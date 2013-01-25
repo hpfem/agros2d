@@ -330,11 +330,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="570"/>
-        <source>Reference emperature</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="573"/>
         <source>Fixed - x</source>
         <translation type="unfinished"></translation>
@@ -365,6 +360,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="570"/>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="591"/>
         <source>Reference temperature</source>
         <translation type="unfinished"></translation>

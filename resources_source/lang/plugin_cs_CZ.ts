@@ -6,107 +6,107 @@
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="738"/>
         <source>Acoustics</source>
-        <translation type="unfinished"></translation>
+        <translation>Akustika</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="741"/>
         <source>Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Harmonická analýza</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="744"/>
         <source>Transient</source>
-        <translation type="unfinished"></translation>
+        <translation>Přechodný děj</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="747"/>
         <source>Pressure</source>
-        <translation type="unfinished"></translation>
+        <translation>Tlak</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="750"/>
         <source>Normal acceleration</source>
-        <translation type="unfinished"></translation>
+        <translation>Normálové zrychlení</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="753"/>
         <source>Impedance boundary condition</source>
-        <translation type="unfinished"></translation>
+        <translation>Imedanční okrajová podmínka</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="756"/>
         <source>Mass density</source>
-        <translation type="unfinished"></translation>
+        <translation>Hustota</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="759"/>
         <source>Speed of sound</source>
-        <translation type="unfinished"></translation>
+        <translation>Rychlost zvuku</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="762"/>
         <source>Pressure - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Tlak - reál. složka</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="765"/>
         <source>Pressure - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Tlak - imag. složka</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="768"/>
         <source>Normal acceleration - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Norm. zrychlení - reál. sl.</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="771"/>
         <source>Normal acceleration - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Norm. zrychlení - imag. sl.</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="774"/>
         <source>Pressure - time der.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tlak - časová der.</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="777"/>
         <source>Sound pressure level</source>
-        <translation type="unfinished"></translation>
+        <translation>Hladina akustického tlaku</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="780"/>
         <source>Local acceleration - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokální zrychlení - reál. složka</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="783"/>
         <source>Local acceleration - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokální zrychlení - imag. složka</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="786"/>
         <source>Pressure derivative</source>
-        <translation type="unfinished"></translation>
+        <translation>Derivace tlaku</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="789"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Objem</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="792"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation>Průřez</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="795"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Délka</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="798"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Plocha</translation>
     </message>
 </context>
 <context>
@@ -114,157 +114,157 @@
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="426"/>
         <source>Current field</source>
-        <translation type="unfinished"></translation>
+        <translation>Proudové pole</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="429"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustálený stav</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="432"/>
         <source>Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Harmonická analýza</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="435"/>
         <source>Fixed voltage</source>
-        <translation type="unfinished"></translation>
+        <translation>Pevné napětí</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="438"/>
         <source>Current density</source>
-        <translation type="unfinished"></translation>
+        <translation>Proudová hustota</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="441"/>
         <source>Conductivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Vodivost</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="444"/>
         <source>Permittivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Permitivita</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="447"/>
         <source>Scalar potential</source>
-        <translation type="unfinished"></translation>
+        <translation>Skalární potenciál</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="450"/>
         <source>Scalar potential - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Skalární potenciál - reál. složka</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="453"/>
         <source>Scalar potential - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Skalární potenciál - imag. složka</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="456"/>
         <source>Electric field</source>
-        <translation type="unfinished"></translation>
+        <translation>Intenzita elektrické pole</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="459"/>
         <source>Electric field - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Intenzita el. pole - reál. složka</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="462"/>
         <source>Electric field - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Intenzita el. pole - imag. složka</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="465"/>
         <source>Displacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Elektrická indukce</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="468"/>
         <source>Displacement - real</source>
-        <translation type="unfinished"></translation>
+        <translation>El. indukce - reál. složka</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="471"/>
         <source>Displacement - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>El. indukce - imag. složka</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="474"/>
         <source>Current density - conductive</source>
-        <translation type="unfinished"></translation>
+        <translation>Proudová hustota - vodivá</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="477"/>
         <source>Current density - conductive - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Proud. hustota - vodivá - reál. sl.</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="480"/>
         <source>Current density - conductive - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Proud. hustota - vodivá - imag. sl.</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="483"/>
         <source>Current density - displacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Proudová hustota - posuvná</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="486"/>
         <source>Current density - displacement - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Proud. hustota - posuvná - reál. sl.</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="489"/>
         <source>Current density - displacement - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Proud. hustota - posuvná - imag. sl.</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="492"/>
         <source>Current density - total</source>
-        <translation type="unfinished"></translation>
+        <translation>Proudová hustota - celková</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="495"/>
         <source>Current density - total - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Proud. hustota - celková - reál. sl.</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="498"/>
         <source>Current density - total - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Proud. hustota - celková - imag. sl.</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="501"/>
         <source>Joule losses</source>
-        <translation type="unfinished"></translation>
+        <translation>Jouleovy ztráty</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="504"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Objem</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="507"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation>Průřez</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="510"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Délka</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="513"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Povrch</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="516"/>
         <source>Current - conductive - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Proud - vodivý - reál. složka</translation>
     </message>
 </context>
 <context>
@@ -272,67 +272,62 @@
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="534"/>
         <source>Structural analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Strukturální analýza</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="537"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustálený stav</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="540"/>
         <source>Fixed - fixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Fixace - fixace</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="543"/>
         <source>Fixed - free</source>
-        <translation type="unfinished"></translation>
+        <translation>Fixace - volná</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="546"/>
         <source>Free - fixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Volná - fixace</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="549"/>
         <source>Free - free</source>
-        <translation type="unfinished"></translation>
+        <translation>Volná - volná</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="552"/>
         <source>Young modulus</source>
-        <translation type="unfinished"></translation>
+        <translation>Youngův modul</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="555"/>
         <source>Poisson ratio</source>
-        <translation type="unfinished"></translation>
+        <translation>Poissonovo číslo</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="558"/>
         <source>Force - x</source>
-        <translation type="unfinished"></translation>
+        <translation>Síla - x</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="561"/>
         <source>Force - y</source>
-        <translation type="unfinished"></translation>
+        <translation>Síla - y</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="564"/>
         <source>Temperature coefficient</source>
-        <translation type="unfinished"></translation>
+        <translation>Teplotní koeficient</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="567"/>
         <source>Temperature difference</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="570"/>
-        <source>Reference emperature</source>
-        <translation type="unfinished"></translation>
+        <translation>Teplotní rozdíl</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="573"/>
@@ -357,7 +352,7 @@
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="585"/>
         <source>Displacement</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Elektrická indukce</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="588"/>
@@ -365,6 +360,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="570"/>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="591"/>
         <source>Reference temperature</source>
         <translation type="unfinished"></translation>
@@ -372,17 +368,17 @@
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="594"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objem</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="597"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Průřez</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="600"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Délka</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="603"/>
@@ -400,12 +396,12 @@
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="213"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ustálený stav</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="216"/>
         <source>Fixed voltage</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pevné napětí</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="219"/>
@@ -415,7 +411,7 @@
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="222"/>
         <source>Permittivity</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Permitivita</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="225"/>
@@ -425,17 +421,17 @@
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="228"/>
         <source>Scalar potential</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Skalární potenciál</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="231"/>
         <source>Electric field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Intenzita elektrické pole</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="234"/>
         <source>Displacement</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Elektrická indukce</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="237"/>
@@ -445,12 +441,12 @@
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="240"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objem</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="243"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Průřez</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="246"/>
@@ -460,7 +456,7 @@
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="249"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Délka</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="252"/>
@@ -483,12 +479,12 @@
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1191"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ustálený stav</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1194"/>
         <source>Transient</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Přechodný děj</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1197"/>
@@ -503,7 +499,7 @@
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1203"/>
         <source>Pressure</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tlak</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1206"/>
@@ -518,12 +514,12 @@
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1212"/>
         <source>Force - x</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Síla - x</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1215"/>
         <source>Force - y</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Síla - y</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1218"/>
@@ -548,12 +544,12 @@
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1230"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objem</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1233"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Délka</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1236"/>
@@ -576,12 +572,12 @@
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="369"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ustálený stav</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="372"/>
         <source>Transient</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Přechodný děj</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="375"/>
@@ -661,17 +657,17 @@
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="420"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objem</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="423"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Průřez</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="426"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Délka</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="429"/>
@@ -689,17 +685,17 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="657"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ustálený stav</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="660"/>
         <source>Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Harmonická analýza</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="663"/>
         <source>Transient</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Přechodný děj</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="666"/>
@@ -834,7 +830,7 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="744"/>
         <source>Conductivity</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vodivost</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="747"/>
@@ -904,12 +900,12 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="786"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objem</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="789"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Průřez</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="792"/>
@@ -969,7 +965,7 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="825"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Délka</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="828"/>
@@ -1002,12 +998,12 @@
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="525"/>
         <source>Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Harmonická analýza</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="528"/>
         <source>Electric field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Intenzita elektrické pole</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="531"/>
@@ -1022,12 +1018,12 @@
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="537"/>
         <source>Impedance boundary condition</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Imedanční okrajová podmínka</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="540"/>
         <source>Permittivity</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Permitivita</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="543"/>
@@ -1037,7 +1033,7 @@
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="546"/>
         <source>Conductivity</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vodivost</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="549"/>
@@ -1052,12 +1048,12 @@
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="555"/>
         <source>Electric field - real</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Intenzita el. pole - reál. složka</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="558"/>
         <source>Electric field - imag</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Intenzita el. pole - imag. složka</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="561"/>
@@ -1087,17 +1083,17 @@
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="576"/>
         <source>Displacement</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Elektrická indukce</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="579"/>
         <source>Displacement - real</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">El. indukce - reál. složka</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="582"/>
         <source>Displacement - imag</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">El. indukce - imag. složka</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="585"/>
@@ -1132,17 +1128,17 @@
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="603"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objem</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="606"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Průřez</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="609"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Délka</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="612"/>

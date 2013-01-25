@@ -6036,7 +6036,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../src/util/enums.cpp" line="374"/>
         <source>Adaptive (num steps)</source>
-        <translation>Adaptivní (počt kroků)</translation>
+        <translation>Adaptivní (počet kroků)</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="386"/>
