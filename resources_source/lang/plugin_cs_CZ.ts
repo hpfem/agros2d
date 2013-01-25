@@ -259,7 +259,7 @@
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="513"/>
         <source>Surface</source>
-        <translation>Povrch</translation>
+        <translation>Plocha</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="516"/>
@@ -322,7 +322,7 @@
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="564"/>
         <source>Temperature coefficient</source>
-        <translation>Teplotní koeficient</translation>
+        <translation>Koeficient přestupu tepla</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="567"/>
@@ -332,58 +332,58 @@
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="573"/>
         <source>Fixed - x</source>
-        <translation type="unfinished"></translation>
+        <translation>Fixována v x</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="576"/>
         <source>Fixed - y</source>
-        <translation type="unfinished"></translation>
+        <translation>Fixována v y</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="579"/>
         <source>Free - x</source>
-        <translation type="unfinished"></translation>
+        <translation>Volná v x</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="582"/>
         <source>Free - y</source>
-        <translation type="unfinished"></translation>
+        <translation>Volná v y</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="585"/>
         <source>Displacement</source>
-        <translation type="unfinished">Elektrická indukce</translation>
+        <translation>Posun</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="588"/>
         <source>Inner force</source>
-        <translation type="unfinished"></translation>
+        <translation>Vnitřní síla</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="570"/>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="591"/>
         <source>Reference temperature</source>
-        <translation type="unfinished"></translation>
+        <translation>Referenční teplota</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="594"/>
         <source>Volume</source>
-        <translation type="unfinished">Objem</translation>
+        <translation>Objem</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="597"/>
         <source>Cross section</source>
-        <translation type="unfinished">Průřez</translation>
+        <translation>Průřez</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="600"/>
         <source>Length</source>
-        <translation type="unfinished">Délka</translation>
+        <translation>Délka</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="603"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Plocha</translation>
     </message>
 </context>
 <context>
@@ -391,82 +391,82 @@
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="210"/>
         <source>Electrostatic field</source>
-        <translation type="unfinished"></translation>
+        <translation>Elektrostatické pole</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="213"/>
         <source>Steady state</source>
-        <translation type="unfinished">Ustálený stav</translation>
+        <translation>Ustálený stav</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="216"/>
         <source>Fixed voltage</source>
-        <translation type="unfinished">Pevné napětí</translation>
+        <translation>Pevné napětí</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="219"/>
         <source>Surface charge density</source>
-        <translation type="unfinished"></translation>
+        <translation>Plošná hustota náboje</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="222"/>
         <source>Permittivity</source>
-        <translation type="unfinished">Permitivita</translation>
+        <translation>Permitivita</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="225"/>
         <source>Charge density</source>
-        <translation type="unfinished"></translation>
+        <translation>Hustota náboje</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="228"/>
         <source>Scalar potential</source>
-        <translation type="unfinished">Skalární potenciál</translation>
+        <translation>Skalární potenciál</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="231"/>
         <source>Electric field</source>
-        <translation type="unfinished">Intenzita elektrické pole</translation>
+        <translation>Intenzita elektrické pole</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="234"/>
         <source>Displacement</source>
-        <translation type="unfinished">Elektrická indukce</translation>
+        <translation>Elektrická indukce</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="237"/>
         <source>Energy density</source>
-        <translation type="unfinished"></translation>
+        <translation>Hustota energie</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="240"/>
         <source>Volume</source>
-        <translation type="unfinished">Objem</translation>
+        <translation>Objem</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="243"/>
         <source>Cross section</source>
-        <translation type="unfinished">Průřez</translation>
+        <translation>Průřez</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="246"/>
         <source>Energy</source>
-        <translation type="unfinished"></translation>
+        <translation>Energie</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="249"/>
         <source>Length</source>
-        <translation type="unfinished">Délka</translation>
+        <translation>Délka</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="252"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Plocha</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="255"/>
         <source>Charge</source>
-        <translation type="unfinished"></translation>
+        <translation>Náboj</translation>
     </message>
 </context>
 <context>
