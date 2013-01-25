@@ -34,6 +34,7 @@ win32-msvc2010 {
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
     LIBS += -L..
+    LIBS += -L../libs
     TARGET = ../../agros2d
 }
 
