@@ -44,8 +44,7 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 
-PostHermes::PostHermes() :
-    m_particleTracingIsPrepared(false)
+PostHermes::PostHermes()
 {
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(clear()));
 
@@ -272,7 +271,17 @@ void PostHermes::processParticleTracing()
         {
             // position and velocity cache
             ParticleTracing particleTracing;
-            particleTracing.computeTrajectoryParticle(k > 0);
+            try
+            {
+                particleTracing.computeTrajectoryParticle(k > 0);
+            }
+            catch (...)
+            {
+                m_particleTracingVelocityMin = 0.0;
+                m_particleTracingVelocityMax = 0.0;
+
+                return;
+            }
 
             m_particleTracingPositionsList.append(particleTracing.positions());
             m_particleTracingVelocitiesList.append(particleTracing.velocities());
@@ -287,8 +296,6 @@ void PostHermes::processParticleTracing()
                                       arg(particleTracing.times().count()).
                                       arg(particleTracing.times().last()));
         }
-
-        m_particleTracingIsPrepared = true;
     }
 }
 
@@ -314,8 +321,6 @@ void PostHermes::clear()
     m_linContourView.free();
     m_linScalarView.free();
     m_vecVectorView.free();
-
-    m_particleTracingIsPrepared = false;
 }
 
 void PostHermes::processMeshed()

@@ -58,7 +58,7 @@ public:
     inline Hermes::Hermes2D::Views::Vectorizer &vecVectorView() { return m_vecVectorView; }
 
     // particle tracing
-    inline bool particleTracingIsPrepared() { return m_particleTracingIsPrepared; }
+    inline bool particleTracingIsPrepared() { return !m_particleTracingPositionsList.isEmpty(); }
     inline QList<QList<Point3> > particleTracingPositionsList() const { return m_particleTracingPositionsList; }
     inline QList<QList<Point3> > particleTracingVelocitiesList() const { return m_particleTracingVelocitiesList; }
     inline QList<QList<double> > particleTracingTimesList() const { return m_particleTracingTimesList; }
@@ -95,7 +95,6 @@ private:
 
     // particle tracing
     ParticleTracing *particleTracing;
-    bool m_particleTracingIsPrepared;
     QList<QList<Point3> > m_particleTracingPositionsList;
     QList<QList<Point3> > m_particleTracingVelocitiesList;
     QList<QList<double> > m_particleTracingTimesList;
