@@ -19,20 +19,16 @@
 
 #include "{{ID}}_volumeintegral.h"
 
-#include "hermes2d/module.h"
-#include "hermes2d/module_agros.h"
-#include "hermes2d/field.h"
-#include "hermes2d/block.h"
-#include "hermes2d/problem.h"
-#include "hermes2d/problem_config.h"
-#include "hermes2d/solutionstore.h"
-
 #include "util.h"
 #include "util/global.h"
 
-#include "scene.h"
-#include "scenelabel.h"
-#include "logview.h"
+#include "hermes2d/module_agros.h"
+#include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
+#include "hermes2d/field.h"
+#include "hermes2d/solutionstore.h"
+
+#include "hermes2d/plugin_interface.h"
 
 {{CLASS}}VolumeIntegral::{{CLASS}}VolumeIntegral(FieldInfo *fieldInfo)
     : IntegralValue(fieldInfo)
