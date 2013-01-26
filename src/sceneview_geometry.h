@@ -90,6 +90,8 @@ protected:
     void paintGeometry(); // paint nodes, edges and labels
     void paintRulersHintsEdges();
 
+    void paintSelectRegion();
+
     void paintBackgroundPixmap();
 
 private:

@@ -410,11 +410,11 @@ void SceneViewCommon2D::paintRulersHints()
 
 void SceneViewCommon2D::paintZoomRegion()
 {
-    loadProjection2d(true);
-
     // zoom region
     if (m_zoomRegion)
     {
+        loadProjection2d(true);
+
         Point posStart = transform(Point(m_zoomRegionPos.x(), m_zoomRegionPos.y()));
         Point posEnd = transform(Point(m_lastPos.x(), m_lastPos.y()));
 

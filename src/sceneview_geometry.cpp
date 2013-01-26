@@ -970,6 +970,7 @@ void SceneViewPreprocessor::paintGL()
     // axes
     if (Agros2D::problem()->configView()->showAxes) paintAxes();
 
+    paintSelectRegion();
     paintZoomRegion();
     paintSnapToGrid();
     paintEdgeLine();
@@ -1306,6 +1307,23 @@ void SceneViewPreprocessor::paintEdgeLine()
             glDisable(GL_LINE_STIPPLE);
             glLineWidth(1.0);
         }
+    }
+}
+
+void SceneViewPreprocessor::paintSelectRegion()
+{
+    // zoom region
+    if (m_selectRegion)
+    {
+        loadProjection2d(true);
+
+        Point posStart = transform(Point(m_selectRegionPos.x(), m_selectRegionPos.y()));
+        Point posEnd = transform(Point(m_lastPos.x(), m_lastPos.y()));
+
+        drawBlend(posStart, posEnd,
+                  Agros2D::problem()->configView()->colorHighlighted.redF(),
+                  Agros2D::problem()->configView()->colorHighlighted.greenF(),
+                  Agros2D::problem()->configView()->colorHighlighted.blueF());
     }
 }
 
