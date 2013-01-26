@@ -89,82 +89,6 @@ void InfoWidget::refresh()
     QTimer::singleShot(0, this, SLOT(showInfo()));
 }
 
-std::string InfoWidget::utfToHtml(const QString & utfString)
-{
-    QString str = "";
-    QByteArray byteArray;
-    byteArray = utfString.toUtf8();
-    int i = 0;
-    while(i < byteArray.length())
-    {
-        uchar code[6];
-        for(int j = 0; j < 6; j++)
-        {
-            code[j] = char(byteArray[i+j]);
-        }
-
-        if(code[0] <= 127)
-        {
-            str.append(code[0]);
-            i += 1;
-            continue;
-        }
-        if((code[0] >= 192) && (code[0] <= 223))
-        {
-            QString htmlCode = "&#" + QString::number((code[0] - 192) * 64 + (code[1] - 128)) + ";";
-            str.append(htmlCode);
-            i += 2;
-            continue;
-        }
-        if((code[0] >= 224) && (code[0] <= 239))
-        {
-            QString htmlCode = "&#" + QString::number((code[0] - 224) * 4096 +
-                                                      (code[1] - 128) * 64  +
-                                                      (code[2]-128)) + ";";
-            str.append(htmlCode);
-            i += 3;
-            continue;
-        }
-        if((code[0] >= 240) && (code[0] <=247))
-        {
-            QString htmlCode = "&#" + QString::number((code[0] - 240) * 262144 +
-                                                      (code[1] - 128) * 4096  +
-                                                      (code[2]-128) * 64 +
-                                                      (code[3]-128))+ ";";
-            str.append(htmlCode);
-            i += 4;
-            continue;
-        }
-        if((code[0] >= 248) && (code[0] <=251))
-        {
-            QString htmlCode = "&#" + QString::number((code[0] - 248) * 16777216 +
-                                                      (code[1] - 128) * 262144 +
-                                                      (code[2] - 128) * 4096  +
-                                                      (code[3]-128) * 64 +
-                                                      (code[4]-128))+ ";";
-            str.append(htmlCode);
-            i += 5;
-            continue;
-        }
-        if((code[0] >= 252) && (code[0] <=253))
-        {
-            QString htmlCode = "&#" + QString::number((code[0] - 252) * 1073741824 +
-                                                      (code[1] - 128) * 16777216 +
-                                                      (code[2] - 128) * 262144 +
-                                                      (code[3] - 128) * 4096  +
-                                                      (code[4]-128) * 64 +
-                                                      (code[5]-128))+ ";";
-            str.append(htmlCode);
-            i += 6;
-            continue;
-        }
-        else
-        {
-        }
-    }
-    return str.toStdString();
-}
-
 void InfoWidget::showInfo()
 {    
     // template
@@ -176,22 +100,22 @@ void InfoWidget::showInfo()
     problemInfo.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
     problemInfo.SetValue("PANELS_DIRECTORY", QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels").toStdString());
 
-    problemInfo.SetValue("BASIC_INFORMATION_LABEL", utfToHtml(tr("Basic informations")));
+    problemInfo.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
 
-    problemInfo.SetValue("NAME_LABEL", utfToHtml(tr("Name:")));
+    problemInfo.SetValue("NAME_LABEL", tr("Name:").toStdString());
     problemInfo.SetValue("NAME", Agros2D::problem()->config()->name().toStdString());
 
-    problemInfo.SetValue("COORDINATE_TYPE_LABEL", utfToHtml(tr("Coordinate type:")));
+    problemInfo.SetValue("COORDINATE_TYPE_LABEL", tr("Coordinate type:").toStdString());
     problemInfo.SetValue("COORDINATE_TYPE", coordinateTypeString(Agros2D::problem()->config()->coordinateType()).toStdString());
 
-    problemInfo.SetValue("MESH_TYPE_LABEL", utfToHtml(tr("Mesh type:")));
+    problemInfo.SetValue("MESH_TYPE_LABEL", tr("Mesh type:").toStdString());
     problemInfo.SetValue("MESH_TYPE", meshTypeString(Agros2D::problem()->config()->meshType()).toStdString());
 
     if (Agros2D::problem()->isHarmonic())
         problemInfo.ShowSection("HARMONIC");
 
-    problemInfo.SetValue("HARMONIC_LABEL", utfToHtml(tr("Harmonic analysis")));
-    problemInfo.SetValue("HARMONIC_FREQUENCY_LABEL", utfToHtml(tr("Frequency:")));
+    problemInfo.SetValue("HARMONIC_LABEL", tr("Harmonic analysis").toStdString());
+    problemInfo.SetValue("HARMONIC_FREQUENCY_LABEL", tr("Frequency:").toStdString());
     problemInfo.SetValue("HARMONIC_FREQUENCY", QString::number(Agros2D::problem()->config()->frequency()).toStdString() + " Hz");
 
     if (Agros2D::problem()->isTransient())
@@ -221,10 +145,10 @@ void InfoWidget::showInfo()
             }
         }
     }
-    problemInfo.SetValue("TRANSIENT_LABEL", utfToHtml(tr("Transient analysis")));
-    problemInfo.SetValue("TRANSIENT_STEP_METHOD_LABEL", utfToHtml(tr("Method:")));
+    problemInfo.SetValue("TRANSIENT_LABEL", tr("Transient analysis").toStdString());
+    problemInfo.SetValue("TRANSIENT_STEP_METHOD_LABEL", tr("Method:").toStdString());
     problemInfo.SetValue("TRANSIENT_STEP_METHOD", timeStepMethodString(Agros2D::problem()->config()->timeStepMethod()).toStdString());
-    problemInfo.SetValue("TRANSIENT_STEP_ORDER_LABEL", utfToHtml(tr("Order:")));
+    problemInfo.SetValue("TRANSIENT_STEP_ORDER_LABEL", tr("Order:").toStdString());
     problemInfo.SetValue("TRANSIENT_STEP_ORDER", QString::number(Agros2D::problem()->config()->timeOrder()).toStdString());
     problemInfo.SetValue("TRANSIENT_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
     problemInfo.SetValue("TRANSIENT_TOLERANCE", QString::number(Agros2D::problem()->config()->timeMethodTolerance().number()).toStdString());
@@ -235,12 +159,12 @@ void InfoWidget::showInfo()
     problemInfo.SetValue("TRANSIENT_TOTAL_LABEL", tr("Total time:").toStdString());
     problemInfo.SetValue("TRANSIENT_TOTAL", QString::number(Agros2D::problem()->config()->timeTotal().number()).toStdString() + " s");
 
-    problemInfo.SetValue("GEOMETRY_LABEL", utfToHtml(tr("Geometry")));
+    problemInfo.SetValue("GEOMETRY_LABEL", tr("Geometry").toStdString());
     problemInfo.SetValue("GEOMETRY_NODES_LABEL", tr("Nodes:").toStdString());
     problemInfo.SetValue("GEOMETRY_NODES", QString::number(Agros2D::scene()->nodes->count()).toStdString());
     problemInfo.SetValue("GEOMETRY_EDGES_LABEL", tr("Edges:").toStdString());
     problemInfo.SetValue("GEOMETRY_EDGES", QString::number(Agros2D::scene()->edges->count()).toStdString());
-    problemInfo.SetValue("GEOMETRY_LABELS_LABEL", utfToHtml(tr("Labels:")));
+    problemInfo.SetValue("GEOMETRY_LABELS_LABEL", tr("Labels:").toStdString());
     problemInfo.SetValue("GEOMETRY_LABELS", QString::number(Agros2D::scene()->labels->count()).toStdString());
     problemInfo.SetValue("GEOMETRY_MATERIALS_LABEL", tr("Materials:").toStdString());
     problemInfo.SetValue("GEOMETRY_MATERIALS", QString::number(Agros2D::scene()->materials->items().count() - 1).toStdString());

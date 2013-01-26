@@ -129,6 +129,11 @@ int main(int argc, char *argv[])
     QString locale = settings.value("General/Language", QLocale::system().name()).value<QString>();
     setLanguage(locale);
 
+    // std::string codec
+    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+    QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+
     // init indicator (ubuntu - unity, windows - overlay icon, macosx - ???)
     Indicator::init();
 
