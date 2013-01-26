@@ -51,7 +51,8 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
     this->m_sceneViewGeometry = sceneView;
 
     // problem information
-    webView = new QWebView(this);
+    webView = new QWebView();
+    webView->page()->setNetworkAccessManager(networkAccessManager());
 
     // stylesheet
     std::string style;

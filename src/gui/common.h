@@ -46,5 +46,6 @@ inline QString htmlFontFamily() { return QApplication::font().family(); }
     inline int htmlFontSize() { return QApplication::font().pointSize() + 1; }
 #endif
 
+QNetworkAccessManager *networkAccessManager();
 
 #endif // GUI_COMMON_H

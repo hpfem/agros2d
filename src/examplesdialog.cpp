@@ -43,7 +43,8 @@ ExamplesDialog::ExamplesDialog(QWidget *parent) : QDialog(parent)
     m_selectedFilename = "";
 
     // problem information
-    webView = new QWebView(this);
+    webView = new QWebView();
+    webView->page()->setNetworkAccessManager(networkAccessManager());
 
     // stylesheet
     std::string style;

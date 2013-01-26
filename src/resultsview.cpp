@@ -42,7 +42,8 @@ ResultsView::ResultsView(QWidget *parent): QDockWidget(tr("Results view"), paren
 
     createActions();
 
-    webView = new QWebView(this);
+    webView = new QWebView();
+    webView->page()->setNetworkAccessManager(networkAccessManager());
 
     // stylesheet
     std::string style;

@@ -21,11 +21,14 @@
 
 #include "util.h"
 #include "util/constants.h"
+#include "gui/common.h"
 
 #include "ctemplate/template.h"
 
 LaTeXViewer::LaTeXViewer(QWidget *parent, const QString &str) : QWebView(parent)
 {
+    page()->setNetworkAccessManager(networkAccessManager());
+
     setAcceptDrops(false);
     setContextMenuPolicy(Qt::NoContextMenu);
     setContentsMargins(0, 0, 0, 0);
