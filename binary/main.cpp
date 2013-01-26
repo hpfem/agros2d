@@ -8,10 +8,10 @@
 #include "util.h"
 #include "mainwindow.h"
 
-class ArgosApplication : public QApplication
+class AgrosApplication : public QApplication
 {
 public:
-    ArgosApplication(int& argc, char ** argv) : QApplication(argc, argv) {}
+    AgrosApplication(int& argc, char ** argv) : QApplication(argc, argv) {}
 
     // reimplemented from QApplication so we can throw exceptions in slots
     virtual bool notify(QObject *receiver, QEvent *event)
@@ -48,7 +48,7 @@ public:
 
 int main(int argc, char *argv[])
 {
-    ArgosApplication a(argc, argv);
+    AgrosApplication a(argc, argv);
     // QApplication a(argc, argv);
 
 #ifdef VERSION_BETA
