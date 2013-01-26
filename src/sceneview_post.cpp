@@ -70,7 +70,7 @@ void PostHermes::processInitialMesh()
             Hermes::Hermes2D::ZeroSolution<double> initial(Agros2D::scene()->activeViewField()->initialMesh());
 
             m_linInitialMeshView.free();
-            m_linInitialMeshView.process_solution(&initial);            
+            m_linInitialMeshView.process_solution(&initial);
         }
         catch (Hermes::Exceptions::Exception& e)
         {
@@ -325,6 +325,10 @@ void PostHermes::processMeshed()
 
 void PostHermes::processSolved()
 {
+    // temporary use 3/4 of max threads
+    int threads = omp_get_max_threads() * 3/4;
+    Hermes::Hermes2D::Hermes2DApi.set_integral_param_value(Hermes::Hermes2D::numThreads, threads);
+
     processSolutionMesh();
     processOrder();
 
@@ -333,9 +337,8 @@ void PostHermes::processSolved()
     processRangeVector();
     processParticleTracing();
 
-    // QTimer::singleShot(0, this, SLOT(processRangeContour()));
-    // QTimer::singleShot(0, this, SLOT(processRangeScalar()));
-    // QTimer::singleShot(0, this, SLOT(processRangeVector()));
+    // restore settings
+    Hermes::Hermes2D::Hermes2DApi.set_integral_param_value(Hermes::Hermes2D::numThreads, Agros2D::configComputer()->numberOfThreads);
 }
 
 // ************************************************************************************************
