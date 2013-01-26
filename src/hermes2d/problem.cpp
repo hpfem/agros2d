@@ -163,6 +163,8 @@ void Problem::clearFieldsAndConfig()
 
 void Problem::addField(FieldInfo *field)
 {
+    clearSolution();
+
     // remove field
     if (hasField(field->fieldId()))
         removeField(m_fieldInfos[field->fieldId()]);
@@ -173,13 +175,13 @@ void Problem::addField(FieldInfo *field)
     // couplings
     synchronizeCouplings();
 
-    m_isSolved = false;
-
     emit fieldsChanged();
 }
 
 void Problem::removeField(FieldInfo *field)
 {
+    clearSolution();
+
     // first remove references to markers of this field from all edges and labels
     Agros2D::scene()->edges->removeFieldMarkers(field);
     Agros2D::scene()->labels->removeFieldMarkers(field);
