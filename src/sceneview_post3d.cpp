@@ -117,7 +117,8 @@ void SceneViewPost3D::paintGL()
                 Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3DSolid)
             paintScalarFieldColorBar(Agros2D::problem()->configView()->scalarRangeMin, Agros2D::problem()->configView()->scalarRangeMax);
 
-        if (Agros2D::problem()->configView()->showParticleView && Agros2D::problem()->configView()->particleColorByVelocity)
+        if (Agros2D::problem()->configView()->showParticleView && Agros2D::problem()->configView()->particleColorByVelocity &&
+                Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ParticleTracing)
             paintParticleTracingColorBar(m_postHermes->particleTracingVelocityMin(), m_postHermes->particleTracingVelocityMax(), false);
     }
 
