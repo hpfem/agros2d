@@ -82,6 +82,7 @@ QWidget *AboutDialog::createAgros2D()
                                          "<b>František Mach</b> - developer, documentation (University of West Bohemia, Pilsen)<br/>"
                                          "<b>Pavel Kůs</b> - developer, coupled problems, time domain adaptivity (University of West Bohemia, Prague)<br/>"
                                          "<b>David Pánek</b> - developer (University of West Bohemia, Pilsen)<br/>"
+                                         "<b>Lukáš Korous</b> - developer (University of West Bohemia, Pilsen)<br/>"
                                          "<b>Lukáš Koudela</b> - developer - RF module (University of West Bohemia, Pilsen)<br/>"
                                          "<b>Bartosz Sawicki</b> - Polish translation (Warsaw University of Technology, Warsaw)<br/>"
                                          "<b>Václav Kotlan</b> - German translation (University of West Bohemia, Pilsen)<br/>"
