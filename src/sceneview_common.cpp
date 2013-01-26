@@ -33,8 +33,12 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 
+#ifndef GL_MULTISAMPLE
+#define GL_MULTISAMPLE 0x809D
+#endif
+
 SceneViewCommon::SceneViewCommon(QWidget *parent)
-    : QGLWidget(QGLFormat(QGL::SampleBuffers), parent),
+    : QGLWidget(parent),
       m_fontPost(NULL),
       m_fontRulers(NULL),
       m_textureLabelRulers(-1),
@@ -72,16 +76,8 @@ void SceneViewCommon::createActions()
 void SceneViewCommon::initializeGL()
 {
     glShadeModel(GL_SMOOTH);
+    glDisable(GL_MULTISAMPLE);
     glEnable(GL_NORMALIZE);
-
-#ifdef Q_WS_X11
-    glDisable(GL_MULTISAMPLE);
-#endif
-#ifdef Q_WS_WIN
-#endif
-#ifdef Q_WS_MAC
-    glDisable(GL_MULTISAMPLE);
-#endif
 
     // rulers font
     if (m_fontRulers)
