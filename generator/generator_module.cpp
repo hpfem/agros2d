@@ -97,6 +97,10 @@ void Agros2DGeneratorModule::generatePluginInterfaceFiles()
     output.SetValue("ID", m_module->general().id());
     output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
 
+    QString description = QString::fromStdString(m_module->general().description());
+    description = description.replace("\n","");
+    output.SetValue("DESCRIPTION", description.toStdString());
+
     std::string text;
 
     // header - expand template

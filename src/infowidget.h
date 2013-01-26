@@ -34,6 +34,7 @@ class InfoWidget : public QWidget
 public:
     InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent = 0);
     ~InfoWidget();
+    std::string utfToHtml(const QString & utfString);
 
 public slots:
     void refresh();

@@ -394,7 +394,7 @@ Module::LocalVariable::LocalVariable(XMLModule::localvariable lv, const QString 
                                      CoordinateType coordinateType, AnalysisType analysisType)
 {    
     PluginInterface *plugin = Agros2D::plugin(fieldId);
-    assert(plugin);    
+    assert(plugin);
 
     m_id = QString::fromStdString(lv.id());
     m_name = plugin->localeName(QString::fromStdString(lv.name()));
