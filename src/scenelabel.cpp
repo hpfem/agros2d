@@ -35,7 +35,7 @@
 #include "hermes2d/problem_config.h"
 
 SceneLabel::SceneLabel(const Point &point, double area)
-    : MarkedSceneBasic(), m_point(point), m_area(area)
+    : MarkedSceneBasic<SceneMaterial>(), m_point(point), m_area(area)
 {
     foreach (FieldInfo* field, Agros2D::problem()->fieldInfos())
     {

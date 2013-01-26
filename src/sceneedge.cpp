@@ -34,7 +34,7 @@
 #include "hermes2d/field.h"
 
 SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle)
-    : MarkedSceneBasic(),
+    : MarkedSceneBasic<SceneBoundary>(),
       m_nodeStart(nodeStart), m_nodeEnd(nodeEnd), m_angle(angle)
 {
     foreach (FieldInfo* field, Agros2D::problem()->fieldInfos())

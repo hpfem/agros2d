@@ -4074,7 +4074,7 @@
     <message>
         <location filename="../../src/sceneview_post.cpp" line="132"/>
         <source>contour view (%1)</source>
-        <translation>zobrazení vrstevnic (%1)</translation>
+        <translation>zobrazení kontur (%1)</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="181"/>
@@ -4510,7 +4510,7 @@
     <message>
         <location filename="../../src/postprocessorview.cpp" line="414"/>
         <source>Contours</source>
-        <translation>Vrstevnice</translation>
+        <translation>Kontury</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="416"/>
@@ -4559,7 +4559,7 @@
     <message>
         <location filename="../../src/postprocessorview.cpp" line="483"/>
         <source>Contour field</source>
-        <translation>Vrstevnicové pole</translation>
+        <translation>Pole kontur</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="505"/>
@@ -4700,12 +4700,12 @@
     <message>
         <location filename="../../src/postprocessorview.cpp" line="819"/>
         <source>Number of contours:</source>
-        <translation>Počet vrstevnic:</translation>
+        <translation>Počet kontur:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="821"/>
         <source>Contour width:</source>
-        <translation>Šířka vrstevnic:</translation>
+        <translation>Šířka kontur:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="833"/>
@@ -7339,7 +7339,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="328"/>
         <source>Contour count must be in the range from %1 to %2.</source>
-        <translation>Počet vrstevnic musí být v rozsahu od %1 do %2.</translation>
+        <translation>Počet kontur musí být v rozsahu od %1 do %2.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="369"/>
@@ -9783,7 +9783,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/settings.cpp" line="375"/>
         <source>Contours</source>
-        <translation>Vrstevnice</translation>
+        <translation>Kontury</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="376"/>
@@ -9955,7 +9955,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/settings.cpp" line="549"/>
         <source>Contours:</source>
-        <translation>Vrstevnice:</translation>
+        <translation>Kontury:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="550"/>
