@@ -70,10 +70,10 @@ Problem::~Problem()
 bool Problem::isMeshed() const
 {
     foreach (FieldInfo* fieldInfo, m_fieldInfos)
-        if (fieldInfo->initialMesh())
-            return true;
+        if (!fieldInfo->initialMesh())
+            return false;
 
-    return false;
+    return true;
 }
 
 int Problem::numAdaptiveFields() const
@@ -313,6 +313,11 @@ bool Problem::mesh()
             delete meshGenerator;
             return true;
         }
+        catch (AgrosException& e)
+        {
+            delete meshGenerator;
+            Agros2D::log()->printError(tr("Mesh reader"), QString("%1").arg(e.what()));
+        }
         catch (Hermes::Exceptions::Exception& e)
         {
             delete meshGenerator;
@@ -516,7 +521,7 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
             m_isSolved = true;
         }
     }
-    catch (AgrosSolverException &e)
+    catch (...)
     {
         return;
     }
@@ -563,6 +568,11 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
         Agros2D::log()->printError(QObject::tr("Solver"), e.what());
         throw;
     }
+    catch (AgrosException& e)
+    {
+        Agros2D::log()->printError(QObject::tr("Solver"), e.what());
+        throw;
+    }
     catch (...)
     {
         throw;
@@ -593,7 +603,14 @@ void Problem::solveAction()
     Agros2D::scene()->setActiveTimeStep(0);
     Agros2D::scene()->setActiveViewField(fieldInfos().values().at(0));
 
-    solveInit();
+    try
+    {
+        solveInit();
+    }
+    catch (...)
+    {
+        throw;
+    }
 
     assert(isMeshed());
 
