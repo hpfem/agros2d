@@ -183,10 +183,8 @@ void ChartControlsWidget::createControls()
 {
     // variable
     cmbFieldVariable = new QComboBox();
-    connect(cmbFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldVariable(int)));
     // component
     cmbFieldVariableComp = new QComboBox();
-    connect(cmbFieldVariableComp, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldVariableComp(int)));
 
     QFormLayout *layoutVariable = new QFormLayout();
     layoutVariable->addRow(tr("Variable:"), cmbFieldVariable);
@@ -614,13 +612,6 @@ void ChartControlsWidget::doFieldVariable(int index)
 
     if (cmbFieldVariableComp->currentIndex() == -1)
         cmbFieldVariableComp->setCurrentIndex(0);
-
-    doPlot();
-}
-
-void ChartControlsWidget::doFieldVariableComp(int index)
-{
-    doPlot();
 }
 
 void ChartControlsWidget::doExportData()
