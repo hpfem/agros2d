@@ -366,7 +366,6 @@ MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent),
     webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
 
     connect(webView->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
-    connect(webView->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
 
     // stylesheet
     std::string style;
