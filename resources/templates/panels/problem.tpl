@@ -241,39 +241,3 @@ function showTooltip(x, y, contents)
 </body>
 </html>
 
-<!--
-{{#SOLUTION_SECTION}}
-<h1>{{SOLUTION_INFORMATION_LABEL}}</h1>
-<div class="section">
-<table>
-	<tr><td colspan=2><h2>{{INITIAL_MESH_LABEL}}</h2></td></tr>
-	<tr><td colspan=2><div class="subsection">
-		<table>
-			<tr><td><b>{{INITIAL_MESH_NODES_LABEL}}</b></td><td>{{INITIAL_MESH_NODES}}</td></tr>
-			<tr><td><b>{{INITIAL_MESH_ELEMENTS_LABEL}}</b></td><td>{{INITIAL_MESH_ELEMENTS}}</td></tr>
-		</table>
-	</div></td></tr>
-	{{#SOLUTION_PARAMETERS_SECTION}}
-	<tr><td><b>{{ELAPSED_TIME_LABEL}}</b></td><td>{{ELAPSED_TIME}}</td></tr>
-	<tr><td><b>{{DOFS_LABEL}}</b></td><td>{{DOFS}}</td></tr>
-	{{#ADAPTIVITY_SECTION}}
-	<tr><td colspan=2><h2>{{ADAPTIVITY_LABEL}}</h2></td></tr>
-	<tr><td colspan=2><div class="subsection">
-		<table>
-			<tr><td><b>{{ADAPTIVITY_ERROR_LABEL}}</b></td><td>{{ADAPTIVITY_ERROR}}</td></tr>
-			<tr><td><b>{{ADAPTIVITY_TOLERANCE_LABEL}}</b></td><td>{{ADAPTIVITY_TOLERANCE}}</td></tr>
-		</table>
-	</div></td></tr>
-	<tr><td colspan=2><h2>{{SOLUTION_MESH_LABEL}}</h2></td></tr>
-	<tr><td colspan=2><div class="subsection">
-		<table>
-			<tr><td><b>{{SOLUTION_MESH_NODES_LABEL}}</b></td><td>{{SOLUTION_MESH_NODES}}</td></tr>
-			<tr><td><b>{{SOLUTION_MESH_ELEMENTS_LABEL}}</b></td><td>{{SOLUTION_MESH_ELEMENTS}}</td></tr>
-		</table>
-	</div></td></tr>
-	{{/ADAPTIVITY_SECTION}}
-	{{/SOLUTION_PARAMETERS_SECTION}}
-</table>
-</div>
-{{/SOLUTION_SECTION}}
--->

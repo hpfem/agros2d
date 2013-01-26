@@ -230,7 +230,7 @@ void ExamplesDialog::problemInfo(const QString &fileName)
         problemInfo.SetValue("AGROS2D", QDir(datadir() + TEMPLATEROOT).absolutePath().toStdString() + "/panels/agros2d.png");
 
         problemInfo.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
-        problemInfo.SetValue("PANELS_DIRECTORY", QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels").toStdString());
+        problemInfo.SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
         problemInfo.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
 
         problemInfo.SetValue("NAME_LABEL", tr("Name:").toStdString());

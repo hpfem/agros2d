@@ -363,6 +363,8 @@ MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent),
     // problem information
     webView = new QWebView(this);
     webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+
+    connect(webView->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
     connect(webView->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
 
     // stylesheet
@@ -522,7 +524,7 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
         ctemplate::TemplateDictionary materialInfo("info");
 
         materialInfo.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
-        materialInfo.SetValue("PANELS_DIRECTORY", QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels").toStdString());
+        materialInfo.SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
 
         materialInfo.SetValue("NAME", material->general().name());
         if (material->general().description().present())
