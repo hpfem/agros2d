@@ -296,6 +296,7 @@ linux-g++|linux-g++-64|linux-g++-32 {
 macx-g++ {
     ICON += resources/images/agros2d.icns
     QMAKE_INFO_PLIST  += resources/Info.plist
+    QMAKE_CXXFLAGS += -fpermissive
     #target.path = /Applications
     #INSTALLS += target
 

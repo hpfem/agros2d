@@ -69,6 +69,8 @@ linux-g++|linux-g++-64|linux-g++-32 {
 }
 
 macx-g++ {
+    CONFIG += staticlib
+    TARGET = ../libs/agros2d_3rdparty
     INCLUDEPATH += ctemplate \
             ctemplate/osx \
             .

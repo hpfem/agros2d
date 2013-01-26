@@ -175,6 +175,7 @@ linux-g++|linux-g++-64|linux-g++-32 {
 
 macx-g++ {
     TARGET = ../libs/agros2d_hermes2d
+    QMAKE_CXXFLAGS += -fpermissive
 
     DEFINES += HAVE_FMEMOPEN
     DEFINES += HAVE_LOG2
