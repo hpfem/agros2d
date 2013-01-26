@@ -368,8 +368,8 @@ MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent),
     // stylesheet
     std::string style;
     ctemplate::TemplateDictionary stylesheet("style");
-    stylesheet.SetValue("FONTFAMILY", APPLICATION_FONTFAMILY.toStdString());
-    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(APPLICATION_FONTSIZE).toStdString()));
+    stylesheet.SetValue("FONTFAMILY", htmlFontFamily().toStdString());
+    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(htmlFontSize()).toStdString()));
 
     ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style_common.css", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
     m_cascadeStyleSheet = QString::fromStdString(style);

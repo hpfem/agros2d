@@ -23,6 +23,7 @@
 #include "util/global.h"
 
 #include "gui/chart.h"
+#include "gui/common.h"
 
 #include "scene.h"
 #include "scenebasic.h"
@@ -55,8 +56,8 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
     // stylesheet
     std::string style;
     ctemplate::TemplateDictionary stylesheet("style");
-    stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
-    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize() + 1).toStdString()));
+    stylesheet.SetValue("FONTFAMILY", htmlFontFamily().toStdString());
+    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(htmlFontSize()).toStdString()));
 
     ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style_common.css", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
     m_cascadeStyleSheet = QString::fromStdString(style);

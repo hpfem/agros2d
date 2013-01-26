@@ -22,6 +22,8 @@
 #include "util/constants.h"
 #include "util/global.h"
 
+#include "gui/common.h"
+
 #include "scene.h"
 #include "hermes2d.h"
 #include "hermes2d/plugin_interface.h"
@@ -45,8 +47,8 @@ ResultsView::ResultsView(QWidget *parent): QDockWidget(tr("Results view"), paren
     // stylesheet
     std::string style;
     ctemplate::TemplateDictionary stylesheet("style");
-    stylesheet.SetValue("FONTFAMILY", QApplication::font().family().toStdString());
-    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(QApplication::font().pointSize()).toStdString()));
+    stylesheet.SetValue("FONTFAMILY", htmlFontFamily().toStdString());
+    stylesheet.SetValue("FONTSIZE", (QString("%1").arg(htmlFontSize() - 1).toStdString()));
 
     ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style_results.css", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
     m_cascadeStyleSheet = QString::fromStdString(style);

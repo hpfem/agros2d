@@ -35,4 +35,16 @@ void fillComboBoxAdaptivityStep(FieldInfo* fieldInfo, int timeStep, QComboBox *c
 void fillComboBoxSolutionType(FieldInfo* fieldInfo, int timeStep, int adaptivityStep, QComboBox *cmbFieldVariable);
 void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const QString &text, const QString &unit);
 
+inline QString htmlFontFamily() { return QApplication::font().family(); }
+#ifdef Q_WS_WIN
+    inline int htmlFontSize() { return QApplication::font().pointSize() + 4; }
+#endif
+#ifdef Q_WS_X11
+    inline int htmlFontSize() { return QApplication::font().pointSize() + 1; }
+#endif
+#ifdef Q_WS_MAC
+    inline int htmlFontSize() { return QApplication::font().pointSize() + 1; }
+#endif
+
+
 #endif // GUI_COMMON_H

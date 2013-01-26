@@ -58,17 +58,6 @@ const bool SNAPTOGRID = true;
 const QString RULERSFONT = "fontGoogleDroidMono10";
 const QString POSTFONT = "fontGoogleDroidMono14";
 
-const QString APPLICATION_FONTFAMILY = QApplication::font().family();
-#ifdef Q_WS_WIN
-    const int APPLICATION_FONTSIZE = QApplication::font().pointSize() + 4;
-#endif
-#ifdef Q_WS_X11
-    const int APPLICATION_FONTSIZE = APPLICATION_FONTSIZE;
-#endif
-#ifdef Q_WS_MAC
-    const int APPLICATION_FONTSIZE = APPLICATION_FONTSIZE;
-#endif
-
 const bool SHOWAXES = true;
 const bool SHOWRULERS = true;
 const bool ZOOMTOMOUSE = true;
