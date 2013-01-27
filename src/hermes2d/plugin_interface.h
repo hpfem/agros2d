@@ -179,7 +179,7 @@ public:
 class PluginInterface
 {
 public:
-    virtual PluginInterface() : m_module(NULL), m_coupling(NULL) {}
+    inline virtual PluginInterface() : m_module(NULL), m_coupling(NULL) {}
     virtual ~PluginInterface() {}
 
     virtual QString fieldId() = 0;

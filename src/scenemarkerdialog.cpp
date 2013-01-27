@@ -261,9 +261,9 @@ ValueLineEdit *SceneFieldWidgetBoundary::addValueEditWidget(const Module::Dialog
 void SceneFieldWidgetBoundary::addCustomWidget(QVBoxLayout *layout)
 {
     comboBox = new QComboBox(this);
-    foreach (Module::BoundaryType boundary, boundary->fieldInfo()->boundaryTypes())
-        comboBox->addItem(boundary.name(),
-                          boundary.id());
+    foreach (Module::BoundaryType marker, boundary->fieldInfo()->boundaryTypes())
+        comboBox->addItem(marker.name(),
+                          marker.id());
 
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
