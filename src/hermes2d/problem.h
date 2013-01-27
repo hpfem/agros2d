@@ -40,8 +40,6 @@ public:
     Problem();
     ~Problem();
 
-    QAction *actClearSolutions;
-
     inline ProblemConfig *config() const { return m_config; }
     inline ProblemConfigView *configView() const { return m_configView; }
 

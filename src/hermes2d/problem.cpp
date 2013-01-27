@@ -51,10 +51,6 @@ Problem::Problem()
     m_configView = new ProblemConfigView();
 
     connect(m_config, SIGNAL(changed()), this, SLOT(clearSolution()));
-
-    actClearSolutions = new QAction(icon(""), tr("Clear solutions"), this);
-    actClearSolutions->setStatusTip(tr("Clear solutions"));
-    connect(actClearSolutions, SIGNAL(triggered()), this, SLOT(clearSolution()));
 }
 
 Problem::~Problem()

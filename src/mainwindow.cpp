@@ -382,7 +382,7 @@ void MainWindow::createActions()
     actSolve->setStatusTip(tr("Solve problem"));
     connect(actSolve, SIGNAL(triggered()), this, SLOT(doSolve()));
 
-    actSolveAdaptiveStep = new QAction(icon("run-step"), tr("Adapt. step"), this);
+    actSolveAdaptiveStep = new QAction(icon("run-step"), tr("Adaptive\nstep"), this);
     actSolveAdaptiveStep->setStatusTip(tr("Adaptivity step"));
     connect(actSolveAdaptiveStep, SIGNAL(triggered()), this, SLOT(doSolveAdaptiveStep()));
 
@@ -560,8 +560,6 @@ void MainWindow::createMenus()
     mnuProblem->addAction(actCreateMesh);
     mnuProblem->addAction(actSolve);
     mnuProblem->addAction(actSolveAdaptiveStep);
-    mnuProblem->addSeparator();
-    mnuProblem->addAction(Agros2D::problem()->actClearSolutions);
 
     mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actScriptEditor);

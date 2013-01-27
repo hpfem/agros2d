@@ -1388,7 +1388,6 @@ void PostprocessorWidget::doApply()
     QApplication::processEvents();
 
     int actualTimeStep = selectedTimeStep();
-    qDebug() << "actualTimeStep : " << actualTimeStep;
     Agros2D::scene()->setActiveTimeStep(actualTimeStep);
 
     // todo: this should be revised
