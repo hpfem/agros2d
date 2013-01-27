@@ -24,10 +24,10 @@
 #include "util/enums.h"
 
 #include "hermes2d.h"
+#include "hermes2d/module.h"
 
 class FieldInfo;
 class ProblemConfig;
-class FormInfo;
 class PluginInterface;
 
 // available couplings

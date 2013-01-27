@@ -408,12 +408,6 @@ Module::MaterialTypeVariable FieldInfo::materialTypeVariable(const QString &id) 
     assert(0);
 }
 
-// boundary conditions
-QList<Module::BoundaryTypeVariable> FieldInfo::boundaryTypeVariables() const
-{
-
-}
-
 QList<Module::BoundaryType> FieldInfo::boundaryTypes() const
 {
     QList<Module::BoundaryTypeVariable> boundaryTypeVariablesAll;

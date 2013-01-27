@@ -167,7 +167,6 @@ public:
     Module::MaterialTypeVariable materialTypeVariable(const QString &id) const;
 
     // boundary conditions
-    QList<Module::BoundaryTypeVariable> boundaryTypeVariables() const;
     QList<Module::BoundaryType> boundaryTypes() const;
     // default boundary condition
     Module::BoundaryType boundaryTypeDefault() const;
