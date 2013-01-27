@@ -35,7 +35,7 @@
 
 #include "../../resources_source/classes/module_xml.h"
 
-{{CLASS}}Interface::{{CLASS}}Interface()
+{{CLASS}}Interface::{{CLASS}}Interface() : PluginInterface()
 {
     // xml module description
     std::auto_ptr<XMLModule::module> module_xsd = XMLModule::module_((datadir() + MODULEROOT + QDir::separator() + "{{ID}}.xml").toStdString());

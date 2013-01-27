@@ -1330,11 +1330,14 @@ void PostprocessorWidget::refresh()
 
 void PostprocessorWidget::updateControls()
 {
-    fillComboBoxFieldInfo(cmbFieldInfo);
-    doFieldInfo(cmbFieldInfo->currentIndex());
+    if (Agros2D::problem()->isSolved())
+    {
+        fillComboBoxFieldInfo(cmbFieldInfo);
+        doFieldInfo(cmbFieldInfo->currentIndex());
 
-    loadBasic();
-    loadAdvanced();
+        loadBasic();
+        loadAdvanced();
+    }
 }
 
 void PostprocessorWidget::doPostprocessorGroupClicked(QAbstractButton *button)

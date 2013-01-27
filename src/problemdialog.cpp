@@ -56,16 +56,10 @@ FieldSelectDialog::FieldSelectDialog(QList<QString> fields, QWidget *parent) : Q
         // add only missing fields
         if (!fields.contains(it.key()))
         {
-            // TODO: load plugin - should be slow
-            PluginInterface *plugin = Agros2D::loadPlugin(it.key());
-
             QListWidgetItem *item = new QListWidgetItem(lstFields);
             item->setIcon(icon("fields/" + it.key()));            
-            item->setText(plugin->localeName(it.value()));
+            item->setText(it.value());
             item->setData(Qt::UserRole, it.key());
-
-            // delete plugin
-            delete plugin;
 
             lstFields->addItem(item);           
         }

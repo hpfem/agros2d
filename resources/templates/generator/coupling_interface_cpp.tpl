@@ -26,7 +26,7 @@
 #include "util/global.h"
 #include "util/constants.h"
 
-{{CLASS}}Interface::{{CLASS}}Interface()
+{{CLASS}}Interface::{{CLASS}}Interface() : PluginInterface()
 {
     // xml coupling description
     std::auto_ptr<XMLCoupling::coupling> coupling_xsd = XMLCoupling::coupling_((datadir() + COUPLINGROOT + QDir::separator() + "{{ID}}.xml").toStdString());
