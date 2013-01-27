@@ -72,7 +72,7 @@ bool Problem::isMeshed() const
         if (!fieldInfo->initialMesh())
             return false;
 
-    return true;
+    return (m_fieldInfos.size() > 0);
 }
 
 int Problem::numAdaptiveFields() const
@@ -280,6 +280,14 @@ void Problem::createStructure()
 bool Problem::mesh()
 {
     clearSolution();
+
+    Agros2D::scene()->blockSignals(true);
+
+    Agros2D::scene()->setActiveAdaptivityStep(0);
+    Agros2D::scene()->setActiveTimeStep(0);
+    Agros2D::scene()->setActiveViewField(fieldInfos().values().at(0));
+
+    Agros2D::scene()->blockSignals(false);
 
     Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("mesh generation"));
 
@@ -592,6 +600,8 @@ void Problem::solveAction()
     Agros2D::scene()->setActiveTimeStep(0);
     Agros2D::scene()->setActiveViewField(fieldInfos().values().at(0));
 
+    Agros2D::scene()->blockSignals(false);
+
     try
     {
         solveInit();
@@ -684,6 +694,12 @@ void Problem::solveAction()
 void Problem::solveAdaptiveStepAction()
 {
     Agros2D::scene()->blockSignals(true);
+
+    Agros2D::scene()->setActiveAdaptivityStep(0);
+    Agros2D::scene()->setActiveTimeStep(0);
+    Agros2D::scene()->setActiveViewField(fieldInfos().values().at(0));
+
+    Agros2D::scene()->blockSignals(false);
 
     try
     {

@@ -1330,7 +1330,7 @@ void PostprocessorWidget::refresh()
 
 void PostprocessorWidget::updateControls()
 {
-    if (Agros2D::problem()->isSolved())
+    if (Agros2D::problem()->isMeshed())
     {
         fillComboBoxFieldInfo(cmbFieldInfo);
         doFieldInfo(cmbFieldInfo->currentIndex());

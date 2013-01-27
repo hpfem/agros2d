@@ -1518,7 +1518,6 @@ void MainWindow::setControls()
         tabControlsLayout->setCurrentWidget(settingsWidget);
     }
 
-
     actDocumentExportMeshFile->setEnabled(Agros2D::problem()->isMeshed());
 
     actSolveAdaptiveStep->setEnabled((!Agros2D::problem()->isTransient())); // FIXME: timedep
