@@ -56,15 +56,18 @@ FieldSelectDialog::FieldSelectDialog(QList<QString> fields, QWidget *parent) : Q
         // add only missing fields
         if (!fields.contains(it.key()))
         {
-            QListWidgetItem *item = new QListWidgetItem(lstFields);
-            item->setIcon(icon("fields/" + it.key()));
+            // TODO: load plugin - should be slow
+            PluginInterface *plugin = Agros2D::loadPlugin(it.key());
 
-            PluginInterface *plugin =  Agros2D::plugin(it.key());
-            assert(plugin);
-            item->setText(plugin->localeName(it.value()));            
+            QListWidgetItem *item = new QListWidgetItem(lstFields);
+            item->setIcon(icon("fields/" + it.key()));            
+            item->setText(plugin->localeName(it.value()));
             item->setData(Qt::UserRole, it.key());
 
-            lstFields->addItem(item);
+            // delete plugin
+            delete plugin;
+
+            lstFields->addItem(item);           
         }
     }
 
@@ -711,7 +714,7 @@ void CouplingsWidget::createContent()
     {
         m_comboBoxes[couplingInfo] = new QComboBox();
 
-        layoutTable->addWidget(new QLabel(couplingInfo->coupling()->name()), line, 0);
+        layoutTable->addWidget(new QLabel(couplingInfo->name()), line, 0);
         layoutTable->addWidget(m_comboBoxes[couplingInfo], line, 1);
 
         line++;

@@ -30,6 +30,7 @@
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
+#include "hermes2d/plugin_interface.h"
 
 #include "../../resources_source/classes/coupling_xml.h"
 
@@ -59,18 +60,19 @@ QMap<QString, QString> availableCouplings()
     return couplings;
 }
 
-// TODO: in each module should be implicit value
-CouplingInfo::CouplingInfo(FieldInfo *sourceField, FieldInfo *targetField,
+CouplingInfo::CouplingInfo(FieldInfo *sourceField,
+                           FieldInfo *targetField,
                            CouplingType couplingType) :
-    m_sourceField(sourceField), m_targetField(targetField), m_couplingType(couplingType), m_coupling(NULL)
+    m_plugin(NULL),
+    m_sourceField(sourceField), m_targetField(targetField),
+    m_couplingType(couplingType)
 {
     reload();
 }
 
 CouplingInfo::~CouplingInfo()
-{
-    if (m_coupling)
-        delete m_coupling;
+{    
+    delete m_plugin;
 }
 
 void CouplingInfo::setCouplingType(CouplingType couplingType)
@@ -81,10 +83,85 @@ void CouplingInfo::setCouplingType(CouplingType couplingType)
 
 void CouplingInfo::reload()
 {
-    if (m_coupling)
-        delete m_coupling;
+    // coupling id
+    m_couplingId = m_sourceField->fieldId() + "-" + m_targetField->fieldId();
 
-    m_coupling = couplingFactory(m_sourceField, m_targetField, m_couplingType);
+    // read plugin
+    if (m_plugin)
+        delete m_plugin;
+
+    m_plugin = Agros2D::loadPlugin(m_couplingId);
+    assert(m_plugin);
+}
+
+// name
+QString CouplingInfo::name() const
+{
+    return QString::fromStdString(m_plugin->coupling()->general().name());
+}
+
+// description
+QString CouplingInfo::description() const
+{
+    return QString::fromStdString(m_plugin->coupling()->general().description());
+}
+
+// constants
+QMap<QString, double> CouplingInfo::constants()
+{
+    QMap<QString, double> constants;
+    // constants
+    foreach (XMLCoupling::constant cnst, m_plugin->coupling()->constants().constant())
+        constants[QString::fromStdString(cnst.id())] = cnst.value();
+
+    return constants;
+}
+
+// weak forms
+QList<FormInfo> CouplingInfo::wfMatrixVolume() const
+{
+    // matrix weakforms
+    QList<FormInfo> wfMatrixVolume;
+    for (int i = 0; i < m_plugin->coupling()->volume().weakforms_volume().weakform_volume().size(); i++)
+    {
+        XMLCoupling::weakform_volume wf = m_plugin->coupling()->volume().weakforms_volume().weakform_volume().at(i);
+
+        if ((wf.couplingtype() == couplingTypeToStringKey(m_couplingType).toStdString()) &&
+                (wf.sourceanalysis() == analysisTypeToStringKey(m_sourceField->analysisType()).toStdString()) &&
+                (wf.targetanalysis() == analysisTypeToStringKey(m_targetField->analysisType()).toStdString()))
+        {
+            for (int i = 0; i < wf.matrix_form().size(); i++)
+            {
+                XMLCoupling::matrix_form form = wf.matrix_form().at(i);
+                wfMatrixVolume.push_back(FormInfo(QString::fromStdString(form.id()), form.i(), form.j()));
+            }
+        }
+    }
+
+    return wfMatrixVolume;
+}
+
+QList<FormInfo> CouplingInfo::wfVectorVolume() const
+{
+    // vector weakforms
+    QList<FormInfo> wfVectorVolume;
+    for (int i = 0; i < m_plugin->coupling()->volume().weakforms_volume().weakform_volume().size(); i++)
+    {
+        XMLCoupling::weakform_volume wf = m_plugin->coupling()->volume().weakforms_volume().weakform_volume().at(i);
+
+        if ((wf.couplingtype() == couplingTypeToStringKey(m_couplingType).toStdString()) &&
+                (wf.sourceanalysis() == analysisTypeToStringKey(m_sourceField->analysisType()).toStdString()) &&
+                (wf.targetanalysis() == analysisTypeToStringKey(m_targetField->analysisType()).toStdString()))
+        {
+            for (int i = 0; i < wf.vector_form().size(); i++)
+            {
+                XMLCoupling::vector_form form = wf.vector_form().at(i);
+                wfVectorVolume.push_back(FormInfo(QString::fromStdString(form.id()), form.i(), form.j()));
+            }
+        }
+    }
+
+    return wfVectorVolume;
 }
 
 LinearityType CouplingInfo::linearityType()
@@ -145,124 +222,4 @@ bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField)
     }
 
     return false;
-}
-
-Coupling::Coupling(const QString &couplingId, CoordinateType coordinateType, CouplingType couplingType, AnalysisType sourceFieldAnalysis, AnalysisType targetFieldAnalysis)
-{
-    m_coordinateType = coordinateType;
-    m_couplingType = couplingType;
-    m_sourceFieldAnalysis = sourceFieldAnalysis;
-    m_targetFieldAnalysis = targetFieldAnalysis;
-
-    clear();
-
-    // read coupling description
-    QString filename = (datadir() + COUPLINGROOT + QDir::separator() + couplingId + ".xml");
-    assert(QFile::exists(filename));
-
-    read(filename);
-}
-
-Coupling::~Coupling()
-{
-    clear();
-}
-
-void Coupling::clear()
-{
-    m_constants.clear();
-
-    foreach (FormInfo *formInfo, m_wfMatrixVolumeExpression)
-        delete formInfo;
-    m_wfMatrixVolumeExpression.clear();
-
-    foreach (FormInfo *formInfo, m_wfVectorVolumeExpression)
-        delete formInfo;
-    m_wfVectorVolumeExpression.clear();
-}
-
-void Coupling::read(const QString &filename)
-{
-    assert(QFile::exists(filename));
-
-    // qDebug() << "reading coupling: " << filename;
-
-    clear();
-
-    // save current locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
-
-    std::auto_ptr<XMLCoupling::coupling> couplings_xsd = XMLCoupling::coupling_(filename.toStdString().c_str());
-    XMLCoupling::coupling *coup = couplings_xsd.get();
-
-    // problem
-    m_couplingId = QString::fromStdString(coup->general().id());
-    m_name = QString::fromStdString(coup->general().name());
-    m_description = QString::fromStdString(coup->general().description());
-
-    // constants
-    for (int i = 0; i < coup->constants().constant().size(); i++)
-    {
-        XMLCoupling::constant cnst = coup->constants().constant().at(i);
-        m_constants[QString::fromStdString(cnst.id())] = cnst.value();
-    }
-
-    // volume weakforms
-    for (int i = 0; i < coup->volume().weakforms_volume().weakform_volume().size(); i++)
-    {
-        XMLCoupling::weakform_volume wf = coup->volume().weakforms_volume().weakform_volume().at(i);
-
-        if ((wf.couplingtype() == couplingTypeToStringKey(m_couplingType).toStdString()) &&
-                (wf.sourceanalysis() == analysisTypeToStringKey(m_sourceFieldAnalysis).toStdString()) &&
-                (wf.targetanalysis() == analysisTypeToStringKey(m_targetFieldAnalysis).toStdString()))
-        {
-            // matrix form
-            for (int i = 0; i < wf.matrix_form().size(); i++)
-            {
-                XMLCoupling::matrix_form form = wf.matrix_form().at(i);
-                m_wfMatrixVolumeExpression.push_back(new FormInfo(QString::fromStdString(form.id()), form.i(), form.j()));
-            }
-
-            // vector form
-            for (int i = 0; i < wf.vector_form().size(); i++)
-            {
-                XMLCoupling::vector_form form = wf.vector_form().at(i);
-                m_wfVectorVolumeExpression.push_back(new FormInfo(QString::fromStdString(form.id()), form.i(), form.j()));
-            }
-        }
-    }
-
-    // set system locale
-    setlocale(LC_NUMERIC, plocale);
-}
-
-
-
-// ****************************************************************************************************
-
-Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, CouplingType couplingType)
-{
-    // open coupling
-    QString couplingId = sourceField->fieldId() + "-" + targetField->fieldId();
-    QString filename = (datadir() + COUPLINGROOT + QDir::separator() + couplingId + ".xml");
-
-    if (QFile::exists(filename))
-    {
-        CoordinateType coordinateType = Agros2D::problem()->config()->coordinateType();
-        Coupling *coupling = new Coupling(couplingId,
-                                          coordinateType,
-                                          couplingType,
-                                          sourceField->analysisType(),
-                                          targetField->analysisType());
-
-        return coupling;
-    }
-    else
-    {
-        qDebug() << "Coupling doesn't exists.";
-        return NULL;
-    }
-
-
 }

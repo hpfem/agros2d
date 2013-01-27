@@ -419,7 +419,7 @@ void PyField::localValues(const double x, const double y, map<std::string, doubl
 
         Point point(x, y);
 
-        LocalValue *value = Agros2D::plugin(fieldInfo()->fieldId())->localValue(fieldInfo(), point);
+        LocalValue *value = fieldInfo()->plugin()->localValue(fieldInfo(), point);
         QMapIterator<QString, PointValue> it(value->values());
         while (it.hasNext())
         {
@@ -486,7 +486,7 @@ void PyField::surfaceIntegrals(vector<int> edges, map<std::string, double> &resu
             Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnEdges);
         }
 
-        IntegralValue *integral = Agros2D::plugin(fieldInfo()->fieldId())->surfaceIntegral(fieldInfo());
+        IntegralValue *integral = fieldInfo()->plugin()->surfaceIntegral(fieldInfo());
         QMapIterator<QString, double> it(integral->values());
         while (it.hasNext())
         {
@@ -551,7 +551,7 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
             Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnLabels);
         }
 
-        IntegralValue *integral = Agros2D::plugin(fieldInfo()->fieldId())->volumeIntegral(fieldInfo());
+        IntegralValue *integral = fieldInfo()->plugin()->volumeIntegral(fieldInfo());
         QMapIterator<QString, double> it(integral->values());
         while (it.hasNext())
         {

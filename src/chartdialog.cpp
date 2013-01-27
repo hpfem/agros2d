@@ -435,7 +435,7 @@ void ChartControlsWidget::plotGeometry()
 
             foreach (Point point, points)
             {
-                LocalValue *localValue = Agros2D::plugin(fieldInfo->fieldId())->localValue(fieldInfo, point);
+                LocalValue *localValue = fieldInfo->plugin()->localValue(fieldInfo, point);
                 QMap<QString, PointValue> values = localValue->values();
 
                 if (variable.isScalar())
@@ -515,7 +515,7 @@ void ChartControlsWidget::plotTime()
                 xval.append(timeLevels.at(i));
 
                 Point point(txtPointX->value().number(), txtPointY->value().number());
-                LocalValue *localValue = Agros2D::plugin(fieldInfo->fieldId())->localValue(fieldInfo, point);
+                LocalValue *localValue = fieldInfo->plugin()->localValue(fieldInfo, point);
                 QMap<QString, PointValue> values = localValue->values();
 
                 if (variable.isScalar())
@@ -732,7 +732,7 @@ QMap<QString, double> ChartControlsWidget::getData(Point point, int timeStep)
 
     foreach (Module::LocalVariable variable, fieldInfo->localPointVariables())
     {
-        LocalValue *localValue = Agros2D::plugin(fieldInfo->fieldId())->localValue(fieldInfo, point);
+        LocalValue *localValue = fieldInfo->plugin()->localValue(fieldInfo, point);
         QMap<QString, PointValue> values = localValue->values();
 
         if (variable.isScalar())

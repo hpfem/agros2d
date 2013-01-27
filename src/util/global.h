@@ -46,8 +46,7 @@ public:
     static inline SolutionStore *solutionStore() { return Agros2D::singleton()->m_solutionStore; }
     static inline Log *log() { return Agros2D::singleton()->m_log; }
 
-    static void loadPlugin(const QString &plugin);
-    static PluginInterface *plugin(const QString &plugin);
+    static PluginInterface *loadPlugin(const QString &plugin);
 
     static void clear();
 
@@ -57,8 +56,6 @@ private:
     Problem *m_problem;
     SolutionStore *m_solutionStore;
     Log *m_log;
-
-    QMap<QString, PluginInterface *> m_plugins;
 };
 
 #endif /* GLOBAL_H */

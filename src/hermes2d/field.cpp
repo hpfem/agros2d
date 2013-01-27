@@ -63,7 +63,7 @@ FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
     }
 
     // read plugin
-    m_plugin = Agros2D::plugin(fieldId);
+    m_plugin = Agros2D::loadPlugin(m_fieldId);
     assert(m_plugin);
 
     clear();
@@ -71,6 +71,7 @@ FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
 
 FieldInfo::~FieldInfo()
 {
+    delete m_plugin;
 }
 
 void FieldInfo::setInitialMesh(Hermes::Hermes2D::Mesh *mesh)

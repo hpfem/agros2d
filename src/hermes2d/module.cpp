@@ -115,8 +115,12 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
     QString fieldId = (problemId.analysisTypeTarget == AnalysisType_Undefined) ?
                 problemId.sourceFieldId : problemId.sourceFieldId + "-" + problemId.targetFieldId;
 
-    // get weakform
-    PluginInterface *plugin = Agros2D::plugin(fieldId);
+    PluginInterface *plugin = NULL;
+    if (markerTarget)
+        plugin = Agros2D::problem()->couplingInfo(markerSource->fieldId(), markerTarget->fieldId())->plugin();
+    else
+        plugin = Agros2D::problem()->fieldInfo(fieldId)->plugin();
+
     assert(plugin);
 
     Hermes::Hermes2D::Form<Scalar> *weakForm = NULL;
@@ -247,7 +251,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
 }
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area, FormInfo *form, int offsetI, int offsetJ,
+void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area, FormInfo form, int offsetI, int offsetJ,
                                                  SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo)
 {
     ProblemID problemId;
@@ -262,7 +266,7 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
 
     // compiled form
     Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId,
-                                                                      area, form, materialSource, materialTarget, offsetI, offsetJ);
+                                                                      area, &form, materialSource, materialTarget, offsetI, offsetJ);
     // weakform with zero coefficients
     if (!custom_form) return;
 
@@ -335,14 +339,13 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
                 // weak coupling
                 foreach(CouplingInfo* couplingInfo, field->couplingInfos())
                 {
-                    foreach (FormInfo *expression, couplingInfo->coupling()->wfVectorVolumeExpression())
+                    foreach (FormInfo expression, couplingInfo->wfVectorVolume())
                     {
                         SceneMaterial* materialSource = Agros2D::scene()->labels->at(labelNum)->marker(couplingInfo->sourceField());
                         assert(materialSource);
 
                         if (materialSource != Agros2D::scene()->materials->getNone(couplingInfo->sourceField()))
                         {
-                            cout << "register coupling form " << expression << endl;
                             registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), expression,
                                                  m_block->offset(field), m_block->offset(field), materialSource, material, couplingInfo);
                         }
@@ -357,7 +360,6 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
     {
         if (couplingInfo->isHard())
         {
-            Coupling* coupling = couplingInfo->coupling();
             Field* sourceField = m_block->field(couplingInfo->sourceField());
             Field* targetField = m_block->field(couplingInfo->targetField());
 
@@ -372,12 +374,12 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
 
                     qDebug() << "hard coupling form on marker " << labelNum;
 
-                    foreach (FormInfo *pars, coupling->wfMatrixVolumeExpression())
+                    foreach (FormInfo pars, couplingInfo->wfMatrixVolume())
                         registerFormCoupling(WeakForm_MatVol, QString::number(labelNum), pars,
                                              m_block->offset(targetField) - sourceField->fieldInfo()->numberOfSolutions(), m_block->offset(sourceField),
                                              sourceMaterial, targetMaterial, couplingInfo);
 
-                    foreach (FormInfo *pars, coupling->wfVectorVolumeExpression())
+                    foreach (FormInfo pars, couplingInfo->wfVectorVolume())
                         registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), pars,
                                              m_block->offset(targetField) - sourceField->fieldInfo()->numberOfSolutions(), m_block->offset(sourceField),
                                              sourceMaterial, targetMaterial, couplingInfo);
@@ -393,11 +395,8 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
 Module::LocalVariable::LocalVariable(XMLModule::localvariable lv, const QString &fieldId,
                                      CoordinateType coordinateType, AnalysisType analysisType)
 {    
-    PluginInterface *plugin = Agros2D::plugin(fieldId);
-    assert(plugin);
-
     m_id = QString::fromStdString(lv.id());
-    m_name = plugin->localeName(QString::fromStdString(lv.name()));
+    m_name = Agros2D::problem()->fieldInfo(fieldId)->plugin()->localeName(QString::fromStdString(lv.name()));
     m_shortname = QString::fromStdString(lv.shortname());
     m_shortnameHtml = (lv.shortname_html().present()) ? QString::fromStdString(lv.shortname_html().get()) : m_shortname;
     m_unit = QString::fromStdString(lv.unit());

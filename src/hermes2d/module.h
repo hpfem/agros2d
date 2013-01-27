@@ -117,7 +117,7 @@ public:
 private:
     // materialTarget has to be specified for coupling forms. couplingInfo only for weak couplings
     void registerForm(WeakFormKind type, Field *field, QString area, FormInfo form, int offsetI, int offsetJ, Marker *marker, BDF2Table* bdf2Table = NULL);
-    void registerFormCoupling(WeakFormKind type, QString area, FormInfo *form, int offsetI, int offsetJ, SceneMaterial *materialSource,
+    void registerFormCoupling(WeakFormKind type, QString area, FormInfo form, int offsetI, int offsetJ, SceneMaterial *materialSource,
                               SceneMaterial *materialTarget, CouplingInfo *couplingInfo);
     void addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar>* form);
 

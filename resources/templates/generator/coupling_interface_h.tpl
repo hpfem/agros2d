@@ -34,7 +34,8 @@ class {{CLASS}}Interface : public QObject, public PluginInterface
     Q_INTERFACES(PluginInterface)
 
 public:
-    virtual ~{{CLASS}}Interface() {}
+    virtual {{CLASS}}Interface();
+    virtual ~{{CLASS}}Interface();
 
     inline virtual QString fieldId() { return "{{ID}}"; }
 

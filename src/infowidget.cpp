@@ -316,7 +316,7 @@ void InfoWidget::showInfo()
         {
             ctemplate::TemplateDictionary *couplingSection = problemInfo.AddSectionDictionary("COUPLING_SECTION");
 
-            couplingSection->SetValue("COUPLING_LABEL", couplingInfo->coupling()->name().toStdString());
+            couplingSection->SetValue("COUPLING_LABEL", couplingInfo->name().toStdString());
 
             couplingSection->SetValue("COUPLING_SOURCE_LABEL", tr("Source:").toStdString());
             couplingSection->SetValue("COUPLING_SOURCE", couplingInfo->sourceField()->name().toStdString());

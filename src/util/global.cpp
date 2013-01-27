@@ -65,11 +65,6 @@ void Agros2D::clear()
     delete m_singleton.data()->m_configComputer;
     delete m_singleton.data()->m_solutionStore;
     delete m_singleton.data()->m_log;
-
-    // unload plugins and clear list
-    foreach (PluginInterface *plugin, Agros2D::singleton()->m_plugins)
-        delete plugin;
-    m_singleton.data()->m_plugins.clear();
 }
 
 void Agros2D::createSingleton()
@@ -82,7 +77,7 @@ Agros2D *Agros2D::singleton()
     return m_singleton.data();
 }
 
-void Agros2D::loadPlugin(const QString &plugin)
+PluginInterface *Agros2D::loadPlugin(const QString &plugin)
 {
     QPluginLoader *loader = NULL;
 
@@ -118,20 +113,7 @@ void Agros2D::loadPlugin(const QString &plugin)
     }
 
     assert(loader->instance());
-    if (Agros2D::singleton()->m_plugins.contains(plugin))
-    {
-        delete Agros2D::singleton()->m_plugins[plugin];
-        Agros2D::singleton()->m_plugins.remove(plugin);
-    }
-    Agros2D::singleton()->m_plugins[plugin] = qobject_cast<PluginInterface *>(loader->instance());
+    PluginInterface *plugion = qobject_cast<PluginInterface *>(loader->instance());
     delete loader;
-}
-
-PluginInterface *Agros2D::plugin(const QString &plugin)
-{
-    if (!Agros2D::singleton()->m_plugins.contains(plugin))
-        loadPlugin(plugin);
-
-    assert(Agros2D::singleton()->m_plugins.contains(plugin));
-    return Agros2D::singleton()->m_plugins[plugin];
+    return plugion;
 }

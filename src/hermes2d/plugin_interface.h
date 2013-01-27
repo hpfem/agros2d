@@ -33,6 +33,8 @@
 #include "hermes2d/module.h"
 #include "hermes2d/marker.h"
 
+#include "../../resources_source/classes/coupling_xml.h"
+
 struct PointValue
 {
     PointValue()
@@ -183,6 +185,7 @@ public:
     virtual QString fieldId() = 0;
 
     inline XMLModule::module *module() const { assert(m_module); return m_module; }
+    inline XMLCoupling::coupling *coupling() const { assert(m_coupling); return m_coupling; }
 
     // weak forms
     virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material) = 0;
@@ -214,6 +217,7 @@ public:
 
 protected:
     XMLModule::module *m_module;
+    XMLCoupling::coupling *m_coupling;
 };
 
 

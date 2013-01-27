@@ -24,6 +24,19 @@
 
 #include "util.h"
 #include "util/global.h"
+#include "util/constants.h"
+
+{{CLASS}}Interface::{{CLASS}}Interface()
+{
+    // xml coupling description
+    std::auto_ptr<XMLCoupling::coupling> coupling_xsd = XMLCoupling::coupling_((datadir() + COUPLINGROOT + QDir::separator() + "{{ID}}.xml").toStdString());
+    m_coupling = coupling_xsd.release();
+}
+
+{{CLASS}}Interface::~{{CLASS}}Interface()
+{
+    delete m_coupling;
+}
 
 MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material)
 {

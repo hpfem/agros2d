@@ -28,81 +28,29 @@
 class FieldInfo;
 class ProblemConfig;
 class FormInfo;
+class PluginInterface;
 
 // available couplings
 QMap<QString, QString> availableCouplings();
 
-struct Coupling
-{
-    Coupling(const QString &couplingId,
-             CoordinateType coordinateType, CouplingType couplingType,
-             AnalysisType sourceFieldAnalysis, AnalysisType targetFieldAnalysis);
-    ~Coupling();
-
-    // id
-    inline QString couplingId() const { return m_couplingId; }
-    // name
-    inline QString name() const { return m_name; }
-    // description
-    inline QString description() const { return m_description; }
-
-    // constants
-    inline QMap<QString, double> constants() const { return m_constants; }
-
-    // weak forms
-    inline QList<FormInfo *> wfMatrixVolumeExpression() const { return m_wfMatrixVolumeExpression; }
-    inline QList<FormInfo *> wfVectorVolumeExpression() const { return m_wfVectorVolumeExpression; }
-
-    inline CoordinateType coordinateType() const { return m_coordinateType; }
-
-private:
-    CouplingType m_couplingType;
-    CoordinateType m_coordinateType;
-
-    AnalysisType m_sourceFieldAnalysis;
-    AnalysisType m_targetFieldAnalysis;
-
-    // id
-    QString m_couplingId;
-    // name
-    QString m_name;
-    // description
-    QString m_description;
-
-    // constants
-    QMap<QString, double> m_constants;
-
-    // weak forms
-    QList<FormInfo *> m_wfMatrixVolumeExpression;
-    QList<FormInfo *> m_wfVectorVolumeExpression;
-
-    void read(const QString &filename);
-    void clear();
-};
-
 bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField);
-
-// coupling factory
-Coupling *couplingFactory(FieldInfo* sourceField, FieldInfo* targetField, CouplingType couplingType);
 
 class CouplingInfo
 {
-
-signals:
-    void invalidated();
-
 public:
     CouplingInfo(FieldInfo* sourceField, FieldInfo* targetField,
                  CouplingType couplingType = CouplingType_Weak);
     ~CouplingInfo();
 
-    inline Coupling *coupling() const { return m_coupling; }
+    inline PluginInterface *plugin() const { assert(m_plugin); return m_plugin; }
 
-    QString couplingId() { if (m_coupling) return m_coupling->couplingId(); return "None"; }
+    QString couplingId() { return m_couplingId; }
+
     CouplingType couplingType() { return m_couplingType; }
+    void setCouplingType(CouplingType couplingType);
+
     inline bool isHard() { return m_couplingType == CouplingType_Hard;}
     inline bool isWeak() { return m_couplingType == CouplingType_Weak;}
-    void setCouplingType(CouplingType couplingType);
 
     inline FieldInfo* sourceField() {return m_sourceField; }
     inline FieldInfo* targetField() {return m_targetField; }
@@ -114,18 +62,36 @@ public:
 
     LinearityType linearityType();
 
+    // xml coupling
+
+    // name
+    QString name() const;
+    // description
+    QString description() const;
+
+    // constants
+    QMap<QString, double> constants();
+
+    // weak forms
+    QList<FormInfo> wfMatrixVolume() const;
+    QList<FormInfo> wfVectorVolume() const;
+
 private:
-    /// module
-    Coupling *m_coupling;
+    /// plugin
+    PluginInterface *m_plugin;
 
-    /// pointer to problem info
-    ProblemConfig *m_problemInfo;
+    /// unique field info
+    QString m_couplingId;
 
+    /// pointers to problem infos
     FieldInfo* m_sourceField;
     FieldInfo* m_targetField;
 
     /// coupling type
     CouplingType m_couplingType;
+
+signals:
+    void invalidated();
 };
 
 //}

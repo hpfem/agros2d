@@ -73,7 +73,7 @@ bool ParticleTracing::newtonEquations(FieldInfo* fieldInfo,
     Point3 forceLorentz;
     try
     {
-        forceLorentz = Agros2D::plugin(fieldInfo->fieldId())->force(fieldInfo, m_materials[fieldInfo], position, velocity)
+        forceLorentz = fieldInfo->plugin()->force(fieldInfo, m_materials[fieldInfo], position, velocity)
                 * Agros2D::problem()->configView()->particleConstant;
     }
     catch (AgrosException e)
@@ -193,7 +193,7 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
     double relErrorMin = (Agros2D::problem()->configView()->particleMaximumRelativeError > 0.0) ? Agros2D::problem()->configView()->particleMaximumRelativeError/100 : 1e-6;
     double relErrorMax = 1e-3;
     double dt = Agros2D::problem()->configView()->particleStartVelocity.magnitude() > 0 ? qMax(bound.width(), bound.height()) / Agros2D::problem()->configView()->particleStartVelocity.magnitude() / 10
-                                                                         : 1e-11;
+                                                                                        : 1e-11;
 
     // QTime time;
     // time.start();
