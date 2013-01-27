@@ -125,7 +125,6 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     datatable.cpp \
     datatabledialog.cpp \
     materialbrowserdialog.cpp \
-    hermes2d/module_agros.cpp \
     sceneedge.cpp \
     scenelabel.cpp \
     scenenode.cpp \
@@ -222,7 +221,6 @@ HEADERS += util.h \
     materialbrowserdialog.h \
     confdialog.h \
     hermes2d/solver.h \
-    hermes2d/module_agros.h \
     sceneedge.h \
     scenelabel.h \
     scenenode.h \

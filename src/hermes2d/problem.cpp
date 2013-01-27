@@ -34,7 +34,6 @@
 #include "sceneedge.h"
 #include "scenelabel.h"
 #include "module.h"
-#include "module_agros.h"
 #include "coupling.h"
 #include "solver.h"
 #include "meshgenerator_triangle.h"
@@ -529,16 +528,6 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
 
 void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
 {
-    try
-    {
-        Agros2D::loadActivePlugins();
-    }
-    catch (AgrosException e)
-    {
-        Agros2D::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString("%1").arg(e.what()));
-        return;
-    }
-
     m_lastTimeElapsed = QTime();
     QTime timeCounter = QTime();
     timeCounter.start();
@@ -867,7 +856,7 @@ void Problem::readInitialMeshesFromFile()
         boundaries.clear();
 
         // refine mesh
-        refineMesh(fieldInfo, mesh, true, true, true);
+        fieldInfo->refineMesh(mesh, true, true, true);
 
         // set initial mesh
         fieldInfo->setInitialMesh(mesh);
@@ -885,17 +874,6 @@ void Problem::readSolutionsFromFile()
 
     if (QFile::exists(QString("%1/runtime.xml").arg(cacheProblemDir())))
     {
-        // load active plugins
-        try
-        {
-            Agros2D::loadActivePlugins();
-        }
-        catch (AgrosException e)
-        {
-            Agros2D::log()->printError(QObject::tr("Solver"), /*QObject::tr(*/QString("%1").arg(e.what()));
-            return;
-        }
-
         // load structure
         Agros2D::solutionStore()->loadRunTimeDetails();
 

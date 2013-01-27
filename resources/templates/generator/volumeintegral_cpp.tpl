@@ -22,7 +22,7 @@
 #include "util.h"
 #include "util/global.h"
 
-#include "hermes2d/module_agros.h"
+
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 #include "hermes2d/field.h"
@@ -46,12 +46,12 @@ void {{CLASS}}VolumeIntegral::calculate()
         if (m_fieldInfo->analysisType() == AnalysisType_Transient)
         {
             QList<double> timeLevels = Agros2D::solutionStore()->timeLevels(Agros2D::scene()->activeViewField());
-            m_fieldInfo->module()->updateTimeFunctions(timeLevels[Agros2D::scene()->activeTimeStep()]);
+            Module::updateTimeFunctions(timeLevels[Agros2D::scene()->activeTimeStep()]);
         }
 
         // solutions
         Hermes::vector<Hermes::Hermes2D::Solution<double> *> sln;
-        for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+        for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
         {
             int adaptivityStep, timeStep;
             SolutionMode solutionMode;
@@ -73,9 +73,9 @@ void {{CLASS}}VolumeIntegral::calculate()
             sln.push_back(Agros2D::solutionStore()->multiArray(fsid).solutions().at(k));
         }
 
-        double **value = new double*[m_fieldInfo->module()->numberOfSolutions()];
-        double **dudx = new double*[m_fieldInfo->module()->numberOfSolutions()];
-        double **dudy = new double*[m_fieldInfo->module()->numberOfSolutions()];
+        double **value = new double*[m_fieldInfo->numberOfSolutions()];
+        double **dudx = new double*[m_fieldInfo->numberOfSolutions()];
+        double **dudy = new double*[m_fieldInfo->numberOfSolutions()];
 
         Hermes::Hermes2D::Quad2D *quad = &Hermes::Hermes2D::g_quad_2d_std;
 
@@ -98,13 +98,13 @@ void {{CLASS}}VolumeIntegral::calculate()
                     {
                         Hermes::Hermes2D::update_limit_table(e->get_mode());
 
-                        for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+                        for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
                             sln[k]->set_active_element(e);
 
                         Hermes::Hermes2D::RefMap *ru = sln[0]->get_refmap();
 
                         int o = 0;
-                        for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+                        for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
                             o += sln[k]->get_fn_order();
                         o += ru->get_inv_ref_order();
 
@@ -117,7 +117,7 @@ void {{CLASS}}VolumeIntegral::calculate()
                         }
 
                         // solution
-                        for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+                        for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
                         {
                             sln[k]->set_quad_order(o, Hermes::Hermes2D::H2D_FN_VAL | Hermes::Hermes2D::H2D_FN_DX | Hermes::Hermes2D::H2D_FN_DY);
                             // value
@@ -133,8 +133,8 @@ void {{CLASS}}VolumeIntegral::calculate()
 
                         // expressions
                         {{#VARIABLE_SOURCE}}
-                        if ((m_fieldInfo->module()->analysisType() == {{ANALYSIS_TYPE}})
-                                && (m_fieldInfo->module()->coordinateType() == {{COORDINATE_TYPE}}))
+                        if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
+                                && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
                         {
                             double result = 0.0;
                             for (int i = 0; i < np; i++)
@@ -144,7 +144,7 @@ void {{CLASS}}VolumeIntegral::calculate()
                                 else
                                     result += pt[i][2] * jac[i] * ({{EXPRESSION}});
                             }
-                            m_values[m_fieldInfo->module()->volumeIntegral("{{VARIABLE}}")] += result;
+                            m_values["{{VARIABLE}}"] += result;
                         }
                         {{/VARIABLE_SOURCE}}
                     }

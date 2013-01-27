@@ -22,7 +22,7 @@
 #include "util.h"
 #include "util/global.h"
 
-#include "hermes2d/module_agros.h"
+
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 #include "hermes2d/field.h"
@@ -46,12 +46,12 @@ void {{CLASS}}SurfaceIntegral::calculate()
         if (m_fieldInfo->analysisType() == AnalysisType_Transient)
         {
             QList<double> timeLevels = Agros2D::solutionStore()->timeLevels(Agros2D::scene()->activeViewField());
-            m_fieldInfo->module()->updateTimeFunctions(timeLevels[Agros2D::scene()->activeTimeStep()]);
+            Module::updateTimeFunctions(timeLevels[Agros2D::scene()->activeTimeStep()]);
         }
 
         // solutions
         Hermes::vector<Hermes::Hermes2D::Solution<double> *> sln;
-        for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+        for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
         {
             int adaptivityStep, timeStep;
             SolutionMode solutionMode;
@@ -73,14 +73,14 @@ void {{CLASS}}SurfaceIntegral::calculate()
             sln.push_back(Agros2D::solutionStore()->multiArray(fsid).solutions().at(k));
         }
 
-        double **value = new double*[m_fieldInfo->module()->numberOfSolutions()];
-        double **dudx = new double*[m_fieldInfo->module()->numberOfSolutions()];
-        double **dudy = new double*[m_fieldInfo->module()->numberOfSolutions()];
+        double **value = new double*[m_fieldInfo->numberOfSolutions()];
+        double **dudx = new double*[m_fieldInfo->numberOfSolutions()];
+        double **dudy = new double*[m_fieldInfo->numberOfSolutions()];
 
         Hermes::Hermes2D::Element *e;
         Hermes::Hermes2D::Quad2D *quad = &Hermes::Hermes2D::g_quad_2d_std;
 
-        for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+        for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
             sln[k]->set_quad_2d(quad);
 
         const Hermes::Hermes2D::Mesh* mesh = sln[0]->get_mesh();
@@ -113,7 +113,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
                             Hermes::Hermes2D::update_limit_table(e->get_mode());
 
                             int o = 0;
-                            for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+                            for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
                             {
                                 o += sln[k]->get_fn_order();
                                 sln[k]->set_active_element(e);
@@ -127,7 +127,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
                             double3 *pt = quad->get_points(eo, e->get_mode());
                             double3 *tan = ru->get_tangent(edge);
 
-                            for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+                            for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
                             {
                                 sln[k]->set_quad_order(eo, Hermes::Hermes2D::H2D_FN_VAL | Hermes::Hermes2D::H2D_FN_DX | Hermes::Hermes2D::H2D_FN_DY);
                                 // value
@@ -148,13 +148,13 @@ void {{CLASS}}SurfaceIntegral::calculate()
 
                             // expressions
                             {{#VARIABLE_SOURCE}}
-                            if ((m_fieldInfo->module()->analysisType() == {{ANALYSIS_TYPE}})
-                                    && (m_fieldInfo->module()->coordinateType() == {{COORDINATE_TYPE}}))
+                            if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
+                                    && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
                             {
                                 double result = 0.0;
                                 for (int i = 0; i < np; i++)
                                     result += pt[i][2] * tan[i][2] * 0.5 * (boundary ? 1.0 : 0.5) * ({{EXPRESSION}});
-                                m_values[m_fieldInfo->module()->surfaceIntegral("{{VARIABLE}}")] += result;
+                                m_values["{{VARIABLE}}"] += result;
                             }
                             {{/VARIABLE_SOURCE}}
                         }

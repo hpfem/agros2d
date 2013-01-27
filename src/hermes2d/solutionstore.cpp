@@ -27,7 +27,6 @@
 #include "scene.h"
 #include "problem.h"
 #include "problem_config.h"
-#include "module_agros.h"
 
 #include "../../resources_source/classes/agros2d_structure_xml.h"
 
@@ -152,7 +151,7 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID)
 
         QFile::remove(QString("%1.mesh").arg(fn));
 
-        for (int solutionIndex = 0; solutionIndex < solutionID.group->module()->numberOfSolutions(); solutionIndex++)
+        for (int solutionIndex = 0; solutionIndex < solutionID.group->numberOfSolutions(); solutionIndex++)
         {
             QFile::remove(QString("%1_%2.spc").arg(fn).arg(solutionIndex));
             QFile::remove(QString("%1_%2.sln").arg(fn).arg(solutionIndex));

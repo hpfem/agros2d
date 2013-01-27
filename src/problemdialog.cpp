@@ -28,7 +28,7 @@
 #include "pythonlab/pythonengine_agros.h"
 
 #include "hermes2d/module.h"
-#include "hermes2d/module_agros.h"
+
 #include "hermes2d/coupling.h"
 #include "hermes2d/problem_config.h"
 
@@ -49,7 +49,7 @@ FieldSelectDialog::FieldSelectDialog(QList<QString> fields, QWidget *parent) : Q
     lstFields->setIconSize(QSize(32, 32));
     lstFields->setMinimumHeight(36*8);
 
-    QMapIterator<QString, QString> it(availableModules());
+    QMapIterator<QString, QString> it(Module::availableModules());
     while (it.hasNext())
     {
         it.next();
@@ -333,7 +333,7 @@ void FieldWidget::fillComboBox()
         cmbLinearityType->addItem(linearityTypeString(LinearityType_Newton), LinearityType_Newton);
     }
 
-    QMapIterator<AnalysisType, QString> it(availableAnalyses(m_fieldInfo->fieldId()));
+    QMapIterator<AnalysisType, QString> it(Module::availableAnalyses(m_fieldInfo->fieldId()));
     while (it.hasNext())
     {
         it.next();
@@ -433,11 +433,7 @@ void FieldWidget::doAnalysisTypeChanged(int index)
 
 void FieldWidget::doShowEquation()
 {
-    Module::ModuleAgros module(m_fieldInfo->fieldId(),
-                               Agros2D::problem()->config()->coordinateType(),
-                               (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt());
-
-    equationLaTeX->setLatex(module.equation());
+    equationLaTeX->setLatex(m_fieldInfo->equation());
 }
 
 void FieldWidget::doAdaptivityChanged(int index)
@@ -623,7 +619,7 @@ void FieldsToobar::refresh()
 
         QToolButton *button = new QToolButton();
         button->setMinimumWidth(120);
-        button->setText(fieldInfo->module() ? fieldInfo->name() : fieldInfo->fieldId());
+        button->setText(fieldInfo->name());
         button->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         button->setStyleSheet("QToolButton { font-size: 8pt; }");
         button->setIconSize(QSize(36, 36));

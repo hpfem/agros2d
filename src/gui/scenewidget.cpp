@@ -31,7 +31,7 @@
 #include "scenelabel.h"
 
 #include "hermes2d/module.h"
-#include "hermes2d/module_agros.h"
+
 #include "hermes2d/problem.h"
 
 SceneViewWidget::SceneViewWidget(SceneViewCommon *widget, QWidget *parent) : QWidget(parent)

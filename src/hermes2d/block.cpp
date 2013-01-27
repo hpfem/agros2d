@@ -27,7 +27,6 @@
 #include "logview.h"
 #include "solver.h"
 #include "module.h"
-#include "module_agros.h"
 
 Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings) :
     m_couplings(couplings), m_wf(NULL)
@@ -196,7 +195,7 @@ int Block::numSolutions() const
 {
     int num = 0;
     foreach (Field *field, m_fields)
-        num += field->fieldInfo()->module()->numberOfSolutions();
+        num += field->fieldInfo()->numberOfSolutions();
 
     return num;
 }
@@ -210,7 +209,7 @@ int Block::offset(Field *fieldParam) const
         if (field == fieldParam)
             return offset;
         else
-            offset += field->fieldInfo()->module()->numberOfSolutions();
+            offset += field->fieldInfo()->numberOfSolutions();
     }
 
     assert(0);
@@ -380,9 +379,9 @@ Hermes::vector<Hermes::Hermes2D::ProjNormType> Block::projNormTypeVector() const
 
     foreach (Field* field, m_fields)
     {
-        for (int comp = 0; comp < field->fieldInfo()->module()->numberOfSolutions(); comp++)
+        for (int comp = 0; comp < field->fieldInfo()->numberOfSolutions(); comp++)
         {
-            Hermes::Hermes2D::SpaceType spaceType = field->fieldInfo()->module()->spaces()[comp+1].type();
+            Hermes::Hermes2D::SpaceType spaceType = field->fieldInfo()->spaces()[comp+1].type();
             if (spaceType == Hermes::Hermes2D::HERMES_H1_SPACE)
                 vec.push_back(Hermes::Hermes2D::HERMES_H1_NORM);
             else if (spaceType == Hermes::Hermes2D::HERMES_L2_SPACE)

@@ -314,7 +314,7 @@ void ExamplesDialog::problemInfo(const QString &fileName)
 
             ctemplate::TemplateDictionary *field = problemInfo.AddSectionDictionary("FIELD_SECTION");
 
-            field->SetValue("PHYSICAL_FIELD_LABEL", availableModules()[eleField.toElement().attribute("field_id")].toStdString());
+            field->SetValue("PHYSICAL_FIELD_LABEL", Module::availableModules()[eleField.toElement().attribute("field_id")].toStdString());
 
             field->SetValue("ANALYSIS_TYPE_LABEL", tr("Analysis:").toStdString());
             field->SetValue("ANALYSIS_TYPE", analysisTypeString(analysisTypeFromStringKey(eleField.toElement().attribute("analysis_type"))).toStdString());

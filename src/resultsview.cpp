@@ -28,7 +28,7 @@
 #include "hermes2d.h"
 #include "hermes2d/plugin_interface.h"
 #include "hermes2d/module.h"
-#include "hermes2d/module_agros.h"
+
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
@@ -109,7 +109,7 @@ void ResultsView::showPoint(const Point &point)
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
         LocalValue *value = Agros2D::plugin(fieldInfo->fieldId())->localValue(fieldInfo, point);
-        QMap<Module::LocalVariable *, PointValue> values = value->values();
+        QMap<QString, PointValue> values = value->values();
         delete value;
 
         if (values.size() > 0)
@@ -117,35 +117,35 @@ void ResultsView::showPoint(const Point &point)
             ctemplate::TemplateDictionary *field = localPointValues.AddSectionDictionary("FIELD");
             field->SetValue("FIELDNAME", fieldInfo->name().toStdString());
 
-            foreach (Module::LocalVariable *variable, fieldInfo->module()->localPointVariables())
+            foreach (Module::LocalVariable variable, fieldInfo->localPointVariables())
             {
-                if (variable->isScalar())
+                if (variable.isScalar())
                 {
                     // scalar variable
                     ctemplate::TemplateDictionary *item = field->AddSectionDictionary("ITEM");
-                    item->SetValue("NAME", variable->name().toStdString());
-                    item->SetValue("SHORTNAME", variable->shortnameHtml().toStdString());
-                    item->SetValue("VALUE", QString("%1").arg(values[variable].scalar, 0, 'e', 3).toStdString());
-                    item->SetValue("UNIT", variable->unitHtml().toStdString());
+                    item->SetValue("NAME", variable.name().toStdString());
+                    item->SetValue("SHORTNAME", variable.shortnameHtml().toStdString());
+                    item->SetValue("VALUE", QString("%1").arg(values[variable.id()].scalar, 0, 'e', 3).toStdString());
+                    item->SetValue("UNIT", variable.unitHtml().toStdString());
                 }
                 else
                 {
                     // vector variable
                     ctemplate::TemplateDictionary *itemMagnitude = field->AddSectionDictionary("ITEM");
-                    itemMagnitude->SetValue("NAME", variable->name().toStdString());
-                    itemMagnitude->SetValue("SHORTNAME", variable->shortnameHtml().toStdString());
-                    itemMagnitude->SetValue("VALUE", QString("%1").arg(values[variable].vector.magnitude(), 0, 'e', 3).toStdString());
-                    itemMagnitude->SetValue("UNIT", variable->unitHtml().toStdString());
+                    itemMagnitude->SetValue("NAME", variable.name().toStdString());
+                    itemMagnitude->SetValue("SHORTNAME", variable.shortnameHtml().toStdString());
+                    itemMagnitude->SetValue("VALUE", QString("%1").arg(values[variable.id()].vector.magnitude(), 0, 'e', 3).toStdString());
+                    itemMagnitude->SetValue("UNIT", variable.unitHtml().toStdString());
                     ctemplate::TemplateDictionary *itemX = field->AddSectionDictionary("ITEM");
-                    itemX->SetValue("SHORTNAME", variable->shortnameHtml().toStdString());
+                    itemX->SetValue("SHORTNAME", variable.shortnameHtml().toStdString());
                     itemX->SetValue("PART", Agros2D::problem()->config()->labelX().toLower().toStdString());
-                    itemX->SetValue("VALUE", QString("%1").arg(values[variable].vector.x, 0, 'e', 3).toStdString());
-                    itemX->SetValue("UNIT", variable->unitHtml().toStdString());
+                    itemX->SetValue("VALUE", QString("%1").arg(values[variable.id()].vector.x, 0, 'e', 3).toStdString());
+                    itemX->SetValue("UNIT", variable.unitHtml().toStdString());
                     ctemplate::TemplateDictionary *itemY = field->AddSectionDictionary("ITEM");
-                    itemY->SetValue("SHORTNAME", variable->shortnameHtml().toStdString());
+                    itemY->SetValue("SHORTNAME", variable.shortnameHtml().toStdString());
                     itemY->SetValue("PART", Agros2D::problem()->config()->labelY().toLower().toStdString());
-                    itemY->SetValue("VALUE", QString("%1").arg(values[variable].vector.y, 0, 'e', 3).toStdString());
-                    itemY->SetValue("UNIT", variable->unitHtml().toStdString());
+                    itemY->SetValue("VALUE", QString("%1").arg(values[variable.id()].vector.y, 0, 'e', 3).toStdString());
+                    itemY->SetValue("UNIT", variable.unitHtml().toStdString());
                 }
             }
         }
@@ -174,19 +174,19 @@ void ResultsView::showVolumeIntegral()
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
         IntegralValue *integral = Agros2D::plugin(fieldInfo->fieldId())->volumeIntegral(fieldInfo);
-        QMap<Module::Integral*, double> values = integral->values();
+        QMap<QString, double> values = integral->values();
         if (values.size() > 0)
         {
             ctemplate::TemplateDictionary *field = volumeIntegrals.AddSectionDictionary("FIELD");
             field->SetValue("FIELDNAME", fieldInfo->name().toStdString());
 
-            foreach (Module::Integral *integral, fieldInfo->module()->volumeIntegrals())
+            foreach (Module::Integral integral, fieldInfo->volumeIntegrals())
             {
                 ctemplate::TemplateDictionary *item = field->AddSectionDictionary("ITEM");
-                item->SetValue("NAME", integral->name().toStdString());
-                item->SetValue("SHORTNAME", integral->shortnameHtml().toStdString());
-                item->SetValue("VALUE", QString("%1").arg(values[integral], 0, 'e', 3).toStdString());
-                item->SetValue("UNIT", integral->unitHtml().toStdString());
+                item->SetValue("NAME", integral.name().toStdString());
+                item->SetValue("SHORTNAME", integral.shortnameHtml().toStdString());
+                item->SetValue("VALUE", QString("%1").arg(values[integral.id()], 0, 'e', 3).toStdString());
+                item->SetValue("UNIT", integral.unitHtml().toStdString());
             }
         }
         delete integral;
@@ -215,18 +215,18 @@ void ResultsView::showSurfaceIntegral()
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
         IntegralValue *integral = Agros2D::plugin(fieldInfo->fieldId())->surfaceIntegral(fieldInfo);
-        QMap<Module::Integral*, double> values = integral->values();
+        QMap<QString, double> values = integral->values();
         {
             ctemplate::TemplateDictionary *field = surfaceIntegrals.AddSectionDictionary("FIELD");
             field->SetValue("FIELDNAME", fieldInfo->name().toStdString());
 
-            foreach (Module::Integral *integral, fieldInfo->module()->surfaceIntegrals())
+            foreach (Module::Integral integral, fieldInfo->surfaceIntegrals())
             {
                 ctemplate::TemplateDictionary *item = field->AddSectionDictionary("ITEM");
-                item->SetValue("NAME", integral->name().toStdString());
-                item->SetValue("SHORTNAME", integral->shortnameHtml().toStdString());
-                item->SetValue("VALUE", QString("%1").arg(values[integral], 0, 'e', 3).toStdString());
-                item->SetValue("UNIT", integral->unitHtml().toStdString());
+                item->SetValue("NAME", integral.name().toStdString());
+                item->SetValue("SHORTNAME", integral.shortnameHtml().toStdString());
+                item->SetValue("VALUE", QString("%1").arg(values[integral.id()], 0, 'e', 3).toStdString());
+                item->SetValue("UNIT", integral.unitHtml().toStdString());
             }
         }
         delete integral;

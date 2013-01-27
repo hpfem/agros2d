@@ -31,7 +31,7 @@
 #include "pythonlab/pythonengine_agros.h"
 #include "hermes2d/problem_config.h"
 #include "hermes2d/module.h"
-#include "hermes2d/module_agros.h"
+
 
 
 ReportDialog::ReportDialog(SceneViewCommon *sceneView, QWidget *parent) : QDialog(parent)

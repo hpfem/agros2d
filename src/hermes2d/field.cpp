@@ -25,8 +25,9 @@
 #include "scene.h"
 #include "scenemarker.h"
 #include "module.h"
-#include "module_agros.h"
 #include "plugin_interface.h"
+
+#include "../../resources_source/classes/module_xml.h"
 
 Field::Field(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo)
 {
@@ -45,40 +46,31 @@ bool Field::solveInitVariables()
 }
 
 FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
-    : m_module(NULL), m_initialMesh(NULL)
+    : m_plugin(NULL), m_initialMesh(NULL)
 {
     if (fieldId.isEmpty())
-    {
-        // default
-        // read default field (Agros2D::config() is not set)
-        QSettings settings;
-        m_fieldId = settings.value("General/DefaultPhysicField", "electrostatic").toString();
-
-        QMap<QString, QString> modules = availableModules();
-        if (!modules.keys().contains(m_fieldId))
-            m_fieldId = "electrostatic";
-    }
+        m_fieldId = "electrostatic";
     else
-    {
         m_fieldId = fieldId;
-    }
 
     // set first analysis and read module
     if (analysisType == AnalysisType_Undefined)
     {
-        QMap<AnalysisType, QString> analyses = availableAnalyses(m_fieldId);
+        QMap<AnalysisType, QString> analyses = Module::availableAnalyses(m_fieldId);
         assert(analyses.count());
 
         setAnalysisType(analyses.begin().key());
     }
+
+    // read plugin
+    m_plugin = Agros2D::plugin(fieldId);
+    assert(m_plugin);
 
     clear();
 }
 
 FieldInfo::~FieldInfo()
 {
-    if (m_module)
-        delete m_module;
 }
 
 void FieldInfo::setInitialMesh(Hermes::Hermes2D::Mesh *mesh)
@@ -91,11 +83,6 @@ void FieldInfo::setInitialMesh(Hermes::Hermes2D::Mesh *mesh)
 void FieldInfo::setAnalysisType(const AnalysisType analysisType)
 {
     m_analysisType = analysisType;
-
-    if (m_module) delete m_module;
-    m_module = new Module::ModuleAgros(m_fieldId,
-                                       Agros2D::problem()->config()->coordinateType(),
-                                       m_analysisType);
 }
 
 int FieldInfo::edgeRefinement(SceneEdge *edge)
@@ -169,12 +156,591 @@ void FieldInfo::clear()
     m_picardAndersonNumberOfLastVectors = 3;
 }
 
-QString FieldInfo::name()
+template <class T>
+void deformShapeTemplate(T linVert, int count)
 {
-    return m_module->name();
+    MultiArray<double> msa = Agros2D::scene()->activeMultiSolutionArray();
+
+    double min =  numeric_limits<double>::max();
+    double max = -numeric_limits<double>::max();
+    for (int i = 0; i < count; i++)
+    {
+        double x = linVert[i][0];
+        double y = linVert[i][1];
+
+        double dx = msa.solutions().at(0)->get_pt_value(x, y)->val[0];
+        double dy = msa.solutions().at(1)->get_pt_value(x, y)->val[0];
+
+        double dm = sqrt(Hermes::sqr(dx) + Hermes::sqr(dy));
+
+        if (dm < min) min = dm;
+        if (dm > max) max = dm;
+    }
+
+    RectPoint rect = Agros2D::scene()->boundingBox();
+    double k = qMax(rect.width(), rect.height()) / qMax(min, max) / 15.0;
+
+    for (int i = 0; i < count; i++)
+    {
+        double x = linVert[i][0];
+        double y = linVert[i][1];
+
+        double dx = msa.solutions().at(0)->get_pt_value(x, y)->val[0];
+        double dy = msa.solutions().at(1)->get_pt_value(x, y)->val[0];
+
+        linVert[i][0] += k*dx;
+        linVert[i][1] += k*dy;
+    }
 }
 
-QString FieldInfo::description()
+void FieldInfo::deformShape(double3* linVert, int count)
 {
-    return m_module->description();
+    if (hasDeformableShape())
+        deformShapeTemplate<double3 *>(linVert, count);
 }
+
+void FieldInfo::deformShape(double4* linVert, int count)
+{
+    if (hasDeformableShape())
+        deformShapeTemplate<double4 *>(linVert, count);
+}
+
+void FieldInfo::refineMesh(Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea)
+{
+    // refine mesh - global
+    if (refineGlobal)
+        for (int i = 0; i < numberOfRefinements(); i++)
+            mesh->refine_all_elements(0);
+
+    // refine mesh - boundary
+    if (refineTowardsEdge)
+        foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+        {
+            if (edgeRefinement(edge) > 0)
+            {
+                mesh->refine_towards_boundary(QString::number(Agros2D::scene()->edges->items().indexOf(edge)).toStdString(),
+                                              edgeRefinement(edge));
+            }
+        }
+
+    // refine mesh - elements
+    if (refineArea)
+    {
+        foreach (SceneLabel *label, Agros2D::scene()->labels->items())
+        {
+            if (labelRefinement(label) > 0)
+                mesh->refine_in_area(QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString(),
+                                     labelRefinement(label));
+        }
+    }
+}
+
+// xml module
+// name
+QString FieldInfo::name() const
+{    
+    return QString::fromStdString(m_plugin->module()->general().name());
+}
+
+// description
+QString FieldInfo::description() const
+{
+    return QString::fromStdString(m_plugin->module()->general().description());
+}
+
+// deformable shape
+bool FieldInfo::hasDeformableShape() const
+{
+    if (m_plugin->module()->general().deformed_shape().present())
+        return m_plugin->module()->general().deformed_shape().get();
+
+    return false;
+}
+
+// number of solutions
+int FieldInfo::numberOfSolutions() const
+{
+    // analyses
+    foreach (XMLModule::analysis an, m_plugin->module()->general().analyses().analysis())
+        if (an.type() == analysisTypeToStringKey(m_analysisType).toStdString())
+            return an.solutions();
+}
+
+// latex equation
+QString FieldInfo::equation() const
+{
+    // volumetric weakforms
+    for (unsigned int i = 0; i < m_plugin->module()->volume().weakforms_volume().weakform_volume().size(); i++)
+    {
+        XMLModule::weakform_volume wf = m_plugin->module()->volume().weakforms_volume().weakform_volume().at(i);
+        if (wf.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+            return QString::fromStdString(wf.equation());
+    }
+
+    assert(0);
+}
+
+// constants
+QMap<QString, double> FieldInfo::constants() const
+{
+    QMap<QString, double> constants;
+    // constants
+    foreach (XMLModule::constant cnst, m_plugin->module()->constants().constant())
+        constants[QString::fromStdString(cnst.id())] = cnst.value();
+
+    return constants;
+}
+
+// macros
+QMap<QString, QString> FieldInfo::macros() const
+{
+    // QMap<QString, QString> macros;
+    // // constants
+    // foreach (XMLModule::macro mcro, m_plugin->module()->macros().macro())
+    //     macros[QString::fromStdString(mcro.id())] = mcro.value();
+
+    return QMap<QString, QString>();
+}
+
+// spaces
+QMap<int, Module::Space> FieldInfo::spaces() const
+{
+    // spaces
+    QMap<int, Module::Space> spaces;
+
+    foreach (XMLModule::space spc, m_plugin->module()->spaces().space())
+        if (spc.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+            foreach (XMLModule::space_config config, spc.space_config())
+                spaces[config.i()] = Module::Space(config.i(),
+                                                   spaceTypeFromStringKey(QString::fromStdString(config.type())),
+                                                   config.orderadjust());
+    return spaces;
+}
+
+// material type
+QList<Module::MaterialTypeVariable> FieldInfo::materialTypeVariables() const
+{
+    // all materials variables
+    QList<Module::MaterialTypeVariable> materialTypeVariablesAll;
+    for (int i = 0; i < m_plugin->module()->volume().quantity().size(); i++)
+    {
+        XMLModule::quantity quant = m_plugin->module()->volume().quantity().at(i);
+
+        // gui default
+        for (unsigned int i = 0; i < m_plugin->module()->preprocessor().gui().size(); i++)
+        {
+            XMLModule::gui ui = m_plugin->module()->preprocessor().gui().at(i);
+            if (ui.type() == "volume")
+            {
+                for (unsigned int i = 0; i < ui.group().size(); i++)
+                {
+                    XMLModule::group grp = ui.group().at(i);
+                    for (unsigned int i = 0; i < grp.quantity().size(); i++)
+                    {
+                        XMLModule::quantity quant_ui = grp.quantity().at(i);
+                        if ((quant_ui.id() == quant.id()) && quant_ui.default_().present())
+                            quant.default_().set(quant_ui.default_().get());
+                    }
+                }
+            }
+        }
+
+        // add to the list
+        materialTypeVariablesAll.append(Module::MaterialTypeVariable(quant));
+    }
+
+    QList<Module::MaterialTypeVariable> materialTypeVariables;
+    for (unsigned int i = 0; i < m_plugin->module()->volume().weakforms_volume().weakform_volume().size(); i++)
+    {
+        XMLModule::weakform_volume wf = m_plugin->module()->volume().weakforms_volume().weakform_volume().at(i);
+
+        if (wf.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+        {
+            for (unsigned int i = 0; i < wf.quantity().size(); i++)
+            {
+                XMLModule::quantity qty = wf.quantity().at(i);
+
+                foreach (Module::MaterialTypeVariable variable, materialTypeVariablesAll)
+                {
+                    if (variable.id().toStdString() == qty.id())
+                    {
+                        QString nonlinearExpression;
+                        if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar && qty.nonlinearity_planar().present())
+                            nonlinearExpression = QString::fromStdString(qty.nonlinearity_planar().get());
+                        else
+                            if (qty.nonlinearity_axi().present())
+                                nonlinearExpression = QString::fromStdString(qty.nonlinearity_axi().get());
+
+                        bool isTimeDep = false;
+                        if (qty.dependence().present())
+                            isTimeDep = (QString::fromStdString(qty.dependence().get()) == "time");
+
+                        materialTypeVariables.append(Module::MaterialTypeVariable(variable.id(), variable.shortname(),
+                                                                                        nonlinearExpression, isTimeDep));
+                    }
+                }
+            }
+        }
+    }
+
+    materialTypeVariablesAll.clear();
+
+    return materialTypeVariables;
+}
+
+// variable by name
+bool FieldInfo::materialTypeVariableContains(const QString &id) const
+{
+    foreach (Module::MaterialTypeVariable var, materialTypeVariables())
+        if (var.id() == id)
+            return true;
+
+    return false;
+}
+
+Module::MaterialTypeVariable FieldInfo::materialTypeVariable(const QString &id) const
+{
+    foreach (Module::MaterialTypeVariable var, materialTypeVariables())
+        if (var.id() == id)
+            return var;
+
+    assert(0);
+}
+
+// boundary conditions
+QList<Module::BoundaryTypeVariable> FieldInfo::boundaryTypeVariables() const
+{
+
+}
+
+QList<Module::BoundaryType> FieldInfo::boundaryTypes() const
+{
+    QList<Module::BoundaryTypeVariable> boundaryTypeVariablesAll;
+    for (int i = 0; i < m_plugin->module()->surface().quantity().size(); i++)
+    {
+        XMLModule::quantity quant = m_plugin->module()->surface().quantity().at(i);
+
+        // add to list
+        boundaryTypeVariablesAll.append(Module::BoundaryTypeVariable(quant));
+    }
+
+    QList<Module::BoundaryType> boundaryTypes;
+    for (int i = 0; i < m_plugin->module()->surface().weakforms_surface().weakform_surface().size(); i++)
+    {
+        XMLModule::weakform_surface wf = m_plugin->module()->surface().weakforms_surface().weakform_surface().at(i);
+
+        if (wf.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+        {
+            for (int i = 0; i < wf.boundary().size(); i++)
+            {
+                XMLModule::boundary bdy = wf.boundary().at(i);
+                boundaryTypes.append(Module::BoundaryType(boundaryTypeVariablesAll, bdy, Agros2D::problem()->config()->coordinateType()));
+            }
+        }
+    }
+
+    boundaryTypeVariablesAll.clear();
+
+    return boundaryTypes;
+}
+
+// default boundary condition
+Module::BoundaryType FieldInfo::boundaryTypeDefault() const
+{
+    for (int i = 0; i < m_plugin->module()->surface().weakforms_surface().weakform_surface().size(); i++)
+    {
+        XMLModule::weakform_surface wf = m_plugin->module()->surface().weakforms_surface().weakform_surface().at(i);
+
+        // default
+        return boundaryType(QString::fromStdString(wf.default_().get()));
+    }
+
+    assert(0);
+}
+
+// variable by name
+bool FieldInfo::boundaryTypeContains(const QString &id) const
+{
+    foreach (Module::BoundaryType var, boundaryTypes())
+        if (var.id() == id)
+            return true;
+
+    return false;
+}
+
+Module::BoundaryType FieldInfo::boundaryType(const QString &id) const
+{
+    foreach (Module::BoundaryType var, boundaryTypes())
+        if (var.id() == id)
+            return var;
+
+    assert(0);
+}
+
+// force
+Module::Force FieldInfo::force() const
+{
+    // force
+    XMLModule::force force = m_plugin->module()->postprocessor().force();
+    for (unsigned int i = 0; i < force.expression().size(); i++)
+    {
+        XMLModule::expression exp = force.expression().at(i);
+        if (exp.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+            return Module::Force((Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ? QString::fromStdString(exp.planar_x().get()) : QString::fromStdString(exp.axi_r().get()),
+                                 (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ? QString::fromStdString(exp.planar_y().get()) : QString::fromStdString(exp.axi_z().get()),
+                                 (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ? QString::fromStdString(exp.planar_z().get()) : QString::fromStdString(exp.axi_phi().get()));
+    }
+}
+
+// material and boundary user interface
+Module::DialogUI FieldInfo::materialUI() const
+{
+    // preprocessor
+    for (unsigned int i = 0; i < m_plugin->module()->preprocessor().gui().size(); i++)
+    {
+        XMLModule::gui ui = m_plugin->module()->preprocessor().gui().at(i);
+        if (ui.type() == "volume")
+            return Module::DialogUI(ui);
+    }
+
+    assert(0);
+}
+
+Module::DialogUI FieldInfo::boundaryUI() const
+{
+    // preprocessor
+    for (unsigned int i = 0; i < m_plugin->module()->preprocessor().gui().size(); i++)
+    {
+        XMLModule::gui ui = m_plugin->module()->preprocessor().gui().at(i);
+        if (ui.type() == "surface")
+            return Module::DialogUI(ui);
+    }
+
+    assert(0);
+}
+
+// local point variables
+QList<Module::LocalVariable> FieldInfo::localPointVariables() const
+{
+    // local variables
+    QList<Module::LocalVariable> variables;
+    for (unsigned int i = 0; i < m_plugin->module()->postprocessor().localvariables().localvariable().size(); i++)
+    {
+        XMLModule::localvariable lv = m_plugin->module()->postprocessor().localvariables().localvariable().at(i);
+
+        for (unsigned int i = 0; i < lv.expression().size(); i++)
+        {
+            XMLModule::expression expr = lv.expression().at(i);
+            if (expr.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+            {
+                variables.append(Module::LocalVariable(lv,
+                                                       m_fieldId,
+                                                       Agros2D::problem()->config()->coordinateType(),
+                                                       m_analysisType));
+            }
+        }
+    }
+
+    return variables;
+}
+
+// view scalar variables
+QList<Module::LocalVariable> FieldInfo::viewScalarVariables() const
+{
+    // scalar variables = local variables
+    return localPointVariables();
+}
+
+// view vector variables
+QList<Module::LocalVariable> FieldInfo::viewVectorVariables() const
+{
+    // vector variables
+    QList<Module::LocalVariable> variables;
+    foreach (Module::LocalVariable var, localPointVariables())
+        if (!var.isScalar())
+            variables.append(var);
+
+    return variables;
+}
+
+// surface integrals
+QList<Module::Integral> FieldInfo::surfaceIntegrals() const
+{
+    // surface integrals
+    QList<Module::Integral> surfaceIntegrals;
+    for (unsigned int i = 0; i < m_plugin->module()->postprocessor().surfaceintegrals().surfaceintegral().size(); i++)
+    {
+        XMLModule::surfaceintegral sur = m_plugin->module()->postprocessor().surfaceintegrals().surfaceintegral().at(i);
+
+        QString expr;
+        for (unsigned int i = 0; i < sur.expression().size(); i++)
+        {
+            XMLModule::expression exp = sur.expression().at(i);
+            if (exp.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+            {
+                if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
+                    expr = QString::fromStdString(exp.planar().get()).trimmed();
+                else
+                    expr = QString::fromStdString(exp.axi().get()).trimmed();
+            }
+        }
+
+        // new integral
+        if (!expr.isEmpty())
+        {
+            Module::Integral surint = Module::Integral(
+                        QString::fromStdString(sur.id()),
+                        m_plugin->localeName(QString::fromStdString(sur.name())),
+                        QString::fromStdString(sur.shortname()),
+                        (sur.shortname_html().present()) ? QString::fromStdString(sur.shortname_html().get()) : QString::fromStdString(sur.shortname()),
+                        QString::fromStdString(sur.unit()),
+                        (sur.unit_html().present()) ? QString::fromStdString(sur.unit_html().get()) : QString::fromStdString(sur.unit()),
+                        expr);
+
+            surfaceIntegrals.append(surint);
+        }
+    }
+
+    return surfaceIntegrals;
+}
+
+// volume integrals
+QList<Module::Integral> FieldInfo::volumeIntegrals() const
+{
+    // volume integrals
+    QList<Module::Integral> volumeIntegrals;
+    foreach (XMLModule::volumeintegral vol, m_plugin->module()->postprocessor().volumeintegrals().volumeintegral())
+    {
+        QString expr;
+        for (unsigned int i = 0; i < vol.expression().size(); i++)
+        {
+            XMLModule::expression exp = vol.expression().at(i);
+            if (exp.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+            {
+                if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
+                    expr = QString::fromStdString(exp.planar().get()).trimmed();
+                else
+                    expr = QString::fromStdString(exp.axi().get()).trimmed();
+            }
+        }
+
+        // new integral
+        if (!expr.isEmpty())
+        {
+            Module::Integral volint = Module::Integral(
+                        QString::fromStdString(vol.id()),
+                        m_plugin->localeName(QString::fromStdString(vol.name())),
+                        QString::fromStdString(vol.shortname()),
+                        (vol.shortname_html().present()) ? QString::fromStdString(vol.shortname_html().get()) : QString::fromStdString(vol.shortname()),
+                        QString::fromStdString(vol.unit()),
+                        (vol.unit_html().present()) ? QString::fromStdString(vol.unit_html().get()) : QString::fromStdString(vol.unit()),
+                        expr);
+
+            volumeIntegrals.append(volint);
+        }
+    }
+
+    return volumeIntegrals;
+}
+
+// variable by name
+Module::LocalVariable FieldInfo::localVariable(const QString &id) const
+{
+    foreach (Module::LocalVariable var, localPointVariables())
+        if (var.id() == id)
+            return var;
+
+    qDebug() << "localVariable: " << id;
+    assert(0);
+}
+
+Module::Integral FieldInfo::surfaceIntegral(const QString &id) const
+{
+    foreach (Module::Integral var, surfaceIntegrals())
+        if (var.id() == id)
+            return var;
+
+    qDebug() << "surfaceIntegral: " << id;
+    assert(0);
+}
+
+Module::Integral FieldInfo::volumeIntegral(const QString &id) const
+{
+    foreach (Module::Integral var, volumeIntegrals())
+        if (var.id() == id)
+            return var;
+
+    qDebug() << "volumeIntegral: " << id;
+    assert(0);
+}
+
+// default variables
+Module::LocalVariable FieldInfo::defaultViewScalarVariable() const
+{
+    // scalar variables default
+    foreach (XMLModule::default_ def, m_plugin->module()->postprocessor().view().scalar_view().default_())
+        if (def.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+            return localVariable(QString::fromStdString(def.id()));
+
+    assert(0);
+}
+
+Module::LocalVariable FieldInfo::defaultViewVectorVariable() const
+{
+    // vector variables default
+    foreach (XMLModule::default_ def, m_plugin->module()->postprocessor().view().vector_view().default_())
+        if (def.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+            return(localVariable(QString::fromStdString(def.id())));
+
+    assert(0);
+}
+
+// weak forms
+QList<FormInfo> FieldInfo::wfMatrixVolume() const
+{
+    // matrix weakforms
+    QList<FormInfo> weakForms;
+    for (unsigned int i = 0; i < m_plugin->module()->volume().weakforms_volume().weakform_volume().size(); i++)
+    {
+        XMLModule::weakform_volume wf = m_plugin->module()->volume().weakforms_volume().weakform_volume().at(i);
+
+        if (wf.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+        {
+            // weakform
+            for (unsigned int i = 0; i < wf.matrix_form().size(); i++)
+            {
+                XMLModule::matrix_form form = wf.matrix_form().at(i);
+                weakForms.append(FormInfo(QString::fromStdString(form.id()),
+                                                 form.i(),
+                                                 form.j(),
+                                                 form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
+            }
+        }
+    }
+
+    return weakForms;
+}
+
+QList<FormInfo> FieldInfo::wfVectorVolume() const
+{
+    // vector weakforms
+    QList<FormInfo> weakForms;
+    for (unsigned int i = 0; i < m_plugin->module()->volume().weakforms_volume().weakform_volume().size(); i++)
+    {
+        XMLModule::weakform_volume wf = m_plugin->module()->volume().weakforms_volume().weakform_volume().at(i);
+
+        if (wf.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+        {
+            for (unsigned int i = 0; i < wf.vector_form().size(); i++)
+            {
+                XMLModule::vector_form form = wf.vector_form().at(i);
+                weakForms.append(FormInfo(QString::fromStdString(form.id()),
+                                          form.i(),
+                                          form.j()));
+            }
+        }
+    }
+
+    return weakForms;
+}
+

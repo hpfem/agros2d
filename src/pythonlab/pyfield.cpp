@@ -20,7 +20,7 @@
 #include "pythonlab/pyfield.h"
 #include "pythonlab/pythonengine_agros.h"
 
-#include "hermes2d/module_agros.h"
+
 #include "hermes2d/problem_config.h"
 #include "hermes2d/solutionstore.h"
 
@@ -29,7 +29,7 @@
 
 PyField::PyField(char *fieldId)
 {
-    QMap<QString, QString> modules = availableModules();
+    QMap<QString, QString> modules = Module::availableModules();
 
     if (modules.keys().contains(QString(fieldId)))
         if (Agros2D::problem()->hasField(QString(fieldId)))
@@ -52,14 +52,14 @@ FieldInfo *PyField::fieldInfo()
 
 void PyField::setAnalysisType(const char *analysisType)
 {
-    if (availableAnalyses(m_fieldInfo->fieldId()).contains(analysisTypeFromStringKey(QString(analysisType))))
+    if (Module::availableAnalyses(m_fieldInfo->fieldId()).contains(analysisTypeFromStringKey(QString(analysisType))))
     {
         Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setAnalysisType(analysisTypeFromStringKey(QString(analysisType)));
     }
     else
     {
         QStringList list;
-        QList<AnalysisType> analyses = availableAnalyses(m_fieldInfo->fieldId()).keys();
+        QList<AnalysisType> analyses = Module::availableAnalyses(m_fieldInfo->fieldId()).keys();
         foreach (AnalysisType analysis, analyses)
             list.append(analysisTypeToStringKey(analysis));
 
@@ -211,30 +211,31 @@ void PyField::addBoundary(const char *name, const char *type, map<char*, double>
             throw invalid_argument(QObject::tr("Boundary '%1' already exists.").arg(QString(name)).toStdString());
     }
 
-    Module::BoundaryType *boundaryType = Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->boundaryType(QString(type));
-    if (!boundaryType)
+    if (!Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->boundaryTypeContains(QString(type)))
         throw invalid_argument(QObject::tr("Wrong boundary type '%1'.").arg(type).toStdString());
+
+    Module::BoundaryType boundaryType = Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->boundaryType(QString(type));
 
     // browse boundary parameters
     QHash<QString, Value> values;
     for (map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         bool assigned = false;
-        foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
+        foreach (Module::BoundaryTypeVariable variable, boundaryType.variables())
         {
-            if (variable->id() == QString(QString((*i).first)))
+            if (variable.id() == QString(QString((*i).first)))
             {
                 assigned = true;
                 if (expressions.count((*i).first) == 0)
-                    values[variable->id()] = Value(m_fieldInfo,
-                                                   (*i).second,
-                                                   vector<double>(),
-                                                   vector<double>());
+                    values[variable.id()] = Value(m_fieldInfo,
+                                                  (*i).second,
+                                                  vector<double>(),
+                                                  vector<double>());
                 else
-                    values[variable->id()] = Value(m_fieldInfo,
-                                                   expressions[(*i).first],
-                                                   vector<double>(),
-                                                   vector<double>());
+                    values[variable.id()] = Value(m_fieldInfo,
+                                                  expressions[(*i).first],
+                            vector<double>(),
+                            vector<double>());
                 break;
             }
         }
@@ -253,9 +254,9 @@ void PyField::setBoundary(const char *name, const char *type, map<char*, double>
         throw invalid_argument(QObject::tr("Boundary condition '%1' doesn't exists.").arg(name).toStdString());
 
     // browse boundary types
-    foreach (Module::BoundaryType *boundaryType, sceneBoundary->fieldInfo()->module()->boundaryTypes())
+    foreach (Module::BoundaryType boundaryType, sceneBoundary->fieldInfo()->boundaryTypes())
     {
-        if (QString(type) == boundaryType->id())
+        if (QString(type) == boundaryType.id())
         {
             sceneBoundary->setType(QString(type));
             break;
@@ -265,13 +266,13 @@ void PyField::setBoundary(const char *name, const char *type, map<char*, double>
     }
 
     // browse boundary parameters
-    Module::BoundaryType *boundaryType = Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->boundaryType(sceneBoundary->type());
+    Module::BoundaryType boundaryType = Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->boundaryType(sceneBoundary->type());
     for (map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         bool assigned = false;
-        foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
+        foreach (Module::BoundaryTypeVariable variable, boundaryType.variables())
         {
-            if (variable->id() == QString(QString((*i).first)))
+            if (variable.id() == QString(QString((*i).first)))
             {
                 assigned = true;
                 if (expressions.count((*i).first) == 0)
@@ -282,8 +283,8 @@ void PyField::setBoundary(const char *name, const char *type, map<char*, double>
                 else
                     sceneBoundary->setValue(QString((*i).first), Value(m_fieldInfo,
                                                                        expressions[(*i).first],
-                                                                       vector<double>(),
-                                                                       vector<double>()));
+                                            vector<double>(),
+                                            vector<double>()));
                 break;
             }
         }
@@ -314,12 +315,12 @@ void PyField::addMaterial(char *name, map<char*, double> parameters,
     QHash<QString, Value> values;
     for (std::map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
-        QList<Module::MaterialTypeVariable *> materials = Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->materialTypeVariables();
+        QList<Module::MaterialTypeVariable> materials = Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->materialTypeVariables();
 
         bool assigned = false;
-        foreach (Module::MaterialTypeVariable *variable, materials)
+        foreach (Module::MaterialTypeVariable variable, materials)
         {
-            if (variable->id() == QString((*i).first))
+            if (variable.id() == QString((*i).first))
             {
                 int lenx = ((nonlin_x.find((*i).first) != nonlin_x.end()) ? nonlin_x[(*i).first].size() : 0);
                 int leny = ((nonlin_y.find((*i).first) != nonlin_y.end()) ? nonlin_y[(*i).first].size() : 0);
@@ -331,15 +332,15 @@ void PyField::addMaterial(char *name, map<char*, double> parameters,
 
                 assigned = true;
                 if (expressions.count((*i).first) == 0)
-                    values[variable->id()] = Value(m_fieldInfo,
-                                                   (*i).second,
-                                                   (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
-                                                   (leny > 0) ? nonlin_y[(*i).first] : vector<double>());
+                    values[variable.id()] = Value(m_fieldInfo,
+                                                  (*i).second,
+                                                  (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
+                                                  (leny > 0) ? nonlin_y[(*i).first] : vector<double>());
                 else
-                    values[variable->id()] = Value(m_fieldInfo,
-                                                   expressions[(*i).first],
-                                                   (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
-                                                   (leny > 0) ? nonlin_y[(*i).first] : vector<double>());
+                    values[variable.id()] = Value(m_fieldInfo,
+                                                  expressions[(*i).first],
+                            (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
+                        (leny > 0) ? nonlin_y[(*i).first] : vector<double>());
                 break;
             }
         }
@@ -363,12 +364,12 @@ void PyField::setMaterial(char *name, map<char*, double> parameters,
 
     for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
     {
-        QList<Module::MaterialTypeVariable *> materialVariables = Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->module()->materialTypeVariables();
+        QList<Module::MaterialTypeVariable> materialVariables = Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->materialTypeVariables();
 
         bool assigned = false;
-        foreach (Module::MaterialTypeVariable *variable, materialVariables)
+        foreach (Module::MaterialTypeVariable variable, materialVariables)
         {
-            if (variable->id() == QString((*i).first))
+            if (variable.id() == QString((*i).first))
             {
                 int lenx = ((nonlin_x.find((*i).first) != nonlin_x.end()) ? nonlin_x[(*i).first].size() : 0);
                 int leny = ((nonlin_y.find((*i).first) != nonlin_y.end()) ? nonlin_y[(*i).first].size() : 0);
@@ -387,8 +388,8 @@ void PyField::setMaterial(char *name, map<char*, double> parameters,
                 else
                     sceneMaterial->setValue(QString((*i).first), Value(m_fieldInfo,
                                                                        expressions[(*i).first],
-                                                                       (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
-                                                                       (leny > 0) ? nonlin_y[(*i).first] : vector<double>()));
+                                            (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
+                                            (leny > 0) ? nonlin_y[(*i).first] : vector<double>()));
                 break;
             }
         }
@@ -419,20 +420,22 @@ void PyField::localValues(const double x, const double y, map<std::string, doubl
         Point point(x, y);
 
         LocalValue *value = Agros2D::plugin(fieldInfo()->fieldId())->localValue(fieldInfo(), point);
-        QMapIterator<Module::LocalVariable *, PointValue> it(value->values());
+        QMapIterator<QString, PointValue> it(value->values());
         while (it.hasNext())
         {
             it.next();
 
-            if (it.key()->isScalar())
+            Module::LocalVariable variable = fieldInfo()->localVariable(it.key());
+
+            if (variable.isScalar())
             {
-                values[it.key()->shortname().toStdString()] = it.value().scalar;
+                values[variable.shortname().toStdString()] = it.value().scalar;
             }
             else
             {
-                values[it.key()->shortname().toStdString()] = it.value().vector.magnitude();
-                values[it.key()->shortname().toStdString() + Agros2D::problem()->config()->labelX().toLower().toStdString()] = it.value().vector.x;
-                values[it.key()->shortname().toStdString() + Agros2D::problem()->config()->labelY().toLower().toStdString()] = it.value().vector.y;
+                values[variable.shortname().toStdString()] = it.value().vector.magnitude();
+                values[variable.shortname().toStdString() + Agros2D::problem()->config()->labelX().toLower().toStdString()] = it.value().vector.x;
+                values[variable.shortname().toStdString() + Agros2D::problem()->config()->labelY().toLower().toStdString()] = it.value().vector.y;
             }
         }
         delete value;
@@ -484,12 +487,14 @@ void PyField::surfaceIntegrals(vector<int> edges, map<std::string, double> &resu
         }
 
         IntegralValue *integral = Agros2D::plugin(fieldInfo()->fieldId())->surfaceIntegral(fieldInfo());
-        QMapIterator<Module::Integral *, double> it(integral->values());
+        QMapIterator<QString, double> it(integral->values());
         while (it.hasNext())
         {
             it.next();
 
-            values[it.key()->shortname().toStdString()] = it.value();
+            Module::Integral integral = fieldInfo()->surfaceIntegral(it.key());
+
+            values[integral.shortname().toStdString()] = it.value();
         }
         delete integral;
     }
@@ -547,12 +552,15 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
         }
 
         IntegralValue *integral = Agros2D::plugin(fieldInfo()->fieldId())->volumeIntegral(fieldInfo());
-        QMapIterator<Module::Integral *, double> it(integral->values());
+        QMapIterator<QString, double> it(integral->values());
         while (it.hasNext())
         {
             it.next();
 
-            values[it.key()->shortname().toStdString()] = it.value();
+            Module::Integral integral = fieldInfo()->volumeIntegral(it.key());
+
+            values[integral.shortname().toStdString()] = it.value();
+
         }
         delete integral;
     }

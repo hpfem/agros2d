@@ -209,7 +209,7 @@ void Agros2DGenerator::run()
     if (args.count() == 2)
     {
         // generate one module or coupling
-        QMap<QString, QString> modules = availableModules();
+        QMap<QString, QString> modules = Module::availableModules();
         QMap<QString, QString> couplings = availableCouplings();
 
         if (modules.keys().contains(args[1]))
@@ -235,7 +235,7 @@ void Agros2DGenerator::createStructure()
     doc_root.mkpath(GENERATOR_DOCROOT);
 
     ctemplate::TemplateDictionary output("project_output");
-    QMap<QString, QString> modules = availableModules();
+    QMap<QString, QString> modules = Module::availableModules();
     QMap<QString, QString> couplings = availableCouplings();
 
     foreach (QString moduleId, modules.keys())
@@ -279,7 +279,7 @@ void Agros2DGenerator::createStructure()
 
 void Agros2DGenerator::generateSources()
 {
-    QMap<QString, QString> modules = availableModules();
+    QMap<QString, QString> modules = Module::availableModules();
     QMap<QString, QString> couplings = availableCouplings();
 
     foreach (QString moduleId, modules.keys())

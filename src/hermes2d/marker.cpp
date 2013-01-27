@@ -19,7 +19,6 @@
 
 #include "marker.h"
 #include "module.h"
-#include "module_agros.h"
 #include "scene.h"
 #include "util.h"
 #include "hermes2d/field.h"
@@ -79,12 +78,12 @@ Boundary::Boundary(FieldInfo *fieldInfo, QString name, QString type,
     {
         if (this->m_values.size() == 0)
         {
-            Module::BoundaryType *boundaryType = fieldInfo->module()->boundaryType(type);
-            foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
+            Module::BoundaryType boundaryType = fieldInfo->boundaryType(type);
+            foreach (Module::BoundaryTypeVariable variable, boundaryType.variables())
             {
                 // default for GUI
-                Module::DialogRow row = fieldInfo->module()->boundaryUI()->dialogRow(variable->id());
-                this->m_values[variable->id()] = Value(QString::number(row.defaultValue()));
+                Module::DialogRow row = fieldInfo->boundaryUI().dialogRow(variable.id());
+                this->m_values[variable.id()] = Value(QString::number(row.defaultValue()));
             }
         }
     }
@@ -101,11 +100,11 @@ Material::Material(FieldInfo *fieldInfo, QString name,
     {
         if (this->m_values.size() == 0)
         {
-            foreach (Module::MaterialTypeVariable *variable, fieldInfo->module()->materialTypeVariables())
+            foreach (Module::MaterialTypeVariable variable, fieldInfo->materialTypeVariables())
             {
                 // default for GUI
-                Module::DialogRow row = fieldInfo->module()->materialUI()->dialogRow(variable->id());
-                this->m_values[variable->id()] = Value(QString::number(row.defaultValue()));
+                Module::DialogRow row = fieldInfo->materialUI().dialogRow(variable.id());
+                this->m_values[variable.id()] = Value(QString::number(row.defaultValue()));
             }
         }
     }

@@ -26,7 +26,7 @@
 
 #include "scenemarker.h"
 #include "hermes2d/module.h"
-#include "hermes2d/module_agros.h"
+
 #include "hermes2d/field.h"
 #include "datatable.h"
 #include "scene.h"
@@ -96,7 +96,7 @@ SceneMaterialNone::SceneMaterialNone() : SceneMaterial(NULL, "none")
 // *************************************************************************************************************************************
 
 
-SceneFieldWidget::SceneFieldWidget(Module::DialogUI *ui, QWidget *parent)
+SceneFieldWidget::SceneFieldWidget(Module::DialogUI ui, QWidget *parent)
     : QWidget(parent), ui(ui)
 {
 }
@@ -122,7 +122,7 @@ void SceneFieldWidget::createContent()
 
     layout->addWidget(grpEquation);
 
-    QMapIterator<QString, QList<Module::DialogRow> > i(ui->groups());
+    QMapIterator<QString, QList<Module::DialogRow> > i(ui.groups());
     while (i.hasNext())
     {
         i.next();
@@ -181,21 +181,21 @@ void SceneFieldWidget::createContent()
 
 // *************************************************************************************************************************************
 
-SceneFieldWidgetMaterial::SceneFieldWidgetMaterial(Module::DialogUI *ui, SceneMaterial *material, QWidget *parent)
+SceneFieldWidgetMaterial::SceneFieldWidgetMaterial(Module::DialogUI ui, SceneMaterial *material, QWidget *parent)
     : SceneFieldWidget(ui, parent), material(material)
 {
 }
 
 ValueLineEdit *SceneFieldWidgetMaterial::addValueEditWidget(const Module::DialogRow &row)
 {
-    foreach (Module::MaterialTypeVariable *variable, material->fieldInfo()->module()->materialTypeVariables())
+    foreach (Module::MaterialTypeVariable variable, material->fieldInfo()->materialTypeVariables())
     {
-        if (variable->id() == row.id())
+        if (variable.id() == row.id())
         {
             ValueLineEdit *edit = new ValueLineEdit(this,
-                                                    (variable->isTimeDep() && material->fieldInfo()->analysisType() == AnalysisType_Transient),
-                                                    (variable->isNonlinear() && material->fieldInfo()->linearityType() != LinearityType_Linear));
-            if (variable->isNonlinear())
+                                                    (variable.isTimeDep() && material->fieldInfo()->analysisType() == AnalysisType_Transient),
+                                                    (variable.isNonlinear() && material->fieldInfo()->linearityType() != LinearityType_Linear));
+            if (variable.isNonlinear())
             {
                 edit->setLabelX(row.shortnameDependenceHtml());
                 edit->setLabelY(row.shortnameHtml());
@@ -231,25 +231,25 @@ bool SceneFieldWidgetMaterial::save()
 
 void SceneFieldWidgetMaterial::refresh()
 {
-    equationLaTeX->setLatex(material->fieldInfo()->module()->equation());
+    equationLaTeX->setLatex(material->fieldInfo()->equation());
 }
 
 // *************************************************************************************************************************************
 
-SceneFieldWidgetBoundary::SceneFieldWidgetBoundary(Module::DialogUI *ui, SceneBoundary *boundary, QWidget *parent)
+SceneFieldWidgetBoundary::SceneFieldWidgetBoundary(Module::DialogUI ui, SceneBoundary *boundary, QWidget *parent)
     : SceneFieldWidget(ui, parent), boundary(boundary)
 {
 }
 
 ValueLineEdit *SceneFieldWidgetBoundary::addValueEditWidget(const Module::DialogRow &row)
 {
-    foreach (Module::BoundaryType *boundaryType, boundary->fieldInfo()->module()->boundaryTypes())
-        foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
+    foreach (Module::BoundaryType boundaryType, boundary->fieldInfo()->boundaryTypes())
+        foreach (Module::BoundaryTypeVariable variable, boundaryType.variables())
         {
-            if (variable->id() == row.id())
+            if (variable.id() == row.id())
             {
                 ValueLineEdit *edit = new ValueLineEdit(this,
-                                                        (variable->isTimeDep() && boundary->fieldInfo()->analysisType() == AnalysisType_Transient),
+                                                        (variable.isTimeDep() && boundary->fieldInfo()->analysisType() == AnalysisType_Transient),
                                                         false);
                 return edit;
             }
@@ -261,7 +261,10 @@ ValueLineEdit *SceneFieldWidgetBoundary::addValueEditWidget(const Module::Dialog
 void SceneFieldWidgetBoundary::addCustomWidget(QVBoxLayout *layout)
 {
     comboBox = new QComboBox(this);
-    boundary->fieldInfo()->module()->fillComboBoxBoundaryCondition(comboBox);
+    foreach (Module::BoundaryType boundary, boundary->fieldInfo()->boundaryTypes())
+        comboBox->addItem(boundary.name(),
+                          boundary.id());
+
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged(int)));
 
     QFormLayout *layoutForm = new QFormLayout();
@@ -282,17 +285,17 @@ void SceneFieldWidgetBoundary::doTypeChanged(int index)
     for (int i = 0; i < ids.count(); i++)
         values.at(i)->setEnabled(false);
 
-    Module::BoundaryType *boundary_type = boundary->fieldInfo()->module()->boundaryType(comboBox->itemData(index).toString());
-    foreach (Module::BoundaryTypeVariable *variable, boundary_type->variables())
+    Module::BoundaryType boundaryType = boundary->fieldInfo()->boundaryType(comboBox->itemData(index).toString());
+    foreach (Module::BoundaryTypeVariable variable, boundaryType.variables())
     {
-        int i = ids.indexOf(variable->id());
+        int i = ids.indexOf(variable.id());
 
         if (i >= 0)
             values.at(i)->setEnabled(true);
     }
 
     // read equation
-    equationLaTeX->setLatex(boundary_type->equation());
+    equationLaTeX->setLatex(boundaryType.equation());
 }
 
 void SceneFieldWidgetBoundary::load()
@@ -366,7 +369,7 @@ void SceneBoundaryDialog::createDialog()
 
 void SceneBoundaryDialog::createContent()
 {
-    fieldWidget = new SceneFieldWidgetBoundary(boundary->fieldInfo()->module()->boundaryUI(), boundary, this);
+    fieldWidget = new SceneFieldWidgetBoundary(boundary->fieldInfo()->boundaryUI(), boundary, this);
     fieldWidget->createContent();
 
     layout->addWidget(fieldWidget, 10, 0, 1, 3);
@@ -459,10 +462,10 @@ void SceneMaterialDialog::createDialog()
 
 void SceneMaterialDialog::createContent()
 {
-    fieldWidget = new SceneFieldWidgetMaterial(material->fieldInfo()->module()->materialUI(), material, this);
+    fieldWidget = new SceneFieldWidgetMaterial(material->fieldInfo()->materialUI(), material, this);
     fieldWidget->createContent();
 
-    layout->addWidget(fieldWidget, 10, 0, 1, 3);   
+    layout->addWidget(fieldWidget, 10, 0, 1, 3);
 }
 
 void SceneMaterialDialog::load()

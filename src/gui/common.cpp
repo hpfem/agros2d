@@ -23,7 +23,7 @@
 #include "util/global.h"
 
 #include "hermes2d/module.h"
-#include "hermes2d/module_agros.h"
+
 #include "hermes2d/solver.h"
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
@@ -96,7 +96,9 @@ void fillComboBoxScalarVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariabl
     // clear combo
     cmbFieldVariable->blockSignals(true);
     cmbFieldVariable->clear();
-    fieldInfo->module()->fillComboBoxScalarVariable(cmbFieldVariable);
+    foreach (Module::LocalVariable variable, fieldInfo->viewScalarVariables())
+        cmbFieldVariable->addItem(variable.name(),
+                                  variable.id());
 
     cmbFieldVariable->setCurrentIndex(cmbFieldVariable->findData(physicFieldVariable));
     if (cmbFieldVariable->currentIndex() == -1)
@@ -115,7 +117,10 @@ void fillComboBoxContourVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariab
     // clear combo
     cmbFieldVariable->blockSignals(true);
     cmbFieldVariable->clear();
-    fieldInfo->module()->fillComboBoxContourVariable(cmbFieldVariable);
+    foreach (Module::LocalVariable variable, fieldInfo->viewScalarVariables())
+        cmbFieldVariable->addItem(variable.name(),
+                                  variable.id());
+
 
     cmbFieldVariable->setCurrentIndex(cmbFieldVariable->findData(physicFieldVariable));
     if (cmbFieldVariable->currentIndex() == -1)
@@ -134,7 +139,9 @@ void fillComboBoxVectorVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariabl
     // clear combo
     cmbFieldVariable->blockSignals(true);
     cmbFieldVariable->clear();
-    fieldInfo->module()->fillComboBoxVectorVariable(cmbFieldVariable);
+    foreach (Module::LocalVariable variable, fieldInfo->viewVectorVariables())
+        cmbFieldVariable->addItem(variable.name(),
+                                  variable.id());
 
     cmbFieldVariable->setCurrentIndex(cmbFieldVariable->findData(physicFieldVariable));
     if (cmbFieldVariable->currentIndex() == -1)

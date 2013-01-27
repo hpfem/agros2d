@@ -25,7 +25,6 @@
 #include "field.h"
 #include "block.h"
 #include "problem.h"
-#include "module_agros.h"
 
 using namespace Hermes::Hermes2D;
 
@@ -119,7 +118,7 @@ MultiArray<Scalar> MultiArray<Scalar>::fieldPart(Block *block, FieldInfo *fieldI
     assert(block->contains(fieldInfo));
     MultiArray<Scalar> msa;
     int offset = block->offset(block->field(fieldInfo));
-    int numSol = fieldInfo->module()->numberOfSolutions();
+    int numSol = fieldInfo->numberOfSolutions();
 
     for(int i = offset; i < offset + numSol; i++)
     {
@@ -139,7 +138,7 @@ void MultiArray<Scalar>::loadFromFile(const QString &baseName, FieldSolutionID s
     clear();
 
     // load the mesh file
-    Hermes::vector<Mesh *> meshes = readMeshFromFile(QString("%1.mesh").arg(baseName));
+    Hermes::vector<Mesh *> meshes = Module::readMeshFromFile(QString("%1.mesh").arg(baseName));
     Mesh *mesh = NULL;
     int i = 0;
     foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
@@ -153,7 +152,7 @@ void MultiArray<Scalar>::loadFromFile(const QString &baseName, FieldSolutionID s
     }
     assert(mesh);
 
-    for (int i = 0; i < solutionID.group->module()->numberOfSolutions(); i++)
+    for (int i = 0; i < solutionID.group->numberOfSolutions(); i++)
     {
         Space<Scalar> *space = Space<Scalar>::load(QString("%1_%2.spc").arg(baseName).arg(i).toStdString().c_str(),
                                                    mesh, false);
@@ -185,7 +184,7 @@ void MultiArray<Scalar>::saveToFile(const QString &baseName, FieldSolutionID sol
             meshes.push_back(fieldInfo->initialMesh());
     }
 
-    writeMeshToFile(QString("%1.mesh").arg(baseName), meshes);
+    Module::writeMeshToFile(QString("%1.mesh").arg(baseName), meshes);
 
     int solutionIndex = 0;
     for (int i = 0; i < m_solutions.size(); i++)

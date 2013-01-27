@@ -28,7 +28,7 @@
 #include "pythonlab/pythonengine_agros.h"
 
 #include "hermes2d/module.h"
-#include "hermes2d/module_agros.h"
+
 #include "hermes2d/problem.h"
 #include "hermes2d/coupling.h"
 #include "hermes2d/solutionstore.h"
@@ -82,28 +82,6 @@ Agros2D *Agros2D::singleton()
     return m_singleton.data();
 }
 
-void Agros2D::loadActivePlugins()
-{
-    // load plugins
-    QStringList modules = Agros2D::problem()->fieldInfos().keys();
-    QStringList couplings;
-    foreach (CouplingInfo *info, Agros2D::problem()->couplingInfos().values())
-        couplings.append(info->couplingId());
-
-    QStringList plugins;
-    plugins.append(modules);
-    plugins.append(couplings);
-
-    // unload plugins and clear list
-    foreach (PluginInterface *plugin, Agros2D::singleton()->m_plugins)
-        delete plugin;
-    Agros2D::singleton()->m_plugins.clear();
-
-    // load plugins
-    foreach (QString plugin, plugins)
-        Agros2D::loadPlugin(plugin);
-}
-
 void Agros2D::loadPlugin(const QString &plugin)
 {
     QPluginLoader *loader = NULL;
@@ -152,7 +130,7 @@ void Agros2D::loadPlugin(const QString &plugin)
 PluginInterface *Agros2D::plugin(const QString &plugin)
 {
     if (!Agros2D::singleton()->m_plugins.contains(plugin))
-        Agros2D::loadPlugin(plugin);
+        loadPlugin(plugin);
 
     assert(Agros2D::singleton()->m_plugins.contains(plugin));
     return Agros2D::singleton()->m_plugins[plugin];

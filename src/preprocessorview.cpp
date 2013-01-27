@@ -34,7 +34,7 @@
 #include "problemdialog.h"
 #include "pythonlab/pythonengine_agros.h"
 #include "hermes2d/module.h"
-#include "hermes2d/module_agros.h"
+
 #include "hermes2d/problem.h"
 #include "ctemplate/template.h"
 
@@ -183,9 +183,9 @@ void PreprocessorWidget::refresh()
         {
             QTreeWidgetItem *item = new QTreeWidgetItem(boundaryConditionsNode);
 
-            Module::BoundaryType *boundary_type = fieldInfo->module()->boundaryType(boundary->type());
+            Module::BoundaryType boundaryType = fieldInfo->boundaryType(boundary->type());
 
-            item->setText(0, QString("%1 (%2)").arg(boundary->name()).arg(boundary_type->name()));
+            item->setText(0, QString("%1 (%2)").arg(boundary->name()).arg(boundaryType.name()));
             item->setIcon(0, (Agros2D::scene()->edges->haveMarker(boundary).count() > 0) ? icon("scene-edgemarker") : icon("scene-edgemarker-notused"));
             if (Agros2D::scene()->edges->haveMarker(boundary).count() == 0)
                 item->setForeground(0, QBrush(Qt::gray));

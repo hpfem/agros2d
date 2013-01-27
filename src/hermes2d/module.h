@@ -116,7 +116,7 @@ public:
 
 private:
     // materialTarget has to be specified for coupling forms. couplingInfo only for weak couplings
-    void registerForm(WeakFormKind type, Field *field, QString area, FormInfo *form, int offsetI, int offsetJ, Marker *marker, BDF2Table* bdf2Table = NULL);
+    void registerForm(WeakFormKind type, Field *field, QString area, FormInfo form, int offsetI, int offsetJ, Marker *marker, BDF2Table* bdf2Table = NULL);
     void registerFormCoupling(WeakFormKind type, QString area, FormInfo *form, int offsetI, int offsetJ, SceneMaterial *materialSource,
                               SceneMaterial *materialTarget, CouplingInfo *couplingInfo);
     void addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar>* form);
@@ -316,14 +316,14 @@ struct BoundaryType
     inline QString name() const { return m_name; }
 
     // variables
-    inline QList<BoundaryTypeVariable *> variables() const { return m_variables; }
+    inline QList<BoundaryTypeVariable> variables() const { return m_variables; }
 
     // weakform
-    inline QList<FormInfo *> wfMatrixSurface() const { return m_wfMatrixSurface; }
-    inline QList<FormInfo *> wfVectorSurface() const { return m_wfVectorSurface; }
+    inline QList<FormInfo> wfMatrixSurface() const { return m_wfMatrixSurface; }
+    inline QList<FormInfo> wfVectorSurface() const { return m_wfVectorSurface; }
 
     // essential
-    inline QList<FormInfo *> essential() const { return m_essential; }
+    inline QList<FormInfo> essential() const { return m_essential; }
 
     // latex equation
     inline QString equation() { return m_equation; }
@@ -335,14 +335,14 @@ private:
     QString m_name;
 
     // variables
-    QList<BoundaryTypeVariable *> m_variables;
+    QList<BoundaryTypeVariable> m_variables;
 
     // weakform
-    QList<FormInfo *> m_wfMatrixSurface;
-    QList<FormInfo *> m_wfVectorSurface;
+    QList<FormInfo> m_wfMatrixSurface;
+    QList<FormInfo> m_wfVectorSurface;
 
     // essential
-    QList<FormInfo *> m_essential;
+    QList<FormInfo> m_essential;
 
     // latex equation
     QString m_equation;
@@ -446,184 +446,8 @@ private:
     QMap<QString, QList<Module::DialogRow> > m_groups;
 };
 
-// basic xml module
-struct BasicModule
-{
-    // default contructor
-    BasicModule(const QString &fieldId, CoordinateType problemType, AnalysisType analysisType);
-    ~BasicModule();
-
-    // name
-    inline QString name() const { return m_name; }
-    // deformed shape
-    inline bool hasDeformableShape() const { return m_hasDeformableShape; }
-    // description
-    inline QString description() const { return m_description; }
-
-    // constants
-    inline QMap<QString, double> constants() const { return m_constants; }
-
-    // macros
-    inline QMap<QString, QString> macros() const { return m_macros; }
-
-    // spaces
-    inline QMap<int, Module::Space> spaces() const { return m_spaces; }
-
-    // material type variable
-    inline QList<MaterialTypeVariable *> materialTypeVariables() const { return m_materialTypeVariables; }
-
-    // boundary type and type variable
-    inline QList<BoundaryTypeVariable *> boundaryTypeVariables() const { return m_boundaryTypeVariables; }
-    inline QList<BoundaryType *> boundaryTypes() const { return m_boundaryTypes; }
-    // default boundary condition
-    BoundaryType *boundaryTypeDefault() const { return m_boundaryTypeDefault; }
-
-    // weak forms
-    inline QList<FormInfo *> wfMatrixVolumeExpression() const { return m_wfMatrixVolume; }
-    inline QList<FormInfo *> wfVectorVolumeExpression() const { return m_wfVectorVolume; }
-
-    // all physical variables
-    QList<LocalVariable *> variables;
-
-    // material and boundary user interface
-    inline DialogUI *materialUI() { return m_materialUI; }
-    inline DialogUI *boundaryUI() { return m_boundaryUI; }
-
-    inline virtual void updateTimeFunctions(double time) {}
-
-    virtual inline void deformShape(double3* linVert, int count) {}
-    virtual inline void deformShape(double4* linVert, int count) {}
-
-    // coordinate and analysis type
-    inline CoordinateType coordinateType() { return m_coordinateType; }
-    inline AnalysisType analysisType() { return m_analysisType; }
-
-    // number of solutions
-    inline int numberOfSolutions() const { return m_numberOfSolutions; }
-
-    // scalar filter
-    Hermes::Hermes2D::Filter<double> *viewScalarFilter(Module::LocalVariable *physicFieldVariable,
-                                                       PhysicFieldVariableComp physicFieldVariableComp);
-
-    // variable by name
-    LocalVariable *localVariable(const QString &id);
-    Integral *surfaceIntegral(const QString &id);
-    Integral *volumeIntegral(const QString &id);
-    BoundaryType *boundaryType(const QString &id);
-    BoundaryTypeVariable *boundaryTypeVariable(const QString &id);
-    MaterialTypeVariable *materialTypeVariable(const QString &id);
-
-    // get expression
-    QString expression(LocalVariable *physicFieldVariable,
-                       PhysicFieldVariableComp physicFieldVariableComp);
-
-    // local point variables
-    inline QList<LocalVariable *> localPointVariables() const { return m_localPointVariables; }
-
-    // surface integrals
-    inline QList<Integral *> surfaceIntegrals() const { return m_surfaceIntegrals; }
-
-    // volume integrals
-    inline QList<Integral *> volumeIntegrals() const { return m_volumeIntegrals; }
-    // force
-    inline Force force() const { return m_force; }
-
-    // view scalar and vector variables
-    inline QList<LocalVariable *> viewScalarVariables() const { return m_viewScalarVariables; }
-    inline QList<LocalVariable *> viewVectorVariables() const { return m_viewVectorVariables; }
-
-    // default view variables
-    inline LocalVariable *defaultViewScalarVariable() const { return m_defaultViewScalarVariable; }
-    inline PhysicFieldVariableComp defaultViewScalarVariableComp()
-    {
-        if (m_defaultViewScalarVariable)
-            return m_defaultViewScalarVariable->isScalar() ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude;
-        else
-            return PhysicFieldVariableComp_Undefined;
-    }
-    inline LocalVariable *defaultViewVectorVariable() const { return m_defaultViewVectorVariable; }
-
-    // latex equation
-    inline QString equation() { return m_equation; }
-
-protected:
-    // id
-    QString m_fieldid;
-
-private:
-    // coordinate and analysis type
-    CoordinateType m_coordinateType;
-    AnalysisType m_analysisType;
-
-    // name
-    QString m_name;
-    // deformed shape
-    bool m_hasDeformableShape;
-    // description
-    QString m_description;
-
-    // constants
-    QMap<QString, double> m_constants;
-
-    // macros
-    QMap<QString, QString> m_macros;
-
-    // spaces
-    QMap<int, Module::Space> m_spaces;
-
-    // number of solutions
-    int m_numberOfSolutions;
-
-    // material type
-    QList<MaterialTypeVariable *> m_materialTypeVariables;
-
-    // boundary conditions
-    QList<BoundaryTypeVariable *> m_boundaryTypeVariables;
-    QList<BoundaryType *> m_boundaryTypes;
-    // default boundary condition
-    BoundaryType *m_boundaryTypeDefault;
-
-    // local point variables
-    QList<LocalVariable *> m_localPointVariables;
-
-    // surface integrals
-    QList<Integral *> m_surfaceIntegrals;
-
-    // volume integrals
-    QList<Integral *> m_volumeIntegrals;
-
-    // force
-    Force m_force;
-
-    // material and boundary user interface
-    DialogUI *m_materialUI;
-    DialogUI *m_boundaryUI;
-
-    // view scalar and vector variables
-    QList<LocalVariable *> m_viewScalarVariables;
-    QList<LocalVariable *> m_viewVectorVariables;
-
-    // default variables
-    LocalVariable *m_defaultViewScalarVariable;
-    LocalVariable *m_defaultViewVectorVariable;
-
-    // weak forms
-    QList<FormInfo *> m_wfMatrixVolume;
-    QList<FormInfo *> m_wfVectorVolume;
-
-    // latex equation
-    QString m_equation;
-
-    // read form xml
-    void read(const QString &filename);
-    // clear
-    void clear();
-
-    // xml module description
-    std::auto_ptr<XMLModule::module> module_xsd;
-};
-
-}
+// functions
+void updateTimeFunctions(double time);
 
 // available modules
 QMap<QString, QString> availableModules();
@@ -633,10 +457,10 @@ QMap<AnalysisType, QString> availableAnalyses(const QString &fieldId);
 // mesh fix
 void readMeshDirtyFix();
 
-// read mesh
+// read and write mesh
 Hermes::vector<Hermes::Hermes2D::Mesh *> readMeshFromFile(const QString &fileName);
 void writeMeshToFile(const QString &fileName, Hermes::vector<Hermes::Hermes2D::Mesh *> meshes);
 
-void refineMesh(FieldInfo *fieldInfo, Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea);
+}
 
 #endif // HERMES_FIELD_H

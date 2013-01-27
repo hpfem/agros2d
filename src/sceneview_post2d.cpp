@@ -37,7 +37,7 @@
 #include "resultsview.h"
 
 #include "hermes2d/module.h"
-#include "hermes2d/module_agros.h"
+
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
@@ -164,7 +164,7 @@ void SceneViewPost2D::mousePressEvent(QMouseEvent *event)
             if (e)
             {
                 SceneLabel *label = Agros2D::scene()->labels->at(atoi(Agros2D::scene()->activeViewField()->initialMesh()->get_element_markers_conversion().
-                                                                   get_user_marker(e->marker).marker.c_str()));
+                                                                      get_user_marker(e->marker).marker.c_str()));
 
                 label->setSelected(!label->isSelected());
                 updateGL();
@@ -243,14 +243,12 @@ void SceneViewPost2D::paintGL()
     {
         if (Agros2D::problem()->configView()->showScalarView)
         {
-            Module::LocalVariable *localVariable = Agros2D::scene()->activeViewField()->module()->localVariable(Agros2D::problem()->configView()->scalarVariable);
-            if (localVariable)
-            {
-                QString text = Agros2D::problem()->configView()->scalarVariable != "" ? localVariable->name() : "";
-                if (Agros2D::problem()->configView()->scalarVariableComp != PhysicFieldVariableComp_Scalar)
-                    text += " - " + physicFieldVariableCompString(Agros2D::problem()->configView()->scalarVariableComp);
-                emit labelCenter(text);
-            }
+            Module::LocalVariable localVariable = Agros2D::scene()->activeViewField()->localVariable(Agros2D::problem()->configView()->scalarVariable);
+            QString text = Agros2D::problem()->configView()->scalarVariable != "" ? localVariable.name() : "";
+            if (Agros2D::problem()->configView()->scalarVariableComp != PhysicFieldVariableComp_Scalar)
+                text += " - " + physicFieldVariableCompString(Agros2D::problem()->configView()->scalarVariableComp);
+
+            emit labelCenter(text);
         }
         else
         {
@@ -1303,8 +1301,8 @@ void SceneViewPost2D::exportVTKScalarView(const QString &fileName)
         }
 
         Hermes::Hermes2D::Views::Linearizer linScalarView;
-        Hermes::Hermes2D::Filter<double> *slnScalarView = Agros2D::scene()->activeViewField()->module()->viewScalarFilter(Agros2D::scene()->activeViewField()->module()->localVariable(Agros2D::problem()->configView()->scalarVariable),
-                                                                                                                       Agros2D::problem()->configView()->scalarVariableComp);
+        Hermes::Hermes2D::Filter<double> *slnScalarView = m_postHermes->viewScalarFilter(Agros2D::scene()->activeViewField()->localVariable(Agros2D::problem()->configView()->scalarVariable),
+                                                                                         Agros2D::problem()->configView()->scalarVariableComp);
 
         linScalarView.save_solution_vtk(slnScalarView,
                                         fn.toStdString().c_str(),

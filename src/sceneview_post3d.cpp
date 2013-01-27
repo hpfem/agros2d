@@ -33,7 +33,7 @@
 #include "scenemarker.h"
 
 #include "hermes2d/module.h"
-#include "hermes2d/module_agros.h"
+
 #include "hermes2d/field.h"
 #include "hermes2d/problem_config.h"
 
@@ -129,14 +129,12 @@ void SceneViewPost3D::paintGL()
     {
         if (Agros2D::problem()->isSolved())
         {
-            Module::LocalVariable *localVariable = Agros2D::scene()->activeViewField()->module()->localVariable(Agros2D::problem()->configView()->scalarVariable);
-            if (localVariable)
-            {
-                QString text = Agros2D::problem()->configView()->scalarVariable != "" ? localVariable->name() : "";
-                if (Agros2D::problem()->configView()->scalarVariableComp != PhysicFieldVariableComp_Scalar)
-                    text += " - " + physicFieldVariableCompString(Agros2D::problem()->configView()->scalarVariableComp);
-                emit labelCenter(text);
-            }
+            Module::LocalVariable localVariable = Agros2D::scene()->activeViewField()->localVariable(Agros2D::problem()->configView()->scalarVariable);
+            QString text = Agros2D::problem()->configView()->scalarVariable != "" ? localVariable.name() : "";
+            if (Agros2D::problem()->configView()->scalarVariableComp != PhysicFieldVariableComp_Scalar)
+                text += " - " + physicFieldVariableCompString(Agros2D::problem()->configView()->scalarVariableComp);
+
+            emit labelCenter(text);
         }
     }
         break;
@@ -249,9 +247,9 @@ void SceneViewPost3D::paintScalarField3D()
             if (Agros2D::problem()->configView()->scalarView3DLighting)
             {
                 computeNormal(point[0].x, point[0].y, - delta - (value[0] - Agros2D::problem()->configView()->scalarRangeMin),
-                              point[1].x, point[1].y, - delta - (value[1] - Agros2D::problem()->configView()->scalarRangeMin),
-                              point[2].x, point[2].y, - delta - (value[2] - Agros2D::problem()->configView()->scalarRangeMin),
-                              normal);
+                        point[1].x, point[1].y, - delta - (value[1] - Agros2D::problem()->configView()->scalarRangeMin),
+                        point[2].x, point[2].y, - delta - (value[2] - Agros2D::problem()->configView()->scalarRangeMin),
+                        normal);
 
                 glNormal3d(normal[0], normal[1], normal[2]);
             }
@@ -483,9 +481,9 @@ void SceneViewPost3D::paintScalarField3DSolid()
                 if (Agros2D::problem()->configView()->scalarView3DLighting || isModel)
                 {
                     computeNormal(point[0].x, point[0].y, -depth/2.0,
-                                  point[1].x, point[1].y, -depth/2.0,
-                                  point[2].x, point[2].y, -depth/2.0,
-                                  normal);
+                            point[1].x, point[1].y, -depth/2.0,
+                            point[2].x, point[2].y, -depth/2.0,
+                            normal);
                     glNormal3d(normal[0], normal[1], normal[2]);
                 }
 
@@ -499,9 +497,9 @@ void SceneViewPost3D::paintScalarField3DSolid()
                 if (Agros2D::problem()->configView()->scalarView3DLighting || isModel)
                 {
                     computeNormal(point[0].x, point[0].y, depth/2.0,
-                                  point[1].x, point[1].y, depth/2.0,
-                                  point[2].x, point[2].y, depth/2.0,
-                                  normal);
+                            point[1].x, point[1].y, depth/2.0,
+                            point[2].x, point[2].y, depth/2.0,
+                            normal);
                     glNormal3d(normal[0], normal[1], normal[2]);
                 }
 
@@ -518,8 +516,8 @@ void SceneViewPost3D::paintScalarField3DSolid()
                     {
                         computeNormal(point[k].x, point[k].y, -depth/2.0,
                                       point[(k + 1) % 3].x, point[(k + 1) % 3].y, -depth/2.0,
-                                      point[(k + 1) % 3].x, point[(k + 1) % 3].y,  depth/2.0,
-                                      normal);
+                                point[(k + 1) % 3].x, point[(k + 1) % 3].y,  depth/2.0,
+                                normal);
                         glNormal3d(normal[0], normal[1], normal[2]);
                     }
 
@@ -616,9 +614,9 @@ void SceneViewPost3D::paintScalarField3DSolid()
                     if (Agros2D::problem()->configView()->scalarView3DLighting || isModel)
                     {
                         computeNormal(point[0].x * cos(j*phi/180.0*M_PI), point[0].y, point[0].x * sin(j*phi/180.0*M_PI),
-                                      point[1].x * cos(j*phi/180.0*M_PI), point[1].y, point[1].x * sin(j*phi/180.0*M_PI),
-                                      point[2].x * cos(j*phi/180.0*M_PI), point[2].y, point[2].x * sin(j*phi/180.0*M_PI),
-                                      normal);
+                                point[1].x * cos(j*phi/180.0*M_PI), point[1].y, point[1].x * sin(j*phi/180.0*M_PI),
+                                point[2].x * cos(j*phi/180.0*M_PI), point[2].y, point[2].x * sin(j*phi/180.0*M_PI),
+                                normal);
                         glNormal3d(normal[0], normal[1], normal[2]);
                     }
 
@@ -641,8 +639,8 @@ void SceneViewPost3D::paintScalarField3DSolid()
                         {
                             computeNormal(point[k].x * cos((j+0)*step/180.0*M_PI), point[k].y, point[k].x * sin((j+0)*step/180.0*M_PI),
                                           point[(k + 1) % 3].x * cos((j+0)*step/180.0*M_PI), point[(k + 1) % 3].y, point[(k + 1) % 3].x * sin((j+0)*step/180.0*M_PI),
-                                          point[(k + 1) % 3].x * cos((j+1)*step/180.0*M_PI), point[(k + 1) % 3].y, point[(k + 1) % 3].x * sin((j+1)*step/180.0*M_PI),
-                                          normal);
+                                    point[(k + 1) % 3].x * cos((j+1)*step/180.0*M_PI), point[(k + 1) % 3].y, point[(k + 1) % 3].x * sin((j+1)*step/180.0*M_PI),
+                                    normal);
                             glNormal3d(normal[0], normal[1], normal[2]);
                         }
 

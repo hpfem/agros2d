@@ -234,7 +234,6 @@ private slots:
     void doAdaptivityStep(int index);
     void doCalculationFinished();
     void doScalarFieldVariable(int index);
-    void doScalarFieldVariableComp(int index);
     void doScalarFieldRangeAuto(int state);
     void doPostprocessorGroupClicked(QAbstractButton *button);
     void doScalarFieldRangeMinChanged();

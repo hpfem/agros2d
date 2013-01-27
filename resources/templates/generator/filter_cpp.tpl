@@ -22,7 +22,7 @@
 #include "util.h"
 #include "util/global.h"
 
-#include "hermes2d/module_agros.h"
+
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 
@@ -45,15 +45,13 @@ Hermes::Hermes2D::Func<double> *{{CLASS}}ViewScalarFilter::get_pt_value(double x
 
 void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
 {
-    bool isLinear = (m_fieldInfo->linearityType() == LinearityType_Linear);
-
     Hermes::Hermes2D::Quad2D* quad = this->quads[Hermes::Hermes2D::Function<double>::cur_quad];
     int np = quad->get_num_points(order, this->get_active_element()->get_mode());
     Hermes::Hermes2D::Function<double>::Node* node = this->new_node(Hermes::Hermes2D::H2D_FN_DEFAULT, np);
 
-    double **value = new double*[m_fieldInfo->module()->numberOfSolutions()];
-    double **dudx = new double*[m_fieldInfo->module()->numberOfSolutions()];
-    double **dudy = new double*[m_fieldInfo->module()->numberOfSolutions()];
+    double **value = new double*[this->num];
+    double **dudx = new double*[this->num];
+    double **dudy = new double*[this->num];
 
     for (int k = 0; k < this->num; k++)
     {
@@ -74,8 +72,8 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
                                                              get_user_marker(e->marker).marker.c_str()))->marker(m_fieldInfo);
 
     {{#VARIABLE_SOURCE}}
-    if ((m_fieldInfo->module()->coordinateType() == {{COORDINATE_TYPE}})
-            && (m_fieldInfo->module()->analysisType() == {{ANALYSIS_TYPE}})
+    if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}})
+            && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
             && (m_physicFieldVariableComp == {{PHYSICFIELDVARIABLECOMP_TYPE}})
             && (m_variable == "{{VARIABLE}}"))
         for (int i = 0; i < np; i++)

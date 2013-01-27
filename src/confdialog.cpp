@@ -454,7 +454,7 @@ void ConfigComputerDialog::buildModuleOrCoupling(const QString &id)
 void ConfigComputerDialog::readModulesAndCouplings()
 {
     treeModules->clear();
-    QMapIterator<QString, QString> itModules(availableModules());
+    QMapIterator<QString, QString> itModules(Module::availableModules());
     while (itModules.hasNext())
     {
         itModules.next();
@@ -523,7 +523,7 @@ void ConfigComputerDialog::fillComboBoxPhysicField(QComboBox *cmbPhysicField)
     cmbPhysicField->blockSignals(true);
 
     cmbPhysicField->clear();
-    QMapIterator<QString, QString> it(availableModules());
+    QMapIterator<QString, QString> it(Module::availableModules());
     while (it.hasNext())
     {
         it.next();

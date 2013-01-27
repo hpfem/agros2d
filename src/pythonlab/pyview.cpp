@@ -26,7 +26,7 @@
 #include "sceneview_post3d.h"
 
 #include "hermes2d/module.h"
-#include "hermes2d/module_agros.h"
+
 
 #include "util/constants.h"
 #include "util/global.h"
@@ -169,10 +169,10 @@ void PyViewPost::setScalarViewVariable(char* var)
     QStringList list;
 
     // scalar variables
-    foreach (Module::LocalVariable *variable, Agros2D::scene()->activeViewField()->module()->viewScalarVariables())
+    foreach (Module::LocalVariable variable, Agros2D::scene()->activeViewField()->viewScalarVariables())
     {
-        list.append(variable->id());
-        if (variable->id() == QString(var))
+        list.append(variable.id());
+        if (variable.id() == QString(var))
         {
             Agros2D::problem()->configView()->scalarVariable = QString(var);
             currentPythonEngineAgros()->postHermes()->refresh();
@@ -331,13 +331,13 @@ void PyViewPost2D::setContourCount(int count)
 void PyViewPost2D::setContourVariable(char* var)
 {
     QStringList list;
-    foreach (Module::LocalVariable *variable, Agros2D::scene()->activeViewField()->module()->viewScalarVariables())
+    foreach (Module::LocalVariable variable, Agros2D::scene()->activeViewField()->viewScalarVariables())
     {
-        if (variable->isScalar())
+        if (variable.isScalar())
         {
-            list.append(variable->id());
+            list.append(variable.id());
 
-            if (variable->id() == QString(var))
+            if (variable.id() == QString(var))
             {
                 Agros2D::problem()->configView()->contourVariable = QString(var);
                 if (!silentMode())
@@ -384,10 +384,10 @@ void PyViewPost2D::setVectorScale(double scale)
 void PyViewPost2D::setVectorVariable(char* var)
 {
     QStringList list;
-    foreach (Module::LocalVariable *variable, Agros2D::scene()->activeViewField()->module()->viewVectorVariables())
+    foreach (Module::LocalVariable variable, Agros2D::scene()->activeViewField()->viewVectorVariables())
     {
-        list.append(variable->id());
-        if (variable->id() == QString(var))
+        list.append(variable.id());
+        if (variable.id() == QString(var))
         {
             Agros2D::problem()->configView()->vectorVariable = QString(var);
             if (!silentMode())

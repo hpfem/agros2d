@@ -45,7 +45,6 @@
 #include "pythonlab/pythonengine_agros.h"
 
 #include "hermes2d/module.h"
-#include "hermes2d/module_agros.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 #include "hermes2d/coupling.h"
@@ -176,7 +175,7 @@ void DxfFilter::addCircle(const DL_CircleData& c)
 // ************************************************************************************************************************
 
 NewMarkerAction::NewMarkerAction(QIcon icon, QObject* parent, QString field) :
-    QAction(icon, availableModules()[field], parent),
+    QAction(icon, Module::availableModules()[field], parent),
     field(field)
 {
     setStatusTip(tr("New boundary condition"));
@@ -265,7 +264,7 @@ void Scene::createActions()
         delete action;
     actNewBoundaries.clear();
 
-    QMapIterator<QString, QString> iEdge(availableModules());
+    QMapIterator<QString, QString> iEdge(Module::availableModules());
     while (iEdge.hasNext())
     {
         iEdge.next();
@@ -285,7 +284,7 @@ void Scene::createActions()
         delete action;
     actNewMaterials.clear();
 
-    QMapIterator<QString, QString> iLabel(availableModules());
+    QMapIterator<QString, QString> iLabel(Module::availableModules());
     while (iLabel.hasNext())
     {
         iLabel.next();
@@ -934,12 +933,13 @@ void Scene::doNewBoundary()
 
 void Scene::doNewBoundary(QString field)
 {
-    SceneBoundary *marker = Agros2D::problem()->fieldInfo(field)->module()->newBoundary();
+    SceneBoundary *boundary = new SceneBoundary(Agros2D::problem()->fieldInfo(field), tr("new boundary"),
+                                                Agros2D::problem()->fieldInfo(field)->boundaryTypeDefault().id());
 
-    if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
-        addBoundary(marker);
+    if (boundary->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
+        addBoundary(boundary);
     else
-        delete marker;
+        delete boundary;
 }
 
 void Scene::doNewMaterial()
@@ -949,12 +949,12 @@ void Scene::doNewMaterial()
 
 void Scene::doNewMaterial(QString field)
 {
-    SceneMaterial *marker = Agros2D::problem()->fieldInfo(field)->module()->newMaterial();
+    SceneMaterial *material = new SceneMaterial(Agros2D::problem()->fieldInfo(field), tr("new material"));
 
-    if (marker->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
-        addMaterial(marker);
+    if (material->showDialog(QApplication::activeWindow()) == QDialog::Accepted)
+        addMaterial(material);
     else
-        delete marker;
+        delete material;
 }
 
 void Scene::addBoundaryAndMaterialMenuItems(QMenu* menu, QWidget* parent)
@@ -1410,10 +1410,10 @@ ErrorResult Scene::readFromFile(const QString &fileName)
                                                         name,
                                                         type);
 
-            Module::BoundaryType *boundary_type = field->module()->boundaryType(type);
-            foreach (Module::BoundaryTypeVariable *variable, boundary_type->variables())
-                boundary->setValue(variable->id(),
-                                   Value(field, element.toElement().attribute(variable->id(), "0")));
+            Module::BoundaryType boundaryType = field->boundaryType(type);
+            foreach (Module::BoundaryTypeVariable variable, boundaryType.variables())
+                boundary->setValue(variable.id(),
+                                   Value(field, element.toElement().attribute(variable.id(), "0")));
 
             Agros2D::scene()->addBoundary(boundary);
 
@@ -1446,10 +1446,10 @@ ErrorResult Scene::readFromFile(const QString &fileName)
             // read marker
             SceneMaterial *material = new SceneMaterial(field, name);
 
-            foreach (Module::MaterialTypeVariable *variable, field->module()->materialTypeVariables())
+            foreach (Module::MaterialTypeVariable variable, field->materialTypeVariables())
             {
-                material->setValue(variable->id(),
-                                   Value(field, element.toElement().attribute(variable->id(), "0")));
+                material->setValue(variable.id(),
+                                   Value(field, element.toElement().attribute(variable.id(), "0")));
             }
 
             // add material
@@ -1474,7 +1474,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         }
 
         // add field
+        Agros2D::problem()->blockSignals(true);
         Agros2D::problem()->addField(field);
+        Agros2D::problem()->blockSignals(false);
 
         // next field
         nodeField = nodeField.nextSibling();
@@ -1622,7 +1624,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     eleProblem.setAttribute("time_method_tolerance", Agros2D::problem()->config()->timeMethodTolerance().text());
 
     // matrix solver
-    eleProblem.setAttribute("matrix_solver", matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()));   
+    eleProblem.setAttribute("matrix_solver", matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()));
 
     // field ***************************************************************************************************************
     QDomNode eleFields = doc.createElement("fields");

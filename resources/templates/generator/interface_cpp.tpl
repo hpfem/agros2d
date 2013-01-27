@@ -29,8 +29,23 @@
 
 #include "util.h"
 #include "util/global.h"
+#include "util/constants.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
+
+#include "../../resources_source/classes/module_xml.h"
+
+{{CLASS}}Interface::{{CLASS}}Interface()
+{
+    // xml module description
+    std::auto_ptr<XMLModule::module> module_xsd = XMLModule::module_((datadir() + MODULEROOT + QDir::separator() + "{{ID}}.xml").toStdString());
+    m_module = module_xsd.release();
+}
+
+{{CLASS}}Interface::~{{CLASS}}Interface()
+{
+    delete m_module;
+}
 
 MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material)
 {

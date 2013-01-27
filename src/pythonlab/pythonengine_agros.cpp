@@ -38,7 +38,7 @@
 
 #include "hermes2d/plugin_interface.h"
 #include "hermes2d/module.h"
-#include "hermes2d/module_agros.h"
+
 #include "hermes2d/problem.h"
 #include "hermes2d/coupling.h"
 
@@ -280,21 +280,21 @@ QString createPythonFromModel()
 
             QString variables = "{";
 
-            Module::BoundaryType *boundaryType = fieldInfo->module()->boundaryType(boundary->type());
-            foreach (Module::BoundaryTypeVariable *variable, boundaryType->variables())
+            Module::BoundaryType boundaryType = fieldInfo->boundaryType(boundary->type());
+            foreach (Module::BoundaryTypeVariable variable, boundaryType.variables())
             {
-                Value value = values[variable->id()];
+                Value value = values[variable.id()];
 
                 if (value.hasExpression())
                 {
                     variables += QString("\"%1\" : { \"expression\" : \"%2\" }, ").
-                            arg(variable->id()).
+                            arg(variable.id()).
                             arg(value.text());
                 }
                 else
                 {
                     variables += QString("\"%1\" : %2, ").
-                            arg(variable->id()).
+                            arg(variable.id()).
                             arg(value.toString());
                 }
             }
@@ -315,21 +315,21 @@ QString createPythonFromModel()
             const QHash<QString, Value> values = material->values();
 
             QString variables = "{";
-            foreach (Module::MaterialTypeVariable *variable, material->fieldInfo()->module()->materialTypeVariables())
+            foreach (Module::MaterialTypeVariable variable, material->fieldInfo()->materialTypeVariables())
             {
-                Value value = values[variable->id()];
+                Value value = values[variable.id()];
 
                 if (value.hasTable())
                 {
                     if (value.hasExpression())
                         variables += QString("\"%1\" : { \"expression\" : \"%2\", \"x\" : [%3], \"y\" : [%4] }, ").
-                                arg(variable->id()).
+                                arg(variable.id()).
                                 arg(value.text()).
                                 arg(value.table().toStringX()).
                                 arg(value.table().toStringY());
                     else
                         variables += QString("\"%1\" : { \"value\" : %2, \"x\" : [%3], \"y\" : [%4] }, ").
-                                arg(variable->id()).
+                                arg(variable.id()).
                                 arg(value.number()).
                                 arg(value.table().toStringX()).
                                 arg(value.table().toStringY());
@@ -337,13 +337,13 @@ QString createPythonFromModel()
                 else if (value.hasExpression())
                 {
                     variables += QString("\"%1\" : { \"expression\" : \"%2\" }, ").
-                            arg(variable->id()).
+                            arg(variable.id()).
                             arg(value.text());
                 }
                 else
                 {
                     variables += QString("\"%1\" : %2, ").
-                            arg(variable->id()).
+                            arg(variable.id()).
                             arg(value.toString());
                 }
             }

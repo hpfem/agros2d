@@ -46,7 +46,7 @@ public:
 
     void clear();
 
-    inline Module::ModuleAgros *module() const { assert(m_module); return m_module; }
+    inline PluginInterface *plugin() const { assert(m_plugin); return m_plugin; }
 
     QString fieldId() const { return m_fieldId; }
 
@@ -129,17 +129,89 @@ public:
     inline Value timeSkip() const { return m_timeSkip; }
     void setTimeSkip(const Value& value) { m_timeSkip = value; emit changed(); }
 
-    // module
-    QString name();
+    // deform shape
+    void deformShape(double3* linVert, int count);
+    void deformShape(double4* linVert, int count);
+
+    // refine mesh
+    void refineMesh(Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea);
+
+    // name
+    QString name() const;
+
     // description
-    QString description();
+    QString description() const;
+
+    // deformable shape
+    bool hasDeformableShape() const;
+
+    // number of solutions
+    int numberOfSolutions() const;
+
+    // latex equation
+    QString equation() const;
+
+    // constants
+    QMap<QString, double> constants() const;
+
+    // macros
+    QMap<QString, QString> macros() const;
+
+    // spaces
+    QMap<int, Module::Space> spaces() const;
+
+    // material type
+    QList<Module::MaterialTypeVariable> materialTypeVariables() const;
+    // variable by name
+    bool materialTypeVariableContains(const QString &id) const;
+    Module::MaterialTypeVariable materialTypeVariable(const QString &id) const;
+
+    // boundary conditions
+    QList<Module::BoundaryTypeVariable> boundaryTypeVariables() const;
+    QList<Module::BoundaryType> boundaryTypes() const;
+    // default boundary condition
+    Module::BoundaryType boundaryTypeDefault() const;
+    // variable by name
+    bool boundaryTypeContains(const QString &id) const;
+    Module::BoundaryType boundaryType(const QString &id) const;
+    Module::BoundaryTypeVariable boundaryTypeVariable(const QString &id) const;
+
+    // force
+    Module::Force force() const;
+
+    // material and boundary user interface
+    Module::DialogUI materialUI() const;
+    Module::DialogUI boundaryUI() const;
+
+    // local point variables
+    QList<Module::LocalVariable> localPointVariables() const;
+    // view scalar and vector variables
+    QList<Module::LocalVariable> viewScalarVariables() const;
+    QList<Module::LocalVariable> viewVectorVariables() const;
+    // surface integrals
+    QList<Module::Integral> surfaceIntegrals() const;
+    // volume integrals
+    QList<Module::Integral> volumeIntegrals() const;
+
+    // variable by name
+    Module::LocalVariable localVariable(const QString &id) const;
+    Module::Integral surfaceIntegral(const QString &id) const;
+    Module::Integral volumeIntegral(const QString &id) const;
+
+    // default variables
+    Module::LocalVariable defaultViewScalarVariable() const;    
+    Module::LocalVariable defaultViewVectorVariable() const;
+
+    // weak forms
+    QList<FormInfo> wfMatrixVolume() const;
+    QList<FormInfo> wfVectorVolume() const;
 
 signals:
     void changed();
 
 private:
-    /// module
-    Module::ModuleAgros *m_module;
+    /// plugin
+    PluginInterface *m_plugin;
 
     /// pointer to problem info, whose this object is a "subfield"
     ProblemConfig *m_parent;

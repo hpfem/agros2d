@@ -67,6 +67,8 @@ public:
     inline double particleTracingVelocityMin() { return m_particleTracingVelocityMin; }
     inline double particleTracingVelocityMax() { return m_particleTracingVelocityMax; }
 
+    Hermes::Hermes2D::Filter<double> *viewScalarFilter(Module::LocalVariable physicFieldVariable,
+                                                    PhysicFieldVariableComp physicFieldVariableComp);
 signals:
     void processed();
 

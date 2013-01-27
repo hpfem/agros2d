@@ -48,7 +48,7 @@
 #include "resultsview.h"
 #include "materialbrowserdialog.h"
 #include "hermes2d/module.h"
-#include "hermes2d/module_agros.h"
+
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 #include "scenetransformdialog.h"
@@ -68,7 +68,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         logStdOut = new LogStdOut();
 
     // FIXME: curve elements from script doesn't work
-    readMeshDirtyFix();
+    Module::readMeshDirtyFix();
 
     createPythonEngine(new PythonEngineAgros());
 

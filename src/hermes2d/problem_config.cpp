@@ -33,7 +33,6 @@
 #include "sceneedge.h"
 #include "scenelabel.h"
 #include "module.h"
-#include "module_agros.h"
 #include "coupling.h"
 #include "solver.h"
 #include "meshgenerator_triangle.h"

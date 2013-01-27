@@ -25,7 +25,7 @@
 #include "scene.h"
 #include "hermes2d.h"
 #include "hermes2d/module.h"
-#include "hermes2d/module_agros.h"
+
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"

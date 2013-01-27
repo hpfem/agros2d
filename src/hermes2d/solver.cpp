@@ -32,7 +32,6 @@
 #include "scenelabel.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
-#include "module_agros.h"
 #include "solutionstore.h"
 #include "plugin_interface.h"
 #include "logview.h"
@@ -321,7 +320,7 @@ Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> Solver<Scalar>::deepMeshAndSpa
             mesh->copy(spaces.at(totalComp)->get_mesh());
         }
 
-        for (int comp = 0; comp < field->fieldInfo()->module()->numberOfSolutions(); comp++)
+        for (int comp = 0; comp < field->fieldInfo()->numberOfSolutions(); comp++)
         {
             // TODO: double -> Scalar
             Space<double>::ReferenceSpaceCreator spaceCreator(spaces.at(totalComp),
@@ -429,7 +428,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
 
     // update timedep values
     foreach (Field* field, m_block->fields())
-        field->fieldInfo()->module()->updateTimeFunctions(Agros2D::problem()->actualTime());
+        Module::updateTimeFunctions(Agros2D::problem()->actualTime());
     updateExactSolutionFunctions();
 
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(m_actualSpaces, Agros2D::problem()->actualTime());
@@ -608,8 +607,8 @@ void Solver<Scalar>::createInitialSpace()
         ProblemID problemId;
 
         problemId.sourceFieldId = fieldInfo->fieldId();
-        problemId.analysisTypeSource = fieldInfo->module()->analysisType();
-        problemId.coordinateType = fieldInfo->module()->coordinateType();
+        problemId.analysisTypeSource = fieldInfo->analysisType();
+        problemId.coordinateType = Agros2D::problem()->config()->coordinateType();
         problemId.linearityType = fieldInfo->linearityType();
 
         int index = 0;
@@ -619,16 +618,12 @@ void Solver<Scalar>::createInitialSpace()
 
             if (boundary && (!boundary->isNone()))
             {
-                Module::BoundaryType *boundary_type = fieldInfo->module()->boundaryType(boundary->type());
+                Module::BoundaryType boundaryType = fieldInfo->boundaryType(boundary->type());
 
-                foreach (FormInfo *form, boundary_type->essential())
+                foreach (FormInfo form, boundaryType.essential())
                 {
-                    // plugion interface
-                    PluginInterface *plugin = Agros2D::plugin(fieldInfo->fieldId());
-                    assert(plugin);
-
-                    // exact solution - Dirichlet BC
-                    ExactSolutionScalarAgros<double> *function = plugin->exactSolution(problemId, form, initialMesh);
+                   // exact solution - Dirichlet BC
+                    ExactSolutionScalarAgros<double> *function = fieldInfo->plugin()->exactSolution(problemId, &form, initialMesh);
                     function->setMarkerSource(boundary);
 
                     // save function - boundary pairs, so thay can be easily updated in each time step;
@@ -636,7 +631,7 @@ void Solver<Scalar>::createInitialSpace()
 
                     EssentialBoundaryCondition<Scalar> *custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
 
-                    m_block->bcs().at(form->i - 1 + m_block->offset(field))->add_boundary_condition(custom_form);
+                    m_block->bcs().at(form.i - 1 + m_block->offset(field))->add_boundary_condition(custom_form);
                     //  cout << "adding BC i: " << form->i - 1 + m_block->offset(field) << " ( form i " << form->i << ", " << m_block->offset(field) << "), expression: " << form->expression << endl;
                 }
             }
@@ -644,20 +639,20 @@ void Solver<Scalar>::createInitialSpace()
         }
 
         // create space
-        for (int i = 0; i < fieldInfo->module()->numberOfSolutions(); i++)
+        for (int i = 0; i < fieldInfo->numberOfSolutions(); i++)
         {
             // create copy of initial mesh
             Hermes::Hermes2D::Mesh *oneInitialMesh = new Hermes::Hermes2D::Mesh();
             oneInitialMesh->copy(initialMesh);
 
             Space<Scalar> *oneSpace = NULL;
-            switch (fieldInfo->module()->spaces()[i+1].type())
+            switch (fieldInfo->spaces()[i+1].type())
             {
             case HERMES_L2_SPACE:
-                oneSpace = new L2Space<Scalar>(oneInitialMesh, fieldInfo->polynomialOrder() + fieldInfo->module()->spaces()[i+1].orderAdjust());
+                oneSpace = new L2Space<Scalar>(oneInitialMesh, fieldInfo->polynomialOrder() + fieldInfo->spaces()[i+1].orderAdjust());
                 break;
             case HERMES_H1_SPACE:
-                oneSpace = new H1Space<Scalar>(oneInitialMesh, m_block->bcs().at(i + m_block->offset(field)), fieldInfo->polynomialOrder() + fieldInfo->module()->spaces()[i+1].orderAdjust());
+                oneSpace = new H1Space<Scalar>(oneInitialMesh, m_block->bcs().at(i + m_block->offset(field)), fieldInfo->polynomialOrder() + fieldInfo->spaces()[i+1].orderAdjust());
                 break;
             default:
                 assert(0);
@@ -734,7 +729,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, 
 
     // update timedep values
     foreach (Field* field, m_block->fields())
-        field->fieldInfo()->module()->updateTimeFunctions(Agros2D::problem()->actualTime());
+        Module::updateTimeFunctions(Agros2D::problem()->actualTime());
 
     // todo: delete? delam to pro referencni... (zkusit)
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(m_actualSpaces, Agros2D::problem()->actualTime());
@@ -863,7 +858,7 @@ void Solver<Scalar>::solveInitialTimeStep()
     int totalComp = 0;
     foreach(Field* field, m_block->fields())
     {
-        for (int comp = 0; comp < field->fieldInfo()->module()->numberOfSolutions(); comp++)
+        for (int comp = 0; comp < field->fieldInfo()->numberOfSolutions(); comp++)
         {
             // constant initial solution
             Mesh *mesh = spaces.at(totalComp)->get_mesh();

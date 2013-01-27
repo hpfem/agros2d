@@ -22,7 +22,7 @@
 #include "util.h"
 #include "util/global.h"
 
-#include "hermes2d/module_agros.h"
+
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 #include "hermes2d/solutionstore.h"
@@ -39,19 +39,19 @@ Point3 force{{CLASS}}(FieldInfo *fieldInfo, const SceneMaterial *material, const
         if (fieldInfo->analysisType() == AnalysisType_Transient)
         {
             QList<double> timeLevels = Agros2D::solutionStore()->timeLevels(Agros2D::scene()->activeViewField());
-            fieldInfo->module()->updateTimeFunctions(timeLevels[Agros2D::scene()->activeTimeStep()]);
+            Module::updateTimeFunctions(timeLevels[Agros2D::scene()->activeTimeStep()]);
         }
 
         // set variables
         double x = point.x;
         double y = point.y;
 
-        double *value = new double[fieldInfo->module()->numberOfSolutions()];
-        double *dudx = new double[fieldInfo->module()->numberOfSolutions()];
-        double *dudy = new double[fieldInfo->module()->numberOfSolutions()];
+        double *value = new double[fieldInfo->numberOfSolutions()];
+        double *dudx = new double[fieldInfo->numberOfSolutions()];
+        double *dudy = new double[fieldInfo->numberOfSolutions()];
 
-        std::vector<Hermes::Hermes2D::Solution<double> *> sln(fieldInfo->module()->numberOfSolutions());
-        for (int k = 0; k < fieldInfo->module()->numberOfSolutions(); k++)
+        std::vector<Hermes::Hermes2D::Solution<double> *> sln(fieldInfo->numberOfSolutions());
+        for (int k = 0; k < fieldInfo->numberOfSolutions(); k++)
         {
             // todo: do it better! - I could use reference solution. This way I ignore selected active adaptivity step and solution mode
             FieldSolutionID fsid(fieldInfo, Agros2D::scene()->activeTimeStep(), Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, Agros2D::scene()->activeTimeStep()), SolutionMode_Normal);
@@ -83,8 +83,8 @@ Point3 force{{CLASS}}(FieldInfo *fieldInfo, const SceneMaterial *material, const
         }
 
         {{#VARIABLE_SOURCE}}
-        if ((fieldInfo->module()->analysisType() == {{ANALYSIS_TYPE}})
-         && (fieldInfo->module()->coordinateType() == {{COORDINATE_TYPE}}))
+        if ((fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
+         && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
         {
             res.x = {{EXPRESSION_X}};
             res.y = {{EXPRESSION_Y}};

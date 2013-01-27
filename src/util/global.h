@@ -46,7 +46,6 @@ public:
     static inline SolutionStore *solutionStore() { return Agros2D::singleton()->m_solutionStore; }
     static inline Log *log() { return Agros2D::singleton()->m_log; }
 
-    static void loadActivePlugins();
     static void loadPlugin(const QString &plugin);
     static PluginInterface *plugin(const QString &plugin);
 

@@ -68,9 +68,9 @@ class SceneFieldWidget : public QWidget
 {
     Q_OBJECT
 public:
-    SceneFieldWidget(Module::DialogUI *ui, QWidget *parent);
+    SceneFieldWidget(Module::DialogUI ui, QWidget *parent);
 
-    Module::DialogUI *ui;
+    Module::DialogUI ui;
 
     // layout
     QVBoxLayout *layout;
@@ -99,7 +99,7 @@ class SceneFieldWidgetMaterial : public SceneFieldWidget
 public:
     SceneMaterial *material;
 
-    SceneFieldWidgetMaterial(Module::DialogUI *ui, SceneMaterial *material, QWidget *parent);
+    SceneFieldWidgetMaterial(Module::DialogUI ui, SceneMaterial *material, QWidget *parent);
 
     void addCustomWidget(QVBoxLayout *layout) {}
     ValueLineEdit *addValueEditWidget(const Module::DialogRow &row);
@@ -114,7 +114,7 @@ class SceneFieldWidgetBoundary : public SceneFieldWidget
 public:
     SceneBoundary *boundary;
 
-    SceneFieldWidgetBoundary(Module::DialogUI *ui, SceneBoundary *boundary, QWidget *parent);
+    SceneFieldWidgetBoundary(Module::DialogUI ui, SceneBoundary *boundary, QWidget *parent);
 
     QComboBox *comboBox;
 

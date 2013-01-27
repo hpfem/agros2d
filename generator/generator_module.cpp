@@ -1086,7 +1086,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
         dict["uptval"] = "ext[this->j - this->offsetJ()]->val[i]";
         dict["deltat"] = "Agros2D::problem()->actualTimeStepLength()";
         dict["timedermat"] = "this->m_table->matrixFormCoefficient()";
-        dict["timedervec"] = "this->m_table->vectorFormCoefficient(ext, this->j, this->m_markerSource->fieldInfo()->module()->numberOfSolutions(), i)";
+        dict["timedervec"] = "this->m_table->vectorFormCoefficient(ext, this->j, this->m_markerSource->fieldInfo()->numberOfSolutions(), i)";
         dict["timederres"] = "this->m_table->residualCoefficient()";
 
         if (coordinateType == CoordinateType_Planar)

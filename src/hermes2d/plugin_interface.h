@@ -64,7 +64,7 @@ public:
     inline Point point() { return m_point; }
 
     // variables
-    QMap<Module::LocalVariable *, PointValue> values() const { return m_values; }
+    QMap<QString, PointValue> values() const { return m_values; }
 
     virtual void calculate() = 0;
 
@@ -75,7 +75,7 @@ protected:
     FieldInfo *m_fieldInfo;
 
     // variables
-    QMap<Module::LocalVariable *, PointValue> m_values;
+    QMap<QString, PointValue> m_values;
 };
 
 class IntegralValue
@@ -85,14 +85,14 @@ public:
         : m_fieldInfo(fieldInfo) {}
 
     // variables
-    inline QMap<Module::Integral*, double> values() const { return m_values; }
+    inline QMap<QString, double> values() const { return m_values; }
 
 protected:
     // field info
     FieldInfo *m_fieldInfo;
 
     // variables
-    QMap<Module::Integral*, double> m_values;
+    QMap<QString, double> m_values;
 };
 
 const int OFFSET_NON_DEF = -100;
@@ -177,9 +177,14 @@ public:
 class PluginInterface
 {
 public:
+    virtual PluginInterface() {}
     virtual ~PluginInterface() {}
 
     virtual QString fieldId() = 0;
+
+    inline XMLModule::module *module() const { assert(m_module); return m_module; }
+
+    // weak forms
     virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material) = 0;
     virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material) = 0;
     virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Boundary *boundary) = 0;
@@ -206,6 +211,9 @@ public:
     virtual QString localeDescription() = 0;
     // force calculation
     virtual Point3 force(FieldInfo *fieldInfo, const SceneMaterial *material, const Point3 &point, const Point3 &velocity) = 0;
+
+protected:
+    XMLModule::module *m_module;
 };
 
 

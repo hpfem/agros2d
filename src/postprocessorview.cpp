@@ -33,7 +33,7 @@
 #include "pythonlab/pythonengine_agros.h"
 
 #include "hermes2d/module.h"
-#include "hermes2d/module_agros.h"
+
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
@@ -442,7 +442,6 @@ CollapsableGroupBoxButton *PostprocessorWidget::postScalarWidget()
     cmbPostScalarFieldVariable = new QComboBox();
     connect(cmbPostScalarFieldVariable, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariable(int)));
     cmbPostScalarFieldVariableComp = new QComboBox();
-    connect(cmbPostScalarFieldVariableComp, SIGNAL(currentIndexChanged(int)), this, SLOT(doScalarFieldVariableComp(int)));
 
     chkScalarFieldRangeAuto = new QCheckBox(tr("Auto range"));
     connect(chkScalarFieldRangeAuto, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldRangeAuto(int)));
@@ -1133,48 +1132,24 @@ void PostprocessorWidget::doScalarFieldVariable(int index)
         QString variableName(cmbPostScalarFieldVariable->itemData(index).toString());
 
         QString fieldName = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
-        Module::LocalVariable *physicFieldVariable = Agros2D::problem()->fieldInfo(fieldName)->module()->localVariable(variableName);
+        Module::LocalVariable physicFieldVariable = Agros2D::problem()->fieldInfo(fieldName)->localVariable(variableName);
 
         // component
         cmbPostScalarFieldVariableComp->clear();
-        if (physicFieldVariable)
+        if (physicFieldVariable.isScalar())
         {
-            if (physicFieldVariable->isScalar())
-            {
-                cmbPostScalarFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
-            }
-            else
-            {
-                cmbPostScalarFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
-                cmbPostScalarFieldVariableComp->addItem(Agros2D::problem()->config()->labelX(), PhysicFieldVariableComp_X);
-                cmbPostScalarFieldVariableComp->addItem(Agros2D::problem()->config()->labelY(), PhysicFieldVariableComp_Y);
-            }
+            cmbPostScalarFieldVariableComp->addItem(tr("Scalar"), PhysicFieldVariableComp_Scalar);
+        }
+        else
+        {
+            cmbPostScalarFieldVariableComp->addItem(tr("Magnitude"), PhysicFieldVariableComp_Magnitude);
+            cmbPostScalarFieldVariableComp->addItem(Agros2D::problem()->config()->labelX(), PhysicFieldVariableComp_X);
+            cmbPostScalarFieldVariableComp->addItem(Agros2D::problem()->config()->labelY(), PhysicFieldVariableComp_Y);
         }
 
         cmbPostScalarFieldVariableComp->setCurrentIndex(cmbPostScalarFieldVariableComp->findData(scalarFieldVariableComp));
         if (cmbPostScalarFieldVariableComp->currentIndex() == -1)
             cmbPostScalarFieldVariableComp->setCurrentIndex(0);
-
-        doScalarFieldVariableComp(cmbPostScalarFieldVariableComp->currentIndex());
-    }
-}
-
-void PostprocessorWidget::doScalarFieldVariableComp(int index)
-{
-    if (cmbPostScalarFieldVariable->currentIndex() == -1)
-        return;
-
-    Module::LocalVariable *physicFieldVariable = NULL;
-
-    // TODO: proc je tu index a cmb..->currentIndex?
-    if (cmbPostScalarFieldVariable->currentIndex() != -1 && index != -1)
-    {
-        QString variableName(cmbPostScalarFieldVariable->itemData(cmbPostScalarFieldVariable->currentIndex()).toString());
-
-        // TODO: not good - relies on variable names begining with module name
-        std::string fieldName(variableName.split("_")[0].toStdString());
-
-        physicFieldVariable = Agros2D::problem()->fieldInfo(fieldName)->module()->localVariable(variableName);
     }
 }
 
@@ -1297,8 +1272,8 @@ void PostprocessorWidget::refresh()
         groupPostSolid->setVisible((radPost3DScalarField3DSolid->isEnabled() && radPost3DScalarField3DSolid->isChecked())
                                    || (radPost3DModel->isEnabled() && radPost3DModel->isChecked()));
         groupPostSolidAdvanced->setVisible(((radPost3DScalarField3DSolid->isEnabled() && radPost3DScalarField3DSolid->isChecked())
-                                   || (radPost3DModel->isEnabled() && radPost3DModel->isChecked()))
-                                   && !groupPostSolid->isCollapsed());
+                                            || (radPost3DModel->isEnabled() && radPost3DModel->isChecked()))
+                                           && !groupPostSolid->isCollapsed());
 
         // chart
         groupChart->setVisible(false);
@@ -1334,7 +1309,6 @@ void PostprocessorWidget::refresh()
     if (groupPostScalar->isVisible())
     {
         doScalarFieldRangeAuto(-1);
-        doScalarFieldVariableComp(cmbPostScalarFieldVariableComp->currentIndex());
     }
 
     grpTransient->setVisible(false);

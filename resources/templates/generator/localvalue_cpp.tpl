@@ -22,7 +22,7 @@
 #include "util.h"
 #include "util/global.h"
 
-#include "hermes2d/module_agros.h"
+
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 #include "hermes2d/field.h"
@@ -43,7 +43,7 @@ void {{CLASS}}LocalValue::calculate()
     // update time functions
     if (m_fieldInfo->analysisType() == AnalysisType_Transient)
     {
-        m_fieldInfo->module()->updateTimeFunctions(Agros2D::problem()->timeStepToTime(Agros2D::scene()->activeTimeStep()));
+       Module::updateTimeFunctions(Agros2D::problem()->timeStepToTime(Agros2D::scene()->activeTimeStep()));
     }
 
     if (Agros2D::problem()->isSolved())
@@ -59,12 +59,12 @@ void {{CLASS}}LocalValue::calculate()
             SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()));
             SceneMaterial *material = label->marker(m_fieldInfo);
 
-            double *value = new double[m_fieldInfo->module()->numberOfSolutions()];
-            double *dudx = new double[m_fieldInfo->module()->numberOfSolutions()];
-            double *dudy = new double[m_fieldInfo->module()->numberOfSolutions()];
+            double *value = new double[m_fieldInfo->numberOfSolutions()];
+            double *dudx = new double[m_fieldInfo->numberOfSolutions()];
+            double *dudy = new double[m_fieldInfo->numberOfSolutions()];
 
-            std::vector<Hermes::Hermes2D::Solution<double> *> sln(m_fieldInfo->module()->numberOfSolutions());
-            for (int k = 0; k < m_fieldInfo->module()->numberOfSolutions(); k++)
+            std::vector<Hermes::Hermes2D::Solution<double> *> sln(m_fieldInfo->numberOfSolutions());
+            for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
             {
                 int adaptivityStep, timeStep;
                 SolutionMode solutionMode;
@@ -106,9 +106,9 @@ void {{CLASS}}LocalValue::calculate()
 
             // expressions
             {{#VARIABLE_SOURCE}}
-            if ((m_fieldInfo->module()->analysisType() == {{ANALYSIS_TYPE}})
-                    && (m_fieldInfo->module()->coordinateType() == {{COORDINATE_TYPE}}))
-                m_values[m_fieldInfo->module()->localVariable("{{VARIABLE}}")] = PointValue({{EXPRESSION_SCALAR}}, Point({{EXPRESSION_VECTORX}}, {{EXPRESSION_VECTORY}}), material);
+            if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
+                    && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
+                m_values["{{VARIABLE}}"] = PointValue({{EXPRESSION_SCALAR}}, Point({{EXPRESSION_VECTORX}}, {{EXPRESSION_VECTORY}}), material);
             {{/VARIABLE_SOURCE}}
 
             delete [] value;
