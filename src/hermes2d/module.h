@@ -129,8 +129,9 @@ private:
 namespace Module
 {
 // local variable
-struct LocalVariable
+class AGROS_API LocalVariable
 {
+public:
     struct Expression
     {
         Expression(const QString &scalar = "", const QString &compX = "", const QString &compY = "")

@@ -44,7 +44,7 @@ QString stringListToString(const QStringList &list)
     return out;
 }
 
-void setGUIStyle(const QString &styleName)
+AGROS_API void setGUIStyle(const QString &styleName)
 {
     QStyle *style = NULL;
     if (styleName == "Manhattan")
@@ -85,7 +85,7 @@ void setGUIStyle(const QString &styleName)
     }
 }
 
-void setLanguage(const QString &locale)
+AGROS_API void setLanguage(const QString &locale)
 {
     // non latin-1 chars
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf8"));
@@ -148,7 +148,7 @@ QStringList availableLanguages()
     return list;
 }
 
-QIcon icon(const QString &name)
+AGROS_API QIcon icon(const QString &name)
 {
     QString fileName;
 

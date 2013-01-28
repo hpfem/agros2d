@@ -22,12 +22,13 @@
 
 #include "util.h"
 #include "scenebasic.h"
+#include "scenemarkerdialog.h"
 
 class SceneLabelCommandAdd;
 class SceneLabelCommandRemove;
 class FieldInfo;
 
-class SceneLabel : public MarkedSceneBasic<SceneMaterial>
+class AGROS_API SceneLabel : public MarkedSceneBasic<SceneMaterial>
 {
 public:
     SceneLabel(const Point &m_point, double m_area);

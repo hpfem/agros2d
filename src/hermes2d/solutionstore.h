@@ -22,7 +22,7 @@
 
 #include "solutiontypes.h"
 
-class SolutionStore
+class AGROS_API SolutionStore
 {
 public:
     ~SolutionStore();

@@ -36,15 +36,11 @@ class SceneLabel;
 class Marker;
 class FieldInfo;
 
-class SceneBoundary;
-class SceneMaterial;
-
-
 // Q_DECLARE_METATYPE(SceneNode *)
 // Q_DECLARE_METATYPE(SceneEdge *)
 // Q_DECLARE_METATYPE(SceneLabel *)
 
-class SceneBasic 
+class AGROS_API SceneBasic 
 {
 
 public:
@@ -66,7 +62,7 @@ private:
 };
 
 template <typename BasicType>
-class SceneBasicContainer
+class AGROS_API SceneBasicContainer
 {
 public:
     SceneBasicContainer() : data(QList<BasicType* >()) {}
