@@ -32,7 +32,7 @@ class PyProblem
 
         // clear and refresh
         void clear();
-        void clearSolution() { Agros2D::problem()->clearSolution(); }
+        void clearSolution();
         void refresh();
 
         // name
