@@ -928,7 +928,7 @@ void Scene::doDeleteSelected()
 
 void Scene::doNewBoundary()
 {
-    doNewBoundary(Agros2D::scene()->activeViewField()->fieldId());
+    doNewBoundary(Agros2D::problem()->fieldInfos().begin().key());
 }
 
 void Scene::doNewBoundary(QString field)
@@ -944,7 +944,7 @@ void Scene::doNewBoundary(QString field)
 
 void Scene::doNewMaterial()
 {
-    doNewMaterial(Agros2D::scene()->activeViewField()->fieldId());
+    doNewMaterial(Agros2D::problem()->fieldInfos().begin().key());
 }
 
 void Scene::doNewMaterial(QString field)
