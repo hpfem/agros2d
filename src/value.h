@@ -31,8 +31,9 @@ class ChartBasic;
 class DataTable;
 class FieldInfo;
 
-struct Value
+class AGROS_API Value
 {
+public:
     Value(double value = 0.0);
     Value(double value, std::vector<double> x, std::vector<double> y);
     Value(const QString &value, bool evaluateExpression = true);

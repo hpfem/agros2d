@@ -31,7 +31,7 @@ class Log;
 class Scene;
 class PluginInterface;
 
-class Agros2D
+class AGROS_API Agros2D
 {
 public:
     Agros2D(const Agros2D &);

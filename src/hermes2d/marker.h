@@ -25,7 +25,7 @@
 
 class FieldInfo;
 
-class Marker
+class AGROS_API Marker
 {
 public:
     Marker(FieldInfo *m_fieldInfo, QString m_name);
