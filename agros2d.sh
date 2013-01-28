@@ -5,9 +5,11 @@ docPathTarget="./resources/help"
 langPath="./resources_source/lang"
 langPathTarget="./resources/lang"
 tempPath="./tmp"
-version="2.1"
+version="3.0"
 debianizedFiles="data debian hermes2d hermes_common lib resources src src-remote weakform agros2d.desktop agros2d.pro agros2d.sh AUTHORS COPYING functions.py README"
 unwantedFiles="data/custom data/data hermes2d/build hermes2d/lib hermes2d/Makefile lib/build lib/lib lib/Makefile src/build src/python src/Makefile src/python src-remote/build src-remote/Makefile weakform/build weakform/lib weakform/src weakform/Makefile weakform/*.pyc"
+
+export LD_LIBRARY_PATH="libs"
 
 case "$1" in
     help )
@@ -17,7 +19,7 @@ case "$1" in
         mkdir -v $docPathTarget
         cp -rv $docPath/build/html/* $docPathTarget
         ;;
-	lang )
+    lang )
         case "$2" in
             release )
                 lrelease $langPath/*.ts
@@ -36,7 +38,12 @@ case "$1" in
         esac
         ;;
     comp )
-        if qmake ./agros2d.pro ; then make ; fi
+        if qmake -r ./agros2d.pro ; then make ; fi
+        ./agros2d_generator
+        if qmake ./plugins/plugins.pro ; then make -C ./plugins/ ; fi
+        ;;
+    run )
+        ./agros2d
         ;;
     build )
         case "$2" in
@@ -68,7 +75,7 @@ case "$1" in
                 do
                     rm -rv ./$tempPathTarget/$file
                 done
-				rm `find ./$tempPathTarget/resources/python -name "*.pyc"`
+                rm `find ./$tempPathTarget/resources/python -name "*.pyc"`
 
                 echo "Run 'debuild -S -sa'"
                 echo "Run 'dput ppa:pkarban/agros2d *.changes' for upload stable version"
@@ -80,6 +87,6 @@ case "$1" in
         esac
         ;;
     * )
-        echo "Usage: agros2d.sh\n\t [help - build and generate documentation]\n\t [lang release - release language files]\n\t [lang update - update language files]\n\t [comp - compile]\n\t [build binary - build binary package]\n\t [build source - build source package]"
+        echo "Usage: agros2d.sh\n\t [help - build and generate documentation]\n\t [lang release - release language files]\n\t [lang update - update language files]\n\t [comp - compile]\n\t [run - run]\n\t [build binary - build binary package]\n\t [build source - build source package]"
         ;;
 esac
