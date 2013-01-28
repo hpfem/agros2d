@@ -22,7 +22,7 @@
 
 #include "util.h"
 
-class AgrosMeshException : public AgrosException
+class AGROS_API AgrosMeshException : public AgrosException
 {
 public:
     AgrosMeshException(const QString &what) : AgrosException(what)
@@ -30,7 +30,7 @@ public:
     }
 };
 
-class MeshGenerator : public QObject
+class AGROS_API MeshGenerator : public QObject
 {
     Q_OBJECT
 

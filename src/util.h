@@ -35,11 +35,10 @@
 
 // Windows DLL export/import definitions
 #ifdef Q_WS_WIN
-  #ifdef AGROS
-    #define AGROS_API __declspec(dllexport)
-  #else
-    #define AGROS_API __declspec(dllimport)
-  #endif
+    // dynamic library
+  #define AGROS_API __declspec(dllexport)
+  // static library
+  // #define AGROS_API __declspec(dllimport)
 #else
   #define AGROS_API
 #endif

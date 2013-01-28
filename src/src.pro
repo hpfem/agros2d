@@ -134,10 +134,6 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     infowidget.cpp \
     settings.cpp \
     hermes2d/solutionstore.cpp \
-    ../resources_source/classes/module_xml.cpp \
-    ../resources_source/classes/coupling_xml.cpp \
-    ../resources_source/classes/agros2d_structure_xml.cpp \
-    ../resources_source/classes/material_xml.cpp \
     moduledialog.cpp \
     parser/lex.cpp \
     hermes2d/bdf2.cpp \
@@ -147,8 +143,14 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     pythonlab/pygeometry.cpp \
     pythonlab/pyview.cpp \
     pythonlab/pyparticletracing.cpp \
+    particle/particle_tracing.cpp \
     ../pythonlab/pythonlab_functions.cpp \
-    particle/particle_tracing.cpp
+    ../resources_source/classes/module_xml.cpp \
+    ../resources_source/classes/coupling_xml.cpp \
+    ../resources_source/classes/agros2d_structure_xml.cpp \
+    ../resources_source/classes/material_xml.cpp \
+    ../hermes2d/src/mesh/subdomains_h2d_xml.cpp \
+    ../hermes2d/src/mesh/mesh_h2d_xml.cpp
 
 HEADERS += util.h \
     value.h \
@@ -279,7 +281,9 @@ OTHER_FILES += functions.py \
     ../resources/xsd/coupling_xml.xsd
 
 INCLUDEPATH += ../hermes2d/include
+INCLUDEPATH += ../hermes2d/include/mesh/
 INCLUDEPATH += ../hermes_common/include
+
 LIBS += -lagros2d_hermes2d
 LIBS += -lagros2d_3rdparty
 
@@ -324,8 +328,6 @@ win32-msvc2010 {
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
     DEFINES += XERCES_STATIC_LIBRARY
-    DEFINES += AGROS
-    #DEFINES += XML_LIBRARY
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"
 
