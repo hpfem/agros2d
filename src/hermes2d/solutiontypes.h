@@ -76,7 +76,7 @@ void deleteSolutions(Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> slns)
 }
 
 template <typename Scalar>
-class MultiArray
+class AGROS_API MultiArray
 {
 public:
     MultiArray();

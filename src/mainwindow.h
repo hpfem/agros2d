@@ -49,7 +49,7 @@ class SceneViewWidget;
 class LogStdOut;
 class ChartWidget;
 
-class MainWindow : public QMainWindow
+class AGROS_API MainWindow : public QMainWindow
 {
     Q_OBJECT
 

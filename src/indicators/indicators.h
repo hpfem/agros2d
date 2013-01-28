@@ -20,13 +20,15 @@
 #ifndef INDICATORS_H
 #define INDICATORS_H
 
+#include "util.h"
+
 namespace Indicator
 {
-bool isRunning();
-void init();
-void openProgress();
-void closeProgress();
-void setProgress(double value);
+	AGROS_API bool isRunning();
+	AGROS_API void init();
+	AGROS_API void openProgress();
+	AGROS_API void closeProgress();
+	AGROS_API void setProgress(double value);
 }
 
 #endif // INDICATORS_H

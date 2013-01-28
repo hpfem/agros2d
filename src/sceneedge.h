@@ -22,11 +22,12 @@
 
 #include "util.h"
 #include "scenebasic.h"
+#include "scenemarkerdialog.h"
 
 class SceneEdgeCommandAdd;
 class SceneEdgeCommandRemove;
 
-class SceneEdge : public MarkedSceneBasic<SceneBoundary>
+class AGROS_API SceneEdge : public MarkedSceneBasic<SceneBoundary>
 {
 public:
     SceneEdge(SceneNode *m_nodeStart, SceneNode *m_nodeEnd, double m_angle);

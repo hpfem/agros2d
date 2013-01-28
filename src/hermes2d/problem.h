@@ -16,7 +16,7 @@ class ProblemConfigView;
 /// intented as central for solution process
 /// shielded from gui and QT
 /// holds data describing individual fields, means of coupling and solutions
-class Problem : public QObject
+class AGROS_API Problem : public QObject
 {
     Q_OBJECT
 
