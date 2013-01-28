@@ -34,7 +34,7 @@
 #include "hermes2d/solutionstore.h"
 #include "hermes2d/plugin_interface.h"
 
-static AGROS_API QSharedPointer<Agros2D> m_singleton;
+static QSharedPointer<Agros2D> m_singleton;
 
 Agros2D::Agros2D()
 {
@@ -68,7 +68,7 @@ void Agros2D::clear()
 }
 
 void Agros2D::createSingleton()
-{    
+{
     m_singleton = QSharedPointer<Agros2D>(new Agros2D());
 }
 

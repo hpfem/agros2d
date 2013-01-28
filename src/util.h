@@ -124,7 +124,7 @@ QString cacheProblemDir();
 QString tempProblemFileName();
 
 // convert time in ms to QTime
-QTime milisecondsToTime(int ms);
+AGROS_API QTime milisecondsToTime(int ms);
 
 // remove directory content
 bool removeDirectory(const QDir &dir);
@@ -134,7 +134,7 @@ void msleep(unsigned long msecs);
 
 // read file content
 QByteArray readFileContentByteArray(const QString &fileName);
-QString readFileContent(const QString &fileName);
+AGROS_API QString readFileContent(const QString &fileName);
 
 // write content into the file
 void writeStringContent(const QString &fileName, QString content);

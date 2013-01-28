@@ -36,7 +36,7 @@ class SceneViewPost2D;
 class SceneViewPost3D;
 class PostHermes;
 
-class PythonEngineAgros : public PythonEngine
+class AGROS_API PythonEngineAgros : public PythonEngine
 {
     Q_OBJECT
 public:
@@ -82,7 +82,7 @@ private slots:
 };
 
 // current python engine agros
-PythonEngineAgros *currentPythonEngineAgros();
+AGROS_API PythonEngineAgros *currentPythonEngineAgros();
 
 // create script from model
 QString createPythonFromModel();

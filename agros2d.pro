@@ -12,7 +12,7 @@ linux-g++|linux-g++-64|linux-g++-32 {
 CONFIG += ordered
 TEMPLATE = subdirs
 
-linux-g++ {
+linux-g++|linux-g++-64|linux-g++-32 {
     # use qmake PREFIX=... to customize your installation
     isEmpty(PREFIX):PREFIX = /usr/local
 

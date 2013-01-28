@@ -45,7 +45,7 @@
 #include <Python.h>
 
 // current python engine agros
-PythonEngineAgros *currentPythonEngineAgros()
+AGROS_API PythonEngineAgros *currentPythonEngineAgros()
 {
     return static_cast<PythonEngineAgros *>(currentPythonEngine());
 }

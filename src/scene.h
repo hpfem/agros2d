@@ -90,7 +90,7 @@ private:
     QString field;
 };
 
-class Scene : public QObject
+class AGROS_API Scene : public QObject
 {
     Q_OBJECT
 

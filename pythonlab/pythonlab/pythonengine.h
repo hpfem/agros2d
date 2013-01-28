@@ -11,7 +11,7 @@ struct PythonVariable
     QVariant value;
 };
 
-class PythonEngine : public QObject
+class AGROS_API PythonEngine : public QObject
 {
     Q_OBJECT
 
@@ -61,17 +61,17 @@ private slots:
 private:
     QString m_stdOut;
 
-    QString m_functions;    
+    QString m_functions;
 };
 
 // create custom python engine
-void createPythonEngine(PythonEngine *custom = NULL);
+AGROS_API void createPythonEngine(PythonEngine *custom = NULL);
 
 // current python engine
-PythonEngine *currentPythonEngine();
+AGROS_API PythonEngine *currentPythonEngine();
 
 // silent mode
-void setSilentMode(bool mode);
-bool silentMode();
+AGROS_API void setSilentMode(bool mode);
+AGROS_API bool silentMode();
 
 #endif // PYTHONENGINE_H

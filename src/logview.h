@@ -25,7 +25,7 @@
 class QwtPlotCurve;
 class ChartBasic;
 
-class Log: public QObject
+class AGROS_API Log: public QObject
 {
     Q_OBJECT
 public:
@@ -43,7 +43,7 @@ signals:
     void debugMsg(const QString &module, const QString &message, bool escaped);
 };
 
-class LogWidget : public QTextEdit
+class AGROS_API LogWidget : public QTextEdit
 {
     Q_OBJECT
 public:
@@ -84,10 +84,10 @@ public:
     LogView(QWidget *parent = 0);
 
 private:
-     LogWidget *logWidget;     
+     LogWidget *logWidget;
 };
 
-class LogDialog : public QDialog
+class AGROS_API LogDialog : public QDialog
 {
     Q_OBJECT
 public:
@@ -111,7 +111,7 @@ private slots:
      void refreshStatus();
 };
 
-class LogStdOut : public QObject
+class AGROS_API LogStdOut : public QObject
 {
     Q_OBJECT
 public:

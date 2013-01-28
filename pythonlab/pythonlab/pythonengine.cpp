@@ -11,7 +11,7 @@ static PythonEngine *pythonEngine = NULL;
 static bool m_silentMode = false;
 
 // create custom python engine
-void createPythonEngine(PythonEngine *custom)
+AGROS_API void createPythonEngine(PythonEngine *custom)
 {
     if (custom)
         pythonEngine = custom;
@@ -22,18 +22,18 @@ void createPythonEngine(PythonEngine *custom)
 }
 
 // current python engine
-PythonEngine *currentPythonEngine()
+AGROS_API PythonEngine *currentPythonEngine()
 {
     return pythonEngine;
 }
 
 // silent mode
-void setSilentMode(bool mode)
+AGROS_API void setSilentMode(bool mode)
 {
     m_silentMode = mode;
 }
 
-bool silentMode()
+AGROS_API bool silentMode()
 {
     return m_silentMode;
 }
@@ -437,7 +437,7 @@ QStringList PythonEngine::codePyFlakes(const QString& fileName)
 
 
 ScriptResult PythonEngine::parseError()
-{    
+{
     // error
     ScriptResult error;
     error.isError = true;
