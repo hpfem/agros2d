@@ -15,7 +15,7 @@ def create_image(template, equation, fnimage):
     os.system("pdflatex -interaction=nonstopmode equation.tex")
     
     # crop image
-    os.system("pdfcrop --margins '0 10 0 10' --clip equation.pdf")
+    os.system("pdfcrop --margins '0 6 0 6' --clip equation.pdf")
     
     # convert to png
     os.system("convert -transparent white -antialias -density 110 -quality 100 equation-crop.pdf " + fnimage)
