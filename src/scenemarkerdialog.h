@@ -76,7 +76,8 @@ public:
     QVBoxLayout *layout;
 
     // equation
-    LaTeXViewer *equationLaTeX;
+    // LaTeXViewer *equationLaTeX;
+    QLabel *equationImage;
 
     // quantities
     QList<QString> ids;
@@ -106,6 +107,9 @@ public:
     void refresh();
     void load();
     bool save();
+
+private:
+    void readEquation();
 };
 
 class SceneFieldWidgetBoundary : public SceneFieldWidget
@@ -123,6 +127,9 @@ public:
     void refresh();
     void load();
     bool save();
+
+private:
+    void readEquation();
 
 private slots:
     void doTypeChanged(int index);

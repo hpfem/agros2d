@@ -44,7 +44,10 @@ case "$1" in
         ;;
     run )
         ./agros2d
-        ;;
+        ;;        
+    equations )
+        find ./plugins/ -name "*.py" -exec python {} \;
+        ;;       
     build )
         case "$2" in
             binary )
@@ -87,6 +90,6 @@ case "$1" in
         esac
         ;;
     * )
-        echo "Usage: agros2d.sh\n\t [help - build and generate documentation]\n\t [lang release - release language files]\n\t [lang update - update language files]\n\t [comp - compile]\n\t [run - run]\n\t [build binary - build binary package]\n\t [build source - build source package]"
+        echo "Usage: agros2d.sh\n\t [equations - build equations]\n\t [help - build and generate documentation]\n\t [lang release - release language files]\n\t [lang update - update language files]\n\t [comp - compile]\n\t [run - run]\n\t [build binary - build binary package]\n\t [build source - build source package]"
         ;;
 esac

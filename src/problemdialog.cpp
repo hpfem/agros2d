@@ -139,8 +139,9 @@ FieldWidget::FieldWidget(FieldInfo *fieldInfo, QWidget *parent)
 void FieldWidget::createContent()
 {
     // equations
-    equationLaTeX = new LaTeXViewer(this);
-    equationLaTeX->setMaximumWidth(400);
+    // equationLaTeX = new LaTeXViewer(this);
+    // equationLaTeX->setMaximumWidth(400);
+    equationImage = new QLabel();
 
     cmbAdaptivityType = new QComboBox();
     txtAdaptivitySteps = new QSpinBox(this);
@@ -300,7 +301,8 @@ void FieldWidget::createContent()
 
     // equation
     QVBoxLayout *layoutEquation = new QVBoxLayout();
-    layoutEquation->addWidget(equationLaTeX);
+    // layoutEquation->addWidget(equationLaTeX);
+    layoutEquation->addWidget(equationImage);
     layoutEquation->addStretch();
 
     QGroupBox *grpEquation = new QGroupBox(tr("Partial differential equation"));
@@ -430,7 +432,14 @@ void FieldWidget::doAnalysisTypeChanged(int index)
 
 void FieldWidget::doShowEquation()
 {
-    equationLaTeX->setLatex(m_fieldInfo->equation());
+    // equationLaTeX->setLatex(m_fieldInfo->equation());
+    QPixmap pixmap(QString("%1/resources/images/equations/%2_equation_%3.png").
+                   arg(datadir()).
+                   arg(m_fieldInfo->fieldId()).
+                   arg(analysisTypeToStringKey(m_fieldInfo->analysisType())));
+
+    equationImage->setPixmap(pixmap);
+    equationImage->setMask(pixmap.mask());
 }
 
 void FieldWidget::doAdaptivityChanged(int index)

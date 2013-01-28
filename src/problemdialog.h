@@ -88,9 +88,6 @@ class FieldWidget : public QWidget
 public:
     FieldWidget(FieldInfo *m_fieldInfo, QWidget *parent);
 
-    // equation
-    QLabel *equationImage;
-
     void createContent();
 
     void load();
@@ -136,7 +133,8 @@ private:
     ValueLineEdit *txtTransientTimeSkip;
 
     // equation
-    LaTeXViewer *equationLaTeX;
+    // LaTeXViewer *equationLaTeX;
+    QLabel *equationImage;
 
     void fillComboBox();
 

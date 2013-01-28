@@ -111,10 +111,12 @@ void SceneFieldWidget::createContent()
     addCustomWidget(layout);
 
     // equation
-    equationLaTeX = new LaTeXViewer(this);
+    // equationLaTeX = new LaTeXViewer(this);
+    equationImage = new QLabel();
 
     QVBoxLayout *layoutEquation = new QVBoxLayout();
-    layoutEquation->addWidget(equationLaTeX);
+    // layoutEquation->addWidget(equationLaTeX);
+    layoutEquation->addWidget(equationImage);
     layoutEquation->addStretch();
 
     QGroupBox *grpEquation = new QGroupBox(tr("Equation"));
@@ -231,7 +233,19 @@ bool SceneFieldWidgetMaterial::save()
 
 void SceneFieldWidgetMaterial::refresh()
 {
-    equationLaTeX->setLatex(material->fieldInfo()->equation());
+    // equationLaTeX->setLatex(material->fieldInfo()->equation());
+    readEquation();
+}
+
+void SceneFieldWidgetMaterial::readEquation()
+{
+    QPixmap pixmap(QString("%1/resources/images/equations/%2_equation_%3.png").
+                   arg(datadir()).
+                   arg(material->fieldInfo()->fieldId()).
+                   arg(analysisTypeToStringKey(material->fieldInfo()->analysisType())));
+
+    equationImage->setPixmap(pixmap);
+    equationImage->setMask(pixmap.mask());
 }
 
 // *************************************************************************************************************************************
@@ -295,7 +309,8 @@ void SceneFieldWidgetBoundary::doTypeChanged(int index)
     }
 
     // read equation
-    equationLaTeX->setLatex(boundaryType.equation());
+    // equationLaTeX->setLatex(boundaryType.equation());
+    readEquation();
 }
 
 void SceneFieldWidgetBoundary::load()
@@ -328,6 +343,18 @@ bool SceneFieldWidgetBoundary::save()
             return false;
 
     return true;
+}
+
+void SceneFieldWidgetBoundary::readEquation()
+{
+    QPixmap pixmap(QString("%1/resources/images/equations/%2_equation_%3_%4.png").
+                   arg(datadir()).
+                   arg(boundary->fieldInfo()->fieldId()).
+                   arg(analysisTypeToStringKey(boundary->fieldInfo()->analysisType())).
+                   arg(comboBox->itemData(comboBox->currentIndex()).toString()));
+
+    equationImage->setPixmap(pixmap);
+    equationImage->setMask(pixmap.mask());
 }
 
 // *************************************************************************************************************************************

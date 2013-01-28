@@ -241,7 +241,7 @@ void Agros2DGenerator::createStructure()
     foreach (QString moduleId, modules.keys())
     {
         ctemplate::TemplateDictionary *field = output.AddSectionDictionary("SOURCE");
-        field->SetValue("ID", moduleId.toStdString());        
+        field->SetValue("ID", moduleId.toStdString());
     }
 
     // generate documentation
@@ -290,7 +290,7 @@ void Agros2DGenerator::generateSources()
 
     foreach (QString couplingId, couplings.keys())
     {
-        generateCoupling(couplingId);        
+        generateCoupling(couplingId);
     }
 }
 
@@ -308,7 +308,10 @@ void Agros2DGenerator::generateModule(const QString &moduleId)
     generator.generatePluginWeakFormFiles();
 
     // generates documentation
-    generator.generatePluginDocuentationFiles();
+    generator.generatePluginDocumentationFiles();
+
+    // generates equations
+    generator.generatePluginEquations();
 }
 
 void Agros2DGenerator::generateDocumentation(const QString &moduleId)

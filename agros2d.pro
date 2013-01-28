@@ -5,7 +5,9 @@ SUBDIRS += hermes2d
 SUBDIRS += src
 SUBDIRS += binary
 SUBDIRS += solver
-SUBDIRS += generator
+linux-g++|linux-g++-64|linux-g++-32 {
+    SUBDIRS += generator
+}
 
 CONFIG += ordered
 TEMPLATE = subdirs

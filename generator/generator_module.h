@@ -33,7 +33,8 @@ public:
     void generatePluginVolumeIntegralFiles();
     void generatePluginInterfaceFiles();
     void generatePluginWeakFormFiles();
-    void generatePluginDocuentationFiles();
+    void generatePluginDocumentationFiles();
+    void generatePluginEquations();
 
 
 private:

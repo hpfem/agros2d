@@ -73,7 +73,7 @@ void Agros2DGeneratorModule::generatePluginProjectFile()
     ctemplate::TemplateDictionary output("output");
     output.SetValue("ID", id.toStdString());
 
-     // expand template
+    // expand template
     std::string text;
     ctemplate::ExpandTemplate(QString("%1/%2/module_pro.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
@@ -159,7 +159,7 @@ QString Agros2DGeneratorModule::capitalize(QString text)
     return text;
 }
 
-void Agros2DGeneratorModule::generatePluginDocuentationFiles()
+void Agros2DGeneratorModule::generatePluginDocumentationFiles()
 {
     qDebug() << tr("%1: generating plugin documentation file.").arg(QString::fromStdString(m_module->general().id()));
     QString id = QString::fromStdString(m_module->general().id());
@@ -177,6 +177,56 @@ void Agros2DGeneratorModule::generatePluginDocuentationFiles()
                        arg(GENERATOR_DOCROOT).
                        arg(id),
                        text);
+}
+
+void Agros2DGeneratorModule::generatePluginEquations()
+{
+    qDebug() << tr("%1: generating plugin equations.").arg(QString::fromStdString(m_module->general().id()));
+
+    QString id = QString::fromStdString(m_module->general().id());
+    QString outputDir = QDir().absoluteFilePath(QString("%1/%2").arg(QApplication::applicationDirPath()).arg("resources/images/equations/"));
+
+    ctemplate::TemplateDictionary output("output");
+
+    output.SetValue("ID", m_module->general().id());
+    output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
+
+    std::string text;
+
+    output.SetValue("LATEX_TEMPLATE", QString("%1/%2/equations.tex").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString());
+
+    foreach(XMLModule::weakform_volume weakform, m_module->volume().weakforms_volume().weakform_volume())
+    {
+        ctemplate::TemplateDictionary *equation = output.AddSectionDictionary("EQUATION_SECTION");
+
+        equation->SetValue("EQUATION", weakform.equation());
+        equation->SetValue("OUTPUT_DIRECTORY", outputDir.toStdString());
+
+        equation->SetValue("NAME", QString("%1").arg(QString::fromStdString(weakform.analysistype())).toStdString());
+    }
+
+    foreach(XMLModule::weakform_surface weakform, m_module->surface().weakforms_surface().weakform_surface())
+    {
+        foreach(XMLModule::boundary boundary, weakform.boundary())
+        {
+            ctemplate::TemplateDictionary *equation = output.AddSectionDictionary("EQUATION_SECTION");
+
+            equation->SetValue("EQUATION", boundary.equation());
+            equation->SetValue("OUTPUT_DIRECTORY", outputDir.toStdString());
+
+            equation->SetValue("NAME", QString("%1_%2").arg(QString::fromStdString(weakform.analysistype())).arg(QString::fromStdString(boundary.id())).toStdString());
+        }
+    }
+
+    ExpandTemplate(QString("%1/%2/equations.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+                   ctemplate::DO_NOT_STRIP, &output, &text);
+
+    // source - save to file
+    writeStringContent(QString("%1/%2/%3/%3_equations.py").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
 }
 
 void Agros2DGeneratorModule::generatePluginWeakFormSourceFiles()
@@ -1362,8 +1412,8 @@ QString Agros2DGeneratorModule::generateDocWeakFormExpression(AnalysisType analy
         dict["z"] = "y";
         dict["PI"] = "\pi";
         dict["f"] = "f";
-//        foreach (XMLModule::constant cnst, m_module->constants().constant())
-//            dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
+        //        foreach (XMLModule::constant cnst, m_module->constants().constant())
+        //            dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
 
         // functions
         dict["uval"] = "u";
@@ -1557,7 +1607,7 @@ void Agros2DGeneratorModule::generateForm(Form form, ctemplate::TemplateDictiona
                 //docummentation
                 m_docString += ".. math::\n\n";
                 m_docString +=  "   " + generateDocWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
-                                                              coordinateType, linearityType, expression);
+                                                                      coordinateType, linearityType, expression);
                 m_docString += "\n\n";
 
                 // qDebug() << generateDocWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
@@ -1593,5 +1643,5 @@ void Agros2DGeneratorModule::getNames(const QString &moduleId)
             if(!m_names.contains(xml.attributes().value("name").toString()))
                 m_names.append(xml.attributes().value("name").toString());
         }
-    }    
+    }
 }
