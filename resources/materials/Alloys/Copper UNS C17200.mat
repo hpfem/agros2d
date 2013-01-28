@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/vasek/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="bal. Cu, 2 Be, 0.5 other (wt%)" name="Beryllium copper UNS C17200"/>
+
+  <material:properties>
+    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="&amp;deg;C" name="Thermal conductivity (Celsius)" shortname="&lt;i>&amp;lambda;&lt;/i>" source="N.J. Simon, E.S. Drexler, R.P. Reed, NIST Monograph 177, Properties of Copper and Copper Alloys at Cryogenic Temperatures (1992) and R.P. Tye, R.W. Hayden and S.C. Spinney, High Temperatures-High Pressures, v4, p503 (1972)" unit="W/m.K">
+      <material:constant value="101.15"/>
+      <material:dependence>
+        <material:function body="def agros2d_material(t) :&#xA;&#x9;t = t + 273.15&#xA;&#x9;if t >= 2.0 and t &lt; 293.0 :&#xA;&#x9;&#x9;return -6.385500e-04*t*t +5.289000e-01*t +9.997500e-01&#xA;&#x9;elif t >= 293.0 and t &lt; 600.0 :&#xA;&#x9;&#x9;return 1.125000e-04*t*t +9.125000e-02*t +6.475000e+01&#xA;&#x9;elif t >= 600.0 and t &lt; 800.0 :&#xA;&#x9;&#x9;return 3.166667e-06*t*t*t -7.812500e-03*t*t +6.259583e+00*t -1.467200e+03&#xA;&#x9;elif t >= 800.0 and t &lt;= 1100.0 :&#xA;&#x9;&#x9;return -1.583333e-06*t*t*t +4.800000e-03*t*t -4.874167e+00*t +1.799800e+03&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="-250" interval_to="820"/>
+      </material:dependence>
+    </material:property>
+    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="&amp;deg;C" name="Specific heat (Celsius)" shortname="&lt;i>c&lt;/i>&lt;sub>p&lt;/sub>" source="N.J. Simon, E.S. Drexler, R.P. Reed, NIST Monograph 177, Properties of Copper and Copper Alloys at Cryogenic Temperatures (1992) and MIL-HDBK-5H, 1 Dec 1998 p7-18" unit="J/kg.K">
+      <material:constant value="398.19"/>
+      <material:dependence>
+        <material:function body="def agros2d_material(t) :&#xA;    &#x9;t = t + 273.15&#xA;&#x9;if t >= 83.0 and t &lt; 250.0 :&#xA;&#x9;&#x9;return 1.238984e-05*t*t*t -1.099269e-02*t*t +3.469962e+00*t +1.018117e+01&#xA;&#x9;elif t >= 250.0 and t &lt;= 811.0 :&#xA;&#x9;&#x9;return 3.248192e-01*t +3.030227e+02&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="-180" interval_to="530"/>
+      </material:dependence>
+    </material:property>
+    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="&amp;deg;C" name="Density (Celsius)" shortname="&lt;i>&amp;rho;&lt;/i>" source="Brush Wellman Inc.; calculated from the linear expansion" unit="kg/m&lt;sup>3&lt;/sup>">
+      <material:constant value="8259.6"/>
+      <material:dependence>
+        <material:function body="def agros2d_material(t) :&#xA;&#x9;t = t + 273.15&#xA;&#x9;if t >= 20.0 and t &lt;= 573.0 :&#xA;&#x9;&#x9;return 1.005565e-06*t*t*t -1.142833e-03*t*t -2.338771e-02*t +8.339296e+03&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="-250" interval_to="295"/>
+      </material:dependence>
+    </material:property>
+  </material:properties>
+
+</material:material>
