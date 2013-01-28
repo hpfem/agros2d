@@ -17,7 +17,7 @@ INCLUDEPATH += ../hermes_common/include
 
 LIBS += -lagros2d_hermes2d
 LIBS += -lagros2d_3rdparty
-LIBS += -lagros2d
+LIBS += -lagros2d_library
 
 linux-g++|linux-g++-64|linux-g++-32 {
     CONFIG += warn_off

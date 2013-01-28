@@ -8,7 +8,7 @@ INCLUDEPATH += ../hermes_common/include
 
 LIBS += -lagros2d_hermes2d
 LIBS += -lagros2d_3rdparty
-LIBS += -lagros2d
+LIBS += -lagros2d_library
 
 HEADERS += generator.h \
     generator_module.h \

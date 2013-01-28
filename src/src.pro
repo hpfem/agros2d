@@ -285,7 +285,7 @@ LIBS += -lagros2d_3rdparty
 
 linux-g++|linux-g++-64|linux-g++-32 {
     # DEFINES += WITH_UNITY
-    TARGET = ../libs/agros2d
+    TARGET = ../libs/agros2d_library
 
     CONFIG += warn_off
     # QMAKE_CXXFLAGS += -Wun
@@ -317,7 +317,7 @@ macx-g++ {
 
 win32-msvc2010 {
     CONFIG += staticlib
-    TARGET = ../../libs/agros2d
+    TARGET = ../../libs/agros2d_library
 
     QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
     QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt
