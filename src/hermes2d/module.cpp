@@ -392,7 +392,7 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
 
 // ***********************************************************************************************
 
-Module::LocalVariable::LocalVariable(FieldInfo *fieldInfo, XMLModule::localvariable lv,
+Module::LocalVariable::LocalVariable(const FieldInfo *fieldInfo, XMLModule::localvariable lv,
                                      CoordinateType coordinateType, AnalysisType analysisType)
 {    
     m_id = QString::fromStdString(lv.id());
@@ -437,7 +437,7 @@ Module::MaterialTypeVariable::MaterialTypeVariable(XMLModule::quantity quant)
 
 // ***********************************************************************************************
 
-Module::BoundaryType::BoundaryType(FieldInfo *fieldInfo,
+Module::BoundaryType::BoundaryType(const FieldInfo *fieldInfo,
                                    QList<BoundaryTypeVariable> boundary_type_variables,
                                    XMLModule::boundary bdy)
 {
