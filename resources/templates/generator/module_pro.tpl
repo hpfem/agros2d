@@ -31,6 +31,8 @@ win32-msvc2010 {
     QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
+    DEFINES += XERCES_STATIC_LIBRARY
+
     INCLUDEPATH += c:/hpfem/hermes/dependencies/include
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 
@@ -53,6 +55,12 @@ win32-msvc2010 {
     LIBS += -lws2_32
     LIBS += -lpsapi
 }
+
+SOURCES      += ../../resources_source/classes/module_xml.cpp
+HEADERS      += ../../resources_source/classes/module_xml.h
+HEADERS      += ../../src/hermes2d/problem.h
+HEADERS      += ../../src/hermes2d/field.h
+HEADERS      += ../../src/scene.h
 
 # interface
 HEADERS      += {{ID}}_interface.h

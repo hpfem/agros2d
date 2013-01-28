@@ -25,7 +25,7 @@
 
 class Material;
 
-class BDF2Table
+class AGROS_API BDF2Table
 {
 public:
     BDF2Table() : m_calculated(false) {}

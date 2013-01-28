@@ -111,7 +111,7 @@ QStringList availableLanguages();
 AGROS_API QIcon icon(const QString &name);
 
 // get datadir
-QString datadir();
+AGROS_API QString datadir();
 
 // get external js functions
 QString externalFunctions();

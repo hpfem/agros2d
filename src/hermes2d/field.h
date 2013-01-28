@@ -36,7 +36,7 @@ class LocalForceValue;
 class PluginInterface;
 class Value;
 
-class FieldInfo : public QObject
+class AGROS_API FieldInfo : public QObject
 {
     Q_OBJECT
 

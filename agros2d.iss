@@ -1,8 +1,8 @@
 [Setup]
 
 #define AppName "Agros2D"
-#define AppVersion "3.0.0.2888"
-#define AppDate "2012-01-14"
+#define AppVersion "3.0.0.3027"
+#define AppDate "2013-01-28"
 #define OutputBaseFileName "Agros2D" + "_" + AppVersion
 
 AppName={#AppName}

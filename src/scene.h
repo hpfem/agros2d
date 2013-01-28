@@ -73,7 +73,7 @@ private:
     Scene *m_scene;
 };
 
-class NewMarkerAction : public QAction
+class AGROS_API NewMarkerAction : public QAction
 {
     Q_OBJECT
 

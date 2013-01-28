@@ -193,7 +193,7 @@ AGROS_API QIcon icon(const QString &name)
     return QIcon();
 }
 
-QString datadir()
+AGROS_API QString datadir()
 {
     // windows and local installation
     if (QFile::exists(QApplication::applicationDirPath() + "/functions_pythonlab.py"))

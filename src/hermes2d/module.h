@@ -448,7 +448,7 @@ private:
 };
 
 // functions
-void updateTimeFunctions(double time);
+AGROS_API void updateTimeFunctions(double time);
 
 // available modules
 QMap<QString, QString> availableModules();

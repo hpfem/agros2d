@@ -320,7 +320,7 @@ macx-g++ {
 }
 
 win32-msvc2010 {
-    TARGET = ../../libs/agros2d_library
+    TARGET = ../../agros2d_library
 
     QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
     QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt
