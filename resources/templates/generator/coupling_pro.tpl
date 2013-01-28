@@ -29,13 +29,20 @@ linux-g++|linux-g++-64|linux-g++-32 {
 
 win32-msvc2010 {
     QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
-    QMAKE_LFLAGS += /NODEFAULTLIB:libcmt
-    QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd
+    QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt
     QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
+    DEFINES += XERCES_STATIC_LIBRARY
+
     INCLUDEPATH += c:/hpfem/hermes/dependencies/include
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
+
+    SOURCES      += ../../resources_source/classes/coupling_xml.cpp
+    HEADERS      += ../../resources_source/classes/coupling_xml.h
+    HEADERS      += ../../src/hermes2d/problem.h
+    HEADERS      += ../../src/hermes2d/field.h
+    HEADERS      += ../../src/scene.h
 
     LIBS += -L../../libs
     LIBS += -L../..
@@ -55,8 +62,6 @@ win32-msvc2010 {
     LIBS += -ladvapi32
     LIBS += -lws2_32
     LIBS += -lpsapi
-
-    DESTDIR = ../..
 }
 
 # interface

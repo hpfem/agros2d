@@ -36,6 +36,12 @@ win32-msvc2010 {
     INCLUDEPATH += c:/hpfem/hermes/dependencies/include
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 
+    SOURCES      += ../../resources_source/classes/module_xml.cpp
+    HEADERS      += ../../resources_source/classes/module_xml.h
+    HEADERS      += ../../src/hermes2d/problem.h
+    HEADERS      += ../../src/hermes2d/field.h
+    HEADERS      += ../../src/scene.h
+
     LIBS += -L../../libs
     LIBS += -L../..
 
@@ -55,12 +61,6 @@ win32-msvc2010 {
     LIBS += -lws2_32
     LIBS += -lpsapi
 }
-
-SOURCES      += ../../resources_source/classes/module_xml.cpp
-HEADERS      += ../../resources_source/classes/module_xml.h
-HEADERS      += ../../src/hermes2d/problem.h
-HEADERS      += ../../src/hermes2d/field.h
-HEADERS      += ../../src/scene.h
 
 # interface
 HEADERS      += {{ID}}_interface.h
