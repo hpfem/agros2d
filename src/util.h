@@ -43,6 +43,13 @@
 #include <locale.h>
 #include <stdlib.h>
 
+// Windows DLL export/import definitions
+#if defined (AGROS)
+  #define AGROS_API __declspec(dllexport)
+#else
+  #define AGROS_API __declspec(dllimport)
+#endif
+
 #include "util/point.h"
 
 #include "indicators/indicators.h"
@@ -90,16 +97,16 @@ inline int sign(double arg)
 void showPage(const QString &str = "");
 
 // set gui style
-void setGUIStyle(const QString &styleName);
+AGROS_API void setGUIStyle(const QString &styleName);
 
 // set language
-void setLanguage(const QString &locale);
+AGROS_API void setLanguage(const QString &locale);
 
 // get available languages
 QStringList availableLanguages();
 
 // get icon with respect to actual theme
-QIcon icon(const QString &name);
+AGROS_API QIcon icon(const QString &name);
 
 // get datadir
 QString datadir();
