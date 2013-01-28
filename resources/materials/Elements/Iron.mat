@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d-coupling/resources/xsd/material_xml.xsd">
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/vasek/agros2d/resources/xsd/material_xml.xsd">
 
   <material:general description="Iron is a chemical element with the symbol Fe and atomic number 26. It is a metal in the first transition series. It is the most common element (by mass) forming the planet Earth as a whole, forming much of Earth's outer and inner core." name="Iron"/>
 
