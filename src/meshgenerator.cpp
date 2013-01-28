@@ -42,53 +42,15 @@ MeshGenerator::MeshGenerator() : QObject()
 
 bool MeshGenerator::writeToHermes()
 {
-    // save current locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
-
-    QDomDocument doc;
-    QDomProcessingInstruction instr = doc.createProcessingInstruction("xml", "version='1.0' encoding='UTF-8' standalone='no'");
-    doc.appendChild(instr);
-
-    // main document
-    QDomElement eleMesh = doc.createElement("domain:domain");
-    eleMesh.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-    eleMesh.setAttribute("xmlns:domain", "XMLSubdomains");
-    eleMesh.setAttribute("xsi:schemaLocation", QString("XMLSubdomains %1/subdomains_h2d_xml.xsd").arg(datadir() + "/resources/xsd"));
-    doc.appendChild(eleMesh);
-
-    QDomElement eleVertices = doc.createElement("vertices");
-    eleMesh.appendChild(eleVertices);
-    QDomElement eleElements = doc.createElement("elements");
-    eleMesh.appendChild(eleElements);
-    QDomElement eleEdges = doc.createElement("edges");
-    eleMesh.appendChild(eleEdges);
-    QDomElement eleCurves = doc.createElement("curves");
-    eleMesh.appendChild(eleCurves);
-    QDomElement eleSubdomains = doc.createElement("subdomains");
-    eleMesh.appendChild(eleSubdomains);
-
     // edges
-    int countEdges = 0;
+    XMLSubdomains::edges_type edges;
     for (int i = 0; i < edgeList.count(); i++)
-    {
         if (edgeList[i].isUsed && edgeList[i].marker != -1)
-        {
-            int marker = edgeList[i].marker;
+            edges.edge().push_back(XMLSubdomains::edge(edgeList[i].node[0], edgeList[i].node[1],
+                    QString::number(edgeList[i].marker).toStdString(), i));
 
-            //assert(countEdges == i+1);
-            QDomElement eleEdge = doc.createElement("edge");
-            eleEdge.setAttribute("v1", edgeList[i].node[0]);
-            eleEdge.setAttribute("v2", edgeList[i].node[1]);
-            eleEdge.setAttribute("i", i);
-            eleEdge.setAttribute("marker", marker);
-
-            eleEdges.appendChild(eleEdge);
-        }
-    }
-
-    // curves
-    int countCurves = 0;
+    // curved edges
+    XMLMesh::curves_type curves;
     if (Agros2D::problem()->configView()->curvilinearElements)
     {
         for (int i = 0; i<edgeList.count(); i++)
@@ -98,7 +60,6 @@ bool MeshGenerator::writeToHermes()
                 // curve
                 if (Agros2D::scene()->edges->at(edgeList[i].marker)->angle() > 0.0)
                 {
-                    countCurves++;
                     int segments = Agros2D::scene()->edges->at(edgeList[i].marker)->segments();
 
                     // subdivision angle and chord
@@ -111,16 +72,11 @@ bool MeshGenerator::writeToHermes()
                     // direction
                     Point center = Agros2D::scene()->edges->at(edgeList[i].marker)->center();
                     int direction = (((nodeList[edgeList[i].node[0]].x-center.x)*(nodeList[edgeList[i].node[1]].y-center.y) -
-                                      (nodeList[edgeList[i].node[0]].y-center.y)*(nodeList[edgeList[i].node[1]].x-center.x)) > 0) ? 1 : -1;
+                            (nodeList[edgeList[i].node[0]].y-center.y)*(nodeList[edgeList[i].node[1]].x-center.x)) > 0) ? 1 : -1;
 
                     double angle = direction * theta * chordShort / chord;
 
-                    QDomElement eleArc = doc.createElement("arc");
-                    eleArc.setAttribute("v1", edgeList[i].node[0]);
-                    eleArc.setAttribute("v2", edgeList[i].node[1]);
-                    eleArc.setAttribute("angle", QString("%1").arg(rad2deg(angle)));
-
-                    eleCurves.appendChild(eleArc);
+                    curves.arc().push_back(XMLMesh::arc(edgeList[i].node[0], edgeList[i].node[1], rad2deg(angle)));
                 }
             }
         }
@@ -137,10 +93,10 @@ bool MeshGenerator::writeToHermes()
                     // angle
                     Point center = Agros2D::scene()->edges->at(edgeList[i].marker)->center();
                     double pointAngle1 = atan2(center.y - nodeList[edgeList[i].node[0]].y,
-                                               center.x - nodeList[edgeList[i].node[0]].x) - M_PI;
+                            center.x - nodeList[edgeList[i].node[0]].x) - M_PI;
 
                     double pointAngle2 = atan2(center.y - nodeList[edgeList[i].node[1]].y,
-                                               center.x - nodeList[edgeList[i].node[1]].x) - M_PI;
+                            center.x - nodeList[edgeList[i].node[1]].x) - M_PI;
 
                     nodeList[edgeList[i].node[0]].x = center.x + Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * cos(pointAngle1);
                     nodeList[edgeList[i].node[0]].y = center.y + Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * sin(pointAngle1);
@@ -152,34 +108,23 @@ bool MeshGenerator::writeToHermes()
         }
     }
 
-    // nodes
+    // vertices
+    XMLMesh::vertices_type vertices;
     for (int i = 0; i<nodeList.count(); i++)
-    {
-        QDomElement eleVertex = doc.createElement("vertex");
-        eleVertex.setAttribute("i", i);
-        eleVertex.setAttribute("x", QString("%1").arg(nodeList[i].x));
-        eleVertex.setAttribute("y", QString("%1").arg(nodeList[i].y));
-
-        eleVertices.appendChild(eleVertex);
-    }
+        vertices.vertex().push_back(std::auto_ptr<XMLMesh::vertex>(new XMLMesh::vertex(QString::number(nodeList[i].x).toStdString(),
+                                                                                       QString::number(nodeList[i].y).toStdString(), i)));
 
     // elements
+    XMLSubdomains::elements_type elements;
     for (int i = 0; i<elementList.count(); i++)
-    {
         if (elementList[i].isUsed)
-        {
-            QDomElement eleElement = doc.createElement(QString("domain:%1").arg(elementList[i].isTriangle() ? "triangle" : "quad"));
-            eleElement.setAttribute("v1", elementList[i].node[0]);
-            eleElement.setAttribute("v2", elementList[i].node[1]);
-            eleElement.setAttribute("v3", elementList[i].node[2]);
-            if (!elementList[i].isTriangle())
-                eleElement.setAttribute("v4", elementList[i].node[3]);
-            eleElement.setAttribute("i", i);
-            eleElement.setAttribute("marker", QString("%1").arg(abs(elementList[i].marker)));
-
-            eleElements.appendChild(eleElement);
-        }
-    }
+            if (elementList[i].isTriangle())
+                elements.element().push_back(XMLSubdomains::triangle_type(elementList[i].node[0], elementList[i].node[1], elementList[i].node[2],
+                        QString::number(elementList[i].marker).toStdString(), i));
+            else
+                elements.element().push_back(XMLSubdomains::quad_type(elementList[i].node[0], elementList[i].node[1], elementList[i].node[2],
+                        QString::number(elementList[i].marker).toStdString(), i,
+                        elementList[i].node[3]));
 
     // find edge neighbours
     // for each vertex list elements that it belogns to
@@ -189,15 +134,9 @@ bool MeshGenerator::writeToHermes()
         vertexElements.push_back(QSet<int>());
 
     for (int i = 0; i < elementList.count(); i++)
-    {
         if (elementList[i].isUsed)
-        {
             for(int elemNode = 0; elemNode < (elementList[i].isTriangle() ? 3 : 4); elemNode++)
-            {
                 vertexElements[elementList[i].node[elemNode]].insert(i);
-            }
-        }
-    }
 
     for (int i = 0; i < edgeList.count(); i++)
     {
@@ -213,39 +152,21 @@ bool MeshGenerator::writeToHermes()
     }
 
     // subdomains
+    XMLSubdomains::subdomains subdomains;
     foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        QDomElement eleSubdomain = doc.createElement("subdomain");
-        eleSubdomains.appendChild(eleSubdomain);
-        eleSubdomain.setAttribute("name", fieldInfo->fieldId());
-
-        QDomElement eleSubElements = doc.createElement("elements");
-        eleSubdomain.appendChild(eleSubElements);
+        XMLSubdomains::subdomain subdomain(fieldInfo->fieldId().toStdString());
+        subdomain.elements().set(XMLSubdomains::subdomain::elements_type());
+        subdomain.boundary_edges().set(XMLSubdomains::subdomain::boundary_edges_type());
+        subdomain.inner_edges().set(XMLSubdomains::subdomain::inner_edges_type());
 
         for (int i = 0; i<elementList.count(); i++)
-        {
             if (elementList[i].isUsed && (Agros2D::scene()->labels->at(elementList[i].marker)->marker(fieldInfo) != SceneMaterialContainer::getNone(fieldInfo)))
-            {
-                QDomElement eleSubElement = doc.createElement("i");
-                eleSubElements.appendChild(eleSubElement);
-                QDomText number = doc.createTextNode(QString::number(i));
-                eleSubElement.appendChild(number);
-            }
-        }
-
-        QDomElement eleBoundaryEdges = doc.createElement("boundary_edges");
-        eleSubdomain.appendChild(eleBoundaryEdges);
-        QDomElement eleInnerEdges = doc.createElement("inner_edges");
-        eleSubdomain.appendChild(eleInnerEdges);
+                subdomain.elements()->i().push_back(i);
 
         QList<int> unassignedEdges;
         for (int i = 0; i < edgeList.count(); i++)
         {
-            QDomElement eleEdge = doc.createElement("i");
-            QDomText number = doc.createTextNode(QString::number(i));
-            eleEdge.appendChild(number);
-
-            //assert(edgeList[i].marker >= 0);
             if (edgeList[i].isUsed && edgeList[i].marker != -1)
             {
                 int numNeighWithField = 0;
@@ -272,14 +193,13 @@ bool MeshGenerator::writeToHermes()
                         if (!unassignedEdges.contains(edgeList[i].marker))
                             unassignedEdges.append(edgeList[i].marker);
 
-                    eleBoundaryEdges.appendChild(eleEdge);
+                    subdomain.boundary_edges()->i().push_back(i);
                 }
                 else if (numNeighWithField == 2)
                 {
                     // todo: we could enforce not to have boundary conditions prescribed inside:
                     // assert(!hasFieldBoundaryCondition);
-
-                    eleInnerEdges.appendChild(eleEdge);
+                    subdomain.inner_edges()->i().push_back(i);
                 }
             }
         }
@@ -295,21 +215,28 @@ bool MeshGenerator::writeToHermes()
 
             return false;
         }
+
+        subdomains.subdomain().push_back(subdomain);
     }
 
-    // save to file
-    QFile file(cacheProblemDir() + "/initial.mesh");
-    if (!file.open(QIODevice::WriteOnly))
-        return false;
+    XMLSubdomains::domain xmldomain(vertices, elements, edges, subdomains);
+    xmldomain.curves().set(curves);
 
-    QTextStream out(&file);
-    doc.save(out, 4);
+    std::string mesh_schema_location(Hermes::Hermes2D::Hermes2DApi.get_text_param_value(Hermes::Hermes2D::xmlSchemasDirPath));
+    mesh_schema_location.append("/mesh_h2d_xml.xsd");
+    ::xml_schema::namespace_info namespace_info_mesh("XMLMesh", mesh_schema_location);
 
-    file.waitForBytesWritten(0);
-    file.close();
+    std::string domain_schema_location(Hermes::Hermes2D::Hermes2DApi.get_text_param_value(Hermes::Hermes2D::xmlSchemasDirPath));
+    domain_schema_location.append("/subdomains_h2d_xml.xsd");
+    ::xml_schema::namespace_info namespace_info_domain("XMLSubdomains", domain_schema_location);
 
-    // set system locale
-    setlocale(LC_NUMERIC, plocale);
+    ::xml_schema::namespace_infomap namespace_info_map;
+    namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("mesh", namespace_info_mesh));
+    namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("domain", namespace_info_domain));
+
+    std::ofstream out((cacheProblemDir() + "/initial.mesh").toStdString().c_str());
+    XMLSubdomains::domain_(out, xmldomain, namespace_info_map);
+    out.close();
 
     return true;
 }
