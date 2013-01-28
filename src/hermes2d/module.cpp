@@ -392,11 +392,11 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
 
 // ***********************************************************************************************
 
-Module::LocalVariable::LocalVariable(XMLModule::localvariable lv, const QString &fieldId,
+Module::LocalVariable::LocalVariable(FieldInfo *fieldInfo, XMLModule::localvariable lv,
                                      CoordinateType coordinateType, AnalysisType analysisType)
 {    
     m_id = QString::fromStdString(lv.id());
-    m_name = Agros2D::problem()->fieldInfo(fieldId)->plugin()->localeName(QString::fromStdString(lv.name()));
+    m_name = fieldInfo->plugin()->localeName(QString::fromStdString(lv.name()));
     m_shortname = QString::fromStdString(lv.shortname());
     m_shortnameHtml = (lv.shortname_html().present()) ? QString::fromStdString(lv.shortname_html().get()) : m_shortname;
     m_unit = QString::fromStdString(lv.unit());
@@ -437,12 +437,12 @@ Module::MaterialTypeVariable::MaterialTypeVariable(XMLModule::quantity quant)
 
 // ***********************************************************************************************
 
-Module::BoundaryType::BoundaryType(QList<BoundaryTypeVariable> boundary_type_variables,
-                                   XMLModule::boundary bdy,
-                                   CoordinateType problem_type)
+Module::BoundaryType::BoundaryType(FieldInfo *fieldInfo,
+                                   QList<BoundaryTypeVariable> boundary_type_variables,
+                                   XMLModule::boundary bdy)
 {
     m_id = QString::fromStdString(bdy.id());
-    m_name = QString::fromStdString(bdy.name());
+    m_name = fieldInfo->plugin()->localeName(QString::fromStdString(bdy.name()));
     m_equation = QString::fromStdString(bdy.equation());
 
     // variables

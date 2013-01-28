@@ -429,7 +429,7 @@ QList<Module::BoundaryType> FieldInfo::boundaryTypes() const
             for (int i = 0; i < wf.boundary().size(); i++)
             {
                 XMLModule::boundary bdy = wf.boundary().at(i);
-                boundaryTypes.append(Module::BoundaryType(boundaryTypeVariablesAll, bdy, Agros2D::problem()->config()->coordinateType()));
+                boundaryTypes.append(Module::BoundaryType(this, boundaryTypeVariablesAll, bdy));
             }
         }
     }
@@ -528,8 +528,8 @@ QList<Module::LocalVariable> FieldInfo::localPointVariables() const
             XMLModule::expression expr = lv.expression().at(i);
             if (expr.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
             {
-                variables.append(Module::LocalVariable(lv,
-                                                       m_fieldId,
+                variables.append(Module::LocalVariable(this,
+                                                       lv,
                                                        Agros2D::problem()->config()->coordinateType(),
                                                        m_analysisType));
             }

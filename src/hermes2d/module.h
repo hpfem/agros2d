@@ -160,7 +160,7 @@ struct LocalVariable
           m_unitHtml(unitHtml),
           m_isScalar(true),
           m_expression(Expression()) {}
-    LocalVariable(XMLModule::localvariable lv, const QString &fieldId, CoordinateType problemType, AnalysisType analysisType);
+    LocalVariable(FieldInfo *fieldInfo, XMLModule::localvariable lv, CoordinateType problemType, AnalysisType analysisType);
 
     // id
     inline QString id() const { return m_id; }
@@ -305,9 +305,9 @@ private:
 struct BoundaryType
 {
     BoundaryType() : m_id(""), m_name(""), m_equation("") {}
-    BoundaryType(QList<BoundaryTypeVariable> boundary_type_variables,
-                 XMLModule::boundary bdy,
-                 CoordinateType problem_type);
+    BoundaryType(FieldInfo *fieldInfo,
+                 QList<BoundaryTypeVariable> boundary_type_variables,
+                 XMLModule::boundary bdy);
     ~BoundaryType();
 
     // id
