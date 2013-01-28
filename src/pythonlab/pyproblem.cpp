@@ -134,6 +134,12 @@ void PyProblem::clear()
     Agros2D::scene()->clear();
 }
 
+void PyProblem::clearSolution()
+{
+    Agros2D::problem()->clearSolution();
+    currentPythonEngineAgros()->postHermes()->refresh();
+}
+
 void PyProblem::refresh()
 {
     Agros2D::scene()->invalidate();
