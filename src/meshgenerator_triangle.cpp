@@ -344,7 +344,7 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
         Agros2D::log()->printError(tr("Mesh generator"), tr("could not read Triangle node file"));
         return false;
     }
-    QTextStream inNode(&fileNode);
+    QTextStream inNode(&fileNode);    
 
     QFile fileEdge(tempProblemFileName() + ".edge");
     if (!fileEdge.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -371,13 +371,24 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
     QTextStream inNeigh(&fileNeigh);
 
     // triangle nodes
-    sscanf(inNode.readLine().toStdString().c_str(), "%i", &k);
+    // sscanf(inNode.readLine().toStdString().c_str(), "%i", &k);
+    QRegExp re("\\s+");
+    QString line = inNode.readLine().trimmed();
+    QStringList parsedLine = line.split(re);
+    k = parsedLine[0].toInt();
+
     for (int i = 0; i<k; i++)
     {
         int marker, n;
         double x, y;
 
-        sscanf(inNode.readLine().toStdString().c_str(), "%i   %lf %lf %i", &n, &x, &y, &marker);
+        // suspisious code, causes the "Concave element ...." exception
+        line = inNode.readLine().trimmed();
+        parsedLine = line.split(re);
+        n = parsedLine[0].toInt();
+        x = parsedLine[1].toDouble();
+        y = parsedLine[2].toDouble();
+        marker = parsedLine[3].toInt();
         nodeList.append(Point(x, y));
     }
 
