@@ -20,6 +20,30 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+// qt5
+#ifdef Q_OS_WIN
+#define Q_WS_WIN
+#endif
+
+#ifdef Q_OS_MAC
+#define Q_WS_MAC
+#endif
+
+#ifdef Q_OS_LINUX
+#define Q_WS_X11
+#endif
+
+// Windows DLL export/import definitions
+#ifdef Q_WS_WIN
+  #ifdef AGROS
+    #define AGROS_API __declspec(dllexport)
+  #else
+    #define AGROS_API __declspec(dllimport)
+  #endif
+#else
+  #define AGROS_API
+#endif
+
 #include <QtCore>
 #include <QtGui>
 #include <QtNetwork>
@@ -43,29 +67,9 @@
 #include <locale.h>
 #include <stdlib.h>
 
-// Windows DLL export/import definitions
-#if defined (AGROS)
-  #define AGROS_API __declspec(dllexport)
-#else
-  #define AGROS_API __declspec(dllimport)
-#endif
-
 #include "util/point.h"
 
 #include "indicators/indicators.h"
-
-// qt5
-#ifdef Q_OS_WIN
-#define Q_WS_WIN
-#endif
-
-#ifdef Q_OS_MAC
-#define Q_WS_MAC
-#endif
-
-#ifdef Q_OS_LINUX
-#define Q_WS_X11
-#endif
 
 // zero
 #define EPS_ZERO 1e-10

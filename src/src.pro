@@ -316,7 +316,6 @@ macx-g++ {
 }
 
 win32-msvc2010 {
-    CONFIG += staticlib
     TARGET = ../../libs/agros2d_library
 
     QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
