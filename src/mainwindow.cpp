@@ -1071,7 +1071,9 @@ void MainWindow::doDocumentClose()
     */
 
     Agros2D::scene()->clear();
+    Agros2D::problem()->clearFieldsAndConfig();
 
+    problemWidget->actProperties->trigger();
     sceneViewPreprocessor->actOperateOnNodes->trigger();
     sceneViewPreprocessor->doZoomBestFit();
     sceneViewMesh->doZoomBestFit();
