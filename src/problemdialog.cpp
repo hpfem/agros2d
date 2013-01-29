@@ -436,7 +436,7 @@ void FieldWidget::doShowEquation()
     QPixmap pixmap(QString("%1/resources/images/equations/%2_equation_%3.png").
                    arg(datadir()).
                    arg(m_fieldInfo->fieldId()).
-                   arg(analysisTypeToStringKey(m_fieldInfo->analysisType())));
+                   arg(analysisTypeToStringKey(cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt())));
 
     equationImage->setPixmap(pixmap);
     equationImage->setMask(pixmap.mask());
