@@ -111,7 +111,7 @@
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="820"/>
         <source>Acoustics is the interdisciplinary science that deals with the study of all mechanical waves in gases, liquids, and solids.</source>
-        <translation type="unfinished"></translation>
+        <translation>Akustika je interdisciplinární věda, která se zabývá studiem mechanického vlnění v plynném, tekutém a pevném prostředí.</translation>
     </message>
 </context>
 <context>
@@ -274,7 +274,7 @@
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="538"/>
         <source>Electric current is a flow of electric charge through a medium. This charge is typically carried by moving electrons in a conductor such as wire. It can also be carried by ions in an electrolyte, or by both ions and electrons in a plasma.        </source>
-        <translation type="unfinished"></translation>
+        <translation>Elektrický proud je tok elektrických nábojů určitým prostředím. Tento náboj je často nesen pohybujícími se elektrony ve vodiči, tedy drátu. Může být ale také nesen ionty v elektrolytu nebo ionty a elektrony v plazmě.</translation>
     </message>
 </context>
 <context>
@@ -485,7 +485,7 @@
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="277"/>
         <source>Electrostatics is the branch of science that deals with the phenomena and properties of stationary or slow-moving (without acceleration) electric charges.</source>
-        <translation type="unfinished"></translation>
+        <translation>Elektrostatika je vědní obor, který se zabývá jevy a vlastnostmi stacionárních nebo pomalu se pohybujících (bez zrychlení) elektrických nábojů.</translation>
     </message>
 </context>
 <context>
@@ -493,97 +493,97 @@
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1203"/>
         <source>Incompressible flow</source>
-        <translation type="unfinished"></translation>
+        <translation>Nestlačitelné proudění</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1206"/>
         <source>Steady state</source>
-        <translation type="unfinished">Ustálený stav</translation>
+        <translation>Ustálený stav</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1209"/>
         <source>Transient</source>
-        <translation type="unfinished">Přechodný děj</translation>
+        <translation>Přechodný děj</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1212"/>
         <source>Velocity</source>
-        <translation type="unfinished"></translation>
+        <translation>Rychlost</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1215"/>
         <source>Outlet</source>
-        <translation type="unfinished"></translation>
+        <translation>Odtok</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1218"/>
         <source>Pressure</source>
-        <translation type="unfinished">Tlak</translation>
+        <translation>Tlak</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1221"/>
         <source>Density</source>
-        <translation type="unfinished"></translation>
+        <translation>Hustota</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1224"/>
         <source>Viscosity</source>
-        <translation type="unfinished"></translation>
+        <translation>Viskozita</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1227"/>
         <source>Force - x</source>
-        <translation type="unfinished">Síla - x</translation>
+        <translation>Síla - x</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1230"/>
         <source>Force - y</source>
-        <translation type="unfinished">Síla - y</translation>
+        <translation>Síla - y</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1233"/>
         <source>Velocity - x</source>
-        <translation type="unfinished"></translation>
+        <translation>Rychlost - x</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1236"/>
         <source>Velocity - y</source>
-        <translation type="unfinished"></translation>
+        <translation>Rychlost - y</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1239"/>
         <source>Vorticity</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorticita</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1242"/>
         <source>Inner force</source>
-        <translation type="unfinished">Vnitřní síla</translation>
+        <translation>Vnitřní síla</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1245"/>
         <source>Volume</source>
-        <translation type="unfinished">Objem</translation>
+        <translation>Objem</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1248"/>
         <source>Length</source>
-        <translation type="unfinished">Délka</translation>
+        <translation>Délka</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1251"/>
         <source>Force X</source>
-        <translation type="unfinished"></translation>
+        <translation>Síla X</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1254"/>
         <source>Force Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Síla Y</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1261"/>
         <source>Incompressible flow model using Navier-Stokes equations </source>
-        <translation type="unfinished"></translation>
+        <translation>Model nestlačitelného proudění využívající Navier-Stokesovy rovnice.</translation>
     </message>
 </context>
 <context>
@@ -591,117 +591,117 @@
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="381"/>
         <source>Heat transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Teplotní přenos</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="384"/>
         <source>Steady state</source>
-        <translation type="unfinished">Ustálený stav</translation>
+        <translation>Ustálený stav</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="387"/>
         <source>Transient</source>
-        <translation type="unfinished">Přechodný děj</translation>
+        <translation>Přechodný děj</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="390"/>
         <source>Temperature</source>
-        <translation type="unfinished"></translation>
+        <translation>Teplota</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="393"/>
         <source>Heat flux</source>
-        <translation type="unfinished"></translation>
+        <translation>Teplotní tok</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="396"/>
         <source>Thermal conductivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Teplotní vodivost</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="399"/>
         <source>Volume heat</source>
-        <translation type="unfinished"></translation>
+        <translation>Množství tepla</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="402"/>
         <source>Density</source>
-        <translation type="unfinished"></translation>
+        <translation>Hustota</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="405"/>
         <source>Specific heat</source>
-        <translation type="unfinished"></translation>
+        <translation>Měrné teplo</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="408"/>
         <source>Velocity</source>
-        <translation type="unfinished"></translation>
+        <translation>Rychlost</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="411"/>
         <source>Velocity - x</source>
-        <translation type="unfinished"></translation>
+        <translation>Rychlost - x</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="414"/>
         <source>Velocity - y</source>
-        <translation type="unfinished"></translation>
+        <translation>Rychlost - y</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="417"/>
         <source>Velocity - angular</source>
-        <translation type="unfinished"></translation>
+        <translation>Rychlost - úhlová</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="420"/>
         <source>Heat transfer coefficient</source>
-        <translation type="unfinished"></translation>
+        <translation>Koef. přestupu tepla</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="423"/>
         <source>Convection - external temperature</source>
-        <translation type="unfinished"></translation>
+        <translation>Konvekce  - okolní teplota</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="426"/>
         <source>Emissivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Emisivita</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="429"/>
         <source>Radiation - ambient temperature</source>
-        <translation type="unfinished"></translation>
+        <translation>Radiace - okolní teplota</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="432"/>
         <source>Temperature gradient</source>
-        <translation type="unfinished"></translation>
+        <translation>Teplotní gradient</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="435"/>
         <source>Volume</source>
-        <translation type="unfinished">Objem</translation>
+        <translation>Objem</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="438"/>
         <source>Cross section</source>
-        <translation type="unfinished">Průřez</translation>
+        <translation>Průřez</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="441"/>
         <source>Length</source>
-        <translation type="unfinished">Délka</translation>
+        <translation>Délka</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="444"/>
         <source>Surface</source>
-        <translation type="unfinished">Plocha</translation>
+        <translation>Plocha</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="451"/>
         <source>Heat transfer is a discipline of thermal engineering that concerns the exchange of thermal energy from one physical system to another. Heat transfer is classified into various mechanisms, such as heat conduction, convection and thermal radiation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Přenos tepla je disciplína tepelné techniky, která se týká výměny tepelné energie z jednoho fyzikálního systému do jiného. Přenos tepla je klasifikován do několika mechanismů, jako je vedení tepla, proudění a tepelné záření.</translation>
     </message>
 </context>
 <context>
@@ -709,102 +709,102 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="669"/>
         <source>Magnetic field</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetické pole</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="672"/>
         <source>Steady state</source>
-        <translation type="unfinished">Ustálený stav</translation>
+        <translation>Ustálený stav</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="675"/>
         <source>Harmonic</source>
-        <translation type="unfinished">Harmonická analýza</translation>
+        <translation>Harmonická analýza</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="678"/>
         <source>Transient</source>
-        <translation type="unfinished">Přechodný děj</translation>
+        <translation>Přechodný děj</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="681"/>
         <source>Magnetic potential</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetický potenciál</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="684"/>
         <source>Surface current</source>
-        <translation type="unfinished"></translation>
+        <translation>Povrchový proud</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="687"/>
         <source>Material properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Materiálové vlastnosti</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="690"/>
         <source>Permeability</source>
-        <translation type="unfinished"></translation>
+        <translation>Permeabilita</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="693"/>
         <source>Electrical conductivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Elektrická vodivost</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="696"/>
         <source>Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Zdroj</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="699"/>
         <source>Current dens. - ext. - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Proudová hustota - ext. - reál. složka</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="702"/>
         <source>Current dens. - ext. - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Proudová hustota - ext. - imag. složka</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="705"/>
         <source>Permanent magnet</source>
-        <translation type="unfinished"></translation>
+        <translation>Permanentní magnet</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="708"/>
         <source>Remanent flux density</source>
-        <translation type="unfinished"></translation>
+        <translation>Remanentní indukce</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="711"/>
         <source>Remanent flux density - angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Remanentní indukce - úhel</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="714"/>
         <source>Velocity</source>
-        <translation type="unfinished"></translation>
+        <translation>Rychlost</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="717"/>
         <source>Velocity - x</source>
-        <translation type="unfinished"></translation>
+        <translation>Rychlost - x</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="720"/>
         <source>Velocity - y</source>
-        <translation type="unfinished"></translation>
+        <translation>Rychlost - y</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="723"/>
         <source>Velocity - angular</source>
-        <translation type="unfinished"></translation>
+        <translation>Rychlost - úhlová</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="726"/>
         <source>Vector potential - real</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vekt. potenciál - reál. složka</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="729"/>
@@ -1019,7 +1019,7 @@
         <location filename="../../plugins/magnetic/magnetic_force.cpp" line="64"/>
         <location filename="../../plugins/rf/rf_force.cpp" line="64"/>
         <source>Point [%1, %2] does not lie in any element</source>
-        <translation type="unfinished"></translation>
+        <translation>Bod [%1, %2] neleží v žádném elementu</translation>
     </message>
 </context>
 <context>

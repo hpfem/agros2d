@@ -2,7 +2,7 @@
 <module:module xmlns:module="XMLModule" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd">
 
   <module:general id="flow" name="Incompressible flow">
-    <module:description>Incompressible flow model using Navier-Stokes equations </module:description>
+    <module:description>Incompressible flow model using Navier-Stokes equations.</module:description>
     <module:analyses>
       <module:analysis id="steadystate" name="Steady state" solutions="3" type="steadystate"/>
       <module:analysis id="transient" name="Transient" solutions="3" type="transient"/>
