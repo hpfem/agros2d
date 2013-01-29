@@ -336,8 +336,6 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
     edgeList.clear();
     elementList.clear();
 
-    int k;
-
     QFile fileNode(tempProblemFileName() + ".node");
     if (!fileNode.open(QIODevice::ReadOnly | QIODevice::Text))
     {
@@ -370,101 +368,70 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
     }
     QTextStream inNeigh(&fileNeigh);
 
+    // white chars
+    QRegExp whiteChar("\\s+");
+
     // triangle nodes
-    // sscanf(inNode.readLine().toStdString().c_str(), "%i", &k);
-    QRegExp re("\\s+");
-    QString line = inNode.readLine().trimmed();
-    QStringList parsedLine = line.split(re);
-    k = parsedLine[0].toInt();
-
-    for (int i = 0; i<k; i++)
+    QString lineNode = inNode.readLine().trimmed();
+    int numberOfNodes = lineNode.split(whiteChar).at(0).toInt();
+    for (int i = 0; i < numberOfNodes; i++)
     {
-        int marker, n;
-        double x, y;
-
         // suspisious code, causes the "Concave element ...." exception
-        line = inNode.readLine().trimmed();
-        parsedLine = line.split(re);
-        n = parsedLine[0].toInt();
-        x = parsedLine[1].toDouble();
-        y = parsedLine[2].toDouble();
-        marker = parsedLine[3].toInt();
-        nodeList.append(Point(x, y));
+        QStringList parsedLine = inNode.readLine().trimmed().split(whiteChar);
+
+        nodeList.append(Point(parsedLine.at(1).toDouble(),
+                              parsedLine.at(2).toDouble()));
     }
 
     // triangle edges
-    sscanf(inEdge.readLine().toStdString().c_str(), "%i", &k);
-    QSet<int> edgeMarkersCheck;
-    for (int i = 0; i<k; i++)
+    QString lineEdge = inEdge.readLine().trimmed();
+    int numberOfEdges = lineEdge.split(whiteChar).at(0).toInt();
+    for (int i = 0; i < numberOfEdges; i++)
     {
-        int node[2];
-        int marker, n;
+        QStringList parsedLine = inEdge.readLine().trimmed().split(whiteChar);
 
-        sscanf(inEdge.readLine().toStdString().c_str(), "%i	%i	%i	%i", &n, &node[0], &node[1], &marker);
-
-        edgeList.append(MeshEdge(node[0], node[1], marker - 1)); // marker conversion from triangle, where it starts from 1
+        // marker conversion from triangle, where it starts from 1
+        edgeList.append(MeshEdge(parsedLine.at(1).toInt(),
+                                 parsedLine.at(2).toInt(),
+                                 parsedLine.at(3).toInt() - 1));
     }
     int edgeCountLinear = edgeList.count();
 
-    FieldInfo *fieldInfoTMP;
-    foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
-    {
-        fieldInfoTMP = fieldInfo;
-    }
-
-    // check for multiple edge markers
-    foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
-    {
-        // if (Agros2D::scene()->boundaries.indexOf(edge->getMarker(fieldInfoTMP) > 0)
-        {
-            // if (!edgeMarkersCheck.contains(i))
-            {
-                // emit message(tr("Edge marker '%1' is not present in mesh file.").
-                //              arg(i), true, 0);
-                // return false;
-            }
-        }
-    }
-    // edgeMarkersCheck.clear();
-
-    // TODO: move
-    // no edge marker
-    /*
-    if (edgeCountLinear < 1)
-    {
-        Agros2D::log()->printError(tr("Mesh generator"), tr("invalid number of edge markers"));
-        return false;
-    }
-    */
-
     // triangle elements
-    sscanf(inEle.readLine().toStdString().c_str(), "%i", &k);
+    QString lineElement = inEle.readLine().trimmed();
+    int numberOfElements = lineElement.split(whiteChar).at(0).toInt();
     QSet<int> labelMarkersCheck;
-    for (int i = 0; i < k; i++)
+    for (int i = 0; i < numberOfElements; i++)
     {
-        int node[6];
-        int marker, n;
-
-        sscanf(inEle.readLine().toStdString().c_str(), "%i	%i	%i	%i	%i	%i	%i	%i",
-               &n, &node[0], &node[1], &node[2], &node[3], &node[4], &node[5], &marker);
+        QStringList parsedLine = inEle.readLine().trimmed().split(whiteChar);
+        int marker = parsedLine.at(7).toInt();
         assert(marker > 0);
+
+        // vertices
+        int nodeA = parsedLine.at(1).toInt();
+        int nodeB = parsedLine.at(2).toInt();
+        int nodeC = parsedLine.at(3).toInt();
+        // 2nd order nodes (in the middle of edges)
+        int nodeNA = parsedLine.at(4).toInt();
+        int nodeNB = parsedLine.at(5).toInt();
+        int nodeNC = parsedLine.at(6).toInt();
 
         if (Agros2D::problem()->config()->meshType() == MeshType_Triangle ||
                 Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadJoin ||
                 Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadRoughDivision)
         {
-            elementList.append(MeshElement(node[0], node[1], node[2], marker - 1)); // marker conversion from triangle, where it starts from 1
+            elementList.append(MeshElement(nodeA, nodeB, nodeC, marker - 1)); // marker conversion from triangle, where it starts from 1
         }
 
         if (Agros2D::problem()->config()->meshType() == MeshType_Triangle_QuadFineDivision)
         {
             // add additional node
-            nodeList.append(Point((nodeList[node[0]].x + nodeList[node[1]].x + nodeList[node[2]].x) / 3.0,
-                                  (nodeList[node[0]].y + nodeList[node[1]].y + nodeList[node[2]].y) / 3.0));
+            nodeList.append(Point((nodeList[nodeA].x + nodeList[nodeB].x + nodeList[nodeC].x) / 3.0,
+                                  (nodeList[nodeA].y + nodeList[nodeB].y + nodeList[nodeC].y) / 3.0));
             // add three quad elements
-            elementList.append(MeshElement(node[4], node[0], node[5], nodeList.count() - 1, marker - 1)); // marker conversion from triangle, where it starts from 1
-            elementList.append(MeshElement(node[5], node[1], node[3], nodeList.count() - 1, marker - 1)); // marker conversion from triangle, where it starts from 1
-            elementList.append(MeshElement(node[3], node[2], node[4], nodeList.count() - 1, marker - 1)); // marker conversion from triangle, where it starts from 1
+            elementList.append(MeshElement(nodeNB, nodeA, nodeNC, nodeList.count() - 1, marker - 1)); // marker conversion from triangle, where it starts from 1
+            elementList.append(MeshElement(nodeNC, nodeB, nodeNA, nodeList.count() - 1, marker - 1)); // marker conversion from triangle, where it starts from 1
+            elementList.append(MeshElement(nodeNA, nodeC, nodeNB, nodeList.count() - 1, marker - 1)); // marker conversion from triangle, where it starts from 1
         }
 
         if (marker == 0)
@@ -502,16 +469,15 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
     */
 
     // triangle neigh
-    sscanf(inNeigh.readLine().toStdString().c_str(), "%i", &k);
-    for (int i = 0; i < k; i++)
+    QString lineNeigh = inNeigh.readLine().trimmed();
+    int numberOfNeigh = lineNeigh.split(whiteChar).at(0).toInt();
+    for (int i = 0; i < numberOfNeigh; i++)
     {
-        int n;
-        int ele_1, ele_2, ele_3;
+        QStringList parsedLine = inNeigh.readLine().trimmed().split(whiteChar);
 
-        sscanf(inNeigh.readLine().toStdString().c_str(), "%i	%i	%i	%i", &n, &ele_1, &ele_2, &ele_3);
-        elementList[i].neigh[0] = ele_1;
-        elementList[i].neigh[1] = ele_2;
-        elementList[i].neigh[2] = ele_3;
+        elementList[i].neigh[0] = parsedLine.at(1).toInt();;
+        elementList[i].neigh[1] = parsedLine.at(2).toInt();;
+        elementList[i].neigh[2] = parsedLine.at(3).toInt();;
     }
 
     fileNode.close();
