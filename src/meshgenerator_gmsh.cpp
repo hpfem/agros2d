@@ -172,9 +172,9 @@ bool MeshGeneratorGMSH::writeToGmsh()
     QTextStream out(&file);
 
     // mesh size
-    // RectPoint rect = Agros2D::scene()->boundingBox();
-    // out << QString("mesh_size = %1;\n").arg(qMin(rect.width(), rect.height()) / 6.0);
-    out << QString("mesh_size = 0;\n");
+    RectPoint rect = Agros2D::scene()->boundingBox();
+    out << QString("mesh_size = %1;\n").arg(qMin(rect.width(), rect.height()) / 6.0);
+    //out << QString("mesh_size = 0;\n");
 
     // nodes
     QString outNodes;
