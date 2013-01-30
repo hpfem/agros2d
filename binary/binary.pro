@@ -32,6 +32,8 @@ win32-msvc2010 {
     QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
+    HEADERS      += ../src/mainwindow.h
+
     LIBS += -L..
     LIBS += -L../libs
     TARGET = ../../agros2d

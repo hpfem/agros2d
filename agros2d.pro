@@ -4,8 +4,8 @@ SUBDIRS += 3rdparty
 SUBDIRS += hermes2d
 SUBDIRS += src
 SUBDIRS += binary
-SUBDIRS += solver
 linux-g++|linux-g++-64|linux-g++-32 {
+    SUBDIRS += solver
     SUBDIRS += generator
 }
 

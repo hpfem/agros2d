@@ -102,6 +102,7 @@ win32-msvc2010 {
     INCLUDEPATH += c:/hpfem/hermes/dependencies/include
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 
+    LIBS += -L..
     LIBS += -L../libs
     LIBS += -L../hermes2d/libs
     LIBS += -L../3rdparty/libs

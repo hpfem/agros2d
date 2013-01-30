@@ -35,6 +35,14 @@ win32-msvc2010 {
     QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
+    HEADERS      += ../src/hermes2d/problem.h
+    HEADERS      += ../src/hermes2d/field.h
+    HEADERS      += ../src/scene.h
+    HEADERS      += ../src/logview.h
+    HEADERS      += ../src/pythonlab/pythonengine_agros.h
+    HEADERS      += ../pythonlab/pythonlab/pythonengine.h
+    HEADERS      += ../pythonlab/pythonlab/pythoneditor.h
+
     LIBS += -L..
     TARGET = ../../agros2d_solver
 }

@@ -682,8 +682,16 @@ void SceneViewPost2D::paintContoursTri(double3* vert, int3* tri, double step)
             double x2 = (1.0 - rt) * vert[idx[r1]][0] + rt * vert[idx[r2]][0];
             double y2 = (1.0 - rt) * vert[idx[r1]][1] + rt * vert[idx[r2]][1];
 
-            if (perm & 1) { glVertex2d(x1, y1); glVertex2d(x2, y2); }
-            else { glVertex2d(x2, y2); glVertex2d(x1, y1); }
+            if (perm & 1)
+            {
+                glVertex2d(x1, y1);
+                glVertex2d(x2, y2);
+            }
+            else
+            {
+                glVertex2d(x2, y2);
+                glVertex2d(x1, y1);
+            }
 
             val += step;
         }
