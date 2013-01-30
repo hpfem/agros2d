@@ -36,17 +36,17 @@
         <module:quantity id="flow_density"/>
         <module:quantity id="flow_force_x"/>
         <module:quantity id="flow_force_y"/>
-        <module:matrix_form id="form" axi_linear="0" axi_newton="0" i="1" j="1" planar_linear="fl_mu * (udx * vdx + udy * vdy)" planar_newton="fl_mu * (udx * vdx + udy * vdy) + fl_rho * (value1 * udx + value2 * udy + dx1 * uval) * vval"/>
-        <module:matrix_form id="form" axi_linear="0" axi_newton="0" i="1" j="2" planar_linear="0" planar_newton="fl_rho * dy1 * uval * vval"/>
-        <module:matrix_form id="form" axi_linear="0" axi_newton="0" i="1" j="3" planar_linear=" - uval * vdx" planar_newton=" - uval * vdx"/>
-        <module:matrix_form id="form" axi_linear="0" axi_newton="0" i="2" j="1" planar_linear="0" planar_newton="fl_rho * dx2 * uval * vval"/>
-        <module:matrix_form id="form" axi_linear="0" axi_newton="0" i="2" j="2" planar_linear="fl_mu * (udx * vdx + udy * vdy)" planar_newton="fl_mu * (udx * vdx + udy * vdy) + fl_rho * (value1 * udx + value2 * udy + dy2 * uval) * vval"/>
-        <module:matrix_form id="form" axi_linear="0" axi_newton="0" i="2" j="3" planar_linear=" - uval * vdy" planar_newton=" - uval * vdy"/>
-        <module:matrix_form id="form" axi_linear="0" axi_newton="0" i="3" j="1" planar_linear="udx * vval" planar_newton="udx * vval"/>
-        <module:matrix_form id="form" axi_linear="0" axi_newton="0" i="3" j="2" planar_linear="udy * vval" planar_newton="udy * vval"/>
-        <module:vector_form id="form" axi_linear="0" axi_newton="0" i="1" j="1" planar_linear="fl_fx * vval" planar_newton="fl_mu * (updx * vdx + updy * vdy) - value3 * vdx + fl_rho * (value1 * dx1 + value2 * dy1) * vval - fl_fx * vval"/>
-        <module:vector_form id="form" axi_linear="0" axi_newton="0" i="2" j="2" planar_linear="fl_fy * vval" planar_newton="fl_mu * (updx * vdx + updy * vdy) - value3 * vdy + fl_rho * (value1 * dx2 + value2 * dy2) * vval - fl_fy * vval"/>
-        <module:vector_form id="form" axi_linear="0" axi_newton="0" i="3" j="3" planar_linear="0" planar_newton="(dx1 + dy2) * vval"/>
+        <module:matrix_form id="form" axi_linear="fl_mu * (r*r * udr * vdr - r * udr * vval + uval * vval + r*r * udz * vdz)" axi_newton="fl_mu * (r*r * udr * vdr - r * udr * vval + uval * vval + r*r * udz * vdz) + fl_rho * r*r * (value1 * udr + value2 * udz + dr1 * uval) * vval" i="1" j="1" planar_linear="fl_mu * (udx * vdx + udy * vdy)" planar_newton="fl_mu * (udx * vdx + udy * vdy) + fl_rho * (value1 * udx + value2 * udy + dx1 * uval) * vval"/>
+        <module:matrix_form id="form" axi_linear="0" axi_newton="fl_rho * r*r * dz1 * uval * vval" i="1" j="2" planar_linear="0" planar_newton="fl_rho * dy1 * uval * vval"/>
+        <module:matrix_form id="form" axi_linear="- r*r * uval * vdr" axi_newton="- r*r * uval * vdr" i="1" j="3" planar_linear=" - uval * vdx" planar_newton=" - uval * vdx"/>
+        <module:matrix_form id="form" axi_linear="0" axi_newton="fl_rho * r*r * dr2 * uval * vval" i="2" j="1" planar_linear="0" planar_newton="fl_rho * dx2 * uval * vval"/>
+        <module:matrix_form id="form" axi_linear="fl_mu * (r * udr * vdr - udr * vval + r * udz * vdz)" axi_newton="fl_mu * (r * udr * vdr - udr * vval + r * udz * vdz) + fl_rho * r * (value1 * udr + value2 * udz + dz2 * uval) * vval" i="2" j="2" planar_linear="fl_mu * (udx * vdx + udy * vdy)" planar_newton="fl_mu * (udx * vdx + udy * vdy) + fl_rho * (value1 * udx + value2 * udy + dy2 * uval) * vval"/>
+        <module:matrix_form id="form" axi_linear="- r * uval * vdz" axi_newton="- r * uval * vdz" i="2" j="3" planar_linear=" - uval * vdy" planar_newton=" - uval * vdy"/>
+        <module:matrix_form id="form" axi_linear="r * udr * vval + uval * vval" axi_newton="r * udr * vval + uval * vval" i="3" j="1" planar_linear="udx * vval" planar_newton="udx * vval"/>
+        <module:matrix_form id="form" axi_linear="udz * vval" axi_newton="udz * vval" i="3" j="2" planar_linear="udy * vval" planar_newton="udy * vval"/>
+        <module:vector_form id="form" axi_linear="r*r * fl_fx * vval" axi_newton="fl_mu * (r*r * updr * vdr - r * updr * vval + upval * vval + r*r * updz * vdz) - r*r * value3 * vdr + fl_rho * r*r * (value1 * dr1 + value2 * dz1) * vval - r*r * fl_fx * vval" i="1" j="1" planar_linear="fl_fx * vval" planar_newton="fl_mu * (updx * vdx + updy * vdy) - value3 * vdx + fl_rho * (value1 * dx1 + value2 * dy1) * vval - fl_fx * vval"/>
+        <module:vector_form id="form" axi_linear="r * fl_fy * vval" axi_newton="fl_mu * (r * updr * vdr - updr * vval + r * updz * vdz) - r * value3 * vdz + fl_rho * r * (value1 * dr2 + value2 * dz2) * vval - r * fl_fy * vval" i="2" j="2" planar_linear="fl_fy * vval" planar_newton="fl_mu * (updx * vdx + updy * vdy) - value3 * vdy + fl_rho * (value1 * dx2 + value2 * dy2) * vval - fl_fy * vval"/>
+        <module:vector_form id="form" axi_linear="0" axi_newton="(r * dr1 + value1 + r * dz2) * vval" i="3" j="3" planar_linear="0" planar_newton="(dx1 + dy2) * vval"/>
       </module:weakform_volume>
       <module:weakform_volume analysistype="transient"
         equation="\rho \left( \frac{\partial \vec{v}}{\partial t} + \vec{v} \cdot \grad \vec{v} \right) = -\, \grad p + \mu \triangle \vec{v} + \vec{f},~\div \vec{v} = 0">
