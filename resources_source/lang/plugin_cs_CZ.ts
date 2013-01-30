@@ -110,8 +110,12 @@
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="820"/>
-        <source>Acoustics is the interdisciplinary science that deals with the study of all mechanical waves in gases, liquids, and solids.</source>
+        <source>Acoustics is the interdisciplinary science that deals with the study of all mechanical waves in gases, liquids and solids.</source>
         <translation>Akustika je interdisciplinární věda, která se zabývá studiem mechanického vlnění v plynném, tekutém a pevném prostředí.</translation>
+    </message>
+    <message>
+        <source>Acoustics is the interdisciplinary science that deals with the study of all mechanical waves in gases, liquids, and solids.</source>
+        <translation type="obsolete">Akustika je interdisciplinární věda, která se zabývá studiem mechanického vlnění v plynném, tekutém a pevném prostředí.</translation>
     </message>
 </context>
 <context>
@@ -582,8 +586,12 @@
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1261"/>
-        <source>Incompressible flow model using Navier-Stokes equations </source>
+        <source>Incompressible flow model using Navier-Stokes equations.</source>
         <translation>Model nestlačitelného proudění využívající Navier-Stokesovy rovnice.</translation>
+    </message>
+    <message>
+        <source>Incompressible flow model using Navier-Stokes equations </source>
+        <translation type="obsolete">Model nestlačitelného proudění využívající Navier-Stokesovy rovnice.</translation>
     </message>
 </context>
 <context>
