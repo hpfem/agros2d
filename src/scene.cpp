@@ -1503,6 +1503,10 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         nodeCoupling = nodeCoupling.nextSibling();
     }
 
+    // set active field info
+    if (Agros2D::problem()->fieldInfos().count() > 0)
+        setActiveViewField(Agros2D::problem()->fieldInfos().begin().value());
+
     blockSignals(false);
 
     // default values
