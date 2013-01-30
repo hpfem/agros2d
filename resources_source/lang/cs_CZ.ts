@@ -2405,6 +2405,13 @@
         <translation>Export DXF...</translation>
     </message>
     <message>
+        <location filename="../../src/mainwindow.cpp" line="385"/>
+        <source>Adaptive
+step</source>
+        <translation>Adaptivní
+krok</translation>
+    </message>
+    <message>
         <location filename="../../src/mainwindow.cpp" line="1366"/>
         <source>Run script: %1
 </source>
@@ -3022,10 +3029,9 @@ oblasti</translation>
         <translation>Uložit řešení na disk</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="385"/>
         <source>Adaptive 
 step</source>
-        <translation>Adaptivní
+        <translation type="obsolete">Adaptivní
 krok</translation>
     </message>
     <message>
@@ -9077,7 +9083,7 @@ Chcete tyto změny uložit?</translation>
         <translation>Export rozložení skaláru jako VTK soubor</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post2d.cpp" line="1291"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="1299"/>
         <source>Export VTK file</source>
         <translation>Eportovat VTK soubor</translation>
     </message>
@@ -9086,7 +9092,7 @@ Chcete tyto změny uložit?</translation>
         <translation type="obsolete">Export vtk souboru</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post2d.cpp" line="1291"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="1299"/>
         <source>VTK files (*.vtk)</source>
         <translation>VTK soubory (*.vtk)</translation>
     </message>

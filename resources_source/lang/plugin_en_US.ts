@@ -110,7 +110,7 @@
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="820"/>
-        <source>Acoustics is the interdisciplinary science that deals with the study of all mechanical waves in gases, liquids, and solids.</source>
+        <source>Acoustics is the interdisciplinary science that deals with the study of all mechanical waves in gases, liquids and solids.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -582,7 +582,7 @@
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="1261"/>
-        <source>Incompressible flow model using Navier-Stokes equations </source>
+        <source>Incompressible flow model using Navier-Stokes equations.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
