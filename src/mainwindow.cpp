@@ -938,7 +938,16 @@ void MainWindow::doDocumentOpen(const QString &fileName)
         if (fileInfo.suffix() == "a2d")
         {
             // a2d data file
-            ErrorResult result = Agros2D::scene()->readFromFile(fileNameDocument);
+            ErrorResult result;
+            // todo: mixing exceptions with error code. Should be unified, probably use exceptions everywhere
+            try{
+                result = Agros2D::scene()->readFromFile(fileNameDocument);
+            }
+            catch(AgrosModuleException& e)
+            {
+                result = ErrorResult(ErrorResultType_Critical, e.what());
+            }
+
             if (!result.isError())
             {
                 setRecentFiles();
@@ -989,7 +998,16 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
     QString fileName = action->text();
     if (QFile::exists(fileName))
     {
-        ErrorResult result = Agros2D::scene()->readFromFile(fileName);
+        ErrorResult result;
+        // todo: mixing exceptions with error code. Should be unified, probably use exceptions everywhere
+        try{
+            result = Agros2D::scene()->readFromFile(fileName);
+        }
+        catch(AgrosModuleException& e)
+        {
+            result = ErrorResult(ErrorResultType_Critical, e.what());
+        }
+
         if (!result.isError())
         {
             setRecentFiles();
