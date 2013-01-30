@@ -320,7 +320,8 @@ SceneEdgeMarker::SceneEdgeMarker(SceneEdge *edge, FieldInfo *fieldInfo, QWidget 
 
 void SceneEdgeMarker::load()
 {
-    cmbBoundary->setCurrentIndex(cmbBoundary->findData(m_edge->marker(m_fieldInfo)->variant()));
+    if (m_edge->hasMarker(m_fieldInfo))
+        cmbBoundary->setCurrentIndex(cmbBoundary->findData(m_edge->marker(m_fieldInfo)->variant()));
 
     // edge refinement
     int refinement = m_fieldInfo->edgeRefinement(m_edge);

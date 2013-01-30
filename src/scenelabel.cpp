@@ -219,7 +219,8 @@ SceneLabelMarker::SceneLabelMarker(SceneLabel *label, FieldInfo *fieldInfo, QWid
 
 void SceneLabelMarker::load()
 {
-    cmbMaterial->setCurrentIndex(cmbMaterial->findData(m_label->marker(m_fieldInfo)->variant()));
+    if (m_label->hasMarker(m_fieldInfo))
+        cmbMaterial->setCurrentIndex(cmbMaterial->findData(m_label->marker(m_fieldInfo)->variant()));
 
     // refine area
     int refinement = m_fieldInfo->labelRefinement(m_label);

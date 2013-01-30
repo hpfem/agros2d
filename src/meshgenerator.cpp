@@ -182,8 +182,8 @@ bool MeshGenerator::writeToHermes()
                 }
 
                 // edge has boundary condition prescribed for this field
-                bool hasFieldBoundaryCondition = (Agros2D::scene()->edges->at(edgeList[i].marker)->marker(fieldInfo)
-                                                  != SceneBoundaryContainer::getNone(fieldInfo));
+                bool hasFieldBoundaryCondition = (Agros2D::scene()->edges->at(edgeList[i].marker)->hasMarker(fieldInfo)
+                                                  && (Agros2D::scene()->edges->at(edgeList[i].marker)->marker(fieldInfo) != SceneBoundaryContainer::getNone(fieldInfo)));
 
                 if (numNeighWithField == 1)
                 {

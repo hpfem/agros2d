@@ -320,7 +320,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                 foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
                 {
                     str = str + QString("%1 (%2), ").
-                            arg(edge->marker(fieldInfo)->name()).
+                            arg(edge->hasMarker(fieldInfo) ? edge->marker(fieldInfo)->name() : tr("-")).
                             arg(fieldInfo->name());
                     refinement = refinement + QString("%1 (%2), ").
                             arg(fieldInfo->edgeRefinement(edge)).
@@ -356,7 +356,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                 foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
                 {
                     str = str + QString("%1 (%2), ").
-                            arg(label->marker(fieldInfo)->name()).
+                            arg(label->hasMarker(fieldInfo) ? label->marker(fieldInfo)->name() : tr("-")).
                             arg(fieldInfo->name());
                     area_refinement = area_refinement + QString("%1 (%2), ").
                             arg(fieldInfo->labelRefinement(label)).
