@@ -89,15 +89,20 @@
           <module:essential_form id="form" axi_linear="fl_vx" axi_newton="fl_vx" i="1" planar_linear="fl_vx" planar_newton="fl_vx"/>
           <module:essential_form id="form" axi_linear="fl_vy" axi_newton="fl_vy" i="2" planar_linear="fl_vy" planar_newton="fl_vy"/>
         </module:boundary>
-        <module:boundary id="fluid_outlet" name="Outlet"
+        <module:boundary id="flow_outlet" name="Outlet"
           equation="">
           <module:vector_form id="form" axi_linear="0" axi_newton="0" i="1" j="1" planar_linear="0" planar_newton="0"/>
           <module:vector_form id="form" axi_linear="0" axi_newton="0" i="2" j="2" planar_linear="0" planar_newton="0"/>
         </module:boundary>
-        <module:boundary id="fluid_pressure" name="Pressure"
+        <module:boundary id="flow_pressure" name="Pressure"
           equation="">
           <module:quantity dependence="space" id="flow_pressure"/>
           <module:essential_form id="form" axi_linear="fl_p" axi_newton="fl_p" i="3" planar_linear="fl_p" planar_newton="fl_p"/>
+        </module:boundary>
+        <module:boundary id="flow_symmetry" name="Axial symmetry"
+          equation="">
+          <module:essential_form id="form" axi_linear="0" axi_newton="0" i="1" planar_linear="0" planar_newton="0"/>
+          <module:vector_form id="form" axi_linear="0" axi_newton="0" i="2" j="2" planar_linear="0" planar_newton="0"/>
         </module:boundary>
       </module:weakform_surface>
       <module:weakform_surface analysistype="transient" default="flow_velocity">
@@ -108,7 +113,7 @@
           <module:essential_form id="form" axi_linear="fl_vx" axi_newton="fl_vx" i="1" planar_linear="fl_vx" planar_newton="fl_vx"/>
           <module:essential_form id="form" axi_linear="fl_vy" axi_newton="fl_vy" i="2" planar_linear="fl_vy" planar_newton="fl_vy"/>
         </module:boundary>
-        <module:boundary id="fluid_outlet" name="Outlet"
+        <module:boundary id="flow_outlet" name="Outlet"
           equation="">
           <module:vector_form id="form" axi_linear="0" axi_newton="0" i="1" j="1" planar_linear="0" planar_newton="0"/>
           <module:vector_form id="form" axi_linear="0" axi_newton="0" i="2" j="2" planar_linear="0" planar_newton="0"/>

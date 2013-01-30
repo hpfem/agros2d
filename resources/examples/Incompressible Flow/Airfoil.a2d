@@ -102,7 +102,7 @@
                         <edge edge="32"/>
                         <edge edge="34"/>
                     </boundary>
-                    <boundary type="fluid_outlet" id="3" name="Outlet">
+                    <boundary type="flow_outlet" id="3" name="Outlet">
                         <edge edge="33"/>
                     </boundary>
                     <boundary type="flow_velocity" id="4" name="Airfoil" flow_velocity_x="0" flow_velocity_y="0">

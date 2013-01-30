@@ -50,7 +50,7 @@
                         <edge edge="6"/>
                         <edge edge="7"/>
                     </boundary>
-                    <boundary flow_pressure="0" type="fluid_outlet" id="3" name="Outlet" flow_velocity_x="0" flow_velocity_y="0">
+                    <boundary flow_pressure="0" type="flow_outlet" id="3" name="Outlet" flow_velocity_x="0" flow_velocity_y="0">
                         <edge edge="1"/>
                     </boundary>
                 </boundaries>
