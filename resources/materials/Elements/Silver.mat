@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/vasek/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Silver"/>
+
+  <material:properties>
+    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="&amp;deg;C" name="Thermal conductivity (Celsius)" shortname="&lt;i>&amp;lambda;&lt;/i>" source="C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)" unit="W/m.K">
+      <material:constant value="428.77"/>
+      <material:dependence>
+        <material:function body="def agros2d_material(t) :&#xA;&#x9;t = t + 273.15&#xA;&#x9;if t >= 0.0 and t &lt; 12.0 :&#xA;&#x9;&#x9;return -6.180556e-02*t*t*t*t*t +5.370411e+00*t*t*t*t -1.014630e+02*t*t*t +3.488866e+02*t*t +3.587152e+03*t&#xA;&#x9;elif t >= 12.0 and t &lt; 35.0 :&#xA;&#x9;&#x9;return 1.433909e-02*t*t*t*t -2.689213e+00*t*t*t +1.722387e+02*t*t -4.753283e+03*t +5.052205e+04&#xA;&#x9;elif t >= 35.0 and t &lt; 100.0 :&#xA;&#x9;&#x9;return -1.566974e-06*t*t*t*t*t +7.123183e-04*t*t*t*t -1.287378e-01*t*t*t +1.160410e+01*t*t -5.246271e+02*t +1.004841e+04&#xA;&#x9;elif t >= 100.0 and t &lt; 250.0 :&#xA;&#x9;&#x9;return -5.424229e-10*t*t*t*t*t +6.016276e-07*t*t*t*t -2.715928e-04*t*t*t +6.197118e-02*t*t -7.120703e+00*t +7.592297e+02&#xA;&#x9;elif t >= 250.0 and t &lt;= 1235.0 :&#xA;&#x9;&#x9;return -5.786644e-11*t*t*t*t +2.109166e-07*t*t*t -2.937158e-04*t*t +9.979317e-02*t +4.198682e+02&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="-270" interval_to="960"/>
+      </material:dependence>
+    </material:property>
+    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="&amp;deg;C" name="Specific heat (Celsius)" shortname="&lt;i>c&lt;/i>&lt;sub>p&lt;/sub>" source="B.J. McBride, S. Gordon and M.A. Reno, NASA Technical Paper 3287 (1993) and D.R. Smith, F.R. Fickett, J. Research National Institute Standards Technology, v100, p119 (1995)" unit="J/kg.K">
+      <material:constant value="234.53"/>
+      <material:dependence>
+        <material:function body="def agros2d_material(t) :&#xA;&#x9;t = t + 273.15&#xA;&#x9;if t >= 1.0 and t &lt; 12.3 :&#xA;&#x9;&#x9;return -3.512349e-06*t*t*t*t*t +1.661680e-04*t*t*t*t -4.957659e-04*t*t*t +1.009593e-02*t*t -1.394369e-02*t +1.224227e-02&#xA;&#x9;elif t >= 12.3 and t &lt; 75.0 :&#xA;&#x9;&#x9;return -8.439015e-08*t*t*t*t*t +3.380225e-05*t*t*t*t -4.853545e-03*t*t*t +2.956444e-01*t*t -4.669813e+00*t +2.424847e+01&#xA;&#x9;elif t >= 75.0 and t &lt; 300.0 :&#xA;&#x9;&#x9;return 2.411435e-10*t*t*t*t*t -3.105375e-07*t*t*t*t +1.570454e-04*t*t*t -3.961478e-02*t*t +5.177265e+00*t -6.385884e+01&#xA;&#x9;elif t >= 300.0 and t &lt;= 1235.0 :&#xA;&#x9;&#x9;return -1.768498e-08*t*t*t +5.007143e-05*t*t +1.705702e-02*t +2.257065e+02&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="-270" interval_to="960"/>
+      </material:dependence>
+    </material:property>
+    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="&amp;deg;C" name="Density (Celsius)" shortname="&lt;i>&amp;rho;&lt;/i>" source="F.C. Nix and D. MacNair, Physical Review, v61, p74 (1942) and E.A. Owen and E.L. Yates, Phil. Mag. S7, v17, p113 (1934) and N. Waterhouse and B. Yates, Cryogenics, p267, v8, (1968)" unit="kg/m&lt;sup>3&lt;/sup>">
+      <material:constant value="10500"/>
+      <material:dependence>
+        <material:function body="def agros2d_material(t) :&#xA;&#x9;t = t + 273.15&#xA;&#x9;if t >= 30.0 and t &lt; 140.0 :&#xA;&#x9;&#x9;return 1.205168e-05*t*t*t -4.909187e-03*t*t +1.425881e-01*t +1.063021e+04&#xA;&#x9;elif t >= 140.0 and t &lt;= 873.0 :&#xA;&#x9;&#x9;return 1.470941e-07*t*t*t -2.976784e-04*t*t -4.692536e-01*t +1.065896e+04&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="-240" interval_to="595"/>
+      </material:dependence>
+    </material:property>
+  </material:properties>
+
+</material:material>
