@@ -91,7 +91,7 @@ private:
 };
 
 
-class LexicalAnalyser
+class AGROS_API LexicalAnalyser
 {
 public:
 

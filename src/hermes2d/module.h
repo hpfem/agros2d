@@ -451,9 +451,9 @@ private:
 AGROS_API void updateTimeFunctions(double time);
 
 // available modules
-QMap<QString, QString> availableModules();
+AGROS_API QMap<QString, QString> availableModules();
 // available analyses
-QMap<AnalysisType, QString> availableAnalyses(const QString &fieldId);
+AGROS_API QMap<AnalysisType, QString> availableAnalyses(const QString &fieldId);
 
 // mesh fix
 void readMeshDirtyFix();
