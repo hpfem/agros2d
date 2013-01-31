@@ -46,9 +46,7 @@ MeshGeneratorGMSH::MeshGeneratorGMSH() : MeshGenerator()
 
 bool MeshGeneratorGMSH::mesh()
 {
-    m_isError = false;
-
-    QFile::remove(tempProblemFileName() + ".mesh");
+    m_isError = !prepare();
 
     // create gmsh files
     if (writeToGmsh())

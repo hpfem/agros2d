@@ -46,22 +46,7 @@ MeshGeneratorTriangle::MeshGeneratorTriangle() : MeshGenerator()
 
 bool MeshGeneratorTriangle::mesh()
 {
-    m_isError = false;
-
-    LoopsInfo loopsInfo;
-    try
-    {
-        loopsInfo = findLoops();
-    }
-    catch (AgrosMeshException& ame)
-    {
-        Agros2D::log()->printError(tr("GMSH"), ame.toString());
-        std::cout << "Missing Label";
-        m_isError = true;
-        return false;
-    }
-
-    QFile::remove(tempProblemFileName() + ".mesh");
+    m_isError = !prepare();
 
     // create triangle files
     if (writeToTriangle())

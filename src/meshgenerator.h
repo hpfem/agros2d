@@ -21,6 +21,7 @@
 #define MESHGENERATOR_H
 
 #include "util.h"
+#include "util/loops.h"
 
 class AGROS_API AgrosMeshException : public AgrosException
 {
@@ -158,8 +159,10 @@ protected:
     QList<MeshElement> elementList;
 
     bool writeToHermes();
+    bool prepare();
 
     bool m_isError;
+    LoopsInfo m_loopsInfo;
 };
 
 #endif //MESHGENERATOR_H

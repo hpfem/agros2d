@@ -240,3 +240,21 @@ bool MeshGenerator::writeToHermes()
 
     return true;
 }
+
+bool MeshGenerator::prepare()
+{
+    LoopsInfo loopsInfo;
+    try
+    {
+        loopsInfo = findLoops();
+    }
+    catch (AgrosMeshException& ame)
+    {
+        Agros2D::log()->printError(tr("Mesh generator"), ame.toString());
+        return false;
+    }
+
+    QFile::remove(tempProblemFileName() + ".mesh");
+
+    return true;
+}
