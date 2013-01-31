@@ -1146,7 +1146,8 @@ void SceneViewPost2D::paintVectors()
 
 void SceneViewPost2D::paintPostprocessorSelectedVolume()
 {
-    if (!Agros2D::problem()->isMeshed()) return;
+    if (!Agros2D::problem()->isSolved()) return;
+    if (!m_postHermes->initialMeshIsPrepared()) return;
 
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -1199,6 +1200,9 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
 
 void SceneViewPost2D::paintPostprocessorSelectedSurface()
 {
+    if (!Agros2D::problem()->isSolved()) return;
+    if (!m_postHermes->initialMeshIsPrepared()) return;
+
     // edges
     foreach (SceneEdge *edge, Agros2D::scene()->edges->items()) {
         glColor3d(Agros2D::problem()->configView()->colorSelected.redF(), Agros2D::problem()->configView()->colorSelected.greenF(), Agros2D::problem()->configView()->colorSelected.blueF());
@@ -1228,6 +1232,8 @@ void SceneViewPost2D::paintPostprocessorSelectedSurface()
 
 void SceneViewPost2D::paintPostprocessorSelectedPoint()
 {
+    if (!Agros2D::problem()->isSolved()) return;
+
     glColor3d(Agros2D::problem()->configView()->colorSelected.redF(), Agros2D::problem()->configView()->colorSelected.greenF(), Agros2D::problem()->configView()->colorSelected.blueF());
     glPointSize(8.0);
 

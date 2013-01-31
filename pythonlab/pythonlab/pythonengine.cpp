@@ -289,16 +289,29 @@ ExpressionResult PythonEngine::runExpression(const QString &expression, bool ret
             if (returnValue)
             {
                 PyObject *result = PyDict_GetItemString(m_dict, "result_pythonlab");
+
+
                 if (result)
                 {
-                    Py_INCREF(result);
-                    PyArg_Parse(result, "d", &expressionResult.value);
-                    if (fabs(expressionResult.value) < EPS_ZERO)
+                    if ((QString(result->ob_type->tp_name) == "bool") ||
+                            (QString(result->ob_type->tp_name) == "int") ||
+                            (QString(result->ob_type->tp_name) == "float"))
+                    {
+                        Py_INCREF(result);
+                        PyArg_Parse(result, "d", &expressionResult.value);
+                        if (fabs(expressionResult.value) < EPS_ZERO)
+                            expressionResult.value = 0.0;
+                        Py_XDECREF(result);
+                    }
+                    else
+                    {
+                        qDebug() << tr("Type '%1' is not supported ().").arg(result->ob_type->tp_name).arg(expression);
+                        expressionResult.error = tr("Type '%1' is not supported.").arg(result->ob_type->tp_name);
                         expressionResult.value = 0.0;
-                    Py_XDECREF(result);
-
-                    PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
+                    }
                 }
+
+                PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
             }
         }
     }
