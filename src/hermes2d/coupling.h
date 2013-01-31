@@ -31,11 +31,11 @@ class ProblemConfig;
 class PluginInterface;
 
 // available couplings
-QMap<QString, QString> availableCouplings();
+AGROS_API QMap<QString, QString> availableCouplings();
 
-bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField);
+AGROS_API bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField);
 
-class CouplingInfo
+class AGROS_API CouplingInfo
 {
 public:
     CouplingInfo(FieldInfo* sourceField, FieldInfo* targetField,

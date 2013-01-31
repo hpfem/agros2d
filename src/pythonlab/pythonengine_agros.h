@@ -68,7 +68,7 @@ private:
     PostHermes *m_postHermes;
 };
 
-class PythonLabAgros : public PythonEditorDialog
+class AGROS_API PythonLabAgros : public PythonEditorDialog
 {
     Q_OBJECT
 public:
