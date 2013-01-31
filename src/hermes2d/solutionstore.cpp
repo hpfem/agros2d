@@ -448,7 +448,7 @@ void SolutionStore::loadRunTimeDetails()
 
 void SolutionStore::saveRunTimeDetails()
 {
-    QString fn = QString("%1/rruntime.xml").arg(cacheProblemDir());
+    QString fn = QString("%1/runtime.xml").arg(cacheProblemDir());
 
     try
     {
