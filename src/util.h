@@ -137,9 +137,9 @@ QByteArray readFileContentByteArray(const QString &fileName);
 AGROS_API QString readFileContent(const QString &fileName);
 
 // write content into the file
-void writeStringContent(const QString &fileName, QString content);
-void writeStringContent(const QString &fileName, QString *content);
-void writeStringContentByteArray(const QString &fileName, QByteArray content);
+AGROS_API void writeStringContent(const QString &fileName, QString content);
+AGROS_API void writeStringContent(const QString &fileName, QString *content);
+AGROS_API void writeStringContentByteArray(const QString &fileName, QByteArray content);
 
 // append to the file
 void appendToFile(const QString &fileName, const QString &str);
