@@ -1429,9 +1429,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
                 nodeEdge = nodeEdge.nextSibling();
             }
 
-            // add missing none markers
-            edges->addMissingFieldMarkers(field);
-
             nodeBoundary = nodeBoundary.nextSibling();
         }
 
@@ -1467,11 +1464,12 @@ ErrorResult Scene::readFromFile(const QString &fileName)
                 nodeLabel = nodeLabel.nextSibling();
             }
 
-            // add missing none markers
-            labels->addMissingFieldMarkers(field);
-
             nodeMaterial = nodeMaterial.nextSibling();
         }
+
+        // add missing none markers
+        edges->addMissingFieldMarkers(field);
+        labels->addMissingFieldMarkers(field);
 
         // add field
         Agros2D::problem()->blockSignals(true);
