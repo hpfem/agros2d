@@ -24,6 +24,7 @@
 
 #include "hermes_common.h"
 #include "hermes2d.h"
+#include "util.h"
 
 enum CoordinateType
 {
@@ -210,119 +211,119 @@ enum VectorCenter
     VectorCenter_Center
 };
 
-QString stringListToString(const QStringList &list);
+AGROS_API QString stringListToString(const QStringList &list);
 
 // keys
-void initLists();
+AGROS_API void initLists();
 
 // error norm
-QString errorNormString(Hermes::Hermes2D::ProjNormType projNormType);
+AGROS_API QString errorNormString(Hermes::Hermes2D::ProjNormType projNormType);
 
 // coordinate type
-QString coordinateTypeString(CoordinateType coordinateType);
-QStringList coordinateTypeStringKeys();
-QString coordinateTypeToStringKey(CoordinateType coordinateType);
-CoordinateType coordinateTypeFromStringKey(const QString &coordinateType);
+AGROS_API QString coordinateTypeString(CoordinateType coordinateType);
+AGROS_API QStringList coordinateTypeStringKeys();
+AGROS_API QString coordinateTypeToStringKey(CoordinateType coordinateType);
+AGROS_API CoordinateType coordinateTypeFromStringKey(const QString &coordinateType);
 
 // analysis type
-QString analysisTypeString(AnalysisType analysisType);
-QStringList analysisTypeStringKeys();
-QString analysisTypeToStringKey(AnalysisType analysisType);
-AnalysisType analysisTypeFromStringKey(const QString &analysisType);
+AGROS_API QString analysisTypeString(AnalysisType analysisType);
+AGROS_API QStringList analysisTypeStringKeys();
+AGROS_API QString analysisTypeToStringKey(AnalysisType analysisType);
+AGROS_API AnalysisType analysisTypeFromStringKey(const QString &analysisType);
 
 // coupling type
-QString couplingTypeString(CouplingType couplingType);
-QStringList couplingTypeStringKeys();
-QString couplingTypeToStringKey(CouplingType couplingType);
-CouplingType couplingTypeFromStringKey(const QString &couplingType);
+AGROS_API QString couplingTypeString(CouplingType couplingType);
+AGROS_API QStringList couplingTypeStringKeys();
+AGROS_API QString couplingTypeToStringKey(CouplingType couplingType);
+AGROS_API CouplingType couplingTypeFromStringKey(const QString &couplingType);
 
 // weakform type
-QString weakFormString(WeakFormKind weakForm);
-QStringList weakFormStringKeys();
-QString weakFormToStringKey(WeakFormKind weakForm);
-WeakFormKind weakFormFromStringKey(const QString &weakForm);
+AGROS_API QString weakFormString(WeakFormKind weakForm);
+AGROS_API QStringList weakFormStringKeys();
+AGROS_API QString weakFormToStringKey(WeakFormKind weakForm);
+AGROS_API WeakFormKind weakFormFromStringKey(const QString &weakForm);
 
 // mesh type
-QString meshTypeString(MeshType meshType);
-QStringList meshTypeStringKeys();
-QString meshTypeToStringKey(MeshType meshType);
-MeshType meshTypeFromStringKey(const QString &meshType);
+AGROS_API QString meshTypeString(MeshType meshType);
+AGROS_API QStringList meshTypeStringKeys();
+AGROS_API QString meshTypeToStringKey(MeshType meshType);
+AGROS_API MeshType meshTypeFromStringKey(const QString &meshType);
 
 // physic field variable component
-QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp);
-QStringList physicFieldVariableCompTypeStringKeys();
-QString physicFieldVariableCompToStringKey(PhysicFieldVariableComp physicFieldVariableComp);
-PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &physicFieldVariableComp);
+AGROS_API QString physicFieldVariableCompString(PhysicFieldVariableComp physicFieldVariableComp);
+AGROS_API QStringList physicFieldVariableCompTypeStringKeys();
+AGROS_API QString physicFieldVariableCompToStringKey(PhysicFieldVariableComp physicFieldVariableComp);
+AGROS_API PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &physicFieldVariableComp);
 
 // adaptivity type
-QString adaptivityTypeString(AdaptivityType adaptivityType);
-QStringList adaptivityTypeStringKeys();
-QString adaptivityTypeToStringKey(AdaptivityType adaptivityType);
-AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
+AGROS_API QString adaptivityTypeString(AdaptivityType adaptivityType);
+AGROS_API QStringList adaptivityTypeStringKeys();
+AGROS_API QString adaptivityTypeToStringKey(AdaptivityType adaptivityType);
+AGROS_API AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
 
 // time step method
-QString timeStepMethodString(TimeStepMethod timeStepMethod);
-QStringList timeStepMethodStringKeys();
-QString timeStepMethodToStringKey(TimeStepMethod timeStepMethod);
-TimeStepMethod timeStepMethodFromStringKey(const QString &timeStepMethod);
+AGROS_API QString timeStepMethodString(TimeStepMethod timeStepMethod);
+AGROS_API QStringList timeStepMethodStringKeys();
+AGROS_API QString timeStepMethodToStringKey(TimeStepMethod timeStepMethod);
+AGROS_API TimeStepMethod timeStepMethodFromStringKey(const QString &timeStepMethod);
 
 // solution mode
-QString solutionTypeString(SolutionMode solutionMode);
-QStringList solutionTypeStringKeys();
-QString solutionTypeToStringKey(SolutionMode solutionType);
-SolutionMode solutionTypeFromStringKey(const QString &solutionType);
+AGROS_API QString solutionTypeString(SolutionMode solutionMode);
+AGROS_API QStringList solutionTypeStringKeys();
+AGROS_API QString solutionTypeToStringKey(SolutionMode solutionType);
+AGROS_API SolutionMode solutionTypeFromStringKey(const QString &solutionType);
 
 // matrix solver type
-QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType);
-QStringList matrixSolverTypeStringKeys();
-QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType);
-Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType);
+AGROS_API QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType);
+AGROS_API QStringList matrixSolverTypeStringKeys();
+AGROS_API QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType);
+AGROS_API Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType);
 
 // space type
-QStringList spaceTypeStringKeys();
-QString spaceTypeToStringKey(Hermes::Hermes2D::SpaceType spaceType);
-Hermes::Hermes2D::SpaceType spaceTypeFromStringKey(const QString &spaceType);
+AGROS_API QStringList spaceTypeStringKeys();
+AGROS_API QString spaceTypeToStringKey(Hermes::Hermes2D::SpaceType spaceType);
+AGROS_API Hermes::Hermes2D::SpaceType spaceTypeFromStringKey(const QString &spaceType);
 
 // linearity type
-QString linearityTypeString(LinearityType linearityType);
-QStringList linearityTypeStringKeys();
-QString linearityTypeToStringKey(LinearityType linearityType);
-LinearityType linearityTypeFromStringKey(const QString &linearityType);
+AGROS_API QString linearityTypeString(LinearityType linearityType);
+AGROS_API QStringList linearityTypeStringKeys();
+AGROS_API QString linearityTypeToStringKey(LinearityType linearityType);
+AGROS_API LinearityType linearityTypeFromStringKey(const QString &linearityType);
 
 // scene view 3d mode
-QStringList sceneViewPost3DModeStringKeys();
-QString sceneViewPost3DModeToStringKey(SceneViewPost3DMode sceneViewPost3DMode);
-SceneViewPost3DMode sceneViewPost3DModeFromStringKey(const QString &sceneViewPost3DMode);
+AGROS_API QStringList sceneViewPost3DModeStringKeys();
+AGROS_API QString sceneViewPost3DModeToStringKey(SceneViewPost3DMode sceneViewPost3DMode);
+AGROS_API SceneViewPost3DMode sceneViewPost3DModeFromStringKey(const QString &sceneViewPost3DMode);
 
 // palette type
-QStringList paletteTypeStringKeys();
-QString paletteTypeToStringKey(PaletteType paletteType);
-PaletteType paletteTypeFromStringKey(const QString &paletteType);
-QString paletteTypeString(PaletteType paletteType);
+AGROS_API QStringList paletteTypeStringKeys();
+AGROS_API QString paletteTypeToStringKey(PaletteType paletteType);
+AGROS_API PaletteType paletteTypeFromStringKey(const QString &paletteType);
+AGROS_API QString paletteTypeString(PaletteType paletteType);
 
 // palette quality
-QStringList paletteQualityStringKeys();
-QString paletteQualityToStringKey(PaletteQuality paletteQuality);
-PaletteQuality paletteQualityFromStringKey(const QString &quality);
-double paletteQualityToDouble(PaletteQuality paletteQuality);
-QString paletteQualityString(PaletteQuality paletteQuality);
+AGROS_API QStringList paletteQualityStringKeys();
+AGROS_API QString paletteQualityToStringKey(PaletteQuality paletteQuality);
+AGROS_API PaletteQuality paletteQualityFromStringKey(const QString &quality);
+AGROS_API double paletteQualityToDouble(PaletteQuality paletteQuality);
+AGROS_API QString paletteQualityString(PaletteQuality paletteQuality);
 
 // palette order
-QStringList paletteOrderTypeStringKeys();
-QString paletteOrderTypeToStringKey(PaletteOrderType paletteType);
-PaletteOrderType paletteOrderTypeFromStringKey(const QString &paletteType);
+AGROS_API QStringList paletteOrderTypeStringKeys();
+AGROS_API QString paletteOrderTypeToStringKey(PaletteOrderType paletteType);
+AGROS_API PaletteOrderType paletteOrderTypeFromStringKey(const QString &paletteType);
 
 // vector type
-QString vectorTypeString(VectorType vectorType);
-QStringList vectorTypeStringKeys();
-QString vectorTypeToStringKey(VectorType vectorType);
-VectorType vectorTypeFromStringKey(const QString &vectorType);
+AGROS_API QString vectorTypeString(VectorType vectorType);
+AGROS_API QStringList vectorTypeStringKeys();
+AGROS_API QString vectorTypeToStringKey(VectorType vectorType);
+AGROS_API VectorType vectorTypeFromStringKey(const QString &vectorType);
 
 // vector center
-QString vectorCenterString(VectorCenter vectorCenter);
-QStringList vectorCenterStringKeys();
-QString vectorCenterToStringKey(VectorCenter vectorCenter);
-VectorCenter vectorCenterFromStringKey(const QString &vectorCenter);
+AGROS_API QString vectorCenterString(VectorCenter vectorCenter);
+AGROS_API QStringList vectorCenterStringKeys();
+AGROS_API QString vectorCenterToStringKey(VectorCenter vectorCenter);
+AGROS_API VectorCenter vectorCenterFromStringKey(const QString &vectorCenter);
 
 #endif // UTIL_ENUMS_H
 
