@@ -1855,10 +1855,24 @@ void Scene::readSolutionFromFile(const QString &fileName)
         // read mesh file
         if (QFile::exists(QString("%1/initial.mesh").arg(cacheProblemDir())))
         {
-            Agros2D::problem()->readInitialMeshesFromFile();
+            try
+            {
+                Agros2D::problem()->readInitialMeshesFromFile();
+            }
+            catch (AgrosException& e)
+            {
+                Agros2D::problem()->clearSolution();
+                Agros2D::log()->printError(tr("Mesh reader"), QString("Initial mesh is corrupted (%1).").arg(e.what()));
+            }
+            catch (Hermes::Exceptions::Exception& e)
+            {
+                Agros2D::problem()->clearSolution();
+                Agros2D::log()->printError(tr("Mesh reader"), QString("Initial mesh is corrupted (%1).").arg(e.what()));
+            }
         }
 
-        Agros2D::problem()->readSolutionsFromFile();
+        if (Agros2D::problem()->isMeshed())
+            Agros2D::problem()->readSolutionsFromFile();
     }
 }
 
