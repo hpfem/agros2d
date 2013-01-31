@@ -54,8 +54,8 @@ void Marker::evaluate(QString id, double time)
 
 bool Marker::evaluateAllVariables()
 {
-    foreach (Value value, m_values)
-        if (!value.evaluate())
+    foreach (QString key, m_values.keys())
+        if (!m_values[key].evaluate())
             return false;
 
     return true;

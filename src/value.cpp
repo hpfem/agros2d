@@ -240,8 +240,8 @@ bool Value::evaluate(double time, const Point &point, bool quiet)
     if (!signalBlocked)
         currentPythonEngineAgros()->blockSignals(false);
 
-    m_isEvaluated = true;
-    return expressionResult.error.isEmpty();
+    m_isEvaluated = expressionResult.error.isEmpty();
+    return m_isEvaluated;
 }
 
 // ***********************************************************************************

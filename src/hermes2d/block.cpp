@@ -87,7 +87,7 @@ Solver<double> *Block::prepareSolver()
 
     foreach (Field* field, m_fields)
     {
-        // evaluate startup script values
+        // evaluate all values
         if (!field->solveInitVariables())
         {
             delete solver;
