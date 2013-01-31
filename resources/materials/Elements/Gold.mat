@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/vasek/agros2d/resources/xsd/material_xml.xsd">
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/fmach/Projekty/Agros2D/agros2d-current/resources/xsd/material_xml.xsd">
 
   <material:general description="Gold is a dense, soft, shiny, malleable and ductile metal. It is a chemical element with the symbol Au and atomic number 79." name="Gold"/>
 
   <material:properties>
-    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="&amp;deg;C" name="Thermal conductivity (Celsius)" shortname="&lt;i>&amp;lambda;&lt;/i>" source="C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)" unit="W/m.K">
+    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" name="Thermal conductivity" shortname="&lt;i>&amp;lambda;&lt;/i>" source="C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)" unit="W/m.K">
       <material:constant value="317.7"/>
       <material:dependence>
-        <material:function body="def agros2d_material(t) :&#xA;&#x9;t = t + 273.15&#xA;&#x9;if t >= 0.0 and t &lt; 14.0 :&#xA;&#x9;&#x9;return -9.429161e-03*t*t*t*t*t +5.579006e-01*t*t*t*t -1.046095e+01*t*t*t +4.100857e+01*t*t +4.968118e+02*t&#xA;&#x9;elif t >= 14.0 and t &lt; 45.0 :&#xA;&#x9;&#x9;return 3.231278e-04*t*t*t*t -1.468484e-01*t*t*t +1.456751e+01*t*t -5.547566e+02*t +7.977526e+03&#xA;&#x9;elif t >= 45.0 and t &lt; 85.0 :&#xA;&#x9;&#x9;return -1.232150e-06*t*t*t*t*t +4.612091e-04*t*t*t*t -6.880706e-02*t*t*t +5.171042e+00*t*t -1.994435e+02*t +3.568586e+03&#xA;&#x9;elif t >= 85.0 and t &lt;= 1338.0 :&#xA;&#x9;&#x9;return -2.153620e-11*t*t*t*t +6.792908e-08*t*t*t -8.191375e-05*t*t -2.536626e-02*t +3.306431e+02&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="-270" interval_to="1050"/>
+        <material:function body="def agros2d_material(t) :&#xA;&#x9;if t >= 0.0 and t &lt; 14.0 :&#xA;&#x9;&#x9;return -9.429161e-03*t*t*t*t*t +5.579006e-01*t*t*t*t -1.046095e+01*t*t*t +4.100857e+01*t*t +4.968118e+02*t&#xA;&#x9;elif t >= 14.0 and t &lt; 45.0 :&#xA;&#x9;&#x9;return 3.231278e-04*t*t*t*t -1.468484e-01*t*t*t +1.456751e+01*t*t -5.547566e+02*t +7.977526e+03&#xA;&#x9;elif t >= 45.0 and t &lt; 85.0 :&#xA;&#x9;&#x9;return -1.232150e-06*t*t*t*t*t +4.612091e-04*t*t*t*t -6.880706e-02*t*t*t +5.171042e+00*t*t -1.994435e+02*t +3.568586e+03&#xA;&#x9;elif t >= 85.0 and t &lt;= 1338.0 :&#xA;&#x9;&#x9;return -2.153620e-11*t*t*t*t +6.792908e-08*t*t*t -8.191375e-05*t*t -2.536626e-02*t +3.306431e+02&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="0" interval_to="1338"/>
       </material:dependence>
     </material:property>
-    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="&amp;deg;C" name="Specific heat (Celsius)" shortname="&lt;i>c&lt;/i>&lt;sub>p&lt;/sub>" source="L.B. Pankratz, US Bureau of Mines Bulletin 672 (1982)" unit="J/kg.K">
+    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" name="Specific heat" shortname="&lt;i>c&lt;/i>&lt;sub>p&lt;/sub>" source="L.B. Pankratz, US Bureau of Mines Bulletin 672 (1982)" unit="J/kg.K">
       <material:constant value="129.01"/>
       <material:dependence>
-        <material:function body="def agros2d_material(t) :&#xA;    &#x9;t = t + 273.15&#xA;&#x9;if t >= 293.0 and t &lt;= 1338.0 :&#xA;&#x9;&#x9;return 1.148987e+02 + 3.228805e-02*t + 3.993522e+05/t/t&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100&#xA;" interval_from="20" interval_to="1050"/>
+        <material:function body="def agros2d_material(t) :&#xA;&#x9;if t >= 293.0 and t &lt;= 1338.0 :&#xA;&#x9;&#x9;return 1.148987e+02 + 3.228805e-02*t + 3.993522e+05/t/t&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100&#xA;" interval_from="293" interval_to="1338"/>
       </material:dependence>
     </material:property>
-    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="&amp;deg;C" name="Density (Celsius)" shortname="&lt;i>&amp;rho;&lt;/i>" source="F.C. Nix and D. MacNair, Physical Review, v60, p597 (1941); calculated from the linear expansion" unit="kg/m&lt;sup>3&lt;/sup>">
+    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" name="Density" shortname="&lt;i>&amp;rho;&lt;/i>" source="F.C. Nix and D. MacNair, Physical Review, v60, p597 (1941); calculated from the linear expansion" unit="kg/m&lt;sup>3&lt;/sup>">
       <material:constant value="19282"/>
       <material:dependence>
-        <material:function body="def agros2d_material(t) :&#xA;&#x9;t = t + 273.15&#xA;&#x9;if t >= 86.0 and t &lt;= 1003.0 :&#xA;&#x9;&#x9;return 4.297982e-08*t*t*t -2.041944e-04*t*t -6.933844e-01*t +1.950144e+04&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="-180" interval_to="725"/>
+        <material:function body="def agros2d_material(t) :&#xA;&#x9;if t >= 86.0 and t &lt;= 1003.0 :&#xA;&#x9;&#x9;return 4.297982e-08*t*t*t -2.041944e-04*t*t -6.933844e-01*t +1.950144e+04&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="86" interval_to="1003"/>
       </material:dependence>
     </material:property>
   </material:properties>
