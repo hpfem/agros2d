@@ -240,13 +240,13 @@ void FieldInfo::refineMesh(Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool
 // name
 QString FieldInfo::name() const
 {    
-    return QString::fromStdString(m_plugin->module()->general().name());
+    return m_plugin->localeName(QString::fromStdString(m_plugin->module()->general().name()));
 }
 
 // description
 QString FieldInfo::description() const
 {
-    return QString::fromStdString(m_plugin->module()->general().description());
+    return m_plugin->localeName(QString::fromStdString(m_plugin->module()->general().description()));
 }
 
 // deformable shape
