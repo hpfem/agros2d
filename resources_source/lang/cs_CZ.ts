@@ -3315,6 +3315,7 @@ krok</translation>
     <name>MeshGenerator</name>
     <message>
         <location filename="../../src/meshgenerator.cpp" line="214"/>
+        <location filename="../../src/meshgenerator.cpp" line="253"/>
         <source>Mesh generator</source>
         <translation>Generátor sítě</translation>
     </message>
@@ -3327,66 +3328,66 @@ krok</translation>
 <context>
     <name>MeshGeneratorGMSH</name>
     <message>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="56"/>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="76"/>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="106"/>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="110"/>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="127"/>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="141"/>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="150"/>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="155"/>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="169"/>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="407"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="54"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="74"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="104"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="108"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="125"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="139"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="148"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="153"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="167"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="405"/>
         <source>Mesh generator</source>
         <translation>Generátor sítě</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="56"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="54"/>
         <source>GMSH geo file was created.</source>
         <translation>GMSH soubor s geometrií byl vytvořen.</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="76"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="74"/>
         <source>Could not start GMSH.</source>
         <translation>Nelze spustit GMSH.</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="106"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="104"/>
         <source>mesh files were created</source>
         <translation>byly vytvořeny soubory sítí</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="110"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="108"/>
         <source>mesh was converted to Hermes2D mesh file</source>
         <translation>síť byla převedena do formátu Hermes2D sítě</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="127"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="125"/>
         <source>mesh files were deleted</source>
         <translation>soubory sítí byly smazány</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="150"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="148"/>
         <source>invalid number of nodes (%1 &lt; 3)</source>
         <translation>chybný počet uzlů (%1 &lt; 3)</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="155"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="153"/>
         <source>invalid number of edges (%1 &lt; 3)</source>
         <translation>chybný počet hran (%1 &lt; 3)</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="169"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="167"/>
         <source>could not create GMSH geo mesh file (%1)</source>
         <translation>nelze vytvořit GMSH geo soubor sítě (%1)</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="281"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="279"/>
         <source>GMSH</source>
         <translation>GMSH</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="407"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="405"/>
         <source>could not read GMSH mesh file</source>
         <translation>nelze číst GMSH soubor sítě</translation>
     </message>
@@ -3394,90 +3395,89 @@ krok</translation>
 <context>
     <name>MeshGeneratorTriangle</name>
     <message>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="58"/>
         <source>GMSH</source>
-        <translation>GMSH</translation>
+        <translation type="obsolete">GMSH</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="69"/>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="89"/>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="122"/>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="127"/>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="146"/>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="160"/>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="169"/>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="174"/>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="188"/>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="342"/>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="350"/>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="358"/>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="366"/>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="439"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="54"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="74"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="107"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="112"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="131"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="145"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="154"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="159"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="173"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="327"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="335"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="343"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="351"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="424"/>
         <source>Mesh generator</source>
         <translation>Generátor sítě</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="69"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="54"/>
         <source>Poly file was created</source>
         <translation>Soubor poly byl vytvořen</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="89"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="74"/>
         <source>could not start Triangle</source>
         <translation>program Triangle nelze spustit</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="122"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="107"/>
         <source>mesh files were created</source>
         <translation>byly vytvořeny soubory sítí</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="127"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="112"/>
         <source>mesh was converted to Hermes2D mesh file</source>
         <translation>síť byla převedena do formátu Hermes2D sítě</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="146"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="131"/>
         <source>mesh files were deleted</source>
         <translation>soubory sítí byly smazány</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="169"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="154"/>
         <source>invalid number of nodes (%1 &lt; 3)</source>
         <translation>chybný počet uzlů (%1 &lt; 3)</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="174"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="159"/>
         <source>invalid number of edges (%1 &lt; 3)</source>
         <translation>chybný počet hran (%1 &lt; 3)</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="188"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="173"/>
         <source>could not create Triangle poly mesh file (%1)</source>
         <translation>nelze vytvořit soubor Triangle poly (%1)</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="342"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="327"/>
         <source>could not read Triangle node file</source>
         <translation>nelze přečíst soubor Triangle s uzly</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="350"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="335"/>
         <source>could not read Triangle edge file</source>
         <translation>nelze přečíst soubor Triangle s hranami</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="358"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="343"/>
         <source>could not read Triangle ele file</source>
         <translation>nelze přečíst soubor Triangle s elementy</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="366"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="351"/>
         <source>could not read Triangle neigh file</source>
         <translation>nelze přečíst soubor Triangle se sousedními elementy</translation>
     </message>
     <message>
-        <location filename="../../src/meshgenerator_triangle.cpp" line="439"/>
+        <location filename="../../src/meshgenerator_triangle.cpp" line="424"/>
         <source>some areas have no label marker</source>
         <translation>některé oblasti neobsahují značky oblastí</translation>
     </message>
@@ -7908,38 +7908,38 @@ Chcete tyto změny uložit?</translation>
         <translation>&amp;Ne</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1845"/>
-        <location filename="../../src/scene.cpp" line="1865"/>
+        <location filename="../../src/scene.cpp" line="1849"/>
+        <location filename="../../src/scene.cpp" line="1869"/>
         <source>Scene</source>
         <translation>Scéna</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1845"/>
+        <location filename="../../src/scene.cpp" line="1849"/>
         <source>Loading solution from disk</source>
         <translation>Nahrávání řešení z disku</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1865"/>
+        <location filename="../../src/scene.cpp" line="1869"/>
         <source>Saving solution to disk</source>
         <translation>Ukládání řešení na disk</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="2013"/>
+        <location filename="../../src/scene.cpp" line="2017"/>
         <source>There are nodes &apos;%1&apos; with negative radial component.</source>
         <translation>Existují uzly &apos;%1&apos; se zápornou radiální složkou.</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="2024"/>
+        <location filename="../../src/scene.cpp" line="2028"/>
         <source>There are crossings in the geometry (red highlighted). Remove the crossings first.</source>
         <translation>V geometrii jsou křížení (označena červeně). Nejprve odstraňte křížení.</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="2032"/>
+        <location filename="../../src/scene.cpp" line="2036"/>
         <source>There are nodes which are not connected to any edge (red highlighted). All nodes should be connected.</source>
         <translation>Existují uzly, které nejsou připojeny k žádné spojnici (označené červeně). Všechny uzly musí být spojeny.</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="2037"/>
+        <location filename="../../src/scene.cpp" line="2041"/>
         <source>There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first.</source>
         <translation>Existují uzly, které leží na spojnici, ale nejsou s ní spojené. Nejprve odeberte tyto uzly.</translation>
     </message>
@@ -8010,7 +8010,7 @@ Chcete tyto změny uložit?</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1204"/>
-        <location filename="../../src/scene.cpp" line="1815"/>
+        <location filename="../../src/scene.cpp" line="1819"/>
         <source>File &apos;%1&apos; cannot be saved (%2).</source>
         <translation>Soubor &apos;%1&apos; nelze uložit (%2).</translation>
     </message>
@@ -8166,12 +8166,12 @@ Chcete tyto změny uložit?</translation>
 <context>
     <name>SceneEdgeDialog</name>
     <message>
-        <location filename="../../src/sceneedge.cpp" line="386"/>
+        <location filename="../../src/sceneedge.cpp" line="387"/>
         <source>Edge</source>
         <translation>Hrana</translation>
     </message>
     <message>
-        <location filename="../../src/sceneedge.cpp" line="421"/>
+        <location filename="../../src/sceneedge.cpp" line="422"/>
         <source>Edge parameters</source>
         <translation>Parametry hrany</translation>
     </message>
@@ -8184,7 +8184,7 @@ Chcete tyto změny uložit?</translation>
         <translation type="obsolete">Koncový bod:</translation>
     </message>
     <message>
-        <location filename="../../src/sceneedge.cpp" line="418"/>
+        <location filename="../../src/sceneedge.cpp" line="419"/>
         <source>Angle (deg.):</source>
         <translation>Úhel (st.):</translation>
     </message>
@@ -8209,7 +8209,7 @@ Chcete tyto změny uložit?</translation>
         <translation type="obsolete">Okrajová podmínka:</translation>
     </message>
     <message>
-        <location filename="../../src/sceneedge.cpp" line="419"/>
+        <location filename="../../src/sceneedge.cpp" line="420"/>
         <source>Length:</source>
         <translation>Délka:</translation>
     </message>
@@ -8237,12 +8237,12 @@ Chcete tyto změny uložit?</translation>
 <context>
     <name>SceneEdgeSelectDialog</name>
     <message>
-        <location filename="../../src/sceneedge.cpp" line="497"/>
+        <location filename="../../src/sceneedge.cpp" line="498"/>
         <source>Edges</source>
         <translation>Hrany</translation>
     </message>
     <message>
-        <location filename="../../src/sceneedge.cpp" line="502"/>
+        <location filename="../../src/sceneedge.cpp" line="503"/>
         <source>Boundary conditions</source>
         <translation>Okrajové podmínky</translation>
     </message>
@@ -8438,12 +8438,12 @@ Chcete tyto změny uložit?</translation>
 <context>
     <name>SceneLabelDialog</name>
     <message>
-        <location filename="../../src/scenelabel.cpp" line="304"/>
+        <location filename="../../src/scenelabel.cpp" line="305"/>
         <source>Label</source>
         <translation>Značka oblasti</translation>
     </message>
     <message>
-        <location filename="../../src/scenelabel.cpp" line="345"/>
+        <location filename="../../src/scenelabel.cpp" line="346"/>
         <source>Coordinates</source>
         <translation>Souřadnice</translation>
     </message>
@@ -8452,7 +8452,7 @@ Chcete tyto změny uložit?</translation>
         <translation type="obsolete">Globální řád je %1.</translation>
     </message>
     <message>
-        <location filename="../../src/scenelabel.cpp" line="358"/>
+        <location filename="../../src/scenelabel.cpp" line="359"/>
         <source>Triangle area (m):</source>
         <translation>Obsah elementu (m):</translation>
     </message>
@@ -8461,7 +8461,7 @@ Chcete tyto změny uložit?</translation>
         <translation type="obsolete">Řád polynomu (-):</translation>
     </message>
     <message>
-        <location filename="../../src/scenelabel.cpp" line="360"/>
+        <location filename="../../src/scenelabel.cpp" line="361"/>
         <source>Mesh parameters</source>
         <translation>Parametry sítě</translation>
     </message>
@@ -8505,12 +8505,12 @@ Chcete tyto změny uložit?</translation>
 <context>
     <name>SceneLabelSelectDialog</name>
     <message>
-        <location filename="../../src/scenelabel.cpp" line="446"/>
+        <location filename="../../src/scenelabel.cpp" line="447"/>
         <source>Labels</source>
         <translation>Značky oblastí</translation>
     </message>
     <message>
-        <location filename="../../src/scenelabel.cpp" line="451"/>
+        <location filename="../../src/scenelabel.cpp" line="452"/>
         <source>Materials</source>
         <translation>Materiály</translation>
     </message>
@@ -9205,6 +9205,12 @@ Chcete tyto změny uložit?</translation>
         <location filename="../../src/sceneview_geometry.cpp" line="305"/>
         <source>&lt;h3&gt;Node&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Index: %3</source>
         <translation>&lt;h3&gt;Uzel&lt;/h3&gt;Bod: [%1; %2]&lt;br/&gt;Index: %3</translation>
+    </message>
+    <message>
+        <location filename="../../src/sceneview_geometry.cpp" line="323"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="359"/>
+        <source>-</source>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="334"/>
