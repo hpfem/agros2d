@@ -51,17 +51,16 @@ double SceneLabel::distance(const Point &point) const
 bool SceneLabel::isHole()
 {
     foreach (FieldInfo* field, Agros2D::problem()->fieldInfos())
-    {
-        if(!marker(field)->isNone())
+        if(hasMarker(field) && !marker(field)->isNone())
             return false;
-    }
+
     return true;
 }
 
 int SceneLabel::showDialog(QWidget *parent, bool isNew)
 {
     SceneLabelDialog *dialog = new SceneLabelDialog(this, parent, isNew);
-    return dialog->exec();
+    return dialog->exec();    
 }
 
 SceneLabelCommandAdd* SceneLabel::getAddCommand()

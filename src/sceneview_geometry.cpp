@@ -1226,7 +1226,7 @@ void SceneViewPreprocessor::paintGeometry()
             QString str;
             foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
                 str = str + QString("%1, ").
-                        arg(label->marker(fieldInfo)->name());
+                        arg(label->hasMarker(fieldInfo) ? label->marker(fieldInfo)->name() : tr(""));
             if (str.length() > 0)
                 str = str.left(str.length() - 2);
 
