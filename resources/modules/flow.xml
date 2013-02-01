@@ -97,7 +97,7 @@
         <module:boundary id="flow_pressure" name="Pressure"
           equation="">
           <module:quantity dependence="space" id="flow_pressure"/>
-          <module:essential_form id="form" axi_linear="fl_p" axi_newton="fl_p" i="3" planar_linear="fl_p" planar_newton="fl_p"/>
+          <module:essential_form id="form" axi_linear="r * fl_p" axi_newton="r * fl_p" i="3" planar_linear="fl_p" planar_newton="fl_p"/>
         </module:boundary>
         <module:boundary id="flow_symmetry" name="Axial symmetry"
           equation="">
