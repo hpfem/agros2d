@@ -495,97 +495,102 @@
 <context>
     <name>FlowInterface</name>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="1203"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="1251"/>
         <source>Incompressible flow</source>
         <translation>Nestlačitelné proudění</translation>
     </message>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="1206"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="1254"/>
         <source>Steady state</source>
         <translation>Ustálený stav</translation>
     </message>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="1209"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="1257"/>
         <source>Transient</source>
         <translation>Přechodný děj</translation>
     </message>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="1212"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="1260"/>
         <source>Velocity</source>
         <translation>Rychlost</translation>
     </message>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="1215"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="1263"/>
         <source>Outlet</source>
         <translation>Odtok</translation>
     </message>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="1218"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="1266"/>
         <source>Pressure</source>
         <translation>Tlak</translation>
     </message>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="1221"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="1269"/>
+        <source>Axial symmetry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="1272"/>
         <source>Density</source>
         <translation>Hustota</translation>
     </message>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="1224"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="1275"/>
         <source>Viscosity</source>
         <translation>Viskozita</translation>
     </message>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="1227"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="1278"/>
         <source>Force - x</source>
         <translation>Síla - x</translation>
     </message>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="1230"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="1281"/>
         <source>Force - y</source>
         <translation>Síla - y</translation>
     </message>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="1233"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="1284"/>
         <source>Velocity - x</source>
         <translation>Rychlost - x</translation>
     </message>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="1236"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="1287"/>
         <source>Velocity - y</source>
         <translation>Rychlost - y</translation>
     </message>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="1239"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="1290"/>
         <source>Vorticity</source>
         <translation>Vorticita</translation>
     </message>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="1242"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="1293"/>
         <source>Inner force</source>
         <translation>Vnitřní síla</translation>
     </message>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="1245"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="1296"/>
         <source>Volume</source>
         <translation>Objem</translation>
     </message>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="1248"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="1299"/>
         <source>Length</source>
         <translation>Délka</translation>
     </message>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="1251"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="1302"/>
         <source>Force X</source>
         <translation>Síla X</translation>
     </message>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="1254"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="1305"/>
         <source>Force Y</source>
         <translation>Síla Y</translation>
     </message>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="1261"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="1312"/>
         <source>Incompressible flow model using Navier-Stokes equations.</source>
         <translation>Model nestlačitelného proudění využívající Navier-Stokesovy rovnice.</translation>
     </message>

@@ -6373,6 +6373,19 @@ Do you want to save your changes?</source>
     </message>
 </context>
 <context>
+    <name>PythonEngine</name>
+    <message>
+        <location filename="../../pythonlab/pythonlab/pythonengine.cpp" line="308"/>
+        <source>Type &apos;%1&apos; is not supported ().</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../pythonlab/pythonlab/pythonengine.cpp" line="309"/>
+        <source>Type &apos;%1&apos; is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>PythonLabAgros</name>
     <message>
         <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="87"/>
@@ -7915,6 +7928,11 @@ Do you want to save your changes?</source>
         <source>Schema &apos;%1&apos; is not valid. %2</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../../src/hermes2d/solutionstore.cpp" line="421"/>
+        <source>Field &apos;%1&apos; info mismatch.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QObject::QObject</name>
@@ -8320,43 +8338,50 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1204"/>
-        <location filename="../../src/scene.cpp" line="1819"/>
+        <location filename="../../src/scene.cpp" line="1817"/>
         <source>File &apos;%1&apos; cannot be saved (%2).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1849"/>
-        <location filename="../../src/scene.cpp" line="1869"/>
+        <location filename="../../src/scene.cpp" line="1847"/>
+        <location filename="../../src/scene.cpp" line="1891"/>
         <source>Scene</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1849"/>
+        <location filename="../../src/scene.cpp" line="1847"/>
         <source>Loading solution from disk</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1869"/>
+        <location filename="../../src/scene.cpp" line="1865"/>
+        <location filename="../../src/scene.cpp" line="1870"/>
+        <location filename="../../src/scene.cpp" line="1883"/>
+        <source>Mesh reader</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="1891"/>
         <source>Saving solution to disk</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="2017"/>
+        <location filename="../../src/scene.cpp" line="2039"/>
         <source>There are nodes &apos;%1&apos; with negative radial component.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="2028"/>
+        <location filename="../../src/scene.cpp" line="2050"/>
         <source>There are crossings in the geometry (red highlighted). Remove the crossings first.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="2036"/>
+        <location filename="../../src/scene.cpp" line="2058"/>
         <source>There are nodes which are not connected to any edge (red highlighted). All nodes should be connected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="2041"/>
+        <location filename="../../src/scene.cpp" line="2063"/>
         <source>There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8734,12 +8759,12 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneLabelDialog</name>
     <message>
-        <location filename="../../src/scenelabel.cpp" line="305"/>
+        <location filename="../../src/scenelabel.cpp" line="304"/>
         <source>Label</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scenelabel.cpp" line="346"/>
+        <location filename="../../src/scenelabel.cpp" line="345"/>
         <source>Coordinates</source>
         <translation type="unfinished">Koordinaten</translation>
     </message>
@@ -8748,7 +8773,7 @@ Do you want to save your changes?</source>
         <translation type="obsolete">Globale Zehnerpotenz ist %1.</translation>
     </message>
     <message>
-        <location filename="../../src/scenelabel.cpp" line="359"/>
+        <location filename="../../src/scenelabel.cpp" line="358"/>
         <source>Triangle area (m):</source>
         <translation type="unfinished">Inhalt des Elementes (m):</translation>
     </message>
@@ -8757,7 +8782,7 @@ Do you want to save your changes?</source>
         <translation type="obsolete">Zehnerpotenz des Polynoms (-):</translation>
     </message>
     <message>
-        <location filename="../../src/scenelabel.cpp" line="361"/>
+        <location filename="../../src/scenelabel.cpp" line="360"/>
         <source>Mesh parameters</source>
         <translation type="unfinished">Parametern des Netzes</translation>
     </message>
@@ -8769,27 +8794,27 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneLabelMarker</name>
     <message>
-        <location filename="../../src/scenelabel.cpp" line="195"/>
+        <location filename="../../src/scenelabel.cpp" line="194"/>
         <source>Global refinement is %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scenelabel.cpp" line="209"/>
+        <location filename="../../src/scenelabel.cpp" line="208"/>
         <source>Global order is %1.</source>
         <translation type="unfinished">Globale Zehnerpotenz ist %1.</translation>
     </message>
     <message>
-        <location filename="../../src/scenelabel.cpp" line="213"/>
+        <location filename="../../src/scenelabel.cpp" line="212"/>
         <source>Material:</source>
         <translation type="unfinished">Material:</translation>
     </message>
     <message>
-        <location filename="../../src/scenelabel.cpp" line="214"/>
+        <location filename="../../src/scenelabel.cpp" line="213"/>
         <source>Area refinement (-):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scenelabel.cpp" line="215"/>
+        <location filename="../../src/scenelabel.cpp" line="214"/>
         <source>Polynomial order (-):</source>
         <translation type="unfinished">Zehnerpotenz des Polynoms (-):</translation>
     </message>
@@ -8797,12 +8822,12 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneLabelSelectDialog</name>
     <message>
-        <location filename="../../src/scenelabel.cpp" line="447"/>
+        <location filename="../../src/scenelabel.cpp" line="446"/>
         <source>Labels</source>
         <translation type="unfinished">Zeichen der Gebiete</translation>
     </message>
     <message>
-        <location filename="../../src/scenelabel.cpp" line="452"/>
+        <location filename="../../src/scenelabel.cpp" line="451"/>
         <source>Materials</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9232,7 +9257,7 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post2d.cpp" line="1299"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="1305"/>
         <source>Export VTK file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9241,7 +9266,7 @@ Do you want to save your changes?</source>
         <translation type="obsolete">VTK Dateien exportieren</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post2d.cpp" line="1299"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="1305"/>
         <source>VTK files (*.vtk)</source>
         <translation type="unfinished">VTK Dateien (*.vtk)</translation>
     </message>

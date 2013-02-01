@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.0" language="ru_RU">
 <context>
     <name>AcousticInterface</name>
     <message>
@@ -340,6 +340,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="585"/>
+        <source>Reference temperature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="588"/>
         <source>Fixed - x</source>
         <translation type="unfinished"></translation>
@@ -370,16 +375,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="622"/>
-        <source>Structural analysis is the determination of the            effects of loads on physical structures and their components.        </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="585"/>
-        <source>Reference temperature</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="606"/>
         <source>Volume</source>
         <translation type="unfinished"></translation>
@@ -397,6 +392,11 @@
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="615"/>
         <source>Surface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="622"/>
+        <source>Structural analysis is the determination of the            effects of loads on physical structures and their components.        </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
