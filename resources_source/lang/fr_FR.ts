@@ -6,7 +6,7 @@
     <message>
         <location filename="../../src/gui/about.cpp" line="30"/>
         <source>About...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">À propos...</translation>
     </message>
     <message>
         <location filename="../../src/gui/about.cpp" line="46"/>
