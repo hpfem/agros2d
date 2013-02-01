@@ -965,6 +965,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             }
             else
             {
+                Agros2D::scene()->clear();
                 result.showDialog();
                 return;
             }
@@ -1016,8 +1017,10 @@ void MainWindow::doDocumentOpenRecent(QAction *action)
             sceneViewPreprocessor->doZoomBestFit();
             return;
         }
-        else
+        else{
+            Agros2D::scene()->clear();
             result.showDialog();
+        }
     }
 }
 
