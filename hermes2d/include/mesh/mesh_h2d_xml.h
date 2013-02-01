@@ -626,19 +626,19 @@ namespace XMLMesh
   class variables_type;
   class vertices_type;
   class elements_type;
-  class element_type;
-  class triangle_type;
-  class quad_type;
+  class el_t;
+  class t_t;
+  class q_t;
   class edges_type;
   class curves_type;
   class refinements_type;
   class mesh;
-  class variable;
-  class vertex;
-  class edge;
+  class var;
+  class v;
+  class ed;
   class arc;
   class NURBS;
-  class refinement;
+  class ref;
   class inner_point;
   class knot;
 }
@@ -672,9 +672,9 @@ namespace XMLMesh
   {
     public:
     /**
-     * @name variable
+     * @name var
      *
-     * @brief Accessor and modifier functions for the %variable
+     * @brief Accessor and modifier functions for the %var
      * sequence element.
      */
     //@{
@@ -682,27 +682,27 @@ namespace XMLMesh
     /**
      * @brief Element type.
      */
-    typedef ::XMLMesh::variable variable_type;
+    typedef ::XMLMesh::var var_type;
 
     /**
      * @brief Element sequence container type.
      */
-    typedef ::xsd::cxx::tree::sequence< variable_type > variable_sequence;
+    typedef ::xsd::cxx::tree::sequence< var_type > var_sequence;
 
     /**
      * @brief Element iterator type.
      */
-    typedef variable_sequence::iterator variable_iterator;
+    typedef var_sequence::iterator var_iterator;
 
     /**
      * @brief Element constant iterator type.
      */
-    typedef variable_sequence::const_iterator variable_const_iterator;
+    typedef var_sequence::const_iterator var_const_iterator;
 
     /**
      * @brief Element traits type.
      */
-    typedef ::xsd::cxx::tree::traits< variable_type, char > variable_traits;
+    typedef ::xsd::cxx::tree::traits< var_type, char > var_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the element
@@ -710,16 +710,16 @@ namespace XMLMesh
      *
      * @return A constant reference to the sequence container.
      */
-    const variable_sequence&
-    variable () const;
+    const var_sequence&
+    var () const;
 
     /**
      * @brief Return a read-write reference to the element sequence.
      *
      * @return A reference to the sequence container.
      */
-    variable_sequence&
-    variable ();
+    var_sequence&
+    var ();
 
     /**
      * @brief Copy elements from a given sequence.
@@ -731,7 +731,7 @@ namespace XMLMesh
      * sequence and all old elements will be lost.
      */
     void
-    variable (const variable_sequence& s);
+    var (const var_sequence& s);
 
     //@}
 
@@ -805,7 +805,7 @@ namespace XMLMesh
            ::xml_schema::flags);
 
     protected:
-    variable_sequence variable_;
+    var_sequence var_;
 
     //@endcond
   };
@@ -819,9 +819,9 @@ namespace XMLMesh
   {
     public:
     /**
-     * @name vertex
+     * @name v
      *
-     * @brief Accessor and modifier functions for the %vertex
+     * @brief Accessor and modifier functions for the %v
      * sequence element.
      */
     //@{
@@ -829,27 +829,27 @@ namespace XMLMesh
     /**
      * @brief Element type.
      */
-    typedef ::XMLMesh::vertex vertex_type;
+    typedef ::XMLMesh::v v_type;
 
     /**
      * @brief Element sequence container type.
      */
-    typedef ::xsd::cxx::tree::sequence< vertex_type > vertex_sequence;
+    typedef ::xsd::cxx::tree::sequence< v_type > v_sequence;
 
     /**
      * @brief Element iterator type.
      */
-    typedef vertex_sequence::iterator vertex_iterator;
+    typedef v_sequence::iterator v_iterator;
 
     /**
      * @brief Element constant iterator type.
      */
-    typedef vertex_sequence::const_iterator vertex_const_iterator;
+    typedef v_sequence::const_iterator v_const_iterator;
 
     /**
      * @brief Element traits type.
      */
-    typedef ::xsd::cxx::tree::traits< vertex_type, char > vertex_traits;
+    typedef ::xsd::cxx::tree::traits< v_type, char > v_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the element
@@ -857,16 +857,16 @@ namespace XMLMesh
      *
      * @return A constant reference to the sequence container.
      */
-    const vertex_sequence&
-    vertex () const;
+    const v_sequence&
+    v () const;
 
     /**
      * @brief Return a read-write reference to the element sequence.
      *
      * @return A reference to the sequence container.
      */
-    vertex_sequence&
-    vertex ();
+    v_sequence&
+    v ();
 
     /**
      * @brief Copy elements from a given sequence.
@@ -878,7 +878,7 @@ namespace XMLMesh
      * sequence and all old elements will be lost.
      */
     void
-    vertex (const vertex_sequence& s);
+    v (const v_sequence& s);
 
     //@}
 
@@ -952,7 +952,7 @@ namespace XMLMesh
            ::xml_schema::flags);
 
     protected:
-    vertex_sequence vertex_;
+    v_sequence v_;
 
     //@endcond
   };
@@ -966,9 +966,9 @@ namespace XMLMesh
   {
     public:
     /**
-     * @name element
+     * @name el
      *
-     * @brief Accessor and modifier functions for the %element
+     * @brief Accessor and modifier functions for the %el
      * sequence element.
      */
     //@{
@@ -976,27 +976,27 @@ namespace XMLMesh
     /**
      * @brief Element type.
      */
-    typedef ::XMLMesh::element_type element_type;
+    typedef ::XMLMesh::el_t el_type;
 
     /**
      * @brief Element sequence container type.
      */
-    typedef ::xsd::cxx::tree::sequence< element_type > element_sequence;
+    typedef ::xsd::cxx::tree::sequence< el_type > el_sequence;
 
     /**
      * @brief Element iterator type.
      */
-    typedef element_sequence::iterator element_iterator;
+    typedef el_sequence::iterator el_iterator;
 
     /**
      * @brief Element constant iterator type.
      */
-    typedef element_sequence::const_iterator element_const_iterator;
+    typedef el_sequence::const_iterator el_const_iterator;
 
     /**
      * @brief Element traits type.
      */
-    typedef ::xsd::cxx::tree::traits< element_type, char > element_traits;
+    typedef ::xsd::cxx::tree::traits< el_type, char > el_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the element
@@ -1004,16 +1004,16 @@ namespace XMLMesh
      *
      * @return A constant reference to the sequence container.
      */
-    const element_sequence&
-    element () const;
+    const el_sequence&
+    el () const;
 
     /**
      * @brief Return a read-write reference to the element sequence.
      *
      * @return A reference to the sequence container.
      */
-    element_sequence&
-    element ();
+    el_sequence&
+    el ();
 
     /**
      * @brief Copy elements from a given sequence.
@@ -1025,7 +1025,7 @@ namespace XMLMesh
      * sequence and all old elements will be lost.
      */
     void
-    element (const element_sequence& s);
+    el (const el_sequence& s);
 
     //@}
 
@@ -1099,17 +1099,17 @@ namespace XMLMesh
            ::xml_schema::flags);
 
     protected:
-    element_sequence element_;
+    el_sequence el_;
 
     //@endcond
   };
 
   /**
-   * @brief Class corresponding to the %element_type schema type.
+   * @brief Class corresponding to the %el_t schema type.
    *
    * @nosubgrouping
    */
-  class element_type: public ::xml_schema::type
+  class el_t: public ::xml_schema::type
   {
     public:
     /**
@@ -1254,9 +1254,9 @@ namespace XMLMesh
     //@}
 
     /**
-     * @name marker
+     * @name m
      *
-     * @brief Accessor and modifier functions for the %marker
+     * @brief Accessor and modifier functions for the %m
      * required attribute.
      */
     //@{
@@ -1264,28 +1264,28 @@ namespace XMLMesh
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::string marker_type;
+    typedef ::xml_schema::string m_type;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< marker_type, char > marker_traits;
+    typedef ::xsd::cxx::tree::traits< m_type, char > m_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute.
      *
      * @return A constant reference to the attribute.
      */
-    const marker_type&
-    marker () const;
+    const m_type&
+    m () const;
 
     /**
      * @brief Return a read-write reference to the attribute.
      *
      * @return A reference to the attribute.
      */
-    marker_type&
-    marker ();
+    m_type&
+    m ();
 
     /**
      * @brief Set the attribute value.
@@ -1296,7 +1296,7 @@ namespace XMLMesh
      * the new value of the attribute.
      */
     void
-    marker (const marker_type& x);
+    m (const m_type& x);
 
     /**
      * @brief Set the attribute value without copying.
@@ -1307,7 +1307,7 @@ namespace XMLMesh
      * instead of making a copy.
      */
     void
-    marker (::std::auto_ptr< marker_type > p);
+    m (::std::auto_ptr< m_type > p);
 
     //@}
 
@@ -1320,10 +1320,10 @@ namespace XMLMesh
      * @brief Create an instance from the ultimate base and
      * initializers for required elements and attributes.
      */
-    element_type (const v1_type&,
-                  const v2_type&,
-                  const v3_type&,
-                  const marker_type&);
+    el_t (const v1_type&,
+          const v2_type&,
+          const v3_type&,
+          const m_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -1333,9 +1333,9 @@ namespace XMLMesh
      * @param c A pointer to the object that will contain the new
      * instance.
      */
-    element_type (const ::xercesc::DOMElement& e,
-                  ::xml_schema::flags f = 0,
-                  ::xml_schema::container* c = 0);
+    el_t (const ::xercesc::DOMElement& e,
+          ::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy constructor.
@@ -1346,9 +1346,9 @@ namespace XMLMesh
      *
      * For polymorphic object models use the @c _clone function instead.
      */
-    element_type (const element_type& x,
-                  ::xml_schema::flags f = 0,
-                  ::xml_schema::container* c = 0);
+    el_t (const el_t& x,
+          ::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy the instance polymorphically.
@@ -1361,7 +1361,7 @@ namespace XMLMesh
      * used for copying and should be used for polymorphic object
      * models instead of the copy constructor.
      */
-    virtual element_type*
+    virtual el_t*
     _clone (::xml_schema::flags f = 0,
             ::xml_schema::container* c = 0) const;
 
@@ -1371,7 +1371,7 @@ namespace XMLMesh
      * @brief Destructor.
      */
     virtual 
-    ~element_type ();
+    ~el_t ();
 
     // Implementation.
     //
@@ -1387,17 +1387,17 @@ namespace XMLMesh
     ::xsd::cxx::tree::one< v1_type > v1_;
     ::xsd::cxx::tree::one< v2_type > v2_;
     ::xsd::cxx::tree::one< v3_type > v3_;
-    ::xsd::cxx::tree::one< marker_type > marker_;
+    ::xsd::cxx::tree::one< m_type > m_;
 
     //@endcond
   };
 
   /**
-   * @brief Class corresponding to the %triangle_type schema type.
+   * @brief Class corresponding to the %t_t schema type.
    *
    * @nosubgrouping
    */
-  class triangle_type: public ::XMLMesh::element_type
+  class t_t: public ::XMLMesh::el_t
   {
     public:
     /**
@@ -1409,10 +1409,10 @@ namespace XMLMesh
      * @brief Create an instance from the ultimate base and
      * initializers for required elements and attributes.
      */
-    triangle_type (const v1_type&,
-                   const v2_type&,
-                   const v3_type&,
-                   const marker_type&);
+    t_t (const v1_type&,
+         const v2_type&,
+         const v3_type&,
+         const m_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -1422,9 +1422,9 @@ namespace XMLMesh
      * @param c A pointer to the object that will contain the new
      * instance.
      */
-    triangle_type (const ::xercesc::DOMElement& e,
-                   ::xml_schema::flags f = 0,
-                   ::xml_schema::container* c = 0);
+    t_t (const ::xercesc::DOMElement& e,
+         ::xml_schema::flags f = 0,
+         ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy constructor.
@@ -1435,9 +1435,9 @@ namespace XMLMesh
      *
      * For polymorphic object models use the @c _clone function instead.
      */
-    triangle_type (const triangle_type& x,
-                   ::xml_schema::flags f = 0,
-                   ::xml_schema::container* c = 0);
+    t_t (const t_t& x,
+         ::xml_schema::flags f = 0,
+         ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy the instance polymorphically.
@@ -1450,7 +1450,7 @@ namespace XMLMesh
      * used for copying and should be used for polymorphic object
      * models instead of the copy constructor.
      */
-    virtual triangle_type*
+    virtual t_t*
     _clone (::xml_schema::flags f = 0,
             ::xml_schema::container* c = 0) const;
 
@@ -1460,15 +1460,15 @@ namespace XMLMesh
      * @brief Destructor.
      */
     virtual 
-    ~triangle_type ();
+    ~t_t ();
   };
 
   /**
-   * @brief Class corresponding to the %quad_type schema type.
+   * @brief Class corresponding to the %q_t schema type.
    *
    * @nosubgrouping
    */
-  class quad_type: public ::XMLMesh::element_type
+  class q_t: public ::XMLMesh::el_t
   {
     public:
     /**
@@ -1527,11 +1527,11 @@ namespace XMLMesh
      * @brief Create an instance from the ultimate base and
      * initializers for required elements and attributes.
      */
-    quad_type (const v1_type&,
-               const v2_type&,
-               const v3_type&,
-               const marker_type&,
-               const v4_type&);
+    q_t (const v1_type&,
+         const v2_type&,
+         const v3_type&,
+         const m_type&,
+         const v4_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -1541,9 +1541,9 @@ namespace XMLMesh
      * @param c A pointer to the object that will contain the new
      * instance.
      */
-    quad_type (const ::xercesc::DOMElement& e,
-               ::xml_schema::flags f = 0,
-               ::xml_schema::container* c = 0);
+    q_t (const ::xercesc::DOMElement& e,
+         ::xml_schema::flags f = 0,
+         ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy constructor.
@@ -1554,9 +1554,9 @@ namespace XMLMesh
      *
      * For polymorphic object models use the @c _clone function instead.
      */
-    quad_type (const quad_type& x,
-               ::xml_schema::flags f = 0,
-               ::xml_schema::container* c = 0);
+    q_t (const q_t& x,
+         ::xml_schema::flags f = 0,
+         ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy the instance polymorphically.
@@ -1569,7 +1569,7 @@ namespace XMLMesh
      * used for copying and should be used for polymorphic object
      * models instead of the copy constructor.
      */
-    virtual quad_type*
+    virtual q_t*
     _clone (::xml_schema::flags f = 0,
             ::xml_schema::container* c = 0) const;
 
@@ -1579,7 +1579,7 @@ namespace XMLMesh
      * @brief Destructor.
      */
     virtual 
-    ~quad_type ();
+    ~q_t ();
 
     // Implementation.
     //
@@ -1606,9 +1606,9 @@ namespace XMLMesh
   {
     public:
     /**
-     * @name edge
+     * @name ed
      *
-     * @brief Accessor and modifier functions for the %edge
+     * @brief Accessor and modifier functions for the %ed
      * sequence element.
      */
     //@{
@@ -1616,27 +1616,27 @@ namespace XMLMesh
     /**
      * @brief Element type.
      */
-    typedef ::XMLMesh::edge edge_type;
+    typedef ::XMLMesh::ed ed_type;
 
     /**
      * @brief Element sequence container type.
      */
-    typedef ::xsd::cxx::tree::sequence< edge_type > edge_sequence;
+    typedef ::xsd::cxx::tree::sequence< ed_type > ed_sequence;
 
     /**
      * @brief Element iterator type.
      */
-    typedef edge_sequence::iterator edge_iterator;
+    typedef ed_sequence::iterator ed_iterator;
 
     /**
      * @brief Element constant iterator type.
      */
-    typedef edge_sequence::const_iterator edge_const_iterator;
+    typedef ed_sequence::const_iterator ed_const_iterator;
 
     /**
      * @brief Element traits type.
      */
-    typedef ::xsd::cxx::tree::traits< edge_type, char > edge_traits;
+    typedef ::xsd::cxx::tree::traits< ed_type, char > ed_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the element
@@ -1644,16 +1644,16 @@ namespace XMLMesh
      *
      * @return A constant reference to the sequence container.
      */
-    const edge_sequence&
-    edge () const;
+    const ed_sequence&
+    ed () const;
 
     /**
      * @brief Return a read-write reference to the element sequence.
      *
      * @return A reference to the sequence container.
      */
-    edge_sequence&
-    edge ();
+    ed_sequence&
+    ed ();
 
     /**
      * @brief Copy elements from a given sequence.
@@ -1665,7 +1665,7 @@ namespace XMLMesh
      * sequence and all old elements will be lost.
      */
     void
-    edge (const edge_sequence& s);
+    ed (const ed_sequence& s);
 
     //@}
 
@@ -1739,7 +1739,7 @@ namespace XMLMesh
            ::xml_schema::flags);
 
     protected:
-    edge_sequence edge_;
+    ed_sequence ed_;
 
     //@endcond
   };
@@ -1965,9 +1965,9 @@ namespace XMLMesh
   {
     public:
     /**
-     * @name refinement
+     * @name ref
      *
-     * @brief Accessor and modifier functions for the %refinement
+     * @brief Accessor and modifier functions for the %ref
      * sequence element.
      */
     //@{
@@ -1975,27 +1975,27 @@ namespace XMLMesh
     /**
      * @brief Element type.
      */
-    typedef ::XMLMesh::refinement refinement_type;
+    typedef ::XMLMesh::ref ref_type;
 
     /**
      * @brief Element sequence container type.
      */
-    typedef ::xsd::cxx::tree::sequence< refinement_type > refinement_sequence;
+    typedef ::xsd::cxx::tree::sequence< ref_type > ref_sequence;
 
     /**
      * @brief Element iterator type.
      */
-    typedef refinement_sequence::iterator refinement_iterator;
+    typedef ref_sequence::iterator ref_iterator;
 
     /**
      * @brief Element constant iterator type.
      */
-    typedef refinement_sequence::const_iterator refinement_const_iterator;
+    typedef ref_sequence::const_iterator ref_const_iterator;
 
     /**
      * @brief Element traits type.
      */
-    typedef ::xsd::cxx::tree::traits< refinement_type, char > refinement_traits;
+    typedef ::xsd::cxx::tree::traits< ref_type, char > ref_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the element
@@ -2003,16 +2003,16 @@ namespace XMLMesh
      *
      * @return A constant reference to the sequence container.
      */
-    const refinement_sequence&
-    refinement () const;
+    const ref_sequence&
+    ref () const;
 
     /**
      * @brief Return a read-write reference to the element sequence.
      *
      * @return A reference to the sequence container.
      */
-    refinement_sequence&
-    refinement ();
+    ref_sequence&
+    ref ();
 
     /**
      * @brief Copy elements from a given sequence.
@@ -2024,7 +2024,7 @@ namespace XMLMesh
      * sequence and all old elements will be lost.
      */
     void
-    refinement (const refinement_sequence& s);
+    ref (const ref_sequence& s);
 
     //@}
 
@@ -2098,7 +2098,7 @@ namespace XMLMesh
            ::xml_schema::flags);
 
     protected:
-    refinement_sequence refinement_;
+    ref_sequence ref_;
 
     //@endcond
   };
@@ -2608,11 +2608,11 @@ namespace XMLMesh
   };
 
   /**
-   * @brief Class corresponding to the %variable schema type.
+   * @brief Class corresponding to the %var schema type.
    *
    * @nosubgrouping
    */
-  class variable: public ::xml_schema::type
+  class var: public ::xml_schema::type
   {
     public:
     /**
@@ -2729,8 +2729,8 @@ namespace XMLMesh
      * @brief Create an instance from the ultimate base and
      * initializers for required elements and attributes.
      */
-    variable (const name_type&,
-              const value_type&);
+    var (const name_type&,
+         const value_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -2740,9 +2740,9 @@ namespace XMLMesh
      * @param c A pointer to the object that will contain the new
      * instance.
      */
-    variable (const ::xercesc::DOMElement& e,
-              ::xml_schema::flags f = 0,
-              ::xml_schema::container* c = 0);
+    var (const ::xercesc::DOMElement& e,
+         ::xml_schema::flags f = 0,
+         ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy constructor.
@@ -2753,9 +2753,9 @@ namespace XMLMesh
      *
      * For polymorphic object models use the @c _clone function instead.
      */
-    variable (const variable& x,
-              ::xml_schema::flags f = 0,
-              ::xml_schema::container* c = 0);
+    var (const var& x,
+         ::xml_schema::flags f = 0,
+         ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy the instance polymorphically.
@@ -2768,7 +2768,7 @@ namespace XMLMesh
      * used for copying and should be used for polymorphic object
      * models instead of the copy constructor.
      */
-    virtual variable*
+    virtual var*
     _clone (::xml_schema::flags f = 0,
             ::xml_schema::container* c = 0) const;
 
@@ -2778,7 +2778,7 @@ namespace XMLMesh
      * @brief Destructor.
      */
     virtual 
-    ~variable ();
+    ~var ();
 
     // Implementation.
     //
@@ -2798,11 +2798,11 @@ namespace XMLMesh
   };
 
   /**
-   * @brief Class corresponding to the %vertex schema type.
+   * @brief Class corresponding to the %v schema type.
    *
    * @nosubgrouping
    */
-  class vertex: public ::xml_schema::type
+  class v: public ::xml_schema::type
   {
     public:
     /**
@@ -2977,9 +2977,9 @@ namespace XMLMesh
      * @brief Create an instance from the ultimate base and
      * initializers for required elements and attributes.
      */
-    vertex (const x_type&,
-            const y_type&,
-            const i_type&);
+    v (const x_type&,
+       const y_type&,
+       const i_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -2989,9 +2989,9 @@ namespace XMLMesh
      * @param c A pointer to the object that will contain the new
      * instance.
      */
-    vertex (const ::xercesc::DOMElement& e,
-            ::xml_schema::flags f = 0,
-            ::xml_schema::container* c = 0);
+    v (const ::xercesc::DOMElement& e,
+       ::xml_schema::flags f = 0,
+       ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy constructor.
@@ -3002,9 +3002,9 @@ namespace XMLMesh
      *
      * For polymorphic object models use the @c _clone function instead.
      */
-    vertex (const vertex& x,
-            ::xml_schema::flags f = 0,
-            ::xml_schema::container* c = 0);
+    v (const v& x,
+       ::xml_schema::flags f = 0,
+       ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy the instance polymorphically.
@@ -3017,7 +3017,7 @@ namespace XMLMesh
      * used for copying and should be used for polymorphic object
      * models instead of the copy constructor.
      */
-    virtual vertex*
+    virtual v*
     _clone (::xml_schema::flags f = 0,
             ::xml_schema::container* c = 0) const;
 
@@ -3027,7 +3027,7 @@ namespace XMLMesh
      * @brief Destructor.
      */
     virtual 
-    ~vertex ();
+    ~v ();
 
     // Implementation.
     //
@@ -3048,11 +3048,11 @@ namespace XMLMesh
   };
 
   /**
-   * @brief Class corresponding to the %edge schema type.
+   * @brief Class corresponding to the %ed schema type.
    *
    * @nosubgrouping
    */
-  class edge: public ::xml_schema::type
+  class ed: public ::xml_schema::type
   {
     public:
     /**
@@ -3150,9 +3150,9 @@ namespace XMLMesh
     //@}
 
     /**
-     * @name marker
+     * @name m
      *
-     * @brief Accessor and modifier functions for the %marker
+     * @brief Accessor and modifier functions for the %m
      * required attribute.
      */
     //@{
@@ -3160,28 +3160,28 @@ namespace XMLMesh
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::string marker_type;
+    typedef ::xml_schema::string m_type;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< marker_type, char > marker_traits;
+    typedef ::xsd::cxx::tree::traits< m_type, char > m_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute.
      *
      * @return A constant reference to the attribute.
      */
-    const marker_type&
-    marker () const;
+    const m_type&
+    m () const;
 
     /**
      * @brief Return a read-write reference to the attribute.
      *
      * @return A reference to the attribute.
      */
-    marker_type&
-    marker ();
+    m_type&
+    m ();
 
     /**
      * @brief Set the attribute value.
@@ -3192,7 +3192,7 @@ namespace XMLMesh
      * the new value of the attribute.
      */
     void
-    marker (const marker_type& x);
+    m (const m_type& x);
 
     /**
      * @brief Set the attribute value without copying.
@@ -3203,7 +3203,7 @@ namespace XMLMesh
      * instead of making a copy.
      */
     void
-    marker (::std::auto_ptr< marker_type > p);
+    m (::std::auto_ptr< m_type > p);
 
     //@}
 
@@ -3216,9 +3216,9 @@ namespace XMLMesh
      * @brief Create an instance from the ultimate base and
      * initializers for required elements and attributes.
      */
-    edge (const v1_type&,
-          const v2_type&,
-          const marker_type&);
+    ed (const v1_type&,
+        const v2_type&,
+        const m_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -3228,9 +3228,9 @@ namespace XMLMesh
      * @param c A pointer to the object that will contain the new
      * instance.
      */
-    edge (const ::xercesc::DOMElement& e,
-          ::xml_schema::flags f = 0,
-          ::xml_schema::container* c = 0);
+    ed (const ::xercesc::DOMElement& e,
+        ::xml_schema::flags f = 0,
+        ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy constructor.
@@ -3241,9 +3241,9 @@ namespace XMLMesh
      *
      * For polymorphic object models use the @c _clone function instead.
      */
-    edge (const edge& x,
-          ::xml_schema::flags f = 0,
-          ::xml_schema::container* c = 0);
+    ed (const ed& x,
+        ::xml_schema::flags f = 0,
+        ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy the instance polymorphically.
@@ -3256,7 +3256,7 @@ namespace XMLMesh
      * used for copying and should be used for polymorphic object
      * models instead of the copy constructor.
      */
-    virtual edge*
+    virtual ed*
     _clone (::xml_schema::flags f = 0,
             ::xml_schema::container* c = 0) const;
 
@@ -3266,7 +3266,7 @@ namespace XMLMesh
      * @brief Destructor.
      */
     virtual 
-    ~edge ();
+    ~ed ();
 
     // Implementation.
     //
@@ -3281,7 +3281,7 @@ namespace XMLMesh
     protected:
     ::xsd::cxx::tree::one< v1_type > v1_;
     ::xsd::cxx::tree::one< v2_type > v2_;
-    ::xsd::cxx::tree::one< marker_type > marker_;
+    ::xsd::cxx::tree::one< m_type > m_;
 
     //@endcond
   };
@@ -3745,9 +3745,9 @@ namespace XMLMesh
     //@}
 
     /**
-     * @name degree
+     * @name deg
      *
-     * @brief Accessor and modifier functions for the %degree
+     * @brief Accessor and modifier functions for the %deg
      * required attribute.
      */
     //@{
@@ -3755,28 +3755,28 @@ namespace XMLMesh
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::integer degree_type;
+    typedef ::xml_schema::integer deg_type;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< degree_type, char > degree_traits;
+    typedef ::xsd::cxx::tree::traits< deg_type, char > deg_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute.
      *
      * @return A constant reference to the attribute.
      */
-    const degree_type&
-    degree () const;
+    const deg_type&
+    deg () const;
 
     /**
      * @brief Return a read-write reference to the attribute.
      *
      * @return A reference to the attribute.
      */
-    degree_type&
-    degree ();
+    deg_type&
+    deg ();
 
     /**
      * @brief Set the attribute value.
@@ -3787,7 +3787,7 @@ namespace XMLMesh
      * the new value of the attribute.
      */
     void
-    degree (const degree_type& x);
+    deg (const deg_type& x);
 
     //@}
 
@@ -3802,7 +3802,7 @@ namespace XMLMesh
      */
     NURBS (const v1_type&,
            const v2_type&,
-           const degree_type&);
+           const deg_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -3867,17 +3867,17 @@ namespace XMLMesh
     knot_sequence knot_;
     ::xsd::cxx::tree::one< v1_type > v1_;
     ::xsd::cxx::tree::one< v2_type > v2_;
-    ::xsd::cxx::tree::one< degree_type > degree_;
+    ::xsd::cxx::tree::one< deg_type > deg_;
 
     //@endcond
   };
 
   /**
-   * @brief Class corresponding to the %refinement schema type.
+   * @brief Class corresponding to the %ref schema type.
    *
    * @nosubgrouping
    */
-  class refinement: public ::xml_schema::type
+  class ref: public ::xml_schema::type
   {
     public:
     /**
@@ -3983,8 +3983,8 @@ namespace XMLMesh
      * @brief Create an instance from the ultimate base and
      * initializers for required elements and attributes.
      */
-    refinement (const element_id_type&,
-                const refinement_type_type&);
+    ref (const element_id_type&,
+         const refinement_type_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -3994,9 +3994,9 @@ namespace XMLMesh
      * @param c A pointer to the object that will contain the new
      * instance.
      */
-    refinement (const ::xercesc::DOMElement& e,
-                ::xml_schema::flags f = 0,
-                ::xml_schema::container* c = 0);
+    ref (const ::xercesc::DOMElement& e,
+         ::xml_schema::flags f = 0,
+         ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy constructor.
@@ -4007,9 +4007,9 @@ namespace XMLMesh
      *
      * For polymorphic object models use the @c _clone function instead.
      */
-    refinement (const refinement& x,
-                ::xml_schema::flags f = 0,
-                ::xml_schema::container* c = 0);
+    ref (const ref& x,
+         ::xml_schema::flags f = 0,
+         ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy the instance polymorphically.
@@ -4022,7 +4022,7 @@ namespace XMLMesh
      * used for copying and should be used for polymorphic object
      * models instead of the copy constructor.
      */
-    virtual refinement*
+    virtual ref*
     _clone (::xml_schema::flags f = 0,
             ::xml_schema::container* c = 0) const;
 
@@ -4032,7 +4032,7 @@ namespace XMLMesh
      * @brief Destructor.
      */
     virtual 
-    ~refinement ();
+    ~ref ();
 
     // Implementation.
     //
@@ -4424,13 +4424,13 @@ namespace XMLMesh
   operator<< (::std::ostream&, const elements_type&);
 
   ::std::ostream&
-  operator<< (::std::ostream&, const element_type&);
+  operator<< (::std::ostream&, const el_t&);
 
   ::std::ostream&
-  operator<< (::std::ostream&, const triangle_type&);
+  operator<< (::std::ostream&, const t_t&);
 
   ::std::ostream&
-  operator<< (::std::ostream&, const quad_type&);
+  operator<< (::std::ostream&, const q_t&);
 
   ::std::ostream&
   operator<< (::std::ostream&, const edges_type&);
@@ -4445,13 +4445,13 @@ namespace XMLMesh
   operator<< (::std::ostream&, const mesh&);
 
   ::std::ostream&
-  operator<< (::std::ostream&, const variable&);
+  operator<< (::std::ostream&, const var&);
 
   ::std::ostream&
-  operator<< (::std::ostream&, const vertex&);
+  operator<< (::std::ostream&, const v&);
 
   ::std::ostream&
-  operator<< (::std::ostream&, const edge&);
+  operator<< (::std::ostream&, const ed&);
 
   ::std::ostream&
   operator<< (::std::ostream&, const arc&);
@@ -4460,7 +4460,7 @@ namespace XMLMesh
   operator<< (::std::ostream&, const NURBS&);
 
   ::std::ostream&
-  operator<< (::std::ostream&, const refinement&);
+  operator<< (::std::ostream&, const ref&);
 
   ::std::ostream&
   operator<< (::std::ostream&, const inner_point&);
@@ -4910,13 +4910,13 @@ namespace XMLMesh
   operator<< (::xercesc::DOMElement&, const elements_type&);
 
   void
-  operator<< (::xercesc::DOMElement&, const element_type&);
+  operator<< (::xercesc::DOMElement&, const el_t&);
 
   void
-  operator<< (::xercesc::DOMElement&, const triangle_type&);
+  operator<< (::xercesc::DOMElement&, const t_t&);
 
   void
-  operator<< (::xercesc::DOMElement&, const quad_type&);
+  operator<< (::xercesc::DOMElement&, const q_t&);
 
   void
   operator<< (::xercesc::DOMElement&, const edges_type&);
@@ -4931,13 +4931,13 @@ namespace XMLMesh
   operator<< (::xercesc::DOMElement&, const mesh&);
 
   void
-  operator<< (::xercesc::DOMElement&, const variable&);
+  operator<< (::xercesc::DOMElement&, const var&);
 
   void
-  operator<< (::xercesc::DOMElement&, const vertex&);
+  operator<< (::xercesc::DOMElement&, const v&);
 
   void
-  operator<< (::xercesc::DOMElement&, const edge&);
+  operator<< (::xercesc::DOMElement&, const ed&);
 
   void
   operator<< (::xercesc::DOMElement&, const arc&);
@@ -4946,7 +4946,7 @@ namespace XMLMesh
   operator<< (::xercesc::DOMElement&, const NURBS&);
 
   void
-  operator<< (::xercesc::DOMElement&, const refinement&);
+  operator<< (::xercesc::DOMElement&, const ref&);
 
   void
   operator<< (::xercesc::DOMElement&, const inner_point&);

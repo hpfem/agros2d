@@ -45,145 +45,145 @@ namespace XMLSubdomains
   // elements_type
   // 
 
-  const elements_type::element_sequence& elements_type::
-  element () const
+  const elements_type::el_sequence& elements_type::
+  el () const
   {
-    return this->element_;
+    return this->el_;
   }
 
-  elements_type::element_sequence& elements_type::
-  element ()
+  elements_type::el_sequence& elements_type::
+  el ()
   {
-    return this->element_;
+    return this->el_;
   }
 
   void elements_type::
-  element (const element_sequence& s)
+  el (const el_sequence& s)
   {
-    this->element_ = s;
+    this->el_ = s;
   }
 
 
-  // element_type
+  // el_t
   // 
 
-  const element_type::v1_type& element_type::
+  const el_t::v1_type& el_t::
   v1 () const
   {
     return this->v1_.get ();
   }
 
-  element_type::v1_type& element_type::
+  el_t::v1_type& el_t::
   v1 ()
   {
     return this->v1_.get ();
   }
 
-  void element_type::
+  void el_t::
   v1 (const v1_type& x)
   {
     this->v1_.set (x);
   }
 
-  const element_type::v2_type& element_type::
+  const el_t::v2_type& el_t::
   v2 () const
   {
     return this->v2_.get ();
   }
 
-  element_type::v2_type& element_type::
+  el_t::v2_type& el_t::
   v2 ()
   {
     return this->v2_.get ();
   }
 
-  void element_type::
+  void el_t::
   v2 (const v2_type& x)
   {
     this->v2_.set (x);
   }
 
-  const element_type::v3_type& element_type::
+  const el_t::v3_type& el_t::
   v3 () const
   {
     return this->v3_.get ();
   }
 
-  element_type::v3_type& element_type::
+  el_t::v3_type& el_t::
   v3 ()
   {
     return this->v3_.get ();
   }
 
-  void element_type::
+  void el_t::
   v3 (const v3_type& x)
   {
     this->v3_.set (x);
   }
 
-  const element_type::marker_type& element_type::
-  marker () const
+  const el_t::m_type& el_t::
+  m () const
   {
-    return this->marker_.get ();
+    return this->m_.get ();
   }
 
-  element_type::marker_type& element_type::
-  marker ()
+  el_t::m_type& el_t::
+  m ()
   {
-    return this->marker_.get ();
+    return this->m_.get ();
   }
 
-  void element_type::
-  marker (const marker_type& x)
+  void el_t::
+  m (const m_type& x)
   {
-    this->marker_.set (x);
+    this->m_.set (x);
   }
 
-  void element_type::
-  marker (::std::auto_ptr< marker_type > x)
+  void el_t::
+  m (::std::auto_ptr< m_type > x)
   {
-    this->marker_.set (x);
+    this->m_.set (x);
   }
 
-  const element_type::i_type& element_type::
+  const el_t::i_type& el_t::
   i () const
   {
     return this->i_.get ();
   }
 
-  element_type::i_type& element_type::
+  el_t::i_type& el_t::
   i ()
   {
     return this->i_.get ();
   }
 
-  void element_type::
+  void el_t::
   i (const i_type& x)
   {
     this->i_.set (x);
   }
 
 
-  // triangle_type
+  // t_t
   // 
 
 
-  // quad_type
+  // q_t
   // 
 
-  const quad_type::v4_type& quad_type::
+  const q_t::v4_type& q_t::
   v4 () const
   {
     return this->v4_.get ();
   }
 
-  quad_type::v4_type& quad_type::
+  q_t::v4_type& q_t::
   v4 ()
   {
     return this->v4_.get ();
   }
 
-  void quad_type::
+  void q_t::
   v4 (const v4_type& x)
   {
     this->v4_.set (x);
@@ -193,22 +193,22 @@ namespace XMLSubdomains
   // edges_type
   // 
 
-  const edges_type::edge_sequence& edges_type::
-  edge () const
+  const edges_type::ed_sequence& edges_type::
+  ed () const
   {
-    return this->edge_;
+    return this->ed_;
   }
 
-  edges_type::edge_sequence& edges_type::
-  edge ()
+  edges_type::ed_sequence& edges_type::
+  ed ()
   {
-    return this->edge_;
+    return this->ed_;
   }
 
   void edges_type::
-  edge (const edge_sequence& s)
+  ed (const ed_sequence& s)
   {
-    this->edge_ = s;
+    this->ed_ = s;
   }
 
 
@@ -372,82 +372,82 @@ namespace XMLSubdomains
   }
 
 
-  // edge
+  // ed
   // 
 
-  const edge::v1_type& edge::
+  const ed::v1_type& ed::
   v1 () const
   {
     return this->v1_.get ();
   }
 
-  edge::v1_type& edge::
+  ed::v1_type& ed::
   v1 ()
   {
     return this->v1_.get ();
   }
 
-  void edge::
+  void ed::
   v1 (const v1_type& x)
   {
     this->v1_.set (x);
   }
 
-  const edge::v2_type& edge::
+  const ed::v2_type& ed::
   v2 () const
   {
     return this->v2_.get ();
   }
 
-  edge::v2_type& edge::
+  ed::v2_type& ed::
   v2 ()
   {
     return this->v2_.get ();
   }
 
-  void edge::
+  void ed::
   v2 (const v2_type& x)
   {
     this->v2_.set (x);
   }
 
-  const edge::marker_type& edge::
-  marker () const
+  const ed::m_type& ed::
+  m () const
   {
-    return this->marker_.get ();
+    return this->m_.get ();
   }
 
-  edge::marker_type& edge::
-  marker ()
+  ed::m_type& ed::
+  m ()
   {
-    return this->marker_.get ();
+    return this->m_.get ();
   }
 
-  void edge::
-  marker (const marker_type& x)
+  void ed::
+  m (const m_type& x)
   {
-    this->marker_.set (x);
+    this->m_.set (x);
   }
 
-  void edge::
-  marker (::std::auto_ptr< marker_type > x)
+  void ed::
+  m (::std::auto_ptr< m_type > x)
   {
-    this->marker_.set (x);
+    this->m_.set (x);
   }
 
-  const edge::i_type& edge::
+  const ed::i_type& ed::
   i () const
   {
     return this->i_.get ();
   }
 
-  edge::i_type& edge::
+  ed::i_type& ed::
   i ()
   {
     return this->i_.get ();
   }
 
-  void edge::
+  void ed::
   i (const i_type& x)
   {
     this->i_.set (x);
@@ -756,20 +756,20 @@ namespace _xsd
 namespace XMLSubdomains
 {
   static
-  const ::xsd::cxx::tree::element_factory_initializer< 0, char, ::XMLSubdomains::triangle_type >
-  _xsd_triangle_element_factory_init (
-    "element",
+  const ::xsd::cxx::tree::element_factory_initializer< 0, char, ::XMLSubdomains::t_t >
+  _xsd_t_element_factory_init (
+    "el",
     "XMLSubdomains",
-    "triangle",
+    "t",
     "XMLSubdomains");
 
 
   static
-  const ::xsd::cxx::tree::element_factory_initializer< 0, char, ::XMLSubdomains::quad_type >
-  _xsd_quad_element_factory_init (
-    "element",
+  const ::xsd::cxx::tree::element_factory_initializer< 0, char, ::XMLSubdomains::q_t >
+  _xsd_q_element_factory_init (
+    "el",
     "XMLSubdomains",
-    "quad",
+    "q",
     "XMLSubdomains");
 
 
@@ -779,7 +779,7 @@ namespace XMLSubdomains
   elements_type::
   elements_type ()
   : ::xml_schema::type (),
-    element_ (::xml_schema::flags (), this)
+    el_ (::xml_schema::flags (), this)
   {
   }
 
@@ -788,7 +788,7 @@ namespace XMLSubdomains
                  ::xml_schema::flags f,
                  ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
-    element_ (x.element_, f, this)
+    el_ (x.el_, f, this)
   {
   }
 
@@ -797,7 +797,7 @@ namespace XMLSubdomains
                  ::xml_schema::flags f,
                  ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-    element_ (f, this)
+    el_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -816,7 +816,7 @@ namespace XMLSubdomains
       const ::xsd::cxx::xml::qualified_name< char > n (
         ::xsd::cxx::xml::dom::name< char > (i));
 
-      // element
+      // el
       //
       {
         ::xsd::cxx::tree::type_factory_map< char >& tfm (
@@ -824,22 +824,22 @@ namespace XMLSubdomains
 
         ::std::auto_ptr< ::xsd::cxx::tree::type > tmp (
           tfm.create (
-            "element",
+            "el",
             "XMLSubdomains",
-            &::xsd::cxx::tree::factory_impl< element_type >,
+            &::xsd::cxx::tree::factory_impl< el_type >,
             true, true, i, n, f, this));
 
         if (tmp.get () != 0)
         {
-          ::std::auto_ptr< element_type > r (
-            dynamic_cast< element_type* > (tmp.get ()));
+          ::std::auto_ptr< el_type > r (
+            dynamic_cast< el_type* > (tmp.get ()));
 
           if (r.get ())
             tmp.release ();
           else
             throw ::xsd::cxx::tree::not_derived< char > ();
 
-          this->element_.push_back (r);
+          this->el_.push_back (r);
           continue;
         }
       }
@@ -860,46 +860,46 @@ namespace XMLSubdomains
   {
   }
 
-  // element_type
+  // el_t
   //
 
-  element_type::
-  element_type (const v1_type& v1,
-                const v2_type& v2,
-                const v3_type& v3,
-                const marker_type& marker,
-                const i_type& i)
+  el_t::
+  el_t (const v1_type& v1,
+        const v2_type& v2,
+        const v3_type& v3,
+        const m_type& m,
+        const i_type& i)
   : ::xml_schema::type (),
     v1_ (v1, ::xml_schema::flags (), this),
     v2_ (v2, ::xml_schema::flags (), this),
     v3_ (v3, ::xml_schema::flags (), this),
-    marker_ (marker, ::xml_schema::flags (), this),
+    m_ (m, ::xml_schema::flags (), this),
     i_ (i, ::xml_schema::flags (), this)
   {
   }
 
-  element_type::
-  element_type (const element_type& x,
-                ::xml_schema::flags f,
-                ::xml_schema::container* c)
+  el_t::
+  el_t (const el_t& x,
+        ::xml_schema::flags f,
+        ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     v1_ (x.v1_, f, this),
     v2_ (x.v2_, f, this),
     v3_ (x.v3_, f, this),
-    marker_ (x.marker_, f, this),
+    m_ (x.m_, f, this),
     i_ (x.i_, f, this)
   {
   }
 
-  element_type::
-  element_type (const ::xercesc::DOMElement& e,
-                ::xml_schema::flags f,
-                ::xml_schema::container* c)
+  el_t::
+  el_t (const ::xercesc::DOMElement& e,
+        ::xml_schema::flags f,
+        ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     v1_ (f, this),
     v2_ (f, this),
     v3_ (f, this),
-    marker_ (f, this),
+    m_ (f, this),
     i_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
@@ -909,7 +909,7 @@ namespace XMLSubdomains
     }
   }
 
-  void element_type::
+  void el_t::
   parse (::xsd::cxx::xml::dom::parser< char >& p,
          ::xml_schema::flags f)
   {
@@ -937,12 +937,12 @@ namespace XMLSubdomains
         continue;
       }
 
-      if (n.name () == "marker" && n.namespace_ ().empty ())
+      if (n.name () == "m" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< marker_type > r (
-          marker_traits::create (i, f, this));
+        ::std::auto_ptr< m_type > r (
+          m_traits::create (i, f, this));
 
-        this->marker_.set (r);
+        this->m_.set (r);
         continue;
       }
 
@@ -974,10 +974,10 @@ namespace XMLSubdomains
         "");
     }
 
-    if (!marker_.present ())
+    if (!m_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "marker",
+        "m",
         "");
     }
 
@@ -989,108 +989,108 @@ namespace XMLSubdomains
     }
   }
 
-  element_type* element_type::
+  el_t* el_t::
   _clone (::xml_schema::flags f,
           ::xml_schema::container* c) const
   {
-    return new class element_type (*this, f, c);
+    return new class el_t (*this, f, c);
   }
 
-  element_type::
-  ~element_type ()
+  el_t::
+  ~el_t ()
   {
   }
 
   static
-  const ::xsd::cxx::tree::type_factory_initializer< 0, char, element_type >
-  _xsd_element_type_type_factory_init (
-    "element_type",
+  const ::xsd::cxx::tree::type_factory_initializer< 0, char, el_t >
+  _xsd_el_t_type_factory_init (
+    "el_t",
     "XMLSubdomains");
 
-  // triangle_type
+  // t_t
   //
 
-  triangle_type::
-  triangle_type (const v1_type& v1,
-                 const v2_type& v2,
-                 const v3_type& v3,
-                 const marker_type& marker,
-                 const i_type& i)
-  : ::XMLSubdomains::element_type (v1,
-                                   v2,
-                                   v3,
-                                   marker,
-                                   i)
+  t_t::
+  t_t (const v1_type& v1,
+       const v2_type& v2,
+       const v3_type& v3,
+       const m_type& m,
+       const i_type& i)
+  : ::XMLSubdomains::el_t (v1,
+                           v2,
+                           v3,
+                           m,
+                           i)
   {
   }
 
-  triangle_type::
-  triangle_type (const triangle_type& x,
-                 ::xml_schema::flags f,
-                 ::xml_schema::container* c)
-  : ::XMLSubdomains::element_type (x, f, c)
+  t_t::
+  t_t (const t_t& x,
+       ::xml_schema::flags f,
+       ::xml_schema::container* c)
+  : ::XMLSubdomains::el_t (x, f, c)
   {
   }
 
-  triangle_type::
-  triangle_type (const ::xercesc::DOMElement& e,
-                 ::xml_schema::flags f,
-                 ::xml_schema::container* c)
-  : ::XMLSubdomains::element_type (e, f, c)
+  t_t::
+  t_t (const ::xercesc::DOMElement& e,
+       ::xml_schema::flags f,
+       ::xml_schema::container* c)
+  : ::XMLSubdomains::el_t (e, f, c)
   {
   }
 
-  triangle_type* triangle_type::
+  t_t* t_t::
   _clone (::xml_schema::flags f,
           ::xml_schema::container* c) const
   {
-    return new class triangle_type (*this, f, c);
+    return new class t_t (*this, f, c);
   }
 
-  triangle_type::
-  ~triangle_type ()
+  t_t::
+  ~t_t ()
   {
   }
 
   static
-  const ::xsd::cxx::tree::type_factory_initializer< 0, char, triangle_type >
-  _xsd_triangle_type_type_factory_init (
-    "triangle_type",
+  const ::xsd::cxx::tree::type_factory_initializer< 0, char, t_t >
+  _xsd_t_t_type_factory_init (
+    "t_t",
     "XMLSubdomains");
 
-  // quad_type
+  // q_t
   //
 
-  quad_type::
-  quad_type (const v1_type& v1,
-             const v2_type& v2,
-             const v3_type& v3,
-             const marker_type& marker,
-             const i_type& i,
-             const v4_type& v4)
-  : ::XMLSubdomains::element_type (v1,
-                                   v2,
-                                   v3,
-                                   marker,
-                                   i),
+  q_t::
+  q_t (const v1_type& v1,
+       const v2_type& v2,
+       const v3_type& v3,
+       const m_type& m,
+       const i_type& i,
+       const v4_type& v4)
+  : ::XMLSubdomains::el_t (v1,
+                           v2,
+                           v3,
+                           m,
+                           i),
     v4_ (v4, ::xml_schema::flags (), this)
   {
   }
 
-  quad_type::
-  quad_type (const quad_type& x,
-             ::xml_schema::flags f,
-             ::xml_schema::container* c)
-  : ::XMLSubdomains::element_type (x, f, c),
+  q_t::
+  q_t (const q_t& x,
+       ::xml_schema::flags f,
+       ::xml_schema::container* c)
+  : ::XMLSubdomains::el_t (x, f, c),
     v4_ (x.v4_, f, this)
   {
   }
 
-  quad_type::
-  quad_type (const ::xercesc::DOMElement& e,
-             ::xml_schema::flags f,
-             ::xml_schema::container* c)
-  : ::XMLSubdomains::element_type (e, f | ::xml_schema::flags::base, c),
+  q_t::
+  q_t (const ::xercesc::DOMElement& e,
+       ::xml_schema::flags f,
+       ::xml_schema::container* c)
+  : ::XMLSubdomains::el_t (e, f | ::xml_schema::flags::base, c),
     v4_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
@@ -1100,11 +1100,11 @@ namespace XMLSubdomains
     }
   }
 
-  void quad_type::
+  void q_t::
   parse (::xsd::cxx::xml::dom::parser< char >& p,
          ::xml_schema::flags f)
   {
-    this->::XMLSubdomains::element_type::parse (p, f);
+    this->::XMLSubdomains::el_t::parse (p, f);
 
     p.reset_attributes ();
 
@@ -1129,22 +1129,22 @@ namespace XMLSubdomains
     }
   }
 
-  quad_type* quad_type::
+  q_t* q_t::
   _clone (::xml_schema::flags f,
           ::xml_schema::container* c) const
   {
-    return new class quad_type (*this, f, c);
+    return new class q_t (*this, f, c);
   }
 
-  quad_type::
-  ~quad_type ()
+  q_t::
+  ~q_t ()
   {
   }
 
   static
-  const ::xsd::cxx::tree::type_factory_initializer< 0, char, quad_type >
-  _xsd_quad_type_type_factory_init (
-    "quad_type",
+  const ::xsd::cxx::tree::type_factory_initializer< 0, char, q_t >
+  _xsd_q_t_type_factory_init (
+    "q_t",
     "XMLSubdomains");
 
   // edges_type
@@ -1153,7 +1153,7 @@ namespace XMLSubdomains
   edges_type::
   edges_type ()
   : ::xml_schema::type (),
-    edge_ (::xml_schema::flags (), this)
+    ed_ (::xml_schema::flags (), this)
   {
   }
 
@@ -1162,7 +1162,7 @@ namespace XMLSubdomains
               ::xml_schema::flags f,
               ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
-    edge_ (x.edge_, f, this)
+    ed_ (x.ed_, f, this)
   {
   }
 
@@ -1171,7 +1171,7 @@ namespace XMLSubdomains
               ::xml_schema::flags f,
               ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-    edge_ (f, this)
+    ed_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -1190,14 +1190,14 @@ namespace XMLSubdomains
       const ::xsd::cxx::xml::qualified_name< char > n (
         ::xsd::cxx::xml::dom::name< char > (i));
 
-      // edge
+      // ed
       //
-      if (n.name () == "edge" && n.namespace_ ().empty ())
+      if (n.name () == "ed" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< edge_type > r (
-          edge_traits::create (i, f, this));
+        ::std::auto_ptr< ed_type > r (
+          ed_traits::create (i, f, this));
 
-        this->edge_.push_back (r);
+        this->ed_.push_back (r);
         continue;
       }
 
@@ -1421,42 +1421,42 @@ namespace XMLSubdomains
   {
   }
 
-  // edge
+  // ed
   //
 
-  edge::
-  edge (const v1_type& v1,
-        const v2_type& v2,
-        const marker_type& marker,
-        const i_type& i)
+  ed::
+  ed (const v1_type& v1,
+      const v2_type& v2,
+      const m_type& m,
+      const i_type& i)
   : ::xml_schema::type (),
     v1_ (v1, ::xml_schema::flags (), this),
     v2_ (v2, ::xml_schema::flags (), this),
-    marker_ (marker, ::xml_schema::flags (), this),
+    m_ (m, ::xml_schema::flags (), this),
     i_ (i, ::xml_schema::flags (), this)
   {
   }
 
-  edge::
-  edge (const edge& x,
-        ::xml_schema::flags f,
-        ::xml_schema::container* c)
+  ed::
+  ed (const ed& x,
+      ::xml_schema::flags f,
+      ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     v1_ (x.v1_, f, this),
     v2_ (x.v2_, f, this),
-    marker_ (x.marker_, f, this),
+    m_ (x.m_, f, this),
     i_ (x.i_, f, this)
   {
   }
 
-  edge::
-  edge (const ::xercesc::DOMElement& e,
-        ::xml_schema::flags f,
-        ::xml_schema::container* c)
+  ed::
+  ed (const ::xercesc::DOMElement& e,
+      ::xml_schema::flags f,
+      ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     v1_ (f, this),
     v2_ (f, this),
-    marker_ (f, this),
+    m_ (f, this),
     i_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
@@ -1466,7 +1466,7 @@ namespace XMLSubdomains
     }
   }
 
-  void edge::
+  void ed::
   parse (::xsd::cxx::xml::dom::parser< char >& p,
          ::xml_schema::flags f)
   {
@@ -1488,12 +1488,12 @@ namespace XMLSubdomains
         continue;
       }
 
-      if (n.name () == "marker" && n.namespace_ ().empty ())
+      if (n.name () == "m" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< marker_type > r (
-          marker_traits::create (i, f, this));
+        ::std::auto_ptr< m_type > r (
+          m_traits::create (i, f, this));
 
-        this->marker_.set (r);
+        this->m_.set (r);
         continue;
       }
 
@@ -1518,10 +1518,10 @@ namespace XMLSubdomains
         "");
     }
 
-    if (!marker_.present ())
+    if (!m_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "marker",
+        "m",
         "");
     }
 
@@ -1533,15 +1533,15 @@ namespace XMLSubdomains
     }
   }
 
-  edge* edge::
+  ed* ed::
   _clone (::xml_schema::flags f,
           ::xml_schema::container* c) const
   {
-    return new class edge (*this, f, c);
+    return new class ed (*this, f, c);
   }
 
-  edge::
-  ~edge ()
+  ed::
+  ~ed ()
   {
   }
 
@@ -2071,11 +2071,11 @@ namespace XMLSubdomains
       ::xsd::cxx::tree::std_ostream_map< char >& om (
         ::xsd::cxx::tree::std_ostream_map_instance< 0, char > ());
 
-      for (elements_type::element_const_iterator
-           b (i.element ().begin ()), e (i.element ().end ());
+      for (elements_type::el_const_iterator
+           b (i.el ().begin ()), e (i.el ().end ());
            b != e; ++b)
       {
-        o << ::std::endl << "element: ";
+        o << ::std::endl << "el: ";
         om.insert (o, *b);
       }
     }
@@ -2084,53 +2084,53 @@ namespace XMLSubdomains
   }
 
   ::std::ostream&
-  operator<< (::std::ostream& o, const element_type& i)
+  operator<< (::std::ostream& o, const el_t& i)
   {
     o << ::std::endl << "v1: " << i.v1 ();
     o << ::std::endl << "v2: " << i.v2 ();
     o << ::std::endl << "v3: " << i.v3 ();
-    o << ::std::endl << "marker: " << i.marker ();
+    o << ::std::endl << "m: " << i.m ();
     o << ::std::endl << "i: " << i.i ();
     return o;
   }
 
   static
-  const ::xsd::cxx::tree::std_ostream_initializer< 0, char, element_type >
-  _xsd_element_type_std_ostream_init;
+  const ::xsd::cxx::tree::std_ostream_initializer< 0, char, el_t >
+  _xsd_el_t_std_ostream_init;
 
   ::std::ostream&
-  operator<< (::std::ostream& o, const triangle_type& i)
+  operator<< (::std::ostream& o, const t_t& i)
   {
-    o << static_cast< const ::XMLSubdomains::element_type& > (i);
+    o << static_cast< const ::XMLSubdomains::el_t& > (i);
 
     return o;
   }
 
   static
-  const ::xsd::cxx::tree::std_ostream_initializer< 0, char, triangle_type >
-  _xsd_triangle_type_std_ostream_init;
+  const ::xsd::cxx::tree::std_ostream_initializer< 0, char, t_t >
+  _xsd_t_t_std_ostream_init;
 
   ::std::ostream&
-  operator<< (::std::ostream& o, const quad_type& i)
+  operator<< (::std::ostream& o, const q_t& i)
   {
-    o << static_cast< const ::XMLSubdomains::element_type& > (i);
+    o << static_cast< const ::XMLSubdomains::el_t& > (i);
 
     o << ::std::endl << "v4: " << i.v4 ();
     return o;
   }
 
   static
-  const ::xsd::cxx::tree::std_ostream_initializer< 0, char, quad_type >
-  _xsd_quad_type_std_ostream_init;
+  const ::xsd::cxx::tree::std_ostream_initializer< 0, char, q_t >
+  _xsd_q_t_std_ostream_init;
 
   ::std::ostream&
   operator<< (::std::ostream& o, const edges_type& i)
   {
-    for (edges_type::edge_const_iterator
-         b (i.edge ().begin ()), e (i.edge ().end ());
+    for (edges_type::ed_const_iterator
+         b (i.ed ().begin ()), e (i.ed ().end ());
          b != e; ++b)
     {
-      o << ::std::endl << "edge: " << *b;
+      o << ::std::endl << "ed: " << *b;
     }
 
     return o;
@@ -2157,11 +2157,11 @@ namespace XMLSubdomains
   }
 
   ::std::ostream&
-  operator<< (::std::ostream& o, const edge& i)
+  operator<< (::std::ostream& o, const ed& i)
   {
     o << ::std::endl << "v1: " << i.v1 ();
     o << ::std::endl << "v2: " << i.v2 ();
-    o << ::std::endl << "marker: " << i.marker ();
+    o << ::std::endl << "m: " << i.m ();
     o << ::std::endl << "i: " << i.i ();
     return o;
   }
@@ -2715,20 +2715,20 @@ namespace XMLSubdomains
   }
 
   static
-  const ::xsd::cxx::tree::element_serializer_initializer< 0, char, ::XMLSubdomains::triangle_type >
-  _xsd_triangle_element_serializer_init (
-    "element",
+  const ::xsd::cxx::tree::element_serializer_initializer< 0, char, ::XMLSubdomains::t_t >
+  _xsd_t_element_serializer_init (
+    "el",
     "XMLSubdomains",
-    "triangle",
+    "t",
     "XMLSubdomains");
 
 
   static
-  const ::xsd::cxx::tree::element_serializer_initializer< 0, char, ::XMLSubdomains::quad_type >
-  _xsd_quad_element_serializer_init (
-    "element",
+  const ::xsd::cxx::tree::element_serializer_initializer< 0, char, ::XMLSubdomains::q_t >
+  _xsd_q_element_serializer_init (
+    "el",
     "XMLSubdomains",
-    "quad",
+    "q",
     "XMLSubdomains");
 
 
@@ -2737,21 +2737,21 @@ namespace XMLSubdomains
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
-    // element
+    // el
     //
     {
       ::xsd::cxx::tree::type_serializer_map< char >& tsm (
         ::xsd::cxx::tree::type_serializer_map_instance< 0, char > ());
 
-      for (elements_type::element_const_iterator
-           b (i.element ().begin ()), n (i.element ().end ());
+      for (elements_type::el_const_iterator
+           b (i.el ().begin ()), n (i.el ().end ());
            b != n; ++b)
       {
-        if (typeid (elements_type::element_type) == typeid (*b))
+        if (typeid (elements_type::el_type) == typeid (*b))
         {
           ::xercesc::DOMElement& s (
             ::xsd::cxx::xml::dom::create_element (
-              "element",
+              "el",
               "XMLSubdomains",
               e));
 
@@ -2759,7 +2759,7 @@ namespace XMLSubdomains
         }
         else
           tsm.serialize (
-            "element",
+            "el",
             "XMLSubdomains",
             true, true, e, *b);
       }
@@ -2767,7 +2767,7 @@ namespace XMLSubdomains
   }
 
   void
-  operator<< (::xercesc::DOMElement& e, const element_type& i)
+  operator<< (::xercesc::DOMElement& e, const el_t& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
@@ -2804,15 +2804,15 @@ namespace XMLSubdomains
       a << i.v3 ();
     }
 
-    // marker
+    // m
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "marker",
+          "m",
           e));
 
-      a << i.marker ();
+      a << i.m ();
     }
 
     // i
@@ -2828,29 +2828,29 @@ namespace XMLSubdomains
   }
 
   static
-  const ::xsd::cxx::tree::type_serializer_initializer< 0, char, element_type >
-  _xsd_element_type_type_serializer_init (
-    "element_type",
+  const ::xsd::cxx::tree::type_serializer_initializer< 0, char, el_t >
+  _xsd_el_t_type_serializer_init (
+    "el_t",
     "XMLSubdomains");
 
 
   void
-  operator<< (::xercesc::DOMElement& e, const triangle_type& i)
+  operator<< (::xercesc::DOMElement& e, const t_t& i)
   {
-    e << static_cast< const ::XMLSubdomains::element_type& > (i);
+    e << static_cast< const ::XMLSubdomains::el_t& > (i);
   }
 
   static
-  const ::xsd::cxx::tree::type_serializer_initializer< 0, char, triangle_type >
-  _xsd_triangle_type_type_serializer_init (
-    "triangle_type",
+  const ::xsd::cxx::tree::type_serializer_initializer< 0, char, t_t >
+  _xsd_t_t_type_serializer_init (
+    "t_t",
     "XMLSubdomains");
 
 
   void
-  operator<< (::xercesc::DOMElement& e, const quad_type& i)
+  operator<< (::xercesc::DOMElement& e, const q_t& i)
   {
-    e << static_cast< const ::XMLSubdomains::element_type& > (i);
+    e << static_cast< const ::XMLSubdomains::el_t& > (i);
 
     // v4
     //
@@ -2865,9 +2865,9 @@ namespace XMLSubdomains
   }
 
   static
-  const ::xsd::cxx::tree::type_serializer_initializer< 0, char, quad_type >
-  _xsd_quad_type_type_serializer_init (
-    "quad_type",
+  const ::xsd::cxx::tree::type_serializer_initializer< 0, char, q_t >
+  _xsd_q_t_type_serializer_init (
+    "q_t",
     "XMLSubdomains");
 
 
@@ -2876,15 +2876,15 @@ namespace XMLSubdomains
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
-    // edge
+    // ed
     //
-    for (edges_type::edge_const_iterator
-         b (i.edge ().begin ()), n (i.edge ().end ());
+    for (edges_type::ed_const_iterator
+         b (i.ed ().begin ()), n (i.ed ().end ());
          b != n; ++b)
     {
       ::xercesc::DOMElement& s (
         ::xsd::cxx::xml::dom::create_element (
-          "edge",
+          "ed",
           e));
 
       s << *b;
@@ -2966,7 +2966,7 @@ namespace XMLSubdomains
   }
 
   void
-  operator<< (::xercesc::DOMElement& e, const edge& i)
+  operator<< (::xercesc::DOMElement& e, const ed& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
@@ -2992,15 +2992,15 @@ namespace XMLSubdomains
       a << i.v2 ();
     }
 
-    // marker
+    // m
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "marker",
+          "m",
           e));
 
-      a << i.marker ();
+      a << i.m ();
     }
 
     // i

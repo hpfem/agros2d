@@ -46,7 +46,7 @@ bool MeshGenerator::writeToHermes()
     XMLSubdomains::edges_type edges;
     for (int i = 0; i < edgeList.count(); i++)
         if (edgeList[i].isUsed && edgeList[i].marker != -1)
-            edges.edge().push_back(XMLSubdomains::edge(edgeList[i].node[0], edgeList[i].node[1],
+            edges.ed().push_back(XMLSubdomains::ed(edgeList[i].node[0], edgeList[i].node[1],
                     QString::number(edgeList[i].marker).toStdString(), i));
 
     // curved edges
@@ -111,18 +111,18 @@ bool MeshGenerator::writeToHermes()
     // vertices
     XMLMesh::vertices_type vertices;
     for (int i = 0; i<nodeList.count(); i++)
-        vertices.vertex().push_back(std::auto_ptr<XMLMesh::vertex>(new XMLMesh::vertex(QString::number(nodeList[i].x).toStdString(),
-                                                                                       QString::number(nodeList[i].y).toStdString(), i)));
+        vertices.v().push_back(std::auto_ptr<XMLMesh::v>(new XMLMesh::v(QString::number(nodeList[i].x).toStdString(),
+                                                                        QString::number(nodeList[i].y).toStdString(), i)));
 
     // elements
     XMLSubdomains::elements_type elements;
     for (int i = 0; i<elementList.count(); i++)
         if (elementList[i].isUsed)
             if (elementList[i].isTriangle())
-                elements.element().push_back(XMLSubdomains::triangle_type(elementList[i].node[0], elementList[i].node[1], elementList[i].node[2],
+                elements.el().push_back(XMLSubdomains::t_t(elementList[i].node[0], elementList[i].node[1], elementList[i].node[2],
                         QString::number(elementList[i].marker).toStdString(), i));
             else
-                elements.element().push_back(XMLSubdomains::quad_type(elementList[i].node[0], elementList[i].node[1], elementList[i].node[2],
+                elements.el().push_back(XMLSubdomains::q_t(elementList[i].node[0], elementList[i].node[1], elementList[i].node[2],
                         QString::number(elementList[i].marker).toStdString(), i,
                         elementList[i].node[3]));
 

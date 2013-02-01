@@ -624,12 +624,12 @@ namespace xml_schema
 namespace XMLSubdomains
 {
   class elements_type;
-  class element_type;
-  class triangle_type;
-  class quad_type;
+  class el_t;
+  class t_t;
+  class q_t;
   class edges_type;
   class domain;
-  class edge;
+  class ed;
   class subdomains;
   class subdomain;
   class vertices;
@@ -669,9 +669,9 @@ namespace XMLSubdomains
   {
     public:
     /**
-     * @name element
+     * @name el
      *
-     * @brief Accessor and modifier functions for the %element
+     * @brief Accessor and modifier functions for the %el
      * sequence element.
      */
     //@{
@@ -679,27 +679,27 @@ namespace XMLSubdomains
     /**
      * @brief Element type.
      */
-    typedef ::XMLSubdomains::element_type element_type;
+    typedef ::XMLSubdomains::el_t el_type;
 
     /**
      * @brief Element sequence container type.
      */
-    typedef ::xsd::cxx::tree::sequence< element_type > element_sequence;
+    typedef ::xsd::cxx::tree::sequence< el_type > el_sequence;
 
     /**
      * @brief Element iterator type.
      */
-    typedef element_sequence::iterator element_iterator;
+    typedef el_sequence::iterator el_iterator;
 
     /**
      * @brief Element constant iterator type.
      */
-    typedef element_sequence::const_iterator element_const_iterator;
+    typedef el_sequence::const_iterator el_const_iterator;
 
     /**
      * @brief Element traits type.
      */
-    typedef ::xsd::cxx::tree::traits< element_type, char > element_traits;
+    typedef ::xsd::cxx::tree::traits< el_type, char > el_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the element
@@ -707,16 +707,16 @@ namespace XMLSubdomains
      *
      * @return A constant reference to the sequence container.
      */
-    const element_sequence&
-    element () const;
+    const el_sequence&
+    el () const;
 
     /**
      * @brief Return a read-write reference to the element sequence.
      *
      * @return A reference to the sequence container.
      */
-    element_sequence&
-    element ();
+    el_sequence&
+    el ();
 
     /**
      * @brief Copy elements from a given sequence.
@@ -728,7 +728,7 @@ namespace XMLSubdomains
      * sequence and all old elements will be lost.
      */
     void
-    element (const element_sequence& s);
+    el (const el_sequence& s);
 
     //@}
 
@@ -802,17 +802,17 @@ namespace XMLSubdomains
            ::xml_schema::flags);
 
     protected:
-    element_sequence element_;
+    el_sequence el_;
 
     //@endcond
   };
 
   /**
-   * @brief Class corresponding to the %element_type schema type.
+   * @brief Class corresponding to the %el_t schema type.
    *
    * @nosubgrouping
    */
-  class element_type: public ::xml_schema::type
+  class el_t: public ::xml_schema::type
   {
     public:
     /**
@@ -957,9 +957,9 @@ namespace XMLSubdomains
     //@}
 
     /**
-     * @name marker
+     * @name m
      *
-     * @brief Accessor and modifier functions for the %marker
+     * @brief Accessor and modifier functions for the %m
      * required attribute.
      */
     //@{
@@ -967,28 +967,28 @@ namespace XMLSubdomains
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::string marker_type;
+    typedef ::xml_schema::string m_type;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< marker_type, char > marker_traits;
+    typedef ::xsd::cxx::tree::traits< m_type, char > m_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute.
      *
      * @return A constant reference to the attribute.
      */
-    const marker_type&
-    marker () const;
+    const m_type&
+    m () const;
 
     /**
      * @brief Return a read-write reference to the attribute.
      *
      * @return A reference to the attribute.
      */
-    marker_type&
-    marker ();
+    m_type&
+    m ();
 
     /**
      * @brief Set the attribute value.
@@ -999,7 +999,7 @@ namespace XMLSubdomains
      * the new value of the attribute.
      */
     void
-    marker (const marker_type& x);
+    m (const m_type& x);
 
     /**
      * @brief Set the attribute value without copying.
@@ -1010,7 +1010,7 @@ namespace XMLSubdomains
      * instead of making a copy.
      */
     void
-    marker (::std::auto_ptr< marker_type > p);
+    m (::std::auto_ptr< m_type > p);
 
     //@}
 
@@ -1070,11 +1070,11 @@ namespace XMLSubdomains
      * @brief Create an instance from the ultimate base and
      * initializers for required elements and attributes.
      */
-    element_type (const v1_type&,
-                  const v2_type&,
-                  const v3_type&,
-                  const marker_type&,
-                  const i_type&);
+    el_t (const v1_type&,
+          const v2_type&,
+          const v3_type&,
+          const m_type&,
+          const i_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -1084,9 +1084,9 @@ namespace XMLSubdomains
      * @param c A pointer to the object that will contain the new
      * instance.
      */
-    element_type (const ::xercesc::DOMElement& e,
-                  ::xml_schema::flags f = 0,
-                  ::xml_schema::container* c = 0);
+    el_t (const ::xercesc::DOMElement& e,
+          ::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy constructor.
@@ -1097,9 +1097,9 @@ namespace XMLSubdomains
      *
      * For polymorphic object models use the @c _clone function instead.
      */
-    element_type (const element_type& x,
-                  ::xml_schema::flags f = 0,
-                  ::xml_schema::container* c = 0);
+    el_t (const el_t& x,
+          ::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy the instance polymorphically.
@@ -1112,7 +1112,7 @@ namespace XMLSubdomains
      * used for copying and should be used for polymorphic object
      * models instead of the copy constructor.
      */
-    virtual element_type*
+    virtual el_t*
     _clone (::xml_schema::flags f = 0,
             ::xml_schema::container* c = 0) const;
 
@@ -1122,7 +1122,7 @@ namespace XMLSubdomains
      * @brief Destructor.
      */
     virtual 
-    ~element_type ();
+    ~el_t ();
 
     // Implementation.
     //
@@ -1138,18 +1138,18 @@ namespace XMLSubdomains
     ::xsd::cxx::tree::one< v1_type > v1_;
     ::xsd::cxx::tree::one< v2_type > v2_;
     ::xsd::cxx::tree::one< v3_type > v3_;
-    ::xsd::cxx::tree::one< marker_type > marker_;
+    ::xsd::cxx::tree::one< m_type > m_;
     ::xsd::cxx::tree::one< i_type > i_;
 
     //@endcond
   };
 
   /**
-   * @brief Class corresponding to the %triangle_type schema type.
+   * @brief Class corresponding to the %t_t schema type.
    *
    * @nosubgrouping
    */
-  class triangle_type: public ::XMLSubdomains::element_type
+  class t_t: public ::XMLSubdomains::el_t
   {
     public:
     /**
@@ -1161,11 +1161,11 @@ namespace XMLSubdomains
      * @brief Create an instance from the ultimate base and
      * initializers for required elements and attributes.
      */
-    triangle_type (const v1_type&,
-                   const v2_type&,
-                   const v3_type&,
-                   const marker_type&,
-                   const i_type&);
+    t_t (const v1_type&,
+         const v2_type&,
+         const v3_type&,
+         const m_type&,
+         const i_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -1175,9 +1175,9 @@ namespace XMLSubdomains
      * @param c A pointer to the object that will contain the new
      * instance.
      */
-    triangle_type (const ::xercesc::DOMElement& e,
-                   ::xml_schema::flags f = 0,
-                   ::xml_schema::container* c = 0);
+    t_t (const ::xercesc::DOMElement& e,
+         ::xml_schema::flags f = 0,
+         ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy constructor.
@@ -1188,9 +1188,9 @@ namespace XMLSubdomains
      *
      * For polymorphic object models use the @c _clone function instead.
      */
-    triangle_type (const triangle_type& x,
-                   ::xml_schema::flags f = 0,
-                   ::xml_schema::container* c = 0);
+    t_t (const t_t& x,
+         ::xml_schema::flags f = 0,
+         ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy the instance polymorphically.
@@ -1203,7 +1203,7 @@ namespace XMLSubdomains
      * used for copying and should be used for polymorphic object
      * models instead of the copy constructor.
      */
-    virtual triangle_type*
+    virtual t_t*
     _clone (::xml_schema::flags f = 0,
             ::xml_schema::container* c = 0) const;
 
@@ -1213,15 +1213,15 @@ namespace XMLSubdomains
      * @brief Destructor.
      */
     virtual 
-    ~triangle_type ();
+    ~t_t ();
   };
 
   /**
-   * @brief Class corresponding to the %quad_type schema type.
+   * @brief Class corresponding to the %q_t schema type.
    *
    * @nosubgrouping
    */
-  class quad_type: public ::XMLSubdomains::element_type
+  class q_t: public ::XMLSubdomains::el_t
   {
     public:
     /**
@@ -1280,12 +1280,12 @@ namespace XMLSubdomains
      * @brief Create an instance from the ultimate base and
      * initializers for required elements and attributes.
      */
-    quad_type (const v1_type&,
-               const v2_type&,
-               const v3_type&,
-               const marker_type&,
-               const i_type&,
-               const v4_type&);
+    q_t (const v1_type&,
+         const v2_type&,
+         const v3_type&,
+         const m_type&,
+         const i_type&,
+         const v4_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -1295,9 +1295,9 @@ namespace XMLSubdomains
      * @param c A pointer to the object that will contain the new
      * instance.
      */
-    quad_type (const ::xercesc::DOMElement& e,
-               ::xml_schema::flags f = 0,
-               ::xml_schema::container* c = 0);
+    q_t (const ::xercesc::DOMElement& e,
+         ::xml_schema::flags f = 0,
+         ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy constructor.
@@ -1308,9 +1308,9 @@ namespace XMLSubdomains
      *
      * For polymorphic object models use the @c _clone function instead.
      */
-    quad_type (const quad_type& x,
-               ::xml_schema::flags f = 0,
-               ::xml_schema::container* c = 0);
+    q_t (const q_t& x,
+         ::xml_schema::flags f = 0,
+         ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy the instance polymorphically.
@@ -1323,7 +1323,7 @@ namespace XMLSubdomains
      * used for copying and should be used for polymorphic object
      * models instead of the copy constructor.
      */
-    virtual quad_type*
+    virtual q_t*
     _clone (::xml_schema::flags f = 0,
             ::xml_schema::container* c = 0) const;
 
@@ -1333,7 +1333,7 @@ namespace XMLSubdomains
      * @brief Destructor.
      */
     virtual 
-    ~quad_type ();
+    ~q_t ();
 
     // Implementation.
     //
@@ -1360,9 +1360,9 @@ namespace XMLSubdomains
   {
     public:
     /**
-     * @name edge
+     * @name ed
      *
-     * @brief Accessor and modifier functions for the %edge
+     * @brief Accessor and modifier functions for the %ed
      * sequence element.
      */
     //@{
@@ -1370,27 +1370,27 @@ namespace XMLSubdomains
     /**
      * @brief Element type.
      */
-    typedef ::XMLSubdomains::edge edge_type;
+    typedef ::XMLSubdomains::ed ed_type;
 
     /**
      * @brief Element sequence container type.
      */
-    typedef ::xsd::cxx::tree::sequence< edge_type > edge_sequence;
+    typedef ::xsd::cxx::tree::sequence< ed_type > ed_sequence;
 
     /**
      * @brief Element iterator type.
      */
-    typedef edge_sequence::iterator edge_iterator;
+    typedef ed_sequence::iterator ed_iterator;
 
     /**
      * @brief Element constant iterator type.
      */
-    typedef edge_sequence::const_iterator edge_const_iterator;
+    typedef ed_sequence::const_iterator ed_const_iterator;
 
     /**
      * @brief Element traits type.
      */
-    typedef ::xsd::cxx::tree::traits< edge_type, char > edge_traits;
+    typedef ::xsd::cxx::tree::traits< ed_type, char > ed_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the element
@@ -1398,16 +1398,16 @@ namespace XMLSubdomains
      *
      * @return A constant reference to the sequence container.
      */
-    const edge_sequence&
-    edge () const;
+    const ed_sequence&
+    ed () const;
 
     /**
      * @brief Return a read-write reference to the element sequence.
      *
      * @return A reference to the sequence container.
      */
-    edge_sequence&
-    edge ();
+    ed_sequence&
+    ed ();
 
     /**
      * @brief Copy elements from a given sequence.
@@ -1419,7 +1419,7 @@ namespace XMLSubdomains
      * sequence and all old elements will be lost.
      */
     void
-    edge (const edge_sequence& s);
+    ed (const ed_sequence& s);
 
     //@}
 
@@ -1493,7 +1493,7 @@ namespace XMLSubdomains
            ::xml_schema::flags);
 
     protected:
-    edge_sequence edge_;
+    ed_sequence ed_;
 
     //@endcond
   };
@@ -1987,11 +1987,11 @@ namespace XMLSubdomains
   };
 
   /**
-   * @brief Class corresponding to the %edge schema type.
+   * @brief Class corresponding to the %ed schema type.
    *
    * @nosubgrouping
    */
-  class edge: public ::xml_schema::type
+  class ed: public ::xml_schema::type
   {
     public:
     /**
@@ -2089,9 +2089,9 @@ namespace XMLSubdomains
     //@}
 
     /**
-     * @name marker
+     * @name m
      *
-     * @brief Accessor and modifier functions for the %marker
+     * @brief Accessor and modifier functions for the %m
      * required attribute.
      */
     //@{
@@ -2099,28 +2099,28 @@ namespace XMLSubdomains
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::string marker_type;
+    typedef ::xml_schema::string m_type;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< marker_type, char > marker_traits;
+    typedef ::xsd::cxx::tree::traits< m_type, char > m_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute.
      *
      * @return A constant reference to the attribute.
      */
-    const marker_type&
-    marker () const;
+    const m_type&
+    m () const;
 
     /**
      * @brief Return a read-write reference to the attribute.
      *
      * @return A reference to the attribute.
      */
-    marker_type&
-    marker ();
+    m_type&
+    m ();
 
     /**
      * @brief Set the attribute value.
@@ -2131,7 +2131,7 @@ namespace XMLSubdomains
      * the new value of the attribute.
      */
     void
-    marker (const marker_type& x);
+    m (const m_type& x);
 
     /**
      * @brief Set the attribute value without copying.
@@ -2142,7 +2142,7 @@ namespace XMLSubdomains
      * instead of making a copy.
      */
     void
-    marker (::std::auto_ptr< marker_type > p);
+    m (::std::auto_ptr< m_type > p);
 
     //@}
 
@@ -2202,10 +2202,10 @@ namespace XMLSubdomains
      * @brief Create an instance from the ultimate base and
      * initializers for required elements and attributes.
      */
-    edge (const v1_type&,
-          const v2_type&,
-          const marker_type&,
-          const i_type&);
+    ed (const v1_type&,
+        const v2_type&,
+        const m_type&,
+        const i_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -2215,9 +2215,9 @@ namespace XMLSubdomains
      * @param c A pointer to the object that will contain the new
      * instance.
      */
-    edge (const ::xercesc::DOMElement& e,
-          ::xml_schema::flags f = 0,
-          ::xml_schema::container* c = 0);
+    ed (const ::xercesc::DOMElement& e,
+        ::xml_schema::flags f = 0,
+        ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy constructor.
@@ -2228,9 +2228,9 @@ namespace XMLSubdomains
      *
      * For polymorphic object models use the @c _clone function instead.
      */
-    edge (const edge& x,
-          ::xml_schema::flags f = 0,
-          ::xml_schema::container* c = 0);
+    ed (const ed& x,
+        ::xml_schema::flags f = 0,
+        ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy the instance polymorphically.
@@ -2243,7 +2243,7 @@ namespace XMLSubdomains
      * used for copying and should be used for polymorphic object
      * models instead of the copy constructor.
      */
-    virtual edge*
+    virtual ed*
     _clone (::xml_schema::flags f = 0,
             ::xml_schema::container* c = 0) const;
 
@@ -2253,7 +2253,7 @@ namespace XMLSubdomains
      * @brief Destructor.
      */
     virtual 
-    ~edge ();
+    ~ed ();
 
     // Implementation.
     //
@@ -2268,7 +2268,7 @@ namespace XMLSubdomains
     protected:
     ::xsd::cxx::tree::one< v1_type > v1_;
     ::xsd::cxx::tree::one< v2_type > v2_;
-    ::xsd::cxx::tree::one< marker_type > marker_;
+    ::xsd::cxx::tree::one< m_type > m_;
     ::xsd::cxx::tree::one< i_type > i_;
 
     //@endcond
@@ -3544,13 +3544,13 @@ namespace XMLSubdomains
   operator<< (::std::ostream&, const elements_type&);
 
   ::std::ostream&
-  operator<< (::std::ostream&, const element_type&);
+  operator<< (::std::ostream&, const el_t&);
 
   ::std::ostream&
-  operator<< (::std::ostream&, const triangle_type&);
+  operator<< (::std::ostream&, const t_t&);
 
   ::std::ostream&
-  operator<< (::std::ostream&, const quad_type&);
+  operator<< (::std::ostream&, const q_t&);
 
   ::std::ostream&
   operator<< (::std::ostream&, const edges_type&);
@@ -3559,7 +3559,7 @@ namespace XMLSubdomains
   operator<< (::std::ostream&, const domain&);
 
   ::std::ostream&
-  operator<< (::std::ostream&, const edge&);
+  operator<< (::std::ostream&, const ed&);
 
   ::std::ostream&
   operator<< (::std::ostream&, const subdomains&);
@@ -4015,13 +4015,13 @@ namespace XMLSubdomains
   operator<< (::xercesc::DOMElement&, const elements_type&);
 
   void
-  operator<< (::xercesc::DOMElement&, const element_type&);
+  operator<< (::xercesc::DOMElement&, const el_t&);
 
   void
-  operator<< (::xercesc::DOMElement&, const triangle_type&);
+  operator<< (::xercesc::DOMElement&, const t_t&);
 
   void
-  operator<< (::xercesc::DOMElement&, const quad_type&);
+  operator<< (::xercesc::DOMElement&, const q_t&);
 
   void
   operator<< (::xercesc::DOMElement&, const edges_type&);
@@ -4030,7 +4030,7 @@ namespace XMLSubdomains
   operator<< (::xercesc::DOMElement&, const domain&);
 
   void
-  operator<< (::xercesc::DOMElement&, const edge&);
+  operator<< (::xercesc::DOMElement&, const ed&);
 
   void
   operator<< (::xercesc::DOMElement&, const subdomains&);

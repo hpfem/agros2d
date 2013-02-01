@@ -45,171 +45,171 @@ namespace XMLMesh
   // variables_type
   // 
 
-  const variables_type::variable_sequence& variables_type::
-  variable () const
+  const variables_type::var_sequence& variables_type::
+  var () const
   {
-    return this->variable_;
+    return this->var_;
   }
 
-  variables_type::variable_sequence& variables_type::
-  variable ()
+  variables_type::var_sequence& variables_type::
+  var ()
   {
-    return this->variable_;
+    return this->var_;
   }
 
   void variables_type::
-  variable (const variable_sequence& s)
+  var (const var_sequence& s)
   {
-    this->variable_ = s;
+    this->var_ = s;
   }
 
 
   // vertices_type
   // 
 
-  const vertices_type::vertex_sequence& vertices_type::
-  vertex () const
+  const vertices_type::v_sequence& vertices_type::
+  v () const
   {
-    return this->vertex_;
+    return this->v_;
   }
 
-  vertices_type::vertex_sequence& vertices_type::
-  vertex ()
+  vertices_type::v_sequence& vertices_type::
+  v ()
   {
-    return this->vertex_;
+    return this->v_;
   }
 
   void vertices_type::
-  vertex (const vertex_sequence& s)
+  v (const v_sequence& s)
   {
-    this->vertex_ = s;
+    this->v_ = s;
   }
 
 
   // elements_type
   // 
 
-  const elements_type::element_sequence& elements_type::
-  element () const
+  const elements_type::el_sequence& elements_type::
+  el () const
   {
-    return this->element_;
+    return this->el_;
   }
 
-  elements_type::element_sequence& elements_type::
-  element ()
+  elements_type::el_sequence& elements_type::
+  el ()
   {
-    return this->element_;
+    return this->el_;
   }
 
   void elements_type::
-  element (const element_sequence& s)
+  el (const el_sequence& s)
   {
-    this->element_ = s;
+    this->el_ = s;
   }
 
 
-  // element_type
+  // el_t
   // 
 
-  const element_type::v1_type& element_type::
+  const el_t::v1_type& el_t::
   v1 () const
   {
     return this->v1_.get ();
   }
 
-  element_type::v1_type& element_type::
+  el_t::v1_type& el_t::
   v1 ()
   {
     return this->v1_.get ();
   }
 
-  void element_type::
+  void el_t::
   v1 (const v1_type& x)
   {
     this->v1_.set (x);
   }
 
-  const element_type::v2_type& element_type::
+  const el_t::v2_type& el_t::
   v2 () const
   {
     return this->v2_.get ();
   }
 
-  element_type::v2_type& element_type::
+  el_t::v2_type& el_t::
   v2 ()
   {
     return this->v2_.get ();
   }
 
-  void element_type::
+  void el_t::
   v2 (const v2_type& x)
   {
     this->v2_.set (x);
   }
 
-  const element_type::v3_type& element_type::
+  const el_t::v3_type& el_t::
   v3 () const
   {
     return this->v3_.get ();
   }
 
-  element_type::v3_type& element_type::
+  el_t::v3_type& el_t::
   v3 ()
   {
     return this->v3_.get ();
   }
 
-  void element_type::
+  void el_t::
   v3 (const v3_type& x)
   {
     this->v3_.set (x);
   }
 
-  const element_type::marker_type& element_type::
-  marker () const
+  const el_t::m_type& el_t::
+  m () const
   {
-    return this->marker_.get ();
+    return this->m_.get ();
   }
 
-  element_type::marker_type& element_type::
-  marker ()
+  el_t::m_type& el_t::
+  m ()
   {
-    return this->marker_.get ();
+    return this->m_.get ();
   }
 
-  void element_type::
-  marker (const marker_type& x)
+  void el_t::
+  m (const m_type& x)
   {
-    this->marker_.set (x);
+    this->m_.set (x);
   }
 
-  void element_type::
-  marker (::std::auto_ptr< marker_type > x)
+  void el_t::
+  m (::std::auto_ptr< m_type > x)
   {
-    this->marker_.set (x);
+    this->m_.set (x);
   }
 
 
-  // triangle_type
+  // t_t
   // 
 
 
-  // quad_type
+  // q_t
   // 
 
-  const quad_type::v4_type& quad_type::
+  const q_t::v4_type& q_t::
   v4 () const
   {
     return this->v4_.get ();
   }
 
-  quad_type::v4_type& quad_type::
+  q_t::v4_type& q_t::
   v4 ()
   {
     return this->v4_.get ();
   }
 
-  void quad_type::
+  void q_t::
   v4 (const v4_type& x)
   {
     this->v4_.set (x);
@@ -219,22 +219,22 @@ namespace XMLMesh
   // edges_type
   // 
 
-  const edges_type::edge_sequence& edges_type::
-  edge () const
+  const edges_type::ed_sequence& edges_type::
+  ed () const
   {
-    return this->edge_;
+    return this->ed_;
   }
 
-  edges_type::edge_sequence& edges_type::
-  edge ()
+  edges_type::ed_sequence& edges_type::
+  ed ()
   {
-    return this->edge_;
+    return this->ed_;
   }
 
   void edges_type::
-  edge (const edge_sequence& s)
+  ed (const ed_sequence& s)
   {
-    this->edge_ = s;
+    this->ed_ = s;
   }
 
 
@@ -281,22 +281,22 @@ namespace XMLMesh
   // refinements_type
   // 
 
-  const refinements_type::refinement_sequence& refinements_type::
-  refinement () const
+  const refinements_type::ref_sequence& refinements_type::
+  ref () const
   {
-    return this->refinement_;
+    return this->ref_;
   }
 
-  refinements_type::refinement_sequence& refinements_type::
-  refinement ()
+  refinements_type::ref_sequence& refinements_type::
+  ref ()
   {
-    return this->refinement_;
+    return this->ref_;
   }
 
   void refinements_type::
-  refinement (const refinement_sequence& s)
+  ref (const ref_sequence& s)
   {
-    this->refinement_ = s;
+    this->ref_ = s;
   }
 
 
@@ -466,183 +466,183 @@ namespace XMLMesh
   }
 
 
-  // variable
+  // var
   // 
 
-  const variable::name_type& variable::
+  const var::name_type& var::
   name () const
   {
     return this->name_.get ();
   }
 
-  variable::name_type& variable::
+  var::name_type& var::
   name ()
   {
     return this->name_.get ();
   }
 
-  void variable::
+  void var::
   name (const name_type& x)
   {
     this->name_.set (x);
   }
 
-  void variable::
+  void var::
   name (::std::auto_ptr< name_type > x)
   {
     this->name_.set (x);
   }
 
-  const variable::value_type& variable::
+  const var::value_type& var::
   value () const
   {
     return this->value_.get ();
   }
 
-  variable::value_type& variable::
+  var::value_type& var::
   value ()
   {
     return this->value_.get ();
   }
 
-  void variable::
+  void var::
   value (const value_type& x)
   {
     this->value_.set (x);
   }
 
 
-  // vertex
+  // v
   // 
 
-  const vertex::x_type& vertex::
+  const v::x_type& v::
   x () const
   {
     return this->x_.get ();
   }
 
-  vertex::x_type& vertex::
+  v::x_type& v::
   x ()
   {
     return this->x_.get ();
   }
 
-  void vertex::
+  void v::
   x (const x_type& x)
   {
     this->x_.set (x);
   }
 
-  void vertex::
+  void v::
   x (::std::auto_ptr< x_type > x)
   {
     this->x_.set (x);
   }
 
-  const vertex::y_type& vertex::
+  const v::y_type& v::
   y () const
   {
     return this->y_.get ();
   }
 
-  vertex::y_type& vertex::
+  v::y_type& v::
   y ()
   {
     return this->y_.get ();
   }
 
-  void vertex::
+  void v::
   y (const y_type& x)
   {
     this->y_.set (x);
   }
 
-  void vertex::
+  void v::
   y (::std::auto_ptr< y_type > x)
   {
     this->y_.set (x);
   }
 
-  const vertex::i_type& vertex::
+  const v::i_type& v::
   i () const
   {
     return this->i_.get ();
   }
 
-  vertex::i_type& vertex::
+  v::i_type& v::
   i ()
   {
     return this->i_.get ();
   }
 
-  void vertex::
+  void v::
   i (const i_type& x)
   {
     this->i_.set (x);
   }
 
 
-  // edge
+  // ed
   // 
 
-  const edge::v1_type& edge::
+  const ed::v1_type& ed::
   v1 () const
   {
     return this->v1_.get ();
   }
 
-  edge::v1_type& edge::
+  ed::v1_type& ed::
   v1 ()
   {
     return this->v1_.get ();
   }
 
-  void edge::
+  void ed::
   v1 (const v1_type& x)
   {
     this->v1_.set (x);
   }
 
-  const edge::v2_type& edge::
+  const ed::v2_type& ed::
   v2 () const
   {
     return this->v2_.get ();
   }
 
-  edge::v2_type& edge::
+  ed::v2_type& ed::
   v2 ()
   {
     return this->v2_.get ();
   }
 
-  void edge::
+  void ed::
   v2 (const v2_type& x)
   {
     this->v2_.set (x);
   }
 
-  const edge::marker_type& edge::
-  marker () const
+  const ed::m_type& ed::
+  m () const
   {
-    return this->marker_.get ();
+    return this->m_.get ();
   }
 
-  edge::marker_type& edge::
-  marker ()
+  ed::m_type& ed::
+  m ()
   {
-    return this->marker_.get ();
+    return this->m_.get ();
   }
 
-  void edge::
-  marker (const marker_type& x)
+  void ed::
+  m (const m_type& x)
   {
-    this->marker_.set (x);
+    this->m_.set (x);
   }
 
-  void edge::
-  marker (::std::auto_ptr< marker_type > x)
+  void ed::
+  m (::std::auto_ptr< m_type > x)
   {
-    this->marker_.set (x);
+    this->m_.set (x);
   }
 
 
@@ -779,59 +779,59 @@ namespace XMLMesh
     this->v2_.set (x);
   }
 
-  const NURBS::degree_type& NURBS::
-  degree () const
+  const NURBS::deg_type& NURBS::
+  deg () const
   {
-    return this->degree_.get ();
+    return this->deg_.get ();
   }
 
-  NURBS::degree_type& NURBS::
-  degree ()
+  NURBS::deg_type& NURBS::
+  deg ()
   {
-    return this->degree_.get ();
+    return this->deg_.get ();
   }
 
   void NURBS::
-  degree (const degree_type& x)
+  deg (const deg_type& x)
   {
-    this->degree_.set (x);
+    this->deg_.set (x);
   }
 
 
-  // refinement
+  // ref
   // 
 
-  const refinement::element_id_type& refinement::
+  const ref::element_id_type& ref::
   element_id () const
   {
     return this->element_id_.get ();
   }
 
-  refinement::element_id_type& refinement::
+  ref::element_id_type& ref::
   element_id ()
   {
     return this->element_id_.get ();
   }
 
-  void refinement::
+  void ref::
   element_id (const element_id_type& x)
   {
     this->element_id_.set (x);
   }
 
-  const refinement::refinement_type_type& refinement::
+  const ref::refinement_type_type& ref::
   refinement_type () const
   {
     return this->refinement_type_.get ();
   }
 
-  refinement::refinement_type_type& refinement::
+  ref::refinement_type_type& ref::
   refinement_type ()
   {
     return this->refinement_type_.get ();
   }
 
-  void refinement::
+  void ref::
   refinement_type (const refinement_type_type& x)
   {
     this->refinement_type_.set (x);
@@ -937,7 +937,7 @@ namespace XMLMesh
   variables_type::
   variables_type ()
   : ::xml_schema::type (),
-    variable_ (::xml_schema::flags (), this)
+    var_ (::xml_schema::flags (), this)
   {
   }
 
@@ -946,7 +946,7 @@ namespace XMLMesh
                   ::xml_schema::flags f,
                   ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
-    variable_ (x.variable_, f, this)
+    var_ (x.var_, f, this)
   {
   }
 
@@ -955,7 +955,7 @@ namespace XMLMesh
                   ::xml_schema::flags f,
                   ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-    variable_ (f, this)
+    var_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -974,14 +974,14 @@ namespace XMLMesh
       const ::xsd::cxx::xml::qualified_name< char > n (
         ::xsd::cxx::xml::dom::name< char > (i));
 
-      // variable
+      // var
       //
-      if (n.name () == "variable" && n.namespace_ ().empty ())
+      if (n.name () == "var" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< variable_type > r (
-          variable_traits::create (i, f, this));
+        ::std::auto_ptr< var_type > r (
+          var_traits::create (i, f, this));
 
-        this->variable_.push_back (r);
+        this->var_.push_back (r);
         continue;
       }
 
@@ -1007,7 +1007,7 @@ namespace XMLMesh
   vertices_type::
   vertices_type ()
   : ::xml_schema::type (),
-    vertex_ (::xml_schema::flags (), this)
+    v_ (::xml_schema::flags (), this)
   {
   }
 
@@ -1016,7 +1016,7 @@ namespace XMLMesh
                  ::xml_schema::flags f,
                  ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
-    vertex_ (x.vertex_, f, this)
+    v_ (x.v_, f, this)
   {
   }
 
@@ -1025,7 +1025,7 @@ namespace XMLMesh
                  ::xml_schema::flags f,
                  ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-    vertex_ (f, this)
+    v_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -1044,14 +1044,14 @@ namespace XMLMesh
       const ::xsd::cxx::xml::qualified_name< char > n (
         ::xsd::cxx::xml::dom::name< char > (i));
 
-      // vertex
+      // v
       //
-      if (n.name () == "vertex" && n.namespace_ ().empty ())
+      if (n.name () == "v" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< vertex_type > r (
-          vertex_traits::create (i, f, this));
+        ::std::auto_ptr< v_type > r (
+          v_traits::create (i, f, this));
 
-        this->vertex_.push_back (r);
+        this->v_.push_back (r);
         continue;
       }
 
@@ -1072,20 +1072,20 @@ namespace XMLMesh
   }
 
   static
-  const ::xsd::cxx::tree::element_factory_initializer< 0, char, ::XMLMesh::triangle_type >
-  _xsd_triangle_element_factory_init (
-    "element",
+  const ::xsd::cxx::tree::element_factory_initializer< 0, char, ::XMLMesh::t_t >
+  _xsd_t_element_factory_init (
+    "el",
     "XMLMesh",
-    "triangle",
+    "t",
     "XMLMesh");
 
 
   static
-  const ::xsd::cxx::tree::element_factory_initializer< 0, char, ::XMLMesh::quad_type >
-  _xsd_quad_element_factory_init (
-    "element",
+  const ::xsd::cxx::tree::element_factory_initializer< 0, char, ::XMLMesh::q_t >
+  _xsd_q_element_factory_init (
+    "el",
     "XMLMesh",
-    "quad",
+    "q",
     "XMLMesh");
 
 
@@ -1095,7 +1095,7 @@ namespace XMLMesh
   elements_type::
   elements_type ()
   : ::xml_schema::type (),
-    element_ (::xml_schema::flags (), this)
+    el_ (::xml_schema::flags (), this)
   {
   }
 
@@ -1104,7 +1104,7 @@ namespace XMLMesh
                  ::xml_schema::flags f,
                  ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
-    element_ (x.element_, f, this)
+    el_ (x.el_, f, this)
   {
   }
 
@@ -1113,7 +1113,7 @@ namespace XMLMesh
                  ::xml_schema::flags f,
                  ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-    element_ (f, this)
+    el_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -1132,7 +1132,7 @@ namespace XMLMesh
       const ::xsd::cxx::xml::qualified_name< char > n (
         ::xsd::cxx::xml::dom::name< char > (i));
 
-      // element
+      // el
       //
       {
         ::xsd::cxx::tree::type_factory_map< char >& tfm (
@@ -1140,22 +1140,22 @@ namespace XMLMesh
 
         ::std::auto_ptr< ::xsd::cxx::tree::type > tmp (
           tfm.create (
-            "element",
+            "el",
             "XMLMesh",
-            &::xsd::cxx::tree::factory_impl< element_type >,
+            &::xsd::cxx::tree::factory_impl< el_type >,
             true, true, i, n, f, this));
 
         if (tmp.get () != 0)
         {
-          ::std::auto_ptr< element_type > r (
-            dynamic_cast< element_type* > (tmp.get ()));
+          ::std::auto_ptr< el_type > r (
+            dynamic_cast< el_type* > (tmp.get ()));
 
           if (r.get ())
             tmp.release ();
           else
             throw ::xsd::cxx::tree::not_derived< char > ();
 
-          this->element_.push_back (r);
+          this->el_.push_back (r);
           continue;
         }
       }
@@ -1176,43 +1176,43 @@ namespace XMLMesh
   {
   }
 
-  // element_type
+  // el_t
   //
 
-  element_type::
-  element_type (const v1_type& v1,
-                const v2_type& v2,
-                const v3_type& v3,
-                const marker_type& marker)
+  el_t::
+  el_t (const v1_type& v1,
+        const v2_type& v2,
+        const v3_type& v3,
+        const m_type& m)
   : ::xml_schema::type (),
     v1_ (v1, ::xml_schema::flags (), this),
     v2_ (v2, ::xml_schema::flags (), this),
     v3_ (v3, ::xml_schema::flags (), this),
-    marker_ (marker, ::xml_schema::flags (), this)
+    m_ (m, ::xml_schema::flags (), this)
   {
   }
 
-  element_type::
-  element_type (const element_type& x,
-                ::xml_schema::flags f,
-                ::xml_schema::container* c)
+  el_t::
+  el_t (const el_t& x,
+        ::xml_schema::flags f,
+        ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     v1_ (x.v1_, f, this),
     v2_ (x.v2_, f, this),
     v3_ (x.v3_, f, this),
-    marker_ (x.marker_, f, this)
+    m_ (x.m_, f, this)
   {
   }
 
-  element_type::
-  element_type (const ::xercesc::DOMElement& e,
-                ::xml_schema::flags f,
-                ::xml_schema::container* c)
+  el_t::
+  el_t (const ::xercesc::DOMElement& e,
+        ::xml_schema::flags f,
+        ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     v1_ (f, this),
     v2_ (f, this),
     v3_ (f, this),
-    marker_ (f, this)
+    m_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -1221,7 +1221,7 @@ namespace XMLMesh
     }
   }
 
-  void element_type::
+  void el_t::
   parse (::xsd::cxx::xml::dom::parser< char >& p,
          ::xml_schema::flags f)
   {
@@ -1249,12 +1249,12 @@ namespace XMLMesh
         continue;
       }
 
-      if (n.name () == "marker" && n.namespace_ ().empty ())
+      if (n.name () == "m" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< marker_type > r (
-          marker_traits::create (i, f, this));
+        ::std::auto_ptr< m_type > r (
+          m_traits::create (i, f, this));
 
-        this->marker_.set (r);
+        this->m_.set (r);
         continue;
       }
     }
@@ -1280,112 +1280,112 @@ namespace XMLMesh
         "");
     }
 
-    if (!marker_.present ())
+    if (!m_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "marker",
+        "m",
         "");
     }
   }
 
-  element_type* element_type::
+  el_t* el_t::
   _clone (::xml_schema::flags f,
           ::xml_schema::container* c) const
   {
-    return new class element_type (*this, f, c);
+    return new class el_t (*this, f, c);
   }
 
-  element_type::
-  ~element_type ()
+  el_t::
+  ~el_t ()
   {
   }
 
   static
-  const ::xsd::cxx::tree::type_factory_initializer< 0, char, element_type >
-  _xsd_element_type_type_factory_init (
-    "element_type",
+  const ::xsd::cxx::tree::type_factory_initializer< 0, char, el_t >
+  _xsd_el_t_type_factory_init (
+    "el_t",
     "XMLMesh");
 
-  // triangle_type
+  // t_t
   //
 
-  triangle_type::
-  triangle_type (const v1_type& v1,
-                 const v2_type& v2,
-                 const v3_type& v3,
-                 const marker_type& marker)
-  : ::XMLMesh::element_type (v1,
-                             v2,
-                             v3,
-                             marker)
+  t_t::
+  t_t (const v1_type& v1,
+       const v2_type& v2,
+       const v3_type& v3,
+       const m_type& m)
+  : ::XMLMesh::el_t (v1,
+                     v2,
+                     v3,
+                     m)
   {
   }
 
-  triangle_type::
-  triangle_type (const triangle_type& x,
-                 ::xml_schema::flags f,
-                 ::xml_schema::container* c)
-  : ::XMLMesh::element_type (x, f, c)
+  t_t::
+  t_t (const t_t& x,
+       ::xml_schema::flags f,
+       ::xml_schema::container* c)
+  : ::XMLMesh::el_t (x, f, c)
   {
   }
 
-  triangle_type::
-  triangle_type (const ::xercesc::DOMElement& e,
-                 ::xml_schema::flags f,
-                 ::xml_schema::container* c)
-  : ::XMLMesh::element_type (e, f, c)
+  t_t::
+  t_t (const ::xercesc::DOMElement& e,
+       ::xml_schema::flags f,
+       ::xml_schema::container* c)
+  : ::XMLMesh::el_t (e, f, c)
   {
   }
 
-  triangle_type* triangle_type::
+  t_t* t_t::
   _clone (::xml_schema::flags f,
           ::xml_schema::container* c) const
   {
-    return new class triangle_type (*this, f, c);
+    return new class t_t (*this, f, c);
   }
 
-  triangle_type::
-  ~triangle_type ()
+  t_t::
+  ~t_t ()
   {
   }
 
   static
-  const ::xsd::cxx::tree::type_factory_initializer< 0, char, triangle_type >
-  _xsd_triangle_type_type_factory_init (
-    "triangle_type",
+  const ::xsd::cxx::tree::type_factory_initializer< 0, char, t_t >
+  _xsd_t_t_type_factory_init (
+    "t_t",
     "XMLMesh");
 
-  // quad_type
+  // q_t
   //
 
-  quad_type::
-  quad_type (const v1_type& v1,
-             const v2_type& v2,
-             const v3_type& v3,
-             const marker_type& marker,
-             const v4_type& v4)
-  : ::XMLMesh::element_type (v1,
-                             v2,
-                             v3,
-                             marker),
+  q_t::
+  q_t (const v1_type& v1,
+       const v2_type& v2,
+       const v3_type& v3,
+       const m_type& m,
+       const v4_type& v4)
+  : ::XMLMesh::el_t (v1,
+                     v2,
+                     v3,
+                     m),
     v4_ (v4, ::xml_schema::flags (), this)
   {
   }
 
-  quad_type::
-  quad_type (const quad_type& x,
-             ::xml_schema::flags f,
-             ::xml_schema::container* c)
-  : ::XMLMesh::element_type (x, f, c),
+  q_t::
+  q_t (const q_t& x,
+       ::xml_schema::flags f,
+       ::xml_schema::container* c)
+  : ::XMLMesh::el_t (x, f, c),
     v4_ (x.v4_, f, this)
   {
   }
 
-  quad_type::
-  quad_type (const ::xercesc::DOMElement& e,
-             ::xml_schema::flags f,
-             ::xml_schema::container* c)
-  : ::XMLMesh::element_type (e, f | ::xml_schema::flags::base, c),
+  q_t::
+  q_t (const ::xercesc::DOMElement& e,
+       ::xml_schema::flags f,
+       ::xml_schema::container* c)
+  : ::XMLMesh::el_t (e, f | ::xml_schema::flags::base, c),
     v4_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
@@ -1395,11 +1395,11 @@ namespace XMLMesh
     }
   }
 
-  void quad_type::
+  void q_t::
   parse (::xsd::cxx::xml::dom::parser< char >& p,
          ::xml_schema::flags f)
   {
-    this->::XMLMesh::element_type::parse (p, f);
+    this->::XMLMesh::el_t::parse (p, f);
 
     p.reset_attributes ();
 
@@ -1424,22 +1424,22 @@ namespace XMLMesh
     }
   }
 
-  quad_type* quad_type::
+  q_t* q_t::
   _clone (::xml_schema::flags f,
           ::xml_schema::container* c) const
   {
-    return new class quad_type (*this, f, c);
+    return new class q_t (*this, f, c);
   }
 
-  quad_type::
-  ~quad_type ()
+  q_t::
+  ~q_t ()
   {
   }
 
   static
-  const ::xsd::cxx::tree::type_factory_initializer< 0, char, quad_type >
-  _xsd_quad_type_type_factory_init (
-    "quad_type",
+  const ::xsd::cxx::tree::type_factory_initializer< 0, char, q_t >
+  _xsd_q_t_type_factory_init (
+    "q_t",
     "XMLMesh");
 
   // edges_type
@@ -1448,7 +1448,7 @@ namespace XMLMesh
   edges_type::
   edges_type ()
   : ::xml_schema::type (),
-    edge_ (::xml_schema::flags (), this)
+    ed_ (::xml_schema::flags (), this)
   {
   }
 
@@ -1457,7 +1457,7 @@ namespace XMLMesh
               ::xml_schema::flags f,
               ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
-    edge_ (x.edge_, f, this)
+    ed_ (x.ed_, f, this)
   {
   }
 
@@ -1466,7 +1466,7 @@ namespace XMLMesh
               ::xml_schema::flags f,
               ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-    edge_ (f, this)
+    ed_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -1485,14 +1485,14 @@ namespace XMLMesh
       const ::xsd::cxx::xml::qualified_name< char > n (
         ::xsd::cxx::xml::dom::name< char > (i));
 
-      // edge
+      // ed
       //
-      if (n.name () == "edge" && n.namespace_ ().empty ())
+      if (n.name () == "ed" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< edge_type > r (
-          edge_traits::create (i, f, this));
+        ::std::auto_ptr< ed_type > r (
+          ed_traits::create (i, f, this));
 
-        this->edge_.push_back (r);
+        this->ed_.push_back (r);
         continue;
       }
 
@@ -1602,7 +1602,7 @@ namespace XMLMesh
   refinements_type::
   refinements_type ()
   : ::xml_schema::type (),
-    refinement_ (::xml_schema::flags (), this)
+    ref_ (::xml_schema::flags (), this)
   {
   }
 
@@ -1611,7 +1611,7 @@ namespace XMLMesh
                     ::xml_schema::flags f,
                     ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
-    refinement_ (x.refinement_, f, this)
+    ref_ (x.ref_, f, this)
   {
   }
 
@@ -1620,7 +1620,7 @@ namespace XMLMesh
                     ::xml_schema::flags f,
                     ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-    refinement_ (f, this)
+    ref_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -1639,14 +1639,14 @@ namespace XMLMesh
       const ::xsd::cxx::xml::qualified_name< char > n (
         ::xsd::cxx::xml::dom::name< char > (i));
 
-      // refinement
+      // ref
       //
-      if (n.name () == "refinement" && n.namespace_ ().empty ())
+      if (n.name () == "ref" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< refinement_type > r (
-          refinement_traits::create (i, f, this));
+        ::std::auto_ptr< ref_type > r (
+          ref_traits::create (i, f, this));
 
-        this->refinement_.push_back (r);
+        this->ref_.push_back (r);
         continue;
       }
 
@@ -1861,32 +1861,32 @@ namespace XMLMesh
   {
   }
 
-  // variable
+  // var
   //
 
-  variable::
-  variable (const name_type& name,
-            const value_type& value)
+  var::
+  var (const name_type& name,
+       const value_type& value)
   : ::xml_schema::type (),
     name_ (name, ::xml_schema::flags (), this),
     value_ (value, ::xml_schema::flags (), this)
   {
   }
 
-  variable::
-  variable (const variable& x,
-            ::xml_schema::flags f,
-            ::xml_schema::container* c)
+  var::
+  var (const var& x,
+       ::xml_schema::flags f,
+       ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     name_ (x.name_, f, this),
     value_ (x.value_, f, this)
   {
   }
 
-  variable::
-  variable (const ::xercesc::DOMElement& e,
-            ::xml_schema::flags f,
-            ::xml_schema::container* c)
+  var::
+  var (const ::xercesc::DOMElement& e,
+       ::xml_schema::flags f,
+       ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     name_ (f, this),
     value_ (f, this)
@@ -1898,7 +1898,7 @@ namespace XMLMesh
     }
   }
 
-  void variable::
+  void var::
   parse (::xsd::cxx::xml::dom::parser< char >& p,
          ::xml_schema::flags f)
   {
@@ -1939,25 +1939,25 @@ namespace XMLMesh
     }
   }
 
-  variable* variable::
+  var* var::
   _clone (::xml_schema::flags f,
           ::xml_schema::container* c) const
   {
-    return new class variable (*this, f, c);
+    return new class var (*this, f, c);
   }
 
-  variable::
-  ~variable ()
+  var::
+  ~var ()
   {
   }
 
-  // vertex
+  // v
   //
 
-  vertex::
-  vertex (const x_type& x,
-          const y_type& y,
-          const i_type& i)
+  v::
+  v (const x_type& x,
+     const y_type& y,
+     const i_type& i)
   : ::xml_schema::type (),
     x_ (x, ::xml_schema::flags (), this),
     y_ (y, ::xml_schema::flags (), this),
@@ -1965,10 +1965,10 @@ namespace XMLMesh
   {
   }
 
-  vertex::
-  vertex (const vertex& x,
-          ::xml_schema::flags f,
-          ::xml_schema::container* c)
+  v::
+  v (const v& x,
+     ::xml_schema::flags f,
+     ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     x_ (x.x_, f, this),
     y_ (x.y_, f, this),
@@ -1976,10 +1976,10 @@ namespace XMLMesh
   {
   }
 
-  vertex::
-  vertex (const ::xercesc::DOMElement& e,
-          ::xml_schema::flags f,
-          ::xml_schema::container* c)
+  v::
+  v (const ::xercesc::DOMElement& e,
+     ::xml_schema::flags f,
+     ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     x_ (f, this),
     y_ (f, this),
@@ -1992,7 +1992,7 @@ namespace XMLMesh
     }
   }
 
-  void vertex::
+  void v::
   parse (::xsd::cxx::xml::dom::parser< char >& p,
          ::xml_schema::flags f)
   {
@@ -2049,51 +2049,51 @@ namespace XMLMesh
     }
   }
 
-  vertex* vertex::
+  v* v::
   _clone (::xml_schema::flags f,
           ::xml_schema::container* c) const
   {
-    return new class vertex (*this, f, c);
+    return new class v (*this, f, c);
   }
 
-  vertex::
-  ~vertex ()
+  v::
+  ~v ()
   {
   }
 
-  // edge
+  // ed
   //
 
-  edge::
-  edge (const v1_type& v1,
-        const v2_type& v2,
-        const marker_type& marker)
+  ed::
+  ed (const v1_type& v1,
+      const v2_type& v2,
+      const m_type& m)
   : ::xml_schema::type (),
     v1_ (v1, ::xml_schema::flags (), this),
     v2_ (v2, ::xml_schema::flags (), this),
-    marker_ (marker, ::xml_schema::flags (), this)
+    m_ (m, ::xml_schema::flags (), this)
   {
   }
 
-  edge::
-  edge (const edge& x,
-        ::xml_schema::flags f,
-        ::xml_schema::container* c)
+  ed::
+  ed (const ed& x,
+      ::xml_schema::flags f,
+      ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     v1_ (x.v1_, f, this),
     v2_ (x.v2_, f, this),
-    marker_ (x.marker_, f, this)
+    m_ (x.m_, f, this)
   {
   }
 
-  edge::
-  edge (const ::xercesc::DOMElement& e,
-        ::xml_schema::flags f,
-        ::xml_schema::container* c)
+  ed::
+  ed (const ::xercesc::DOMElement& e,
+      ::xml_schema::flags f,
+      ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     v1_ (f, this),
     v2_ (f, this),
-    marker_ (f, this)
+    m_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -2102,7 +2102,7 @@ namespace XMLMesh
     }
   }
 
-  void edge::
+  void ed::
   parse (::xsd::cxx::xml::dom::parser< char >& p,
          ::xml_schema::flags f)
   {
@@ -2124,12 +2124,12 @@ namespace XMLMesh
         continue;
       }
 
-      if (n.name () == "marker" && n.namespace_ ().empty ())
+      if (n.name () == "m" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< marker_type > r (
-          marker_traits::create (i, f, this));
+        ::std::auto_ptr< m_type > r (
+          m_traits::create (i, f, this));
 
-        this->marker_.set (r);
+        this->m_.set (r);
         continue;
       }
     }
@@ -2148,23 +2148,23 @@ namespace XMLMesh
         "");
     }
 
-    if (!marker_.present ())
+    if (!m_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "marker",
+        "m",
         "");
     }
   }
 
-  edge* edge::
+  ed* ed::
   _clone (::xml_schema::flags f,
           ::xml_schema::container* c) const
   {
-    return new class edge (*this, f, c);
+    return new class ed (*this, f, c);
   }
 
-  edge::
-  ~edge ()
+  ed::
+  ~ed ()
   {
   }
 
@@ -2278,13 +2278,13 @@ namespace XMLMesh
   NURBS::
   NURBS (const v1_type& v1,
          const v2_type& v2,
-         const degree_type& degree)
+         const deg_type& deg)
   : ::xml_schema::type (),
     inner_point_ (::xml_schema::flags (), this),
     knot_ (::xml_schema::flags (), this),
     v1_ (v1, ::xml_schema::flags (), this),
     v2_ (v2, ::xml_schema::flags (), this),
-    degree_ (degree, ::xml_schema::flags (), this)
+    deg_ (deg, ::xml_schema::flags (), this)
   {
   }
 
@@ -2297,7 +2297,7 @@ namespace XMLMesh
     knot_ (x.knot_, f, this),
     v1_ (x.v1_, f, this),
     v2_ (x.v2_, f, this),
-    degree_ (x.degree_, f, this)
+    deg_ (x.deg_, f, this)
   {
   }
 
@@ -2310,7 +2310,7 @@ namespace XMLMesh
     knot_ (f, this),
     v1_ (f, this),
     v2_ (f, this),
-    degree_ (f, this)
+    deg_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -2372,9 +2372,9 @@ namespace XMLMesh
         continue;
       }
 
-      if (n.name () == "degree" && n.namespace_ ().empty ())
+      if (n.name () == "deg" && n.namespace_ ().empty ())
       {
-        this->degree_.set (degree_traits::create (i, f, this));
+        this->deg_.set (deg_traits::create (i, f, this));
         continue;
       }
     }
@@ -2393,10 +2393,10 @@ namespace XMLMesh
         "");
     }
 
-    if (!degree_.present ())
+    if (!deg_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "degree",
+        "deg",
         "");
     }
   }
@@ -2413,32 +2413,32 @@ namespace XMLMesh
   {
   }
 
-  // refinement
+  // ref
   //
 
-  refinement::
-  refinement (const element_id_type& element_id,
-              const refinement_type_type& refinement_type)
+  ref::
+  ref (const element_id_type& element_id,
+       const refinement_type_type& refinement_type)
   : ::xml_schema::type (),
     element_id_ (element_id, ::xml_schema::flags (), this),
     refinement_type_ (refinement_type, ::xml_schema::flags (), this)
   {
   }
 
-  refinement::
-  refinement (const refinement& x,
-              ::xml_schema::flags f,
-              ::xml_schema::container* c)
+  ref::
+  ref (const ref& x,
+       ::xml_schema::flags f,
+       ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     element_id_ (x.element_id_, f, this),
     refinement_type_ (x.refinement_type_, f, this)
   {
   }
 
-  refinement::
-  refinement (const ::xercesc::DOMElement& e,
-              ::xml_schema::flags f,
-              ::xml_schema::container* c)
+  ref::
+  ref (const ::xercesc::DOMElement& e,
+       ::xml_schema::flags f,
+       ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     element_id_ (f, this),
     refinement_type_ (f, this)
@@ -2450,7 +2450,7 @@ namespace XMLMesh
     }
   }
 
-  void refinement::
+  void ref::
   parse (::xsd::cxx::xml::dom::parser< char >& p,
          ::xml_schema::flags f)
   {
@@ -2488,15 +2488,15 @@ namespace XMLMesh
     }
   }
 
-  refinement* refinement::
+  ref* ref::
   _clone (::xml_schema::flags f,
           ::xml_schema::container* c) const
   {
-    return new class refinement (*this, f, c);
+    return new class ref (*this, f, c);
   }
 
-  refinement::
-  ~refinement ()
+  ref::
+  ~ref ()
   {
   }
 
@@ -2691,11 +2691,11 @@ namespace XMLMesh
   ::std::ostream&
   operator<< (::std::ostream& o, const variables_type& i)
   {
-    for (variables_type::variable_const_iterator
-         b (i.variable ().begin ()), e (i.variable ().end ());
+    for (variables_type::var_const_iterator
+         b (i.var ().begin ()), e (i.var ().end ());
          b != e; ++b)
     {
-      o << ::std::endl << "variable: " << *b;
+      o << ::std::endl << "var: " << *b;
     }
 
     return o;
@@ -2704,11 +2704,11 @@ namespace XMLMesh
   ::std::ostream&
   operator<< (::std::ostream& o, const vertices_type& i)
   {
-    for (vertices_type::vertex_const_iterator
-         b (i.vertex ().begin ()), e (i.vertex ().end ());
+    for (vertices_type::v_const_iterator
+         b (i.v ().begin ()), e (i.v ().end ());
          b != e; ++b)
     {
-      o << ::std::endl << "vertex: " << *b;
+      o << ::std::endl << "v: " << *b;
     }
 
     return o;
@@ -2721,11 +2721,11 @@ namespace XMLMesh
       ::xsd::cxx::tree::std_ostream_map< char >& om (
         ::xsd::cxx::tree::std_ostream_map_instance< 0, char > ());
 
-      for (elements_type::element_const_iterator
-           b (i.element ().begin ()), e (i.element ().end ());
+      for (elements_type::el_const_iterator
+           b (i.el ().begin ()), e (i.el ().end ());
            b != e; ++b)
       {
-        o << ::std::endl << "element: ";
+        o << ::std::endl << "el: ";
         om.insert (o, *b);
       }
     }
@@ -2734,52 +2734,52 @@ namespace XMLMesh
   }
 
   ::std::ostream&
-  operator<< (::std::ostream& o, const element_type& i)
+  operator<< (::std::ostream& o, const el_t& i)
   {
     o << ::std::endl << "v1: " << i.v1 ();
     o << ::std::endl << "v2: " << i.v2 ();
     o << ::std::endl << "v3: " << i.v3 ();
-    o << ::std::endl << "marker: " << i.marker ();
+    o << ::std::endl << "m: " << i.m ();
     return o;
   }
 
   static
-  const ::xsd::cxx::tree::std_ostream_initializer< 0, char, element_type >
-  _xsd_element_type_std_ostream_init;
+  const ::xsd::cxx::tree::std_ostream_initializer< 0, char, el_t >
+  _xsd_el_t_std_ostream_init;
 
   ::std::ostream&
-  operator<< (::std::ostream& o, const triangle_type& i)
+  operator<< (::std::ostream& o, const t_t& i)
   {
-    o << static_cast< const ::XMLMesh::element_type& > (i);
+    o << static_cast< const ::XMLMesh::el_t& > (i);
 
     return o;
   }
 
   static
-  const ::xsd::cxx::tree::std_ostream_initializer< 0, char, triangle_type >
-  _xsd_triangle_type_std_ostream_init;
+  const ::xsd::cxx::tree::std_ostream_initializer< 0, char, t_t >
+  _xsd_t_t_std_ostream_init;
 
   ::std::ostream&
-  operator<< (::std::ostream& o, const quad_type& i)
+  operator<< (::std::ostream& o, const q_t& i)
   {
-    o << static_cast< const ::XMLMesh::element_type& > (i);
+    o << static_cast< const ::XMLMesh::el_t& > (i);
 
     o << ::std::endl << "v4: " << i.v4 ();
     return o;
   }
 
   static
-  const ::xsd::cxx::tree::std_ostream_initializer< 0, char, quad_type >
-  _xsd_quad_type_std_ostream_init;
+  const ::xsd::cxx::tree::std_ostream_initializer< 0, char, q_t >
+  _xsd_q_t_std_ostream_init;
 
   ::std::ostream&
   operator<< (::std::ostream& o, const edges_type& i)
   {
-    for (edges_type::edge_const_iterator
-         b (i.edge ().begin ()), e (i.edge ().end ());
+    for (edges_type::ed_const_iterator
+         b (i.ed ().begin ()), e (i.ed ().end ());
          b != e; ++b)
     {
-      o << ::std::endl << "edge: " << *b;
+      o << ::std::endl << "ed: " << *b;
     }
 
     return o;
@@ -2808,11 +2808,11 @@ namespace XMLMesh
   ::std::ostream&
   operator<< (::std::ostream& o, const refinements_type& i)
   {
-    for (refinements_type::refinement_const_iterator
-         b (i.refinement ().begin ()), e (i.refinement ().end ());
+    for (refinements_type::ref_const_iterator
+         b (i.ref ().begin ()), e (i.ref ().end ());
          b != e; ++b)
     {
-      o << ::std::endl << "refinement: " << *b;
+      o << ::std::endl << "ref: " << *b;
     }
 
     return o;
@@ -2843,7 +2843,7 @@ namespace XMLMesh
   }
 
   ::std::ostream&
-  operator<< (::std::ostream& o, const variable& i)
+  operator<< (::std::ostream& o, const var& i)
   {
     o << ::std::endl << "name: " << i.name ();
     o << ::std::endl << "value: " << i.value ();
@@ -2851,7 +2851,7 @@ namespace XMLMesh
   }
 
   ::std::ostream&
-  operator<< (::std::ostream& o, const vertex& i)
+  operator<< (::std::ostream& o, const v& i)
   {
     o << ::std::endl << "x: " << i.x ();
     o << ::std::endl << "y: " << i.y ();
@@ -2860,11 +2860,11 @@ namespace XMLMesh
   }
 
   ::std::ostream&
-  operator<< (::std::ostream& o, const edge& i)
+  operator<< (::std::ostream& o, const ed& i)
   {
     o << ::std::endl << "v1: " << i.v1 ();
     o << ::std::endl << "v2: " << i.v2 ();
-    o << ::std::endl << "marker: " << i.marker ();
+    o << ::std::endl << "m: " << i.m ();
     return o;
   }
 
@@ -2896,12 +2896,12 @@ namespace XMLMesh
 
     o << ::std::endl << "v1: " << i.v1 ();
     o << ::std::endl << "v2: " << i.v2 ();
-    o << ::std::endl << "degree: " << i.degree ();
+    o << ::std::endl << "deg: " << i.deg ();
     return o;
   }
 
   ::std::ostream&
-  operator<< (::std::ostream& o, const refinement& i)
+  operator<< (::std::ostream& o, const ref& i)
   {
     o << ::std::endl << "element_id: " << i.element_id ();
     o << ::std::endl << "refinement_type: " << i.refinement_type ();
@@ -3380,15 +3380,15 @@ namespace XMLMesh
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
-    // variable
+    // var
     //
-    for (variables_type::variable_const_iterator
-         b (i.variable ().begin ()), n (i.variable ().end ());
+    for (variables_type::var_const_iterator
+         b (i.var ().begin ()), n (i.var ().end ());
          b != n; ++b)
     {
       ::xercesc::DOMElement& s (
         ::xsd::cxx::xml::dom::create_element (
-          "variable",
+          "var",
           e));
 
       s << *b;
@@ -3400,15 +3400,15 @@ namespace XMLMesh
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
-    // vertex
+    // v
     //
-    for (vertices_type::vertex_const_iterator
-         b (i.vertex ().begin ()), n (i.vertex ().end ());
+    for (vertices_type::v_const_iterator
+         b (i.v ().begin ()), n (i.v ().end ());
          b != n; ++b)
     {
       ::xercesc::DOMElement& s (
         ::xsd::cxx::xml::dom::create_element (
-          "vertex",
+          "v",
           e));
 
       s << *b;
@@ -3416,20 +3416,20 @@ namespace XMLMesh
   }
 
   static
-  const ::xsd::cxx::tree::element_serializer_initializer< 0, char, ::XMLMesh::triangle_type >
-  _xsd_triangle_element_serializer_init (
-    "element",
+  const ::xsd::cxx::tree::element_serializer_initializer< 0, char, ::XMLMesh::t_t >
+  _xsd_t_element_serializer_init (
+    "el",
     "XMLMesh",
-    "triangle",
+    "t",
     "XMLMesh");
 
 
   static
-  const ::xsd::cxx::tree::element_serializer_initializer< 0, char, ::XMLMesh::quad_type >
-  _xsd_quad_element_serializer_init (
-    "element",
+  const ::xsd::cxx::tree::element_serializer_initializer< 0, char, ::XMLMesh::q_t >
+  _xsd_q_element_serializer_init (
+    "el",
     "XMLMesh",
-    "quad",
+    "q",
     "XMLMesh");
 
 
@@ -3438,21 +3438,21 @@ namespace XMLMesh
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
-    // element
+    // el
     //
     {
       ::xsd::cxx::tree::type_serializer_map< char >& tsm (
         ::xsd::cxx::tree::type_serializer_map_instance< 0, char > ());
 
-      for (elements_type::element_const_iterator
-           b (i.element ().begin ()), n (i.element ().end ());
+      for (elements_type::el_const_iterator
+           b (i.el ().begin ()), n (i.el ().end ());
            b != n; ++b)
       {
-        if (typeid (elements_type::element_type) == typeid (*b))
+        if (typeid (elements_type::el_type) == typeid (*b))
         {
           ::xercesc::DOMElement& s (
             ::xsd::cxx::xml::dom::create_element (
-              "element",
+              "el",
               "XMLMesh",
               e));
 
@@ -3460,7 +3460,7 @@ namespace XMLMesh
         }
         else
           tsm.serialize (
-            "element",
+            "el",
             "XMLMesh",
             true, true, e, *b);
       }
@@ -3468,7 +3468,7 @@ namespace XMLMesh
   }
 
   void
-  operator<< (::xercesc::DOMElement& e, const element_type& i)
+  operator<< (::xercesc::DOMElement& e, const el_t& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
@@ -3505,42 +3505,42 @@ namespace XMLMesh
       a << i.v3 ();
     }
 
-    // marker
+    // m
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "marker",
+          "m",
           e));
 
-      a << i.marker ();
+      a << i.m ();
     }
   }
 
   static
-  const ::xsd::cxx::tree::type_serializer_initializer< 0, char, element_type >
-  _xsd_element_type_type_serializer_init (
-    "element_type",
+  const ::xsd::cxx::tree::type_serializer_initializer< 0, char, el_t >
+  _xsd_el_t_type_serializer_init (
+    "el_t",
     "XMLMesh");
 
 
   void
-  operator<< (::xercesc::DOMElement& e, const triangle_type& i)
+  operator<< (::xercesc::DOMElement& e, const t_t& i)
   {
-    e << static_cast< const ::XMLMesh::element_type& > (i);
+    e << static_cast< const ::XMLMesh::el_t& > (i);
   }
 
   static
-  const ::xsd::cxx::tree::type_serializer_initializer< 0, char, triangle_type >
-  _xsd_triangle_type_type_serializer_init (
-    "triangle_type",
+  const ::xsd::cxx::tree::type_serializer_initializer< 0, char, t_t >
+  _xsd_t_t_type_serializer_init (
+    "t_t",
     "XMLMesh");
 
 
   void
-  operator<< (::xercesc::DOMElement& e, const quad_type& i)
+  operator<< (::xercesc::DOMElement& e, const q_t& i)
   {
-    e << static_cast< const ::XMLMesh::element_type& > (i);
+    e << static_cast< const ::XMLMesh::el_t& > (i);
 
     // v4
     //
@@ -3555,9 +3555,9 @@ namespace XMLMesh
   }
 
   static
-  const ::xsd::cxx::tree::type_serializer_initializer< 0, char, quad_type >
-  _xsd_quad_type_type_serializer_init (
-    "quad_type",
+  const ::xsd::cxx::tree::type_serializer_initializer< 0, char, q_t >
+  _xsd_q_t_type_serializer_init (
+    "q_t",
     "XMLMesh");
 
 
@@ -3566,15 +3566,15 @@ namespace XMLMesh
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
-    // edge
+    // ed
     //
-    for (edges_type::edge_const_iterator
-         b (i.edge ().begin ()), n (i.edge ().end ());
+    for (edges_type::ed_const_iterator
+         b (i.ed ().begin ()), n (i.ed ().end ());
          b != n; ++b)
     {
       ::xercesc::DOMElement& s (
         ::xsd::cxx::xml::dom::create_element (
-          "edge",
+          "ed",
           e));
 
       s << *b;
@@ -3620,15 +3620,15 @@ namespace XMLMesh
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
-    // refinement
+    // ref
     //
-    for (refinements_type::refinement_const_iterator
-         b (i.refinement ().begin ()), n (i.refinement ().end ());
+    for (refinements_type::ref_const_iterator
+         b (i.ref ().begin ()), n (i.ref ().end ());
          b != n; ++b)
     {
       ::xercesc::DOMElement& s (
         ::xsd::cxx::xml::dom::create_element (
-          "refinement",
+          "ref",
           e));
 
       s << *b;
@@ -3711,7 +3711,7 @@ namespace XMLMesh
   }
 
   void
-  operator<< (::xercesc::DOMElement& e, const variable& i)
+  operator<< (::xercesc::DOMElement& e, const var& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
@@ -3739,7 +3739,7 @@ namespace XMLMesh
   }
 
   void
-  operator<< (::xercesc::DOMElement& e, const vertex& i)
+  operator<< (::xercesc::DOMElement& e, const v& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
@@ -3778,7 +3778,7 @@ namespace XMLMesh
   }
 
   void
-  operator<< (::xercesc::DOMElement& e, const edge& i)
+  operator<< (::xercesc::DOMElement& e, const ed& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
@@ -3804,15 +3804,15 @@ namespace XMLMesh
       a << i.v2 ();
     }
 
-    // marker
+    // m
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "marker",
+          "m",
           e));
 
-      a << i.marker ();
+      a << i.m ();
     }
   }
 
@@ -3910,20 +3910,20 @@ namespace XMLMesh
       a << i.v2 ();
     }
 
-    // degree
+    // deg
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "degree",
+          "deg",
           e));
 
-      a << i.degree ();
+      a << i.deg ();
     }
   }
 
   void
-  operator<< (::xercesc::DOMElement& e, const refinement& i)
+  operator<< (::xercesc::DOMElement& e, const ref& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
