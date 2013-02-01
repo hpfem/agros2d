@@ -1872,7 +1872,17 @@ void Scene::readSolutionFromFile(const QString &fileName)
         }
 
         if (Agros2D::problem()->isMeshed())
-            Agros2D::problem()->readSolutionsFromFile();
+        {
+            try
+            {
+                Agros2D::problem()->readSolutionsFromFile();
+            }
+            catch (AgrosException& e)
+            {
+                Agros2D::problem()->clearSolution();
+                Agros2D::log()->printError(tr("Mesh reader"), e.what());
+            }
+        }
     }
 }
 

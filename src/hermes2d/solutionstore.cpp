@@ -416,6 +416,10 @@ void SolutionStore::loadRunTimeDetails()
         {
             XMLStructure::element_data data = structure->element_data().at(i);
 
+            // check field
+            if (!Agros2D::problem()->hasField(QString::fromStdString(data.field_id())))
+                throw AgrosException(QObject::tr("Field '%1' info mismatch.").arg(QString::fromStdString(data.field_id())));
+
             FieldSolutionID solutionID(Agros2D::problem()->fieldInfo(QString::fromStdString(data.field_id())),
                                        data.time_step(),
                                        data.adaptivity_step(),

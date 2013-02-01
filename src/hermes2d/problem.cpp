@@ -887,20 +887,27 @@ void Problem::readSolutionsFromFile()
     if (QFile::exists(QString("%1/runtime.xml").arg(cacheProblemDir())))
     {
         // load structure
-        Agros2D::solutionStore()->loadRunTimeDetails();
+        try
+        {
+            Agros2D::solutionStore()->loadRunTimeDetails();
 
-        // set view
-        Agros2D::scene()->blockSignals(true);
+            // set view
+            Agros2D::scene()->blockSignals(true);
 
-        Agros2D::scene()->setActiveTimeStep(Agros2D::solutionStore()->lastTimeStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal));
-        Agros2D::scene()->setActiveAdaptivityStep(Agros2D::solutionStore()->lastAdaptiveStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal));
-        Agros2D::scene()->setActiveSolutionType(SolutionMode_Normal);
+            Agros2D::scene()->setActiveTimeStep(Agros2D::solutionStore()->lastTimeStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal));
+            Agros2D::scene()->setActiveAdaptivityStep(Agros2D::solutionStore()->lastAdaptiveStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal));
+            Agros2D::scene()->setActiveSolutionType(SolutionMode_Normal);
 
-        Agros2D::scene()->blockSignals(false);
+            Agros2D::scene()->blockSignals(false);
 
-        // emit solve
-        m_isSolved = true;
-        emit solved();
+            // emit solve
+            m_isSolved = true;
+            emit solved();
+        }
+        catch (AgrosException &e)
+        {
+            throw e;
+        }
     }
 }
 
