@@ -664,9 +664,14 @@ void Module::writeMeshToFile(const QString &fileName, Hermes::vector<Hermes::Her
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
+    QTime time;
+    time.start();
+
     Hermes::Hermes2D::MeshReaderH2DXML meshloader;
     meshloader.set_validation(false);
     meshloader.save(fileName.toStdString().c_str(), meshes);
+
+    qDebug() << time.elapsed();
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);

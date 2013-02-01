@@ -153,70 +153,81 @@ bool MeshGenerator::writeToHermes()
 
     // subdomains
     XMLSubdomains::subdomains subdomains;
-    foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
+
+    if (Agros2D::problem()->fieldInfos().count() == 0)
     {
-        XMLSubdomains::subdomain subdomain(fieldInfo->fieldId().toStdString());
-        subdomain.elements().set(XMLSubdomains::subdomain::elements_type());
-        subdomain.boundary_edges().set(XMLSubdomains::subdomain::boundary_edges_type());
-        subdomain.inner_edges().set(XMLSubdomains::subdomain::inner_edges_type());
-
-        for (int i = 0; i<elementList.count(); i++)
-            if (elementList[i].isUsed && (Agros2D::scene()->labels->at(elementList[i].marker)->marker(fieldInfo) != SceneMaterialContainer::getNone(fieldInfo)))
-                subdomain.elements()->i().push_back(i);
-
-        QList<int> unassignedEdges;
-        for (int i = 0; i < edgeList.count(); i++)
+        // one domain
+        XMLSubdomains::subdomain subdomain(Agros2D::problem()->fieldInfos().begin().value()->fieldId().toStdString());
+        subdomains.subdomain().push_back(subdomain);
+    }
+    else
+    {
+        // more subdomains
+        foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
         {
-            if (edgeList[i].isUsed && edgeList[i].marker != -1)
+            XMLSubdomains::subdomain subdomain(fieldInfo->fieldId().toStdString());
+            subdomain.elements().set(XMLSubdomains::subdomain::elements_type());
+            subdomain.boundary_edges().set(XMLSubdomains::subdomain::boundary_edges_type());
+            subdomain.inner_edges().set(XMLSubdomains::subdomain::inner_edges_type());
+
+            for (int i = 0; i<elementList.count(); i++)
+                if (elementList[i].isUsed && (Agros2D::scene()->labels->at(elementList[i].marker)->marker(fieldInfo) != SceneMaterialContainer::getNone(fieldInfo)))
+                    subdomain.elements()->i().push_back(i);
+
+            QList<int> unassignedEdges;
+            for (int i = 0; i < edgeList.count(); i++)
             {
-                int numNeighWithField = 0;
-                for (int neigh_i = 0; neigh_i < 2; neigh_i++)
+                if (edgeList[i].isUsed && edgeList[i].marker != -1)
                 {
-                    int neigh = edgeList[i].neighElem[neigh_i];
-                    if (neigh != -1)
+                    int numNeighWithField = 0;
+                    for (int neigh_i = 0; neigh_i < 2; neigh_i++)
                     {
-                        if (Agros2D::scene()->labels->at(elementList[neigh].marker)->marker(fieldInfo)
-                                != SceneMaterialContainer::getNone(fieldInfo))
-                            numNeighWithField++;
+                        int neigh = edgeList[i].neighElem[neigh_i];
+                        if (neigh != -1)
+                        {
+                            if (Agros2D::scene()->labels->at(elementList[neigh].marker)->marker(fieldInfo)
+                                    != SceneMaterialContainer::getNone(fieldInfo))
+                                numNeighWithField++;
+                        }
+                    }
+
+                    // edge has boundary condition prescribed for this field
+                    bool hasFieldBoundaryCondition = (Agros2D::scene()->edges->at(edgeList[i].marker)->hasMarker(fieldInfo)
+                                                      && (Agros2D::scene()->edges->at(edgeList[i].marker)->marker(fieldInfo) != SceneBoundaryContainer::getNone(fieldInfo)));
+
+                    if (numNeighWithField == 1)
+                    {
+                        // edge is on "boundary" of the field, should have boundary condition prescribed
+
+                        if (!hasFieldBoundaryCondition)
+                            if (!unassignedEdges.contains(edgeList[i].marker))
+                                unassignedEdges.append(edgeList[i].marker);
+
+                        subdomain.boundary_edges()->i().push_back(i);
+                    }
+                    else if (numNeighWithField == 2)
+                    {
+                        // todo: we could enforce not to have boundary conditions prescribed inside:
+                        // assert(!hasFieldBoundaryCondition);
+                        subdomain.inner_edges()->i().push_back(i);
                     }
                 }
-
-                // edge has boundary condition prescribed for this field
-                bool hasFieldBoundaryCondition = (Agros2D::scene()->edges->at(edgeList[i].marker)->hasMarker(fieldInfo)
-                                                  && (Agros2D::scene()->edges->at(edgeList[i].marker)->marker(fieldInfo) != SceneBoundaryContainer::getNone(fieldInfo)));
-
-                if (numNeighWithField == 1)
-                {
-                    // edge is on "boundary" of the field, should have boundary condition prescribed
-
-                    if (!hasFieldBoundaryCondition)
-                        if (!unassignedEdges.contains(edgeList[i].marker))
-                            unassignedEdges.append(edgeList[i].marker);
-
-                    subdomain.boundary_edges()->i().push_back(i);
-                }
-                else if (numNeighWithField == 2)
-                {
-                    // todo: we could enforce not to have boundary conditions prescribed inside:
-                    // assert(!hasFieldBoundaryCondition);
-                    subdomain.inner_edges()->i().push_back(i);
-                }
             }
+
+            // not assigned boundary
+            if (unassignedEdges.count() > 0)
+            {
+                QString list;
+                foreach (int index, unassignedEdges)
+                    list += QString::number(index) + ", ";
+
+                Agros2D::log()->printError(tr("Mesh generator"), tr("Boundary condition is not assigned on following edges %1.").arg(list.left(list.count() - 2)));
+
+                return false;
+            }
+
+            subdomains.subdomain().push_back(subdomain);
         }
-
-        // not assigned boundary
-        if (unassignedEdges.count() > 0)
-        {
-            QString list;
-            foreach (int index, unassignedEdges)
-                list += QString::number(index) + ", ";
-
-            Agros2D::log()->printError(tr("Mesh generator"), tr("Boundary condition is not assigned on following edges %1.").arg(list.left(list.count() - 2)));
-
-            return false;
-        }
-
-        subdomains.subdomain().push_back(subdomain);
     }
 
     XMLSubdomains::domain xmldomain(vertices, elements, edges, subdomains);
@@ -235,7 +246,8 @@ bool MeshGenerator::writeToHermes()
     namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("domain", namespace_info_domain));
 
     std::ofstream out((cacheProblemDir() + "/initial.mesh").toStdString().c_str());
-    XMLSubdomains::domain_(out, xmldomain, namespace_info_map);
+    ::xml_schema::flags parsing_flags = ::xml_schema::flags::dont_pretty_print;
+    XMLSubdomains::domain_(out, xmldomain, namespace_info_map, "UTF-8", parsing_flags);
     out.close();
 
     return true;

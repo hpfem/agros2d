@@ -134,7 +134,10 @@ namespace Hermes
       namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("mesh", namespace_info_mesh));
 
       std::ofstream out(filename);
-      XMLMesh::mesh_(out, xmlmesh, namespace_info_map);
+      ::xml_schema::flags parsing_flags = ::xml_schema::flags::dont_initialize |
+              ::xml_schema::flags::dont_pretty_print |
+              ::xml_schema::flags::no_xml_declaration;
+      XMLMesh::mesh_(out, xmlmesh, namespace_info_map, "UTF-8", parsing_flags);
       out.close();
 
       return true;
@@ -734,7 +737,10 @@ namespace Hermes
       namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("domain", namespace_info_domain));
 
       std::ofstream out(filename);
-      XMLSubdomains::domain_(out, xmldomain, namespace_info_map);
+      ::xml_schema::flags parsing_flags = ::xml_schema::flags::dont_initialize |
+              ::xml_schema::flags::dont_pretty_print |
+              ::xml_schema::flags::no_xml_declaration;
+      XMLSubdomains::domain_(out, xmldomain, namespace_info_map, "UTF-8", parsing_flags);
       out.close();
 
       return true;
