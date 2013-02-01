@@ -469,7 +469,7 @@ Module::BoundaryType FieldInfo::boundaryType(const QString &id) const
         if (var.id() == id)
             return var;
 
-    assert(0);
+    throw AgrosModuleException(QString("Boundary type %1 not found. Probably using corrupted a2d file or wrong version.").arg(id));
 }
 
 // force

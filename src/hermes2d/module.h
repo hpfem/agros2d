@@ -26,6 +26,16 @@
 
 inline Hermes::Ord sign(Hermes::Ord arg) { return Hermes::Ord(); }
 
+// to be thrown when string refering to module entity (boundary condition type, etc.) not found
+class AgrosModuleException : public AgrosException
+{
+public:
+    AgrosModuleException(const QString &what) : AgrosException(what)
+    {
+    }
+};
+
+
 struct ProblemID
 {
     ProblemID() :
