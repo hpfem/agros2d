@@ -388,7 +388,7 @@ void SceneViewPostInterface::initializeGL()
     SceneViewCommon::initializeGL();
 }
 
-const double* SceneViewPostInterface::paletteColor2(const int pos) const
+const QVector3D SceneViewPostInterface::paletteColor2(const int pos) const
 {
     int n = (int) (pos / (PALETTEENTRIES / Agros2D::problem()->configView()->paletteSteps)) * (PALETTEENTRIES / Agros2D::problem()->configView()->paletteSteps);
 
@@ -397,11 +397,15 @@ const double* SceneViewPostInterface::paletteColor2(const int pos) const
     else if (n > PALETTEENTRIES - 1)
         n = PALETTEENTRIES - 1;
 
+    const double *colors = NULL;
     switch (Agros2D::problem()->configView()->paletteType)
     {
     case Palette_Agros2D:
-        return paletteDataAgros2D[n];
+        colors = paletteDataAgros2D[n];
     }
+
+    assert(colors);
+    return QVector3D(colors[0], colors[1], colors[2]);
 }
 
 const double* SceneViewPostInterface::paletteColor(double x) const

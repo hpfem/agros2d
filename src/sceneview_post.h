@@ -144,7 +144,7 @@ protected:
     void paintParticleTracingColorBar(double min, double max, bool is2D = true);
 
     // palette
-    const double *paletteColor2(const int pos) const;
+    const QVector3D paletteColor2(const int pos) const;
     const double *paletteColor(double x) const;
     const double *paletteColorOrder(int n) const;
     void paletteCreate();
