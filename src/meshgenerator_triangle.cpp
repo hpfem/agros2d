@@ -388,7 +388,12 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
     {
         QStringList parsedLine = inEle.readLine().trimmed().split(whiteChar);
         int marker = parsedLine.at(7).toInt();
-        assert(marker > 0);
+
+        if (marker == 0)
+        {
+            Agros2D::log()->printError(tr("Mesh generator"), tr("Some areas do not have a marker"));
+            return false;
+        }
 
         // vertices
         int nodeA = parsedLine.at(1).toInt();
@@ -415,12 +420,6 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
             elementList.append(MeshElement(nodeNB, nodeA, nodeNC, nodeList.count() - 1, marker - 1)); // marker conversion from triangle, where it starts from 1
             elementList.append(MeshElement(nodeNC, nodeB, nodeNA, nodeList.count() - 1, marker - 1)); // marker conversion from triangle, where it starts from 1
             elementList.append(MeshElement(nodeNA, nodeC, nodeNB, nodeList.count() - 1, marker - 1)); // marker conversion from triangle, where it starts from 1
-        }
-
-        if (marker == 0)
-        {
-            Agros2D::log()->printError(tr("Mesh generator"), tr("some areas have no label marker"));
-            return false;
         }
 
         labelMarkersCheck.insert(marker - 1);

@@ -553,7 +553,7 @@ LoopsInfo findLoops()
             }
         }
         if (labelsInsideLoop[loopIdx].size() == 0)
-            throw (AgrosMeshException("There is no label in some domain"));
+            throw (AgrosMeshException("Some areas do not have a marker"));
     }
 
     for (int labelIdx = 0; labelIdx < Agros2D::scene()->labels->count(); labelIdx++)
