@@ -25,7 +25,8 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 
-SceneTransformDialog::SceneTransformDialog(QWidget *parent) : QDialog(parent)
+SceneTransformDialog::SceneTransformDialog(SceneViewPreprocessor *sceneViewPreprocessor, QWidget *parent)
+    : QDialog(parent), m_sceneViewPreprocessor(sceneViewPreprocessor)
 {
     setWindowIcon(icon("scene-transform"));
     setWindowTitle(tr("Transform"));
@@ -176,4 +177,6 @@ void SceneTransformDialog::doTransform()
         if (!txtScaleFactor->evaluate(false)) return;
         Agros2D::scene()->transformScale(Point(txtScaleBasePointX->number(), txtScaleBasePointY->number()), txtScaleFactor->number(), chkCopy->isChecked());
     }
+
+    m_sceneViewPreprocessor->refresh();
 }

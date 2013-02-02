@@ -100,7 +100,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     scriptEditorDialog = new PythonLabAgros(currentPythonEngine(), QApplication::arguments(), this);
     // collaborationDownloadDialog = new ServerDownloadDialog(this);
-    sceneTransformDialog = new SceneTransformDialog(this);
+    sceneTransformDialog = new SceneTransformDialog(sceneViewPreprocessor, this);
 
     createActions();
     createViews();

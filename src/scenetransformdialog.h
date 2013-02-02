@@ -21,15 +21,17 @@
 #define SCENETRANSFORMDIALOG_H
 
 #include "util.h"
+#include "sceneview_geometry.h"
 
 class Scene;
 class ValueLineEdit;
+class SceneViewPreprocessor;
 
 class SceneTransformDialog : public QDialog
 {
     Q_OBJECT
 public:
-    SceneTransformDialog(QWidget *parent = 0);
+    SceneTransformDialog(SceneViewPreprocessor *sceneViewPreprocessor, QWidget *parent = 0);
     ~SceneTransformDialog();
 
     void showDialog();
@@ -42,6 +44,8 @@ protected:
     void createControls();
 
 private:
+    SceneViewPreprocessor *m_sceneViewPreprocessor;
+
     QTabWidget *tabWidget;
 
     QWidget *widTranslate;

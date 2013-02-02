@@ -319,6 +319,8 @@ template class MarkedSceneBasicContainer<SceneMaterial, SceneLabel>;
 
 SceneBasicDialog::SceneBasicDialog(QWidget *parent, bool isNew) : QDialog(parent)
 {
+    setAttribute(Qt::WA_DeleteOnClose);
+
     this->m_isNew = isNew;
     layout = new QVBoxLayout();
 }
