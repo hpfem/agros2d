@@ -27,8 +27,6 @@ flow.damping_coeff = 1.0
 flow.automatic_damping = True
 flow.damping_number_to_increase = 1
 
-flow.adaptivity_type = "disabled"
-
 flow.add_boundary("Inlet", "flow_velocity", {"flow_velocity_x" : { "expression" : "cos((y-0.135)/0.035*pi/2)" }, "flow_velocity_y" : 0})
 flow.add_boundary("Wall", "flow_velocity", {"flow_velocity_x" : 0, "flow_velocity_y" : 0})
 flow.add_boundary("Outlet", "flow_outlet", {})

@@ -34,7 +34,8 @@ execfile("test_acoustic_axisymmetric.py")
 # execfile("test_rf_axisymmetric.py")
 
 # incompressible flow
-#execfile("test_flow_steady_planar_nonlin.py") 
+execfile("test_flow_steady_planar_nonlin.py") 
+execfile("test_flow_steady_axisymmetric_nonlin.py") 
 
 # coupling
 execfile("test_coupling_1_planar.py")
