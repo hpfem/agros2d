@@ -162,6 +162,7 @@ private:
 
     QString m_solverID;
     QString m_solverName;
+    QString m_solverCode;
 
     // elapsed time
     double m_elapsedTime;

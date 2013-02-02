@@ -54,9 +54,11 @@ void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Hermes2D::Mixi
     {
         solver->output_matrix();
         solver->output_rhs();
-        QString name = QString("%1/%2-%3-%4").arg(tempProblemDir()).arg(solverName).arg(Agros2D::problem()->actualTimeStep()).arg(adaptivityStep);
-        solver->set_matrix_filename(QString("%1-Matrix").arg(name).toStdString());
-        solver->set_rhs_filename(QString("%1-RHS").arg(name).toStdString());
+        QString name = QString("%1/%2_%3_%4").arg(tempProblemDir()).arg(solverName).arg(Agros2D::problem()->actualTimeStep()).arg(adaptivityStep);
+        solver->set_matrix_filename(QString("%1_Matrix").arg(name).toStdString());
+        solver->set_rhs_filename(QString("%1_RHS").arg(name).toStdString());
+        solver->set_matrix_number_format("%g");
+        solver->set_rhs_number_format("%g");
     }
 }
 
@@ -220,9 +222,14 @@ void Solver<Scalar>::init(Block* block)
     QListIterator<Field*> iter(m_block->fields());
     while (iter.hasNext())
     {
-        m_solverName += iter.next()->fieldInfo()->fieldId();
+        QString str = iter.next()->fieldInfo()->fieldId();
+        m_solverName += str;
+        m_solverCode += str;
         if (iter.hasNext())
+        {
             m_solverName += ", ";
+            m_solverCode += "_";
+        }
     }
     m_solverID = QObject::tr("Solver (%1)").arg(m_solverName);
 }
@@ -392,7 +399,7 @@ Scalar *Solver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
         m_hermesSolverContainer->projectPreviousSolution(initialSolutionVector, spaces, previousSolution);
         m_hermesSolverContainer->setTableSpaces()->set_spaces(castConst(spaces));
         m_hermesSolverContainer->setWeakFormulation(m_block->weakForm());
-        m_hermesSolverContainer->setMatrixRhsOutput(m_solverName, adaptivityStep);
+        m_hermesSolverContainer->setMatrixRhsOutput(m_solverCode, adaptivityStep);
 
         m_hermesSolverContainer->solve(initialSolutionVector);
     }

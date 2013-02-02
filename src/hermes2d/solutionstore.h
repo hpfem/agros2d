@@ -47,6 +47,7 @@ public:
     MultiArray<double> multiSolutionPreviousCalculatedTS(BlockSolutionID solutionID);
 
     void addSolution(BlockSolutionID solutionID, MultiArray<double> multiArray, SolutionRunTimeDetails runTime);
+    void removeSolution(BlockSolutionID solutionID);
 
     // removes all solutions with the given time step
     void removeTimeStep(int timeStep);
@@ -87,7 +88,6 @@ private:
 
     void addSolution(FieldSolutionID solutionID, MultiArray<double> multiArray, SolutionRunTimeDetails runTime);
     void removeSolution(FieldSolutionID solutionID);
-    void removeSolution(BlockSolutionID solutionID);
 
     void insertMultiSolutionToCache(FieldSolutionID solutionID, MultiArray<double> multiArray);
 

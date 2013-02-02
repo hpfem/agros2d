@@ -733,6 +733,8 @@ void Problem::solveAdaptiveStepAction()
         if(adaptStepReference == NOT_FOUND_SO_FAR)
         {
             // previously simple solve was used
+            BlockSolutionID sidRemove(block, 0, 0, SolutionMode_Normal);
+            Agros2D::solutionStore()->removeSolution(sidRemove);
             solver->solveReferenceAndProject(0, adaptStep);
         }
         else
