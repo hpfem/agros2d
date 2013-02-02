@@ -242,10 +242,11 @@ void SceneViewMesh::paintInitialMesh()
         int2* linEdges = m_postHermes->linInitialMeshView().get_edges();
 
         // edges
+        m_arrayInitialMesh.reserve(2 * m_postHermes->linInitialMeshView().get_num_edges());
         for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_edges(); i++)
         {
-            m_arrayInitialMesh.push_back(QVector2D(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]));
-            m_arrayInitialMesh.push_back(QVector2D(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]));
+            m_arrayInitialMesh.append(QVector2D(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]));
+            m_arrayInitialMesh.append(QVector2D(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]));
         }
 
         m_postHermes->linInitialMeshView().unlock_data();
@@ -282,11 +283,12 @@ void SceneViewMesh::paintSolutionMesh()
         double3* linVert = m_postHermes->linSolutionMeshView().get_vertices();
         int2* linEdges = m_postHermes->linSolutionMeshView().get_edges();
 
-        // triangles
+        // edges
+        m_arraySolutionMesh.reserve(2 * m_postHermes->linSolutionMeshView().get_num_edges());
         for (int i = 0; i < m_postHermes->linSolutionMeshView().get_num_edges(); i++)
         {
-            m_arraySolutionMesh.push_back(QVector2D(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]));
-            m_arraySolutionMesh.push_back(QVector2D(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]));
+            m_arraySolutionMesh.append(QVector2D(linVert[linEdges[i][0]][0], linVert[linEdges[i][0]][1]));
+            m_arraySolutionMesh.append(QVector2D(linVert[linEdges[i][1]][0], linVert[linEdges[i][1]][1]));
         }
 
         m_postHermes->linSolutionMeshView().unlock_data();
@@ -333,6 +335,8 @@ void SceneViewMesh::paintOrder()
         }
 
         // triangles
+        m_arrayOrderMesh.reserve(3 * m_postHermes->ordView().get_num_triangles());
+        m_arrayOrderMeshColor.reserve(3 * m_postHermes->ordView().get_num_triangles());
         for (int i = 0; i < m_postHermes->ordView().get_num_triangles(); i++)
         {
             int color = vert[tris[i][0]][2];
@@ -340,14 +344,14 @@ void SceneViewMesh::paintOrder()
                     paletteColorOrder(color)[1],
                     paletteColorOrder(color)[2]);
 
-            m_arrayOrderMesh.push_back(QVector2D(vert[tris[i][0]][0], vert[tris[i][0]][1]));
-            m_arrayOrderMeshColor.push_back(colorVector);
+            m_arrayOrderMesh.append(QVector2D(vert[tris[i][0]][0], vert[tris[i][0]][1]));
+            m_arrayOrderMeshColor.append(colorVector);
 
-            m_arrayOrderMesh.push_back(QVector2D(vert[tris[i][1]][0], vert[tris[i][1]][1]));
-            m_arrayOrderMeshColor.push_back(colorVector);
+            m_arrayOrderMesh.append(QVector2D(vert[tris[i][1]][0], vert[tris[i][1]][1]));
+            m_arrayOrderMeshColor.append(colorVector);
 
-            m_arrayOrderMesh.push_back(QVector2D(vert[tris[i][2]][0], vert[tris[i][2]][1]));
-            m_arrayOrderMeshColor.push_back(colorVector);
+            m_arrayOrderMesh.append(QVector2D(vert[tris[i][2]][0], vert[tris[i][2]][1]));
+            m_arrayOrderMeshColor.append(colorVector);
         }
 
         m_postHermes->ordView().unlock_data();
