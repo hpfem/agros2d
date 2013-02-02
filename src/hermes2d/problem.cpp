@@ -744,7 +744,7 @@ void Problem::solveAdaptiveStepAction()
         }
     }
 
-    solver->createAdaptedSpace(0, adaptStep + 1);
+    solver->createAdaptedSpace(0, adaptStep + 1, true);
     solver->solveReferenceAndProject(0, adaptStep + 1);
 
 

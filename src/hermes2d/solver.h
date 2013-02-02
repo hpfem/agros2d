@@ -145,7 +145,7 @@ public:
 
     void solveSimple(int timeStep, int adaptivityStep);
     void solveReferenceAndProject(int timeStep, int adaptivityStep);
-    bool createAdaptedSpace(int timeStep, int adaptivityStep);
+    bool createAdaptedSpace(int timeStep, int adaptivityStep, bool forceAdaptation = false);
 
     // for time dependent problems
     void updateExactSolutionFunctions();

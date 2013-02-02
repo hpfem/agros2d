@@ -750,6 +750,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
     }
 
     // TODO: wf should be created only at the beginning
+    // TODO: at least for the adaptivity, it should be ok to keep the form. For transiet step would be more complicated...
     m_block->setWeakForm(new WeakFormAgros<double>(m_block));
     m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());
     m_block->weakForm()->registerForms(bdf2Table);
@@ -802,7 +803,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
 }
 
 template <typename Scalar>
-bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
+bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep, bool forceAdaptation)
 {
     MultiArray<Scalar> msa = Agros2D::solutionStore()->multiArray(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Normal));
     MultiArray<Scalar> msaRef = Agros2D::solutionStore()->multiArray(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Reference));
@@ -832,6 +833,9 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
 
     // todo: otazku zda uz neni moc dofu jsem mel vyresit nekde drive
     bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces) < Agros2D::problem()->configView()->maxDofs;
+
+    // allways adapt when forcing adaptation, to be used in solveAdaptiveStep
+    adapt = adapt || forceAdaptation;
 
     if(adapt)
     {
