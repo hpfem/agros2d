@@ -127,8 +127,6 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
             QFile::remove(tempProblemFileName() + ".neigh");
             QFile::remove(tempProblemFileName() + ".triangle.out");
             QFile::remove(tempProblemFileName() + ".triangle.err");
-
-            Agros2D::log()->printMessage(tr("Mesh generator"), tr("mesh files were deleted"));
         }
         else
         {

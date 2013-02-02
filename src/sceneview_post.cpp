@@ -181,10 +181,15 @@ void PostHermes::processRangeScalar()
         Hermes::Hermes2D::Filter<double> *slnScalarView = viewScalarFilter(Agros2D::scene()->activeViewField()->localVariable(Agros2D::problem()->configView()->scalarVariable),
                                                                            Agros2D::problem()->configView()->scalarVariableComp);
 
+        // QTime time;
+        // time.start();
+        // qDebug() << "process scalar: start";
         m_linScalarView.free();
         m_linScalarView.process_solution(slnScalarView,
                                          Hermes::Hermes2D::H2D_FN_VAL_0,
                                          paletteQualityToDouble(Agros2D::problem()->configView()->linearizerQuality));
+
+        // qDebug() << "process scalar: " << time.elapsed();
 
         // deformed shape
         if (Agros2D::problem()->configView()->deformScalar)
