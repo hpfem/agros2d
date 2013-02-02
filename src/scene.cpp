@@ -965,7 +965,7 @@ void Scene::addBoundaryAndMaterialMenuItems(QMenu* menu, QWidget* parent)
         menu->addAction(actNewBoundary);
         menu->addAction(actNewMaterial);
     }
-    else
+    else if (Agros2D::problem()->fieldInfos().count() > 1)
     {
         // multiple materials and boundaries
         QMenu* mnuSubBoundaries = new QMenu("New boundary condition", parent);
@@ -1472,9 +1472,9 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         labels->addMissingFieldMarkers(field);
 
         // add field
-        Agros2D::problem()->blockSignals(true);
+        // Agros2D::problem()->blockSignals(true);
         Agros2D::problem()->addField(field);
-        Agros2D::problem()->blockSignals(false);
+        // Agros2D::problem()->blockSignals(false);
 
         // next field
         nodeField = nodeField.nextSibling();

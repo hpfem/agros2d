@@ -447,9 +447,8 @@ void MainWindow::createActions()
 
 void MainWindow::doFieldsChanged()
 {
-    //TODO it is not necessary to create whole menu, it only needs to be adjusted
-    //TODO what hapens to old menu object? Memory leaks???
-
+    // TODO: it is not necessary to create whole menu, it only needs to be adjusted
+    // TODO: what hapens to old menu object? Memory leaks???
     createMenus();
 }
 
