@@ -32,7 +32,7 @@ Log::Log()
 
 // *******************************************************************************************************
 
-LogWidget::LogWidget(QWidget *parent) : QTextEdit(parent)
+LogWidget::LogWidget(QWidget *parent) : QPlainTextEdit(parent)
 {
     setReadOnly(true);
     setMinimumSize(160, 160);
@@ -121,11 +121,11 @@ void LogWidget::printDebug(const QString &module, const QString &message, bool e
 
 void LogWidget::print(const QString &module, const QString &message, const QString &color, bool escaped)
 {
+    setUpdatesEnabled(false);
+
     QTextCursor cursor = textCursor();
     cursor.movePosition(QTextCursor::End);
     setTextCursor(cursor);
-
-    append(QString());
 
     QString str;
 
@@ -161,9 +161,10 @@ void LogWidget::print(const QString &module, const QString &message, const QStri
     if (!color.isEmpty())
         str += "</span>";
 
-    insertHtml(str);
+    setUpdatesEnabled(true);
+    appendHtml(str);
 
-    repaint();
+    ensureCursorVisible();
 }
 
 void LogWidget::welcomeMessage()
@@ -284,6 +285,7 @@ void LogDialog::refreshStatus()
     int memory = getCurrentRSS() / 1024 / 1024;
 
     memoryLabel->setText(tr("Process Memory: %1 MB").arg(memory));
+    logWidget->repaint();
     // memoryLabel->repaint();
 }
 

@@ -155,7 +155,10 @@ void PyProblem::mesh()
     {
         // trigger postprocessor
         if (!silentMode())
+        {
             currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
+            QApplication::processEvents();
+        }
     }
     else
     {
@@ -176,7 +179,10 @@ void PyProblem::solve()
     {
         // trigger postprocessor
         if (!silentMode())
+        {
             currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
+            QApplication::processEvents();
+        }
     }
     else
     {

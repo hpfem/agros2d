@@ -43,7 +43,7 @@ signals:
     void debugMsg(const QString &module, const QString &message, bool escaped);
 };
 
-class AGROS_API LogWidget : public QTextEdit
+class AGROS_API LogWidget : public QPlainTextEdit
 {
     Q_OBJECT
 public:
