@@ -1641,7 +1641,12 @@ void Agros2DGeneratorModule::getNames(const QString &moduleId)
         if(xml.attributes().hasAttribute("name"))
         {
             if(!m_names.contains(xml.attributes().value("name").toString()))
-                m_names.append(xml.attributes().value("name").toString());
+                m_names.append(xml.attributes().value("name").toString());            
+        }
+        if(xml.attributes().hasAttribute("name"))
+        {
+            if(!m_names.contains(xml.attributes().value("analysistype").toString()))
+                m_names.append(xml.attributes().value("analysistype").toString());
         }
     }
 }

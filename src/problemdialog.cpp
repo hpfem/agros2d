@@ -336,7 +336,7 @@ void FieldWidget::fillComboBox()
     while (it.hasNext())
     {
         it.next();
-        cmbAnalysisType->addItem(it.value(), it.key());
+        cmbAnalysisType->addItem(this->fieldInfo()->plugin()->localeName(it.value()), it.key());
     }
 }
 
