@@ -132,9 +132,6 @@ void MultiArray<Scalar>::loadFromFile(const QString &baseName, FieldSolutionID s
 {
     // qDebug() << "void MultiSolutionArray<Scalar>::loadFromFile(FieldSolutionID solutionID)" << solutionID.toString();
 
-    // QTime time;
-    // time.start();
-
     clear();
 
     // load the mesh file
@@ -163,8 +160,6 @@ void MultiArray<Scalar>::loadFromFile(const QString &baseName, FieldSolutionID s
 
         append(space, sln);
     }
-
-    // qDebug() << "void MultiSolutionArray<Scalar>::loadFromFile(FieldSolutionID solutionID)" << solutionID.toString() << time.elapsed();
 }
 
 template <typename Scalar>
