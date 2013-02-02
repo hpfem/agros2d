@@ -71,6 +71,8 @@ private:
     Point m_centerCache;
 
     void computeCenter();
+
+    friend class SceneNode;
 };
 
 Q_DECLARE_METATYPE(SceneEdge *)

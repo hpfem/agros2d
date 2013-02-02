@@ -32,7 +32,7 @@ public:
     SceneNode(const Point &m_point);
 
     inline Point point() const { return m_point; }
-    inline void setPoint(const Point &point) { m_point = point; }
+    void setPoint(const Point &point);
 
     // geometry editor
     bool isConnected() const { return connectedEdges().length() > 0; }

@@ -33,6 +33,15 @@ SceneNode::SceneNode(const Point &point) : SceneBasic(), m_point(point)
 {
 }
 
+void SceneNode::setPoint(const Point &point)
+{
+    m_point = point;
+
+    // refresh cache
+    foreach (SceneEdge *edge, connectedEdges())
+        edge->computeCenter();
+}
+
 double SceneNode::distance(const Point &point) const
 {
     return (this->point() - point).magnitude();

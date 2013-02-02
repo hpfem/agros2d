@@ -185,7 +185,10 @@ SceneEdge *SceneEdge::findClosestEdge(const Point &point)
 
 void SceneEdge::computeCenter()
 {
-    m_centerCache = centerPoint(m_nodeStart->point(), m_nodeEnd->point(), m_angle);
+    if (fabs(m_angle) > EPS_ZERO)
+        m_centerCache = centerPoint(m_nodeStart->point(), m_nodeEnd->point(), m_angle);
+    else
+        m_centerCache = Point();
 }
 
 //************************************************************************************************
