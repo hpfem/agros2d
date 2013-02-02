@@ -10,8 +10,8 @@ sys.path.insert(0, ".")
 def sgn(number):
 	return (number >= 0) and 1 or -1 
 
-from rope.base.project import Project
-pythonlab_rope_project = Project(".", ropefolder=None)
+# from rope.base.project import Project
+# pythonlab_rope_project = Project(".", ropefolder=None)
 
 # get completion list
 def python_engine_get_completion_string(code, offset):

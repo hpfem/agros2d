@@ -23,7 +23,9 @@
 
 #include "util.h"
 
+#ifndef M_PI_2
 #define M_PI_2 1.57079632679489661923	/* pi/2 */
+#endif
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QStandardPaths>
@@ -88,7 +90,9 @@ AGROS_API void setGUIStyle(const QString &styleName)
 AGROS_API void setLanguage(const QString &locale)
 {
     // non latin-1 chars
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf8"));
+#endif
 
     QTranslator *qtTranslator = new QTranslator();
     QTranslator *appTranslator = new QTranslator();

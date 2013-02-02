@@ -113,13 +113,20 @@ win32-msvc2010 {
     LIBS += -Lc:/Python27/libs
     LIBS += -L../../qwt-6.0.1/lib
     LIBS += -lvcomp
-    LIBS += -lqwt
     LIBS += -lpython27
     LIBS += -llibumfpack
     LIBS += -llibamd
     LIBS += -lpthreadVCE2
-    LIBS += -lxerces-c_static_3
     LIBS += -ladvapi32
     LIBS += -lws2_32
     LIBS += -lpsapi # process memory usage (system_utils.h)
+
+    CONFIG(release, debug|release) {
+        LIBS += -lxerces-c_static_3
+        LIBS += -lqwt
+    }
+    CONFIG(debug, debug|release) {
+        LIBS += -lxerces-c_static_3D
+        LIBS += -lqwtd
+    }
 }

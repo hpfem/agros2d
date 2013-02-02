@@ -73,3 +73,5 @@ resources_source/python/pythonlab.cpp
 resources_source/doc/source/mathematical_background
 git_fetch.sh
 data/save
+DLLs
+tcl

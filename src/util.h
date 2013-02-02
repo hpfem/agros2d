@@ -32,6 +32,7 @@
 #include <QtWidgets>
 #include <QtWebKitWidgets>
 #include <QtPrintSupport>
+#include <QtOpenGL>
 #endif
 
 #include <typeinfo>

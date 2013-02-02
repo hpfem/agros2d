@@ -63,7 +63,7 @@
         <file alias="scene-function.png">../resources_source/images/scene-function.png</file>
         <file alias="run.png">../resources_source/images/run.png</file>
         <file alias="run-step.png">../resources_source/images/run-step.png</file>
-        <file alias="zoom-best-fit.png">../resources_source/images/zoom-best-fit.png</file>
+        <file alias="zoom-fit-best.png">../resources_source/images/zoom-fit-best.png</file>
         <file alias="zoom-in.png">../resources_source/images/zoom-in.png</file>
         <file alias="zoom-out.png">../resources_source/images/zoom-out.png</file>
         <file alias="zoom-original.png">../resources_source/images/zoom-original.png</file>

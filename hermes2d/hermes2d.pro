@@ -223,4 +223,11 @@ win32-msvc2010 {
     LIBS += -lvcomp
     LIBS += -ladvapi32
     LIBS += -lws2_32
+
+    CONFIG(release, debug|release) {
+        LIBS += -lxerces-c_static_3
+    }
+    CONFIG(debug, debug|release) {
+        LIBS += -lxerces-c_static_3D
+    }
 }

@@ -633,7 +633,7 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
 
         // load(...) works
         writeStringContent(tempProblemDir() + "/material.html", QString::fromStdString(info));
-        webView->load(tempProblemDir() + "/material.html");
+        webView->load(QUrl::fromLocalFile(tempProblemDir() + "/material.html"));
     }
 }
 

@@ -338,7 +338,7 @@ void ExamplesDialog::problemInfo(const QString &fileName)
         {
             // replace current path in index.html
             QString detail = readFileContent(detailsFilename);
-            detail = detail.replace("{{DIR}}", QString("%1/%2").arg(fileInfo.absolutePath()).arg(fileInfo.baseName()));
+            detail = detail.replace("{{DIR}}", QString("%1/%2").arg(QUrl::fromLocalFile(fileInfo.absolutePath()).toString()).arg(fileInfo.baseName()));
 
             problemInfo.SetValue("PROBLEM_DETAILS", detail.toStdString());
         }
@@ -350,7 +350,7 @@ void ExamplesDialog::problemInfo(const QString &fileName)
 
         // load(...) works
         writeStringContent(tempProblemDir() + "/example.html", QString::fromStdString(info));
-        webView->load(tempProblemDir() + "/example.html");
+        webView->load(QUrl::fromLocalFile(tempProblemDir() + "/example.html"));
     }
 }
 

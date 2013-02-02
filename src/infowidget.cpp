@@ -345,5 +345,5 @@ void InfoWidget::showInfo()
 
     // load(...) works
     writeStringContent(tempProblemDir() + "/info.html", QString::fromStdString(info));
-    webView->load(tempProblemDir() + "/info.html");
+    webView->load(QUrl::fromLocalFile(tempProblemDir() + "/info.html"));
 }
