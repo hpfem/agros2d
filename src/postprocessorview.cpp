@@ -1391,7 +1391,7 @@ void PostprocessorWidget::doApply()
     Agros2D::scene()->setActiveTimeStep(actualTimeStep);
 
     // todo: this should be revised
-    if(this->selectedField()->adaptivityType() != AdaptivityType_None)
+//    if(this->selectedField()->adaptivityType() != AdaptivityType_None)
     {
         Agros2D::scene()->setActiveAdaptivityStep(cmbAdaptivityStep->currentIndex());
         Agros2D::scene()->setActiveSolutionType((SolutionMode)cmbAdaptivitySolutionType->currentIndex());

@@ -250,7 +250,7 @@ double SolutionStore::lastTime(FieldInfo *fieldInfo)
 
     foreach (FieldSolutionID id, m_multiSolutions)
     {
-        if ((id.group == fieldInfo) && (id.timeStep == timeStep) && (id.exists()))
+        if ((id.group == fieldInfo) && (id.timeStep == timeStep))
         {
             if (time == NOT_FOUND_SO_FAR)
                 time = Agros2D::problem()->timeStepToTotalTime(id.timeStep);

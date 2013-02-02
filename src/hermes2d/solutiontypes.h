@@ -125,8 +125,6 @@ struct SolutionID
     SolutionID() : group(NULL), timeStep(0), adaptivityStep(0), solutionMode(SolutionMode_Normal) {}
     SolutionID(Group* group, int timeStep, int adaptivityStep, SolutionMode solutionMode) :
         group(group), timeStep(timeStep), adaptivityStep(adaptivityStep), solutionMode(solutionMode) {}
-
-    inline bool exists() { return solutionMode != SolutionMode_NonExisting; }
 };
 
 template <typename Group>

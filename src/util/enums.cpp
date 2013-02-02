@@ -334,8 +334,6 @@ QString solutionTypeString(SolutionMode solutionMode)
         return QObject::tr("Normal");
     case SolutionMode_Reference:
         return QObject::tr("Reference");
-    case SolutionMode_NonExisting:
-        return QObject::tr("Non-existing");
     case SolutionMode_Finer:
         return QObject::tr("Finer"); // used to choose reference if exists, normal otherwise
     default:

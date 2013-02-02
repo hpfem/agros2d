@@ -189,7 +189,7 @@ public:
     void setActiveTimeStep(int ts);
 
     inline int activeAdaptivityStep() const { return m_activeAdaptivityStep; }
-    void setActiveAdaptivityStep(int as) { m_activeAdaptivityStep = as; }
+    void setActiveAdaptivityStep(int as);
 
     inline SolutionMode activeSolutionType() const { return m_activeSolutionMode; }
     void setActiveSolutionType(SolutionMode st) { m_activeSolutionMode = st; }

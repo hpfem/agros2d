@@ -683,7 +683,7 @@ void Solver<Scalar>::createInitialSpace()
 }
 
 template <typename Scalar>
-void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep, bool solutionExists)
+void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
 {
     //    SolutionMode solutionMode = solutionExists ? SolutionMode_Normal : SolutionMode_NonExisting;
     //    MultiSolutionArray<Scalar> msa = Agros2D::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));
@@ -826,21 +826,26 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep)
     // todo: otazku zda uz neni moc dofu jsem mel vyresit nekde drive
     bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces) < Agros2D::problem()->configView()->maxDofs;
 
-    try
+    if(adapt)
     {
-        bool noref = adaptivity.adapt(selector, Agros2D::problem()->configView()->threshold, Agros2D::problem()->configView()->strategy, Agros2D::problem()->configView()->meshRegularity);
-    }
-    catch (Hermes::Exceptions::Exception e)
-    {
-        QString error = QString(e.what());
-        Agros2D::log()->printDebug(m_solverID, QObject::tr("Adaptive process failed: %1").arg(error));
-        throw;
-    }
+        bool noRefinementPerformed;
+        try
+        {
+            noRefinementPerformed = adaptivity.adapt(selector, Agros2D::problem()->configView()->threshold, Agros2D::problem()->configView()->strategy, Agros2D::problem()->configView()->meshRegularity);
+        }
+        catch (Hermes::Exceptions::Exception e)
+        {
+            QString error = QString(e.what());
+            Agros2D::log()->printDebug(m_solverID, QObject::tr("Adaptive process failed: %1").arg(error));
+            throw;
+        }
 
-    Agros2D::log()->printMessage(m_solverID, QObject::tr("adaptivity step (error = %1, DOFs = %2/%3)").
-                                 arg(error).
-                                 arg(Space<Scalar>::get_num_dofs(msa.spacesConst())).
-                                 arg(Space<Scalar>::get_num_dofs(msaRef.spacesConst())));
+        Agros2D::log()->printMessage(m_solverID, QObject::tr("adaptivity step (error = %1, DOFs = %2/%3)").
+                                     arg(error).
+                                     arg(Space<Scalar>::get_num_dofs(msa.spacesConst())).
+                                     arg(Space<Scalar>::get_num_dofs(msaRef.spacesConst())));
+        adapt = adapt && (!noRefinementPerformed);
+    }
 
     deleteSelectors(selector);
 
@@ -877,6 +882,19 @@ void Solver<Scalar>::solveInitialTimeStep()
     Agros2D::solutionStore()->addSolution(solutionID,
                                           MultiArray<Scalar>(spaces, solutions),
                                           runTime);
+}
+
+template <typename Scalar>
+void Solver<Scalar>::resumeAdaptivityProcess(int adaptivityStep)
+{
+    BlockSolutionID solID(m_block, 0, adaptivityStep, SolutionMode_Normal);
+    MultiArray<Scalar> msa = Agros2D::solutionStore()->multiArray(solID);
+
+    setActualSpaces(deepMeshAndSpaceCopy(msa.spaces(), false));
+
+    assert(!m_hermesSolverContainer);
+    m_hermesSolverContainer = HermesSolverContainer<Scalar>::factory(m_block);
+
 }
 
 

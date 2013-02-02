@@ -144,11 +144,14 @@ public:
     NextTimeStep estimateTimeStepLength(int timeStep, int adaptivityStep);
 
     void solveSimple(int timeStep, int adaptivityStep);
-    void solveReferenceAndProject(int timeStep, int adaptivityStep, bool solutionExists);
+    void solveReferenceAndProject(int timeStep, int adaptivityStep);
     bool createAdaptedSpace(int timeStep, int adaptivityStep);
 
     // for time dependent problems
     void updateExactSolutionFunctions();
+
+    // to be used in solveAdaptivityStep
+    void resumeAdaptivityProcess(int adaptivityStep);
 
 private:
     Block* m_block;

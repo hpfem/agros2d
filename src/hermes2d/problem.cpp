@@ -275,7 +275,7 @@ void Problem::createStructure()
 
 bool Problem::mesh()
 {
-    clearSolution();
+    //clearSolution();
 
     Agros2D::scene()->blockSignals(true);
 
@@ -488,9 +488,6 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
     if(Agros2D::configComputer()->saveMatrixRHS)
         Agros2D::log()->printWarning(tr(""), tr("Warning: Matrix and RHS will be saved on the disk. This will slow down the calculation. You may disable it in Edit->Options->Solver menu."));
 
-    // clear solution
-    clearSolution();
-
     try
     {
         solveActionCatchExceptions(adaptiveStepOnly);
@@ -590,8 +587,11 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
 
 void Problem::solveAction()
 {
-    Agros2D::scene()->blockSignals(true);
+    // clear solution
+    clearSolution();
 
+    Agros2D::scene()->blockSignals(true);
+    // todo: remove?
     Agros2D::scene()->setActiveAdaptivityStep(0);
     Agros2D::scene()->setActiveTimeStep(0);
     Agros2D::scene()->setActiveViewField(fieldInfos().values().at(0));
@@ -652,7 +652,7 @@ void Problem::solveAction()
                     while (continueAdaptivity && (adaptStep <= block->adaptivitySteps()))
                     {
                         // solve problem
-                        solvers[block]->solveReferenceAndProject(actualTimeStep(), adaptStep - 1, false);
+                        solvers[block]->solveReferenceAndProject(actualTimeStep(), adaptStep - 1);
                         // create adapted space
                         continueAdaptivity = solvers[block]->createAdaptedSpace(actualTimeStep(), adaptStep);
 
@@ -690,7 +690,7 @@ void Problem::solveAction()
 void Problem::solveAdaptiveStepAction()
 {
     Agros2D::scene()->blockSignals(true);
-
+    // todo: remove?
     Agros2D::scene()->setActiveAdaptivityStep(0);
     Agros2D::scene()->setActiveTimeStep(0);
     Agros2D::scene()->setActiveViewField(fieldInfos().values().at(0));
@@ -700,56 +700,54 @@ void Problem::solveAdaptiveStepAction()
     try
     {
         solveInit();
-
-        assert(isMeshed());
-
-        Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
-
-        assert(m_blocks.size() == 1);
-        Block* block = m_blocks.at(0);
-        Solver<double> *solver = block->prepareSolver();
-        if (!solver)
-            throw AgrosSolverException(tr("Cannot create solver."));
-
-        int adaptStepNormal = Agros2D::solutionStore()->lastAdaptiveStep(block, SolutionMode_Normal, 0);
-        int adaptStepNonExisting = Agros2D::solutionStore()->lastAdaptiveStep(block, SolutionMode_NonExisting, 0);
-        int adaptStep = max(adaptStepNormal, adaptStepNonExisting);
-
-        // it means that solution allready exists, but will be recalculated by adapt step
-        bool solutionAlreadyExists = ((adaptStep >= 0) && (adaptStepNormal == adaptStep));
-
-        // it does not exist, problem has not been solved yet
-        if (adaptStep < 0)
-        {
-            Agros2D::scene()->setActiveAdaptivityStep(0);
-            Agros2D::scene()->setActiveTimeStep(0);
-            Agros2D::scene()->setActiveViewField(fieldInfos().values().at(0));
-
-            solver->createInitialSpace();
-            adaptStep = 0;
-        }
-
-        // standard adaptivity process may end by calculation of refference or by creating adapted space
-        // (depends on which stopping criteria is fulfilled). To avoid unnecessary calculations:
-        bool hasReference = (Agros2D::solutionStore()->lastAdaptiveStep(block, SolutionMode_Reference, 0) == adaptStep);
-        if (!hasReference)
-        {
-            solver->solveReferenceAndProject(0, adaptStep, solutionAlreadyExists);
-        }
-
-        solver->createAdaptedSpace(0, adaptStep + 1);
-
-        // only if solution in previous adapt step existed, solve new one (we would have two new adapt steps otherwise)
-        if (solutionAlreadyExists || adaptStep == 0)
-            solver->solveSimple(0, adaptStep + 1);
-
-        // delete solver
-        delete solver;
     }
     catch (AgrosSolverException& e)
     {
         throw;
     }
+
+    assert(isMeshed());
+
+    Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
+
+    assert(actualTimeStep() == 0);
+    assert(m_blocks.size() == 1);
+    Block* block = m_blocks.at(0);
+    Solver<double> *solver = block->prepareSolver();
+    if (!solver)
+        throw AgrosSolverException(tr("Cannot create solver."));
+
+    int adaptStep = Agros2D::solutionStore()->lastAdaptiveStep(block, SolutionMode_Normal, 0);
+    int adaptStepReference = Agros2D::solutionStore()->lastAdaptiveStep(block, SolutionMode_Reference, 0);
+
+    if (adaptStep == NOT_FOUND_SO_FAR)
+    {
+        // it does not exist, problem has not been solved yet
+        adaptStep = 0;
+        solver->createInitialSpace();
+        solver->solveReferenceAndProject(0, adaptStep);
+    }
+    else
+    {
+        solver->resumeAdaptivityProcess(adaptStep);
+        if(adaptStepReference == NOT_FOUND_SO_FAR)
+        {
+            // previously simple solve was used
+            solver->solveReferenceAndProject(0, adaptStep);
+        }
+        else
+        {
+            // previously solveAdaptiveStep was used
+            assert(adaptStep == adaptStepReference);
+        }
+    }
+
+    solver->createAdaptedSpace(0, adaptStep + 1);
+    solver->solveReferenceAndProject(0, adaptStep + 1);
+
+
+    // delete solver
+    delete solver;
 }
 
 void Problem::stepMessage(Block* block)

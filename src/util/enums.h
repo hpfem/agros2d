@@ -194,7 +194,6 @@ enum SolutionMode
 {
     SolutionMode_Normal,
     SolutionMode_Reference,
-    SolutionMode_NonExisting,
     SolutionMode_Finer  // used to choose reference if exists, normal otherwise
 };
 

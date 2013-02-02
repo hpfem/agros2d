@@ -1897,7 +1897,8 @@ void Scene::writeSolutionToFile(const QString &fileName)
 
 MultiArray<double> Scene::activeMultiSolutionArray()
 {
-    return Agros2D::solutionStore()->multiArray(FieldSolutionID(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeSolutionType()));
+    FieldSolutionID fsid(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeSolutionType());
+    return Agros2D::solutionStore()->multiArray(fsid);
 }
 
 void Scene::checkNodeConnect(SceneNode *node)
@@ -2082,4 +2083,9 @@ void Scene::setActiveViewField(FieldInfo* fieldInfo)
 void Scene::setActiveTimeStep(int ts)
 {
     m_activeTimeStep = ts;
+}
+
+void Scene::setActiveAdaptivityStep(int as)
+{
+    m_activeAdaptivityStep = as;
 }
