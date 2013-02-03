@@ -428,9 +428,9 @@ MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent),
 }
 
 MaterialBrowserDialog::~MaterialBrowserDialog()
-{
+{    
     QSettings settings;
-    restoreGeometry(settings.value("MaterialBrowserDialog/Geometry", saveGeometry()).toByteArray());
+    settings.setValue("MaterialBrowserDialog/Geometry", saveGeometry());
 }
 
 int MaterialBrowserDialog::showDialog(bool select)
