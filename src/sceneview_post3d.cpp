@@ -422,6 +422,20 @@ void SceneViewPost3D::paintScalarField3DSolid()
         int3* linTris = m_postHermes->linScalarView().get_triangles();
         int* linTrisMarkers = m_postHermes->linScalarView().get_triangle_markers();
         int2* linEdges = m_postHermes->linScalarView().get_edges();
+        int* linEdgesMarkers = m_postHermes->linScalarView().get_edge_markers();
+
+        QVector<int> linTrisBoundaries;
+        for (int edge = 0; edge < m_postHermes->linScalarView().get_num_edges(); edge++)
+        {
+            if (linEdgesMarkers[edge] > 0)
+            {
+                if (!linTrisBoundaries.contains(linEdges[edge][0]))
+                    linTrisBoundaries.append(linEdges[edge][0]);
+                if (!linTrisBoundaries.contains(linEdges[edge][1]))
+                    linTrisBoundaries.append(linEdges[edge][1]);
+            }
+        }
+
         Point point[3];
         double value[3];
 
@@ -508,32 +522,52 @@ void SceneViewPost3D::paintScalarField3DSolid()
                     if (!isModel) glTexCoord1d((value[j] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
                     glVertex3d(point[j].x, point[j].y, depth/2.0);
                 }
+            }
+            glEnd();
 
-                // length
-                for (int k = 0; k < 3; k++)
+            glBegin(GL_QUADS);
+            for (int i = 0; i < m_postHermes->linScalarView().get_num_triangles(); i++)
+            {
+                // boundary element
+                if ((linTrisBoundaries.contains(linTris[i][0]) || linTrisBoundaries.contains(linTris[i][1]) || linTrisBoundaries.contains(linTris[i][2])))
                 {
-                    if (Agros2D::problem()->configView()->scalarView3DLighting || isModel)
+                    for (int j = 0; j < 3; j++)
                     {
-                        computeNormal(point[k].x, point[k].y, -depth/2.0,
-                                      point[(k + 1) % 3].x, point[(k + 1) % 3].y, -depth/2.0,
-                                point[(k + 1) % 3].x, point[(k + 1) % 3].y,  depth/2.0,
-                                normal);
-                        glNormal3d(normal[0], normal[1], normal[2]);
+                        point[j].x = linVert[linTris[i][j]][0];
+                        point[j].y = linVert[linTris[i][j]][1];
+                        value[j]   = linVert[linTris[i][j]][2];
                     }
 
-                    if (!isModel) glTexCoord1d((value[k] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                    glVertex3d(point[k].x, point[k].y, -depth/2.0);
-                    if (!isModel) glTexCoord1d((value[(k + 1) % 3] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                    glVertex3d(point[(k + 1) % 3].x, point[1].y, -depth/2.0);
-                    if (!isModel) glTexCoord1d((value[(k + 1) % 3] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                    glVertex3d(point[(k + 1) % 3].x, point[(k + 1) % 3].y, depth/2.0);
+                    // find marker
+                    SceneLabel *label = Agros2D::scene()->labels->at(atoi(Agros2D::scene()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
+                    SceneMaterial *material = label->marker(Agros2D::scene()->activeViewField());
 
-                    if (!isModel) glTexCoord1d((value[(k + 1) % 3] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                    glVertex3d(point[(k + 1) % 3].x, point[(k + 1) % 3].y, depth/2.0);
-                    if (!isModel) glTexCoord1d((value[k] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                    glVertex3d(point[k].x, point[k].y, depth/2.0);
-                    if (!isModel) glTexCoord1d((value[k] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                    glVertex3d(point[k].x, point[k].y, -depth/2.0);
+                    // hide material
+                    if (Agros2D::problem()->configView()->solidViewHide.contains(material->name()))
+                        continue;
+
+                    // length
+                    for (int k = 0; k < 3; k++)
+                    {
+                        if (Agros2D::problem()->configView()->scalarView3DLighting || isModel)
+                        {
+                            computeNormal(point[k].x, point[k].y, -depth/2.0,
+                                          point[(k + 1) % 3].x, point[(k + 1) % 3].y, -depth/2.0,
+                                    point[(k + 1) % 3].x, point[(k + 1) % 3].y,  depth/2.0,
+                                    normal);
+                            glNormal3d(normal[0], normal[1], normal[2]);
+                        }
+
+                        if (!isModel) glTexCoord1d((value[k] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                        glVertex3d(point[k].x, point[k].y, -depth/2.0);
+                        if (!isModel) glTexCoord1d((value[(k + 1) % 3] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                        glVertex3d(point[(k + 1) % 3].x, point[(k + 1) % 3].y, -depth/2.0);
+
+                        if (!isModel) glTexCoord1d((value[(k + 1) % 3] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                        glVertex3d(point[(k + 1) % 3].x, point[(k + 1) % 3].y, depth/2.0);
+                        if (!isModel) glTexCoord1d((value[k] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                        glVertex3d(point[k].x, point[k].y, depth/2.0);
+                    }
                 }
             }
             glEnd();
@@ -632,103 +666,107 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
             for (int i = 0; i < m_postHermes->linScalarView().get_num_triangles(); i++)
             {
-                for (int j = 0; j < 3; j++)
+                // boundary element
+                if ((linTrisBoundaries.contains(linTris[i][0]) || linTrisBoundaries.contains(linTris[i][1]) || linTrisBoundaries.contains(linTris[i][2])))
                 {
-                    point[j].x = linVert[linTris[i][j]][0];
-                    point[j].y = linVert[linTris[i][j]][1];
-                    value[j]   = linVert[linTris[i][j]][2];
-                }
-
-                // find marker
-                SceneLabel *label = Agros2D::scene()->labels->at(atoi(Agros2D::scene()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
-                SceneMaterial *material = label->marker(Agros2D::scene()->activeViewField());
-
-                // hide material
-                if (Agros2D::problem()->configView()->solidViewHide.contains(material->name()))
-                    continue;
-
-                if (!Agros2D::problem()->configView()->scalarRangeAuto)
-                {
-                    double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                    if (avgValue < Agros2D::problem()->configView()->scalarRangeMin || avgValue > Agros2D::problem()->configView()->scalarRangeMax)
-                        continue;
-                }
-
-                // sides
-                int count = 25.0 * phi / 360.0;
-                double step = phi/count;
-                for (int k = 0; k < 3; k++)
-                {
-                    glBegin(GL_TRIANGLE_STRIP);
-                    for (int j = 0; j < count + 1; j++)
+                    for (int j = 0; j < 3; j++)
                     {
-
-                        if (Agros2D::problem()->configView()->scalarView3DLighting || isModel)
-                        {
-                            computeNormal(point[k].x * cos((j+0)*step/180.0*M_PI), point[k].y, point[k].x * sin((j+0)*step/180.0*M_PI),
-                                          point[(k + 1) % 3].x * cos((j+0)*step/180.0*M_PI), point[(k + 1) % 3].y, point[(k + 1) % 3].x * sin((j+0)*step/180.0*M_PI),
-                                    point[(k + 1) % 3].x * cos((j+1)*step/180.0*M_PI), point[(k + 1) % 3].y, point[(k + 1) % 3].x * sin((j+1)*step/180.0*M_PI),
-                                    normal);
-                            glNormal3d(normal[0], normal[1], normal[2]);
-                        }
-
-                        if (!isModel) glTexCoord1d((value[k] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                        glVertex3d(point[k].x * cos((j+0)*step/180.0*M_PI), point[k].y, point[k].x * sin((j+0)*step/180.0*M_PI));
-                        if (!isModel) glTexCoord1d((value[(k + 1) % 3] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                        glVertex3d(point[(k + 1) % 3].x * cos((j+0)*step/180.0*M_PI), point[(k + 1) % 3].y, point[(k + 1) % 3].x * sin((j+0)*step/180.0*M_PI));
+                        point[j].x = linVert[linTris[i][j]][0];
+                        point[j].y = linVert[linTris[i][j]][1];
+                        value[j]   = linVert[linTris[i][j]][2];
                     }
-                    glEnd();
+
+                    // find marker
+                    SceneLabel *label = Agros2D::scene()->labels->at(atoi(Agros2D::scene()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
+                    SceneMaterial *material = label->marker(Agros2D::scene()->activeViewField());
+
+                    // hide material
+                    if (Agros2D::problem()->configView()->solidViewHide.contains(material->name()))
+                        continue;
+
+                    if (!Agros2D::problem()->configView()->scalarRangeAuto)
+                    {
+                        double avgValue = (value[0] + value[1] + value[2]) / 3.0;
+                        if (avgValue < Agros2D::problem()->configView()->scalarRangeMin || avgValue > Agros2D::problem()->configView()->scalarRangeMax)
+                            continue;
+                    }
+
+                    // sides
+                    int count = 25.0 * phi / 360.0;
+                    double step = phi/count;
+                    for (int k = 0; k < 3; k++)
+                    {
+                        glBegin(GL_TRIANGLE_STRIP);
+                        for (int j = 0; j < count + 1; j++)
+                        {
+
+                            if (Agros2D::problem()->configView()->scalarView3DLighting || isModel)
+                            {
+                                computeNormal(point[k].x * cos((j+0)*step/180.0*M_PI), point[k].y, point[k].x * sin((j+0)*step/180.0*M_PI),
+                                              point[(k + 1) % 3].x * cos((j+0)*step/180.0*M_PI), point[(k + 1) % 3].y, point[(k + 1) % 3].x * sin((j+0)*step/180.0*M_PI),
+                                        point[(k + 1) % 3].x * cos((j+1)*step/180.0*M_PI), point[(k + 1) % 3].y, point[(k + 1) % 3].x * sin((j+1)*step/180.0*M_PI),
+                                        normal);
+                                glNormal3d(normal[0], normal[1], normal[2]);
+                            }
+
+                            if (!isModel) glTexCoord1d((value[k] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                            glVertex3d(point[k].x * cos((j+0)*step/180.0*M_PI), point[k].y, point[k].x * sin((j+0)*step/180.0*M_PI));
+                            if (!isModel) glTexCoord1d((value[(k + 1) % 3] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                            glVertex3d(point[(k + 1) % 3].x * cos((j+0)*step/180.0*M_PI), point[(k + 1) % 3].y, point[(k + 1) % 3].x * sin((j+0)*step/180.0*M_PI));
+                        }
+                        glEnd();
+                    }
                 }
             }
 
             // symmetry
             /*
-            glBegin(GL_QUADS);
-            for (int i = 0; i < m_postHermes->linScalarView().get_num_edges(); i++)
-            {
-                // draw only boundary edges
-                if (!linEdges[i][2]) continue;
-
-                for (int j = 0; j < 2; j++)
-                {
-                    point[j].x = linVert[linEdges[i][j]][0];
-                    point[j].y = linVert[linEdges[i][j]][1];
-                    value[j]   = linVert[linEdges[i][j]][2];
-                }
-
-                if (!Agros2D::problem()->configView()->scalarRangeAuto)
-                {
-                    double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                    if (avgValue < Agros2D::problem()->configView()->scalarRangeMin || avgValue > Agros2D::problem()->configView()->scalarRangeMax)
-                        continue;
-                }
-
-                int count = 30;
-                double step = phi/count;
-                for (int j = 0; j < count; j++)
-                {
-                    if (Agros2D::problem()->configView()->scalarView3DLighting || isModel)
+                    glBegin(GL_QUADS);
+                    for (int i = 0; i < m_postHermes->linScalarView().get_num_edges(); i++)
                     {
+                        // draw only boundary edges
+                        if (!linEdges[i][2]) continue;
 
-                        computeNormal(point[0].x * cos((j+0)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+0)*step/180.0*M_PI),
-                                      point[1].x * cos((j+0)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+0)*step/180.0*M_PI),
-                                      point[1].x * cos((j+1)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+1)*step/180.0*M_PI),
-                                      normal);
-                        glNormal3d(normal[0], normal[1], normal[2]);
+                        for (int j = 0; j < 2; j++)
+                        {
+                            point[j].x = linVert[linEdges[i][j]][0];
+                            point[j].y = linVert[linEdges[i][j]][1];
+                            value[j]   = linVert[linEdges[i][j]][2];
+                        }
+
+                        if (!Agros2D::problem()->configView()->scalarRangeAuto)
+                        {
+                            double avgValue = (value[0] + value[1] + value[2]) / 3.0;
+                            if (avgValue < Agros2D::problem()->configView()->scalarRangeMin || avgValue > Agros2D::problem()->configView()->scalarRangeMax)
+                                continue;
+                        }
+
+                        int count = 30;
+                        double step = phi/count;
+                        for (int j = 0; j < count; j++)
+                        {
+                            if (Agros2D::problem()->configView()->scalarView3DLighting || isModel)
+                            {
+
+                                computeNormal(point[0].x * cos((j+0)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+0)*step/180.0*M_PI),
+                                              point[1].x * cos((j+0)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+0)*step/180.0*M_PI),
+                                              point[1].x * cos((j+1)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+1)*step/180.0*M_PI),
+                                              normal);
+                                glNormal3d(normal[0], normal[1], normal[2]);
+                            }
+
+                            if (!isModel) glTexCoord1d((value[0] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                            glVertex3d(point[0].x * cos((j+0)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+0)*step/180.0*M_PI));
+                            if (!isModel) glTexCoord1d((value[1] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                            glVertex3d(point[1].x * cos((j+0)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+0)*step/180.0*M_PI));
+                            if (!isModel) glTexCoord1d((value[1] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                            glVertex3d(point[1].x * cos((j+1)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+1)*step/180.0*M_PI));
+                            if (!isModel) glTexCoord1d((value[0] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                            glVertex3d(point[0].x * cos((j+1)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+1)*step/180.0*M_PI));
+                        }
                     }
-
-                    if (!isModel) glTexCoord1d((value[0] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                    glVertex3d(point[0].x * cos((j+0)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+0)*step/180.0*M_PI));
-                    if (!isModel) glTexCoord1d((value[1] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                    glVertex3d(point[1].x * cos((j+0)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+0)*step/180.0*M_PI));
-                    if (!isModel) glTexCoord1d((value[1] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                    glVertex3d(point[1].x * cos((j+1)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+1)*step/180.0*M_PI));
-                    if (!isModel) glTexCoord1d((value[0] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                    glVertex3d(point[0].x * cos((j+1)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+1)*step/180.0*M_PI));
-                }
-            }
-            glEnd();
-            */
+                    glEnd();
+                    */
         }
 
         // remove normals
@@ -1268,7 +1306,7 @@ void SceneViewPost3D::clearGLLists()
 }
 
 void SceneViewPost3D::refresh()
-{   
+{
     clearGLLists();
 
     // actions
