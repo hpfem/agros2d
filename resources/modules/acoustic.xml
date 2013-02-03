@@ -100,7 +100,7 @@
         <module:boundary id="acoustic_impedance" name="Impedance boundary condition"
           equation="\frac{1}{\rho} \frac{\partial p}{\partial n_0} = - \frac{1}{Z_0} \frac{\partial p}{\partial t}">
           <module:quantity id="acoustic_impedance"/>
-          <module:matrix_form axi_linear="- r * 1.0 / ac_Z0 * uval * vval" axi_newton="- r * 1.0 / ac_Z0 * uval * vval" i="1" id="form" j="2" planar_linear="1.0 / ac_Z0 * uval * vval" planar_newton="- 1.0 / ac_Z0 * uval * vval" symmetric="0"/>
+          <module:matrix_form axi_linear="r * 1.0 / ac_Z0 * uval * vval" axi_newton="- r * 1.0 / ac_Z0 * uval * vval" i="1" id="form" j="2" planar_linear="1.0 / ac_Z0 * uval * vval" planar_newton="- 1.0 / ac_Z0 * uval * vval" symmetric="0"/>
           <module:vector_form axi_linear="0" id="form" axi_newton="- r * 1.0 / ac_Z0 * upval * vval" i="1" j="2" planar_linear="0" planar_newton="- 1.0 / ac_Z0 * upval * vval"/>
         </module:boundary>
       </module:weakform_surface>
