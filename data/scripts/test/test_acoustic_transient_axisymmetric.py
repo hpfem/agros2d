@@ -9,14 +9,14 @@ problem.matrix_solver = "umfpack"
 problem.time_step_method = "fixed"
 problem.time_method_order = 2
 problem.time_total = 0.008
-problem.time_steps = 80
+problem.time_steps = 200
 
 # fields
 # acoustic
 acoustic = agros2d.field("acoustic")
 acoustic.analysis_type = "transient"
 acoustic.initial_condition = 0
-acoustic.number_of_refinements = 1
+acoustic.number_of_refinements = 2
 acoustic.polynomial_order = 2
 acoustic.adaptivity_type = "disabled"
 acoustic.linearity_type = "linear"
