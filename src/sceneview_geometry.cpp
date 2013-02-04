@@ -446,16 +446,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             else
             {
                 Agros2D::scene()->transformTranslate(dp, false);
-            }
-            foreach (SceneNode *node, Agros2D::scene()->nodes->items())
-            {
-                Agros2D::scene()->checkNode(node);
-            }
-
-            foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
-            {
-                Agros2D::scene()->checkEdge(edge);
-            }
+            }           
         }
         else if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
         {
@@ -485,15 +476,6 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             else
             {
                 Agros2D::scene()->transformTranslate(dp, false);
-            }
-            foreach (SceneNode *node, Agros2D::scene()->nodes->items())
-            {
-                Agros2D::scene()->checkNode(node);
-            }
-
-            foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
-            {
-                Agros2D::scene()->checkEdge(edge);
             }
         }
         else if (m_sceneMode == SceneGeometryMode_OperateOnLabels)

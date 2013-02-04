@@ -105,6 +105,37 @@ double SceneEdge::distance(const Point &point) const
     }
 }
 
+QList<SceneEdge *> SceneEdge::crossedEdges() const
+{
+    QList<SceneEdge *> edges;
+
+    foreach (SceneEdge *edgeCheck, Agros2D::scene()->edges->items())
+    {
+        if (edgeCheck != this)
+        {
+            QList<Point> intersects;
+
+            // TODO: improve - add check of crossings of two arcs
+            if (isStraight())
+                intersects = intersection(m_nodeStart->point(), m_nodeEnd->point(),
+                                          edgeCheck->center(), radius(), angle(),
+                                          edgeCheck->nodeStart()->point(), edgeCheck->nodeEnd()->point(),
+                                          edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle());
+
+            else
+                intersects = intersection(edgeCheck->nodeStart()->point(), edgeCheck->nodeEnd()->point(),
+                                          edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle(),
+                                          m_nodeStart->point(), m_nodeEnd->point(),
+                                          center(), radius(), angle());
+
+            if (intersects.count() > 0)
+                edges.append(edgeCheck);
+        }
+    }
+
+    return edges;
+}
+
 QList<SceneNode *> SceneEdge::lyingNodes() const
 {
     QList<SceneNode *> nodes;
@@ -470,8 +501,6 @@ bool SceneEdgeDialog::save()
 
     foreach (SceneEdgeMarker *edgeMarker, m_edgeMarkers)
         edgeMarker->save();
-
-    Agros2D::scene()->checkEdge(sceneEdge);
 
     Agros2D::scene()->invalidate();
     return true;

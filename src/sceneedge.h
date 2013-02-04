@@ -40,8 +40,8 @@ public:
     inline void setAngle(double angle) { m_angle = angle; computeCenter(); }
     void swapDirection();
 
-    bool isCrossed() const { return m_crossedEdges.length() > 0; }
-    inline QList<SceneEdge *> &crossedEdges() { return m_crossedEdges; } // TODO: make const
+    bool isCrossed() const { return crossedEdges().length() > 0; }
+    QList<SceneEdge *> crossedEdges() const;
     bool isLyingNode() const { return lyingNodes().length() > 0; }
     QList<SceneNode *> lyingNodes() const;
     bool isOutsideArea() const;
@@ -66,10 +66,8 @@ private:
     SceneNode *m_nodeEnd;
     double m_angle;
 
-    QList<SceneEdge *> m_crossedEdges;   
-
+    // cache
     Point m_centerCache;
-
     void computeCenter();
 
     friend class SceneNode;

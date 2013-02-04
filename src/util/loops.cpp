@@ -732,55 +732,59 @@ QMap<SceneLabel*, QList<Triangle> > findPolygonTriangles()
 {
     QMap<SceneLabel*, QList<Triangle> > objects;
 
-    // find loops
-    LoopsInfo loopsInfo = findLoops();
+    // TODO: rewrite to exceptions
+    ErrorResult res = Agros2D::scene()->checkGeometryResult();
+    if (!res.isError())
+    {// find loops
+        LoopsInfo loopsInfo = findLoops();
 
-    QList<QList<Point> > polylines;
-    for (int i = 0; i < loopsInfo.loops.size(); i++)
-    {
-        QList<Point> polyline;
-
-        // QList<Point> contour;
-        for (int j = 0; j < loopsInfo.loops[i].size(); j++)
+        QList<QList<Point> > polylines;
+        for (int i = 0; i < loopsInfo.loops.size(); i++)
         {
-            SceneEdge *edge = Agros2D::scene()->edges->items().at(loopsInfo.loops[i][j].edge);
-            if ((edge->nodeStart()->connectedEdges().size() > 1) && (edge->nodeEnd()->connectedEdges().size() > 1))
+            QList<Point> polyline;
+
+            // QList<Point> contour;
+            for (int j = 0; j < loopsInfo.loops[i].size(); j++)
             {
-                if (loopsInfo.loops[i][j].reverse)
-                    addEdgePoints(&polyline, SceneEdge(edge->nodeStart(), edge->nodeEnd(), edge->angle()), true);
-                else
-                    addEdgePoints(&polyline, SceneEdge(edge->nodeStart(), edge->nodeEnd(), edge->angle()));
+                SceneEdge *edge = Agros2D::scene()->edges->items().at(loopsInfo.loops[i][j].edge);
+                if ((edge->nodeStart()->connectedEdges().size() > 1) && (edge->nodeEnd()->connectedEdges().size() > 1))
+                {
+                    if (loopsInfo.loops[i][j].reverse)
+                        addEdgePoints(&polyline, SceneEdge(edge->nodeStart(), edge->nodeEnd(), edge->angle()), true);
+                    else
+                        addEdgePoints(&polyline, SceneEdge(edge->nodeStart(), edge->nodeEnd(), edge->angle()));
+                }
+            }
+
+            polylines.append(polyline);
+        }
+
+        foreach (SceneLabel* label, Agros2D::scene()->labels->items())
+        {
+            // if (!label->isHole() && loopsInfo.labelToLoops[label].count() > 0)
+            if (loopsInfo.labelToLoops[label].count() > 0)
+            {
+                // main polyline
+                QList<Point> polyline = polylines[loopsInfo.labelToLoops[label][0]];
+
+                // holes
+                QList<QList<Point> > holes;
+                for (int j = 1; j < loopsInfo.labelToLoops[label].count(); j++)
+                {
+                    QList<Point> hole = polylines[loopsInfo.labelToLoops[label][j]];
+                    holes.append(hole);
+                }
+
+                QList<Triangle> triangles = triangulateLabel(polyline, holes);
+                objects.insert(label, triangles);
             }
         }
 
-        polylines.append(polyline);
+        // clear polylines
+        foreach (QList<Point> polyline, polylines)
+            polyline.clear();
+        polylines.clear();
     }
-
-    foreach (SceneLabel* label, Agros2D::scene()->labels->items())
-    {
-        // if (!label->isHole() && loopsInfo.labelToLoops[label].count() > 0)
-        if (loopsInfo.labelToLoops[label].count() > 0)
-        {
-            // main polyline
-            QList<Point> polyline = polylines[loopsInfo.labelToLoops[label][0]];
-
-            // holes
-            QList<QList<Point> > holes;
-            for (int j = 1; j < loopsInfo.labelToLoops[label].count(); j++)
-            {
-                QList<Point> hole = polylines[loopsInfo.labelToLoops[label][j]];
-                holes.append(hole);
-            }
-
-            QList<Triangle> triangles = triangulateLabel(polyline, holes);
-            objects.insert(label, triangles);
-        }
-    }
-
-    // clear polylines
-    foreach (QList<Point> polyline, polylines)
-        polyline.clear();
-    polylines.clear();
 
     return objects;
 }

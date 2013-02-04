@@ -204,10 +204,7 @@ public:
     void readSolutionFromFile(const QString &fileName);
     void writeSolutionToFile(const QString &fileName);
 
-    void checkEdge(SceneEdge *edge);
-    void checkNode(SceneNode *node);
     void checkNodeConnect(SceneNode *node);
-    void checkGeometry();
     ErrorResult checkGeometryResult();
 
     void addBoundaryAndMaterialMenuItems(QMenu* menu, QWidget* parent);
