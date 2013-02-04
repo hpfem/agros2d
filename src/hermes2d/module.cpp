@@ -654,7 +654,7 @@ void Module::writeMeshToFile(const QString &fileName, Hermes::vector<Hermes::Her
     meshloader.set_validation(false);
     meshloader.save(fileName.toStdString().c_str(), meshes);
 
-    // qDebug() << time.elapsed();
+    // qDebug() << milisecondsToTime(time.elapsed()).toString("hh:mm:ss.zzz");
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
