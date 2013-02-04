@@ -40,14 +40,14 @@ public:
     inline void setAngle(double angle) { m_angle = angle; computeCenter(); }
     void swapDirection();
 
-    bool isCrossed() const { return crossedEdges().length() > 0; }
+    bool isCrossed() const;
     QList<SceneEdge *> crossedEdges() const;
     bool isLyingNode() const { return lyingNodes().length() > 0; }
     QList<SceneNode *> lyingNodes() const;
     bool isOutsideArea() const;
     bool isError() const;
 
-    Point center() const;
+    inline Point center() const { return m_centerCache; }
     double radius() const;
     double distance(const Point &point) const;
     int segments() const; // needed by mesh generator
