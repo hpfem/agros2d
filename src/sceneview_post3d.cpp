@@ -692,7 +692,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
                     }
 
                     // sides
-                    int count = 25.0 * phi / 360.0;
+                    int count = 29.0 * phi / 360.0;
                     double step = phi/count;
                     for (int k = 0; k < 3; k++)
                     {
@@ -786,13 +786,16 @@ void SceneViewPost3D::paintScalarField3DSolid()
         }
 
         // geometry
+        glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+        glEnable(GL_LINE_SMOOTH);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glColor3d(0.0, 0.0, 0.0);
+        glLineWidth(1.6);
+
         if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
         {
-            glColor3d(Agros2D::problem()->configView()->colorEdges.redF(),
-                      Agros2D::problem()->configView()->colorEdges.greenF(),
-                      Agros2D::problem()->configView()->colorEdges.blueF());
-            glLineWidth(Agros2D::problem()->configView()->edgeWidth);
-
             // top and bottom
             foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
             {
@@ -841,12 +844,6 @@ void SceneViewPost3D::paintScalarField3DSolid()
         }
         else
         {
-            // geometry
-            glColor3d(Agros2D::problem()->configView()->colorEdges.redF(),
-                      Agros2D::problem()->configView()->colorEdges.greenF(),
-                      Agros2D::problem()->configView()->colorEdges.blueF());
-            glLineWidth(Agros2D::problem()->configView()->edgeWidth);
-
             // top
             foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
             {
@@ -885,7 +882,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
             // side
             foreach (SceneNode *node, Agros2D::scene()->nodes->items())
             {
-                int count = 30;
+                int count = 29.0 * phi / 360.0;
                 double step = phi/count;
 
                 glBegin(GL_LINE_STRIP);
@@ -899,6 +896,9 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
             glLineWidth(1.0);
         }
+
+        glDisable(GL_BLEND);
+        glDisable(GL_LINE_SMOOTH);
 
         glDisable(GL_DEPTH_TEST);
 
@@ -1058,7 +1058,7 @@ void SceneViewPost3D::paintParticleTracing()
                         continue;
                 }
 
-                int count = 30;
+                int count = 29.0;
                 double step = 360.0/count;
                 for (int j = 0; j < count; j++)
                 {
@@ -1075,13 +1075,16 @@ void SceneViewPost3D::paintParticleTracing()
         glDisable(GL_POLYGON_OFFSET_FILL);
 
         // geometry
+        glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+        glEnable(GL_LINE_SMOOTH);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glColor3d(0.0, 0.0, 0.0);
+        glLineWidth(1.6);
+
         if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
         {
-            glColor3d(Agros2D::problem()->configView()->colorEdges.redF(),
-                      Agros2D::problem()->configView()->colorEdges.greenF(),
-                      Agros2D::problem()->configView()->colorEdges.blueF());
-            glLineWidth(Agros2D::problem()->configView()->edgeWidth);
-
             // top and bottom
             foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
             {
@@ -1124,18 +1127,10 @@ void SceneViewPost3D::paintParticleTracing()
                 glVertex3d(node->point().x, node->point().y,  depth/2.0);
                 glVertex3d(node->point().x, node->point().y, -depth/2.0);
             }
-            glEnd();
-
-            glLineWidth(1.0);
+            glEnd();           
         }
         else
-        {
-            // geometry
-            glColor3d(Agros2D::problem()->configView()->colorEdges.redF(),
-                      Agros2D::problem()->configView()->colorEdges.greenF(),
-                      Agros2D::problem()->configView()->colorEdges.blueF());
-            glLineWidth(Agros2D::problem()->configView()->edgeWidth);
-
+        {            
             // top
             foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
             {
@@ -1180,7 +1175,7 @@ void SceneViewPost3D::paintParticleTracing()
             // side
             foreach (SceneNode *node, Agros2D::scene()->nodes->items())
             {
-                int count = 30;
+                int count = 29.0;
                 double step = 360.0/count;
 
                 glBegin(GL_LINE_STRIP);
@@ -1195,8 +1190,6 @@ void SceneViewPost3D::paintParticleTracing()
                 }
                 glEnd();
             }
-
-            glLineWidth(1.0);
         }
 
         double velocityMin = m_postHermes->particleTracingVelocityMin();
@@ -1210,6 +1203,8 @@ void SceneViewPost3D::paintParticleTracing()
             positionMin = -1.0;
             positionMax = +1.0;
         }
+
+        glLineWidth(1.0);
 
         // visualization
         for (int k = 0; k < Agros2D::problem()->configView()->particleNumberOfParticles; k++)
@@ -1280,7 +1275,10 @@ void SceneViewPost3D::paintParticleTracing()
             }
         }
 
-        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_LINE_SMOOTH);
+        glDisable(GL_BLEND);
+
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
         glEndList();
 
