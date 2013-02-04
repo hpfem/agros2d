@@ -1,3 +1,4 @@
+import pythonlab
 import numpy as np
 import pylab as pl
 from scipy.integrate import odeint
@@ -10,11 +11,11 @@ T_torque = [7.600635000000001e-08, -0.00017802715, -0.00043366050000000005, -0.0
 # static characteristic
 pl.close()
 pl.figure(figsize = [8, 5])
-pl.plot(phi, T_magnetic_torque, 'b', label="$\mathrm{0.0~A$")
-pl.plot(phi, T_torque, 'r', label="$\mathrm{0.8~A$")
+pl.plot(phi, T_magnetic_torque, 'b', label="0.0 A")
+pl.plot(phi, T_torque, 'r', label="0.8 A")
 pl.plot([0, 180], [0, 0], '--k')
-pl.xlabel("$\\phi~\mathrm{(deg.)}$")
-pl.ylabel("$T~\mathrm{(Nm)}$")
+pl.xlabel("phi (deg.)")
+pl.ylabel("T (Nm)")
 pl.legend(loc="lower right")
 fn_chart_static = pythonlab.tempname("png")
 pl.savefig(fn_chart_static, dpi=60)
@@ -43,12 +44,12 @@ pl.figure(figsize = [8, 5])
 pl.subplot(2,1,1)
 pl.plot(time, y[:,0]/np.pi*180 % 180, 'r-')
 # pl.xlabel("$t~\mathrm{(s)}$")
-pl.ylabel("$\\phi~\mathrm{(deg.)}$")
+pl.ylabel("phi (deg.)")
 pl.xlim(0, 1.41)
 pl.subplot(2,1,2)
 pl.plot(time, y[:,1]/2/np.pi*60, 'r-')
-pl.xlabel("$t~\mathrm{(s)}$")
-pl.ylabel("$n~\mathrm{(rev./min.)}$")
+pl.xlabel("t (s)")
+pl.ylabel("n (rev./min.)")
 pl.xlim(0, 1.41)
 fn_chart_dynamic = pythonlab.tempname("png")
 pl.savefig(fn_chart_dynamic, dpi=60)

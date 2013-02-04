@@ -22,7 +22,6 @@ pl.plot(t, y)
 pl.grid(1)
 pl.xlabel("$t\,\mathrm{(s)}$")
 pl.ylabel("$i\,\mathrm{(A)}$")
-pl.show()
 pl.savefig("diff_equation.png", dpi=60)
 
 pythonlab.html("RL circuit")
