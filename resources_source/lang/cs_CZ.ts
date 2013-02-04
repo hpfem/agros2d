@@ -421,7 +421,7 @@
     <message>
         <location filename="../../src/confdialog.cpp" line="249"/>
         <source>Print application log to stdout.</source>
-        <translation>Tisknout log aplikace do stdout.</translation>
+        <translation>Tisknout log aplikace do stdout</translation>
     </message>
     <message>
         <location filename="../../src/confdialog.cpp" line="256"/>
@@ -3094,7 +3094,7 @@ krok</translation>
     <message>
         <location filename="../../src/mainwindow.cpp" line="459"/>
         <source>&amp;Recent files</source>
-        <translation>&amp;Nedávné soubory</translation>
+        <translation>&amp;Poslední soubory</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="1051"/>
@@ -4978,7 +4978,7 @@ krok</translation>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="793"/>
         <source>Loading initial mesh from disk</source>
-        <translation>Načítání výchozí šítě z disku</translation>
+        <translation>Načítání výchozí sítě z disku</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="885"/>
@@ -7410,9 +7410,14 @@ Chcete tyto změny uložit?</translation>
         <translation>Šablona &apos;%1&apos; není platná. %2</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solutionstore.cpp" line="421"/>
+        <location filename="../../src/hermes2d/solutionstore.cpp" line="428"/>
         <source>Field &apos;%1&apos; info mismatch.</source>
         <translation>Neshoda v informacích pole &apos;%1&apos; </translation>
+    </message>
+    <message>
+        <location filename="../../src/hermes2d/solutiontypes.cpp" line="168"/>
+        <source>MultiArray</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -9156,7 +9161,7 @@ Chcete tyto změny uložit?</translation>
 <context>
     <name>SceneViewPostInterface</name>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="807"/>
+        <location filename="../../src/sceneview_post.cpp" line="812"/>
         <source>Vel.</source>
         <translation>Rych.</translation>
     </message>
