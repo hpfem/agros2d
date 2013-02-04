@@ -25,6 +25,7 @@
 #include "field.h"
 #include "block.h"
 #include "problem.h"
+#include "logview.h"
 
 using namespace Hermes::Hermes2D;
 
@@ -151,14 +152,22 @@ void MultiArray<Scalar>::loadFromFile(const QString &baseName, FieldSolutionID s
 
     for (int i = 0; i < solutionID.group->numberOfSolutions(); i++)
     {
-        Space<Scalar> *space = Space<Scalar>::load(QString("%1_%2.spc").arg(baseName).arg(i).toStdString().c_str(),
-                                                   mesh, false);
+        try
+        {
+            Space<Scalar> *space = Space<Scalar>::load(QString("%1_%2.spc").arg(baseName).arg(i).toStdString().c_str(),
+                                                       mesh, false);
 
-        Solution<Scalar> *sln = new Solution<Scalar>();
-        sln->set_validation(false);
-        sln->load((QString("%1_%2.sln").arg(baseName).arg(i)).toStdString().c_str(), space);
+            Solution<Scalar> *sln = new Solution<Scalar>();
+            sln->set_validation(false);
+            sln->load((QString("%1_%2.sln").arg(baseName).arg(i)).toStdString().c_str(), space);
 
-        append(space, sln);
+            append(space, sln);
+        }
+        catch (Hermes::Exceptions::Exception &e)
+        {
+            Agros2D::log()->printError(QObject::tr("MultiArray"), QString::fromStdString(e.what()));
+            throw;
+        }
     }
 }
 

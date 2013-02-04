@@ -144,9 +144,9 @@ namespace Hermes
     bool MeshReaderH2DXML::load(const char *filename, Hermes::vector<Mesh *> meshes)
     {
       for(unsigned int meshes_i = 0; meshes_i < meshes.size(); meshes_i++)
-			{
-				meshes.at(meshes_i)->free();
-			}
+            {
+                meshes.at(meshes_i)->free();
+            }
 
       Mesh global_mesh;
 
@@ -213,8 +213,8 @@ namespace Hermes
           unsigned int boundary_edge_number_count = parsed_xml_domain->subdomains().subdomain().at(subdomains_i).boundary_edges().present() ? parsed_xml_domain->subdomains().subdomain().at(subdomains_i).boundary_edges()->i().size() : 0;
           unsigned int inner_edge_number_count = parsed_xml_domain->subdomains().subdomain().at(subdomains_i).inner_edges().present() ? parsed_xml_domain->subdomains().subdomain().at(subdomains_i).inner_edges()->i().size() : 0;
 
-          // copy the whole mesh if the subdomain is the whole mesh.
-          if(element_number_count == 0 || element_number_count == parsed_xml_domain->elements().el().size())
+          // copy nodes and elements
+          if(vertex_number_count == 0 && element_number_count == 0 && boundary_edge_number_count == 0)
           {
             meshes[subdomains_i]->copy(&global_mesh);
             continue;
@@ -227,11 +227,11 @@ namespace Hermes
             std::map<std::string, double> variables;
             for (unsigned int variables_i = 0; variables_i < variables_count; variables_i++)
 #ifdef _MSC_VER
-				variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_domain->variables()->var().at(variables_i).name(), (double&&)parsed_xml_domain->variables()->var().at(variables_i).value()));
+                variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_domain->variables()->var().at(variables_i).name(), (double&&)parsed_xml_domain->variables()->var().at(variables_i).value()));
 #else
-				variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_domain->variables()->var().at(variables_i).name(), parsed_xml_domain->variables()->var().at(variables_i).value()));
+                variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_domain->variables()->var().at(variables_i).name(), parsed_xml_domain->variables()->var().at(variables_i).value()));
 #endif
-			// Vertex numbers //
+            // Vertex numbers //
             // create a mapping order-in-the-whole-domain <-> order-in-this-subdomain.
             std::map<unsigned int, unsigned int> vertex_vertex_numbers;
 
@@ -359,20 +359,18 @@ namespace Hermes
               if(element == NULL)
                   throw Exceptions::Exception("Element number wrong in the mesh file.");
 
-              XMLSubdomains::q_t* el_q = dynamic_cast<XMLSubdomains::q_t*>(element);
-              XMLSubdomains::t_t* el_t = dynamic_cast<XMLSubdomains::t_t*>(element);
-              if(el_q != NULL)
+              if(dynamic_cast<XMLSubdomains::q_t*>(element) != NULL)
                 e = meshes[subdomains_i]->create_quad(meshes[subdomains_i]->element_markers_conversion.get_internal_marker(element->m()).marker,
-                &meshes[subdomains_i]->nodes[vertex_vertex_numbers.find(el_q->v1())->second],
-                &meshes[subdomains_i]->nodes[vertex_vertex_numbers.find(el_q->v2())->second],
-                &meshes[subdomains_i]->nodes[vertex_vertex_numbers.find(el_q->v3())->second],
-                &meshes[subdomains_i]->nodes[vertex_vertex_numbers.find(el_q->v4())->second],
-                   NULL, elements_existing[element_i]);
-              if(el_t != NULL)
+                &meshes[subdomains_i]->nodes[vertex_vertex_numbers.find(dynamic_cast<XMLSubdomains::q_t*>(element)->v1())->second],
+                &meshes[subdomains_i]->nodes[vertex_vertex_numbers.find(dynamic_cast<XMLSubdomains::q_t*>(element)->v2())->second],
+                &meshes[subdomains_i]->nodes[vertex_vertex_numbers.find(dynamic_cast<XMLSubdomains::q_t*>(element)->v3())->second],
+                &meshes[subdomains_i]->nodes[vertex_vertex_numbers.find(dynamic_cast<XMLSubdomains::q_t*>(element)->v4())->second],
+                NULL, elements_existing[element_i]);
+              else
                 e = meshes[subdomains_i]->create_triangle(meshes[subdomains_i]->element_markers_conversion.get_internal_marker(element->m()).marker,
-                &meshes[subdomains_i]->nodes[vertex_vertex_numbers.find(el_t->v1())->second],
-                &meshes[subdomains_i]->nodes[vertex_vertex_numbers.find(el_t->v2())->second],
-                &meshes[subdomains_i]->nodes[vertex_vertex_numbers.find(el_t->v3())->second],
+                &meshes[subdomains_i]->nodes[vertex_vertex_numbers.find(dynamic_cast<XMLSubdomains::t_t*>(element)->v1())->second],
+                &meshes[subdomains_i]->nodes[vertex_vertex_numbers.find(dynamic_cast<XMLSubdomains::t_t*>(element)->v2())->second],
+                &meshes[subdomains_i]->nodes[vertex_vertex_numbers.find(dynamic_cast<XMLSubdomains::t_t*>(element)->v3())->second],
                 NULL, elements_existing[element_i]);
             }
 
@@ -618,17 +616,42 @@ namespace Hermes
         subdomain.elements().set(XMLSubdomains::subdomain::elements_type());
         for (int i = 0; i < meshes[meshes_i]->get_num_base_elements(); i++)
         {
-          e = &(meshes[meshes_i]->elements[i]);
+          e = meshes[meshes_i]->get_element_fast(i);
           if(e->used)
           {
             if(e->is_triangle())
             {
-              elements.el().push_back(XMLSubdomains::t_t(vertices_to_vertices.find(e->vn[0]->id)->second, vertices_to_vertices.find(e->vn[1]->id)->second, vertices_to_vertices.find(e->vn[2]->id)->second, meshes[meshes_i]->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str(), e->id));
+              bool present = false;
+              for(unsigned int elements_i = 0; elements_i < elements.el().size(); elements_i++)
+                if(dynamic_cast<XMLSubdomains::t_t*>(&elements.el().at(elements_i)) != NULL)
+                  if(dynamic_cast<XMLSubdomains::t_t*>(&elements.el().at(elements_i))->v1() == vertices_to_vertices.find(e->vn[0]->id)->second &&
+                    dynamic_cast<XMLSubdomains::t_t*>(&elements.el().at(elements_i))->v2() == vertices_to_vertices.find(e->vn[1]->id)->second &&
+                    dynamic_cast<XMLSubdomains::t_t*>(&elements.el().at(elements_i))->v3() == vertices_to_vertices.find(e->vn[2]->id)->second)
+                    {
+                      present = true;
+                      break;
+                    }
+
+              if(!present)
+                elements.el().push_back(XMLSubdomains::t_t(vertices_to_vertices.find(e->vn[0]->id)->second, vertices_to_vertices.find(e->vn[1]->id)->second, vertices_to_vertices.find(e->vn[2]->id)->second, meshes[meshes_i]->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str(), e->id));
             }
             else
             {
-                elements.el().push_back(XMLSubdomains::q_t(vertices_to_vertices.find(e->vn[0]->id)->second, vertices_to_vertices.find(e->vn[1]->id)->second, vertices_to_vertices.find(e->vn[2]->id)->second, meshes[meshes_i]->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str(), e->id, vertices_to_vertices.find(e->vn[3]->id)->second));
-            }
+              bool present = false;
+              for(unsigned int elements_i = 0; elements_i < elements.el().size(); elements_i++)
+                if(dynamic_cast<XMLSubdomains::q_t*>(&elements.el().at(elements_i)) != NULL)
+                  if(dynamic_cast<XMLSubdomains::q_t*>(&elements.el().at(elements_i))->v1() == vertices_to_vertices.find(e->vn[0]->id)->second &&
+                    dynamic_cast<XMLSubdomains::q_t*>(&elements.el().at(elements_i))->v2() == vertices_to_vertices.find(e->vn[1]->id)->second &&
+                    dynamic_cast<XMLSubdomains::q_t*>(&elements.el().at(elements_i))->v3() == vertices_to_vertices.find(e->vn[2]->id)->second &&
+                    dynamic_cast<XMLSubdomains::q_t*>(&elements.el().at(elements_i))->v4() == vertices_to_vertices.find(e->vn[3]->id)->second)
+                    {
+                      present = true;
+                      break;
+                    }
+
+                if(!present)
+                  elements.el().push_back(XMLSubdomains::q_t(vertices_to_vertices.find(e->vn[0]->id)->second, vertices_to_vertices.find(e->vn[1]->id)->second, vertices_to_vertices.find(e->vn[2]->id)->second, meshes[meshes_i]->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str(), e->id, vertices_to_vertices.find(e->vn[3]->id)->second));
+              }
             subdomain.elements()->i().push_back(e->id);
           }
         }
@@ -728,9 +751,9 @@ namespace Hermes
         std::map<std::string, double> variables;
         for (unsigned int variables_i = 0; variables_i < variables_count; variables_i++)
 #ifdef _MSC_VER
-				variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_mesh->variables()->var().at(variables_i).name(), (double&&)parsed_xml_mesh->variables()->var().at(variables_i).value()));
+                variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_mesh->variables()->var().at(variables_i).name(), (double&&)parsed_xml_mesh->variables()->var().at(variables_i).value()));
 #else
-				variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_mesh->variables()->var().at(variables_i).name(), parsed_xml_mesh->variables()->var().at(variables_i).value()));
+                variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_mesh->variables()->var().at(variables_i).name(), parsed_xml_mesh->variables()->var().at(variables_i).value()));
 #endif
 
         // Vertices //
@@ -833,20 +856,18 @@ namespace Hermes
 
           mesh->element_markers_conversion.insert_marker(mesh->element_markers_conversion.min_marker_unused, element->m());
 
-          XMLSubdomains::q_t* el_q = dynamic_cast<XMLSubdomains::q_t*>(element);
-          XMLSubdomains::t_t* el_t = dynamic_cast<XMLSubdomains::t_t*>(element);
-          if(el_q != NULL)
+          if(dynamic_cast<XMLMesh::q_t*>(element) != NULL)
             e = mesh->create_quad(mesh->element_markers_conversion.get_internal_marker(element->m()).marker,
-            &mesh->nodes[vertex_is.find(el_q->v1())->second],
-            &mesh->nodes[vertex_is.find(el_q->v2())->second],
-            &mesh->nodes[vertex_is.find(el_q->v3())->second],
-            &mesh->nodes[vertex_is.find(el_q->v4())->second],
+            &mesh->nodes[vertex_is.find(dynamic_cast<XMLMesh::q_t*>(element)->v1())->second],
+            &mesh->nodes[vertex_is.find(dynamic_cast<XMLMesh::q_t*>(element)->v2())->second],
+            &mesh->nodes[vertex_is.find(dynamic_cast<XMLMesh::q_t*>(element)->v3())->second],
+            &mesh->nodes[vertex_is.find(dynamic_cast<XMLMesh::q_t*>(element)->v4())->second],
             NULL);
-          if(el_t != NULL)
+          else
             e = mesh->create_triangle(mesh->element_markers_conversion.get_internal_marker(element->m()).marker,
-            &mesh->nodes[vertex_is.find(el_t->v1())->second],
-            &mesh->nodes[vertex_is.find(el_t->v2())->second],
-            &mesh->nodes[vertex_is.find(el_t->v3())->second],
+            &mesh->nodes[vertex_is.find(dynamic_cast<XMLMesh::t_t*>(element)->v1())->second],
+            &mesh->nodes[vertex_is.find(dynamic_cast<XMLMesh::t_t*>(element)->v2())->second],
+            &mesh->nodes[vertex_is.find(dynamic_cast<XMLMesh::t_t*>(element)->v3())->second],
             NULL);
         }
 
@@ -978,9 +999,9 @@ namespace Hermes
         std::map<std::string, double> variables;
         for (unsigned int variables_i = 0; variables_i < variables_count; variables_i++)
 #ifdef _MSC_VER
-				variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_domain->variables()->var().at(variables_i).name(), (double&&)parsed_xml_domain->variables()->var().at(variables_i).value()));
+                variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_domain->variables()->var().at(variables_i).name(), (double&&)parsed_xml_domain->variables()->var().at(variables_i).value()));
 #else
-				variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_domain->variables()->var().at(variables_i).name(), parsed_xml_domain->variables()->var().at(variables_i).value()));
+                variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_domain->variables()->var().at(variables_i).name(), parsed_xml_domain->variables()->var().at(variables_i).value()));
 #endif
 
 
@@ -1093,20 +1114,18 @@ namespace Hermes
 
           mesh->element_markers_conversion.insert_marker(mesh->element_markers_conversion.min_marker_unused, element->m());
 
-          XMLSubdomains::q_t* el_q = dynamic_cast<XMLSubdomains::q_t*>(element);
-          XMLSubdomains::t_t* el_t = dynamic_cast<XMLSubdomains::t_t*>(element);
-          if(el_q != NULL)
+          if(dynamic_cast<XMLSubdomains::q_t*>(element) != NULL)
             e = mesh->create_quad(mesh->element_markers_conversion.get_internal_marker(element->m()).marker,
-            &mesh->nodes[el_q->v1()],
-            &mesh->nodes[el_q->v2()],
-            &mesh->nodes[el_q->v3()],
-            &mesh->nodes[el_q->v4()],
+            &mesh->nodes[dynamic_cast<XMLSubdomains::q_t*>(element)->v1()],
+            &mesh->nodes[dynamic_cast<XMLSubdomains::q_t*>(element)->v2()],
+            &mesh->nodes[dynamic_cast<XMLSubdomains::q_t*>(element)->v3()],
+            &mesh->nodes[dynamic_cast<XMLSubdomains::q_t*>(element)->v4()],
             NULL);
-          if(el_t != NULL)
+          else
             e = mesh->create_triangle(mesh->element_markers_conversion.get_internal_marker(element->m()).marker,
-            &mesh->nodes[el_t->v1()],
-            &mesh->nodes[el_t->v2()],
-            &mesh->nodes[el_t->v3()],
+            &mesh->nodes[dynamic_cast<XMLSubdomains::t_t*>(element)->v1()],
+            &mesh->nodes[dynamic_cast<XMLSubdomains::t_t*>(element)->v2()],
+            &mesh->nodes[dynamic_cast<XMLSubdomains::t_t*>(element)->v3()],
             NULL);
         }
 

@@ -334,6 +334,11 @@ void PostHermes::processMeshed()
 
 void PostHermes::processSolved()
 {
+    if (Agros2D::scene()->activeMultiSolutionArray().spaces().empty())
+        return;
+    if (Agros2D::scene()->activeMultiSolutionArray().solutions().empty())
+        return;
+
     // temporary use 3/4 of max threads
     int threads = omp_get_max_threads() * 3/4;
     Hermes::Hermes2D::Hermes2DApi.set_integral_param_value(Hermes::Hermes2D::numThreads, threads);

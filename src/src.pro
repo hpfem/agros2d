@@ -339,3 +339,4 @@ win32-msvc2010 {
 }
 
 include(../agros2d.pri)
+include(../agros2d_version.pri)

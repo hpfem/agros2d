@@ -608,8 +608,8 @@ void Solver<Scalar>::createInitialSpace()
         FieldInfo* fieldInfo = field->fieldInfo();
 
         // create copy of initial mesh
-        Hermes::Hermes2D::Mesh *initialMesh = new Hermes::Hermes2D::Mesh();
-        initialMesh->copy(fieldInfo->initialMesh());
+        // Hermes::Hermes2D::Mesh *initialMesh = new Hermes::Hermes2D::Mesh();
+        // initialMesh->copy(fieldInfo->initialMesh());
 
         ProblemID problemId;
 
@@ -630,7 +630,7 @@ void Solver<Scalar>::createInitialSpace()
                 foreach (FormInfo form, boundaryType.essential())
                 {
                    // exact solution - Dirichlet BC
-                    ExactSolutionScalarAgros<double> *function = fieldInfo->plugin()->exactSolution(problemId, &form, initialMesh);
+                    ExactSolutionScalarAgros<double> *function = fieldInfo->plugin()->exactSolution(problemId, &form, fieldInfo->initialMesh());
                     function->setMarkerSource(boundary);
 
                     // save function - boundary pairs, so thay can be easily updated in each time step;
@@ -650,7 +650,7 @@ void Solver<Scalar>::createInitialSpace()
         {
             // create copy of initial mesh
             Hermes::Hermes2D::Mesh *oneInitialMesh = new Hermes::Hermes2D::Mesh();
-            oneInitialMesh->copy(initialMesh);
+            oneInitialMesh->copy(fieldInfo->initialMesh());
 
             Space<Scalar> *oneSpace = NULL;
             switch (fieldInfo->spaces()[i+1].type())
@@ -682,7 +682,7 @@ void Solver<Scalar>::createInitialSpace()
         }
 
         // delete temp initial mesh
-        delete initialMesh;
+        // delete initialMesh;
     }
 
     assert(!m_hermesSolverContainer);

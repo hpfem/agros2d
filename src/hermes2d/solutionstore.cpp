@@ -73,10 +73,17 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
         // qDebug() << "Read from disk: " << solutionID.toString();
 
         MultiArray<double> msa;
-        msa.loadFromFile(baseStoreFileName(solutionID), solutionID);
+        try
+        {
+            msa.loadFromFile(baseStoreFileName(solutionID), solutionID);
 
-        // insert to the cache
-        insertMultiSolutionToCache(solutionID, msa);
+            // insert to the cache
+            insertMultiSolutionToCache(solutionID, msa);
+        }
+        catch (...)
+        {
+            Agros2D::problem()->clearSolution();
+        }
 
         return msa;
     }
