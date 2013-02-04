@@ -841,6 +841,9 @@ void Problem::readInitialMeshesFromFile()
 
                 assert(marker >= 0 || marker == -999);
 
+                if (marker >= Agros2D::scene()->edges->count())
+                    throw AgrosException(tr("Marker index is out of range."));
+
                 if (marker >= 0 && Agros2D::scene()->edges->at(marker)->marker(fieldInfo) == SceneBoundaryContainer::getNone(fieldInfo))
                     boundaries.insert(marker);
             }

@@ -387,6 +387,11 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
     for (int i = 0; i < numberOfElements; i++)
     {
         QStringList parsedLine = inEle.readLine().trimmed().split(whiteChar);
+        if (parsedLine.count() == 7)
+        {
+            Agros2D::log()->printError(tr("Mesh generator"), tr("Some areas do not have a marker"));
+            return false;
+        }
         int marker = parsedLine.at(7).toInt();
 
         if (marker == 0)
