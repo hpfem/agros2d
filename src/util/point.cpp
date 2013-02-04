@@ -180,79 +180,76 @@ QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, d
             }
         }
     }
-    else
+    else if (angle2 > 0.0)
     {
-        if (angle2 > 0.0)
-            // crossing of arc and line
+        // crossing of arc and line
+        double b = 2 * (dx * (p1s.x - center2.x) + dy * (p1s.y - center2.y));
+        double c = p1s.x * p1s.x + p1s.y * p1s.y + center2.x * center2.x + center2.y * center2.y - 2 * (center2.x * p1s.x + center2.y * p1s.y)-(radius2 * radius2);
+
+        double bb4ac = b * b - 4 * a * c;
+
+        double mu1 = (-b + sqrt(bb4ac)) / (2*a);
+        double mu2 = (-b - sqrt(bb4ac)) / (2*a);
+
+        double i1x = p1s.x + mu1*(dx);
+        double i1y = p1s.y + mu1*(dy);
+
+        double i2x = p1s.x + mu2*(dx);
+        double i2y = p1s.y + mu2*(dy);
+
+
+        Point p1(i1x, i1y);     // possible intersection point
+        Point p2(i2x, i2y);     // possible intersection point
+
+        double t1;
+        double t2;
+
+        if (std::abs(dx - dy) > tol)
         {
-            double b = 2 * (dx * (p1s.x - center2.x) + dy * (p1s.y - center2.y));
-            double c = p1s.x * p1s.x + p1s.y * p1s.y + center2.x * center2.x + center2.y * center2.y - 2 * (center2.x * p1s.x + center2.y * p1s.y)-(radius2 * radius2);
-
-            double bb4ac = b * b - 4 * a * c;
-
-            double mu1 = (-b + sqrt(bb4ac)) / (2*a);
-            double mu2 = (-b - sqrt(bb4ac)) / (2*a);
-
-            double i1x = p1s.x + mu1*(dx);
-            double i1y = p1s.y + mu1*(dy);
-
-            double i2x = p1s.x + mu2*(dx);
-            double i2y = p1s.y + mu2*(dy);
-
-
-            Point p1(i1x, i1y);     // possible intersection point
-            Point p2(i2x, i2y);     // possible intersection point
-
-            double t1;
-            double t2;
-
-            if (std::abs(dx - dy) > tol)
-            {
-                t1 = (p1.x - p1s.x - p1.y + p1s.y) / (dx - dy); // tangent
-                t2 = (p2.x - p1s.x - p2.y + p1s.y) / (dx - dy); // tangent
-            }
-            else
-            {
-                t1 = (p1.x - p1s.x) / dx; // tangent
-                t2 = (p2.x - p1s.x) / dx; // tangent
-            }
-
-            if ((t1 >= 0) && (t1 <= 1))
-            {
-                // 1 solution: One Point in the circle
-                if (isBetween((p2e - center2), (p2s - center2), (p1 - center2)) && ((p1 - p2s).magnitude() > tol) && ((p1 - p2e).magnitude() > tol))
-                    out.append(p1);
-            }
-
-            if ((t2 >= 0) && (t2 <= 1))
-            {
-                // 1 solution: One Point in the circle
-                if (isBetween((p2e - center2), (p2s - center2), (p2 - center2)) && ((p2 -  p2s).magnitude() > tol) && ((p2 - p2e).magnitude() > tol))
-                    out.append(p2);
-            }
+            t1 = (p1.x - p1s.x - p1.y + p1s.y) / (dx - dy); // tangent
+            t2 = (p2.x - p1s.x - p2.y + p1s.y) / (dx - dy); // tangent
         }
         else
         {
-            // straight line
-            if ((p2e != p1s) && (p1e != p2s) && (p1e != p2e) && (p1s != p2s))
+            t1 = (p1.x - p1s.x) / dx; // tangent
+            t2 = (p2.x - p1s.x) / dx; // tangent
+        }
+
+        if ((t1 >= 0) && (t1 <= 1))
+        {
+            // 1 solution: One Point in the circle
+            if (isBetween((p2e - center2), (p2s - center2), (p1 - center2)) && ((p1 - p2s).magnitudeSquared() > tol) && ((p1 - p2e).magnitudeSquared() > tol))
+                out.append(p1);
+        }
+
+        if ((t2 >= 0) && (t2 <= 1))
+        {
+            // 1 solution: One Point in the circle
+            if (isBetween((p2e - center2), (p2s - center2), (p2 - center2)) && ((p2 -  p2s).magnitudeSquared() > tol) && ((p2 - p2e).magnitudeSquared() > tol))
+                out.append(p2);
+        }
+    }
+    else
+    {
+        // straight line
+        if ((p2e != p1s) && (p1e != p2s) && (p1e != p2e) && (p1s != p2s))
+        {
+            double denom = (p2e.y-p2s.y)*(p1e.x-p1s.x) - (p2e.x-p2s.x)*(p1e.y-p1s.y);
+
+            if (abs(denom) > EPS_ZERO)
             {
-                double denom = (p2e.y-p2s.y)*(p1e.x-p1s.x) - (p2e.x-p2s.x)*(p1e.y-p1s.y);
+                double nume_a = ((p2e.x-p2s.x)*(p1s.y-p2s.y) - (p2e.y-p2s.y)*(p1s.x-p2s.x));
+                double nume_b = ((p1e.x-p1s.x)*(p1s.y-p2s.y) - (p1e.y-p1s.y)*(p1s.x-p2s.x));
 
-                if (abs(denom) > EPS_ZERO)
+                double ua = nume_a / denom;
+                double ub = nume_b / denom;
+
+                if ((ua >= 0.0) && (ua <= 1.0) && (ub >= 0.0) && (ub <= 1.0))
                 {
-                    double nume_a = ((p2e.x-p2s.x)*(p1s.y-p2s.y) - (p2e.y-p2s.y)*(p1s.x-p2s.x));
-                    double nume_b = ((p1e.x-p1s.x)*(p1s.y-p2s.y) - (p1e.y-p1s.y)*(p1s.x-p2s.x));
+                    double xi = p1s.x + ua*(p1e.x - p1s.x);
+                    double yi = p1s.y + ua*(p1e.y - p1s.y);
 
-                    double ua = nume_a / denom;
-                    double ub = nume_b / denom;
-
-                    if ((ua >= 0.0) && (ua <= 1.0) && (ub >= 0.0) && (ub <= 1.0))
-                    {
-                        double xi = p1s.x + ua*(p1e.x - p1s.x);
-                        double yi = p1s.y + ua*(p1e.y - p1s.y);
-
-                        out.append(Point(xi, yi));
-                    }
+                    out.append(Point(xi, yi));
                 }
             }
         }
