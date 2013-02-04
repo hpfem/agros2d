@@ -36,6 +36,7 @@ public:
 
     // geometry editor
     bool isConnected() const { return connectedEdges().length() > 0; }
+    bool isEndNoed() const {return connectedEdges().length() == 1; }
     QList<SceneEdge *> connectedEdges() const;
     bool isLyingOnEdges() const { return lyingEdges().length() > 0; }
     QList<SceneEdge *> lyingEdges() const;

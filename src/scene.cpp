@@ -1962,6 +1962,11 @@ ErrorResult Scene::checkGeometryResult()
             return ErrorResult(ErrorResultType_Critical, tr("There are nodes which are not connected to any edge (red highlighted). All nodes should be connected."));
         }
 
+        if (node->isEndNoed())
+        {
+            return ErrorResult(ErrorResultType_Critical, tr("There are nodes which are connected to one edge only (red highlighted). This is not allowed in Agros."));
+        }
+
         if (node->isLyingOnEdges())
         {
             return ErrorResult(ErrorResultType_Critical, tr("There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first."));

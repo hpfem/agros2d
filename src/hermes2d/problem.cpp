@@ -287,6 +287,14 @@ bool Problem::mesh()
 
     Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("mesh generation"));
 
+    ErrorResult result = Agros2D::scene()->checkGeometryResult();
+    if (result.isError())
+    {
+        result.showDialog();
+        m_isSolving = false;
+        throw (AgrosSolverException("Geometry check failed"));
+    }
+
     MeshGenerator *meshGenerator = NULL;
     switch (config()->meshType())
     {
