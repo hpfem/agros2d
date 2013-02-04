@@ -420,8 +420,9 @@ void Problem::solveInit()
     ErrorResult result = Agros2D::scene()->checkGeometryResult();
     if (result.isError())
     {
-        result.showDialog();
-        throw (AgrosSolverException("Geometry check failed"));
+        //result.showDialog();
+        //throw (AgrosSolverException("Geometry check failed"));
+        throw (AgrosSolverException(result.message()));
     }
 
     // save problem
