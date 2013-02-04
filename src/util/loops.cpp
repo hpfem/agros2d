@@ -354,6 +354,8 @@ int windingNumber(Point point, QList<LoopsNodeEdgeData> loop)
         // regular points
         Point nodePoint = Agros2D::scene()->nodes->at(ned.node)->point();
         double angle = atan2(nodePoint.y - point.y, nodePoint.x - point.x);
+        while (angle >= M_PI) angle -= 2*M_PI;
+        while (angle < -M_PI) angle += 2*M_PI;
         assert((angle <= M_PI) && (angle >= -M_PI));
 
         angles.append(angle);
