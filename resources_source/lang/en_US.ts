@@ -4713,8 +4713,13 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solutionstore.cpp" line="421"/>
+        <location filename="../../src/hermes2d/solutionstore.cpp" line="428"/>
         <source>Field &apos;%1&apos; info mismatch.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/hermes2d/solutiontypes.cpp" line="168"/>
+        <source>MultiArray</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5580,7 +5585,7 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneViewPostInterface</name>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="807"/>
+        <location filename="../../src/sceneview_post.cpp" line="812"/>
         <source>Vel.</source>
         <translation type="unfinished"></translation>
     </message>
