@@ -421,7 +421,6 @@ void Problem::solveInit()
     if (result.isError())
     {
         result.showDialog();
-        m_isSolving = false;
         throw (AgrosSolverException("Geometry check failed"));
     }
 
@@ -523,6 +522,7 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
     }
     catch (...)
     {
+        m_isSolving = false;
         return;
     }
 }
