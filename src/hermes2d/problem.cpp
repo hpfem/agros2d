@@ -532,6 +532,8 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
     catch (...)
     {
         m_isSolving = false;
+        // todo: dangerous
+        Agros2D::log()->printWarning("Solver", "An exception occured in solver and has been ignored!");
         return;
     }
 }
