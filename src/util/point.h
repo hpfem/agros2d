@@ -30,11 +30,11 @@ struct Point;
 Point centerPoint(const Point &pointStart, const Point &pointEnd, double angle);
 
 // intersection of two lines
-bool intersectionLines(Point p1s, Point p1e, Point p2s, Point p2e, Point &out);
+bool intersectionLines(const Point &p1s, const Point &p1e, const Point &p2s, const Point &p2e, Point &out);
 
 // intersection of two lines or line and arc
-QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, double angle1,
-                          Point p2s, Point p2e, Point center2, double radius2, double angle2);
+QList<Point> intersection(const Point &p1s, const Point &p1e, const Point &center1, double radius1, double angle1,
+                          const Point &p2s, const Point &p2e, const Point &center2, double radius2, double angle2);
 
 struct Point
 {

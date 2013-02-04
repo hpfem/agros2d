@@ -40,19 +40,20 @@ public:
     inline void setAngle(double angle) { m_angle = angle; computeCenter(); }
     void swapDirection();
 
-    bool isCrossed() const;
-    QList<SceneEdge *> crossedEdges() const;
-    bool isLyingNode() const { return lyingNodes().length() > 0; }
     QList<SceneNode *> lyingNodes() const;
+
+    bool isLyingNode() const { return lyingNodes().length() > 0; }
     bool isOutsideArea() const;
     bool isError() const;
+    bool isCrossed() const; // very slow, use carefully
 
     inline Point center() const { return m_centerCache; }
     double radius() const;
     double distance(const Point &point) const;
-    int segments() const; // needed by mesh generator
     double length() const;
     bool isStraight() const { return (fabs(m_angle) < EPS_ZERO); }
+
+    int segments() const; // needed by mesh generator
 
     SceneEdgeCommandAdd* getAddCommand();
     SceneEdgeCommandRemove* getRemoveCommand();
@@ -60,6 +61,7 @@ public:
     int showDialog(QWidget *parent, bool isNew = false);
 
     static SceneEdge *findClosestEdge(const Point &point);
+    static QList<SceneEdge *> findCrossings();
 
 private:
     SceneNode *m_nodeStart;

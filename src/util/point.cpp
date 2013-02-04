@@ -67,13 +67,13 @@ bool isBetween(double angleStart, double angleEnd, double angleTest)
     return false;
 }
 
-bool isBetween(Point pointStart, Point pointEnd, Point pointTest)
+bool isBetween(const Point &pointStart, const Point &pointEnd, const Point &pointTest)
 {
     // TODO: rewrite - too slow
     return isBetween(pointStart.angle(), pointEnd.angle(), pointTest.angle());
 }
 
-bool intersection(Point p, Point p1s, Point p1e)
+bool intersection(const Point &p, const Point &p1s, const Point &p1e)
 {
     Point dv_line = p1e - p1s;
     Point dv_point = p1e - p;
@@ -83,7 +83,7 @@ bool intersection(Point p, Point p1s, Point p1e)
         return false;
 }
 
-bool intersectionLines(Point p1s, Point p1e, Point p2s, Point p2e, Point &out)
+bool intersectionLines(const Point &p1s, const Point &p1e, const Point &p2s, const Point &p2e, Point &out)
 {
     if ((p2e != p1s) && (p1e != p2s) && (p1e != p2e) && (p1s != p2s))
     {
@@ -111,8 +111,8 @@ bool intersectionLines(Point p1s, Point p1e, Point p2s, Point p2e, Point &out)
     return false;
 }
 
-QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, double angle1,
-                          Point p2s, Point p2e, Point center2, double radius2, double angle2)
+QList<Point> intersection(const Point &p1s, const Point &p1e, const Point &center1, double radius1, double angle1,
+                          const Point &p2s, const Point &p2e, const Point &center2, double radius2, double angle2)
 {
     QList<Point> out;
 

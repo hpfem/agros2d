@@ -468,9 +468,6 @@ bool Scene::checkGeometryAssignement()
         return false;
     }
 
-    // multiple labels in area
-    QMap<SceneLabel*, QList<Triangle> > labels = findPolygonTriangles();
-
     return true;
 }
 
@@ -1971,12 +1968,10 @@ ErrorResult Scene::checkGeometryResult()
         }
     }
 
-    foreach (SceneEdge *edge, this->edges->items())
+    QList<SceneEdge *> crossings = SceneEdge::findCrossings();
+    if (!crossings.isEmpty())
     {
-        if (edge->isCrossed())
-        {
-            return ErrorResult(ErrorResultType_Critical, tr("There are crossings in the geometry (red highlighted). Remove the crossings first."));
-        }
+        return ErrorResult(ErrorResultType_Critical, tr("There are crossings in the geometry (red highlighted). Remove the crossings first."));
     }
 
     return ErrorResult();
