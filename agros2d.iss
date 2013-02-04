@@ -31,6 +31,7 @@ WizardSmallImageFile=install\win32\setup\SetupModernSmall.bmp
 Source: agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
 Source: agros2d_pythonlab.exe; DestDir: {app}; DestName: Agros2D_PythonLab.exe
 ; Source: agros2d_solver.exe; DestDir: {app}; DestName: Agros2D_Solver.exe
+Source: GMSH.exe; DestDir: {app}; DestName: GMSH.exe
 Source: agros2d_hermes2d.dll; DestDir: {app}; DestName: agros2d_hermes2d.dll
 Source: agros2d_library.dll; DestDir: {app}; DestName: agros2d_library.dll
 Source: libs\*.dll; DestDir: {app}/libs
