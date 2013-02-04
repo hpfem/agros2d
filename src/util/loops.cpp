@@ -364,12 +364,10 @@ int windingNumber(Point point, QList<LoopsNodeEdgeData> loop)
     for (int i = 0; i < angles.size(); i++)
     {
         double angle = angles[(i+1) % angles.size()] - angles[i];
-        //cout << "angle: " << angle;
-        if(angle < - M_PI)
-            angle = 2*M_PI + angle;
-        if(angle > M_PI)
-            angle = -2*M_PI + angle;
+        while (angle >= M_PI) angle -= 2*M_PI;
+        while (angle < -M_PI) angle += 2*M_PI;
         assert((angle <= M_PI) && (angle >= -M_PI));
+
         totalAngle += angle;
     }
 
