@@ -53,18 +53,12 @@ FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
     else
         m_fieldId = fieldId;
 
-    // set first analysis and read module
-    if (analysisType == AnalysisType_Undefined)
-    {
-        QMap<AnalysisType, QString> analyses = Module::availableAnalyses(m_fieldId);
-        assert(analyses.count());
-
-        setAnalysisType(analyses.begin().key());
-    }
-
     // read plugin
     m_plugin = Agros2D::loadPlugin(m_fieldId);
     assert(m_plugin);
+
+    // default analysis
+    setAnalysisType(analyses().begin().key());
 
     clear();
 }
@@ -301,6 +295,20 @@ QMap<QString, QString> FieldInfo::macros() const
     //     macros[QString::fromStdString(mcro.id())] = mcro.value();
 
     return QMap<QString, QString>();
+}
+
+QMap<AnalysisType, QString> FieldInfo::analyses() const
+{
+    QMap<AnalysisType, QString> analyses;
+
+    for (unsigned int i = 0; i < m_plugin->module()->general().analyses().analysis().size(); i++)
+    {
+        XMLModule::analysis an = m_plugin->module()->general().analyses().analysis().at(i);
+
+        analyses[analysisTypeFromStringKey(QString::fromStdString(an.id()))] = m_plugin->localeName(QString::fromStdString(an.name()));
+    }
+
+    return analyses;
 }
 
 // spaces

@@ -332,11 +332,11 @@ void FieldWidget::fillComboBox()
         cmbLinearityType->addItem(linearityTypeString(LinearityType_Newton), LinearityType_Newton);
     }
 
-    QMapIterator<AnalysisType, QString> it(Module::availableAnalyses(m_fieldInfo->fieldId()));
+    QMapIterator<AnalysisType, QString> it(m_fieldInfo->analyses());
     while (it.hasNext())
     {
         it.next();
-        cmbAnalysisType->addItem(this->fieldInfo()->plugin()->localeName(it.value()), it.key());
+        cmbAnalysisType->addItem(it.value(), it.key());
     }
 }
 

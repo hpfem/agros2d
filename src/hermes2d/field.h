@@ -157,6 +157,8 @@ public:
     // macros
     QMap<QString, QString> macros() const;
 
+    QMap<AnalysisType, QString> analyses() const;
+
     // spaces
     QMap<int, Module::Space> spaces() const;
 

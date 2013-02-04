@@ -74,23 +74,6 @@ QMap<QString, QString> Module::availableModules()
     return modules;
 }
 
-QMap<AnalysisType, QString> Module::availableAnalyses(const QString &fieldId)
-{
-    QMap<AnalysisType, QString> analyses;
-
-    std::auto_ptr<XMLModule::module> module_xsd = XMLModule::module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + fieldId.toStdString() + ".xml").c_str());
-    XMLModule::module *mod = module_xsd.get();
-
-    for (unsigned int i = 0; i < mod->general().analyses().analysis().size(); i++)
-    {
-        XMLModule::analysis an = mod->general().analyses().analysis().at(i);
-
-        analyses[analysisTypeFromStringKey(QString::fromStdString(an.id()))] = QString::fromStdString(an.name());
-    }
-
-    return analyses;
-}
-
 template <typename Scalar>
 WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
     Hermes::Hermes2D::WeakForm<Scalar>(block->numSolutions()), m_block(block)

@@ -52,14 +52,14 @@ FieldInfo *PyField::fieldInfo()
 
 void PyField::setAnalysisType(const char *analysisType)
 {
-    if (Module::availableAnalyses(m_fieldInfo->fieldId()).contains(analysisTypeFromStringKey(QString(analysisType))))
+    if (m_fieldInfo->analyses().contains(analysisTypeFromStringKey(QString(analysisType))))
     {
         Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setAnalysisType(analysisTypeFromStringKey(QString(analysisType)));
     }
     else
     {
         QStringList list;
-        QList<AnalysisType> analyses = Module::availableAnalyses(m_fieldInfo->fieldId()).keys();
+        QList<AnalysisType> analyses = m_fieldInfo->analyses().keys();
         foreach (AnalysisType analysis, analyses)
             list.append(analysisTypeToStringKey(analysis));
 
