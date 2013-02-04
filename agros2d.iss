@@ -1,8 +1,8 @@
 [Setup]
 
 #define AppName "Agros2D"
-#define AppVersion "3.0.0.3027"
-#define AppDate "2013-01-28"
+#define AppVersion "3.0.0.3121"
+#define AppDate "2013-02-04"
 #define OutputBaseFileName "Agros2D" + "_" + AppVersion
 
 AppName={#AppName}
@@ -30,8 +30,9 @@ WizardSmallImageFile=install\win32\setup\SetupModernSmall.bmp
 [Files]
 Source: agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
 Source: agros2d_pythonlab.exe; DestDir: {app}; DestName: Agros2D_PythonLab.exe
-Source: agros2d_solver.exe; DestDir: {app}; DestName: Agros2D_Solver.exe
-Source: libs\agros2d_hermes2d.dll; DestDir: {app}; DestName: agros2d_hermes2d.dll
+; Source: agros2d_solver.exe; DestDir: {app}; DestName: Agros2D_Solver.exe
+Source: agros2d_hermes2d.dll; DestDir: {app}; DestName: agros2d_hermes2d.dll
+Source: agros2d_library.dll; DestDir: {app}; DestName: agros2d_library.dll
 Source: libs\*.dll; DestDir: {app}/libs
 Source: resources\images\agros2d.ico; DestDir: {app}; DestName: Agros2D.ico
 Source: COPYING; DestDir: {app}; DestName: COPYING
