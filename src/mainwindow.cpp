@@ -1546,7 +1546,7 @@ void MainWindow::setControls()
 
     actDocumentExportMeshFile->setEnabled(Agros2D::problem()->isMeshed());
 
-    actSolve->setEnabled(Agros2D::problem()->fieldInfos().count() > 0);
+    // actSolve->setEnabled(Agros2D::problem()->fieldInfos().count() > 0);
     actSolveAdaptiveStep->setEnabled(false);
 //    actSolveAdaptiveStep->setEnabled(Agros2D::problem()->fieldInfos().count() > 0 && Agros2D::problem()->fieldInfos().count() <= 1 && (!Agros2D::problem()->isTransient()) );
 
