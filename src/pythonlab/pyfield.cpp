@@ -577,7 +577,7 @@ void PyField::initialMeshParameters(map<std::string, int> &parameters)
     if (!Agros2D::problem()->isMeshed())
         throw logic_error(QObject::tr("Problem is not meshed.").toStdString());
 
-    parameters["nodes"] = fieldInfo()->initialMesh()->get_num_nodes();
+    parameters["nodes"] = fieldInfo()->initialMesh()->get_num_vertex_nodes();
     parameters["elements"] = fieldInfo()->initialMesh()->get_num_active_elements();
 
     if (Agros2D::problem()->isSolved())
@@ -600,7 +600,7 @@ void PyField::solutionMeshParameters(map<std::string, int> &parameters)
         int adaptiveStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo(), SolutionMode_Normal);
         MultiArray<double> msa = Agros2D::solutionStore()->multiArray(FieldSolutionID(fieldInfo(), timeStep, adaptiveStep, SolutionMode_Normal));
 
-        parameters["nodes"] = msa.solutions().at(0)->get_mesh()->get_num_nodes();
+        parameters["nodes"] = msa.solutions().at(0)->get_mesh()->get_num_vertex_nodes();
         parameters["elements"] = msa.solutions().at(0)->get_mesh()->get_num_active_elements();
         parameters["dofs"] = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spacesConst());
     }

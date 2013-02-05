@@ -868,9 +868,9 @@ namespace XMLSpace
   {
     public:
     /**
-     * @name element_id
+     * @name e_id
      *
-     * @brief Accessor and modifier functions for the %element_id
+     * @brief Accessor and modifier functions for the %e_id
      * required attribute.
      */
     //@{
@@ -878,28 +878,28 @@ namespace XMLSpace
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::integer element_id_type;
+    typedef ::xml_schema::integer e_id_type;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< element_id_type, char > element_id_traits;
+    typedef ::xsd::cxx::tree::traits< e_id_type, char > e_id_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute.
      *
      * @return A constant reference to the attribute.
      */
-    const element_id_type&
-    element_id () const;
+    const e_id_type&
+    e_id () const;
 
     /**
      * @brief Return a read-write reference to the attribute.
      *
      * @return A reference to the attribute.
      */
-    element_id_type&
-    element_id ();
+    e_id_type&
+    e_id ();
 
     /**
      * @brief Set the attribute value.
@@ -910,14 +910,14 @@ namespace XMLSpace
      * the new value of the attribute.
      */
     void
-    element_id (const element_id_type& x);
+    e_id (const e_id_type& x);
 
     //@}
 
     /**
-     * @name order
+     * @name ord
      *
-     * @brief Accessor and modifier functions for the %order
+     * @brief Accessor and modifier functions for the %ord
      * required attribute.
      */
     //@{
@@ -925,28 +925,28 @@ namespace XMLSpace
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::integer order_type;
+    typedef ::xml_schema::integer ord_type;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< order_type, char > order_traits;
+    typedef ::xsd::cxx::tree::traits< ord_type, char > ord_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute.
      *
      * @return A constant reference to the attribute.
      */
-    const order_type&
-    order () const;
+    const ord_type&
+    ord () const;
 
     /**
      * @brief Return a read-write reference to the attribute.
      *
      * @return A reference to the attribute.
      */
-    order_type&
-    order ();
+    ord_type&
+    ord ();
 
     /**
      * @brief Set the attribute value.
@@ -957,14 +957,14 @@ namespace XMLSpace
      * the new value of the attribute.
      */
     void
-    order (const order_type& x);
+    ord (const ord_type& x);
 
     //@}
 
     /**
-     * @name bdof
+     * @name bd
      *
-     * @brief Accessor and modifier functions for the %bdof
+     * @brief Accessor and modifier functions for the %bd
      * required attribute.
      */
     //@{
@@ -972,28 +972,28 @@ namespace XMLSpace
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::integer bdof_type;
+    typedef ::xml_schema::integer bd_type;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< bdof_type, char > bdof_traits;
+    typedef ::xsd::cxx::tree::traits< bd_type, char > bd_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute.
      *
      * @return A constant reference to the attribute.
      */
-    const bdof_type&
-    bdof () const;
+    const bd_type&
+    bd () const;
 
     /**
      * @brief Return a read-write reference to the attribute.
      *
      * @return A reference to the attribute.
      */
-    bdof_type&
-    bdof ();
+    bd_type&
+    bd ();
 
     /**
      * @brief Set the attribute value.
@@ -1004,7 +1004,7 @@ namespace XMLSpace
      * the new value of the attribute.
      */
     void
-    bdof (const bdof_type& x);
+    bd (const bd_type& x);
 
     //@}
 
@@ -1056,9 +1056,9 @@ namespace XMLSpace
     //@}
 
     /**
-     * @name changed_in_last_adaptation
+     * @name chgd
      *
-     * @brief Accessor and modifier functions for the %changed_in_last_adaptation
+     * @brief Accessor and modifier functions for the %chgd
      * required attribute.
      */
     //@{
@@ -1066,28 +1066,28 @@ namespace XMLSpace
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::boolean changed_in_last_adaptation_type;
+    typedef ::xml_schema::boolean chgd_type;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< changed_in_last_adaptation_type, char > changed_in_last_adaptation_traits;
+    typedef ::xsd::cxx::tree::traits< chgd_type, char > chgd_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute.
      *
      * @return A constant reference to the attribute.
      */
-    const changed_in_last_adaptation_type&
-    changed_in_last_adaptation () const;
+    const chgd_type&
+    chgd () const;
 
     /**
      * @brief Return a read-write reference to the attribute.
      *
      * @return A reference to the attribute.
      */
-    changed_in_last_adaptation_type&
-    changed_in_last_adaptation ();
+    chgd_type&
+    chgd ();
 
     /**
      * @brief Set the attribute value.
@@ -1098,7 +1098,7 @@ namespace XMLSpace
      * the new value of the attribute.
      */
     void
-    changed_in_last_adaptation (const changed_in_last_adaptation_type& x);
+    chgd (const chgd_type& x);
 
     //@}
 
@@ -1111,11 +1111,11 @@ namespace XMLSpace
      * @brief Create an instance from the ultimate base and
      * initializers for required elements and attributes.
      */
-    element_data (const element_id_type&,
-                  const order_type&,
-                  const bdof_type&,
+    element_data (const e_id_type&,
+                  const ord_type&,
+                  const bd_type&,
                   const n_type&,
-                  const changed_in_last_adaptation_type&);
+                  const chgd_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -1176,11 +1176,11 @@ namespace XMLSpace
            ::xml_schema::flags);
 
     protected:
-    ::xsd::cxx::tree::one< element_id_type > element_id_;
-    ::xsd::cxx::tree::one< order_type > order_;
-    ::xsd::cxx::tree::one< bdof_type > bdof_;
+    ::xsd::cxx::tree::one< e_id_type > e_id_;
+    ::xsd::cxx::tree::one< ord_type > ord_;
+    ::xsd::cxx::tree::one< bd_type > bd_;
     ::xsd::cxx::tree::one< n_type > n_;
-    ::xsd::cxx::tree::one< changed_in_last_adaptation_type > changed_in_last_adaptation_;
+    ::xsd::cxx::tree::one< chgd_type > chgd_;
 
     //@endcond
   };

@@ -20,10 +20,12 @@ y = odeint(func, y0, t)
 pl.close()
 pl.plot(t, y)
 pl.grid(1)
-pl.xlabel("$t\,\mathrm{(s)}$")
-pl.ylabel("$i\,\mathrm{(A)}$")
-pl.savefig("diff_equation.png", dpi=60)
-
-pythonlab.html("RL circuit")
-pythonlab.image("diff_equation.png")
+pl.xlabel("t (s)")
+pl.ylabel("i (A)")
+fn_chart = pythonlab.tempname("png")
+pl.savefig(fn_chart, dpi=60)
 pl.close()
+
+# show in console
+pythonlab.html("RL circuit")
+pythonlab.image(fn_chart)

@@ -99,58 +99,58 @@ namespace XMLSolution
     this->component_ = s;
   }
 
-  const solution::num_components_type& solution::
-  num_components () const
+  const solution::ncmp_type& solution::
+  ncmp () const
   {
-    return this->num_components_.get ();
+    return this->ncmp_.get ();
   }
 
-  solution::num_components_type& solution::
-  num_components ()
+  solution::ncmp_type& solution::
+  ncmp ()
   {
-    return this->num_components_.get ();
-  }
-
-  void solution::
-  num_components (const num_components_type& x)
-  {
-    this->num_components_.set (x);
-  }
-
-  const solution::num_elems_type& solution::
-  num_elems () const
-  {
-    return this->num_elems_.get ();
-  }
-
-  solution::num_elems_type& solution::
-  num_elems ()
-  {
-    return this->num_elems_.get ();
+    return this->ncmp_.get ();
   }
 
   void solution::
-  num_elems (const num_elems_type& x)
+  ncmp (const ncmp_type& x)
   {
-    this->num_elems_.set (x);
+    this->ncmp_.set (x);
   }
 
-  const solution::num_coeffs_type& solution::
-  num_coeffs () const
+  const solution::nel_type& solution::
+  nel () const
   {
-    return this->num_coeffs_.get ();
+    return this->nel_.get ();
   }
 
-  solution::num_coeffs_type& solution::
-  num_coeffs ()
+  solution::nel_type& solution::
+  nel ()
   {
-    return this->num_coeffs_.get ();
+    return this->nel_.get ();
   }
 
   void solution::
-  num_coeffs (const num_coeffs_type& x)
+  nel (const nel_type& x)
   {
-    this->num_coeffs_.set (x);
+    this->nel_.set (x);
+  }
+
+  const solution::nc_type& solution::
+  nc () const
+  {
+    return this->nc_.get ();
+  }
+
+  solution::nc_type& solution::
+  nc ()
+  {
+    return this->nc_.get ();
+  }
+
+  void solution::
+  nc (const nc_type& x)
+  {
+    this->nc_.set (x);
   }
 
   const solution::exact_type& solution::
@@ -171,148 +171,148 @@ namespace XMLSolution
     this->exact_.set (x);
   }
 
-  const solution::exactComplex_type& solution::
-  exactComplex () const
+  const solution::exactC_type& solution::
+  exactC () const
   {
-    return this->exactComplex_.get ();
+    return this->exactC_.get ();
   }
 
-  solution::exactComplex_type& solution::
-  exactComplex ()
+  solution::exactC_type& solution::
+  exactC ()
   {
-    return this->exactComplex_.get ();
-  }
-
-  void solution::
-  exactComplex (const exactComplex_type& x)
-  {
-    this->exactComplex_.set (x);
-  }
-
-  const solution::exactConstantXReal_optional& solution::
-  exactConstantXReal () const
-  {
-    return this->exactConstantXReal_;
-  }
-
-  solution::exactConstantXReal_optional& solution::
-  exactConstantXReal ()
-  {
-    return this->exactConstantXReal_;
+    return this->exactC_.get ();
   }
 
   void solution::
-  exactConstantXReal (const exactConstantXReal_type& x)
+  exactC (const exactC_type& x)
   {
-    this->exactConstantXReal_.set (x);
+    this->exactC_.set (x);
+  }
+
+  const solution::exactCXR_optional& solution::
+  exactCXR () const
+  {
+    return this->exactCXR_;
+  }
+
+  solution::exactCXR_optional& solution::
+  exactCXR ()
+  {
+    return this->exactCXR_;
   }
 
   void solution::
-  exactConstantXReal (const exactConstantXReal_optional& x)
+  exactCXR (const exactCXR_type& x)
   {
-    this->exactConstantXReal_ = x;
-  }
-
-  const solution::exactConstantYReal_optional& solution::
-  exactConstantYReal () const
-  {
-    return this->exactConstantYReal_;
-  }
-
-  solution::exactConstantYReal_optional& solution::
-  exactConstantYReal ()
-  {
-    return this->exactConstantYReal_;
+    this->exactCXR_.set (x);
   }
 
   void solution::
-  exactConstantYReal (const exactConstantYReal_type& x)
+  exactCXR (const exactCXR_optional& x)
   {
-    this->exactConstantYReal_.set (x);
+    this->exactCXR_ = x;
+  }
+
+  const solution::exactCYR_optional& solution::
+  exactCYR () const
+  {
+    return this->exactCYR_;
+  }
+
+  solution::exactCYR_optional& solution::
+  exactCYR ()
+  {
+    return this->exactCYR_;
   }
 
   void solution::
-  exactConstantYReal (const exactConstantYReal_optional& x)
+  exactCYR (const exactCYR_type& x)
   {
-    this->exactConstantYReal_ = x;
-  }
-
-  const solution::exactConstantXComplex_optional& solution::
-  exactConstantXComplex () const
-  {
-    return this->exactConstantXComplex_;
-  }
-
-  solution::exactConstantXComplex_optional& solution::
-  exactConstantXComplex ()
-  {
-    return this->exactConstantXComplex_;
+    this->exactCYR_.set (x);
   }
 
   void solution::
-  exactConstantXComplex (const exactConstantXComplex_type& x)
+  exactCYR (const exactCYR_optional& x)
   {
-    this->exactConstantXComplex_.set (x);
+    this->exactCYR_ = x;
+  }
+
+  const solution::exactCXC_optional& solution::
+  exactCXC () const
+  {
+    return this->exactCXC_;
+  }
+
+  solution::exactCXC_optional& solution::
+  exactCXC ()
+  {
+    return this->exactCXC_;
   }
 
   void solution::
-  exactConstantXComplex (const exactConstantXComplex_optional& x)
+  exactCXC (const exactCXC_type& x)
   {
-    this->exactConstantXComplex_ = x;
-  }
-
-  const solution::exactConstantYComplex_optional& solution::
-  exactConstantYComplex () const
-  {
-    return this->exactConstantYComplex_;
-  }
-
-  solution::exactConstantYComplex_optional& solution::
-  exactConstantYComplex ()
-  {
-    return this->exactConstantYComplex_;
+    this->exactCXC_.set (x);
   }
 
   void solution::
-  exactConstantYComplex (const exactConstantYComplex_type& x)
+  exactCXC (const exactCXC_optional& x)
   {
-    this->exactConstantYComplex_.set (x);
+    this->exactCXC_ = x;
+  }
+
+  const solution::exactCYC_optional& solution::
+  exactCYC () const
+  {
+    return this->exactCYC_;
+  }
+
+  solution::exactCYC_optional& solution::
+  exactCYC ()
+  {
+    return this->exactCYC_;
   }
 
   void solution::
-  exactConstantYComplex (const exactConstantYComplex_optional& x)
+  exactCYC (const exactCYC_type& x)
   {
-    this->exactConstantYComplex_ = x;
-  }
-
-  const solution::spaceType_optional& solution::
-  spaceType () const
-  {
-    return this->spaceType_;
-  }
-
-  solution::spaceType_optional& solution::
-  spaceType ()
-  {
-    return this->spaceType_;
+    this->exactCYC_.set (x);
   }
 
   void solution::
-  spaceType (const spaceType_type& x)
+  exactCYC (const exactCYC_optional& x)
   {
-    this->spaceType_.set (x);
+    this->exactCYC_ = x;
+  }
+
+  const solution::space_optional& solution::
+  space () const
+  {
+    return this->space_;
+  }
+
+  solution::space_optional& solution::
+  space ()
+  {
+    return this->space_;
   }
 
   void solution::
-  spaceType (const spaceType_optional& x)
+  space (const space_type& x)
   {
-    this->spaceType_ = x;
+    this->space_.set (x);
   }
 
   void solution::
-  spaceType (::std::auto_ptr< spaceType_type > x)
+  space (const space_optional& x)
   {
-    this->spaceType_.set (x);
+    this->space_ = x;
+  }
+
+  void solution::
+  space (::std::auto_ptr< space_type > x)
+  {
+    this->space_.set (x);
   }
 
 
@@ -337,46 +337,46 @@ namespace XMLSolution
     this->id_.set (x);
   }
 
-  const mono_coeffs::real_type& mono_coeffs::
-  real () const
+  const mono_coeffs::re_type& mono_coeffs::
+  re () const
   {
-    return this->real_.get ();
+    return this->re_.get ();
   }
 
-  mono_coeffs::real_type& mono_coeffs::
-  real ()
+  mono_coeffs::re_type& mono_coeffs::
+  re ()
   {
-    return this->real_.get ();
-  }
-
-  void mono_coeffs::
-  real (const real_type& x)
-  {
-    this->real_.set (x);
-  }
-
-  const mono_coeffs::imaginary_optional& mono_coeffs::
-  imaginary () const
-  {
-    return this->imaginary_;
-  }
-
-  mono_coeffs::imaginary_optional& mono_coeffs::
-  imaginary ()
-  {
-    return this->imaginary_;
+    return this->re_.get ();
   }
 
   void mono_coeffs::
-  imaginary (const imaginary_type& x)
+  re (const re_type& x)
   {
-    this->imaginary_.set (x);
+    this->re_.set (x);
+  }
+
+  const mono_coeffs::im_optional& mono_coeffs::
+  im () const
+  {
+    return this->im_;
+  }
+
+  mono_coeffs::im_optional& mono_coeffs::
+  im ()
+  {
+    return this->im_;
   }
 
   void mono_coeffs::
-  imaginary (const imaginary_optional& x)
+  im (const im_type& x)
   {
-    this->imaginary_ = x;
+    this->im_.set (x);
+  }
+
+  void mono_coeffs::
+  im (const im_optional& x)
+  {
+    this->im_ = x;
   }
 
 
@@ -401,22 +401,22 @@ namespace XMLSolution
     this->id_.set (x);
   }
 
-  const elem_orders::order_type& elem_orders::
-  order () const
+  const elem_orders::ord_type& elem_orders::
+  ord () const
   {
-    return this->order_.get ();
+    return this->ord_.get ();
   }
 
-  elem_orders::order_type& elem_orders::
-  order ()
+  elem_orders::ord_type& elem_orders::
+  ord ()
   {
-    return this->order_.get ();
+    return this->ord_.get ();
   }
 
   void elem_orders::
-  order (const order_type& x)
+  ord (const ord_type& x)
   {
-    this->order_.set (x);
+    this->ord_.set (x);
   }
 
 
@@ -487,22 +487,22 @@ namespace XMLSolution
     this->id_.set (x);
   }
 
-  const elem_coeffs::coeff_type& elem_coeffs::
-  coeff () const
+  const elem_coeffs::c_type& elem_coeffs::
+  c () const
   {
-    return this->coeff_.get ();
+    return this->c_.get ();
   }
 
-  elem_coeffs::coeff_type& elem_coeffs::
-  coeff ()
+  elem_coeffs::c_type& elem_coeffs::
+  c ()
   {
-    return this->coeff_.get ();
+    return this->c_.get ();
   }
 
   void elem_coeffs::
-  coeff (const coeff_type& x)
+  c (const c_type& x)
   {
-    this->coeff_.set (x);
+    this->c_.set (x);
   }
 }
 
@@ -514,25 +514,25 @@ namespace XMLSolution
   //
 
   solution::
-  solution (const num_components_type& num_components,
-            const num_elems_type& num_elems,
-            const num_coeffs_type& num_coeffs,
+  solution (const ncmp_type& ncmp,
+            const nel_type& nel,
+            const nc_type& nc,
             const exact_type& exact,
-            const exactComplex_type& exactComplex)
+            const exactC_type& exactC)
   : ::xml_schema::type (),
     mono_coeffs_ (::xml_schema::flags (), this),
     elem_orders_ (::xml_schema::flags (), this),
     component_ (::xml_schema::flags (), this),
-    num_components_ (num_components, ::xml_schema::flags (), this),
-    num_elems_ (num_elems, ::xml_schema::flags (), this),
-    num_coeffs_ (num_coeffs, ::xml_schema::flags (), this),
+    ncmp_ (ncmp, ::xml_schema::flags (), this),
+    nel_ (nel, ::xml_schema::flags (), this),
+    nc_ (nc, ::xml_schema::flags (), this),
     exact_ (exact, ::xml_schema::flags (), this),
-    exactComplex_ (exactComplex, ::xml_schema::flags (), this),
-    exactConstantXReal_ (::xml_schema::flags (), this),
-    exactConstantYReal_ (::xml_schema::flags (), this),
-    exactConstantXComplex_ (::xml_schema::flags (), this),
-    exactConstantYComplex_ (::xml_schema::flags (), this),
-    spaceType_ (::xml_schema::flags (), this)
+    exactC_ (exactC, ::xml_schema::flags (), this),
+    exactCXR_ (::xml_schema::flags (), this),
+    exactCYR_ (::xml_schema::flags (), this),
+    exactCXC_ (::xml_schema::flags (), this),
+    exactCYC_ (::xml_schema::flags (), this),
+    space_ (::xml_schema::flags (), this)
   {
   }
 
@@ -544,16 +544,16 @@ namespace XMLSolution
     mono_coeffs_ (x.mono_coeffs_, f, this),
     elem_orders_ (x.elem_orders_, f, this),
     component_ (x.component_, f, this),
-    num_components_ (x.num_components_, f, this),
-    num_elems_ (x.num_elems_, f, this),
-    num_coeffs_ (x.num_coeffs_, f, this),
+    ncmp_ (x.ncmp_, f, this),
+    nel_ (x.nel_, f, this),
+    nc_ (x.nc_, f, this),
     exact_ (x.exact_, f, this),
-    exactComplex_ (x.exactComplex_, f, this),
-    exactConstantXReal_ (x.exactConstantXReal_, f, this),
-    exactConstantYReal_ (x.exactConstantYReal_, f, this),
-    exactConstantXComplex_ (x.exactConstantXComplex_, f, this),
-    exactConstantYComplex_ (x.exactConstantYComplex_, f, this),
-    spaceType_ (x.spaceType_, f, this)
+    exactC_ (x.exactC_, f, this),
+    exactCXR_ (x.exactCXR_, f, this),
+    exactCYR_ (x.exactCYR_, f, this),
+    exactCXC_ (x.exactCXC_, f, this),
+    exactCYC_ (x.exactCYC_, f, this),
+    space_ (x.space_, f, this)
   {
   }
 
@@ -565,16 +565,16 @@ namespace XMLSolution
     mono_coeffs_ (f, this),
     elem_orders_ (f, this),
     component_ (f, this),
-    num_components_ (f, this),
-    num_elems_ (f, this),
-    num_coeffs_ (f, this),
+    ncmp_ (f, this),
+    nel_ (f, this),
+    nc_ (f, this),
     exact_ (f, this),
-    exactComplex_ (f, this),
-    exactConstantXReal_ (f, this),
-    exactConstantYReal_ (f, this),
-    exactConstantXComplex_ (f, this),
-    exactConstantYComplex_ (f, this),
-    spaceType_ (f, this)
+    exactC_ (f, this),
+    exactCXR_ (f, this),
+    exactCYR_ (f, this),
+    exactCXC_ (f, this),
+    exactCYC_ (f, this),
+    space_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -635,21 +635,21 @@ namespace XMLSolution
       const ::xsd::cxx::xml::qualified_name< char > n (
         ::xsd::cxx::xml::dom::name< char > (i));
 
-      if (n.name () == "num_components" && n.namespace_ ().empty ())
+      if (n.name () == "ncmp" && n.namespace_ ().empty ())
       {
-        this->num_components_.set (num_components_traits::create (i, f, this));
+        this->ncmp_.set (ncmp_traits::create (i, f, this));
         continue;
       }
 
-      if (n.name () == "num_elems" && n.namespace_ ().empty ())
+      if (n.name () == "nel" && n.namespace_ ().empty ())
       {
-        this->num_elems_.set (num_elems_traits::create (i, f, this));
+        this->nel_.set (nel_traits::create (i, f, this));
         continue;
       }
 
-      if (n.name () == "num_coeffs" && n.namespace_ ().empty ())
+      if (n.name () == "nc" && n.namespace_ ().empty ())
       {
-        this->num_coeffs_.set (num_coeffs_traits::create (i, f, this));
+        this->nc_.set (nc_traits::create (i, f, this));
         continue;
       }
 
@@ -659,64 +659,64 @@ namespace XMLSolution
         continue;
       }
 
-      if (n.name () == "exactComplex" && n.namespace_ ().empty ())
+      if (n.name () == "exactC" && n.namespace_ ().empty ())
       {
-        this->exactComplex_.set (exactComplex_traits::create (i, f, this));
+        this->exactC_.set (exactC_traits::create (i, f, this));
         continue;
       }
 
-      if (n.name () == "exactConstantXReal" && n.namespace_ ().empty ())
+      if (n.name () == "exactCXR" && n.namespace_ ().empty ())
       {
-        this->exactConstantXReal_.set (exactConstantXReal_traits::create (i, f, this));
+        this->exactCXR_.set (exactCXR_traits::create (i, f, this));
         continue;
       }
 
-      if (n.name () == "exactConstantYReal" && n.namespace_ ().empty ())
+      if (n.name () == "exactCYR" && n.namespace_ ().empty ())
       {
-        this->exactConstantYReal_.set (exactConstantYReal_traits::create (i, f, this));
+        this->exactCYR_.set (exactCYR_traits::create (i, f, this));
         continue;
       }
 
-      if (n.name () == "exactConstantXComplex" && n.namespace_ ().empty ())
+      if (n.name () == "exactCXC" && n.namespace_ ().empty ())
       {
-        this->exactConstantXComplex_.set (exactConstantXComplex_traits::create (i, f, this));
+        this->exactCXC_.set (exactCXC_traits::create (i, f, this));
         continue;
       }
 
-      if (n.name () == "exactConstantYComplex" && n.namespace_ ().empty ())
+      if (n.name () == "exactCYC" && n.namespace_ ().empty ())
       {
-        this->exactConstantYComplex_.set (exactConstantYComplex_traits::create (i, f, this));
+        this->exactCYC_.set (exactCYC_traits::create (i, f, this));
         continue;
       }
 
-      if (n.name () == "spaceType" && n.namespace_ ().empty ())
+      if (n.name () == "space" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< spaceType_type > r (
-          spaceType_traits::create (i, f, this));
+        ::std::auto_ptr< space_type > r (
+          space_traits::create (i, f, this));
 
-        this->spaceType_.set (r);
+        this->space_.set (r);
         continue;
       }
     }
 
-    if (!num_components_.present ())
+    if (!ncmp_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "num_components",
+        "ncmp",
         "");
     }
 
-    if (!num_elems_.present ())
+    if (!nel_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "num_elems",
+        "nel",
         "");
     }
 
-    if (!num_coeffs_.present ())
+    if (!nc_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "num_coeffs",
+        "nc",
         "");
     }
 
@@ -727,10 +727,10 @@ namespace XMLSolution
         "");
     }
 
-    if (!exactComplex_.present ())
+    if (!exactC_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "exactComplex",
+        "exactC",
         "");
     }
   }
@@ -752,11 +752,11 @@ namespace XMLSolution
 
   mono_coeffs::
   mono_coeffs (const id_type& id,
-               const real_type& real)
+               const re_type& re)
   : ::xml_schema::type (),
     id_ (id, ::xml_schema::flags (), this),
-    real_ (real, ::xml_schema::flags (), this),
-    imaginary_ (::xml_schema::flags (), this)
+    re_ (re, ::xml_schema::flags (), this),
+    im_ (::xml_schema::flags (), this)
   {
   }
 
@@ -766,8 +766,8 @@ namespace XMLSolution
                ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     id_ (x.id_, f, this),
-    real_ (x.real_, f, this),
-    imaginary_ (x.imaginary_, f, this)
+    re_ (x.re_, f, this),
+    im_ (x.im_, f, this)
   {
   }
 
@@ -777,8 +777,8 @@ namespace XMLSolution
                ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     id_ (f, this),
-    real_ (f, this),
-    imaginary_ (f, this)
+    re_ (f, this),
+    im_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -803,15 +803,15 @@ namespace XMLSolution
         continue;
       }
 
-      if (n.name () == "real" && n.namespace_ ().empty ())
+      if (n.name () == "re" && n.namespace_ ().empty ())
       {
-        this->real_.set (real_traits::create (i, f, this));
+        this->re_.set (re_traits::create (i, f, this));
         continue;
       }
 
-      if (n.name () == "imaginary" && n.namespace_ ().empty ())
+      if (n.name () == "im" && n.namespace_ ().empty ())
       {
-        this->imaginary_.set (imaginary_traits::create (i, f, this));
+        this->im_.set (im_traits::create (i, f, this));
         continue;
       }
     }
@@ -823,10 +823,10 @@ namespace XMLSolution
         "");
     }
 
-    if (!real_.present ())
+    if (!re_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "real",
+        "re",
         "");
     }
   }
@@ -848,10 +848,10 @@ namespace XMLSolution
 
   elem_orders::
   elem_orders (const id_type& id,
-               const order_type& order)
+               const ord_type& ord)
   : ::xml_schema::type (),
     id_ (id, ::xml_schema::flags (), this),
-    order_ (order, ::xml_schema::flags (), this)
+    ord_ (ord, ::xml_schema::flags (), this)
   {
   }
 
@@ -861,7 +861,7 @@ namespace XMLSolution
                ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     id_ (x.id_, f, this),
-    order_ (x.order_, f, this)
+    ord_ (x.ord_, f, this)
   {
   }
 
@@ -871,7 +871,7 @@ namespace XMLSolution
                ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     id_ (f, this),
-    order_ (f, this)
+    ord_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -896,9 +896,9 @@ namespace XMLSolution
         continue;
       }
 
-      if (n.name () == "order" && n.namespace_ ().empty ())
+      if (n.name () == "ord" && n.namespace_ ().empty ())
       {
-        this->order_.set (order_traits::create (i, f, this));
+        this->ord_.set (ord_traits::create (i, f, this));
         continue;
       }
     }
@@ -910,10 +910,10 @@ namespace XMLSolution
         "");
     }
 
-    if (!order_.present ())
+    if (!ord_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "order",
+        "ord",
         "");
     }
   }
@@ -1021,10 +1021,10 @@ namespace XMLSolution
 
   elem_coeffs::
   elem_coeffs (const id_type& id,
-               const coeff_type& coeff)
+               const c_type& c)
   : ::xml_schema::type (),
     id_ (id, ::xml_schema::flags (), this),
-    coeff_ (coeff, ::xml_schema::flags (), this)
+    c_ (c, ::xml_schema::flags (), this)
   {
   }
 
@@ -1034,7 +1034,7 @@ namespace XMLSolution
                ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     id_ (x.id_, f, this),
-    coeff_ (x.coeff_, f, this)
+    c_ (x.c_, f, this)
   {
   }
 
@@ -1044,7 +1044,7 @@ namespace XMLSolution
                ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     id_ (f, this),
-    coeff_ (f, this)
+    c_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -1069,9 +1069,9 @@ namespace XMLSolution
         continue;
       }
 
-      if (n.name () == "coeff" && n.namespace_ ().empty ())
+      if (n.name () == "c" && n.namespace_ ().empty ())
       {
-        this->coeff_.set (coeff_traits::create (i, f, this));
+        this->c_.set (c_traits::create (i, f, this));
         continue;
       }
     }
@@ -1083,10 +1083,10 @@ namespace XMLSolution
         "");
     }
 
-    if (!coeff_.present ())
+    if (!c_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "coeff",
+        "c",
         "");
     }
   }
@@ -1132,34 +1132,34 @@ namespace XMLSolution
       o << ::std::endl << "component: " << *b;
     }
 
-    o << ::std::endl << "num_components: " << i.num_components ();
-    o << ::std::endl << "num_elems: " << i.num_elems ();
-    o << ::std::endl << "num_coeffs: " << i.num_coeffs ();
+    o << ::std::endl << "ncmp: " << i.ncmp ();
+    o << ::std::endl << "nel: " << i.nel ();
+    o << ::std::endl << "nc: " << i.nc ();
     o << ::std::endl << "exact: " << i.exact ();
-    o << ::std::endl << "exactComplex: " << i.exactComplex ();
-    if (i.exactConstantXReal ())
+    o << ::std::endl << "exactC: " << i.exactC ();
+    if (i.exactCXR ())
     {
-      o << ::std::endl << "exactConstantXReal: " << *i.exactConstantXReal ();
+      o << ::std::endl << "exactCXR: " << *i.exactCXR ();
     }
 
-    if (i.exactConstantYReal ())
+    if (i.exactCYR ())
     {
-      o << ::std::endl << "exactConstantYReal: " << *i.exactConstantYReal ();
+      o << ::std::endl << "exactCYR: " << *i.exactCYR ();
     }
 
-    if (i.exactConstantXComplex ())
+    if (i.exactCXC ())
     {
-      o << ::std::endl << "exactConstantXComplex: " << *i.exactConstantXComplex ();
+      o << ::std::endl << "exactCXC: " << *i.exactCXC ();
     }
 
-    if (i.exactConstantYComplex ())
+    if (i.exactCYC ())
     {
-      o << ::std::endl << "exactConstantYComplex: " << *i.exactConstantYComplex ();
+      o << ::std::endl << "exactCYC: " << *i.exactCYC ();
     }
 
-    if (i.spaceType ())
+    if (i.space ())
     {
-      o << ::std::endl << "spaceType: " << *i.spaceType ();
+      o << ::std::endl << "space: " << *i.space ();
     }
 
     return o;
@@ -1169,10 +1169,10 @@ namespace XMLSolution
   operator<< (::std::ostream& o, const mono_coeffs& i)
   {
     o << ::std::endl << "id: " << i.id ();
-    o << ::std::endl << "real: " << i.real ();
-    if (i.imaginary ())
+    o << ::std::endl << "re: " << i.re ();
+    if (i.im ())
     {
-      o << ::std::endl << "imaginary: " << *i.imaginary ();
+      o << ::std::endl << "im: " << *i.im ();
     }
 
     return o;
@@ -1182,7 +1182,7 @@ namespace XMLSolution
   operator<< (::std::ostream& o, const elem_orders& i)
   {
     o << ::std::endl << "id: " << i.id ();
-    o << ::std::endl << "order: " << i.order ();
+    o << ::std::endl << "ord: " << i.ord ();
     return o;
   }
 
@@ -1208,7 +1208,7 @@ namespace XMLSolution
   operator<< (::std::ostream& o, const elem_coeffs& i)
   {
     o << ::std::endl << "id: " << i.id ();
-    o << ::std::endl << "coeff: " << i.coeff ();
+    o << ::std::endl << "c: " << i.c ();
     return o;
   }
 }
@@ -1701,37 +1701,37 @@ namespace XMLSolution
       s << *b;
     }
 
-    // num_components
+    // ncmp
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "num_components",
+          "ncmp",
           e));
 
-      a << i.num_components ();
+      a << i.ncmp ();
     }
 
-    // num_elems
+    // nel
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "num_elems",
+          "nel",
           e));
 
-      a << i.num_elems ();
+      a << i.nel ();
     }
 
-    // num_coeffs
+    // nc
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "num_coeffs",
+          "nc",
           e));
 
-      a << i.num_coeffs ();
+      a << i.nc ();
     }
 
     // exact
@@ -1745,75 +1745,75 @@ namespace XMLSolution
       a << i.exact ();
     }
 
-    // exactComplex
+    // exactC
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "exactComplex",
+          "exactC",
           e));
 
-      a << i.exactComplex ();
+      a << i.exactC ();
     }
 
-    // exactConstantXReal
+    // exactCXR
     //
-    if (i.exactConstantXReal ())
+    if (i.exactCXR ())
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "exactConstantXReal",
+          "exactCXR",
           e));
 
-      a << ::xml_schema::as_decimal(*i.exactConstantXReal ());
+      a << ::xml_schema::as_decimal(*i.exactCXR ());
     }
 
-    // exactConstantYReal
+    // exactCYR
     //
-    if (i.exactConstantYReal ())
+    if (i.exactCYR ())
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "exactConstantYReal",
+          "exactCYR",
           e));
 
-      a << ::xml_schema::as_decimal(*i.exactConstantYReal ());
+      a << ::xml_schema::as_decimal(*i.exactCYR ());
     }
 
-    // exactConstantXComplex
+    // exactCXC
     //
-    if (i.exactConstantXComplex ())
+    if (i.exactCXC ())
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "exactConstantXComplex",
+          "exactCXC",
           e));
 
-      a << ::xml_schema::as_decimal(*i.exactConstantXComplex ());
+      a << ::xml_schema::as_decimal(*i.exactCXC ());
     }
 
-    // exactConstantYComplex
+    // exactCYC
     //
-    if (i.exactConstantYComplex ())
+    if (i.exactCYC ())
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "exactConstantYComplex",
+          "exactCYC",
           e));
 
-      a << ::xml_schema::as_decimal(*i.exactConstantYComplex ());
+      a << ::xml_schema::as_decimal(*i.exactCYC ());
     }
 
-    // spaceType
+    // space
     //
-    if (i.spaceType ())
+    if (i.space ())
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "spaceType",
+          "space",
           e));
 
-      a << *i.spaceType ();
+      a << *i.space ();
     }
   }
 
@@ -1833,27 +1833,27 @@ namespace XMLSolution
       a << i.id ();
     }
 
-    // real
+    // re
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "real",
+          "re",
           e));
 
-      a << ::xml_schema::as_decimal(i.real ());
+      a << ::xml_schema::as_decimal(i.re ());
     }
 
-    // imaginary
+    // im
     //
-    if (i.imaginary ())
+    if (i.im ())
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "imaginary",
+          "im",
           e));
 
-      a << ::xml_schema::as_decimal(*i.imaginary ());
+      a << ::xml_schema::as_decimal(*i.im ());
     }
   }
 
@@ -1873,15 +1873,15 @@ namespace XMLSolution
       a << i.id ();
     }
 
-    // order
+    // ord
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "order",
+          "ord",
           e));
 
-      a << i.order ();
+      a << i.ord ();
     }
   }
 
@@ -1933,15 +1933,15 @@ namespace XMLSolution
       a << i.id ();
     }
 
-    // coeff
+    // c
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "coeff",
+          "c",
           e));
 
-      a << i.coeff ();
+      a << i.c ();
     }
   }
 }

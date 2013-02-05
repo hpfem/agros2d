@@ -44,12 +44,11 @@ namespace Hermes
       signal(SIGILL, CallStack::dump);
       signal(SIGSEGV, CallStack::dump);
       signal(SIGTERM, CallStack::dump);
-
+      
       // Xerces initialization - for better performance.
-      XMLPlatformUtils::Initialize();
+      XMLPlatformUtils::Initialize();   
 
       this->integral_parameters.insert(std::pair<Hermes2DApiParam, Parameter<int>*> (Hermes::Hermes2D::numThreads,new Parameter<int>(NUM_THREADS)));
-      this->integral_parameters.insert(std::pair<Hermes2DApiParam, Parameter<int>*> (Hermes::Hermes2D::secondDerivatives,new Parameter<int>(0)));
       this->text_parameters.insert(std::pair<Hermes2DApiParam, Parameter<std::string>*> (Hermes::Hermes2D::xmlSchemasDirPath,new Parameter<std::string>(*(new std::string(H2D_XML_SCHEMAS_DIRECTORY)))));
       std::stringstream ss;
       ss << H2D_PRECALCULATED_FORMS_DIRECTORY;
@@ -60,6 +59,8 @@ namespace Hermes
         ss << '/';
         this->text_parameters.insert(std::pair<Hermes2DApiParam, Parameter<std::string>*> (Hermes::Hermes2D::precalculatedFormsDirPath,new Parameter<std::string>(*(new std::string(ss.str())))));
       }
+
+      XMLPlatformUtils::Terminate();
     }
 
     Api2D::~Api2D()
@@ -69,8 +70,6 @@ namespace Hermes
 
       for(std::map<Hermes2DApiParam, Parameter<int>*>::const_iterator it = this->integral_parameters.begin(); it != this->integral_parameters.end(); ++it)
         delete it->second;
-
-      XMLPlatformUtils::Terminate();
     }
 
     int Api2D::get_integral_param_value(Hermes2DApiParam param)

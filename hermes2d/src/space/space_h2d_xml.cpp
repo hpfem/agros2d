@@ -97,58 +97,58 @@ namespace XMLSpace
   // element_data
   // 
 
-  const element_data::element_id_type& element_data::
-  element_id () const
+  const element_data::e_id_type& element_data::
+  e_id () const
   {
-    return this->element_id_.get ();
+    return this->e_id_.get ();
   }
 
-  element_data::element_id_type& element_data::
-  element_id ()
+  element_data::e_id_type& element_data::
+  e_id ()
   {
-    return this->element_id_.get ();
-  }
-
-  void element_data::
-  element_id (const element_id_type& x)
-  {
-    this->element_id_.set (x);
-  }
-
-  const element_data::order_type& element_data::
-  order () const
-  {
-    return this->order_.get ();
-  }
-
-  element_data::order_type& element_data::
-  order ()
-  {
-    return this->order_.get ();
+    return this->e_id_.get ();
   }
 
   void element_data::
-  order (const order_type& x)
+  e_id (const e_id_type& x)
   {
-    this->order_.set (x);
+    this->e_id_.set (x);
   }
 
-  const element_data::bdof_type& element_data::
-  bdof () const
+  const element_data::ord_type& element_data::
+  ord () const
   {
-    return this->bdof_.get ();
+    return this->ord_.get ();
   }
 
-  element_data::bdof_type& element_data::
-  bdof ()
+  element_data::ord_type& element_data::
+  ord ()
   {
-    return this->bdof_.get ();
+    return this->ord_.get ();
   }
 
   void element_data::
-  bdof (const bdof_type& x)
+  ord (const ord_type& x)
   {
-    this->bdof_.set (x);
+    this->ord_.set (x);
+  }
+
+  const element_data::bd_type& element_data::
+  bd () const
+  {
+    return this->bd_.get ();
+  }
+
+  element_data::bd_type& element_data::
+  bd ()
+  {
+    return this->bd_.get ();
+  }
+
+  void element_data::
+  bd (const bd_type& x)
+  {
+    this->bd_.set (x);
   }
 
   const element_data::n_type& element_data::
@@ -169,22 +169,22 @@ namespace XMLSpace
     this->n_.set (x);
   }
 
-  const element_data::changed_in_last_adaptation_type& element_data::
-  changed_in_last_adaptation () const
+  const element_data::chgd_type& element_data::
+  chgd () const
   {
-    return this->changed_in_last_adaptation_.get ();
+    return this->chgd_.get ();
   }
 
-  element_data::changed_in_last_adaptation_type& element_data::
-  changed_in_last_adaptation ()
+  element_data::chgd_type& element_data::
+  chgd ()
   {
-    return this->changed_in_last_adaptation_.get ();
+    return this->chgd_.get ();
   }
 
   void element_data::
-  changed_in_last_adaptation (const changed_in_last_adaptation_type& x)
+  chgd (const chgd_type& x)
   {
-    this->changed_in_last_adaptation_.set (x);
+    this->chgd_.set (x);
   }
 }
 
@@ -285,17 +285,17 @@ namespace XMLSpace
   //
 
   element_data::
-  element_data (const element_id_type& element_id,
-                const order_type& order,
-                const bdof_type& bdof,
+  element_data (const e_id_type& e_id,
+                const ord_type& ord,
+                const bd_type& bd,
                 const n_type& n,
-                const changed_in_last_adaptation_type& changed_in_last_adaptation)
+                const chgd_type& chgd)
   : ::xml_schema::type (),
-    element_id_ (element_id, ::xml_schema::flags (), this),
-    order_ (order, ::xml_schema::flags (), this),
-    bdof_ (bdof, ::xml_schema::flags (), this),
+    e_id_ (e_id, ::xml_schema::flags (), this),
+    ord_ (ord, ::xml_schema::flags (), this),
+    bd_ (bd, ::xml_schema::flags (), this),
     n_ (n, ::xml_schema::flags (), this),
-    changed_in_last_adaptation_ (changed_in_last_adaptation, ::xml_schema::flags (), this)
+    chgd_ (chgd, ::xml_schema::flags (), this)
   {
   }
 
@@ -304,11 +304,11 @@ namespace XMLSpace
                 ::xml_schema::flags f,
                 ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
-    element_id_ (x.element_id_, f, this),
-    order_ (x.order_, f, this),
-    bdof_ (x.bdof_, f, this),
+    e_id_ (x.e_id_, f, this),
+    ord_ (x.ord_, f, this),
+    bd_ (x.bd_, f, this),
     n_ (x.n_, f, this),
-    changed_in_last_adaptation_ (x.changed_in_last_adaptation_, f, this)
+    chgd_ (x.chgd_, f, this)
   {
   }
 
@@ -317,11 +317,11 @@ namespace XMLSpace
                 ::xml_schema::flags f,
                 ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-    element_id_ (f, this),
-    order_ (f, this),
-    bdof_ (f, this),
+    e_id_ (f, this),
+    ord_ (f, this),
+    bd_ (f, this),
     n_ (f, this),
-    changed_in_last_adaptation_ (f, this)
+    chgd_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -340,21 +340,21 @@ namespace XMLSpace
       const ::xsd::cxx::xml::qualified_name< char > n (
         ::xsd::cxx::xml::dom::name< char > (i));
 
-      if (n.name () == "element_id" && n.namespace_ ().empty ())
+      if (n.name () == "e_id" && n.namespace_ ().empty ())
       {
-        this->element_id_.set (element_id_traits::create (i, f, this));
+        this->e_id_.set (e_id_traits::create (i, f, this));
         continue;
       }
 
-      if (n.name () == "order" && n.namespace_ ().empty ())
+      if (n.name () == "ord" && n.namespace_ ().empty ())
       {
-        this->order_.set (order_traits::create (i, f, this));
+        this->ord_.set (ord_traits::create (i, f, this));
         continue;
       }
 
-      if (n.name () == "bdof" && n.namespace_ ().empty ())
+      if (n.name () == "bd" && n.namespace_ ().empty ())
       {
-        this->bdof_.set (bdof_traits::create (i, f, this));
+        this->bd_.set (bd_traits::create (i, f, this));
         continue;
       }
 
@@ -364,31 +364,31 @@ namespace XMLSpace
         continue;
       }
 
-      if (n.name () == "changed_in_last_adaptation" && n.namespace_ ().empty ())
+      if (n.name () == "chgd" && n.namespace_ ().empty ())
       {
-        this->changed_in_last_adaptation_.set (changed_in_last_adaptation_traits::create (i, f, this));
+        this->chgd_.set (chgd_traits::create (i, f, this));
         continue;
       }
     }
 
-    if (!element_id_.present ())
+    if (!e_id_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "element_id",
+        "e_id",
         "");
     }
 
-    if (!order_.present ())
+    if (!ord_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "order",
+        "ord",
         "");
     }
 
-    if (!bdof_.present ())
+    if (!bd_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "bdof",
+        "bd",
         "");
     }
 
@@ -399,10 +399,10 @@ namespace XMLSpace
         "");
     }
 
-    if (!changed_in_last_adaptation_.present ())
+    if (!chgd_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "changed_in_last_adaptation",
+        "chgd",
         "");
     }
   }
@@ -445,11 +445,11 @@ namespace XMLSpace
   ::std::ostream&
   operator<< (::std::ostream& o, const element_data& i)
   {
-    o << ::std::endl << "element_id: " << i.element_id ();
-    o << ::std::endl << "order: " << i.order ();
-    o << ::std::endl << "bdof: " << i.bdof ();
+    o << ::std::endl << "e_id: " << i.e_id ();
+    o << ::std::endl << "ord: " << i.ord ();
+    o << ::std::endl << "bd: " << i.bd ();
     o << ::std::endl << "n: " << i.n ();
-    o << ::std::endl << "changed_in_last_adaptation: " << i.changed_in_last_adaptation ();
+    o << ::std::endl << "chgd: " << i.chgd ();
     return o;
   }
 }
@@ -932,37 +932,37 @@ namespace XMLSpace
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
-    // element_id
+    // e_id
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "element_id",
+          "e_id",
           e));
 
-      a << i.element_id ();
+      a << i.e_id ();
     }
 
-    // order
+    // ord
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "order",
+          "ord",
           e));
 
-      a << i.order ();
+      a << i.ord ();
     }
 
-    // bdof
+    // bd
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "bdof",
+          "bd",
           e));
 
-      a << i.bdof ();
+      a << i.bd ();
     }
 
     // n
@@ -976,15 +976,15 @@ namespace XMLSpace
       a << i.n ();
     }
 
-    // changed_in_last_adaptation
+    // chgd
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "changed_in_last_adaptation",
+          "chgd",
           e));
 
-      a << i.changed_in_last_adaptation ();
+      a << i.chgd ();
     }
   }
 }

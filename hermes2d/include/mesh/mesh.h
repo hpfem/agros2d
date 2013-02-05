@@ -138,11 +138,11 @@ namespace Hermes
       /// Returns the center of gravity.
       void get_center(double& x, double& y);
 
-      Node* vn[4];   ///< vertex node pointers
+      Node* vn[H2D_MAX_NUMBER_VERTICES];   ///< vertex node pointers
       union
       {
-        Node* en[4];      ///< edge node pointers
-        Element* sons[4]; ///< son elements (up to four)
+        Node* en[H2D_MAX_NUMBER_EDGES];      ///< edge node pointers
+        Element* sons[H2D_MAX_ELEMENT_SONS]; ///< son elements (up to four)
       };
 
       int marker;        ///< element marker
@@ -271,14 +271,23 @@ namespace Hermes
       /// Returns the total number of elements stored.
       int get_num_elements() const;
 
-      /// Returns the number of coarse mesh elements.
+      /// Returns the number of base mesh elements.
       int get_num_base_elements() const;
+
+      /// Returns the number of used base mesh elements.
+      int get_num_used_base_elements() const;
 
       /// Returns the current number of active elements in the mesh.
       int get_num_active_elements() const;
 
       /// Returns the maximum node id number plus one.
       int get_max_element_id() const;
+
+      /// Returns the number of vertex nodes.
+      int get_num_vertex_nodes() const;
+
+      /// Returns the number of edge nodes.
+      int get_num_edge_nodes() const;
 
       /// Refines an element.
       /// \param id[in] Element id number.
@@ -370,6 +379,10 @@ namespace Hermes
       };
 
     private:
+      /// For internal use.
+      void initial_single_check();
+      static void initial_multimesh_check(Hermes::vector<Mesh*> meshes);
+
       /// For internal use.
       int get_edge_sons(Element* e, int edge, int& son1, int& son2) const;
 
