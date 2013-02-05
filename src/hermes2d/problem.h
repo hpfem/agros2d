@@ -127,6 +127,7 @@ private:
 
     bool skipThisTimeStep(Block* block);
 
+    bool meshAction();
     void solveInit();
     void solve(bool adaptiveStepOnly, bool commandLine);
     void solveActionCatchExceptions(bool adaptiveStepOnly); //calls one of following, catches exceptions

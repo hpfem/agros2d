@@ -23,14 +23,6 @@
 #include "util.h"
 #include "util/loops.h"
 
-class AGROS_API AgrosMeshException : public AgrosException
-{
-public:
-    AgrosMeshException(const QString &what) : AgrosException(what)
-    {
-    }
-};
-
 class AGROS_API MeshGenerator : public QObject
 {
     Q_OBJECT

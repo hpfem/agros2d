@@ -177,6 +177,30 @@ protected:
     QString m_what;
 };
 
+class AgrosSolverException : public AgrosException
+{
+public:
+    AgrosSolverException(const QString &what) : AgrosException(what)
+    {
+    }
+};
+
+class AgrosGeometryException : public AgrosException
+{
+public:
+    AgrosGeometryException(const QString &what) : AgrosException(what)
+    {
+    }
+};
+
+class AgrosMeshException : public AgrosException
+{
+public:
+    AgrosMeshException(const QString &what) : AgrosException(what)
+    {
+    }
+};
+
 struct ScriptResult
 {
     ScriptResult()

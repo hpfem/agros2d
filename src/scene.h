@@ -205,7 +205,7 @@ public:
     void writeSolutionToFile(const QString &fileName);
 
     void checkNodeConnect(SceneNode *node);
-    ErrorResult checkGeometryResult();
+    void checkGeometryResult();
 
     void addBoundaryAndMaterialMenuItems(QMenu* menu, QWidget* parent);
 
