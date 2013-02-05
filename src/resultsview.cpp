@@ -100,8 +100,8 @@ void ResultsView::showPoint(const Point &point)
     localPointValues.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
     localPointValues.SetValue("LABEL", tr("Local point values").toStdString());
 
-    localPointValues.SetValue("LABELX", Agros2D::problem()->config()->labelX().toLower().toStdString());
-    localPointValues.SetValue("LABELY", Agros2D::problem()->config()->labelY().toLower().toStdString());
+    localPointValues.SetValue("LABELX", QString("<i>%1</i>").arg(Agros2D::problem()->config()->labelX().toLower()).toStdString());
+    localPointValues.SetValue("LABELY", QString("<i>%1</i>").arg(Agros2D::problem()->config()->labelY().toLower()).toStdString());
     localPointValues.SetValue("POINTX", (QString("%1").arg(point.x, 0, 'e', 3)).toStdString());
     localPointValues.SetValue("POINTY", (QString("%1").arg(point.y, 0, 'e', 3)).toStdString());
     localPointValues.SetValue("POINT_UNIT", "m");

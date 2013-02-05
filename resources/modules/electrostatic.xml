@@ -14,7 +14,7 @@
 
   <module:spaces>
     <module:space analysistype="steadystate">
-        <module:space_config i="1" type="h1" orderadjust="0" />
+      <module:space_config i="1" orderadjust="0" type="h1"/>
     </module:space>
   </module:spaces>
 
@@ -22,12 +22,11 @@
     <module:quantity id="electrostatic_permittivity" shortname="el_epsr"/>
     <module:quantity id="electrostatic_charge_density" shortname="el_rho"/>
     <module:weakforms_volume>
-      <module:weakform_volume analysistype="steadystate"
-        equation="-\, \div \left( \varepsilon\,\, \grad \varphi \right) = \rho">
+      <module:weakform_volume analysistype="steadystate" equation="-\, \div \left( \varepsilon\,\, \grad \varphi \right) = \rho">
         <module:quantity id="electrostatic_permittivity"/>
         <module:quantity id="electrostatic_charge_density"/>
-        <module:matrix_form id="laplace" axi_linear="el_epsr * EPS0 * r * (udr * vdr + udz * vdz)" axi_newton="el_epsr * EPS0 * r * (udr * vdr + udz * vdz)" i="1" j="1" planar_linear="el_epsr * EPS0 * (udx * vdx + udy * vdy)" planar_newton="el_epsr * EPS0 * (udx * vdx + udy * vdy)" symmetric="1"/>
-        <module:vector_form id="function" axi_linear="el_rho * r * vval" axi_newton="el_epsr * EPS0 * r *(updr * vdr + updz * vdz) - r * el_rho * vval" i="1" j="1" planar_linear="el_rho * vval" planar_newton="el_epsr * EPS0 * (updx * vdx + updy * vdy) - el_rho * vval"/>
+        <module:matrix_form axi_linear="el_epsr * EPS0 * r * (udr * vdr + udz * vdz)" axi_newton="el_epsr * EPS0 * r * (udr * vdr + udz * vdz)" i="1" id="laplace" j="1" planar_linear="el_epsr * EPS0 * (udx * vdx + udy * vdy)" planar_newton="el_epsr * EPS0 * (udx * vdx + udy * vdy)" symmetric="1"/>
+        <module:vector_form axi_linear="el_rho * r * vval" axi_newton="el_epsr * EPS0 * r *(updr * vdr + updz * vdz) - r * el_rho * vval" i="1" id="function" j="1" planar_linear="el_rho * vval" planar_newton="el_epsr * EPS0 * (updx * vdx + updy * vdy) - el_rho * vval"/>
       </module:weakform_volume>
     </module:weakforms_volume>
   </module:volume>
@@ -37,15 +36,13 @@
     <module:quantity id="electrostatic_surface_charge_density" shortname="sigma"/>
     <module:weakforms_surface>
       <module:weakform_surface analysistype="steadystate" default="electrostatic_potential">
-        <module:boundary id="electrostatic_potential" name="Fixed voltage"
-          equation="\varphi = \varphi_0">
+        <module:boundary equation="\varphi = \varphi_0" id="electrostatic_potential" name="Fixed voltage">
           <module:quantity id="electrostatic_potential"/>
-          <module:essential_form id="function" axi_linear="V" axi_newton="V" i="1" planar_linear="V" planar_newton="V"/>
+          <module:essential_form axi_linear="V" axi_newton="V" i="1" id="function" planar_linear="V" planar_newton="V"/>
         </module:boundary>
-        <module:boundary id="electrostatic_surface_charge_density" name="Surface charge density"
-          equation="\sigma = D_\mathrm{n} = \varepsilon \frac{\partial \varphi}{\partial n_0} = \sigma_0">
+        <module:boundary equation="\sigma = D_\mathrm{n} = \varepsilon \frac{\partial \varphi}{\partial n_0} = \sigma_0" id="electrostatic_surface_charge_density" name="Surface charge density">
           <module:quantity id="electrostatic_surface_charge_density"/>
-          <module:vector_form id="function" axi_linear="sigma * r * vval" axi_newton="sigma * r * vval" i="1" j="1" planar_linear="sigma * vval" planar_newton="sigma * vval"/>
+          <module:vector_form axi_linear="sigma * r * vval" axi_newton="sigma * r * vval" i="1" id="function" j="1" planar_linear="sigma * vval" planar_newton="sigma * vval"/>
         </module:boundary>
       </module:weakform_surface>
     </module:weakforms_surface>

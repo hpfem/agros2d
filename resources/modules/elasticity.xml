@@ -2,8 +2,7 @@
 <module:module xmlns:module="XMLModule" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd">
 
   <module:general deformed_shape="1" id="elasticity" name="Structural analysis">
-    <module:description>Structural analysis is the determination of the
-            effects of loads on physical structures and their components.
+    <module:description>Structural analysis is the determination of the effects of loads on physical structures and their components.
         </module:description>
     <module:analyses>
       <module:analysis id="steadystate" name="Steady state" solutions="2" type="steadystate"/>
@@ -14,8 +13,8 @@
 
   <module:spaces>
     <module:space analysistype="steadystate">
-      <module:space_config i="1" type="h1" orderadjust="0" />
-      <module:space_config i="2" type="h1" orderadjust="0" />
+      <module:space_config i="1" orderadjust="0" type="h1"/>
+      <module:space_config i="2" orderadjust="0" type="h1"/>
     </module:space>
   </module:spaces>
 
@@ -28,8 +27,7 @@
     <module:quantity id="elasticity_temperature_difference" shortname="st_dT"/>
     <module:quantity id="elasticity_temperature_reference" shortname="st_Tr"/>
     <module:weakforms_volume>
-      <module:weakform_volume analysistype="steadystate"
-        equation="-\, (\lambda + \mu)~\grad \div \vec{u} -\, \mu \triangle \vec{u} - \alpha_\mathrm{T} \left( 3 \lambda + 2 \mu \right) \grad T = \vec{f},\,\,\, \lambda = \frac{\nu E}{(1 + \nu) (1 - 2 \nu)},\,\, \mu = \frac{E}{2(1 + \nu)}">
+      <module:weakform_volume analysistype="steadystate" equation="-\, (\lambda + \mu)~\grad \div \vec{u} -\, \mu \triangle \vec{u} - \alpha_\mathrm{T} \left( 3 \lambda + 2 \mu \right) \grad T = \vec{f},\,\,\, \lambda = \frac{\nu E}{(1 + \nu) (1 - 2 \nu)},\,\, \mu = \frac{E}{2(1 + \nu)}">
         <module:quantity id="elasticity_young_modulus"/>
         <module:quantity id="elasticity_poisson_ratio"/>
         <module:quantity id="elasticity_volume_force_x"/>
@@ -37,14 +35,14 @@
         <module:quantity id="elasticity_alpha"/>
         <module:quantity id="elasticity_temperature_difference"/>
         <module:quantity id="elasticity_temperature_reference"/>
-        <module:matrix_form id="form" axi_linear="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udr * vdr + uval * vdr + udr * vval + uval * vval / (r + 1e-12)) +                                          (st_E / (2.0*(1.0 + st_nu))) * (2 * r * udr * vdr + 2 * uval * vval / (r + 1e-12) + r * udz * vdz)" axi_newton="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udr * vdr + uval * vdr + udr * vval + uval * vval / (r + 1e-12)) +                                          (st_E / (2.0*(1.0 + st_nu))) * (2 * r * udr * vdr + 2 * uval * vval / (r + 1e-12) + r * udz * vdz)" i="1" j="1" planar_linear="(((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (udx * vdx)                                             + (st_E / (2.0*(1.0 + st_nu))) * (udy * vdy)" planar_newton="(((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (udx * vdx)                                             + (st_E / (2.0*(1.0 + st_nu))) * (udy * vdy)"/>
-        <module:matrix_form id="form" axi_linear="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udz * vdr + udz * vval) + (st_E / (2.0*(1.0 + st_nu))) * r * udr * vdz" axi_newton="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udz * vdr + udz * vval) + (st_E / (2.0*(1.0 + st_nu))) * r * udr * vdz" i="1" j="2" planar_linear="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (udy * vdx)                                             + (st_E / (2.0*(1.0 + st_nu))) * (udx * vdy)" planar_newton="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (udy * vdx)                        + (st_E / (2.0*(1.0 + st_nu))) * (udx * vdy)"/>
-        <module:matrix_form id="form" axi_linear="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udr * vdz + uval * vdz) + (st_E / (2.0*(1.0 + st_nu))) * r * udz * vdr" axi_newton="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udr * vdz + uval * vdz) + (st_E / (2.0*(1.0 + st_nu))) * r * udz * vdr" i="2" j="1" planar_linear="(st_E / (2.0*(1.0 + st_nu))) * (udy * vdx) + ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (udx * vdy)" planar_newton="(st_E / (2.0*(1.0 + st_nu))) * (udy * vdx) + ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (udx * vdy)"/>
-        <module:matrix_form id="form" axi_linear="r * ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * udz * vdz +                                          r * (st_E / (2.0*(1.0 + st_nu))) * (udr * vdr + 2 * udz * vdz)" axi_newton="r * ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * udz * vdz +                                          r * (st_E / (2.0*(1.0 + st_nu))) * (udr * vdr + 2 * udz * vdz)" i="2" j="2" planar_linear="(st_E / (2.0*(1.0 + st_nu))) * (udx * vdx)                                             + (((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (udy * vdy)" planar_newton="(st_E / (2.0*(1.0 + st_nu))) * (udx * vdx)                           + (((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (udy * vdy)"/>
-        <module:vector_form id="form" axi_linear="r * st_fvx * vval + r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * (vdr + vval / r)" axi_newton="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * updr * vdr + upval * vdr + updr * vval + upval * vval / (r + 1e-12)) +                                          (st_E / (2.0*(1.0 + st_nu))) * (2 * r * updr * vdr + 2 * upval * vval / (r + 1e-12) + r * updz * vdz)                                          - r * st_fvx * vval - r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * (vdr + vval / r)" i="1" j="1" planar_linear="st_fvx * vval + ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdx" planar_newton="(((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (updx * vdx)                                             + (st_E / (2.0*(1.0 + st_nu))) * (updy * vdy)                                             - st_fvx * vval - ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdx"/>
-        <module:vector_form id="form" axi_linear="0" axi_newton="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * updz * vdr + updz * vval) +                                             (st_E / (2.0*(1.0 + st_nu))) * r * updr * vdz" i="1" j="2" planar_linear="0" planar_newton="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (updy * vdx)                                             + (st_E / (2.0*(1.0 + st_nu))) * (updx * vdy)"/>
-        <module:vector_form id="form" axi_linear="0" axi_newton="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * updr * vdz + upval * vdz) +                                            (st_E / (2.0*(1.0 + st_nu))) * r * updz * vdr" i="2" j="1" planar_linear="0" planar_newton="(st_E / (2.0*(1.0 + st_nu))) * (updy * vdx)                                             + ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (updx * vdy)"/>
-        <module:vector_form id="form" axi_linear="r * st_fvy * vval + r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdz" axi_newton="r * ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * updz * vdz +                                          r * (st_E / (2.0*(1.0 + st_nu))) * (updr * vdr + 2 * updz * vdz)                                          - r * st_fvy * vval - r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdz" i="2" j="2" planar_linear="st_fvy * vval + ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdy" planar_newton="(st_E / (2.0*(1.0 + st_nu))) * (updx * vdx)                                             + (((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (updy * vdy)                                             - st_fvy * vval - ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdy"/>
+        <module:matrix_form axi_linear="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udr * vdr + uval * vdr + udr * vval + uval * vval / (r + 1e-12)) +                                          (st_E / (2.0*(1.0 + st_nu))) * (2 * r * udr * vdr + 2 * uval * vval / (r + 1e-12) + r * udz * vdz)" axi_newton="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udr * vdr + uval * vdr + udr * vval + uval * vval / (r + 1e-12)) +                                          (st_E / (2.0*(1.0 + st_nu))) * (2 * r * udr * vdr + 2 * uval * vval / (r + 1e-12) + r * udz * vdz)" i="1" id="form" j="1" planar_linear="(((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (udx * vdx)                                             + (st_E / (2.0*(1.0 + st_nu))) * (udy * vdy)" planar_newton="(((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (udx * vdx)                                             + (st_E / (2.0*(1.0 + st_nu))) * (udy * vdy)"/>
+        <module:matrix_form axi_linear="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udz * vdr + udz * vval) + (st_E / (2.0*(1.0 + st_nu))) * r * udr * vdz" axi_newton="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udz * vdr + udz * vval) + (st_E / (2.0*(1.0 + st_nu))) * r * udr * vdz" i="1" id="form" j="2" planar_linear="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (udy * vdx)                                             + (st_E / (2.0*(1.0 + st_nu))) * (udx * vdy)" planar_newton="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (udy * vdx)                        + (st_E / (2.0*(1.0 + st_nu))) * (udx * vdy)"/>
+        <module:matrix_form axi_linear="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udr * vdz + uval * vdz) + (st_E / (2.0*(1.0 + st_nu))) * r * udz * vdr" axi_newton="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * udr * vdz + uval * vdz) + (st_E / (2.0*(1.0 + st_nu))) * r * udz * vdr" i="2" id="form" j="1" planar_linear="(st_E / (2.0*(1.0 + st_nu))) * (udy * vdx) + ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (udx * vdy)" planar_newton="(st_E / (2.0*(1.0 + st_nu))) * (udy * vdx) + ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (udx * vdy)"/>
+        <module:matrix_form axi_linear="r * ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * udz * vdz +                                          r * (st_E / (2.0*(1.0 + st_nu))) * (udr * vdr + 2 * udz * vdz)" axi_newton="r * ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * udz * vdz +                                          r * (st_E / (2.0*(1.0 + st_nu))) * (udr * vdr + 2 * udz * vdz)" i="2" id="form" j="2" planar_linear="(st_E / (2.0*(1.0 + st_nu))) * (udx * vdx)                                             + (((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (udy * vdy)" planar_newton="(st_E / (2.0*(1.0 + st_nu))) * (udx * vdx)                           + (((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (udy * vdy)"/>
+        <module:vector_form axi_linear="r * st_fvx * vval + r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * (vdr + vval / r)" axi_newton="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * updr * vdr + upval * vdr + updr * vval + upval * vval / (r + 1e-12)) +                                          (st_E / (2.0*(1.0 + st_nu))) * (2 * r * updr * vdr + 2 * upval * vval / (r + 1e-12) + r * updz * vdz)                                          - r * st_fvx * vval - r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * (vdr + vval / r)" i="1" id="form" j="1" planar_linear="st_fvx * vval + ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdx" planar_newton="(((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (updx * vdx)                                             + (st_E / (2.0*(1.0 + st_nu))) * (updy * vdy)                                             - st_fvx * vval - ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdx"/>
+        <module:vector_form axi_linear="0" axi_newton="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * updz * vdr + updz * vval) +                                             (st_E / (2.0*(1.0 + st_nu))) * r * updr * vdz" i="1" id="form" j="2" planar_linear="0" planar_newton="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (updy * vdx)                                             + (st_E / (2.0*(1.0 + st_nu))) * (updx * vdy)"/>
+        <module:vector_form axi_linear="0" axi_newton="((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (r * updr * vdz + upval * vdz) +                                            (st_E / (2.0*(1.0 + st_nu))) * r * updz * vdr" i="2" id="form" j="1" planar_linear="0" planar_newton="(st_E / (2.0*(1.0 + st_nu))) * (updy * vdx)                                             + ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * (updx * vdy)"/>
+        <module:vector_form axi_linear="r * st_fvy * vval + r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdz" axi_newton="r * ((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) * updz * vdz +                                          r * (st_E / (2.0*(1.0 + st_nu))) * (updr * vdr + 2 * updz * vdz)                                          - r * st_fvy * vval - r * ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdz" i="2" id="form" j="2" planar_linear="st_fvy * vval + ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdy" planar_newton="(st_E / (2.0*(1.0 + st_nu))) * (updx * vdx)                                             + (((st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu))) + 2*(st_E / (2.0*(1.0 + st_nu)))) * (updy * vdy)                                             - st_fvy * vval - ((3*(st_E * st_nu) / ((1.0 + st_nu) * (1.0 - 2.0*st_nu)) + 2*st_E / (2.0*(1.0 + st_nu))) * st_alpha * st_dT) * vdy"/>
       </module:weakform_volume>
     </module:weakforms_volume>
   </module:volume>
@@ -56,33 +54,29 @@
     <module:quantity id="elasticity_force_y" shortname="st_fy"/>
     <module:weakforms_surface>
       <module:weakform_surface analysistype="steadystate" default="elasticity_fixed_fixed">
-        <module:boundary id="elasticity_fixed_fixed" name="Fixed - fixed"
-          equation="u_x = u_{0,x},\,\,\, u_y = u_{0,y}">
+        <module:boundary equation="u_x = u_{0,x},\,\,\, u_y = u_{0,y}" id="elasticity_fixed_fixed" name="Fixed - fixed">
           <module:quantity id="elasticity_displacement_x"/>
           <module:quantity id="elasticity_displacement_y"/>
-          <module:essential_form id="form" axi_linear="st_dx" axi_newton="st_dx" i="1" planar_linear="st_dx" planar_newton="st_dx"/>
-          <module:essential_form id="form" axi_linear="st_dy" axi_newton="st_dy" i="2" planar_linear="st_dy" planar_newton="st_dy"/>
+          <module:essential_form axi_linear="st_dx" axi_newton="st_dx" i="1" id="form" planar_linear="st_dx" planar_newton="st_dx"/>
+          <module:essential_form axi_linear="st_dy" axi_newton="st_dy" i="2" id="form" planar_linear="st_dy" planar_newton="st_dy"/>
         </module:boundary>
-        <module:boundary id="elasticity_fixed_free" name="Fixed - free"
-          equation="u_x = u_{0,x},\,\,\, F_y = F_{0,y}">
+        <module:boundary equation="u_x = u_{0,x},\,\,\, F_y = F_{0,y}" id="elasticity_fixed_free" name="Fixed - free">
           <module:quantity id="elasticity_displacement_x"/>
           <module:quantity id="elasticity_force_y"/>
-          <module:vector_form id="form" axi_linear="st_fy * r * vval" axi_newton="- st_fy * r * vval" i="2" j="2" planar_linear="st_fy * vval" planar_newton="- st_fy * vval"/>
-          <module:essential_form id="form" axi_linear="st_dx" axi_newton="st_dx" i="1" planar_linear="st_dx" planar_newton="st_dx"/>
+          <module:vector_form axi_linear="st_fy * r * vval" axi_newton="- st_fy * r * vval" i="2" id="form" j="2" planar_linear="st_fy * vval" planar_newton="- st_fy * vval"/>
+          <module:essential_form axi_linear="st_dx" axi_newton="st_dx" i="1" id="form" planar_linear="st_dx" planar_newton="st_dx"/>
         </module:boundary>
-        <module:boundary id="elasticity_free_fixed" name="Free - fixed"
-          equation="F_x = F_{0,x},\,\,\, u_y = u_{0,y}">
+        <module:boundary equation="F_x = F_{0,x},\,\,\, u_y = u_{0,y}" id="elasticity_free_fixed" name="Free - fixed">
           <module:quantity id="elasticity_force_x"/>
           <module:quantity id="elasticity_displacement_y"/>
-          <module:vector_form id="form" axi_linear="st_fx * r * vval" axi_newton="- st_fx * r * vval" i="1" j="1" planar_linear="st_fx * vval" planar_newton="- st_fx * vval"/>
-          <module:essential_form id="form" axi_linear="st_dy" axi_newton="st_dy" i="2" planar_linear="st_dy" planar_newton="st_dy"/>
+          <module:vector_form axi_linear="st_fx * r * vval" axi_newton="- st_fx * r * vval" i="1" id="form" j="1" planar_linear="st_fx * vval" planar_newton="- st_fx * vval"/>
+          <module:essential_form axi_linear="st_dy" axi_newton="st_dy" i="2" id="form" planar_linear="st_dy" planar_newton="st_dy"/>
         </module:boundary>
-        <module:boundary id="elasticity_free_free" name="Free - free"
-          equation="F_x = F_{0,x},\,\,\, F_y = F_{0,y}">
+        <module:boundary equation="F_x = F_{0,x},\,\,\, F_y = F_{0,y}" id="elasticity_free_free" name="Free - free">
           <module:quantity id="elasticity_force_x"/>
           <module:quantity id="elasticity_force_y"/>
-          <module:vector_form id="form" axi_linear="st_fx * r * vval" axi_newton="- st_fx * r * vval" i="1" j="1" planar_linear="st_fx * vval" planar_newton="- st_fx * vval"/>
-          <module:vector_form id="form" axi_linear="st_fy * r * vval" axi_newton="- st_fy * r * vval" i="2" j="2" planar_linear="st_fy * vval" planar_newton="- st_fy * vval"/>
+          <module:vector_form axi_linear="st_fx * r * vval" axi_newton="- st_fx * r * vval" i="1" id="form" j="1" planar_linear="st_fx * vval" planar_newton="- st_fx * vval"/>
+          <module:vector_form axi_linear="st_fy * r * vval" axi_newton="- st_fy * r * vval" i="2" id="form" j="2" planar_linear="st_fy * vval" planar_newton="- st_fy * vval"/>
         </module:boundary>
       </module:weakform_surface>
     </module:weakforms_surface>
@@ -127,7 +121,7 @@
       <module:localvariable id="elasticity_alpha" name="Temperature coefficient" shortname="alpha" shortname_html="&lt;i>&amp;alpha;&lt;/i>" shortname_latex="\alpha" type="scalar" unit="1/K" unit_html="K&lt;sup>-1&lt;/sup>" unit_latex="K^{-1}">
         <module:expression analysistype="steadystate" axi="st_alpha" planar="st_alpha"/>
       </module:localvariable>
-      <module:localvariable id="elasticity_temperature_difference" name="Temperature difference" shortname="dT" shortname_html="D&lt;i>T&lt;/i>" shortname_latex="\triangle T" type="scalar" unit="K" unit_html="K" unit_latex="K">
+      <module:localvariable id="elasticity_temperature_difference" name="Temperature difference" shortname="dT" shortname_html="d&lt;i>T&lt;/i>" shortname_latex="\triangle T" type="scalar" unit="K" unit_html="K" unit_latex="K">
         <module:expression analysistype="steadystate" axi="st_dT" planar="st_dT"/>
       </module:localvariable>
       <module:localvariable id="elasticity_temperature_reference" name="Reference temperature" shortname="Tr" shortname_html="&lt;i>T&lt;/i>&lt;sub>ref&lt;/sub>" shortname_latex="T_{ref}" type="scalar" unit="K" unit_html="K" unit_latex="K">

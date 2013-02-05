@@ -16,11 +16,11 @@
 
   <module:spaces>
     <module:space analysistype="steadystate">
-      <module:space_config i="1" type="h1" orderadjust="0" />
+      <module:space_config i="1" orderadjust="0" type="h1"/>
     </module:space>
     <module:space analysistype="harmonic">
-      <module:space_config i="1" type="h1" orderadjust="0" />
-      <module:space_config i="2" type="h1" orderadjust="0" />
+      <module:space_config i="1" orderadjust="0" type="h1"/>
+      <module:space_config i="2" orderadjust="0" type="h1"/>
     </module:space>
   </module:spaces>
 
@@ -28,20 +28,18 @@
     <module:quantity id="current_conductivity" shortname="cu_gamma"/>
     <module:quantity id="current_permittivity" shortname="cu_epsr"/>
     <module:weakforms_volume>
-      <module:weakform_volume analysistype="steadystate"
-        equation="-\, \div \left( \sigma\,\, \grad \varphi \right) = 0">
+      <module:weakform_volume analysistype="steadystate" equation="-\, \div \left( \sigma\,\, \grad \varphi \right) = 0">
         <module:quantity id="current_conductivity"/>
-        <module:matrix_form id="form" axi_linear="cu_gamma * r * (udr * vdr + udz * vdz)" axi_newton="cu_gamma * r * (udr * vdr + udz * vdz)" i="1" j="1" planar_linear="cu_gamma * (udx * vdx + udy * vdy)" planar_newton="cu_gamma * (udx * vdx + udy * vdy)" symmetric="1"/>
-        <module:vector_form id="form" axi_linear="0" axi_newton="cu_gamma * r * (updr * vdr + updz * vdz)" i="1" j="1" planar_linear="0" planar_newton="cu_gamma * (updx * vdx + updy * vdy)"/>
+        <module:matrix_form axi_linear="cu_gamma * r * (udr * vdr + udz * vdz)" axi_newton="cu_gamma * r * (udr * vdr + udz * vdz)" i="1" id="form" j="1" planar_linear="cu_gamma * (udx * vdx + udy * vdy)" planar_newton="cu_gamma * (udx * vdx + udy * vdy)" symmetric="1"/>
+        <module:vector_form axi_linear="0" axi_newton="cu_gamma * r * (updr * vdr + updz * vdz)" i="1" id="form" j="1" planar_linear="0" planar_newton="cu_gamma * (updx * vdx + updy * vdy)"/>
       </module:weakform_volume>
-      <module:weakform_volume analysistype="harmonic"
-        equation="-\, \div \left( \left( \sigma + \mj \omega \varepsilon \right) \,\, \grad \varphi \right) = 0">
+      <module:weakform_volume analysistype="harmonic" equation="-\, \div \left( \left( \sigma + \mj \omega \varepsilon \right) \,\, \grad \varphi \right) = 0">
         <module:quantity id="current_conductivity"/>
         <module:quantity id="current_permittivity"/>
-        <module:matrix_form id="form" axi_linear="cu_gamma * r * (udr * vdr + udz * vdz)" axi_newton="cu_gamma * r * (udr * vdr + udz * vdz)" i="1" j="1" planar_linear="cu_gamma * (udx * vdx + udy * vdy)" planar_newton="cu_gamma * (udx * vdx + udy * vdy)" symmetric="1"/>
-        <module:matrix_form id="form" axi_linear="2 * PI * f * cu_epsr * EPS0 * r * (udr * vdr + udz * vdz)" axi_newton="2 * PI * f * cu_epsr * EPS0 * r * (udr * vdr + udz * vdz)" i="2" j="2" planar_linear="2 * PI * f * cu_epsr * EPS0 * (udx * vdx + udy * vdy)" planar_newton="2 * PI * f * cu_epsr * EPS0 * (udx * vdx + udy * vdy)" symmetric="1"/>
-        <module:vector_form id="form" axi_linear="0" axi_newton="cu_gamma * r * (updr * vdr + updz * vdz)" i="1" j="1" planar_linear="0" planar_newton="cu_gamma * (updx * vdx + updy * vdy)"/>
-        <module:vector_form id="form" axi_linear="0" axi_newton="2 * PI * f * cu_epsr * EPS0 * r * (updr * vdr + updz * vdz)" i="2" j="2" planar_linear="0" planar_newton="2 * PI * f * cu_epsr * EPS0 * (updx * vdx + updy * vdy)"/>
+        <module:matrix_form axi_linear="cu_gamma * r * (udr * vdr + udz * vdz)" axi_newton="cu_gamma * r * (udr * vdr + udz * vdz)" i="1" id="form" j="1" planar_linear="cu_gamma * (udx * vdx + udy * vdy)" planar_newton="cu_gamma * (udx * vdx + udy * vdy)" symmetric="1"/>
+        <module:matrix_form axi_linear="2 * PI * f * cu_epsr * EPS0 * r * (udr * vdr + udz * vdz)" axi_newton="2 * PI * f * cu_epsr * EPS0 * r * (udr * vdr + udz * vdz)" i="2" id="form" j="2" planar_linear="2 * PI * f * cu_epsr * EPS0 * (udx * vdx + udy * vdy)" planar_newton="2 * PI * f * cu_epsr * EPS0 * (udx * vdx + udy * vdy)" symmetric="1"/>
+        <module:vector_form axi_linear="0" axi_newton="cu_gamma * r * (updr * vdr + updz * vdz)" i="1" id="form" j="1" planar_linear="0" planar_newton="cu_gamma * (updx * vdx + updy * vdy)"/>
+        <module:vector_form axi_linear="0" axi_newton="2 * PI * f * cu_epsr * EPS0 * r * (updr * vdr + updz * vdz)" i="2" id="form" j="2" planar_linear="0" planar_newton="2 * PI * f * cu_epsr * EPS0 * (updx * vdx + updy * vdy)"/>
       </module:weakform_volume>
     </module:weakforms_volume>
   </module:volume>
@@ -51,29 +49,25 @@
     <module:quantity id="current_inward_current_flow" shortname="cu_Jn"/>
     <module:weakforms_surface>
       <module:weakform_surface analysistype="steadystate" default="current_potential">
-        <module:boundary id="current_potential" name="Fixed voltage"
-          equation="\varphi = \varphi_0">
+        <module:boundary equation="\varphi = \varphi_0" id="current_potential" name="Fixed voltage">
           <module:quantity id="current_potential"/>
-          <module:essential_form id="form" axi_linear="cu_V" axi_newton="cu_V" i="1" planar_linear="cu_V" planar_newton="cu_V"/>
+          <module:essential_form axi_linear="cu_V" axi_newton="cu_V" i="1" id="form" planar_linear="cu_V" planar_newton="cu_V"/>
         </module:boundary>
-        <module:boundary id="current_inward_current_flow" name="Current density"
-          equation="J_\mathrm{n} = \sigma \frac{\partial \varphi}{\partial n_0} = J_0">
+        <module:boundary equation="J_\mathrm{n} = \sigma \frac{\partial \varphi}{\partial n_0} = J_0" id="current_inward_current_flow" name="Current density">
           <module:quantity id="current_inward_current_flow"/>
-          <module:vector_form id="form" axi_linear="cu_Jn * r * vval" axi_newton="- cu_Jn * r * vval" i="1" j="1" planar_linear="cu_Jn * vval" planar_newton="- cu_Jn * vval"/>
+          <module:vector_form axi_linear="cu_Jn * r * vval" axi_newton="- cu_Jn * r * vval" i="1" id="form" j="1" planar_linear="cu_Jn * vval" planar_newton="- cu_Jn * vval"/>
         </module:boundary>
       </module:weakform_surface>
       <module:weakform_surface analysistype="harmonic" default="current_potential">
-        <module:boundary id="current_potential" name="Fixed voltage"
-          equation="\varphi = \varphi_0">
+        <module:boundary equation="\varphi = \varphi_0" id="current_potential" name="Fixed voltage">
           <module:quantity id="current_potential"/>
-          <module:essential_form id="form" axi_linear="cu_V" axi_newton="cu_V" i="1" planar_linear="cu_V" planar_newton="cu_V"/>
-          <module:essential_form id="form" axi_linear="0" axi_newton="0" i="2" planar_linear="0" planar_newton="0"/>
+          <module:essential_form axi_linear="cu_V" axi_newton="cu_V" i="1" id="form" planar_linear="cu_V" planar_newton="cu_V"/>
+          <module:essential_form axi_linear="0" axi_newton="0" i="2" id="form" planar_linear="0" planar_newton="0"/>
         </module:boundary>
-        <module:boundary id="current_inward_current_flow" name="Current density"
-          equation="J_\mathrm{n} = \sigma \frac{\partial \varphi}{\partial n_0} = J_0">
+        <module:boundary equation="J_\mathrm{n} = \sigma \frac{\partial \varphi}{\partial n_0} = J_0" id="current_inward_current_flow" name="Current density">
           <module:quantity id="current_inward_current_flow"/>
-          <module:vector_form id="form" axi_linear="cu_Jn * r * vval" axi_newton="- cu_Jn * r * vval" i="1" j="1" planar_linear="cu_Jn * vval" planar_newton="- cu_Jn * vval"/>
-          <module:vector_form id="form" axi_linear="0" axi_newton="0" i="2" j="2" planar_linear="0" planar_newton="0"/>
+          <module:vector_form axi_linear="cu_Jn * r * vval" axi_newton="- cu_Jn * r * vval" i="1" id="form" j="1" planar_linear="cu_Jn * vval" planar_newton="- cu_Jn * vval"/>
+          <module:vector_form axi_linear="0" axi_newton="0" i="2" id="form" j="2" planar_linear="0" planar_newton="0"/>
         </module:boundary>
       </module:weakform_surface>
     </module:weakforms_surface>
