@@ -69,8 +69,18 @@ bool isBetween(double angleStart, double angleEnd, double angleTest)
 
 bool isBetween(const Point &pointStart, const Point &pointEnd, const Point &pointTest)
 {
+    Point pointIntersect;
+    bool result = intersectionLines(pointStart, pointEnd, Point(0,0), pointTest, pointIntersect);
+    if(result)
+    {
+        if(fabs(pointTest.x) > fabs(pointTest.y))
+            return pointTest.x * pointIntersect.x > 0.;
+        else
+            return pointTest.y * pointIntersect.y > 0.;
+    }
+    return false;
     // TODO: rewrite - too slow
-    return isBetween(pointStart.angle(), pointEnd.angle(), pointTest.angle());
+    //return isBetween(pointStart.angle(), pointEnd.angle(), pointTest.angle());
 }
 
 bool intersection(const Point &p, const Point &p1s, const Point &p1e)
