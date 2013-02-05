@@ -354,8 +354,6 @@ namespace Hermes
       { element->vn[1]->y - element->vn[0]->y,  element->vn[k]->y - element->vn[0]->y } };
 
       const_jacobian = 0.25 * (m[0][0] * m[1][1] - m[0][1] * m[1][0]);
-      if(const_jacobian <= 0.0)
-        throw Hermes::Exceptions::Exception("Element #%d is concave or badly oriented.", element->id);
 
       double ij = 0.5 / const_jacobian;
 
@@ -591,7 +589,7 @@ namespace Hermes
       // Newton Method
       int local_nc;
       double2* local_coeffs;
-      double2  local_lin_coeffs[4];
+      double2  local_lin_coeffs[H2D_MAX_NUMBER_VERTICES];
       H1ShapesetJacobi shapeset;
       int local_indices[70];
         

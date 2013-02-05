@@ -26,8 +26,6 @@
 #include "refinement_selectors/selector.h"
 #include "exceptions.h"
 #include "mixins2d.h"
-#include "elemwise_parameter/elemwise_parameter_mesh_func.h"
-#include "elemwise_parameter/elemwise_parameter_nonlinear.h"
 
 namespace Hermes
 {
@@ -186,12 +184,6 @@ namespace Hermes
       void assemble_one_state(PrecalcShapeset** current_pss, PrecalcShapeset** current_spss, RefMap** current_refmaps, Solution<Scalar>** current_u_ext, 
         AsmList<Scalar>** current_als, Traverse::State* current_state, WeakForm<Scalar>* current_wf);
 
-      /// Assemble constant forms in one state.
-      void assemble_constant_forms(RefMap* current_refmap, AsmList<Scalar>** current_als, Traverse::State* current_state, WeakForm<Scalar>* current_wf);
-
-      /// Assemble Dirichlet in constant forms.
-      void assemble_constant_forms_Dirichlet(Traverse::State* current_state, int n_quadrature_points, Geom<double>* geometry, double* jacobian_x_weights, Func<double>** base_fns, Func<double>** test_fns, AsmList<Scalar>** current_als, MatrixForm<Scalar>* form);
-
       /// Adjusts order to refmaps.
       void adjust_order_to_refmaps(Form<Scalar> *form, int& order, Hermes::Ord* o, RefMap** current_refmaps);
 
@@ -199,7 +191,7 @@ namespace Hermes
       int calc_order_matrix_form(MatrixForm<Scalar>* mfv, RefMap** current_refmaps, Solution<Scalar>** current_u_ext, Traverse::State* current_state);
 
       /// Matrix volumetric forms - assemble the form.
-      virtual void assemble_matrix_form(MatrixForm<Scalar>* form, int order, Func<double>** base_fns, Func<double>** test_fns, Func<Scalar>** ext, Func<Scalar>** u_ext, Solution<Scalar>** u_ext_solutions, 
+      virtual void assemble_matrix_form(MatrixForm<Scalar>* form, int order, Func<double>** base_fns, Func<double>** test_fns, Func<Scalar>** ext, Func<Scalar>** u_ext,
       AsmList<Scalar>* current_als_i, AsmList<Scalar>* current_als_j, Traverse::State* current_state, int n_quadrature_points, Geom<double>* geometry, double* jacobian_x_weights);
 
       /// Vector volumetric forms - calculate the integration order.

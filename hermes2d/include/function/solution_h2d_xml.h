@@ -839,9 +839,9 @@ namespace XMLSolution
     //@}
 
     /**
-     * @name num_components
+     * @name ncmp
      *
-     * @brief Accessor and modifier functions for the %num_components
+     * @brief Accessor and modifier functions for the %ncmp
      * required attribute.
      */
     //@{
@@ -849,28 +849,28 @@ namespace XMLSolution
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::integer num_components_type;
+    typedef ::xml_schema::integer ncmp_type;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< num_components_type, char > num_components_traits;
+    typedef ::xsd::cxx::tree::traits< ncmp_type, char > ncmp_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute.
      *
      * @return A constant reference to the attribute.
      */
-    const num_components_type&
-    num_components () const;
+    const ncmp_type&
+    ncmp () const;
 
     /**
      * @brief Return a read-write reference to the attribute.
      *
      * @return A reference to the attribute.
      */
-    num_components_type&
-    num_components ();
+    ncmp_type&
+    ncmp ();
 
     /**
      * @brief Set the attribute value.
@@ -881,14 +881,14 @@ namespace XMLSolution
      * the new value of the attribute.
      */
     void
-    num_components (const num_components_type& x);
+    ncmp (const ncmp_type& x);
 
     //@}
 
     /**
-     * @name num_elems
+     * @name nel
      *
-     * @brief Accessor and modifier functions for the %num_elems
+     * @brief Accessor and modifier functions for the %nel
      * required attribute.
      */
     //@{
@@ -896,28 +896,28 @@ namespace XMLSolution
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::integer num_elems_type;
+    typedef ::xml_schema::integer nel_type;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< num_elems_type, char > num_elems_traits;
+    typedef ::xsd::cxx::tree::traits< nel_type, char > nel_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute.
      *
      * @return A constant reference to the attribute.
      */
-    const num_elems_type&
-    num_elems () const;
+    const nel_type&
+    nel () const;
 
     /**
      * @brief Return a read-write reference to the attribute.
      *
      * @return A reference to the attribute.
      */
-    num_elems_type&
-    num_elems ();
+    nel_type&
+    nel ();
 
     /**
      * @brief Set the attribute value.
@@ -928,14 +928,14 @@ namespace XMLSolution
      * the new value of the attribute.
      */
     void
-    num_elems (const num_elems_type& x);
+    nel (const nel_type& x);
 
     //@}
 
     /**
-     * @name num_coeffs
+     * @name nc
      *
-     * @brief Accessor and modifier functions for the %num_coeffs
+     * @brief Accessor and modifier functions for the %nc
      * required attribute.
      */
     //@{
@@ -943,28 +943,28 @@ namespace XMLSolution
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::integer num_coeffs_type;
+    typedef ::xml_schema::integer nc_type;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< num_coeffs_type, char > num_coeffs_traits;
+    typedef ::xsd::cxx::tree::traits< nc_type, char > nc_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute.
      *
      * @return A constant reference to the attribute.
      */
-    const num_coeffs_type&
-    num_coeffs () const;
+    const nc_type&
+    nc () const;
 
     /**
      * @brief Return a read-write reference to the attribute.
      *
      * @return A reference to the attribute.
      */
-    num_coeffs_type&
-    num_coeffs ();
+    nc_type&
+    nc ();
 
     /**
      * @brief Set the attribute value.
@@ -975,7 +975,7 @@ namespace XMLSolution
      * the new value of the attribute.
      */
     void
-    num_coeffs (const num_coeffs_type& x);
+    nc (const nc_type& x);
 
     //@}
 
@@ -1027,9 +1027,9 @@ namespace XMLSolution
     //@}
 
     /**
-     * @name exactComplex
+     * @name exactC
      *
-     * @brief Accessor and modifier functions for the %exactComplex
+     * @brief Accessor and modifier functions for the %exactC
      * required attribute.
      */
     //@{
@@ -1037,28 +1037,28 @@ namespace XMLSolution
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::integer exactComplex_type;
+    typedef ::xml_schema::integer exactC_type;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< exactComplex_type, char > exactComplex_traits;
+    typedef ::xsd::cxx::tree::traits< exactC_type, char > exactC_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute.
      *
      * @return A constant reference to the attribute.
      */
-    const exactComplex_type&
-    exactComplex () const;
+    const exactC_type&
+    exactC () const;
 
     /**
      * @brief Return a read-write reference to the attribute.
      *
      * @return A reference to the attribute.
      */
-    exactComplex_type&
-    exactComplex ();
+    exactC_type&
+    exactC ();
 
     /**
      * @brief Set the attribute value.
@@ -1069,14 +1069,14 @@ namespace XMLSolution
      * the new value of the attribute.
      */
     void
-    exactComplex (const exactComplex_type& x);
+    exactC (const exactC_type& x);
 
     //@}
 
     /**
-     * @name exactConstantXReal
+     * @name exactCXR
      *
-     * @brief Accessor and modifier functions for the %exactConstantXReal
+     * @brief Accessor and modifier functions for the %exactCXR
      * optional attribute.
      */
     //@{
@@ -1084,17 +1084,17 @@ namespace XMLSolution
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::decimal exactConstantXReal_type;
+    typedef ::xml_schema::decimal exactCXR_type;
 
     /**
      * @brief Attribute optional container type.
      */
-    typedef ::xsd::cxx::tree::optional< exactConstantXReal_type > exactConstantXReal_optional;
+    typedef ::xsd::cxx::tree::optional< exactCXR_type > exactCXR_optional;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< exactConstantXReal_type, char, ::xsd::cxx::tree::schema_type::decimal > exactConstantXReal_traits;
+    typedef ::xsd::cxx::tree::traits< exactCXR_type, char, ::xsd::cxx::tree::schema_type::decimal > exactCXR_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute
@@ -1102,16 +1102,16 @@ namespace XMLSolution
      *
      * @return A constant reference to the optional container.
      */
-    const exactConstantXReal_optional&
-    exactConstantXReal () const;
+    const exactCXR_optional&
+    exactCXR () const;
 
     /**
      * @brief Return a read-write reference to the attribute container.
      *
      * @return A reference to the optional container.
      */
-    exactConstantXReal_optional&
-    exactConstantXReal ();
+    exactCXR_optional&
+    exactCXR ();
 
     /**
      * @brief Set the attribute value.
@@ -1122,7 +1122,7 @@ namespace XMLSolution
      * the new value of the attribute.
      */
     void
-    exactConstantXReal (const exactConstantXReal_type& x);
+    exactCXR (const exactCXR_type& x);
 
     /**
      * @brief Set the attribute value.
@@ -1134,14 +1134,14 @@ namespace XMLSolution
      * Otherwise the attribute container is set the 'not present' state.
      */
     void
-    exactConstantXReal (const exactConstantXReal_optional& x);
+    exactCXR (const exactCXR_optional& x);
 
     //@}
 
     /**
-     * @name exactConstantYReal
+     * @name exactCYR
      *
-     * @brief Accessor and modifier functions for the %exactConstantYReal
+     * @brief Accessor and modifier functions for the %exactCYR
      * optional attribute.
      */
     //@{
@@ -1149,17 +1149,17 @@ namespace XMLSolution
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::decimal exactConstantYReal_type;
+    typedef ::xml_schema::decimal exactCYR_type;
 
     /**
      * @brief Attribute optional container type.
      */
-    typedef ::xsd::cxx::tree::optional< exactConstantYReal_type > exactConstantYReal_optional;
+    typedef ::xsd::cxx::tree::optional< exactCYR_type > exactCYR_optional;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< exactConstantYReal_type, char, ::xsd::cxx::tree::schema_type::decimal > exactConstantYReal_traits;
+    typedef ::xsd::cxx::tree::traits< exactCYR_type, char, ::xsd::cxx::tree::schema_type::decimal > exactCYR_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute
@@ -1167,16 +1167,16 @@ namespace XMLSolution
      *
      * @return A constant reference to the optional container.
      */
-    const exactConstantYReal_optional&
-    exactConstantYReal () const;
+    const exactCYR_optional&
+    exactCYR () const;
 
     /**
      * @brief Return a read-write reference to the attribute container.
      *
      * @return A reference to the optional container.
      */
-    exactConstantYReal_optional&
-    exactConstantYReal ();
+    exactCYR_optional&
+    exactCYR ();
 
     /**
      * @brief Set the attribute value.
@@ -1187,7 +1187,7 @@ namespace XMLSolution
      * the new value of the attribute.
      */
     void
-    exactConstantYReal (const exactConstantYReal_type& x);
+    exactCYR (const exactCYR_type& x);
 
     /**
      * @brief Set the attribute value.
@@ -1199,14 +1199,14 @@ namespace XMLSolution
      * Otherwise the attribute container is set the 'not present' state.
      */
     void
-    exactConstantYReal (const exactConstantYReal_optional& x);
+    exactCYR (const exactCYR_optional& x);
 
     //@}
 
     /**
-     * @name exactConstantXComplex
+     * @name exactCXC
      *
-     * @brief Accessor and modifier functions for the %exactConstantXComplex
+     * @brief Accessor and modifier functions for the %exactCXC
      * optional attribute.
      */
     //@{
@@ -1214,17 +1214,17 @@ namespace XMLSolution
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::decimal exactConstantXComplex_type;
+    typedef ::xml_schema::decimal exactCXC_type;
 
     /**
      * @brief Attribute optional container type.
      */
-    typedef ::xsd::cxx::tree::optional< exactConstantXComplex_type > exactConstantXComplex_optional;
+    typedef ::xsd::cxx::tree::optional< exactCXC_type > exactCXC_optional;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< exactConstantXComplex_type, char, ::xsd::cxx::tree::schema_type::decimal > exactConstantXComplex_traits;
+    typedef ::xsd::cxx::tree::traits< exactCXC_type, char, ::xsd::cxx::tree::schema_type::decimal > exactCXC_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute
@@ -1232,16 +1232,16 @@ namespace XMLSolution
      *
      * @return A constant reference to the optional container.
      */
-    const exactConstantXComplex_optional&
-    exactConstantXComplex () const;
+    const exactCXC_optional&
+    exactCXC () const;
 
     /**
      * @brief Return a read-write reference to the attribute container.
      *
      * @return A reference to the optional container.
      */
-    exactConstantXComplex_optional&
-    exactConstantXComplex ();
+    exactCXC_optional&
+    exactCXC ();
 
     /**
      * @brief Set the attribute value.
@@ -1252,7 +1252,7 @@ namespace XMLSolution
      * the new value of the attribute.
      */
     void
-    exactConstantXComplex (const exactConstantXComplex_type& x);
+    exactCXC (const exactCXC_type& x);
 
     /**
      * @brief Set the attribute value.
@@ -1264,14 +1264,14 @@ namespace XMLSolution
      * Otherwise the attribute container is set the 'not present' state.
      */
     void
-    exactConstantXComplex (const exactConstantXComplex_optional& x);
+    exactCXC (const exactCXC_optional& x);
 
     //@}
 
     /**
-     * @name exactConstantYComplex
+     * @name exactCYC
      *
-     * @brief Accessor and modifier functions for the %exactConstantYComplex
+     * @brief Accessor and modifier functions for the %exactCYC
      * optional attribute.
      */
     //@{
@@ -1279,17 +1279,17 @@ namespace XMLSolution
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::decimal exactConstantYComplex_type;
+    typedef ::xml_schema::decimal exactCYC_type;
 
     /**
      * @brief Attribute optional container type.
      */
-    typedef ::xsd::cxx::tree::optional< exactConstantYComplex_type > exactConstantYComplex_optional;
+    typedef ::xsd::cxx::tree::optional< exactCYC_type > exactCYC_optional;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< exactConstantYComplex_type, char, ::xsd::cxx::tree::schema_type::decimal > exactConstantYComplex_traits;
+    typedef ::xsd::cxx::tree::traits< exactCYC_type, char, ::xsd::cxx::tree::schema_type::decimal > exactCYC_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute
@@ -1297,16 +1297,16 @@ namespace XMLSolution
      *
      * @return A constant reference to the optional container.
      */
-    const exactConstantYComplex_optional&
-    exactConstantYComplex () const;
+    const exactCYC_optional&
+    exactCYC () const;
 
     /**
      * @brief Return a read-write reference to the attribute container.
      *
      * @return A reference to the optional container.
      */
-    exactConstantYComplex_optional&
-    exactConstantYComplex ();
+    exactCYC_optional&
+    exactCYC ();
 
     /**
      * @brief Set the attribute value.
@@ -1317,7 +1317,7 @@ namespace XMLSolution
      * the new value of the attribute.
      */
     void
-    exactConstantYComplex (const exactConstantYComplex_type& x);
+    exactCYC (const exactCYC_type& x);
 
     /**
      * @brief Set the attribute value.
@@ -1329,14 +1329,14 @@ namespace XMLSolution
      * Otherwise the attribute container is set the 'not present' state.
      */
     void
-    exactConstantYComplex (const exactConstantYComplex_optional& x);
+    exactCYC (const exactCYC_optional& x);
 
     //@}
 
     /**
-     * @name spaceType
+     * @name space
      *
-     * @brief Accessor and modifier functions for the %spaceType
+     * @brief Accessor and modifier functions for the %space
      * optional attribute.
      */
     //@{
@@ -1344,17 +1344,17 @@ namespace XMLSolution
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::string spaceType_type;
+    typedef ::xml_schema::string space_type;
 
     /**
      * @brief Attribute optional container type.
      */
-    typedef ::xsd::cxx::tree::optional< spaceType_type > spaceType_optional;
+    typedef ::xsd::cxx::tree::optional< space_type > space_optional;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< spaceType_type, char > spaceType_traits;
+    typedef ::xsd::cxx::tree::traits< space_type, char > space_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute
@@ -1362,16 +1362,16 @@ namespace XMLSolution
      *
      * @return A constant reference to the optional container.
      */
-    const spaceType_optional&
-    spaceType () const;
+    const space_optional&
+    space () const;
 
     /**
      * @brief Return a read-write reference to the attribute container.
      *
      * @return A reference to the optional container.
      */
-    spaceType_optional&
-    spaceType ();
+    space_optional&
+    space ();
 
     /**
      * @brief Set the attribute value.
@@ -1382,7 +1382,7 @@ namespace XMLSolution
      * the new value of the attribute.
      */
     void
-    spaceType (const spaceType_type& x);
+    space (const space_type& x);
 
     /**
      * @brief Set the attribute value.
@@ -1394,7 +1394,7 @@ namespace XMLSolution
      * Otherwise the attribute container is set the 'not present' state.
      */
     void
-    spaceType (const spaceType_optional& x);
+    space (const space_optional& x);
 
     /**
      * @brief Set the attribute value without copying.
@@ -1405,7 +1405,7 @@ namespace XMLSolution
      * of making a copy.
      */
     void
-    spaceType (::std::auto_ptr< spaceType_type > p);
+    space (::std::auto_ptr< space_type > p);
 
     //@}
 
@@ -1418,11 +1418,11 @@ namespace XMLSolution
      * @brief Create an instance from the ultimate base and
      * initializers for required elements and attributes.
      */
-    solution (const num_components_type&,
-              const num_elems_type&,
-              const num_coeffs_type&,
+    solution (const ncmp_type&,
+              const nel_type&,
+              const nc_type&,
               const exact_type&,
-              const exactComplex_type&);
+              const exactC_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -1486,16 +1486,16 @@ namespace XMLSolution
     mono_coeffs_sequence mono_coeffs_;
     elem_orders_sequence elem_orders_;
     component_sequence component_;
-    ::xsd::cxx::tree::one< num_components_type > num_components_;
-    ::xsd::cxx::tree::one< num_elems_type > num_elems_;
-    ::xsd::cxx::tree::one< num_coeffs_type > num_coeffs_;
+    ::xsd::cxx::tree::one< ncmp_type > ncmp_;
+    ::xsd::cxx::tree::one< nel_type > nel_;
+    ::xsd::cxx::tree::one< nc_type > nc_;
     ::xsd::cxx::tree::one< exact_type > exact_;
-    ::xsd::cxx::tree::one< exactComplex_type > exactComplex_;
-    exactConstantXReal_optional exactConstantXReal_;
-    exactConstantYReal_optional exactConstantYReal_;
-    exactConstantXComplex_optional exactConstantXComplex_;
-    exactConstantYComplex_optional exactConstantYComplex_;
-    spaceType_optional spaceType_;
+    ::xsd::cxx::tree::one< exactC_type > exactC_;
+    exactCXR_optional exactCXR_;
+    exactCYR_optional exactCYR_;
+    exactCXC_optional exactCXC_;
+    exactCYC_optional exactCYC_;
+    space_optional space_;
 
     //@endcond
   };
@@ -1556,9 +1556,9 @@ namespace XMLSolution
     //@}
 
     /**
-     * @name real
+     * @name re
      *
-     * @brief Accessor and modifier functions for the %real
+     * @brief Accessor and modifier functions for the %re
      * required attribute.
      */
     //@{
@@ -1566,28 +1566,28 @@ namespace XMLSolution
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::decimal real_type;
+    typedef ::xml_schema::decimal re_type;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< real_type, char, ::xsd::cxx::tree::schema_type::decimal > real_traits;
+    typedef ::xsd::cxx::tree::traits< re_type, char, ::xsd::cxx::tree::schema_type::decimal > re_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute.
      *
      * @return A constant reference to the attribute.
      */
-    const real_type&
-    real () const;
+    const re_type&
+    re () const;
 
     /**
      * @brief Return a read-write reference to the attribute.
      *
      * @return A reference to the attribute.
      */
-    real_type&
-    real ();
+    re_type&
+    re ();
 
     /**
      * @brief Set the attribute value.
@@ -1598,14 +1598,14 @@ namespace XMLSolution
      * the new value of the attribute.
      */
     void
-    real (const real_type& x);
+    re (const re_type& x);
 
     //@}
 
     /**
-     * @name imaginary
+     * @name im
      *
-     * @brief Accessor and modifier functions for the %imaginary
+     * @brief Accessor and modifier functions for the %im
      * optional attribute.
      */
     //@{
@@ -1613,17 +1613,17 @@ namespace XMLSolution
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::decimal imaginary_type;
+    typedef ::xml_schema::decimal im_type;
 
     /**
      * @brief Attribute optional container type.
      */
-    typedef ::xsd::cxx::tree::optional< imaginary_type > imaginary_optional;
+    typedef ::xsd::cxx::tree::optional< im_type > im_optional;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< imaginary_type, char, ::xsd::cxx::tree::schema_type::decimal > imaginary_traits;
+    typedef ::xsd::cxx::tree::traits< im_type, char, ::xsd::cxx::tree::schema_type::decimal > im_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute
@@ -1631,16 +1631,16 @@ namespace XMLSolution
      *
      * @return A constant reference to the optional container.
      */
-    const imaginary_optional&
-    imaginary () const;
+    const im_optional&
+    im () const;
 
     /**
      * @brief Return a read-write reference to the attribute container.
      *
      * @return A reference to the optional container.
      */
-    imaginary_optional&
-    imaginary ();
+    im_optional&
+    im ();
 
     /**
      * @brief Set the attribute value.
@@ -1651,7 +1651,7 @@ namespace XMLSolution
      * the new value of the attribute.
      */
     void
-    imaginary (const imaginary_type& x);
+    im (const im_type& x);
 
     /**
      * @brief Set the attribute value.
@@ -1663,7 +1663,7 @@ namespace XMLSolution
      * Otherwise the attribute container is set the 'not present' state.
      */
     void
-    imaginary (const imaginary_optional& x);
+    im (const im_optional& x);
 
     //@}
 
@@ -1677,7 +1677,7 @@ namespace XMLSolution
      * initializers for required elements and attributes.
      */
     mono_coeffs (const id_type&,
-                 const real_type&);
+                 const re_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -1739,8 +1739,8 @@ namespace XMLSolution
 
     protected:
     ::xsd::cxx::tree::one< id_type > id_;
-    ::xsd::cxx::tree::one< real_type > real_;
-    imaginary_optional imaginary_;
+    ::xsd::cxx::tree::one< re_type > re_;
+    im_optional im_;
 
     //@endcond
   };
@@ -1801,9 +1801,9 @@ namespace XMLSolution
     //@}
 
     /**
-     * @name order
+     * @name ord
      *
-     * @brief Accessor and modifier functions for the %order
+     * @brief Accessor and modifier functions for the %ord
      * required attribute.
      */
     //@{
@@ -1811,28 +1811,28 @@ namespace XMLSolution
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::integer order_type;
+    typedef ::xml_schema::integer ord_type;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< order_type, char > order_traits;
+    typedef ::xsd::cxx::tree::traits< ord_type, char > ord_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute.
      *
      * @return A constant reference to the attribute.
      */
-    const order_type&
-    order () const;
+    const ord_type&
+    ord () const;
 
     /**
      * @brief Return a read-write reference to the attribute.
      *
      * @return A reference to the attribute.
      */
-    order_type&
-    order ();
+    ord_type&
+    ord ();
 
     /**
      * @brief Set the attribute value.
@@ -1843,7 +1843,7 @@ namespace XMLSolution
      * the new value of the attribute.
      */
     void
-    order (const order_type& x);
+    ord (const ord_type& x);
 
     //@}
 
@@ -1857,7 +1857,7 @@ namespace XMLSolution
      * initializers for required elements and attributes.
      */
     elem_orders (const id_type&,
-                 const order_type&);
+                 const ord_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -1919,7 +1919,7 @@ namespace XMLSolution
 
     protected:
     ::xsd::cxx::tree::one< id_type > id_;
-    ::xsd::cxx::tree::one< order_type > order_;
+    ::xsd::cxx::tree::one< ord_type > ord_;
 
     //@endcond
   };
@@ -2193,9 +2193,9 @@ namespace XMLSolution
     //@}
 
     /**
-     * @name coeff
+     * @name c
      *
-     * @brief Accessor and modifier functions for the %coeff
+     * @brief Accessor and modifier functions for the %c
      * required attribute.
      */
     //@{
@@ -2203,28 +2203,28 @@ namespace XMLSolution
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::integer coeff_type;
+    typedef ::xml_schema::integer c_type;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< coeff_type, char > coeff_traits;
+    typedef ::xsd::cxx::tree::traits< c_type, char > c_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute.
      *
      * @return A constant reference to the attribute.
      */
-    const coeff_type&
-    coeff () const;
+    const c_type&
+    c () const;
 
     /**
      * @brief Return a read-write reference to the attribute.
      *
      * @return A reference to the attribute.
      */
-    coeff_type&
-    coeff ();
+    c_type&
+    c ();
 
     /**
      * @brief Set the attribute value.
@@ -2235,7 +2235,7 @@ namespace XMLSolution
      * the new value of the attribute.
      */
     void
-    coeff (const coeff_type& x);
+    c (const c_type& x);
 
     //@}
 
@@ -2249,7 +2249,7 @@ namespace XMLSolution
      * initializers for required elements and attributes.
      */
     elem_coeffs (const id_type&,
-                 const coeff_type&);
+                 const c_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -2311,7 +2311,7 @@ namespace XMLSolution
 
     protected:
     ::xsd::cxx::tree::one< id_type > id_;
-    ::xsd::cxx::tree::one< coeff_type > coeff_;
+    ::xsd::cxx::tree::one< c_type > c_;
 
     //@endcond
   };

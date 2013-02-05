@@ -470,7 +470,7 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
     //        dict.SetValue("MESHANDSOLVER_LABEL", tr("Mesh and Solution").toStdString());
     //        dict.SetValue("SOLVER_LABEL", tr("Solver information").toStdString());
     //        dict.SetValue("SOLVER_NODES_LABEL", tr("Nodes:").toStdString());
-    //        dict.SetIntValue("SOLVER_NODES", Agros2D::scene()->sceneSolution()->meshInitial()->get_num_nodes());
+    //        dict.SetIntValue("SOLVER_NODES", Agros2D::scene()->sceneSolution()->meshInitial()->get_num_vertex_nodes());
     //        dict.SetValue("SOLVER_ELEMENTS_LABEL", tr("Elements:").toStdString());
     //        dict.SetIntValue("SOLVER_ELEMENTS", Agros2D::scene()->sceneSolution()->meshInitial()->get_num_active_elements());
     //        dict.SetValue("SOLVER_DOFS_LABEL", tr("DOFs:").toStdString());
