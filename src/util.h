@@ -96,6 +96,29 @@ inline int sign(double arg)
         return 0;
 }
 
+// approximation of atan2(y, x).
+// maximum error of 0.0061 radians at 0.35 degrees
+inline double fastatan2(double y, double x)
+{
+    double abs_y = std::fabs(y) + 1e-8;
+
+    double angle;
+    double r;
+    if (x >= 0)
+    {
+        r = (x - abs_y) / (x + abs_y);
+        angle = M_PI_4;
+    }
+    else
+    {
+        r = (x + abs_y) / (abs_y - x);
+        angle = 3.0f * M_PI_4;
+    }
+    angle += (0.1821f * r*r - 0.9675f) * r;
+
+    return (y < 0) ? - angle : angle;
+}
+
 // show page
 void showPage(const QString &str = "");
 

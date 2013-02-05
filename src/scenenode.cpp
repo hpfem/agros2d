@@ -321,6 +321,8 @@ void SceneNodeCommandEdit::redo()
 QList<SceneEdge *> SceneNode::connectedEdges() const
 {
     QList<SceneEdge *> edges;
+    edges.reserve(Agros2D::scene()->edges->count());
+
     foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
         if (edge->nodeStart() == this || edge->nodeEnd() == this)
             edges.append(edge);
@@ -331,6 +333,8 @@ QList<SceneEdge *> SceneNode::connectedEdges() const
 QList<SceneEdge *> SceneNode::lyingEdges() const
 {
     QList<SceneEdge *> edges;
+    edges.reserve(Agros2D::scene()->edges->count());
+
     foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
     {
         if ((edge->nodeStart() == this) || (edge->nodeEnd() == this))
