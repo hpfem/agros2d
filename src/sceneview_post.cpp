@@ -676,7 +676,6 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     glEnd();
 
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
     glDisable(GL_TEXTURE_1D);
 
     // ticks
@@ -763,6 +762,8 @@ void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max
     glVertex2d(scaleLeft + 30.0, scaleBorder.y + 10.0);
     glEnd();
 
+    glDisable(GL_POLYGON_OFFSET_FILL);
+
     // palette
     glBegin(GL_QUADS);
     glColor3d(0.0, 0.0, 0.0);
@@ -771,7 +772,7 @@ void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max
     glColor3d(0.8, 0.8, 0.8);
     glVertex2d(scaleLeft + 12.0, scaleBorder.y + 12.0);
     glVertex2d(scaleLeft + 28.0, scaleBorder.y + 12.0);
-    glEnd();
+    glEnd();    
 
     // ticks
     glColor3d(0.0, 0.0, 0.0);

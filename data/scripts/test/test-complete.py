@@ -2,6 +2,7 @@
 execfile("test_acoustic_planar.py") 
 execfile("test_acoustic_axisymmetric.py")
 execfile("test_acoustic_transient_planar.py") 
+execfile("test_acoustic_transient_axisymmetric.py") 
 
 # electrostatic
 execfile("test_electrostatic_planar.py") 

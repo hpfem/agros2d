@@ -447,15 +447,6 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             {
                 Agros2D::scene()->transformTranslate(dp, false);
             }
-            foreach (SceneNode *node, Agros2D::scene()->nodes->items())
-            {
-                Agros2D::scene()->checkNode(node);
-            }
-
-            foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
-            {
-                Agros2D::scene()->checkEdge(edge);
-            }
         }
         else if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
         {
@@ -485,15 +476,6 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
             else
             {
                 Agros2D::scene()->transformTranslate(dp, false);
-            }
-            foreach (SceneNode *node, Agros2D::scene()->nodes->items())
-            {
-                Agros2D::scene()->checkNode(node);
-            }
-
-            foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
-            {
-                Agros2D::scene()->checkEdge(edge);
             }
         }
         else if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
@@ -980,6 +962,9 @@ void SceneViewPreprocessor::paintGeometry()
 {
     loadProjection2d(true);
 
+    // find crossings
+    QList<SceneEdge *> crossings = SceneEdge::findCrossings();
+
     // edges
     foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
     {
@@ -998,7 +983,7 @@ void SceneViewPreprocessor::paintGeometry()
                   Agros2D::problem()->configView()->colorEdges.blueF());
         glLineWidth(Agros2D::problem()->configView()->edgeWidth);
 
-        if (edge->isError())
+        if (edge->isLyingNode() || edge->isOutsideArea() || crossings.contains(edge))
         {
             glColor3d(Agros2D::problem()->configView()->colorCrossed.redF(),
                       Agros2D::problem()->configView()->colorCrossed.greenF(),
@@ -1139,46 +1124,49 @@ void SceneViewPreprocessor::paintGeometry()
 
     try
     {
-        QMap<SceneLabel*, QList<Triangle> > labels = findPolygonTriangles();
-
-        glEnable(GL_POLYGON_OFFSET_FILL);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-        // blended rectangle
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        QMapIterator<SceneLabel*, QList<Triangle> > i(labels);
-        while (i.hasNext())
+        if (crossings.isEmpty())
         {
-            i.next();
+            QMap<SceneLabel*, QList<Triangle> > labels = findPolygonTriangles();
 
-            if (i.key()->isSelected() && i.key()->isHole())
-                glColor4f(0.7, 0.1, 0.3, 0.55);
-            else if (i.key()->isSelected())
-                glColor4f(0.3, 0.1, 0.7, 0.55);
-            else if (i.key()->isHighlighted() && i.key()->isHole())
-                glColor4f(0.7, 0.1, 0.3, 0.10);
-            else if (i.key()->isHighlighted())
-                glColor4f(0.3, 0.1, 0.7, 0.18);
-            else if (i.key()->isHole())
-                glColor4f(0.3, 0.1, 0.7, 0.00);
-            else
-                glColor4f(0.3, 0.1, 0.7, 0.10);
+            glEnable(GL_POLYGON_OFFSET_FILL);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-            glBegin(GL_TRIANGLES);
-            foreach (Triangle triangle, i.value())
+            // blended rectangle
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+            QMapIterator<SceneLabel*, QList<Triangle> > i(labels);
+            while (i.hasNext())
             {
-                glVertex2d(triangle.a.x, triangle.a.y);
-                glVertex2d(triangle.b.x, triangle.b.y);
-                glVertex2d(triangle.c.x, triangle.c.y);
-            }
-            glEnd();
-        }
+                i.next();
 
-        glDisable(GL_BLEND);
-        glDisable(GL_POLYGON_OFFSET_FILL);
+                if (i.key()->isSelected() && i.key()->isHole())
+                    glColor4f(0.7, 0.1, 0.3, 0.55);
+                else if (i.key()->isSelected())
+                    glColor4f(0.3, 0.1, 0.7, 0.55);
+                else if (i.key()->isHighlighted() && i.key()->isHole())
+                    glColor4f(0.7, 0.1, 0.3, 0.10);
+                else if (i.key()->isHighlighted())
+                    glColor4f(0.3, 0.1, 0.7, 0.18);
+                else if (i.key()->isHole())
+                    glColor4f(0.3, 0.1, 0.7, 0.00);
+                else
+                    glColor4f(0.3, 0.1, 0.7, 0.10);
+
+                glBegin(GL_TRIANGLES);
+                foreach (Triangle triangle, i.value())
+                {
+                    glVertex2d(triangle.a.x, triangle.a.y);
+                    glVertex2d(triangle.b.x, triangle.b.y);
+                    glVertex2d(triangle.c.x, triangle.c.y);
+                }
+                glEnd();
+            }
+
+            glDisable(GL_BLEND);
+            glDisable(GL_POLYGON_OFFSET_FILL);
+        }
 
         // FIX: temp
         /*

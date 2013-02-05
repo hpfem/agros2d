@@ -1546,9 +1546,9 @@ void MainWindow::setControls()
 
     actDocumentExportMeshFile->setEnabled(Agros2D::problem()->isMeshed());
 
-    actSolveAdaptiveStep->setEnabled((!Agros2D::problem()->isTransient())); // FIXME: timedep
     actSolve->setEnabled(Agros2D::problem()->fieldInfos().count() > 0);
-    actSolveAdaptiveStep->setEnabled(Agros2D::problem()->fieldInfos().count() > 0);
+    actSolveAdaptiveStep->setEnabled(false);
+//    actSolveAdaptiveStep->setEnabled(Agros2D::problem()->fieldInfos().count() > 0 && Agros2D::problem()->fieldInfos().count() <= 1 && (!Agros2D::problem()->isTransient()) );
 
     QTimer::singleShot(0, postprocessorWidget, SLOT(updateControls()));
 

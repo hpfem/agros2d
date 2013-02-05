@@ -46,11 +46,11 @@ public:
 
     QString couplingId() { return m_couplingId; }
 
-    CouplingType couplingType() { return m_couplingType; }
+    CouplingType couplingType();
     void setCouplingType(CouplingType couplingType);
 
-    inline bool isHard() { return m_couplingType == CouplingType_Hard;}
-    inline bool isWeak() { return m_couplingType == CouplingType_Weak;}
+    inline bool isHard() { return couplingType() == CouplingType_Hard;}
+    inline bool isWeak() { return couplingType() == CouplingType_Weak;}
 
     inline FieldInfo* sourceField() {return m_sourceField; }
     inline FieldInfo* targetField() {return m_targetField; }

@@ -732,6 +732,7 @@ QMap<SceneLabel*, QList<Triangle> > findPolygonTriangles()
 {
     QMap<SceneLabel*, QList<Triangle> > objects;
 
+    // TODO: rewrite to exceptions
     // find loops
     LoopsInfo loopsInfo = findLoops();
 

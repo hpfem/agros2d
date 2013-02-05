@@ -30,11 +30,11 @@ struct Point;
 Point centerPoint(const Point &pointStart, const Point &pointEnd, double angle);
 
 // intersection of two lines
-Point *intersection(Point p1s, Point p1e, Point p2s, Point p2e);
+bool intersectionLines(const Point &p1s, const Point &p1e, const Point &p2s, const Point &p2e, Point &out);
 
 // intersection of two lines or line and arc
-QList<Point> intersection(Point p1s, Point p1e, Point center1, double radius1, double angle1,
-                          Point p2s, Point p2e, Point center2, double radius2, double angle2);
+QList<Point> intersection(const Point &p1s, const Point &p1e, const Point &center1, double radius1, double angle1,
+                          const Point &p2s, const Point &p2e, const Point &center2, double radius2, double angle2);
 
 struct Point
 {
@@ -53,6 +53,7 @@ struct Point
     inline bool operator==(const Point &vec) const { return ((fabs(vec.x-x) < 1e-12) && (fabs(vec.y-y) < 1e-12)); }
 
     inline double magnitude() const { return sqrt(x * x + y * y); }
+    inline double magnitudeSquared() const { return (x * x + y * y); }
     inline double angle() const { return atan2(y, x); }
 
     Point normalizePoint() const

@@ -81,6 +81,17 @@ void CouplingInfo::setCouplingType(CouplingType couplingType)
     reload();
 }
 
+CouplingType CouplingInfo::couplingType()
+{
+    //todo: remove!!!!
+    if(m_couplingType == CouplingType_Hard)
+    {
+        Agros2D::log()->printDebug("Solver", "Hard coupling not available yet, switching to weak coupling");
+        return CouplingType_Weak;
+    }
+    return m_couplingType;
+}
+
 void CouplingInfo::reload()
 {
     // coupling id
@@ -126,7 +137,7 @@ QList<FormInfo> CouplingInfo::wfMatrixVolume() const
     {
         XMLCoupling::weakform_volume wf = m_plugin->coupling()->volume().weakforms_volume().weakform_volume().at(i);
 
-        if ((wf.couplingtype() == couplingTypeToStringKey(m_couplingType).toStdString()) &&
+        if ((wf.couplingtype() == couplingTypeToStringKey(this->couplingType()).toStdString()) &&
                 (wf.sourceanalysis() == analysisTypeToStringKey(m_sourceField->analysisType()).toStdString()) &&
                 (wf.targetanalysis() == analysisTypeToStringKey(m_targetField->analysisType()).toStdString()))
         {
@@ -149,7 +160,7 @@ QList<FormInfo> CouplingInfo::wfVectorVolume() const
     {
         XMLCoupling::weakform_volume wf = m_plugin->coupling()->volume().weakforms_volume().weakform_volume().at(i);
 
-        if ((wf.couplingtype() == couplingTypeToStringKey(m_couplingType).toStdString()) &&
+        if ((wf.couplingtype() == couplingTypeToStringKey(this->couplingType()).toStdString()) &&
                 (wf.sourceanalysis() == analysisTypeToStringKey(m_sourceField->analysisType()).toStdString()) &&
                 (wf.targetanalysis() == analysisTypeToStringKey(m_targetField->analysisType()).toStdString()))
         {

@@ -314,7 +314,6 @@ SceneNode *Scene::addNode(SceneNode *node)
     if (!currentPythonEngine()->isRunning()) emit invalidated();
 
     checkNodeConnect(node);
-    checkNode(node);
 
     return node;
 }
@@ -334,13 +333,6 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
         delete edge;
         return existing;
     }
-
-    // check of crossings
-    // ToDo: Zjistit proč se funkce addEdge volá dvakrát pro stejnou hranu. BUG?
-
-    this->checkEdge(edge);
-
-
 
     edges->add(edge);
     if (!currentPythonEngine()->isRunning()) emit invalidated();
@@ -476,9 +468,6 @@ bool Scene::checkGeometryAssignement()
         return false;
     }
 
-    // multiple labels in area
-    QMap<SceneLabel*, QList<Triangle> > labels = findPolygonTriangles();
-
     return true;
 }
 
@@ -579,7 +568,7 @@ void Scene::deleteSelected()
     labels->selected().deleteWithUndo(tr("Remove label"));
 
     m_undoStack->endMacro();
-    checkGeometry();
+
     emit invalidated();
 }
 
@@ -706,7 +695,6 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
         {
             edge->nodeStart()->setSelected(false);
             edge->nodeEnd()->setSelected(false);
-            // this->checkEdge(edge);
 
             // add new edge
             if (copy)
@@ -1942,81 +1930,6 @@ void Scene::checkNodeConnect(SceneNode *node)
     }
 }
 
-void Scene::checkNode(SceneNode *node)
-{
-    /*
-    // control if node is not lying on the edge
-    foreach (SceneEdge *edge, node->lyingEdges())
-    {
-        edge->lyingNodes().removeOne(node);
-    }
-
-    foreach (SceneEdge *edge, edges->items())
-    {
-        if ((edge->nodeStart() == node) || (edge->nodeEnd() == node))
-            continue;
-
-        if ((edge->distance(node->point()) < EPS_ZERO))
-            edge->lyingNodes().append(node);
-    }
-    */
-}
-
-void Scene::checkEdge(SceneEdge *edge)
-{
-    // clear all crossings
-    foreach (SceneEdge *edgeCheck, edge->crossedEdges())
-    {
-        edgeCheck->crossedEdges().removeOne(edge);
-    }
-
-    edge->crossedEdges().clear();
-
-    foreach (SceneEdge *edgeCheck, this->edges->items())
-    {
-        if (edgeCheck != edge)
-        {
-            QList<Point> intersects;
-
-            // ToDo: Improve
-            // ToDo: Add check of crossings of two arcs
-            if (edge->angle() > 0)
-                intersects = intersection(edgeCheck->nodeStart()->point(), edgeCheck->nodeEnd()->point(),
-                                          edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle(),
-                                          edge->nodeStart()->point(), edge->nodeEnd()->point(),
-                                          edge->center(), edge->radius(), edge->angle());
-
-            else
-                intersects = intersection(edge->nodeStart()->point(), edge->nodeEnd()->point(),
-                                          edgeCheck->center(), edge->radius(), edge->angle(),
-                                          edgeCheck->nodeStart()->point(), edgeCheck->nodeEnd()->point(),
-                                          edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle());
-
-            edgeCheck->crossedEdges().removeOne(edge);
-
-            if (intersects.count() > 0)
-            {
-                edgeCheck->crossedEdges().append(edge);
-                edge->crossedEdges().append(edgeCheck);
-
-            }
-        }
-    }
-}
-
-void Scene::checkGeometry()
-{
-    foreach (SceneNode *node, this->nodes->items())
-    {
-        this->checkNode(node);
-    }
-
-    foreach (SceneEdge *edge, this->edges->items())
-    {
-        this->checkEdge(edge);
-    }
-}
-
 ErrorResult Scene::checkGeometryResult()
 {
     if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric)
@@ -2042,16 +1955,6 @@ ErrorResult Scene::checkGeometryResult()
         nodes.clear();
     }
 
-    checkGeometry();
-
-    foreach (SceneEdge *edge, this->edges->items())
-    {
-        if (edge->crossedEdges().count() != 0)
-        {
-            return ErrorResult(ErrorResultType_Critical, tr("There are crossings in the geometry (red highlighted). Remove the crossings first."));
-        }
-    }
-
     foreach (SceneNode *node, this->nodes->items())
     {
         if (!node->isConnected())
@@ -2063,6 +1966,12 @@ ErrorResult Scene::checkGeometryResult()
         {
             return ErrorResult(ErrorResultType_Critical, tr("There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first."));
         }
+    }
+
+    QList<SceneEdge *> crossings = SceneEdge::findCrossings();
+    if (!crossings.isEmpty())
+    {
+        return ErrorResult(ErrorResultType_Critical, tr("There are crossings in the geometry (red highlighted). Remove the crossings first."));
     }
 
     return ErrorResult();
