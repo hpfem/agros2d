@@ -149,6 +149,7 @@ void ProblemConfigView::load(QDomElement *config)
     scalarView3DBackground = readConfig("View/ScalarView3DBackground", VIEW3DBACKGROUND);
     scalarView3DHeight = readConfig("View/ScalarView3DHeight", VIEW3DHEIGHT);
     scalarView3DBoundingBox = readConfig("View/ScalarView3DBoundingBox", VIEW3DBOUNDINGBOX);
+    scalarView3DSolidGeometry = readConfig("View/ScalarView3DSolidGeometry", VIEW3DSOLIDGEOMETRY);
 
     // deformations
     deformScalar = readConfig("View/DeformScalar", DEFORMSCALAR);
@@ -312,6 +313,7 @@ void ProblemConfigView::save(QDomElement *config)
     writeConfig("View/ScalarView3DBackground", scalarView3DBackground);
     writeConfig("View/ScalarView3DHeight", scalarView3DHeight);
     writeConfig("View/ScalarView3DBoundingBox", scalarView3DBoundingBox);
+    writeConfig("View/ScalarView3DSolidGeometry", scalarView3DSolidGeometry);
 
     // deformations
     writeConfig("View/DeformScalar", deformScalar);

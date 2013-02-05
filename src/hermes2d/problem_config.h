@@ -168,6 +168,7 @@ public:
 
     // 3d
     bool scalarView3DLighting;
+    bool scalarView3DSolidGeometry;
     double scalarView3DAngle;
     bool scalarView3DBackground;
     double scalarView3DHeight;

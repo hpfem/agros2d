@@ -153,11 +153,12 @@ const bool SCALARRANGEAUTO = true;
 const double SCALARRANGEMIN = 0.0;
 const double SCALARRANGEMAX = 1.0;
 
-const bool VIEW3DLIGHTING = false;
+const bool VIEW3DLIGHTING = true;
 const double VIEW3DANGLE = 240.0;
 const bool VIEW3DBACKGROUND = true;
 const double VIEW3DHEIGHT = 4.0;
 const bool VIEW3DBOUNDINGBOX = true;
+const bool VIEW3DSOLIDGEOMETRY = true;
 
 const bool DEFORMSCALAR = true;
 const bool DEFORMCONTOUR = true;

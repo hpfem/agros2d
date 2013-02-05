@@ -86,6 +86,7 @@ void SettingsWidget::load()
     chkView3DBackground->setChecked(Agros2D::problem()->configView()->scalarView3DBackground);
     txtView3DHeight->setValue(Agros2D::problem()->configView()->scalarView3DHeight);
     chkView3DBoundingBox->setChecked(Agros2D::problem()->configView()->scalarView3DBoundingBox);
+    chkView3DSolidGeometry->setChecked(Agros2D::problem()->configView()->scalarView3DSolidGeometry);
 
     // deform shape
     chkDeformScalar->setChecked(Agros2D::problem()->configView()->deformScalar);
@@ -164,6 +165,7 @@ void SettingsWidget::save()
     Agros2D::problem()->configView()->scalarView3DBackground = chkView3DBackground->isChecked();
     Agros2D::problem()->configView()->scalarView3DHeight = txtView3DHeight->value();
     Agros2D::problem()->configView()->scalarView3DBoundingBox = chkView3DBoundingBox->isChecked();
+    Agros2D::problem()->configView()->scalarView3DSolidGeometry = chkView3DSolidGeometry->isChecked();
 
     // deform shape
     Agros2D::problem()->configView()->deformScalar = chkDeformScalar->isChecked();
@@ -357,6 +359,7 @@ QWidget *SettingsWidget::controlsWorkspace()
     txtView3DHeight->setMinimum(0.2);
     txtView3DHeight->setMaximum(10.0);
     chkView3DBoundingBox = new QCheckBox(tr("Bounding box"), this);
+    chkView3DSolidGeometry = new QCheckBox(tr("Show geometry lines"), this);
 
     QGridLayout *layout3D = new QGridLayout();
     layout3D->addWidget(new QLabel(tr("Angle:")), 0, 1);
@@ -366,6 +369,7 @@ QWidget *SettingsWidget::controlsWorkspace()
     layout3D->addWidget(txtView3DHeight, 1, 2);
     layout3D->addWidget(chkView3DBackground, 1, 3);
     layout3D->addWidget(chkView3DBoundingBox, 2, 3);
+    layout3D->addWidget(chkView3DSolidGeometry, 3, 3);
 
     QGroupBox *grp3D = new QGroupBox(tr("3D view"));
     grp3D->setLayout(layout3D);
