@@ -68,7 +68,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         logStdOut = new LogStdOut();
 
     // FIXME: curve elements from script doesn't work
-    Module::readMeshDirtyFix();
+    // Module::readMeshDirtyFix();
 
     createPythonEngine(new PythonEngineAgros());
 
