@@ -403,13 +403,12 @@ Scalar *Solver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
 
         m_hermesSolverContainer->solve(initialSolutionVector);
     }
-    catch (Hermes::Exceptions::Exception e)
+    catch (Hermes::Exceptions::Exception& e)
     {
         QString error = QString("%1").arg(e.what());
         // Agros2D::log()->printDebug(m_solverID, QObject::tr("Solver failed: %1").arg(error));
         throw AgrosSolverException(QObject::tr("Solver failed: %1").arg(error));
     }
-
     return m_hermesSolverContainer->slnVector();
 }
 
