@@ -184,19 +184,19 @@ void SceneFieldWidget::createContent()
 // *************************************************************************************************************************************
 
 SceneFieldWidgetMaterial::SceneFieldWidgetMaterial(Module::DialogUI ui, SceneMaterial *material, QWidget *parent)
-    : SceneFieldWidget(ui, parent), material(material)
+    : SceneFieldWidget(ui, parent), m_material(material)
 {
 }
 
 ValueLineEdit *SceneFieldWidgetMaterial::addValueEditWidget(const Module::DialogRow &row)
 {
-    foreach (Module::MaterialTypeVariable variable, material->fieldInfo()->materialTypeVariables())
+    foreach (Module::MaterialTypeVariable variable, m_material->fieldInfo()->materialTypeVariables())
     {
         if (variable.id() == row.id())
         {
             ValueLineEdit *edit = new ValueLineEdit(this,
-                                                    (variable.isTimeDep() && material->fieldInfo()->analysisType() == AnalysisType_Transient),
-                                                    (variable.isNonlinear() && material->fieldInfo()->linearityType() != LinearityType_Linear));
+                                                    (variable.isTimeDep() && m_material->fieldInfo()->analysisType() == AnalysisType_Transient),
+                                                    (variable.isNonlinear() && m_material->fieldInfo()->linearityType() != LinearityType_Linear));
             if (variable.isNonlinear())
             {
                 edit->setLabelX(row.shortnameDependenceHtml());
@@ -213,20 +213,25 @@ void SceneFieldWidgetMaterial::load()
 {
     // variables
     for (int j = 0; j < ids.count(); j++)
-        values.at(j)->setValue(material->value(ids.at(j)));
+        values.at(j)->setValue(m_material->value(ids.at(j)));
 
     // conditions
-    for (int j = 0; j < conditions.count(); j++)
-        values.at(j)->setCondition(conditions.at(j));
+    for (int i = 0; i < conditions.count(); i++)
+        values.at(i)->setCondition(conditions.at(i));
 }
 
 bool SceneFieldWidgetMaterial::save()
 {
-    for (int j = 0; j < ids.count(); j++)
-        if (values.at(j)->evaluate())
-            material->setValue(ids.at(j), values.at(j)->value());
+    for (int i = 0; i < ids.count(); i++)
+    {
+        if (values.at(i)->isEnabled())
+            continue;
+
+        if (values.at(i)->evaluate())
+            m_material->setValue(ids.at(i), values.at(i)->value());
         else
             return false;
+    }
 
     return true;
 }
@@ -241,8 +246,8 @@ void SceneFieldWidgetMaterial::readEquation()
 {
     QPixmap pixmap(QString("%1/resources/images/equations/%2_equation_%3.png").
                    arg(datadir()).
-                   arg(material->fieldInfo()->fieldId()).
-                   arg(analysisTypeToStringKey(material->fieldInfo()->analysisType())));
+                   arg(m_material->fieldInfo()->fieldId()).
+                   arg(analysisTypeToStringKey(m_material->fieldInfo()->analysisType())));
 
     equationImage->setPixmap(pixmap);
     equationImage->setMask(pixmap.mask());
@@ -251,19 +256,19 @@ void SceneFieldWidgetMaterial::readEquation()
 // *************************************************************************************************************************************
 
 SceneFieldWidgetBoundary::SceneFieldWidgetBoundary(Module::DialogUI ui, SceneBoundary *boundary, QWidget *parent)
-    : SceneFieldWidget(ui, parent), boundary(boundary)
+    : SceneFieldWidget(ui, parent), m_boundary(boundary)
 {
 }
 
 ValueLineEdit *SceneFieldWidgetBoundary::addValueEditWidget(const Module::DialogRow &row)
 {
-    foreach (Module::BoundaryType boundaryType, boundary->fieldInfo()->boundaryTypes())
+    foreach (Module::BoundaryType boundaryType, m_boundary->fieldInfo()->boundaryTypes())
         foreach (Module::BoundaryTypeVariable variable, boundaryType.variables())
         {
             if (variable.id() == row.id())
             {
                 ValueLineEdit *edit = new ValueLineEdit(this,
-                                                        (variable.isTimeDep() && boundary->fieldInfo()->analysisType() == AnalysisType_Transient),
+                                                        (variable.isTimeDep() && m_boundary->fieldInfo()->analysisType() == AnalysisType_Transient),
                                                         false);
                 return edit;
             }
@@ -275,7 +280,7 @@ ValueLineEdit *SceneFieldWidgetBoundary::addValueEditWidget(const Module::Dialog
 void SceneFieldWidgetBoundary::addCustomWidget(QVBoxLayout *layout)
 {
     comboBox = new QComboBox(this);
-    foreach (Module::BoundaryType marker, boundary->fieldInfo()->boundaryTypes())
+    foreach (Module::BoundaryType marker, m_boundary->fieldInfo()->boundaryTypes())
         comboBox->addItem(marker.name(),
                           marker.id());
 
@@ -299,7 +304,7 @@ void SceneFieldWidgetBoundary::doTypeChanged(int index)
     for (int i = 0; i < ids.count(); i++)
         values.at(i)->setEnabled(false);
 
-    Module::BoundaryType boundaryType = boundary->fieldInfo()->boundaryType(comboBox->itemData(index).toString());
+    Module::BoundaryType boundaryType = m_boundary->fieldInfo()->boundaryType(comboBox->itemData(index).toString());
     foreach (Module::BoundaryTypeVariable variable, boundaryType.variables())
     {
         int i = ids.indexOf(variable.id());
@@ -316,31 +321,33 @@ void SceneFieldWidgetBoundary::doTypeChanged(int index)
 void SceneFieldWidgetBoundary::load()
 {
     // type
-    comboBox->setCurrentIndex(comboBox->findData(boundary->type()));
+    comboBox->setCurrentIndex(comboBox->findData(m_boundary->type()));
 
     // variables
     for (int i = 0; i < ids.count(); i++)
-        values.at(i)->setValue(boundary->value(ids.at(i)));
+        values.at(i)->setValue(m_boundary->value(ids.at(i)));
 
     // conditions
-    for (int j = 0; j < conditions.count(); j++)
-        if(values.at(j)->isEnabled())
-        {
-            values.at(j)->setCondition(conditions.at(j));
-        }
+    for (int i = 0; i < conditions.count(); i++)
+        values.at(i)->setCondition(conditions.at(i));
 }
 
 bool SceneFieldWidgetBoundary::save()
 {
     // type
-    boundary->setType(comboBox->itemData(comboBox->currentIndex()).toString());
+    m_boundary->setType(comboBox->itemData(comboBox->currentIndex()).toString());
 
     // variables
     for (int i = 0; i < ids.count(); i++)
+    {
+        if (!values.at(i)->isEnabled())
+            continue;
+
         if (values.at(i)->evaluate())
-            boundary->setValue(ids.at(i), values.at(i)->value());
+            m_boundary->setValue(ids.at(i), values.at(i)->value());
         else
             return false;
+    }
 
     return true;
 }
@@ -349,8 +356,8 @@ void SceneFieldWidgetBoundary::readEquation()
 {
     QPixmap pixmap(QString("%1/resources/images/equations/%2_equation_%3_%4.png").
                    arg(datadir()).
-                   arg(boundary->fieldInfo()->fieldId()).
-                   arg(analysisTypeToStringKey(boundary->fieldInfo()->analysisType())).
+                   arg(m_boundary->fieldInfo()->fieldId()).
+                   arg(analysisTypeToStringKey(m_boundary->fieldInfo()->analysisType())).
                    arg(comboBox->itemData(comboBox->currentIndex()).toString()));
 
     equationImage->setPixmap(pixmap);
@@ -360,7 +367,7 @@ void SceneFieldWidgetBoundary::readEquation()
 // *************************************************************************************************************************************
 
 SceneBoundaryDialog::SceneBoundaryDialog(SceneBoundary *boundary, QWidget *parent)
-    : QDialog(parent), boundary(boundary)
+    : QDialog(parent), m_boundary(boundary)
 {
     setWindowIcon(icon("scene-edgemarker"));
     setWindowTitle(tr("Boundary condition - %1").arg(boundary->fieldInfo()->name()));
@@ -396,7 +403,7 @@ void SceneBoundaryDialog::createDialog()
 
 void SceneBoundaryDialog::createContent()
 {
-    fieldWidget = new SceneFieldWidgetBoundary(boundary->fieldInfo()->boundaryUI(), boundary, this);
+    fieldWidget = new SceneFieldWidgetBoundary(m_boundary->fieldInfo()->boundaryUI(), m_boundary, this);
     fieldWidget->createContent();
 
     layout->addWidget(fieldWidget, 10, 0, 1, 3);
@@ -404,7 +411,7 @@ void SceneBoundaryDialog::createContent()
 
 void SceneBoundaryDialog::load()
 {
-    txtName->setText(boundary->name());
+    txtName->setText(m_boundary->name());
 
     // load variables
     fieldWidget->load();
@@ -417,14 +424,14 @@ bool SceneBoundaryDialog::save()
     {
         if (boundary->name() == txtName->text())
         {
-            if (boundary == boundary)
+            if (m_boundary == boundary)
                 continue;
 
             QMessageBox::warning(this, tr("Boundary marker"), tr("Boundary marker name already exists."));
             return false;
         }
     }
-    boundary->setName(txtName->text());
+    m_boundary->setName(txtName->text());
 
     // save variables
     if (!fieldWidget->save())
@@ -452,7 +459,7 @@ void SceneBoundaryDialog::evaluated(bool isError)
 // *************************************************************************************************************************************
 
 SceneMaterialDialog::SceneMaterialDialog(SceneMaterial *material, QWidget *parent)
-    : QDialog(parent), material(material)
+    : QDialog(parent), m_material(material)
 {
     setWindowIcon(icon("scene-labelmarker"));
     setWindowTitle(tr("Material - %1").arg(material->fieldInfo()->name()));
@@ -489,7 +496,7 @@ void SceneMaterialDialog::createDialog()
 
 void SceneMaterialDialog::createContent()
 {
-    fieldWidget = new SceneFieldWidgetMaterial(material->fieldInfo()->materialUI(), material, this);
+    fieldWidget = new SceneFieldWidgetMaterial(m_material->fieldInfo()->materialUI(), m_material, this);
     fieldWidget->createContent();
 
     layout->addWidget(fieldWidget, 10, 0, 1, 3);
@@ -497,7 +504,7 @@ void SceneMaterialDialog::createContent()
 
 void SceneMaterialDialog::load()
 {
-    txtName->setText(material->name());
+    txtName->setText(m_material->name());
 
     // load variables
     fieldWidget->load();
@@ -510,14 +517,14 @@ bool SceneMaterialDialog::save()
     {
         if (material->name() == txtName->text())
         {
-            if (material == material)
+            if (m_material == material)
                 continue;
 
             QMessageBox::warning(this, tr("Material marker"), tr("Material marker name already exists."));
             return false;
         }
     }
-    material->setName(txtName->text());
+    m_material->setName(txtName->text());
 
     // save variables
     if (!fieldWidget->save())
