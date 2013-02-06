@@ -12,7 +12,7 @@ problem.frequency = 1e+09
 # rf
 rf = agros2d.field("rf")
 rf.analysis_type = "harmonic"
-rf.number_of_refinements = 5
+rf.number_of_refinements = 3
 rf.polynomial_order = 2
 rf.adaptivity_type = "disabled"
 rf.linearity_type = "linear"
@@ -29,20 +29,25 @@ rf.add_material("air", {"rf_te_permittivity" : 1, "rf_te_permeability" : 1, "rf_
 
 # geometry
 geometry = agros2d.geometry
-geometry.add_edge(0, 1, 0, -1, boundaries = {"rf" : "osa"})
-geometry.add_edge(0, -1, 1, -1, boundaries = {"rf" : "osa"})
+geometry.add_edge(0, 1, 0, -1, boundaries = {"rf" : "electric field"})
+geometry.add_edge(0, -1, 1, -1, boundaries = {"rf" : "electric field"})
 geometry.add_edge(1, -1, 1, -0.75, boundaries = {"rf" : "electric field"})
-geometry.add_edge(1, -0.75, 1, 0.75, boundaries = {"rf" : "electric field"})
-geometry.add_edge(1, 0.75, 1, 1, boundaries = {"rf" : "electric field"})
-geometry.add_edge(1, 1, 0, 1, boundaries = {"rf" : "osa"})
+geometry.add_edge(1, -0.75, 1.7, 0.65, boundaries = {"rf" : "electric field"})
+geometry.add_edge(1.7, 0.65, 0.9, 0.35, boundaries = {"rf" : "electric field"})
+geometry.add_edge(0.9, 0.35, 0, 1, boundaries = {"rf" : "electric field"})
+geometry.add_edge(0.5, -0.25, 0.25, -0.5, angle = 90, boundaries = {"rf" : "PEC"})
+geometry.add_edge(0.25, -0.5, 0.5, -0.75, angle = 90, boundaries = {"rf" : "PEC"})
+geometry.add_edge(0.5, -0.75, 0.75, -0.5, angle = 90, boundaries = {"rf" : "PEC"})
+geometry.add_edge(0.75, -0.5, 0.5, -0.25, angle = 90, boundaries = {"rf" : "PEC"})
 
 geometry.add_label(0.399371, 0.440347, materials = {"rf" : "air"})
+geometry.add_label(0.484795, -0.434246, materials = {"rf" : "none"})
 geometry.zoom_best_fit()
 
 problem.solve()
 
-point = rf.local_values(0.15705, 0.68773)
+point = rf.local_values(0.126923,-0.738462)
 
-testEr = agros2d.test("Electric field - real", point["Er"], 1.71298)
+testEr = agros2d.test("Electric field - real", point["Er"], 330.799748)
 
 print("Test: RF - axisymmetric: " + str(testEr))
