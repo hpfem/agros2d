@@ -410,7 +410,7 @@ private:
 // dialog UI
 struct DialogRow
 {
-    DialogRow(XMLModule::quantity qty);
+    DialogRow(const FieldInfo *fieldInfo, XMLModule::quantity qty);
 
     inline QString id() const { return m_id; }
 
@@ -447,7 +447,7 @@ private:
 struct DialogUI
 {
     DialogUI() {}
-    DialogUI(XMLModule::gui ui);
+    DialogUI(const FieldInfo *fieldInfo, XMLModule::gui ui);
 
     inline QMap<QString, QList<Module::DialogRow> > groups() const { return m_groups; }
     DialogRow dialogRow(const QString &id);

@@ -495,6 +495,8 @@ void MainWindow::createMenus()
     mnuEdit->addAction(actUndo);
     mnuEdit->addAction(actRedo);
     mnuEdit->addSeparator();
+    mnuEdit->addAction(actCopy);
+    mnuEdit->addSeparator();
     mnuEdit->addAction(Agros2D::scene()->actDeleteSelected);
     mnuEdit->addSeparator();
     mnuEdit->addAction(sceneViewPreprocessor->actSceneViewSelectRegion);
@@ -532,7 +534,6 @@ void MainWindow::createMenus()
     mnuView->addAction(actSceneZoomRegion);
     mnuView->addMenu(mnuProjection);
     mnuView->addSeparator();
-    mnuView->addAction(actCopy);
     mnuView->addAction(actLoadBackground);
     mnuView->addSeparator();
     mnuView->addMenu(mnuShowPanels);
