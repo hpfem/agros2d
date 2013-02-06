@@ -113,15 +113,17 @@ void LoopsGraph::addEdge(int startNode, int endNode, int edgeIdx, double angle)
 
 void LoopsGraph::print()
 {
+    /*
     for (int i = 0; i < data.size(); i++)
     {
-        //cout << "node " << i << "\n";
+        cout << "node " << i << "\n";
         foreach(LoopsNodeEdgeData ned, data[i].data)
         {
-            //cout << "     node " << ned.node << ", edge " << (ned.reverse ? "-" : "") << ned.edge << ", angle " << ned.angle << ", visited " << ned.visited << "\n";
+            cout << "     node " << ned.node << ", edge " << (ned.reverse ? "-" : "") << ned.edge << ", angle " << ned.angle << ", visited " << ned.visited << "\n";
         }
     }
-    //cout << "\n";
+    cout << "\n";
+    */
 }
 
 enum Intersection
@@ -399,6 +401,27 @@ bool areSameLoops(QList<LoopsNodeEdgeData> loop1, QList<LoopsNodeEdgeData> loop2
     return true;
 }
 
+bool areEdgeDuplicities(QList<LoopsNodeEdgeData> loop)
+{
+    for (int i = 0; i < loop.length(); i++)
+    {
+        LoopsNodeEdgeData data = loop.at(i);
+
+        for (int j = 0; j < loop.length(); j++)
+        {
+            if (i != j)
+            {
+                LoopsNodeEdgeData dataTest = loop.at(j);
+
+                if (data.edge == dataTest.edge)
+                    return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 int longerLoop(QList<QList<LoopsNodeEdgeData> > loops, int idx1, int idx2)
 {
     int size1 = loops[idx1].size();
@@ -502,8 +525,8 @@ LoopsInfo findLoops()
         //cout << "** starting with node " << i << endl;
         LoopsNode& node = graph.data[i];
         int previousNodeIdx, currentNodeIdx;
-        while(node.hasUnvisited()){
-
+        while (node.hasUnvisited())
+        {
             graph.print();
 
             QList<LoopsNodeEdgeData> loop;
@@ -518,10 +541,13 @@ LoopsInfo findLoops()
                 ned = actualNode.continueLoop(previousNodeIdx);
                 previousNodeIdx = currentNodeIdx;
                 loop.push_back(ned);
-            } while(ned.node != i);
+            } while (ned.node != i);
 
-            //for simple domains, we have the same loop twice. Do not include it second times
-            if(loops.isEmpty() || !areSameLoops(loop, loops.last()))
+            if (areEdgeDuplicities(loop))
+                throw AgrosGeometryException(QObject::tr("Two loops connected by one edge."));
+
+            // for simple domains, we have the same loop twice. Do not include it second times
+            if (loops.isEmpty() || !areSameLoops(loop, loops.last()))
                 loops.push_back(loop);
         }
     }
@@ -734,54 +760,61 @@ QMap<SceneLabel*, QList<Triangle> > findPolygonTriangles()
 
     // TODO: rewrite to exceptions
     // find loops
-    LoopsInfo loopsInfo = findLoops();
-
-    QList<QList<Point> > polylines;
-    for (int i = 0; i < loopsInfo.loops.size(); i++)
+    try
     {
-        QList<Point> polyline;
+        LoopsInfo loopsInfo = findLoops();
 
-        // QList<Point> contour;
-        for (int j = 0; j < loopsInfo.loops[i].size(); j++)
+        QList<QList<Point> > polylines;
+        for (int i = 0; i < loopsInfo.loops.size(); i++)
         {
-            SceneEdge *edge = Agros2D::scene()->edges->items().at(loopsInfo.loops[i][j].edge);
-            if ((edge->nodeStart()->connectedEdges().size() > 1) && (edge->nodeEnd()->connectedEdges().size() > 1))
+            QList<Point> polyline;
+
+            // QList<Point> contour;
+            for (int j = 0; j < loopsInfo.loops[i].size(); j++)
             {
-                if (loopsInfo.loops[i][j].reverse)
-                    addEdgePoints(&polyline, SceneEdge(edge->nodeStart(), edge->nodeEnd(), edge->angle()), true);
-                else
-                    addEdgePoints(&polyline, SceneEdge(edge->nodeStart(), edge->nodeEnd(), edge->angle()));
+                SceneEdge *edge = Agros2D::scene()->edges->items().at(loopsInfo.loops[i][j].edge);
+                if ((edge->nodeStart()->connectedEdges().size() > 1) && (edge->nodeEnd()->connectedEdges().size() > 1))
+                {
+                    if (loopsInfo.loops[i][j].reverse)
+                        addEdgePoints(&polyline, SceneEdge(edge->nodeStart(), edge->nodeEnd(), edge->angle()), true);
+                    else
+                        addEdgePoints(&polyline, SceneEdge(edge->nodeStart(), edge->nodeEnd(), edge->angle()));
+                }
+            }
+
+            polylines.append(polyline);
+        }
+
+        foreach (SceneLabel* label, Agros2D::scene()->labels->items())
+        {
+            // if (!label->isHole() && loopsInfo.labelToLoops[label].count() > 0)
+            if (loopsInfo.labelToLoops[label].count() > 0)
+            {
+                // main polyline
+                QList<Point> polyline = polylines[loopsInfo.labelToLoops[label][0]];
+
+                // holes
+                QList<QList<Point> > holes;
+                for (int j = 1; j < loopsInfo.labelToLoops[label].count(); j++)
+                {
+                    QList<Point> hole = polylines[loopsInfo.labelToLoops[label][j]];
+                    holes.append(hole);
+                }
+
+                QList<Triangle> triangles = triangulateLabel(polyline, holes);
+                objects.insert(label, triangles);
             }
         }
 
-        polylines.append(polyline);
+        // clear polylines
+        foreach (QList<Point> polyline, polylines)
+            polyline.clear();
+        polylines.clear();
     }
-
-    foreach (SceneLabel* label, Agros2D::scene()->labels->items())
+    catch (AgrosGeometryException &e)
     {
-        // if (!label->isHole() && loopsInfo.labelToLoops[label].count() > 0)
-        if (loopsInfo.labelToLoops[label].count() > 0)
-        {
-            // main polyline
-            QList<Point> polyline = polylines[loopsInfo.labelToLoops[label][0]];
-
-            // holes
-            QList<QList<Point> > holes;
-            for (int j = 1; j < loopsInfo.labelToLoops[label].count(); j++)
-            {
-                QList<Point> hole = polylines[loopsInfo.labelToLoops[label][j]];
-                holes.append(hole);
-            }
-
-            QList<Triangle> triangles = triangulateLabel(polyline, holes);
-            objects.insert(label, triangles);
-        }
+        // do nothing
     }
-
-    // clear polylines
-    foreach (QList<Point> polyline, polylines)
-        polyline.clear();
-    polylines.clear();
 
     return objects;
 }
