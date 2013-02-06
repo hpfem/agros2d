@@ -1613,21 +1613,24 @@ void MainWindow::doDocumentExportMeshFile()
         QSettings settings;
         QString dir = settings.value("General/LastMeshDir").toString();
 
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Export mesh file"), dir, tr("Mesh files (*.xml)"));
-        fileName.remove(".xml");
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Export mesh file"), dir, tr("Mesh files (*.mesh)"));
         QFileInfo fileInfo(fileName);
 
         if (!fileName.isEmpty())
         {
             // remove existing file
-            if (QFile::exists(fileName + ".xml"))
-                QFile::remove(fileName + ".xml");
+            if (QFile::exists(fileName + ".mesh"))
+                QFile::remove(fileName + ".mesh");
 
             // copy file
-            QFile::copy(tempProblemDir() + "/temp.xml", fileName + ".xml");
-            if (fileInfo.absoluteDir() != tempProblemDir())
+            QFile::copy(cacheProblemDir() + "/initial.mesh", fileName + ".mesh");
+            if (fileInfo.absoluteDir() != cacheProblemDir())
                 settings.setValue("General/LastMeshDir", fileInfo.absolutePath());
         }
+    }
+    else
+    {
+        Agros2D::log()->printMessage(tr("Export mesh"), tr("The problem is not meshed."));
     }
 }
 
