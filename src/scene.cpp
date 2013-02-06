@@ -1930,7 +1930,7 @@ void Scene::checkNodeConnect(SceneNode *node)
     }
 }
 
-ErrorResult Scene::checkGeometryResult()
+void Scene::checkGeometryResult()
 {
     if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric)
     {
@@ -1950,7 +1950,7 @@ ErrorResult Scene::checkGeometryResult()
             indices = indices.left(indices.length() - 2);
 
             nodes.clear();
-            return ErrorResult(ErrorResultType_Critical, tr("There are nodes '%1' with negative radial component.").arg(indices));
+            throw AgrosGeometryException(tr("There are nodes '%1' with negative radial component.").arg(indices));
         }
         nodes.clear();
     }
@@ -1959,22 +1959,25 @@ ErrorResult Scene::checkGeometryResult()
     {
         if (!node->isConnected())
         {
-            return ErrorResult(ErrorResultType_Critical, tr("There are nodes which are not connected to any edge (red highlighted). All nodes should be connected."));
+            throw AgrosGeometryException(tr("There are nodes which are not connected to any edge (red highlighted). All nodes should be connected."));
+        }
+
+        if (node->isEndNoed())
+        {
+            throw AgrosGeometryException(tr("There are nodes which are connected to one edge only (red highlighted). This is not allowed in Agros."));
         }
 
         if (node->isLyingOnEdges())
         {
-            return ErrorResult(ErrorResultType_Critical, tr("There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first."));
+            throw AgrosGeometryException(tr("There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first."));
         }
     }
 
     QList<SceneEdge *> crossings = SceneEdge::findCrossings();
     if (!crossings.isEmpty())
     {
-        return ErrorResult(ErrorResultType_Critical, tr("There are crossings in the geometry (red highlighted). Remove the crossings first."));
+        throw AgrosGeometryException(tr("There are crossings in the geometry (red highlighted). Remove the crossings first."));
     }
-
-    return ErrorResult();
 }
 
 void Scene::setActiveViewField(FieldInfo* fieldInfo)

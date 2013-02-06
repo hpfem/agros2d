@@ -88,6 +88,7 @@ ChartWidget::ChartWidget(QWidget *parent) : QWidget(parent)
     actSceneModeChart->setCheckable(true);
 
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(setControls()));
+    connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(setControls()));
     connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(setControls()));
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
 

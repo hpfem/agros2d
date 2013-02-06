@@ -40,8 +40,6 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 
-#include "gl2ps/gl2ps.h"
-
 SceneViewPreprocessor::SceneViewPreprocessor(QWidget *parent)
     : SceneViewCommon2D(NULL, parent)
 {
@@ -1316,45 +1314,8 @@ void SceneViewPreprocessor::paintSelectRegion()
     }
 }
 
-ErrorResult SceneViewPreprocessor::saveGeometryToFile(const QString &fileName, int format)
+void SceneViewPreprocessor::saveGeometryToSvg(const QString &fileName)
 {
-    // store old value
-    SceneGeometryMode sceneMode = m_sceneMode;
-    m_sceneMode == SceneGeometryMode_OperateOnNodes;
-    actOperateOnNodes->trigger();
-
-    makeCurrent();
-    int state = GL2PS_OVERFLOW;
-    int buffsize = 0;
-    GLint options = GL2PS_DRAW_BACKGROUND | GL2PS_USE_CURRENT_VIEWPORT;
-
-    FILE *fp = fopen(fileName.toStdString().c_str(), "wb");
-    while (state == GL2PS_OVERFLOW)
-    {
-        buffsize += 1024*1024;
-        gl2psBeginPage("Agros2D", "Agros2D - export", NULL, format,
-                       GL2PS_BSP_SORT, options,
-                       GL_RGBA, 0, NULL, 0, 0, 0, buffsize, fp, "xxx.pdf");
-
-        glClearColor(Agros2D::problem()->configView()->colorBackground.redF(),
-                     Agros2D::problem()->configView()->colorBackground.greenF(),
-                     Agros2D::problem()->configView()->colorBackground.blueF(), 0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // paintSolutionMesh();
-        // paintInitialMesh();
-
-        paintGeometry();
-
-        state = gl2psEndPage();
-    }
-    fclose(fp);
-
-    // restore viewport
-    m_sceneMode = sceneMode;
-    if (m_sceneMode == SceneGeometryMode_OperateOnNodes) actOperateOnNodes->trigger();
-    if (m_sceneMode == SceneGeometryMode_OperateOnEdges) actOperateOnEdges->trigger();
-    if (m_sceneMode == SceneGeometryMode_OperateOnLabels) actOperateOnLabels->trigger();
-
-    return ErrorResult();
+    QString geometry = generateSvgGeometry(Agros2D::scene()->edges->items());
+    writeStringContent(fileName, geometry);
 }

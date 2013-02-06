@@ -612,7 +612,7 @@
     <message>
         <location filename="../../src/problemdialog.cpp" line="223"/>
         <source>Time skip (s):</source>
-        <translation type="unfinished">Пропустить время (с):</translation>
+        <translation>Пропустить время (с):</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="226"/>
@@ -692,7 +692,7 @@
     <message>
         <location filename="../../src/problemdialog.cpp" line="611"/>
         <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Analysis:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Solver:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Adaptivity:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Number of ref. / order:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%4 / %5&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
-        <translation type="unfinished">&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Анализ:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Решатель:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Адаптивность:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;УКол-во улучш. / порядок:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%4 / %5&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
+        <translation>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Анализ:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Решатель:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Адаптивность:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Кол-во улучш. / порядок:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%4 / %5&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
 </context>
 <context>
@@ -1373,7 +1373,7 @@
     <message>
         <location filename="../../src/mainwindow.cpp" line="361"/>
         <source>Show the application&apos;s About box</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать окно &quot;О приложении&quot;</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="365"/>
@@ -1383,7 +1383,7 @@
     <message>
         <location filename="../../src/mainwindow.cpp" line="366"/>
         <source>Show the Qt library&apos;s About box</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать окно &quot;О Qt&quot;</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="370"/>
@@ -1398,7 +1398,7 @@
     <message>
         <location filename="../../src/mainwindow.cpp" line="375"/>
         <source>&amp;Mesh area</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Область сетки</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="376"/>
@@ -1567,7 +1567,7 @@ step</source>
     <message>
         <location filename="../../src/mainwindow.cpp" line="545"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">&amp;Добавить</translation>
+        <translation>&amp;Добавить</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="563"/>
@@ -1614,7 +1614,7 @@ step</source>
         <location filename="../../src/mainwindow.cpp" line="983"/>
         <location filename="../../src/mainwindow.cpp" line="1406"/>
         <source>File open</source>
-        <translation type="unfinished">Открытый файл</translation>
+        <translation>Открытый файл</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="979"/>
@@ -2013,27 +2013,27 @@ step</source>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="325"/>
         <source>could not read Triangle node file</source>
-        <translation>не удалось считать Triangle файл узлов</translation>
+        <translation>не удалось считать файл узлов Triangle</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="333"/>
         <source>could not read Triangle edge file</source>
-        <translation>не удалось считать Triangle файл рёбер</translation>
+        <translation>не удалось считать файл рёбер Triangle</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="341"/>
         <source>could not read Triangle ele file</source>
-        <translation type="unfinished">не удалось считать Triangle файл элементов</translation>
+        <translation>не удалось считать файл элементов Triangle</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="349"/>
         <source>could not read Triangle neigh file</source>
-        <translation>не удалось считать Triangle файл соседей</translation>
+        <translation>не удалось считать файл соседей Triangle</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="394"/>
         <source>Some areas do not have a marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует маркер у некоторых областей</translation>
     </message>
     <message>
         <source>some areas have no label marker</source>
@@ -2170,7 +2170,7 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1634"/>
         <source>Number of Solution</source>
-        <translation type="unfinished">Номер решения</translation>
+        <translation>Номер решения</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1641"/>
@@ -2280,7 +2280,7 @@ step</source>
         <location filename="../../src/moduledialog.cpp" line="1869"/>
         <location filename="../../src/moduledialog.cpp" line="1887"/>
         <source>Analyses</source>
-        <translation type="unfinished">Анализ</translation>
+        <translation>Анализ</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1850"/>
@@ -2530,34 +2530,34 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="671"/>
         <source>Solution index:</source>
-        <translation type="unfinished">Индекс решения:</translation>
+        <translation>Индекс решения:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="673"/>
         <source>Test function index:</source>
-        <translation type="unfinished">Индекс основной функции:</translation>
+        <translation>Индекс основной функции:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="677"/>
         <location filename="../../src/moduledialog.cpp" line="686"/>
         <source>Planar:</source>
-        <translation type="unfinished">Планарный:</translation>
+        <translation>Планарный:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="679"/>
         <location filename="../../src/moduledialog.cpp" line="688"/>
         <source>Axisymmetric:</source>
-        <translation type="unfinished">Осесимметричный:</translation>
+        <translation>Осесимметричный:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="682"/>
         <source>Linear</source>
-        <translation type="unfinished">Линейный</translation>
+        <translation>Линейный</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="691"/>
         <source>Nonlinear</source>
-        <translation type="unfinished">Нелинейный</translation>
+        <translation>Нелинейный</translation>
     </message>
 </context>
 <context>
@@ -3212,13 +3212,13 @@ step</source>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="489"/>
         <source>Warning: Matrix and RHS will be saved on the disk. This will slow down the calculation. You may disable it in Edit-&gt;Options-&gt;Solver menu.</source>
-        <translation type="unfinished"></translation>
+        <translation>Внимание: матрица и правая часть будет сохранена на диск. Это может замедлить вычисления. Вы можете отключить сохранение тут: Редактировать-&gt;Опции-&gt;Меню решателя.</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="622"/>
         <location filename="../../src/hermes2d/problem.cpp" line="718"/>
         <source>Cannot create solver.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно создать решатель</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="793"/>
@@ -3229,12 +3229,12 @@ step</source>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="793"/>
         <source>Loading initial mesh from disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузка исходной сетки с диска</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="885"/>
         <source>Loading spaces and solutions from disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузка пространств и решений с диска</translation>
     </message>
 </context>
 <context>
@@ -3242,42 +3242,42 @@ step</source>
     <message>
         <location filename="../../src/problemdialog.cpp" line="797"/>
         <source>Properties</source>
-        <translation type="unfinished">Свойства</translation>
+        <translation>Свойства</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="798"/>
         <source>Ctrl+1</source>
-        <translation type="unfinished">Ctrl+1</translation>
+        <translation>Ctrl+1</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="799"/>
         <source>Problem properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Свойства проблемы</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="811"/>
         <source>Physical fields</source>
-        <translation type="unfinished">Физические поля</translation>
+        <translation>Физические поля</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="826"/>
         <source>Name:</source>
-        <translation type="unfinished">Имя:</translation>
+        <translation>Имя:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="828"/>
         <source>Coordinate type:</source>
-        <translation type="unfinished">Типы координат:</translation>
+        <translation>Типы координат:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="830"/>
         <source>Linear solver:</source>
-        <translation type="unfinished"></translation>
+        <translation>Линейный решатель</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="832"/>
         <source>Mesh type:</source>
-        <translation type="unfinished">Тип сетки:</translation>
+        <translation>Тип сетки:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="835"/>
@@ -3287,62 +3287,62 @@ step</source>
     <message>
         <location filename="../../src/problemdialog.cpp" line="844"/>
         <source>Frequency (Hz):</source>
-        <translation type="unfinished"></translation>
+        <translation>Частота (Гц):</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="847"/>
         <source>Harmonic analysis</source>
-        <translation type="unfinished">Анализ гармоник</translation>
+        <translation>Анализ гармоник</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="861"/>
         <source>Number of constant steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Кол-во пост. шагов</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="867"/>
         <source>Method:</source>
-        <translation type="unfinished">Метод:</translation>
+        <translation>Метод:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="869"/>
         <source>Order:</source>
-        <translation type="unfinished">Порядок:</translation>
+        <translation>Порядок:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="871"/>
         <source>Tolerance:</source>
-        <translation type="unfinished">Допуск:</translation>
+        <translation>Допуск:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="873"/>
         <source>Total time (s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Общее время (с):</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="877"/>
         <source>Constant time step:</source>
-        <translation type="unfinished">Постоянный временной шаг:</translation>
+        <translation>Постоянный временной шаг:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="880"/>
         <source>Transient analysis</source>
-        <translation type="unfinished">Анализ переходных процессов</translation>
+        <translation>Анализ переходных процессов</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="893"/>
         <source>Couplings</source>
-        <translation type="unfinished">Сопряжения</translation>
+        <translation>Сопряжения</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="1060"/>
         <source>Number of steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Кол-во шагов:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="1062"/>
         <source>Aprox. number of steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Прибл. кол-во шагов:</translation>
     </message>
 </context>
 <context>
@@ -3350,57 +3350,57 @@ step</source>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="41"/>
         <source>Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Браузер</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="57"/>
         <source>Name</source>
-        <translation type="unfinished">Имя</translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="57"/>
         <source>Type</source>
-        <translation type="unfinished">Тип</translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="57"/>
         <source>Value</source>
-        <translation type="unfinished">Значение</translation>
+        <translation>Значение</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="76"/>
         <source>Copy name</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать имя</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="79"/>
         <source>Copy value</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать значение</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="82"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Удалить</translation>
+        <translation>&amp;Удалить</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="122"/>
         <source>Variables</source>
-        <translation type="unfinished">Переменные</translation>
+        <translation>Переменные</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="126"/>
         <source>Other</source>
-        <translation type="unfinished">Другое</translation>
+        <translation>Другое</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="130"/>
         <source>Functions</source>
-        <translation type="unfinished">Функции</translation>
+        <translation>Функции</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="134"/>
         <source>Classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Классы</translation>
     </message>
 </context>
 <context>
@@ -3408,269 +3408,269 @@ step</source>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="342"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Новый</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="346"/>
         <source>&amp;Open...</source>
-        <translation type="unfinished">&amp;Открыть...</translation>
+        <translation>&amp;Открыть...</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="350"/>
         <source>&amp;Save</source>
-        <translation type="unfinished">&amp;Сохранить</translation>
+        <translation>&amp;Сохранить</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="354"/>
         <source>Save &amp;as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить &amp;как...</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="358"/>
         <source>Save console output as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить вывод консоли как...</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="364"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Закрыть</translation>
+        <translation>&amp;Закрыть</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="368"/>
         <source>&amp;Print</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Печать</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="372"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished">&amp;Отменить</translation>
+        <translation>&amp;Отменить</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="375"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished">&amp;Повторить</translation>
+        <translation>&amp;Повторить</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="378"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы&amp;резать</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="382"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Копировать</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="386"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Вставить</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="389"/>
         <source>&amp;Find</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Найти</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="393"/>
         <source>Find &amp;next</source>
-        <translation type="unfinished"></translation>
+        <translation>Найти &amp;следующее</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="397"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="401"/>
         <source>Replace</source>
-        <translation type="unfinished"></translation>
+        <translation>Заменить</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="405"/>
         <source>Indent</source>
-        <translation type="unfinished"></translation>
+        <translation>Отступ</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="406"/>
         <source>Unindent</source>
-        <translation type="unfinished"></translation>
+        <translation>Выступ</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="408"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Комментировать</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="410"/>
         <source>Uncomment</source>
-        <translation type="unfinished"></translation>
+        <translation>Раскомментировать</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="411"/>
         <source>Ctrl+U</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+U</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="413"/>
         <source>Goto line</source>
-        <translation type="unfinished">Перейти на строку</translation>
+        <translation>Перейти на строку</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="414"/>
         <source>Alt+G</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+G</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="416"/>
         <source>&amp;Run Python script</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Выполнить Python скрипт</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="417"/>
         <source>Ctrl+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="419"/>
         <source>Replace tabs with spaces</source>
-        <translation type="unfinished"></translation>
+        <translation>Заменить табы на пробелы</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="422"/>
         <source>&amp;Check Python script (PyLint)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Проверить Python скрипт (PyLint)</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="424"/>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+C</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="426"/>
         <source>PyFlakes enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>PyFlakes включен</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="431"/>
         <source>PyLint enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>PyLint включен</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="436"/>
         <source>Print stacktrace</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Печать</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="441"/>
         <source>E&amp;xit</source>
-        <translation type="unfinished">Вы&amp;ход</translation>
+        <translation>Вы&amp;ход</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="442"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="443"/>
         <source>Exit editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Выход из редактора</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="446"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="515"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Помощь</translation>
+        <translation>&amp;Помощь</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="450"/>
         <source>&amp;Keyword List</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ключевые слова</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="454"/>
         <source>About &amp;PythonLab</source>
-        <translation type="unfinished"></translation>
+        <translation>О &amp;PythonLab</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="455"/>
         <source>Show the application&apos;s About box</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать окно &quot;О приложении&quot;</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="459"/>
         <source>About &amp;Qt</source>
-        <translation type="unfinished">О &amp;Qt</translation>
+        <translation>О &amp;Qt</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="460"/>
         <source>Show the Qt library&apos;s About box</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать окно &quot;О Qt&quot;</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="467"/>
         <source>&amp;Recent files</source>
-        <translation type="unfinished">&amp;Последние файлы</translation>
+        <translation>&amp;Последние файлы</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="469"/>
         <source>&amp;File</source>
-        <translation type="unfinished">&amp;Файл</translation>
+        <translation>&amp;Файл</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="483"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Редактировать</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="503"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished">&amp;Инструментарий</translation>
+        <translation>&amp;Инструментарий</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="509"/>
         <source>&amp;Options</source>
-        <translation type="unfinished">&amp;Опции</translation>
+        <translation>&amp;Опции</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="525"/>
         <source>File</source>
-        <translation type="unfinished">Файл</translation>
+        <translation>Файл</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="535"/>
         <source>Edit</source>
-        <translation type="unfinished">Редактировать</translation>
+        <translation>Редактировать</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="548"/>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Инструментарий</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="567"/>
         <source>Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Путь</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="573"/>
         <source>Working directory: </source>
-        <translation type="unfinished"></translation>
+        <translation>Рабочий каталог:</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="584"/>
         <source>Add new document</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить новый документ</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="628"/>
         <source>File browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Просмотр файлов</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="651"/>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation>Готов</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="778"/>
         <source>Select directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите каталог</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="785"/>
@@ -3678,72 +3678,73 @@ step</source>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1084"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1105"/>
         <source>Untitled</source>
-        <translation type="unfinished"></translation>
+        <translation>Безымянный</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="798"/>
         <source>Open File</source>
-        <translation type="unfinished">Открыть файл</translation>
+        <translation>Открыть файл</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="798"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="859"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="895"/>
         <source>Python files (*.py)</source>
-        <translation type="unfinished"></translation>
+        <translation>Python файлы (*.py)</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="815"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Информация</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="815"/>
         <source>Script is already opened.</source>
-        <translation type="unfinished"></translation>
+        <translation>Скрипт уже открыт.</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="859"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="895"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="912"/>
         <source>Save file</source>
-        <translation type="unfinished">Сохранить файл</translation>
+        <translation>Сохранить файл</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="881"/>
         <source>File &apos;%1&apos; cannot be saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно сохранить файл &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="912"/>
         <source>Html files (*.html)</source>
-        <translation type="unfinished"></translation>
+        <translation>html файлы (*.html)</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="941"/>
         <source>Print Document</source>
-        <translation type="unfinished"></translation>
+        <translation>Печать документа</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1017"/>
         <source>Application</source>
-        <translation type="unfinished"></translation>
+        <translation>Приложение</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1017"/>
         <source>File &apos;%1&apos; has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл &apos;%1&apos; был модифицирован.
+Хотите сохранить изменения?</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1090"/>
         <source>Python Lab - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Python Lab — %1</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1098"/>
         <source>Line: %1, Col: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Стр.: %1, Кол.: %2</translation>
     </message>
 </context>
 <context>
@@ -3752,24 +3753,24 @@ Do you want to save your changes?</source>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="136"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="181"/>
         <source>Convention</source>
-        <translation type="unfinished"></translation>
+        <translation>Соглашение</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="139"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="186"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Внимание</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="143"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="191"/>
         <source>Error</source>
-        <translation type="unfinished">Ошибка</translation>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="150"/>
         <source>Could not read PyLint output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось считать вывод PyLint.</translation>
     </message>
 </context>
 <context>
@@ -3777,12 +3778,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonengine.cpp" line="308"/>
         <source>Type &apos;%1&apos; is not supported ().</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип &apos;%1&apos; не поддерживается ().</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonengine.cpp" line="309"/>
         <source>Type &apos;%1&apos; is not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип &apos;%1&apos; не поддерживается.</translation>
     </message>
 </context>
 <context>
@@ -3790,12 +3791,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="87"/>
         <source>&amp;Create script from model</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Создать скрипт по модели</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="88"/>
         <source>Ctrl+M</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+M</translation>
     </message>
 </context>
 <context>
@@ -3803,7 +3804,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonconsole.cpp" line="695"/>
         <source>Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Консоль</translation>
     </message>
 </context>
 <context>
@@ -3811,7 +3812,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonconsole.cpp" line="726"/>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>История</translation>
     </message>
 </context>
 <context>
@@ -3829,7 +3830,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/gui/common.cpp" line="179"/>
         <source>Step: %1, time: %2 s</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаг: %1, время: %2 s</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/coupling.cpp" line="180"/>
@@ -3857,18 +3858,18 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="288"/>
         <source>mesh generation</source>
-        <translation type="unfinished"></translation>
+        <translation>генерирование сетки</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="445"/>
         <source>No field defined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не указан тип поля.</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="614"/>
         <location filename="../../src/hermes2d/problem.cpp" line="711"/>
         <source>solving problem</source>
-        <translation type="unfinished"></translation>
+        <translation>решение проблемы</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="767"/>
@@ -3877,7 +3878,7 @@ Do you want to save your changes?</source>
         <location filename="../../src/hermes2d/problem.cpp" line="785"/>
         <location filename="../../src/hermes2d/solver.cpp" line="234"/>
         <source>Solver (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Решатель (%1)</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="768"/>
@@ -3907,7 +3908,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/hermes2d/problem_config.cpp" line="50"/>
         <source>unnamed</source>
-        <translation type="unfinished">безымянный</translation>
+        <translation>безымянный</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/solutionstore.cpp" line="428"/>
@@ -3924,7 +3925,7 @@ Do you want to save your changes?</source>
         <location filename="../../src/hermes2d/solver.cpp" line="430"/>
         <location filename="../../src/hermes2d/solver.cpp" line="733"/>
         <source>DOF is zero</source>
-        <translation type="unfinished"></translation>
+        <translation>Нулевое кол-во степеней свободы</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/solver.cpp" line="601"/>
@@ -4399,89 +4400,89 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/util/enums.cpp" line="298"/>
         <source>Hard</source>
-        <translation type="unfinished"></translation>
+        <translation>Сильное</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="300"/>
         <source>Weak</source>
-        <translation type="unfinished"></translation>
+        <translation>Слабое</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="312"/>
         <source>Scalar</source>
-        <translation type="unfinished">Скаляр</translation>
+        <translation>Скаляр</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="314"/>
         <source>Magnitude</source>
-        <translation type="unfinished">Модуль</translation>
+        <translation>Модуль</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="320"/>
         <source>Undefined</source>
-        <translation type="unfinished"></translation>
+        <translation>Не указано</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="326"/>
         <source>Planar</source>
-        <translation type="unfinished"></translation>
+        <translation>Планарный</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="326"/>
         <source>Axisymmetric</source>
-        <translation type="unfinished"></translation>
+        <translation>Осесимметричный</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="334"/>
         <location filename="../../src/util/enums.cpp" line="460"/>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Нормальный</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="336"/>
         <source>Reference</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Эталонный</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="338"/>
         <location filename="../../src/util/enums.cpp" line="464"/>
         <source>Finer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Уточненный</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="350"/>
         <source>Disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Отключена</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="352"/>
         <source>h-adaptivity</source>
-        <translation type="unfinished"></translation>
+        <translation>h-адаптивность</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="354"/>
         <source>p-adaptivity</source>
-        <translation type="unfinished"></translation>
+        <translation>p-адаптивность</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="356"/>
         <source>hp-adaptivity</source>
-        <translation type="unfinished"></translation>
+        <translation>hp-адаптивность</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="368"/>
         <source>Fixed step</source>
-        <translation type="unfinished"></translation>
+        <translation>Фикс. шаг</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="370"/>
         <source>Adaptive (tolerance)</source>
-        <translation type="unfinished"></translation>
+        <translation>Адаптивный (допуск)</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="372"/>
         <source>Adaptive (num steps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Адаптивный (кол. шагов)</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="384"/>
@@ -4506,162 +4507,162 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/util/enums.cpp" line="402"/>
         <source>Triangle</source>
-        <translation type="unfinished">Triangle</translation>
+        <translation>Triangle</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="404"/>
         <source>Triangle - quad fine div.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Triangle — </translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="406"/>
         <source>Triangle - quad rough div.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Triangle —</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="408"/>
         <source>Triangle - quad join</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Triangle —</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="410"/>
         <source>GMSH - triangle</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GMSH —</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="412"/>
         <source>GMSH - quad</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GMSH —</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="414"/>
         <source>GMSH - quad Delaunay (exp.)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GMSH —</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="452"/>
         <source>Extremely coarse</source>
-        <translation type="unfinished"></translation>
+        <translation>Крупнейший</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="454"/>
         <source>Extra coarse</source>
-        <translation type="unfinished"></translation>
+        <translation>Еще крупнее</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="456"/>
         <source>Coarser</source>
-        <translation type="unfinished"></translation>
+        <translation>Крупнее</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="458"/>
         <source>Coarse</source>
-        <translation type="unfinished"></translation>
+        <translation>Крупный</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="462"/>
         <source>Fine</source>
-        <translation type="unfinished"></translation>
+        <translation>Мелкий</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="466"/>
         <source>Extra fine</source>
-        <translation type="unfinished"></translation>
+        <translation>Мельчайший</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="478"/>
         <source>Agros2D</source>
-        <translation type="unfinished">Agros2D</translation>
+        <translation>Agros2D</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="480"/>
         <source>Jet</source>
-        <translation type="unfinished">Реактивная струя</translation>
+        <translation>Реактивная струя</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="482"/>
         <source>Copper</source>
-        <translation type="unfinished">Медь</translation>
+        <translation>Медь</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="484"/>
         <source>Hot</source>
-        <translation type="unfinished">Жар</translation>
+        <translation>Жар</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="486"/>
         <source>Cool</source>
-        <translation type="unfinished">Прохлада</translation>
+        <translation>Прохлада</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="488"/>
         <source>Bone</source>
-        <translation type="unfinished">Скелет</translation>
+        <translation>Скелет</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="490"/>
         <source>Pink</source>
-        <translation type="unfinished">Розовый</translation>
+        <translation>Розовый</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="492"/>
         <source>Spring</source>
-        <translation type="unfinished">Весна</translation>
+        <translation>Весна</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="494"/>
         <source>Summer</source>
-        <translation type="unfinished">Лето</translation>
+        <translation>Лето</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="496"/>
         <source>Autumn</source>
-        <translation type="unfinished">Осень</translation>
+        <translation>Осень</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="498"/>
         <source>Winter</source>
-        <translation type="unfinished">Зима</translation>
+        <translation>Зима</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="500"/>
         <source>HSV</source>
-        <translation type="unfinished">HSV</translation>
+        <translation>HSV</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="502"/>
         <source>B/W ascending</source>
-        <translation type="unfinished">Ч/Б восходящий</translation>
+        <translation>Ч/Б восходящий</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="504"/>
         <source>B/W descending</source>
-        <translation type="unfinished">Ч/Б нисходящий</translation>
+        <translation>Ч/Б нисходящий</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="516"/>
         <source>Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Стрелка</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="518"/>
         <source>Cone</source>
-        <translation type="unfinished"></translation>
+        <translation>Конус</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="530"/>
         <source>Tail</source>
-        <translation type="unfinished"></translation>
+        <translation>Хвост</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="532"/>
         <source>Head</source>
-        <translation type="unfinished"></translation>
+        <translation>Голова</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="534"/>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Центр</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="546"/>
@@ -4696,7 +4697,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/util/enums.cpp" line="568"/>
         <source>Linear</source>
-        <translation type="unfinished">Линейный</translation>
+        <translation>Линейный</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="570"/>
@@ -4726,7 +4727,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/value.cpp" line="237"/>
         <source>Value</source>
-        <translation type="unfinished">Значение</translation>
+        <translation>Значение</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/solutiontypes.cpp" line="168"/>

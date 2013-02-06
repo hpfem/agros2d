@@ -275,6 +275,40 @@ void Problem::createStructure()
 
 bool Problem::mesh()
 {
+    bool result;
+    try{
+        result = meshAction();
+    }
+    catch (AgrosGeometryException& e)
+    {
+        // this assumes that all the code in Hermes and Agros is exception-safe
+        // todo:  this is almost certainly not the case, at least for Agros. It should be further investigated
+        Agros2D::log()->printError(tr("Geometry check"), QString("%1").arg(e.what()));
+        m_isSolving = false;
+        return true;
+    }
+    catch (AgrosMeshException& e)
+    {
+        // this assumes that all the code in Hermes and Agros is exception-safe
+        // todo:  this is almost certainly not the case, at least for Agros. It should be further investigated
+        Agros2D::log()->printError(tr("Mesh reader"), QString("%1").arg(e.what()));
+        m_isSolving = false;
+        return false;
+    }
+    catch (...)
+    {
+        // todo: dangerous
+        // catching all other exceptions. This is not save at all
+        Agros2D::log()->printWarning("Solver", "An unknown exception occured in solver and has been ignored!");
+        m_isSolving = false;
+        return false;
+    }
+
+    return result;
+}
+
+bool Problem::meshAction()
+{
     //clearSolution();
 
     Agros2D::scene()->blockSignals(true);
@@ -286,6 +320,8 @@ bool Problem::mesh()
     Agros2D::scene()->blockSignals(false);
 
     Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("mesh generation"));
+
+    Agros2D::scene()->checkGeometryResult();
 
     MeshGenerator *meshGenerator = NULL;
     switch (config()->meshType())
@@ -319,12 +355,17 @@ bool Problem::mesh()
         catch (AgrosException& e)
         {
             delete meshGenerator;
-            Agros2D::log()->printError(tr("Mesh reader"), QString("%1").arg(e.what()));
+            throw;
         }
         catch (Hermes::Exceptions::Exception& e)
         {
             delete meshGenerator;
-            Agros2D::log()->printError(tr("Mesh reader"), QString("%1").arg(e.what()));
+            throw AgrosMeshException(e.what());
+        }
+        catch (Hermes::Exceptions::Exception* e)
+        {
+            delete meshGenerator;
+            throw AgrosMeshException(e->what());
         }
     }
 
@@ -417,16 +458,10 @@ void Problem::solveInit()
     Indicator::openProgress();
 
     // control geometry
-    ErrorResult result = Agros2D::scene()->checkGeometryResult();
-    if (result.isError())
-    {
-        result.showDialog();
-        m_isSolving = false;
-        throw (AgrosSolverException("Geometry check failed"));
-    }
+    Agros2D::scene()->checkGeometryResult();
 
     // save problem
-    result = Agros2D::scene()->writeToFile(tempProblemFileName() + ".a2d");
+    ErrorResult result = Agros2D::scene()->writeToFile(tempProblemFileName() + ".a2d");
     if (result.isError())
         result.showDialog();
 
@@ -520,9 +555,22 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
         {
             m_isSolved = true;
         }
+    }    
+    catch (AgrosException& e)
+    {
+        // message has been allready displayed
+        // originaly either Agros or Hermes exception has been risen, so it should be safe to catch it here and stop propagating
+        // however, this assumes that all the code in Hermes and Agros is exception-safe
+        // todo:  this is almost certainly not the case, at least for Agros. It should be further investigated
+        m_isSolving = false;
+        return;
     }
     catch (...)
     {
+        // todo: dangerous
+        // catching all other exceptions. This is not save at all
+        m_isSolving = false;
+        Agros2D::log()->printWarning("Solver", "An unknown exception occured in solver and has been ignored!");
         return;
     }
 }
@@ -551,7 +599,7 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
     catch (Hermes::Exceptions::Exception* e)
     {
         Agros2D::log()->printError(QObject::tr("Solver"), QString("%1").arg(e->what()));
-        throw;
+        throw AgrosSolverException(e->what());
     }
     catch (AgrosSolverException& e)
     {

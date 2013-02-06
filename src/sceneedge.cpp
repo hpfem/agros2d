@@ -28,7 +28,6 @@
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
 
-
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 #include "hermes2d/field.h"
@@ -89,7 +88,9 @@ double SceneEdge::distance(const Point &point) const
         Point t = (point - c) / distance;
         double l = ((point - c) - t * R).magnitude();
 
-        double z = (t.angle() - (m_nodeStart->point() - c).angle())/M_PI*180.0;
+        // double z = (t.angle() - (m_nodeStart->point() - c).angle()) / M_PI*180.0;
+        Point p = (m_nodeStart->point() - c);
+        double z = (fastatan2(t.y, t.x) - fastatan2(p.y, p.x)) / M_PI*180.0;
         if (z < 0) z = z + 360.0; // interval (0, 360)
         if ((z > 0) && (z < m_angle)) return l;
 
@@ -133,6 +134,7 @@ bool SceneEdge::isCrossed() const
 QList<SceneNode *> SceneEdge::lyingNodes() const
 {
     QList<SceneNode *> nodes;
+    nodes.reserve(3);
 
     foreach (SceneNode *node, Agros2D::scene()->nodes->items())
     {

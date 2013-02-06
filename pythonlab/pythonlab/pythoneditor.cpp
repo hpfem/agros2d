@@ -633,7 +633,7 @@ void PythonEditorDialog::createViews()
 
     consoleView = new PythonScriptingConsoleView(pythonEngine, this);
     consoleView->setAllowedAreas(Qt::AllDockWidgetAreas);
-    addDockWidget(Qt::BottomDockWidgetArea, consoleView);
+    addDockWidget(Qt::RightDockWidgetArea, consoleView);
 
     consoleHistoryView = new PythonScriptingHistoryView(consoleView->console(), this);
     consoleHistoryView->setAllowedAreas(Qt::AllDockWidgetAreas);

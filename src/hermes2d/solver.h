@@ -31,14 +31,6 @@ class ExactSolutionScalarAgros;
 
 class SceneBoundary;
 
-class AgrosSolverException : public AgrosException
-{
-public:
-    AgrosSolverException(const QString &what) : AgrosException(what)
-    {
-    }
-};
-
 struct NextTimeStep
 {
     NextTimeStep(double len, bool ref = false) : length(len), refuse(ref) {}

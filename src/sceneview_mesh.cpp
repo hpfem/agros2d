@@ -40,6 +40,9 @@ SceneViewMesh::SceneViewMesh(PostHermes *postHermes, QWidget *parent)
 {
     createActionsMesh();
 
+    connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(clear()));
+
+    connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
     connect(m_postHermes, SIGNAL(processed()), this, SLOT(refresh()));
 }
 

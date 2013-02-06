@@ -28,8 +28,7 @@
     <module:quantity id="acoustic_density" shortname="ac_rho"/>
     <module:quantity id="acoustic_speed" shortname="ac_vel"/>
     <module:weakforms_volume>
-      <module:weakform_volume analysistype="harmonic"
-        equation="-\, \div \left( \frac{1}{\rho}\,\, \grad \faz{p} \right) - \frac{\omega^2}{\rho  c^2} \cdot \faz{p} = 0">
+      <module:weakform_volume analysistype="harmonic" equation="-\, \div \left( \frac{1}{\rho}\,\, \grad \faz{p} \right) - \frac{\omega^2}{\rho  c^2} \cdot \faz{p} = 0">
         <module:quantity id="acoustic_density"/>
         <module:quantity id="acoustic_speed"/>
         <module:matrix_form axi_linear="1 / ac_rho * r * (udr * vdr + udz * vdz) - r * pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" axi_newton="1 / ac_rho * r * (udr * vdr + udz * vdz) - r * pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" i="1" id="form" j="1" planar_linear="1 / ac_rho * (udx * vdx + udy * vdy) - pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" planar_newton="1 / ac_rho * (udx * vdx + udy * vdy) - pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" symmetric="1"/>
@@ -37,8 +36,7 @@
         <module:vector_form axi_linear="0" axi_newton="1 / ac_rho * r * (updr * vdr + updz * vdz) - r * pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * upval * vval" i="1" id="form" j="1" planar_linear="0" planar_newton="1 / ac_rho * (updx * vdx + updy * vdy) - pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * upval * vval"/>
         <module:vector_form axi_linear="0" axi_newton="1 / ac_rho * r * (updr * vdr + updz * vdz) - r * pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * upval * vval" i="2" id="form" j="2" planar_linear="0" planar_newton="1 / ac_rho * (updx * vdx + updy * vdy) - pow(2 * PI * f, 2) / (ac_rho *ac_vel * ac_vel) * upval * vval"/>
       </module:weakform_volume>
-      <module:weakform_volume analysistype="transient"
-        equation="-\, \div \left( \frac{1}{\rho}\,\, \grad p \right) + \frac{1}{\rho  c^2} \frac{\partial^2 p}{\partial t^2} = 0">
+      <module:weakform_volume analysistype="transient" equation="-\, \div \left( \frac{1}{\rho}\,\, \grad p \right) + \frac{1}{\rho  c^2} \frac{\partial^2 p}{\partial t^2} = 0">
         <module:quantity id="acoustic_density"/>
         <module:quantity id="acoustic_speed"/>
         <module:matrix_form axi_linear="1 / ac_rho * r * (udr * vdr + udz * vdz)" axi_newton="1 / ac_rho * r * (udr * vdr + udz * vdz)" i="1" id="form" j="1" planar_linear="1 / ac_rho * (udx * vdx + udy * vdy)" planar_newton="1 / ac_rho * (udx * vdx + udy * vdy)" symmetric="1"/>
@@ -60,22 +58,19 @@
     <module:quantity id="acoustic_pressure_time_derivative" shortname="ac_dpt"/>
     <module:weakforms_surface>
       <module:weakform_surface analysistype="harmonic" default="acoustic_pressure">
-        <module:boundary id="acoustic_pressure" name="Pressure"
-          equation="\faz{p} = \faz{p}_0">
+        <module:boundary equation="\faz{p} = \faz{p}_0" id="acoustic_pressure" name="Pressure">
           <module:quantity id="acoustic_pressure_real"/>
           <module:quantity id="acoustic_pressure_imag"/>
           <module:essential_form axi_linear="ac_pr" axi_newton="ac_pr" i="1" id="form" planar_linear="ac_pr" planar_newton="ac_pr"/>
           <module:essential_form axi_linear="ac_pi" axi_newton="ac_pi" i="2" id="form" planar_linear="ac_pi" planar_newton="ac_pi"/>
         </module:boundary>
-        <module:boundary id="acoustic_normal_acceleration" name="Normal acceleration"
-          equation="a_\mathrm{n} = \frac{1}{\rho} \frac{\partial \faz{p}}{\partial n_0} = \faz{a_0}">
+        <module:boundary equation="a_\mathrm{n} = \frac{1}{\rho} \frac{\partial \faz{p}}{\partial n_0} = \faz{a_0}" id="acoustic_normal_acceleration" name="Normal acceleration">
           <module:quantity id="acoustic_normal_acceleration_real"/>
           <module:quantity id="acoustic_normal_acceleration_imag"/>
           <module:vector_form axi_linear="ac_anr * r * vval" axi_newton="- ac_anr * r * vval" i="1" id="form" j="1" planar_linear="ac_anr * vval" planar_newton="- ac_anr * vval"/>
           <module:vector_form axi_linear="ac_ani * r * vval" axi_newton="- ac_ani * r * vval" i="2" id="form" j="2" planar_linear="ac_ani * vval" planar_newton="- ac_ani * vval"/>
         </module:boundary>
-        <module:boundary id="acoustic_impedance" name="Impedance boundary condition"
-          equation="\frac{1}{\rho} \frac{\partial \faz{p}}{\partial n_0} = - \mj \omega \frac{\faz{p}}{Z_0}">
+        <module:boundary equation="\frac{1}{\rho} \frac{\partial \faz{p}}{\partial n_0} = - \mj \omega \frac{\faz{p}}{Z_0}" id="acoustic_impedance" name="Impedance boundary condition">
           <module:quantity id="acoustic_impedance"/>
           <module:matrix_form axi_linear="- r * 2 * PI * f / ac_Z0 * uval * vval" axi_newton="- r * 2 * PI * f / ac_Z0 * uval * vval" i="1" id="form" j="2" planar_linear="- 2 * PI * f / ac_Z0 * uval * vval" planar_newton="- 2 * PI * f / ac_Z0 * uval * vval" symmetric="1"/>
           <module:matrix_form axi_linear="r * 2 * PI * f / ac_Z0 * uval * vval" axi_newton="r * 2 * PI * f / ac_Z0 * uval * vval" i="2" id="form" j="1" planar_linear="2 * PI * f / ac_Z0 * uval * vval" planar_newton="2 * PI * f / ac_Z0 * uval * vval" symmetric="1"/>
@@ -84,24 +79,21 @@
         </module:boundary>
       </module:weakform_surface>
       <module:weakform_surface analysistype="transient" default="acoustic_pressure">
-        <module:boundary id="acoustic_pressure" name="Pressure"
-          equation="p = p_0">
+        <module:boundary equation="p = p_0" id="acoustic_pressure" name="Pressure">
           <module:quantity dependence="time" id="acoustic_pressure_real"/>
           <module:quantity dependence="time" id="acoustic_pressure_time_derivative"/>
           <module:essential_form axi_linear="ac_dpt" axi_newton="ac_dpt" i="2" id="form" planar_linear="ac_dpt" planar_newton="ac_dpt"/>
           <module:essential_form axi_linear="ac_pr" axi_newton="ac_pr" i="1" id="form" planar_linear="ac_pr" planar_newton="ac_pr"/>
         </module:boundary>
-        <module:boundary id="acoustic_normal_acceleration" name="Normal acceleration"
-          equation="a_\mathrm{n} = \frac{1}{\rho} \frac{\partial p}{\partial n_0} = a_0">
+        <module:boundary equation="a_\mathrm{n} = \frac{1}{\rho} \frac{\partial p}{\partial n_0} = a_0" id="acoustic_normal_acceleration" name="Normal acceleration">
           <module:quantity dependence="time" id="acoustic_normal_acceleration_real"/>
           <module:vector_form axi_linear="ac_anr * r * vval" axi_newton="- ac_anr * r * vval" i="1" id="form" j="1" planar_linear="ac_anr * vval" planar_newton="- ac_anr * vval"/>
           <module:vector_form axi_linear="0" axi_newton="0" i="2" id="form" j="2" planar_linear="0" planar_newton="0"/>
         </module:boundary>
-        <module:boundary id="acoustic_impedance" name="Impedance boundary condition"
-          equation="\frac{1}{\rho} \frac{\partial p}{\partial n_0} = - \frac{1}{Z_0} \frac{\partial p}{\partial t}">
+        <module:boundary equation="\frac{1}{\rho} \frac{\partial p}{\partial n_0} = - \frac{1}{Z_0} \frac{\partial p}{\partial t}" id="acoustic_impedance" name="Impedance boundary condition">
           <module:quantity id="acoustic_impedance"/>
           <module:matrix_form axi_linear="r * 1.0 / ac_Z0 * uval * vval" axi_newton="- r * 1.0 / ac_Z0 * uval * vval" i="1" id="form" j="2" planar_linear="1.0 / ac_Z0 * uval * vval" planar_newton="- 1.0 / ac_Z0 * uval * vval" symmetric="0"/>
-          <module:vector_form axi_linear="0" id="form" axi_newton="- r * 1.0 / ac_Z0 * upval * vval" i="1" j="2" planar_linear="0" planar_newton="- 1.0 / ac_Z0 * upval * vval"/>
+          <module:vector_form axi_linear="0" axi_newton="- r * 1.0 / ac_Z0 * upval * vval" i="1" id="form" j="2" planar_linear="0" planar_newton="- 1.0 / ac_Z0 * upval * vval"/>
         </module:boundary>
       </module:weakform_surface>
     </module:weakforms_surface>
