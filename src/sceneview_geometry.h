@@ -61,7 +61,7 @@ public:
     QRectF m_backgroundPosition;
 
     inline SceneGeometryMode sceneMode() const { return m_sceneMode; }
-    ErrorResult saveGeometryToFile(const QString &fileName, int format);
+    void saveGeometryToSvg(const QString &fileName);
 
     void loadBackgroundImage(const QString &fileName, double x, double y, double w, double h);
 

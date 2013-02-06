@@ -56,8 +56,6 @@
 #include "examplesdialog.h"
 #include "hermes2d/solver.h"
 
-#include "gl2ps/gl2ps.h"
-
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     Agros2D::createSingleton();
@@ -1172,33 +1170,18 @@ void MainWindow::doDocumentSaveGeometry()
 
     QString selected;
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export geometry to file"), dir,
-                                                    tr("PDF files (*.pdf);;EPS files (*.eps);;SVG files (*.svg)"),
+                                                    tr("SVG files (*.svg)"),
                                                     &selected);
 
     if (!fileName.isEmpty())
     {
-        int format = GL2PS_PDF;
         QFileInfo fileInfo(fileName);
-
-        if (selected == "PDF files (*.pdf)")
-        {
-            if (fileInfo.suffix().toLower() != "pdf") fileName += ".pdf";
-            format = GL2PS_PDF;
-        }
-        if (selected == "EPS files (*.eps)")
-        {
-            if (fileInfo.suffix().toLower() != "eps") fileName += ".eps";
-            format = GL2PS_EPS;
-        }
         if (selected == "SVG files (*.svg)")
         {
-            if (fileInfo.suffix().toLower() != "svg") fileName += ".svg";
-            format = GL2PS_SVG;
+            if (fileInfo.suffix().toLower() != "svg") fileName += ".svg";            
         }
 
-        ErrorResult result = sceneViewPreprocessor->saveGeometryToFile(fileName, format);
-        if (result.isError())
-            result.showDialog();
+        sceneViewPreprocessor->saveGeometryToSvg(fileName);
 
         if (fileInfo.absoluteDir() != tempProblemDir())
             settings.setValue("General/LastImageDir", fileInfo.absolutePath());
