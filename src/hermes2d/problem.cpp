@@ -362,11 +362,6 @@ bool Problem::meshAction()
             delete meshGenerator;
             throw AgrosMeshException(e.what());
         }
-        catch (Hermes::Exceptions::Exception* e)
-        {
-            delete meshGenerator;
-            throw AgrosMeshException(e->what());
-        }
     }
 
     return false;
@@ -595,11 +590,6 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
     {
         Agros2D::log()->printError(QObject::tr("Solver"), QString("%1").arg(e.what()));
         throw AgrosSolverException(e.what());
-    }
-    catch (Hermes::Exceptions::Exception* e)
-    {
-        Agros2D::log()->printError(QObject::tr("Solver"), QString("%1").arg(e->what()));
-        throw AgrosSolverException(e->what());
     }
     catch (AgrosSolverException& e)
     {
