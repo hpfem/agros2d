@@ -57,11 +57,11 @@ FieldSelectDialog::FieldSelectDialog(QList<QString> fields, QWidget *parent) : Q
         if (!fields.contains(it.key()))
         {
             QListWidgetItem *item = new QListWidgetItem(lstFields);
-            item->setIcon(icon("fields/" + it.key()));            
+            item->setIcon(icon("fields/" + it.key()));
             item->setText(it.value());
             item->setData(Qt::UserRole, it.key());
 
-            lstFields->addItem(item);           
+            lstFields->addItem(item);
         }
     }
 
@@ -937,6 +937,10 @@ void ProblemWidget::fillComboBox()
 void ProblemWidget::updateControls()
 {
     // disconnect signals
+    // without clearing solution
+    txtName->disconnect();
+    connect(txtName, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
+
     // with clearing solution
     cmbCoordinateType->disconnect();
     cmbMatrixSolver->disconnect();
@@ -1013,6 +1017,8 @@ void ProblemWidget::changedWithClear()
 {
     // save properties
     Agros2D::problem()->config()->blockSignals(true);
+
+    Agros2D::problem()->config()->setName(txtName->text());
 
     Agros2D::problem()->config()->setCoordinateType((CoordinateType) cmbCoordinateType->itemData(cmbCoordinateType->currentIndex()).toInt());
     Agros2D::problem()->config()->setMeshType((MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt());
