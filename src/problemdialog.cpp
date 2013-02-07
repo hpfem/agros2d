@@ -998,15 +998,15 @@ void ProblemWidget::updateControls()
     connect(cmbMeshType, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
 
     connect(cmbTransientMethod, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
-    connect(txtTransientOrder, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
-    connect(txtTransientTimeTotal, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
-    connect(txtTransientTolerance, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
-    connect(txtTransientSteps, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
+    connect(txtTransientOrder, SIGNAL(valueChanged(int)), this, SLOT(changedWithClear()));
+    connect(txtTransientTimeTotal, SIGNAL(textChanged(QString)), this, SLOT(changedWithClear()));
+    connect(txtTransientTolerance, SIGNAL(textChanged(QString)), this, SLOT(changedWithClear()));
+    connect(txtTransientSteps, SIGNAL(valueChanged(int)), this, SLOT(changedWithClear()));
 
     // transient
-    connect(txtTransientSteps, SIGNAL(editingFinished()), this, SLOT(transientChanged()));
-    connect(txtTransientTimeTotal, SIGNAL(editingFinished()), this, SLOT(transientChanged()));
-    connect(txtTransientOrder, SIGNAL(editingFinished()), this, SLOT(transientChanged()));
+    connect(txtTransientSteps, SIGNAL(valueChanged(int)), this, SLOT(transientChanged()));
+    connect(txtTransientTimeTotal, SIGNAL(textChanged(QString)), this, SLOT(transientChanged()));
+    connect(txtTransientOrder, SIGNAL(textChanged(QString)), this, SLOT(transientChanged()));
     connect(cmbTransientMethod, SIGNAL(currentIndexChanged(int)), this, SLOT(transientChanged()));
 }
 

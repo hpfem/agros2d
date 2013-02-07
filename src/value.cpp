@@ -258,6 +258,7 @@ ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin)
     txtLineEdit->setToolTip(tr("This textedit allows using variables."));
     txtLineEdit->setText("0");
     connect(txtLineEdit, SIGNAL(textChanged(QString)), this, SLOT(evaluate()));
+    //connect(txtLineEdit, SIGNAL(textChanged(QString)), this, SIGNAL(textChanged(QString)));
     connect(txtLineEdit, SIGNAL(editingFinished()), this, SIGNAL(editingFinished()));
 
     lblValue = new QLabel(this);
@@ -349,6 +350,7 @@ Value ValueLineEdit::value()
 bool ValueLineEdit::evaluate(bool quiet)
 {
     bool isOk = false;
+    bool valueChanged = false;
 
     if (!m_hasNonlin || m_table.size() == 0)
     {
@@ -380,7 +382,9 @@ bool ValueLineEdit::evaluate(bool quiet)
             }
             else
             {
-                m_number = val.number();
+                double evaluatedNumber = val.number();
+                valueChanged = (evaluatedNumber != m_number);
+                m_number = evaluatedNumber;
                 setValueLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText),
                               Agros2D::configComputer()->lineEditValueShowResult);
                 isOk = true;
@@ -401,6 +405,11 @@ bool ValueLineEdit::evaluate(bool quiet)
     if (isOk)
     {
         emit evaluated(false);
+        if(valueChanged)
+        {
+            QString textValue = QString("%1").arg(m_number);
+            emit textChanged(textValue);
+        }
         return true;
     }
     else
