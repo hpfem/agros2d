@@ -14,8 +14,11 @@ RC_FILE = ../src/src.rc
 RESOURCES = ../src/src.qrc
 
 SOURCES += main.cpp \
+    ../src/gui/textedit.cpp \
     agros_solver.cpp
+    
 HEADERS += \
+    ../src/gui/textedit.h \
     agros_solver.h
 
 linux-g++|linux-g++-64|linux-g++-32 {
