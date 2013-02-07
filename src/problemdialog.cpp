@@ -945,7 +945,7 @@ void ProblemWidget::updateControls()
     cmbMeshType->disconnect();
 
     cmbMeshType->disconnect();
-    connect(txtFrequency, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
+    connect(txtFrequency, SIGNAL(textChanged(QString)), this, SLOT(frequencyChanged()));
 
     cmbTransientMethod->disconnect();
     txtTransientOrder->disconnect();
@@ -996,8 +996,6 @@ void ProblemWidget::updateControls()
     connect(cmbCoordinateType, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
     connect(cmbMatrixSolver, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
     connect(cmbMeshType, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
-
-    connect(txtFrequency, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
 
     connect(cmbTransientMethod, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
     connect(txtTransientOrder, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
