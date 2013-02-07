@@ -224,7 +224,7 @@ bool SceneFieldWidgetMaterial::save()
 {
     for (int i = 0; i < ids.count(); i++)
     {
-        if (values.at(i)->isEnabled())
+        if (!values.at(i)->isEnabled())
             continue;
 
         if (values.at(i)->evaluate())
