@@ -120,11 +120,6 @@ void PostprocessorWidget::loadBasic()
         cmbPost2DVectorFieldVariable->setCurrentIndex(0);
     }
     Agros2D::problem()->configView()->vectorVariable = cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString();
-
-    // transient view
-    // cmbTimeStep->setCurrentIndex(Agros2D::scene()->sceneSolution()->timeStep());
-
-    refresh();
 }
 
 void PostprocessorWidget::loadAdvanced()
@@ -1081,20 +1076,22 @@ void PostprocessorWidget::doFieldInfo(int index)
         FieldInfo *fieldInfo = Agros2D::problem()->fieldInfo(fieldName);
         Agros2D::scene()->setActiveViewField(fieldInfo);
 
-        fillComboBoxScalarVariable(fieldInfo, cmbPostScalarFieldVariable);
-        fillComboBoxContourVariable(fieldInfo, cmbPost2DContourVariable);
-        fillComboBoxVectorVariable(fieldInfo, cmbPost2DVectorFieldVariable);
         fillComboBoxTimeStep(fieldInfo, cmbTimeStep);
         doTimeStep(0);
-
-        doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
 
         int currentStep = Agros2D::solutionStore()->nearestTimeStep(Agros2D::scene()->activeViewField(), Agros2D::scene()->activeTimeStep());
         double currentTime = Agros2D::problem()->timeStepToTotalTime(currentStep);
         int stepIndex = Agros2D::solutionStore()->timeLevelIndex(selectedField(), currentTime);
         cmbTimeStep->setCurrentIndex(stepIndex);
         cmbAdaptivityStep->setCurrentIndex(Agros2D::scene()->activeAdaptivityStep());
-        // qDebug() << "timestep set to " << currentStep << ", adapt " << Agros2D::scene()->activeAdaptivityStep() << "\n";
+
+        if (Agros2D::problem()->isSolved())
+        {
+            fillComboBoxScalarVariable(fieldInfo, cmbPostScalarFieldVariable);
+            fillComboBoxContourVariable(fieldInfo, cmbPost2DContourVariable);
+            fillComboBoxVectorVariable(fieldInfo, cmbPost2DVectorFieldVariable);
+            doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
+        }
     }
 }
 
@@ -1335,9 +1332,14 @@ void PostprocessorWidget::updateControls()
         fillComboBoxFieldInfo(cmbFieldInfo);
         doFieldInfo(cmbFieldInfo->currentIndex());
 
-        loadBasic();
-        loadAdvanced();
+        if (Agros2D::problem()->isSolved())
+        {
+            loadBasic();
+            loadAdvanced();
+        }
     }
+
+    refresh();
 }
 
 void PostprocessorWidget::doPostprocessorGroupClicked(QAbstractButton *button)
@@ -1391,7 +1393,7 @@ void PostprocessorWidget::doApply()
     Agros2D::scene()->setActiveTimeStep(actualTimeStep);
 
     // todo: this should be revised
-//    if(this->selectedField()->adaptivityType() != AdaptivityType_None)
+    //    if(this->selectedField()->adaptivityType() != AdaptivityType_None)
     {
         Agros2D::scene()->setActiveAdaptivityStep(cmbAdaptivityStep->currentIndex());
         Agros2D::scene()->setActiveSolutionType((SolutionMode)cmbAdaptivitySolutionType->currentIndex());

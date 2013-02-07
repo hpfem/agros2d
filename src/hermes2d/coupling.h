@@ -46,7 +46,7 @@ public:
 
     QString couplingId() { return m_couplingId; }
 
-    CouplingType couplingType();
+    CouplingType couplingType() const;
     void setCouplingType(CouplingType couplingType);
 
     inline bool isHard() { return couplingType() == CouplingType_Hard;}

@@ -275,8 +275,10 @@ void Problem::createStructure()
 
 bool Problem::mesh()
 {
-    bool result;
-    try{
+    bool result = false;
+
+    try
+    {
         result = meshAction();
     }
     catch (AgrosGeometryException& e)
@@ -285,7 +287,7 @@ bool Problem::mesh()
         // todo:  this is almost certainly not the case, at least for Agros. It should be further investigated
         Agros2D::log()->printError(tr("Geometry check"), QString("%1").arg(e.what()));
         m_isSolving = false;
-        return true;
+        return false;
     }
     catch (AgrosMeshException& e)
     {
@@ -361,11 +363,6 @@ bool Problem::meshAction()
         {
             delete meshGenerator;
             throw AgrosMeshException(e.what());
-        }
-        catch (Hermes::Exceptions::Exception* e)
-        {
-            delete meshGenerator;
-            throw AgrosMeshException(e->what());
         }
     }
 
@@ -595,11 +592,6 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
     {
         Agros2D::log()->printError(QObject::tr("Solver"), QString("%1").arg(e.what()));
         throw AgrosSolverException(e.what());
-    }
-    catch (Hermes::Exceptions::Exception* e)
-    {
-        Agros2D::log()->printError(QObject::tr("Solver"), QString("%1").arg(e->what()));
-        throw AgrosSolverException(e->what());
     }
     catch (AgrosSolverException& e)
     {

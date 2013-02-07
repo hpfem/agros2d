@@ -98,7 +98,7 @@ class SceneFieldWidgetMaterial : public SceneFieldWidget
 {
     Q_OBJECT
 public:
-    SceneMaterial *material;
+    SceneMaterial *m_material;
 
     SceneFieldWidgetMaterial(Module::DialogUI ui, SceneMaterial *material, QWidget *parent);
 
@@ -116,7 +116,7 @@ class SceneFieldWidgetBoundary : public SceneFieldWidget
 {
     Q_OBJECT
 public:
-    SceneBoundary *boundary;
+    SceneBoundary *m_boundary;
 
     SceneFieldWidgetBoundary(Module::DialogUI ui, SceneBoundary *boundary, QWidget *parent);
 
@@ -172,7 +172,7 @@ protected:
     QDialogButtonBox *buttonBox;
 
     QLineEdit *txtName;
-    SceneBoundary *boundary;
+    SceneBoundary *m_boundary;
 
     SceneFieldWidget *fieldWidget;
 
@@ -202,7 +202,7 @@ protected:
     QDialogButtonBox *buttonBox;
 
     QLineEdit *txtName;
-    SceneMaterial *material;
+    SceneMaterial *m_material;
 
     SceneFieldWidget *fieldWidget;
 

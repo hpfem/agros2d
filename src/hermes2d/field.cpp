@@ -503,7 +503,7 @@ Module::DialogUI FieldInfo::materialUI() const
     {
         XMLModule::gui ui = m_plugin->module()->preprocessor().gui().at(i);
         if (ui.type() == "volume")
-            return Module::DialogUI(ui);
+            return Module::DialogUI(this, ui);
     }
 
     assert(0);
@@ -516,7 +516,7 @@ Module::DialogUI FieldInfo::boundaryUI() const
     {
         XMLModule::gui ui = m_plugin->module()->preprocessor().gui().at(i);
         if (ui.type() == "surface")
-            return Module::DialogUI(ui);
+            return Module::DialogUI(this, ui);
     }
 
     assert(0);

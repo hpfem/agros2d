@@ -73,9 +73,13 @@ class AGROS_API PythonLabAgros : public PythonEditorDialog
     Q_OBJECT
 public:
     PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWidget *parent);
+    ~PythonLabAgros();
 
 private:
     QAction *actCreateFromModel;
+
+    QAction *actStartupScriptVariables;
+    QAction *actStartupScriptValues;
 
 private slots:
     void doCreatePythonFromModel();
@@ -84,8 +88,14 @@ private slots:
 // current python engine agros
 AGROS_API PythonEngineAgros *currentPythonEngineAgros();
 
+enum StartupScript_Type
+{
+    StartupScript_Variable,
+    StartupScript_Value
+};
+
 // create script from model
-QString createPythonFromModel();
+QString createPythonFromModel(StartupScript_Type startupScript);
 
 // ************************************************************************************
 

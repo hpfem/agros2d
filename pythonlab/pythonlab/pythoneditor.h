@@ -86,7 +86,7 @@ class AGROS_API PythonEditorDialog : public QMainWindow
     Q_OBJECT
 public:
     PythonEditorDialog(PythonEngine *pythonEngine, QStringList args, QWidget *parent = 0);
-    ~PythonEditorDialog();
+    virtual ~PythonEditorDialog();
 
     void showDialog();
     void closeTabs();

@@ -56,8 +56,6 @@
 #include "examplesdialog.h"
 #include "hermes2d/solver.h"
 
-#include "gl2ps/gl2ps.h"
-
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     Agros2D::createSingleton();
@@ -68,7 +66,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         logStdOut = new LogStdOut();
 
     // FIXME: curve elements from script doesn't work
-    Module::readMeshDirtyFix();
+    // Module::readMeshDirtyFix();
 
     createPythonEngine(new PythonEngineAgros());
 
@@ -497,6 +495,8 @@ void MainWindow::createMenus()
     mnuEdit->addAction(actUndo);
     mnuEdit->addAction(actRedo);
     mnuEdit->addSeparator();
+    mnuEdit->addAction(actCopy);
+    mnuEdit->addSeparator();
     mnuEdit->addAction(Agros2D::scene()->actDeleteSelected);
     mnuEdit->addSeparator();
     mnuEdit->addAction(sceneViewPreprocessor->actSceneViewSelectRegion);
@@ -534,7 +534,6 @@ void MainWindow::createMenus()
     mnuView->addAction(actSceneZoomRegion);
     mnuView->addMenu(mnuProjection);
     mnuView->addSeparator();
-    mnuView->addAction(actCopy);
     mnuView->addAction(actLoadBackground);
     mnuView->addSeparator();
     mnuView->addMenu(mnuShowPanels);
@@ -1172,33 +1171,18 @@ void MainWindow::doDocumentSaveGeometry()
 
     QString selected;
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export geometry to file"), dir,
-                                                    tr("PDF files (*.pdf);;EPS files (*.eps);;SVG files (*.svg)"),
+                                                    tr("SVG files (*.svg)"),
                                                     &selected);
 
     if (!fileName.isEmpty())
     {
-        int format = GL2PS_PDF;
         QFileInfo fileInfo(fileName);
-
-        if (selected == "PDF files (*.pdf)")
-        {
-            if (fileInfo.suffix().toLower() != "pdf") fileName += ".pdf";
-            format = GL2PS_PDF;
-        }
-        if (selected == "EPS files (*.eps)")
-        {
-            if (fileInfo.suffix().toLower() != "eps") fileName += ".eps";
-            format = GL2PS_EPS;
-        }
         if (selected == "SVG files (*.svg)")
         {
-            if (fileInfo.suffix().toLower() != "svg") fileName += ".svg";
-            format = GL2PS_SVG;
+            if (fileInfo.suffix().toLower() != "svg") fileName += ".svg";            
         }
 
-        ErrorResult result = sceneViewPreprocessor->saveGeometryToFile(fileName, format);
-        if (result.isError())
-            result.showDialog();
+        sceneViewPreprocessor->saveGeometryToSvg(fileName);
 
         if (fileInfo.absoluteDir() != tempProblemDir())
             settings.setValue("General/LastImageDir", fileInfo.absolutePath());
@@ -1546,7 +1530,7 @@ void MainWindow::setControls()
 
     actDocumentExportMeshFile->setEnabled(Agros2D::problem()->isMeshed());
 
-    actSolve->setEnabled(Agros2D::problem()->fieldInfos().count() > 0);
+    // actSolve->setEnabled(Agros2D::problem()->fieldInfos().count() > 0);
     actSolveAdaptiveStep->setEnabled(false);
 //    actSolveAdaptiveStep->setEnabled(Agros2D::problem()->fieldInfos().count() > 0 && Agros2D::problem()->fieldInfos().count() <= 1 && (!Agros2D::problem()->isTransient()) );
 
@@ -1613,21 +1597,24 @@ void MainWindow::doDocumentExportMeshFile()
         QSettings settings;
         QString dir = settings.value("General/LastMeshDir").toString();
 
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Export mesh file"), dir, tr("Mesh files (*.xml)"));
-        fileName.remove(".xml");
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Export mesh file"), dir, tr("Mesh files (*.mesh)"));
         QFileInfo fileInfo(fileName);
 
         if (!fileName.isEmpty())
         {
             // remove existing file
-            if (QFile::exists(fileName + ".xml"))
-                QFile::remove(fileName + ".xml");
+            if (QFile::exists(fileName + ".mesh"))
+                QFile::remove(fileName + ".mesh");
 
             // copy file
-            QFile::copy(tempProblemDir() + "/temp.xml", fileName + ".xml");
-            if (fileInfo.absoluteDir() != tempProblemDir())
+            QFile::copy(cacheProblemDir() + "/initial.mesh", fileName + ".mesh");
+            if (fileInfo.absoluteDir() != cacheProblemDir())
                 settings.setValue("General/LastMeshDir", fileInfo.absolutePath());
         }
+    }
+    else
+    {
+        Agros2D::log()->printMessage(tr("Export mesh"), tr("The problem is not meshed."));
     }
 }
 

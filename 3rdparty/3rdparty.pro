@@ -9,7 +9,6 @@ contains(CONFIG, HERMES_DEBUG) {
 
 SOURCES += dxflib/dl_writer_ascii.cpp \
     dxflib/dl_dxf.cpp \
-    gl2ps/gl2ps.c \
     ctemplate/base/arena.cc \
     ctemplate/htmlparser/htmlparser.cc \
     ctemplate/htmlparser/htmlparser_cpp.h \
