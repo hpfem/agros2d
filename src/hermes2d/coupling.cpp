@@ -81,7 +81,7 @@ void CouplingInfo::setCouplingType(CouplingType couplingType)
     reload();
 }
 
-CouplingType CouplingInfo::couplingType()
+CouplingType CouplingInfo::couplingType() const
 {
     //todo: remove!!!!
     if(m_couplingType == CouplingType_Hard)
