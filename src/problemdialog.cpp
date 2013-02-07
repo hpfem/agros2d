@@ -945,7 +945,7 @@ void ProblemWidget::updateControls()
     cmbMeshType->disconnect();
 
     cmbMeshType->disconnect();
-    connect(txtFrequency, SIGNAL(textChanged(QString)), this, SLOT(frequencyChanged()));
+    connect(txtFrequency, SIGNAL(textChanged(QString)), this, SLOT(changedWithClear()));
 
     cmbTransientMethod->disconnect();
     txtTransientOrder->disconnect();
