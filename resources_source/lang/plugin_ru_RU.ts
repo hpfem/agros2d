@@ -124,122 +124,122 @@
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="447"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation>Стационарный</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="450"/>
         <source>Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Гармонический</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="453"/>
         <source>Fixed voltage</source>
-        <translation type="unfinished"></translation>
+        <translation>Фикс. напряжение</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="456"/>
         <source>Current density</source>
-        <translation type="unfinished"></translation>
+        <translation>Плотность тока</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="459"/>
         <source>Conductivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Проводимость</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="462"/>
         <source>Permittivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Диэл. проницаемость</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="465"/>
         <source>Scalar potential</source>
-        <translation type="unfinished"></translation>
+        <translation>Скалярный потенциал</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="468"/>
         <source>Scalar potential - real</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Скалярный потенциал</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="471"/>
         <source>Scalar potential - imag</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Скалярный потенциал</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="474"/>
         <source>Electric field</source>
-        <translation type="unfinished"></translation>
+        <translation>Электр. поле</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="477"/>
         <source>Electric field - real</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Электр. поле</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="480"/>
         <source>Electric field - imag</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Электр. поле</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="483"/>
         <source>Displacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Электр. смещение</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="486"/>
         <source>Displacement - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Электр. смещение — Re</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="489"/>
         <source>Displacement - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Электр. смещение — Im</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="492"/>
         <source>Current density - conductive</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Плотность тока — </translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="495"/>
         <source>Current density - conductive - real</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Плотность тока —</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="498"/>
         <source>Current density - conductive - imag</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Плотность тока —</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="501"/>
         <source>Current density - displacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Плотность тока — смещение</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="504"/>
         <source>Current density - displacement - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Плотность тока — смещение — Re</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="507"/>
         <source>Current density - displacement - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Плотность тока — смещение — Im</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="510"/>
         <source>Current density - total</source>
-        <translation type="unfinished"></translation>
+        <translation>Плотность тока — Общая</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="513"/>
         <source>Current density - total - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Плотность тока — Общая — Re</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="516"/>
         <source>Current density - total - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Плотность тока — Общая — Im</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="519"/>
@@ -249,22 +249,22 @@
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="522"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Объем</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="525"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation>Поперечное сечение</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="528"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Длина</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="531"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Поверхность</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="534"/>
@@ -709,97 +709,97 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="669"/>
         <source>Magnetic field</source>
-        <translation type="unfinished"></translation>
+        <translation>Магнитное поле</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="675"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation>Стационарный</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="678"/>
         <source>Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Гармонический</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="681"/>
         <source>Transient</source>
-        <translation type="unfinished"></translation>
+        <translation>Переходный процесс</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="684"/>
         <source>Magnetic potential</source>
-        <translation type="unfinished"></translation>
+        <translation>Магнитный потенциал</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="687"/>
         <source>Surface current</source>
-        <translation type="unfinished"></translation>
+        <translation>Поверхностный ток</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="690"/>
         <source>Material properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Свойства материала</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="693"/>
         <source>Permeability</source>
-        <translation type="unfinished"></translation>
+        <translation>Магнитная проницаемость</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="696"/>
         <source>Electrical conductivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Проводимость</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="699"/>
         <source>Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Источник</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="702"/>
         <source>Current dens. - ext. - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Плотность тока — внешн. — Re</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="705"/>
         <source>Current dens. - ext. - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Плотность тока — внешн. — Im</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="708"/>
         <source>Permanent magnet</source>
-        <translation type="unfinished"></translation>
+        <translation>Постоянный магнит</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="711"/>
         <source>Remanent flux density</source>
-        <translation type="unfinished"></translation>
+        <translation>Остаточная плотность потока</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="714"/>
         <source>Remanent flux density - angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Остаточная плотность потока — угол</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="717"/>
         <source>Velocity</source>
-        <translation type="unfinished"></translation>
+        <translation>Скорость</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="720"/>
         <source>Velocity - x</source>
-        <translation type="unfinished"></translation>
+        <translation>Скорость — х</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="723"/>
         <source>Velocity - y</source>
-        <translation type="unfinished"></translation>
+        <translation>Скорость — у</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="726"/>
         <source>Velocity - angular</source>
-        <translation type="unfinished"></translation>
+        <translation>Скорость — угловая</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="729"/>
@@ -929,22 +929,22 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="804"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Объем</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="807"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation>Поперечное сечение</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="810"/>
         <source>Current - ext. - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Ток — внешн. — Re</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="813"/>
         <source>Current - ext. - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Ток — внешн. — Im</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="816"/>
@@ -1019,7 +1019,7 @@
         <location filename="../../plugins/magnetic/magnetic_force.cpp" line="64"/>
         <location filename="../../plugins/rf/rf_force.cpp" line="64"/>
         <source>Point [%1, %2] does not lie in any element</source>
-        <translation type="unfinished"></translation>
+        <translation>Точка [%1, %2] не лежит ни в одном элементе</translation>
     </message>
 </context>
 <context>
@@ -1027,27 +1027,27 @@
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="537"/>
         <source>RF waves</source>
-        <translation type="unfinished"></translation>
+        <translation>Радиоволны</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="543"/>
         <source>Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Гармонический</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="546"/>
         <source>Electric field</source>
-        <translation type="unfinished"></translation>
+        <translation>Электрическое поле</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="549"/>
         <source>Magnetic field</source>
-        <translation type="unfinished"></translation>
+        <translation>Магнитное поле</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="552"/>
         <source>Surface current</source>
-        <translation type="unfinished"></translation>
+        <translation>Поверхностный ток</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="555"/>
@@ -1057,132 +1057,132 @@
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="558"/>
         <source>Permittivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Диэлектрическая проницаемость</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="561"/>
         <source>Permeability</source>
-        <translation type="unfinished"></translation>
+        <translation>Магнитная проницаемость</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="564"/>
         <source>Conductivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Проводимость</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="567"/>
         <source>Current dens. - ext. - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Плотность тока — внешн. — Re</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="570"/>
         <source>Current dens. - ext. - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Плотность тока — внешн. — Im</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="573"/>
         <source>Electric field - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Электр. поле — Re</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="576"/>
         <source>Electric field - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Электр. поле — Im</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="579"/>
         <source>Magnetic field - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Магнитное поле — Re</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="582"/>
         <source>Magnetic field - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Магнитное поле — Im</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="585"/>
         <source>Surface current - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Поверхностный ток — Re</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="588"/>
         <source>Surface current - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Поверхностный ток — Im</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="591"/>
         <source>Impedance</source>
-        <translation type="unfinished"></translation>
+        <translation>Импеданс</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="594"/>
         <source>Displacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Электр. смещение</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="597"/>
         <source>Displacement - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Электр. смещение — Re</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="600"/>
         <source>Displacement - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Электр. смещение — Im</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="603"/>
         <source>Current density - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Плотность тока — Re</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="606"/>
         <source>Current density - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Плотность тока — Im</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="609"/>
         <source>Flux density</source>
-        <translation type="unfinished"></translation>
+        <translation>Плотность потока</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="612"/>
         <source>Flux density - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Плотность потока — Re</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="615"/>
         <source>Flux density - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Плотность потока — Im</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="618"/>
         <source>Poyting vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Вектор Пойнтинга</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="621"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Объем</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="624"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation>Поперечное сечение</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="627"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Длина</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="630"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Поверхность</translation>
     </message>
     <message>
         <location filename="../../plugins/rf/rf_interface.cpp" line="637"/>
         <source>Solving TE waves in RF field.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Решение поперечных волн в .</translation>
     </message>
 </context>
 </TS>

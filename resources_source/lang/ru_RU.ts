@@ -3820,12 +3820,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../pythonlab/pythonlab_functions.cpp" line="37"/>
         <source>Script input</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Скрипт</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab_functions.cpp" line="43"/>
         <source>Script message</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Скрипт</translation>
     </message>
     <message>
         <location filename="../../src/gui/common.cpp" line="179"/>
@@ -3835,12 +3835,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/hermes2d/coupling.cpp" line="180"/>
         <source>Couplings dir &apos;%1&apos; doesn&apos;t exists</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Сопряжения &apos;%1&apos; не существуют</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/coupling.cpp" line="198"/>
         <source>Unable to read coupling file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Не удалось считать файл сопряжений %1: %2</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="288"/>
@@ -3883,27 +3883,27 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="768"/>
         <source>transient step %1 (%2%)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">шаг %1 (%2%)</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="775"/>
         <source>transient step %1/%2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">шаг %1/%2</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="783"/>
         <source>single analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Одиночный анализ</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="785"/>
         <source>coupled analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>сопряженный анализ</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="856"/>
         <source>Mesh reader (%1): boundary edges &apos;%2&apos; does not have a boundary marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Сетка: (%1): граничные рёбра &apos;%2&apos; без маркера</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem_config.cpp" line="50"/>
@@ -3913,13 +3913,13 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/hermes2d/solutionstore.cpp" line="428"/>
         <source>Field &apos;%1&apos; info mismatch.</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле &apos;%1&apos;: несоответствие инормации.</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/solver.cpp" line="410"/>
         <location filename="../../src/hermes2d/solver.cpp" line="478"/>
         <source>Solver failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Решение не удалось: %1</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/solver.cpp" line="430"/>
@@ -3930,27 +3930,27 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/hermes2d/solver.cpp" line="601"/>
         <source>Meshes are empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Сетки пусты</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/solver.cpp" line="850"/>
         <source>Adaptive process failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка адаптивного процесса:%1</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/solver.cpp" line="854"/>
         <source>adaptivity step (error = %1, DOFs = %2/%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>шаг адаптивности (погр. = %1, Ст. Своб. = %2/%3)</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/solver.cpp" line="869"/>
         <source>initial time step</source>
-        <translation type="unfinished"></translation>
+        <translation>начальный врем. шаг</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="45"/>
         <source>Invalid field id. Valid keys: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверный ID поля. Допустимые ключи: %1</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="66"/>
@@ -3971,42 +3971,42 @@ Do you want to save your changes?</source>
         <location filename="../../src/pythonlab/pyview.cpp" line="399"/>
         <location filename="../../src/pythonlab/pyview.cpp" line="441"/>
         <source>Invalid argument. Valid keys: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверный аргумент. Допустимые ключи: %1</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="75"/>
         <source>Number of refinements is out of range (0 - 5).</source>
-        <translation type="unfinished"></translation>
+        <translation>Кол-во улучшений вне допустимого диапазона (0–5).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="83"/>
         <source>Polynomial order is out of range (1 - 10).</source>
-        <translation type="unfinished"></translation>
+        <translation>Порядок полинома вне допустимого диапазона (1–10).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="99"/>
         <source>Nonlinearity tolerance must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Допуск нелинейности должен быть положительным.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="107"/>
         <source>Nonlinearity steps must be higher than 1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Кол-во нелинейных шагов должно быть больше одного.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="115"/>
         <source>Damping coefficient must be between 0 and 1 .</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Коэф. демпфирования должен быть от 0 до 1. </translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="128"/>
         <source>Number of steps needed to increase the damping coefficient must be between 1 and 5 .</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Кол-во шагов, необходимых для увеличения коэф. демпфирования должно быть от 1 до 5. </translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="141"/>
         <source>Anderson coefficient must be between 0 and 1 .</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Коэф. Андерсона должен быть от 0 до 1.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="149"/>
@@ -4016,38 +4016,38 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="165"/>
         <source>Adaptivity tolerance must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Допуск адаптивности должен быть положительным.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="173"/>
         <source>Adaptivity steps must be higher than 1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Кол-во шагов адаптивности должно быть больше 1.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="181"/>
         <source>Adaptivity back steps must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Кол-во обратных шагов адаптивности должно быть положительным.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="189"/>
         <source>Adaptivity back steps must be higher than 1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Кол-во обратных шагов адаптивности должно быть больше 1.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="202"/>
         <source>Time skip is out of range (0 - %1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Врем. пропуск вне диапазона (0–%1).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="211"/>
         <source>Boundary &apos;%1&apos; already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Граница &apos;%1&apos; уже существует.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="215"/>
         <location filename="../../src/pythonlab/pyfield.cpp" line="265"/>
         <source>Wrong boundary type &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверный тип границы &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="244"/>
@@ -4055,37 +4055,37 @@ Do you want to save your changes?</source>
         <location filename="../../src/pythonlab/pyfield.cpp" line="349"/>
         <location filename="../../src/pythonlab/pyfield.cpp" line="398"/>
         <source>Wrong parameter &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверный параметр &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="254"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="77"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="129"/>
         <source>Boundary condition &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Граничное условие &apos;%1&apos; не существует.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="311"/>
         <source>Material &apos;%1&apos; already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Материал &apos;%1&apos; уже существует.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="329"/>
         <location filename="../../src/pythonlab/pyfield.cpp" line="378"/>
         <source>Size doesn&apos;t match (%1 &gt; %2).</source>
-        <translation type="unfinished">Размеры не совпадают (%1 &gt; %2).</translation>
+        <translation>Размеры не совпадают (%1 &gt; %2).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="331"/>
         <location filename="../../src/pythonlab/pyfield.cpp" line="380"/>
         <source>Size doesn&apos;t match (%1 &lt; %2).</source>
-        <translation type="unfinished">Размеры не совпадают (%1 &lt; %2).</translation>
+        <translation>Размеры не совпадают (%1 &lt; %2).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="363"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="188"/>
         <source>Material &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Материал &apos;%1&apos; не существует.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="445"/>
@@ -4100,42 +4100,42 @@ Do you want to save your changes?</source>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="234"/>
         <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="551"/>
         <source>Problem is not solved.</source>
-        <translation type="unfinished">Проблема не решена.</translation>
+        <translation>Проблема не решена.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="475"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="292"/>
         <source>Edge index must be between 0 and &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Индекс ребра должен быть от 0 до &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="535"/>
         <source>Label with index &apos;%1&apos; is &apos;none&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Метка с индексом &apos;%1&apos; отсутствует.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="540"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="314"/>
         <source>Label index must be between 0 and &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Индекс метки должен быть от 0 до &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="578"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="409"/>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="169"/>
         <source>Problem is not meshed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Проблема не дискретизирована (нет сетки).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="629"/>
         <source>Solution is not adaptive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Решение не адаптивное.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="50"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="91"/>
         <source>Angle &apos;%1&apos; is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Угол &apos;%1&apos; вне диапазона.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="60"/>
@@ -4145,187 +4145,187 @@ Do you want to save your changes?</source>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="199"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="211"/>
         <source>Invalid field id &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверный ID поля &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="94"/>
         <source>Geometry does not contain nodes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Геометрия не содержит узлов.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="97"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="99"/>
         <source>Node with index &apos;%1&apos; does not exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Узел с индексом &apos;%1&apos; не существует.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="147"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="202"/>
         <source>Number of refinements &apos;%1&apos; is out of range (0 - 10).</source>
-        <translation type="unfinished"></translation>
+        <translation>Кол-во улучшений &apos;%1&apos; вне допустимого диапазона (0–10).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="156"/>
         <source>Area must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Площадь должна быть положительной.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="214"/>
         <source>Polynomial order &apos;%1&apos; is out of range (1 - 10).</source>
-        <translation type="unfinished"></translation>
+        <translation>Порядок полинома &apos;%1&apos; вне допустимого диапазона (1–10).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="223"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="231"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="239"/>
         <source>Index &apos;%1&apos; is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Индекс &apos;%1&apos; вне диапазона.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="270"/>
         <source>Node index must be between 0 and &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Индекс узла должен быть от 0 до &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="84"/>
         <source>Number of particles must be bigger then 1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Кол-во частиц должно быть больше 1.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="92"/>
         <source>Particles dispersion must be possitive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Дисперсия частиц должна быть положительной.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="113"/>
         <source>The x coordinate is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Коорд. х вне диапазона.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="115"/>
         <source>The y coordinate is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Коорд.у вне диапазона.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="128"/>
         <source>Mass must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Масса должна быть положительной.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="141"/>
         <source>Density cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Плотность не может быть отрицательной.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="149"/>
         <source>Area cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Площадь не может быть отрицательной.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="157"/>
         <source>Coefficient cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Коэф. не может быть отрицательным.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="194"/>
         <source>Coefficient of restitution must be between 0 (collide inelastically) and 1 (collide elastically).</source>
-        <translation type="unfinished"></translation>
+        <translation>Коэффициент реституции должeн быть от 0 (неупругое столкновение) до 1 (упругое столкновение).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="202"/>
         <source>Tolerance cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Допуск не может быть отрицательным.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="210"/>
         <source>Maximum number of steps cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Макс. кол-во шагов не может быть отрицательным.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="218"/>
         <source>Minimum step cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Минимальный шаг не может быть отрицательным.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="61"/>
         <source>The frequency must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Частота должна быть положительной.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="77"/>
         <source>Number of time method order must be greater then 1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">должен быть больше 1.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="85"/>
         <source>The time method tolerance must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">допуск должен быть положительным.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="93"/>
         <source>Number of time steps must be greater then 1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Кол-во шагов должно быть больше 1.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="101"/>
         <source>The total time must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Общее время должно быть положительным.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="113"/>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="128"/>
         <source>Coupling &apos;%1&apos; + &apos;%2&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Сопряжение &apos;%1&apos; + &apos;%2&apos; не существует.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="125"/>
         <source>Invalid coupling type key. Valid keys: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверный тип сопряжения. Допустимые ключи: %1</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="231"/>
         <source>Problem is not transient.</source>
-        <translation type="unfinished"></translation>
+        <translation>Проблема не является переходным процессом.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="52"/>
         <source>Time step must be in the range from 0 to %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Временной шаг должен быть от 0 до &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="62"/>
         <source>Adaptivity step for active field (%1) must be in the range from 0 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Адаптивный шаг для активного поля (%1) должен быть от 0 до %2.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="227"/>
         <source>Palette steps must be in the range from %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Дискр. палитры должна быть от %1 до &apos;%2&apos;.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="262"/>
         <source>Decimal place must be in the range from %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Десятичный разряд должен быть в диапазоне %1–%2.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="328"/>
         <source>Contour count must be in the range from %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Кол-во контуров должно быть от %1 до %2.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="369"/>
         <source>Vector count must be in the range from %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Кол-во векторов должно быть от %1 до %2.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="381"/>
         <source>Vector scale must be in the range from %1 to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Шкала векторов должна быть от %1 до %2.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="461"/>
         <source>Image is not saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось сохранить изображение.</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="76"/>
@@ -4335,22 +4335,22 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/settings.cpp" line="705"/>
         <source>Error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: %1</translation>
     </message>
     <message>
         <location filename="../../src/util.h" line="260"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Информация</translation>
     </message>
     <message>
         <location filename="../../src/util.h" line="263"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Внимание</translation>
     </message>
     <message>
         <location filename="../../src/util.h" line="266"/>
         <source>Critical</source>
-        <translation type="unfinished"></translation>
+        <translation>Крит.</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="260"/>
@@ -4380,22 +4380,22 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/util/enums.cpp" line="280"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation>Стационарный</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="282"/>
         <source>Transient</source>
-        <translation type="unfinished">Переходный процесс</translation>
+        <translation>Переходный процесс</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="284"/>
         <source>Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Гармонический</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="296"/>
         <source>Not used</source>
-        <translation type="unfinished"></translation>
+        <translation>Не используется</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="298"/>
@@ -4512,32 +4512,32 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/util/enums.cpp" line="404"/>
         <source>Triangle - quad fine div.</source>
-        <translation type="unfinished">Triangle — </translation>
+        <translation type="unfinished">Triangle — .</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="406"/>
         <source>Triangle - quad rough div.</source>
-        <translation type="unfinished">Triangle —</translation>
+        <translation type="unfinished">Triangle — .</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="408"/>
         <source>Triangle - quad join</source>
-        <translation type="unfinished">Triangle —</translation>
+        <translation type="unfinished">Triangle — </translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="410"/>
         <source>GMSH - triangle</source>
-        <translation type="unfinished">GMSH —</translation>
+        <translation>GMSH — треуг.</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="412"/>
         <source>GMSH - quad</source>
-        <translation type="unfinished">GMSH —</translation>
+        <translation>GMSH — квад.</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="414"/>
         <source>GMSH - quad Delaunay (exp.)</source>
-        <translation type="unfinished">GMSH —</translation>
+        <translation type="unfinished">GMSH — квад. Delaunay (эксп.)</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="452"/>
@@ -4702,27 +4702,27 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/util/enums.cpp" line="570"/>
         <source>Picard&apos;s method</source>
-        <translation type="unfinished"></translation>
+        <translation>Метод Пикара</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="572"/>
         <source>Newton&apos;s method</source>
-        <translation type="unfinished"></translation>
+        <translation>Метод Ньютона</translation>
     </message>
     <message>
         <location filename="../../src/util/global.cpp" line="104"/>
         <source>Could not find &apos;agros2d_plugin_%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось найти &apos;agros2d_plugin_%1&apos;</translation>
     </message>
     <message>
         <location filename="../../src/util/global.cpp" line="110"/>
         <source>Could not load &apos;agros2d_plugin_%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось загрузить &apos;agros2d_plugin_%1&apos;</translation>
     </message>
     <message>
         <location filename="../../src/util/xml.cpp" line="45"/>
         <source>Schema &apos;%1&apos; is not valid. %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Схема &apos;%1&apos; недопустима. %2</translation>
     </message>
     <message>
         <location filename="../../src/value.cpp" line="237"/>
