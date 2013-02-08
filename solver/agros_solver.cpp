@@ -43,29 +43,22 @@ bool AgrosSolver::notify(QObject *receiver, QEvent *event)
     catch (std::exception& e)
     {
         qCritical() << "Exception thrown: " << e.what();
-		// This should not throw anything. If it does, qWarning(..) at qeventloop.cpp#206 is called:
-		//     "Qt has caught an exception thrown from an event handler. Throwing\n"
-		//     "exceptions from an event handler is not supported in Qt. You must\n"
-        //     "reimplement QApplication::notify() and catch all exceptions there.\n"
-        //throw;
+        QApplication::exit(1);
     }
     catch (Hermes::Exceptions::Exception& e)
     {
         qCritical() << "Hermes exception thrown: " << QString("%1").arg(e.what());
-		// See above.
-        // throw;
+        QApplication::exit(1);
     }
     catch (AgrosException e)
     {
         qCritical() << "Exception thrown: " << e.what();
-        // See above.
-        // throw;
+        QApplication::exit(1);
     }
     catch (...)
     {
         qCritical() << "Unknown exception thrown";
-        // See above.
-        // throw;
+        QApplication::exit(1);
     }
 
     return false;
