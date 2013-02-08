@@ -1193,8 +1193,9 @@ void SceneViewPreprocessor::paintGeometry()
     }
     catch (AgrosException& ame)
     {
-        Agros2D::log()->printWarning(tr("Geometry"), ame.toString());
-        //throw;
+        // This is a function responsible for painting geometry in process of its creation by the user.
+        // Situations, which do not represent valid geometry, are acceptable here
+        // Therefore catch exceptions and do nothing
     }
 
     // labels hints
