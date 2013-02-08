@@ -1659,7 +1659,8 @@ namespace Hermes
           toReturn->dy0[0] = dy[0] * (static_cast<ExactSolutionScalar<Scalar>*>(this))->exact_multiplicator;
           toReturn->dy1[0] = dy[1] * (static_cast<ExactSolutionScalar<Scalar>*>(this))->exact_multiplicator;
         }
-        throw Hermes::Exceptions::Exception("Cannot obtain second derivatives of an exact solution.");
+        return toReturn;
+        //throw Hermes::Exceptions::Exception("Cannot obtain second derivatives of an exact solution.");
       }
       else if(sln_type == HERMES_UNDEF)
       {
