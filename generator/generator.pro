@@ -34,7 +34,16 @@ macx-g++ {
 
 win32-msvc2010 {
     QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt
+    CONFIG += console
 
+    SOURCES      += ../resources_source/classes/module_xml.cpp
+    HEADERS      += ../resources_source/classes/module_xml.h
+    
+    SOURCES      += ../resources_source/classes/coupling_xml.cpp
+    HEADERS      += ../resources_source/classes/coupling_xml.h
+    
+    DEFINES += XERCES_STATIC_LIBRARY
+    
     LIBS += -L..
     TARGET = ../../agros2d_generator
 }
