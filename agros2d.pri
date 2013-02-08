@@ -105,7 +105,7 @@ win32-msvc2010 {
     LIBS += -Lc:/Python27/libs
     LIBS += -L../../qwt-6.0.1/lib
     LIBS += -lvcomp
-    LIBS += -lpython27
+    
     LIBS += -llibumfpack
     LIBS += -llibamd
     LIBS += -lpthreadVCE2
@@ -116,9 +116,11 @@ win32-msvc2010 {
     CONFIG(release, debug|release) {
         LIBS += -lxerces-c_static_3
         LIBS += -lqwt
+        LIBS += -lpython27
     }
     CONFIG(debug, debug|release) {
         LIBS += -lxerces-c_static_3D
         LIBS += -lqwtd
+        LIBS += -lpython27_d
     }
 }

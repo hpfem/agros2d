@@ -213,7 +213,6 @@ win32-msvc2010 {
     LIBS += -llibamd
     # LIBS += -lblas
     LIBS += -lpthreadVCE2
-    LIBS += -lxerces-c_static_3
     LIBS += -lvcomp
     LIBS += -ladvapi32
     LIBS += -lws2_32

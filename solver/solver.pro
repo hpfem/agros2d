@@ -14,11 +14,9 @@ RC_FILE = ../src/src.rc
 RESOURCES = ../src/src.qrc
 
 SOURCES += main.cpp \
-    ../src/gui/textedit.cpp \
     agros_solver.cpp
     
 HEADERS += \
-    ../src/gui/textedit.h \
     agros_solver.h
 
 linux-g++|linux-g++-64|linux-g++-32 {
@@ -37,6 +35,10 @@ win32-msvc2010 {
     QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt
     QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
+    CONFIG += console
+
+    SOURCES += ../src/gui/textedit.cpp
+    HEADERS += ../src/gui/textedit.h
 
     HEADERS      += ../src/hermes2d/problem.h
     HEADERS      += ../src/hermes2d/field.h

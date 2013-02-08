@@ -606,7 +606,8 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
         }
     }
 
-    writeToHermes();
+    if(!writeToHermes())
+        return false;
 
     nodeList.clear();
     edgeList.clear();
