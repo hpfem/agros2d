@@ -839,6 +839,7 @@ void ProblemWidget::createControls()
 
     // harmonic
     txtFrequency = new LineEditDouble();
+    txtFrequency->setBottom(0.0);
 
     // harmonic analysis
     QGridLayout *layoutHarmonicAnalysis = new QGridLayout();
@@ -936,16 +937,12 @@ void ProblemWidget::fillComboBox()
 void ProblemWidget::updateControls()
 {
     // disconnect signals
-    // without clearing solution
-    txtName->disconnect();
-
     // with clearing solution
     cmbCoordinateType->disconnect();
     cmbMatrixSolver->disconnect();
     cmbMeshType->disconnect();
 
-    cmbMeshType->disconnect();
-    connect(txtFrequency, SIGNAL(textChanged(QString)), this, SLOT(changedWithClear()));
+    txtFrequency->disconnect();
 
     cmbTransientMethod->disconnect();
     txtTransientOrder->disconnect();
@@ -996,6 +993,8 @@ void ProblemWidget::updateControls()
     connect(cmbCoordinateType, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
     connect(cmbMatrixSolver, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
     connect(cmbMeshType, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
+
+    connect(txtFrequency, SIGNAL(textChanged(QString)), this, SLOT(changedWithClear()));
 
     connect(cmbTransientMethod, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
     connect(txtTransientOrder, SIGNAL(valueChanged(int)), this, SLOT(changedWithClear()));
