@@ -136,10 +136,16 @@ win32-msvc2010 {
 
     LIBS += -Lc:/Python27/libs
     LIBS += -lvcomp
-    LIBS += -lpython27
     LIBS += -lpthreadVCE2
     LIBS += -ladvapi32
     LIBS += -lws2_32
+    
+    CONFIG(release, debug|release) {
+        LIBS += -lpython27
+    }
+    CONFIG(debug, debug|release) {
+        LIBS += -lpython27_d
+    }
 }
 
 include(../agros2d_version.pri)
