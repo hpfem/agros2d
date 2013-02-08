@@ -1006,7 +1006,7 @@ void ProblemWidget::updateControls()
     // transient
     connect(txtTransientSteps, SIGNAL(valueChanged(int)), this, SLOT(transientChanged()));
     connect(txtTransientTimeTotal, SIGNAL(textChanged(QString)), this, SLOT(transientChanged()));
-    connect(txtTransientOrder, SIGNAL(textChanged(QString)), this, SLOT(transientChanged()));
+    connect(txtTransientOrder, SIGNAL(valueChanged(int)), this, SLOT(transientChanged()));
     connect(cmbTransientMethod, SIGNAL(currentIndexChanged(int)), this, SLOT(transientChanged()));
 }
 
