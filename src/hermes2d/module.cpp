@@ -633,7 +633,15 @@ Hermes::vector<Hermes::Hermes2D::Mesh *> Module::readMeshFromFile(const QString 
     }
 
     Hermes::Hermes2D::MeshReaderH2DXML meshloader;
-    meshloader.load(fileName.toStdString().c_str(), meshes);
+    meshloader.set_validation(false);
+    try
+    {
+        meshloader.load(fileName.toStdString().c_str(), meshes);
+    }
+    catch (Hermes::Exceptions::MeshLoadFailureException& e)
+    {
+        throw Hermes::Exceptions::MeshLoadFailureException(e.what());
+    }
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
