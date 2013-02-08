@@ -36,7 +36,7 @@
 	<tr><td><b>{{PROPERTY_CONSTANT_LABEL}}</b></td><td>{{PROPERTY_CONSTANT}} {{PROPERTY_UNIT}}</td></tr>
 </table>
 {{#PROPERTY_SELECTABLE}}
-<a href="property?id={{PROPERTY_ID}}&amp;constant={{PROPERTY_CONSTANT}}&amp;x={{PROPERTY_DEPENDENCE_X}}&amp;y={{PROPERTY_DEPENDENCE_Y}}" style="float: right;">Select property</a>
+<a href="property?id={{PROPERTY_ID}}&amp;constant={{PROPERTY_CONSTANT}}&amp;x={{PROPERTY_DEPENDENCE_X}}&amp;y={{PROPERTY_DEPENDENCE_Y}}" style="float: right;"><button>Select property</button></a>
 {{/PROPERTY_SELECTABLE}}
 </div>
 </td>
