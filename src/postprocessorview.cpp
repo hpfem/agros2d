@@ -512,7 +512,7 @@ CollapsableGroupBoxButton *PostprocessorWidget::postParticalTracingWidget()
     QVBoxLayout *layoutParticleTracing = new QVBoxLayout();
     layoutParticleTracing->addWidget(groupPostParticalTracingAdvanced);
 
-    CollapsableGroupBoxButton *grpParticalTracing = new CollapsableGroupBoxButton(tr("Partical tracing"));
+    CollapsableGroupBoxButton *grpParticalTracing = new CollapsableGroupBoxButton(tr("Particle tracing"));
     connect(grpParticalTracing, SIGNAL(collapseEvent(bool)), this, SLOT(doParticleFieldExpandCollapse(bool)));
     grpParticalTracing->setCollapsed(true);
     grpParticalTracing->setLayout(layoutParticleTracing);
