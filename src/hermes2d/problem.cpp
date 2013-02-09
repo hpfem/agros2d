@@ -277,6 +277,13 @@ bool Problem::mesh()
 {
     bool result = false;
 
+    // TODO: make global check geometry before mesh() and solve()
+    if (Agros2D::problem()->fieldInfos().count() == 0)
+    {
+        Agros2D::log()->printError(tr("Mesh"), tr("No fields defined."));
+        return false;
+    }
+
     try
     {
         result = meshAction();
@@ -301,7 +308,7 @@ bool Problem::mesh()
     {
         // todo: dangerous
         // catching all other exceptions. This is not save at all
-        Agros2D::log()->printWarning("Solver", "An unknown exception occured in solver and has been ignored!");
+        Agros2D::log()->printWarning(tr("Mesh"), tr("An unknown exception occured in solver and has been ignored!"));
         m_isSolving = false;
         return false;
     }
