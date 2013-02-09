@@ -499,26 +499,32 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
     if (isSolving())
         return;
 
-    if(numTransientFields() > 1)
+    if (numTransientFields() > 1)
     {
-        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", "Coupling of more transient fields not possible at the moment.");
+        QMessageBox::critical(QApplication::activeWindow(), tr("Solver"), tr("Coupling of more transient fields not possible at the moment."));
         return;
     }
 
-    if((m_fieldInfos.size() > 1) && isTransient() && (numAdaptiveFields() >= 1))
+    if ((m_fieldInfos.size() > 1) && isTransient() && (numAdaptiveFields() >= 1))
     {
-        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", "Space adaptivity for transient coupled problems not possible at the moment.");
+        QMessageBox::critical(QApplication::activeWindow(), tr("Solver"), tr("Space adaptivity for transient coupled problems not possible at the moment."));
         return;
     }
 
-    if(isTransient() && config()->isTransientAdaptive() && (numAdaptiveFields() >= 1))
+    if (isTransient() && config()->isTransientAdaptive() && (numAdaptiveFields() >= 1))
     {
-        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", "Both space and transient adaptivity at the same time not possible at the moment.");
+        QMessageBox::critical(QApplication::activeWindow(), tr("Solver"), tr("Both space and transient adaptivity at the same time not possible at the moment."));
         return;
     }
 
-    if(Agros2D::configComputer()->saveMatrixRHS)
-        Agros2D::log()->printWarning(tr(""), tr("Warning: Matrix and RHS will be saved on the disk. This will slow down the calculation. You may disable it in Edit->Options->Solver menu."));
+    if (Agros2D::problem()->fieldInfos().count() == 0)
+    {
+        Agros2D::log()->printError(tr("Solver"), tr("No fields defined."));
+        return;
+    }
+
+    if (Agros2D::configComputer()->saveMatrixRHS)
+        Agros2D::log()->printWarning(tr("Solver"), tr("Warning: Matrix and RHS will be saved on the disk. This will slow down the calculation. You may disable it in Edit->Options->Solver menu."));
 
     try
     {
