@@ -653,8 +653,8 @@ Module::LocalVariable FieldInfo::localVariable(const QString &id) const
         if (var.id() == id)
             return var;
 
-    qDebug() << "localVariable: " << id;
-    assert(0);
+    qDebug() << "Warning: unable to return local variable: " << id;
+    return Module::LocalVariable();
 }
 
 Module::Integral FieldInfo::surfaceIntegral(const QString &id) const
