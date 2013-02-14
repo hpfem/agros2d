@@ -72,7 +72,7 @@
     <message>
         <location filename="../../src/gui/chart.cpp" line="164"/>
         <source>Export image to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter l&apos;image vers un fichier</translation>
     </message>
 </context>
 <context>
@@ -685,12 +685,12 @@
     <message>
         <location filename="../../src/problemdialog.cpp" line="572"/>
         <source>Add field</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter un champ</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="611"/>
         <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Analysis:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Solver:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Adaptivity:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Number of ref. / order:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%4 / %5&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Analyse :&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Solveur :&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Adaptativité :&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Nombre d&apos;améliorations. / ordre :&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%4 / %5&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
 </context>
 <context>
@@ -698,67 +698,67 @@
     <message>
         <location filename="../../src/gui/filebrowser.cpp" line="30"/>
         <source>&amp;Create directory</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Créer un répertoire</translation>
     </message>
     <message>
         <location filename="../../src/gui/filebrowser.cpp" line="33"/>
         <source>Create &amp;file</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer un &amp;fichier</translation>
     </message>
     <message>
         <location filename="../../src/gui/filebrowser.cpp" line="36"/>
         <source>&amp;Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Renommer</translation>
     </message>
     <message>
         <location filename="../../src/gui/filebrowser.cpp" line="39"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Su&amp;pprimer</translation>
     </message>
     <message>
         <location filename="../../src/gui/filebrowser.cpp" line="145"/>
         <source>Create directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer un répertoire</translation>
     </message>
     <message>
         <location filename="../../src/gui/filebrowser.cpp" line="145"/>
         <location filename="../../src/gui/filebrowser.cpp" line="218"/>
         <source>Enter directory name</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrez le nom du répertoire</translation>
     </message>
     <message>
         <location filename="../../src/gui/filebrowser.cpp" line="159"/>
         <location filename="../../src/gui/filebrowser.cpp" line="171"/>
         <source>Create file</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer un fichier</translation>
     </message>
     <message>
         <location filename="../../src/gui/filebrowser.cpp" line="159"/>
         <location filename="../../src/gui/filebrowser.cpp" line="231"/>
         <source>Enter file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrez le nom du fichier</translation>
     </message>
     <message>
         <location filename="../../src/gui/filebrowser.cpp" line="218"/>
         <location filename="../../src/gui/filebrowser.cpp" line="224"/>
         <source>Rename directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Renommer le répertoire</translation>
     </message>
     <message>
         <location filename="../../src/gui/filebrowser.cpp" line="224"/>
         <source>Directory could not be renamed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le répertoire ne peut pas être renommé.</translation>
     </message>
     <message>
         <location filename="../../src/gui/filebrowser.cpp" line="231"/>
         <location filename="../../src/gui/filebrowser.cpp" line="241"/>
         <source>Rename file</source>
-        <translation type="unfinished"></translation>
+        <translation>Renommer le fichier</translation>
     </message>
     <message>
         <location filename="../../src/gui/filebrowser.cpp" line="241"/>
         <source>File could not be renamed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier ne peut être renommé.</translation>
     </message>
 </context>
 <context>
@@ -774,42 +774,42 @@
     <message>
         <location filename="../../src/gui/imageloader.cpp" line="30"/>
         <source>Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Image</translation>
     </message>
     <message>
         <location filename="../../src/gui/imageloader.cpp" line="69"/>
         <source>Filename:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom du fichier :</translation>
     </message>
     <message>
         <location filename="../../src/gui/imageloader.cpp" line="80"/>
         <source>X:</source>
-        <translation type="unfinished"></translation>
+        <translation>X :</translation>
     </message>
     <message>
         <location filename="../../src/gui/imageloader.cpp" line="82"/>
         <source>Y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y :</translation>
     </message>
     <message>
         <location filename="../../src/gui/imageloader.cpp" line="84"/>
         <source>Width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Longueur :</translation>
     </message>
     <message>
         <location filename="../../src/gui/imageloader.cpp" line="86"/>
         <source>Height:</source>
-        <translation type="unfinished"></translation>
+        <translation>Hauteur :</translation>
     </message>
     <message>
         <location filename="../../src/gui/imageloader.cpp" line="114"/>
         <source>Open file</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir le fichier</translation>
     </message>
     <message>
         <location filename="../../src/gui/imageloader.cpp" line="114"/>
         <source>Images (*.png *.bmp *.jpg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Images (*.png *.bmp *.jpg)</translation>
     </message>
 </context>
 <context>
@@ -817,7 +817,7 @@
     <message>
         <location filename="../../src/videodialog.cpp" line="345"/>
         <source>Video</source>
-        <translation type="unfinished"></translation>
+        <translation>Vidéo</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="378"/>
@@ -828,17 +828,17 @@
     <message>
         <location filename="../../src/videodialog.cpp" line="380"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Fermer</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="389"/>
         <source>Speed:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vitesse :</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="443"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Arrêter</translation>
     </message>
 </context>
 <context>
@@ -851,7 +851,7 @@
     <message>
         <location filename="../../src/infowidget.cpp" line="107"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom :</translation>
     </message>
     <message>
         <location filename="../../src/infowidget.cpp" line="110"/>
@@ -1017,32 +1017,32 @@
         <location filename="../../src/infowidget.cpp" line="298"/>
         <location filename="../../src/infowidget.cpp" line="326"/>
         <source>%1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1</translation>
     </message>
     <message>
         <location filename="../../src/infowidget.cpp" line="299"/>
         <source>Error:</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur :</translation>
     </message>
     <message>
         <location filename="../../src/infowidget.cpp" line="300"/>
         <source>%1 %</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 %</translation>
     </message>
     <message>
         <location filename="../../src/infowidget.cpp" line="313"/>
         <source>Coupled fields</source>
-        <translation type="unfinished"></translation>
+        <translation>Champs couplées</translation>
     </message>
     <message>
         <location filename="../../src/infowidget.cpp" line="321"/>
         <source>Source:</source>
-        <translation type="unfinished"></translation>
+        <translation>Source :</translation>
     </message>
     <message>
         <location filename="../../src/infowidget.cpp" line="323"/>
         <source>Target:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cible :</translation>
     </message>
     <message>
         <location filename="../../src/infowidget.cpp" line="325"/>
@@ -1052,7 +1052,7 @@
     <message>
         <location filename="../../src/infowidget.cpp" line="333"/>
         <source>Solution</source>
-        <translation type="unfinished"></translation>
+        <translation>Solution</translation>
     </message>
     <message>
         <location filename="../../src/infowidget.cpp" line="334"/>
@@ -1062,7 +1062,7 @@
     <message>
         <location filename="../../src/infowidget.cpp" line="335"/>
         <source>%1 s</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 s</translation>
     </message>
 </context>
 <context>
@@ -1070,7 +1070,7 @@
     <message>
         <location filename="../../src/resultsview.cpp" line="257"/>
         <source>Local point value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeur de point local</translation>
     </message>
 </context>
 <context>
@@ -1078,22 +1078,22 @@
     <message>
         <location filename="../../src/logview.cpp" line="227"/>
         <source>error</source>
-        <translation type="unfinished"></translation>
+        <translation>erreur</translation>
     </message>
     <message>
         <location filename="../../src/logview.cpp" line="228"/>
         <source>iteration</source>
-        <translation type="unfinished"></translation>
+        <translation>itération</translation>
     </message>
     <message>
         <location filename="../../src/logview.cpp" line="231"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Fermer</translation>
     </message>
     <message>
         <location filename="../../src/logview.cpp" line="256"/>
         <source>Solver</source>
-        <translation type="unfinished"></translation>
+        <translation>Solveur</translation>
     </message>
     <message>
         <location filename="../../src/logview.cpp" line="287"/>
@@ -1129,7 +1129,7 @@
     <message>
         <location filename="../../src/logview.cpp" line="80"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Nettoyer</translation>
     </message>
     <message>
         <location filename="../../src/logview.cpp" line="83"/>
@@ -1162,119 +1162,119 @@
     <message>
         <location filename="../../src/mainwindow.cpp" line="251"/>
         <source>Open an existing file</source>
-        <translation type="unfinished"></translation>
+        <translation>Open an existing file</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="259"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregi&amp;strer</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="261"/>
         <source>Save project file to disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer le fichier projet sur le disque</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="264"/>
         <source>Save solution</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer la solution</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="265"/>
         <source>Save solution to disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer la solution sur le disque</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="268"/>
         <source>Save &amp;As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer so&amp;us…</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="270"/>
         <source>Save the file under a new name</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrez le fichier sous un nouveau nom</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="277"/>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fermer</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="279"/>
         <source>Close the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Fermer le fichier</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="282"/>
         <source>Import DXF...</source>
-        <translation type="unfinished"></translation>
+        <translation>Import DXF…</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="283"/>
         <source>Import AutoCAD DXF</source>
-        <translation type="unfinished"></translation>
+        <translation>Import AutoCAD DXF</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="286"/>
         <source>Export DXF...</source>
-        <translation type="unfinished"></translation>
+        <translation>Export DXF…</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="287"/>
         <source>Export AutoCAD DXF</source>
-        <translation type="unfinished"></translation>
+        <translation>Export AutoCAD DXF</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="290"/>
         <source>Export mesh file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter fichier de maillage…</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="291"/>
         <source>Export Hermes2D mesh file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter Hermes2D fichier de maillage</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="294"/>
         <source>Export image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Export d&apos;image…</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="295"/>
         <location filename="../../src/mainwindow.cpp" line="1142"/>
         <source>Export image to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter l&apos;image vers un fichier</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="298"/>
         <source>Export geometry...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter la géométrie…</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="299"/>
         <location filename="../../src/mainwindow.cpp" line="1173"/>
         <source>Export geometry to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter la géométrie vers un fichier</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="302"/>
         <source>New example...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvel exemple…</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="305"/>
         <source>Create &amp;video...</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer une &amp;vidéo…</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="306"/>
         <source>Create video</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer une vidéo</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="309"/>
         <source>Load background...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">…</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="310"/>
@@ -1294,7 +1294,7 @@
     <message>
         <location filename="../../src/mainwindow.cpp" line="315"/>
         <source>Exit the application</source>
-        <translation type="unfinished"></translation>
+        <translation>Quitter l&apos;application</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="322"/>
@@ -1437,42 +1437,42 @@ step</source>
     <message>
         <location filename="../../src/mainwindow.cpp" line="387"/>
         <source>Fullscreen mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode plein écran</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="388"/>
         <source>F11</source>
-        <translation type="unfinished">F11</translation>
+        <translation>F11</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="394"/>
         <source>PythonLab</source>
-        <translation type="unfinished"></translation>
+        <translation>PythonLab</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="395"/>
         <source>Script editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditeur de script</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="399"/>
         <source>Run &amp;script...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exécuter le &amp;script…</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="400"/>
         <source>Run script...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exécuter le script…</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="407"/>
         <source>Material browser...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">…</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="408"/>
         <source>Ctrl+M</source>
-        <translation type="unfinished">Ctrl+M</translation>
+        <translation>Ctrl+M</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="409"/>
@@ -1499,7 +1499,7 @@ step</source>
     <message>
         <location filename="../../src/mainwindow.cpp" line="423"/>
         <source>Ctrl+0</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+0</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="424"/>
@@ -1520,7 +1520,7 @@ step</source>
     <message>
         <location filename="../../src/mainwindow.cpp" line="440"/>
         <source>Alt+0</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+0</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="457"/>
@@ -1530,12 +1530,12 @@ step</source>
     <message>
         <location filename="../../src/mainwindow.cpp" line="458"/>
         <source>Import/Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Import/Export</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="475"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fichier</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="494"/>
@@ -1560,22 +1560,22 @@ step</source>
     <message>
         <location filename="../../src/mainwindow.cpp" line="543"/>
         <source>&amp;Problem</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Problème</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="544"/>
         <source>&amp;Add</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ajouter</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="562"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Ou&amp;tils</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="600"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier :</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="615"/>
@@ -1585,17 +1585,17 @@ step</source>
     <message>
         <location filename="../../src/mainwindow.cpp" line="625"/>
         <source>Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="633"/>
         <source>Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Géométrie</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="652"/>
         <source>Postprocessor 2D</source>
-        <translation type="unfinished"></translation>
+        <translation>Postprocesseur 2D</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="924"/>
@@ -1605,7 +1605,7 @@ step</source>
     <message>
         <location filename="../../src/mainwindow.cpp" line="924"/>
         <source>Agros2D files (*.a2d *.py);;Agros2D data files (*.a2d);;Python script (*.py)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers Agros2D (*.a2d *.py);;Fichiers de données Agros2D (*.a2d);;Python script (*.py)</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="978"/>
@@ -1627,12 +1627,12 @@ step</source>
     <message>
         <location filename="../../src/mainwindow.cpp" line="1050"/>
         <source>Save file</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer le fichier</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="1050"/>
         <source>Agros2D files (*.a2d)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers Agros2D (*.a2d)</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="1108"/>
@@ -1643,7 +1643,7 @@ step</source>
         <location filename="../../src/mainwindow.cpp" line="1108"/>
         <location filename="../../src/mainwindow.cpp" line="1125"/>
         <source>DXF files (*.dxf)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers DXF (*.dxf)</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="1125"/>
@@ -1653,22 +1653,22 @@ step</source>
     <message>
         <location filename="../../src/mainwindow.cpp" line="1142"/>
         <source>PNG files (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers PNG (*.png)</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="1174"/>
         <source>SVG files (*.svg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers SVG (*.svg)</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="1600"/>
         <source>Mesh files (*.mesh)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers de maillage (*.mesh)</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="1617"/>
         <source>Export mesh</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Export de maillage</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="1617"/>
@@ -1678,7 +1678,7 @@ step</source>
     <message>
         <location filename="../../src/mainwindow.cpp" line="1225"/>
         <source>Mesh</source>
-        <translation type="unfinished"></translation>
+        <translation>Maillage</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="1242"/>
@@ -1704,12 +1704,12 @@ step</source>
         <location filename="../../src/mainwindow.cpp" line="1370"/>
         <source>Run script: %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Exécuter le script : %1</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="1390"/>
         <source>File &apos;%1&apos; doesn&apos;t exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier n&apos;existe pas.</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="1600"/>
@@ -2314,13 +2314,13 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="259"/>
         <source>Coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Coordonnées</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="295"/>
         <location filename="../../src/moduledialog.cpp" line="355"/>
         <source>Functions</source>
-        <translation type="unfinished"></translation>
+        <translation>Fonctions</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="314"/>
@@ -2328,7 +2328,7 @@ step</source>
         <location filename="../../src/moduledialog.cpp" line="374"/>
         <location filename="../../src/moduledialog.cpp" line="393"/>
         <source>Variables</source>
-        <translation type="unfinished"></translation>
+        <translation>Variables</translation>
     </message>
 </context>
 <context>
@@ -2336,22 +2336,22 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="556"/>
         <source>ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>ID :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="558"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="560"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Type :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="562"/>
         <source>Solution:</source>
-        <translation type="unfinished"></translation>
+        <translation>Solution :</translation>
     </message>
 </context>
 <context>
@@ -2359,12 +2359,12 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="515"/>
         <source>ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>ID :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="517"/>
         <source>Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeur :</translation>
     </message>
 </context>
 <context>
@@ -2377,42 +2377,42 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="440"/>
         <source>ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>ID :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="442"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="444"/>
         <source>Shortname:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom court :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="446"/>
         <source>Shortname (HTML):</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom court (HTML) :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="448"/>
         <source>Shortname (LaTeX):</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom court (LaTeX) :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="450"/>
         <source>Unit:</source>
-        <translation type="unfinished"></translation>
+        <translation>Unité :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="452"/>
         <source>Unit (HTML):</source>
-        <translation type="unfinished"></translation>
+        <translation>Unité (HTML) :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="454"/>
         <source>Unit (LaTeX):</source>
-        <translation type="unfinished"></translation>
+        <translation>Unité (LaTeX) :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="457"/>
@@ -2433,7 +2433,7 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="791"/>
         <source>Essential form</source>
-        <translation type="unfinished"></translation>
+        <translation>Forme essentielle</translation>
     </message>
 </context>
 <context>
@@ -2441,32 +2441,32 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="158"/>
         <source>Planar:</source>
-        <translation type="unfinished"></translation>
+        <translation>Planair :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="160"/>
         <source>Axisymmetric:</source>
-        <translation type="unfinished"></translation>
+        <translation>Axisymétrique :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="181"/>
         <source>Planar X:</source>
-        <translation type="unfinished"></translation>
+        <translation>Planair X :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="183"/>
         <source>Planar Y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Planair Y :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="185"/>
         <source>Axisymmetric R:</source>
-        <translation type="unfinished"></translation>
+        <translation>Axisymétrique R :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="187"/>
         <source>Axisymmetric Z:</source>
-        <translation type="unfinished"></translation>
+        <translation>Axisymétrique Z :</translation>
     </message>
 </context>
 <context>
@@ -2474,17 +2474,17 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="626"/>
         <source>Planar nonlinearity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Non-linéarité planaire :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="628"/>
         <source>Axisymmetric nonlinearity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Non-linéarité axisymétrique :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="630"/>
         <source>Dependence:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dépendance :</translation>
     </message>
 </context>
 <context>
@@ -2492,12 +2492,12 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="592"/>
         <source>ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>ID :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="594"/>
         <source>Shortname:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom court :</translation>
     </message>
 </context>
 <context>
@@ -2505,7 +2505,7 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="747"/>
         <source>Vector form</source>
-        <translation type="unfinished"></translation>
+        <translation>Forme vectorielle</translation>
     </message>
 </context>
 <context>
@@ -2513,7 +2513,7 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="954"/>
         <source>Local variable:</source>
-        <translation type="unfinished"></translation>
+        <translation>Variable locale :</translation>
     </message>
 </context>
 <context>
@@ -2521,12 +2521,12 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="652"/>
         <source>Matrix form</source>
-        <translation type="unfinished"></translation>
+        <translation>Forme matricielle</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="669"/>
         <source>ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>ID :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="671"/>
@@ -2536,29 +2536,29 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="673"/>
         <source>Test function index:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Index fonctions tests :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="677"/>
         <location filename="../../src/moduledialog.cpp" line="686"/>
         <source>Planar:</source>
-        <translation type="unfinished"></translation>
+        <translation>Planair :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="679"/>
         <location filename="../../src/moduledialog.cpp" line="688"/>
         <source>Axisymmetric:</source>
-        <translation type="unfinished"></translation>
+        <translation>Axisymétrique :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="682"/>
         <source>Linear</source>
-        <translation type="unfinished"></translation>
+        <translation>Linéaire</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="691"/>
         <source>Nonlinear</source>
-        <translation type="unfinished"></translation>
+        <translation>Non linéaire</translation>
     </message>
 </context>
 <context>
@@ -2566,17 +2566,17 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="853"/>
         <source>Condition:</source>
-        <translation type="unfinished"></translation>
+        <translation>Condition :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="855"/>
         <source>Default:</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeur par défaut :</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="858"/>
         <source>Constraints and default value</source>
-        <translation type="unfinished"></translation>
+        <translation>Contraintes et valeur par défaut</translation>
     </message>
 </context>
 <context>
@@ -2584,7 +2584,7 @@ step</source>
     <message>
         <location filename="../../src/scene.cpp" line="181"/>
         <source>New boundary condition</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvelle condition à la limite</translation>
     </message>
 </context>
 <context>
@@ -2592,12 +2592,12 @@ step</source>
     <message>
         <location filename="../../src/particle/particle_tracing.cpp" line="81"/>
         <source>Particle Tracing</source>
-        <translation type="unfinished"></translation>
+        <translation>Le traçage de particules</translation>
     </message>
     <message>
         <location filename="../../src/particle/particle_tracing.cpp" line="171"/>
         <source>Element [%1, %2] lies out of the mesh (&apos;%3&apos;).</source>
-        <translation type="unfinished"></translation>
+        <translation>Élément [%1, %2] se trouve hors de maillage (&apos;%3&apos;).</translation>
     </message>
 </context>
 <context>
@@ -2622,7 +2622,7 @@ step</source>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="103"/>
         <source>polynomial order</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordre polynomial</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="131"/>
@@ -2655,7 +2655,7 @@ step</source>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="298"/>
         <source>Particle Tracing</source>
-        <translation type="unfinished"></translation>
+        <translation>Traçage de particules</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="298"/>
@@ -2673,98 +2673,98 @@ step</source>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="327"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Appliquer</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="356"/>
         <source>Initial mesh</source>
-        <translation type="unfinished"></translation>
+        <translation>Maillage initial</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="357"/>
         <source>Solution mesh</source>
-        <translation type="unfinished"></translation>
+        <translation>Maillage de solutions</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="358"/>
         <location filename="../../src/postprocessorview.cpp" line="400"/>
         <source>Polynomial order</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordre polynomial</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="366"/>
         <source>Mesh</source>
-        <translation type="unfinished"></translation>
+        <translation>Maillage</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="376"/>
         <source>Hermes</source>
-        <translation type="unfinished"></translation>
+        <translation>Hermes</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="377"/>
         <source>Jet</source>
-        <translation type="unfinished"></translation>
+        <translation>Jet</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="378"/>
         <source>Copper</source>
-        <translation type="unfinished"></translation>
+        <translation>Cuivre</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="379"/>
         <source>Hot</source>
-        <translation type="unfinished"></translation>
+        <translation>Chaud</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="380"/>
         <source>Cool</source>
-        <translation type="unfinished"></translation>
+        <translation>Frais</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="381"/>
         <source>Bone</source>
-        <translation type="unfinished"></translation>
+        <translation>Ivoire</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="382"/>
         <source>Pink</source>
-        <translation type="unfinished"></translation>
+        <translation>Rose</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="383"/>
         <source>Spring</source>
-        <translation type="unfinished"></translation>
+        <translation>Printemps</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="384"/>
         <source>Summer</source>
-        <translation type="unfinished"></translation>
+        <translation>Été</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="385"/>
         <source>Autumn</source>
-        <translation type="unfinished"></translation>
+        <translation>Automne</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="386"/>
         <source>Winter</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiver</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="387"/>
         <source>HSV</source>
-        <translation type="unfinished"></translation>
+        <translation>HSV</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="388"/>
         <source>B/W ascending</source>
-        <translation type="unfinished"></translation>
+        <translation>NB ascendant</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="389"/>
         <source>B/W descending</source>
-        <translation type="unfinished"></translation>
+        <translation>NB descendant</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="391"/>
@@ -2784,12 +2784,12 @@ step</source>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="409"/>
         <source>Contours</source>
-        <translation type="unfinished"></translation>
+        <translation>Contours</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="411"/>
         <source>Vectors</source>
-        <translation type="unfinished"></translation>
+        <translation>Vecteurs</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="413"/>
@@ -2801,12 +2801,12 @@ step</source>
         <location filename="../../src/postprocessorview.cpp" line="415"/>
         <location filename="../../src/postprocessorview.cpp" line="545"/>
         <source>Particle tracing</source>
-        <translation type="unfinished"></translation>
+        <translation>Traçage de particules</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="428"/>
         <source>Postprocessor 2D</source>
-        <translation type="unfinished"></translation>
+        <translation>Postprocesseur 2D</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="441"/>
@@ -2818,17 +2818,17 @@ step</source>
         <location filename="../../src/postprocessorview.cpp" line="473"/>
         <location filename="../../src/postprocessorview.cpp" line="495"/>
         <source>Variable:</source>
-        <translation type="unfinished"></translation>
+        <translation>Variable :</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="451"/>
         <source>Component:</source>
-        <translation type="unfinished"></translation>
+        <translation>Composant :</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="455"/>
         <source>Scalar field</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ scalaire</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="477"/>
@@ -2838,12 +2838,12 @@ step</source>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="499"/>
         <source>Vector field</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ vectoriel</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="515"/>
         <source>Partical tracing</source>
-        <translation type="unfinished"></translation>
+        <translation>Traçage de particules</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="531"/>
@@ -2863,7 +2863,7 @@ step</source>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="567"/>
         <source>Postprocessor 3D</source>
-        <translation type="unfinished"></translation>
+        <translation>Postprocesseur 3D</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="586"/>
@@ -2899,7 +2899,7 @@ step</source>
         <location filename="../../src/postprocessorview.cpp" line="638"/>
         <location filename="../../src/postprocessorview.cpp" line="854"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Type :</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="641"/>
@@ -2919,22 +2919,22 @@ step</source>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="740"/>
         <source>Minimum:</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimum :</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="745"/>
         <source>Maximum:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum :</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="750"/>
         <source>Range</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gamme</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="756"/>
         <source>Palette:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Palette :</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="758"/>
@@ -2954,7 +2954,7 @@ step</source>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="767"/>
         <source>Palette</source>
-        <translation type="unfinished"></translation>
+        <translation>Palette</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="776"/>
@@ -3035,17 +3035,17 @@ step</source>
         <location filename="../../src/postprocessorview.cpp" line="942"/>
         <location filename="../../src/postprocessorview.cpp" line="954"/>
         <source>Equation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Équation :</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="944"/>
         <source>Charge (C):</source>
-        <translation type="unfinished"></translation>
+        <translation>Charge (C) :</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="947"/>
         <source>Lorentz force</source>
-        <translation type="unfinished"></translation>
+        <translation>Force de Lorentz</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="956"/>
@@ -3110,42 +3110,42 @@ step</source>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1021"/>
         <source>Solver</source>
-        <translation type="unfinished"></translation>
+        <translation>Solveur</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1029"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Réglages</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1034"/>
         <source>Equations:</source>
-        <translation type="unfinished"></translation>
+        <translation>Équations :</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1036"/>
         <source>Number of particles:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de particules :</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1038"/>
         <source>Particles dispersion (m):</source>
-        <translation type="unfinished"></translation>
+        <translation>Dispersion des particules (m) :</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1040"/>
         <source>Mass (kg):</source>
-        <translation type="unfinished"></translation>
+        <translation>Masse (kg) :</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1138"/>
         <source>Scalar</source>
-        <translation type="unfinished"></translation>
+        <translation>Scalaire</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1142"/>
         <source>Magnitude</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ampleur</translation>
     </message>
 </context>
 <context>
@@ -3228,7 +3228,7 @@ step</source>
         <location filename="../../src/hermes2d/problem.cpp" line="833"/>
         <location filename="../../src/hermes2d/problem.cpp" line="928"/>
         <source>Problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Problème</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="833"/>
@@ -3251,12 +3251,12 @@ step</source>
     <message>
         <location filename="../../src/problemdialog.cpp" line="799"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriétés</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="800"/>
         <source>Ctrl+1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+1</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="801"/>
@@ -3271,7 +3271,7 @@ step</source>
     <message>
         <location filename="../../src/problemdialog.cpp" line="828"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom :</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="830"/>
@@ -3761,24 +3761,24 @@ Do you want to save your changes?</source>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="136"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="181"/>
         <source>Convention</source>
-        <translation type="unfinished"></translation>
+        <translation>Convention</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="139"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="186"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Avertissement</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="143"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="191"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="150"/>
         <source>Could not read PyLint output.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Impossible de lire la sortie du PyLint.</translation>
     </message>
 </context>
 <context>
@@ -3786,12 +3786,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonengine.cpp" line="308"/>
         <source>Type &apos;%1&apos; is not supported ().</source>
-        <translation type="unfinished"></translation>
+        <translation>Type &apos;%1&apos; n&apos;est pas supporté ().</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythonengine.cpp" line="309"/>
         <source>Type &apos;%1&apos; is not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Type &apos;%1&apos; n&apos;est pas supporté.</translation>
     </message>
 </context>
 <context>
@@ -3799,27 +3799,27 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="89"/>
         <source>&amp;Create script from model</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer le script à partir d&apos;un modèle</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="90"/>
         <source>Ctrl+M</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+M</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="100"/>
         <source>Variables</source>
-        <translation type="unfinished"></translation>
+        <translation>Variables</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="104"/>
         <source>Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeurs</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="112"/>
         <source>Startup script</source>
-        <translation type="unfinished"></translation>
+        <translation>Script de démarrage</translation>
     </message>
 </context>
 <context>
@@ -4447,12 +4447,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/util/enums.cpp" line="326"/>
         <source>Planar</source>
-        <translation type="unfinished"></translation>
+        <translation>Planair</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="326"/>
         <source>Axisymmetric</source>
-        <translation type="unfinished"></translation>
+        <translation>Axisymétrique</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="334"/>
@@ -4909,27 +4909,27 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/resultsview.cpp" line="38"/>
         <source>Results view</source>
-        <translation type="unfinished"></translation>
+        <translation>Voir les résultats</translation>
     </message>
     <message>
         <location filename="../../src/resultsview.cpp" line="101"/>
         <source>Local point values</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeur de point local</translation>
     </message>
     <message>
         <location filename="../../src/resultsview.cpp" line="172"/>
         <source>Volume integrals</source>
-        <translation type="unfinished"></translation>
+        <translation>Intégrales de volume</translation>
     </message>
     <message>
         <location filename="../../src/resultsview.cpp" line="213"/>
         <source>Surface integrals</source>
-        <translation type="unfinished"></translation>
+        <translation>Intégrales de surface</translation>
     </message>
     <message>
         <location filename="../../src/resultsview.cpp" line="247"/>
         <source>Problem is not solved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Problème n&apos;est pas résolu.</translation>
     </message>
 </context>
 <context>
@@ -4942,7 +4942,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scene.cpp" line="239"/>
         <source>Alt+N</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+N</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="240"/>
@@ -4957,7 +4957,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scene.cpp" line="244"/>
         <source>Alt+E</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+E</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="245"/>
@@ -4972,7 +4972,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scene.cpp" line="249"/>
         <source>Alt+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+L</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="250"/>
@@ -4993,7 +4993,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scene.cpp" line="258"/>
         <source>Alt+B</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+B</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="259"/>
@@ -5008,7 +5008,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scene.cpp" line="278"/>
         <source>Alt+M</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+M</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="279"/>
@@ -5132,12 +5132,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scene.cpp" line="1183"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Oui</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1183"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Non</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1192"/>
@@ -5266,12 +5266,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/sceneedge.cpp" line="567"/>
         <source>Edges</source>
-        <translation type="unfinished"></translation>
+        <translation>Arêtes</translation>
     </message>
     <message>
         <location filename="../../src/sceneedge.cpp" line="572"/>
         <source>Boundary conditions</source>
-        <translation type="unfinished"></translation>
+        <translation>Condition aux limites</translation>
     </message>
 </context>
 <context>
@@ -5351,7 +5351,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scenelabel.cpp" line="446"/>
         <source>Labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Étiquettes</translation>
     </message>
     <message>
         <location filename="../../src/scenelabel.cpp" line="451"/>
@@ -5453,7 +5453,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/sceneview_common.cpp" line="299"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;image ne ​​peut pas être enregistré dans le fichier &apos;%1&apos;.</translation>
     </message>
 </context>
 <context>
@@ -5461,7 +5461,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/sceneview_common2d.cpp" line="68"/>
         <source>Position: [%1; %2]</source>
-        <translation type="unfinished"></translation>
+        <translation>Position : [%1; %2]</translation>
     </message>
 </context>
 <context>
@@ -5762,12 +5762,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1383"/>
         <source>Goto line</source>
-        <translation type="unfinished"></translation>
+        <translation>Aller à la ligne</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1383"/>
         <source>Line number:</source>
-        <translation type="unfinished"></translation>
+        <translation>Numéro de la ligne:</translation>
     </message>
 </context>
 <context>
@@ -5803,17 +5803,17 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/collaboration.cpp" line="166"/>
         <source>Download from server</source>
-        <translation type="unfinished"></translation>
+        <translation>Téléchargement depuis serveur</translation>
     </message>
     <message>
         <location filename="../../src/collaboration.cpp" line="205"/>
         <source>Login</source>
-        <translation type="unfinished"></translation>
+        <translation>Login</translation>
     </message>
     <message>
         <location filename="../../src/collaboration.cpp" line="207"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Fermer</translation>
     </message>
 </context>
 <context>
@@ -5821,7 +5821,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/collaboration.cpp" line="43"/>
         <source>Login</source>
-        <translation type="unfinished"></translation>
+        <translation>Login</translation>
     </message>
     <message>
         <location filename="../../src/collaboration.cpp" line="78"/>
@@ -5831,17 +5831,17 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/collaboration.cpp" line="81"/>
         <source>Username:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom d&apos;utilisateur :</translation>
     </message>
     <message>
         <location filename="../../src/collaboration.cpp" line="82"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mot de passe :</translation>
     </message>
     <message>
         <location filename="../../src/collaboration.cpp" line="101"/>
         <source>Anonymous user</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilisateur anonyme</translation>
     </message>
 </context>
 <context>
@@ -6386,7 +6386,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/videodialog.cpp" line="37"/>
         <source>Video</source>
-        <translation type="unfinished"></translation>
+        <translation>Vidéo</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="84"/>
@@ -6394,68 +6394,68 @@ Do you want to save your changes?</source>
         <location filename="../../src/videodialog.cpp" line="258"/>
         <location filename="../../src/videodialog.cpp" line="302"/>
         <source>%1 / %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 / %2</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="85"/>
         <location filename="../../src/videodialog.cpp" line="259"/>
         <source>%1 / %2 s</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 / %2 s</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="114"/>
         <source>Adaptivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptivité</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="115"/>
         <source>Transient</source>
-        <translation type="unfinished"></translation>
+        <translation>Transitoire</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="118"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Fermer</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="122"/>
         <source>Show video</source>
-        <translation type="unfinished"></translation>
+        <translation>Voir la vidéo</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="126"/>
         <source>Generate</source>
-        <translation type="unfinished"></translation>
+        <translation>Générer</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="136"/>
         <source>Save images to disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer les images sur le disque</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="139"/>
         <source>Show grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher la grille</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="141"/>
         <source>Show rulers</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les règles</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="143"/>
         <source>Show axes</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les axes</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="173"/>
         <source>Time step:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de temps :</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="175"/>
         <source>Time:</source>
-        <translation type="unfinished"></translation>
+        <translation>Temps :</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="197"/>
@@ -6472,7 +6472,7 @@ Do you want to save your changes?</source>
         <location filename="../../src/videodialog.cpp" line="226"/>
         <location filename="../../src/videodialog.cpp" line="279"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Arrêter</translation>
     </message>
 </context>
 </TS>
