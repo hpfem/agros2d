@@ -1087,6 +1087,8 @@ void SceneViewPost3D::paintParticleTracing()
         glDisable(GL_POLYGON_OFFSET_FILL);
 
         // geometry
+        glEnable(GL_DEPTH_TEST);
+
         glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
         glEnable(GL_LINE_SMOOTH);
         glEnable(GL_BLEND);
@@ -1289,6 +1291,7 @@ void SceneViewPost3D::paintParticleTracing()
 
         glDisable(GL_LINE_SMOOTH);
         glDisable(GL_BLEND);
+        glEnable(GL_DEPTH_TEST);
 
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 

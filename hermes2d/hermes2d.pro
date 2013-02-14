@@ -75,9 +75,7 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 src/mesh/hash.cpp \
                 src/mesh/mesh_data.cpp \
                 src/mesh/mesh_reader_exodusii.cpp \
-                src/mesh/mesh_h1d_xml.cpp \
                 src/mesh/mesh_h2d_xml.cpp \
-                src/mesh/mesh_reader_h1d_xml.cpp \
                 src/mesh/mesh_reader_h2d_xml.cpp \
                 src/mesh/mesh_reader_h2d.cpp \
                 src/mesh/subdomains_h2d_xml.cpp \
@@ -133,12 +131,14 @@ HEADERS += \
     ../hermes_common/include/config.h
 
 linux-g++|linux-g++-64|linux-g++-32 {
+    QMAKE_LFLAGS += -fopenmp
+    QMAKE_CXXFLAGS += -fopenmp
+}
+
+linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     TARGET = ../libs/agros2d_hermes2d
 
     CONFIG += warn_off
-
-    QMAKE_LFLAGS += -fopenmp
-    QMAKE_CXXFLAGS += -fopenmp
 
     # DEFINES += WITH_MUMPS
     # DEFINES += WITH_SUPERLU
@@ -146,13 +146,9 @@ linux-g++|linux-g++-64|linux-g++-32 {
     DEFINES += HAVE_LOG2
 
     INCLUDEPATH += /usr/include/suitesparse
-    INCLUDEPATH += /usr/include/python2.6
-    INCLUDEPATH += /usr/include/python2.7
     LIBS += -lumfpack
     LIBS += -lxerces-c
     LIBS += -lstdc++
-    LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
-    LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
 
     # mumps
     contains(CONFIG, WITH_MUMPS) {

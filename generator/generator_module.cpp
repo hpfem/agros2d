@@ -1534,7 +1534,7 @@ QString Agros2DGeneratorModule::generateDocWeakFormExpression(AnalysisType analy
 }
 
 template <typename Form, typename WeakForm>
-void Agros2DGeneratorModule::generateForm(Form form, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, XMLModule::boundary *boundary = 0, int j = 0)
+void Agros2DGeneratorModule::generateForm(Form form, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, XMLModule::boundary *boundary, int j)
 {
     foreach(LinearityType linearityType, Agros2DGenerator::linearityTypeList())
     {

@@ -143,6 +143,9 @@ namespace Hermes
       static int init_geometry_points(RefMap* reference_mapping, int order, Geom<double>*& geometry, double*& jacobian_x_weights);
       static int init_surface_geometry_points(RefMap* reference_mapping, int& order, Traverse::State* current_state, Geom<double>*& geometry, double*& jacobian_x_weights);
 
+      /// Set the special handling of external functions of Runge-Kutta methods, including information how many spaces were there in the original problem.
+      inline void set_RK(int original_spaces_count) { this->RungeKutta = true; RK_original_spaces_count = original_spaces_count; }
+
     protected:
       void init_assembling(Scalar* coeff_vec, PrecalcShapeset*** pss , PrecalcShapeset*** spss, RefMap*** refmaps, Solution<Scalar>*** u_ext, AsmList<Scalar>*** als, WeakForm<Scalar>** weakforms);
 
@@ -168,9 +171,6 @@ namespace Hermes
       /// weighting of matrix blocks in systems.
       void create_sparse_structure();
       void create_sparse_structure(SparseMatrix<Scalar>* mat, Vector<Scalar>* rhs = NULL);
-
-      /// Set the special handling of external functions of Runge-Kutta methods, including information how many spaces were there in the original problem.
-      inline void set_RK(int original_spaces_count) { this->RungeKutta = true; RK_original_spaces_count = original_spaces_count; }
 
       /// Assemble one state - needs recalculation?
       /// \return if one needs to recalculate, the method calculate_cache_records is called.

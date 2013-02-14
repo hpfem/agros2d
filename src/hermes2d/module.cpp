@@ -86,7 +86,7 @@ WeakFormAgros<Scalar>::~WeakFormAgros()
     foreach (Hermes::Hermes2D::Form<Scalar> *form, this->forms)
         delete form;
 
-    delete_all();
+    this->delete_all();
 }
 
 template <typename Scalar>

@@ -59,7 +59,7 @@ HEADERS += \
     quazip/unzip.h \
     quazip/zip.h
 
-linux-g++|linux-g++-64|linux-g++-32 {
+linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     TARGET = ../libs/agros2d_3rdparty
 
     INCLUDEPATH += ctemplate \

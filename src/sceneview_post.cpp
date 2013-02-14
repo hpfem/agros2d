@@ -341,6 +341,9 @@ void PostHermes::processSolved()
 
     // temporary use 3/4 of max threads
     int threads = omp_get_max_threads() * 3/4;
+    if (threads == 0)
+        threads = 1;
+
     Hermes::Hermes2D::Hermes2DApi.set_integral_param_value(Hermes::Hermes2D::numThreads, threads);
 
     processSolutionMesh();

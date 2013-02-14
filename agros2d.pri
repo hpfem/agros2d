@@ -13,6 +13,9 @@ INCLUDEPATH += ./ \
 linux-g++|linux-g++-64|linux-g++-32 {
     QMAKE_LFLAGS += -fopenmp
     QMAKE_CXXFLAGS += -fopenmp
+}
+
+linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     # DEFINES += WITH_UNITY
 
     INCLUDEPATH += /usr/include

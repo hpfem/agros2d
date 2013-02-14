@@ -8,7 +8,7 @@ TEMPLATE = lib
 # backup
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
 # run cython for python extensions
-linux-g++|linux-g++-64|linux-g++-32 : CONFIG(release) {
+linux-g++|linux-g++-64|linux-g++-32: CONFIG(release) {
     system(cython --cplus ../resources_source/python/agros2d.pyx)
     system(cython --cplus ../resources_source/python/pythonlab.pyx)
     system(cd ../ && ./agros2d.sh lang release)
@@ -287,7 +287,7 @@ INCLUDEPATH += ../hermes_common/include
 LIBS += -lagros2d_hermes2d
 LIBS += -lagros2d_3rdparty
 
-linux-g++|linux-g++-64|linux-g++-32 {
+linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     # DEFINES += WITH_UNITY
     TARGET = ../libs/agros2d_library
 

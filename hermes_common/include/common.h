@@ -51,7 +51,12 @@
 #include <fstream>
 #include <cstring>
 #include <iostream>
+#ifdef _OPENMP
 #include <omp.h>
+#else
+inline static int omp_get_max_threads() { return 1; }
+inline static int omp_get_thread_num() { return 1; }
+#endif
 #include <signal.h>
 
 #include "config.h"

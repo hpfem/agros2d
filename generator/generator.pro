@@ -21,7 +21,7 @@ SOURCES += main.cpp \
 
 include(../agros2d.pri)
 
-linux-g++|linux-g++-64|linux-g++-32 {
+linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     TARGET = ../agros2d_generator
 }
 

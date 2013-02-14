@@ -54,7 +54,7 @@ private:
 
     //ToDo: make up better names
     template <typename Form, typename WeakForm>
-    void generateForm(Form form, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, XMLModule::boundary *boundary, int j);
+    void generateForm(Form form, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, XMLModule::boundary *boundary = 0, int j = 0);
 
     QString nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);
     QString dependence(const QString &variable, AnalysisType analysisType);
