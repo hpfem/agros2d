@@ -227,8 +227,8 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
                 Point3 k2nv;
                 if (!newtonEquations(fieldInfo,
                                      dt,
-                                     position + k1np * 1/4,
-                                     velocity + k1nv * 1/4,
+                                     position + k1np * 1./4.,
+                                     velocity + k1nv * 1./4.,
                                      &k2np, &k2nv))
                     stopComputation = true;
 
@@ -236,8 +236,8 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
                 Point3 k3nv;
                 if (!newtonEquations(fieldInfo,
                                      dt,
-                                     position + k1np * 3/32 + k2np * 9/32,
-                                     velocity + k1nv * 3/32 + k2nv * 9/32,
+                                     position + k1np * 3./32. + k2np * 9./32.,
+                                     velocity + k1nv * 3./32. + k2nv * 9./32.,
                                      &k3np, &k3nv))
                     stopComputation = true;
 
@@ -245,8 +245,8 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
                 Point3 k4nv;
                 if (!newtonEquations(fieldInfo,
                                      dt,
-                                     position + k1np * 1932/2197 - k2np * 7200/2197 + k3np * 7296/2197,
-                                     velocity + k1nv * 1932/2197 - k2nv * 7200/2197 + k3nv * 7296/2197,
+                                     position + k1np * 1932./2197. - k2np * 7200./2197. + k3np * 7296./2197.,
+                                     velocity + k1nv * 1932./2197. - k2nv * 7200./2197. + k3nv * 7296./2197.,
                                      &k4np, &k4nv))
                     stopComputation = true;
 
@@ -254,8 +254,8 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
                 Point3 k5nv;
                 if (!newtonEquations(fieldInfo,
                                      dt,
-                                     position + k1np * 439/216 - k2np * 8 + k3np * 3680/513 - k4np * 845/4104,
-                                     velocity + k1nv * 439/216 - k2nv * 8 + k3nv * 3680/513 - k4nv * 845/4104,
+                                     position + k1np * 439./216. - k2np * 8. + k3np * 3680./513. - k4np * 845./4104.,
+                                     velocity + k1nv * 439./216. - k2nv * 8. + k3nv * 3680./513. - k4nv * 845./4104.,
                                      &k5np, &k5nv))
                     stopComputation = true;
 
@@ -263,18 +263,18 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
                 Point3 k6nv;
                 if (!newtonEquations(fieldInfo,
                                      dt,
-                                     position - k1np * 8/27 + k2np * 2 - k3np * 3544/2565 + k4np * 1859/4104 - k5np * 11/40,
-                                     velocity - k1nv * 8/27 + k2nv * 2 - k3nv * 3544/2565 + k4nv * 1859/4104 - k5nv * 11/40,
+                                     position - k1np * 8./27. + k2np * 2. - k3np * 3544./2565. + k4np * 1859./4104. - k5np * 11./40.,
+                                     velocity - k1nv * 8./27. + k2nv * 2. - k3nv * 3544./2565. + k4nv * 1859./4104. - k5nv * 11./40.,
                                      &k6np, &k6nv))
                     stopComputation = true;
 
                 // Runge-Kutta order 4
-                Point3 np4 = position + k1np * 25/216 + k3np * 1408/2565 + k4np * 2197/4104 - k5np * 1/5;
+                Point3 np4 = position + k1np * 25./216. + k3np * 1408./2565. + k4np * 2197./4104. - k5np * 1./5.;
                 // Point3 nv4 = v + k1nv * 25/216 + k3nv * 1408/2565 + k4nv * 2197/4104 - k5nv * 1/5;
 
                 // Runge-Kutta order 5
-                newPosition = position + k1np * 16/135 + k3np * 6656/12825 + k4np * 28561/56430 - k5np * 9/50 + k6np * 2/55;
-                newVelocity = velocity + k1nv * 16/135 + k3nv * 6656/12825 + k4nv * 28561/56430 - k5nv * 9/50 + k6nv * 2/55;
+                newPosition = position + k1np * 16./135. + k3np * 6656./12825. + k4np * 28561./56430. - k5np * 9./50. + k6np * 2./55.;
+                newVelocity = velocity + k1nv * 16./135. + k3nv * 6656./12825. + k4nv * 28561./56430. - k5nv * 9./50. + k6nv * 2./55.;
 
                 // optimal step estimation
                 double absError = abs(newPosition.magnitude() - np4.magnitude());
