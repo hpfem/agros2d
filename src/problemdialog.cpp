@@ -937,9 +937,7 @@ void ProblemWidget::fillComboBox()
 void ProblemWidget::updateControls()
 {
     // disconnect signals
-    // without clearing solution
     txtName->disconnect();
-    connect(txtName, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
 
     // with clearing solution
     cmbCoordinateType->disconnect();
@@ -992,6 +990,7 @@ void ProblemWidget::updateControls()
     transientChanged();
 
     // connect signals
+    connect(txtName, SIGNAL(textChanged(QString)), this, SLOT(changedWithClear()));
 
     // with clearing solution
     connect(cmbCoordinateType, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
