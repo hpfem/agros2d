@@ -6,112 +6,112 @@
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="753"/>
         <source>Acoustics</source>
-        <translation type="unfinished"></translation>
+        <translation>Acoustique</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="759"/>
         <source>Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Harmonique</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="762"/>
         <source>Transient</source>
-        <translation type="unfinished">Transitoire</translation>
+        <translation>Transitoire</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="765"/>
         <source>Pressure</source>
-        <translation type="unfinished"></translation>
+        <translation>Pression</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="768"/>
         <source>Normal acceleration</source>
-        <translation type="unfinished"></translation>
+        <translation>Accélération normale</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="771"/>
         <source>Impedance boundary condition</source>
-        <translation type="unfinished"></translation>
+        <translation>Condition aux limites d&apos;impédance</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="774"/>
         <source>Mass density</source>
-        <translation type="unfinished"></translation>
+        <translation>Masse volumique</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="777"/>
         <source>Speed of sound</source>
-        <translation type="unfinished"></translation>
+        <translation>Vitesse du son</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="780"/>
         <source>Pressure - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Pression : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="783"/>
         <source>Pressure - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Pression : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="786"/>
         <source>Normal acceleration - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Accélération normale : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="789"/>
         <source>Normal acceleration - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Accélération normale : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="792"/>
         <source>Pressure - time der.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pression : dérivé de temps</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="795"/>
         <source>Sound pressure level</source>
-        <translation type="unfinished"></translation>
+        <translation>Niveau de pression acoustique</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="798"/>
         <source>Local acceleration - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Accélération locale : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="801"/>
         <source>Local acceleration - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Accélération locale : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="804"/>
         <source>Pressure derivative</source>
-        <translation type="unfinished"></translation>
+        <translation>Dérivé de pression</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="807"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Volume</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="810"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation>Coupe transversale</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="813"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Longueur</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="816"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Surface</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="823"/>
         <source>Acoustics is the interdisciplinary science that deals with the study of all mechanical waves in gases, liquids and solids.</source>
-        <translation type="unfinished"></translation>
+        <translation>L’acoustique est la science du son, ce qui inclut sa production, son contrôle, sa transmission, sa réception et ses effets.</translation>
     </message>
 </context>
 <context>
@@ -119,42 +119,42 @@
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="225"/>
         <source>Current field</source>
-        <translation type="unfinished"></translation>
+        <translation>Courant électrique</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="231"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation>État stationnaire</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="234"/>
         <source>Fixed voltage</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Potentiel fixe</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="237"/>
         <source>Current density</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de courant</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="240"/>
         <source>Conductivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Conductivité</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="243"/>
         <source>Permittivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Permittivité</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="246"/>
         <source>Scalar potential - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Potentiel scalaire : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="249"/>
         <source>Electric field - real</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">C</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="252"/>
@@ -174,22 +174,22 @@
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="261"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Volume</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="264"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation>Coupe transversale</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="267"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Longueur</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="270"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Surface</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="273"/>
@@ -199,7 +199,7 @@
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="280"/>
         <source>Electric current is a flow of electric charge through a medium. This charge is typically carried by moving electrons in a conductor such as wire. It can also be carried by ions in an electrolyte, or by both ions and electrons in a plasma.        </source>
-        <translation type="unfinished"></translation>
+        <translation>Un courant électrique est un déplacement d&apos;ensemble de porteurs de charge électrique, généralement des électrons, au sein d&apos;un matériau conducteur. Ces déplacements sont imposés par l&apos;action de la force électromagnétique, dont l&apos;interaction avec la matière est le fondement de l&apos;électricité.</translation>
     </message>
 </context>
 <context>
@@ -212,7 +212,7 @@
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="555"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation>État stationnaire</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="558"/>
@@ -302,22 +302,22 @@
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="609"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Volume</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="612"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation>Coupe transversale</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="615"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Longueur</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="618"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Surface</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="625"/>
@@ -948,7 +948,7 @@
         <location filename="../../plugins/heat/heat_force.cpp" line="64"/>
         <location filename="../../plugins/magnetic/magnetic_force.cpp" line="64"/>
         <source>Point [%1, %2] does not lie in any element</source>
-        <translation type="unfinished"></translation>
+        <translation>Point [%1, %2] ne se trouve pas dans aucun élément</translation>
     </message>
 </context>
 </TS>

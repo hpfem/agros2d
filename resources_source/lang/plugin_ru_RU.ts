@@ -914,7 +914,7 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="795"/>
         <source>Losses density</source>
-        <translation type="unfinished"></translation>
+        <translation>Потери</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="798"/>

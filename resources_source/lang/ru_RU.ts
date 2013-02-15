@@ -249,7 +249,7 @@
     <message>
         <location filename="../../src/confdialog.cpp" line="172"/>
         <source>Main</source>
-        <translation type="unfinished">Главный</translation>
+        <translation>Общее</translation>
     </message>
     <message>
         <location filename="../../src/confdialog.cpp" line="177"/>
@@ -280,12 +280,12 @@
     <message>
         <location filename="../../src/confdialog.cpp" line="232"/>
         <source>General</source>
-        <translation type="unfinished">Общее</translation>
+        <translation>Общее</translation>
     </message>
     <message>
         <location filename="../../src/confdialog.cpp" line="246"/>
         <source>Show value result in line edit input</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать результат ввода</translation>
     </message>
     <message>
         <location filename="../../src/confdialog.cpp" line="247"/>
@@ -341,7 +341,7 @@
         <location filename="../../src/confdialog.cpp" line="320"/>
         <location filename="../../src/confdialog.cpp" line="349"/>
         <source>Build plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Сборка плагина</translation>
     </message>
     <message>
         <location filename="../../src/confdialog.cpp" line="334"/>
@@ -353,7 +353,7 @@
         <location filename="../../src/confdialog.cpp" line="334"/>
         <location filename="../../src/confdialog.cpp" line="363"/>
         <source>Availability</source>
-        <translation type="unfinished">Доступность</translation>
+        <translation>Доступность</translation>
     </message>
     <message>
         <location filename="../../src/confdialog.cpp" line="346"/>
@@ -488,7 +488,7 @@
     <message>
         <location filename="../../src/examplesdialog.cpp" line="240"/>
         <source>Coordinate type:</source>
-        <translation>Типы координат:</translation>
+        <translation>Тип координат:</translation>
     </message>
     <message>
         <location filename="../../src/examplesdialog.cpp" line="294"/>
@@ -577,7 +577,7 @@
     <message>
         <location filename="../../src/problemdialog.cpp" line="184"/>
         <source>Steps to increase DF:</source>
-        <translation type="unfinished"></translation>
+        <translation>Увеличение демпф.:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="189"/>
@@ -602,7 +602,7 @@
     <message>
         <location filename="../../src/problemdialog.cpp" line="214"/>
         <source>General</source>
-        <translation type="unfinished">Общее</translation>
+        <translation>Общее</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="221"/>
@@ -654,12 +654,12 @@
     <message>
         <location filename="../../src/problemdialog.cpp" line="252"/>
         <source>Steps back in trans:</source>
-        <translation type="unfinished"></translation>
+        <translation>Обратный переходный процесс:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="254"/>
         <source>Redone each trans st:</source>
-        <translation type="unfinished"></translation>
+        <translation>Возобновлять адаптивность каждый n шаг:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="257"/>
@@ -768,7 +768,7 @@
     <message>
         <location filename="../../src/gui/htmledit.cpp" line="30"/>
         <source>This textedit allows using HTML entities.</source>
-        <translation type="unfinished"></translation>
+        <translation>В окне вводе допускается HTML.</translation>
     </message>
 </context>
 <context>
@@ -858,7 +858,7 @@
     <message>
         <location filename="../../src/infowidget.cpp" line="110"/>
         <source>Coordinate type:</source>
-        <translation>Типы координат:</translation>
+        <translation>Тип координат:</translation>
     </message>
     <message>
         <location filename="../../src/infowidget.cpp" line="113"/>
@@ -1121,12 +1121,12 @@
     <message>
         <location filename="../../src/logview.cpp" line="70"/>
         <source>Show timestamp</source>
-        <translation type="unfinished">Показать метки</translation>
+        <translation>Показывать время</translation>
     </message>
     <message>
         <location filename="../../src/logview.cpp" line="75"/>
         <source>Show debug</source>
-        <translation type="unfinished">Показать отладки</translation>
+        <translation>Показывать вывод отладки</translation>
     </message>
     <message>
         <location filename="../../src/logview.cpp" line="80"/>
@@ -1342,12 +1342,12 @@
     <message>
         <location filename="../../src/mainwindow.cpp" line="344"/>
         <source>&amp;Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Сочетания клавиш</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="345"/>
         <source>Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Сочетания клавиш</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="352"/>
@@ -1496,7 +1496,7 @@ step</source>
     <message>
         <location filename="../../src/mainwindow.cpp" line="424"/>
         <source>Zoom best fit</source>
-        <translation type="unfinished">Вписать</translation>
+        <translation>Вписать</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="425"/>
@@ -1506,7 +1506,7 @@ step</source>
     <message>
         <location filename="../../src/mainwindow.cpp" line="426"/>
         <source>Best fit</source>
-        <translation type="unfinished">Наилучший размер</translation>
+        <translation>Наилучший размер</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="428"/>
@@ -1739,12 +1739,12 @@ step</source>
     <message>
         <location filename="../../src/materialbrowserdialog.cpp" line="548"/>
         <source>Dependence variable:</source>
-        <translation type="unfinished">Зависимая переменная:</translation>
+        <translation>Зависимая переменная:</translation>
     </message>
     <message>
         <location filename="../../src/materialbrowserdialog.cpp" line="550"/>
         <source>Dependence unit:</source>
-        <translation type="unfinished">Зависимая единица измерения:</translation>
+        <translation>Зависимая единица измерения:</translation>
     </message>
     <message>
         <location filename="../../src/materialbrowserdialog.cpp" line="559"/>
@@ -1838,12 +1838,12 @@ step</source>
     <message>
         <location filename="../../src/materialbrowserdialog.cpp" line="172"/>
         <source>Dependence shortname:</source>
-        <translation type="unfinished"></translation>
+        <translation>Кратк. имя зависимости</translation>
     </message>
     <message>
         <location filename="../../src/materialbrowserdialog.cpp" line="174"/>
         <source>Dependence unit:</source>
-        <translation type="unfinished">Зависимая единица измерения:</translation>
+        <translation>Зависимая единица измерения:</translation>
     </message>
     <message>
         <location filename="../../src/materialbrowserdialog.cpp" line="331"/>
@@ -2052,14 +2052,14 @@ step</source>
         <location filename="../../src/moduledialog.cpp" line="1255"/>
         <location filename="../../src/moduledialog.cpp" line="2004"/>
         <source>linear</source>
-        <translation type="unfinished">линейный</translation>
+        <translation>линейные</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1163"/>
         <location filename="../../src/moduledialog.cpp" line="1260"/>
         <location filename="../../src/moduledialog.cpp" line="2009"/>
         <source>nonlinear</source>
-        <translation type="unfinished">нелинейный</translation>
+        <translation>нелинейные</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1191"/>
@@ -2091,7 +2091,7 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1539"/>
         <source>Main</source>
-        <translation type="unfinished">Главный</translation>
+        <translation>Общее</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1544"/>
@@ -2113,7 +2113,7 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1569"/>
         <source>Build plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Сборка плагина</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1573"/>
@@ -2214,14 +2214,13 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1684"/>
         <source>Parameters for particular analysis:</source>
-        <translation type="unfinished">Параметры :</translation>
+        <translation>Параметры конкретного анализа:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1688"/>
         <location filename="../../src/moduledialog.cpp" line="1747"/>
         <source>Quantities</source>
-        <translatorcomment>Количества?</translatorcomment>
-        <translation type="unfinished">Величины</translation>
+        <translation>Величины</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1699"/>
@@ -2244,7 +2243,7 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1743"/>
         <source>Parameters for partial analysis:</source>
-        <translation type="unfinished">Параметры :</translation>
+        <translation>Параметры частичного анализа:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1778"/>
@@ -2371,7 +2370,7 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="427"/>
         <source>Item editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор элементов</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="440"/>
@@ -2416,7 +2415,7 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="457"/>
         <source>General</source>
-        <translation type="unfinished">Основное</translation>
+        <translation>Общее</translation>
     </message>
 </context>
 <context>
@@ -2424,7 +2423,7 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="409"/>
         <source>Item editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор элементов</translation>
     </message>
 </context>
 <context>
@@ -2440,32 +2439,32 @@ step</source>
     <message>
         <location filename="../../src/moduledialog.cpp" line="158"/>
         <source>Planar:</source>
-        <translation type="unfinished">Планарный:</translation>
+        <translation>Планарный:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="160"/>
         <source>Axisymmetric:</source>
-        <translation type="unfinished">Осесимметричный:</translation>
+        <translation>Осесимметричный:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="181"/>
         <source>Planar X:</source>
-        <translation type="unfinished"></translation>
+        <translation>Планарный X:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="183"/>
         <source>Planar Y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Планарный Y:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="185"/>
         <source>Axisymmetric R:</source>
-        <translation type="unfinished"></translation>
+        <translation>Осесимметричный R:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="187"/>
         <source>Axisymmetric Z:</source>
-        <translation type="unfinished"></translation>
+        <translation>Осесимметричный Z:</translation>
     </message>
 </context>
 <context>
@@ -2606,7 +2605,7 @@ step</source>
         <location filename="../../src/sceneview_post.cpp" line="86"/>
         <location filename="../../src/sceneview_post.cpp" line="103"/>
         <source>MeshView</source>
-        <translation type="unfinished"></translation>
+        <translation>Сетка</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="64"/>
@@ -2629,7 +2628,7 @@ step</source>
         <location filename="../../src/sceneview_post.cpp" line="229"/>
         <location filename="../../src/sceneview_post.cpp" line="256"/>
         <source>PostView</source>
-        <translation type="unfinished"></translation>
+        <translation>Пост Проц.</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="131"/>
@@ -2649,7 +2648,7 @@ step</source>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="256"/>
         <source>particle view</source>
-        <translation type="unfinished"></translation>
+        <translation>частицы</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="298"/>
@@ -2768,17 +2767,17 @@ step</source>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="396"/>
         <source>Show order colorbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать палитру порядков</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="397"/>
         <source>Show order labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать метки порядков</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="400"/>
         <source>Order palette:</source>
-        <translation type="unfinished"></translation>
+        <translation>Палитра порядка:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="414"/>
@@ -2958,7 +2957,7 @@ step</source>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="781"/>
         <source>Show colorbar</source>
-        <translation type="unfinished">Показать</translation>
+        <translation>Показать палитру</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="784"/>
@@ -2968,7 +2967,7 @@ step</source>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="788"/>
         <source>Colorbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Палитра</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="818"/>
@@ -2983,13 +2982,12 @@ step</source>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="832"/>
         <source>Proportional</source>
-        <translation type="unfinished">Пропорциональный</translation>
+        <translation>Пропорциональный</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="833"/>
         <source>Color (b/w)</source>
-        <translatorcomment>Оттенок?</translatorcomment>
-        <translation type="unfinished">Цвет (ч/б)</translation>
+        <translation>Яркость (ч/б)</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="853"/>
@@ -3014,17 +3012,17 @@ step</source>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="926"/>
         <source>Reflection on different material</source>
-        <translation type="unfinished">Отражение от различных материалов</translation>
+        <translation>Отскок от различных материалов</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="927"/>
         <source>Reflection on boundary</source>
-        <translation type="unfinished">Отражение на границе</translation>
+        <translation>Отражение на границе</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="931"/>
         <source>Line color is controlled by velocity</source>
-        <translation type="unfinished">Цвет линии по скорости</translation>
+        <translation>Цвет линии зависит от скорости</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="932"/>
@@ -3207,7 +3205,7 @@ step</source>
         <location filename="../../src/hermes2d/problem.cpp" line="322"/>
         <location filename="../../src/hermes2d/problem.cpp" line="327"/>
         <source>Mesh reader</source>
-        <translation type="unfinished">Считать сетку</translation>
+        <translation>Сетка</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="489"/>
@@ -3267,7 +3265,7 @@ step</source>
     <message>
         <location filename="../../src/problemdialog.cpp" line="828"/>
         <source>Coordinate type:</source>
-        <translation>Типы координат:</translation>
+        <translation>Тип координат:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="830"/>
@@ -3282,7 +3280,7 @@ step</source>
     <message>
         <location filename="../../src/problemdialog.cpp" line="835"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Общее</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="844"/>
@@ -3554,7 +3552,7 @@ step</source>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="436"/>
         <source>Print stacktrace</source>
-        <translation type="unfinished">Печать</translation>
+        <translation>Печать StackTrace</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="441"/>
@@ -3820,12 +3818,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../pythonlab/pythonlab_functions.cpp" line="37"/>
         <source>Script input</source>
-        <translation type="unfinished">Скрипт</translation>
+        <translation>Ввод скрипта</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab_functions.cpp" line="43"/>
         <source>Script message</source>
-        <translation type="unfinished">Скрипт</translation>
+        <translation>Сообщение скрипта</translation>
     </message>
     <message>
         <location filename="../../src/gui/common.cpp" line="179"/>
@@ -3840,7 +3838,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/hermes2d/coupling.cpp" line="198"/>
         <source>Unable to read coupling file %1: %2</source>
-        <translation type="unfinished">Не удалось считать файл сопряжений %1: %2</translation>
+        <translation>Не удалось считать файл сопряжений %1: %2</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="288"/>
@@ -3883,12 +3881,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="768"/>
         <source>transient step %1 (%2%)</source>
-        <translation type="unfinished">шаг %1 (%2%)</translation>
+        <translation>шаг переходн. проц. %1 (%2%)</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="775"/>
         <source>transient step %1/%2</source>
-        <translation type="unfinished">шаг %1/%2</translation>
+        <translation>шаг переходн. проц. %1/%2</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="783"/>
@@ -3996,17 +3994,17 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="115"/>
         <source>Damping coefficient must be between 0 and 1 .</source>
-        <translation type="unfinished">Коэф. демпфирования должен быть от 0 до 1. </translation>
+        <translation>Коэф. демпфирования должен быть от 0 до 1. </translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="128"/>
         <source>Number of steps needed to increase the damping coefficient must be between 1 and 5 .</source>
-        <translation type="unfinished">Кол-во шагов, необходимых для увеличения коэф. демпфирования должно быть от 1 до 5. </translation>
+        <translation>Кол-во шагов, необходимых для увеличения коэф. демпфирования должно быть от 1 до 5. </translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="141"/>
         <source>Anderson coefficient must be between 0 and 1 .</source>
-        <translation type="unfinished">Коэф. Андерсона должен быть от 0 до 1.</translation>
+        <translation>Коэф. Андерсона должен быть от 0 до 1.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="149"/>
@@ -4111,7 +4109,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="535"/>
         <source>Label with index &apos;%1&apos; is &apos;none&apos;.</source>
-        <translation type="unfinished">Метка с индексом &apos;%1&apos; отсутствует.</translation>
+        <translation>Метка с индексом &apos;%1&apos; типа &apos;none&apos;.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="540"/>
@@ -4254,12 +4252,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="77"/>
         <source>Number of time method order must be greater then 1.</source>
-        <translation type="unfinished">должен быть больше 1.</translation>
+        <translation>Число порядка временного метода должно быть больше 1.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="85"/>
         <source>The time method tolerance must be positive.</source>
-        <translation type="unfinished">допуск должен быть положительным.</translation>
+        <translation>Допуск временного метода должен быть положительным.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="93"/>
@@ -4300,7 +4298,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="227"/>
         <source>Palette steps must be in the range from %1 to %2.</source>
-        <translation type="unfinished">Дискр. палитры должна быть от %1 до &apos;%2&apos;.</translation>
+        <translation>Диапазон палитры должен быть от %1 до &apos;%2&apos;.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="262"/>
@@ -4330,7 +4328,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="76"/>
         <source>Linearizer processing failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка процесса линеарайзера: %1</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="705"/>
@@ -4355,27 +4353,27 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/util/enums.cpp" line="260"/>
         <source>H1 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>H1 норма</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="262"/>
         <source>L2 norm</source>
-        <translation type="unfinished"></translation>
+        <translation>L2 норма</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="264"/>
         <source>H1 seminorm</source>
-        <translation type="unfinished"></translation>
+        <translation>H1 полунорма</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="266"/>
         <source>Hdiv norm</source>
-        <translation type="unfinished"></translation>
+        <translation>Hdiv норма</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="268"/>
         <source>Hcurl norm</source>
-        <translation type="unfinished"></translation>
+        <translation>Hcurl полунорма</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="280"/>
@@ -4436,18 +4434,18 @@ Do you want to save your changes?</source>
         <location filename="../../src/util/enums.cpp" line="334"/>
         <location filename="../../src/util/enums.cpp" line="460"/>
         <source>Normal</source>
-        <translation>Нормальный</translation>
+        <translation>Нормальное</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="336"/>
         <source>Reference</source>
-        <translation type="unfinished">Эталонный</translation>
+        <translation>Уточнённое</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="338"/>
         <location filename="../../src/util/enums.cpp" line="464"/>
         <source>Finer</source>
-        <translation type="unfinished">Уточненный</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="350"/>
@@ -4487,22 +4485,22 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/util/enums.cpp" line="384"/>
         <source>Matrix volume</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Матричный объем</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="386"/>
         <source>Matrix surface</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Матричная поверхность</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="388"/>
         <source>Vector volume</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Векторный объем</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="390"/>
         <source>Vector surface</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Векторная поверхность</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="402"/>
@@ -4512,32 +4510,32 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/util/enums.cpp" line="404"/>
         <source>Triangle - quad fine div.</source>
-        <translation type="unfinished">Triangle — .</translation>
+        <translation>Triangle — четырехугольная мелкая разделенная</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="406"/>
         <source>Triangle - quad rough div.</source>
-        <translation type="unfinished">Triangle — .</translation>
+        <translation>Triangle — четырехугольная крупная разделенная</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="408"/>
         <source>Triangle - quad join</source>
-        <translation type="unfinished">Triangle — </translation>
+        <translation>Triangle — четырехугольная соединенная</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="410"/>
         <source>GMSH - triangle</source>
-        <translation>GMSH — треуг.</translation>
+        <translation>GMSH — треугольная</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="412"/>
         <source>GMSH - quad</source>
-        <translation>GMSH — квад.</translation>
+        <translation>GMSH — четырёхугольная</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="414"/>
         <source>GMSH - quad Delaunay (exp.)</source>
-        <translation type="unfinished">GMSH — квад. Delaunay (эксп.)</translation>
+        <translation type="unfinished">GMSH — четырёхугольная Delaunay (эксп.)</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="452"/>
@@ -4732,7 +4730,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/hermes2d/solutiontypes.cpp" line="168"/>
         <source>MultiArray</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">MultiArray</translation>
     </message>
 </context>
 <context>
@@ -4864,7 +4862,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/reportdialog.cpp" line="139"/>
         <source>Figures properties</source>
-        <translation type="unfinished">Свойства </translation>
+        <translation>Свойства рисунка</translation>
     </message>
     <message>
         <location filename="../../src/reportdialog.cpp" line="228"/>
@@ -5060,7 +5058,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scene.cpp" line="847"/>
         <source>Translation</source>
-        <translation type="unfinished">Перенос</translation>
+        <translation>Перенос</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="858"/>
@@ -5122,7 +5120,7 @@ Do you want to save your changes?</source>
         <location filename="../../src/scene.cpp" line="1847"/>
         <location filename="../../src/scene.cpp" line="1891"/>
         <source>Scene</source>
-        <translation type="unfinished">Сцена</translation>
+        <translation>Рабочее пространство</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1847"/>
@@ -5134,7 +5132,7 @@ Do you want to save your changes?</source>
         <location filename="../../src/scene.cpp" line="1870"/>
         <location filename="../../src/scene.cpp" line="1883"/>
         <source>Mesh reader</source>
-        <translation type="unfinished">Считать сетку</translation>
+        <translation>Сетка</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1891"/>
@@ -5278,7 +5276,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scenelabel.cpp" line="358"/>
         <source>Triangle area (m):</source>
-        <translation type="unfinished">Площадь (м):</translation>
+        <translation>Макс. размер треуг. элемента (м):</translation>
     </message>
     <message>
         <location filename="../../src/scenelabel.cpp" line="360"/>
@@ -5403,7 +5401,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scenetransformdialog.cpp" line="138"/>
         <source>Translate</source>
-        <translation type="unfinished">Перенести</translation>
+        <translation>Перенести</translation>
     </message>
     <message>
         <location filename="../../src/scenetransformdialog.cpp" line="139"/>
@@ -5470,7 +5468,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/sceneview_mesh.cpp" line="59"/>
         <source>Export order view as VTK file</source>
-        <translation type="unfinished">Экспорт порядка как файл VTK </translation>
+        <translation>Экспорт порядка как файл VTK</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_mesh.cpp" line="62"/>
@@ -5495,7 +5493,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/sceneview_mesh.h" line="39"/>
         <source>Mesh and polynomial order view</source>
-        <translation type="unfinished">Просмотр сетки и полиномального порядка</translation>
+        <translation>Просмотр сетки и полиномального порядка</translation>
     </message>
 </context>
 <context>
@@ -5618,35 +5616,35 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="64"/>
         <source>Operate on &amp;nodes</source>
-        <translation type="unfinished">Действие на &amp;узлах</translation>
+        <translation>Работа над &amp;узлами</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="66"/>
         <location filename="../../src/sceneview_geometry.cpp" line="233"/>
         <source>Operate on nodes</source>
-        <translation type="unfinished">Действие на узлах</translation>
+        <translation>Работа над узлами</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="70"/>
         <source>Operate on &amp;edges</source>
-        <translation type="unfinished">Действие на &amp;рёбрах</translation>
+        <translation>Работа над &amp;рёбрами</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="72"/>
         <location filename="../../src/sceneview_geometry.cpp" line="236"/>
         <source>Operate on edges</source>
-        <translation type="unfinished">Действие на рёбрах</translation>
+        <translation>Работа над рёбрами</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="75"/>
         <source>Operate on &amp;labels</source>
-        <translation type="unfinished">Действие на &amp;метках</translation>
+        <translation>Работа над &amp;метками</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="77"/>
         <location filename="../../src/sceneview_geometry.cpp" line="239"/>
         <source>Operate on labels</source>
-        <translation type="unfinished">Действие на метках</translation>
+        <translation>Работа над метками</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="88"/>
@@ -5666,7 +5664,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="98"/>
         <source>Swap direction</source>
-        <translation type="unfinished">Сменить направление</translation>
+        <translation>Сменить направление</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="305"/>
@@ -5936,7 +5934,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/settings.cpp" line="338"/>
         <source>Edge width:</source>
-        <translation type="unfinished">Толщина ребра: </translation>
+        <translation>Толщина ребра: </translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="340"/>
@@ -6013,7 +6011,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/settings.cpp" line="416"/>
         <source>Angle segments count:</source>
-        <translation type="unfinished">Угловые сегменты:</translation>
+        <translation>Кол-во угловых сегментов:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="419"/>
@@ -6053,32 +6051,32 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/settings.cpp" line="453"/>
         <source>arbitrary level</source>
-        <translation type="unfinished">произвольный уровень</translation>
+        <translation>произвольный уровень</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="454"/>
         <source>at most one-level</source>
-        <translation type="unfinished"></translation>
+        <translation>не более I уровня</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="455"/>
         <source>at most two-level</source>
-        <translation type="unfinished"></translation>
+        <translation>не более II уровня</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="456"/>
         <source>at most three-level</source>
-        <translation type="unfinished"></translation>
+        <translation>не более III уровня</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="457"/>
         <source>at most four-level</source>
-        <translation type="unfinished"></translation>
+        <translation>не более IV уровня</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="458"/>
         <source>at most five-level</source>
-        <translation type="unfinished"></translation>
+        <translation>не более V уровня</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="465"/>
@@ -6088,7 +6086,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/settings.cpp" line="466"/>
         <source>Use hp reference solution for h and p adaptivity</source>
-        <translation type="unfinished">Использовать эталонное решение hp для h и p адаптивности </translation>
+        <translation type="unfinished">Использовать эталонное решение hp для h и p адаптивности</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="472"/>
@@ -6113,7 +6111,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/settings.cpp" line="483"/>
         <source>Norm:</source>
-        <translation type="unfinished"></translation>
+        <translation>Норма:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="500"/>
@@ -6138,7 +6136,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/settings.cpp" line="545"/>
         <source>Cross:</source>
-        <translation type="unfinished"></translation>
+        <translation>Пересечение:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="546"/>
@@ -6264,12 +6262,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/value.cpp" line="459"/>
         <source>nonlinear %1(%2)</source>
-        <translation type="unfinished">нелинейно %1(%2)</translation>
+        <translation>нелинейн. %1(%2)</translation>
     </message>
     <message>
         <location filename="../../src/value.cpp" line="461"/>
         <source>nonlinear</source>
-        <translation type="unfinished">нелинейно</translation>
+        <translation>нелинейн.</translation>
     </message>
 </context>
 <context>
@@ -6282,7 +6280,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/value.cpp" line="565"/>
         <source>select a preset...</source>
-        <translation type="unfinished"></translation>
+        <translation>выбрать пресет...</translation>
     </message>
     <message>
         <location filename="../../src/value.cpp" line="566"/>
@@ -6302,7 +6300,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/value.cpp" line="569"/>
         <source>exp. step</source>
-        <translation type="unfinished">эксп. шаг</translation>
+        <translation>эксп.</translation>
     </message>
     <message>
         <location filename="../../src/value.cpp" line="575"/>
