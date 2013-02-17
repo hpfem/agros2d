@@ -335,7 +335,7 @@
     <message>
         <location filename="../../src/chartdialog.cpp" line="86"/>
         <source>Ctrl+6</source>
-        <translation>Ctrl+6</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -434,7 +434,7 @@
         <location filename="../../src/confdialog.cpp" line="249"/>
         <source>Print application log to stdout.</source>
         <translatorcomment>na obrazovku?</translatorcomment>
-        <translation>Tisknout log aplikace do stdout</translation>
+        <translation type="unfinished">Tisknout log aplikace do stdout.</translation>
     </message>
     <message>
         <location filename="../../src/confdialog.cpp" line="256"/>
@@ -454,7 +454,7 @@
     <message>
         <location filename="../../src/confdialog.cpp" line="276"/>
         <source>Save problem with solution</source>
-        <translation>Ukládat včetně řešení</translation>
+        <translation type="unfinished">Ukládat problém včetně řešení</translation>
     </message>
     <message>
         <location filename="../../src/confdialog.cpp" line="288"/>
@@ -480,7 +480,7 @@
         <location filename="../../src/confdialog.cpp" line="320"/>
         <location filename="../../src/confdialog.cpp" line="349"/>
         <source>Build plugin</source>
-        <translation>Sestavující plugin</translation>
+        <translation type="unfinished">Sestavit plugin</translation>
     </message>
     <message>
         <location filename="../../src/confdialog.cpp" line="334"/>
@@ -955,7 +955,7 @@
     <message>
         <location filename="../../src/datatabledialog.cpp" line="216"/>
         <source>Ok</source>
-        <translation>OK</translation>
+        <translation type="unfinished">Ok</translation>
     </message>
     <message>
         <location filename="../../src/datatabledialog.cpp" line="219"/>
@@ -976,7 +976,7 @@
         <location filename="../../src/datatabledialog.cpp" line="243"/>
         <location filename="../../src/datatabledialog.cpp" line="244"/>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1146,7 +1146,6 @@
     <message>
         <location filename="../../src/problemdialog.cpp" line="180"/>
         <source>Automatic damping</source>
-        <translatorcomment>? význam dumping v této frázi?</translatorcomment>
         <translation>Automatické tlumení</translation>
     </message>
     <message>
@@ -1157,7 +1156,7 @@
     <message>
         <location filename="../../src/problemdialog.cpp" line="184"/>
         <source>Steps to increase DF:</source>
-        <translation>Kroky ke zvýšení TF:</translation>
+        <translation type="unfinished">Počet kroků ke zvýšení TF:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="189"/>
@@ -1198,12 +1197,12 @@
     <message>
         <location filename="../../src/problemdialog.cpp" line="252"/>
         <source>Steps back in trans:</source>
-        <translation>Kroků zpět v přech. ději:</translation>
+        <translation type="unfinished">Počet zp. kroků v přech. ději:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="254"/>
         <source>Redone each trans st:</source>
-        <translation>Předělat každý krok přech.děje:</translation>
+        <translation type="unfinished">Přepočítat každý krok přech.děje:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="281"/>
@@ -2144,7 +2143,7 @@
         <location filename="../../src/infowidget.cpp" line="299"/>
         <location filename="../../src/infowidget.cpp" line="327"/>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/infowidget.cpp" line="300"/>
@@ -2154,7 +2153,7 @@
     <message>
         <location filename="../../src/infowidget.cpp" line="301"/>
         <source>%1 %</source>
-        <translation>%1 %</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/infowidget.cpp" line="314"/>
@@ -2189,7 +2188,7 @@
     <message>
         <location filename="../../src/infowidget.cpp" line="336"/>
         <source>%1 s</source>
-        <translation>%1 s</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2353,7 +2352,7 @@
     <message>
         <location filename="../../src/logview.cpp" line="70"/>
         <source>Show timestamp</source>
-        <translation>Zobrazit časové razítko</translation>
+        <translation type="unfinished">Zobrazit čas</translation>
     </message>
     <message>
         <location filename="../../src/logview.cpp" line="75"/>
@@ -2508,7 +2507,7 @@ krok</translation>
     <message>
         <location filename="../../src/mainwindow.cpp" line="309"/>
         <source>Load background...</source>
-        <translation>Načítání pozadí...</translation>
+        <translation type="unfinished">Načíst pozadí...</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="313"/>
@@ -2553,7 +2552,7 @@ krok</translation>
     <message>
         <location filename="../../src/mainwindow.cpp" line="334"/>
         <source>Copy image from workspace to clipboard.</source>
-        <translation>Kopírovat obrázek z pracovního prostoru do schránky.</translation>
+        <translation type="unfinished">Kopírovat obrázek z pracovní plochy do schránky.</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="338"/>
@@ -2662,7 +2661,7 @@ krok</translation>
     <message>
         <location filename="../../src/mainwindow.cpp" line="408"/>
         <source>Ctrl+M</source>
-        <translation>Ctrl+M</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="414"/>
@@ -2684,7 +2683,7 @@ krok</translation>
     <message>
         <location filename="../../src/mainwindow.cpp" line="423"/>
         <source>Ctrl+0</source>
-        <translation>Ctrl+0</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="424"/>
@@ -2705,7 +2704,7 @@ krok</translation>
     <message>
         <location filename="../../src/mainwindow.cpp" line="440"/>
         <source>Alt+0</source>
-        <translation>Alt+0</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="625"/>
@@ -2749,7 +2748,7 @@ krok</translation>
     <message>
         <location filename="../../src/mainwindow.cpp" line="387"/>
         <source>Fullscreen mode</source>
-        <translation>Celá obrazovka</translation>
+        <translation type="unfinished">Celoobrazovkový režim</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="388"/>
@@ -2977,7 +2976,7 @@ krok</translation>
     <message>
         <location filename="../../src/mainwindow.cpp" line="310"/>
         <source>Load background image</source>
-        <translation>Načítání obrázek na pozadí</translation>
+        <translation type="unfinished">Načíst obrázek na pozadí</translation>
     </message>
     <message>
         <source>Copy</source>
@@ -3570,7 +3569,7 @@ krok</translation>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1423"/>
         <source>Vector view</source>
-        <translation>Vektorové zobrazení</translation>
+        <translation type="unfinished">Zobrazení vektorů</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1539"/>
@@ -3597,7 +3596,7 @@ krok</translation>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1569"/>
         <source>Build plugin</source>
-        <translation>Sestavující plugin</translation>
+        <translation type="unfinished">Sestavit plugin</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1573"/>
@@ -3704,7 +3703,7 @@ krok</translation>
         <location filename="../../src/moduledialog.cpp" line="1688"/>
         <location filename="../../src/moduledialog.cpp" line="1747"/>
         <source>Quantities</source>
-        <translation>Množství</translation>
+        <translation type="unfinished">Veličiny</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1699"/>
@@ -3933,25 +3932,21 @@ krok</translation>
     <message>
         <location filename="../../src/moduledialog.cpp" line="181"/>
         <source>Planar X:</source>
-        <translatorcomment>doplnit</translatorcomment>
         <translation>Kartézský X:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="183"/>
         <source>Planar Y:</source>
-        <translatorcomment>dopnit</translatorcomment>
         <translation>Kartézský Y:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="185"/>
         <source>Axisymmetric R:</source>
-        <translatorcomment>???</translatorcomment>
-        <translation>Osově symetrický R:</translation>
+        <translation type="unfinished">Osově symetrický R:</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="187"/>
         <source>Axisymmetric Z:</source>
-        <translatorcomment>???</translatorcomment>
         <translation>Osově symetrický Z:</translation>
     </message>
 </context>
@@ -4078,7 +4073,7 @@ krok</translation>
     <message>
         <location filename="../../src/particle/particle_tracing.cpp" line="81"/>
         <source>Particle Tracing</source>
-        <translation>Sledování částic</translation>
+        <translation type="unfinished">Trasování částic</translation>
     </message>
     <message>
         <location filename="../../src/particle/particle_tracing.cpp" line="171"/>
@@ -4126,12 +4121,12 @@ krok</translation>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="179"/>
         <source>scalar view (%1)</source>
-        <translation>zobrazení skaláru (%1)</translation>
+        <translation type="unfinished">skalární zobrazení (%1)</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="229"/>
         <source>vector view (%1)</source>
-        <translation>zobrazení vektoru (%1)</translation>
+        <translation type="unfinished">zobrazení vektorů (%1)</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="256"/>
@@ -4141,7 +4136,7 @@ krok</translation>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="298"/>
         <source>Particle Tracing</source>
-        <translation>Sledování částic</translation>
+        <translation type="unfinished">Trasování částic</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="298"/>
@@ -4441,7 +4436,7 @@ krok</translation>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="143"/>
         <source>Width and height of bounding box over vector count.</source>
-        <translation>Śířka a výška ohraničovacího boxu nad počtem vektorů.</translation>
+        <translation type="unfinished">Šířka a výška ohraničujícího boxu nad počtem vektorů.</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="327"/>
@@ -4456,7 +4451,7 @@ krok</translation>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="357"/>
         <source>Solution mesh</source>
-        <translation>Výsledná síť</translation>
+        <translation type="unfinished">Řešená síť</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="358"/>
@@ -4542,17 +4537,17 @@ krok</translation>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="391"/>
         <source>Show order colorbar</source>
-        <translation>Zobrazit barevnou stupnici řádu</translation>
+        <translation type="unfinished">Zobrazit pol. řád bar. stupnicí</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="392"/>
         <source>Show order labels</source>
-        <translation>Zobrazit řár číselně</translation>
+        <translation type="unfinished">Zobrazit pol. řád číselně</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="395"/>
         <source>Order palette:</source>
-        <translation>Paleta řádu:</translation>
+        <translation type="unfinished">Paleta pol. řádu:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="409"/>
@@ -4575,7 +4570,7 @@ krok</translation>
         <location filename="../../src/postprocessorview.cpp" line="515"/>
         <location filename="../../src/postprocessorview.cpp" line="545"/>
         <source>Particle tracing</source>
-        <translation>Sledování částic</translation>
+        <translation type="unfinished">Trasování částic</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="428"/>
@@ -4621,7 +4616,7 @@ krok</translation>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="531"/>
         <source>Solid view</source>
-        <translation>Pevné zobrazení</translation>
+        <translation type="unfinished">Prostorové zobrazení</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="542"/>
@@ -4722,7 +4717,7 @@ krok</translation>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="763"/>
         <source>Base:</source>
-        <translation>Základ log.:</translation>
+        <translation type="unfinished">Základ:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="767"/>
@@ -4838,12 +4833,12 @@ krok</translation>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="963"/>
         <source>Drag force</source>
-        <translation>Tažná síla</translation>
+        <translation type="unfinished">Odpor prostředí</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="972"/>
         <source>Coefficient of restitution (-):</source>
-        <translation>Návratový koeficient (-):</translation>
+        <translation type="unfinished">Součinitel restituce (-):</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="975"/>
@@ -4853,17 +4848,17 @@ krok</translation>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="987"/>
         <source>Custom force</source>
-        <translation>Vlastní síla</translation>
+        <translation type="unfinished">Ostatní síly</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="997"/>
         <source>Initial particle position</source>
-        <translation>Výchozí pozice částice</translation>
+        <translation type="unfinished">Počáteční pozice částice</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1007"/>
         <source>Initial particle velocity</source>
-        <translation>Výchozí rychlost částice</translation>
+        <translation type="unfinished">Počáteční rychlost částice</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="1014"/>
@@ -4984,13 +4979,13 @@ krok</translation>
         <location filename="../../src/hermes2d/problem.cpp" line="283"/>
         <location filename="../../src/hermes2d/problem.cpp" line="311"/>
         <source>Mesh</source>
-        <translation>Síť</translation>
+        <translation type="unfinished">Síť</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="283"/>
         <location filename="../../src/hermes2d/problem.cpp" line="529"/>
         <source>No fields defined.</source>
-        <translation>Nejsou definována žádná pole.</translation>
+        <translation type="unfinished">Není definované žádné fyzikální pole.</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="295"/>
@@ -5005,7 +5000,7 @@ krok</translation>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="311"/>
         <source>An unknown exception occured in solver and has been ignored!</source>
-        <translation>Nastala neznámá výjimka v řešiči a byla ignorována!</translation>
+        <translation type="unfinished">Nastala neznámá vyjímka!</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="511"/>
@@ -5014,33 +5009,32 @@ krok</translation>
         <location filename="../../src/hermes2d/problem.cpp" line="529"/>
         <location filename="../../src/hermes2d/problem.cpp" line="534"/>
         <source>Solver</source>
-        <translation>Řešič</translation>
+        <translation type="unfinished">Řešič</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="511"/>
         <source>Coupling of more transient fields not possible at the moment.</source>
-        <translation>Sdružení více polí s přechodným dějěm není v současné době možné.</translation>
+        <translation type="unfinished">Řešení více polí s přechodovým dějem není možné.</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="517"/>
         <source>Space adaptivity for transient coupled problems not possible at the moment.</source>
-        <translation>Prostorová adaptivita pro přechodné sdružené problémy není v toto chvíli k dispozici.</translation>
+        <translation type="unfinished">Prostorovou adaptivitu není možné využít pro přechodové děje u sdružených úloh.</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="523"/>
         <source>Both space and transient adaptivity at the same time not possible at the moment.</source>
-        <translation>Použití prostorové a přechodové adaptivity současně není v tuto chvíli možné.</translation>
+        <translation type="unfinished">Řešení s využitím časové a prostorové adaptivity není možné.</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="534"/>
         <source>Warning: Matrix and RHS will be saved on the disk. This will slow down the calculation. You may disable it in Edit-&gt;Options-&gt;Solver menu.</source>
-        <translation>Varování: Matice a RHS budou uloženy na disk. Toto zpomalí výpočet. Můžete to zakázav v menu Úprava-&gt;Nastavení-&gt;Nastavení Řešiče.</translation>
+        <translation type="unfinished">Varování: Matice a RHS budou uloženy na disk. Toto zpomalí výpočet. Ukládání můžete to zakáza v nastavení aplikace (Úpravy-&gt;Nastavení-&gt;Řešič).</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="675"/>
         <location filename="../../src/hermes2d/problem.cpp" line="771"/>
         <source>Cannot create solver.</source>
-        <translatorcomment>Asi spíš inicialozovat???</translatorcomment>
         <translation>Nelze vytvořit řešič.</translation>
     </message>
     <message>
@@ -5057,7 +5051,7 @@ krok</translation>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="898"/>
         <source>Marker index is out of range.</source>
-        <translation>Index značky oblasti je imo rozsah.</translation>
+        <translation type="unfinished">Index značky oblasti je mimo rozsah.</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="941"/>
@@ -5238,7 +5232,7 @@ krok</translation>
     <message>
         <location filename="../../src/problemdialog.cpp" line="800"/>
         <source>Ctrl+1</source>
-        <translation>Ctrl+1</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="801"/>
@@ -5313,7 +5307,7 @@ krok</translation>
     <message>
         <location filename="../../src/problemdialog.cpp" line="880"/>
         <source>Constant time step:</source>
-        <translation>Konstantní časový krok:</translation>
+        <translation type="unfinished">Konstantní čas. krok:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="883"/>
@@ -5326,14 +5320,14 @@ krok</translation>
         <translation>Sdružení</translation>
     </message>
     <message>
-        <location filename="../../src/problemdialog.cpp" line="1062"/>
+        <location filename="../../src/problemdialog.cpp" line="1063"/>
         <source>Number of steps:</source>
         <translation>Počet kroků:</translation>
     </message>
     <message>
-        <location filename="../../src/problemdialog.cpp" line="1064"/>
+        <location filename="../../src/problemdialog.cpp" line="1065"/>
         <source>Aprox. number of steps:</source>
-        <translation>Prům. počet kroků:</translation>
+        <translation type="unfinished">Předpokládaný počet kroků:</translation>
     </message>
 </context>
 <context>
@@ -5711,7 +5705,7 @@ krok</translation>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="411"/>
         <source>Ctrl+U</source>
-        <translation>Ctrl+U</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="413"/>
@@ -5721,22 +5715,22 @@ krok</translation>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="414"/>
         <source>Alt+G</source>
-        <translation>Alt+G</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="416"/>
         <source>&amp;Run Python script</source>
-        <translation>Spustit &amp;Python skript</translation>
+        <translation type="unfinished">&amp;Spustit Python skript</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="417"/>
         <source>Ctrl+R</source>
-        <translation>Ctrl+R</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="419"/>
         <source>Replace tabs with spaces</source>
-        <translation>Nahradit tabelétory mezerami</translation>
+        <translation type="unfinished">Nahradit tabulátory mezerami</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="422"/>
@@ -5746,7 +5740,7 @@ krok</translation>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="424"/>
         <source>Alt+C</source>
-        <translation>Alt+C</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="426"/>
@@ -5771,7 +5765,7 @@ krok</translation>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="442"/>
         <source>Ctrl+Q</source>
-        <translation>Ctrl+Q</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="443"/>
@@ -5792,7 +5786,7 @@ krok</translation>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="454"/>
         <source>About &amp;PythonLab</source>
-        <translation>O &amp;PythonLabu</translation>
+        <translation type="unfinished">O aplikaci &amp;PythonLab</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="455"/>
@@ -5897,7 +5891,7 @@ krok</translation>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="859"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="895"/>
         <source>Python files (*.py)</source>
-        <translation>Python soubory (*.py)</translation>
+        <translation type="unfinished">Python skripty (*.py)</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="815"/>
@@ -6003,7 +5997,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="90"/>
         <source>Ctrl+M</source>
-        <translation>Ctrl+M</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="100"/>
@@ -6177,13 +6171,13 @@ Chcete tyto změny uložit?</translation>
         <location filename="../../src/util/enums.cpp" line="388"/>
         <source>Vector volume</source>
         <translatorcomment>upřesnit pojem</translatorcomment>
-        <translation>Vektor z obj. integrálů</translation>
+        <translation type="unfinished">Vektorová objemová forma</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="390"/>
         <source>Vector surface</source>
         <translatorcomment>upřesnit pojem</translatorcomment>
-        <translation>Vektor z povrch. integrálů</translation>
+        <translation type="unfinished">Vektor povrchová forma</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="404"/>
@@ -6498,7 +6492,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../src/util/enums.cpp" line="320"/>
         <source>Undefined</source>
-        <translation>Nedefinována</translation>
+        <translation type="unfinished">Nedefinovaný</translation>
     </message>
     <message>
         <location filename="../../src/util.h" line="307"/>
@@ -7268,7 +7262,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../src/hermes2d/coupling.cpp" line="209"/>
         <source>Unable to read coupling file %1: %2</source>
-        <translation>Není možné našíst soubor sdružení %1: %2</translation>
+        <translation type="unfinished">Není možné načíst soubor sdružení %1: %2</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="331"/>
@@ -7470,7 +7464,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="381"/>
         <source>Vector scale must be in the range from %1 to %2.</source>
-        <translation>Měřítko vektoru musí být v rozmezí od %1 do %2.</translation>
+        <translation type="unfinished">Velikost vektoru musí být v rozmezí od %1 do %2.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="461"/>
@@ -7515,7 +7509,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../src/util/loops.cpp" line="547"/>
         <source>Two loops connected by one edge.</source>
-        <translation>Dvě smyčky jsou spojeny pouze jedním bodem.</translation>
+        <translation type="unfinished">Dvě smyčky jsou spojeny pouze jednou hranou.</translation>
     </message>
 </context>
 <context>
