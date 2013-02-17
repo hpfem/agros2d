@@ -45,22 +45,22 @@ namespace XMLMesh1D
   // variables_type
   // 
 
-  const variables_type::variable_sequence& variables_type::
-  variable () const
+  const variables_type::var_sequence& variables_type::
+  var () const
   {
-    return this->variable_;
+    return this->var_;
   }
 
-  variables_type::variable_sequence& variables_type::
-  variable ()
+  variables_type::var_sequence& variables_type::
+  var ()
   {
-    return this->variable_;
+    return this->var_;
   }
 
   void variables_type::
-  variable (const variable_sequence& s)
+  var (const var_sequence& s)
   {
-    this->variable_ = s;
+    this->var_ = s;
   }
 
 
@@ -97,126 +97,126 @@ namespace XMLMesh1D
     this->variables_.set (x);
   }
 
-  const mesh::vertex_sequence& mesh::
-  vertex () const
+  const mesh::v_sequence& mesh::
+  v () const
   {
-    return this->vertex_;
+    return this->v_;
   }
 
-  mesh::vertex_sequence& mesh::
-  vertex ()
+  mesh::v_sequence& mesh::
+  v ()
   {
-    return this->vertex_;
+    return this->v_;
   }
 
   void mesh::
-  vertex (const vertex_sequence& s)
+  v (const v_sequence& s)
   {
-    this->vertex_ = s;
+    this->v_ = s;
   }
 
 
-  // variable
+  // var
   // 
 
-  const variable::name_type& variable::
+  const var::name_type& var::
   name () const
   {
     return this->name_.get ();
   }
 
-  variable::name_type& variable::
+  var::name_type& var::
   name ()
   {
     return this->name_.get ();
   }
 
-  void variable::
+  void var::
   name (const name_type& x)
   {
     this->name_.set (x);
   }
 
-  void variable::
+  void var::
   name (::std::auto_ptr< name_type > x)
   {
     this->name_.set (x);
   }
 
-  const variable::value_type& variable::
+  const var::value_type& var::
   value () const
   {
     return this->value_.get ();
   }
 
-  variable::value_type& variable::
+  var::value_type& var::
   value ()
   {
     return this->value_.get ();
   }
 
-  void variable::
+  void var::
   value (const value_type& x)
   {
     this->value_.set (x);
   }
 
 
-  // vertex
+  // v
   // 
 
-  const vertex::x_type& vertex::
+  const v::x_type& v::
   x () const
   {
     return this->x_.get ();
   }
 
-  vertex::x_type& vertex::
+  v::x_type& v::
   x ()
   {
     return this->x_.get ();
   }
 
-  void vertex::
+  void v::
   x (const x_type& x)
   {
     this->x_.set (x);
   }
 
-  void vertex::
+  void v::
   x (::std::auto_ptr< x_type > x)
   {
     this->x_.set (x);
   }
 
-  const vertex::marker_optional& vertex::
-  marker () const
+  const v::m_optional& v::
+  m () const
   {
-    return this->marker_;
+    return this->m_;
   }
 
-  vertex::marker_optional& vertex::
-  marker ()
+  v::m_optional& v::
+  m ()
   {
-    return this->marker_;
+    return this->m_;
   }
 
-  void vertex::
-  marker (const marker_type& x)
+  void v::
+  m (const m_type& x)
   {
-    this->marker_.set (x);
+    this->m_.set (x);
   }
 
-  void vertex::
-  marker (const marker_optional& x)
+  void v::
+  m (const m_optional& x)
   {
-    this->marker_ = x;
+    this->m_ = x;
   }
 
-  void vertex::
-  marker (::std::auto_ptr< marker_type > x)
+  void v::
+  m (::std::auto_ptr< m_type > x)
   {
-    this->marker_.set (x);
+    this->m_.set (x);
   }
 }
 
@@ -239,7 +239,7 @@ namespace XMLMesh1D
   variables_type::
   variables_type ()
   : ::xml_schema::type (),
-    variable_ (::xml_schema::flags (), this)
+    var_ (::xml_schema::flags (), this)
   {
   }
 
@@ -248,7 +248,7 @@ namespace XMLMesh1D
                   ::xml_schema::flags f,
                   ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
-    variable_ (x.variable_, f, this)
+    var_ (x.var_, f, this)
   {
   }
 
@@ -257,7 +257,7 @@ namespace XMLMesh1D
                   ::xml_schema::flags f,
                   ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-    variable_ (f, this)
+    var_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -276,14 +276,14 @@ namespace XMLMesh1D
       const ::xsd::cxx::xml::qualified_name< char > n (
         ::xsd::cxx::xml::dom::name< char > (i));
 
-      // variable
+      // var
       //
-      if (n.name () == "variable" && n.namespace_ ().empty ())
+      if (n.name () == "var" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< variable_type > r (
-          variable_traits::create (i, f, this));
+        ::std::auto_ptr< var_type > r (
+          var_traits::create (i, f, this));
 
-        this->variable_.push_back (r);
+        this->var_.push_back (r);
         continue;
       }
 
@@ -310,7 +310,7 @@ namespace XMLMesh1D
   mesh ()
   : ::xml_schema::type (),
     variables_ (::xml_schema::flags (), this),
-    vertex_ (::xml_schema::flags (), this)
+    v_ (::xml_schema::flags (), this)
   {
   }
 
@@ -320,7 +320,7 @@ namespace XMLMesh1D
         ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     variables_ (x.variables_, f, this),
-    vertex_ (x.vertex_, f, this)
+    v_ (x.v_, f, this)
   {
   }
 
@@ -330,7 +330,7 @@ namespace XMLMesh1D
         ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     variables_ (f, this),
-    vertex_ (f, this)
+    v_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -363,14 +363,14 @@ namespace XMLMesh1D
         }
       }
 
-      // vertex
+      // v
       //
-      if (n.name () == "vertex" && n.namespace_ ().empty ())
+      if (n.name () == "v" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< vertex_type > r (
-          vertex_traits::create (i, f, this));
+        ::std::auto_ptr< v_type > r (
+          v_traits::create (i, f, this));
 
-        this->vertex_.push_back (r);
+        this->v_.push_back (r);
         continue;
       }
 
@@ -390,32 +390,32 @@ namespace XMLMesh1D
   {
   }
 
-  // variable
+  // var
   //
 
-  variable::
-  variable (const name_type& name,
-            const value_type& value)
+  var::
+  var (const name_type& name,
+       const value_type& value)
   : ::xml_schema::type (),
     name_ (name, ::xml_schema::flags (), this),
     value_ (value, ::xml_schema::flags (), this)
   {
   }
 
-  variable::
-  variable (const variable& x,
-            ::xml_schema::flags f,
-            ::xml_schema::container* c)
+  var::
+  var (const var& x,
+       ::xml_schema::flags f,
+       ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     name_ (x.name_, f, this),
     value_ (x.value_, f, this)
   {
   }
 
-  variable::
-  variable (const ::xercesc::DOMElement& e,
-            ::xml_schema::flags f,
-            ::xml_schema::container* c)
+  var::
+  var (const ::xercesc::DOMElement& e,
+       ::xml_schema::flags f,
+       ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     name_ (f, this),
     value_ (f, this)
@@ -427,7 +427,7 @@ namespace XMLMesh1D
     }
   }
 
-  void variable::
+  void var::
   parse (::xsd::cxx::xml::dom::parser< char >& p,
          ::xml_schema::flags f)
   {
@@ -468,46 +468,46 @@ namespace XMLMesh1D
     }
   }
 
-  variable* variable::
+  var* var::
   _clone (::xml_schema::flags f,
           ::xml_schema::container* c) const
   {
-    return new class variable (*this, f, c);
+    return new class var (*this, f, c);
   }
 
-  variable::
-  ~variable ()
+  var::
+  ~var ()
   {
   }
 
-  // vertex
+  // v
   //
 
-  vertex::
-  vertex (const x_type& x)
+  v::
+  v (const x_type& x)
   : ::xml_schema::type (),
     x_ (x, ::xml_schema::flags (), this),
-    marker_ (::xml_schema::flags (), this)
+    m_ (::xml_schema::flags (), this)
   {
   }
 
-  vertex::
-  vertex (const vertex& x,
-          ::xml_schema::flags f,
-          ::xml_schema::container* c)
+  v::
+  v (const v& x,
+     ::xml_schema::flags f,
+     ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     x_ (x.x_, f, this),
-    marker_ (x.marker_, f, this)
+    m_ (x.m_, f, this)
   {
   }
 
-  vertex::
-  vertex (const ::xercesc::DOMElement& e,
-          ::xml_schema::flags f,
-          ::xml_schema::container* c)
+  v::
+  v (const ::xercesc::DOMElement& e,
+     ::xml_schema::flags f,
+     ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     x_ (f, this),
-    marker_ (f, this)
+    m_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -516,7 +516,7 @@ namespace XMLMesh1D
     }
   }
 
-  void vertex::
+  void v::
   parse (::xsd::cxx::xml::dom::parser< char >& p,
          ::xml_schema::flags f)
   {
@@ -535,12 +535,12 @@ namespace XMLMesh1D
         continue;
       }
 
-      if (n.name () == "marker" && n.namespace_ ().empty ())
+      if (n.name () == "m" && n.namespace_ ().empty ())
       {
-        ::std::auto_ptr< marker_type > r (
-          marker_traits::create (i, f, this));
+        ::std::auto_ptr< m_type > r (
+          m_traits::create (i, f, this));
 
-        this->marker_.set (r);
+        this->m_.set (r);
         continue;
       }
     }
@@ -553,15 +553,15 @@ namespace XMLMesh1D
     }
   }
 
-  vertex* vertex::
+  v* v::
   _clone (::xml_schema::flags f,
           ::xml_schema::container* c) const
   {
-    return new class vertex (*this, f, c);
+    return new class v (*this, f, c);
   }
 
-  vertex::
-  ~vertex ()
+  v::
+  ~v ()
   {
   }
 }
@@ -582,11 +582,11 @@ namespace XMLMesh1D
   ::std::ostream&
   operator<< (::std::ostream& o, const variables_type& i)
   {
-    for (variables_type::variable_const_iterator
-         b (i.variable ().begin ()), e (i.variable ().end ());
+    for (variables_type::var_const_iterator
+         b (i.var ().begin ()), e (i.var ().end ());
          b != e; ++b)
     {
-      o << ::std::endl << "variable: " << *b;
+      o << ::std::endl << "var: " << *b;
     }
 
     return o;
@@ -600,18 +600,18 @@ namespace XMLMesh1D
       o << ::std::endl << "variables: " << *i.variables ();
     }
 
-    for (mesh::vertex_const_iterator
-         b (i.vertex ().begin ()), e (i.vertex ().end ());
+    for (mesh::v_const_iterator
+         b (i.v ().begin ()), e (i.v ().end ());
          b != e; ++b)
     {
-      o << ::std::endl << "vertex: " << *b;
+      o << ::std::endl << "v: " << *b;
     }
 
     return o;
   }
 
   ::std::ostream&
-  operator<< (::std::ostream& o, const variable& i)
+  operator<< (::std::ostream& o, const var& i)
   {
     o << ::std::endl << "name: " << i.name ();
     o << ::std::endl << "value: " << i.value ();
@@ -619,12 +619,12 @@ namespace XMLMesh1D
   }
 
   ::std::ostream&
-  operator<< (::std::ostream& o, const vertex& i)
+  operator<< (::std::ostream& o, const v& i)
   {
     o << ::std::endl << "x: " << i.x ();
-    if (i.marker ())
+    if (i.m ())
     {
-      o << ::std::endl << "marker: " << *i.marker ();
+      o << ::std::endl << "m: " << *i.m ();
     }
 
     return o;
@@ -1086,15 +1086,15 @@ namespace XMLMesh1D
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
-    // variable
+    // var
     //
-    for (variables_type::variable_const_iterator
-         b (i.variable ().begin ()), n (i.variable ().end ());
+    for (variables_type::var_const_iterator
+         b (i.var ().begin ()), n (i.var ().end ());
          b != n; ++b)
     {
       ::xercesc::DOMElement& s (
         ::xsd::cxx::xml::dom::create_element (
-          "variable",
+          "var",
           e));
 
       s << *b;
@@ -1118,15 +1118,15 @@ namespace XMLMesh1D
       s << *i.variables ();
     }
 
-    // vertex
+    // v
     //
-    for (mesh::vertex_const_iterator
-         b (i.vertex ().begin ()), n (i.vertex ().end ());
+    for (mesh::v_const_iterator
+         b (i.v ().begin ()), n (i.v ().end ());
          b != n; ++b)
     {
       ::xercesc::DOMElement& s (
         ::xsd::cxx::xml::dom::create_element (
-          "vertex",
+          "v",
           e));
 
       s << *b;
@@ -1134,7 +1134,7 @@ namespace XMLMesh1D
   }
 
   void
-  operator<< (::xercesc::DOMElement& e, const variable& i)
+  operator<< (::xercesc::DOMElement& e, const var& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
@@ -1162,7 +1162,7 @@ namespace XMLMesh1D
   }
 
   void
-  operator<< (::xercesc::DOMElement& e, const vertex& i)
+  operator<< (::xercesc::DOMElement& e, const v& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
@@ -1177,16 +1177,16 @@ namespace XMLMesh1D
       a << i.x ();
     }
 
-    // marker
+    // m
     //
-    if (i.marker ())
+    if (i.m ())
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "marker",
+          "m",
           e));
 
-      a << *i.marker ();
+      a << *i.m ();
     }
   }
 }

@@ -9,9 +9,9 @@ TEMPLATE = lib
 # VERSION_GIT=$$system(git log --pretty=format:%h | wc -l)
 # run cython for python extensions
 linux-g++|linux-g++-64|linux-g++-32: CONFIG(release) {
-    system(cython --cplus ../resources_source/python/agros2d.pyx)
-    system(cython --cplus ../resources_source/python/pythonlab.pyx)
-    system(cd ../ && ./agros2d.sh lang release)
+    #system(cython --cplus ../resources_source/python/agros2d.pyx)
+    #system(cython --cplus ../resources_source/python/pythonlab.pyx)
+    #system(cd ../ && ./agros2d.sh lang release)
     #system(cd ../ && ./agros2d.sh help)
 }
 

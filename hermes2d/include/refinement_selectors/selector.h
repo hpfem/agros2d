@@ -76,7 +76,7 @@ namespace Hermes
       {
       public:
         virtual ~Selector() {};
-
+      protected:
         const int max_order; ///< A maximum allowed order.
         /// Constructor
         /** \param[in] max_order A maximum order used by this selector. If it is ::H2DRS_DEFAULT_ORDER, a maximum supported order is used. */

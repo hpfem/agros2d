@@ -865,7 +865,8 @@ namespace Hermes
     template<typename Scalar>
     void Solution<Scalar>::set_active_element(Element* e)
     {
-      // if(e == element) return; // FIXME
+      if(e == this->element)
+        return; // FIXME
       if(!e->active) throw Hermes::Exceptions::Exception("Cannot select inactive element. Wrong mesh?");
       MeshFunction<Scalar>::set_active_element(e);
 
@@ -964,7 +965,7 @@ namespace Hermes
       // H1 space
       if(space_type == HERMES_H1_SPACE)
       {
-#ifdef H2D_SECOND_DERIVATIVES_ENABLED
+#ifdef H2D_USE_SECOND_DERIVATIVES
         if(((newmask & H2D_SECOND) == H2D_SECOND && (oldmask & H2D_SECOND) != H2D_SECOND))
         {
           this->update_refmap();
@@ -1544,6 +1545,7 @@ namespace Hermes
     {
       if(e==NULL) 
         throw Exceptions::NullException(1);
+
       set_active_element(e);
 
       int o = elem_orders[e->id];
@@ -1580,7 +1582,7 @@ namespace Hermes
         }
         else
         {
-#ifdef H2D_SECOND_DERIVATIVES_ENABLED
+#ifdef H2D_USE_SECOND_DERIVATIVES
           double2x2 mat;
           double3x2 mat2;
           double xx, yy;
@@ -1627,7 +1629,6 @@ namespace Hermes
       double xi1, xi2;
 
       Func<Scalar>* toReturn = new Func<Scalar>(1, this->num_components);
-      // return toReturn;
 
       if(sln_type == HERMES_EXACT)
       {
@@ -1660,7 +1661,9 @@ namespace Hermes
           toReturn->dy0[0] = dy[0] * (static_cast<ExactSolutionScalar<Scalar>*>(this))->exact_multiplicator;
           toReturn->dy1[0] = dy[1] * (static_cast<ExactSolutionScalar<Scalar>*>(this))->exact_multiplicator;
         }
-        throw Hermes::Exceptions::Exception("Cannot obtain second derivatives of an exact solution.");
+#ifdef H2D_USE_SECOND_DERIVATIVES
+        this->warn("Cannot obtain second derivatives of an exact solution.");
+#endif
       }
       else if(sln_type == HERMES_UNDEF)
       {
@@ -1689,10 +1692,10 @@ namespace Hermes
             toReturn->dx[0] = m[0][0]*dx + m[0][1]*dy;
             toReturn->dy[0] = m[1][0]*dx + m[1][1]*dy;
     
-#ifdef H2D_SECOND_DERIVATIVES_ENABLED
+#ifdef H2D_USE_SECOND_DERIVATIVES
+            toReturn->laplace = new Scalar[1];
             double2x2 mat;
             double3x2 mat2;
-            double xx, yy;
 
             this->refmap->inv_ref_map_at_point(xi1, xi2, xx, yy, mat);
             this->refmap->second_ref_map_at_point(xi1, xi2, xx, yy, mat2);
@@ -1700,9 +1703,9 @@ namespace Hermes
             Scalar vxx = get_ref_value(e, xi1, xi2, 0, 3);
             Scalar vyy = get_ref_value(e, xi1, xi2, 0, 4);
             Scalar vxy = get_ref_value(e, xi1, xi2, 0, 5);
-            toReturn->dxx[0] = sqr(mat[0][0])*vxx + 2*mat[0][1]*mat[0][0]*vxy + sqr(mat[0][1])*vyy + mat2[0][0]*dx + mat2[0][1]*dy;   // dxx
-            toReturn->dyy[0] = sqr(mat[1][0])*vxx + 2*mat[1][1]*mat[1][0]*vxy + sqr(mat[1][1])*vyy + mat2[2][0]*dx + mat2[2][1]*dy;   // dyy
-            toReturn->dxy[0] = mat[0][0]*mat[1][0]*vxx + (mat[0][0]*mat[1][1] + mat[1][0]*mat[0][1])*vxy + mat[0][1]*mat[1][1]*vyy + mat2[1][0]*dx + mat2[1][1]*dy;   //dxy
+            Scalar dxx = sqr(mat[0][0])*vxx + 2*mat[0][1]*mat[0][0]*vxy + sqr(mat[0][1])*vyy + mat2[0][0]*dx + mat2[0][1]*dy;   // dxx
+            Scalar dyy = sqr(mat[1][0])*vxx + 2*mat[1][1]*mat[1][0]*vxy + sqr(mat[1][1])*vyy + mat2[2][0]*dx + mat2[2][1]*dy;   // dyy
+            toReturn->laplace[0] = dxx + dyy;
 #endif
           }
           else // vector solution
