@@ -1627,6 +1627,7 @@ namespace Hermes
       double xi1, xi2;
 
       Func<Scalar>* toReturn = new Func<Scalar>(1, this->num_components);
+      // return toReturn;
 
       if(sln_type == HERMES_EXACT)
       {

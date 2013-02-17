@@ -956,12 +956,12 @@ void Scene::addBoundaryAndMaterialMenuItems(QMenu* menu, QWidget* parent)
     else if (Agros2D::problem()->fieldInfos().count() > 1)
     {
         // multiple materials and boundaries
-        QMenu* mnuSubBoundaries = new QMenu("New boundary condition", parent);
+        QMenu* mnuSubBoundaries = new QMenu(tr("New boundary condition"), parent);
         menu->addMenu(mnuSubBoundaries);
         foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
             mnuSubBoundaries->addAction(actNewBoundaries[fieldInfo->fieldId()]);
 
-        QMenu* mnuSubMaterials = new QMenu("New material", parent);
+        QMenu* mnuSubMaterials = new QMenu(tr("New material"), parent);
         menu->addMenu(mnuSubMaterials);
         foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
             mnuSubMaterials->addAction(actNewMaterials[fieldInfo->fieldId()]);

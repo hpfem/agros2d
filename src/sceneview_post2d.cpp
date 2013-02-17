@@ -482,6 +482,31 @@ void SceneViewPost2D::paintScalarField()
     else
     {
         glCallList(m_listScalarField);
+
+        /*
+        double3* linVert = m_postHermes->linScalarView().get_vertices();
+        int3* linTris = m_postHermes->linScalarView().get_triangles();
+
+        Point point[3];
+        double value[3];
+
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+        glBegin(GL_TRIANGLES);
+        for (int i = 0; i < m_postHermes->linScalarView().get_num_triangles(); i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                point[j].x = linVert[linTris[i][j]][0];
+                point[j].y = linVert[linTris[i][j]][1];
+                value[j]   = linVert[linTris[i][j]][2];
+
+                glVertex2d(point[j].x, point[j].y);
+            }
+        }
+        glEnd();
+        */
         /*
         glEnableClientState(GL_COLOR_ARRAY);
         glEnableClientState(GL_VERTEX_ARRAY);
@@ -966,6 +991,28 @@ void SceneViewPost2D::paintVectors()
 
         double4* vecVert = m_postHermes->vecVectorView().get_vertices();
         int3* vecTris = m_postHermes->vecVectorView().get_triangles();
+
+        /*
+        Point point[3];
+        double value[3];
+
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+        glBegin(GL_TRIANGLES);
+        for (int i = 0; i < m_postHermes->vecVectorView().get_num_triangles(); i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                point[j].x = vecVert[vecTris[i][j]][0];
+                point[j].y = vecVert[vecTris[i][j]][1];
+                value[j]   = vecVert[vecTris[i][j]][2];
+
+                glVertex2d(point[j].x, point[j].y);
+            }
+        }
+        glEnd();
+        */
 
         glEnable(GL_POLYGON_OFFSET_FILL);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

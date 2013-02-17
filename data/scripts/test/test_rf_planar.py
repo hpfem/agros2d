@@ -51,7 +51,7 @@ geometry.add_edge(0.175, -0.04, 0.19286, -0.04, 0, boundaries = {"rf" : "Matched
 geometry.add_edge(0.086, 0, 0.16, 0, 0, boundaries = {"rf" : "Perfect electric conductor"})
 
 # labels
-geometry.add_label(0.0359418, 0.0109393, 5e-06, 0, materials = {"rf" : "Air"})
+geometry.add_label(0.0359418, 0.0109393, materials = {"rf" : "Air"})
 
 geometry.zoom_best_fit()
 

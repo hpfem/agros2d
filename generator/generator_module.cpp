@@ -1016,14 +1016,23 @@ LexicalAnalyser *Agros2DGeneratorModule::weakFormLexicalAnalyser(AnalysisType an
 
     LexicalAnalyser *lex = new LexicalAnalyser();
 
+    // scalar field
     lex->addVariable("uval");
     lex->addVariable("upval");
     lex->addVariable("uptval");
     lex->addVariable("vval");
 
+    // vector field
+    lex->addVariable("val0");
+    lex->addVariable("val1");
+    lex->addVariable("ucurl");
+    lex->addVariable("vcurl");
+    lex->addVariable("upcurl");
+
     // coordinates
     if (coordinateType == CoordinateType_Planar)
     {
+        // scalar field
         lex->addVariable("udx");
         lex->addVariable("vdx");
         lex->addVariable("udy");
@@ -1032,11 +1041,19 @@ LexicalAnalyser *Agros2DGeneratorModule::weakFormLexicalAnalyser(AnalysisType an
         lex->addVariable("updy");
         lex->addVariable("uptdx");
         lex->addVariable("uptdy");
+
+        // vector field
+        lex->addVariable("dx0");
+        lex->addVariable("dx1");
+        lex->addVariable("dy0");
+        lex->addVariable("dy1");
+
         lex->addVariable(QString("x"));
         lex->addVariable(QString("y"));
     }
     else
     {
+        // scalar field
         lex->addVariable("udr");
         lex->addVariable("vdr");
         lex->addVariable("udz");
@@ -1045,6 +1062,13 @@ LexicalAnalyser *Agros2DGeneratorModule::weakFormLexicalAnalyser(AnalysisType an
         lex->addVariable("updz");
         lex->addVariable("uptdr");
         lex->addVariable("uptdz");
+
+        // vector field
+        lex->addVariable("dr0");
+        lex->addVariable("dr1");
+        lex->addVariable("dz0");
+        lex->addVariable("dz1");
+
         lex->addVariable(QString("r"));
         lex->addVariable(QString("z"));
     }
@@ -1130,17 +1154,29 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
             dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
 
         // functions
+        // scalar field
         dict["uval"] = "u->val[i]";
         dict["vval"] = "v->val[i]";
         dict["upval"] = "u_ext[this->j]->val[i]";
         dict["uptval"] = "ext[this->j - this->offsetJ()]->val[i]";
         dict["deltat"] = "Agros2D::problem()->actualTimeStepLength()";
+
+        // vector field
+        dict["uval0"] = "u->val0[i]";
+        dict["uval1"] = "u->val1[i]";
+        dict["ucurl"] = "u->curl[i]";
+        dict["vval0"] = "v->val0[i]";
+        dict["vval1"] = "v->val1[i]";
+        dict["vcurl"] = "v->curl[i]";
+        dict["upcurl"] = "u_ext[this->j]->curl[i]";
+
         dict["timedermat"] = "this->m_table->matrixFormCoefficient()";
         dict["timedervec"] = "this->m_table->vectorFormCoefficient(ext, this->j, this->m_markerSource->fieldInfo()->numberOfSolutions(), i)";
         dict["timederres"] = "this->m_table->residualCoefficient()";
 
         if (coordinateType == CoordinateType_Planar)
         {
+            // scalar field
             dict["udx"] = "u->dx[i]";
             dict["vdx"] = "v->dx[i]";
             dict["udy"] = "u->dy[i]";
@@ -1152,6 +1188,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
         }
         else
         {
+            // scalar field
             dict["udr"] = "u->dx[i]";
             dict["vdr"] = "v->dx[i]";
             dict["udz"] = "u->dy[i]";
@@ -1283,10 +1320,21 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
             dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
 
         // functions
+        // scalar field
         dict["uval"] = "1";
         dict["vval"] = "1";
         dict["upval"] = "1";
         dict["uptval"] = "1";
+
+        // vector field
+        dict["uval0"] = "1";
+        dict["uval1"] = "1";
+        dict["vval0"] = "1";
+        dict["vval1"] = "1";
+        dict["ucurl"] = "1";
+        dict["vcurl"] = "1";
+        dict["upcurl"] = "1";
+
         dict["deltat"] = "Agros2D::problem()->actualTimeStepLength()";
         dict["timedermat"] = "1";
         dict["timedervec"] = "1";
@@ -1294,6 +1342,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
 
         if (coordinateType == CoordinateType_Planar)
         {
+            // scalar field
             dict["udx"] = "1";
             dict["vdx"] = "1";
             dict["udy"] = "1";
@@ -1305,6 +1354,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
         }
         else
         {
+            // scalar field
             dict["udr"] = "1";
             dict["vdr"] = "1";
             dict["udz"] = "1";
@@ -1436,8 +1486,11 @@ QString Agros2DGeneratorModule::generateDocWeakFormExpression(AnalysisType analy
         dict["vdr"] = "\\frac{\\partial v}{\\partial r}";
         dict["udz"] = "\\frac{\\partial u}{\\partial z}";
         dict["vdz"] = "\\frac{\\partial v}{\\partial z}";
+        dict["ucurl"] = "TODO";
+        dict["vcurl"] = "TODO";
         dict["updr"] = "\\frac{\\partial u_j}{\\partial x_i}";
         dict["updz"] = "\\frac{\\partial u_j}{\\partial y_i}";
+        dict["upcurl"] = "TODO";
         dict["uptdr"] = "\\frac{\\partial u_{ext}j}{\\partial x_i}";
         dict["uptdz"] = "\\frac{\\partial u_{ext}j}{\\partial y_i}";
         dict["*"] = "\\cdot ";
