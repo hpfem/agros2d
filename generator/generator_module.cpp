@@ -855,6 +855,10 @@ LexicalAnalyser *Agros2DGeneratorModule::postprocessorLexicalAnalyser(AnalysisTy
         lex->addVariable("velz");
         lex->addVariable("x");
         lex->addVariable("y");
+        lex->addVariable("tx");
+        lex->addVariable("ty");
+        lex->addVariable("nx");
+        lex->addVariable("ny");
     }
     else
     {
@@ -865,6 +869,10 @@ LexicalAnalyser *Agros2DGeneratorModule::postprocessorLexicalAnalyser(AnalysisTy
         lex->addVariable("velphi");
         lex->addVariable("r");
         lex->addVariable("z");
+        lex->addVariable("tr");
+        lex->addVariable("tz");
+        lex->addVariable("nr");
+        lex->addVariable("nz");
     }
 
     // functions
@@ -1140,11 +1148,19 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
         {
             dict["x"] = "e->x[i]";
             dict["y"] = "e->y[i]";
+            dict["tx"] = "e->tx[i]";
+            dict["ty"] = "e->ty[i]";
+            dict["nx"] = "e->nx[i]";
+            dict["ny"] = "e->ny[i]";
         }
         else
         {
             dict["r"] = "e->x[i]";
             dict["z"] = "e->y[i]";
+            dict["tr"] = "e->tx[i]";
+            dict["tz"] = "e->ty[i]";
+            dict["nr"] = "e->nx[i]";
+            dict["nz"] = "e->ny[i]";
         }
 
         // constants
@@ -1306,11 +1322,19 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
         {
             dict["x"] = "1";
             dict["y"] = "1";
+            dict["tx"] = "1";
+            dict["ty"] = "1";
+            dict["nx"] = "1";
+            dict["ny"] = "1";
         }
         else
         {
             dict["r"] = "1";
             dict["z"] = "1";
+            dict["tr"] = "1";
+            dict["tz"] = "1";
+            dict["nr"] = "1";
+            dict["nz"] = "1";
         }
 
         // constants
