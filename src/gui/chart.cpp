@@ -135,6 +135,7 @@ void ChartBasic::saveImage(const QString &fileName)
     QSettings settings;
     QString dir = settings.value("General/LastImageDir").toString();
 
+    QString selectedFilter = "png";
     QString fileNameTemp;
     if (fileName.isEmpty())
     {
@@ -146,7 +147,9 @@ void ChartBasic::saveImage(const QString &fileName)
         filter += "SVG Documents (*.svg)";
 #endif
         filter += "Postscript Documents (*.ps)";
+        filter += "Image (*.png)";
 
+        /*
         if (imageFormats.size() > 0)
         {
             QString imageFilter("Images (");
@@ -161,7 +164,12 @@ void ChartBasic::saveImage(const QString &fileName)
 
             filter += imageFilter;
         }
-        fileNameTemp = QFileDialog::getSaveFileName(this, tr("Export image to file"), dir, filter.join(";;"));
+        */
+
+        fileNameTemp = QFileDialog::getSaveFileName(this, tr("Export image to file"), dir, filter.join(";;"),
+                                                    &selectedFilter);
+        selectedFilter = selectedFilter.mid(selectedFilter.indexOf("*.") + 2,
+                                            selectedFilter.length() - selectedFilter.indexOf("*.") - 3);
 
         QFileInfo fileInfo(fileNameTemp);
         if (!fileNameTemp.isEmpty() && fileInfo.absoluteDir() != tempProblemDir())
@@ -174,15 +182,13 @@ void ChartBasic::saveImage(const QString &fileName)
 
     if (!fileNameTemp.isEmpty())
     {
-        // QFileInfo fileInfo(fileNameTemp);
-        // if (fileInfo.suffix().toLower() != "png") fileNameTemp += ".png";
-
+        QFileInfo fileInfo(fileNameTemp);
         QwtPlotRenderer renderer;
 
         renderer.setDiscardFlag(QwtPlotRenderer::DiscardBackground, false);
         renderer.setLayoutFlag(QwtPlotRenderer::KeepFrames, true);
-
-        renderer.renderDocument(this, fileNameTemp, QSizeF(300, 200), 85);
+        renderer.renderDocument(this, (fileInfo.suffix() == selectedFilter) ? fileInfo.absoluteFilePath() : fileInfo.absoluteFilePath() + "." + selectedFilter,
+                                selectedFilter, QSizeF(160, 120));
     }
 }
 

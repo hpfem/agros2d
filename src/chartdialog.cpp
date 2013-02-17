@@ -589,7 +589,7 @@ void ChartControlsWidget::doPlot()
         if (!txtPointY->evaluate()) return;
 
         plotTime();
-    }
+    }       
 }
 
 void ChartControlsWidget::doFieldVariable(int index)
@@ -621,19 +621,18 @@ void ChartControlsWidget::doExportData()
     QString dir = settings.value("General/LastDataDir").toString();
 
     QString selectedFilter;
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Export data to file"), dir, tr("CSV files (*.csv);;Matlab/Octave script (*.m)"), &selectedFilter);
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export data to file"), dir, tr("CSV files (*.csv)"), &selectedFilter);
     if (fileName.isEmpty())
     {
         cerr << "Incorrect file name." << endl;
         return;
     }
 
-    QString ext = (selectedFilter.contains("CSV")) ? ".csv" : ".m";
     QFileInfo fileInfo(fileName);
 
     // open file for write
     if (fileInfo.suffix().isEmpty())
-        fileName = fileName + ext;
+        fileName = fileName + ".csv";
 
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -660,6 +659,8 @@ void ChartControlsWidget::doExportData()
                 values->append(data.value(key));
             }
         }
+
+        delete chartLine;
     }
     else if (tabAnalysisType->currentWidget() == widTime)
     {
@@ -677,45 +678,17 @@ void ChartControlsWidget::doExportData()
     }
 
     // csv
-    if (fileInfo.suffix().toLower() == "csv")
+    // headers
+    foreach(QString key, table.keys())
+        out << key << ";";
+    out << "\n";
+
+    // values
+    for (int i = 0; i < table.values().first().size(); i++)
     {
-        // headers
         foreach(QString key, table.keys())
-            out << key << ";";
-        out << "\n";
-
-        // values
-        for (int i = 0; i < table.values().first().size(); i++)
-        {
-            foreach(QString key, table.keys())
-                out << QString::number(table.value(key).at(i)) << ";";
-            out << endl;
-        }
-    }
-
-    // m-file
-    if (fileInfo.suffix().toLower() == "m")
-    {
-        // matrix
-        foreach(QString key, table.keys())
-        {
-            out << key << " = [ ";
-            foreach(double value, table.value(key))
-                out << QString::number(value).replace(",", ".") << " ";
-            out << "]" << endl;
-        }
-
-        /*
-        // example
-        QString x = table.keys().at(0).at(0);
-        QString y = table.keys().at(1).at(0);
-
-        out << endl << "% example" << endl;
-        out << QString("% plot(%1, %2)").arg(x).arg(y) << endl;
-        out << "% grid on;" << endl;
-        out << QString("% xlabel('%1');").arg(x) << endl;
-        out << QString("% ylabel('%1');").arg(y) << endl;
-        */
+            out << QString::number(table.value(key).at(i)) << ";";
+        out << endl;
     }
 
     if (fileInfo.absoluteDir() != tempProblemDir())
