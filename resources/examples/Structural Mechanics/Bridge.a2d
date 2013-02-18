@@ -3,18 +3,18 @@
     <geometry>
         <nodes>
             <node x="-45" y="0" id="0"/>
-            <node x="-40" y="0" id="1"/>
-            <node x="40" y="0" id="2"/>
+            <node x="-43" y="0" id="1"/>
+            <node x="43" y="0" id="2"/>
             <node x="45" y="0" id="3"/>
-            <node x="0" y="13" id="4"/>
+            <node x="0" y="14" id="4"/>
             <node x="-45" y="14" id="5"/>
             <node x="-1" y="16" id="6"/>
             <node x="1" y="16" id="7"/>
             <node x="45" y="14" id="8"/>
-            <node x="-45" y="16" id="9"/>
-            <node x="-1" y="18" id="10"/>
-            <node x="1" y="18" id="11"/>
-            <node x="45" y="16" id="12"/>
+            <node x="-45" y="14.5" id="9"/>
+            <node x="-1" y="16.7" id="10"/>
+            <node x="1" y="16.7" id="11"/>
+            <node x="45" y="14.5" id="12"/>
             <node x="-1" y="15" id="13"/>
             <node x="1" y="15" id="14"/>
             <node x="-12.5" y="13.8" id="15"/>
@@ -41,8 +41,6 @@
             <node x="38.5" y="4.3" id="36"/>
             <node x="39.5" y="14.2" id="37"/>
             <node x="38.5" y="14.3" id="38"/>
-            <node x="30.5" y="16.8" id="39"/>
-            <node x="26.5" y="17.1" id="40"/>
         </nodes>
         <edges>
             <edge end="3" id="0" start="2" angle="0"/>
@@ -50,7 +48,7 @@
             <edge end="1" id="2" start="4" angle="35"/>
             <edge end="4" id="3" start="2" angle="35"/>
             <edge end="11" id="4" start="10" angle="0"/>
-            <edge end="9" id="5" start="10" angle="5"/>
+            <edge end="9" id="5" start="10" angle="4"/>
             <edge end="5" id="6" start="9" angle="0"/>
             <edge end="8" id="7" start="12" angle="0"/>
             <edge end="7" id="8" start="14" angle="0"/>
@@ -83,9 +81,7 @@
             <edge end="32" id="35" start="34" angle="0"/>
             <edge end="29" id="36" start="27" angle="0"/>
             <edge end="28" id="37" start="30" angle="0"/>
-            <edge end="39" id="38" start="12" angle="2"/>
-            <edge end="40" id="39" start="39" angle="0"/>
-            <edge end="11" id="40" start="40" angle="2"/>
+            <edge end="11" id="38" start="12" angle="4"/>
         </edges>
         <labels>
             <label x="-17.2506" y="12.0083" id="0" area="0"/>
@@ -108,7 +104,7 @@
                 <adaptivity adaptivity_type="disabled" adaptivity_back_steps="0" adaptivity_redone_each="1" adaptivity_tolerance="1" adaptivity_steps="1"/>
                 <solver linearity_type="linear" picard_anderson_acceleration="1" newton_automatic_damping="1" picard_anderson_beta="0.2" picard_anderson_vectors="3" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>
-                    <boundary type="elasticity_fixed_fixed" id="1" elasticity_displacement_x="0" name="fixed-fixed" elasticity_displacement_y="0">
+                    <boundary elasticity_force_x="0" elasticity_force_y="0" type="elasticity_fixed_fixed" id="1" elasticity_displacement_x="0" name="fixed-fixed" elasticity_displacement_y="0">
                         <edge edge="0"/>
                         <edge edge="1"/>
                     </boundary>
@@ -148,18 +144,15 @@
                         <edge edge="36"/>
                         <edge edge="37"/>
                         <edge edge="38"/>
-                        <edge edge="40"/>
                     </boundary>
-                    <boundary elasticity_force_x="0" type="elasticity_free_fixed" id="3" name="free-fixed" elasticity_displacement_y="0">
+                    <boundary elasticity_force_x="0" elasticity_force_y="0" type="elasticity_free_fixed" id="3" elasticity_displacement_x="0" name="free-fixed" elasticity_displacement_y="0">
                         <edge edge="6"/>
                         <edge edge="7"/>
                     </boundary>
-                    <boundary elasticity_force_x="0" elasticity_force_y="-100000" type="elasticity_free_free" id="4" name="load">
-                        <edge edge="39"/>
-                    </boundary>
+                    <boundary elasticity_force_x="0" elasticity_force_y="0*-1000*9.81/4" type="elasticity_free_free" id="4" elasticity_displacement_x="0" name="load" elasticity_displacement_y="0"/>
                 </boundaries>
                 <materials>
-                    <material elasticity_poisson_ratio="0.33" elasticity_young_modulus="2e11" elasticity_temperature_difference="0" elasticity_alpha="0" elasticity_temperature_reference="0" id="1" name="steel" elasticity_volume_force_x="0" elasticity_volume_force_y="-10e3">
+                    <material elasticity_poisson_ratio="0.2" elasticity_young_modulus="48e9" elasticity_temperature_difference="0" elasticity_alpha="0" elasticity_temperature_reference="0" id="1" name="Concrete" elasticity_volume_force_x="0" elasticity_volume_force_y="-2500*9.81">
                         <label label="0"/>
                     </material>
                 </materials>
@@ -167,5 +160,5 @@
         </fields>
         <couplings/>
     </problem>
-    <config View_ColorSolutionMesh_blue="0" View_ParticleReflectOnDifferentMaterial="1" Adaptivity_Threshold="0.3" View_ColorContours_green="0" View_ScalarView3DAngle="240" View_SnapToGrid="1" View_ColorSolutionMesh_red="150" View_ContourVariable="elasticity_displacement" View_ColorEdges_blue="150" View_ParticleMaximumRelativeError="0.01" View_ParticleDragCoefficient="0" Adaptivity_IsoOnly="0" View_ScalarVariableComp="2" View_ScalarVariable="elasticity_displacement" View_ShowParticleView="0" View_ParticleCoefficientOfRestitution="0" View_ScalarView3DSolidGeometry="1" View_ColorContours_blue="0" Adaptivity_UseAniso="1" View_OrderLabel="0" View_PaletteType="0" View_ColorEdges_green="0" View_ScalarView3DBoundingBox="1" Adaptivity_MeshRegularity="-1" Adaptivity_FinerReference="0" View_ParticleMinimumStep="0" View_LinearizerQuality="normal" View_NodeSize="6" View_ScalarView3DBackground="1" Problem_Description="" View_EdgeWidth="2" View_PaletteSteps="30" View_ColorCross_green="150" View_SolidViewHide="" View_ColorContours_red="0" View_ContoursWidth="1" View_PostFont="fontGoogleDroidMono14" View_ScalarView3DHeight="4" View_VectorNumber="50" View_VectorColor="1" View_ParticleDragReferenceArea="1e-06" Adaptivity_MaxDofs="60000" View_ColorEdges_red="0" View_ScalarDecimalPlace="2" View_MeshAngleSegmentsCount="3" View_ParticleNumberOfParticles="5" View_ColorBackground_blue="255" View_ShowScalarView="1" View_ColorGrid_blue="200" View_ShowSolutionMeshView="0" Commands_Triangle="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;" View_ScalarView3DLighting="1" View_ContoursCount="15" View_ScalarRangeAuto="1" View_OrderPaletteOrderType="0" View_ColorNodes_blue="0" View_ScalarRangeLog="0" View_ShowAxes="1" View_VectorProportional="1" View_ParticleStartVelocityX="0" View_ParticleStartVelocityY="0" View_VectorType="0" View_ShowInitialMeshView="1" View_GridStep="0.001" View_ColorLabels_blue="0" View_ParticleIncludeRelativisticCorrection="1" View_ColorLabels_green="150" View_ParticleStartX="0" View_ParticleStartY="0" View_RulersFont="fontGoogleDroidMono10" View_ColorBackground_red="255" View_DeformContour="0" View_ParticleShowPoints="0" View_ColorGrid_red="200" View_ColorInitialMesh_green="150" View_PaletteFilter="0" View_ColorVectors_green="0" View_ParticleReflectOnBoundary="0" Adaptivity_ConvExp="1" View_ShowGrid="1" Adaptivity_ProjNormType="1" View_LabelSize="6" View_ColorSolutionMesh_green="0" View_ShowPost3D="0" View_VectorScale="0.6" Adaptivity_Strategy="0" View_ShowOrderView="1" View_ColorNodes_green="0" View_ShowOrderColorBar="1" View_ColorNodes_red="150" View_ScalarRangeMin="0" View_ParticleStartingRadius="0" View_ParticleColorByVelocity="1" View_ColorBackground_green="255" View_MeshCurvilinearElements="1" View_DeformScalar="0" View_ColorCross_blue="150" View_ColorInitialMesh_blue="0" View_ColorCross_red="150" View_DeformVector="0" View_ShowContourView="0" View_ScalarRangeMax="0.0006657681607998147" View_ColorVectors_red="0" View_ColorVectors_blue="0" View_ParticleMaximumNumberOfSteps="500" View_ParticleConstant="1.602e-19" View_VectorCenter="0" View_ParticleMass="9.108999999999999e-31" View_ParticleCustomForceX="0" View_ScalarRangeBase="10" View_ParticleCustomForceY="0" View_ParticleCustomForceZ="0" View_ColorGrid_green="200" View_VectorVariable="elasticity_displacement" Commands_Gmsh="%1 -2 &quot;%2.geo&quot;" View_ShowScalarColorBar="1" View_ShowVectorView="0" View_ColorInitialMesh_red="250" View_ShowRulers="1" View_ActiveField="elasticity" View_ParticleDragDensity="1.2041" General_ZoomToMouse="1" Problem_StartupScript="" View_ColorLabels_red="0"/>
+    <config View_ColorSolutionMesh_blue="0" View_ParticleReflectOnDifferentMaterial="1" Adaptivity_Threshold="0.3" View_ColorContours_green="0" View_ScalarView3DAngle="240" View_SnapToGrid="1" View_ColorSolutionMesh_red="150" View_ContourVariable="elasticity_displacement" View_ColorEdges_blue="150" View_ParticleMaximumRelativeError="0.01" View_ParticleDragCoefficient="0" Adaptivity_IsoOnly="0" View_ScalarVariableComp="4" View_ScalarVariable="elasticity_displacement" View_ShowParticleView="0" View_ParticleCoefficientOfRestitution="0" View_ScalarView3DSolidGeometry="1" View_ColorContours_blue="0" Adaptivity_UseAniso="1" View_OrderLabel="0" View_PaletteType="0" View_ColorEdges_green="0" View_ScalarView3DBoundingBox="1" Adaptivity_MeshRegularity="-1" Adaptivity_FinerReference="0" View_ParticleMinimumStep="0" View_LinearizerQuality="normal" View_NodeSize="6" View_ScalarView3DBackground="1" Problem_Description="" View_EdgeWidth="2" View_PaletteSteps="30" View_ColorCross_green="150" View_SolidViewHide="" View_ColorContours_red="0" View_ContoursWidth="1" View_PostFont="fontGoogleDroidMono14" View_ScalarView3DHeight="4" View_VectorNumber="50" View_VectorColor="1" View_ParticleDragReferenceArea="1e-06" Adaptivity_MaxDofs="60000" View_ColorEdges_red="0" View_ScalarDecimalPlace="2" View_MeshAngleSegmentsCount="3" View_ParticleNumberOfParticles="5" View_ColorBackground_blue="255" View_ShowScalarView="1" View_ColorGrid_blue="200" View_ShowSolutionMeshView="0" Commands_Triangle="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;" View_ScalarView3DLighting="1" View_ContoursCount="15" View_ScalarRangeAuto="1" View_OrderPaletteOrderType="0" View_ColorNodes_blue="0" View_ScalarRangeLog="0" View_ShowAxes="1" View_VectorProportional="1" View_ParticleStartVelocityX="0" View_ParticleStartVelocityY="0" View_VectorType="0" View_ShowInitialMeshView="1" View_GridStep="0.001" View_ColorLabels_blue="0" View_ParticleIncludeRelativisticCorrection="1" View_ColorLabels_green="150" View_ParticleStartX="0" View_ParticleStartY="0" View_RulersFont="fontGoogleDroidMono10" View_ColorBackground_red="255" View_DeformContour="0" View_ParticleShowPoints="0" View_ColorGrid_red="200" View_ColorInitialMesh_green="150" View_PaletteFilter="0" View_ColorVectors_green="0" View_ParticleReflectOnBoundary="0" Adaptivity_ConvExp="1" View_ShowGrid="1" Adaptivity_ProjNormType="1" View_LabelSize="6" View_ColorSolutionMesh_green="0" View_ShowPost3D="0" View_VectorScale="0.6" Adaptivity_Strategy="0" View_ShowOrderView="1" View_ColorNodes_green="0" View_ShowOrderColorBar="1" View_ColorNodes_red="150" View_ScalarRangeMin="-0.009110402217144285" View_ParticleStartingRadius="0" View_ParticleColorByVelocity="1" View_ColorBackground_green="255" View_MeshCurvilinearElements="1" View_DeformScalar="0" View_ColorCross_blue="150" View_ColorInitialMesh_blue="0" View_ColorCross_red="150" View_DeformVector="0" View_ShowContourView="0" View_ScalarRangeMax="8.470329472543003e-21" View_ColorVectors_red="0" View_ColorVectors_blue="0" View_ParticleMaximumNumberOfSteps="500" View_ParticleConstant="1.602e-19" View_VectorCenter="0" View_ParticleMass="9.108999999999999e-31" View_ParticleCustomForceX="0" View_ScalarRangeBase="10" View_ParticleCustomForceY="0" View_ParticleCustomForceZ="0" View_ColorGrid_green="200" View_VectorVariable="elasticity_displacement" Commands_Gmsh="%1 -2 &quot;%2.geo&quot;" View_ShowScalarColorBar="1" View_ShowVectorView="0" View_ColorInitialMesh_red="250" View_ShowRulers="1" View_ActiveField="elasticity" View_ParticleDragDensity="1.2041" General_ZoomToMouse="1" Problem_StartupScript="" View_ColorLabels_red="0"/>
 </document>

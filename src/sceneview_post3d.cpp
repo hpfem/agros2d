@@ -355,7 +355,7 @@ void SceneViewPost3D::paintScalarField3D()
                 double radius = edge->radius();
                 double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
 
-                drawArc(center, radius, startAngle, edge->angle(), edge->angle()/2);
+                drawArc(center, radius, startAngle, edge->angle());
             }
 
             glDisable(GL_LINE_STIPPLE);
