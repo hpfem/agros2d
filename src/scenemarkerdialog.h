@@ -59,9 +59,6 @@ public:
     int showDialog(QWidget *parent) { return 0; }
 };
 
-template <class T>
-void deformShapeTemplate(T linVert, int count);
-
 // ************************************************************************************************
 
 class SceneFieldWidget : public QWidget

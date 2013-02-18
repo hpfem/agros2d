@@ -158,55 +158,6 @@ void FieldInfo::clear()
     m_picardAndersonNumberOfLastVectors = 3;
 }
 
-template <class T>
-void deformShapeTemplate(T linVert, int count)
-{
-    MultiArray<double> msa = Agros2D::scene()->activeMultiSolutionArray();
-
-    double min =  numeric_limits<double>::max();
-    double max = -numeric_limits<double>::max();
-    for (int i = 0; i < count; i++)
-    {
-        double x = linVert[i][0];
-        double y = linVert[i][1];
-
-        double dx = msa.solutions().at(0)->get_pt_value(x, y)->val[0];
-        double dy = msa.solutions().at(1)->get_pt_value(x, y)->val[0];
-
-        double dm = sqrt(Hermes::sqr(dx) + Hermes::sqr(dy));
-
-        if (dm < min) min = dm;
-        if (dm > max) max = dm;
-    }
-
-    RectPoint rect = Agros2D::scene()->boundingBox();
-    double k = qMax(rect.width(), rect.height()) / qMax(min, max) / 15.0;
-
-    for (int i = 0; i < count; i++)
-    {
-        double x = linVert[i][0];
-        double y = linVert[i][1];
-
-        double dx = msa.solutions().at(0)->get_pt_value(x, y)->val[0];
-        double dy = msa.solutions().at(1)->get_pt_value(x, y)->val[0];
-
-        linVert[i][0] += k*dx;
-        linVert[i][1] += k*dy;
-    }
-}
-
-void FieldInfo::deformShape(double3* linVert, int count)
-{
-    if (hasDeformableShape())
-        deformShapeTemplate<double3 *>(linVert, count);
-}
-
-void FieldInfo::deformShape(double4* linVert, int count)
-{
-    if (hasDeformableShape())
-        deformShapeTemplate<double4 *>(linVert, count);
-}
-
 void FieldInfo::refineMesh(Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea)
 {
     // refine mesh - global
