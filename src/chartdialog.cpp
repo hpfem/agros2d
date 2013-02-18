@@ -197,14 +197,19 @@ void ChartControlsWidget::createControls()
 
     // controls
     QPushButton *btnPlot = new QPushButton();
+    btnPlot->setDefault(false);
     btnPlot->setText(tr("Plot"));
     connect(btnPlot, SIGNAL(clicked()), this, SLOT(doPlot()));
 
-    QPushButton *btnSaveImage = new QPushButton();
+    btnSaveImage = new QPushButton();
+    btnSaveImage->setDefault(false);
+    btnSaveImage->setEnabled(false);
     btnSaveImage->setText(tr("Save image"));
     connect(btnSaveImage, SIGNAL(clicked()), m_chart, SLOT(saveImage()));
 
-    QPushButton *btnExportData = new QPushButton();
+    btnExportData = new QPushButton();
+    btnExportData->setDefault(false);
+    btnExportData->setEnabled(false);
     btnExportData->setText(tr("Export"));
     connect(btnExportData, SIGNAL(clicked()), SLOT(doExportData()));
 
@@ -590,6 +595,9 @@ void ChartControlsWidget::doPlot()
 
         plotTime();
     }       
+
+    btnSaveImage->setEnabled(m_chart->curve()->dataSize() > 0);
+    btnExportData->setEnabled(m_chart->curve()->dataSize() > 0);
 }
 
 void ChartControlsWidget::doFieldVariable(int index)

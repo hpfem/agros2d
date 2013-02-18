@@ -64,6 +64,11 @@ Point3 force{{CLASS}}(FieldInfo *fieldInfo, const SceneMaterial *material, const
             if (!values)
             {
                 throw AgrosException(QObject::tr("Point [%1, %2] does not lie in any element").arg(x).arg(y));
+
+                delete [] value;
+                delete [] dudx;
+                delete [] dudy;
+
                 return res;
             }
 

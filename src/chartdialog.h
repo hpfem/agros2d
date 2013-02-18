@@ -104,6 +104,10 @@ private:
 
     QTabWidget* tabAnalysisType;
 
+    // buttons
+    QPushButton *btnSaveImage;
+    QPushButton *btnExportData;
+
     // geometry
     QLabel *lblStartX;
     QLabel *lblStartY;
