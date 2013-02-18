@@ -279,13 +279,21 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
                 // optimal step estimation
                 double absError = abs(newPosition.magnitude() - np4.magnitude());
                 double relError = abs(absError / newPosition.magnitude());
-                double currentStep = (position - newPosition).magnitude();
+                double currentStepLength = (position - newPosition).magnitude();
+                double currentStepVelocity = (velocity - newVelocity).magnitude();
 
                 // qDebug() << np5.toString();
                 // qDebug() << "abs. error: " << absError << ", rel. error: " << relError << ", time step: " << dt << "current step: " << currentStep;
 
+                // zero step
+                if (currentStepLength < EPS_ZERO && currentStepVelocity < EPS_ZERO)
+                {
+                    stopComputation = true;
+                    break;
+                }
+
                 // minimum step
-                if ((currentStep > minStep) || (relError > relErrorMax))
+                if ((currentStepLength > minStep) || (relError > relErrorMax))
                 {
                     // decrease step
                     dt /= 3.0;
