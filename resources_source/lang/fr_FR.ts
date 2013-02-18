@@ -296,7 +296,7 @@
     </message>
     <message>
         <location filename="../../src/confdialog.cpp" line="249"/>
-        <source>Print application log to stdout.</source>
+        <source>Print application log to standard output.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -458,10 +458,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/datatabledialog.cpp" line="243"/>
-        <location filename="../../src/datatabledialog.cpp" line="244"/>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation type="obsolete">%1</translation>
     </message>
 </context>
 <context>
@@ -665,8 +663,12 @@
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="257"/>
+        <source>Space adaptivity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Adaptivity</source>
-        <translation type="unfinished">Adaptivité</translation>
+        <translation type="obsolete">Adaptivité</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="264"/>
@@ -1018,10 +1020,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="299"/>
-        <location filename="../../src/infowidget.cpp" line="327"/>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation type="obsolete">%1</translation>
     </message>
     <message>
         <location filename="../../src/infowidget.cpp" line="300"/>
@@ -1029,9 +1029,8 @@
         <translation>Erreur :</translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="301"/>
         <source>%1 %</source>
-        <translation>%1 %</translation>
+        <translation type="obsolete">%1 %</translation>
     </message>
     <message>
         <location filename="../../src/infowidget.cpp" line="314"/>
@@ -1261,9 +1260,8 @@
         <translation>Exporter la géométrie vers un fichier</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="302"/>
         <source>New example...</source>
-        <translation>Nouvel exemple…</translation>
+        <translation type="obsolete">Nouvel exemple…</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="305"/>
@@ -1683,6 +1681,11 @@ step</source>
         <location filename="../../src/mainwindow.cpp" line="1225"/>
         <source>Mesh</source>
         <translation>Maillage</translation>
+    </message>
+    <message>
+        <location filename="../../src/mainwindow.cpp" line="302"/>
+        <source>Open example...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="1242"/>
@@ -2630,9 +2633,9 @@ step</source>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="131"/>
-        <location filename="../../src/sceneview_post.cpp" line="179"/>
-        <location filename="../../src/sceneview_post.cpp" line="229"/>
-        <location filename="../../src/sceneview_post.cpp" line="256"/>
+        <location filename="../../src/sceneview_post.cpp" line="194"/>
+        <location filename="../../src/sceneview_post.cpp" line="258"/>
+        <location filename="../../src/sceneview_post.cpp" line="301"/>
         <source>PostView</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2642,27 +2645,27 @@ step</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="179"/>
+        <location filename="../../src/sceneview_post.cpp" line="194"/>
         <source>scalar view (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="229"/>
+        <location filename="../../src/sceneview_post.cpp" line="258"/>
         <source>vector view (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="256"/>
+        <location filename="../../src/sceneview_post.cpp" line="301"/>
         <source>particle view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="298"/>
+        <location filename="../../src/sceneview_post.cpp" line="343"/>
         <source>Particle Tracing</source>
         <translation>Traçage de particules</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="298"/>
+        <location filename="../../src/sceneview_post.cpp" line="343"/>
         <source>Particle %1: %2 steps, final time %3 s</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2769,21 +2772,6 @@ step</source>
         <location filename="../../src/postprocessorview.cpp" line="389"/>
         <source>B/W descending</source>
         <translation>NB descendant</translation>
-    </message>
-    <message>
-        <location filename="../../src/postprocessorview.cpp" line="391"/>
-        <source>Show order colorbar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/postprocessorview.cpp" line="392"/>
-        <source>Show order labels</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/postprocessorview.cpp" line="395"/>
-        <source>Order palette:</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="409"/>
@@ -2906,9 +2894,13 @@ step</source>
         <translation>Type :</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="641"/>
         <source>Adaptivity</source>
-        <translation type="unfinished">Adaptivité</translation>
+        <translation type="obsolete">Adaptivité</translation>
+    </message>
+    <message>
+        <location filename="../../src/postprocessorview.cpp" line="641"/>
+        <source>Space adaptivity</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="712"/>
@@ -2936,6 +2928,7 @@ step</source>
         <translation type="unfinished">Gamme</translation>
     </message>
     <message>
+        <location filename="../../src/postprocessorview.cpp" line="395"/>
         <location filename="../../src/postprocessorview.cpp" line="756"/>
         <source>Palette:</source>
         <translation type="unfinished">Palette :</translation>
@@ -2961,8 +2954,14 @@ step</source>
         <translation>Palette</translation>
     </message>
     <message>
+        <location filename="../../src/postprocessorview.cpp" line="391"/>
         <location filename="../../src/postprocessorview.cpp" line="776"/>
         <source>Show colorbar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/postprocessorview.cpp" line="392"/>
+        <source>Show labels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3255,7 +3254,7 @@ step</source>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="523"/>
-        <source>Both space and transient adaptivity at the same time not possible at the moment.</source>
+        <source>Both space and time adaptivity at the same time not possible at the moment.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3969,7 +3968,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="912"/>
-        <source>Mesh reader (%1): boundary edges &apos;%2&apos; does not have a boundary marker</source>
+        <source>Mesh reader (%1): boundary edges &apos;%2&apos; does not have a boundary condition</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4107,7 +4106,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="211"/>
-        <source>Boundary &apos;%1&apos; already exists.</source>
+        <source>Boundary condition &apos;%1&apos; already exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4806,6 +4805,16 @@ Do you want to save your changes?</source>
         <source>Two loops connected by one edge.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="1886"/>
+        <source>Solution</source>
+        <translation type="unfinished">Solution</translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="1886"/>
+        <source>Access denied &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QObject::QObject</name>
@@ -5216,27 +5225,27 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1953"/>
+        <location filename="../../src/scene.cpp" line="1956"/>
         <source>There are nodes &apos;%1&apos; with negative radial component.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1967"/>
+        <location filename="../../src/scene.cpp" line="1970"/>
         <source>There are nodes which are connected to one edge only (red highlighted). This is not allowed in Agros.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1979"/>
+        <location filename="../../src/scene.cpp" line="1982"/>
         <source>There are crossings in the geometry (red highlighted). Remove the crossings first.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1962"/>
+        <location filename="../../src/scene.cpp" line="1965"/>
         <source>There are nodes which are not connected to any edge (red highlighted). All nodes should be connected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1972"/>
+        <location filename="../../src/scene.cpp" line="1975"/>
         <source>There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5268,7 +5277,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/scenemarkerdialog.cpp" line="430"/>
-        <source>Boundary marker name already exists.</source>
+        <source>Boundary condition name already exists.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5498,7 +5507,7 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneViewCommon</name>
     <message>
-        <location filename="../../src/sceneview_common.cpp" line="299"/>
+        <location filename="../../src/sceneview_common.cpp" line="307"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
         <translation>L&apos;image ne ​​peut pas être enregistré dans le fichier &apos;%1&apos;.</translation>
     </message>
@@ -5676,7 +5685,7 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneViewPostInterface</name>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="816"/>
+        <location filename="../../src/sceneview_post.cpp" line="861"/>
         <source>Vel.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5753,12 +5762,6 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="321"/>
-        <location filename="../../src/sceneview_geometry.cpp" line="357"/>
-        <source>-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/sceneview_geometry.cpp" line="332"/>
         <source>&lt;h3&gt;Edge&lt;/h3&gt;&lt;b&gt;Point:&lt;/b&gt; [%1; %2] - [%3; %4]&lt;br/&gt;&lt;b&gt;Boundary conditions:&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Refinement:&lt;/b&gt; %6&lt;br/&gt;&lt;b&gt;Angle:&lt;/b&gt; %7 deg.&lt;br/&gt;&lt;b&gt;Index:&lt;/b&gt; %8</source>
         <translation type="unfinished"></translation>
@@ -5778,11 +5781,6 @@ Do you want to save your changes?</source>
         <location filename="../../src/sceneview_geometry.cpp" line="548"/>
         <location filename="../../src/sceneview_geometry.cpp" line="594"/>
         <source>Radial component must be greater then or equal to zero.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="874"/>
-        <source>%1, %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6120,21 +6118,6 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="448"/>
-        <source>0</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/settings.cpp" line="449"/>
-        <source>1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/settings.cpp" line="450"/>
-        <source>2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/settings.cpp" line="457"/>
         <source>arbitrary level</source>
         <translation type="unfinished"></translation>
@@ -6431,12 +6414,8 @@ Do you want to save your changes?</source>
         <translation>Vidéo</translation>
     </message>
     <message>
-        <location filename="../../src/videodialog.cpp" line="84"/>
-        <location filename="../../src/videodialog.cpp" line="93"/>
-        <location filename="../../src/videodialog.cpp" line="258"/>
-        <location filename="../../src/videodialog.cpp" line="302"/>
         <source>%1 / %2</source>
-        <translation>%1 / %2</translation>
+        <translation type="obsolete">%1 / %2</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="85"/>

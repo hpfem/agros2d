@@ -301,9 +301,13 @@
         <translation>Проверить новую версию при запуске</translation>
     </message>
     <message>
-        <location filename="../../src/confdialog.cpp" line="249"/>
         <source>Print application log to stdout.</source>
-        <translation>Печать журнала приложений на стандартный вывод.</translation>
+        <translation type="obsolete">Печать журнала приложений на стандартный вывод.</translation>
+    </message>
+    <message>
+        <location filename="../../src/confdialog.cpp" line="249"/>
+        <source>Print application log to standard output.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/confdialog.cpp" line="256"/>
@@ -462,12 +466,6 @@
         <location filename="../../src/datatabledialog.cpp" line="223"/>
         <source>Material browser</source>
         <translation>Материалы</translation>
-    </message>
-    <message>
-        <location filename="../../src/datatabledialog.cpp" line="243"/>
-        <location filename="../../src/datatabledialog.cpp" line="244"/>
-        <source>%1</source>
-        <translation></translation>
     </message>
 </context>
 <context>
@@ -671,8 +669,12 @@
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="257"/>
+        <source>Space adaptivity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Adaptivity</source>
-        <translation>Адаптивность</translation>
+        <translation type="obsolete">Адаптивность</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="264"/>
@@ -1024,20 +1026,9 @@
         <translation>Количество степеней свободы:</translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="299"/>
-        <location filename="../../src/infowidget.cpp" line="327"/>
-        <source>%1</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../../src/infowidget.cpp" line="300"/>
         <source>Error:</source>
         <translation>Ошибка:</translation>
-    </message>
-    <message>
-        <location filename="../../src/infowidget.cpp" line="301"/>
-        <source>%1 %</source>
-        <translation></translation>
     </message>
     <message>
         <location filename="../../src/infowidget.cpp" line="314"/>
@@ -1267,9 +1258,13 @@
         <translation>Экспорт геометрии в файл</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="302"/>
         <source>New example...</source>
-        <translation>Новый пример...</translation>
+        <translation type="obsolete">Новый пример...</translation>
+    </message>
+    <message>
+        <location filename="../../src/mainwindow.cpp" line="302"/>
+        <source>Open example...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="305"/>
@@ -2652,9 +2647,9 @@ step</source>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="131"/>
-        <location filename="../../src/sceneview_post.cpp" line="179"/>
-        <location filename="../../src/sceneview_post.cpp" line="229"/>
-        <location filename="../../src/sceneview_post.cpp" line="256"/>
+        <location filename="../../src/sceneview_post.cpp" line="194"/>
+        <location filename="../../src/sceneview_post.cpp" line="258"/>
+        <location filename="../../src/sceneview_post.cpp" line="301"/>
         <source>PostView</source>
         <translation>Пост Проц.</translation>
     </message>
@@ -2664,27 +2659,27 @@ step</source>
         <translation>контурный вид (%1)</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="179"/>
+        <location filename="../../src/sceneview_post.cpp" line="194"/>
         <source>scalar view (%1)</source>
         <translation>скалярный вид (%1)</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="229"/>
+        <location filename="../../src/sceneview_post.cpp" line="258"/>
         <source>vector view (%1)</source>
         <translation>векторный вид (%1)</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="256"/>
+        <location filename="../../src/sceneview_post.cpp" line="301"/>
         <source>particle view</source>
         <translation>частицы</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="298"/>
+        <location filename="../../src/sceneview_post.cpp" line="343"/>
         <source>Particle Tracing</source>
         <translation>Трассировка частиц</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="298"/>
+        <location filename="../../src/sceneview_post.cpp" line="343"/>
         <source>Particle %1: %2 steps, final time %3 s</source>
         <translation>Частица %1: %2 шагов, общее время %3 с</translation>
     </message>
@@ -2793,19 +2788,16 @@ step</source>
         <translation>Ч/Б нисходящий</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="391"/>
         <source>Show order colorbar</source>
-        <translation>Показать палитру порядков</translation>
+        <translation type="obsolete">Показать палитру порядков</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="392"/>
         <source>Show order labels</source>
-        <translation>Показать метки порядков</translation>
+        <translation type="obsolete">Показать метки порядков</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="395"/>
         <source>Order palette:</source>
-        <translation>Палитра порядка:</translation>
+        <translation type="obsolete">Палитра порядка:</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="409"/>
@@ -2928,9 +2920,13 @@ step</source>
         <translation>Тип:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="641"/>
         <source>Adaptivity</source>
-        <translation>Адаптивность</translation>
+        <translation type="obsolete">Адаптивность</translation>
+    </message>
+    <message>
+        <location filename="../../src/postprocessorview.cpp" line="641"/>
+        <source>Space adaptivity</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="712"/>
@@ -2958,6 +2954,7 @@ step</source>
         <translation>Диапазон</translation>
     </message>
     <message>
+        <location filename="../../src/postprocessorview.cpp" line="395"/>
         <location filename="../../src/postprocessorview.cpp" line="756"/>
         <source>Palette:</source>
         <translation>Палитра:</translation>
@@ -2983,9 +2980,15 @@ step</source>
         <translation>Палитра</translation>
     </message>
     <message>
+        <location filename="../../src/postprocessorview.cpp" line="391"/>
         <location filename="../../src/postprocessorview.cpp" line="776"/>
         <source>Show colorbar</source>
         <translation>Показать палитру</translation>
+    </message>
+    <message>
+        <location filename="../../src/postprocessorview.cpp" line="392"/>
+        <source>Show labels</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="779"/>
@@ -3277,7 +3280,7 @@ step</source>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="523"/>
-        <source>Both space and transient adaptivity at the same time not possible at the moment.</source>
+        <source>Both space and time adaptivity at the same time not possible at the moment.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3992,8 +3995,12 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="912"/>
+        <source>Mesh reader (%1): boundary edges &apos;%2&apos; does not have a boundary condition</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Mesh reader (%1): boundary edges &apos;%2&apos; does not have a boundary marker</source>
-        <translation>Сетка: (%1): граничные рёбра &apos;%2&apos; без маркера</translation>
+        <translation type="obsolete">Сетка: (%1): граничные рёбра &apos;%2&apos; без маркера</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem_config.cpp" line="50"/>
@@ -4130,8 +4137,12 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="211"/>
+        <source>Boundary condition &apos;%1&apos; already exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Boundary &apos;%1&apos; already exists.</source>
-        <translation>Граница &apos;%1&apos; уже существует.</translation>
+        <translation type="obsolete">Граница &apos;%1&apos; уже существует.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="215"/>
@@ -4829,6 +4840,16 @@ Do you want to save your changes?</source>
         <source>Two loops connected by one edge.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="1886"/>
+        <source>Solution</source>
+        <translation type="unfinished">Решение</translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="1886"/>
+        <source>Access denied &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QObject::QObject</name>
@@ -5239,27 +5260,27 @@ Do you want to save your changes?</source>
         <translation>Сохранение решения на диск</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1953"/>
+        <location filename="../../src/scene.cpp" line="1956"/>
         <source>There are nodes &apos;%1&apos; with negative radial component.</source>
         <translation>Узлы &apos;%1&apos; содержат негативную радиальную составляющую.</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1967"/>
+        <location filename="../../src/scene.cpp" line="1970"/>
         <source>There are nodes which are connected to one edge only (red highlighted). This is not allowed in Agros.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1979"/>
+        <location filename="../../src/scene.cpp" line="1982"/>
         <source>There are crossings in the geometry (red highlighted). Remove the crossings first.</source>
         <translation>Геометрия где-то пересекается (выделено красным). Удалите пересечения.</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1962"/>
+        <location filename="../../src/scene.cpp" line="1965"/>
         <source>There are nodes which are not connected to any edge (red highlighted). All nodes should be connected.</source>
         <translation>Некоторые узлы не связаны (выделено красным). Все узлы должны быть соединены.</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1972"/>
+        <location filename="../../src/scene.cpp" line="1975"/>
         <source>There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first.</source>
         <translation>Некоторые узлы лежат на ребре но не соединены с ним. Удалите эти узлы.</translation>
     </message>
@@ -5291,8 +5312,12 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/scenemarkerdialog.cpp" line="430"/>
+        <source>Boundary condition name already exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Boundary marker name already exists.</source>
-        <translation>Имя граничного маркера уже существует.</translation>
+        <translation type="obsolete">Имя граничного маркера уже существует.</translation>
     </message>
 </context>
 <context>
@@ -5521,7 +5546,7 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneViewCommon</name>
     <message>
-        <location filename="../../src/sceneview_common.cpp" line="299"/>
+        <location filename="../../src/sceneview_common.cpp" line="307"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
         <translation>Не удалось сохранить изображение в файл %1&apos;.</translation>
     </message>
@@ -5699,7 +5724,7 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneViewPostInterface</name>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="816"/>
+        <location filename="../../src/sceneview_post.cpp" line="861"/>
         <source>Vel.</source>
         <translation>Скорость</translation>
     </message>
@@ -5776,10 +5801,8 @@ Do you want to save your changes?</source>
         <translation>&lt;h3&gt;Узел&lt;/h3&gt;Точка: [%1; %2]&lt;br/&gt;Индекс: %3</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="321"/>
-        <location filename="../../src/sceneview_geometry.cpp" line="357"/>
         <source>-</source>
-        <translation>-</translation>
+        <translation type="obsolete">-</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="332"/>
@@ -5804,9 +5827,8 @@ Do you want to save your changes?</source>
         <translation>Радиальная компонента должна быть больше или равна нулю.</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="874"/>
         <source>%1, %2</source>
-        <translation>%1, %2</translation>
+        <translation type="obsolete">%1, %2</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.h" line="69"/>
@@ -6143,19 +6165,16 @@ Do you want to save your changes?</source>
         <translation>&lt;b&gt;&lt;/b&gt;количественный параметр функции adapt(...)&lt;br/&gt;с различным смыслом, зависящим от стратегии адаптивности</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="448"/>
         <source>0</source>
-        <translation>0</translation>
+        <translation type="obsolete">0</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="449"/>
         <source>1</source>
-        <translation>1</translation>
+        <translation type="obsolete">1</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="450"/>
         <source>2</source>
-        <translation>2</translation>
+        <translation type="obsolete">2</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="457"/>
@@ -6455,12 +6474,8 @@ Do you want to save your changes?</source>
         <translation>Видео</translation>
     </message>
     <message>
-        <location filename="../../src/videodialog.cpp" line="84"/>
-        <location filename="../../src/videodialog.cpp" line="93"/>
-        <location filename="../../src/videodialog.cpp" line="258"/>
-        <location filename="../../src/videodialog.cpp" line="302"/>
         <source>%1 / %2</source>
-        <translation>%1 / %2</translation>
+        <translation type="obsolete">%1 / %2</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="85"/>

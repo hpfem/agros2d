@@ -909,7 +909,7 @@ void Problem::readInitialMeshesFromFile()
                 markers += QString::number(marker) + ", ";
             markers = markers.left(markers.length() - 2);
 
-            throw AgrosException(QObject::tr("Mesh reader (%1): boundary edges '%2' does not have a boundary marker").
+            throw AgrosException(QObject::tr("Mesh reader (%1): boundary edges '%2' does not have a boundary condition").
                                  arg(fieldInfo->fieldId()).
                                  arg(markers));
 

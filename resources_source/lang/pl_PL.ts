@@ -459,7 +459,7 @@
     </message>
     <message>
         <location filename="../../src/confdialog.cpp" line="249"/>
-        <source>Print application log to stdout.</source>
+        <source>Print application log to standard output.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1673,10 +1673,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/datatabledialog.cpp" line="243"/>
-        <location filename="../../src/datatabledialog.cpp" line="244"/>
         <source>%1</source>
-        <translation type="unfinished">%1</translation>
+        <translation type="obsolete">%1</translation>
     </message>
 </context>
 <context>
@@ -1835,9 +1833,8 @@
         <translation type="obsolete">Tolerancja adaptacji (%):</translation>
     </message>
     <message>
-        <location filename="../../src/problemdialog.cpp" line="257"/>
         <source>Adaptivity</source>
-        <translation type="unfinished">Adaptacja</translation>
+        <translation type="obsolete">Adaptacja</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="264"/>
@@ -1909,6 +1906,11 @@
     <message>
         <location filename="../../src/problemdialog.cpp" line="254"/>
         <source>Redone each trans st:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/problemdialog.cpp" line="257"/>
+        <source>Space adaptivity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2936,19 +2938,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/infowidget.cpp" line="299"/>
-        <location filename="../../src/infowidget.cpp" line="327"/>
         <source>%1</source>
-        <translation type="unfinished">%1</translation>
+        <translation type="obsolete">%1</translation>
     </message>
     <message>
         <location filename="../../src/infowidget.cpp" line="300"/>
         <source>Error:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/infowidget.cpp" line="301"/>
-        <source>%1 %</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3266,6 +3261,11 @@
         <translation>Eksport AutoCAD DXF</translation>
     </message>
     <message>
+        <location filename="../../src/mainwindow.cpp" line="302"/>
+        <source>Open example...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/mainwindow.cpp" line="332"/>
         <source>Copy image to clipboard</source>
         <translation type="unfinished"></translation>
@@ -3381,11 +3381,6 @@
         <location filename="../../src/mainwindow.cpp" line="299"/>
         <location filename="../../src/mainwindow.cpp" line="1173"/>
         <source>Export geometry to file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/mainwindow.cpp" line="302"/>
-        <source>New example...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4885,9 +4880,9 @@ step</source>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="131"/>
-        <location filename="../../src/sceneview_post.cpp" line="179"/>
-        <location filename="../../src/sceneview_post.cpp" line="229"/>
-        <location filename="../../src/sceneview_post.cpp" line="256"/>
+        <location filename="../../src/sceneview_post.cpp" line="194"/>
+        <location filename="../../src/sceneview_post.cpp" line="258"/>
+        <location filename="../../src/sceneview_post.cpp" line="301"/>
         <source>PostView</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4897,27 +4892,27 @@ step</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="179"/>
+        <location filename="../../src/sceneview_post.cpp" line="194"/>
         <source>scalar view (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="229"/>
+        <location filename="../../src/sceneview_post.cpp" line="258"/>
         <source>vector view (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="256"/>
+        <location filename="../../src/sceneview_post.cpp" line="301"/>
         <source>particle view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="298"/>
+        <location filename="../../src/sceneview_post.cpp" line="343"/>
         <source>Particle Tracing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="298"/>
+        <location filename="../../src/sceneview_post.cpp" line="343"/>
         <source>Particle %1: %2 steps, final time %3 s</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5273,21 +5268,6 @@ step</source>
         <translation type="unfinished">B-Cz malejąco</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="391"/>
-        <source>Show order colorbar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/postprocessorview.cpp" line="392"/>
-        <source>Show order labels</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/postprocessorview.cpp" line="395"/>
-        <source>Order palette:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/postprocessorview.cpp" line="409"/>
         <source>Contours</source>
         <translation type="unfinished">Izolinie</translation>
@@ -5404,9 +5384,13 @@ step</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="641"/>
         <source>Adaptivity</source>
-        <translation type="unfinished">Adaptacja</translation>
+        <translation type="obsolete">Adaptacja</translation>
+    </message>
+    <message>
+        <location filename="../../src/postprocessorview.cpp" line="641"/>
+        <source>Space adaptivity</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="712"/>
@@ -5434,6 +5418,7 @@ step</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../src/postprocessorview.cpp" line="395"/>
         <location filename="../../src/postprocessorview.cpp" line="756"/>
         <source>Palette:</source>
         <translation type="unfinished">Paleta:</translation>
@@ -5459,8 +5444,14 @@ step</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../src/postprocessorview.cpp" line="391"/>
         <location filename="../../src/postprocessorview.cpp" line="776"/>
         <source>Show colorbar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/postprocessorview.cpp" line="392"/>
+        <source>Show labels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5753,7 +5744,7 @@ step</source>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="523"/>
-        <source>Both space and transient adaptivity at the same time not possible at the moment.</source>
+        <source>Both space and time adaptivity at the same time not possible at the moment.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -7043,7 +7034,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="211"/>
-        <source>Boundary &apos;%1&apos; already exists.</source>
+        <source>Boundary condition &apos;%1&apos; already exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -8103,7 +8094,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="912"/>
-        <source>Mesh reader (%1): boundary edges &apos;%2&apos; does not have a boundary marker</source>
+        <source>Mesh reader (%1): boundary edges &apos;%2&apos; does not have a boundary condition</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -8285,6 +8276,16 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/util/loops.cpp" line="547"/>
         <source>Two loops connected by one edge.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="1886"/>
+        <source>Solution</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="1886"/>
+        <source>Access denied &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8816,27 +8817,27 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1953"/>
+        <location filename="../../src/scene.cpp" line="1956"/>
         <source>There are nodes &apos;%1&apos; with negative radial component.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1967"/>
+        <location filename="../../src/scene.cpp" line="1970"/>
         <source>There are nodes which are connected to one edge only (red highlighted). This is not allowed in Agros.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1979"/>
+        <location filename="../../src/scene.cpp" line="1982"/>
         <source>There are crossings in the geometry (red highlighted). Remove the crossings first.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1962"/>
+        <location filename="../../src/scene.cpp" line="1965"/>
         <source>There are nodes which are not connected to any edge (red highlighted). All nodes should be connected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1972"/>
+        <location filename="../../src/scene.cpp" line="1975"/>
         <source>There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8978,8 +8979,12 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/scenemarkerdialog.cpp" line="430"/>
+        <source>Boundary condition name already exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Boundary marker name already exists.</source>
-        <translation type="unfinished">Istnieje już znacznik brzegu o takiej nazwie.</translation>
+        <translation type="obsolete">Istnieje już znacznik brzegu o takiej nazwie.</translation>
     </message>
     <message>
         <source>Boundary condition</source>
@@ -9809,7 +9814,7 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneViewCommon</name>
     <message>
-        <location filename="../../src/sceneview_common.cpp" line="299"/>
+        <location filename="../../src/sceneview_common.cpp" line="307"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
         <translation type="unfinished">Obraz nie może być zapisany do pliku &apos;%1&apos;.</translation>
     </message>
@@ -10102,7 +10107,7 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneViewPostInterface</name>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="816"/>
+        <location filename="../../src/sceneview_post.cpp" line="861"/>
         <source>Vel.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10179,10 +10184,8 @@ Do you want to save your changes?</source>
         <translation type="unfinished">&lt;h3&gt;Węzeł&lt;/h3&gt;Punkt: [%1; %2]&lt;br/&gt;Numer: %3</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="321"/>
-        <location filename="../../src/sceneview_geometry.cpp" line="357"/>
         <source>-</source>
-        <translation type="unfinished">-</translation>
+        <translation type="obsolete">-</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_geometry.cpp" line="332"/>
@@ -10205,11 +10208,6 @@ Do you want to save your changes?</source>
         <location filename="../../src/sceneview_geometry.cpp" line="594"/>
         <source>Radial component must be greater then or equal to zero.</source>
         <translation type="unfinished">Współrzędna radialna musi być większa lub równa od zera.</translation>
-    </message>
-    <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="874"/>
-        <source>%1, %2</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Geometry</source>
@@ -10860,19 +10858,16 @@ Do you want to save your changes?</source>
         <translation type="unfinished">&lt;b&gt;&lt;/b&gt;ilościowy parament funkcji adapt(...), ma inne znaczenie dla różnych strategii adaptacji</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="448"/>
         <source>0</source>
-        <translation type="unfinished">0</translation>
+        <translation type="obsolete">0</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="449"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation type="obsolete">1</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="450"/>
         <source>2</source>
-        <translation type="unfinished">2</translation>
+        <translation type="obsolete">2</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="457"/>
@@ -11361,14 +11356,6 @@ Do you want to save your changes?</source>
         <location filename="../../src/videodialog.cpp" line="37"/>
         <source>Video</source>
         <translation>Wideo</translation>
-    </message>
-    <message>
-        <location filename="../../src/videodialog.cpp" line="84"/>
-        <location filename="../../src/videodialog.cpp" line="93"/>
-        <location filename="../../src/videodialog.cpp" line="258"/>
-        <location filename="../../src/videodialog.cpp" line="302"/>
-        <source>%1 / %2</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="85"/>
