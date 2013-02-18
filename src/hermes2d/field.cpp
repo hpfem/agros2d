@@ -46,7 +46,7 @@ bool Field::solveInitVariables()
 }
 
 FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
-    : m_plugin(NULL), m_initialMesh(NULL)
+    : m_plugin(NULL), m_initialMesh(NULL), m_numberOfSolutions(0)
 {
     if (fieldId.isEmpty())
         m_fieldId = "electrostatic";
@@ -78,6 +78,13 @@ void FieldInfo::setInitialMesh(Hermes::Hermes2D::Mesh *mesh)
 void FieldInfo::setAnalysisType(const AnalysisType analysisType)
 {
     m_analysisType = analysisType;
+
+    // number of soutions
+    m_numberOfSolutions = 0;
+
+    foreach (XMLModule::analysis an, m_plugin->module()->general().analyses().analysis())
+        if (an.type() == analysisTypeToStringKey(m_analysisType).toStdString())
+            m_numberOfSolutions = an.solutions();
 }
 
 int FieldInfo::edgeRefinement(SceneEdge *edge)
@@ -250,15 +257,6 @@ bool FieldInfo::hasDeformableShape() const
         return m_plugin->module()->general().deformed_shape().get();
 
     return false;
-}
-
-// number of solutions
-int FieldInfo::numberOfSolutions() const
-{
-    // analyses
-    foreach (XMLModule::analysis an, m_plugin->module()->general().analyses().analysis())
-        if (an.type() == analysisTypeToStringKey(m_analysisType).toStdString())
-            return an.solutions();
 }
 
 // latex equation

@@ -146,7 +146,7 @@ public:
     bool hasDeformableShape() const;
 
     // number of solutions
-    int numberOfSolutions() const;
+    inline int numberOfSolutions() const { return m_numberOfSolutions; }
 
     // latex equation
     QString equation() const;
@@ -225,6 +225,8 @@ private:
 
     // analysis type
     AnalysisType m_analysisType;
+    // number of solutions cache
+    int m_numberOfSolutions;
 
     // linearity
     LinearityType m_linearityType;
