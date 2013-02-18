@@ -254,7 +254,7 @@ void FieldWidget::createContent()
     layoutAdaptivity->addWidget(new QLabel(tr("Redone each trans st:")), 4, 0);
     layoutAdaptivity->addWidget(txtAdaptivityRedoneEach, 4, 1);
 
-    QGroupBox *grpAdaptivity = new QGroupBox(tr("Adaptivity"));
+    QGroupBox *grpAdaptivity = new QGroupBox(tr("Space adaptivity"));
     grpAdaptivity->setLayout(layoutAdaptivity);
 
     // linearity

@@ -78,7 +78,7 @@ void AgrosSolver::solveProblem()
     ErrorResult result = Agros2D::scene()->readFromFile(m_fileName);
     if (result.isError())
     {
-        Agros2D::log()->printMessage(tr("Solver"), tr("%1\n.").arg(result.message()));
+        Agros2D::log()->printMessage(tr("Solver"), QString("%1\n.").arg(result.message()));
 
         QApplication::exit(-1);
     }

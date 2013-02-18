@@ -871,7 +871,7 @@ void SceneViewPreprocessor::paintRulersHintsEdges()
         Point scr = untransform(snapPoint.x, snapPoint.y);
         printRulersAt(scr.x + m_fontRulers->glyphs[GLYPH_M].width,
                       scr.y + m_fontRulers->height * 0.7,
-                      QString(tr("%1, %2")).arg(snapPoint.x).arg(snapPoint.y));
+                      QString("%1, %2").arg(snapPoint.x).arg(snapPoint.y));
     }
 }
 

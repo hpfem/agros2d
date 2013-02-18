@@ -520,7 +520,7 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
 
     if (isTransient() && config()->isTransientAdaptive() && (numAdaptiveFields() >= 1))
     {
-        QMessageBox::critical(QApplication::activeWindow(), tr("Solver"), tr("Both space and transient adaptivity at the same time not possible at the moment."));
+        QMessageBox::critical(QApplication::activeWindow(), tr("Solver"), tr("Both space and time adaptivity at the same time not possible at the moment."));
         return;
     }
 
@@ -565,7 +565,7 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
         {
             m_isSolved = true;
         }
-    }    
+    }
     catch (AgrosException& e)
     {
         // message has been allready displayed

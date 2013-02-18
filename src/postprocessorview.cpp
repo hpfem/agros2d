@@ -638,7 +638,7 @@ QWidget *PostprocessorWidget::controlsBasic()
     layoutAdaptivity->addWidget(new QLabel(tr("Type:")), 1, 0);
     layoutAdaptivity->addWidget(cmbAdaptivitySolutionType, 1, 1);
 
-    grpAdaptivity = new QGroupBox(tr("Adaptivity"));
+    grpAdaptivity = new QGroupBox(tr("Space adaptivity"));
     grpAdaptivity->setLayout(layoutAdaptivity);
 
     groupMesh = meshWidget();

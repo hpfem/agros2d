@@ -1098,7 +1098,7 @@
     <message>
         <location filename="../../src/problemdialog.cpp" line="226"/>
         <source>Transient analysis</source>
-        <translation>Přechodný děj</translation>
+        <translation type="unfinished">Přechodový děj</translation>
     </message>
     <message>
         <source>Mesh type:</source>
@@ -2002,7 +2002,7 @@
     <message>
         <location filename="../../src/infowidget.cpp" line="151"/>
         <source>Transient analysis</source>
-        <translation>Přechodný děj</translation>
+        <translation type="unfinished">Přechodový děj</translation>
     </message>
     <message>
         <location filename="../../src/infowidget.cpp" line="152"/>
@@ -4656,7 +4656,7 @@ krok</translation>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="625"/>
         <source>Transient analysis</source>
-        <translation>Přechodný děj</translation>
+        <translation type="unfinished">Přechodový děj</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="636"/>
@@ -5312,7 +5312,7 @@ krok</translation>
     <message>
         <location filename="../../src/problemdialog.cpp" line="883"/>
         <source>Transient analysis</source>
-        <translation>Přechodný děj</translation>
+        <translation type="unfinished">Přechodový děj</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="896"/>
