@@ -75,7 +75,9 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 src/mesh/hash.cpp \
                 src/mesh/mesh_data.cpp \
                 src/mesh/mesh_reader_exodusii.cpp \
+                src/mesh/mesh_h1d_xml.cpp \
                 src/mesh/mesh_h2d_xml.cpp \
+                src/mesh/mesh_reader_h1d_xml.cpp \
                 src/mesh/mesh_reader_h2d_xml.cpp \
                 src/mesh/mesh_reader_h2d.cpp \
                 src/mesh/subdomains_h2d_xml.cpp \
