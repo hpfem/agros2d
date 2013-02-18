@@ -1879,8 +1879,11 @@ void Scene::writeSolutionToFile(const QString &fileName)
     Agros2D::log()->printMessage(tr("Scene"), tr("Saving solution to disk"));
 
     QFileInfo fileInfo(fileName);
-    QString solutionFile = QString("%1/%2.sol").arg(fileInfo.absolutePath()).arg(fileInfo.baseName());
-    JlCompress::compressDir(solutionFile, cacheProblemDir());
+    QString solutionFN = QString("%1/%2.sol").arg(fileInfo.absolutePath()).arg(fileInfo.baseName());
+    if (QFile(solutionFN).open(QIODevice::WriteOnly))
+        JlCompress::compressDir(solutionFN, cacheProblemDir());
+    else
+        Agros2D::log()->printError(QObject::tr("Solution"), QObject::tr("Access denied '%1'.").arg(solutionFN));
 }
 
 MultiArray<double> Scene::activeMultiSolutionArray()

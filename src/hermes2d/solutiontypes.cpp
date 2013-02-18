@@ -193,9 +193,11 @@ void MultiArray<Scalar>::saveToFile(const QString &baseName, FieldSolutionID sol
     int solutionIndex = 0;
     for (int i = 0; i < m_solutions.size(); i++)
     {
-        // TODO: check write access
-        m_spaces.at(i)->save((QString("%1_%2.spc").arg(baseName).arg(solutionIndex)).toStdString().c_str());
-        m_solutions.at(i)->save((QString("%1_%2.sln").arg(baseName).arg(solutionIndex)).toStdString().c_str());
+        QString spaceFN = QString("%1_%2.spc").arg(baseName).arg(solutionIndex);
+        m_spaces.at(i)->save(spaceFN.toStdString().c_str());
+
+        QString solutionFN = QString("%1_%2.sln").arg(baseName).arg(solutionIndex);
+        m_solutions.at(i)->save(solutionFN.toStdString().c_str());
 
         solutionIndex++;
     }
