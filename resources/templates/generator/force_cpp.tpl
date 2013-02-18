@@ -33,6 +33,9 @@ Point3 force{{CLASS}}(FieldInfo *fieldInfo, const SceneMaterial *material, const
 {
     int numberOfSolutions = fieldInfo->numberOfSolutions();
 
+    {{#VARIABLE_MATERIAL}}Value material_{{MATERIAL_VARIABLE}} = material->value("{{MATERIAL_VARIABLE}}");
+    {{/VARIABLE_MATERIAL}}
+
     Point3 res;
 
     if (Agros2D::problem()->isSolved())

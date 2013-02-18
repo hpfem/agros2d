@@ -61,6 +61,9 @@ void {{CLASS}}LocalValue::calculate()
             SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()));
             SceneMaterial *material = label->marker(m_fieldInfo);
 
+            {{#VARIABLE_MATERIAL}}Value material_{{MATERIAL_VARIABLE}} = material->value("{{MATERIAL_VARIABLE}}");
+            {{/VARIABLE_MATERIAL}}
+
             double *value = new double[numberOfSolutions];
             double *dudx = new double[numberOfSolutions];
             double *dudy = new double[numberOfSolutions];

@@ -92,6 +92,9 @@ void {{CLASS}}VolumeIntegral::calculate()
 
                 SceneMaterial *material = label->marker(m_fieldInfo);
 
+                {{#VARIABLE_MATERIAL}}Value material_{{MATERIAL_VARIABLE}} = material->value("{{MATERIAL_VARIABLE}}");
+                {{/VARIABLE_MATERIAL}}
+
                 for_all_active_elements(e, mesh)
                 {
                     if (m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->marker).marker == QString::number(index).toStdString())

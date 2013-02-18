@@ -47,6 +47,7 @@ private:
     FieldInfo *m_fieldInfo;
 
     QString m_variable;
+    uint m_variableHash;
     PhysicFieldVariableComp m_physicFieldVariableComp;
 };
 

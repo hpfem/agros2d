@@ -35,7 +35,7 @@
                                            PhysicFieldVariableComp physicFieldVariableComp)
     : Hermes::Hermes2D::Filter<double>(sln), m_fieldInfo(fieldInfo), m_variable(variable), m_physicFieldVariableComp(physicFieldVariableComp)
 {
-
+    m_variableHash = qHash(m_variable);
 }
 
 Hermes::Hermes2D::Func<double> *{{CLASS}}ViewScalarFilter::get_pt_value(double x, double y)
@@ -71,11 +71,14 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
     SceneMaterial *material = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().
                                                              get_user_marker(e->marker).marker.c_str()))->marker(m_fieldInfo);
 
+    {{#VARIABLE_MATERIAL}}Value material_{{MATERIAL_VARIABLE}} = material->value("{{MATERIAL_VARIABLE}}");
+    {{/VARIABLE_MATERIAL}}
+
     {{#VARIABLE_SOURCE}}
     if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}})
             && (m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
             && (m_physicFieldVariableComp == {{PHYSICFIELDVARIABLECOMP_TYPE}})
-            && (m_variable == "{{VARIABLE}}"))
+            && (m_variableHash == {{VARIABLE_HASH}}))
         for (int i = 0; i < np; i++)
             node->values[0][0][i] = {{EXPRESSION}};
     {{/VARIABLE_SOURCE}}

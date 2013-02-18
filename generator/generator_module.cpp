@@ -338,6 +338,16 @@ void Agros2DGeneratorModule::generatePluginFilterFiles()
     ctemplate::ExpandTemplate(QString("%1/%2/filter_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
 
+    foreach (XMLModule::quantity quantity, m_module->volume().quantity())
+    {
+        if (quantity.shortname().present())
+        {
+            ctemplate::TemplateDictionary *variable = output.AddSectionDictionary("VARIABLE_MATERIAL");
+
+            variable->SetValue("MATERIAL_VARIABLE", quantity.id());
+        }
+    }
+
     foreach (XMLModule::localvariable lv, m_module->postprocessor().localvariables().localvariable())
     {
         foreach (XMLModule::expression expr, lv.expression())
@@ -444,6 +454,15 @@ void Agros2DGeneratorModule::generatePluginForceFiles()
     ctemplate::ExpandTemplate(QString("%1/%2/force_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
 
+    foreach (XMLModule::quantity quantity, m_module->volume().quantity())
+    {
+        if (quantity.shortname().present())
+        {
+            ctemplate::TemplateDictionary *variable = output.AddSectionDictionary("VARIABLE_MATERIAL");
+
+            variable->SetValue("MATERIAL_VARIABLE", quantity.id());
+        }
+    }
 
     // force
     XMLModule::force force = m_module->postprocessor().force();
@@ -519,6 +538,16 @@ void Agros2DGeneratorModule::generatePluginLocalPointFiles()
     ctemplate::ExpandTemplate(QString("%1/%2/localvalue_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
 
+    foreach (XMLModule::quantity quantity, m_module->volume().quantity())
+    {
+        if (quantity.shortname().present())
+        {
+            ctemplate::TemplateDictionary *variable = output.AddSectionDictionary("VARIABLE_MATERIAL");
+
+            variable->SetValue("MATERIAL_VARIABLE", quantity.id());
+        }
+    }
+
     foreach (XMLModule::localvariable lv, m_module->postprocessor().localvariables().localvariable())
     {
         foreach (XMLModule::expression expr, lv.expression())
@@ -584,6 +613,16 @@ void Agros2DGeneratorModule::generatePluginSurfaceIntegralFiles()
     ctemplate::ExpandTemplate(QString("%1/%2/surfaceintegral_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
 
+    foreach (XMLModule::quantity quantity, m_module->volume().quantity())
+    {
+        if (quantity.shortname().present())
+        {
+            ctemplate::TemplateDictionary *variable = output.AddSectionDictionary("VARIABLE_MATERIAL");
+
+            variable->SetValue("MATERIAL_VARIABLE", quantity.id());
+        }
+    }
+
     foreach (XMLModule::surfaceintegral surf, m_module->postprocessor().surfaceintegrals().surfaceintegral())
     {
         foreach (XMLModule::expression expr, surf.expression())
@@ -644,6 +683,16 @@ void Agros2DGeneratorModule::generatePluginVolumeIntegralFiles()
     // header - expand template
     ctemplate::ExpandTemplate(QString("%1/%2/volumeintegral_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
+
+    foreach (XMLModule::quantity quantity, m_module->volume().quantity())
+    {
+        if (quantity.shortname().present())
+        {
+            ctemplate::TemplateDictionary *variable = output.AddSectionDictionary("VARIABLE_MATERIAL");
+
+            variable->SetValue("MATERIAL_VARIABLE", quantity.id());
+        }
+    }
 
     foreach (XMLModule::volumeintegral vol, m_module->postprocessor().volumeintegrals().volumeintegral())
     {
@@ -796,7 +845,7 @@ void Agros2DGeneratorModule::createFilterExpression(ctemplate::TemplateDictionar
     {
         ctemplate::TemplateDictionary *expression = output.AddSectionDictionary("VARIABLE_SOURCE");
 
-        expression->SetValue("VARIABLE", variable.toStdString());
+        expression->SetValue("VARIABLE_HASH", QString::number(qHash(variable)).toStdString());
         expression->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisType).toStdString());
         expression->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
         expression->SetValue("PHYSICFIELDVARIABLECOMP_TYPE", Agros2DGenerator::physicFieldVariableCompStringEnum(physicFieldVariableComp).toStdString());
@@ -987,10 +1036,10 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
 
                     if (nonlinearExpr.isEmpty())
                         // linear material
-                        dict[QString::fromStdString(quantity.shortname().get())] = QString("material->value(\"%1\").number()").arg(QString::fromStdString(quantity.id()));
+                        dict[QString::fromStdString(quantity.shortname().get())] = QString("material_%1.number()").arg(QString::fromStdString(quantity.id()));
                     else
                         // nonlinear material
-                        dict[QString::fromStdString(quantity.shortname().get())] = QString("material->value(\"%1\").value(%2)").
+                        dict[QString::fromStdString(quantity.shortname().get())] = QString("material_%1.value(%2)").
                                 arg(QString::fromStdString(quantity.id())).
                                 arg(parsePostprocessorExpression(analysisType, coordinateType, nonlinearExpr, false));
                 }
