@@ -335,12 +335,12 @@
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="231"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">État stationnaire</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="234"/>
         <source>Fixed voltage</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Potentiel fixe</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="237"/>
@@ -350,7 +350,7 @@
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="240"/>
         <source>Permittivity</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Permittivité</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="243"/>
@@ -380,12 +380,12 @@
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="258"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Volume</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="261"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Coupe transversale</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="264"/>
@@ -395,12 +395,12 @@
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="267"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Longueur</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="270"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Surface</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="273"/>
@@ -423,7 +423,7 @@
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="621"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">État stationnaire</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="624"/>
@@ -438,7 +438,7 @@
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="630"/>
         <source>Pressure</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pression</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="633"/>
@@ -488,17 +488,17 @@
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="660"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Volume</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="663"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Coupe transversale</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="666"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Longueur</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="669"/>
@@ -526,7 +526,7 @@
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="387"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">État stationnaire</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="390"/>
@@ -611,22 +611,22 @@
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="438"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Volume</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="441"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Coupe transversale</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="444"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Longueur</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="447"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Surface</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="454"/>
@@ -644,12 +644,12 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="675"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">État stationnaire</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="678"/>
         <source>Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Harmonique</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="681"/>
@@ -789,7 +789,7 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="762"/>
         <source>Conductivity</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Conductivité</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="765"/>
@@ -859,12 +859,12 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="804"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Volume</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="807"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Coupe transversale</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="810"/>
@@ -924,12 +924,12 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="843"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Longueur</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="846"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Surface</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="853"/>
