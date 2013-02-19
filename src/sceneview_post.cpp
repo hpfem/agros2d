@@ -262,7 +262,6 @@ void PostHermes::processRangeVector()
         // deformed shape
         if (Agros2D::scene()->activeViewField()->hasDeformableShape() && Agros2D::problem()->configView()->deformVector)
         {
-            /*
             Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *>(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0),
                                                                                                                                                            Agros2D::scene()->activeMultiSolutionArray().solutions().at(1)));
 
@@ -272,7 +271,6 @@ void PostHermes::processRangeVector()
             m_vecVectorView.set_displacement(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0),
                                              Agros2D::scene()->activeMultiSolutionArray().solutions().at(1),
                                              dmult);
-            */
         }
 
         // process solution
