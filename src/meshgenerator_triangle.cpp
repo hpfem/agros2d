@@ -338,7 +338,7 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
     QFile fileEle(tempProblemFileName() + ".ele");
     if (!fileEle.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        Agros2D::log()->printError(tr("Mesh generator"), tr("Could not read Triangle ele file"));
+        Agros2D::log()->printError(tr("Mesh generator"), tr("Could not read Triangle elements file"));
         return false;
     }
     QTextStream inEle(&fileEle);
@@ -346,7 +346,7 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
     QFile fileNeigh(tempProblemFileName() + ".neigh");
     if (!fileNeigh.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        Agros2D::log()->printError(tr("Mesh generator"), tr("Could not read Triangle neigh file"));
+        Agros2D::log()->printError(tr("Mesh generator"), tr("Could not read Triangle neighbors elements file"));
         return false;
     }
     QTextStream inNeigh(&fileNeigh);

@@ -597,7 +597,7 @@ void Solver<Scalar>::createInitialSpace()
 {
     // read mesh from file
     if (!Agros2D::problem()->isMeshed())
-        throw AgrosSolverException(QObject::tr("Meshes are empty"));
+        throw AgrosSolverException(QObject::tr("Problem is not meshed"));
 
     m_exactSolutionFunctions.clear();
     clearActualSpaces();
