@@ -315,8 +315,17 @@ void PostHermes::processParticleTracing()
             {
                 particleTracing.computeTrajectoryParticle(k > 0);
             }
+            catch (AgrosException& e)
+            {
+                Agros2D::log()->printWarning("Particle tracing", QString("Particle tracing failed, ").append(e.what()));
+                m_particleTracingVelocityMin = 0.0;
+                m_particleTracingVelocityMax = 0.0;
+
+                return;
+            }
             catch (...)
             {
+                Agros2D::log()->printWarning("Particle tracing", "Catched unknown exception in particle tracing!");
                 m_particleTracingVelocityMin = 0.0;
                 m_particleTracingVelocityMax = 0.0;
 
