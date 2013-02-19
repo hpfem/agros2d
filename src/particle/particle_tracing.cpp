@@ -69,6 +69,9 @@ bool ParticleTracing::newtonEquations(double step,
     Point3 totalFieldForce;
     foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
     {
+        if(!fieldInfo->plugin()->hasForce())
+            continue;
+
         Point3 fieldForce;
 
         // check domain
