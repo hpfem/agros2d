@@ -144,16 +144,13 @@ void PostHermes::processRangeContour()
         m_linContourView.free();
 
         // deformed shape
-        if (Agros2D::scene()->activeViewField()->hasDeformableShape() && Agros2D::problem()->configView()->deformScalar)
+        if (Agros2D::scene()->activeViewField()->hasDeformableShape() && Agros2D::problem()->configView()->deformContour)
         {
-            // TODO: FIX - sln min() and max()
             Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *>(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0),
                                                                                                                                                            Agros2D::scene()->activeMultiSolutionArray().solutions().at(1)));
-            Hermes::Hermes2D::Views::Linearizer lin;
-            lin.process_solution(filter);
 
             RectPoint rect = Agros2D::scene()->boundingBox();
-            double dmult = qMax(rect.width(), rect.height()) / lin.get_max_value() / 15.0;
+            double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
 
             m_linContourView.set_displacement(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0),
                                               Agros2D::scene()->activeMultiSolutionArray().solutions().at(1),
@@ -204,14 +201,11 @@ void PostHermes::processRangeScalar()
         // deformed shape
         if (Agros2D::scene()->activeViewField()->hasDeformableShape() && Agros2D::problem()->configView()->deformScalar)
         {
-            // TODO: FIX - sln min() and max()
             Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *>(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0),
                                                                                                                                                            Agros2D::scene()->activeMultiSolutionArray().solutions().at(1)));
-            Hermes::Hermes2D::Views::Linearizer lin;
-            lin.process_solution(filter);
 
             RectPoint rect = Agros2D::scene()->boundingBox();
-            double dmult = qMax(rect.width(), rect.height()) / lin.get_max_value() / 15.0;
+            double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
 
             m_linScalarView.set_displacement(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0),
                                              Agros2D::scene()->activeMultiSolutionArray().solutions().at(1),
@@ -266,17 +260,14 @@ void PostHermes::processRangeVector()
         m_vecVectorView.free();
 
         // deformed shape
-        if (Agros2D::scene()->activeViewField()->hasDeformableShape() && Agros2D::problem()->configView()->deformScalar)
+        if (Agros2D::scene()->activeViewField()->hasDeformableShape() && Agros2D::problem()->configView()->deformVector)
         {
             /*
-            // TODO: FIX - sln min() and max()
             Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *>(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0),
                                                                                                                                                            Agros2D::scene()->activeMultiSolutionArray().solutions().at(1)));
-            Hermes::Hermes2D::Views::Linearizer lin;
-            lin.process_solution(filter);
 
             RectPoint rect = Agros2D::scene()->boundingBox();
-            double dmult = qMax(rect.width(), rect.height()) / lin.get_max_value() / 15.0;
+            double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
 
             m_vecVectorView.set_displacement(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0),
                                              Agros2D::scene()->activeMultiSolutionArray().solutions().at(1),
