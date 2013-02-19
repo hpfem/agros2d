@@ -795,7 +795,7 @@ void PythonEditorDialog::doFileOpen(const QString &file)
     // open dialog
     QString fileName = file;
     if (fileName.isEmpty())
-        fileName = QFileDialog::getOpenFileName(this, tr("Open File"), dir, tr("Python files (*.py)"));
+        fileName = QFileDialog::getOpenFileName(this, tr("Open File"), dir, tr("Python scripts (*.py)"));
 
     // read text
     if (!fileName.isEmpty())
@@ -856,7 +856,7 @@ void PythonEditorDialog::doFileSave()
 
     // save dialog
     if (scriptEditorWidget()->fileName.isEmpty())
-        scriptEditorWidget()->fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python files (*.py)"));
+        scriptEditorWidget()->fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python scripts (*.py)"));
 
     // write text
     if (!scriptEditorWidget()->fileName.isEmpty())
@@ -892,7 +892,7 @@ void PythonEditorDialog::doFileSaveAs()
     QSettings settings;
     QString dir = settings.value("General/LastDir", "data").toString();
 
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python files (*.py)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python scripts (*.py)"));
     if (!fileName.isEmpty())
     {
         scriptEditorWidget()->fileName = fileName;
