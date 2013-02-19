@@ -78,7 +78,8 @@ bool ParticleTracing::newtonEquations(FieldInfo* fieldInfo,
     }
     catch (AgrosException e)
     {
-        Agros2D::log()->printWarning(tr("Particle Tracing"), e.what());
+//        Agros2D::log()->printWarning(tr("Particle Tracing"), e.what());
+        qDebug() << "Particle Tracing warning: " << e.what();
         return false;
     }
 
