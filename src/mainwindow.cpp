@@ -1403,7 +1403,7 @@ void MainWindow::doCopy()
     if (sceneViewPreprocessor->actSceneModePreprocessor->isChecked())
         pixmap = sceneViewPreprocessor->renderScenePixmap();
     else if (sceneViewMesh->actSceneModeMesh->isChecked())
-        pixmap = sceneViewPost2D->renderScenePixmap();
+        pixmap = sceneViewMesh->renderScenePixmap();
     else if (sceneViewPost2D->actSceneModePost2D->isChecked())
         pixmap = sceneViewPost2D->renderScenePixmap();
     else if (sceneViewPost3D->actSceneModePost3D->isChecked())
@@ -1532,7 +1532,7 @@ void MainWindow::setControls()
 
     // actSolve->setEnabled(Agros2D::problem()->fieldInfos().count() > 0);
     actSolveAdaptiveStep->setEnabled(false);
-//    actSolveAdaptiveStep->setEnabled(Agros2D::problem()->fieldInfos().count() > 0 && Agros2D::problem()->fieldInfos().count() <= 1 && (!Agros2D::problem()->isTransient()) );
+    //    actSolveAdaptiveStep->setEnabled(Agros2D::problem()->fieldInfos().count() > 0 && Agros2D::problem()->fieldInfos().count() <= 1 && (!Agros2D::problem()->isTransient()) );
 
     QTimer::singleShot(0, postprocessorWidget, SLOT(updateControls()));
 
