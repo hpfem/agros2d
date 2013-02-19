@@ -568,7 +568,7 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivity
     nextTimeStepLength = min(nextTimeStepLength, Agros2D::problem()->actualTimeStepLength() * maxTimeStepRatio);
     nextTimeStepLength = max(nextTimeStepLength, Agros2D::problem()->actualTimeStepLength() / maxTimeStepRatio);
 
-    Agros2D::log()->printDebug(m_solverID, QString("time adaptivity, time %1, rel. error %2, tolerance %3, step size %4 -> %5 (%6 %)").
+    Agros2D::log()->printDebug(m_solverID, QString("Time adaptivity, time %1, rel. error %2, tolerance %3, step size %4 -> %5 (%6 %)").
                                arg(Agros2D::problem()->actualTime()).
                                arg(error).
                                arg(TOL).
@@ -576,7 +576,7 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivity
                                arg(nextTimeStepLength).
                                arg(nextTimeStepLength / Agros2D::problem()->actualTimeStepLength()*100.));
     if(refuseThisStep)
-        Agros2D::log()->printDebug(m_solverID, "time step refused");
+        Agros2D::log()->printDebug(m_solverID, "Time step refused");
 
     delete bdf2Table;
     return NextTimeStep(nextTimeStepLength, refuseThisStep);
@@ -856,7 +856,7 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep, bool f
             throw;
         }
 
-        Agros2D::log()->printMessage(m_solverID, QObject::tr("adaptivity step (error = %1, DOFs = %2/%3)").
+        Agros2D::log()->printMessage(m_solverID, QObject::tr("Adaptivity step (error = %1, DOFs = %2/%3)").
                                      arg(error).
                                      arg(Space<Scalar>::get_num_dofs(msa.spacesConst())).
                                      arg(Space<Scalar>::get_num_dofs(msaRef.spacesConst())));
@@ -871,7 +871,7 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep, bool f
 template <typename Scalar>
 void Solver<Scalar>::solveInitialTimeStep()
 {
-    Agros2D::log()->printDebug(m_solverID, QObject::tr("initial time step"));
+    Agros2D::log()->printDebug(m_solverID, QObject::tr("Initial time step"));
 
     Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces = deepMeshAndSpaceCopy(m_actualSpaces, false);
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions;

@@ -1427,12 +1427,12 @@
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="1617"/>
-        <source>Export mesh</source>
+        <source>The problem is not meshed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="1617"/>
-        <source>The problem is not meshed.</source>
+        <source>Problem</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1873,7 +1873,7 @@ step</source>
     </message>
     <message>
         <location filename="../../src/meshgenerator.cpp" line="224"/>
-        <source>Boundary condition is not assigned on following edges %1.</source>
+        <source>Boundary condition is not assigned on following edges %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1889,58 +1889,54 @@ step</source>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="148"/>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="153"/>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="167"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="279"/>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="405"/>
         <source>Mesh generator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="54"/>
-        <source>GMSH geo file was created.</source>
+        <source>GMSH geo file was created</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="74"/>
-        <source>Could not start GMSH.</source>
+        <source>Could not start GMSH</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="104"/>
-        <source>mesh files were created</source>
+        <source>Mesh files were created</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="108"/>
-        <source>mesh was converted to Hermes2D mesh file</source>
+        <source>Mesh was converted to Hermes2D mesh file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="125"/>
-        <source>mesh files were deleted</source>
+        <source>Mesh files were deleted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="148"/>
-        <source>invalid number of nodes (%1 &lt; 3)</source>
+        <source>Invalid number of nodes (%1 &lt; 3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="153"/>
-        <source>invalid number of edges (%1 &lt; 3)</source>
+        <source>Invalid number of edges (%1 &lt; 3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="167"/>
-        <source>could not create GMSH geo mesh file (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="279"/>
-        <source>GMSH</source>
+        <source>Could not create GMSH geo mesh file (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="405"/>
-        <source>could not read GMSH mesh file</source>
+        <source>Could not read GMSH mesh file</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1971,52 +1967,52 @@ step</source>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="74"/>
-        <source>could not start Triangle</source>
+        <source>Could not start Triangle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="107"/>
-        <source>mesh files were created</source>
+        <source>Mesh files were created</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="112"/>
-        <source>mesh was converted to Hermes2D mesh file</source>
+        <source>Mesh was converted to Hermes2D mesh file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="152"/>
-        <source>invalid number of nodes (%1 &lt; 3)</source>
+        <source>Invalid number of nodes (%1 &lt; 3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="157"/>
-        <source>invalid number of edges (%1 &lt; 3)</source>
+        <source>Invalid number of edges (%1 &lt; 3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="171"/>
-        <source>could not create Triangle poly mesh file (%1)</source>
+        <source>Could not create Triangle poly mesh file (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="325"/>
-        <source>could not read Triangle node file</source>
+        <source>Could not read Triangle node file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="333"/>
-        <source>could not read Triangle edge file</source>
+        <source>Could not read Triangle edge file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="341"/>
-        <source>could not read Triangle ele file</source>
+        <source>Could not read Triangle ele file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="349"/>
-        <source>could not read Triangle neigh file</source>
+        <source>Could not read Triangle neigh file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2590,22 +2586,22 @@ step</source>
         <location filename="../../src/sceneview_post.cpp" line="64"/>
         <location filename="../../src/sceneview_post.cpp" line="86"/>
         <location filename="../../src/sceneview_post.cpp" line="103"/>
-        <source>MeshView</source>
+        <source>Mesh View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="64"/>
-        <source>initial mesh with %1 elements</source>
+        <source>Initial mesh with %1 elements</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="86"/>
-        <source>solution mesh with %1 elements</source>
+        <source>Solution mesh with %1 elements</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="103"/>
-        <source>polynomial order</source>
+        <source>Polynomial order</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2613,27 +2609,27 @@ step</source>
         <location filename="../../src/sceneview_post.cpp" line="194"/>
         <location filename="../../src/sceneview_post.cpp" line="258"/>
         <location filename="../../src/sceneview_post.cpp" line="301"/>
-        <source>PostView</source>
+        <source>Post View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="131"/>
-        <source>contour view (%1)</source>
+        <source>Contour view (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="194"/>
-        <source>scalar view (%1)</source>
+        <source>Scalar view (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="258"/>
-        <source>vector view (%1)</source>
+        <source>Vector view (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="301"/>
-        <source>particle view</source>
+        <source>Particle view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3177,6 +3173,7 @@ step</source>
     <name>Problem</name>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="283"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="303"/>
         <location filename="../../src/hermes2d/problem.cpp" line="311"/>
         <source>Mesh</source>
         <translation type="unfinished"></translation>
@@ -3184,22 +3181,17 @@ step</source>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="283"/>
         <location filename="../../src/hermes2d/problem.cpp" line="529"/>
-        <source>No fields defined.</source>
+        <source>No fields defined</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="295"/>
-        <source>Geometry check</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="303"/>
-        <source>Mesh reader</source>
+        <source>Geometry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="311"/>
-        <source>An unknown exception occured in solver and has been ignored!</source>
+        <source>An unknown exception occured and has been ignored</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3208,6 +3200,7 @@ step</source>
         <location filename="../../src/hermes2d/problem.cpp" line="523"/>
         <location filename="../../src/hermes2d/problem.cpp" line="529"/>
         <location filename="../../src/hermes2d/problem.cpp" line="534"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="583"/>
         <source>Solver</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3228,7 +3221,7 @@ step</source>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="534"/>
-        <source>Warning: Matrix and RHS will be saved on the disk. This will slow down the calculation. You may disable it in Edit-&gt;Options-&gt;Solver menu.</source>
+        <source>Matrix and RHS will be saved on the disk and this will slow down the calculation (you may disable it in appllication settings)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3239,13 +3232,13 @@ step</source>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="846"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="941"/>
-        <source>Problem</source>
+        <source>Loading initial mesh from disk</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="846"/>
-        <source>Loading initial mesh from disk</source>
+        <location filename="../../src/hermes2d/problem.cpp" line="941"/>
+        <source>Problem</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3759,7 +3752,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1090"/>
-        <source>Python Lab - %1</source>
+        <source>PythonLab - %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4485,6 +4478,11 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../src/hermes2d/coupling.cpp" line="89"/>
+        <source>Hard coupling not available yet, switching to weak coupling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/hermes2d/coupling.cpp" line="191"/>
         <source>Couplings dir &apos;%1&apos; doesn&apos;t exists</source>
         <translation type="unfinished"></translation>
@@ -4495,31 +4493,32 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="331"/>
+        <location filename="../../src/hermes2d/coupling.cpp" line="89"/>
+        <location filename="../../src/hermes2d/coupling.cpp" line="209"/>
         <location filename="../../src/hermes2d/problem.cpp" line="484"/>
         <location filename="../../src/hermes2d/problem.cpp" line="606"/>
         <location filename="../../src/hermes2d/problem.cpp" line="611"/>
         <location filename="../../src/hermes2d/problem.cpp" line="616"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="667"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="764"/>
+        <location filename="../../src/hermes2d/solutiontypes.cpp" line="168"/>
         <location filename="../../src/hermes2d/solver.cpp" line="47"/>
+        <location filename="../../src/scene.cpp" line="1888"/>
         <source>Solver</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="331"/>
-        <source>mesh generation</source>
+        <source>Mesh generation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="484"/>
-        <source>No field defined.</source>
+        <source>No fields defined</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="667"/>
         <location filename="../../src/hermes2d/problem.cpp" line="764"/>
-        <source>solving problem</source>
+        <source>Solving problem</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4533,22 +4532,22 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="821"/>
-        <source>transient step %1 (%2%)</source>
+        <source>Transient step %1 (%2%)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="828"/>
-        <source>transient step %1/%2</source>
+        <source>Transient step %1/%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="836"/>
-        <source>single analysis</source>
+        <source>Field solving (single analysis)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="838"/>
-        <source>coupled analysis</source>
+        <source>Fields solving (coupled analysis)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4580,12 +4579,12 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/hermes2d/solver.cpp" line="859"/>
-        <source>adaptivity step (error = %1, DOFs = %2/%3)</source>
+        <source>Adaptivity step (error = %1, DOFs = %2/%3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/solver.cpp" line="874"/>
-        <source>initial time step</source>
+        <source>Initial time step</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4750,11 +4749,6 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/value.cpp" line="237"/>
-        <source>Value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/util/xml.cpp" line="45"/>
         <source>Schema &apos;%1&apos; is not valid. %2</source>
         <translation type="unfinished"></translation>
@@ -4765,23 +4759,21 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solutiontypes.cpp" line="168"/>
-        <source>MultiArray</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/util/loops.cpp" line="547"/>
         <source>Two loops connected by one edge.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1886"/>
-        <source>Solution</source>
+        <location filename="../../src/scene.cpp" line="1888"/>
+        <source>Access denied &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1886"/>
-        <source>Access denied &apos;%1&apos;.</source>
+        <location filename="../../src/hermes2d/problem.cpp" line="331"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="667"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="764"/>
+        <location filename="../../src/value.cpp" line="237"/>
+        <source>Problem</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5060,31 +5052,6 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="437"/>
-        <source>at least one boundary condition has to be assigned</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/scene.cpp" line="443"/>
-        <source>invalid number of labels (%1 &lt; 1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/scene.cpp" line="456"/>
-        <source>at least one material has to be assigned</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/scene.cpp" line="462"/>
-        <source>invalid number of boundary conditions (%1 &lt; 1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/scene.cpp" line="467"/>
-        <source>invalid number of materials (%1 &lt; 1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/scene.cpp" line="835"/>
         <source>Translation</source>
         <translation type="unfinished"></translation>
@@ -5110,76 +5077,82 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1181"/>
+        <location filename="../../src/scene.cpp" line="1149"/>
+        <location filename="../../src/scene.cpp" line="1841"/>
+        <location filename="../../src/scene.cpp" line="1881"/>
+        <source>Problem</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="1149"/>
+        <source>Loading problem from disk</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="1183"/>
         <source>Convert file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1182"/>
+        <location filename="../../src/scene.cpp" line="1184"/>
         <source>File %1 must be converted to the new version. Do you want to convert and replace current file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1183"/>
+        <location filename="../../src/scene.cpp" line="1185"/>
         <source>&amp;Yes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1183"/>
+        <location filename="../../src/scene.cpp" line="1185"/>
         <source>&amp;No</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1192"/>
-        <location filename="../../src/scene.cpp" line="1805"/>
+        <location filename="../../src/scene.cpp" line="1194"/>
+        <location filename="../../src/scene.cpp" line="1807"/>
         <source>File &apos;%1&apos; cannot be saved (%2).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1835"/>
-        <location filename="../../src/scene.cpp" line="1879"/>
-        <source>Scene</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/scene.cpp" line="1835"/>
+        <location filename="../../src/scene.cpp" line="1841"/>
         <source>Loading solution from disk</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1853"/>
-        <location filename="../../src/scene.cpp" line="1858"/>
-        <location filename="../../src/scene.cpp" line="1871"/>
-        <source>Mesh reader</source>
+        <location filename="../../src/scene.cpp" line="1855"/>
+        <location filename="../../src/scene.cpp" line="1860"/>
+        <location filename="../../src/scene.cpp" line="1873"/>
+        <source>Mesh</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1879"/>
+        <location filename="../../src/scene.cpp" line="1881"/>
         <source>Saving solution to disk</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1956"/>
+        <location filename="../../src/scene.cpp" line="1958"/>
         <source>There are nodes &apos;%1&apos; with negative radial component.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1970"/>
+        <location filename="../../src/scene.cpp" line="1972"/>
         <source>There are nodes which are connected to one edge only (red highlighted). This is not allowed in Agros.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1982"/>
+        <location filename="../../src/scene.cpp" line="1984"/>
         <source>There are crossings in the geometry (red highlighted). Remove the crossings first.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1965"/>
+        <location filename="../../src/scene.cpp" line="1967"/>
         <source>There are nodes which are not connected to any edge (red highlighted). All nodes should be connected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1975"/>
+        <location filename="../../src/scene.cpp" line="1977"/>
         <source>There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5187,6 +5160,31 @@ Do you want to save your changes?</source>
         <location filename="../../src/scene.cpp" line="511"/>
         <source>unnamed</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="437"/>
+        <source>At least one boundary condition has to be assigned</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="443"/>
+        <source>Invalid number of labels (%1 &lt; 1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="456"/>
+        <source>At least one material has to be assigned</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="462"/>
+        <source>Invalid number of boundary conditions (%1 &lt; 1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="467"/>
+        <source>Invalid number of materials (%1 &lt; 1)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="564"/>
@@ -5209,12 +5207,12 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1152"/>
+        <location filename="../../src/scene.cpp" line="1154"/>
         <source>File &apos;%1&apos; cannot be opened (%2).</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1170"/>
+        <location filename="../../src/scene.cpp" line="1172"/>
         <source>File &apos;%1&apos; is not valid Agros2D file.</source>
         <translation></translation>
     </message>

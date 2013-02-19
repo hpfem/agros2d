@@ -280,7 +280,7 @@ bool Problem::mesh()
     // TODO: make global check geometry before mesh() and solve()
     if (Agros2D::problem()->fieldInfos().count() == 0)
     {
-        Agros2D::log()->printError(tr("Mesh"), tr("No fields defined."));
+        Agros2D::log()->printError(tr("Mesh"), tr("No fields defined"));
         return false;
     }
 
@@ -292,7 +292,7 @@ bool Problem::mesh()
     {
         // this assumes that all the code in Hermes and Agros is exception-safe
         // todo:  this is almost certainly not the case, at least for Agros. It should be further investigated
-        Agros2D::log()->printError(tr("Geometry check"), QString("%1").arg(e.what()));
+        Agros2D::log()->printError(tr("Geometry"), QString("%1").arg(e.what()));
         m_isSolving = false;
         return false;
     }
@@ -300,7 +300,7 @@ bool Problem::mesh()
     {
         // this assumes that all the code in Hermes and Agros is exception-safe
         // todo:  this is almost certainly not the case, at least for Agros. It should be further investigated
-        Agros2D::log()->printError(tr("Mesh reader"), QString("%1").arg(e.what()));
+        Agros2D::log()->printError(tr("Mesh"), QString("%1").arg(e.what()));
         m_isSolving = false;
         return false;
     }
@@ -308,7 +308,7 @@ bool Problem::mesh()
     {
         // todo: dangerous
         // catching all other exceptions. This is not save at all
-        Agros2D::log()->printWarning(tr("Mesh"), tr("An unknown exception occured in solver and has been ignored!"));
+        Agros2D::log()->printWarning(tr("Mesh"), tr("An unknown exception occured and has been ignored"));
         m_isSolving = false;
         return false;
     }
@@ -328,7 +328,7 @@ bool Problem::meshAction()
 
     Agros2D::scene()->blockSignals(false);
 
-    Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("mesh generation"));
+    Agros2D::log()->printMessage(QObject::tr("Problem"), QObject::tr("Mesh generation"));
 
     Agros2D::scene()->checkGeometryResult();
 
@@ -481,7 +481,7 @@ void Problem::solveInit()
 
     if (fieldInfos().count() == 0)
     {
-        Agros2D::log()->printError(QObject::tr("Solver"), QObject::tr("No field defined."));
+        Agros2D::log()->printError(QObject::tr("Solver"), QObject::tr("No fields defined"));
         throw AgrosSolverException("No field defined.");
     }
 }
@@ -526,12 +526,12 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
 
     if (Agros2D::problem()->fieldInfos().count() == 0)
     {
-        Agros2D::log()->printError(tr("Solver"), tr("No fields defined."));
+        Agros2D::log()->printError(tr("Solver"), tr("No fields defined"));
         return;
     }
 
     if (Agros2D::configComputer()->saveMatrixRHS)
-        Agros2D::log()->printWarning(tr("Solver"), tr("Warning: Matrix and RHS will be saved on the disk. This will slow down the calculation. You may disable it in Edit->Options->Solver menu."));
+        Agros2D::log()->printWarning(tr("Solver"), tr("Matrix and RHS will be saved on the disk and this will slow down the calculation (you may disable it in appllication settings)"));
 
     try
     {
@@ -580,7 +580,7 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
         // todo: dangerous
         // catching all other exceptions. This is not save at all
         m_isSolving = false;
-        Agros2D::log()->printWarning("Solver", "An unknown exception occured in solver and has been ignored!");
+        Agros2D::log()->printWarning(tr("Solver"), "An unknown exception occured in solver and has been ignored");
         return;
     }
 }
@@ -624,7 +624,7 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
     // todo: somehow catch other exceptions - agros should not fail, but some message should be generated
     //                        catch (...)
     //                        {
-    //                            // Agros2D::log()->printError(tr("Problem"), QString::fromStdString(e.what()));
+    //                            // Agros2D::log()->printError(tr("Solver"), QString::fromStdString(e.what()));
     //                            return;
     //                        }
 
@@ -664,7 +664,7 @@ void Problem::solveAction()
 
     QMap<Block*, Solver<double> *> solvers;
 
-    Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
+    Agros2D::log()->printMessage(QObject::tr("Problem"), QObject::tr("Solving problem"));
 
     foreach (Block* block, m_blocks)
     {
@@ -761,7 +761,7 @@ void Problem::solveAdaptiveStepAction()
 
     assert(isMeshed());
 
-    Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("solving problem"));
+    Agros2D::log()->printMessage(QObject::tr("Problem"), QObject::tr("Solving problem"));
 
     assert(actualTimeStep() == 0);
     assert(m_blocks.size() == 1);
@@ -818,14 +818,14 @@ void Problem::stepMessage(Block* block)
         if(config()->isTransientAdaptive())
         {
             Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
-                                         QObject::tr("transient step %1 (%2%)").
+                                         QObject::tr("Transient step %1 (%2%)").
                                          arg(actualTimeStep()).
                                          arg(int(100*actualTime()/config()->timeTotal().number())));
         }
         else
         {
             Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
-                                         QObject::tr("transient step %1/%2").
+                                         QObject::tr("Transient step %1/%2").
                                          arg(actualTimeStep()).
                                          arg(config()->numConstantTimeSteps()));
         }
@@ -833,9 +833,9 @@ void Problem::stepMessage(Block* block)
     else
     {
         if (block->fields().count() == 1)
-            Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields), QObject::tr("single analysis"));
+            Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields), QObject::tr("Field solving (single analysis)"));
         else
-            Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields), QObject::tr("coupled analysis"));
+            Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields), QObject::tr("Fields solving (coupled analysis)"));
     }
 
 }

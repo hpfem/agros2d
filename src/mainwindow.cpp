@@ -1614,7 +1614,7 @@ void MainWindow::doDocumentExportMeshFile()
     }
     else
     {
-        Agros2D::log()->printMessage(tr("Export mesh"), tr("The problem is not meshed."));
+        Agros2D::log()->printMessage(tr("Problem"), tr("The problem is not meshed"));
     }
 }
 

@@ -37,7 +37,7 @@
 #include "hermes2d/problem_config.h"
 
 MeshGenerator::MeshGenerator() : QObject()
-{    
+{
 }
 
 bool MeshGenerator::writeToHermes()
@@ -221,7 +221,7 @@ bool MeshGenerator::writeToHermes()
                 foreach (int index, unassignedEdges)
                     list += QString::number(index) + ", ";
 
-                Agros2D::log()->printError(tr("Mesh generator"), tr("Boundary condition is not assigned on following edges %1.").arg(list.left(list.count() - 2)));
+                Agros2D::log()->printError(tr("Mesh generator"), tr("Boundary condition is not assigned on following edges %1").arg(list.left(list.count() - 2)));
 
                 return false;
             }

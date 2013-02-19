@@ -16,7 +16,7 @@
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="762"/>
         <source>Transient</source>
-        <translation>Přechodný děj</translation>
+        <translation type="unfinished">Přechodový děj</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="765"/>

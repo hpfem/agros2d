@@ -1284,14 +1284,12 @@ krok</translation>
         <translation>Klávesové zkratky</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1617"/>
         <source>Export mesh</source>
-        <translation>Eport sítě</translation>
+        <translation type="obsolete">Eport sítě</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1617"/>
         <source>The problem is not meshed.</source>
-        <translation>Problém není diskretizován.</translation>
+        <translation type="obsolete">Problém není diskretizován.</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="350"/>
@@ -1442,6 +1440,16 @@ krok</translation>
         <location filename="../../src/mainwindow.cpp" line="1278"/>
         <source>Adaptive step</source>
         <translation>Adaptivní krok</translation>
+    </message>
+    <message>
+        <location filename="../../src/mainwindow.cpp" line="1617"/>
+        <source>The problem is not meshed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/mainwindow.cpp" line="1617"/>
+        <source>Problem</source>
+        <translation type="unfinished">Problém</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="387"/>
@@ -1876,8 +1884,12 @@ oblasti</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator.cpp" line="224"/>
+        <source>Boundary condition is not assigned on following edges %1</source>
+        <translation type="unfinished">Okrajová podmínka není zadána na následujících hranách %1. {1?}</translation>
+    </message>
+    <message>
         <source>Boundary condition is not assigned on following edges %1.</source>
-        <translation>Okrajová podmínka není zadána na následujících hranách %1.</translation>
+        <translation type="obsolete">Okrajová podmínka není zadána na následujících hranách %1.</translation>
     </message>
 </context>
 <context>
@@ -1892,59 +1904,95 @@ oblasti</translation>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="148"/>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="153"/>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="167"/>
+        <location filename="../../src/meshgenerator_gmsh.cpp" line="279"/>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="405"/>
         <source>Mesh generator</source>
         <translation>Generátor sítě</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="54"/>
-        <source>GMSH geo file was created.</source>
-        <translation>GMSH soubor s geometrií byl vytvořen.</translation>
+        <source>GMSH geo file was created</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="74"/>
-        <source>Could not start GMSH.</source>
-        <translation>Nelze spustit GMSH.</translation>
+        <source>Could not start GMSH</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="104"/>
-        <source>mesh files were created</source>
-        <translation>byly vytvořeny soubory sítí</translation>
+        <source>Mesh files were created</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="108"/>
-        <source>mesh was converted to Hermes2D mesh file</source>
-        <translation>síť byla převedena do formátu Hermes2D sítě</translation>
+        <source>Mesh was converted to Hermes2D mesh file</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="125"/>
-        <source>mesh files were deleted</source>
-        <translation>soubory sítí byly smazány</translation>
+        <source>Mesh files were deleted</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="148"/>
-        <source>invalid number of nodes (%1 &lt; 3)</source>
-        <translation>chybný počet uzlů (%1 &lt; 3)</translation>
+        <source>Invalid number of nodes (%1 &lt; 3)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="153"/>
-        <source>invalid number of edges (%1 &lt; 3)</source>
-        <translation>chybný počet hran (%1 &lt; 3)</translation>
+        <source>Invalid number of edges (%1 &lt; 3)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="167"/>
-        <source>could not create GMSH geo mesh file (%1)</source>
-        <translation>nelze vytvořit GMSH geo soubor sítě (%1)</translation>
-    </message>
-    <message>
-        <location filename="../../src/meshgenerator_gmsh.cpp" line="279"/>
-        <source>GMSH</source>
-        <translation>GMSH</translation>
+        <source>Could not create GMSH geo mesh file (%1)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="405"/>
+        <source>Could not read GMSH mesh file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GMSH geo file was created.</source>
+        <translation type="obsolete">GMSH soubor s geometrií byl vytvořen.</translation>
+    </message>
+    <message>
+        <source>Could not start GMSH.</source>
+        <translation type="obsolete">Nelze spustit GMSH.</translation>
+    </message>
+    <message>
+        <source>mesh files were created</source>
+        <translation type="obsolete">byly vytvořeny soubory sítí</translation>
+    </message>
+    <message>
+        <source>mesh was converted to Hermes2D mesh file</source>
+        <translation type="obsolete">síť byla převedena do formátu Hermes2D sítě</translation>
+    </message>
+    <message>
+        <source>mesh files were deleted</source>
+        <translation type="obsolete">soubory sítí byly smazány</translation>
+    </message>
+    <message>
+        <source>invalid number of nodes (%1 &lt; 3)</source>
+        <translation type="obsolete">chybný počet uzlů (%1 &lt; 3)</translation>
+    </message>
+    <message>
+        <source>invalid number of edges (%1 &lt; 3)</source>
+        <translation type="obsolete">chybný počet hran (%1 &lt; 3)</translation>
+    </message>
+    <message>
+        <source>could not create GMSH geo mesh file (%1)</source>
+        <translation type="obsolete">nelze vytvořit GMSH geo soubor sítě (%1)</translation>
+    </message>
+    <message>
+        <source>GMSH</source>
+        <translation type="obsolete">GMSH</translation>
+    </message>
+    <message>
         <source>could not read GMSH mesh file</source>
-        <translation>nelze číst GMSH soubor sítě</translation>
+        <translation type="obsolete">nelze číst GMSH soubor sítě</translation>
     </message>
 </context>
 <context>
@@ -1974,53 +2022,93 @@ oblasti</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="74"/>
-        <source>could not start Triangle</source>
-        <translation>program Triangle nelze spustit</translation>
+        <source>Could not start Triangle</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="107"/>
-        <source>mesh files were created</source>
-        <translation>byly vytvořeny soubory sítí</translation>
+        <source>Mesh files were created</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="112"/>
-        <source>mesh was converted to Hermes2D mesh file</source>
-        <translation>síť byla převedena do formátu Hermes2D sítě</translation>
+        <source>Mesh was converted to Hermes2D mesh file</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="152"/>
-        <source>invalid number of nodes (%1 &lt; 3)</source>
-        <translation>chybný počet uzlů (%1 &lt; 3)</translation>
+        <source>Invalid number of nodes (%1 &lt; 3)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="157"/>
-        <source>invalid number of edges (%1 &lt; 3)</source>
-        <translation>chybný počet hran (%1 &lt; 3)</translation>
+        <source>Invalid number of edges (%1 &lt; 3)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="171"/>
-        <source>could not create Triangle poly mesh file (%1)</source>
-        <translation>nelze vytvořit soubor Triangle poly (%1)</translation>
+        <source>Could not create Triangle poly mesh file (%1)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="325"/>
-        <source>could not read Triangle node file</source>
-        <translation>nelze přečíst soubor Triangle s uzly</translation>
+        <source>Could not read Triangle node file</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="333"/>
-        <source>could not read Triangle edge file</source>
-        <translation>nelze přečíst soubor Triangle s hranami</translation>
+        <source>Could not read Triangle edge file</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="341"/>
-        <source>could not read Triangle ele file</source>
-        <translation>nelze přečíst soubor Triangle s elementy</translation>
+        <source>Could not read Triangle ele file</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="349"/>
+        <source>Could not read Triangle neigh file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>could not start Triangle</source>
+        <translation type="obsolete">program Triangle nelze spustit</translation>
+    </message>
+    <message>
+        <source>mesh files were created</source>
+        <translation type="obsolete">byly vytvořeny soubory sítí</translation>
+    </message>
+    <message>
+        <source>mesh was converted to Hermes2D mesh file</source>
+        <translation type="obsolete">síť byla převedena do formátu Hermes2D sítě</translation>
+    </message>
+    <message>
+        <source>invalid number of nodes (%1 &lt; 3)</source>
+        <translation type="obsolete">chybný počet uzlů (%1 &lt; 3)</translation>
+    </message>
+    <message>
+        <source>invalid number of edges (%1 &lt; 3)</source>
+        <translation type="obsolete">chybný počet hran (%1 &lt; 3)</translation>
+    </message>
+    <message>
+        <source>could not create Triangle poly mesh file (%1)</source>
+        <translation type="obsolete">nelze vytvořit soubor Triangle poly (%1)</translation>
+    </message>
+    <message>
+        <source>could not read Triangle node file</source>
+        <translation type="obsolete">nelze přečíst soubor Triangle s uzly</translation>
+    </message>
+    <message>
+        <source>could not read Triangle edge file</source>
+        <translation type="obsolete">nelze přečíst soubor Triangle s hranami</translation>
+    </message>
+    <message>
+        <source>could not read Triangle ele file</source>
+        <translation type="obsolete">nelze přečíst soubor Triangle s elementy</translation>
+    </message>
+    <message>
         <source>could not read Triangle neigh file</source>
-        <translation>nelze přečíst soubor Triangle se sousedními elementy</translation>
+        <translation type="obsolete">nelze přečíst soubor Triangle se sousedními elementy</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="392"/>
@@ -2590,54 +2678,90 @@ oblasti</translation>
 <context>
     <name>PostHermes</name>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="64"/>
-        <location filename="../../src/sceneview_post.cpp" line="86"/>
-        <location filename="../../src/sceneview_post.cpp" line="103"/>
         <source>MeshView</source>
-        <translation>Náhled sítě</translation>
+        <translation type="obsolete">Náhled sítě</translation>
+    </message>
+    <message>
+        <source>initial mesh with %1 elements</source>
+        <translation type="obsolete">výchozí síť s %1 elementy</translation>
+    </message>
+    <message>
+        <source>solution mesh with %1 elements</source>
+        <translation type="obsolete">výsledná síť s %1 elementy</translation>
+    </message>
+    <message>
+        <source>polynomial order</source>
+        <translation type="obsolete">řád polynomu</translation>
+    </message>
+    <message>
+        <source>PostView</source>
+        <translation type="obsolete">Zobrazení výsledků</translation>
+    </message>
+    <message>
+        <source>contour view (%1)</source>
+        <translation type="obsolete">zobrazení kontur (%1)</translation>
+    </message>
+    <message>
+        <source>scalar view (%1)</source>
+        <translation type="obsolete">skalární zobrazení (%1)</translation>
+    </message>
+    <message>
+        <source>vector view (%1)</source>
+        <translation type="obsolete">zobrazení vektorů (%1)</translation>
+    </message>
+    <message>
+        <source>particle view</source>
+        <translation type="obsolete">zobrazení částic</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="64"/>
-        <source>initial mesh with %1 elements</source>
-        <translation>výchozí síť s %1 elementy</translation>
+        <location filename="../../src/sceneview_post.cpp" line="86"/>
+        <location filename="../../src/sceneview_post.cpp" line="103"/>
+        <source>Mesh View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/sceneview_post.cpp" line="64"/>
+        <source>Initial mesh with %1 elements</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="86"/>
-        <source>solution mesh with %1 elements</source>
-        <translation>výsledná síť s %1 elementy</translation>
+        <source>Solution mesh with %1 elements</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="103"/>
-        <source>polynomial order</source>
-        <translation>řád polynomu</translation>
+        <source>Polynomial order</source>
+        <translation type="unfinished">Řád polynomu</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="131"/>
         <location filename="../../src/sceneview_post.cpp" line="194"/>
         <location filename="../../src/sceneview_post.cpp" line="258"/>
         <location filename="../../src/sceneview_post.cpp" line="301"/>
-        <source>PostView</source>
-        <translation>Zobrazení výsledků</translation>
+        <source>Post View</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="131"/>
-        <source>contour view (%1)</source>
-        <translation>zobrazení kontur (%1)</translation>
+        <source>Contour view (%1)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="194"/>
-        <source>scalar view (%1)</source>
-        <translation>skalární zobrazení (%1)</translation>
+        <source>Scalar view (%1)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="258"/>
-        <source>vector view (%1)</source>
-        <translation>zobrazení vektorů (%1)</translation>
+        <source>Vector view (%1)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="301"/>
-        <source>particle view</source>
-        <translation>zobrazení částic</translation>
+        <source>Particle view</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="343"/>
@@ -3180,30 +3304,42 @@ oblasti</translation>
     <name>Problem</name>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="283"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="303"/>
         <location filename="../../src/hermes2d/problem.cpp" line="311"/>
         <source>Mesh</source>
         <translation>Síť</translation>
     </message>
     <message>
+        <source>No fields defined.</source>
+        <translation type="obsolete">Není definované žádné fyzikální pole.</translation>
+    </message>
+    <message>
+        <source>Geometry check</source>
+        <translation type="obsolete">Kontrola geometrie</translation>
+    </message>
+    <message>
+        <source>Mesh reader</source>
+        <translation type="obsolete">Načítání sítě</translation>
+    </message>
+    <message>
+        <source>An unknown exception occured in solver and has been ignored!</source>
+        <translation type="obsolete">Nastala neznámá vyjímka, která byla ignorována!</translation>
+    </message>
+    <message>
         <location filename="../../src/hermes2d/problem.cpp" line="283"/>
         <location filename="../../src/hermes2d/problem.cpp" line="529"/>
-        <source>No fields defined.</source>
-        <translation>Není definované žádné fyzikální pole.</translation>
+        <source>No fields defined</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="295"/>
-        <source>Geometry check</source>
-        <translation>Kontrola geometrie</translation>
-    </message>
-    <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="303"/>
-        <source>Mesh reader</source>
-        <translation>Načítání sítě</translation>
+        <source>Geometry</source>
+        <translation type="unfinished">Geometrie</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="311"/>
-        <source>An unknown exception occured in solver and has been ignored!</source>
-        <translation>Nastala neznámá vyjímka, která byla ignorována!</translation>
+        <source>An unknown exception occured and has been ignored</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="511"/>
@@ -3211,6 +3347,7 @@ oblasti</translation>
         <location filename="../../src/hermes2d/problem.cpp" line="523"/>
         <location filename="../../src/hermes2d/problem.cpp" line="529"/>
         <location filename="../../src/hermes2d/problem.cpp" line="534"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="583"/>
         <source>Solver</source>
         <translation>Řešič</translation>
     </message>
@@ -3231,8 +3368,12 @@ oblasti</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="534"/>
+        <source>Matrix and RHS will be saved on the disk and this will slow down the calculation (you may disable it in appllication settings)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Warning: Matrix and RHS will be saved on the disk. This will slow down the calculation. You may disable it in Edit-&gt;Options-&gt;Solver menu.</source>
-        <translation>Varování: Matice a RHS budou uloženy na disk. Toto zpomalí výpočet. Ukládání můžete zakázat v nastavení aplikace (Úpravy-&gt;Nastavení-&gt;Řešič).</translation>
+        <translation type="obsolete">Varování: Matice a RHS budou uloženy na disk. Toto zpomalí výpočet. Ukládání můžete zakázat v nastavení aplikace (Úpravy-&gt;Nastavení-&gt;Řešič).</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="675"/>
@@ -3244,7 +3385,7 @@ oblasti</translation>
         <location filename="../../src/hermes2d/problem.cpp" line="846"/>
         <location filename="../../src/hermes2d/problem.cpp" line="941"/>
         <source>Problem</source>
-        <translation>Problém</translation>
+        <translation type="unfinished">Problém</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="846"/>
@@ -3763,8 +3904,12 @@ Chcete tyto změny uložit?</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1090"/>
+        <source>PythonLab - %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Python Lab - %1</source>
-        <translation>Python Lab - %1</translation>
+        <translation type="obsolete">Python Lab - %1</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1098"/>
@@ -4232,9 +4377,8 @@ Chcete tyto změny uložit?</translation>
         <translation>Harmonická analýza</translation>
     </message>
     <message>
-        <location filename="../../src/value.cpp" line="237"/>
         <source>Value</source>
-        <translation>Hodnota</translation>
+        <translation type="obsolete">Hodnota</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem_config.cpp" line="50"/>
@@ -4514,18 +4658,31 @@ Chcete tyto změny uložit?</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/solver.cpp" line="859"/>
-        <source>adaptivity step (error = %1, DOFs = %2/%3)</source>
-        <translation>krok adaptivity (chyba = %1, počet st. volnosti  = %2/%3)</translation>
+        <source>Adaptivity step (error = %1, DOFs = %2/%3)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/solver.cpp" line="874"/>
+        <source>Initial time step</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>adaptivity step (error = %1, DOFs = %2/%3)</source>
+        <translation type="obsolete">krok adaptivity (chyba = %1, počet st. volnosti  = %2/%3)</translation>
+    </message>
+    <message>
         <source>initial time step</source>
-        <translation>počáteční časový krok</translation>
+        <translation type="obsolete">počáteční časový krok</translation>
     </message>
     <message>
         <location filename="../../src/gui/common.cpp" line="179"/>
         <source>Step: %1, time: %2 s</source>
         <translation>Krok: %1, čas: %2 s</translation>
+    </message>
+    <message>
+        <location filename="../../src/hermes2d/coupling.cpp" line="89"/>
+        <source>Hard coupling not available yet, switching to weak coupling</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/coupling.cpp" line="191"/>
@@ -4538,32 +4695,45 @@ Chcete tyto změny uložit?</translation>
         <translation>Není možné načíst soubor sdružení %1: %2</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="331"/>
+        <location filename="../../src/hermes2d/coupling.cpp" line="89"/>
+        <location filename="../../src/hermes2d/coupling.cpp" line="209"/>
         <location filename="../../src/hermes2d/problem.cpp" line="484"/>
         <location filename="../../src/hermes2d/problem.cpp" line="606"/>
         <location filename="../../src/hermes2d/problem.cpp" line="611"/>
         <location filename="../../src/hermes2d/problem.cpp" line="616"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="667"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="764"/>
+        <location filename="../../src/hermes2d/solutiontypes.cpp" line="168"/>
         <location filename="../../src/hermes2d/solver.cpp" line="47"/>
+        <location filename="../../src/scene.cpp" line="1888"/>
         <source>Solver</source>
         <translation>Řešič</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="331"/>
         <source>mesh generation</source>
-        <translation>generování výpočetní sítě</translation>
+        <translation type="obsolete">generování výpočetní sítě</translation>
+    </message>
+    <message>
+        <source>No field defined.</source>
+        <translation type="obsolete">Není definované žádné pole.</translation>
+    </message>
+    <message>
+        <source>solving problem</source>
+        <translation type="obsolete">řešení problému</translation>
+    </message>
+    <message>
+        <location filename="../../src/hermes2d/problem.cpp" line="331"/>
+        <source>Mesh generation</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="484"/>
-        <source>No field defined.</source>
-        <translation>Není definované žádné pole.</translation>
+        <source>No fields defined</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="667"/>
         <location filename="../../src/hermes2d/problem.cpp" line="764"/>
-        <source>solving problem</source>
-        <translation>řešení problému</translation>
+        <source>Solving problem</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="820"/>
@@ -4576,23 +4746,39 @@ Chcete tyto změny uložit?</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="821"/>
-        <source>transient step %1 (%2%)</source>
-        <translation>krok přechodového děje %1 (%2%)</translation>
+        <source>Transient step %1 (%2%)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="828"/>
-        <source>transient step %1/%2</source>
-        <translation>krok přechodového děje %1/%2</translation>
+        <source>Transient step %1/%2</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="836"/>
-        <source>single analysis</source>
-        <translation>prostá analýza</translation>
+        <source>Field solving (single analysis)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="838"/>
+        <source>Fields solving (coupled analysis)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>transient step %1 (%2%)</source>
+        <translation type="obsolete">krok přechodového děje %1 (%2%)</translation>
+    </message>
+    <message>
+        <source>transient step %1/%2</source>
+        <translation type="obsolete">krok přechodového děje %1/%2</translation>
+    </message>
+    <message>
+        <source>single analysis</source>
+        <translation type="obsolete">prostá analýza</translation>
+    </message>
+    <message>
         <source>coupled analysis</source>
-        <translation>sdružená analýza</translation>
+        <translation type="obsolete">sdružená analýza</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="912"/>
@@ -4771,24 +4957,30 @@ Chcete tyto změny uložit?</translation>
         <translation>Neshoda v informacích o poli &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solutiontypes.cpp" line="168"/>
-        <source>MultiArray</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../../src/util/loops.cpp" line="547"/>
         <source>Two loops connected by one edge.</source>
         <translation>Dvě smyčky jsou spojeny pouze jednou hranou.</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1886"/>
         <source>Solution</source>
-        <translation>Řešení</translation>
+        <translation type="obsolete">Řešení</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1886"/>
         <source>Access denied &apos;%1&apos;.</source>
-        <translation>Přístup zamítnut &apos;%1&apos;.</translation>
+        <translation type="obsolete">Přístup zamítnut &apos;%1&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="1888"/>
+        <source>Access denied &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/hermes2d/problem.cpp" line="331"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="667"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="764"/>
+        <location filename="../../src/value.cpp" line="237"/>
+        <source>Problem</source>
+        <translation type="unfinished">Problém</translation>
     </message>
 </context>
 <context>
@@ -5066,29 +5258,24 @@ Chcete tyto změny uložit?</translation>
         <translation>Geometrie</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="437"/>
         <source>at least one boundary condition has to be assigned</source>
-        <translation>musí být přiřazena alespoň jedna okrajová podmínka</translation>
+        <translation type="obsolete">musí být přiřazena alespoň jedna okrajová podmínka</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="443"/>
         <source>invalid number of labels (%1 &lt; 1)</source>
-        <translation>chybný počet značek oblastí (%1 &lt; 1)</translation>
+        <translation type="obsolete">chybný počet značek oblastí (%1 &lt; 1)</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="456"/>
         <source>at least one material has to be assigned</source>
-        <translation>musí být přiřazen alespoň jeden materiál</translation>
+        <translation type="obsolete">musí být přiřazen alespoň jeden materiál</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="462"/>
         <source>invalid number of boundary conditions (%1 &lt; 1)</source>
-        <translation>chybný počet okrajových podmínek (%1 &lt; 1)</translation>
+        <translation type="obsolete">chybný počet okrajových podmínek (%1 &lt; 1)</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="467"/>
         <source>invalid number of materials (%1 &lt; 1)</source>
-        <translation>chybný počet materiálů (%1 &lt; 1)</translation>
+        <translation type="obsolete">chybný počet materiálů (%1 &lt; 1)</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="924"/>
@@ -5101,70 +5288,76 @@ Chcete tyto změny uložit?</translation>
         <translation>nový materiál</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1181"/>
+        <location filename="../../src/scene.cpp" line="1183"/>
         <source>Convert file?</source>
         <translation>Převést soubor?</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1182"/>
+        <location filename="../../src/scene.cpp" line="1184"/>
         <source>File %1 must be converted to the new version. Do you want to convert and replace current file?</source>
         <translation>Soubor %1 musí být převeden do nové verze. Chcete jej převést a nahradit stávající soubor?</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1183"/>
+        <location filename="../../src/scene.cpp" line="1185"/>
         <source>&amp;Yes</source>
         <translation>&amp;Ano</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1183"/>
+        <location filename="../../src/scene.cpp" line="1185"/>
         <source>&amp;No</source>
         <translation>&amp;Ne</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1835"/>
-        <location filename="../../src/scene.cpp" line="1879"/>
         <source>Scene</source>
-        <translation>Scéna</translation>
+        <translation type="obsolete">Scéna</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1835"/>
+        <location filename="../../src/scene.cpp" line="1841"/>
         <source>Loading solution from disk</source>
         <translation>Nahrávání řešení z disku</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1853"/>
-        <location filename="../../src/scene.cpp" line="1858"/>
-        <location filename="../../src/scene.cpp" line="1871"/>
-        <source>Mesh reader</source>
-        <translation>Načítání sítě</translation>
+        <source>Solver</source>
+        <translation type="obsolete">Řešič</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1879"/>
+        <location filename="../../src/scene.cpp" line="1855"/>
+        <location filename="../../src/scene.cpp" line="1860"/>
+        <location filename="../../src/scene.cpp" line="1873"/>
+        <source>Mesh</source>
+        <translation type="unfinished">Síť</translation>
+    </message>
+    <message>
+        <source>Mesh reader</source>
+        <translation type="obsolete">Načítání sítě</translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="1881"/>
         <source>Saving solution to disk</source>
         <translation>Ukládání řešení na disk</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1956"/>
+        <location filename="../../src/scene.cpp" line="1958"/>
         <source>There are nodes &apos;%1&apos; with negative radial component.</source>
         <translation>Uzly &apos;%1&apos; mají zápornou radiální složkou.</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1970"/>
+        <location filename="../../src/scene.cpp" line="1972"/>
         <source>There are nodes which are connected to one edge only (red highlighted). This is not allowed in Agros.</source>
         <translation>Některé uzly (označené červeně) nejsou připojeny k žádné hraně.</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1982"/>
+        <location filename="../../src/scene.cpp" line="1984"/>
         <source>There are crossings in the geometry (red highlighted). Remove the crossings first.</source>
         <translation>V geometrii jsou křížení (označena červeně). Nejprve odstraňte křížení.</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1965"/>
+        <location filename="../../src/scene.cpp" line="1967"/>
         <source>There are nodes which are not connected to any edge (red highlighted). All nodes should be connected.</source>
         <translation>Některé uzly (označené červeně) nejsou připojeny k žádné hraně. Všechny uzly musí být spojeny.</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1975"/>
+        <location filename="../../src/scene.cpp" line="1977"/>
         <source>There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first.</source>
         <translation>Některé uzly (označené červeně) leží na hranici, ale nejsou s ní spojené. Nejprve odeberte tyto uzly.</translation>
     </message>
@@ -5172,6 +5365,31 @@ Chcete tyto změny uložit?</translation>
         <location filename="../../src/scene.cpp" line="511"/>
         <source>unnamed</source>
         <translation>nepojmenovaný</translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="437"/>
+        <source>At least one boundary condition has to be assigned</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="443"/>
+        <source>Invalid number of labels (%1 &lt; 1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="456"/>
+        <source>At least one material has to be assigned</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="462"/>
+        <source>Invalid number of boundary conditions (%1 &lt; 1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="467"/>
+        <source>Invalid number of materials (%1 &lt; 1)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="564"/>
@@ -5209,18 +5427,30 @@ Chcete tyto změny uložit?</translation>
         <translation>Zvětšení/zmenšení</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1152"/>
+        <location filename="../../src/scene.cpp" line="1149"/>
+        <location filename="../../src/scene.cpp" line="1841"/>
+        <location filename="../../src/scene.cpp" line="1881"/>
+        <source>Problem</source>
+        <translation type="unfinished">Problém</translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="1149"/>
+        <source>Loading problem from disk</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/scene.cpp" line="1154"/>
         <source>File &apos;%1&apos; cannot be opened (%2).</source>
         <translation>Soubor &apos;%1&apos; nelze otevřít (%2).</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1192"/>
-        <location filename="../../src/scene.cpp" line="1805"/>
+        <location filename="../../src/scene.cpp" line="1194"/>
+        <location filename="../../src/scene.cpp" line="1807"/>
         <source>File &apos;%1&apos; cannot be saved (%2).</source>
         <translation>Soubor &apos;%1&apos; nelze uložit (%2).</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1170"/>
+        <location filename="../../src/scene.cpp" line="1172"/>
         <source>File &apos;%1&apos; is not valid Agros2D file.</source>
         <translation>Soubor &apos;%1&apos; není platným souborem Agros2D.</translation>
     </message>
