@@ -34,7 +34,7 @@ Marker::~Marker()
     m_values.clear();
 }
 
-Value Marker::value(QString id)
+Value Marker::value(QString id) const
 {
     if (!id.isEmpty())
         return m_values[id];
