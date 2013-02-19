@@ -708,6 +708,7 @@ void CouplingsWidget::createContent()
     }
 
     layoutTable = new QGridLayout();
+    layoutTable->setContentsMargins(0, 0, 0, 0);
     layoutTable->setColumnMinimumWidth(0, minWidth);
     layoutTable->setColumnStretch(1, 1);
 
