@@ -246,7 +246,7 @@ QWidget *ConfigComputerDialog::createMainWidget()
     chkLineEditValueShowResult = new QCheckBox(tr("Show value result in line edit input"));
     chkCheckVersion = new QCheckBox(tr("Check new version during startup"));
 
-    chkLogStdOut = new QCheckBox(tr("Print application log to stdout."));
+    chkLogStdOut = new QCheckBox(tr("Print application log to standard output."));
 
     QVBoxLayout *layoutOther = new QVBoxLayout();
     layoutOther->addWidget(chkLineEditValueShowResult);

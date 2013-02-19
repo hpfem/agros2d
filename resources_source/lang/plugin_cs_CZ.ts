@@ -16,7 +16,7 @@
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="762"/>
         <source>Transient</source>
-        <translation>Přechodný děj</translation>
+        <translation type="unfinished">Přechodový děj</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="765"/>
@@ -355,11 +355,16 @@
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="606"/>
+        <source>Von Misses stress</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="609"/>
         <source>Inner force</source>
         <translation>Vnitřní síla</translation>
     </message>
     <message>
-        <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="625"/>
+        <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="628"/>
         <source>Structural analysis is the determination of the effects of loads on physical structures and their components.        </source>
         <translation>Strukturální analýza se zabývá určením učinků zatížení na fyzikální strukturu a její složky.</translation>
     </message>
@@ -373,22 +378,22 @@
         <translation>Referenční teplota</translation>
     </message>
     <message>
-        <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="609"/>
+        <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="612"/>
         <source>Volume</source>
         <translation>Objem</translation>
     </message>
     <message>
-        <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="612"/>
+        <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="615"/>
         <source>Cross section</source>
         <translation>Průřez</translation>
     </message>
     <message>
-        <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="615"/>
+        <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="618"/>
         <source>Length</source>
         <translation>Délka</translation>
     </message>
     <message>
-        <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="618"/>
+        <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="621"/>
         <source>Surface</source>
         <translation>Plocha</translation>
     </message>
@@ -1016,13 +1021,13 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../plugins/acoustic/acoustic_force.cpp" line="64"/>
-        <location filename="../../plugins/current/current_force.cpp" line="64"/>
-        <location filename="../../plugins/elasticity/elasticity_force.cpp" line="64"/>
-        <location filename="../../plugins/electrostatic/electrostatic_force.cpp" line="64"/>
-        <location filename="../../plugins/flow/flow_force.cpp" line="64"/>
-        <location filename="../../plugins/heat/heat_force.cpp" line="64"/>
-        <location filename="../../plugins/magnetic/magnetic_force.cpp" line="64"/>
+        <location filename="../../plugins/acoustic/acoustic_force.cpp" line="66"/>
+        <location filename="../../plugins/current/current_force.cpp" line="66"/>
+        <location filename="../../plugins/elasticity/elasticity_force.cpp" line="66"/>
+        <location filename="../../plugins/electrostatic/electrostatic_force.cpp" line="66"/>
+        <location filename="../../plugins/flow/flow_force.cpp" line="66"/>
+        <location filename="../../plugins/heat/heat_force.cpp" line="66"/>
+        <location filename="../../plugins/magnetic/magnetic_force.cpp" line="66"/>
         <source>Point [%1, %2] does not lie in any element</source>
         <translation>Bod [%1, %2] neleží v žádném elementu</translation>
     </message>

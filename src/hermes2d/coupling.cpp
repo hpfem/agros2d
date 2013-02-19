@@ -71,7 +71,7 @@ CouplingInfo::CouplingInfo(FieldInfo *sourceField,
 }
 
 CouplingInfo::~CouplingInfo()
-{    
+{
     delete m_plugin;
 }
 
@@ -86,7 +86,7 @@ CouplingType CouplingInfo::couplingType() const
     //todo: remove!!!!
     if(m_couplingType == CouplingType_Hard)
     {
-        Agros2D::log()->printDebug("Solver", "Hard coupling not available yet, switching to weak coupling");
+        Agros2D::log()->printDebug(QObject::tr("Solver"), QObject::tr("Hard coupling not available yet, switching to weak coupling"));
         return CouplingType_Weak;
     }
     return m_couplingType;
@@ -206,7 +206,7 @@ bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField)
             cout << e;
             std::stringstream str;
             str << e;
-            Agros2D::log()->printError("solver",QObject::tr("Unable to read coupling file %1: %2").arg(filename).arg(QString::fromStdString(str.str())));
+            Agros2D::log()->printError(QObject::tr("Solver"),QObject::tr("Unable to read coupling file %1: %2").arg(filename).arg(QString::fromStdString(str.str())));
             return false;
         }
 

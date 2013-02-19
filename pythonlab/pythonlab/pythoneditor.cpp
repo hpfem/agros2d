@@ -42,7 +42,7 @@ PythonEditorWidget::PythonEditorWidget(PythonEngine *pythonEngine, QWidget *pare
     connect(timer, SIGNAL(timeout()), this, SLOT(pyFlakesAnalyse()));
     timer->start(4000);
 
-    txtEditor->setAcceptDrops(false);    
+    txtEditor->setAcceptDrops(false);
 }
 
 PythonEditorWidget::~PythonEditorWidget()
@@ -850,7 +850,7 @@ void PythonEditorDialog::doFileOpenRecent(QAction *action)
 }
 
 void PythonEditorDialog::doFileSave()
-{    
+{
     QSettings settings;
     QString dir = settings.value("General/LastDir", "data").toString();
 
@@ -1087,7 +1087,7 @@ void PythonEditorDialog::doCurrentPageChanged(int index)
         QFileInfo fileInfo(scriptEditorWidget()->fileName);
         fileName = fileInfo.completeBaseName();
     }
-    setWindowTitle(tr("Python Lab - %1").arg(fileName));
+    setWindowTitle(tr("PythonLab - %1").arg(fileName));
 
     txtEditor->setFocus();
 }

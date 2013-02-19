@@ -248,7 +248,7 @@ void SettingsWidget::createControls()
 QWidget *SettingsWidget::controlsControlsScriptAndDescription()
 {
     // startup script
-    txtStartupScript = new ScriptEditor(currentPythonEngine(), this);   
+    txtStartupScript = new ScriptEditor(currentPythonEngine(), this);
     connect(txtStartupScript, SIGNAL(textChanged()), this, SLOT(doStartupScriptChanged()));
     lblStartupScriptError = new QLabel();
 
@@ -293,7 +293,7 @@ QWidget *SettingsWidget::controlsWorkspace()
     chkShowGrid = new QCheckBox(tr("Show grid"));
     connect(chkShowGrid, SIGNAL(clicked()), this, SLOT(doShowGridChanged()));
     chkSnapToGrid = new QCheckBox(tr("Snap to grid"));
-    chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));   
+    chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));
     chkShowRulers = new QCheckBox(tr("Show rulers"));
     chkShowAxes = new QCheckBox(tr("Show axes"));
 
@@ -445,9 +445,9 @@ QWidget *SettingsWidget::controlsMeshAndSolver()
     lblThreshold->setFont(fnt);
 
     cmbStrategy = new QComboBox();
-    cmbStrategy->addItem(tr("0"), 0);
-    cmbStrategy->addItem(tr("1"), 1);
-    cmbStrategy->addItem(tr("2"), 2);
+    cmbStrategy->addItem("0", 0);
+    cmbStrategy->addItem("1", 1);
+    cmbStrategy->addItem("2", 2);
     connect(cmbStrategy, SIGNAL(currentIndexChanged(int)), this, SLOT(doStrategyChanged(int)));
     lblStrategy = new QLabel("");
     lblStrategy->setFont(fnt);

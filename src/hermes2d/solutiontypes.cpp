@@ -165,7 +165,7 @@ void MultiArray<Scalar>::loadFromFile(const QString &baseName, FieldSolutionID s
         }
         catch (Hermes::Exceptions::Exception &e)
         {
-            Agros2D::log()->printError(QObject::tr("MultiArray"), QString::fromStdString(e.what()));
+            Agros2D::log()->printError(QObject::tr("Solver"), QString::fromStdString(e.what()));
             throw;
         }
     }

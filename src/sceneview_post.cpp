@@ -61,7 +61,7 @@ void PostHermes::processInitialMesh()
 {
     if (Agros2D::problem()->isMeshed() && Agros2D::problem()->configView()->showInitialMeshView)
     {
-        Agros2D::log()->printMessage(tr("MeshView"), tr("initial mesh with %1 elements").arg(Agros2D::scene()->activeViewField()->initialMesh()->get_num_active_elements()));
+        Agros2D::log()->printMessage(tr("Mesh View"), tr("Initial mesh with %1 elements").arg(Agros2D::scene()->activeViewField()->initialMesh()->get_num_active_elements()));
 
         // init linearizer for initial mesh
         try
@@ -73,7 +73,7 @@ void PostHermes::processInitialMesh()
         }
         catch (Hermes::Exceptions::Exception& e)
         {
-            Agros2D::log()->printError("MeshView", QObject::tr("Linearizer processing failed: %1").arg(e.what()));
+            Agros2D::log()->printError("Mesh View", QObject::tr("Linearizer processing failed: %1").arg(e.what()));
         }
     }
 }
@@ -83,7 +83,7 @@ void PostHermes::processSolutionMesh()
     if (Agros2D::problem()->isSolved() && Agros2D::problem()->configView()->showSolutionMeshView)
     {
         // ERROR: FIX component(0)
-        Agros2D::log()->printMessage(tr("MeshView"), tr("solution mesh with %1 elements").arg(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0)->get_mesh()->get_num_active_elements()));
+        Agros2D::log()->printMessage(tr("Mesh View"), tr("Solution mesh with %1 elements").arg(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0)->get_mesh()->get_num_active_elements()));
 
         // init linearizer for solution mesh
         // ERROR: FIX component(0)
@@ -100,7 +100,7 @@ void PostHermes::processOrder()
     // init linearizer for order view
     if (Agros2D::problem()->isSolved() && Agros2D::problem()->configView()->showOrderView)
     {
-        Agros2D::log()->printMessage(tr("MeshView"), tr("polynomial order"));
+        Agros2D::log()->printMessage(tr("Mesh View"), tr("Polynomial order"));
 
         // ERROR: FIX component(0)
         m_orderView.free();
@@ -128,7 +128,7 @@ void PostHermes::processRangeContour()
             Agros2D::problem()->configView()->contourVariable = Agros2D::scene()->activeViewField()->defaultViewScalarVariable().id();
         }
 
-        Agros2D::log()->printMessage(tr("PostView"), tr("contour view (%1)").arg(Agros2D::problem()->configView()->contourVariable));
+        Agros2D::log()->printMessage(tr("Post View"), tr("Contour view (%1)").arg(Agros2D::problem()->configView()->contourVariable));
 
         QString variableName = Agros2D::problem()->configView()->contourVariable;
         Module::LocalVariable variable = Agros2D::scene()->activeViewField()->localVariable(variableName);
@@ -188,7 +188,7 @@ void PostHermes::processRangeScalar()
             Agros2D::problem()->configView()->scalarVariableComp = variable.isScalar() ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude;
         }
 
-        Agros2D::log()->printMessage(tr("PostView"), tr("scalar view (%1)").arg(Agros2D::problem()->configView()->scalarVariable));
+        Agros2D::log()->printMessage(tr("Post View"), tr("Scalar view (%1)").arg(Agros2D::problem()->configView()->scalarVariable));
 
         Hermes::Hermes2D::Filter<double> *slnScalarView = viewScalarFilter(Agros2D::scene()->activeViewField()->localVariable(Agros2D::problem()->configView()->scalarVariable),
                                                                            Agros2D::problem()->configView()->scalarVariableComp);
@@ -249,7 +249,7 @@ void PostHermes::processRangeVector()
             Agros2D::problem()->configView()->vectorVariable = Agros2D::scene()->activeViewField()->defaultViewVectorVariable().id();
         }
 
-        Agros2D::log()->printMessage(tr("PostView"), tr("vector view (%1)").arg(Agros2D::problem()->configView()->vectorVariable));
+        Agros2D::log()->printMessage(tr("Post View"), tr("Vector view (%1)").arg(Agros2D::problem()->configView()->vectorVariable));
 
         Hermes::Hermes2D::Filter<double> *slnVectorXView = viewScalarFilter(Agros2D::scene()->activeViewField()->localVariable(Agros2D::problem()->configView()->vectorVariable),
                                                                             PhysicFieldVariableComp_X);
@@ -289,7 +289,7 @@ void PostHermes::processParticleTracing()
 {
     if (Agros2D::problem()->isSolved() && Agros2D::problem()->configView()->showParticleView)
     {
-        Agros2D::log()->printMessage(tr("PostView"), tr("particle view"));
+        Agros2D::log()->printMessage(tr("Post View"), tr("Particle view"));
 
         // clear lists
         foreach (QList<Point3> list, m_particleTracingPositionsList)

@@ -171,7 +171,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
 template <typename Scalar>
 void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar> *form)
 {
-    //    Agros2D::log()->printDebug("WeakFormAgros", QString("add form: type: %1, area: %2").
+    //    Agros2D::log()->printDebug(tr("Solver"), QString("Add form: type: %1, area: %2").
     //                            arg(weakFormString(type)).
     //                            arg(QString::fromStdString(form->getAreas().at(0))));
 
@@ -377,7 +377,7 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
 
 Module::LocalVariable::LocalVariable(const FieldInfo *fieldInfo, XMLModule::localvariable lv,
                                      CoordinateType coordinateType, AnalysisType analysisType)
-{    
+{
     m_id = QString::fromStdString(lv.id());
     m_name = fieldInfo->plugin()->localeName(QString::fromStdString(lv.name()));
     m_shortname = QString::fromStdString(lv.shortname());

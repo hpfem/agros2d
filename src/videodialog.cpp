@@ -81,7 +81,7 @@ void VideoDialog::showDialog()
     // time steps
     m_timeLevels = Agros2D::solutionStore()->timeLevels(Agros2D::scene()->activeViewField());
     m_timeSteps = m_timeLevels.count() - 1;
-    lblTransientStep->setText(tr("%1 / %2").arg(0).arg(m_timeSteps));
+    lblTransientStep->setText(QString("%1 / %2").arg(0).arg(m_timeSteps));
     lblTransientTime->setText(tr("%1 / %2 s").arg(0.0).arg(m_timeLevels.last()));
     sliderTransientAnimate->blockSignals(true);
     sliderTransientAnimate->setMinimum(0);
@@ -90,7 +90,7 @@ void VideoDialog::showDialog()
 
     // adaptive steps
     m_adaptiveSteps = Agros2D::solutionStore()->lastAdaptiveStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal) + 1;
-    lblAdaptiveStep->setText(tr("%1 / %2").arg(1).arg(m_adaptiveSteps));
+    lblAdaptiveStep->setText(QString("%1 / %2").arg(1).arg(m_adaptiveSteps));
     sliderAdaptiveAnimate->blockSignals(true);
     sliderAdaptiveAnimate->setMinimum(1);
     sliderAdaptiveAnimate->setMaximum(m_adaptiveSteps);
@@ -255,7 +255,7 @@ void VideoDialog::setTransientStep(int transientStep)
         m_sceneViewInterface->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000000" + QString::number(transientStep)).right(8)));
 
     QString time = QString::number(m_timeLevels[transientStep], 'g');
-    lblTransientStep->setText(tr("%1 / %2").arg(transientStep).arg(m_timeSteps));
+    lblTransientStep->setText(QString("%1 / %2").arg(transientStep).arg(m_timeSteps));
     lblTransientTime->setText(tr("%1 / %2 s").arg(time).arg(m_timeLevels.last()));
 
     QApplication::processEvents();
@@ -299,7 +299,7 @@ void VideoDialog::adaptiveSetStep(int adaptiveStep)
     m_postHermes->refresh();
 
     sliderAdaptiveAnimate->setValue(adaptiveStep);
-    lblAdaptiveStep->setText(tr("%1 / %2").arg(adaptiveStep).arg(m_adaptiveSteps));
+    lblAdaptiveStep->setText(QString("%1 / %2").arg(adaptiveStep).arg(m_adaptiveSteps));
 
     if (chkSaveImages->isChecked())
         m_sceneViewInterface->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000000" + QString::number(adaptiveStep)).right(8)));

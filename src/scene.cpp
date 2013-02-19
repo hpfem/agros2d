@@ -434,13 +434,13 @@ bool Scene::checkGeometryAssignement()
 
         if (count == 0)
         {
-            Agros2D::log()->printError(tr("Geometry"), tr("at least one boundary condition has to be assigned"));
+            Agros2D::log()->printError(tr("Geometry"), tr("At least one boundary condition has to be assigned"));
             return false;
         }
     }
     if (Agros2D::scene()->labels->length() < 1)
     {
-        Agros2D::log()->printError(tr("Geometry"), tr("invalid number of labels (%1 < 1)").arg(Agros2D::scene()->labels->length()));
+        Agros2D::log()->printError(tr("Geometry"), tr("Invalid number of labels (%1 < 1)").arg(Agros2D::scene()->labels->length()));
         return false;
     }
     else
@@ -453,18 +453,18 @@ bool Scene::checkGeometryAssignement()
 
         if (count == 0)
         {
-            Agros2D::log()->printError(tr("Geometry"), tr("at least one material has to be assigned"));
+            Agros2D::log()->printError(tr("Geometry"), tr("At least one material has to be assigned"));
             return false;
         }
     }
     if (Agros2D::scene()->boundaries->length() < 2) // + none marker
     {
-        Agros2D::log()->printError(tr("Geometry"), tr("invalid number of boundary conditions (%1 < 1)").arg(Agros2D::scene()->boundaries->length()));
+        Agros2D::log()->printError(tr("Geometry"), tr("Invalid number of boundary conditions (%1 < 1)").arg(Agros2D::scene()->boundaries->length()));
         return false;
     }
     if (Agros2D::scene()->materials->length() < 2) // + none marker
     {
-        Agros2D::log()->printError(tr("Geometry"), tr("invalid number of materials (%1 < 1)").arg(Agros2D::scene()->materials->length()));
+        Agros2D::log()->printError(tr("Geometry"), tr("Invalid number of materials (%1 < 1)").arg(Agros2D::scene()->materials->length()));
         return false;
     }
 
@@ -1145,6 +1145,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     QFileInfo fileInfo(fileName);
     if (fileInfo.absoluteDir() != tempProblemDir())
         settings.setValue("General/LastProblemDir", fileInfo.absolutePath());
+
+    Agros2D::log()->printMessage(tr("Problem"), tr("Loading problem from disk"));
 
     QDomDocument doc;
     QFile file(fileName);
@@ -1832,12 +1834,12 @@ ErrorResult Scene::writeToFile(const QString &fileName)
 
 void Scene::readSolutionFromFile(const QString &fileName)
 {
-    Agros2D::log()->printMessage(tr("Scene"), tr("Loading solution from disk"));
-
     QFileInfo fileInfo(fileName);
     QString solutionFile = QString("%1/%2.sol").arg(fileInfo.absolutePath()).arg(fileInfo.baseName());
     if (QFile::exists(solutionFile))
     {
+        Agros2D::log()->printMessage(tr("Problem"), tr("Loading solution from disk"));
+
         JlCompress::extractDir(solutionFile, cacheProblemDir());
 
         // read mesh file
@@ -1850,12 +1852,12 @@ void Scene::readSolutionFromFile(const QString &fileName)
             catch (AgrosException& e)
             {
                 Agros2D::problem()->clearSolution();
-                Agros2D::log()->printError(tr("Mesh reader"), QString("Initial mesh is corrupted (%1).").arg(e.what()));
+                Agros2D::log()->printError(tr("Mesh"), QString("Initial mesh is corrupted (%1)").arg(e.what()));
             }
             catch (Hermes::Exceptions::Exception& e)
             {
                 Agros2D::problem()->clearSolution();
-                Agros2D::log()->printError(tr("Mesh reader"), QString("Initial mesh is corrupted (%1).").arg(e.what()));
+                Agros2D::log()->printError(tr("Mesh"), QString("Initial mesh is corrupted (%1)").arg(e.what()));
             }
         }
 
@@ -1868,7 +1870,7 @@ void Scene::readSolutionFromFile(const QString &fileName)
             catch (AgrosException& e)
             {
                 Agros2D::problem()->clearSolution();
-                Agros2D::log()->printError(tr("Mesh reader"), e.what());
+                Agros2D::log()->printError(tr("Mesh"), e.what());
             }
         }
     }
@@ -1876,14 +1878,14 @@ void Scene::readSolutionFromFile(const QString &fileName)
 
 void Scene::writeSolutionToFile(const QString &fileName)
 {
-    Agros2D::log()->printMessage(tr("Scene"), tr("Saving solution to disk"));
+    Agros2D::log()->printMessage(tr("Problem"), tr("Saving solution to disk"));
 
     QFileInfo fileInfo(fileName);
     QString solutionFN = QString("%1/%2.sol").arg(fileInfo.absolutePath()).arg(fileInfo.baseName());
     if (QFile(solutionFN).open(QIODevice::WriteOnly))
         JlCompress::compressDir(solutionFN, cacheProblemDir());
     else
-        Agros2D::log()->printError(QObject::tr("Solution"), QObject::tr("Access denied '%1'.").arg(solutionFN));
+        Agros2D::log()->printError(QObject::tr("Solver"), QObject::tr("Access denied '%1'").arg(solutionFN));
 }
 
 MultiArray<double> Scene::activeMultiSolutionArray()

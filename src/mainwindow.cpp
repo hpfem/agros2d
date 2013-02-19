@@ -299,7 +299,7 @@ void MainWindow::createActions()
     actDocumentSaveGeometry->setStatusTip(tr("Export geometry to file"));
     connect(actDocumentSaveGeometry, SIGNAL(triggered()), this, SLOT(doDocumentSaveGeometry()));
 
-    actExamples = new QAction(tr("New example..."), this);
+    actExamples = new QAction(tr("Open example..."), this);
     connect(actExamples, SIGNAL(triggered()), this, SLOT(doExamples()));
 
     actCreateVideo = new QAction(icon("video"), tr("Create &video..."), this);
@@ -1179,7 +1179,7 @@ void MainWindow::doDocumentSaveGeometry()
         QFileInfo fileInfo(fileName);
         if (selected == "SVG files (*.svg)")
         {
-            if (fileInfo.suffix().toLower() != "svg") fileName += ".svg";            
+            if (fileInfo.suffix().toLower() != "svg") fileName += ".svg";
         }
 
         sceneViewPreprocessor->saveGeometryToSvg(fileName);
@@ -1614,7 +1614,7 @@ void MainWindow::doDocumentExportMeshFile()
     }
     else
     {
-        Agros2D::log()->printMessage(tr("Export mesh"), tr("The problem is not meshed."));
+        Agros2D::log()->printMessage(tr("Problem"), tr("The problem is not meshed"));
     }
 }
 
