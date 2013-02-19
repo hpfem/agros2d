@@ -101,6 +101,10 @@ void Agros2DGeneratorModule::generatePluginInterfaceFiles()
     description = description.replace("\n","");
     output.SetValue("DESCRIPTION", description.toStdString());
 
+    // force
+    XMLModule::force force = m_module->postprocessor().force();
+    output.SetValue("HAS_FORCE", (force.expression().empty() ? "false" : "true"));
+
     std::string text;
 
     // header - expand template
@@ -443,6 +447,7 @@ void Agros2DGeneratorModule::generatePluginForceFiles()
 
     QString id = QString::fromStdString(m_module->general().id());
 
+
     ctemplate::TemplateDictionary output("output");
 
     output.SetValue("ID", id.toStdString());
@@ -454,6 +459,8 @@ void Agros2DGeneratorModule::generatePluginForceFiles()
     ctemplate::ExpandTemplate(QString("%1/%2/force_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
 
+    // force
+    XMLModule::force force = m_module->postprocessor().force();
     foreach (XMLModule::quantity quantity, m_module->volume().quantity())
     {
         if (quantity.shortname().present())
@@ -465,7 +472,6 @@ void Agros2DGeneratorModule::generatePluginForceFiles()
     }
 
     // force
-    XMLModule::force force = m_module->postprocessor().force();
     foreach (XMLModule::expression expr, force.expression())
     {
         AnalysisType analysisType = analysisTypeFromStringKey(QString::fromStdString(expr.analysistype()));

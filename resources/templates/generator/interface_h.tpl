@@ -70,6 +70,7 @@ public:
 
     // force calculation
     virtual Point3 force(FieldInfo *fieldInfo, const SceneMaterial *material, const Point3 &point, const Point3 &velocity);    
+    virtual bool hasForce() { return {{HAS_FORCE}}; }
 };
 
 #endif // {{ID}}_INTERFACE_H
