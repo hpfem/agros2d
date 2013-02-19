@@ -46,7 +46,7 @@ bool Field::solveInitVariables()
 }
 
 FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
-    : m_plugin(NULL), m_initialMesh(NULL)
+    : m_plugin(NULL), m_initialMesh(NULL), m_numberOfSolutions(0)
 {
     if (fieldId.isEmpty())
         m_fieldId = "electrostatic";
@@ -78,6 +78,13 @@ void FieldInfo::setInitialMesh(Hermes::Hermes2D::Mesh *mesh)
 void FieldInfo::setAnalysisType(const AnalysisType analysisType)
 {
     m_analysisType = analysisType;
+
+    // number of soutions
+    m_numberOfSolutions = 0;
+
+    foreach (XMLModule::analysis an, m_plugin->module()->general().analyses().analysis())
+        if (an.type() == analysisTypeToStringKey(m_analysisType).toStdString())
+            m_numberOfSolutions = an.solutions();
 }
 
 int FieldInfo::edgeRefinement(SceneEdge *edge)
@@ -151,55 +158,6 @@ void FieldInfo::clear()
     m_picardAndersonNumberOfLastVectors = 3;
 }
 
-template <class T>
-void deformShapeTemplate(T linVert, int count)
-{
-    MultiArray<double> msa = Agros2D::scene()->activeMultiSolutionArray();
-
-    double min =  numeric_limits<double>::max();
-    double max = -numeric_limits<double>::max();
-    for (int i = 0; i < count; i++)
-    {
-        double x = linVert[i][0];
-        double y = linVert[i][1];
-
-        double dx = msa.solutions().at(0)->get_pt_value(x, y)->val[0];
-        double dy = msa.solutions().at(1)->get_pt_value(x, y)->val[0];
-
-        double dm = sqrt(Hermes::sqr(dx) + Hermes::sqr(dy));
-
-        if (dm < min) min = dm;
-        if (dm > max) max = dm;
-    }
-
-    RectPoint rect = Agros2D::scene()->boundingBox();
-    double k = qMax(rect.width(), rect.height()) / qMax(min, max) / 15.0;
-
-    for (int i = 0; i < count; i++)
-    {
-        double x = linVert[i][0];
-        double y = linVert[i][1];
-
-        double dx = msa.solutions().at(0)->get_pt_value(x, y)->val[0];
-        double dy = msa.solutions().at(1)->get_pt_value(x, y)->val[0];
-
-        linVert[i][0] += k*dx;
-        linVert[i][1] += k*dy;
-    }
-}
-
-void FieldInfo::deformShape(double3* linVert, int count)
-{
-    if (hasDeformableShape())
-        deformShapeTemplate<double3 *>(linVert, count);
-}
-
-void FieldInfo::deformShape(double4* linVert, int count)
-{
-    if (hasDeformableShape())
-        deformShapeTemplate<double4 *>(linVert, count);
-}
-
 void FieldInfo::refineMesh(Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea)
 {
     // refine mesh - global
@@ -250,15 +208,6 @@ bool FieldInfo::hasDeformableShape() const
         return m_plugin->module()->general().deformed_shape().get();
 
     return false;
-}
-
-// number of solutions
-int FieldInfo::numberOfSolutions() const
-{
-    // analyses
-    foreach (XMLModule::analysis an, m_plugin->module()->general().analyses().analysis())
-        if (an.type() == analysisTypeToStringKey(m_analysisType).toStdString())
-            return an.solutions();
 }
 
 // latex equation
@@ -503,7 +452,7 @@ Module::DialogUI FieldInfo::materialUI() const
     {
         XMLModule::gui ui = m_plugin->module()->preprocessor().gui().at(i);
         if (ui.type() == "volume")
-            return Module::DialogUI(ui);
+            return Module::DialogUI(this, ui);
     }
 
     assert(0);
@@ -516,7 +465,7 @@ Module::DialogUI FieldInfo::boundaryUI() const
     {
         XMLModule::gui ui = m_plugin->module()->preprocessor().gui().at(i);
         if (ui.type() == "surface")
-            return Module::DialogUI(ui);
+            return Module::DialogUI(this, ui);
     }
 
     assert(0);
@@ -653,8 +602,8 @@ Module::LocalVariable FieldInfo::localVariable(const QString &id) const
         if (var.id() == id)
             return var;
 
-    qDebug() << "localVariable: " << id;
-    assert(0);
+    qDebug() << "Warning: unable to return local variable: " << id;
+    return Module::LocalVariable();
 }
 
 Module::Integral FieldInfo::surfaceIntegral(const QString &id) const

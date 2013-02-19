@@ -129,10 +129,6 @@ public:
     inline Value timeSkip() const { return m_timeSkip; }
     void setTimeSkip(const Value& value) { m_timeSkip = value; emit changed(); }
 
-    // deform shape
-    void deformShape(double3* linVert, int count);
-    void deformShape(double4* linVert, int count);
-
     // refine mesh
     void refineMesh(Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea);
 
@@ -146,7 +142,7 @@ public:
     bool hasDeformableShape() const;
 
     // number of solutions
-    int numberOfSolutions() const;
+    inline int numberOfSolutions() const { return m_numberOfSolutions; }
 
     // latex equation
     QString equation() const;
@@ -225,6 +221,8 @@ private:
 
     // analysis type
     AnalysisType m_analysisType;
+    // number of solutions cache
+    int m_numberOfSolutions;
 
     // linearity
     LinearityType m_linearityType;

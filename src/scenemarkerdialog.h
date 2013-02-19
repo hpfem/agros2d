@@ -59,9 +59,6 @@ public:
     int showDialog(QWidget *parent) { return 0; }
 };
 
-template <class T>
-void deformShapeTemplate(T linVert, int count);
-
 // ************************************************************************************************
 
 class SceneFieldWidget : public QWidget
@@ -98,7 +95,7 @@ class SceneFieldWidgetMaterial : public SceneFieldWidget
 {
     Q_OBJECT
 public:
-    SceneMaterial *material;
+    SceneMaterial *m_material;
 
     SceneFieldWidgetMaterial(Module::DialogUI ui, SceneMaterial *material, QWidget *parent);
 
@@ -116,7 +113,7 @@ class SceneFieldWidgetBoundary : public SceneFieldWidget
 {
     Q_OBJECT
 public:
-    SceneBoundary *boundary;
+    SceneBoundary *m_boundary;
 
     SceneFieldWidgetBoundary(Module::DialogUI ui, SceneBoundary *boundary, QWidget *parent);
 
@@ -172,7 +169,7 @@ protected:
     QDialogButtonBox *buttonBox;
 
     QLineEdit *txtName;
-    SceneBoundary *boundary;
+    SceneBoundary *m_boundary;
 
     SceneFieldWidget *fieldWidget;
 
@@ -202,7 +199,7 @@ protected:
     QDialogButtonBox *buttonBox;
 
     QLineEdit *txtName;
-    SceneMaterial *material;
+    SceneMaterial *m_material;
 
     SceneFieldWidget *fieldWidget;
 

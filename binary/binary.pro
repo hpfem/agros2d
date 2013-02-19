@@ -15,7 +15,7 @@ RESOURCES = ../src/src.qrc
 
 SOURCES += main.cpp
 
-linux-g++|linux-g++-64|linux-g++-32 {
+linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     TARGET = ../agros2d
 }
 

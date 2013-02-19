@@ -107,12 +107,12 @@ inline double fastatan2(double y, double x)
     if (x >= 0)
     {
         r = (x - abs_y) / (x + abs_y);
-        angle = M_PI_4;
+        angle = 0.78539816339744830962;
     }
     else
     {
         r = (x + abs_y) / (abs_y - x);
-        angle = 3.0f * M_PI_4;
+        angle = 3.0f * 0.78539816339744830962;
     }
     angle += (0.1821f * r*r - 0.9675f) * r;
 

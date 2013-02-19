@@ -88,7 +88,8 @@ InfoWidget::~InfoWidget()
 
 void InfoWidget::refresh()
 {
-    QTimer::singleShot(0, this, SLOT(showInfo()));
+    // QTimer::singleShot(0, this, SLOT(showInfo()));
+    showInfo();
 }
 
 void InfoWidget::showInfo()

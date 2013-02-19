@@ -57,11 +57,11 @@ FieldSelectDialog::FieldSelectDialog(QList<QString> fields, QWidget *parent) : Q
         if (!fields.contains(it.key()))
         {
             QListWidgetItem *item = new QListWidgetItem(lstFields);
-            item->setIcon(icon("fields/" + it.key()));            
+            item->setIcon(icon("fields/" + it.key()));
             item->setText(it.value());
             item->setData(Qt::UserRole, it.key());
 
-            lstFields->addItem(item);           
+            lstFields->addItem(item);
         }
     }
 
@@ -839,6 +839,7 @@ void ProblemWidget::createControls()
 
     // harmonic
     txtFrequency = new LineEditDouble();
+    txtFrequency->setBottom(0.0);
 
     // harmonic analysis
     QGridLayout *layoutHarmonicAnalysis = new QGridLayout();
@@ -936,7 +937,6 @@ void ProblemWidget::fillComboBox()
 void ProblemWidget::updateControls()
 {
     // disconnect signals
-    // without clearing solution
     txtName->disconnect();
 
     // with clearing solution
@@ -944,8 +944,7 @@ void ProblemWidget::updateControls()
     cmbMatrixSolver->disconnect();
     cmbMeshType->disconnect();
 
-    cmbMeshType->disconnect();
-    connect(txtFrequency, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
+    txtFrequency->disconnect();
 
     cmbTransientMethod->disconnect();
     txtTransientOrder->disconnect();
@@ -991,24 +990,25 @@ void ProblemWidget::updateControls()
     transientChanged();
 
     // connect signals
+    connect(txtName, SIGNAL(textChanged(QString)), this, SLOT(changedWithClear()));
 
     // with clearing solution
     connect(cmbCoordinateType, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
     connect(cmbMatrixSolver, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
     connect(cmbMeshType, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
 
-    connect(txtFrequency, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
+    connect(txtFrequency, SIGNAL(textChanged(QString)), this, SLOT(changedWithClear()));
 
     connect(cmbTransientMethod, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
-    connect(txtTransientOrder, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
-    connect(txtTransientTimeTotal, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
-    connect(txtTransientTolerance, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
-    connect(txtTransientSteps, SIGNAL(editingFinished()), this, SLOT(changedWithClear()));
+    connect(txtTransientOrder, SIGNAL(valueChanged(int)), this, SLOT(changedWithClear()));
+    connect(txtTransientTimeTotal, SIGNAL(textChanged(QString)), this, SLOT(changedWithClear()));
+    connect(txtTransientTolerance, SIGNAL(textChanged(QString)), this, SLOT(changedWithClear()));
+    connect(txtTransientSteps, SIGNAL(valueChanged(int)), this, SLOT(changedWithClear()));
 
     // transient
-    connect(txtTransientSteps, SIGNAL(editingFinished()), this, SLOT(transientChanged()));
-    connect(txtTransientTimeTotal, SIGNAL(editingFinished()), this, SLOT(transientChanged()));
-    connect(txtTransientOrder, SIGNAL(editingFinished()), this, SLOT(transientChanged()));
+    connect(txtTransientSteps, SIGNAL(valueChanged(int)), this, SLOT(transientChanged()));
+    connect(txtTransientTimeTotal, SIGNAL(textChanged(QString)), this, SLOT(transientChanged()));
+    connect(txtTransientOrder, SIGNAL(valueChanged(int)), this, SLOT(transientChanged()));
     connect(cmbTransientMethod, SIGNAL(currentIndexChanged(int)), this, SLOT(transientChanged()));
 }
 
@@ -1016,6 +1016,8 @@ void ProblemWidget::changedWithClear()
 {
     // save properties
     Agros2D::problem()->config()->blockSignals(true);
+
+    Agros2D::problem()->config()->setName(txtName->text());
 
     Agros2D::problem()->config()->setCoordinateType((CoordinateType) cmbCoordinateType->itemData(cmbCoordinateType->currentIndex()).toInt());
     Agros2D::problem()->config()->setMeshType((MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt());

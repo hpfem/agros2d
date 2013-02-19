@@ -96,7 +96,7 @@ protected:
 
     void createActions();
 
-    void drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments) const;
+    void drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments = -1) const;
     void drawBlend(Point start, Point end, double red = 1.0, double green = 1.0, double blue = 1.0, double alpha = 0.75) const;
 
     void printAt(int penX, int penY, const QString &text, const TextureFont *fnt);

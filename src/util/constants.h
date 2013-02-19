@@ -118,7 +118,7 @@ const bool ORDERLABEL = false;
 // particle
 const bool SHOWPARTICLEVIEW = false;
 const bool PARTICLEINCLUDERELATIVISTICCORRECTION = true;
-const int PARTICLENUMBEROFPARTICLES = 5;
+const int PARTICLENUMBEROFPARTICLES = 1;
 const double PARTICLESTARTINGRADIUS = 0;
 const double PARTICLESTARTX = 0;
 const double PARTICLESTARTY = 0;

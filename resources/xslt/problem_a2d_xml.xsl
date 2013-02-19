@@ -118,10 +118,6 @@
                 <xsl:value-of select="/document/problems/problem/description" />
             </xsl:element>
 
-            <xsl:element name="startup_script">
-                <xsl:value-of select="/document/problems/problem/scriptstartup" />
-            </xsl:element>
-
             <xsl:element name="fields">
                 <xsl:element name="field">
                     <xsl:attribute name="field_id">
@@ -318,9 +314,8 @@
                                             </xsl:attribute>
                                         </xsl:if>
                                         <xsl:if test="@type='acoustic_matched_boundary'">
-                                            <xsl:attribute name="type">
-                                                <xsl:value-of select="@type"/>
-                                            </xsl:attribute>
+                                            <xsl:attribute name="type">acoustic_impedance</xsl:attribute>
+                                            <xsl:attribute name="acoustic_impedance">428.75</xsl:attribute>
                                         </xsl:if>
 
                                         <!-- Current field -->
@@ -656,6 +651,12 @@
                     </xsl:element>
                 </xsl:element>
             </xsl:element>
+        </xsl:element>
+
+        <xsl:element name="config">
+          <xsl:attribute name="Problem_StartupScript">
+            <xsl:value-of select="/document/problems/problem/scriptstartup" />
+          </xsl:attribute>
         </xsl:element>
     </xsl:element>
 </xsl:template>

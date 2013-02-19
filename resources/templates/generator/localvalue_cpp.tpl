@@ -38,6 +38,8 @@
 
 void {{CLASS}}LocalValue::calculate()
 {
+    int numberOfSolutions = m_fieldInfo->numberOfSolutions();
+
     m_values.clear();
 
     // update time functions
@@ -59,12 +61,15 @@ void {{CLASS}}LocalValue::calculate()
             SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()));
             SceneMaterial *material = label->marker(m_fieldInfo);
 
-            double *value = new double[m_fieldInfo->numberOfSolutions()];
-            double *dudx = new double[m_fieldInfo->numberOfSolutions()];
-            double *dudy = new double[m_fieldInfo->numberOfSolutions()];
+            {{#VARIABLE_MATERIAL}}Value material_{{MATERIAL_VARIABLE}} = material->value("{{MATERIAL_VARIABLE}}");
+            {{/VARIABLE_MATERIAL}}
 
-            std::vector<Hermes::Hermes2D::Solution<double> *> sln(m_fieldInfo->numberOfSolutions());
-            for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
+            double *value = new double[numberOfSolutions];
+            double *dudx = new double[numberOfSolutions];
+            double *dudy = new double[numberOfSolutions];
+
+            std::vector<Hermes::Hermes2D::Solution<double> *> sln(numberOfSolutions);
+            for (int k = 0; k < numberOfSolutions; k++)
             {
                 int adaptivityStep, timeStep;
                 SolutionMode solutionMode;

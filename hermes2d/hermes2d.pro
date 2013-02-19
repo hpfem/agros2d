@@ -133,12 +133,14 @@ HEADERS += \
     ../hermes_common/include/config.h
 
 linux-g++|linux-g++-64|linux-g++-32 {
+    QMAKE_LFLAGS += -fopenmp
+    QMAKE_CXXFLAGS += -fopenmp
+}
+
+linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     TARGET = ../libs/agros2d_hermes2d
 
     CONFIG += warn_off
-
-    QMAKE_LFLAGS += -fopenmp
-    QMAKE_CXXFLAGS += -fopenmp
 
     # DEFINES += WITH_MUMPS
     # DEFINES += WITH_SUPERLU
@@ -146,13 +148,9 @@ linux-g++|linux-g++-64|linux-g++-32 {
     DEFINES += HAVE_LOG2
 
     INCLUDEPATH += /usr/include/suitesparse
-    INCLUDEPATH += /usr/include/python2.6
-    INCLUDEPATH += /usr/include/python2.7
     LIBS += -lumfpack
     LIBS += -lxerces-c
     LIBS += -lstdc++
-    LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
-    LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
 
     # mumps
     contains(CONFIG, WITH_MUMPS) {
@@ -207,14 +205,12 @@ win32-msvc2010 {
     INCLUDEPATH += c:/hpfem/hermes/dependencies/include
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 
-    LIBS += -Lc:/Qt/4.8.2/lib
     LIBS += -Lc:/hpfem/hermes/dependencies/lib
     LIBS += -Ld:/hpfem/hermes/dependencies/lib
     LIBS += -llibumfpack
     LIBS += -llibamd
     # LIBS += -lblas
     LIBS += -lpthreadVCE2
-    LIBS += -lxerces-c_static_3
     LIBS += -lvcomp
     LIBS += -ladvapi32
     LIBS += -lws2_32

@@ -32,7 +32,7 @@ public:
     virtual ~Marker();
 
     /// value of one individual variable
-    Value value(QString id);
+    Value value(QString id) const;
 
     /// get all values
     const QHash<QString, Value> values() const;

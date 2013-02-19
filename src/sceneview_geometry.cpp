@@ -1016,7 +1016,7 @@ void SceneViewPreprocessor::paintGeometry()
             double radius = edge->radius();
             double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
 
-            drawArc(center, radius, startAngle, edge->angle(), edge->angle()/4.0);
+            drawArc(center, radius, startAngle, edge->angle());
         }
 
         glDisable(GL_LINE_STIPPLE);
@@ -1193,7 +1193,9 @@ void SceneViewPreprocessor::paintGeometry()
     }
     catch (AgrosException& ame)
     {
-        // Agros2D::log()->printError(tr("Geometry"), ame.toString());
+        // This is a function responsible for painting geometry in process of its creation by the user.
+        // Situations, which do not represent valid geometry, are acceptable here
+        // Therefore catch exceptions and do nothing
     }
 
     // labels hints

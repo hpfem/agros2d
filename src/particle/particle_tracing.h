@@ -56,10 +56,7 @@ private:
     double m_velocityMin;
     double m_velocityMax;
 
-    QMap<FieldInfo *, SceneMaterial *> m_materials;
-
-    bool newtonEquations(FieldInfo* fieldInfo,
-                         double step,
+    bool newtonEquations(double step,
                          Point3 position,
                          Point3 velocity,
                          Point3 *newposition,

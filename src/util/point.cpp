@@ -49,7 +49,7 @@ bool isBetween(double angleStart, double angleEnd, double angleTest)
     }
 
     // angle_1 is in the third quadrant, angle_2 is in the second quadrant
-    if ((angleStart <= - (M_PI_2 - tol) ) && (angleEnd >= (M_PI_2 - tol)))
+    if ((angleStart <= - (1.57079632679489661923 - tol) ) && (angleEnd >= (1.57079632679489661923 - tol)))
     {
         if ((angleTest <= angleStart) || (angleTest >= angleEnd))
         {

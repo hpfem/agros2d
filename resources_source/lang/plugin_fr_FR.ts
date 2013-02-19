@@ -6,275 +6,200 @@
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="753"/>
         <source>Acoustics</source>
-        <translation type="unfinished"></translation>
+        <translation>Acoustique</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="759"/>
         <source>Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Harmonique</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="762"/>
         <source>Transient</source>
-        <translation type="unfinished">Transitoire</translation>
+        <translation>Transitoire</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="765"/>
         <source>Pressure</source>
-        <translation type="unfinished"></translation>
+        <translation>Pression</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="768"/>
         <source>Normal acceleration</source>
-        <translation type="unfinished"></translation>
+        <translation>Accélération normale</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="771"/>
         <source>Impedance boundary condition</source>
-        <translation type="unfinished"></translation>
+        <translation>Condition aux limites d&apos;impédance</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="774"/>
         <source>Mass density</source>
-        <translation type="unfinished"></translation>
+        <translation>Masse volumique</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="777"/>
         <source>Speed of sound</source>
-        <translation type="unfinished"></translation>
+        <translation>Vitesse du son</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="780"/>
         <source>Pressure - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Pression : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="783"/>
         <source>Pressure - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Pression : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="786"/>
         <source>Normal acceleration - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Accélération normale : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="789"/>
         <source>Normal acceleration - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Accélération normale : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="792"/>
         <source>Pressure - time der.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pression : dérivé de temps</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="795"/>
         <source>Sound pressure level</source>
-        <translation type="unfinished"></translation>
+        <translation>Niveau de pression acoustique</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="798"/>
         <source>Local acceleration - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Accélération locale : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="801"/>
         <source>Local acceleration - imag</source>
-        <translation type="unfinished"></translation>
+        <translation>Accélération locale : Im</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="804"/>
         <source>Pressure derivative</source>
-        <translation type="unfinished"></translation>
+        <translation>Dérivé de pression</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="807"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Volume</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="810"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation>Coupe transversale</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="813"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Longueur</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="816"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Surface</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="823"/>
         <source>Acoustics is the interdisciplinary science that deals with the study of all mechanical waves in gases, liquids and solids.</source>
-        <translation type="unfinished"></translation>
+        <translation>L’acoustique est la science du son, ce qui inclut sa production, son contrôle, sa transmission, sa réception et ses effets.</translation>
     </message>
 </context>
 <context>
     <name>CurrentInterface</name>
     <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="441"/>
+        <location filename="../../plugins/current/current_interface.cpp" line="225"/>
         <source>Current field</source>
-        <translation type="unfinished"></translation>
+        <translation>Courant électrique</translation>
     </message>
     <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="447"/>
+        <location filename="../../plugins/current/current_interface.cpp" line="231"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation>État stationnaire</translation>
     </message>
     <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="450"/>
-        <source>Harmonic</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="453"/>
+        <location filename="../../plugins/current/current_interface.cpp" line="234"/>
         <source>Fixed voltage</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Potentiel fixe</translation>
     </message>
     <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="456"/>
+        <location filename="../../plugins/current/current_interface.cpp" line="237"/>
         <source>Current density</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de courant</translation>
     </message>
     <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="459"/>
+        <location filename="../../plugins/current/current_interface.cpp" line="240"/>
         <source>Conductivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Conductivité</translation>
     </message>
     <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="462"/>
+        <location filename="../../plugins/current/current_interface.cpp" line="243"/>
         <source>Permittivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Permittivité</translation>
     </message>
     <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="465"/>
-        <source>Scalar potential</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="468"/>
+        <location filename="../../plugins/current/current_interface.cpp" line="246"/>
         <source>Scalar potential - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Potentiel scalaire : Re</translation>
     </message>
     <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="471"/>
-        <source>Scalar potential - imag</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="474"/>
-        <source>Electric field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="477"/>
+        <location filename="../../plugins/current/current_interface.cpp" line="249"/>
         <source>Electric field - real</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">C</translation>
     </message>
     <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="480"/>
-        <source>Electric field - imag</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="483"/>
-        <source>Displacement</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="486"/>
-        <source>Displacement - real</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="489"/>
-        <source>Displacement - imag</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="492"/>
-        <source>Current density - conductive</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="495"/>
+        <location filename="../../plugins/current/current_interface.cpp" line="252"/>
         <source>Current density - conductive - real</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="498"/>
-        <source>Current density - conductive - imag</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="501"/>
-        <source>Current density - displacement</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="504"/>
-        <source>Current density - displacement - real</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="507"/>
-        <source>Current density - displacement - imag</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="510"/>
-        <source>Current density - total</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="513"/>
+        <location filename="../../plugins/current/current_interface.cpp" line="255"/>
         <source>Current density - total - real</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="516"/>
-        <source>Current density - total - imag</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="519"/>
+        <location filename="../../plugins/current/current_interface.cpp" line="258"/>
         <source>Joule losses</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="522"/>
+        <location filename="../../plugins/current/current_interface.cpp" line="261"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Volume</translation>
     </message>
     <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="525"/>
+        <location filename="../../plugins/current/current_interface.cpp" line="264"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation>Coupe transversale</translation>
     </message>
     <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="528"/>
+        <location filename="../../plugins/current/current_interface.cpp" line="267"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Longueur</translation>
     </message>
     <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="531"/>
+        <location filename="../../plugins/current/current_interface.cpp" line="270"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Surface</translation>
     </message>
     <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="534"/>
+        <location filename="../../plugins/current/current_interface.cpp" line="273"/>
         <source>Current - conductive - real</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/current/current_interface.cpp" line="541"/>
+        <location filename="../../plugins/current/current_interface.cpp" line="280"/>
         <source>Electric current is a flow of electric charge through a medium. This charge is typically carried by moving electrons in a conductor such as wire. It can also be carried by ions in an electrolyte, or by both ions and electrons in a plasma.        </source>
-        <translation type="unfinished"></translation>
+        <translation>Un courant électrique est un déplacement d&apos;ensemble de porteurs de charge électrique, généralement des électrons, au sein d&apos;un matériau conducteur. Ces déplacements sont imposés par l&apos;action de la force électromagnétique, dont l&apos;interaction avec la matière est le fondement de l&apos;électricité.</translation>
     </message>
 </context>
 <context>
@@ -287,7 +212,7 @@
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="555"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation>État stationnaire</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="558"/>
@@ -377,26 +302,26 @@
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="609"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Volume</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="612"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation>Coupe transversale</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="615"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Longueur</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="618"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Surface</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="625"/>
-        <source>Structural analysis is the determination of the            effects of loads on physical structures and their components.        </source>
+        <source>Structural analysis is the determination of the effects of loads on physical structures and their components.        </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -410,12 +335,12 @@
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="231"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">État stationnaire</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="234"/>
         <source>Fixed voltage</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Potentiel fixe</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="237"/>
@@ -425,7 +350,7 @@
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="240"/>
         <source>Permittivity</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Permittivité</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="243"/>
@@ -455,12 +380,12 @@
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="258"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Volume</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="261"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Coupe transversale</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="264"/>
@@ -470,12 +395,12 @@
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="267"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Longueur</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="270"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Surface</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="273"/>
@@ -498,7 +423,7 @@
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="621"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">État stationnaire</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="624"/>
@@ -513,7 +438,7 @@
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="630"/>
         <source>Pressure</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pression</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="633"/>
@@ -563,25 +488,30 @@
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="660"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Volume</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="663"/>
-        <source>Length</source>
-        <translation type="unfinished"></translation>
+        <source>Cross section</source>
+        <translation type="unfinished">Coupe transversale</translation>
     </message>
     <message>
         <location filename="../../plugins/flow/flow_interface.cpp" line="666"/>
+        <source>Length</source>
+        <translation type="unfinished">Longueur</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="669"/>
         <source>Force X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="669"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="672"/>
         <source>Force Y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../plugins/flow/flow_interface.cpp" line="676"/>
+        <location filename="../../plugins/flow/flow_interface.cpp" line="679"/>
         <source>Incompressible flow model using Navier-Stokes equations.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -596,7 +526,7 @@
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="387"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">État stationnaire</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="390"/>
@@ -681,22 +611,22 @@
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="438"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Volume</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="441"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Coupe transversale</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="444"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Longueur</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="447"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Surface</translation>
     </message>
     <message>
         <location filename="../../plugins/heat/heat_interface.cpp" line="454"/>
@@ -714,12 +644,12 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="675"/>
         <source>Steady state</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">État stationnaire</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="678"/>
         <source>Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Harmonique</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="681"/>
@@ -859,7 +789,7 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="762"/>
         <source>Conductivity</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Conductivité</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="765"/>
@@ -929,12 +859,12 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="804"/>
         <source>Volume</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Volume</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="807"/>
         <source>Cross section</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Coupe transversale</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="810"/>
@@ -994,12 +924,12 @@
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="843"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Longueur</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="846"/>
         <source>Surface</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Surface</translation>
     </message>
     <message>
         <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="853"/>
@@ -1017,172 +947,8 @@
         <location filename="../../plugins/flow/flow_force.cpp" line="64"/>
         <location filename="../../plugins/heat/heat_force.cpp" line="64"/>
         <location filename="../../plugins/magnetic/magnetic_force.cpp" line="64"/>
-        <location filename="../../plugins/rf/rf_force.cpp" line="64"/>
         <source>Point [%1, %2] does not lie in any element</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>RfInterface</name>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="537"/>
-        <source>RF waves</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="543"/>
-        <source>Harmonic</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="546"/>
-        <source>Electric field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="549"/>
-        <source>Magnetic field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="552"/>
-        <source>Surface current</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="555"/>
-        <source>Impedance boundary condition</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="558"/>
-        <source>Permittivity</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="561"/>
-        <source>Permeability</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="564"/>
-        <source>Conductivity</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="567"/>
-        <source>Current dens. - ext. - real</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="570"/>
-        <source>Current dens. - ext. - imag</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="573"/>
-        <source>Electric field - real</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="576"/>
-        <source>Electric field - imag</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="579"/>
-        <source>Magnetic field - real</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="582"/>
-        <source>Magnetic field - imag</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="585"/>
-        <source>Surface current - real</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="588"/>
-        <source>Surface current - imag</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="591"/>
-        <source>Impedance</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="594"/>
-        <source>Displacement</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="597"/>
-        <source>Displacement - real</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="600"/>
-        <source>Displacement - imag</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="603"/>
-        <source>Current density - real</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="606"/>
-        <source>Current density - imag</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="609"/>
-        <source>Flux density</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="612"/>
-        <source>Flux density - real</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="615"/>
-        <source>Flux density - imag</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="618"/>
-        <source>Poyting vector</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="621"/>
-        <source>Volume</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="624"/>
-        <source>Cross section</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="627"/>
-        <source>Length</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="630"/>
-        <source>Surface</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="637"/>
-        <source>Solving TE waves in RF field.</source>
-        <translation type="unfinished"></translation>
+        <translation>Point [%1, %2] ne se trouve pas dans aucun élément</translation>
     </message>
 </context>
 </TS>

@@ -142,13 +142,25 @@ void PostHermes::processRangeContour()
                                               PhysicFieldVariableComp_Magnitude);
 
         m_linContourView.free();
+
+        // deformed shape
+        if (Agros2D::scene()->activeViewField()->hasDeformableShape() && Agros2D::problem()->configView()->deformContour)
+        {
+            Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *>(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0),
+                                                                                                                                                           Agros2D::scene()->activeMultiSolutionArray().solutions().at(1)));
+
+            RectPoint rect = Agros2D::scene()->boundingBox();
+            double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
+
+            m_linContourView.set_displacement(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0),
+                                              Agros2D::scene()->activeMultiSolutionArray().solutions().at(1),
+                                              dmult);
+        }
+
+        // process solution
         m_linContourView.process_solution(slnContourView,
                                           Hermes::Hermes2D::H2D_FN_VAL_0,
                                           paletteQualityToDouble(Agros2D::problem()->configView()->linearizerQuality));
-
-        // deformed shape
-        if (Agros2D::problem()->configView()->deformContour)
-            Agros2D::scene()->activeViewField()->deformShape(m_linContourView.get_vertices(), m_linContourView.get_num_vertices());
 
         delete slnContourView;
     }
@@ -185,16 +197,27 @@ void PostHermes::processRangeScalar()
         // time.start();
         // qDebug() << "process scalar: start";
         m_linScalarView.free();
+
+        // deformed shape
+        if (Agros2D::scene()->activeViewField()->hasDeformableShape() && Agros2D::problem()->configView()->deformScalar)
+        {
+            Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *>(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0),
+                                                                                                                                                           Agros2D::scene()->activeMultiSolutionArray().solutions().at(1)));
+
+            RectPoint rect = Agros2D::scene()->boundingBox();
+            double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
+
+            m_linScalarView.set_displacement(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0),
+                                             Agros2D::scene()->activeMultiSolutionArray().solutions().at(1),
+                                             dmult);
+        }
+
+        // process solution
         m_linScalarView.process_solution(slnScalarView,
                                          Hermes::Hermes2D::H2D_FN_VAL_0,
                                          paletteQualityToDouble(Agros2D::problem()->configView()->linearizerQuality));
 
         // qDebug() << "process scalar: " << time.elapsed();
-
-        // deformed shape
-        if (Agros2D::problem()->configView()->deformScalar)
-            Agros2D::scene()->activeViewField()->deformShape(m_linScalarView.get_vertices(),
-                                                             m_linScalarView.get_num_vertices());
 
         if (Agros2D::problem()->configView()->scalarRangeAuto)
         {
@@ -235,14 +258,27 @@ void PostHermes::processRangeVector()
                                                                             PhysicFieldVariableComp_Y);
 
         m_vecVectorView.free();
+
+        // deformed shape
+        if (Agros2D::scene()->activeViewField()->hasDeformableShape() && Agros2D::problem()->configView()->deformVector)
+        {
+            /*
+            Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *>(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0),
+                                                                                                                                                           Agros2D::scene()->activeMultiSolutionArray().solutions().at(1)));
+
+            RectPoint rect = Agros2D::scene()->boundingBox();
+            double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
+
+            m_vecVectorView.set_displacement(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0),
+                                             Agros2D::scene()->activeMultiSolutionArray().solutions().at(1),
+                                             dmult);
+            */
+        }
+
+        // process solution
         m_vecVectorView.process_solution(slnVectorXView, slnVectorYView,
                                          Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::H2D_FN_VAL_0,
                                          Hermes::Hermes2D::Views::HERMES_EPS_LOW);
-
-        // deformed shape
-        if (Agros2D::problem()->configView()->deformVector)
-            Agros2D::scene()->activeViewField()->deformShape(m_vecVectorView.get_vertices(),
-                                                             m_vecVectorView.get_num_vertices());
 
         delete slnVectorXView;
         delete slnVectorYView;
@@ -279,8 +315,17 @@ void PostHermes::processParticleTracing()
             {
                 particleTracing.computeTrajectoryParticle(k > 0);
             }
+            catch (AgrosException& e)
+            {
+                Agros2D::log()->printWarning("Particle tracing", QString("Particle tracing failed, ").append(e.what()));
+                m_particleTracingVelocityMin = 0.0;
+                m_particleTracingVelocityMax = 0.0;
+
+                return;
+            }
             catch (...)
             {
+                Agros2D::log()->printWarning("Particle tracing", "Catched unknown exception in particle tracing!");
                 m_particleTracingVelocityMin = 0.0;
                 m_particleTracingVelocityMax = 0.0;
 
@@ -341,6 +386,9 @@ void PostHermes::processSolved()
 
     // temporary use 3/4 of max threads
     int threads = omp_get_max_threads() * 3/4;
+    if (threads == 0)
+        threads = 1;
+
     Hermes::Hermes2D::Hermes2DApi.set_integral_param_value(Hermes::Hermes2D::numThreads, threads);
 
     processSolutionMesh();
@@ -772,7 +820,7 @@ void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max
     glColor3d(0.8, 0.8, 0.8);
     glVertex2d(scaleLeft + 12.0, scaleBorder.y + 12.0);
     glVertex2d(scaleLeft + 28.0, scaleBorder.y + 12.0);
-    glEnd();    
+    glEnd();
 
     // ticks
     glColor3d(0.0, 0.0, 0.0);

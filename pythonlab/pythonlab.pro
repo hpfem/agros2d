@@ -10,7 +10,7 @@ RESOURCES = ../src/src.qrc
 INCLUDEPATH += ./ \
     ../src
 
-linux-g++|linux-g++-64|linux-g++-32 {
+linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     TARGET = ../agros2d_pythonlab
 }
 
@@ -65,9 +65,7 @@ HEADERS  += pythonlab.h \
     ../src/gui/about.h \
     ../src/util/checkversion.h
 
-linux-g++|linux-g++-64|linux-g++-32 {
-    QMAKE_LFLAGS += -fopenmp
-    QMAKE_CXXFLAGS += -fopenmp
+linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     # DEFINES += WITH_UNITY
 
     HEADERS += singleapp/qtlockedfile_unix.h
@@ -136,10 +134,16 @@ win32-msvc2010 {
 
     LIBS += -Lc:/Python27/libs
     LIBS += -lvcomp
-    LIBS += -lpython27
     LIBS += -lpthreadVCE2
     LIBS += -ladvapi32
     LIBS += -lws2_32
+    
+    CONFIG(release, debug|release) {
+        LIBS += -lpython27
+    }
+    CONFIG(debug, debug|release) {
+        LIBS += -lpython27_d
+    }
 }
 
 include(../agros2d_version.pri)

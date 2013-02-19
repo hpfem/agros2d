@@ -13,6 +13,9 @@ INCLUDEPATH += ./ \
 linux-g++|linux-g++-64|linux-g++-32 {
     QMAKE_LFLAGS += -fopenmp
     QMAKE_CXXFLAGS += -fopenmp
+}
+
+linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     # DEFINES += WITH_UNITY
 
     INCLUDEPATH += /usr/include
@@ -105,7 +108,7 @@ win32-msvc2010 {
     LIBS += -Lc:/Python27/libs
     LIBS += -L../../qwt-6.0.1/lib
     LIBS += -lvcomp
-    LIBS += -lpython27
+    
     LIBS += -llibumfpack
     LIBS += -llibamd
     LIBS += -lpthreadVCE2
@@ -116,9 +119,11 @@ win32-msvc2010 {
     CONFIG(release, debug|release) {
         LIBS += -lxerces-c_static_3
         LIBS += -lqwt
+        LIBS += -lpython27
     }
     CONFIG(debug, debug|release) {
         LIBS += -lxerces-c_static_3D
         LIBS += -lqwtd
+        LIBS += -lpython27_d
     }
 }

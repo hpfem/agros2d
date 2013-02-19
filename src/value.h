@@ -114,6 +114,7 @@ public slots:
 
 signals:
     void editingFinished();
+    void textChanged(QString);
     void evaluated(bool isError);
 
 protected:

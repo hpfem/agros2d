@@ -22,6 +22,7 @@
 
 #include "util.h"
 #include "util/enums.h"
+#include "hermes2d/module.h"
 
 class FieldInfo;
 class CouplingInfo;
@@ -33,6 +34,7 @@ class Solver;
 
 template <typename Scalar>
 class WeakFormAgros;
+
 
 /// represents one or more fields, that are hard-coupled -> produce only 1 weak form
 class Block

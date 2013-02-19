@@ -31,6 +31,11 @@
 
 Point3 force{{CLASS}}(FieldInfo *fieldInfo, const SceneMaterial *material, const Point3 &point, const Point3 &velocity)
 {
+    int numberOfSolutions = fieldInfo->numberOfSolutions();
+
+    {{#VARIABLE_MATERIAL}}Value material_{{MATERIAL_VARIABLE}} = material->value("{{MATERIAL_VARIABLE}}");
+    {{/VARIABLE_MATERIAL}}
+
     Point3 res;
 
     if (Agros2D::problem()->isSolved())
@@ -46,12 +51,12 @@ Point3 force{{CLASS}}(FieldInfo *fieldInfo, const SceneMaterial *material, const
         double x = point.x;
         double y = point.y;
 
-        double *value = new double[fieldInfo->numberOfSolutions()];
-        double *dudx = new double[fieldInfo->numberOfSolutions()];
-        double *dudy = new double[fieldInfo->numberOfSolutions()];
+        double *value = new double[numberOfSolutions];
+        double *dudx = new double[numberOfSolutions];
+        double *dudy = new double[numberOfSolutions];
 
-        std::vector<Hermes::Hermes2D::Solution<double> *> sln(fieldInfo->numberOfSolutions());
-        for (int k = 0; k < fieldInfo->numberOfSolutions(); k++)
+        std::vector<Hermes::Hermes2D::Solution<double> *> sln(numberOfSolutions);
+        for (int k = 0; k < numberOfSolutions; k++)
         {
             // todo: do it better! - I could use reference solution. This way I ignore selected active adaptivity step and solution mode
             FieldSolutionID fsid(fieldInfo, Agros2D::scene()->activeTimeStep(), Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, Agros2D::scene()->activeTimeStep()), SolutionMode_Normal);
@@ -62,6 +67,11 @@ Point3 force{{CLASS}}(FieldInfo *fieldInfo, const SceneMaterial *material, const
             if (!values)
             {
                 throw AgrosException(QObject::tr("Point [%1, %2] does not lie in any element").arg(x).arg(y));
+
+                delete [] value;
+                delete [] dudx;
+                delete [] dudy;
+
                 return res;
             }
 

@@ -6,7 +6,7 @@
         </module:description>
     <module:analyses>
       <module:analysis id="steadystate" name="Steady state" solutions="1" type="steadystate"/>
-      <module:analysis id="harmonic" name="Harmonic" solutions="2" type="harmonic"/>
+      <!--<module:analysis id="harmonic" name="Harmonic" solutions="2" type="harmonic"/>-->
     </module:analyses>
   </module:general>
 
@@ -18,10 +18,12 @@
     <module:space analysistype="steadystate">
       <module:space_config i="1" orderadjust="0" type="h1"/>
     </module:space>
+    <!--
     <module:space analysistype="harmonic">
       <module:space_config i="1" orderadjust="0" type="h1"/>
       <module:space_config i="2" orderadjust="0" type="h1"/>
     </module:space>
+    -->
   </module:spaces>
 
   <module:volume>
@@ -33,6 +35,7 @@
         <module:matrix_form axi_linear="cu_gamma * r * (udr * vdr + udz * vdz)" axi_newton="cu_gamma * r * (udr * vdr + udz * vdz)" i="1" id="form" j="1" planar_linear="cu_gamma * (udx * vdx + udy * vdy)" planar_newton="cu_gamma * (udx * vdx + udy * vdy)" symmetric="1"/>
         <module:vector_form axi_linear="0" axi_newton="cu_gamma * r * (updr * vdr + updz * vdz)" i="1" id="form" j="1" planar_linear="0" planar_newton="cu_gamma * (updx * vdx + updy * vdy)"/>
       </module:weakform_volume>
+      <!--
       <module:weakform_volume analysistype="harmonic" equation="-\, \div \left( \left( \sigma + \mj \omega \varepsilon \right) \,\, \grad \varphi \right) = 0">
         <module:quantity id="current_conductivity"/>
         <module:quantity id="current_permittivity"/>
@@ -41,6 +44,7 @@
         <module:vector_form axi_linear="0" axi_newton="cu_gamma * r * (updr * vdr + updz * vdz)" i="1" id="form" j="1" planar_linear="0" planar_newton="cu_gamma * (updx * vdx + updy * vdy)"/>
         <module:vector_form axi_linear="0" axi_newton="2 * PI * f * cu_epsr * EPS0 * r * (updr * vdr + updz * vdz)" i="2" id="form" j="2" planar_linear="0" planar_newton="2 * PI * f * cu_epsr * EPS0 * (updx * vdx + updy * vdy)"/>
       </module:weakform_volume>
+      -->
     </module:weakforms_volume>
   </module:volume>
 
@@ -58,6 +62,7 @@
           <module:vector_form axi_linear="cu_Jn * r * vval" axi_newton="- cu_Jn * r * vval" i="1" id="form" j="1" planar_linear="cu_Jn * vval" planar_newton="- cu_Jn * vval"/>
         </module:boundary>
       </module:weakform_surface>
+      <!--
       <module:weakform_surface analysistype="harmonic" default="current_potential">
         <module:boundary equation="\varphi = \varphi_0" id="current_potential" name="Fixed voltage">
           <module:quantity id="current_potential"/>
@@ -70,6 +75,7 @@
           <module:vector_form axi_linear="0" axi_newton="0" i="2" id="form" j="2" planar_linear="0" planar_newton="0"/>
         </module:boundary>
       </module:weakform_surface>
+      -->
     </module:weakforms_surface>
   </module:surface>
 
@@ -90,23 +96,28 @@
 
   <module:postprocessor>
     <module:localvariables>
+      <!--
       <module:localvariable id="current_potential" name="Scalar potential" shortname="V" shortname_html="&lt;i>V&lt;/i>" shortname_latex="V" type="scalar" unit="V" unit_html="V" unit_latex="V">
         <module:expression analysistype="harmonic" axi="sqrt(value1*value1 + value2*value2)" planar="sqrt(value1*value1 + value2*value2)"/>
       </module:localvariable>
+      -->
       <module:localvariable id="current_potential_real" name="Scalar potential - real" shortname="V" shortname_html="&lt;i>V&lt;/i>" shortname_latex="V" type="scalar" unit="V" unit_html="V" unit_latex="V">
         <module:expression analysistype="steadystate" axi="value1" planar="value1"/>
-        <module:expression analysistype="harmonic" axi="value1" planar="value1"/>
+        <!--<module:expression analysistype="harmonic" axi="value1" planar="value1"/>-->
       </module:localvariable>
+      <!--
       <module:localvariable id="current_potential_imag" name="Scalar potential - imag" shortname="V" shortname_html="&lt;i>V&lt;/i>" shortname_latex="V" type="scalar" unit="V" unit_html="V" unit_latex="V">
         <module:expression analysistype="harmonic" axi="value2" planar="value2"/>
       </module:localvariable>
       <module:localvariable id="current_electric_field" name="Electric field" shortname="E" shortname_html="&lt;i>E&lt;/i>" shortname_latex="E" type="scalar" unit="V/m" unit_html="V.m&lt;sup>-1&lt;/sup>" unit_latex="V \cdot m^{-1}">
         <module:expression analysistype="harmonic" axi="sqrt(dr1*dr1 + dz1*dz1 + dr2*dr2 + dz2*dz2)" planar="sqrt(dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)"/>
       </module:localvariable>
+      -->
       <module:localvariable id="current_electric_field_real" name="Electric field - real" shortname="Er" shortname_html="&lt;i>E&lt;/i>" shortname_latex="E_\mathrm{r}" type="vector" unit="V/m" unit_html="V.m&lt;sup>-1&lt;/sup>" unit_latex="V \cdot m^{-1}">
         <module:expression analysistype="steadystate" axi_r="- dr1" axi_z="- dz1" planar_x="- dx1" planar_y="- dy1"/>
-        <module:expression analysistype="harmonic" axi_r="- dr1" axi_z="- dz1" planar_x="- dx1" planar_y="- dy1"/>
+        <!--<module:expression analysistype="harmonic" axi_r="- dr1" axi_z="- dz1" planar_x="- dx1" planar_y="- dy1"/>-->
       </module:localvariable>
+      <!--
       <module:localvariable id="current_electric_field_imag" name="Electric field - imag" shortname="Ei" shortname_html="&lt;i>E&lt;/i>" shortname_latex="E_\mathrm{i}" type="vector" unit="V/m" unit_html="V.m&lt;sup>-1&lt;/sup>" unit_latex="V \cdot m^{-1}">
         <module:expression analysistype="harmonic" axi_r="- dr2" axi_z="- dz2" planar_x="- dx2" planar_y="- dy2"/>
       </module:localvariable>
@@ -122,10 +133,12 @@
       <module:localvariable id="current_current_density_conductive" name="Current density - conductive" shortname="Jc" shortname_html="&lt;i>J&lt;/i>&lt;sub>cond&lt;/sub>" shortname_latex="J" type="scalar" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
         <module:expression analysistype="harmonic" axi="cu_gamma * sqrt(dr1*dr1 + dz1*dz1 + dr2*dr2 + dz2*dz2)" planar="cu_gamma * sqrt(dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)"/>
       </module:localvariable>
+      -->
       <module:localvariable id="current_current_density_conductive_real" name="Current density - conductive - real" shortname="Jrc" shortname_html="&lt;i>J&lt;/i>&lt;sub>r,cond&lt;/sub>" shortname_latex="J" type="vector" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
         <module:expression analysistype="steadystate" axi_r="- cu_gamma * dr1" axi_z="- cu_gamma * dz1" planar_x="- cu_gamma * dx1" planar_y="- cu_gamma * dy1"/>
-        <module:expression analysistype="harmonic" axi_r="- cu_gamma * dr1" axi_z="- cu_gamma * dz1" planar_x="- cu_gamma * dx1" planar_y="- cu_gamma * dy1"/>
+        <!--<module:expression analysistype="harmonic" axi_r="- cu_gamma * dr1" axi_z="- cu_gamma * dz1" planar_x="- cu_gamma * dx1" planar_y="- cu_gamma * dy1"/>-->
       </module:localvariable>
+      <!--
       <module:localvariable id="current_current_density_conductive_imag" name="Current density - conductive - imag" shortname="Jic" shortname_html="&lt;i>J&lt;/i>&lt;sub>i,cond&lt;/sub>" shortname_latex="J" type="vector" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
         <module:expression analysistype="harmonic" axi_r="- cu_gamma * dr2" axi_z="- cu_gamma * dz2" planar_x="- cu_gamma * dx2" planar_y="- cu_gamma * dy2"/>
       </module:localvariable>
@@ -141,33 +154,38 @@
       <module:localvariable id="current_current_density_total" name="Current density - total" shortname="J" shortname_html="&lt;i>J&lt;/i>" shortname_latex="J" type="scalar" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
         <module:expression analysistype="harmonic" axi="(cu_gamma + 2 * PI * f * cu_epsr * EPS0) * sqrt(dr1*dr1 + dz1*dz1 + dr2*dr2 + dz2*dz2)" planar="(cu_gamma + 2 * PI * f * cu_epsr * EPS0) * sqrt(dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)"/>
       </module:localvariable>
+      -->
       <module:localvariable id="current_current_density_total_real" name="Current density - total - real" shortname="Jr" shortname_html="&lt;i>J&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="J" type="vector" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
         <module:expression analysistype="steadystate" axi_r="- (cu_gamma + 2 * PI * f * cu_epsr * EPS0) * dr1" axi_z="- (cu_gamma + 2 * PI * f * cu_epsr * EPS0) * dz1" planar_x="- (cu_gamma + 2 * PI * f * cu_epsr * EPS0) * dx1" planar_y="- (cu_gamma + 2 * PI * f * cu_epsr * EPS0) * dy1"/>
-        <module:expression analysistype="harmonic" axi_r="- (cu_gamma + 2 * PI * f * cu_epsr * EPS0) * dr1" axi_z="- (cu_gamma + 2 * PI * f * cu_epsr * EPS0) * dz1" planar_x="- (cu_gamma + 2 * PI * f * cu_epsr * EPS0) * dx1" planar_y="- (cu_gamma + 2 * PI * f * cu_epsr * EPS0) * dy1"/>
+        <!--<module:expression analysistype="harmonic" axi_r="- (cu_gamma + 2 * PI * f * cu_epsr * EPS0) * dr1" axi_z="- (cu_gamma + 2 * PI * f * cu_epsr * EPS0) * dz1" planar_x="- (cu_gamma + 2 * PI * f * cu_epsr * EPS0) * dx1" planar_y="- (cu_gamma + 2 * PI * f * cu_epsr * EPS0) * dy1"/>-->
       </module:localvariable>
+      <!--
       <module:localvariable id="current_current_density_total_imag" name="Current density - total - imag" shortname="Ji" shortname_html="&lt;i>J&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="J" type="vector" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
         <module:expression analysistype="harmonic" axi_r="- (cu_gamma + 2 * PI * f * cu_epsr * EPS0) * dr2" axi_z="- (cu_gamma + 2 * PI * f * cu_epsr * EPS0) * dz2" planar_x="- (cu_gamma + 2 * PI * f * cu_epsr * EPS0) * dx2" planar_y="- (cu_gamma + 2 * PI * f * cu_epsr * EPS0) * dy2"/>
       </module:localvariable>
+      -->
       <module:localvariable id="current_joule_losses" name="Joule losses" shortname="pj" shortname_html="&lt;i>p&lt;/i>&lt;sub>j&lt;/sub>" shortname_latex="p_{j}" type="scalar" unit="W/m3" unit_html="W.m&lt;sup>-3&lt;/sup>" unit_latex="W \cdot m^{-3}">
         <module:expression analysistype="steadystate" axi="cu_gamma * (dr1 * dr1 + dz1 * dz1)" planar="cu_gamma * (dx1 * dx1 + dy1 * dy1)"/>
-        <module:expression analysistype="harmonic" axi="cu_gamma * (dr1 * dr1 + dz1 * dz1)" planar="cu_gamma * (dx1 * dx1 + dy1 * dy1)"/>
+        <!--<module:expression analysistype="harmonic" axi="cu_gamma * (dr1 * dr1 + dz1 * dz1)" planar="cu_gamma * (dx1 * dx1 + dy1 * dy1)"/>-->
       </module:localvariable>
+      <!--
       <module:localvariable id="current_conductivity" name="Conductivity" shortname="gamma" shortname_html="&lt;i>&amp;gamma;&lt;/i>" shortname_latex="\gamma" type="scalar" unit="S/m" unit_html="S.m&lt;sup>-1&lt;/sup>" unit_latex="S \cdot m^{-1}">
         <module:expression analysistype="harmonic" axi="cu_gamma" planar="cu_gamma"/>
       </module:localvariable>
+      -->
       <module:localvariable id="current_permittivity" name="Permittivity" shortname="epsr" shortname_html="&lt;i>&amp;epsilon;&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="\varepilon_{r}" type="scalar" unit="-" unit_html="-" unit_latex="-">
         <module:expression analysistype="steadystate" axi="cu_epsr" planar="cu_epsr"/>
-        <module:expression analysistype="harmonic" axi="cu_epsr" planar="cu_epsr"/>
+        <!--<module:expression analysistype="harmonic" axi="cu_epsr" planar="cu_epsr"/>-->
       </module:localvariable>
     </module:localvariables>
     <module:view>
       <module:scalar_view>
         <module:default analysistype="steadystate" id="current_potential_real"/>
-        <module:default analysistype="harmonic" id="current_potential_real"/>
+        <!--<module:default analysistype="harmonic" id="current_potential_real"/>-->
       </module:scalar_view>
       <module:vector_view>
         <module:default analysistype="steadystate" id="current_current_density_conductive_real"/>
-        <module:default analysistype="harmonic" id="current_current_density_conductive_real"/>
+        <!--<module:default analysistype="harmonic" id="current_current_density_conductive_real"/>-->
       </module:vector_view>
     </module:view>
     <module:volumeintegrals>
@@ -190,7 +208,7 @@
       </module:surfaceintegral>
       <module:surfaceintegral id="current_current_conductive_real" name="Current - conductive - real" shortname="Ir" shortname_html="&lt;i>I&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="I_\mathrm{r,cond}" unit="A" unit_html="A" unit_latex="A">
         <module:expression analysistype="steadystate" axi="2.0 * PI * r * cu_gamma * (tanr * dz1 - tanz * dr1)" planar="cu_gamma * (tanx * dy1 - tany * dx1)"/>
-        <module:expression analysistype="harmonic" axi="2.0 * PI * r * cu_gamma * (tanr * dz1 - tanz * dr1)" planar="cu_gamma * (tanx * dy1 - tany * dx1)"/>
+        <!--<module:expression analysistype="harmonic" axi="2.0 * PI * r * cu_gamma * (tanr * dz1 - tanz * dr1)" planar="cu_gamma * (tanx * dy1 - tany * dx1)"/>-->
       </module:surfaceintegral>
     </module:surfaceintegrals>
     <module:force>

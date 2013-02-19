@@ -28,8 +28,8 @@ h2 {
 
 h3 {
 	font-size: 110%;
-	margin-top: 2px;
-	margin-bottom: 2px;
+	margin-top: 3px;
+	margin-bottom: 3px;
 	color: rgb(91, 91, 91);
 }
 
@@ -82,11 +82,35 @@ a:link, a:visited {
 }
 
 .heading td {
-	width: 100px;
 	padding-left: 10px;
 	padding-right: 10px;
 	padding-top: 1px;
 	padding-bottom: 1px;
+}
+
+table.gridtable {
+	width: auto;
+	color: #333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+
+table.gridtable th {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+}
+
+table.gridtable td {
+	width: auto;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
 }
 
 .figure {
@@ -95,9 +119,6 @@ a:link, a:visited {
 }
 
 .section {
-	/* background: rgba(206, 206, 206, 0.6); */
-	/* border-radius: 6px; */
-	/* margin-bottom: 20px; */
 	width: 100%;
 }
 

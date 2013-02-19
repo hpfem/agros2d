@@ -83,6 +83,8 @@ void PythonEngineAgros::runPythonHeader()
 PythonLabAgros::PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWidget *parent)
     : PythonEditorDialog(pythonEngine, args, parent)
 {
+    QSettings settings;
+
     // add create from model
     actCreateFromModel = new QAction(icon("script-create"), tr("&Create script from model"), this);
     actCreateFromModel->setShortcut(QKeySequence(tr("Ctrl+M")));
@@ -93,15 +95,43 @@ PythonLabAgros::PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWi
 
     tlbTools->addSeparator();
     tlbTools->addAction(actCreateFromModel);
+
+    // startup script options
+    actStartupScriptVariables = new QAction(tr("Variables"), this);
+    actStartupScriptVariables->setCheckable(true);
+    actStartupScriptVariables->setChecked(settings.value("PythonEditorDialog/StartupScriptVariables", true).toBool());
+
+    actStartupScriptValues = new QAction(tr("Values"), this);
+    actStartupScriptValues->setCheckable(true);
+    actStartupScriptValues->setChecked(settings.value("PythonEditorDialog/StartupScriptValues", false).toBool());
+
+    QActionGroup *actStartupScriptGroup = new QActionGroup(this);
+    actStartupScriptGroup->addAction(actStartupScriptVariables);
+    actStartupScriptGroup->addAction(actStartupScriptValues);
+
+    QMenu *mnuStartupScript = new QMenu(tr("Startup script"), this);
+    mnuStartupScript->addAction(actStartupScriptVariables);
+    mnuStartupScript->addAction(actStartupScriptValues);
+
+    mnuOptions->addSeparator();
+    mnuOptions->addMenu(mnuStartupScript);
+}
+
+PythonLabAgros::~PythonLabAgros()
+{
+    QSettings settings;
+    settings.setValue("PythonEditorDialog/StartupScriptVariables", actStartupScriptVariables->isChecked());
+    settings.setValue("PythonEditorDialog/StartupScriptValues", actStartupScriptValues->isChecked());
 }
 
 void PythonLabAgros::doCreatePythonFromModel()
 {
-    txtEditor->setPlainText(createPythonFromModel());
+    StartupScript_Type type = actStartupScriptVariables->isChecked() ? StartupScript_Variable : StartupScript_Value;
+    txtEditor->setPlainText(createPythonFromModel(type));
 }
 
 // create script from model
-QString createPythonFromModel()
+QString createPythonFromModel(StartupScript_Type startupScript)
 {
     QString str;
 
@@ -285,7 +315,7 @@ QString createPythonFromModel()
             {
                 Value value = values[variable.id()];
 
-                if (value.hasExpression())
+                if (value.hasExpression() && startupScript == StartupScript_Variable)
                 {
                     variables += QString("\"%1\" : { \"expression\" : \"%2\" }, ").
                             arg(variable.id()).
@@ -334,7 +364,7 @@ QString createPythonFromModel()
                                 arg(value.table().toStringX()).
                                 arg(value.table().toStringY());
                 }
-                else if (value.hasExpression())
+                else if (value.hasExpression() && startupScript == StartupScript_Variable)
                 {
                     variables += QString("\"%1\" : { \"expression\" : \"%2\" }, ").
                             arg(variable.id()).

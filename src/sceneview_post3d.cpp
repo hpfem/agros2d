@@ -355,7 +355,7 @@ void SceneViewPost3D::paintScalarField3D()
                 double radius = edge->radius();
                 double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
 
-                drawArc(center, radius, startAngle, edge->angle(), edge->angle()/2);
+                drawArc(center, radius, startAngle, edge->angle());
             }
 
             glDisable(GL_LINE_STIPPLE);
@@ -1087,6 +1087,8 @@ void SceneViewPost3D::paintParticleTracing()
         glDisable(GL_POLYGON_OFFSET_FILL);
 
         // geometry
+        glEnable(GL_DEPTH_TEST);
+
         glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
         glEnable(GL_LINE_SMOOTH);
         glEnable(GL_BLEND);
@@ -1289,6 +1291,7 @@ void SceneViewPost3D::paintParticleTracing()
 
         glDisable(GL_LINE_SMOOTH);
         glDisable(GL_BLEND);
+        glEnable(GL_DEPTH_TEST);
 
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 

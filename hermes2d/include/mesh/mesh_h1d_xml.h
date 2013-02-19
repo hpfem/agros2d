@@ -625,8 +625,8 @@ namespace XMLMesh1D
 {
   class variables_type;
   class mesh;
-  class variable;
-  class vertex;
+  class var;
+  class v;
 }
 
 
@@ -658,9 +658,9 @@ namespace XMLMesh1D
   {
     public:
     /**
-     * @name variable
+     * @name var
      *
-     * @brief Accessor and modifier functions for the %variable
+     * @brief Accessor and modifier functions for the %var
      * sequence element.
      */
     //@{
@@ -668,27 +668,27 @@ namespace XMLMesh1D
     /**
      * @brief Element type.
      */
-    typedef ::XMLMesh1D::variable variable_type;
+    typedef ::XMLMesh1D::var var_type;
 
     /**
      * @brief Element sequence container type.
      */
-    typedef ::xsd::cxx::tree::sequence< variable_type > variable_sequence;
+    typedef ::xsd::cxx::tree::sequence< var_type > var_sequence;
 
     /**
      * @brief Element iterator type.
      */
-    typedef variable_sequence::iterator variable_iterator;
+    typedef var_sequence::iterator var_iterator;
 
     /**
      * @brief Element constant iterator type.
      */
-    typedef variable_sequence::const_iterator variable_const_iterator;
+    typedef var_sequence::const_iterator var_const_iterator;
 
     /**
      * @brief Element traits type.
      */
-    typedef ::xsd::cxx::tree::traits< variable_type, char > variable_traits;
+    typedef ::xsd::cxx::tree::traits< var_type, char > var_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the element
@@ -696,16 +696,16 @@ namespace XMLMesh1D
      *
      * @return A constant reference to the sequence container.
      */
-    const variable_sequence&
-    variable () const;
+    const var_sequence&
+    var () const;
 
     /**
      * @brief Return a read-write reference to the element sequence.
      *
      * @return A reference to the sequence container.
      */
-    variable_sequence&
-    variable ();
+    var_sequence&
+    var ();
 
     /**
      * @brief Copy elements from a given sequence.
@@ -717,7 +717,7 @@ namespace XMLMesh1D
      * sequence and all old elements will be lost.
      */
     void
-    variable (const variable_sequence& s);
+    var (const var_sequence& s);
 
     //@}
 
@@ -791,7 +791,7 @@ namespace XMLMesh1D
            ::xml_schema::flags);
 
     protected:
-    variable_sequence variable_;
+    var_sequence var_;
 
     //@endcond
   };
@@ -881,9 +881,9 @@ namespace XMLMesh1D
     //@}
 
     /**
-     * @name vertex
+     * @name v
      *
-     * @brief Accessor and modifier functions for the %vertex
+     * @brief Accessor and modifier functions for the %v
      * sequence element.
      */
     //@{
@@ -891,27 +891,27 @@ namespace XMLMesh1D
     /**
      * @brief Element type.
      */
-    typedef ::XMLMesh1D::vertex vertex_type;
+    typedef ::XMLMesh1D::v v_type;
 
     /**
      * @brief Element sequence container type.
      */
-    typedef ::xsd::cxx::tree::sequence< vertex_type > vertex_sequence;
+    typedef ::xsd::cxx::tree::sequence< v_type > v_sequence;
 
     /**
      * @brief Element iterator type.
      */
-    typedef vertex_sequence::iterator vertex_iterator;
+    typedef v_sequence::iterator v_iterator;
 
     /**
      * @brief Element constant iterator type.
      */
-    typedef vertex_sequence::const_iterator vertex_const_iterator;
+    typedef v_sequence::const_iterator v_const_iterator;
 
     /**
      * @brief Element traits type.
      */
-    typedef ::xsd::cxx::tree::traits< vertex_type, char > vertex_traits;
+    typedef ::xsd::cxx::tree::traits< v_type, char > v_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the element
@@ -919,16 +919,16 @@ namespace XMLMesh1D
      *
      * @return A constant reference to the sequence container.
      */
-    const vertex_sequence&
-    vertex () const;
+    const v_sequence&
+    v () const;
 
     /**
      * @brief Return a read-write reference to the element sequence.
      *
      * @return A reference to the sequence container.
      */
-    vertex_sequence&
-    vertex ();
+    v_sequence&
+    v ();
 
     /**
      * @brief Copy elements from a given sequence.
@@ -940,7 +940,7 @@ namespace XMLMesh1D
      * sequence and all old elements will be lost.
      */
     void
-    vertex (const vertex_sequence& s);
+    v (const v_sequence& s);
 
     //@}
 
@@ -1015,17 +1015,17 @@ namespace XMLMesh1D
 
     protected:
     variables_optional variables_;
-    vertex_sequence vertex_;
+    v_sequence v_;
 
     //@endcond
   };
 
   /**
-   * @brief Class corresponding to the %variable schema type.
+   * @brief Class corresponding to the %var schema type.
    *
    * @nosubgrouping
    */
-  class variable: public ::xml_schema::type
+  class var: public ::xml_schema::type
   {
     public:
     /**
@@ -1142,8 +1142,8 @@ namespace XMLMesh1D
      * @brief Create an instance from the ultimate base and
      * initializers for required elements and attributes.
      */
-    variable (const name_type&,
-              const value_type&);
+    var (const name_type&,
+         const value_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -1153,9 +1153,9 @@ namespace XMLMesh1D
      * @param c A pointer to the object that will contain the new
      * instance.
      */
-    variable (const ::xercesc::DOMElement& e,
-              ::xml_schema::flags f = 0,
-              ::xml_schema::container* c = 0);
+    var (const ::xercesc::DOMElement& e,
+         ::xml_schema::flags f = 0,
+         ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy constructor.
@@ -1166,9 +1166,9 @@ namespace XMLMesh1D
      *
      * For polymorphic object models use the @c _clone function instead.
      */
-    variable (const variable& x,
-              ::xml_schema::flags f = 0,
-              ::xml_schema::container* c = 0);
+    var (const var& x,
+         ::xml_schema::flags f = 0,
+         ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy the instance polymorphically.
@@ -1181,7 +1181,7 @@ namespace XMLMesh1D
      * used for copying and should be used for polymorphic object
      * models instead of the copy constructor.
      */
-    virtual variable*
+    virtual var*
     _clone (::xml_schema::flags f = 0,
             ::xml_schema::container* c = 0) const;
 
@@ -1191,7 +1191,7 @@ namespace XMLMesh1D
      * @brief Destructor.
      */
     virtual 
-    ~variable ();
+    ~var ();
 
     // Implementation.
     //
@@ -1211,11 +1211,11 @@ namespace XMLMesh1D
   };
 
   /**
-   * @brief Class corresponding to the %vertex schema type.
+   * @brief Class corresponding to the %v schema type.
    *
    * @nosubgrouping
    */
-  class vertex: public ::xml_schema::type
+  class v: public ::xml_schema::type
   {
     public:
     /**
@@ -1277,9 +1277,9 @@ namespace XMLMesh1D
     //@}
 
     /**
-     * @name marker
+     * @name m
      *
-     * @brief Accessor and modifier functions for the %marker
+     * @brief Accessor and modifier functions for the %m
      * optional attribute.
      */
     //@{
@@ -1287,17 +1287,17 @@ namespace XMLMesh1D
     /**
      * @brief Attribute type.
      */
-    typedef ::xml_schema::string marker_type;
+    typedef ::xml_schema::string m_type;
 
     /**
      * @brief Attribute optional container type.
      */
-    typedef ::xsd::cxx::tree::optional< marker_type > marker_optional;
+    typedef ::xsd::cxx::tree::optional< m_type > m_optional;
 
     /**
      * @brief Attribute traits type.
      */
-    typedef ::xsd::cxx::tree::traits< marker_type, char > marker_traits;
+    typedef ::xsd::cxx::tree::traits< m_type, char > m_traits;
 
     /**
      * @brief Return a read-only (constant) reference to the attribute
@@ -1305,16 +1305,16 @@ namespace XMLMesh1D
      *
      * @return A constant reference to the optional container.
      */
-    const marker_optional&
-    marker () const;
+    const m_optional&
+    m () const;
 
     /**
      * @brief Return a read-write reference to the attribute container.
      *
      * @return A reference to the optional container.
      */
-    marker_optional&
-    marker ();
+    m_optional&
+    m ();
 
     /**
      * @brief Set the attribute value.
@@ -1325,7 +1325,7 @@ namespace XMLMesh1D
      * the new value of the attribute.
      */
     void
-    marker (const marker_type& x);
+    m (const m_type& x);
 
     /**
      * @brief Set the attribute value.
@@ -1337,7 +1337,7 @@ namespace XMLMesh1D
      * Otherwise the attribute container is set the 'not present' state.
      */
     void
-    marker (const marker_optional& x);
+    m (const m_optional& x);
 
     /**
      * @brief Set the attribute value without copying.
@@ -1348,7 +1348,7 @@ namespace XMLMesh1D
      * of making a copy.
      */
     void
-    marker (::std::auto_ptr< marker_type > p);
+    m (::std::auto_ptr< m_type > p);
 
     //@}
 
@@ -1361,7 +1361,7 @@ namespace XMLMesh1D
      * @brief Create an instance from the ultimate base and
      * initializers for required elements and attributes.
      */
-    vertex (const x_type&);
+    v (const x_type&);
 
     /**
      * @brief Create an instance from a DOM element.
@@ -1371,9 +1371,9 @@ namespace XMLMesh1D
      * @param c A pointer to the object that will contain the new
      * instance.
      */
-    vertex (const ::xercesc::DOMElement& e,
-            ::xml_schema::flags f = 0,
-            ::xml_schema::container* c = 0);
+    v (const ::xercesc::DOMElement& e,
+       ::xml_schema::flags f = 0,
+       ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy constructor.
@@ -1384,9 +1384,9 @@ namespace XMLMesh1D
      *
      * For polymorphic object models use the @c _clone function instead.
      */
-    vertex (const vertex& x,
-            ::xml_schema::flags f = 0,
-            ::xml_schema::container* c = 0);
+    v (const v& x,
+       ::xml_schema::flags f = 0,
+       ::xml_schema::container* c = 0);
 
     /**
      * @brief Copy the instance polymorphically.
@@ -1399,7 +1399,7 @@ namespace XMLMesh1D
      * used for copying and should be used for polymorphic object
      * models instead of the copy constructor.
      */
-    virtual vertex*
+    virtual v*
     _clone (::xml_schema::flags f = 0,
             ::xml_schema::container* c = 0) const;
 
@@ -1409,7 +1409,7 @@ namespace XMLMesh1D
      * @brief Destructor.
      */
     virtual 
-    ~vertex ();
+    ~v ();
 
     // Implementation.
     //
@@ -1423,7 +1423,7 @@ namespace XMLMesh1D
 
     protected:
     ::xsd::cxx::tree::one< x_type > x_;
-    marker_optional marker_;
+    m_optional m_;
 
     //@endcond
   };
@@ -1440,10 +1440,10 @@ namespace XMLMesh1D
   operator<< (::std::ostream&, const mesh&);
 
   ::std::ostream&
-  operator<< (::std::ostream&, const variable&);
+  operator<< (::std::ostream&, const var&);
 
   ::std::ostream&
-  operator<< (::std::ostream&, const vertex&);
+  operator<< (::std::ostream&, const v&);
 }
 
 #include <iosfwd>
@@ -1884,10 +1884,10 @@ namespace XMLMesh1D
   operator<< (::xercesc::DOMElement&, const mesh&);
 
   void
-  operator<< (::xercesc::DOMElement&, const variable&);
+  operator<< (::xercesc::DOMElement&, const var&);
 
   void
-  operator<< (::xercesc::DOMElement&, const vertex&);
+  operator<< (::xercesc::DOMElement&, const v&);
 }
 
 #include <xsd/cxx/post.hxx>

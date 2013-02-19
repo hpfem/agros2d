@@ -275,8 +275,17 @@ void Problem::createStructure()
 
 bool Problem::mesh()
 {
-    bool result;
-    try{
+    bool result = false;
+
+    // TODO: make global check geometry before mesh() and solve()
+    if (Agros2D::problem()->fieldInfos().count() == 0)
+    {
+        Agros2D::log()->printError(tr("Mesh"), tr("No fields defined."));
+        return false;
+    }
+
+    try
+    {
         result = meshAction();
     }
     catch (AgrosGeometryException& e)
@@ -285,7 +294,7 @@ bool Problem::mesh()
         // todo:  this is almost certainly not the case, at least for Agros. It should be further investigated
         Agros2D::log()->printError(tr("Geometry check"), QString("%1").arg(e.what()));
         m_isSolving = false;
-        return true;
+        return false;
     }
     catch (AgrosMeshException& e)
     {
@@ -299,7 +308,7 @@ bool Problem::mesh()
     {
         // todo: dangerous
         // catching all other exceptions. This is not save at all
-        Agros2D::log()->printWarning("Solver", "An unknown exception occured in solver and has been ignored!");
+        Agros2D::log()->printWarning(tr("Mesh"), tr("An unknown exception occured in solver and has been ignored!"));
         m_isSolving = false;
         return false;
     }
@@ -361,11 +370,6 @@ bool Problem::meshAction()
         {
             delete meshGenerator;
             throw AgrosMeshException(e.what());
-        }
-        catch (Hermes::Exceptions::Exception* e)
-        {
-            delete meshGenerator;
-            throw AgrosMeshException(e->what());
         }
     }
 
@@ -502,26 +506,32 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
     if (isSolving())
         return;
 
-    if(numTransientFields() > 1)
+    if (numTransientFields() > 1)
     {
-        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", "Coupling of more transient fields not possible at the moment.");
+        QMessageBox::critical(QApplication::activeWindow(), tr("Solver"), tr("Coupling of more transient fields not possible at the moment."));
         return;
     }
 
-    if((m_fieldInfos.size() > 1) && isTransient() && (numAdaptiveFields() >= 1))
+    if ((m_fieldInfos.size() > 1) && isTransient() && (numAdaptiveFields() >= 1))
     {
-        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", "Space adaptivity for transient coupled problems not possible at the moment.");
+        QMessageBox::critical(QApplication::activeWindow(), tr("Solver"), tr("Space adaptivity for transient coupled problems not possible at the moment."));
         return;
     }
 
-    if(isTransient() && config()->isTransientAdaptive() && (numAdaptiveFields() >= 1))
+    if (isTransient() && config()->isTransientAdaptive() && (numAdaptiveFields() >= 1))
     {
-        QMessageBox::critical(QApplication::activeWindow(), "Solver Error", "Both space and transient adaptivity at the same time not possible at the moment.");
+        QMessageBox::critical(QApplication::activeWindow(), tr("Solver"), tr("Both space and transient adaptivity at the same time not possible at the moment."));
         return;
     }
 
-    if(Agros2D::configComputer()->saveMatrixRHS)
-        Agros2D::log()->printWarning(tr(""), tr("Warning: Matrix and RHS will be saved on the disk. This will slow down the calculation. You may disable it in Edit->Options->Solver menu."));
+    if (Agros2D::problem()->fieldInfos().count() == 0)
+    {
+        Agros2D::log()->printError(tr("Solver"), tr("No fields defined."));
+        return;
+    }
+
+    if (Agros2D::configComputer()->saveMatrixRHS)
+        Agros2D::log()->printWarning(tr("Solver"), tr("Warning: Matrix and RHS will be saved on the disk. This will slow down the calculation. You may disable it in Edit->Options->Solver menu."));
 
     try
     {
@@ -595,11 +605,6 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
     {
         Agros2D::log()->printError(QObject::tr("Solver"), QString("%1").arg(e.what()));
         throw AgrosSolverException(e.what());
-    }
-    catch (Hermes::Exceptions::Exception* e)
-    {
-        Agros2D::log()->printError(QObject::tr("Solver"), QString("%1").arg(e->what()));
-        throw AgrosSolverException(e->what());
     }
     catch (AgrosSolverException& e)
     {

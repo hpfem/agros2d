@@ -86,7 +86,7 @@ WeakFormAgros<Scalar>::~WeakFormAgros()
     foreach (Hermes::Hermes2D::Form<Scalar> *form, this->forms)
         delete form;
 
-    delete_all();
+    this->delete_all();
 }
 
 template <typename Scalar>
@@ -506,10 +506,10 @@ Module::BoundaryType::~BoundaryType()
 // ***********************************************************************************************
 
 // dialog row UI
-Module::DialogRow::DialogRow(XMLModule::quantity qty)
+Module::DialogRow::DialogRow(const FieldInfo *fieldInfo, XMLModule::quantity qty)
 {
     m_id = QString::fromStdString(qty.id());
-    m_name = (qty.name().present()) ? QString::fromStdString(qty.name().get()) : "";
+    m_name = (qty.name().present()) ? fieldInfo->plugin()->localeName(QString::fromStdString(qty.name().get())) : "";
 
     m_shortname = (qty.shortname().present()) ? QString::fromStdString(qty.shortname().get()) : "";
     m_shortnameHtml = (qty.shortname_html().present()) ? QString::fromStdString(qty.shortname_html().get()) : "";
@@ -525,14 +525,14 @@ Module::DialogRow::DialogRow(XMLModule::quantity qty)
 }
 
 // dialog UI
-Module::DialogUI::DialogUI(XMLModule::gui ui)
+Module::DialogUI::DialogUI(const FieldInfo *fieldInfo, XMLModule::gui ui)
 {
     for (unsigned int i = 0; i < ui.group().size(); i++)
     {
         XMLModule::group grp = ui.group().at(i);
 
         // group name
-        QString name = (grp.name().present()) ? QString::fromStdString(grp.name().get()) : "";
+        QString name = (grp.name().present()) ? fieldInfo->plugin()->localeName(QString::fromStdString(grp.name().get())) : "";
 
         QList<Module::DialogRow> materials;
         for (unsigned int i = 0; i < grp.quantity().size(); i++)
@@ -540,7 +540,7 @@ Module::DialogUI::DialogUI(XMLModule::gui ui)
             XMLModule::quantity quant = grp.quantity().at(i);
 
             // append material
-            materials.append(Module::DialogRow(quant));
+            materials.append(Module::DialogRow(fieldInfo, quant));
         }
 
         m_groups[name] = materials;
@@ -633,7 +633,15 @@ Hermes::vector<Hermes::Hermes2D::Mesh *> Module::readMeshFromFile(const QString 
     }
 
     Hermes::Hermes2D::MeshReaderH2DXML meshloader;
-    meshloader.load(fileName.toStdString().c_str(), meshes);
+    meshloader.set_validation(false);
+    try
+    {
+        meshloader.load(fileName.toStdString().c_str(), meshes);
+    }
+    catch (Hermes::Exceptions::MeshLoadFailureException& e)
+    {
+        throw Hermes::Exceptions::MeshLoadFailureException(e.what());
+    }
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);

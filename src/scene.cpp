@@ -956,12 +956,12 @@ void Scene::addBoundaryAndMaterialMenuItems(QMenu* menu, QWidget* parent)
     else if (Agros2D::problem()->fieldInfos().count() > 1)
     {
         // multiple materials and boundaries
-        QMenu* mnuSubBoundaries = new QMenu("New boundary condition", parent);
+        QMenu* mnuSubBoundaries = new QMenu(tr("New boundary condition"), parent);
         menu->addMenu(mnuSubBoundaries);
         foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
             mnuSubBoundaries->addAction(actNewBoundaries[fieldInfo->fieldId()]);
 
-        QMenu* mnuSubMaterials = new QMenu("New material", parent);
+        QMenu* mnuSubMaterials = new QMenu(tr("New material"), parent);
         menu->addMenu(mnuSubMaterials);
         foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
             mnuSubMaterials->addAction(actNewMaterials[fieldInfo->fieldId()]);
@@ -1879,8 +1879,11 @@ void Scene::writeSolutionToFile(const QString &fileName)
     Agros2D::log()->printMessage(tr("Scene"), tr("Saving solution to disk"));
 
     QFileInfo fileInfo(fileName);
-    QString solutionFile = QString("%1/%2.sol").arg(fileInfo.absolutePath()).arg(fileInfo.baseName());
-    JlCompress::compressDir(solutionFile, cacheProblemDir());
+    QString solutionFN = QString("%1/%2.sol").arg(fileInfo.absolutePath()).arg(fileInfo.baseName());
+    if (QFile(solutionFN).open(QIODevice::WriteOnly))
+        JlCompress::compressDir(solutionFN, cacheProblemDir());
+    else
+        Agros2D::log()->printError(QObject::tr("Solution"), QObject::tr("Access denied '%1'.").arg(solutionFN));
 }
 
 MultiArray<double> Scene::activeMultiSolutionArray()

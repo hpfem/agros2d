@@ -248,6 +248,14 @@ void SceneViewCommon::doBoundaryGroup(QAction *action)
 
 void SceneViewCommon::drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments) const
 {
+    if (segments == -1)
+    {
+        if (arcAngle < 10)
+            segments = 10;
+        else
+            segments = arcAngle / 3;
+    }
+
     if (segments < 2) segments = 2;
     double theta = arcAngle / double(segments - 1);
 

@@ -403,13 +403,12 @@ Scalar *Solver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
 
         m_hermesSolverContainer->solve(initialSolutionVector);
     }
-    catch (Hermes::Exceptions::Exception e)
+    catch (Hermes::Exceptions::Exception& e)
     {
         QString error = QString("%1").arg(e.what());
         // Agros2D::log()->printDebug(m_solverID, QObject::tr("Solver failed: %1").arg(error));
         throw AgrosSolverException(QObject::tr("Solver failed: %1").arg(error));
     }
-
     return m_hermesSolverContainer->slnVector();
 }
 
@@ -660,6 +659,12 @@ void Solver<Scalar>::createInitialSpace()
                 break;
             case HERMES_H1_SPACE:
                 oneSpace = new H1Space<Scalar>(oneInitialMesh, m_block->bcs().at(i + m_block->offset(field)), fieldInfo->polynomialOrder() + fieldInfo->spaces()[i+1].orderAdjust());
+                break;
+            case HERMES_HCURL_SPACE:
+                oneSpace = new HcurlSpace<Scalar>(oneInitialMesh, m_block->bcs().at(i + m_block->offset(field)), fieldInfo->polynomialOrder() + fieldInfo->spaces()[i+1].orderAdjust());
+                break;
+            case HERMES_HDIV_SPACE:
+                oneSpace = new HdivSpace<Scalar>(oneInitialMesh, m_block->bcs().at(i + m_block->offset(field)), fieldInfo->polynomialOrder() + fieldInfo->spaces()[i+1].orderAdjust());
                 break;
             default:
                 assert(0);

@@ -63,12 +63,14 @@ namespace Hermes
 
     /// \brief Represents the weak formulation of a PDE problem.
     ///
-    /// The WeakForm class represents the weak formulation of a system of linear PDEs.
-    /// The number of equations ("neq") in the system is fixed and is passed to the constructor.
-    /// The weak formulation of the system A(U, V) = L(V) has a block structure. A(U, V) is
-    /// a (neq x neq) matrix of bilinear forms a_mn(u, v) and L(V) is a neq-component vector
-    /// of linear forms l(v). U and V are the vectors of basis and test functions.
-    ///
+    /// The WeakForm class represents the weak formulation of a system of linear PDEs.<br>
+    /// The number of equations ("neq") in the system is fixed and is passed to the constructor.<br>
+    /// The weak formulation of the system A(U, V) = L(V) has a block structure. A(U, V) is<br>
+    /// a (neq x neq) matrix of bilinear forms a_mn(u, v) and L(V) is a neq-component vector<br>
+    /// of linear forms l(v). U and V are the vectors of basis and test functions.<br>
+    /// <br>
+    /// There is a single tutorial just on implementing the weak formulation.<br>
+    /// For some basic ideas, please see the examples provided.<br>
     template<typename Scalar>
     class HERMES_API WeakForm : public Hermes::Mixins::IntegrableWithGlobalOrder, public Hermes::Mixins::Loggable
     {
@@ -104,34 +106,51 @@ namespace Hermes
       /// Returns the number of equations.
       unsigned int get_neq() const { return neq; }
 
+      /// This weakform is matrix-free.
       bool is_matrix_free() const { return is_matfree; }
 
       /// For time-dependent right-hand side functions.
+      /// Sets current time.
       void set_current_time(double time);
+      
+      /// For time-dependent right-hand side functions.
+      /// Sets current time step.
       void set_current_time_step(double time_step);
 
+      /// For time-dependent right-hand side functions.
+      /// Gets current time.
       virtual double get_current_time() const;
+      
+      /// For time-dependent right-hand side functions.
+      /// Gets current time step.
       virtual double get_current_time_step() const;
 
-      Hermes::vector<Form<Scalar> *> get_forms() const;
+      /// External functions.
+      /// Set one external function.
+      void set_ext(MeshFunction<Scalar>* ext);
+      
+      /// External functions.
+      /// Set more external functions.
+      void set_ext(Hermes::vector<MeshFunction<Scalar>*> ext);
+      
+      /// External functions.
+      /// Get external functions.
+      Hermes::vector<MeshFunction<Scalar>*> get_ext() const;
 
+      /// Cloning.
+      virtual WeakForm* clone() const;
+
+      /// Internal.
+      Hermes::vector<Form<Scalar> *> get_forms() const;
       Hermes::vector<MatrixFormVol<Scalar> *> get_mfvol() const;
       Hermes::vector<MatrixFormSurf<Scalar> *> get_mfsurf() const;
       Hermes::vector<MatrixFormDG<Scalar> *> get_mfDG() const;
-
       Hermes::vector<VectorFormVol<Scalar> *> get_vfvol() const;
       Hermes::vector<VectorFormSurf<Scalar> *> get_vfsurf() const;
       Hermes::vector<VectorFormDG<Scalar> *> get_vfDG() const;
 
       /// Deletes all volumetric and surface forms.
       void delete_all();
-
-      /// external functions.
-      void set_ext(MeshFunction<Scalar>* ext);
-      void set_ext(Hermes::vector<MeshFunction<Scalar>*> ext);
-      Hermes::vector<MeshFunction<Scalar>*> get_ext() const;
-
-      virtual WeakForm* clone() const;
 
     protected:
       /// External solutions.
@@ -181,9 +200,11 @@ namespace Hermes
       void cloneMembers(const WeakForm<Scalar>* otherWf);
     };
 
-    /// By default, the form is initialized with the following natural attributes:
-    /// - no external functions.
-    /// - assembled over any (parameter 'HERMES_ANY') element/boundary marker.
+    /// \brief Abstract, base class for any form - i.e. integral in the weak formulation of (a system of) PDE<br>
+    /// By default, the form is initialized with the following natural attributes:<br>
+    /// - no external functions.<br>
+    /// - assembled over any (parameter 'HERMES_ANY') element/boundary marker.<br>
+    /// Internal.
     template<typename Scalar>
     class HERMES_API Form
     {
@@ -240,7 +261,8 @@ namespace Hermes
       friend class DiscreteProblemLinear<Scalar>;
     };
 
-    /// By default, the matrix form is initialized with the following natural attribute:
+    /// \brief Abstract, base class for matrix form - i.e. a single integral in the bilinear form on the left hand side of the variational formulation of a (system of) PDE.<br>
+    /// By default, the matrix form is initialized with the following natural attribute:<br>
     /// - nonsymmetrical (if the user omits the HERMES_SYM / HERMES_ANTISYM parameters, nothing worse than a non-necessary calculations happen).
     template<typename Scalar>
     class HERMES_API MatrixForm : public Form<Scalar>
@@ -270,6 +292,7 @@ namespace Hermes
       friend class DiscreteProblem<Scalar>;
     };
 
+    /// \brief Abstract, base class for matrix Volumetric form - i.e. MatrixForm, where the integration is with respect to 2D-Lebesgue measure (elements).
     template<typename Scalar>
     class HERMES_API MatrixFormVol : public MatrixForm<Scalar>
     {
@@ -285,6 +308,7 @@ namespace Hermes
       virtual MatrixFormVol* clone() const;
     };
 
+    /// \brief Abstract, base class for matrix Surface form - i.e. MatrixForm, where the integration is with respect to 1D-Lebesgue measure (element domain-boundary edges).
     template<typename Scalar>
     class HERMES_API MatrixFormSurf : public MatrixForm<Scalar>
     {
@@ -297,6 +321,7 @@ namespace Hermes
       virtual MatrixFormSurf* clone() const;
     };
 
+    /// \brief Abstract, base class for matrix DG form - i.e. MatrixForm, where the integration is with respect to 1D-Lebesgue measure (element inner-domain edges).
     template<typename Scalar>
     class HERMES_API MatrixFormDG : public MatrixForm<Scalar>
     {
@@ -309,6 +334,7 @@ namespace Hermes
       virtual MatrixFormDG* clone() const;
     };
 
+    /// \brief Abstract, base class for vector form - i.e. a single integral in the linear form on the right hand side of the variational formulation of a (system of) PDE.
     template<typename Scalar>
     class VectorForm : public Form<Scalar>
     {
@@ -329,6 +355,7 @@ namespace Hermes
       friend class DiscreteProblem<Scalar>;
     };
 
+    /// \brief Abstract, base class for vector Volumetric form - i.e. VectorForm, where the integration is with respect to 2D-Lebesgue measure (elements).
     template<typename Scalar>
     class VectorFormVol : public VectorForm<Scalar>
     {
@@ -341,6 +368,7 @@ namespace Hermes
       virtual VectorFormVol* clone() const;
     };
 
+    /// \brief Abstract, base class for vector Surface form - i.e. VectorForm, where the integration is with respect to 1D-Lebesgue measure (element domain-boundary edges).
     template<typename Scalar>
     class VectorFormSurf : public VectorForm<Scalar>
     {
@@ -353,6 +381,7 @@ namespace Hermes
       virtual VectorFormSurf* clone() const;
     };
 
+    /// \brief Abstract, base class for vector DG form - i.e. VectorForm, where the integration is with respect to 1D-Lebesgue measure (element inner-domain edges).
     template<typename Scalar>
     class VectorFormDG : public VectorForm<Scalar>
     {
