@@ -51,7 +51,7 @@ bool MeshGeneratorGMSH::mesh()
     // create gmsh files
     if (writeToGmsh())
     {
-        Agros2D::log()->printDebug(tr("Mesh generator"), tr("GMSH geo file was created"));
+        Agros2D::log()->printDebug(tr("Mesh generator"), tr("GMSH geometry file was created"));
 
         // exec triangle
         QProcess processGmsh;
@@ -164,7 +164,7 @@ bool MeshGeneratorGMSH::writeToGmsh()
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        Agros2D::log()->printError(tr("Mesh generator"), tr("Could not create GMSH geo mesh file (%1)").arg(file.errorString()));
+        Agros2D::log()->printError(tr("Mesh generator"), tr("Could not create GMSH geometry file (%1)").arg(file.errorString()));
         return false;
     }
     QTextStream out(&file);

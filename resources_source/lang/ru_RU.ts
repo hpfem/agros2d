@@ -1929,7 +1929,7 @@ step</source>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="54"/>
-        <source>GMSH geo file was created</source>
+        <source>GMSH geometry file was created</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1964,7 +1964,7 @@ step</source>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="167"/>
-        <source>Could not create GMSH geo mesh file (%1)</source>
+        <source>Could not create GMSH geometry file (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2076,12 +2076,12 @@ step</source>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="341"/>
-        <source>Could not read Triangle ele file</source>
+        <source>Could not read Triangle elements file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="349"/>
-        <source>Could not read Triangle neigh file</source>
+        <source>Could not read Triangle neighbors elements file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2759,9 +2759,9 @@ step</source>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="131"/>
-        <location filename="../../src/sceneview_post.cpp" line="194"/>
-        <location filename="../../src/sceneview_post.cpp" line="258"/>
-        <location filename="../../src/sceneview_post.cpp" line="301"/>
+        <location filename="../../src/sceneview_post.cpp" line="191"/>
+        <location filename="../../src/sceneview_post.cpp" line="252"/>
+        <location filename="../../src/sceneview_post.cpp" line="292"/>
         <source>Post View</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2771,27 +2771,27 @@ step</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="194"/>
+        <location filename="../../src/sceneview_post.cpp" line="191"/>
         <source>Scalar view (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="258"/>
+        <location filename="../../src/sceneview_post.cpp" line="252"/>
         <source>Vector view (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="301"/>
+        <location filename="../../src/sceneview_post.cpp" line="292"/>
         <source>Particle view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="343"/>
+        <location filename="../../src/sceneview_post.cpp" line="334"/>
         <source>Particle Tracing</source>
         <translation>Трассировка частиц</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="343"/>
+        <location filename="../../src/sceneview_post.cpp" line="334"/>
         <source>Particle %1: %2 steps, final time %3 s</source>
         <translation>Частица %1: %2 шагов, общее время %3 с</translation>
     </message>
@@ -3885,8 +3885,12 @@ step</source>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="798"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="859"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="895"/>
+        <source>Python scripts (*.py)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Python files (*.py)</source>
-        <translation>Python файлы (*.py)</translation>
+        <translation type="obsolete">Python файлы (*.py)</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="815"/>
@@ -3976,11 +3980,11 @@ Do you want to save your changes?</source>
 <context>
     <name>PythonEngine</name>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonengine.cpp" line="308"/>
         <source>Type &apos;%1&apos; is not supported ().</source>
-        <translation>Тип &apos;%1&apos; не поддерживается ().</translation>
+        <translation type="obsolete">Тип &apos;%1&apos; не поддерживается ().</translation>
     </message>
     <message>
+        <location filename="../../pythonlab/pythonlab/pythonengine.cpp" line="308"/>
         <location filename="../../pythonlab/pythonlab/pythonengine.cpp" line="309"/>
         <source>Type &apos;%1&apos; is not supported.</source>
         <translation>Тип &apos;%1&apos; не поддерживается.</translation>
@@ -4049,7 +4053,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/hermes2d/coupling.cpp" line="89"/>
-        <source>Hard coupling not available yet, switching to weak coupling</source>
+        <source>Hard coupling is not available yet, switching to weak coupling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4180,9 +4184,13 @@ Do you want to save your changes?</source>
         <translation>Нулевое кол-во степеней свободы</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solver.cpp" line="600"/>
         <source>Meshes are empty</source>
-        <translation>Сетки пусты</translation>
+        <translation type="obsolete">Сетки пусты</translation>
+    </message>
+    <message>
+        <location filename="../../src/hermes2d/solver.cpp" line="600"/>
+        <source>Problem is not meshed</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/solver.cpp" line="855"/>
@@ -5930,7 +5938,7 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneViewPostInterface</name>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="861"/>
+        <location filename="../../src/sceneview_post.cpp" line="852"/>
         <source>Vel.</source>
         <translation>Скорость</translation>
     </message>
@@ -6362,13 +6370,36 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="440"/>
-        <source>&lt;b&gt;&lt;/b&gt;default value is 1.0, this parameter influences the selection&lt;br/&gt;of candidates in hp-adaptivity</source>
-        <translation>&lt;b&gt;&lt;/b&gt;Значение по умолчанию 1,0. Этот параметр влияет&lt;br/&gt;на отбор элементов для hp-адаптивности</translation>
+        <source>This parameter influences the selection of candidates&lt;br/&gt;in hp-adaptivity. Default value is 1.0.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="444"/>
+        <source>Quantitative parameter of the adaptivity&lt;br/&gt;with different meanings for various adaptive strategies.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="597"/>
+        <source>Refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;) times total error&lt;br/&gt;is processed. If more elements have similar errors,&lt;br/&gt;refine all to keep the mesh symmetric.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;&lt;/b&gt;default value is 1.0, this parameter influences the selection&lt;br/&gt;of candidates in hp-adaptivity</source>
+        <translation type="obsolete">&lt;b&gt;&lt;/b&gt;Значение по умолчанию 1,0. Этот параметр влияет&lt;br/&gt;на отбор элементов для hp-адаптивности</translation>
+    </message>
+    <message>
         <source>&lt;b&gt;&lt;/b&gt;quantitative parameter of the adapt(...) function&lt;br/&gt;with different meanings for various adaptive strategies</source>
-        <translation>&lt;b&gt;&lt;/b&gt;количественный параметр функции adapt(...)&lt;br/&gt;с различным смыслом, зависящим от стратегии адаптивности</translation>
+        <translation type="obsolete">&lt;b&gt;&lt;/b&gt;количественный параметр функции adapt(...)&lt;br/&gt;с различным смыслом, зависящим от стратегии адаптивности</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="600"/>
+        <source>Refine all elements whose error is larger&lt;br/&gt;than &lt;b&gt;threshold&lt;/b&gt; times maximum element error.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="603"/>
+        <source>Refine all elements whose error is larger&lt;br/&gt;than &lt;b&gt;threshold&lt;/b&gt;.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>0</source>
@@ -6518,19 +6549,16 @@ Do you want to save your changes?</source>
         <translation>Выбранные элементы:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="597"/>
         <source>refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;) times total error&lt;br/&gt;is processed. If more elements have similar errors, refine all&lt;br/&gt;to keep the mesh symmetric</source>
-        <translation>улучшать элементы до достижения sqrt(&lt;b&gt;порог&lt;/b&gt;) на суммарную погрешность.&lt;br/&gt;Если другие элементы содержат подобные погрешности, улучшать всё&lt;br/&gt; для симметрии сетки   </translation>
+        <translation type="obsolete">улучшать элементы до достижения sqrt(&lt;b&gt;порог&lt;/b&gt;) на суммарную погрешность.&lt;br/&gt;Если другие элементы содержат подобные погрешности, улучшать всё&lt;br/&gt; для симметрии сетки   </translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="600"/>
         <source>refine all elements whose error is larger&lt;br/&gt;than &lt;b&gt;threshold&lt;/b&gt; times maximum element error</source>
-        <translation>улучшать все элементы с погрешностью&lt;br/&gt;более &lt;b&gt;порога&lt;/b&gt; умноженного на максимальную погрешность элемента</translation>
+        <translation type="obsolete">улучшать все элементы с погрешностью&lt;br/&gt;более &lt;b&gt;порога&lt;/b&gt; умноженного на максимальную погрешность элемента</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="603"/>
         <source>refine all elements whose error is larger&lt;br/&gt;than &lt;b&gt;threshold&lt;/b&gt;</source>
-        <translation>улучшать все элементы с погрешностью&lt;br/&gt;более &lt;b&gt;порога&lt;/b&gt; </translation>
+        <translation type="obsolete">улучшать все элементы с погрешностью&lt;br/&gt;более &lt;b&gt;порога&lt;/b&gt; </translation>
     </message>
 </context>
 <context>
