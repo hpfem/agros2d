@@ -7,6 +7,14 @@ problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 problem.frequency = 1e+09
 
+# disable view
+agros2d.view.mesh.initial_mesh = False
+agros2d.view.mesh.solution_mesh = False
+agros2d.view.mesh.order = False
+agros2d.view.post2d.scalar = False
+agros2d.view.post2d.contours = False
+agros2d.view.post2d.vectors = False
+
 # fields
 # rf
 rf = agros2d.field("rf")

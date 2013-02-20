@@ -18,8 +18,8 @@ agros2d.view.post2d.vectors = False
 # fields
 rf = agros2d.field("rf")
 rf.analysis_type = "harmonic"
-rf.number_of_refinements = 1
-rf.polynomial_order = 2
+rf.number_of_refinements = 3	
+rf.polynomial_order = 3
 rf.linearity_type = "linear"
 
 # boundaries
