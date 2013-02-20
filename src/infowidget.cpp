@@ -106,7 +106,7 @@ void InfoWidget::showInfo()
     problemInfo.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
 
     problemInfo.SetValue("NAME_LABEL", tr("Name:").toStdString());
-    problemInfo.SetValue("NAME", Agros2D::problem()->config()->fileName().toStdString());
+    problemInfo.SetValue("NAME", QFileInfo(Agros2D::problem()->config()->fileName()).baseName().toStdString());
 
     problemInfo.SetValue("COORDINATE_TYPE_LABEL", tr("Coordinate type:").toStdString());
     problemInfo.SetValue("COORDINATE_TYPE", coordinateTypeString(Agros2D::problem()->config()->coordinateType()).toStdString());
