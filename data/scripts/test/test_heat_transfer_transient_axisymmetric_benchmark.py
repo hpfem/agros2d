@@ -8,7 +8,6 @@ import agros2d
 
 # problem
 problem = agros2d.problem(clear = True)
-problem.name = "NAFEMS"
 problem.coordinate_type = "axisymmetric"
 problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"

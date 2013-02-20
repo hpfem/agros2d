@@ -3,7 +3,6 @@ import agros2d
 # model
 problem = agros2d.problem(clear = True)
 problem.coordinate_type = "planar"
-problem.name = "Magnetic Steadystate Planar Magnet"
 problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 

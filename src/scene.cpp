@@ -1268,8 +1268,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     // problem info
     QDomNode eleProblemInfo = eleDoc.elementsByTagName("problem").at(0);
 
-    // name
-    Agros2D::problem()->config()->setName(eleProblemInfo.toElement().attribute("name"));
     // coordinate type
     Agros2D::problem()->config()->setCoordinateType(coordinateTypeFromStringKey(eleProblemInfo.toElement().attribute("coordinate_type")));
     // mesh type
@@ -1598,8 +1596,6 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     QDomElement eleProblem = doc.createElement("problem");
     eleDoc.appendChild(eleProblem);
 
-    // name
-    eleProblem.setAttribute("name", Agros2D::problem()->config()->name());
     // coordinate type
     eleProblem.setAttribute("coordinate_type", coordinateTypeToStringKey(Agros2D::problem()->config()->coordinateType()));
     // mesh type

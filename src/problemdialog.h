@@ -210,7 +210,6 @@ private:
     FieldsToobar *fieldsToolbar;
     CouplingsWidget *couplingsWidget;
 
-    QLineEdit *txtName;
     QComboBox *cmbCoordinateType;
     QComboBox *cmbMeshType;
     QComboBox *cmbMatrixSolver;

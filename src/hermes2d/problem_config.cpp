@@ -47,7 +47,6 @@ ProblemConfig::ProblemConfig(QWidget *parent) : QObject(parent)
 void ProblemConfig::clear()
 {
     m_coordinateType = CoordinateType_Planar;
-    m_name = QObject::tr("unnamed");
     m_fileName = "";
 
     // matrix solver
