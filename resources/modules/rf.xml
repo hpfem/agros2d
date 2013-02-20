@@ -132,25 +132,25 @@
         <module:expression analysistype="harmonic" axi="rf_gamma * value2" planar="rf_gamma * value2"/>
       </module:localvariable>
       <module:localvariable id="rf_te_magnetic_field" name="Magnetic field" shortname="H" shortname_html="&lt;i>H&lt;/i>" shortname_latex="H" type="scalar" unit="A/m" unit_html="A.m&lt;sup>-1&lt;/sup>">
-        <module:expression analysistype="harmonic" axi="0" planar="1.0 / (rf_mur * MU0) * sqrt((- 1.0 / (2.0 * PI * f) * dy2)^2 + (1.0 / (2.0 * PI * f) * dx2)^2 + (1.0 / (2.0 * PI * f) * dy1)^2 + (1.0 / (2.0 * PI * f) * dx1)^2)"/>
+        <module:expression analysistype="harmonic" axi="1.0 / (rf_mur * MU0) * sqrt((- 1.0 / (2.0 * PI * f) * dz2)^2 + (1.0 / (2.0 * PI * f) * (dr2 + value2 / (r + 1e-12)))^2 + (1.0 / (2.0 * PI * f) * dz1)^2 + (1.0 / (2.0 * PI * f) * (dr1 + value1 / (r + 1e-12)))^2)" planar="1.0 / (rf_mur * MU0) * sqrt((- 1.0 / (2.0 * PI * f) * dy2)^2 + (1.0 / (2.0 * PI * f) * dx2)^2 + (1.0 / (2.0 * PI * f) * dy1)^2 + (1.0 / (2.0 * PI * f) * dx1)^2)"/>
       </module:localvariable>
       <module:localvariable id="rf_te_magnetic_field_real" name="Magnetic field - real" shortname="Hr" shortname_html="&lt;i>H&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="H_{r}" type="vector" unit="A/m" unit_html="A.m&lt;sup>-1&lt;/sup>" unit_latex="A \cdot m^{-1}">
-        <module:expression analysistype="harmonic" axi_r="0" axi_z="0" planar_x="- 1.0 / (2.0 * PI * f * rf_mur * MU0) * dy2" planar_y="1.0 / (2.0 * PI * f * rf_mur * MU0) * dx2"/>
+        <module:expression analysistype="harmonic" axi_r="1.0 / (2.0 * PI * f * rf_mur * MU0) * dz2" axi_z="-1.0 / (2.0 * PI * f * rf_mur * MU0) * (dr2 + value2 / (r + 1e-12))" planar_x="- 1.0 / (2.0 * PI * f * rf_mur * MU0) * dy2" planar_y="1.0 / (2.0 * PI * f * rf_mur * MU0) * dx2"/>
       </module:localvariable>
       <module:localvariable id="rf_te_magnetic_field_imag" name="Magnetic field - imag" shortname="Hi" shortname_html="&lt;i>H&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="H_{i}" type="vector" unit="A/m" unit_html="A.m&lt;sup>-1&lt;/sup>" unit_latex="A \cdot m^{-1}">
-        <module:expression analysistype="harmonic" axi_r="0" axi_z="0" planar_x="1.0 / (2.0 * PI * f * rf_mur * MU0) * dy1" planar_y="- 1.0 / (2.0 * PI * f * rf_mur * MU0) * dx1"/>
+        <module:expression analysistype="harmonic" axi_r="-1.0 / (2.0 * PI * f * rf_mur * MU0) * dz1" axi_z="1.0 / (2.0 * PI * f * rf_mur * MU0) * (dr1 + value1 / (r + 1e-12))" planar_x="1.0 / (2.0 * PI * f * rf_mur * MU0) * dy1" planar_y="- 1.0 / (2.0 * PI * f * rf_mur * MU0) * dx1"/>
       </module:localvariable>
       <module:localvariable id="rf_te_flux_density" name="Flux density" shortname="B" shortname_html="&lt;i>B&lt;/i>" shortname_latex="B" type="scalar" unit="T">
-        <module:expression analysistype="harmonic" axi="0" planar="sqrt((- 1.0 / (2.0 * PI * f) * dy2)^2 + (1.0 / (2.0 * PI * f) * dx2)^2 + (1.0 / (2.0 * PI * f) * dy1)^2 + (1.0 / (2.0 * PI * f) * dx1)^2)"/>
+        <module:expression analysistype="harmonic" axi="sqrt((- 1.0 / (2.0 * PI * f) * dz2)^2 + (1.0 / (2.0 * PI * f) * (dr2 + value2 / (r + 1e-12)))^2 + (1.0 / (2.0 * PI * f) * dz1)^2 + (1.0 / (2.0 * PI * f) * (dr1 + value1 / (r + 1e-12)))^2)" planar="sqrt((- 1.0 / (2.0 * PI * f) * dy2)^2 + (1.0 / (2.0 * PI * f) * dx2)^2 + (1.0 / (2.0 * PI * f) * dy1)^2 + (1.0 / (2.0 * PI * f) * dx1)^2)"/>
       </module:localvariable>
       <module:localvariable id="rf_te_flux_density_real" name="Flux density - real" shortname="Br" shortname_html="&lt;i>B&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="B_{r}" type="vector" unit="T">
-        <module:expression analysistype="harmonic" axi_r="0" axi_z="0" planar_x="- 1.0 / (2.0 * PI * f) * dy2" planar_y="1.0 / (2.0 * PI * f) * dx2"/>
+        <module:expression analysistype="harmonic" axi_r="1.0 / (2.0 * PI * f) * dz2" axi_z="-1.0 / (2.0 * PI * f) * (dr2 + value2 / (r + 1e-12))" planar_x="- 1.0 / (2.0 * PI * f) * dy2" planar_y="1.0 / (2.0 * PI * f) * dx2"/>
       </module:localvariable>
       <module:localvariable id="rf_te_flux_density_imag" name="Flux density - imag" shortname="Bi" shortname_html="&lt;i>B&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="B_{i}" type="vector" unit="T">
-        <module:expression analysistype="harmonic" axi_r="0" axi_z="0" planar_x="1.0 / (2.0 * PI * f) * dy1" planar_y="- 1.0 / (2.0 * PI * f) * dx1"/>
+        <module:expression analysistype="harmonic" axi_r="-1.0 / (2.0 * PI * f) * dz1" axi_z="1.0 / (2.0 * PI * f) * (dr1 + value1 / (r + 1e-12))" planar_x="1.0 / (2.0 * PI * f) * dy1" planar_y="- 1.0 / (2.0 * PI * f) * dx1"/>
       </module:localvariable>
       <module:localvariable id="rf_te_poynting_vector" name="Poyting vector" shortname="N" shortname_html="&lt;i>N&lt;/i>" shortname_latex="N" type="vector" unit="W/m2" unit_html="W.m&lt;sup>-2&lt;/sup>" unit_latex="W \cdot m^{-2}">
-        <module:expression analysistype="harmonic" axi_r="0" axi_z="0" planar_x="0.5 / (2.0 * PI * f * rf_mur * MU0) * (value2 * dx1 - value1 * dx2)" planar_y="0.5 / (2.0 * PI * f * rf_mur * MU0) * (value2 * dy1 - value1 * dy2)"/>
+        <module:expression analysistype="harmonic" axi_r="0.5 / (2.0 * PI * f * rf_mur * MU0) * (value2 * (dr1 + value1 / (r + 1e-12)) - value1 * (dr2 + value2 / (r + 1e-12)))" axi_z="0.5 / (2.0 * PI * f * rf_mur * MU0) * (value2 * dz1 - value1 * dz2)" planar_x="0.5 / (2.0 * PI * f * rf_mur * MU0) * (value2 * dx1 - value1 * dx2)" planar_y="0.5 / (2.0 * PI * f * rf_mur * MU0) * (value2 * dy1 - value1 * dy2)"/>
       </module:localvariable>
       <module:localvariable id="rf_te_permittivity" name="Permittivity" shortname="epsr" shortname_html="&lt;i>&amp;epsilon;&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="\varepsilon_{r}" type="scalar" unit="-" unit_html="-" unit_latex="-">
         <module:expression analysistype="harmonic" axi="rf_eps" planar="rf_eps"/>
@@ -178,7 +178,7 @@
         <module:expression analysistype="harmonic" axi="1.0" planar="1.0"/>
       </module:volumeintegral>
       <module:volumeintegral id="rf_te_electric_field" name="Electric field" shortname="E" shortname_html="&lt;i>E&lt;/i>" shortname_latex="E" unit="V m" unit_html="V.m" unit_latex="m^{2}">
-        <module:expression analysistype="harmonic" axi="0" planar="sqrt(value1*value1 + value2*value2)"/>
+        <module:expression analysistype="harmonic" axi="sqrt(value1*value1 + value2*value2)" planar="sqrt(value1*value1 + value2*value2)"/>
       </module:volumeintegral>
     </module:volumeintegrals>
     <module:surfaceintegrals>

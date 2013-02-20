@@ -75,3 +75,8 @@ git_fetch.sh
 data/save
 DLLs
 tcl
+*.poly
+*.ele
+*.geo
+*.node
+*.edge
