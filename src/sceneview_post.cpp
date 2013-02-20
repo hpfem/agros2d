@@ -155,6 +155,7 @@ void PostHermes::processRangeContour()
             m_linContourView.set_displacement(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0),
                                               Agros2D::scene()->activeMultiSolutionArray().solutions().at(1),
                                               dmult);
+            delete filter;
         }
 
         // process solution
@@ -210,6 +211,7 @@ void PostHermes::processRangeScalar()
             m_linScalarView.set_displacement(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0),
                                              Agros2D::scene()->activeMultiSolutionArray().solutions().at(1),
                                              dmult);
+            delete filter;
         }
 
         // process solution
@@ -271,6 +273,7 @@ void PostHermes::processRangeVector()
             m_vecVectorView.set_displacement(Agros2D::scene()->activeMultiSolutionArray().solutions().at(0),
                                              Agros2D::scene()->activeMultiSolutionArray().solutions().at(1),
                                              dmult);
+            delete filter;
         }
 
         // process solution
