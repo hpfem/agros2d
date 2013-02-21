@@ -305,7 +305,7 @@ ExpressionResult PythonEngine::runExpression(const QString &expression, bool ret
                     }
                     else
                     {
-                        qDebug() << tr("Type '%1' is not supported ().").arg(result->ob_type->tp_name).arg(expression);
+                        qDebug() << tr("Type '%1' is not supported.").arg(result->ob_type->tp_name).arg(expression);
                         expressionResult.error = tr("Type '%1' is not supported.").arg(result->ob_type->tp_name);
                         expressionResult.value = 0.0;
                     }

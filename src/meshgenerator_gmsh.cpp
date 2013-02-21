@@ -41,7 +41,7 @@
 #include "hermes2d/problem_config.h"
 
 MeshGeneratorGMSH::MeshGeneratorGMSH() : MeshGenerator()
-{    
+{
 }
 
 bool MeshGeneratorGMSH::mesh()
@@ -51,7 +51,7 @@ bool MeshGeneratorGMSH::mesh()
     // create gmsh files
     if (writeToGmsh())
     {
-        Agros2D::log()->printDebug(tr("Mesh generator"), tr("GMSH geo file was created."));
+        Agros2D::log()->printDebug(tr("Mesh generator"), tr("GMSH geometry file was created"));
 
         // exec triangle
         QProcess processGmsh;
@@ -71,7 +71,7 @@ bool MeshGeneratorGMSH::mesh()
 
         if (!processGmsh.waitForStarted(100000))
         {
-            Agros2D::log()->printError(tr("Mesh generator"), tr("Could not start GMSH."));
+            Agros2D::log()->printError(tr("Mesh generator"), tr("Could not start GMSH"));
             processGmsh.kill();
 
             m_isError = true;
@@ -101,11 +101,11 @@ void MeshGeneratorGMSH::meshGmshCreated(int exitCode)
 {
     if (exitCode == 0)
     {
-        Agros2D::log()->printMessage(tr("Mesh generator"), tr("mesh files were created"));
+        Agros2D::log()->printMessage(tr("Mesh generator"), tr("Mesh files were created"));
         // convert gmsh mesh to hermes mesh
         if (readGmshMeshFile())
         {
-            Agros2D::log()->printMessage(tr("Mesh generator"), tr("mesh was converted to Hermes2D mesh file"));
+            Agros2D::log()->printMessage(tr("Mesh generator"), tr("Mesh was converted to Hermes2D mesh file"));
 
             // copy triangle files
             if ((!Agros2D::configComputer()->deleteHermesMeshFile) && (!Agros2D::problem()->config()->fileName().isEmpty()))
@@ -122,7 +122,7 @@ void MeshGeneratorGMSH::meshGmshCreated(int exitCode)
             QFile::remove(tempProblemFileName() + ".gmsh.out");
             QFile::remove(tempProblemFileName() + ".gmsh.err");
             */
-            Agros2D::log()->printMessage(tr("Mesh generator"), tr("mesh files were deleted"));
+            Agros2D::log()->printMessage(tr("Mesh generator"), tr("Mesh files were deleted"));
         }
         else
         {
@@ -145,12 +145,12 @@ bool MeshGeneratorGMSH::writeToGmsh()
     // basic check
     if (Agros2D::scene()->nodes->length() < 3)
     {
-        Agros2D::log()->printError(tr("Mesh generator"), tr("invalid number of nodes (%1 < 3)").arg(Agros2D::scene()->nodes->length()));
+        Agros2D::log()->printError(tr("Mesh generator"), tr("Invalid number of nodes (%1 < 3)").arg(Agros2D::scene()->nodes->length()));
         return false;
     }
     if (Agros2D::scene()->edges->length() < 3)
     {
-        Agros2D::log()->printError(tr("Mesh generator"), tr("invalid number of edges (%1 < 3)").arg(Agros2D::scene()->edges->length()));
+        Agros2D::log()->printError(tr("Mesh generator"), tr("Invalid number of edges (%1 < 3)").arg(Agros2D::scene()->edges->length()));
         return false;
     }
 
@@ -164,7 +164,7 @@ bool MeshGeneratorGMSH::writeToGmsh()
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        Agros2D::log()->printError(tr("Mesh generator"), tr("could not create GMSH geo mesh file (%1)").arg(file.errorString()));
+        Agros2D::log()->printError(tr("Mesh generator"), tr("Could not create GMSH geometry file (%1)").arg(file.errorString()));
         return false;
     }
     QTextStream out(&file);
@@ -276,7 +276,7 @@ bool MeshGeneratorGMSH::writeToGmsh()
     }
     catch (AgrosMeshException& ame)
     {
-        Agros2D::log()->printError(tr("GMSH"), ame.toString());
+        Agros2D::log()->printError(tr("Mesh generator"), ame.toString());
         std::cout << "Missing Label";
         return false;
     }
@@ -344,7 +344,7 @@ bool MeshGeneratorGMSH::writeToGmsh()
                 outLoops.append(",");
         }
         outLoops.append(QString("};\n"));
-    }    
+    }
     //    QString outLoops;
     //    outLoops.append(QString("Line Loop(1) = {0, 1, 2, 3};\n"));
     //    outLoops.append(QString("Plane Surface(1) = {1};\n"));
@@ -402,7 +402,7 @@ bool MeshGeneratorGMSH::readGmshMeshFile()
     QFile fileGMSH(tempProblemFileName() + ".msh");
     if (!fileGMSH.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        Agros2D::log()->printError(tr("Mesh generator"), tr("could not read GMSH mesh file"));
+        Agros2D::log()->printError(tr("Mesh generator"), tr("Could not read GMSH mesh file"));
         return false;
     }
     QTextStream inGMSH(&fileGMSH);
@@ -449,7 +449,7 @@ bool MeshGeneratorGMSH::readGmshMeshFile()
 
         if (marker == 0)
         {
-            Agros2D::log()->printError(tr("Mesh generator"), tr("some areas have no label marker"));
+            Agros2D::log()->printError(tr("Mesh generator"), tr("Some areas have no label marker"));
             return false;
         }
         */

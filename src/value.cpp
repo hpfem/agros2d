@@ -234,7 +234,7 @@ bool Value::evaluate(double time, const Point &point, bool quiet)
     }
     else
     {
-        Agros2D::log()->printDebug(QObject::tr("Value"), expressionResult.error);
+        Agros2D::log()->printDebug(QObject::tr("Problem"), expressionResult.error);
     }
 
     if (!signalBlocked)
@@ -310,7 +310,7 @@ ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin)
 }
 
 ValueLineEdit::~ValueLineEdit()
-{  
+{
 }
 
 void ValueLineEdit::setNumber(double value)

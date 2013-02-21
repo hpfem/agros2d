@@ -5,7 +5,6 @@ user_module.function(2)
 
 problem = agros2d.problem(clear = True)
 problem.coordinate_type = "axisymmetric"
-problem.name = "Induction heating"
 problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 problem.frequency = 1e3

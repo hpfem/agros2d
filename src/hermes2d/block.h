@@ -22,7 +22,6 @@
 
 #include "util.h"
 #include "util/enums.h"
-#include "hermes2d/module.h"
 
 class FieldInfo;
 class CouplingInfo;

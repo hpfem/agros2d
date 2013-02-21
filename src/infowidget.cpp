@@ -93,7 +93,7 @@ void InfoWidget::refresh()
 }
 
 void InfoWidget::showInfo()
-{    
+{
     // template
     std::string info;
     ctemplate::TemplateDictionary problemInfo("info");
@@ -106,7 +106,7 @@ void InfoWidget::showInfo()
     problemInfo.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
 
     problemInfo.SetValue("NAME_LABEL", tr("Name:").toStdString());
-    problemInfo.SetValue("NAME", Agros2D::problem()->config()->name().toStdString());
+    problemInfo.SetValue("NAME", QFileInfo(Agros2D::problem()->config()->fileName()).baseName().toStdString());
 
     problemInfo.SetValue("COORDINATE_TYPE_LABEL", tr("Coordinate type:").toStdString());
     problemInfo.SetValue("COORDINATE_TYPE", coordinateTypeString(Agros2D::problem()->config()->coordinateType()).toStdString());
@@ -296,9 +296,9 @@ void InfoWidget::showInfo()
                 if (Agros2D::problem()->isSolved())
                 {
                     field->SetValue("DOFS_LABEL", tr("Number of DOFs:").toStdString());
-                    field->SetValue("DOFS", tr("%1").arg(DOFs).toStdString());
+                    field->SetValue("DOFS", QString("%1").arg(DOFs).toStdString());
                     field->SetValue("ERROR_LABEL", tr("Error:").toStdString());
-                    field->SetValue("ERROR", tr("%1 %").arg(error).toStdString());
+                    field->SetValue("ERROR", QString("%1 %").arg(error).toStdString());
                     field->ShowSection("MESH_SOLUTION_DOFS_PARAMETERS_SECTION");
                 }
 
@@ -324,7 +324,7 @@ void InfoWidget::showInfo()
             couplingSection->SetValue("COUPLING_TARGET_LABEL", tr("Target:").toStdString());
             couplingSection->SetValue("COUPLING_TARGET", couplingInfo->targetField()->name().toStdString());
             couplingSection->SetValue("COUPLING_TYPE_LABEL", tr("Coupling type:").toStdString());
-            couplingSection->SetValue("COUPLING_TYPE", tr("%1").arg(couplingTypeString(couplingInfo->couplingType())).toStdString());
+            couplingSection->SetValue("COUPLING_TYPE", QString("%1").arg(couplingTypeString(couplingInfo->couplingType())).toStdString());
         }
         problemInfo.ShowSection("COUPLING");
     }
@@ -335,7 +335,7 @@ void InfoWidget::showInfo()
         problemInfo.SetValue("SOLUTION_ELAPSED_TIME_LABEL", tr("Total elapsed time:").toStdString());
         problemInfo.SetValue("SOLUTION_ELAPSED_TIME", tr("%1 s").arg(Agros2D::problem()->timeElapsed().toString("mm:ss.zzz")).toStdString());
         // problemInfo.SetValue("NUM_THREADS_LABEL", tr("Number of threads:").toStdString());
-        // problemInfo.SetValue("NUM_THREADS", tr("%1").arg(Hermes::Hermes2D::Hermes2DApi.get_integral_param_value(Hermes::Hermes2D::numThreads)).toStdString());
+        // problemInfo.SetValue("NUM_THREADS", QString("%1").arg(Hermes::Hermes2D::Hermes2DApi.get_integral_param_value(Hermes::Hermes2D::numThreads)).toStdString());
         problemInfo.ShowSection("SOLUTION_PARAMETERS_SECTION");
     }
 

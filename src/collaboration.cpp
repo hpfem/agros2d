@@ -364,6 +364,7 @@ void ServerUploadDialog::doDocumentChanged()
     cmbName->setVisible(false);
     txtName->setVisible(false);
 
+    /*
     if (radDocumentExisting->isChecked())
     {
         if (cmbName->findText(Agros2D::problem()->config()->name(), Qt::MatchStartsWith) != -1)
@@ -380,6 +381,7 @@ void ServerUploadDialog::doDocumentChanged()
         txtName->setVisible(true);
         txtName->setText(Agros2D::problem()->config()->name());
     }
+    */
 }
 
 void ServerUploadDialog::doExistingProblemSelected(int index)
@@ -430,11 +432,13 @@ void ServerUploadDialog::httpContentFinished()
         n = n.nextSibling();
     }
 
+    /*
     if (cmbName->findText(Agros2D::problem()->config()->name(), Qt::MatchStartsWith) != -1)
     {
         radDocumentExisting->setChecked(true);
         doDocumentChanged();
     }
+    */
 }
 
 void ServerUploadDialog::uploadToServer()
@@ -467,7 +471,7 @@ void ServerUploadDialog::httpFileFinished()
 
     if (content.startsWith("Message: "))
     {
-        QMessageBox::information(this, tr("Upload to server"), tr("Problem '%1' was uploaded to the server.").arg(Agros2D::problem()->config()->name()));
+        // QMessageBox::information(this, tr("Upload to server"), tr("Problem '%1' was uploaded to the server.").arg(Agros2D::problem()->config()->name()));
         accept();
     }
     else

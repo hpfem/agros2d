@@ -3,7 +3,6 @@ import agros2d
 # model
 problem = agros2d.problem(clear = True)
 problem.coordinate_type = "axisymmetric"
-problem.name = "Magnetic harmonic - axisymmetric"
 problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 problem.frequency = 100

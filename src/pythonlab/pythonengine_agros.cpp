@@ -149,8 +149,6 @@ QString createPythonFromModel(StartupScript_Type startupScript)
     // model
     str += "# problem\n";
     str += QString("problem = agros2d.problem(clear = True)\n");
-    if (!Agros2D::problem()->config()->name().isEmpty())
-        str += QString("problem.name = \"%1\"\n").arg(Agros2D::problem()->config()->name());
     str += QString("problem.coordinate_type = \"%1\"\n").arg(coordinateTypeToStringKey(Agros2D::problem()->config()->coordinateType()));
     str += QString("problem.mesh_type = \"%1\"\n").arg(meshTypeToStringKey(Agros2D::problem()->config()->meshType()));
     str += QString("problem.matrix_solver = \"%1\"\n").arg(matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()));

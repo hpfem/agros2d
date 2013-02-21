@@ -254,7 +254,7 @@ void FieldWidget::createContent()
     layoutAdaptivity->addWidget(new QLabel(tr("Redone each trans st:")), 4, 0);
     layoutAdaptivity->addWidget(txtAdaptivityRedoneEach, 4, 1);
 
-    QGroupBox *grpAdaptivity = new QGroupBox(tr("Adaptivity"));
+    QGroupBox *grpAdaptivity = new QGroupBox(tr("Space adaptivity"));
     grpAdaptivity->setLayout(layoutAdaptivity);
 
     // linearity
@@ -708,6 +708,7 @@ void CouplingsWidget::createContent()
     }
 
     layoutTable = new QGridLayout();
+    layoutTable->setContentsMargins(0, 0, 0, 0);
     layoutTable->setColumnMinimumWidth(0, minWidth);
     layoutTable->setColumnStretch(1, 1);
 
@@ -815,7 +816,6 @@ void ProblemWidget::createControls()
 
     // problem
     cmbCoordinateType = new QComboBox();
-    txtName = new QLineEdit("");
     // matrix solver
     cmbMatrixSolver = new QComboBox();
     // mesh type
@@ -825,14 +825,12 @@ void ProblemWidget::createControls()
     QGridLayout *layoutGeneral = new QGridLayout();
     layoutGeneral->setColumnMinimumWidth(0, minWidth);
     layoutGeneral->setColumnStretch(1, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Name:")), 0, 0);
-    layoutGeneral->addWidget(txtName, 0, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Coordinate type:")), 1, 0);
-    layoutGeneral->addWidget(cmbCoordinateType, 1, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Linear solver:")), 2, 0);
-    layoutGeneral->addWidget(cmbMatrixSolver, 2, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Mesh type:")), 3, 0);
-    layoutGeneral->addWidget(cmbMeshType, 3, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Coordinate type:")), 0, 0);
+    layoutGeneral->addWidget(cmbCoordinateType, 0, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Linear solver:")), 1, 0);
+    layoutGeneral->addWidget(cmbMatrixSolver, 1, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Mesh type:")), 2, 0);
+    layoutGeneral->addWidget(cmbMeshType, 2, 1);
 
     QGroupBox *grpGeneral = new QGroupBox(tr("General"));
     grpGeneral->setLayout(layoutGeneral);
@@ -937,9 +935,6 @@ void ProblemWidget::fillComboBox()
 void ProblemWidget::updateControls()
 {
     // disconnect signals
-    txtName->disconnect();
-
-    // with clearing solution
     cmbCoordinateType->disconnect();
     cmbMatrixSolver->disconnect();
     cmbMeshType->disconnect();
@@ -953,7 +948,6 @@ void ProblemWidget::updateControls()
     txtTransientSteps->disconnect();
 
     // main
-    txtName->setText(Agros2D::problem()->config()->name());
     cmbCoordinateType->setCurrentIndex(cmbCoordinateType->findData(Agros2D::problem()->config()->coordinateType()));
     if (cmbCoordinateType->currentIndex() == -1)
         cmbCoordinateType->setCurrentIndex(0);
@@ -990,9 +984,6 @@ void ProblemWidget::updateControls()
     transientChanged();
 
     // connect signals
-    connect(txtName, SIGNAL(textChanged(QString)), this, SLOT(changedWithClear()));
-
-    // with clearing solution
     connect(cmbCoordinateType, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
     connect(cmbMatrixSolver, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
     connect(cmbMeshType, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
@@ -1016,8 +1007,6 @@ void ProblemWidget::changedWithClear()
 {
     // save properties
     Agros2D::problem()->config()->blockSignals(true);
-
-    Agros2D::problem()->config()->setName(txtName->text());
 
     Agros2D::problem()->config()->setCoordinateType((CoordinateType) cmbCoordinateType->itemData(cmbCoordinateType->currentIndex()).toInt());
     Agros2D::problem()->config()->setMeshType((MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt());

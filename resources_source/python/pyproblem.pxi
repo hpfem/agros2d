@@ -15,9 +15,6 @@ cdef extern from "../../src/pythonlab/pyproblem.h":
         void clearSolution()
         void refresh()
 
-        char *getName()
-        void setName(char *name)
-
         char *getCoordinateType()
         void setCoordinateType(char *coordinateType) except +
 
@@ -75,13 +72,6 @@ cdef class __Problem__:
     # refresh
     def refresh(self):
         self.thisptr.refresh()
-
-    # name
-    property name:
-        def __get__(self):
-            return self.thisptr.getName()
-        def __set__(self, name):
-            self.thisptr.setName(name)
 
     # coordinate type
     property coordinate_type:

@@ -299,7 +299,7 @@ void MainWindow::createActions()
     actDocumentSaveGeometry->setStatusTip(tr("Export geometry to file"));
     connect(actDocumentSaveGeometry, SIGNAL(triggered()), this, SLOT(doDocumentSaveGeometry()));
 
-    actExamples = new QAction(tr("New example..."), this);
+    actExamples = new QAction(tr("Open example..."), this);
     connect(actExamples, SIGNAL(triggered()), this, SLOT(doExamples()));
 
     actCreateVideo = new QAction(icon("video"), tr("Create &video..."), this);
@@ -1179,7 +1179,7 @@ void MainWindow::doDocumentSaveGeometry()
         QFileInfo fileInfo(fileName);
         if (selected == "SVG files (*.svg)")
         {
-            if (fileInfo.suffix().toLower() != "svg") fileName += ".svg";            
+            if (fileInfo.suffix().toLower() != "svg") fileName += ".svg";
         }
 
         sceneViewPreprocessor->saveGeometryToSvg(fileName);
@@ -1403,7 +1403,7 @@ void MainWindow::doCopy()
     if (sceneViewPreprocessor->actSceneModePreprocessor->isChecked())
         pixmap = sceneViewPreprocessor->renderScenePixmap();
     else if (sceneViewMesh->actSceneModeMesh->isChecked())
-        pixmap = sceneViewPost2D->renderScenePixmap();
+        pixmap = sceneViewMesh->renderScenePixmap();
     else if (sceneViewPost2D->actSceneModePost2D->isChecked())
         pixmap = sceneViewPost2D->renderScenePixmap();
     else if (sceneViewPost3D->actSceneModePost3D->isChecked())
@@ -1532,7 +1532,7 @@ void MainWindow::setControls()
 
     // actSolve->setEnabled(Agros2D::problem()->fieldInfos().count() > 0);
     actSolveAdaptiveStep->setEnabled(false);
-//    actSolveAdaptiveStep->setEnabled(Agros2D::problem()->fieldInfos().count() > 0 && Agros2D::problem()->fieldInfos().count() <= 1 && (!Agros2D::problem()->isTransient()) );
+    //    actSolveAdaptiveStep->setEnabled(Agros2D::problem()->fieldInfos().count() > 0 && Agros2D::problem()->fieldInfos().count() <= 1 && (!Agros2D::problem()->isTransient()) );
 
     QTimer::singleShot(0, postprocessorWidget, SLOT(updateControls()));
 
@@ -1614,7 +1614,7 @@ void MainWindow::doDocumentExportMeshFile()
     }
     else
     {
-        Agros2D::log()->printMessage(tr("Export mesh"), tr("The problem is not meshed."));
+        Agros2D::log()->printMessage(tr("Problem"), tr("The problem is not meshed"));
     }
 }
 

@@ -41,7 +41,7 @@
 #include "util/loops.h"
 
 MeshGeneratorTriangle::MeshGeneratorTriangle() : MeshGenerator()
-{    
+{
 }
 
 bool MeshGeneratorTriangle::mesh()
@@ -71,7 +71,7 @@ bool MeshGeneratorTriangle::mesh()
 
         if (!processTriangle.waitForStarted(100000))
         {
-            Agros2D::log()->printError(tr("Mesh generator"), tr("could not start Triangle"));
+            Agros2D::log()->printError(tr("Mesh generator"), tr("Could not start Triangle"));
             processTriangle.kill();
 
             m_isError = true;
@@ -104,12 +104,12 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
 {
     if (exitCode == 0)
     {
-        Agros2D::log()->printMessage(tr("Mesh generator"), tr("mesh files were created"));
+        Agros2D::log()->printMessage(tr("Mesh generator"), tr("Mesh files were created"));
 
         // convert triangle mesh to hermes mesh
         if (readTriangleMeshFormat())
         {
-            Agros2D::log()->printMessage(tr("Mesh generator"), tr("mesh was converted to Hermes2D mesh file"));
+            Agros2D::log()->printMessage(tr("Mesh generator"), tr("Mesh was converted to Hermes2D mesh file"));
 
             // copy triangle files
             if ((!Agros2D::configComputer()->deleteHermesMeshFile) && (!Agros2D::problem()->config()->fileName().isEmpty()))
@@ -149,12 +149,12 @@ bool MeshGeneratorTriangle::writeToTriangle()
     // basic check
     if (Agros2D::scene()->nodes->length() < 3)
     {
-        Agros2D::log()->printError(tr("Mesh generator"), tr("invalid number of nodes (%1 < 3)").arg(Agros2D::scene()->nodes->length()));
+        Agros2D::log()->printError(tr("Mesh generator"), tr("Invalid number of nodes (%1 < 3)").arg(Agros2D::scene()->nodes->length()));
         return false;
     }
     if (Agros2D::scene()->edges->length() < 3)
     {
-        Agros2D::log()->printError(tr("Mesh generator"), tr("invalid number of edges (%1 < 3)").arg(Agros2D::scene()->edges->length()));
+        Agros2D::log()->printError(tr("Mesh generator"), tr("Invalid number of edges (%1 < 3)").arg(Agros2D::scene()->edges->length()));
         return false;
     }
 
@@ -168,7 +168,7 @@ bool MeshGeneratorTriangle::writeToTriangle()
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        Agros2D::log()->printError(tr("Mesh generator"), tr("could not create Triangle poly mesh file (%1)").arg(file.errorString()));
+        Agros2D::log()->printError(tr("Mesh generator"), tr("Could not create Triangle poly mesh file (%1)").arg(file.errorString()));
         return false;
     }
     QTextStream out(&file);
@@ -322,15 +322,15 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
     QFile fileNode(tempProblemFileName() + ".node");
     if (!fileNode.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        Agros2D::log()->printError(tr("Mesh generator"), tr("could not read Triangle node file"));
+        Agros2D::log()->printError(tr("Mesh generator"), tr("Could not read Triangle node file"));
         return false;
     }
-    QTextStream inNode(&fileNode);    
+    QTextStream inNode(&fileNode);
 
     QFile fileEdge(tempProblemFileName() + ".edge");
     if (!fileEdge.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        Agros2D::log()->printError(tr("Mesh generator"), tr("could not read Triangle edge file"));
+        Agros2D::log()->printError(tr("Mesh generator"), tr("Could not read Triangle edge file"));
         return false;
     }
     QTextStream inEdge(&fileEdge);
@@ -338,7 +338,7 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
     QFile fileEle(tempProblemFileName() + ".ele");
     if (!fileEle.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        Agros2D::log()->printError(tr("Mesh generator"), tr("could not read Triangle ele file"));
+        Agros2D::log()->printError(tr("Mesh generator"), tr("Could not read Triangle elements file"));
         return false;
     }
     QTextStream inEle(&fileEle);
@@ -346,7 +346,7 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
     QFile fileNeigh(tempProblemFileName() + ".neigh");
     if (!fileNeigh.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        Agros2D::log()->printError(tr("Mesh generator"), tr("could not read Triangle neigh file"));
+        Agros2D::log()->printError(tr("Mesh generator"), tr("Could not read Triangle neighbors elements file"));
         return false;
     }
     QTextStream inNeigh(&fileNeigh);
@@ -450,7 +450,7 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
     /*
     if (elementList.count() < 1)
     {
-        Agros2D::log()->printError(tr("Mesh generator"), tr("invalid number of label markers"));
+        Agros2D::log()->printError(tr("Mesh generator"), tr("Invalid number of label markers"));
         return false;
     }
     */

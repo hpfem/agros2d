@@ -248,7 +248,7 @@ void SettingsWidget::createControls()
 QWidget *SettingsWidget::controlsControlsScriptAndDescription()
 {
     // startup script
-    txtStartupScript = new ScriptEditor(currentPythonEngine(), this);   
+    txtStartupScript = new ScriptEditor(currentPythonEngine(), this);
     connect(txtStartupScript, SIGNAL(textChanged()), this, SLOT(doStartupScriptChanged()));
     lblStartupScriptError = new QLabel();
 
@@ -293,7 +293,7 @@ QWidget *SettingsWidget::controlsWorkspace()
     chkShowGrid = new QCheckBox(tr("Show grid"));
     connect(chkShowGrid, SIGNAL(clicked()), this, SLOT(doShowGridChanged()));
     chkSnapToGrid = new QCheckBox(tr("Snap to grid"));
-    chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));   
+    chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));
     chkShowRulers = new QCheckBox(tr("Show rulers"));
     chkShowAxes = new QCheckBox(tr("Show axes"));
 
@@ -437,17 +437,17 @@ QWidget *SettingsWidget::controlsMeshAndSolver()
     txtMaxDOFs->setSingleStep(1e2);
 
     txtConvExp = new LineEditDouble();
-    lblConvExp = new QLabel(tr("<b></b>default value is 1.0, this parameter influences the selection<br/>of candidates in hp-adaptivity"));
+    lblConvExp = new QLabel(tr("This parameter influences the selection of candidates<br/>in hp-adaptivity. Default value is 1.0."));
     lblConvExp->setFont(fnt);
 
     txtThreshold = new LineEditDouble();
-    lblThreshold = new QLabel(tr("<b></b>quantitative parameter of the adapt(...) function<br/>with different meanings for various adaptive strategies"));
+    lblThreshold = new QLabel(tr("Quantitative parameter of the adaptivity<br/>with different meanings for various adaptive strategies."));
     lblThreshold->setFont(fnt);
 
     cmbStrategy = new QComboBox();
-    cmbStrategy->addItem(tr("0"), 0);
-    cmbStrategy->addItem(tr("1"), 1);
-    cmbStrategy->addItem(tr("2"), 2);
+    cmbStrategy->addItem("0", 0);
+    cmbStrategy->addItem("1", 1);
+    cmbStrategy->addItem("2", 2);
     connect(cmbStrategy, SIGNAL(currentIndexChanged(int)), this, SLOT(doStrategyChanged(int)));
     lblStrategy = new QLabel("");
     lblStrategy->setFont(fnt);
@@ -594,13 +594,13 @@ void SettingsWidget::doStrategyChanged(int index)
     switch (index)
     {
     case 0:
-        lblStrategy->setText(tr("refine elements until sqrt(<b>threshold</b>) times total error<br/>is processed. If more elements have similar errors, refine all<br/>to keep the mesh symmetric"));
+        lblStrategy->setText(tr("Refine elements until sqrt(<b>threshold</b>) times total error<br/>is processed. If more elements have similar errors,<br/>refine all to keep the mesh symmetric."));
         break;
     case 1:
-        lblStrategy->setText(tr("refine all elements whose error is larger<br/>than <b>threshold</b> times maximum element error"));
+        lblStrategy->setText(tr("Refine all elements whose error is larger<br/>than <b>threshold</b> times maximum element error."));
         break;
     case 2:
-        lblStrategy->setText(tr("refine all elements whose error is larger<br/>than <b>threshold</b>"));
+        lblStrategy->setText(tr("Refine all elements whose error is larger<br/>than <b>threshold</b>."));
         break;
     default:
         break;

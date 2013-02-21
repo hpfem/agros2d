@@ -96,7 +96,7 @@ void SceneViewCommon::initializeGL()
 
 void SceneViewCommon::resizeGL(int w, int h)
 {
-    setupViewport(w, h);   
+    setupViewport(w, h);
 }
 
 void SceneViewCommon::setupViewport(int w, int h)
@@ -118,12 +118,16 @@ void SceneViewCommon::printPostAt(int penX, int penY, const QString &text)
 
 QPixmap SceneViewCommon::renderScenePixmap(int w, int h, bool useContext)
 {
+    /*
     QPixmap pixmap = renderPixmap((w == 0) ? width() : w,
                                   (h == 0) ? height() : h,
                                   useContext);
     resizeGL(width(), height());
 
     return pixmap;
+    */
+
+    return QPixmap::fromImage(grabFrameBuffer(false));
 }
 
 void SceneViewCommon::loadProjectionViewPort()

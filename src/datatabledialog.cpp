@@ -240,8 +240,8 @@ void DataTableDialog::createControls()
 
 void DataTableDialog::textChanged()
 {
-    lblInfoX->setText(tr("%1").arg(lstX->toPlainText().trimmed().split("\n").size()));
-    lblInfoY->setText(tr("%1").arg(lstY->toPlainText().trimmed().split("\n").size()));
+    lblInfoX->setText(QString("%1").arg(lstX->toPlainText().trimmed().split("\n").size()));
+    lblInfoY->setText(QString("%1").arg(lstY->toPlainText().trimmed().split("\n").size()));
 
     // try parse
     parseTable(false);

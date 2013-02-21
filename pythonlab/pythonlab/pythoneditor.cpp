@@ -42,7 +42,7 @@ PythonEditorWidget::PythonEditorWidget(PythonEngine *pythonEngine, QWidget *pare
     connect(timer, SIGNAL(timeout()), this, SLOT(pyFlakesAnalyse()));
     timer->start(4000);
 
-    txtEditor->setAcceptDrops(false);    
+    txtEditor->setAcceptDrops(false);
 }
 
 PythonEditorWidget::~PythonEditorWidget()
@@ -795,7 +795,7 @@ void PythonEditorDialog::doFileOpen(const QString &file)
     // open dialog
     QString fileName = file;
     if (fileName.isEmpty())
-        fileName = QFileDialog::getOpenFileName(this, tr("Open File"), dir, tr("Python files (*.py)"));
+        fileName = QFileDialog::getOpenFileName(this, tr("Open File"), dir, tr("Python scripts (*.py)"));
 
     // read text
     if (!fileName.isEmpty())
@@ -850,13 +850,13 @@ void PythonEditorDialog::doFileOpenRecent(QAction *action)
 }
 
 void PythonEditorDialog::doFileSave()
-{    
+{
     QSettings settings;
     QString dir = settings.value("General/LastDir", "data").toString();
 
     // save dialog
     if (scriptEditorWidget()->fileName.isEmpty())
-        scriptEditorWidget()->fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python files (*.py)"));
+        scriptEditorWidget()->fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python scripts (*.py)"));
 
     // write text
     if (!scriptEditorWidget()->fileName.isEmpty())
@@ -892,7 +892,7 @@ void PythonEditorDialog::doFileSaveAs()
     QSettings settings;
     QString dir = settings.value("General/LastDir", "data").toString();
 
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python files (*.py)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python scripts (*.py)"));
     if (!fileName.isEmpty())
     {
         scriptEditorWidget()->fileName = fileName;
@@ -1087,7 +1087,7 @@ void PythonEditorDialog::doCurrentPageChanged(int index)
         QFileInfo fileInfo(scriptEditorWidget()->fileName);
         fileName = fileInfo.completeBaseName();
     }
-    setWindowTitle(tr("Python Lab - %1").arg(fileName));
+    setWindowTitle(tr("PythonLab - %1").arg(fileName));
 
     txtEditor->setFocus();
 }

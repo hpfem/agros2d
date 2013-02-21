@@ -388,11 +388,11 @@ QWidget *PostprocessorWidget::meshOrderWidget()
     cmbOrderPaletteOrder->addItem(tr("B/W ascending"), PaletteOrder_BWAsc);
     cmbOrderPaletteOrder->addItem(tr("B/W descending"), PaletteOrder_BWDesc);
 
-    chkShowOrderColorbar = new QCheckBox(tr("Show order colorbar"), this);
-    chkOrderLabel = new QCheckBox(tr("Show order labels"), this);
+    chkShowOrderColorbar = new QCheckBox(tr("Show colorbar"), this);
+    chkOrderLabel = new QCheckBox(tr("Show labels"), this);
 
     QGridLayout *gridLayoutOrder = new QGridLayout();
-    gridLayoutOrder->addWidget(new QLabel(tr("Order palette:")), 0, 0);
+    gridLayoutOrder->addWidget(new QLabel(tr("Palette:")), 0, 0);
     gridLayoutOrder->addWidget(cmbOrderPaletteOrder, 0, 1);
     gridLayoutOrder->addWidget(chkShowOrderColorbar, 1, 0, 1, 2);
     gridLayoutOrder->addWidget(chkOrderLabel, 2, 0, 1, 2);
@@ -638,7 +638,7 @@ QWidget *PostprocessorWidget::controlsBasic()
     layoutAdaptivity->addWidget(new QLabel(tr("Type:")), 1, 0);
     layoutAdaptivity->addWidget(cmbAdaptivitySolutionType, 1, 1);
 
-    grpAdaptivity = new QGroupBox(tr("Adaptivity"));
+    grpAdaptivity = new QGroupBox(tr("Space adaptivity"));
     grpAdaptivity->setLayout(layoutAdaptivity);
 
     groupMesh = meshWidget();

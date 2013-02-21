@@ -136,7 +136,7 @@ bool ParticleTracing::newtonEquations(double step,
 
         (*newvelocity).x = (totalAccel.x + velocity.z * velocity.z * position.x) * step; // r
         (*newvelocity).y = (totalAccel.y) * step; // z
-        (*newvelocity).z = (totalAccel.z / position.x - 2 / position.x * velocity.x * velocity.z) * step; // alpha
+        (*newvelocity).z = (position.x < EPS_ZERO) ? 0 : (totalAccel.z / position.x - 2 / position.x * velocity.x * velocity.z) * step; // alpha
     }
 
     return true;

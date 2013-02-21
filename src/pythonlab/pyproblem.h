@@ -35,10 +35,6 @@ class PyProblem
         void clearSolution();
         void refresh();
 
-        // name
-        inline const char *getName() { return Agros2D::problem()->config()->name().toStdString().c_str(); }
-        void setName(const char *name) { Agros2D::problem()->config()->setName(QString(name)); }
-
         // coordinate type
         inline const char *getCoordinateType() { return coordinateTypeToStringKey(Agros2D::problem()->config()->coordinateType()).toStdString().c_str(); }
         void setCoordinateType(const char *coordinateType);

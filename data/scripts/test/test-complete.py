@@ -89,5 +89,8 @@ execfile("test_coupling_2_axisymmetric.py")
 execfile("test_coupling_3_axisymmetric_nonlin.py")
 execfile("test_coupling_4_transient_planar.py") 
 
+# particle tracing
+execfile("test_particle_tracing_axisymmetric.py")
+
 # scripting
 # execfile("test_scripting.py")

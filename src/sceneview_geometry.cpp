@@ -318,7 +318,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                 foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
                 {
                     str = str + QString("%1 (%2), ").
-                            arg(edge->hasMarker(fieldInfo) ? edge->marker(fieldInfo)->name() : tr("-")).
+                            arg(edge->hasMarker(fieldInfo) ? edge->marker(fieldInfo)->name() : "-").
                             arg(fieldInfo->name());
                     refinement = refinement + QString("%1 (%2), ").
                             arg(fieldInfo->edgeRefinement(edge)).
@@ -354,7 +354,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                 foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
                 {
                     str = str + QString("%1 (%2), ").
-                            arg(label->hasMarker(fieldInfo) ? label->marker(fieldInfo)->name() : tr("-")).
+                            arg(label->hasMarker(fieldInfo) ? label->marker(fieldInfo)->name() : "-").
                             arg(fieldInfo->name());
                     area_refinement = area_refinement + QString("%1 (%2), ").
                             arg(fieldInfo->labelRefinement(label)).
@@ -871,7 +871,7 @@ void SceneViewPreprocessor::paintRulersHintsEdges()
         Point scr = untransform(snapPoint.x, snapPoint.y);
         printRulersAt(scr.x + m_fontRulers->glyphs[GLYPH_M].width,
                       scr.y + m_fontRulers->height * 0.7,
-                      QString(tr("%1, %2")).arg(snapPoint.x).arg(snapPoint.y));
+                      QString("%1, %2").arg(snapPoint.x).arg(snapPoint.y));
     }
 }
 

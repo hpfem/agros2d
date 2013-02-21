@@ -208,7 +208,7 @@ void PyField::addBoundary(const char *name, const char *type, map<char*, double>
     foreach (SceneBoundary *boundary, Agros2D::scene()->boundaries->filter(Agros2D::problem()->fieldInfo(QString(fieldInfo()->fieldId()))).items())
     {
         if (boundary->name() == name)
-            throw invalid_argument(QObject::tr("Boundary '%1' already exists.").arg(QString(name)).toStdString());
+            throw invalid_argument(QObject::tr("Boundary condition '%1' already exists.").arg(QString(name)).toStdString());
     }
 
     if (!Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->boundaryTypeContains(QString(type)))

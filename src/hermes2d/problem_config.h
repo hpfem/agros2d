@@ -42,9 +42,6 @@ public:
 
     void clear();
 
-    inline QString name() const { return m_name; }
-    void setName(const QString &name) { m_name = name; }
-
     inline QString fileName() const { return m_fileName; }
     void setFileName(const QString &fileName) { m_fileName = fileName; }
 
@@ -90,7 +87,6 @@ signals:
     void changed();
 
 private:
-    QString m_name;
     QString m_fileName;
     CoordinateType m_coordinateType;
 
