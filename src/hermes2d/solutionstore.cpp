@@ -22,6 +22,7 @@
 #include "util/global.h"
 #include "util/constants.h"
 
+#include "logview.h"
 #include "field.h"
 #include "block.h"
 #include "scene.h"
@@ -83,6 +84,7 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
         catch (...)
         {
             Agros2D::problem()->clearSolution();
+            Agros2D::log()->printWarning("Solver", "catched unknown exception while loading solution");
         }
 
         return msa;
