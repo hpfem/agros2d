@@ -179,8 +179,7 @@ enum SceneViewPost3DMode
     SceneViewPost3DMode_None,
     SceneViewPost3DMode_ScalarView3D,
     SceneViewPost3DMode_ScalarView3DSolid,
-    SceneViewPost3DMode_Model,
-    SceneViewPost3DMode_ParticleTracing
+    SceneViewPost3DMode_Model
 };
 
 enum SceneTransformMode

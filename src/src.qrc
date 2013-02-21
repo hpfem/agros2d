@@ -55,6 +55,7 @@
         <file alias="scene-mesh.png">../resources_source/images/scene-mesh.png</file>
         <file alias="scene-post2d.png">../resources_source/images/scene-post2d.png</file>
 		<file alias="scene-post3d.png">../resources_source/images/scene-post3d.png</file>
+        <file alias="scene-particle.png">../resources_source/images/scene-particle.png</file>
         <file alias="scene-delete.png">../resources_source/images/scene-delete.png</file>
         <file alias="scene-properties.png">../resources_source/images/scene-properties.png</file>
         <file alias="scene-select-region.png">../resources_source/images/scene-select-region.png</file>

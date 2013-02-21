@@ -34,8 +34,6 @@
 #include "sceneedge.h"
 #include "scenelabel.h"
 
-#include "particle/particle_tracing.h"
-
 #include "logview.h"
 
 #include "hermes2d/module.h"
@@ -286,69 +284,6 @@ void PostHermes::processRangeVector()
     }
 }
 
-void PostHermes::processParticleTracing()
-{
-    if (Agros2D::problem()->isSolved() && Agros2D::problem()->configView()->showParticleView)
-    {
-        Agros2D::log()->printMessage(tr("Post View"), tr("Particle view"));
-
-        // clear lists
-        foreach (QList<Point3> list, m_particleTracingPositionsList)
-            list.clear();
-        m_particleTracingPositionsList.clear();
-
-        foreach (QList<Point3> list, m_particleTracingVelocitiesList)
-            list.clear();
-        m_particleTracingVelocitiesList.clear();
-
-        foreach (QList<double> list, m_particleTracingTimesList)
-            list.clear();
-        m_particleTracingTimesList.clear();
-
-        m_particleTracingVelocityMin =  numeric_limits<double>::max();
-        m_particleTracingVelocityMax = -numeric_limits<double>::max();
-
-        for (int k = 0; k < Agros2D::problem()->configView()->particleNumberOfParticles; k++)
-        {
-            // position and velocity cache
-            ParticleTracing particleTracing;
-            try
-            {
-                particleTracing.computeTrajectoryParticle(k > 0);
-            }
-            catch (AgrosException& e)
-            {
-                Agros2D::log()->printWarning("Particle tracing", QString("Particle tracing failed, ").append(e.what()));
-                m_particleTracingVelocityMin = 0.0;
-                m_particleTracingVelocityMax = 0.0;
-
-                return;
-            }
-            catch (...)
-            {
-                Agros2D::log()->printWarning("Particle tracing", "Catched unknown exception in particle tracing!");
-                m_particleTracingVelocityMin = 0.0;
-                m_particleTracingVelocityMax = 0.0;
-
-                return;
-            }
-
-            m_particleTracingPositionsList.append(particleTracing.positions());
-            m_particleTracingVelocitiesList.append(particleTracing.velocities());
-            m_particleTracingTimesList.append(particleTracing.times());
-
-            // velocity min and max value
-            if (particleTracing.velocityMin() < m_particleTracingVelocityMin) m_particleTracingVelocityMin = particleTracing.velocityMin();
-            if (particleTracing.velocityMax() > m_particleTracingVelocityMax) m_particleTracingVelocityMax = particleTracing.velocityMax();
-
-            Agros2D::log()->printMessage(tr("Particle Tracing"), tr("Particle %1: %2 steps, final time %3 s").
-                                         arg(k + 1).
-                                         arg(particleTracing.times().count()).
-                                         arg(particleTracing.times().last()));
-        }
-    }
-}
-
 void PostHermes::refresh()
 {
     clear();
@@ -398,7 +333,6 @@ void PostHermes::processSolved()
     processRangeContour();
     processRangeScalar();
     processRangeVector();
-    processParticleTracing();
 
     // restore settings
     Hermes::Hermes2D::Hermes2DApi.set_integral_param_value(Hermes::Hermes2D::numThreads, Agros2D::configComputer()->numberOfThreads);
@@ -772,96 +706,6 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
             arg(Agros2D::problem()->configView()->scalarVariable != "" ? localVariable.unit() : "");
 
     printPostAt(scaleLeft + scaleSize.x / 2.0 - m_fontPost->glyphs[GLYPH_M].width * str.count() / 2.0,
-                scaleBorder.y + scaleSize.y - 20.0,
-                str);
-}
-
-void SceneViewPostInterface::paintParticleTracingColorBar(double min, double max, bool is2D)
-{
-    if (!Agros2D::problem()->isSolved() || !Agros2D::problem()->configView()->showParticleView) return;
-
-    loadProjectionViewPort();
-
-    glScaled(2.0 / width(), 2.0 / height(), 1.0);
-    glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
-
-    // dimensions
-    int textWidth = m_fontPost->glyphs[GLYPH_M].width * (QString::number(-1.0, '+e', Agros2D::problem()->configView()->scalarDecimalPlace).length() + 1);
-    int textHeight = m_fontPost->height;
-    Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // contextHeight() - 20.0
-    Point scaleBorder = Point(10.0, (Agros2D::problem()->configView()->showRulers) ? 1.8 * textHeight : 10.0);
-    double scaleLeft = (width()
-                        - (((Agros2D::problem()->configView()->showParticleView && Agros2D::problem()->configView()->showScalarView && is2D) ? scaleSize.x : 0.0) + 45.0 + textWidth));
-    int numTicks = 11;
-
-    // blended rectangle
-    drawBlend(Point(scaleLeft, scaleBorder.y), Point(scaleLeft + scaleSize.x - scaleBorder.x, scaleBorder.y + scaleSize.y),
-              0.91, 0.91, 0.91);
-
-    glDisable(GL_DEPTH_TEST);
-    glEnable(GL_POLYGON_OFFSET_FILL);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-    // palette border
-    glColor3d(0.0, 0.0, 0.0);
-    glBegin(GL_QUADS);
-    glVertex2d(scaleLeft + 30.0, scaleBorder.y + scaleSize.y - 50.0);
-    glVertex2d(scaleLeft + 10.0, scaleBorder.y + scaleSize.y - 50.0);
-    glVertex2d(scaleLeft + 10.0, scaleBorder.y + 10.0);
-    glVertex2d(scaleLeft + 30.0, scaleBorder.y + 10.0);
-    glEnd();
-
-    glDisable(GL_POLYGON_OFFSET_FILL);
-
-    // palette
-    glBegin(GL_QUADS);
-    glColor3d(0.0, 0.0, 0.0);
-    glVertex2d(scaleLeft + 28.0, scaleBorder.y + scaleSize.y - 52.0);
-    glVertex2d(scaleLeft + 12.0, scaleBorder.y + scaleSize.y - 52.0);
-    glColor3d(0.8, 0.8, 0.8);
-    glVertex2d(scaleLeft + 12.0, scaleBorder.y + 12.0);
-    glVertex2d(scaleLeft + 28.0, scaleBorder.y + 12.0);
-    glEnd();
-
-    // ticks
-    glColor3d(0.0, 0.0, 0.0);
-    glLineWidth(1.0);
-    glBegin(GL_LINES);
-    for (int i = 1; i < numTicks; i++)
-    {
-        double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
-
-        glVertex2d(scaleLeft + 10.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
-        glVertex2d(scaleLeft + 15.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
-        glVertex2d(scaleLeft + 25.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
-        glVertex2d(scaleLeft + 30.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
-    }
-    glEnd();
-
-    // line
-    glLineWidth(1.0);
-    glBegin(GL_LINES);
-    glVertex2d(scaleLeft + 5.0, scaleBorder.y + scaleSize.y - 31.0);
-    glVertex2d(scaleLeft + scaleSize.x - 15.0, scaleBorder.y + scaleSize.y - 31.0);
-    glEnd();
-
-    // labels
-    for (int i = 1; i < numTicks+1; i++)
-    {
-        double value = min + (double) (i-1) / (numTicks-1) * (max - min);
-
-        if (fabs(value) < EPS_ZERO) value = 0.0;
-        double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
-
-        printPostAt(scaleLeft + 33.0 + ((value >= 0.0) ? m_fontPost->glyphs[GLYPH_M].width : 0.0),
-                    scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
-                    QString::number(value, '+e', Agros2D::problem()->configView()->scalarDecimalPlace));
-    }
-
-    // variable
-    QString str = QString("%1 (m/s)").arg(tr("Vel."));
-
-    printPostAt(scaleLeft + scaleSize.x / 2.0 - m_fontPost->glyphs[GLYPH_M].width  * str.count() / 2.0,
                 scaleBorder.y + scaleSize.y - 20.0,
                 str);
 }

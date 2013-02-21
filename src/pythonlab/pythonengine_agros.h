@@ -34,6 +34,7 @@ class SceneViewPreprocessor;
 class SceneViewMesh;
 class SceneViewPost2D;
 class SceneViewPost3D;
+class SceneViewParticleTracing;
 class PostHermes;
 
 class AGROS_API PythonEngineAgros : public PythonEngine
@@ -51,6 +52,8 @@ public:
     inline SceneViewPost2D *sceneViewPost2D() {assert(m_sceneViewPost2D); return m_sceneViewPost2D; }
     inline void setSceneViewPost3D(SceneViewPost3D *sceneViewPost3D) { assert(sceneViewPost3D); m_sceneViewPost3D = sceneViewPost3D; }
     inline SceneViewPost3D *sceneViewPost3D() { assert(m_sceneViewPost3D); return m_sceneViewPost3D; }
+    inline void setSceneViewParticleTracing(SceneViewParticleTracing *sceneViewParticleTracing) { assert(sceneViewParticleTracing); m_sceneViewParticleTracing = sceneViewParticleTracing; }
+    inline SceneViewParticleTracing *sceneViewParticleTracing() { assert(m_sceneViewParticleTracing); return m_sceneViewParticleTracing; }
     inline void setPostHermes(PostHermes *postHermes) { assert(postHermes); m_postHermes = postHermes; }
     inline PostHermes *postHermes() { assert(m_postHermes); return m_postHermes; }
 
@@ -64,6 +67,7 @@ private:
     SceneViewMesh *m_sceneViewMesh;
     SceneViewPost2D *m_sceneViewPost2D;
     SceneViewPost3D *m_sceneViewPost3D;
+    SceneViewParticleTracing *m_sceneViewParticleTracing;
 
     PostHermes *m_postHermes;
 };

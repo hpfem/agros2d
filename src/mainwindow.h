@@ -28,9 +28,11 @@ class SceneViewPost2D;
 class SceneViewPost3D;
 class SceneViewPreprocessor;
 class SceneViewMesh;
+class SceneViewParticleTracing;
 class InfoWidget;
 class SettingsWidget;
 class ProblemWidget;
+class ParticleTracingWidget;
 class ResultsView;
 class VolumeIntegralValueView;
 class SurfaceIntegralValueView;
@@ -201,6 +203,7 @@ private:
     SceneViewWidget *sceneViewMeshWidget;
     SceneViewWidget *sceneViewPost2DWidget;
     SceneViewWidget *sceneViewPost3DWidget;
+    SceneViewWidget *sceneViewPostParticleTracingWidget;
     SceneViewWidget *sceneViewBlankWidget;
     SceneViewWidget *sceneViewChartWidget;
 
@@ -212,6 +215,7 @@ private:
     SceneViewMesh *sceneViewMesh;
     SceneViewPost2D *sceneViewPost2D;
     SceneViewPost3D *sceneViewPost3D;
+    SceneViewParticleTracing *sceneViewParticleTracing;
     QWidget *sceneViewBlank;
     ChartWidget *sceneChart;
 
@@ -219,6 +223,7 @@ private:
     QStackedLayout *tabControlsLayout;
     PreprocessorWidget *preprocessorWidget;
     PostprocessorWidget *postprocessorWidget;
+    ParticleTracingWidget *particleTracingWidget;
     SettingsWidget *settingsWidget;
     ProblemWidget *problemWidget;
 

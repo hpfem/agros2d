@@ -225,7 +225,6 @@ public:
     bool paletteFilter;
 
     // particle tracing
-    bool showParticleView;
     bool particleIncludeRelativisticCorrection;
     double particleMass;
     double particleConstant;

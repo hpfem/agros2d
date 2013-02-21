@@ -84,13 +84,11 @@ void PostprocessorWidget::loadBasic()
     radPost3DScalarField3D->setChecked(Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3D);
     radPost3DScalarField3DSolid->setChecked(Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3DSolid);
     radPost3DModel->setChecked(Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_Model);
-    radPost3DParticleTracing->setChecked(Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ParticleTracing);
     doPostprocessorGroupClicked(butPost3DGroup->checkedButton());
 
     chkShowPost2DContourView->setChecked(Agros2D::problem()->configView()->showContourView);
     chkShowPost2DVectorView->setChecked(Agros2D::problem()->configView()->showVectorView);
     chkShowPost2DScalarView->setChecked(Agros2D::problem()->configView()->showScalarView);
-    chkShowPost2DParticleView->setChecked(Agros2D::problem()->configView()->showParticleView);
 
     // contour field
     cmbPost2DContourVariable->setCurrentIndex(cmbPost2DContourVariable->findData(Agros2D::problem()->configView()->contourVariable));
@@ -150,44 +148,6 @@ void PostprocessorWidget::loadAdvanced()
     cmbOrderPaletteOrder->setCurrentIndex(cmbOrderPaletteOrder->findData(Agros2D::problem()->configView()->orderPaletteOrderType));
     chkOrderLabel->setChecked(Agros2D::problem()->configView()->orderLabel);
 
-    // particle tracing
-    chkParticleIncludeRelativisticCorrection->setChecked(Agros2D::problem()->configView()->particleIncludeRelativisticCorrection);
-    txtParticleNumberOfParticles->setValue(Agros2D::problem()->configView()->particleNumberOfParticles);
-    txtParticleStartingRadius->setValue(Agros2D::problem()->configView()->particleStartingRadius);
-    txtParticleMass->setValue(Agros2D::problem()->configView()->particleMass);
-    txtParticleConstant->setValue(Agros2D::problem()->configView()->particleConstant);
-    txtParticlePointX->setValue(Agros2D::problem()->configView()->particleStart.x);
-    txtParticlePointY->setValue(Agros2D::problem()->configView()->particleStart.y);
-    txtParticleVelocityX->setValue(Agros2D::problem()->configView()->particleStartVelocity.x);
-    txtParticleVelocityY->setValue(Agros2D::problem()->configView()->particleStartVelocity.y);
-    chkParticleReflectOnDifferentMaterial->setChecked(Agros2D::problem()->configView()->particleReflectOnDifferentMaterial);
-    chkParticleReflectOnBoundary->setChecked(Agros2D::problem()->configView()->particleReflectOnBoundary);
-    txtParticleCoefficientOfRestitution->setValue(Agros2D::problem()->configView()->particleCoefficientOfRestitution);
-    txtParticleCustomForceX->setValue(Agros2D::problem()->configView()->particleCustomForce.x);
-    txtParticleCustomForceY->setValue(Agros2D::problem()->configView()->particleCustomForce.y);
-    txtParticleCustomForceZ->setValue(Agros2D::problem()->configView()->particleCustomForce.z);
-    txtParticleMaximumRelativeError->setValue(Agros2D::problem()->configView()->particleMaximumRelativeError);
-    txtParticleMinimumStep->setValue(Agros2D::problem()->configView()->particleMinimumStep);
-    txtParticleMaximumNumberOfSteps->setValue(Agros2D::problem()->configView()->particleMaximumNumberOfSteps);
-    chkParticleColorByVelocity->setChecked(Agros2D::problem()->configView()->particleColorByVelocity);
-    chkParticleShowPoints->setChecked(Agros2D::problem()->configView()->particleShowPoints);
-    txtParticleDragDensity->setValue(Agros2D::problem()->configView()->particleDragDensity);
-    txtParticleDragReferenceArea->setValue(Agros2D::problem()->configView()->particleDragReferenceArea);
-    txtParticleDragCoefficient->setValue(Agros2D::problem()->configView()->particleDragCoefficient);
-
-    lblParticlePointX->setText(QString("%1 (m):").arg(Agros2D::problem()->config()->labelX()));
-    lblParticlePointY->setText(QString("%1 (m):").arg(Agros2D::problem()->config()->labelY()));
-    lblParticleVelocityX->setText(QString("%1 (m/s):").arg(Agros2D::problem()->config()->labelX()));
-    lblParticleVelocityY->setText(QString("%1 (m/s):").arg(Agros2D::problem()->config()->labelY()));
-    lblParticleCustomForceX->setText(QString("%1 (N):").arg(Agros2D::problem()->config()->labelX()));
-    lblParticleCustomForceY->setText(QString("%1 (N):").arg(Agros2D::problem()->config()->labelY()));
-    lblParticleCustomForceZ->setText(QString("%1 (N):").arg(Agros2D::problem()->config()->labelZ()));
-
-    if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
-        lblParticleMotionEquations->setText(QString("<i>x</i>\" = <i>F</i><sub>x</sub> / <i>m</i>, &nbsp; <i>y</i>\" = <i>F</i><sub>y</sub> / <i>m</i>, &nbsp; <i>z</i>\" = <i>F</i><sub>z</sub> / <i>m</i>"));
-    else
-        lblParticleMotionEquations->setText(QString("<i>r</i>\" = <i>F</i><sub>r</sub> / <i>m</i> + <i>r</i> (<i>&phi;</i>')<sup>2</sup>, &nbsp; <i>z</i>\" = <i>F</i><sub>z</sub> / <i>m</i>, &nbsp; <i>&phi;</i>\" = <i>F</i><sub>&phi;</sub> / <i>m</i> - 2<i>r</i> <i>r</i>' <i>&phi;</i>' / <i>r</i>"));
-
     // advanced
     // scalar field
     chkScalarFieldRangeLog->setChecked(Agros2D::problem()->configView()->scalarRangeLog);
@@ -232,12 +192,10 @@ void PostprocessorWidget::saveBasic()
     if (radPost3DScalarField3D->isChecked()) Agros2D::problem()->configView()->showPost3D = SceneViewPost3DMode_ScalarView3D;
     if (radPost3DScalarField3DSolid->isChecked()) Agros2D::problem()->configView()->showPost3D = SceneViewPost3DMode_ScalarView3DSolid;
     if (radPost3DModel->isChecked()) Agros2D::problem()->configView()->showPost3D = SceneViewPost3DMode_Model;
-    if (radPost3DParticleTracing->isChecked()) Agros2D::problem()->configView()->showPost3D = SceneViewPost3DMode_ParticleTracing;
 
     Agros2D::problem()->configView()->showContourView = chkShowPost2DContourView->isChecked();
     Agros2D::problem()->configView()->showScalarView = chkShowPost2DScalarView->isChecked();
     Agros2D::problem()->configView()->showVectorView = chkShowPost2DVectorView->isChecked();
-    Agros2D::problem()->configView()->showParticleView = chkShowPost2DParticleView->isChecked();
 
     // contour field
     Agros2D::problem()->configView()->contourVariable = cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()).toString();
@@ -279,31 +237,6 @@ void PostprocessorWidget::saveAdvanced()
     Agros2D::problem()->configView()->orderPaletteOrderType = (PaletteOrderType) cmbOrderPaletteOrder->itemData(cmbOrderPaletteOrder->currentIndex()).toInt();
     Agros2D::problem()->configView()->orderLabel = chkOrderLabel->isChecked();
 
-    // particle tracing
-    Agros2D::problem()->configView()->particleIncludeRelativisticCorrection = chkParticleIncludeRelativisticCorrection->isChecked();
-    Agros2D::problem()->configView()->particleNumberOfParticles = txtParticleNumberOfParticles->value();
-    Agros2D::problem()->configView()->particleStartingRadius = txtParticleStartingRadius->value();
-    Agros2D::problem()->configView()->particleMass = txtParticleMass->value();
-    Agros2D::problem()->configView()->particleConstant = txtParticleConstant->value();
-    Agros2D::problem()->configView()->particleStart.x = txtParticlePointX->value();
-    Agros2D::problem()->configView()->particleStart.y = txtParticlePointY->value();
-    Agros2D::problem()->configView()->particleStartVelocity.x = txtParticleVelocityX->value();
-    Agros2D::problem()->configView()->particleStartVelocity.y = txtParticleVelocityY->value();
-    Agros2D::problem()->configView()->particleReflectOnDifferentMaterial = chkParticleReflectOnDifferentMaterial->isChecked();
-    Agros2D::problem()->configView()->particleReflectOnBoundary = chkParticleReflectOnBoundary->isChecked();
-    Agros2D::problem()->configView()->particleCoefficientOfRestitution = txtParticleCoefficientOfRestitution->value();
-    Agros2D::problem()->configView()->particleCustomForce.x = txtParticleCustomForceX->value();
-    Agros2D::problem()->configView()->particleCustomForce.y = txtParticleCustomForceY->value();
-    Agros2D::problem()->configView()->particleCustomForce.z = txtParticleCustomForceZ->value();
-    Agros2D::problem()->configView()->particleMaximumRelativeError = txtParticleMaximumRelativeError->value();
-    Agros2D::problem()->configView()->particleMinimumStep = txtParticleMinimumStep->value();
-    Agros2D::problem()->configView()->particleMaximumNumberOfSteps = txtParticleMaximumNumberOfSteps->value();
-    Agros2D::problem()->configView()->particleColorByVelocity = chkParticleColorByVelocity->isChecked();
-    Agros2D::problem()->configView()->particleShowPoints = chkParticleShowPoints->isChecked();
-    Agros2D::problem()->configView()->particleDragDensity = txtParticleDragDensity->value();
-    Agros2D::problem()->configView()->particleDragCoefficient = txtParticleDragCoefficient->value();
-    Agros2D::problem()->configView()->particleDragReferenceArea = txtParticleDragReferenceArea->value();
-
     // scalar view
     Agros2D::problem()->configView()->scalarRangeLog = chkScalarFieldRangeLog->isChecked();
     Agros2D::problem()->configView()->scalarRangeBase = txtScalarFieldRangeBase->text().toDouble();
@@ -343,7 +276,6 @@ void PostprocessorWidget::createControls()
     groupPostScalarAdvanced->setVisible(false);
     groupPostContourAdvanced->setVisible(false);
     groupPostVectorAdvanced->setVisible(false);
-    groupPostParticalTracingAdvanced->setVisible(false);
     groupPostSolidAdvanced->setVisible(false);
     groupPostChart->setVisible(false);
 
@@ -412,14 +344,11 @@ QWidget *PostprocessorWidget::post2DWidget()
     connect(chkShowPost2DVectorView, SIGNAL(clicked()), this, SLOT(refresh()));
     chkShowPost2DScalarView = new QCheckBox(tr("Scalar view"));
     connect(chkShowPost2DScalarView, SIGNAL(clicked()), this, SLOT(refresh()));
-    chkShowPost2DParticleView = new QCheckBox(tr("Particle tracing"));
-    connect(chkShowPost2DParticleView, SIGNAL(clicked()), this, SLOT(refresh()));
 
     QGridLayout *layoutPost2D = new QGridLayout();
     layoutPost2D->addWidget(chkShowPost2DScalarView, 0, 0);
     layoutPost2D->addWidget(chkShowPost2DContourView, 1, 0);
     layoutPost2D->addWidget(chkShowPost2DVectorView, 2, 0);
-    layoutPost2D->addWidget(chkShowPost2DParticleView, 0, 1);
 
     QHBoxLayout *layoutShowPost2D = new QHBoxLayout();
     layoutShowPost2D->addLayout(layoutPost2D);
@@ -504,22 +433,6 @@ CollapsableGroupBoxButton *PostprocessorWidget::postVectorWidget()
     return grpVectorField;
 }
 
-CollapsableGroupBoxButton *PostprocessorWidget::postParticalTracingWidget()
-{
-    // particle tracing
-    groupPostParticalTracingAdvanced = postParticalTracingAdvancedWidget();
-
-    QVBoxLayout *layoutParticleTracing = new QVBoxLayout();
-    layoutParticleTracing->addWidget(groupPostParticalTracingAdvanced);
-
-    CollapsableGroupBoxButton *grpParticalTracing = new CollapsableGroupBoxButton(tr("Particle tracing"));
-    connect(grpParticalTracing, SIGNAL(collapseEvent(bool)), this, SLOT(doParticleFieldExpandCollapse(bool)));
-    grpParticalTracing->setCollapsed(true);
-    grpParticalTracing->setLayout(layoutParticleTracing);
-
-    return grpParticalTracing;
-}
-
 CollapsableGroupBoxButton *PostprocessorWidget::postSolidWidget()
 {
     // solid view
@@ -542,22 +455,19 @@ QWidget *PostprocessorWidget::post3DWidget()
     radPost3DNone = new QRadioButton(tr("None"), this);
     radPost3DScalarField3D = new QRadioButton(tr("Scalar view"), this);
     radPost3DScalarField3DSolid = new QRadioButton(tr("Scalar view solid"), this);
-    radPost3DParticleTracing = new QRadioButton(tr("Particle tracing"), this);
     radPost3DModel = new QRadioButton("Model", this);
 
     butPost3DGroup = new QButtonGroup(this);
     butPost3DGroup->addButton(radPost3DNone);
     butPost3DGroup->addButton(radPost3DScalarField3D);
     butPost3DGroup->addButton(radPost3DScalarField3DSolid);
-    butPost3DGroup->addButton(radPost3DParticleTracing);
     butPost3DGroup->addButton(radPost3DModel);
     connect(butPost3DGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(doPostprocessorGroupClicked(QAbstractButton*)));
 
     QGridLayout *layoutPost3D = new QGridLayout();
     layoutPost3D->addWidget(radPost3DNone, 0, 0);
-    layoutPost3D->addWidget(radPost3DScalarField3D, 1, 0);
-    layoutPost3D->addWidget(radPost3DScalarField3DSolid, 2, 0);
-    layoutPost3D->addWidget(radPost3DParticleTracing, 1, 1);
+    layoutPost3D->addWidget(radPost3DScalarField3D, 0, 1);
+    layoutPost3D->addWidget(radPost3DScalarField3DSolid, 1, 1);
     layoutPost3D->addWidget(radPost3DModel, 2, 1);
 
     QHBoxLayout *layoutShowPost3D = new QHBoxLayout();
@@ -671,7 +581,6 @@ QWidget *PostprocessorWidget::controlsAdvanced()
     groupPostScalar = postScalarWidget();
     groupPostContour = postContourWidget();
     groupPostVector = postVectorWidget();
-    groupPostParticalTracing = postParticalTracingWidget();
     groupPostSolid = postSolidWidget();
     groupPostChart = postChartWidget();
 
@@ -680,7 +589,6 @@ QWidget *PostprocessorWidget::controlsAdvanced()
     layoutArea->addWidget(groupPostScalar);
     layoutArea->addWidget(groupPostContour);
     layoutArea->addWidget(groupPostVector);
-    layoutArea->addWidget(groupPostParticalTracing);
     layoutArea->addWidget(groupPostSolid);
     layoutArea->addWidget(groupPostChart);
     layoutArea->addStretch(1);
@@ -892,168 +800,6 @@ QWidget *PostprocessorWidget::postChartWidget()
     return widget;
 }
 
-QWidget *PostprocessorWidget::postParticalTracingAdvancedWidget()
-{
-    // particle tracing
-    chkParticleIncludeRelativisticCorrection = new QCheckBox(tr("Relativistic correction"));
-    txtParticleNumberOfParticles = new QSpinBox(this);
-    txtParticleNumberOfParticles->setMinimum(1);
-    txtParticleNumberOfParticles->setMaximum(200);
-    txtParticleStartingRadius = new LineEditDouble();
-    txtParticleMass = new LineEditDouble();
-    txtParticleConstant = new LineEditDouble();
-    lblParticlePointX = new QLabel();
-    lblParticlePointY = new QLabel();
-    txtParticlePointX = new LineEditDouble();
-    txtParticlePointY = new LineEditDouble();
-    lblParticleVelocityX = new QLabel();
-    lblParticleVelocityY = new QLabel();
-    txtParticleVelocityX = new LineEditDouble();
-    txtParticleVelocityY = new LineEditDouble();
-    lblParticleCustomForceX = new QLabel();
-    lblParticleCustomForceY = new QLabel();
-    lblParticleCustomForceZ = new QLabel();
-    txtParticleCustomForceX = new LineEditDouble();
-    txtParticleCustomForceY = new LineEditDouble();
-    txtParticleCustomForceZ = new LineEditDouble();
-    txtParticleMaximumRelativeError = new LineEditDouble();
-    txtParticleMinimumStep = new LineEditDouble();
-    chkParticleReflectOnDifferentMaterial = new QCheckBox(tr("Reflection on different material"));
-    chkParticleReflectOnBoundary = new QCheckBox(tr("Reflection on boundary"));
-    txtParticleCoefficientOfRestitution = new LineEditDouble(0.0, true);
-    txtParticleCoefficientOfRestitution->setBottom(0.0);
-    txtParticleCoefficientOfRestitution->setTop(1.0);
-    chkParticleColorByVelocity = new QCheckBox(tr("Line color is controlled by velocity"));
-    chkParticleShowPoints = new QCheckBox(tr("Show points"));
-    txtParticleMaximumNumberOfSteps = new QSpinBox();
-    txtParticleMaximumNumberOfSteps->setMinimum(10);
-    txtParticleMaximumNumberOfSteps->setMaximum(100000);
-    txtParticleMaximumNumberOfSteps->setSingleStep(10);
-    txtParticleDragDensity = new LineEditDouble();
-    txtParticleDragCoefficient = new LineEditDouble();
-    txtParticleDragReferenceArea = new LineEditDouble();
-    lblParticleMotionEquations = new QLabel();
-
-    // QPushButton *btnParticleDefault = new QPushButton(tr("Default"));
-    // connect(btnParticleDefault, SIGNAL(clicked()), this, SLOT(doParticleDefault()));
-
-    // Lorentz force
-    QGridLayout *gridLayoutLorentzForce = new QGridLayout();
-    gridLayoutLorentzForce->addWidget(new QLabel(tr("Equation:")), 0, 0);
-    gridLayoutLorentzForce->addWidget(new QLabel(QString("<i><b>F</b></i><sub>L</sub> = <i>Q</i> (<i><b>E</b></i> + <i><b>v</b></i> x <i><b>B</b></i>)")), 0, 1);
-    gridLayoutLorentzForce->addWidget(new QLabel(tr("Charge (C):")), 1, 0);
-    gridLayoutLorentzForce->addWidget(txtParticleConstant, 1, 1);
-
-    QGroupBox *grpLorentzForce = new QGroupBox(tr("Lorentz force"));
-    grpLorentzForce->setLayout(gridLayoutLorentzForce);
-
-    // drag force
-    QGridLayout *gridLayoutDragForce = new QGridLayout();
-    gridLayoutDragForce->setColumnMinimumWidth(0, minWidth);
-    gridLayoutDragForce->setColumnStretch(1, 1);
-    gridLayoutDragForce->addWidget(new QLabel(tr("Equation:")), 0, 0);
-    gridLayoutDragForce->addWidget(new QLabel(QString("<i><b>F</b></i><sub>D</sub> = - &frac12; <i>&rho;</i> <i>v</i><sup>2</sup> <i>C</i><sub>D</sub> <i>S</i> &sdot; <i><b>v</b></i><sub>0</sub>")), 0, 1);
-    gridLayoutDragForce->addWidget(new QLabel(tr("Density (kg/m<sup>3</sup>):")), 1, 0);
-    gridLayoutDragForce->addWidget(txtParticleDragDensity, 1, 1);
-    gridLayoutDragForce->addWidget(new QLabel(tr("Reference area (m<sup>2</sup>):")), 2, 0);
-    gridLayoutDragForce->addWidget(txtParticleDragReferenceArea, 2, 1);
-    gridLayoutDragForce->addWidget(new QLabel(tr("Coefficient (-):")), 3, 0);
-    gridLayoutDragForce->addWidget(txtParticleDragCoefficient, 3, 1);
-
-    QGroupBox *grpDragForce = new QGroupBox(tr("Drag force"));
-    grpDragForce->setLayout(gridLayoutDragForce);
-
-    // reflection
-    QGridLayout *gridLayoutReflection = new QGridLayout();
-    gridLayoutReflection->setColumnMinimumWidth(0, minWidth);
-    gridLayoutReflection->setColumnStretch(1, 1);
-    gridLayoutReflection->addWidget(chkParticleReflectOnDifferentMaterial, 0, 0, 1, 2);
-    gridLayoutReflection->addWidget(chkParticleReflectOnBoundary, 1, 0, 1, 2);
-    gridLayoutReflection->addWidget(new QLabel(tr("Coefficient of restitution (-):")), 2, 0);
-    gridLayoutReflection->addWidget(txtParticleCoefficientOfRestitution, 2, 1);
-
-    QGroupBox *grpReflection = new QGroupBox(tr("Reflection"));
-    grpReflection->setLayout(gridLayoutReflection);
-
-    // initial particle velocity
-    QGridLayout *gridCustomForce = new QGridLayout();
-    gridCustomForce->addWidget(lblParticleCustomForceX, 0, 0);
-    gridCustomForce->addWidget(txtParticleCustomForceX, 0, 1);
-    gridCustomForce->addWidget(lblParticleCustomForceY, 1, 0);
-    gridCustomForce->addWidget(txtParticleCustomForceY, 1, 1);
-    gridCustomForce->addWidget(lblParticleCustomForceZ, 2, 0);
-    gridCustomForce->addWidget(txtParticleCustomForceZ, 2, 1);
-
-    QGroupBox *grpCustomForce = new QGroupBox(tr("Custom force"));
-    grpCustomForce->setLayout(gridCustomForce);
-
-    // initial particle position
-    QGridLayout *gridLayoutInitialPosition = new QGridLayout();
-    gridLayoutInitialPosition->addWidget(lblParticlePointX, 0, 0);
-    gridLayoutInitialPosition->addWidget(txtParticlePointX, 0, 1);
-    gridLayoutInitialPosition->addWidget(lblParticlePointY, 1, 0);
-    gridLayoutInitialPosition->addWidget(txtParticlePointY, 1, 1);
-
-    QGroupBox *grpInitialPosition = new QGroupBox(tr("Initial particle position"));
-    grpInitialPosition->setLayout(gridLayoutInitialPosition);
-
-    // initial particle velocity
-    QGridLayout *gridLayoutInitialVelocity = new QGridLayout();
-    gridLayoutInitialVelocity->addWidget(lblParticleVelocityX, 0, 0);
-    gridLayoutInitialVelocity->addWidget(txtParticleVelocityX, 0, 1);
-    gridLayoutInitialVelocity->addWidget(lblParticleVelocityY, 1, 0);
-    gridLayoutInitialVelocity->addWidget(txtParticleVelocityY, 1, 1);
-
-    QGroupBox *grpInitialVelocity = new QGroupBox(tr("Initial particle velocity"));
-    grpInitialVelocity->setLayout(gridLayoutInitialVelocity);
-
-    // solver
-    QGridLayout *gridLayoutSolver = new QGridLayout();
-    gridLayoutSolver->addWidget(chkParticleIncludeRelativisticCorrection, 0, 0);
-    gridLayoutSolver->addWidget(new QLabel(QString("<i>m</i><sub>p</sub> = m / (1 - v<sup>2</sup>/c<sup>2</sup>)<sup>1/2</sup>")), 0, 1);
-    gridLayoutSolver->addWidget(new QLabel(tr("Maximum relative error (%):")), 1, 0);
-    gridLayoutSolver->addWidget(txtParticleMaximumRelativeError, 1, 1);
-    gridLayoutSolver->addWidget(new QLabel(tr("Minimum step (m):")), 2, 0);
-    gridLayoutSolver->addWidget(txtParticleMinimumStep, 2, 1);
-    gridLayoutSolver->addWidget(new QLabel(tr("Maximum number of steps:")), 3, 0);
-    gridLayoutSolver->addWidget(txtParticleMaximumNumberOfSteps, 3, 1);
-
-    QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
-    grpSolver->setLayout(gridLayoutSolver);
-
-    // settings
-    QGridLayout *gridLayoutSettings = new QGridLayout();
-    gridLayoutSettings->addWidget(chkParticleColorByVelocity, 2, 0, 1, 2);
-    gridLayoutSettings->addWidget(chkParticleShowPoints, 3, 0, 1, 2);
-
-    QGroupBox *grpSettings = new QGroupBox(tr("Settings"));
-    grpSettings->setLayout(gridLayoutSettings);
-
-    QGridLayout *layoutParticle = new QGridLayout();
-    layoutParticle->setMargin(0);
-    layoutParticle->addWidget(new QLabel(tr("Equations:")), 0, 0);
-    layoutParticle->addWidget(lblParticleMotionEquations, 1, 0, 1, 2);
-    layoutParticle->addWidget(new QLabel(tr("Number of particles:")), 2, 0);
-    layoutParticle->addWidget(txtParticleNumberOfParticles, 2, 1);
-    layoutParticle->addWidget(new QLabel(tr("Particles dispersion (m):")), 3, 0);
-    layoutParticle->addWidget(txtParticleStartingRadius, 3, 1);
-    layoutParticle->addWidget(new QLabel(tr("Mass (kg):")), 4, 0);
-    layoutParticle->addWidget(txtParticleMass, 4, 1);
-    layoutParticle->addWidget(grpInitialPosition, 5, 0, 1, 2);
-    layoutParticle->addWidget(grpInitialVelocity, 6, 0, 1, 2);
-    layoutParticle->addWidget(grpLorentzForce, 7, 0, 1, 2);
-    layoutParticle->addWidget(grpDragForce, 8, 0, 1, 2);
-    layoutParticle->addWidget(grpCustomForce, 9, 0, 1, 2);
-    layoutParticle->addWidget(grpReflection, 10, 0, 1, 2);
-    layoutParticle->addWidget(grpSolver, 11, 0, 1, 2);
-    layoutParticle->addWidget(grpSettings, 12, 0, 1, 2);
-
-    QWidget *particleWidget = new QWidget();
-    particleWidget->setLayout(layoutParticle);
-
-    return particleWidget;
-}
-
 void PostprocessorWidget::doCalculationFinished()
 {
     QString activeFieldName = Agros2D::scene()->activeViewField()->fieldId();
@@ -1184,9 +930,6 @@ void PostprocessorWidget::refresh()
         // vector
         groupPostVector->setVisible(false);
         groupPostVectorAdvanced->setVisible(false);
-        // particle tracing
-        groupPostParticalTracing->setVisible(false);
-        groupPostParticalTracingAdvanced->setVisible(false);
         // solid
         groupPostSolid->setVisible(false);
         groupPostSolidAdvanced->setVisible(false);
@@ -1202,7 +945,6 @@ void PostprocessorWidget::refresh()
         chkShowPost2DContourView->setEnabled(Agros2D::problem()->isSolved() && (cmbPost2DContourVariable->count() > 0));
         chkShowPost2DScalarView->setEnabled(Agros2D::problem()->isSolved() && (cmbPostScalarFieldVariable->count() > 0));
         chkShowPost2DVectorView->setEnabled(Agros2D::problem()->isSolved() && (cmbPost2DVectorFieldVariable->count() > 0));
-        chkShowPost2DParticleView->setEnabled(Agros2D::problem()->isSolved());
 
         // mesh
         groupMeshOrder->setVisible(false);
@@ -1218,10 +960,6 @@ void PostprocessorWidget::refresh()
         // vector view
         groupPostVector->setVisible(chkShowPost2DVectorView->isEnabled() && chkShowPost2DVectorView->isChecked());
         groupPostVectorAdvanced->setVisible(chkShowPost2DVectorView->isEnabled() && chkShowPost2DVectorView->isChecked() && !groupPostVector->isCollapsed());
-
-        // partical tracing
-        groupPostParticalTracing->setVisible(chkShowPost2DParticleView->isEnabled() && chkShowPost2DParticleView->isChecked());
-        groupPostParticalTracingAdvanced->setVisible(chkShowPost2DParticleView->isEnabled() && chkShowPost2DParticleView->isChecked() && !groupPostParticalTracing->isCollapsed());
 
         // solid
         groupPostSolid->setVisible(false);
@@ -1244,7 +982,6 @@ void PostprocessorWidget::refresh()
         radPost3DScalarField3D->setEnabled(Agros2D::problem()->isSolved());
         radPost3DScalarField3DSolid->setEnabled(Agros2D::problem()->isSolved());
         radPost3DModel->setEnabled(Agros2D::problem()->isSolved());
-        radPost3DParticleTracing->setEnabled(Agros2D::problem()->isSolved());
 
         // scalar
         groupPostScalar->setVisible((radPost3DScalarField3D->isEnabled() && radPost3DScalarField3D->isChecked())
@@ -1260,10 +997,6 @@ void PostprocessorWidget::refresh()
         // vector
         groupPostVector->setVisible(false);
         groupPostVectorAdvanced->setVisible(false);
-
-        // partical tracing
-        groupPostParticalTracing->setVisible(radPost3DParticleTracing->isEnabled() && radPost3DParticleTracing->isChecked());
-        groupPostParticalTracingAdvanced->setVisible(radPost3DParticleTracing->isEnabled() && radPost3DParticleTracing->isChecked() && !groupPostParticalTracing->isCollapsed());
 
         // solid
         groupPostSolid->setVisible((radPost3DScalarField3DSolid->isEnabled() && radPost3DScalarField3DSolid->isChecked())
@@ -1291,9 +1024,6 @@ void PostprocessorWidget::refresh()
         // vector
         groupPostVector->setVisible(false);
         groupPostVectorAdvanced->setVisible(false);
-        // particle tracing
-        groupPostParticalTracing->setVisible(false);
-        groupPostParticalTracingAdvanced->setVisible(false);
         // solid
         groupPostSolid->setVisible(false);
         groupPostSolidAdvanced->setVisible(false);
@@ -1430,11 +1160,6 @@ void PostprocessorWidget::doSolidExpandCollapse(bool collapsed)
     groupPostSolidAdvanced->setVisible(!collapsed);
 }
 
-void PostprocessorWidget::doParticleFieldExpandCollapse(bool collapsed)
-{
-    groupPostParticalTracingAdvanced->setVisible(!collapsed);
-}
-
 void PostprocessorWidget::doScalarFieldDefault()
 {
     cmbPalette->setCurrentIndex(cmbPalette->findData((PaletteType) PALETTETYPE));
@@ -1463,33 +1188,6 @@ void PostprocessorWidget::doOrderDefault()
     cmbOrderPaletteOrder->setCurrentIndex(cmbOrderPaletteOrder->findData((PaletteOrderType) ORDERPALETTEORDERTYPE));
     chkShowOrderColorbar->setChecked(SHOWORDERCOLORBAR);
     chkOrderLabel->setChecked(ORDERLABEL);
-}
-
-void PostprocessorWidget::doParticleDefault()
-{
-    txtParticleNumberOfParticles->setValue(PARTICLENUMBEROFPARTICLES);
-    txtParticleStartingRadius->setValue(PARTICLESTARTINGRADIUS);
-    chkParticleIncludeRelativisticCorrection->setChecked(PARTICLEINCLUDERELATIVISTICCORRECTION);
-    txtParticleMass->setValue(PARTICLEMASS);
-    txtParticleConstant->setValue(PARTICLECONSTANT);
-    txtParticlePointX->setValue(PARTICLESTARTX);
-    txtParticlePointY->setValue(PARTICLESTARTY);
-    txtParticleVelocityX->setValue(PARTICLESTARTVELOCITYX);
-    txtParticleVelocityY->setValue(PARTICLESTARTVELOCITYY);
-    chkParticleReflectOnDifferentMaterial->setChecked(PARTICLEREFLECTONDIFFERENTMATERIAL);
-    chkParticleReflectOnBoundary->setChecked(PARTICLEREFLECTONBOUNDARY);
-    txtParticleCoefficientOfRestitution->setValue(PARTICLECOEFFICIENTOFRESTITUTION);
-    txtParticleCustomForceX->setValue(PARTICLECUSTOMFORCEX);
-    txtParticleCustomForceY->setValue(PARTICLECUSTOMFORCEY);
-    txtParticleCustomForceZ->setValue(PARTICLECUSTOMFORCEZ);
-    txtParticleMaximumRelativeError->setValue(PARTICLEMAXIMUMRELATIVEERROR);
-    txtParticleMinimumStep->setValue(PARTICLEMINIMUMSTEP);
-    txtParticleMaximumNumberOfSteps->setValue(PARTICLEMAXIMUMNUMBEROFSTEPS);
-    chkParticleColorByVelocity->setChecked(PARTICLECOLORBYVELOCITY);
-    chkParticleShowPoints->setChecked(PARTICLESHOWPOINTS);
-    txtParticleDragDensity->setValue(PARTICLEDRAGDENSITY);
-    txtParticleDragReferenceArea->setValue(PARTICLEDRAGREFERENCEAREA);
-    txtParticleDragCoefficient->setValue(PARTICLEDRAGCOEFFICIENT);
 }
 
 void PostprocessorWidget::doScalarFieldRangeMinChanged()

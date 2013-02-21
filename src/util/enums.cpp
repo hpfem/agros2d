@@ -170,7 +170,6 @@ void initLists()
     sceneViewPost3DModeList.insert(SceneViewPost3DMode_None, "none");
     sceneViewPost3DModeList.insert(SceneViewPost3DMode_ScalarView3D, "scalar");
     sceneViewPost3DModeList.insert(SceneViewPost3DMode_ScalarView3DSolid, "scalarsolid");
-    sceneViewPost3DModeList.insert(SceneViewPost3DMode_ParticleTracing, "particletracing");
     sceneViewPost3DModeList.insert(SceneViewPost3DMode_Model, "model");
 
     // ADAPTIVITYTYPE

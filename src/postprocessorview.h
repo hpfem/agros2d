@@ -68,14 +68,12 @@ private:
     QCheckBox *chkShowPost2DScalarView;
     QCheckBox *chkShowOrderView;
     QCheckBox *chkShowPost2DVectorView;
-    QCheckBox *chkShowPost2DParticleView;
 
     QButtonGroup *butPost3DGroup;
     QRadioButton *radPost3DNone;
     QRadioButton *radPost3DScalarField3D;
     QRadioButton *radPost3DScalarField3DSolid;
     QRadioButton *radPost3DModel;
-    QRadioButton *radPost3DParticleTracing;
 
     // scalar field
     QComboBox *cmbPostScalarFieldVariable;
@@ -128,39 +126,6 @@ private:
     QComboBox *cmbOrderPaletteOrder;
     QCheckBox *chkOrderLabel;
 
-    // particle tracing
-    QCheckBox *chkParticleIncludeRelativisticCorrection;
-    QSpinBox *txtParticleNumberOfParticles;
-    LineEditDouble *txtParticleStartingRadius;
-    LineEditDouble *txtParticleMass;
-    LineEditDouble *txtParticleConstant;
-    LineEditDouble *txtParticlePointX;
-    LineEditDouble *txtParticlePointY;
-    QLabel *lblParticlePointX;
-    QLabel *lblParticlePointY;
-    QLabel *lblParticleVelocityX;
-    QLabel *lblParticleVelocityY;
-    LineEditDouble *txtParticleVelocityX;
-    LineEditDouble *txtParticleVelocityY;
-    QCheckBox *chkParticleReflectOnDifferentMaterial;
-    QCheckBox *chkParticleReflectOnBoundary;
-    LineEditDouble *txtParticleCoefficientOfRestitution;
-    QLabel *lblParticleMotionEquations;
-    QLabel *lblParticleCustomForceX;
-    QLabel *lblParticleCustomForceY;
-    QLabel *lblParticleCustomForceZ;
-    LineEditDouble *txtParticleCustomForceX;
-    LineEditDouble *txtParticleCustomForceY;
-    LineEditDouble *txtParticleCustomForceZ;
-    QCheckBox *chkParticleColorByVelocity;
-    QCheckBox *chkParticleShowPoints;
-    LineEditDouble *txtParticleMaximumRelativeError;
-    LineEditDouble *txtParticleMinimumStep;
-    QSpinBox *txtParticleMaximumNumberOfSteps;
-    LineEditDouble *txtParticleDragDensity;
-    LineEditDouble *txtParticleDragCoefficient;
-    LineEditDouble *txtParticleDragReferenceArea;
-
     // solid view - materials
     QListWidget *lstSolidMaterials;
 
@@ -193,8 +158,6 @@ private:
     QWidget *groupPostContourAdvanced;
     CollapsableGroupBoxButton *groupPostVector;
     QWidget *groupPostVectorAdvanced;
-    CollapsableGroupBoxButton *groupPostParticalTracing;
-    QWidget *groupPostParticalTracingAdvanced;
     CollapsableGroupBoxButton *groupPostSolid;
     QWidget *groupPostSolidAdvanced;
     QWidget *groupPostChart;
@@ -211,8 +174,6 @@ private:
     QWidget *postContourAdvancedWidget();
     CollapsableGroupBoxButton *postVectorWidget();
     QWidget *postVectorAdvancedWidget();
-    CollapsableGroupBoxButton *postParticalTracingWidget();
-    QWidget *postParticalTracingAdvancedWidget();
     CollapsableGroupBoxButton *postSolidWidget();
     QWidget *postPostSolidAdvancedWidget();
     QWidget *postChartWidget();
@@ -241,7 +202,6 @@ private slots:
     void doPaletteFilter(int state);
     void doScalarFieldDefault();
     void doContoursVectorsDefault();
-    void doParticleDefault();
     void doOrderDefault();
     void doScalarFieldLog(int state);
 
@@ -249,7 +209,6 @@ private slots:
     void doContourFieldExpandCollapse(bool collapsed);
     void doVectorFieldExpandCollapse(bool collapsed);
     void doSolidExpandCollapse(bool collapsed);
-    void doParticleFieldExpandCollapse(bool collapsed);       
 };
 
 #endif // SCENEVIEWDIALOG_H

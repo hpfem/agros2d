@@ -104,6 +104,7 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     sceneview_post.cpp \
     sceneview_post2d.cpp \
     sceneview_post3d.cpp \
+    sceneview_particle.cpp \
     meshgenerator.cpp \
     meshgenerator_triangle.cpp \
     meshgenerator_gmsh.cpp \
@@ -200,6 +201,7 @@ HEADERS += util.h \
     sceneview_post.h \
     sceneview_post2d.h \
     sceneview_post3d.h \
+    sceneview_particle.h \
     meshgenerator.h \
     meshgenerator_triangle.h \
     meshgenerator_gmsh.h \

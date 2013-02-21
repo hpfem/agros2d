@@ -218,7 +218,6 @@ void ProblemConfigView::load(QDomElement *config)
     orderLabel = readConfig("View/OrderLabel", ORDERLABEL);
 
     // particle tracing
-    showParticleView = readConfig("View/ShowParticleView", SHOWPARTICLEVIEW);
     particleIncludeRelativisticCorrection = readConfig("View/ParticleIncludeRelativisticCorrection", PARTICLEINCLUDERELATIVISTICCORRECTION);
     particleMass = readConfig("View/ParticleMass", PARTICLEMASS);
     particleConstant = readConfig("View/ParticleConstant", PARTICLECONSTANT);
@@ -380,7 +379,6 @@ void ProblemConfigView::save(QDomElement *config)
     writeConfig("View/OrderLabel", orderLabel);
 
     // particle tracing
-    writeConfig("View/ShowParticleView", showParticleView);
     writeConfig("View/ParticleIncludeRelativisticCorrection", particleIncludeRelativisticCorrection);
     writeConfig("View/ParticleMass", particleMass);
     writeConfig("View/ParticleConstant", particleConstant);

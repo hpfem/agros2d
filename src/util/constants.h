@@ -116,7 +116,6 @@ const PaletteOrderType ORDERPALETTEORDERTYPE = PaletteOrder_Hermes;
 const bool ORDERLABEL = false;
 
 // particle
-const bool SHOWPARTICLEVIEW = false;
 const bool PARTICLEINCLUDERELATIVISTICCORRECTION = true;
 const int PARTICLENUMBEROFPARTICLES = 1;
 const double PARTICLESTARTINGRADIUS = 0;

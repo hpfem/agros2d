@@ -89,11 +89,6 @@ cdef extern from "../../src/pythonlab/pyview.h":
         void setScalarViewRangeMax(double max)
         double getScalarViewRangeMax()
 
-        void setParticleColoredByVelocity(bool colored)
-        bool getParticleColoredByVelocity()
-        void setParticleShowPoints(bool points)
-        bool getParticleShowPoints()
-
     # PyViewPost2D
     cdef cppclass PyViewPost2D:
         void activate()
@@ -307,25 +302,6 @@ cdef class __ViewPost__:
         def __set__(self, range_auto):
             self.thisptr.setScalarViewRangeAuto(range_auto)
 
-    # particle tracing
-    property particle_colored_by_velocity:
-        def __get__(self):
-            return self.thisptr.getParticleColoredByVelocity()
-        def __set__(self, colored):
-            self.thisptr.setParticleColoredByVelocity(colored)
-
-    property particle_show_points:
-        def __get__(self):
-            return self.thisptr.getParticleShowPoints()
-        def __set__(self, points):
-            self.thisptr.setParticleShowPoints(points)
-
-    property scalar_range_min:
-        def __get__(self):
-            return self.thisptr.getScalarViewRangeMin()
-        def __set__(self, min):
-            self.thisptr.setScalarViewRangeMin(min)
-
     property scalar_range_max:
         def __get__(self):
             return self.thisptr.getScalarViewRangeMax()
@@ -406,13 +382,6 @@ cdef class __ViewPost2D__(__ViewPost__):
             return self.thisptr2d.getVectorColor()
         def __set__(self, show):
             self.thisptr2d.setVectorColor(show)
-
-    # particle tracing
-    property particle_tracing:
-        def __get__(self):
-            return self.thisptr2d.getParticleShow()
-        def __set__(self, show):
-            self.thisptr2d.setParticleShow(show)
 
 # ViewPost3D
 cdef class __ViewPost3D__(__ViewPost__):
