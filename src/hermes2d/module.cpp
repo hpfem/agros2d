@@ -640,6 +640,7 @@ Hermes::vector<Hermes::Hermes2D::Mesh *> Module::readMeshFromFile(const QString 
     }
     catch (Hermes::Exceptions::MeshLoadFailureException& e)
     {
+        qDebug() << e.what();
         throw Hermes::Exceptions::MeshLoadFailureException(e.what());
     }
 
