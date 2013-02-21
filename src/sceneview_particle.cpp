@@ -590,7 +590,7 @@ void SceneViewParticleTracing::paintParticleTracing()
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        glColor3d(0.0, 0.0, 0.0);
+        glColor4d(0.0, 0.0, 0.0, 0.8);
         glLineWidth(1.6);
 
         if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
