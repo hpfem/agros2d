@@ -961,6 +961,10 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             {
                 result = ErrorResult(ErrorResultType_Critical, e.what());
             }
+            catch(AgrosPluginException& e)
+            {
+                result = ErrorResult(ErrorResultType_Critical, e.what());
+            }
 
             if (!result.isError())
             {

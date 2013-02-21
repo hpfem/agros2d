@@ -26,6 +26,7 @@
 #include "scenemarker.h"
 #include "module.h"
 #include "plugin_interface.h"
+#include "logview.h"
 
 #include "../../resources_source/classes/module_xml.h"
 
@@ -54,7 +55,15 @@ FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
         m_fieldId = fieldId;
 
     // read plugin
-    m_plugin = Agros2D::loadPlugin(m_fieldId);
+    try{
+        m_plugin = Agros2D::loadPlugin(m_fieldId);
+    }
+    catch (AgrosPluginException &e)
+    {
+        Agros2D::log()->printError("Solver", "Cannot load plugin");
+        throw;
+    }
+
     assert(m_plugin);
 
     // default analysis

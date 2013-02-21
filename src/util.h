@@ -224,6 +224,14 @@ public:
     }
 };
 
+class AgrosPluginException : public AgrosException
+{
+public:
+    AgrosPluginException(const QString &what) : AgrosException(what)
+    {
+    }
+};
+
 struct ScriptResult
 {
     ScriptResult()
