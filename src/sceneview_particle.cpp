@@ -579,16 +579,10 @@ void SceneViewParticleTracing::paintParticleTracing()
             glEnd();
         }
 
-        glDisable(GL_BLEND);
         glDisable(GL_POLYGON_OFFSET_FILL);
 
         // geometry
         glEnable(GL_DEPTH_TEST);
-
-        glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-        glEnable(GL_LINE_SMOOTH);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glColor4d(0.0, 0.0, 0.0, 0.8);
         glLineWidth(1.6);
@@ -714,12 +708,11 @@ void SceneViewParticleTracing::paintParticleTracing()
             positionMax = +1.0;
         }
 
-        glLineWidth(1.0);
-
-        // visualization
+        // particle visualization
         for (int k = 0; k < Agros2D::problem()->configView()->particleNumberOfParticles; k++)
         {
             // starting point
+            /*
             glPointSize(Agros2D::problem()->configView()->nodeSize * 1.2);
             glColor3d(0.0, 0.0, 0.0);
             glBegin(GL_POINTS);
@@ -728,66 +721,98 @@ void SceneViewParticleTracing::paintParticleTracing()
             else
                 glVertex3d(m_positionsList[k][0].x * cos(m_positionsList[k][0].z), m_positionsList[k][0].y, m_positionsList[k][0].x * sin(m_positionsList[k][0].z));
             glEnd();
-
-            // color
-            if (!Agros2D::problem()->configView()->particleColorByVelocity)
-            {
-                if (k == 0)
-                    glColor3d(Agros2D::problem()->configView()->colorSelected.redF(),
-                              Agros2D::problem()->configView()->colorSelected.greenF(),
-                              Agros2D::problem()->configView()->colorSelected.blueF());
-                else
-                    glColor3d(rand() / double(RAND_MAX),
-                              rand() / double(RAND_MAX),
-                              rand() / double(RAND_MAX));
-            }
+            */
 
             // lines
             glLineWidth(3.0);
-            glBegin(GL_LINES);
-            for (int i = 0; i < m_positionsList[k].length() - 1; i++)
+
+            if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
             {
-                if (Agros2D::problem()->configView()->particleColorByVelocity)
-                    glColor3d(1.0 - 0.8 * (m_velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin),
-                              1.0 - 0.8 * (m_velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin),
-                              1.0 - 0.8 * (m_velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin));
+                glColor3d(rand() / double(RAND_MAX),
+                          rand() / double(RAND_MAX),
+                          rand() / double(RAND_MAX));
 
-                if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
+                glBegin(GL_LINES);
+                for (int i = 0; i < m_positionsList[k].length() - 1; i++)
                 {
-                    glVertex3d(m_positionsList[k][i].x, m_positionsList[k][i].y, -depth/2.0 + (m_positionsList[k][i].z - positionMin) * depth/(positionMax - positionMin));
-                    glVertex3d(m_positionsList[k][i+1].x, m_positionsList[k][i+1].y, -depth/2.0 + (m_positionsList[k][i+1].z - positionMin) * depth/(positionMax - positionMin));
-                }
-                else
-                {
-                    glVertex3d(m_positionsList[k][i].x * cos(m_positionsList[k][i].z), m_positionsList[k][i].y, m_positionsList[k][i].x * sin(m_positionsList[k][i].z));
-                    glVertex3d(m_positionsList[k][i+1].x * cos(m_positionsList[k][i+1].z), m_positionsList[k][i+1].y, m_positionsList[k][i+1].x * sin(m_positionsList[k][i+1].z));
-                }
-            }
-            glEnd();
+                    if (Agros2D::problem()->configView()->particleColorByVelocity)
+                        glColor3d(1.0 - 0.8 * (m_velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin),
+                                  1.0 - 0.8 * (m_velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin),
+                                  1.0 - 0.8 * (m_velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin));
 
-            // points
-            if (Agros2D::problem()->configView()->particleShowPoints)
-            {
-                glColor3d(Agros2D::problem()->configView()->colorSelected.redF(),
-                          Agros2D::problem()->configView()->colorSelected.greenF(),
-                          Agros2D::problem()->configView()->colorSelected.blueF());
-
-                glPointSize(Agros2D::problem()->configView()->nodeSize * 3.0/5.0);
-                glBegin(GL_POINTS);
-                for (int i = 0; i < m_positionsList[k].length(); i++)
-                {
-                    if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
-                        glVertex3d(m_positionsList[k][i].x, m_positionsList[k][i].y, -depth/2.0 + (m_positionsList[k][i].z - positionMin) * depth/(positionMax - positionMin));
-                    else
-                        glVertex3d(m_positionsList[k][i].x * cos(m_positionsList[k][i].z), m_positionsList[k][i].y, m_positionsList[k][i].x * sin(m_positionsList[k][i].z));
+                    glVertex3d(m_positionsList[k][i].x,
+                               m_positionsList[k][i].y,
+                               -depth/2.0 + (m_positionsList[k][i].z - positionMin) * depth/(positionMax - positionMin));
+                    glVertex3d(m_positionsList[k][i+1].x,
+                            m_positionsList[k][i+1].y,
+                            -depth/2.0 + (m_positionsList[k][i+1].z - positionMin) * depth/(positionMax - positionMin));
                 }
                 glEnd();
+
+                // points
+                if (Agros2D::problem()->configView()->particleShowPoints)
+                {
+                    glPointSize(Agros2D::problem()->configView()->nodeSize * 3.0/5.0);
+
+                    glBegin(GL_POINTS);
+                    for (int i = 0; i < m_positionsList[k].length(); i++)
+                    {
+                        glVertex3d(m_positionsList[k][i].x,
+                                   m_positionsList[k][i].y,
+                                   -depth/2.0 + (m_positionsList[k][i].z - positionMin) * depth/(positionMax - positionMin));
+                    }
+                    glEnd();
+                }
+            }
+            else
+            {
+                int particles = 15;
+                int stepAngle = 360 / particles;
+
+                for (int l = 0; l < particles; l++)
+                {
+                    glColor3d(rand() / double(RAND_MAX),
+                              rand() / double(RAND_MAX),
+                              rand() / double(RAND_MAX));
+
+                    glBegin(GL_LINES);
+                    for (int i = 0; i < m_positionsList[k].length() - 1; i++)
+                    {
+                        if (Agros2D::problem()->configView()->particleColorByVelocity)
+                            glColor3d(1.0 - 0.8 * (m_velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin),
+                                      1.0 - 0.8 * (m_velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin),
+                                      1.0 - 0.8 * (m_velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin));
+
+                        glVertex3d(m_positionsList[k][i].x * cos(m_positionsList[k][i].z + l * stepAngle/180.0 * M_PI),
+                                   m_positionsList[k][i].y,
+                                   m_positionsList[k][i].x * sin(m_positionsList[k][i].z + l * stepAngle/180.0 * M_PI));
+                        glVertex3d(m_positionsList[k][i+1].x * cos(m_positionsList[k][i+1].z + l * stepAngle/180.0 * M_PI),
+                                m_positionsList[k][i+1].y,
+                                m_positionsList[k][i+1].x * sin(m_positionsList[k][i+1].z + l * stepAngle/180.0 * M_PI));
+
+                    }
+                    glEnd();
+
+                    // points
+                    glBegin(GL_POINTS);
+                    if (Agros2D::problem()->configView()->particleShowPoints)
+                    {
+                        glPointSize(Agros2D::problem()->configView()->nodeSize * 3.0/5.0);
+                        for (int i = 0; i < m_positionsList[k].length(); i++)
+                        {
+                            glVertex3d(m_positionsList[k][i].x * cos(m_positionsList[k][i].z + l * stepAngle/180.0 * M_PI),
+                                       m_positionsList[k][i].y,
+                                       m_positionsList[k][i].x * sin(m_positionsList[k][i].z + l * stepAngle/180.0 * M_PI));
+                        }
+                    }
+                    glEnd();
+                }
             }
         }
 
         glDisable(GL_LINE_SMOOTH);
         glDisable(GL_BLEND);
-        glEnable(GL_DEPTH_TEST);
+        glDisable(GL_DEPTH_TEST);
 
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
@@ -984,7 +1009,7 @@ void SceneViewParticleTracing::processParticleTracing()
                                          arg(k + 1).
                                          arg(particleTracing.times().count()).
                                          arg(particleTracing.times().last()));
-        }        
+        }
     }
 
     refresh();
