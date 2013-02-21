@@ -913,18 +913,37 @@ void MainWindow::doDocumentNew()
         Agros2D::scene()->clear();
         Agros2D::problem()->clearFieldsAndConfig();
 
+        FieldInfo *fieldInfo;
+        ErrorResult result;
         // add field
-        FieldInfo *fieldInfo = new FieldInfo(dialog.selectedFieldId());
+        // todo: mixing exceptions with error code. Should be unified, probably use exceptions everywhere
+        try{
+            fieldInfo = new FieldInfo(dialog.selectedFieldId());
+        }
+        catch(AgrosPluginException& e)
+        {
+            result = ErrorResult(ErrorResultType_Critical, e.what());
+        }
 
-        Agros2D::problem()->addField(fieldInfo);
+        if (!result.isError())
+        {
 
-        problemWidget->actProperties->trigger();
-        sceneViewPreprocessor->doZoomBestFit();
-        sceneViewMesh->doZoomBestFit();
-        sceneViewPost2D->doZoomBestFit();
-        sceneViewPost3D->doZoomBestFit();
-        sceneViewParticleTracing->doZoomBestFit();
-        settingsWidget->updateControls();
+            Agros2D::problem()->addField(fieldInfo);
+
+            problemWidget->actProperties->trigger();
+            sceneViewPreprocessor->doZoomBestFit();
+            sceneViewMesh->doZoomBestFit();
+            sceneViewPost2D->doZoomBestFit();
+            sceneViewPost3D->doZoomBestFit();
+            sceneViewParticleTracing->doZoomBestFit();
+            settingsWidget->updateControls();
+        }
+        else
+        {
+            Agros2D::scene()->clear();
+            result.showDialog();
+            return;
+        }
     }
 }
 
