@@ -470,7 +470,7 @@ void ConfigComputerDialog::readModulesAndCouplings()
 
             item->setText(1, tr("available"));
         }
-        catch (AgrosException e)
+        catch (AgrosPluginException e)
         {
             item->setText(1, tr("missing"));
             item->setForeground(1, QBrush(Qt::red));
@@ -494,7 +494,7 @@ void ConfigComputerDialog::readModulesAndCouplings()
 
             item->setText(1, tr("available"));
         }
-        catch (AgrosException e)
+        catch (AgrosPluginException e)
         {
             item->setText(1, tr("missing"));
             item->setForeground(1, QBrush(Qt::red));

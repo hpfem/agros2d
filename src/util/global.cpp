@@ -101,13 +101,13 @@ PluginInterface *Agros2D::loadPlugin(const QString &plugin)
 
     if (!loader)
     {
-        throw AgrosException(QObject::tr("Could not find 'agros2d_plugin_%1'").arg(plugin));
+        throw AgrosPluginException(QObject::tr("Could not find 'agros2d_plugin_%1'").arg(plugin));
     }
 
     if (!loader->load())
     {
         delete loader;
-        throw AgrosException(QObject::tr("Could not load 'agros2d_plugin_%1'").arg(plugin));
+        throw AgrosPluginException(QObject::tr("Could not load 'agros2d_plugin_%1'").arg(plugin));
     }
 
     assert(loader->instance());
