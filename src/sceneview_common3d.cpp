@@ -143,11 +143,9 @@ void SceneViewCommon3D::paintAxes()
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    glColor3d(Agros2D::problem()->configView()->colorCross.redF(),
-              Agros2D::problem()->configView()->colorCross.greenF(),
-              Agros2D::problem()->configView()->colorCross.blueF());
-
     // x-axis
+    glColor3d(0.9, 0.0, 0.0);
+
     glBegin(GL_QUADS);
     glVertex3d(0, -1, 0);
     glVertex3d(16, -1, 0);
@@ -171,6 +169,8 @@ void SceneViewCommon3D::paintAxes()
     glEnd();
 
     // y-axis
+    glColor3d(0.0, 0.9, 0.0);
+
     glBegin(GL_QUADS);
     glVertex3d(-1, 0, 0);
     glVertex3d(-1, 16, 0);
@@ -194,6 +194,8 @@ void SceneViewCommon3D::paintAxes()
     glEnd();
 
     // z-axis
+    glColor3d(0.0, 0.0, 0.9);
+
     glBegin(GL_QUADS);
     glVertex3d(-1, 0, 0);
     glVertex3d(-1, 0, -16);
