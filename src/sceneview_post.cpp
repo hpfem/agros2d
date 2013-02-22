@@ -223,6 +223,19 @@ void PostHermes::processRangeScalar()
         {
             Agros2D::problem()->configView()->scalarRangeMin = m_linScalarView.get_min_value();
             Agros2D::problem()->configView()->scalarRangeMax = m_linScalarView.get_max_value();
+
+            // Adjust the min-max if they are very close to each other.
+            double maxAbsValue = std::max(std::abs(Agros2D::problem()->configView()->scalarRangeMax), std::abs(Agros2D::problem()->configView()->scalarRangeMin));
+            double distanceBetweenMinMax = Agros2D::problem()->configView()->scalarRangeMax - Agros2D::problem()->configView()->scalarRangeMin;
+
+            // Let us keep this above 1%.
+            if(distanceBetweenMinMax / maxAbsValue < 1e-2)
+            {
+                // And extend the distance symmetrically.
+                double middleValue = (Agros2D::problem()->configView()->scalarRangeMin + Agros2D::problem()->configView()->scalarRangeMax) / 2.;
+                Agros2D::problem()->configView()->scalarRangeMin = middleValue - 0.5 * 1e-2 * maxAbsValue;
+                Agros2D::problem()->configView()->scalarRangeMax = middleValue + 0.5 * 1e-2 * maxAbsValue;
+            }
         }
 
         delete slnScalarView;
