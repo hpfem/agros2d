@@ -863,10 +863,6 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep, bool f
         adapt = adapt && (!noRefinementPerformed);
     }
 
-    Agros2D::log()->printMessage(m_solverID, QObject::tr("meshes %1, %2 elements").
-                                 arg(actualSpaces().at(0)->get_mesh()->get_num_active_elements()).
-                                 arg(actualSpaces().at(1)->get_mesh()->get_num_active_elements()));
-
     deleteSelectors(selector);
 
     return adapt;
