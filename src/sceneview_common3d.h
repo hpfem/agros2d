@@ -44,10 +44,15 @@ public:
     QAction *actSetProjectionYZ;
 
     void loadProjection3d(bool setScene = false);
+
 protected:
     double m_scale3d; // scale
     Point m_offset3d; // offset
     Point3 m_rotation3d; // rotation
+
+    QMenu *mnuView3D;
+
+    void createMenu();
 
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
@@ -56,6 +61,7 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent *event);
+    virtual void contextMenuEvent(QContextMenuEvent *event);
 
     void setZoom(double power);
     void initLighting();

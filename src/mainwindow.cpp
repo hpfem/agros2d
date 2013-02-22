@@ -516,11 +516,6 @@ void MainWindow::createMenus()
     mnuEdit->addAction(actOptions);
 #endif
 
-    QMenu *mnuProjection = new QMenu(tr("Projection"), this);
-    mnuProjection->addAction(sceneViewPost3D->actSetProjectionXY);
-    mnuProjection->addAction(sceneViewPost3D->actSetProjectionXZ);
-    mnuProjection->addAction(sceneViewPost3D->actSetProjectionYZ);
-
     QMenu *mnuShowPanels = new QMenu(tr("Panels"), this);
     mnuShowPanels->addAction(resultsView->toggleViewAction());
     mnuShowPanels->addAction(consoleView->toggleViewAction());
@@ -543,7 +538,6 @@ void MainWindow::createMenus()
     mnuView->addAction(actSceneZoomIn);
     mnuView->addAction(actSceneZoomOut);
     mnuView->addAction(actSceneZoomRegion);
-    mnuView->addMenu(mnuProjection);
     mnuView->addSeparator();
     mnuView->addAction(actLoadBackground);
     mnuView->addSeparator();
