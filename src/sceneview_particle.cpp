@@ -408,8 +408,13 @@ void SceneViewParticleTracing::paintGL()
                  Agros2D::problem()->configView()->colorBackground.blueF(), 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // gradient background
+    paintBackground();
+
     if (Agros2D::problem()->isSolved())
     {
+        paintGeometrySurface(true);
+        paintGeometryOutline();
         paintParticleTracing();
 
         // bars
@@ -427,20 +432,358 @@ void SceneViewParticleTracing::resizeGL(int w, int h)
     SceneViewCommon::resizeGL(w, h);
 }
 
+
+void SceneViewParticleTracing::paintGeometryOutline()
+{
+    if (!Agros2D::problem()->isSolved()) return;
+    if (!particleTracingIsPrepared()) return;
+
+    loadProjection3d(true, false);
+
+    RectPoint rect = Agros2D::scene()->boundingBox();
+    double max = qMax(rect.width(), rect.height());
+    double depth = max / Agros2D::problem()->configView()->scalarView3DHeight;
+
+    glPushMatrix();
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glPopMatrix();
+
+    // geometry
+    glDisable(GL_POLYGON_OFFSET_FILL);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LINE_SMOOTH);
+
+    glColor3d(0.0, 0.0, 0.0);
+    glLineWidth(1.3);
+
+    if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
+    {
+        // depth
+        foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+        {
+            glBegin(GL_LINES);
+            if (edge->isStraight())
+            {
+                glVertex3d(edge->nodeStart()->point().x, edge->nodeStart()->point().y, -depth/2.0);
+                glVertex3d(edge->nodeStart()->point().x, edge->nodeStart()->point().y, depth/2.0);
+
+                glVertex3d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y, -depth/2.0);
+                glVertex3d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y, depth/2.0);
+            }
+            glEnd();
+        }
+
+        // length
+        foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+        {
+            glBegin(GL_LINES);
+            if (edge->isStraight())
+            {
+                glVertex3d(edge->nodeStart()->point().x, edge->nodeStart()->point().y, -depth/2.0);
+                glVertex3d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y, -depth/2.0);
+
+                glVertex3d(edge->nodeStart()->point().x, edge->nodeStart()->point().y, depth/2.0);
+                glVertex3d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y, depth/2.0);
+            }
+            else
+            {
+                Point center = edge->center();
+                double radius = edge->radius();
+                double startAngle = atan2(center.y - edge->nodeStart()->point().y,
+                                          center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
+
+                int segments = edge->angle() / 5.0;
+                if (segments < 2) segments = 2;
+
+                double theta = edge->angle() / double(segments);
+
+                for (int i = 0; i < segments; i++)
+                {
+                    double arc1 = (startAngle + i*theta)/180.0*M_PI;
+                    double arc2 = (startAngle + (i+1)*theta)/180.0*M_PI;
+
+                    double x1 = radius * cos(arc1);
+                    double y1 = radius * sin(arc1);
+                    double x2 = radius * cos(arc2);
+                    double y2 = radius * sin(arc2);
+
+                    glVertex3d(center.x + x1, center.y + y1, depth/2.0);
+                    glVertex3d(center.x + x2, center.y + y2, depth/2.0);
+
+                    glVertex3d(center.x + x1, center.y + y1, -depth/2.0);
+                    glVertex3d(center.x + x2, center.y + y2, -depth/2.0);
+                }
+            }
+            glEnd();
+        }
+    }
+    else
+    {
+        // top
+        foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+        {
+            for (int j = 0; j <= 360; j = j + 90)
+            {
+                if (edge->isStraight())
+                {
+                    glBegin(GL_LINES);
+                    glVertex3d(edge->nodeStart()->point().x * cos(j/180.0*M_PI),
+                               edge->nodeStart()->point().y,
+                               edge->nodeStart()->point().x * sin(j/180.0*M_PI));
+                    glVertex3d(edge->nodeEnd()->point().x * cos(j/180.0*M_PI),
+                               edge->nodeEnd()->point().y,
+                               edge->nodeEnd()->point().x * sin(j/180.0*M_PI));
+                    glEnd();
+                }
+                else
+                {
+                    Point center = edge->center();
+                    double radius = edge->radius();
+                    double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
+
+                    double theta = edge->angle() / double(edge->angle()/2 - 1);
+
+                    glBegin(GL_LINE_STRIP);
+                    for (int i = 0; i < edge->angle()/2; i++)
+                    {
+                        double arc = (startAngle + i*theta)/180.0*M_PI;
+
+                        double x = radius * cos(arc);
+                        double y = radius * sin(arc);
+
+                        glVertex3d((center.x + x) * cos(j/180.0*M_PI),
+                                   center.y + y,
+                                   (center.x + x) * sin(j/180.0*M_PI));
+                    }
+                    glEnd();
+                }
+            }
+        }
+
+        // side
+        foreach (SceneNode *node, Agros2D::scene()->nodes->items())
+        {
+            int count = 29.0;
+            double step = 360.0/count;
+
+            glBegin(GL_LINE_STRIP);
+            for (int j = 0; j < count; j++)
+            {
+                glVertex3d(node->point().x * cos((j+0)*step/180.0*M_PI),
+                           node->point().y,
+                           node->point().x * sin((j+0)*step/180.0*M_PI));
+                glVertex3d(node->point().x * cos((j+1)*step/180.0*M_PI),
+                           node->point().y,
+                           node->point().x * sin((j+1)*step/180.0*M_PI));
+            }
+            glEnd();
+        }
+    }
+
+    glDisable(GL_LINE_SMOOTH);
+    glDisable(GL_DEPTH_TEST);
+
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+}
+
+void SceneViewParticleTracing::paintGeometrySurface(bool blend)
+{
+    if (!Agros2D::problem()->isSolved()) return;
+    if (!particleTracingIsPrepared()) return;
+
+    loadProjection3d(true, false);
+
+    RectPoint rect = Agros2D::scene()->boundingBox();
+    double max = qMax(rect.width(), rect.height());
+    double depth = max / Agros2D::problem()->configView()->scalarView3DHeight;
+
+    QMap<SceneLabel*, QList<Triangle> > labels = findPolygonTriangles();
+
+    glPushMatrix();
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glPopMatrix();
+
+    glDisable(GL_DEPTH_TEST);
+
+    if (blend)
+    {
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glColor4d(0.2, 0.4, 0.1, 0.3);
+    }
+    else
+    {
+        glColor3d(0.2, 0.4, 0.1);
+    }
+
+    // surfaces
+    if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
+    {
+        glBegin(GL_TRIANGLES);
+        QMapIterator<SceneLabel*, QList<Triangle> > i(labels);
+        while (i.hasNext())
+        {
+            i.next();
+            if (i.key()->isHole())
+                continue;
+
+            foreach (Triangle triangle, i.value())
+            {
+                // z = - depth / 2.0
+                glVertex3d(triangle.a.x, triangle.a.y, -depth/2.0);
+                glVertex3d(triangle.b.x, triangle.b.y, -depth/2.0);
+                glVertex3d(triangle.c.x, triangle.c.y, -depth/2.0);
+
+                // z = + depth / 2.0
+                glVertex3d(triangle.a.x, triangle.a.y, depth/2.0);
+                glVertex3d(triangle.c.x, triangle.c.y, depth/2.0);
+                glVertex3d(triangle.b.x, triangle.b.y, depth/2.0);
+            }
+        }
+        glEnd();
+
+        // length
+        foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+        {
+            glBegin(GL_TRIANGLE_STRIP);
+            if (edge->isStraight())
+            {
+                glVertex3d(edge->nodeStart()->point().x, edge->nodeStart()->point().y, -depth/2.0);
+                glVertex3d(edge->nodeStart()->point().x, edge->nodeStart()->point().y, depth/2.0);
+
+                glVertex3d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y, -depth/2.0);
+                glVertex3d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y, depth/2.0);
+            }
+            else
+            {
+                Point center = edge->center();
+                double radius = edge->radius();
+                double startAngle = atan2(center.y - edge->nodeStart()->point().y,
+                                          center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
+
+                int segments = edge->angle() / 5.0;
+                if (segments < 2) segments = 2;
+
+                double theta = edge->angle() / double(segments);
+
+                for (int i = 0; i < segments + 1; i++)
+                {
+                    double arc = (startAngle + i*theta)/180.0*M_PI;
+
+                    double x = radius * cos(arc);
+                    double y = radius * sin(arc);
+
+                    glVertex3d(center.x + x, center.y + y, -depth/2.0);
+                    glVertex3d(center.x + x, center.y + y, depth/2.0);
+                }
+            }
+            glEnd();
+        }
+    }
+    else
+    {
+        glBegin(GL_TRIANGLES);
+        QMapIterator<SceneLabel*, QList<Triangle> > i(labels);
+        while (i.hasNext())
+        {
+            i.next();
+            if (i.key()->isHole())
+                continue;
+
+            foreach (Triangle triangle, i.value())
+            {
+                for (int j = 0; j <= 360; j = j + 90)
+                {
+                    glVertex3d(triangle.a.x * cos(j/180.0*M_PI), triangle.a.y, triangle.a.x * sin(j/180.0*M_PI));
+                    glVertex3d(triangle.b.x * cos(j/180.0*M_PI), triangle.b.y, triangle.b.x * sin(j/180.0*M_PI));
+                    glVertex3d(triangle.c.x * cos(j/180.0*M_PI), triangle.c.y, triangle.c.x * sin(j/180.0*M_PI));
+                }
+            }
+        }
+        glEnd();
+
+        // length
+        foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+        {
+            int count = 29.0;
+            double step = 360.0/count;
+
+            glBegin(GL_TRIANGLE_STRIP);
+            if (edge->isStraight())
+            {
+                for (int j = 0; j < count + 1; j++)
+                {
+                    glVertex3d(edge->nodeStart()->point().x * cos((j+0)*step/180.0*M_PI), edge->nodeStart()->point().y, edge->nodeStart()->point().x * sin((j+0)*step/180.0*M_PI));
+                    glVertex3d(edge->nodeEnd()->point().x * cos((j+0)*step/180.0*M_PI), edge->nodeEnd()->point().y, edge->nodeEnd()->point().x * sin((j+0)*step/180.0*M_PI));
+                }
+            }
+            else
+            {
+                Point center = edge->center();
+                double radius = edge->radius();
+                double startAngle = atan2(center.y - edge->nodeStart()->point().y,
+                                          center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
+
+                int segments = edge->angle() / 5.0;
+                if (segments < 2) segments = 2;
+
+                double theta = edge->angle() / double(segments);
+
+                for (int i = 0; i < segments; i++)
+                {
+                    double arc1 = (startAngle + i*theta)/180.0*M_PI;
+                    double arc2 = (startAngle + (i+1)*theta)/180.0*M_PI;
+
+                    double x1 = radius * cos(arc1);
+                    double y1 = radius * sin(arc1);
+                    double x2 = radius * cos(arc2);
+                    double y2 = radius * sin(arc2);
+
+                    for (int j = 0; j < count + 1; j++)
+                    {
+                        glVertex3d((center.x + x1) * cos((j+0)*step/180.0*M_PI), (center.y + y1), (center.x + x1) * sin((j+0)*step/180.0*M_PI));
+                        glVertex3d((center.x + x2) * cos((j+0)*step/180.0*M_PI), (center.y + y2), (center.x + x2) * sin((j+0)*step/180.0*M_PI));
+                    }
+                }
+            }
+            glEnd();
+        }
+    }
+
+    if (blend)
+    {
+        glDisable(GL_BLEND);
+    }
+
+    glDisable(GL_POLYGON_OFFSET_FILL);
+}
+
 void SceneViewParticleTracing::paintParticleTracing()
 {
     if (!Agros2D::problem()->isSolved()) return;
     if (!particleTracingIsPrepared()) return;
 
-    loadProjection3d(true);
+    loadProjection3d(true, false);
 
     if (m_listParticleTracing == -1)
     {
         m_listParticleTracing = glGenLists(1);
         glNewList(m_listParticleTracing, GL_COMPILE);
-
-        // gradient background
-        paintBackground();
 
         RectPoint rect = Agros2D::scene()->boundingBox();
         double max = qMax(rect.width(), rect.height());
@@ -448,263 +791,15 @@ void SceneViewParticleTracing::paintParticleTracing()
 
         QMap<SceneLabel*, QList<Triangle> > labels = findPolygonTriangles();
 
-        glDisable(GL_DEPTH_TEST);
+        glPushMatrix();
 
-        glEnable(GL_POLYGON_OFFSET_FILL);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
 
-        glColor4d(0.2, 0.4, 0.1, 0.3);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
 
-        if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
-        {
-            glBegin(GL_TRIANGLES);
-            QMapIterator<SceneLabel*, QList<Triangle> > i(labels);
-            while (i.hasNext())
-            {
-                i.next();
-                if (i.key()->isHole())
-                    continue;
-
-                foreach (Triangle triangle, i.value())
-                {
-                    // z = - depth / 2.0
-                    glVertex3d(triangle.a.x, triangle.a.y, -depth/2.0);
-                    glVertex3d(triangle.b.x, triangle.b.y, -depth/2.0);
-                    glVertex3d(triangle.c.x, triangle.c.y, -depth/2.0);
-
-                    // z = + depth / 2.0
-                    glVertex3d(triangle.a.x, triangle.a.y, depth/2.0);
-                    glVertex3d(triangle.c.x, triangle.c.y, depth/2.0);
-                    glVertex3d(triangle.b.x, triangle.b.y, depth/2.0);
-                }
-            }
-            glEnd();
-
-            // length
-            foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
-            {
-                glBegin(GL_TRIANGLE_STRIP);
-                if (edge->isStraight())
-                {
-                    glVertex3d(edge->nodeStart()->point().x, edge->nodeStart()->point().y, -depth/2.0);
-                    glVertex3d(edge->nodeStart()->point().x, edge->nodeStart()->point().y, depth/2.0);
-
-                    glVertex3d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y, -depth/2.0);
-                    glVertex3d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y, depth/2.0);
-                }
-                else
-                {
-                    Point center = edge->center();
-                    double radius = edge->radius();
-                    double startAngle = atan2(center.y - edge->nodeStart()->point().y,
-                                              center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
-
-                    int segments = edge->angle() / 5.0;
-                    if (segments < 2) segments = 2;
-
-                    double theta = edge->angle() / double(segments);
-
-                    for (int i = 0; i < segments + 1; i++)
-                    {
-                        double arc = (startAngle + i*theta)/180.0*M_PI;
-
-                        double x = radius * cos(arc);
-                        double y = radius * sin(arc);
-
-                        glVertex3d(center.x + x, center.y + y, -depth/2.0);
-                        glVertex3d(center.x + x, center.y + y, depth/2.0);
-                    }
-                }
-                glEnd();
-            }
-        }
-        else
-        {
-            glBegin(GL_TRIANGLES);
-            QMapIterator<SceneLabel*, QList<Triangle> > i(labels);
-            while (i.hasNext())
-            {
-                i.next();
-                if (i.key()->isHole())
-                    continue;
-
-                foreach (Triangle triangle, i.value())
-                {
-                    for (int j = 0; j <= 360; j = j + 90)
-                    {
-                        glVertex3d(triangle.a.x * cos(j/180.0*M_PI), triangle.a.y, triangle.a.x * sin(j/180.0*M_PI));
-                        glVertex3d(triangle.b.x * cos(j/180.0*M_PI), triangle.b.y, triangle.b.x * sin(j/180.0*M_PI));
-                        glVertex3d(triangle.c.x * cos(j/180.0*M_PI), triangle.c.y, triangle.c.x * sin(j/180.0*M_PI));
-                    }
-                }
-            }
-            glEnd();
-
-            // length
-            foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
-            {
-                int count = 29.0;
-                double step = 360.0/count;
-                glBegin(GL_TRIANGLE_STRIP);
-                if (edge->isStraight())
-                {
-                    for (int j = 0; j < count + 1; j++)
-                    {
-                        glVertex3d(edge->nodeStart()->point().x * cos((j+0)*step/180.0*M_PI), edge->nodeStart()->point().y, edge->nodeStart()->point().x * sin((j+0)*step/180.0*M_PI));
-                        glVertex3d(edge->nodeEnd()->point().x * cos((j+0)*step/180.0*M_PI), edge->nodeEnd()->point().y, edge->nodeEnd()->point().x * sin((j+0)*step/180.0*M_PI));
-                    }
-                }
-                else
-                {
-                    Point center = edge->center();
-                    double radius = edge->radius();
-                    double startAngle = atan2(center.y - edge->nodeStart()->point().y,
-                                              center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
-
-                    int segments = edge->angle() / 5.0;
-                    if (segments < 2) segments = 2;
-
-                    double theta = edge->angle() / double(segments);
-
-                    for (int i = 0; i < segments; i++)
-                    {
-                        for (int j = 0; j < count + 1; j++)
-                        {
-                            double arc1 = (startAngle + i*theta)/180.0*M_PI;
-                            double arc2 = (startAngle + (i+1)*theta)/180.0*M_PI;
-
-                            double x1 = radius * cos(arc1);
-                            double y1 = radius * sin(arc1);
-                            double x2 = radius * cos(arc2);
-                            double y2 = radius * sin(arc2);
-
-                            glVertex3d(x1 * cos((j+0)*step/180.0*M_PI), y1, x1 * sin((j+0)*step/180.0*M_PI));
-                            glVertex3d(x2 * cos((j+0)*step/180.0*M_PI), y2, x2 * sin((j+0)*step/180.0*M_PI));
-                        }
-                    }
-                }
-                glEnd();
-            }
-        }
-
-        glDisable(GL_POLYGON_OFFSET_FILL);
-
-        // geometry
-        glEnable(GL_DEPTH_TEST);
-
-        glColor4d(0.0, 0.0, 0.0, 0.8);
-        glLineWidth(1.6);
-
-        if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
-        {
-            // top and bottom
-            foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
-            {
-                for (int j = 0; j < 2; j++)
-                {
-                    if (edge->isStraight())
-                    {
-                        glBegin(GL_LINES);
-                        glVertex3d(edge->nodeStart()->point().x, edge->nodeStart()->point().y, - depth/2.0 + j*depth);
-                        glVertex3d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y, - depth/2.0 + j*depth);
-                        glEnd();
-                    }
-                    else
-                    {
-                        Point center = edge->center();
-                        double radius = edge->radius();
-                        double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
-
-                        double theta = edge->angle() / double(edge->angle()/2 - 1);
-
-                        glBegin(GL_LINE_STRIP);
-                        for (int i = 0; i < edge->angle()/2; i++)
-                        {
-                            double arc = (startAngle + i*theta)/180.0*M_PI;
-
-                            double x = radius * cos(arc);
-                            double y = radius * sin(arc);
-
-                            glVertex3d(center.x + x, center.y + y, - depth/2.0 + j*depth);
-                        }
-                        glEnd();
-                    }
-                }
-            }
-
-            // side
-            glBegin(GL_LINES);
-            foreach (SceneNode *node, Agros2D::scene()->nodes->items())
-            {
-                glVertex3d(node->point().x, node->point().y,  depth/2.0);
-                glVertex3d(node->point().x, node->point().y, -depth/2.0);
-            }
-            glEnd();
-        }
-        else
-        {
-            // top
-            foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
-            {
-                for (int j = 0; j <= 360; j = j + 90)
-                {
-                    if (edge->isStraight())
-                    {
-                        glBegin(GL_LINES);
-                        glVertex3d(edge->nodeStart()->point().x * cos(j/180.0*M_PI),
-                                   edge->nodeStart()->point().y,
-                                   edge->nodeStart()->point().x * sin(j/180.0*M_PI));
-                        glVertex3d(edge->nodeEnd()->point().x * cos(j/180.0*M_PI),
-                                   edge->nodeEnd()->point().y,
-                                   edge->nodeEnd()->point().x * sin(j/180.0*M_PI));
-                        glEnd();
-                    }
-                    else
-                    {
-                        Point center = edge->center();
-                        double radius = edge->radius();
-                        double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
-
-                        double theta = edge->angle() / double(edge->angle()/2 - 1);
-
-                        glBegin(GL_LINE_STRIP);
-                        for (int i = 0; i < edge->angle()/2; i++)
-                        {
-                            double arc = (startAngle + i*theta)/180.0*M_PI;
-
-                            double x = radius * cos(arc);
-                            double y = radius * sin(arc);
-
-                            glVertex3d((center.x + x) * cos(j/180.0*M_PI),
-                                       center.y + y,
-                                       (center.x + x) * sin(j/180.0*M_PI));
-                        }
-                        glEnd();
-                    }
-                }
-            }
-
-            // side
-            foreach (SceneNode *node, Agros2D::scene()->nodes->items())
-            {
-                int count = 29.0;
-                double step = 360.0/count;
-
-                glBegin(GL_LINE_STRIP);
-                for (int j = 0; j < count; j++)
-                {
-                    glVertex3d(node->point().x * cos((j+0)*step/180.0*M_PI),
-                               node->point().y,
-                               node->point().x * sin((j+0)*step/180.0*M_PI));
-                    glVertex3d(node->point().x * cos((j+1)*step/180.0*M_PI),
-                               node->point().y,
-                               node->point().x * sin((j+1)*step/180.0*M_PI));
-                }
-                glEnd();
-            }
-        }
+        glPopMatrix();
 
         double velocityMin = m_velocityMin;
         double velocityMax = m_velocityMax;
@@ -717,6 +812,9 @@ void SceneViewParticleTracing::paintParticleTracing()
             positionMin = -1.0;
             positionMax = +1.0;
         }
+
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_LINE_SMOOTH);
 
         // particle visualization
         for (int k = 0; k < Agros2D::problem()->configView()->particleNumberOfParticles; k++)
@@ -821,7 +919,6 @@ void SceneViewParticleTracing::paintParticleTracing()
         }
 
         glDisable(GL_LINE_SMOOTH);
-        glDisable(GL_BLEND);
         glDisable(GL_DEPTH_TEST);
 
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);

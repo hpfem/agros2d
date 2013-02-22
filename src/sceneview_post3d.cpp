@@ -158,7 +158,7 @@ void SceneViewPost3D::paintScalarField3D()
     if (!Agros2D::problem()->isSolved()) return;
     if (!m_postHermes->scalarIsPrepared()) return;
 
-    loadProjection3d(true);
+    loadProjection3d(true, Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3D);
 
     if (m_listScalarField3D == -1)
     {
@@ -379,7 +379,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
     if (!Agros2D::problem()->isSolved()) return;
     if (Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3DSolid && !m_postHermes->scalarIsPrepared()) return;
 
-    loadProjection3d(true);
+    loadProjection3d(true, Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3D);
 
     if (m_listScalarField3DSolid == -1)
     {
@@ -563,49 +563,6 @@ void SceneViewPost3D::paintScalarField3DSolid()
                 }
             }
             glEnd();
-
-            // length
-            /*
-            glBegin(GL_QUADS);
-            for (int i = 0; i < m_postHermes->linScalarView().get_num_edges(); i++)
-            {
-                // draw only boundary edges
-                if (!linEdges[i][2]) continue;
-
-                for (int j = 0; j < 2; j++)
-                {
-                    point[j].x = linVert[linEdges[i][j]][0];
-                    point[j].y = linVert[linEdges[i][j]][1];
-                    value[j]   = linVert[linEdges[i][j]][2];
-                }
-
-                if (!Agros2D::problem()->configView()->scalarRangeAuto)
-                {
-                    double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                    if (avgValue < Agros2D::problem()->configView()->scalarRangeMin || avgValue > Agros2D::problem()->configView()->scalarRangeMax)
-                        continue;
-                }
-
-                if (Agros2D::problem()->configView()->scalarView3DLighting || isModel)
-                {
-                    computeNormal(point[0].x, point[0].y, -depth/2.0,
-                                  point[1].x, point[1].y, -depth/2.0,
-                                  point[1].x, point[1].y,  depth/2.0,
-                                  normal);
-                    glNormal3d(normal[0], normal[1], normal[2]);
-                }
-
-                if (!isModel) glTexCoord1d((value[0] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                glVertex3d(point[0].x, point[0].y, -depth/2.0);
-                if (!isModel) glTexCoord1d((value[1] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                glVertex3d(point[1].x, point[1].y, -depth/2.0);
-                if (!isModel) glTexCoord1d((value[1] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                glVertex3d(point[1].x, point[1].y, depth/2.0);
-                if (!isModel) glTexCoord1d((value[0] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                glVertex3d(point[0].x, point[0].y, depth/2.0);
-            }
-            glEnd();
-            */
         }
         else
         {
@@ -710,55 +667,6 @@ void SceneViewPost3D::paintScalarField3DSolid()
                     }
                 }
             }
-
-            // symmetry
-            /*
-                    glBegin(GL_QUADS);
-                    for (int i = 0; i < m_postHermes->linScalarView().get_num_edges(); i++)
-                    {
-                        // draw only boundary edges
-                        if (!linEdges[i][2]) continue;
-
-                        for (int j = 0; j < 2; j++)
-                        {
-                            point[j].x = linVert[linEdges[i][j]][0];
-                            point[j].y = linVert[linEdges[i][j]][1];
-                            value[j]   = linVert[linEdges[i][j]][2];
-                        }
-
-                        if (!Agros2D::problem()->configView()->scalarRangeAuto)
-                        {
-                            double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                            if (avgValue < Agros2D::problem()->configView()->scalarRangeMin || avgValue > Agros2D::problem()->configView()->scalarRangeMax)
-                                continue;
-                        }
-
-                        int count = 30;
-                        double step = phi/count;
-                        for (int j = 0; j < count; j++)
-                        {
-                            if (Agros2D::problem()->configView()->scalarView3DLighting || isModel)
-                            {
-
-                                computeNormal(point[0].x * cos((j+0)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+0)*step/180.0*M_PI),
-                                              point[1].x * cos((j+0)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+0)*step/180.0*M_PI),
-                                              point[1].x * cos((j+1)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+1)*step/180.0*M_PI),
-                                              normal);
-                                glNormal3d(normal[0], normal[1], normal[2]);
-                            }
-
-                            if (!isModel) glTexCoord1d((value[0] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                            glVertex3d(point[0].x * cos((j+0)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+0)*step/180.0*M_PI));
-                            if (!isModel) glTexCoord1d((value[1] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                            glVertex3d(point[1].x * cos((j+0)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+0)*step/180.0*M_PI));
-                            if (!isModel) glTexCoord1d((value[1] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                            glVertex3d(point[1].x * cos((j+1)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+1)*step/180.0*M_PI));
-                            if (!isModel) glTexCoord1d((value[0] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                            glVertex3d(point[0].x * cos((j+1)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+1)*step/180.0*M_PI));
-                        }
-                    }
-                    glEnd();
-                    */
         }
 
         // remove normals
@@ -793,38 +701,45 @@ void SceneViewPost3D::paintScalarField3DSolid()
                 // top and bottom
                 foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
                 {
-                    for (int j = 0; j < 2; j++)
+                    glBegin(GL_LINES);
+                    if (edge->isStraight())
                     {
-                        if (edge->isStraight())
+                        glVertex3d(edge->nodeStart()->point().x, edge->nodeStart()->point().y, -depth/2.0);
+                        glVertex3d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y, -depth/2.0);
+
+                        glVertex3d(edge->nodeStart()->point().x, edge->nodeStart()->point().y, depth/2.0);
+                        glVertex3d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y, depth/2.0);
+                    }
+                    else
+                    {
+                        Point center = edge->center();
+                        double radius = edge->radius();
+                        double startAngle = atan2(center.y - edge->nodeStart()->point().y,
+                                                  center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
+
+                        int segments = edge->angle() / 5.0;
+                        if (segments < 2) segments = 2;
+
+                        double theta = edge->angle() / double(segments);
+
+                        for (int i = 0; i < segments; i++)
                         {
-                            glBegin(GL_LINES);
-                            glVertex3d(edge->nodeStart()->point().x, edge->nodeStart()->point().y, - depth/2.0 + j*depth);
-                            glVertex3d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y, - depth/2.0 + j*depth);
-                            glEnd();
-                        }
-                        else
-                        {
-                            Point center = edge->center();
-                            double radius = edge->radius();
-                            double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
+                            double arc1 = (startAngle + i*theta)/180.0*M_PI;
+                            double arc2 = (startAngle + (i+1)*theta)/180.0*M_PI;
 
-                            double theta = edge->angle() / double(edge->angle()/2 - 1);
+                            double x1 = radius * cos(arc1);
+                            double y1 = radius * sin(arc1);
+                            double x2 = radius * cos(arc2);
+                            double y2 = radius * sin(arc2);
 
-                            glBegin(GL_LINE_STRIP);
-                            for (int i = 0; i < edge->angle()/2; i++)
-                            {
-                                double arc = (startAngle + i*theta)/180.0*M_PI;
+                            glVertex3d(center.x + x1, center.y + y1, depth/2.0);
+                            glVertex3d(center.x + x2, center.y + y2, depth/2.0);
 
-                                double x = radius * cos(arc);
-                                double y = radius * sin(arc);
-
-                                glVertex3d(center.x + x,
-                                           center.y + y,
-                                           - depth/2.0 + j*depth);
-                            }
-                            glEnd();
+                            glVertex3d(center.x + x1, center.y + y1, -depth/2.0);
+                            glVertex3d(center.x + x2, center.y + y2, -depth/2.0);
                         }
                     }
+                    glEnd();
                 }
 
                 // side

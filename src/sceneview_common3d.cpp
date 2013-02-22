@@ -20,6 +20,7 @@
 #include "sceneview_common3d.h"
 
 #include "util/global.h"
+#include "util/loops.h"
 
 #include "sceneview_data.h"
 #include "scene.h"
@@ -94,7 +95,6 @@ void SceneViewCommon3D::paintBackground()
 {
     // background
     glPushMatrix();
-    glLoadIdentity();
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -126,8 +126,6 @@ void SceneViewCommon3D::paintBackground()
 
     glPopMatrix();
 }
-
-
 
 void SceneViewCommon3D::paintAxes()
 {
@@ -221,7 +219,7 @@ void SceneViewCommon3D::paintAxes()
     glDisable(GL_POLYGON_OFFSET_FILL);
 }
 
-void SceneViewCommon3D::loadProjection3d(bool setScene)
+void SceneViewCommon3D::loadProjection3d(bool setScene, bool plane)
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -246,7 +244,7 @@ void SceneViewCommon3D::loadProjection3d(bool setScene)
         glRotated(m_rotation3d.y, 0.0, 0.0, 1.0);
 
         RectPoint rect = Agros2D::scene()->boundingBox();
-        if (Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3D)
+        if (plane)
         {
             glTranslated(- m_scale3d * (rect.start.x + rect.end.x) / 2.0, - m_scale3d * (rect.start.y + rect.end.y) / 2.0, 0.0);
         }

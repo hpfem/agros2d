@@ -43,7 +43,7 @@ public:
     QAction *actSetProjectionXZ;
     QAction *actSetProjectionYZ;
 
-    void loadProjection3d(bool setScene = false);
+    void loadProjection3d(bool setScene = false, bool plane = true);
 
 protected:
     double m_scale3d; // scale
