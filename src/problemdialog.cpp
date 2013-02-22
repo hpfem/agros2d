@@ -863,7 +863,9 @@ void ProblemWidget::createControls()
     txtTransientOrder->setMinimum(1);
     txtTransientOrder->setMaximum(3);
     txtTransientTimeTotal = new ValueLineEdit();
+    txtTransientTimeTotal->setCondition("value > 0");
     txtTransientTolerance = new ValueLineEdit();
+    txtTransientTolerance->setCondition("value > 0");
     txtTransientSteps = new QSpinBox();
     txtTransientSteps->setMinimum(1);
     txtTransientSteps->setMaximum(10000);
