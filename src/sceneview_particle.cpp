@@ -22,6 +22,7 @@
 #include "util.h"
 #include "util/global.h"
 #include "util/constants.h"
+#include "util/loops.h"
 
 #include "gui/lineeditdouble.h"
 
@@ -30,6 +31,8 @@
 #include "scene.h"
 #include "hermes2d/problem.h"
 #include "logview.h"
+
+
 
 #include "pythonlab/pythonengine_agros.h"
 
@@ -443,12 +446,7 @@ void SceneViewParticleTracing::paintParticleTracing()
         double max = qMax(rect.width(), rect.height());
         double depth = max / Agros2D::problem()->configView()->scalarView3DHeight;
 
-        double3* linVert = m_postHermes->linInitialMeshView().get_vertices();
-        int3* linTris = m_postHermes->linInitialMeshView().get_triangles();
-        int2* linEdges = m_postHermes->linInitialMeshView().get_edges();
-        int* linEdgesMarkers = m_postHermes->linInitialMeshView().get_edge_markers();
-        Point point[3];
-        double value[3];
+        QMap<SceneLabel*, QList<Triangle> > labels = findPolygonTriangles();
 
         glDisable(GL_DEPTH_TEST);
 
@@ -462,121 +460,133 @@ void SceneViewParticleTracing::paintParticleTracing()
         if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
         {
             glBegin(GL_TRIANGLES);
-            for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_triangles(); i++)
+            QMapIterator<SceneLabel*, QList<Triangle> > i(labels);
+            while (i.hasNext())
             {
-                for (int j = 0; j < 3; j++)
+                i.next();
+                if (i.key()->isHole())
+                    continue;
+
+                foreach (Triangle triangle, i.value())
                 {
-                    point[j].x = linVert[linTris[i][j]][0];
-                    point[j].y = linVert[linTris[i][j]][1];
-                    value[j]   = linVert[linTris[i][j]][2];
+                    // z = - depth / 2.0
+                    glVertex3d(triangle.a.x, triangle.a.y, -depth/2.0);
+                    glVertex3d(triangle.b.x, triangle.b.y, -depth/2.0);
+                    glVertex3d(triangle.c.x, triangle.c.y, -depth/2.0);
+
+                    // z = + depth / 2.0
+                    glVertex3d(triangle.a.x, triangle.a.y, depth/2.0);
+                    glVertex3d(triangle.c.x, triangle.c.y, depth/2.0);
+                    glVertex3d(triangle.b.x, triangle.b.y, depth/2.0);
                 }
-
-                if (!Agros2D::problem()->configView()->scalarRangeAuto)
-                {
-                    double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                    if (avgValue < Agros2D::problem()->configView()->scalarRangeMin || avgValue > Agros2D::problem()->configView()->scalarRangeMax)
-                        continue;
-                }
-
-                // z = - depth / 2.0
-                for (int j = 0; j < 3; j++)
-                    glVertex3d(point[j].x, point[j].y, -depth/2.0);
-
-                // z = + depth / 2.0
-                for (int j = 0; j < 3; j++)
-                    glVertex3d(point[j].x, point[j].y, depth/2.0);
             }
             glEnd();
 
             // length
-            glBegin(GL_QUADS);
-            for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_edges(); i++)
+            foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
             {
-                // draw only boundary edges
-                if (!linEdgesMarkers[i]) continue;
-
-                for (int j = 0; j < 2; j++)
+                glBegin(GL_TRIANGLE_STRIP);
+                if (edge->isStraight())
                 {
-                    point[j].x = linVert[linEdges[i][j]][0];
-                    point[j].y = linVert[linEdges[i][j]][1];
-                    value[j]   = linVert[linEdges[i][j]][2];
-                }
+                    glVertex3d(edge->nodeStart()->point().x, edge->nodeStart()->point().y, -depth/2.0);
+                    glVertex3d(edge->nodeStart()->point().x, edge->nodeStart()->point().y, depth/2.0);
 
-                if (!Agros2D::problem()->configView()->scalarRangeAuto)
+                    glVertex3d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y, -depth/2.0);
+                    glVertex3d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y, depth/2.0);
+                }
+                else
                 {
-                    double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                    if (avgValue < Agros2D::problem()->configView()->scalarRangeMin || avgValue > Agros2D::problem()->configView()->scalarRangeMax)
-                        continue;
-                }
+                    Point center = edge->center();
+                    double radius = edge->radius();
+                    double startAngle = atan2(center.y - edge->nodeStart()->point().y,
+                                              center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
 
-                glVertex3d(point[0].x, point[0].y, -depth/2.0);
-                glVertex3d(point[1].x, point[1].y, -depth/2.0);
-                glVertex3d(point[1].x, point[1].y, depth/2.0);
-                glVertex3d(point[0].x, point[0].y, depth/2.0);
+                    int segments = edge->angle() / 5.0;
+                    if (segments < 2) segments = 2;
+
+                    double theta = edge->angle() / double(segments);
+
+                    for (int i = 0; i < segments + 1; i++)
+                    {
+                        double arc = (startAngle + i*theta)/180.0*M_PI;
+
+                        double x = radius * cos(arc);
+                        double y = radius * sin(arc);
+
+                        glVertex3d(center.x + x, center.y + y, -depth/2.0);
+                        glVertex3d(center.x + x, center.y + y, depth/2.0);
+                    }
+                }
+                glEnd();
             }
-            glEnd();
         }
         else
         {
-            // side
             glBegin(GL_TRIANGLES);
-            for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_triangles(); i++)
+            QMapIterator<SceneLabel*, QList<Triangle> > i(labels);
+            while (i.hasNext())
             {
-                for (int j = 0; j < 3; j++)
-                {
-                    point[j].x = linVert[linTris[i][j]][0];
-                    point[j].y = linVert[linTris[i][j]][1];
-                    value[j]   = linVert[linTris[i][j]][2];
-                }
+                i.next();
+                if (i.key()->isHole())
+                    continue;
 
-                if (!Agros2D::problem()->configView()->scalarRangeAuto)
+                foreach (Triangle triangle, i.value())
                 {
-                    double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                    if (avgValue < Agros2D::problem()->configView()->scalarRangeMin || avgValue > Agros2D::problem()->configView()->scalarRangeMax)
-                        continue;
-                }
-
-                for (int j = 0; j <= 360; j = j + 90)
-                {
-                    glVertex3d(point[0].x * cos(j/180.0*M_PI), point[0].y, point[0].x * sin(j/180.0*M_PI));
-                    glVertex3d(point[1].x * cos(j/180.0*M_PI), point[1].y, point[1].x * sin(j/180.0*M_PI));
-                    glVertex3d(point[2].x * cos(j/180.0*M_PI), point[2].y, point[2].x * sin(j/180.0*M_PI));
+                    for (int j = 0; j <= 360; j = j + 90)
+                    {
+                        glVertex3d(triangle.a.x * cos(j/180.0*M_PI), triangle.a.y, triangle.a.x * sin(j/180.0*M_PI));
+                        glVertex3d(triangle.b.x * cos(j/180.0*M_PI), triangle.b.y, triangle.b.x * sin(j/180.0*M_PI));
+                        glVertex3d(triangle.c.x * cos(j/180.0*M_PI), triangle.c.y, triangle.c.x * sin(j/180.0*M_PI));
+                    }
                 }
             }
             glEnd();
 
-            // symmetry
-            glBegin(GL_QUADS);
-            for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_edges(); i++)
+            // length
+            foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
             {
-                // draw only boundary edges
-                if (!linEdgesMarkers[i]) continue;
-
-                for (int j = 0; j < 2; j++)
-                {
-                    point[j].x = linVert[linEdges[i][j]][0];
-                    point[j].y = linVert[linEdges[i][j]][1];
-                    value[j]   = linVert[linEdges[i][j]][2];
-                }
-
-                if (!Agros2D::problem()->configView()->scalarRangeAuto)
-                {
-                    double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                    if (avgValue < Agros2D::problem()->configView()->scalarRangeMin || avgValue > Agros2D::problem()->configView()->scalarRangeMax)
-                        continue;
-                }
-
                 int count = 29.0;
                 double step = 360.0/count;
-                for (int j = 0; j < count; j++)
+                glBegin(GL_TRIANGLE_STRIP);
+                if (edge->isStraight())
                 {
-                    glVertex3d(point[0].x * cos((j+0)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+0)*step/180.0*M_PI));
-                    glVertex3d(point[1].x * cos((j+0)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+0)*step/180.0*M_PI));
-                    glVertex3d(point[1].x * cos((j+1)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+1)*step/180.0*M_PI));
-                    glVertex3d(point[0].x * cos((j+1)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+1)*step/180.0*M_PI));
+                    for (int j = 0; j < count + 1; j++)
+                    {
+                        glVertex3d(edge->nodeStart()->point().x * cos((j+0)*step/180.0*M_PI), edge->nodeStart()->point().y, edge->nodeStart()->point().x * sin((j+0)*step/180.0*M_PI));
+                        glVertex3d(edge->nodeEnd()->point().x * cos((j+0)*step/180.0*M_PI), edge->nodeEnd()->point().y, edge->nodeEnd()->point().x * sin((j+0)*step/180.0*M_PI));
+                    }
                 }
+                else
+                {
+                    Point center = edge->center();
+                    double radius = edge->radius();
+                    double startAngle = atan2(center.y - edge->nodeStart()->point().y,
+                                              center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
+
+                    int segments = edge->angle() / 5.0;
+                    if (segments < 2) segments = 2;
+
+                    double theta = edge->angle() / double(segments);
+
+                    for (int i = 0; i < segments; i++)
+                    {
+                        for (int j = 0; j < count + 1; j++)
+                        {
+                            double arc1 = (startAngle + i*theta)/180.0*M_PI;
+                            double arc2 = (startAngle + (i+1)*theta)/180.0*M_PI;
+
+                            double x1 = radius * cos(arc1);
+                            double y1 = radius * sin(arc1);
+                            double x2 = radius * cos(arc2);
+                            double y2 = radius * sin(arc2);
+
+                            glVertex3d(x1 * cos((j+0)*step/180.0*M_PI), y1, x1 * sin((j+0)*step/180.0*M_PI));
+                            glVertex3d(x2 * cos((j+0)*step/180.0*M_PI), y2, x2 * sin((j+0)*step/180.0*M_PI));
+                        }
+                    }
+                }
+                glEnd();
             }
-            glEnd();
         }
 
         glDisable(GL_POLYGON_OFFSET_FILL);
