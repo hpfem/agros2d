@@ -1,0 +1,1016 @@
+// This file is part of Agros2D.
+//
+// Agros2D is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// Agros2D is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Agros2D.  If not, see <http://www.gnu.org/licenses/>.
+//
+// hp-FEM group (http://hpfem.org/)
+// University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
+// Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
+
+#include "sceneview_particle.h"
+
+#include "util.h"
+#include "util/global.h"
+#include "util/constants.h"
+
+#include "gui/lineeditdouble.h"
+
+#include "particle/particle_tracing.h"
+
+#include "scene.h"
+#include "hermes2d/problem.h"
+#include "logview.h"
+
+#include "pythonlab/pythonengine_agros.h"
+
+#include "scenebasic.h"
+#include "scenenode.h"
+#include "sceneedge.h"
+#include "scenelabel.h"
+#include "scenemarker.h"
+
+#include "hermes2d/module.h"
+
+#include "hermes2d/field.h"
+#include "hermes2d/problem_config.h"
+
+const double minWidth = 110;
+
+ParticleTracingWidget::ParticleTracingWidget(SceneViewParticleTracing *sceneView, QWidget *parent): QWidget(parent)
+{
+    this->m_sceneViewParticleTracing = sceneView;
+
+    setMinimumWidth(160);
+    setObjectName("ParticleTracingView");
+
+    createControls();
+
+    connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(refresh()));
+
+    updateControls();
+
+    connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(updateControls()));
+    connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(updateControls()));
+}
+
+ParticleTracingWidget::~ParticleTracingWidget()
+{
+}
+
+void ParticleTracingWidget::createControls()
+{
+    // particle tracing
+    chkParticleIncludeRelativisticCorrection = new QCheckBox(tr("Relativistic correction"));
+    txtParticleNumberOfParticles = new QSpinBox(this);
+    txtParticleNumberOfParticles->setMinimum(1);
+    txtParticleNumberOfParticles->setMaximum(200);
+    txtParticleStartingRadius = new LineEditDouble();
+    txtParticleMass = new LineEditDouble();
+    txtParticleConstant = new LineEditDouble();
+    lblParticlePointX = new QLabel();
+    lblParticlePointY = new QLabel();
+    txtParticlePointX = new LineEditDouble();
+    txtParticlePointY = new LineEditDouble();
+    lblParticleVelocityX = new QLabel();
+    lblParticleVelocityY = new QLabel();
+    txtParticleVelocityX = new LineEditDouble();
+    txtParticleVelocityY = new LineEditDouble();
+    lblParticleCustomForceX = new QLabel();
+    lblParticleCustomForceY = new QLabel();
+    lblParticleCustomForceZ = new QLabel();
+    txtParticleCustomForceX = new LineEditDouble();
+    txtParticleCustomForceY = new LineEditDouble();
+    txtParticleCustomForceZ = new LineEditDouble();
+    txtParticleMaximumRelativeError = new LineEditDouble();
+    txtParticleMinimumStep = new LineEditDouble();
+    chkParticleReflectOnDifferentMaterial = new QCheckBox(tr("Reflection on different material"));
+    chkParticleReflectOnBoundary = new QCheckBox(tr("Reflection on boundary"));
+    txtParticleCoefficientOfRestitution = new LineEditDouble(0.0, true);
+    txtParticleCoefficientOfRestitution->setBottom(0.0);
+    txtParticleCoefficientOfRestitution->setTop(1.0);
+    chkParticleColorByVelocity = new QCheckBox(tr("Line color is controlled by velocity"));
+    chkParticleShowPoints = new QCheckBox(tr("Show points"));
+    txtParticleMaximumNumberOfSteps = new QSpinBox();
+    txtParticleMaximumNumberOfSteps->setMinimum(10);
+    txtParticleMaximumNumberOfSteps->setMaximum(100000);
+    txtParticleMaximumNumberOfSteps->setSingleStep(10);
+    txtParticleDragDensity = new LineEditDouble();
+    txtParticleDragCoefficient = new LineEditDouble();
+    txtParticleDragReferenceArea = new LineEditDouble();
+    lblParticleMotionEquations = new QLabel();
+
+    // QPushButton *btnParticleDefault = new QPushButton(tr("Default"));
+    // connect(btnParticleDefault, SIGNAL(clicked()), this, SLOT(doParticleDefault()));
+
+    // initial particle position
+    QGridLayout *gridLayoutInitialPosition = new QGridLayout();
+    gridLayoutInitialPosition->addWidget(lblParticlePointX, 0, 0);
+    gridLayoutInitialPosition->addWidget(txtParticlePointX, 0, 1);
+    gridLayoutInitialPosition->addWidget(lblParticlePointY, 1, 0);
+    gridLayoutInitialPosition->addWidget(txtParticlePointY, 1, 1);
+
+    QGroupBox *grpInitialPosition = new QGroupBox(tr("Initial particle position"));
+    grpInitialPosition->setLayout(gridLayoutInitialPosition);
+
+    // initial particle velocity
+    QGridLayout *gridLayoutInitialVelocity = new QGridLayout();
+    gridLayoutInitialVelocity->addWidget(lblParticleVelocityX, 0, 0);
+    gridLayoutInitialVelocity->addWidget(txtParticleVelocityX, 0, 1);
+    gridLayoutInitialVelocity->addWidget(lblParticleVelocityY, 1, 0);
+    gridLayoutInitialVelocity->addWidget(txtParticleVelocityY, 1, 1);
+
+    QGroupBox *grpInitialVelocity = new QGroupBox(tr("Initial particle velocity"));
+    grpInitialVelocity->setLayout(gridLayoutInitialVelocity);
+
+    // reflection
+    QGridLayout *gridLayoutReflection = new QGridLayout();
+    gridLayoutReflection->setColumnMinimumWidth(0, minWidth);
+    gridLayoutReflection->setColumnStretch(1, 1);
+    gridLayoutReflection->addWidget(chkParticleReflectOnDifferentMaterial, 0, 0, 1, 2);
+    gridLayoutReflection->addWidget(chkParticleReflectOnBoundary, 1, 0, 1, 2);
+    gridLayoutReflection->addWidget(new QLabel(tr("Coefficient of restitution (-):")), 2, 0);
+    gridLayoutReflection->addWidget(txtParticleCoefficientOfRestitution, 2, 1);
+    gridLayoutReflection->addWidget(new QLabel(""), 10, 0);
+    gridLayoutReflection->setRowStretch(10, 1);
+
+    QGroupBox *grpReflection = new QGroupBox(tr("Reflection"));
+    grpReflection->setLayout(gridLayoutReflection);
+
+    // Lorentz force
+    QGridLayout *gridLayoutLorentzForce = new QGridLayout();
+    gridLayoutLorentzForce->addWidget(new QLabel(tr("Equation:")), 0, 0);
+    gridLayoutLorentzForce->addWidget(new QLabel(QString("<i><b>F</b></i><sub>L</sub> = <i>Q</i> (<i><b>E</b></i> + <i><b>v</b></i> x <i><b>B</b></i>)")), 0, 1);
+    gridLayoutLorentzForce->addWidget(new QLabel(tr("Charge (C):")), 1, 0);
+    gridLayoutLorentzForce->addWidget(txtParticleConstant, 1, 1);
+
+    QGroupBox *grpLorentzForce = new QGroupBox(tr("Lorentz force"));
+    grpLorentzForce->setLayout(gridLayoutLorentzForce);
+
+    // drag force
+    QGridLayout *gridLayoutDragForce = new QGridLayout();
+    gridLayoutDragForce->setColumnMinimumWidth(0, minWidth);
+    gridLayoutDragForce->setColumnStretch(1, 1);
+    gridLayoutDragForce->addWidget(new QLabel(tr("Equation:")), 0, 0);
+    gridLayoutDragForce->addWidget(new QLabel(QString("<i><b>F</b></i><sub>D</sub> = - &frac12; <i>&rho;</i> <i>v</i><sup>2</sup> <i>C</i><sub>D</sub> <i>S</i> &sdot; <i><b>v</b></i><sub>0</sub>")), 0, 1);
+    gridLayoutDragForce->addWidget(new QLabel(tr("Density (kg/m<sup>3</sup>):")), 1, 0);
+    gridLayoutDragForce->addWidget(txtParticleDragDensity, 1, 1);
+    gridLayoutDragForce->addWidget(new QLabel(tr("Reference area (m<sup>2</sup>):")), 2, 0);
+    gridLayoutDragForce->addWidget(txtParticleDragReferenceArea, 2, 1);
+    gridLayoutDragForce->addWidget(new QLabel(tr("Coefficient (-):")), 3, 0);
+    gridLayoutDragForce->addWidget(txtParticleDragCoefficient, 3, 1);
+
+    QGroupBox *grpDragForce = new QGroupBox(tr("Drag force"));
+    grpDragForce->setLayout(gridLayoutDragForce);
+
+    // custom force
+    QGridLayout *gridCustomForce = new QGridLayout();
+    gridCustomForce->addWidget(lblParticleCustomForceX, 0, 0);
+    gridCustomForce->addWidget(txtParticleCustomForceX, 0, 1);
+    gridCustomForce->addWidget(lblParticleCustomForceY, 1, 0);
+    gridCustomForce->addWidget(txtParticleCustomForceY, 1, 1);
+    gridCustomForce->addWidget(lblParticleCustomForceZ, 2, 0);
+    gridCustomForce->addWidget(txtParticleCustomForceZ, 2, 1);
+
+    QGroupBox *grpCustomForce = new QGroupBox(tr("Custom force"));
+    grpCustomForce->setLayout(gridCustomForce);
+
+    // forces
+    QVBoxLayout *layoutForces = new QVBoxLayout();
+    layoutForces->addWidget(grpLorentzForce);
+    layoutForces->addWidget(grpDragForce);
+    layoutForces->addWidget(grpCustomForce);
+    layoutForces->addStretch(1);
+
+    QWidget *widgetForces = new QWidget(this);
+    widgetForces->setLayout(layoutForces);
+
+    // solver
+    QGridLayout *gridLayoutSolver = new QGridLayout();
+    gridLayoutSolver->addWidget(chkParticleIncludeRelativisticCorrection, 0, 0);
+    gridLayoutSolver->addWidget(new QLabel(QString("<i>m</i><sub>p</sub> = m / (1 - v<sup>2</sup>/c<sup>2</sup>)<sup>1/2</sup>")), 0, 1);
+    gridLayoutSolver->addWidget(new QLabel(tr("Maximum relative error (%):")), 1, 0);
+    gridLayoutSolver->addWidget(txtParticleMaximumRelativeError, 1, 1);
+    gridLayoutSolver->addWidget(new QLabel(tr("Minimum step (m):")), 2, 0);
+    gridLayoutSolver->addWidget(txtParticleMinimumStep, 2, 1);
+    gridLayoutSolver->addWidget(new QLabel(tr("Maximum number of steps:")), 3, 0);
+    gridLayoutSolver->addWidget(txtParticleMaximumNumberOfSteps, 3, 1);
+    gridLayoutSolver->addWidget(new QLabel(""), 10, 0);
+    gridLayoutSolver->setRowStretch(10, 1);
+
+    QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
+    grpSolver->setLayout(gridLayoutSolver);
+
+    // settings
+    QGridLayout *gridLayoutSettings = new QGridLayout();
+    gridLayoutSettings->addWidget(chkParticleColorByVelocity, 2, 0, 1, 2);
+    gridLayoutSettings->addWidget(chkParticleShowPoints, 3, 0, 1, 2);
+    gridLayoutSettings->addWidget(new QLabel(""), 10, 0);
+    gridLayoutSettings->setRowStretch(10, 1);
+
+    QGroupBox *grpSettings = new QGroupBox(tr("Settings"));
+    grpSettings->setLayout(gridLayoutSettings);
+
+    // tab widget
+    QToolBox *tbxWorkspace = new QToolBox();
+    tbxWorkspace->addItem(widgetForces, icon(""), tr("Forces"));
+    tbxWorkspace->addItem(grpReflection, icon(""), tr("Reflection"));
+    tbxWorkspace->addItem(grpSolver, icon(""), tr("Solver"));
+    tbxWorkspace->addItem(grpSettings, icon(""), tr("Settings"));
+
+    QGridLayout *layoutParticle = new QGridLayout();
+    layoutParticle->setMargin(0);
+    layoutParticle->addWidget(new QLabel(tr("Equations:")), 0, 0);
+    layoutParticle->addWidget(lblParticleMotionEquations, 1, 0, 1, 2);
+    layoutParticle->addWidget(new QLabel(tr("Number of particles:")), 2, 0);
+    layoutParticle->addWidget(txtParticleNumberOfParticles, 2, 1);
+    layoutParticle->addWidget(new QLabel(tr("Particles dispersion (m):")), 3, 0);
+    layoutParticle->addWidget(txtParticleStartingRadius, 3, 1);
+    layoutParticle->addWidget(new QLabel(tr("Mass (kg):")), 4, 0);
+    layoutParticle->addWidget(txtParticleMass, 4, 1);
+    layoutParticle->addWidget(grpInitialPosition, 5, 0, 1, 2);
+    layoutParticle->addWidget(grpInitialVelocity, 6, 0, 1, 2);
+    layoutParticle->addWidget(tbxWorkspace, 7, 0, 1, 2);
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(layoutParticle);
+
+    QScrollArea *widgetArea = new QScrollArea();
+    widgetArea->setFrameShape(QFrame::NoFrame);
+    widgetArea->setWidgetResizable(true);
+    widgetArea->setWidget(widget);
+
+    // dialog buttons
+    QPushButton *btnOK = new QPushButton(tr("Apply"));
+    connect(btnOK, SIGNAL(clicked()), SLOT(doApply()));
+
+    QVBoxLayout *layoutMain = new QVBoxLayout();
+    layoutMain->addWidget(widgetArea, 1);
+    layoutMain->addWidget(btnOK, 0, Qt::AlignRight);
+
+    setLayout(layoutMain);
+}
+
+void ParticleTracingWidget::updateControls()
+{
+    // particle tracing
+    chkParticleIncludeRelativisticCorrection->setChecked(Agros2D::problem()->configView()->particleIncludeRelativisticCorrection);
+    txtParticleNumberOfParticles->setValue(Agros2D::problem()->configView()->particleNumberOfParticles);
+    txtParticleStartingRadius->setValue(Agros2D::problem()->configView()->particleStartingRadius);
+    txtParticleMass->setValue(Agros2D::problem()->configView()->particleMass);
+    txtParticleConstant->setValue(Agros2D::problem()->configView()->particleConstant);
+    txtParticlePointX->setValue(Agros2D::problem()->configView()->particleStart.x);
+    txtParticlePointY->setValue(Agros2D::problem()->configView()->particleStart.y);
+    txtParticleVelocityX->setValue(Agros2D::problem()->configView()->particleStartVelocity.x);
+    txtParticleVelocityY->setValue(Agros2D::problem()->configView()->particleStartVelocity.y);
+    chkParticleReflectOnDifferentMaterial->setChecked(Agros2D::problem()->configView()->particleReflectOnDifferentMaterial);
+    chkParticleReflectOnBoundary->setChecked(Agros2D::problem()->configView()->particleReflectOnBoundary);
+    txtParticleCoefficientOfRestitution->setValue(Agros2D::problem()->configView()->particleCoefficientOfRestitution);
+    txtParticleCustomForceX->setValue(Agros2D::problem()->configView()->particleCustomForce.x);
+    txtParticleCustomForceY->setValue(Agros2D::problem()->configView()->particleCustomForce.y);
+    txtParticleCustomForceZ->setValue(Agros2D::problem()->configView()->particleCustomForce.z);
+    txtParticleMaximumRelativeError->setValue(Agros2D::problem()->configView()->particleMaximumRelativeError);
+    txtParticleMinimumStep->setValue(Agros2D::problem()->configView()->particleMinimumStep);
+    txtParticleMaximumNumberOfSteps->setValue(Agros2D::problem()->configView()->particleMaximumNumberOfSteps);
+    chkParticleColorByVelocity->setChecked(Agros2D::problem()->configView()->particleColorByVelocity);
+    chkParticleShowPoints->setChecked(Agros2D::problem()->configView()->particleShowPoints);
+    txtParticleDragDensity->setValue(Agros2D::problem()->configView()->particleDragDensity);
+    txtParticleDragReferenceArea->setValue(Agros2D::problem()->configView()->particleDragReferenceArea);
+    txtParticleDragCoefficient->setValue(Agros2D::problem()->configView()->particleDragCoefficient);
+
+    lblParticlePointX->setText(QString("%1 (m):").arg(Agros2D::problem()->config()->labelX()));
+    lblParticlePointY->setText(QString("%1 (m):").arg(Agros2D::problem()->config()->labelY()));
+    lblParticleVelocityX->setText(QString("%1 (m/s):").arg(Agros2D::problem()->config()->labelX()));
+    lblParticleVelocityY->setText(QString("%1 (m/s):").arg(Agros2D::problem()->config()->labelY()));
+    lblParticleCustomForceX->setText(QString("%1 (N):").arg(Agros2D::problem()->config()->labelX()));
+    lblParticleCustomForceY->setText(QString("%1 (N):").arg(Agros2D::problem()->config()->labelY()));
+    lblParticleCustomForceZ->setText(QString("%1 (N):").arg(Agros2D::problem()->config()->labelZ()));
+
+    if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
+        lblParticleMotionEquations->setText(QString("<i>x</i>\" = <i>F</i><sub>x</sub> / <i>m</i>, &nbsp; <i>y</i>\" = <i>F</i><sub>y</sub> / <i>m</i>, &nbsp; <i>z</i>\" = <i>F</i><sub>z</sub> / <i>m</i>"));
+    else
+        lblParticleMotionEquations->setText(QString("<i>r</i>\" = <i>F</i><sub>r</sub> / <i>m</i> + <i>r</i> (<i>&phi;</i>')<sup>2</sup>, &nbsp; <i>z</i>\" = <i>F</i><sub>z</sub> / <i>m</i>, &nbsp; <i>&phi;</i>\" = <i>F</i><sub>&phi;</sub> / <i>m</i> - 2<i>r</i> <i>r</i>' <i>&phi;</i>' / <i>r</i>"));
+}
+
+void ParticleTracingWidget::doParticleDefault()
+{
+    txtParticleNumberOfParticles->setValue(PARTICLENUMBEROFPARTICLES);
+    txtParticleStartingRadius->setValue(PARTICLESTARTINGRADIUS);
+    chkParticleIncludeRelativisticCorrection->setChecked(PARTICLEINCLUDERELATIVISTICCORRECTION);
+    txtParticleMass->setValue(PARTICLEMASS);
+    txtParticleConstant->setValue(PARTICLECONSTANT);
+    txtParticlePointX->setValue(PARTICLESTARTX);
+    txtParticlePointY->setValue(PARTICLESTARTY);
+    txtParticleVelocityX->setValue(PARTICLESTARTVELOCITYX);
+    txtParticleVelocityY->setValue(PARTICLESTARTVELOCITYY);
+    chkParticleReflectOnDifferentMaterial->setChecked(PARTICLEREFLECTONDIFFERENTMATERIAL);
+    chkParticleReflectOnBoundary->setChecked(PARTICLEREFLECTONBOUNDARY);
+    txtParticleCoefficientOfRestitution->setValue(PARTICLECOEFFICIENTOFRESTITUTION);
+    txtParticleCustomForceX->setValue(PARTICLECUSTOMFORCEX);
+    txtParticleCustomForceY->setValue(PARTICLECUSTOMFORCEY);
+    txtParticleCustomForceZ->setValue(PARTICLECUSTOMFORCEZ);
+    txtParticleMaximumRelativeError->setValue(PARTICLEMAXIMUMRELATIVEERROR);
+    txtParticleMinimumStep->setValue(PARTICLEMINIMUMSTEP);
+    txtParticleMaximumNumberOfSteps->setValue(PARTICLEMAXIMUMNUMBEROFSTEPS);
+    chkParticleColorByVelocity->setChecked(PARTICLECOLORBYVELOCITY);
+    chkParticleShowPoints->setChecked(PARTICLESHOWPOINTS);
+    txtParticleDragDensity->setValue(PARTICLEDRAGDENSITY);
+    txtParticleDragReferenceArea->setValue(PARTICLEDRAGREFERENCEAREA);
+    txtParticleDragCoefficient->setValue(PARTICLEDRAGCOEFFICIENT);
+}
+
+void ParticleTracingWidget::refresh()
+{
+
+}
+
+void ParticleTracingWidget::doApply()
+{
+    // particle tracing
+    Agros2D::problem()->configView()->particleIncludeRelativisticCorrection = chkParticleIncludeRelativisticCorrection->isChecked();
+    Agros2D::problem()->configView()->particleNumberOfParticles = txtParticleNumberOfParticles->value();
+    Agros2D::problem()->configView()->particleStartingRadius = txtParticleStartingRadius->value();
+    Agros2D::problem()->configView()->particleMass = txtParticleMass->value();
+    Agros2D::problem()->configView()->particleConstant = txtParticleConstant->value();
+    Agros2D::problem()->configView()->particleStart.x = txtParticlePointX->value();
+    Agros2D::problem()->configView()->particleStart.y = txtParticlePointY->value();
+    Agros2D::problem()->configView()->particleStartVelocity.x = txtParticleVelocityX->value();
+    Agros2D::problem()->configView()->particleStartVelocity.y = txtParticleVelocityY->value();
+    Agros2D::problem()->configView()->particleReflectOnDifferentMaterial = chkParticleReflectOnDifferentMaterial->isChecked();
+    Agros2D::problem()->configView()->particleReflectOnBoundary = chkParticleReflectOnBoundary->isChecked();
+    Agros2D::problem()->configView()->particleCoefficientOfRestitution = txtParticleCoefficientOfRestitution->value();
+    Agros2D::problem()->configView()->particleCustomForce.x = txtParticleCustomForceX->value();
+    Agros2D::problem()->configView()->particleCustomForce.y = txtParticleCustomForceY->value();
+    Agros2D::problem()->configView()->particleCustomForce.z = txtParticleCustomForceZ->value();
+    Agros2D::problem()->configView()->particleMaximumRelativeError = txtParticleMaximumRelativeError->value();
+    Agros2D::problem()->configView()->particleMinimumStep = txtParticleMinimumStep->value();
+    Agros2D::problem()->configView()->particleMaximumNumberOfSteps = txtParticleMaximumNumberOfSteps->value();
+    Agros2D::problem()->configView()->particleColorByVelocity = chkParticleColorByVelocity->isChecked();
+    Agros2D::problem()->configView()->particleShowPoints = chkParticleShowPoints->isChecked();
+    Agros2D::problem()->configView()->particleDragDensity = txtParticleDragDensity->value();
+    Agros2D::problem()->configView()->particleDragCoefficient = txtParticleDragCoefficient->value();
+    Agros2D::problem()->configView()->particleDragReferenceArea = txtParticleDragReferenceArea->value();
+
+    m_sceneViewParticleTracing->processParticleTracing();
+}
+
+// *************************************************************************************************
+
+SceneViewParticleTracing::SceneViewParticleTracing(PostHermes *postHermes, QWidget *parent)
+    : SceneViewCommon3D(postHermes, parent),
+      m_listParticleTracing(-1)
+{
+    createActionsParticleTracing();
+
+    connect(Agros2D::scene(), SIGNAL(defaultValues()), this, SLOT(clear()));
+    connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(clear()));
+
+    connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
+    connect(m_postHermes, SIGNAL(processed()), this, SLOT(refresh()));
+}
+
+SceneViewParticleTracing::~SceneViewParticleTracing()
+{
+}
+
+void SceneViewParticleTracing::createActionsParticleTracing()
+{
+    actSceneModeParticleTracing = new QAction(iconView(), tr("Particle\nTracing"), this);
+    actSceneModeParticleTracing->setShortcut(tr("Ctrl+7"));
+    actSceneModeParticleTracing->setStatusTip(tr("Particle Tracing"));
+    actSceneModeParticleTracing->setCheckable(true);
+}
+
+void SceneViewParticleTracing::mousePressEvent(QMouseEvent *event)
+{
+    SceneViewCommon3D::mousePressEvent(event);
+}
+
+void SceneViewParticleTracing::paintGL()
+{
+    if (!isVisible()) return;
+    makeCurrent();
+
+    glClearColor(Agros2D::problem()->configView()->colorBackground.redF(),
+                 Agros2D::problem()->configView()->colorBackground.greenF(),
+                 Agros2D::problem()->configView()->colorBackground.blueF(), 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    if (Agros2D::problem()->isSolved())
+    {
+        paintParticleTracing();
+
+        // bars
+        if (Agros2D::problem()->configView()->particleColorByVelocity)
+            paintParticleTracingColorBar(m_velocityMin, m_velocityMax);
+    }
+
+    emit labelCenter(tr("Particle tracing"));
+
+    if (Agros2D::problem()->configView()->showAxes) paintAxes();
+}
+
+void SceneViewParticleTracing::resizeGL(int w, int h)
+{
+    SceneViewCommon::resizeGL(w, h);
+}
+
+void SceneViewParticleTracing::paintParticleTracing()
+{
+    if (!Agros2D::problem()->isSolved()) return;
+    if (!particleTracingIsPrepared()) return;
+
+    loadProjection3d(true);
+
+    if (m_listParticleTracing == -1)
+    {
+        m_listParticleTracing = glGenLists(1);
+        glNewList(m_listParticleTracing, GL_COMPILE);
+
+        // gradient background
+        paintBackground();
+
+        RectPoint rect = Agros2D::scene()->boundingBox();
+        double max = qMax(rect.width(), rect.height());
+        double depth = max / Agros2D::problem()->configView()->scalarView3DHeight;
+
+        double3* linVert = m_postHermes->linInitialMeshView().get_vertices();
+        int3* linTris = m_postHermes->linInitialMeshView().get_triangles();
+        int2* linEdges = m_postHermes->linInitialMeshView().get_edges();
+        int* linEdgesMarkers = m_postHermes->linInitialMeshView().get_edge_markers();
+        Point point[3];
+        double value[3];
+
+        glDisable(GL_DEPTH_TEST);
+
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glColor4d(0.2, 0.4, 0.1, 0.3);
+
+        if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
+        {
+            glBegin(GL_TRIANGLES);
+            for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_triangles(); i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    point[j].x = linVert[linTris[i][j]][0];
+                    point[j].y = linVert[linTris[i][j]][1];
+                    value[j]   = linVert[linTris[i][j]][2];
+                }
+
+                if (!Agros2D::problem()->configView()->scalarRangeAuto)
+                {
+                    double avgValue = (value[0] + value[1] + value[2]) / 3.0;
+                    if (avgValue < Agros2D::problem()->configView()->scalarRangeMin || avgValue > Agros2D::problem()->configView()->scalarRangeMax)
+                        continue;
+                }
+
+                // z = - depth / 2.0
+                for (int j = 0; j < 3; j++)
+                    glVertex3d(point[j].x, point[j].y, -depth/2.0);
+
+                // z = + depth / 2.0
+                for (int j = 0; j < 3; j++)
+                    glVertex3d(point[j].x, point[j].y, depth/2.0);
+            }
+            glEnd();
+
+            // length
+            glBegin(GL_QUADS);
+            for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_edges(); i++)
+            {
+                // draw only boundary edges
+                if (!linEdgesMarkers[i]) continue;
+
+                for (int j = 0; j < 2; j++)
+                {
+                    point[j].x = linVert[linEdges[i][j]][0];
+                    point[j].y = linVert[linEdges[i][j]][1];
+                    value[j]   = linVert[linEdges[i][j]][2];
+                }
+
+                if (!Agros2D::problem()->configView()->scalarRangeAuto)
+                {
+                    double avgValue = (value[0] + value[1] + value[2]) / 3.0;
+                    if (avgValue < Agros2D::problem()->configView()->scalarRangeMin || avgValue > Agros2D::problem()->configView()->scalarRangeMax)
+                        continue;
+                }
+
+                glVertex3d(point[0].x, point[0].y, -depth/2.0);
+                glVertex3d(point[1].x, point[1].y, -depth/2.0);
+                glVertex3d(point[1].x, point[1].y, depth/2.0);
+                glVertex3d(point[0].x, point[0].y, depth/2.0);
+            }
+            glEnd();
+        }
+        else
+        {
+            // side
+            glBegin(GL_TRIANGLES);
+            for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_triangles(); i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    point[j].x = linVert[linTris[i][j]][0];
+                    point[j].y = linVert[linTris[i][j]][1];
+                    value[j]   = linVert[linTris[i][j]][2];
+                }
+
+                if (!Agros2D::problem()->configView()->scalarRangeAuto)
+                {
+                    double avgValue = (value[0] + value[1] + value[2]) / 3.0;
+                    if (avgValue < Agros2D::problem()->configView()->scalarRangeMin || avgValue > Agros2D::problem()->configView()->scalarRangeMax)
+                        continue;
+                }
+
+                for (int j = 0; j <= 360; j = j + 90)
+                {
+                    glVertex3d(point[0].x * cos(j/180.0*M_PI), point[0].y, point[0].x * sin(j/180.0*M_PI));
+                    glVertex3d(point[1].x * cos(j/180.0*M_PI), point[1].y, point[1].x * sin(j/180.0*M_PI));
+                    glVertex3d(point[2].x * cos(j/180.0*M_PI), point[2].y, point[2].x * sin(j/180.0*M_PI));
+                }
+            }
+            glEnd();
+
+            // symmetry
+            glBegin(GL_QUADS);
+            for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_edges(); i++)
+            {
+                // draw only boundary edges
+                if (!linEdgesMarkers[i]) continue;
+
+                for (int j = 0; j < 2; j++)
+                {
+                    point[j].x = linVert[linEdges[i][j]][0];
+                    point[j].y = linVert[linEdges[i][j]][1];
+                    value[j]   = linVert[linEdges[i][j]][2];
+                }
+
+                if (!Agros2D::problem()->configView()->scalarRangeAuto)
+                {
+                    double avgValue = (value[0] + value[1] + value[2]) / 3.0;
+                    if (avgValue < Agros2D::problem()->configView()->scalarRangeMin || avgValue > Agros2D::problem()->configView()->scalarRangeMax)
+                        continue;
+                }
+
+                int count = 29.0;
+                double step = 360.0/count;
+                for (int j = 0; j < count; j++)
+                {
+                    glVertex3d(point[0].x * cos((j+0)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+0)*step/180.0*M_PI));
+                    glVertex3d(point[1].x * cos((j+0)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+0)*step/180.0*M_PI));
+                    glVertex3d(point[1].x * cos((j+1)*step/180.0*M_PI), point[1].y, point[1].x * sin((j+1)*step/180.0*M_PI));
+                    glVertex3d(point[0].x * cos((j+1)*step/180.0*M_PI), point[0].y, point[0].x * sin((j+1)*step/180.0*M_PI));
+                }
+            }
+            glEnd();
+        }
+
+        glDisable(GL_POLYGON_OFFSET_FILL);
+
+        // geometry
+        glEnable(GL_DEPTH_TEST);
+
+        glColor4d(0.0, 0.0, 0.0, 0.8);
+        glLineWidth(1.6);
+
+        if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
+        {
+            // top and bottom
+            foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    if (edge->isStraight())
+                    {
+                        glBegin(GL_LINES);
+                        glVertex3d(edge->nodeStart()->point().x, edge->nodeStart()->point().y, - depth/2.0 + j*depth);
+                        glVertex3d(edge->nodeEnd()->point().x, edge->nodeEnd()->point().y, - depth/2.0 + j*depth);
+                        glEnd();
+                    }
+                    else
+                    {
+                        Point center = edge->center();
+                        double radius = edge->radius();
+                        double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
+
+                        double theta = edge->angle() / double(edge->angle()/2 - 1);
+
+                        glBegin(GL_LINE_STRIP);
+                        for (int i = 0; i < edge->angle()/2; i++)
+                        {
+                            double arc = (startAngle + i*theta)/180.0*M_PI;
+
+                            double x = radius * cos(arc);
+                            double y = radius * sin(arc);
+
+                            glVertex3d(center.x + x, center.y + y, - depth/2.0 + j*depth);
+                        }
+                        glEnd();
+                    }
+                }
+            }
+
+            // side
+            glBegin(GL_LINES);
+            foreach (SceneNode *node, Agros2D::scene()->nodes->items())
+            {
+                glVertex3d(node->point().x, node->point().y,  depth/2.0);
+                glVertex3d(node->point().x, node->point().y, -depth/2.0);
+            }
+            glEnd();
+        }
+        else
+        {
+            // top
+            foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+            {
+                for (int j = 0; j <= 360; j = j + 90)
+                {
+                    if (edge->isStraight())
+                    {
+                        glBegin(GL_LINES);
+                        glVertex3d(edge->nodeStart()->point().x * cos(j/180.0*M_PI),
+                                   edge->nodeStart()->point().y,
+                                   edge->nodeStart()->point().x * sin(j/180.0*M_PI));
+                        glVertex3d(edge->nodeEnd()->point().x * cos(j/180.0*M_PI),
+                                   edge->nodeEnd()->point().y,
+                                   edge->nodeEnd()->point().x * sin(j/180.0*M_PI));
+                        glEnd();
+                    }
+                    else
+                    {
+                        Point center = edge->center();
+                        double radius = edge->radius();
+                        double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
+
+                        double theta = edge->angle() / double(edge->angle()/2 - 1);
+
+                        glBegin(GL_LINE_STRIP);
+                        for (int i = 0; i < edge->angle()/2; i++)
+                        {
+                            double arc = (startAngle + i*theta)/180.0*M_PI;
+
+                            double x = radius * cos(arc);
+                            double y = radius * sin(arc);
+
+                            glVertex3d((center.x + x) * cos(j/180.0*M_PI),
+                                       center.y + y,
+                                       (center.x + x) * sin(j/180.0*M_PI));
+                        }
+                        glEnd();
+                    }
+                }
+            }
+
+            // side
+            foreach (SceneNode *node, Agros2D::scene()->nodes->items())
+            {
+                int count = 29.0;
+                double step = 360.0/count;
+
+                glBegin(GL_LINE_STRIP);
+                for (int j = 0; j < count; j++)
+                {
+                    glVertex3d(node->point().x * cos((j+0)*step/180.0*M_PI),
+                               node->point().y,
+                               node->point().x * sin((j+0)*step/180.0*M_PI));
+                    glVertex3d(node->point().x * cos((j+1)*step/180.0*M_PI),
+                               node->point().y,
+                               node->point().x * sin((j+1)*step/180.0*M_PI));
+                }
+                glEnd();
+            }
+        }
+
+        double velocityMin = m_velocityMin;
+        double velocityMax = m_velocityMax;
+
+        double positionMin = m_positionMin;
+        double positionMax = m_positionMax;
+
+        if ((positionMax - positionMin) < EPS_ZERO)
+        {
+            positionMin = -1.0;
+            positionMax = +1.0;
+        }
+
+        // particle visualization
+        for (int k = 0; k < Agros2D::problem()->configView()->particleNumberOfParticles; k++)
+        {
+            // starting point
+            /*
+            glPointSize(Agros2D::problem()->configView()->nodeSize * 1.2);
+            glColor3d(0.0, 0.0, 0.0);
+            glBegin(GL_POINTS);
+            if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
+                glVertex3d(m_positionsList[k][0].x, m_positionsList[k][0].y, -depth/2.0 + (m_positionsList[k][0].z - positionMin) * depth/(positionMax - positionMin));
+            else
+                glVertex3d(m_positionsList[k][0].x * cos(m_positionsList[k][0].z), m_positionsList[k][0].y, m_positionsList[k][0].x * sin(m_positionsList[k][0].z));
+            glEnd();
+            */
+
+            // lines
+            glLineWidth(3.0);
+
+            if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
+            {
+                glColor3d(rand() / double(RAND_MAX),
+                          rand() / double(RAND_MAX),
+                          rand() / double(RAND_MAX));
+
+                glBegin(GL_LINES);
+                for (int i = 0; i < m_positionsList[k].length() - 1; i++)
+                {
+                    if (Agros2D::problem()->configView()->particleColorByVelocity)
+                        glColor3d(1.0 - 0.8 * (m_velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin),
+                                  1.0 - 0.8 * (m_velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin),
+                                  1.0 - 0.8 * (m_velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin));
+
+                    glVertex3d(m_positionsList[k][i].x,
+                               m_positionsList[k][i].y,
+                               -depth/2.0 + (m_positionsList[k][i].z - positionMin) * depth/(positionMax - positionMin));
+                    glVertex3d(m_positionsList[k][i+1].x,
+                            m_positionsList[k][i+1].y,
+                            -depth/2.0 + (m_positionsList[k][i+1].z - positionMin) * depth/(positionMax - positionMin));
+                }
+                glEnd();
+
+                // points
+                if (Agros2D::problem()->configView()->particleShowPoints)
+                {
+                    glPointSize(Agros2D::problem()->configView()->nodeSize * 3.0/5.0);
+
+                    glBegin(GL_POINTS);
+                    for (int i = 0; i < m_positionsList[k].length(); i++)
+                    {
+                        glVertex3d(m_positionsList[k][i].x,
+                                   m_positionsList[k][i].y,
+                                   -depth/2.0 + (m_positionsList[k][i].z - positionMin) * depth/(positionMax - positionMin));
+                    }
+                    glEnd();
+                }
+            }
+            else
+            {
+                int particles = 15;
+                int stepAngle = 360 / particles;
+
+                for (int l = 0; l < particles; l++)
+                {
+                    glColor3d(rand() / double(RAND_MAX),
+                              rand() / double(RAND_MAX),
+                              rand() / double(RAND_MAX));
+
+                    glBegin(GL_LINES);
+                    for (int i = 0; i < m_positionsList[k].length() - 1; i++)
+                    {
+                        if (Agros2D::problem()->configView()->particleColorByVelocity)
+                            glColor3d(1.0 - 0.8 * (m_velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin),
+                                      1.0 - 0.8 * (m_velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin),
+                                      1.0 - 0.8 * (m_velocitiesList[k][i].magnitude() - velocityMin) / (velocityMax - velocityMin));
+
+                        glVertex3d(m_positionsList[k][i].x * cos(m_positionsList[k][i].z + l * stepAngle/180.0 * M_PI),
+                                   m_positionsList[k][i].y,
+                                   m_positionsList[k][i].x * sin(m_positionsList[k][i].z + l * stepAngle/180.0 * M_PI));
+                        glVertex3d(m_positionsList[k][i+1].x * cos(m_positionsList[k][i+1].z + l * stepAngle/180.0 * M_PI),
+                                m_positionsList[k][i+1].y,
+                                m_positionsList[k][i+1].x * sin(m_positionsList[k][i+1].z + l * stepAngle/180.0 * M_PI));
+
+                    }
+                    glEnd();
+
+                    // points
+                    glBegin(GL_POINTS);
+                    if (Agros2D::problem()->configView()->particleShowPoints)
+                    {
+                        glPointSize(Agros2D::problem()->configView()->nodeSize * 3.0/5.0);
+                        for (int i = 0; i < m_positionsList[k].length(); i++)
+                        {
+                            glVertex3d(m_positionsList[k][i].x * cos(m_positionsList[k][i].z + l * stepAngle/180.0 * M_PI),
+                                       m_positionsList[k][i].y,
+                                       m_positionsList[k][i].x * sin(m_positionsList[k][i].z + l * stepAngle/180.0 * M_PI));
+                        }
+                    }
+                    glEnd();
+                }
+            }
+        }
+
+        glDisable(GL_LINE_SMOOTH);
+        glDisable(GL_BLEND);
+        glDisable(GL_DEPTH_TEST);
+
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+        glEndList();
+
+        glCallList(m_listParticleTracing);
+    }
+    else
+    {
+        glCallList(m_listParticleTracing);
+    }
+}
+
+void SceneViewParticleTracing::paintParticleTracingColorBar(double min, double max)
+{
+    if (!Agros2D::problem()->isSolved()) return;
+
+    loadProjectionViewPort();
+
+    glScaled(2.0 / width(), 2.0 / height(), 1.0);
+    glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
+
+    // dimensions
+    int textWidth = m_fontPost->glyphs[GLYPH_M].width * (QString::number(-1.0, '+e', Agros2D::problem()->configView()->scalarDecimalPlace).length() + 1);
+    int textHeight = m_fontPost->height;
+    Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // contextHeight() - 20.0
+    Point scaleBorder = Point(10.0, (Agros2D::problem()->configView()->showRulers) ? 1.8 * textHeight : 10.0);
+    double scaleLeft = (width() - (45.0 + textWidth));
+    int numTicks = 11;
+
+    // blended rectangle
+    drawBlend(Point(scaleLeft, scaleBorder.y), Point(scaleLeft + scaleSize.x - scaleBorder.x, scaleBorder.y + scaleSize.y),
+              0.91, 0.91, 0.91);
+
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    // palette border
+    glColor3d(0.0, 0.0, 0.0);
+    glBegin(GL_QUADS);
+    glVertex2d(scaleLeft + 30.0, scaleBorder.y + scaleSize.y - 50.0);
+    glVertex2d(scaleLeft + 10.0, scaleBorder.y + scaleSize.y - 50.0);
+    glVertex2d(scaleLeft + 10.0, scaleBorder.y + 10.0);
+    glVertex2d(scaleLeft + 30.0, scaleBorder.y + 10.0);
+    glEnd();
+
+    glDisable(GL_POLYGON_OFFSET_FILL);
+
+    // palette
+    glBegin(GL_QUADS);
+    glColor3d(0.0, 0.0, 0.0);
+    glVertex2d(scaleLeft + 28.0, scaleBorder.y + scaleSize.y - 52.0);
+    glVertex2d(scaleLeft + 12.0, scaleBorder.y + scaleSize.y - 52.0);
+    glColor3d(0.8, 0.8, 0.8);
+    glVertex2d(scaleLeft + 12.0, scaleBorder.y + 12.0);
+    glVertex2d(scaleLeft + 28.0, scaleBorder.y + 12.0);
+    glEnd();
+
+    // ticks
+    glColor3d(0.0, 0.0, 0.0);
+    glLineWidth(1.0);
+    glBegin(GL_LINES);
+    for (int i = 1; i < numTicks; i++)
+    {
+        double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
+
+        glVertex2d(scaleLeft + 10.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
+        glVertex2d(scaleLeft + 15.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
+        glVertex2d(scaleLeft + 25.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
+        glVertex2d(scaleLeft + 30.0, scaleBorder.y + scaleSize.y - 49.0 - i*tickY);
+    }
+    glEnd();
+
+    // line
+    glLineWidth(1.0);
+    glBegin(GL_LINES);
+    glVertex2d(scaleLeft + 5.0, scaleBorder.y + scaleSize.y - 31.0);
+    glVertex2d(scaleLeft + scaleSize.x - 15.0, scaleBorder.y + scaleSize.y - 31.0);
+    glEnd();
+
+    // labels
+    for (int i = 1; i < numTicks+1; i++)
+    {
+        double value = min + (double) (i-1) / (numTicks-1) * (max - min);
+
+        if (fabs(value) < EPS_ZERO) value = 0.0;
+        double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
+
+        printPostAt(scaleLeft + 33.0 + ((value >= 0.0) ? m_fontPost->glyphs[GLYPH_M].width : 0.0),
+                    scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
+                    QString::number(value, '+e', Agros2D::problem()->configView()->scalarDecimalPlace));
+    }
+
+    // variable
+    QString str = QString("%1 (m/s)").arg(tr("Vel."));
+
+    printPostAt(scaleLeft + scaleSize.x / 2.0 - m_fontPost->glyphs[GLYPH_M].width  * str.count() / 2.0,
+                scaleBorder.y + scaleSize.y - 20.0,
+                str);
+}
+
+void SceneViewParticleTracing::clearGLLists()
+{
+    if (m_listParticleTracing != -1) glDeleteLists(m_listParticleTracing, 1);
+
+    m_listParticleTracing = -1;
+}
+
+void SceneViewParticleTracing::refresh()
+{
+    clearGLLists();
+
+    // actions
+    actSceneModeParticleTracing->setEnabled(Agros2D::problem()->isSolved());
+    actSetProjectionXY->setEnabled(Agros2D::problem()->isSolved());
+    actSetProjectionXZ->setEnabled(Agros2D::problem()->isSolved());
+    actSetProjectionYZ->setEnabled(Agros2D::problem()->isSolved());
+
+    SceneViewCommon::refresh();
+}
+
+void SceneViewParticleTracing::clear()
+{
+    clearParticleLists();
+
+    SceneViewCommon3D::clear();
+}
+
+void SceneViewParticleTracing::clearParticleLists()
+{
+    // clear lists
+    foreach (QList<Point3> list, m_positionsList)
+        list.clear();
+    m_positionsList.clear();
+
+    foreach (QList<Point3> list, m_velocitiesList)
+        list.clear();
+    m_velocitiesList.clear();
+
+    foreach (QList<double> list, m_timesList)
+        list.clear();
+    m_timesList.clear();
+
+    m_velocityMin = 0.0;
+    m_velocityMax = 0.0;
+}
+
+void SceneViewParticleTracing::processParticleTracing()
+{
+    clearParticleLists();
+
+    if (Agros2D::problem()->isSolved())
+    {
+        Agros2D::log()->printMessage(tr("Post View"), tr("Particle view"));
+
+        m_velocityMin =  numeric_limits<double>::max();
+        m_velocityMax = -numeric_limits<double>::max();
+
+        for (int k = 0; k < Agros2D::problem()->configView()->particleNumberOfParticles; k++)
+        {
+            // position and velocity cache
+            ParticleTracing particleTracing;
+            try
+            {
+                particleTracing.computeTrajectoryParticle(k > 0);
+            }
+            catch (AgrosException& e)
+            {
+                Agros2D::log()->printWarning("Particle tracing", QString("Particle tracing failed, ").append(e.what()));
+                m_velocityMin = 0.0;
+                m_velocityMax = 0.0;
+
+                return;
+            }
+            catch (...)
+            {
+                Agros2D::log()->printWarning("Particle tracing", "Catched unknown exception in particle tracing!");
+                m_velocityMin = 0.0;
+                m_velocityMax = 0.0;
+
+                return;
+            }
+
+            m_positionsList.append(particleTracing.positions());
+            m_velocitiesList.append(particleTracing.velocities());
+            m_timesList.append(particleTracing.times());
+
+            // velocity min and max value
+            if (particleTracing.velocityMin() < m_velocityMin) m_velocityMin = particleTracing.velocityMin();
+            if (particleTracing.velocityMax() > m_velocityMax) m_velocityMax = particleTracing.velocityMax();
+
+            Agros2D::log()->printMessage(tr("Particle Tracing"), tr("Particle %1: %2 steps, final time %3 s").
+                                         arg(k + 1).
+                                         arg(particleTracing.times().count()).
+                                         arg(particleTracing.times().last()));
+        }
+    }
+
+    refresh();
+}

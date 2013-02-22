@@ -40,7 +40,7 @@
 
 PreprocessorWidget::PreprocessorWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidget(parent)
 {
-    this->m_sceneViewGeometry = sceneView;
+    this->m_sceneViewPreprocessor = sceneView;
 
     setMinimumWidth(160);
     setObjectName("PreprocessorView");
@@ -310,18 +310,18 @@ void PreprocessorWidget::doItemSelected(QTreeWidgetItem *item, int role)
         // geometry
         if (SceneBasic *objectBasic = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBasic *>())
         {
-            m_sceneViewGeometry->actSceneModePreprocessor->trigger();
+            m_sceneViewPreprocessor->actSceneModePreprocessor->trigger();
 
             if (dynamic_cast<SceneNode *>(objectBasic))
-                m_sceneViewGeometry->actOperateOnNodes->trigger();
+                m_sceneViewPreprocessor->actOperateOnNodes->trigger();
             if (dynamic_cast<SceneEdge *>(objectBasic))
-                m_sceneViewGeometry->actOperateOnEdges->trigger();
+                m_sceneViewPreprocessor->actOperateOnEdges->trigger();
             if (dynamic_cast<SceneLabel *>(objectBasic))
-                m_sceneViewGeometry->actOperateOnLabels->trigger();
+                m_sceneViewPreprocessor->actOperateOnLabels->trigger();
 
             objectBasic->setSelected(true);
-            m_sceneViewGeometry->refresh();
-            m_sceneViewGeometry->setFocus();
+            m_sceneViewPreprocessor->refresh();
+            m_sceneViewPreprocessor->setFocus();
 
             actProperties->setEnabled(true);
             actDelete->setEnabled(true);
@@ -331,12 +331,12 @@ void PreprocessorWidget::doItemSelected(QTreeWidgetItem *item, int role)
         if (SceneBoundary *objectBoundary = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBoundary *>())
         {
             // select all edges
-            m_sceneViewGeometry->actOperateOnEdges->trigger();
+            m_sceneViewPreprocessor->actOperateOnEdges->trigger();
 
             Agros2D::scene()->edges->haveMarker(objectBoundary).setSelected();
 
-            m_sceneViewGeometry->refresh();
-            m_sceneViewGeometry->setFocus();
+            m_sceneViewPreprocessor->refresh();
+            m_sceneViewPreprocessor->setFocus();
 
             actProperties->setEnabled(true);
             actDelete->setEnabled(true);
@@ -346,12 +346,12 @@ void PreprocessorWidget::doItemSelected(QTreeWidgetItem *item, int role)
         if (SceneMaterial *objectMaterial = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneMaterial *>())
         {
             // select all labels
-            m_sceneViewGeometry->actOperateOnLabels->trigger();
+            m_sceneViewPreprocessor->actOperateOnLabels->trigger();
 
             Agros2D::scene()->labels->haveMarker(objectMaterial).setSelected();
 
-            m_sceneViewGeometry->refresh();
-            m_sceneViewGeometry->setFocus();
+            m_sceneViewPreprocessor->refresh();
+            m_sceneViewPreprocessor->setFocus();
 
             actProperties->setEnabled(true);
             actDelete->setEnabled(true);
@@ -373,7 +373,7 @@ void PreprocessorWidget::doProperties()
         {
             if (objectBasic->showDialog(this) == QDialog::Accepted)
             {
-                m_sceneViewGeometry->refresh();
+                m_sceneViewPreprocessor->refresh();
                 refresh();
             }
             return;
@@ -384,7 +384,7 @@ void PreprocessorWidget::doProperties()
         {
             if (objectBoundary->showDialog(this) == QDialog::Accepted)
             {
-                m_sceneViewGeometry->refresh();
+                m_sceneViewPreprocessor->refresh();
                 refresh();
             }
             return;
@@ -395,7 +395,7 @@ void PreprocessorWidget::doProperties()
         {
             if (objectMaterial->showDialog(this) == QDialog::Accepted)
             {
-                m_sceneViewGeometry->refresh();
+                m_sceneViewPreprocessor->refresh();
                 refresh();
             }
             return;
@@ -438,6 +438,6 @@ void PreprocessorWidget::doDelete()
             Agros2D::scene()->removeBoundary(objectBoundary);
         }
 
-        m_sceneViewGeometry->refresh();
+        m_sceneViewPreprocessor->refresh();
     }
 }

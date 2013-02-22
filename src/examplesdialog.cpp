@@ -31,6 +31,9 @@
 #include "gui/latexviewer.h"
 #include "gui/common.h"
 
+#include "hermes2d/problem.h"
+#include "hermes2d/problem_config.h"
+
 #include "hermes2d/module.h"
 
 #include "ctemplate/template.h"
@@ -235,7 +238,7 @@ void ExamplesDialog::problemInfo(const QString &fileName)
         problemInfo.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
 
         problemInfo.SetValue("NAME_LABEL", tr("Name:").toStdString());
-        problemInfo.SetValue("NAME", eleProblemInfo.toElement().attribute("name").toStdString());
+        problemInfo.SetValue("NAME", QFileInfo(file).baseName().toStdString());
 
         problemInfo.SetValue("COORDINATE_TYPE_LABEL", tr("Coordinate type:").toStdString());
         problemInfo.SetValue("COORDINATE_TYPE", coordinateTypeString(coordinateTypeFromStringKey(eleProblemInfo.toElement().attribute("coordinate_type"))).toStdString());

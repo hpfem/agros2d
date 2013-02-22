@@ -366,8 +366,7 @@ namespace Hermes
               if(elementI > max_element_i)
                   throw Exceptions::MeshLoadFailureException("Wrong element number:%i in subdomain %u.", elementI, subdomains_i);
 
-              // elements_existing[element_is[parsed_xml_domain->subdomains().subdomain().at(subdomains_i).elements()->i().at(element_number_i)]] = elementI;
-              elements_existing[parsed_xml_domain->subdomains().subdomain().at(subdomains_i).elements()->i().at(element_number_i)] = elementI;
+              elements_existing[element_is[parsed_xml_domain->subdomains().subdomain().at(subdomains_i).elements()->i().at(element_number_i)]] = elementI;
             }
             for (int element_i = 0; element_i < element_count; element_i++)
             {
@@ -403,15 +402,13 @@ namespace Hermes
                 &meshes[subdomains_i]->nodes[vertex_vertex_numbers.find(el_q->v2())->second],
                 &meshes[subdomains_i]->nodes[vertex_vertex_numbers.find(el_q->v3())->second],
                 &meshes[subdomains_i]->nodes[vertex_vertex_numbers.find(el_q->v4())->second],
-                NULL, elements_existing[element_i]);
-                // NULL, element_i);
+                NULL, element_i);
               if(el_t != NULL)
                 e = meshes[subdomains_i]->create_triangle(meshes[subdomains_i]->element_markers_conversion.get_internal_marker(element->m()).marker,
                 &meshes[subdomains_i]->nodes[vertex_vertex_numbers.find(el_t->v1())->second],
                 &meshes[subdomains_i]->nodes[vertex_vertex_numbers.find(el_t->v2())->second],
                 &meshes[subdomains_i]->nodes[vertex_vertex_numbers.find(el_t->v3())->second],
-                NULL, elements_existing[element_i]);
-                // NULL, element_i);
+                NULL, element_i);
             }
 
             // Boundary Edge numbers //
@@ -600,6 +597,8 @@ namespace Hermes
       }
     }
 
+    static bool elementCompare (XMLSubdomains::el_t* el_i, XMLSubdomains::el_t* el_j) { return ( el_i->i() < el_j->i() ); }
+
     bool MeshReaderH2DXML::save(const char *filename, Hermes::vector<Mesh *> meshes)
     {
       // For mapping of physical coordinates onto top vertices.
@@ -612,7 +611,7 @@ namespace Hermes
       // Global vertices list.
       XMLMesh::vertices_type vertices;
       // Global elements list.
-      XMLSubdomains::elements_type elements;
+      Hermes::vector<XMLSubdomains::el_t*> elements;
       // Global boudnary edges list.
       XMLSubdomains::edges_type edges;
       // Global curves list.
@@ -678,11 +677,11 @@ namespace Hermes
           {
             if(e->nvert == 3)
             {
-              elements.el().push_back(XMLSubdomains::t_t(vertices_to_vertices.find(e->vn[0]->id)->second, vertices_to_vertices.find(e->vn[1]->id)->second, vertices_to_vertices.find(e->vn[2]->id)->second, meshes[meshes_i]->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str(), e->id));
+              elements.push_back(new XMLSubdomains::t_t(vertices_to_vertices.find(e->vn[0]->id)->second, vertices_to_vertices.find(e->vn[1]->id)->second, vertices_to_vertices.find(e->vn[2]->id)->second, meshes[meshes_i]->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str(), e->id));
             }
             else
             {
-              elements.el().push_back(XMLSubdomains::q_t(vertices_to_vertices.find(e->vn[0]->id)->second, vertices_to_vertices.find(e->vn[1]->id)->second, vertices_to_vertices.find(e->vn[2]->id)->second, meshes[meshes_i]->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str(), e->id, vertices_to_vertices.find(e->vn[3]->id)->second));
+              elements.push_back(new XMLSubdomains::q_t(vertices_to_vertices.find(e->vn[0]->id)->second, vertices_to_vertices.find(e->vn[1]->id)->second, vertices_to_vertices.find(e->vn[2]->id)->second, meshes[meshes_i]->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str(), e->id, vertices_to_vertices.find(e->vn[3]->id)->second));
             }
             baseElementsSaved[e->id] = true;
           }
@@ -758,7 +757,13 @@ namespace Hermes
 
       delete [] baseElementsSaved;
 
-      XMLSubdomains::domain xmldomain(vertices, elements, edges, subdomains);
+      std::sort (elements.begin(), elements.end(), elementCompare);
+
+      XMLSubdomains::elements_type elementsToPass;
+      for(int i = 0; i < elements.size(); i++)
+        elementsToPass.el().push_back(*elements[i]);
+
+      XMLSubdomains::domain xmldomain(vertices, elementsToPass, edges, subdomains);
       xmldomain.curves().set(curves);
 
       std::string mesh_schema_location(Hermes2DApi.get_text_param_value(xmlSchemasDirPath));

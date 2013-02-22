@@ -25,24 +25,25 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 
-static QHash<CoordinateType, QString> coordinateTypeList;
-static QHash<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
-static QHash<SceneViewPost3DMode, QString> sceneViewPost3DModeList;
-static QHash<WeakFormKind, QString> weakFormList;
-static QHash<AdaptivityType, QString> adaptivityTypeList;
-static QHash<TimeStepMethod, QString> timeStepMethodList;
-static QHash<SolutionMode, QString> solutionTypeList;
-static QHash<AnalysisType, QString> analysisTypeList;
-static QHash<CouplingType, QString> couplingTypeList;
-static QHash<LinearityType, QString> linearityTypeList;
-static QHash<MeshType, QString> meshTypeList;
-static QHash<Hermes::MatrixSolverType, QString> matrixSolverTypeList;
-static QHash<Hermes::Hermes2D::SpaceType, QString> spaceTypeList;
-static QHash<PaletteType, QString> paletteTypeList;
-static QHash<PaletteQuality, QString> paletteQualityList;
-static QHash<PaletteOrderType, QString> paletteOrderTypeList;
-static QHash<VectorType, QString> vectorTypeList;
-static QHash<VectorCenter, QString> vectorCenterList;
+// QMap lookup is faster than in a QMap for less than about 10 elements
+static QMap<CoordinateType, QString> coordinateTypeList;
+static QMap<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
+static QMap<SceneViewPost3DMode, QString> sceneViewPost3DModeList;
+static QMap<WeakFormKind, QString> weakFormList;
+static QMap<AdaptivityType, QString> adaptivityTypeList;
+static QMap<TimeStepMethod, QString> timeStepMethodList;
+static QMap<SolutionMode, QString> solutionTypeList;
+static QMap<AnalysisType, QString> analysisTypeList;
+static QMap<CouplingType, QString> couplingTypeList;
+static QMap<LinearityType, QString> linearityTypeList;
+static QMap<MeshType, QString> meshTypeList;
+static QMap<Hermes::MatrixSolverType, QString> matrixSolverTypeList;
+static QMap<Hermes::Hermes2D::SpaceType, QString> spaceTypeList;
+static QMap<PaletteType, QString> paletteTypeList;
+static QMap<PaletteQuality, QString> paletteQualityList;
+static QMap<PaletteOrderType, QString> paletteOrderTypeList;
+static QMap<VectorType, QString> vectorTypeList;
+static QMap<VectorCenter, QString> vectorCenterList;
 
 QStringList coordinateTypeStringKeys() { return coordinateTypeList.values(); }
 QString coordinateTypeToStringKey(CoordinateType coordinateType) { return coordinateTypeList[coordinateType]; }
@@ -169,7 +170,6 @@ void initLists()
     sceneViewPost3DModeList.insert(SceneViewPost3DMode_None, "none");
     sceneViewPost3DModeList.insert(SceneViewPost3DMode_ScalarView3D, "scalar");
     sceneViewPost3DModeList.insert(SceneViewPost3DMode_ScalarView3DSolid, "scalarsolid");
-    sceneViewPost3DModeList.insert(SceneViewPost3DMode_ParticleTracing, "particletracing");
     sceneViewPost3DModeList.insert(SceneViewPost3DMode_Model, "model");
 
     // ADAPTIVITYTYPE

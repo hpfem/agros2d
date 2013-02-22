@@ -50,7 +50,7 @@ SettingsWidget::SettingsWidget(QWidget *parent) : QWidget(parent)
 void SettingsWidget::createActions()
 {
     actSettings = new QAction(icon("options"), tr("Settings"), this);
-    actSettings->setShortcut(tr("Ctrl+7"));
+    actSettings->setShortcut(tr("Ctrl+8"));
     actSettings->setCheckable(true);
 }
 

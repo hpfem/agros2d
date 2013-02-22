@@ -208,7 +208,6 @@ void SceneViewPost2D::paintGL()
         if (Agros2D::problem()->configView()->showScalarView) paintScalarField();
         if (Agros2D::problem()->configView()->showContourView) paintContours();
         if (Agros2D::problem()->configView()->showVectorView) paintVectors();
-        if (Agros2D::problem()->configView()->showParticleView) paintParticleTracing();
     }
 
     // geometry
@@ -223,8 +222,6 @@ void SceneViewPost2D::paintGL()
         // bars
         if (Agros2D::problem()->configView()->showScalarView && Agros2D::problem()->configView()->showScalarColorBar)
             paintScalarFieldColorBar(Agros2D::problem()->configView()->scalarRangeMin, Agros2D::problem()->configView()->scalarRangeMax);
-        if (Agros2D::problem()->configView()->showParticleView && Agros2D::problem()->configView()->particleColorByVelocity)
-            paintParticleTracingColorBar(m_postHermes->particleTracingVelocityMin(), m_postHermes->particleTracingVelocityMax());
     }
 
     // rulers
@@ -584,90 +581,6 @@ void SceneViewPost2D::paintContours()
     else
     {
         glCallList(m_listContours);
-    }
-}
-
-void SceneViewPost2D::paintParticleTracing()
-{
-    if (!Agros2D::problem()->isSolved()) return;
-    if (!m_postHermes->particleTracingIsPrepared()) return;
-
-    loadProjection2d(true);
-
-    if (m_listParticleTracing == -1)
-    {
-        m_listParticleTracing = glGenLists(1);
-        glNewList(m_listParticleTracing, GL_COMPILE);
-
-        RectPoint rect = Agros2D::scene()->boundingBox();
-        double bound = max(rect.width(), rect.height());
-        if (bound < EPS_ZERO)
-            return;
-
-        // visualization
-        for (int k = 0; k < Agros2D::problem()->configView()->particleNumberOfParticles; k++)
-        {
-            // starting point
-            glPointSize(Agros2D::problem()->configView()->nodeSize * 1.2);
-            glColor3d(0.0, 0.0, 0.0);
-            glBegin(GL_POINTS);
-            glVertex2d(m_postHermes->particleTracingPositionsList()[k][0].x, m_postHermes->particleTracingPositionsList()[k][0].y);
-            glEnd();
-
-            // color
-            if (!Agros2D::problem()->configView()->particleColorByVelocity)
-            {
-                if (k == 0)
-                    glColor3d(Agros2D::problem()->configView()->colorSelected.redF(),
-                              Agros2D::problem()->configView()->colorSelected.greenF(),
-                              Agros2D::problem()->configView()->colorSelected.blueF());
-                else
-                    glColor3d(rand() / double(RAND_MAX),
-                              rand() / double(RAND_MAX),
-                              rand() / double(RAND_MAX));
-            }
-
-            // lines
-            glLineWidth(2.0);
-            glBegin(GL_LINES);
-            for (int i = 0; i < m_postHermes->particleTracingPositionsList()[k].length() - 1; i++)
-            {
-                if (Agros2D::problem()->configView()->particleColorByVelocity)
-                    glColor3d(1.0 - 0.8 * (m_postHermes->particleTracingVelocitiesList()[k][i].magnitude() - m_postHermes->particleTracingVelocityMin()) / (m_postHermes->particleTracingVelocityMax() - m_postHermes->particleTracingVelocityMin()),
-                              1.0 - 0.8 * (m_postHermes->particleTracingVelocitiesList()[k][i].magnitude() - m_postHermes->particleTracingVelocityMin()) / (m_postHermes->particleTracingVelocityMax() - m_postHermes->particleTracingVelocityMin()),
-                              1.0 - 0.8 * (m_postHermes->particleTracingVelocitiesList()[k][i].magnitude() - m_postHermes->particleTracingVelocityMin()) / (m_postHermes->particleTracingVelocityMax() - m_postHermes->particleTracingVelocityMin()));
-
-                glVertex2d(m_postHermes->particleTracingPositionsList()[k][i].x, m_postHermes->particleTracingPositionsList()[k][i].y);
-                glVertex2d(m_postHermes->particleTracingPositionsList()[k][i+1].x, m_postHermes->particleTracingPositionsList()[k][i+1].y);
-            }
-            glEnd();
-
-            // points
-            if (Agros2D::problem()->configView()->particleShowPoints)
-            {
-                glColor3d(Agros2D::problem()->configView()->colorSelected.redF(),
-                          Agros2D::problem()->configView()->colorSelected.greenF(),
-                          Agros2D::problem()->configView()->colorSelected.blueF());
-
-                glPointSize(Agros2D::problem()->configView()->nodeSize * 4.0/5.0);
-                glBegin(GL_POINTS);
-                for (int i = 0; i < m_postHermes->particleTracingPositionsList()[k].length(); i++)
-                {
-                    glVertex2d(m_postHermes->particleTracingPositionsList()[k][i].x, m_postHermes->particleTracingPositionsList()[k][i].y);
-                }
-                glEnd();
-            }
-        }
-
-        glDisable(GL_POLYGON_OFFSET_FILL);
-
-        glEndList();
-
-        glCallList(m_listParticleTracing);
-    }
-    else
-    {
-        glCallList(m_listParticleTracing);
     }
 }
 
@@ -1295,12 +1208,12 @@ void SceneViewPost2D::clearGLLists()
     if (m_listContours != -1) glDeleteLists(m_listContours, 1);
     if (m_listVectors != -1) glDeleteLists(m_listVectors, 1);
     if (m_listScalarField != -1) glDeleteLists(m_listScalarField, 1);
-    if (m_listParticleTracing != -1) glDeleteLists(m_listParticleTracing, 1);
+    // if (m_listParticleTracing != -1) glDeleteLists(m_listParticleTracing, 1);
 
     m_listContours = -1;
     m_listVectors = -1;
     m_listScalarField = -1;
-    m_listParticleTracing = -1;
+    // m_listParticleTracing = -1;
 
     // m_arrayScalarField.clear();
     // m_arrayScalarFieldColors.clear();

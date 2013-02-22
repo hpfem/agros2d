@@ -50,13 +50,11 @@ protected:
 
     void paintScalarField3D(); // paint scalar field 3d surface
     void paintScalarField3DSolid(); // paint scalar field 3d solid
-    void paintParticleTracing(); // paint scalar field contours
 
 private:
     // gl lists
     int m_listScalarField3D;
     int m_listScalarField3DSolid;
-    int m_listParticleTracing;
     int m_listModel;
 
     void createActionsPost3D();

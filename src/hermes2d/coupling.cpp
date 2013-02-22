@@ -101,7 +101,15 @@ void CouplingInfo::reload()
     if (m_plugin)
         delete m_plugin;
 
-    m_plugin = Agros2D::loadPlugin(m_couplingId);
+    try{
+        m_plugin = Agros2D::loadPlugin(m_couplingId);
+    }
+    catch (AgrosPluginException &e)
+    {
+        Agros2D::log()->printError("Solver", "Cannot load plugin");
+        throw;
+    }
+
     assert(m_plugin);
 }
 

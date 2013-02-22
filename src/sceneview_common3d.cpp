@@ -42,26 +42,36 @@ SceneViewCommon3D::SceneViewCommon3D(PostHermes *postHermes, QWidget *parent)
     : SceneViewPostInterface(postHermes, parent)
 {
     createActions();
+    createMenu();
+}
+
+SceneViewCommon3D::~SceneViewCommon3D()
+{
 }
 
 void SceneViewCommon3D::createActions()
 {
     // projection
     actSetProjectionXY = new QAction(tr("Projection to %1%2").arg(Agros2D::problem()->config()->labelX()).arg(Agros2D::problem()->config()->labelY()), this);
-    actSetProjectionXY->setStatusTip(tr("Projection to %1%2 plane.").arg(Agros2D::problem()->config()->labelX()).arg(Agros2D::problem()->config()->labelY()));
     connect(actSetProjectionXY, SIGNAL(triggered()), this, SLOT(doSetProjectionXY()));
 
     actSetProjectionXZ = new QAction(tr("Projection to %1%2").arg(Agros2D::problem()->config()->labelX()).arg(Agros2D::problem()->config()->labelZ()), this);
-    actSetProjectionXZ->setStatusTip(tr("Projection to %1%2 plane.").arg(Agros2D::problem()->config()->labelX()).arg(Agros2D::problem()->config()->labelZ()));
     connect(actSetProjectionXZ, SIGNAL(triggered()), this, SLOT(doSetProjectionXZ()));
 
     actSetProjectionYZ = new QAction(tr("Projection to %1%2").arg(Agros2D::problem()->config()->labelY()).arg(Agros2D::problem()->config()->labelZ()), this);
-    actSetProjectionYZ->setStatusTip(tr("Projection to %1%2 plane.").arg(Agros2D::problem()->config()->labelY()).arg(Agros2D::problem()->config()->labelZ()));
     connect(actSetProjectionYZ, SIGNAL(triggered()), this, SLOT(doSetProjectionYZ()));
 }
 
-SceneViewCommon3D::~SceneViewCommon3D()
+void SceneViewCommon3D::createMenu()
 {
+    QMenu *mnuView = new QMenu(tr("View"), this);
+
+    mnuView->addAction(actSetProjectionXY);
+    mnuView->addAction(actSetProjectionXZ);
+    mnuView->addAction(actSetProjectionYZ);
+
+    mnuView3D = new QMenu(this);
+    mnuView3D->addMenu(mnuView);
 }
 
 void SceneViewCommon3D::clear()
@@ -381,6 +391,11 @@ void SceneViewCommon3D::mouseMoveEvent(QMouseEvent *event)
 void SceneViewCommon3D::wheelEvent(QWheelEvent *event)
 {
     setZoom(event->delta()/150.0);
+}
+
+void SceneViewCommon3D::contextMenuEvent(QContextMenuEvent *event)
+{
+    mnuView3D->exec(event->globalPos());
 }
 
 void SceneViewCommon3D::doSetProjectionXY()

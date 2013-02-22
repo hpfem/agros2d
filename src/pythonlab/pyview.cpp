@@ -280,18 +280,6 @@ void PyViewPost::setScalarViewRangeMax(double max)
     currentPythonEngineAgros()->postHermes()->refresh();
 }
 
-void PyViewPost::setParticleColoredByVelocity(bool colored)
-{
-    Agros2D::problem()->configView()->particleColorByVelocity = colored;
-    currentPythonEngineAgros()->postHermes()->refresh();
-}
-
-void PyViewPost::setParticleShowPoints(bool points)
-{
-    Agros2D::problem()->configView()->particleShowPoints = points;
-    currentPythonEngineAgros()->postHermes()->refresh();
-}
-
 
 // ****************************************************************************************************
 
@@ -413,12 +401,14 @@ void PyViewPost2D::setVectorColor(bool show)
         currentPythonEngineAgros()->postHermes()->refresh();
 }
 
+/*
 void PyViewPost2D::setParticleShow(bool show)
 {
     Agros2D::problem()->configView()->showParticleView = show;
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
+*/
 
 // ****************************************************************************************************
 

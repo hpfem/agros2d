@@ -44,7 +44,7 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 
 private:
-    SceneViewPreprocessor *m_sceneViewGeometry;
+    SceneViewPreprocessor *m_sceneViewPreprocessor;
 
     QTreeWidget *trvWidget;
 

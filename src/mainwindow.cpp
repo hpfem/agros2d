@@ -32,6 +32,7 @@
 #include "sceneview_mesh.h"
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
+#include "sceneview_particle.h"
 #include "tooltipview.h"
 #include "logview.h"
 #include "infowidget.h"
@@ -77,6 +78,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     sceneViewMesh = new SceneViewMesh(postHermes, this);
     sceneViewPost2D = new SceneViewPost2D(postHermes, this);
     sceneViewPost3D = new SceneViewPost3D(postHermes, this);
+    sceneViewParticleTracing = new SceneViewParticleTracing(postHermes, this);
     sceneViewBlank = new QLabel("", this);
     sceneInfoWidget = new InfoWidget(sceneViewPreprocessor, this);
     sceneChart = new ChartWidget(this);
@@ -91,6 +93,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
                                                   sceneViewPost3D,
                                                   sceneChart,
                                                   this);
+    // particle tracing
+    particleTracingWidget = new ParticleTracingWidget(sceneViewParticleTracing, this);
+
     // settings
     settingsWidget = new SettingsWidget(this);
     // problem
@@ -132,6 +137,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltipPost2D()));
     currentPythonEngineAgros()->setSceneViewGeometry(sceneViewPreprocessor);
 
+    // particle tracing
+    currentPythonEngineAgros()->setSceneViewParticleTracing(sceneViewParticleTracing);
+
     // mesh
     connect(Agros2D::scene(), SIGNAL(cleared()), sceneViewMesh, SLOT(clear()));
     currentPythonEngineAgros()->setSceneViewMesh(sceneViewMesh);
@@ -156,6 +164,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     sceneViewMesh->clear();
     sceneViewPost2D->clear();
     sceneViewPost3D->clear();
+    sceneViewParticleTracing->clear();
 
     QSettings settings;
     recentFiles = settings.value("MainWindow/RecentFiles").value<QStringList>();
@@ -434,6 +443,7 @@ void MainWindow::createActions()
     actSceneModeGroup->addAction(sceneViewPost2D->actSceneModePost2D);
     actSceneModeGroup->addAction(sceneViewPost3D->actSceneModePost3D);
     actSceneModeGroup->addAction(sceneChart->actSceneModeChart);
+    actSceneModeGroup->addAction(sceneViewParticleTracing->actSceneModeParticleTracing);
     actSceneModeGroup->addAction(settingsWidget->actSettings);
 
     actHideControlPanel = new QAction(icon("showhide"), tr("Show/hide control panel"), this);
@@ -506,11 +516,6 @@ void MainWindow::createMenus()
     mnuEdit->addAction(actOptions);
 #endif
 
-    QMenu *mnuProjection = new QMenu(tr("Projection"), this);
-    mnuProjection->addAction(sceneViewPost3D->actSetProjectionXY);
-    mnuProjection->addAction(sceneViewPost3D->actSetProjectionXZ);
-    mnuProjection->addAction(sceneViewPost3D->actSetProjectionYZ);
-
     QMenu *mnuShowPanels = new QMenu(tr("Panels"), this);
     mnuShowPanels->addAction(resultsView->toggleViewAction());
     mnuShowPanels->addAction(consoleView->toggleViewAction());
@@ -524,6 +529,7 @@ void MainWindow::createMenus()
     mnuView->addAction(sceneViewPost2D->actSceneModePost2D);
     mnuView->addAction(sceneViewPost3D->actSceneModePost3D);
     mnuView->addAction(sceneChart->actSceneModeChart);
+    mnuView->addAction(sceneViewParticleTracing->actSceneModeParticleTracing);
     mnuView->addAction(settingsWidget->actSettings);
     mnuView->addSeparator();
     mnuView->addAction(actHideControlPanel);
@@ -532,7 +538,6 @@ void MainWindow::createMenus()
     mnuView->addAction(actSceneZoomIn);
     mnuView->addAction(actSceneZoomOut);
     mnuView->addAction(actSceneZoomRegion);
-    mnuView->addMenu(mnuProjection);
     mnuView->addSeparator();
     mnuView->addAction(actLoadBackground);
     mnuView->addSeparator();
@@ -676,6 +681,7 @@ void MainWindow::createMain()
     sceneViewMeshWidget = new SceneViewWidget(sceneViewMesh, this);
     sceneViewPost2DWidget = new SceneViewWidget(sceneViewPost2D, this);
     sceneViewPost3DWidget = new SceneViewWidget(sceneViewPost3D, this);
+    sceneViewPostParticleTracingWidget = new SceneViewWidget(sceneViewParticleTracing, this);
     sceneViewChartWidget = new SceneViewWidget(sceneChart, this);
 
     tabViewLayout = new QStackedLayout();
@@ -686,6 +692,7 @@ void MainWindow::createMain()
     tabViewLayout->addWidget(sceneViewMeshWidget);
     tabViewLayout->addWidget(sceneViewPost2DWidget);
     tabViewLayout->addWidget(sceneViewPost3DWidget);
+    tabViewLayout->addWidget(sceneViewPostParticleTracingWidget);
     tabViewLayout->addWidget(sceneViewChartWidget);
 
     QWidget *viewWidget = new QWidget();
@@ -696,6 +703,7 @@ void MainWindow::createMain()
     tabControlsLayout->addWidget(problemWidget);
     tabControlsLayout->addWidget(preprocessorWidget);
     tabControlsLayout->addWidget(postprocessorWidget);
+    tabControlsLayout->addWidget(particleTracingWidget);
     tabControlsLayout->addWidget(settingsWidget);
 
     viewControls = new QWidget();
@@ -732,6 +740,7 @@ void MainWindow::createMain()
     tlbLeftBar->addAction(sceneViewMesh->actSceneModeMesh);
     tlbLeftBar->addAction(sceneViewPost2D->actSceneModePost2D);
     tlbLeftBar->addAction(sceneViewPost3D->actSceneModePost3D);
+    tlbLeftBar->addAction(sceneViewParticleTracing->actSceneModeParticleTracing);
     tlbLeftBar->addAction(sceneChart->actSceneModeChart);
     tlbLeftBar->addSeparator();
     tlbLeftBar->addAction(settingsWidget->actSettings);
@@ -898,17 +907,37 @@ void MainWindow::doDocumentNew()
         Agros2D::scene()->clear();
         Agros2D::problem()->clearFieldsAndConfig();
 
+        FieldInfo *fieldInfo;
+        ErrorResult result;
         // add field
-        FieldInfo *fieldInfo = new FieldInfo(dialog.selectedFieldId());
+        // todo: mixing exceptions with error code. Should be unified, probably use exceptions everywhere
+        try{
+            fieldInfo = new FieldInfo(dialog.selectedFieldId());
+        }
+        catch(AgrosPluginException& e)
+        {
+            result = ErrorResult(ErrorResultType_Critical, e.what());
+        }
 
-        Agros2D::problem()->addField(fieldInfo);
+        if (!result.isError())
+        {
 
-        problemWidget->actProperties->trigger();
-        sceneViewPreprocessor->doZoomBestFit();
-        sceneViewMesh->doZoomBestFit();
-        sceneViewPost2D->doZoomBestFit();
-        sceneViewPost3D->doZoomBestFit();
-        settingsWidget->updateControls();
+            Agros2D::problem()->addField(fieldInfo);
+
+            problemWidget->actProperties->trigger();
+            sceneViewPreprocessor->doZoomBestFit();
+            sceneViewMesh->doZoomBestFit();
+            sceneViewPost2D->doZoomBestFit();
+            sceneViewPost3D->doZoomBestFit();
+            sceneViewParticleTracing->doZoomBestFit();
+            settingsWidget->updateControls();
+        }
+        else
+        {
+            Agros2D::scene()->clear();
+            result.showDialog();
+            return;
+        }
     }
 }
 
@@ -945,6 +974,10 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             {
                 result = ErrorResult(ErrorResultType_Critical, e.what());
             }
+            catch(AgrosPluginException& e)
+            {
+                result = ErrorResult(ErrorResultType_Critical, e.what());
+            }
 
             if (!result.isError())
             {
@@ -958,6 +991,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
                 sceneViewMesh->doZoomBestFit();
                 sceneViewPost2D->doZoomBestFit();
                 sceneViewPost3D->doZoomBestFit();
+                sceneViewParticleTracing->doZoomBestFit();
 
                 return;
             }
@@ -1098,6 +1132,7 @@ void MainWindow::doDocumentClose()
     sceneViewMesh->doZoomBestFit();
     sceneViewPost2D->doZoomBestFit();
     sceneViewPost3D->doZoomBestFit();
+    sceneViewParticleTracing->doZoomBestFit();
 }
 
 void MainWindow::doDocumentImportDXF()
@@ -1154,6 +1189,8 @@ void MainWindow::doDocumentSaveImage()
             result = sceneViewPost2D->saveImageToFile(fileName);
         else if (sceneViewPost3D->actSceneModePost3D->isChecked())
             result = sceneViewPost3D->saveImageToFile(fileName);
+        else if (sceneViewParticleTracing->actSceneModeParticleTracing->isChecked())
+            result = sceneViewParticleTracing->saveImageToFile(fileName);
 
         if (result.isError())
             result.showDialog();
@@ -1408,6 +1445,8 @@ void MainWindow::doCopy()
         pixmap = sceneViewPost2D->renderScenePixmap();
     else if (sceneViewPost3D->actSceneModePost3D->isChecked())
         pixmap = sceneViewPost3D->renderScenePixmap();
+    else if (sceneViewParticleTracing->actSceneModeParticleTracing->isChecked())
+        pixmap = sceneViewParticleTracing->renderScenePixmap();
 
     QApplication::clipboard()->setImage(pixmap.toImage());
 }
@@ -1446,18 +1485,21 @@ void MainWindow::setControls()
     sceneViewMesh->actSceneZoomRegion = NULL;
     sceneViewPost2D->actSceneZoomRegion = NULL;
     sceneViewPost3D->actSceneZoomRegion = NULL;
+    sceneViewParticleTracing->actSceneZoomRegion = NULL;
 
     tlbGeometry->setVisible(sceneViewPreprocessor->actSceneModePreprocessor->isChecked());
     tlbPost2D->setVisible(sceneViewPost2D->actSceneModePost2D->isChecked());
     bool showZoom = sceneViewPreprocessor->actSceneModePreprocessor->isChecked() ||
             sceneViewMesh->actSceneModeMesh->isChecked() ||
             sceneViewPost2D->actSceneModePost2D->isChecked() ||
-            sceneViewPost3D->actSceneModePost3D->isChecked();
+            sceneViewPost3D->actSceneModePost3D->isChecked() ||
+            sceneViewParticleTracing->actSceneModeParticleTracing->isChecked();
+
     tlbZoom->setVisible(showZoom);
     actSceneZoomIn->setVisible(showZoom);
     actSceneZoomOut->setVisible(showZoom);
     actSceneZoomBestFit->setVisible(showZoom);
-    actSceneZoomRegion->setVisible(showZoom);
+    actSceneZoomRegion->setVisible(showZoom);        
 
     // disconnect signals
     actSceneZoomIn->disconnect();
@@ -1512,6 +1554,18 @@ void MainWindow::setControls()
         connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewPost3D, SLOT(doZoomIn()));
         connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewPost3D, SLOT(doZoomOut()));
         connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewPost3D, SLOT(doZoomBestFit()));
+
+        // hide transform dialog
+        sceneTransformDialog->hide();
+    }
+    if (sceneViewParticleTracing->actSceneModeParticleTracing->isChecked())
+    {
+        tabViewLayout->setCurrentWidget(sceneViewPostParticleTracingWidget);
+        tabControlsLayout->setCurrentWidget(particleTracingWidget);
+
+        connect(actSceneZoomIn, SIGNAL(triggered()), sceneViewParticleTracing, SLOT(doZoomIn()));
+        connect(actSceneZoomOut, SIGNAL(triggered()), sceneViewParticleTracing, SLOT(doZoomOut()));
+        connect(actSceneZoomBestFit, SIGNAL(triggered()), sceneViewParticleTracing, SLOT(doZoomBestFit()));
 
         // hide transform dialog
         sceneTransformDialog->hide();

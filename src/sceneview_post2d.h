@@ -75,7 +75,6 @@ protected:
     void paintContours(); // paint scalar field contours
     void paintContoursTri(double3* vert, int3* tri, double step);
     void paintVectors(); // paint vector field vectors
-    void paintParticleTracing(); // paint scalar field contours
 
     void paintPostprocessorSelectedVolume(); // paint selected volume for integration
     void paintPostprocessorSelectedSurface(); // paint selected surface for integration
@@ -92,7 +91,6 @@ private:
     int m_listContours;
     int m_listVectors;
     int m_listScalarField;
-    int m_listParticleTracing;
 
     // QVector<QVector2D> m_arrayScalarField;
     // QVector<QVector3D> m_arrayScalarFieldColors;
