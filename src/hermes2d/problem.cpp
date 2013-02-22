@@ -304,10 +304,18 @@ bool Problem::mesh()
         m_isSolving = false;
         return false;
     }
+    catch (Hermes::Exceptions::Exception& e)
+    {
+        // todo: dangerous
+        // catching all other exceptions. This is not safe at all
+        Agros2D::log()->printWarning(tr("Mesh"), tr(e.what()));
+        m_isSolving = false;
+        return false;
+    }
     catch (...)
     {
         // todo: dangerous
-        // catching all other exceptions. This is not save at all
+        // catching all other exceptions. This is not safe at all
         Agros2D::log()->printWarning(tr("Mesh"), tr("An unknown exception occured and has been ignored"));
         m_isSolving = false;
         return false;
