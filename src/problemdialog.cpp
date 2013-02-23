@@ -845,7 +845,7 @@ void ProblemWidget::createControls()
     grpGeneral->setLayout(layoutGeneral);
 
     // harmonic
-    txtFrequency = new LineEditDouble();
+    txtFrequency = new LineEditDouble(0, true);
     txtFrequency->setBottom(0.0);
 
     // harmonic analysis
