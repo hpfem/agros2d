@@ -119,6 +119,7 @@ private:
     QTabWidget* tbxAnalysisType;
 
     // buttons
+    QPushButton *btnPlot;
     QPushButton *btnSaveImage;
     QPushButton *btnExportData;
 
@@ -158,6 +159,8 @@ private:
 
     QList<double> getHorizontalAxisValues(ChartLine *chartLine);
 
+    void createChartLine();
+
     void plotGeometry();
     void plotTime();
 
@@ -173,7 +176,7 @@ private slots:
     void doExportData();
     QMap<QString, double> getData(Point point, int timeStep);
 
-    void doChartLine();
+    void doEvaluate(bool isError);
 };
 
 #endif // CHARTDIALOG_H
