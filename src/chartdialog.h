@@ -24,6 +24,9 @@
 #include "gui/chart.h"
 #include "hermes2d/plugin_interface.h"
 
+#include <QSvgWidget>
+#include <QSvgRenderer>
+
 class ChartBasic;
 class LineEditDouble;
 class ValueLineEdit;
@@ -33,25 +36,37 @@ class SceneViewPost2D;
 
 namespace Module
 {
-    struct LocalVariable;
+struct LocalVariable;
 }
+
+class SvgWidget : public QSvgWidget
+{
+public:
+    SvgWidget(QWidget *parent=0);
+
+    void load(const QString &fileName);
+
+protected:
+    void paintEvent(QPaintEvent* qp);
+
+private:
+    QSvgRenderer renderer;
+};
 
 // definition of chart line
 struct ChartLine
 {
     Point start;
     Point end;
-    double angle;
     int numberOfPoints;
     bool reverse;
 
-    ChartLine() : start(Point()), end(end), angle(0.0), numberOfPoints(0), reverse(false) {}
+    ChartLine() : start(Point()), end(end), numberOfPoints(0), reverse(false) {}
 
-    ChartLine(Point start, Point end, double angle = 0.0, int numberOfPoints = 200, bool reverse = false)
+    ChartLine(Point start, Point end, int numberOfPoints = 200, bool reverse = false)
     {
         this->start = start;
         this->end = end;
-        this->angle = angle;
         this->numberOfPoints = numberOfPoints;
         this->reverse = reverse;
     }
@@ -81,17 +96,14 @@ class ChartControlsWidget : public QWidget
 {
     Q_OBJECT
 
-signals:
-    void setChartLine(const ChartLine &chartLine);
-
 public slots:
     void doPlot();
     void setControls();
 
 public:
     ChartControlsWidget(SceneViewPost2D *sceneView,
-                ChartBasic *chart,
-                QWidget *parent = 0);
+                        ChartBasic *chart,
+                        QWidget *parent = 0);
     ~ChartControlsWidget();
 
     inline QWidget *variablesWidget() { return m_variableWidget; }
@@ -102,7 +114,9 @@ private:
     // variable widget
     QWidget *m_variableWidget;
 
-    QTabWidget* tabAnalysisType;
+    SvgWidget *viewerSVG;
+
+    QTabWidget* tbxAnalysisType;
 
     // buttons
     QPushButton *btnSaveImage;
@@ -118,7 +132,6 @@ private:
     ValueLineEdit *txtStartY;
     ValueLineEdit *txtEndX;
     ValueLineEdit *txtEndY;
-    ValueLineEdit *txtAngle;
 
     QRadioButton *radAxisLength;
     QRadioButton *radAxisX;

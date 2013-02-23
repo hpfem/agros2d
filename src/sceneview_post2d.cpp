@@ -235,7 +235,6 @@ void SceneViewPost2D::paintGL()
     if (Agros2D::problem()->configView()->showAxes) paintAxes();
 
     paintZoomRegion();
-    paintChartLine();
 
     if (Agros2D::problem()->isSolved())
     {
@@ -295,58 +294,6 @@ void SceneViewPost2D::paintGeometry()
 
         glLineWidth(1.0);
     }
-}
-
-void SceneViewPost2D::setChartLine(const ChartLine &chartLine)
-{
-    // set line for chart
-    m_chartLine = chartLine;
-
-    updateGL();
-}
-
-
-void SceneViewPost2D::paintChartLine()
-{
-    loadProjection2d(true);
-
-    glColor3d(Agros2D::problem()->configView()->colorSelected.redF(),
-              Agros2D::problem()->configView()->colorSelected.greenF(),
-              Agros2D::problem()->configView()->colorSelected.blueF());
-    glLineWidth(3.0);
-
-    QList<Point> points = m_chartLine.getPoints();
-
-    glBegin(GL_LINES);
-    for (int i = 0; i < points.length() - 1; i++)
-    {
-        glVertex2d(points.at(i).x, points.at(i).y);
-        glVertex2d(points.at(i+1).x, points.at(i+1).y);
-    }
-    glEnd();
-
-    // angle
-    glBegin(GL_TRIANGLES);
-    if (points.length() > 1)
-    {
-        double angle = atan2(points.at(points.length() - 1).y - points.at(points.length() - 2).y,
-                             points.at(points.length() - 1).x - points.at(points.length() - 2).x);
-
-        RectPoint rect = Agros2D::scene()->boundingBox();
-        double dm = (rect.width() + rect.height()) / 40.0;
-
-        // head of an arrow
-        double vh1x = points.at(points.length() - 1).x - dm/5.0 * cos(angle - M_PI/2.0) - dm * cos(angle);
-        double vh1y = points.at(points.length() - 1).y - dm/5.0 * sin(angle - M_PI/2.0) - dm * sin(angle);
-        double vh2x = points.at(points.length() - 1).x - dm/5.0 * cos(angle + M_PI/2.0) - dm * cos(angle);
-        double vh2y = points.at(points.length() - 1).y - dm/5.0 * sin(angle + M_PI/2.0) - dm * sin(angle);
-        double vh3x = points.at(points.length() - 1).x;
-        double vh3y = points.at(points.length() - 1).y;
-        glVertex2d(vh1x, vh1y);
-        glVertex2d(vh2x, vh2y);
-        glVertex2d(vh3x, vh3y);
-    }
-    glEnd();
 }
 
 void SceneViewPost2D::paintScalarField()
@@ -1242,8 +1189,6 @@ void SceneViewPost2D::setControls()
 
 void SceneViewPost2D::clear()
 {
-    m_chartLine = ChartLine();
-
     actPostprocessorModeLocalPointValue->trigger();
 
     setControls();

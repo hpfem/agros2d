@@ -56,7 +56,6 @@ protected:
     virtual void paintGL() = 0;
 
     void paintZoomRegion();
-    void paintChartLine();
 
     void paintBackgroundPixmap(); // pixmap background
     void paintGrid(); // paint grid

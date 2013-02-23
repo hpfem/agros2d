@@ -39,7 +39,6 @@ public slots:
     void setControls();
     virtual void clear();
     void exportVTKScalarView(const QString &fileName = QString());
-    void setChartLine(const ChartLine &chartLine);
 
 public:
     SceneViewPost2D(PostHermes *postHermes, QWidget *parent = 0);
@@ -67,8 +66,6 @@ protected:
     virtual void paintGL();
     virtual void resizeGL(int w, int h);
 
-    void paintChartLine();
-
     void paintGeometry(); // paint edges
 
     void paintScalarField(); // paint scalar field surface
@@ -83,9 +80,6 @@ protected:
 private:
     // selected point
     Point m_selectedPoint;
-
-    // chart line
-    ChartLine m_chartLine; // line
 
     // gl lists
     int m_listContours;

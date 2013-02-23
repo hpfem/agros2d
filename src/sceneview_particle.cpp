@@ -32,8 +32,6 @@
 #include "hermes2d/problem.h"
 #include "logview.h"
 
-
-
 #include "pythonlab/pythonengine_agros.h"
 
 #include "scenebasic.h"

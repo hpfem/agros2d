@@ -22,6 +22,8 @@
 #include "util/global.h"
 
 #include "scene.h"
+#include "scenenode.h"
+#include "sceneedge.h"
 #include "sceneview_post2d.h"
 
 #include "hermes2d/module.h"
@@ -34,6 +36,105 @@
 #include "gui/chart.h"
 #include "gui/common.h"
 
+#include <QSvgRenderer>
+
+static QString generateSvgGeometryWithLine(ChartLine line)
+{
+    RectPoint boundingBox = SceneEdgeContainer::boundingBox(Agros2D::scene()->edges->items());
+
+    double w = 150;
+    double h = 150;
+    double stroke_width = max(boundingBox.width(), boundingBox.height()) / qMax(w, h) / 2.0;
+
+    // svg
+    QString str;
+    str += QString("<svg width=\"%1px\" height=\"%2px\" viewBox=\"%3 %4 %5 %6\" preserveAspectRatio=\"xMinYMin meet\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n").
+            arg(w).
+            arg(h).
+            arg(boundingBox.start.x).
+            arg(0).
+            arg(boundingBox.width()).
+            arg(boundingBox.height());
+
+    str += QString("<g stroke=\"black\" stroke-width=\"%1\" fill=\"none\">\n").arg(stroke_width);
+
+    foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+    {
+        if (edge->angle() > 0.0)
+        {
+            Point center = edge->center();
+            double radius = edge->radius();
+            double startAngle = atan2(center.y - edge->nodeStart()->point().y,
+                                      center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
+
+            int segments = edge->angle() / 5.0;
+            if (segments < 2) segments = 2;
+            double theta = edge->angle() / double(segments - 1);
+
+            for (int i = 0; i < segments-1; i++)
+            {
+                double arc1 = (startAngle + i*theta)/180.0*M_PI;
+                double arc2 = (startAngle + (i+1)*theta)/180.0*M_PI;
+
+                double x1 = radius * cos(arc1);
+                double y1 = radius * sin(arc1);
+                double x2 = radius * cos(arc2);
+                double y2 = radius * sin(arc2);
+
+                str += QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" />\n").
+                        arg(center.x + x1).
+                        arg(boundingBox.end.y - (center.y + y1)).
+                        arg(center.x + x2).
+                        arg(boundingBox.end.y - (center.y + y2));
+            }
+        }
+        else
+        {
+            str += QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" />\n").
+                    arg(edge->nodeStart()->point().x).
+                    arg(boundingBox.end.y - edge->nodeStart()->point().y).
+                    arg(edge->nodeEnd()->point().x).
+                    arg(boundingBox.end.y - edge->nodeEnd()->point().y);
+        }
+    }
+    str += "</g>\n";
+
+    // line
+    str += QString("<g stroke=\"red\" stroke-width=\"%1\" fill=\"none\">%2</g>\n").arg(stroke_width*3).arg(QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" />").
+                                                                                                             arg(line.start.x).
+                                                                                                             arg(boundingBox.end.y - line.start.y).
+                                                                                                             arg(line.end.x).
+                                                                                                             arg(boundingBox.end.y - line.end.y));
+
+    str += "</svg>\n";
+
+    return str;
+}
+
+SvgWidget::SvgWidget(QWidget* parent) : QSvgWidget(parent)
+{
+}
+
+void SvgWidget::load(const QString &fileName)
+{
+    renderer.load(fileName);
+    update();
+}
+
+void SvgWidget::paintEvent(QPaintEvent* qp)
+{
+    QSize siz = renderer.defaultSize();
+
+    // maintain te aspect ratio
+    // double aspect = renderer.viewBoxF().width() / renderer.viewBoxF().height();
+
+    // qDebug() << aspect;
+
+    QPainter painter(this);
+    // painter.scale(1.0, 1 / aspect);
+    renderer.render(&painter);
+}
+
 QList<Point> ChartLine::getPoints()
 {
     if (numberOfPoints == 0)
@@ -42,43 +143,20 @@ QList<Point> ChartLine::getPoints()
     QList<Point> points;
     points.reserve(numberOfPoints);
 
-    if (fabs(angle) < EPS_ZERO)
-    {
-        double dx = (end.x - start.x) / (numberOfPoints - 1);
-        double dy = (end.y - start.y) / (numberOfPoints - 1);
+    double dx = (end.x - start.x) / (numberOfPoints - 1);
+    double dy = (end.y - start.y) / (numberOfPoints - 1);
 
-        for (int i = 0; i < numberOfPoints; i++)
-            if (reverse)
-                points.insert(0, Point(start.x + i*dx, start.y + i*dy));
-            else
-                points.append(Point(start.x + i*dx, start.y + i*dy));
-    }
-    else
-    {
-        Point center = centerPoint(start, end, angle);
-        double radius = (start - center).magnitude();
-        double startAngle = atan2(center.y - start.y, center.x - start.x) / M_PI*180 - 180;
-        double theta = angle / double(numberOfPoints - 1);
+    for (int i = 0; i < numberOfPoints; i++)
+        if (reverse)
+            points.insert(0, Point(start.x + i*dx, start.y + i*dy));
+        else
+            points.append(Point(start.x + i*dx, start.y + i*dy));
 
-        for (int i = 0; i < numberOfPoints; i++)
-        {
-            double arc = (startAngle + i*theta)/180.0*M_PI;
-
-            double x = radius * cos(arc);
-            double y = radius * sin(arc);
-
-            if (reverse)
-                points.insert(0, Point(center.x + x, center.y + y));
-            else
-                points.append(Point(center.x + x, center.y + y));
-        }
-    }
 
     return points;
 }
 
 // **************************************************************************************************
-
 
 ChartWidget::ChartWidget(QWidget *parent) : QWidget(parent)
 {
@@ -113,7 +191,6 @@ ChartControlsWidget::ChartControlsWidget(SceneViewPost2D *sceneView,
                                          ChartBasic *chart,
                                          QWidget *parent) : QWidget(parent), m_sceneViewPost2D(sceneView), m_chart(chart)
 {
-    connect(this, SIGNAL(setChartLine(ChartLine)), m_sceneViewPost2D, SLOT(setChartLine(ChartLine)));
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
 
     createControls();
@@ -124,7 +201,6 @@ ChartControlsWidget::ChartControlsWidget(SceneViewPost2D *sceneView,
     txtEndX->setValue(settings.value("ChartDialog/EndX", "0").toString());
     txtStartY->setValue(settings.value("ChartDialog/StartY", "0").toString());
     txtEndY->setValue(settings.value("ChartDialog/EndY", "0").toString());
-    txtAngle->setValue(settings.value("ChartDialog/Angle", "0").toString());
     radAxisLength->setChecked(settings.value("ChartDialog/AxisLength", true).toBool());
     radAxisX->setChecked(settings.value("ChartDialog/AxisX", false).toBool());
     radAxisY->setChecked(settings.value("ChartDialog/AxisY", false).toBool());
@@ -142,7 +218,6 @@ ChartControlsWidget::~ChartControlsWidget()
     settings.setValue("ChartDialog/EndX", txtEndX->value().text());
     settings.setValue("ChartDialog/StartY", txtStartY->value().text());
     settings.setValue("ChartDialog/EndY", txtEndY->value().text());
-    settings.setValue("ChartDialog/Angle", txtAngle->value().text());
     settings.setValue("ChartDialog/AxisLength", radAxisLength->isChecked());
     settings.setValue("ChartDialog/AxisX", radAxisX->isChecked());
     settings.setValue("ChartDialog/AxisY", radAxisY->isChecked());
@@ -170,12 +245,13 @@ void ChartControlsWidget::setControls()
 
     if (Agros2D::scene()->activeViewField()->analysisType() == AnalysisType_Transient)
     {
-        tabAnalysisType->setTabEnabled(tabAnalysisType->indexOf(widTime), true);
+        widTime->setEnabled(true);
     }
     else
     {
-        tabAnalysisType->setTabEnabled(tabAnalysisType->indexOf(widTime), false);
-        tabAnalysisType->setCurrentWidget(widGeometry);
+        widTime->setEnabled(false);
+        widGeometry->setEnabled(true);
+        tbxAnalysisType->setCurrentWidget(widGeometry);
     }
 
     doChartLine();
@@ -194,6 +270,13 @@ void ChartControlsWidget::createControls()
 
     m_variableWidget = new QWidget();
     m_variableWidget->setLayout(layoutVariable);
+
+    // viewer
+    viewerSVG = new SvgWidget();
+    viewerSVG->setMinimumWidth(150);
+    viewerSVG->setMaximumWidth(150);
+    viewerSVG->setMinimumHeight(250);
+    viewerSVG->setMaximumHeight(250);
 
     // controls
     QPushButton *btnPlot = new QPushButton();
@@ -249,17 +332,6 @@ void ChartControlsWidget::createControls()
     QGroupBox *grpEnd = new QGroupBox(tr("End"));
     grpEnd->setLayout(layoutEnd);
 
-    // angle
-    txtAngle = new ValueLineEdit();
-    connect(txtAngle, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
-
-    QHBoxLayout *layoutAngle = new QHBoxLayout();
-    layoutAngle->addWidget(new QLabel("Angle"));
-    layoutAngle->addWidget(txtAngle);
-
-    QGroupBox *grpAngle = new QGroupBox(tr("Angle"));
-    grpAngle->setLayout(layoutAngle);
-
     // x - axis
     radAxisLength = new QRadioButton(tr("Length"));
     radAxisLength->setChecked(true);
@@ -295,7 +367,7 @@ void ChartControlsWidget::createControls()
     QGridLayout *layoutAxisPointsAndTimeStep = new QGridLayout();
     layoutAxisPointsAndTimeStep->addWidget(new QLabel(tr("Points:")), 0, 0);
     layoutAxisPointsAndTimeStep->addWidget(txtAxisPoints, 0, 1);
-    layoutAxisPointsAndTimeStep->addWidget(chkAxisPointsReverse, 0, 2);
+    layoutAxisPointsAndTimeStep->addWidget(chkAxisPointsReverse, 1, 0, 1, 2);
 
     QGroupBox *grpAxisPointsAndTimeStep = new QGroupBox(tr("Points and time step"), this);
     grpAxisPointsAndTimeStep->setLayout(layoutAxisPointsAndTimeStep);
@@ -316,7 +388,7 @@ void ChartControlsWidget::createControls()
     grpTime->setLayout(layoutTime);
 
     // button bar
-    QHBoxLayout *layoutButton = new QHBoxLayout();
+    QVBoxLayout *layoutButton = new QVBoxLayout();
     layoutButton->addStretch();
     layoutButton->addWidget(btnPlot);
     layoutButton->addWidget(btnSaveImage);
@@ -331,7 +403,6 @@ void ChartControlsWidget::createControls()
     widGeometry->setLayout(controlsGeometryLayout);
     controlsGeometryLayout->addWidget(grpStart);
     controlsGeometryLayout->addWidget(grpEnd);
-    controlsGeometryLayout->addWidget(grpAngle);
     controlsGeometryLayout->addWidget(grpAxis);
     controlsGeometryLayout->addWidget(grpAxisPointsAndTimeStep);
     controlsGeometryLayout->addStretch();
@@ -343,14 +414,23 @@ void ChartControlsWidget::createControls()
     controlsTimeLayout->addWidget(grpTime);
     controlsTimeLayout->addStretch();
 
-    tabAnalysisType = new QTabWidget();
-    tabAnalysisType->addTab(widGeometry, icon(""), tr("Geometry"));
-    tabAnalysisType->addTab(widTime, icon(""), tr("Time"));
+    tbxAnalysisType = new QTabWidget();
+    tbxAnalysisType->addTab(widGeometry, icon(""), tr("Geometry"));
+    tbxAnalysisType->addTab(widTime, icon(""), tr("Time"));
+
+    QVBoxLayout *controlsAndFigureLayout = new QVBoxLayout();
+    controlsAndFigureLayout->addWidget(viewerSVG);
+    // controlsAndFigureLayout->addStretch(1);
+    controlsAndFigureLayout->addWidget(widButton);
+
+    QHBoxLayout *viewLayout = new QHBoxLayout();
+    viewLayout->addWidget(tbxAnalysisType);
+    viewLayout->addLayout(controlsAndFigureLayout);
 
     // controls
     QVBoxLayout *controlsLayout = new QVBoxLayout();
     controlsLayout->setMargin(0);
-    controlsLayout->addWidget(tabAnalysisType);
+    controlsLayout->addLayout(viewLayout);
     controlsLayout->addWidget(widButton);
     controlsLayout->addStretch(1);
 
@@ -369,18 +449,7 @@ QList<double> ChartControlsWidget::getHorizontalAxisValues(ChartLine *chartLine)
             if (i == 0)
                 xval.append(0.0);
             else
-            {
-                if (fabs(chartLine->angle) < EPS_ZERO)
-                    xval.append(xval.at(i-1) + sqrt(Hermes::sqr(points.at(i).x - points.at(i-1).x) + Hermes::sqr(points.at(i).y - points.at(i-1).y)));
-                else
-                {
-                    Point center = centerPoint(points.at(i-1), points.at(i), chartLine->angle/(points.length() - 1));
-                    double radius = (points.at(i-1) - center).magnitude();
-                    double angle = atan2(points.at(i).y - center.y, points.at(i).x - center.x)
-                            - atan2(points.at(i-1).y - center.y, points.at(i-1).x - center.x);
-                    xval.append(xval[i-1] + radius * angle);
-                }
-            }
+                xval.append(xval.at(i-1) + sqrt(Hermes::sqr(points.at(i).x - points.at(i-1).x) + Hermes::sqr(points.at(i).y - points.at(i-1).y)));
         }
     }
     else if (radAxisX->isChecked())
@@ -426,7 +495,6 @@ void ChartControlsWidget::plotGeometry()
     // values
     ChartLine chartLine(Point(txtStartX->value().number(), txtStartY->value().number()),
                         Point(txtEndX->value().number(), txtEndY->value().number()),
-                        txtAngle->value().number(),
                         count);
     doChartLine();
 
@@ -577,24 +645,23 @@ void ChartControlsWidget::doPlot()
 {
     if (!Agros2D::problem()->isSolved()) return;
 
-    if (tabAnalysisType->currentWidget() == widGeometry)
+    if (tbxAnalysisType->currentWidget() == widGeometry)
     {
         if (!txtStartX->evaluate()) return;
         if (!txtStartY->evaluate()) return;
         if (!txtEndX->evaluate()) return;
         if (!txtEndY->evaluate()) return;
-        if (!txtAngle->evaluate()) return;
 
         plotGeometry();
     }
 
-    if (tabAnalysisType->currentWidget() == widTime)
+    if (tbxAnalysisType->currentWidget() == widTime)
     {
         if (!txtPointX->evaluate()) return;
         if (!txtPointY->evaluate()) return;
 
         plotTime();
-    }       
+    }
 
     btnSaveImage->setEnabled(m_chart->curve()->dataSize() > 0);
     btnExportData->setEnabled(m_chart->curve()->dataSize() > 0);
@@ -651,11 +718,10 @@ void ChartControlsWidget::doExportData()
     QTextStream out(&file);
 
     QMap<QString, QList<double> > table;
-    if (tabAnalysisType->currentWidget() == widGeometry)
+    if (tbxAnalysisType->currentWidget() == widGeometry)
     {
         ChartLine *chartLine = new ChartLine(Point(txtStartX->value().number(), txtStartY->value().number()),
                                              Point(txtEndX->value().number(), txtEndY->value().number()),
-                                             txtAngle->value().number(),
                                              txtAxisPoints->value());
 
         foreach (Point point, chartLine->getPoints())
@@ -670,7 +736,7 @@ void ChartControlsWidget::doExportData()
 
         delete chartLine;
     }
-    else if (tabAnalysisType->currentWidget() == widTime)
+    else if (tbxAnalysisType->currentWidget() == widTime)
     {
         Point point(txtPointX->value().number(), txtPointY->value().number());
         foreach (double timeLevel, Agros2D::solutionStore()->timeLevels(Agros2D::scene()->activeViewField()))
@@ -741,35 +807,40 @@ QMap<QString, double> ChartControlsWidget::getData(Point point, int timeStep)
 
 void ChartControlsWidget::doChartLine()
 {
+    ChartLine line;
+
     if (isVisible())
     {
-        if (tabAnalysisType->currentWidget() == widGeometry)
+        if (tbxAnalysisType->currentWidget() == widGeometry)
         {
             if (!txtStartX->evaluate()) return;
             if (!txtStartY->evaluate()) return;
             if (!txtEndX->evaluate()) return;
             if (!txtEndY->evaluate()) return;
-            if (!txtAngle->evaluate()) return;
 
-            emit setChartLine(ChartLine(Point(txtStartX->value().number(), txtStartY->value().number()),
-                                        Point(txtEndX->value().number(), txtEndY->value().number()),
-                                        txtAngle->value().number(),
-                                        txtAxisPoints->value(),
-                                        chkAxisPointsReverse->isChecked()));
+            line = ChartLine(Point(txtStartX->value().number(), txtStartY->value().number()),
+                             Point(txtEndX->value().number(), txtEndY->value().number()),
+                             txtAxisPoints->value(),
+                             chkAxisPointsReverse->isChecked());
         }
-        if (tabAnalysisType->currentWidget() == widTime)
+        if (tbxAnalysisType->currentWidget() == widTime)
         {
             if (!txtPointX->evaluate()) return;
             if (!txtPointY->evaluate()) return;
 
-            emit setChartLine(ChartLine(Point(txtPointX->value().number(), txtPointY->value().number()),
-                                        Point(txtPointX->value().number(), txtPointY->value().number()),
-                                        0.0,
-                                        0));
+            line = ChartLine(Point(txtPointX->value().number(), txtPointY->value().number()),
+                             Point(txtPointX->value().number(), txtPointY->value().number()),
+                             0.0,
+                             0);
         }
     }
-    else
-    {
-        emit setChartLine(ChartLine());
-    }
+
+    QString figure = generateSvgGeometryWithLine(line);
+    QString fileName = QString("%1/figure.svg").arg(tempProblemDir());
+    writeStringContent(fileName, figure);
+
+    viewerSVG->load(fileName);
+    // double ratio = ((double) m_viewerSVG->renderer()->viewBox().width() / (double) m_viewerSVG->renderer()->viewBox().height());
+    // double h = m_viewerSVG->width() / ratio;
+    // m_viewerSVG->resize(m_viewerSVG->width(), h);
 }
