@@ -26,7 +26,7 @@ class SceneEdge;
 
 #include "util.h"
 
-class AGROS_API LoopsInfo : public QObject
+class LoopsInfo : public QObject
 {
     Q_OBJECT
 
