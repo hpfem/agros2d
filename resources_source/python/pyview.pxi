@@ -302,6 +302,12 @@ cdef class __ViewPost__:
         def __set__(self, range_auto):
             self.thisptr.setScalarViewRangeAuto(range_auto)
 
+    property scalar_range_min:
+        def __get__(self):
+            return self.thisptr.getScalarViewRangeMin()
+        def __set__(self, min):
+            self.thisptr.setScalarViewRangeMin(min)
+
     property scalar_range_max:
         def __get__(self):
             return self.thisptr.getScalarViewRangeMax()
