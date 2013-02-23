@@ -16,7 +16,7 @@
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="762"/>
         <source>Transient</source>
-        <translation type="unfinished">Přechodový děj</translation>
+        <translation>Přechodový děj</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="765"/>
@@ -31,7 +31,7 @@
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="771"/>
         <source>Impedance boundary condition</source>
-        <translation>Imedanční okrajová podmínka</translation>
+        <translation>Impedanční okrajová podmínka</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="774"/>
