@@ -97,9 +97,6 @@ protected:
 private:
     QMenu *mnuScene;
 
-    // experimental
-    LoopsInfo m_loopsInfo;
-
     // helper for snap to grid
     bool m_snapToGrid;
 

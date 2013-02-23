@@ -1476,6 +1476,8 @@ void MainWindow::clear()
 
 void MainWindow::setControls()
 {
+    setUpdatesEnabled(false);
+
     actDocumentSaveSolution->setEnabled(Agros2D::problem()->isSolved());
 
     // set controls
@@ -1586,7 +1588,10 @@ void MainWindow::setControls()
 
     // actSolve->setEnabled(Agros2D::problem()->fieldInfos().count() > 0);
     actSolveAdaptiveStep->setEnabled(false);
+    actSolveAdaptiveStep->setVisible(false);
     //    actSolveAdaptiveStep->setEnabled(Agros2D::problem()->fieldInfos().count() > 0 && Agros2D::problem()->fieldInfos().count() <= 1 && (!Agros2D::problem()->isTransient()) );
+
+    setUpdatesEnabled(true);
 
     QTimer::singleShot(0, postprocessorWidget, SLOT(updateControls()));
 

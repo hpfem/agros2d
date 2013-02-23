@@ -436,11 +436,12 @@ QWidget *SettingsWidget::controlsMeshAndSolver()
     txtMaxDOFs->setMaximum(1e9);
     txtMaxDOFs->setSingleStep(1e2);
 
-    txtConvExp = new LineEditDouble();
+    txtConvExp = new LineEditDouble(ADAPTIVITY_CONVEXP, true);
     lblConvExp = new QLabel(tr("This parameter influences the selection of candidates<br/>in hp-adaptivity. Default value is 1.0."));
     lblConvExp->setFont(fnt);
 
-    txtThreshold = new LineEditDouble();
+    txtThreshold = new LineEditDouble(ADAPTIVITY_THRESHOLD, true);
+    txtThreshold->setBottom(0.0);
     lblThreshold = new QLabel(tr("Quantitative parameter of the adaptivity<br/>with different meanings for various adaptive strategies."));
     lblThreshold->setFont(fnt);
 

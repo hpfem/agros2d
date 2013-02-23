@@ -254,11 +254,10 @@ bool MeshGenerator::writeToHermes()
 }
 
 bool MeshGenerator::prepare()
-{
-    LoopsInfo loopsInfo;
+{    
     try
     {
-        loopsInfo = findLoops();
+        Agros2D::scene()->loopsInfo()->processLoops();
     }
     catch (AgrosMeshException& ame)
     {

@@ -588,6 +588,8 @@ void FieldsToobar::createControls()
 
 void FieldsToobar::refresh()
 {
+    setUpdatesEnabled(false);
+
     // fields
     buttonBar->buttons().clear();
     fields.clear();
@@ -644,7 +646,7 @@ void FieldsToobar::refresh()
         row++;
     }
 
-    repaint();
+    setUpdatesEnabled(true);
 }
 
 void FieldsToobar::fieldDialog(int index)
@@ -655,6 +657,8 @@ void FieldsToobar::fieldDialog(int index)
         FieldDialog fieldDialog(fieldInfo, this);
         if (fieldDialog.exec() == QDialog::Accepted)
         {
+            Agros2D::problem()->clearSolution();
+
             refresh();
             emit changed();
         }
@@ -673,6 +677,7 @@ void FieldsToobar::addField()
         FieldDialog fieldDialog(fieldInfo, this);
         if (fieldDialog.exec() == QDialog::Accepted)
         {
+            Agros2D::problem()->clearSolution();
             Agros2D::problem()->addField(fieldInfo);
 
             refresh();
@@ -701,6 +706,8 @@ CouplingsWidget::CouplingsWidget(QWidget *parent) : QWidget(parent)
 
 void CouplingsWidget::createContent()
 {
+    setUpdatesEnabled(false);
+
     if (layoutTable)
     {
         delete layoutTable;
@@ -733,6 +740,8 @@ void CouplingsWidget::createContent()
     }
 
     setLayout(layoutTable);
+
+    setUpdatesEnabled(true);
 }
 
 void CouplingsWidget::fillComboBox()
@@ -854,7 +863,9 @@ void ProblemWidget::createControls()
     txtTransientOrder->setMinimum(1);
     txtTransientOrder->setMaximum(3);
     txtTransientTimeTotal = new ValueLineEdit();
+    txtTransientTimeTotal->setCondition("value > 0");
     txtTransientTolerance = new ValueLineEdit();
+    txtTransientTolerance->setCondition("value > 0");
     txtTransientSteps = new QSpinBox();
     txtTransientSteps->setMinimum(1);
     txtTransientSteps->setMaximum(10000);
@@ -1052,7 +1063,5 @@ void ProblemWidget::transientChanged()
         else
             lblTransientSteps->setText(tr("Aprox. number of steps:"));
     }
-
-
 }
 

@@ -354,7 +354,7 @@ void Solver<Scalar>::clearActualSpaces()
 {
     // used meshes (should be shared between spaces)
     QList<Hermes::Hermes2D::Mesh *> meshes;
-    foreach (Hermes::Hermes2D::Space<Scalar> *space, m_actualSpaces)
+    foreach (Hermes::Hermes2D::Space<Scalar> *space, actualSpaces())
         if (!meshes.contains(space->get_mesh()))
             meshes.append(space->get_mesh());
 
@@ -363,7 +363,7 @@ void Solver<Scalar>::clearActualSpaces()
         delete mesh;
 
     // clear spaces
-    foreach (Hermes::Hermes2D::Space<Scalar> *space, m_actualSpaces)
+    foreach (Hermes::Hermes2D::Space<Scalar> *space, actualSpaces())
         delete space;
 
     m_actualSpaces.clear();
@@ -373,7 +373,7 @@ template <typename Scalar>
 void Solver<Scalar>::addSolutionToStore(BlockSolutionID solutionID, Scalar* solutionVector)
 {
     assert(solutionID.solutionMode == SolutionMode_Normal);
-    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> newSpaces = deepMeshAndSpaceCopy(m_actualSpaces, false);
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> newSpaces = deepMeshAndSpaceCopy(actualSpaces(), false);
 
     Hermes::vector<Hermes::Hermes2D::Mesh *> meshes = spacesMeshes(newSpaces);
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions = createSolutions<Scalar>(meshes);
@@ -423,7 +423,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     // cout << "Solving with " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) << " dofs" << endl;
 
     // check for DOFs
-    int ndof = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(m_actualSpaces));
+    int ndof = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(actualSpaces()));
     if (ndof == 0)
     {
         Agros2D::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
@@ -437,7 +437,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
         Module::updateTimeFunctions(Agros2D::problem()->actualTime());
     updateExactSolutionFunctions();
 
-    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(m_actualSpaces, Agros2D::problem()->actualTime());
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(actualSpaces(), Agros2D::problem()->actualTime());
 
     BDF2Table* bdf2Table = NULL;
     if (m_block->isTransient())
@@ -456,7 +456,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     try
     {
         initialSolutionVector = new Scalar[ndof];
-        Scalar *solutionVector = solveOneProblem(initialSolutionVector, m_actualSpaces, adaptivityStep,
+        Scalar *solutionVector = solveOneProblem(initialSolutionVector, actualSpaces(), adaptivityStep,
                                                  previousTSMultiSolutionArray.solutions());
         delete [] initialSolutionVector;
 
@@ -520,14 +520,14 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivity
 
     // solve, for nonlinear solver use solution obtained by BDFA method as an initial vector
     // TODO: remove for linear solver
-    Scalar *initialSolutionVector = new Scalar[Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(m_actualSpaces))];
-    Scalar *solutionVector = solveOneProblem(initialSolutionVector, m_actualSpaces, adaptivityStep,
+    Scalar *initialSolutionVector = new Scalar[Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(actualSpaces()))];
+    Scalar *solutionVector = solveOneProblem(initialSolutionVector, actualSpaces(), adaptivityStep,
                                              timeStep > 0 ? referenceCalculation.solutions() : Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *>());
     delete [] initialSolutionVector;
 
-    Hermes::vector<Hermes::Hermes2D::Mesh *> meshes = spacesMeshes(m_actualSpaces);
+    Hermes::vector<Hermes::Hermes2D::Mesh *> meshes = spacesMeshes(actualSpaces());
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions = createSolutions<Scalar>(meshes);
-    Solution<Scalar>::vector_to_solutions(solutionVector, castConst(m_actualSpaces), solutions);
+    Solution<Scalar>::vector_to_solutions(solutionVector, castConst(actualSpaces()), solutions);
 
     double error = Global<Scalar>::calc_abs_errors(referenceCalculation.solutions(), solutions);
 
@@ -644,13 +644,13 @@ void Solver<Scalar>::createInitialSpace()
             index++;
         }
 
+        // create copy of initial mesh, for all components only one mesh
+        Hermes::Hermes2D::Mesh *oneInitialMesh = new Hermes::Hermes2D::Mesh();
+        oneInitialMesh->copy(fieldInfo->initialMesh());
+
         // create space
         for (int i = 0; i < fieldInfo->numberOfSolutions(); i++)
         {
-            // create copy of initial mesh
-            Hermes::Hermes2D::Mesh *oneInitialMesh = new Hermes::Hermes2D::Mesh();
-            oneInitialMesh->copy(fieldInfo->initialMesh());
-
             Space<Scalar> *oneSpace = NULL;
             switch (fieldInfo->spaces()[i+1].type())
             {
@@ -680,7 +680,7 @@ void Solver<Scalar>::createInitialSpace()
                 if (!label->marker(fieldInfo)->isNone() &&
                         (fieldInfo->labelPolynomialOrder(label) != fieldInfo->polynomialOrder()))
                 {
-                    m_actualSpaces.at(i)->set_uniform_order(fieldInfo->labelPolynomialOrder(label),
+                    actualSpaces().at(i)->set_uniform_order(fieldInfo->labelPolynomialOrder(label),
                                                             QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString());
                 }
             }
@@ -733,7 +733,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
     }
 
     // check for DOFs
-    if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces) == 0)
+    if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(actualSpaces()) == 0)
     {
         Agros2D::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
         throw(AgrosSolverException("DOF is zero"));
@@ -744,7 +744,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
         Module::updateTimeFunctions(Agros2D::problem()->actualTime());
 
     // todo: delete? delam to pro referencni... (zkusit)
-    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(m_actualSpaces, Agros2D::problem()->actualTime());
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(actualSpaces(), Agros2D::problem()->actualTime());
 
     BDF2Table* bdf2Table = NULL;
     if(m_block->isTransient())
@@ -761,8 +761,8 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
     m_block->weakForm()->registerForms(bdf2Table);
 
     // create reference spaces
-    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spacesRef = deepMeshAndSpaceCopy(m_actualSpaces, true);
-    assert(m_actualSpaces.size() == spacesRef.size());
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spacesRef = deepMeshAndSpaceCopy(actualSpaces(), true);
+    assert(actualSpaces().size() == spacesRef.size());
 
     // todo: delete? je to vubec potreba?
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(spacesRef, Agros2D::problem()->actualTime());
@@ -770,7 +770,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
     // solve reference problem
     // TODO: posledni parametr: predchozi reseni pro projekci!!
     // TODO: remove for linear solver
-    Scalar *initialSolutionVector = new Scalar[Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(m_actualSpaces))];
+    Scalar *initialSolutionVector = new Scalar[Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(actualSpaces()))];
     Scalar *solutionVector = solveOneProblem(initialSolutionVector, spacesRef, adaptivityStep,
                                              Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *>());
     delete [] initialSolutionVector;
@@ -787,8 +787,8 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
     Agros2D::solutionStore()->addSolution(referenceSolutionID, MultiArray<Scalar>(spacesRef, solutionsRef), runTimeRef);
 
     // copy spaces and create empty solutions
-    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spacesCopy = deepMeshAndSpaceCopy(m_actualSpaces, false);
-    Hermes::vector<Hermes::Hermes2D::Mesh *> meshes = spacesMeshes(m_actualSpaces);
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spacesCopy = deepMeshAndSpaceCopy(actualSpaces(), false);
+    Hermes::vector<Hermes::Hermes2D::Mesh *> meshes = spacesMeshes(actualSpaces());
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions = createSolutions<Scalar>(meshes);
 
     // project the fine mesh solution onto the coarse mesh.
@@ -818,7 +818,7 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep, bool f
     initSelectors(projNormType, selector);
 
     // calculate element errors and total error estimate.
-    Adapt<Scalar> adaptivity(m_actualSpaces, projNormType);
+    Adapt<Scalar> adaptivity(actualSpaces(), projNormType);
     adaptivity.set_verbose_output(false);
 
     // calculate error estimate for each solution component and the total error estimate.
@@ -837,7 +837,7 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep, bool f
     }
 
     // todo: otazku zda uz neni moc dofu jsem mel vyresit nekde drive
-    bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(m_actualSpaces) < Agros2D::problem()->configView()->maxDofs;
+    bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(actualSpaces()) < Agros2D::problem()->configView()->maxDofs;
 
     // allways adapt when forcing adaptation, to be used in solveAdaptiveStep
     adapt = adapt || forceAdaptation;
@@ -873,7 +873,7 @@ void Solver<Scalar>::solveInitialTimeStep()
 {
     Agros2D::log()->printDebug(m_solverID, QObject::tr("Initial time step"));
 
-    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces = deepMeshAndSpaceCopy(m_actualSpaces, false);
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces = deepMeshAndSpaceCopy(actualSpaces(), false);
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions;
 
     int totalComp = 0;
@@ -893,7 +893,7 @@ void Solver<Scalar>::solveInitialTimeStep()
     BlockSolutionID solutionID(m_block, 0, 0, SolutionMode_Normal);
     SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(),
                                                   0.0,
-                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(m_actualSpaces)));
+                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(actualSpaces())));
 
     Agros2D::solutionStore()->addSolution(solutionID,
                                           MultiArray<Scalar>(spaces, solutions),

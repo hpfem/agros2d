@@ -154,7 +154,6 @@ protected:
     bool prepare();
 
     bool m_isError;
-    LoopsInfo m_loopsInfo;
 };
 
 #endif //MESHGENERATOR_H

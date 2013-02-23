@@ -20,69 +20,110 @@
 #ifndef UTIL_LOOPS_H
 #define UTIL_LOOPS_H
 
+class Scene;
 class SceneLabel;
+class SceneEdge;
 
 #include "util.h"
 
-struct LoopsNodeEdgeData
+class AGROS_API LoopsInfo : public QObject
 {
-    LoopsNodeEdgeData();
-    LoopsNodeEdgeData(int node, int edge, bool reverse,  double angle) : node(node), edge(edge), reverse(reverse), angle(angle), visited(false) {}
-    int node;
-    int edge;
-    bool reverse;
-    double angle; // to order edges going from node (anti)clockwise
-    bool visited;
-};
+    Q_OBJECT
 
-struct LoopsNode
-{
-    void insertEdge(int endNode, int edgeIdx, bool reverse,  double angle);
-    bool hasUnvisited();
-    LoopsNodeEdgeData startLoop();
-    LoopsNodeEdgeData continueLoop(int previousNode);
-    void setVisited(int index) {data[index].visited = true;}
+public:
+    LoopsInfo(Scene *scene);
+    virtual ~LoopsInfo() {}
 
-    QList<LoopsNodeEdgeData> data;
-};
-
-struct LoopsGraph
-{
-    LoopsGraph(int numNodes);
-    void addEdge(int startNode, int endNode, int edgeIdx, double angle);
-    void print();
-
-    QList<LoopsNode> data;
-};
-
-struct LoopsInfo
-{
-    QList<QList<LoopsNodeEdgeData> > loops;
-    QMap<SceneLabel*, QList<int> > labelToLoops;
-    QList<int> outsideLoops;
-
-    inline void clear()
+    enum Intersection
     {
-        loops.clear();
-        labelToLoops.clear();
-        outsideLoops.clear();
-    }
-};
+        Intersection_Uncertain,
+        Intersection_Left,
+        Intersection_Right,
+        Intersection_Both,
+        Intersection_No
+    };
 
-struct Triangle
-{
-    Triangle(const Point &a, const Point &b, const Point &c) : a(a), b(b), c(c)
+    struct LoopsNodeEdgeData
     {
-    }
+        LoopsNodeEdgeData();
+        LoopsNodeEdgeData(int node, int edge, bool reverse,  double angle) : node(node), edge(edge), reverse(reverse), angle(angle), visited(false) {}
+        int node;
+        int edge;
+        bool reverse;
+        double angle; // to order edges going from node (anti)clockwise
+        bool visited;
+    };
 
-    Point a, b, c;
+    struct LoopsNode
+    {
+        void insertEdge(int endNode, int edgeIdx, bool reverse,  double angle);
+        bool hasUnvisited();
+        LoopsNodeEdgeData startLoop();
+        LoopsNodeEdgeData continueLoop(int previousNode);
+        void setVisited(int index) {data[index].visited = true;}
+
+        QList<LoopsNodeEdgeData> data;
+    };
+
+    struct LoopsGraph
+    {
+        LoopsGraph(int numNodes);
+        void addEdge(int startNode, int endNode, int edgeIdx, double angle);
+        void print();
+
+        QList<LoopsNode> data;
+    };
+
+    struct Triangle
+    {
+        Triangle(const Point &a, const Point &b, const Point &c) : a(a), b(b), c(c)
+        {
+        }
+
+        Point a, b, c;
+    };
+
+    inline QList<QList<LoopsNodeEdgeData> > loops() const { return m_loops; }
+    inline QList<int> outsideLoops() const { return m_outsideLoops; }
+    inline QMap<SceneLabel*, QList<int> > labelLoops() const { return m_labelLoops; }
+
+    // polygon triangles
+    inline QMap<SceneLabel*, QList<Triangle> > polygonTriangles() const { return m_polygonTriangles; }
+
+    inline bool isProcessPolygonError() { return m_isProcessPolygonError; }
+
+public slots:
+    void processLoops();
+    void processPolygonTriangles();
+
+    void clear();
+
+private:
+    Scene *m_scene;
+
+    bool m_isProcessPolygonError;
+
+    QList<QList<LoopsNodeEdgeData> > m_loops;
+    QMap<SceneLabel*, QList<int> > m_labelLoops;
+    QList<int> m_outsideLoops;
+
+    QMap<SceneLabel*, QList<Triangle> > m_polygonTriangles;
+
+    Intersection intersects(Point point, double tangent, SceneEdge* edge);
+    Intersection intersects(Point point, double tangent, SceneEdge* edge, Point& intersection);
+    int intersectionsParity(Point point, QList<LoopsNodeEdgeData> loop);
+    bool isInsideSeg(double angleSegStart, double angleSegEnd, double angle);
+
+    QList<Triangle> triangulateLabel(const QList<Point> &polyline, const QList<QList<Point> > &holes);
+    int windingNumber(Point point, QList<LoopsNodeEdgeData> loop);
+    bool areSameLoops(QList<LoopsNodeEdgeData> loop1, QList<LoopsNodeEdgeData> loop2);
+    bool areEdgeDuplicities(QList<LoopsNodeEdgeData> loop);
+    int longerLoop(int idx1, int idx2);
+    bool shareEdge(int idx1, int idx2);
+    void switchOrientation(int idx);
+    void addEdgePoints(QList<Point> *polyline, const SceneEdge &edge, bool reverse = false);
 };
 
-// find loops
-LoopsInfo findLoops();
-
-// find polygon triangles
-QMap<SceneLabel*, QList<Triangle> > findPolygonTriangles();
 
 #endif // UTIL_LOOPS_H
 

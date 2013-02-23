@@ -189,7 +189,7 @@ void NewMarkerAction::doTriggered()
 
 // ************************************************************************************************************************
 
-Scene::Scene()
+Scene::Scene() : m_loopsInfo(NULL)
 {
     createActions();
 
@@ -207,6 +207,8 @@ Scene::Scene()
     edges = new SceneEdgeContainer();
     labels = new SceneLabelContainer();
 
+    m_loopsInfo = new LoopsInfo(this);
+
     clear();
 }
 
@@ -221,6 +223,8 @@ Scene::~Scene()
     delete nodes;
     delete edges;
     delete labels;
+
+    delete m_loopsInfo;
 
     // clear actions
     foreach (QAction *action, actNewBoundaries.values())
@@ -498,6 +502,10 @@ void Scene::clear()
     // markers
     boundaries->clear();
     materials->clear();
+
+    // loops
+    if (m_loopsInfo)
+        m_loopsInfo->clear();
 
     // none edge
     boundaries->add(new SceneBoundaryNone());
@@ -867,7 +875,7 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
 void Scene::doInvalidated()
 {
     actNewEdge->setEnabled((nodes->length() >= 2) && (boundaries->length() >= 1));
-    actNewLabel->setEnabled(materials->length() >= 1);
+    actNewLabel->setEnabled(materials->length() >= 1);   
 }
 
 void Scene::doNewNode(const Point &point)
@@ -1494,6 +1502,8 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         setActiveViewField(Agros2D::problem()->fieldInfos().begin().value());
 
     blockSignals(false);
+
+    m_loopsInfo->processPolygonTriangles();
 
     // default values
     emit invalidated();

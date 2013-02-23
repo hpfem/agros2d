@@ -40,6 +40,7 @@ Agros2D::Agros2D()
 {
     m_problem = new Problem();
     m_scene = new Scene();
+
     QObject::connect(m_problem, SIGNAL(fieldsChanged()), m_scene, SLOT(doFieldsChanged()));
     QObject::connect(m_scene, SIGNAL(invalidated()), m_problem, SLOT(clearSolution()));
 

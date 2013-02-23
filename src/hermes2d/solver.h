@@ -172,6 +172,7 @@ private:
 
     void clearActualSpaces();
     void setActualSpaces(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces);
+    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> actualSpaces() { return m_actualSpaces;}
     Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> deepMeshAndSpaceCopy(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces, bool createReference);
     void addSolutionToStore(BlockSolutionID id, Scalar* solutionVector);
 };
