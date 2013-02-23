@@ -603,8 +603,6 @@ void SceneViewParticleTracing::paintGeometrySurface(bool blend)
     double max = qMax(rect.width(), rect.height());
     double depth = max / Agros2D::problem()->configView()->scalarView3DHeight;
 
-    QMap<SceneLabel*, QList<Triangle> > labels = findPolygonTriangles();
-
     glPushMatrix();
 
     glMatrixMode(GL_PROJECTION);
@@ -635,14 +633,14 @@ void SceneViewParticleTracing::paintGeometrySurface(bool blend)
     if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
     {
         glBegin(GL_TRIANGLES);
-        QMapIterator<SceneLabel*, QList<Triangle> > i(labels);
+        QMapIterator<SceneLabel*, QList<LoopsInfo::Triangle> > i(Agros2D::scene()->loopsInfo()->polygonTriangles());
         while (i.hasNext())
         {
             i.next();
             if (i.key()->isHole())
                 continue;
 
-            foreach (Triangle triangle, i.value())
+            foreach (LoopsInfo::Triangle triangle, i.value())
             {
                 // z = - depth / 2.0
                 glVertex3d(triangle.a.x, triangle.a.y, -depth/2.0);
@@ -698,14 +696,14 @@ void SceneViewParticleTracing::paintGeometrySurface(bool blend)
     else
     {
         glBegin(GL_TRIANGLES);
-        QMapIterator<SceneLabel*, QList<Triangle> > i(labels);
+        QMapIterator<SceneLabel*, QList<LoopsInfo::Triangle> > i(Agros2D::scene()->loopsInfo()->polygonTriangles());
         while (i.hasNext())
         {
             i.next();
             if (i.key()->isHole())
                 continue;
 
-            foreach (Triangle triangle, i.value())
+            foreach (LoopsInfo::Triangle triangle, i.value())
             {
                 for (int j = 0; j <= 360; j = j + 90)
                 {
@@ -788,8 +786,6 @@ void SceneViewParticleTracing::paintParticleTracing()
         RectPoint rect = Agros2D::scene()->boundingBox();
         double max = qMax(rect.width(), rect.height());
         double depth = max / Agros2D::problem()->configView()->scalarView3DHeight;
-
-        QMap<SceneLabel*, QList<Triangle> > labels = findPolygonTriangles();
 
         glPushMatrix();
 

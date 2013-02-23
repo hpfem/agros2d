@@ -39,7 +39,7 @@ void SceneNode::setPoint(const Point &point)
 
     // refresh cache
     foreach (SceneEdge *edge, connectedEdges())
-        edge->computeCenter();
+        edge->computeCenterAndRadius();
 }
 
 double SceneNode::distance(const Point &point) const

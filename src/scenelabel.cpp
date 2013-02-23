@@ -60,7 +60,7 @@ bool SceneLabel::isHole()
 int SceneLabel::showDialog(QWidget *parent, bool isNew)
 {
     SceneLabelDialog *dialog = new SceneLabelDialog(this, parent, isNew);
-    return dialog->exec();    
+    return dialog->exec();
 }
 
 SceneLabelCommandAdd* SceneLabel::getAddCommand()
@@ -75,16 +75,14 @@ SceneLabelCommandRemove* SceneLabel::getRemoveCommand()
 
 SceneLabel *SceneLabel::findClosestLabel(const Point &point)
 {
-    QMap<SceneLabel*, QList<Triangle> > labels;
     try
     {
-        labels = findPolygonTriangles();
-        QMapIterator<SceneLabel*, QList<Triangle> > i(labels);
+        QMapIterator<SceneLabel*, QList<LoopsInfo::Triangle> > i(Agros2D::scene()->loopsInfo()->polygonTriangles());
         while (i.hasNext())
         {
             i.next();
 
-            foreach (Triangle triangle, i.value())
+            foreach (LoopsInfo::Triangle triangle, i.value())
             {
                 bool b1 = (point.x - triangle.b.x) * (triangle.a.y - triangle.b.y) - (triangle.a.x - triangle.b.x) * (point.y - triangle.b.y) < 0.0;
                 bool b2 = (point.x - triangle.c.x) * (triangle.b.y - triangle.c.y) - (triangle.b.x - triangle.c.x) * (point.y - triangle.c.y) < 0.0;
@@ -99,6 +97,11 @@ SceneLabel *SceneLabel::findClosestLabel(const Point &point)
         }
     }
     catch (AgrosMeshException &ame)
+    {
+        // do nothing
+    }
+
+    if (Agros2D::scene()->loopsInfo()->isProcessPolygonError())
     {
         SceneLabel *labelClosest = NULL;
 
@@ -115,7 +118,6 @@ SceneLabel *SceneLabel::findClosestLabel(const Point &point)
 
         return labelClosest;
     }
-
 
     return NULL;
 }

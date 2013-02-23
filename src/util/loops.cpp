@@ -21,6 +21,7 @@
 
 #include "meshgenerator.h"
 
+#include "scene.h"
 #include "scenenode.h"
 #include "sceneedge.h"
 #include "scenelabel.h"
@@ -30,15 +31,18 @@
 
 #include "scene.h"
 
-const int LOOPS_NON_EXISTING = -100000;
+const static int LOOPS_NON_EXISTING = -100000;
+const static double TOL = 0.001;
 
-LoopsNodeEdgeData::LoopsNodeEdgeData() : node(LOOPS_NON_EXISTING)
+// **************************************************************************************
+
+LoopsInfo::LoopsNodeEdgeData::LoopsNodeEdgeData() : node(LOOPS_NON_EXISTING)
 {
 }
 
 // **************************************************************************************
 
-bool LoopsNode::hasUnvisited()
+bool LoopsInfo::LoopsNode::hasUnvisited()
 {
     foreach(LoopsNodeEdgeData ned, data)
         if(!ned.visited)
@@ -47,7 +51,7 @@ bool LoopsNode::hasUnvisited()
     return false;
 }
 
-LoopsNodeEdgeData LoopsNode::startLoop()
+LoopsInfo::LoopsNodeEdgeData LoopsInfo::LoopsNode::startLoop()
 {
     for (int i = 0; i < data.size(); i++){
         LoopsNodeEdgeData ned = data.at(i);
@@ -61,7 +65,7 @@ LoopsNodeEdgeData LoopsNode::startLoop()
     assert(0);
 }
 
-LoopsNodeEdgeData LoopsNode::continueLoop(int previousNode)
+LoopsInfo::LoopsNodeEdgeData LoopsInfo::LoopsNode::continueLoop(int previousNode)
 {
     LoopsNodeEdgeData previousNED;
     int index;
@@ -83,7 +87,7 @@ LoopsNodeEdgeData LoopsNode::continueLoop(int previousNode)
     return data[nextIdx];
 }
 
-void LoopsNode::insertEdge(int endNode, int edgeIdx, bool reverse, double angle)
+void LoopsInfo::LoopsNode::insertEdge(int endNode, int edgeIdx, bool reverse, double angle)
 {
     int index = 0;
 
@@ -95,13 +99,13 @@ void LoopsNode::insertEdge(int endNode, int edgeIdx, bool reverse, double angle)
 
 // ***********************************************************************
 
-LoopsGraph::LoopsGraph(int numNodes)
+LoopsInfo::LoopsGraph::LoopsGraph(int numNodes)
 {
     for (int i = 0; i < numNodes; i++)
         data.push_back(LoopsNode());
 }
 
-void LoopsGraph::addEdge(int startNode, int endNode, int edgeIdx, double angle)
+void LoopsInfo::LoopsGraph::addEdge(int startNode, int endNode, int edgeIdx, double angle)
 {
     double angle2 = angle + M_PI;
     if(angle2 >= 2 * M_PI)
@@ -111,7 +115,7 @@ void LoopsGraph::addEdge(int startNode, int endNode, int edgeIdx, double angle)
     data[endNode].insertEdge(startNode, edgeIdx, true, angle2);
 }
 
-void LoopsGraph::print()
+void LoopsInfo::LoopsGraph::print()
 {
     /*
     for (int i = 0; i < data.size(); i++)
@@ -126,18 +130,7 @@ void LoopsGraph::print()
     */
 }
 
-enum Intersection
-{
-    Intersection_Uncertain,
-    Intersection_Left,
-    Intersection_Right,
-    Intersection_Both,
-    Intersection_No
-};
-
-const double TOL = 0.001;
-
-bool isInsideSeg(double angleSegStart, double angleSegEnd, double angle)
+bool LoopsInfo::isInsideSeg(double angleSegStart, double angleSegEnd, double angle)
 {
     if(angleSegEnd > angleSegStart)
     {
@@ -157,7 +150,7 @@ bool isInsideSeg(double angleSegStart, double angleSegEnd, double angle)
     }
 }
 
-Intersection intersects(Point point, double tangent, SceneEdge* edge, Point& intersection)
+LoopsInfo::Intersection LoopsInfo::intersects(Point point, double tangent, SceneEdge* edge, Point& intersection)
 {
     double x1 = edge->nodeStart()->point().x;
     double y1 = edge->nodeStart()->point().y;
@@ -199,7 +192,7 @@ Intersection intersects(Point point, double tangent, SceneEdge* edge, Point& int
             //cout << "first: anglestart " << angleSegStart << ", end " << angleSegEnd << ", angle1 " << angle1 << ", x1" << x1 << ", point.x " << point.x << ", inside " << isInsideSeg(angleSegStart, angleSegEnd, angle1) << endl;
             //cout << "second: anglestart " << angleSegStart << ", end " << angleSegEnd << ", angle2 " << angle2 << ", x2" << x2 << ", point.x " << point.x << ", inside " << isInsideSeg(angleSegStart, angleSegEnd, angle2) << endl;
 
-            if(isInsideSeg(angleSegStart, angleSegEnd, angle1))
+            if (isInsideSeg(angleSegStart, angleSegEnd, angle1))
             {
                 if(xI1 < point.x)
                     leftInter++;
@@ -208,7 +201,7 @@ Intersection intersects(Point point, double tangent, SceneEdge* edge, Point& int
                 intersection.x = xI1;
                 intersection.y = yI1;
             }
-            if(isInsideSeg(angleSegStart, angleSegEnd, angle2))
+            if (isInsideSeg(angleSegStart, angleSegEnd, angle2))
             {
                 if(xI2 < point.x)
                     leftInter++;
@@ -279,19 +272,27 @@ Intersection intersects(Point point, double tangent, SceneEdge* edge, Point& int
     }
 }
 
-Intersection intersects(Point point, double tangent, SceneEdge* edge)
+LoopsInfo::Intersection LoopsInfo::intersects(Point point, double tangent, SceneEdge* edge)
 {
     Point intersection;
     return intersects(point, tangent, edge, intersection);
 }
 
+// *********************************************************************************************
 
-int intersectionsParity(Point point, QList<LoopsNodeEdgeData> loop)
+LoopsInfo::LoopsInfo(Scene *scene)
+    : QObject(), m_scene(scene)
+{
+    connect(m_scene, SIGNAL(invalidated()), this, SLOT(processPolygonTriangles()));
+    connect(m_scene, SIGNAL(cleared()), this, SLOT(processPolygonTriangles()));
+}
+
+int LoopsInfo::intersectionsParity(Point point, QList<LoopsNodeEdgeData> loop)
 {
     bool rejectTangent;
     double tangent = 0.;
     int left, right;
-    do{
+    do {
         tangent += 0.1;
         //cout << "IntersectionParity, tangent " << tangent << endl;
         assert(tangent < 10);
@@ -300,7 +301,7 @@ int intersectionsParity(Point point, QList<LoopsNodeEdgeData> loop)
 
         foreach (LoopsNodeEdgeData ned, loop)
         {
-            Intersection result = intersects(point, tangent, Agros2D::scene()->edges->at(ned.edge));
+            Intersection result = intersects(point, tangent, m_scene->edges->at(ned.edge));
             if(result == Intersection_Uncertain)
             {
                 rejectTangent = true;
@@ -327,15 +328,16 @@ int intersectionsParity(Point point, QList<LoopsNodeEdgeData> loop)
     return left%2;
 }
 
-int windingNumber(Point point, QList<LoopsNodeEdgeData> loop)
+int LoopsInfo::windingNumber(Point point, QList<LoopsNodeEdgeData> loop)
 {
     QList<double> angles;
-    foreach(LoopsNodeEdgeData ned, loop)
+    angles.reserve(loop.size() * 2);
+    foreach (LoopsNodeEdgeData ned, loop)
     {
         // use two segments instead of arc. Point on arc to be found as intersection of arc with line going through
         // edge center and point
-        SceneEdge* edge = Agros2D::scene()->edges->at(ned.edge);
-        if(edge->angle() != 0)
+        SceneEdge* edge = m_scene->edges->at(ned.edge);
+        if (!edge->isStraight())
         {
             Point intersection;
             Point edgePoint = edge->center();
@@ -346,22 +348,20 @@ int windingNumber(Point point, QList<LoopsNodeEdgeData> loop)
 
             double tangent = (edgePoint.y - point.y) / (edgePoint.x - point.x);
             Intersection intersectionType = intersects(point, tangent, edge, intersection);
-            if((intersectionType == Intersection_Left) || (intersectionType == Intersection_Right))
+            if ((intersectionType == Intersection_Left) || (intersectionType == Intersection_Right))
             {
-                double additionalAngle = atan2(intersection.y - point.y, intersection.x - point.x);
+                double additionalAngle = atan2(intersection.y - point.y,
+                                                   intersection.x - point.x);
                 angles.append(additionalAngle);
             }
         }
 
         // regular points
-        Point nodePoint = Agros2D::scene()->nodes->at(ned.node)->point();
-        double angle = atan2(nodePoint.y - point.y, nodePoint.x - point.x);
-        while (angle >= M_PI) angle -= 2*M_PI;
-        while (angle < -M_PI) angle += 2*M_PI;
-        assert((angle <= M_PI) && (angle >= -M_PI));
+        Point nodePoint = m_scene->nodes->at(ned.node)->point();
+        double angle = atan2(nodePoint.y - point.y,
+                                 nodePoint.x - point.x);
 
         angles.append(angle);
-
     }
 
     double totalAngle = 0;
@@ -383,12 +383,16 @@ int windingNumber(Point point, QList<LoopsNodeEdgeData> loop)
     return intWinding;
 }
 
-bool areSameLoops(QList<LoopsNodeEdgeData> loop1, QList<LoopsNodeEdgeData> loop2)
+bool LoopsInfo::areSameLoops(QList<LoopsNodeEdgeData> loop1, QList<LoopsNodeEdgeData> loop2)
 {
     if(loop1.size() != loop2.size())
         return false;
 
-    QList<int> nodes1, nodes2;
+    QList<int> nodes1;
+    nodes1.reserve(loop1.size());
+    QList<int> nodes2;
+    nodes2.reserve(loop2.size());
+
     foreach(LoopsNodeEdgeData ned, loop1)
         nodes1.push_back(ned.node);
     foreach(LoopsNodeEdgeData ned, loop2)
@@ -401,7 +405,7 @@ bool areSameLoops(QList<LoopsNodeEdgeData> loop1, QList<LoopsNodeEdgeData> loop2
     return true;
 }
 
-bool areEdgeDuplicities(QList<LoopsNodeEdgeData> loop)
+bool LoopsInfo::areEdgeDuplicities(QList<LoopsNodeEdgeData> loop)
 {
     for (int i = 0; i < loop.length(); i++)
     {
@@ -422,10 +426,10 @@ bool areEdgeDuplicities(QList<LoopsNodeEdgeData> loop)
     return false;
 }
 
-int longerLoop(QList<QList<LoopsNodeEdgeData> > loops, int idx1, int idx2)
+int LoopsInfo::longerLoop(int idx1, int idx2)
 {
-    int size1 = loops[idx1].size();
-    int size2 = loops[idx2].size();
+    int size1 = m_loops[idx1].size();
+    int size2 = m_loops[idx2].size();
 
     if(size1 > size2)
         return idx1;
@@ -435,30 +439,28 @@ int longerLoop(QList<QList<LoopsNodeEdgeData> > loops, int idx1, int idx2)
         assert(0);
 }
 
-int shareEdge(QList<QList<LoopsNodeEdgeData> > loops, int idx1, int idx2)
+bool LoopsInfo::shareEdge(int idx1, int idx2)
 {
-    foreach(LoopsNodeEdgeData ned1, loops[idx1])
+    foreach(LoopsNodeEdgeData ned1, m_loops[idx1])
     {
-        foreach(LoopsNodeEdgeData ned2, loops[idx2])
+        foreach(LoopsNodeEdgeData ned2, m_loops[idx2])
         {
-            if(ned1.edge == ned2.edge)
+            if (ned1.edge == ned2.edge)
                 return true;
         }
     }
     return false;
 }
 
-void switchOrientation(QList<QList<LoopsNodeEdgeData> >& loops, int idx)
+void LoopsInfo::switchOrientation(int idx)
 {
-    QList<LoopsNodeEdgeData>& loop = loops[idx];
-    for (int i = 0; i < loop.size() / 2; i++)
-        swap(loop[i], loop[loop.size() - 1 - i]);
-    for (int i = 0; i < loop.size(); i++)
-        loop[i].reverse = !loop[i].reverse;
-
+    for (int i = 0; i < m_loops[idx].size() / 2; i++)
+        swap(m_loops[idx][i], m_loops[idx][m_loops[idx].size() - 1 - i]);
+    for (int i = 0; i < m_loops[idx].size(); i++)
+        m_loops[idx][i].reverse = !m_loops[idx][i].reverse;
 }
 
-void addEdgePoints(QList<Point> *polyline, const SceneEdge &edge, bool reverse = false)
+void LoopsInfo::addEdgePoints(QList<Point> *polyline, const SceneEdge &edge, bool reverse = false)
 {
     QList<Point> localPolyline;
 
@@ -499,19 +501,20 @@ void addEdgePoints(QList<Point> *polyline, const SceneEdge &edge, bool reverse =
     polyline->append(localPolyline);
 }
 
-LoopsInfo findLoops()
+void LoopsInfo::processLoops()
 {
     // find loops
-    LoopsGraph graph(Agros2D::scene()->nodes->length());
-    for (int i = 0; i < Agros2D::scene()->edges->length(); i++)
+    LoopsGraph graph(m_scene->nodes->length());
+    for (int i = 0; i < m_scene->edges->length(); i++)
     {
-        SceneNode* startNode = Agros2D::scene()->edges->at(i)->nodeStart();
-        SceneNode* endNode = Agros2D::scene()->edges->at(i)->nodeEnd();
-        int startNodeIdx = Agros2D::scene()->nodes->items().indexOf(startNode);
-        int endNodeIdx = Agros2D::scene()->nodes->items().indexOf(endNode);
+        SceneNode* startNode = m_scene->edges->at(i)->nodeStart();
+        SceneNode* endNode = m_scene->edges->at(i)->nodeEnd();
+        int startNodeIdx = m_scene->nodes->items().indexOf(startNode);
+        int endNodeIdx = m_scene->nodes->items().indexOf(endNode);
 
-        double angle = atan2(endNode->point().y - startNode->point().y, endNode->point().x - startNode->point().x);
-        if(angle < 0)
+        double angle = atan2(endNode->point().y - startNode->point().y,
+                             endNode->point().x - startNode->point().x);
+        if (angle < 0)
             angle += 2 * M_PI;
 
         graph.addEdge(startNodeIdx, endNodeIdx, i, angle);
@@ -519,7 +522,7 @@ LoopsInfo findLoops()
 
     graph.print();
 
-    QList<QList<LoopsNodeEdgeData> > loops;
+    m_loops.clear();
     for (int i = 0; i < graph.data.size(); i++)
     {
         //cout << "** starting with node " << i << endl;
@@ -547,8 +550,8 @@ LoopsInfo findLoops()
                 throw AgrosGeometryException(QObject::tr("Two loops connected by one edge."));
 
             // for simple domains, we have the same loop twice. Do not include it second times
-            if (loops.isEmpty() || !areSameLoops(loop, loops.last()))
-                loops.push_back(loop);
+            if (m_loops.isEmpty() || !areSameLoops(loop, m_loops.last()))
+                m_loops.append(loop);
         }
     }
 
@@ -559,17 +562,17 @@ LoopsInfo findLoops()
     QMap<QPair<SceneLabel*, int>, int> windingNumbers;
 
     // find what labels are inside what loops
-    for (int loopIdx = 0; loopIdx < loops.size(); loopIdx++)
+    for (int loopIdx = 0; loopIdx < m_loops.size(); loopIdx++)
     {
         labelsInsideLoop.push_back(QList<SceneLabel*>());
-        for (int labelIdx = 0; labelIdx < Agros2D::scene()->labels->count(); labelIdx++)
+        for (int labelIdx = 0; labelIdx < m_scene->labels->count(); labelIdx++)
         {
-            SceneLabel* label = Agros2D::scene()->labels->at(labelIdx);
-            int wn = windingNumber(label->point(), loops[loopIdx]);
+            SceneLabel* label = m_scene->labels->at(labelIdx);
+            int wn = windingNumber(label->point(), m_loops[loopIdx]);
             //cout << "winding number " << wn << endl;
             assert(wn < 2);
             windingNumbers[QPair<SceneLabel*, int>(label, loopIdx)] = wn;
-            int ip = intersectionsParity(label->point(), loops[loopIdx]);
+            int ip = intersectionsParity(label->point(), m_loops[loopIdx]);
             // assert(abs(wn) == ip);
             if(ip == 1){
                 labelsInsideLoop[loopIdx].push_back(label);
@@ -579,35 +582,34 @@ LoopsInfo findLoops()
             }
         }
         if (labelsInsideLoop[loopIdx].size() == 0)
-            throw (AgrosMeshException("Some areas do not have a marker"));
+            throw (AgrosGeometryException("Some areas do not have a marker"));
     }
 
-    for (int labelIdx = 0; labelIdx < Agros2D::scene()->labels->count(); labelIdx++)
+    for (int labelIdx = 0; labelIdx < m_scene->labels->count(); labelIdx++)
     {
-        SceneLabel* label = Agros2D::scene()->labels->at(labelIdx);
+        SceneLabel* label = m_scene->labels->at(labelIdx);
         if(!loopsContainingLabel.contains(label))
-            throw(AgrosMeshException("There is a label outside of the domain"));
+            throw(AgrosGeometryException("There is a label outside of the domain"));
     }
 
     // direct super and sub domains (indexed by loop indices)
     QList<int> superDomains;
     QList<QList<int> > subDomains;
 
-    for (int i = 0; i < loops.size(); i++)
+    for (int i = 0; i < m_loops.size(); i++)
     {
         superDomains.push_back(-1);
         subDomains.push_back(QList<int>());
     }
 
     // outiside loops, not to be considered
-    QList<int> outsideLoops;
-
-    for (int labelIdx = 0; labelIdx < Agros2D::scene()->labels->count(); labelIdx++)
+    m_outsideLoops.clear();
+    for (int labelIdx = 0; labelIdx < m_scene->labels->count(); labelIdx++)
     {
-        SceneLabel* actualLabel = Agros2D::scene()->labels->at(labelIdx);
+        SceneLabel* actualLabel = m_scene->labels->at(labelIdx);
         QList<int> loopsWithLabel = loopsContainingLabel[actualLabel];
         if(loopsWithLabel.size() == 0)
-            throw (AgrosMeshException("There is no label in some subdomain"));
+            throw (AgrosGeometryException("There is no label in some subdomain"));
 
 
         // sort
@@ -632,10 +634,11 @@ LoopsInfo findLoops()
         int windNum = windingNumbers[QPair<SceneLabel*, int>(actualLabel, indexOfInmost)];
         assert(abs(windNum) == 1);
         if(windNum == -1)
-            switchOrientation(loops, indexOfInmost);
+            switchOrientation(indexOfInmost);
 
-        if((labelsInsideLoop[indexOfOutmost].size() > 1) && (indexOfOutmost != indexOfInmost) && shareEdge(loops, indexOfOutmost, indexOfInmost))
-            outsideLoops.push_back(indexOfOutmost);
+        if ((labelsInsideLoop[indexOfOutmost].size() > 1) && (indexOfOutmost != indexOfInmost)
+                && shareEdge(indexOfOutmost, indexOfInmost))
+            m_outsideLoops.append(indexOfOutmost);
 
         for (int j = 0; j < loopsWithLabel.size() -1; j++)
         {
@@ -643,7 +646,7 @@ LoopsInfo findLoops()
             int numLabelsPlus1 = labelsInsideLoop[loopsWithLabel[j+1]].size();
             if(numLabelsJ == numLabelsPlus1)
             {
-                throw (AgrosMeshException("There is no label in some subdomain"));
+                throw (AgrosGeometryException("There is no label in some subdomain"));
             }
         }
 
@@ -658,19 +661,19 @@ LoopsInfo findLoops()
         }
     }
 
-    QMap<SceneLabel*, QList<int> > labelLoopsInfo;
-    for (int labelIdx = 0; labelIdx < Agros2D::scene()->labels->count(); labelIdx++)
+    m_labelLoops.clear();
+    for (int labelIdx = 0; labelIdx < m_scene->labels->count(); labelIdx++)
     {
-        SceneLabel* label = Agros2D::scene()->labels->at(labelIdx);
+        SceneLabel* label = m_scene->labels->at(labelIdx);
         if(!principalLoopOfLabel.contains(label))
-            throw (AgrosMeshException("There is a label outside of the domain"));
+            throw (AgrosGeometryException("There is a label outside of the domain"));
 
         int principalLoop = principalLoopOfLabel[label];
-        labelLoopsInfo[label] = QList<int>();
-        labelLoopsInfo[label].push_back(principalLoop);
+        m_labelLoops[label] = QList<int>();
+        m_labelLoops[label].push_back(principalLoop);
         for (int i = 0; i < subDomains[principalLoop].count(); i++)
         {
-            labelLoopsInfo[label].push_back(subDomains[principalLoop][i]);
+            m_labelLoops[label].append(subDomains[principalLoop][i]);
         }
     }
 
@@ -681,18 +684,11 @@ LoopsInfo findLoops()
         if (!usedLoops.contains(principalLoopOfLabel[label]))
             usedLoops.append(principalLoopOfLabel[label]);
         else
-            throw (AgrosMeshException("There is multiple labels in the domain"));
+            throw (AgrosGeometryException("There is multiple labels in the domain"));
     }
-
-    LoopsInfo loopsInfo;
-    loopsInfo.loops = loops;
-    loopsInfo.labelToLoops = labelLoopsInfo;
-    loopsInfo.outsideLoops = outsideLoops;
-
-    return loopsInfo;
 }
 
-QList<Triangle> triangulateLabel(const QList<Point> &polyline, const QList<QList<Point> > &holes)
+QList<LoopsInfo::Triangle> LoopsInfo::triangulateLabel(const QList<Point> &polyline, const QList<QList<Point> > &holes)
 {
     // create p2t structure
     vector<p2t::Point*> polylineP2T;
@@ -753,29 +749,28 @@ QList<Triangle> triangulateLabel(const QList<Point> &polyline, const QList<QList
     return triangles;
 }
 
-
-QMap<SceneLabel*, QList<Triangle> > findPolygonTriangles()
+void LoopsInfo::processPolygonTriangles()
 {
-    QMap<SceneLabel*, QList<Triangle> > objects;
+    m_polygonTriangles.clear();
 
     // TODO: rewrite to exceptions
     // find loops
     try
     {
-        LoopsInfo loopsInfo = findLoops();
+        processLoops();
 
         QList<QList<Point> > polylines;
-        for (int i = 0; i < loopsInfo.loops.size(); i++)
+        for (int i = 0; i < m_loops.size(); i++)
         {
             QList<Point> polyline;
 
             // QList<Point> contour;
-            for (int j = 0; j < loopsInfo.loops[i].size(); j++)
+            for (int j = 0; j < m_loops[i].size(); j++)
             {
-                SceneEdge *edge = Agros2D::scene()->edges->items().at(loopsInfo.loops[i][j].edge);
+                SceneEdge *edge = m_scene->edges->items().at(m_loops[i][j].edge);
                 if ((edge->nodeStart()->connectedEdges().size() > 1) && (edge->nodeEnd()->connectedEdges().size() > 1))
                 {
-                    if (loopsInfo.loops[i][j].reverse)
+                    if (m_loops[i][j].reverse)
                         addEdgePoints(&polyline, SceneEdge(edge->nodeStart(), edge->nodeEnd(), edge->angle()), true);
                     else
                         addEdgePoints(&polyline, SceneEdge(edge->nodeStart(), edge->nodeEnd(), edge->angle()));
@@ -785,24 +780,24 @@ QMap<SceneLabel*, QList<Triangle> > findPolygonTriangles()
             polylines.append(polyline);
         }
 
-        foreach (SceneLabel* label, Agros2D::scene()->labels->items())
+        foreach (SceneLabel* label, m_scene->labels->items())
         {
             // if (!label->isHole() && loopsInfo.labelToLoops[label].count() > 0)
-            if (loopsInfo.labelToLoops[label].count() > 0)
+            if (m_labelLoops[label].count() > 0)
             {
                 // main polyline
-                QList<Point> polyline = polylines[loopsInfo.labelToLoops[label][0]];
+                QList<Point> polyline = polylines[m_labelLoops[label][0]];
 
                 // holes
                 QList<QList<Point> > holes;
-                for (int j = 1; j < loopsInfo.labelToLoops[label].count(); j++)
+                for (int j = 1; j < m_labelLoops[label].count(); j++)
                 {
-                    QList<Point> hole = polylines[loopsInfo.labelToLoops[label][j]];
+                    QList<Point> hole = polylines[m_labelLoops[label][j]];
                     holes.append(hole);
                 }
 
                 QList<Triangle> triangles = triangulateLabel(polyline, holes);
-                objects.insert(label, triangles);
+                m_polygonTriangles.insert(label, triangles);
             }
         }
 
@@ -810,11 +805,21 @@ QMap<SceneLabel*, QList<Triangle> > findPolygonTriangles()
         foreach (QList<Point> polyline, polylines)
             polyline.clear();
         polylines.clear();
+
+        m_isProcessPolygonError = false;
     }
     catch (AgrosGeometryException &e)
     {
         // do nothing
+        m_isProcessPolygonError = true;
     }
+}
 
-    return objects;
+void LoopsInfo::clear()
+{
+    m_loops.clear();
+    m_labelLoops.clear();
+    m_outsideLoops.clear();
+
+    m_polygonTriangles.clear();
 }

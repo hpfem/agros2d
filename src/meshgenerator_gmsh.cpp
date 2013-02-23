@@ -268,11 +268,9 @@ bool MeshGeneratorGMSH::writeToGmsh()
     out << outLabels;
     */
 
-    // TODO: find loops
-    LoopsInfo loopsInfo;
     try
     {
-        loopsInfo = findLoops();
+        Agros2D::scene()->loopsInfo()->processLoops();
     }
     catch (AgrosMeshException& ame)
     {
@@ -281,20 +279,18 @@ bool MeshGeneratorGMSH::writeToGmsh()
         return false;
     }
 
-    QList<QList<LoopsNodeEdgeData> > loops = loopsInfo.loops;
-
     QString outLoops;
-    for(int i = 0; i < loops.size(); i++)
+    for(int i = 0; i < Agros2D::scene()->loopsInfo()->loops().size(); i++)
     {
-        if(! loopsInfo.outsideLoops.contains(i))
+        if (!Agros2D::scene()->loopsInfo()->outsideLoops().contains(i))
         {
             outLoops.append(QString("Line Loop(%1) = {").arg(i+1));
-            for(int j = 0; j < loops[i].size(); j++)
+            for(int j = 0; j < Agros2D::scene()->loopsInfo()->loops().at(i).size(); j++)
             {
-                if(loops[i][j].reverse)
+                if (Agros2D::scene()->loopsInfo()->loops().at(i)[j].reverse)
                     outLoops.append("-");
-                outLoops.append(QString("%1").arg(loops[i][j].edge + 1));
-                if(j < loops[i].size() - 1)
+                outLoops.append(QString("%1").arg(Agros2D::scene()->loopsInfo()->loops().at(i)[j].edge + 1));
+                if (j < Agros2D::scene()->loopsInfo()->loops().at(i).size() - 1)
                     outLoops.append(",");
             }
             outLoops.append(QString("};\n"));
@@ -303,9 +299,8 @@ bool MeshGeneratorGMSH::writeToGmsh()
     outLoops.append("\n");
 
     QList<int> surfaces;
-    QMap<SceneLabel*, QList<int> > labelInfo = loopsInfo.labelToLoops;
     int surfaceCount = 0;
-    for(int i = 0; i < Agros2D::scene()->labels->count(); i++)
+    for (int i = 0; i < Agros2D::scene()->labels->count(); i++)
     {
         surfaceCount++;
         SceneLabel* label = Agros2D::scene()->labels->at(i);
@@ -313,10 +308,10 @@ bool MeshGeneratorGMSH::writeToGmsh()
         {
             surfaces.push_back(surfaceCount);
             outLoops.append(QString("Plane Surface(%1) = {").arg(surfaceCount));
-            for(int j = 0; j < labelInfo[label].count(); j++)
+            for (int j = 0; j < Agros2D::scene()->loopsInfo()->labelLoops()[label].count(); j++)
             {
-                outLoops.append(QString("%1").arg(labelInfo[label][j]+1));
-                if(j < labelInfo[label].count() - 1)
+                outLoops.append(QString("%1").arg(Agros2D::scene()->loopsInfo()->labelLoops()[label][j]+1));
+                if (j < Agros2D::scene()->loopsInfo()->labelLoops()[label].count() - 1)
                     outLoops.append(",");
             }
             outLoops.append(QString("};\n"));

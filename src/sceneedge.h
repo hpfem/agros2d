@@ -33,11 +33,11 @@ public:
     SceneEdge(SceneNode *m_nodeStart, SceneNode *m_nodeEnd, double m_angle);
 
     inline SceneNode *nodeStart() const { return m_nodeStart; }
-    inline void setNodeStart(SceneNode *nodeStart) { m_nodeStart = nodeStart; computeCenter(); }
+    inline void setNodeStart(SceneNode *nodeStart) { m_nodeStart = nodeStart; computeCenterAndRadius(); }
     inline SceneNode *nodeEnd() const { return m_nodeEnd; }
-    inline void setNodeEnd(SceneNode *nodeEnd) { m_nodeEnd = nodeEnd; computeCenter(); }
+    inline void setNodeEnd(SceneNode *nodeEnd) { m_nodeEnd = nodeEnd; computeCenterAndRadius(); }
     inline double angle() const { return m_angle; }
-    inline void setAngle(double angle) { m_angle = angle; computeCenter(); }
+    inline void setAngle(double angle) { m_angle = angle; computeCenterAndRadius(); }
     void swapDirection();
 
     QList<SceneNode *> lyingNodes() const;
@@ -48,7 +48,7 @@ public:
     bool isCrossed() const; // very slow, use carefully
 
     inline Point center() const { return m_centerCache; }
-    double radius() const;
+    inline double radius() const { return m_radiusCache; }
     double distance(const Point &point) const;
     double length() const;
     bool isStraight() const { return (fabs(m_angle) < EPS_ZERO); }
@@ -70,7 +70,8 @@ private:
 
     // cache
     Point m_centerCache;
-    void computeCenter();
+    double m_radiusCache;
+    void computeCenterAndRadius();
 
     friend class SceneNode;
 };

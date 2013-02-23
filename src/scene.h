@@ -39,7 +39,7 @@ class SceneLabel;
 class SceneBoundary;
 class SceneMaterial;
 struct SceneViewSettings;
-struct LoopsInfo;
+class LoopsInfo;
 
 class SceneNodeContainer;
 class SceneEdgeContainer;
@@ -180,6 +180,8 @@ public:
     void transformRotate(const Point &point, double angle, bool copy);
     void transformScale(const Point &point, double scaleFactor, bool copy);
 
+    LoopsInfo *loopsInfo() const { return m_loopsInfo; }
+
     inline void invalidate() { emit invalidated(); }
 
     inline FieldInfo* activeViewField() const { assert(m_activeViewField); return m_activeViewField; }
@@ -218,6 +220,8 @@ private:
     int m_activeTimeStep;
     int m_activeAdaptivityStep;
     SolutionMode m_activeSolutionMode;
+
+    LoopsInfo *m_loopsInfo;
 
     void createActions();
 

@@ -191,8 +191,6 @@ void SceneViewPreprocessor::refresh()
     actOperateOnEdges->setEnabled(actSceneModePreprocessor->isChecked());
     actOperateOnLabels->setEnabled(actSceneModePreprocessor->isChecked());
 
-    // m_loopsInfo = findLoops();
-
     SceneViewCommon::refresh();
 }
 
@@ -206,8 +204,6 @@ void SceneViewPreprocessor::clear()
     m_backgroundTexture = -1;
 
     m_sceneMode = SceneGeometryMode_OperateOnNodes;
-
-    m_loopsInfo.clear();
 }
 
 void SceneViewPreprocessor::doSceneGeometryModeSet(QAction *action)
@@ -1124,8 +1120,6 @@ void SceneViewPreprocessor::paintGeometry()
     {
         if (crossings.isEmpty())
         {
-            QMap<SceneLabel*, QList<Triangle> > labels = findPolygonTriangles();
-
             glEnable(GL_POLYGON_OFFSET_FILL);
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -1134,7 +1128,7 @@ void SceneViewPreprocessor::paintGeometry()
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-            QMapIterator<SceneLabel*, QList<Triangle> > i(labels);
+            QMapIterator<SceneLabel*, QList<LoopsInfo::Triangle> > i(Agros2D::scene()->loopsInfo()->polygonTriangles());
             while (i.hasNext())
             {
                 i.next();
@@ -1153,7 +1147,7 @@ void SceneViewPreprocessor::paintGeometry()
                     glColor4f(0.3, 0.1, 0.7, 0.10);
 
                 glBegin(GL_TRIANGLES);
-                foreach (Triangle triangle, i.value())
+                foreach (LoopsInfo::Triangle triangle, i.value())
                 {
                     glVertex2d(triangle.a.x, triangle.a.y);
                     glVertex2d(triangle.b.x, triangle.b.y);

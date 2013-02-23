@@ -42,7 +42,7 @@ SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle)
     }
 
     // cache center;
-    computeCenter();
+    computeCenterAndRadius();
 }
 
 void SceneEdge::swapDirection()
@@ -53,28 +53,25 @@ void SceneEdge::swapDirection()
     m_nodeEnd = tmp;
 
     // cache center;
-    computeCenter();
-}
-
-double SceneEdge::radius() const
-{
-    return (center() - m_nodeStart->point()).magnitude();
+    computeCenterAndRadius();
 }
 
 double SceneEdge::distance(const Point &point) const
 {
     if (isStraight())
     {
-        double t = ((point.x-m_nodeStart->point().x)*(m_nodeEnd->point().x-m_nodeStart->point().x) + (point.y-m_nodeStart->point().y)*(m_nodeEnd->point().y-m_nodeStart->point().y)) /
-                ((m_nodeEnd->point().x-m_nodeStart->point().x)*(m_nodeEnd->point().x-m_nodeStart->point().x) + (m_nodeEnd->point().y-m_nodeStart->point().y)*(m_nodeEnd->point().y-m_nodeStart->point().y));
+        double dx = m_nodeEnd->point().x - m_nodeStart->point().x;
+        double dy = m_nodeEnd->point().y - m_nodeStart->point().y;
+
+        double t = ((point.x - m_nodeStart->point().x)*dx + (point.y - m_nodeStart->point().y)*dy) / (dx*dx + dy*dy);
 
         if (t > 1.0) t = 1.0;
         if (t < 0.0) t = 0.0;
 
-        double x = m_nodeStart->point().x + t*(m_nodeEnd->point().x-m_nodeStart->point().x);
-        double y = m_nodeStart->point().y + t*(m_nodeEnd->point().y-m_nodeStart->point().y);
+        double x = m_nodeStart->point().x + t*dx;
+        double y = m_nodeStart->point().y + t*dy;
 
-        return sqrt(Hermes::sqr(point.x-x) + Hermes::sqr(point.y-y));
+        return sqrt((point.x-x)*(point.x-x) + (point.y-y)*(point.y-y));
     }
     else
     {
@@ -192,12 +189,14 @@ SceneEdgeCommandRemove* SceneEdge::getRemoveCommand()
     return new SceneEdgeCommandRemove(m_nodeStart->point(), m_nodeEnd->point(), markersKeys(), m_angle);
 }
 
-void SceneEdge::computeCenter()
+void SceneEdge::computeCenterAndRadius()
 {
-    if (fabs(m_angle) > EPS_ZERO)
+    if (!isStraight())
         m_centerCache = centerPoint(m_nodeStart->point(), m_nodeEnd->point(), m_angle);
     else
         m_centerCache = Point();
+
+    m_radiusCache = (m_centerCache - m_nodeStart->point()).magnitude();
 }
 
 SceneEdge *SceneEdge::findClosestEdge(const Point &point)
