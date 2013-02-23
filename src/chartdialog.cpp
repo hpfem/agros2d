@@ -178,13 +178,14 @@ void ChartControlsWidget::setControls()
         tabAnalysisType->setCurrentWidget(widGeometry);
     }
 
-    doChartLine();
+    createChartLine();
 }
 
 void ChartControlsWidget::createControls()
 {
     // variable
     cmbFieldVariable = new QComboBox();
+
     // component
     cmbFieldVariableComp = new QComboBox();
 
@@ -196,7 +197,7 @@ void ChartControlsWidget::createControls()
     m_variableWidget->setLayout(layoutVariable);
 
     // controls
-    QPushButton *btnPlot = new QPushButton();
+    btnPlot = new QPushButton();
     btnPlot->setDefault(false);
     btnPlot->setText(tr("Plot"));
     connect(btnPlot, SIGNAL(clicked()), this, SLOT(doPlot()));
@@ -221,13 +222,13 @@ void ChartControlsWidget::createControls()
 
     txtStartX = new ValueLineEdit();
     txtStartY = new ValueLineEdit();
+    connect(txtStartX, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
+    connect(txtStartY, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
+
     txtEndX = new ValueLineEdit();
     txtEndY = new ValueLineEdit();
-
-    connect(txtStartX, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
-    connect(txtStartY, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
-    connect(txtEndX, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
-    connect(txtEndY, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
+    connect(txtEndX, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
+    connect(txtEndY, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
 
     // start
     QGridLayout *layoutStart = new QGridLayout();
@@ -251,7 +252,7 @@ void ChartControlsWidget::createControls()
 
     // angle
     txtAngle = new ValueLineEdit();
-    connect(txtAngle, SIGNAL(editingFinished()), this, SLOT(doChartLine()));
+    connect(txtAngle, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
 
     QHBoxLayout *layoutAngle = new QHBoxLayout();
     layoutAngle->addWidget(new QLabel("Angle"));
@@ -266,13 +267,16 @@ void ChartControlsWidget::createControls()
     radAxisX = new QRadioButton("X");
     radAxisY = new QRadioButton("Y");
 
-    // QButtonGroup *axisGroup = new QButtonGroup();
-    // axisGroup->addButton(radAxisLength);
-    // axisGroup->addButton(radAxisX);
-    // axisGroup->addButton(radAxisY);
+    QButtonGroup *axisGroup = new QButtonGroup();
+    axisGroup->addButton(radAxisLength);
+    axisGroup->addButton(radAxisX);
+    axisGroup->addButton(radAxisY);
+
+    /*
     connect(radAxisLength, SIGNAL(clicked()), this, SLOT(doPlot()));
     connect(radAxisX, SIGNAL(clicked()), this, SLOT(doPlot()));
     connect(radAxisY, SIGNAL(clicked()), this, SLOT(doPlot()));
+    */
 
     // axis
     QHBoxLayout *layoutAxis = new QHBoxLayout();
@@ -289,7 +293,7 @@ void ChartControlsWidget::createControls()
     txtAxisPoints->setMaximum(500);
     txtAxisPoints->setValue(200);
     chkAxisPointsReverse = new QCheckBox(tr("Reverse"));
-    connect(chkAxisPointsReverse, SIGNAL(clicked()), this, SLOT(doPlot()));
+    //connect(chkAxisPointsReverse, SIGNAL(clicked()), this, SLOT(doPlot()));
 
     // timestep
     QGridLayout *layoutAxisPointsAndTimeStep = new QGridLayout();
@@ -303,8 +307,11 @@ void ChartControlsWidget::createControls()
     // time
     lblPointX = new QLabel("X:");
     lblPointY = new QLabel("Y:");
+
     txtPointX = new ValueLineEdit();
     txtPointY = new ValueLineEdit();
+    connect(txtPointX, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
+    connect(txtPointY, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
 
     QGridLayout *layoutTime = new QGridLayout();
     layoutTime->addWidget(lblPointX, 0, 0);
@@ -428,7 +435,7 @@ void ChartControlsWidget::plotGeometry()
                         Point(txtEndX->value().number(), txtEndY->value().number()),
                         txtAngle->value().number(),
                         count);
-    doChartLine();
+    createChartLine();
 
     QList<Point> points = chartLine.getPoints();
     QList<double> xval = getHorizontalAxisValues(&chartLine);
@@ -506,7 +513,7 @@ void ChartControlsWidget::plotTime()
     QList<double> xval;
     QList<double> yval;
 
-    doChartLine();
+    createChartLine();
 
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
@@ -594,7 +601,7 @@ void ChartControlsWidget::doPlot()
         if (!txtPointY->evaluate()) return;
 
         plotTime();
-    }       
+    }
 
     btnSaveImage->setEnabled(m_chart->curve()->dataSize() > 0);
     btnExportData->setEnabled(m_chart->curve()->dataSize() > 0);
@@ -739,18 +746,20 @@ QMap<QString, double> ChartControlsWidget::getData(Point point, int timeStep)
     return table;
 }
 
-void ChartControlsWidget::doChartLine()
+void ChartControlsWidget::doEvaluate(bool isError)
+{
+    btnPlot->setEnabled(!isError);
+
+    if (!isError)
+        createChartLine();
+}
+
+void ChartControlsWidget::createChartLine()
 {
     if (isVisible())
     {
         if (tabAnalysisType->currentWidget() == widGeometry)
         {
-            if (!txtStartX->evaluate()) return;
-            if (!txtStartY->evaluate()) return;
-            if (!txtEndX->evaluate()) return;
-            if (!txtEndY->evaluate()) return;
-            if (!txtAngle->evaluate()) return;
-
             emit setChartLine(ChartLine(Point(txtStartX->value().number(), txtStartY->value().number()),
                                         Point(txtEndX->value().number(), txtEndY->value().number()),
                                         txtAngle->value().number(),
@@ -759,9 +768,6 @@ void ChartControlsWidget::doChartLine()
         }
         if (tabAnalysisType->currentWidget() == widTime)
         {
-            if (!txtPointX->evaluate()) return;
-            if (!txtPointY->evaluate()) return;
-
             emit setChartLine(ChartLine(Point(txtPointX->value().number(), txtPointY->value().number()),
                                         Point(txtPointX->value().number(), txtPointY->value().number()),
                                         0.0,
