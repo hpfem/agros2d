@@ -460,7 +460,7 @@ void LoopsInfo::switchOrientation(int idx)
         m_loops[idx][i].reverse = !m_loops[idx][i].reverse;
 }
 
-void LoopsInfo::addEdgePoints(QList<Point> *polyline, const SceneEdge &edge, bool reverse = false)
+void LoopsInfo::addEdgePoints(QList<Point> *polyline, const SceneEdge &edge, bool reverse)
 {
     QList<Point> localPolyline;
 

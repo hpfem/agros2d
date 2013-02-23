@@ -58,10 +58,16 @@ win32-msvc2010 {
     LIBS += -llibumfpack
     LIBS += -llibamd
     LIBS += -lpthreadVCE2
-    LIBS += -lxerces-c_static_3
     LIBS += -ladvapi32
     LIBS += -lws2_32
     LIBS += -lpsapi
+    
+    CONFIG(release, debug|release) {
+        LIBS += -lxerces-c_static_3
+    }
+    CONFIG(debug, debug|release) {
+        LIBS += -lxerces-c_static_3D
+    }
 }
 
 # interface
@@ -72,5 +78,5 @@ SOURCES      += {{ID}}_interface.cpp
 HEADERS      += {{ID}}_weakform.h
 SOURCES      += {{ID}}_weakform.cpp
 
-TARGET = $$qtLibraryTarget(agros2d_plugin_{{ID}})
+TARGET = agros2d_plugin_{{ID}}
 DESTDIR = ../../libs
