@@ -866,10 +866,10 @@ void ProblemWidget::createControls()
     txtTransientOrder = new QSpinBox();
     txtTransientOrder->setMinimum(1);
     txtTransientOrder->setMaximum(3);
-    txtTransientTimeTotal = new ValueLineEdit();
-    txtTransientTimeTotal->setCondition("value > 0");
-    txtTransientTolerance = new ValueLineEdit();
-    txtTransientTolerance->setCondition("value > 0");
+    txtTransientTimeTotal = new LineEditDouble(1.0, true);
+    txtTransientTimeTotal->setBottom(0.0);
+    txtTransientTolerance = new LineEditDouble(0.1, true);
+    txtTransientTolerance->setBottom(0.0);
     txtTransientSteps = new QSpinBox();
     txtTransientSteps->setMinimum(1);
     txtTransientSteps->setMaximum(10000);
@@ -979,8 +979,8 @@ void ProblemWidget::updateControls()
     grpTransientAnalysis->setVisible(Agros2D::problem()->isTransient());
     txtTransientSteps->setValue(Agros2D::problem()->config()->numConstantTimeSteps());
     // txtTransientTimeStep->setEnabled(Agros2D::problem()->isTransient());
-    txtTransientTimeTotal->setValue(Agros2D::problem()->config()->timeTotal());
-    txtTransientTolerance->setValue(Agros2D::problem()->config()->timeMethodTolerance());
+    txtTransientTimeTotal->setValue(Agros2D::problem()->config()->timeTotal().number());
+    txtTransientTolerance->setValue(Agros2D::problem()->config()->timeMethodTolerance().number());
     // txtTransientTimeTotal->setEnabled(Agros2D::problem()->isTransient());
     txtTransientOrder->setValue(Agros2D::problem()->config()->timeOrder());
     cmbTransientMethod->setCurrentIndex(cmbTransientMethod->findData(Agros2D::problem()->config()->timeStepMethod()));
@@ -1048,10 +1048,13 @@ void ProblemWidget::changedWithClear()
 
 void ProblemWidget::transientChanged()
 {
+    /*
     if (txtTransientTimeTotal->evaluate(true))
     {
         lblTransientTimeStep->setText(QString("%1 s").arg(txtTransientTimeTotal->number() / txtTransientSteps->value()));
     }
+    */
+    lblTransientTimeStep->setText(QString("%1 s").arg(txtTransientTimeTotal->value() / txtTransientSteps->value()));
 
     if(Agros2D::problem()->config()->timeStepMethod() == TimeStepMethod_BDFTolerance)
     {
