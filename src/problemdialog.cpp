@@ -147,7 +147,7 @@ void FieldWidget::createContent()
     txtAdaptivitySteps = new QSpinBox(this);
     txtAdaptivitySteps->setMinimum(1);
     txtAdaptivitySteps->setMaximum(100);
-    txtAdaptivityTolerance = new LineEditDouble(1, true);
+    txtAdaptivityTolerance = new LineEditDouble(1.0, true);
     txtAdaptivityTolerance->setBottom(0.0);
     txtAdaptivityBackSteps = new QSpinBox(this);
     txtAdaptivityBackSteps->setMinimum(0);
@@ -168,19 +168,21 @@ void FieldWidget::createContent()
     cmbAnalysisType = new QComboBox();
     txtTransientInitialCondition = new ValueLineEdit();
     txtTransientTimeSkip = new ValueLineEdit();
-    txtTransientTimeSkip->setMinimum(0);
+    txtTransientTimeSkip->setMinimum(0.0);
 
     // linearity
     cmbLinearityType = new QComboBox();
     txtNonlinearSteps = new QSpinBox(this);
     txtNonlinearSteps->setMinimum(1);
     txtNonlinearSteps->setMaximum(100);
-    txtNonlinearTolerance = new LineEditDouble(1);
+    txtNonlinearTolerance = new LineEditDouble(1e-3, true);
+    txtNonlinearTolerance->setBottom(0.0);
 
     chkNewtonAutomaticDamping = new QCheckBox(tr("Automatic damping"));
     connect(chkNewtonAutomaticDamping, SIGNAL(stateChanged(int)), this, SLOT(doNewtonDampingChanged(int)));
     lblNewtonDampingCoeff = new QLabel(tr("Damping factor:"));
-    txtNewtonDampingCoeff = new LineEditDouble(1);
+    txtNewtonDampingCoeff = new LineEditDouble(1.0, true);
+    txtNewtonDampingCoeff->setBottom(0.0);
     lblNewtonDampingNumberToIncrease = new QLabel(tr("Steps to increase DF:"));
     txtNewtonDampingNumberToIncrease = new QSpinBox(this);
     txtNewtonDampingNumberToIncrease->setMinimum(1);
@@ -189,8 +191,10 @@ void FieldWidget::createContent()
     chkPicardAndersonAcceleration = new QCheckBox(tr("Use Anderson acceleration"));
     connect(chkPicardAndersonAcceleration, SIGNAL(stateChanged(int)), this, SLOT(doPicardAndersonChanged(int)));
     lblPicardAndersonBeta = new QLabel(tr("Anderson beta:"));
-    txtPicardAndersonBeta = new LineEditDouble(0.2);
-    lblPicardAndersonNumberOfLastVectors = new QLabel(tr("Num. of last vectors:"));
+    txtPicardAndersonBeta = new LineEditDouble(0.2, true);
+    txtPicardAndersonBeta->setBottom(0.0);
+    txtPicardAndersonBeta->setTop(1.0);
+    lblPicardAndersonNumberOfLastVectors = new QLabel(tr("Num. of last iter.:"));
     txtPicardAndersonNumberOfLastVectors = new QSpinBox(this);
     txtPicardAndersonNumberOfLastVectors->setMinimum(1);
     txtPicardAndersonNumberOfLastVectors->setMaximum(5);
