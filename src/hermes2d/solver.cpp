@@ -736,7 +736,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(actualSpaces()) == 0)
     {
         Agros2D::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
-        throw(AgrosSolverException("DOF is zero"));
+        throw(AgrosSolverException(QObject::tr("DOF is zero")));
     }
 
     // update timedep values

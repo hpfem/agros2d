@@ -194,7 +194,7 @@ void FieldWidget::createContent()
     txtPicardAndersonBeta = new LineEditDouble(0.2, true);
     txtPicardAndersonBeta->setBottom(0.0);
     txtPicardAndersonBeta->setTop(1.0);
-    lblPicardAndersonNumberOfLastVectors = new QLabel(tr("Num. of last iter.:"));
+    lblPicardAndersonNumberOfLastVectors = new QLabel(tr("Num. of last used iter.:"));
     txtPicardAndersonNumberOfLastVectors = new QSpinBox(this);
     txtPicardAndersonNumberOfLastVectors->setMinimum(1);
     txtPicardAndersonNumberOfLastVectors->setMaximum(5);
