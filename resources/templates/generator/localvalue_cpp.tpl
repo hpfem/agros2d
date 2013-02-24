@@ -30,8 +30,9 @@
 
 #include "hermes2d/plugin_interface.h"
 
-{{CLASS}}LocalValue::{{CLASS}}LocalValue(FieldInfo *fieldInfo, const Point &point)
-    : LocalValue(fieldInfo, point)
+{{CLASS}}LocalValue::{{CLASS}}LocalValue(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+                                         const Point &point)
+    : LocalValue(fieldInfo, timeStep, adaptivityStep, solutionType, point)
 {
     calculate();
 }
@@ -45,7 +46,7 @@ void {{CLASS}}LocalValue::calculate()
     // update time functions
     if (m_fieldInfo->analysisType() == AnalysisType_Transient)
     {
-       Module::updateTimeFunctions(Agros2D::problem()->timeStepToTime(Agros2D::scene()->activeTimeStep()));
+       Module::updateTimeFunctions(Agros2D::problem()->timeStepToTime(m_timeStep));
     }
 
     if (Agros2D::problem()->isSolved())
@@ -71,29 +72,13 @@ void {{CLASS}}LocalValue::calculate()
             std::vector<Hermes::Hermes2D::Solution<double> *> sln(numberOfSolutions);
             for (int k = 0; k < numberOfSolutions; k++)
             {
-                int adaptivityStep, timeStep;
-                SolutionMode solutionMode;
-                if(m_fieldInfo == Agros2D::scene()->activeViewField())
-                {
-                    // if calculating values for active view field, use the solution that is viewed
-                    timeStep = Agros2D::scene()->activeTimeStep();
-                    adaptivityStep = Agros2D::scene()->activeAdaptivityStep();
-                    solutionMode = Agros2D::scene()->activeSolutionType();
-                }
-                else
-                {
-                    // else use solution on nearest time step, last adaptivity step possible and if exists, reference solution
-                    timeStep = Agros2D::solutionStore()->nearestTimeStep(m_fieldInfo, Agros2D::scene()->activeTimeStep());
-                    adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(m_fieldInfo, SolutionMode_Normal, timeStep);
-                    solutionMode = SolutionMode_Finer;
-                }
-                FieldSolutionID fsid(m_fieldInfo, timeStep, adaptivityStep, solutionMode);
+                FieldSolutionID fsid(m_fieldInfo, m_timeStep, m_adaptivityStep, m_solutionType);
                 sln[k] = Agros2D::solutionStore()->multiArray(fsid).solutions().at(k);
 
                 // point values
                 Hermes::Hermes2D::Func<double> *values = sln[k]->get_pt_value(m_point.x, m_point.y);
                 double val;
-                if ((m_fieldInfo->analysisType() == AnalysisType_Transient) && Agros2D::scene()->activeTimeStep() == 0)
+                if ((m_fieldInfo->analysisType() == AnalysisType_Transient) && m_timeStep == 0)
                     // const solution at first time step
                     val = m_fieldInfo->initialCondition().number();
                 else

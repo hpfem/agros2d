@@ -44,6 +44,11 @@ SceneViewMesh::SceneViewMesh(PostHermes *postHermes, QWidget *parent)
 
     connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
     connect(m_postHermes, SIGNAL(processed()), this, SLOT(refresh()));
+
+    connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(setControls()));
+    connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(setControls()));
+    connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(setControls()));
+    connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
 }
 
 SceneViewMesh::~SceneViewMesh()
@@ -131,10 +136,10 @@ void SceneViewMesh::exportVTK(const QString &fileName, bool exportMeshOnly)
 
         Hermes::Hermes2D::Views::Orderizer orderView;
         if (exportMeshOnly)
-            orderView.save_mesh_vtk(Agros2D::scene()->activeMultiSolutionArray().spaces().at(0),
+            orderView.save_mesh_vtk(postHermes()->activeMultiSolutionArray().spaces().at(0),
                                     fn.toStdString().c_str());
         else
-            orderView.save_orders_vtk(Agros2D::scene()->activeMultiSolutionArray().spaces().at(0),
+            orderView.save_orders_vtk(postHermes()->activeMultiSolutionArray().spaces().at(0),
                                       fn.toStdString().c_str());
 
         if (!fn.isEmpty())
@@ -167,20 +172,20 @@ void SceneViewMesh::paintGL()
     QTime time;
 
     // view
-    if (Agros2D::problem()->isSolved())
+    if (Agros2D::problem()->isSolved() && m_postHermes->isProcessed())
     {
         if (Agros2D::problem()->configView()->showOrderView) paintOrder();
         if (Agros2D::problem()->configView()->showSolutionMeshView) paintSolutionMesh();
     }
 
     // initial mesh
-    if (Agros2D::problem()->isMeshed())
+    if (Agros2D::problem()->isMeshed() && m_postHermes->isProcessed())
         if (Agros2D::problem()->configView()->showInitialMeshView) paintInitialMesh();
 
     // geometry
     paintGeometry();
 
-    if (Agros2D::problem()->isSolved())
+    if (Agros2D::problem()->isSolved() && m_postHermes->isProcessed())
     {
         // bars
         if (Agros2D::problem()->configView()->showOrderView && Agros2D::problem()->configView()->showOrderColorBar)

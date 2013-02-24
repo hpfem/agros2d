@@ -173,6 +173,14 @@ enum PaletteOrderType
     PaletteOrder_BWDesc
 };
 
+
+enum ChartAxisType
+{
+    ChartAxis_X,
+    ChartAxis_Y,
+    ChartAxis_Length
+};
+
 enum SceneViewPost3DMode
 {
     //SceneViewPost3DMode_Undefined,
@@ -191,9 +199,10 @@ enum SceneTransformMode
 
 enum SolutionMode
 {
-    SolutionMode_Normal,
-    SolutionMode_Reference,
-    SolutionMode_Finer  // used to choose reference if exists, normal otherwise
+    SolutionMode_Undefined = -1,
+    SolutionMode_Normal = 0,
+    SolutionMode_Reference = 1,
+    SolutionMode_Finer = 100 // used to choose reference if exists, normal otherwise
 };
 
 enum VectorType

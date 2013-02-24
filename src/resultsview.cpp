@@ -28,14 +28,16 @@
 #include "hermes2d.h"
 #include "hermes2d/plugin_interface.h"
 #include "hermes2d/module.h"
-
 #include "hermes2d/field.h"
+#include "hermes2d/solutionstore.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
+#include "sceneview_post.h"
 
 #include <ctemplate/template.h>
 
-ResultsView::ResultsView(QWidget *parent): QDockWidget(tr("Results view"), parent)
+ResultsView::ResultsView(PostHermes *postHermes, QWidget *parent)
+    : QDockWidget(tr("Results view"), parent), m_postHermes(postHermes)
 {
     setMinimumWidth(280);
     setObjectName("ResultsView");
@@ -108,7 +110,12 @@ void ResultsView::showPoint(const Point &point)
 
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        LocalValue *value = fieldInfo->plugin()->localValue(fieldInfo, point);
+        // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
+        int timeStep = Agros2D::solutionStore()->nearestTimeStep(fieldInfo, m_postHermes->activeTimeStep());
+        int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, timeStep);
+        int solutionMode = SolutionMode_Finer;
+
+        LocalValue *value = fieldInfo->plugin()->localValue(fieldInfo, timeStep, adaptivityStep, solutionMode, point);
         QMap<QString, PointValue> values = value->values();
         delete value;
 
@@ -173,7 +180,12 @@ void ResultsView::showVolumeIntegral()
 
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        IntegralValue *integral = fieldInfo->plugin()->volumeIntegral(fieldInfo);
+        // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
+        int timeStep = Agros2D::solutionStore()->nearestTimeStep(fieldInfo, m_postHermes->activeTimeStep());
+        int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, timeStep);
+        int solutionMode = SolutionMode_Finer;
+
+        IntegralValue *integral = fieldInfo->plugin()->volumeIntegral(fieldInfo, timeStep, adaptivityStep, solutionMode);
         QMap<QString, double> values = integral->values();
         if (values.size() > 0)
         {
@@ -214,7 +226,12 @@ void ResultsView::showSurfaceIntegral()
 
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        IntegralValue *integral = fieldInfo->plugin()->surfaceIntegral(fieldInfo);
+        // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
+        int timeStep = Agros2D::solutionStore()->nearestTimeStep(fieldInfo, m_postHermes->activeTimeStep());
+        int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, timeStep);
+        int solutionMode = SolutionMode_Finer;
+
+        IntegralValue *integral = fieldInfo->plugin()->surfaceIntegral(fieldInfo, timeStep, adaptivityStep, solutionMode);
         QMap<QString, double> values = integral->values();
         {
             ctemplate::TemplateDictionary *field = surfaceIntegrals.AddSectionDictionary("FIELD");

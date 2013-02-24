@@ -25,6 +25,7 @@
 class PostHermes;
 class LineEditDouble;
 class SceneViewPostInterface;
+class FieldInfo;
 
 class VideoDialog : public QDialog
 {

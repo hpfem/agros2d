@@ -72,6 +72,12 @@ SceneViewPost3D::SceneViewPost3D(PostHermes *postHermes, QWidget *parent)
 
     connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
     connect(m_postHermes, SIGNAL(processed()), this, SLOT(refresh()));
+
+    connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(setControls()));
+    connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(setControls()));
+    connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(setControls()));
+    connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
+
 }
 
 SceneViewPost3D::~SceneViewPost3D()
@@ -106,7 +112,7 @@ void SceneViewPost3D::paintGL()
         if (Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_Model) paintScalarField3DSolid();
     }
 
-    if (Agros2D::problem()->isSolved())
+    if (Agros2D::problem()->isSolved() && m_postHermes->isProcessed())
     {
         if (Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3D) paintScalarField3D();
         if (Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3DSolid) paintScalarField3DSolid();
@@ -122,9 +128,9 @@ void SceneViewPost3D::paintGL()
     case SceneViewPost3DMode_ScalarView3D:
     case SceneViewPost3DMode_ScalarView3DSolid:
     {
-        if (Agros2D::problem()->isSolved())
+        if (Agros2D::problem()->isSolved() && m_postHermes->isProcessed())
         {
-            Module::LocalVariable localVariable = Agros2D::scene()->activeViewField()->localVariable(Agros2D::problem()->configView()->scalarVariable);
+            Module::LocalVariable localVariable = postHermes()->activeViewField()->localVariable(Agros2D::problem()->configView()->scalarVariable);
             QString text = Agros2D::problem()->configView()->scalarVariable != "" ? localVariable.name() : "";
             if (Agros2D::problem()->configView()->scalarVariableComp != PhysicFieldVariableComp_Scalar)
                 text += " - " + physicFieldVariableCompString(Agros2D::problem()->configView()->scalarVariableComp);
@@ -469,8 +475,8 @@ void SceneViewPost3D::paintScalarField3DSolid()
                 }
 
                 // find marker
-                SceneLabel *label = Agros2D::scene()->labels->at(atoi(Agros2D::scene()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
-                SceneMaterial *material = label->marker(Agros2D::scene()->activeViewField());
+                SceneLabel *label = Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
+                SceneMaterial *material = label->marker(postHermes()->activeViewField());
 
                 // hide material
                 if (Agros2D::problem()->configView()->solidViewHide.contains(material->name()))
@@ -531,8 +537,8 @@ void SceneViewPost3D::paintScalarField3DSolid()
                     }
 
                     // find marker
-                    SceneLabel *label = Agros2D::scene()->labels->at(atoi(Agros2D::scene()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
-                    SceneMaterial *material = label->marker(Agros2D::scene()->activeViewField());
+                    SceneLabel *label = Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
+                    SceneMaterial *material = label->marker(postHermes()->activeViewField());
 
                     // hide material
                     if (Agros2D::problem()->configView()->solidViewHide.contains(material->name()))
@@ -578,8 +584,8 @@ void SceneViewPost3D::paintScalarField3DSolid()
                 }
 
                 // find marker
-                SceneLabel *label = Agros2D::scene()->labels->at(atoi(Agros2D::scene()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
-                SceneMaterial *material = label->marker(Agros2D::scene()->activeViewField());
+                SceneLabel *label = Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
+                SceneMaterial *material = label->marker(postHermes()->activeViewField());
 
                 // hide material
                 if (Agros2D::problem()->configView()->solidViewHide.contains(material->name()))
@@ -626,8 +632,8 @@ void SceneViewPost3D::paintScalarField3DSolid()
                     }
 
                     // find marker
-                    SceneLabel *label = Agros2D::scene()->labels->at(atoi(Agros2D::scene()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
-                    SceneMaterial *material = label->marker(Agros2D::scene()->activeViewField());
+                    SceneLabel *label = Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
+                    SceneMaterial *material = label->marker(postHermes()->activeViewField());
 
                     // hide material
                     if (Agros2D::problem()->configView()->solidViewHide.contains(material->name()))
@@ -849,13 +855,18 @@ void SceneViewPost3D::refresh()
 {
     clearGLLists();
 
+    setControls();
+
+    SceneViewCommon::refresh();
+}
+
+void SceneViewPost3D::setControls()
+{
     // actions
     actSceneModePost3D->setEnabled(Agros2D::problem()->isSolved());
     actSetProjectionXY->setEnabled(Agros2D::problem()->isSolved());
     actSetProjectionXZ->setEnabled(Agros2D::problem()->isSolved());
     actSetProjectionYZ->setEnabled(Agros2D::problem()->isSolved());
-
-    SceneViewCommon::refresh();
 }
 
 void SceneViewPost3D::clear()

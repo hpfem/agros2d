@@ -87,7 +87,13 @@ bool ParticleTracing::newtonEquations(double step,
 
             try
             {
-                fieldForce = fieldInfo->plugin()->force(fieldInfo, material, position, velocity)
+                // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
+                int timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo, SolutionMode_Normal);
+                int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, timeStep);
+                int solutionMode = SolutionMode_Finer;
+
+                fieldForce = fieldInfo->plugin()->force(fieldInfo, timeStep, adaptivityStep, solutionMode,
+                                                        material, position, velocity)
                         * Agros2D::problem()->configView()->particleConstant;
             }
             catch (AgrosException e)
@@ -168,10 +174,8 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
                               -Agros2D::problem()->configView()->particleStartingRadius / 2,
                               (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ? 0.0 : -1.0*M_PI) + position + dp;
 
-            Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(Agros2D::scene()->activeViewField()->initialMesh(),
-                                                                                                     position.x, position.y);
             trials++;
-            if (e || trials > 10)
+            if (trials > 10)
                 break;
         }
     }
@@ -193,7 +197,6 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
     double relErrorMax = 1e-3;
     double dt = Agros2D::problem()->configView()->particleStartVelocity.magnitude() > 0 ? qMax(bound.width(), bound.height()) / Agros2D::problem()->configView()->particleStartVelocity.magnitude() / 10
                                                                                         : 1e-11;
-
     // QTime time;
     // time.start();
 

@@ -328,14 +328,6 @@ bool Problem::meshAction()
 {
     //clearSolution();
 
-    Agros2D::scene()->blockSignals(true);
-
-    Agros2D::scene()->setActiveAdaptivityStep(0);
-    Agros2D::scene()->setActiveTimeStep(0);
-    Agros2D::scene()->setActiveViewField(fieldInfos().values().at(0));
-
-    Agros2D::scene()->blockSignals(false);
-
     Agros2D::log()->printMessage(QObject::tr("Problem"), QObject::tr("Mesh generation"));
 
     Agros2D::scene()->checkGeometryResult();
@@ -554,14 +546,6 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
 
         if (!commandLine)
         {
-            Agros2D::scene()->blockSignals(true);
-
-            Agros2D::scene()->setActiveTimeStep(Agros2D::solutionStore()->lastTimeStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal));
-            Agros2D::scene()->setActiveAdaptivityStep(Agros2D::solutionStore()->lastAdaptiveStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal));
-            Agros2D::scene()->setActiveSolutionType(SolutionMode_Normal);
-
-            Agros2D::scene()->blockSignals(false);
-
             m_isSolving = false;
             m_isSolved = true;
             emit solved();
@@ -650,14 +634,6 @@ void Problem::solveAction()
 {
     // clear solution
     clearSolution();
-
-    Agros2D::scene()->blockSignals(true);
-    // todo: remove?
-    Agros2D::scene()->setActiveAdaptivityStep(0);
-    Agros2D::scene()->setActiveTimeStep(0);
-    Agros2D::scene()->setActiveViewField(fieldInfos().values().at(0));
-
-    Agros2D::scene()->blockSignals(false);
 
     try
     {
@@ -750,14 +726,6 @@ void Problem::solveAction()
 
 void Problem::solveAdaptiveStepAction()
 {
-    Agros2D::scene()->blockSignals(true);
-    // todo: remove?
-    Agros2D::scene()->setActiveAdaptivityStep(0);
-    Agros2D::scene()->setActiveTimeStep(0);
-    Agros2D::scene()->setActiveViewField(fieldInfos().values().at(0));
-
-    Agros2D::scene()->blockSignals(false);
-
     try
     {
         solveInit();
@@ -954,15 +922,6 @@ void Problem::readSolutionsFromFile()
         try
         {
             Agros2D::solutionStore()->loadRunTimeDetails();
-
-            // set view
-            Agros2D::scene()->blockSignals(true);
-
-            Agros2D::scene()->setActiveTimeStep(Agros2D::solutionStore()->lastTimeStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal));
-            Agros2D::scene()->setActiveAdaptivityStep(Agros2D::solutionStore()->lastAdaptiveStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal));
-            Agros2D::scene()->setActiveSolutionType(SolutionMode_Normal);
-
-            Agros2D::scene()->blockSignals(false);
 
             // emit solve
             m_isSolved = true;

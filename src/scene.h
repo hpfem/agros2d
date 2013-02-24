@@ -184,21 +184,6 @@ public:
 
     inline void invalidate() { emit invalidated(); }
 
-    inline FieldInfo* activeViewField() const { assert(m_activeViewField); return m_activeViewField; }
-    void setActiveViewField(FieldInfo* fieldInfo);
-
-    inline int activeTimeStep() const { return m_activeTimeStep; }
-    void setActiveTimeStep(int ts);
-
-    inline int activeAdaptivityStep() const { return m_activeAdaptivityStep; }
-    void setActiveAdaptivityStep(int as);
-
-    inline SolutionMode activeSolutionType() const { return m_activeSolutionMode; }
-    void setActiveSolutionType(SolutionMode st) { m_activeSolutionMode = st; }
-
-    // active MultiSolutionArray
-    MultiArray<double> activeMultiSolutionArray();
-
     void readFromDxf(const QString &fileName);
     void writeToDxf(const QString &fileName);
     ErrorResult readFromFile(const QString &fileName);

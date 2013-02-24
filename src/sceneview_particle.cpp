@@ -384,6 +384,11 @@ SceneViewParticleTracing::SceneViewParticleTracing(PostHermes *postHermes, QWidg
 
     connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
     connect(m_postHermes, SIGNAL(processed()), this, SLOT(refresh()));
+
+    connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(setControls()));
+    connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(setControls()));
+    connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(setControls()));
+    connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
 }
 
 SceneViewParticleTracing::~SceneViewParticleTracing()
@@ -1034,13 +1039,17 @@ void SceneViewParticleTracing::refresh()
 {
     clearGLLists();
 
-    // actions
+    setControls();
+
+    SceneViewCommon::refresh();
+}
+
+void SceneViewParticleTracing::setControls()
+{
     actSceneModeParticleTracing->setEnabled(Agros2D::problem()->isSolved());
     actSetProjectionXY->setEnabled(Agros2D::problem()->isSolved());
     actSetProjectionXZ->setEnabled(Agros2D::problem()->isSolved());
     actSetProjectionYZ->setEnabled(Agros2D::problem()->isSolved());
-
-    SceneViewCommon::refresh();
 }
 
 void SceneViewParticleTracing::clear()

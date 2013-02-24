@@ -30,7 +30,7 @@
 class {{CLASS}}ViewScalarFilter : public Hermes::Hermes2D::Filter<double>
 {
 public:
-    {{CLASS}}ViewScalarFilter(FieldInfo *fieldInfo,
+    {{CLASS}}ViewScalarFilter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                      Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
                      const QString &variable,
                      PhysicFieldVariableComp physicFieldVariableComp);
@@ -45,6 +45,9 @@ protected:
 
 private:
     FieldInfo *m_fieldInfo;
+    int m_timeStep;
+    int m_adaptivityStep;
+    SolutionMode m_solutionType;
 
     QString m_variable;
     uint m_variableHash;

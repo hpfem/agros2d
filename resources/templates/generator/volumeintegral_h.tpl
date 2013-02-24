@@ -32,7 +32,7 @@ class FieldInfo;
 class {{CLASS}}VolumeIntegral : public IntegralValue
 {
 public:
-    {{CLASS}}VolumeIntegral(FieldInfo *fieldInfo);
+    {{CLASS}}VolumeIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType);
 
     void calculate();
 };

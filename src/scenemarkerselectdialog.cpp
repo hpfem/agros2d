@@ -51,7 +51,7 @@ void SceneMarkerSelectDialog::createControls()
 {
     // surface
     lstSurface = new QListWidget(this);
-    foreach (SceneBoundary *boundary, Agros2D::scene()->boundaries->filter(Agros2D::scene()->activeViewField()).items())
+    foreach (SceneBoundary *boundary, Agros2D::scene()->boundaries->filter(m_sceneViewPost2D->postHermes()->activeViewField()).items())
     {
         QListWidgetItem *item = new QListWidgetItem(lstSurface);
         item->setText(boundary->name());
@@ -68,7 +68,7 @@ void SceneMarkerSelectDialog::createControls()
 
     // volume
     lstVolume = new QListWidget(this);
-    foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(Agros2D::scene()->activeViewField()).items())
+    foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(m_sceneViewPost2D->postHermes()->activeViewField()).items())
     {
         QListWidgetItem *item = new QListWidgetItem(lstVolume);
         item->setText(material->name());
@@ -113,7 +113,7 @@ void SceneMarkerSelectDialog::doAccept()
             {
                 foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
                 {
-                    if (edge->marker(Agros2D::scene()->activeViewField()) ==
+                    if (edge->marker(m_sceneViewPost2D->postHermes()->activeViewField()) ==
                             lstSurface->item(i)->data(Qt::UserRole).value<SceneBoundary *>())
                         edge->setSelected(true);
                 }
@@ -132,7 +132,7 @@ void SceneMarkerSelectDialog::doAccept()
             {
                 foreach (SceneLabel *label, Agros2D::scene()->labels->items())
                 {
-                    if (label->marker(Agros2D::scene()->activeViewField()) ==
+                    if (label->marker(m_sceneViewPost2D->postHermes()->activeViewField()) ==
                             lstVolume->item(i)->data(Qt::UserRole).value<SceneMaterial *>())
                         label->setSelected(true);
                 }

@@ -61,6 +61,11 @@ SceneViewPost2D::SceneViewPost2D(PostHermes *postHermes, QWidget *parent)
 
     connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
     connect(m_postHermes, SIGNAL(processed()), this, SLOT(refresh()));
+
+    connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(setControls()));
+    connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(setControls()));
+    connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(setControls()));
+    connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
 }
 
 SceneViewPost2D::~SceneViewPost2D()
@@ -161,10 +166,10 @@ void SceneViewPost2D::mousePressEvent(QMouseEvent *event)
         // select volume integral area
         if (actPostprocessorModeVolumeIntegral->isChecked())
         {
-            Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(Agros2D::scene()->activeViewField()->initialMesh(), p.x, p.y);
+            Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(postHermes()->activeViewField()->initialMesh(), p.x, p.y);
             if (e)
             {
-                SceneLabel *label = Agros2D::scene()->labels->at(atoi(Agros2D::scene()->activeViewField()->initialMesh()->get_element_markers_conversion().
+                SceneLabel *label = Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().
                                                                       get_user_marker(e->marker).marker.c_str()));
 
                 label->setSelected(!label->isSelected());
@@ -203,7 +208,7 @@ void SceneViewPost2D::paintGL()
     if (Agros2D::problem()->configView()->showGrid) paintGrid();
 
     // view
-    if (Agros2D::problem()->isSolved())
+    if (Agros2D::problem()->isSolved() && m_postHermes->isProcessed())
     {
         if (Agros2D::problem()->configView()->showScalarView) paintScalarField();
         if (Agros2D::problem()->configView()->showContourView) paintContours();
@@ -213,7 +218,7 @@ void SceneViewPost2D::paintGL()
     // geometry
     paintGeometry();
 
-    if (Agros2D::problem()->isSolved())
+    if (Agros2D::problem()->isSolved() && m_postHermes->isProcessed())
     {
         if (actPostprocessorModeLocalPointValue->isChecked()) paintPostprocessorSelectedPoint();
         if (actPostprocessorModeVolumeIntegral->isChecked()) paintPostprocessorSelectedVolume();
@@ -236,11 +241,11 @@ void SceneViewPost2D::paintGL()
 
     paintZoomRegion();
 
-    if (Agros2D::problem()->isSolved())
+    if (Agros2D::problem()->isSolved() && m_postHermes->isProcessed())
     {
         if (Agros2D::problem()->configView()->showScalarView)
         {
-            Module::LocalVariable localVariable = Agros2D::scene()->activeViewField()->localVariable(Agros2D::problem()->configView()->scalarVariable);
+            Module::LocalVariable localVariable = postHermes()->activeViewField()->localVariable(Agros2D::problem()->configView()->scalarVariable);
             QString text = Agros2D::problem()->configView()->scalarVariable != "" ? localVariable.name() : "";
             if (Agros2D::problem()->configView()->scalarVariableComp != PhysicFieldVariableComp_Scalar)
                 text += " - " + physicFieldVariableCompString(Agros2D::problem()->configView()->scalarVariableComp);
@@ -1089,7 +1094,7 @@ void SceneViewPost2D::paintPostprocessorSelectedVolume()
     glBegin(GL_TRIANGLES);
     for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_triangles(); i++)
     {
-        SceneLabel *label = Agros2D::scene()->labels->at(atoi(Agros2D::scene()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
+        SceneLabel *label = Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
         if (label->isSelected())
         {
             glVertex2d(linVert[linTris[i][0]][0], linVert[linTris[i][0]][1]);
@@ -1221,7 +1226,7 @@ void SceneViewPost2D::exportVTKScalarView(const QString &fileName)
         }
 
         Hermes::Hermes2D::Views::Linearizer linScalarView;
-        Hermes::Hermes2D::Filter<double> *slnScalarView = m_postHermes->viewScalarFilter(Agros2D::scene()->activeViewField()->localVariable(Agros2D::problem()->configView()->scalarVariable),
+        Hermes::Hermes2D::Filter<double> *slnScalarView = m_postHermes->viewScalarFilter(postHermes()->activeViewField()->localVariable(Agros2D::problem()->configView()->scalarVariable),
                                                                                          Agros2D::problem()->configView()->scalarVariableComp);
 
         linScalarView.save_solution_vtk(slnScalarView,

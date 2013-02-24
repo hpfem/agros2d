@@ -74,27 +74,30 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // scene
     postHermes = new PostHermes();
 
+    sceneInfoWidget = new InfoWidget(sceneViewPreprocessor, this);
     sceneViewPreprocessor = new SceneViewPreprocessor(this);
     sceneViewMesh = new SceneViewMesh(postHermes, this);
     sceneViewPost2D = new SceneViewPost2D(postHermes, this);
     sceneViewPost3D = new SceneViewPost3D(postHermes, this);
+    sceneViewChart = new ChartView(this);
     sceneViewParticleTracing = new SceneViewParticleTracing(postHermes, this);
     sceneViewBlank = new QLabel("", this);
-    sceneInfoWidget = new InfoWidget(sceneViewPreprocessor, this);
-    sceneChart = new ChartWidget(this);
 
     // preprocessor
     preprocessorWidget = new PreprocessorWidget(sceneViewPreprocessor, this);
     connect(Agros2D::problem(), SIGNAL(fieldsChanged()), preprocessorWidget, SLOT(refresh()));
     // postprocessor
-    postprocessorWidget = new PostprocessorWidget(sceneViewPreprocessor,
+    postprocessorWidget = new PostprocessorWidget(postHermes,
+                                                  sceneViewPreprocessor,
                                                   sceneViewMesh,
                                                   sceneViewPost2D,
                                                   sceneViewPost3D,
-                                                  sceneChart,
                                                   this);
     // particle tracing
     particleTracingWidget = new ParticleTracingWidget(sceneViewParticleTracing, this);
+
+    // chart
+    chartWidget = new ChartWidget(sceneViewChart, this);
 
     // settings
     settingsWidget = new SettingsWidget(this);
@@ -442,7 +445,7 @@ void MainWindow::createActions()
     actSceneModeGroup->addAction(sceneViewMesh->actSceneModeMesh);
     actSceneModeGroup->addAction(sceneViewPost2D->actSceneModePost2D);
     actSceneModeGroup->addAction(sceneViewPost3D->actSceneModePost3D);
-    actSceneModeGroup->addAction(sceneChart->actSceneModeChart);
+    actSceneModeGroup->addAction(sceneViewChart->actSceneModeChart);
     actSceneModeGroup->addAction(sceneViewParticleTracing->actSceneModeParticleTracing);
     actSceneModeGroup->addAction(settingsWidget->actSettings);
 
@@ -528,7 +531,7 @@ void MainWindow::createMenus()
     mnuView->addAction(sceneViewMesh->actSceneModeMesh);
     mnuView->addAction(sceneViewPost2D->actSceneModePost2D);
     mnuView->addAction(sceneViewPost3D->actSceneModePost3D);
-    mnuView->addAction(sceneChart->actSceneModeChart);
+    mnuView->addAction(sceneViewChart->actSceneModeChart);
     mnuView->addAction(sceneViewParticleTracing->actSceneModeParticleTracing);
     mnuView->addAction(settingsWidget->actSettings);
     mnuView->addSeparator();
@@ -682,7 +685,7 @@ void MainWindow::createMain()
     sceneViewPost2DWidget = new SceneViewWidget(sceneViewPost2D, this);
     sceneViewPost3DWidget = new SceneViewWidget(sceneViewPost3D, this);
     sceneViewPostParticleTracingWidget = new SceneViewWidget(sceneViewParticleTracing, this);
-    sceneViewChartWidget = new SceneViewWidget(sceneChart, this);
+    sceneViewChartWidget = new SceneViewWidget(sceneViewChart, this);
 
     tabViewLayout = new QStackedLayout();
     tabViewLayout->setContentsMargins(0, 0, 0, 0);
@@ -704,6 +707,7 @@ void MainWindow::createMain()
     tabControlsLayout->addWidget(preprocessorWidget);
     tabControlsLayout->addWidget(postprocessorWidget);
     tabControlsLayout->addWidget(particleTracingWidget);
+    tabControlsLayout->addWidget(chartWidget);
     tabControlsLayout->addWidget(settingsWidget);
 
     viewControls = new QWidget();
@@ -741,7 +745,7 @@ void MainWindow::createMain()
     tlbLeftBar->addAction(sceneViewPost2D->actSceneModePost2D);
     tlbLeftBar->addAction(sceneViewPost3D->actSceneModePost3D);
     tlbLeftBar->addAction(sceneViewParticleTracing->actSceneModeParticleTracing);
-    tlbLeftBar->addAction(sceneChart->actSceneModeChart);
+    tlbLeftBar->addAction(sceneViewChart->actSceneModeChart);
     tlbLeftBar->addSeparator();
     tlbLeftBar->addAction(settingsWidget->actSettings);
     tlbLeftBar->addWidget(spacing);
@@ -788,7 +792,7 @@ void MainWindow::createViews()
     logView->setAllowedAreas(Qt::RightDockWidgetArea);
     addDockWidget(Qt::RightDockWidgetArea, logView);
 
-    resultsView = new ResultsView(this);
+    resultsView = new ResultsView(postHermes, this);
     resultsView->setAllowedAreas(Qt::RightDockWidgetArea);
     addDockWidget(Qt::RightDockWidgetArea, resultsView);
 
@@ -1456,17 +1460,6 @@ void MainWindow::doPaste()
 
 }
 
-void MainWindow::doTimeStepChanged(int index)
-{
-    if (cmbTimeStep->currentIndex() != -1)
-    {
-        double actualTime = cmbTimeStep->itemText(cmbTimeStep->currentIndex()).toDouble();
-        int actualTimeStep = Agros2D::problem()->timeToTimeStep(actualTime);
-        Agros2D::scene()->setActiveTimeStep(actualTimeStep);
-        postprocessorWidget->updateControls();
-    }
-}
-
 void MainWindow::clear()
 {
     sceneViewPreprocessor->actSceneModePreprocessor->trigger();
@@ -1572,10 +1565,10 @@ void MainWindow::setControls()
         // hide transform dialog
         sceneTransformDialog->hide();
     }
-    if (sceneChart->actSceneModeChart->isChecked())
+    if (sceneViewChart->actSceneModeChart->isChecked())
     {
         tabViewLayout->setCurrentWidget(sceneViewChartWidget);
-        tabControlsLayout->setCurrentWidget(postprocessorWidget);
+        tabControlsLayout->setCurrentWidget(chartWidget);
     }
 
     if (settingsWidget->actSettings->isChecked())

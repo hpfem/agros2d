@@ -203,7 +203,7 @@ void SolutionStore::removeTimeStep(int timeStep)
 int SolutionStore::lastTimeStep(FieldInfo *fieldInfo, SolutionMode solutionType) const
 {
     int timeStep = NOT_FOUND_SO_FAR;
-    foreach(FieldSolutionID sid, m_multiSolutions)
+    foreach (FieldSolutionID sid, m_multiSolutions)
     {
         if((sid.group == fieldInfo) && (sid.solutionMode == solutionType) && (sid.timeStep > timeStep))
             timeStep = sid.timeStep;

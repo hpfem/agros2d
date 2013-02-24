@@ -24,6 +24,7 @@
 #include "sceneview_geometry.h"
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
+#include "scenemarker.h"
 #include "scenenode.h"
 #include "sceneedge.h"
 #include "scenelabel.h"

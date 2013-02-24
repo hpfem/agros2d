@@ -87,8 +87,8 @@ void fillComboBoxFieldInfo(QComboBox *cmbFieldInfo)
 
 void fillComboBoxScalarVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable)
 {
-    if (!Agros2D::problem()->isSolved())
-        return;
+    // if (!Agros2D::problem()->isSolved())
+    //     return;
 
     // store variable
     QString physicFieldVariable = cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString();
@@ -108,8 +108,8 @@ void fillComboBoxScalarVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariabl
 
 void fillComboBoxContourVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable)
 {
-    if (!Agros2D::problem()->isSolved())
-        return;
+    // if (!Agros2D::problem()->isSolved())
+    //     return;
 
     // store variable
     QString physicFieldVariable = cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString();
@@ -130,8 +130,8 @@ void fillComboBoxContourVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariab
 
 void fillComboBoxVectorVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariable)
 {
-    if (!Agros2D::problem()->isSolved())
-        return;
+    // if (!Agros2D::problem()->isSolved())
+    //     return;
 
     // store variable
     QString physicFieldVariable = cmbFieldVariable->itemData(cmbFieldVariable->currentIndex()).toString();
@@ -173,7 +173,7 @@ void fillComboBoxTimeStep(FieldInfo* fieldInfo, QComboBox *cmbTimeStep)
 
     QList<double> timeLevels = Agros2D::solutionStore()->timeLevels(fieldInfo);
     int i = 0;
-    timeStep = 0;
+    // timeStep = 0;
     foreach (double time, timeLevels)
     {
         cmbTimeStep->addItem(QObject::tr("Step: %1, time: %2 s").arg(i - 1).arg(QString::number(time, 'e', 2)),

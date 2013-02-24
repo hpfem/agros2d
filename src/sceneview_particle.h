@@ -27,6 +27,7 @@ template <typename Scalar> class SceneSolution;
 template <typename Scalar> class ViewScalarFilter;
 
 class SceneViewParticleTracing;
+class LineEditDouble;
 
 class ParticleTracingWidget : public QWidget
 {
@@ -132,6 +133,7 @@ private slots:
     virtual void refresh();
     virtual void clearGLLists();
     void clearParticleLists();
+    void setControls();
 };
 
 #endif // SCENEVIEWPARTICLETRACING_H

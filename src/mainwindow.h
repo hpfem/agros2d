@@ -42,14 +42,14 @@ class PythonScriptingConsoleView;
 class TooltipView;
 class LogView;
 
-class ChartControlsWidget;
+class ChartWidget;
 class PythonLabAgros;
 class ReportDialog;
 class ServerDownloadDialog;
 class SceneTransformDialog;
 class SceneViewWidget;
 class LogStdOut;
-class ChartWidget;
+class ChartView;
 
 class AGROS_API MainWindow : public QMainWindow
 {
@@ -111,8 +111,6 @@ private slots:
     void setControls();
     void clear();
     void doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor);
-
-    void doTimeStepChanged(int index);
 
     /// fields adeed or removed, menus need to be modified
     void doFieldsChanged();
@@ -216,16 +214,17 @@ private:
     SceneViewPost2D *sceneViewPost2D;
     SceneViewPost3D *sceneViewPost3D;
     SceneViewParticleTracing *sceneViewParticleTracing;
+    ChartView *sceneViewChart;
     QWidget *sceneViewBlank;
-    ChartWidget *sceneChart;
 
     QWidget *viewControls;
     QStackedLayout *tabControlsLayout;
+    ProblemWidget *problemWidget;
     PreprocessorWidget *preprocessorWidget;
     PostprocessorWidget *postprocessorWidget;
+    ChartWidget *chartWidget;
     ParticleTracingWidget *particleTracingWidget;
     SettingsWidget *settingsWidget;
-    ProblemWidget *problemWidget;
 
     ResultsView *resultsView;
     PythonScriptingConsoleView *consoleView;

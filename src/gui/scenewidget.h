@@ -23,7 +23,6 @@
 #include <QGLWidget>
 
 #include "util.h"
-#include "chartdialog.h"
 
 #include "util/glfont.h"
 

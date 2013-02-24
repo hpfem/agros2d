@@ -50,26 +50,27 @@ public:
     // postprocessor
     // filter
     virtual Hermes::Hermes2D::Filter<double> *filter(FieldInfo *fieldInfo,
+                                                     int timeStep, int adaptivityStep, SolutionMode solutionType,
                                                      Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
                                                      const QString &variable,
                                                      PhysicFieldVariableComp physicFieldVariableComp) { assert(0); return NULL; }
 
     // local values
-    virtual LocalValue *localValue(FieldInfo *fieldInfo, const Point &point) { assert(0); return NULL; }
+    virtual LocalValue *localValue(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point) { assert(0); return NULL; }
     // surface integrals
-    virtual IntegralValue *surfaceIntegral(FieldInfo *fieldInfo) { assert(0); return NULL; }
+    virtual IntegralValue *surfaceIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType) { assert(0); return NULL; }
     // volume integrals
-    virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo) { assert(0); return NULL; }
+    virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType) { assert(0); return NULL; }
 
-    // localization	
+    // force calculation
+    virtual Point3 force(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const SceneMaterial *material, const Point3 &point, const Point3 &velocity) { assert(0); return Point3(); }
+    virtual bool hasForce() { return false; }
+
+    // localization
     virtual QString localeName(const QString &name) { assert(0); return NULL; }
 
     // description of module
     virtual QString localeDescription()  { assert(0); return NULL; }
-
-    // force calculation
-    virtual Point3 force(FieldInfo *fieldInfo, const SceneMaterial *material, const Point3 &point, const Point3 &velocity) { assert(0); return Point3(); }
-    virtual bool hasForce() { return false; }
 };
 
 #endif // {{CLASS}}_INTERFACE_H

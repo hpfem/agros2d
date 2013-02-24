@@ -23,10 +23,10 @@
 #include <QGLWidget>
 
 #include "util.h"
-#include "chartdialog.h"
 
 #include "gui/scenewidget.h"
 #include "util/glfont.h"
+#include "util/enums.h"
 
 class Scene;
 class SceneViewCommon;

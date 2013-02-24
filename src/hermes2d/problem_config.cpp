@@ -242,6 +242,17 @@ void ProblemConfigView::load(QDomElement *config)
     particleCustomForce.y = readConfig("View/ParticleCustomForceY", PARTICLECUSTOMFORCEY);
     particleCustomForce.z = readConfig("View/ParticleCustomForceZ", PARTICLECUSTOMFORCEZ);
 
+    // chart
+    chartStartX = readConfig("View/ChartStartX", CHARTSTARTX);
+    chartStartY = readConfig("View/ChartStartY", CHARTSTARTY);
+    chartEndX = readConfig("View/ChartEndX", CHARTENDX);
+    chartEndY = readConfig("View/ChartEndY", CHARTENDY);
+    chartTimeX = readConfig("View/ChartTimeX", CHARTTIMEX);
+    chartTimeY = readConfig("View/ChartTimeY", CHARTTIMEY);
+    chartHorizontalAxis = readConfig("View/ChartHorizontalAxis", CHARTHORIZONTALAXIS);
+    chartHorizontalAxisReverse = readConfig("View/ChartHorizontalAxisReverse", CHARTHORIZONTALAXISREVERSE);
+    chartHorizontalAxisPoints = readConfig("View/ChartHorizontalAxisPoints", CHARTHORIZONTALAXISPOINTS);
+
     // mesh
     angleSegmentsCount = readConfig("View/MeshAngleSegmentsCount", MESHANGLESEGMENTSCOUNT);
     curvilinearElements = readConfig("View/MeshCurvilinearElements", MESHCURVILINEARELEMENTS);
@@ -402,6 +413,17 @@ void ProblemConfigView::save(QDomElement *config)
     writeConfig("View/ParticleCustomForceX", particleCustomForce.x);
     writeConfig("View/ParticleCustomForceY", particleCustomForce.y);
     writeConfig("View/ParticleCustomForceZ", particleCustomForce.z);
+
+    // chart
+    writeConfig("View/ChartStartX", chartStartX);
+    writeConfig("View/ChartStartY", chartStartY);
+    writeConfig("View/ChartEndX", chartEndX);
+    writeConfig("View/ChartEndY", chartEndY);
+    writeConfig("View/ChartTimeX", chartTimeX);
+    writeConfig("View/ChartTimeY", chartTimeY);
+    writeConfig("View/ChartHorizontalAxis", chartHorizontalAxis);
+    writeConfig("View/ChartHorizontalAxisReverse", chartHorizontalAxisReverse);
+    writeConfig("View/ChartHorizontalAxisPoints", chartHorizontalAxisPoints);
 
     // mesh
     writeConfig("View/MeshAngleSegmentsCount", angleSegmentsCount);

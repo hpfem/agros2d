@@ -79,6 +79,7 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     gui/scenewidget.cpp \
     gui/groupbox.cpp \
     gui/latexviewer.cpp \
+    gui/physicalfield.cpp \
     hermes2d/marker.cpp \
     hermes2d/module.cpp \
     hermes2d/solver.cpp \
@@ -177,6 +178,7 @@ HEADERS += util.h \
     gui/systemoutput.h \
     gui/scenewidget.h \
     gui/latexviewer.h \
+    gui/physicalfield.h \
     hermes2d/marker.h \
     hermes2d/module.h \
     hermes2d/problem.h \

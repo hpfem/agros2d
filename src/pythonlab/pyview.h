@@ -46,19 +46,19 @@ struct PyViewConfig
 {
     // field
     void setField(const char *fieldid);
-    inline const char* getField() const { return const_cast<char*>(Agros2D::scene()->activeViewField()->fieldId().toStdString().c_str()); }
+    const char* getField() const;
 
     // time step
     void setActiveTimeStep(int timeStep);
-    inline int getActiveTimeStep() const { return Agros2D::scene()->activeTimeStep(); }
+    int getActiveTimeStep() const;
 
     // adaptivity step
     void setActiveAdaptivityStep(int adaptivityStep);
-    inline int getActiveAdaptivityStep() const { return Agros2D::scene()->activeAdaptivityStep(); }
+    int getActiveAdaptivityStep() const;
 
     // solution type
     void setActiveSolutionType(const char *solutionType);
-    inline const char* getActiveSolutionType() const { return const_cast<char*>(solutionTypeToStringKey(Agros2D::scene()->activeSolutionType()).toStdString().c_str()); }
+    const char* getActiveSolutionType() const;
 
     // grid
     void setGridShow(bool show);

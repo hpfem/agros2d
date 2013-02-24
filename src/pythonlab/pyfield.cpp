@@ -20,7 +20,7 @@
 #include "pythonlab/pyfield.h"
 #include "pythonlab/pythonengine_agros.h"
 
-
+#include "hermes2d/plugin_interface.h"
 #include "hermes2d/problem_config.h"
 #include "hermes2d/solutionstore.h"
 
@@ -419,7 +419,12 @@ void PyField::localValues(const double x, const double y, map<std::string, doubl
 
         Point point(x, y);
 
-        LocalValue *value = fieldInfo()->plugin()->localValue(fieldInfo(), point);
+        // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
+        int timeStep = Agros2D::solutionStore()->nearestTimeStep(fieldInfo(), currentPythonEngineAgros()->postHermes()->activeTimeStep());
+        int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo(), SolutionMode_Normal, timeStep);
+        int solutionMode = SolutionMode_Finer;
+
+        LocalValue *value = fieldInfo()->plugin()->localValue(fieldInfo(), timeStep, adaptivityStep, solutionMode, point);
         QMapIterator<QString, PointValue> it(value->values());
         while (it.hasNext())
         {
@@ -486,7 +491,12 @@ void PyField::surfaceIntegrals(vector<int> edges, map<std::string, double> &resu
             Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnEdges);
         }
 
-        IntegralValue *integral = fieldInfo()->plugin()->surfaceIntegral(fieldInfo());
+        // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
+        int timeStep = Agros2D::solutionStore()->nearestTimeStep(fieldInfo(), currentPythonEngineAgros()->postHermes()->activeTimeStep());
+        int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo(), SolutionMode_Normal, timeStep);
+        int solutionMode = SolutionMode_Finer;
+
+        IntegralValue *integral = fieldInfo()->plugin()->surfaceIntegral(fieldInfo(), timeStep, adaptivityStep, solutionMode);
         QMapIterator<QString, double> it(integral->values());
         while (it.hasNext())
         {
@@ -551,7 +561,12 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
             Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnLabels);
         }
 
-        IntegralValue *integral = fieldInfo()->plugin()->volumeIntegral(fieldInfo());
+        // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
+        int timeStep = Agros2D::solutionStore()->nearestTimeStep(fieldInfo(), currentPythonEngineAgros()->postHermes()->activeTimeStep());
+        int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo(), SolutionMode_Normal, timeStep);
+        int solutionMode = SolutionMode_Finer;
+
+        IntegralValue *integral = fieldInfo()->plugin()->volumeIntegral(fieldInfo(), timeStep, adaptivityStep, solutionMode);
         QMapIterator<QString, double> it(integral->values());
         while (it.hasNext())
         {

@@ -22,44 +22,45 @@
 
 #include "util.h"
 
+class PostHermes;
 class SceneViewPreprocessor;
 class SceneViewMesh;
 class SceneViewPost2D;
 class SceneViewPost3D;
-class ChartWidget;
+class ChartView;
 class LineEditDouble;
 class CollapsableGroupBoxButton;
 class FieldInfo;
 class ValueLineEdit;
-class ChartControlsWidget;
+class PhysicalFieldWidget;
 
 class PostprocessorWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    PostprocessorWidget(SceneViewPreprocessor *sceneGeometry,
-                      SceneViewMesh *sceneMesh,
-                      SceneViewPost2D *scenePost2D,
-                      SceneViewPost3D *scenePost3D,
-                      ChartWidget *sceneChart,
-                      QWidget *parent);
+    PostprocessorWidget(PostHermes *postHermes,
+                        SceneViewPreprocessor *sceneGeometry,
+                        SceneViewMesh *sceneMesh,
+                        SceneViewPost2D *scenePost2D,
+                        SceneViewPost3D *scenePost3D,
+                        QWidget *parent);
 
 private slots:
     void doApply();
 
 private:
+    PostHermes *m_postHermes;
     SceneViewPreprocessor *m_sceneGeometry;
     SceneViewMesh *m_sceneMesh;
     SceneViewPost2D *m_scenePost2D;
     SceneViewPost3D *m_scenePost3D;
-    ChartWidget *m_sceneChart;
 
     QWidget *basic;
     QWidget *advanced;
 
     // basic
-    QComboBox *cmbFieldInfo;
+    PhysicalFieldWidget *fieldWidget;
 
     // show
     QCheckBox *chkShowInitialMeshView;
@@ -88,15 +89,6 @@ private:
 
     // vector field
     QComboBox *cmbPost2DVectorFieldVariable;
-
-    // transient
-    QGroupBox *grpTransient;
-    QComboBox *cmbTimeStep;
-
-    // adaptivity
-    QGroupBox *grpAdaptivity;
-    QComboBox *cmbAdaptivityStep;
-    QComboBox *cmbAdaptivitySolutionType;
 
     // scalar field
     QCheckBox *chkShowScalarColorBar;
@@ -133,9 +125,6 @@ private:
     QToolBox *tbxPostprocessor;
     QPushButton *btnOK;
 
-    // chart
-    ChartControlsWidget *m_chartWidget;
-
     void loadBasic();
     void loadAdvanced();
     void saveBasic();
@@ -149,7 +138,6 @@ private:
     QWidget *groupMesh;
     QWidget *groupPost2d;
     QWidget *groupPost3d;
-    QWidget *groupChart;
 
     QWidget *groupMeshOrder;
     CollapsableGroupBoxButton *groupPostScalar;
@@ -160,12 +148,10 @@ private:
     QWidget *groupPostVectorAdvanced;
     CollapsableGroupBoxButton *groupPostSolid;
     QWidget *groupPostSolidAdvanced;
-    QWidget *groupPostChart;
 
     QWidget *meshWidget();
     QWidget *post2DWidget();
     QWidget *post3DWidget();
-    QWidget *chartWidget();
 
     QWidget *meshOrderWidget();
     CollapsableGroupBoxButton *postScalarWidget();
@@ -176,11 +162,6 @@ private:
     QWidget *postVectorAdvancedWidget();
     CollapsableGroupBoxButton *postSolidWidget();
     QWidget *postPostSolidAdvancedWidget();
-    QWidget *postChartWidget();
-
-    int selectedTimeStep();
-    int selectedAdaptivityStep();
-    FieldInfo* selectedField();
 
 signals:
     void apply();
@@ -190,9 +171,7 @@ public slots:
     void refresh();
 
 private slots:
-    void doFieldInfo(int index);
-    void doTimeStep(int index);
-    void doAdaptivityStep(int index);
+    void doField();
     void doCalculationFinished();
     void doScalarFieldVariable(int index);
     void doScalarFieldRangeAuto(int state);

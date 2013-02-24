@@ -104,32 +104,33 @@ ExactSolutionScalarAgros<double> *{{CLASS}}Interface::exactSolution(const Proble
     return NULL;
 }
 
-Hermes::Hermes2D::Filter<double> *{{CLASS}}Interface::filter(FieldInfo *fieldInfo,
+Hermes::Hermes2D::Filter<double> *{{CLASS}}Interface::filter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                                                      Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
                                                      const QString &variable,
                                                      PhysicFieldVariableComp physicFieldVariableComp)
 {
-    return new {{CLASS}}ViewScalarFilter(fieldInfo, sln, variable, physicFieldVariableComp);
+    return new {{CLASS}}ViewScalarFilter(fieldInfo, timeStep, adaptivityStep, solutionType, sln, variable, physicFieldVariableComp);
 }
 
-LocalValue *{{CLASS}}Interface::localValue(FieldInfo *fieldInfo, const Point &point)
+LocalValue *{{CLASS}}Interface::localValue(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point)
 {
-    return new {{CLASS}}LocalValue(fieldInfo, point);
+    return new {{CLASS}}LocalValue(fieldInfo, timeStep, adaptivityStep, solutionType, point);
 }
 
-IntegralValue *{{CLASS}}Interface::surfaceIntegral(FieldInfo *fieldInfo)
+IntegralValue *{{CLASS}}Interface::surfaceIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType)
 {
-    return new {{CLASS}}SurfaceIntegral(fieldInfo);
+    return new {{CLASS}}SurfaceIntegral(fieldInfo, timeStep, adaptivityStep, solutionType);
 }
 
-IntegralValue *{{CLASS}}Interface::volumeIntegral(FieldInfo *fieldInfo)
+IntegralValue *{{CLASS}}Interface::volumeIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType)
 {
-    return new {{CLASS}}VolumeIntegral(fieldInfo);
+    return new {{CLASS}}VolumeIntegral(fieldInfo, timeStep, adaptivityStep, solutionType);
 }
 
-Point3 {{CLASS}}Interface::force(FieldInfo *fieldInfo, const SceneMaterial *material, const Point3 &point, const Point3 &velocity)
+Point3 {{CLASS}}Interface::force(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+                                 const SceneMaterial *material, const Point3 &point, const Point3 &velocity)
 {
-    return force{{CLASS}}(fieldInfo, material, point, velocity);
+    return force{{CLASS}}(fieldInfo, timeStep, adaptivityStep, solutionType, material, point, velocity);
 }
 
 QString {{CLASS}}Interface::localeName(const QString &name)

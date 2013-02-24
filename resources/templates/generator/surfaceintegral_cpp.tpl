@@ -30,8 +30,8 @@
 
 #include "hermes2d/plugin_interface.h"
 
-{{CLASS}}SurfaceIntegral::{{CLASS}}SurfaceIntegral(FieldInfo *fieldInfo)
-    : IntegralValue(fieldInfo)
+{{CLASS}}SurfaceIntegral::{{CLASS}}SurfaceIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType)
+    : IntegralValue(fieldInfo, timeStep, adaptivityStep, solutionType)
 {
     calculate();
 }
@@ -45,31 +45,15 @@ void {{CLASS}}SurfaceIntegral::calculate()
         // update time functions
         if (m_fieldInfo->analysisType() == AnalysisType_Transient)
         {
-            QList<double> timeLevels = Agros2D::solutionStore()->timeLevels(Agros2D::scene()->activeViewField());
-            Module::updateTimeFunctions(timeLevels[Agros2D::scene()->activeTimeStep()]);
+            QList<double> timeLevels = Agros2D::solutionStore()->timeLevels(m_fieldInfo);
+            Module::updateTimeFunctions(timeLevels[m_timeStep]);
         }
 
         // solutions
         Hermes::vector<Hermes::Hermes2D::Solution<double> *> sln;
         for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
         {
-            int adaptivityStep, timeStep;
-            SolutionMode solutionMode;
-            if(m_fieldInfo == Agros2D::scene()->activeViewField())
-            {
-                // if calculating values for active view field, use the solution that is viewed
-                timeStep = Agros2D::scene()->activeTimeStep();
-                adaptivityStep = Agros2D::scene()->activeAdaptivityStep();
-                solutionMode = Agros2D::scene()->activeSolutionType();
-            }
-            else
-            {
-                // else use solution on nearest time step, last adaptivity step possible and if exists, reference solution
-                timeStep = Agros2D::solutionStore()->nearestTimeStep(m_fieldInfo, Agros2D::scene()->activeTimeStep());
-                adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(m_fieldInfo, SolutionMode_Normal, timeStep);
-                solutionMode = SolutionMode_Finer;
-            }
-            FieldSolutionID fsid(m_fieldInfo, timeStep, adaptivityStep, solutionMode);
+            FieldSolutionID fsid(m_fieldInfo, m_timeStep, m_adaptivityStep, m_solutionType);
             sln.push_back(Agros2D::solutionStore()->multiArray(fsid).solutions().at(k));
         }
 

@@ -24,8 +24,10 @@
 #include "gui/lineeditdouble.h"
 #include "gui/groupbox.h"
 #include "gui/common.h"
+#include "gui/physicalfield.h"
 
 #include "scene.h"
+#include "scenemarker.h"
 #include "sceneview_geometry.h"
 #include "sceneview_mesh.h"
 #include "sceneview_post2d.h"
@@ -43,18 +45,18 @@
 
 const double minWidth = 110;
 
-PostprocessorWidget::PostprocessorWidget(SceneViewPreprocessor *sceneGeometry,
+PostprocessorWidget::PostprocessorWidget(PostHermes *postHermes,
+                                         SceneViewPreprocessor *sceneGeometry,
                                          SceneViewMesh *sceneMesh,
                                          SceneViewPost2D *scenePost2D,
                                          SceneViewPost3D *scenePost3D,
-                                         ChartWidget *sceneChart,
                                          QWidget *parent) : QWidget(parent)
 {
+    m_postHermes = postHermes;
     m_sceneGeometry = sceneGeometry;
     m_sceneMesh = sceneMesh;
     m_scenePost2D = scenePost2D;
     m_scenePost3D = scenePost3D;
-    m_sceneChart = sceneChart;
 
     setWindowIcon(icon("scene-properties"));
     setObjectName("PostprocessorView");
@@ -64,17 +66,15 @@ PostprocessorWidget::PostprocessorWidget(SceneViewPreprocessor *sceneGeometry,
     loadBasic();
     loadAdvanced();
 
+    connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(updateControls()));
+    connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(updateControls()));
+
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(updateControls()));
     connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(updateControls()));
 }
 
 void PostprocessorWidget::loadBasic()
 {
-    // cmbFieldInfo->setCurrentIndex(cmbFieldInfo->findData(Agros2D::problem()->configView()->activeField));
-    if (cmbFieldInfo->currentIndex() == -1)
-        cmbFieldInfo->setCurrentIndex(0);
-    doFieldInfo(cmbFieldInfo->currentIndex());
-
     // show
     chkShowInitialMeshView->setChecked(Agros2D::problem()->configView()->showInitialMeshView);
     chkShowSolutionMeshView->setChecked(Agros2D::problem()->configView()->showSolutionMeshView);
@@ -161,9 +161,9 @@ void PostprocessorWidget::loadAdvanced()
 
     // solid
     lstSolidMaterials->clear();
-    if (Agros2D::problem()->isSolved())
+    if (Agros2D::problem()->isSolved() && m_scenePost2D->postHermes()->activeViewField())
     {
-        foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(Agros2D::scene()->activeViewField()).items())
+        foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(m_scenePost2D->postHermes()->activeViewField()).items())
         {
             QListWidgetItem *item = new QListWidgetItem(lstSolidMaterials);
             item->setText(material->name());
@@ -181,7 +181,7 @@ void PostprocessorWidget::loadAdvanced()
 void PostprocessorWidget::saveBasic()
 {
     // active field
-    Agros2D::problem()->configView()->activeField = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
+    Agros2D::problem()->configView()->activeField = fieldWidget->selectedField()->fieldId();
 
     Agros2D::problem()->configView()->showInitialMeshView = chkShowInitialMeshView->isChecked();
     Agros2D::problem()->configView()->showSolutionMeshView = chkShowSolutionMeshView->isChecked();
@@ -260,8 +260,6 @@ void PostprocessorWidget::createControls()
     btnOK = new QPushButton(tr("Apply"));
     connect(btnOK, SIGNAL(clicked()), SLOT(doApply()));
 
-    m_chartWidget = new ChartControlsWidget(m_scenePost2D, m_sceneChart->chart(), this);
-
     basic = controlsBasic();
     advanced = controlsAdvanced();
 
@@ -277,7 +275,6 @@ void PostprocessorWidget::createControls()
     groupPostContourAdvanced->setVisible(false);
     groupPostVectorAdvanced->setVisible(false);
     groupPostSolidAdvanced->setVisible(false);
-    groupPostChart->setVisible(false);
 
     setLayout(layoutMain);
 }
@@ -488,85 +485,25 @@ QWidget *PostprocessorWidget::post3DWidget()
     return widget;
 }
 
-QWidget *PostprocessorWidget::chartWidget()
-{
-    QVBoxLayout *layoutVariables = new QVBoxLayout();
-    layoutVariables->addWidget(m_chartWidget->variablesWidget());
-
-    QGroupBox *grpChart = new QGroupBox(tr("Chart"));
-    grpChart->setLayout(layoutVariables);
-
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setMargin(0);
-    layout->addWidget(grpChart);
-    layout->addStretch(1);
-
-    QWidget *widget = new QWidget(this);
-    widget->setLayout(layout);
-
-    return widget;
-}
-
 QWidget *PostprocessorWidget::controlsBasic()
 {
-    cmbFieldInfo = new QComboBox();
-    connect(cmbFieldInfo, SIGNAL(currentIndexChanged(int)), this, SLOT(doFieldInfo(int)));
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(doCalculationFinished()));
 
-    QGridLayout *layoutField = new QGridLayout();
-    layoutField->setColumnMinimumWidth(0, minWidth);
-    layoutField->setColumnStretch(1, 1);
-    layoutField->addWidget(new QLabel(tr("Physical field:")), 0, 0);
-    layoutField->addWidget(cmbFieldInfo, 0, 1);
-
-    QGroupBox *grpField = new QGroupBox(tr("Physical field"));
-    grpField->setLayout(layoutField);
-
-    // transient
-    cmbTimeStep = new QComboBox(this);
-    connect(cmbTimeStep, SIGNAL(currentIndexChanged(int)), this, SLOT(doTimeStep(int)));
-
-    QGridLayout *layoutTransient = new QGridLayout();
-    layoutTransient->setColumnMinimumWidth(0, minWidth);
-    layoutTransient->setColumnStretch(1, 1);
-    layoutTransient->addWidget(new QLabel(tr("Time step:")), 0, 0);
-    layoutTransient->addWidget(cmbTimeStep, 0, 1);
-
-    grpTransient = new QGroupBox(tr("Transient analysis"));
-    grpTransient->setLayout(layoutTransient);
-
-    // adaptivity
-    cmbAdaptivityStep = new QComboBox(this);
-    connect(cmbAdaptivityStep, SIGNAL(currentIndexChanged(int)), this, SLOT(doAdaptivityStep(int)));
-    cmbAdaptivitySolutionType = new QComboBox(this);
-
-    QGridLayout *layoutAdaptivity = new QGridLayout();
-    layoutAdaptivity->setColumnMinimumWidth(0, minWidth);
-    layoutAdaptivity->setColumnStretch(1, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Step:")), 0, 0);
-    layoutAdaptivity->addWidget(cmbAdaptivityStep, 0, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Type:")), 1, 0);
-    layoutAdaptivity->addWidget(cmbAdaptivitySolutionType, 1, 1);
-
-    grpAdaptivity = new QGroupBox(tr("Space adaptivity"));
-    grpAdaptivity->setLayout(layoutAdaptivity);
+    fieldWidget = new PhysicalFieldWidget(this);
+    connect(fieldWidget, SIGNAL(fieldChanged()), this, SLOT(doField()));
 
     groupMesh = meshWidget();
     groupMeshOrder = meshOrderWidget();
     groupPost2d = post2DWidget();
     groupPost3d = post3DWidget();
-    groupChart = chartWidget();
 
     widgetsLayout = new QStackedLayout();
     widgetsLayout->addWidget(groupMesh);
     widgetsLayout->addWidget(groupPost2d);
     widgetsLayout->addWidget(groupPost3d);
-    widgetsLayout->addWidget(groupChart);
 
     QVBoxLayout *layoutBasic = new QVBoxLayout();
-    layoutBasic->addWidget(grpField);
-    layoutBasic->addWidget(grpTransient);
-    layoutBasic->addWidget(grpAdaptivity);
+    layoutBasic->addWidget(fieldWidget);
     layoutBasic->addLayout(widgetsLayout);
     layoutBasic->addStretch(1);
 
@@ -582,7 +519,6 @@ QWidget *PostprocessorWidget::controlsAdvanced()
     groupPostContour = postContourWidget();
     groupPostVector = postVectorWidget();
     groupPostSolid = postSolidWidget();
-    groupPostChart = postChartWidget();
 
     QVBoxLayout *layoutArea = new QVBoxLayout();
     layoutArea->addWidget(groupMeshOrder);
@@ -590,7 +526,6 @@ QWidget *PostprocessorWidget::controlsAdvanced()
     layoutArea->addWidget(groupPostContour);
     layoutArea->addWidget(groupPostVector);
     layoutArea->addWidget(groupPostSolid);
-    layoutArea->addWidget(groupPostChart);
     layoutArea->addStretch(1);
 
     QWidget *widget = new QWidget(this);
@@ -786,86 +721,22 @@ QWidget *PostprocessorWidget::postPostSolidAdvancedWidget()
     return solidWidget;
 }
 
-QWidget *PostprocessorWidget::postChartWidget()
+void PostprocessorWidget::doField()
 {
-    // layout
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setMargin(0);
-    layout->addWidget(m_chartWidget);
-    layout->addStretch(1);
-
-    QWidget *widget = new QWidget(this);
-    widget->setLayout(layout);
-
-    return widget;
+    fillComboBoxScalarVariable(fieldWidget->selectedField(), cmbPostScalarFieldVariable);
+    fillComboBoxContourVariable(fieldWidget->selectedField(), cmbPost2DContourVariable);
+    fillComboBoxVectorVariable(fieldWidget->selectedField(), cmbPost2DVectorFieldVariable);
+    doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
 }
 
 void PostprocessorWidget::doCalculationFinished()
-{
-    QString activeFieldName = Agros2D::scene()->activeViewField()->fieldId();
-    for (int index = 0; index < cmbFieldInfo->count(); index++)
-    {
-        if (cmbFieldInfo->itemData(index).toString() == activeFieldName)
-        {
-            cmbFieldInfo->setCurrentIndex(index);
-            doFieldInfo(index);
-            break;
-        }
-    }
-}
-
-void PostprocessorWidget::doFieldInfo(int index)
-{
-    QString fieldName = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
-    if (Agros2D::problem()->hasField(fieldName))
-    {
-        FieldInfo *fieldInfo = Agros2D::problem()->fieldInfo(fieldName);
-        Agros2D::scene()->setActiveViewField(fieldInfo);
-
-        fillComboBoxTimeStep(fieldInfo, cmbTimeStep);
-        doTimeStep(0);
-
-        int currentStep = Agros2D::solutionStore()->nearestTimeStep(Agros2D::scene()->activeViewField(), Agros2D::scene()->activeTimeStep());
-        double currentTime = Agros2D::problem()->timeStepToTotalTime(currentStep);
-        int stepIndex = Agros2D::solutionStore()->timeLevelIndex(selectedField(), currentTime);
-        cmbTimeStep->setCurrentIndex(stepIndex);
-        cmbAdaptivityStep->setCurrentIndex(Agros2D::scene()->activeAdaptivityStep());
-
-        if (Agros2D::problem()->isSolved())
-        {
-            fillComboBoxScalarVariable(fieldInfo, cmbPostScalarFieldVariable);
-            fillComboBoxContourVariable(fieldInfo, cmbPost2DContourVariable);
-            fillComboBoxVectorVariable(fieldInfo, cmbPost2DVectorFieldVariable);
-            doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
-        }
-    }
-}
-
-void PostprocessorWidget::doTimeStep(int index)
-{
-    fillComboBoxAdaptivityStep(selectedField(), selectedTimeStep(), cmbAdaptivityStep);
-    if ((cmbAdaptivityStep->currentIndex() >= cmbAdaptivityStep->count()) || (cmbAdaptivityStep->currentIndex() < 0))
-    {
-        cmbAdaptivityStep->setCurrentIndex(cmbAdaptivityStep->count() - 1);
-    }
-    grpAdaptivity->setVisible(cmbAdaptivityStep->count() > 1);
-    cmbAdaptivityStep->setEnabled(cmbAdaptivityStep->count() > 1);
-    cmbAdaptivitySolutionType->setEnabled(cmbAdaptivityStep->count() > 1);
-    doAdaptivityStep(0);
-}
-
-void PostprocessorWidget::doAdaptivityStep(int index)
-{
-    fillComboBoxSolutionType(selectedField(), selectedTimeStep(), selectedAdaptivityStep(), cmbAdaptivitySolutionType);
-    if ((cmbAdaptivitySolutionType->currentIndex() >= cmbAdaptivitySolutionType->count()) || (cmbAdaptivitySolutionType->currentIndex() < 0))
-    {
-        cmbAdaptivitySolutionType->setCurrentIndex(0);
-    }
+{   
+    // doApply();
 }
 
 void PostprocessorWidget::doScalarFieldVariable(int index)
 {
-    if (cmbFieldInfo->currentIndex() == -1)
+    if (!fieldWidget->selectedField())
         return;
 
     PhysicFieldVariableComp scalarFieldVariableComp = (PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt();
@@ -874,7 +745,7 @@ void PostprocessorWidget::doScalarFieldVariable(int index)
     {
         QString variableName(cmbPostScalarFieldVariable->itemData(index).toString());
 
-        QString fieldName = cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString();
+        QString fieldName = fieldWidget->selectedField()->fieldId();
         Module::LocalVariable physicFieldVariable = Agros2D::problem()->fieldInfo(fieldName)->localVariable(variableName);
 
         // component
@@ -909,6 +780,8 @@ void PostprocessorWidget::doPaletteFilter(int state)
 
 void PostprocessorWidget::refresh()
 {
+    fieldWidget->updateControls();
+
     if (m_sceneMesh->actSceneModeMesh->isChecked())
     {
         widgetsLayout->setCurrentWidget(groupMesh);
@@ -933,9 +806,6 @@ void PostprocessorWidget::refresh()
         // solid
         groupPostSolid->setVisible(false);
         groupPostSolidAdvanced->setVisible(false);
-        // chart
-        groupChart->setVisible(false);
-        groupPostChart->setVisible(false);
     }
 
     if (m_scenePost2D->actSceneModePost2D->isChecked())
@@ -964,10 +834,6 @@ void PostprocessorWidget::refresh()
         // solid
         groupPostSolid->setVisible(false);
         groupPostSolidAdvanced->setVisible(false);
-
-        // chart
-        groupChart->setVisible(false);
-        groupPostChart->setVisible(false);
     }
 
     if (m_scenePost3D->actSceneModePost3D->isChecked())
@@ -1004,32 +870,6 @@ void PostprocessorWidget::refresh()
         groupPostSolidAdvanced->setVisible(((radPost3DScalarField3DSolid->isEnabled() && radPost3DScalarField3DSolid->isChecked())
                                             || (radPost3DModel->isEnabled() && radPost3DModel->isChecked()))
                                            && !groupPostSolid->isCollapsed());
-
-        // chart
-        groupChart->setVisible(false);
-        groupPostChart->setVisible(false);
-    }
-    if (m_sceneChart->actSceneModeChart->isChecked())
-    {
-        widgetsLayout->setCurrentWidget(groupChart);
-
-        // mesh
-        groupMeshOrder->setVisible(false);
-        // scalar
-        groupPostScalar->setVisible(false);
-        groupPostScalarAdvanced->setVisible(false);
-        // contour
-        groupPostContour->setVisible(false);
-        groupPostContourAdvanced->setVisible(false);
-        // vector
-        groupPostVector->setVisible(false);
-        groupPostVectorAdvanced->setVisible(false);
-        // solid
-        groupPostSolid->setVisible(false);
-        groupPostSolidAdvanced->setVisible(false);
-        // chart
-        groupChart->setVisible(true);
-        groupPostChart->setVisible(true);
     }
 
     // scalar view
@@ -1037,30 +877,13 @@ void PostprocessorWidget::refresh()
     {
         doScalarFieldRangeAuto(-1);
     }
-
-    grpTransient->setVisible(false);
-    grpAdaptivity->setVisible(false);
-    if (Agros2D::problem()->isSolved())
-    {
-        // transient group
-        int timeSteps = Agros2D::solutionStore()->timeLevels(Agros2D::scene()->activeViewField()).count();
-        grpTransient->setVisible(timeSteps > 1);
-        cmbTimeStep->setEnabled(timeSteps > 1);
-
-        // adaptivity group
-        int lastStep = Agros2D::solutionStore()->lastAdaptiveStep(Agros2D::scene()->activeViewField(), SolutionMode_Normal, Agros2D::scene()->activeTimeStep());
-        grpAdaptivity->setVisible(lastStep > 0);
-        cmbAdaptivityStep->setEnabled(lastStep > 0);
-        cmbAdaptivitySolutionType->setEnabled(lastStep > 0);
-    }
 }
 
 void PostprocessorWidget::updateControls()
 {
     if (Agros2D::problem()->isMeshed())
     {
-        fillComboBoxFieldInfo(cmbFieldInfo);
-        doFieldInfo(cmbFieldInfo->currentIndex());
+        fieldWidget->updateControls();
 
         if (Agros2D::problem()->isSolved())
         {
@@ -1077,6 +900,7 @@ void PostprocessorWidget::doPostprocessorGroupClicked(QAbstractButton *button)
     refresh();
 }
 
+/*
 int PostprocessorWidget::selectedTimeStep()
 {
     if (cmbTimeStep->currentIndex() == -1)
@@ -1110,23 +934,29 @@ FieldInfo* PostprocessorWidget::selectedField()
 {
     return Agros2D::problem()->fieldInfo(cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString());
 }
+*/
 
 void PostprocessorWidget::doApply()
 {
+    m_postHermes->setActiveViewField(fieldWidget->selectedField());
+    m_postHermes->setActiveTimeStep(fieldWidget->selectedTimeStep());
+    m_postHermes->setActiveAdaptivityStep(fieldWidget->selectedAdaptivityStep());
+    m_postHermes->setActiveAdaptivitySolutionType(fieldWidget->selectedAdaptivitySolutionType());
+
     saveBasic();
     saveAdvanced();
 
     // time step
     QApplication::processEvents();
 
-    int actualTimeStep = selectedTimeStep();
-    Agros2D::scene()->setActiveTimeStep(actualTimeStep);
+    // int actualTimeStep = selectedTimeStep();
+    // Agros2D::scene()->setActiveTimeStep(actualTimeStep);
 
     // todo: this should be revised
     //    if(this->selectedField()->adaptivityType() != AdaptivityType_None)
     {
-        Agros2D::scene()->setActiveAdaptivityStep(cmbAdaptivityStep->currentIndex());
-        Agros2D::scene()->setActiveSolutionType((SolutionMode)cmbAdaptivitySolutionType->currentIndex());
+        // Agros2D::scene()->setActiveAdaptivityStep(cmbAdaptivityStep->currentIndex());
+        // Agros2D::scene()->setActiveSolutionType((SolutionMode)cmbAdaptivitySolutionType->currentIndex());
     }
     // read auto range values
     if (chkScalarFieldRangeAuto->isChecked())
@@ -1135,6 +965,7 @@ void PostprocessorWidget::doApply()
         txtScalarFieldRangeMax->setValue(Agros2D::problem()->configView()->scalarRangeMax);
     }
 
+    // refresh
     emit apply();
 
     activateWindow();

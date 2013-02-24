@@ -29,11 +29,12 @@
 #include "hermes2d/plugin_interface.h"
 
 
-{{CLASS}}ViewScalarFilter::{{CLASS}}ViewScalarFilter(FieldInfo *fieldInfo,
+{{CLASS}}ViewScalarFilter::{{CLASS}}ViewScalarFilter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                                            Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
                                            const QString &variable,
                                            PhysicFieldVariableComp physicFieldVariableComp)
-    : Hermes::Hermes2D::Filter<double>(sln), m_fieldInfo(fieldInfo), m_variable(variable), m_physicFieldVariableComp(physicFieldVariableComp)
+    : Hermes::Hermes2D::Filter<double>(sln), m_fieldInfo(fieldInfo), m_timeStep(timeStep), m_adaptivityStep(adaptivityStep), m_solutionType(solutionType),
+      m_variable(variable), m_physicFieldVariableComp(physicFieldVariableComp)
 {
     m_variableHash = qHash(m_variable);
 }
@@ -103,7 +104,7 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
     for (int i = 0; i < this->num; i++)
         slns.push_back(this->sln[i]->clone());
 
-    {{CLASS}}ViewScalarFilter *filter = new {{CLASS}}ViewScalarFilter(m_fieldInfo, slns, m_variable, m_physicFieldVariableComp);
+    {{CLASS}}ViewScalarFilter *filter = new {{CLASS}}ViewScalarFilter(m_fieldInfo, m_timeStep, m_adaptivityStep, m_solutionType, slns, m_variable, m_physicFieldVariableComp);
     filter->setDeleteSolutions();
 
     return filter;

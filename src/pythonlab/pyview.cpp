@@ -37,7 +37,7 @@ void PyViewConfig::setField(const char* fieldid)
     {
         if (fieldInfo->fieldId() == QString(fieldid))
         {
-            Agros2D::scene()->setActiveViewField(fieldInfo);
+            currentPythonEngineAgros()->postHermes()->setActiveViewField(fieldInfo);
             currentPythonEngineAgros()->postHermes()->refresh();
             return;
         }
@@ -46,31 +46,51 @@ void PyViewConfig::setField(const char* fieldid)
     throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(Agros2D::problem()->fieldInfos().keys())).toStdString());
 }
 
+const char* PyViewConfig::getField() const
+{
+    return const_cast<char*>(currentPythonEngineAgros()->postHermes()->activeViewField()->fieldId().toStdString().c_str());
+}
+
 void PyViewConfig::setActiveTimeStep(int timeStep)
 {
     if (timeStep < 0 || timeStep >= Agros2D::problem()->numTimeLevels())
         throw invalid_argument(QObject::tr("Time step must be in the range from 0 to %1.").arg(Agros2D::problem()->numTimeLevels()).toStdString());
 
-    Agros2D::scene()->setActiveTimeStep(timeStep);
+    currentPythonEngineAgros()->postHermes()->setActiveTimeStep(timeStep);
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
 
+int PyViewConfig::getActiveTimeStep() const
+{
+    return currentPythonEngineAgros()->postHermes()->activeTimeStep();
+}
+
+int PyViewConfig::getActiveAdaptivityStep() const
+{
+    return currentPythonEngineAgros()->postHermes()->activeAdaptivityStep();
+}
+
 void PyViewConfig::setActiveAdaptivityStep(int adaptivityStep)
 {
-    if (adaptivityStep < 0 || adaptivityStep > Agros2D::scene()->activeViewField()->adaptivitySteps())
-        throw invalid_argument(QObject::tr("Adaptivity step for active field (%1) must be in the range from 0 to %2.").arg(Agros2D::scene()->activeViewField()->fieldId()).arg(Agros2D::scene()->activeViewField()->adaptivitySteps()).toStdString());
+    if (adaptivityStep < 0 || adaptivityStep > currentPythonEngineAgros()->postHermes()->activeViewField()->adaptivitySteps())
+        throw invalid_argument(QObject::tr("Adaptivity step for active field (%1) must be in the range from 0 to %2.").arg(currentPythonEngineAgros()->postHermes()->activeViewField()->fieldId()).arg(currentPythonEngineAgros()->postHermes()->activeViewField()->adaptivitySteps()).toStdString());
 
-    Agros2D::scene()->setActiveAdaptivityStep(adaptivityStep);
+    currentPythonEngineAgros()->postHermes()->setActiveAdaptivityStep(adaptivityStep);
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
+}
+
+const char* PyViewConfig::getActiveSolutionType() const
+{
+    return const_cast<char*>(solutionTypeToStringKey(currentPythonEngineAgros()->postHermes()->activeAdaptivitySolutionType()).toStdString().c_str());
 }
 
 void PyViewConfig::setActiveSolutionType(const char *solutionType)
 {
     if (solutionTypeStringKeys().contains(QString(solutionType)))
     {
-        Agros2D::scene()->setActiveSolutionType(solutionTypeFromStringKey(QString(solutionType)));
+        currentPythonEngineAgros()->postHermes()->setActiveAdaptivitySolutionType(solutionTypeFromStringKey(QString(solutionType)));
         if (!silentMode())
             currentPythonEngineAgros()->postHermes()->refresh();
     }
@@ -169,7 +189,7 @@ void PyViewPost::setScalarViewVariable(char* var)
     QStringList list;
 
     // scalar variables
-    foreach (Module::LocalVariable variable, Agros2D::scene()->activeViewField()->viewScalarVariables())
+    foreach (Module::LocalVariable variable, currentPythonEngineAgros()->postHermes()->activeViewField()->viewScalarVariables())
     {
         list.append(variable.id());
         if (variable.id() == QString(var))
@@ -319,7 +339,7 @@ void PyViewPost2D::setContourCount(int count)
 void PyViewPost2D::setContourVariable(char* var)
 {
     QStringList list;
-    foreach (Module::LocalVariable variable, Agros2D::scene()->activeViewField()->viewScalarVariables())
+    foreach (Module::LocalVariable variable, currentPythonEngineAgros()->postHermes()->activeViewField()->viewScalarVariables())
     {
         if (variable.isScalar())
         {
@@ -372,7 +392,7 @@ void PyViewPost2D::setVectorScale(double scale)
 void PyViewPost2D::setVectorVariable(char* var)
 {
     QStringList list;
-    foreach (Module::LocalVariable variable, Agros2D::scene()->activeViewField()->viewVectorVariables())
+    foreach (Module::LocalVariable variable, currentPythonEngineAgros()->postHermes()->activeViewField()->viewVectorVariables())
     {
         list.append(variable.id());
         if (variable.id() == QString(var))

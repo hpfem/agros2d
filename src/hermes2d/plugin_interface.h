@@ -59,8 +59,8 @@ struct PointValue
 class LocalValue
 {
 public:
-    LocalValue(FieldInfo *fieldInfo, const Point &point)
-        : m_fieldInfo(fieldInfo), m_point(point) {}
+    LocalValue(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point)
+        : m_fieldInfo(fieldInfo), m_timeStep(timeStep), m_adaptivityStep(adaptivityStep), m_solutionType(solutionType), m_point(point) {}
 
     // point
     inline Point point() { return m_point; }
@@ -75,6 +75,9 @@ protected:
     Point m_point;
     // field info
     FieldInfo *m_fieldInfo;
+    int m_timeStep;
+    int m_adaptivityStep;
+    SolutionMode m_solutionType;
 
     // variables
     QMap<QString, PointValue> m_values;
@@ -83,8 +86,8 @@ protected:
 class IntegralValue
 {
 public:
-    IntegralValue(FieldInfo *fieldInfo)
-        : m_fieldInfo(fieldInfo) {}
+    IntegralValue(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType)
+        : m_fieldInfo(fieldInfo), m_timeStep(timeStep), m_adaptivityStep(adaptivityStep), m_solutionType(solutionType) {}
 
     // variables
     inline QMap<QString, double> values() const { return m_values; }
@@ -92,6 +95,9 @@ public:
 protected:
     // field info
     FieldInfo *m_fieldInfo;
+    int m_timeStep;
+    int m_adaptivityStep;
+    SolutionMode m_solutionType;
 
     // variables
     QMap<QString, double> m_values;
@@ -197,24 +203,26 @@ public:
 
     // postprocessor
     // filter
-    virtual Hermes::Hermes2D::Filter<double> *filter(FieldInfo *fieldInfo,
+    virtual Hermes::Hermes2D::Filter<double> *filter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                                                      Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
                                                      const QString &variable,
                                                      PhysicFieldVariableComp physicFieldVariableComp) = 0;
 
     // local values
-    virtual LocalValue *localValue(FieldInfo *fieldInfo, const Point &point) = 0;
+    virtual LocalValue *localValue(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point) = 0;
     // surface integrals
-    virtual IntegralValue *surfaceIntegral(FieldInfo *fieldInfo) = 0;
+    virtual IntegralValue *surfaceIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType) = 0;
     // volume integrals
-    virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo) = 0;
+    virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType) = 0;
+    // force calculation
+    virtual Point3 force(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+                         const SceneMaterial *material, const Point3 &point, const Point3 &velocity) = 0;
+    virtual bool hasForce() = 0;
+
     // localization
     virtual QString localeName(const QString &name) = 0;
     // description
     virtual QString localeDescription() = 0;
-    // force calculation
-    virtual Point3 force(FieldInfo *fieldInfo, const SceneMaterial *material, const Point3 &point, const Point3 &velocity) = 0;
-    virtual bool hasForce() = 0;
 
 protected:
     XMLModule::module *m_module;

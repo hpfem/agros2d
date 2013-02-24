@@ -246,6 +246,17 @@ public:
     double particleDragCoefficient;
     double particleDragReferenceArea;
 
+    // chart
+    double chartStartX;
+    double chartStartY;
+    double chartEndX;
+    double chartEndY;
+    double chartTimeX;
+    double chartTimeY;
+    ChartAxisType chartHorizontalAxis;
+    bool chartHorizontalAxisReverse;
+    double chartHorizontalAxisPoints;
+
     // solid view
     QStringList solidViewHide;
 

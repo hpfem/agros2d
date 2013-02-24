@@ -29,15 +29,17 @@
 
 class ChartBasic;
 class LineEditDouble;
-class ValueLineEdit;
+class LineEditDouble;
 class LocalValue;
 class FieldInfo;
 class SceneViewPost2D;
+class PhysicalFieldWidget;
 
 namespace Module
 {
 struct LocalVariable;
 }
+
 
 class SvgWidget : public QSvgWidget
 {
@@ -74,12 +76,12 @@ struct ChartLine
     QList<Point> getPoints();
 };
 
-class ChartWidget : public QWidget
+class ChartView : public QWidget
 {
     Q_OBJECT
 
 public:
-    ChartWidget(QWidget *parent = 0);
+    ChartView(QWidget *parent = 0);
 
     QAction *actSceneModeChart;
 
@@ -92,34 +94,27 @@ private:
     Chart *m_chart;
 };
 
-class ChartControlsWidget : public QWidget
+class ChartWidget : public QWidget
 {
     Q_OBJECT
 
 public slots:
-    void doPlot();
-    void setControls();
+    void doApply();
+    void updateControls();
 
 public:
-    ChartControlsWidget(SceneViewPost2D *sceneView,
-                        ChartBasic *chart,
+    ChartWidget(ChartView *chart,
                         QWidget *parent = 0);
-    ~ChartControlsWidget();
-
-    inline QWidget *variablesWidget() { return m_variableWidget; }
+    ~ChartWidget();
 
 private:
-    SceneViewPost2D *m_sceneViewPost2D;
-
     // variable widget
-    QWidget *m_variableWidget;
-
     SvgWidget *viewerSVG;
 
     QTabWidget* tbxAnalysisType;
 
     // buttons
-    QPushButton *btnPlot;
+    QPushButton *btnApply;
     QPushButton *btnSaveImage;
     QPushButton *btnExportData;
 
@@ -129,23 +124,25 @@ private:
     QLabel *lblEndX;
     QLabel *lblEndY;
 
-    ValueLineEdit *txtStartX;
-    ValueLineEdit *txtStartY;
-    ValueLineEdit *txtEndX;
-    ValueLineEdit *txtEndY;
+    LineEditDouble *txtStartX;
+    LineEditDouble *txtStartY;
+    LineEditDouble *txtEndX;
+    LineEditDouble *txtEndY;
 
-    QRadioButton *radAxisLength;
-    QRadioButton *radAxisX;
-    QRadioButton *radAxisY;
+    QRadioButton *radHorizontalAxisLength;
+    QRadioButton *radHorizontalAxisX;
+    QRadioButton *radHorizontalAxisY;
 
-    QSpinBox *txtAxisPoints;
-    QCheckBox *chkAxisPointsReverse;
+    QSpinBox *txtHorizontalAxisPoints;
+    QCheckBox *chkHorizontalAxisReverse;
 
     // time
     QLabel *lblPointX;
     QLabel *lblPointY;
-    ValueLineEdit *txtPointX;
-    ValueLineEdit *txtPointY;
+    LineEditDouble *txtTimeX;
+    LineEditDouble *txtTimeY;
+
+    PhysicalFieldWidget *fieldWidget;
 
     QComboBox *cmbFieldVariable;
     QComboBox *cmbFieldVariableComp;
@@ -153,13 +150,11 @@ private:
     QWidget *widGeometry;
     QWidget *widTime;
 
-    ChartBasic *m_chart;
+    ChartView *m_chart;
 
     void createControls();
 
-    QList<double> getHorizontalAxisValues(ChartLine *chartLine);
-
-    void createChartLine();
+    QList<double> horizontalAxisValues(ChartLine *chartLine);
 
     void plotGeometry();
     void plotTime();
@@ -172,11 +167,12 @@ private:
                   Module::LocalVariable *physicFieldVariable);
 
 private slots:
+    void doField();
     void doFieldVariable(int index);
     void doExportData();
-    QMap<QString, double> getData(Point point, int timeStep);
+    QMap<QString, double> getData(Point point, int timeStep, int adaptivityStep, SolutionMode solutionType);
 
-    void doEvaluate(bool isError);
+    void createChartLine();
 };
 
 #endif // CHARTDIALOG_H

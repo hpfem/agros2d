@@ -24,8 +24,10 @@
 #include "sceneview_common.h"
 
 template <typename Scalar> class SceneSolution;
+template <typename Scalar> class MultiArray;
 
 class ParticleTracing;
+class FieldInfo;
 
 class PostHermes : public QObject
 {
@@ -58,7 +60,25 @@ public:
     inline Hermes::Hermes2D::Views::Vectorizer &vecVectorView() { return m_vecVectorView; }
 
     Hermes::Hermes2D::Filter<double> *viewScalarFilter(Module::LocalVariable physicFieldVariable,
-                                                    PhysicFieldVariableComp physicFieldVariableComp);
+                                                      PhysicFieldVariableComp physicFieldVariableComp);
+
+    // view
+    inline FieldInfo* activeViewField() const { return m_activeViewField; } // assert(m_activeViewField);
+    void setActiveViewField(FieldInfo* fieldInfo);
+
+    inline int activeTimeStep() const { return m_activeTimeStep; }
+    void setActiveTimeStep(int ts);
+
+    inline int activeAdaptivityStep() const { return m_activeAdaptivityStep; }
+    void setActiveAdaptivityStep(int as);
+
+    inline SolutionMode activeAdaptivitySolutionType() const { return m_activeSolutionMode; }
+    void setActiveAdaptivitySolutionType(SolutionMode st) { m_activeSolutionMode = st; }
+
+    MultiArray<double> activeMultiSolutionArray();
+
+    inline bool isProcessed() const { return m_isProcessed; }
+
 signals:
     void processed();
 
@@ -67,6 +87,8 @@ public slots:
     void clear();
 
 private:
+    bool m_isProcessed;
+
     // initial mesh
     Hermes::Hermes2D::Views::Linearizer m_linInitialMeshView;
 
@@ -84,6 +106,12 @@ private:
 
     // vector view
     Hermes::Hermes2D::Views::Vectorizer m_vecVectorView; // vectorizer for vector view
+
+    // view
+    FieldInfo *m_activeViewField;
+    int m_activeTimeStep;
+    int m_activeAdaptivityStep;
+    SolutionMode m_activeSolutionMode;
 
 private slots:
     void processMeshed();

@@ -35,8 +35,7 @@ class SceneViewPost2D : public SceneViewCommon2D
 public slots:   
     void selectByMarker();
     void selectPoint();
-    void doPostprocessorModeGroup(QAction *action);
-    void setControls();
+    void doPostprocessorModeGroup(QAction *action);    
     virtual void clear();
     void exportVTKScalarView(const QString &fileName = QString());
 
@@ -97,6 +96,8 @@ private slots:
 
     virtual void refresh();
     virtual void clearGLLists();
+
+    void setControls();
 };
 
 #endif // SCENEVIEWPOST2D_H

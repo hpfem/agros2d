@@ -140,6 +140,17 @@ const double PARTICLEDRAGDENSITY = 1.2041;
 const double PARTICLEDRAGCOEFFICIENT = 0.0;
 const double PARTICLEDRAGREFERENCEAREA = 1e-6;
 
+// chart
+const double CHARTSTARTX = 0.0;
+const double CHARTSTARTY = 0.0;
+const double CHARTENDX = 0.0;
+const double CHARTENDY = 0.0;
+const double CHARTTIMEX = 0.0;
+const double CHARTTIMEY = 0.0;
+const ChartAxisType CHARTHORIZONTALAXIS = ChartAxis_X;
+const bool CHARTHORIZONTALAXISREVERSE = false;
+const int CHARTHORIZONTALAXISPOINTS = 200;
+
 // scalarview
 const PaletteQuality PALETTEQUALITY = PaletteQuality_Normal;
 

@@ -1497,10 +1497,6 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         nodeCoupling = nodeCoupling.nextSibling();
     }
 
-    // set active field info
-    if (Agros2D::problem()->fieldInfos().count() > 0)
-        setActiveViewField(Agros2D::problem()->fieldInfos().begin().value());
-
     blockSignals(false);
 
     m_loopsInfo->processPolygonTriangles();
@@ -1894,12 +1890,6 @@ void Scene::writeSolutionToFile(const QString &fileName)
         Agros2D::log()->printError(QObject::tr("Solver"), QObject::tr("Access denied '%1'").arg(solutionFN));
 }
 
-MultiArray<double> Scene::activeMultiSolutionArray()
-{
-    FieldSolutionID fsid(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeSolutionType());
-    return Agros2D::solutionStore()->multiArray(fsid);
-}
-
 void Scene::checkNodeConnect(SceneNode *node)
 {
     bool isConnected = false;
@@ -1991,24 +1981,3 @@ void Scene::checkGeometryResult()
     }
 }
 
-void Scene::setActiveViewField(FieldInfo* fieldInfo)
-{
-    m_activeViewField = fieldInfo;
-
-    int newTimeStep = Agros2D::solutionStore()->nearestTimeStep(fieldInfo, m_activeTimeStep);
-    setActiveTimeStep(newTimeStep);
-
-    int lastAdaptiveStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, newTimeStep);
-    setActiveAdaptivityStep(min(lastAdaptiveStep, activeAdaptivityStep()));
-    setActiveSolutionType(SolutionMode_Normal);
-}
-
-void Scene::setActiveTimeStep(int ts)
-{
-    m_activeTimeStep = ts;
-}
-
-void Scene::setActiveAdaptivityStep(int as)
-{
-    m_activeAdaptivityStep = as;
-}

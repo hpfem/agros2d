@@ -29,7 +29,8 @@
 
 #include "hermes2d/plugin_interface.h"
 
-Point3 force{{CLASS}}(FieldInfo *fieldInfo, const SceneMaterial *material, const Point3 &point, const Point3 &velocity)
+Point3 force{{CLASS}}(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+                      const SceneMaterial *material, const Point3 &point, const Point3 &velocity)
 {
     int numberOfSolutions = fieldInfo->numberOfSolutions();
 
@@ -43,8 +44,8 @@ Point3 force{{CLASS}}(FieldInfo *fieldInfo, const SceneMaterial *material, const
         // update time functions
         if (fieldInfo->analysisType() == AnalysisType_Transient)
         {
-            QList<double> timeLevels = Agros2D::solutionStore()->timeLevels(Agros2D::scene()->activeViewField());
-            Module::updateTimeFunctions(timeLevels[Agros2D::scene()->activeTimeStep()]);
+            QList<double> timeLevels = Agros2D::solutionStore()->timeLevels(fieldInfo);
+            Module::updateTimeFunctions(timeLevels[timeStep]);
         }
 
         // set variables
@@ -58,8 +59,7 @@ Point3 force{{CLASS}}(FieldInfo *fieldInfo, const SceneMaterial *material, const
         std::vector<Hermes::Hermes2D::Solution<double> *> sln(numberOfSolutions);
         for (int k = 0; k < numberOfSolutions; k++)
         {
-            // todo: do it better! - I could use reference solution. This way I ignore selected active adaptivity step and solution mode
-            FieldSolutionID fsid(fieldInfo, Agros2D::scene()->activeTimeStep(), Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, Agros2D::scene()->activeTimeStep()), SolutionMode_Normal);
+            FieldSolutionID fsid(fieldInfo, timeStep, adaptivityStep, solutionType);
             sln[k] = Agros2D::solutionStore()->multiArray(fsid).solutions().at(k);
 
             // point values
@@ -76,7 +76,7 @@ Point3 force{{CLASS}}(FieldInfo *fieldInfo, const SceneMaterial *material, const
             }
 
             double val;
-            if ((fieldInfo->analysisType() == AnalysisType_Transient) && Agros2D::scene()->activeTimeStep() == 0)
+            if ((fieldInfo->analysisType() == AnalysisType_Transient) && timeStep == 0)
                 // const solution at first time step
                 val = fieldInfo->initialCondition().number();
             else

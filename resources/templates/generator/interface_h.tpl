@@ -50,27 +50,29 @@ public:
 
     // postprocessor
     // filter
-    virtual Hermes::Hermes2D::Filter<double> *filter(FieldInfo *fieldInfo,
+    virtual Hermes::Hermes2D::Filter<double> *filter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                                                      Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
                                                      const QString &variable,
                                                      PhysicFieldVariableComp physicFieldVariableComp);
 
     // local values
-    virtual LocalValue *localValue(FieldInfo *fieldInfo, const Point &point);
+    virtual LocalValue *localValue(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point);
     // surface integrals
-    virtual IntegralValue *surfaceIntegral(FieldInfo *fieldInfo);
+    virtual IntegralValue *surfaceIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType);
     // volume integrals
-    virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo);
+    virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType);
 
-    // localization	
-    virtual QString localeName(const QString &name);	
+    // force calculation
+    virtual Point3 force(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+                         const SceneMaterial *material, const Point3 &point, const Point3 &velocity);
+    virtual bool hasForce() { return {{HAS_FORCE}}; }
+
+
+    // localization
+    virtual QString localeName(const QString &name);
 
     // description of module
     virtual QString localeDescription();
-
-    // force calculation
-    virtual Point3 force(FieldInfo *fieldInfo, const SceneMaterial *material, const Point3 &point, const Point3 &velocity);    
-    virtual bool hasForce() { return {{HAS_FORCE}}; }
 };
 
 #endif // {{ID}}_INTERFACE_H
