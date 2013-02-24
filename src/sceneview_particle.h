@@ -46,42 +46,39 @@ private:
     // particle tracing
     QCheckBox *chkParticleIncludeRelativisticCorrection;
     QSpinBox *txtParticleNumberOfParticles;
-    ValueLineEdit *txtParticleStartingRadius;
-    ValueLineEdit *txtParticleMass;
-    ValueLineEdit *txtParticleConstant;
-    ValueLineEdit *txtParticlePointX;
-    ValueLineEdit *txtParticlePointY;
+    LineEditDouble *txtParticleStartingRadius;
+    LineEditDouble *txtParticleMass;
+    LineEditDouble *txtParticleConstant;
+    LineEditDouble *txtParticlePointX;
+    LineEditDouble *txtParticlePointY;
     QLabel *lblParticlePointX;
     QLabel *lblParticlePointY;
     QLabel *lblParticleVelocityX;
     QLabel *lblParticleVelocityY;
-    ValueLineEdit *txtParticleVelocityX;
-    ValueLineEdit *txtParticleVelocityY;
+    LineEditDouble *txtParticleVelocityX;
+    LineEditDouble *txtParticleVelocityY;
     QCheckBox *chkParticleReflectOnDifferentMaterial;
     QCheckBox *chkParticleReflectOnBoundary;
-    ValueLineEdit *txtParticleCoefficientOfRestitution;
+    LineEditDouble *txtParticleCoefficientOfRestitution;
     QLabel *lblParticleMotionEquations;
     QLabel *lblParticleCustomForceX;
     QLabel *lblParticleCustomForceY;
     QLabel *lblParticleCustomForceZ;
-    ValueLineEdit *txtParticleCustomForceX;
-    ValueLineEdit *txtParticleCustomForceY;
-    ValueLineEdit *txtParticleCustomForceZ;
+    LineEditDouble *txtParticleCustomForceX;
+    LineEditDouble *txtParticleCustomForceY;
+    LineEditDouble *txtParticleCustomForceZ;
     QCheckBox *chkParticleColorByVelocity;
     QCheckBox *chkParticleShowPoints;
-    ValueLineEdit *txtParticleMaximumRelativeError;
-    ValueLineEdit *txtParticleMinimumStep;
+    LineEditDouble *txtParticleMaximumRelativeError;
+    LineEditDouble *txtParticleMinimumStep;
     QSpinBox *txtParticleMaximumNumberOfSteps;
-    ValueLineEdit *txtParticleDragDensity;
-    ValueLineEdit *txtParticleDragCoefficient;
-    ValueLineEdit *txtParticleDragReferenceArea;
-
-    QPushButton *btnOK;
+    LineEditDouble *txtParticleDragDensity;
+    LineEditDouble *txtParticleDragCoefficient;
+    LineEditDouble *txtParticleDragReferenceArea;
 
     void createControls();
 
 private slots:
-    void doEvaluate(bool isError);
     void doApply();
     void doParticleDefault();
 };

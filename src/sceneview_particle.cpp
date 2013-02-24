@@ -71,78 +71,43 @@ ParticleTracingWidget::~ParticleTracingWidget()
 void ParticleTracingWidget::createControls()
 {
     // particle tracing
+    chkParticleIncludeRelativisticCorrection = new QCheckBox(tr("Relativistic correction"));
     txtParticleNumberOfParticles = new QSpinBox(this);
     txtParticleNumberOfParticles->setMinimum(1);
     txtParticleNumberOfParticles->setMaximum(200);
-
-    txtParticleStartingRadius = new ValueLineEdit();
-    txtParticleStartingRadius->setMinimum(0.0);
-    connect(txtParticleStartingRadius, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
-
-    txtParticleMass = new ValueLineEdit();
-    txtParticleMass->setMinimum(0.0);
-    connect(txtParticleMass, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
-
+    txtParticleStartingRadius = new LineEditDouble();
+    txtParticleMass = new LineEditDouble();
+    txtParticleConstant = new LineEditDouble();
     lblParticlePointX = new QLabel();
     lblParticlePointY = new QLabel();
-    txtParticlePointX = new ValueLineEdit();
-    connect(txtParticlePointX, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
-    txtParticlePointY = new ValueLineEdit();
-    connect(txtParticlePointY, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
-
+    txtParticlePointX = new LineEditDouble();
+    txtParticlePointY = new LineEditDouble();
     lblParticleVelocityX = new QLabel();
     lblParticleVelocityY = new QLabel();
-    txtParticleVelocityX = new ValueLineEdit();
-    connect(txtParticleVelocityX, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
-    txtParticleVelocityY = new ValueLineEdit();
-    connect(txtParticleVelocityY, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
-
-    txtParticleConstant = new ValueLineEdit();
-    connect(txtParticleConstant, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
-
-    txtParticleDragDensity = new ValueLineEdit();
-    txtParticleDragDensity->setMinimum(0.0);
-    connect(txtParticleDragDensity, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
-    txtParticleDragCoefficient = new ValueLineEdit();
-    txtParticleDragCoefficient->setMinimum(0.0);
-    connect(txtParticleDragCoefficient, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
-    txtParticleDragReferenceArea = new ValueLineEdit();
-    txtParticleDragReferenceArea->setMinimum(0.0);
-    connect(txtParticleDragReferenceArea, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
-
+    txtParticleVelocityX = new LineEditDouble();
+    txtParticleVelocityY = new LineEditDouble();
     lblParticleCustomForceX = new QLabel();
     lblParticleCustomForceY = new QLabel();
     lblParticleCustomForceZ = new QLabel();
-    txtParticleCustomForceX = new ValueLineEdit();
-    connect(txtParticleCustomForceX, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
-    txtParticleCustomForceY = new ValueLineEdit();
-    connect(txtParticleCustomForceY, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
-    txtParticleCustomForceZ = new ValueLineEdit();
-    connect(txtParticleCustomForceZ, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
-
-    txtParticleMaximumRelativeError = new ValueLineEdit();
-    txtParticleMaximumRelativeError->setMinimum(0.0);
-    connect(txtParticleMaximumRelativeError, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
-
-    txtParticleMinimumStep = new ValueLineEdit();
-    txtParticleMinimumStep->setMinimum(0.0);
-    connect(txtParticleMinimumStep, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
-
-    chkParticleIncludeRelativisticCorrection = new QCheckBox(tr("Relativistic correction"));
+    txtParticleCustomForceX = new LineEditDouble();
+    txtParticleCustomForceY = new LineEditDouble();
+    txtParticleCustomForceZ = new LineEditDouble();
+    txtParticleMaximumRelativeError = new LineEditDouble();
+    txtParticleMinimumStep = new LineEditDouble();
     chkParticleReflectOnDifferentMaterial = new QCheckBox(tr("Reflection on different material"));
     chkParticleReflectOnBoundary = new QCheckBox(tr("Reflection on boundary"));
-
-    txtParticleCoefficientOfRestitution = new ValueLineEdit();
-    txtParticleCoefficientOfRestitution->setMinimum(0.0);
-    txtParticleCoefficientOfRestitution->setMaximum(1.0);
-    connect(txtParticleCoefficientOfRestitution, SIGNAL(evaluated(bool)), this, SLOT(doEvaluate(bool)));
-
+    txtParticleCoefficientOfRestitution = new LineEditDouble(0.0, true);
+    txtParticleCoefficientOfRestitution->setBottom(0.0);
+    txtParticleCoefficientOfRestitution->setTop(1.0);
     chkParticleColorByVelocity = new QCheckBox(tr("Line color is controlled by velocity"));
     chkParticleShowPoints = new QCheckBox(tr("Show points"));
     txtParticleMaximumNumberOfSteps = new QSpinBox();
     txtParticleMaximumNumberOfSteps->setMinimum(10);
     txtParticleMaximumNumberOfSteps->setMaximum(100000);
     txtParticleMaximumNumberOfSteps->setSingleStep(10);
+    txtParticleDragDensity = new LineEditDouble();
+    txtParticleDragCoefficient = new LineEditDouble();
+    txtParticleDragReferenceArea = new LineEditDouble();
     lblParticleMotionEquations = new QLabel();
 
     // QPushButton *btnParticleDefault = new QPushButton(tr("Default"));
@@ -286,7 +251,7 @@ void ParticleTracingWidget::createControls()
     widgetArea->setWidget(widget);
 
     // dialog buttons
-    btnOK = new QPushButton(tr("Apply"));
+    QPushButton *btnOK = new QPushButton(tr("Apply"));
     connect(btnOK, SIGNAL(clicked()), SLOT(doApply()));
 
     QVBoxLayout *layoutMain = new QVBoxLayout();
@@ -369,37 +334,32 @@ void ParticleTracingWidget::refresh()
 
 }
 
-void ParticleTracingWidget::doEvaluate(bool isError)
-{
-    btnOK->setEnabled(!isError);
-}
-
 void ParticleTracingWidget::doApply()
 {
-    // save
+    // particle tracing
     Agros2D::problem()->configView()->particleIncludeRelativisticCorrection = chkParticleIncludeRelativisticCorrection->isChecked();
     Agros2D::problem()->configView()->particleNumberOfParticles = txtParticleNumberOfParticles->value();
-    Agros2D::problem()->configView()->particleStartingRadius = txtParticleStartingRadius->value().number();
-    Agros2D::problem()->configView()->particleMass = txtParticleMass->value().number();
-    Agros2D::problem()->configView()->particleConstant = txtParticleConstant->value().number();
-    Agros2D::problem()->configView()->particleStart.x = txtParticlePointX->value().number();
-    Agros2D::problem()->configView()->particleStart.y = txtParticlePointY->value().number();
-    Agros2D::problem()->configView()->particleStartVelocity.x = txtParticleVelocityX->value().number();
-    Agros2D::problem()->configView()->particleStartVelocity.y = txtParticleVelocityY->value().number();
+    Agros2D::problem()->configView()->particleStartingRadius = txtParticleStartingRadius->value();
+    Agros2D::problem()->configView()->particleMass = txtParticleMass->value();
+    Agros2D::problem()->configView()->particleConstant = txtParticleConstant->value();
+    Agros2D::problem()->configView()->particleStart.x = txtParticlePointX->value();
+    Agros2D::problem()->configView()->particleStart.y = txtParticlePointY->value();
+    Agros2D::problem()->configView()->particleStartVelocity.x = txtParticleVelocityX->value();
+    Agros2D::problem()->configView()->particleStartVelocity.y = txtParticleVelocityY->value();
     Agros2D::problem()->configView()->particleReflectOnDifferentMaterial = chkParticleReflectOnDifferentMaterial->isChecked();
     Agros2D::problem()->configView()->particleReflectOnBoundary = chkParticleReflectOnBoundary->isChecked();
-    Agros2D::problem()->configView()->particleCoefficientOfRestitution = txtParticleCoefficientOfRestitution->value().number();
-    Agros2D::problem()->configView()->particleCustomForce.x = txtParticleCustomForceX->value().number();
-    Agros2D::problem()->configView()->particleCustomForce.y = txtParticleCustomForceY->value().number();
-    Agros2D::problem()->configView()->particleCustomForce.z = txtParticleCustomForceZ->value().number();
-    Agros2D::problem()->configView()->particleMaximumRelativeError = txtParticleMaximumRelativeError->value().number();
-    Agros2D::problem()->configView()->particleMinimumStep = txtParticleMinimumStep->value().number();
+    Agros2D::problem()->configView()->particleCoefficientOfRestitution = txtParticleCoefficientOfRestitution->value();
+    Agros2D::problem()->configView()->particleCustomForce.x = txtParticleCustomForceX->value();
+    Agros2D::problem()->configView()->particleCustomForce.y = txtParticleCustomForceY->value();
+    Agros2D::problem()->configView()->particleCustomForce.z = txtParticleCustomForceZ->value();
+    Agros2D::problem()->configView()->particleMaximumRelativeError = txtParticleMaximumRelativeError->value();
+    Agros2D::problem()->configView()->particleMinimumStep = txtParticleMinimumStep->value();
     Agros2D::problem()->configView()->particleMaximumNumberOfSteps = txtParticleMaximumNumberOfSteps->value();
     Agros2D::problem()->configView()->particleColorByVelocity = chkParticleColorByVelocity->isChecked();
     Agros2D::problem()->configView()->particleShowPoints = chkParticleShowPoints->isChecked();
-    Agros2D::problem()->configView()->particleDragDensity = txtParticleDragDensity->value().number();
-    Agros2D::problem()->configView()->particleDragCoefficient = txtParticleDragCoefficient->value().number();
-    Agros2D::problem()->configView()->particleDragReferenceArea = txtParticleDragReferenceArea->value().number();
+    Agros2D::problem()->configView()->particleDragDensity = txtParticleDragDensity->value();
+    Agros2D::problem()->configView()->particleDragCoefficient = txtParticleDragCoefficient->value();
+    Agros2D::problem()->configView()->particleDragReferenceArea = txtParticleDragReferenceArea->value();
 
     m_sceneViewParticleTracing->processParticleTracing();
 }
