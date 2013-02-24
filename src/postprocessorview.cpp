@@ -900,42 +900,6 @@ void PostprocessorWidget::doPostprocessorGroupClicked(QAbstractButton *button)
     refresh();
 }
 
-/*
-int PostprocessorWidget::selectedTimeStep()
-{
-    if (cmbTimeStep->currentIndex() == -1)
-        return 0;
-    else
-    {
-        int selectedTimeStep = cmbTimeStep->itemData(cmbTimeStep->currentIndex()).toInt();
-
-        // todo: this is here to avoid fail after loading new model
-        // todo: cmbTimeStep should probably be cleared somewhere
-        // todo: or the PostprocessorWidget should be destroyed and created a new one?
-        if(Agros2D::solutionStore()->timeLevels(selectedField()).size() <= selectedTimeStep)
-            return 0;
-
-        // due to timeskipping
-        double realTime = Agros2D::solutionStore()->timeLevels(selectedField()).at(selectedTimeStep);
-        int realTimeStep = Agros2D::problem()->timeToTimeStep(realTime);
-        return realTimeStep;
-    }
-}
-
-int PostprocessorWidget::selectedAdaptivityStep()
-{
-    if (cmbAdaptivityStep->currentIndex() == -1)
-        return 0;
-    else
-        return cmbAdaptivityStep->itemData(cmbAdaptivityStep->currentIndex()).toInt();
-}
-
-FieldInfo* PostprocessorWidget::selectedField()
-{
-    return Agros2D::problem()->fieldInfo(cmbFieldInfo->itemData(cmbFieldInfo->currentIndex()).toString());
-}
-*/
-
 void PostprocessorWidget::doApply()
 {
     m_postHermes->setActiveViewField(fieldWidget->selectedField());

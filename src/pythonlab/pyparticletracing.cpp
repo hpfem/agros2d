@@ -36,8 +36,6 @@ void PyParticleTracing::solve()
     m_positions = particleTracing.positions();
     m_velocities = particleTracing.velocities();
     m_times = particleTracing.times();
-
-    currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyParticleTracing::positions(std::vector<double> &x,

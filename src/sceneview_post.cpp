@@ -57,7 +57,7 @@ PostHermes::~PostHermes()
 
 void PostHermes::processInitialMesh()
 {
-    if (Agros2D::problem()->isMeshed() && Agros2D::problem()->configView()->showInitialMeshView)
+    if (Agros2D::problem()->isMeshed() && (m_activeViewField) && Agros2D::problem()->configView()->showInitialMeshView)
     {
         Agros2D::log()->printMessage(tr("Mesh View"), tr("Initial mesh with %1 elements").arg(m_activeViewField->initialMesh()->get_num_active_elements()));
 
