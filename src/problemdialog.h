@@ -129,8 +129,8 @@ private:
     QSpinBox *txtPicardAndersonNumberOfLastVectors;
 
     // transient
-    ValueLineEdit *txtTransientInitialCondition;
-    ValueLineEdit *txtTransientTimeSkip;
+    LineEditDouble *txtTransientInitialCondition;
+    LineEditDouble *txtTransientTimeSkip;
 
     // equation
     // LaTeXViewer *equationLaTeX;

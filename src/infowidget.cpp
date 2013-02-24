@@ -192,7 +192,7 @@ void InfoWidget::showInfo()
             if (fieldInfo->analysisType() == AnalysisType_Transient)
             {
                 field->SetValue("INITIAL_CONDITION_LABEL", tr("Initial condition:").toStdString());
-                field->SetValue("INITIAL_CONDITION", QString::number(fieldInfo->initialCondition().number()).toStdString());
+                field->SetValue("INITIAL_CONDITION", QString::number(fieldInfo->initialCondition()).toStdString());
                 field->ShowSection("INITIAL_CONDITION_SECTION");
             }
 

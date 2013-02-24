@@ -110,11 +110,11 @@ class PyField
         void setAdaptivityRedoneEach(const int adaptivityRedoneEach);
 
         // initial condition
-        inline double getInitialCondition() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->initialCondition().number(); }
+        inline double getInitialCondition() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->initialCondition(); }
         void setInitialCondition(const double initialCondition);
 
         // time steps skip
-        inline int getTimeSkip() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->timeSkip().number(); }
+        inline int getTimeSkip() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->timeSkip(); }
         void setTimeSkip(const double timeSkip);
 
         // boundaries

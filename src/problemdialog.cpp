@@ -166,9 +166,9 @@ void FieldWidget::createContent()
 
     // transient
     cmbAnalysisType = new QComboBox();
-    txtTransientInitialCondition = new ValueLineEdit();
-    txtTransientTimeSkip = new ValueLineEdit();
-    txtTransientTimeSkip->setMinimum(0.0);
+    txtTransientInitialCondition = new LineEditDouble(0.0, true);
+    txtTransientTimeSkip = new LineEditDouble(0.0, true);
+    txtTransientTimeSkip->setBottom(0.0);
 
     // linearity
     cmbLinearityType = new QComboBox();

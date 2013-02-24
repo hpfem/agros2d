@@ -884,7 +884,7 @@ void Solver<Scalar>::solveInitialTimeStep()
             // constant initial solution
             Mesh *mesh = spaces.at(totalComp)->get_mesh();
             ConstantSolution<double> *initial = new ConstantSolution<double>(mesh,
-                                                                             field->fieldInfo()->initialCondition().number());
+                                                                             field->fieldInfo()->initialCondition());
             solutions.push_back(initial);
             totalComp++;
         }

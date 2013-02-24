@@ -191,13 +191,13 @@ void PyField::setAdaptivityRedoneEach(const int adaptivityRedoneEach)
 
 void PyField::setInitialCondition(const double initialCondition)
 {
-    Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setInitialCondition(Value(QString::number(initialCondition)));
+    Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setInitialCondition(initialCondition);
 }
 
 void PyField::setTimeSkip(const double timeSkip)
 {
     if (timeSkip >= 0 && timeSkip <= Agros2D::problem()->config()->timeTotal().number())
-        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setTimeSkip(Value(QString::number(timeSkip)));
+        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setTimeSkip(timeSkip);
     else
         throw out_of_range(QObject::tr("Time skip is out of range (0 - %1).").arg(Agros2D::problem()->config()->timeTotal().number()).toStdString());
 }
