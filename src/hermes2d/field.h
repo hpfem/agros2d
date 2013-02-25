@@ -123,11 +123,11 @@ public:
     inline int adaptivityRedoneEach() const { return m_adaptivityRedoneEach; }
     void setAdaptivityRedoneEach(const int re) { m_adaptivityRedoneEach = re; emit changed(); }
 
-    inline Value initialCondition() const { return m_initialCondition; }
-    void setInitialCondition(const Value& value) { m_initialCondition = value; emit changed(); }
+    inline double initialCondition() const { return m_initialCondition; }
+    void setInitialCondition(const double cond) { m_initialCondition = cond; emit changed(); }
 
-    inline Value timeSkip() const { return m_timeSkip; }
-    void setTimeSkip(const Value& value) { m_timeSkip = value; emit changed(); }
+    inline double timeSkip() const { return m_timeSkip; }
+    void setTimeSkip(const double skip) { m_timeSkip = skip; emit changed(); }
 
     // refine mesh
     void refineMesh(Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea);
@@ -196,7 +196,7 @@ public:
     Module::Integral volumeIntegral(const QString &id) const;
 
     // default variables
-    Module::LocalVariable defaultViewScalarVariable() const;    
+    Module::LocalVariable defaultViewScalarVariable() const;
     Module::LocalVariable defaultViewVectorVariable() const;
 
     // weak forms
@@ -255,8 +255,8 @@ private:
     int m_adaptivityRedoneEach;
 
     // transient
-    Value m_initialCondition;
-    Value m_timeSkip;
+    double m_initialCondition;
+    double m_timeSkip;
 };
 
 ostream& operator<<(ostream& output, FieldInfo& id);

@@ -152,8 +152,8 @@ void FieldInfo::clear()
     m_adaptivityTolerance = 1.0;
 
     // transient
-    m_initialCondition = Value(0.0);
-    m_timeSkip = Value(0.0);
+    m_initialCondition = 0.0;
+    m_timeSkip = 0.0;
 
     // linearity
     m_linearityType = LinearityType_Linear;
@@ -200,7 +200,7 @@ void FieldInfo::refineMesh(Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool
 // xml module
 // name
 QString FieldInfo::name() const
-{    
+{
     return m_plugin->localeName(QString::fromStdString(m_plugin->module()->general().name()));
 }
 

@@ -147,7 +147,7 @@ void FieldWidget::createContent()
     txtAdaptivitySteps = new QSpinBox(this);
     txtAdaptivitySteps->setMinimum(1);
     txtAdaptivitySteps->setMaximum(100);
-    txtAdaptivityTolerance = new LineEditDouble(1, true);
+    txtAdaptivityTolerance = new LineEditDouble(1.0, true);
     txtAdaptivityTolerance->setBottom(0.0);
     txtAdaptivityBackSteps = new QSpinBox(this);
     txtAdaptivityBackSteps->setMinimum(0);
@@ -166,21 +166,23 @@ void FieldWidget::createContent()
 
     // transient
     cmbAnalysisType = new QComboBox();
-    txtTransientInitialCondition = new ValueLineEdit();
-    txtTransientTimeSkip = new ValueLineEdit();
-    txtTransientTimeSkip->setMinimum(0);
+    txtTransientInitialCondition = new LineEditDouble(0.0, true);
+    txtTransientTimeSkip = new LineEditDouble(0.0, true);
+    txtTransientTimeSkip->setBottom(0.0);
 
     // linearity
     cmbLinearityType = new QComboBox();
     txtNonlinearSteps = new QSpinBox(this);
     txtNonlinearSteps->setMinimum(1);
     txtNonlinearSteps->setMaximum(100);
-    txtNonlinearTolerance = new LineEditDouble(1);
+    txtNonlinearTolerance = new LineEditDouble(1e-3, true);
+    txtNonlinearTolerance->setBottom(0.0);
 
     chkNewtonAutomaticDamping = new QCheckBox(tr("Automatic damping"));
     connect(chkNewtonAutomaticDamping, SIGNAL(stateChanged(int)), this, SLOT(doNewtonDampingChanged(int)));
     lblNewtonDampingCoeff = new QLabel(tr("Damping factor:"));
-    txtNewtonDampingCoeff = new LineEditDouble(1);
+    txtNewtonDampingCoeff = new LineEditDouble(1.0, true);
+    txtNewtonDampingCoeff->setBottom(0.0);
     lblNewtonDampingNumberToIncrease = new QLabel(tr("Steps to increase DF:"));
     txtNewtonDampingNumberToIncrease = new QSpinBox(this);
     txtNewtonDampingNumberToIncrease->setMinimum(1);
@@ -189,8 +191,10 @@ void FieldWidget::createContent()
     chkPicardAndersonAcceleration = new QCheckBox(tr("Use Anderson acceleration"));
     connect(chkPicardAndersonAcceleration, SIGNAL(stateChanged(int)), this, SLOT(doPicardAndersonChanged(int)));
     lblPicardAndersonBeta = new QLabel(tr("Anderson beta:"));
-    txtPicardAndersonBeta = new LineEditDouble(0.2);
-    lblPicardAndersonNumberOfLastVectors = new QLabel(tr("Num. of last vectors:"));
+    txtPicardAndersonBeta = new LineEditDouble(0.2, true);
+    txtPicardAndersonBeta->setBottom(0.0);
+    txtPicardAndersonBeta->setTop(1.0);
+    lblPicardAndersonNumberOfLastVectors = new QLabel(tr("Num. of last used iter.:"));
     txtPicardAndersonNumberOfLastVectors = new QSpinBox(this);
     txtPicardAndersonNumberOfLastVectors->setMinimum(1);
     txtPicardAndersonNumberOfLastVectors->setMaximum(5);
@@ -862,10 +866,10 @@ void ProblemWidget::createControls()
     txtTransientOrder = new QSpinBox();
     txtTransientOrder->setMinimum(1);
     txtTransientOrder->setMaximum(3);
-    txtTransientTimeTotal = new ValueLineEdit();
-    txtTransientTimeTotal->setCondition("value > 0");
-    txtTransientTolerance = new ValueLineEdit();
-    txtTransientTolerance->setCondition("value > 0");
+    txtTransientTimeTotal = new LineEditDouble(1.0, true);
+    txtTransientTimeTotal->setBottom(0.0);
+    txtTransientTolerance = new LineEditDouble(0.1, true);
+    txtTransientTolerance->setBottom(0.0);
     txtTransientSteps = new QSpinBox();
     txtTransientSteps->setMinimum(1);
     txtTransientSteps->setMaximum(10000);
@@ -975,8 +979,8 @@ void ProblemWidget::updateControls()
     grpTransientAnalysis->setVisible(Agros2D::problem()->isTransient());
     txtTransientSteps->setValue(Agros2D::problem()->config()->numConstantTimeSteps());
     // txtTransientTimeStep->setEnabled(Agros2D::problem()->isTransient());
-    txtTransientTimeTotal->setValue(Agros2D::problem()->config()->timeTotal());
-    txtTransientTolerance->setValue(Agros2D::problem()->config()->timeMethodTolerance());
+    txtTransientTimeTotal->setValue(Agros2D::problem()->config()->timeTotal().number());
+    txtTransientTolerance->setValue(Agros2D::problem()->config()->timeMethodTolerance().number());
     // txtTransientTimeTotal->setEnabled(Agros2D::problem()->isTransient());
     txtTransientOrder->setValue(Agros2D::problem()->config()->timeOrder());
     cmbTransientMethod->setCurrentIndex(cmbTransientMethod->findData(Agros2D::problem()->config()->timeStepMethod()));
@@ -1044,10 +1048,13 @@ void ProblemWidget::changedWithClear()
 
 void ProblemWidget::transientChanged()
 {
+    /*
     if (txtTransientTimeTotal->evaluate(true))
     {
         lblTransientTimeStep->setText(QString("%1 s").arg(txtTransientTimeTotal->number() / txtTransientSteps->value()));
     }
+    */
+    lblTransientTimeStep->setText(QString("%1 s").arg(txtTransientTimeTotal->value() / txtTransientSteps->value()));
 
     if(Agros2D::problem()->config()->timeStepMethod() == TimeStepMethod_BDFTolerance)
     {

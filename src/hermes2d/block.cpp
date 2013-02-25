@@ -119,7 +119,7 @@ double Block::timeSkip() const
         if (field->fieldInfo()->analysisType() == AnalysisType_Transient)
             continue;
 
-        double sActual = field->fieldInfo()->timeSkip().number();
+        double sActual = field->fieldInfo()->timeSkip();
         if ((skip == 0.) || (sActual < skip))
             skip = sActual;
     }

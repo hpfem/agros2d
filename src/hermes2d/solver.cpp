@@ -736,7 +736,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
     if (Hermes::Hermes2D::Space<Scalar>::get_num_dofs(actualSpaces()) == 0)
     {
         Agros2D::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
-        throw(AgrosSolverException("DOF is zero"));
+        throw(AgrosSolverException(QObject::tr("DOF is zero")));
     }
 
     // update timedep values
@@ -884,7 +884,7 @@ void Solver<Scalar>::solveInitialTimeStep()
             // constant initial solution
             Mesh *mesh = spaces.at(totalComp)->get_mesh();
             ConstantSolution<double> *initial = new ConstantSolution<double>(mesh,
-                                                                             field->fieldInfo()->initialCondition().number());
+                                                                             field->fieldInfo()->initialCondition());
             solutions.push_back(initial);
             totalComp++;
         }

@@ -458,6 +458,12 @@ void Problem::solveInit()
     m_isSolving = true;
     m_timeStepLengths.clear();
 
+    // check problem settings
+    if (!Agros2D::problem()->config()->timeTotal().number() > 0.0)
+        throw AgrosSolverException(tr("Total time is zero"));
+    if (!Agros2D::problem()->config()->timeMethodTolerance().number() > 0.0)
+        throw AgrosSolverException(tr("Time method tolerance is zero"));
+
     // open indicator progress
     Indicator::openProgress();
 
@@ -473,16 +479,16 @@ void Problem::solveInit()
 
     // todo: we should not mesh always, but we would need to refine signals to determine when is it neccesary (whether, e.g., parameters of the mesh have been changed)
     if (!mesh())
-        throw AgrosSolverException("Could not create mesh");
+        throw AgrosSolverException(tr("Could not create mesh"));
 
     // check geometry
     if (!Agros2D::scene()->checkGeometryAssignement())
-        throw AgrosSolverException("Geometry assignment failed");
+        throw AgrosSolverException(tr("Geometry assignment failed"));
 
     if (fieldInfos().count() == 0)
     {
         Agros2D::log()->printError(QObject::tr("Solver"), QObject::tr("No fields defined"));
-        throw AgrosSolverException("No field defined.");
+        throw AgrosSolverException(tr("No field defined"));
     }
 }
 

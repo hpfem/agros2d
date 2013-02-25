@@ -875,7 +875,7 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
 void Scene::doInvalidated()
 {
     actNewEdge->setEnabled((nodes->length() >= 2) && (boundaries->length() >= 1));
-    actNewLabel->setEnabled(materials->length() >= 1);   
+    actNewLabel->setEnabled(materials->length() >= 1);
 }
 
 void Scene::doNewNode(const Point &point)
@@ -1316,7 +1316,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
                                                                                         analysisTypeToStringKey(AnalysisType_SteadyState))));
 
         // initial condition
-        field->setInitialCondition(eleField.toElement().attribute("initial_condition", "0.0"));
+        field->setInitialCondition(eleField.toElement().attribute("initial_condition").toDouble());
 
         // polynomial order
         field->setPolynomialOrder(eleField.toElement().attribute("polynomial_order").toInt());
@@ -1390,7 +1390,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
         field->setPicardAndersonNumberOfLastVectors(eleFieldLinearity.toElement().attribute("picard_anderson_vectors", "3").toInt());
 
         // time steps skip
-        field->setTimeSkip(eleField.toElement().attribute("time_skip", "0.0"));
+        field->setTimeSkip(eleField.toElement().attribute("time_skip").toDouble());
 
         // boundary conditions
         QDomNode eleBoundaries = eleField.toElement().elementsByTagName("boundaries").at(0);
@@ -1633,11 +1633,11 @@ ErrorResult Scene::writeToFile(const QString &fileName)
         // analysis type
         eleField.setAttribute("analysis_type", analysisTypeToStringKey(fieldInfo->analysisType()));
         // initial condition
-        eleField.setAttribute("initial_condition", fieldInfo->initialCondition().text());
+        eleField.setAttribute("initial_condition", fieldInfo->initialCondition());
         // polynomial order
         eleField.setAttribute("polynomial_order", fieldInfo->polynomialOrder());
         // time steps skip
-        eleField.setAttribute("time_skip", fieldInfo->timeSkip().text());
+        eleField.setAttribute("time_skip", fieldInfo->timeSkip());
 
         // number of refinements
         eleField.setAttribute("number_of_refinements", fieldInfo->numberOfRefinements());

@@ -945,14 +945,178 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../plugins/acoustic/acoustic_force.cpp" line="66"/>
-        <location filename="../../plugins/current/current_force.cpp" line="66"/>
-        <location filename="../../plugins/elasticity/elasticity_force.cpp" line="66"/>
-        <location filename="../../plugins/electrostatic/electrostatic_force.cpp" line="66"/>
-        <location filename="../../plugins/flow/flow_force.cpp" line="66"/>
-        <location filename="../../plugins/heat/heat_force.cpp" line="66"/>
-        <location filename="../../plugins/magnetic/magnetic_force.cpp" line="66"/>
+        <location filename="../../plugins/acoustic/acoustic_force.cpp" line="70"/>
+        <location filename="../../plugins/current/current_force.cpp" line="70"/>
+        <location filename="../../plugins/elasticity/elasticity_force.cpp" line="75"/>
+        <location filename="../../plugins/electrostatic/electrostatic_force.cpp" line="70"/>
+        <location filename="../../plugins/flow/flow_force.cpp" line="72"/>
+        <location filename="../../plugins/heat/heat_force.cpp" line="75"/>
+        <location filename="../../plugins/magnetic/magnetic_force.cpp" line="77"/>
+        <location filename="../../plugins/rf/rf_force.cpp" line="73"/>
         <source>Point [%1, %2] does not lie in any element</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>RfInterface</name>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="537"/>
+        <source>RF waves</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="543"/>
+        <source>Harmonic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="546"/>
+        <source>Electric field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="549"/>
+        <source>Magnetic field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="552"/>
+        <source>Surface current</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="555"/>
+        <source>Impedance boundary condition</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="558"/>
+        <source>Permittivity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="561"/>
+        <source>Permeability</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="564"/>
+        <source>Conductivity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="567"/>
+        <source>Current dens. - ext. - real</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="570"/>
+        <source>Current dens. - ext. - imag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="573"/>
+        <source>Electric field - real</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="576"/>
+        <source>Electric field - imag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="579"/>
+        <source>Magnetic field - real</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="582"/>
+        <source>Magnetic field - imag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="585"/>
+        <source>Surface current - real</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="588"/>
+        <source>Surface current - imag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="591"/>
+        <source>Impedance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="594"/>
+        <source>Displacement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="597"/>
+        <source>Displacement - real</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="600"/>
+        <source>Displacement - imag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="603"/>
+        <source>Current density - real</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="606"/>
+        <source>Current density - imag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="609"/>
+        <source>Flux density</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="612"/>
+        <source>Flux density - real</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="615"/>
+        <source>Flux density - imag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="618"/>
+        <source>Poyting vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="621"/>
+        <source>Volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="624"/>
+        <source>Cross section</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="627"/>
+        <source>Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="630"/>
+        <source>Surface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf/rf_interface.cpp" line="637"/>
+        <source>Solving TE waves in RF field.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

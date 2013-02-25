@@ -129,8 +129,8 @@ private:
     QSpinBox *txtPicardAndersonNumberOfLastVectors;
 
     // transient
-    ValueLineEdit *txtTransientInitialCondition;
-    ValueLineEdit *txtTransientTimeSkip;
+    LineEditDouble *txtTransientInitialCondition;
+    LineEditDouble *txtTransientTimeSkip;
 
     // equation
     // LaTeXViewer *equationLaTeX;
@@ -220,10 +220,10 @@ private:
 
     // transient
     QGroupBox *grpTransientAnalysis;
-    ValueLineEdit *txtTransientTimeTotal;
+    LineEditDouble *txtTransientTimeTotal;
     QLabel* lblTransientSteps;
     QSpinBox *txtTransientSteps;
-    ValueLineEdit *txtTransientTolerance;
+    LineEditDouble *txtTransientTolerance;
     QSpinBox *txtTransientOrder;
     QComboBox *cmbTransientMethod;
     QLabel *lblTransientTimeStep;

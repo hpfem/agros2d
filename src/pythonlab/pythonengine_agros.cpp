@@ -199,13 +199,13 @@ QString createPythonFromModel(StartupScript_Type startupScript)
             {
                 str += QString("%1.initial_condition = %2\n").
                         arg(fieldInfo->fieldId()).
-                        arg(fieldInfo->initialCondition().number());
+                        arg(fieldInfo->initialCondition());
             }
             else
             {
                 str += QString("%1.time_skip = %2\n").
                         arg(fieldInfo->fieldId()).
-                        arg(fieldInfo->timeSkip().number());
+                        arg(fieldInfo->timeSkip());
             }
         }
 
