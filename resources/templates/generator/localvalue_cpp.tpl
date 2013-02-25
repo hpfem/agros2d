@@ -80,7 +80,7 @@ void {{CLASS}}LocalValue::calculate()
                 double val;
                 if ((m_fieldInfo->analysisType() == AnalysisType_Transient) && m_timeStep == 0)
                     // const solution at first time step
-                    val = m_fieldInfo->initialCondition().number();
+                    val = m_fieldInfo->initialCondition();
                 else
                     val = values->val[0];
 

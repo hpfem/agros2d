@@ -78,7 +78,7 @@ Point3 force{{CLASS}}(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, So
             double val;
             if ((fieldInfo->analysisType() == AnalysisType_Transient) && timeStep == 0)
                 // const solution at first time step
-                val = fieldInfo->initialCondition().number();
+                val = fieldInfo->initialCondition();
             else
                 val = values->val[0];
 
