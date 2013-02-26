@@ -1188,7 +1188,7 @@ void MainWindow::doDocumentSaveImage()
         if (sceneViewPreprocessor->actSceneModePreprocessor->isChecked())
             result = sceneViewPreprocessor->saveImageToFile(fileName);
         else if (sceneViewMesh->actSceneModeMesh->isChecked())
-            result = sceneViewPost2D->saveImageToFile(fileName);
+            result = sceneViewMesh->saveImageToFile(fileName);
         else if (sceneViewPost2D->actSceneModePost2D->isChecked())
             result = sceneViewPost2D->saveImageToFile(fileName);
         else if (sceneViewPost3D->actSceneModePost3D->isChecked())
@@ -1494,7 +1494,7 @@ void MainWindow::setControls()
     actSceneZoomIn->setVisible(showZoom);
     actSceneZoomOut->setVisible(showZoom);
     actSceneZoomBestFit->setVisible(showZoom);
-    actSceneZoomRegion->setVisible(showZoom);        
+    actSceneZoomRegion->setVisible(showZoom);
 
     // disconnect signals
     actSceneZoomIn->disconnect();
