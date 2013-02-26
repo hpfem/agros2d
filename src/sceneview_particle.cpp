@@ -117,6 +117,20 @@ void ParticleTracingWidget::createControls()
     txtParticleDragReferenceArea->setBottom(0.0);
     lblParticleMotionEquations = new QLabel();
 
+    // initial particle position
+    QGridLayout *gridLayoutGeneral = new QGridLayout();
+    gridLayoutGeneral->addWidget(new QLabel(tr("Equations:")), 0, 0);
+    gridLayoutGeneral->addWidget(lblParticleMotionEquations, 1, 0, 1, 2);
+    gridLayoutGeneral->addWidget(new QLabel(tr("Number of particles:")), 2, 0);
+    gridLayoutGeneral->addWidget(txtParticleNumberOfParticles, 2, 1);
+    gridLayoutGeneral->addWidget(new QLabel(tr("Particles dispersion (m):")), 3, 0);
+    gridLayoutGeneral->addWidget(txtParticleStartingRadius, 3, 1);
+    gridLayoutGeneral->addWidget(new QLabel(tr("Mass (kg):")), 4, 0);
+    gridLayoutGeneral->addWidget(txtParticleMass, 4, 1);
+
+    QGroupBox *grpGeneral = new QGroupBox(tr("General"));
+    grpGeneral->setLayout(gridLayoutGeneral);
+
     // QPushButton *btnParticleDefault = new QPushButton(tr("Default"));
     // connect(btnParticleDefault, SIGNAL(clicked()), this, SLOT(doParticleDefault()));
 
@@ -142,6 +156,7 @@ void ParticleTracingWidget::createControls()
 
     // reflection
     QGridLayout *gridLayoutReflection = new QGridLayout();
+    gridLayoutReflection->setContentsMargins(5, 0, 0, 0);
     gridLayoutReflection->setColumnMinimumWidth(0, minWidth);
     gridLayoutReflection->setColumnStretch(1, 1);
     gridLayoutReflection->addWidget(chkParticleReflectOnDifferentMaterial, 0, 0, 1, 2);
@@ -194,6 +209,7 @@ void ParticleTracingWidget::createControls()
 
     // forces
     QVBoxLayout *layoutForces = new QVBoxLayout();
+    layoutForces->setContentsMargins(5, 0, 0, 0);
     layoutForces->addWidget(grpLorentzForce);
     layoutForces->addWidget(grpDragForce);
     layoutForces->addWidget(grpCustomForce);
@@ -220,6 +236,7 @@ void ParticleTracingWidget::createControls()
 
     // settings
     QGridLayout *gridLayoutSettings = new QGridLayout();
+    gridLayoutSettings->setContentsMargins(5, 0, 0, 0);
     gridLayoutSettings->addWidget(chkParticleColorByVelocity, 2, 0, 1, 2);
     gridLayoutSettings->addWidget(chkParticleShowPoints, 3, 0, 1, 2);
     gridLayoutSettings->addWidget(new QLabel(""), 10, 0);
@@ -235,19 +252,11 @@ void ParticleTracingWidget::createControls()
     tbxWorkspace->addItem(grpSolver, icon(""), tr("Solver"));
     tbxWorkspace->addItem(grpSettings, icon(""), tr("Settings"));
 
-    QGridLayout *layoutParticle = new QGridLayout();
-    layoutParticle->setMargin(0);
-    layoutParticle->addWidget(new QLabel(tr("Equations:")), 0, 0);
-    layoutParticle->addWidget(lblParticleMotionEquations, 1, 0, 1, 2);
-    layoutParticle->addWidget(new QLabel(tr("Number of particles:")), 2, 0);
-    layoutParticle->addWidget(txtParticleNumberOfParticles, 2, 1);
-    layoutParticle->addWidget(new QLabel(tr("Particles dispersion (m):")), 3, 0);
-    layoutParticle->addWidget(txtParticleStartingRadius, 3, 1);
-    layoutParticle->addWidget(new QLabel(tr("Mass (kg):")), 4, 0);
-    layoutParticle->addWidget(txtParticleMass, 4, 1);
-    layoutParticle->addWidget(grpInitialPosition, 5, 0, 1, 2);
-    layoutParticle->addWidget(grpInitialVelocity, 6, 0, 1, 2);
-    layoutParticle->addWidget(tbxWorkspace, 7, 0, 1, 2);
+    QVBoxLayout *layoutParticle = new QVBoxLayout();
+    layoutParticle->addWidget(grpGeneral);
+    layoutParticle->addWidget(grpInitialPosition);
+    layoutParticle->addWidget(grpInitialVelocity);
+    layoutParticle->addWidget(tbxWorkspace);
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(layoutParticle);
@@ -261,7 +270,7 @@ void ParticleTracingWidget::createControls()
     QPushButton *btnOK = new QPushButton(tr("Apply"));
     connect(btnOK, SIGNAL(clicked()), SLOT(doApply()));
 
-    QVBoxLayout *layoutMain = new QVBoxLayout();
+    QVBoxLayout *layoutMain = new QVBoxLayout();    
     layoutMain->addWidget(widgetArea, 1);
     layoutMain->addWidget(btnOK, 0, Qt::AlignRight);
 

@@ -78,7 +78,7 @@ PhysicalFieldWidget::PhysicalFieldWidget(QWidget *parent) : QWidget(parent)
     grpField->setLayout(layoutField);
 
     QHBoxLayout *layoutMain = new QHBoxLayout();
-    layoutMain->setMargin(0);
+    layoutMain->setContentsMargins(0, 0, 0, 0);
     layoutMain->addWidget(grpField);
 
     setLayout(layoutMain);

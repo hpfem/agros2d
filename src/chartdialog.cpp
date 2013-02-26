@@ -284,10 +284,10 @@ void ChartWidget::createControls()
     viewerSVG->setMaximumHeight(50);
 
     // controls
-    btnApply = new QPushButton();
-    btnApply->setDefault(false);
-    btnApply->setText(tr("Apply"));
-    connect(btnApply, SIGNAL(clicked()), this, SLOT(doApply()));
+    btnOK = new QPushButton();
+    btnOK->setDefault(false);
+    btnOK->setText(tr("Apply"));
+    connect(btnOK, SIGNAL(clicked()), this, SLOT(doApply()));
 
     btnSaveImage = new QPushButton();
     btnSaveImage->setDefault(false);
@@ -403,7 +403,7 @@ void ChartWidget::createControls()
     layoutButton->addStretch();
     layoutButton->addWidget(btnSaveImage);
     layoutButton->addWidget(btnExportData);
-    layoutButton->addWidget(btnApply);
+    layoutButton->addWidget(btnOK);
 
     QWidget *widButton = new QWidget();
     widButton->setLayout(layoutButton);
@@ -434,7 +434,7 @@ void ChartWidget::createControls()
     viewLayout->addWidget(viewerSVG);
 
     // controls
-    QVBoxLayout *controlsLayout = new QVBoxLayout();
+    QVBoxLayout *controlsLayout = new QVBoxLayout();  
     controlsLayout->addWidget(fieldWidget);
     controlsLayout->addWidget(grpVariable);
     controlsLayout->addLayout(viewLayout);

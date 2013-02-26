@@ -264,7 +264,6 @@ void PostprocessorWidget::createControls()
     advanced = controlsAdvanced();
 
     QVBoxLayout *layoutMain = new QVBoxLayout();
-    layoutMain->setContentsMargins(0, 5, 3, 5);
     layoutMain->addWidget(basic);
     layoutMain->addWidget(advanced, 1);
     layoutMain->addWidget(btnOK, 0, Qt::AlignRight);
@@ -475,7 +474,6 @@ QWidget *PostprocessorWidget::post3DWidget()
     grpShowPost3D->setLayout(layoutShowPost3D);
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->setMargin(0);
     layout->addWidget(grpShowPost3D);
     layout->addStretch(1);
 
@@ -627,7 +625,7 @@ QWidget *PostprocessorWidget::postScalarAdvancedWidget()
     grpScalarFieldColorbar->setLayout(gridLayoutScalarFieldColorbar);
 
     QVBoxLayout *layoutScalarFieldAdvanced = new QVBoxLayout();
-    layoutScalarFieldAdvanced->setMargin(0);
+    layoutScalarFieldAdvanced->setContentsMargins(0, 0, 0, 0);
     layoutScalarFieldAdvanced->addWidget(grpScalarFieldPalette);
     layoutScalarFieldAdvanced->addWidget(grpScalarFieldColorbar);
     layoutScalarFieldAdvanced->addWidget(grpScalarFieldRange);
@@ -650,7 +648,7 @@ QWidget *PostprocessorWidget::postContourAdvancedWidget()
     txtContourWidth->setSingleStep(0.1);
 
     QGridLayout *gridLayoutContours = new QGridLayout();
-    gridLayoutContours->setMargin(0);
+    gridLayoutContours->setContentsMargins(0, 0, 0, 0);
     gridLayoutContours->setColumnMinimumWidth(0, minWidth);
     gridLayoutContours->setColumnStretch(1, 1);
     gridLayoutContours->addWidget(new QLabel(tr("Number of contours:")), 0, 0);
@@ -685,7 +683,7 @@ QWidget *PostprocessorWidget::postVectorAdvancedWidget()
         cmbVectorCenter->addItem(vectorCenterString(vectorCenterFromStringKey(key)), vectorCenterFromStringKey(key));
 
     QGridLayout *gridLayoutVectors = new QGridLayout();
-    gridLayoutVectors->setMargin(0);
+    gridLayoutVectors->setContentsMargins(0, 0, 0, 0);
     gridLayoutVectors->setColumnMinimumWidth(0, minWidth);
     gridLayoutVectors->setColumnStretch(1, 1);
     gridLayoutVectors->addWidget(new QLabel(tr("Number of vectors:")), 0, 0);
@@ -710,7 +708,7 @@ QWidget *PostprocessorWidget::postPostSolidAdvancedWidget()
     lstSolidMaterials = new QListWidget();
 
     QGridLayout *gridLayoutSolid = new QGridLayout();
-    gridLayoutSolid->setMargin(0);
+    gridLayoutSolid->setContentsMargins(0, 0, 0, 0);
     gridLayoutSolid->setColumnMinimumWidth(0, minWidth);
     gridLayoutSolid->setColumnStretch(0, 1);
     gridLayoutSolid->addWidget(lstSolidMaterials, 0, 0);

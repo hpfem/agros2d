@@ -114,7 +114,7 @@ private:
     QTabWidget* tbxAnalysisType;
 
     // buttons
-    QPushButton *btnApply;
+    QPushButton *btnOK;
     QPushButton *btnSaveImage;
     QPushButton *btnExportData;
 

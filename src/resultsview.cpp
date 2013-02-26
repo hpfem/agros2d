@@ -89,7 +89,7 @@ void ResultsView::doShowResults()
 
 void ResultsView::showPoint(const Point &point)
 {
-    if (!Agros2D::problem()->isSolved())
+    if (!(Agros2D::problem()->isSolved() && m_postHermes->isProcessed()))
     {
         showEmpty();
         return;
