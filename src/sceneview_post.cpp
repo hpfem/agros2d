@@ -45,9 +45,12 @@
 #include "hermes2d/solutionstore.h"
 
 PostHermes::PostHermes() :
-    m_activeViewField(NULL), m_activeTimeStep(-1), m_activeAdaptivityStep(-1), m_activeSolutionMode(SolutionMode_Undefined), m_isProcessed(false)
+    m_activeViewField(NULL), m_activeTimeStep(-1), m_activeAdaptivityStep(NOT_FOUND_SO_FAR), m_activeSolutionMode(SolutionMode_Undefined), m_isProcessed(false)
 {
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(clear()));
+
+    connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(problemMeshed()));
+    connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(problemSolved()));
 }
 
 PostHermes::~PostHermes()
@@ -332,9 +335,45 @@ void PostHermes::clear()
     m_vecVectorView.free();
 
     m_activeViewField = NULL;
-    m_activeTimeStep = -1;
-    m_activeAdaptivityStep = -1;
+    m_activeTimeStep = NOT_FOUND_SO_FAR;
+    m_activeAdaptivityStep = NOT_FOUND_SO_FAR;
     m_activeSolutionMode = SolutionMode_Undefined;
+}
+
+void PostHermes::problemMeshed()
+{
+    if (!m_activeViewField)
+    {
+        setActiveViewField(Agros2D::problem()->fieldInfos().begin().value());
+    }
+    if (m_activeTimeStep == NOT_FOUND_SO_FAR)
+    {
+        setActiveTimeStep(0);
+    }
+    if (m_activeAdaptivityStep == NOT_FOUND_SO_FAR)
+    {
+        setActiveAdaptivityStep(0);
+        setActiveAdaptivitySolutionType(SolutionMode_Normal);
+    }
+}
+
+void PostHermes::problemSolved()
+{
+    if (!m_activeViewField)
+    {
+        setActiveViewField(Agros2D::problem()->fieldInfos().begin().value());
+    }
+    if (m_activeTimeStep == NOT_FOUND_SO_FAR)
+    {
+        int lastTimeStep = Agros2D::solutionStore()->lastTimeStep(Agros2D::problem()->fieldInfos().begin().value(), SolutionMode_Normal);
+        setActiveTimeStep(lastTimeStep);
+    }
+    if (m_activeAdaptivityStep == NOT_FOUND_SO_FAR)
+    {
+        int lastAdaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(m_activeViewField, SolutionMode_Normal, m_activeTimeStep);
+        setActiveAdaptivityStep(lastAdaptivityStep);
+        setActiveAdaptivitySolutionType(SolutionMode_Normal);
+    }
 }
 
 void PostHermes::processMeshed()

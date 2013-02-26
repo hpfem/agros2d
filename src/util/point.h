@@ -21,7 +21,6 @@
 #define UTIL_POINT_H
 
 #include <QtCore>
-
 #include <cmath>
 
 struct Point;

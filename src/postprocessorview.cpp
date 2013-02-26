@@ -487,6 +487,7 @@ QWidget *PostprocessorWidget::post3DWidget()
 
 QWidget *PostprocessorWidget::controlsBasic()
 {
+    connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(doCalculationFinished()));
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(doCalculationFinished()));
 
     fieldWidget = new PhysicalFieldWidget(this);
@@ -731,7 +732,7 @@ void PostprocessorWidget::doField()
 
 void PostprocessorWidget::doCalculationFinished()
 {   
-    // doApply();
+    emit apply();
 }
 
 void PostprocessorWidget::doScalarFieldVariable(int index)

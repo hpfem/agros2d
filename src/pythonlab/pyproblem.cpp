@@ -154,11 +154,6 @@ void PyProblem::mesh()
     Agros2D::problem()->mesh();
     if (Agros2D::problem()->isMeshed())
     {        
-        currentPythonEngineAgros()->postHermes()->setActiveViewField(Agros2D::problem()->fieldInfos().begin().value());
-        currentPythonEngineAgros()->postHermes()->setActiveTimeStep(0);
-        currentPythonEngineAgros()->postHermes()->setActiveAdaptivityStep(0);
-        currentPythonEngineAgros()->postHermes()->setActiveAdaptivitySolutionType(SolutionMode_Normal);
-
         // trigger postprocessor
         if (!silentMode())
         {
@@ -183,14 +178,6 @@ void PyProblem::solve()
     Agros2D::problem()->solve();
     if (Agros2D::problem()->isSolved())
     {
-        int lastTimeStep = Agros2D::solutionStore()->lastTimeStep(Agros2D::problem()->fieldInfos().begin().value(), SolutionMode_Normal);
-        int lastAdaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(Agros2D::problem()->fieldInfos().begin().value(), SolutionMode_Normal, lastTimeStep);
-
-        currentPythonEngineAgros()->postHermes()->setActiveViewField(Agros2D::problem()->fieldInfos().begin().value());
-        currentPythonEngineAgros()->postHermes()->setActiveTimeStep(lastTimeStep);
-        currentPythonEngineAgros()->postHermes()->setActiveAdaptivityStep(lastAdaptivityStep);
-        currentPythonEngineAgros()->postHermes()->setActiveAdaptivitySolutionType(SolutionMode_Normal);
-
         // trigger postprocessor
         if (!silentMode())
         {

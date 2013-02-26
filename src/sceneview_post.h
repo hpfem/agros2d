@@ -126,6 +126,9 @@ private slots:
     void processRangeVector();
 
     virtual void clearGLLists() {}
+
+    void problemMeshed();
+    void problemSolved();
 };
 
 class SceneViewPostInterface : public SceneViewCommon
