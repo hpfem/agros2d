@@ -231,7 +231,7 @@ void ChartWidget::updateControls()
     radHorizontalAxisX->setText(Agros2D::problem()->config()->labelX());
     radHorizontalAxisY->setText(Agros2D::problem()->config()->labelY());
 
-    if (fieldWidget->selectedField()->analysisType() == AnalysisType_Transient)
+    if (Agros2D::problem()->isTransient())
     {
         widTime->setEnabled(true);
     }
