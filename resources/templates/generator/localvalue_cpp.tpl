@@ -72,26 +72,31 @@ void {{CLASS}}LocalValue::calculate()
             std::vector<Hermes::Hermes2D::Solution<double> *> sln(numberOfSolutions);
             for (int k = 0; k < numberOfSolutions; k++)
             {
-                FieldSolutionID fsid(m_fieldInfo, m_timeStep, m_adaptivityStep, m_solutionType);
-                sln[k] = Agros2D::solutionStore()->multiArray(fsid).solutions().at(k);
-
-                // point values
-                Hermes::Hermes2D::Func<double> *values = sln[k]->get_pt_value(m_point.x, m_point.y);
-                double val;
                 if ((m_fieldInfo->analysisType() == AnalysisType_Transient) && m_timeStep == 0)
-                    // const solution at first time step
-                    val = m_fieldInfo->initialCondition();
+                {
+
+                    // set variables
+                    value[k] = m_fieldInfo->initialCondition();
+                    dudx[k] = 0;
+                    dudy[k] = 0;
+                }
                 else
-                    val = values->val[0];
+                {
+                    FieldSolutionID fsid(m_fieldInfo, m_timeStep, m_adaptivityStep, m_solutionType);
+                    sln[k] = Agros2D::solutionStore()->multiArray(fsid).solutions().at(k);
 
-                // set variables
-                value[k] = val;
-                dudx[k] = values->dx[0];
-                dudy[k] = values->dy[0];
+                    // point values
+                    Hermes::Hermes2D::Func<double> *values = sln[k]->get_pt_value(m_point.x, m_point.y);
 
-                values->free_fn();
-                values->free_ord();
-                delete values;
+                    // set variables
+                    value[k] = values->val[0];
+                    dudx[k] = values->dx[0];
+                    dudy[k] = values->dy[0];
+
+                    values->free_fn();
+                    values->free_ord();
+                    delete values;
+                }
             }
 
             // expressions
