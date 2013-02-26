@@ -182,7 +182,7 @@ void initLists()
     // SolutionType
     solutionTypeList.insert(SolutionMode_Normal, "normal");
     solutionTypeList.insert(SolutionMode_Reference, "reference");
-    solutionTypeList.insert(SolutionMode_Finer, "finer");
+    //solutionTypeList.insert(SolutionMode_Finer, "finer");
 
     // MatrixSolverType
     matrixSolverTypeList.insert(Hermes::SOLVER_UMFPACK, "umfpack");
