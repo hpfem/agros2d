@@ -24,6 +24,7 @@
 
 #include "hermes2d/problem.h"
 #include "hermes2d/solutionstore.h"
+#include "hermes2d/field.h"
 
 const double minWidth = 110;
 
@@ -103,6 +104,26 @@ FieldInfo* PhysicalFieldWidget::selectedField()
         return NULL;
 }
 
+void PhysicalFieldWidget::selectField(const FieldInfo* fieldInfo)
+{
+    if (cmbFieldInfo->findData(fieldInfo) != -1)
+    {
+        cmbFieldInfo->setCurrentIndex(cmbFieldInfo->findData(fieldInfo));
+
+        if (Agros2D::problem()->isSolved())
+        {
+            fillComboBoxTimeStep(fieldInfo, cmbTimeStep);
+            doTimeStep(-1);
+        }
+
+        // if (m_currentFieldName != fieldInfo->fieldId())
+        //     emit fieldChanged();
+
+        // set current field name
+        // m_currentFieldName = fieldInfo->fieldId();
+    }
+}
+
 int PhysicalFieldWidget::selectedTimeStep()
 {
     if (cmbTimeStep->currentIndex() == -1)
@@ -124,6 +145,15 @@ int PhysicalFieldWidget::selectedTimeStep()
     }
 }
 
+void PhysicalFieldWidget::selectTimeStep(int timeStep)
+{
+    if (cmbTimeStep->findData(timeStep) != -1)
+    {
+        cmbTimeStep->setCurrentIndex(cmbTimeStep->findData(timeStep));
+        doAdaptivityStep(-1);
+    }
+}
+
 int PhysicalFieldWidget::selectedAdaptivityStep()
 {
     if (cmbAdaptivityStep->currentIndex() == -1)
@@ -132,12 +162,25 @@ int PhysicalFieldWidget::selectedAdaptivityStep()
         return cmbAdaptivityStep->itemData(cmbAdaptivityStep->currentIndex()).toInt();
 }
 
+void PhysicalFieldWidget::selectAdaptivityStep(int adaptivityStep)
+{
+    if (cmbAdaptivityStep->findData(adaptivityStep) != -1)
+    {
+        cmbAdaptivityStep->setCurrentIndex(cmbAdaptivityStep->findData(adaptivityStep));
+    }
+}
+
 SolutionMode PhysicalFieldWidget::selectedAdaptivitySolutionType()
 {
     if (cmbAdaptivityStep->currentIndex() == -1)
         return SolutionMode_Undefined;
     else
         return (SolutionMode) cmbAdaptivitySolutionType->itemData(cmbAdaptivitySolutionType->currentIndex()).toInt();
+}
+
+void PhysicalFieldWidget::selectedAdaptivitySolutionType(SolutionMode solutionMode)
+{
+    cmbAdaptivitySolutionType->setCurrentIndex(cmbAdaptivitySolutionType->findData(solutionMode));
 }
 
 void PhysicalFieldWidget::updateControls()

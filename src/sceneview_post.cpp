@@ -45,7 +45,7 @@
 #include "hermes2d/solutionstore.h"
 
 PostHermes::PostHermes() :
-    m_activeViewField(NULL), m_activeTimeStep(-1), m_activeAdaptivityStep(NOT_FOUND_SO_FAR), m_activeSolutionMode(SolutionMode_Undefined), m_isProcessed(false)
+    m_activeViewField(NULL), m_activeTimeStep(NOT_FOUND_SO_FAR), m_activeAdaptivityStep(NOT_FOUND_SO_FAR), m_activeSolutionMode(SolutionMode_Undefined), m_isProcessed(false)
 {
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(clear()));
 
@@ -346,15 +346,15 @@ void PostHermes::problemMeshed()
     {
         setActiveViewField(Agros2D::problem()->fieldInfos().begin().value());
     }
-    if (m_activeTimeStep == NOT_FOUND_SO_FAR)
-    {
-        setActiveTimeStep(0);
-    }
-    if (m_activeAdaptivityStep == NOT_FOUND_SO_FAR)
-    {
-        setActiveAdaptivityStep(0);
-        setActiveAdaptivitySolutionType(SolutionMode_Normal);
-    }
+    //    if (m_activeTimeStep == NOT_FOUND_SO_FAR)
+    //    {
+    //        setActiveTimeStep(0);
+    //    }
+    //    if (m_activeAdaptivityStep == NOT_FOUND_SO_FAR)
+    //    {
+    //        setActiveAdaptivityStep(0);
+    //        setActiveAdaptivitySolutionType(SolutionMode_Normal);
+    //    }
 }
 
 void PostHermes::problemSolved()

@@ -37,10 +37,15 @@ public:
     PhysicalFieldWidget(QWidget *parent = 0);
     ~PhysicalFieldWidget();
 
-    FieldInfo* selectedField();
+
+    FieldInfo *selectedField();
+    void selectField(const FieldInfo *fieldInfo);
     int selectedTimeStep();
+    void selectTimeStep(int timeStep);
     int selectedAdaptivityStep();
+    void selectAdaptivityStep(int adaptivityStep);
     SolutionMode selectedAdaptivitySolutionType();
+    void selectedAdaptivitySolutionType(SolutionMode solutionMode);
 
 private:
     QComboBox *cmbFieldInfo;
