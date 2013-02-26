@@ -24,7 +24,7 @@
 #include "scene.h"
 #include "scenenode.h"
 #include "sceneedge.h"
-#include "sceneview_post2d.h"
+#include "sceneview_geometry_chart.h"
 
 #include "hermes2d/module.h"
 
@@ -43,111 +43,6 @@
 
 const double minWidth = 110;
 
-// ******************************************************************************************************
-
-static QString generateSvgGeometryWithLine(ChartLine line)
-{
-    RectPoint boundingBox = SceneEdgeContainer::boundingBox(Agros2D::scene()->edges->items());
-
-    double w = 50;
-    double h = 50;
-    double stroke_width = max(boundingBox.width(), boundingBox.height()) / qMax(w, h) / 2.0;
-
-    // svg
-    QString str;
-    str += QString("<svg width=\"%1px\" height=\"%2px\" viewBox=\"%3 %4 %5 %6\" preserveAspectRatio=\"xMinYMin meet\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n").
-            arg(w).
-            arg(h).
-            arg(boundingBox.start.x).
-            arg(0).
-            arg(boundingBox.width()).
-            arg(boundingBox.height());
-
-    str += QString("<g stroke=\"black\" stroke-width=\"%1\" fill=\"none\">\n").arg(stroke_width);
-
-    foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
-    {
-        if (edge->angle() > 0.0)
-        {
-            Point center = edge->center();
-            double radius = edge->radius();
-            double startAngle = atan2(center.y - edge->nodeStart()->point().y,
-                                      center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
-
-            int segments = edge->angle() / 5.0;
-            if (segments < 2) segments = 2;
-            double theta = edge->angle() / double(segments - 1);
-
-            for (int i = 0; i < segments-1; i++)
-            {
-                double arc1 = (startAngle + i*theta)/180.0*M_PI;
-                double arc2 = (startAngle + (i+1)*theta)/180.0*M_PI;
-
-                double x1 = radius * cos(arc1);
-                double y1 = radius * sin(arc1);
-                double x2 = radius * cos(arc2);
-                double y2 = radius * sin(arc2);
-
-                str += QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" />\n").
-                        arg(center.x + x1).
-                        arg(boundingBox.end.y - (center.y + y1)).
-                        arg(center.x + x2).
-                        arg(boundingBox.end.y - (center.y + y2));
-            }
-        }
-        else
-        {
-            str += QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" />\n").
-                    arg(edge->nodeStart()->point().x).
-                    arg(boundingBox.end.y - edge->nodeStart()->point().y).
-                    arg(edge->nodeEnd()->point().x).
-                    arg(boundingBox.end.y - edge->nodeEnd()->point().y);
-        }
-    }
-    str += "</g>\n";
-
-    // line
-    if (line.start == line.end)
-        str += QString("<g stroke=\"red\" stroke-width=\"%1\" fill=\"none\">%2</g>\n").arg(stroke_width*3).arg(QString(" <circle cx=\"%1\" cy=\"%2\" r=\"%3\" />").
-                                                                                                               arg(line.start.x).
-                                                                                                               arg(boundingBox.end.y - line.start.y).
-                                                                                                               arg(stroke_width));
-    else
-        str += QString("<g stroke=\"red\" stroke-width=\"%1\" fill=\"none\">%2</g>\n").arg(stroke_width*3).arg(QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" />").
-                                                                                                               arg(line.start.x).
-                                                                                                               arg(boundingBox.end.y - line.start.y).
-                                                                                                               arg(line.end.x).
-                                                                                                               arg(boundingBox.end.y - line.end.y));
-
-    str += "</svg>\n";
-
-    return str;
-}
-
-SvgWidget::SvgWidget(QWidget* parent) : QSvgWidget(parent)
-{
-}
-
-void SvgWidget::load(const QString &fileName)
-{
-    renderer.load(fileName);
-    update();
-}
-
-void SvgWidget::paintEvent(QPaintEvent* qp)
-{
-    QSize siz = renderer.defaultSize();
-
-    // maintain te aspect ratio
-    // double aspect = renderer.viewBoxF().width() / renderer.viewBoxF().height();
-
-    // qDebug() << aspect;
-
-    QPainter painter(this);
-    // painter.scale(1.0, 1 / aspect);
-    renderer.render(&painter);
-}
-
 QList<Point> ChartLine::getPoints()
 {
     if (numberOfPoints == 0)
@@ -164,7 +59,6 @@ QList<Point> ChartLine::getPoints()
             points.insert(0, Point(start.x + i*dx, start.y + i*dy));
         else
             points.append(Point(start.x + i*dx, start.y + i*dy));
-
 
     return points;
 }
@@ -277,11 +171,9 @@ void ChartWidget::createControls()
     grpVariable->setLayout(layoutVariable);
 
     // viewer
-    viewerSVG = new SvgWidget();
-    viewerSVG->setMinimumWidth(50);
-    viewerSVG->setMaximumWidth(50);
-    viewerSVG->setMinimumHeight(50);
-    viewerSVG->setMaximumHeight(50);
+    geometryViewer = new SceneViewPreprocessorChart(this);
+    geometryViewer->setMinimumHeight(150);
+    geometryViewer->setMaximumHeight(150);
 
     // controls
     btnOK = new QPushButton();
@@ -430,12 +322,12 @@ void ChartWidget::createControls()
     tbxAnalysisType->addTab(widTime, icon(""), tr("Time"));
 
     // controls
-    QVBoxLayout *controlsLayout = new QVBoxLayout();  
+    QVBoxLayout *controlsLayout = new QVBoxLayout();
     // controlsLayout->setContentsMargins(0, 5, 3, 0);
     controlsLayout->addWidget(fieldWidget);
     controlsLayout->addWidget(grpVariable);
     controlsLayout->addWidget(tbxAnalysisType);
-    controlsLayout->addWidget(viewerSVG);
+    controlsLayout->addWidget(geometryViewer, 0, Qt::AlignCenter);
     controlsLayout->addStretch(1);
     controlsLayout->addWidget(widButton);
 
@@ -828,30 +720,21 @@ void ChartWidget::createChartLine()
 {
     ChartLine line;
 
-    if (isVisible())
+    if (tbxAnalysisType->currentWidget() == widGeometry)
     {
-        if (tbxAnalysisType->currentWidget() == widGeometry)
-        {
-            line = ChartLine(Point(txtStartX->value(), txtStartY->value()),
-                             Point(txtEndX->value(), txtEndY->value()),
-                             txtHorizontalAxisPoints->value(),
-                             chkHorizontalAxisReverse->isChecked());
-        }
-        if (tbxAnalysisType->currentWidget() == widTime)
-        {
-            line = ChartLine(Point(txtTimeX->value(), txtTimeY->value()),
-                             Point(txtTimeX->value(), txtTimeY->value()),
-                             0.0,
-                             0);
-        }
+        line = ChartLine(Point(txtStartX->value(), txtStartY->value()),
+                         Point(txtEndX->value(), txtEndY->value()),
+                         txtHorizontalAxisPoints->value(),
+                         chkHorizontalAxisReverse->isChecked());
+    }
+    if (tbxAnalysisType->currentWidget() == widTime)
+    {
+        line = ChartLine(Point(txtTimeX->value(), txtTimeY->value()),
+                         Point(txtTimeX->value(), txtTimeY->value()),
+                         0.0,
+                         0);
     }
 
-    QString figure = generateSvgGeometryWithLine(line);
-    QString fileName = QString("%1/figure.svg").arg(tempProblemDir());
-    writeStringContent(fileName, figure);
-
-    viewerSVG->load(fileName);
-    // double ratio = ((double) m_viewerSVG->renderer()->viewBox().width() / (double) m_viewerSVG->renderer()->viewBox().height());
-    // double h = m_viewerSVG->width() / ratio;
-    // m_viewerSVG->resize(m_viewerSVG->width(), h);
+    geometryViewer->setChartLine(line);
+    geometryViewer->doZoomBestFit();
 }

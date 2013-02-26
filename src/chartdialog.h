@@ -34,26 +34,12 @@ class LocalValue;
 class FieldInfo;
 class SceneViewPost2D;
 class PhysicalFieldWidget;
+class SceneViewPreprocessorChart;
 
 namespace Module
 {
 struct LocalVariable;
 }
-
-
-class SvgWidget : public QSvgWidget
-{
-public:
-    SvgWidget(QWidget *parent=0);
-
-    void load(const QString &fileName);
-
-protected:
-    void paintEvent(QPaintEvent* qp);
-
-private:
-    QSvgRenderer renderer;
-};
 
 // definition of chart line
 struct ChartLine
@@ -109,7 +95,7 @@ public:
 
 private:
     // variable widget
-    SvgWidget *viewerSVG;
+    SceneViewPreprocessorChart *geometryViewer;
 
     QTabWidget* tbxAnalysisType;
 

@@ -102,6 +102,7 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     sceneview_common3d.cpp \
     sceneview_mesh.cpp \
     sceneview_geometry.cpp \
+    sceneview_geometry_chart.cpp \
     sceneview_post.cpp \
     sceneview_post2d.cpp \
     sceneview_post3d.cpp \
@@ -199,6 +200,7 @@ HEADERS += util.h \
     sceneview_common2d.h \
     sceneview_common3d.h \
     sceneview_geometry.h \
+    sceneview_geometry_chart.h \
     sceneview_mesh.h \
     sceneview_post.h \
     sceneview_post2d.h \
