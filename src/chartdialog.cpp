@@ -429,15 +429,13 @@ void ChartWidget::createControls()
     tbxAnalysisType->addTab(widGeometry, icon(""), tr("Geometry"));
     tbxAnalysisType->addTab(widTime, icon(""), tr("Time"));
 
-    QVBoxLayout *viewLayout = new QVBoxLayout();
-    viewLayout->addWidget(tbxAnalysisType);
-    viewLayout->addWidget(viewerSVG);
-
     // controls
     QVBoxLayout *controlsLayout = new QVBoxLayout();  
+    // controlsLayout->setContentsMargins(0, 5, 3, 0);
     controlsLayout->addWidget(fieldWidget);
     controlsLayout->addWidget(grpVariable);
-    controlsLayout->addLayout(viewLayout);
+    controlsLayout->addWidget(tbxAnalysisType);
+    controlsLayout->addWidget(viewerSVG);
     controlsLayout->addStretch(1);
     controlsLayout->addWidget(widButton);
 

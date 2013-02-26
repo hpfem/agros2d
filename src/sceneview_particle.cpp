@@ -271,6 +271,7 @@ void ParticleTracingWidget::createControls()
     connect(btnOK, SIGNAL(clicked()), SLOT(doApply()));
 
     QVBoxLayout *layoutMain = new QVBoxLayout();    
+    layoutMain->setContentsMargins(0, 5, 3, 5);
     layoutMain->addWidget(widgetArea, 1);
     layoutMain->addWidget(btnOK, 0, Qt::AlignRight);
 

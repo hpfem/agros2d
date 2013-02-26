@@ -264,6 +264,7 @@ void PostprocessorWidget::createControls()
     advanced = controlsAdvanced();
 
     QVBoxLayout *layoutMain = new QVBoxLayout();
+    layoutMain->setContentsMargins(0, 3, 3, 5);
     layoutMain->addWidget(basic);
     layoutMain->addWidget(advanced, 1);
     layoutMain->addWidget(btnOK, 0, Qt::AlignRight);
@@ -474,6 +475,7 @@ QWidget *PostprocessorWidget::post3DWidget()
     grpShowPost3D->setLayout(layoutShowPost3D);
 
     QVBoxLayout *layout = new QVBoxLayout();
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(grpShowPost3D);
     layout->addStretch(1);
 
