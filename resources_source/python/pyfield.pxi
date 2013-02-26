@@ -89,7 +89,7 @@ cdef extern from "../../src/pythonlab/pyfield.h":
 
         void solve()
 
-        void localValues(double x, double y, map[string, double] results) except +
+        void localValues(double x, double y, int timeStep, int adaptivityStep, char *solutionType, map[string, double] results) except +
         void surfaceIntegrals(vector[int], map[string, double] results) except +
         void volumeIntegrals(vector[int], map[string, double] results) except +
 
@@ -403,12 +403,21 @@ cdef class __Field__:
     def remove_material(self, char *name):
         self.thisptr.removeMaterial(name)
 
+    def active_time_step(self):
+        return 0
+
+    def active_adaptivity_step(self):
+        return 0
+
     # local values
-    def local_values(self, double x, double y):
+    def local_values(self, double x, double y, time_step = None, adaptivity_step = None, char *solution_type = "finer"):
         out = dict()
         cdef map[string, double] results
 
-        self.thisptr.localValues(x, y, results)
+        self.thisptr.localValues(x, y,
+                                 int(-1 if time_step is None else time_step),
+                                 int(-1 if adaptivity_step is None else adaptivity_step),
+                                 solution_type, results)
         it = results.begin()
         while it != results.end():
             out[deref(it).first.c_str()] = deref(it).second

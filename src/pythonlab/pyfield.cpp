@@ -404,7 +404,8 @@ void PyField::removeMaterial(char *name)
     Agros2D::scene()->removeMaterial(Agros2D::scene()->getMaterial(fieldInfo(), QString(name)));
 }
 
-void PyField::localValues(const double x, const double y, map<std::string, double> &results)
+void PyField::localValues(const double x, const double y, int timeStep, int adaptivityStep,
+                          const char *solutionType, map<std::string, double> &results)
 {
     map<std::string, double> values;
 
@@ -419,10 +420,22 @@ void PyField::localValues(const double x, const double y, map<std::string, doubl
 
         Point point(x, y);
 
-        // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
-        int timeStep = Agros2D::solutionStore()->nearestTimeStep(fieldInfo(), currentPythonEngineAgros()->postHermes()->activeTimeStep());
-        int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo(), SolutionMode_Normal, timeStep);
-        int solutionMode = SolutionMode_Finer;
+        if (timeStep == -1)
+            timeStep = Agros2D::solutionStore()->nearestTimeStep(fieldInfo(), currentPythonEngineAgros()->postHermes()->activeTimeStep());
+        else if (timeStep < 0 || timeStep > Agros2D::problem()->numTimeLevels())
+            throw out_of_range(QObject::tr("Time step is out of range (0 - %1).").arg(Agros2D::problem()->numTimeLevels()).toStdString());
+
+        if (adaptivityStep == -1)
+            adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo(), SolutionMode_Normal, timeStep);
+        else if (adaptivityStep < 0 || adaptivityStep > fieldInfo()->adaptivitySteps())
+                throw out_of_range(QObject::tr("Adaptivity step is out of range. (1 to %2).").arg(fieldInfo()->adaptivitySteps()).toStdString());
+
+        if (!solutionTypeStringKeys().contains(QString(solutionType)))
+            throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(solutionTypeStringKeys())).toStdString());
+
+        // FIXME: (Franta) reference for non-adaptive solution
+
+        int solutionMode = solutionTypeFromStringKey(QString(solutionType));
 
         LocalValue *value = fieldInfo()->plugin()->localValue(fieldInfo(), timeStep, adaptivityStep, solutionMode, point);
         QMapIterator<QString, PointValue> it(value->values());
