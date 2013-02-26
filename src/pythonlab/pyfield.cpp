@@ -427,21 +427,25 @@ void PyField::localValues(const double x, const double y, int timeStep, int adap
 
         Point point(x, y);
 
-        // FIXME: (Franta) reference for non-adaptive solution
         if (!solutionTypeStringKeys().contains(QString(solutionType)))
             throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(solutionTypeStringKeys())).toStdString());
 
         SolutionMode solutionMode = solutionTypeFromStringKey(QString(solutionType));
 
+        // FIXME: (Franta) solutionMode have to be tested, but not here
+        // FIXME: (Franta) finer solution is nor supported yet
+        if (solutionMode != SolutionMode_Normal && fieldInfo()->adaptivityType() == AdaptivityType_None)
+            throw logic_error(QObject::tr("Reference solution doesn't exist.").toStdString());
+
         if (timeStep == -1)
             timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo(), solutionMode);
-        else if (timeStep < 0 || timeStep > Agros2D::problem()->numTimeLevels())
-            throw out_of_range(QObject::tr("Time step is out of range (0 - %1).").arg(Agros2D::problem()->numTimeLevels()).toStdString());
+        else if (timeStep < 0 || timeStep > Agros2D::problem()->numTimeLevels() - 1)
+            throw out_of_range(QObject::tr("Time step is out of range (0 - %1).").arg(Agros2D::problem()->numTimeLevels()-1).toStdString());
 
         if (adaptivityStep == -1)
             adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo(), solutionMode, timeStep);
-        else if (adaptivityStep < 0 || adaptivityStep > fieldInfo()->adaptivitySteps())
-                throw out_of_range(QObject::tr("Adaptivity step is out of range. (1 to %2).").arg(fieldInfo()->adaptivitySteps()).toStdString());
+        else if (adaptivityStep < 0 || adaptivityStep > fieldInfo()->adaptivitySteps()-1)
+                throw out_of_range(QObject::tr("Adaptivity step is out of range. (0 to %2).").arg(fieldInfo()->adaptivitySteps()-1).toStdString());
 
         LocalValue *value = fieldInfo()->plugin()->localValue(fieldInfo(), timeStep, adaptivityStep, solutionMode, point);
         QMapIterator<QString, PointValue> it(value->values());
@@ -472,7 +476,8 @@ void PyField::localValues(const double x, const double y, int timeStep, int adap
     results = values;
 }
 
-void PyField::surfaceIntegrals(vector<int> edges, map<std::string, double> &results)
+void PyField::surfaceIntegrals(vector<int> edges, int timeStep, int adaptivityStep,
+                               const char *solutionType, map<std::string, double> &results)
 {
     map<std::string, double> values;
 
@@ -510,10 +515,20 @@ void PyField::surfaceIntegrals(vector<int> edges, map<std::string, double> &resu
             Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnEdges);
         }
 
-        // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
-        int timeStep = Agros2D::solutionStore()->nearestTimeStep(fieldInfo(), currentPythonEngineAgros()->postHermes()->activeTimeStep());
-        int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo(), SolutionMode_Normal, timeStep);
-        int solutionMode = SolutionMode_Finer;
+        // FIXME: (Franta) solutionMode have to be tested, but not here
+        // FIXME: (Franta) finer solution is nor supported yet
+        if (solutionMode != SolutionMode_Normal && fieldInfo()->adaptivityType() == AdaptivityType_None)
+            throw logic_error(QObject::tr("Reference solution doesn't exist.").toStdString());
+
+        if (timeStep == -1)
+            timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo(), solutionMode);
+        else if (timeStep < 0 || timeStep > Agros2D::problem()->numTimeLevels() - 1)
+            throw out_of_range(QObject::tr("Time step is out of range (0 - %1).").arg(Agros2D::problem()->numTimeLevels()-1).toStdString());
+
+        if (adaptivityStep == -1)
+            adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo(), solutionMode, timeStep);
+        else if (adaptivityStep < 0 || adaptivityStep > fieldInfo()->adaptivitySteps()-1)
+                throw out_of_range(QObject::tr("Adaptivity step is out of range. (0 to %2).").arg(fieldInfo()->adaptivitySteps()-1).toStdString());
 
         IntegralValue *integral = fieldInfo()->plugin()->surfaceIntegral(fieldInfo(), timeStep, adaptivityStep, solutionMode);
         QMapIterator<QString, double> it(integral->values());
@@ -535,7 +550,8 @@ void PyField::surfaceIntegrals(vector<int> edges, map<std::string, double> &resu
     results = values;
 }
 
-void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &results)
+void PyField::volumeIntegrals(vector<int> labels, int timeStep, int adaptivityStep,
+                              const char *solutionType, map<std::string, double> &results)
 {
     map<std::string, double> values;
 
@@ -580,10 +596,20 @@ void PyField::volumeIntegrals(vector<int> labels, map<std::string, double> &resu
             Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnLabels);
         }
 
-        // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
-        int timeStep = Agros2D::solutionStore()->nearestTimeStep(fieldInfo(), currentPythonEngineAgros()->postHermes()->activeTimeStep());
-        int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo(), SolutionMode_Normal, timeStep);
-        int solutionMode = SolutionMode_Finer;
+        // FIXME: (Franta) solutionMode have to be tested, but not here
+        // FIXME: (Franta) finer solution is nor supported yet
+        if (solutionMode != SolutionMode_Normal && fieldInfo()->adaptivityType() == AdaptivityType_None)
+            throw logic_error(QObject::tr("Reference solution doesn't exist.").toStdString());
+
+        if (timeStep == -1)
+            timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo(), solutionMode);
+        else if (timeStep < 0 || timeStep > Agros2D::problem()->numTimeLevels() - 1)
+            throw out_of_range(QObject::tr("Time step is out of range (0 - %1).").arg(Agros2D::problem()->numTimeLevels()-1).toStdString());
+
+        if (adaptivityStep == -1)
+            adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo(), solutionMode, timeStep);
+        else if (adaptivityStep < 0 || adaptivityStep > fieldInfo()->adaptivitySteps()-1)
+                throw out_of_range(QObject::tr("Adaptivity step is out of range. (0 to %2).").arg(fieldInfo()->adaptivitySteps()-1).toStdString());
 
         IntegralValue *integral = fieldInfo()->plugin()->volumeIntegral(fieldInfo(), timeStep, adaptivityStep, solutionMode);
         QMapIterator<QString, double> it(integral->values());

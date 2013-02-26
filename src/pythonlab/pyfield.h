@@ -138,9 +138,9 @@ class PyField
         void removeMaterial(char *name);
 
         // local values, integrals
-        void localValues(const double x, const double y, int timeStep, int adaptivityStep, const char *solutionMode, map<std::string, double> &results);
-        void surfaceIntegrals(vector<int> edges, map<std::string, double> &results);
-        void volumeIntegrals(vector<int> labels, map<std::string, double> &results);
+        void localValues(const double x, const double y, int timeStep, int adaptivityStep, const char *solutionType, map<std::string, double> &results);
+        void surfaceIntegrals(vector<int> edges, int timeStep, int adaptivityStep, const char *solutionType, map<std::string, double> &results);
+        void volumeIntegrals(vector<int> labels, int timeStep, int adaptivityStep, const char *solutionType, map<std::string, double> &results);
 
         // mesh parameters
         void initialMeshParameters(map<std::string, int> &parameters);
