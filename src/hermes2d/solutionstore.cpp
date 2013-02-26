@@ -314,7 +314,7 @@ int SolutionStore::lastAdaptiveStep(Block *block, SolutionMode solutionType, int
 FieldSolutionID SolutionStore::lastTimeAndAdaptiveSolution(FieldInfo *fieldInfo, SolutionMode solutionType)
 {
     FieldSolutionID solutionID;
-    if(solutionType == SolutionMode_Finer) {
+    if (solutionType == SolutionMode_Finer) {
         FieldSolutionID solutionIDNormal = lastTimeAndAdaptiveSolution(fieldInfo, SolutionMode_Normal);
         FieldSolutionID solutionIDReference = lastTimeAndAdaptiveSolution(fieldInfo, SolutionMode_Reference);
         if((solutionIDNormal.timeStep > solutionIDReference.timeStep) ||

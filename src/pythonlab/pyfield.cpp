@@ -420,22 +420,21 @@ void PyField::localValues(const double x, const double y, int timeStep, int adap
 
         Point point(x, y);
 
+        // FIXME: (Franta) reference for non-adaptive solution
+        if (!solutionTypeStringKeys().contains(QString(solutionType)))
+            throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(solutionTypeStringKeys())).toStdString());
+
+        SolutionMode solutionMode = solutionTypeFromStringKey(QString(solutionType));
+
         if (timeStep == -1)
-            timeStep = Agros2D::solutionStore()->nearestTimeStep(fieldInfo(), currentPythonEngineAgros()->postHermes()->activeTimeStep());
+            timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo(), solutionMode);
         else if (timeStep < 0 || timeStep > Agros2D::problem()->numTimeLevels())
             throw out_of_range(QObject::tr("Time step is out of range (0 - %1).").arg(Agros2D::problem()->numTimeLevels()).toStdString());
 
         if (adaptivityStep == -1)
-            adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo(), SolutionMode_Normal, timeStep);
+            adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo(), solutionMode, timeStep);
         else if (adaptivityStep < 0 || adaptivityStep > fieldInfo()->adaptivitySteps())
                 throw out_of_range(QObject::tr("Adaptivity step is out of range. (1 to %2).").arg(fieldInfo()->adaptivitySteps()).toStdString());
-
-        if (!solutionTypeStringKeys().contains(QString(solutionType)))
-            throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(solutionTypeStringKeys())).toStdString());
-
-        // FIXME: (Franta) reference for non-adaptive solution
-
-        int solutionMode = solutionTypeFromStringKey(QString(solutionType));
 
         LocalValue *value = fieldInfo()->plugin()->localValue(fieldInfo(), timeStep, adaptivityStep, solutionMode, point);
         QMapIterator<QString, PointValue> it(value->values());

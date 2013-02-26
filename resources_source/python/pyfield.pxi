@@ -410,7 +410,7 @@ cdef class __Field__:
         return 0
 
     # local values
-    def local_values(self, double x, double y, time_step = None, adaptivity_step = None, char *solution_type = "finer"):
+    def local_values(self, double x, double y, time_step = None, adaptivity_step = None, char *solution_type = "normal"):
         out = dict()
         cdef map[string, double] results
 
