@@ -515,6 +515,8 @@ void PyField::surfaceIntegrals(vector<int> edges, int timeStep, int adaptivitySt
             Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnEdges);
         }
 
+        SolutionMode solutionMode = solutionTypeFromStringKey(QString(solutionType));
+
         // FIXME: (Franta) solutionMode have to be tested, but not here
         // FIXME: (Franta) finer solution is nor supported yet
         if (solutionMode != SolutionMode_Normal && fieldInfo()->adaptivityType() == AdaptivityType_None)
@@ -595,6 +597,8 @@ void PyField::volumeIntegrals(vector<int> labels, int timeStep, int adaptivitySt
         {
             Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnLabels);
         }
+
+        SolutionMode solutionMode = solutionTypeFromStringKey(QString(solutionType));
 
         // FIXME: (Franta) solutionMode have to be tested, but not here
         // FIXME: (Franta) finer solution is nor supported yet
