@@ -619,7 +619,7 @@ void PyField::volumeIntegrals(vector<int> labels, int timeStep, int adaptivitySt
         if (adaptivityStep == -1)
             adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo(), solutionMode, timeStep);
         else if (adaptivityStep < 0 || adaptivityStep > fieldInfo()->adaptivitySteps()-1)
-                throw out_of_range(QObject::tr("Adaptivity step is out of range. (0 to %2).").arg(fieldInfo()->adaptivitySteps()-1).toStdString());
+                throw out_of_range(QObject::tr("Adaptivity step is out of range. (0 to %1).").arg(fieldInfo()->adaptivitySteps()-1).toStdString());
 
         IntegralValue *integral = fieldInfo()->plugin()->volumeIntegral(fieldInfo(), timeStep, adaptivityStep, solutionMode);
         QMapIterator<QString, double> it(integral->values());

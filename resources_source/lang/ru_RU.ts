@@ -84,113 +84,88 @@
 <context>
     <name>ChartControlsWidget</name>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="269"/>
         <source>Variable:</source>
-        <translation>Переменная:</translation>
+        <translation type="obsolete">Переменная:</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="270"/>
         <source>Component:</source>
-        <translation>Компонент:</translation>
+        <translation type="obsolete">Компонент:</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="285"/>
         <source>Plot</source>
-        <translation>График</translation>
+        <translation type="obsolete">График</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="291"/>
         <source>Save image</source>
-        <translation>Сохранить изображение</translation>
+        <translation type="obsolete">Сохранить изображение</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="297"/>
         <source>Export</source>
-        <translation>Экспорт</translation>
+        <translation type="obsolete">Экспорт</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="323"/>
         <source>Start</source>
-        <translation>Начало</translation>
+        <translation type="obsolete">Начало</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="333"/>
         <source>End</source>
-        <translation>Конец</translation>
+        <translation type="obsolete">Конец</translation>
     </message>
     <message>
         <source>Angle</source>
         <translation type="obsolete">Угол</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="337"/>
         <source>Length</source>
-        <translation>Длина</translation>
+        <translation type="obsolete">Длина</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="359"/>
         <source>Horizontal axis</source>
-        <translation>Горизонтальная ось</translation>
+        <translation type="obsolete">Горизонтальная ось</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="367"/>
         <source>Reverse</source>
-        <translation>Реверсировать</translation>
+        <translation type="obsolete">Реверсировать</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="372"/>
         <source>Points:</source>
-        <translation>Точки:</translation>
+        <translation type="obsolete">Точки:</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="376"/>
         <source>Points and time step</source>
-        <translation>Точки и временной шаг</translation>
+        <translation type="obsolete">Точки и временной шаг</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="394"/>
         <source>Point</source>
-        <translation>Точка</translation>
+        <translation type="obsolete">Точка</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="425"/>
         <source>Geometry</source>
-        <translation>Геометрия</translation>
+        <translation type="obsolete">Геометрия</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="426"/>
         <source>Time</source>
-        <translation>Время</translation>
+        <translation type="obsolete">Время</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="494"/>
         <source>Length (m)</source>
-        <translation>Длина (м)</translation>
+        <translation type="obsolete">Длина (м)</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="573"/>
         <source>time (s)</source>
-        <translation>Время (с)</translation>
+        <translation type="obsolete">Время (с)</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="687"/>
         <source>Scalar</source>
-        <translation>Скаляр</translation>
+        <translation type="obsolete">Скаляр</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="691"/>
         <source>Magnitude</source>
-        <translation>Модуль</translation>
+        <translation type="obsolete">Модуль</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="706"/>
         <source>Export data to file</source>
-        <translation>Экспорт данных в файл</translation>
-    </message>
-    <message>
-        <location filename="../../src/chartdialog.cpp" line="706"/>
-        <source>CSV files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Экспорт данных в файл</translation>
     </message>
     <message>
         <source>CSV files (*.csv);;Matlab/Octave script (*.m)</source>
@@ -198,17 +173,134 @@
     </message>
 </context>
 <context>
-    <name>ChartWidget</name>
+    <name>ChartView</name>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="163"/>
-        <location filename="../../src/chartdialog.cpp" line="165"/>
+        <location filename="../../src/chartdialog.cpp" line="176"/>
+        <location filename="../../src/chartdialog.cpp" line="178"/>
         <source>Chart</source>
-        <translation>График</translation>
+        <translation type="unfinished">График</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="164"/>
+        <location filename="../../src/chartdialog.cpp" line="177"/>
         <source>Ctrl+6</source>
-        <translation></translation>
+        <translation type="unfinished">Ctrl+6</translation>
+    </message>
+</context>
+<context>
+    <name>ChartWidget</name>
+    <message>
+        <source>Chart</source>
+        <translation type="obsolete">График</translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="273"/>
+        <source>Variable:</source>
+        <translation type="unfinished">Переменная:</translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="274"/>
+        <source>Component:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="276"/>
+        <source>Variable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="289"/>
+        <source>Apply</source>
+        <translation type="unfinished">Применить</translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="295"/>
+        <source>Save image</source>
+        <translation type="unfinished">Сохранить изображение</translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="301"/>
+        <source>Export</source>
+        <translation type="unfinished">Экспорт</translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="327"/>
+        <source>Start</source>
+        <translation type="unfinished">Начало</translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="337"/>
+        <source>End</source>
+        <translation type="unfinished">Конец</translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="341"/>
+        <source>Length</source>
+        <translation type="unfinished">Длина</translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="363"/>
+        <source>Horizontal axis</source>
+        <translation type="unfinished">Горизонтальная ось</translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="371"/>
+        <source>Reverse</source>
+        <translation type="unfinished">Реверсировать</translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="376"/>
+        <source>Points:</source>
+        <translation type="unfinished">Точки:</translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="380"/>
+        <source>Points and time step</source>
+        <translation type="unfinished">Точки и временной шаг</translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="398"/>
+        <source>Point</source>
+        <translation type="unfinished">Точка</translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="429"/>
+        <source>Geometry</source>
+        <translation type="unfinished">Геометрия</translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="430"/>
+        <source>Time</source>
+        <translation type="unfinished">Время</translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="492"/>
+        <source>Length (m)</source>
+        <translation type="unfinished">Длина (м)</translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="574"/>
+        <source>time (s)</source>
+        <translation type="unfinished">Время (с)</translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="694"/>
+        <source>Scalar</source>
+        <translation type="unfinished">Скаляр</translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="698"/>
+        <source>Magnitude</source>
+        <translation type="unfinished">Модуль</translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="713"/>
+        <source>Export data to file</source>
+        <translation type="unfinished">Экспорт данных в файл</translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="713"/>
+        <source>CSV files (*.csv)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1068,7 +1160,7 @@
 <context>
     <name>LocalPointValueDialog</name>
     <message>
-        <location filename="../../src/resultsview.cpp" line="257"/>
+        <location filename="../../src/resultsview.cpp" line="274"/>
         <source>Local point value</source>
         <translation>Значение в точке</translation>
     </message>
@@ -1145,114 +1237,114 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="253"/>
+        <location filename="../../src/mainwindow.cpp" line="256"/>
         <source>&amp;New...</source>
         <translation>&amp;Новый...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="255"/>
+        <location filename="../../src/mainwindow.cpp" line="258"/>
         <source>Create a new file</source>
         <translation>Создать новый файл</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="258"/>
+        <location filename="../../src/mainwindow.cpp" line="261"/>
         <source>&amp;Open...</source>
         <translation>&amp;Открыть...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="260"/>
+        <location filename="../../src/mainwindow.cpp" line="263"/>
         <source>Open an existing file</source>
         <translation>Открыть существующий файл</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="268"/>
+        <location filename="../../src/mainwindow.cpp" line="271"/>
         <source>&amp;Save</source>
         <translation>&amp;Сохранить</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="270"/>
+        <location filename="../../src/mainwindow.cpp" line="273"/>
         <source>Save project file to disk</source>
         <translation>Сохранить файл проекта на диск</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="273"/>
+        <location filename="../../src/mainwindow.cpp" line="276"/>
         <source>Save solution</source>
         <translation>Сохранить решение</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="274"/>
+        <location filename="../../src/mainwindow.cpp" line="277"/>
         <source>Save solution to disk</source>
         <translation>Сохранить решение на диск</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="277"/>
+        <location filename="../../src/mainwindow.cpp" line="280"/>
         <source>Save &amp;As...</source>
         <translation>Сохранить &amp;Как...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="279"/>
+        <location filename="../../src/mainwindow.cpp" line="282"/>
         <source>Save the file under a new name</source>
         <translation>Сохранить файл под новым именем</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="286"/>
+        <location filename="../../src/mainwindow.cpp" line="289"/>
         <source>&amp;Close</source>
         <translation>&amp;Закрыть</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="288"/>
+        <location filename="../../src/mainwindow.cpp" line="291"/>
         <source>Close the file</source>
         <translation>Закрыть файл</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="291"/>
+        <location filename="../../src/mainwindow.cpp" line="294"/>
         <source>Import DXF...</source>
         <translation>Импорт DXF...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="292"/>
+        <location filename="../../src/mainwindow.cpp" line="295"/>
         <source>Import AutoCAD DXF</source>
         <translation>Импорт AutoCAD DXF</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="295"/>
+        <location filename="../../src/mainwindow.cpp" line="298"/>
         <source>Export DXF...</source>
         <translation>Экспорт DXF...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="296"/>
+        <location filename="../../src/mainwindow.cpp" line="299"/>
         <source>Export AutoCAD DXF</source>
         <translation>Экспорт AutoCAD DXF</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="299"/>
+        <location filename="../../src/mainwindow.cpp" line="302"/>
         <source>Export mesh file...</source>
         <translation>Экспорт файла сетки...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="300"/>
+        <location filename="../../src/mainwindow.cpp" line="303"/>
         <source>Export Hermes2D mesh file</source>
         <translation>Экспорт файла сетки Hermes2D</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="303"/>
+        <location filename="../../src/mainwindow.cpp" line="306"/>
         <source>Export image...</source>
         <translation>Экспорт изображения</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="304"/>
-        <location filename="../../src/mainwindow.cpp" line="1177"/>
+        <location filename="../../src/mainwindow.cpp" line="307"/>
+        <location filename="../../src/mainwindow.cpp" line="1181"/>
         <source>Export image to file</source>
         <translation>Экспорт изображения в файл</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="307"/>
+        <location filename="../../src/mainwindow.cpp" line="310"/>
         <source>Export geometry...</source>
         <translation>Экспорт геометрии...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="308"/>
-        <location filename="../../src/mainwindow.cpp" line="1210"/>
+        <location filename="../../src/mainwindow.cpp" line="311"/>
+        <location filename="../../src/mainwindow.cpp" line="1214"/>
         <source>Export geometry to file</source>
         <translation>Экспорт геометрии в файл</translation>
     </message>
@@ -1261,288 +1353,288 @@
         <translation type="obsolete">Новый пример...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="311"/>
+        <location filename="../../src/mainwindow.cpp" line="314"/>
         <source>Open example...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="314"/>
+        <location filename="../../src/mainwindow.cpp" line="317"/>
         <source>Create &amp;video...</source>
         <translation>Создать &amp;видео</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="315"/>
+        <location filename="../../src/mainwindow.cpp" line="318"/>
         <source>Create video</source>
         <translation>Создать видео</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="318"/>
+        <location filename="../../src/mainwindow.cpp" line="321"/>
         <source>Load background...</source>
         <translation>Загрузить фон</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="319"/>
+        <location filename="../../src/mainwindow.cpp" line="322"/>
         <source>Load background image</source>
         <translation>Загрузить фоновое изображение</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="322"/>
+        <location filename="../../src/mainwindow.cpp" line="325"/>
         <source>E&amp;xit</source>
         <translation>Вы&amp;ход</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="323"/>
+        <location filename="../../src/mainwindow.cpp" line="326"/>
         <source>Ctrl+Q</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="324"/>
+        <location filename="../../src/mainwindow.cpp" line="327"/>
         <source>Exit the application</source>
         <translation>Выйти из приложения</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="331"/>
+        <location filename="../../src/mainwindow.cpp" line="334"/>
         <source>&amp;Undo</source>
         <translation>&amp;Отменить</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="333"/>
+        <location filename="../../src/mainwindow.cpp" line="336"/>
         <source>Undo operation</source>
         <translation>Отменить операцию</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="337"/>
+        <location filename="../../src/mainwindow.cpp" line="340"/>
         <source>&amp;Redo</source>
         <translation>&amp;Повторить</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="339"/>
+        <location filename="../../src/mainwindow.cpp" line="342"/>
         <source>Redo operation</source>
         <translation>Повторить операцию</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="341"/>
+        <location filename="../../src/mainwindow.cpp" line="344"/>
         <source>Copy image to clipboard</source>
         <translation>Скопировать изображение в буфер обмена</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="343"/>
+        <location filename="../../src/mainwindow.cpp" line="346"/>
         <source>Copy image from workspace to clipboard.</source>
         <translation>Скопировать изображение с рабочей области в буфер обмена.</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="346"/>
-        <location filename="../../src/mainwindow.cpp" line="580"/>
+        <location filename="../../src/mainwindow.cpp" line="349"/>
+        <location filename="../../src/mainwindow.cpp" line="583"/>
         <source>&amp;Help</source>
         <translation>&amp;Помощь</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="347"/>
+        <location filename="../../src/mainwindow.cpp" line="350"/>
         <source>Show help</source>
         <translation>Показать помощь</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="351"/>
+        <location filename="../../src/mainwindow.cpp" line="354"/>
         <source>&amp;Shortcuts</source>
         <translation>&amp;Сочетания клавиш</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="352"/>
+        <location filename="../../src/mainwindow.cpp" line="355"/>
         <source>Shortcuts</source>
         <translation>Сочетания клавиш</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="359"/>
+        <location filename="../../src/mainwindow.cpp" line="362"/>
         <source>&amp;Online help</source>
         <translation>&amp;Онлайн помощь</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="360"/>
+        <location filename="../../src/mainwindow.cpp" line="363"/>
         <source>Online help</source>
         <translation>Онлайн помощь</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="363"/>
-        <location filename="../../src/mainwindow.cpp" line="364"/>
+        <location filename="../../src/mainwindow.cpp" line="366"/>
+        <location filename="../../src/mainwindow.cpp" line="367"/>
         <source>Check version</source>
         <translation>Проверить обновления</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="367"/>
+        <location filename="../../src/mainwindow.cpp" line="370"/>
         <source>About &amp;Agros2D</source>
         <translation>О &amp;Agros2D</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="368"/>
+        <location filename="../../src/mainwindow.cpp" line="371"/>
         <source>Show the application&apos;s About box</source>
         <translation>Показать окно &quot;О приложении&quot;</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="372"/>
+        <location filename="../../src/mainwindow.cpp" line="375"/>
         <source>About &amp;Qt</source>
         <translation>О &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="373"/>
+        <location filename="../../src/mainwindow.cpp" line="376"/>
         <source>Show the Qt library&apos;s About box</source>
         <translation>Показать окно &quot;О Qt&quot;</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="377"/>
+        <location filename="../../src/mainwindow.cpp" line="380"/>
         <source>&amp;Options</source>
         <translation>&amp;Опции</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="378"/>
+        <location filename="../../src/mainwindow.cpp" line="381"/>
         <source>Options</source>
         <translation>Опции</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="382"/>
+        <location filename="../../src/mainwindow.cpp" line="385"/>
         <source>&amp;Mesh area</source>
         <translation>&amp;Область сетки</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="383"/>
+        <location filename="../../src/mainwindow.cpp" line="386"/>
         <source>Alt+W</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="384"/>
+        <location filename="../../src/mainwindow.cpp" line="387"/>
         <source>Mesh area</source>
         <translation>Область сетки</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="387"/>
+        <location filename="../../src/mainwindow.cpp" line="390"/>
         <source>&amp;Solve</source>
         <translation>&amp;Решить</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="388"/>
+        <location filename="../../src/mainwindow.cpp" line="391"/>
         <source>Alt+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="389"/>
+        <location filename="../../src/mainwindow.cpp" line="392"/>
         <source>Solve problem</source>
         <translation>Решить проблему</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="392"/>
+        <location filename="../../src/mainwindow.cpp" line="395"/>
         <source>Adaptive
 step</source>
         <translation>Адаптивный шаг</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="393"/>
+        <location filename="../../src/mainwindow.cpp" line="396"/>
         <source>Adaptivity step</source>
         <translation>Шаг адаптивности</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="396"/>
+        <location filename="../../src/mainwindow.cpp" line="399"/>
         <source>Fullscreen mode</source>
         <translation>Полноэкранный режим</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="397"/>
+        <location filename="../../src/mainwindow.cpp" line="400"/>
         <source>F11</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="403"/>
+        <location filename="../../src/mainwindow.cpp" line="406"/>
         <source>PythonLab</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="404"/>
+        <location filename="../../src/mainwindow.cpp" line="407"/>
         <source>Script editor</source>
         <translation>Редактор скриптов</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="408"/>
+        <location filename="../../src/mainwindow.cpp" line="411"/>
         <source>Run &amp;script...</source>
         <translation>Выполнить &amp;скрипт...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="409"/>
+        <location filename="../../src/mainwindow.cpp" line="412"/>
         <source>Run script...</source>
         <translation>Выполнить скрипт</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="416"/>
+        <location filename="../../src/mainwindow.cpp" line="419"/>
         <source>Material browser...</source>
         <translation>Материалы...</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="417"/>
+        <location filename="../../src/mainwindow.cpp" line="420"/>
         <source>Ctrl+M</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="418"/>
+        <location filename="../../src/mainwindow.cpp" line="421"/>
         <source>Material browser</source>
         <translation>Материалы</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="423"/>
-        <location filename="../../src/mainwindow.cpp" line="425"/>
+        <location filename="../../src/mainwindow.cpp" line="426"/>
+        <location filename="../../src/mainwindow.cpp" line="428"/>
         <source>Zoom in</source>
         <translation>Увеличить</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="427"/>
-        <location filename="../../src/mainwindow.cpp" line="429"/>
+        <location filename="../../src/mainwindow.cpp" line="430"/>
+        <location filename="../../src/mainwindow.cpp" line="432"/>
         <source>Zoom out</source>
         <translation>Уменьшить</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="431"/>
+        <location filename="../../src/mainwindow.cpp" line="434"/>
         <source>Zoom best fit</source>
         <translation>Вписать</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="432"/>
+        <location filename="../../src/mainwindow.cpp" line="435"/>
         <source>Ctrl+0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="433"/>
+        <location filename="../../src/mainwindow.cpp" line="436"/>
         <source>Best fit</source>
         <translation>Наилучший размер</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="435"/>
-        <location filename="../../src/mainwindow.cpp" line="436"/>
+        <location filename="../../src/mainwindow.cpp" line="438"/>
+        <location filename="../../src/mainwindow.cpp" line="439"/>
         <source>Zoom region</source>
         <translation>Увеличить область</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="449"/>
+        <location filename="../../src/mainwindow.cpp" line="452"/>
         <source>Show/hide control panel</source>
         <translation>Показать/скрыть панель управления</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="450"/>
+        <location filename="../../src/mainwindow.cpp" line="453"/>
         <source>Alt+0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="467"/>
+        <location filename="../../src/mainwindow.cpp" line="470"/>
         <source>&amp;Recent files</source>
         <translation>&amp;Последние файлы</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="468"/>
+        <location filename="../../src/mainwindow.cpp" line="471"/>
         <source>Import/Export</source>
         <translation>Импорт/Экспорт</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="485"/>
+        <location filename="../../src/mainwindow.cpp" line="488"/>
         <source>&amp;File</source>
         <translation>&amp;Файл</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="504"/>
+        <location filename="../../src/mainwindow.cpp" line="507"/>
         <source>E&amp;dit</source>
         <translation>&amp;Редактировать</translation>
     </message>
@@ -1551,130 +1643,130 @@ step</source>
         <translation type="obsolete">Проекция</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="519"/>
+        <location filename="../../src/mainwindow.cpp" line="522"/>
         <source>Panels</source>
         <translation>Панели</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="525"/>
+        <location filename="../../src/mainwindow.cpp" line="528"/>
         <source>&amp;View</source>
         <translation>&amp;Вид</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="548"/>
+        <location filename="../../src/mainwindow.cpp" line="551"/>
         <source>&amp;Problem</source>
         <translation>&amp;Проблема</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="549"/>
+        <location filename="../../src/mainwindow.cpp" line="552"/>
         <source>&amp;Add</source>
         <translation>&amp;Добавить</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="567"/>
+        <location filename="../../src/mainwindow.cpp" line="570"/>
         <source>&amp;Tools</source>
         <translation>&amp;Инструментарий</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="605"/>
+        <location filename="../../src/mainwindow.cpp" line="608"/>
         <source>File</source>
         <translation>Файл</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="620"/>
+        <location filename="../../src/mainwindow.cpp" line="623"/>
         <source>View</source>
         <translation>Вид</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="630"/>
+        <location filename="../../src/mainwindow.cpp" line="633"/>
         <source>Zoom</source>
         <translation>Масштабирование</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="638"/>
+        <location filename="../../src/mainwindow.cpp" line="641"/>
         <source>Geometry</source>
         <translation>Геометрия</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="657"/>
+        <location filename="../../src/mainwindow.cpp" line="660"/>
         <source>Postprocessor 2D</source>
         <translation>Постпроцессор 2D</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="953"/>
+        <location filename="../../src/mainwindow.cpp" line="957"/>
         <source>Open file</source>
         <translation>Открыть файл</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="953"/>
+        <location filename="../../src/mainwindow.cpp" line="957"/>
         <source>Agros2D files (*.a2d *.py);;Agros2D data files (*.a2d);;Python script (*.py)</source>
         <translation>Файлы Agros2D (*.a2d *.py);;Файлы данных Agros2D (*.a2d);;Python скрипт (*.py)</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1012"/>
         <location filename="../../src/mainwindow.cpp" line="1016"/>
-        <location filename="../../src/mainwindow.cpp" line="1427"/>
+        <location filename="../../src/mainwindow.cpp" line="1020"/>
+        <location filename="../../src/mainwindow.cpp" line="1431"/>
         <source>File open</source>
         <translation>Открытый файл</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1012"/>
+        <location filename="../../src/mainwindow.cpp" line="1016"/>
         <source>Unknown suffix.</source>
         <translation>Неизвестный суффикс</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1016"/>
+        <location filename="../../src/mainwindow.cpp" line="1020"/>
         <source>File &apos;%1&apos; is not found.</source>
         <translation>Файл &apos;%1&apos; не найден.</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1084"/>
+        <location filename="../../src/mainwindow.cpp" line="1088"/>
         <source>Save file</source>
         <translation>Сохранить файл</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1084"/>
+        <location filename="../../src/mainwindow.cpp" line="1088"/>
         <source>Agros2D files (*.a2d)</source>
         <translation>Файлы Agros2D (*.a2d)</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1143"/>
+        <location filename="../../src/mainwindow.cpp" line="1147"/>
         <source>Import file</source>
         <translation>Импорт файла</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1143"/>
-        <location filename="../../src/mainwindow.cpp" line="1160"/>
+        <location filename="../../src/mainwindow.cpp" line="1147"/>
+        <location filename="../../src/mainwindow.cpp" line="1164"/>
         <source>DXF files (*.dxf)</source>
         <translation>DXF файлы (*.dxf)</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1160"/>
+        <location filename="../../src/mainwindow.cpp" line="1164"/>
         <source>Export file</source>
         <translation>Экспорт файла</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1177"/>
+        <location filename="../../src/mainwindow.cpp" line="1181"/>
         <source>PNG files (*.png)</source>
         <translation>PNG файлы (*.png)</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1211"/>
+        <location filename="../../src/mainwindow.cpp" line="1215"/>
         <source>SVG files (*.svg)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1659"/>
+        <location filename="../../src/mainwindow.cpp" line="1652"/>
         <source>Mesh files (*.mesh)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1676"/>
+        <location filename="../../src/mainwindow.cpp" line="1669"/>
         <source>The problem is not meshed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1676"/>
+        <location filename="../../src/mainwindow.cpp" line="1669"/>
         <source>Problem</source>
         <translation type="unfinished">Проблема</translation>
     </message>
@@ -1683,43 +1775,43 @@ step</source>
         <translation type="obsolete">PDF файлы (*.pdf);;EPS файлы (*.eps);;SVG файлы (*.svg)</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1262"/>
+        <location filename="../../src/mainwindow.cpp" line="1266"/>
         <source>Mesh</source>
         <translation>Сетка</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1279"/>
+        <location filename="../../src/mainwindow.cpp" line="1283"/>
         <source>Solver</source>
         <translation>Решатель</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1315"/>
+        <location filename="../../src/mainwindow.cpp" line="1319"/>
         <source>Adaptive step</source>
         <translation>Адаптивный шаг</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1398"/>
+        <location filename="../../src/mainwindow.cpp" line="1402"/>
         <source>Open File</source>
         <translation>Открыть файл</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1398"/>
+        <location filename="../../src/mainwindow.cpp" line="1402"/>
         <source>Python script (*.py)</source>
         <translation>Python скрипт (*.py)</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1407"/>
+        <location filename="../../src/mainwindow.cpp" line="1411"/>
         <source>Run script: %1
 </source>
         <translation>Выполнить скрипт: %</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1427"/>
+        <location filename="../../src/mainwindow.cpp" line="1431"/>
         <source>File &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Файл &apos;%1&apos; не существует.</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1659"/>
+        <location filename="../../src/mainwindow.cpp" line="1652"/>
         <source>Export mesh file</source>
         <translation>Экспорт файла сетки</translation>
     </message>
@@ -2721,123 +2813,166 @@ step</source>
         <translation type="unfinished">Показать точки</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="130"/>
+        <location filename="../../src/sceneview_particle.cpp" line="131"/>
+        <source>General</source>
+        <translation type="unfinished">Общее</translation>
+    </message>
+    <message>
+        <location filename="../../src/sceneview_particle.cpp" line="144"/>
         <source>Initial particle position</source>
         <translation type="unfinished">Исходное положение частицы</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="140"/>
+        <location filename="../../src/sceneview_particle.cpp" line="154"/>
         <source>Initial particle velocity</source>
         <translation type="unfinished">Исходная скорость частицы</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="149"/>
+        <location filename="../../src/sceneview_particle.cpp" line="164"/>
         <source>Coefficient of restitution (-):</source>
         <translation type="unfinished">Коэффициент восстановления (-):</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="154"/>
-        <location filename="../../src/sceneview_particle.cpp" line="234"/>
+        <location filename="../../src/sceneview_particle.cpp" line="169"/>
+        <location filename="../../src/sceneview_particle.cpp" line="251"/>
         <source>Reflection</source>
         <translation type="unfinished">Отражение</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="159"/>
-        <location filename="../../src/sceneview_particle.cpp" line="171"/>
+        <location filename="../../src/sceneview_particle.cpp" line="174"/>
+        <location filename="../../src/sceneview_particle.cpp" line="186"/>
         <source>Equation:</source>
         <translation type="unfinished">Уравнение:</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="161"/>
+        <location filename="../../src/sceneview_particle.cpp" line="176"/>
         <source>Charge (C):</source>
         <translation type="unfinished">Заряд (Кл):</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="164"/>
+        <location filename="../../src/sceneview_particle.cpp" line="179"/>
         <source>Lorentz force</source>
         <translation type="unfinished">Сила Лоренца</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="173"/>
+        <location filename="../../src/sceneview_particle.cpp" line="188"/>
         <source>Density (kg/m&lt;sup&gt;3&lt;/sup&gt;):</source>
         <translation type="unfinished">Плотность (кг/м&lt;sup&gt;3&lt;/sup&gt;):</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="175"/>
+        <location filename="../../src/sceneview_particle.cpp" line="190"/>
         <source>Reference area (m&lt;sup&gt;2&lt;/sup&gt;):</source>
         <translation type="unfinished">Площадь (м&lt;sup&gt;2&lt;/sup&gt;):</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="177"/>
+        <location filename="../../src/sceneview_particle.cpp" line="192"/>
         <source>Coefficient (-):</source>
         <translation type="unfinished">Коэффициент (-):</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="180"/>
+        <location filename="../../src/sceneview_particle.cpp" line="195"/>
         <source>Drag force</source>
         <translation type="unfinished">Тормозящая сила</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="192"/>
+        <location filename="../../src/sceneview_particle.cpp" line="207"/>
         <source>Custom force</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="209"/>
+        <location filename="../../src/sceneview_particle.cpp" line="225"/>
         <source>Maximum relative error (%):</source>
         <translation type="unfinished">Макс. относительная погрешность (%):</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="211"/>
+        <location filename="../../src/sceneview_particle.cpp" line="227"/>
         <source>Minimum step (m):</source>
         <translation type="unfinished">Минимальный шаг (м):</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="213"/>
+        <location filename="../../src/sceneview_particle.cpp" line="229"/>
         <source>Maximum number of steps:</source>
         <translation type="unfinished">Максимальное количество шагов:</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="218"/>
-        <location filename="../../src/sceneview_particle.cpp" line="235"/>
+        <location filename="../../src/sceneview_particle.cpp" line="234"/>
+        <location filename="../../src/sceneview_particle.cpp" line="252"/>
         <source>Solver</source>
         <translation type="unfinished">Решатель</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="228"/>
-        <location filename="../../src/sceneview_particle.cpp" line="236"/>
+        <location filename="../../src/sceneview_particle.cpp" line="245"/>
+        <location filename="../../src/sceneview_particle.cpp" line="253"/>
         <source>Settings</source>
         <translation type="unfinished">Настройки</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="233"/>
+        <location filename="../../src/sceneview_particle.cpp" line="250"/>
         <source>Forces</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="240"/>
+        <location filename="../../src/sceneview_particle.cpp" line="122"/>
         <source>Equations:</source>
         <translation type="unfinished">Уравнения:</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="242"/>
+        <location filename="../../src/sceneview_particle.cpp" line="124"/>
         <source>Number of particles:</source>
         <translation type="unfinished">Кол-во частиц:</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="244"/>
+        <location filename="../../src/sceneview_particle.cpp" line="126"/>
         <source>Particles dispersion (m):</source>
         <translation type="unfinished">Дисперсия частиц (м):</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="246"/>
+        <location filename="../../src/sceneview_particle.cpp" line="128"/>
         <source>Mass (kg):</source>
         <translation type="unfinished">Масса (кг)</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="261"/>
+        <location filename="../../src/sceneview_particle.cpp" line="270"/>
         <source>Apply</source>
         <translation type="unfinished">Применить</translation>
+    </message>
+</context>
+<context>
+    <name>PhysicalFieldWidget</name>
+    <message>
+        <location filename="../../src/gui/physicalfield.cpp" line="36"/>
+        <source>Time step:</source>
+        <translation type="unfinished">Временной шаг:</translation>
+    </message>
+    <message>
+        <location filename="../../src/gui/physicalfield.cpp" line="46"/>
+        <source>Transient analysis</source>
+        <translation type="unfinished">Анализ переходных процессов</translation>
+    </message>
+    <message>
+        <location filename="../../src/gui/physicalfield.cpp" line="51"/>
+        <source>Adaptivity step:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/gui/physicalfield.cpp" line="54"/>
+        <source>Adaptivity type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/gui/physicalfield.cpp" line="65"/>
+        <source>Space adaptivity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/gui/physicalfield.cpp" line="72"/>
+        <source>Physical field:</source>
+        <translation type="unfinished">Физическое поле:</translation>
+    </message>
+    <message>
+        <location filename="../../src/gui/physicalfield.cpp" line="77"/>
+        <source>Postprocessor settings</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2944,93 +3079,93 @@ step</source>
         <translation>Применить</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="288"/>
+        <location filename="../../src/postprocessorview.cpp" line="285"/>
         <source>Initial mesh</source>
         <translation>Исходная сетка</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="289"/>
+        <location filename="../../src/postprocessorview.cpp" line="286"/>
         <source>Solution mesh</source>
         <translation>Финальная сетка</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="290"/>
-        <location filename="../../src/postprocessorview.cpp" line="332"/>
+        <location filename="../../src/postprocessorview.cpp" line="287"/>
+        <location filename="../../src/postprocessorview.cpp" line="329"/>
         <source>Polynomial order</source>
         <translation>Порядок полинома</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="298"/>
+        <location filename="../../src/postprocessorview.cpp" line="295"/>
         <source>Mesh</source>
         <translation>Сетка</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="308"/>
+        <location filename="../../src/postprocessorview.cpp" line="305"/>
         <source>Hermes</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="309"/>
+        <location filename="../../src/postprocessorview.cpp" line="306"/>
         <source>Jet</source>
         <translation>Реактивная струя</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="310"/>
+        <location filename="../../src/postprocessorview.cpp" line="307"/>
         <source>Copper</source>
         <translation>Медь</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="311"/>
+        <location filename="../../src/postprocessorview.cpp" line="308"/>
         <source>Hot</source>
         <translation>Жар</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="312"/>
+        <location filename="../../src/postprocessorview.cpp" line="309"/>
         <source>Cool</source>
         <translation>Прохлада</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="313"/>
+        <location filename="../../src/postprocessorview.cpp" line="310"/>
         <source>Bone</source>
         <translation>Скелет</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="314"/>
+        <location filename="../../src/postprocessorview.cpp" line="311"/>
         <source>Pink</source>
         <translation>Розовый</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="315"/>
+        <location filename="../../src/postprocessorview.cpp" line="312"/>
         <source>Spring</source>
         <translation>Весна</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="316"/>
+        <location filename="../../src/postprocessorview.cpp" line="313"/>
         <source>Summer</source>
         <translation>Лето</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="317"/>
+        <location filename="../../src/postprocessorview.cpp" line="314"/>
         <source>Autumn</source>
         <translation>Осень</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="318"/>
+        <location filename="../../src/postprocessorview.cpp" line="315"/>
         <source>Winter</source>
         <translation>Зима</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="319"/>
+        <location filename="../../src/postprocessorview.cpp" line="316"/>
         <source>HSV</source>
         <translation>HSV</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="320"/>
+        <location filename="../../src/postprocessorview.cpp" line="317"/>
         <source>B/W ascending</source>
         <translation>Ч/Б восходящий</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="321"/>
+        <location filename="../../src/postprocessorview.cpp" line="318"/>
         <source>B/W descending</source>
         <translation>Ч/Б нисходящий</translation>
     </message>
@@ -3047,18 +3182,18 @@ step</source>
         <translation type="obsolete">Палитра порядка:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="341"/>
+        <location filename="../../src/postprocessorview.cpp" line="338"/>
         <source>Contours</source>
         <translation>Контуры</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="343"/>
+        <location filename="../../src/postprocessorview.cpp" line="340"/>
         <source>Vectors</source>
         <translation>Векторы</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="345"/>
-        <location filename="../../src/postprocessorview.cpp" line="456"/>
+        <location filename="../../src/postprocessorview.cpp" line="342"/>
+        <location filename="../../src/postprocessorview.cpp" line="453"/>
         <source>Scalar view</source>
         <translation>Скалярный вид</translation>
     </message>
@@ -3067,39 +3202,39 @@ step</source>
         <translation type="obsolete">Трассировка частиц</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="357"/>
+        <location filename="../../src/postprocessorview.cpp" line="354"/>
         <source>Postprocessor 2D</source>
         <translation>Постпроцессор 2D</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="370"/>
+        <location filename="../../src/postprocessorview.cpp" line="367"/>
         <source>Auto range</source>
         <translation>Авто диапазон</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="378"/>
-        <location filename="../../src/postprocessorview.cpp" line="402"/>
-        <location filename="../../src/postprocessorview.cpp" line="424"/>
+        <location filename="../../src/postprocessorview.cpp" line="375"/>
+        <location filename="../../src/postprocessorview.cpp" line="399"/>
+        <location filename="../../src/postprocessorview.cpp" line="421"/>
         <source>Variable:</source>
         <translation>Переменная:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="380"/>
+        <location filename="../../src/postprocessorview.cpp" line="377"/>
         <source>Component:</source>
         <translation>Компонента:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="384"/>
+        <location filename="../../src/postprocessorview.cpp" line="381"/>
         <source>Scalar field</source>
         <translation>Скалярное поле</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="406"/>
+        <location filename="../../src/postprocessorview.cpp" line="403"/>
         <source>Contour field</source>
         <translation>Контурное поле</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="428"/>
+        <location filename="../../src/postprocessorview.cpp" line="425"/>
         <source>Vector field</source>
         <translation>Векторное поле</translation>
     </message>
@@ -3108,58 +3243,51 @@ step</source>
         <translation type="obsolete">Трассировка частиц</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="444"/>
+        <location filename="../../src/postprocessorview.cpp" line="441"/>
         <source>Solid view</source>
         <translation>Твердотельный вид</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="455"/>
+        <location filename="../../src/postprocessorview.cpp" line="452"/>
         <source>None</source>
         <translation>Нет</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="457"/>
+        <location filename="../../src/postprocessorview.cpp" line="454"/>
         <source>Scalar view solid</source>
         <translation>Скалярный твердотельный вид</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="477"/>
+        <location filename="../../src/postprocessorview.cpp" line="474"/>
         <source>Postprocessor 3D</source>
         <translation>Постпроцессор 3D</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="496"/>
         <source>Chart</source>
-        <translation>График</translation>
+        <translation type="obsolete">График</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="519"/>
         <source>Physical field:</source>
-        <translation>Физическое поле:</translation>
+        <translation type="obsolete">Физическое поле:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="522"/>
         <source>Physical field</source>
-        <translation>Физическое поле</translation>
+        <translation type="obsolete">Физическое поле</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="532"/>
         <source>Time step:</source>
-        <translation>Временной шаг:</translation>
+        <translation type="obsolete">Временной шаг:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="535"/>
         <source>Transient analysis</source>
-        <translation>Анализ переходных процессов</translation>
+        <translation type="obsolete">Анализ переходных процессов</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="546"/>
         <source>Step:</source>
-        <translation>Шаг:</translation>
+        <translation type="obsolete">Шаг:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="548"/>
-        <location filename="../../src/postprocessorview.cpp" line="762"/>
+        <location filename="../../src/postprocessorview.cpp" line="697"/>
         <source>Type:</source>
         <translation>Тип:</translation>
     </message>
@@ -3168,114 +3296,109 @@ step</source>
         <translation type="obsolete">Адаптивность</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="551"/>
-        <source>Space adaptivity</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/postprocessorview.cpp" line="620"/>
+        <location filename="../../src/postprocessorview.cpp" line="555"/>
         <source>Filter</source>
         <translation>Фильтр</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="629"/>
+        <location filename="../../src/postprocessorview.cpp" line="564"/>
         <source>Log. scale</source>
         <translation>Лог. шкала</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="648"/>
+        <location filename="../../src/postprocessorview.cpp" line="583"/>
         <source>Minimum:</source>
         <translation>Минимум:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="653"/>
+        <location filename="../../src/postprocessorview.cpp" line="588"/>
         <source>Maximum:</source>
         <translation>Максимум:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="658"/>
+        <location filename="../../src/postprocessorview.cpp" line="593"/>
         <source>Range</source>
         <translation>Диапазон</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="327"/>
-        <location filename="../../src/postprocessorview.cpp" line="664"/>
+        <location filename="../../src/postprocessorview.cpp" line="324"/>
+        <location filename="../../src/postprocessorview.cpp" line="599"/>
         <source>Palette:</source>
         <translation>Палитра:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="666"/>
+        <location filename="../../src/postprocessorview.cpp" line="601"/>
         <source>Quality:</source>
         <translation>Качество:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="668"/>
+        <location filename="../../src/postprocessorview.cpp" line="603"/>
         <source>Steps:</source>
         <translation>Шаги:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="671"/>
+        <location filename="../../src/postprocessorview.cpp" line="606"/>
         <source>Base:</source>
         <translation>База:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="675"/>
+        <location filename="../../src/postprocessorview.cpp" line="610"/>
         <source>Palette</source>
         <translation>Палитра</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="323"/>
-        <location filename="../../src/postprocessorview.cpp" line="684"/>
+        <location filename="../../src/postprocessorview.cpp" line="320"/>
+        <location filename="../../src/postprocessorview.cpp" line="619"/>
         <source>Show colorbar</source>
         <translation>Показать палитру</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="324"/>
+        <location filename="../../src/postprocessorview.cpp" line="321"/>
         <source>Show labels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="687"/>
+        <location filename="../../src/postprocessorview.cpp" line="622"/>
         <source>Decimal places:</source>
         <translation>Десятичные разряды:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="691"/>
+        <location filename="../../src/postprocessorview.cpp" line="626"/>
         <source>Colorbar</source>
         <translation>Палитра</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="721"/>
+        <location filename="../../src/postprocessorview.cpp" line="656"/>
         <source>Number of contours:</source>
         <translation>Количество контуров:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="723"/>
+        <location filename="../../src/postprocessorview.cpp" line="658"/>
         <source>Contour width:</source>
         <translation>Толщина контура:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="735"/>
+        <location filename="../../src/postprocessorview.cpp" line="670"/>
         <source>Proportional</source>
         <translation>Пропорциональный</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="736"/>
+        <location filename="../../src/postprocessorview.cpp" line="671"/>
         <source>Color (b/w)</source>
         <translation>Яркость (ч/б)</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="756"/>
+        <location filename="../../src/postprocessorview.cpp" line="691"/>
         <source>Number of vectors:</source>
         <translation>Количество векторов:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="759"/>
+        <location filename="../../src/postprocessorview.cpp" line="694"/>
         <source>Scale:</source>
         <translation>Масштаб:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="764"/>
+        <location filename="../../src/postprocessorview.cpp" line="699"/>
         <source>Center:</source>
         <translation>Центр:</translation>
     </message>
@@ -3380,12 +3503,12 @@ step</source>
         <translation type="obsolete">Масса (кг)</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="884"/>
+        <location filename="../../src/postprocessorview.cpp" line="755"/>
         <source>Scalar</source>
         <translation>Скаляр</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="888"/>
+        <location filename="../../src/postprocessorview.cpp" line="759"/>
         <source>Magnitude</source>
         <translation>Модуль</translation>
     </message>
@@ -3459,7 +3582,7 @@ step</source>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="283"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="543"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="535"/>
         <source>No fields defined</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3474,57 +3597,57 @@ step</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="471"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="463"/>
         <source>Total time is zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="473"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="465"/>
         <source>Time method tolerance is zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="490"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="482"/>
         <source>Could not create mesh</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="494"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="486"/>
         <source>Geometry assignment failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="499"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="491"/>
         <source>No field defined</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="525"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="531"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="537"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="543"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="548"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="597"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="517"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="523"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="529"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="535"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="540"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="581"/>
         <source>Solver</source>
         <translation type="unfinished">Решатель</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="525"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="517"/>
         <source>Coupling of more transient fields not possible at the moment.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="531"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="523"/>
         <source>Space adaptivity for transient coupled problems not possible at the moment.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="537"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="529"/>
         <source>Both space and time adaptivity at the same time not possible at the moment.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="548"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="540"/>
         <source>Matrix and RHS will be saved on the disk and this will slow down the calculation (you may disable it in appllication settings)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3533,29 +3656,29 @@ step</source>
         <translation type="obsolete">Внимание: матрица и правая часть будет сохранена на диск. Это может замедлить вычисления. Вы можете отключить сохранение тут: Редактировать-&gt;Опции-&gt;Меню решателя.</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="689"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="785"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="665"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="753"/>
         <source>Cannot create solver.</source>
         <translation>Невозможно создать решатель</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="860"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="955"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="828"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="923"/>
         <source>Problem</source>
         <translation type="unfinished">Проблема</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="860"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="828"/>
         <source>Loading initial mesh from disk</source>
         <translation>Загрузка исходной сетки с диска</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="912"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="880"/>
         <source>Marker index is out of range.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="955"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="923"/>
         <source>Loading spaces and solutions from disk</source>
         <translation>Загрузка пространств и решений с диска</translation>
     </message>
@@ -4195,13 +4318,13 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/hermes2d/coupling.cpp" line="89"/>
         <location filename="../../src/hermes2d/coupling.cpp" line="217"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="498"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="620"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="625"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="630"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="490"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="604"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="609"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="614"/>
         <location filename="../../src/hermes2d/solutiontypes.cpp" line="168"/>
         <location filename="../../src/hermes2d/solver.cpp" line="47"/>
-        <location filename="../../src/scene.cpp" line="1894"/>
+        <location filename="../../src/scene.cpp" line="1890"/>
         <source>Solver</source>
         <translation>Решатель</translation>
     </message>
@@ -4218,47 +4341,47 @@ Do you want to save your changes?</source>
         <translation type="obsolete">решение проблемы</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="339"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="331"/>
         <source>Mesh generation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="498"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="490"/>
         <source>No fields defined</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="681"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="778"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="657"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="746"/>
         <source>Solving problem</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="834"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="841"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="850"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="852"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="802"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="809"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="818"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="820"/>
         <location filename="../../src/hermes2d/solver.cpp" line="234"/>
         <source>Solver (%1)</source>
         <translation>Решатель (%1)</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="835"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="803"/>
         <source>Transient step %1 (%2%)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="842"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="810"/>
         <source>Transient step %1/%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="850"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="818"/>
         <source>Field solving (single analysis)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="852"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="820"/>
         <source>Fields solving (coupled analysis)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4279,7 +4402,7 @@ Do you want to save your changes?</source>
         <translation type="obsolete">сопряженный анализ</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="926"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="894"/>
         <source>Mesh reader (%1): boundary edges &apos;%2&apos; does not have a boundary condition</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4342,98 +4465,106 @@ Do you want to save your changes?</source>
         <translation type="obsolete">начальный врем. шаг</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="45"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="46"/>
+        <source>Invalid field id. Plugin %1 cannot be loaded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="52"/>
         <source>Invalid field id. Valid keys: %1</source>
         <translation>Неверный ID поля. Допустимые ключи: %1</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="66"/>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="91"/>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="157"/>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="37"/>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="45"/>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="53"/>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="69"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="73"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="98"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="164"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="431"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="519"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="605"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="38"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="46"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="54"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="70"/>
         <location filename="../../src/pythonlab/pyview.cpp" line="46"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="78"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="162"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="183"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="194"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="205"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="216"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="338"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="387"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="431"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="98"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="182"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="203"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="214"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="225"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="236"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="358"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="407"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="451"/>
         <source>Invalid argument. Valid keys: %1</source>
         <translation>Неверный аргумент. Допустимые ключи: %1</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="75"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="82"/>
         <source>Number of refinements is out of range (0 - 5).</source>
         <translation>Кол-во улучшений вне допустимого диапазона (0–5).</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="83"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="90"/>
         <source>Polynomial order is out of range (1 - 10).</source>
         <translation>Порядок полинома вне допустимого диапазона (1–10).</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="99"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="106"/>
         <source>Nonlinearity tolerance must be positive.</source>
         <translation>Допуск нелинейности должен быть положительным.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="107"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="114"/>
         <source>Nonlinearity steps must be higher than 1.</source>
         <translation>Кол-во нелинейных шагов должно быть больше одного.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="115"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="122"/>
         <source>Damping coefficient must be between 0 and 1 .</source>
         <translation>Коэф. демпфирования должен быть от 0 до 1. </translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="128"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="135"/>
         <source>Number of steps needed to increase the damping coefficient must be between 1 and 5 .</source>
         <translation>Кол-во шагов, необходимых для увеличения коэф. демпфирования должно быть от 1 до 5. </translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="141"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="148"/>
         <source>Anderson coefficient must be between 0 and 1 .</source>
         <translation>Коэф. Андерсона должен быть от 0 до 1.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="149"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="156"/>
         <source>Number of last vector must be between 1 and 5 .</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="165"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="172"/>
         <source>Adaptivity tolerance must be positive.</source>
         <translation>Допуск адаптивности должен быть положительным.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="173"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="180"/>
         <source>Adaptivity steps must be higher than 1.</source>
         <translation>Кол-во шагов адаптивности должно быть больше 1.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="181"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="188"/>
         <source>Adaptivity back steps must be positive.</source>
         <translation>Кол-во обратных шагов адаптивности должно быть положительным.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="189"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="196"/>
         <source>Adaptivity back steps must be higher than 1.</source>
         <translation>Кол-во обратных шагов адаптивности должно быть больше 1.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="202"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="209"/>
         <source>Time skip is out of range (0 - %1).</source>
         <translation>Врем. пропуск вне диапазона (0–%1).</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="211"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="218"/>
         <source>Boundary condition &apos;%1&apos; already exists.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4442,286 +4573,311 @@ Do you want to save your changes?</source>
         <translation type="obsolete">Граница &apos;%1&apos; уже существует.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="215"/>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="265"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="222"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="272"/>
         <source>Wrong boundary type &apos;%1&apos;.</source>
         <translation>Неверный тип границы &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="244"/>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="293"/>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="349"/>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="398"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="251"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="300"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="356"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="405"/>
         <source>Wrong parameter &apos;%1&apos;.</source>
         <translation>Неверный параметр &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="254"/>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="77"/>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="129"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="261"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="78"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="130"/>
         <source>Boundary condition &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Граничное условие &apos;%1&apos; не существует.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="311"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="318"/>
         <source>Material &apos;%1&apos; already exists.</source>
         <translation>Материал &apos;%1&apos; уже существует.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="329"/>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="378"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="336"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="385"/>
         <source>Size doesn&apos;t match (%1 &gt; %2).</source>
         <translation>Размеры не совпадают (%1 &gt; %2).</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="331"/>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="380"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="338"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="387"/>
         <source>Size doesn&apos;t match (%1 &lt; %2).</source>
         <translation>Размеры не совпадают (%1 &lt; %2).</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="363"/>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="188"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="370"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="189"/>
         <source>Material &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Материал &apos;%1&apos; не существует.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="445"/>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="503"/>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="569"/>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="595"/>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="614"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="438"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="526"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="612"/>
+        <source>Reference solution doesn&apos;t exist.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="443"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="531"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="617"/>
+        <source>Time step is out of range (0 - %1).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="448"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="536"/>
+        <source>Adaptivity step is out of range. (0 to %2).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="473"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="552"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="639"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="665"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="684"/>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="31"/>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="193"/>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="214"/>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="221"/>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="234"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="207"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="228"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="235"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="248"/>
         <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="580"/>
         <source>Problem is not solved.</source>
         <translation>Проблема не решена.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="475"/>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="292"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="504"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="293"/>
         <source>Edge index must be between 0 and &apos;%1&apos;.</source>
         <translation>Индекс ребра должен быть от 0 до &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="535"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="585"/>
         <source>Label with index &apos;%1&apos; is &apos;none&apos;.</source>
         <translation>Метка с индексом &apos;%1&apos; типа &apos;none&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="540"/>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="314"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="590"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="315"/>
         <source>Label index must be between 0 and &apos;%1&apos;.</source>
         <translation>Индекс метки должен быть от 0 до &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="578"/>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="409"/>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="169"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="622"/>
+        <source>Adaptivity step is out of range. (0 to %1).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="648"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="410"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="175"/>
         <source>Problem is not meshed.</source>
         <translation>Проблема не дискретизирована (нет сетки).</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyfield.cpp" line="629"/>
+        <location filename="../../src/pythonlab/pyfield.cpp" line="699"/>
         <source>Solution is not adaptive.</source>
         <translation>Решение не адаптивное.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="50"/>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="91"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="51"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="92"/>
         <source>Angle &apos;%1&apos; is out of range.</source>
         <translation>Угол &apos;%1&apos; вне диапазона.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="60"/>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="112"/>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="144"/>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="168"/>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="199"/>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="211"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="61"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="113"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="145"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="169"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="200"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="212"/>
         <source>Invalid field id &apos;%1&apos;.</source>
         <translation>Неверный ID поля &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="94"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="95"/>
         <source>Geometry does not contain nodes.</source>
         <translation>Геометрия не содержит узлов.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="97"/>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="99"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="98"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="100"/>
         <source>Node with index &apos;%1&apos; does not exist.</source>
         <translation>Узел с индексом &apos;%1&apos; не существует.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="147"/>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="202"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="148"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="203"/>
         <source>Number of refinements &apos;%1&apos; is out of range (0 - 10).</source>
         <translation>Кол-во улучшений &apos;%1&apos; вне допустимого диапазона (0–10).</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="156"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="157"/>
         <source>Area must be positive.</source>
         <translation>Площадь должна быть положительной.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="214"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="215"/>
         <source>Polynomial order &apos;%1&apos; is out of range (1 - 10).</source>
         <translation>Порядок полинома &apos;%1&apos; вне допустимого диапазона (1–10).</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="223"/>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="231"/>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="239"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="224"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="232"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="240"/>
         <source>Index &apos;%1&apos; is out of range.</source>
         <translation>Индекс &apos;%1&apos; вне диапазона.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pygeometry.cpp" line="270"/>
+        <location filename="../../src/pythonlab/pygeometry.cpp" line="271"/>
         <source>Node index must be between 0 and &apos;%1&apos;.</source>
         <translation>Индекс узла должен быть от 0 до &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="84"/>
+        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="82"/>
         <source>Number of particles must be bigger then 1.</source>
         <translation>Кол-во частиц должно быть больше 1.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="92"/>
+        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="90"/>
         <source>Particles dispersion must be possitive.</source>
         <translation>Дисперсия частиц должна быть положительной.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="113"/>
+        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="111"/>
         <source>The x coordinate is out of range.</source>
         <translation>Коорд. х вне диапазона.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="115"/>
+        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="113"/>
         <source>The y coordinate is out of range.</source>
         <translation>Коорд.у вне диапазона.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="128"/>
+        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="126"/>
         <source>Mass must be positive.</source>
         <translation>Масса должна быть положительной.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="141"/>
+        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="139"/>
         <source>Density cannot be negative.</source>
         <translation>Плотность не может быть отрицательной.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="149"/>
+        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="147"/>
         <source>Area cannot be negative.</source>
         <translation>Площадь не может быть отрицательной.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="157"/>
+        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="155"/>
         <source>Coefficient cannot be negative.</source>
         <translation>Коэф. не может быть отрицательным.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="194"/>
+        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="192"/>
         <source>Coefficient of restitution must be between 0 (collide inelastically) and 1 (collide elastically).</source>
         <translation>Коэффициент реституции должeн быть от 0 (неупругое столкновение) до 1 (упругое столкновение).</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="202"/>
+        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="200"/>
         <source>Tolerance cannot be negative.</source>
         <translation>Допуск не может быть отрицательным.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="210"/>
+        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="208"/>
         <source>Maximum number of steps cannot be negative.</source>
         <translation>Макс. кол-во шагов не может быть отрицательным.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="218"/>
+        <location filename="../../src/pythonlab/pyparticletracing.cpp" line="216"/>
         <source>Minimum step cannot be negative.</source>
         <translation>Минимальный шаг не может быть отрицательным.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="61"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="62"/>
         <source>The frequency must be positive.</source>
         <translation>Частота должна быть положительной.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="77"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="78"/>
         <source>Number of time method order must be greater then 1.</source>
         <translation>Число порядка временного метода должно быть больше 1.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="85"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="86"/>
         <source>The time method tolerance must be positive.</source>
         <translation>Допуск временного метода должен быть положительным.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="93"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="94"/>
         <source>Number of time steps must be greater then 1.</source>
         <translation>Кол-во шагов должно быть больше 1.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="101"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="102"/>
         <source>The total time must be positive.</source>
         <translation>Общее время должно быть положительным.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="113"/>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="128"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="114"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="129"/>
         <source>Coupling &apos;%1&apos; + &apos;%2&apos; doesn&apos;t exists.</source>
         <translation>Сопряжение &apos;%1&apos; + &apos;%2&apos; не существует.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="125"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="126"/>
         <source>Invalid coupling type key. Valid keys: %1</source>
         <translation>Неверный тип сопряжения. Допустимые ключи: %1</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="231"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="245"/>
         <source>Problem is not transient.</source>
         <translation>Проблема не является переходным процессом.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="52"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="57"/>
         <source>Time step must be in the range from 0 to %1.</source>
         <translation>Временной шаг должен быть от 0 до &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="62"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="77"/>
         <source>Adaptivity step for active field (%1) must be in the range from 0 to %2.</source>
         <translation>Адаптивный шаг для активного поля (%1) должен быть от 0 до %2.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="227"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="247"/>
         <source>Palette steps must be in the range from %1 to %2.</source>
         <translation>Диапазон палитры должен быть от %1 до &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="262"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="282"/>
         <source>Decimal place must be in the range from %1 to %2.</source>
         <translation>Десятичный разряд должен быть в диапазоне %1–%2.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="316"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="336"/>
         <source>Contour count must be in the range from %1 to %2.</source>
         <translation>Кол-во контуров должно быть от %1 до %2.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="357"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="377"/>
         <source>Vector count must be in the range from %1 to %2.</source>
         <translation>Кол-во векторов должно быть от %1 до %2.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="369"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="389"/>
         <source>Vector scale must be in the range from %1 to %2.</source>
         <translation>Шкала векторов должна быть от %1 до %2.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="451"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="471"/>
         <source>Image is not saved.</source>
         <translation>Не удалось сохранить изображение.</translation>
     </message>
@@ -4751,359 +4907,359 @@ Do you want to save your changes?</source>
         <translation>Крит.</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="260"/>
+        <location filename="../../src/util/enums.cpp" line="261"/>
         <source>H1 norm</source>
         <translation>H1 норма</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="262"/>
+        <location filename="../../src/util/enums.cpp" line="263"/>
         <source>L2 norm</source>
         <translation>L2 норма</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="264"/>
+        <location filename="../../src/util/enums.cpp" line="265"/>
         <source>H1 seminorm</source>
         <translation>H1 полунорма</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="266"/>
+        <location filename="../../src/util/enums.cpp" line="267"/>
         <source>Hdiv norm</source>
         <translation>Hdiv норма</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="268"/>
+        <location filename="../../src/util/enums.cpp" line="269"/>
         <source>Hcurl norm</source>
         <translation>Hcurl полунорма</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="280"/>
+        <location filename="../../src/util/enums.cpp" line="281"/>
         <source>Steady state</source>
         <translation>Стационарный</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="282"/>
+        <location filename="../../src/util/enums.cpp" line="283"/>
         <source>Transient</source>
         <translation>Переходный процесс</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="284"/>
+        <location filename="../../src/util/enums.cpp" line="285"/>
         <source>Harmonic</source>
         <translation>Гармонический</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="296"/>
+        <location filename="../../src/util/enums.cpp" line="297"/>
         <source>Not used</source>
         <translation>Не используется</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="298"/>
+        <location filename="../../src/util/enums.cpp" line="299"/>
         <source>Hard</source>
         <translation>Сильное</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="300"/>
+        <location filename="../../src/util/enums.cpp" line="301"/>
         <source>Weak</source>
         <translation>Слабое</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="312"/>
+        <location filename="../../src/util/enums.cpp" line="313"/>
         <source>Scalar</source>
         <translation>Скаляр</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="314"/>
+        <location filename="../../src/util/enums.cpp" line="315"/>
         <source>Magnitude</source>
         <translation>Модуль</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="320"/>
+        <location filename="../../src/util/enums.cpp" line="321"/>
         <source>Undefined</source>
         <translation>Не указано</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="326"/>
+        <location filename="../../src/util/enums.cpp" line="327"/>
         <source>Planar</source>
         <translation>Планарный</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="326"/>
+        <location filename="../../src/util/enums.cpp" line="327"/>
         <source>Axisymmetric</source>
         <translation>Осесимметричный</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="334"/>
-        <location filename="../../src/util/enums.cpp" line="460"/>
+        <location filename="../../src/util/enums.cpp" line="335"/>
+        <location filename="../../src/util/enums.cpp" line="461"/>
         <source>Normal</source>
         <translation>Нормальное</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="336"/>
+        <location filename="../../src/util/enums.cpp" line="337"/>
         <source>Reference</source>
         <translation>Уточнённое</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="338"/>
-        <location filename="../../src/util/enums.cpp" line="464"/>
+        <location filename="../../src/util/enums.cpp" line="339"/>
+        <location filename="../../src/util/enums.cpp" line="465"/>
         <source>Finer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="350"/>
+        <location filename="../../src/util/enums.cpp" line="351"/>
         <source>Disabled</source>
         <translation>Отключена</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="352"/>
+        <location filename="../../src/util/enums.cpp" line="353"/>
         <source>h-adaptivity</source>
         <translation>h-адаптивность</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="354"/>
+        <location filename="../../src/util/enums.cpp" line="355"/>
         <source>p-adaptivity</source>
         <translation>p-адаптивность</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="356"/>
+        <location filename="../../src/util/enums.cpp" line="357"/>
         <source>hp-adaptivity</source>
         <translation>hp-адаптивность</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="368"/>
+        <location filename="../../src/util/enums.cpp" line="369"/>
         <source>Fixed step</source>
         <translation>Фикс. шаг</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="370"/>
+        <location filename="../../src/util/enums.cpp" line="371"/>
         <source>Adaptive (tolerance)</source>
         <translation>Адаптивный (допуск)</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="372"/>
+        <location filename="../../src/util/enums.cpp" line="373"/>
         <source>Adaptive (num steps)</source>
         <translation>Адаптивный (кол. шагов)</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="384"/>
+        <location filename="../../src/util/enums.cpp" line="385"/>
         <source>Matrix volume</source>
         <translation type="unfinished">Матричный объем</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="386"/>
+        <location filename="../../src/util/enums.cpp" line="387"/>
         <source>Matrix surface</source>
         <translation type="unfinished">Матричная поверхность</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="388"/>
+        <location filename="../../src/util/enums.cpp" line="389"/>
         <source>Vector volume</source>
         <translation type="unfinished">Векторный объем</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="390"/>
+        <location filename="../../src/util/enums.cpp" line="391"/>
         <source>Vector surface</source>
         <translation type="unfinished">Векторная поверхность</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="402"/>
+        <location filename="../../src/util/enums.cpp" line="403"/>
         <source>Triangle</source>
         <translation>Triangle</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="404"/>
+        <location filename="../../src/util/enums.cpp" line="405"/>
         <source>Triangle - quad fine div.</source>
         <translation>Triangle — четырехугольная мелкая разделенная</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="406"/>
+        <location filename="../../src/util/enums.cpp" line="407"/>
         <source>Triangle - quad rough div.</source>
         <translation>Triangle — четырехугольная крупная разделенная</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="408"/>
+        <location filename="../../src/util/enums.cpp" line="409"/>
         <source>Triangle - quad join</source>
         <translation>Triangle — четырехугольная соединенная</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="410"/>
+        <location filename="../../src/util/enums.cpp" line="411"/>
         <source>GMSH - triangle</source>
         <translation>GMSH — треугольная</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="412"/>
+        <location filename="../../src/util/enums.cpp" line="413"/>
         <source>GMSH - quad</source>
         <translation>GMSH — четырёхугольная</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="414"/>
+        <location filename="../../src/util/enums.cpp" line="415"/>
         <source>GMSH - quad Delaunay (exp.)</source>
         <translation type="unfinished">GMSH — четырёхугольная Delaunay (эксп.)</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="452"/>
+        <location filename="../../src/util/enums.cpp" line="453"/>
         <source>Extremely coarse</source>
         <translation>Крупнейший</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="454"/>
+        <location filename="../../src/util/enums.cpp" line="455"/>
         <source>Extra coarse</source>
         <translation>Еще крупнее</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="456"/>
+        <location filename="../../src/util/enums.cpp" line="457"/>
         <source>Coarser</source>
         <translation>Крупнее</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="458"/>
+        <location filename="../../src/util/enums.cpp" line="459"/>
         <source>Coarse</source>
         <translation>Крупный</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="462"/>
+        <location filename="../../src/util/enums.cpp" line="463"/>
         <source>Fine</source>
         <translation>Мелкий</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="466"/>
+        <location filename="../../src/util/enums.cpp" line="467"/>
         <source>Extra fine</source>
         <translation>Мельчайший</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="478"/>
+        <location filename="../../src/util/enums.cpp" line="479"/>
         <source>Agros2D</source>
         <translation>Agros2D</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="480"/>
+        <location filename="../../src/util/enums.cpp" line="481"/>
         <source>Jet</source>
         <translation>Реактивная струя</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="482"/>
+        <location filename="../../src/util/enums.cpp" line="483"/>
         <source>Copper</source>
         <translation>Медь</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="484"/>
+        <location filename="../../src/util/enums.cpp" line="485"/>
         <source>Hot</source>
         <translation>Жар</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="486"/>
+        <location filename="../../src/util/enums.cpp" line="487"/>
         <source>Cool</source>
         <translation>Прохлада</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="488"/>
+        <location filename="../../src/util/enums.cpp" line="489"/>
         <source>Bone</source>
         <translation>Скелет</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="490"/>
+        <location filename="../../src/util/enums.cpp" line="491"/>
         <source>Pink</source>
         <translation>Розовый</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="492"/>
+        <location filename="../../src/util/enums.cpp" line="493"/>
         <source>Spring</source>
         <translation>Весна</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="494"/>
+        <location filename="../../src/util/enums.cpp" line="495"/>
         <source>Summer</source>
         <translation>Лето</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="496"/>
+        <location filename="../../src/util/enums.cpp" line="497"/>
         <source>Autumn</source>
         <translation>Осень</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="498"/>
+        <location filename="../../src/util/enums.cpp" line="499"/>
         <source>Winter</source>
         <translation>Зима</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="500"/>
+        <location filename="../../src/util/enums.cpp" line="501"/>
         <source>HSV</source>
         <translation>HSV</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="502"/>
+        <location filename="../../src/util/enums.cpp" line="503"/>
         <source>B/W ascending</source>
         <translation>Ч/Б восходящий</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="504"/>
+        <location filename="../../src/util/enums.cpp" line="505"/>
         <source>B/W descending</source>
         <translation>Ч/Б нисходящий</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="516"/>
+        <location filename="../../src/util/enums.cpp" line="517"/>
         <source>Arrow</source>
         <translation>Стрелка</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="518"/>
+        <location filename="../../src/util/enums.cpp" line="519"/>
         <source>Cone</source>
         <translation>Конус</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="530"/>
+        <location filename="../../src/util/enums.cpp" line="531"/>
         <source>Tail</source>
         <translation>Хвост</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="532"/>
+        <location filename="../../src/util/enums.cpp" line="533"/>
         <source>Head</source>
         <translation>Голова</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="534"/>
+        <location filename="../../src/util/enums.cpp" line="535"/>
         <source>Center</source>
         <translation>Центр</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="546"/>
+        <location filename="../../src/util/enums.cpp" line="547"/>
         <source>UMFPACK</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="548"/>
+        <location filename="../../src/util/enums.cpp" line="549"/>
         <source>PETSc</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="550"/>
+        <location filename="../../src/util/enums.cpp" line="551"/>
         <source>MUMPS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="552"/>
+        <location filename="../../src/util/enums.cpp" line="553"/>
         <source>SuperLU</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="554"/>
+        <location filename="../../src/util/enums.cpp" line="555"/>
         <source>Trilinos/Amesos</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="556"/>
+        <location filename="../../src/util/enums.cpp" line="557"/>
         <source>Trilinos/AztecOO</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="568"/>
+        <location filename="../../src/util/enums.cpp" line="569"/>
         <source>Linear</source>
         <translation>Линейный</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="570"/>
+        <location filename="../../src/util/enums.cpp" line="571"/>
         <source>Picard&apos;s method</source>
         <translation>Метод Пикара</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="572"/>
+        <location filename="../../src/util/enums.cpp" line="573"/>
         <source>Newton&apos;s method</source>
         <translation>Метод Ньютона</translation>
     </message>
@@ -5140,14 +5296,14 @@ Do you want to save your changes?</source>
         <translation type="obsolete">Решение</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1894"/>
+        <location filename="../../src/scene.cpp" line="1890"/>
         <source>Access denied &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="339"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="681"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="778"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="331"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="657"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="746"/>
         <location filename="../../src/value.cpp" line="237"/>
         <source>Problem</source>
         <translation type="unfinished">Проблема</translation>
@@ -5298,27 +5454,27 @@ Do you want to save your changes?</source>
 <context>
     <name>ResultsView</name>
     <message>
-        <location filename="../../src/resultsview.cpp" line="38"/>
+        <location filename="../../src/resultsview.cpp" line="40"/>
         <source>Results view</source>
         <translation>Результаты</translation>
     </message>
     <message>
-        <location filename="../../src/resultsview.cpp" line="101"/>
+        <location filename="../../src/resultsview.cpp" line="103"/>
         <source>Local point values</source>
         <translation>Значения в точке</translation>
     </message>
     <message>
-        <location filename="../../src/resultsview.cpp" line="172"/>
+        <location filename="../../src/resultsview.cpp" line="179"/>
         <source>Volume integrals</source>
         <translation>Объёмные интегралы</translation>
     </message>
     <message>
-        <location filename="../../src/resultsview.cpp" line="213"/>
+        <location filename="../../src/resultsview.cpp" line="225"/>
         <source>Surface integrals</source>
         <translation>Поверхностные интегралы</translation>
     </message>
     <message>
-        <location filename="../../src/resultsview.cpp" line="247"/>
+        <location filename="../../src/resultsview.cpp" line="264"/>
         <source>Problem is not solved.</source>
         <translation>Проблема не решена.</translation>
     </message>
@@ -5499,8 +5655,8 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1157"/>
-        <location filename="../../src/scene.cpp" line="1847"/>
-        <location filename="../../src/scene.cpp" line="1887"/>
+        <location filename="../../src/scene.cpp" line="1843"/>
+        <location filename="../../src/scene.cpp" line="1883"/>
         <source>Problem</source>
         <translation type="unfinished">Проблема</translation>
     </message>
@@ -5541,7 +5697,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1202"/>
-        <location filename="../../src/scene.cpp" line="1813"/>
+        <location filename="../../src/scene.cpp" line="1809"/>
         <source>File &apos;%1&apos; cannot be saved (%2).</source>
         <translation>Невозможно сохранить файл &apos;%1&apos; (%2).</translation>
     </message>
@@ -5550,7 +5706,7 @@ Do you want to save your changes?</source>
         <translation type="obsolete">Рабочее пространство</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1847"/>
+        <location filename="../../src/scene.cpp" line="1843"/>
         <source>Loading solution from disk</source>
         <translation>Загрузить решение с диска</translation>
     </message>
@@ -5559,27 +5715,27 @@ Do you want to save your changes?</source>
         <translation type="obsolete">Сетка</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1887"/>
+        <location filename="../../src/scene.cpp" line="1883"/>
         <source>Saving solution to disk</source>
         <translation>Сохранение решения на диск</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1964"/>
+        <location filename="../../src/scene.cpp" line="1954"/>
         <source>There are nodes &apos;%1&apos; with negative radial component.</source>
         <translation>Узлы &apos;%1&apos; содержат негативную радиальную составляющую.</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1978"/>
+        <location filename="../../src/scene.cpp" line="1968"/>
         <source>There are nodes which are connected to one edge only (red highlighted). This is not allowed in Agros.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1990"/>
+        <location filename="../../src/scene.cpp" line="1980"/>
         <source>There are crossings in the geometry (red highlighted). Remove the crossings first.</source>
         <translation>Геометрия где-то пересекается (выделено красным). Удалите пересечения.</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1973"/>
+        <location filename="../../src/scene.cpp" line="1963"/>
         <source>There are nodes which are not connected to any edge (red highlighted). All nodes should be connected.</source>
         <translation>Некоторые узлы не связаны (выделено красным). Все узлы должны быть соединены.</translation>
     </message>
@@ -5613,14 +5769,14 @@ Do you want to save your changes?</source>
         <translation type="obsolete">Решатель</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1861"/>
-        <location filename="../../src/scene.cpp" line="1866"/>
-        <location filename="../../src/scene.cpp" line="1879"/>
+        <location filename="../../src/scene.cpp" line="1857"/>
+        <location filename="../../src/scene.cpp" line="1862"/>
+        <location filename="../../src/scene.cpp" line="1875"/>
         <source>Mesh</source>
         <translation type="unfinished">Сетка</translation>
     </message>
     <message>
-        <location filename="../../src/scene.cpp" line="1983"/>
+        <location filename="../../src/scene.cpp" line="1973"/>
         <source>There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first.</source>
         <translation>Некоторые узлы лежат на ребре но не соединены с ним. Удалите эти узлы.</translation>
     </message>
@@ -5921,43 +6077,43 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneViewMesh</name>
     <message>
-        <location filename="../../src/sceneview_mesh.cpp" line="56"/>
-        <location filename="../../src/sceneview_mesh.cpp" line="58"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="61"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="63"/>
         <source>Mesh</source>
         <translation>Сетка</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_mesh.cpp" line="57"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="62"/>
         <source>Ctrl+3</source>
         <translation>Ctrl+3</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_mesh.cpp" line="61"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="66"/>
         <source>Export VTK order...</source>
         <translation>Экспорт порядка VTK...</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_mesh.cpp" line="62"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="67"/>
         <source>Export order view as VTK file</source>
         <translation>Экспорт порядка как файл VTK</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_mesh.cpp" line="65"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="70"/>
         <source>Export VTK mesh...</source>
         <translation>Экспорт сетки VTK...</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_mesh.cpp" line="66"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="71"/>
         <source>Export mesh as VTK file</source>
         <translation>Экспорт сетки как файл VTK</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_mesh.cpp" line="120"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="125"/>
         <source>Export VTK file</source>
         <translation>Экспорт VTK файла</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_mesh.cpp" line="120"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="125"/>
         <source>VTK files (*.vtk)</source>
         <translation>VTK файлы (*.vtk)</translation>
     </message>
@@ -5970,45 +6126,45 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneViewParticleTracing</name>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="395"/>
+        <location filename="../../src/sceneview_particle.cpp" line="410"/>
         <source>Particle
 Tracing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="396"/>
+        <location filename="../../src/sceneview_particle.cpp" line="411"/>
         <source>Ctrl+7</source>
         <translation type="unfinished">Ctrl+7</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="397"/>
-        <location filename="../../src/sceneview_particle.cpp" line="1116"/>
-        <location filename="../../src/sceneview_particle.h" line="101"/>
+        <location filename="../../src/sceneview_particle.cpp" line="412"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1135"/>
+        <location filename="../../src/sceneview_particle.h" line="102"/>
         <source>Particle Tracing</source>
         <translation type="unfinished">Трассировка частиц</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="430"/>
+        <location filename="../../src/sceneview_particle.cpp" line="445"/>
         <source>Particle tracing</source>
         <translation type="unfinished">Трассировка частиц</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1019"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1034"/>
         <source>Vel.</source>
         <translation type="unfinished">Скорость</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1078"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1097"/>
         <source>Post View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1078"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1097"/>
         <source>Particle view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1116"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1135"/>
         <source>Particle %1: %2 steps, final time %3 s</source>
         <translation type="unfinished">Частица %1: %2 шагов, общее время %3 с</translation>
     </message>
@@ -6016,65 +6172,65 @@ Tracing</source>
 <context>
     <name>SceneViewPost2D</name>
     <message>
-        <location filename="../../src/sceneview_post2d.cpp" line="73"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="78"/>
         <source>Post 2D</source>
         <translation>Пост 2D</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post2d.cpp" line="74"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="79"/>
         <source>Ctrl+4</source>
         <translation>Ctrl+3</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post2d.cpp" line="75"/>
-        <location filename="../../src/sceneview_post2d.cpp" line="252"/>
-        <location filename="../../src/sceneview_post2d.h" line="60"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="80"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="257"/>
+        <location filename="../../src/sceneview_post2d.h" line="59"/>
         <source>Postprocessor 2D</source>
         <translation>Постпроцессор 2D</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post2d.cpp" line="79"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="84"/>
         <source>Local point value</source>
         <translation>Значение в точке</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post2d.cpp" line="83"/>
-        <location filename="../../src/sceneview_post2d.cpp" line="84"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="88"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="89"/>
         <source>Select by marker</source>
         <translation>Выбрать по метке</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post2d.cpp" line="88"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="93"/>
         <source>Local Values</source>
         <translation>Локальные значения</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post2d.cpp" line="91"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="96"/>
         <source>Surface Integrals</source>
         <translation>Поверхностные интегралы</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post2d.cpp" line="94"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="99"/>
         <source>Volume Integrals</source>
         <translation>Объёмные интегралы</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post2d.cpp" line="103"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="108"/>
         <source>Export VTK scalar...</source>
         <translation>Экспорт скаляра VTK...</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post2d.cpp" line="104"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="109"/>
         <source>Export scalar view as VTK file</source>
         <translation>Экспорт скалярного представления как файл VTK</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post2d.cpp" line="1211"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="1216"/>
         <source>Export VTK file</source>
         <translation>Экспорт VTK файла</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post2d.cpp" line="1211"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="1216"/>
         <source>VTK files (*.vtk)</source>
         <translation>VTK файлы (*.vtk)</translation>
     </message>
@@ -6082,24 +6238,24 @@ Tracing</source>
 <context>
     <name>SceneViewPost3D</name>
     <message>
-        <location filename="../../src/sceneview_post3d.cpp" line="83"/>
+        <location filename="../../src/sceneview_post3d.cpp" line="89"/>
         <source>Post 3D</source>
         <translation>Пост 3D</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post3d.cpp" line="84"/>
+        <location filename="../../src/sceneview_post3d.cpp" line="90"/>
         <source>Ctrl+5</source>
         <translation>Ctrl+5</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post3d.cpp" line="85"/>
-        <location filename="../../src/sceneview_post3d.cpp" line="140"/>
+        <location filename="../../src/sceneview_post3d.cpp" line="91"/>
+        <location filename="../../src/sceneview_post3d.cpp" line="146"/>
         <location filename="../../src/sceneview_post3d.h" line="43"/>
         <source>Postprocessor 3D</source>
         <translation>Постпроцессор 3D</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post3d.cpp" line="137"/>
+        <location filename="../../src/sceneview_post3d.cpp" line="143"/>
         <source>Model</source>
         <translation>Модель</translation>
     </message>
