@@ -38,7 +38,14 @@ PyField::PyField(char *fieldId)
         }
         else
         {
-            m_fieldInfo = new FieldInfo(fieldId);
+            try{
+                m_fieldInfo = new FieldInfo(fieldId);
+            }
+            catch(AgrosPluginException& e)
+            {
+                throw invalid_argument(QObject::tr("Invalid field id. Plugin %1 cannot be loaded").arg(QString(fieldId)).toStdString());
+            }
+
             Agros2D::problem()->addField(fieldInfo());
         }
     else
