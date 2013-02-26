@@ -90,7 +90,7 @@ bool ParticleTracing::newtonEquations(double step,
                 // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
                 int timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo, SolutionMode_Normal);
                 int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, timeStep);
-                int solutionMode = SolutionMode_Finer;
+                SolutionMode solutionMode = SolutionMode_Finer;
 
                 fieldForce = fieldInfo->plugin()->force(fieldInfo, timeStep, adaptivityStep, solutionMode,
                                                         material, position, velocity)
