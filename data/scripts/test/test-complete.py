@@ -92,5 +92,9 @@ execfile("test_coupling_4_transient_planar.py")
 # particle tracing
 execfile("test_particle_tracing_axisymmetric.py")
 
+# adaptivity
+execfile("test_adaptivity_acoustic.py")
+execfile("test_adaptivity_electrostatic.py")
+
 # scripting
 # execfile("test_scripting.py")
