@@ -515,6 +515,9 @@ void PyField::surfaceIntegrals(vector<int> edges, int timeStep, int adaptivitySt
             Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnEdges);
         }
 
+        if (!solutionTypeStringKeys().contains(QString(solutionType)))
+            throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(solutionTypeStringKeys())).toStdString());
+
         SolutionMode solutionMode = solutionTypeFromStringKey(QString(solutionType));
 
         // FIXME: (Franta) solutionMode have to be tested, but not here
@@ -597,6 +600,9 @@ void PyField::volumeIntegrals(vector<int> labels, int timeStep, int adaptivitySt
         {
             Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnLabels);
         }
+
+        if (!solutionTypeStringKeys().contains(QString(solutionType)))
+            throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(solutionTypeStringKeys())).toStdString());
 
         SolutionMode solutionMode = solutionTypeFromStringKey(QString(solutionType));
 
