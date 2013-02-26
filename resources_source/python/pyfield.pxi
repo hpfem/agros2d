@@ -90,8 +90,8 @@ cdef extern from "../../src/pythonlab/pyfield.h":
         void solve()
 
         void localValues(double x, double y, int timeStep, int adaptivityStep, char *solutionType, map[string, double] results) except +
-        void surfaceIntegrals(vector[int], map[string, double] results) except +
-        void volumeIntegrals(vector[int], map[string, double] results) except +
+        void surfaceIntegrals(vector[int], int timeStep, int adaptivityStep, char *solutionType, map[string, double] results) except +
+        void volumeIntegrals(vector[int], int timeStep, int adaptivityStep, char *solutionType, map[string, double] results) except +
 
         void initialMeshParameters(map[string , int] parameters) except +
         void solutionMeshParameters(map[string , int] parameters) except +
@@ -426,7 +426,7 @@ cdef class __Field__:
         return out
 
     # surface integrals
-    def surface_integrals(self, edges = []):
+    def surface_integrals(self, edges = [], time_step = None, adaptivity_step = None, char *solution_type = "normal"):
         cdef vector[int] edges_vector
         for i in edges:
             edges_vector.push_back(i)
@@ -434,7 +434,10 @@ cdef class __Field__:
         out = dict()
         cdef map[string, double] results
 
-        self.thisptr.surfaceIntegrals(edges_vector, results)
+        self.thisptr.surfaceIntegrals(edges_vector,
+                                      int(-1 if time_step is None else time_step),
+                                      int(-1 if adaptivity_step is None else adaptivity_step),
+                                      solution_type, results)
         it = results.begin()
         while it != results.end():
             out[deref(it).first.c_str()] = deref(it).second
@@ -443,7 +446,7 @@ cdef class __Field__:
         return out
 
     # volume integrals
-    def volume_integrals(self, labels = []):
+    def volume_integrals(self, labels = [], time_step = None, adaptivity_step = None, char *solution_type = "normal"):
         cdef vector[int] labels_vector
         for i in labels:
             labels_vector.push_back(i)
@@ -451,7 +454,10 @@ cdef class __Field__:
         out = dict()
         cdef map[string, double] results
 
-        self.thisptr.volumeIntegrals(labels_vector, results)
+        self.thisptr.volumeIntegrals(labels_vector,
+                                     int(-1 if time_step is None else time_step),
+                                     int(-1 if adaptivity_step is None else adaptivity_step),
+                                     solution_type, results)
         it = results.begin()
         while it != results.end():
             out[deref(it).first.c_str()] = deref(it).second
