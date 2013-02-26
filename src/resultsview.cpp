@@ -113,7 +113,7 @@ void ResultsView::showPoint(const Point &point)
         // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
         int timeStep = Agros2D::solutionStore()->nearestTimeStep(fieldInfo, m_postHermes->activeTimeStep());
         int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, timeStep);
-        int solutionMode = SolutionMode_Finer;
+        SolutionMode solutionMode = SolutionMode_Finer;
 
         LocalValue *value = fieldInfo->plugin()->localValue(fieldInfo, timeStep, adaptivityStep, solutionMode, point);
         QMap<QString, PointValue> values = value->values();
@@ -183,7 +183,7 @@ void ResultsView::showVolumeIntegral()
         // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
         int timeStep = Agros2D::solutionStore()->nearestTimeStep(fieldInfo, m_postHermes->activeTimeStep());
         int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, timeStep);
-        int solutionMode = SolutionMode_Finer;
+        SolutionMode solutionMode = SolutionMode_Finer;
 
         IntegralValue *integral = fieldInfo->plugin()->volumeIntegral(fieldInfo, timeStep, adaptivityStep, solutionMode);
         QMap<QString, double> values = integral->values();
@@ -229,7 +229,7 @@ void ResultsView::showSurfaceIntegral()
         // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
         int timeStep = Agros2D::solutionStore()->nearestTimeStep(fieldInfo, m_postHermes->activeTimeStep());
         int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, timeStep);
-        int solutionMode = SolutionMode_Finer;
+        SolutionMode solutionMode = SolutionMode_Finer;
 
         IntegralValue *integral = fieldInfo->plugin()->surfaceIntegral(fieldInfo, timeStep, adaptivityStep, solutionMode);
         QMap<QString, double> values = integral->values();
