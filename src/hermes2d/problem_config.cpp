@@ -249,7 +249,7 @@ void ProblemConfigView::load(QDomElement *config)
     chartEndY = readConfig("View/ChartEndY", CHARTENDY);
     chartTimeX = readConfig("View/ChartTimeX", CHARTTIMEX);
     chartTimeY = readConfig("View/ChartTimeY", CHARTTIMEY);
-    chartHorizontalAxis = readConfig("View/ChartHorizontalAxis", CHARTHORIZONTALAXIS);
+    chartHorizontalAxis = (ChartAxisType) readConfig("View/ChartHorizontalAxis", CHARTHORIZONTALAXIS);
     chartHorizontalAxisReverse = readConfig("View/ChartHorizontalAxisReverse", CHARTHORIZONTALAXISREVERSE);
     chartHorizontalAxisPoints = readConfig("View/ChartHorizontalAxisPoints", CHARTHORIZONTALAXISPOINTS);
 
