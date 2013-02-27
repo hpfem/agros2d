@@ -420,7 +420,7 @@ void SceneBoundaryDialog::load()
 bool SceneBoundaryDialog::save()
 {
     // find name duplicities
-    foreach (SceneBoundary *boundary, Agros2D::scene()->boundaries->items())
+    foreach (SceneBoundary *boundary, Agros2D::scene()->boundaries->filter(m_boundary->fieldInfo()).items())
     {
         if (boundary->name() == txtName->text())
         {
@@ -513,7 +513,7 @@ void SceneMaterialDialog::load()
 bool SceneMaterialDialog::save()
 {
     // find name duplicities
-    foreach (SceneMaterial *material, Agros2D::scene()->materials->items())
+    foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(m_material->fieldInfo()).items())
     {
         if (material->name() == txtName->text())
         {
