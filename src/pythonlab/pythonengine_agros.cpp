@@ -154,10 +154,10 @@ void PythonLabAgros::scriptFinish()
 {
     if (actConsoleOutput->isChecked())
     {
-        disconnect(Agros2D::log(), SIGNAL(messageMsg(QString, QString, bool)), NULL, NULL);
-        disconnect(Agros2D::log(), SIGNAL(errorMsg(QString, QString, bool)), NULL, NULL);
-        disconnect(Agros2D::log(), SIGNAL(warningMsg(QString, QString, bool)), NULL, NULL);
-        disconnect(Agros2D::log(), SIGNAL(debugMsg(QString, QString, bool)), NULL, NULL);
+        disconnect(Agros2D::log(), SIGNAL(messageMsg(QString, QString, bool)), this, SLOT(printMessage(QString, QString, bool)));
+        disconnect(Agros2D::log(), SIGNAL(errorMsg(QString, QString, bool)), this, SLOT(printError(QString, QString, bool)));
+        disconnect(Agros2D::log(), SIGNAL(warningMsg(QString, QString, bool)), this, SLOT(printWarning(QString, QString, bool)));
+        disconnect(Agros2D::log(), SIGNAL(debugMsg(QString, QString, bool)), this, SLOT(printDebug(QString, QString, bool)));
     }
 }
 
