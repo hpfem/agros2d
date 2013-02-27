@@ -158,6 +158,10 @@ void PostHermes::processRangeContour()
                                               dmult);
             delete filter;
         }
+        else
+        {
+            m_linContourView.set_displacement(NULL, NULL);
+        }
 
         // process solution
         m_linContourView.process_solution(slnContourView,
@@ -213,6 +217,10 @@ void PostHermes::processRangeScalar()
                                              activeMultiSolutionArray().solutions().at(1),
                                              dmult);
             delete filter;
+        }
+        else
+        {
+            m_linScalarView.set_displacement(NULL, NULL);
         }
 
         // process solution
@@ -290,6 +298,10 @@ void PostHermes::processRangeVector()
                                              activeMultiSolutionArray().solutions().at(1),
                                              dmult);
             delete filter;
+        }
+        else
+        {
+            m_vecVectorView.set_displacement(NULL, NULL);
         }
 
         // process solution

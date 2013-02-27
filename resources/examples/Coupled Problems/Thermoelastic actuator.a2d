@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<document version="2.1">
+    <geometry>
+        <nodes>
+            <node x="0.008" y="-0.09" id="0"/>
+            <node x="0" y="0.07000000000000001" id="1"/>
+            <node x="0.008" y="0.07000000000000001" id="2"/>
+            <node x="0.03" y="0.09" id="3"/>
+            <node x="0.03" y="-0.09" id="4"/>
+            <node x="0.025" y="-0.06" id="5"/>
+            <node x="0.0125" y="-0.06" id="6"/>
+            <node x="0.0125" y="0.06" id="7"/>
+            <node x="0.025" y="0.06" id="8"/>
+            <node x="0.008" y="0.09" id="9"/>
+            <node x="0" y="-0.3" id="10"/>
+            <node x="0.3" y="0" id="11"/>
+            <node x="0" y="0.3" id="12"/>
+            <node x="0" y="-0.09" id="13"/>
+            <node x="0" y="0.1" id="14"/>
+            <node x="0" y="-0.1" id="15"/>
+            <node x="0.05" y="-0.1" id="16"/>
+            <node x="0.05" y="0.1" id="17"/>
+            <node x="0.008" y="0.1" id="18"/>
+        </nodes>
+        <edges>
+            <edge end="4" id="0" start="3" angle="0"/>
+            <edge end="6" id="1" start="5" angle="0"/>
+            <edge end="7" id="2" start="6" angle="0"/>
+            <edge end="8" id="3" start="7" angle="0"/>
+            <edge end="5" id="4" start="8" angle="0"/>
+            <edge end="11" id="5" start="10" angle="90"/>
+            <edge end="12" id="6" start="11" angle="89.99999999999999"/>
+            <edge end="2" id="7" start="1" angle="0"/>
+            <edge end="1" id="8" start="13" angle="0"/>
+            <edge end="0" id="9" start="2" angle="0"/>
+            <edge end="9" id="10" start="3" angle="0"/>
+            <edge end="1" id="11" start="14" angle="0"/>
+            <edge end="2" id="12" start="9" angle="0"/>
+            <edge end="0" id="13" start="13" angle="0"/>
+            <edge end="4" id="14" start="0" angle="0"/>
+            <edge end="12" id="15" start="14" angle="0"/>
+            <edge end="16" id="16" start="15" angle="0"/>
+            <edge end="17" id="17" start="16" angle="0"/>
+            <edge end="18" id="18" start="17" angle="0"/>
+            <edge end="9" id="19" start="18" angle="0"/>
+            <edge end="18" id="20" start="14" angle="0"/>
+            <edge end="15" id="21" start="13" angle="0"/>
+            <edge end="10" id="22" start="15" angle="0"/>
+        </edges>
+        <labels>
+            <label x="0.004" y="0" id="0" area="0"/>
+            <label x="0.01865" y="0" id="1" area="0"/>
+            <label x="0.004" y="0.08" id="2" area="0"/>
+            <label x="0.01865" y="0.08" id="3" area="0"/>
+            <label x="0.15" y="0" id="4" area="0"/>
+            <label x="0.04" y="0" id="5" area="0"/>
+        </labels>
+    </geometry>
+    <problem time_order="2" frequency="1000" time_method="fixed" time_method_tolerance="0.1" matrix_solver="umfpack" coordinate_type="axisymmetric" mesh_type="triangle" time_steps="10" time_total="60">
+        <fields>
+            <field field_id="elasticity" initial_condition="0" polynomial_order="1" number_of_refinements="0" time_skip="60" analysis_type="steadystate">
+                <refinement>
+                    <edges/>
+                    <labels/>
+                </refinement>
+                <polynomial_order/>
+                <adaptivity adaptivity_type="disabled" adaptivity_back_steps="100" adaptivity_redone_each="1" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver linearity_type="linear" picard_anderson_acceleration="1" newton_automatic_damping="1" picard_anderson_beta="0.2" picard_anderson_vectors="3" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <boundaries>
+                    <boundary type="elasticity_fixed_fixed" id="1" elasticity_displacement_x="0" name="Bottom" elasticity_displacement_y="0">
+                        <edge edge="13"/>
+                    </boundary>
+                    <boundary elasticity_force_y="0" type="elasticity_fixed_free" id="2" elasticity_displacement_x="0" name="Lateral">
+                        <edge edge="8"/>
+                        <edge edge="9"/>
+                    </boundary>
+                    <boundary elasticity_force_x="0" elasticity_force_y="0" type="elasticity_free_free" id="3" name="Upper">
+                        <edge edge="7"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material elasticity_poisson_ratio="0.33" elasticity_young_modulus="1.135e11" elasticity_temperature_difference="0" elasticity_alpha="1.85e-5" elasticity_temperature_reference="20" id="1" name="Brass" elasticity_volume_force_x="0" elasticity_volume_force_y="0">
+                        <label label="0"/>
+                    </material>
+                </materials>
+            </field>
+            <field field_id="heat" initial_condition="20" polynomial_order="1" number_of_refinements="0" time_skip="0" analysis_type="transient">
+                <refinement>
+                    <edges/>
+                    <labels/>
+                </refinement>
+                <polynomial_order/>
+                <adaptivity adaptivity_type="disabled" adaptivity_back_steps="0" adaptivity_redone_each="1" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver linearity_type="linear" picard_anderson_acceleration="1" newton_automatic_damping="1" picard_anderson_beta="0.2" picard_anderson_vectors="3" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <boundaries>
+                    <boundary heat_convection_heat_transfer_coefficient="0" heat_convection_external_temperature="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Symmetry" heat_radiation_ambient_temperature="0">
+                        <edge edge="8"/>
+                        <edge edge="11"/>
+                        <edge edge="15"/>
+                        <edge edge="21"/>
+                        <edge edge="22"/>
+                    </boundary>
+                    <boundary heat_convection_heat_transfer_coefficient="10" heat_convection_external_temperature="20" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Convection" heat_radiation_ambient_temperature="0">
+                        <edge edge="16"/>
+                        <edge edge="17"/>
+                        <edge edge="18"/>
+                        <edge edge="20"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material heat_volume_heat="0" heat_velocity_x="0" heat_conductivity="120" heat_density="8600" heat_velocity_y="0" heat_specific_heat="380" heat_velocity_angular="0" id="1" name="Brass">
+                        <label label="0"/>
+                    </material>
+                    <material heat_volume_heat="0" heat_velocity_x="0" heat_conductivity="0.24" heat_density="2220" heat_velocity_y="0" heat_specific_heat="1050" heat_velocity_angular="0" id="2" name="Teflon">
+                        <label label="2"/>
+                        <label label="3"/>
+                    </material>
+                    <material heat_volume_heat="0" heat_velocity_x="0" heat_conductivity="0.26" heat_density="1150" heat_velocity_y="0" heat_specific_heat="1100" heat_velocity_angular="0" id="3" name="Silicon">
+                        <label label="5"/>
+                    </material>
+                    <material heat_volume_heat="0" heat_velocity_x="0" heat_conductivity="372" heat_density="8800" heat_velocity_y="0" heat_specific_heat="380" heat_velocity_angular="0" id="4" name="Copper">
+                        <label label="1"/>
+                    </material>
+                </materials>
+            </field>
+            <field field_id="magnetic" initial_condition="0" polynomial_order="1" number_of_refinements="0" time_skip="60" analysis_type="harmonic">
+                <refinement>
+                    <edges/>
+                    <labels/>
+                </refinement>
+                <polynomial_order/>
+                <adaptivity adaptivity_type="disabled" adaptivity_back_steps="97" adaptivity_redone_each="1" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver linearity_type="linear" picard_anderson_acceleration="1" newton_automatic_damping="1" picard_anderson_beta="0.2" picard_anderson_vectors="3" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <boundaries>
+                    <boundary magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="1" name="Antisymmetry">
+                        <edge edge="8"/>
+                        <edge edge="11"/>
+                        <edge edge="15"/>
+                        <edge edge="21"/>
+                        <edge edge="22"/>
+                    </boundary>
+                    <boundary magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="2" name="Fictional boundary">
+                        <edge edge="5"/>
+                        <edge edge="6"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="1.25e+07" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Brass" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="0"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="2" magnetic_remanence_angle="0" name="Teflon" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="2"/>
+                        <label label="3"/>
+                    </material>
+                    <material magnetic_current_density_external_real="1e6" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="3" magnetic_remanence_angle="0" name="Copper" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="1"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="4" magnetic_remanence_angle="0" name="Silicon" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="5"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="5" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="4"/>
+                    </material>
+                </materials>
+            </field>
+        </fields>
+        <couplings>
+            <coupling source_fieldid="heat" target_fieldid="elasticity" type="weak" id="heat-elasticity"/>
+            <coupling source_fieldid="magnetic" target_fieldid="heat" type="weak" id="magnetic-heat"/>
+        </couplings>
+    </problem>
+    <config View_ParticleMinimumStep="0" View_MeshCurvilinearElements="1" View_ColorGrid_blue="200" View_ScalarRangeLog="0" View_ParticleMaximumNumberOfSteps="500" View_ScalarDecimalPlace="2" View_ParticleShowPoints="0" View_OrderLabel="0" View_ColorContours_red="0" View_ParticleNumberOfParticles="1" View_ScalarView3DHeight="4" Adaptivity_MaxDofs="60000" View_ColorLabels_red="0" View_ColorGrid_red="200" View_ColorLabels_blue="0" View_SolidViewHide="" View_ColorEdges_blue="150" View_ParticleReflectOnBoundary="0" Adaptivity_Strategy="0" View_ColorEdges_green="0" View_VectorType="0" View_ColorBackground_blue="255" View_ColorInitialMesh_red="250" View_ColorCross_red="150" View_ColorVectors_blue="0" View_ShowScalarView="1" View_LinearizerQuality="normal" View_DeformScalar="1" View_ScalarRangeMax="22.1568" View_PaletteType="0" View_ShowPost3D="0" View_ShowVectorView="0" View_ParticleDragCoefficient="0" View_ColorContours_green="0" View_ScalarView3DBoundingBox="1" View_ChartHorizontalAxisReverse="0" View_ColorContours_blue="0" View_VectorProportional="1" View_ActiveField="elasticity" View_ColorSolutionMesh_green="0" View_GridStep="0.05" View_VectorNumber="50" View_ShowOrderView="1" View_MeshAngleSegmentsCount="3" View_ColorSolutionMesh_blue="0" View_EdgeWidth="2" View_ParticleCoefficientOfRestitution="0" Adaptivity_Threshold="0.3" Problem_Description="" View_ContoursCount="15" View_ColorVectors_green="0" View_OrderPaletteOrderType="0" Adaptivity_MeshRegularity="-1" View_VectorScale="0.6" View_ParticleMaximumRelativeError="0.01" Adaptivity_IsoOnly="0" View_ScalarView3DAngle="240" View_ChartHorizontalAxisPoints="200" View_ShowRulers="1" View_ShowContourView="0" View_ParticleStartingRadius="0" View_RulersFont="fontGoogleDroidMono10" View_ParticleMass="9.108999999999999e-31" View_ColorNodes_blue="0" View_ChartEndX="0" View_ChartEndY="0" View_PostFont="fontGoogleDroidMono14" View_ColorSolutionMesh_red="150" Adaptivity_ProjNormType="1" View_ScalarVariableComp="2" View_VectorVariable="elasticity_displacement" View_ParticleDragDensity="1.2041" View_ScalarView3DSolidGeometry="1" View_ColorLabels_green="150" View_ScalarView3DBackground="1" Adaptivity_FinerReference="0" View_ParticleColorByVelocity="1" View_ParticleIncludeRelativisticCorrection="1" Commands_Gmsh="%1 -2 &quot;%2.geo&quot;" View_ParticleStartVelocityX="0" View_PaletteSteps="30" View_ParticleStartVelocityY="0" View_ParticleCustomForceX="0" View_ParticleCustomForceY="0" View_ScalarRangeMin="19.5438" View_ParticleCustomForceZ="0" View_ColorVectors_red="0" View_VectorCenter="0" View_ShowSolutionMeshView="0" View_ChartTimeX="0" View_ChartTimeY="0" View_ContoursWidth="1" View_NodeSize="6" View_ColorCross_green="150" Adaptivity_ConvExp="1" View_ColorInitialMesh_blue="0" View_ParticleStartX="0" General_ZoomToMouse="1" View_ParticleStartY="0" View_ColorNodes_green="0" View_SnapToGrid="1" View_ScalarRangeAuto="1" View_VectorColor="1" View_ColorGrid_green="200" View_ParticleReflectOnDifferentMaterial="1" View_ParticleDragReferenceArea="1e-06" View_ParticleConstant="1.602e-19" Problem_StartupScript="" Adaptivity_UseAniso="1" View_DeformContour="1" View_LabelSize="6" View_ColorInitialMesh_green="150" View_ColorCross_blue="150" View_ScalarView3DLighting="1" View_ShowAxes="1" View_ChartHorizontalAxis="0" View_ContourVariable="elasticity_displacement" View_ScalarVariable="elasticity_displacement" Commands_Triangle="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;" View_ShowScalarColorBar="1" View_ColorBackground_green="255" View_ShowInitialMeshView="1" View_ColorEdges_red="0" View_ColorNodes_red="150" View_DeformVector="1" View_PaletteFilter="0" View_ChartStartX="0" View_ChartStartY="0" View_ScalarRangeBase="10" View_ShowOrderColorBar="1" View_ColorBackground_red="255" View_ShowGrid="1"/>
+</document>
