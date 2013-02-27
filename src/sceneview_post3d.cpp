@@ -107,6 +107,9 @@ void SceneViewPost3D::paintGL()
                  Agros2D::problem()->configView()->colorBackground.blueF(), 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // gradient background
+    paintBackground();
+
     if (Agros2D::problem()->isMeshed())
     {
         if (Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_Model) paintScalarField3DSolid();
@@ -173,8 +176,16 @@ void SceneViewPost3D::paintScalarField3D()
         m_listScalarField3D = glGenLists(1);
         glNewList(m_listScalarField3D, GL_COMPILE);
 
-        // gradient background
-        paintBackground();
+        glPushMatrix();
+
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+
+        glPopMatrix();
+
         glEnable(GL_DEPTH_TEST);
 
         // range
@@ -396,8 +407,16 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
         bool isModel = (Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_Model);
 
-        // gradient background
-        paintBackground();
+        glPushMatrix();
+
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+
+        glPopMatrix();
+
         glEnable(GL_DEPTH_TEST);
 
         RectPoint rect = Agros2D::scene()->boundingBox();
