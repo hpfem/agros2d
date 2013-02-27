@@ -1133,7 +1133,7 @@ void Scene::readFromDxf(const QString &fileName)
     setlocale(LC_NUMERIC, plocale);
 }
 
-ErrorResult Scene::readFromFile(const QString &fileName)
+void Scene::readFromFile(const QString &fileName)
 {
     QSettings settings;
     QFileInfo fileInfo(fileName);
@@ -1145,9 +1145,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     QDomDocument doc;
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly))
-        return ErrorResult(ErrorResultType_Critical, tr("File '%1' cannot be opened (%2).").
-                           arg(fileName).
-                           arg(file.errorString()));
+        throw AgrosException(tr("File '%1' cannot be opened (%2).").arg(fileName).arg(file.errorString()));
 
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -1163,7 +1161,7 @@ ErrorResult Scene::readFromFile(const QString &fileName)
     if (!doc.setContent(&file))
     {
         file.close();
-        return ErrorResult(ErrorResultType_Critical, tr("File '%1' is not valid Agros2D file.").arg(fileName));
+        throw AgrosException(tr("File '%1' is not valid Agros2D file.").arg(fileName));
     }
     file.close();
 
@@ -1185,27 +1183,25 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
             QFile file(fileName);
             if (!file.open(QIODevice::WriteOnly))
-                return ErrorResult(ErrorResultType_Critical, tr("File '%1' cannot be saved (%2).").
-                                   arg(fileName).
-                                   arg(file.errorString()));
+                throw AgrosException(tr("File '%1' cannot be saved (%2).").arg(fileName). arg(file.errorString()));
 
             QTextStream stream(&file);
             doc.save(stream, 4);
 
             file.waitForBytesWritten(0);
             file.close();
-        }
-        else
-            return ErrorResult();
+        }        
     }
 
     // validation
     /*
-    ErrorResult error = validateXML(fileName, datadir() + "/resources/xsd/problem_a2d_xml.xsd");
-    if (error.isError())
+    try
     {
-        //qDebug() << error.message();
-        return error;
+        validateXML(fileName, datadir() + "/resources/xsd/problem_a2d_xml.xsd");
+    }
+    catch (AgrosException &e)
+    {
+        throw AgrosException(e.toString());
     }
     */
 
@@ -1493,15 +1489,13 @@ ErrorResult Scene::readFromFile(const QString &fileName)
 
     // run script
     currentPythonEngineAgros()->runScript(Agros2D::problem()->configView()->startupScript);
-
-    return ErrorResult();
 }
 
-ErrorResult Scene::writeToFile(const QString &fileName)
+void Scene::writeToFile(const QString &fileName, bool saveLastProblemDir)
 {
     QSettings settings;
 
-    if (QFileInfo(tempProblemFileName()).baseName() != QFileInfo(fileName).baseName())
+    if (saveLastProblemDir)
     {
         QFileInfo fileInfo(fileName);
         if (fileInfo.absoluteDir() != tempProblemDir())
@@ -1792,9 +1786,7 @@ ErrorResult Scene::writeToFile(const QString &fileName)
     // save to file
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly))
-        return ErrorResult(ErrorResultType_Critical, tr("File '%1' cannot be saved (%2).").
-                           arg(fileName).
-                           arg(file.errorString()));
+        throw AgrosException(tr("File '%1' cannot be saved (%2).").arg(fileName).arg(file.errorString()));
 
     // save config
     QDomElement eleConfig = doc.createElement("config");
@@ -1816,8 +1808,6 @@ ErrorResult Scene::writeToFile(const QString &fileName)
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
-
-    return ErrorResult();
 }
 
 void Scene::readSolutionFromFile(const QString &fileName)

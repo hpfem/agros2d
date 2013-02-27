@@ -6,6 +6,14 @@ problem.coordinate_type = "planar"
 problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 
+# disable view
+agros2d.view.mesh.initial_mesh = False
+agros2d.view.mesh.solution_mesh = False
+agros2d.view.mesh.order = False
+agros2d.view.post2d.scalar = False
+agros2d.view.post2d.contours = False
+agros2d.view.post2d.vectors = False
+
 # fields
 # electrostatic
 electrostatic = agros2d.field("electrostatic")

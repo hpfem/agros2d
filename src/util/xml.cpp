@@ -33,7 +33,7 @@ QString transformXML(const QString &fileName, const QString &stylesheetFileName)
     return out;
 }
 
-ErrorResult validateXML(const QString &fileName, const QString &schemaFileName)
+void validateXML(const QString &fileName, const QString &schemaFileName)
 {
     QXmlSchema schema;
     schema.load(QUrl(schemaFileName));
@@ -42,9 +42,9 @@ ErrorResult validateXML(const QString &fileName, const QString &schemaFileName)
     schema.setMessageHandler(&schemaMessageHandler);
 
     if (!schema.isValid())
-        return ErrorResult(ErrorResultType_Critical, QObject::tr("Schema '%1' is not valid. %2").
-                           arg(schemaFileName).
-                           arg(schemaMessageHandler.statusMessage()));
+        throw AgrosException(QObject::tr("Schema '%1' is not valid. %2").
+                             arg(schemaFileName).
+                             arg(schemaMessageHandler.statusMessage()));
 
     QFile file(fileName);
     file.open(QIODevice::ReadOnly);
@@ -53,13 +53,11 @@ ErrorResult validateXML(const QString &fileName, const QString &schemaFileName)
     MessageHandler validatorMessageHandler;
     validator.setMessageHandler(&validatorMessageHandler);
 
-    //TODO neslo mi nacist soubor se dvema poli
-//    if (!validator.validate(&file, QUrl::fromLocalFile(file.fileName())))
-//        return ErrorResult(ErrorResultType_Critical, QObject::tr("File '%1' is not valid Agros2D problem file. Error (line %3, column %4): %2").
-//                           arg(fileName).
-//                           arg(validatorMessageHandler.statusMessage()).
-//                           arg(validatorMessageHandler.line()).
-//                           arg(validatorMessageHandler.column()));
-
-    return ErrorResult();
+    // TODO: cannot read problem file containing two fields
+    if (!validator.validate(&file, QUrl::fromLocalFile(file.fileName())))
+        throw AgrosException(QObject::tr("File '%1' is not valid Agros2D problem file. Error (line %3, column %4): %2").
+                             arg(fileName).
+                             arg(validatorMessageHandler.statusMessage()).
+                             arg(validatorMessageHandler.line()).
+                             arg(validatorMessageHandler.column()));
 }

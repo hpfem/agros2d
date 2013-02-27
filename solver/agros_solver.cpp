@@ -75,15 +75,10 @@ void AgrosSolver::solveProblem()
     QTime time;
     time.start();
 
-    ErrorResult result = Agros2D::scene()->readFromFile(m_fileName);
-    if (result.isError())
+    try
     {
-        Agros2D::log()->printMessage(tr("Problem"), QString("%1\n").arg(result.message()));
+        Agros2D::scene()->readFromFile(m_fileName);
 
-        QApplication::exit(-1);
-    }
-    else
-    {
         Agros2D::log()->printMessage(tr("Problem"), tr("Problem '%1' successfuly loaded").arg(m_fileName));
 
         // solve
@@ -97,6 +92,11 @@ void AgrosSolver::solveProblem()
         Agros2D::problem()->clearFieldsAndConfig();
 
         QApplication::exit(0);
+    }
+    catch (AgrosException &e)
+    {
+        Agros2D::log()->printError(tr("Problem"), e.toString());
+        QApplication::exit(-1);
     }
 }
 

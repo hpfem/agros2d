@@ -878,8 +878,7 @@ void PythonEditorDialog::doFileSave()
         }
         else
         {
-            ErrorResult errorResult(ErrorResultType_Critical, tr("File '%1' cannot be saved.").arg(scriptEditorWidget()->fileName));
-            errorResult.showDialog();
+            throw AgrosException(tr("File '%1' cannot be saved.").arg(scriptEditorWidget()->fileName));
         }
 
         if (fileInfo.absoluteDir() != tempProblemDir())
