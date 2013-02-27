@@ -149,7 +149,7 @@ void fillComboBoxVectorVariable(FieldInfo *fieldInfo, QComboBox *cmbFieldVariabl
     cmbFieldVariable->blockSignals(false);
 }
 
-void fillComboBoxTimeStep(FieldInfo* fieldInfo, QComboBox *cmbTimeStep)
+void fillComboBoxTimeStep(const FieldInfo* fieldInfo, QComboBox *cmbTimeStep)
 {
     if (!Agros2D::problem()->isSolved())
         return;
