@@ -200,7 +200,7 @@ void SolutionStore::removeTimeStep(int timeStep)
 
 }
 
-int SolutionStore::lastTimeStep(FieldInfo *fieldInfo, SolutionMode solutionType) const
+int SolutionStore::lastTimeStep(const FieldInfo *fieldInfo, SolutionMode solutionType) const
 {
     int timeStep = NOT_FOUND_SO_FAR;
     foreach (FieldSolutionID sid, m_multiSolutions)
@@ -352,7 +352,7 @@ BlockSolutionID SolutionStore::lastTimeAndAdaptiveSolution(Block *block, Solutio
     return bsid;
 }
 
-QList<double> SolutionStore::timeLevels(FieldInfo *fieldInfo)
+QList<double> SolutionStore::timeLevels(const FieldInfo *fieldInfo)
 {
     QList<double> list;
 
