@@ -45,7 +45,7 @@ public:
     Solver<double> *prepareSolver();
 
     inline WeakFormAgros<double> *weakForm() { return m_wf;}
-    inline void setWeakForm(WeakFormAgros<double> *wf) { if (m_wf) delete m_wf; m_wf = wf;}
+    void setWeakForm(WeakFormAgros<double> *wf);
 
     int numSolutions() const;
     int offset(Field* field) const;

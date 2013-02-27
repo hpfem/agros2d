@@ -130,11 +130,16 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 src/global.cpp
 
 HEADERS += \
-    ../hermes_common/include/config.h
+    ../hermes_common/include/config.h \
+    omp/omp.h
 
 linux-g++|linux-g++-64|linux-g++-32 {
     QMAKE_LFLAGS += -fopenmp
     QMAKE_CXXFLAGS += -fopenmp
+}
+
+linux-clang {
+    INCLUDEPATH += omp
 }
 
 linux-g++|linux-g++-64|linux-g++-32|linux-clang {

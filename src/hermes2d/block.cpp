@@ -81,6 +81,11 @@ Block::~Block()
     m_wf = NULL;
 }
 
+void Block::setWeakForm(WeakFormAgros<double> *wf)
+{
+    if (m_wf) delete m_wf; m_wf = wf;
+}
+
 Solver<double> *Block::prepareSolver()
 {
     Solver<double> *solver = new Solver<double>();
