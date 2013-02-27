@@ -503,24 +503,27 @@ void SceneViewPost2D::paintContours()
             if (vert[i][2] < rangeMin) rangeMin = vecVert[i][2];
         }
 
-        // value range
-        double step = (rangeMax-rangeMin)/Agros2D::problem()->configView()->contoursCount;
-
         // draw contours
-        glLineWidth(Agros2D::problem()->configView()->contourWidth);
-        glColor3d(Agros2D::problem()->configView()->colorContours.redF(),
-                  Agros2D::problem()->configView()->colorContours.greenF(),
-                  Agros2D::problem()->configView()->colorContours.blueF());
-
-        glBegin(GL_LINES);
-        for (int i = 0; i < m_postHermes->linContourView().get_num_contour_triangles(); i++)
+        if ((rangeMax-rangeMin) > EPS_ZERO)
         {
-            if (finite(vert[tris[i][0]][2]) && finite(vert[tris[i][1]][2]) && finite(vert[tris[i][2]][2]))
+            // value range
+            double step = (rangeMax-rangeMin)/Agros2D::problem()->configView()->contoursCount;
+
+            glLineWidth(Agros2D::problem()->configView()->contourWidth);
+            glColor3d(Agros2D::problem()->configView()->colorContours.redF(),
+                      Agros2D::problem()->configView()->colorContours.greenF(),
+                      Agros2D::problem()->configView()->colorContours.blueF());
+
+            glBegin(GL_LINES);
+            for (int i = 0; i < m_postHermes->linContourView().get_num_contour_triangles(); i++)
             {
-                paintContoursTri(vert, &tris[i], step);
+                if (finite(vert[tris[i][0]][2]) && finite(vert[tris[i][1]][2]) && finite(vert[tris[i][2]][2]))
+                {
+                    paintContoursTri(vert, &tris[i], step);
+                }
             }
+            glEnd();
         }
-        glEnd();
 
         delete vert;
 
