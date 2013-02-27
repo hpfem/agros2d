@@ -67,7 +67,7 @@ protected:
     void initLighting();
 
     virtual void paintGL() = 0;
-    void doZoomRegion(const Point &start, const Point &end) {}
+    void doZoomRegion(const Point &start, const Point &end);
 
     void paintBackground(); // gradient background
     void paintAxes(); // axes

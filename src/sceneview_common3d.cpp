@@ -91,6 +91,25 @@ void SceneViewCommon3D::clear()
     SceneViewCommon::clear();
 }
 
+void SceneViewCommon3D::doZoomRegion(const Point &start, const Point &end)
+{
+    if (fabs(end.x-start.x) < EPS_ZERO || fabs(end.y-start.y) < EPS_ZERO)
+        return;
+
+    double sceneWidth = end.x - start.x;
+    double sceneHeight = end.y - start.y;
+
+    double maxScene = ((width() / height()) < (sceneWidth / sceneHeight)) ? sceneWidth/aspect() : sceneHeight;
+
+    if (maxScene > 0.0)
+        m_scale3d = 0.9/maxScene;
+
+    m_offset3d.x = 0.0;
+    m_offset3d.y = 0.0;
+
+    setZoom(0);
+}
+
 void SceneViewCommon3D::paintBackground()
 {
     // background
@@ -260,7 +279,7 @@ void SceneViewCommon3D::loadProjection3d(bool setScene, bool plane)
             }
         }
 
-        glScaled(m_scale3d, m_scale3d, m_scale3d);
+        glScaled(m_scale3d, m_scale3d, m_scale3d);       
     }
 }
 

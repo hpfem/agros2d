@@ -149,7 +149,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     // postprocessor 2d
     connect(sceneViewPost2D, SIGNAL(mousePressed()), resultsView, SLOT(doShowResults()));
-    connect(sceneViewPost2D, SIGNAL(mousePressed(const Point &)), resultsView, SLOT(showPoint(const Point &)));    
+    connect(sceneViewPost2D, SIGNAL(mousePressed(const Point &)), resultsView, SLOT(showPoint(const Point &)));
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), resultsView, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), this, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
     currentPythonEngineAgros()->setSceneViewPost2D(sceneViewPost2D);
@@ -934,7 +934,7 @@ void MainWindow::doDocumentNew()
             Agros2D::scene()->clear();
 
             Agros2D::log()->printError(tr("Problem"), e.toString());
-        }              
+        }
     }
 }
 
@@ -1475,6 +1475,9 @@ void MainWindow::setControls()
     actSceneZoomOut->setVisible(showZoom);
     actSceneZoomBestFit->setVisible(showZoom);
     actSceneZoomRegion->setVisible(showZoom);
+    actSceneZoomRegion->setEnabled(sceneViewPreprocessor->actSceneModePreprocessor->isChecked() ||
+                                   sceneViewMesh->actSceneModeMesh->isChecked() ||
+                                   sceneViewPost2D->actSceneModePost2D->isChecked());
 
     // disconnect signals
     actSceneZoomIn->disconnect();
