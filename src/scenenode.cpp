@@ -355,5 +355,5 @@ bool SceneNode::isOutsideArea() const
 
 bool SceneNode::isError()
 {
-    return (isLyingOnEdges() || !isConnected() || isOutsideArea() || isEndNode());
+    return (isOutsideArea() || connectedEdges().length() <= 1 || isLyingOnEdges());
 }
