@@ -44,6 +44,7 @@ execfile("test_coupling_3_axisymmetric_nonlin.py")
 execfile("test_coupling_4_transient_planar.py") 
 
 # particle tracing
+execfile("test_particle_tracing_planar.py")
 execfile("test_particle_tracing_axisymmetric.py")
 
 # adaptivity
