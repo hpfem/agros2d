@@ -349,10 +349,12 @@ void MainWindow::createActions()
     actHelp = new QAction(icon("help-contents"), tr("&Help"), this);
     actHelp->setStatusTip(tr("Show help"));
     actHelp->setShortcut(QKeySequence::HelpContents);
+    actHelp->setEnabled(false);
     connect(actHelp, SIGNAL(triggered()), this, SLOT(doHelp()));
 
     actHelpShortCut = new QAction(icon(""), tr("&Shortcuts"), this);
     actHelpShortCut->setStatusTip(tr("Shortcuts"));
+    actHelpShortCut->setEnabled(false);
     connect(actHelpShortCut, SIGNAL(triggered()), this, SLOT(doHelpShortCut()));
 
     // actCollaborationServer = new QAction(icon("collaboration"), tr("Collaboration server"), this);
@@ -361,6 +363,7 @@ void MainWindow::createActions()
 
     actOnlineHelp = new QAction(icon(""), tr("&Online help"), this);
     actOnlineHelp->setStatusTip(tr("Online help"));
+    actOnlineHelp->setEnabled(false);
     connect(actOnlineHelp, SIGNAL(triggered()), this, SLOT(doOnlineHelp()));
 
     actCheckVersion = new QAction(icon(""), tr("Check version"), this);
@@ -911,20 +914,10 @@ void MainWindow::doDocumentNew()
         Agros2D::scene()->clear();
         Agros2D::problem()->clearFieldsAndConfig();
 
-        FieldInfo *fieldInfo;
-        ErrorResult result;
         // add field
-        // todo: mixing exceptions with error code. Should be unified, probably use exceptions everywhere
-        try{
-            fieldInfo = new FieldInfo(dialog.selectedFieldId());
-        }
-        catch(AgrosPluginException& e)
+        try
         {
-            result = ErrorResult(ErrorResultType_Critical, e.what());
-        }
-
-        if (!result.isError())
-        {
+            FieldInfo *fieldInfo = new FieldInfo(dialog.selectedFieldId());
 
             Agros2D::problem()->addField(fieldInfo);
 
@@ -936,12 +929,12 @@ void MainWindow::doDocumentNew()
             sceneViewParticleTracing->doZoomBestFit();
             settingsWidget->updateControls();
         }
-        else
+        catch (AgrosPluginException& e)
         {
             Agros2D::scene()->clear();
-            result.showDialog();
-            return;
-        }
+
+            Agros2D::log()->printError(tr("Problem"), e.toString());
+        }              
     }
 }
 
@@ -968,23 +961,10 @@ void MainWindow::doDocumentOpen(const QString &fileName)
         QFileInfo fileInfo(fileNameDocument);
         if (fileInfo.suffix() == "a2d")
         {
-            // a2d data file
-            ErrorResult result;
-            // todo: mixing exceptions with error code. Should be unified, probably use exceptions everywhere
-            try{
-                result = Agros2D::scene()->readFromFile(fileNameDocument);
-            }
-            catch(AgrosModuleException& e)
+            try
             {
-                result = ErrorResult(ErrorResultType_Critical, e.what());
-            }
-            catch(AgrosPluginException& e)
-            {
-                result = ErrorResult(ErrorResultType_Critical, e.what());
-            }
-
-            if (!result.isError())
-            {
+                // load problem
+                Agros2D::scene()->readFromFile(fileNameDocument);
                 setRecentFiles();
 
                 // load solution
@@ -999,13 +979,29 @@ void MainWindow::doDocumentOpen(const QString &fileName)
 
                 return;
             }
-            else
+            catch (AgrosException &e)
             {
                 Agros2D::scene()->clear();
-                result.showDialog();
+
+                Agros2D::log()->printError(tr("Problem"), e.toString());
+                return;
+            }
+            catch(AgrosModuleException& e)
+            {
+                Agros2D::scene()->clear();
+
+                Agros2D::log()->printError(tr("Problem"), e.toString());
+                return;
+            }
+            catch(AgrosPluginException& e)
+            {
+                Agros2D::scene()->clear();
+
+                Agros2D::log()->printError(tr("Problem"), e.toString());
                 return;
             }
         }
+
         if (fileInfo.suffix() == "py")
         {
             // python script
@@ -1013,11 +1009,12 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             scriptEditorDialog->showDialog();
             return;
         }
-        QMessageBox::critical(this, tr("File open"), tr("Unknown suffix."));
+
+        Agros2D::log()->printError(tr("Problem"), tr("Unknown suffix."));
     }
     else
     {
-        QMessageBox::critical(this, tr("File open"), tr("File '%1' is not found.").arg(fileNameDocument));
+        Agros2D::log()->printError(tr("Problem"), tr("File '%1' is not found.").arg(fileNameDocument));
     }
 }
 
@@ -1033,43 +1030,26 @@ void MainWindow::doDocumentDownloadFromServer()
 void MainWindow::doDocumentOpenRecent(QAction *action)
 {
     QString fileName = action->text();
-    if (QFile::exists(fileName))
-    {
-        ErrorResult result;
-        // todo: mixing exceptions with error code. Should be unified, probably use exceptions everywhere
-        try{
-            result = Agros2D::scene()->readFromFile(fileName);
-        }
-        catch(AgrosModuleException& e)
-        {
-            result = ErrorResult(ErrorResultType_Critical, e.what());
-        }
-
-        if (!result.isError())
-        {
-            setRecentFiles();
-
-            sceneViewPreprocessor->actOperateOnNodes->trigger();
-            sceneViewPreprocessor->doZoomBestFit();
-            return;
-        }
-        else{
-            Agros2D::scene()->clear();
-            result.showDialog();
-        }
-    }
+    doDocumentOpen(fileName);
 }
 
 void MainWindow::doDocumentSave()
 {
     if (QFile::exists(Agros2D::problem()->config()->fileName()))
     {
-        ErrorResult result = Agros2D::scene()->writeToFile(Agros2D::problem()->config()->fileName());
-        if (result.isError())
-            result.showDialog();
+        try
+        {
+            Agros2D::scene()->writeToFile(Agros2D::problem()->config()->fileName(), true);
+        }
+        catch (AgrosException &e)
+        {
+            Agros2D::log()->printError(tr("Problem"), e.toString());
+        }
     }
     else
+    {
         doDocumentSaveAs();
+    }
 }
 
 void MainWindow::doDocumentSaveSolution()
@@ -1091,11 +1071,15 @@ void MainWindow::doDocumentSaveAs()
         QFileInfo fileInfo(fileName);
         if (fileInfo.suffix() != "a2d") fileName += ".a2d";
 
-        ErrorResult result = Agros2D::scene()->writeToFile(fileName);
-        if (result.isError())
-            result.showDialog();
-
-        setRecentFiles();
+        try
+        {
+            Agros2D::scene()->writeToFile(fileName);
+            setRecentFiles();
+        }
+        catch (AgrosException &e)
+        {
+            Agros2D::log()->printError(tr("Problem"), e.toString());
+        }
     }
 }
 
@@ -1184,20 +1168,16 @@ void MainWindow::doDocumentSaveImage()
         QFileInfo fileInfo(fileName);
         if (fileInfo.suffix().toLower() != "png") fileName += ".png";
 
-        ErrorResult result;
         if (sceneViewPreprocessor->actSceneModePreprocessor->isChecked())
-            result = sceneViewPreprocessor->saveImageToFile(fileName);
+            sceneViewPreprocessor->saveImageToFile(fileName);
         else if (sceneViewMesh->actSceneModeMesh->isChecked())
-            result = sceneViewMesh->saveImageToFile(fileName);
+            sceneViewMesh->saveImageToFile(fileName);
         else if (sceneViewPost2D->actSceneModePost2D->isChecked())
-            result = sceneViewPost2D->saveImageToFile(fileName);
+            sceneViewPost2D->saveImageToFile(fileName);
         else if (sceneViewPost3D->actSceneModePost3D->isChecked())
-            result = sceneViewPost3D->saveImageToFile(fileName);
+            sceneViewPost3D->saveImageToFile(fileName);
         else if (sceneViewParticleTracing->actSceneModeParticleTracing->isChecked())
-            result = sceneViewParticleTracing->saveImageToFile(fileName);
-
-        if (result.isError())
-            result.showDialog();
+            sceneViewParticleTracing->saveImageToFile(fileName);
 
         if (fileInfo.absoluteDir() != tempProblemDir())
             settings.setValue("General/LastImageDir", fileInfo.absolutePath());

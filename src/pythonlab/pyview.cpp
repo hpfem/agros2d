@@ -455,21 +455,12 @@ void PyViewPost3D::setPost3DMode(char* mode)
 
 void PyView::saveImageToFile(const char *file, int width, int height)
 {
-    ErrorResult result;
     if (currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->isChecked())
-        result = currentPythonEngineAgros()->sceneViewPreprocessor()->saveImageToFile(file, width, height);
+        currentPythonEngineAgros()->sceneViewPreprocessor()->saveImageToFile(file, width, height);
     else if (currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->isChecked())
-        result = currentPythonEngineAgros()->sceneViewMesh()->saveImageToFile(file, width, height);
-
+        currentPythonEngineAgros()->sceneViewMesh()->saveImageToFile(file, width, height);
     else if (currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->isChecked())
-        result = currentPythonEngineAgros()->sceneViewPost2D()->saveImageToFile(file, width, height);
-
+        currentPythonEngineAgros()->sceneViewPost2D()->saveImageToFile(file, width, height);
     else if (currentPythonEngineAgros()->sceneViewPost3D()->actSceneModePost3D->isChecked())
-        result = currentPythonEngineAgros()->sceneViewPost3D()->saveImageToFile(file, width, height);
-
-    else
-        result = ErrorResult(ErrorResultType_Critical, QObject::tr("Image is not saved."));
-
-    if (result.isError())
-        throw invalid_argument(result.message().toStdString());
+        currentPythonEngineAgros()->sceneViewPost3D()->saveImageToFile(file, width, height);
 }

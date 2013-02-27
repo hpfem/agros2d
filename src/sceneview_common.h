@@ -61,7 +61,7 @@ public:
 
     QAction *actSceneZoomRegion;
 
-    ErrorResult saveImageToFile(const QString &fileName, int w = 0, int h = 0);
+    void saveImageToFile(const QString &fileName, int w = 0, int h = 0);
     void saveImagesForReport(const QString &path, bool showGrid, bool showRulers, bool showAxes, bool showLabel, int w = 0, int h = 0);
     QPixmap renderScenePixmap(int w = 0, int h = 0, bool useContext = false);
 

@@ -19,6 +19,10 @@ SOURCES += main.cpp \
 HEADERS += \
     agros_solver.h
 
+linux-clang {
+    INCLUDEPATH += ../hermes2d/omp
+}
+
 linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     TARGET = ../agros2d_solver
 }

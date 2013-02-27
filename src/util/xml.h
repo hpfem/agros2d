@@ -22,8 +22,6 @@
 
 #include <QtXmlPatterns>
 
-struct ErrorResult;
-
 class MessageHandler : public QAbstractMessageHandler
  {
      public:
@@ -69,7 +67,7 @@ class MessageHandler : public QAbstractMessageHandler
 QString transformXML(const QString &fileName, const QString &stylesheetFileName);
 
 // xml validation
-ErrorResult validateXML(const QString &fileName, const QString &schemaFileName);
+void validateXML(const QString &fileName, const QString &schemaFileName);
 
 
 #endif // UTIL_XML_H

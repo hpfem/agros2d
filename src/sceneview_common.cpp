@@ -20,6 +20,7 @@
 #include "sceneview_common.h"
 
 #include "util/global.h"
+#include "logview.h"
 
 #include "sceneview_data.h"
 #include "scene.h"
@@ -304,13 +305,11 @@ void SceneViewCommon::drawBlend(Point start, Point end, double red, double green
     glColor4d(color[0], color[1], color[2], color[3]);
 }
 
-ErrorResult SceneViewCommon::saveImageToFile(const QString &fileName, int w, int h)
+void SceneViewCommon::saveImageToFile(const QString &fileName, int w, int h)
 {
     QPixmap pixmap = renderScenePixmap(w, h);
     if (!pixmap.save(fileName, "PNG"))
-        return ErrorResult(ErrorResultType_Critical, tr("Image cannot be saved to the file '%1'.").arg(fileName));
-
-    return ErrorResult();
+        Agros2D::log()->printError(tr("SceneView"), tr("Image cannot be saved to the file '%1'.").arg(fileName));
 }
 
 void SceneViewCommon::saveImagesForReport(const QString &path, bool showGrid, bool showRulers, bool showAxes, bool showLabel, int w, int h)

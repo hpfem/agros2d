@@ -186,8 +186,8 @@ public:
 
     void readFromDxf(const QString &fileName);
     void writeToDxf(const QString &fileName);
-    ErrorResult readFromFile(const QString &fileName);
-    ErrorResult writeToFile(const QString &fileName);
+    void readFromFile(const QString &fileName);
+    void writeToFile(const QString &fileName, bool saveLastProblemDir = false);
     void readSolutionFromFile(const QString &fileName);
     void writeSolutionToFile(const QString &fileName);
 

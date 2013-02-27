@@ -539,16 +539,26 @@ QString createPythonFromModel(StartupScript_Type startupScript)
 
 void pyOpenDocument(char *str)
 {
-    ErrorResult result = Agros2D::scene()->readFromFile(QString(str));
-    if (result.isError())
-        throw invalid_argument(result.message().toStdString());
+    try
+    {
+        Agros2D::scene()->readFromFile(QString(str));
+    }
+    catch (AgrosException &e)
+    {
+        throw invalid_argument(e.toString().toStdString());
+    }
 }
 
 void pySaveDocument(char *str)
 {
-    ErrorResult result = Agros2D::scene()->writeToFile(QString(str));
-    if (result.isError())
-        throw invalid_argument(result.message().toStdString());
+    try
+    {
+        Agros2D::scene()->writeToFile(QString(str), false);
+    }
+    catch (AgrosException &e)
+    {
+        throw invalid_argument(e.toString().toStdString());
+    }
 }
 
 void pyCloseDocument()
