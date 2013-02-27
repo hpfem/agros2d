@@ -156,7 +156,7 @@ void ParticleTracingWidget::createControls()
 
     // reflection
     QGridLayout *gridLayoutReflection = new QGridLayout();
-    gridLayoutReflection->setContentsMargins(5, 0, 0, 0);
+    gridLayoutReflection->setContentsMargins(5, 5, 0, 0);
     gridLayoutReflection->setColumnMinimumWidth(0, minWidth);
     gridLayoutReflection->setColumnStretch(1, 1);
     gridLayoutReflection->addWidget(chkParticleReflectOnDifferentMaterial, 0, 0, 1, 2);
@@ -209,7 +209,7 @@ void ParticleTracingWidget::createControls()
 
     // forces
     QVBoxLayout *layoutForces = new QVBoxLayout();
-    layoutForces->setContentsMargins(5, 0, 0, 0);
+    layoutForces->setContentsMargins(5, 5, 0, 0);
     layoutForces->addWidget(grpLorentzForce);
     layoutForces->addWidget(grpDragForce);
     layoutForces->addWidget(grpCustomForce);
@@ -236,7 +236,7 @@ void ParticleTracingWidget::createControls()
 
     // settings
     QGridLayout *gridLayoutSettings = new QGridLayout();
-    gridLayoutSettings->setContentsMargins(5, 0, 0, 0);
+    gridLayoutSettings->setContentsMargins(5, 5, 0, 0);
     gridLayoutSettings->addWidget(chkParticleColorByVelocity, 2, 0, 1, 2);
     gridLayoutSettings->addWidget(chkParticleShowPoints, 3, 0, 1, 2);
     gridLayoutSettings->addWidget(new QLabel(""), 10, 0);
