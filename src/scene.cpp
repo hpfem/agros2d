@@ -426,7 +426,7 @@ void Scene::setMaterial(SceneMaterial *material)
     selectNone();
 }
 
-bool Scene::checkGeometryAssignement()
+void Scene::checkGeometryAssignement()
 {
     if (Agros2D::scene()->edges->length() > 2)
     {
@@ -437,16 +437,11 @@ bool Scene::checkGeometryAssignement()
                 count++;
 
         if (count == 0)
-        {
-            Agros2D::log()->printError(tr("Geometry"), tr("At least one boundary condition has to be assigned"));
-            return false;
-        }
+            throw AgrosGeometryException(tr("At least one boundary condition has to be assigned"));
     }
+
     if (Agros2D::scene()->labels->length() < 1)
-    {
-        Agros2D::log()->printError(tr("Geometry"), tr("Invalid number of labels (%1 < 1)").arg(Agros2D::scene()->labels->length()));
-        return false;
-    }
+        throw AgrosGeometryException(tr("Invalid number of labels (%1 < 1)").arg(Agros2D::scene()->labels->length()));
     else
     {
         // at least one material has to be assigned
@@ -456,23 +451,14 @@ bool Scene::checkGeometryAssignement()
                 count++;
 
         if (count == 0)
-        {
-            Agros2D::log()->printError(tr("Geometry"), tr("At least one material has to be assigned"));
-            return false;
-        }
-    }
-    if (Agros2D::scene()->boundaries->length() < 2) // + none marker
-    {
-        Agros2D::log()->printError(tr("Geometry"), tr("Invalid number of boundary conditions (%1 < 1)").arg(Agros2D::scene()->boundaries->length()));
-        return false;
-    }
-    if (Agros2D::scene()->materials->length() < 2) // + none marker
-    {
-        Agros2D::log()->printError(tr("Geometry"), tr("Invalid number of materials (%1 < 1)").arg(Agros2D::scene()->materials->length()));
-        return false;
+            throw AgrosGeometryException(tr("At least one material has to be assigned"));
     }
 
-    return true;
+    if (Agros2D::scene()->boundaries->length() < 2) // + none marker
+        throw AgrosGeometryException(tr("Invalid number of boundary conditions (%1 < 1)").arg(Agros2D::scene()->boundaries->length()));
+
+    if (Agros2D::scene()->materials->length() < 2) // + none marker
+        throw AgrosGeometryException(tr("Invalid number of materials (%1 < 1)").arg(Agros2D::scene()->materials->length()));
 }
 
 void Scene::clear()
@@ -1963,7 +1949,7 @@ void Scene::checkGeometryResult()
             throw AgrosGeometryException(tr("There are nodes which are not connected to any edge (red highlighted). All nodes should be connected."));
         }
 
-        if (node->isEndNoed())
+        if (node->isEndNode())
         {
             throw AgrosGeometryException(tr("There are nodes which are connected to one edge only (red highlighted). This is not allowed in Agros."));
         }

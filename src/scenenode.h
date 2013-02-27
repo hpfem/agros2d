@@ -36,7 +36,7 @@ public:
 
     // geometry editor
     bool isConnected() const { return connectedEdges().length() > 0; }
-    bool isEndNoed() const {return connectedEdges().length() == 1; }
+    bool isEndNode() const {return connectedEdges().length() == 1; }
     QList<SceneEdge *> connectedEdges() const;
     bool isLyingOnEdges() const { return lyingEdges().length() > 0; }
     QList<SceneEdge *> lyingEdges() const;
@@ -51,7 +51,7 @@ public:
     static SceneNode *findClosestNode(const Point &point);
 
 private:
-    Point m_point;   
+    Point m_point;
 };
 
 Q_DECLARE_METATYPE(SceneNode *)

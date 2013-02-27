@@ -330,7 +330,9 @@ bool Problem::meshAction()
 
     Agros2D::log()->printMessage(QObject::tr("Problem"), QObject::tr("Mesh generation"));
 
+    // check geometry
     Agros2D::scene()->checkGeometryResult();
+    Agros2D::scene()->checkGeometryAssignement();
 
     MeshGenerator *meshGenerator = NULL;
     switch (config()->meshType())
@@ -469,6 +471,7 @@ void Problem::solveInit()
 
     // control geometry
     Agros2D::scene()->checkGeometryResult();
+    Agros2D::scene()->checkGeometryAssignement();
 
     // save problem
     ErrorResult result = Agros2D::scene()->writeToFile(tempProblemFileName() + ".a2d");
@@ -480,10 +483,6 @@ void Problem::solveInit()
     // todo: we should not mesh always, but we would need to refine signals to determine when is it neccesary (whether, e.g., parameters of the mesh have been changed)
     if (!mesh())
         throw AgrosSolverException(tr("Could not create mesh"));
-
-    // check geometry
-    if (!Agros2D::scene()->checkGeometryAssignement())
-        throw AgrosSolverException(tr("Geometry assignment failed"));
 
     if (fieldInfos().count() == 0)
     {
@@ -603,6 +602,11 @@ void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
     {
         Agros2D::log()->printError(QObject::tr("Solver"), QString("%1").arg(e.what()));
         throw AgrosSolverException(e.what());
+    }
+    catch (AgrosGeometryException& e)
+    {
+        Agros2D::log()->printError(QObject::tr("Geometry"), e.what());
+        throw;
     }
     catch (AgrosSolverException& e)
     {

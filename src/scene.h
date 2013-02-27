@@ -159,7 +159,7 @@ public:
     void setMaterial(SceneMaterial *material); // set label marker to selected labels
     SceneMaterial *getMaterial(FieldInfo *field, const QString &name);
 
-    bool checkGeometryAssignement();
+    void checkGeometryAssignement();
     // OBSOLETE - DO NOT USE *************************************************************
 
     void clear();
