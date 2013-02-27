@@ -74,7 +74,7 @@ void LogWidget::createActions()
 
     actShowDebug = new QAction(icon(""), tr("Show debug"), this);
     actShowDebug->setCheckable(true);
-    actShowDebug->setChecked(settings.value("LogWidget/ShowDebug", true).toBool());
+    actShowDebug->setChecked(settings.value("LogWidget/ShowDebug", false).toBool());
     connect(actShowDebug, SIGNAL(triggered()), this, SLOT(showDebug()));
 
     actClear = new QAction(icon(""), tr("Clear"), this);
