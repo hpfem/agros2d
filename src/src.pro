@@ -293,6 +293,10 @@ INCLUDEPATH += ../hermes_common/include
 LIBS += -lagros2d_hermes2d
 LIBS += -lagros2d_3rdparty
 
+linux-clang {
+    INCLUDEPATH += ../hermes2d/omp
+}
+
 linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     # DEFINES += WITH_UNITY
     TARGET = ../libs/agros2d_library
