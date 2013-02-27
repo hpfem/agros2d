@@ -43,7 +43,8 @@ public slots:
     void doShowResults();
 
     void showEmpty();
-    void showPoint(const Point &m_point = Point());
+    void showPoint(const Point &point);
+    void showPoint();
     void showVolumeIntegral();
     void showSurfaceIntegral();
 
@@ -53,6 +54,7 @@ public:
     QPushButton *btnSelectMarker;
 
 private:
+    Point m_point;
     PostHermes *m_postHermes;
 
     SceneModePostprocessor m_sceneModePostprocessor;

@@ -47,6 +47,8 @@ ResultsView::ResultsView(PostHermes *postHermes, QWidget *parent)
     webView = new QWebView();
     webView->page()->setNetworkAccessManager(networkAccessManager());
 
+    connect(postHermes, SIGNAL(processed()), this, SLOT(doShowResults()));
+
     // stylesheet
     std::string style;
     ctemplate::TemplateDictionary stylesheet("style");
@@ -89,6 +91,13 @@ void ResultsView::doShowResults()
 
 void ResultsView::showPoint(const Point &point)
 {
+    m_point = point;
+
+    showPoint();
+}
+
+void ResultsView::showPoint()
+{
     if (!(Agros2D::problem()->isSolved() && m_postHermes->isProcessed()))
     {
         showEmpty();
@@ -104,8 +113,8 @@ void ResultsView::showPoint(const Point &point)
 
     localPointValues.SetValue("LABELX", QString("<i>%1</i>").arg(Agros2D::problem()->config()->labelX().toLower()).toStdString());
     localPointValues.SetValue("LABELY", QString("<i>%1</i>").arg(Agros2D::problem()->config()->labelY().toLower()).toStdString());
-    localPointValues.SetValue("POINTX", (QString("%1").arg(point.x, 0, 'e', 3)).toStdString());
-    localPointValues.SetValue("POINTY", (QString("%1").arg(point.y, 0, 'e', 3)).toStdString());
+    localPointValues.SetValue("POINTX", (QString("%1").arg(m_point.x, 0, 'e', 3)).toStdString());
+    localPointValues.SetValue("POINTY", (QString("%1").arg(m_point.y, 0, 'e', 3)).toStdString());
     localPointValues.SetValue("POINT_UNIT", "m");
 
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
@@ -115,7 +124,7 @@ void ResultsView::showPoint(const Point &point)
         int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, timeStep);
         SolutionMode solutionMode = SolutionMode_Finer;
 
-        LocalValue *value = fieldInfo->plugin()->localValue(fieldInfo, timeStep, adaptivityStep, solutionMode, point);
+        LocalValue *value = fieldInfo->plugin()->localValue(fieldInfo, timeStep, adaptivityStep, solutionMode, m_point);
         QMap<QString, PointValue> values = value->values();
         delete value;
 
