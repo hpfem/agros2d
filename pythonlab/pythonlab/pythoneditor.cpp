@@ -663,8 +663,9 @@ void PythonEditorDialog::doRunPython()
     QApplication::processEvents();
 
     // run script
-    consoleView->console()->consoleMessage("Run script: " + tabWidget->tabText(tabWidget->currentIndex()).replace("* ", "") + "\n",
-                                           Qt::gray);
+    consoleView->console()->consoleMessage(tr("Run script: %1\n").arg(tabWidget->tabText(tabWidget->currentIndex()).replace("* ", "")), Qt::gray);
+
+    scriptPrepare();
 
     // benchmark
     QTime time;
@@ -690,7 +691,7 @@ void PythonEditorDialog::doRunPython()
             doFileSave();
 
         result = pythonEngine->runScript(txtEditor->toPlainText(),
-                                               QFileInfo(scriptEditorWidget()->fileName).absoluteFilePath());
+                                         QFileInfo(scriptEditorWidget()->fileName).absoluteFilePath());
     }
     // disconnect stdout
     consoleView->console()->disconnectStdOut();
@@ -710,6 +711,8 @@ void PythonEditorDialog::doRunPython()
             txtEditor->gotoLine(result.line, true);
     }
     consoleView->console()->appendCommandPrompt();
+
+    scriptFinish();
 
     // enable controls
     consoleView->setEnabled(true);

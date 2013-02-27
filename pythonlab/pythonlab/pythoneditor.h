@@ -122,6 +122,9 @@ protected:
     void dragLeaveEvent(QDragLeaveEvent *event);
     void dropEvent(QDropEvent *event);
 
+    virtual void scriptPrepare() {}
+    virtual void scriptFinish() {}
+
 protected:
     PythonEngine *pythonEngine;
 

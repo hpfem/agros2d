@@ -57,6 +57,9 @@ public:
     inline void setPostHermes(PostHermes *postHermes) { assert(postHermes); m_postHermes = postHermes; }
     inline PostHermes *postHermes() { assert(m_postHermes); return m_postHermes; }
 
+    inline void setConsole(PythonScriptingConsole *console) { m_console = console; }
+    inline void resetConsole() { m_console = NULL; }
+
 protected:
     virtual void addCustomExtensions();
     virtual void addCustomFunctions();
@@ -70,6 +73,8 @@ private:
     SceneViewParticleTracing *m_sceneViewParticleTracing;
 
     PostHermes *m_postHermes;
+
+    PythonScriptingConsole *m_console;
 };
 
 class AGROS_API PythonLabAgros : public PythonEditorDialog
@@ -79,14 +84,24 @@ public:
     PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWidget *parent);
     ~PythonLabAgros();
 
+protected:
+    virtual void scriptPrepare();
+    virtual void scriptFinish();
+
 private:
     QAction *actCreateFromModel;
 
     QAction *actStartupScriptVariables;
     QAction *actStartupScriptValues;
+    QAction *actConsoleOutput;
 
 private slots:
     void doCreatePythonFromModel();
+
+    void printMessage(const QString &module, const QString &message, bool escaped = true);
+    void printError(const QString &module, const QString &message, bool escaped = true);
+    void printWarning(const QString &module, const QString &message, bool escaped = true);
+    void printDebug(const QString &module, const QString &message, bool escaped = true);
 };
 
 // current python engine agros

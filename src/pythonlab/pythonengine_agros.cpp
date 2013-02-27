@@ -36,6 +36,7 @@
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
 #include "datatable.h"
+#include "logview.h"
 
 #include "hermes2d/plugin_interface.h"
 #include "hermes2d/module.h"
@@ -106,6 +107,11 @@ PythonLabAgros::PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWi
     actStartupScriptValues->setCheckable(true);
     actStartupScriptValues->setChecked(settings.value("PythonEditorDialog/StartupScriptValues", false).toBool());
 
+    // console output
+    actConsoleOutput = new QAction(tr("Console output"), this);
+    actConsoleOutput->setCheckable(true);
+    actConsoleOutput->setChecked(settings.value("PythonEditorDialog/ConsoleOutput", true).toBool());
+
     QActionGroup *actStartupScriptGroup = new QActionGroup(this);
     actStartupScriptGroup->addAction(actStartupScriptVariables);
     actStartupScriptGroup->addAction(actStartupScriptValues);
@@ -114,6 +120,7 @@ PythonLabAgros::PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWi
     mnuStartupScript->addAction(actStartupScriptVariables);
     mnuStartupScript->addAction(actStartupScriptValues);
 
+    mnuOptions->addAction(actConsoleOutput);
     mnuOptions->addSeparator();
     mnuOptions->addMenu(mnuStartupScript);
 }
@@ -123,6 +130,7 @@ PythonLabAgros::~PythonLabAgros()
     QSettings settings;
     settings.setValue("PythonEditorDialog/StartupScriptVariables", actStartupScriptVariables->isChecked());
     settings.setValue("PythonEditorDialog/StartupScriptValues", actStartupScriptValues->isChecked());
+    settings.setValue("PythonEditorDialog/ConsoleOutput", actConsoleOutput->isChecked());
 }
 
 void PythonLabAgros::doCreatePythonFromModel()
@@ -130,6 +138,52 @@ void PythonLabAgros::doCreatePythonFromModel()
     StartupScript_Type type = actStartupScriptVariables->isChecked() ? StartupScript_Variable : StartupScript_Value;
     txtEditor->setPlainText(createPythonFromModel(type));
 }
+
+void PythonLabAgros::scriptPrepare()
+{
+    if (actConsoleOutput->isChecked())
+    {
+        connect(Agros2D::log(), SIGNAL(messageMsg(QString, QString, bool)), this, SLOT(printMessage(QString, QString, bool)));
+        connect(Agros2D::log(), SIGNAL(errorMsg(QString, QString, bool)), this, SLOT(printError(QString, QString, bool)));
+        connect(Agros2D::log(), SIGNAL(warningMsg(QString, QString, bool)), this, SLOT(printWarning(QString, QString, bool)));
+        connect(Agros2D::log(), SIGNAL(debugMsg(QString, QString, bool)), this, SLOT(printDebug(QString, QString, bool)));
+    }
+}
+
+void PythonLabAgros::scriptFinish()
+{
+    if (actConsoleOutput->isChecked())
+    {
+        disconnect(Agros2D::log(), SIGNAL(messageMsg(QString, QString, bool)), NULL, NULL);
+        disconnect(Agros2D::log(), SIGNAL(errorMsg(QString, QString, bool)), NULL, NULL);
+        disconnect(Agros2D::log(), SIGNAL(warningMsg(QString, QString, bool)), NULL, NULL);
+        disconnect(Agros2D::log(), SIGNAL(debugMsg(QString, QString, bool)), NULL, NULL);
+    }
+}
+
+void PythonLabAgros::printMessage(const QString &module, const QString &message, bool escaped)
+{
+    consoleView->console()->consoleMessage(QString("%1: %2\n").arg(module).arg(message), Qt::gray);
+}
+
+void PythonLabAgros::printError(const QString &module, const QString &message, bool escaped)
+{
+    consoleView->console()->consoleMessage(QString("%1: %2\n").arg(module).arg(message), Qt::red);
+}
+
+void PythonLabAgros::printWarning(const QString &module, const QString &message, bool escaped)
+{
+    consoleView->console()->consoleMessage(QString("%1: %2\n").arg(module).arg(message), Qt::green);
+}
+
+void PythonLabAgros::printDebug(const QString &module, const QString &message, bool escaped)
+{
+#ifndef QT_NO_DEBUG_OUTPUT
+    consoleView->console()->consoleMessage(QString("%1: %2\n").arg(module).arg(message), Qt::lightGray);
+#endif
+}
+
+// *****************************************************************************
 
 // create script from model
 QString createPythonFromModel(StartupScript_Type startupScript)
