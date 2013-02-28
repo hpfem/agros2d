@@ -324,7 +324,7 @@ void MainWindow::createActions()
     actRedo->setShortcuts(QKeySequence::Redo);
 
     actCopy = new QAction(icon("edit-copy"), tr("Copy image to clipboard"), this);
-    actCopy->setShortcuts(QKeySequence::Copy);
+    // actCopy->setShortcuts(QKeySequence::Copy);
     connect(actCopy, SIGNAL(triggered()), this, SLOT(doCopy()));
 
     actHelp = new QAction(icon("help-contents"), tr("&Help"), this);

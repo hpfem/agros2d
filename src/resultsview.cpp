@@ -42,10 +42,10 @@ ResultsView::ResultsView(PostHermes *postHermes, QWidget *parent)
     setMinimumWidth(280);
     setObjectName("ResultsView");
 
-    createActions();
-
     webView = new QWebView();
     webView->page()->setNetworkAccessManager(networkAccessManager());
+
+    createActions();
 
     connect(postHermes, SIGNAL(processed()), this, SLOT(doShowResults()));
 
@@ -71,7 +71,9 @@ ResultsView::ResultsView(PostHermes *postHermes, QWidget *parent)
 
 void ResultsView::createActions()
 {
-
+    QAction *copyAction = webView->pageAction(QWebPage::Copy);
+    copyAction->setShortcut(QKeySequence::Copy);
+    webView->addAction(copyAction);
 }
 
 void ResultsView::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor)
