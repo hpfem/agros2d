@@ -1,8 +1,8 @@
 [Setup]
 
 #define AppName "Agros2D"
-#define AppVersion "3.0.0.3253"
-#define AppDate "2013-02-18"
+#define AppVersion "3.0.0.3433"
+#define AppDate "2013-02-28"
 #define OutputBaseFileName "Agros2D" + "_" + AppVersion
 
 AppName={#AppName}
@@ -14,7 +14,7 @@ LicenseFile=COPYING
 AppId=Agros2D
 AppPublisher=hpfem.org
 AppCopyright=hpfem.org
-AppPublisherURL=http://www.hpfem.org/agros2d
+AppPublisherURL=http://www.agros2d.org/
 AppMutex=Agros2D
 OutputDir=setup
 DefaultDirName={pf}\Agros2D
@@ -31,20 +31,27 @@ WizardSmallImageFile=install\win32\setup\SetupModernSmall.bmp
 Source: agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
 Source: agros2d_pythonlab.exe; DestDir: {app}; DestName: Agros2D_PythonLab.exe
 Source: agros2d_solver.exe; DestDir: {app}; DestName: Agros2D_Solver.exe
-Source: GMSH.exe; DestDir: {app}; DestName: GMSH.exe
 Source: agros2d_hermes2d.dll; DestDir: {app}; DestName: agros2d_hermes2d.dll
 Source: agros2d_library.dll; DestDir: {app}; DestName: agros2d_library.dll
 Source: libs\*.dll; DestDir: {app}/libs
 Source: resources\images\agros2d.ico; DestDir: {app}; DestName: Agros2D.ico
 Source: COPYING; DestDir: {app}; DestName: COPYING
 Source: README; DestDir: {app}; DestName: README
+Source: README_Python.txt; DestDir: {app}; DestName: README_Python.txt
 Source: functions_pythonlab.py; DestDir: {app}; DestName: functions_pythonlab.py
 Source: functions_agros2d.py; DestDir: {app}; DestName: functions_agros2d.py
 Source: data\*.a2d; DestDir: {app}/data
 Source: data\scripts\*.py; DestDir: {app}/data/scripts
 Source: data\scripts\test\*.py; DestDir: {app}/data/scripts/test
 Source: resources\*; DestDir: {app}/resources; Flags: recursesubdirs
-Source: ..\agros2d_windows_install\runtime\*; DestDir: {app}; Flags: ignoreversion recursesubdirs
+Source: DLLs\*; DestDir: {app}/DLLs; Flags: recursesubdirs
+Source: Lib\*; DestDir: {app}/Lib; Flags: recursesubdirs
+Source: tcl\*; DestDir: {app}/tcl; Flags: recursesubdirs
+Source: *.dll; DestDir: {app};
+Source: triangle.exe; DestDir: {app}; DestName: triangle.exe
+Source: GMSH.exe; DestDir: {app}; DestName: GMSH.exe
+Source: python.exe; DestDir: {app}; DestName: python.exe
+Source: pythonw.exe; DestDir: {app}; DestName: pythonw.exe
 
 [Icons]
 Name: {group}\Agros2D; Filename: {app}\Agros2D.exe; WorkingDir: {app}
