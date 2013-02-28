@@ -51,7 +51,7 @@ private:
     bool m_showGridStore;
     bool m_showAxesStore;
 
-    QTabWidget *tabType;
+    QStackedWidget *tabType;
     QWidget *tabTransient;
     QWidget *tabAdaptivity;
 
@@ -59,7 +59,7 @@ private:
 
     // file
     QPushButton *btnClose;
-    QPushButton *btnAnimate;
+    QPushButton *btnGenerate;
 
     QCheckBox *chkSaveImages;
     QCheckBox *chkFigureShowGrid;
@@ -82,13 +82,11 @@ private:
 private slots:
     void adaptiveAnimate();
     void adaptiveAnimateNextStep();
-    void adaptiveSetStep(int index);
+    void setAdaptiveStep(int adaptiveStep);
 
     void transientAnimate();
     void transientAnimateNextStep();
     void setTransientStep(int transientStep);
-
-    void tabChanged(int index);
 
     void doClose();
     void doVideo();

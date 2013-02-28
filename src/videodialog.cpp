@@ -26,6 +26,7 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 #include "hermes2d/solutionstore.h"
+#include "hermes2d/field.h"
 
 #include "gui/lineeditdouble.h"
 
@@ -51,8 +52,7 @@ VideoDialog::VideoDialog(SceneViewPostInterface *sceneViewInterface, PostHermes 
     // timer create images
     timer = new QTimer(this);
 
-    createControls();
-    tabChanged(0);
+    createControls();    
 }
 
 VideoDialog::~VideoDialog()
@@ -96,10 +96,32 @@ void VideoDialog::showDialog()
     sliderAdaptiveAnimate->setMaximum(m_adaptiveSteps);
     sliderAdaptiveAnimate->blockSignals(false);
 
-    if (Agros2D::problem()->isTransient())
+    if (m_postHermes->activeViewField()->analysisType() == AnalysisType_Transient)
+    {
         tabType->setCurrentWidget(tabTransient);
-    else
+    }
+    else if (m_postHermes->activeViewField()->adaptivityType() != AdaptivityType_None)
+    {
         tabType->setCurrentWidget(tabAdaptivity);
+    }
+    else
+    {
+        QMessageBox::information(this, tr("Video Dialog"), tr("The field is not time dependent or adaptive."));
+
+        close();
+        return;
+    }
+
+    if (tabType->currentWidget() == tabTransient)
+    {
+        connect(btnGenerate, SIGNAL(clicked()), this, SLOT(transientAnimate()));
+        connect(timer, SIGNAL(timeout()), this, SLOT(transientAnimateNextStep()));
+    }
+    else if (tabType->currentWidget() == tabAdaptivity)
+    {
+        connect(btnGenerate, SIGNAL(clicked()), this, SLOT(adaptiveAnimate()));
+        connect(timer, SIGNAL(timeout()), this, SLOT(adaptiveAnimateNextStep()));
+    }
 
     exec();
 }
@@ -110,10 +132,9 @@ void VideoDialog::createControls()
     tabTransient = createControlsViewportTimeSteps();
     tabAdaptivity = createControlsViewportAdaptiveSteps();
 
-    tabType = new QTabWidget();
-    tabType->addTab(tabAdaptivity, icon(""), tr("Adaptivity"));
-    tabType->addTab(tabTransient, icon(""), tr("Transient"));
-    connect(tabType, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
+    tabType = new QStackedWidget();
+    tabType->addWidget(tabAdaptivity);
+    tabType->addWidget(tabTransient);
 
     btnClose = new QPushButton(tr("Close"));
     btnClose->setDefault(true);
@@ -123,11 +144,11 @@ void VideoDialog::createControls()
     btnVideo->setDefault(true);
     connect(btnVideo, SIGNAL(clicked()), this, SLOT(doVideo()));
 
-    btnAnimate = new QPushButton(tr("Generate"));
+    btnGenerate = new QPushButton(tr("Generate"));
 
     QHBoxLayout *layoutButton = new QHBoxLayout();
     layoutButton->addStretch();
-    layoutButton->addWidget(btnAnimate);
+    layoutButton->addWidget(btnGenerate);
     layoutButton->addWidget(btnVideo);
     layoutButton->addWidget(btnClose);
 
@@ -145,7 +166,7 @@ void VideoDialog::createControls()
 
     QHBoxLayout *layoutButtonViewport = new QHBoxLayout();
     layoutButtonViewport->addStretch();
-    layoutButtonViewport->addWidget(btnAnimate);
+    layoutButtonViewport->addWidget(btnGenerate);
 
     QGridLayout *layout = new QGridLayout();
     layout->addWidget(tabType, 0, 0, 1, 2);
@@ -189,7 +210,7 @@ QWidget *VideoDialog::createControlsViewportAdaptiveSteps()
 {
     sliderAdaptiveAnimate = new QSlider(Qt::Horizontal);
     sliderAdaptiveAnimate->setTickPosition(QSlider::TicksBelow);
-    connect(sliderAdaptiveAnimate, SIGNAL(valueChanged(int)), this, SLOT(adaptiveSetStep(int)));
+    connect(sliderAdaptiveAnimate, SIGNAL(valueChanged(int)), this, SLOT(setAdaptiveStep(int)));
 
     lblAdaptiveStep = new QLabel();
 
@@ -215,15 +236,15 @@ void VideoDialog::transientAnimate()
         btnClose->setEnabled(true);
 
         timer->stop();
-        btnAnimate->setText(tr("Run"));
+        btnGenerate->setText(tr("Run"));
     }
     else
     {
-        setTransientStep(1);
+        setTransientStep(0);
 
         btnClose->setEnabled(false);
 
-        btnAnimate->setText(tr("Stop"));
+        btnGenerate->setText(tr("Stop"));
         timer->start(0.0);
     }
 }
@@ -268,15 +289,15 @@ void VideoDialog::adaptiveAnimate()
         btnClose->setEnabled(true);
 
         timer->stop();
-        btnAnimate->setText(tr("Run"));
+        btnGenerate->setText(tr("Generate"));
     }
     else
     {
-        adaptiveSetStep(1);
+        setAdaptiveStep(1);
 
         btnClose->setEnabled(false);
 
-        btnAnimate->setText(tr("Stop"));
+        btnGenerate->setText(tr("Stop"));
         timer->start(0.0);
     }
 }
@@ -284,12 +305,12 @@ void VideoDialog::adaptiveAnimate()
 void VideoDialog::adaptiveAnimateNextStep()
 {
     if (m_postHermes->activeAdaptivityStep() < m_adaptiveSteps - 1)
-        adaptiveSetStep(m_postHermes->activeAdaptivityStep() + 2);
+        setAdaptiveStep(m_postHermes->activeAdaptivityStep() + 2);
     else
         adaptiveAnimate();
 }
 
-void VideoDialog::adaptiveSetStep(int adaptiveStep)
+void VideoDialog::setAdaptiveStep(int adaptiveStep)
 {
     Agros2D::problem()->configView()->showRulers = chkFigureShowRulers->isChecked();
     Agros2D::problem()->configView()->showGrid = chkFigureShowGrid->isChecked();
@@ -305,23 +326,6 @@ void VideoDialog::adaptiveSetStep(int adaptiveStep)
         m_sceneViewInterface->saveImageToFile(tempProblemDir() + QString("/video/video_%1.png").arg(QString("0000000" + QString::number(adaptiveStep)).right(8)));
 
     QApplication::processEvents();
-}
-
-void VideoDialog::tabChanged(int index)
-{
-    timer->disconnect(this);
-    btnAnimate->disconnect(this);
-
-    if (tabType->currentWidget() == tabTransient)
-    {
-        connect(btnAnimate, SIGNAL(clicked()), this, SLOT(transientAnimate()));
-        connect(timer, SIGNAL(timeout()), this, SLOT(transientAnimateNextStep()));
-    }
-    else if (tabType->currentWidget() == tabAdaptivity)
-    {
-        connect(btnAnimate, SIGNAL(clicked()), this, SLOT(adaptiveAnimate()));
-        connect(timer, SIGNAL(timeout()), this, SLOT(adaptiveAnimateNextStep()));
-    }
 }
 
 void VideoDialog::doVideo()
