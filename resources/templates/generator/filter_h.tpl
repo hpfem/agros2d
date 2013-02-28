@@ -35,7 +35,7 @@ public:
                      const QString &variable,
                      PhysicFieldVariableComp physicFieldVariableComp);
 
-    virtual Hermes::Hermes2D::Func<double> *get_pt_value(double x, double y);
+    virtual Hermes::Hermes2D::Func<double> *get_pt_value(double x, double y, Hermes::Hermes2D::Element* e = NULL);
 
     {{CLASS}}ViewScalarFilter* clone() const;
 
