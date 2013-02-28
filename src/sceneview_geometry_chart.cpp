@@ -139,11 +139,12 @@ void SceneViewPreprocessorChart::paintChartLine()
     double dm = qMax(rect.width(), rect.height()) / 25.0;
 
     glColor3d(1.0, 0.1, 0.1);
-    glLineWidth(2);
+    glLineWidth(2.0);
 
     // line
     if (m_chartLine.start == m_chartLine.end)
     {
+        glPointSize(5.0);
         glBegin(GL_POINTS);
         glVertex2d(m_chartLine.start.x, m_chartLine.start.y);
         glEnd();
