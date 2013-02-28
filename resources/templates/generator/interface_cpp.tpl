@@ -128,9 +128,10 @@ IntegralValue *{{CLASS}}Interface::volumeIntegral(FieldInfo *fieldInfo, int time
 }
 
 Point3 {{CLASS}}Interface::force(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                                 const SceneMaterial *material, const Point3 &point, const Point3 &velocity)
+                                 Hermes::Hermes2D::Element *element, const SceneMaterial *material,
+                                 const Point3 &point, const Point3 &velocity)
 {
-    return force{{CLASS}}(fieldInfo, timeStep, adaptivityStep, solutionType, material, point, velocity);
+    return force{{CLASS}}(fieldInfo, timeStep, adaptivityStep, solutionType, element, material, point, velocity);
 }
 
 QString {{CLASS}}Interface::localeName(const QString &name)

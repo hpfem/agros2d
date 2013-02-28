@@ -30,7 +30,7 @@
 #include "hermes2d/plugin_interface.h"
 
 Point3 force{{CLASS}}(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                      const SceneMaterial *material, const Point3 &point, const Point3 &velocity)
+                      Hermes::Hermes2D::Element *element, const SceneMaterial *material, const Point3 &point, const Point3 &velocity)
 {
     int numberOfSolutions = fieldInfo->numberOfSolutions();
 
@@ -63,7 +63,7 @@ Point3 force{{CLASS}}(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, So
             sln[k] = Agros2D::solutionStore()->multiArray(fsid).solutions().at(k);
 
             // point values
-            Hermes::Hermes2D::Func<double> *values = sln[k]->get_pt_value(point.x, point.y);
+            Hermes::Hermes2D::Func<double> *values = sln[k]->get_pt_value(point.x, point.y, element);
             if (!values)
             {
                 throw AgrosException(QObject::tr("Point [%1, %2] does not lie in any element").arg(x).arg(y));

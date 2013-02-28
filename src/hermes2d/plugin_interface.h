@@ -216,7 +216,7 @@ public:
     virtual IntegralValue *volumeIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType) = 0;
     // force calculation
     virtual Point3 force(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                         const SceneMaterial *material, const Point3 &point, const Point3 &velocity) = 0;
+                         Hermes::Hermes2D::Element *element, const SceneMaterial *material, const Point3 &point, const Point3 &velocity) = 0;
     virtual bool hasForce() = 0;
 
     // localization

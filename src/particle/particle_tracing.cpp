@@ -93,7 +93,7 @@ bool ParticleTracing::newtonEquations(double step,
                 SolutionMode solutionMode = SolutionMode_Finer;
 
                 fieldForce = fieldInfo->plugin()->force(fieldInfo, timeStep, adaptivityStep, solutionMode,
-                                                        material, position, velocity)
+                                                        element, material, position, velocity)
                         * Agros2D::problem()->configView()->particleConstant;
             }
             catch (AgrosException e)

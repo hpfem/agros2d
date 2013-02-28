@@ -86,7 +86,7 @@ void {{CLASS}}LocalValue::calculate()
                     sln[k] = Agros2D::solutionStore()->multiArray(fsid).solutions().at(k);
 
                     // point values
-                    Hermes::Hermes2D::Func<double> *values = sln[k]->get_pt_value(m_point.x, m_point.y);
+                    Hermes::Hermes2D::Func<double> *values = sln[k]->get_pt_value(m_point.x, m_point.y, e);
 
                     // set variables
                     value[k] = values->val[0];
