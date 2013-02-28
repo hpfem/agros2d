@@ -21,6 +21,10 @@ SOURCES += main.cpp \
 
 include(../agros2d.pri)
 
+linux-clang {
+    INCLUDEPATH += ../hermes2d/omp
+}
+
 linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     TARGET = ../agros2d_generator
 }
