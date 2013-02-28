@@ -39,7 +39,7 @@
     m_variableHash = qHash(m_variable);
 }
 
-Hermes::Hermes2D::Func<double> *{{CLASS}}ViewScalarFilter::get_pt_value(double x, double y)
+Hermes::Hermes2D::Func<double> *{{CLASS}}ViewScalarFilter::get_pt_value(double x, double y, Hermes::Hermes2D::Element* e)
 {
     return NULL;
 }

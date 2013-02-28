@@ -41,18 +41,6 @@ namespace Hermes
         ydisp = NULL;
       }
 
-      int Vectorizer::create_vertex(double x, double y, double xvalue, double yvalue)
-      {
-        int i;
-#pragma omp critical(realloc_vertices)
-        i = add_vertex();
-        verts[i][0] = x;
-        verts[i][1] = y;
-        verts[i][2] = xvalue;
-        verts[i][3] = yvalue;
-        return i;
-      }
-
       int Vectorizer::get_vertex(int p1, int p2, double x, double y, double xvalue, double yvalue)
       {
         // search for an existing vertex
@@ -75,7 +63,19 @@ namespace Hermes
 
         // if not found, create a new one
 #pragma omp critical(realloc_vertices)
-        i = add_vertex();
+        try
+        {
+          i = add_vertex();
+        }
+        catch(std::exception& e)
+        {
+          if(this->caughtException == NULL)
+            this->caughtException = new Hermes::Exceptions::Exception(e.what());
+        }
+        if(this->caughtException != NULL)
+        {
+          return -1;
+        }
         verts[i][0] = x;
         verts[i][1] = y;
         verts[i][2] = xvalue;
@@ -89,16 +89,10 @@ namespace Hermes
 
       void Vectorizer::set_displacement(MeshFunction<double>* xdisp, MeshFunction<double>* ydisp, double dmult)
       {
-        if(xdisp != NULL)
-        {
-          user_xdisp = true;
-          this->xdisp = xdisp;
-        }
-        if(ydisp != NULL)
-        {
-          user_ydisp = true;
-          this->ydisp = ydisp;
-        }
+        this->xdisp = xdisp;
+        user_xdisp = (xdisp != NULL);
+        this->ydisp = ydisp;
+        user_ydisp = (ydisp != NULL);
         this->dmult = dmult;
       }
 
@@ -252,6 +246,9 @@ namespace Hermes
               int mid0 = get_vertex(iv0, iv1, midval[0][0], midval[1][0], xval[idx[0]], yval[idx[0]]);
               int mid1 = get_vertex(iv1, iv2, midval[0][1], midval[1][1], xval[idx[1]], yval[idx[1]]);
               int mid2 = get_vertex(iv2, iv0, midval[0][2], midval[1][2], xval[idx[2]], yval[idx[2]]);
+
+              if(this->caughtException != NULL)
+                return;
 
               // recur to sub-elements
               this->push_transforms(fns, 0);
@@ -411,6 +408,9 @@ namespace Hermes
             int mid2 = get_vertex(iv2,  iv3,  midval[0][2], midval[1][2], xval[idx[2]], yval[idx[2]]);
             int mid3 = get_vertex(iv3,  iv0,  midval[0][3], midval[1][3], xval[idx[3]], yval[idx[3]]);
             int mid4 = get_vertex(mid0, mid2, midval[0][4], midval[1][4], xval[idx[4]], yval[idx[4]]);
+
+            if(this->caughtException != NULL)
+              return;
 
             // recur to sub-elements
             this->push_transforms(fns, 0);
@@ -684,6 +684,9 @@ namespace Hermes
 #pragma omp for schedule(dynamic, CHUNKSIZE)
           for(state_i = 0; state_i < num_states; state_i++)
           {
+            if(this->caughtException != NULL)
+              continue;
+
             try
             {
               Traverse::State current_state;
@@ -727,6 +730,9 @@ namespace Hermes
                   y_disp += dmult * dy[i];
 
                 iv[i] = this->get_vertex(-fns[omp_get_thread_num()][0]->get_active_element()->vn[i]->id, -fns[omp_get_thread_num()][0]->get_active_element()->vn[i]->id, x_disp, y_disp, fx, fy);
+
+                if(this->caughtException != NULL)
+                  continue;
               }
 
               // recur to sub-elements
