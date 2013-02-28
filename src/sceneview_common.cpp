@@ -40,6 +40,7 @@
 
 SceneViewCommon::SceneViewCommon(QWidget *parent)
     : QGLWidget(parent),
+      actSceneZoomRegion(NULL),
       m_fontPost(NULL),
       m_fontRulers(NULL),
       m_textureLabelRulers(-1),
