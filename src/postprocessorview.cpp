@@ -913,6 +913,8 @@ void PostprocessorWidget::doApply()
     m_postHermes->setActiveAdaptivityStep(fieldWidget->selectedAdaptivityStep());
     m_postHermes->setActiveAdaptivitySolutionType(fieldWidget->selectedAdaptivitySolutionType());
 
+    // qDebug() << "doApply: " << fieldWidget->selectedField()->fieldId() << fieldWidget->selectedTimeStep() << fieldWidget->selectedAdaptivityStep() << fieldWidget->selectedAdaptivitySolutionType();
+
     saveBasic();
     saveAdvanced();
 

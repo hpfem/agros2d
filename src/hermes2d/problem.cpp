@@ -397,7 +397,7 @@ double Problem::timeStepToTotalTime(int timeStepIndex) const
 
 int Problem::timeToTimeStep(double time) const
 {
-    if(time == 0)
+    if (time == 0)
         return 0;
 
     double timeSum = 0;

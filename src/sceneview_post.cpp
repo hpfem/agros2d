@@ -433,6 +433,8 @@ Hermes::Hermes2D::Filter<double> *PostHermes::viewScalarFilter(Module::LocalVari
     for (int k = 0; k < activeViewField()->numberOfSolutions(); k++)
         sln.push_back(activeMultiSolutionArray().solutions().at(k));
 
+    // qDebug() << "viewScalarFilter: " << activeViewField()->fieldId() << activeTimeStep() << activeAdaptivityStep() << activeAdaptivitySolutionType();
+
     return activeViewField()->plugin()->filter(activeViewField(),
                                                activeTimeStep(),
                                                activeAdaptivityStep(),
@@ -446,13 +448,16 @@ Hermes::Hermes2D::Filter<double> *PostHermes::viewScalarFilter(Module::LocalVari
 void PostHermes::setActiveViewField(FieldInfo* fieldInfo)
 {
     m_activeViewField = fieldInfo;
-
-    int newTimeStep = Agros2D::solutionStore()->nearestTimeStep(m_activeViewField, m_activeTimeStep);
-    setActiveTimeStep(newTimeStep);
-
-    int lastAdaptiveStep = Agros2D::solutionStore()->lastAdaptiveStep(m_activeViewField, SolutionMode_Normal, newTimeStep);
-    setActiveAdaptivityStep(min(lastAdaptiveStep, activeAdaptivityStep()));
+    setActiveTimeStep(NOT_FOUND_SO_FAR);
+    setActiveAdaptivityStep(NOT_FOUND_SO_FAR);
     setActiveAdaptivitySolutionType(SolutionMode_Normal);
+
+    // int newTimeStep = Agros2D::solutionStore()->nearestTimeStep(m_activeViewField, m_activeTimeStep);
+    // setActiveTimeStep(newTimeStep);
+
+    // int lastAdaptiveStep = Agros2D::solutionStore()->lastAdaptiveStep(m_activeViewField, SolutionMode_Normal, newTimeStep);
+    // setActiveAdaptivityStep(min(lastAdaptiveStep, activeAdaptivityStep()));
+    // setActiveAdaptivitySolutionType(SolutionMode_Normal);
 }
 
 void PostHermes::setActiveTimeStep(int ts)
