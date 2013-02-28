@@ -440,7 +440,6 @@ void PythonEditorDialog::createActions()
 
     actExit = new QAction(icon("application-exit"), tr("E&xit"), this);
     actExit->setShortcut(tr("Ctrl+Q"));
-    actExit->setStatusTip(tr("Exit editor"));
     connect(actExit, SIGNAL(triggered()), this, SLOT(close()));
 
     actHelp = new QAction(icon("help-contents"), tr("&Help"), this);
@@ -452,12 +451,10 @@ void PythonEditorDialog::createActions()
     connect(actHelpKeywordList, SIGNAL(triggered()), this, SLOT(doHelpKeywordList()));
 
     actAbout = new QAction(icon("about"), tr("About &PythonLab"), this);
-    actAbout->setStatusTip(tr("Show the application's About box"));
     actAbout->setMenuRole(QAction::AboutRole);
     connect(actAbout, SIGNAL(triggered()), this, SLOT(doAbout()));
 
     actAboutQt = new QAction(icon("help-about"), tr("About &Qt"), this);
-    actAboutQt->setStatusTip(tr("Show the Qt library's About box"));
     actAboutQt->setMenuRole(QAction::AboutQtRole);
     connect(actAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 }

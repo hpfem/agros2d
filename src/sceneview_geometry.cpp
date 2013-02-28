@@ -55,24 +55,20 @@ void SceneViewPreprocessor::createActionsGeometry()
 {
     actSceneModePreprocessor = new QAction(iconView(), tr("Preprocessor"), this);
     actSceneModePreprocessor->setShortcut(tr("Ctrl+2"));
-    actSceneModePreprocessor->setStatusTip(tr("Preprocessor"));
     actSceneModePreprocessor->setCheckable(true);
 
     // scene - operate on items
     actOperateOnNodes = new QAction(icon("scene-node"), tr("Operate on &nodes"), this);
     actOperateOnNodes->setShortcut(Qt::Key_F2);
-    actOperateOnNodes->setStatusTip(tr("Operate on nodes"));
     actOperateOnNodes->setCheckable(true);
     actOperateOnNodes->setChecked(true);
 
     actOperateOnEdges = new QAction(icon("scene-edge"), tr("Operate on &edges"), this);
     actOperateOnEdges->setShortcut(Qt::Key_F3);
-    actOperateOnEdges->setStatusTip(tr("Operate on edges"));
     actOperateOnEdges->setCheckable(true);
 
     actOperateOnLabels = new QAction(icon("scene-label"), tr("Operate on &labels"), this);
     actOperateOnLabels->setShortcut(Qt::Key_F4);
-    actOperateOnLabels->setStatusTip(tr("Operate on labels"));
     actOperateOnLabels->setCheckable(true);
 
     actOperateGroup = new QActionGroup(this);
@@ -84,7 +80,6 @@ void SceneViewPreprocessor::createActionsGeometry()
 
     // select region
     actSceneViewSelectRegion = new QAction(icon("scene-select-region"), tr("&Select region"), this);
-    actSceneViewSelectRegion->setStatusTip(tr("Select region"));
     actSceneViewSelectRegion->setCheckable(true);
 
     // object properties

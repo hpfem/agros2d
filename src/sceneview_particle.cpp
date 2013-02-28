@@ -409,7 +409,6 @@ void SceneViewParticleTracing::createActionsParticleTracing()
 {
     actSceneModeParticleTracing = new QAction(iconView(), tr("Particle\nTracing"), this);
     actSceneModeParticleTracing->setShortcut(tr("Ctrl+7"));
-    actSceneModeParticleTracing->setStatusTip(tr("Particle Tracing"));
     actSceneModeParticleTracing->setCheckable(true);
 }
 

@@ -255,76 +255,60 @@ void MainWindow::createActions()
 {
     actDocumentNew = new QAction(icon("document-new"), tr("&New..."), this);
     actDocumentNew->setShortcuts(QKeySequence::New);
-    actDocumentNew->setStatusTip(tr("Create a new file"));
     connect(actDocumentNew, SIGNAL(triggered()), this, SLOT(doDocumentNew()));
 
     actDocumentOpen = new QAction(icon("document-open"), tr("&Open..."), this);
     actDocumentOpen->setShortcuts(QKeySequence::Open);
-    actDocumentOpen->setStatusTip(tr("Open an existing file"));
     connect(actDocumentOpen, SIGNAL(triggered()), this, SLOT(doDocumentOpen()));
 
     // actDocumentDownloadFromServer = new QAction(icon(""), tr("&Download from server..."), this);
     // actDocumentDownloadFromServer->setShortcut(tr("Ctrl+Shift+O"));
-    // actDocumentDownloadFromServer->setStatusTip(tr("Download from server..."));
     // connect(actDocumentDownloadFromServer, SIGNAL(triggered()), this, SLOT(doDocumentDownloadFromServer()));
 
     actDocumentSave = new QAction(icon("document-save"), tr("&Save"), this);
     actDocumentSave->setShortcuts(QKeySequence::Save);
-    actDocumentSave->setStatusTip(tr("Save project file to disk"));
     connect(actDocumentSave, SIGNAL(triggered()), this, SLOT(doDocumentSave()));
 
     actDocumentSaveSolution = new QAction(icon(""), tr("Save solution"), this);
-    actDocumentSaveSolution->setStatusTip(tr("Save solution to disk"));
     connect(actDocumentSaveSolution, SIGNAL(triggered()), this, SLOT(doDocumentSaveSolution()));
 
     actDocumentSaveAs = new QAction(icon("document-save-as"), tr("Save &As..."), this);
     actDocumentSaveAs->setShortcuts(QKeySequence::SaveAs);
-    actDocumentSaveAs->setStatusTip(tr("Save the file under a new name"));
     connect(actDocumentSaveAs, SIGNAL(triggered()), this, SLOT(doDocumentSaveAs()));
 
     // actDocumentUploadToServer = new QAction(icon(""), tr("Upload to server..."), this);
-    // actDocumentUploadToServer->setStatusTip(tr("Upload to server..."));
     // connect(actDocumentUploadToServer, SIGNAL(triggered()), this, SLOT(doDocumentUploadToServer()));
 
     actDocumentClose = new QAction(tr("&Close"), this);
     actDocumentClose->setShortcuts(QKeySequence::Close);
-    actDocumentClose->setStatusTip(tr("Close the file"));
     connect(actDocumentClose, SIGNAL(triggered()), this, SLOT(doDocumentClose()));
 
     actDocumentImportDXF = new QAction(tr("Import DXF..."), this);
-    actDocumentImportDXF->setStatusTip(tr("Import AutoCAD DXF"));
     connect(actDocumentImportDXF, SIGNAL(triggered()), this, SLOT(doDocumentImportDXF()));
 
     actDocumentExportDXF = new QAction(tr("Export DXF..."), this);
-    actDocumentExportDXF->setStatusTip(tr("Export AutoCAD DXF"));
     connect(actDocumentExportDXF, SIGNAL(triggered()), this, SLOT(doDocumentExportDXF()));
 
     actDocumentExportMeshFile = new QAction(tr("Export mesh file..."), this);
-    actDocumentExportMeshFile->setStatusTip(tr("Export Hermes2D mesh file"));
     connect(actDocumentExportMeshFile, SIGNAL(triggered()), this, SLOT(doDocumentExportMeshFile()));
 
     actDocumentSaveImage = new QAction(tr("Export image..."), this);
-    actDocumentSaveImage->setStatusTip(tr("Export image to file"));
     connect(actDocumentSaveImage, SIGNAL(triggered()), this, SLOT(doDocumentSaveImage()));
 
     actDocumentSaveGeometry = new QAction(tr("Export geometry..."), this);
-    actDocumentSaveGeometry->setStatusTip(tr("Export geometry to file"));
     connect(actDocumentSaveGeometry, SIGNAL(triggered()), this, SLOT(doDocumentSaveGeometry()));
 
     actExamples = new QAction(tr("Open example..."), this);
     connect(actExamples, SIGNAL(triggered()), this, SLOT(doExamples()));
 
     actCreateVideo = new QAction(icon("video"), tr("Create &video..."), this);
-    actCreateVideo->setStatusTip(tr("Create video"));
     connect(actCreateVideo, SIGNAL(triggered()), this, SLOT(doCreateVideo()));
 
     actLoadBackground = new QAction(tr("Load background..."), this);
-    actLoadBackground->setStatusTip(tr("Load background image"));
     connect(actLoadBackground, SIGNAL(triggered()), this, SLOT(doLoadBackground()));
 
     actExit = new QAction(icon("application-exit"), tr("E&xit"), this);
     actExit->setShortcut(tr("Ctrl+Q"));
-    actExit->setStatusTip(tr("Exit the application"));
     actExit->setMenuRole(QAction::QuitRole);
     connect(actExit, SIGNAL(triggered()), this, SLOT(close()));
 
@@ -333,70 +317,56 @@ void MainWindow::createActions()
     actUndo->setIcon(icon("edit-undo"));
     actUndo->setIconText(tr("&Undo"));
     actUndo->setShortcuts(QKeySequence::Undo);
-    actUndo->setStatusTip(tr("Undo operation"));
 
     actRedo = Agros2D::scene()->undoStack()->createRedoAction(this);
     actRedo->setIcon(icon("edit-redo"));
     actRedo->setIconText(tr("&Redo"));
     actRedo->setShortcuts(QKeySequence::Redo);
-    actRedo->setStatusTip(tr("Redo operation"));
 
     actCopy = new QAction(icon("edit-copy"), tr("Copy image to clipboard"), this);
     actCopy->setShortcuts(QKeySequence::Copy);
-    actCopy->setStatusTip(tr("Copy image from workspace to clipboard."));
     connect(actCopy, SIGNAL(triggered()), this, SLOT(doCopy()));
 
     actHelp = new QAction(icon("help-contents"), tr("&Help"), this);
-    actHelp->setStatusTip(tr("Show help"));
     actHelp->setShortcut(QKeySequence::HelpContents);
     actHelp->setEnabled(false);
     connect(actHelp, SIGNAL(triggered()), this, SLOT(doHelp()));
 
     actHelpShortCut = new QAction(icon(""), tr("&Shortcuts"), this);
-    actHelpShortCut->setStatusTip(tr("Shortcuts"));
     actHelpShortCut->setEnabled(false);
     connect(actHelpShortCut, SIGNAL(triggered()), this, SLOT(doHelpShortCut()));
 
     // actCollaborationServer = new QAction(icon("collaboration"), tr("Collaboration server"), this);
-    // actCollaborationServer->setStatusTip(tr("Collaboration server..."));
     // connect(actCollaborationServer, SIGNAL(triggered()), this, SLOT(doCollaborationServer()));
 
     actOnlineHelp = new QAction(icon(""), tr("&Online help"), this);
-    actOnlineHelp->setStatusTip(tr("Online help"));
     actOnlineHelp->setEnabled(false);
     connect(actOnlineHelp, SIGNAL(triggered()), this, SLOT(doOnlineHelp()));
 
     actCheckVersion = new QAction(icon(""), tr("Check version"), this);
-    actCheckVersion->setStatusTip(tr("Check version"));
     connect(actCheckVersion, SIGNAL(triggered()), this, SLOT(doCheckVersion()));
 
     actAbout = new QAction(icon("about"), tr("About &Agros2D"), this);
-    actAbout->setStatusTip(tr("Show the application's About box"));
     actAbout->setMenuRole(QAction::AboutRole);
     connect(actAbout, SIGNAL(triggered()), this, SLOT(doAbout()));
 
     actAboutQt = new QAction(icon("help-about"), tr("About &Qt"), this);
-    actAboutQt->setStatusTip(tr("Show the Qt library's About box"));
     actAboutQt->setMenuRole(QAction::AboutQtRole);
     connect(actAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
     actOptions = new QAction(icon("options"), tr("&Options"), this);
-    actOptions->setStatusTip(tr("Options"));
     actOptions->setMenuRole(QAction::PreferencesRole);
     connect(actOptions, SIGNAL(triggered()), this, SLOT(doOptions()));
 
     actCreateMesh = new QAction(icon("scene-meshgen"), tr("&Mesh area"), this);
     actCreateMesh->setShortcut(QKeySequence(tr("Alt+W")));
-    actCreateMesh->setStatusTip(tr("Mesh area"));
     connect(actCreateMesh, SIGNAL(triggered()), this, SLOT(doCreateMesh()));
 
     actSolve = new QAction(icon("run"), tr("&Solve"), this);
     actSolve->setShortcut(QKeySequence(tr("Alt+S")));
-    actSolve->setStatusTip(tr("Solve problem"));
     connect(actSolve, SIGNAL(triggered()), this, SLOT(doSolve()));
 
     actSolveAdaptiveStep = new QAction(icon("run-step"), tr("Adaptive\nstep"), this);
-    actSolveAdaptiveStep->setStatusTip(tr("Adaptivity step"));
     connect(actSolveAdaptiveStep, SIGNAL(triggered()), this, SLOT(doSolveAdaptiveStep()));
 
     actFullScreen = new QAction(icon("view-fullscreen"), tr("Fullscreen mode"), this);
@@ -407,39 +377,31 @@ void MainWindow::createActions()
     connect(actDocumentOpenRecentGroup, SIGNAL(triggered(QAction *)), this, SLOT(doDocumentOpenRecent(QAction *)));
 
     actScriptEditor = new QAction(icon("script-python"), tr("PythonLab"), this);
-    actScriptEditor->setStatusTip(tr("Script editor"));
     actScriptEditor->setShortcut(Qt::Key_F9);
     connect(actScriptEditor, SIGNAL(triggered()), this, SLOT(doScriptEditor()));
 
     actScriptEditorRunScript = new QAction(icon("script"), tr("Run &script..."), this);
-    actScriptEditorRunScript->setStatusTip(tr("Run script..."));
     connect(actScriptEditorRunScript, SIGNAL(triggered()), this, SLOT(doScriptEditorRunScript()));
 
     // actReport = new QAction(icon("report"), tr("&Report..."), this);
-    // actReport->setStatusTip(tr("Problem html report"));
     // connect(actReport, SIGNAL(triggered()), this, SLOT(doReport()));
 
     actMaterialBrowser = new QAction(icon(""), tr("Material browser..."), this);
     actMaterialBrowser->setShortcut(QKeySequence(tr("Ctrl+M")));
-    actMaterialBrowser->setStatusTip(tr("Material browser"));
     connect(actMaterialBrowser, SIGNAL(triggered()), this, SLOT(doMaterialBrowser()));
 
     // zoom actions (geometry, post2d and post3d)
     // scene - zoom
     actSceneZoomIn = new QAction(icon("zoom-in"), tr("Zoom in"), this);
     actSceneZoomIn->setShortcut(QKeySequence::ZoomIn);
-    actSceneZoomIn->setStatusTip(tr("Zoom in"));
 
     actSceneZoomOut = new QAction(icon("zoom-out"), tr("Zoom out"), this);
     actSceneZoomOut->setShortcut(QKeySequence::ZoomOut);
-    actSceneZoomOut->setStatusTip(tr("Zoom out"));
 
     actSceneZoomBestFit = new QAction(icon("zoom-original"), tr("Zoom best fit"), this);
     actSceneZoomBestFit->setShortcut(tr("Ctrl+0"));
-    actSceneZoomBestFit->setStatusTip(tr("Best fit"));
 
     actSceneZoomRegion = new QAction(icon("zoom-fit-best"), tr("Zoom region"), this);
-    actSceneZoomRegion->setStatusTip(tr("Zoom region"));
     actSceneZoomRegion->setCheckable(true);
 
     actSceneModeGroup = new QActionGroup(this);

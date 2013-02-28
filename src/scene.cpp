@@ -178,7 +178,6 @@ NewMarkerAction::NewMarkerAction(QIcon icon, QObject* parent, QString field) :
     QAction(icon, Module::availableModules()[field], parent),
     field(field)
 {
-    setStatusTip(tr("New boundary condition"));
     connect(this, SIGNAL(triggered()), this, SLOT(doTriggered()));
 }
 
@@ -241,26 +240,21 @@ void Scene::createActions()
     // scene - add items
     actNewNode = new QAction(icon("scene-node"), tr("New &node..."), this);
     actNewNode->setShortcut(tr("Alt+N"));
-    actNewNode->setStatusTip(tr("New node"));
     connect(actNewNode, SIGNAL(triggered()), this, SLOT(doNewNode()));
 
     actNewEdge = new QAction(icon("scene-edge"), tr("New &edge..."), this);
     actNewEdge->setShortcut(tr("Alt+E"));
-    actNewEdge->setStatusTip(tr("New edge"));
     connect(actNewEdge, SIGNAL(triggered()), this, SLOT(doNewEdge()));
 
     actNewLabel = new QAction(icon("scene-label"), tr("New &label..."), this);
     actNewLabel->setShortcut(tr("Alt+L"));
-    actNewLabel->setStatusTip(tr("New label"));
     connect(actNewLabel, SIGNAL(triggered()), this, SLOT(doNewLabel()));
 
     actDeleteSelected = new QAction(icon("edit-delete"), tr("Delete selected objects"), this);
-    actDeleteSelected->setStatusTip(tr("Delete selected objects"));
     connect(actDeleteSelected, SIGNAL(triggered()), this, SLOT(doDeleteSelected()));
 
     actNewBoundary = new QAction(icon("scene-edgemarker"), tr("New &boundary condition..."), this);
     actNewBoundary->setShortcut(tr("Alt+B"));
-    actNewBoundary->setStatusTip(tr("New boundary condition"));
     connect(actNewBoundary, SIGNAL(triggered()), this, SLOT(doNewBoundary()));
 
     // clear actions
@@ -280,7 +274,6 @@ void Scene::createActions()
 
     actNewMaterial = new QAction(icon("scene-labelmarker"), tr("New &material..."), this);
     actNewMaterial->setShortcut(tr("Alt+M"));
-    actNewMaterial->setStatusTip(tr("New material"));
     connect(actNewMaterial, SIGNAL(triggered()), this, SLOT(doNewMaterial()));
 
     // clear actions
@@ -299,7 +292,6 @@ void Scene::createActions()
     }
 
     actTransform = new QAction(icon("scene-transform"), tr("&Transform"), this);
-    actTransform->setStatusTip(tr("Transform"));
 }
 
 SceneNode *Scene::addNode(SceneNode *node)

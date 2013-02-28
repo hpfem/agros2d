@@ -75,11 +75,9 @@ PreprocessorWidget::~PreprocessorWidget()
 void PreprocessorWidget::createActions()
 {
     actProperties = new QAction(icon("scene-properties"), tr("&Properties"), this);
-    actProperties->setStatusTip(tr("Properties"));
     connect(actProperties, SIGNAL(triggered()), this, SLOT(doProperties()));
 
     actDelete = new QAction(icon("scene-delete"), tr("&Delete"), this);
-    actDelete->setStatusTip(tr("Delete item"));
     connect(actDelete, SIGNAL(triggered()), this, SLOT(doDelete()));
 }
 

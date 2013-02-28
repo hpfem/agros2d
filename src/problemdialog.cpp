@@ -812,7 +812,6 @@ void ProblemWidget::createActions()
 {
     actProperties = new QAction(icon("document-properties"), tr("Properties"), this);
     actProperties->setShortcut(tr("Ctrl+1"));
-    actProperties->setStatusTip(tr("Problem properties"));
     actProperties->setCheckable(true);
 }
 

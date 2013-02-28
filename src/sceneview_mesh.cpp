@@ -60,15 +60,12 @@ void SceneViewMesh::createActionsMesh()
     // scene mode
     actSceneModeMesh = new QAction(iconView(), tr("Mesh"), this);
     actSceneModeMesh->setShortcut(tr("Ctrl+3"));
-    actSceneModeMesh->setStatusTip(tr("Mesh"));
     actSceneModeMesh->setCheckable(true);
 
     actExportVTKOrder = new QAction(tr("Export VTK order..."), this);
-    actExportVTKOrder->setStatusTip(tr("Export order view as VTK file"));
     connect(actExportVTKOrder, SIGNAL(triggered()), this, SLOT(exportVTKOrderView()));
 
     actExportVTKMesh = new QAction(tr("Export VTK mesh..."), this);
-    actExportVTKMesh->setStatusTip(tr("Export mesh as VTK file"));
     connect(actExportVTKMesh, SIGNAL(triggered()), this, SLOT(exportVTKMesh()));
 }
 

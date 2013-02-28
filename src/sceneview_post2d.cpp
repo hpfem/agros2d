@@ -77,7 +77,6 @@ void SceneViewPost2D::createActionsPost2D()
     // scene mode
     actSceneModePost2D = new QAction(iconView(), tr("Post 2D"), this);
     actSceneModePost2D->setShortcut(tr("Ctrl+4"));
-    actSceneModePost2D->setStatusTip(tr("Postprocessor 2D"));
     actSceneModePost2D->setCheckable(true);
 
     // point
@@ -86,7 +85,6 @@ void SceneViewPost2D::createActionsPost2D()
 
     // marker
     actSelectByMarker = new QAction(icon("select-by-marker"), tr("Select by marker"), this);
-    actSelectByMarker->setStatusTip(tr("Select by marker"));
     connect(actSelectByMarker, SIGNAL(triggered()), this, SLOT(selectByMarker()));
 
     // postprocessor group
@@ -106,7 +104,6 @@ void SceneViewPost2D::createActionsPost2D()
     connect(actPostprocessorModeGroup, SIGNAL(triggered(QAction *)), this, SLOT(doPostprocessorModeGroup(QAction*)));
 
     actExportVTKScalar = new QAction(tr("Export VTK scalar..."), this);
-    actExportVTKScalar->setStatusTip(tr("Export scalar view as VTK file"));
     connect(actExportVTKScalar, SIGNAL(triggered()), this, SLOT(exportVTKScalarView()));
 }
 
