@@ -476,23 +476,23 @@ void Problem::solveInit()
     // save problem
     try
     {
-        Agros2D::scene()->writeToFile(tempProblemFileName() + ".a2d", false);
-
-        createStructure();
-
-        // todo: we should not mesh always, but we would need to refine signals to determine when is it neccesary (whether, e.g., parameters of the mesh have been changed)
-        if (!mesh())
-            throw AgrosSolverException(tr("Could not create mesh"));
-
-        if (fieldInfos().count() == 0)
-        {
-            Agros2D::log()->printError(QObject::tr("Solver"), QObject::tr("No fields defined"));
-            throw AgrosSolverException(tr("No field defined"));
-        }
+        Agros2D::scene()->writeToFile(tempProblemFileName() + ".a2d", false);       
     }
     catch (AgrosException &e)
     {
         Agros2D::log()->printError(tr("Problem"), e.toString());
+    }
+
+    createStructure();
+
+    // todo: we should not mesh always, but we would need to refine signals to determine when is it neccesary (whether, e.g., parameters of the mesh have been changed)
+    if (!mesh())
+        throw AgrosSolverException(tr("Could not create mesh"));
+
+    if (fieldInfos().count() == 0)
+    {
+        Agros2D::log()->printError(QObject::tr("Solver"), QObject::tr("No fields defined"));
+        throw AgrosSolverException(tr("No field defined"));
     }
 }
 
@@ -657,6 +657,7 @@ void Problem::solveAction()
     catch (...)
     {
         throw;
+        return;
     }
 
     assert(isMeshed());
