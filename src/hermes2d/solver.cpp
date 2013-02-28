@@ -770,7 +770,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
     // solve reference problem
     // TODO: posledni parametr: predchozi reseni pro projekci!!
     // TODO: remove for linear solver
-    Scalar *initialSolutionVector = new Scalar[Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(actualSpaces()))];
+    Scalar *initialSolutionVector = new Scalar[Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spacesRef)];
     Scalar *solutionVector = solveOneProblem(initialSolutionVector, spacesRef, adaptivityStep,
                                              Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *>());
     delete [] initialSolutionVector;
