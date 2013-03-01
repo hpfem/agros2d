@@ -70,6 +70,8 @@ private:
     LineEditDouble *txtParticleCustomForceZ;
     QCheckBox *chkParticleColorByVelocity;
     QCheckBox *chkParticleShowPoints;
+    QCheckBox *chkParticleShowBlendedFaces;
+    QSpinBox *txtParticleNumShowParticleAxi;
     LineEditDouble *txtParticleMaximumRelativeError;
     LineEditDouble *txtParticleMinimumStep;
     QSpinBox *txtParticleMaximumNumberOfSteps;

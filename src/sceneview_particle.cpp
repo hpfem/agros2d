@@ -105,6 +105,10 @@ void ParticleTracingWidget::createControls()
     txtParticleCoefficientOfRestitution->setTop(1.0);
     chkParticleColorByVelocity = new QCheckBox(tr("Line color is controlled by velocity"));
     chkParticleShowPoints = new QCheckBox(tr("Show points"));
+    chkParticleShowBlendedFaces = new QCheckBox(tr("Show blended faces"));
+    txtParticleNumShowParticleAxi = new QSpinBox();
+    txtParticleNumShowParticleAxi->setMinimum(1);
+    txtParticleNumShowParticleAxi->setMaximum(50);
     txtParticleMaximumNumberOfSteps = new QSpinBox();
     txtParticleMaximumNumberOfSteps->setMinimum(10);
     txtParticleMaximumNumberOfSteps->setMaximum(100000);
@@ -239,6 +243,9 @@ void ParticleTracingWidget::createControls()
     gridLayoutSettings->setContentsMargins(5, 5, 0, 0);
     gridLayoutSettings->addWidget(chkParticleColorByVelocity, 2, 0, 1, 2);
     gridLayoutSettings->addWidget(chkParticleShowPoints, 3, 0, 1, 2);
+    gridLayoutSettings->addWidget(chkParticleShowBlendedFaces, 4, 0, 1, 2);
+    gridLayoutSettings->addWidget(new QLabel(tr("Show particle multiple times:")), 5, 0);
+    gridLayoutSettings->addWidget(txtParticleNumShowParticleAxi, 5, 1);
     gridLayoutSettings->addWidget(new QLabel(""), 10, 0);
     gridLayoutSettings->setRowStretch(10, 1);
 
@@ -301,6 +308,9 @@ void ParticleTracingWidget::updateControls()
     txtParticleMaximumNumberOfSteps->setValue(Agros2D::problem()->configView()->particleMaximumNumberOfSteps);
     chkParticleColorByVelocity->setChecked(Agros2D::problem()->configView()->particleColorByVelocity);
     chkParticleShowPoints->setChecked(Agros2D::problem()->configView()->particleShowPoints);
+    chkParticleShowBlendedFaces->setChecked(Agros2D::problem()->configView()->particleShowBlendedFaces);
+    txtParticleNumShowParticleAxi->setValue(Agros2D::problem()->configView()->particleNumShowParticlesAxi);
+    txtParticleNumShowParticleAxi->setEnabled(Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric);
     txtParticleDragDensity->setValue(Agros2D::problem()->configView()->particleDragDensity);
     txtParticleDragReferenceArea->setValue(Agros2D::problem()->configView()->particleDragReferenceArea);
     txtParticleDragCoefficient->setValue(Agros2D::problem()->configView()->particleDragCoefficient);
@@ -341,6 +351,8 @@ void ParticleTracingWidget::doParticleDefault()
     txtParticleMaximumNumberOfSteps->setValue(PARTICLEMAXIMUMNUMBEROFSTEPS);
     chkParticleColorByVelocity->setChecked(PARTICLECOLORBYVELOCITY);
     chkParticleShowPoints->setChecked(PARTICLESHOWPOINTS);
+    chkParticleShowBlendedFaces->setChecked(PARTICLESHOWBLENDEDFACES);
+    txtParticleNumShowParticleAxi->setValue(PARTICLENUMSHOWPARTICLESAXI);
     txtParticleDragDensity->setValue(PARTICLEDRAGDENSITY);
     txtParticleDragReferenceArea->setValue(PARTICLEDRAGREFERENCEAREA);
     txtParticleDragCoefficient->setValue(PARTICLEDRAGCOEFFICIENT);
@@ -374,6 +386,8 @@ void ParticleTracingWidget::doApply()
     Agros2D::problem()->configView()->particleMaximumNumberOfSteps = txtParticleMaximumNumberOfSteps->value();
     Agros2D::problem()->configView()->particleColorByVelocity = chkParticleColorByVelocity->isChecked();
     Agros2D::problem()->configView()->particleShowPoints = chkParticleShowPoints->isChecked();
+    Agros2D::problem()->configView()->particleShowBlendedFaces = chkParticleShowBlendedFaces->isChecked();
+    Agros2D::problem()->configView()->particleNumShowParticlesAxi = txtParticleNumShowParticleAxi->value();
     Agros2D::problem()->configView()->particleDragDensity = txtParticleDragDensity->value();
     Agros2D::problem()->configView()->particleDragCoefficient = txtParticleDragCoefficient->value();
     Agros2D::problem()->configView()->particleDragReferenceArea = txtParticleDragReferenceArea->value();
@@ -432,7 +446,11 @@ void SceneViewParticleTracing::paintGL()
 
     if (Agros2D::problem()->isSolved())
     {
-        paintGeometrySurface(true);
+        // todo: what is better?
+        //paintGeometrySurface(Agros2D::problem()->configView()->particleShowBlendedFaces);
+        if(Agros2D::problem()->configView()->particleShowBlendedFaces)
+            paintGeometrySurface(true);
+
         paintGeometryOutline();
         paintParticleTracing();
 
@@ -889,7 +907,7 @@ void SceneViewParticleTracing::paintParticleTracing()
             }
             else
             {
-                int particles = 15;
+                int particles = Agros2D::problem()->configView()->particleNumShowParticlesAxi;
                 int stepAngle = 360 / particles;
 
                 for (int l = 0; l < particles; l++)

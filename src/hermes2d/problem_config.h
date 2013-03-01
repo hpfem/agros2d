@@ -242,6 +242,8 @@ public:
     double particleStartingRadius;
     bool particleColorByVelocity;
     bool particleShowPoints;
+    bool particleShowBlendedFaces;
+    int particleNumShowParticlesAxi;
     double particleDragDensity;
     double particleDragCoefficient;
     double particleDragReferenceArea;

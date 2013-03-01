@@ -232,6 +232,8 @@ void ProblemConfigView::load(QDomElement *config)
     particleCoefficientOfRestitution = readConfig("View/ParticleCoefficientOfRestitution", PARTICLECOEFFICIENTOFRESTITUTION);
     particleMaximumRelativeError = readConfig("View/ParticleMaximumRelativeError", PARTICLEMAXIMUMRELATIVEERROR);
     particleShowPoints = readConfig("View/ParticleShowPoints", PARTICLESHOWPOINTS);
+    particleShowBlendedFaces = readConfig("View/ParticleShowBlendedFaces", PARTICLESHOWBLENDEDFACES);
+    particleNumShowParticlesAxi = readConfig("View/ParticleNumShowParticlesAxi", PARTICLENUMSHOWPARTICLESAXI);
     particleColorByVelocity = readConfig("View/ParticleColorByVelocity", PARTICLECOLORBYVELOCITY);
     particleMaximumNumberOfSteps = readConfig("View/ParticleMaximumNumberOfSteps", PARTICLEMAXIMUMNUMBEROFSTEPS);
     particleMinimumStep = readConfig("View/ParticleMinimumStep", PARTICLEMINIMUMSTEP);
@@ -404,6 +406,8 @@ void ProblemConfigView::save(QDomElement *config)
     writeConfig("View/ParticleCoefficientOfRestitution", particleCoefficientOfRestitution);
     writeConfig("View/ParticleMaximumRelativeError", particleMaximumRelativeError);
     writeConfig("View/ParticleShowPoints", particleShowPoints);
+    writeConfig("View/ParticleShowBlendedFaces", particleShowBlendedFaces);
+    writeConfig("View/ParticleNumShowParticlesAxi", particleNumShowParticlesAxi);
     writeConfig("View/ParticleColorByVelocity", particleColorByVelocity);
     writeConfig("View/ParticleMaximumNumberOfSteps", particleMaximumNumberOfSteps);
     writeConfig("View/ParticleMinimumStep", particleMinimumStep);
