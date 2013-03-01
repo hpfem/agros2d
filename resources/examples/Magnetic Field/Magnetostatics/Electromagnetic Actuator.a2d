@@ -2,27 +2,33 @@
 <document version="2.1">
     <geometry>
         <nodes>
-            <node x="0.01" y="0.01" id="0"/>
-            <node x="0.01" y="0" id="1"/>
-            <node x="0.04000000000000001" y="0" id="2"/>
-            <node x="0.04000000000000001" y="0.1" id="3"/>
-            <node x="0" y="0.1" id="4"/>
-            <node x="0" y="0.08" id="5"/>
-            <node x="0.01" y="0.08" id="6"/>
-            <node x="0.01" y="0.09" id="7"/>
-            <node x="0.03" y="0.09" id="8"/>
-            <node x="0.03" y="0.01" id="9"/>
-            <node x="0.012" y="0.08799999999999999" id="10"/>
-            <node x="0.012" y="0.012" id="11"/>
-            <node x="0.028" y="0.012" id="12"/>
-            <node x="0.028" y="0.08799999999999999" id="13"/>
-            <node x="0" y="0.05" id="14"/>
-            <node x="0.008999999999999999" y="0.05" id="15"/>
-            <node x="0.008999999999999999" y="-0.02" id="16"/>
-            <node x="0" y="-0.02" id="17"/>
-            <node x="0" y="0.15" id="18"/>
-            <node x="0" y="-0.05" id="19"/>
-            <node x="0.1" y="0.05" id="20"/>
+            <node x="0" y="0.18" id="0"/>
+            <node x="0.035" y="0.18" id="1"/>
+            <node x="0.035" y="0.03" id="2"/>
+            <node x="0.0135" y="0.03" id="3"/>
+            <node x="0.0135" y="0.038" id="4"/>
+            <node x="0.019" y="0.038" id="5"/>
+            <node x="0.027" y="0.038" id="6"/>
+            <node x="0.027" y="0.172" id="7"/>
+            <node x="0.008" y="0.172" id="8"/>
+            <node x="0.008" y="0.16" id="9"/>
+            <node x="0" y="0.16" id="10"/>
+            <node x="0" y="0.13" id="11"/>
+            <node x="0.008" y="0.13" id="12"/>
+            <node x="0.008" y="0.0395" id="13"/>
+            <node x="0.008" y="0" id="14"/>
+            <node x="0" y="0" id="15"/>
+            <node x="0.019" y="0.0395" id="16"/>
+            <node x="0.01" y="0.041" id="17"/>
+            <node x="0.01" y="0.1705" id="18"/>
+            <node x="0.025" y="0.041" id="19"/>
+            <node x="0.025" y="0.1705" id="20"/>
+            <node x="0.008" y="0.03" id="21"/>
+            <node x="0.008999999999999999" y="0.0395" id="22"/>
+            <node x="0.008999999999999999" y="0.03" id="23"/>
+            <node x="0" y="0.36" id="24"/>
+            <node x="0" y="-0.18" id="25"/>
+            <node x="0.27" y="0.09" id="26"/>
         </nodes>
         <edges>
             <edge end="1" id="0" start="0" angle="0"/>
@@ -30,68 +36,79 @@
             <edge end="3" id="2" start="2" angle="0"/>
             <edge end="4" id="3" start="3" angle="0"/>
             <edge end="5" id="4" start="4" angle="0"/>
-            <edge end="6" id="5" start="5" angle="0"/>
+            <edge end="7" id="5" start="6" angle="0"/>
             <edge end="8" id="6" start="7" angle="0"/>
-            <edge end="6" id="7" start="7" angle="0"/>
-            <edge end="9" id="8" start="8" angle="0"/>
-            <edge end="9" id="9" start="0" angle="0"/>
-            <edge end="11" id="10" start="10" angle="0"/>
-            <edge end="12" id="11" start="11" angle="0"/>
-            <edge end="13" id="12" start="12" angle="0"/>
-            <edge end="10" id="13" start="13" angle="0"/>
-            <edge end="15" id="14" start="14" angle="0"/>
-            <edge end="16" id="15" start="15" angle="0"/>
-            <edge end="17" id="16" start="14" angle="0"/>
-            <edge end="16" id="17" start="17" angle="0"/>
-            <edge end="4" id="18" start="18" angle="0"/>
-            <edge end="14" id="19" start="5" angle="0"/>
-            <edge end="19" id="20" start="17" angle="0"/>
-            <edge end="20" id="21" start="19" angle="90"/>
-            <edge end="18" id="22" start="20" angle="90"/>
+            <edge end="9" id="7" start="8" angle="0"/>
+            <edge end="10" id="8" start="9" angle="0"/>
+            <edge end="0" id="9" start="10" angle="0"/>
+            <edge end="12" id="10" start="11" angle="0"/>
+            <edge end="13" id="11" start="12" angle="0"/>
+            <edge end="15" id="12" start="14" angle="0"/>
+            <edge end="11" id="13" start="15" angle="0"/>
+            <edge end="6" id="14" start="5" angle="0"/>
+            <edge end="16" id="15" start="5" angle="0"/>
+            <edge end="10" id="16" start="11" angle="0"/>
+            <edge end="18" id="17" start="17" angle="0"/>
+            <edge end="17" id="18" start="19" angle="0"/>
+            <edge end="20" id="19" start="18" angle="0"/>
+            <edge end="19" id="20" start="20" angle="0"/>
+            <edge end="21" id="21" start="13" angle="0"/>
+            <edge end="14" id="22" start="21" angle="0"/>
+            <edge end="22" id="23" start="16" angle="0"/>
+            <edge end="23" id="24" start="22" angle="0"/>
+            <edge end="3" id="25" start="23" angle="0"/>
+            <edge end="15" id="26" start="25" angle="0"/>
+            <edge end="24" id="27" start="0" angle="0"/>
+            <edge end="26" id="28" start="25" angle="90"/>
+            <edge end="24" id="29" start="26" angle="90"/>
         </edges>
         <labels>
-            <label x="0.03487431206306708" y="0.03472367950279597" id="0" area="0"/>
-            <label x="0.021206" y="0.06929639999999999" id="1" area="0"/>
-            <label x="0.0141705" y="0.12445" id="2" area="0"/>
-            <label x="0.00512569" y="0.040852" id="3" area="0"/>
+            <label x="0.00396154" y="0.0974872" id="0" area="0"/>
+            <label x="0.0179103" y="0.10241" id="1" area="0"/>
+            <label x="0.0310385" y="0.112667" id="2" area="0"/>
+            <label x="0.011141" y="0.0343077" id="3" area="0"/>
+            <label x="0.123923" y="0.0884615" id="4" area="0"/>
         </labels>
     </geometry>
-    <problem time_order="1" frequency="0" time_method="fixed" time_method_tolerance="0.05" matrix_solver="umfpack" coordinate_type="axisymmetric" mesh_type="triangle" time_steps="2" name="Magnetic Steadystate Axisymmetric Actuator" time_total="1">
+    <problem time_order="1" frequency="0" time_method="fixed" time_method_tolerance="0.05" matrix_solver="umfpack" coordinate_type="axisymmetric" mesh_type="triangle" time_steps="2" time_total="1">
         <fields>
-            <field field_id="magnetic" initial_condition="0.0" polynomial_order="2" number_of_refinements="1" time_skip="0.0" analysis_type="steadystate">
+            <field field_id="magnetic" initial_condition="0" polynomial_order="2" number_of_refinements="2" time_skip="0" analysis_type="steadystate">
                 <refinement>
                     <edges/>
                     <labels/>
                 </refinement>
                 <polynomial_order/>
-                <adaptivity adaptivity_type="disabled" adaptivity_back_steps="0" adaptivity_redone_each="0" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <adaptivity adaptivity_type="disabled" adaptivity_back_steps="0" adaptivity_redone_each="1" adaptivity_tolerance="1" adaptivity_steps="1"/>
                 <solver linearity_type="linear" picard_anderson_acceleration="1" newton_automatic_damping="1" picard_anderson_beta="0.2" picard_anderson_vectors="3" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
                 <boundaries>
                     <boundary type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0">
-                        <edge edge="4"/>
+                        <edge edge="9"/>
+                        <edge edge="13"/>
                         <edge edge="16"/>
-                        <edge edge="18"/>
-                        <edge edge="19"/>
-                        <edge edge="20"/>
-                        <edge edge="21"/>
-                        <edge edge="22"/>
+                        <edge edge="26"/>
+                        <edge edge="27"/>
+                        <edge edge="28"/>
+                        <edge edge="29"/>
                     </boundary>
                 </boundaries>
                 <materials>
                     <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" id="1" magnetic_remanence_angle="0" name="Air" magnetic_velocity_x="0" magnetic_velocity_y="0">
-                        <label label="2"/>
+                        <label label="4"/>
                     </material>
-                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="300" magnetic_conductivity="0" magnetic_remanence="0" id="2" magnetic_remanence_angle="0" name="Iron" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1e3" magnetic_conductivity="0" magnetic_remanence="0" id="2" magnetic_remanence_angle="0" name="Iron" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="0"/>
-                        <label label="3"/>
+                        <label label="2"/>
                     </material>
                     <material magnetic_current_density_external_real="1e6" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" id="3" magnetic_remanence_angle="0" name="Copper" magnetic_velocity_x="0" magnetic_velocity_y="0">
                         <label label="1"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" id="4" magnetic_remanence_angle="0" name="Brass" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="3"/>
                     </material>
                 </materials>
             </field>
         </fields>
         <couplings/>
     </problem>
-    <config View_ColorSolutionMesh_blue="0" View_ParticleReflectOnDifferentMaterial="1" Adaptivity_Threshold="0.3" View_ColorContours_green="0" View_ScalarView3DAngle="240" View_SnapToGrid="1" View_ColorSolutionMesh_red="150" View_ContourVariable="magnetic_potential_real" View_ColorEdges_blue="150" View_ParticleMaximumRelativeError="0.01" View_ParticleDragCoefficient="0" Adaptivity_IsoOnly="0" View_ScalarVariableComp="2" View_ScalarVariable="magnetic_flux_density_real" View_ShowParticleView="0" View_ParticleCoefficientOfRestitution="0" View_ColorContours_blue="0" Adaptivity_UseAniso="1" View_OrderLabel="0" View_PaletteType="0" View_ColorEdges_green="0" View_ScalarView3DBoundingBox="1" Adaptivity_MeshRegularity="-1" Adaptivity_FinerReference="0" View_ParticleMinimumStep="0" View_LinearizerQuality="normal" View_NodeSize="6" View_ScalarView3DBackground="1" Problem_Description="" View_EdgeWidth="2" View_PaletteSteps="30" View_ColorCross_green="150" View_SolidViewHide="Air" View_ColorContours_red="0" View_ContoursWidth="1" View_PostFont="fontGoogleDroidMono14" View_ScalarView3DHeight="4" View_VectorNumber="50" View_VectorColor="1" View_ParticleDragReferenceArea="1e-06" Adaptivity_MaxDofs="60000" View_ColorEdges_red="0" View_ScalarDecimalPlace="2" View_MeshAngleSegmentsCount="3" View_ParticleNumberOfParticles="5" View_ColorBackground_blue="255" View_ShowScalarView="1" View_ColorGrid_blue="200" View_ShowSolutionMeshView="0" Commands_Triangle="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;" View_ScalarView3DLighting="1" View_ContoursCount="15" View_ScalarRangeAuto="1" View_OrderPaletteOrderType="0" View_ColorNodes_blue="0" View_ScalarRangeLog="0" View_ShowAxes="1" View_VectorProportional="1" View_ParticleStartVelocityX="0" View_ParticleStartVelocityY="0" View_VectorType="0" View_ShowInitialMeshView="1" View_GridStep="0.05" View_ColorLabels_blue="0" View_ParticleIncludeRelativisticCorrection="1" View_ColorLabels_green="150" View_ParticleStartX="0" View_ParticleStartY="0" View_RulersFont="fontGoogleDroidMono10" View_ColorBackground_red="255" View_DeformContour="1" View_ParticleShowPoints="0" View_ColorGrid_red="200" View_ColorInitialMesh_green="150" View_PaletteFilter="0" View_ColorVectors_green="0" View_ParticleReflectOnBoundary="0" Adaptivity_ConvExp="1" View_ShowGrid="1" Adaptivity_ProjNormType="1" View_LabelSize="6" View_ColorSolutionMesh_green="0" View_ShowPost3D="3" View_VectorScale="0.6" Adaptivity_Strategy="0" View_ShowOrderView="1" View_ColorNodes_green="0" View_ShowOrderColorBar="1" View_ColorNodes_red="150" View_ScalarRangeMin="0" View_ParticleStartingRadius="0" View_ParticleColorByVelocity="1" View_ColorBackground_green="255" View_MeshCurvilinearElements="1" View_DeformScalar="1" View_ColorCross_blue="150" View_ColorInitialMesh_blue="0" View_ColorCross_red="150" View_DeformVector="1" View_ShowContourView="0" View_ScalarRangeMax="0.3806320782368378" View_ColorVectors_red="0" View_ColorVectors_blue="0" View_ParticleMaximumNumberOfSteps="500" View_ParticleConstant="1.602e-19" View_VectorCenter="0" View_ParticleMass="9.108999999999999e-31" View_ParticleCustomForceX="0" View_ScalarRangeBase="10" View_ParticleCustomForceY="0" View_ParticleCustomForceZ="0" View_ColorGrid_green="200" View_VectorVariable="magnetic_flux_density_real" Commands_Gmsh="%1 -2 &quot;%2.geo&quot;" View_ShowScalarColorBar="1" View_ShowVectorView="0" View_ColorInitialMesh_red="250" View_ShowRulers="1" View_ActiveField="magnetic" View_ParticleDragDensity="1.2041" General_ZoomToMouse="1" Problem_StartupScript="" View_ColorLabels_red="0"/>
+    <config View_ParticleMinimumStep="0" View_MeshCurvilinearElements="1" View_ColorGrid_blue="200" View_ScalarRangeLog="0" View_ParticleMaximumNumberOfSteps="500" View_ScalarDecimalPlace="2" View_ParticleShowPoints="0" View_OrderLabel="0" View_ColorContours_red="0" View_ParticleNumberOfParticles="5" View_ScalarView3DHeight="4" Adaptivity_MaxDofs="60000" View_ColorLabels_red="0" View_ColorGrid_red="200" View_ColorLabels_blue="0" View_SolidViewHide="Air" View_ColorEdges_blue="150" View_ParticleReflectOnBoundary="0" Adaptivity_Strategy="0" View_ColorEdges_green="0" View_VectorType="0" View_ColorBackground_blue="255" View_ColorInitialMesh_red="250" View_ColorCross_red="150" View_ColorVectors_blue="0" View_ShowScalarView="1" View_LinearizerQuality="normal" View_DeformScalar="1" View_ScalarRangeMax="0.9427026164877821" View_PaletteType="0" View_ShowPost3D="2" View_ShowVectorView="0" View_ParticleDragCoefficient="0" View_ColorContours_green="0" View_ScalarView3DBoundingBox="0" View_ChartHorizontalAxisReverse="0" View_ColorContours_blue="0" View_VectorProportional="1" View_ActiveField="magnetic" View_ColorSolutionMesh_green="0" View_GridStep="0.05" View_VectorNumber="50" View_ShowOrderView="1" View_MeshAngleSegmentsCount="3" View_ColorSolutionMesh_blue="0" View_EdgeWidth="2" View_ParticleCoefficientOfRestitution="0" Adaptivity_Threshold="0.3" Problem_Description="" View_ContoursCount="15" View_ColorVectors_green="0" View_OrderPaletteOrderType="0" Adaptivity_MeshRegularity="-1" View_VectorScale="0.6" View_ParticleMaximumRelativeError="0.01" Adaptivity_IsoOnly="0" View_ScalarView3DAngle="240" View_ChartHorizontalAxisPoints="200" View_ShowRulers="0" View_ShowContourView="0" View_ParticleStartingRadius="0" View_RulersFont="fontGoogleDroidMono10" View_ParticleMass="9.108999999999999e-31" View_ColorNodes_blue="0" View_ChartEndX="0" View_ChartEndY="0" View_PostFont="fontGoogleDroidMono14" View_ColorSolutionMesh_red="150" Adaptivity_ProjNormType="1" View_ScalarVariableComp="2" View_VectorVariable="magnetic_flux_density_real" View_ParticleDragDensity="1.2041" View_ScalarView3DSolidGeometry="1" View_ColorLabels_green="150" View_ScalarView3DBackground="0" Adaptivity_FinerReference="0" View_ParticleColorByVelocity="1" View_ParticleIncludeRelativisticCorrection="1" Commands_Gmsh="%1 -2 &quot;%2.geo&quot;" View_ParticleStartVelocityX="0" View_PaletteSteps="30" View_ParticleStartVelocityY="0" View_ParticleCustomForceX="0" View_ParticleCustomForceY="0" View_ScalarRangeMin="6.685760067682999e-23" View_ParticleCustomForceZ="0" View_ColorVectors_red="0" View_VectorCenter="0" View_ShowSolutionMeshView="0" View_ChartTimeX="0" View_ChartTimeY="0" View_ContoursWidth="1" View_NodeSize="6" View_ColorCross_green="150" Adaptivity_ConvExp="1" View_ColorInitialMesh_blue="0" View_ParticleStartX="0" General_ZoomToMouse="1" View_ParticleStartY="0" View_ColorNodes_green="0" View_SnapToGrid="1" View_ScalarRangeAuto="1" View_VectorColor="1" View_ColorGrid_green="200" View_ParticleReflectOnDifferentMaterial="1" View_ParticleDragReferenceArea="1e-06" View_ParticleConstant="1.602e-19" Problem_StartupScript="" Adaptivity_UseAniso="1" View_DeformContour="1" View_LabelSize="6" View_ColorInitialMesh_green="150" View_ColorCross_blue="150" View_ScalarView3DLighting="1" View_ShowAxes="0" View_ChartHorizontalAxis="0" View_ContourVariable="magnetic_potential_real" View_ScalarVariable="magnetic_flux_density_real" Commands_Triangle="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;" View_ShowScalarColorBar="0" View_ColorBackground_green="255" View_ShowInitialMeshView="1" View_ColorEdges_red="0" View_ColorNodes_red="150" View_DeformVector="1" View_PaletteFilter="1" View_ChartStartX="0" View_ChartStartY="0" View_ScalarRangeBase="10" View_ShowOrderColorBar="1" View_ColorBackground_red="255" View_ShowGrid="0"/>
 </document>
