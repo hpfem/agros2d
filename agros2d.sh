@@ -6,7 +6,7 @@ langPath="./resources_source/lang"
 langPathTarget="./resources/lang"
 tempPath="./tmp"
 version="3.0"
-debianizedFiles="data debian hermes2d hermes_common lib resources src src-remote weakform agros2d.desktop agros2d.pro agros2d.sh AUTHORS COPYING functions.py README"
+debianizedFiles="data debian hermes2d hermes_common lib resources generator src src-remote weakform agros2d.desktop agros2d.pro agros2d.sh AUTHORS COPYING functions.py README"
 unwantedFiles="data/custom data/data hermes2d/build hermes2d/lib hermes2d/Makefile lib/build lib/lib lib/Makefile src/build src/python src/Makefile src/python src-remote/build src-remote/Makefile weakform/build weakform/lib weakform/src weakform/Makefile weakform/*.pyc"
 
 export LD_LIBRARY_PATH="libs"
