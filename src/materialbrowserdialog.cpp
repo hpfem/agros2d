@@ -407,6 +407,7 @@ MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent),
     btnEdit->setText(tr("Edit"));
     btnEdit->setDefault(false);
     btnEdit->setEnabled(false);
+    btnEdit->setVisible(false);
     connect(btnEdit, SIGNAL(clicked()), this, SLOT(doEdit()));
 
     QHBoxLayout *layoutButtons = new QHBoxLayout();
