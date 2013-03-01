@@ -479,7 +479,7 @@ QLayout* SceneEdgeDialog::createContent()
 
     txtAngle = new ValueLineEdit();
     txtAngle->setMinimum(0.0);
-    txtAngle->setMaximum(180.0);
+    txtAngle->setMaximum(90.0);
     connect(txtAngle, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
     // connect(txtAngle, SIGNAL(evaluated(bool)), this, SLOT(doAngleChanged()));
     lblLength = new QLabel();
