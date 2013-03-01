@@ -427,7 +427,7 @@ bool SceneBoundaryDialog::save()
             if (m_boundary == boundary)
                 continue;
 
-            QMessageBox::warning(this, tr("Boundary marker"), tr("Boundary condition name already exists."));
+            QMessageBox::warning(this, tr("Boundary marker"), tr("Boundary condition with the same name already exists."));
             return false;
         }
     }
@@ -520,7 +520,7 @@ bool SceneMaterialDialog::save()
             if (m_material == material)
                 continue;
 
-            QMessageBox::warning(this, tr("Material marker"), tr("Material marker name already exists."));
+            QMessageBox::warning(this, tr("Material marker"), tr("Material marker with the same name already exists."));
             return false;
         }
     }
