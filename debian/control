@@ -20,4 +20,6 @@ Description: hp-FEM multiphysics application based on Hermes2D library
   - Magnetic fields (steady state, harmonic and transient analysis)
   - Heat transfer (steady state and transient analysis) 
   - Structrural mechanics
-  - Acoustics  
+  - Acoustics
+  - Incompresible flow
+  - RF waves
