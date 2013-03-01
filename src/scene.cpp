@@ -447,10 +447,10 @@ void Scene::checkGeometryAssignement()
     }
 
     if (Agros2D::scene()->boundaries->length() < 2) // + none marker
-        throw AgrosGeometryException(tr("Invalid number of boundary conditions (%1 < 1)").arg(Agros2D::scene()->boundaries->length()));
+        throw AgrosGeometryException(tr("Invalid number of boundary conditions (%1 < 1)").arg(Agros2D::scene()->boundaries->length() - 1));
 
     if (Agros2D::scene()->materials->length() < 2) // + none marker
-        throw AgrosGeometryException(tr("Invalid number of materials (%1 < 1)").arg(Agros2D::scene()->materials->length()));
+        throw AgrosGeometryException(tr("Invalid number of materials (%1 < 1)").arg(Agros2D::scene()->materials->length() - 1));
 }
 
 void Scene::clear()
