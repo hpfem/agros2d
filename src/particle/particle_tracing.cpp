@@ -74,13 +74,34 @@ bool ParticleTracing::newtonEquations(double step,
 
         Point3 fieldForce;
 
-        // check domain
-        Hermes::Hermes2D::Element *element = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(fieldInfo->initialMesh(),
-                                                                                                       position.x, position.y);
-        if (element)
+        bool elementIsValid = false;
+        Hermes::Hermes2D::Element *activeElement = NULL;
+
+        // active element for current field
+        if (m_activeElement.contains(fieldInfo))
+            activeElement = m_activeElement[fieldInfo];
+
+        if (activeElement)
+        {
+            double x_reference;
+            double y_reference;
+            elementIsValid = Hermes::Hermes2D::RefMap::is_element_on_physical_coordinates(activeElement,
+                                                                                          position.x, position.y, &x_reference, &y_reference);
+        }
+
+        if (!elementIsValid)
+        {
+            // check whole domain
+            m_activeElement[fieldInfo] = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(fieldInfo->initialMesh(),
+                                                                                                   position.x, position.y);
+            // store active element
+            activeElement = m_activeElement[fieldInfo];
+        }
+
+        if (activeElement)
         {
             // find material
-            SceneLabel *label = Agros2D::scene()->labels->at(atoi(fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(element->marker).marker.c_str()));
+            SceneLabel *label = Agros2D::scene()->labels->at(atoi(fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(activeElement->marker).marker.c_str()));
             SceneMaterial* material = label->marker(fieldInfo);
 
             assert(!material->isNone());
@@ -93,7 +114,7 @@ bool ParticleTracing::newtonEquations(double step,
                 SolutionMode solutionMode = SolutionMode_Finer;
 
                 fieldForce = fieldInfo->plugin()->force(fieldInfo, timeStep, adaptivityStep, solutionMode,
-                                                        element, material, position, velocity)
+                                                        activeElement, material, position, velocity)
                         * Agros2D::problem()->configView()->particleConstant;
             }
             catch (AgrosException e)
@@ -121,7 +142,12 @@ bool ParticleTracing::newtonEquations(double step,
     // relativistic correction
     double mass = Agros2D::problem()->configView()->particleMass;
     if (Agros2D::problem()->configView()->particleIncludeRelativisticCorrection)
-        mass = Agros2D::problem()->configView()->particleMass / (sqrt(1.0 - (velocity.magnitude() * velocity.magnitude()) / (SPEEDOFLIGHT * SPEEDOFLIGHT)));
+    {
+        if (velocity.magnitude() < SPEEDOFLIGHT)
+            mass = Agros2D::problem()->configView()->particleMass / (sqrt(1.0 - (velocity.magnitude() * velocity.magnitude()) / (SPEEDOFLIGHT * SPEEDOFLIGHT)));
+        else
+            throw AgrosException(tr("Velocity is greater then speed of light."));
+    }
 
     // Total acceleration
     Point3 totalAccel = totalForce / mass;
@@ -338,7 +364,7 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
                         (crossingEdge->marker(fieldInfo) == Agros2D::scene()->boundaries->getNone(fieldInfo)
                          && !Agros2D::problem()->configView()->particleReflectOnDifferentMaterial) || // inner edge
                         (crossingEdge->marker(fieldInfo) != Agros2D::scene()->boundaries->getNone(fieldInfo)
-                        && !Agros2D::problem()->configView()->particleReflectOnBoundary)) // boundary
+                         && !Agros2D::problem()->configView()->particleReflectOnBoundary)) // boundary
                     impact = true;
             }
 
@@ -415,5 +441,5 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
         if (velocity > m_velocityMax) m_velocityMax = velocity;
     }
 
-    // qDebug() << "total: " << timePart.elapsed();
+    qDebug() << "total: " << timePart.elapsed();
 }

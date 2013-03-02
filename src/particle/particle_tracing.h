@@ -56,6 +56,8 @@ private:
     double m_velocityMin;
     double m_velocityMax;
 
+    QMap<FieldInfo *, Hermes::Hermes2D::Element *> m_activeElement;
+
     bool newtonEquations(double step,
                          Point3 position,
                          Point3 velocity,

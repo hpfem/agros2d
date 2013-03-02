@@ -2,6 +2,7 @@
 
 # store pro file
 cp hermes2d/hermes2d.pro .
+cp hermes2d/omp/omp.h .
 
 # remove directory
 rm -rf hermes2d
@@ -9,6 +10,7 @@ rm -rf hermes_common
 
 # create directories
 mkdir hermes2d
+mkdir hermes2d/omp
 mkdir hermes2d/src
 mkdir hermes2d/include
 mkdir hermes_common
@@ -31,5 +33,4 @@ cp ../hermes/AUTHORS hermes2d
 # copy remove temp file
 cp hermes2d.pro hermes2d
 rm hermes2d.pro
-
-
+cp omp.h hermes2d/omp
