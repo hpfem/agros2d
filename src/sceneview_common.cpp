@@ -82,14 +82,14 @@ void SceneViewCommon::initializeGL()
     glEnable(GL_NORMALIZE);
 
     // rulers font
-    if (m_fontRulers)
+    if (glIsTexture(m_textureLabelRulers))
         glDeleteTextures(1, &m_textureLabelRulers);
     m_fontRulers = textureFontFromStringKey(Agros2D::problem()->configView()->rulersFont);
     glGenTextures(1, &m_textureLabelRulers);
     initFont(m_textureLabelRulers, m_fontRulers);
 
     // rulers font
-    if (m_fontPost)
+    if (glIsTexture(m_textureLabelPost))
         glDeleteTextures(1, &m_textureLabelPost);
     m_fontPost = textureFontFromStringKey(Agros2D::problem()->configView()->postFont);
     glGenTextures(1, &m_textureLabelPost);
@@ -145,15 +145,10 @@ void SceneViewCommon::loadProjectionViewPort()
 
 void SceneViewCommon::printAt(int penX, int penY, const QString &text, const TextureFont *fnt)
 {
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
     glBegin(GL_TRIANGLES);
     for (int i = 0; i < text.length(); ++i)
@@ -194,14 +189,14 @@ void SceneViewCommon::printAt(int penX, int penY, const QString &text, const Tex
     glDisable(GL_TEXTURE_2D);
 }
 
-void SceneViewCommon::initFont(int textureID, const TextureFont *fnt)
+void SceneViewCommon::initFont(GLuint textureID, const TextureFont *fnt)
 {
     glBindTexture(GL_TEXTURE_2D, textureID);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, fnt->tex_width, fnt->tex_height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, fnt->tex_data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_INTENSITY, fnt->tex_width, fnt->tex_height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, fnt->tex_data);
 }
 
 // events *****************************************************************************************************************************

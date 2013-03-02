@@ -69,7 +69,7 @@ void LogWidget::createActions()
 
     actShowTimestamp = new QAction(icon(""), tr("Show timestamp"), this);
     actShowTimestamp->setCheckable(true);
-    actShowTimestamp->setChecked(settings.value("LogWidget/ShowTimestamp", true).toBool());
+    actShowTimestamp->setChecked(settings.value("LogWidget/ShowTimestamp", false).toBool());
     connect(actShowTimestamp, SIGNAL(triggered()), this, SLOT(showTimestamp()));
 
     actShowDebug = new QAction(icon(""), tr("Show debug"), this);
