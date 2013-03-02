@@ -441,5 +441,5 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
         if (velocity > m_velocityMax) m_velocityMax = velocity;
     }
 
-    qDebug() << "total: " << timePart.elapsed();
+    // qDebug() << "total: " << timePart.elapsed();
 }
