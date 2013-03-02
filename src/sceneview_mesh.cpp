@@ -405,9 +405,9 @@ void SceneViewMesh::paintOrder()
                 Point scr = untransform(vert[lvert[i]][0],
                         vert[lvert[i]][1]);
 
-                printRulersAt(scr.x - m_fontPost->glyphs[GLYPH_M].width / 2.0,
-                              scr.y - m_fontPost->height / 2.0,
-                              ltext[i]);
+                printPostAt(scr.x - m_fontPost->glyphs[GLYPH_M].width / 2.0,
+                            scr.y - m_fontPost->height / 2.0,
+                            ltext[i]);
             }
         }
 
