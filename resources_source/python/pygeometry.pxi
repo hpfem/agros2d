@@ -20,6 +20,10 @@ cdef extern from "../../src/pythonlab/pygeometry.h":
         void addEdgeByNodes(int, int, double, map[char*, int], map[char*, char*]) except +
         void addLabel(double, double, double, map[char*, int], map[char*, int], map[char*, char*]) except +
 
+        int nodesCount()
+        int edgesCount()
+        int labelsCount()
+
         void removeNode(int index) except +
         void removeEdge(int index) except +
         void removeLabel(int index) except +
@@ -138,6 +142,18 @@ cdef class __Geometry__:
             materials_map.insert(material)
 
         self.thisptr.addLabel(x, y, area, refinements_map, orders_map, materials_map)
+
+    # nodes_count()
+    def nodes_count(self):
+        return self.thisptr.nodesCount()
+
+    # edges_count()
+    def edges_count(self):
+        return self.thisptr.edgesCount()
+
+    # labels_count()
+    def labels_count(self):
+        return self.thisptr.labelsCount()
 
     # remove_label(index)
     def remove_label(self, int index):
