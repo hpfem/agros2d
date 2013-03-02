@@ -39,14 +39,30 @@
 #include "hermes2d/field.h"
 #include "hermes2d/solutionstore.h"
 #include "hermes2d/problem_config.h"
+#include "mesh_hash.h"
 
 ParticleTracing::ParticleTracing(QObject *parent)
     : QObject(parent)
 {
+    qDebug() << "Creating mesh hashes...";
+    foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
+    {
+        if(!fieldInfo->plugin()->hasForce())
+            continue;
+
+        // todo: should not be initial mesh, but the solution mesh (will not work for adaptivity)
+        m_meshHashs[fieldInfo] = new MeshHash(fieldInfo->initialMesh());
+    }
+    qDebug() << "finished";
+    num_lookups = 0;
+    num_fails = 0;
 }
 
 ParticleTracing::~ParticleTracing()
 {
+    foreach(MeshHash* mh, m_meshHashs)
+        delete mh;
+    qDebug() << QString("Total hash lookups %1, failed %2").arg(num_lookups).arg(num_fails);
 }
 
 void ParticleTracing::clear()
@@ -91,11 +107,21 @@ bool ParticleTracing::newtonEquations(double step,
 
         if (!elementIsValid)
         {
-            // check whole domain
-            m_activeElement[fieldInfo] = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(fieldInfo->initialMesh(),
+            // first try this way
+            activeElement = m_meshHashs[fieldInfo]->getElement(position.x, position.y);
+            num_lookups++;
+
+            if(!activeElement)
+            {
+                num_fails++;
+                // check whole domain
+                // todo: should not be initial mesh, but the solution mesh (will not work for adaptivity)
+                m_activeElement[fieldInfo] = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(fieldInfo->initialMesh(),
                                                                                                    position.x, position.y);
-            // store active element
-            activeElement = m_activeElement[fieldInfo];
+                // store active element
+                activeElement = m_activeElement[fieldInfo];
+            }
+
         }
 
         if (activeElement)

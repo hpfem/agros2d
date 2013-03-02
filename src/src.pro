@@ -146,6 +146,7 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     pythonlab/pyview.cpp \
     pythonlab/pyparticletracing.cpp \
     particle/particle_tracing.cpp \
+    particle/mesh_hash.cpp \
     ../pythonlab/pythonlab_functions.cpp \
     ../resources_source/classes/module_xml.cpp \
     ../resources_source/classes/coupling_xml.cpp \
@@ -250,7 +251,8 @@ HEADERS += util.h \
     pythonlab/pygeometry.h \
     pythonlab/pyview.h \
     pythonlab/pyparticletracing.h \
-    particle/particle_tracing.h
+    particle/particle_tracing.h \
+    particle/mesh_hash.h
 
 OTHER_FILES += functions.py \
     version.xml \

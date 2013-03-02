@@ -28,6 +28,7 @@
 
 class FieldInfo;
 class SceneMaterial;
+class MeshHash;
 
 class ParticleTracing : public QObject
 {
@@ -58,11 +59,16 @@ private:
 
     QMap<FieldInfo *, Hermes::Hermes2D::Element *> m_activeElement;
 
+    QMap<FieldInfo *, MeshHash *> m_meshHashs;
+
     bool newtonEquations(double step,
                          Point3 position,
                          Point3 velocity,
                          Point3 *newposition,
                          Point3 *newvelocity);
+
+    int num_lookups;
+    int num_fails;
 };
 
 
