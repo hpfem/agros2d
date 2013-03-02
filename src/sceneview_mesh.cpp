@@ -402,9 +402,7 @@ void SceneViewMesh::paintOrder()
             glColor3d(1, 1, 1);
             // if (lbox[i][0]/m_scale*aspect() > size.x && lbox[i][1]/m_scale > size.y)
             {
-                Point scr = untransform(vert[lvert[i]][0],
-                        vert[lvert[i]][1]);
-
+                Point scr = untransform(vert[lvert[i]][0], vert[lvert[i]][1]);
                 printPostAt(scr.x - m_fontPost->glyphs[GLYPH_M].width / 2.0,
                             scr.y - m_fontPost->height / 2.0,
                             ltext[i]);
