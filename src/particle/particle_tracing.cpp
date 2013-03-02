@@ -50,8 +50,17 @@ ParticleTracing::ParticleTracing(QObject *parent)
         if(!fieldInfo->plugin()->hasForce())
             continue;
 
+        // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
+        int timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo, SolutionMode_Normal);
+        int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, timeStep);
+        SolutionMode solutionMode = SolutionMode_Finer;
+
+        FieldSolutionID fsid(fieldInfo, timeStep, adaptivityStep, solutionMode);
+        Hermes::Hermes2D::Solution<double> *sln = Agros2D::solutionStore()->multiArray(fsid).solutions().at(0);
+
         // todo: should not be initial mesh, but the solution mesh (will not work for adaptivity)
-        m_meshHashs[fieldInfo] = new MeshHash(fieldInfo->initialMesh());
+        // m_meshHashs[fieldInfo] = new MeshHash(fieldInfo->initialMesh());
+        m_meshCache[fieldInfo] = new MeshCache(timeStep, adaptivityStep, solutionMode, sln->get_mesh(), new MeshHash(sln->get_mesh()));
     }
     qDebug() << "finished";
     num_lookups = 0;
@@ -60,8 +69,8 @@ ParticleTracing::ParticleTracing(QObject *parent)
 
 ParticleTracing::~ParticleTracing()
 {
-    foreach(MeshHash* mh, m_meshHashs)
-        delete mh;
+    foreach (MeshCache *cache, m_meshCache.values())
+        delete cache;
     qDebug() << QString("Total hash lookups %1, failed %2").arg(num_lookups).arg(num_fails);
 }
 
@@ -99,6 +108,8 @@ bool ParticleTracing::newtonEquations(double step,
 
         if (activeElement)
         {
+            qDebug() << "activeElement->active()" << activeElement->active;
+
             double x_reference;
             double y_reference;
             elementIsValid = Hermes::Hermes2D::RefMap::is_element_on_physical_coordinates(activeElement,
@@ -108,7 +119,7 @@ bool ParticleTracing::newtonEquations(double step,
         if (!elementIsValid)
         {
             // first try this way
-            activeElement = m_meshHashs[fieldInfo]->getElement(position.x, position.y);
+            activeElement = m_meshCache[fieldInfo]->meshHashes->getElement(position.x, position.y);
             num_lookups++;
 
             if(!activeElement)
@@ -116,8 +127,8 @@ bool ParticleTracing::newtonEquations(double step,
                 num_fails++;
                 // check whole domain
                 // todo: should not be initial mesh, but the solution mesh (will not work for adaptivity)
-                m_activeElement[fieldInfo] = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(fieldInfo->initialMesh(),
-                                                                                                   position.x, position.y);
+                m_activeElement[fieldInfo] = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(m_meshCache[fieldInfo]->mesh,
+                                                                                                       position.x, position.y);
                 // store active element
                 activeElement = m_activeElement[fieldInfo];
             }
@@ -127,19 +138,14 @@ bool ParticleTracing::newtonEquations(double step,
         if (activeElement)
         {
             // find material
-            SceneLabel *label = Agros2D::scene()->labels->at(atoi(fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(activeElement->marker).marker.c_str()));
+            SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_meshCache[fieldInfo]->mesh->get_element_markers_conversion().get_user_marker(activeElement->marker).marker.c_str()));
             SceneMaterial* material = label->marker(fieldInfo);
 
             assert(!material->isNone());
 
             try
             {
-                // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
-                int timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo, SolutionMode_Normal);
-                int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, timeStep);
-                SolutionMode solutionMode = SolutionMode_Finer;
-
-                fieldForce = fieldInfo->plugin()->force(fieldInfo, timeStep, adaptivityStep, solutionMode,
+                fieldForce = fieldInfo->plugin()->force(fieldInfo, m_meshCache[fieldInfo]->timeStep, m_meshCache[fieldInfo]->adaptivityStep, m_meshCache[fieldInfo]->solutionMode,
                                                         activeElement, material, position, velocity)
                         * Agros2D::problem()->configView()->particleConstant;
             }
@@ -467,5 +473,5 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
         if (velocity > m_velocityMax) m_velocityMax = velocity;
     }
 
-    // qDebug() << "total: " << timePart.elapsed();
+    qDebug() << "total: " << timePart.elapsed();
 }

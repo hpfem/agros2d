@@ -57,9 +57,29 @@ private:
     double m_velocityMin;
     double m_velocityMax;
 
-    QMap<FieldInfo *, Hermes::Hermes2D::Element *> m_activeElement;
+    struct MeshCache
+    {
+        MeshCache() : timeStep(0), adaptivityStep(0), solutionMode(SolutionMode_Normal), mesh(NULL), meshHashes(NULL) {}
+        MeshCache(int timeStep, int adaptivityStep, SolutionMode solutionMode, const Hermes::Hermes2D::Mesh *mesh, MeshHash *meshHashes)
+            : timeStep(timeStep), adaptivityStep(adaptivityStep), solutionMode(solutionMode), mesh(mesh), meshHashes(meshHashes)
+        {}
 
-    QMap<FieldInfo *, MeshHash *> m_meshHashs;
+        ~MeshCache()
+        {
+            if (meshHashes)
+                delete meshHashes;
+        }
+
+        int timeStep;
+        int adaptivityStep;
+        SolutionMode solutionMode;
+
+        const Hermes::Hermes2D::Mesh *mesh;
+        MeshHash *meshHashes;
+    };
+
+    QMap<FieldInfo *, MeshCache *> m_meshCache;
+    QMap<FieldInfo *, Hermes::Hermes2D::Element *> m_activeElement;
 
     bool newtonEquations(double step,
                          Point3 position,
