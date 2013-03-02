@@ -372,8 +372,6 @@ void SceneViewPost2D::paintScalarField()
         glLoadIdentity();
         glMatrixMode(GL_MODELVIEW);
 
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
         m_postHermes->linScalarView().unlock_data();
 
         glEndList();

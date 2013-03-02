@@ -206,11 +206,6 @@ void SceneViewPost3D::paintScalarField3D()
 
         double max = qMax(rect.width(), rect.height());
 
-        if (Agros2D::problem()->configView()->scalarView3DLighting)
-            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-        else
-            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-
         glPushMatrix();
         glScaled(1.0, 1.0, max / Agros2D::problem()->configView()->scalarView3DHeight * fabs(irange));
 
@@ -220,9 +215,12 @@ void SceneViewPost3D::paintScalarField3D()
         double *normal = new double[3];
 
         // set texture for coloring
+        if (Agros2D::problem()->configView()->scalarView3DLighting)
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        else
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
         glEnable(GL_TEXTURE_1D);
         glBindTexture(GL_TEXTURE_1D, m_textureScalar);
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
         // set texture transformation matrix
         glMatrixMode(GL_TEXTURE);
@@ -271,8 +269,6 @@ void SceneViewPost3D::paintScalarField3D()
 
         // remove normal
         delete [] normal;
-
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
         glDisable(GL_TEXTURE_1D);
         glDisable(GL_LIGHTING);

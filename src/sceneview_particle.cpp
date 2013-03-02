@@ -624,9 +624,7 @@ void SceneViewParticleTracing::paintGeometryOutline()
     }
 
     glDisable(GL_LINE_SMOOTH);
-    glDisable(GL_DEPTH_TEST);
-
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glDisable(GL_DEPTH_TEST);    
 }
 
 void SceneViewParticleTracing::paintGeometrySurface(bool blend)
@@ -953,8 +951,6 @@ void SceneViewParticleTracing::paintParticleTracing()
 
         glDisable(GL_LINE_SMOOTH);
         glDisable(GL_DEPTH_TEST);
-
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
         glEndList();
 

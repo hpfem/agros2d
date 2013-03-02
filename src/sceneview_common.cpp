@@ -113,7 +113,7 @@ void SceneViewCommon::printRulersAt(int penX, int penY, const QString &text)
 }
 
 void SceneViewCommon::printPostAt(int penX, int penY, const QString &text)
-{
+{    
     glBindTexture(GL_TEXTURE_2D, m_textureLabelPost);
     printAt(penX, penY, text, m_fontPost);
 }
@@ -148,6 +148,7 @@ void SceneViewCommon::printAt(int penX, int penY, const QString &text, const Tex
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
