@@ -101,6 +101,7 @@ protected:
 
     void printAt(int penX, int penY, const QString &text, const TextureFont *fnt);
     void initFont(GLuint textureID, const TextureFont *fnt);
+    void createFontTexture();
 
     GLuint m_textureLabelRulers;
     GLuint m_textureLabelPost;

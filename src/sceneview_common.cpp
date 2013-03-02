@@ -48,9 +48,7 @@ SceneViewCommon::SceneViewCommon(QWidget *parent)
 {
     m_mainWindow = (QMainWindow *) parent;
 
-    m_fontRulers = textureFontFromStringKey(Agros2D::problem()->configView()->rulersFont);
-    m_fontPost = textureFontFromStringKey(Agros2D::problem()->configView()->postFont);
-
+    createFontTexture();
     createActions();
 
     setMouseTracking(true);
@@ -81,12 +79,18 @@ void SceneViewCommon::initializeGL()
     glDisable(GL_MULTISAMPLE);
     glEnable(GL_NORMALIZE);
 
+    createFontTexture();
+}
+
+void SceneViewCommon::createFontTexture()
+{
     // rulers font
     if (glIsTexture(m_textureLabelRulers))
         glDeleteTextures(1, &m_textureLabelRulers);
     m_fontRulers = textureFontFromStringKey(Agros2D::problem()->configView()->rulersFont);
     glGenTextures(1, &m_textureLabelRulers);
     initFont(m_textureLabelRulers, m_fontRulers);
+    // qDebug() << "textureLabelRulers: " << m_textureLabelRulers;
 
     // rulers font
     if (glIsTexture(m_textureLabelPost))
@@ -94,6 +98,7 @@ void SceneViewCommon::initializeGL()
     m_fontPost = textureFontFromStringKey(Agros2D::problem()->configView()->postFont);
     glGenTextures(1, &m_textureLabelPost);
     initFont(m_textureLabelPost, m_fontPost);
+    // qDebug() << "textureLabelPost: " << m_textureLabelPost;
 }
 
 void SceneViewCommon::resizeGL(int w, int h)
@@ -232,6 +237,8 @@ void SceneViewCommon::clear()
 
 void SceneViewCommon::refresh()
 {
+    createFontTexture();
+
     paintGL();
     updateGL();
 }
