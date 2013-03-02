@@ -103,7 +103,7 @@ Hermes::Hermes2D::Element* MeshHashElement::getElement(double x, double y)
     }
 }
 
-static void MeshHash::elementBoundingBox(Hermes::Hermes2D::Element *element, Point &p1, Point &p2)
+void MeshHash::elementBoundingBox(Hermes::Hermes2D::Element *element, Point &p1, Point &p2)
 {
     p1.x = p2.x = element->vn[0]->x;
     p1.y = p2.y = element->vn[0]->y;
@@ -133,7 +133,7 @@ static void MeshHash::elementBoundingBox(Hermes::Hermes2D::Element *element, Poi
 
 
 
-MeshHash::MeshHash(Hermes::Hermes2D::Mesh *mesh)
+MeshHash::MeshHash(const Hermes::Hermes2D::Mesh *mesh)
 {
     // find bounding box of the whole mesh
     Point mesh_p1, mesh_p2;

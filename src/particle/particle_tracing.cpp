@@ -137,7 +137,7 @@ bool ParticleTracing::newtonEquations(double step,
         if (activeElement)
         {
             // find material
-            SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_meshCache[fieldInfo]->mesh->get_element_markers_conversion().get_user_marker(activeElement->marker).marker.c_str()));
+            SceneLabel *label = Agros2D::scene()->labels->at(atoi(fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(activeElement->marker).marker.c_str()));
             SceneMaterial* material = label->marker(fieldInfo);
 
             assert(!material->isNone());
