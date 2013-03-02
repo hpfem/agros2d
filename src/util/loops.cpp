@@ -294,8 +294,8 @@ int LoopsInfo::intersectionsParity(Point point, QList<LoopsNodeEdgeData> loop)
     int left, right;
     do {
         tangent += 0.1;
-        //cout << "IntersectionParity, tangent " << tangent << endl;
-        assert(tangent < 10);
+        if (tangent > 10)
+            throw AgrosGeometryException(tr("Intersection partity failed (tangent > 10)."));
         rejectTangent = false;
         left = right = 0;
 
@@ -582,14 +582,14 @@ void LoopsInfo::processLoops()
             }
         }
         if (labelsInsideLoop[loopIdx].size() == 0)
-            throw (AgrosGeometryException("Some areas do not have a marker"));
+            throw AgrosGeometryException(tr("Some areas do not have a marker"));
     }
 
     for (int labelIdx = 0; labelIdx < m_scene->labels->count(); labelIdx++)
     {
         SceneLabel* label = m_scene->labels->at(labelIdx);
         if(!loopsContainingLabel.contains(label))
-            throw(AgrosGeometryException("There is a label outside of the domain"));
+            throw AgrosGeometryException(tr("There is a label outside of the domain"));
     }
 
     // direct super and sub domains (indexed by loop indices)
@@ -609,7 +609,7 @@ void LoopsInfo::processLoops()
         SceneLabel* actualLabel = m_scene->labels->at(labelIdx);
         QList<int> loopsWithLabel = loopsContainingLabel[actualLabel];
         if(loopsWithLabel.size() == 0)
-            throw (AgrosGeometryException("There is no label in some subdomain"));
+            throw AgrosGeometryException(tr("There is no label in some subdomain"));
 
 
         // sort
@@ -646,7 +646,7 @@ void LoopsInfo::processLoops()
             int numLabelsPlus1 = labelsInsideLoop[loopsWithLabel[j+1]].size();
             if(numLabelsJ == numLabelsPlus1)
             {
-                throw (AgrosGeometryException("There is no label in some subdomain"));
+                throw AgrosGeometryException(tr("There is no label in some subdomain"));
             }
         }
 
@@ -666,7 +666,7 @@ void LoopsInfo::processLoops()
     {
         SceneLabel* label = m_scene->labels->at(labelIdx);
         if(!principalLoopOfLabel.contains(label))
-            throw (AgrosGeometryException("There is a label outside of the domain"));
+            throw AgrosGeometryException(tr("There is a label outside of the domain"));
 
         int principalLoop = principalLoopOfLabel[label];
         m_labelLoops[label] = QList<int>();
@@ -684,7 +684,7 @@ void LoopsInfo::processLoops()
         if (!usedLoops.contains(principalLoopOfLabel[label]))
             usedLoops.append(principalLoopOfLabel[label]);
         else
-            throw (AgrosGeometryException("There is multiple labels in the domain"));
+            throw AgrosGeometryException(tr("There is multiple labels in the domain"));
     }
 }
 
