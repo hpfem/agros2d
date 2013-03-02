@@ -1,29 +1,29 @@
 #!/usr/bin/make -f
 
-# export DH_VERBOSE=1
+export DH_VERBOSE=1
 
 configure: configure-stamp
 
 configure-stamp:
 	dh_testdir
 	-$(MAKE) distclean
-	qmake-qt4 PREFIX=$(CURDIR)/debian/agros2d/usr CONFIG-="debug" CONFIG+="release" 
+	qmake-qt4 PREFIX=$(CURDIR)/debian/agros2d/usr CONFIG-="debug" CONFIG+="release"
 	touch $@
 
 build: build-stamp
 
-build-stamp: configure-stamp  
+build-stamp: configure-stamp
 	dh_testdir	
 	$(MAKE)
 	LD_LIBRARY_PATH=$(CURDIR)/libs ./agros2d_generator
-	qmake-qt4 CONFIG-="debug" CONFIG+="release" plugins/plugins.pro
-	make --directory plugins
+	qmake-qt4 PREFIX=$(CURDIR)/debian/agros2d/usr CONFIG-="debug" CONFIG+="release" plugins/plugins.pro
+	$(MAKE) --directory plugins
 
-clean: 
+clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp configure-stamp -f 
-	qmake-qt4 CONFIG-="debug" CONFIG+="release"
+	qmake-qt4 PREFIX=$(CURDIR)/debian/agros2d/usr CONFIG-="debug" CONFIG+="release"
 	$(MAKE) distclean
 	dh_clean
 
@@ -43,7 +43,7 @@ binary-arch: build install
 	dh_installchangelogs 
 	dh_installdocs
 	dh_installexamples
-#	dh_install
+	dh_install
 	dh_installmenu
 #	dh_installdebconf
 #	dh_installlogrotate
@@ -67,5 +67,5 @@ binary-arch: build install
 	dh_md5sums
 	dh_builddeb
 
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install configure
+binary: binary-arch
+.PHONY: build clean binary-arch binary install configure

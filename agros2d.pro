@@ -37,8 +37,14 @@ linux-g++|linux-g++-64|linux-g++-32 {
     desktop.files = agros2d.desktop
 
     # libs
-    libs.path = $${PREFIX}/lib
-    libs.files = libs/*
+    lib_3rdparty.path = $${PREFIX}/lib
+    lib_3rdparty.files = libs/libagros2d_3rdparty.so.1.0.0
+    lib_hermes2d.path = $${PREFIX}/lib
+    lib_hermes2d.files = libs/libagros2d_hermes2d.so.1.0.0
+    lib_library.path = $${PREFIX}/lib
+    lib_library.files = libs/libagros2d_library.so.1.0.0
+    lib_plugins.path = $${PREFIX}/lib
+    lib_plugins.files = libs/libagros2d_plugin_*.so
 
     # install binary
     system(touch agros2d)
@@ -57,7 +63,10 @@ linux-g++|linux-g++-64|linux-g++-32 {
     INSTALLS *= target \
         target_solver \
         target_pytholab \
-        libs \
+        lib_3rdparty \
+        lib_hermes2d \
+        lib_library \
+        lib_plugins \
         resources \
         python_startup \
         script_examples \

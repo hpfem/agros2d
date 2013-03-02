@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="utf-8"?>
+<document version="2.1">
+    <geometry>
+        <nodes>
+            <node x="0" y="-0.07000000000000001" id="0"/>
+            <node x="0.33132" y="-0.07000000000000001" id="1"/>
+            <node x="0.33132" y="-0.135" id="2"/>
+            <node x="0.35132" y="-0.135" id="3"/>
+            <node x="0.35132" y="-0.05" id="4"/>
+            <node x="0.25382" y="-0.05" id="5"/>
+            <node x="0.25382" y="-0.045" id="6"/>
+            <node x="0.27132" y="-0.045" id="7"/>
+            <node x="0.27132" y="0.437" id="8"/>
+            <node x="0.24632" y="0.335" id="9"/>
+            <node x="0.24632" y="-0.015" id="10"/>
+            <node x="0" y="-0.015" id="11"/>
+            <node x="0" y="0.465" id="12"/>
+            <node x="0.27132" y="0.465" id="13"/>
+            <node x="0.27132" y="0.49" id="14"/>
+            <node x="0" y="0.49" id="15"/>
+            <node x="0.24632" y="0.437" id="16"/>
+            <node x="0.23132" y="0.2795" id="17"/>
+            <node x="0" y="0.2795" id="18"/>
+            <node x="0.216694" y="0.57" id="19"/>
+            <node x="0.201694" y="0.555" id="20"/>
+            <node x="0.14431" y="0.555" id="21"/>
+            <node x="0.12931" y="0.57" id="22"/>
+            <node x="0.188002" y="0.555" id="23"/>
+            <node x="0.173002" y="0.57" id="24"/>
+            <node x="0.0856181" y="0.57" id="25"/>
+            <node x="0.070618" y="0.555" id="26"/>
+            <node x="0.100618" y="0.555" id="27"/>
+            <node x="0.085618" y="0.54" id="28"/>
+            <node x="0.12931" y="0.54" id="29"/>
+            <node x="0.11431" y="0.555" id="30"/>
+            <node x="0.173002" y="0.54" id="31"/>
+            <node x="0.158002" y="0.555" id="32"/>
+            <node x="0.231694" y="0.555" id="33"/>
+            <node x="0.216694" y="0.54" id="34"/>
+            <node x="0.37882" y="0.29" id="35"/>
+            <node x="0.38882" y="0.28" id="36"/>
+            <node x="0.38882" y="0.3" id="37"/>
+            <node x="0.38882" y="0.23" id="38"/>
+            <node x="0.39882" y="0.24" id="39"/>
+            <node x="0.37882" y="0.24" id="40"/>
+            <node x="0.38882" y="0.25" id="41"/>
+            <node x="0.38882" y="0.18" id="42"/>
+            <node x="0.39882" y="0.19" id="43"/>
+            <node x="0.37882" y="0.19" id="44"/>
+            <node x="0.38882" y="0.2" id="45"/>
+            <node x="0.38882" y="0.13" id="46"/>
+            <node x="0.39882" y="0.14" id="47"/>
+            <node x="0.37882" y="0.14" id="48"/>
+            <node x="0.38882" y="0.15" id="49"/>
+            <node x="0.38882" y="0.08" id="50"/>
+            <node x="0.39882" y="0.09" id="51"/>
+            <node x="0.37882" y="0.09" id="52"/>
+            <node x="0.38882" y="0.1" id="53"/>
+            <node x="0.38882" y="0.03" id="54"/>
+            <node x="0.39882" y="0.04" id="55"/>
+            <node x="0.37882" y="0.04" id="56"/>
+            <node x="0.38882" y="0.05" id="57"/>
+            <node x="0.39882" y="0.29" id="58"/>
+            <node x="0.1055" y="-0.12" id="59"/>
+            <node x="0.0755" y="-0.12" id="60"/>
+            <node x="0.1055" y="-0.15" id="61"/>
+            <node x="0.0755" y="-0.15" id="62"/>
+            <node x="0.1495" y="-0.12" id="63"/>
+            <node x="0.1195" y="-0.12" id="64"/>
+            <node x="0.1495" y="-0.15" id="65"/>
+            <node x="0.1195" y="-0.15" id="66"/>
+            <node x="0.1935" y="-0.12" id="67"/>
+            <node x="0.1635" y="-0.12" id="68"/>
+            <node x="0.1935" y="-0.15" id="69"/>
+            <node x="0.1635" y="-0.15" id="70"/>
+            <node x="0.2375" y="-0.12" id="71"/>
+            <node x="0.2075" y="-0.12" id="72"/>
+            <node x="0.2375" y="-0.15" id="73"/>
+            <node x="0.2075" y="-0.15" id="74"/>
+            <node x="0.23132" y="0.335" id="75"/>
+            <node x="0.23132" y="0" id="76"/>
+            <node x="0" y="0" id="77"/>
+            <node x="0.35632" y="-0.042" id="78"/>
+            <node x="0.35632" y="0.536" id="79"/>
+            <node x="0" y="0.536" id="80"/>
+            <node x="0" y="0.5" id="81"/>
+            <node x="0.28132" y="0.5" id="82"/>
+            <node x="0.28132" y="-0.042" id="83"/>
+            <node x="0.35132" y="-0.042" id="84"/>
+            <node x="0" y="-0.62902" id="85"/>
+            <node x="0.441794" y="-0.5414600000000001" id="86"/>
+            <node x="0.536116" y="-0.4817" id="87"/>
+            <node x="0.615" y="-0.34" id="88"/>
+            <node x="0.615" y="0.67" id="89"/>
+            <node x="0.536123" y="0.811638" id="90"/>
+            <node x="0.442727" y="0.871282" id="91"/>
+            <node x="0" y="0.95902" id="92"/>
+            <node x="0" y="0.92902" id="93"/>
+            <node x="0" y="-0.59902" id="94"/>
+            <node x="0.420294" y="-0.51996" id="95"/>
+            <node x="0.514616" y="-0.4602" id="96"/>
+            <node x="0.585" y="-0.34" id="97"/>
+            <node x="0.585" y="0.67" id="98"/>
+            <node x="0.5146230000000001" y="0.790138" id="99"/>
+            <node x="0.421227" y="0.849782" id="100"/>
+        </nodes>
+        <edges>
+            <edge end="1" id="0" start="0" angle="0"/>
+            <edge end="2" id="1" start="1" angle="0"/>
+            <edge end="3" id="2" start="2" angle="0"/>
+            <edge end="4" id="3" start="3" angle="0"/>
+            <edge end="5" id="4" start="4" angle="0"/>
+            <edge end="6" id="5" start="5" angle="0"/>
+            <edge end="7" id="6" start="6" angle="0"/>
+            <edge end="8" id="7" start="7" angle="0"/>
+            <edge end="10" id="8" start="9" angle="0"/>
+            <edge end="11" id="9" start="10" angle="0"/>
+            <edge end="0" id="10" start="11" angle="0"/>
+            <edge end="13" id="11" start="12" angle="0"/>
+            <edge end="14" id="12" start="13" angle="0"/>
+            <edge end="15" id="13" start="14" angle="0"/>
+            <edge end="12" id="14" start="15" angle="0"/>
+            <edge end="9" id="15" start="16" angle="0"/>
+            <edge end="16" id="16" start="8" angle="0"/>
+            <edge end="18" id="17" start="17" angle="0"/>
+            <edge end="20" id="18" start="19" angle="90"/>
+            <edge end="22" id="19" start="21" angle="90"/>
+            <edge end="24" id="20" start="23" angle="90"/>
+            <edge end="26" id="21" start="25" angle="90"/>
+            <edge end="25" id="22" start="27" angle="90"/>
+            <edge end="28" id="23" start="26" angle="90"/>
+            <edge end="27" id="24" start="28" angle="90"/>
+            <edge end="21" id="25" start="29" angle="90"/>
+            <edge end="30" id="26" start="22" angle="90"/>
+            <edge end="29" id="27" start="30" angle="90"/>
+            <edge end="23" id="28" start="31" angle="90"/>
+            <edge end="32" id="29" start="24" angle="90"/>
+            <edge end="31" id="30" start="32" angle="90"/>
+            <edge end="19" id="31" start="33" angle="90"/>
+            <edge end="34" id="32" start="20" angle="90"/>
+            <edge end="33" id="33" start="34" angle="90"/>
+            <edge end="36" id="34" start="35" angle="90"/>
+            <edge end="35" id="35" start="37" angle="90"/>
+            <edge end="39" id="36" start="38" angle="90"/>
+            <edge end="38" id="37" start="40" angle="90"/>
+            <edge end="40" id="38" start="41" angle="90"/>
+            <edge end="41" id="39" start="39" angle="90"/>
+            <edge end="43" id="40" start="42" angle="90"/>
+            <edge end="42" id="41" start="44" angle="90"/>
+            <edge end="44" id="42" start="45" angle="90"/>
+            <edge end="45" id="43" start="43" angle="90"/>
+            <edge end="47" id="44" start="46" angle="90"/>
+            <edge end="46" id="45" start="48" angle="90"/>
+            <edge end="48" id="46" start="49" angle="90"/>
+            <edge end="49" id="47" start="47" angle="90"/>
+            <edge end="51" id="48" start="50" angle="90"/>
+            <edge end="50" id="49" start="52" angle="90"/>
+            <edge end="52" id="50" start="53" angle="90"/>
+            <edge end="53" id="51" start="51" angle="90"/>
+            <edge end="55" id="52" start="54" angle="90"/>
+            <edge end="54" id="53" start="56" angle="90"/>
+            <edge end="56" id="54" start="57" angle="90"/>
+            <edge end="57" id="55" start="55" angle="90"/>
+            <edge end="58" id="56" start="36" angle="90"/>
+            <edge end="37" id="57" start="58" angle="90"/>
+            <edge end="60" id="58" start="59" angle="0"/>
+            <edge end="59" id="59" start="61" angle="0"/>
+            <edge end="61" id="60" start="62" angle="0"/>
+            <edge end="62" id="61" start="60" angle="0"/>
+            <edge end="64" id="62" start="63" angle="0"/>
+            <edge end="63" id="63" start="65" angle="0"/>
+            <edge end="65" id="64" start="66" angle="0"/>
+            <edge end="66" id="65" start="64" angle="0"/>
+            <edge end="68" id="66" start="67" angle="0"/>
+            <edge end="67" id="67" start="69" angle="0"/>
+            <edge end="69" id="68" start="70" angle="0"/>
+            <edge end="70" id="69" start="68" angle="0"/>
+            <edge end="72" id="70" start="71" angle="0"/>
+            <edge end="71" id="71" start="73" angle="0"/>
+            <edge end="73" id="72" start="74" angle="0"/>
+            <edge end="74" id="73" start="72" angle="0"/>
+            <edge end="75" id="74" start="9" angle="0"/>
+            <edge end="17" id="75" start="75" angle="0"/>
+            <edge end="76" id="76" start="17" angle="0"/>
+            <edge end="77" id="77" start="76" angle="0"/>
+            <edge end="11" id="78" start="77" angle="0"/>
+            <edge end="79" id="79" start="78" angle="0"/>
+            <edge end="80" id="80" start="79" angle="0"/>
+            <edge end="81" id="81" start="80" angle="0"/>
+            <edge end="82" id="82" start="81" angle="0"/>
+            <edge end="83" id="83" start="82" angle="0"/>
+            <edge end="84" id="84" start="78" angle="0"/>
+            <edge end="83" id="85" start="84" angle="0"/>
+            <edge end="4" id="86" start="84" angle="0"/>
+            <edge end="86" id="87" start="85" angle="25"/>
+            <edge end="87" id="88" start="86" angle="15"/>
+            <edge end="88" id="89" start="87" angle="45"/>
+            <edge end="89" id="90" start="88" angle="0"/>
+            <edge end="90" id="91" start="89" angle="45"/>
+            <edge end="91" id="92" start="90" angle="15"/>
+            <edge end="92" id="93" start="91" angle="25"/>
+            <edge end="93" id="94" start="92" angle="0"/>
+            <edge end="94" id="95" start="85" angle="0"/>
+            <edge end="95" id="96" start="94" angle="25"/>
+            <edge end="96" id="97" start="95" angle="15"/>
+            <edge end="97" id="98" start="96" angle="45"/>
+            <edge end="98" id="99" start="97" angle="0"/>
+            <edge end="99" id="100" start="98" angle="45"/>
+            <edge end="100" id="101" start="99" angle="15"/>
+            <edge end="93" id="102" start="100" angle="25"/>
+            <edge end="0" id="103" start="94" angle="0"/>
+            <edge end="12" id="104" start="18" angle="0"/>
+            <edge end="81" id="105" start="15" angle="0"/>
+            <edge end="93" id="106" start="80" angle="0"/>
+            <edge end="13" id="107" start="8" angle="0"/>
+            <edge end="77" id="108" start="18" angle="0"/>
+        </edges>
+        <labels>
+            <label x="0.133371" y="0.476583" id="0" area="0"/>
+            <label x="0.117017" y="-0.0407923" id="1" area="0"/>
+            <label x="0.114151" y="0.138996" id="2" area="0"/>
+            <label x="0.0856181" y="0.555" id="3" area="0"/>
+            <label x="0.12931" y="0.555" id="4" area="0"/>
+            <label x="0.173002" y="0.555" id="5" area="0"/>
+            <label x="0.216694" y="0.555" id="6" area="0"/>
+            <label x="0.38882" y="0.29" id="7" area="0"/>
+            <label x="0.38882" y="0.24" id="8" area="0"/>
+            <label x="0.38882" y="0.19" id="9" area="0"/>
+            <label x="0.38882" y="0.14" id="10" area="0"/>
+            <label x="0.38882" y="0.09" id="11" area="0"/>
+            <label x="0.38882" y="0.04" id="12" area="0"/>
+            <label x="0.09003659999999999" y="-0.135495" id="13" area="0"/>
+            <label x="0.133879" y="-0.134886" id="14" area="0"/>
+            <label x="0.17833" y="-0.135495" id="15" area="0"/>
+            <label x="0.221969" y="-0.134886" id="16" area="0"/>
+            <label x="0.238933" y="0.174867" id="17" area="0"/>
+            <label x="0.321451" y="0.220326" id="18" area="0"/>
+            <label x="0.600207" y="0.225626" id="19" area="0"/>
+            <label x="0.276477" y="0.379528" id="20" area="0"/>
+            <label x="0.113397" y="0.36136" id="21" area="0"/>
+            <label x="0.475408" y="0.423975" id="22" area="0"/>
+        </labels>
+    </geometry>
+    <problem time_order="2" frequency="6000" time_method="fixed" time_method_tolerance="0.1" matrix_solver="umfpack" coordinate_type="axisymmetric" mesh_type="triangle" time_steps="2" name="iDSS Furnace" time_total="36000">
+        <startup_script></startup_script>
+        <description></description>
+        <fields>
+            <field field_id="heat" initial_condition="20" polynomial_order="2" number_of_refinements="0" time_skip="0.0" analysis_type="transient">
+                <refinement>
+                    <edges/>
+                    <labels/>
+                </refinement>
+                <polynomial_order/>
+                <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="0"/>
+                <solver linearity_type="newton" picard_anderson_acceleration="1" newton_automatic_damping="1" picard_anderson_beta="0.2" picard_anderson_vectors="3" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="50" nonlinear_tolerance="0.001"/>
+                <boundaries>
+                    <boundary heat_convection_heat_transfer_coefficient="5" heat_convection_external_temperature="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="1" name="Convection" heat_radiation_ambient_temperature="0"/>
+                    <boundary heat_convection_heat_transfer_coefficient="0" heat_convection_external_temperature="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="2" name="Neumann" heat_radiation_ambient_temperature="0">
+                        <edge edge="10"/>
+                        <edge edge="14"/>
+                        <edge edge="78"/>
+                        <edge edge="81"/>
+                        <edge edge="104"/>
+                        <edge edge="105"/>
+                        <edge edge="108"/>
+                    </boundary>
+                    <boundary heat_convection_heat_transfer_coefficient="285.383" heat_convection_external_temperature="1550" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="3" name="Radiation (susceptor)" heat_radiation_ambient_temperature="0">
+                        <edge edge="11"/>
+                    </boundary>
+                    <boundary heat_convection_heat_transfer_coefficient="285.383" heat_convection_external_temperature="1750" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="0" id="4" name="Radiation (charge)" heat_radiation_ambient_temperature="0">
+                        <edge edge="17"/>
+                    </boundary>
+                    <boundary heat_convection_heat_transfer_coefficient="0" heat_convection_external_temperature="0" heat_radiation_emissivity="0" type="heat_heat_flux" heat_heat_flux="1000" id="5" name="Radiation (internal ambient)" heat_radiation_ambient_temperature="0">
+                        <edge edge="15"/>
+                        <edge edge="16"/>
+                        <edge edge="74"/>
+                        <edge edge="75"/>
+                        <edge edge="107"/>
+                    </boundary>
+                    <boundary heat_convection_heat_transfer_coefficient="0" heat_convection_external_temperature="0" heat_radiation_emissivity="0.8" type="heat_heat_flux" heat_heat_flux="0" id="6" name="Radiation (external ambient)" heat_radiation_ambient_temperature="100">
+                        <edge edge="0"/>
+                        <edge edge="1"/>
+                        <edge edge="2"/>
+                        <edge edge="3"/>
+                        <edge edge="79"/>
+                        <edge edge="80"/>
+                        <edge edge="84"/>
+                        <edge edge="86"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material heat_volume_heat="0" heat_velocity_x="0" heat_conductivity="385" heat_density="8930" heat_velocity_y="0" heat_specific_heat="385" heat_velocity_angular="0" id="1" name="Copper"/>
+                    <material heat_volume_heat="0" heat_velocity_x="0" heat_conductivity="40" heat_density="2262" heat_velocity_y="0" heat_specific_heat="2050" heat_velocity_angular="0" id="2" name="Graphite">
+                        <label label="0"/>
+                        <label label="1"/>
+                    </material>
+                    <material heat_volume_heat="0" heat_velocity_x="0" heat_conductivity="15" heat_density="7800" heat_velocity_y="0" heat_specific_heat="1000" heat_velocity_angular="0" id="3" name="Stainless steel"/>
+                    <material heat_volume_heat="0" heat_velocity_x="0" heat_conductivity="152.463;20,36.9697,53.9394,70.9091,87.8788,104.848,121.818,138.788,155.758,172.727,189.697,206.667,223.636,240.606,257.576,274.545,291.515,308.485,325.455,342.424,359.394,376.364,393.333,410.303,427.273,444.242,461.212,478.182,495.152,512.121,529.091,546.061,563.03,580,596.97,613.939,630.909,647.879,664.848,681.818,698.788,715.758,732.727,749.697,766.667,783.636,800.606,817.576,834.545,851.515,868.485,885.455,902.424,919.394,936.364,953.333,970.303,987.273,1004.24,1021.21,1038.18,1055.15,1072.12,1089.09,1106.06,1123.03,1140,1156.97,1173.94,1190.91,1207.88,1224.85,1241.82,1258.79,1275.76,1292.73,1309.7,1326.67,1343.64,1360.61,1377.58,1394.55,1411.52,1428.48,1445.45,1462.42,1479.39,1496.36,1513.33,1530.3,1547.27,1564.24,1581.21,1598.18,1615.15,1632.12,1649.09,1666.06,1683.03,1700;152.463,140.904,130.737,121.801,113.95,107.051,100.979,95.6256,90.8893,86.6802,82.9181,79.5319,76.4594,73.6462,71.0457,68.6187,66.3321,64.1593,62.079,60.075,58.1357,56.2534,54.4237,52.6455,50.9199,49.2499,47.6399,46.0951,44.6211,43.2233,41.9064,40.6739,39.5272,38.466,37.4866,36.5825,35.7429,34.9528,34.1926,33.4367,32.654,31.8068,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57,57" heat_density="2300;20,36.9697,53.9394,70.9091,87.8788,104.848,121.818,138.788,155.758,172.727,189.697,206.667,223.636,240.606,257.576,274.545,291.515,308.485,325.455,342.424,359.394,376.364,393.333,410.303,427.273,444.242,461.212,478.182,495.152,512.121,529.091,546.061,563.03,580,596.97,613.939,630.909,647.879,664.848,681.818,698.788,715.758,732.727,749.697,766.667,783.636,800.606,817.576,834.545,851.515,868.485,885.455,902.424,919.394,936.364,953.333,970.303,987.273,1004.24,1021.21,1038.18,1055.15,1072.12,1089.09,1106.06,1123.03,1140,1156.97,1173.94,1190.91,1207.88,1224.85,1241.82,1258.79,1275.76,1292.73,1309.7,1326.67,1343.64,1360.61,1377.58,1394.55,1411.52,1428.48,1445.45,1462.42,1479.39,1496.36,1513.33,1530.3,1547.27,1564.24,1581.21,1598.18,1615.15,1632.12,1649.09,1666.06,1683.03,1700;2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2300,2530,2530,2530,2530,2530,2530,2530,2530,2530,2530,2530,2530,2530,2530,2530,2530,2530" heat_velocity_y="0" heat_specific_heat="707.119;20,36.9697,53.9394,70.9091,87.8788,104.848,121.818,138.788,155.758,172.727,189.697,206.667,223.636,240.606,257.576,274.545,291.515,308.485,325.455,342.424,359.394,376.364,393.333,410.303,427.273,444.242,461.212,478.182,495.152,512.121,529.091,546.061,563.03,580,596.97,613.939,630.909,647.879,664.848,681.818,698.788,715.758,732.727,749.697,766.667,783.636,800.606,817.576,834.545,851.515,868.485,885.455,902.424,919.394,936.364,953.333,970.303,987.273,1004.24,1021.21,1038.18,1055.15,1072.12,1089.09,1106.06,1123.03,1140,1156.97,1173.94,1190.91,1207.88,1224.85,1241.82,1258.79,1275.76,1292.73,1309.7,1326.67,1343.64,1360.61,1377.58,1394.55,1411.52,1428.48,1445.45,1462.42,1479.39,1496.36,1513.33,1530.3,1547.27,1564.24,1581.21,1598.18,1615.15,1632.12,1649.09,1666.06,1683.03,1700;707.119,723.984,739.402,753.473,766.298,777.973,788.588,798.231,806.987,814.935,822.152,828.71,834.679,840.123,845.102,849.676,853.896,857.813,861.472,864.916,868.183,871.307,874.318,877.245,880.109,882.93,885.723,888.5,891.268,894.033,896.792,899.544,902.281,904.99,907.658,910.265,912.654,914.844,917.016,919.169,921.305,923.422,925.52,927.6,929.662,931.706,933.731,935.737,937.726,939.696,941.648,943.581,945.497,947.393,949.272,951.132,952.974,954.797,956.602,958.389,960.157,961.907,963.639,965.353,967.048,968.724,970.383,972.023,973.645,975.248,976.833,978.4,979.948,981.478,982.99,984.483,985.958,987.415,988.853,990.273,991.675,993.058,994.423,908.739,908.739,908.739,908.739,908.739,908.739,908.739,908.739,908.739,908.739,908.739,908.739,908.739,908.739,908.739,908.739,908.739" heat_velocity_angular="0" id="4" name="Silicon">
+                        <label label="2"/>
+                    </material>
+                    <material heat_volume_heat="0" heat_velocity_x="0" heat_conductivity="0.7" heat_density="1800" heat_velocity_y="0" heat_specific_heat="1800" heat_velocity_angular="0" id="5" name="Graphite felt">
+                        <label label="18"/>
+                    </material>
+                    <material heat_volume_heat="0" heat_velocity_x="0" heat_conductivity="2" heat_density="1925" heat_velocity_y="0" heat_specific_heat="1050" heat_velocity_angular="0" id="6" name="Quartz">
+                        <label label="17"/>
+                    </material>
+                    <material heat_volume_heat="0" heat_velocity_x="0" heat_conductivity="40" heat_density="2262" heat_velocity_y="0" heat_specific_heat="2050" heat_velocity_angular="0" id="7" name="Carbon"/>
+                    <material heat_volume_heat="0" heat_velocity_x="0" heat_conductivity="0.25" heat_density="1.63" heat_velocity_y="0" heat_specific_heat="520" heat_velocity_angular="0" id="8" name="Argon">
+                        <label label="20"/>
+                    </material>
+                    <material heat_volume_heat="0" heat_velocity_x="0" heat_conductivity="0.6" heat_density="958" heat_velocity_y="0" heat_specific_heat="1250" heat_velocity_angular="0" id="9" name="Water"/>
+                </materials>
+            </field>
+            <field field_id="magnetic" initial_condition="0.0" polynomial_order="2" number_of_refinements="0" time_skip="36000" analysis_type="harmonic">
+                <refinement>
+                    <edges/>
+                    <labels/>
+                </refinement>
+                <polynomial_order/>
+                <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="0"/>
+                <solver linearity_type="linear" picard_anderson_acceleration="1" newton_automatic_damping="1" picard_anderson_beta="0.2" picard_anderson_vectors="3" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <boundaries>
+                    <boundary magnetic_potential_imag="0" type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0">
+                        <edge edge="10"/>
+                        <edge edge="14"/>
+                        <edge edge="78"/>
+                        <edge edge="81"/>
+                        <edge edge="87"/>
+                        <edge edge="88"/>
+                        <edge edge="89"/>
+                        <edge edge="90"/>
+                        <edge edge="91"/>
+                        <edge edge="92"/>
+                        <edge edge="93"/>
+                        <edge edge="94"/>
+                        <edge edge="95"/>
+                        <edge edge="103"/>
+                        <edge edge="104"/>
+                        <edge edge="105"/>
+                        <edge edge="106"/>
+                        <edge edge="108"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material magnetic_current_density_external_real="2.54648e+06" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="1" magnetic_remanence_angle="0" name="Copper (lateral coil 0)" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="7"/>
+                    </material>
+                    <material magnetic_current_density_external_real="2.54648e+06" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="2" magnetic_remanence_angle="0" name="Copper (lateral coil 1)" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="8"/>
+                    </material>
+                    <material magnetic_current_density_external_real="2.54648e+06" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="3" magnetic_remanence_angle="0" name="Copper (lateral coil 2)" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="9"/>
+                    </material>
+                    <material magnetic_current_density_external_real="2.54648e+06" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="4" magnetic_remanence_angle="0" name="Copper (lateral coil 3)" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="10"/>
+                    </material>
+                    <material magnetic_current_density_external_real="2.54648e+06" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="5" magnetic_remanence_angle="0" name="Copper (lateral coil 4)" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="11"/>
+                    </material>
+                    <material magnetic_current_density_external_real="2.54648e+06" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="6" magnetic_remanence_angle="0" name="Copper (lateral coil 5)" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="12"/>
+                    </material>
+                    <material magnetic_current_density_external_real="2.26354e+06" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="7" magnetic_remanence_angle="0" name="Copper (upper coil)" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="3"/>
+                        <label label="4"/>
+                        <label label="5"/>
+                        <label label="6"/>
+                    </material>
+                    <material magnetic_current_density_external_real="1.77778e+06" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="8" magnetic_remanence_angle="0" name="Copper (lower coil)" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="13"/>
+                        <label label="14"/>
+                        <label label="15"/>
+                        <label label="16"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="76923" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="9" magnetic_remanence_angle="0" name="Graphite" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="0"/>
+                        <label label="1"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="1.4e+06" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="10" magnetic_remanence_angle="0" name="Stainless steel" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="19"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="11" magnetic_remanence_angle="0" name="Silicon" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="2"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="12" magnetic_remanence_angle="0" name="Graphite felt" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="18"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="13" magnetic_remanence_angle="0" name="Quartz" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="17"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="14" magnetic_remanence_angle="0" name="Carbon" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="15" magnetic_remanence_angle="0" name="Argon" magnetic_velocity_x="0" magnetic_velocity_y="0">
+                        <label label="20"/>
+                        <label label="21"/>
+                        <label label="22"/>
+                    </material>
+                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" magnetic_current_density_external_imag="0" id="16" magnetic_remanence_angle="0" name="Water" magnetic_velocity_x="0" magnetic_velocity_y="0"/>
+                </materials>
+            </field>
+        </fields>
+        <couplings>
+            <coupling source_fieldid="magnetic" target_fieldid="heat" type="weak" id="magnetic-heat"/>
+        </couplings>
+    </problem>
+    <config SceneViewSettings_ScalarView3DAngle="240" SceneViewSettings_VectorColor="1" SceneViewSettings_VectorProportional="1" SceneViewSettings_ParticleDragReferenceArea="1e-06" Adaptivity_Threshold="0.3" SceneViewSettings_ScalarView3DHeight="4" SceneViewSettings_ColorCross_blue="150" SceneViewSettings_RulersFont="fontGoogleDroidMono10" SceneViewSettings_ShowSolutionMeshView="0" SceneViewSettings_SnapToGrid="1" SceneViewSettings_ColorCross_red="150" SceneViewSettings_ParticleMinimumStep="0" Adaptivity_IsoOnly="0" SceneViewSettings_ScalarView3DLighting="0" SceneViewSettings_ScalarRangeBase="10" SceneViewSettings_ColorBackground_green="255" SceneViewSettings_DeformScalar="1" SceneViewSettings_VectorScale="0.6" SceneViewSettings_ShowOrderColorBar="1" SceneViewSettings_ShowPost3D="0" SceneViewSettings_ColorInitialMesh_green="150" SceneViewSettings_ShowGrid="1" SceneViewSettings_ColorVectors_blue="0" SceneViewSettings_PostFont="fontGoogleDroidMono14" SceneViewSettings_ColorBackground_red="255" Adaptivity_UseAniso="1" Adaptivity_MeshRegularity="-1" SceneViewSettings_VectorNumber="50" Adaptivity_FinerReference="0" SceneViewSettings_ColorGrid_blue="200" SceneViewSettings_ColorNodes_red="150" SceneViewSettings_LinearizerQuality="normal" SceneViewSettings_ShowInitialMeshView="1" SceneViewSettings_ColorContours_green="0" SceneViewSettings_VectorType="0" SceneViewSettings_ColorContours_blue="0" SceneViewSettings_PaletteFilter="0" SceneViewSettings_ParticleColorByVelocity="1" SceneViewSettings_ColorVectors_green="0" SceneViewSettings_ShowScalarColorBar="1" SceneViewSettings_ColorEdges_green="0" SceneViewSettings_ActiveField="heat" SceneViewSettings_ScalarDecimalPlace="2" SceneViewSettings_LabelSize="6" SceneViewSettings_ShowRulers="1" SceneViewSettings_ParticleCustomForceX="0" SceneViewSettings_ColorSolutionMesh_blue="0" SceneViewSettings_ParticleCustomForceY="0" SceneViewSettings_ParticleCustomForceZ="0" SceneViewSettings_DeformVector="1" SceneViewSettings_ParticleShowPoints="0" Adaptivity_MaxDofs="60000" SceneViewSettings_DeformContour="1" SceneViewSettings_NodeSize="6" SceneViewSettings_ParticleIncludeRelativisticCorrection="1" SceneViewSettings_ColorNodes_blue="0" SceneViewSettings_ScalarView3DBoundingBox="1" SceneViewSettings_ScalarRangeMin="0" Commands_Triangle="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;" SceneViewSettings_ShowAxes="1" SceneViewSettings_ParticleStartingRadius="0" SceneViewSettings_ScalarVariable="" SceneViewSettings_ScalarRangeAuto="1" SceneViewSettings_ParticleNumberOfParticles="5" SceneViewSettings_ColorGrid_green="200" SceneViewSettings_ParticleReflectOnDifferentMaterial="1" SceneViewSettings_SolidViewHide="" SceneViewSettings_ShowContourView="0" SceneViewSettings_ColorEdges_red="0" SceneViewSettings_PaletteSteps="30" SceneViewSettings_ParticleDragDensity="1.2041" SceneViewSettings_ParticleStartX="0" SceneViewSettings_OrderPaletteOrderType="0" SceneViewSettings_ParticleStartY="0" SceneViewSettings_ColorLabels_red="0" SceneViewSettings_OrderLabel="0" SceneViewSettings_ScalarRangeLog="0" SceneViewSettings_ShowScalarView="1" SceneViewSettings_ContoursWidth="1" SceneViewSettings_ShowParticleView="0" SceneViewSettings_ColorSolutionMesh_red="150" SceneViewSettings_ContourVariable="" SceneViewSettings_ColorContours_red="0" Adaptivity_ConvExp="1" SceneViewSettings_ColorInitialMesh_red="250" Adaptivity_ProjNormType="1" SceneViewSettings_VectorCenter="0" SceneViewSettings_MeshCurvilinearElements="1" Adaptivity_Strategy="0" SceneViewSettings_ColorBackground_blue="255" SceneViewSettings_ColorNodes_green="0" SceneViewSettings_ColorLabels_blue="0" SceneViewSettings_ScalarVariableComp="0" SceneViewSettings_ParticleStartVelocityX="0" SceneViewSettings_ColorLabels_green="150" SceneViewSettings_ParticleStartVelocityY="0" SceneViewSettings_MeshAngleSegmentsCount="3" SceneViewSettings_ColorVectors_red="0" SceneViewSettings_ParticleConstant="1.602e-19" SceneViewSettings_ParticleMaximumNumberOfSteps="500" SceneViewSettings_ScalarView3DBackground="1" SceneViewSettings_ParticleDragCoefficient="0" SceneViewSettings_ColorCross_green="150" SceneViewSettings_ParticleReflectOnBoundary="0" SceneViewSettings_GridStep="0.05" SceneViewSettings_ShowOrderView="1" SceneViewSettings_ParticleCoefficientOfRestitution="0" SceneViewSettings_ShowVectorView="0" SceneViewSettings_PaletteType="0" SceneViewSettings_EdgeWidth="2" SceneViewSettings_ParticleMass="9.108999999999999e-31" SceneViewSettings_ParticleMaximumRelativeError="0.01" SceneViewSettings_ColorSolutionMesh_green="0" SceneViewSettings_VectorVariable="" Commands_Gmsh="%1 -2 &quot;%2.geo&quot;" SceneViewSettings_ColorInitialMesh_blue="0" SceneViewSettings_ColorGrid_red="200" General_ZoomToMouse="1" SceneViewSettings_ContoursCount="15" SceneViewSettings_ColorEdges_blue="150" SceneViewSettings_ScalarRangeMax="1"/>
+</document>
