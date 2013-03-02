@@ -4,40 +4,43 @@ import agros2d
 import sys
 from math import *
 
-def addsemicircle(x0, y0, radius, boundary = "none", material = "null"):
-	addedge(x0, (y0)-radius, (x0)+radius, y0, boundary=boundary, angle=90)
-	addedge((x0)+radius, y0, x0, (y0)+radius, boundary=boundary, angle=90)
-	addedge(x0, (y0)+radius, x0, (y0)-radius, boundary=boundary, angle=0)
-	if (material != "null"):
-		addlabel((x0)+(radius/2.0), y0, 0, 0, material=material)
-	return
-setattr(agros2d, "addsemicircle", addsemicircle)
+def add_semicircle(x0, y0, radius, boundaries = {}, materials = None):
+    geometry = agros2d.geometry
+    geometry.add_edge(x0, (y0)-radius, (x0)+radius, y0, boundaries=boundaries, angle=90)
+    geometry.add_edge((x0)+radius, y0, x0, (y0)+radius, boundaries=boundaries, angle=90)
+    geometry.add_edge(x0, (y0)+radius, x0, (y0)-radius, boundaries=boundaries, angle=0)
+    if (materials != None):
+        geometry.add_label((x0)+(radius/2.0), y0, materials=materials)
+    return
+setattr(agros2d, "add_semicircle", add_semicircle)
 
-def addcircle(x0, y0, radius, boundary = "none", material = "null"):
-	addedge(x0, (y0)-radius, (x0)+radius, y0, boundary=boundary, angle=90)
-	addedge((x0)+radius, y0, x0, (y0)+radius, boundary=boundary, angle=90)
-	addedge(x0, (y0)+radius, (x0)-radius, y0, boundary=boundary, angle=90)
-	addedge((x0)-radius, y0, x0, (y0)-radius, boundary=boundary, angle=90)
-	if (material != "null"):
-		addlabel(x0, y0, 0, 0, material=material)
-	return
-setattr(agros2d, "addcircle", addcircle)
+def add_circle(x0, y0, radius, boundaries = {}, materials = None):
+    geometry = agros2d.geometry
+    geometry.add_edge(x0, (y0)-radius, (x0)+radius, y0, boundaries=boundaries, angle=90)
+    geometry.add_edge((x0)+radius, y0, x0, (y0)+radius, boundaries=boundaries, angle=90)
+    geometry.add_edge(x0, (y0)+radius, (x0)-radius, y0, boundaries=boundaries, angle=90)
+    geometry.add_edge((x0)-radius, y0, x0, (y0)-radius, boundaries=boundaries, angle=90)
+    if (materials != None):
+        geometry.add_label(x0, y0, materials=materials)
+    return
+setattr(agros2d, "add_circle", add_circle)
 
-def addrect(x0, y0, width, height, boundary = "none", material = "null"):
-	addedge(x0, y0, (x0)+width, y0, boundary=boundary)
-	addedge(x0+width, y0, (x0)+width, (y0)+height, boundary=boundary)
-	addedge(x0+width, (y0)+height, x0, (y0)+height, boundary=boundary)
-	addedge(x0, (y0)+height, x0, y0, boundary=boundary)
-	if (material != "null"):
-		addlabel((x0)+(width/2.0), (y0)+(height/2.0), material=material)
-	return
-setattr(agros2d, "addrect", addrect)
+def add_rect(x0, y0, width, height, boundaries = {}, materials = None):
+    geometry = agros2d.geometry
+    geometry.add_edge(x0, y0, (x0)+width, y0, boundaries=boundaries)
+    geometry.add_edge(x0+width, y0, (x0)+width, (y0)+height, boundaries=boundaries)
+    geometry.add_edge(x0+width, (y0)+height, x0, (y0)+height, boundaries=boundaries)
+    geometry.add_edge(x0, (y0)+height, x0, y0, boundaries=boundaries)
+    if (materials != None):
+        geometry.add_label((x0)+(width/2.0), (y0)+(height/2.0), materials=materials)
+    return
+setattr(agros2d, "add_rect", add_rect)
 
 def test(text, value, normal, error = 0.03):
-	if ((normal == 0.0) and abs(value < 1e-14)):
-		return True
-	test = abs((value - normal)/value) < error
-	if (not test):	
-		print(text + ": Agros2D: " + str(value) + ", correct: " + str(normal) + ")")
-	return test
+    if ((normal == 0.0) and abs(value < 1e-14)):
+        return True
+    test = abs((value - normal)/value) < error
+    if (not test):    
+        print(text + ": Agros2D: " + str(value) + ", correct: " + str(normal) + ")")
+    return test
 setattr(agros2d, "test", test)
