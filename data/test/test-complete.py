@@ -38,6 +38,7 @@ execfile("test_rf_axisymmetric.py")
 
 # incompressible flow
 execfile("test_flow_steady_planar_nonlin.py") 
+execfile("test_flow_steady_axisymmetric_nonlin.py") 
 
 # contains sets of tests obtained by varying previously present coupling tests
 # various combinations of hard/weak and linear/nonlinear are tested
@@ -90,6 +91,7 @@ execfile("test_coupling_3_axisymmetric_nonlin.py")
 execfile("test_coupling_4_transient_planar.py") 
 
 # particle tracing
+execfile("test_particle_tracing_planar.py")
 execfile("test_particle_tracing_axisymmetric.py")
 
 # adaptivity
