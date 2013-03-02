@@ -6,15 +6,6 @@
 	<style type="text/css">
 		{{STYLESHEET}}
 	</style>
-    <script type="text/javascript" src="{{PANELS_DIRECTORY}}/js/MathJax.js?config=TeX-AMS_HTML">
-		MathJax.Hub.Config({
-			jax: ["input/TeX","output/HTML-CSS"],
-			displayAlign: "left", 
-			showMathMenu: false,
-			showProcessingMessages: false,
-			messageStyle: "none"
-		});
-	</script>
 </head>
 <body>
 

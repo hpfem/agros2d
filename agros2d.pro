@@ -30,21 +30,15 @@ linux-g++|linux-g++-64|linux-g++-32 {
 
     # install pixmap
     pixmap.path = $${PREFIX}/share/pixmaps
-    pixmap.files = src/images/agros2d.xpm
+    pixmap.files = resources/images/agros2d.xpm
 
     # install desktop
     desktop.path = $${PREFIX}/share/applications
     desktop.files = agros2d.desktop
 
     # libs
-    libs_3rdparty.path = $${PREFIX}/lib
-    libs_3rdparty.files = libs/libagros2d_3rdparty.so
-    libs_hermes2d.path = $${PREFIX}/lib
-    libs_hermes2d.files = libs/libagros2d_hermes2d.so
-    libs_library.path = $${PREFIX}/lib
-    libs_library.files = libs/libagros2d_library.so
-    libs_plugins.path = $${PREFIX}/lib
-    libs_plugins.files = libs/libagros2d_plugin_*.so
+    libs.path = $${PREFIX}/lib
+    libs.files = libs/*
 
     # install binary
     system(touch agros2d)
@@ -63,10 +57,7 @@ linux-g++|linux-g++-64|linux-g++-32 {
     INSTALLS *= target \
         target_solver \
         target_pytholab \
-        libs_3rdparty \
-        libs_hermes2d \
-        libs_library \
-        libs_plugins \
+        libs \
         resources \
         python_startup \
         script_examples \
