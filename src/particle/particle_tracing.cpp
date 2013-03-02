@@ -44,7 +44,7 @@
 ParticleTracing::ParticleTracing(QObject *parent)
     : QObject(parent)
 {
-    qDebug() << "Creating mesh hashes...";
+    // qDebug() << "Creating mesh hashes...";
     foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
     {
         if(!fieldInfo->plugin()->hasForce(fieldInfo))
@@ -62,7 +62,8 @@ ParticleTracing::ParticleTracing(QObject *parent)
         // m_meshHashs[fieldInfo] = new MeshHash(fieldInfo->initialMesh());
         m_meshCache[fieldInfo] = new MeshCache(timeStep, adaptivityStep, solutionMode, sln->get_mesh(), new MeshHash(sln->get_mesh()));
     }
-    qDebug() << "finished";
+    // qDebug() << "finished";
+
     num_lookups = 0;
     num_fails = 0;
 }
@@ -71,7 +72,7 @@ ParticleTracing::~ParticleTracing()
 {
     foreach (MeshCache *cache, m_meshCache.values())
         delete cache;
-    qDebug() << QString("Total hash lookups %1, failed %2").arg(num_lookups).arg(num_fails);
+    // qDebug() << QString("Total hash lookups %1, failed %2").arg(num_lookups).arg(num_fails);
 }
 
 void ParticleTracing::clear()
@@ -108,8 +109,6 @@ bool ParticleTracing::newtonEquations(double step,
 
         if (activeElement)
         {
-            qDebug() << "activeElement->active()" << activeElement->active;
-
             double x_reference;
             double y_reference;
             elementIsValid = Hermes::Hermes2D::RefMap::is_element_on_physical_coordinates(activeElement,
@@ -473,5 +472,5 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
         if (velocity > m_velocityMax) m_velocityMax = velocity;
     }
 
-    qDebug() << "total: " << timePart.elapsed();
+    // qDebug() << "total: " << timePart.elapsed();
 }
