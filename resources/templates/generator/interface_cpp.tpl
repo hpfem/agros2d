@@ -134,6 +134,11 @@ Point3 {{CLASS}}Interface::force(FieldInfo *fieldInfo, int timeStep, int adaptiv
     return force{{CLASS}}(fieldInfo, timeStep, adaptivityStep, solutionType, element, material, point, velocity);
 }
 
+bool {{CLASS}}Interface::hasForce(FieldInfo *fieldInfo)
+{
+    return hasForce{{CLASS}}(fieldInfo);
+}
+
 QString {{CLASS}}Interface::localeName(const QString &name)
 {
    {{#NAMES}}

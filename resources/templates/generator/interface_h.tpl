@@ -66,7 +66,7 @@ public:
     virtual Point3 force(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                          Hermes::Hermes2D::Element *element, const SceneMaterial *material,
                          const Point3 &point, const Point3 &velocity);
-    virtual bool hasForce() { return {{HAS_FORCE}}; }
+    virtual bool hasForce(FieldInfo *fieldInfo);
 
 
     // localization

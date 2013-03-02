@@ -217,7 +217,7 @@ public:
     // force calculation
     virtual Point3 force(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                          Hermes::Hermes2D::Element *element, const SceneMaterial *material, const Point3 &point, const Point3 &velocity) = 0;
-    virtual bool hasForce() = 0;
+    virtual bool hasForce(FieldInfo *fieldInfo) = 0;
 
     // localization
     virtual QString localeName(const QString &name) = 0;

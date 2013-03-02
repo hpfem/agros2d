@@ -101,10 +101,6 @@ void Agros2DGeneratorModule::generatePluginInterfaceFiles()
     description = description.replace("\n","");
     output.SetValue("DESCRIPTION", description.toStdString());
 
-    // force
-    XMLModule::force force = m_module->postprocessor().force();
-    output.SetValue("HAS_FORCE", (force.expression().empty() ? "false" : "true"));
-
     std::string text;
 
     // header - expand template

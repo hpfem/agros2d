@@ -29,6 +29,19 @@
 
 #include "hermes2d/plugin_interface.h"
 
+bool hasForce{{CLASS}}(FieldInfo *fieldInfo)
+{
+    {{#VARIABLE_SOURCE}}
+    if ((fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
+     && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
+    {
+        return true;
+    }
+    {{/VARIABLE_SOURCE}}
+
+    return false;
+}
+
 Point3 force{{CLASS}}(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                       Hermes::Hermes2D::Element *element, const SceneMaterial *material, const Point3 &point, const Point3 &velocity)
 {

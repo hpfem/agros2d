@@ -47,7 +47,7 @@ ParticleTracing::ParticleTracing(QObject *parent)
     qDebug() << "Creating mesh hashes...";
     foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        if(!fieldInfo->plugin()->hasForce())
+        if(!fieldInfo->plugin()->hasForce(fieldInfo))
             continue;
 
         // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
@@ -94,7 +94,7 @@ bool ParticleTracing::newtonEquations(double step,
     Point3 totalFieldForce;
     foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        if(!fieldInfo->plugin()->hasForce())
+        if(!fieldInfo->plugin()->hasForce(fieldInfo))
             continue;
 
         Point3 fieldForce;
