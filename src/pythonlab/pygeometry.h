@@ -24,6 +24,9 @@
 #include "util/global.h"
 
 #include "scene.h"
+#include "scenenode.h"
+#include "sceneedge.h"
+#include "scenelabel.h"
 
 class Solution;
 class SceneViewPreprocessor;
@@ -46,6 +49,10 @@ class PyGeometry
         void addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, map<char *, int> refinements, map<char*, char*> boundaries);
         void setMeshRefinementOnEdge(SceneEdge *edge, map<char *, int> refinements);
         void addLabel(double x, double y, double area, map<char *, int> refinements, map<char*, int> orders, map<char*, char*> materials);
+
+        int nodesCount() { return Agros2D::scene()->nodes->count(); }
+        int edgesCount() { return Agros2D::scene()->edges->count(); }
+        int labelsCount() { return Agros2D::scene()->labels->count(); }
 
         // remove operations
         void removeNode(int index);
