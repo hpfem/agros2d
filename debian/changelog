@@ -1,4 +1,18 @@
-agros2d (2.0-ubuntu91) oneiric; urgency=low
+agros2d (3.0-ubuntu100) quantal; urgency=low
+
+  * field solution with the possibility of weak and hard coupling
+  * adaptive transient analysis
+  * Newton and Picard solvers for nonlinear problems
+  * material library
+  * new preprocessor for fast modeling
+  * quad meshing using GMSH
+  * code/design separation with xml field description
+  * object scripting
+  * new translations (Russian and French)
+
+ -- Pavel Karban <pkarban@gmail.com>  Sat, 2 Mar 2013 12:00:00 +0200
+ 
+ agros2d (2.0-ubuntu91) oneiric; urgency=low
 
   * pythonlab integration
   * particle tracing

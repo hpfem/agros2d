@@ -1,6 +1,7 @@
 QT -= GUI
 CONFIG += qt
 OBJECTS_DIR = build
+MOC_DIR = build
 TEMPLATE = lib
 
 contains(CONFIG, HERMES_DEBUG) {

@@ -15,6 +15,9 @@ build: build-stamp
 build-stamp: configure-stamp  
 	dh_testdir	
 	$(MAKE)
+	LD_LIBRARY_PATH=$(CURDIR)/libs ./agros2d_generator
+	qmake-qt4 CONFIG-="debug" CONFIG+="release" plugins/plugins.pro
+	make --directory plugins
 
 clean: 
 	dh_testdir
@@ -57,9 +60,9 @@ binary-arch: build install
 	dh_compress
 	dh_fixperms
 #	dh_perl
-#	dh_makeshlibs
+	dh_makeshlibs
 	dh_installdeb
-	dh_shlibdeps
+	LD_LIBRARY_PATH=$(CURDIR)/libs dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb

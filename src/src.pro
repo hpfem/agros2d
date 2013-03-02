@@ -1,5 +1,4 @@
 # agros2d - hp-FEM multiphysics application based on Hermes2D library
-
 OBJECTS_DIR = build
 MOC_DIR = build
 
