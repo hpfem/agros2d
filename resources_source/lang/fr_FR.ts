@@ -198,96 +198,101 @@
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="180"/>
+        <source>Line preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/chartdialog.cpp" line="186"/>
         <source>Apply</source>
         <translation type="unfinished">Appliquer</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="186"/>
+        <location filename="../../src/chartdialog.cpp" line="192"/>
         <source>Save image</source>
         <translation type="unfinished">Enregistrer l&apos;image</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="192"/>
+        <location filename="../../src/chartdialog.cpp" line="198"/>
         <source>Export</source>
         <translation type="unfinished">Exporter</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="218"/>
+        <location filename="../../src/chartdialog.cpp" line="224"/>
         <source>Start</source>
         <translation type="unfinished">Démarrer</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="228"/>
+        <location filename="../../src/chartdialog.cpp" line="234"/>
         <source>End</source>
         <translation type="unfinished">Fin</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="232"/>
+        <location filename="../../src/chartdialog.cpp" line="238"/>
         <source>Length</source>
         <translation type="unfinished">Longueur</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="254"/>
+        <location filename="../../src/chartdialog.cpp" line="260"/>
         <source>Horizontal axis</source>
         <translation type="unfinished">L&apos;axe horizontal</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="262"/>
+        <location filename="../../src/chartdialog.cpp" line="268"/>
         <source>Reverse</source>
         <translation type="unfinished">Inverser</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="267"/>
+        <location filename="../../src/chartdialog.cpp" line="273"/>
         <source>Points:</source>
         <translation type="unfinished">Points :</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="271"/>
+        <location filename="../../src/chartdialog.cpp" line="277"/>
         <source>Points and time step</source>
         <translation type="unfinished">Points et pas de temps</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="289"/>
+        <location filename="../../src/chartdialog.cpp" line="295"/>
         <source>Point</source>
         <translation type="unfinished">Point</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="320"/>
+        <location filename="../../src/chartdialog.cpp" line="326"/>
         <source>Geometry</source>
         <translation type="unfinished">Géométrie</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="321"/>
+        <location filename="../../src/chartdialog.cpp" line="327"/>
         <source>Time</source>
         <translation type="unfinished">Temps</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="383"/>
+        <location filename="../../src/chartdialog.cpp" line="389"/>
         <source>Length (m)</source>
         <translation type="unfinished">Longueur (m)</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="465"/>
+        <location filename="../../src/chartdialog.cpp" line="471"/>
         <source>time (s)</source>
         <translation type="unfinished">temps (s)</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="585"/>
+        <location filename="../../src/chartdialog.cpp" line="591"/>
         <source>Scalar</source>
         <translation type="unfinished">Scalaire</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="589"/>
+        <location filename="../../src/chartdialog.cpp" line="595"/>
         <source>Magnitude</source>
         <translation type="unfinished">Ampleur</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="604"/>
+        <location filename="../../src/chartdialog.cpp" line="610"/>
         <source>Export data to file</source>
         <translation type="unfinished">Exporter des données vers un fichier</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="604"/>
+        <location filename="../../src/chartdialog.cpp" line="610"/>
         <source>CSV files (*.csv)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -295,24 +300,24 @@
 <context>
     <name>CheckVersion</name>
     <message>
-        <location filename="../../src/util/checkversion.cpp" line="85"/>
-        <location filename="../../src/util/checkversion.cpp" line="100"/>
-        <location filename="../../src/util/checkversion.cpp" line="104"/>
+        <location filename="../../src/util/checkversion.cpp" line="87"/>
+        <location filename="../../src/util/checkversion.cpp" line="102"/>
+        <location filename="../../src/util/checkversion.cpp" line="106"/>
         <source>New version</source>
         <translation>Nouvelle version</translation>
     </message>
     <message>
-        <location filename="../../src/util/checkversion.cpp" line="85"/>
+        <location filename="../../src/util/checkversion.cpp" line="87"/>
         <source>File is corrupted or network is disconnected.</source>
         <translation>Le fichier est endommagé ou le réseau est déconnecté.</translation>
     </message>
     <message>
-        <location filename="../../src/util/checkversion.cpp" line="92"/>
+        <location filename="../../src/util/checkversion.cpp" line="94"/>
         <source>&lt;b&gt;New version available.&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Actual version: %1&lt;br/&gt;New version: %2&lt;br/&gt;&lt;br/&gt;URL: &lt;a href=&quot;%3&quot;&gt;%3&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/util/checkversion.cpp" line="104"/>
+        <location filename="../../src/util/checkversion.cpp" line="106"/>
         <source>You are using actual version.</source>
         <translation>Vous utilisez version la plus récente.</translation>
     </message>
@@ -1157,7 +1162,7 @@
 <context>
     <name>LocalPointValueDialog</name>
     <message>
-        <location filename="../../src/resultsview.cpp" line="285"/>
+        <location filename="../../src/resultsview.cpp" line="289"/>
         <source>Local point value</source>
         <translation>Valeur de point local</translation>
     </message>
@@ -1235,7 +1240,7 @@
     <name>LoopsInfo</name>
     <message>
         <location filename="../../src/util/loops.cpp" line="298"/>
-        <source>Intersection partity failed (tangent &gt; 10).</source>
+        <source>Intersection parity failed (tangent &gt; 10).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1350,7 +1355,7 @@
         <translation>Export d&apos;image…</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1127"/>
+        <location filename="../../src/mainwindow.cpp" line="1129"/>
         <source>Export image to file</source>
         <translation>Exporter l&apos;image vers un fichier</translation>
     </message>
@@ -1360,7 +1365,7 @@
         <translation>Exporter la géométrie…</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1156"/>
+        <location filename="../../src/mainwindow.cpp" line="1158"/>
         <source>Export geometry to file</source>
         <translation>Exporter la géométrie vers un fichier</translation>
     </message>
@@ -1413,7 +1418,7 @@
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="330"/>
-        <location filename="../../src/mainwindow.cpp" line="548"/>
+        <location filename="../../src/mainwindow.cpp" line="549"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1607,116 +1612,116 @@ step</source>
         <translation>&amp;Ajouter</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="535"/>
+        <location filename="../../src/mainwindow.cpp" line="536"/>
         <source>&amp;Tools</source>
         <translation>Ou&amp;tils</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="573"/>
+        <location filename="../../src/mainwindow.cpp" line="574"/>
         <source>File</source>
         <translation>Fichier :</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="588"/>
+        <location filename="../../src/mainwindow.cpp" line="589"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="598"/>
+        <location filename="../../src/mainwindow.cpp" line="599"/>
         <source>Zoom</source>
         <translation>Zoom</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="606"/>
+        <location filename="../../src/mainwindow.cpp" line="607"/>
         <source>Geometry</source>
         <translation>Géométrie</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="625"/>
+        <location filename="../../src/mainwindow.cpp" line="626"/>
         <source>Postprocessor 2D</source>
         <translation>Postprocesseur 2D</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="912"/>
+        <location filename="../../src/mainwindow.cpp" line="914"/>
         <source>Open file</source>
         <translation>Ouvrir le fichier</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="912"/>
+        <location filename="../../src/mainwindow.cpp" line="914"/>
         <source>Agros2D files (*.a2d *.py);;Agros2D data files (*.a2d);;Python script (*.py)</source>
         <translation>Fichiers Agros2D (*.a2d *.py);;Fichiers de données Agros2D (*.a2d);;Python script (*.py)</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1373"/>
+        <location filename="../../src/mainwindow.cpp" line="1372"/>
         <source>File open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="975"/>
+        <location filename="../../src/mainwindow.cpp" line="977"/>
         <source>Unknown suffix.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="979"/>
+        <location filename="../../src/mainwindow.cpp" line="981"/>
         <source>File &apos;%1&apos; is not found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1030"/>
+        <location filename="../../src/mainwindow.cpp" line="1032"/>
         <source>Save file</source>
         <translation>Enregistrer le fichier</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1030"/>
+        <location filename="../../src/mainwindow.cpp" line="1032"/>
         <source>Agros2D files (*.a2d)</source>
         <translation>Fichiers Agros2D (*.a2d)</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1093"/>
+        <location filename="../../src/mainwindow.cpp" line="1095"/>
         <source>Import file</source>
         <translation>Importer le fichier</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1093"/>
-        <location filename="../../src/mainwindow.cpp" line="1110"/>
+        <location filename="../../src/mainwindow.cpp" line="1095"/>
+        <location filename="../../src/mainwindow.cpp" line="1112"/>
         <source>DXF files (*.dxf)</source>
         <translation>Fichiers DXF (*.dxf)</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1110"/>
+        <location filename="../../src/mainwindow.cpp" line="1112"/>
         <source>Export file</source>
         <translation>Exporter le fichier</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1127"/>
+        <location filename="../../src/mainwindow.cpp" line="1129"/>
         <source>PNG files (*.png)</source>
         <translation>Fichiers PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1157"/>
+        <location filename="../../src/mainwindow.cpp" line="1159"/>
         <source>SVG files (*.svg)</source>
         <translation>Fichiers SVG (*.svg)</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1597"/>
+        <location filename="../../src/mainwindow.cpp" line="1585"/>
         <source>Mesh files (*.mesh)</source>
         <translation>Fichiers de maillage (*.mesh)</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1614"/>
+        <location filename="../../src/mainwindow.cpp" line="1602"/>
         <source>The problem is not meshed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="898"/>
-        <location filename="../../src/mainwindow.cpp" line="948"/>
-        <location filename="../../src/mainwindow.cpp" line="955"/>
-        <location filename="../../src/mainwindow.cpp" line="962"/>
-        <location filename="../../src/mainwindow.cpp" line="975"/>
-        <location filename="../../src/mainwindow.cpp" line="979"/>
-        <location filename="../../src/mainwindow.cpp" line="1008"/>
-        <location filename="../../src/mainwindow.cpp" line="1043"/>
-        <location filename="../../src/mainwindow.cpp" line="1614"/>
+        <location filename="../../src/mainwindow.cpp" line="900"/>
+        <location filename="../../src/mainwindow.cpp" line="950"/>
+        <location filename="../../src/mainwindow.cpp" line="957"/>
+        <location filename="../../src/mainwindow.cpp" line="964"/>
+        <location filename="../../src/mainwindow.cpp" line="977"/>
+        <location filename="../../src/mainwindow.cpp" line="981"/>
+        <location filename="../../src/mainwindow.cpp" line="1010"/>
+        <location filename="../../src/mainwindow.cpp" line="1045"/>
+        <location filename="../../src/mainwindow.cpp" line="1602"/>
         <source>Problem</source>
         <translation type="unfinished">Problème</translation>
     </message>
@@ -1725,7 +1730,7 @@ step</source>
         <translation type="obsolete">Export de maillage</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1208"/>
+        <location filename="../../src/mainwindow.cpp" line="1210"/>
         <source>Mesh</source>
         <translation>Maillage</translation>
     </message>
@@ -1735,38 +1740,38 @@ step</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1225"/>
+        <location filename="../../src/mainwindow.cpp" line="1227"/>
         <source>Solver</source>
         <translation>Solveur</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1261"/>
+        <location filename="../../src/mainwindow.cpp" line="1262"/>
         <source>Adaptive step</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1344"/>
+        <location filename="../../src/mainwindow.cpp" line="1343"/>
         <source>Open File</source>
         <translation>Ouvrir le fichier</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1344"/>
+        <location filename="../../src/mainwindow.cpp" line="1343"/>
         <source>Python script (*.py)</source>
         <translation>Python script (*.py)</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1353"/>
+        <location filename="../../src/mainwindow.cpp" line="1352"/>
         <source>Run script: %1
 </source>
         <translation>Exécuter le script : %1</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1373"/>
+        <location filename="../../src/mainwindow.cpp" line="1372"/>
         <source>File &apos;%1&apos; doesn&apos;t exists.</source>
         <translation>Fichier n&apos;existe pas.</translation>
     </message>
     <message>
-        <location filename="../../src/mainwindow.cpp" line="1597"/>
+        <location filename="../../src/mainwindow.cpp" line="1585"/>
         <source>Export mesh file</source>
         <translation>Exporter le fichier de maillage</translation>
     </message>
@@ -2659,7 +2664,7 @@ step</source>
         <translation type="obsolete">Élément [%1, %2] se trouve hors de maillage (&apos;%3&apos;).</translation>
     </message>
     <message>
-        <location filename="../../src/particle/particle_tracing.cpp" line="149"/>
+        <location filename="../../src/particle/particle_tracing.cpp" line="180"/>
         <source>Velocity is greater then speed of light.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5131,22 +5136,22 @@ Do you want to save your changes?</source>
         <translation>Voir les résultats</translation>
     </message>
     <message>
-        <location filename="../../src/resultsview.cpp" line="114"/>
+        <location filename="../../src/resultsview.cpp" line="118"/>
         <source>Local point values</source>
         <translation>Valeur de point local</translation>
     </message>
     <message>
-        <location filename="../../src/resultsview.cpp" line="190"/>
+        <location filename="../../src/resultsview.cpp" line="193"/>
         <source>Volume integrals</source>
         <translation>Intégrales de volume</translation>
     </message>
     <message>
-        <location filename="../../src/resultsview.cpp" line="236"/>
+        <location filename="../../src/resultsview.cpp" line="237"/>
         <source>Surface integrals</source>
         <translation>Intégrales de surface</translation>
     </message>
     <message>
-        <location filename="../../src/resultsview.cpp" line="275"/>
+        <location filename="../../src/resultsview.cpp" line="279"/>
         <source>Problem is not solved.</source>
         <translation>Problème n&apos;est pas résolu.</translation>
     </message>
@@ -5660,8 +5665,8 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/sceneview_common.cpp" line="316"/>
-        <source>SceneView</source>
-        <translation type="unfinished"></translation>
+        <source>Problem</source>
+        <translation type="unfinished">Problème</translation>
     </message>
 </context>
 <context>
@@ -5739,7 +5744,7 @@ Tracing</source>
         <translation type="unfinished">Ctrl+7</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1148"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1147"/>
         <location filename="../../src/sceneview_particle.h" line="104"/>
         <source>Particle Tracing</source>
         <translation type="unfinished"></translation>
@@ -5750,22 +5755,22 @@ Tracing</source>
         <translation type="unfinished">Traçage de particules</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1047"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1046"/>
         <source>Vel.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1110"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1109"/>
         <source>Post View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1110"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1109"/>
         <source>Particle view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1148"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1147"/>
         <source>Particle %1: %2 steps, final time %3 s</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5783,8 +5788,8 @@ Tracing</source>
         <translation type="unfinished">Ctrl+4</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post2d.cpp" line="254"/>
-        <location filename="../../src/sceneview_post2d.h" line="59"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="258"/>
+        <location filename="../../src/sceneview_post2d.h" line="60"/>
         <source>Postprocessor 2D</source>
         <translation type="unfinished">Postprocesseur 2D</translation>
     </message>
@@ -5800,31 +5805,36 @@ Tracing</source>
     </message>
     <message>
         <location filename="../../src/sceneview_post2d.cpp" line="91"/>
-        <source>Local Values</source>
+        <source>Nothing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post2d.cpp" line="94"/>
-        <source>Surface Integrals</source>
+        <source>Local Values</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post2d.cpp" line="97"/>
+        <source>Surface Integrals</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/sceneview_post2d.cpp" line="100"/>
         <source>Volume Integrals</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post2d.cpp" line="106"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="110"/>
         <source>Export VTK scalar...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post2d.cpp" line="1214"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="1218"/>
         <source>Export VTK file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post2d.cpp" line="1214"/>
+        <location filename="../../src/sceneview_post2d.cpp" line="1218"/>
         <source>VTK files (*.vtk)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6590,7 +6600,7 @@ Tracing</source>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="109"/>
-        <source>The field is not time dependent or adaptive.</source>
+        <source>The active field is not time dependent or adaptive.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

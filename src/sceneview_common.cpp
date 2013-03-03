@@ -118,7 +118,7 @@ void SceneViewCommon::printRulersAt(int penX, int penY, const QString &text)
 }
 
 void SceneViewCommon::printPostAt(int penX, int penY, const QString &text)
-{    
+{
     glBindTexture(GL_TEXTURE_2D, m_textureLabelPost);
     printAt(penX, penY, text, m_fontPost);
 }
@@ -313,7 +313,7 @@ void SceneViewCommon::saveImageToFile(const QString &fileName, int w, int h)
 {
     QPixmap pixmap = renderScenePixmap(w, h);
     if (!pixmap.save(fileName, "PNG"))
-        Agros2D::log()->printError(tr("SceneView"), tr("Image cannot be saved to the file '%1'.").arg(fileName));
+        Agros2D::log()->printError(tr("Problem"), tr("Image cannot be saved to the file '%1'.").arg(fileName));
 }
 
 void SceneViewCommon::saveImagesForReport(const QString &path, bool showGrid, bool showRulers, bool showAxes, bool showLabel, int w, int h)

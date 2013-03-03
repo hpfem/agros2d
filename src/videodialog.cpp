@@ -52,7 +52,7 @@ VideoDialog::VideoDialog(SceneViewPostInterface *sceneViewInterface, PostHermes 
     // timer create images
     timer = new QTimer(this);
 
-    createControls();    
+    createControls();
 }
 
 VideoDialog::~VideoDialog()
@@ -106,7 +106,7 @@ void VideoDialog::showDialog()
     }
     else
     {
-        QMessageBox::information(this, tr("Video Dialog"), tr("The field is not time dependent or adaptive."));
+        QMessageBox::information(this, tr("Video Dialog"), tr("The active field is not time dependent or adaptive."));
 
         close();
         return;

@@ -295,7 +295,7 @@ int LoopsInfo::intersectionsParity(Point point, QList<LoopsNodeEdgeData> loop)
     do {
         tangent += 0.1;
         if (tangent > 10)
-            throw AgrosGeometryException(tr("Intersection partity failed (tangent > 10)."));
+            throw AgrosGeometryException(tr("Intersection parity failed (tangent > 10)."));
         rejectTangent = false;
         left = right = 0;
 
