@@ -52,8 +52,6 @@ void CheckVersion::run(bool quiet)
     m_quiet = quiet;
     m_networkReply = m_manager->get(QNetworkRequest(m_url));
 
-    qDebug() << m_url.toString();
-
     connect(m_networkReply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(showProgress(qint64,qint64)));
     connect(m_networkReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(handleError(QNetworkReply::NetworkError)));
 }
@@ -61,8 +59,6 @@ void CheckVersion::run(bool quiet)
 void CheckVersion::downloadFinished(QNetworkReply *networkReply)
 {
     QString text = networkReply->readAll();
-
-    qDebug() << text;
 
     if (!text.isEmpty())
     {
