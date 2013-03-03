@@ -1037,7 +1037,7 @@ void MainWindow::doDocumentSaveAs()
 
         try
         {
-            Agros2D::scene()->writeToFile(fileName);
+            Agros2D::scene()->writeToFile(fileName, true);
             setRecentFiles();
         }
         catch (AgrosException &e)
@@ -1241,8 +1241,7 @@ void MainWindow::doSolve()
         sceneViewPost2D->actSceneModePost2D->trigger();
 
         // show local point values
-        Point point = Point(0, 0);
-        resultsView->showPoint(point);
+        resultsView->showEmpty();
 
         // raise postprocessor
         postprocessorWidget->raise();
@@ -1276,9 +1275,7 @@ void MainWindow::doSolveAdaptiveStep()
     {
         sceneViewPost2D->actSceneModePost2D->trigger();
 
-        // show local point values
-        Point point = Point(0, 0);
-        resultsView->showPoint(point);
+        resultsView->showEmpty();
 
         // raise postprocessor
         postprocessorWidget->raise();

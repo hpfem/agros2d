@@ -1271,7 +1271,7 @@ void SceneViewPost2D::selectPoint()
 
 void SceneViewPost2D::doPostprocessorModeGroup(QAction *action)
 {
-    if (actPostprocessorModeLocalPointValue->isChecked())
+    if (actPostprocessorModeNothing->isChecked())
         emit postprocessorModeGroupChanged(SceneModePostprocessor_Empty);
     if (actPostprocessorModeLocalPointValue->isChecked())
         emit postprocessorModeGroupChanged(SceneModePostprocessor_LocalValue);
