@@ -25,17 +25,19 @@ static CheckVersion *checkVersion = NULL;
 void checkForNewVersion(bool quiet)
 {
     // download version
-    QUrl url("http://agros2d.org/version/version.xml");
+#ifdef VERSION_BETA
+    QUrl url("http://www.agros2d.org/version/version_beta.xml");
+#else
+    QUrl url("http://www.agros2d.org/version/version.xml");
+#endif
     if (checkVersion == NULL)
         checkVersion = new CheckVersion(url);
 
     checkVersion->run(quiet);
 }
 
-CheckVersion::CheckVersion(QUrl url) : QObject()
+CheckVersion::CheckVersion(QUrl url) : QObject(), m_url(url)
 {
-    m_url = url;
-
     m_manager = new QNetworkAccessManager(this);
     connect(m_manager, SIGNAL(finished(QNetworkReply *)), this, SLOT(downloadFinished(QNetworkReply *)));
 }
@@ -50,6 +52,8 @@ void CheckVersion::run(bool quiet)
     m_quiet = quiet;
     m_networkReply = m_manager->get(QNetworkRequest(m_url));
 
+    qDebug() << m_url.toString();
+
     connect(m_networkReply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(showProgress(qint64,qint64)));
     connect(m_networkReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(handleError(QNetworkReply::NetworkError)));
 }
@@ -57,6 +61,8 @@ void CheckVersion::run(bool quiet)
 void CheckVersion::downloadFinished(QNetworkReply *networkReply)
 {
     QString text = networkReply->readAll();
+
+    qDebug() << text;
 
     if (!text.isEmpty())
     {
