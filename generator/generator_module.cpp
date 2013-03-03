@@ -1396,8 +1396,8 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
 
         // functions
         // scalar field
-        dict["uval"] = "1";
-        dict["vval"] = "1";
+        dict["uval"] = "1.0";
+        dict["vval"] = "1.0";
         dict["upval"] = "1";
         dict["uptval"] = "1";
 
@@ -1418,10 +1418,10 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
         if (coordinateType == CoordinateType_Planar)
         {
             // scalar field
-            dict["udx"] = "1";
-            dict["vdx"] = "1";
-            dict["udy"] = "1";
-            dict["vdy"] = "1";
+            dict["udx"] = "1.0";
+            dict["vdx"] = "1.0";
+            dict["udy"] = "1.0";
+            dict["vdy"] = "1.0";
             dict["updx"] = "1";
             dict["updy"] = "1";
             dict["uptdx"] = "1";
@@ -1430,10 +1430,10 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
         else
         {
             // scalar field
-            dict["udr"] = "1";
-            dict["vdr"] = "1";
-            dict["udz"] = "1";
-            dict["vdz"] = "1";
+            dict["udr"] = "1.0";
+            dict["vdr"] = "1.0";
+            dict["udz"] = "1.0";
+            dict["vdz"] = "1.0";
             dict["updr"] = "1";
             dict["updz"] = "1";
             dict["uptdr"] = "1";
