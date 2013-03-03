@@ -108,7 +108,7 @@ void ParticleTracingWidget::createControls()
     chkParticleShowBlendedFaces = new QCheckBox(tr("Show blended faces"));
     txtParticleNumShowParticleAxi = new QSpinBox();
     txtParticleNumShowParticleAxi->setMinimum(1);
-    txtParticleNumShowParticleAxi->setMaximum(50);
+    txtParticleNumShowParticleAxi->setMaximum(500);
     txtParticleMaximumNumberOfSteps = new QSpinBox();
     txtParticleMaximumNumberOfSteps->setMinimum(10);
     txtParticleMaximumNumberOfSteps->setMaximum(100000);
@@ -905,10 +905,9 @@ void SceneViewParticleTracing::paintParticleTracing()
             }
             else
             {
-                int particles = Agros2D::problem()->configView()->particleNumShowParticlesAxi;
-                int stepAngle = 360 / particles;
+                double stepAngle = 360.0 / Agros2D::problem()->configView()->particleNumShowParticlesAxi;
 
-                for (int l = 0; l < particles; l++)
+                for (int l = 0; l < Agros2D::problem()->configView()->particleNumShowParticlesAxi; l++)
                 {
                     glColor3d(rand() / double(RAND_MAX),
                               rand() / double(RAND_MAX),
