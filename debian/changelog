@@ -1,4 +1,4 @@
-agros2d (3.0-ubuntu100) quantal; urgency=low
+agros2d (3.0-ubuntu101) quantal; urgency=low
 
   * field solution with the possibility of weak and hard coupling
   * adaptive transient analysis
@@ -18,25 +18,25 @@ agros2d (3.0-ubuntu100) quantal; urgency=low
   * particle tracing
   * improved preprocessor
 
- -- Pavel Karban <pkarban@gmail.com>  Wen, 15 Oct 2011 12:40:00 +0200
+ -- Pavel Karban <pkarban@gmail.com>  Mon, 10 Oct 2011 12:40:00 +0200
 
 agros2d (1.9-ubuntu61) oneiric; urgency=low
 
   * simple particle tracing
 
- -- Pavel Karban <pkarban@gmail.com>  Wen, 15 Oct 2011 12:40:00 +0200
+ -- Pavel Karban <pkarban@gmail.com>  Mon, 3 Oct 2011 12:40:00 +0200
 
 agros2d (1.9-ubuntu48) oneiric; urgency=low
 
   * reworked postprocessor panel 
 
- -- Pavel Karban <pkarban@gmail.com>  Wen, 15 Oct 2011 12:40:00 +0200
+ -- Pavel Karban <pkarban@gmail.com>  Mon, 3 Oct 2011 12:40:00 +0200
 
 agros2d (1.9-ubuntu43) natty; urgency=low
 
   * added quad element support
 
- -- Pavel Karban <pkarban@gmail.com>  Wen, 23 Mar 2011 12:40:00 +0200
+ -- Pavel Karban <pkarban@gmail.com>  Mon, 3 Mar 2011 12:40:00 +0200
 
 agros2d (1.9-ubuntu42) maverick; urgency=low
 

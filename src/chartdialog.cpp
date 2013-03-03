@@ -172,7 +172,13 @@ void ChartWidget::createControls()
     // viewer
     geometryViewer = new SceneViewPreprocessorChart(this);
     geometryViewer->setMinimumHeight(150);
-    geometryViewer->setMaximumHeight(150);
+    // geometryViewer->setMaximumHeight(150);
+
+    QVBoxLayout *layoutChart = new QVBoxLayout();
+    layoutChart->addWidget(geometryViewer);
+
+    QGroupBox *grpChart = new QGroupBox(tr("Line preview"));
+    grpChart->setLayout(layoutChart);
 
     // controls
     btnOK = new QPushButton();
@@ -326,8 +332,8 @@ void ChartWidget::createControls()
     controlsLayout->addWidget(fieldWidget);
     controlsLayout->addWidget(grpVariable);
     controlsLayout->addWidget(tbxAnalysisType);
-    controlsLayout->addWidget(geometryViewer, 0, Qt::AlignCenter);
-    controlsLayout->addStretch(1);
+    controlsLayout->addWidget(grpChart, 1);
+    // controlsLayout->addStretch(1);
     controlsLayout->addWidget(widButton);
 
     setLayout(controlsLayout);
