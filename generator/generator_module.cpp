@@ -1371,8 +1371,8 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
         // coordinates
         if (coordinateType == CoordinateType_Planar)
         {
-            dict["x"] = "1";
-            dict["y"] = "1";
+            dict["x"] = "1.0";
+            dict["y"] = "1.0";
             dict["tx"] = "1";
             dict["ty"] = "1";
             dict["nx"] = "1";
@@ -1380,8 +1380,8 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
         }
         else
         {
-            dict["r"] = "1";
-            dict["z"] = "1";
+            dict["r"] = "1.0";
+            dict["z"] = "1.0";
             dict["tr"] = "1";
             dict["tz"] = "1";
             dict["nr"] = "1";
