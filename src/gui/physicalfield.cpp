@@ -106,9 +106,9 @@ FieldInfo* PhysicalFieldWidget::selectedField()
 
 void PhysicalFieldWidget::selectField(const FieldInfo* fieldInfo)
 {
-    if (cmbFieldInfo->findData(fieldInfo) != -1)
+    if (cmbFieldInfo->findData(fieldInfo->fieldId()) != -1)
     {
-        cmbFieldInfo->setCurrentIndex(cmbFieldInfo->findData(fieldInfo));
+        cmbFieldInfo->setCurrentIndex(cmbFieldInfo->findData(fieldInfo->fieldId()));
 
         if (Agros2D::problem()->isSolved())
         {

@@ -377,14 +377,20 @@ void PostHermes::problemSolved()
     {
         setActiveViewField(Agros2D::problem()->fieldInfos().begin().value());
     }
-    if (m_activeTimeStep == NOT_FOUND_SO_FAR)
+
+    // time step
+    int lastTimeStep = Agros2D::solutionStore()->lastTimeStep(m_activeViewField, SolutionMode_Normal);
+
+    if (m_activeTimeStep == NOT_FOUND_SO_FAR || activeTimeStep() > lastTimeStep)
     {
-        int lastTimeStep = Agros2D::solutionStore()->lastTimeStep(Agros2D::problem()->fieldInfos().begin().value(), SolutionMode_Normal);
         setActiveTimeStep(lastTimeStep);
     }
-    if (m_activeAdaptivityStep == NOT_FOUND_SO_FAR)
+
+    // adaptive step
+    int lastAdaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(m_activeViewField, SolutionMode_Normal, m_activeTimeStep);
+
+    if (m_activeAdaptivityStep == NOT_FOUND_SO_FAR || activeAdaptivityStep() > lastAdaptivityStep)
     {
-        int lastAdaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(m_activeViewField, SolutionMode_Normal, m_activeTimeStep);
         setActiveAdaptivityStep(lastAdaptivityStep);
         setActiveAdaptivitySolutionType(SolutionMode_Normal);
     }
@@ -447,17 +453,19 @@ Hermes::Hermes2D::Filter<double> *PostHermes::viewScalarFilter(Module::LocalVari
 
 void PostHermes::setActiveViewField(FieldInfo* fieldInfo)
 {
+    // previous active field
+    FieldInfo* previousActiveViewField = m_activeViewField;
+
+    // set new field
     m_activeViewField = fieldInfo;
-    setActiveTimeStep(NOT_FOUND_SO_FAR);
-    setActiveAdaptivityStep(NOT_FOUND_SO_FAR);
-    setActiveAdaptivitySolutionType(SolutionMode_Normal);
 
-    // int newTimeStep = Agros2D::solutionStore()->nearestTimeStep(m_activeViewField, m_activeTimeStep);
-    // setActiveTimeStep(newTimeStep);
-
-    // int lastAdaptiveStep = Agros2D::solutionStore()->lastAdaptiveStep(m_activeViewField, SolutionMode_Normal, newTimeStep);
-    // setActiveAdaptivityStep(min(lastAdaptiveStep, activeAdaptivityStep()));
-    // setActiveAdaptivitySolutionType(SolutionMode_Normal);
+    // check for different field
+    if (previousActiveViewField != fieldInfo)
+    {
+        setActiveTimeStep(NOT_FOUND_SO_FAR);
+        setActiveAdaptivityStep(NOT_FOUND_SO_FAR);
+        setActiveAdaptivitySolutionType(SolutionMode_Normal);
+    }
 }
 
 void PostHermes::setActiveTimeStep(int ts)
