@@ -43,6 +43,7 @@ public slots:
     void doShowResults();
 
     void showEmpty();
+    void showNotSolved();
     void showPoint(const Point &point);
     void showPoint();
     void showVolumeIntegral();

@@ -151,7 +151,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneViewPost2D, SIGNAL(mousePressed()), resultsView, SLOT(doShowResults()));
     connect(sceneViewPost2D, SIGNAL(mousePressed(const Point &)), resultsView, SLOT(showPoint(const Point &)));
     connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), resultsView, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
-    connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), this, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
+    // connect(sceneViewPost2D, SIGNAL(postprocessorModeGroupChanged(SceneModePostprocessor)), this, SLOT(doPostprocessorModeGroupChanged(SceneModePostprocessor)));
     currentPythonEngineAgros()->setSceneViewPost2D(sceneViewPost2D);
 
     // postprocessor 3d
@@ -521,7 +521,8 @@ void MainWindow::createMenus()
     mnuAdd->addAction(Agros2D::scene()->actNewLabel);
     mnuAdd->addSeparator();
     Agros2D::scene()->addBoundaryAndMaterialMenuItems(mnuAdd, this);
-    mnuProblem->addSeparator();
+    mnuProblem->addSeparator();    
+    mnuProblem->addAction(sceneViewPost2D->actPostprocessorModeNothing);
     mnuProblem->addAction(sceneViewPost2D->actPostprocessorModeLocalPointValue);
     mnuProblem->addAction(sceneViewPost2D->actPostprocessorModeSurfaceIntegral);
     mnuProblem->addAction(sceneViewPost2D->actPostprocessorModeVolumeIntegral);
@@ -632,6 +633,7 @@ void MainWindow::createToolBars()
     tlbPost2D->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
 #endif
     tlbPost2D->addSeparator();
+    tlbPost2D->addAction(sceneViewPost2D->actPostprocessorModeNothing);
     tlbPost2D->addAction(sceneViewPost2D->actPostprocessorModeLocalPointValue);
     tlbPost2D->addAction(sceneViewPost2D->actPostprocessorModeSurfaceIntegral);
     tlbPost2D->addAction(sceneViewPost2D->actPostprocessorModeVolumeIntegral);
@@ -1538,17 +1540,6 @@ void MainWindow::setControls()
 
     //actProgressLog->setEnabled(Agros2D::problem()->configView()->enabledProgressLog);
     //actApplicationLog->setEnabled(Agros2D::problem()->configView()->enabledApplicationLog);
-}
-
-void MainWindow::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor)
-{
-    //resultsView->raise();
-    if (sceneModePostprocessor == SceneModePostprocessor_LocalValue)
-        resultsView->showPoint();
-    else if (sceneModePostprocessor == SceneModePostprocessor_SurfaceIntegral)
-        resultsView->showSurfaceIntegral();
-    else if (sceneModePostprocessor == SceneModePostprocessor_VolumeIntegral)
-        resultsView->showVolumeIntegral();
 }
 
 void MainWindow::doHelp()

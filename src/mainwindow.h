@@ -110,7 +110,6 @@ private slots:
     void doAbout();
     void setControls();
     void clear();
-    void doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor);
 
     /// fields adeed or removed, menus need to be modified
     void doFieldsChanged();

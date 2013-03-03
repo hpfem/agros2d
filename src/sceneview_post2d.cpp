@@ -88,6 +88,9 @@ void SceneViewPost2D::createActionsPost2D()
     connect(actSelectByMarker, SIGNAL(triggered()), this, SLOT(selectByMarker()));
 
     // postprocessor group
+    actPostprocessorModeNothing = new QAction(icon("mode-nothing"), tr("Nothing"), this);
+    actPostprocessorModeNothing->setCheckable(true);
+
     actPostprocessorModeLocalPointValue = new QAction(icon("mode-localpointvalue"), tr("Local Values"), this);
     actPostprocessorModeLocalPointValue->setCheckable(true);
 
@@ -98,6 +101,7 @@ void SceneViewPost2D::createActionsPost2D()
     actPostprocessorModeVolumeIntegral->setCheckable(true);
 
     actPostprocessorModeGroup = new QActionGroup(this);
+    actPostprocessorModeGroup->addAction(actPostprocessorModeNothing);
     actPostprocessorModeGroup->addAction(actPostprocessorModeLocalPointValue);
     actPostprocessorModeGroup->addAction(actPostprocessorModeSurfaceIntegral);
     actPostprocessorModeGroup->addAction(actPostprocessorModeVolumeIntegral);
@@ -1192,7 +1196,7 @@ void SceneViewPost2D::setControls()
 
 void SceneViewPost2D::clear()
 {
-    actPostprocessorModeLocalPointValue->trigger();
+    actPostprocessorModeNothing->trigger();
 
     setControls();
 
@@ -1267,6 +1271,8 @@ void SceneViewPost2D::selectPoint()
 
 void SceneViewPost2D::doPostprocessorModeGroup(QAction *action)
 {
+    if (actPostprocessorModeLocalPointValue->isChecked())
+        emit postprocessorModeGroupChanged(SceneModePostprocessor_Empty);
     if (actPostprocessorModeLocalPointValue->isChecked())
         emit postprocessorModeGroupChanged(SceneModePostprocessor_LocalValue);
     if (actPostprocessorModeSurfaceIntegral->isChecked())

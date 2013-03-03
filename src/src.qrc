@@ -29,6 +29,7 @@
         <file alias="edit-delete.png">../resources_source/images/edit-delete.png</file>
         <file alias="geometry.png">../resources_source/images/geometry.png</file>
         <file alias="chart.png">../resources_source/images/chart.png</file>
+        <file alias="mode-nothing.png">../resources_source/images/mode-nothing.png</file>        
         <file alias="mode-localpointvalue.png">../resources_source/images/mode-localpointvalue.png</file>
         <file alias="mode-surfaceintegral.png">../resources_source/images/mode-surfaceintegral.png</file>
         <file alias="mode-volumeintegral.png">../resources_source/images/mode-volumeintegral.png</file>

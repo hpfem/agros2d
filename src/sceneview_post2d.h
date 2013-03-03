@@ -49,6 +49,7 @@ public:
     QAction *actSelectByMarker;
 
     QActionGroup *actPostprocessorModeGroup;
+    QAction *actPostprocessorModeNothing;
     QAction *actPostprocessorModeLocalPointValue;
     QAction *actPostprocessorModeSurfaceIntegral;
     QAction *actPostprocessorModeVolumeIntegral;

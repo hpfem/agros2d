@@ -120,6 +120,7 @@ enum MouseSceneMode
 
 enum SceneModePostprocessor
 {
+    SceneModePostprocessor_Empty,
     SceneModePostprocessor_LocalValue,
     SceneModePostprocessor_SurfaceIntegral,
     SceneModePostprocessor_VolumeIntegral

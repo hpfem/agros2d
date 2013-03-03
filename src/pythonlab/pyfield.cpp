@@ -422,7 +422,7 @@ void PyField::localValues(const double x, const double y, int timeStep, int adap
         if (!silentMode())
         {
             currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
-            currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeLocalPointValue->trigger();
+            currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeNothing->trigger();
         }
 
         Point point(x, y);

@@ -79,10 +79,14 @@ void ResultsView::createActions()
 void ResultsView::doPostprocessorModeGroupChanged(SceneModePostprocessor sceneModePostprocessor)
 {
     m_sceneModePostprocessor = sceneModePostprocessor;
+
+    doShowResults();
 }
 
 void ResultsView::doShowResults()
 {
+    if (m_sceneModePostprocessor == SceneModePostprocessor_Empty)
+        showEmpty();
     if (m_sceneModePostprocessor == SceneModePostprocessor_LocalValue)
         showPoint();
     if (m_sceneModePostprocessor == SceneModePostprocessor_SurfaceIntegral)
@@ -102,7 +106,7 @@ void ResultsView::showPoint()
 {
     if (!(Agros2D::problem()->isSolved() && m_postHermes->isProcessed()))
     {
-        showEmpty();
+        showNotSolved();
         return;
     }
 
@@ -121,12 +125,11 @@ void ResultsView::showPoint()
 
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
-        int timeStep = Agros2D::solutionStore()->nearestTimeStep(fieldInfo, m_postHermes->activeTimeStep());
-        int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, timeStep);
-        SolutionMode solutionMode = SolutionMode_Finer;
-
-        LocalValue *value = fieldInfo->plugin()->localValue(fieldInfo, timeStep, adaptivityStep, solutionMode, m_point);
+        LocalValue *value = fieldInfo->plugin()->localValue(fieldInfo,
+                                                            m_postHermes->activeTimeStep(),
+                                                            m_postHermes->activeAdaptivityStep(),
+                                                            m_postHermes->activeAdaptivitySolutionType(),
+                                                            m_point);
         QMap<QString, PointValue> values = value->values();
         delete value;
 
@@ -178,7 +181,7 @@ void ResultsView::showVolumeIntegral()
 {
     if (!Agros2D::problem()->isSolved())
     {
-        showEmpty();
+        showNotSolved();
         return;
     }
 
@@ -191,12 +194,10 @@ void ResultsView::showVolumeIntegral()
 
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
-        int timeStep = Agros2D::solutionStore()->nearestTimeStep(fieldInfo, m_postHermes->activeTimeStep());
-        int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, timeStep);
-        SolutionMode solutionMode = SolutionMode_Finer;
-
-        IntegralValue *integral = fieldInfo->plugin()->volumeIntegral(fieldInfo, timeStep, adaptivityStep, solutionMode);
+        IntegralValue *integral = fieldInfo->plugin()->volumeIntegral(fieldInfo,
+                                                                      m_postHermes->activeTimeStep(),
+                                                                      m_postHermes->activeAdaptivityStep(),
+                                                                      m_postHermes->activeAdaptivitySolutionType());
         QMap<QString, double> values = integral->values();
         if (values.size() > 0)
         {
@@ -224,7 +225,7 @@ void ResultsView::showSurfaceIntegral()
 {
     if (!Agros2D::problem()->isSolved())
     {
-        showEmpty();
+        showNotSolved();
         return;
     }
 
@@ -237,12 +238,10 @@ void ResultsView::showSurfaceIntegral()
 
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
-        // use solution on nearest time step, last adaptivity step possible and if exists, reference solution
-        int timeStep = Agros2D::solutionStore()->nearestTimeStep(fieldInfo, m_postHermes->activeTimeStep());
-        int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal, timeStep);
-        SolutionMode solutionMode = SolutionMode_Finer;
-
-        IntegralValue *integral = fieldInfo->plugin()->surfaceIntegral(fieldInfo, timeStep, adaptivityStep, solutionMode);
+        IntegralValue *integral = fieldInfo->plugin()->surfaceIntegral(fieldInfo,
+                                                                       m_postHermes->activeTimeStep(),
+                                                                       m_postHermes->activeAdaptivityStep(),
+                                                                       m_postHermes->activeAdaptivitySolutionType());
         QMap<QString, double> values = integral->values();
         {
             ctemplate::TemplateDictionary *field = surfaceIntegrals.AddSectionDictionary("FIELD");
@@ -266,6 +265,11 @@ void ResultsView::showSurfaceIntegral()
 }
 
 void ResultsView::showEmpty()
+{
+    webView->setHtml("");
+}
+
+void ResultsView::showNotSolved()
 {
     // template
     std::string results;
