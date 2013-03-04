@@ -270,7 +270,6 @@ void SceneEdgeContainer::removeConnectedToNode(SceneNode *node)
                                                                            edge->nodeEnd()->point(),
                                                                            edge->markersKeys(),
                                                                            edge->angle()));
-            remove(edge);
         }
     }
 

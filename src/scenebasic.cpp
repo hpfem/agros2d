@@ -209,7 +209,6 @@ void SceneBasicContainer<BasicType>::deleteWithUndo(QString message)
     {
         Agros2D::scene()->undoStack()->beginMacro(message);
         Agros2D::scene()->undoStack()->push(node->getRemoveCommand());
-        this->remove(node);
         Agros2D::scene()->undoStack()->endMacro();
     }
 }

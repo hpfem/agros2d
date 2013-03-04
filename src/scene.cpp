@@ -663,7 +663,6 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
         if (!copy)
         {
             m_undoStack->push(new SceneNodeCommandEdit(node->point(), newPoint));
-            node->setPoint(newPoint);
         }
         else
         {
