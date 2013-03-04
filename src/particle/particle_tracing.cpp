@@ -118,14 +118,20 @@ bool ParticleTracing::newtonEquations(double step,
         if (!elementIsValid)
         {
             // first try this way
-            activeElement = m_meshCache[fieldInfo]->meshHashes->getElement(position.x, position.y);
             num_lookups++;
+            try{
+                activeElement = m_meshCache[fieldInfo]->meshHashes->getElement(position.x, position.y);
+            }
+            catch(...)
+            {
+                qDebug() << "Unknown exception catched in MeshHash";
+                activeElement = NULL;
+            }
 
             if(!activeElement)
             {
                 num_fails++;
                 // check whole domain
-                // todo: should not be initial mesh, but the solution mesh (will not work for adaptivity)
                 m_activeElement[fieldInfo] = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(m_meshCache[fieldInfo]->mesh,
                                                                                                        position.x, position.y);
                 // store active element

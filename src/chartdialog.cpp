@@ -488,9 +488,10 @@ void ChartWidget::plotTime()
             xval.append(timeLevels.at(i));
 
             Point point(txtTimeX->value(), txtTimeY->value());
+            int timeLevelIndex = Agros2D::solutionStore()->nthCalculatedTimeStep(fieldWidget->selectedField(), i);
             LocalValue *localValue = fieldWidget->selectedField()->plugin()->localValue(fieldWidget->selectedField(),
-                                                                                        i,
-                                                                                        Agros2D::solutionStore()->lastAdaptiveStep(fieldWidget->selectedField(), SolutionMode_Normal, i),
+                                                                                        timeLevelIndex,
+                                                                                        Agros2D::solutionStore()->lastAdaptiveStep(fieldWidget->selectedField(), SolutionMode_Normal, timeLevelIndex),
                                                                                         SolutionMode_Normal,
                                                                                         point);
             QMap<QString, PointValue> values = localValue->values();

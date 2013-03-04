@@ -235,12 +235,16 @@ MeshHash::~MeshHash()
 Hermes::Hermes2D::Element* MeshHash::getElement(double x, double y)
 {
     int i = 0;
-    while(intervals_x[i+1] < x)
+    while((i < GRID_SIZE) && (intervals_x[i+1] < x))
         i++;
 
     int j = 0;
-    while(intervals_y[j+1] < y)
+    while((j < GRID_SIZE) && (intervals_y[j+1] < y))
         j++;
 
-    return m_grid[i][j]->getElement(x,y);
+    // this means that x or y is outside mesh, but it can hapen
+    if((i >= GRID_SIZE) || (j >= GRID_SIZE))
+        return NULL;
+    else
+        return m_grid[i][j]->getElement(x,y);
 }
