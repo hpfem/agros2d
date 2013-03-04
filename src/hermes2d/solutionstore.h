@@ -58,6 +58,9 @@ public:
     // finds nearest smaller(or equal) time step, where this fieldInfo was calculated
     int nearestTimeStep(FieldInfo* fieldInfo, int timeStep) const;
 
+    // finds nth calculated time step for the given field
+    int nthCalculatedTimeStep(FieldInfo* fieldInfo, int n) const;
+
     double lastTime(FieldInfo* fieldInfo);
     double lastTime(Block* block);
 

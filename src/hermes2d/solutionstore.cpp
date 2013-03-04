@@ -239,6 +239,22 @@ MultiArray<double> SolutionStore::multiSolutionPreviousCalculatedTS(BlockSolutio
     return ma;
 }
 
+int SolutionStore::nthCalculatedTimeStep(FieldInfo* fieldInfo, int n) const
+{
+    int count = 0;
+    for(int step = 0; step <= lastTimeStep(fieldInfo, SolutionMode_Normal); step++)
+    {
+        if(this->contains(FieldSolutionID(fieldInfo, step, 0, SolutionMode_Normal)))
+            count++;
+
+        // n is counted from zero
+        if(count == n + 1)
+            return step;
+    }
+
+    assert(0);
+}
+
 
 int SolutionStore::nearestTimeStep(FieldInfo *fieldInfo, int timeStep) const
 {
