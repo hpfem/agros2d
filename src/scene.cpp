@@ -579,20 +579,21 @@ int Scene::highlightedCount()
             labels->highlighted().length();
 }
 
-void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
-{
-    QList<SceneEdge *> selectedEdges;
-    QList<QPair<double, SceneNode *> > selectedNodes;
 
+
+void Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
+{
+    // select endpoints
     foreach (SceneEdge *edge, edges->items())
     {
         if (edge->isSelected())
         {
             edge->nodeStart()->setSelected(true);
             edge->nodeEnd()->setSelected(true);
-            selectedEdges.append(edge);
         }
     }
+
+    QList<QPair<double, SceneNode *> > selectedNodes;
 
     foreach (SceneNode *node, nodes->items())
     {
@@ -676,6 +677,19 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
             node->setSelected(false);
         }
     }
+}
+
+void Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
+{
+    QList<SceneEdge *> selectedEdges;
+
+    foreach (SceneEdge *edge, edges->items())
+    {
+        if (edge->isSelected())
+        {
+            selectedEdges.append(edge);
+        }
+    }
 
     foreach (SceneEdge *edge, selectedEdges)
     {
@@ -727,7 +741,6 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
         }
     }
 
-    selectedNodes.clear();
     selectedEdges.clear();
 }
 
@@ -822,7 +835,8 @@ void Scene::transformTranslate(const Point &point, bool copy)
 {
     m_undoStack->beginMacro(tr("Translation"));
 
-    moveSelectedNodesAndEdges(SceneTransformMode_Translate, point, 0.0, 0.0, copy);
+    moveSelectedNodes(SceneTransformMode_Translate, point, 0.0, 0.0, copy);
+    moveSelectedEdges(SceneTransformMode_Translate, point, 0.0, 0.0, copy);
     moveSelectedLabels(SceneTransformMode_Translate, point, 0.0, 0.0, copy);
 
     m_undoStack->endMacro();
@@ -833,7 +847,8 @@ void Scene::transformRotate(const Point &point, double angle, bool copy)
 {
     m_undoStack->beginMacro(tr("Rotation"));
 
-    moveSelectedNodesAndEdges(SceneTransformMode_Rotate, point, angle, 0.0, copy);
+    moveSelectedNodes(SceneTransformMode_Rotate, point, angle, 0.0, copy);
+    moveSelectedEdges(SceneTransformMode_Rotate, point, angle, 0.0, copy);
     moveSelectedLabels(SceneTransformMode_Rotate, point, angle, 0.0, copy);
 
     m_undoStack->endMacro();
@@ -844,7 +859,8 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
 {
     m_undoStack->beginMacro(tr("Scale"));
 
-    moveSelectedNodesAndEdges(SceneTransformMode_Scale, point, 0.0, scaleFactor, copy);
+    moveSelectedNodes(SceneTransformMode_Scale, point, 0.0, scaleFactor, copy);
+    moveSelectedEdges(SceneTransformMode_Scale, point, 0.0, scaleFactor, copy);
     moveSelectedLabels(SceneTransformMode_Scale, point, 0.0, scaleFactor, copy);
 
     m_undoStack->endMacro();
