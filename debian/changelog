@@ -1,4 +1,4 @@
-agros2d (3.0-ubuntu101) quantal; urgency=low
+agros2d (3.0-ubuntu102) quantal; urgency=low
 
   * field solution with the possibility of weak and hard coupling
   * adaptive transient analysis
@@ -12,7 +12,7 @@ agros2d (3.0-ubuntu101) quantal; urgency=low
 
  -- Pavel Karban <pkarban@gmail.com>  Sat, 2 Mar 2013 12:00:00 +0200
  
- agros2d (2.0-ubuntu91) oneiric; urgency=low
+agros2d (2.0-ubuntu91) oneiric; urgency=low
 
   * pythonlab integration
   * particle tracing
