@@ -626,7 +626,10 @@ void Scene::moveSelectedNodesAndEdges(SceneTransformMode mode, Point point, doub
 
             SceneNode *obstructNode = getNode(newPoint);
             if (obstructNode && !obstructNode->isSelected())
+            {
+                Agros2D::log()->printWarning("Geometry", "Cannot perform transformation, existing point would be overwritten.");
                 return;
+            }
 
             pair.second = node;
             selectedNodes.append(pair);
