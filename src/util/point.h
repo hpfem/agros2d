@@ -22,6 +22,7 @@
 
 #include <QtCore>
 #include <cmath>
+#include <iostream>
 
 struct Point;
 
@@ -73,6 +74,8 @@ struct Point
                 arg(magnitude());
     }
 };
+
+QDebug& operator<<(QDebug output, const Point& pt);
 
 struct Point3
 {

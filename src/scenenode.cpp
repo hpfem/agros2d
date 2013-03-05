@@ -326,6 +326,7 @@ SceneNodeCommandMoveMulti::SceneNodeCommandMoveMulti(QList<Point> points, QList<
 
 void moveAll(QList<Point> moveFrom, QList<Point> moveTo)
 {
+    assert(moveFrom.size() == moveTo.size());
     QList<SceneNode*> nodes;
     for(int i = 0; i < moveFrom.size(); i++)
     {
@@ -356,6 +357,37 @@ void SceneNodeCommandMoveMulti::redo()
     moveAll(m_points, m_pointsNew);
     Agros2D::scene()->invalidate();
 }
+
+SceneNodeCommandAddMulti::SceneNodeCommandAddMulti(QList<Point> points, QUndoCommand *parent) : QUndoCommand(parent)
+{
+    m_points = points;
+}
+
+void SceneNodeCommandAddMulti::undo()
+{
+    foreach(Point point, m_points)
+    {
+        SceneNode *node = Agros2D::scene()->getNode(point);
+        if (node)
+        {
+            Agros2D::scene()->nodes->remove(node);
+        }
+    }
+
+    Agros2D::scene()->invalidate();
+}
+
+void SceneNodeCommandAddMulti::redo()
+{
+    foreach(Point point, m_points)
+    {
+        Agros2D::scene()->addNode(new SceneNode(point));
+    }
+
+    Agros2D::scene()->invalidate();
+}
+
+
 
 QList<SceneEdge *> SceneNode::connectedEdges() const
 {

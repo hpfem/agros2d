@@ -712,7 +712,7 @@ void Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle
         }
     }
 
-    QList<Point> points, newPoints;
+    QList<Point> points, newPoints, pointsToSelect;
 
     foreach (SceneNode *node, nodes->selected().items())
     {
@@ -726,10 +726,44 @@ void Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle
         }
 
         points.push_back(node->point());
-        newPoints.push_back(newPoint);
+
+        // when copying, add only those points, that did not exist
+        // when moving, add all, because if poit on place where adding exist, it will be moved away (otherwise it would be obstruct node and function would not reach this point)
+        if(copy)
+        {
+            if(obstructNode)
+                pointsToSelect.push_back(newPoint);
+            else
+                newPoints.push_back(newPoint);
+        }
+        else
+        {
+            newPoints.push_back(newPoint);
+        }
     }
 
-    m_undoStack->push(new SceneNodeCommandMoveMulti(points, newPoints));
+    qDebug() << "points " << points;
+    qDebug() << "new points " << newPoints;
+
+    if(copy)
+    {
+        m_undoStack->push(new SceneNodeCommandAddMulti(newPoints));
+
+        // unselect old
+        foreach(Point point, points)
+            getNode(point)->setSelected(false);
+
+        // select new
+        foreach(Point point, newPoints)
+            getNode(point)->setSelected(true);
+
+        foreach(Point point, pointsToSelect)
+            getNode(point)->setSelected(true);
+    }
+    else
+    {
+        m_undoStack->push(new SceneNodeCommandMoveMulti(points, newPoints));
+    }
 }
 
 void Scene::moveSelectedNodes_Old(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
