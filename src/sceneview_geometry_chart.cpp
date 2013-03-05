@@ -43,7 +43,7 @@
 SceneViewPreprocessorChart::SceneViewPreprocessorChart(QWidget *parent)
     : SceneViewCommon2D(NULL, parent)
 {
-
+    setMinimumSize(100, 50);
 }
 
 SceneViewPreprocessorChart::~SceneViewPreprocessorChart()

@@ -36,8 +36,6 @@
 #include "gui/latexviewer.h"
 #include "gui/common.h"
 
-const int minWidth = 130;
-
 FieldSelectDialog::FieldSelectDialog(QList<QString> fields, QWidget *parent) : QDialog(parent)
 {
     setWindowTitle(tr("Select field"));
@@ -210,7 +208,7 @@ void FieldWidget::createContent()
 
     // table
     QGridLayout *layoutGeneral = new QGridLayout();
-    layoutGeneral->setColumnMinimumWidth(0, minWidth);
+    layoutGeneral->setColumnMinimumWidth(0, columnMinimumWidth());
     layoutGeneral->setColumnStretch(1, 1);
     layoutGeneral->addWidget(new QLabel(tr("Type of analysis:")), 0, 0);
     layoutGeneral->addWidget(cmbAnalysisType, 0, 1);
@@ -220,7 +218,7 @@ void FieldWidget::createContent()
 
     // transient analysis
     QGridLayout *layoutTransientAnalysis = new QGridLayout();
-    layoutTransientAnalysis->setColumnMinimumWidth(0, minWidth);
+    layoutTransientAnalysis->setColumnMinimumWidth(0, columnMinimumWidth());
     layoutTransientAnalysis->setColumnStretch(1, 1);
     layoutTransientAnalysis->addWidget(new QLabel(tr("Initial condition:")), 0, 0);
     layoutTransientAnalysis->addWidget(txtTransientInitialCondition, 0, 1);
@@ -232,7 +230,7 @@ void FieldWidget::createContent()
 
     // harmonic analysis
     QGridLayout *layoutMesh = new QGridLayout();
-    layoutMesh->setColumnMinimumWidth(0, minWidth);
+    layoutMesh->setColumnMinimumWidth(0, columnMinimumWidth());
     layoutMesh->setColumnStretch(1, 1);
     layoutMesh->addWidget(new QLabel(tr("Number of refinements:")), 0, 0);
     layoutMesh->addWidget(txtNumberOfRefinements, 0, 1);
@@ -244,7 +242,7 @@ void FieldWidget::createContent()
 
     // adaptivity
     QGridLayout *layoutAdaptivity = new QGridLayout();
-    layoutAdaptivity->setColumnMinimumWidth(0, minWidth);
+    layoutAdaptivity->setColumnMinimumWidth(0, columnMinimumWidth());
     layoutAdaptivity->setColumnStretch(1, 1);
     layoutAdaptivity->addWidget(new QLabel(tr("Type:")), 0, 0);
     layoutAdaptivity->addWidget(cmbAdaptivityType, 0, 1);
@@ -263,7 +261,7 @@ void FieldWidget::createContent()
 
     // linearity
     QGridLayout *layoutLinearity = new QGridLayout();
-    layoutLinearity->setColumnMinimumWidth(0, minWidth);
+    layoutLinearity->setColumnMinimumWidth(0, columnMinimumWidth());
     layoutLinearity->setColumnStretch(1, 1);
     layoutLinearity->addWidget(new QLabel(tr("Linearity:")), 0, 0);
     layoutLinearity->addWidget(cmbLinearityType, 0, 1);
@@ -630,7 +628,7 @@ void FieldsToobar::refresh()
         label->setStyleSheet("QLabel { font-size: 8.5pt; }");
 
         QToolButton *button = new QToolButton();
-        button->setMinimumWidth(120);
+        button->setMinimumWidth(columnMinimumWidth());
         button->setText(fieldInfo->name());
         button->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         button->setStyleSheet("QToolButton { font-size: 8pt; }");
@@ -720,7 +718,7 @@ void CouplingsWidget::createContent()
 
     layoutTable = new QGridLayout();
     layoutTable->setContentsMargins(0, 0, 0, 0);
-    layoutTable->setColumnMinimumWidth(0, minWidth);
+    layoutTable->setColumnMinimumWidth(0, columnMinimumWidth());
     layoutTable->setColumnStretch(1, 1);
 
     m_comboBoxes.clear();
@@ -835,7 +833,7 @@ void ProblemWidget::createControls()
 
     // general
     QGridLayout *layoutGeneral = new QGridLayout();
-    layoutGeneral->setColumnMinimumWidth(0, minWidth);
+    layoutGeneral->setColumnMinimumWidth(0, columnMinimumWidth());
     layoutGeneral->setColumnStretch(1, 1);
     layoutGeneral->addWidget(new QLabel(tr("Coordinate type:")), 0, 0);
     layoutGeneral->addWidget(cmbCoordinateType, 0, 1);
@@ -853,7 +851,7 @@ void ProblemWidget::createControls()
 
     // harmonic analysis
     QGridLayout *layoutHarmonicAnalysis = new QGridLayout();
-    layoutHarmonicAnalysis->setColumnMinimumWidth(0, minWidth);
+    layoutHarmonicAnalysis->setColumnMinimumWidth(0, columnMinimumWidth());
     layoutHarmonicAnalysis->addWidget(new QLabel(tr("Frequency (Hz):")), 0, 0);
     layoutHarmonicAnalysis->addWidget(txtFrequency, 0, 1);
 
@@ -877,7 +875,7 @@ void ProblemWidget::createControls()
 
     // transient analysis
     QGridLayout *layoutTransientAnalysis = new QGridLayout();
-    layoutTransientAnalysis->setColumnMinimumWidth(0, minWidth);
+    layoutTransientAnalysis->setColumnMinimumWidth(0, columnMinimumWidth());
     layoutTransientAnalysis->setColumnStretch(1, 1);
     layoutTransientAnalysis->addWidget(new QLabel(tr("Method:")), 0, 0);
     layoutTransientAnalysis->addWidget(cmbTransientMethod, 0, 1);

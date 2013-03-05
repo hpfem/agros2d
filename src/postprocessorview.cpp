@@ -43,8 +43,6 @@
 
 #include "util/constants.h"
 
-const double minWidth = 110;
-
 PostprocessorWidget::PostprocessorWidget(PostHermes *postHermes,
                                          SceneViewPreprocessor *sceneGeometry,
                                          SceneViewMesh *sceneMesh,
@@ -370,7 +368,7 @@ CollapsableGroupBoxButton *PostprocessorWidget::postScalarWidget()
     groupPostScalarAdvanced = postScalarAdvancedWidget();
 
     QGridLayout *layoutScalarField = new QGridLayout();
-    layoutScalarField->setColumnMinimumWidth(0, minWidth);
+    layoutScalarField->setColumnMinimumWidth(0, columnMinimumWidth());
     layoutScalarField->setColumnStretch(1, 1);
     layoutScalarField->addWidget(new QLabel(tr("Variable:")), 0, 0);
     layoutScalarField->addWidget(cmbPostScalarFieldVariable, 0, 1);
@@ -394,7 +392,7 @@ CollapsableGroupBoxButton *PostprocessorWidget::postContourWidget()
     groupPostContourAdvanced = postContourAdvancedWidget();
 
     QGridLayout *layoutContourField = new QGridLayout();
-    layoutContourField->setColumnMinimumWidth(0, minWidth);
+    layoutContourField->setColumnMinimumWidth(0, columnMinimumWidth());
     layoutContourField->setColumnStretch(1, 1);
     layoutContourField->addWidget(new QLabel(tr("Variable:")), 0, 0);
     layoutContourField->addWidget(cmbPost2DContourVariable, 0, 1);
@@ -416,7 +414,7 @@ CollapsableGroupBoxButton *PostprocessorWidget::postVectorWidget()
     groupPostVectorAdvanced = postVectorAdvancedWidget();
 
     QGridLayout *layoutVectorField = new QGridLayout();
-    layoutVectorField->setColumnMinimumWidth(0, minWidth);
+    layoutVectorField->setColumnMinimumWidth(0, columnMinimumWidth());
     layoutVectorField->setColumnStretch(1, 1);
     layoutVectorField->addWidget(new QLabel(tr("Variable:")), 0, 0);
     layoutVectorField->addWidget(cmbPost2DVectorFieldVariable, 0, 1);
@@ -595,7 +593,7 @@ QWidget *PostprocessorWidget::postScalarAdvancedWidget()
     grpScalarFieldRange->setLayout(layoutScalarFieldRange);
 
     QGridLayout *gridLayoutScalarFieldPalette = new QGridLayout();
-    gridLayoutScalarFieldPalette->setColumnMinimumWidth(0, minWidth);
+    gridLayoutScalarFieldPalette->setColumnMinimumWidth(0, columnMinimumWidth());
     gridLayoutScalarFieldPalette->setColumnStretch(1, 1);
     gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Palette:")), 0, 0);
     gridLayoutScalarFieldPalette->addWidget(cmbPalette, 0, 1, 1, 2);
@@ -652,7 +650,7 @@ QWidget *PostprocessorWidget::postContourAdvancedWidget()
 
     QGridLayout *gridLayoutContours = new QGridLayout();
     gridLayoutContours->setContentsMargins(0, 0, 0, 0);
-    gridLayoutContours->setColumnMinimumWidth(0, minWidth);
+    gridLayoutContours->setColumnMinimumWidth(0, columnMinimumWidth());
     gridLayoutContours->setColumnStretch(1, 1);
     gridLayoutContours->addWidget(new QLabel(tr("Number of contours:")), 0, 0);
     gridLayoutContours->addWidget(txtContoursCount, 0, 1);
@@ -687,7 +685,7 @@ QWidget *PostprocessorWidget::postVectorAdvancedWidget()
 
     QGridLayout *gridLayoutVectors = new QGridLayout();
     gridLayoutVectors->setContentsMargins(0, 0, 0, 0);
-    gridLayoutVectors->setColumnMinimumWidth(0, minWidth);
+    gridLayoutVectors->setColumnMinimumWidth(0, columnMinimumWidth());
     gridLayoutVectors->setColumnStretch(1, 1);
     gridLayoutVectors->addWidget(new QLabel(tr("Number of vectors:")), 0, 0);
     gridLayoutVectors->addWidget(txtVectorCount, 0, 1);
@@ -712,7 +710,7 @@ QWidget *PostprocessorWidget::postPostSolidAdvancedWidget()
 
     QGridLayout *gridLayoutSolid = new QGridLayout();
     gridLayoutSolid->setContentsMargins(0, 0, 0, 0);
-    gridLayoutSolid->setColumnMinimumWidth(0, minWidth);
+    gridLayoutSolid->setColumnMinimumWidth(0, columnMinimumWidth());
     gridLayoutSolid->setColumnStretch(0, 1);
     gridLayoutSolid->addWidget(lstSolidMaterials, 0, 0);
 

@@ -25,6 +25,7 @@
 #include "util/loops.h"
 
 #include "gui/lineeditdouble.h"
+#include "gui/common.h"
 
 #include "particle/particle_tracing.h"
 
@@ -44,8 +45,6 @@
 
 #include "hermes2d/field.h"
 #include "hermes2d/problem_config.h"
-
-const double minWidth = 110;
 
 ParticleTracingWidget::ParticleTracingWidget(SceneViewParticleTracing *sceneView, QWidget *parent): QWidget(parent)
 {
@@ -161,7 +160,7 @@ void ParticleTracingWidget::createControls()
     // reflection
     QGridLayout *gridLayoutReflection = new QGridLayout();
     gridLayoutReflection->setContentsMargins(5, 5, 0, 0);
-    gridLayoutReflection->setColumnMinimumWidth(0, minWidth);
+    gridLayoutReflection->setColumnMinimumWidth(0, columnMinimumWidth());
     gridLayoutReflection->setColumnStretch(1, 1);
     gridLayoutReflection->addWidget(chkParticleReflectOnDifferentMaterial, 0, 0, 1, 2);
     gridLayoutReflection->addWidget(chkParticleReflectOnBoundary, 1, 0, 1, 2);
@@ -185,7 +184,7 @@ void ParticleTracingWidget::createControls()
 
     // drag force
     QGridLayout *gridLayoutDragForce = new QGridLayout();
-    gridLayoutDragForce->setColumnMinimumWidth(0, minWidth);
+    gridLayoutDragForce->setColumnMinimumWidth(0, columnMinimumWidth());
     gridLayoutDragForce->setColumnStretch(1, 1);
     gridLayoutDragForce->addWidget(new QLabel(tr("Equation:")), 0, 0);
     gridLayoutDragForce->addWidget(new QLabel(QString("<i><b>F</b></i><sub>D</sub> = - &frac12; <i>&rho;</i> <i>v</i><sup>2</sup> <i>C</i><sub>D</sub> <i>S</i> &sdot; <i><b>v</b></i><sub>0</sub>")), 0, 1);

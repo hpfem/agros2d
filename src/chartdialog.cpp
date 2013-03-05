@@ -41,8 +41,6 @@
 
 #include <QSvgRenderer>
 
-const double minWidth = 110;
-
 QList<Point> ChartLine::getPoints()
 {
     if (numberOfPoints == 0)

@@ -26,8 +26,6 @@
 #include "hermes2d/solutionstore.h"
 #include "hermes2d/field.h"
 
-const double minWidth = 110;
-
 PhysicalFieldWidget::PhysicalFieldWidget(QWidget *parent) : QWidget(parent)
 {
     cmbFieldInfo = new QComboBox();
@@ -39,7 +37,7 @@ PhysicalFieldWidget::PhysicalFieldWidget(QWidget *parent) : QWidget(parent)
     connect(cmbTimeStep, SIGNAL(currentIndexChanged(int)), this, SLOT(doTimeStep(int)));
 
     QGridLayout *layoutTransient = new QGridLayout();
-    layoutTransient->setColumnMinimumWidth(0, minWidth);
+    layoutTransient->setColumnMinimumWidth(0, columnMinimumWidth());
     layoutTransient->setColumnStretch(1, 1);
     layoutTransient->addWidget(lblTimeStep, 0, 0);
     layoutTransient->addWidget(cmbTimeStep, 0, 1);
@@ -56,7 +54,7 @@ PhysicalFieldWidget::PhysicalFieldWidget(QWidget *parent) : QWidget(parent)
     cmbAdaptivitySolutionType = new QComboBox(this);
 
     QGridLayout *layoutAdaptivity = new QGridLayout();
-    layoutAdaptivity->setColumnMinimumWidth(0, minWidth);
+    layoutAdaptivity->setColumnMinimumWidth(0, columnMinimumWidth());
     layoutAdaptivity->setColumnStretch(1, 1);
     layoutAdaptivity->addWidget(lblAdaptivityStep, 0, 0);
     layoutAdaptivity->addWidget(cmbAdaptivityStep, 0, 1);
@@ -68,7 +66,7 @@ PhysicalFieldWidget::PhysicalFieldWidget(QWidget *parent) : QWidget(parent)
     grpAdaptivity->setVisible(false);
 
     QGridLayout *layoutField = new QGridLayout();
-    layoutField->setColumnMinimumWidth(0, minWidth);
+    layoutField->setColumnMinimumWidth(0, columnMinimumWidth());
     layoutField->setColumnStretch(1, 1);
     layoutField->addWidget(new QLabel(tr("Physical field:")), 1, 0);
     layoutField->addWidget(cmbFieldInfo, 1, 1);

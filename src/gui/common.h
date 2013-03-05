@@ -48,4 +48,6 @@ inline QString htmlFontFamily() { return QApplication::font().family(); }
 
 QNetworkAccessManager *networkAccessManager();
 
+int columnMinimumWidth();
+
 #endif // GUI_COMMON_H

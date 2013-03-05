@@ -246,3 +246,13 @@ void fillComboBoxSolutionType(FieldInfo* fieldInfo, int timeStep, int adaptivity
     cmbSolutionType->setCurrentIndex(solutionType);
     cmbSolutionType->blockSignals(false);
 }
+
+// column minimum width
+int columnMinimumWidth()
+{
+    if (QApplication::desktop()->width() == 1024)
+        return 70;
+    else
+        return 110;
+}
+

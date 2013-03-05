@@ -31,8 +31,6 @@
 #include "scene.h"
 #include "pythonlab/pythonengine_agros.h"
 
-const double minWidth = 110;
-
 SettingsWidget::SettingsWidget(QWidget *parent) : QWidget(parent)
 {
     setWindowIcon(icon("options"));
