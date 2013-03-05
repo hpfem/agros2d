@@ -257,11 +257,12 @@ void InfoWidget::showInfo()
                     field->ShowSection("MESH_SOLUTION_ADAPTIVITY_PARAMETERS_SECTION");
 
                     int timeStep = Agros2D::solutionStore()->timeLevels(fieldInfo).count() - 1;
-                    int adaptiveSteps = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal) + 1;
+                    int adaptiveSteps = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal);
+                    error = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(fieldInfo, timeStep, adaptiveSteps, SolutionMode_Normal)).adaptivity_error;
 
                     QString dataDOFs = "[";
                     QString dataError = "[";
-                    for (int i = 0; i < adaptiveSteps; i++)
+                    for (int i = 0; i <= adaptiveSteps; i++)
                     {
                         SolutionStore::SolutionRunTimeDetails runTime = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(fieldInfo, timeStep, i, SolutionMode_Normal));
 
@@ -276,7 +277,7 @@ void InfoWidget::showInfo()
                     // error
                     QString prescribedError = QString("[[1, %1], [%2, %3]]").
                             arg(fieldInfo->adaptivityTolerance()).
-                            arg(adaptiveSteps).
+                            arg(adaptiveSteps + 1).
                             arg(fieldInfo->adaptivityTolerance());
 
                     // chart error vs. steps
