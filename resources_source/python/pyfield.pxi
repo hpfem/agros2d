@@ -403,12 +403,6 @@ cdef class __Field__:
     def remove_material(self, char *name):
         self.thisptr.removeMaterial(name)
 
-    def active_time_step(self):
-        return 0
-
-    def active_adaptivity_step(self):
-        return 0
-
     # local values
     def local_values(self, double x, double y, time_step = None, adaptivity_step = None, char *solution_type = "normal"):
         out = dict()
