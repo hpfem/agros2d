@@ -712,6 +712,45 @@ void SceneEdgeCommandAdd::redo()
     Agros2D::scene()->invalidate();
 }
 
+SceneEdgeCommandAddMulti::SceneEdgeCommandAddMulti(QList<Point> pointStarts, QList<Point> pointEnds,
+                                         QList<double> angles, QUndoCommand *parent) : QUndoCommand(parent)
+{
+    assert(pointStarts.size() == pointEnds.size());
+    assert(pointStarts.size() == angles.size());
+    m_pointStarts = pointStarts;
+    m_pointEnds = pointEnds;
+    m_angles = angles;
+}
+
+void SceneEdgeCommandAddMulti::undo()
+{
+    for(int i = 0; i < m_pointStarts.size(); i++)
+    {
+        Agros2D::scene()->edges->remove(Agros2D::scene()->getEdge(m_pointStarts[i], m_pointEnds[i], m_angles[i]));
+    }
+    Agros2D::scene()->invalidate();
+}
+
+void SceneEdgeCommandAddMulti::redo()
+{
+    Agros2D::scene()->stopInvalidating(true);
+    for(int i = 0; i < m_pointStarts.size(); i++)
+    {
+        SceneNode *nodeStart = Agros2D::scene()->getNode(m_pointStarts[i]);
+        SceneNode *nodeEnd = Agros2D::scene()->getNode(m_pointEnds[i]);
+        assert(nodeStart && nodeEnd);
+        if(nodeStart && nodeEnd)
+        {
+            SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, m_angles[i]);
+
+            // add edge to the list
+            Agros2D::scene()->addEdge(edge);
+        }
+    }
+    Agros2D::scene()->stopInvalidating(false);
+    Agros2D::scene()->invalidate();
+}
+
 SceneEdgeCommandRemove::SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QMap<QString, QString> &markers,
                                                double angle, QUndoCommand *parent) : QUndoCommand(parent)
 {

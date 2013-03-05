@@ -208,6 +208,7 @@ Scene::Scene() : m_loopsInfo(NULL)
 
     m_loopsInfo = new LoopsInfo(this);
 
+    m_stopInvalidating = false;
     clear();
 }
 
@@ -331,7 +332,8 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
     }
 
     edges->add(edge);
-    if (!currentPythonEngine()->isRunning()) emit invalidated();
+    if (!currentPythonEngine()->isRunning() && !m_stopInvalidating)
+        emit invalidated();
 
     return edge;
 }
@@ -781,6 +783,8 @@ void Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle
         return;
 
     QList<QPair<Point, Point> > newEdgeEndPoints;
+    QList<Point> edgeStartPointsToAdd, edgeEndPointsToAdd;
+    QList<double> edgeAnglesToAdd;
 
     foreach (SceneEdge *edge, selectedEdges)
     {
@@ -802,15 +806,20 @@ void Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle
 
         if(! obstructEdge)
         {
-            SceneEdge newEdge(newNodeStart, newNodeEnd, edge->angle());
-            m_undoStack->push(newEdge.getAddCommand());
+//            SceneEdge newEdge(newNodeStart, newNodeEnd, edge->angle());
+//            m_undoStack->push(newEdge.getAddCommand());
+            edgeStartPointsToAdd.push_back(newPointStart);
+            edgeEndPointsToAdd.push_back(newPointEnd);
+            edgeAnglesToAdd.push_back(edge->angle());
         }
 
         newEdgeEndPoints.push_back(QPair<Point, Point>(newPointStart, newPointEnd));
-        qDebug() << newEdgeEndPoints;
+        //qDebug() << newEdgeEndPoints;
     }
 
     edges->setSelected(false);
+
+    m_undoStack->push(new SceneEdgeCommandAddMulti(edgeStartPointsToAdd, edgeEndPointsToAdd, edgeAnglesToAdd));
 
     for(int i = 0; i < newEdgeEndPoints.size(); i++)
     {
