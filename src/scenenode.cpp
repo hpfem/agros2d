@@ -96,7 +96,7 @@ SceneNode* SceneNodeContainer::get(const Point &point) const
 {
     foreach (SceneNode *nodeCheck, data)
     {
-        if (nodeCheck->point() == point)
+        if ((nodeCheck->point() - point).magnitude() < 1e-12)
             return nodeCheck;
     }
 
@@ -316,6 +316,45 @@ void SceneNodeCommandEdit::redo()
         node->setPoint(m_pointNew);
         Agros2D::scene()->invalidate();
     }
+}
+
+SceneNodeCommandMoveMulti::SceneNodeCommandMoveMulti(QList<Point> points, QList<Point> pointsNew, QUndoCommand *parent) : QUndoCommand(parent)
+{
+    m_points = points;
+    m_pointsNew = pointsNew;
+}
+
+void moveAll(QList<Point> moveFrom, QList<Point> moveTo)
+{
+    QList<SceneNode*> nodes;
+    for(int i = 0; i < moveFrom.size(); i++)
+    {
+        Point point = moveFrom[i];
+        SceneNode *node = Agros2D::scene()->getNode(point);
+        nodes.push_back(node);
+    }
+
+    for(int i = 0; i < moveFrom.size(); i++)
+    {
+        Point pointNew = moveTo[i];
+        SceneNode *node = nodes[i];
+        if (node)
+        {
+            node->setPoint(pointNew);
+        }
+    }
+}
+
+void SceneNodeCommandMoveMulti::undo()
+{
+    moveAll(m_pointsNew, m_points);
+    Agros2D::scene()->invalidate();
+}
+
+void SceneNodeCommandMoveMulti::redo()
+{
+    moveAll(m_points, m_pointsNew);
+    Agros2D::scene()->invalidate();
 }
 
 QList<SceneEdge *> SceneNode::connectedEdges() const

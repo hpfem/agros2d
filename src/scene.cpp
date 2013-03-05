@@ -579,9 +579,160 @@ int Scene::highlightedCount()
             labels->highlighted().length();
 }
 
+Point Scene::calculateNewPoint(SceneTransformMode mode, Point originalPoint, Point transformationPoint, double angle, double scaleFactor)
+{
+    Point newPoint;
 
+    if (mode == SceneTransformMode_Translate)
+    {
+        newPoint = originalPoint + transformationPoint;
+    }
+    else if (mode == SceneTransformMode_Rotate)
+    {
+        double distanceNode = (originalPoint - transformationPoint).magnitude();
+        double angleNode = (originalPoint - transformationPoint).angle()/M_PI*180;
+
+        newPoint = transformationPoint + Point(distanceNode * cos((angleNode + angle)/180.0*M_PI), distanceNode * sin((angleNode + angle)/180.0*M_PI));
+    }
+    else if (mode == SceneTransformMode_Scale)
+    {
+        newPoint = transformationPoint + (originalPoint - transformationPoint) * scaleFactor;
+    }
+
+    return newPoint;
+}
+
+
+void Scene::moveSelectedNodes_FirstAttempt(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
+{
+    // select endpoints
+    foreach (SceneEdge *edge, edges->selected().items())
+    {
+        edge->nodeStart()->setSelected(true);
+        edge->nodeEnd()->setSelected(true);
+    }
+
+    QList<SceneNode *> selectedNodes;
+    QMap<SceneNode *, Point> originPoints;
+    QMap<SceneNode *, Point> destinationPoints;
+
+    foreach (SceneNode *node, nodes->selected().items())
+    {
+        selectedNodes.append(node);
+        originPoints[node] = node->point();
+        destinationPoints[node] = calculateNewPoint(mode, node->point(), point, angle, scaleFactor);
+    }
+
+    double range = 0;
+    if (mode == SceneTransformMode_Translate)
+    {
+        foreach(SceneNode *node, selectedNodes)
+        {
+            double value = node->point().magnitude();
+            if(value > range)
+                range = value;
+        }
+        range = range + point.magnitude() + 1;
+    }
+    else if (mode == SceneTransformMode_Rotate)
+    {
+        foreach(SceneNode *node, selectedNodes)
+        {
+            double value = Point(node->point()-point).magnitude();
+            if(value > range)
+                range = value;
+        }
+        range = range + point.magnitude() + 1;
+    }
+    else if (mode == SceneTransformMode_Scale)
+    {
+        foreach(SceneNode *node, selectedNodes)
+        {
+            double value = node->point().magnitude();
+            if(value > range)
+                range = value;
+        }
+        range = (1 + scaleFactor) * range + 1;
+    }
+
+    // range selected in such a way, that in distant range from origin, no present nor future point should lie
+
+    foreach(SceneNode *node, selectedNodes)
+    {
+        Point temporaryPoint(range, 0);
+        if(copy)
+        {
+            SceneNode* newNode = new SceneNode(destinationPoints[node]);
+            originPoints[newNode] = node->point();
+            destinationPoints[newNode] = destinationPoints[node];
+
+            node->setSelected(false);
+
+            selectedNodes.removeOne(node);
+            selectedNodes.push_back(newNode);
+        }
+        else
+        {
+            originPoints[node] = node->point();
+            node->setPoint(temporaryPoint);
+        }
+        range += 1;
+    }
+
+    // now move back
+    foreach(SceneNode *node, selectedNodes)
+    {
+        if(copy)
+        {
+            SceneNode *nodeAdded = addNode(node);
+
+            if (nodeAdded == node)
+                m_undoStack->push(new SceneNodeCommandAdd(destinationPoints[node]));
+
+            nodeAdded->setSelected(true);
+        }
+        else
+        {
+
+            //m_undoStack->push(new SceneNodeCommandEdit(node->point(), newPoint));
+
+        }
+    }
+}
 
 void Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
+{
+    // select endpoints
+    foreach (SceneEdge *edge, edges->items())
+    {
+        if (edge->isSelected())
+        {
+            edge->nodeStart()->setSelected(true);
+            edge->nodeEnd()->setSelected(true);
+        }
+    }
+
+    QList<Point> points, newPoints;
+
+    foreach (SceneNode *node, nodes->selected().items())
+    {
+        Point newPoint = calculateNewPoint(mode, node->point(), point, angle, scaleFactor);
+
+        SceneNode *obstructNode = getNode(newPoint);
+        if (obstructNode && !obstructNode->isSelected())
+        {
+            Agros2D::log()->printWarning("Geometry", "Cannot perform transformation, existing point would be overwritten.");
+            return;
+        }
+
+        points.push_back(node->point());
+        newPoints.push_back(newPoint);
+    }
+
+    m_undoStack->push(new SceneNodeCommandMoveMulti(points, newPoints));
+}
+
+void Scene::moveSelectedNodes_Old(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
 {
     // select endpoints
     foreach (SceneEdge *edge, edges->items())
@@ -644,22 +795,7 @@ void Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle
     {
         SceneNode *node = selectedNodes[i].second;
 
-        Point newPoint;
-        if (mode == SceneTransformMode_Translate)
-        {
-            newPoint = node->point() + point;
-        }
-        else if (mode == SceneTransformMode_Rotate)
-        {
-            double distanceNode = (node->point() - point).magnitude();
-            double angleNode = (node->point() - point).angle()/M_PI*180;
-
-            newPoint = point + Point(distanceNode * cos((angleNode + angle)/180.0*M_PI), distanceNode * sin((angleNode + angle)/180.0*M_PI));
-        }
-        else if (mode == SceneTransformMode_Scale)
-        {
-            newPoint = point + (node->point() - point) * scaleFactor;
-        }
+        Point newPoint = calculateNewPoint(mode, node->point(), point, angle, scaleFactor);
 
         if (!copy)
         {
@@ -683,12 +819,9 @@ void Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle
 {
     QList<SceneEdge *> selectedEdges;
 
-    foreach (SceneEdge *edge, edges->items())
+    foreach (SceneEdge *edge, edges->selected().items())
     {
-        if (edge->isSelected())
-        {
-            selectedEdges.append(edge);
-        }
+        selectedEdges.append(edge);
     }
 
     foreach (SceneEdge *edge, selectedEdges)

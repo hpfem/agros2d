@@ -141,4 +141,18 @@ private:
     Point m_pointNew;
 };
 
+class SceneNodeCommandMoveMulti : public QUndoCommand
+{
+public:
+    SceneNodeCommandMoveMulti(QList<Point> points, QList<Point> pointsNew,  QUndoCommand *parent = 0);
+    void undo();
+    void redo();
+
+private:
+    QList<Point> m_points;
+    QList<Point> m_pointsNew;
+};
+
+
+
 #endif // SCENENODE_H
