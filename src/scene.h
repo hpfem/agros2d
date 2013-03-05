@@ -210,8 +210,9 @@ private:
     void createActions();
 
     Point calculateNewPoint(SceneTransformMode mode, Point originalPoint, Point transformationPoint, double angle, double scaleFactor);
-    void moveSelectedNodes(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
-    void moveSelectedNodes_FirstAttempt(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
+
+    // false if cannot (obstruct nodes)
+    bool moveSelectedNodes(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
     void moveSelectedNodes_Old(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
     void moveSelectedEdges(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
     void moveSelectedEdges_Old(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);

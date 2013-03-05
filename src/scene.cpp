@@ -343,7 +343,10 @@ SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd, double
 
 SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd)
 {
-    return edges->get(pointStart, pointEnd);
+    SceneEdge *edge = edges->get(pointStart, pointEnd);
+    if(edge)
+        return edge;
+    return edges->get(pointEnd, pointStart);
 }
 
 SceneLabel *Scene::addLabel(SceneLabel *label)
@@ -607,105 +610,7 @@ Point Scene::calculateNewPoint(SceneTransformMode mode, Point originalPoint, Poi
     return newPoint;
 }
 
-
-void Scene::moveSelectedNodes_FirstAttempt(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
-{
-    // select endpoints
-    foreach (SceneEdge *edge, edges->selected().items())
-    {
-        edge->nodeStart()->setSelected(true);
-        edge->nodeEnd()->setSelected(true);
-    }
-
-    QList<SceneNode *> selectedNodes;
-    QMap<SceneNode *, Point> originPoints;
-    QMap<SceneNode *, Point> destinationPoints;
-
-    foreach (SceneNode *node, nodes->selected().items())
-    {
-        selectedNodes.append(node);
-        originPoints[node] = node->point();
-        destinationPoints[node] = calculateNewPoint(mode, node->point(), point, angle, scaleFactor);
-    }
-
-    double range = 0;
-    if (mode == SceneTransformMode_Translate)
-    {
-        foreach(SceneNode *node, selectedNodes)
-        {
-            double value = node->point().magnitude();
-            if(value > range)
-                range = value;
-        }
-        range = range + point.magnitude() + 1;
-    }
-    else if (mode == SceneTransformMode_Rotate)
-    {
-        foreach(SceneNode *node, selectedNodes)
-        {
-            double value = Point(node->point()-point).magnitude();
-            if(value > range)
-                range = value;
-        }
-        range = range + point.magnitude() + 1;
-    }
-    else if (mode == SceneTransformMode_Scale)
-    {
-        foreach(SceneNode *node, selectedNodes)
-        {
-            double value = node->point().magnitude();
-            if(value > range)
-                range = value;
-        }
-        range = (1 + scaleFactor) * range + 1;
-    }
-
-    // range selected in such a way, that in distant range from origin, no present nor future point should lie
-
-    foreach(SceneNode *node, selectedNodes)
-    {
-        Point temporaryPoint(range, 0);
-        if(copy)
-        {
-            SceneNode* newNode = new SceneNode(destinationPoints[node]);
-            originPoints[newNode] = node->point();
-            destinationPoints[newNode] = destinationPoints[node];
-
-            node->setSelected(false);
-
-            selectedNodes.removeOne(node);
-            selectedNodes.push_back(newNode);
-        }
-        else
-        {
-            originPoints[node] = node->point();
-            node->setPoint(temporaryPoint);
-        }
-        range += 1;
-    }
-
-    // now move back
-    foreach(SceneNode *node, selectedNodes)
-    {
-        if(copy)
-        {
-            SceneNode *nodeAdded = addNode(node);
-
-            if (nodeAdded == node)
-                m_undoStack->push(new SceneNodeCommandAdd(destinationPoints[node]));
-
-            nodeAdded->setSelected(true);
-        }
-        else
-        {
-
-            //m_undoStack->push(new SceneNodeCommandEdit(node->point(), newPoint));
-
-        }
-    }
-}
-
-void Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
+bool Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
 {
     // select endpoints
     foreach (SceneEdge *edge, edges->items())
@@ -727,7 +632,7 @@ void Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle
         if (obstructNode && !obstructNode->isSelected())
         {
             Agros2D::log()->printWarning("Geometry", "Cannot perform transformation, existing point would be overwritten.");
-            return;
+            return false;
         }
 
         points.push_back(node->point());
@@ -771,6 +676,8 @@ void Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle
     {
         m_undoStack->push(new SceneNodeCommandMoveMulti(points, newPoints));
     }
+
+    return true;
 }
 
 void Scene::moveSelectedNodes_Old(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
@@ -863,8 +770,6 @@ void Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle
     foreach (SceneEdge *edge, edges->selected().items())
     {
         selectedEdges.append(edge);
-        if(copy)
-            edge->setSelected(false);
     }
 
     if(selectedEdges.isEmpty())
@@ -872,28 +777,40 @@ void Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle
 
     nodes->setSelected(false);
 
+    if(!copy)
+        return;
+
     QList<QPair<Point, Point> > newEdgeEndPoints;
 
-    if (copy)
+    foreach (SceneEdge *edge, selectedEdges)
     {
-        foreach (SceneEdge *edge, selectedEdges)
+        Point newPointStart = calculateNewPoint(mode, edge->nodeStart()->point(), point, angle, scaleFactor);
+        Point newPointEnd = calculateNewPoint(mode, edge->nodeEnd()->point(), point, angle, scaleFactor);
+
+        // add new edge
+        SceneNode *newNodeStart = getNode(newPointStart);
+        SceneNode *newNodeEnd = getNode(newPointEnd);
+
+        assert(newNodeStart && newNodeEnd);
+
+        SceneEdge *obstructEdge = getEdge(newPointStart, newPointEnd);
+        if (obstructEdge && !obstructEdge->isSelected())
         {
-            Point newPointStart = calculateNewPoint(mode, edge->nodeStart()->point(), point, angle, scaleFactor);
-            Point newPointEnd = calculateNewPoint(mode, edge->nodeEnd()->point(), point, angle, scaleFactor);
-
-            // add new edge
-            SceneNode *newNodeStart = getNode(newPointStart);
-            SceneNode *newNodeEnd = getNode(newPointEnd);
-            if (newNodeStart && newNodeEnd)
-            {
-                SceneEdge newEdge(newNodeStart, newNodeEnd, edge->angle());
-                m_undoStack->push(newEdge.getAddCommand());
-            }
-
-            newEdgeEndPoints.push_back(QPair<Point, Point>(newPointStart, newPointEnd));
-            qDebug() << newEdgeEndPoints;
+            Agros2D::log()->printWarning("Geometry", "Cannot perform transformation, existing edge would be overwritten.");
+            return;
         }
+
+        if(! obstructEdge)
+        {
+            SceneEdge newEdge(newNodeStart, newNodeEnd, edge->angle());
+            m_undoStack->push(newEdge.getAddCommand());
+        }
+
+        newEdgeEndPoints.push_back(QPair<Point, Point>(newPointStart, newPointEnd));
+        qDebug() << newEdgeEndPoints;
     }
+
+    edges->setSelected(false);
 
     for(int i = 0; i < newEdgeEndPoints.size(); i++)
     {
@@ -1059,8 +976,8 @@ void Scene::transformTranslate(const Point &point, bool copy)
 {
     m_undoStack->beginMacro(tr("Translation"));
 
-    moveSelectedNodes(SceneTransformMode_Translate, point, 0.0, 0.0, copy);
-    moveSelectedEdges(SceneTransformMode_Translate, point, 0.0, 0.0, copy);
+    if(moveSelectedNodes(SceneTransformMode_Translate, point, 0.0, 0.0, copy))
+        moveSelectedEdges(SceneTransformMode_Translate, point, 0.0, 0.0, copy);
     moveSelectedLabels(SceneTransformMode_Translate, point, 0.0, 0.0, copy);
 
     m_undoStack->endMacro();
@@ -1071,8 +988,8 @@ void Scene::transformRotate(const Point &point, double angle, bool copy)
 {
     m_undoStack->beginMacro(tr("Rotation"));
 
-    moveSelectedNodes(SceneTransformMode_Rotate, point, angle, 0.0, copy);
-    moveSelectedEdges(SceneTransformMode_Rotate, point, angle, 0.0, copy);
+    if(moveSelectedNodes(SceneTransformMode_Rotate, point, angle, 0.0, copy))
+        moveSelectedEdges(SceneTransformMode_Rotate, point, angle, 0.0, copy);
     moveSelectedLabels(SceneTransformMode_Rotate, point, angle, 0.0, copy);
 
     m_undoStack->endMacro();
@@ -1083,8 +1000,8 @@ void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
 {
     m_undoStack->beginMacro(tr("Scale"));
 
-    moveSelectedNodes(SceneTransformMode_Scale, point, 0.0, scaleFactor, copy);
-    moveSelectedEdges(SceneTransformMode_Scale, point, 0.0, scaleFactor, copy);
+    if(moveSelectedNodes(SceneTransformMode_Scale, point, 0.0, scaleFactor, copy))
+        moveSelectedEdges(SceneTransformMode_Scale, point, 0.0, scaleFactor, copy);
     moveSelectedLabels(SceneTransformMode_Scale, point, 0.0, scaleFactor, copy);
 
     m_undoStack->endMacro();
