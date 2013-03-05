@@ -195,7 +195,7 @@ void MaterialEditDialog::readMaterial()
     if (QFile::exists(m_fileName))
     {
         std::auto_ptr<XMLMaterial::material> material_xsd;
-        material_xsd = XMLMaterial::material_(m_fileName.toStdString().c_str(), xml_schema::flags::dont_validate);
+        material_xsd = XMLMaterial::material_(m_fileName.toLatin1().data(), xml_schema::flags::dont_validate);
         XMLMaterial::material *material = material_xsd.get();
 
         txtName->setText(QString::fromStdString(material->general().name()));
@@ -313,7 +313,7 @@ bool MaterialEditDialog::writeMaterial()
         ::xml_schema::namespace_infomap namespace_info_map;
         namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("material", namespace_info_mesh));
 
-        std::ofstream out(m_fileName.toStdString().c_str());
+        std::ofstream out(m_fileName.toLatin1().data());
         XMLMaterial::material_(out, material, namespace_info_map);
 
         return true;
@@ -517,7 +517,7 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
     if (QFile::exists(fileName))
     {
         std::auto_ptr<XMLMaterial::material> material_xsd;
-        material_xsd = XMLMaterial::material_(fileName.toStdString().c_str(), xml_schema::flags::dont_validate);
+        material_xsd = XMLMaterial::material_(fileName.toLatin1().data(), xml_schema::flags::dont_validate);
         XMLMaterial::material *material = material_xsd.get();
 
         // template

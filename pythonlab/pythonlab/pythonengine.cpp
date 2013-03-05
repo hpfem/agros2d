@@ -99,7 +99,7 @@ static PyObject *pythonTempname(PyObject* self, PyObject* pArgs)
             tempName = tempName + "." + str;
     }
 
-    return PyString_FromString((tempDir + tempName).toStdString().c_str());
+    return PyString_FromString((tempDir + tempName).toLatin1().data());
 }
 
 static PyMethodDef pythonEngineFuntions[] =
@@ -148,10 +148,10 @@ void PythonEngine::init()
     addCustomExtensions();
 
     // custom modules
-    PyRun_String(QString("import sys; sys.path.insert(0, \"" + datadir() + "/resources/python" + "\")").toStdString().c_str(), Py_file_input, m_dict, m_dict);
+    PyRun_String(QString("import sys; sys.path.insert(0, \"" + datadir() + "/resources/python" + "\")").toLatin1().data(), Py_file_input, m_dict, m_dict);
 
     // functions.py
-    PyRun_String(m_functions.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+    PyRun_String(m_functions.toLatin1().data(), Py_file_input, m_dict, m_dict);
 }
 
 void PythonEngine::pythonShowMessageCommand(const QString &message)
@@ -232,10 +232,10 @@ ScriptResult PythonEngine::runScript(const QString &script, const QString &fileN
     if (QFile::exists(fileName))
     {
         QString str = QString("from os import chdir; chdir(u'" + QFileInfo(fileName).absolutePath() + "')");
-        PyRun_String(str.toStdString().c_str(), Py_single_input, m_dict, m_dict);
+        PyRun_String(str.toLatin1().data(), Py_single_input, m_dict, m_dict);
     }
     // compile
-    PyObject *code = Py_CompileString(script.toStdString().c_str(), fileName.toStdString().c_str(), Py_file_input);
+    PyObject *code = Py_CompileString(script.toLatin1().data(), fileName.toLatin1().data(), Py_file_input);
     // run
     if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
 

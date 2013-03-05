@@ -986,7 +986,7 @@ void Scene::writeToDxf(const QString &fileName)
 
     DL_Dxf* dxf = new DL_Dxf();
     DL_Codes::version exportVersion = DL_Codes::AC1015;
-    DL_WriterA *dw = dxf->out(fileName.toStdString().c_str(), exportVersion);
+    DL_WriterA *dw = dxf->out(fileName.toLatin1().data(), exportVersion);
     if (dw == NULL) {
         qCritical() << fileName << " could not be opened.";
         return;

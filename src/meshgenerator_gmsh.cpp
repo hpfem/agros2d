@@ -407,27 +407,27 @@ bool MeshGeneratorGMSH::readGmshMeshFile()
     inGMSH.readLine();
     inGMSH.readLine();
     inGMSH.readLine();
-    sscanf(inGMSH.readLine().toStdString().c_str(), "%i", &k);
+    sscanf(inGMSH.readLine().toLatin1().data(), "%i", &k);
     for (int i = 0; i < k; i++)
     {
         int n;
         double x, y, z;
 
-        sscanf(inGMSH.readLine().toStdString().c_str(), "%i %lf %lf %lf", &n, &x, &y, &z);
+        sscanf(inGMSH.readLine().toLatin1().data(), "%i %lf %lf %lf", &n, &x, &y, &z);
         nodeList.append(Point(x, y));
     }
 
     // elements
     inGMSH.readLine();
     inGMSH.readLine();
-    sscanf(inGMSH.readLine().toStdString().c_str(), "%i", &k);
+    sscanf(inGMSH.readLine().toLatin1().data(), "%i", &k);
     QSet<int> labelMarkersCheck;
     for (int i = 0; i < k; i++)
     {
         int quad[4];
         int n, type, phys, part, marker;
 
-        if (sscanf(inGMSH.readLine().toStdString().c_str(), "%i %i %i %i %i %i %i %i %i",
+        if (sscanf(inGMSH.readLine().toLatin1().data(), "%i %i %i %i %i %i %i %i %i",
                    &n, &type, &phys, &part, &marker, &quad[0], &quad[1], &quad[2], &quad[3]))
         {
             // edge

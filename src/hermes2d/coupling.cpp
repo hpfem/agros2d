@@ -207,7 +207,7 @@ bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField)
         // read name
         std::auto_ptr<XMLCoupling::coupling> couplings_xsd;
         try{
-            couplings_xsd = XMLCoupling::coupling_((datadir() + COUPLINGROOT + QDir::separator() + filename).toStdString().c_str());
+            couplings_xsd = XMLCoupling::coupling_((datadir() + COUPLINGROOT + QDir::separator() + filename).toLatin1().data());
         }
         catch(xsd::cxx::tree::exception<char>& e)
         {

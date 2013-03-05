@@ -1232,8 +1232,8 @@ void SceneViewPost2D::exportVTKScalarView(const QString &fileName)
                                                                                          Agros2D::problem()->configView()->scalarVariableComp);
 
         linScalarView.save_solution_vtk(slnScalarView,
-                                        fn.toStdString().c_str(),
-                                        Agros2D::problem()->configView()->scalarVariable.toStdString().c_str(),
+                                        fn.toLatin1().data(),
+                                        Agros2D::problem()->configView()->scalarVariable.toLatin1().data(),
                                         true);
 
         delete slnScalarView;

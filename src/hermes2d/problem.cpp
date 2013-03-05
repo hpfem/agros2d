@@ -860,7 +860,7 @@ void Problem::readInitialMeshesFromFile()
     meshloader.set_validation(false);
     try
     {
-        meshloader.load(fileName.toStdString().c_str(), meshesVector);
+        meshloader.load(fileName.toLatin1().data(), meshesVector);
     }
     catch (Hermes::Exceptions::MeshLoadFailureException& e)
     {

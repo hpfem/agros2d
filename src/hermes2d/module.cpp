@@ -642,7 +642,7 @@ Hermes::vector<Hermes::Hermes2D::Mesh *> Module::readMeshFromFile(const QString 
     meshloader.set_validation(false);
     try
     {
-        meshloader.load(fileName.toStdString().c_str(), meshes);
+        meshloader.load(fileName.toLatin1().data(), meshes);
     }
     catch (Hermes::Exceptions::MeshLoadFailureException& e)
     {
@@ -667,7 +667,7 @@ void Module::writeMeshToFile(const QString &fileName, Hermes::vector<Hermes::Her
 
     Hermes::Hermes2D::MeshReaderH2DXML meshloader;
     meshloader.set_validation(false);
-    meshloader.save(fileName.toStdString().c_str(), meshes);
+    meshloader.save(fileName.toLatin1().data(), meshes);
 
     // qDebug() << milisecondsToTime(time.elapsed()).toString("hh:mm:ss.zzz");
 

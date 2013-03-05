@@ -405,7 +405,7 @@ void PyGeometry::mesh()
 char *PyGeometry::meshFileName()
 {
     if (Agros2D::problem()->isMeshed())
-        return const_cast<char*>(QString(tempProblemFileName() + ".mesh").toStdString().c_str());
+        return const_cast<char*>(QString(tempProblemFileName() + ".mesh").toLatin1().data());
     else
         throw invalid_argument(QObject::tr("Problem is not meshed.").toStdString());
 }

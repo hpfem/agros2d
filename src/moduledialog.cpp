@@ -1081,7 +1081,7 @@ ModuleDialog::ModuleDialog(const QString &fieldId, QWidget *parent)
 
     createControls();
 
-    m_module_xsd = XMLModule::module_(QString("%1%2/%3.xml").arg(datadir()).arg(MODULEROOT).arg(m_fieldId).toStdString().c_str());
+    m_module_xsd = XMLModule::module_(QString("%1%2/%3.xml").arg(datadir()).arg(MODULEROOT).arg(m_fieldId).toLatin1().data());
 
     load();
 

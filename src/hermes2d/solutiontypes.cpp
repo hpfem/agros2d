@@ -154,12 +154,12 @@ void MultiArray<Scalar>::loadFromFile(const QString &baseName, FieldSolutionID s
     {
         try
         {
-            Space<Scalar> *space = Space<Scalar>::load(QString("%1_%2.spc").arg(baseName).arg(i).toStdString().c_str(),
+            Space<Scalar> *space = Space<Scalar>::load(QString("%1_%2.spc").arg(baseName).arg(i).toLatin1().data(),
                                                        mesh, false);
 
             Solution<Scalar> *sln = new Solution<Scalar>();
             sln->set_validation(false);
-            sln->load((QString("%1_%2.sln").arg(baseName).arg(i)).toStdString().c_str(), space);
+            sln->load((QString("%1_%2.sln").arg(baseName).arg(i)).toLatin1().data(), space);
 
             append(space, sln);
         }
@@ -194,10 +194,10 @@ void MultiArray<Scalar>::saveToFile(const QString &baseName, FieldSolutionID sol
     for (int i = 0; i < m_solutions.size(); i++)
     {
         QString spaceFN = QString("%1_%2.spc").arg(baseName).arg(solutionIndex);
-        m_spaces.at(i)->save(spaceFN.toStdString().c_str());
+        m_spaces.at(i)->save(spaceFN.toLatin1().data());
 
         QString solutionFN = QString("%1_%2.sln").arg(baseName).arg(solutionIndex);
-        m_solutions.at(i)->save(solutionFN.toStdString().c_str());
+        m_solutions.at(i)->save(solutionFN.toLatin1().data());
 
         solutionIndex++;
     }

@@ -79,7 +79,7 @@ void PythonEngineAgros::runPythonHeader()
 
     // run script
     if (!script.trimmed().isEmpty())
-        PyRun_String(script.toStdString().c_str(), Py_file_input, m_dict, m_dict);
+        PyRun_String(script.toLatin1().data(), Py_file_input, m_dict, m_dict);
 }
 
 PythonLabAgros::PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWidget *parent)
@@ -636,7 +636,7 @@ char *pythonSolutionFileName()
 {
     if (Agros2D::problem()->isSolved())
     {
-        char *fileName = const_cast<char*>(QString(tempProblemFileName() + ".sln").toStdString().c_str());
+        char *fileName = const_cast<char*>(QString(tempProblemFileName() + ".sln").toLatin1().data());
         //Agros2D::scene()->sceneSolution()->sln()->save(fileName);
         return fileName;
     }

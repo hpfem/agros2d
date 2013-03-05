@@ -134,10 +134,10 @@ void SceneViewMesh::exportVTK(const QString &fileName, bool exportMeshOnly)
         Hermes::Hermes2D::Views::Orderizer orderView;
         if (exportMeshOnly)
             orderView.save_mesh_vtk(postHermes()->activeMultiSolutionArray().spaces().at(0),
-                                    fn.toStdString().c_str());
+                                    fn.toLatin1().data());
         else
             orderView.save_orders_vtk(postHermes()->activeMultiSolutionArray().spaces().at(0),
-                                      fn.toStdString().c_str());
+                                      fn.toLatin1().data());
 
         if (!fn.isEmpty())
         {
