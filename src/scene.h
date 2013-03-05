@@ -215,9 +215,7 @@ private:
 
     // false if cannot (obstruct nodes)
     bool moveSelectedNodes(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
-    void moveSelectedNodes_Old(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
     void moveSelectedEdges(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
-    void moveSelectedEdges_Old(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
     void moveSelectedLabels(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
 
     bool m_stopInvalidating;
