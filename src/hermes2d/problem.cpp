@@ -366,7 +366,7 @@ bool Problem::meshAction()
         catch (AgrosException& e)
         {
             delete meshGenerator;
-            throw;
+            throw AgrosMeshException(e.what());
         }
         catch (Hermes::Exceptions::Exception& e)
         {

@@ -84,6 +84,7 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
 
 InfoWidget::~InfoWidget()
 {
+    QFile::remove(tempProblemDir() + "/info.html");
 }
 
 void InfoWidget::refresh()
