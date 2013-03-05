@@ -302,6 +302,17 @@ SceneEdge* SceneEdgeContainer::get(const Point &pointStart, const Point &pointEn
     return NULL;
 }
 
+SceneEdge* SceneEdgeContainer::get(const Point &pointStart, const Point &pointEnd) const
+{
+    foreach (SceneEdge *edgeCheck, data)
+    {
+        if (((edgeCheck->nodeStart()->point() == pointStart) && (edgeCheck->nodeEnd()->point() == pointEnd)))
+            return edgeCheck;
+    }
+
+    return NULL;
+}
+
 RectPoint SceneEdgeContainer::boundingBox() const
 {
     return SceneEdgeContainer::boundingBox(data);

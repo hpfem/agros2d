@@ -341,6 +341,11 @@ SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd, double
     return edges->get(pointStart, pointEnd, angle);
 }
 
+SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd)
+{
+    return edges->get(pointStart, pointEnd);
+}
+
 SceneLabel *Scene::addLabel(SceneLabel *label)
 {
     // clear solution
@@ -750,8 +755,10 @@ void Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle
         m_undoStack->push(new SceneNodeCommandAddMulti(newPoints));
 
         // unselect old
-        foreach(Point point, points)
-            getNode(point)->setSelected(false);
+//        foreach(Point point, points)
+//            getNode(point)->setSelected(false);
+        //probably faster:
+        nodes->setSelected(false);
 
         // select new
         foreach(Point point, newPoints)
@@ -850,6 +857,56 @@ void Scene::moveSelectedNodes_Old(SceneTransformMode mode, Point point, double a
 }
 
 void Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
+{
+    QList<SceneEdge *> selectedEdges;
+
+    foreach (SceneEdge *edge, edges->selected().items())
+    {
+        selectedEdges.append(edge);
+        if(copy)
+            edge->setSelected(false);
+    }
+
+    if(selectedEdges.isEmpty())
+        return;
+
+    nodes->setSelected(false);
+
+    QList<QPair<Point, Point> > newEdgeEndPoints;
+
+    if (copy)
+    {
+        foreach (SceneEdge *edge, selectedEdges)
+        {
+            Point newPointStart = calculateNewPoint(mode, edge->nodeStart()->point(), point, angle, scaleFactor);
+            Point newPointEnd = calculateNewPoint(mode, edge->nodeEnd()->point(), point, angle, scaleFactor);
+
+            // add new edge
+            SceneNode *newNodeStart = getNode(newPointStart);
+            SceneNode *newNodeEnd = getNode(newPointEnd);
+            if (newNodeStart && newNodeEnd)
+            {
+                SceneEdge newEdge(newNodeStart, newNodeEnd, edge->angle());
+                m_undoStack->push(newEdge.getAddCommand());
+            }
+
+            newEdgeEndPoints.push_back(QPair<Point, Point>(newPointStart, newPointEnd));
+            qDebug() << newEdgeEndPoints;
+        }
+    }
+
+    for(int i = 0; i < newEdgeEndPoints.size(); i++)
+    {
+        SceneEdge* sceneEdge = getEdge(newEdgeEndPoints[i].first, newEdgeEndPoints[i].second);
+        if(sceneEdge)
+            sceneEdge->setSelected(true);
+        else
+            qDebug() << "no such edge";
+    }
+
+}
+
+void Scene::moveSelectedEdges_Old(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
 {
     QList<SceneEdge *> selectedEdges;
 

@@ -145,6 +145,7 @@ public:
 
     SceneEdge *addEdge(SceneEdge *edge);
     SceneEdge *getEdge(const Point &pointStart, const Point &pointEnd, double angle);
+    SceneEdge *getEdge(const Point &pointStart, const Point &pointEnd);
 
     SceneLabel *addLabel(SceneLabel *label);
     SceneLabel *getLabel(const Point &point);
@@ -213,6 +214,7 @@ private:
     void moveSelectedNodes_FirstAttempt(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
     void moveSelectedNodes_Old(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
     void moveSelectedEdges(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
+    void moveSelectedEdges_Old(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
     void moveSelectedLabels(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
 
 private slots:

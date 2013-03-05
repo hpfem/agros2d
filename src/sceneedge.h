@@ -91,6 +91,9 @@ public:
     /// returns corresponding edge or NULL
     SceneEdge* get(const Point &pointStart, const Point &pointEnd, double angle) const;
 
+    /// returns corresponding edge or NULL
+    SceneEdge* get(const Point &pointStart, const Point &pointEnd) const;
+
     /// returns bounding box, assumes container not empty
     RectPoint boundingBox() const;
     static RectPoint boundingBox(QList<SceneEdge *> edges);
