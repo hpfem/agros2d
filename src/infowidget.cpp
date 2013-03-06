@@ -53,6 +53,7 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
     // problem information
     webView = new QWebView();
     webView->page()->setNetworkAccessManager(networkAccessManager());
+    webView->setMinimumSize(200, 200);
 
     // stylesheet
     std::string style;

@@ -906,13 +906,25 @@ void ProblemWidget::createControls()
     grpCouplings = new QGroupBox(tr("Couplings"));
     grpCouplings->setLayout(layoutCouplings);
 
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(grpGeneral);
-    layout->addWidget(grpFieldsToolbar);
-    layout->addWidget(grpCouplings);
-    layout->addWidget(grpHarmonicAnalysis);
-    layout->addWidget(grpTransientAnalysis);
-    layout->addStretch(1);
+    QVBoxLayout *layoutArea = new QVBoxLayout();
+    layoutArea->addWidget(grpGeneral);
+    layoutArea->addWidget(grpFieldsToolbar);
+    layoutArea->addWidget(grpCouplings);
+    layoutArea->addWidget(grpHarmonicAnalysis);
+    layoutArea->addWidget(grpTransientAnalysis);
+    layoutArea->addStretch(1);
+
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(layoutArea);
+
+    QScrollArea *widgetArea = new QScrollArea();
+    widgetArea->setFrameShape(QFrame::NoFrame);
+    widgetArea->setWidgetResizable(true);
+    widgetArea->setWidget(widget);
+
+    QVBoxLayout *layout= new QVBoxLayout();
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->addWidget(widgetArea);
 
     setLayout(layout);
 }

@@ -329,12 +329,24 @@ void ChartWidget::createControls()
     // controlsLayout->setContentsMargins(0, 5, 3, 0);
     controlsLayout->addWidget(fieldWidget);
     controlsLayout->addWidget(grpVariable);
-    controlsLayout->addWidget(tbxAnalysisType);
-    controlsLayout->addWidget(grpChart, 1);
+    controlsLayout->addWidget(tbxAnalysisType, 0.5);
+    controlsLayout->addWidget(grpChart, 0.5);
     // controlsLayout->addStretch(1);
-    controlsLayout->addWidget(widButton);
 
-    setLayout(controlsLayout);
+    QWidget *widget = new QWidget(this);
+    widget->setLayout(controlsLayout);
+
+    QScrollArea *widgetArea = new QScrollArea();
+    widgetArea->setFrameShape(QFrame::NoFrame);
+    widgetArea->setWidgetResizable(true);
+    widgetArea->setWidget(widget);
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->addWidget(widgetArea);
+    layout->addWidget(widButton);
+
+    setLayout(layout);
 }
 
 QList<double> ChartWidget::horizontalAxisValues(ChartLine *chartLine)

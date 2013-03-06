@@ -268,6 +268,7 @@ void ParticleTracingWidget::createControls()
     widget->setLayout(layoutParticle);
 
     QScrollArea *widgetArea = new QScrollArea();
+    widgetArea->setContentsMargins(0, 0, 0, 0);
     widgetArea->setFrameShape(QFrame::NoFrame);
     widgetArea->setWidgetResizable(true);
     widgetArea->setWidget(widget);

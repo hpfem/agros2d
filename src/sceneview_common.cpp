@@ -55,7 +55,7 @@ SceneViewCommon::SceneViewCommon(QWidget *parent)
     setFocusPolicy(Qt::StrongFocus);
     setContextMenuPolicy(Qt::DefaultContextMenu);
 
-    setMinimumSize(400, 400);
+    setMinimumSize(200, 200);
 }
 
 SceneViewCommon::~SceneViewCommon()

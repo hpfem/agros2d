@@ -62,11 +62,11 @@ void SceneViewWidget::createControls(QWidget *widget)
     // label
     sceneViewLabelPixmap = new QLabel();
     sceneViewLabelLeft = new QLabel();
-    sceneViewLabelLeft->setMinimumWidth(150);
+    sceneViewLabelLeft->setMinimumWidth(120);
     sceneViewLabelCenter = new QLabel();
-    sceneViewLabelCenter->setMinimumWidth(150);
+    sceneViewLabelCenter->setMinimumWidth(120);
     sceneViewLabelRight = new QLabel();
-    sceneViewLabelRight->setMinimumWidth(200);
+    sceneViewLabelRight->setMinimumWidth(150);
 
     QHBoxLayout *sceneViewLabelLayout = new QHBoxLayout();
     sceneViewLabelLayout->addWidget(sceneViewLabelPixmap);
