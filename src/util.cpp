@@ -48,37 +48,8 @@ QString stringListToString(const QStringList &list)
 
 AGROS_API void setGUIStyle(const QString &styleName)
 {
-    QStyle *style = NULL;
-    if (styleName == "Manhattan")
-    {
-        QString styleName = "";
-        QStringList styles = QStyleFactory::keys();
-
-#ifdef Q_WS_X11
-        // kde 3
-        if (getenv("KDE_FULL_SESSION") != NULL)
-            styleName = "Plastique";
-        // kde 4
-        if (getenv("KDE_SESSION_VERSION") != NULL)
-        {
-            if (styles.contains("Oxygen"))
-                styleName = "Oxygen";
-            else
-                styleName = "Plastique";
-        }
-
-        // gtk+
-        if (styleName == "")
-            styleName = "GTK+";
-#else
-        styleName = "Plastique";
-#endif
-    }
-    else
-    {
-        // standard style
-        style = QStyleFactory::create(styleName);
-    }
+    // standard style
+    QStyle *style = QStyleFactory::create(styleName);
 
     QApplication::setStyle(style);
     if (QApplication::desktopSettingsAware())

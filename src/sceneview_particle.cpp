@@ -259,6 +259,7 @@ void ParticleTracingWidget::createControls()
     tbxWorkspace->addItem(grpSettings, icon(""), tr("Settings"));
 
     QVBoxLayout *layoutParticle = new QVBoxLayout();
+    layoutParticle->setContentsMargins(0, 0, 0, 0);
     layoutParticle->addWidget(grpGeneral);
     layoutParticle->addWidget(grpInitialPosition);
     layoutParticle->addWidget(grpInitialVelocity);
@@ -278,7 +279,7 @@ void ParticleTracingWidget::createControls()
     connect(btnOK, SIGNAL(clicked()), SLOT(doApply()));
 
     QVBoxLayout *layoutMain = new QVBoxLayout();    
-    layoutMain->setContentsMargins(0, 5, 3, 5);
+    layoutMain->setContentsMargins(2, 2, 2, 3);
     layoutMain->addWidget(widgetArea, 1);
     layoutMain->addWidget(btnOK, 0, Qt::AlignRight);
 

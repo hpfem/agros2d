@@ -579,7 +579,7 @@ void FieldsToobar::createControls()
     layoutButtons->addWidget(btnAddField);
 
     QVBoxLayout *layoutToolBar = new QVBoxLayout();
-    layoutToolBar->setContentsMargins(0, 2, 0, 1);
+    layoutToolBar->setContentsMargins(0, 1, 0, 1);
     // layoutToolBar->addWidget(tlbFields);
     layoutToolBar->addLayout(layoutFields);
     layoutToolBar->addLayout(layoutButtons);
@@ -907,6 +907,7 @@ void ProblemWidget::createControls()
     grpCouplings->setLayout(layoutCouplings);
 
     QVBoxLayout *layoutArea = new QVBoxLayout();
+    layoutArea->setContentsMargins(2, 2, 2, 3);
     layoutArea->addWidget(grpGeneral);
     layoutArea->addWidget(grpFieldsToolbar);
     layoutArea->addWidget(grpCouplings);

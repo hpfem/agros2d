@@ -216,8 +216,8 @@ void ChartWidget::createControls()
     QGridLayout *layoutStart = new QGridLayout();
     layoutStart->addWidget(lblStartX, 0, 0);
     layoutStart->addWidget(txtStartX, 0, 1);
-    layoutStart->addWidget(lblStartY, 1, 0);
-    layoutStart->addWidget(txtStartY, 1, 1);
+    layoutStart->addWidget(lblStartY, 0, 2);
+    layoutStart->addWidget(txtStartY, 0, 3);
 
     QGroupBox *grpStart = new QGroupBox(tr("Start"));
     grpStart->setLayout(layoutStart);
@@ -226,8 +226,8 @@ void ChartWidget::createControls()
     QGridLayout *layoutEnd = new QGridLayout();
     layoutEnd->addWidget(lblEndX, 0, 0);
     layoutEnd->addWidget(txtEndX, 0, 1);
-    layoutEnd->addWidget(lblEndY, 1, 0);
-    layoutEnd->addWidget(txtEndY, 1, 1);
+    layoutEnd->addWidget(lblEndY, 0, 2);
+    layoutEnd->addWidget(txtEndY, 0, 3);
 
     QGroupBox *grpEnd = new QGroupBox(tr("End"));
     grpEnd->setLayout(layoutEnd);
@@ -295,6 +295,7 @@ void ChartWidget::createControls()
 
     // button bar
     QHBoxLayout *layoutButton = new QHBoxLayout();
+    layoutButton->setContentsMargins(2, 0, 0, 0);
     layoutButton->addStretch();
     layoutButton->addWidget(btnSaveImage);
     layoutButton->addWidget(btnExportData);
@@ -326,7 +327,7 @@ void ChartWidget::createControls()
 
     // controls
     QVBoxLayout *controlsLayout = new QVBoxLayout();
-    // controlsLayout->setContentsMargins(0, 5, 3, 0);
+    controlsLayout->setContentsMargins(0, 0, 0, 0);
     controlsLayout->addWidget(fieldWidget);
     controlsLayout->addWidget(grpVariable);
     controlsLayout->addWidget(tbxAnalysisType, 0.5);
@@ -342,7 +343,7 @@ void ChartWidget::createControls()
     widgetArea->setWidget(widget);
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(2, 2, 2, 3);
     layout->addWidget(widgetArea);
     layout->addWidget(widButton);
 

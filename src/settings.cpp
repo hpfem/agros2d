@@ -234,7 +234,7 @@ void SettingsWidget::createControls()
     layoutButtons->addWidget(btnOK);
 
     QVBoxLayout *layoutMain = new QVBoxLayout();
-    layoutMain->setContentsMargins(0, 5, 3, 5);
+    layoutMain->setContentsMargins(2, 2, 2, 3);
     layoutMain->addWidget(widget);
     layoutMain->addLayout(layoutButtons);
 

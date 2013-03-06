@@ -262,7 +262,7 @@ void PostprocessorWidget::createControls()
     advanced = controlsAdvanced();
 
     QVBoxLayout *layoutMain = new QVBoxLayout();
-    layoutMain->setContentsMargins(0, 3, 3, 5);
+    layoutMain->setContentsMargins(2, 2, 2, 3);
     layoutMain->addWidget(basic);
     layoutMain->addWidget(advanced, 1);
     layoutMain->addWidget(btnOK, 0, Qt::AlignRight);
@@ -319,6 +319,7 @@ QWidget *PostprocessorWidget::meshOrderWidget()
     chkOrderLabel = new QCheckBox(tr("Show labels"), this);
 
     QGridLayout *gridLayoutOrder = new QGridLayout();
+    gridLayoutOrder->setContentsMargins(2, 2, 2, 3);
     gridLayoutOrder->addWidget(new QLabel(tr("Palette:")), 0, 0);
     gridLayoutOrder->addWidget(cmbOrderPaletteOrder, 0, 1);
     gridLayoutOrder->addWidget(chkShowOrderColorbar, 1, 0, 1, 2);
@@ -502,6 +503,7 @@ QWidget *PostprocessorWidget::controlsBasic()
     widgetsLayout->addWidget(groupPost3d);
 
     QVBoxLayout *layoutBasic = new QVBoxLayout();
+    layoutBasic->setContentsMargins(2, 2, 2, 3);
     layoutBasic->addWidget(fieldWidget);
     layoutBasic->addLayout(widgetsLayout);
     layoutBasic->addStretch(1);
