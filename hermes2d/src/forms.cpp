@@ -180,9 +180,37 @@ namespace Hermes
       if(fn == NULL)
         throw Hermes::Exceptions::Exception("Invalid arguments to DiscontinuousFunc constructor.");
       if(support_on_neighbor)
+      {
         fn_neighbor = fn;
+        if(reverse_neighbor_side)
+        {
+          this->val_neighbor = new T[this->num_gip];
+          this->dx_neighbor = new T[this->num_gip];
+          this->dy_neighbor = new T[this->num_gip];
+          for(int i = 0; i < this->num_gip; i++)
+          {
+            this->val_neighbor[i] = fn->val[this->num_gip-i-1];
+            this->dx_neighbor[i] = fn->dx[this->num_gip-i-1];
+            this->dy_neighbor[i] = fn->dy[this->num_gip-i-1];
+          }
+        }
+        else
+        {
+          this->val_neighbor = fn->val;
+          this->dx_neighbor = fn->dx;
+          this->dy_neighbor = fn->dy;
+        }
+
+        this->val = this->dx = this->dy = NULL;
+      }
       else
-        fn_central = fn;
+      {
+        this->fn_central = fn;
+        this->val = fn->val;
+        this->dx = fn->dx;
+        this->dy = fn->dy;
+        this->val_neighbor = this->dx_neighbor = this->dy_neighbor = NULL;
+      }
     }
 
     template<typename T>
@@ -192,42 +220,28 @@ namespace Hermes
       fn_neighbor(fn_n),
       reverse_neighbor_side(reverse)
     {
-      if(fn_c == NULL)
-        throw Hermes::Exceptions::NullException(0);
-      if(fn_n == NULL)
-        throw Hermes::Exceptions::NullException(1);
-      if(fn_c->num_gip != fn_n->num_gip || fn_c->nc != fn_n->nc)
-        throw Hermes::Exceptions::Exception("DiscontinuousFunc must be formed by two Func's with same number of integration points and components.");
+      if(reverse_neighbor_side)
+      {
+        this->val_neighbor = new T[this->num_gip];
+        this->dx_neighbor = new T[this->num_gip];
+        this->dy_neighbor = new T[this->num_gip];
+        for(int i = 0; i < this->num_gip; i++)
+        {
+          this->val_neighbor[i] = fn_neighbor->val[this->num_gip-i-1];
+          this->dx_neighbor[i] = fn_neighbor->dx[this->num_gip-i-1];
+          this->dy_neighbor[i] = fn_neighbor->dy[this->num_gip-i-1];
+        }
+      }
+      else
+      {
+        this->val_neighbor = fn_neighbor->val;
+        this->dx_neighbor = fn_neighbor->dx;
+        this->dy_neighbor = fn_neighbor->dy;
+      }
+      this->val = fn_central->val;
+      this->dx = fn_central->dx;
+      this->dy = fn_central->dy;
     }
-
-    // Explicit template specializations are needed here, general template<T> T DiscontinuousFunc<T>::zero = T(0) doesn't work.
-    template<> Hermes::Ord DiscontinuousFunc<Hermes::Ord>::zero = Hermes::Ord(0);
-    template<> double DiscontinuousFunc<double>::zero = 0.0;
-    template<> std::complex<double> DiscontinuousFunc<std::complex<double> >::zero = std::complex<double>(0);
-
-    template<typename T>
-    T& DiscontinuousFunc<T>::get_val_central(int k) const { return (fn_central != NULL) ? fn_central->val[k] : zero; }
-
-    template<typename T>
-    T& DiscontinuousFunc<T>::get_val_neighbor(int k) const { return (fn_neighbor != NULL) ? fn_neighbor->val[ reverse_neighbor_side ? fn_neighbor->num_gip-k-1 : k ] : zero; }
-
-    template<typename T>
-    T& DiscontinuousFunc<T>::get_dx_central(int k) const { return (fn_central != NULL) ? fn_central->dx[k] : zero; }
-
-    template<typename T>
-    T& DiscontinuousFunc<T>::get_dx_neighbor(int k) const { return (fn_neighbor != NULL) ? fn_neighbor->dx[ reverse_neighbor_side ? fn_neighbor->num_gip-k-1 : k ] : zero; }
-
-    template<typename T>
-    T& DiscontinuousFunc<T>::get_dy_central(int k) const { return (fn_central != NULL) ? fn_central->dy[k] : zero; }
-
-    template<typename T>
-    T& DiscontinuousFunc<T>::get_dy_neighbor(int k) const { return (fn_neighbor != NULL) ? fn_neighbor->dy[ reverse_neighbor_side ? fn_neighbor->num_gip-k-1 : k ] : zero; }
-
-    template<typename T>
-    T& DiscontinuousFunc<T>::get_laplace_central(int k) { return (fn_central != NULL) ? fn_central->laplace[k] : zero; }
-
-    template<typename T>
-    T& DiscontinuousFunc<T>::get_laplace_neighbor(int k) { return (fn_neighbor != NULL) ? fn_neighbor->laplace[ reverse_neighbor_side ? fn_neighbor->num_gip-k-1 : k ] : zero; }
 
     template<typename T>
     void DiscontinuousFunc<T>::subtract(const DiscontinuousFunc<T>& func)
@@ -249,6 +263,12 @@ namespace Hermes
       }
       if(fn_neighbor != NULL)
       {
+        if(reverse_neighbor_side)
+        {
+          delete [] this->val_neighbor;
+          delete [] this->dx_neighbor;
+          delete [] this->dy_neighbor;
+        }
         fn_neighbor->free_fn();
         delete fn_neighbor;
         fn_neighbor = NULL;

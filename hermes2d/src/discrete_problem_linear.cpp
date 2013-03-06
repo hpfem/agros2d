@@ -152,7 +152,7 @@ namespace Hermes
       int num_threads_used = Hermes2DApi.get_integral_param_value(Hermes::Hermes2D::numThreads);
 #pragma omp parallel shared(trav_master, mat, rhs ) private(state_i, current_pss, current_spss, current_refmaps, current_als, current_weakform) num_threads(num_threads_used)
       {
-#pragma omp for schedule(dynamic, CHUNKSIZE)
+#pragma omp for schedule(static, CHUNKSIZE)
         for(state_i = 0; state_i < num_states; state_i++)
         {
           if(this->caughtException != NULL)
@@ -195,7 +195,7 @@ namespace Hermes
             this->assemble_one_state(current_pss, current_spss, current_refmaps, NULL, current_als, &current_state, current_weakform);
 
             if(this->DG_matrix_forms_present || this->DG_vector_forms_present)
-              this->assemble_one_DG_state(current_pss, current_spss, current_refmaps, NULL, current_als, &current_state, current_weakform->mfDG, current_weakform->vfDG, trav[omp_get_thread_num()].fn);
+              this->assemble_one_DG_state(current_pss, current_spss, current_refmaps, current_als, &current_state, current_weakform->mfDG, current_weakform->vfDG, trav[omp_get_thread_num()].fn, current_weakform);
           }
           catch(Hermes::Exceptions::Exception& e)
           {

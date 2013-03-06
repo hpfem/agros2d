@@ -515,7 +515,7 @@ namespace Hermes
         dashes_count = 0;
 
         // reuse or allocate vertex, triangle and edge arrays
-        verts = (double4*) malloc(sizeof(double4) * vertex_size);
+        this->verts = (double4*) realloc(this->verts, sizeof(double4) * vertex_size);
         this->tris = (int3*) realloc(this->tris, sizeof(int3) * this->triangle_size);
         this->tri_markers = (int*) realloc(this->tri_markers, sizeof(int) * this->triangle_size);
         this->edges = (int2*) realloc(this->edges, sizeof(int2) * this->edges_size);
@@ -625,7 +625,7 @@ namespace Hermes
         int num_threads_used = Hermes2DApi.get_integral_param_value(Hermes::Hermes2D::numThreads);
 #pragma omp parallel shared(trav_masterMax) private(state_i) num_threads(num_threads_used)
         {
-#pragma omp for schedule(dynamic, CHUNKSIZE)
+#pragma omp for schedule(static, CHUNKSIZE)
           for(state_i = 0; state_i < num_states; state_i++)
           {
             try
@@ -681,7 +681,7 @@ namespace Hermes
 
 #pragma omp parallel shared(trav_master) private(state_i) num_threads(num_threads_used)
         {
-#pragma omp for schedule(dynamic, CHUNKSIZE)
+#pragma omp for schedule(static, CHUNKSIZE)
           for(state_i = 0; state_i < num_states; state_i++)
           {
             if(this->caughtException != NULL)

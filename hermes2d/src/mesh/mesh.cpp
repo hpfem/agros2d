@@ -94,7 +94,7 @@ namespace Hermes
       this->diameterCalculated = false;
     }
 
-    Element::Element() : visited(false), area(0.0), diameter(0.0) 
+    Element::Element() : visited(false), area(0.0), diameter(0.0), center_set(false)
     {
     };
 
@@ -191,25 +191,30 @@ namespace Hermes
 
     void Element::get_center(double& x, double& y)
     {
-      // x - coordinate
-      x = this->vn[0]->x + this->vn[1]->x + this->vn[2]->x;
-      if(this->is_quad())
+      if(center_set)
       {
-        x += this->vn[3]->x;
-        x = x / 4.0;
+        x = this->x_center;
+        y = this->y_center;
+        return;
       }
-      else
-        x = x / 3.0;
 
-      // y - coordinate
-      y = this->vn[0]->y + this->vn[1]->y + this->vn[2]->y;
+      // x - coordinate
+      this->x_center = this->vn[0]->x + this->vn[1]->x + this->vn[2]->x;
+      this->y_center = this->vn[0]->y + this->vn[1]->y + this->vn[2]->y;
       if(this->is_quad())
       {
-        y += this->vn[3]->y;
-        y = y / 4.0;
+        this->x_center += this->vn[3]->x;
+        this->x_center = this->x_center / 4.0;
+        this->y_center += this->vn[3]->y;
+        this->y_center = this->y_center / 4.0;
       }
       else
-        y = y / 3.0;
+      {
+        this->x_center = this->x_center / 3.0;
+        this->y_center = this->y_center / 3.0;
+      }
+      x = this->x_center;
+      y = this->y_center;
     }
 
     double Element::get_diameter()
@@ -288,7 +293,7 @@ namespace Hermes
       {
         r.set_active_element(e);
 
-        int i, o, mo = quad->get_max_order(e->get_mode());
+        int i, mo = quad->get_max_order(e->get_mode());
 
         int k = e->is_triangle() ? 2 : 3;
 
@@ -299,7 +304,6 @@ namespace Hermes
         };
 
         double const_jacobian = 0.25 * (const_m[0][0] * const_m[1][1] - const_m[0][1] * const_m[1][0]);
-        double2x2 const_inv_ref_map;
         if(const_jacobian <= 0.0)
           throw Hermes::Exceptions::MeshLoadFailureException("Element #%d is concave or badly oriented in initial_single_check().", e->id);
 
@@ -2213,6 +2217,16 @@ namespace Hermes
       return HERMES_BOUNDARY_MARKERS_CONVERSION;
     }
 
+    const Mesh::ElementMarkersConversion &Mesh::get_element_markers_conversion() const
+    {
+      return element_markers_conversion;
+    }
+
+    const Mesh::BoundaryMarkersConversion &Mesh::get_boundary_markers_conversion() const
+    {
+      return boundary_markers_conversion;
+    }
+    
     Mesh::ElementMarkersConversion &Mesh::get_element_markers_conversion()
     {
       return element_markers_conversion;
@@ -3186,6 +3200,8 @@ namespace Hermes
         if(node->elem[0] != NULL) node->elem[0] = &(elements[idx[((int) (long) node->elem[0]) - 1]]);
         if(node->elem[1] != NULL) node->elem[1] = &(elements[idx[((int) (long) node->elem[1]) - 1]]);
       }
+
+      delete [] idx;
     }
 
     void Mesh::assign_parent(Element* e, int i)

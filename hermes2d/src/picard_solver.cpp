@@ -136,7 +136,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void calculate_anderson_coeffs(Scalar** previous_vectors, Scalar* anderson_coeffs, int num_last_vectors_used, int ndof)
+    void PicardSolver<Scalar>::calculate_anderson_coeffs(Scalar** previous_vectors, Scalar* anderson_coeffs, int num_last_vectors_used, int ndof)
     {
       if(num_last_vectors_used <= 1) throw Hermes::Exceptions::Exception("Picard: Anderson acceleration makes sense only if at least two last iterations are used.");
 
@@ -415,7 +415,7 @@ namespace Hermes
         if(std::abs(last_iter_vec_norm) < 1e-12)
           this->info("\tPicard: iteration %d, nDOFs %d, starting from zero vector.", it, ndof);
         else
-          this->info("\tPicard: iteration %d, nDOFs %d, relative error %g%%", it, ndof, rel_error);
+          this->info("\tPicard: iteration %d, nDOFs %d, relative error %g%%", it, ndof, rel_error * 100);
 
         // Stopping because error is sufficiently low.
         if(rel_error < tol)

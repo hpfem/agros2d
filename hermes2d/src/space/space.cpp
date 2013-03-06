@@ -1132,7 +1132,7 @@ namespace Hermes
     void Space<Scalar>::free_bc_data()
     {
       for (unsigned int i = 0; i < bc_data.size(); i++)
-        delete (bc_data[i]);
+        delete [] bc_data[i];
       bc_data.clear();
     }
 
@@ -1287,7 +1287,7 @@ namespace Hermes
 				}
 
 				space->essential_bcs = essential_bcs;
-				space->mesh_seq == space->mesh->get_seq();
+				space->mesh_seq = space->mesh->get_seq();
 
 				// L2 space does not have any (strong) essential BCs.
 				if(essential_bcs != NULL && parsed_xml_space->spaceType().get().c_str() != "l2")

@@ -3,6 +3,7 @@
 
 // OpenMP
 #define NUM_THREADS 4
+#define WITH_OPENMP
 
 #define HAVE_FMEMOPEN
 /* #undef HAVE_LOG2 */
@@ -33,5 +34,8 @@
 
 // no logo
 /* #undef HERMES_NO_LOGO */
+
+// GLUT
+/* #undef NOGLUT */
 
 #endif

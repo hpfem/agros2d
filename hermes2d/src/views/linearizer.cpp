@@ -178,7 +178,7 @@ namespace Hermes
           if(eps >= 1.0)
           {
             // if eps > 1, the user wants a fixed number of refinements (no adaptivity)
-            split = (level + 5 < eps);
+            split = ((level + 5) < eps);
           }
           else
           {
@@ -632,7 +632,7 @@ namespace Hermes
         int num_threads_used = Hermes2DApi.get_integral_param_value(Hermes::Hermes2D::numThreads);
 #pragma omp parallel shared(trav_masterMax) private(state_i) num_threads(num_threads_used)
         {
-#pragma omp for schedule(dynamic, CHUNKSIZE)
+#pragma omp for schedule(static, CHUNKSIZE)
           for(state_i = 0; state_i < num_states; state_i++)
           {
             try
@@ -685,7 +685,7 @@ namespace Hermes
 
 #pragma omp parallel shared(trav_master) private(state_i) num_threads(num_threads_used)
         {
-#pragma omp for schedule(dynamic, CHUNKSIZE)
+#pragma omp for schedule(static, CHUNKSIZE)
           for(state_i = 0; state_i < num_states; state_i++)
           {
             if(this->caughtException != NULL)

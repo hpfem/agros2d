@@ -72,6 +72,24 @@ namespace Hermes
     }
 
     template<typename Scalar>
+    void WeakForm<Scalar>::set_active_state(Element** e)
+    {
+      // Nothing here, supposed to be overriden if necessary.
+    }
+
+    template<typename Scalar>
+    void WeakForm<Scalar>::set_active_edge_state(Element** e, int isurf)
+    {
+      // Nothing here, supposed to be overriden if necessary.
+    }
+
+    template<typename Scalar>
+    void WeakForm<Scalar>::set_active_DG_state(Element** e, int isurf)
+    {
+      // Nothing here, supposed to be overriden if necessary.
+    }
+
+    template<typename Scalar>
     void WeakForm<Scalar>::cloneMembers(const WeakForm<Scalar>* otherWf)
     {
       this->mfvol.clear();
@@ -120,7 +138,13 @@ namespace Hermes
           this->vfDG.push_back(dynamic_cast<VectorFormDG<Scalar>*>(this->forms.back()));
       }
       for(unsigned int i = 0; i < otherWf->ext.size(); i++)
+      {
         this->ext.push_back(otherWf->ext[i]->clone());
+        if(dynamic_cast<Solution<Scalar>*>(otherWf->ext[i]) != NULL)
+        {
+          dynamic_cast<Solution<Scalar>*>(this->ext.back())->set_type(dynamic_cast<Solution<Scalar>*>(otherWf->ext[i])->get_type());
+        }
+      }
     }
 
     template<typename Scalar>
@@ -229,7 +253,7 @@ namespace Hermes
 
     template<typename Scalar>
     MatrixForm<Scalar>::MatrixForm(unsigned int i, unsigned int j) :
-      Form<Scalar>(), sym(HERMES_NONSYM), i(i), j(j), previous_iteration_space_index(-1)
+    Form<Scalar>(), sym(HERMES_NONSYM), i(i), j(j), previous_iteration_space_index(-1)
     {
     }
 
@@ -256,7 +280,7 @@ namespace Hermes
 
     template<typename Scalar>
     MatrixFormVol<Scalar>::MatrixFormVol(unsigned int i, unsigned int j) :
-      MatrixForm<Scalar>(i, j)
+    MatrixForm<Scalar>(i, j)
     {
     }
 
@@ -286,7 +310,7 @@ namespace Hermes
 
     template<typename Scalar>
     MatrixFormSurf<Scalar>::MatrixFormSurf(unsigned int i, unsigned int j) :
-      MatrixForm<Scalar>(i, j)
+    MatrixForm<Scalar>(i, j)
     {
     }
 
@@ -304,7 +328,7 @@ namespace Hermes
 
     template<typename Scalar>
     MatrixFormDG<Scalar>::MatrixFormDG(unsigned int i, unsigned int j) :
-      MatrixForm<Scalar>(i, j)
+    Form<Scalar>(), i(i), j(j)
     {
       this->set_area(H2D_DG_INNER_EDGE);
     }
@@ -312,6 +336,22 @@ namespace Hermes
     template<typename Scalar>
     MatrixFormDG<Scalar>::~MatrixFormDG()
     {
+    }
+
+    template<typename Scalar>
+    Scalar MatrixFormDG<Scalar>::value(int n, double *wt, DiscontinuousFunc<double> *u, DiscontinuousFunc<double> *v,
+      Geom<double> *e, DiscontinuousFunc<Scalar> **ext) const
+    {
+      throw Hermes::Exceptions::MethodNotOverridenException("MatrixFormDG<Scalar>::value");
+      return 0.0;
+    }
+
+    template<typename Scalar>
+    Hermes::Ord MatrixFormDG<Scalar>::ord(int n, double *wt, DiscontinuousFunc<Hermes::Ord> *u, DiscontinuousFunc<Hermes::Ord> *v,
+      Geom<Hermes::Ord> *e, DiscontinuousFunc<Ord> **ext) const
+    {
+      throw Hermes::Exceptions::MethodNotOverridenException("MatrixFormDG<Scalar>::ord");
+      return Hermes::Ord();
     }
 
     template<typename Scalar>
@@ -323,7 +363,7 @@ namespace Hermes
 
     template<typename Scalar>
     VectorForm<Scalar>::VectorForm(unsigned int i) :
-      Form<Scalar>(), i(i)
+    Form<Scalar>(), i(i)
     {
     }
 
@@ -334,7 +374,7 @@ namespace Hermes
 
     template<typename Scalar>
     VectorFormVol<Scalar>::VectorFormVol(unsigned int i) :
-      VectorForm<Scalar>(i)
+    VectorForm<Scalar>(i)
     {
     }
 
@@ -368,7 +408,7 @@ namespace Hermes
 
     template<typename Scalar>
     VectorFormSurf<Scalar>::VectorFormSurf(unsigned int i) :
-      VectorForm<Scalar>(i)
+    VectorForm<Scalar>(i)
     {
     }
 
@@ -386,7 +426,7 @@ namespace Hermes
 
     template<typename Scalar>
     VectorFormDG<Scalar>::VectorFormDG(unsigned int i) :
-      VectorForm<Scalar>(i)
+    Form<Scalar>(), i(i)
     {
       this->set_area(H2D_DG_INNER_EDGE);
     }
@@ -394,6 +434,22 @@ namespace Hermes
     template<typename Scalar>
     VectorFormDG<Scalar>::~VectorFormDG()
     {
+    }
+
+    template<typename Scalar>
+    Scalar VectorFormDG<Scalar>::value(int n, double *wt, Func<double> *v,
+      Geom<double> *e, DiscontinuousFunc<Scalar> **ext) const
+    {
+      throw Hermes::Exceptions::MethodNotOverridenException("VectorFormDG<Scalar>::value");
+      return 0.0;
+    }
+
+    template<typename Scalar>
+    Hermes::Ord VectorFormDG<Scalar>::ord(int n, double *wt, Func<Hermes::Ord> *v,
+      Geom<Hermes::Ord> *e, DiscontinuousFunc<Ord> **ext) const
+    {
+      throw Hermes::Exceptions::MethodNotOverridenException("VectorFormDG<Scalar>::ord");
+      return Hermes::Ord();
     }
 
     template<typename Scalar>

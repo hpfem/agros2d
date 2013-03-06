@@ -42,6 +42,7 @@ namespace Hermes
     class Element;
     class Shapeset;
     template<typename T> class Func;
+    template<typename T> class DiscontinuousFunc;
     template<typename T> class Geom;
 
     template<typename Scalar> class Form;
@@ -83,7 +84,7 @@ namespace Hermes
       WeakForm(unsigned int neq = 1, bool mat_free = false);
 
       /// Destructor.
-      ~WeakForm();
+      virtual ~WeakForm();
 
       /// Adds volumetric matrix form.
       void add_matrix_form(MatrixFormVol<Scalar>* mfv);
@@ -103,6 +104,24 @@ namespace Hermes
       /// Adds DG vector form.
       void add_vector_form_DG(VectorFormDG<Scalar>* vfDG);
 
+      /// Provides possibility of setup element-wise parameters.
+      /// For parameters that only depend on element and that do
+      /// not have to be calculated for every form.
+      /// This is rarely used and typically only for multi-physical tasks where there is a multitude of forms.
+      virtual void set_active_state(Element** e);
+
+      /// Provides possibility of setup edge-wise parameters.
+      /// For parameters that only depend on element and edge and that do
+      /// not have to be calculated for every form.
+      /// This is rarely used and typically only for multi-physical tasks where there is a multitude of forms.
+      virtual void set_active_edge_state(Element** e, int isurf);
+
+      /// Provides possibility of setup edge-wise parameters.
+      /// For parameters that only depend on element and inner edge and that do
+      /// not have to be calculated for every form.
+      /// This is rarely used and typically only for multi-physical tasks where there is a multitude of forms.
+      virtual void set_active_DG_state(Element** e, int isurf);
+
       /// Returns the number of equations.
       unsigned int get_neq() const { return neq; }
 
@@ -112,7 +131,7 @@ namespace Hermes
       /// For time-dependent right-hand side functions.
       /// Sets current time.
       void set_current_time(double time);
-      
+
       /// For time-dependent right-hand side functions.
       /// Sets current time step.
       void set_current_time_step(double time_step);
@@ -120,7 +139,7 @@ namespace Hermes
       /// For time-dependent right-hand side functions.
       /// Gets current time.
       virtual double get_current_time() const;
-      
+
       /// For time-dependent right-hand side functions.
       /// Gets current time step.
       virtual double get_current_time_step() const;
@@ -128,11 +147,11 @@ namespace Hermes
       /// External functions.
       /// Set one external function.
       void set_ext(MeshFunction<Scalar>* ext);
-      
+
       /// External functions.
       /// Set more external functions.
       void set_ext(Hermes::vector<MeshFunction<Scalar>*> ext);
-      
+
       /// External functions.
       /// Get external functions.
       Hermes::vector<MeshFunction<Scalar>*> get_ext() const;
@@ -195,9 +214,10 @@ namespace Hermes
       bool warned_nonOverride;
 
       // internal.
+      virtual void cloneMembers(const WeakForm<Scalar>* otherWf);
+
     private:
       void free_ext();
-      void cloneMembers(const WeakForm<Scalar>* otherWf);
     };
 
     /// \brief Abstract, base class for any form - i.e. integral in the weak formulation of (a system of) PDE<br>
@@ -226,6 +246,9 @@ namespace Hermes
       void set_ext(Hermes::vector<MeshFunction<Scalar>*> ext);
       Hermes::vector<MeshFunction<Scalar>*> get_ext() const;
 
+      /// scaling factor
+      void setScalingFactor(double scalingFactor);
+
     protected:
       /// Set pointer to a WeakForm.
       inline void set_weakform(WeakForm<Scalar>* wf) { this->wf = wf; }
@@ -253,7 +276,6 @@ namespace Hermes
 
       WeakForm<Scalar>* wf;
       double stage_time;
-      void setScalingFactor(double scalingFactor);
       void set_uExtOffset(int u_ext_offset);
       friend class WeakForm<Scalar>;
       friend class RungeKutta<Scalar>;
@@ -279,15 +301,12 @@ namespace Hermes
 
       SymFlag sym;
 
-      typedef Scalar valueFunction(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *u, Func<double> *v,
-        Geom<double> *e, Func<Scalar> **ext) const;
-
       virtual Scalar value(int n, double *wt, Func<Scalar> *u_ext[], Func<double> *u, Func<double> *v,
         Geom<double> *e, Func<Scalar> **ext) const;
 
       virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *u_ext[], Func<Hermes::Ord> *u, Func<Hermes::Ord> *v,
         Geom<Hermes::Ord> *e, Func<Ord> **ext) const;
-    
+
     protected:
       friend class DiscreteProblem<Scalar>;
     };
@@ -321,9 +340,9 @@ namespace Hermes
       virtual MatrixFormSurf* clone() const;
     };
 
-    /// \brief Abstract, base class for matrix DG form - i.e. MatrixForm, where the integration is with respect to 1D-Lebesgue measure (element inner-domain edges).
+    /// \brief Abstract, base class for matrix DG form - i.e. bilinear form, where the integration is with respect to 1D-Lebesgue measure (element inner-domain edges).
     template<typename Scalar>
-    class HERMES_API MatrixFormDG : public MatrixForm<Scalar>
+    class HERMES_API MatrixFormDG : public Form<Scalar>
     {
     public:
       /// Constructor with coordinates.
@@ -331,8 +350,20 @@ namespace Hermes
 
       virtual ~MatrixFormDG();
 
+      unsigned int i;
+      unsigned int j;
+
+      virtual Scalar value(int n, double *wt, DiscontinuousFunc<double> *u, DiscontinuousFunc<double> *v,
+        Geom<double> *e, DiscontinuousFunc<Scalar> **ext) const;
+
+      virtual Hermes::Ord ord(int n, double *wt, DiscontinuousFunc<Hermes::Ord> *u, DiscontinuousFunc<Hermes::Ord> *v,
+        Geom<Hermes::Ord> *e, DiscontinuousFunc<Ord> **ext) const;
+
       virtual MatrixFormDG* clone() const;
+    protected:
+      friend class DiscreteProblem<Scalar>;
     };
+
 
     /// \brief Abstract, base class for vector form - i.e. a single integral in the linear form on the right hand side of the variational formulation of a (system of) PDE.
     template<typename Scalar>
@@ -381,9 +412,9 @@ namespace Hermes
       virtual VectorFormSurf* clone() const;
     };
 
-    /// \brief Abstract, base class for vector DG form - i.e. VectorForm, where the integration is with respect to 1D-Lebesgue measure (element inner-domain edges).
+    /// \brief Abstract, base class for vector DG form - i.e. linear Form, where the integration is with respect to 1D-Lebesgue measure (element inner-domain edges).
     template<typename Scalar>
-    class VectorFormDG : public VectorForm<Scalar>
+    class VectorFormDG : public Form<Scalar>
     {
     public:
       /// Constructor with coordinates.
@@ -391,7 +422,16 @@ namespace Hermes
 
       virtual ~VectorFormDG();
 
+      virtual Scalar value(int n, double *wt, Func<double> *v,
+        Geom<double> *e, DiscontinuousFunc<Scalar> **ext) const;
+
+      virtual Hermes::Ord ord(int n, double *wt, Func<Hermes::Ord> *v, Geom<Hermes::Ord> *e,
+        DiscontinuousFunc<Ord> **ext) const;
+      unsigned int i;
+
       virtual VectorFormDG* clone() const;
+    protected:
+      friend class DiscreteProblem<Scalar>;
     };
   }
 }
