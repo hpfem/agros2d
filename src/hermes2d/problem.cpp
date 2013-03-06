@@ -308,7 +308,7 @@ bool Problem::mesh()
     {
         // todo: dangerous
         // catching all other exceptions. This is not safe at all
-        Agros2D::log()->printWarning(tr("Mesh"), tr(e.what()));
+        Agros2D::log()->printWarning(tr("Mesh"), e.what());
         m_isSolving = false;
         return false;
     }
@@ -476,7 +476,7 @@ void Problem::solveInit()
     // save problem
     try
     {
-        Agros2D::scene()->writeToFile(tempProblemFileName() + ".a2d", false);       
+        Agros2D::scene()->writeToFile(tempProblemFileName() + ".a2d", false);
     }
     catch (AgrosException &e)
     {
@@ -582,7 +582,7 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
         // todo: dangerous
         // catching all other exceptions. This is not save at all
         m_isSolving = false;
-        Agros2D::log()->printWarning(tr("Solver"), "An unknown exception occured in solver and has been ignored");
+        Agros2D::log()->printWarning(tr("Solver"), tr("An unknown exception occured in solver and has been ignored"));
         return;
     }
 }

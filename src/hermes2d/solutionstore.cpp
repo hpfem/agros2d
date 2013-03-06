@@ -84,7 +84,7 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
         catch (...)
         {
             Agros2D::problem()->clearSolution();
-            Agros2D::log()->printWarning("Solver", "catched unknown exception while loading solution");
+            Agros2D::log()->printWarning(QObject::tr("Solver"), QObject::tr("Catched unknown exception while loading solution"));
         }
 
         return msa;

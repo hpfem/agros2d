@@ -278,7 +278,7 @@ void ParticleTracingWidget::createControls()
     QPushButton *btnOK = new QPushButton(tr("Apply"));
     connect(btnOK, SIGNAL(clicked()), SLOT(doApply()));
 
-    QVBoxLayout *layoutMain = new QVBoxLayout();    
+    QVBoxLayout *layoutMain = new QVBoxLayout();
     layoutMain->setContentsMargins(2, 2, 2, 3);
     layoutMain->addWidget(widgetArea, 1);
     layoutMain->addWidget(btnOK, 0, Qt::AlignRight);
@@ -625,7 +625,7 @@ void SceneViewParticleTracing::paintGeometryOutline()
     }
 
     glDisable(GL_LINE_SMOOTH);
-    glDisable(GL_DEPTH_TEST);    
+    glDisable(GL_DEPTH_TEST);
 }
 
 void SceneViewParticleTracing::paintGeometrySurface(bool blend)
@@ -1122,7 +1122,7 @@ void SceneViewParticleTracing::processParticleTracing()
             }
             catch (AgrosException& e)
             {
-                Agros2D::log()->printWarning("Particle tracing", QString("Particle tracing failed, ").append(e.what()));
+                Agros2D::log()->printWarning(tr("Particle tracing"), tr("Particle tracing failed (%1)").append(e.what()));
                 m_velocityMin = 0.0;
                 m_velocityMax = 0.0;
 
@@ -1130,7 +1130,7 @@ void SceneViewParticleTracing::processParticleTracing()
             }
             catch (...)
             {
-                Agros2D::log()->printWarning("Particle tracing", "Catched unknown exception in particle tracing!");
+                Agros2D::log()->printWarning(tr("Particle tracing"), tr("Catched unknown exception in particle tracing"));
                 m_velocityMin = 0.0;
                 m_velocityMax = 0.0;
 

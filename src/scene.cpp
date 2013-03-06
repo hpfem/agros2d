@@ -633,7 +633,7 @@ bool Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle
         SceneNode *obstructNode = getNode(newPoint);
         if (obstructNode && !obstructNode->isSelected())
         {
-            Agros2D::log()->printWarning("Geometry", "Cannot perform transformation, existing point would be overwritten.");
+            Agros2D::log()->printWarning(tr("Geometry"), tr("Geometry", "Cannot perform transformation, existing point would be overwritten"));
             return false;
         }
 
@@ -714,7 +714,7 @@ bool Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle
         SceneEdge *obstructEdge = getEdge(newPointStart, newPointEnd);
         if (obstructEdge && !obstructEdge->isSelected())
         {
-            Agros2D::log()->printWarning("Geometry", "Cannot perform transformation, existing edge would be overwritten.");
+            Agros2D::log()->printWarning(tr("Geometry"), tr("Geometry", "Cannot perform transformation, existing edge would be overwritten"));
             return false;
         }
 
@@ -1196,7 +1196,7 @@ void Scene::readFromFile(const QString &fileName)
 
             file.waitForBytesWritten(0);
             file.close();
-        }        
+        }
     }
 
     // validation
@@ -1836,12 +1836,12 @@ void Scene::readSolutionFromFile(const QString &fileName)
             catch (AgrosException& e)
             {
                 Agros2D::problem()->clearSolution();
-                Agros2D::log()->printError(tr("Mesh"), QString("Initial mesh is corrupted (%1)").arg(e.what()));
+                Agros2D::log()->printError(tr("Mesh"), tr("Initial mesh is corrupted (%1)").arg(e.what()));
             }
             catch (Hermes::Exceptions::Exception& e)
             {
                 Agros2D::problem()->clearSolution();
-                Agros2D::log()->printError(tr("Mesh"), QString("Initial mesh is corrupted (%1)").arg(e.what()));
+                Agros2D::log()->printError(tr("Mesh"), tr("Initial mesh is corrupted (%1)").arg(e.what()));
             }
         }
 
@@ -1869,7 +1869,7 @@ void Scene::writeSolutionToFile(const QString &fileName)
     if (QFile(solutionFN).open(QIODevice::WriteOnly))
         JlCompress::compressDir(solutionFN, cacheProblemDir());
     else
-        Agros2D::log()->printError(QObject::tr("Solver"), QObject::tr("Access denied '%1'").arg(solutionFN));
+        Agros2D::log()->printError(tr("Solver"), tr("Access denied '%1'").arg(solutionFN));
 }
 
 void Scene::checkNodeConnect(SceneNode *node)
