@@ -85,17 +85,6 @@
 
 using namespace std;
 
-// sign function
-inline int sign(double arg)
-{
-    if (arg > 0)
-        return 1;
-    else if (arg < 0)
-        return -1;
-    else
-        return 0;
-}
-
 // approximation of atan2(y, x).
 // maximum error of 0.0061 radians at 0.35 degrees
 inline double fastatan2(double y, double x)

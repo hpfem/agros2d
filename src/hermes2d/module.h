@@ -24,7 +24,26 @@
 #include "util/enums.h"
 #include "hermes2d.h"
 
-inline Hermes::Ord sign(Hermes::Ord arg) { return Hermes::Ord(); }
+inline double tern(bool condition, double a, double b)
+{
+    return (condition ? a : b);
+}
+
+inline Hermes::Ord tern(bool condition, Hermes::Ord a, Hermes::Ord b)
+{
+    if (condition)
+        return a;
+    else
+        return b;
+}
+
+inline Hermes::Ord tern(bool condition, Hermes::Ord a, double b)
+{
+    if (condition)
+        return a;
+    else
+        return Hermes::Ord(b);
+}
 
 // to be thrown when string refering to module entity (boundary condition type, etc.) not found
 class AgrosModuleException : public AgrosException
