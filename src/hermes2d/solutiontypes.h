@@ -33,21 +33,21 @@ class Block;
 class BlockSolutionID;
 class FieldSolutionID;
 
-template <typename Scalar>
-Hermes::vector<const Hermes::Hermes2D::Space<Scalar> *> castConst(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> space)
-{
-    Hermes::vector<const Hermes::Hermes2D::Space<Scalar> *> out;
-    for (int i = 0; i < space.size(); i++)
-        out.push_back(const_cast<const Hermes::Hermes2D::Space<Scalar> *>(space.at(i)));
+//template <typename Scalar>
+//Hermes::vector<const SpaceSharedPtr<Scalar> > castConst(Hermes::vector<SpaceSharedPtr<Scalar> > space)
+//{
+//    Hermes::vector<const SpaceSharedPtr<Scalar> > out;
+//    for (int i = 0; i < space.size(); i++)
+//        out.push_back(const_cast<const SpaceSharedPtr<Scalar> >(space.at(i)));
 
-    return out;
-}
+//    return out;
+//}
 
 template <typename Scalar>
-Hermes::vector<MeshSharedPtr> spacesMeshes(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces)
+Hermes::vector<MeshSharedPtr> spacesMeshes(Hermes::vector<SpaceSharedPtr<Scalar> > spaces)
 {
     Hermes::vector<MeshSharedPtr> meshes;
-    foreach (Hermes::Hermes2D::Space<Scalar> *space, spaces)
+    foreach (SpaceSharedPtr<Scalar> space, spaces)
         meshes.push_back(space->get_mesh());
 
     return meshes;
@@ -80,20 +80,20 @@ class AGROS_API MultiArray
 {
 public:
     MultiArray();
-    MultiArray(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces,
+    MultiArray(Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
                Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions) : m_spaces(spaces), m_solutions(solutions) {}
     ~MultiArray();
 
     void clear();
 
     // add next component
-    void append(Hermes::Hermes2D::Space<Scalar> *space, Hermes::Hermes2D::Solution<Scalar> *solution);
-    void append(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces, Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions);
+    void append(SpaceSharedPtr<Scalar> space, Hermes::Hermes2D::Solution<Scalar> *solution);
+    void append(Hermes::vector<SpaceSharedPtr<Scalar> > spaces, Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions);
 
-    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces() { return m_spaces; }
+    Hermes::vector<SpaceSharedPtr<Scalar> > spaces() { return m_spaces; }
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions() { return m_solutions; }
 
-    Hermes::vector<const Hermes::Hermes2D::Space<Scalar>* > spacesConst() { return castConst(m_spaces); }
+    //Hermes::vector<const SpaceSharedPtr<Scalar> > spacesConst() { return m_spaces; }
 
     // returns only that part of list that corresponds to given field (as part of the given block)
     MultiArray<Scalar> fieldPart(Block* block, FieldInfo* fieldInfo);
@@ -106,7 +106,7 @@ public:
     void loadFromFile(const QString &baseName, FieldSolutionID solutionID);
 
 private:
-    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> m_spaces;
+    Hermes::vector<SpaceSharedPtr<Scalar> > m_spaces;
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> m_solutions;
 };
 

@@ -128,18 +128,18 @@ NewtonSolverContainer<Scalar>::~NewtonSolverContainer()
 
 template <typename Scalar>
 void NewtonSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVector,
-                                                            Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces,
+                                                            Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
                                                             Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions)
 {
     if (solutions.empty())
     {
-        int ndof = Space<Scalar>::get_num_dofs(castConst(spaces));
+        int ndof = Space<Scalar>::get_num_dofs(spaces);
         memset(solutionVector, 0, ndof*sizeof(Scalar));
     }
     else
     {
         OGProjection<double> ogProjection;
-        ogProjection.project_global(castConst(spaces),
+        ogProjection.project_global(spaces,
                                     solutions,
                                     solutionVector, this->m_block->projNormTypeVector());
     }
@@ -180,18 +180,18 @@ PicardSolverContainer<Scalar>::~PicardSolverContainer()
 
 template <typename Scalar>
 void PicardSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVector,
-                                                            Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces,
+                                                            Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
                                                             Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions)
 {
     if (solutions.empty())
     {
-        int ndof = Space<Scalar>::get_num_dofs(castConst(spaces));
+        int ndof = Space<Scalar>::get_num_dofs(spaces);
         memset(solutionVector, 0, ndof*sizeof(Scalar));
     }
     else
     {
         OGProjection<double> ogProjection;
-        ogProjection.project_global(castConst(spaces),
+        ogProjection.project_global(spaces,
                                     solutions,
                                     solutionVector, this->m_block->projNormTypeVector());
     }
@@ -296,9 +296,9 @@ void Solver<Scalar>::deleteSelectors(Hermes::vector<RefinementSelectors::Selecto
 }
 
 template <typename Scalar>
-Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> Solver<Scalar>::deepMeshAndSpaceCopy(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces, bool createReference)
+Hermes::vector<SpaceSharedPtr<Scalar> > Solver<Scalar>::deepMeshAndSpaceCopy(Hermes::vector<SpaceSharedPtr<Scalar> > spaces, bool createReference)
 {
-    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> newSpaces;
+    Hermes::vector<SpaceSharedPtr<Scalar> > newSpaces;
     int totalComp = 0;
     foreach(Field* field, m_block->fields())
     {
@@ -343,7 +343,7 @@ Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> Solver<Scalar>::deepMeshAndSpa
 }
 
 template <typename Scalar>
-void Solver<Scalar>::setActualSpaces(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces)
+void Solver<Scalar>::setActualSpaces(Hermes::vector<SpaceSharedPtr<Scalar> > spaces)
 {
     clearActualSpaces();
     m_actualSpaces = spaces;
@@ -352,10 +352,6 @@ void Solver<Scalar>::setActualSpaces(Hermes::vector<Hermes::Hermes2D::Space<Scal
 template <typename Scalar>
 void Solver<Scalar>::clearActualSpaces()
 {
-    // clear spaces
-    foreach (Hermes::Hermes2D::Space<Scalar> *space, actualSpaces())
-        delete space;
-
     m_actualSpaces.clear();
 }
 
@@ -363,22 +359,22 @@ template <typename Scalar>
 void Solver<Scalar>::addSolutionToStore(BlockSolutionID solutionID, Scalar* solutionVector)
 {
     assert(solutionID.solutionMode == SolutionMode_Normal);
-    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> newSpaces = deepMeshAndSpaceCopy(actualSpaces(), false);
+    Hermes::vector<SpaceSharedPtr<Scalar> > newSpaces = deepMeshAndSpaceCopy(actualSpaces(), false);
 
     Hermes::vector<MeshSharedPtr> meshes = spacesMeshes(newSpaces);
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions = createSolutions<Scalar>(meshes);
-    Solution<Scalar>::vector_to_solutions(solutionVector, castConst(newSpaces), solutions);
+    Solution<Scalar>::vector_to_solutions(solutionVector, newSpaces, solutions);
 
     SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(),
                                                   0.0,
-                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(newSpaces)));
+                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(newSpaces));
 
     Agros2D::solutionStore()->addSolution(solutionID, MultiArray<Scalar>(newSpaces, solutions), runTime);
 }
 
 template <typename Scalar>
 Scalar *Solver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
-                                        Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces,
+                                        Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
                                         int adaptivityStep,
                                         Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> previousSolution)
 {
@@ -387,7 +383,7 @@ Scalar *Solver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
     try
     {
         m_hermesSolverContainer->projectPreviousSolution(initialSolutionVector, spaces, previousSolution);
-        m_hermesSolverContainer->setTableSpaces()->set_spaces(castConst(spaces));
+        m_hermesSolverContainer->setTableSpaces()->set_spaces(spaces);
         m_hermesSolverContainer->setWeakFormulation(m_block->weakForm());
         m_hermesSolverContainer->setMatrixRhsOutput(m_solverCode, adaptivityStep);
 
@@ -413,7 +409,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     // cout << "Solving with " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) << " dofs" << endl;
 
     // check for DOFs
-    int ndof = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(actualSpaces()));
+    int ndof = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(actualSpaces());
     if (ndof == 0)
     {
         Agros2D::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
@@ -510,14 +506,14 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivity
 
     // solve, for nonlinear solver use solution obtained by BDFA method as an initial vector
     // TODO: remove for linear solver
-    Scalar *initialSolutionVector = new Scalar[Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(actualSpaces()))];
+    Scalar *initialSolutionVector = new Scalar[Hermes::Hermes2D::Space<Scalar>::get_num_dofs(actualSpaces())];
     Scalar *solutionVector = solveOneProblem(initialSolutionVector, actualSpaces(), adaptivityStep,
                                              timeStep > 0 ? referenceCalculation.solutions() : Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *>());
     delete [] initialSolutionVector;
 
     Hermes::vector<MeshSharedPtr> meshes = spacesMeshes(actualSpaces());
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions = createSolutions<Scalar>(meshes);
-    Solution<Scalar>::vector_to_solutions(solutionVector, castConst(actualSpaces()), solutions);
+    Solution<Scalar>::vector_to_solutions(solutionVector, actualSpaces(), solutions);
 
     double error = Global<Scalar>::calc_abs_errors(referenceCalculation.solutions(), solutions);
 
@@ -751,7 +747,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
     m_block->weakForm()->registerForms(bdf2Table);
 
     // create reference spaces
-    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spacesRef = deepMeshAndSpaceCopy(actualSpaces(), true);
+    Hermes::vector<SpaceSharedPtr<Scalar> > spacesRef = deepMeshAndSpaceCopy(actualSpaces(), true);
     assert(actualSpaces().size() == spacesRef.size());
 
     // todo: delete? je to vubec potreba?
@@ -768,28 +764,28 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
     // output reference solution
     Hermes::vector<MeshSharedPtr> meshesRef = spacesMeshes(spacesRef);
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionsRef = createSolutions<Scalar>(meshesRef);
-    Solution<Scalar>::vector_to_solutions(solutionVector, castConst(spacesRef), solutionsRef);
+    Solution<Scalar>::vector_to_solutions(solutionVector, spacesRef, solutionsRef);
 
     BlockSolutionID referenceSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Reference);
     SolutionStore::SolutionRunTimeDetails runTimeRef(Agros2D::problem()->actualTimeStepLength(),
                                                      0.0,
-                                                     Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(spacesRef)));
+                                                     Hermes::Hermes2D::Space<double>::get_num_dofs(spacesRef));
     Agros2D::solutionStore()->addSolution(referenceSolutionID, MultiArray<Scalar>(spacesRef, solutionsRef), runTimeRef);
 
     // copy spaces and create empty solutions
-    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spacesCopy = deepMeshAndSpaceCopy(actualSpaces(), false);
+    Hermes::vector<SpaceSharedPtr<Scalar> > spacesCopy = deepMeshAndSpaceCopy(actualSpaces(), false);
     Hermes::vector<MeshSharedPtr> meshes = spacesMeshes(actualSpaces());
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions = createSolutions<Scalar>(meshes);
 
     // project the fine mesh solution onto the coarse mesh.
     Hermes::Hermes2D::OGProjection<Scalar> ogProjection;
-    ogProjection.project_global(castConst(spacesCopy), solutionsRef, solutions);
+    ogProjection.project_global(spacesCopy, solutionsRef, solutions);
 
     // save the solution
     BlockSolutionID solutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal);
     SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(),
                                                   0.0,
-                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(spacesCopy)));
+                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(spacesCopy));
     MultiArray<Scalar> msa(spacesCopy, solutions);
     Agros2D::solutionStore()->addSolution(solutionID, msa, runTime);
 
@@ -848,8 +844,8 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep, bool f
 
         Agros2D::log()->printMessage(m_solverID, QObject::tr("Adaptivity step (error = %1, DOFs = %2/%3)").
                                      arg(error).
-                                     arg(Space<Scalar>::get_num_dofs(msa.spacesConst())).
-                                     arg(Space<Scalar>::get_num_dofs(msaRef.spacesConst())));
+                                     arg(Space<Scalar>::get_num_dofs(msa.spaces())).
+                                     arg(Space<Scalar>::get_num_dofs(msaRef.spaces())));
         adapt = adapt && (!noRefinementPerformed);
     }
 
@@ -863,7 +859,7 @@ void Solver<Scalar>::solveInitialTimeStep()
 {
     Agros2D::log()->printDebug(m_solverID, QObject::tr("Initial time step"));
 
-    Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces = deepMeshAndSpaceCopy(actualSpaces(), false);
+    Hermes::vector<SpaceSharedPtr<Scalar> > spaces = deepMeshAndSpaceCopy(actualSpaces(), false);
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions;
 
     int totalComp = 0;
@@ -882,7 +878,7 @@ void Solver<Scalar>::solveInitialTimeStep()
     BlockSolutionID solutionID(m_block, 0, 0, SolutionMode_Normal);
     SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(),
                                                   0.0,
-                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(castConst(actualSpaces())));
+                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(actualSpaces()));
 
     Agros2D::solutionStore()->addSolution(solutionID,
                                           MultiArray<Scalar>(spaces, solutions),

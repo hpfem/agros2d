@@ -655,7 +655,7 @@ void PyField::initialMeshParameters(map<std::string, int> &parameters)
         int timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo(), SolutionMode_Normal);
         MultiArray<double> msa = Agros2D::solutionStore()->multiArray(FieldSolutionID(fieldInfo(), timeStep, 0, SolutionMode_Normal));
 
-        parameters["dofs"] = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spacesConst());
+        parameters["dofs"] = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spaces());
     }
 }
 
@@ -672,7 +672,7 @@ void PyField::solutionMeshParameters(map<std::string, int> &parameters)
 
         parameters["nodes"] = msa.solutions().at(0)->get_mesh()->get_num_vertex_nodes();
         parameters["elements"] = msa.solutions().at(0)->get_mesh()->get_num_active_elements();
-        parameters["dofs"] = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spacesConst());
+        parameters["dofs"] = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spaces());
     }
     else
         initialMeshParameters(parameters);

@@ -240,7 +240,7 @@ void InfoWidget::showInfo()
 
                 solutionMeshNodes = msa.solutions().at(0)->get_mesh()->get_num_vertex_nodes();
                 solutionMeshElements = msa.solutions().at(0)->get_mesh()->get_num_active_elements();
-                DOFs = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spacesConst());
+                DOFs = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spaces());
             }
 
             if (Agros2D::problem()->isMeshed())

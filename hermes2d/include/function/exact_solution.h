@@ -32,7 +32,7 @@ namespace Hermes
     class HERMES_API ExactSolution : public Solution<Scalar>
     {
     public:
-      ExactSolution(MeshSharedPtr);
+      ExactSolution(MeshSharedPtr mesh);
 
       /// Dimension of result - either 1 or 2.
       virtual unsigned int get_dimension() const = 0;

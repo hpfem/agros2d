@@ -81,22 +81,18 @@ void MultiArray<Scalar>::clear()
 
     m_solutions.clear();
 
-    // clear spaces
-    foreach (Hermes::Hermes2D::Space<Scalar> *space, m_spaces)
-        delete space;
-
     m_spaces.clear();
 }
 
 template <typename Scalar>
-void MultiArray<Scalar>::append(Hermes::Hermes2D::Space<Scalar> *space, Hermes::Hermes2D::Solution<Scalar> *solution)
+void MultiArray<Scalar>::append(SpaceSharedPtr<Scalar> space, Hermes::Hermes2D::Solution<Scalar> *solution)
 {
     m_spaces.push_back(space);
     m_solutions.push_back(solution);
 }
 
 template <typename Scalar>
-void MultiArray<Scalar>::append(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces, Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions)
+void MultiArray<Scalar>::append(Hermes::vector<SpaceSharedPtr<Scalar> > spaces, Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions)
 {
     assert(spaces.size() == solutions.size());
     for (int i = 0; i < solutions.size(); i++)
@@ -144,8 +140,7 @@ void MultiArray<Scalar>::loadFromFile(const QString &baseName, FieldSolutionID s
     {
         try
         {
-            Space<Scalar> *space = Space<Scalar>::load(QString("%1_%2.spc").arg(baseName).arg(i).toLatin1().data(),
-                                                       mesh, false);
+            SpaceSharedPtr<Scalar> space = Space<Scalar>::load(QString("%1_%2.spc").arg(baseName).arg(i).toLatin1().data(), mesh, false);
 
             Solution<Scalar> *sln = new Solution<Scalar>();
             sln->set_validation(false);
