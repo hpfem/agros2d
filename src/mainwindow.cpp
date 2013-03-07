@@ -243,7 +243,7 @@ MainWindow::~MainWindow()
 
     delete logStdOut;
 
-    Agros2D::Agros2D().clear();
+    Agros2D::clear();
 }
 
 void MainWindow::open(const QString &fileName)
@@ -521,7 +521,7 @@ void MainWindow::createMenus()
     mnuAdd->addAction(Agros2D::scene()->actNewLabel);
     mnuAdd->addSeparator();
     Agros2D::scene()->addBoundaryAndMaterialMenuItems(mnuAdd, this);
-    mnuProblem->addSeparator();    
+    mnuProblem->addSeparator();
     mnuProblem->addAction(sceneViewPost2D->actPostprocessorModeNothing);
     mnuProblem->addAction(sceneViewPost2D->actPostprocessorModeLocalPointValue);
     mnuProblem->addAction(sceneViewPost2D->actPostprocessorModeSurfaceIntegral);
