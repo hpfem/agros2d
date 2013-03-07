@@ -34,6 +34,16 @@ namespace Hermes
   }
 }
 
+#ifdef _WINDOWS
+template<typename Scalar>
+class SpaceSharedPtr : public std::shared_ptr<Hermes::Hermes2D::Space<Scalar> >
+{
+public:
+  SpaceSharedPtr(Hermes::Hermes2D::Space<Scalar>* ptr = NULL) : std::shared_ptr<Hermes::Hermes2D::Space<Scalar> >(ptr)
+  {
+  }
+};
+#else
 template<typename Scalar>
 class SpaceSharedPtr : public std::tr1::shared_ptr<Hermes::Hermes2D::Space<Scalar> >
 {
@@ -42,6 +52,7 @@ public:
   {
   }
 };
+#endif
 
 namespace Hermes
 {
