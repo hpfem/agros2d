@@ -24,8 +24,6 @@
 
 #include "util.h"
 
-#include "util/glfont.h"
-
 class Scene;
 class SceneViewCommon;
 class SceneViewInterface;

@@ -58,7 +58,8 @@ HEADERS += \
     quazip/quazip.h \
     quazip/quazipnewinfo.h \
     quazip/unzip.h \
-    quazip/zip.h
+    quazip/zip.h \
+    stb_truetype/stb_truetype.h
 
 linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     TARGET = ../libs/agros2d_3rdparty

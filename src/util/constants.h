@@ -55,8 +55,10 @@ const double GRIDSTEP = 0.05;
 const bool SHOWGRID = true;
 const bool SNAPTOGRID = true;
 
-const QString RULERSFONT = "fontGoogleDroidMono10";
-const QString POSTFONT = "fontGoogleDroidMono14";
+const QString RULERSFONT = "Droid";
+const int RULERSFONTSIZE = 9;
+const QString POSTFONT = "Droid";
+const int POSTFONTSIZE = 12;
 
 const bool SHOWAXES = true;
 const bool SHOWRULERS = true;
@@ -198,6 +200,8 @@ const int MAX_DOFS = 60e3;
 const int CACHE_SIZE = 10;
 
 const int NOT_FOUND_SO_FAR = -999;
+
+const int GLYPH_M = 77;
 
 #endif // UTIL_CONSTANTS_H
 

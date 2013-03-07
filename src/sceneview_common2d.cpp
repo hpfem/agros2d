@@ -210,7 +210,7 @@ void SceneViewCommon2D::paintAxes()
     glVertex2d(border.x + 35, border.y + 1);
     glEnd();
 
-    printRulersAt(border.x + 38, border.y + 1 - m_fontRulers->size / 2.0, Agros2D::problem()->config()->labelX());
+    printRulersAt(border.x + 38, border.y + 1 - (m_charDataRulers[GLYPH_M].x1 - m_charDataRulers[GLYPH_M].x0) / 2.0, Agros2D::problem()->config()->labelX());
 
     // y-axis
     glBegin(GL_QUADS);
@@ -226,7 +226,7 @@ void SceneViewCommon2D::paintAxes()
     glVertex2d(border.x + 1, border.y + 35);
     glEnd();
 
-    printRulersAt(border.x + 1 - m_fontRulers->glyphs[GLYPH_M].width / 2.0, border.y + 38, Agros2D::problem()->config()->labelY());
+    printRulersAt(border.x + 1 - (m_charDataRulers[GLYPH_M].x1 - m_charDataRulers[GLYPH_M].x0) / 2.0, border.y + 38, Agros2D::problem()->config()->labelY());
 
     glDisable(GL_POLYGON_OFFSET_FILL);
 }
@@ -352,7 +352,8 @@ void SceneViewCommon2D::paintRulers()
                     text = QString::number(i*gridStep, 'f', 6);
 
                 Point scr = untransform(i*gridStep, cornerMax.y);
-                printRulersAt(scr.x + m_fontRulers->glyphs[GLYPH_M].width / 2.0, scr.y + 2, QString(text + "        ").left(9));
+                printRulersAt(scr.x + (m_charDataRulers[GLYPH_M].x1 - m_charDataRulers[GLYPH_M].x0) / 2.0,
+                              scr.y + 2, QString(text + "        ").left(9));
             }
         }
 
@@ -371,7 +372,8 @@ void SceneViewCommon2D::paintRulers()
                     text = QString::number(i*gridStep, 'f', 7);
 
                 Point scr = untransform(cornerMin.x + rulersArea.x / 20.0, i*gridStep);
-                printRulersAt(scr.x, scr.y - m_fontRulers->height * 1.1, QString(((i >= 0) ? " " : "") + text + "        ").left(9));
+                printRulersAt(scr.x, scr.y - 2 * (m_charDataRulers[GLYPH_M].y1 - m_charDataRulers[GLYPH_M].y0) * 1.1,
+                              QString(((i >= 0) ? " " : "") + text + "        ").left(9));
             }
         }
     }
@@ -526,7 +528,8 @@ void SceneViewCommon2D::keyReleaseEvent(QKeyEvent *event)
 // rulers
 Point SceneViewCommon2D::rulersAreaSize()
 {
-    return Point(m_fontRulers->glyphs[GLYPH_M].width * 11, m_fontRulers->height * 2);
+    return Point((m_charDataRulers[GLYPH_M].x1 - m_charDataRulers[GLYPH_M].x0) * 11,
+                 (m_charDataRulers[GLYPH_M].y1 - m_charDataRulers[GLYPH_M].y0) * 3);
 }
 
 void SceneViewCommon2D::setZoom(double power)

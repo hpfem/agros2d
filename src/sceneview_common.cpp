@@ -34,15 +34,20 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 
+#ifndef STB_TRUETYPE_IMPLEMENTATION
+#define STB_TRUETYPE_IMPLEMENTATION
+#include "stb_truetype/stb_truetype.h"
+#endif
+
 #ifndef GL_MULTISAMPLE
 #define GL_MULTISAMPLE 0x809D
 #endif
 
+static const int TEXTURE_SIZE = 512;
+
 SceneViewCommon::SceneViewCommon(QWidget *parent)
     : QGLWidget(parent),
       actSceneZoomRegion(NULL),
-      m_fontPost(NULL),
-      m_fontRulers(NULL),
       m_textureLabelRulers(-1),
       m_textureLabelPost(-1)
 {
@@ -87,17 +92,15 @@ void SceneViewCommon::createFontTexture()
     // rulers font
     if (glIsTexture(m_textureLabelRulers))
         glDeleteTextures(1, &m_textureLabelRulers);
-    m_fontRulers = textureFontFromStringKey(Agros2D::problem()->configView()->rulersFont);
     glGenTextures(1, &m_textureLabelRulers);
-    initFont(m_textureLabelRulers, m_fontRulers);
+    initFont(m_textureLabelRulers, m_charDataRulers, Agros2D::problem()->configView()->rulersFont, Agros2D::problem()->configView()->rulersFontSize);
     // qDebug() << "textureLabelRulers: " << m_textureLabelRulers;
 
     // rulers font
     if (glIsTexture(m_textureLabelPost))
         glDeleteTextures(1, &m_textureLabelPost);
-    m_fontPost = textureFontFromStringKey(Agros2D::problem()->configView()->postFont);
     glGenTextures(1, &m_textureLabelPost);
-    initFont(m_textureLabelPost, m_fontPost);
+    initFont(m_textureLabelPost, m_charDataPost, Agros2D::problem()->configView()->postFont, Agros2D::problem()->configView()->postFontSize);
     // qDebug() << "textureLabelPost: " << m_textureLabelPost;
 }
 
@@ -113,14 +116,20 @@ void SceneViewCommon::setupViewport(int w, int h)
 
 void SceneViewCommon::printRulersAt(int penX, int penY, const QString &text)
 {
+    glColor3d(Agros2D::problem()->configView()->colorCross.redF(),
+              Agros2D::problem()->configView()->colorCross.greenF(),
+              Agros2D::problem()->configView()->colorCross.blueF());
+
     glBindTexture(GL_TEXTURE_2D, m_textureLabelRulers);
-    printAt(penX, penY, text, m_fontRulers);
+    printAt(penX, penY, text, m_charDataRulers);
 }
 
 void SceneViewCommon::printPostAt(int penX, int penY, const QString &text)
 {
+    glColor3d(0.0, 0.0, 0.0);
+
     glBindTexture(GL_TEXTURE_2D, m_textureLabelPost);
-    printAt(penX, penY, text, m_fontPost);
+    printAt(penX, penY, text, m_charDataPost);
 }
 
 QPixmap SceneViewCommon::renderScenePixmap(int w, int h, bool useContext)
@@ -148,45 +157,61 @@ void SceneViewCommon::loadProjectionViewPort()
     glLoadIdentity();
 }
 
-void SceneViewCommon::printAt(int penX, int penY, const QString &text, const TextureFont *fnt)
+void getBakedQuad(stbtt_bakedchar *chardata, int pw, int ph, int char_index,
+                  float *xpos, float *ypos, stbtt_aligned_quad *q)
 {
+
+}
+
+void SceneViewCommon::printAt(int penX, int penY, const QString &text, stbtt_bakedchar *fnt)
+{   
     glEnable(GL_TEXTURE_2D);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    double xpos = 0.0;
 
     glBegin(GL_TRIANGLES);
     for (int i = 0; i < text.length(); ++i)
     {
-        const TextureGlyph *glyph = NULL;
-        for (int j = 0; j < fnt->glyphs_count; ++j)
+        int c = text.at(i).toAscii();
+
+        if (c >= 32 && c < 128)
         {
-            if (fnt->glyphs[j].charcode == text.at(i) )
-            {
-                glyph = &fnt->glyphs[j];
-                break;
-            }
+            stbtt_aligned_quad q;
+
+            stbtt_bakedchar *b = fnt + c - 32;
+
+            int round_x = std::floor(penX + b->xoff);
+            int round_y = std::floor(penY - b->yoff);
+
+            q.x0 = (float) round_x + xpos;
+            q.y0 = (float) round_y;
+            q.x1 = (float) round_x + b->x1 - b->x0 + xpos;
+            q.y1 = (float) round_y - b->y1 + b->y0;
+
+            q.s0 = b->x0 / (float) TEXTURE_SIZE;
+            q.t0 = b->y0 / (float) TEXTURE_SIZE;
+            q.s1 = b->x1 / (float) TEXTURE_SIZE;
+            q.t1 = b->y1 / (float) TEXTURE_SIZE;
+
+            xpos += b->xadvance;
+
+            glTexCoord2f(q.s0, q.t0);
+            glVertex2i(q.x0, q.y0);
+            glTexCoord2f(q.s1, q.t1);
+            glVertex2i(q.x1, q.y1);
+            glTexCoord2f(q.s1, q.t0);
+            glVertex2i(q.x1, q.y0);
+
+            glTexCoord2f(q.s0, q.t0);
+            glVertex2i(q.x0, q.y0);
+            glTexCoord2f(q.s0, q.t1);
+            glVertex2i(q.x0, q.y1);
+            glTexCoord2f(q.s1, q.t1);
+            glVertex2i(q.x1, q.y1);
         }
-        if (!glyph)
-        {
-            continue;
-        }
-
-        int x = penX + glyph->offset_x;
-        int y = penY + glyph->offset_y;
-        int w  = glyph->width;
-        int h  = glyph->height;
-
-        glTexCoord2f(glyph->s0, glyph->t0); glVertex2i(x,   y );
-        glTexCoord2f(glyph->s0, glyph->t1); glVertex2i(x,   y-h);
-        glTexCoord2f(glyph->s1, glyph->t1); glVertex2i(x+w, y-h);
-        glTexCoord2f(glyph->s0, glyph->t0); glVertex2i(x,   y  );
-        glTexCoord2f(glyph->s1, glyph->t1); glVertex2i(x+w, y-h);
-        glTexCoord2f(glyph->s1, glyph->t0); glVertex2i(x+w, y  );
-
-        penX += glyph->advance_x;
-        penY += glyph->advance_y;
-
     }
     glEnd();
 
@@ -194,14 +219,44 @@ void SceneViewCommon::printAt(int penX, int penY, const QString &text, const Tex
     glDisable(GL_TEXTURE_2D);
 }
 
-void SceneViewCommon::initFont(GLuint textureID, const TextureFont *fnt)
+void SceneViewCommon::initFont(GLuint textureID, stbtt_bakedchar *fnt, const QString fontName, int pointSize)
 {
+    // load font    
+    QString fntx = QFileInfo(QString("%1/resources/fonts/%2.ttf").arg(datadir()).arg(fontName)).absoluteFilePath();
+    if (!QFile::exists(fntx)) return;
+
+    FILE* fp = fopen(fntx.toStdString().c_str(), "rb");
+    if (!fp) return;
+    fseek(fp, 0, SEEK_END);
+    int fsize = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+
+    unsigned char* ttfBuffer = (unsigned char*)malloc(fsize);
+    if (!ttfBuffer)
+    {
+        fclose(fp);
+    }
+
+    fread(ttfBuffer, 1, fsize, fp);
+    fclose(fp);
+    fp = NULL;
+
+    unsigned char* bmap = (unsigned char*) malloc(TEXTURE_SIZE*TEXTURE_SIZE);
+    if (!bmap)
+    {
+        free(ttfBuffer);
+    }
+
+    stbtt_BakeFontBitmap(ttfBuffer, 0, pointSize, bmap, TEXTURE_SIZE, TEXTURE_SIZE, 32, 96, fnt);
+
+    // can free ttf_buffer at this point
     glBindTexture(GL_TEXTURE_2D, textureID);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, TEXTURE_SIZE, TEXTURE_SIZE, 0, GL_ALPHA, GL_UNSIGNED_BYTE, bmap);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_INTENSITY, fnt->tex_width, fnt->tex_height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, fnt->tex_data);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    free(ttfBuffer);
+    free(bmap);
 }
 
 // events *****************************************************************************************************************************

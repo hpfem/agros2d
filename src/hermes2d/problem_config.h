@@ -120,7 +120,9 @@ public:
 
     // font
     QString rulersFont;
+    int rulersFontSize;
     QString postFont;
+    int postFontSize;
 
     // zoom
     bool zoomToMouse;

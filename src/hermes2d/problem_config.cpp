@@ -121,8 +121,10 @@ void ProblemConfigView::load(QDomElement *config)
     activeField = readConfig("View/ActiveField", QString());
 
     // font
-    rulersFont = readConfig("View/RulersFont", RULERSFONT);
-    postFont = readConfig("View/PostFont", POSTFONT);
+    rulersFont = readConfig("View/RulersFontFamily", RULERSFONT);
+    rulersFontSize = readConfig("View/RulersFontPointSize", RULERSFONTSIZE);
+    postFont = readConfig("View/PostFontFamily", POSTFONT);
+    postFontSize = readConfig("View/PostFontPointSize", POSTFONTSIZE);
 
     // geometry
     nodeSize = readConfig("View/NodeSize", GEOMETRYNODESIZE);
@@ -295,8 +297,10 @@ void ProblemConfigView::save(QDomElement *config)
     writeConfig("Problem/Description", description);
 
     // font
-    writeConfig("View/RulersFont", rulersFont);
-    writeConfig("View/PostFont", postFont);
+    writeConfig("View/RulersFontFamily", rulersFont);
+    writeConfig("View/RulersFontPointSize", rulersFontSize);
+    writeConfig("View/PostFontFamily", postFont);
+    writeConfig("View/PostFontPointSize", postFontSize);
 
     // zoom
     writeConfig("General/ZoomToMouse", zoomToMouse);

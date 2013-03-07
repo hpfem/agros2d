@@ -21,6 +21,7 @@
 
 #include "util.h"
 #include "util/global.h"
+#include "util/constants.h"
 
 #include "scene.h"
 #include "hermes2d/field.h"
@@ -403,8 +404,8 @@ void SceneViewMesh::paintOrder()
             // if (lbox[i][0]/m_scale*aspect() > size.x && lbox[i][1]/m_scale > size.y)
             {
                 Point scr = untransform(vert[lvert[i]][0], vert[lvert[i]][1]);
-                printPostAt(scr.x - m_fontPost->glyphs[GLYPH_M].width / 2.0,
-                            scr.y - m_fontPost->height / 2.0,
+                printPostAt(scr.x - (m_charDataPost[GLYPH_M].x1 - m_charDataPost[GLYPH_M].x0) / 2.0,
+                            scr.y - (m_charDataPost[GLYPH_M].y1 - m_charDataPost[GLYPH_M].y0) / 2.0,
                             ltext[i]);
             }
         }
@@ -440,8 +441,8 @@ void SceneViewMesh::paintOrderColorBar()
     glTranslated(- width() / 2.0, -height() / 2.0, 0.0);
 
     // dimensions
-    int textWidth = 6 * m_fontPost->glyphs[GLYPH_M].width;
-    int textHeight = m_fontPost->height;
+    int textWidth = 6 * (m_charDataPost[GLYPH_M].x1 - m_charDataPost[GLYPH_M].x0);
+    int textHeight = 2 * (m_charDataPost[GLYPH_M].y1 - m_charDataPost[GLYPH_M].y0);
     Point scaleSize = Point(20 + textWidth, (20 + max * (2 * textHeight) - textHeight / 2.0 + 2));
     Point scaleBorder = Point(10.0, (Agros2D::problem()->configView()->showRulers) ? 1.8 * textHeight : 10.0);
     double scaleLeft = (width() - (20 + textWidth));
@@ -478,7 +479,7 @@ void SceneViewMesh::paintOrderColorBar()
     glColor3d(1.0, 1.0, 1.0);
     for (int i = 1; i < max + 1; i++)
     {
-        printPostAt(scaleLeft + 10 + 3.5 * m_fontPost->glyphs[GLYPH_M].width - 2 - scaleBorder.x,
+        printPostAt(scaleLeft + 10 + 3.5 * (m_charDataPost[GLYPH_M].x1 - m_charDataPost[GLYPH_M].x0) - 2 - scaleBorder.x,
                     scaleBorder.y + 10.0 + (i-1)*(2.0 * textHeight) + textHeight / 2.0,
                     QString::number(i));
     }

@@ -20,7 +20,6 @@
 #include "settings.h"
 
 #include "util/constants.h"
-#include "util/glfont.h"
 #include "util/global.h"
 
 #include "gui/common.h"
@@ -60,11 +59,9 @@ void SettingsWidget::load()
     chkSnapToGrid->setChecked(Agros2D::problem()->configView()->snapToGrid);
 
     cmbRulersFont->setCurrentIndex(cmbRulersFont->findData(Agros2D::problem()->configView()->rulersFont));
-    if (cmbRulersFont->currentIndex() == -1)
-        cmbRulersFont->setCurrentIndex(0);
+    cmbRulersFontSizes->setCurrentIndex(cmbRulersFontSizes->findData(Agros2D::problem()->configView()->rulersFontSize));
     cmbPostFont->setCurrentIndex(cmbPostFont->findData(Agros2D::problem()->configView()->postFont));
-    if (cmbPostFont->currentIndex() == -1)
-        cmbPostFont->setCurrentIndex(0);
+    cmbPostFontSizes->setCurrentIndex(cmbPostFontSizes->findData(Agros2D::problem()->configView()->postFontSize));
 
     chkShowAxes->setChecked(Agros2D::problem()->configView()->showAxes);
     chkShowRulers->setChecked(Agros2D::problem()->configView()->showRulers);
@@ -144,7 +141,9 @@ void SettingsWidget::save()
     Agros2D::problem()->configView()->snapToGrid = chkSnapToGrid->isChecked();
 
     Agros2D::problem()->configView()->rulersFont = cmbRulersFont->itemData(cmbRulersFont->currentIndex()).toString();
+    Agros2D::problem()->configView()->rulersFontSize = cmbRulersFontSizes->itemData(cmbRulersFontSizes->currentIndex()).toInt();
     Agros2D::problem()->configView()->postFont = cmbPostFont->itemData(cmbPostFont->currentIndex()).toString();
+    Agros2D::problem()->configView()->postFontSize = cmbPostFontSizes->itemData(cmbPostFontSizes->currentIndex()).toInt();
 
     Agros2D::problem()->configView()->showAxes = chkShowAxes->isChecked();
     Agros2D::problem()->configView()->showRulers = chkShowRulers->isChecked();
@@ -308,15 +307,21 @@ QWidget *SettingsWidget::controlsWorkspace()
     grpGrid->setLayout(layoutGrid);
 
     cmbRulersFont = new QComboBox();
-    fillFontsComboBox(cmbRulersFont);
+    fillComboBoxFonts(cmbRulersFont);
+    cmbRulersFontSizes = new QComboBox();
+    fillComboBoxFontSizes(cmbRulersFontSizes);
     cmbPostFont = new QComboBox();
-    fillFontsComboBox(cmbPostFont);
+    fillComboBoxFonts(cmbPostFont);
+    cmbPostFontSizes = new QComboBox();
+    fillComboBoxFontSizes(cmbPostFontSizes);
 
     QGridLayout *layoutFont = new QGridLayout();
     layoutFont->addWidget(new QLabel(tr("Rulers:")), 0, 0);
     layoutFont->addWidget(cmbRulersFont, 0, 1);
-    layoutFont->addWidget(new QLabel(tr("Postprocessor:")), 1, 0);
-    layoutFont->addWidget(cmbPostFont, 1, 1);
+    layoutFont->addWidget(cmbRulersFontSizes, 1, 1);
+    layoutFont->addWidget(new QLabel(tr("Postprocessor:")), 2, 0);
+    layoutFont->addWidget(cmbPostFont, 2, 1);
+    layoutFont->addWidget(cmbPostFontSizes, 3, 1);
 
     QGroupBox *grpFont = new QGroupBox(tr("Fonts"));
     grpFont->setLayout(layoutFont);
@@ -635,7 +640,9 @@ void SettingsWidget::doWorkspaceDefault()
     chkSnapToGrid->setChecked(SNAPTOGRID);
 
     cmbRulersFont->setCurrentIndex(cmbRulersFont->findData(RULERSFONT));
+    cmbRulersFontSizes->setCurrentIndex(cmbRulersFontSizes->findData(RULERSFONTSIZE));
     cmbPostFont->setCurrentIndex(cmbPostFont->findData(POSTFONT));
+    cmbPostFontSizes->setCurrentIndex(cmbPostFontSizes->findData(POSTFONTSIZE));
 
     chkShowAxes->setChecked(SHOWAXES);
     chkShowRulers->setChecked(SHOWRULERS);

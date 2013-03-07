@@ -54,9 +54,11 @@ private:
     QSpinBox *txtGeometryEdgeWidth;
     QSpinBox *txtGeometryLabelSize;
 
-    // scene font
+    // scene font   
     QComboBox *cmbRulersFont;
+    QComboBox *cmbRulersFontSizes;
     QComboBox *cmbPostFont;
+    QComboBox *cmbPostFontSizes;
 
     // workspace other
     QCheckBox *chkShowAxes;

@@ -21,39 +21,7 @@ CODECFORTR = UTF-8
 RC_FILE = src.rc
 RESOURCES = src.qrc
 
-SOURCES += util/fonts/ubuntu-10.cpp \
-    util/fonts/ubuntu-12.cpp \
-    util/fonts/ubuntu-14.cpp \
-    util/fonts/ubuntu-16.cpp \
-    util/fonts/ubuntu-18.cpp \
-    util/fonts/ubuntu-20.cpp \
-    util/fonts/ubuntu-22.cpp \
-    util/fonts/ubuntu-24.cpp \
-    util/fonts/liberation-10.cpp \
-    util/fonts/liberation-12.cpp \
-    util/fonts/liberation-14.cpp \
-    util/fonts/liberation-16.cpp \
-    util/fonts/liberation-18.cpp \
-    util/fonts/liberation-20.cpp \
-    util/fonts/liberation-22.cpp \
-    util/fonts/liberation-24.cpp \
-    util/fonts/google-droid-10.cpp \
-    util/fonts/google-droid-12.cpp \
-    util/fonts/google-droid-14.cpp \
-    util/fonts/google-droid-16.cpp \
-    util/fonts/google-droid-18.cpp \
-    util/fonts/google-droid-20.cpp \
-    util/fonts/google-droid-22.cpp \
-    util/fonts/google-droid-24.cpp \
-    util/fonts/computer-modern-10.cpp \
-    util/fonts/computer-modern-12.cpp \
-    util/fonts/computer-modern-14.cpp \
-    util/fonts/computer-modern-16.cpp \
-    util/fonts/computer-modern-18.cpp \
-    util/fonts/computer-modern-20.cpp \
-    util/fonts/computer-modern-22.cpp \
-    util/fonts/computer-modern-24.cpp \
-    util.cpp \
+SOURCES += util.cpp \
     value.cpp \
     scene.cpp \
     confdialog.cpp \
@@ -64,7 +32,6 @@ SOURCES += util/fonts/ubuntu-10.cpp \
     util/xml.cpp \
     util/enums.cpp \
     util/loops.cpp \
-    util/glfont.cpp \
     util/system_utils.cpp \
     gui/common.cpp \
     gui/chart.cpp \
@@ -166,7 +133,6 @@ HEADERS += util.h \
     util/xml.h \
     util/loops.h \
     util/enums.h \
-    util/glfont.h \
     util/system_utils.h \
     gui/common.h \
     gui/chart.h \

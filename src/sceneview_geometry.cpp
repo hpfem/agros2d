@@ -22,6 +22,7 @@
 #include "util.h"
 #include "util/global.h"
 #include "util/loops.h"
+#include "util/constants.h"
 #include "logview.h"
 
 #include "scene.h"
@@ -860,8 +861,8 @@ void SceneViewPreprocessor::paintRulersHintsEdges()
         glTranslated(- width() / 2.0, -height() / 2.0, 0.0);
 
         Point scr = untransform(snapPoint.x, snapPoint.y);
-        printRulersAt(scr.x + m_fontRulers->glyphs[GLYPH_M].width,
-                      scr.y + m_fontRulers->height * 0.7,
+        printRulersAt(scr.x + (m_charDataRulers[GLYPH_M].x1 - m_charDataRulers[GLYPH_M].x0),
+                      scr.y + (m_charDataRulers[GLYPH_M].y1 - m_charDataRulers[GLYPH_M].y0) * 0.7,
                       QString("%1, %2").arg(snapPoint.x).arg(snapPoint.y));
     }
 }
@@ -1210,7 +1211,8 @@ void SceneViewPreprocessor::paintGeometry()
 
             Point scr = untransform(label->point().x, label->point().y);
 
-            printRulersAt(scr.x - m_fontRulers->glyphs[GLYPH_M].width * str.length() / 2.0, scr.y - m_fontRulers->height * 1.2, str);
+            printRulersAt(scr.x - (m_charDataRulers[GLYPH_M].x1 - m_charDataRulers[GLYPH_M].x0) * str.length() / 2.0,
+                          scr.y - (m_charDataRulers[GLYPH_M].y1 - m_charDataRulers[GLYPH_M].y0) * 1.2, str);
         }
     }
 }

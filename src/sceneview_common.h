@@ -25,8 +25,9 @@
 #include "util.h"
 
 #include "gui/scenewidget.h"
-#include "util/glfont.h"
 #include "util/enums.h"
+
+#include "stb_truetype/stb_truetype.h"
 
 class Scene;
 class SceneViewCommon;
@@ -84,9 +85,6 @@ protected:
     QPoint m_lastPos; // last position of cursor
     SceneNode *m_nodeLast;
 
-    TextureFont *m_fontRulers;
-    TextureFont *m_fontPost;
-
     // helper for zoom region
     bool m_zoomRegion;
     QPointF m_zoomRegionPos;
@@ -99,12 +97,14 @@ protected:
     void drawArc(const Point &point, double r, double startAngle, double arcAngle, int segments = -1) const;
     void drawBlend(Point start, Point end, double red = 1.0, double green = 1.0, double blue = 1.0, double alpha = 0.75) const;
 
-    void printAt(int penX, int penY, const QString &text, const TextureFont *fnt);
-    void initFont(GLuint textureID, const TextureFont *fnt);
+    void printAt(int penX, int penY, const QString &text, stbtt_bakedchar *fnt);
+    void initFont(GLuint textureID, stbtt_bakedchar *fnt, const QString fontName, int pointSize);
     void createFontTexture();
 
     GLuint m_textureLabelRulers;
+    stbtt_bakedchar m_charDataRulers[96]; // ASCII 32..126 is 95 glyphs
     GLuint m_textureLabelPost;
+    stbtt_bakedchar m_charDataPost[96]; // ASCII 32..126 is 95 glyphs
 
     void printRulersAt(int penX, int penY, const QString &text);
     void printPostAt(int penX, int penY, const QString &text);

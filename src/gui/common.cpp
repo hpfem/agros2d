@@ -247,6 +247,61 @@ void fillComboBoxSolutionType(FieldInfo* fieldInfo, int timeStep, int adaptivity
     cmbSolutionType->blockSignals(false);
 }
 
+void fillComboBoxFonts(QComboBox *cmbFonts)
+{
+    // read fonts
+    cmbFonts->blockSignals(true);
+
+    // store variable
+    QString fnt = cmbFonts->itemData(cmbFonts->currentIndex(), Qt::UserRole).toString();
+
+    QDir dir(datadir() + "/resources/fonts");
+
+    QStringList filter;
+    filter << "*.ttf";
+    QStringList list = dir.entryList(filter);
+
+    cmbFonts->clear();
+    foreach (QString filename, list)
+    {
+        cmbFonts->addItem(QFileInfo(filename).baseName(), QFileInfo(filename).baseName());
+    }
+
+    cmbFonts->setCurrentIndex(cmbFonts->findData(fnt, Qt::UserRole));
+    if (cmbFonts->currentIndex() == -1 && cmbFonts->children().size() > 0)
+        cmbFonts->setCurrentIndex(0);
+    cmbFonts->blockSignals(false);
+}
+
+void fillComboBoxFontSizes(QComboBox *cmbFontSizes)
+{
+    // read fonts
+    cmbFontSizes->blockSignals(true);
+
+    // store variable
+    QString fnt = cmbFontSizes->itemData(cmbFontSizes->currentIndex(), Qt::UserRole).toString();
+
+    cmbFontSizes->clear();
+    cmbFontSizes->addItem("7", 7);
+    cmbFontSizes->addItem("8", 8);
+    cmbFontSizes->addItem("9", 9);
+    cmbFontSizes->addItem("10", 10);
+    cmbFontSizes->addItem("12", 12);
+    cmbFontSizes->addItem("14", 14);
+    cmbFontSizes->addItem("16", 16);
+    cmbFontSizes->addItem("18", 18);
+    cmbFontSizes->addItem("20", 20);
+    cmbFontSizes->addItem("24", 24);
+    cmbFontSizes->addItem("32", 32);
+    cmbFontSizes->addItem("40", 40);
+
+    cmbFontSizes->setCurrentIndex(cmbFontSizes->findData(fnt, Qt::UserRole));
+    if (cmbFontSizes->currentIndex() == -1)
+        cmbFontSizes->setCurrentIndex(0);
+    cmbFontSizes->blockSignals(false);
+}
+
+
 // column minimum width
 int columnMinimumWidth()
 {
