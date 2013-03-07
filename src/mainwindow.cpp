@@ -243,7 +243,7 @@ MainWindow::~MainWindow()
 
     delete logStdOut;
 
-    Agros2D::Agros2D().clear();
+    Agros2D::clear();
 }
 
 void MainWindow::open(const QString &fileName)
