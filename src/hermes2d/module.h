@@ -486,8 +486,8 @@ AGROS_API QMap<QString, QString> availableModules();
 void readMeshDirtyFix();
 
 // read and write mesh
-Hermes::vector<Hermes::Hermes2D::Mesh *> readMeshFromFile(const QString &fileName);
-void writeMeshToFile(const QString &fileName, Hermes::vector<Hermes::Hermes2D::Mesh *> meshes);
+Hermes::vector<MeshSharedPtr> readMeshFromFile(const QString &fileName);
+void writeMeshToFile(const QString &fileName, Hermes::vector<MeshSharedPtr> meshes);
 
 }
 

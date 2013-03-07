@@ -47,7 +47,7 @@ bool Field::solveInitVariables()
 }
 
 FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
-    : m_plugin(NULL), m_initialMesh(NULL), m_numberOfSolutions(0)
+    : m_plugin(NULL), m_numberOfSolutions(0)
 {
     if (fieldId.isEmpty())
         m_fieldId = "electrostatic";
@@ -77,7 +77,7 @@ FieldInfo::~FieldInfo()
     delete m_plugin;
 }
 
-void FieldInfo::setInitialMesh(Hermes::Hermes2D::Mesh *mesh)
+void FieldInfo::setInitialMesh(MeshSharedPtr mesh)
 {
     clearInitialMesh();
     m_initialMesh = mesh;
@@ -167,7 +167,7 @@ void FieldInfo::clear()
     m_picardAndersonNumberOfLastVectors = 3;
 }
 
-void FieldInfo::refineMesh(Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea)
+void FieldInfo::refineMesh(MeshSharedPtr mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea)
 {
     // refine mesh - global
     if (refineGlobal)

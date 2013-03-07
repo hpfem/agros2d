@@ -65,7 +65,7 @@ void {{CLASS}}VolumeIntegral::calculate()
 
         sln[0]->set_quad_2d(quad);
 
-        const Hermes::Hermes2D::Mesh* mesh = sln[0]->get_mesh();
+        const MeshSharedPtr mesh = sln[0]->get_mesh();
         Hermes::Hermes2D::Element *e;
 
         foreach (SceneLabel *label, Agros2D::scene()->labels->items())

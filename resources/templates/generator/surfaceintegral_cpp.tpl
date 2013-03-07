@@ -67,7 +67,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
         for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
             sln[k]->set_quad_2d(quad);
 
-        const Hermes::Hermes2D::Mesh* mesh = sln[0]->get_mesh();
+        const MeshSharedPtr mesh = sln[0]->get_mesh();
         for (int i = 0; i<Agros2D::scene()->edges->length(); i++)
         {
             if (Agros2D::scene()->edges->at(i)->isSelected())

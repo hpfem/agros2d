@@ -314,7 +314,7 @@ Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> Solver<Scalar>::deepMeshAndSpa
                 orderIncrease = 1;
         }
 
-        Mesh *mesh = NULL;
+        MeshSharedPtr mesh;
         // Deep copy of mesh for each field separately, than use for all field component the same one
         if (refineMesh)
         {
@@ -323,7 +323,7 @@ Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> Solver<Scalar>::deepMeshAndSpa
         }
         else
         {
-            mesh = new Mesh();
+            mesh = MeshSharedPtr(new Mesh());
             mesh->copy(spaces.at(totalComp)->get_mesh());
         }
 
@@ -352,16 +352,6 @@ void Solver<Scalar>::setActualSpaces(Hermes::vector<Hermes::Hermes2D::Space<Scal
 template <typename Scalar>
 void Solver<Scalar>::clearActualSpaces()
 {
-    // used meshes (should be shared between spaces)
-    QList<Hermes::Hermes2D::Mesh *> meshes;
-    foreach (Hermes::Hermes2D::Space<Scalar> *space, actualSpaces())
-        if (!meshes.contains(space->get_mesh()))
-            meshes.append(space->get_mesh());
-
-    // clear meshes
-    foreach (Hermes::Hermes2D::Mesh *mesh, meshes)
-        delete mesh;
-
     // clear spaces
     foreach (Hermes::Hermes2D::Space<Scalar> *space, actualSpaces())
         delete space;
@@ -375,7 +365,7 @@ void Solver<Scalar>::addSolutionToStore(BlockSolutionID solutionID, Scalar* solu
     assert(solutionID.solutionMode == SolutionMode_Normal);
     Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> newSpaces = deepMeshAndSpaceCopy(actualSpaces(), false);
 
-    Hermes::vector<Hermes::Hermes2D::Mesh *> meshes = spacesMeshes(newSpaces);
+    Hermes::vector<MeshSharedPtr> meshes = spacesMeshes(newSpaces);
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions = createSolutions<Scalar>(meshes);
     Solution<Scalar>::vector_to_solutions(solutionVector, castConst(newSpaces), solutions);
 
@@ -525,7 +515,7 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivity
                                              timeStep > 0 ? referenceCalculation.solutions() : Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *>());
     delete [] initialSolutionVector;
 
-    Hermes::vector<Hermes::Hermes2D::Mesh *> meshes = spacesMeshes(actualSpaces());
+    Hermes::vector<MeshSharedPtr> meshes = spacesMeshes(actualSpaces());
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions = createSolutions<Scalar>(meshes);
     Solution<Scalar>::vector_to_solutions(solutionVector, castConst(actualSpaces()), solutions);
 
@@ -607,7 +597,7 @@ void Solver<Scalar>::createInitialSpace()
         FieldInfo* fieldInfo = field->fieldInfo();
 
         // create copy of initial mesh
-        // Hermes::Hermes2D::Mesh *initialMesh = new Hermes::Hermes2D::Mesh();
+        // MeshSharedPtr initialMesh = new Hermes::Hermes2D::Mesh();
         // initialMesh->copy(fieldInfo->initialMesh());
 
         ProblemID problemId;
@@ -645,7 +635,7 @@ void Solver<Scalar>::createInitialSpace()
         }
 
         // create copy of initial mesh, for all components only one mesh
-        Hermes::Hermes2D::Mesh *oneInitialMesh = new Hermes::Hermes2D::Mesh();
+        MeshSharedPtr oneInitialMesh(new Hermes::Hermes2D::Mesh());
         oneInitialMesh->copy(fieldInfo->initialMesh());
 
         // create space
@@ -776,7 +766,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
     delete [] initialSolutionVector;
 
     // output reference solution
-    Hermes::vector<Hermes::Hermes2D::Mesh *> meshesRef = spacesMeshes(spacesRef);
+    Hermes::vector<MeshSharedPtr> meshesRef = spacesMeshes(spacesRef);
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutionsRef = createSolutions<Scalar>(meshesRef);
     Solution<Scalar>::vector_to_solutions(solutionVector, castConst(spacesRef), solutionsRef);
 
@@ -788,7 +778,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
 
     // copy spaces and create empty solutions
     Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spacesCopy = deepMeshAndSpaceCopy(actualSpaces(), false);
-    Hermes::vector<Hermes::Hermes2D::Mesh *> meshes = spacesMeshes(actualSpaces());
+    Hermes::vector<MeshSharedPtr> meshes = spacesMeshes(actualSpaces());
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions = createSolutions<Scalar>(meshes);
 
     // project the fine mesh solution onto the coarse mesh.
@@ -882,9 +872,8 @@ void Solver<Scalar>::solveInitialTimeStep()
         for (int comp = 0; comp < field->fieldInfo()->numberOfSolutions(); comp++)
         {
             // constant initial solution
-            Mesh *mesh = spaces.at(totalComp)->get_mesh();
-            ConstantSolution<double> *initial = new ConstantSolution<double>(mesh,
-                                                                             field->fieldInfo()->initialCondition());
+            MeshSharedPtr mesh = spaces.at(totalComp)->get_mesh();
+            ConstantSolution<double> *initial = new ConstantSolution<double>(mesh, field->fieldInfo()->initialCondition());
             solutions.push_back(initial);
             totalComp++;
         }

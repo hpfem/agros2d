@@ -81,16 +81,6 @@ void MultiArray<Scalar>::clear()
 
     m_solutions.clear();
 
-    // used meshes (should be shared between spaces)
-    QList<Hermes::Hermes2D::Mesh *> meshes;
-    foreach (Hermes::Hermes2D::Space<Scalar> *space, m_spaces)
-        if (!meshes.contains(space->get_mesh()))
-            meshes.append(space->get_mesh());
-
-    // clear meshes
-    foreach (Hermes::Hermes2D::Mesh *mesh, meshes)
-        delete mesh;
-
     // clear spaces
     foreach (Hermes::Hermes2D::Space<Scalar> *space, m_spaces)
         delete space;
@@ -136,8 +126,8 @@ void MultiArray<Scalar>::loadFromFile(const QString &baseName, FieldSolutionID s
     clear();
 
     // load the mesh file
-    Hermes::vector<Mesh *> meshes = Module::readMeshFromFile(QString("%1.mesh").arg(baseName));
-    Mesh *mesh = NULL;
+    Hermes::vector<MeshSharedPtr> meshes = Module::readMeshFromFile(QString("%1.mesh").arg(baseName));
+    MeshSharedPtr mesh;
     int i = 0;
     foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
     {
@@ -179,7 +169,7 @@ void MultiArray<Scalar>::saveToFile(const QString &baseName, FieldSolutionID sol
     // QTime time;
     // time.start();
 
-    Hermes::vector<Mesh *> meshes;
+    Hermes::vector<MeshSharedPtr> meshes;
     foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
     {
         if (fieldInfo == solutionID.group)

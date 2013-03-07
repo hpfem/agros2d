@@ -89,7 +89,7 @@ void PostHermes::processSolutionMesh()
 
         // init linearizer for solution mesh
         // ERROR: FIX component(0)
-        const Hermes::Hermes2D::Mesh *mesh = activeMultiSolutionArray().solutions().at(0)->get_mesh();
+        const MeshSharedPtr mesh = activeMultiSolutionArray().solutions().at(0)->get_mesh();
         Hermes::Hermes2D::ZeroSolution<double> solution(mesh);
 
         m_linSolutionMeshView.free();

@@ -253,7 +253,7 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
 
 {{#EXACT_SOURCE}}
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(Hermes::Hermes2D::Mesh *mesh)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(MeshSharedPtr mesh)
     : ExactSolutionScalarAgros<Scalar>(mesh)
 {
 }

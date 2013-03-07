@@ -50,9 +50,9 @@ public:
 
     QString fieldId() const { return m_fieldId; }
 
-    inline Hermes::Hermes2D::Mesh *initialMesh() const { return m_initialMesh; }
-    inline void clearInitialMesh() { if (m_initialMesh) delete m_initialMesh; m_initialMesh = NULL; }
-    void setInitialMesh(Hermes::Hermes2D::Mesh *mesh);
+    inline MeshSharedPtr initialMesh() const { return m_initialMesh; }
+    inline void clearInitialMesh() { m_initialMesh = MeshSharedPtr();}
+    void setInitialMesh(MeshSharedPtr mesh);
 
     AnalysisType analysisType() const { return m_analysisType; }
     void setAnalysisType(const AnalysisType analysisType);
@@ -130,7 +130,7 @@ public:
     void setTimeSkip(const double skip) { m_timeSkip = skip; emit changed(); }
 
     // refine mesh
-    void refineMesh(Hermes::Hermes2D::Mesh *mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea);
+    void refineMesh(MeshSharedPtr mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea);
 
     // name
     QString name() const;
@@ -217,7 +217,7 @@ private:
     QString m_fieldId;
 
     // initial mesh
-    Hermes::Hermes2D::Mesh *m_initialMesh;
+    MeshSharedPtr m_initialMesh;
 
     // analysis type
     AnalysisType m_analysisType;
@@ -273,7 +273,7 @@ public:
     QList<CouplingInfo* > couplingInfos() { return m_couplingInfos; }
 
     // mesh
-    void setMeshInitial(Hermes::Hermes2D::Mesh *meshInitial);
+    void setMeshInitial(MeshSharedPtr meshInitial);
 
 private:
     QList<CouplingInfo* > m_couplingInfos;

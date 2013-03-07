@@ -839,11 +839,11 @@ void Problem::readInitialMeshesFromFile()
 
     // load initial mesh file
     // prepare mesh array
-    Hermes::vector<Hermes::Hermes2D::Mesh*> meshesVector;
-    QMap<FieldInfo *, Hermes::Hermes2D::Mesh *> meshes;
+    Hermes::vector<MeshSharedPtr> meshesVector;
+    QMap<FieldInfo *, MeshSharedPtr> meshes;
     foreach (FieldInfo* fieldInfo, m_fieldInfos)
     {
-        Hermes::Hermes2D::Mesh *mesh = new Hermes::Hermes2D::Mesh();
+        MeshSharedPtr mesh(new Hermes::Hermes2D::Mesh());
 
         meshesVector.push_back(mesh);
         // cache
@@ -873,7 +873,7 @@ void Problem::readInitialMeshesFromFile()
     QSet<int> boundaries;
     foreach (FieldInfo *fieldInfo, m_fieldInfos)
     {
-        Hermes::Hermes2D::Mesh *mesh = meshes[fieldInfo];
+        MeshSharedPtr mesh = meshes[fieldInfo];
 
         // check that all boundary edges have a marker assigned
         for (int i = 0; i < mesh->get_max_node_id(); i++)
@@ -906,8 +906,6 @@ void Problem::readInitialMeshesFromFile()
                                  arg(markers));
 
             // delete meshes
-            foreach (Hermes::Hermes2D::Mesh *mesh, meshes)
-                delete mesh;
             meshes.clear();
             meshesVector.clear();
 

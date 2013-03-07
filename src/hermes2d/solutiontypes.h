@@ -44,9 +44,9 @@ Hermes::vector<const Hermes::Hermes2D::Space<Scalar> *> castConst(Hermes::vector
 }
 
 template <typename Scalar>
-Hermes::vector<Hermes::Hermes2D::Mesh *> spacesMeshes(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces)
+Hermes::vector<MeshSharedPtr> spacesMeshes(Hermes::vector<Hermes::Hermes2D::Space<Scalar> *> spaces)
 {
-    Hermes::vector<Hermes::Hermes2D::Mesh *> meshes;
+    Hermes::vector<MeshSharedPtr> meshes;
     foreach (Hermes::Hermes2D::Space<Scalar> *space, spaces)
         meshes.push_back(space->get_mesh());
 
@@ -54,10 +54,10 @@ Hermes::vector<Hermes::Hermes2D::Mesh *> spacesMeshes(Hermes::vector<Hermes::Her
 }
 
 template <typename Scalar>
-Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> createSolutions(Hermes::vector<Hermes::Hermes2D::Mesh *> meshes)
+Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> createSolutions(Hermes::vector<MeshSharedPtr> meshes)
 {
     Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> slns;
-    foreach (Hermes::Hermes2D::Mesh *mesh, meshes)
+    foreach (MeshSharedPtr mesh, meshes)
     {
         Hermes::Hermes2D::Solution<Scalar> *sln = new Hermes::Hermes2D::Solution<double>(mesh);
         slns.push_back(sln);

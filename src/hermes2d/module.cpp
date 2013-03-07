@@ -611,30 +611,30 @@ void Module::readMeshDirtyFix()
           "  [ 0, 1, 90 ]" << std::endl <<
           "]" << std::endl;
 
-    Hermes::Hermes2D::Mesh mesh;
+    MeshSharedPtr mesh(new Hermes::Hermes2D::Mesh);
     Hermes::Hermes2D::MeshReaderH2D meshloader;
 
     std::ofstream outputFile((tempProblemDir().toStdString() + "/dummy.mesh").c_str(), fstream::out);
     outputFile << os.str();
     outputFile.close();
 
-    meshloader.load((tempProblemDir().toStdString() + "/dummy.mesh").c_str(), &mesh);
+    meshloader.load((tempProblemDir().toStdString() + "/dummy.mesh").c_str(), mesh);
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
 }
 
-Hermes::vector<Hermes::Hermes2D::Mesh *> Module::readMeshFromFile(const QString &fileName)
+Hermes::vector<MeshSharedPtr> Module::readMeshFromFile(const QString &fileName)
 {
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
-    Hermes::vector<Hermes::Hermes2D::Mesh* > meshes;
+    Hermes::vector<MeshSharedPtr > meshes;
     int numMeshes = Agros2D::problem()->fieldInfos().count();
     for(int i = 0; i < numMeshes; i++)
     {
-        Hermes::Hermes2D::Mesh *mesh = new Hermes::Hermes2D::Mesh();
+        MeshSharedPtr mesh(new Hermes::Hermes2D::Mesh());
         meshes.push_back(mesh);
     }
 
@@ -656,7 +656,7 @@ Hermes::vector<Hermes::Hermes2D::Mesh *> Module::readMeshFromFile(const QString 
     return meshes;
 }
 
-void Module::writeMeshToFile(const QString &fileName, Hermes::vector<Hermes::Hermes2D::Mesh *> meshes)
+void Module::writeMeshToFile(const QString &fileName, Hermes::vector<MeshSharedPtr> meshes)
 {
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");

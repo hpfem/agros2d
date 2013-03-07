@@ -126,7 +126,7 @@ template<typename Scalar>
 class {{FUNCTION_NAME}} : public ExactSolutionScalarAgros<Scalar>
 {
 public:
-    {{FUNCTION_NAME}}(Hermes::Hermes2D::Mesh *mesh);
+    {{FUNCTION_NAME}}(MeshSharedPtr mesh);
 
     Scalar value(double x, double y) const;
     void derivatives (double x, double y, Scalar& dx, Scalar& dy) const;

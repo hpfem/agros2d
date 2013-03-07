@@ -59,8 +59,8 @@ private:
 
     struct MeshCache
     {
-        MeshCache() : timeStep(0), adaptivityStep(0), solutionMode(SolutionMode_Normal), mesh(NULL), meshHashes(NULL) {}
-        MeshCache(int timeStep, int adaptivityStep, SolutionMode solutionMode, const Hermes::Hermes2D::Mesh *mesh, MeshHash *meshHashes)
+        MeshCache() : timeStep(0), adaptivityStep(0), solutionMode(SolutionMode_Normal), meshHashes(NULL) {}
+        MeshCache(int timeStep, int adaptivityStep, SolutionMode solutionMode, const MeshSharedPtr mesh, MeshHash *meshHashes)
             : timeStep(timeStep), adaptivityStep(adaptivityStep), solutionMode(solutionMode), mesh(mesh), meshHashes(meshHashes)
         {}
 
@@ -74,7 +74,7 @@ private:
         int adaptivityStep;
         SolutionMode solutionMode;
 
-        const Hermes::Hermes2D::Mesh *mesh;
+        const MeshSharedPtr mesh;
         MeshHash *meshHashes;
     };
 

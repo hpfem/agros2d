@@ -10,6 +10,8 @@ INCLUDEPATH += ./ \
     ../3rdparty/quazip \
     ../pythonlab
 
+DEFINES += WITH_OPENMP
+
 linux-g++|linux-g++-64|linux-g++-32 {
     QMAKE_LFLAGS += -fopenmp
     QMAKE_CXXFLAGS += -fopenmp
