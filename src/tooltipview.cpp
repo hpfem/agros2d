@@ -25,7 +25,6 @@ TooltipView::TooltipView(QWidget *parent) : QDockWidget(tr("Hints"), parent)
 
     txtView = new QTextEdit(this);
     txtView->setReadOnly(true);
-    txtView->setMinimumSize(160, 160);
 
     setWidget(txtView);
 }

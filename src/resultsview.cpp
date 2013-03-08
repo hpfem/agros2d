@@ -39,7 +39,6 @@
 ResultsView::ResultsView(PostHermes *postHermes, QWidget *parent)
     : QDockWidget(tr("Results view"), parent), m_postHermes(postHermes)
 {
-    setMinimumWidth(280);
     setObjectName("ResultsView");
 
     webView = new QWebView();

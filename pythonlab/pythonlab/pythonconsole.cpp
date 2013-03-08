@@ -694,7 +694,6 @@ void PythonScriptingConsole::consoleMessage(const QString &message, const QColor
 PythonScriptingConsoleView::PythonScriptingConsoleView(PythonEngine *pythonEngine, QWidget *parent)
     : QDockWidget(tr("Console"), parent)
 {
-    setMinimumWidth(280);
     setObjectName("ConsoleView");
 
     connect(this, SIGNAL(visibilityChanged(bool)), this, SLOT(doVisibilityChanged(bool)));

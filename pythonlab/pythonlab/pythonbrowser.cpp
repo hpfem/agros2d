@@ -40,7 +40,6 @@ bool isPythonVariable(const QString& type)
 PythonBrowserView::PythonBrowserView(PythonEngine *pythonEngine, PythonScriptingConsole *console, QWidget *parent)
     : QDockWidget(tr("Browser"), parent), pythonEngine(pythonEngine), console(console)
 {
-    setMinimumWidth(280);
     setObjectName("BrowserView");
 
     connect(pythonEngine, SIGNAL(executedExpression()), this, SLOT(executed()));
