@@ -131,14 +131,13 @@ void PyProblem::setCouplingType(const char *sourceField, const char *targetField
 
 void PyProblem::clear()
 {
-    Agros2D::problem()->clearFieldsAndConfig();
     Agros2D::scene()->clear();
 }
 
 void PyProblem::clearSolution()
 {
     Agros2D::problem()->clearSolution();
-    currentPythonEngineAgros()->postHermes()->refresh();
+    currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
 }
 
 void PyProblem::refresh()
@@ -153,7 +152,7 @@ void PyProblem::mesh()
 
     Agros2D::problem()->mesh();
     if (Agros2D::problem()->isMeshed())
-    {        
+    {
         // trigger postprocessor
         if (!silentMode())
         {
