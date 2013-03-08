@@ -882,10 +882,10 @@ void SceneViewParticleTracing::paintParticleTracing()
 
                     glVertex3d(m_positionsList[k][i].x,
                                m_positionsList[k][i].y,
-                               -depth/2.0 + (m_positionsList[k][i].z - positionMin) * depth/(positionMax - positionMin));
+                               0.0);
                     glVertex3d(m_positionsList[k][i+1].x,
                             m_positionsList[k][i+1].y,
-                            -depth/2.0 + (m_positionsList[k][i+1].z - positionMin) * depth/(positionMax - positionMin));
+                            0.0);
                 }
                 glEnd();
 
@@ -899,7 +899,7 @@ void SceneViewParticleTracing::paintParticleTracing()
                     {
                         glVertex3d(m_positionsList[k][i].x,
                                    m_positionsList[k][i].y,
-                                   -depth/2.0 + (m_positionsList[k][i].z - positionMin) * depth/(positionMax - positionMin));
+                                   0.0);
                     }
                     glEnd();
                 }
