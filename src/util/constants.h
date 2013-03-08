@@ -56,9 +56,9 @@ const bool SHOWGRID = true;
 const bool SNAPTOGRID = true;
 
 const QString RULERSFONT = "Droid";
-const int RULERSFONTSIZE = 9;
+const int RULERSFONTSIZE = 12;
 const QString POSTFONT = "Droid";
-const int POSTFONTSIZE = 12;
+const int POSTFONTSIZE = 16;
 
 const bool SHOWAXES = true;
 const bool SHOWRULERS = true;

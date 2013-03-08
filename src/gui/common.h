@@ -35,7 +35,6 @@ void fillComboBoxAdaptivityStep(FieldInfo* fieldInfo, int timeStep, QComboBox *c
 void fillComboBoxSolutionType(FieldInfo* fieldInfo, int timeStep, int adaptivityStep, QComboBox *cmbFieldVariable);
 void addTreeWidgetItemValue(QTreeWidgetItem *parent, const QString &name, const QString &text, const QString &unit);
 void fillComboBoxFonts(QComboBox *cmbFonts);
-void fillComboBoxFontSizes(QComboBox *cmbFontSizes);
 
 inline QString htmlFontFamily() { return QApplication::font().family(); }
 #ifdef Q_WS_WIN

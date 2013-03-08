@@ -273,35 +273,6 @@ void fillComboBoxFonts(QComboBox *cmbFonts)
     cmbFonts->blockSignals(false);
 }
 
-void fillComboBoxFontSizes(QComboBox *cmbFontSizes)
-{
-    // read fonts
-    cmbFontSizes->blockSignals(true);
-
-    // store variable
-    QString fnt = cmbFontSizes->itemData(cmbFontSizes->currentIndex(), Qt::UserRole).toString();
-
-    cmbFontSizes->clear();
-    cmbFontSizes->addItem("7", 7);
-    cmbFontSizes->addItem("8", 8);
-    cmbFontSizes->addItem("9", 9);
-    cmbFontSizes->addItem("10", 10);
-    cmbFontSizes->addItem("12", 12);
-    cmbFontSizes->addItem("14", 14);
-    cmbFontSizes->addItem("16", 16);
-    cmbFontSizes->addItem("18", 18);
-    cmbFontSizes->addItem("20", 20);
-    cmbFontSizes->addItem("24", 24);
-    cmbFontSizes->addItem("32", 32);
-    cmbFontSizes->addItem("40", 40);
-
-    cmbFontSizes->setCurrentIndex(cmbFontSizes->findData(fnt, Qt::UserRole));
-    if (cmbFontSizes->currentIndex() == -1)
-        cmbFontSizes->setCurrentIndex(0);
-    cmbFontSizes->blockSignals(false);
-}
-
-
 // column minimum width
 int columnMinimumWidth()
 {

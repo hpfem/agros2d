@@ -56,9 +56,9 @@ private:
 
     // scene font   
     QComboBox *cmbRulersFont;
-    QComboBox *cmbRulersFontSizes;
+    QSpinBox *txtRulersFontSizes;
     QComboBox *cmbPostFont;
-    QComboBox *cmbPostFontSizes;
+    QSpinBox *txtPostFontSizes;
 
     // workspace other
     QCheckBox *chkShowAxes;
