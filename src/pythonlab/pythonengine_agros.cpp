@@ -614,32 +614,3 @@ void pySaveDocument(char *str)
         throw invalid_argument(e.toString().toStdString());
     }
 }
-
-void pyCloseDocument()
-{
-    Agros2D::scene()->clear();
-    // sceneView()->doDefaultValues();
-    Agros2D::scene()->invalidate();
-
-    currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
-
-    currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomBestFit();
-    currentPythonEngineAgros()->sceneViewMesh()->doZoomBestFit();
-    currentPythonEngineAgros()->sceneViewPost2D()->doZoomBestFit();
-    currentPythonEngineAgros()->sceneViewPost3D()->doZoomBestFit();
-}
-
-// ************************************************************************************
-
-// solutionfilename()
-char *pythonSolutionFileName()
-{
-    if (Agros2D::problem()->isSolved())
-    {
-        char *fileName = const_cast<char*>(QString(tempProblemFileName() + ".sln").toLatin1().data());
-        //Agros2D::scene()->sceneSolution()->sln()->save(fileName);
-        return fileName;
-    }
-    else
-        throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
-}

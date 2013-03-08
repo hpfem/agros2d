@@ -14,6 +14,3 @@ def open_document(char *str):
 
 def save_document(char *str):
     pySaveDocument(str)
-
-def close_document():
-    pyCloseDocument()
