@@ -116,9 +116,9 @@ void SceneViewCommon::setupViewport(int w, int h)
 
 void SceneViewCommon::printRulersAt(int penX, int penY, const QString &text)
 {
-    glColor3d(Agros2D::problem()->configView()->colorCross.redF(),
-              Agros2D::problem()->configView()->colorCross.greenF(),
-              Agros2D::problem()->configView()->colorCross.blueF());
+    glColor3d(Agros2D::problem()->configView()->colorCross.darker().redF(),
+              Agros2D::problem()->configView()->colorCross.darker().greenF(),
+              Agros2D::problem()->configView()->colorCross.darker().blueF());
 
     glBindTexture(GL_TEXTURE_2D, m_textureLabelRulers);
     printAt(penX, penY, text, m_charDataRulers);

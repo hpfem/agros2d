@@ -65,7 +65,7 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidg
     m_cascadeStyleSheet = QString::fromStdString(style);
 
     QVBoxLayout *layoutMain = new QVBoxLayout(this);
-    // layoutMain->setContentsMargins(0, 5, 3, 5);
+    layoutMain->setContentsMargins(2, 2, 2, 2);
     layoutMain->addWidget(webView);
 
     setLayout(layoutMain);
