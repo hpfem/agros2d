@@ -79,14 +79,15 @@ QWidget *AboutDialog::createAgros2D()
                                          "<b>Authors:</b>"
                                          "<p>"
                                          "<b>Pavel Karban</b> - main developer (University of West Bohemia, Pilsen)<br/>"
-                                         "<b>František Mach</b> - developer, documentation (University of West Bohemia, Pilsen)<br/>"
-                                         "<b>Pavel Kůs</b> - developer, coupled problems, time domain adaptivity (University of West Bohemia, Prague)<br/>"
+                                         "<b>František Mach</b> - developer, Python script (University of West Bohemia, Pilsen)<br/>"
+                                         "<b>Pavel Kůs</b> - developer, coupled problems, time domain adaptivity (University of West Bohemia, Pilsen)<br/>"
                                          "<b>David Pánek</b> - developer (University of West Bohemia, Pilsen)<br/>"
                                          "<b>Lukáš Korous</b> - developer (University of West Bohemia, Pilsen)<br/>"
                                          "<b>Lukáš Koudela</b> - developer - RF module (University of West Bohemia, Pilsen)<br/>"
                                          "<b>Bartosz Sawicki</b> - Polish translation (Warsaw University of Technology, Warsaw)<br/>"
                                          "<b>Václav Kotlan</b> - German translation (University of West Bohemia, Pilsen)<br/>"
                                          "<b>Petr Kropík</b> - University of West Bohemia, Pilsen<br/>"
+                                         "<b>Denys Nikolayev</b> - Russion and French translation, University of West Bohemia, Pilsen<br/>"
                                          "</p>")
                                       .arg(QApplication::applicationVersion()));
     labelContent->setWordWrap(true);
@@ -164,6 +165,7 @@ QWidget *AboutDialog::createLibraries()
                                          "<b>UMFPACK:</b> unsymmetric multifrontal sparse LU factorization package (<a href=\"http://www.cise.ufl.edu/research/sparse/umfpack/\">UMFPACK</a>)<br/>"
                                          "<b>MUMPS:</b> A MUltifrontal Massively Parallel sparse direct Solver (<a href=\"http://graal.ens-lyon.fr/MUMPS/\">MUMPS</a>)<br/>"
                                          "<b>SuperLU:</b> Direct solver for large sparse systems of linear equations (<a href=\"http://crd-legacy.lbl.gov/~xiaoye/SuperLU/\">SuperLU</a>)<br/>"
+                                         "<b>stb_truetype.h:</b> TrueType processing library - Sean Barrett / RAD Game Tools (<a href=\"http://nothings.org/\">stb</a>)<br/>"
                                          ));
     labelContent->setWordWrap(true);
     labelContent->setOpenExternalLinks(true);

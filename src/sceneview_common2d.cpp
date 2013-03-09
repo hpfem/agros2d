@@ -210,8 +210,6 @@ void SceneViewCommon2D::paintAxes()
     glVertex2d(border.x + 35, border.y + 1);
     glEnd();
 
-    printRulersAt(border.x + 38, border.y + 1 - (m_charDataRulers[GLYPH_M].x1 - m_charDataRulers[GLYPH_M].x0) / 2.0, Agros2D::problem()->config()->labelX());
-
     // y-axis
     glBegin(GL_QUADS);
     glVertex2d(border.x, border.y);
@@ -226,9 +224,10 @@ void SceneViewCommon2D::paintAxes()
     glVertex2d(border.x + 1, border.y + 35);
     glEnd();
 
-    printRulersAt(border.x + 1 - (m_charDataRulers[GLYPH_M].x1 - m_charDataRulers[GLYPH_M].x0) / 2.0, border.y + 38, Agros2D::problem()->config()->labelY());
-
     glDisable(GL_POLYGON_OFFSET_FILL);
+
+    printRulersAt(border.x + 38, border.y + 1 - (m_charDataRulers[GLYPH_M].x1 - m_charDataRulers[GLYPH_M].x0) / 2.0, Agros2D::problem()->config()->labelX());
+    printRulersAt(border.x + 1 - (m_charDataRulers[GLYPH_M].x1 - m_charDataRulers[GLYPH_M].x0) / 2.0, border.y + 38, Agros2D::problem()->config()->labelY());
 }
 
 void SceneViewCommon2D::paintRulers()
@@ -259,10 +258,24 @@ void SceneViewCommon2D::paintRulers()
         double tickSize = rulersArea.y / 3.0;
 
         // area background
-        drawBlend(Point(cornerMin.x, cornerMax.y + rulersArea.y),
-                  Point(cornerMax.x, cornerMax.y), 0.95, 0.95, 0.95, 1.0);
-        drawBlend(Point(cornerMin.x + rulersArea.x, cornerMax.y),
-                  Point(cornerMin.x, cornerMin.y), 0.95, 0.95, 0.95, 1.0);
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        glColor3d(0.95, 0.95, 0.95);
+
+        glBegin(GL_QUADS);
+        glVertex2d(cornerMin.x, cornerMax.y + rulersArea.y);
+        glVertex2d(cornerMax.x, cornerMax.y + rulersArea.y);
+        glVertex2d(cornerMax.x, cornerMax.y);
+        glVertex2d(cornerMin.x, cornerMax.y);
+
+        glVertex2d(cornerMin.x + rulersArea.x, cornerMax.y);
+        glVertex2d(cornerMin.x, cornerMax.y);
+        glVertex2d(cornerMin.x, cornerMin.y);
+        glVertex2d(cornerMin.x + rulersArea.x, cornerMin.y);
+        glEnd();
+
+        glDisable(GL_POLYGON_OFFSET_FILL);
 
         // area lines
         glColor3d(0.5, 0.5, 0.5);
