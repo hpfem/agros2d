@@ -290,7 +290,7 @@ QWidget *SettingsWidget::controlsWorkspace()
     chkShowGrid = new QCheckBox(tr("Show grid"));
     connect(chkShowGrid, SIGNAL(clicked()), this, SLOT(doShowGridChanged()));
     chkSnapToGrid = new QCheckBox(tr("Snap to grid"));
-    chkZoomToMouse = new QCheckBox(tr("Zoom to mouse pointer"));
+    chkZoomToMouse = new QCheckBox(tr("Zoom to mouse"));
     chkShowRulers = new QCheckBox(tr("Show rulers"));
     chkShowAxes = new QCheckBox(tr("Show axes"));
 
@@ -319,9 +319,7 @@ QWidget *SettingsWidget::controlsWorkspace()
     txtPostFontSizes->setMaximum(40);
 
     QGridLayout *layoutFont = new QGridLayout();
-    layoutFont->setColumnStretch(0, 2);
-    layoutFont->setColumnStretch(1, 4);
-    layoutFont->setColumnStretch(2, 1);
+    layoutFont->setColumnStretch(1, 1);
     layoutFont->addWidget(new QLabel(tr("Rulers:")), 0, 0);
     layoutFont->addWidget(cmbRulersFont, 0, 1);
     layoutFont->addWidget(txtRulersFontSizes, 0, 2);
@@ -344,6 +342,7 @@ QWidget *SettingsWidget::controlsWorkspace()
     txtGeometryLabelSize->setMaximum(20);
 
     QGridLayout *layoutGeometry = new QGridLayout();
+    layoutGeometry->setColumnStretch(1, 1);
     layoutGeometry->addWidget(new QLabel(tr("Node size:")), 0, 0);
     layoutGeometry->addWidget(txtGeometryNodeSize, 0, 1);
     layoutGeometry->addWidget(new QLabel(tr("Edge width:")), 1, 0);
@@ -361,24 +360,25 @@ QWidget *SettingsWidget::controlsWorkspace()
     txtView3DAngle->setSingleStep(1);
     txtView3DAngle->setMinimum(30);
     txtView3DAngle->setMaximum(360);
-    chkView3DBackground = new QCheckBox(tr("Gradient background"), this);
+    chkView3DBackground = new QCheckBox(tr("Gradient back."), this);
     txtView3DHeight = new QDoubleSpinBox(this);
     txtView3DHeight->setDecimals(1);
     txtView3DHeight->setSingleStep(0.1);
     txtView3DHeight->setMinimum(0.2);
     txtView3DHeight->setMaximum(10.0);
     chkView3DBoundingBox = new QCheckBox(tr("Bounding box"), this);
-    chkView3DSolidGeometry = new QCheckBox(tr("Show geometry lines"), this);
+    chkView3DSolidGeometry = new QCheckBox(tr("Show edges"), this);
 
     QGridLayout *layout3D = new QGridLayout();
-    layout3D->addWidget(new QLabel(tr("Angle:")), 0, 1);
-    layout3D->addWidget(txtView3DAngle, 0, 2);
-    layout3D->addWidget(chkView3DLighting, 0, 3);
-    layout3D->addWidget(new QLabel(tr("Height:")), 1, 1);
-    layout3D->addWidget(txtView3DHeight, 1, 2);
-    layout3D->addWidget(chkView3DBackground, 1, 3);
-    layout3D->addWidget(chkView3DBoundingBox, 2, 3);
-    layout3D->addWidget(chkView3DSolidGeometry, 3, 3);
+    layout3D->setColumnStretch(1, 1);
+    layout3D->addWidget(new QLabel(tr("Angle:")), 0, 0);
+    layout3D->addWidget(txtView3DAngle, 0, 1);
+    layout3D->addWidget(chkView3DLighting, 0, 2);
+    layout3D->addWidget(new QLabel(tr("Height:")), 1, 0);
+    layout3D->addWidget(txtView3DHeight, 1, 1);
+    layout3D->addWidget(chkView3DBackground, 1, 2);
+    layout3D->addWidget(chkView3DBoundingBox, 2, 2);
+    layout3D->addWidget(chkView3DSolidGeometry, 3, 2);
 
     QGroupBox *grp3D = new QGroupBox(tr("3D view"));
     grp3D->setLayout(layout3D);
@@ -386,7 +386,7 @@ QWidget *SettingsWidget::controlsWorkspace()
     // layout deform shape
     chkDeformScalar = new QCheckBox(tr("Scalar field"), this);
     chkDeformContour = new QCheckBox(tr("Contours"), this);
-    chkDeformVector = new QCheckBox(tr("Vector field"), this);
+    chkDeformVector = new QCheckBox(tr("Vectors"), this);
 
     QGridLayout *layoutDeformShape = new QGridLayout();
     layoutDeformShape->addWidget(chkDeformScalar, 0, 0);
@@ -425,8 +425,9 @@ QWidget *SettingsWidget::controlsMeshAndSolver()
     chkMeshCurvilinearElements = new QCheckBox(tr("Curvilinear elements"));
 
     QGridLayout *layoutMesh = new QGridLayout();
+    layoutMesh->setColumnStretch(1, 1);
     layoutMesh->addWidget(chkMeshCurvilinearElements, 0, 0, 1, 2);
-    layoutMesh->addWidget(new QLabel(tr("Angle segments count:")), 1, 0);
+    layoutMesh->addWidget(new QLabel(tr("Angle seg. count:")), 1, 0);
     layoutMesh->addWidget(txtMeshAngleSegmentsCount, 1, 1);
 
     QGroupBox *grpMesh = new QGroupBox(tr("Mesh"));
@@ -439,19 +440,19 @@ QWidget *SettingsWidget::controlsMeshAndSolver()
     QFont fnt = font();
     fnt.setPointSize(fnt.pointSize() - 1);
 
-    lblMaxDofs = new QLabel(tr("Maximum number of DOFs:"));
+    lblMaxDofs = new QLabel(tr("Max. num. of DOFs:"));
     txtMaxDOFs = new QSpinBox(this);
     txtMaxDOFs->setMinimum(1e2);
     txtMaxDOFs->setMaximum(1e9);
     txtMaxDOFs->setSingleStep(1e2);
 
     txtConvExp = new LineEditDouble(ADAPTIVITY_CONVEXP, true);
-    lblConvExp = new QLabel(tr("This parameter influences the selection of candidates<br/>in hp-adaptivity. Default value is 1.0."));
+    lblConvExp = new QLabel(tr("This parameter influences the selection of<br /> candidates in hp-adaptivity. Default value is 1.0."));
     lblConvExp->setFont(fnt);
 
     txtThreshold = new LineEditDouble(ADAPTIVITY_THRESHOLD, true);
     txtThreshold->setBottom(0.0);
-    lblThreshold = new QLabel(tr("Quantitative parameter of the adaptivity<br/>with different meanings for various adaptive strategies."));
+    lblThreshold = new QLabel(tr("Quantitative parameter of the adaptivity with<br/>different meanings for adaptive strategies."));
     lblThreshold->setFont(fnt);
 
     cmbStrategy = new QComboBox();
@@ -477,7 +478,7 @@ QWidget *SettingsWidget::controlsMeshAndSolver()
     cmbProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_SEMINORM), Hermes::Hermes2D::HERMES_H1_SEMINORM);
 
     chkUseAnIso = new QCheckBox(tr("Use anisotropic refinements"));
-    chkFinerReference = new QCheckBox(tr("Use hp reference solution for h and p adaptivity"));
+    chkFinerReference = new QCheckBox(tr("Use hp ref. solution for h and p adaptivity"));
 
     QGridLayout *layoutAdaptivitySettings = new QGridLayout();
     layoutAdaptivitySettings->setColumnStretch(1, 1);
@@ -554,6 +555,7 @@ QWidget *SettingsWidget::controlsColors()
     colorSelected = new ColorButton(this);
 
     QGridLayout *layoutColors = new QGridLayout();
+    layoutColors->setColumnStretch(1, 1);
     layoutColors->addWidget(new QLabel(tr("Background:")), 0, 0);
     layoutColors->addWidget(new QLabel(tr("Grid:")), 1, 0);
     layoutColors->addWidget(new QLabel(tr("Cross:")), 2, 0);
@@ -604,7 +606,7 @@ void SettingsWidget::doStrategyChanged(int index)
     switch (index)
     {
     case 0:
-        lblStrategy->setText(tr("Refine elements until sqrt(<b>threshold</b>) times total error<br/>is processed. If more elements have similar errors,<br/>refine all to keep the mesh symmetric."));
+        lblStrategy->setText(tr("Refine elements until sqrt(<b>threshold</b>) times total<br/>error is processed. If more elements have similar<br/>errors, refine all to keep the mesh symmetric."));
         break;
     case 1:
         lblStrategy->setText(tr("Refine all elements whose error is larger<br/>than <b>threshold</b> times maximum element error."));

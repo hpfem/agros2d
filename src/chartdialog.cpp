@@ -102,7 +102,7 @@ ChartWidget::ChartWidget(ChartView *chart,
 }
 
 ChartWidget::~ChartWidget()
-{    
+{
 }
 
 void ChartWidget::updateControls()
@@ -268,6 +268,7 @@ void ChartWidget::createControls()
 
     // timestep
     QGridLayout *layoutAxisPointsAndTimeStep = new QGridLayout();
+    layoutAxisPointsAndTimeStep->setColumnStretch(1, 1);
     layoutAxisPointsAndTimeStep->addWidget(new QLabel(tr("Points:")), 0, 0);
     layoutAxisPointsAndTimeStep->addWidget(txtHorizontalAxisPoints, 0, 1);
     layoutAxisPointsAndTimeStep->addWidget(chkHorizontalAxisReverse, 1, 0, 1, 2);

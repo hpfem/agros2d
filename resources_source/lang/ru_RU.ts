@@ -40,26 +40,30 @@
     </message>
     <message>
         <location filename="../../src/gui/about.cpp" line="72"/>
+        <source>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D is a multiplatform multiphysics application for the solution of partial differential equations (PDE) based on the &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library using higher order finite element method (&lt;i&gt;hp&lt;/i&gt;-FEM) with automatic adaptivity.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - main developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;FrantiÅ¡ek Mach&lt;/b&gt; - developer, Python script (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Pavel KÅ¯s&lt;/b&gt; - developer, coupled problems, time domain adaptivity (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;David PÃ¡nek&lt;/b&gt; - developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukÃ¡Å¡ Korous&lt;/b&gt; - developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukÃ¡Å¡ Koudela&lt;/b&gt; - developer - RF module (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - Polish translation (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;VÃ¡clav Kotlan&lt;/b&gt; - German translation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Petr KropÃ­k&lt;/b&gt; - University of West Bohemia, Pilsen&lt;br/&gt;&lt;b&gt;Denys Nikolayev&lt;/b&gt; - Russion and French translation, University of West Bohemia, Pilsen&lt;br/&gt;&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/gui/about.cpp" line="156"/>
+        <source>&lt;h3&gt;Libraries&lt;/h3&gt;&lt;b&gt;Digia Qt:&lt;/b&gt; Digia Qt (&lt;a href=&quot;http://qt.digia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Qwt:&lt;/b&gt; Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Python:&lt;/b&gt; Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;dxflib:&lt;/b&gt; Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;ctemplate:&lt;/b&gt; Simple but powerful template language for C++ (&lt;a href=&quot;http://code.google.com/p/ctemplate/&quot;&gt;ctemplate&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;poly2tri:&lt;/b&gt; A 2D constrained Delaunay triangulation library (&lt;a href=&quot;http://code.google.com/p/poly2tri/&quot;&gt;poly2tri&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Triangle:&lt;/b&gt; Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Gmsh:&lt;/b&gt; A three-dimensional finite element mesh generator (&lt;a href=&quot;http://geuz.org/gmsh&quot;&gt;Gmsh&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;UMFPACK:&lt;/b&gt; unsymmetric multifrontal sparse LU factorization package (&lt;a href=&quot;http://www.cise.ufl.edu/research/sparse/umfpack/&quot;&gt;UMFPACK&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;MUMPS:&lt;/b&gt; A MUltifrontal Massively Parallel sparse direct Solver (&lt;a href=&quot;http://graal.ens-lyon.fr/MUMPS/&quot;&gt;MUMPS&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;SuperLU:&lt;/b&gt; Direct solver for large sparse systems of linear equations (&lt;a href=&quot;http://crd-legacy.lbl.gov/~xiaoye/SuperLU/&quot;&gt;SuperLU&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;stb_truetype.h:&lt;/b&gt; TrueType processing library - Sean Barrett / RAD Game Tools (&lt;a href=&quot;http://nothings.org/&quot;&gt;stb&lt;/a&gt;)&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D is a multiplatform multiphysics application for the solution of partial differential equations (PDE) based on the &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library using higher order finite element method (&lt;i&gt;hp&lt;/i&gt;-FEM) with automatic adaptivity.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - main developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;FrantiÅ¡ek Mach&lt;/b&gt; - developer, documentation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Pavel KÅ¯s&lt;/b&gt; - developer, coupled problems, time domain adaptivity (University of West Bohemia, Prague)&lt;br/&gt;&lt;b&gt;David PÃ¡nek&lt;/b&gt; - developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukÃ¡Å¡ Korous&lt;/b&gt; - developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukÃ¡Å¡ Koudela&lt;/b&gt; - developer - RF module (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - Polish translation (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;VÃ¡clav Kotlan&lt;/b&gt; - German translation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Petr KropÃ­k&lt;/b&gt; - University of West Bohemia, Pilsen&lt;br/&gt;&lt;/p&gt;</source>
         <translatorcomment>Problem with diacritics?</translatorcomment>
-        <translation>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D — это многоплатформенное мультифизическое приложение для решения дифференциальных уравнений в частных производных с помощью автоадаптивного метода конечных элементов (&lt;i&gt;hp&lt;/i&gt;-FEM). Ядро программы — библиотека &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt;.&lt;br/&gt;&lt;br/&gt;Веб-сайт: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Фейсбук: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Проблемы: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Авторы:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; — главный разработчик (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;FrantiA?ek Mach&lt;/b&gt; — разработка, документация (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Pavel KA?s&lt;/b&gt; — разработка, сопряженные задачи, адаптивность во временной области (University of West Bohemia, Prague)&lt;br/&gt;&lt;b&gt;David PA?nek&lt;/b&gt; — разработка (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukA?A? Korous&lt;/b&gt; — разработка (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukA?A? Koudela&lt;/b&gt; — разработка, РЧ модуль (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; — польская локализация (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;VA?clav Kotlan&lt;/b&gt; — немецкая локализация (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Petr KropA­k&lt;/b&gt; — University of West Bohemia, Pilsen&lt;br/&gt;&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D — это многоплатформенное мультифизическое приложение для решения дифференциальных уравнений в частных производных с помощью автоадаптивного метода конечных элементов (&lt;i&gt;hp&lt;/i&gt;-FEM). Ядро программы — библиотека &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt;.&lt;br/&gt;&lt;br/&gt;Веб-сайт: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Фейсбук: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Проблемы: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Авторы:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; — главный разработчик (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;FrantiA?ek Mach&lt;/b&gt; — разработка, документация (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Pavel KA?s&lt;/b&gt; — разработка, сопряженные задачи, адаптивность во временной области (University of West Bohemia, Prague)&lt;br/&gt;&lt;b&gt;David PA?nek&lt;/b&gt; — разработка (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukA?A? Korous&lt;/b&gt; — разработка (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukA?A? Koudela&lt;/b&gt; — разработка, РЧ модуль (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; — польская локализация (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;VA?clav Kotlan&lt;/b&gt; — немецкая локализация (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Petr KropA­k&lt;/b&gt; — University of West Bohemia, Pilsen&lt;br/&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/gui/about.cpp" line="115"/>
+        <location filename="../../src/gui/about.cpp" line="116"/>
         <source>&lt;h3&gt;Hermes2D&lt;/h3&gt;Web page: &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;http://hpfem.org/hermes/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Solin&lt;/b&gt; (project leader, University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Martin Zitka&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Tomas Vejchodsky&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Svatava Vyvialova&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Jakub Cerveny&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Lenka Dubcova&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Ondrej Certik&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Robert Cimrman&lt;/b&gt; (New Technologies Research Centre, Pilsen)&lt;br/&gt;&lt;b&gt;Ivo Hanak&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;David Andrs&lt;/b&gt; (formerly University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Sameer Regmi&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;David Puga&lt;/b&gt;l (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Ma Zhonghua&lt;/b&gt; (China University of Petroleum, Beijing)&lt;br/&gt;&lt;b&gt;Milan Hanus&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Damien Lebrun-Grandie&lt;/b&gt; (Texas A&amp;M University)&lt;br/&gt;&lt;b&gt;Lukas Korous&lt;/b&gt; (Charles University, Prague)&lt;br/&gt;&lt;b&gt;Valmor de Almeida&lt;/b&gt; (Oak Ridge National Laboratory, Oak Ridge)&lt;br/&gt;&lt;/p&gt;</source>
         <translation>&lt;h3&gt;Hermes2D&lt;/h3&gt;Веб-сайт: &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;http://hpfem.org/hermes/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Авторы: &lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Solin&lt;/b&gt; (руководитель проекта, University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Martin Zitka&lt;/b&gt; (выпускник University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Tomas Vejchodsky&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Svatava Vyvialova&lt;/b&gt; (выпускник University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Jakub Cerveny&lt;/b&gt; (выпускник University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Lenka Dubcova&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Ondrej Certik&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Robert Cimrman&lt;/b&gt; (New Technologies Research Centre, Pilsen)&lt;br/&gt;&lt;b&gt;Ivo Hanak&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;David Andrs&lt;/b&gt; (выпускник University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Sameer Regmi&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;David Puga&lt;/b&gt;l (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Ma Zhonghua&lt;/b&gt; (China University of Petroleum, Beijing)&lt;br/&gt;&lt;b&gt;Milan Hanus&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Damien Lebrun-Grandie&lt;/b&gt; (Texas A&amp;M University)&lt;br/&gt;&lt;b&gt;Lukas Korous&lt;/b&gt; (Charles University, Prague)&lt;br/&gt;&lt;b&gt;Valmor de Almeida&lt;/b&gt; (Oak Ridge National Laboratory, Oak Ridge)&lt;br/&gt;&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="../../src/gui/about.cpp" line="155"/>
-        <source>&lt;h3&gt;Libraries&lt;/h3&gt;&lt;b&gt;Digia Qt:&lt;/b&gt; Digia Qt (&lt;a href=&quot;http://qt.digia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Qwt:&lt;/b&gt; Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Python:&lt;/b&gt; Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;dxflib:&lt;/b&gt; Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;ctemplate:&lt;/b&gt; Simple but powerful template language for C++ (&lt;a href=&quot;http://code.google.com/p/ctemplate/&quot;&gt;ctemplate&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;poly2tri:&lt;/b&gt; A 2D constrained Delaunay triangulation library (&lt;a href=&quot;http://code.google.com/p/poly2tri/&quot;&gt;poly2tri&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Triangle:&lt;/b&gt; Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Gmsh:&lt;/b&gt; A three-dimensional finite element mesh generator (&lt;a href=&quot;http://geuz.org/gmsh&quot;&gt;Gmsh&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;UMFPACK:&lt;/b&gt; unsymmetric multifrontal sparse LU factorization package (&lt;a href=&quot;http://www.cise.ufl.edu/research/sparse/umfpack/&quot;&gt;UMFPACK&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;MUMPS:&lt;/b&gt; A MUltifrontal Massively Parallel sparse direct Solver (&lt;a href=&quot;http://graal.ens-lyon.fr/MUMPS/&quot;&gt;MUMPS&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;SuperLU:&lt;/b&gt; Direct solver for large sparse systems of linear equations (&lt;a href=&quot;http://crd-legacy.lbl.gov/~xiaoye/SuperLU/&quot;&gt;SuperLU&lt;/a&gt;)&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;h3&gt;Libraries&lt;/h3&gt;&lt;b&gt;Digia Qt:&lt;/b&gt; Digia Qt (&lt;a href=&quot;http://qt.digia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Qwt:&lt;/b&gt; Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Python:&lt;/b&gt; Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;dxflib:&lt;/b&gt; Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;GL2PS:&lt;/b&gt; An OpenGL to PostScript printing library (&lt;a href=&quot;http://www.geuz.org/gl2ps/&quot;&gt;GL2PS&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;ctemplate:&lt;/b&gt; Simple but powerful template language for C++ (&lt;a href=&quot;http://code.google.com/p/ctemplate/&quot;&gt;ctemplate&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;poly2tri:&lt;/b&gt; A 2D constrained Delaunay triangulation library (&lt;a href=&quot;http://code.google.com/p/poly2tri/&quot;&gt;poly2tri&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Triangle:&lt;/b&gt; Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Gmsh:&lt;/b&gt; A three-dimensional finite element mesh generator (&lt;a href=&quot;http://geuz.org/gmsh&quot;&gt;Gmsh&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;UMFPACK:&lt;/b&gt; unsymmetric multifrontal sparse LU factorization package (&lt;a href=&quot;http://www.cise.ufl.edu/research/sparse/umfpack/&quot;&gt;MUMPS&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;MUMPS:&lt;/b&gt; A MUltifrontal Massively Parallel sparse direct Solver (&lt;a href=&quot;http://graal.ens-lyon.fr/MUMPS/&quot;&gt;MUMPS&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;SuperLU:&lt;/b&gt; Direct solver for large sparse systems of linear equations (&lt;a href=&quot;http://crd-legacy.lbl.gov/~xiaoye/SuperLU/&quot;&gt;SuperLU&lt;/a&gt;)&lt;br/&gt;</source>
         <translation type="obsolete">&lt;h3&gt;Библиотеки&lt;/h3&gt;&lt;b&gt;Digia Qt:&lt;/b&gt; Digia Qt (&lt;a href=&quot;http://qt.digia.com/&quot;&gt;Qt — Кроссплатформенный фреймворк&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Qwt:&lt;/b&gt; Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Виджеты Qt для представления числовых данных&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Python:&lt;/b&gt; Язык программирования Python (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;dxflib:&lt;/b&gt; Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;GL2PS:&lt;/b&gt; Библиотека OpenGL &gt; PostScript (&lt;a href=&quot;http://www.geuz.org/gl2ps/&quot;&gt;GL2PS&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;ctemplate:&lt;/b&gt; Язык темплейтов для C++ (&lt;a href=&quot;http://code.google.com/p/ctemplate/&quot;&gt;ctemplate&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;poly2tri:&lt;/b&gt; Библиотека 2D ограниченной триангуляции Делоне (&lt;a href=&quot;http://code.google.com/p/poly2tri/&quot;&gt;poly2tri&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Triangle:&lt;/b&gt; Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Gmsh:&lt;/b&gt; Генератор трехмерной сетки конечных элементов (&lt;a href=&quot;http://geuz.org/gmsh&quot;&gt;Gmsh&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;UMFPACK:&lt;/b&gt; Пакет несимметричного мультифронтального разряженного LU-разложения (&lt;a href=&quot;http://www.cise.ufl.edu/research/sparse/umfpack/&quot;&gt;MUMPS&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;MUMPS:&lt;/b&gt; Мультифронтальный массивно-параллельный разряженный прямой решатель (&lt;a href=&quot;http://graal.ens-lyon.fr/MUMPS/&quot;&gt;MUMPS&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;SuperLU:&lt;/b&gt; Прямой решатель для больших разряженных систем линейных уравнений (&lt;a href=&quot;http://crd-legacy.lbl.gov/~xiaoye/SuperLU/&quot;&gt;SuperLU&lt;/a&gt;)&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/gui/about.cpp" line="183"/>
+        <location filename="../../src/gui/about.cpp" line="185"/>
         <source>&lt;h3&gt;License:&lt;/h3&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.</source>
         <translation>&lt;h3&gt;Лицензионное соглашение:&lt;/h3&gt;&lt;p&gt;Agros2D — свободная программа: вы можете перераспространять ее и/или
  изменять ее на условиях Стандартной общественной лицензии GNU в том виде, в каком она была опубликована Фондом свободного программного обеспечения; либо версии 3 лицензии, либо (по вашему выбору) любой более поздней версии.&lt;/p&gt;&lt;p&gt;Agros2D распространяется в надежде, что она будет полезной, но БЕЗО ВСЯКИХ ГАРАНТИЙ; даже без неявной гарантии ТОВАРНОГО ВИДА или ПРИГОДНОСТИ ДЛЯ ОПРЕДЕЛЕННЫХ ЦЕЛЕЙ. Подробнее см. в Стандартной общественной лицензии GNU.&lt;/p&gt;&lt;p&gt;Вы должны были получить копию Стандартной общественной лицензии GNU вместе с Agros2D. Если это не так, см. &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.</translation>
@@ -252,57 +256,57 @@
         <translation type="unfinished">Реверсировать</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="271"/>
+        <location filename="../../src/chartdialog.cpp" line="272"/>
         <source>Points:</source>
         <translation type="unfinished">Точки:</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="275"/>
+        <location filename="../../src/chartdialog.cpp" line="276"/>
         <source>Points and time step</source>
         <translation type="unfinished">Точки и временной шаг</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="293"/>
+        <location filename="../../src/chartdialog.cpp" line="294"/>
         <source>Point</source>
         <translation type="unfinished">Точка</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="325"/>
+        <location filename="../../src/chartdialog.cpp" line="326"/>
         <source>Geometry</source>
         <translation type="unfinished">Геометрия</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="326"/>
+        <location filename="../../src/chartdialog.cpp" line="327"/>
         <source>Time</source>
         <translation type="unfinished">Время</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="400"/>
+        <location filename="../../src/chartdialog.cpp" line="401"/>
         <source>Length (m)</source>
         <translation type="unfinished">Длина (м)</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="482"/>
+        <location filename="../../src/chartdialog.cpp" line="483"/>
         <source>time (s)</source>
         <translation type="unfinished">Время (с)</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="603"/>
+        <location filename="../../src/chartdialog.cpp" line="604"/>
         <source>Scalar</source>
         <translation type="unfinished">Скаляр</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="607"/>
+        <location filename="../../src/chartdialog.cpp" line="608"/>
         <source>Magnitude</source>
         <translation type="unfinished">Модуль</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="622"/>
+        <location filename="../../src/chartdialog.cpp" line="623"/>
         <source>Export data to file</source>
         <translation type="unfinished">Экспорт данных в файл</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="622"/>
+        <location filename="../../src/chartdialog.cpp" line="623"/>
         <source>CSV files (*.csv)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1164,7 +1168,7 @@
 <context>
     <name>LocalPointValueDialog</name>
     <message>
-        <location filename="../../src/resultsview.cpp" line="289"/>
+        <location filename="../../src/resultsview.cpp" line="288"/>
         <source>Local point value</source>
         <translation>Значение в точке</translation>
     </message>
@@ -2853,7 +2857,7 @@ step</source>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="172"/>
-        <location filename="../../src/sceneview_particle.cpp" line="257"/>
+        <location filename="../../src/sceneview_particle.cpp" line="258"/>
         <source>Reflection</source>
         <translation type="unfinished">Отражение</translation>
     </message>
@@ -2915,23 +2919,23 @@ step</source>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="237"/>
-        <location filename="../../src/sceneview_particle.cpp" line="258"/>
+        <location filename="../../src/sceneview_particle.cpp" line="259"/>
         <source>Solver</source>
         <translation type="unfinished">Решатель</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="246"/>
+        <location filename="../../src/sceneview_particle.cpp" line="247"/>
         <source>Show particle multiple times:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="251"/>
-        <location filename="../../src/sceneview_particle.cpp" line="259"/>
+        <location filename="../../src/sceneview_particle.cpp" line="252"/>
+        <location filename="../../src/sceneview_particle.cpp" line="260"/>
         <source>Settings</source>
         <translation type="unfinished">Настройки</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="256"/>
+        <location filename="../../src/sceneview_particle.cpp" line="257"/>
         <source>Forces</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2956,7 +2960,7 @@ step</source>
         <translation type="unfinished">Масса (кг)</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="278"/>
+        <location filename="../../src/sceneview_particle.cpp" line="279"/>
         <source>Apply</source>
         <translation type="unfinished">Применить</translation>
     </message>
@@ -3114,7 +3118,7 @@ step</source>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="285"/>
-        <location filename="../../src/postprocessorview.cpp" line="328"/>
+        <location filename="../../src/postprocessorview.cpp" line="329"/>
         <source>Polynomial order</source>
         <translation>Порядок полинома</translation>
     </message>
@@ -3194,6 +3198,11 @@ step</source>
         <translation>Ч/Б нисходящий</translation>
     </message>
     <message>
+        <location filename="../../src/postprocessorview.cpp" line="697"/>
+        <source>Number of vec.:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Show order colorbar</source>
         <translation type="obsolete">Показать палитру порядков</translation>
     </message>
@@ -3206,18 +3215,18 @@ step</source>
         <translation type="obsolete">Палитра порядка:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="337"/>
+        <location filename="../../src/postprocessorview.cpp" line="338"/>
         <source>Contours</source>
         <translation>Контуры</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="339"/>
+        <location filename="../../src/postprocessorview.cpp" line="340"/>
         <source>Vectors</source>
         <translation>Векторы</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="341"/>
-        <location filename="../../src/postprocessorview.cpp" line="452"/>
+        <location filename="../../src/postprocessorview.cpp" line="342"/>
+        <location filename="../../src/postprocessorview.cpp" line="453"/>
         <source>Scalar view</source>
         <translation>Скалярный вид</translation>
     </message>
@@ -3226,39 +3235,39 @@ step</source>
         <translation type="obsolete">Трассировка частиц</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="353"/>
+        <location filename="../../src/postprocessorview.cpp" line="354"/>
         <source>Postprocessor 2D</source>
         <translation>Постпроцессор 2D</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="366"/>
+        <location filename="../../src/postprocessorview.cpp" line="367"/>
         <source>Auto range</source>
         <translation>Авто диапазон</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="374"/>
-        <location filename="../../src/postprocessorview.cpp" line="398"/>
-        <location filename="../../src/postprocessorview.cpp" line="420"/>
+        <location filename="../../src/postprocessorview.cpp" line="375"/>
+        <location filename="../../src/postprocessorview.cpp" line="399"/>
+        <location filename="../../src/postprocessorview.cpp" line="421"/>
         <source>Variable:</source>
         <translation>Переменная:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="376"/>
+        <location filename="../../src/postprocessorview.cpp" line="377"/>
         <source>Component:</source>
         <translation>Компонента:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="380"/>
+        <location filename="../../src/postprocessorview.cpp" line="381"/>
         <source>Scalar field</source>
         <translation>Скалярное поле</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="402"/>
+        <location filename="../../src/postprocessorview.cpp" line="403"/>
         <source>Contour field</source>
         <translation>Контурное поле</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="424"/>
+        <location filename="../../src/postprocessorview.cpp" line="425"/>
         <source>Vector field</source>
         <translation>Векторное поле</translation>
     </message>
@@ -3267,22 +3276,22 @@ step</source>
         <translation type="obsolete">Трассировка частиц</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="440"/>
+        <location filename="../../src/postprocessorview.cpp" line="441"/>
         <source>Solid view</source>
         <translation>Твердотельный вид</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="451"/>
+        <location filename="../../src/postprocessorview.cpp" line="452"/>
         <source>None</source>
         <translation>Нет</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="453"/>
+        <location filename="../../src/postprocessorview.cpp" line="454"/>
         <source>Scalar view solid</source>
         <translation>Скалярный твердотельный вид</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="473"/>
+        <location filename="../../src/postprocessorview.cpp" line="474"/>
         <source>Postprocessor 3D</source>
         <translation>Постпроцессор 3D</translation>
     </message>
@@ -3311,7 +3320,7 @@ step</source>
         <translation type="obsolete">Шаг:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="698"/>
+        <location filename="../../src/postprocessorview.cpp" line="703"/>
         <source>Type:</source>
         <translation>Тип:</translation>
     </message>
@@ -3320,59 +3329,59 @@ step</source>
         <translation type="obsolete">Адаптивность</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="556"/>
+        <location filename="../../src/postprocessorview.cpp" line="557"/>
         <source>Filter</source>
         <translation>Фильтр</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="565"/>
+        <location filename="../../src/postprocessorview.cpp" line="566"/>
         <source>Log. scale</source>
         <translation>Лог. шкала</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="584"/>
+        <location filename="../../src/postprocessorview.cpp" line="585"/>
         <source>Minimum:</source>
         <translation>Минимум:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="589"/>
+        <location filename="../../src/postprocessorview.cpp" line="590"/>
         <source>Maximum:</source>
         <translation>Максимум:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="594"/>
+        <location filename="../../src/postprocessorview.cpp" line="595"/>
         <source>Range</source>
         <translation>Диапазон</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="323"/>
-        <location filename="../../src/postprocessorview.cpp" line="600"/>
+        <location filename="../../src/postprocessorview.cpp" line="324"/>
+        <location filename="../../src/postprocessorview.cpp" line="602"/>
         <source>Palette:</source>
         <translation>Палитра:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="602"/>
+        <location filename="../../src/postprocessorview.cpp" line="604"/>
         <source>Quality:</source>
         <translation>Качество:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="604"/>
+        <location filename="../../src/postprocessorview.cpp" line="606"/>
         <source>Steps:</source>
         <translation>Шаги:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="607"/>
+        <location filename="../../src/postprocessorview.cpp" line="609"/>
         <source>Base:</source>
         <translation>База:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="611"/>
+        <location filename="../../src/postprocessorview.cpp" line="613"/>
         <source>Palette</source>
         <translation>Палитра</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="318"/>
-        <location filename="../../src/postprocessorview.cpp" line="620"/>
+        <location filename="../../src/postprocessorview.cpp" line="622"/>
         <source>Show colorbar</source>
         <translation>Показать палитру</translation>
     </message>
@@ -3382,47 +3391,46 @@ step</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="623"/>
+        <location filename="../../src/postprocessorview.cpp" line="628"/>
         <source>Decimal places:</source>
         <translation>Десятичные разряды:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="627"/>
+        <location filename="../../src/postprocessorview.cpp" line="632"/>
         <source>Colorbar</source>
         <translation>Палитра</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="657"/>
+        <location filename="../../src/postprocessorview.cpp" line="662"/>
         <source>Number of contours:</source>
         <translation>Количество контуров:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="659"/>
+        <location filename="../../src/postprocessorview.cpp" line="664"/>
         <source>Contour width:</source>
         <translation>Толщина контура:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="671"/>
+        <location filename="../../src/postprocessorview.cpp" line="676"/>
         <source>Proportional</source>
         <translation>Пропорциональный</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="672"/>
+        <location filename="../../src/postprocessorview.cpp" line="677"/>
         <source>Color (b/w)</source>
         <translation>Яркость (ч/б)</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="692"/>
         <source>Number of vectors:</source>
-        <translation>Количество векторов:</translation>
+        <translation type="obsolete">Количество векторов:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="695"/>
+        <location filename="../../src/postprocessorview.cpp" line="700"/>
         <source>Scale:</source>
         <translation>Масштаб:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="700"/>
+        <location filename="../../src/postprocessorview.cpp" line="705"/>
         <source>Center:</source>
         <translation>Центр:</translation>
     </message>
@@ -3527,12 +3535,12 @@ step</source>
         <translation type="obsolete">Масса (кг)</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="761"/>
+        <location filename="../../src/postprocessorview.cpp" line="766"/>
         <source>Scalar</source>
         <translation>Скаляр</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="765"/>
+        <location filename="../../src/postprocessorview.cpp" line="770"/>
         <source>Magnitude</source>
         <translation>Модуль</translation>
     </message>
@@ -3820,52 +3828,52 @@ step</source>
         <translation>Браузер</translation>
     </message>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="57"/>
+        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="56"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="57"/>
+        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="56"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="57"/>
+        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="56"/>
         <source>Value</source>
         <translation>Значение</translation>
     </message>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="76"/>
+        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="75"/>
         <source>Copy name</source>
         <translation>Копировать имя</translation>
     </message>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="79"/>
+        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="78"/>
         <source>Copy value</source>
         <translation>Копировать значение</translation>
     </message>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="82"/>
+        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="81"/>
         <source>&amp;Delete</source>
         <translation>&amp;Удалить</translation>
     </message>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="122"/>
+        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="121"/>
         <source>Variables</source>
         <translation>Переменные</translation>
     </message>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="126"/>
+        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="125"/>
         <source>Other</source>
         <translation>Другое</translation>
     </message>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="130"/>
+        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="129"/>
         <source>Functions</source>
         <translation>Функции</translation>
     </message>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="134"/>
+        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="133"/>
         <source>Classes</source>
         <translation>Классы</translation>
     </message>
@@ -4308,7 +4316,7 @@ Do you want to save your changes?</source>
 <context>
     <name>PythonScriptingHistoryView</name>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonconsole.cpp" line="726"/>
+        <location filename="../../pythonlab/pythonlab/pythonconsole.cpp" line="725"/>
         <source>History</source>
         <translation>История</translation>
     </message>
@@ -4688,11 +4696,10 @@ Do you want to save your changes?</source>
         <location filename="../../src/pythonlab/pyfield.cpp" line="665"/>
         <location filename="../../src/pythonlab/pyfield.cpp" line="684"/>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="31"/>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="194"/>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="215"/>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="222"/>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="235"/>
-        <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="644"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="193"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="214"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="221"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="234"/>
         <source>Problem is not solved.</source>
         <translation>Проблема не решена.</translation>
     </message>
@@ -4721,7 +4728,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="648"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="410"/>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="170"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="169"/>
         <source>Problem is not meshed.</source>
         <translation>Проблема не дискретизирована (нет сетки).</translation>
     </message>
@@ -4882,7 +4889,7 @@ Do you want to save your changes?</source>
         <translation>Неверный тип сопряжения. Допустимые ключи: %1</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="232"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="231"/>
         <source>Problem is not transient.</source>
         <translation>Проблема не является переходным процессом.</translation>
     </message>
@@ -4931,7 +4938,7 @@ Do you want to save your changes?</source>
         <translation>Ошибка процесса линеарайзера: %1</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="708"/>
+        <location filename="../../src/settings.cpp" line="723"/>
         <source>Error: %1</source>
         <translation>Ошибка: %1</translation>
     </message>
@@ -5100,9 +5107,8 @@ Do you want to save your changes?</source>
         <translation type="unfinished">Векторная поверхность</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="403"/>
         <source>Triangle</source>
-        <translation>Triangle</translation>
+        <translation type="obsolete">Triangle</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="405"/>
@@ -5130,9 +5136,18 @@ Do you want to save your changes?</source>
         <translation>GMSH — четырёхугольная</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="415"/>
         <source>GMSH - quad Delaunay (exp.)</source>
-        <translation type="unfinished">GMSH — четырёхугольная Delaunay (эксп.)</translation>
+        <translation type="obsolete">GMSH — четырёхугольная Delaunay (эксп.)</translation>
+    </message>
+    <message>
+        <location filename="../../src/util/enums.cpp" line="403"/>
+        <source>Triangle - triangle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/util/enums.cpp" line="415"/>
+        <source>GMSH - quad Delaunay</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="453"/>
@@ -5500,22 +5515,22 @@ Do you want to save your changes?</source>
         <translation>Результаты</translation>
     </message>
     <message>
-        <location filename="../../src/resultsview.cpp" line="118"/>
+        <location filename="../../src/resultsview.cpp" line="117"/>
         <source>Local point values</source>
         <translation>Значения в точке</translation>
     </message>
     <message>
-        <location filename="../../src/resultsview.cpp" line="193"/>
+        <location filename="../../src/resultsview.cpp" line="192"/>
         <source>Volume integrals</source>
         <translation>Объёмные интегралы</translation>
     </message>
     <message>
-        <location filename="../../src/resultsview.cpp" line="237"/>
+        <location filename="../../src/resultsview.cpp" line="236"/>
         <source>Surface integrals</source>
         <translation>Поверхностные интегралы</translation>
     </message>
     <message>
-        <location filename="../../src/resultsview.cpp" line="279"/>
+        <location filename="../../src/resultsview.cpp" line="278"/>
         <source>Problem is not solved.</source>
         <translation>Проблема не решена.</translation>
     </message>
@@ -6111,12 +6126,12 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneViewCommon</name>
     <message>
-        <location filename="../../src/sceneview_common.cpp" line="316"/>
+        <location filename="../../src/sceneview_common.cpp" line="371"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
         <translation>Не удалось сохранить изображение в файл %1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_common.cpp" line="316"/>
+        <location filename="../../src/sceneview_common.cpp" line="371"/>
         <source>Problem</source>
         <translation type="unfinished">Проблема</translation>
     </message>
@@ -6151,17 +6166,17 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneViewMesh</name>
     <message>
-        <location filename="../../src/sceneview_mesh.cpp" line="61"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="62"/>
         <source>Mesh</source>
         <translation>Сетка</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_mesh.cpp" line="62"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="63"/>
         <source>Ctrl+3</source>
         <translation>Ctrl+3</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_mesh.cpp" line="65"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="66"/>
         <source>Export VTK order...</source>
         <translation>Экспорт порядка VTK...</translation>
     </message>
@@ -6170,7 +6185,7 @@ Do you want to save your changes?</source>
         <translation type="obsolete">Экспорт порядка как файл VTK</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_mesh.cpp" line="68"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="69"/>
         <source>Export VTK mesh...</source>
         <translation>Экспорт сетки VTK...</translation>
     </message>
@@ -6179,12 +6194,12 @@ Do you want to save your changes?</source>
         <translation type="obsolete">Экспорт сетки как файл VTK</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_mesh.cpp" line="122"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="123"/>
         <source>Export VTK file</source>
         <translation>Экспорт VTK файла</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_mesh.cpp" line="122"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="123"/>
         <source>VTK files (*.vtk)</source>
         <translation>VTK файлы (*.vtk)</translation>
     </message>
@@ -6197,56 +6212,56 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneViewParticleTracing</name>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="425"/>
+        <location filename="../../src/sceneview_particle.cpp" line="426"/>
         <source>Particle
 Tracing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="426"/>
+        <location filename="../../src/sceneview_particle.cpp" line="427"/>
         <source>Ctrl+7</source>
         <translation type="unfinished">Ctrl+7</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1148"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1149"/>
         <location filename="../../src/sceneview_particle.h" line="104"/>
         <source>Particle Tracing</source>
         <translation type="unfinished">Трассировка частиц</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="463"/>
-        <location filename="../../src/sceneview_particle.cpp" line="1125"/>
-        <location filename="../../src/sceneview_particle.cpp" line="1133"/>
+        <location filename="../../src/sceneview_particle.cpp" line="464"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1126"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1134"/>
         <source>Particle tracing</source>
         <translation type="unfinished">Трассировка частиц</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1047"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1048"/>
         <source>Vel.</source>
         <translation type="unfinished">Скорость</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1110"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1111"/>
         <source>Post View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1110"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1111"/>
         <source>Particle view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1125"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1126"/>
         <source>Particle tracing failed (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1133"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1134"/>
         <source>Catched unknown exception in particle tracing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1148"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1149"/>
         <source>Particle %1: %2 steps, final time %3 s</source>
         <translation type="unfinished">Частица %1: %2 шагов, общее время %3 с</translation>
     </message>
@@ -6357,47 +6372,47 @@ Tracing</source>
 <context>
     <name>SceneViewPreprocessor</name>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="56"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="57"/>
         <source>Preprocessor</source>
         <translation>Препроцессор</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="57"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="58"/>
         <source>Ctrl+2</source>
         <translation>Ctrl+2</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="61"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="62"/>
         <source>Operate on &amp;nodes</source>
         <translation>Работа над &amp;узлами</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="222"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="223"/>
         <source>Operate on nodes</source>
         <translation>Работа над узлами</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="66"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="67"/>
         <source>Operate on &amp;edges</source>
         <translation>Работа над &amp;рёбрами</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="225"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="226"/>
         <source>Operate on edges</source>
         <translation>Работа над рёбрами</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="70"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="71"/>
         <source>Operate on &amp;labels</source>
         <translation>Работа над &amp;метками</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="228"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="229"/>
         <source>Operate on labels</source>
         <translation>Работа над метками</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="82"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="83"/>
         <source>&amp;Select region</source>
         <translation>&amp;Выбрать область</translation>
     </message>
@@ -6406,17 +6421,17 @@ Tracing</source>
         <translation type="obsolete">Выбрать область</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="86"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="87"/>
         <source>Object properties</source>
         <translation>Свойства объекта</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="91"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="92"/>
         <source>Swap direction</source>
         <translation>Сменить направление</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="294"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="295"/>
         <source>&lt;h3&gt;Node&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Index: %3</source>
         <translation>&lt;h3&gt;Узел&lt;/h3&gt;Точка: [%1; %2]&lt;br/&gt;Индекс: %3</translation>
     </message>
@@ -6425,24 +6440,24 @@ Tracing</source>
         <translation type="obsolete">-</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="323"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="324"/>
         <source>&lt;h3&gt;Edge&lt;/h3&gt;&lt;b&gt;Point:&lt;/b&gt; [%1; %2] - [%3; %4]&lt;br/&gt;&lt;b&gt;Boundary conditions:&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Refinement:&lt;/b&gt; %6&lt;br/&gt;&lt;b&gt;Angle:&lt;/b&gt; %7 deg.&lt;br/&gt;&lt;b&gt;Index:&lt;/b&gt; %8</source>
         <translation>&lt;h3&gt;Ребро&lt;/h3&gt;&lt;b&gt;Точка:&lt;/b&gt; [%1; %2] - [%3; %4]&lt;br/&gt;&lt;b&gt;Граничные условия:&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Улучшение:&lt;/b&gt; %6&lt;br/&gt;&lt;b&gt;Угол:&lt;/b&gt; %7 град.&lt;br/&gt;&lt;b&gt;Индекс:&lt;/b&gt; %8</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="361"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="362"/>
         <source>&lt;h3&gt;Label&lt;/h3&gt;&lt;b&gt;Point:&lt;/b&gt; [%1; %2]&lt;br/&gt;&lt;b&gt;Material:&lt;/b&gt; %3&lt;br/&gt;&lt;b&gt;Area refinement:&lt;/b&gt; %4&lt;br/&gt;&lt;b&gt;Polynomial order:&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Index:&lt;/b&gt; %6</source>
         <translation>&lt;h3&gt;Метка&lt;/h3&gt;&lt;b&gt;Точка:&lt;/b&gt; [%1; %2]&lt;br/&gt;&lt;b&gt;Материал:&lt;/b&gt; %3&lt;br/&gt;&lt;b&gt;Улучшение области:&lt;/b&gt; %4&lt;br/&gt;&lt;b&gt;Порядок полинома:&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Индекс:&lt;/b&gt; %6</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="539"/>
-        <location filename="../../src/sceneview_geometry.cpp" line="585"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="540"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="586"/>
         <source>Node</source>
         <translation>Узел</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="539"/>
-        <location filename="../../src/sceneview_geometry.cpp" line="585"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="540"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="586"/>
         <source>Radial component must be greater then or equal to zero.</source>
         <translation>Радиальная компонента должна быть больше или равна нулю.</translation>
     </message>
@@ -6575,7 +6590,7 @@ Tracing</source>
 <context>
     <name>SettingsWidget</name>
     <message>
-        <location filename="../../src/settings.cpp" line="50"/>
+        <location filename="../../src/settings.cpp" line="49"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
@@ -6584,212 +6599,187 @@ Tracing</source>
         <translation type="obsolete">Ctrl+7</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="51"/>
+        <location filename="../../src/settings.cpp" line="50"/>
         <source>Ctrl+8</source>
         <translation type="unfinished">Ctrl+8</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="215"/>
+        <location filename="../../src/settings.cpp" line="214"/>
         <source>Workspace</source>
         <translation>Рабочее пространство</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="216"/>
+        <location filename="../../src/settings.cpp" line="215"/>
         <source>Script and description</source>
         <translation>Скрипт и описание</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="217"/>
-        <location filename="../../src/settings.cpp" line="576"/>
+        <location filename="../../src/settings.cpp" line="216"/>
+        <location filename="../../src/settings.cpp" line="589"/>
         <source>Colors</source>
         <translation>Цвета</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="218"/>
+        <location filename="../../src/settings.cpp" line="217"/>
         <source>Mesh and Solver</source>
         <translation>Сетка и Решатель</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="229"/>
+        <location filename="../../src/settings.cpp" line="228"/>
         <source>Apply</source>
         <translation>Применить</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="261"/>
+        <location filename="../../src/settings.cpp" line="260"/>
         <source>Startup script</source>
         <translation>Сценарий запуска</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="271"/>
+        <location filename="../../src/settings.cpp" line="270"/>
         <source>Description</source>
         <translation>Описание</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="291"/>
+        <location filename="../../src/settings.cpp" line="290"/>
         <source>Show grid</source>
         <translation>Показать коорд. сетку</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="293"/>
+        <location filename="../../src/settings.cpp" line="292"/>
         <source>Snap to grid</source>
         <translation>Привязать к коорд. сетке</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="294"/>
         <source>Zoom to mouse pointer</source>
-        <translation>Масштабировать по указателю</translation>
+        <translation type="obsolete">Масштабировать по указателю</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="295"/>
+        <location filename="../../src/settings.cpp" line="294"/>
         <source>Show rulers</source>
         <translation>Показать линейки</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="296"/>
+        <location filename="../../src/settings.cpp" line="295"/>
         <source>Show axes</source>
         <translation>Показать оси</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="299"/>
+        <location filename="../../src/settings.cpp" line="298"/>
         <source>Grid step:</source>
         <translation>Шаг коорд. сетки:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="307"/>
+        <location filename="../../src/settings.cpp" line="306"/>
         <source>Grid</source>
         <translation>Коорд. сетка</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="316"/>
+        <location filename="../../src/settings.cpp" line="323"/>
         <source>Rulers:</source>
         <translation>Линейки:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="318"/>
+        <location filename="../../src/settings.cpp" line="326"/>
         <source>Postprocessor:</source>
         <translation>Постпроцессор:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="321"/>
+        <location filename="../../src/settings.cpp" line="330"/>
         <source>Fonts</source>
         <translation>Шрифты</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="336"/>
+        <location filename="../../src/settings.cpp" line="346"/>
         <source>Node size:</source>
         <translation>Размер узла:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="338"/>
+        <location filename="../../src/settings.cpp" line="348"/>
         <source>Edge width:</source>
         <translation>Толщина ребра: </translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="340"/>
+        <location filename="../../src/settings.cpp" line="350"/>
         <source>Label size:</source>
         <translation>Размер метки:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="343"/>
+        <location filename="../../src/settings.cpp" line="353"/>
         <source>Geometry</source>
         <translation>Геометрия</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="347"/>
+        <location filename="../../src/settings.cpp" line="357"/>
         <source>Ligthing</source>
         <translation>Освещение</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="353"/>
         <source>Gradient background</source>
-        <translation>Градиентная заливка</translation>
+        <translation type="obsolete">Градиентная заливка</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="359"/>
+        <location filename="../../src/settings.cpp" line="369"/>
         <source>Bounding box</source>
         <translation>Ограничительная рамка</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="360"/>
-        <source>Show geometry lines</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/settings.cpp" line="363"/>
+        <location filename="../../src/settings.cpp" line="374"/>
         <source>Angle:</source>
         <translation>Угол:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="366"/>
+        <location filename="../../src/settings.cpp" line="377"/>
         <source>Height:</source>
         <translation>Высота:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="372"/>
+        <location filename="../../src/settings.cpp" line="383"/>
         <source>3D view</source>
         <translation>3D вид</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="376"/>
+        <location filename="../../src/settings.cpp" line="387"/>
         <source>Scalar field</source>
         <translation>Скалярное поле</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="377"/>
+        <location filename="../../src/settings.cpp" line="388"/>
         <source>Contours</source>
         <translation>Контуры</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="378"/>
         <source>Vector field</source>
-        <translation>Векторное поле</translation>
+        <translation type="obsolete">Векторное поле</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="385"/>
+        <location filename="../../src/settings.cpp" line="396"/>
         <source>Deform shape</source>
         <translation>Деформация формы</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="388"/>
-        <location filename="../../src/settings.cpp" line="424"/>
-        <location filename="../../src/settings.cpp" line="573"/>
+        <location filename="../../src/settings.cpp" line="399"/>
+        <location filename="../../src/settings.cpp" line="436"/>
+        <location filename="../../src/settings.cpp" line="586"/>
         <source>Default</source>
         <translation>По умолчанию</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="414"/>
+        <location filename="../../src/settings.cpp" line="425"/>
         <source>Curvilinear elements</source>
         <translation>Криволинейные элементы</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="418"/>
         <source>Angle segments count:</source>
-        <translation>Кол-во угловых сегментов:</translation>
+        <translation type="obsolete">Кол-во угловых сегментов:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="421"/>
+        <location filename="../../src/settings.cpp" line="433"/>
         <source>Mesh</source>
         <translation>Сетка</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="431"/>
         <source>Maximum number of DOFs:</source>
-        <translation>Максимальное количество степеней свободы:</translation>
-    </message>
-    <message>
-        <location filename="../../src/settings.cpp" line="438"/>
-        <source>This parameter influences the selection of candidates&lt;br/&gt;in hp-adaptivity. Default value is 1.0.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/settings.cpp" line="443"/>
-        <source>Quantitative parameter of the adaptivity&lt;br/&gt;with different meanings for various adaptive strategies.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/settings.cpp" line="596"/>
-        <source>Refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;) times total error&lt;br/&gt;is processed. If more elements have similar errors,&lt;br/&gt;refine all to keep the mesh symmetric.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Максимальное количество степеней свободы:</translation>
     </message>
     <message>
         <source>&lt;b&gt;&lt;/b&gt;default value is 1.0, this parameter influences the selection&lt;br/&gt;of candidates in hp-adaptivity</source>
@@ -6800,12 +6790,12 @@ Tracing</source>
         <translation type="obsolete">&lt;b&gt;&lt;/b&gt;количественный параметр функции adapt(...)&lt;br/&gt;с различным смыслом, зависящим от стратегии адаптивности</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="599"/>
+        <location filename="../../src/settings.cpp" line="612"/>
         <source>Refine all elements whose error is larger&lt;br/&gt;than &lt;b&gt;threshold&lt;/b&gt; times maximum element error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="602"/>
+        <location filename="../../src/settings.cpp" line="615"/>
         <source>Refine all elements whose error is larger&lt;br/&gt;than &lt;b&gt;threshold&lt;/b&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6822,139 +6812,188 @@ Tracing</source>
         <translation type="obsolete">2</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="456"/>
+        <location filename="../../src/settings.cpp" line="468"/>
         <source>arbitrary level</source>
         <translation>произвольный уровень</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="457"/>
+        <location filename="../../src/settings.cpp" line="469"/>
         <source>at most one-level</source>
         <translation>не более I уровня</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="458"/>
+        <location filename="../../src/settings.cpp" line="470"/>
         <source>at most two-level</source>
         <translation>не более II уровня</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="459"/>
+        <location filename="../../src/settings.cpp" line="471"/>
         <source>at most three-level</source>
         <translation>не более III уровня</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="460"/>
+        <location filename="../../src/settings.cpp" line="472"/>
         <source>at most four-level</source>
         <translation>не более IV уровня</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="461"/>
+        <location filename="../../src/settings.cpp" line="473"/>
         <source>at most five-level</source>
         <translation>не более V уровня</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="468"/>
+        <location filename="../../src/settings.cpp" line="480"/>
         <source>Use anisotropic refinements</source>
         <translation>Использовать анизотропные улучшения</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="469"/>
         <source>Use hp reference solution for h and p adaptivity</source>
-        <translation type="unfinished">Использовать эталонное решение hp для h и p адаптивности</translation>
+        <translation type="obsolete">Использовать эталонное решение hp для h и p адаптивности</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="475"/>
+        <location filename="../../src/settings.cpp" line="293"/>
+        <source>Zoom to mouse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="363"/>
+        <source>Gradient back.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="370"/>
+        <source>Show edges</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="389"/>
+        <source>Vectors</source>
+        <translation type="unfinished">Векторы</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="430"/>
+        <source>Angle seg. count:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="443"/>
+        <source>Max. num. of DOFs:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="450"/>
+        <source>This parameter influences the selection of&lt;br /&gt; candidates in hp-adaptivity. Default value is 1.0.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="455"/>
+        <source>Quantitative parameter of the adaptivity with&lt;br/&gt;different meanings for adaptive strategies.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="481"/>
+        <source>Use hp ref. solution for h and p adaptivity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="487"/>
         <source>Conv. exp.:</source>
         <translation type="unfinished">Сход. эксп.:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="478"/>
+        <location filename="../../src/settings.cpp" line="490"/>
         <source>Strategy:</source>
         <translation>Стратегия:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="481"/>
+        <location filename="../../src/settings.cpp" line="493"/>
         <source>Threshold:</source>
         <translation>Порог:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="484"/>
+        <location filename="../../src/settings.cpp" line="496"/>
         <source>Hanging nodes:</source>
         <translation>Висячие узлы:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="486"/>
+        <location filename="../../src/settings.cpp" line="498"/>
         <source>Norm:</source>
         <translation>Норма:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="503"/>
+        <location filename="../../src/settings.cpp" line="515"/>
         <source>Triangle</source>
         <translation>Triangle</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="505"/>
+        <location filename="../../src/settings.cpp" line="517"/>
         <source>GMSH</source>
         <translation>GMSH</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="546"/>
+        <location filename="../../src/settings.cpp" line="559"/>
         <source>Background:</source>
         <translation>Фон:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="547"/>
+        <location filename="../../src/settings.cpp" line="560"/>
         <source>Grid:</source>
         <translation>Коорд. сетка:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="548"/>
+        <location filename="../../src/settings.cpp" line="561"/>
         <source>Cross:</source>
         <translation>Пересечение:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="549"/>
+        <location filename="../../src/settings.cpp" line="562"/>
         <source>Nodes:</source>
         <translation>Узлы:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="550"/>
+        <location filename="../../src/settings.cpp" line="563"/>
         <source>Edges:</source>
         <translation>Рёбра:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="551"/>
+        <location filename="../../src/settings.cpp" line="564"/>
         <source>Labels:</source>
         <translation>Метки:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="552"/>
+        <location filename="../../src/settings.cpp" line="565"/>
         <source>Contours:</source>
         <translation>Контуры:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="553"/>
+        <location filename="../../src/settings.cpp" line="566"/>
         <source>Vectors:</source>
         <translation>Векторы:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="554"/>
+        <location filename="../../src/settings.cpp" line="567"/>
         <source>Initial mesh:</source>
         <translation>Исходная сетка:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="555"/>
+        <location filename="../../src/settings.cpp" line="568"/>
         <source>Solution mesh:</source>
         <translation>Финальная сетка:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="556"/>
+        <location filename="../../src/settings.cpp" line="569"/>
         <source>Highlighted elements:</source>
         <translation>Выделенные элементы:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="557"/>
+        <location filename="../../src/settings.cpp" line="570"/>
         <source>Selected elements:</source>
         <translation>Выбранные элементы:</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="609"/>
+        <source>Refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;) times total&lt;br/&gt;error is processed. If more elements have similar&lt;br/&gt;errors, refine all to keep the mesh symmetric.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;) times total error&lt;br/&gt;is processed. If more elements have similar errors, refine all&lt;br/&gt;to keep the mesh symmetric</source>
@@ -6990,22 +7029,22 @@ Tracing</source>
         <translation>Подсказки</translation>
     </message>
     <message>
-        <location filename="../../src/tooltipview.cpp" line="40"/>
+        <location filename="../../src/tooltipview.cpp" line="39"/>
         <source>Tooltip_Postprocessor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/tooltipview.cpp" line="48"/>
+        <location filename="../../src/tooltipview.cpp" line="47"/>
         <source>Tooltip_OperateOnNodes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/tooltipview.cpp" line="51"/>
+        <location filename="../../src/tooltipview.cpp" line="50"/>
         <source>Tooltip_OperateOnEdges</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/tooltipview.cpp" line="54"/>
+        <location filename="../../src/tooltipview.cpp" line="53"/>
         <source>Tooltip_OperateOnLabels</source>
         <translation type="unfinished"></translation>
     </message>
