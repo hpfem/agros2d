@@ -320,6 +320,7 @@ QWidget *PostprocessorWidget::meshOrderWidget()
 
     QGridLayout *gridLayoutOrder = new QGridLayout();
     gridLayoutOrder->setContentsMargins(2, 2, 2, 3);
+    gridLayoutOrder->setColumnStretch(1, 1);
     gridLayoutOrder->addWidget(new QLabel(tr("Palette:")), 0, 0);
     gridLayoutOrder->addWidget(cmbOrderPaletteOrder, 0, 1);
     gridLayoutOrder->addWidget(chkShowOrderColorbar, 1, 0, 1, 2);
@@ -595,6 +596,7 @@ QWidget *PostprocessorWidget::postScalarAdvancedWidget()
     grpScalarFieldRange->setLayout(layoutScalarFieldRange);
 
     QGridLayout *gridLayoutScalarFieldPalette = new QGridLayout();
+    gridLayoutScalarFieldPalette->setContentsMargins(0, 0, 0, 0);
     gridLayoutScalarFieldPalette->setColumnMinimumWidth(0, columnMinimumWidth());
     gridLayoutScalarFieldPalette->setColumnStretch(1, 1);
     gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Palette:")), 0, 0);
@@ -620,6 +622,9 @@ QWidget *PostprocessorWidget::postScalarAdvancedWidget()
     chkShowScalarColorBar = new QCheckBox(tr("Show colorbar"), this);
 
     QGridLayout *gridLayoutScalarFieldColorbar = new QGridLayout();
+    gridLayoutScalarFieldColorbar->setContentsMargins(0, 0, 0, 0);
+    gridLayoutScalarFieldColorbar->setColumnMinimumWidth(0, columnMinimumWidth());
+    gridLayoutScalarFieldColorbar->setColumnStretch(1, 1);
     gridLayoutScalarFieldColorbar->addWidget(new QLabel(tr("Decimal places:")), 0, 0);
     gridLayoutScalarFieldColorbar->addWidget(txtScalarDecimalPlace, 0, 1);
     gridLayoutScalarFieldColorbar->addWidget(chkShowScalarColorBar, 0, 2);
@@ -689,7 +694,7 @@ QWidget *PostprocessorWidget::postVectorAdvancedWidget()
     gridLayoutVectors->setContentsMargins(0, 0, 0, 0);
     gridLayoutVectors->setColumnMinimumWidth(0, columnMinimumWidth());
     gridLayoutVectors->setColumnStretch(1, 1);
-    gridLayoutVectors->addWidget(new QLabel(tr("Number of vectors:")), 0, 0);
+    gridLayoutVectors->addWidget(new QLabel(tr("Number of vec.:")), 0, 0);
     gridLayoutVectors->addWidget(txtVectorCount, 0, 1);
     gridLayoutVectors->addWidget(chkVectorProportional, 0, 2);
     gridLayoutVectors->addWidget(new QLabel(tr("Scale:")), 1, 0);

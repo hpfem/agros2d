@@ -41,21 +41,29 @@
     </message>
     <message>
         <location filename="../../src/gui/about.cpp" line="72"/>
+        <source>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D is a multiplatform multiphysics application for the solution of partial differential equations (PDE) based on the &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library using higher order finite element method (&lt;i&gt;hp&lt;/i&gt;-FEM) with automatic adaptivity.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - main developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;FrantiÅ¡ek Mach&lt;/b&gt; - developer, Python script (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Pavel KÅ¯s&lt;/b&gt; - developer, coupled problems, time domain adaptivity (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;David PÃ¡nek&lt;/b&gt; - developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukÃ¡Å¡ Korous&lt;/b&gt; - developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukÃ¡Å¡ Koudela&lt;/b&gt; - developer - RF module (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - Polish translation (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;VÃ¡clav Kotlan&lt;/b&gt; - German translation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Petr KropÃ­k&lt;/b&gt; - University of West Bohemia, Pilsen&lt;br/&gt;&lt;b&gt;Denys Nikolayev&lt;/b&gt; - Russion and French translation, University of West Bohemia, Pilsen&lt;br/&gt;&lt;/p&gt;</source>
+        <translation>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D je multiplatformní multifyzikální aplikace určená k řešení parciálních diferenciálních rovnic (PDR) založená na knihovně &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; využívající metodu konečných prvků vyšších řádů přesnosti(&lt;i&gt;hp&lt;/i&gt;FEM) s automatickou adaptivitou.&lt;br/&gt;&lt;br/&gt;Internetové stránky: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Hlášení chyb: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autoři:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - hlavní vývojář (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;František Mach&lt;/b&gt; - vývojář, Python skript (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Pavel Kůs&lt;/b&gt; - vývojář, sdružené problémy, adaptivní přechodové děje (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;David Pánek&lt;/b&gt; - vývojář (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Lukáš Korous&lt;/b&gt; - vývojář (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Lukáš Koudela&lt;/b&gt; - vývojář - RF modul (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - polský překlad (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;Václav Kotlan&lt;/b&gt; - německý překlad(Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Petr Kropík&lt;/b&gt; (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Denys Nikolayev&lt;/b&gt; - ruský a francouský překlad, (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
         <source>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D is a multiplatform multiphysics application for the solution of partial differential equations (PDE) based on the &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library using higher order finite element method (&lt;i&gt;hp&lt;/i&gt;-FEM) with automatic adaptivity.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - main developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;FrantiÅ¡ek Mach&lt;/b&gt; - developer, documentation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Pavel KÅ¯s&lt;/b&gt; - developer, coupled problems, time domain adaptivity (University of West Bohemia, Prague)&lt;br/&gt;&lt;b&gt;David PÃ¡nek&lt;/b&gt; - developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukÃ¡Å¡ Korous&lt;/b&gt; - developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukÃ¡Å¡ Koudela&lt;/b&gt; - developer - RF module (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - Polish translation (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;VÃ¡clav Kotlan&lt;/b&gt; - German translation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Petr KropÃ­k&lt;/b&gt; - University of West Bohemia, Pilsen&lt;br/&gt;&lt;/p&gt;</source>
-        <translation>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D je multiplatformní multifyzikální aplikace určená k řešení parciálních diferenciálních rovnic (PDR) založená na knihovně &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; využívající metodu konečných prvků vyšších řádů (&lt;i&gt;hp&lt;/i&gt;FEM) s automatickou adaptivitou.&lt;br/&gt;&lt;br/&gt;Internetové stránky: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Diskuze: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autoři:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - hlavní vývojář (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;František Mach&lt;/b&gt; - vývoj, dokumentace (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Lukáš Korous&lt;/b&gt; - vývoj (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Lukáš Koudela&lt;/b&gt; - vývojář - RF modul (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - polský překlad (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;Václav Kotlan&lt;/b&gt; - lokalizace, německý překlad(Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Petr Kropík&lt;/b&gt; (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D je multiplatformní multifyzikální aplikace určená k řešení parciálních diferenciálních rovnic (PDR) založená na knihovně &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; využívající metodu konečných prvků vyšších řádů (&lt;i&gt;hp&lt;/i&gt;FEM) s automatickou adaptivitou.&lt;br/&gt;&lt;br/&gt;Internetové stránky: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Diskuze: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autoři:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - hlavní vývojář (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;František Mach&lt;/b&gt; - vývoj, dokumentace (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Lukáš Korous&lt;/b&gt; - vývoj (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Lukáš Koudela&lt;/b&gt; - vývojář - RF modul (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - polský překlad (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;Václav Kotlan&lt;/b&gt; - lokalizace, německý překlad(Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Petr Kropík&lt;/b&gt; (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/gui/about.cpp" line="155"/>
         <source>&lt;h3&gt;Libraries&lt;/h3&gt;&lt;b&gt;Digia Qt:&lt;/b&gt; Digia Qt (&lt;a href=&quot;http://qt.digia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Qwt:&lt;/b&gt; Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Python:&lt;/b&gt; Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;dxflib:&lt;/b&gt; Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;ctemplate:&lt;/b&gt; Simple but powerful template language for C++ (&lt;a href=&quot;http://code.google.com/p/ctemplate/&quot;&gt;ctemplate&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;poly2tri:&lt;/b&gt; A 2D constrained Delaunay triangulation library (&lt;a href=&quot;http://code.google.com/p/poly2tri/&quot;&gt;poly2tri&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Triangle:&lt;/b&gt; Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Gmsh:&lt;/b&gt; A three-dimensional finite element mesh generator (&lt;a href=&quot;http://geuz.org/gmsh&quot;&gt;Gmsh&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;UMFPACK:&lt;/b&gt; unsymmetric multifrontal sparse LU factorization package (&lt;a href=&quot;http://www.cise.ufl.edu/research/sparse/umfpack/&quot;&gt;UMFPACK&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;MUMPS:&lt;/b&gt; A MUltifrontal Massively Parallel sparse direct Solver (&lt;a href=&quot;http://graal.ens-lyon.fr/MUMPS/&quot;&gt;MUMPS&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;SuperLU:&lt;/b&gt; Direct solver for large sparse systems of linear equations (&lt;a href=&quot;http://crd-legacy.lbl.gov/~xiaoye/SuperLU/&quot;&gt;SuperLU&lt;/a&gt;)&lt;br/&gt;</source>
-        <translation>&lt;h3&gt;Knihovny&lt;/h3&gt;&lt;b&gt;Digia Qt:&lt;/b&gt; Digia Qt (&lt;a href=&quot;http://qt.digia.com/&quot;&gt;Qt - multiplatformní framework&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Qwt:&lt;/b&gt; Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt widget pro technické aplikace &lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Python:&lt;/b&gt; programovací jazyk Python (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;dxflib:&lt;/b&gt; Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;ctemplate:&lt;/b&gt; jednoduchá ale výkoná šablona pro jazyk C++ (&lt;a href=&quot;http://code.google.com/p/ctemplate/&quot;&gt;ctemplate&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;poly2tri:&lt;/b&gt; 2D Delauniova triangulační knihovna (&lt;a href=&quot;http://code.google.com/p/poly2tri/&quot;&gt;poly2tri&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Triangle:&lt;/b&gt; Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Gmsh:&lt;/b&gt; 3D generátor sítě pro konečné prvky (&lt;a href=&quot;http://geuz.org/gmsh&quot;&gt;Gmsh&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;UMFPACK:&lt;/b&gt; balíček pro LU rozklad řídkých asymetrických multifrontal matic (&lt;a href=&quot;http://www.cise.ufl.edu/research/sparse/umfpack/&quot;&gt;UMFPACK&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;MUMPS:&lt;/b&gt; přímý řešič  rozsáhlých paralelních řídkých multifrontal matic (&lt;a href=&quot;http://graal.ens-lyon.fr/MUMPS/&quot;&gt;MUMPS&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;SuperLU:&lt;/b&gt; přímý řešič pro rozsáhlé řídké soustavy lineárních rovnic (&lt;a href=&quot;http://crd-legacy.lbl.gov/~xiaoye/SuperLU/&quot;&gt;SuperLU&lt;/a&gt;)&lt;br/&gt;</translation>
+        <translation type="obsolete">&lt;h3&gt;Knihovny&lt;/h3&gt;&lt;b&gt;Digia Qt:&lt;/b&gt; Digia Qt (&lt;a href=&quot;http://qt.digia.com/&quot;&gt;Qt - multiplatformní framework&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Qwt:&lt;/b&gt; Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt widget pro technické aplikace &lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Python:&lt;/b&gt; programovací jazyk Python (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;dxflib:&lt;/b&gt; Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;ctemplate:&lt;/b&gt; jednoduchá ale výkoná šablona pro jazyk C++ (&lt;a href=&quot;http://code.google.com/p/ctemplate/&quot;&gt;ctemplate&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;poly2tri:&lt;/b&gt; 2D Delauniova triangulační knihovna (&lt;a href=&quot;http://code.google.com/p/poly2tri/&quot;&gt;poly2tri&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Triangle:&lt;/b&gt; Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Gmsh:&lt;/b&gt; 3D generátor sítě pro konečné prvky (&lt;a href=&quot;http://geuz.org/gmsh&quot;&gt;Gmsh&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;UMFPACK:&lt;/b&gt; balíček pro LU rozklad řídkých asymetrických multifrontal matic (&lt;a href=&quot;http://www.cise.ufl.edu/research/sparse/umfpack/&quot;&gt;UMFPACK&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;MUMPS:&lt;/b&gt; přímý řešič  rozsáhlých paralelních řídkých multifrontal matic (&lt;a href=&quot;http://graal.ens-lyon.fr/MUMPS/&quot;&gt;MUMPS&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;SuperLU:&lt;/b&gt; přímý řešič pro rozsáhlé řídké soustavy lineárních rovnic (&lt;a href=&quot;http://crd-legacy.lbl.gov/~xiaoye/SuperLU/&quot;&gt;SuperLU&lt;/a&gt;)&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/gui/about.cpp" line="115"/>
+        <location filename="../../src/gui/about.cpp" line="116"/>
         <source>&lt;h3&gt;Hermes2D&lt;/h3&gt;Web page: &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;http://hpfem.org/hermes/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Solin&lt;/b&gt; (project leader, University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Martin Zitka&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Tomas Vejchodsky&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Svatava Vyvialova&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Jakub Cerveny&lt;/b&gt; (formerly University of Texas at El Paso)&lt;br/&gt;&lt;b&gt;Lenka Dubcova&lt;/b&gt; (Academy of Sciences of the Czech Republic, Prague)&lt;br/&gt;&lt;b&gt;Ondrej Certik&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Robert Cimrman&lt;/b&gt; (New Technologies Research Centre, Pilsen)&lt;br/&gt;&lt;b&gt;Ivo Hanak&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;David Andrs&lt;/b&gt; (formerly University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Sameer Regmi&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;David Puga&lt;/b&gt;l (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Ma Zhonghua&lt;/b&gt; (China University of Petroleum, Beijing)&lt;br/&gt;&lt;b&gt;Milan Hanus&lt;/b&gt; (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Damien Lebrun-Grandie&lt;/b&gt; (Texas A&amp;M University)&lt;br/&gt;&lt;b&gt;Lukas Korous&lt;/b&gt; (Charles University, Prague)&lt;br/&gt;&lt;b&gt;Valmor de Almeida&lt;/b&gt; (Oak Ridge National Laboratory, Oak Ridge)&lt;br/&gt;&lt;/p&gt;</source>
         <translation>&lt;h3&gt;Hermes2D&lt;/h3&gt;WWW stránky: &lt;a href=&quot;http://hpfem.org/hermes/&quot;&gt;http://hpfem.org/hermes/&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Autoři:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Solin&lt;/b&gt; (vedoucí týmu, University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Martin Zitka&lt;/b&gt; (dříve University of Texas v El Paso)&lt;br/&gt;&lt;b&gt;Tomas Vejchodsky&lt;/b&gt; (Akademie věd ČR, Praha)&lt;br/&gt;&lt;b&gt;Svatava Vyvialova&lt;/b&gt; (dříve University of Texas v El Paso)&lt;br/&gt;&lt;b&gt;Jakub Cerveny&lt;/b&gt; (dříve University of Texas v El Paso)&lt;br/&gt;&lt;b&gt;Lenka Dubcova&lt;/b&gt; (Akademie věd ČR, Praha)&lt;br/&gt;&lt;b&gt;Ondrej Certik&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Robert Cimrman&lt;/b&gt; (Centrum nových technologií, Plzeň)&lt;br/&gt;&lt;b&gt;Ivo Hanak&lt;/b&gt; (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;David Andrs&lt;/b&gt; (dříve University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Sameer Regmi&lt;/b&gt; (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;David Puga&lt;/b&gt;l (University of Nevada, Reno)&lt;br/&gt;&lt;b&gt;Ma Zhonghua&lt;/b&gt; (China University of Petroleum, Beijing)&lt;br/&gt;&lt;b&gt;Milan Hanus&lt;/b&gt; (Západočeská univerzita v Plzni, Plzeň)&lt;br/&gt;&lt;b&gt;Damien Lebrun-Grandie&lt;/b&gt; (Texas A&amp;M University)&lt;br/&gt;&lt;b&gt;Lukas Korous&lt;/b&gt; (Karlova univerzita, Praha)&lt;br/&gt;&lt;b&gt;Valmor de Almeida&lt;/b&gt; (Oak Ridge National Laboratory, Oak Ridge)&lt;br/&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/gui/about.cpp" line="183"/>
+        <location filename="../../src/gui/about.cpp" line="156"/>
+        <source>&lt;h3&gt;Libraries&lt;/h3&gt;&lt;b&gt;Digia Qt:&lt;/b&gt; Digia Qt (&lt;a href=&quot;http://qt.digia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Qwt:&lt;/b&gt; Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Python:&lt;/b&gt; Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;dxflib:&lt;/b&gt; Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;ctemplate:&lt;/b&gt; Simple but powerful template language for C++ (&lt;a href=&quot;http://code.google.com/p/ctemplate/&quot;&gt;ctemplate&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;poly2tri:&lt;/b&gt; A 2D constrained Delaunay triangulation library (&lt;a href=&quot;http://code.google.com/p/poly2tri/&quot;&gt;poly2tri&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Triangle:&lt;/b&gt; Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Gmsh:&lt;/b&gt; A three-dimensional finite element mesh generator (&lt;a href=&quot;http://geuz.org/gmsh&quot;&gt;Gmsh&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;UMFPACK:&lt;/b&gt; unsymmetric multifrontal sparse LU factorization package (&lt;a href=&quot;http://www.cise.ufl.edu/research/sparse/umfpack/&quot;&gt;UMFPACK&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;MUMPS:&lt;/b&gt; A MUltifrontal Massively Parallel sparse direct Solver (&lt;a href=&quot;http://graal.ens-lyon.fr/MUMPS/&quot;&gt;MUMPS&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;SuperLU:&lt;/b&gt; Direct solver for large sparse systems of linear equations (&lt;a href=&quot;http://crd-legacy.lbl.gov/~xiaoye/SuperLU/&quot;&gt;SuperLU&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;stb_truetype.h:&lt;/b&gt; TrueType processing library - Sean Barrett / RAD Game Tools (&lt;a href=&quot;http://nothings.org/&quot;&gt;stb&lt;/a&gt;)&lt;br/&gt;</source>
+        <translation>&lt;h3&gt;Knihovny&lt;/h3&gt;&lt;b&gt;Digia Qt:&lt;/b&gt; Digia Qt (&lt;a href=&quot;http://qt.digia.com/&quot;&gt;Qt - multiplatformní framework&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Qwt:&lt;/b&gt; Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt widget pro technické aplikace &lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Python:&lt;/b&gt; programovací jazyk Python (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;dxflib:&lt;/b&gt; Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;ctemplate:&lt;/b&gt; jednoduchá ale výkoná šablona pro jazyk C++ (&lt;a href=&quot;http://code.google.com/p/ctemplate/&quot;&gt;ctemplate&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;poly2tri:&lt;/b&gt; 2D Delaunay triangulační knihovna (&lt;a href=&quot;http://code.google.com/p/poly2tri/&quot;&gt;poly2tri&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Triangle:&lt;/b&gt; Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Gmsh:&lt;/b&gt; 3D generátor sítě pro konečné prvky (&lt;a href=&quot;http://geuz.org/gmsh&quot;&gt;Gmsh&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;UMFPACK:&lt;/b&gt; balíček pro LU rozklad řídkých asymetrických multifrontal matic (&lt;a href=&quot;http://www.cise.ufl.edu/research/sparse/umfpack/&quot;&gt;UMFPACK&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;MUMPS:&lt;/b&gt; přímý řešič  rozsáhlých paralelních řídkých multifrontal matic (&lt;a href=&quot;http://graal.ens-lyon.fr/MUMPS/&quot;&gt;MUMPS&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;SuperLU:&lt;/b&gt; přímý řešič pro rozsáhlé řídké soustavy lineárních rovnic (&lt;a href=&quot;http://crd-legacy.lbl.gov/~xiaoye/SuperLU/&quot;&gt;SuperLU&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;stb_truetype.h:&lt;/b&gt; knihovna pro zpracování TrueType fontů  - Sean Barrett / RAD Game Tools (&lt;a href=&quot;http://nothings.org/&quot;&gt;stb&lt;/a&gt;)&lt;br/&gt;</translation>
+    </message>
+    <message>
+        <location filename="../../src/gui/about.cpp" line="185"/>
         <source>&lt;h3&gt;License:&lt;/h3&gt;&lt;p&gt;Agros2D is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p&gt;Agros2D is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p&gt;You should have received a copy of the GNU General Public License along with Agros2D. If not, see &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.</source>
         <translation>&lt;h3&gt;Licence:&lt;/h3&gt;&lt;p&gt;Agros2D je volný software: můžete jej distribuovat a/nebo upravovat podle podmínek GNU General Public License, vydávané Free Software Foundation, a to buď verze 2 této licence anebo (podle vašeho uvážení) kterékoli pozdější verze.&lt;/p&gt;&lt;p&gt;Agros2D je distribuován v naději, že to bude užitečný, ale BEZ JAKÉKOLIV ZÁRUKY; dokonce i bez záruky PRODEJNOSTI nebo VHODNOSTI PRO URČITÝ ÚČEL. Podívejte se na GNU General Public License pro další podrobnosti.&lt;/p&gt;&lt;p&gt;Měli byste obdržet kopii GNU General Public License současně s Agros2D, pokud ne, podívejte se na stránky &lt;a href=&quot;http://www.gnu.org/licenses/&quot;&gt;http://www.gnu.org/licenses/&lt;/a&gt;.</translation>
     </message>
@@ -152,57 +160,57 @@
         <translation>Opač. směr</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="271"/>
+        <location filename="../../src/chartdialog.cpp" line="272"/>
         <source>Points:</source>
         <translation>Počet bodů:</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="275"/>
+        <location filename="../../src/chartdialog.cpp" line="276"/>
         <source>Points and time step</source>
         <translation>Body a časový krok</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="293"/>
+        <location filename="../../src/chartdialog.cpp" line="294"/>
         <source>Point</source>
         <translation>Bod</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="325"/>
+        <location filename="../../src/chartdialog.cpp" line="326"/>
         <source>Geometry</source>
         <translation>Geometrie</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="326"/>
+        <location filename="../../src/chartdialog.cpp" line="327"/>
         <source>Time</source>
         <translation>Čas</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="400"/>
+        <location filename="../../src/chartdialog.cpp" line="401"/>
         <source>Length (m)</source>
         <translation>Délka (m)</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="482"/>
+        <location filename="../../src/chartdialog.cpp" line="483"/>
         <source>time (s)</source>
         <translation>čas (s)</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="603"/>
+        <location filename="../../src/chartdialog.cpp" line="604"/>
         <source>Scalar</source>
         <translation>Skalár</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="607"/>
+        <location filename="../../src/chartdialog.cpp" line="608"/>
         <source>Magnitude</source>
         <translation>Modul</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="622"/>
+        <location filename="../../src/chartdialog.cpp" line="623"/>
         <source>Export data to file</source>
         <translation>Export dat do souboru</translation>
     </message>
     <message>
-        <location filename="../../src/chartdialog.cpp" line="622"/>
+        <location filename="../../src/chartdialog.cpp" line="623"/>
         <source>CSV files (*.csv)</source>
         <translation>CSV soubory (*.csv)</translation>
     </message>
@@ -1056,7 +1064,7 @@
 <context>
     <name>LocalPointValueDialog</name>
     <message>
-        <location filename="../../src/resultsview.cpp" line="289"/>
+        <location filename="../../src/resultsview.cpp" line="288"/>
         <source>Local point value</source>
         <translation>Lokální veličina v bodě</translation>
     </message>
@@ -2509,11 +2517,11 @@ oblasti</translation>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="167"/>
         <source>Coefficient of restitution (-):</source>
-        <translation>Součinitel restituce (-):</translation>
+        <translation>Souč. restituce (-):</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="172"/>
-        <location filename="../../src/sceneview_particle.cpp" line="257"/>
+        <location filename="../../src/sceneview_particle.cpp" line="258"/>
         <source>Reflection</source>
         <translation>Odraz</translation>
     </message>
@@ -2541,7 +2549,7 @@ oblasti</translation>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="193"/>
         <source>Reference area (m&lt;sup&gt;2&lt;/sup&gt;):</source>
-        <translation>Referenční plocha (m&lt;sup&gt;2&lt;/sup):</translation>
+        <translation>Ref. plocha (m&lt;sup&gt;2&lt;/sup):</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="195"/>
@@ -2575,23 +2583,23 @@ oblasti</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="237"/>
-        <location filename="../../src/sceneview_particle.cpp" line="258"/>
+        <location filename="../../src/sceneview_particle.cpp" line="259"/>
         <source>Solver</source>
         <translation>Řešič</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="246"/>
+        <location filename="../../src/sceneview_particle.cpp" line="247"/>
         <source>Show particle multiple times:</source>
-        <translation>Vícenásobné zobrazení částic:</translation>
+        <translation>Vícenás. zob. částic:</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="251"/>
-        <location filename="../../src/sceneview_particle.cpp" line="259"/>
+        <location filename="../../src/sceneview_particle.cpp" line="252"/>
+        <location filename="../../src/sceneview_particle.cpp" line="260"/>
         <source>Settings</source>
         <translation>Nastavení</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="256"/>
+        <location filename="../../src/sceneview_particle.cpp" line="257"/>
         <source>Forces</source>
         <translation>Síly</translation>
     </message>
@@ -2616,7 +2624,7 @@ oblasti</translation>
         <translation>Hmotnost (kg):</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="278"/>
+        <location filename="../../src/sceneview_particle.cpp" line="279"/>
         <source>Apply</source>
         <translation>Potvrdit</translation>
     </message>
@@ -2730,7 +2738,7 @@ oblasti</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="285"/>
-        <location filename="../../src/postprocessorview.cpp" line="328"/>
+        <location filename="../../src/postprocessorview.cpp" line="329"/>
         <source>Polynomial order</source>
         <translation>Řád polynomu</translation>
     </message>
@@ -2810,139 +2818,144 @@ oblasti</translation>
         <translation>ČB klesající</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="337"/>
+        <location filename="../../src/postprocessorview.cpp" line="338"/>
         <source>Contours</source>
         <translation>Kontury</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="339"/>
+        <location filename="../../src/postprocessorview.cpp" line="340"/>
         <source>Vectors</source>
         <translation>Vektory</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="341"/>
-        <location filename="../../src/postprocessorview.cpp" line="452"/>
+        <location filename="../../src/postprocessorview.cpp" line="342"/>
+        <location filename="../../src/postprocessorview.cpp" line="453"/>
         <source>Scalar view</source>
         <translation>Skalární zobrazení</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="353"/>
+        <location filename="../../src/postprocessorview.cpp" line="354"/>
         <source>Postprocessor 2D</source>
         <translation>Postprocesor 2D</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="366"/>
+        <location filename="../../src/postprocessorview.cpp" line="367"/>
         <source>Auto range</source>
-        <translation>Autom. rozsah</translation>
+        <translation>Aut. rozsah</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="374"/>
-        <location filename="../../src/postprocessorview.cpp" line="398"/>
-        <location filename="../../src/postprocessorview.cpp" line="420"/>
+        <location filename="../../src/postprocessorview.cpp" line="375"/>
+        <location filename="../../src/postprocessorview.cpp" line="399"/>
+        <location filename="../../src/postprocessorview.cpp" line="421"/>
         <source>Variable:</source>
         <translation>Proměnná:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="376"/>
+        <location filename="../../src/postprocessorview.cpp" line="377"/>
         <source>Component:</source>
         <translation>Složka:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="380"/>
+        <location filename="../../src/postprocessorview.cpp" line="381"/>
         <source>Scalar field</source>
         <translation>Skalární pole</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="402"/>
+        <location filename="../../src/postprocessorview.cpp" line="403"/>
         <source>Contour field</source>
         <translation>Pole kontur</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="424"/>
+        <location filename="../../src/postprocessorview.cpp" line="425"/>
         <source>Vector field</source>
         <translation>Vektorové pole</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="440"/>
+        <location filename="../../src/postprocessorview.cpp" line="441"/>
         <source>Solid view</source>
         <translation>Prostorové zobrazení</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="451"/>
+        <location filename="../../src/postprocessorview.cpp" line="452"/>
         <source>None</source>
         <translation>Bez zobrazení</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="453"/>
+        <location filename="../../src/postprocessorview.cpp" line="454"/>
         <source>Scalar view solid</source>
         <translation>Obj. skalární pole</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="473"/>
+        <location filename="../../src/postprocessorview.cpp" line="474"/>
         <source>Postprocessor 3D</source>
         <translation>Postprocesor 3D</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="698"/>
+        <location filename="../../src/postprocessorview.cpp" line="697"/>
+        <source>Number of vec.:</source>
+        <translation>Počet vek.:</translation>
+    </message>
+    <message>
+        <location filename="../../src/postprocessorview.cpp" line="703"/>
         <source>Type:</source>
         <translation>Typ:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="556"/>
+        <location filename="../../src/postprocessorview.cpp" line="557"/>
         <source>Filter</source>
         <translation>Filtr</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="565"/>
+        <location filename="../../src/postprocessorview.cpp" line="566"/>
         <source>Log. scale</source>
         <translation>Log. škála</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="584"/>
+        <location filename="../../src/postprocessorview.cpp" line="585"/>
         <source>Minimum:</source>
         <translation>Minimum:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="589"/>
+        <location filename="../../src/postprocessorview.cpp" line="590"/>
         <source>Maximum:</source>
         <translation>Maximum:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="594"/>
+        <location filename="../../src/postprocessorview.cpp" line="595"/>
         <source>Range</source>
         <translation>Rozsah</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="323"/>
-        <location filename="../../src/postprocessorview.cpp" line="600"/>
+        <location filename="../../src/postprocessorview.cpp" line="324"/>
+        <location filename="../../src/postprocessorview.cpp" line="602"/>
         <source>Palette:</source>
         <translation>Paleta:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="602"/>
+        <location filename="../../src/postprocessorview.cpp" line="604"/>
         <source>Quality:</source>
         <translation>Kvalita:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="604"/>
+        <location filename="../../src/postprocessorview.cpp" line="606"/>
         <source>Steps:</source>
         <translation>Počet kroků:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="607"/>
+        <location filename="../../src/postprocessorview.cpp" line="609"/>
         <source>Base:</source>
         <translation>Základ:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="611"/>
+        <location filename="../../src/postprocessorview.cpp" line="613"/>
         <source>Palette</source>
         <translation>Paleta</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="318"/>
-        <location filename="../../src/postprocessorview.cpp" line="620"/>
+        <location filename="../../src/postprocessorview.cpp" line="622"/>
         <source>Show colorbar</source>
-        <translation>Zobrazit bar. stupnici</translation>
+        <translation>Zob. stupnici</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="319"/>
@@ -2950,57 +2963,56 @@ oblasti</translation>
         <translation>Zobrazit popisky</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="623"/>
+        <location filename="../../src/postprocessorview.cpp" line="628"/>
         <source>Decimal places:</source>
-        <translation>Počet des. míst:</translation>
+        <translation>Des. místa:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="627"/>
+        <location filename="../../src/postprocessorview.cpp" line="632"/>
         <source>Colorbar</source>
-        <translation>Bar. stupnice</translation>
+        <translation>Barevná stupnice</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="657"/>
+        <location filename="../../src/postprocessorview.cpp" line="662"/>
         <source>Number of contours:</source>
         <translation>Počet kontur:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="659"/>
+        <location filename="../../src/postprocessorview.cpp" line="664"/>
         <source>Contour width:</source>
         <translation>Šířka kontur:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="671"/>
+        <location filename="../../src/postprocessorview.cpp" line="676"/>
         <source>Proportional</source>
         <translation>Proporční</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="672"/>
+        <location filename="../../src/postprocessorview.cpp" line="677"/>
         <source>Color (b/w)</source>
         <translation>Barva (čb.)</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="692"/>
         <source>Number of vectors:</source>
-        <translation>Počet vektorů:</translation>
+        <translation type="obsolete">Počet vektorů:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="695"/>
+        <location filename="../../src/postprocessorview.cpp" line="700"/>
         <source>Scale:</source>
         <translation>Měřítko:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="700"/>
+        <location filename="../../src/postprocessorview.cpp" line="705"/>
         <source>Center:</source>
         <translation>Střed:</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="761"/>
+        <location filename="../../src/postprocessorview.cpp" line="766"/>
         <source>Scalar</source>
         <translation>Skalár</translation>
     </message>
     <message>
-        <location filename="../../src/postprocessorview.cpp" line="765"/>
+        <location filename="../../src/postprocessorview.cpp" line="770"/>
         <source>Magnitude</source>
         <translation>Modul</translation>
     </message>
@@ -3264,52 +3276,52 @@ oblasti</translation>
         <translation>Prohlížeč</translation>
     </message>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="57"/>
+        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="56"/>
         <source>Name</source>
         <translation>Název</translation>
     </message>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="57"/>
+        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="56"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="57"/>
+        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="56"/>
         <source>Value</source>
         <translation>Hodnota</translation>
     </message>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="76"/>
+        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="75"/>
         <source>Copy name</source>
         <translation>Kopírovat název</translation>
     </message>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="79"/>
+        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="78"/>
         <source>Copy value</source>
         <translation>Kopírovat hodnotu</translation>
     </message>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="82"/>
+        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="81"/>
         <source>&amp;Delete</source>
         <translation>&amp;Smazat</translation>
     </message>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="122"/>
+        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="121"/>
         <source>Variables</source>
         <translation>Proměnné</translation>
     </message>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="126"/>
+        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="125"/>
         <source>Other</source>
         <translation>Ostatní</translation>
     </message>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="130"/>
+        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="129"/>
         <source>Functions</source>
         <translation>Funkce</translation>
     </message>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="134"/>
+        <location filename="../../pythonlab/pythonlab/pythonbrowser.cpp" line="133"/>
         <source>Classes</source>
         <translation>Třídy</translation>
     </message>
@@ -3728,7 +3740,7 @@ Chcete tyto změny uložit?</translation>
 <context>
     <name>PythonScriptingHistoryView</name>
     <message>
-        <location filename="../../pythonlab/pythonlab/pythonconsole.cpp" line="726"/>
+        <location filename="../../pythonlab/pythonlab/pythonconsole.cpp" line="725"/>
         <source>History</source>
         <translation>Historie</translation>
     </message>
@@ -3820,19 +3832,24 @@ Chcete tyto změny uložit?</translation>
         <translation>Vektorová povrchová</translation>
     </message>
     <message>
+        <location filename="../../src/util/enums.cpp" line="403"/>
+        <source>Triangle - triangle</source>
+        <translation>Triangle - trojúhelníky</translation>
+    </message>
+    <message>
         <location filename="../../src/util/enums.cpp" line="405"/>
         <source>Triangle - quad fine div.</source>
-        <translation>Triangle - čtyřúhelníky jemné děl.</translation>
+        <translation>Triangle - čtyř. jemné děl.</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="407"/>
         <source>Triangle - quad rough div.</source>
-        <translation>Triangle - čtyřúhelníky hrubé děl.</translation>
+        <translation>Triangle - čtyř. hrubé děl.</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="409"/>
         <source>Triangle - quad join</source>
-        <translation>Triangle - čtyřúhelníky spojené</translation>
+        <translation>Triangle - čtyř. spojené</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="411"/>
@@ -3845,9 +3862,8 @@ Chcete tyto změny uložit?</translation>
         <translation>GMSH - čtyřúhelníky</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="415"/>
         <source>GMSH - quad Delaunay (exp.)</source>
-        <translation>GMSH - Delaunayho čtyřúhelníky (exp.)</translation>
+        <translation type="obsolete">GMSH - čtyř. Delaunayho (exp.)</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="453"/>
@@ -4040,9 +4056,8 @@ Chcete tyto změny uložit?</translation>
         <translation>Hcurl norma</translation>
     </message>
     <message>
-        <location filename="../../src/util/enums.cpp" line="403"/>
         <source>Triangle</source>
-        <translation>Trojúhelníková</translation>
+        <translation type="obsolete">Trojúhelníková</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="569"/>
@@ -4053,6 +4068,11 @@ Chcete tyto změny uložit?</translation>
         <location filename="../../src/util/enums.cpp" line="547"/>
         <source>UMFPACK</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../../src/util/enums.cpp" line="415"/>
+        <source>GMSH - quad Delaunay</source>
+        <translation>GMSH - čtyř. Delaunay</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="549"/>
@@ -4102,7 +4122,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="648"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="410"/>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="170"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="169"/>
         <source>Problem is not meshed.</source>
         <translation>Problém nebyl diskretizován.</translation>
     </message>
@@ -4363,11 +4383,10 @@ Chcete tyto změny uložit?</translation>
         <location filename="../../src/pythonlab/pyfield.cpp" line="665"/>
         <location filename="../../src/pythonlab/pyfield.cpp" line="684"/>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="31"/>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="194"/>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="215"/>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="222"/>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="235"/>
-        <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="644"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="193"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="214"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="221"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="234"/>
         <source>Problem is not solved.</source>
         <translation>Problém nebyl vyřešen.</translation>
     </message>
@@ -4599,7 +4618,7 @@ Chcete tyto změny uložit?</translation>
         <translation>Neplatný typ sdružení. Platné hodnoty: %1</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyproblem.cpp" line="232"/>
+        <location filename="../../src/pythonlab/pyproblem.cpp" line="231"/>
         <source>Problem is not transient.</source>
         <translation>Problém není přechodový děj.</translation>
     </message>
@@ -4644,7 +4663,7 @@ Chcete tyto změny uložit?</translation>
         <translation>Linearizace selhala: %1</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="708"/>
+        <location filename="../../src/settings.cpp" line="723"/>
         <source>Error: %1</source>
         <translation>Chyba: %1</translation>
     </message>
@@ -4842,22 +4861,22 @@ Chcete tyto změny uložit?</translation>
         <translation>Zobrazení výsledků</translation>
     </message>
     <message>
-        <location filename="../../src/resultsview.cpp" line="193"/>
+        <location filename="../../src/resultsview.cpp" line="192"/>
         <source>Volume integrals</source>
         <translation>Objemové integrály</translation>
     </message>
     <message>
-        <location filename="../../src/resultsview.cpp" line="237"/>
+        <location filename="../../src/resultsview.cpp" line="236"/>
         <source>Surface integrals</source>
         <translation>Povrchové integrály</translation>
     </message>
     <message>
-        <location filename="../../src/resultsview.cpp" line="279"/>
+        <location filename="../../src/resultsview.cpp" line="278"/>
         <source>Problem is not solved.</source>
         <translation>Problém nebyl vyřešen.</translation>
     </message>
     <message>
-        <location filename="../../src/resultsview.cpp" line="118"/>
+        <location filename="../../src/resultsview.cpp" line="117"/>
         <source>Local point values</source>
         <translation>Hodnoty v lokálních bodech</translation>
     </message>
@@ -5391,12 +5410,12 @@ Chcete tyto změny uložit?</translation>
 <context>
     <name>SceneViewCommon</name>
     <message>
-        <location filename="../../src/sceneview_common.cpp" line="316"/>
+        <location filename="../../src/sceneview_common.cpp" line="371"/>
         <source>Image cannot be saved to the file &apos;%1&apos;.</source>
         <translation>Obrázek nelze uložit do souboru &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_common.cpp" line="316"/>
+        <location filename="../../src/sceneview_common.cpp" line="371"/>
         <source>Problem</source>
         <translation>Problém</translation>
     </message>
@@ -5427,32 +5446,32 @@ Chcete tyto změny uložit?</translation>
 <context>
     <name>SceneViewMesh</name>
     <message>
-        <location filename="../../src/sceneview_mesh.cpp" line="61"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="62"/>
         <source>Mesh</source>
         <translation>Síť</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_mesh.cpp" line="62"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="63"/>
         <source>Ctrl+3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_mesh.cpp" line="65"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="66"/>
         <source>Export VTK order...</source>
         <translation>Export pol. řádu do VTK...</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_mesh.cpp" line="68"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="69"/>
         <source>Export VTK mesh...</source>
         <translation>Export výp. sítě do VTK...</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_mesh.cpp" line="122"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="123"/>
         <source>Export VTK file</source>
         <translation>Export VTK souboru</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_mesh.cpp" line="122"/>
+        <location filename="../../src/sceneview_mesh.cpp" line="123"/>
         <source>VTK files (*.vtk)</source>
         <translation>VTK soubor (*.vtk)</translation>
     </message>
@@ -5465,57 +5484,57 @@ Chcete tyto změny uložit?</translation>
 <context>
     <name>SceneViewParticleTracing</name>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="425"/>
+        <location filename="../../src/sceneview_particle.cpp" line="426"/>
         <source>Particle
 Tracing</source>
         <translation>Trasování
 částic</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="426"/>
+        <location filename="../../src/sceneview_particle.cpp" line="427"/>
         <source>Ctrl+7</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1148"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1149"/>
         <location filename="../../src/sceneview_particle.h" line="104"/>
         <source>Particle Tracing</source>
         <translation>Trasování částic</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="463"/>
-        <location filename="../../src/sceneview_particle.cpp" line="1125"/>
-        <location filename="../../src/sceneview_particle.cpp" line="1133"/>
+        <location filename="../../src/sceneview_particle.cpp" line="464"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1126"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1134"/>
         <source>Particle tracing</source>
         <translation>Trasování částic</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1047"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1048"/>
         <source>Vel.</source>
         <translation>Rych.</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1110"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1111"/>
         <source>Post View</source>
         <translation>Zobrazení výsledků</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1110"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1111"/>
         <source>Particle view</source>
         <translation>Zobrazení částic</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1125"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1126"/>
         <source>Particle tracing failed (%1)</source>
         <translation>Trasování částic selhalo (%1)</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1133"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1134"/>
         <source>Catched unknown exception in particle tracing</source>
         <translation>Nastala neznámá vyjímka v trasování částic</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_particle.cpp" line="1148"/>
+        <location filename="../../src/sceneview_particle.cpp" line="1149"/>
         <source>Particle %1: %2 steps, final time %3 s</source>
         <translation>Částice %1: %2 kroků, výsledný čas %3 s</translation>
     </message>
@@ -5611,84 +5630,84 @@ Tracing</source>
 <context>
     <name>SceneViewPreprocessor</name>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="56"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="57"/>
         <source>Preprocessor</source>
         <translation>Preprocesor</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="57"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="58"/>
         <source>Ctrl+2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="61"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="62"/>
         <source>Operate on &amp;nodes</source>
         <translation>Práce s &amp;uzly</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="222"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="223"/>
         <source>Operate on nodes</source>
         <translation>Práce s uzly</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="66"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="67"/>
         <source>Operate on &amp;edges</source>
         <translation>Práce s &amp;hranami</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="225"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="226"/>
         <source>Operate on edges</source>
         <translation>Práce s hranami</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="70"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="71"/>
         <source>Operate on &amp;labels</source>
         <translation>Práce se &amp;značkami oblastí</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="228"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="229"/>
         <source>Operate on labels</source>
         <translation>Práce se značkami oblastí</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="82"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="83"/>
         <source>&amp;Select region</source>
         <translation>&amp;Výběr oblasti</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="86"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="87"/>
         <source>Object properties</source>
         <translation>Vlastnosti objektu</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="91"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="92"/>
         <source>Swap direction</source>
         <translation>Otočit směr</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="294"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="295"/>
         <source>&lt;h3&gt;Node&lt;/h3&gt;Point: [%1; %2]&lt;br/&gt;Index: %3</source>
         <translation>&lt;h3&gt;Uzel&lt;/h3&gt;Bod: [%1; %2]&lt;br/&gt;Index: %3</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="323"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="324"/>
         <source>&lt;h3&gt;Edge&lt;/h3&gt;&lt;b&gt;Point:&lt;/b&gt; [%1; %2] - [%3; %4]&lt;br/&gt;&lt;b&gt;Boundary conditions:&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Refinement:&lt;/b&gt; %6&lt;br/&gt;&lt;b&gt;Angle:&lt;/b&gt; %7 deg.&lt;br/&gt;&lt;b&gt;Index:&lt;/b&gt; %8</source>
         <translation>&lt;h3&gt;Hrana&lt;/h3&gt;&lt;b&gt;Bod:&lt;/b&gt; [%1; %2] - [%3; %4]&lt;br/&gt;&lt;b&gt;Okrajová podmínka:&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Zjemnění:&lt;/b&gt; %6&lt;br/&gt;&lt;b&gt;Úhel:&lt;/b&gt; %7 st.&lt;br/&gt;&lt;b&gt;Index:&lt;/b&gt; %8</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="361"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="362"/>
         <source>&lt;h3&gt;Label&lt;/h3&gt;&lt;b&gt;Point:&lt;/b&gt; [%1; %2]&lt;br/&gt;&lt;b&gt;Material:&lt;/b&gt; %3&lt;br/&gt;&lt;b&gt;Area refinement:&lt;/b&gt; %4&lt;br/&gt;&lt;b&gt;Polynomial order:&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Index:&lt;/b&gt; %6</source>
         <translation>&lt;h3&gt;Popisek&lt;/h3&gt;&lt;b&gt;Bod:&lt;/b&gt; [%1; %2]&lt;br/&gt;&lt;b&gt;Materiál:&lt;/b&gt; %3&lt;br/&gt;&lt;b&gt;Zjemnění oblasti:&lt;/b&gt; %4&lt;br/&gt;&lt;b&gt;Řád polynomu:&lt;/b&gt; %5&lt;br/&gt;&lt;b&gt;Index:&lt;/b&gt; %6</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="539"/>
-        <location filename="../../src/sceneview_geometry.cpp" line="585"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="540"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="586"/>
         <source>Node</source>
         <translation>Uzel</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_geometry.cpp" line="539"/>
-        <location filename="../../src/sceneview_geometry.cpp" line="585"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="540"/>
+        <location filename="../../src/sceneview_geometry.cpp" line="586"/>
         <source>Radial component must be greater then or equal to zero.</source>
         <translation>Radiální složka musí být větší nebo rovna nule.</translation>
     </message>
@@ -5809,362 +5828,402 @@ Tracing</source>
 <context>
     <name>SettingsWidget</name>
     <message>
-        <location filename="../../src/settings.cpp" line="50"/>
+        <location filename="../../src/settings.cpp" line="49"/>
         <source>Settings</source>
         <translation>Nastavení</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="215"/>
+        <location filename="../../src/settings.cpp" line="214"/>
         <source>Workspace</source>
         <translation>Pracovní plocha</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="216"/>
+        <location filename="../../src/settings.cpp" line="215"/>
         <source>Script and description</source>
         <translation>Skript a popis</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="217"/>
-        <location filename="../../src/settings.cpp" line="576"/>
+        <location filename="../../src/settings.cpp" line="216"/>
+        <location filename="../../src/settings.cpp" line="589"/>
         <source>Colors</source>
         <translation>Barvy</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="218"/>
+        <location filename="../../src/settings.cpp" line="217"/>
         <source>Mesh and Solver</source>
         <translation>Síť a řešič</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="229"/>
+        <location filename="../../src/settings.cpp" line="228"/>
         <source>Apply</source>
         <translation>Potvrdit</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="261"/>
+        <location filename="../../src/settings.cpp" line="260"/>
         <source>Startup script</source>
         <translation>Definice proměnných</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="271"/>
+        <location filename="../../src/settings.cpp" line="270"/>
         <source>Description</source>
         <translation>Popis</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="291"/>
+        <location filename="../../src/settings.cpp" line="290"/>
         <source>Show grid</source>
         <translation>Zobrazit mřížku</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="293"/>
+        <location filename="../../src/settings.cpp" line="292"/>
         <source>Snap to grid</source>
         <translation>Přichytávat k mřížce</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="294"/>
         <source>Zoom to mouse pointer</source>
-        <translation>Zvětšení k pozici kurzoru myši</translation>
+        <translation type="obsolete">Zvětšení ke kurzoru</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="295"/>
+        <location filename="../../src/settings.cpp" line="294"/>
         <source>Show rulers</source>
         <translation>Zobrazit pravítka</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="296"/>
+        <location filename="../../src/settings.cpp" line="295"/>
         <source>Show axes</source>
         <translation>Zobrazit osy</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="299"/>
+        <location filename="../../src/settings.cpp" line="298"/>
         <source>Grid step:</source>
         <translation>Krok mřížky:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="307"/>
+        <location filename="../../src/settings.cpp" line="306"/>
         <source>Grid</source>
         <translation>Mřížka</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="316"/>
+        <location filename="../../src/settings.cpp" line="323"/>
         <source>Rulers:</source>
         <translation>Pravítka:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="318"/>
+        <location filename="../../src/settings.cpp" line="326"/>
         <source>Postprocessor:</source>
-        <translation>Postprocesor:</translation>
+        <translation>Postproces.:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="321"/>
+        <location filename="../../src/settings.cpp" line="330"/>
         <source>Fonts</source>
         <translation>Fonty</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="336"/>
+        <location filename="../../src/settings.cpp" line="346"/>
         <source>Node size:</source>
         <translation>Velikost uzlů:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="338"/>
+        <location filename="../../src/settings.cpp" line="348"/>
         <source>Edge width:</source>
         <translation>Šířka hrany:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="340"/>
+        <location filename="../../src/settings.cpp" line="350"/>
         <source>Label size:</source>
-        <translation>Velikost značek oblastí:</translation>
+        <translation>Vel. zn. oblastí:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="343"/>
+        <location filename="../../src/settings.cpp" line="353"/>
         <source>Geometry</source>
         <translation>Geometrie</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="347"/>
+        <location filename="../../src/settings.cpp" line="357"/>
         <source>Ligthing</source>
         <translation>Osvětlení</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="353"/>
         <source>Gradient background</source>
-        <translation>Gradientní pozadí</translation>
+        <translation type="obsolete">Grad. pozadí</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="359"/>
+        <location filename="../../src/settings.cpp" line="369"/>
         <source>Bounding box</source>
-        <translation>Ohraničovací rámeček</translation>
+        <translation>Rámeček</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="360"/>
         <source>Show geometry lines</source>
-        <translation>Zobrazit hrany geometrie</translation>
+        <translation type="obsolete">Zobrazit hrany</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="363"/>
+        <location filename="../../src/settings.cpp" line="374"/>
         <source>Angle:</source>
         <translation>Úhel:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="366"/>
+        <location filename="../../src/settings.cpp" line="377"/>
         <source>Height:</source>
         <translation>Výška:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="372"/>
+        <location filename="../../src/settings.cpp" line="383"/>
         <source>3D view</source>
         <translation>3D pohled</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="376"/>
+        <location filename="../../src/settings.cpp" line="387"/>
         <source>Scalar field</source>
         <translation>Skalární pole</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="377"/>
+        <location filename="../../src/settings.cpp" line="388"/>
         <source>Contours</source>
         <translation>Kontury</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="378"/>
         <source>Vector field</source>
-        <translation>Vektorové pole</translation>
+        <translation type="obsolete">Vektor. pole</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="385"/>
+        <location filename="../../src/settings.cpp" line="396"/>
         <source>Deform shape</source>
         <translation>Deformace tvaru</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="388"/>
-        <location filename="../../src/settings.cpp" line="424"/>
-        <location filename="../../src/settings.cpp" line="573"/>
+        <location filename="../../src/settings.cpp" line="399"/>
+        <location filename="../../src/settings.cpp" line="436"/>
+        <location filename="../../src/settings.cpp" line="586"/>
         <source>Default</source>
         <translation>Výchozí</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="414"/>
+        <location filename="../../src/settings.cpp" line="425"/>
         <source>Curvilinear elements</source>
         <translation>Křivočaré elementy</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="418"/>
         <source>Angle segments count:</source>
-        <translation>Počet segmentů úhlu:</translation>
+        <translation type="obsolete">Počet seg. úhlu:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="421"/>
+        <location filename="../../src/settings.cpp" line="433"/>
         <source>Mesh</source>
         <translation>Síť</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="431"/>
         <source>Maximum number of DOFs:</source>
-        <translation>Maximální počet st. volnosti:</translation>
+        <translation type="obsolete">Max. počet st. vol.:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="438"/>
         <source>This parameter influences the selection of candidates&lt;br/&gt;in hp-adaptivity. Default value is 1.0.</source>
-        <translation>Tento parametr ovlivňuje výběr kandidátů&lt;br /&gt;při &lt;i&gt;hp&lt;/i&gt;-adaptivitě. Výchozí hodnota je 1.0.</translation>
+        <translation type="obsolete">Tento parametr ovlivňuje výběr kandidátů&lt;br /&gt;při &lt;i&gt;hp&lt;/i&gt;-adaptivitě. Výchozí hodnota je 1.0.</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="443"/>
         <source>Quantitative parameter of the adaptivity&lt;br/&gt;with different meanings for various adaptive strategies.</source>
-        <translation>Kvantitativní parametr adaptivity&lt;br/&gt;s různýmy významy pro různé adaptivní strategie.</translation>
+        <translation type="obsolete">Kvantitativní parametr adaptivity&lt;br/&gt;s různýmy významy pro různé adaptivní strategie.</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="596"/>
         <source>Refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;) times total error&lt;br/&gt;is processed. If more elements have similar errors,&lt;br/&gt;refine all to keep the mesh symmetric.</source>
-        <translation type="unfinished">Zjemňují se elementy jejichž chyba&lt;br/&gt;je větší než &lt;b&gt;práh&lt;/b&gt; krát maximální chyba elementu.</translation>
+        <translation type="obsolete">Zjemňují se elementy jejichž chyba&lt;br/&gt;je větší než &lt;b&gt;práh&lt;/b&gt; krát maximální chyba elementu.</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="456"/>
+        <location filename="../../src/settings.cpp" line="468"/>
         <source>arbitrary level</source>
         <translation>libovolný stupeň</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="51"/>
+        <location filename="../../src/settings.cpp" line="50"/>
         <source>Ctrl+8</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="457"/>
+        <location filename="../../src/settings.cpp" line="293"/>
+        <source>Zoom to mouse</source>
+        <translation>Zvětšení ke kurzoru</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="363"/>
+        <source>Gradient back.</source>
+        <translation>Grad. pozadí</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="370"/>
+        <source>Show edges</source>
+        <translation>Zobrazit hrany</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="389"/>
+        <source>Vectors</source>
+        <translation>Vektory</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="430"/>
+        <source>Angle seg. count:</source>
+        <translation>Počet seg. úhlu:</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="443"/>
+        <source>Max. num. of DOFs:</source>
+        <translation>Max. počet st. vol.:</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="450"/>
+        <source>This parameter influences the selection of&lt;br /&gt; candidates in hp-adaptivity. Default value is 1.0.</source>
+        <translation>Tento parametr ovlivňuje výběr kandidátů&lt;br /&gt;při &lt;i&gt;hp&lt;/i&gt;-adaptivitě. Výchozí hodnota je 1.0.</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="455"/>
+        <source>Quantitative parameter of the adaptivity with&lt;br/&gt;different meanings for adaptive strategies.</source>
+        <translation>Kvantitativní parametr adaptivity&lt;br/&gt;s různýmy významy pro různé adaptivní strategie.</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="469"/>
         <source>at most one-level</source>
         <translation>nejvýše jednostupňový</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="458"/>
+        <location filename="../../src/settings.cpp" line="470"/>
         <source>at most two-level</source>
         <translation>nejvýše dvoustupňový</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="459"/>
+        <location filename="../../src/settings.cpp" line="471"/>
         <source>at most three-level</source>
         <translation>nejvýše třístupňový</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="460"/>
+        <location filename="../../src/settings.cpp" line="472"/>
         <source>at most four-level</source>
         <translation>nejvýše čtyřstupňový</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="461"/>
+        <location filename="../../src/settings.cpp" line="473"/>
         <source>at most five-level</source>
         <translation>nejvýše pětistupňový</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="468"/>
+        <location filename="../../src/settings.cpp" line="480"/>
         <source>Use anisotropic refinements</source>
         <translation>Použít anizotropní zjemnění</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="469"/>
         <source>Use hp reference solution for h and p adaptivity</source>
-        <translation>Použít hp referenční řešení pro h a p adaptivitu</translation>
+        <translation type="obsolete">Použít hp ref. řešení pro h a p adaptivitu</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="475"/>
+        <location filename="../../src/settings.cpp" line="481"/>
+        <source>Use hp ref. solution for h and p adaptivity</source>
+        <translation>Použít hp ref. řešení pro h a p adaptivitu</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="487"/>
         <source>Conv. exp.:</source>
         <translation>Konv. exp.:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="478"/>
+        <location filename="../../src/settings.cpp" line="490"/>
         <source>Strategy:</source>
         <translation>Strategie:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="481"/>
+        <location filename="../../src/settings.cpp" line="493"/>
         <source>Threshold:</source>
         <translation>Práh:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="484"/>
+        <location filename="../../src/settings.cpp" line="496"/>
         <source>Hanging nodes:</source>
         <translation>Visící uzly:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="486"/>
+        <location filename="../../src/settings.cpp" line="498"/>
         <source>Norm:</source>
         <translation>Norma:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="503"/>
+        <location filename="../../src/settings.cpp" line="515"/>
         <source>Triangle</source>
         <translation>Triangle</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="505"/>
+        <location filename="../../src/settings.cpp" line="517"/>
         <source>GMSH</source>
         <translation>GMSH</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="546"/>
+        <location filename="../../src/settings.cpp" line="559"/>
         <source>Background:</source>
         <translation>Pozadí:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="547"/>
+        <location filename="../../src/settings.cpp" line="560"/>
         <source>Grid:</source>
         <translation>Mřížka:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="548"/>
+        <location filename="../../src/settings.cpp" line="561"/>
         <source>Cross:</source>
         <translation>Kříž:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="549"/>
+        <location filename="../../src/settings.cpp" line="562"/>
         <source>Nodes:</source>
         <translation>Uzly:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="550"/>
+        <location filename="../../src/settings.cpp" line="563"/>
         <source>Edges:</source>
         <translation>Hrany:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="551"/>
+        <location filename="../../src/settings.cpp" line="564"/>
         <source>Labels:</source>
         <translation>Značky oblastí:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="552"/>
+        <location filename="../../src/settings.cpp" line="565"/>
         <source>Contours:</source>
         <translation>Kontury:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="553"/>
+        <location filename="../../src/settings.cpp" line="566"/>
         <source>Vectors:</source>
         <translation>Vektory:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="554"/>
+        <location filename="../../src/settings.cpp" line="567"/>
         <source>Initial mesh:</source>
         <translation>Počáteční síť:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="555"/>
+        <location filename="../../src/settings.cpp" line="568"/>
         <source>Solution mesh:</source>
         <translation>Řešená síť:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="556"/>
+        <location filename="../../src/settings.cpp" line="569"/>
         <source>Highlighted elements:</source>
         <translation>Zvýrazněné elementy:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="557"/>
+        <location filename="../../src/settings.cpp" line="570"/>
         <source>Selected elements:</source>
         <translation>Vybrané elementy:</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="599"/>
+        <location filename="../../src/settings.cpp" line="609"/>
+        <source>Refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;) times total&lt;br/&gt;error is processed. If more elements have similar&lt;br/&gt;errors, refine all to keep the mesh symmetric.</source>
+        <translation>Zjemňují se elementy jejichž chyba je nižší než&lt;br/&gt;druhá odmocnina z &lt;b&gt;práhu&lt;/b&gt; krát maximální chyba &lt;br /&gt;elementu. Pokud je více elementů se stejnou&lt;br /&gt;chybou, zjemní všechny.</translation>
+    </message>
+    <message>
+        <location filename="../../src/settings.cpp" line="612"/>
         <source>Refine all elements whose error is larger&lt;br/&gt;than &lt;b&gt;threshold&lt;/b&gt; times maximum element error.</source>
         <translation>Zjemňují se všechny elementy jejichž chyba&lt;br/&gt;je větší než &lt;b&gt;práh&lt;/b&gt; krát maximální chyba elementu.</translation>
     </message>
     <message>
-        <location filename="../../src/settings.cpp" line="602"/>
+        <location filename="../../src/settings.cpp" line="615"/>
         <source>Refine all elements whose error is larger&lt;br/&gt;than &lt;b&gt;threshold&lt;/b&gt;.</source>
-        <translation>Zjemňují se všechny elementy jejichž chyba je větší než &lt;b&gt;práh&lt;/b&gt;.</translation>
+        <translation>Zjemňují se všechny elementy jejichž chyba&lt;br/&gt;je větší než &lt;b&gt;práh&lt;/b&gt;.</translation>
     </message>
 </context>
 <context>
@@ -6188,7 +6247,7 @@ Tracing</source>
         <translation>Rychlé rady</translation>
     </message>
     <message>
-        <location filename="../../src/tooltipview.cpp" line="48"/>
+        <location filename="../../src/tooltipview.cpp" line="47"/>
         <source>Tooltip_OperateOnNodes</source>
         <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
 &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en-US&quot;&gt;
@@ -6229,7 +6288,7 @@ Tracing</source>
 &lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/tooltipview.cpp" line="51"/>
+        <location filename="../../src/tooltipview.cpp" line="50"/>
         <source>Tooltip_OperateOnEdges</source>
         <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
 &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en-US&quot;&gt;
@@ -6267,7 +6326,7 @@ Tracing</source>
 &lt;/body&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/tooltipview.cpp" line="54"/>
+        <location filename="../../src/tooltipview.cpp" line="53"/>
         <source>Tooltip_OperateOnLabels</source>
         <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
 &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en-US&quot;&gt;
@@ -6313,7 +6372,7 @@ Tracing</source>
 &lt;/body&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/tooltipview.cpp" line="40"/>
+        <location filename="../../src/tooltipview.cpp" line="39"/>
         <source>Tooltip_Postprocessor</source>
         <translation>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
 &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en-US&quot;&gt;

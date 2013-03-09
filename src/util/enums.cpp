@@ -400,7 +400,7 @@ QString meshTypeString(MeshType meshType)
     switch (meshType)
     {
     case MeshType_Triangle:
-        return QObject::tr("Triangle");
+        return QObject::tr("Triangle - triangle");
     case MeshType_Triangle_QuadFineDivision:
         return QObject::tr("Triangle - quad fine div.");
     case MeshType_Triangle_QuadRoughDivision:
@@ -412,7 +412,7 @@ QString meshTypeString(MeshType meshType)
     case MeshType_GMSH_Quad:
         return QObject::tr("GMSH - quad");
     case MeshType_GMSH_QuadDelaunay_Experimental:
-        return QObject::tr("GMSH - quad Delaunay (exp.)");
+        return QObject::tr("GMSH - quad Delaunay");
     default:
         std::cerr << "Mesh type '" + QString::number(meshType).toStdString() + "' is not implemented. meshTypeString(MeshType meshType)" << endl;
         throw;

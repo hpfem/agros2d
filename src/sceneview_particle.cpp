@@ -239,13 +239,14 @@ void ParticleTracingWidget::createControls()
 
     // settings
     QGridLayout *gridLayoutSettings = new QGridLayout();
+    gridLayoutSettings->setColumnStretch(1, 1);
     gridLayoutSettings->setContentsMargins(5, 5, 0, 0);
     gridLayoutSettings->addWidget(chkParticleColorByVelocity, 2, 0, 1, 2);
     gridLayoutSettings->addWidget(chkParticleShowPoints, 3, 0, 1, 2);
     gridLayoutSettings->addWidget(chkParticleShowBlendedFaces, 4, 0, 1, 2);
     gridLayoutSettings->addWidget(new QLabel(tr("Show particle multiple times:")), 5, 0);
     gridLayoutSettings->addWidget(txtParticleNumShowParticleAxi, 5, 1);
-    gridLayoutSettings->addWidget(new QLabel(""), 10, 0);
+    //gridLayoutSettings->addWidget(new QLabel(""), 10, 0);
     gridLayoutSettings->setRowStretch(10, 1);
 
     QGroupBox *grpSettings = new QGroupBox(tr("Settings"));
@@ -327,7 +328,7 @@ void ParticleTracingWidget::updateControls()
     if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
         lblParticleMotionEquations->setText(QString("<i>x</i>\" = <i>F</i><sub>x</sub> / <i>m</i>, &nbsp; <i>y</i>\" = <i>F</i><sub>y</sub> / <i>m</i>, &nbsp; <i>z</i>\" = <i>F</i><sub>z</sub> / <i>m</i>"));
     else
-        lblParticleMotionEquations->setText(QString("<i>r</i>\" = <i>F</i><sub>r</sub> / <i>m</i> + <i>r</i> (<i>&phi;</i>')<sup>2</sup>, &nbsp; <i>z</i>\" = <i>F</i><sub>z</sub> / <i>m</i>, &nbsp; <i>&phi;</i>\" = <i>F</i><sub>&phi;</sub> / <i>m</i> - 2<i>r</i> <i>r</i>' <i>&phi;</i>' / <i>r</i>"));
+        lblParticleMotionEquations->setText(QString("<i>r</i>\" = <i>F</i><sub>r</sub> / <i>m</i> + <i>r</i> (<i>&phi;</i>')<sup>2</sup>, &nbsp; <i>z</i>\" = <i>F</i><sub>z</sub> / <i>m</i><br /><i>&phi;</i>\" = <i>F</i><sub>&phi;</sub> / <i>m</i> - 2<i>r</i> <i>r</i>' <i>&phi;</i>' / <i>r</i>"));
 }
 
 void ParticleTracingWidget::doParticleDefault()
