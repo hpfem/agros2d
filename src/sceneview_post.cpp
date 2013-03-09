@@ -48,6 +48,7 @@ PostHermes::PostHermes() :
     m_activeViewField(NULL), m_activeTimeStep(NOT_FOUND_SO_FAR), m_activeAdaptivityStep(NOT_FOUND_SO_FAR), m_activeSolutionMode(SolutionMode_Undefined), m_isProcessed(false)
 {
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(clear()));
+    connect(Agros2D::problem(), SIGNAL(fieldsChanged()), this, SLOT(clear()));
 
     connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(problemMeshed()));
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(problemSolved()));
