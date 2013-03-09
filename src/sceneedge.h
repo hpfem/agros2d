@@ -126,7 +126,7 @@ private:
 private slots:
     void doBoundaryChanged(int index);
     void doBoundaryClicked();
-    void doRefineTowardsEdge(int state);
+    void doRefineTowardsEdge(int state);    
 };
 
 class SceneEdgeDialog : public SceneBasicDialog
@@ -147,12 +147,16 @@ private:
     ValueLineEdit *txtAngle;
     QLabel *lblLength;
 
+    QComboBox *cmbNodeStart;
+    QComboBox *cmbNodeEnd;
+
     QList<SceneEdgeMarker *> m_edgeMarkers;
 
     void fillComboBox();
 
 private slots:
-    void doAngleChanged();
+    void doNodeChanged();
+    void doSwap();
 };
 
 class SceneEdgeSelectDialog : public QDialog

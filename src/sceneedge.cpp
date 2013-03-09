@@ -491,12 +491,19 @@ QLayout* SceneEdgeDialog::createContent()
     txtAngle->setMinimum(0.0);
     txtAngle->setMaximum(90.0);
     connect(txtAngle, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-    // connect(txtAngle, SIGNAL(evaluated(bool)), this, SLOT(doAngleChanged()));
+    // connect(txtAngle, SIGNAL(evaluated(bool)), this, SLOT(doNodeChanged()));
     lblLength = new QLabel();
+
+    cmbNodeStart = new QComboBox();
+    cmbNodeEnd = new QComboBox();
+    connect(cmbNodeStart, SIGNAL(currentIndexChanged(int)), this, SLOT(doNodeChanged()));
+    connect(cmbNodeEnd, SIGNAL(currentIndexChanged(int)), this, SLOT(doNodeChanged()));
 
     // coordinates
     QFormLayout *layoutEdgeParameters = new QFormLayout();
     layoutEdgeParameters->addRow(tr("Angle (deg.):"), txtAngle);
+    layoutEdgeParameters->addRow(tr("Start node:"), cmbNodeStart);
+    layoutEdgeParameters->addRow(tr("End node:"), cmbNodeEnd);
     layoutEdgeParameters->addRow(tr("Length:"), lblLength);
 
     QGroupBox *grpEdgeParameters = new QGroupBox(tr("Edge parameters"));
@@ -506,6 +513,11 @@ QLayout* SceneEdgeDialog::createContent()
 
     fillComboBox();
 
+    QPushButton *btnSwap = new QPushButton();
+    btnSwap->setText(tr("Swap direction"));
+    connect(btnSwap, SIGNAL(clicked()), this, SLOT(doSwap()));
+    buttonBox->addButton(btnSwap, QDialogButtonBox::ActionRole);
+
     return layout;
 }
 
@@ -514,18 +526,47 @@ void SceneEdgeDialog::fillComboBox()
     // markers
     foreach (SceneEdgeMarker *edgeMarker, m_edgeMarkers)
         edgeMarker->fillComboBox();
+
+    // start and end nodes
+    cmbNodeStart->blockSignals(true);
+    cmbNodeEnd->blockSignals(true);
+    cmbNodeStart->clear();
+    cmbNodeEnd->clear();
+    for (int i = 0; i < Agros2D::scene()->nodes->count(); i++)
+    {
+        cmbNodeStart->addItem(QString("%1 - [%2; %3]").
+                              arg(i).
+                              arg(Agros2D::scene()->nodes->at(i)->point().x, 0, 'e', 2).
+                              arg(Agros2D::scene()->nodes->at(i)->point().y, 0, 'e', 2),
+                              Agros2D::scene()->nodes->at(i)->variant());
+        cmbNodeEnd->addItem(QString("%1 - [%2; %3]").
+                            arg(i).
+                            arg(Agros2D::scene()->nodes->at(i)->point().x, 0, 'e', 2).
+                            arg(Agros2D::scene()->nodes->at(i)->point().y, 0, 'e', 2),
+                            Agros2D::scene()->nodes->at(i)->variant());
+    }
+    cmbNodeStart->blockSignals(false);
+    cmbNodeEnd->blockSignals(false);
 }
 
 bool SceneEdgeDialog::load()
 {
     SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
 
+    cmbNodeStart->blockSignals(true);
+    cmbNodeEnd->blockSignals(true);
+
+    cmbNodeStart->setCurrentIndex(cmbNodeStart->findData(sceneEdge->nodeStart()->variant()));
+    cmbNodeEnd->setCurrentIndex(cmbNodeEnd->findData(sceneEdge->nodeEnd()->variant()));
     txtAngle->setNumber(sceneEdge->angle());
 
     foreach (SceneEdgeMarker *edgeMarker, m_edgeMarkers)
         edgeMarker->load();
 
-    doAngleChanged();
+    doNodeChanged();
+
+    cmbNodeStart->blockSignals(false);
+    cmbNodeEnd->blockSignals(false);
 
     return true;
 }
@@ -536,13 +577,33 @@ bool SceneEdgeDialog::save()
 
     SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
 
+    if (cmbNodeStart->currentIndex() == cmbNodeEnd->currentIndex())
+    {
+        QMessageBox::warning(this, tr("Edge"), tr("Start and end node are same."));
+        return false;
+    }
+
+    // check if edge doesn't exists
+    SceneNode *nodeStart = dynamic_cast<SceneNode *>(cmbNodeStart->itemData(cmbNodeStart->currentIndex()).value<SceneBasic *>());
+    SceneNode *nodeEnd = dynamic_cast<SceneNode *>(cmbNodeEnd->itemData(cmbNodeEnd->currentIndex()).value<SceneBasic *>());
+
+    SceneEdge *edgeCheck = Agros2D::scene()->getEdge(nodeStart->point(), nodeEnd->point());
+    if ((edgeCheck) && ((sceneEdge != edgeCheck) || m_isNew))
+    {
+        QMessageBox::warning(this, tr("Edge"), tr("Edge already exists."));
+        return false;
+    }
+
     if (!m_isNew)
     {
         Agros2D::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart()->point(), sceneEdge->nodeEnd()->point(),
-                                                                     sceneEdge->nodeStart()->point(), sceneEdge->nodeEnd()->point(),
-                                                                     sceneEdge->angle(), txtAngle->number()));
+                                                                     nodeStart->point(), nodeEnd->point(),
+                                                                     sceneEdge->angle(),
+                                                                     txtAngle->number()));
     }
 
+    sceneEdge->setNodeStart(nodeStart);
+    sceneEdge->setNodeEnd(nodeEnd);
     sceneEdge->setAngle(txtAngle->number());
 
     foreach (SceneEdgeMarker *edgeMarker, m_edgeMarkers)
@@ -552,21 +613,29 @@ bool SceneEdgeDialog::save()
     return true;
 }
 
-void SceneEdgeDialog::doAngleChanged()
+void SceneEdgeDialog::doNodeChanged()
 {
-    SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
+    SceneNode *nodeStart = dynamic_cast<SceneNode *>(cmbNodeStart->itemData(cmbNodeStart->currentIndex()).value<SceneBasic *>());
+    SceneNode *nodeEnd = dynamic_cast<SceneNode *>(cmbNodeEnd->itemData(cmbNodeEnd->currentIndex()).value<SceneBasic *>());
 
-    if (txtAngle->number() < EPS_ZERO)
+    if (nodeStart && nodeEnd)
     {
-        // line
-        lblLength->setText(QString("%1 m").arg(sqrt(Hermes::sqr(sceneEdge->nodeEnd()->point().x - sceneEdge->nodeStart()->point().x) + Hermes::sqr(sceneEdge->nodeEnd()->point().y - sceneEdge->nodeStart()->point().y))));
+        SceneEdge *sceneEdge = dynamic_cast<SceneEdge *>(m_object);
+
+        SceneEdge *edgeCheck = Agros2D::scene()->getEdge(nodeStart->point(), nodeEnd->point());
+        buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!((nodeStart == nodeEnd) || ((edgeCheck) && ((sceneEdge != edgeCheck) || m_isNew))));
+
+        SceneEdge edge(nodeStart, nodeEnd, txtAngle->number());
+        lblLength->setText(QString("%1 m").arg(edge.length()));
     }
-    else
-    {
-        // arc
-        SceneEdge edge(sceneEdge->nodeStart(), sceneEdge->nodeEnd(), txtAngle->number());
-        lblLength->setText(QString("%1 m").arg(edge.radius() * edge.angle() / 180.0 * M_PI));
-    }
+}
+
+void SceneEdgeDialog::doSwap()
+{
+    // swap nodes
+    int startIndex = cmbNodeStart->currentIndex();
+    cmbNodeStart->setCurrentIndex(cmbNodeEnd->currentIndex());
+    cmbNodeEnd->setCurrentIndex(startIndex);
 }
 
 SceneEdgeSelectDialog::SceneEdgeSelectDialog(MarkedSceneBasicContainer<SceneBoundary, SceneEdge> edges, QWidget *parent)
@@ -713,7 +782,7 @@ void SceneEdgeCommandAdd::redo()
 }
 
 SceneEdgeCommandAddMulti::SceneEdgeCommandAddMulti(QList<Point> pointStarts, QList<Point> pointEnds,
-                                         QList<double> angles, QUndoCommand *parent) : QUndoCommand(parent)
+                                                   QList<double> angles, QUndoCommand *parent) : QUndoCommand(parent)
 {
     assert(pointStarts.size() == pointEnds.size());
     assert(pointStarts.size() == angles.size());
