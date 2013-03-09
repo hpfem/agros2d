@@ -1,4 +1,4 @@
-agros2d (3.0-ubuntu102) quantal; urgency=low
+agros2d (3.0-ubuntu103) quantal; urgency=low
 
   * field solution with the possibility of weak and hard coupling
   * adaptive transient analysis

@@ -10,7 +10,7 @@ SUBDIRS += generator
 CONFIG += ordered
 TEMPLATE = subdirs
 
-linux-g++|linux-g++-64|linux-g++-32 {
+linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     # use qmake PREFIX=... to customize your installation
     isEmpty(PREFIX):PREFIX = /usr/local
 
@@ -37,14 +37,32 @@ linux-g++|linux-g++-64|linux-g++-32 {
     desktop.files = agros2d.desktop
 
     # libs
-    lib_3rdparty.path = $${PREFIX}/lib
-    lib_3rdparty.files = libs/libagros2d_3rdparty.so.1.0.0
-    lib_hermes2d.path = $${PREFIX}/lib
-    lib_hermes2d.files = libs/libagros2d_hermes2d.so.1.0.0
-    lib_library.path = $${PREFIX}/lib
-    lib_library.files = libs/libagros2d_library.so.1.0.0
-    lib_plugins.path = $${PREFIX}/lib
-    lib_plugins.files = libs/libagros2d_plugin_*.so
+    system(mkdir libs)
+    system(touch libs/libagros2d_3rdparty.so)
+    system(touch libs/libagros2d_3rdparty.so.1)
+    system(touch libs/libagros2d_3rdparty.so.1.0)
+    system(touch libs/libagros2d_3rdparty.so.1.0.0)
+    system(touch libs/libagros2d_hermes2d.so)
+    system(touch libs/libagros2d_hermes2d.so.1)
+    system(touch libs/libagros2d_hermes2d.so.1.0)
+    system(touch libs/libagros2d_hermes2d.so.1.0.0)
+    system(touch libs/libagros2d_library.so)
+    system(touch libs/libagros2d_library.so.1)
+    system(touch libs/libagros2d_library.so.1.0)
+    system(touch libs/libagros2d_library.so.1.0.0)
+    system(touch libs/libagros2d_plugin_acoustic.so)
+    system(touch libs/libagros2d_plugin_current.so)
+    system(touch libs/libagros2d_plugin_elasticity.so)
+    system(touch libs/libagros2d_plugin_electrostatic.so)
+    system(touch libs/libagros2d_plugin_flow.so)
+    system(touch libs/libagros2d_plugin_heat.so)
+    system(touch libs/libagros2d_plugin_magnetic.so)
+    system(touch libs/libagros2d_plugin_rf.so)
+    system(touch libs/libagros2d_plugin_current-heat.so)
+    system(touch libs/libagros2d_plugin_heat-elasticity.so)
+    system(touch libs/libagros2d_plugin_magnetic-heat.so)
+    libs.path = $${PREFIX}/lib
+    libs.files = libs/*
 
     # install binary
     system(touch agros2d)
@@ -63,10 +81,7 @@ linux-g++|linux-g++-64|linux-g++-32 {
     INSTALLS *= target \
         target_solver \
         target_pytholab \
-        lib_3rdparty \
-        lib_hermes2d \
-        lib_library \
-        lib_plugins \
+        libs \
         resources \
         python_startup \
         script_examples \
