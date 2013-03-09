@@ -7,7 +7,6 @@ include "pyparticletracing.pxi"
 cdef extern from "../../src/pythonlab/pythonengine_agros.h":
     void pyOpenDocument(char *str) except +
     void pySaveDocument(char *str) except +
-    void pyCloseDocument()
 
 def open_document(char *str):
     pyOpenDocument(str)

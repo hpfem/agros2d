@@ -121,6 +121,5 @@ QString createPythonFromModel(StartupScript_Type startupScript);
 // functions
 void pyOpenDocument(char *str);
 void pySaveDocument(char *str);
-void pyCloseDocument();
 
 #endif // PYTHONENGINEAGROS_H
