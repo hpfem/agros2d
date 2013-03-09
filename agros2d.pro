@@ -38,17 +38,8 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
 
     # libs
     system(mkdir libs)
-    system(touch libs/libagros2d_3rdparty.so)
-    system(touch libs/libagros2d_3rdparty.so.1)
-    system(touch libs/libagros2d_3rdparty.so.1.0)
     system(touch libs/libagros2d_3rdparty.so.1.0.0)
-    system(touch libs/libagros2d_hermes2d.so)
-    system(touch libs/libagros2d_hermes2d.so.1)
-    system(touch libs/libagros2d_hermes2d.so.1.0)
     system(touch libs/libagros2d_hermes2d.so.1.0.0)
-    system(touch libs/libagros2d_library.so)
-    system(touch libs/libagros2d_library.so.1)
-    system(touch libs/libagros2d_library.so.1.0)
     system(touch libs/libagros2d_library.so.1.0.0)
     system(touch libs/libagros2d_plugin_acoustic.so)
     system(touch libs/libagros2d_plugin_current.so)
