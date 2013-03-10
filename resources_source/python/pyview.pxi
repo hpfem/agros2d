@@ -15,16 +15,16 @@ cdef extern from "../../src/pythonlab/pyview.h":
     # PyViewConfig
     cdef cppclass PyViewConfig:
         void setField(char *fieldid) except +
-        char *getField()
+        char *getField() except +
 
         void setActiveTimeStep(int timeStep) except +
-        int getActiveTimeStep()  except +
+        int getActiveTimeStep() except +
 
         void setActiveAdaptivityStep(int adaptiveStep) except +
-        int getActiveAdaptivityStep()
+        int getActiveAdaptivityStep() except +
 
         void setActiveSolutionType(char *solutionType) except +
-        char *getActiveSolutionType()
+        char *getActiveSolutionType() except +
 
         void setGridShow(bool show)
         bool getGridShow()

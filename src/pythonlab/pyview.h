@@ -46,33 +46,33 @@ struct PyViewConfig
 {
     // field
     void setField(const char *fieldid);
-    const char* getField() const;
+    char* getField();
 
     // time step
     void setActiveTimeStep(int timeStep);
-    int getActiveTimeStep() const;
+    int getActiveTimeStep();
 
     // adaptivity step
     void setActiveAdaptivityStep(int adaptivityStep);
-    int getActiveAdaptivityStep() const;
+    int getActiveAdaptivityStep();
 
     // solution type
     void setActiveSolutionType(const char *solutionType);
-    const char* getActiveSolutionType() const;
+    char* getActiveSolutionType();
 
     // grid
     void setGridShow(bool show);
-    inline bool getGridShow() const { return Agros2D::problem()->configView()->showGrid; }
+    inline bool getGridShow() { return Agros2D::problem()->configView()->showGrid; }
     void setGridStep(double step);
-    inline double getGridStep() const { return Agros2D::problem()->configView()->gridStep; }
+    inline double getGridStep() { return Agros2D::problem()->configView()->gridStep; }
 
     // axes
     void setAxesShow(bool show);
-    inline bool getAxesShow() const { return Agros2D::problem()->configView()->showAxes; }
+    inline bool getAxesShow() { return Agros2D::problem()->configView()->showAxes; }
 
     // rulers
     void setRulersShow(bool show);
-    inline bool getRulersShow() const { return Agros2D::problem()->configView()->showRulers; }
+    inline bool getRulersShow() { return Agros2D::problem()->configView()->showRulers; }
 
     // todo: (Franta) font, size of nodes and edges and labels, colors
 };

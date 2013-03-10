@@ -40,11 +40,15 @@ void PyViewConfig::setField(const char* fieldid)
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(Agros2D::problem()->fieldInfos().keys())).toStdString());
 
     currentPythonEngineAgros()->postHermes()->setActiveViewField(Agros2D::problem()->fieldInfo(fieldid));
-    currentPythonEngineAgros()->postHermes()->refresh();
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
-const char* PyViewConfig::getField() const
+char* PyViewConfig::getField()
 {
+    if (!Agros2D::problem()->isSolved())
+        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
+
     return const_cast<char*>(currentPythonEngineAgros()->postHermes()->activeViewField()->fieldId().toStdString().c_str());
 }
 
@@ -66,7 +70,7 @@ void PyViewConfig::setActiveTimeStep(int timeStep)
         currentPythonEngineAgros()->postHermes()->refresh();
 }
 
-int PyViewConfig::getActiveTimeStep() const
+int PyViewConfig::getActiveTimeStep()
 {
     if (!Agros2D::problem()->isSolved())
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
@@ -74,36 +78,46 @@ int PyViewConfig::getActiveTimeStep() const
     return currentPythonEngineAgros()->postHermes()->activeTimeStep();
 }
 
-int PyViewConfig::getActiveAdaptivityStep() const
+int PyViewConfig::getActiveAdaptivityStep()
 {
+    if (!Agros2D::problem()->isSolved())
+        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
+
     return currentPythonEngineAgros()->postHermes()->activeAdaptivityStep();
 }
 
 void PyViewConfig::setActiveAdaptivityStep(int adaptivityStep)
 {
-    if (adaptivityStep < 0 || adaptivityStep > currentPythonEngineAgros()->postHermes()->activeViewField()->adaptivitySteps())
-        throw invalid_argument(QObject::tr("Adaptivity step for active field (%1) must be in the range from 0 to %2.").arg(currentPythonEngineAgros()->postHermes()->activeViewField()->fieldId()).arg(currentPythonEngineAgros()->postHermes()->activeViewField()->adaptivitySteps()).toStdString());
+    if (!Agros2D::problem()->isSolved())
+        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
+
+    if (adaptivityStep < 0 || adaptivityStep >= currentPythonEngineAgros()->postHermes()->activeViewField()->adaptivitySteps())
+        throw out_of_range(QObject::tr("Adaptivity step for active field (%1) must be in the range from 0 to %2.").arg(currentPythonEngineAgros()->postHermes()->activeViewField()->fieldId()).arg(currentPythonEngineAgros()->postHermes()->activeViewField()->adaptivitySteps() - 1).toStdString());
 
     currentPythonEngineAgros()->postHermes()->setActiveAdaptivityStep(adaptivityStep);
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
 
-const char* PyViewConfig::getActiveSolutionType() const
+char* PyViewConfig::getActiveSolutionType()
 {
+    if (!Agros2D::problem()->isSolved())
+        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
+
     return const_cast<char*>(solutionTypeToStringKey(currentPythonEngineAgros()->postHermes()->activeAdaptivitySolutionType()).toStdString().c_str());
 }
 
 void PyViewConfig::setActiveSolutionType(const char *solutionType)
 {
-    if (solutionTypeStringKeys().contains(QString(solutionType)))
-    {
-        currentPythonEngineAgros()->postHermes()->setActiveAdaptivitySolutionType(solutionTypeFromStringKey(QString(solutionType)));
-        if (!silentMode())
-            currentPythonEngineAgros()->postHermes()->refresh();
-    }
-    else
+    if (!Agros2D::problem()->isSolved())
+        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
+
+    if (!solutionTypeStringKeys().contains(QString(solutionType)))
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(solutionTypeStringKeys())).toStdString());
+
+    currentPythonEngineAgros()->postHermes()->setActiveAdaptivitySolutionType(solutionTypeFromStringKey(QString(solutionType)));
+    if (!silentMode())
+        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewConfig::setGridShow(bool show)
