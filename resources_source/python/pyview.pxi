@@ -18,7 +18,7 @@ cdef extern from "../../src/pythonlab/pyview.h":
         char *getField()
 
         void setActiveTimeStep(int timeStep) except +
-        int getActiveTimeStep()
+        int getActiveTimeStep()  except +
 
         void setActiveAdaptivityStep(int adaptiveStep) except +
         int getActiveAdaptivityStep()
