@@ -33,17 +33,14 @@
 
 void PyViewConfig::setField(const char* fieldid)
 {
-    foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
-    {
-        if (fieldInfo->fieldId() == QString(fieldid))
-        {
-            currentPythonEngineAgros()->postHermes()->setActiveViewField(fieldInfo);
-            currentPythonEngineAgros()->postHermes()->refresh();
-            return;
-        }
-    }
+    if (!Agros2D::problem()->isSolved())
+        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
 
-    throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(Agros2D::problem()->fieldInfos().keys())).toStdString());
+    if (!Agros2D::problem()->hasField(fieldid))
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(Agros2D::problem()->fieldInfos().keys())).toStdString());
+
+    currentPythonEngineAgros()->postHermes()->setActiveViewField(Agros2D::problem()->fieldInfo(fieldid));
+    currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 const char* PyViewConfig::getField() const
@@ -57,11 +54,11 @@ void PyViewConfig::setActiveTimeStep(int timeStep)
         throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
 
     if (timeStep < 0 || timeStep >= Agros2D::problem()->numTimeLevels())
-        throw invalid_argument(QObject::tr("Time step must be in the range from 0 to %1.").arg(Agros2D::problem()->numTimeLevels() - 1).toStdString());
+        throw out_of_range(QObject::tr("Time step must be in the range from 0 to %1.").arg(Agros2D::problem()->numTimeLevels() - 1).toStdString());
 
     FieldInfo *fieldInfo = currentPythonEngineAgros()->postHermes()->activeViewField();
     if (!Agros2D::solutionStore()->timeLevels(fieldInfo).contains(Agros2D::problem()->timeStepToTotalTime(timeStep)))
-        throw invalid_argument(QObject::tr("Field '%1' does not have solution for time step %2 (%3 s).").arg(fieldInfo->fieldId()).
+        throw out_of_range(QObject::tr("Field '%1' does not have solution for time step %2 (%3 s).").arg(fieldInfo->fieldId()).
                                arg(timeStep).arg(Agros2D::problem()->timeStepToTotalTime(timeStep)).toStdString());
 
     currentPythonEngineAgros()->postHermes()->setActiveTimeStep(timeStep);
@@ -72,7 +69,7 @@ void PyViewConfig::setActiveTimeStep(int timeStep)
 int PyViewConfig::getActiveTimeStep() const
 {
     if (!Agros2D::problem()->isSolved())
-        throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
+        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
 
     return currentPythonEngineAgros()->postHermes()->activeTimeStep();
 }
