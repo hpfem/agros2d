@@ -2876,46 +2876,46 @@ step</source>
         <translation type="obsolete">Ordre polynomial</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="65"/>
-        <location filename="../../src/sceneview_post.cpp" line="87"/>
-        <location filename="../../src/sceneview_post.cpp" line="104"/>
+        <location filename="../../src/sceneview_post.cpp" line="66"/>
+        <location filename="../../src/sceneview_post.cpp" line="86"/>
+        <location filename="../../src/sceneview_post.cpp" line="102"/>
         <source>Mesh View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="65"/>
+        <location filename="../../src/sceneview_post.cpp" line="66"/>
         <source>Initial mesh with %1 elements</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="87"/>
+        <location filename="../../src/sceneview_post.cpp" line="86"/>
         <source>Solution mesh with %1 elements</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="104"/>
+        <location filename="../../src/sceneview_post.cpp" line="102"/>
         <source>Polynomial order</source>
         <translation type="unfinished">Ordre polynomial</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="132"/>
-        <location filename="../../src/sceneview_post.cpp" line="197"/>
-        <location filename="../../src/sceneview_post.cpp" line="278"/>
+        <location filename="../../src/sceneview_post.cpp" line="130"/>
+        <location filename="../../src/sceneview_post.cpp" line="193"/>
+        <location filename="../../src/sceneview_post.cpp" line="272"/>
         <source>Post View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="132"/>
+        <location filename="../../src/sceneview_post.cpp" line="130"/>
         <source>Contour view (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="197"/>
+        <location filename="../../src/sceneview_post.cpp" line="193"/>
         <source>Scalar view (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="278"/>
+        <location filename="../../src/sceneview_post.cpp" line="272"/>
         <source>Vector view (%1)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3412,7 +3412,7 @@ step</source>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="483"/>
         <location filename="../../src/hermes2d/problem.cpp" line="838"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="933"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="931"/>
         <source>Problem</source>
         <translation type="unfinished">Problème</translation>
     </message>
@@ -3427,7 +3427,7 @@ step</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="933"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="931"/>
         <source>Loading spaces and solutions from disk</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4059,7 +4059,7 @@ Do you want to save your changes?</source>
         <location filename="../../src/hermes2d/problem.cpp" line="618"/>
         <location filename="../../src/hermes2d/problem.cpp" line="623"/>
         <location filename="../../src/hermes2d/solutionstore.cpp" line="87"/>
-        <location filename="../../src/hermes2d/solutiontypes.cpp" line="168"/>
+        <location filename="../../src/hermes2d/solutiontypes.cpp" line="148"/>
         <location filename="../../src/hermes2d/solver.cpp" line="47"/>
         <source>Solver</source>
         <translation>Solveur</translation>
@@ -4137,40 +4137,40 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solutionstore.cpp" line="446"/>
+        <location filename="../../src/hermes2d/solutionstore.cpp" line="450"/>
         <source>Field &apos;%1&apos; info mismatch.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solver.cpp" line="410"/>
-        <location filename="../../src/hermes2d/solver.cpp" line="477"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="396"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="463"/>
         <source>Solver failed: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solver.cpp" line="429"/>
-        <location filename="../../src/hermes2d/solver.cpp" line="738"/>
-        <location filename="../../src/hermes2d/solver.cpp" line="739"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="415"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="721"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="722"/>
         <source>DOF is zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solver.cpp" line="600"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="583"/>
         <source>Problem is not meshed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solver.cpp" line="855"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="838"/>
         <source>Adaptive process failed: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solver.cpp" line="859"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="842"/>
         <source>Adaptivity step (error = %1, DOFs = %2/%3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solver.cpp" line="874"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="857"/>
         <source>Initial time step</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4195,16 +4195,16 @@ Do you want to save your changes?</source>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="46"/>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="54"/>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="70"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="46"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="98"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="182"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="203"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="214"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="40"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="116"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="204"/>
         <location filename="../../src/pythonlab/pyview.cpp" line="225"/>
         <location filename="../../src/pythonlab/pyview.cpp" line="236"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="358"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="407"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="451"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="247"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="258"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="380"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="429"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="473"/>
         <source>Invalid argument. Valid keys: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4353,6 +4353,14 @@ Do you want to save your changes?</source>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="214"/>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="221"/>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="234"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="37"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="50"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="58"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="76"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="84"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="92"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="105"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="113"/>
         <source>Problem is not solved.</source>
         <translation type="unfinished">Problème n&apos;est pas résolu.</translation>
     </message>
@@ -4547,42 +4555,47 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="57"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="61"/>
         <source>Time step must be in the range from 0 to %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="77"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="65"/>
+        <source>Field &apos;%1&apos; does not have solution for time step %2 (%3 s).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/pythonlab/pyview.cpp" line="95"/>
         <source>Adaptivity step for active field (%1) must be in the range from 0 to %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="247"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="269"/>
         <source>Palette steps must be in the range from %1 to %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="282"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="304"/>
         <source>Decimal place must be in the range from %1 to %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="336"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="358"/>
         <source>Contour count must be in the range from %1 to %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="377"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="399"/>
         <source>Vector count must be in the range from %1 to %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="389"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="411"/>
         <source>Vector scale must be in the range from %1 to %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="77"/>
+        <location filename="../../src/sceneview_post.cpp" line="76"/>
         <source>Linearizer processing failed: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5481,23 +5494,50 @@ Do you want to save your changes?</source>
     <name>SceneEdgeDialog</name>
     <message>
         <location filename="../../src/sceneedge.cpp" line="467"/>
+        <location filename="../../src/sceneedge.cpp" line="582"/>
+        <location filename="../../src/sceneedge.cpp" line="593"/>
         <source>Edge</source>
         <translation>Arête</translation>
     </message>
     <message>
-        <location filename="../../src/sceneedge.cpp" line="499"/>
+        <location filename="../../src/sceneedge.cpp" line="504"/>
         <source>Angle (deg.):</source>
         <translation>Angle (deg.) :</translation>
     </message>
     <message>
-        <location filename="../../src/sceneedge.cpp" line="500"/>
+        <location filename="../../src/sceneedge.cpp" line="505"/>
+        <source>Start node:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/sceneedge.cpp" line="506"/>
+        <source>End node:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/sceneedge.cpp" line="507"/>
         <source>Length:</source>
         <translation>Longueur :</translation>
     </message>
     <message>
-        <location filename="../../src/sceneedge.cpp" line="502"/>
+        <location filename="../../src/sceneedge.cpp" line="509"/>
         <source>Edge parameters</source>
         <translation>Paramètres d&apos;arête</translation>
+    </message>
+    <message>
+        <location filename="../../src/sceneedge.cpp" line="517"/>
+        <source>Swap direction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/sceneedge.cpp" line="582"/>
+        <source>Start and end node are same.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/sceneedge.cpp" line="593"/>
+        <source>Edge already exists.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5516,12 +5556,12 @@ Do you want to save your changes?</source>
 <context>
     <name>SceneEdgeSelectDialog</name>
     <message>
-        <location filename="../../src/sceneedge.cpp" line="576"/>
+        <location filename="../../src/sceneedge.cpp" line="645"/>
         <source>Edges</source>
         <translation>Arêtes</translation>
     </message>
     <message>
-        <location filename="../../src/sceneedge.cpp" line="581"/>
+        <location filename="../../src/sceneedge.cpp" line="650"/>
         <source>Boundary conditions</source>
         <translation>Condition aux limites</translation>
     </message>

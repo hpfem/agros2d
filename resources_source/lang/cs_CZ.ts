@@ -1873,7 +1873,7 @@ oblasti</translation>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="107"/>
         <source>Mesh files were created</source>
-        <translation>Soubory se sítí byli vytvořeny</translation>
+        <translation>Soubory se sítí byly vytvořeny</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="112"/>
@@ -2670,46 +2670,46 @@ oblasti</translation>
 <context>
     <name>PostHermes</name>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="65"/>
-        <location filename="../../src/sceneview_post.cpp" line="87"/>
-        <location filename="../../src/sceneview_post.cpp" line="104"/>
+        <location filename="../../src/sceneview_post.cpp" line="66"/>
+        <location filename="../../src/sceneview_post.cpp" line="86"/>
+        <location filename="../../src/sceneview_post.cpp" line="102"/>
         <source>Mesh View</source>
         <translation>Zobrazení sítě</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="65"/>
+        <location filename="../../src/sceneview_post.cpp" line="66"/>
         <source>Initial mesh with %1 elements</source>
         <translation>Počáteční síť s %1 elementy</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="87"/>
+        <location filename="../../src/sceneview_post.cpp" line="86"/>
         <source>Solution mesh with %1 elements</source>
         <translation>Řešená síť s %1 elementy</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="104"/>
+        <location filename="../../src/sceneview_post.cpp" line="102"/>
         <source>Polynomial order</source>
         <translation>Řád polynomu</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="132"/>
-        <location filename="../../src/sceneview_post.cpp" line="197"/>
-        <location filename="../../src/sceneview_post.cpp" line="278"/>
+        <location filename="../../src/sceneview_post.cpp" line="130"/>
+        <location filename="../../src/sceneview_post.cpp" line="193"/>
+        <location filename="../../src/sceneview_post.cpp" line="272"/>
         <source>Post View</source>
         <translation>Zobrazení výsledků</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="132"/>
+        <location filename="../../src/sceneview_post.cpp" line="130"/>
         <source>Contour view (%1)</source>
         <translation>Zobrazení kontur (%1)</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="197"/>
+        <location filename="../../src/sceneview_post.cpp" line="193"/>
         <source>Scalar view (%1)</source>
         <translation>Skalární zobrazení (%1)</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="278"/>
+        <location filename="../../src/sceneview_post.cpp" line="272"/>
         <source>Vector view (%1)</source>
         <translation>Zobrazení vektorů (%1)</translation>
     </message>
@@ -3150,7 +3150,7 @@ oblasti</translation>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="483"/>
         <location filename="../../src/hermes2d/problem.cpp" line="838"/>
-        <location filename="../../src/hermes2d/problem.cpp" line="933"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="931"/>
         <source>Problem</source>
         <translation>Problém</translation>
     </message>
@@ -3165,7 +3165,7 @@ oblasti</translation>
         <translation>Index značky oblasti je mimo rozsah.</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/problem.cpp" line="933"/>
+        <location filename="../../src/hermes2d/problem.cpp" line="931"/>
         <source>Loading spaces and solutions from disk</source>
         <translation>Načítání řešení z disku</translation>
     </message>
@@ -4189,16 +4189,16 @@ Chcete tyto změny uložit?</translation>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="46"/>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="54"/>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="70"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="46"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="98"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="182"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="203"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="214"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="40"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="116"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="204"/>
         <location filename="../../src/pythonlab/pyview.cpp" line="225"/>
         <location filename="../../src/pythonlab/pyview.cpp" line="236"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="358"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="407"/>
-        <location filename="../../src/pythonlab/pyview.cpp" line="451"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="247"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="258"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="380"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="429"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="473"/>
         <source>Invalid argument. Valid keys: %1</source>
         <translation>Neplatný argument. Platné hodnoty: %1</translation>
     </message>
@@ -4387,6 +4387,14 @@ Chcete tyto změny uložit?</translation>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="214"/>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="221"/>
         <location filename="../../src/pythonlab/pyproblem.cpp" line="234"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="37"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="50"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="58"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="76"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="84"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="92"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="105"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="113"/>
         <source>Problem is not solved.</source>
         <translation>Problém nebyl vyřešen.</translation>
     </message>
@@ -4396,35 +4404,35 @@ Chcete tyto změny uložit?</translation>
         <translation>Zpráva</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solver.cpp" line="410"/>
-        <location filename="../../src/hermes2d/solver.cpp" line="477"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="396"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="463"/>
         <source>Solver failed: %1</source>
         <translation>Řešič selhal: %1</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solver.cpp" line="429"/>
-        <location filename="../../src/hermes2d/solver.cpp" line="738"/>
-        <location filename="../../src/hermes2d/solver.cpp" line="739"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="415"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="721"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="722"/>
         <source>DOF is zero</source>
         <translation>Počet stupňů volnosti je nulový</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solver.cpp" line="600"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="583"/>
         <source>Problem is not meshed</source>
         <translation>Problém nebyl diskretizován</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solver.cpp" line="855"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="838"/>
         <source>Adaptive process failed: %1</source>
         <translation>Adaptivní proces selhal: %1</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solver.cpp" line="859"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="842"/>
         <source>Adaptivity step (error = %1, DOFs = %2/%3)</source>
         <translation>Krok adaptivity (chyba = %1, počet st. volnosti  = %2/%3)</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solver.cpp" line="874"/>
+        <location filename="../../src/hermes2d/solver.cpp" line="857"/>
         <source>Initial time step</source>
         <translation>Počáteční časový krok</translation>
     </message>
@@ -4461,7 +4469,7 @@ Chcete tyto změny uložit?</translation>
         <location filename="../../src/hermes2d/problem.cpp" line="618"/>
         <location filename="../../src/hermes2d/problem.cpp" line="623"/>
         <location filename="../../src/hermes2d/solutionstore.cpp" line="87"/>
-        <location filename="../../src/hermes2d/solutiontypes.cpp" line="168"/>
+        <location filename="../../src/hermes2d/solutiontypes.cpp" line="148"/>
         <location filename="../../src/hermes2d/solver.cpp" line="47"/>
         <source>Solver</source>
         <translation>Řešič</translation>
@@ -4623,42 +4631,47 @@ Chcete tyto změny uložit?</translation>
         <translation>Problém není přechodový děj.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="57"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="61"/>
         <source>Time step must be in the range from 0 to %1.</source>
         <translation>Časový krok musí být v intervalu od 0 do %1.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="77"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="65"/>
+        <source>Field &apos;%1&apos; does not have solution for time step %2 (%3 s).</source>
+        <translation>Pole &apos;%1&apos; nebylo řešeno v časové kroku %2 (%3 s).</translation>
+    </message>
+    <message>
+        <location filename="../../src/pythonlab/pyview.cpp" line="95"/>
         <source>Adaptivity step for active field (%1) must be in the range from 0 to %2.</source>
         <translation>Krok adaptivity pro aktivní pole (%1) musí být v intrervalu od 0 do %2.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="247"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="269"/>
         <source>Palette steps must be in the range from %1 to %2.</source>
         <translation>Počet kroků palety musí být v rozmezí od %1 do %2.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="282"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="304"/>
         <source>Decimal place must be in the range from %1 to %2.</source>
         <translation>Počet desetinných míst musí být v intervalu od %1 do %2.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="336"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="358"/>
         <source>Contour count must be in the range from %1 to %2.</source>
         <translation>Počet kontur musí být v rozsahu od %1 do %2.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="377"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="399"/>
         <source>Vector count must be in the range from %1 to %2.</source>
         <translation>Počet vektorů musí být v rozsahu od %1 do %2.</translation>
     </message>
     <message>
-        <location filename="../../src/pythonlab/pyview.cpp" line="389"/>
+        <location filename="../../src/pythonlab/pyview.cpp" line="411"/>
         <source>Vector scale must be in the range from %1 to %2.</source>
         <translation>Velikost vektoru musí být v rozmezí od %1 do %2.</translation>
     </message>
     <message>
-        <location filename="../../src/sceneview_post.cpp" line="77"/>
+        <location filename="../../src/sceneview_post.cpp" line="76"/>
         <source>Linearizer processing failed: %1</source>
         <translation>Linearizace selhala: %1</translation>
     </message>
@@ -4693,7 +4706,7 @@ Chcete tyto změny uložit?</translation>
         <translation>Nastala neznámá vyjímka při načítání sítě</translation>
     </message>
     <message>
-        <location filename="../../src/hermes2d/solutionstore.cpp" line="446"/>
+        <location filename="../../src/hermes2d/solutionstore.cpp" line="450"/>
         <source>Field &apos;%1&apos; info mismatch.</source>
         <translation>Neshoda v informacích o poli &apos;%1&apos;.</translation>
     </message>
@@ -5188,21 +5201,48 @@ Chcete tyto změny uložit?</translation>
     <name>SceneEdgeDialog</name>
     <message>
         <location filename="../../src/sceneedge.cpp" line="467"/>
+        <location filename="../../src/sceneedge.cpp" line="582"/>
+        <location filename="../../src/sceneedge.cpp" line="593"/>
         <source>Edge</source>
         <translation>Hrana</translation>
     </message>
     <message>
-        <location filename="../../src/sceneedge.cpp" line="502"/>
+        <location filename="../../src/sceneedge.cpp" line="505"/>
+        <source>Start node:</source>
+        <translation>Počáteční uzel:</translation>
+    </message>
+    <message>
+        <location filename="../../src/sceneedge.cpp" line="506"/>
+        <source>End node:</source>
+        <translation>Koncový uzel:</translation>
+    </message>
+    <message>
+        <location filename="../../src/sceneedge.cpp" line="509"/>
         <source>Edge parameters</source>
         <translation>Parametry hrany</translation>
     </message>
     <message>
-        <location filename="../../src/sceneedge.cpp" line="499"/>
+        <location filename="../../src/sceneedge.cpp" line="517"/>
+        <source>Swap direction</source>
+        <translation>Otočit směr</translation>
+    </message>
+    <message>
+        <location filename="../../src/sceneedge.cpp" line="582"/>
+        <source>Start and end node are same.</source>
+        <translation>Počáteční i koncový bod je stejný.</translation>
+    </message>
+    <message>
+        <location filename="../../src/sceneedge.cpp" line="593"/>
+        <source>Edge already exists.</source>
+        <translation>Hrana již existuje.</translation>
+    </message>
+    <message>
+        <location filename="../../src/sceneedge.cpp" line="504"/>
         <source>Angle (deg.):</source>
         <translation>Úhel (st.):</translation>
     </message>
     <message>
-        <location filename="../../src/sceneedge.cpp" line="500"/>
+        <location filename="../../src/sceneedge.cpp" line="507"/>
         <source>Length:</source>
         <translation>Délka:</translation>
     </message>
@@ -5223,12 +5263,12 @@ Chcete tyto změny uložit?</translation>
 <context>
     <name>SceneEdgeSelectDialog</name>
     <message>
-        <location filename="../../src/sceneedge.cpp" line="576"/>
+        <location filename="../../src/sceneedge.cpp" line="645"/>
         <source>Edges</source>
         <translation>Hrany</translation>
     </message>
     <message>
-        <location filename="../../src/sceneedge.cpp" line="581"/>
+        <location filename="../../src/sceneedge.cpp" line="650"/>
         <source>Boundary conditions</source>
         <translation>Okrajové podmínky</translation>
     </message>
