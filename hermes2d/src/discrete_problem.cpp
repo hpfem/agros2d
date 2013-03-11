@@ -460,8 +460,8 @@ namespace Hermes
                 delete this->cache_records_element[i][j];
                 this->cache_records_element[i][j] = NULL;
               }
-            }
-          }
+            }            
+          }          
         }
       }
 
@@ -1005,6 +1005,8 @@ namespace Hermes
         {
           if(u_ext[i] != NULL)
           {
+            for (unsigned int j = 0; j < wf->get_neq(); j++)
+              delete u_ext[i][j];
             delete [] u_ext[i];
           }
         }

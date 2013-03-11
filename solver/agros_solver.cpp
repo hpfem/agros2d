@@ -137,6 +137,8 @@ void AgrosSolver::runScript()
     {
         Agros2D::log()->printMessage(tr("Solver"), tr("Problem was solved in %1").arg(milisecondsToTime(time.elapsed()).toString("mm:ss.zzz")));
 
+        Agros2D::scene()->clear();
+        Agros2D::clear();
         QApplication::exit(0);
     }
 }

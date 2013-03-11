@@ -69,7 +69,7 @@ MultiArray<Scalar>::MultiArray()
 template <typename Scalar>
 MultiArray<Scalar>::~MultiArray()
 {
-
+    clear();
 }
 
 template <typename Scalar>

@@ -784,6 +784,9 @@ namespace Hermes
       XMLSubdomains::domain_(out, xmldomain, namespace_info_map, "UTF-8", parsing_flags);
       out.close();
 
+      for (int i = 0; i < elements.size(); i++)
+          delete elements.at(i);
+
       return true;
     }
 

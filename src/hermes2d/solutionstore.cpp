@@ -116,7 +116,10 @@ void SolutionStore::printDebugMemoryInfo()
         totalSolutions += mi->numAlocatedSolutions();
     }
 
-    qDebug() << QString("Solution store: active %1 meshes, %2 spaces and %3 solutions. Each might be counted multiple times, fix it!").arg(totalMeshes).arg(totalSpaces).arg(totalSolutions);
+    qDebug() << QString("Solution store: active %1 meshes, %2 spaces and %3 solutions. Each might be counted multiple times, fix it!")
+                .arg(totalMeshes)
+                .arg(totalSpaces)
+                .arg(totalSolutions);
 }
 
 SolutionStore::~SolutionStore()
@@ -168,8 +171,8 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
             insertMultiSolutionToCache(solutionID, msa);
 
             // insert to memory info
-            assert(m_memoryInfos.keys().contains(solutionID));
-            m_memoryInfos[solutionID]->addMultiArray(msa);
+            // assert(m_memoryInfos.keys().contains(solutionID));
+            // m_memoryInfos[solutionID]->addMultiArray(msa);
         }
         catch (...)
         {
@@ -228,7 +231,7 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArray<double> m
     saveRunTimeDetails();
 
     // save to the memory info (for debug purposes)
-    m_memoryInfos[solutionID] = tr1::shared_ptr<MemoryInfo>(new MemoryInfo(multiSolution));
+    // m_memoryInfos[solutionID] = tr1::shared_ptr<MemoryInfo>(new MemoryInfo(multiSolution));
 }
 
 void SolutionStore::removeSolution(FieldSolutionID solutionID)
@@ -243,9 +246,7 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID)
     if (m_multiSolutionCache.contains(solutionID))
     {
         // free ma
-        MultiArray<double> msa = m_multiSolutionCache[solutionID];
-        msa.clear();
-
+        m_multiSolutionCache[solutionID].clear();
         m_multiSolutionCache.remove(solutionID);
     }
 
@@ -277,7 +278,7 @@ void SolutionStore::addSolution(BlockSolutionID blockSolutionID, MultiArray<doub
         addSolution(fieldSID, fieldMultiSolution, runTime);
     }
 
-    //printDebugMemoryInfo();
+    // printDebugMemoryInfo();
 }
 
 void SolutionStore::removeSolution(BlockSolutionID solutionID)
@@ -515,9 +516,7 @@ void SolutionStore::insertMultiSolutionToCache(FieldSolutionID solutionID, Multi
         if (m_multiSolutionCache.count() > Agros2D::configComputer()->cacheSize)
         {
             // free ma
-            MultiArray<double> msa = m_multiSolutionCache[m_multiSolutionCache.keys().first()];
-            msa.clear();
-
+            m_multiSolutionCache[m_multiSolutionCache.keys().first()].clear();
             m_multiSolutionCache.remove(m_multiSolutionCache.keys().first());
         }
 
