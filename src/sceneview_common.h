@@ -102,8 +102,12 @@ protected:
     void createFontTexture();
 
     GLuint m_textureLabelRulers;
+    QString m_textureLabelRulersName;
+    int m_textureLabelRulersSize;
     stbtt_bakedchar m_charDataRulers[96]; // ASCII 32..126 is 95 glyphs
     GLuint m_textureLabelPost;
+    QString m_textureLabelPostName;
+    int m_textureLabelPostSize;
     stbtt_bakedchar m_charDataPost[96]; // ASCII 32..126 is 95 glyphs
 
     void printRulersAt(int penX, int penY, const QString &text);

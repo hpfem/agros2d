@@ -480,7 +480,7 @@ MultiArray<double> PostHermes::activeMultiSolutionArray()
 SceneViewPostInterface::SceneViewPostInterface(PostHermes *postHermes, QWidget *parent)
     : SceneViewCommon(parent),
       m_postHermes(postHermes),
-      m_textureScalar(-1)
+      m_textureScalar(0)
 {
 }
 
@@ -696,7 +696,8 @@ void SceneViewPostInterface::paletteCreate()
     for (int i = paletteSteps; i < 256; i++)
         memcpy(palette[i], palette[paletteSteps-1], 3);
 
-    if (m_textureScalar == -1)
+    makeCurrent();
+    if (glIsTexture(m_textureScalar))
         glDeleteTextures(1, &m_textureScalar);
     glGenTextures(1, &m_textureScalar);
 

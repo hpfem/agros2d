@@ -48,8 +48,12 @@ static const int TEXTURE_SIZE = 512;
 SceneViewCommon::SceneViewCommon(QWidget *parent)
     : QGLWidget(parent),
       actSceneZoomRegion(NULL),
-      m_textureLabelRulers(-1),
-      m_textureLabelPost(-1)
+      m_textureLabelRulers(0),
+      m_textureLabelPost(0),
+      m_textureLabelRulersName(""),
+      m_textureLabelPostName(""),
+      m_textureLabelRulersSize(0),
+      m_textureLabelPostSize(0)
 {
     m_mainWindow = (QMainWindow *) parent;
 
@@ -90,17 +94,29 @@ void SceneViewCommon::initializeGL()
 void SceneViewCommon::createFontTexture()
 {
     // rulers font
-    if (glIsTexture(m_textureLabelRulers))
-        glDeleteTextures(1, &m_textureLabelRulers);
-    glGenTextures(1, &m_textureLabelRulers);
-    initFont(m_textureLabelRulers, m_charDataRulers, Agros2D::problem()->configView()->rulersFont, Agros2D::problem()->configView()->rulersFontSize);
+    if (m_textureLabelRulersName != Agros2D::problem()->configView()->rulersFont || m_textureLabelRulersSize != Agros2D::problem()->configView()->rulersFontSize)
+    {
+        makeCurrent();
+        if (glIsTexture(m_textureLabelRulers))
+            glDeleteTextures(1, &m_textureLabelRulers);
+        glGenTextures(1, &m_textureLabelRulers);
+        m_textureLabelRulersName = Agros2D::problem()->configView()->rulersFont;
+        m_textureLabelRulersSize = Agros2D::problem()->configView()->rulersFontSize;
+        initFont(m_textureLabelRulers, m_charDataRulers, Agros2D::problem()->configView()->rulersFont, Agros2D::problem()->configView()->rulersFontSize);
+    }
     // qDebug() << "textureLabelRulers: " << m_textureLabelRulers;
 
     // rulers font
-    if (glIsTexture(m_textureLabelPost))
-        glDeleteTextures(1, &m_textureLabelPost);
-    glGenTextures(1, &m_textureLabelPost);
-    initFont(m_textureLabelPost, m_charDataPost, Agros2D::problem()->configView()->postFont, Agros2D::problem()->configView()->postFontSize);
+    if (m_textureLabelPostName != Agros2D::problem()->configView()->postFont || m_textureLabelPostSize != Agros2D::problem()->configView()->postFontSize)
+    {
+        makeCurrent();
+        if (glIsTexture(m_textureLabelPost))
+            glDeleteTextures(1, &m_textureLabelPost);
+        glGenTextures(1, &m_textureLabelPost);
+        m_textureLabelPostName = Agros2D::problem()->configView()->rulersFont;
+        m_textureLabelPostSize = Agros2D::problem()->configView()->postFontSize;
+        initFont(m_textureLabelPost, m_charDataPost, Agros2D::problem()->configView()->postFont, Agros2D::problem()->configView()->postFontSize);
+    }
     // qDebug() << "textureLabelPost: " << m_textureLabelPost;
 }
 
@@ -221,7 +237,7 @@ void SceneViewCommon::printAt(int penX, int penY, const QString &text, stbtt_bak
 
 void SceneViewCommon::initFont(GLuint textureID, stbtt_bakedchar *fnt, const QString fontName, int pointSize)
 {
-    // load font    
+    // load font
     QString fntx = QFileInfo(QString("%1/resources/fonts/%2.ttf").arg(datadir()).arg(fontName)).absoluteFilePath();
     if (!QFile::exists(fntx)) return;
 
