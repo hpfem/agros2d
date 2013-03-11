@@ -33,6 +33,92 @@
 
 using namespace Hermes::Hermes2D;
 
+MemoryInfo::MemoryInfo(MultiArray<double> multiArray)
+{
+    addMultiArray(multiArray);
+}
+
+void MemoryInfo::addMultiArray(MultiArray<double> multiArray)
+{
+    removeDealocated();
+    for(int i = 0; i < multiArray.size(); i++)
+    {
+        tr1::weak_ptr<Hermes::Hermes2D::Mesh> meshWeak(multiArray.spaces().at(i)->get_mesh());
+        meshes.push_back(meshWeak);
+
+        tr1::weak_ptr<Hermes::Hermes2D::Space<double> > spaceWeak(multiArray.spaces().at(i));
+        spaces.push_back(spaceWeak);
+
+        tr1::weak_ptr<Hermes::Hermes2D::MeshFunction<double> > solutionWeak(multiArray.solutions().at(i));
+        solutions.push_back(solutionWeak);
+    }
+}
+
+void MemoryInfo::removeDealocated()
+{
+    int i = 0;
+    while(i < meshes.size())
+    {
+        if(meshes.at(i).expired())
+            meshes.removeAt(i);
+        else
+            i++;
+    }
+
+    i = 0;
+    while(i < spaces.size())
+    {
+        if(spaces.at(i).expired())
+            spaces.removeAt(i);
+        else
+            i++;
+    }
+
+    i = 0;
+    while(i < solutions.size())
+    {
+        if(solutions.at(i).expired())
+            solutions.removeAt(i);
+        else
+            i++;
+    }
+}
+
+int MemoryInfo::numAlocatedMeshes()
+{
+    removeDealocated();
+    return meshes.size();
+}
+
+int MemoryInfo::numAlocatedSpaces()
+{
+    removeDealocated();
+    return spaces.size();
+}
+
+int MemoryInfo::numAlocatedSolutions()
+{
+    removeDealocated();
+    return solutions.size();
+}
+
+
+void SolutionStore::printDebugMemoryInfo()
+{
+    int totalMeshes = 0;
+    int totalSpaces = 0;
+    int totalSolutions = 0;
+
+    foreach(tr1::shared_ptr<MemoryInfo> mi, m_memoryInfos)
+    {
+        totalMeshes += mi->numAlocatedMeshes();
+        totalSpaces += mi->numAlocatedSpaces();
+        totalSolutions += mi->numAlocatedSolutions();
+    }
+
+    qDebug() << QString("Solution store: active %1 meshes, %2 spaces and %3 solutions. Each might be counted multiple times, fix it!").arg(totalMeshes).arg(totalSpaces).arg(totalSolutions);
+}
+
 SolutionStore::~SolutionStore()
 {
     clearAll();
@@ -80,6 +166,10 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
 
             // insert to the cache
             insertMultiSolutionToCache(solutionID, msa);
+
+            // insert to memory info
+            assert(m_memoryInfos.keys().contains(solutionID));
+            m_memoryInfos[solutionID]->addMultiArray(msa);
         }
         catch (...)
         {
@@ -136,6 +226,9 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArray<double> m
 
     // save run time details to the file
     saveRunTimeDetails();
+
+    // save to the memory info (for debug purposes)
+    m_memoryInfos[solutionID] = tr1::shared_ptr<MemoryInfo>(new MemoryInfo(multiSolution));
 }
 
 void SolutionStore::removeSolution(FieldSolutionID solutionID)
@@ -183,6 +276,8 @@ void SolutionStore::addSolution(BlockSolutionID blockSolutionID, MultiArray<doub
         MultiArray<double> fieldMultiSolution = multiSolution.fieldPart(blockSolutionID.group, field->fieldInfo());
         addSolution(fieldSID, fieldMultiSolution, runTime);
     }
+
+    //printDebugMemoryInfo();
 }
 
 void SolutionStore::removeSolution(BlockSolutionID solutionID)
