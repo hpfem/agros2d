@@ -361,15 +361,15 @@ void Solver<Scalar>::addSolutionToStore(BlockSolutionID solutionID, Scalar* solu
     assert(solutionID.solutionMode == SolutionMode_Normal);
     Hermes::vector<SpaceSharedPtr<Scalar> > newSpaces = deepMeshAndSpaceCopy(actualSpaces(), false);
 
-    Hermes::vector<MeshSharedPtr> meshes = spacesMeshes(newSpaces);
-    Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions = createSolutions<Scalar>(meshes);
-    Solution<Scalar>::vector_to_solutions(solutionVector, newSpaces, solutions);
+    Hermes::vector<MeshSharedPtr> newMeshes = spacesMeshes(newSpaces);
+    Hermes::vector<MeshFunctionSharedPtr<Scalar> > newSolutions = createSolutions<Scalar>(newMeshes);
+    Solution<Scalar>::vector_to_solutions(solutionVector, newSpaces, newSolutions);
 
     SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(),
                                                   0.0,
                                                   Hermes::Hermes2D::Space<double>::get_num_dofs(newSpaces));
 
-    Agros2D::solutionStore()->addSolution(solutionID, MultiArray<Scalar>(newSpaces, solutions), runTime);
+    Agros2D::solutionStore()->addSolution(solutionID, MultiArray<Scalar>(newSpaces, newSolutions), runTime);
 }
 
 template <typename Scalar>

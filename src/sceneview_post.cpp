@@ -165,8 +165,6 @@ void PostHermes::processRangeContour()
         m_linContourView.process_solution(slnContourView,
                                           Hermes::Hermes2D::H2D_FN_VAL_0,
                                           paletteQualityToDouble(Agros2D::problem()->configView()->linearizerQuality));
-
-        delete slnContourView;
     }
 }
 
@@ -304,9 +302,6 @@ void PostHermes::processRangeVector()
         m_vecVectorView.process_solution(slnVectorXView, slnVectorYView,
                                          Hermes::Hermes2D::H2D_FN_VAL_0, Hermes::Hermes2D::H2D_FN_VAL_0,
                                          Hermes::Hermes2D::Views::HERMES_EPS_LOW);
-
-        delete slnVectorXView;
-        delete slnVectorYView;
     }
 }
 

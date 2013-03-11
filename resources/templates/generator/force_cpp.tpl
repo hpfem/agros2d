@@ -47,6 +47,9 @@ Point3 force{{CLASS}}(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, So
 {
     int numberOfSolutions = fieldInfo->numberOfSolutions();
 
+    FieldSolutionID fsid(fieldInfo, timeStep, adaptivityStep, solutionType);
+    MultiArray<double> ma = Agros2D::solutionStore()->multiArray(fsid);
+
     {{#VARIABLE_MATERIAL}}Value material_{{MATERIAL_VARIABLE}} = material->value("{{MATERIAL_VARIABLE}}");
     {{/VARIABLE_MATERIAL}}
 
@@ -69,14 +72,11 @@ Point3 force{{CLASS}}(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, So
         double *dudx = new double[numberOfSolutions];
         double *dudy = new double[numberOfSolutions];
 
-        Hermes::vector<MeshFunctionSharedPtr<double> > sln(numberOfSolutions);
         for (int k = 0; k < numberOfSolutions; k++)
         {
-            FieldSolutionID fsid(fieldInfo, timeStep, adaptivityStep, solutionType);
-            sln[k] = Agros2D::solutionStore()->multiArray(fsid).solutions().at(k);
-
             // point values
-            Hermes::Hermes2D::Func<double> *values = sln[k]->get_pt_value(point.x, point.y, element);
+            // point values
+            Hermes::Hermes2D::Func<double> *values = ma.solutions().at(k)->get_pt_value(point.x, point.y, element);
             if (!values)
             {
                 throw AgrosException(QObject::tr("Point [%1, %2] does not lie in any element").arg(x).arg(y));

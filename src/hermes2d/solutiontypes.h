@@ -59,8 +59,7 @@ Hermes::vector<MeshFunctionSharedPtr<Scalar> > createSolutions(Hermes::vector<Me
     Hermes::vector<MeshFunctionSharedPtr<Scalar> > slns;
     foreach (MeshSharedPtr mesh, meshes)
     {
-        Hermes::Hermes2D::Solution<Scalar> *sln = new Hermes::Hermes2D::Solution<double>(mesh);
-        slns.push_back(sln);
+        slns.push_back(MeshFunctionSharedPtr<Scalar>(new Hermes::Hermes2D::Solution<double>(mesh)));
     }
 
     return slns;

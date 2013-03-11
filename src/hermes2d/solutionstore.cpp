@@ -91,6 +91,10 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
     }
     else
     {
+        // MultiArray<double> ma = m_multiSolutionCache[solutionID];
+        // for (int i = 0; i < ma.solutions().size(); i++)
+        //     qDebug() << "ma.solutions().at(" << i << "): " << ma.solutions().at(i).use_count();
+
         return m_multiSolutionCache[solutionID];
     }
 }

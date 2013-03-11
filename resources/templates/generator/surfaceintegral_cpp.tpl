@@ -40,6 +40,9 @@ void {{CLASS}}SurfaceIntegral::calculate()
 {
     m_values.clear();
 
+    FieldSolutionID fsid(m_fieldInfo, m_timeStep, m_adaptivityStep, m_solutionType);
+    MultiArray<double> ma = Agros2D::solutionStore()->multiArray(fsid);
+
     if (Agros2D::problem()->isSolved())
     {
         // update time functions
@@ -47,14 +50,6 @@ void {{CLASS}}SurfaceIntegral::calculate()
         {
             QList<double> timeLevels = Agros2D::solutionStore()->timeLevels(m_fieldInfo);
             Module::updateTimeFunctions(timeLevels[m_timeStep]);
-        }
-
-        // solutions
-        Hermes::vector<MeshFunctionSharedPtr<double> >  sln;
-        for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
-        {
-            FieldSolutionID fsid(m_fieldInfo, m_timeStep, m_adaptivityStep, m_solutionType);
-            sln.push_back(Agros2D::solutionStore()->multiArray(fsid).solutions().at(k));
         }
 
         double **value = new double*[m_fieldInfo->numberOfSolutions()];
@@ -65,9 +60,9 @@ void {{CLASS}}SurfaceIntegral::calculate()
         Hermes::Hermes2D::Quad2D *quad = &Hermes::Hermes2D::g_quad_2d_std;
 
         for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
-            sln[k]->set_quad_2d(quad);
+            ma.solutions().at(k)->set_quad_2d(quad);
 
-        const MeshSharedPtr mesh = sln[0]->get_mesh();
+        const MeshSharedPtr mesh = ma.solutions().at(0)->get_mesh();
         for (int i = 0; i<Agros2D::scene()->edges->length(); i++)
         {
             if (Agros2D::scene()->edges->at(i)->isSelected())
@@ -99,11 +94,11 @@ void {{CLASS}}SurfaceIntegral::calculate()
                             int o = 0;
                             for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
                             {
-                                o += sln[k]->get_fn_order();
-                                sln[k]->set_active_element(e);
+                                o += ma.solutions().at(k)->get_fn_order();
+                                ma.solutions().at(k)->set_active_element(e);
                             }
 
-                            Hermes::Hermes2D::RefMap* ru = sln[0]->get_refmap();
+                            Hermes::Hermes2D::RefMap* ru = ma.solutions().at(0)->get_refmap();
                             o += ru->get_inv_ref_order();
 
                             Hermes::Hermes2D::Quad2D* quad = ru->get_quad_2d();
@@ -113,11 +108,11 @@ void {{CLASS}}SurfaceIntegral::calculate()
 
                             for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
                             {
-                                sln[k]->set_quad_order(eo, Hermes::Hermes2D::H2D_FN_VAL | Hermes::Hermes2D::H2D_FN_DX | Hermes::Hermes2D::H2D_FN_DY);
+                                ma.solutions().at(k)->set_quad_order(eo, Hermes::Hermes2D::H2D_FN_VAL | Hermes::Hermes2D::H2D_FN_DX | Hermes::Hermes2D::H2D_FN_DY);
                                 // value
-                                value[k] = sln[k]->get_fn_values();
+                                value[k] = ma.solutions().at(k)->get_fn_values();
                                 // derivative
-                                sln[k]->get_dx_dy_values(dudx[k], dudy[k]);
+                                ma.solutions().at(k)->get_dx_dy_values(dudx[k], dudy[k]);
                             }
 
                             // x - coordinate

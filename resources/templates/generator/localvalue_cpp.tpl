@@ -43,6 +43,9 @@ void {{CLASS}}LocalValue::calculate()
 
     m_values.clear();
 
+    FieldSolutionID fsid(m_fieldInfo, m_timeStep, m_adaptivityStep, m_solutionType);
+    MultiArray<double> ma = Agros2D::solutionStore()->multiArray(fsid);
+
     // update time functions
     if (m_fieldInfo->analysisType() == AnalysisType_Transient)
     {
@@ -69,7 +72,6 @@ void {{CLASS}}LocalValue::calculate()
             double *dudx = new double[numberOfSolutions];
             double *dudy = new double[numberOfSolutions];
 
-            Hermes::vector<MeshFunctionSharedPtr<double> > sln(numberOfSolutions);
             for (int k = 0; k < numberOfSolutions; k++)
             {
                 if ((m_fieldInfo->analysisType() == AnalysisType_Transient) && m_timeStep == 0)
@@ -82,11 +84,8 @@ void {{CLASS}}LocalValue::calculate()
                 }
                 else
                 {
-                    FieldSolutionID fsid(m_fieldInfo, m_timeStep, m_adaptivityStep, m_solutionType);
-                    sln[k] = Agros2D::solutionStore()->multiArray(fsid).solutions().at(k);
-
                     // point values
-                    Hermes::Hermes2D::Func<double> *values = sln[k]->get_pt_value(m_point.x, m_point.y);
+                    Hermes::Hermes2D::Func<double> *values = ma.solutions().at(k)->get_pt_value(m_point.x, m_point.y);
 
                     // set variables
                     value[k] = values->val[0];

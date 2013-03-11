@@ -40,6 +40,9 @@ void {{CLASS}}VolumeIntegral::calculate()
 {
     m_values.clear();
 
+    FieldSolutionID fsid(m_fieldInfo, m_timeStep, m_adaptivityStep, m_solutionType);
+    MultiArray<double> ma = Agros2D::solutionStore()->multiArray(fsid);
+
     if (Agros2D::problem()->isSolved())
     {
         // update time functions
@@ -49,23 +52,15 @@ void {{CLASS}}VolumeIntegral::calculate()
             Module::updateTimeFunctions(timeLevels[m_timeStep]);
         }
 
-        // solutions
-        Hermes::vector<MeshFunctionSharedPtr<double> > sln;
-        for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
-        {
-            FieldSolutionID fsid(m_fieldInfo, m_timeStep, m_adaptivityStep, m_solutionType);
-            sln.push_back(Agros2D::solutionStore()->multiArray(fsid).solutions().at(k));
-        }
-
         double **value = new double*[m_fieldInfo->numberOfSolutions()];
         double **dudx = new double*[m_fieldInfo->numberOfSolutions()];
         double **dudy = new double*[m_fieldInfo->numberOfSolutions()];
 
         Hermes::Hermes2D::Quad2D *quad = &Hermes::Hermes2D::g_quad_2d_std;
 
-        sln[0]->set_quad_2d(quad);
+        ma.solutions().at(0)->set_quad_2d(quad);
 
-        const MeshSharedPtr mesh = sln[0]->get_mesh();
+        const MeshSharedPtr mesh = ma.solutions().at(0)->get_mesh();
         Hermes::Hermes2D::Element *e;
 
         foreach (SceneLabel *label, Agros2D::scene()->labels->items())
@@ -86,13 +81,13 @@ void {{CLASS}}VolumeIntegral::calculate()
                         Hermes::Hermes2D::update_limit_table(e->get_mode());
 
                         for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
-                            sln[k]->set_active_element(e);
+                            ma.solutions().at(k)->set_active_element(e);
 
-                        Hermes::Hermes2D::RefMap *ru = sln[0]->get_refmap();
+                        Hermes::Hermes2D::RefMap *ru = ma.solutions().at(0)->get_refmap();
 
                         int o = 0;
                         for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
-                            o += sln[k]->get_fn_order();
+                            o += ma.solutions().at(k)->get_fn_order();
                         o += ru->get_inv_ref_order();
 
                         // coordinates
@@ -106,11 +101,11 @@ void {{CLASS}}VolumeIntegral::calculate()
                         // solution
                         for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
                         {
-                            sln[k]->set_quad_order(o, Hermes::Hermes2D::H2D_FN_VAL | Hermes::Hermes2D::H2D_FN_DX | Hermes::Hermes2D::H2D_FN_DY);
+                            ma.solutions().at(k)->set_quad_order(o, Hermes::Hermes2D::H2D_FN_VAL | Hermes::Hermes2D::H2D_FN_DX | Hermes::Hermes2D::H2D_FN_DY);
                             // value
-                            value[k] = sln[k]->get_fn_values();
+                            value[k] = ma.solutions().at(k)->get_fn_values();
                             // derivative
-                            sln[k]->get_dx_dy_values(dudx[k], dudy[k]);
+                            ma.solutions().at(k)->get_dx_dy_values(dudx[k], dudy[k]);
                         }
                         Hermes::Hermes2D::update_limit_table(e->get_mode());
 
