@@ -515,16 +515,7 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivity
     Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions = createSolutions<Scalar>(meshes);
     Solution<Scalar>::vector_to_solutions(solutionVector, actualSpaces(), solutions);
 
-    // TODO: remove
-    Hermes::vector<MeshFunction<Scalar>* > slns1;
-    for (int i = 0; i < referenceCalculation.solutions().size(); i++)
-        slns1.push_back(referenceCalculation.solutions().at(i).get());
-    Hermes::vector<MeshFunction<Scalar>* > slns2;
-    for (int i = 0; i < solutions.size(); i++)
-        slns2.push_back(solutions.at(i).get());
-
-    double error = Global<Scalar>::calc_abs_errors(slns1, slns2);
-    // double error = Global<Scalar>::calc_abs_errors(referenceCalculation.solutions(), solutions);
+    double error = Global<Scalar>::calc_abs_errors(referenceCalculation.solutions(), solutions);
 
     //update
     double actualRatio = error / Agros2D::problem()->actualTimeStepLength();
