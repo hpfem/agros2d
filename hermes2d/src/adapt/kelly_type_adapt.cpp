@@ -109,7 +109,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    double KellyTypeAdapt<Scalar>::calc_err_internal(Hermes::vector<Solution<Scalar>*> slns,
+    double KellyTypeAdapt<Scalar>::calc_err_internal(Hermes::vector<MeshFunctionSharedPtr<Scalar> > slns,
                                                      Hermes::vector<double>* component_errors,
                                                      unsigned int error_flags)
     {
@@ -120,7 +120,11 @@ namespace Hermes
 
       for (int i = 0; i < this->num; i++)
       {
-        this->sln[i] = slns[i];
+        Solution<Scalar>* solution = dynamic_cast<Solution<Scalar>*>(slns[i].get());
+        if(solution == NULL)
+          throw Exceptions::Exception("Passed solution is in fact not a Solution instance in KellyTypeAdapt::calc_err_*().");
+
+        this->sln[i] = solution;
         this->sln[i]->set_quad_2d(&g_quad_2d_std);
       }
 
@@ -481,7 +485,7 @@ namespace Hermes
 
     template<typename Scalar>
     double KellyTypeAdapt<Scalar>::eval_solution_norm(typename Adapt<Scalar>::MatrixFormVolError* form,
-                                                      RefMap *rm, MeshFunction<Scalar>* sln)
+                                                      RefMap *rm, MeshFunctionSharedPtr<Scalar> sln)
     {
       // Determine the integration order.
       int inc = (sln->get_num_components() == 2) ? 1 : 0;
@@ -493,11 +497,7 @@ namespace Hermes
       int order = rm->get_inv_ref_order();
       order += o.get_order();
 
-      Solution<Scalar>*sol = static_cast<Solution<Scalar>*>(sln);
-      if(sol && sol->get_type() == HERMES_EXACT)
-        limit_order_nowarn(order, rm->get_active_element()->get_mode());
-      else
-        limit_order(order, rm->get_active_element()->get_mode());
+      limit_order(order, rm->get_active_element()->get_mode());
 
       ou->free_ord(); delete ou;
       delete fake_e;
@@ -515,7 +515,7 @@ namespace Hermes
         jwt[i] = pt[i][2] * jac[i];
 
       // Function values.
-      Func<Scalar>* u = init_fn(sln, order);
+      Func<Scalar>* u = init_fn(sln.get(), order);
       Scalar res = form->value(np, jwt, NULL, u, u, e, NULL);
 
       e->free(); delete e;
@@ -589,7 +589,7 @@ namespace Hermes
       for (unsigned i = 0; i < err_est_form->ext.size(); i++)
       {
         if(err_est_form->ext[i] != NULL)
-          ext_fn[i] = init_fn(err_est_form->ext[i], order);
+          ext_fn[i] = init_fn(err_est_form->ext[i].get(), order);
         else
           ext_fn[i] = NULL;
       }
@@ -680,7 +680,7 @@ namespace Hermes
       for (unsigned i = 0; i < err_est_form->ext.size(); i++)
       {
         if(err_est_form->ext[i] != NULL)
-          ext_fn[i] = init_fn(err_est_form->ext[i], order);
+          ext_fn[i] = init_fn(err_est_form->ext[i].get(), order);
         else
           ext_fn[i] = NULL;
       }
@@ -719,7 +719,7 @@ namespace Hermes
                                                             int neighbor_index)
     {
       NeighborSearch<Scalar>* nbs = neighbor_searches.get(neighbor_index);
-      Hermes::vector<MeshFunction<Scalar>*> slns;
+      Hermes::vector<MeshFunctionSharedPtr<Scalar> > slns;
       for (int i = 0; i < this->num; i++)
         slns.push_back(this->sln[i]);
 

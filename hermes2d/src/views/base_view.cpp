@@ -30,22 +30,18 @@ namespace Hermes
     {
       template<typename Scalar>
       BaseView<Scalar>::BaseView(const char* title, WinGeom* wg)
-        : ScalarView((char*) title, wg)
+        : ScalarView((char*) title, wg), sln(MeshFunctionSharedPtr<Scalar>(new Solution<Scalar>())), complex_filter(MeshFunctionSharedPtr<double>())
       {
         pss = NULL;
-        sln = NULL;
-        space = NULL;
         this->show_edges = true;
         basic_title.assign(title);
       }
 
       template<typename Scalar>
       BaseView<Scalar>::BaseView(char* title, WinGeom* wg)
-        : ScalarView(title, wg)
+        : ScalarView(title, wg), sln(MeshFunctionSharedPtr<Scalar>(new Solution<Scalar>())), complex_filter(MeshFunctionSharedPtr<double>())
       {
         pss = NULL;
-        sln = NULL;
-        space = NULL;
         this->show_edges = true;
         basic_title.assign(title);
       }
@@ -56,7 +52,6 @@ namespace Hermes
         this->space = space;
         free();
         pss = new PrecalcShapeset(space->shapeset);
-        sln = new Solution<Scalar>();
         ndof = this->space->get_num_dofs();
         base_index = 0;
         this->eps = eps;
@@ -68,7 +63,6 @@ namespace Hermes
       void BaseView<Scalar>::free()
       {
         if(pss != NULL) { delete pss; pss = NULL; }
-        if(sln != NULL) { delete sln; sln = NULL; }
       }
 
       template<>
@@ -78,7 +72,8 @@ namespace Hermes
         memset(coeffs, 0, sizeof(double) * ndof);
         if(base_index >= 0)
         {
-          if(base_index < ndof) coeffs[base_index] = 1.0;
+          if(base_index < ndof) 
+            coeffs[base_index] = 1.0;
           Solution<double>::vector_to_solution(coeffs, space, sln, pss, false);
         }
         else
@@ -106,9 +101,9 @@ namespace Hermes
           Solution<std::complex<double> >::vector_to_solution(coeffs, space, sln, pss, true);
         }
 
-        Hermes::Hermes2D::RealFilter filter(sln);
-
-        ScalarView::show(&filter, eps, item);
+        
+        complex_filter = MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::RealFilter(sln.get()));
+        ScalarView::show(complex_filter, eps, item);
         update_title();
 
         delete [] coeffs;

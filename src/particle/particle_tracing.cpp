@@ -56,7 +56,7 @@ ParticleTracing::ParticleTracing(QObject *parent)
         SolutionMode solutionMode = SolutionMode_Finer;
 
         FieldSolutionID fsid(fieldInfo, timeStep, adaptivityStep, solutionMode);
-        Hermes::Hermes2D::Solution<double> *sln = Agros2D::solutionStore()->multiArray(fsid).solutions().at(0);
+        MeshFunctionSharedPtr<double> sln = Agros2D::solutionStore()->multiArray(fsid).solutions().at(0);
 
         // todo: should not be initial mesh, but the solution mesh (will not work for adaptivity)
         // m_meshHashs[fieldInfo] = new MeshHash(fieldInfo->initialMesh());

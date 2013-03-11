@@ -1005,8 +1005,6 @@ namespace Hermes
         {
           if(u_ext[i] != NULL)
           {
-            for (unsigned int j = 0; j < wf->get_neq(); j++)
-              delete u_ext[i][j];
             delete [] u_ext[i];
           }
         }
@@ -1102,7 +1100,7 @@ namespace Hermes
           fns[i].push_back(pss[i][j]);
         for (unsigned j = 0; j < this->wf->ext.size(); j++)
         {
-          fns[i].push_back(weakforms[i]->ext[j]);
+          fns[i].push_back(weakforms[i]->ext[j].get());
           weakforms[i]->ext[j]->set_quad_2d(&g_quad_2d_std);
         }
         for(unsigned int form_i = 0; form_i < this->wf->get_forms().size(); form_i++)
@@ -1110,7 +1108,7 @@ namespace Hermes
           for(unsigned int ext_i = 0; ext_i < this->wf->get_forms()[form_i]->ext.size(); ext_i++)
             if(this->wf->get_forms()[form_i]->ext[ext_i] != NULL)
             {
-              fns[i].push_back(weakforms[i]->get_forms()[form_i]->ext[ext_i]);
+              fns[i].push_back(weakforms[i]->get_forms()[form_i]->ext[ext_i].get());
               weakforms[i]->get_forms()[form_i]->ext[ext_i]->set_quad_2d(&g_quad_2d_std);
             }
         }
@@ -1637,7 +1635,7 @@ namespace Hermes
           ext = new Func<Scalar>*[current_extCount];
           for(int ext_i = 0; ext_i < current_extCount; ext_i++)
             if(current_wf->ext[ext_i] != NULL)
-              ext[ext_i] = init_fn(current_wf->ext[ext_i], order);
+              ext[ext_i] = init_fn(current_wf->ext[ext_i].get(), order);
             else
               ext[ext_i] = NULL;
         }
@@ -1757,7 +1755,7 @@ namespace Hermes
               Func<Scalar>** extSurf = new Func<Scalar>*[current_extCount];
               for(int ext_surf_i = 0; ext_surf_i < current_extCount; ext_surf_i++)
                 if(current_wf->ext[ext_surf_i] != NULL)
-                  extSurf[ext_surf_i] = current_state->e[ext_surf_i] == NULL ? NULL : init_fn(current_wf->ext[ext_surf_i], orderSurf);
+                  extSurf[ext_surf_i] = current_state->e[ext_surf_i] == NULL ? NULL : init_fn(current_wf->ext[ext_surf_i].get(), orderSurf);
                 else
                   extSurf[ext_surf_i] = NULL;
 
@@ -1864,19 +1862,11 @@ namespace Hermes
       int max_order_i = this->spaces[form->i]->get_element_order(current_state->e[form->i]->id);
       if(H2D_GET_V_ORDER(max_order_i) > H2D_GET_H_ORDER(max_order_i))
         max_order_i = H2D_GET_V_ORDER(max_order_i);
-<<<<<<< HEAD
       else
         max_order_i = H2D_GET_H_ORDER(max_order_i);
       if(H2D_GET_V_ORDER(max_order_j) > H2D_GET_H_ORDER(max_order_j))
         max_order_j = H2D_GET_V_ORDER(max_order_j);
       else
-=======
-      else
-        max_order_i = H2D_GET_H_ORDER(max_order_i);
-      if(H2D_GET_V_ORDER(max_order_j) > H2D_GET_H_ORDER(max_order_j))
-        max_order_j = H2D_GET_V_ORDER(max_order_j);
-      else
->>>>>>> shared_ptr for meshes, 1. stage
         max_order_j = H2D_GET_H_ORDER(max_order_j);
 
       for (unsigned int k = 0; k < current_state->rep->nvert; k++)
@@ -1930,7 +1920,7 @@ namespace Hermes
         local_ext = new Func<Scalar>*[local_ext_count];
         for(int ext_i = 0; ext_i < local_ext_count; ext_i++)
           if(form->ext[ext_i] != NULL)
-            local_ext[ext_i] = current_state->e[ext_i] == NULL ? NULL : init_fn(form->ext[ext_i], order);
+            local_ext[ext_i] = current_state->e[ext_i] == NULL ? NULL : init_fn(form->ext[ext_i].get(), order);
           else
             local_ext[ext_i] = NULL;
       }
@@ -2082,7 +2072,7 @@ namespace Hermes
         local_ext = new Func<Scalar>*[local_ext_count];
         for(int ext_i = 0; ext_i < local_ext_count; ext_i++)
           if(form->ext[ext_i] != NULL)
-            local_ext[ext_i] = init_fn(form->ext[ext_i], order);
+            local_ext[ext_i] = init_fn(form->ext[ext_i].get(), order);
           else
             local_ext[ext_i] = NULL;
       }
@@ -2479,7 +2469,7 @@ namespace Hermes
         if(dynamic_cast<PrecalcShapeset*>(fn[fns_i]) != NULL)
           mesh_i = spaces[fns_i]->get_mesh();
         else
-          mesh_i = (dynamic_cast<MeshFunction<Scalar>*>(fn[fns_i]))->get_mesh();
+          mesh_i = (dynamic_cast<MeshFunction<Scalar>* >(fn[fns_i]))->get_mesh();
         NeighborSearch<Scalar>* ns = neighbor_searches.get(mesh_i->get_seq() - min_dg_mesh_seq);
         if(ns->central_transformations.present(neighbor_i))
           ns->central_transformations.get(neighbor_i)->apply_on(fn[fns_i]);
@@ -2698,7 +2688,7 @@ namespace Hermes
         if(dynamic_cast<PrecalcShapeset*>(fn[fns_i]) != NULL)
           mesh_i = spaces[fns_i]->get_mesh();
         else
-          mesh_i = (dynamic_cast<MeshFunction<Scalar>*>(fn[fns_i]))->get_mesh();
+          mesh_i = (dynamic_cast<MeshFunction<Scalar>* >(fn[fns_i]))->get_mesh();
 
         fn[fns_i]->set_transform(neighbor_searches.get(mesh_i->get_seq() - min_dg_mesh_seq)->original_central_el_transform);
       }
@@ -2712,7 +2702,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    DiscontinuousFunc<Scalar>** DiscreteProblem<Scalar>::init_ext_fns(Hermes::vector<MeshFunction<Scalar>*> &ext,
+    DiscontinuousFunc<Scalar>** DiscreteProblem<Scalar>::init_ext_fns(Hermes::vector<MeshFunctionSharedPtr<Scalar> > ext,
       LightArray<NeighborSearch<Scalar>*>& neighbor_searches, int order, unsigned int min_dg_mesh_seq)
     {
       DiscontinuousFunc<Scalar>** ext_fns = new DiscontinuousFunc<Scalar>*[ext.size()];

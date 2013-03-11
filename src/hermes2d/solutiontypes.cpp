@@ -75,24 +75,19 @@ MultiArray<Scalar>::~MultiArray()
 template <typename Scalar>
 void MultiArray<Scalar>::clear()
 {
-    // clear solutions
-    foreach (Hermes::Hermes2D::Solution<Scalar> *sln, m_solutions)
-        delete sln;
-
     m_solutions.clear();
-
     m_spaces.clear();
 }
 
 template <typename Scalar>
-void MultiArray<Scalar>::append(SpaceSharedPtr<Scalar> space, Hermes::Hermes2D::Solution<Scalar> *solution)
+void MultiArray<Scalar>::append(SpaceSharedPtr<Scalar> space, MeshFunctionSharedPtr<Scalar> solution)
 {
     m_spaces.push_back(space);
     m_solutions.push_back(solution);
 }
 
 template <typename Scalar>
-void MultiArray<Scalar>::append(Hermes::vector<SpaceSharedPtr<Scalar> > spaces, Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions)
+void MultiArray<Scalar>::append(Hermes::vector<SpaceSharedPtr<Scalar> > spaces, Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions)
 {
     assert(spaces.size() == solutions.size());
     for (int i = 0; i < solutions.size(); i++)
@@ -182,7 +177,7 @@ void MultiArray<Scalar>::saveToFile(const QString &baseName, FieldSolutionID sol
         m_spaces.at(i)->save(spaceFN.toLatin1().data());
 
         QString solutionFN = QString("%1_%2.sln").arg(baseName).arg(solutionIndex);
-        m_solutions.at(i)->save(solutionFN.toLatin1().data());
+        dynamic_cast<Hermes::Hermes2D::Solution<Scalar> *>(m_solutions.at(i).get())->save(solutionFN.toLatin1().data());
 
         solutionIndex++;
     }

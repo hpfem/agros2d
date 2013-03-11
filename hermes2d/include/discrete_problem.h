@@ -334,16 +334,16 @@ namespace Hermes
         bool neighbor_supp_u, bool neighbor_supp_v, LightArray<NeighborSearch<Scalar>*>& neighbor_searches, int neighbor_index_u);
 
       /// Calculates integration order for DG vector forms.
-      int calc_order_dg_vector_form(VectorFormDG<Scalar>* vfDG, Hermes::vector<Solution<Scalar>*> u_ext,
+      int calc_order_dg_vector_form(VectorFormDG<Scalar>* vfDG, Hermes::vector<Solution<Scalar> > u_ext,
         PrecalcShapeset* fv, RefMap* ru, SurfPos* surf_pos,
         LightArray<NeighborSearch<Scalar>*>& neighbor_searches, int neighbor_index_v);
 
       /// Initialize orders of external functions for DG forms.
-      Func<Hermes::Ord>** init_ext_fns_ord(Hermes::vector<MeshFunction<Scalar>*> &ext,
+      Func<Hermes::Ord>** init_ext_fns_ord(Hermes::vector<MeshFunctionSharedPtr<Scalar> > &ext,
         LightArray<NeighborSearch<Scalar>*>& neighbor_searches);
 
       /// Initialize external functions for DG forms.
-      DiscontinuousFunc<Scalar>** init_ext_fns(Hermes::vector<MeshFunction<Scalar>*> &ext,
+      DiscontinuousFunc<Scalar>** init_ext_fns(Hermes::vector<MeshFunctionSharedPtr<Scalar> > ext,
         LightArray<NeighborSearch<Scalar>*>& neighbor_searches,
         int order, unsigned int min_dg_mesh_seq);
 

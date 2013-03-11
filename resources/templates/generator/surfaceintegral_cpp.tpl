@@ -50,7 +50,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
         }
 
         // solutions
-        Hermes::vector<Hermes::Hermes2D::Solution<double> *> sln;
+        Hermes::vector<MeshFunctionSharedPtr<double> >  sln;
         for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
         {
             FieldSolutionID fsid(m_fieldInfo, m_timeStep, m_adaptivityStep, m_solutionType);

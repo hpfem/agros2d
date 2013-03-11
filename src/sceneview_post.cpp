@@ -68,10 +68,8 @@ void PostHermes::processInitialMesh()
         // init linearizer for initial mesh
         try
         {
-            Hermes::Hermes2D::ZeroSolution<double> initial(m_activeViewField->initialMesh());
-
             m_linInitialMeshView.free();
-            m_linInitialMeshView.process_solution(&initial);
+            m_linInitialMeshView.process_solution(MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(m_activeViewField->initialMesh())));
         }
         catch (Hermes::Exceptions::Exception& e)
         {
@@ -90,10 +88,9 @@ void PostHermes::processSolutionMesh()
         // init linearizer for solution mesh
         // ERROR: FIX component(0)
         const MeshSharedPtr mesh = activeMultiSolutionArray().solutions().at(0)->get_mesh();
-        Hermes::Hermes2D::ZeroSolution<double> solution(mesh);
 
         m_linSolutionMeshView.free();
-        m_linSolutionMeshView.process_solution(&solution);
+        m_linSolutionMeshView.process_solution(MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(mesh)));
     }
 }
 
@@ -148,8 +145,8 @@ void PostHermes::processRangeContour()
         // deformed shape
         if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->configView()->deformContour)
         {
-            Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *>(activeMultiSolutionArray().solutions().at(0),
-                                                                                                                                                           activeMultiSolutionArray().solutions().at(1)));
+            Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<MeshFunctionSharedPtr<double> >(activeMultiSolutionArray().solutions().at(0),
+                                                                                                                                                 activeMultiSolutionArray().solutions().at(1)));
 
             RectPoint rect = Agros2D::scene()->boundingBox();
             double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
@@ -208,8 +205,8 @@ void PostHermes::processRangeScalar()
         // deformed shape
         if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->configView()->deformScalar)
         {
-            Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *>(activeMultiSolutionArray().solutions().at(0),
-                                                                                                                                                           activeMultiSolutionArray().solutions().at(1)));
+            Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<MeshFunctionSharedPtr<double> >(activeMultiSolutionArray().solutions().at(0),
+                                                                                                                                                 activeMultiSolutionArray().solutions().at(1)));
 
             RectPoint rect = Agros2D::scene()->boundingBox();
             double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
@@ -251,8 +248,6 @@ void PostHermes::processRangeScalar()
             }
             */
         }
-
-        delete slnScalarView;
     }
 }
 
@@ -289,8 +284,8 @@ void PostHermes::processRangeVector()
         // deformed shape
         if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->configView()->deformVector)
         {
-            Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *>(activeMultiSolutionArray().solutions().at(0),
-                                                                                                                                                           activeMultiSolutionArray().solutions().at(1)));
+            Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<MeshFunctionSharedPtr<double> >(activeMultiSolutionArray().solutions().at(0),
+                                                                                                                                                 activeMultiSolutionArray().solutions().at(1)));
 
             RectPoint rect = Agros2D::scene()->boundingBox();
             double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
@@ -436,9 +431,9 @@ Hermes::Hermes2D::Filter<double> *PostHermes::viewScalarFilter(Module::LocalVari
         m_fieldInfo->module()->update_time_functions(Agros2D::problem()->time());
     */
 
-    Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln;
+    Hermes::vector<MeshFunctionSharedPtr<double> > slns;
     for (int k = 0; k < activeViewField()->numberOfSolutions(); k++)
-        sln.push_back(activeMultiSolutionArray().solutions().at(k));
+        slns.push_back(activeMultiSolutionArray().solutions().at(k));
 
     // qDebug() << "viewScalarFilter: " << activeViewField()->fieldId() << activeTimeStep() << activeAdaptivityStep() << activeAdaptivitySolutionType();
 
@@ -446,7 +441,7 @@ Hermes::Hermes2D::Filter<double> *PostHermes::viewScalarFilter(Module::LocalVari
                                                activeTimeStep(),
                                                activeAdaptivityStep(),
                                                activeAdaptivitySolutionType(),
-                                               sln,
+                                               slns,
                                                physicFieldVariable.id(),
                                                physicFieldVariableComp);
 }

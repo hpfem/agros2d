@@ -204,7 +204,7 @@ public:
     // postprocessor
     // filter
     virtual Hermes::Hermes2D::Filter<double> *filter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                                                     Hermes::vector<Hermes::Hermes2D::MeshFunction<double> *> sln,
+                                                     Hermes::vector<MeshFunctionSharedPtr<double> > sln,
                                                      const QString &variable,
                                                      PhysicFieldVariableComp physicFieldVariableComp) = 0;
 

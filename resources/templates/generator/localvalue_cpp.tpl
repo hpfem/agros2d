@@ -69,7 +69,7 @@ void {{CLASS}}LocalValue::calculate()
             double *dudx = new double[numberOfSolutions];
             double *dudy = new double[numberOfSolutions];
 
-            std::vector<Hermes::Hermes2D::Solution<double> *> sln(numberOfSolutions);
+            Hermes::vector<MeshFunctionSharedPtr<double> > sln(numberOfSolutions);
             for (int k = 0; k < numberOfSolutions; k++)
             {
                 if ((m_fieldInfo->analysisType() == AnalysisType_Transient) && m_timeStep == 0)

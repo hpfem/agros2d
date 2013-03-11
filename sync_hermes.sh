@@ -34,3 +34,4 @@ cp ../hermes/AUTHORS hermes2d
 cp hermes2d.pro hermes2d
 rm hermes2d.pro
 cp omp.h hermes2d/omp
+rm omp.h

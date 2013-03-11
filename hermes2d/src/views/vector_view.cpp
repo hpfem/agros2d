@@ -56,7 +56,7 @@ namespace Hermes
         delete vec;
       }
 
-      void VectorView::show(MeshFunction<double>* vsln, double eps)
+      void VectorView::show(MeshFunctionSharedPtr<double> vsln, double eps)
       {
         if(vec == NULL)
           vec = new Vectorizer;
@@ -65,7 +65,7 @@ namespace Hermes
         show(vsln, vsln, eps, H2D_FN_VAL_0, H2D_FN_VAL_1);
       }
 
-      void VectorView::show(MeshFunction<double>* xsln, MeshFunction<double>* ysln, double eps, int xitem, int yitem, MeshFunction<double>* xdisp, MeshFunction<double>* ydisp, double dmult)
+      void VectorView::show(MeshFunctionSharedPtr<double> xsln, MeshFunctionSharedPtr<double> ysln, double eps, int xitem, int yitem, MeshFunctionSharedPtr<double> xdisp, MeshFunctionSharedPtr<double> ydisp, double dmult)
       {
         if(vec == NULL)
           vec = new Vectorizer;

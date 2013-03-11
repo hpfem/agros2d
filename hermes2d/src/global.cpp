@@ -135,20 +135,24 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    double Global<Scalar>::calc_norms(Hermes::vector<Solution<Scalar>*> slns)
+    double Global<Scalar>::calc_norms(Hermes::vector<MeshFunction<Scalar>* > slns)
     {
       // Calculate norms for all solutions.
       Hermes::vector<double> norms;
       int n = slns.size();
       for (int i = 0; i<n; i++)
       {
-        switch (slns[i]->get_space_type())
+        Solution<Scalar>* sln = dynamic_cast<Solution<Scalar>*>(slns[i]);
+        if(sln == NULL)
+          throw Exceptions::Exception("Passed solution is in fact not a Solution instance in calc_norms().");
+
+        switch (sln->get_space_type())
         {
-        case HERMES_H1_SPACE: norms.push_back(calc_norm(slns[i], HERMES_H1_NORM)); break;
-        case HERMES_HCURL_SPACE: norms.push_back(calc_norm(slns[i], HERMES_HCURL_NORM)); break;
-        case HERMES_HDIV_SPACE: norms.push_back(calc_norm(slns[i], HERMES_HDIV_NORM)); break;
-        case HERMES_L2_SPACE: norms.push_back(calc_norm(slns[i], HERMES_L2_NORM)); break;
-        default: throw Hermes::Exceptions::Exception("Internal in calc_norms(): unknown space type.");
+          case HERMES_H1_SPACE: norms.push_back(calc_norm(slns[i], HERMES_H1_NORM)); break;
+          case HERMES_HCURL_SPACE: norms.push_back(calc_norm(slns[i], HERMES_HCURL_NORM)); break;
+          case HERMES_HDIV_SPACE: norms.push_back(calc_norm(slns[i], HERMES_HDIV_NORM)); break;
+          case HERMES_L2_SPACE: norms.push_back(calc_norm(slns[i], HERMES_L2_NORM)); break;
+          default: throw Hermes::Exceptions::Exception("Internal in calc_norms(): unknown space type.");
         }
       }
       // Calculate the resulting norm.
@@ -159,14 +163,18 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    double Global<Scalar>::calc_abs_errors(Hermes::vector<Solution<Scalar>*> slns1, Hermes::vector<Solution<Scalar>*> slns2)
+    double Global<Scalar>::calc_abs_errors(Hermes::vector<MeshFunction<Scalar>* > slns1, Hermes::vector<MeshFunction<Scalar>* > slns2)
     {
       // Calculate errors for all solutions.
       Hermes::vector<double> errors;
       int n = slns1.size();
       for (int i = 0; i < n; i++)
       {
-        switch (slns1[i]->get_space_type())
+        Solution<Scalar>* sln = dynamic_cast<Solution<Scalar>*>(slns1[i]);
+        if(sln == NULL)
+          throw Exceptions::Exception("Passed solution is in fact not a Solution instance in calc_abs_errors().");
+
+        switch (sln->get_space_type())
         {
         case HERMES_H1_SPACE: errors.push_back(calc_abs_error(slns1[i], slns2[i], HERMES_H1_NORM)); break;
         case HERMES_HCURL_SPACE: errors.push_back(calc_abs_error(slns1[i], slns2[i], HERMES_HCURL_NORM)); break;
@@ -183,7 +191,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    double Global<Scalar>::calc_rel_errors(Hermes::vector<Solution<Scalar>*> slns1, Hermes::vector<Solution<Scalar>*> slns2)
+    double Global<Scalar>::calc_rel_errors(Hermes::vector<MeshFunction<Scalar>* > slns1, Hermes::vector<MeshFunction<Scalar>* > slns2)
     {
       return calc_abs_errors(slns1, slns2) / calc_norms(slns2);
     }

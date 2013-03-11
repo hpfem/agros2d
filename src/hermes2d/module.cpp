@@ -216,7 +216,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
 
         if((type == WeakForm_MatVol) || (type == WeakForm_VecVol))
         {
-            Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar>* > previousSlns;
+            Hermes::vector<MeshFunctionSharedPtr<Scalar> > previousSlns;
 
             int lastTimeStep = Agros2D::problem()->actualTimeStep() - 1; // todo: check
 
@@ -267,7 +267,7 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
     // push external solution for weak coupling
     if (couplingInfo->isWeak())
     {
-        Hermes::vector<Hermes::Hermes2D::MeshFunction<Scalar>* > couplingSlns;
+        Hermes::vector<MeshFunctionSharedPtr<Scalar> > couplingSlns;
 
         FieldSolutionID solutionID = Agros2D::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionMode_Finer);
         assert(solutionID.group->numberOfSolutions() <= maxSourceFieldComponents);

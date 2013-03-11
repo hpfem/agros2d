@@ -54,9 +54,9 @@ Hermes::vector<MeshSharedPtr> spacesMeshes(Hermes::vector<SpaceSharedPtr<Scalar>
 }
 
 template <typename Scalar>
-Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> createSolutions(Hermes::vector<MeshSharedPtr> meshes)
+Hermes::vector<MeshFunctionSharedPtr<Scalar> > createSolutions(Hermes::vector<MeshSharedPtr> meshes)
 {
-    Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> slns;
+    Hermes::vector<MeshFunctionSharedPtr<Scalar> > slns;
     foreach (MeshSharedPtr mesh, meshes)
     {
         Hermes::Hermes2D::Solution<Scalar> *sln = new Hermes::Hermes2D::Solution<double>(mesh);
@@ -67,31 +67,22 @@ Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> createSolutions(Hermes::vec
 }
 
 template <typename Scalar>
-void deleteSolutions(Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> slns)
-{
-    foreach (Hermes::Hermes2D::Solution<Scalar> *sln, slns)
-        delete sln;
-
-    slns.clear();
-}
-
-template <typename Scalar>
 class AGROS_API MultiArray
 {
 public:
     MultiArray();
     MultiArray(Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
-               Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions) : m_spaces(spaces), m_solutions(solutions) {}
+               Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions) : m_spaces(spaces), m_solutions(solutions) {}
     ~MultiArray();
 
     void clear();
 
     // add next component
-    void append(SpaceSharedPtr<Scalar> space, Hermes::Hermes2D::Solution<Scalar> *solution);
-    void append(Hermes::vector<SpaceSharedPtr<Scalar> > spaces, Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions);
+    void append(SpaceSharedPtr<Scalar> space, MeshFunctionSharedPtr<Scalar> solution);
+    void append(Hermes::vector<SpaceSharedPtr<Scalar> > spaces, Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions);
 
     Hermes::vector<SpaceSharedPtr<Scalar> > spaces() { return m_spaces; }
-    Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> solutions() { return m_solutions; }
+    Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions() { return m_solutions; }
 
     //Hermes::vector<const SpaceSharedPtr<Scalar> > spacesConst() { return m_spaces; }
 
@@ -107,7 +98,7 @@ public:
 
 private:
     Hermes::vector<SpaceSharedPtr<Scalar> > m_spaces;
-    Hermes::vector<Hermes::Hermes2D::Solution<Scalar> *> m_solutions;
+    Hermes::vector<MeshFunctionSharedPtr<Scalar> > m_solutions;
 };
 
 //const int LAST_ADAPTIVITY_STEP = -1;
