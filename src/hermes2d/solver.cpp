@@ -359,7 +359,8 @@ template <typename Scalar>
 void Solver<Scalar>::addSolutionToStore(BlockSolutionID solutionID, Scalar* solutionVector)
 {
     assert(solutionID.solutionMode == SolutionMode_Normal);
-    Hermes::vector<SpaceSharedPtr<Scalar> > newSpaces = deepMeshAndSpaceCopy(actualSpaces(), false);
+    Hermes::vector<SpaceSharedPtr<Scalar> > newSpaces = actualSpaces();
+    //Hermes::vector<SpaceSharedPtr<Scalar> > newSpaces = deepMeshAndSpaceCopy(actualSpaces(), false);
 
     Hermes::vector<MeshSharedPtr> newMeshes = spacesMeshes(newSpaces);
     Hermes::vector<MeshFunctionSharedPtr<Scalar> > newSolutions = createSolutions<Scalar>(newMeshes);
@@ -694,7 +695,8 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
                 BlockSolutionID solID(m_block, 1, 0, SolutionMode_Normal);
                 MultiArray<Scalar> msaPrevTS = Agros2D::solutionStore()->multiArray(solID);
 
-                setActualSpaces(deepMeshAndSpaceCopy(msaPrevTS.spaces(), false));
+                setActualSpaces(msaPrevTS.spaces());
+                //setActualSpaces(deepMeshAndSpaceCopy(msaPrevTS.spaces(), false));
             }
             else
             {
@@ -704,7 +706,8 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
                     BlockSolutionID solID(m_block, timeStep-1, max(lastTimeStepNumAdaptations - m_block->adaptivityBackSteps(), 0), SolutionMode_Normal);
                     MultiArray<Scalar> msaPrevTS = Agros2D::solutionStore()->multiArray(solID);
 
-                    setActualSpaces(deepMeshAndSpaceCopy(msaPrevTS.spaces(), false));
+                    setActualSpaces(msaPrevTS.spaces());
+                    //setActualSpaces(deepMeshAndSpaceCopy(msaPrevTS.spaces(), false));
                 }
             }
         }
@@ -770,20 +773,20 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
     Agros2D::solutionStore()->addSolution(referenceSolutionID, MultiArray<Scalar>(spacesRef, solutionsRef), runTimeRef);
 
     // copy spaces and create empty solutions
-    Hermes::vector<SpaceSharedPtr<Scalar> > spacesCopy = deepMeshAndSpaceCopy(actualSpaces(), false);
+    //Hermes::vector<SpaceSharedPtr<Scalar> > spacesCopy = deepMeshAndSpaceCopy(actualSpaces(), false);
     Hermes::vector<MeshSharedPtr> meshes = spacesMeshes(actualSpaces());
     Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions = createSolutions<Scalar>(meshes);
 
     // project the fine mesh solution onto the coarse mesh.
     Hermes::Hermes2D::OGProjection<Scalar> ogProjection;
-    ogProjection.project_global(spacesCopy, solutionsRef, solutions);
+    ogProjection.project_global(actualSpaces(), solutionsRef, solutions);
 
     // save the solution
     BlockSolutionID solutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal);
     SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(),
                                                   0.0,
-                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(spacesCopy));
-    MultiArray<Scalar> msa(spacesCopy, solutions);
+                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(actualSpaces()));
+    MultiArray<Scalar> msa(actualSpaces(), solutions);
     Agros2D::solutionStore()->addSolution(solutionID, msa, runTime);
 
     if (bdf2Table)
@@ -799,6 +802,11 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep, bool f
     Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormType;
     Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
     initSelectors(projNormType, selector);
+
+    // this should be the only place, where we use deep mesh and space copy
+    // not counting creating of reference space
+    // we have to use it here, since we are going to change the space through adaptivity
+    setActualSpaces(deepMeshAndSpaceCopy(actualSpaces(), false));
 
     // calculate element errors and total error estimate.
     Adapt<Scalar> adaptivity(actualSpaces(), projNormType);
@@ -856,7 +864,7 @@ void Solver<Scalar>::solveInitialTimeStep()
 {
     Agros2D::log()->printDebug(m_solverID, QObject::tr("Initial time step"));
 
-    Hermes::vector<SpaceSharedPtr<Scalar> > spaces = deepMeshAndSpaceCopy(actualSpaces(), false);
+    //Hermes::vector<SpaceSharedPtr<Scalar> > spaces = deepMeshAndSpaceCopy(actualSpaces(), false);
     Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions;
 
     int totalComp = 0;
@@ -865,7 +873,7 @@ void Solver<Scalar>::solveInitialTimeStep()
         for (int comp = 0; comp < field->fieldInfo()->numberOfSolutions(); comp++)
         {
             // constant initial solution
-            MeshSharedPtr mesh = spaces.at(totalComp)->get_mesh();
+            MeshSharedPtr mesh = actualSpaces().at(totalComp)->get_mesh();
             ConstantSolution<double> *initial = new ConstantSolution<double>(mesh, field->fieldInfo()->initialCondition());
             solutions.push_back(initial);
             totalComp++;
@@ -878,7 +886,7 @@ void Solver<Scalar>::solveInitialTimeStep()
                                                   Hermes::Hermes2D::Space<double>::get_num_dofs(actualSpaces()));
 
     Agros2D::solutionStore()->addSolution(solutionID,
-                                          MultiArray<Scalar>(spaces, solutions),
+                                          MultiArray<Scalar>(actualSpaces(), solutions),
                                           runTime);
 }
 
