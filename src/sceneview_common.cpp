@@ -94,7 +94,8 @@ void SceneViewCommon::initializeGL()
 void SceneViewCommon::createFontTexture()
 {
     // rulers font
-    if (m_textureLabelRulersName != Agros2D::problem()->configView()->rulersFont || m_textureLabelRulersSize != Agros2D::problem()->configView()->rulersFontSize)
+    // TODO: doesn't work on windows
+    // if (m_textureLabelRulersName != Agros2D::problem()->configView()->rulersFont || m_textureLabelRulersSize != Agros2D::problem()->configView()->rulersFontSize)
     {
         makeCurrent();
         if (glIsTexture(m_textureLabelRulers))
@@ -107,7 +108,8 @@ void SceneViewCommon::createFontTexture()
     // qDebug() << "textureLabelRulers: " << m_textureLabelRulers;
 
     // rulers font
-    if (m_textureLabelPostName != Agros2D::problem()->configView()->postFont || m_textureLabelPostSize != Agros2D::problem()->configView()->postFontSize)
+    // TODO: doesn't work on windows
+    // if (m_textureLabelPostName != Agros2D::problem()->configView()->postFont || m_textureLabelPostSize != Agros2D::problem()->configView()->postFontSize)
     {
         makeCurrent();
         if (glIsTexture(m_textureLabelPost))
