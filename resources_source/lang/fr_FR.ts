@@ -5601,8 +5601,12 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <location filename="../../src/scenelabel.cpp" line="360"/>
+        <source>Triangle area (m&lt;sup&gt;2&lt;/sup&gt;):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Triangle area (m):</source>
-        <translation>L&apos;aire du triangle (m) :</translation>
+        <translation type="obsolete">L&apos;aire du triangle (m) :</translation>
     </message>
     <message>
         <location filename="../../src/scenelabel.cpp" line="362"/>

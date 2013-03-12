@@ -9546,13 +9546,17 @@ Do you want to save your changes?</source>
         <translation type="unfinished">Współrzędne</translation>
     </message>
     <message>
+        <location filename="../../src/scenelabel.cpp" line="360"/>
+        <source>Triangle area (m&lt;sup&gt;2&lt;/sup&gt;):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Global order is %1.</source>
         <translation type="obsolete">Globalny stopień %1.</translation>
     </message>
     <message>
-        <location filename="../../src/scenelabel.cpp" line="360"/>
         <source>Triangle area (m):</source>
-        <translation type="unfinished">Powierzchnia trójkąta (m):</translation>
+        <translation type="obsolete">Powierzchnia trójkąta (m):</translation>
     </message>
     <message>
         <source>Polynomial order (-):</source>

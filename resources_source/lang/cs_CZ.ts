@@ -5308,8 +5308,12 @@ Chcete tyto změny uložit?</translation>
     </message>
     <message>
         <location filename="../../src/scenelabel.cpp" line="360"/>
+        <source>Triangle area (m&lt;sup&gt;2&lt;/sup&gt;):</source>
+        <translation>Obsah elementu (m&lt;sup&gt;2&lt;/sup&gt;):</translation>
+    </message>
+    <message>
         <source>Triangle area (m):</source>
-        <translation>Obsah elementu (m):</translation>
+        <translation type="obsolete">Obsah elementu (m):</translation>
     </message>
     <message>
         <location filename="../../src/scenelabel.cpp" line="362"/>
