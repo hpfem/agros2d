@@ -444,10 +444,12 @@ void PythonEditorDialog::createActions()
 
     actHelp = new QAction(icon("help-contents"), tr("&Help"), this);
     actHelp->setShortcut(QKeySequence::HelpContents);
+    actHelp->setEnabled(false);
     connect(actHelp, SIGNAL(triggered()), this, SLOT(doHelp()));
 
     actHelpKeywordList = new QAction(icon("help-contents"), tr("&Keyword List"), this);
     actHelpKeywordList->setShortcut(QKeySequence::HelpContents);
+    actHelpKeywordList->setEnabled(false);
     connect(actHelpKeywordList, SIGNAL(triggered()), this, SLOT(doHelpKeywordList()));
 
     actAbout = new QAction(icon("about"), tr("About &PythonLab"), this);

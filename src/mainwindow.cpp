@@ -547,9 +547,9 @@ void MainWindow::createMenus()
 #endif
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
-    mnuHelp->addAction(actHelp);
-    mnuHelp->addAction(actOnlineHelp);
-    mnuHelp->addAction(actHelpShortCut);
+    // mnuHelp->addAction(actHelp);
+    // mnuHelp->addAction(actOnlineHelp);
+    // mnuHelp->addAction(actHelpShortCut);
     // mnuHelp->addAction(actCollaborationServer);
 #ifndef Q_WS_MAC
     mnuHelp->addSeparator();
