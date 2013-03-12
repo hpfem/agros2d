@@ -36,8 +36,7 @@ namespace Hermes
     class DiscreteProblemInterface : public Hermes::Mixins::SettableComputationTime
     {
     public:
-        virtual ~DiscreteProblemInterface() {}
-
+      virtual ~DiscreteProblemInterface() {};
       /// Get the number of unknowns.
       virtual int get_num_dofs() const = 0;
 
@@ -72,7 +71,7 @@ namespace Hermes
       virtual void create_sparse_structure() = 0;
       virtual void create_sparse_structure(SparseMatrix<Scalar>* mat, Vector<Scalar>* rhs = NULL) = 0;
 
-      DiscreteProblemInterface();      
+      DiscreteProblemInterface();
 
       template<typename T> friend class DiscreteProblemNOX;
     };

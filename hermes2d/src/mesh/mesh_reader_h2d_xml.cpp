@@ -764,6 +764,8 @@ namespace Hermes
       for(int i = 0; i < elements.size(); i++)
         elementsToPass.el().push_back(*elements[i]);
 
+      for(int i = 0; i < elements.size(); i++)
+        delete elements[i];
       XMLSubdomains::domain xmldomain(vertices, elementsToPass, edges, subdomains);
       xmldomain.curves().set(curves);
 
@@ -783,9 +785,6 @@ namespace Hermes
       ::xml_schema::flags parsing_flags = ::xml_schema::flags::base;
       XMLSubdomains::domain_(out, xmldomain, namespace_info_map, "UTF-8", parsing_flags);
       out.close();
-
-      for (int i = 0; i < elements.size(); i++)
-          delete elements.at(i);
 
       return true;
     }
