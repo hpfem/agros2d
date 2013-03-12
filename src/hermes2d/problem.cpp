@@ -461,10 +461,13 @@ void Problem::solveInit()
     m_timeStepLengths.clear();
 
     // check problem settings
-    if (!Agros2D::problem()->config()->timeTotal().number() > 0.0)
-        throw AgrosSolverException(tr("Total time is zero"));
-    if (!Agros2D::problem()->config()->timeMethodTolerance().number() > 0.0)
-        throw AgrosSolverException(tr("Time method tolerance is zero"));
+    if (Agros2D::problem()->isTransient())
+    {
+        if (!Agros2D::problem()->config()->timeTotal().number() > 0.0)
+            throw AgrosSolverException(tr("Total time is zero"));
+        if (!Agros2D::problem()->config()->timeMethodTolerance().number() > 0.0)
+            throw AgrosSolverException(tr("Time method tolerance is zero"));
+    }
 
     // open indicator progress
     Indicator::openProgress();
