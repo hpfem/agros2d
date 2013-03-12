@@ -47,6 +47,7 @@ win32-msvc2010 {
     HEADERS      += ../resources_source/classes/coupling_xml.h
     
     DEFINES += XERCES_STATIC_LIBRARY
+    DEFINES += _WINDOWS
     
     LIBS += -L..
     TARGET = ../../agros2d_generator

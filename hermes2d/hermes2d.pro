@@ -200,6 +200,7 @@ win32-msvc2010 {
     DEFINES += HERMES_FOR_AGROS
     DEFINES += XML_LIBRARY
     DEFINES += WIN32
+    DEFINES += _WINDOWS
     DEFINES += IMPLEMENT_C99
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"

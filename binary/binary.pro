@@ -37,6 +37,7 @@ win32-msvc2010 {
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
     HEADERS      += ../src/mainwindow.h
+    DEFINES += _WINDOWS
 
     LIBS += -L..
     LIBS += -L../libs

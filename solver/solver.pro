@@ -41,6 +41,8 @@ win32-msvc2010 {
     QMAKE_CXXFLAGS_DEBUG += -MDd
     CONFIG += console
 
+    DEFINES += _WINDOWS
+
     SOURCES += ../src/gui/textedit.cpp
     HEADERS += ../src/gui/textedit.h
 

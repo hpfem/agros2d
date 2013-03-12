@@ -38,6 +38,7 @@ win32-msvc2010 {
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
     DEFINES += XERCES_STATIC_LIBRARY
+    DEFINES += _WINDOWS
 
     INCLUDEPATH += c:/hpfem/hermes/dependencies/include
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
