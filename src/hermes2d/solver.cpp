@@ -692,7 +692,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
             if (timeStep % m_block->adaptivityRedoneEach() == 0)
             {
                 assert(timeStep != 0);
-                BlockSolutionID solID(m_block, 1, 0, SolutionMode_Normal);
+                BlockSolutionID solID(m_block, 0, 0, SolutionMode_Normal);
                 MultiArray<Scalar> msaPrevTS = Agros2D::solutionStore()->multiArray(solID);
 
                 setActualSpaces(msaPrevTS.spaces());

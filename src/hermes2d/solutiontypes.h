@@ -152,6 +152,7 @@ ostream& operator<<(ostream& output, const SolutionID<Group>& id)
     return output;
 }
 
+
 //template class SolutionID<Block>;
 
 class FieldSolutionID : public SolutionID<FieldInfo>
@@ -166,6 +167,8 @@ public:
 
     QString toString();
 };
+
+QDebug& operator<<(QDebug output, const FieldSolutionID& id);
 
 class BlockSolutionID : public SolutionID<Block>
 {
