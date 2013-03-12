@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="2.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:output method="xml" version="1.0" encoding="utf-8" />
 
 <xsl:template name="edges">
     <xsl:param name="id" />
@@ -28,7 +29,7 @@
         <xsl:attribute name="version">2.1</xsl:attribute>
         <xsl:variable name="current_version" select="/document/@version" />
 
-        <!-- Geometry -->
+        <!-- geometry -->
         <xsl:element name="geometry">
             <xsl:copy-of select="/document/geometry/nodes"/>
             <xsl:element name="edges">
@@ -87,37 +88,45 @@
             </xsl:element>
         </xsl:element>
 
-        <!-- Problem -->
+        <!-- problem -->
         <xsl:element name="problem">
             <xsl:attribute name="coordinate_type">
                 <xsl:value-of select="/document/problems/problem/@problemtype" />
             </xsl:attribute>
-            <xsl:attribute name="frequency">
-                <xsl:value-of select="/document/problems/problem/@frequency" />
-            </xsl:attribute>
             <xsl:attribute name="matrix_solver">
                 <xsl:value-of select="/document/problems/problem/@matrix_solver" />
             </xsl:attribute>
-            <xsl:attribute name="time_total">
-                <xsl:value-of select="/document/problems/problem/@timetotal" />
-            </xsl:attribute>
             <xsl:attribute name="mesh_type">
                 <xsl:value-of select="/document/problems/problem/@meshtype" />
-            </xsl:attribute>
-            <xsl:attribute name="time_step">
-                <xsl:value-of select="/document/problems/problem/@timestep" />
-            </xsl:attribute>
-            <xsl:attribute name="name">
-                <xsl:value-of select="/document/problems/problem/@name" />
             </xsl:attribute>
             <xsl:attribute name="date">
                 <xsl:value-of select="/document/problems/problem/@date" />
             </xsl:attribute>
 
+            <!-- transient problem -->
+            <xsl:if test="/document/problems/problem/@analysistype='transient'">
+                <xsl:variable name="time_total" select="/document/problems/problem/@timetotal" />
+                <xsl:variable name="time_step" select="/document/problems/problem/@timestep" />
+                <xsl:attribute name="time_total">
+                    <xsl:value-of select="$time_total" />
+                </xsl:attribute>
+                <xsl:attribute name="time_steps">
+                    <xsl:value-of select="number($time_total div $time_step)" />
+                </xsl:attribute>
+            </xsl:if>
+
+            <!-- harmonic problem -->
+            <xsl:if test="/document/problems/problem/@analysistype='harmonic'">
+                <xsl:attribute name="frequency">
+                    <xsl:value-of select="/document/problems/problem/@frequency" />
+                </xsl:attribute>
+            </xsl:if>
+
             <xsl:element name="description">
                 <xsl:value-of select="/document/problems/problem/description" />
             </xsl:element>
 
+            <!-- fields -->
             <xsl:element name="fields">
                 <xsl:element name="field">
                     <xsl:attribute name="field_id">
@@ -130,13 +139,7 @@
                         <xsl:value-of select="/document/problems/problem/@analysistype" />
                     </xsl:attribute>
                     <xsl:attribute name="polynomial_order">
-                        <xsl:variable name="polynomial_order" select="/document/problems/problem/@polynomial_order" />
-                        <xsl:choose>
-                            <xsl:when test="$polynomial_order!=null">
-                                <xsl:value-of select="$polynomial_order" />
-                            </xsl:when>
-                            <xsl:otherwise>2</xsl:otherwise>
-                        </xsl:choose>
+                        <xsl:value-of select="/document/problems/problem/@polynomialorder" />
                     </xsl:attribute>
                     <xsl:attribute name="initial_condition">
                         <xsl:value-of select="/document/problems/problem/@initialcondition" />
@@ -193,11 +196,11 @@
                         </xsl:attribute>
                     </xsl:element>
 
-                    <!-- Boundaries -->
+                    <!-- boundaries -->
                     <xsl:element name="boundaries">
                         <xsl:choose>
-                            <!-- Transformation from version 2.0 -->
                             <xsl:when test="$current_version!=null">
+                                <!-- transformation from version 2.0 -->
                                 <xsl:variable name="edges" select="/document/geometry/edges/*" />
                                 <xsl:for-each select="/document/problems/problem/edges/edge">
                                     <xsl:element name="boundary">
@@ -213,10 +216,10 @@
                                 </xsl:for-each>
                             </xsl:when>
                             <xsl:otherwise>
-                                <!-- Transformation from version 1.0 -->
+                                <!-- transformation from version 1.0 -->
                                 <xsl:for-each select="/document/problems/problem/edges/edge">
                                     <xsl:element name="boundary">
-                                        <!-- Magnetic field -->
+                                        <!-- magnetic field -->
                                         <xsl:if test="@type='magnetic_vector_potential'">
                                             <xsl:attribute name="type">magnetic_potential</xsl:attribute>
                                             <xsl:attribute name="magnetic_potential_real">
@@ -236,7 +239,7 @@
                                             </xsl:attribute>
                                         </xsl:if>
 
-                                        <!-- Electrostatic field -->
+                                        <!-- electrostatic field -->
                                         <xsl:if test="@type='electrostatic_potential'">
                                             <xsl:attribute name="type">
                                                 <xsl:value-of select="@type"/>
@@ -254,7 +257,7 @@
                                             </xsl:attribute>
                                         </xsl:if>
 
-                                        <!-- Temperature field -->
+                                        <!-- temperature field -->
                                         <xsl:if test="@type='heat_temperature'">
                                             <xsl:attribute name="type">
                                                 <xsl:value-of select="@type"/>
@@ -288,7 +291,7 @@
                                             </xsl:attribute>
                                         </xsl:if>
 
-                                        <!-- Acustic field -->
+                                        <!-- acustic field -->
                                         <xsl:if test="@type='acoustic_pressure'">
                                             <xsl:attribute name="type">
                                                 <xsl:value-of select="@type"/>
@@ -318,7 +321,7 @@
                                             <xsl:attribute name="acoustic_impedance">428.75</xsl:attribute>
                                         </xsl:if>
 
-                                        <!-- Current field -->
+                                        <!-- current field -->
                                         <xsl:if test="@type='current_potential'">
                                             <xsl:attribute name="type">
                                                 <xsl:value-of select="@type"/>
@@ -328,7 +331,7 @@
                                             </xsl:attribute>
                                         </xsl:if>
 
-                                        <!-- RF field -->
+                                        <!-- rf field -->
                                         <xsl:if test="@type='rf_electric_field'">
                                             <xsl:attribute name="type">rf_electric_field</xsl:attribute>
                                             <xsl:attribute name="rf_te_electric_field_real">
@@ -369,7 +372,7 @@
                                             <xsl:attribute name="type">rf_te_matched_boundary</xsl:attribute>
                                         </xsl:if>
 
-                                        <!-- Elasticity -->
+                                        <!-- elasticity -->
                                         <xsl:if test="@typex='elasticity_free'">
                                             <xsl:if test="@typey='elasticity_free'">
                                                 <xsl:attribute name="type">elasticity_free_free</xsl:attribute>
@@ -431,11 +434,11 @@
                         </xsl:choose>
                     </xsl:element>
 
-                    <!-- Materials -->
+                    <!-- materials -->
                     <xsl:element name="materials">
                         <xsl:choose>
-                            <!-- Transformation from version 2.0 -->
                             <xsl:when test="$current_version!=null">
+                                <!-- transformation from version 2.0 -->
                                 <xsl:variable name="labels" select="/document/geometry/labels/*" />
                                 <xsl:for-each select="/document/problems/problem/labels/label">
                                     <xsl:element name="material">
@@ -451,12 +454,12 @@
                                 </xsl:for-each>
                             </xsl:when>
                             <xsl:otherwise>
-                                <!-- Transformation from version 1.0 -->
+                                <!-- transformation from version 1.0 -->
                                 <xsl:variable name="labels" select="/document/geometry/labels/*" />
                                 <xsl:variable name="physical_field" select="/document/problems/problem/@type" />
                                 <xsl:for-each select="/document/problems/problem/labels/label">
                                     <xsl:element name="material">
-                                        <!-- Magnetic field -->
+                                        <!-- magnetic field -->
                                         <xsl:if test="$physical_field='magnetic'">
                                             <xsl:if test="@current_density_real">
                                                 <xsl:attribute name="magnetic_current_density_external_real">
@@ -505,7 +508,7 @@
                                             </xsl:if>
                                         </xsl:if>
 
-                                        <!-- Electrostatic field -->
+                                        <!-- electrostatic field -->
                                         <xsl:if test="$physical_field='electrostatic'">
                                             <xsl:if test="@permittivity">
                                                 <xsl:attribute name="electrostatic_permittivity">
@@ -519,7 +522,7 @@
                                             </xsl:if>
                                         </xsl:if>
 
-                                        <!-- Temperature field -->
+                                        <!-- temperature field -->
                                         <xsl:if test="$physical_field='heat'">
                                             <xsl:if test="@thermal_conductivity">
                                                 <xsl:attribute name="heat_conductivity">
@@ -543,7 +546,7 @@
                                             </xsl:if>
                                         </xsl:if>
 
-                                        <!-- Acoustic field -->
+                                        <!-- acoustic field -->
                                         <xsl:if test="$physical_field='acoustic'">
                                             <xsl:if test="@density">
                                                 <xsl:attribute name="acoustic_density">
@@ -557,7 +560,7 @@
                                             </xsl:if>
                                         </xsl:if>
 
-                                        <!-- Current field -->
+                                        <!-- current field -->
                                         <xsl:if test="$physical_field='current'">
                                             <xsl:if test="@conductivity">
                                                 <xsl:attribute name="current_conductivity">
@@ -566,7 +569,7 @@
                                             </xsl:if>
                                         </xsl:if>
 
-                                        <!-- RF field -->
+                                        <!-- rf field -->
                                         <xsl:if test="$physical_field='rf'">
                                             <xsl:if test="@permittivity">
                                                 <xsl:attribute name="rf_te_permittivity">
@@ -595,7 +598,7 @@
                                             </xsl:if>
                                         </xsl:if>
 
-                                        <!-- Elasticity -->
+                                        <!-- elasticity -->
                                         <xsl:if test="$physical_field='elasticity'">
                                             <xsl:if test="@poisson_ratio">
                                                 <xsl:attribute name="elasticity_poisson_ratio">
