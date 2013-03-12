@@ -278,7 +278,7 @@
                                             <xsl:attribute name="type">
                                                 <xsl:value-of select="@type"/>
                                             </xsl:attribute>
-                                            <xsl:attribute name="heat_heat_transfer_coefficient">
+                                            <xsl:attribute name="heat_convection_heat_transfer_coefficient">
                                                 <xsl:value-of select="@h"/>
                                             </xsl:attribute>
                                         </xsl:if>
@@ -286,8 +286,8 @@
                                             <xsl:attribute name="type">
                                                 <xsl:value-of select="@type"/>
                                             </xsl:attribute>
-                                            <xsl:attribute name="external_temperature">
-                                                <xsl:value-of select="@heat_external_temperature"/>
+                                            <xsl:attribute name="heat_convection_external_temperature">
+                                                <xsl:value-of select="@external_temperature"/>
                                             </xsl:attribute>
                                         </xsl:if>
 
@@ -296,9 +296,10 @@
                                             <xsl:attribute name="type">
                                                 <xsl:value-of select="@type"/>
                                             </xsl:attribute>
-                                            <xsl:attribute name="acoustic_pressure">
+                                            <xsl:attribute name="acoustic_pressure_real">
                                                 <xsl:value-of select="@pressure"/>
                                             </xsl:attribute>
+                                            <xsl:attribute name="acoustic_pressure_imag">0</xsl:attribute>
                                         </xsl:if>
                                         <xsl:if test="@type='acoustic_normal_acceleration'">
                                             <xsl:attribute name="type">
@@ -606,8 +607,10 @@
                                                 </xsl:attribute>
                                             </xsl:if>
                                             <xsl:if test="@temp">
-                                                <xsl:attribute name="elasticity_temperature">
-                                                    <xsl:value-of select="@temp"/>
+                                                <xsl:variable name="temp_abs" select="@temp" />
+                                                <xsl:variable name="temp_ref" select="@temp_ref" />
+                                                <xsl:attribute name="elasticity_temperature_difference">
+                                                    <xsl:value-of select="number($temp_abs - $temp_ref)"/>
                                                 </xsl:attribute>
                                             </xsl:if>
                                             <xsl:if test="@temp_ref">
@@ -626,12 +629,12 @@
                                                 </xsl:attribute>
                                             </xsl:if>
                                             <xsl:if test="@forcex">
-                                                <xsl:attribute name="elasticity_force_x">
+                                                <xsl:attribute name="elasticity_volume_force_x">
                                                     <xsl:value-of select="@forcex"/>
                                                 </xsl:attribute>
                                             </xsl:if>
                                             <xsl:if test="@forcey">
-                                                <xsl:attribute name="elasticity_force_y">
+                                                <xsl:attribute name="elasticity_volume_force_y">
                                                     <xsl:value-of select="@forcey"/>
                                                 </xsl:attribute>
                                             </xsl:if>
