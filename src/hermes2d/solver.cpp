@@ -629,8 +629,8 @@ void Solver<Scalar>::createInitialSpace()
         }
 
         // create copy of initial mesh, for all components only one mesh
-        MeshSharedPtr oneInitialMesh(new Hermes::Hermes2D::Mesh());
-        oneInitialMesh->copy(fieldInfo->initialMesh());
+//        MeshSharedPtr oneInitialMesh(new Hermes::Hermes2D::Mesh());
+//        oneInitialMesh->copy(fieldInfo->initialMesh());
 
         // create space
         for (int i = 0; i < fieldInfo->numberOfSolutions(); i++)
@@ -639,16 +639,16 @@ void Solver<Scalar>::createInitialSpace()
             switch (fieldInfo->spaces()[i+1].type())
             {
             case HERMES_L2_SPACE:
-                oneSpace = new L2Space<Scalar>(oneInitialMesh, fieldInfo->polynomialOrder() + fieldInfo->spaces()[i+1].orderAdjust());
+                oneSpace = new L2Space<Scalar>(fieldInfo->initialMesh(), fieldInfo->polynomialOrder() + fieldInfo->spaces()[i+1].orderAdjust());
                 break;
             case HERMES_H1_SPACE:
-                oneSpace = new H1Space<Scalar>(oneInitialMesh, m_block->bcs().at(i + m_block->offset(field)), fieldInfo->polynomialOrder() + fieldInfo->spaces()[i+1].orderAdjust());
+                oneSpace = new H1Space<Scalar>(fieldInfo->initialMesh(), m_block->bcs().at(i + m_block->offset(field)), fieldInfo->polynomialOrder() + fieldInfo->spaces()[i+1].orderAdjust());
                 break;
             case HERMES_HCURL_SPACE:
-                oneSpace = new HcurlSpace<Scalar>(oneInitialMesh, m_block->bcs().at(i + m_block->offset(field)), fieldInfo->polynomialOrder() + fieldInfo->spaces()[i+1].orderAdjust());
+                oneSpace = new HcurlSpace<Scalar>(fieldInfo->initialMesh(), m_block->bcs().at(i + m_block->offset(field)), fieldInfo->polynomialOrder() + fieldInfo->spaces()[i+1].orderAdjust());
                 break;
             case HERMES_HDIV_SPACE:
-                oneSpace = new HdivSpace<Scalar>(oneInitialMesh, m_block->bcs().at(i + m_block->offset(field)), fieldInfo->polynomialOrder() + fieldInfo->spaces()[i+1].orderAdjust());
+                oneSpace = new HdivSpace<Scalar>(fieldInfo->initialMesh(), m_block->bcs().at(i + m_block->offset(field)), fieldInfo->polynomialOrder() + fieldInfo->spaces()[i+1].orderAdjust());
                 break;
             default:
                 assert(0);
