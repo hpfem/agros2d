@@ -689,7 +689,8 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
     {
         if(adaptivityStep == 0)
         {
-            if (timeStep % m_block->adaptivityRedoneEach() == 0)
+            // when timeStep == 1 and then each adaptivityRedonenEach time steps start adaptivity from the initial mesh
+            if ((timeStep - 1) % m_block->adaptivityRedoneEach() == 0)
             {
                 assert(timeStep != 0);
                 BlockSolutionID solID(m_block, 0, 0, SolutionMode_Normal);
@@ -698,6 +699,8 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
                 setActualSpaces(msaPrevTS.spaces());
                 //setActualSpaces(deepMeshAndSpaceCopy(msaPrevTS.spaces(), false));
             }
+            // otherwise do not start over, but use space from the previous time level
+            // do not use the last adaptation, substract adaptivityBackSteps from it
             else
             {
                 if(timeStep > 1)
