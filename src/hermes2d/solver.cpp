@@ -636,7 +636,7 @@ void Solver<Scalar>::createInitialSpace()
         for (int i = 0; i < fieldInfo->numberOfSolutions(); i++)
         {
             Space<Scalar> *oneSpace = NULL;
-            switch (fieldInfo->spaces()[i+1].type())
+            switch (fieldInfo->spaces()[i].type())
             {
             case HERMES_L2_SPACE:
                 oneSpace = new L2Space<Scalar>(fieldInfo->initialMesh(), fieldInfo->polynomialOrder() + fieldInfo->spaces()[i+1].orderAdjust());
