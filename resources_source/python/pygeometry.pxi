@@ -65,18 +65,47 @@ cdef class __Geometry__:
         del self.thisptr
 
     def activate(self):
+        """Activate preprocessor mode."""
         self.thisptr.activate()
 
     # add_node(x, y)
-    def add_node(self, double x, double y):
+    def add_node(self, x, y):
+        """Add new node by coordinates.
+
+        add_node(x, y)
+
+        Keyword arguments:
+        x -- x or r coordinate of node
+        y -- y or z coordinate of node
+        """
         self.thisptr.addNode(x, y)
 
     # remove_node(index)
-    def remove_node(self, int index):
+    def remove_node(self, index):
+        """Remove node of index.
+
+        remove_node(index)(index)
+
+        Keyword arguments:
+        index -- index of removed node
+        """
         self.thisptr.removeNode(index)
 
     # add_edge(x1, y1, x2, y2, angle, refinements, boundaries)
-    def add_edge(self, double x1, double y1, double x2, double y2, double angle = 0.0, refinements = {}, boundaries = {}):
+    def add_edge(self, x1, y1, x2, y2, angle = 0.0, refinements = {}, boundaries = {}):
+        """Add new edge by coordinates.
+
+        add_edge(x1, y1, x2, y2, angle, refinements, boundaries)
+
+        Keyword arguments:
+        x1 -- x or r coordinate of start node
+        y1 -- y or z coordinate of start node
+        x2 -- x or r coordinate of end node
+        y2 -- y or z coordinate of end node
+        angle -- angle between connecting lines, which join terminal nodes of edge and center of arc (default 0.0)
+        refinements -- refinement towards edge {'field' : refinement} (default {})
+        boundaries -- boundary condition {'field' : 'boundary name'} (default {})
+        """
 
         cdef map[char*, int] refinements_map
         cdef pair[char*, int] refinement
