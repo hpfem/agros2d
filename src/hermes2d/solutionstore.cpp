@@ -170,7 +170,7 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
             // equip with boundary conditions, which were not saved to disk
             FieldInfo *fieldInfo = solutionID.group;
             Block *block = Agros2D::problem()->blockOfField(fieldInfo);
-            //block->createBoundaryConditions();
+            block->createBoundaryConditions();
             for (int i = 0; i < fieldInfo->numberOfSolutions(); i++)
             {
                 if(fieldInfo->spaces()[i].type() != HERMES_L2_SPACE)

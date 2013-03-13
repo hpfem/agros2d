@@ -47,10 +47,6 @@ Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings) :
 
         m_fields.append(field);
     }
-
-    // essential boundary conditions
-    for (int i = 0; i < numSolutions(); i++)
-        m_bcs.push_back(new Hermes::Hermes2D::EssentialBCs<double>());
 }
 
 Block::~Block()
@@ -86,6 +82,13 @@ Block::~Block()
 
 void Block::createBoundaryConditions()
 {
+    // todo: memory leak? boundary conditions are probably released in space, but really?
+    m_bcs.clear();
+
+    // essential boundary conditions
+    for (int i = 0; i < numSolutions(); i++)
+        m_bcs.push_back(new Hermes::Hermes2D::EssentialBCs<double>());
+
     m_exactSolutionFunctions.clear();
 
     foreach(Field* field, this->fields())
