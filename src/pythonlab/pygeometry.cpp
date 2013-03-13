@@ -29,6 +29,8 @@
 #include "sceneedge.h"
 #include "scenelabel.h"
 
+#include "hermes2d/problem_config.h"
+
 void PyGeometry::activate()
 {
     if (!silentMode())
@@ -37,11 +39,21 @@ void PyGeometry::activate()
 
 void PyGeometry::addNode(double x, double y)
 {
+    currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnNodes->trigger();
+
+    if (x < 0.0 && Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric)
+        throw out_of_range(QObject::tr("Radial component must be greater then or equal to zero.").toStdString());
+
     Agros2D::scene()->addNode(new SceneNode(Point(x, y)));
 }
 
 void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle, map<char*, int> refinements, map<char*, char*> boundaries)
 {
+    currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnEdges->trigger();
+
+    if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric && (x1 < 0.0 || x2 < 0.0))
+        throw out_of_range(QObject::tr("Radial component must be greater then or equal to zero.").toStdString());
+
     // nodes
     SceneNode *nodeStart = Agros2D::scene()->addNode(new SceneNode(Point(x1, y1)));
     SceneNode *nodeEnd = Agros2D::scene()->addNode(new SceneNode(Point(x2, y2)));
@@ -153,6 +165,11 @@ void PyGeometry::setMeshRefinementOnEdge(SceneEdge *edge, map<char *, int> refin
 
 void PyGeometry::addLabel(double x, double y, double area, map<char *, int> refinements, map<char *, int> orders, map<char *, char *> materials)
 {
+    currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnLabels->trigger();
+
+    if (x < 0.0 && Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric)
+        throw out_of_range(QObject::tr("Radial component must be greater then or equal to zero.").toStdString());
+
     if (area < 0.0)
         throw out_of_range(QObject::tr("Area must be positive.").toStdString());
 
