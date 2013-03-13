@@ -259,6 +259,7 @@ void PyGeometry::removeLabelPoint(double x, double y)
 
 void PyGeometry::selectNodes(vector<int> nodes)
 {
+    currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnNodes->trigger();
     Agros2D::scene()->selectNone();
 
     if (!nodes.empty())
@@ -276,11 +277,13 @@ void PyGeometry::selectNodes(vector<int> nodes)
         Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnNodes);
     }
 
-    Agros2D::scene()->invalidate();
+    currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
+
 }
 
 void PyGeometry::selectEdges(vector<int> edges)
 {
+    currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnEdges->trigger();
     Agros2D::scene()->selectNone();
 
     if (!edges.empty())
@@ -298,11 +301,12 @@ void PyGeometry::selectEdges(vector<int> edges)
         Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnEdges);
     }
 
-    Agros2D::scene()->invalidate();
+    currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
 void PyGeometry::selectLabels(vector<int> labels)
 {
+    currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnLabels->trigger();
     Agros2D::scene()->selectNone();
 
     if (!labels.empty())
@@ -320,43 +324,58 @@ void PyGeometry::selectLabels(vector<int> labels)
         Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnLabels);
     }
 
-    Agros2D::scene()->invalidate();
+    currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
 void PyGeometry::selectNodePoint(double x, double y)
 {
+    currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnNodes->trigger();
+    Agros2D::scene()->selectNone();
+
     SceneNode *node = SceneNode::findClosestNode(Point(x, y));
     if (node)
     {
         node->setSelected(true);
-        // sceneView()->doInvalidated();
+        currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
     }
+    else
+        throw logic_error(QObject::tr("There are no nodes around the point [%1, %2].").arg(x).arg(y).toStdString());
 }
 
 void PyGeometry::selectEdgePoint(double x, double y)
 {
+    currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnEdges->trigger();
+    Agros2D::scene()->selectNone();
+
     SceneEdge *edge = SceneEdge::findClosestEdge(Point(x, y));
     if (edge)
     {
         edge->setSelected(true);
-        // sceneView()->doInvalidated();
+        currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
     }
+    else
+        throw logic_error(QObject::tr("There are no edges around the point [%1, %2].").arg(x).arg(y).toStdString());
 }
 
 void PyGeometry::selectLabelPoint(double x, double y)
 {
+    currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnLabels->trigger();
+    Agros2D::scene()->selectNone();
+
     SceneLabel *label = SceneLabel::findClosestLabel(Point(x, y));
     if (label)
     {
         label->setSelected(true);
-        // sceneView()->doInvalidated();
+        currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
     }
+    else
+        throw logic_error(QObject::tr("There are no labels around the point [%1, %2].").arg(x).arg(y).toStdString());
 }
 
 void PyGeometry::selectNone()
 {
     Agros2D::scene()->selectNone();
-    Agros2D::scene()->invalidate();
+    currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
 void PyGeometry::moveSelection(double dx, double dy, bool copy)

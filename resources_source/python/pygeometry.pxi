@@ -36,9 +36,9 @@ cdef extern from "../../src/pythonlab/pygeometry.h":
         void selectEdges(vector[int]) except +
         void selectLabels(vector[int]) except +
 
-        void selectNodePoint(double, double)
-        void selectEdgePoint(double, double)
-        void selectLabelPoint(double, double)
+        void selectNodePoint(double, double) except +
+        void selectEdgePoint(double, double) except +
+        void selectLabelPoint(double, double) except +
 
         void selectNone()
 
@@ -95,7 +95,7 @@ cdef class __Geometry__:
     def add_edge(self, x1, y1, x2, y2, angle = 0.0, refinements = {}, boundaries = {}):
         """Add new edge by coordinates.
 
-        add_edge(x1, y1, x2, y2, angle, refinements, boundaries)
+        add_edge(x1, y1, x2, y2, angle = 0.0, refinements = {}, boundaries = {})
 
         Keyword arguments:
         x1 -- x or r coordinate of start node
@@ -202,40 +202,84 @@ cdef class __Geometry__:
 
     # select_nodes(nodes)
     def select_nodes(self, nodes = []):
+        """Select nodes by index.
+
+        select_nodes(nodes = [])
+
+        Keyword arguments:
+        nodes -- list of index (default is [] - select all nodes)
+        """
         cdef vector[int] nodes_vector
-        for i in nodes:
-            nodes_vector.push_back(i)
+        for node in nodes:
+            nodes_vector.push_back(node)
 
         self.thisptr.selectNodes(nodes_vector)
 
     # select_edges(edges)
     def select_edges(self, edges = []):
+        """Select edges by index.
+
+        select_edges(edges = [])
+
+        Keyword arguments:
+        edges -- list of index (default is []  - select all edges)
+        """
         cdef vector[int] edges_vector
-        for i in edges:
-            edges_vector.push_back(i)
+        for edge in edges:
+            edges_vector.push_back(edge)
 
         self.thisptr.selectEdges(edges_vector)
 
     # select_labels(labels)
     def select_labels(self, labels = []):
+        """Select labels by index.
+
+        select_labels(labels = [])
+
+        Keyword arguments:
+        labels -- list of index (default is [] - select all labels)
+        """
         cdef vector[int] labels_vector
-        for i in labels:
-            labels_vector.push_back(i)
+        for label in labels:
+            labels_vector.push_back(label)
 
         self.thisptr.selectLabels(labels_vector)
 
     # select_node_point(x, y)
-    def select_node_point(self, double x, double y):
+    def select_node_point(self, x, y):
+        """Select the closest node around point.
+
+        select_node_point(x, y)
+
+        Keyword arguments:
+        x -- x or r coordinate of point
+        y -- y or r coordinate of point
+        """
         self.thisptr.selectNodePoint(x, y)
 
     # select_edge_point(x, y)
-    def select_edge_point(self, double x, double y):
+    def select_edge_point(self, x, y):
+        """Select the closest edge around point.
+
+        select_edge_point(x, y)
+
+        Keyword arguments:
+        x -- x or r coordinate of point
+        y -- y or r coordinate of point
+        """
         self.thisptr.selectEdgePoint(x, y)
 
     # select_label_point(x, y)
-    def select_label_point(self, double x, double y):
-        self.thisptr.selectLabelPoint(x, y)
+    def select_label_point(self, x, y):
+        """Select the closest label around point.
 
+        select_label_point(x, y)
+
+        Keyword arguments:
+        x -- x or r coordinate of point
+        y -- y or r coordinate of point
+        """
+        self.thisptr.selectLabelPoint(x, y)
 
     # move_selection(dx, dy, copy)
     def move_selection(self, double dx, double dy, int copy = False):
