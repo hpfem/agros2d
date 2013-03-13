@@ -106,6 +106,9 @@ void PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double ang
     if (Agros2D::scene()->nodes->isEmpty())
         throw out_of_range(QObject::tr("Geometry does not contain nodes.").toStdString());
 
+    if (nodeStartIndex == nodeEndIndex)
+        throw logic_error(QObject::tr("Start node index is the same as index of end node.").toStdString());
+
     if (nodeStartIndex > (Agros2D::scene()->nodes->length() - 1) || nodeStartIndex < 0)
         throw out_of_range(QObject::tr("Node with index '%1' does not exist.").arg(nodeStartIndex).toStdString());
     if (nodeEndIndex > (Agros2D::scene()->nodes->length() - 1) || nodeEndIndex < 0)
