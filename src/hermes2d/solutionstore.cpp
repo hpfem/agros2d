@@ -163,9 +163,22 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
         // qDebug() << "Read from disk: " << solutionID.toString();
 
         MultiArray<double> msa;
-        try
-        {
+//        try
+//        {
             msa.loadFromFile(baseStoreFileName(solutionID), solutionID);
+
+            // equip with boundary conditions, which were not saved to disk
+            FieldInfo *fieldInfo = solutionID.group;
+            Block *block = Agros2D::problem()->blockOfField(fieldInfo);
+            //block->createBoundaryConditions();
+            for (int i = 0; i < fieldInfo->numberOfSolutions(); i++)
+            {
+                if(fieldInfo->spaces()[i].type() != HERMES_L2_SPACE)
+                {
+                    EssentialBCs<double>* essentialBcs = block->bcs().at(i + block->offset(block->field(fieldInfo)));
+                    msa.spaces().at(i)->set_essential_bcs(essentialBcs);
+                }
+            }
 
             // insert to the cache
             insertMultiSolutionToCache(solutionID, msa);
@@ -173,12 +186,13 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
             // insert to memory info
             // assert(m_memoryInfos.keys().contains(solutionID));
             // m_memoryInfos[solutionID]->addMultiArray(msa);
-        }
-        catch (...)
-        {
-            Agros2D::problem()->clearSolution();
-            Agros2D::log()->printWarning(QObject::tr("Solver"), QObject::tr("Catched unknown exception while loading solution"));
-        }
+//        }
+//        catch (...)
+//        {
+//            Agros2D::problem()->clearSolution();
+//            Agros2D::log()->printWarning(QObject::tr("Solver"), QObject::tr("Catched unknown exception while loading solution"));
+//            qDebug() << "Solution Store: Catched unknown exception while loading solution";
+//        }
 
         return msa;
     }
@@ -197,7 +211,7 @@ bool SolutionStore::contains(FieldSolutionID solutionID) const
     return m_multiSolutions.contains(solutionID);
 }
 
-MultiArray<double> SolutionStore::multiArray(BlockSolutionID solutionID)
+MultiArray<double> SolutionStore:: multiArray(BlockSolutionID solutionID)
 {
     MultiArray<double> ma;
     foreach (Field *field, solutionID.group->fields())

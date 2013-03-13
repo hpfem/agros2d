@@ -422,7 +422,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     // update timedep values
     foreach (Field* field, m_block->fields())
         Module::updateTimeFunctions(Agros2D::problem()->actualTime());
-    updateExactSolutionFunctions();
+    m_block->updateExactSolutionFunctions();
 
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(actualSpaces(), Agros2D::problem()->actualTime());
 
@@ -567,66 +567,20 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivity
 }
 
 template <typename Scalar>
-void Solver<Scalar>::updateExactSolutionFunctions()
-{
-    foreach(ExactSolutionScalarAgros<double>* function, m_exactSolutionFunctions.keys())
-    {
-        SceneBoundary* boundary = m_exactSolutionFunctions[function];
-        function->setMarkerSource(boundary);
-    }
-}
-
-template <typename Scalar>
 void Solver<Scalar>::createInitialSpace()
 {
     // read mesh from file
     if (!Agros2D::problem()->isMeshed())
         throw AgrosSolverException(QObject::tr("Problem is not meshed"));
 
-    m_exactSolutionFunctions.clear();
     clearActualSpaces();
+
+    m_block->createBoundaryConditions();
 
     foreach(Field* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
 
-        // create copy of initial mesh
-        // MeshSharedPtr initialMesh = new Hermes::Hermes2D::Mesh();
-        // initialMesh->copy(fieldInfo->initialMesh());
-
-        ProblemID problemId;
-
-        problemId.sourceFieldId = fieldInfo->fieldId();
-        problemId.analysisTypeSource = fieldInfo->analysisType();
-        problemId.coordinateType = Agros2D::problem()->config()->coordinateType();
-        problemId.linearityType = fieldInfo->linearityType();
-
-        int index = 0;
-        foreach(SceneEdge* edge, Agros2D::scene()->edges->items())
-        {
-            SceneBoundary *boundary = edge->marker(fieldInfo);
-
-            if (boundary && (!boundary->isNone()))
-            {
-                Module::BoundaryType boundaryType = fieldInfo->boundaryType(boundary->type());
-
-                foreach (FormInfo form, boundaryType.essential())
-                {
-                   // exact solution - Dirichlet BC
-                    ExactSolutionScalarAgros<double> *function = fieldInfo->plugin()->exactSolution(problemId, &form, fieldInfo->initialMesh());
-                    function->setMarkerSource(boundary);
-
-                    // save function - boundary pairs, so thay can be easily updated in each time step;
-                    m_exactSolutionFunctions[function] = boundary;
-
-                    EssentialBoundaryCondition<Scalar> *custom_form = new DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
-
-                    m_block->bcs().at(form.i - 1 + m_block->offset(field))->add_boundary_condition(custom_form);
-                    //  cout << "adding BC i: " << form->i - 1 + m_block->offset(field) << " ( form i " << form->i << ", " << m_block->offset(field) << "), expression: " << form->expression << endl;
-                }
-            }
-            index++;
-        }
 
         // create copy of initial mesh, for all components only one mesh
 //        MeshSharedPtr oneInitialMesh(new Hermes::Hermes2D::Mesh());
@@ -728,6 +682,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
     // update timedep values
     foreach (Field* field, m_block->fields())
         Module::updateTimeFunctions(Agros2D::problem()->actualTime());
+    m_block->updateExactSolutionFunctions();
 
     // todo: delete? delam to pro referencni... (zkusit)
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(actualSpaces(), Agros2D::problem()->actualTime());

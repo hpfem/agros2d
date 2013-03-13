@@ -139,9 +139,6 @@ public:
     void solveReferenceAndProject(int timeStep, int adaptivityStep);
     bool createAdaptedSpace(int timeStep, int adaptivityStep, bool forceAdaptation = false);
 
-    // for time dependent problems
-    void updateExactSolutionFunctions();
-
     // to be used in solveAdaptivityStep
     void resumeAdaptivityProcess(int adaptivityStep);
 
@@ -161,8 +158,6 @@ private:
 
     // to be used in advanced time step adaptivity
     double m_averageErrorToLenghtRatio;
-
-    QMap<ExactSolutionScalarAgros<double>*, SceneBoundary *> m_exactSolutionFunctions;
 
     void initSelectors(Hermes::vector<Hermes::Hermes2D::ProjNormType>& projNormType,
                        Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *>& selectors);

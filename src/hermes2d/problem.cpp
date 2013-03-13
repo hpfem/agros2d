@@ -317,6 +317,7 @@ bool Problem::mesh()
         // todo: dangerous
         // catching all other exceptions. This is not safe at all
         Agros2D::log()->printWarning(tr("Mesh"), tr("An unknown exception occured and has been ignored"));
+        qDebug() << "Mesh: An unknown exception occured and has been ignored";
         m_isSolving = false;
         return false;
     }
@@ -586,6 +587,7 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
         // catching all other exceptions. This is not save at all
         m_isSolving = false;
         Agros2D::log()->printWarning(tr("Solver"), tr("An unknown exception occured in solver and has been ignored"));
+        qDebug() << "Solver: An unknown exception occured and has been ignored";
         return;
     }
 }
