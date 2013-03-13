@@ -687,13 +687,13 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
 
     if (Agros2D::problem()->isTransient())
     {
-        if(adaptivityStep == 0)
+        if((adaptivityStep == 0) && (timeStep > 1))
         {
             // when timeStep == 1 and then each adaptivityRedonenEach time steps start adaptivity from the initial mesh
             if ((timeStep - 1) % m_block->adaptivityRedoneEach() == 0)
             {
                 assert(timeStep != 0);
-                BlockSolutionID solID(m_block, 0, 0, SolutionMode_Normal);
+                BlockSolutionID solID(m_block, 1, 0, SolutionMode_Normal);
                 MultiArray<Scalar> msaPrevTS = Agros2D::solutionStore()->multiArray(solID);
 
                 setActualSpaces(msaPrevTS.spaces());
@@ -703,15 +703,12 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
             // do not use the last adaptation, substract adaptivityBackSteps from it
             else
             {
-                if(timeStep > 1)
-                {
-                    int lastTimeStepNumAdaptations = Agros2D::solutionStore()->lastAdaptiveStep(m_block, SolutionMode_Normal, timeStep - 1);
-                    BlockSolutionID solID(m_block, timeStep-1, max(lastTimeStepNumAdaptations - m_block->adaptivityBackSteps(), 0), SolutionMode_Normal);
-                    MultiArray<Scalar> msaPrevTS = Agros2D::solutionStore()->multiArray(solID);
+                int lastTimeStepNumAdaptations = Agros2D::solutionStore()->lastAdaptiveStep(m_block, SolutionMode_Normal, timeStep - 1);
+                BlockSolutionID solID(m_block, timeStep-1, max(lastTimeStepNumAdaptations - m_block->adaptivityBackSteps(), 0), SolutionMode_Normal);
+                MultiArray<Scalar> msaPrevTS = Agros2D::solutionStore()->multiArray(solID);
 
-                    setActualSpaces(msaPrevTS.spaces());
-                    //setActualSpaces(deepMeshAndSpaceCopy(msaPrevTS.spaces(), false));
-                }
+                setActualSpaces(msaPrevTS.spaces());
+                //setActualSpaces(deepMeshAndSpaceCopy(msaPrevTS.spaces(), false));
             }
         }
 
