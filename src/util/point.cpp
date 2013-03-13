@@ -151,13 +151,12 @@ QList<Point> intersection(const Point &p1s, const Point &p1e, const Point &cente
                 double a = ((radius1*radius1) - (radius2*radius2) + (distance*distance)) / (2.0 * distance);
 
                 // Determine the coordinates of point 2.
-                Point middle;
-                middle.x = center1.x + (dx * a/distance);
-                middle.y = center1.y + (dy * a/distance);
+                Point middle(center1.x + (dx * a/distance),
+                             center1.y + (dy * a/distance));
 
                 // Determine the distance from point 2 to either of the
                 // intersection points.
-                double h = std::sqrt((radius1 * radius1) - (a*a));
+                double h = sqrt((radius1 * radius1) - (a*a));
 
                 // Now determine the offsets of the intersection points from
                 // point 2.
@@ -196,10 +195,10 @@ QList<Point> intersection(const Point &p1s, const Point &p1e, const Point &cente
         double b = 2 * (dx * (p1s.x - center2.x) + dy * (p1s.y - center2.y));
         double c = p1s.x * p1s.x + p1s.y * p1s.y + center2.x * center2.x + center2.y * center2.y - 2 * (center2.x * p1s.x + center2.y * p1s.y)-(radius2 * radius2);
 
-        double bb4ac = b * b - 4 * a * c;
+        double bb4ac = sqrt(b * b - 4 * a * c);
 
-        double mu1 = (-b + sqrt(bb4ac)) / (2*a);
-        double mu2 = (-b - sqrt(bb4ac)) / (2*a);
+        double mu1 = (-b + bb4ac) / (2*a);
+        double mu2 = (-b - bb4ac) / (2*a);
 
         double i1x = p1s.x + mu1*(dx);
         double i1y = p1s.y + mu1*(dy);

@@ -43,13 +43,14 @@ public:
     QList<SceneNode *> lyingNodes() const;
 
     bool isLyingNode() const { return lyingNodes().length() > 0; }
+    bool isLyingOnPoint(const Point &point) const;
     bool isOutsideArea() const;
     bool isError() const;
     bool isCrossed() const; // very slow, use carefully
 
     inline Point center() const { return m_centerCache; }
     inline double radius() const { return m_radiusCache; }
-    double distance(const Point &point) const;
+    double distance(const Point &point) const;    
     double length() const;
     bool isStraight() const { return (fabs(m_angle) < EPS_ZERO); }
 

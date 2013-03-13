@@ -644,17 +644,16 @@ void LoopsInfo::processLoops()
         {
             int numLabelsJ = labelsInsideLoop[loopsWithLabel[j]].size();
             int numLabelsPlus1 = labelsInsideLoop[loopsWithLabel[j+1]].size();
-            if(numLabelsJ == numLabelsPlus1)
-            {
+            if (numLabelsJ == numLabelsPlus1)
                 throw AgrosGeometryException(tr("There is no label in some subdomain"));
-            }
         }
 
         for (int i = 0; i < loopsWithLabel.size() - 1; i++)
         {
             int smallerLoop = loopsWithLabel[i];
             int biggerLoop = loopsWithLabel[i+1];
-            assert(superDomains[smallerLoop] == biggerLoop || superDomains[smallerLoop] == -1);
+            if (!(superDomains[smallerLoop] == biggerLoop || superDomains[smallerLoop] == -1));
+                throw AgrosGeometryException(tr("Unknown error"));
             superDomains[smallerLoop] = biggerLoop;
             if(!subDomains[biggerLoop].contains(smallerLoop))
                 subDomains[biggerLoop].append(smallerLoop);

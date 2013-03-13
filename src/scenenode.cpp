@@ -411,7 +411,7 @@ QList<SceneEdge *> SceneNode::lyingEdges() const
         if ((edge->nodeStart() == this) || (edge->nodeEnd() == this))
             continue;
 
-        if ((edge->distance(m_point) < EPS_ZERO))
+        if (edge->isLyingOnPoint(m_point))
             edges.append(edge);
     }
 

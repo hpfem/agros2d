@@ -83,7 +83,7 @@ void SceneViewPreprocessorChart::setChartLine(ChartLine chartLine)
 {
     m_chartLine = chartLine;
 
-    refresh();
+    updateGL();
 }
 
 void SceneViewPreprocessorChart::paintGL()

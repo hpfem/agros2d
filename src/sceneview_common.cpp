@@ -193,7 +193,7 @@ void SceneViewCommon::printAt(int penX, int penY, const QString &text, stbtt_bak
     glBegin(GL_TRIANGLES);
     for (int i = 0; i < text.length(); ++i)
     {
-        int c = text.at(i).toAscii();
+        ushort c = text.at(i).unicode();
 
         if (c >= 32 && c < 128)
         {

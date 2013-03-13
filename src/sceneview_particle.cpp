@@ -1153,5 +1153,5 @@ void SceneViewParticleTracing::processParticleTracing()
         }
     }
 
-    refresh();
+    updateGL();
 }

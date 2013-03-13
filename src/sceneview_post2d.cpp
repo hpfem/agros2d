@@ -137,7 +137,7 @@ void SceneViewPost2D::keyPressEvent(QKeyEvent *event)
                 emit mousePressed();
             }
 
-            refresh();
+            updateGL();
         }
     }
         break;

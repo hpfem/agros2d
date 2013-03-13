@@ -461,25 +461,25 @@ void SceneViewCommon2D::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Up:
     {
         m_offset2d.y += step;
-        refresh();
+        updateGL();
     }
         break;
     case Qt::Key_Down:
     {
         m_offset2d.y -= step;
-        refresh();
+        updateGL();
     }
         break;
     case Qt::Key_Left:
     {
         m_offset2d.x -= step;
-        refresh();
+        updateGL();
     }
         break;
     case Qt::Key_Right:
     {
         m_offset2d.x += step;
-        refresh();
+        updateGL();
     }
         break;
     case Qt::Key_Plus:
@@ -497,7 +497,7 @@ void SceneViewCommon2D::keyPressEvent(QKeyEvent *event)
         m_nodeLast = NULL;
         Agros2D::scene()->selectNone();
         emit mousePressed();
-        refresh();
+        updateGL();
     }
         break;
     case Qt::Key_N:

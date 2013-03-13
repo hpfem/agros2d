@@ -109,7 +109,7 @@ SceneLabel *SceneLabel::findClosestLabel(const Point &point)
         foreach (SceneLabel *label, Agros2D::scene()->labels->items())
         {
             double labelDistance = label->distance(point);
-            if (label->distance(point) < distance)
+            if (labelDistance < distance)
             {
                 distance = labelDistance;
                 labelClosest = label;

@@ -169,7 +169,7 @@ void SceneViewPreprocessor::doSceneEdgeSwapDirection()
                 if (Agros2D::scene()->edges->at(i)->isSelected())
                 {
                     Agros2D::scene()->edges->at(i)->swapDirection();
-                    refresh();
+                    updateGL();
                 }
 }
 
@@ -234,7 +234,7 @@ void SceneViewPreprocessor::doSceneGeometryModeSet(QAction *action)
     Agros2D::scene()->selectNone();
     m_nodeLast = NULL;
 
-    refresh();
+    updateGL();
 
     emit sceneGeometryModeChanged(m_sceneMode);
 }
@@ -753,7 +753,7 @@ void SceneViewPreprocessor::keyPressEvent(QKeyEvent *event)
         {
             Agros2D::scene()->selectAll(m_sceneMode);
 
-            refresh();
+            updateGL();
         }
     }
         break;
@@ -1036,11 +1036,12 @@ void SceneViewPreprocessor::paintGeometry()
         glVertex2d(node->point().x, node->point().y);
         glEnd();
 
-        if ((node->isSelected()) || (node->isHighlighted()) || (node->isError()) )
+        bool isError = false;
+        if ((node->isSelected()) || (node->isHighlighted()) || (isError = node->isError()) )
         {
             glPointSize(Agros2D::problem()->configView()->nodeSize - 2.0);
 
-            if (node->isError())
+            if (isError)
                 glColor3d(Agros2D::problem()->configView()->colorCrossed.redF(),
                           Agros2D::problem()->configView()->colorCrossed.greenF(),
                           Agros2D::problem()->configView()->colorCrossed.blueF());
@@ -1049,6 +1050,7 @@ void SceneViewPreprocessor::paintGeometry()
                 glColor3d(Agros2D::problem()->configView()->colorHighlighted.redF(),
                           Agros2D::problem()->configView()->colorHighlighted.greenF(),
                           Agros2D::problem()->configView()->colorHighlighted.blueF());
+
             if (node->isSelected())
                 glColor3d(Agros2D::problem()->configView()->colorSelected.redF(),
                           Agros2D::problem()->configView()->colorSelected.greenF(),

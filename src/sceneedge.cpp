@@ -56,6 +56,36 @@ void SceneEdge::swapDirection()
     computeCenterAndRadius();
 }
 
+bool SceneEdge::isLyingOnPoint(const Point &point) const
+{
+    if (isStraight())
+    {
+        double dx = m_nodeEnd->point().x - m_nodeStart->point().x;
+        double dy = m_nodeEnd->point().y - m_nodeStart->point().y;
+
+        double t = ((point.x - m_nodeStart->point().x)*dx + (point.y - m_nodeStart->point().y)*dy) / (dx*dx + dy*dy);
+
+        if (t > 1.0) t = 1.0;
+        if (t < 0.0) t = 0.0;
+
+        Point p(m_nodeStart->point().x + t*dx,
+                m_nodeStart->point().y + t*dy);
+
+        return ((point - p).magnitudeSquared() < EPS_ZERO);
+    }
+    else
+    {
+        Point c = center();
+        double dist = (point - c).magnitudeSquared();
+
+        // point and radius are similar
+        if (dist < EPS_ZERO)
+            return (distance(point) < EPS_ZERO);
+        else
+            return false;
+    }
+}
+
 double SceneEdge::distance(const Point &point) const
 {
     if (isStraight())
@@ -68,10 +98,10 @@ double SceneEdge::distance(const Point &point) const
         if (t > 1.0) t = 1.0;
         if (t < 0.0) t = 0.0;
 
-        double x = m_nodeStart->point().x + t*dx;
-        double y = m_nodeStart->point().y + t*dy;
+        Point p(m_nodeStart->point().x + t*dx,
+                m_nodeStart->point().y + t*dy);
 
-        return sqrt((point.x-x)*(point.x-x) + (point.y-y)*(point.y-y));
+        return (point - p).magnitude();
     }
     else
     {
@@ -138,7 +168,7 @@ QList<SceneNode *> SceneEdge::lyingNodes() const
         if ((this->nodeStart() == node) || (this->nodeEnd() == node))
             continue;
 
-        if (this->distance(node->point()) < EPS_ZERO)
+        if (isLyingOnPoint(node->point()))
             nodes.append(node);
     }
 
