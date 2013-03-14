@@ -82,9 +82,9 @@ cdef class __Geometry__:
 
     # remove_node(index)
     def remove_node(self, index):
-        """Remove node of index.
+        """Remove node by index.
 
-        remove_node(index)(index)
+        remove_node(index)
 
         Keyword arguments:
         index -- index of removed node
@@ -124,8 +124,18 @@ cdef class __Geometry__:
         self.thisptr.addEdge(x1, y1, x2, y2, angle, refinements_map, boundaries_map)
 
     # add_edge_by_nodes(start_node_index, end_node_index, angle, refinements, boundaries)
-    def add_edge_by_nodes(self, int start_node_index, int end_node_index, double angle = 0.0, refinements = {}, boundaries = {}):
+    def add_edge_by_nodes(self, start_node_index, end_node_index, angle = 0.0, refinements = {}, boundaries = {}):
+        """Add new edge by nodes.
 
+        add_edge(start_node_index, end_node_index, angle = 0.0, refinements = {}, boundaries = {})
+
+        Keyword arguments:
+        start_node_index -- index of start node
+        end_node_index -- index of end node
+        angle -- angle between connecting lines, which join terminal nodes of edge and center of arc (default 0.0)
+        refinements -- refinement towards edge {'field' : refinement} (default {})
+        boundaries -- boundary condition {'field' : 'boundary name'} (default {})
+        """
         cdef map[char*, int] refinements_map
         cdef pair[char*, int] refinement
         for key in refinements:
@@ -143,12 +153,30 @@ cdef class __Geometry__:
         self.thisptr.addEdgeByNodes(start_node_index, end_node_index, angle, refinements_map, boundaries_map)
 
     # remove_edge(index)
-    def remove_edge(self, int index):
+    def remove_edge(self, index):
+        """Remove edge by index.
+
+        remove_node(index)
+
+        Keyword arguments:
+        index -- index of removed node
+        """
         self.thisptr.removeEdge(index)
 
     # add_label(x, y, area, refinements, orders, materials)
-    def add_label(self, double x, double y, double area = 0.0, refinements = {}, orders = {}, materials = {}):
+    def add_label(self, x, y, area = 0.0, refinements = {}, orders = {}, materials = {}):
+        """Add new label by coordinates.
 
+        add_label(x, y, area = 0.0, refinements = {}, orders = {}, materials = {})
+
+        Keyword arguments:
+        x -- x or r coordinate of label
+        y -- y or z coordinate of label
+        area -- cross section of circle which influence maximum cross section of elements (default 0.0)
+        refinements -- refinement of area {'field' : refinement} (default {})
+        orders -- polynomial order of area elements {'field' : refinement} (default {})
+        materials -- materials {'field' : 'material name'} (default {})
+        """
         cdef map[char*, int] refinements_map
         cdef pair[char*, int] refinement
         for key in refinements:
