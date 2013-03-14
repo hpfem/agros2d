@@ -27,6 +27,9 @@
 #include "logview.h"
 #include "solver.h"
 #include "module.h"
+#include "problem_config.h"
+#include "plugin_interface.h"
+
 
 Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings) :
     m_couplings(couplings), m_wf(NULL)
@@ -44,10 +47,6 @@ Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings) :
 
         m_fields.append(field);
     }
-
-    // essential boundary conditions
-    for (int i = 0; i < numSolutions(); i++)
-        m_bcs.push_back(new Hermes::Hermes2D::EssentialBCs<double>());
 }
 
 Block::~Block()
@@ -79,6 +78,66 @@ Block::~Block()
     if (m_wf)
         delete m_wf;
     m_wf = NULL;
+}
+
+void Block::createBoundaryConditions()
+{
+    // todo: memory leak? boundary conditions are probably released in space, but really?
+    m_bcs.clear();
+
+    // essential boundary conditions
+    for (int i = 0; i < numSolutions(); i++)
+        m_bcs.push_back(new Hermes::Hermes2D::EssentialBCs<double>());
+
+    m_exactSolutionFunctions.clear();
+
+    foreach(Field* field, this->fields())
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+
+        ProblemID problemId;
+
+        problemId.sourceFieldId = fieldInfo->fieldId();
+        problemId.analysisTypeSource = fieldInfo->analysisType();
+        problemId.coordinateType = Agros2D::problem()->config()->coordinateType();
+        problemId.linearityType = fieldInfo->linearityType();
+
+        int index = 0;
+        foreach(SceneEdge* edge, Agros2D::scene()->edges->items())
+        {
+            SceneBoundary *boundary = edge->marker(fieldInfo);
+
+            if (boundary && (!boundary->isNone()))
+            {
+                Module::BoundaryType boundaryType = fieldInfo->boundaryType(boundary->type());
+
+                foreach (FormInfo form, boundaryType.essential())
+                {
+                    // exact solution - Dirichlet BC
+                    ExactSolutionScalarAgros<double> *function = fieldInfo->plugin()->exactSolution(problemId, &form, fieldInfo->initialMesh());
+                    function->setMarkerSource(boundary);
+
+                    // save function - boundary pairs, so thay can be easily updated in each time step;
+                    m_exactSolutionFunctions[function] = boundary;
+
+                    Hermes::Hermes2D::EssentialBoundaryCondition<double> *custom_form = new Hermes::Hermes2D::DefaultEssentialBCNonConst<double>(QString::number(index).toStdString(), function);
+
+                    this->bcs().at(form.i - 1 + this->offset(field))->add_boundary_condition(custom_form);
+                    //  cout << "adding BC i: " << form->i - 1 + this->offset(field) << " ( form i " << form->i << ", " << this->offset(field) << "), expression: " << form->expression << endl;
+                }
+            }
+            index++;
+        }
+    }
+}
+
+void Block::updateExactSolutionFunctions()
+{
+    foreach(ExactSolutionScalarAgros<double>* function, m_exactSolutionFunctions.keys())
+    {
+        SceneBoundary* boundary = m_exactSolutionFunctions[function];
+        function->setMarkerSource(boundary);
+    }
 }
 
 void Block::setWeakForm(WeakFormAgros<double> *wf)

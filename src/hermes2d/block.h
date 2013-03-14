@@ -27,6 +27,10 @@ class FieldInfo;
 class CouplingInfo;
 class Field;
 class Problem;
+class SceneBoundary;
+
+template <typename Scalar>
+class ExactSolutionScalarAgros;
 
 template <typename Scalar>
 class Solver;
@@ -43,6 +47,7 @@ public:
     ~Block();
 
     Solver<double> *prepareSolver();
+    void createBoundaryConditions();
 
     inline WeakFormAgros<double> *weakForm() { return m_wf;}
     void setWeakForm(WeakFormAgros<double> *wf);
@@ -97,9 +102,13 @@ public:
 
     Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormTypeVector() const;
 
+    void updateExactSolutionFunctions();
+
 private:
     WeakFormAgros<double> *m_wf;
     Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> *> m_bcs;
+
+    QMap<ExactSolutionScalarAgros<double>*, SceneBoundary *> m_exactSolutionFunctions;
 
     QList<Field*> m_fields;
     QList<CouplingInfo*> m_couplings;
