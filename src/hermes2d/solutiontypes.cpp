@@ -138,11 +138,21 @@ void MultiArray<Scalar>::loadFromFile(const QString &baseName, FieldSolutionID s
     }
     assert(mesh);
 
+    FieldInfo *fieldInfo = solutionID.group;
+    Block *block = Agros2D::problem()->blockOfField(fieldInfo);
+    //block->createBoundaryConditions();
+
     for (int i = 0; i < solutionID.group->numberOfSolutions(); i++)
     {
         try
         {
-            SpaceSharedPtr<Scalar> space = Space<Scalar>::load(QString("%1_%2.spc").arg(baseName).arg(i).toLatin1().data(), mesh, false);
+            EssentialBCs<double>* essentialBcs = NULL;
+            if(fieldInfo->spaces()[i].type() != HERMES_L2_SPACE)
+            {
+                essentialBcs = block->bcs().at(i + block->offset(block->field(fieldInfo)));
+            }
+
+            SpaceSharedPtr<Scalar> space = Space<Scalar>::load(QString("%1_%2.spc").arg(baseName).arg(i).toLatin1().data(), mesh, false, essentialBcs);
 
             Solution<Scalar> *sln = new Solution<Scalar>();
             sln->set_validation(false);

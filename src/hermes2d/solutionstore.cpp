@@ -167,19 +167,6 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
 //        {
             msa.loadFromFile(baseStoreFileName(solutionID), solutionID);
 
-            // equip with boundary conditions, which were not saved to disk
-            FieldInfo *fieldInfo = solutionID.group;
-            Block *block = Agros2D::problem()->blockOfField(fieldInfo);
-            block->createBoundaryConditions();
-            for (int i = 0; i < fieldInfo->numberOfSolutions(); i++)
-            {
-                if(fieldInfo->spaces()[i].type() != HERMES_L2_SPACE)
-                {
-                    EssentialBCs<double>* essentialBcs = block->bcs().at(i + block->offset(block->field(fieldInfo)));
-                    msa.spaces().at(i)->set_essential_bcs(essentialBcs);
-                }
-            }
-
             // insert to the cache
             insertMultiSolutionToCache(solutionID, msa);
 

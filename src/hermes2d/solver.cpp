@@ -407,8 +407,6 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     if((m_block->isTransient() && m_block->linearityType() != LinearityType_Linear) && (timeStep > 0))
         previousTSMultiSolutionArray = Agros2D::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));
 
-    // cout << "Solving with " << Hermes::Hermes2D::Space<Scalar>::get_num_dofs(castConst(desmartize(multiSolutionArray.spaces()))) << " dofs" << endl;
-
     // check for DOFs
     int ndof = Hermes::Hermes2D::Space<Scalar>::get_num_dofs(actualSpaces());
     if (ndof == 0)
@@ -758,6 +756,8 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep, bool f
     Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
     initSelectors(projNormType, selector);
 
+    assert(msa.spaces() == actualSpaces());
+
     // this should be the only place, where we use deep mesh and space copy
     // not counting creating of reference space
     // we have to use it here, since we are going to change the space through adaptivity
@@ -790,6 +790,11 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep, bool f
 
     if(adapt)
     {
+        Agros2D::log()->printMessage(m_solverID, QObject::tr("Adaptivity step (error = %1, DOFs = %2/%3)").
+                                     arg(error).
+                                     arg(Space<Scalar>::get_num_dofs(msa.spaces())).
+                                     arg(Space<Scalar>::get_num_dofs(msaRef.spaces())));
+
         bool noRefinementPerformed;
         try
         {
@@ -802,10 +807,6 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep, bool f
             throw;
         }
 
-        Agros2D::log()->printMessage(m_solverID, QObject::tr("Adaptivity step (error = %1, DOFs = %2/%3)").
-                                     arg(error).
-                                     arg(Space<Scalar>::get_num_dofs(msa.spaces())).
-                                     arg(Space<Scalar>::get_num_dofs(msaRef.spaces())));
         adapt = adapt && (!noRefinementPerformed);
     }
 
