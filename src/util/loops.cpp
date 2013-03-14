@@ -652,8 +652,9 @@ void LoopsInfo::processLoops()
         {
             int smallerLoop = loopsWithLabel[i];
             int biggerLoop = loopsWithLabel[i+1];
-            if (!(superDomains[smallerLoop] == biggerLoop || superDomains[smallerLoop] == -1));
-                throw AgrosGeometryException(tr("Unknown error"));
+            assert(superDomains[smallerLoop] == biggerLoop || superDomains[smallerLoop] == -1);
+            // if (!(superDomains[smallerLoop] == biggerLoop || superDomains[smallerLoop] == -1));
+            //    throw AgrosGeometryException(tr("Unknown error"));
             superDomains[smallerLoop] = biggerLoop;
             if(!subDomains[biggerLoop].contains(smallerLoop))
                 subDomains[biggerLoop].append(smallerLoop);
