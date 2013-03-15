@@ -63,7 +63,7 @@ void PyViewConfig::setActiveTimeStep(int timeStep)
     FieldInfo *fieldInfo = currentPythonEngineAgros()->postHermes()->activeViewField();
     if (!Agros2D::solutionStore()->timeLevels(fieldInfo).contains(Agros2D::problem()->timeStepToTotalTime(timeStep)))
         throw out_of_range(QObject::tr("Field '%1' does not have solution for time step %2 (%3 s).").arg(fieldInfo->fieldId()).
-                               arg(timeStep).arg(Agros2D::problem()->timeStepToTotalTime(timeStep)).toStdString());
+                           arg(timeStep).arg(Agros2D::problem()->timeStepToTotalTime(timeStep)).toStdString());
 
     currentPythonEngineAgros()->postHermes()->setActiveTimeStep(timeStep);
     if (!silentMode())
@@ -477,12 +477,15 @@ void PyViewPost3D::setPost3DMode(char* mode)
 
 void PyView::saveImageToFile(const char *file, int width, int height)
 {
-    if (currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->isChecked())
-        currentPythonEngineAgros()->sceneViewPreprocessor()->saveImageToFile(file, width, height);
-    else if (currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->isChecked())
-        currentPythonEngineAgros()->sceneViewMesh()->saveImageToFile(file, width, height);
-    else if (currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->isChecked())
-        currentPythonEngineAgros()->sceneViewPost2D()->saveImageToFile(file, width, height);
-    else if (currentPythonEngineAgros()->sceneViewPost3D()->actSceneModePost3D->isChecked())
-        currentPythonEngineAgros()->sceneViewPost3D()->saveImageToFile(file, width, height);
+    if (!silentMode())
+    {
+        if (currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->isChecked())
+            currentPythonEngineAgros()->sceneViewPreprocessor()->saveImageToFile(file, width, height);
+        else if (currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->isChecked())
+            currentPythonEngineAgros()->sceneViewMesh()->saveImageToFile(file, width, height);
+        else if (currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->isChecked())
+            currentPythonEngineAgros()->sceneViewPost2D()->saveImageToFile(file, width, height);
+        else if (currentPythonEngineAgros()->sceneViewPost3D()->actSceneModePost3D->isChecked())
+            currentPythonEngineAgros()->sceneViewPost3D()->saveImageToFile(file, width, height);
+    }
 }
