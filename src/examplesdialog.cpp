@@ -231,7 +231,7 @@ void ExamplesDialog::problemInfo(const QString &fileName)
         // problem info
         QDomNode eleProblemInfo = eleDoc.elementsByTagName("problem").at(0);
 
-        problemInfo.SetValue("AGROS2D", QDir(datadir() + TEMPLATEROOT).absolutePath().toStdString() + "/panels/agros2d.png");
+        problemInfo.SetValue("AGROS2D", QDir(datadir() + TEMPLATEROOT).absolutePath().toStdString() + "/panels/agros2d_logo.png");
 
         problemInfo.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
         problemInfo.SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());

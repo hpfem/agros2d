@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<!-- <img style="float: right; margin-right: 10px; margin-top: 12px;" src="{{AGROS2D}}" /> -->
+<img style="float: right; margin-right: 10px; margin-top: 12px;" src="{{AGROS2D}}" /> 
 <h1>{{NAME}}</h1>
 <div>
 <table class="heading">
