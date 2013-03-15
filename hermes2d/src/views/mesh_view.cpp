@@ -56,7 +56,7 @@ namespace Hermes
 
       void MeshView::show(MeshSharedPtr mesh)
       {
-        ZeroSolution<double> sln(mesh);
+        MeshFunctionSharedPtr<double> sln(new ZeroSolution<double>(mesh));
         if(mesh == NULL) throw Hermes::Exceptions::Exception("mesh == NULL in MeshView::show().");
         if(mesh->get_max_element_id() == 0) throw Hermes::Exceptions::Exception("Attempt to visualize empty mesh in MeshView::show().");
 
@@ -65,7 +65,7 @@ namespace Hermes
         if(lin == NULL)
           lin = new Linearizer();
 
-        lin->process_solution(&sln);
+        lin->process_solution(sln);
         lin->lock_data();
         lin->calc_vertices_aabb(&vertices_min_x, &vertices_max_x, &vertices_min_y, &vertices_max_y);
         lin->unlock_data();
@@ -147,7 +147,7 @@ namespace Hermes
         int* edge_markers = lin->get_edge_markers();
         for (i = 0; i < lin->get_num_edges(); i++)
         {
-          int mrk = b_markers ? edges[i][2] : 0;
+          int mrk = b_markers ? edge_markers[i] : 0;
 
           if(!edge_markers[i] &&
             ((tvert[edges[i][0]][1] == tvert[edges[i][1]][1] &&

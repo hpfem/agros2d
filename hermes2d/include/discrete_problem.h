@@ -236,10 +236,6 @@ namespace Hermes
       /// Fake weight used in the calculation of integration order.
       static double fake_wt;
 
-      /// If the problem has only constant test functions, there is no need for order calculation,
-      /// which saves time.
-      bool is_fvm;
-
       /// Internal.
       bool is_linear;
 
@@ -301,18 +297,18 @@ namespace Hermes
       bool do_not_use_cache;
 
       /// Exception caught in a parallel region.
-      Hermes::Exceptions::Exception* caughtException;
+      std::exception* caughtException;
     
       
       ///* DG *///
 
       /// Assemble DG forms.
-      void assemble_one_DG_state(PrecalcShapeset** current_pss, PrecalcShapeset** current_spss, RefMap** current_refmaps, AsmList<Scalar>** current_als,
+      void assemble_one_DG_state(PrecalcShapeset** current_pss, PrecalcShapeset** current_spss, RefMap** current_refmaps,  Solution<Scalar>** current_u_ext, AsmList<Scalar>** current_als,
         Traverse::State* current_state, Hermes::vector<MatrixFormDG<Scalar>*> current_mfDG, Hermes::vector<VectorFormDG<Scalar>*> current_vfDG, Transformable** fn, WeakForm<Scalar>* current_wf);
 
       /// Assemble one DG neighbor.
       void assemble_DG_one_neighbor(bool edge_processed, unsigned int neighbor_i,
-        PrecalcShapeset** current_pss, PrecalcShapeset** current_spss, RefMap** current_refmaps, AsmList<Scalar>** current_als,
+        PrecalcShapeset** current_pss, PrecalcShapeset** current_spss, RefMap** current_refmaps,  Solution<Scalar>** current_u_ext, AsmList<Scalar>** current_als,
         Traverse::State* current_state, Hermes::vector<MatrixFormDG<Scalar>*> current_mfDG, Hermes::vector<VectorFormDG<Scalar>*> current_vfDG, Transformable** fn,
         std::map<unsigned int, PrecalcShapeset *> npss, std::map<unsigned int, PrecalcShapeset *> nspss, std::map<unsigned int, RefMap *> nrefmap,
         LightArray<NeighborSearch<Scalar>*>& neighbor_searches, unsigned int min_dg_mesh_seq, WeakForm<Scalar>* current_wf);

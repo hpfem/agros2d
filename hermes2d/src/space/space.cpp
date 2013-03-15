@@ -25,6 +25,61 @@
 #include "api2d.h"
 #include <iostream>
 
+template<typename Scalar>
+unsigned int SpaceSharedPtr<Scalar>::instance_count = 0;
+
+#ifdef _WINDOWS
+template<typename Scalar>
+SpaceSharedPtr<Scalar>::SpaceSharedPtr(Hermes::Hermes2D::Space<Scalar> * ptr) : std::tr1::shared_ptr<Hermes::Hermes2D::Space<Scalar> >(ptr)
+{
+  instance_count++;
+}
+
+template<typename Scalar>
+SpaceSharedPtr<Scalar>::SpaceSharedPtr(const SpaceSharedPtr& other) : std::tr1::shared_ptr<Hermes::Hermes2D::Space<Scalar> >(other)
+{
+  instance_count++;
+}
+
+template<typename Scalar>
+void SpaceSharedPtr<Scalar>::operator=(const SpaceSharedPtr& other)
+{
+  std::shared_ptr<Hermes::Hermes2D::Space<Scalar> >::operator=(other);
+  instance_count++;
+}
+#else
+template<typename Scalar>
+SpaceSharedPtr<Scalar>::SpaceSharedPtr(Hermes::Hermes2D::Space<Scalar> * ptr) : std::tr1::shared_ptr<Hermes::Hermes2D::Space<Scalar> >(ptr)
+{
+  instance_count++;
+}
+
+template<typename Scalar>
+SpaceSharedPtr<Scalar>::SpaceSharedPtr(const SpaceSharedPtr& other) : std::tr1::shared_ptr<Hermes::Hermes2D::Space<Scalar> >(other)
+{
+  instance_count++;
+}
+
+template<typename Scalar>
+void SpaceSharedPtr<Scalar>::operator=(const SpaceSharedPtr& other)
+{
+  std::tr1::shared_ptr<Hermes::Hermes2D::Space<Scalar> >::operator=(other);
+  instance_count++;
+}
+#endif
+
+template<typename Scalar>
+SpaceSharedPtr<Scalar>::~SpaceSharedPtr()
+{
+  instance_count--;
+}
+
+template<typename Scalar>
+unsigned int SpaceSharedPtr<Scalar>::get_instance_count()
+{
+  return instance_count;
+}
+
 namespace Hermes
 {
   namespace Hermes2D
@@ -138,6 +193,12 @@ namespace Hermes
     template<typename Scalar>
     bool Space<Scalar>::isOkay() const
     {
+      if(!mesh)
+      {
+          throw Hermes::Exceptions::Exception("Mesh not present in Space.");
+          return false;
+      }
+
       if(ndata == NULL || edata == NULL || !nsize || !esize)
         return false;
       if(seq < 0)
@@ -979,9 +1040,6 @@ namespace Hermes
       for (unsigned int i = 0; i < e->get_nvert(); i++)
         get_boundary_assembly_list_internal(e, i, al);
       get_bubble_assembly_list(e, al);
-      for(unsigned int i = 0; i < al->cnt; i++)
-        if(al->dof[i] >= 0)
-          al->dof[i] += first_dof;
     }
 
     template<typename Scalar>
@@ -992,9 +1050,6 @@ namespace Hermes
       get_vertex_assembly_list(e, surf_num, al);
       get_vertex_assembly_list(e, e->next_vert(surf_num), al);
       get_boundary_assembly_list_internal(e, surf_num, al);
-      for(unsigned int i = 0; i < al->cnt; i++)
-        if(al->dof[i] >= 0)
-          al->dof[i] += first_dof;
     }
 
     template<typename Scalar>
