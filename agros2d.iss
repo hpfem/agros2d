@@ -22,8 +22,8 @@ UninstallDisplayIcon={app}\images\Agros2d.ico
 Compression=lzma/max
 PrivilegesRequired=admin
 
-WizardImageFile=install\win32\setup\SetupModern.bmp
-WizardSmallImageFile=install\win32\setup\SetupModernSmall.bmp
+WizardImageFile=setup\files\SetupModern.bmp
+WizardSmallImageFile=setup\files\SetupModernSmall.bmp
 
 [Languages]
 

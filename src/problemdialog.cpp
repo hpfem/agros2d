@@ -19,7 +19,7 @@
 
 #include "problemdialog.h"
 
-#include "../hermes2d/plugin_interface.h"
+#include "hermes2d/plugin_interface.h"
 
 #include "util/global.h"
 
