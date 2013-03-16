@@ -163,17 +163,11 @@ namespace Hermes
 
         std::auto_ptr<XMLSubdomains::domain> parsed_xml_domain (XMLSubdomains::domain_(filename, parsing_flags));
 
-        int* vertex_is = new int[parsed_xml_domain->vertices().v().size()];
-        for(int i = 0; i < parsed_xml_domain->vertices().v().size(); i++)
-          vertex_is[i] = -1;
+        std::map<int, int> vertex_is;
 
-        int* element_is = new int[parsed_xml_domain->elements().el().size()];
-        for(int i = 0; i < parsed_xml_domain->elements().el().size(); i++)
-          element_is[i] = -1;
+        std::map<int, int> element_is;
 
-        int* edge_is = new int[parsed_xml_domain->edges().ed().size()];
-        for(int i = 0; i < parsed_xml_domain->edges().ed().size(); i++)
-          edge_is[i] = -1;
+        std::map<int, int> edge_is;
 
         if(!load(parsed_xml_domain, global_mesh, vertex_is, element_is, edge_is))
           return false;
@@ -586,12 +580,6 @@ namespace Hermes
           meshes[subdomains_i]->seq = g_mesh_seq++;
           meshes[subdomains_i]->initial_single_check();
         }
-
-        delete [] vertex_is;
-
-        delete [] element_is;
-
-        delete [] edge_is;
 
         return true;
       }
@@ -1042,7 +1030,7 @@ namespace Hermes
       return true;
     }
 
-    bool MeshReaderH2DXML::load(std::auto_ptr<XMLSubdomains::domain> & parsed_xml_domain, MeshSharedPtr mesh, int* vertex_is, int* element_is, int* edge_is)
+    bool MeshReaderH2DXML::load(std::auto_ptr<XMLSubdomains::domain> & parsed_xml_domain, MeshSharedPtr mesh, std::map<int, int>& vertex_is, std::map<int, int>& element_is, std::map<int, int>& edge_is)
     {
       try
       {
@@ -1081,11 +1069,11 @@ namespace Hermes
           std::string x = parsed_xml_domain->vertices().v().at(vertex_i).x();
           std::string y = parsed_xml_domain->vertices().v().at(vertex_i).y();
 
-          if(parsed_xml_domain->vertices().v().at(vertex_i).i() > parsed_xml_domain->vertices().v().size() - 1)
-            throw Exceptions::MeshLoadFailureException("The index 'i' of vertex in the mesh file must be lower than %i.", parsed_xml_domain->vertices().v().size());
+          if(parsed_xml_domain->vertices().v().at(vertex_i).i() > H2D_MAX_NODE_ID - 1)
+            throw Exceptions::MeshLoadFailureException("The index 'i' of vertex in the mesh file must be lower than %i.", H2D_MAX_NODE_ID);
 
           // insert
-          vertex_is[parsed_xml_domain->vertices().v().at(vertex_i).i()] = vertex_i;
+          vertex_is.insert(std::pair<int,int>(parsed_xml_domain->vertices().v().at(vertex_i).i(), vertex_i));
 
           double x_value;
           double y_value;
@@ -1153,10 +1141,10 @@ namespace Hermes
           XMLSubdomains::domain::elements_type::el_type* element = &parsed_xml_domain->elements().el().at(element_i);
 
           // insert.
-          if(parsed_xml_domain->elements().el().at(element_i).i() > parsed_xml_domain->elements().el().size() - 1)
-            throw Exceptions::MeshLoadFailureException("The index 'i' of element in the mesh file must be lower than %i.", parsed_xml_domain->elements().el().size());
+          if(parsed_xml_domain->elements().el().at(element_i).i() > H2D_MAX_NODE_ID - 1)
+            throw Exceptions::MeshLoadFailureException("The index 'i' of element in the mesh file must be lower than %i.", H2D_MAX_NODE_ID);
 
-          element_is[parsed_xml_domain->elements().el().at(element_i).i()] = element_i;
+          element_is.insert(std::pair<int,int>(parsed_xml_domain->elements().el().at(element_i).i(), element_i));
 
           // Trim whitespaces.
           unsigned int begin = element->m().find_first_not_of(" \t\n");
@@ -1192,10 +1180,11 @@ namespace Hermes
           int v1 = parsed_xml_domain->edges().ed().at(edge_i).v1();
           int v2 = parsed_xml_domain->edges().ed().at(edge_i).v2();
 
-          if(parsed_xml_domain->edges().ed().at(edge_i).i() > parsed_xml_domain->vertices().v().size() - 1)
-            throw Exceptions::MeshLoadFailureException("The index 'i' of edge in the mesh file must be lower than %i.", parsed_xml_domain->vertices().v().size());
+          // insert
+          if(parsed_xml_domain->edges().ed().at(edge_i).i() > H2D_MAX_NODE_ID - 1)
+            throw Exceptions::MeshLoadFailureException("The index 'i' of edge in the mesh file must be lower than %i.", H2D_MAX_NODE_ID);
 
-          edge_is[edge_i] = parsed_xml_domain->edges().ed().at(edge_i).i();
+          edge_is.insert(std::pair<int, int>(edge_i, parsed_xml_domain->edges().ed().at(edge_i).i()));
 
           en = mesh->peek_edge_node(v1, v2);
           if(en == NULL)
