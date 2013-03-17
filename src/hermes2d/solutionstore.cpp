@@ -212,7 +212,7 @@ MultiArray<double> SolutionStore:: multiArray(BlockSolutionID solutionID)
 
 void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArray<double> multiSolution, SolutionRunTimeDetails runTime)
 {
-    qDebug() << "saving solution " << solutionID;
+    // qDebug() << "saving solution " << solutionID;
     assert(!m_multiSolutions.contains(solutionID));
     assert(solutionID.timeStep >= 0);
     assert(solutionID.adaptivityStep >= 0);

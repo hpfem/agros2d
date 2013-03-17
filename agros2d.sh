@@ -7,7 +7,7 @@ langPathTarget="./resources/lang"
 tempPath="./tmp"
 version="3.0"
 debianizedFiles="data debian hermes2d hermes_common lib libs resources resources_source generator binary solver pythonlab src src-remote weakform 3rdparty agros2d.desktop agros2d.pro agros2d.pri agros2d_version.pri agros2d.sh AUTHORS COPYING functions_agros2d.py functions_pythonlab.py README"
-unwantedFiles="data/*.py data/save data/test/*.mph libs/* 3rdparty/build 3rdparty/Makefile hermes2d/build hermes2d/lib hermes2d/Makefile solver/build solver/Makefile solver/qrc_src.cpp generator/build generator/Makefile generator/qrc_src.cpp pythonlab/build pythonlab/Makefile pythonlab/qrc_src.cpp binary/build binary/Makefile binary/qrc_src.cpp pythonlab/build pythonlab/Makefile src/build src/Makefile src/qrc_src.cpp"
+unwantedFiles="data/*.py data/*.a2d data/save data/test/*.mph libs/* 3rdparty/build 3rdparty/Makefile hermes2d/build hermes2d/lib hermes2d/Makefile solver/build solver/Makefile solver/qrc_src.cpp generator/build generator/Makefile generator/qrc_src.cpp pythonlab/build pythonlab/Makefile pythonlab/qrc_src.cpp binary/build binary/Makefile binary/qrc_src.cpp pythonlab/build pythonlab/Makefile src/build src/Makefile src/qrc_src.cpp"
 
 export LD_LIBRARY_PATH="libs"
 

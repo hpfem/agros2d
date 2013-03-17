@@ -19,7 +19,6 @@
 
 #include "htmledit.h"
 
-#include "scene.h"
 #include "util.h"
 
 HtmlValueEdit::HtmlValueEdit(QWidget *parent, const QString &str)
