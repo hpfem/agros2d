@@ -351,7 +351,7 @@ int LoopsInfo::windingNumber(Point point, QList<LoopsNodeEdgeData> loop)
             if ((intersectionType == Intersection_Left) || (intersectionType == Intersection_Right))
             {
                 double additionalAngle = atan2(intersection.y - point.y,
-                                                   intersection.x - point.x);
+                                               intersection.x - point.x);
                 angles.append(additionalAngle);
             }
         }
@@ -359,7 +359,7 @@ int LoopsInfo::windingNumber(Point point, QList<LoopsNodeEdgeData> loop)
         // regular points
         Point nodePoint = m_scene->nodes->at(ned.node)->point();
         double angle = atan2(nodePoint.y - point.y,
-                                 nodePoint.x - point.x);
+                             nodePoint.x - point.x);
 
         angles.append(angle);
     }
@@ -652,12 +652,17 @@ void LoopsInfo::processLoops()
         {
             int smallerLoop = loopsWithLabel[i];
             int biggerLoop = loopsWithLabel[i+1];
-            assert(superDomains[smallerLoop] == biggerLoop || superDomains[smallerLoop] == -1);
-            // if (!(superDomains[smallerLoop] == biggerLoop || superDomains[smallerLoop] == -1));
-            //    throw AgrosGeometryException(tr("Unknown error"));
-            superDomains[smallerLoop] = biggerLoop;
-            if(!subDomains[biggerLoop].contains(smallerLoop))
-                subDomains[biggerLoop].append(smallerLoop);
+            // assert(superDomains[smallerLoop] == biggerLoop || superDomains[smallerLoop] == -1);
+            if ((superDomains[smallerLoop] == biggerLoop || superDomains[smallerLoop] == -1))
+            {
+                superDomains[smallerLoop] = biggerLoop;
+                if(!subDomains[biggerLoop].contains(smallerLoop))
+                    subDomains[biggerLoop].append(smallerLoop);
+            }
+            else
+            {
+                throw AgrosGeometryException(tr("Unknown error"));
+            }
         }
     }
 

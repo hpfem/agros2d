@@ -109,12 +109,19 @@ bool Value::hasExpression()
 bool Value::hasTable() const
 {
     if (m_fieldInfo)
+        return (m_table.size() > 0);
+    else
+        return false;
+
+    /*
+    if (m_fieldInfo)
         if (m_fieldInfo->linearityType() == LinearityType_Linear)
             return false;
         else
             return (m_table.size() > 0);
     else
         return false;
+    */
 }
 
 double Value::number()
