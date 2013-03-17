@@ -573,15 +573,17 @@ namespace Hermes
         }
         else
         {
-          bool marker_on_space_m = this->spaces[form->i]->get_mesh()->get_boundary_markers_conversion().get_internal_marker(form->areas[ss]).valid;
-          if(marker_on_space_m)
-            marker_on_space_m = (this->spaces[form->i]->get_mesh()->get_boundary_markers_conversion().get_internal_marker(form->areas[ss]).marker == current_state->rep->en[current_state->isurf]->marker);
+          Mesh::MarkersConversion::IntValid marker_on_space_m = this->spaces[form->i]->get_mesh()->get_boundary_markers_conversion().get_internal_marker(form->areas[ss]);
+          bool marker_on_space_m_valid = false;
+          if(marker_on_space_m.valid)
+            marker_on_space_m_valid = (marker_on_space_m.marker == current_state->rep->en[current_state->isurf]->marker);
 
-          bool marker_on_space_n = this->spaces[form->j]->get_mesh()->get_boundary_markers_conversion().get_internal_marker(form->areas[ss]).valid;
-          if(marker_on_space_n)
-            marker_on_space_n = (this->spaces[form->j]->get_mesh()->get_boundary_markers_conversion().get_internal_marker(form->areas[ss]).marker == current_state->rep->en[current_state->isurf]->marker);
+          Mesh::MarkersConversion::IntValid marker_on_space_n = this->spaces[form->j]->get_mesh()->get_boundary_markers_conversion().get_internal_marker(form->areas[ss]);
+          bool marker_on_space_n_valid = false;
+          if(marker_on_space_n.valid)
+            marker_on_space_n_valid = (marker_on_space_n.marker == current_state->rep->en[current_state->isurf]->marker);
 
-          if(marker_on_space_m && marker_on_space_n)
+          if(marker_on_space_m_valid && marker_on_space_n_valid)
           {
             assemble_this_form = true;
             break;
