@@ -287,6 +287,7 @@ void LogDialog::refreshStatus()
     memoryLabel->setText(tr("Process Memory: %1 MB").arg(memory));
     logWidget->repaint();
     // memoryLabel->repaint();
+    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 }
 
 // *******************************************************************************************

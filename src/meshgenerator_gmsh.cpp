@@ -54,10 +54,11 @@ bool MeshGeneratorGMSH::mesh()
         Agros2D::log()->printDebug(tr("Mesh generator"), tr("GMSH geometry file was created"));
 
         // exec triangle
-        QProcess processGmsh;
-        processGmsh.setStandardOutputFile(tempProblemFileName() + ".gmsh.out");
-        processGmsh.setStandardErrorFile(tempProblemFileName() + ".gmsh.err");
-        connect(&processGmsh, SIGNAL(finished(int)), this, SLOT(meshGmshCreated(int)));
+        m_process = new QProcess();
+        m_process->setStandardOutputFile(tempProblemFileName() + ".gmsh.out");
+        m_process->setStandardErrorFile(tempProblemFileName() + ".gmsh.err");
+        connect(m_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(meshGmshError(QProcess::ProcessError)));
+        connect(m_process, SIGNAL(finished(int)), this, SLOT(meshGmshCreated(int)));
 
         QString gmshBinary = "gmsh";
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "gmsh.exe"))
@@ -65,29 +66,14 @@ bool MeshGeneratorGMSH::mesh()
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "gmsh"))
             gmshBinary = QApplication::applicationDirPath() + QDir::separator() + "gmsh";
 
-        processGmsh.start(QString(Agros2D::problem()->configView()->commandGmsh).
+        m_process->start(QString(Agros2D::problem()->configView()->commandGmsh).
                           arg(gmshBinary).
                           arg(tempProblemFileName()));
 
-        if (!processGmsh.waitForStarted(100000))
-        {
-            Agros2D::log()->printError(tr("Mesh generator"), tr("Could not start GMSH"));
-            processGmsh.kill();
-
-            m_isError = true;
-        }
-        else
-        {
-            // copy gmsh files
-            if ((!Agros2D::configComputer()->deleteMeshFiles) && (!Agros2D::problem()->config()->fileName().isEmpty()))
-            {
-                QFileInfo fileInfoOrig(Agros2D::problem()->config()->fileName());
-
-                QFile::copy(tempProblemFileName() + ".geo", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".geo");
-            }
-
-            while (!processGmsh.waitForFinished()) {}
-        }
+        // execute an event loop to process the request (nearly-synchronous)
+        QEventLoop eventLoop;
+        connect(m_process, SIGNAL(finished(int)), &eventLoop, SLOT(quit()));
+        eventLoop.exec();
     }
     else
     {
@@ -96,6 +82,13 @@ bool MeshGeneratorGMSH::mesh()
 
     return !m_isError;
 }
+
+void MeshGeneratorGMSH::meshGmshError(QProcess::ProcessError error)
+{
+    Agros2D::log()->printError(tr("Mesh generator"), tr("Could not start GMSH"));
+    m_process->kill();
+}
+
 
 void MeshGeneratorGMSH::meshGmshCreated(int exitCode)
 {
@@ -107,7 +100,15 @@ void MeshGeneratorGMSH::meshGmshCreated(int exitCode)
         {
             Agros2D::log()->printMessage(tr("Mesh generator"), tr("Mesh was converted to Hermes2D mesh file"));
 
-            // copy triangle files
+            // copy gmsh files
+            if ((!Agros2D::configComputer()->deleteMeshFiles) && (!Agros2D::problem()->config()->fileName().isEmpty()))
+            {
+                QFileInfo fileInfoOrig(Agros2D::problem()->config()->fileName());
+
+                QFile::copy(tempProblemFileName() + ".geo", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".geo");
+            }
+
+            // copy hermes files
             if ((!Agros2D::configComputer()->deleteHermesMeshFile) && (!Agros2D::problem()->config()->fileName().isEmpty()))
             {
                 QFileInfo fileInfoOrig(Agros2D::problem()->config()->fileName());
@@ -116,18 +117,15 @@ void MeshGeneratorGMSH::meshGmshCreated(int exitCode)
             }
 
             //  remove gmsh temp files
-            /*
             QFile::remove(tempProblemFileName() + ".geo");
             QFile::remove(tempProblemFileName() + ".msh");
             QFile::remove(tempProblemFileName() + ".gmsh.out");
-            QFile::remove(tempProblemFileName() + ".gmsh.err");
-            */
-            Agros2D::log()->printMessage(tr("Mesh generator"), tr("Mesh files were deleted"));
+            QFile::remove(tempProblemFileName() + ".gmsh.err");            
         }
         else
         {
             m_isError = true;
-            // QFile::remove(Agros2D::problem()->config()->fileName() + ".mesh");
+            QFile::remove(Agros2D::problem()->config()->fileName() + ".mesh");
         }
     }
     else

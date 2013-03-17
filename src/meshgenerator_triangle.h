@@ -28,6 +28,7 @@ class MeshGeneratorTriangle : public MeshGenerator
     Q_OBJECT
 
 private slots:
+    void meshTriangleError(QProcess::ProcessError error);
     void meshTriangleCreated(int exitCode);
     bool writeToTriangle();
     bool readTriangleMeshFormat();
@@ -36,6 +37,8 @@ public:
     MeshGeneratorTriangle();
 
     virtual bool mesh();
+
+
 };
 
 #endif //MESHGENERATOR_TRIANGLE_H

@@ -36,8 +36,14 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 
-MeshGenerator::MeshGenerator() : QObject()
+MeshGenerator::MeshGenerator() : QObject(), m_process(NULL)
 {
+}
+
+MeshGenerator::~MeshGenerator()
+{
+    if (m_process)
+        delete m_process;
 }
 
 bool MeshGenerator::writeToHermes()

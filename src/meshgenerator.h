@@ -29,7 +29,7 @@ class AGROS_API MeshGenerator : public QObject
 
 public:
     MeshGenerator();
-    virtual ~MeshGenerator() {}
+    virtual ~MeshGenerator();
 
     virtual bool mesh() = 0;
 
@@ -154,6 +154,7 @@ protected:
     bool prepare();
 
     bool m_isError;
+    QProcess *m_process;
 };
 
 #endif //MESHGENERATOR_H

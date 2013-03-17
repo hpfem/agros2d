@@ -28,6 +28,7 @@ class MeshGeneratorGMSH : public MeshGenerator
     Q_OBJECT
 
 private slots:
+    void meshGmshError(QProcess::ProcessError error);
     void meshGmshCreated(int exitCode);
     bool writeToGmsh();
     bool readGmshMeshFile();

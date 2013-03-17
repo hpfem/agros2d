@@ -40,7 +40,20 @@
 #include "hermes2d/problem_config.h"
 #include "util/loops.h"
 
-MeshGeneratorTriangle::MeshGeneratorTriangle() : MeshGenerator()
+#include <QThread>
+
+class Xsleep : public QThread
+{
+public:
+    static void msleep(int ms)
+    {
+        QThread::msleep(ms);
+    }
+};
+
+
+MeshGeneratorTriangle::MeshGeneratorTriangle()
+    : MeshGenerator()
 {
 }
 
@@ -54,10 +67,11 @@ bool MeshGeneratorTriangle::mesh()
         Agros2D::log()->printDebug(tr("Mesh generator"), tr("Poly file was created"));
 
         // exec triangle
-        QProcess processTriangle;
-        processTriangle.setStandardOutputFile(tempProblemFileName() + ".triangle.out");
-        processTriangle.setStandardErrorFile(tempProblemFileName() + ".triangle.err");
-        connect(&processTriangle, SIGNAL(finished(int)), this, SLOT(meshTriangleCreated(int)));
+        m_process = new QProcess();
+        m_process->setStandardOutputFile(tempProblemFileName() + ".triangle.out");
+        m_process->setStandardErrorFile(tempProblemFileName() + ".triangle.err");
+        connect(m_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(meshTriangleError(QProcess::ProcessError)));
+        connect(m_process, SIGNAL(finished(int)), this, SLOT(meshTriangleCreated(int)));
 
         QString triangleBinary = "triangle";
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "triangle.exe"))
@@ -65,32 +79,14 @@ bool MeshGeneratorTriangle::mesh()
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "triangle"))
             triangleBinary = QApplication::applicationDirPath() + QDir::separator() + "triangle";
 
-        processTriangle.start(QString(Agros2D::problem()->configView()->commandTriangle).
+        m_process->start(QString(Agros2D::problem()->configView()->commandTriangle).
                               arg(triangleBinary).
                               arg(tempProblemFileName()));
 
-        if (!processTriangle.waitForStarted(100000))
-        {
-            Agros2D::log()->printError(tr("Mesh generator"), tr("Could not start Triangle"));
-            processTriangle.kill();
-
-            m_isError = true;
-        }
-        else
-        {
-            // copy triangle files
-            if ((!Agros2D::configComputer()->deleteMeshFiles) && (!Agros2D::problem()->config()->fileName().isEmpty()))
-            {
-                QFileInfo fileInfoOrig(Agros2D::problem()->config()->fileName());
-
-                QFile::copy(tempProblemFileName() + ".poly", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".poly");
-                QFile::copy(tempProblemFileName() + ".node", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".node");
-                QFile::copy(tempProblemFileName() + ".edge", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".edge");
-                QFile::copy(tempProblemFileName() + ".ele", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".ele");
-            }
-
-            while (!processTriangle.waitForFinished()) {}
-        }
+        // execute an event loop to process the request (nearly-synchronous)
+        QEventLoop eventLoop;
+        connect(m_process, SIGNAL(finished(int)), &eventLoop, SLOT(quit()));
+        eventLoop.exec();
     }
     else
     {
@@ -98,6 +94,12 @@ bool MeshGeneratorTriangle::mesh()
     }
 
     return !m_isError;
+}
+
+void MeshGeneratorTriangle::meshTriangleError(QProcess::ProcessError error)
+{
+    Agros2D::log()->printError(tr("Mesh generator"), tr("Could not start Triangle"));
+    m_process->kill();
 }
 
 void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
@@ -112,6 +114,17 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
             Agros2D::log()->printMessage(tr("Mesh generator"), tr("Mesh was converted to Hermes2D mesh file"));
 
             // copy triangle files
+            if ((!Agros2D::configComputer()->deleteMeshFiles) && (!Agros2D::problem()->config()->fileName().isEmpty()))
+            {
+                QFileInfo fileInfoOrig(Agros2D::problem()->config()->fileName());
+
+                QFile::copy(tempProblemFileName() + ".poly", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".poly");
+                QFile::copy(tempProblemFileName() + ".node", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".node");
+                QFile::copy(tempProblemFileName() + ".edge", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".edge");
+                QFile::copy(tempProblemFileName() + ".ele", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".ele");
+            }
+
+            // copy hermes files
             if ((!Agros2D::configComputer()->deleteHermesMeshFile) && (!Agros2D::problem()->config()->fileName().isEmpty()))
             {
                 QFileInfo fileInfoOrig(Agros2D::problem()->config()->fileName());
