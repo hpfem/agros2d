@@ -86,6 +86,7 @@ bool MeshGeneratorTriangle::mesh()
         // execute an event loop to process the request (nearly-synchronous)
         QEventLoop eventLoop;
         connect(m_process, SIGNAL(finished(int)), &eventLoop, SLOT(quit()));
+        connect(m_process, SIGNAL(error(QProcess::ProcessError)), &eventLoop, SLOT(quit()));
         eventLoop.exec();
     }
     else
