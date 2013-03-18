@@ -22,22 +22,6 @@
 
 #include "solutiontypes.h"
 
-class MemoryInfo
-{
-public:
-    MemoryInfo(MultiArray<double> multiArray);
-    void addMultiArray(MultiArray<double> multiArray);
-    void removeDealocated();
-    int numAlocatedMeshes();
-    int numAlocatedSpaces();
-    int numAlocatedSolutions();
-
-private:
-    QList<tr1::weak_ptr<Hermes::Hermes2D::Mesh> > meshes;
-    QList<tr1::weak_ptr<Hermes::Hermes2D::Space<double> > > spaces;
-    QList<tr1::weak_ptr<Hermes::Hermes2D::MeshFunction<double> > > solutions;
-};
-
 class AGROS_API SolutionStore
 {
 public:
@@ -100,13 +84,12 @@ public:
 
     void clearAll();
 
-    void printDebugMemoryInfo();
+    void printDebugCacheStatus();
 
 private:
     QList<FieldSolutionID> m_multiSolutions;
     QMap<FieldSolutionID, SolutionRunTimeDetails> m_multiSolutionRunTimeDetails;
     QMap<FieldSolutionID, MultiArray<double> > m_multiSolutionCache;
-    QMap<FieldSolutionID, tr1::shared_ptr<MemoryInfo> > m_memoryInfos;
 
     void addSolution(FieldSolutionID solutionID, MultiArray<double> multiArray, SolutionRunTimeDetails runTime);
     void removeSolution(FieldSolutionID solutionID);
