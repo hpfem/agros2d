@@ -35,9 +35,13 @@ using namespace Hermes::Hermes2D;
 
 void SolutionStore::printDebugCacheStatus()
 {
+    assert(m_multiSolutionCacheIDOrder.size() == m_multiSolutionCache.keys().size());
     qDebug() << "solution store cache status:";
-    foreach(FieldSolutionID fsid, m_multiSolutionCache.keys())
+    foreach(FieldSolutionID fsid, m_multiSolutionCacheIDOrder)
+    {
+        assert(m_multiSolutionCache.keys().contains(fsid));
         qDebug() << fsid;
+    }
 }
 
 SolutionStore::~SolutionStore()
@@ -92,10 +96,6 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
     }
     else
     {
-        // MultiArray<double> ma = m_multiSolutionCache[solutionID];
-        // for (int i = 0; i < ma.solutions().size(); i++)
-        //     qDebug() << "ma.solutions().at(" << i << "): " << ma.solutions().at(i).use_count();
-
         return m_multiSolutionCache[solutionID];
     }
 }
@@ -159,6 +159,7 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID)
         // free ma
         m_multiSolutionCache[solutionID].clear();
         m_multiSolutionCache.remove(solutionID);
+        m_multiSolutionCacheIDOrder.removeOne(solutionID);
     }
 
     // remove old files
@@ -425,14 +426,19 @@ void SolutionStore::insertMultiSolutionToCache(FieldSolutionID solutionID, Multi
     {
         // flush cache
         if (m_multiSolutionCache.count() > Agros2D::configComputer()->cacheSize)
-        {
+        {            
+            assert(! m_multiSolutionCacheIDOrder.empty());
+            FieldSolutionID idRemove = m_multiSolutionCacheIDOrder[0];
+            m_multiSolutionCacheIDOrder.removeFirst();
+
             // free ma
-            m_multiSolutionCache[m_multiSolutionCache.keys().first()].clear();
-            m_multiSolutionCache.remove(m_multiSolutionCache.keys().first());
+            m_multiSolutionCache[idRemove].clear();
+            m_multiSolutionCache.remove(idRemove);
         }
 
         // add solution
         m_multiSolutionCache.insert(solutionID, multiSolution);
+        m_multiSolutionCacheIDOrder.append(solutionID);
     }
 }
 
