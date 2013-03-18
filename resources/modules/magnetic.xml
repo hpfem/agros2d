@@ -174,7 +174,7 @@
         <module:expression analysistype="harmonic" axi="sqrt(dz1*dz1 + (dr1 + tern(r > 0, value1/r, 0.0))^2 + dz2*dz2 + (dr2 + tern(r > 0, value2/r, 0.0))^2)" planar="sqrt(dy1*dy1 + dx1*dx1 + dy2*dy2 + dx2*dx2)"/>
       </module:localvariable>
       <module:localvariable id="magnetic_flux_density_real" name="Flux density - real" shortname="Br" shortname_html="&lt;i>B&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="B_\mathrm{r}" type="vector" unit="T" unit_html="T" unit_latex="T">
-        <module:expression analysistype="steadystate" axi_r="- dz1" axi_z="dr1 + tern(r > 0, tern(r > 0, value1/r, 0.0), 0.0)" planar_x="dy1" planar_y="- dx1"/>
+        <module:expression analysistype="steadystate" axi_r="- dz1" axi_z="dr1 + tern(r > 0, value1/r, 0.0)" planar_x="dy1" planar_y="- dx1"/>
         <module:expression analysistype="harmonic" axi_r="- dz1" axi_z="dr1 + tern(r > 0, value1/r, 0.0)" planar_x="dy1" planar_y="- dx1"/>
         <module:expression analysistype="transient" axi_r="- dz1" axi_z="dr1 + tern(r > 0, value1/r, 0.0)" planar_x="dy1" planar_y="- dx1"/>
       </module:localvariable>
