@@ -90,6 +90,7 @@ private:
     QList<FieldSolutionID> m_multiSolutions;
     QMap<FieldSolutionID, SolutionRunTimeDetails> m_multiSolutionRunTimeDetails;
     QMap<FieldSolutionID, MultiArray<double> > m_multiSolutionCache;
+    QList<FieldSolutionID> m_multiSolutionCacheIDOrder;
 
     void addSolution(FieldSolutionID solutionID, MultiArray<double> multiArray, SolutionRunTimeDetails runTime);
     void removeSolution(FieldSolutionID solutionID);
