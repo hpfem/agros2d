@@ -105,7 +105,6 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
         slns.push_back(this->sln[i]->clone());
 
     {{CLASS}}ViewScalarFilter *filter = new {{CLASS}}ViewScalarFilter(m_fieldInfo, m_timeStep, m_adaptivityStep, m_solutionType, slns, m_variable, m_physicFieldVariableComp);
-    filter->setDeleteSolutions();
 
     return filter;
 }
