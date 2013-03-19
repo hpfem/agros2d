@@ -80,6 +80,7 @@ class PyGeometry
         void zoomOut();
         void zoomRegion(double x1, double y1, double x2, double y2);
 private:
+        void setBoundaries(SceneEdge *edge, map<char *, char *> boundaries);
         void setMeshRefinementOnEdge(SceneEdge *edge, map<char *, int> refinements);
 };
 
