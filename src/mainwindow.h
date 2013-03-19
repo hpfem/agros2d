@@ -227,7 +227,6 @@ private:
 
     ResultsView *resultsView;
     PythonScriptingConsoleView *consoleView;
-    TooltipView *tooltipView;
     LogView *logView;
 
     PythonLabAgros *scriptEditorDialog;

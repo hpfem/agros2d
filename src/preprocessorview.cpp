@@ -70,6 +70,9 @@ PreprocessorWidget::PreprocessorWidget(SceneViewPreprocessor *sceneView, QWidget
 
 PreprocessorWidget::~PreprocessorWidget()
 {
+    QSettings settings;
+    settings.setValue("PreprocessorWidget/SplitterState", splitter->saveState());
+    settings.setValue("PreprocessorWidget/SplitterGeometry", splitter->saveGeometry());
 }
 
 void PreprocessorWidget::createActions()
@@ -98,6 +101,10 @@ void PreprocessorWidget::createMenu()
 
 void PreprocessorWidget::createControls()
 {
+    txtView = new QTextEdit(this);
+    txtView->setReadOnly(true);
+    loadTooltip(SceneGeometryMode_OperateOnNodes);
+
     trvWidget = new QTreeWidget(this);
     trvWidget->setHeaderHidden(true);
     trvWidget->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -106,10 +113,19 @@ void PreprocessorWidget::createControls()
     trvWidget->setColumnWidth(0, 150);
     trvWidget->setIndentation(12);
 
+    splitter = new QSplitter(this);
+    splitter->setOrientation(Qt::Vertical);
+    splitter->addWidget(trvWidget);
+    splitter->addWidget(txtView);
+
     QVBoxLayout *layoutMain = new QVBoxLayout();
-    layoutMain->addWidget(trvWidget);
+    layoutMain->addWidget(splitter);
 
     setLayout(layoutMain);
+
+    QSettings settings;
+    splitter->restoreState(settings.value("PreprocessorWidget/SplitterState").toByteArray());
+    splitter->restoreGeometry(settings.value("PreprocessorWidget/SplitterGeometry").toByteArray());
 }
 
 void PreprocessorWidget::keyPressEvent(QKeyEvent *event)
@@ -282,6 +298,22 @@ void PreprocessorWidget::refresh()
 
     setUpdatesEnabled(true);
     blockSignals(false);
+}
+
+void PreprocessorWidget::loadTooltip(SceneGeometryMode sceneMode)
+{
+    switch (sceneMode)
+    {
+    case SceneGeometryMode_OperateOnNodes:
+        txtView->setText(tr("Tooltip_OperateOnNodes"));
+        break;
+    case SceneGeometryMode_OperateOnEdges:
+        txtView->setText(tr("Tooltip_OperateOnEdges"));
+        break;
+    case SceneGeometryMode_OperateOnLabels:
+        txtView->setText(tr("Tooltip_OperateOnLabels"));
+        break;
+    }
 }
 
 void PreprocessorWidget::doContextMenu(const QPoint &pos)

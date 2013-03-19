@@ -82,7 +82,6 @@ SOURCES += util.cpp \
     reportdialog.cpp \
     videodialog.cpp \
     scenemarkerselectdialog.cpp \
-    tooltipview.cpp \
     logview.cpp \
     scenebasicselectdialog.cpp \
     postprocessorview.cpp \
@@ -181,7 +180,6 @@ HEADERS += util.h \
     reportdialog.h \
     videodialog.h \
     scenemarkerselectdialog.h \
-    tooltipview.h \
     logview.h \
     scenebasicselectdialog.h \
     postprocessorview.h \

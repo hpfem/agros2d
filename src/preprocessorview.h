@@ -21,6 +21,7 @@
 #define PREPROCESSORVIEW_H
 
 #include "util.h"
+#include "util/enums.h"
 
 #include <QWebView>
 
@@ -31,8 +32,9 @@ class PreprocessorWidget : public QWidget
 {
     Q_OBJECT
 
-public slots:
+public slots:    
     void refresh();
+    void loadTooltip(SceneGeometryMode sceneMode);
     void doProperties();
     void doDelete();
 
@@ -46,7 +48,9 @@ protected:
 private:
     SceneViewPreprocessor *m_sceneViewPreprocessor;
 
+    QTextEdit *txtView;
     QTreeWidget *trvWidget;
+    QSplitter *splitter;
 
     QAction *actProperties;
     QAction *actDelete;

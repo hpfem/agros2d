@@ -33,7 +33,6 @@
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
 #include "sceneview_particle.h"
-#include "tooltipview.h"
 #include "logview.h"
 #include "infowidget.h"
 #include "settings.h"
@@ -136,8 +135,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // preprocessor
     connect(problemWidget, SIGNAL(changed()), sceneViewPreprocessor, SLOT(refresh()));
     connect(settingsWidget, SIGNAL(apply()), sceneViewPreprocessor, SLOT(refresh()));
-    connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltip(SceneGeometryMode)));
-    connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), tooltipView, SLOT(loadTooltipPost2D()));
+    connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), preprocessorWidget, SLOT(loadTooltip(SceneGeometryMode)));
     currentPythonEngineAgros()->setSceneViewGeometry(sceneViewPreprocessor);
 
     // particle tracing
@@ -488,7 +486,6 @@ void MainWindow::createMenus()
     mnuShowPanels->addAction(resultsView->toggleViewAction());
     mnuShowPanels->addAction(consoleView->toggleViewAction());
     mnuShowPanels->addAction(logView->toggleViewAction());
-    mnuShowPanels->addAction(tooltipView->toggleViewAction());
 
     mnuView = menuBar()->addMenu(tr("&View"));
     mnuView->addAction(problemWidget->actProperties);
@@ -751,10 +748,6 @@ void MainWindow::createViews()
     consoleView->setVisible(false);
     addDockWidget(Qt::RightDockWidgetArea, consoleView);
 
-    tooltipView = new TooltipView(this);
-    tooltipView->setAllowedAreas(Qt::RightDockWidgetArea);
-    addDockWidget(Qt::RightDockWidgetArea, tooltipView);
-
     logView = new LogView(this);
     logView->setAllowedAreas(Qt::RightDockWidgetArea);
     addDockWidget(Qt::RightDockWidgetArea, logView);
@@ -764,7 +757,6 @@ void MainWindow::createViews()
     addDockWidget(Qt::RightDockWidgetArea, resultsView);
 
     // tabify dock together
-    tabifyDockWidget(tooltipView, logView);
     tabifyDockWidget(resultsView, consoleView);
 }
 
