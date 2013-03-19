@@ -35,7 +35,7 @@ void PyGeometry::activate()
         currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
 }
 
-void PyGeometry::addNode(double x, double y)
+int PyGeometry::addNode(double x, double y)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnNodes->trigger();
@@ -43,10 +43,11 @@ void PyGeometry::addNode(double x, double y)
     if (x < 0.0 && Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric)
         throw out_of_range(QObject::tr("Radial component must be greater then or equal to zero.").toStdString());
 
-    Agros2D::scene()->addNode(new SceneNode(Point(x, y)));
+    SceneNode *node = Agros2D::scene()->addNode(new SceneNode(Point(x, y)));
+    return Agros2D::scene()->nodes->items().indexOf(node);
 }
 
-void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle, map<char*, int> refinements, map<char*, char*> boundaries)
+int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle, map<char*, int> refinements, map<char*, char*> boundaries)
 {
     if (!silentMode())
     currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnEdges->trigger();
@@ -95,9 +96,11 @@ void PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angl
 
     // refinements
     setMeshRefinementOnEdge(sceneEdge, refinements);
+
+    return Agros2D::scene()->edges->items().indexOf(sceneEdge);
 }
 
-void PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, map<char *, int> refinements, map<char*, char*> boundaries)
+int PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, map<char *, int> refinements, map<char*, char*> boundaries)
 {
     // nodes
     if (angle > 90.0 || angle < 0.0)
@@ -150,6 +153,8 @@ void PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double ang
 
     // refinements
     setMeshRefinementOnEdge(sceneEdge, refinements);
+
+    return Agros2D::scene()->edges->items().indexOf(sceneEdge);
 }
 
 void PyGeometry::setMeshRefinementOnEdge(SceneEdge *edge, map<char *, int> refinements)
@@ -166,7 +171,7 @@ void PyGeometry::setMeshRefinementOnEdge(SceneEdge *edge, map<char *, int> refin
     }
 }
 
-void PyGeometry::addLabel(double x, double y, double area, map<char *, int> refinements, map<char *, int> orders, map<char *, char *> materials)
+int PyGeometry::addLabel(double x, double y, double area, map<char *, int> refinements, map<char *, int> orders, map<char *, char *> materials)
 {
     if (!silentMode())
     currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnLabels->trigger();
@@ -237,6 +242,8 @@ void PyGeometry::addLabel(double x, double y, double area, map<char *, int> refi
 
         Agros2D::problem()->fieldInfo(QString((*i).first))->setLabelPolynomialOrder(sceneLabel, (*i).second);
     }
+
+    return Agros2D::scene()->labels->items().indexOf(sceneLabel);
 }
 
 void PyGeometry::removeNode(int index)

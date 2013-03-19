@@ -15,10 +15,10 @@ cdef extern from "../../src/pythonlab/pygeometry.h":
 
         void activate()
 
-        void addNode(double, double) except +
-        void addEdge(double, double, double, double, double, map[char*, int], map[char*, char*]) except +
-        void addEdgeByNodes(int, int, double, map[char*, int], map[char*, char*]) except +
-        void addLabel(double, double, double, map[char*, int], map[char*, int], map[char*, char*]) except +
+        int addNode(double x, double y) except +
+        int addEdge(double x1, double y1, double x2, double y2, double angle, map[char *, int] refinements, map[char*, char*] boundaries) except +
+        int addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, map[char *, int] refinements, map[char*, char*] boundaries) except +
+        int addLabel(double x, double y, double area, map[char *, int] refinements, map[char*, int] orders, map[char*, char*] materials) except +
 
         int nodesCount()
         int edgesCount()
@@ -75,7 +75,7 @@ cdef class __Geometry__:
         x -- x or r coordinate of node
         y -- y or z coordinate of node
         """
-        self.thisptr.addNode(x, y)
+        return self.thisptr.addNode(x, y)
 
     # remove_node(index)
     def remove_node(self, index):
@@ -118,7 +118,7 @@ cdef class __Geometry__:
             boundary.second = boundaries[key]
             boundaries_map.insert(boundary)
 
-        self.thisptr.addEdge(x1, y1, x2, y2, angle, refinements_map, boundaries_map)
+        return self.thisptr.addEdge(x1, y1, x2, y2, angle, refinements_map, boundaries_map)
 
     # add_edge_by_nodes(start_node_index, end_node_index, angle, refinements, boundaries)
     def add_edge_by_nodes(self, start_node_index, end_node_index, angle = 0.0, refinements = {}, boundaries = {}):
@@ -147,7 +147,7 @@ cdef class __Geometry__:
             boundary.second = boundaries[key]
             boundaries_map.insert(boundary)
 
-        self.thisptr.addEdgeByNodes(start_node_index, end_node_index, angle, refinements_map, boundaries_map)
+        return self.thisptr.addEdgeByNodes(start_node_index, end_node_index, angle, refinements_map, boundaries_map)
 
     # remove_edge(index)
     def remove_edge(self, index):
@@ -195,7 +195,7 @@ cdef class __Geometry__:
             material.second = materials[key]
             materials_map.insert(material)
 
-        self.thisptr.addLabel(x, y, area, refinements_map, orders_map, materials_map)
+        return self.thisptr.addLabel(x, y, area, refinements_map, orders_map, materials_map)
 
     # nodes_count()
     def nodes_count(self):

@@ -39,11 +39,10 @@ class PyGeometry
         void activate();
 
         // elements
-        void addNode(double x, double y);
-        void addEdge(double x1, double y1, double x2, double y2, double angle, map<char *, int> refinements, map<char*, char*> boundaries);
-        void addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, map<char *, int> refinements, map<char*, char*> boundaries);
-        void setMeshRefinementOnEdge(SceneEdge *edge, map<char *, int> refinements);
-        void addLabel(double x, double y, double area, map<char *, int> refinements, map<char*, int> orders, map<char*, char*> materials);
+        int addNode(double x, double y);
+        int addEdge(double x1, double y1, double x2, double y2, double angle, map<char *, int> refinements, map<char*, char*> boundaries);
+        int addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, map<char *, int> refinements, map<char*, char*> boundaries);
+        int addLabel(double x, double y, double area, map<char *, int> refinements, map<char*, int> orders, map<char*, char*> materials);
 
         int nodesCount() { return Agros2D::scene()->nodes->count(); }
         int edgesCount() { return Agros2D::scene()->edges->count(); }
@@ -80,6 +79,8 @@ class PyGeometry
         void zoomIn();
         void zoomOut();
         void zoomRegion(double x1, double y1, double x2, double y2);
+private:
+        void setMeshRefinementOnEdge(SceneEdge *edge, map<char *, int> refinements);
 };
 
 #endif // PYTHONLABGEOMETRY_H
