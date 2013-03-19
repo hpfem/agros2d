@@ -47,9 +47,6 @@ cdef extern from "../../src/pythonlab/pygeometry.h":
         void scaleSelection(double, double, double, bool)
         void removeSelection()
 
-        void mesh()
-        char *meshFileName() except +
-
         void zoomBestFit()
         void zoomIn()
         void zoomOut()
@@ -328,14 +325,6 @@ cdef class __Geometry__:
     # select_none()
     def select_none(self):
         self.thisptr.selectNone()
-
-    # mesh()
-    def mesh(self):
-        self.thisptr.mesh()
-
-    # mesh_file_name()
-    def mesh_file_name(self):
-        self.thisptr.meshFileName()
 
     # zoom_best_fit()
     def zoom_best_fit(self):

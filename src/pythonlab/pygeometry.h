@@ -28,12 +28,7 @@
 #include "sceneedge.h"
 #include "scenelabel.h"
 
-class Solution;
 class SceneViewPreprocessor;
-class SceneViewMesh;
-class SceneViewPost2D;
-class SceneViewPost3D;
-class PostHermes;
 
 class PyGeometry
 {
@@ -79,10 +74,6 @@ class PyGeometry
         void rotateSelection(double x, double y, double angle, bool copy);
         void scaleSelection(double x, double y, double scale, bool copy);
         void removeSelection();
-
-        // mesh
-        void mesh();
-        char *meshFileName();
 
         // zoom operations
         void zoomBestFit();

@@ -20,16 +20,14 @@
 #include "pythonlab/pygeometry.h"
 #include "pythonlab/pythonengine_agros.h"
 
+#include "hermes2d/problem_config.h"
+
 #include "sceneview_common.h"
 #include "sceneview_geometry.h"
-#include "sceneview_post2d.h"
-#include "sceneview_post3d.h"
 #include "scenemarker.h"
 #include "scenenode.h"
 #include "sceneedge.h"
 #include "scenelabel.h"
-
-#include "hermes2d/problem_config.h"
 
 void PyGeometry::activate()
 {
@@ -440,29 +438,6 @@ void PyGeometry::removeSelection()
     Agros2D::scene()->deleteSelected();
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
-}
-
-void PyGeometry::mesh()
-{
-    // trigger preprocessor
-    if (!silentMode())
-        currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
-
-    Agros2D::problem()->mesh();
-    if (Agros2D::problem()->isMeshed())
-    {
-        // trigger mesh
-        if (!silentMode())
-            currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
-    }
-}
-
-char *PyGeometry::meshFileName()
-{
-    if (Agros2D::problem()->isMeshed())
-        return const_cast<char*>(QString(tempProblemFileName() + ".mesh").toLatin1().data());
-    else
-        throw invalid_argument(QObject::tr("Problem is not meshed.").toStdString());
 }
 
 void PyGeometry::zoomBestFit()
