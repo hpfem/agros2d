@@ -66,7 +66,7 @@ int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle
     try
     {
         setBoundaries(edge, boundaries);
-        setMeshRefinementOnEdge(edge, refinements);
+        setRefinementsOnEdge(edge, refinements);
     }
     catch (std::exception& e)
     {
@@ -106,7 +106,7 @@ int PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angl
     try
     {
         setBoundaries(edge, boundaries);
-        setMeshRefinementOnEdge(edge, refinements);
+        setRefinementsOnEdge(edge, refinements);
     }
     catch (std::exception& e)
     {
@@ -142,7 +142,7 @@ void PyGeometry::setBoundaries(SceneEdge *edge, map<char *, char *> boundaries)
     }
 }
 
-void PyGeometry::setMeshRefinementOnEdge(SceneEdge *edge, map<char *, int> refinements)
+void PyGeometry::setRefinementsOnEdge(SceneEdge *edge, map<char *, int> refinements)
 {
     for (map<char*, int>::iterator i = refinements.begin(); i != refinements.end(); ++i)
     {
@@ -161,24 +161,39 @@ int PyGeometry::addLabel(double x, double y, double area, map<char *, int> refin
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnLabels->trigger();
 
-    if (x < 0.0 && Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric)
+    if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric && x < 0.0)
         throw out_of_range(QObject::tr("Radial component must be greater then or equal to zero.").toStdString());
 
     if (area < 0.0)
         throw out_of_range(QObject::tr("Area must be positive.").toStdString());
 
-    // TODO: (Franta) if (order < 0 || order > 10) throw out_of_range(QObject::tr("Polynomial order is out of range (0 - 10).").toStdString());
+    SceneLabel *label = new SceneLabel(Point(x, y), area);
 
-    SceneLabel *sceneLabel = new SceneLabel(Point(x, y), area);
+    try
+    {
+        setMaterials(label, materials);
+        setRefinements(label, refinements);
+        setPolynomialOrders(label, orders);
+    }
+    catch (std::exception& e)
+    {
+        delete label;
+        throw;
+    }
 
-    // materials
+    Agros2D::scene()->addLabel(label);
+
+    return Agros2D::scene()->labels->items().indexOf(label);
+}
+
+void PyGeometry::setMaterials(SceneLabel *label, map<char *, char *> materials)
+{
     for( map<char*, char*>::iterator i = materials.begin(); i != materials.end(); ++i)
     {
         if (!Agros2D::problem()->hasField(QString((*i).first)))
-        {
-            delete sceneLabel;
             throw invalid_argument(QObject::tr("Invalid field id '%1'.").arg(QString((*i).first)).toStdString());
-        }
+
+        qDebug() << QString((*i).second);
 
         if (QString((*i).second) != "none")
         {
@@ -189,22 +204,19 @@ int PyGeometry::addLabel(double x, double y, double area, map<char *, int> refin
                 if ((sceneMaterial->fieldId() == QString((*i).first)) && (sceneMaterial->name() == QString((*i).second)))
                 {
                     assigned = true;
-                    sceneLabel->addMarker(sceneMaterial);
+                    label->addMarker(sceneMaterial);
                     break;
                 }
             }
 
             if (!assigned)
-            {
-                delete sceneLabel;
                 throw invalid_argument(QObject::tr("Material '%1' doesn't exists.").arg(QString((*i).second)).toStdString());
-            }
         }
     }
+}
 
-    Agros2D::scene()->addLabel(sceneLabel);
-
-    // refinements
+void PyGeometry::setRefinements(SceneLabel *label, map<char *, int> refinements)
+{
     for (map<char*, int>::iterator i = refinements.begin(); i != refinements.end(); ++i)
     {
         if (!Agros2D::problem()->hasField(QString((*i).first)))
@@ -213,10 +225,12 @@ int PyGeometry::addLabel(double x, double y, double area, map<char *, int> refin
         if (((*i).second < 0) || ((*i).second > 10))
             throw out_of_range(QObject::tr("Number of refinements '%1' is out of range (0 - 10).").arg((*i).second).toStdString());
 
-        Agros2D::problem()->fieldInfo(QString((*i).first))->setLabelRefinement(sceneLabel, (*i).second);
+        Agros2D::problem()->fieldInfo(QString((*i).first))->setLabelRefinement(label, (*i).second);
     }
+}
 
-    // orders
+void PyGeometry::setPolynomialOrders(SceneLabel *label, map<char *, int> orders)
+{
     for (map<char*, int>::iterator i = orders.begin(); i != orders.end(); ++i)
     {
         if (!Agros2D::problem()->hasField(QString((*i).first)))
@@ -225,10 +239,8 @@ int PyGeometry::addLabel(double x, double y, double area, map<char *, int> refin
         if (((*i).second < 1) || ((*i).second > 10))
             throw out_of_range(QObject::tr("Polynomial order '%1' is out of range (1 - 10).").arg((*i).second).toStdString());
 
-        Agros2D::problem()->fieldInfo(QString((*i).first))->setLabelPolynomialOrder(sceneLabel, (*i).second);
+        Agros2D::problem()->fieldInfo(QString((*i).first))->setLabelPolynomialOrder(label, (*i).second);
     }
-
-    return Agros2D::scene()->labels->items().indexOf(sceneLabel);
 }
 
 void PyGeometry::removeNode(int index)
@@ -273,7 +285,7 @@ void PyGeometry::removeLabelPoint(double x, double y)
 void PyGeometry::selectNodes(vector<int> nodes)
 {
     if (!silentMode())
-    currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnNodes->trigger();
+        currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnNodes->trigger();
     Agros2D::scene()->selectNone();
 
     if (!nodes.empty())
@@ -292,14 +304,14 @@ void PyGeometry::selectNodes(vector<int> nodes)
     }
 
     if (!silentMode())
-    currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
+        currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 
 }
 
 void PyGeometry::selectEdges(vector<int> edges)
 {
     if (!silentMode())
-    currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnEdges->trigger();
+        currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnEdges->trigger();
     Agros2D::scene()->selectNone();
 
     if (!edges.empty())
@@ -318,13 +330,13 @@ void PyGeometry::selectEdges(vector<int> edges)
     }
 
     if (!silentMode())
-    currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
+        currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
 void PyGeometry::selectLabels(vector<int> labels)
 {
     if (!silentMode())
-    currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnLabels->trigger();
+        currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnLabels->trigger();
     Agros2D::scene()->selectNone();
 
     if (!labels.empty())
@@ -343,7 +355,7 @@ void PyGeometry::selectLabels(vector<int> labels)
     }
 
     if (!silentMode())
-    currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
+        currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
 void PyGeometry::selectNodePoint(double x, double y)

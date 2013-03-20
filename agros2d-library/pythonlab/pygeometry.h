@@ -81,7 +81,10 @@ class PyGeometry
         void zoomRegion(double x1, double y1, double x2, double y2);
 private:
         void setBoundaries(SceneEdge *edge, map<char *, char *> boundaries);
-        void setMeshRefinementOnEdge(SceneEdge *edge, map<char *, int> refinements);
+        void setMaterials(SceneLabel *label, map<char *, char *> materials);
+        void setRefinementsOnEdge(SceneEdge *edge, map<char *, int> refinements);
+        void setRefinements(SceneLabel *label, map<char *, int> refinements);
+        void setPolynomialOrders(SceneLabel *label, map<char *, int> orders);
 };
 
 #endif // PYTHONLABGEOMETRY_H
