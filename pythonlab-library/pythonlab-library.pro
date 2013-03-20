@@ -2,16 +2,16 @@ QT += opengl xml network webkit svg xmlpatterns widgets printsupport webkitwidge
 
 OBJECTS_DIR = build
 MOC_DIR = build
-TEMPLATE = app
+TEMPLATE = lib
 
-RC_FILE = ../src/src.rc
-RESOURCES = ../src/src.qrc
+RC_FILE = ../resources_source/resources.rc
+RESOURCES = ../resources_source/resources.qrc
 
 INCLUDEPATH += ./ \
-    ../src
+    ../util
 
 linux-g++|linux-g++-64|linux-g++-32|linux-clang {
-    TARGET = ../agros2d_pythonlab
+    TARGET = ../libs/agros2d_pythonlab_library
 }
 
 macx-g++ {
@@ -25,11 +25,10 @@ win32-msvc2010 {
     QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt
 
     LIBS += -L..
-    TARGET = ../../agros2d_pythonlab
+    TARGET = ../../agros2d_pythonlab_library
 }
 
-SOURCES += main.cpp \
-    pythonlab.cpp \
+SOURCES += pythonlab.cpp \
     pythonlab_functions.cpp \
     pythonlab/pythonconsole.cpp \
     pythonlab/pythoncompleter.cpp \
@@ -41,11 +40,11 @@ SOURCES += main.cpp \
     singleapp/qtlockedfile.cpp \
     singleapp/qtsingleapplication.cpp \
     singleapp/qtsinglecoreapplication.cpp \
-    ../src/util.cpp \
-    ../src/gui/textedit.cpp \
-    ../src/gui/filebrowser.cpp \
-    ../src/gui/about.cpp \
-    ../src/util/checkversion.cpp
+    ../util/util.cpp \
+    ../util/gui/textedit.cpp \
+    ../util/gui/filebrowser.cpp \
+    ../util/gui/about.cpp \
+    ../util/util/checkversion.cpp
 
 HEADERS  += pythonlab.h \
     pythonlab_functions.h \
@@ -59,17 +58,14 @@ HEADERS  += pythonlab.h \
     singleapp/qtlockedfile.h \
     singleapp/qtsingleapplication.h \
     singleapp/qtsinglecoreapplication.h \
-    ../src/util.h \
-    ../src/gui/textedit.h \
-    ../src/gui/filebrowser.h \
-    ../src/gui/about.h \
-    ../src/util/checkversion.h
+    ../util/util.h \
+    ../util/gui/textedit.h \
+    ../util/gui/filebrowser.h \
+    ../util/gui/about.h \
+    ../util/util/checkversion.h
 
 linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     # DEFINES += WITH_UNITY
-
-    HEADERS += singleapp/qtlockedfile_unix.h
-    SOURCES += singleapp/qtlockedfile_unix.cpp
 
     INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/include/python2.7

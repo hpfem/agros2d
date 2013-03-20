@@ -7,7 +7,7 @@ cdef extern from "limits.h":
     int c_DOUBLE_MIN "DOUBLE_MIN"
     int c_DOUBLE_MAX "DOUBLE_MAX"
 
-cdef extern from "../../src/pythonlab/pyview.h":
+cdef extern from "../../agros2d-library/pythonlab/pyview.h":
     # PyView
     cdef cppclass PyView:
         void saveImageToFile(char *file, int width, int height)  except +

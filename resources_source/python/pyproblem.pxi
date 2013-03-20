@@ -7,7 +7,7 @@ cdef extern from "limits.h":
     int c_DOUBLE_MIN "DOUBLE_MIN"
     int c_DOUBLE_MAX "DOUBLE_MAX"
 
-cdef extern from "../../src/pythonlab/pyproblem.h":
+cdef extern from "../../agros2d-library/pythonlab/pyproblem.h":
     cdef cppclass PyProblem:
         PyProblem(bool clear)
 

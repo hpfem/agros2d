@@ -5,10 +5,13 @@ TEMPLATE = app
 
 INCLUDEPATH += ../hermes2d/include
 INCLUDEPATH += ../hermes_common/include
+INCLUDEPATH += ../util
+INCLUDEPATH += ../agros2d-library
 
 LIBS += -lagros2d_hermes2d
 LIBS += -lagros2d_3rdparty
 LIBS += -lagros2d_library
+LIBS += -lagros2d_pythonlab_library
 
 HEADERS += generator.h \
     generator_module.h \

@@ -4,7 +4,7 @@ include "pygeometry.pxi"
 include "pyview.pxi"
 include "pyparticletracing.pxi"
 
-cdef extern from "../../src/pythonlab/pythonengine_agros.h":
+cdef extern from "../../agros2d-library/pythonlab/pythonengine_agros.h":
     void pyOpenDocument(char *str) except +
     void pySaveDocument(char *str) except +
 

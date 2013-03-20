@@ -16,7 +16,7 @@ cdef extern from "limits.h":
     int c_DOUBLE_MIN "DOUBLE_MIN"
     int c_DOUBLE_MAX "DOUBLE_MAX"
 
-cdef extern from "../../src/pythonlab/pyfield.h":
+cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
     cdef cppclass PyField:
         PyField(char *field_id) except +
 

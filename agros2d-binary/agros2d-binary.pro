@@ -9,9 +9,13 @@ INCLUDEPATH += ../hermes_common/include
 LIBS += -lagros2d_hermes2d
 LIBS += -lagros2d_3rdparty
 LIBS += -lagros2d_library
+LIBS += -lagros2d_pythonlab_library
 
-RC_FILE = ../src/src.rc
-RESOURCES = ../src/src.qrc
+RC_FILE = ../resources_source/resources.rc
+RESOURCES = ../resources_source/resources.qrc
+
+INCLUDEPATH += ../util \
+       ../agros2d-library
 
 SOURCES += main.cpp
 

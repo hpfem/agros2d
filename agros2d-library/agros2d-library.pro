@@ -14,34 +14,41 @@ linux-g++|linux-g++-64|linux-g++-32: CONFIG(release) {
     #system(cd ../ && ./agros2d.sh help)
 }
 
-TRANSLATIONS = lang/cs_CZ.ts \
-    lang/pl_PL.ts \
-    lang/de_DE.ts
 CODECFORTR = UTF-8
-RC_FILE = src.rc
-RESOURCES = src.qrc
 
-SOURCES += util.cpp \
+RC_FILE = ../resources_source/resources.rc
+RESOURCES = ../resources_source/resources.qrc
+
+INCLUDEPATH += ../hermes2d/include
+INCLUDEPATH += ../hermes2d/include/mesh/
+INCLUDEPATH += ../hermes_common/include
+INCLUDEPATH += ../pythonlab-library
+INCLUDEPATH += ../util
+
+
+SOURCES += ../util/util.cpp \
+    ../util/util/checkversion.cpp \
+    ../util/util/point.cpp \
+    ../util/util/system_utils.cpp \
+    ../util/gui/filebrowser.cpp \
+    ../util/gui/about.cpp \
+    ../util/gui/lineeditdouble.cpp \
+    ../util/gui/textedit.cpp \
+    ../util/gui/systemoutput.cpp \
+    ../util/indicators/indicators.cpp \
+    ../util/indicators/indicator_unity.cpp \
     value.cpp \
     scene.cpp \
     confdialog.cpp \
     util/conf.cpp \
     util/global.cpp \
-    util/checkversion.cpp \
-    util/point.cpp \
     util/xml.cpp \
     util/enums.cpp \
     util/loops.cpp \
-    util/system_utils.cpp \
     gui/common.cpp \
     gui/chart.cpp \
-    gui/filebrowser.cpp \
-    gui/imageloader.cpp \
-    gui/about.cpp \
-    gui/lineeditdouble.cpp \
+    gui/imageloader.cpp \ 
     gui/htmledit.cpp \
-    gui/textedit.cpp \
-    gui/systemoutput.cpp \
     gui/scenewidget.cpp \
     gui/groupbox.cpp \
     gui/latexviewer.cpp \
@@ -53,12 +60,6 @@ SOURCES += util.cpp \
     hermes2d/block.cpp \
     hermes2d/problem.cpp \
     hermes2d/problem_config.cpp \
-    ../pythonlab/pythonlab/pythonconsole.cpp \
-    ../pythonlab/pythonlab/pythoncompleter.cpp \
-    ../pythonlab/pythonlab/pythonhighlighter.cpp \
-    ../pythonlab/pythonlab/pythonengine.cpp \
-    ../pythonlab/pythonlab/pythonbrowser.cpp \
-    ../pythonlab/pythonlab/pythoneditor.cpp \
     mainwindow.cpp \
     scenemarker.cpp \
     scenemarkerdialog.cpp \
@@ -85,8 +86,6 @@ SOURCES += util.cpp \
     logview.cpp \
     scenebasicselectdialog.cpp \
     postprocessorview.cpp \
-    indicators/indicators.cpp \
-    indicators/indicator_unity.cpp \
     collaboration.cpp \
     resultsview.cpp \
     examplesdialog.cpp \
@@ -113,7 +112,6 @@ SOURCES += util.cpp \
     pythonlab/pyparticletracing.cpp \
     particle/particle_tracing.cpp \
     particle/mesh_hash.cpp \
-    ../pythonlab/pythonlab_functions.cpp \
     ../resources_source/classes/module_xml.cpp \
     ../resources_source/classes/coupling_xml.cpp \
     ../resources_source/classes/agros2d_structure_xml.cpp \
@@ -121,27 +119,29 @@ SOURCES += util.cpp \
     ../hermes2d/src/mesh/subdomains_h2d_xml.cpp \
     ../hermes2d/src/mesh/mesh_h2d_xml.cpp
 
-HEADERS += util.h \
+HEADERS += ../util/util.h \
+    ../util/util/checkversion.h \
+    ../util/util/point.h \
+    ../util/util/system_utils.h \
+    ../util/gui/filebrowser.h \
+    ../util/gui/about.h \
+    ../util/gui/lineeditdouble.h \
+    ../util/gui/textedit.h \
+    ../util/gui/systemoutput.h \
+    ../util/indicators/indicators.h \
+    ../util/indicators/indicator_unity.h \
     value.h \
     scene.h \
     util/global.h \
     util/constants.h \
-    util/conf.h \
-    util/checkversion.h \
-    util/point.h \
+    util/conf.h \  
     util/xml.h \
     util/loops.h \
     util/enums.h \
-    util/system_utils.h \
     gui/common.h \
     gui/chart.h \
-    gui/filebrowser.h \
     gui/imageloader.h \
-    gui/about.h \
-    gui/lineeditdouble.h \
     gui/htmledit.h \
-    gui/textedit.h \
-    gui/systemoutput.h \
     gui/scenewidget.h \
     gui/latexviewer.h \
     gui/physicalfield.h \
@@ -183,8 +183,6 @@ HEADERS += util.h \
     logview.h \
     scenebasicselectdialog.h \
     postprocessorview.h \
-    indicators/indicators.h \
-    indicators/indicator_unity.h \
     collaboration.h \
     resultsview.h \
     examplesdialog.h \
@@ -251,12 +249,9 @@ OTHER_FILES += functions.py \
     ../resources/xsd/mesh_h2d_xml.xsd \
     ../resources/xsd/coupling_xml.xsd
 
-INCLUDEPATH += ../hermes2d/include
-INCLUDEPATH += ../hermes2d/include/mesh/
-INCLUDEPATH += ../hermes_common/include
-
 LIBS += -lagros2d_hermes2d
 LIBS += -lagros2d_3rdparty
+LIBS += -lagros2d_pythonlab_library
 
 linux-clang {
     INCLUDEPATH += ../hermes2d/omp
