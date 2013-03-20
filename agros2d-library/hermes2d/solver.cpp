@@ -107,7 +107,7 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
     m_newtonSolver = new NewtonSolver<Scalar>();
     m_newtonSolver->set_verbose_output(true);
     m_newtonSolver->set_verbose_callback(processSolverOutput);
-    m_newtonSolver->set_newton_tol(block->nonlinearTolerance());
+    m_newtonSolver->set_newton_tol(block->nonlinearTolerance(), false);
     m_newtonSolver->set_newton_max_iter(block->nonlinearSteps());
     m_newtonSolver->set_max_allowed_residual_norm(1e15);
     if (block->newtonAutomaticDamping())
