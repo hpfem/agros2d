@@ -186,11 +186,15 @@ void initLists()
 
     // MatrixSolverType
     matrixSolverTypeList.insert(Hermes::SOLVER_UMFPACK, "umfpack");
-    matrixSolverTypeList.insert(Hermes::SOLVER_PETSC, "petsc");
+#ifdef WITH_MUMPS
     matrixSolverTypeList.insert(Hermes::SOLVER_MUMPS, "mumps");
+#endif
+#ifdef WITH_SUPERLU
     matrixSolverTypeList.insert(Hermes::SOLVER_SUPERLU, "superlu");
-    matrixSolverTypeList.insert(Hermes::SOLVER_AMESOS, "trilinos_amesos");
-    matrixSolverTypeList.insert(Hermes::SOLVER_AZTECOO, "trilinos_aztecoo");
+#endif
+    // matrixSolverTypeList.insert(Hermes::SOLVER_PETSC, "petsc");
+    // matrixSolverTypeList.insert(Hermes::SOLVER_AMESOS, "trilinos_amesos");
+    // matrixSolverTypeList.insert(Hermes::SOLVER_AZTECOO, "trilinos_aztecoo");
 
     spaceTypeList.insert(Hermes::Hermes2D::HERMES_H1_SPACE, "h1");
     spaceTypeList.insert(Hermes::Hermes2D::HERMES_HCURL_SPACE, "hcurl");
