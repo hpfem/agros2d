@@ -926,15 +926,6 @@ void PostprocessorWidget::doApply()
     // time step
     QApplication::processEvents();
 
-    // int actualTimeStep = selectedTimeStep();
-    // Agros2D::scene()->setActiveTimeStep(actualTimeStep);
-
-    // todo: this should be revised
-    //    if(this->selectedField()->adaptivityType() != AdaptivityType_None)
-    {
-        // Agros2D::scene()->setActiveAdaptivityStep(cmbAdaptivityStep->currentIndex());
-        // Agros2D::scene()->setActiveSolutionType((SolutionMode)cmbAdaptivitySolutionType->currentIndex());
-    }
     // read auto range values
     if (chkScalarFieldRangeAuto->isChecked())
     {

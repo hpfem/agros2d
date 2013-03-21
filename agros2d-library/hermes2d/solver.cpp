@@ -852,7 +852,7 @@ void Solver<Scalar>::resumeAdaptivityProcess(int adaptivityStep)
     BlockSolutionID solID(m_block, 0, adaptivityStep, SolutionMode_Normal);
     MultiArray<Scalar> msa = Agros2D::solutionStore()->multiArray(solID);
 
-    setActualSpaces(deepMeshAndSpaceCopy(msa.spaces(), false));
+    setActualSpaces(msa.spaces());
 
     assert(!m_hermesSolverContainer);
     m_hermesSolverContainer = HermesSolverContainer<Scalar>::factory(m_block);

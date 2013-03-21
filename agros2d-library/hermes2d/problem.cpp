@@ -456,7 +456,7 @@ double Problem::actualTimeStepLength() const
     return m_timeStepLengths.last();
 }
 
-void Problem::solveInit()
+void Problem::solveInit(bool reCreateStructure)
 {
     m_isSolving = true;
     m_timeStepLengths.clear();
@@ -487,8 +487,10 @@ void Problem::solveInit()
         Agros2D::log()->printError(tr("Problem"), e.toString());
     }
 
-    createStructure();
-
+    if(reCreateStructure || m_blocks.size() == 0)
+    {
+        createStructure();
+    }
     // todo: we should not mesh always, but we would need to refine signals to determine when is it neccesary (whether, e.g., parameters of the mesh have been changed)
     if (!mesh())
         throw AgrosSolverException(tr("Could not create mesh"));
@@ -749,7 +751,7 @@ void Problem::solveAdaptiveStepAction()
 {
     try
     {
-        solveInit();
+        solveInit(false);
     }
     catch (AgrosSolverException& e)
     {
