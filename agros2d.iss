@@ -18,7 +18,7 @@ AppPublisherURL=http://www.agros2d.org/
 AppMutex=Agros2D
 OutputDir=setup
 DefaultDirName={pf}\Agros2D
-UninstallDisplayIcon={app}\images\Agros2d.ico
+UninstallDisplayIcon={app}\images\Agros2D_icon.ico
 Compression=lzma/max
 PrivilegesRequired=admin
 
