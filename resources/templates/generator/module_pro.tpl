@@ -12,12 +12,15 @@ INCLUDEPATH += ../../hermes2d/include \
     ../../src/hermes2d \
     ../../3rdparty/dxflib
 
-INCLUDEPATH += ../hermes2d/include
-INCLUDEPATH += ../hermes_common/include
+INCLUDEPATH += ../../util
+INCLUDEPATH += ../../hermes2d/include
+INCLUDEPATH += ../../hermes_common/include
+INCLUDEPATH += ../../agros2d-library
 
 LIBS += -lagros2d_hermes2d
 LIBS += -lagros2d_3rdparty
 LIBS += -lagros2d_library
+LIBS += -lagros2d_pythonlab_library
 
 linux-clang {
     INCLUDEPATH += ../../hermes2d/omp
@@ -43,9 +46,9 @@ win32-msvc2010 {
 
     SOURCES      += ../../resources_source/classes/module_xml.cpp
     HEADERS      += ../../resources_source/classes/module_xml.h
-    HEADERS      += ../../src/hermes2d/problem.h
-    HEADERS      += ../../src/hermes2d/field.h
-    HEADERS      += ../../src/scene.h
+    HEADERS      += ../../agros2d-library/hermes2d/problem.h
+    HEADERS      += ../../agros2d-library/hermes2d/field.h
+    HEADERS      += ../../agros2d-library/scene.h
 
     LIBS += -L../../libs
     LIBS += -L../..
