@@ -248,7 +248,7 @@ void FieldWidget::createContent()
     layoutAdaptivity->addWidget(cmbAdaptivityType, 0, 1);
     layoutAdaptivity->addWidget(new QLabel(tr("Steps:")), 1, 0);
     layoutAdaptivity->addWidget(txtAdaptivitySteps, 1, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Tolerance (%):")), 2, 0);
+    layoutAdaptivity->addWidget(new QLabel(tr("Tolerance:")), 2, 0);
     layoutAdaptivity->addWidget(txtAdaptivityTolerance, 2, 1);
     // todo: meaningfull labels
     layoutAdaptivity->addWidget(new QLabel(tr("Steps back in trans:")), 3, 0);

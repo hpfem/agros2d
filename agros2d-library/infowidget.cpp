@@ -223,7 +223,7 @@ void InfoWidget::showInfo()
                 field->SetValue("NONLINEAR_STEPS_LABEL", tr("Steps:").toStdString());
                 field->SetValue("NONLINEAR_STEPS", QString::number(fieldInfo->nonlinearSteps()).toStdString());
                 field->SetValue("NONLINEAR_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
-                field->SetValue("NONLINEAR_TOLERANCE", QString::number(fieldInfo->nonlinearTolerance()).toStdString() + " %");
+                field->SetValue("NONLINEAR_TOLERANCE", QString::number(fieldInfo->nonlinearTolerance()).toStdString());
                 field->ShowSection("SOLVER_PARAMETERS_SECTION");
             }
 
