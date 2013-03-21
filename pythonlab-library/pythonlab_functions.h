@@ -24,7 +24,7 @@
 #include "pythonlab/pythonengine.h"
 #include "pythonlab/pythoneditor.h"
 
-#include "util.h"
+#include "pythonlab/pythonlabutil.h"
 
 // functions
 char *pyVersion();

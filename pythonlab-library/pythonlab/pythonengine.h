@@ -1,7 +1,7 @@
 #ifndef PYTHONENGINE_H
 #define PYTHONENGINE_H
 
-#include "util.h"
+#include "pythonlab/pythonlabutil.h"
 #include <Python.h>
 
 struct PythonVariable
@@ -11,7 +11,7 @@ struct PythonVariable
     QVariant value;
 };
 
-class AGROS_API PythonEngine : public QObject
+class AGROS_PYTHONLAB_API PythonEngine : public QObject
 {
     Q_OBJECT
 
@@ -65,13 +65,13 @@ private:
 };
 
 // create custom python engine
-AGROS_API void createPythonEngine(PythonEngine *custom = NULL);
+AGROS_PYTHONLAB_API void createPythonEngine(PythonEngine *custom = NULL);
 
 // current python engine
-AGROS_API PythonEngine *currentPythonEngine();
+AGROS_PYTHONLAB_API PythonEngine *currentPythonEngine();
 
 // silent mode
-AGROS_API void setSilentMode(bool mode);
-AGROS_API bool silentMode();
+AGROS_PYTHONLAB_API void setSilentMode(bool mode);
+AGROS_PYTHONLAB_API bool silentMode();
 
 #endif // PYTHONENGINE_H

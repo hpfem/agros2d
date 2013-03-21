@@ -40,7 +40,9 @@
 class QCompleter;
 class PythonEngine;
 
-class PythonScriptingConsole : public QTextEdit
+#include "pythonlabutil.h"
+
+class AGROS_PYTHONLAB_API PythonScriptingConsole : public QTextEdit
 {
     Q_OBJECT
 public:
@@ -124,7 +126,7 @@ private:
     QString m_currentPath;
 };
 
-class PythonScriptingConsoleView : public QDockWidget
+class AGROS_PYTHONLAB_API PythonScriptingConsoleView : public QDockWidget
 {
     Q_OBJECT
 public:
