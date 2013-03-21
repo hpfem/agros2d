@@ -11,7 +11,7 @@ static PythonEngine *pythonEngine = NULL;
 static bool m_silentMode = false;
 
 // create custom python engine
-AGROS_API void createPythonEngine(PythonEngine *custom)
+AGROS_PYTHONLAB_API void createPythonEngine(PythonEngine *custom)
 {
     if (custom)
         pythonEngine = custom;
@@ -22,18 +22,18 @@ AGROS_API void createPythonEngine(PythonEngine *custom)
 }
 
 // current python engine
-AGROS_API PythonEngine *currentPythonEngine()
+AGROS_PYTHONLAB_API PythonEngine *currentPythonEngine()
 {
     return pythonEngine;
 }
 
 // silent mode
-AGROS_API void setSilentMode(bool mode)
+AGROS_PYTHONLAB_API void setSilentMode(bool mode)
 {
     m_silentMode = mode;
 }
 
-AGROS_API bool silentMode()
+AGROS_PYTHONLAB_API bool silentMode()
 {
     return m_silentMode;
 }

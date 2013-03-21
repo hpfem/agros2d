@@ -59,6 +59,7 @@ HEADERS  += pythonlab.h \
     singleapp/qtsingleapplication.h \
     singleapp/qtsinglecoreapplication.h \
     ../util/util.h \
+    pythonlab/pythonlab_util.h
     ../util/gui/textedit.h \
     ../util/gui/filebrowser.h \
     ../util/gui/about.h \
@@ -111,6 +112,7 @@ win32-msvc2010 {
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
     #DEFINES += XERCES_STATIC_LIBRARY
+    DEFINES += AGROS_PYTHONLAB_API
     #DEFINES += XML_LIBRARY
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"
