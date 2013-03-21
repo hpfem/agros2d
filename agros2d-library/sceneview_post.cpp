@@ -380,11 +380,8 @@ void PostHermes::problemSolved()
     // adaptive step
     int lastAdaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(m_activeViewField, SolutionMode_Normal, m_activeTimeStep);
 
-    if (m_activeAdaptivityStep == NOT_FOUND_SO_FAR || activeAdaptivityStep() > lastAdaptivityStep)
-    {
-        setActiveAdaptivityStep(lastAdaptivityStep);
-        setActiveAdaptivitySolutionType(SolutionMode_Normal);
-    }
+    setActiveAdaptivityStep(lastAdaptivityStep);
+    setActiveAdaptivitySolutionType(SolutionMode_Normal);
 }
 
 void PostHermes::processMeshed()
