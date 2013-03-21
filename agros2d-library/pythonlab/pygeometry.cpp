@@ -61,7 +61,9 @@ int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle
     if (angle > 90.0 || angle < 0.0)
         throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
 
-    SceneEdge *edge = new SceneEdge(new SceneNode(Point(x1, y1)), new SceneNode(Point(x2, y2)), angle);
+    SceneEdge *edge = new SceneEdge(Agros2D::scene()->addNode(new SceneNode(Point(x1, y1))),
+                                    Agros2D::scene()->addNode(new SceneNode(Point(x2, y2))),
+                                    angle);
 
     try
     {
