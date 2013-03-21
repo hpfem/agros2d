@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
     bool beta = false;
 #endif
 
-    a.setWindowIcon(icon("agros2d_icon"));
+    a.setWindowIcon(icon("agros2d-icon").pixmap(128, 128));
     a.setApplicationVersion(versionString(VERSION_MAJOR, VERSION_MINOR, VERSION_SUB, VERSION_GIT, VERSION_YEAR, VERSION_MONTH, VERSION_DAY, beta));
     a.setOrganizationName("hpfem.org");
     a.setOrganizationDomain("hpfem.org");

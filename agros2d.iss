@@ -18,7 +18,7 @@ AppPublisherURL=http://www.agros2d.org/
 AppMutex=Agros2D
 OutputDir=setup
 DefaultDirName={pf}\Agros2D
-UninstallDisplayIcon={app}\images\Agros2D_icon.ico
+UninstallDisplayIcon={app}\images\agros2d-icon.ico
 Compression=lzma/max
 PrivilegesRequired=admin
 
@@ -34,7 +34,7 @@ Source: agros2d_solver.exe; DestDir: {app}; DestName: Agros2D_Solver.exe
 Source: agros2d_hermes2d.dll; DestDir: {app}; DestName: agros2d_hermes2d.dll
 Source: agros2d_library.dll; DestDir: {app}; DestName: agros2d_library.dll
 Source: libs\*.dll; DestDir: {app}/libs
-Source: resources\images\agros2d.ico; DestDir: {app}; DestName: Agros2D.ico
+Source: resources\images\agros2d-icon.ico; DestDir: {app}; DestName: Agros2D.ico
 Source: COPYING; DestDir: {app}; DestName: COPYING
 Source: README; DestDir: {app}; DestName: README
 Source: README_Python.txt; DestDir: {app}; DestName: README_Python.txt
