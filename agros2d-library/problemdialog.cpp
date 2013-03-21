@@ -248,7 +248,7 @@ void FieldWidget::createContent()
     layoutAdaptivity->addWidget(cmbAdaptivityType, 0, 1);
     layoutAdaptivity->addWidget(new QLabel(tr("Steps:")), 1, 0);
     layoutAdaptivity->addWidget(txtAdaptivitySteps, 1, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Tolerance:")), 2, 0);
+    layoutAdaptivity->addWidget(new QLabel(tr("Tolerance (%):")), 2, 0);
     layoutAdaptivity->addWidget(txtAdaptivityTolerance, 2, 1);
     // todo: meaningfull labels
     layoutAdaptivity->addWidget(new QLabel(tr("Steps back in trans:")), 3, 0);
@@ -265,7 +265,7 @@ void FieldWidget::createContent()
     layoutLinearity->setColumnStretch(1, 1);
     layoutLinearity->addWidget(new QLabel(tr("Linearity:")), 0, 0);
     layoutLinearity->addWidget(cmbLinearityType, 0, 1);
-    layoutLinearity->addWidget(new QLabel(tr("Tolerance (%):")), 1, 0);
+    layoutLinearity->addWidget(new QLabel(tr("Tolerance:")), 1, 0);
     layoutLinearity->addWidget(txtNonlinearTolerance, 1, 1);
     layoutLinearity->addWidget(new QLabel(tr("Steps:")), 2, 0);
     layoutLinearity->addWidget(txtNonlinearSteps, 2, 1);
@@ -366,7 +366,11 @@ void FieldWidget::load()
     txtNonlinearTolerance->setValue(m_fieldInfo->nonlinearTolerance());
     chkNewtonAutomaticDamping->setChecked(m_fieldInfo->newtonAutomaticDamping());
     txtNewtonDampingCoeff->setValue(m_fieldInfo->newtonDampingCoeff());
-    txtNewtonDampingCoeff->setEnabled(!m_fieldInfo->newtonAutomaticDamping());
+    if(m_fieldInfo->newtonAutomaticDamping())
+        lblNewtonDampingCoeff->setText("Max. damping factor");
+    else
+        lblNewtonDampingCoeff->setText("Damping factor");
+
     txtNewtonDampingNumberToIncrease->setValue(m_fieldInfo->newtonDampingNumberToIncrease());
     txtNewtonDampingNumberToIncrease->setEnabled(m_fieldInfo->newtonAutomaticDamping());
     chkPicardAndersonAcceleration->setChecked(m_fieldInfo->picardAndersonAcceleration());
@@ -474,7 +478,11 @@ void FieldWidget::doLinearityTypeChanged(int index)
 
 void FieldWidget::doNewtonDampingChanged(int index)
 {
-    txtNewtonDampingCoeff->setEnabled(!chkNewtonAutomaticDamping->isChecked());
+    if(chkNewtonAutomaticDamping->isChecked())
+        lblNewtonDampingCoeff->setText("Max. damping factor");
+    else
+        lblNewtonDampingCoeff->setText("Damping factor");
+
     txtNewtonDampingNumberToIncrease->setEnabled(chkNewtonAutomaticDamping->isChecked());
 }
 
