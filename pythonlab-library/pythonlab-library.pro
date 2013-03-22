@@ -10,6 +10,8 @@ RESOURCES = ../resources_source/resources.qrc
 INCLUDEPATH += ./ \
     ../util
 
+LIBS += -lagros2d_util
+
 linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     TARGET = ../libs/agros2d_pythonlab_library
 }
@@ -109,7 +111,7 @@ win32-msvc2010 {
     HEADERS += ../util/gui/textedit.h
     HEADERS += ../util/gui/about.h
     HEADERS += ../util/gui/filebrowser.h
-    HEADERS += singleapp/qtlockedfile_win.h
+    HEADERS += singleapp/qtlockedfile.h
     SOURCES += singleapp/qtlockedfile_win.cpp
 
     INCLUDEPATH += c:/Python27/include

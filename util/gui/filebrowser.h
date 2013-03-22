@@ -22,7 +22,7 @@
 
 #include "../util.h"
 
-class FileBrowser : public QListWidget
+class AGROS_API FileBrowser : public QListWidget
 {
     Q_OBJECT
 
