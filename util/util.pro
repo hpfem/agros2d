@@ -52,7 +52,7 @@ win32-msvc2010 {
     QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
-    DEFINES += AGROS_API
+    DEFINES += AGROS_DLL
 
     LIBS += -lpsapi # process memory usage (system_utils.h)
 }

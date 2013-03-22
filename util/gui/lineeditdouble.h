@@ -20,7 +20,7 @@
 #ifndef GUI_LINEEDIT_H
 #define GUI_LINEEDIT_H
 
-#include "util.h"
+#include "../util.h"
 
 #include <QtGui>
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
