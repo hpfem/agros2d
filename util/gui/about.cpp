@@ -19,6 +19,7 @@
 
 #include "about.h"
 
+#include "../util.h"
 #include "../util/checkversion.h"
 
 AboutDialog::AboutDialog(QWidget *parent) : QDialog(parent)

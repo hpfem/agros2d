@@ -45,8 +45,8 @@
 #include <Python.h>
 
 // static history for all consoles
-QStringList PythonScriptingConsole::history;
-int PythonScriptingConsole::historyPosition;
+static QStringList history;
+static int historyPosition;
 
 PythonScriptingConsole::PythonScriptingConsole(PythonEngine *pythonEngine, QWidget* parent)
     : QTextEdit(parent), pythonEngine(pythonEngine)
@@ -55,7 +55,7 @@ PythonScriptingConsole::PythonScriptingConsole(PythonEngine *pythonEngine, QWidg
     m_defaultTextCharacterFormat = currentCharFormat();
 
     // _context = context;
-    PythonScriptingConsole::historyPosition = 0;
+    historyPosition = 0;
 
     completer = new PythonCompleter();
     completer->setWidget(this);
@@ -66,18 +66,18 @@ PythonScriptingConsole::PythonScriptingConsole(PythonEngine *pythonEngine, QWidg
     welcomeMessage();
 
     QSettings settings;
-    PythonScriptingConsole::history = settings.value("PythonScriptingConsole/History").value<QStringList>();
-    PythonScriptingConsole::historyPosition = PythonScriptingConsole::history.length();
+    history = settings.value("PythonScriptingConsole/History").value<QStringList>();
+    historyPosition = history.length();
 }
 
 PythonScriptingConsole::~PythonScriptingConsole()
 {
     // strip history
-    while (PythonScriptingConsole::history.count() > 50)
-        PythonScriptingConsole::history.removeFirst();
+    while (history.count() > 50)
+        history.removeFirst();
 
     QSettings settings;
-    settings.setValue("PythonScriptingConsole/History", PythonScriptingConsole::history);
+    settings.setValue("PythonScriptingConsole/History", history);
 
     delete completer;
 }
@@ -169,8 +169,8 @@ void PythonScriptingConsole::executeLine(const QString &str, bool storeOnly)
     if (!code.isEmpty())
     {
         // Update the history
-        PythonScriptingConsole::history << code;
-        PythonScriptingConsole::historyPosition = PythonScriptingConsole::history.count();
+        history << code;
+        historyPosition = history.count();
         m_currentMultiLineCode += code + "\n";
 
         emit historyChanged(code);
@@ -423,9 +423,9 @@ void PythonScriptingConsole::keyPressEvent(QKeyEvent* event)
     case Qt::Key_Up:
     {
         // Display the previous command in the history
-        if (PythonScriptingConsole::historyPosition > 0)
+        if (historyPosition > 0)
         {
-            PythonScriptingConsole::historyPosition--;
+            historyPosition--;
             changeHistory();
         }
 
@@ -436,16 +436,16 @@ void PythonScriptingConsole::keyPressEvent(QKeyEvent* event)
     case Qt::Key_Down:
     {
         // clean input
-        if (PythonScriptingConsole::historyPosition+1 == PythonScriptingConsole::history.count())
+        if (historyPosition+1 == history.count())
         {
             clearCommandLine();
-            PythonScriptingConsole::historyPosition = PythonScriptingConsole::history.count();
+            historyPosition = history.count();
         }
 
         // Display the next command in the history
-        if (PythonScriptingConsole::historyPosition+1 < PythonScriptingConsole::history.count())
+        if (historyPosition+1 < history.count())
         {
-            PythonScriptingConsole::historyPosition++;
+            historyPosition++;
             changeHistory();
         }
 
@@ -660,7 +660,7 @@ void PythonScriptingConsole::changeHistory()
     textCursor.setPosition(commandPromptPosition(), QTextCursor::KeepAnchor);
 
     // ... and replace it with the history text.
-    textCursor.insertText(PythonScriptingConsole::history.value(PythonScriptingConsole::historyPosition));
+    textCursor.insertText(history.value(historyPosition));
 
     textCursor.movePosition(QTextCursor::End);
     setTextCursor(textCursor);
@@ -733,8 +733,8 @@ PythonScriptingHistoryView::PythonScriptingHistoryView(PythonScriptingConsole *c
     trvHistory->setHeaderHidden(true);
     trvHistory->setIndentation(2);
 
-    if (PythonScriptingConsole::history.count() > 0)
-        historyChanged(PythonScriptingConsole::history.last());
+    if (history.count() > 0)
+        historyChanged(history.last());
 
     connect(trvHistory, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(executeCommand(QTreeWidgetItem *, int)));
 
@@ -745,9 +745,9 @@ void PythonScriptingHistoryView::historyChanged(const QString &code)
 {
     trvHistory->clear();
 
-    if (PythonScriptingConsole::history.count() > 0)
+    if (history.count() > 0)
     {
-        foreach (QString historyItem, PythonScriptingConsole::history)
+        foreach (QString historyItem, history)
         {
             QTreeWidgetItem *item = new QTreeWidgetItem(trvHistory);
             item->setText(0, historyItem);

@@ -20,13 +20,15 @@
 #ifndef SYSTEM_UTILS_H
 #define SYSTEM_UTILS_H
 
+#include "../util.h"
+
 // Returns the peak (maximum so far) resident set size (physical
 // memory use) measured in bytes, or zero if the value cannot be
 // determined on this OS.
-int getPeakRSS();
+AGROS_API int getPeakRSS();
 
 // Returns the current resident set size (physical memory use) measured
 // in bytes, or zero if the value cannot be determined on this OS.
-int getCurrentRSS();
+AGROS_API int getCurrentRSS();
 
 #endif // SYSTEM_UTILS_H

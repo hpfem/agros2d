@@ -90,7 +90,7 @@ using namespace std;
 
 // approximation of atan2(y, x).
 // maximum error of 0.0061 radians at 0.35 degrees
-inline double fastatan2(double y, double x)
+AGROS_API inline double fastatan2(double y, double x)
 {
     double abs_y = std::fabs(y) + 1e-8;
 
@@ -111,8 +111,10 @@ inline double fastatan2(double y, double x)
     return (y < 0) ? - angle : angle;
 }
 
+AGROS_API QString stringListToString(const QStringList &list);
+
 // show page
-void showPage(const QString &str = "");
+AGROS_API void showPage(const QString &str = "");
 
 // set gui style
 AGROS_API void setGUIStyle(const QString &styleName);
@@ -121,7 +123,7 @@ AGROS_API void setGUIStyle(const QString &styleName);
 AGROS_API void setLanguage(const QString &locale);
 
 // get available languages
-QStringList availableLanguages();
+AGROS_API QStringList availableLanguages();
 
 // get icon with respect to actual theme
 AGROS_API QIcon icon(const QString &name);
@@ -130,26 +132,26 @@ AGROS_API QIcon icon(const QString &name);
 AGROS_API QString datadir();
 
 // get external js functions
-QString externalFunctions();
+AGROS_API QString externalFunctions();
 
 // get temp dir
-QString tempProblemDir();
-QString cacheProblemDir();
+AGROS_API QString tempProblemDir();
+AGROS_API QString cacheProblemDir();
 
 // get temp filename
-QString tempProblemFileName();
+AGROS_API QString tempProblemFileName();
 
 // convert time in ms to QTime
 AGROS_API QTime milisecondsToTime(int ms);
 
 // remove directory content
-bool removeDirectory(const QDir &dir);
+AGROS_API bool removeDirectory(const QDir &dir);
 
 // sleep function
-void msleep(unsigned long msecs);
+AGROS_API void msleep(unsigned long msecs);
 
 // read file content
-QByteArray readFileContentByteArray(const QString &fileName);
+AGROS_API QByteArray readFileContentByteArray(const QString &fileName);
 AGROS_API QString readFileContent(const QString &fileName);
 
 // write content into the file
@@ -158,10 +160,10 @@ AGROS_API void writeStringContent(const QString &fileName, QString *content);
 AGROS_API void writeStringContentByteArray(const QString &fileName, QByteArray content);
 
 // append to the file
-void appendToFile(const QString &fileName, const QString &str);
+AGROS_API void appendToFile(const QString &fileName, const QString &str);
 
 // join version
-inline QString versionString(int major, int minor, int sub, int git, int year, int month, int day, bool beta)
+AGROS_API inline QString versionString(int major, int minor, int sub, int git, int year, int month, int day, bool beta)
 {
     return QString("%1.%2.%3.%4 %5 (%6-%7-%8)")
             .arg(major)

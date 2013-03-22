@@ -19,7 +19,7 @@
 
 #include "textedit.h"
 
-#include "util.h"
+#include "../util.h"
 
 TextBlockData::TextBlockData()
 {

@@ -20,7 +20,7 @@
 #ifndef GUI_FILEBROWSER_H
 #define GUI_FILEBROWSER_H
 
-#include "util.h"
+#include "../util.h"
 
 class FileBrowser : public QListWidget
 {

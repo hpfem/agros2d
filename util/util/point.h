@@ -20,6 +20,8 @@
 #ifndef UTIL_POINT_H
 #define UTIL_POINT_H
 
+#include "../util.h"
+
 #include <QtCore>
 #include <cmath>
 #include <iostream>
@@ -27,16 +29,16 @@
 struct Point;
 
 // return center
-Point centerPoint(const Point &pointStart, const Point &pointEnd, double angle);
+AGROS_API Point centerPoint(const Point &pointStart, const Point &pointEnd, double angle);
 
 // intersection of two lines
-bool intersectionLines(const Point &p1s, const Point &p1e, const Point &p2s, const Point &p2e, Point &out);
+AGROS_API bool intersectionLines(const Point &p1s, const Point &p1e, const Point &p2s, const Point &p2e, Point &out);
 
 // intersection of two lines or line and arc
-QList<Point> intersection(const Point &p1s, const Point &p1e, const Point &center1, double radius1, double angle1,
-                          const Point &p2s, const Point &p2e, const Point &center2, double radius2, double angle2);
+AGROS_API QList<Point> intersection(const Point &p1s, const Point &p1e, const Point &center1, double radius1, double angle1,
+                                    const Point &p2s, const Point &p2e, const Point &center2, double radius2, double angle2);
 
-struct Point
+struct AGROS_API  Point
 {
     double x, y;
 

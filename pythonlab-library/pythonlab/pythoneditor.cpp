@@ -24,7 +24,6 @@
 #include "pythonengine.h"
 #include "pythoncompleter.h"
 
-#include "pythonlab/pythonlabutil.h"
 // #include "util/constants.h"
 #include "gui/filebrowser.h"
 #include "gui/about.h"

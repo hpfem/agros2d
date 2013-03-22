@@ -20,12 +20,14 @@
 #ifndef GUI_LINEEDIT_H
 #define GUI_LINEEDIT_H
 
+#include "util.h"
+
 #include <QtGui>
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QtWidgets>
 #endif
 
-class LineEditDouble : public QLineEdit
+class AGROS_API LineEditDouble : public QLineEdit
 {
     Q_OBJECT
 public:

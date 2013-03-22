@@ -19,7 +19,7 @@
 
 #include "point.h"
 
-#include "util.h"
+#include "../util.h"
 
 Point centerPoint(const Point &pointStart, const Point &pointEnd, double angle)
 {

@@ -19,7 +19,7 @@
 
 #include "lineeditdouble.h"
 
-#include "util.h"
+#include "../util.h"
 
 LineEditDouble::LineEditDouble(double val, bool validator, QWidget *parent)
     : QLineEdit(parent), m_validator(NULL)

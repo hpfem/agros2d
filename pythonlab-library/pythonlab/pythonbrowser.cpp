@@ -19,7 +19,6 @@
 
 #include "pythonbrowser.h"
 
-#include "pythonlab/pythonlabutil.h"
 #include "pythonengine.h"
 #include "pythonconsole.h"
 

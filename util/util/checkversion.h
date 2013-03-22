@@ -20,13 +20,15 @@
 #ifndef UTIL_CHECKVERSION_H
 #define UTIL_CHECKVERSION_H
 
+#include "../util.h"
+
 #include <QtGui>
 #include <QtNetwork>
 
 // check for new version
-void checkForNewVersion(bool quiet = false);
+AGROS_API void checkForNewVersion(bool quiet = false);
 
-class CheckVersion : public QObject
+class AGROS_API CheckVersion : public QObject
 {
     Q_OBJECT
 public:

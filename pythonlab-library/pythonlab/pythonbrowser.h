@@ -1,7 +1,7 @@
 #ifndef PYTHONVARIABLES_H
 #define PYTHONVARIABLES_H
 
-#include "pythonlab/pythonlabutil.h"
+#include "util.h"
 
 class PythonEngine;
 class PythonScriptingConsole;

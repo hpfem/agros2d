@@ -47,9 +47,25 @@ win32-msvc2010 {
     QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
+    DEFINES += QT_QTSINGLEAPPLICATION_EXPORT
+    HEADERS += ../pythonlab-library/singleapp/qtsingleapplication.h
+
+    INCLUDEPATH += c:/Python27/include
+    LIBS += -Lc:/Python27/libs
+    LIBS += -lvcomp
+    LIBS += -Lc:/hpfem/hermes/dependencies/lib
+    LIBS += -Ld:/hpfem/hermes/dependencies/lib
+
     LIBS += -L..
     LIBS += -L../libs
     TARGET = ../../agros2d_pythonlab
+
+    CONFIG(release, debug|release) {
+        LIBS += -lpython27
+    }
+    CONFIG(debug, debug|release) {
+        LIBS += -lpython27_d
+    }
 }
 
 include(../agros2d_version.pri)

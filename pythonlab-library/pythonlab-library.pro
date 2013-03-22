@@ -100,12 +100,15 @@ win32-msvc2010 {
     QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
-    #DEFINES += XERCES_STATIC_LIBRARY
-    DEFINES += AGROS_PYTHONLAB_API
+    DEFINES += QT_QTSINGLEAPPLICATION_EXPORT
+    DEFINES += AGROS_DLL
     #DEFINES += XML_LIBRARY
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"
 
+    HEADERS += ../util/gui/textedit.h
+    HEADERS += ../util/gui/about.h
+    HEADERS += ../util/gui/filebrowser.h
     HEADERS += singleapp/qtlockedfile_win.h
     SOURCES += singleapp/qtlockedfile_win.cpp
 
@@ -124,7 +127,7 @@ win32-msvc2010 {
     LIBS += -lpthreadVCE2
     LIBS += -ladvapi32
     LIBS += -lws2_32
-    
+
     CONFIG(release, debug|release) {
         LIBS += -lpython27
     }

@@ -22,7 +22,7 @@
 #endif
 
 #include "indicator_unity.h"
-#include "util.h"
+#include "../util.h"
 
 namespace Unity
 {

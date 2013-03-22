@@ -20,7 +20,7 @@
 #ifndef GUI_ABOUT_H
 #define GUI_ABOUT_H
 
-#include "util.h"
+#include "../util.h"
 
 class AboutDialog : public QDialog
 {

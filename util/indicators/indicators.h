@@ -20,7 +20,7 @@
 #ifndef INDICATORS_H
 #define INDICATORS_H
 
-#include "util.h"
+#include "../util.h"
 
 namespace Indicator
 {

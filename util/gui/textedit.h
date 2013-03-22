@@ -20,19 +20,7 @@
 #ifndef GUI_TEXTEDIT_H
 #define GUI_TEXTEDIT_H
 
-#include "util.h"
-
-#ifdef Q_WS_WIN
-  // DLL build
-  #ifdef AGROS_PYTHONLAB_DLL
-    #define _AGROS_API __declspec(dllexport)
-  // DLL usage
-  #else
-    #define _AGROS_API AGROS_API
-  #endif
-#else
-  #define _AGROS_API AGROS_API
-#endif
+#include "../util.h"
 
 struct ParenthesisInfo
 {
@@ -40,7 +28,7 @@ struct ParenthesisInfo
     int position;
 };
 
-class _AGROS_API TextBlockData : public QTextBlockUserData
+class AGROS_API TextBlockData : public QTextBlockUserData
 {
 public:
     TextBlockData();
@@ -52,7 +40,7 @@ private:
     QVector<ParenthesisInfo *> m_parentheses;
 };
 
-class _AGROS_API PlainTextEditParenthesis : public QPlainTextEdit
+class AGROS_API PlainTextEditParenthesis : public QPlainTextEdit
 {
     Q_OBJECT
 

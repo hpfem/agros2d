@@ -40,18 +40,14 @@
 class QCompleter;
 class PythonEngine;
 
-#include "pythonlabutil.h"
+#include "util.h"
 
-class AGROS_PYTHONLAB_API PythonScriptingConsole : public QTextEdit
+class AGROS_API PythonScriptingConsole : public QTextEdit
 {
     Q_OBJECT
 public:
     PythonScriptingConsole(PythonEngine *pythonEngine, QWidget* parent = NULL);
     ~PythonScriptingConsole();
-
-    // static history for all consoles
-    static QStringList history;
-    static int historyPosition;
 
 signals:
     void historyChanged(const QString &code);
@@ -126,7 +122,7 @@ private:
     QString m_currentPath;
 };
 
-class AGROS_PYTHONLAB_API PythonScriptingConsoleView : public QDockWidget
+class AGROS_API PythonScriptingConsoleView : public QDockWidget
 {
     Q_OBJECT
 public:
@@ -146,7 +142,7 @@ private slots:
 
 };
 
-class PythonScriptingHistoryView : public QDockWidget
+class AGROS_API PythonScriptingHistoryView : public QDockWidget
 {
     Q_OBJECT
 public:

@@ -19,7 +19,7 @@
 
 #include "filebrowser.h"
 
-#include "util.h"
+#include "../util.h"
 
 FileBrowser::FileBrowser(QWidget *parent) : QListWidget(parent)
 {

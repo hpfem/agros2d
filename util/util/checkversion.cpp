@@ -19,7 +19,7 @@
 
 #include "checkversion.h"
 
-#include "util.h"
+#include "../util.h"
 
 static CheckVersion *checkVersion = NULL;
 void checkForNewVersion(bool quiet)

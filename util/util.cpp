@@ -48,7 +48,7 @@ QString stringListToString(const QStringList &list)
     return out;
 }
 
-AGROS_API void setGUIStyle(const QString &styleName)
+void setGUIStyle(const QString &styleName)
 {
     // standard style
     QStyle *style = QStyleFactory::create(styleName);
@@ -60,7 +60,7 @@ AGROS_API void setGUIStyle(const QString &styleName)
     }
 }
 
-AGROS_API void setLanguage(const QString &locale)
+void setLanguage(const QString &locale)
 {
     // non latin-1 chars
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
@@ -125,7 +125,7 @@ QStringList availableLanguages()
     return list;
 }
 
-AGROS_API QIcon icon(const QString &name)
+QIcon icon(const QString &name)
 {
     QString fileName;
 
@@ -170,7 +170,7 @@ AGROS_API QIcon icon(const QString &name)
     return QIcon();
 }
 
-AGROS_API QString datadir()
+QString datadir()
 {
     // windows and local installation
     if (QFile::exists(QApplication::applicationDirPath() + "/functions_pythonlab.py"))

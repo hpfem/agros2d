@@ -20,7 +20,7 @@
 #ifndef GUI_SYSTEMOUTPUT_H
 #define GUI_SYSTEMOUTPUT_H
 
-#include "util.h"
+#include "../util.h"
 
 class SystemOutputWidget : public QDialog
 {
