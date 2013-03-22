@@ -32,7 +32,8 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
 
     # install pixmap
     pixmap.path = $${PREFIX}/share/pixmaps
-    pixmap.files = resources/images/agros2d.xpm
+    pixmap.files = resources/images/agros2d-icon.xpm
+    pixmap.extra = cp resources/images/agros2d-icon.xpm resources/images/agros2d.xpm
 
     # install desktop
     desktop.path = $${PREFIX}/share/applications
@@ -41,7 +42,9 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     # libs
     system(mkdir libs)
     system(touch libs/libagros2d_3rdparty.so.1.0.0)
+    system(touch libs/libagros2d_util.so.1.0.0)
     system(touch libs/libagros2d_hermes2d.so.1.0.0)
+    system(touch libs/libagros2d_pythonlab_library.so.1.0.0)
     system(touch libs/libagros2d_library.so.1.0.0)
     system(touch libs/libagros2d_plugin_acoustic.so)
     system(touch libs/libagros2d_plugin_current.so)
