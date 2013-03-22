@@ -20,6 +20,7 @@ INCLUDEPATH += ../../agros2d-library
 LIBS += -lagros2d_hermes2d
 LIBS += -lagros2d_3rdparty
 LIBS += -lagros2d_library
+LIBS += -lagros2d_util
 LIBS += -lagros2d_pythonlab_library
 
 linux-clang {

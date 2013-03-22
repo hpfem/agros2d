@@ -26,18 +26,7 @@ INCLUDEPATH += ../pythonlab-library
 INCLUDEPATH += ../util
 
 
-SOURCES += ../util/util.cpp \
-    ../util/util/checkversion.cpp \
-    ../util/util/point.cpp \
-    ../util/util/system_utils.cpp \
-    ../util/gui/filebrowser.cpp \
-    ../util/gui/about.cpp \
-    ../util/gui/lineeditdouble.cpp \
-    ../util/gui/textedit.cpp \
-    ../util/gui/systemoutput.cpp \
-    ../util/indicators/indicators.cpp \
-    ../util/indicators/indicator_unity.cpp \
-    value.cpp \
+SOURCES += value.cpp \
     scene.cpp \
     confdialog.cpp \
     util/conf.cpp \
@@ -119,18 +108,7 @@ SOURCES += ../util/util.cpp \
     ../hermes2d/src/mesh/subdomains_h2d_xml.cpp \
     ../hermes2d/src/mesh/mesh_h2d_xml.cpp
 
-HEADERS += ../util/util.h \
-    ../util/util/checkversion.h \
-    ../util/util/point.h \
-    ../util/util/system_utils.h \
-    ../util/gui/filebrowser.h \
-    ../util/gui/about.h \
-    ../util/gui/lineeditdouble.h \
-    ../util/gui/textedit.h \
-    ../util/gui/systemoutput.h \
-    ../util/indicators/indicators.h \
-    ../util/indicators/indicator_unity.h \
-    value.h \
+HEADERS += value.h \
     scene.h \
     util/global.h \
     util/constants.h \
@@ -251,6 +229,7 @@ OTHER_FILES += functions.py \
 
 LIBS += -lagros2d_hermes2d
 LIBS += -lagros2d_3rdparty
+LIBS += -lagros2d_util
 LIBS += -lagros2d_pythonlab_library
 
 linux-clang {

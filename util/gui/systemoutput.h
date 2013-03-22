@@ -20,10 +20,6 @@
 #ifndef GUI_SYSTEMOUTPUT_H
 #define GUI_SYSTEMOUTPUT_H
 
-#include <qwt_plot.h>
-#include <qwt_plot_curve.h>
-#include <qwt_plot_zoomer.h>
-
 #include "util.h"
 
 class SystemOutputWidget : public QDialog

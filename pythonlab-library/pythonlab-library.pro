@@ -39,12 +39,7 @@ SOURCES += pythonlab.cpp \
     singleapp/qtlocalpeer.cpp \
     singleapp/qtlockedfile.cpp \
     singleapp/qtsingleapplication.cpp \
-    singleapp/qtsinglecoreapplication.cpp \
-    ../util/util.cpp \
-    ../util/gui/textedit.cpp \
-    ../util/gui/filebrowser.cpp \
-    ../util/gui/about.cpp \
-    ../util/util/checkversion.cpp
+    singleapp/qtsinglecoreapplication.cpp
 
 HEADERS  += pythonlab.h \
     pythonlab_functions.h \
@@ -57,13 +52,7 @@ HEADERS  += pythonlab.h \
     singleapp/qtlocalpeer.h \
     singleapp/qtlockedfile.h \
     singleapp/qtsingleapplication.h \
-    singleapp/qtsinglecoreapplication.h \
-    ../util/util.h \
-    pythonlab/pythonlab_util.h
-    ../util/gui/textedit.h \
-    ../util/gui/filebrowser.h \
-    ../util/gui/about.h \
-    ../util/util/checkversion.h
+    singleapp/qtsinglecoreapplication.h
 
 linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     # DEFINES += WITH_UNITY

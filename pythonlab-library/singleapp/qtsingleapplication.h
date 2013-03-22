@@ -46,11 +46,7 @@ class QtLocalPeer;
 
 #if defined(Q_WS_WIN) || defined(Q_OS_WIN32)
 #  if !defined(QT_QTSINGLEAPPLICATION_EXPORT) && !defined(QT_QTSINGLEAPPLICATION_IMPORT)
-#ifdef AGROS_PYTHONLAB_DLL
-#    define QT_QTSINGLEAPPLICATION_EXPORT __declspec(dllexport)
-#else
-#    define QT_QTSINGLEAPPLICATION_EXPORT __declspec(dllimport)
-#endif
+#    define QT_QTSINGLEAPPLICATION_EXPORT
 #  elif defined(QT_QTSINGLEAPPLICATION_IMPORT)
 #    if defined(QT_QTSINGLEAPPLICATION_EXPORT)
 #      undef QT_QTSINGLEAPPLICATION_EXPORT
