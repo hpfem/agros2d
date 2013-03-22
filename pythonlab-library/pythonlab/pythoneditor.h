@@ -23,6 +23,7 @@
 #include <QtGui>
 #include <QtCore>
 
+#include "pythonlabutil.h"
 #include "gui/textedit.h"
 
 class PythonEngine;
@@ -53,7 +54,7 @@ struct ExpressionResult;
     const QFont FONT = QFont("Monaco", 12);
 #endif
 
-class AGROS_API PythonEditorWidget : public QWidget
+class AGROS_PYTHONLAB_API PythonEditorWidget : public QWidget
 {
     Q_OBJECT
 public:
@@ -81,7 +82,7 @@ private slots:
     void doHighlightLine(QTreeWidgetItem *item, int role);   
 };
 
-class AGROS_API PythonEditorDialog : public QMainWindow
+class AGROS_PYTHONLAB_API PythonEditorDialog : public QMainWindow
 {
     Q_OBJECT
 public:
@@ -216,7 +217,7 @@ private slots:
     void doOptionsPrintStacktrace();
 };
 
-class AGROS_API ScriptEditor : public PlainTextEditParenthesis
+class AGROS_PYTHONLAB_API ScriptEditor : public PlainTextEditParenthesis
 {
     Q_OBJECT
 
@@ -258,7 +259,7 @@ private:
     QWidget *lineNumberArea;
 };
 
-class AGROS_API ScriptEditorLineNumberArea : public QWidget
+class AGROS_PYTHONLAB_API ScriptEditorLineNumberArea : public QWidget
 {
 public:
     ScriptEditorLineNumberArea(ScriptEditor *editor) : QWidget(editor)
@@ -280,7 +281,7 @@ private:
 
 // ************************************************************************************************************
 
-class AGROS_API SearchWidget: public QWidget
+class AGROS_PYTHONLAB_API SearchWidget: public QWidget
 {
     Q_OBJECT
 public:
