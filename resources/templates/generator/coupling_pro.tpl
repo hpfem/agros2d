@@ -8,8 +8,6 @@ MOC_DIR = ../build
 
 INCLUDEPATH += ../../hermes2d/include \
     ../../hermes_common/include \
-    ../../src \
-    ../../src/hermes2d \
     ../../3rdparty/dxflib
 
 INCLUDEPATH += ../../util
