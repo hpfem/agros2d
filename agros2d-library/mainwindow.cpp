@@ -58,7 +58,7 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
-    setWindowIcon(icon("agros2d-icon").pixmap(128, 128));
+    setWindowIcon(icon("agros2d"));
 
     Agros2D::createSingleton();
 

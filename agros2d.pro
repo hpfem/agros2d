@@ -32,8 +32,7 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
 
     # install pixmap
     pixmap.path = $${PREFIX}/share/pixmaps
-    pixmap.files = resources/images/agros2d-icon.xpm
-    pixmap.extra = cp resources/images/agros2d-icon.xpm resources/images/agros2d.xpm
+    pixmap.files = resources/images/agros2d.xpm
 
     # install desktop
     desktop.path = $${PREFIX}/share/applications

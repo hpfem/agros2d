@@ -1,8 +1,8 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="agros2d.png">../resources_source/images/agros2d.png</file>
-        <file alias="agros2d-icon.png">../resources_source/images/agros2d-icon.png</file>
+        <file alias="agros2d-pixmap.png">../resources_source/images/agros2d-pixmap.png</file>
         <file alias="agros2d-logo.png">../resources_source/images/agros2d-logo.png</file>
+        <file alias="agros2d.png">../resources_source/images/agros2d.png</file>
         <file alias="pythonlab.png">../resources_source/images/pythonlab.png</file>
         <file alias="application-exit.png">../resources_source/images/application-exit.png</file>
         <file alias="browser.png">../resources_source/images/browser.png</file>
