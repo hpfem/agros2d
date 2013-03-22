@@ -8,11 +8,11 @@ INCLUDEPATH += ../hermes_common/include
 INCLUDEPATH += ../util
 INCLUDEPATH += ../agros2d-library
 
-LIBS += -lagros2d_hermes2d
-LIBS += -lagros2d_3rdparty
-LIBS += -lagros2d_util
+LIBS += -lagros_3rdparty
+LIBS += -lagros_util
+LIBS += -lagros_pythonlab_library
 LIBS += -lagros2d_library
-LIBS += -lagros2d_pythonlab_library
+LIBS += -lagros2d_hermes2d
 
 HEADERS += generator.h \
     generator_module.h \

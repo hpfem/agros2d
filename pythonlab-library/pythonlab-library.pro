@@ -10,10 +10,10 @@ RESOURCES = ../resources_source/resources.qrc
 INCLUDEPATH += ./ \
     ../util
 
-LIBS += -lagros2d_util
+LIBS += -lagros_util
 
 linux-g++|linux-g++-64|linux-g++-32|linux-clang {
-    TARGET = ../libs/agros2d_pythonlab_library
+    TARGET = ../libs/agros_pythonlab_library
 }
 
 macx-g++ {

@@ -35,16 +35,16 @@ HEADERS += util.h \
     indicators/indicator_unity.h
 
 linux-g++|linux-g++-64|linux-g++-32|linux-clang {
-    TARGET = ../libs/agros2d_util
+    TARGET = ../libs/agros_util
 }
 
 macx-g++ {
     CONFIG += staticlib
-    TARGET = ../libs/agros2d_util
+    TARGET = ../libs/agros_util
 }
 
 win32-msvc2010 {
-    TARGET = ../../agros2d_util
+    TARGET = ../../agros_util
 
     # /openmp
     QMAKE_CXXFLAGS += /MP /Zc:wchar_t

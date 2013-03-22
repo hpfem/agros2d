@@ -62,7 +62,7 @@ HEADERS += \
     stb_truetype/stb_truetype.h
 
 linux-g++|linux-g++-64|linux-g++-32|linux-clang {
-    TARGET = ../libs/agros2d_3rdparty
+    TARGET = ../libs/agros_3rdparty
 
     INCLUDEPATH += ctemplate \
             ctemplate/linux \
@@ -71,7 +71,7 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
 
 macx-g++ {
     CONFIG += staticlib
-    TARGET = ../libs/agros2d_3rdparty
+    TARGET = ../libs/agros_3rdparty
     INCLUDEPATH += ctemplate \
             ctemplate/osx \
             .
@@ -79,7 +79,7 @@ macx-g++ {
 
 win32-msvc2010 {
     CONFIG += staticlib
-    TARGET = ../../libs/agros2d_3rdparty
+    TARGET = ../../libs/agros_3rdparty
 
     # /openmp
     QMAKE_CXXFLAGS += /MP /Zc:wchar_t

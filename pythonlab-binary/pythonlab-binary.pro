@@ -8,9 +8,9 @@ TEMPLATE = app
 INCLUDEPATH += ../util \
        ../pythonlab-library
 
-LIBS += -lagros2d_util
-LIBS += -lagros2d_3rdparty
-LIBS += -lagros2d_pythonlab_library
+LIBS += -lagros_3rdparty
+LIBS += -lagros_util
+LIBS += -lagros_pythonlab_library
 
 RC_FILE = ../resources_source/resources.rc
 RESOURCES = ../resources_source/resources.qrc
@@ -22,7 +22,7 @@ linux-clang {
 }
 
 linux-g++|linux-g++-64|linux-g++-32|linux-clang {
-    TARGET = ../agros2d_pythonlab
+    TARGET = ../agros_pythonlab
 
     INCLUDEPATH += /usr/include
     INCLUDEPATH += /usr/include/python2.7

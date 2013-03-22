@@ -25,10 +25,10 @@ INCLUDEPATH += ../hermes_common/include
 INCLUDEPATH += ../pythonlab-library
 INCLUDEPATH += ../util
 
+LIBS += -lagros_3rdparty
+LIBS += -lagros_util
+LIBS += -lagros_pythonlab_library
 LIBS += -lagros2d_hermes2d
-LIBS += -lagros2d_3rdparty
-LIBS += -lagros2d_util
-LIBS += -lagros2d_pythonlab_library
 
 SOURCES += value.cpp \
     scene.cpp \
@@ -230,11 +230,6 @@ OTHER_FILES += functions.py \
     ../resources/xsd/module_xml.xsd \
     ../resources/xsd/mesh_h2d_xml.xsd \
     ../resources/xsd/coupling_xml.xsd
-
-LIBS += -lagros2d_hermes2d
-LIBS += -lagros2d_3rdparty
-LIBS += -lagros2d_util
-LIBS += -lagros2d_pythonlab_library
 
 linux-clang {
     INCLUDEPATH += ../hermes2d/omp
