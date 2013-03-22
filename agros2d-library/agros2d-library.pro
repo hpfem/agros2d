@@ -25,6 +25,10 @@ INCLUDEPATH += ../hermes_common/include
 INCLUDEPATH += ../pythonlab-library
 INCLUDEPATH += ../util
 
+LIBS += -lagros2d_hermes2d
+LIBS += -lagros2d_3rdparty
+LIBS += -lagros2d_util
+LIBS += -lagros2d_pythonlab_library
 
 SOURCES += value.cpp \
     scene.cpp \
@@ -281,6 +285,17 @@ win32-msvc2010 {
     DEFINES += _WINDOWS
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"
+
+    HEADERS += ../util/util/checkversion.h
+    HEADERS += ../util/gui/textedit.h
+    HEADERS += ../util/gui/about.h
+    HEADERS += ../util/gui/filebrowser.h
+    HEADERS += ../util/gui/lineeditdouble.h
+    HEADERS += ../util/gui/systemoutput.h
+    HEADERS += ../pythonlab-library/pythonlab/pythonconsole.h
+    HEADERS += ../pythonlab-library/pythonlab/pythonengine.h
+    HEADERS += ../pythonlab-library/pythonlab/pythoneditor.h
+    HEADERS += ../pythonlab-library/singleapp/qtsingleapplication.h
 
     INCLUDEPATH += c:/Python27/include
     INCLUDEPATH += ../../qwt-6.0.1/src

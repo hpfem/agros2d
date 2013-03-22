@@ -49,9 +49,6 @@ win32-msvc2010 {
 
     DEFINES += _WINDOWS
 
-    SOURCES += ../src/gui/textedit.cpp
-    HEADERS += ../src/gui/textedit.h
-
     HEADERS      += ../src/hermes2d/problem.h
     HEADERS      += ../src/hermes2d/field.h
     HEADERS      += ../src/scene.h

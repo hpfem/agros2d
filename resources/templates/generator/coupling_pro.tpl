@@ -49,9 +49,6 @@ win32-msvc2010 {
 
     SOURCES      += ../../resources_source/classes/coupling_xml.cpp
     HEADERS      += ../../resources_source/classes/coupling_xml.h
-    HEADERS      += ../../agros2d-library/hermes2d/problem.h
-    HEADERS      += ../../agros2d-library/hermes2d/field.h
-    HEADERS      += ../../agros2d-library/scene.h
 
     LIBS += -L../../libs
     LIBS += -L../..
