@@ -58,7 +58,7 @@ win32-msvc2010 {
 
     LIBS += -L..
     LIBS += -L../libs
-    TARGET = ../../agros2d_pythonlab
+    TARGET = ../../agros_pythonlab
 
     CONFIG(release, debug|release) {
         LIBS += -lpython27
