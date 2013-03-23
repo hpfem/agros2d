@@ -112,7 +112,7 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
     m_newtonSolver->set_max_allowed_residual_norm(1e15);
     if (block->newtonAutomaticDamping())
     {
-        m_newtonSolver->set_initial_auto_damping_coeff(block->newtonDampingCoeff());
+        m_newtonSolver->set_initial_auto_damping_coeff(block->newtonAutomaticDampingCoeff());
         m_newtonSolver->set_necessary_successful_steps_to_increase(block->newtonDampingNumberToIncrease());
     }
     else

@@ -1368,11 +1368,12 @@ void Scene::readFromFile(const QString &fileName)
 
         field->setLinearityType(linearityTypeFromStringKey(eleFieldLinearity.toElement().attribute("linearity_type",
                                                                                                    linearityTypeToStringKey(LinearityType_Linear))));
-        field->setNonlinearSteps(eleFieldLinearity.toElement().attribute("nonlinear_steps", "10").toInt());
-        field->setNonlinearTolerance(eleFieldLinearity.toElement().attribute("nonlinear_tolerance", "1e-3").toDouble());
-        field->setNewtonDampingCoeff(eleFieldLinearity.toElement().attribute("newton_damping_coeff", "1").toDouble());
+        field->setNonlinearSteps(eleFieldLinearity.toElement().attribute("nonlinear_steps", QString::number(field->implicitNewtonSteps())).toInt());
+        field->setNonlinearTolerance(eleFieldLinearity.toElement().attribute("nonlinear_tolerance", QString::number(field->implicitNewtonTolerance())).toDouble());
+        field->setNewtonDampingCoeff(eleFieldLinearity.toElement().attribute("newton_damping_coeff", QString::number(field->implicitNewtonDampingCoeff())).toDouble());
+        field->setNewtonAutomaticDampingCoeff(eleFieldLinearity.toElement().attribute("newton_automatic_damping_coeff", QString::number(field->implicitNewtonAutomaticDampingCoeff())).toDouble());
         field->setNewtonAutomaticDamping(eleFieldLinearity.toElement().attribute("newton_automatic_damping", "1").toInt());
-        field->setNewtonDampingNumberToIncrease(eleFieldLinearity.toElement().attribute("newton_damping_number_to_increase", "1").toInt());
+        field->setNewtonDampingNumberToIncrease(eleFieldLinearity.toElement().attribute("newton_damping_number_to_increase", QString::number(field->implicitNewtonDampingNumberToIncrease())).toInt());
         field->setPicardAndersonAcceleration(eleFieldLinearity.toElement().attribute("picard_anderson_acceleration", "1").toInt());
         field->setPicardAndersonBeta(eleFieldLinearity.toElement().attribute("picard_anderson_beta", "0.2").toDouble());
         field->setPicardAndersonNumberOfLastVectors(eleFieldLinearity.toElement().attribute("picard_anderson_vectors", "3").toInt());
@@ -1697,6 +1698,7 @@ void Scene::writeToFile(const QString &fileName, bool saveLastProblemDir)
         eleLinearity.setAttribute("nonlinear_tolerance", fieldInfo->nonlinearTolerance());
         eleLinearity.setAttribute("newton_damping_coeff", fieldInfo->newtonDampingCoeff());
         eleLinearity.setAttribute("newton_automatic_damping", fieldInfo->newtonAutomaticDamping());
+        eleLinearity.setAttribute("newton_automatic_damping_coeff", fieldInfo->newtonAutomaticDampingCoeff());
         eleLinearity.setAttribute("newton_damping_number_to_increase",fieldInfo->newtonDampingNumberToIncrease());
         eleLinearity.setAttribute("picard_anderson_acceleration", fieldInfo->picardAndersonAcceleration());
         eleLinearity.setAttribute("picard_anderson_beta", fieldInfo->picardAndersonBeta());

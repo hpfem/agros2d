@@ -122,6 +122,8 @@ private:
     LineEditDouble *txtNewtonDampingCoeff;
     QLabel *lblNewtonDampingNumberToIncrease;
     QSpinBox *txtNewtonDampingNumberToIncrease;
+    QLabel *lblNewtonAutomaticDampingCoeff;
+    LineEditDouble *txtNewtonAutomaticDampingCoeff;
     QCheckBox *chkPicardAndersonAcceleration;
     QLabel *lblPicardAndersonBeta;
     LineEditDouble *txtPicardAndersonBeta;

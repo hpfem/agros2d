@@ -73,6 +73,10 @@ class PyField
         inline bool getAutomaticDamping() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->newtonAutomaticDamping(); }
         void setAutomaticDamping(const bool automaticDamping);
 
+        // automatic damping coefficient
+        inline double getAutomaticDampingCoeff() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->newtonAutomaticDampingCoeff(); }
+        void setAutomaticDampingCoeff(const double dampingCoeff);
+
         // steps to increase damping coeff
         inline int getDampingNumberToIncrease() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->newtonDampingNumberToIncrease(); }
         void setDampingNumberToIncrease(const int dampingNumberToIncrease);

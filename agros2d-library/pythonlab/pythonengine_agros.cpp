@@ -326,6 +326,9 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                 str += QString("%1.damping_number_to_increase = %2\n").
                         arg(fieldInfo->fieldId()).
                         arg(fieldInfo->newtonDampingNumberToIncrease());
+                str += QString("%1.automatic_damping_coeff = %2\n").
+                        arg(fieldInfo->fieldId()).
+                        arg(fieldInfo->newtonAutomaticDampingCoeff());
             }
             else
             {

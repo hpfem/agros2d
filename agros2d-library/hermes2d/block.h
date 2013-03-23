@@ -80,6 +80,9 @@ public:
     // minimal damping coefficient
     double newtonDampingCoeff() const;
 
+    // minimal automatic damping coefficient
+    double newtonAutomaticDampingCoeff() const;
+
     // maximal damping number to increase in one step
     int newtonDampingNumberToIncrease() const;
 

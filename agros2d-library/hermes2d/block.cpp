@@ -361,6 +361,20 @@ double Block::newtonDampingCoeff() const
     return coeff;
 }
 
+double Block::newtonAutomaticDampingCoeff() const
+{
+    double coeff = 1.0;
+
+    foreach (Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if (fieldInfo->newtonAutomaticDampingCoeff() < coeff)
+            coeff = fieldInfo->newtonAutomaticDampingCoeff();
+    }
+
+    return coeff;
+}
+
 int Block::newtonDampingNumberToIncrease() const
 {
     int number = 0;

@@ -127,6 +127,14 @@ void PyField::setAutomaticDamping(const bool automaticDamping)
     Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setNewtonAutomaticDamping(automaticDamping);
 }
 
+void PyField::setAutomaticDampingCoeff(const double dampingCoeff)
+{
+    if ((dampingCoeff <= 1) && (dampingCoeff > 0))
+        Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setNewtonAutomaticDampingCoeff(dampingCoeff);
+    else
+        throw out_of_range(QObject::tr("Automatic damping coefficient must be between 0 and 1 .").toStdString());
+}
+
 void PyField::setDampingNumberToIncrease(const int dampingNumberToIncrease)
 {
     if ((dampingNumberToIncrease <= 5) && (dampingNumberToIncrease >= 1))

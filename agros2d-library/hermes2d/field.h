@@ -74,8 +74,27 @@ public:
     inline double newtonDampingCoeff() const {return m_newtonDampingCoeff; }
     void setNewtonDampingCoeff(const double df) { m_newtonDampingCoeff = df; emit changed(); }
 
+    inline double newtonAutomaticDampingCoeff() const {return m_newtonAutomaticDampingCoeff; }
+    void setNewtonAutomaticDampingCoeff(const double df) { m_newtonAutomaticDampingCoeff = df; emit changed(); }
+
     inline int newtonDampingNumberToIncrease() const {return m_newtonDampingNumberToIncrease; }
     void setNewtonDampingNumberToIncrease(const int df) { m_newtonDampingNumberToIncrease = df; emit changed(); }
+
+    // implicit values
+    inline double implicitNewtonDampingCoeff() const {return m_implicitNewtonDampingCoeff; }
+    void setImplicitNewtonDampingCoeff(const double df) { m_implicitNewtonDampingCoeff = df; }
+
+    inline double implicitNewtonTolerance() const {return m_implicitNewtonTolerance; }
+    void setImplicitNewtonTolerance(const double tol) { m_implicitNewtonTolerance = tol; }
+
+    inline int implicitNewtonSteps() const {return m_implicitNewtonSteps; }
+    int setImplicitNewtonSteps(const double st) { m_implicitNewtonSteps = st; }
+
+    inline double implicitNewtonAutomaticDampingCoeff() const {return m_implicitNewtonAutomaticDampingCoeff; }
+    void setImplicitNewtonAutomaticDampingCoeff(const double df) { m_implicitNewtonAutomaticDampingCoeff = df; }
+
+    inline int implicitNewtonDampingNumberToIncrease() const {return m_implicitNewtonDampingNumberToIncrease; }
+    int setImplicitNewtonDampingNumberToIncrease(const double nti) { m_implicitNewtonDampingNumberToIncrease = nti; }
 
     // Picard settings
     inline bool picardAndersonAcceleration() const {return m_picardAndersonAcceleration; }
@@ -231,8 +250,16 @@ private:
 
     // newton
     double m_newtonDampingCoeff;
+    double m_newtonAutomaticDampingCoeff;
     bool m_newtonAutomaticDamping;
     int m_newtonDampingNumberToIncrease;
+
+    // implicit newton parameters. May be different for individual fields, are loaded from xml file
+    double m_implicitNewtonTolerance;
+    int m_implicitNewtonSteps;
+    double m_implicitNewtonAutomaticDampingCoeff;
+    double m_implicitNewtonDampingCoeff;
+    int m_implicitNewtonDampingNumberToIncrease;
 
     // picard
     bool m_picardAndersonAcceleration;
