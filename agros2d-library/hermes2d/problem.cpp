@@ -940,18 +940,16 @@ void Problem::readSolutionsFromFile()
     if (QFile::exists(QString("%1/runtime.xml").arg(cacheProblemDir())))
     {
         // load structure
-        try
+        Agros2D::solutionStore()->loadRunTimeDetails();
+        createStructure();
+        foreach(Block* block, m_blocks)
         {
-            Agros2D::solutionStore()->loadRunTimeDetails();
+            block->createBoundaryConditions();
+        }
 
-            // emit solve
-            m_isSolved = true;
-            emit solved();
-        }
-        catch (AgrosException &e)
-        {
-            throw e;
-        }
+        // emit solve
+        m_isSolved = true;
+        emit solved();
     }
 }
 
