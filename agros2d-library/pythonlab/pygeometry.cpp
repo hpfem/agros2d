@@ -245,28 +245,79 @@ void PyGeometry::setPolynomialOrders(SceneLabel *label, map<char *, int> orders)
     }
 }
 
-void PyGeometry::removeNode(int index)
+void PyGeometry::removeNodes(vector<int> nodes)
 {
-    if (index < 0 || index >= Agros2D::scene()->nodes->length())
-        throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnNodes->trigger();
+    Agros2D::scene()->selectNone();
 
-    Agros2D::scene()->nodes->remove(Agros2D::scene()->nodes->at(index));
+    if (!nodes.empty())
+    {
+        for (vector<int>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+        {
+            if ((*it >= 0) && (*it < Agros2D::scene()->nodes->length()))
+                Agros2D::scene()->nodes->at(*it)->setSelected(true);
+            else
+                throw out_of_range(QObject::tr("Node index must be between 0 and '%1'.").arg(Agros2D::scene()->nodes->length()-1).toStdString());
+        }
+    }
+    else
+        Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnNodes);
+
+    Agros2D::scene()->deleteSelected();
+
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
-void PyGeometry::removeEdge(int index)
+void PyGeometry::removeEdges(vector<int> edges)
 {
-    if (index < 0 || index >= Agros2D::scene()->edges->length())
-        throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnEdges->trigger();
+    Agros2D::scene()->selectNone();
 
-    Agros2D::scene()->edges->remove(Agros2D::scene()->edges->at(index));
+    if (!edges.empty())
+    {
+        for (vector<int>::iterator it = edges.begin(); it != edges.end(); ++it)
+        {
+            if ((*it >= 0) && (*it < Agros2D::scene()->edges->length()))
+                Agros2D::scene()->edges->at(*it)->setSelected(true);
+            else
+                throw out_of_range(QObject::tr("Edge index must be between 0 and '%1'.").arg(Agros2D::scene()->edges->length()-1).toStdString());
+        }
+    }
+    else
+        Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnEdges);
+
+    Agros2D::scene()->deleteSelected();
+
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
-void PyGeometry::removeLabel(int index)
+void PyGeometry::removeLabels(vector<int> labels)
 {
-    if (index < 0 || index >= Agros2D::scene()->labels->length())
-        throw out_of_range(QObject::tr("Index '%1' is out of range.").arg(index).toStdString());
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnLabels->trigger();
+    Agros2D::scene()->selectNone();
 
-    Agros2D::scene()->labels->remove(Agros2D::scene()->labels->at(index));
+    if (!labels.empty())
+    {
+        for (vector<int>::iterator it = labels.begin(); it != labels.end(); ++it)
+        {
+            if ((*it >= 0) && (*it < Agros2D::scene()->labels->length()))
+                Agros2D::scene()->labels->at(*it)->setSelected(true);
+            else
+                throw out_of_range(QObject::tr("Label index must be between 0 and '%1'.").arg(Agros2D::scene()->labels->length()-1).toStdString());
+        }
+    }
+    else
+        Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnLabels);
+
+    Agros2D::scene()->deleteSelected();
+
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
 void PyGeometry::removeNodePoint(double x, double y)

@@ -24,9 +24,9 @@ cdef extern from "../../agros2d-library/pythonlab/pygeometry.h":
         int edgesCount()
         int labelsCount()
 
-        void removeNode(int index) except +
-        void removeEdge(int index) except +
-        void removeLabel(int index) except +
+        void removeNodes(vector[int]) except +
+        void removeEdges(vector[int]) except +
+        void removeLabels(vector[int]) except +
 
         void removeNodePoint(double, double)
         void removeEdgePoint(double, double, double, double, double)
@@ -77,16 +77,20 @@ cdef class __Geometry__:
         """
         return self.thisptr.addNode(x, y)
 
-    # remove_node(index)
-    def remove_node(self, index):
-        """Remove node by index.
+    # remove_nodes(nodes)
+    def remove_nodes(self, nodes = []):
+        """Remove nodes by its indexes.
 
-        remove_node(index)
+        remove_nodes(nodes = [])
 
         Keyword arguments:
-        index -- index of removed node
+        nodes -- list of indexes of removed nodes (default [] - remove all nodes)
         """
-        self.thisptr.removeNode(index)
+        cdef vector[int] nodes_vector
+        for node in nodes:
+            nodes_vector.push_back(node)
+
+        self.thisptr.removeNodes(nodes_vector)
 
     # add_edge(x1, y1, x2, y2, angle, refinements, boundaries)
     def add_edge(self, x1, y1, x2, y2, angle = 0.0, refinements = {}, boundaries = {}):
@@ -149,16 +153,20 @@ cdef class __Geometry__:
 
         return self.thisptr.addEdgeByNodes(start_node_index, end_node_index, angle, refinements_map, boundaries_map)
 
-    # remove_edge(index)
-    def remove_edge(self, index):
-        """Remove edge by index.
+    # remove_edges(edges)
+    def remove_edges(self, edges = []):
+        """Remove edges by indexes.
 
-        remove_node(index)
+        remove_edges(edges = [])
 
         Keyword arguments:
-        index -- index of removed node
+        edges -- list of indexes of removed edges (default [] - remove all edges)
         """
-        self.thisptr.removeEdge(index)
+        cdef vector[int] edges_vector
+        for edge in edges:
+            edges_vector.push_back(edge)
+
+        self.thisptr.removeEdges(edges_vector)
 
     # add_label(x, y, area, refinements, orders, materials)
     def add_label(self, x, y, area = 0.0, refinements = {}, orders = {}, materials = {}):
@@ -197,6 +205,21 @@ cdef class __Geometry__:
 
         return self.thisptr.addLabel(x, y, area, refinements_map, orders_map, materials_map)
 
+    # remove_labels(index)
+    def remove_labels(self, labels = []):
+        """Remove labels by its indexes.
+
+        remove_labels(labels = [])
+
+        Keyword arguments:
+        labels -- list of indexes of removed labels (default [] - remove all labels)
+        """
+        cdef vector[int] labels_vector
+        for label in labels:
+            labels_vector.push_back(label)
+
+        self.thisptr.removeLabels(labels_vector)
+
     # nodes_count()
     def nodes_count(self):
         return self.thisptr.nodesCount()
@@ -208,10 +231,6 @@ cdef class __Geometry__:
     # labels_count()
     def labels_count(self):
         return self.thisptr.labelsCount()
-
-    # remove_label(index)
-    def remove_label(self, int index):
-        self.thisptr.removeLabel(index)
 
     # remove_node_point(x, y)
     def remove_node_point(self, double x, double y):
