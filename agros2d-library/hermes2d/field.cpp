@@ -92,8 +92,17 @@ void FieldInfo::setAnalysisType(const AnalysisType analysisType)
     m_numberOfSolutions = 0;
 
     foreach (XMLModule::analysis an, m_plugin->module()->general().analyses().analysis())
+    {
         if (an.type() == analysisTypeToStringKey(m_analysisType).toStdString())
+        {
             m_numberOfSolutions = an.solutions();
+            m_implicitNewtonTolerance = an.newton_tolerance();
+            m_implicitNewtonSteps = an.newton_steps();
+            m_implicitNewtonDampingCoeff = an.newton_damping_coef();
+            m_implicitNewtonAutomaticDampingCoeff = an.newton_automatic_damping_coef();
+            m_implicitNewtonDampingNumberToIncrease = an.newton_steps_back();
+        }
+    }
 }
 
 int FieldInfo::edgeRefinement(SceneEdge *edge)
@@ -157,11 +166,12 @@ void FieldInfo::clear()
 
     // linearity
     m_linearityType = LinearityType_Linear;
-    m_nonlinearTolerance = 1e-3;
-    m_nonlinearSteps = 10;
-    m_newtonDampingCoeff = 1;
+    m_nonlinearTolerance = m_implicitNewtonTolerance;
+    m_nonlinearSteps = m_implicitNewtonSteps;
+    m_newtonDampingCoeff = m_implicitNewtonDampingCoeff;
+    m_newtonAutomaticDampingCoeff = m_implicitNewtonAutomaticDampingCoeff;
     m_newtonAutomaticDamping = true;
-    m_newtonDampingNumberToIncrease = 1;
+    m_newtonDampingNumberToIncrease = m_implicitNewtonDampingNumberToIncrease;
     m_picardAndersonAcceleration = true;
     m_picardAndersonBeta = 0.2;
     m_picardAndersonNumberOfLastVectors = 3;

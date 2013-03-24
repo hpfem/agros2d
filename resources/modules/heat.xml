@@ -4,8 +4,8 @@
   <module:general id="heat" name="Heat transfer">
     <module:description>Heat transfer is a discipline of thermal engineering that concerns the exchange of thermal energy from one physical system to another. Heat transfer is classified into various mechanisms, such as heat conduction, convection and thermal radiation.</module:description>
     <module:analyses>
-      <module:analysis id="steadystate" name="Steady state" solutions="1" type="steadystate"/>
-      <module:analysis id="transient" name="Transient" solutions="1" type="transient"/>
+      <module:analysis id="steadystate" name="Steady state" solutions="1" type="steadystate" newton_tolerance="0.1" newton_steps="10" newton_damping_coef="1.0" newton_automatic_damping_coef="1.0" newton_steps_back="1"/>
+      <module:analysis id="transient" name="Transient" solutions="1" type="transient" newton_tolerance="0.1" newton_steps="10" newton_damping_coef="1.0" newton_automatic_damping_coef="1.0" newton_steps_back="1"/>
     </module:analyses>
   </module:general>
 

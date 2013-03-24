@@ -4,7 +4,7 @@
   <module:general id="rf" name="RF waves">
     <module:description>Solving TE waves in RF field.</module:description>
     <module:analyses>
-      <module:analysis id="harmonic" name="Harmonic" solutions="2" type="harmonic"/>
+      <module:analysis id="harmonic" name="Harmonic" solutions="2" type="harmonic" newton_tolerance="0.1" newton_steps="10" newton_damping_coef="1.0" newton_automatic_damping_coef="1.0" newton_steps_back="1"/>
     </module:analyses>
   </module:general>
 

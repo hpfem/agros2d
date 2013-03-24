@@ -453,6 +453,96 @@ namespace XMLModule
     this->type_.set (x);
   }
 
+  const analysis::newton_tolerance_type& analysis::
+  newton_tolerance () const
+  {
+    return this->newton_tolerance_.get ();
+  }
+
+  analysis::newton_tolerance_type& analysis::
+  newton_tolerance ()
+  {
+    return this->newton_tolerance_.get ();
+  }
+
+  void analysis::
+  newton_tolerance (const newton_tolerance_type& x)
+  {
+    this->newton_tolerance_.set (x);
+  }
+
+  const analysis::newton_steps_type& analysis::
+  newton_steps () const
+  {
+    return this->newton_steps_.get ();
+  }
+
+  analysis::newton_steps_type& analysis::
+  newton_steps ()
+  {
+    return this->newton_steps_.get ();
+  }
+
+  void analysis::
+  newton_steps (const newton_steps_type& x)
+  {
+    this->newton_steps_.set (x);
+  }
+
+  const analysis::newton_damping_coef_type& analysis::
+  newton_damping_coef () const
+  {
+    return this->newton_damping_coef_.get ();
+  }
+
+  analysis::newton_damping_coef_type& analysis::
+  newton_damping_coef ()
+  {
+    return this->newton_damping_coef_.get ();
+  }
+
+  void analysis::
+  newton_damping_coef (const newton_damping_coef_type& x)
+  {
+    this->newton_damping_coef_.set (x);
+  }
+
+  const analysis::newton_automatic_damping_coef_type& analysis::
+  newton_automatic_damping_coef () const
+  {
+    return this->newton_automatic_damping_coef_.get ();
+  }
+
+  analysis::newton_automatic_damping_coef_type& analysis::
+  newton_automatic_damping_coef ()
+  {
+    return this->newton_automatic_damping_coef_.get ();
+  }
+
+  void analysis::
+  newton_automatic_damping_coef (const newton_automatic_damping_coef_type& x)
+  {
+    this->newton_automatic_damping_coef_.set (x);
+  }
+
+  const analysis::newton_steps_back_type& analysis::
+  newton_steps_back () const
+  {
+    return this->newton_steps_back_.get ();
+  }
+
+  analysis::newton_steps_back_type& analysis::
+  newton_steps_back ()
+  {
+    return this->newton_steps_back_.get ();
+  }
+
+  void analysis::
+  newton_steps_back (const newton_steps_back_type& x)
+  {
+    this->newton_steps_back_.set (x);
+  }
+
 
   // constants
   // 
@@ -4248,12 +4338,22 @@ namespace XMLModule
   analysis (const id_type& id,
             const name_type& name,
             const solutions_type& solutions,
-            const type_type& type)
+            const type_type& type,
+            const newton_tolerance_type& newton_tolerance,
+            const newton_steps_type& newton_steps,
+            const newton_damping_coef_type& newton_damping_coef,
+            const newton_automatic_damping_coef_type& newton_automatic_damping_coef,
+            const newton_steps_back_type& newton_steps_back)
   : ::xml_schema::type (),
     id_ (id, ::xml_schema::flags (), this),
     name_ (name, ::xml_schema::flags (), this),
     solutions_ (solutions, ::xml_schema::flags (), this),
-    type_ (type, ::xml_schema::flags (), this)
+    type_ (type, ::xml_schema::flags (), this),
+    newton_tolerance_ (newton_tolerance, ::xml_schema::flags (), this),
+    newton_steps_ (newton_steps, ::xml_schema::flags (), this),
+    newton_damping_coef_ (newton_damping_coef, ::xml_schema::flags (), this),
+    newton_automatic_damping_coef_ (newton_automatic_damping_coef, ::xml_schema::flags (), this),
+    newton_steps_back_ (newton_steps_back, ::xml_schema::flags (), this)
   {
   }
 
@@ -4265,7 +4365,12 @@ namespace XMLModule
     id_ (x.id_, f, this),
     name_ (x.name_, f, this),
     solutions_ (x.solutions_, f, this),
-    type_ (x.type_, f, this)
+    type_ (x.type_, f, this),
+    newton_tolerance_ (x.newton_tolerance_, f, this),
+    newton_steps_ (x.newton_steps_, f, this),
+    newton_damping_coef_ (x.newton_damping_coef_, f, this),
+    newton_automatic_damping_coef_ (x.newton_automatic_damping_coef_, f, this),
+    newton_steps_back_ (x.newton_steps_back_, f, this)
   {
   }
 
@@ -4277,7 +4382,12 @@ namespace XMLModule
     id_ (f, this),
     name_ (f, this),
     solutions_ (f, this),
-    type_ (f, this)
+    type_ (f, this),
+    newton_tolerance_ (f, this),
+    newton_steps_ (f, this),
+    newton_damping_coef_ (f, this),
+    newton_automatic_damping_coef_ (f, this),
+    newton_steps_back_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -4328,6 +4438,36 @@ namespace XMLModule
         this->type_.set (r);
         continue;
       }
+
+      if (n.name () == "newton_tolerance" && n.namespace_ ().empty ())
+      {
+        this->newton_tolerance_.set (newton_tolerance_traits::create (i, f, this));
+        continue;
+      }
+
+      if (n.name () == "newton_steps" && n.namespace_ ().empty ())
+      {
+        this->newton_steps_.set (newton_steps_traits::create (i, f, this));
+        continue;
+      }
+
+      if (n.name () == "newton_damping_coef" && n.namespace_ ().empty ())
+      {
+        this->newton_damping_coef_.set (newton_damping_coef_traits::create (i, f, this));
+        continue;
+      }
+
+      if (n.name () == "newton_automatic_damping_coef" && n.namespace_ ().empty ())
+      {
+        this->newton_automatic_damping_coef_.set (newton_automatic_damping_coef_traits::create (i, f, this));
+        continue;
+      }
+
+      if (n.name () == "newton_steps_back" && n.namespace_ ().empty ())
+      {
+        this->newton_steps_back_.set (newton_steps_back_traits::create (i, f, this));
+        continue;
+      }
     }
 
     if (!id_.present ())
@@ -4355,6 +4495,41 @@ namespace XMLModule
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
         "type",
+        "");
+    }
+
+    if (!newton_tolerance_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "newton_tolerance",
+        "");
+    }
+
+    if (!newton_steps_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "newton_steps",
+        "");
+    }
+
+    if (!newton_damping_coef_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "newton_damping_coef",
+        "");
+    }
+
+    if (!newton_automatic_damping_coef_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "newton_automatic_damping_coef",
+        "");
+    }
+
+    if (!newton_steps_back_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "newton_steps_back",
         "");
     }
   }
@@ -8552,6 +8727,11 @@ namespace XMLModule
     o << ::std::endl << "name: " << i.name ();
     o << ::std::endl << "solutions: " << i.solutions ();
     o << ::std::endl << "type: " << i.type ();
+    o << ::std::endl << "newton_tolerance: " << i.newton_tolerance ();
+    o << ::std::endl << "newton_steps: " << i.newton_steps ();
+    o << ::std::endl << "newton_damping_coef: " << i.newton_damping_coef ();
+    o << ::std::endl << "newton_automatic_damping_coef: " << i.newton_automatic_damping_coef ();
+    o << ::std::endl << "newton_steps_back: " << i.newton_steps_back ();
     return o;
   }
 
@@ -9903,6 +10083,61 @@ namespace XMLModule
           e));
 
       a << i.type ();
+    }
+
+    // newton_tolerance
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "newton_tolerance",
+          e));
+
+      a << ::xml_schema::as_double(i.newton_tolerance ());
+    }
+
+    // newton_steps
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "newton_steps",
+          e));
+
+      a << i.newton_steps ();
+    }
+
+    // newton_damping_coef
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "newton_damping_coef",
+          e));
+
+      a << ::xml_schema::as_double(i.newton_damping_coef ());
+    }
+
+    // newton_automatic_damping_coef
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "newton_automatic_damping_coef",
+          e));
+
+      a << ::xml_schema::as_double(i.newton_automatic_damping_coef ());
+    }
+
+    // newton_steps_back
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "newton_steps_back",
+          e));
+
+      a << i.newton_steps_back ();
     }
   }
 

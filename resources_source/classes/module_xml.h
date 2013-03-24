@@ -730,12 +730,87 @@ namespace XMLModule
     void
     type (::std::auto_ptr< type_type > p);
 
+    // newton_tolerance
+    // 
+    typedef ::xml_schema::double_ newton_tolerance_type;
+    typedef ::xsd::cxx::tree::traits< newton_tolerance_type, char, ::xsd::cxx::tree::schema_type::double_ > newton_tolerance_traits;
+
+    const newton_tolerance_type&
+    newton_tolerance () const;
+
+    newton_tolerance_type&
+    newton_tolerance ();
+
+    void
+    newton_tolerance (const newton_tolerance_type& x);
+
+    // newton_steps
+    // 
+    typedef ::xml_schema::integer newton_steps_type;
+    typedef ::xsd::cxx::tree::traits< newton_steps_type, char > newton_steps_traits;
+
+    const newton_steps_type&
+    newton_steps () const;
+
+    newton_steps_type&
+    newton_steps ();
+
+    void
+    newton_steps (const newton_steps_type& x);
+
+    // newton_damping_coef
+    // 
+    typedef ::xml_schema::double_ newton_damping_coef_type;
+    typedef ::xsd::cxx::tree::traits< newton_damping_coef_type, char, ::xsd::cxx::tree::schema_type::double_ > newton_damping_coef_traits;
+
+    const newton_damping_coef_type&
+    newton_damping_coef () const;
+
+    newton_damping_coef_type&
+    newton_damping_coef ();
+
+    void
+    newton_damping_coef (const newton_damping_coef_type& x);
+
+    // newton_automatic_damping_coef
+    // 
+    typedef ::xml_schema::double_ newton_automatic_damping_coef_type;
+    typedef ::xsd::cxx::tree::traits< newton_automatic_damping_coef_type, char, ::xsd::cxx::tree::schema_type::double_ > newton_automatic_damping_coef_traits;
+
+    const newton_automatic_damping_coef_type&
+    newton_automatic_damping_coef () const;
+
+    newton_automatic_damping_coef_type&
+    newton_automatic_damping_coef ();
+
+    void
+    newton_automatic_damping_coef (const newton_automatic_damping_coef_type& x);
+
+    // newton_steps_back
+    // 
+    typedef ::xml_schema::integer newton_steps_back_type;
+    typedef ::xsd::cxx::tree::traits< newton_steps_back_type, char > newton_steps_back_traits;
+
+    const newton_steps_back_type&
+    newton_steps_back () const;
+
+    newton_steps_back_type&
+    newton_steps_back ();
+
+    void
+    newton_steps_back (const newton_steps_back_type& x);
+
     // Constructors.
     //
     analysis (const id_type&,
               const name_type&,
               const solutions_type&,
-              const type_type&);
+              const type_type&,
+              const newton_tolerance_type&,
+              const newton_steps_type&,
+              const newton_damping_coef_type&,
+              const newton_automatic_damping_coef_type&,
+              const newton_steps_back_type&);
 
     analysis (const ::xercesc::DOMElement& e,
               ::xml_schema::flags f = 0,
@@ -764,6 +839,11 @@ namespace XMLModule
     ::xsd::cxx::tree::one< name_type > name_;
     ::xsd::cxx::tree::one< solutions_type > solutions_;
     ::xsd::cxx::tree::one< type_type > type_;
+    ::xsd::cxx::tree::one< newton_tolerance_type > newton_tolerance_;
+    ::xsd::cxx::tree::one< newton_steps_type > newton_steps_;
+    ::xsd::cxx::tree::one< newton_damping_coef_type > newton_damping_coef_;
+    ::xsd::cxx::tree::one< newton_automatic_damping_coef_type > newton_automatic_damping_coef_;
+    ::xsd::cxx::tree::one< newton_steps_back_type > newton_steps_back_;
   };
 
   class constants: public ::xml_schema::type
