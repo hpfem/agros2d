@@ -32,9 +32,9 @@ cdef extern from "../../agros2d-library/pythonlab/pygeometry.h":
         void selectEdges(vector[int]) except +
         void selectLabels(vector[int]) except +
 
-        void selectNodePoint(double, double) except +
-        void selectEdgePoint(double, double) except +
-        void selectLabelPoint(double, double) except +
+        void selectNodeByPoint(double, double) except +
+        void selectEdgeByPoint(double, double) except +
+        void selectLabelByPoint(double, double) except +
 
         void selectNone()
 
@@ -273,41 +273,41 @@ cdef class __Geometry__:
 
         self.thisptr.selectLabels(labels_vector)
 
-    # select_node_point(x, y)
-    def select_node_point(self, x, y):
+    # select_node_by_point(x, y)
+    def select_node_by_point(self, x, y):
         """Select the closest node around point.
 
-        select_node_point(x, y)
+        select_node_by_point(x, y)
 
         Keyword arguments:
         x -- x or r coordinate of point
         y -- y or r coordinate of point
         """
-        self.thisptr.selectNodePoint(x, y)
+        self.thisptr.selectNodeByPoint(x, y)
 
-    # select_edge_point(x, y)
-    def select_edge_point(self, x, y):
+    # select_edge_by_point(x, y)
+    def select_edge_by_point(self, x, y):
         """Select the closest edge around point.
 
-        select_edge_point(x, y)
+        select_edge_by_point(x, y)
 
         Keyword arguments:
         x -- x or r coordinate of point
         y -- y or r coordinate of point
         """
-        self.thisptr.selectEdgePoint(x, y)
+        self.thisptr.selectEdgeByPoint(x, y)
 
-    # select_label_point(x, y)
-    def select_label_point(self, x, y):
+    # select_label_by_point(x, y)
+    def select_label_by_point(self, x, y):
         """Select the closest label around point.
 
-        select_label_point(x, y)
+        select_label_by_point(x, y)
 
         Keyword arguments:
         x -- x or r coordinate of point
         y -- y or r coordinate of point
         """
-        self.thisptr.selectLabelPoint(x, y)
+        self.thisptr.selectLabelByPoint(x, y)
 
     # move_selection(dx, dy, copy)
     def move_selection(self, double dx, double dy, int copy = False):

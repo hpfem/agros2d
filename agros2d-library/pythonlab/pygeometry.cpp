@@ -43,6 +43,12 @@ int PyGeometry::addNode(double x, double y)
     if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric && x < 0.0)
         throw out_of_range(QObject::tr("Radial component must be greater then or equal to zero.").toStdString());
 
+    foreach (SceneNode *node, Agros2D::scene()->nodes->items())
+    {
+        if (node->point().x == x && node->point().y == y)
+            throw logic_error(QObject::tr("Node already exist.").toStdString());
+    }
+
     SceneNode *node = Agros2D::scene()->addNode(new SceneNode(Point(x, y)));
     return Agros2D::scene()->nodes->items().indexOf(node);
 }
@@ -53,13 +59,18 @@ int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnEdges->trigger();
 
-    // TODO: (Franta) Existing edge
-
     if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric && (x1 < 0.0 || x2 < 0.0))
         throw out_of_range(QObject::tr("Radial component must be greater then or equal to zero.").toStdString());
 
     if (angle > 90.0 || angle < 0.0)
         throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
+
+    foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+    {
+        if (edge->nodeStart()->point().x == x1 && edge->nodeEnd()->point().x == x2 &&
+                edge->nodeStart()->point().y == y1 && edge->nodeEnd()->point().y == y2)
+            throw logic_error(QObject::tr("Edge already exist.").toStdString());
+    }
 
     SceneEdge *edge = new SceneEdge(Agros2D::scene()->addNode(new SceneNode(Point(x1, y1))),
                                     Agros2D::scene()->addNode(new SceneNode(Point(x2, y2))),
@@ -87,8 +98,6 @@ int PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angl
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnEdges->trigger();
 
-    // TODO: (Franta) Existing edge
-
     if (Agros2D::scene()->nodes->isEmpty())
         throw out_of_range(QObject::tr("Geometry does not contain nodes.").toStdString());
 
@@ -102,6 +111,13 @@ int PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angl
 
     if (angle > 90.0 || angle < 0.0)
         throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
+
+    foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+    {
+        if (Agros2D::scene()->nodes->items().indexOf(edge->nodeStart()) == nodeStartIndex &&
+                Agros2D::scene()->nodes->items().indexOf(edge->nodeEnd()) == nodeEndIndex)
+            throw logic_error(QObject::tr("Edge already exist.").toStdString());
+    }
 
     SceneEdge *edge = new SceneEdge(Agros2D::scene()->nodes->at(nodeStartIndex), Agros2D::scene()->nodes->at(nodeEndIndex), angle);
 
@@ -168,6 +184,12 @@ int PyGeometry::addLabel(double x, double y, double area, map<char *, int> refin
 
     if (area < 0.0)
         throw out_of_range(QObject::tr("Area must be positive.").toStdString());
+
+    foreach (SceneLabel *label, Agros2D::scene()->labels->items())
+    {
+        if (label->point().x == x && label->point().y == y)
+            throw logic_error(QObject::tr("Label already exist.").toStdString());
+    }
 
     SceneLabel *label = new SceneLabel(Point(x, y), area);
 
@@ -396,7 +418,7 @@ void PyGeometry::selectLabels(vector<int> labels)
         currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
-void PyGeometry::selectNodePoint(double x, double y)
+void PyGeometry::selectNodeByPoint(double x, double y)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnNodes->trigger();
@@ -413,7 +435,7 @@ void PyGeometry::selectNodePoint(double x, double y)
         throw logic_error(QObject::tr("There are no nodes around the point [%1, %2].").arg(x).arg(y).toStdString());
 }
 
-void PyGeometry::selectEdgePoint(double x, double y)
+void PyGeometry::selectEdgeByPoint(double x, double y)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnEdges->trigger();
@@ -430,7 +452,7 @@ void PyGeometry::selectEdgePoint(double x, double y)
         throw logic_error(QObject::tr("There are no edges around the point [%1, %2].").arg(x).arg(y).toStdString());
 }
 
-void PyGeometry::selectLabelPoint(double x, double y)
+void PyGeometry::selectLabelByPoint(double x, double y)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnLabels->trigger();

@@ -58,9 +58,9 @@ class PyGeometry
         void selectEdges(vector<int> edges);
         void selectLabels(vector<int> labels);
 
-        void selectNodePoint(double x, double y);
-        void selectEdgePoint(double x, double y);
-        void selectLabelPoint(double x, double y);
+        void selectNodeByPoint(double x, double y);
+        void selectEdgeByPoint(double x, double y);
+        void selectLabelByPoint(double x, double y);
 
         void selectNone();
 
@@ -75,9 +75,11 @@ class PyGeometry
         void zoomIn();
         void zoomOut();
         void zoomRegion(double x1, double y1, double x2, double y2);
+
 private:
         void setBoundaries(SceneEdge *edge, map<char *, char *> boundaries);
         void setMaterials(SceneLabel *label, map<char *, char *> materials);
+
         void setRefinementsOnEdge(SceneEdge *edge, map<char *, int> refinements);
         void setRefinements(SceneLabel *label, map<char *, int> refinements);
         void setPolynomialOrders(SceneLabel *label, map<char *, int> orders);
