@@ -320,21 +320,6 @@ void PyGeometry::removeLabels(vector<int> labels)
         currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
-void PyGeometry::removeNodePoint(double x, double y)
-{
-    Agros2D::scene()->nodes->remove(Agros2D::scene()->getNode(Point(x, y)));
-}
-
-void PyGeometry::removeEdgePoint(double x1, double y1, double x2, double y2, double angle)
-{
-    Agros2D::scene()->edges->remove(Agros2D::scene()->getEdge(Point(x1, y1), Point(x2, y2), angle));
-}
-
-void PyGeometry::removeLabelPoint(double x, double y)
-{
-    Agros2D::scene()->labels->remove(Agros2D::scene()->getLabel(Point(x, y)));
-}
-
 void PyGeometry::selectNodes(vector<int> nodes)
 {
     if (!silentMode())

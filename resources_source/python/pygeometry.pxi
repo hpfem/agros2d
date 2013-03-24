@@ -28,10 +28,6 @@ cdef extern from "../../agros2d-library/pythonlab/pygeometry.h":
         void removeEdges(vector[int]) except +
         void removeLabels(vector[int]) except +
 
-        void removeNodePoint(double, double)
-        void removeEdgePoint(double, double, double, double, double)
-        void removeLabelPoint(double, double)
-
         void selectNodes(vector[int]) except +
         void selectEdges(vector[int]) except +
         void selectLabels(vector[int]) except +
@@ -231,18 +227,6 @@ cdef class __Geometry__:
     # labels_count()
     def labels_count(self):
         return self.thisptr.labelsCount()
-
-    # remove_node_point(x, y)
-    def remove_node_point(self, double x, double y):
-        self.thisptr.removeNodePoint(x, y)
-
-    # remove_edge_point(x1, y1, x2, y2, angle)
-    def remove_edge_point(self, double x1, double y1, double x2, double y2, double angle):
-        self.thisptr.removeEdgePoint(x1, y1, x2, y2, angle)
-
-    # remove_label_point(x, y)
-    def remove_label_point(self, double x, double y):
-        self.thisptr.removeLabelPoint(x, y)
 
     # select_nodes(nodes)
     def select_nodes(self, nodes = []):

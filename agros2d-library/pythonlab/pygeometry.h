@@ -53,10 +53,6 @@ class PyGeometry
         void removeEdges(vector<int> edges);
         void removeLabels(vector<int> labels);
 
-        void removeNodePoint(double x, double y);
-        void removeEdgePoint(double x1, double y1, double x2, double y2, double angle);
-        void removeLabelPoint(double x, double y);
-
         // select operations
         void selectNodes(vector<int> nodes);
         void selectEdges(vector<int> edges);
