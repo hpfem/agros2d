@@ -475,7 +475,7 @@ QWidget *PostprocessorWidget::post3DWidget()
     grpShowPost3D->setLayout(layoutShowPost3D);
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->setContentsMargins(0, 0, 0, 0);
+    // layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(grpShowPost3D);
     layout->addStretch(1);
 
@@ -596,7 +596,7 @@ QWidget *PostprocessorWidget::postScalarAdvancedWidget()
     grpScalarFieldRange->setLayout(layoutScalarFieldRange);
 
     QGridLayout *gridLayoutScalarFieldPalette = new QGridLayout();
-    gridLayoutScalarFieldPalette->setContentsMargins(0, 0, 0, 0);
+    // gridLayoutScalarFieldPalette->setContentsMargins(0, 0, 0, 0);
     gridLayoutScalarFieldPalette->setColumnMinimumWidth(0, columnMinimumWidth());
     gridLayoutScalarFieldPalette->setColumnStretch(1, 1);
     gridLayoutScalarFieldPalette->addWidget(new QLabel(tr("Palette:")), 0, 0);
@@ -622,7 +622,7 @@ QWidget *PostprocessorWidget::postScalarAdvancedWidget()
     chkShowScalarColorBar = new QCheckBox(tr("Show colorbar"), this);
 
     QGridLayout *gridLayoutScalarFieldColorbar = new QGridLayout();
-    gridLayoutScalarFieldColorbar->setContentsMargins(0, 0, 0, 0);
+    // gridLayoutScalarFieldColorbar->setContentsMargins(0, 0, 0, 0);
     gridLayoutScalarFieldColorbar->setColumnMinimumWidth(0, columnMinimumWidth());
     gridLayoutScalarFieldColorbar->setColumnStretch(1, 1);
     gridLayoutScalarFieldColorbar->addWidget(new QLabel(tr("Decimal places:")), 0, 0);
@@ -633,7 +633,7 @@ QWidget *PostprocessorWidget::postScalarAdvancedWidget()
     grpScalarFieldColorbar->setLayout(gridLayoutScalarFieldColorbar);
 
     QVBoxLayout *layoutScalarFieldAdvanced = new QVBoxLayout();
-    layoutScalarFieldAdvanced->setContentsMargins(0, 0, 0, 0);
+    // layoutScalarFieldAdvanced->setContentsMargins(0, 0, 0, 0);
     layoutScalarFieldAdvanced->addWidget(grpScalarFieldPalette);
     layoutScalarFieldAdvanced->addWidget(grpScalarFieldColorbar);
     layoutScalarFieldAdvanced->addWidget(grpScalarFieldRange);
@@ -656,7 +656,7 @@ QWidget *PostprocessorWidget::postContourAdvancedWidget()
     txtContourWidth->setSingleStep(0.1);
 
     QGridLayout *gridLayoutContours = new QGridLayout();
-    gridLayoutContours->setContentsMargins(0, 0, 0, 0);
+    // gridLayoutContours->setContentsMargins(0, 0, 0, 0);
     gridLayoutContours->setColumnMinimumWidth(0, columnMinimumWidth());
     gridLayoutContours->setColumnStretch(1, 1);
     gridLayoutContours->addWidget(new QLabel(tr("Number of contours:")), 0, 0);
@@ -691,7 +691,7 @@ QWidget *PostprocessorWidget::postVectorAdvancedWidget()
         cmbVectorCenter->addItem(vectorCenterString(vectorCenterFromStringKey(key)), vectorCenterFromStringKey(key));
 
     QGridLayout *gridLayoutVectors = new QGridLayout();
-    gridLayoutVectors->setContentsMargins(0, 0, 0, 0);
+    // gridLayoutVectors->setContentsMargins(0, 0, 0, 0);
     gridLayoutVectors->setColumnMinimumWidth(0, columnMinimumWidth());
     gridLayoutVectors->setColumnStretch(1, 1);
     gridLayoutVectors->addWidget(new QLabel(tr("Number of vec.:")), 0, 0);
@@ -716,7 +716,7 @@ QWidget *PostprocessorWidget::postPostSolidAdvancedWidget()
     lstSolidMaterials = new QListWidget();
 
     QGridLayout *gridLayoutSolid = new QGridLayout();
-    gridLayoutSolid->setContentsMargins(0, 0, 0, 0);
+    // gridLayoutSolid->setContentsMargins(0, 0, 0, 0);
     gridLayoutSolid->setColumnMinimumWidth(0, columnMinimumWidth());
     gridLayoutSolid->setColumnStretch(0, 1);
     gridLayoutSolid->addWidget(lstSolidMaterials, 0, 0);
