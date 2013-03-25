@@ -28,13 +28,15 @@ WizardSmallImageFile=setup\files\SetupModernSmall.bmp
 [Languages]
 
 [Files]
-Source: agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
-Source: agros2d_pythonlab.exe; DestDir: {app}; DestName: Agros2D_PythonLab.exe
-Source: agros2d_solver.exe; DestDir: {app}; DestName: Agros2D_Solver.exe
-Source: agros2d_hermes2d.dll; DestDir: {app}; DestName: agros2d_hermes2d.dll
+Source: agros_util.dll; DestDir: {app}; DestName: agros_util.dll
+Source: agros_pythonlab_library.dll; DestDir: {app}; DestName: agros_pythonlab_library.dll
+Source: agros_pythonlab.exe; DestDir: {app}; DestName: PythonLab.exe
 Source: agros2d_library.dll; DestDir: {app}; DestName: agros2d_library.dll
+Source: agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
+Source: agros2d_solver.exe; DestDir: {app}; DestName: Solver.exe
+Source: agros2d_hermes2d.dll; DestDir: {app}; DestName: agros2d_hermes2d.dll
 Source: libs\*.dll; DestDir: {app}/libs
-Source: resources\images\agros2d-icon.ico; DestDir: {app}; DestName: Agros2D.ico
+Source: resources\images\agros2d.ico; DestDir: {app}; DestName: Agros2D.ico
 Source: COPYING; DestDir: {app}; DestName: COPYING
 Source: README; DestDir: {app}; DestName: README
 Source: README_Python.txt; DestDir: {app}; DestName: README_Python.txt
