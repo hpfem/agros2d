@@ -104,10 +104,11 @@ void PyProblem::setTimeTotal(const double timeTotal)
 
 char *PyProblem::getCouplingType(const char *sourceField, const char *targetField)
 {
+    checkExistingFields(QString(sourceField), QString(targetField));
+
     if (Agros2D::problem()->hasCoupling(QString(sourceField), QString(targetField)))
     {
         CouplingInfo *couplingInfo = Agros2D::problem()->couplingInfo(QString(sourceField), QString(targetField));
-
         return const_cast<char*>(couplingTypeToStringKey(couplingInfo->couplingType()).toStdString().c_str());
     }
     else
@@ -116,10 +117,11 @@ char *PyProblem::getCouplingType(const char *sourceField, const char *targetFiel
 
 void PyProblem::setCouplingType(const char *sourceField, const char *targetField, const char *type)
 {
+    checkExistingFields(QString(sourceField), QString(targetField));
+
     if (Agros2D::problem()->hasCoupling(QString(sourceField), QString(targetField)))
     {
         CouplingInfo *couplingInfo = Agros2D::problem()->couplingInfo(QString(sourceField), QString(targetField));
-
         if (couplingTypeStringKeys().contains(QString(type)))
             couplingInfo->setCouplingType(couplingTypeFromStringKey(QString(type)));
         else
@@ -127,6 +129,18 @@ void PyProblem::setCouplingType(const char *sourceField, const char *targetField
     }
     else
         throw logic_error(QObject::tr("Coupling '%1' + '%2' doesn't exists.").arg(QString(sourceField)).arg(QString(targetField)).toStdString());
+}
+
+void PyProblem::checkExistingFields(QString sourceField, QString targetField)
+{
+    if (Agros2D::problem()->fieldInfos().isEmpty())
+        throw logic_error(QObject::tr("No fields are defined.").toStdString());
+
+    if (!Agros2D::problem()->fieldInfos().contains(sourceField))
+        throw logic_error(QObject::tr("Source field '%1' is not defined.").arg(sourceField).toStdString());
+
+    if (!Agros2D::problem()->fieldInfos().contains(targetField))
+        throw logic_error(QObject::tr("Target field '%1' is not defined.").arg(targetField).toStdString());
 }
 
 void PyProblem::clear()

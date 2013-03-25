@@ -31,7 +31,6 @@ class PyProblem
         ~PyProblem() {}
 
         // clear and refresh
-        void clear();
         void clearSolution();
         void refresh();
 
@@ -85,6 +84,11 @@ class PyProblem
 
         // time steps
         void timeStepsLength(vector<double> &steps);
+
+public:
+        void clear();
+
+        void checkExistingFields(QString sourceField, QString targetField);
 };
 
 #endif // PYTHONLABPROBLEM_H
