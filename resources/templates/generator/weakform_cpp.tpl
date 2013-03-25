@@ -43,7 +43,7 @@ template <typename Scalar>
 Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u,
                                           Hermes::Hermes2D::Func<double> *v, Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::Func<Scalar> **ext) const
 {
-    double result = 0;    
+    Scalar result = 0;
     for (int i = 0; i < n; i++)
     {
         result += wt[i] * ({{EXPRESSION}});
@@ -101,7 +101,7 @@ template <typename Scalar>
 Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                                           Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::Func<Scalar> **ext) const
 {
-    double result = 0;
+    Scalar result = 0;
 
     for (int i = 0; i < n; i++)
     {
@@ -161,7 +161,7 @@ template <typename Scalar>
 Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *u, Hermes::Hermes2D::Func<double> *v,
                                            Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::Func<Scalar> **ext) const
 {
-    double result = 0;    
+    Scalar result = 0;
     for (int i = 0; i < n; i++)
     {
         result += wt[i] * ({{EXPRESSION}});
@@ -212,7 +212,7 @@ template <typename Scalar>
 Scalar {{FUNCTION_NAME}}<Scalar>::value(int n, double *wt, Hermes::Hermes2D::Func<Scalar> *u_ext[], Hermes::Hermes2D::Func<double> *v,
                                            Hermes::Hermes2D::Geom<double> *e, Hermes::Hermes2D::Func<Scalar> **ext) const
 {
-    double result = 0;    
+    Scalar result = 0;
     for (int i = 0; i < n; i++)
     {
         result += wt[i] * ({{EXPRESSION}});
@@ -261,7 +261,7 @@ template <typename Scalar>
 template <typename Scalar>
 Scalar {{FUNCTION_NAME}}<Scalar>::value(double x, double y) const
 {
-    double result = {{EXPRESSION}};
+    Scalar result = {{EXPRESSION}};
     return result;
 }
 
