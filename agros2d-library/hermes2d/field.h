@@ -88,13 +88,13 @@ public:
     void setImplicitNewtonTolerance(const double tol) { m_implicitNewtonTolerance = tol; }
 
     inline int implicitNewtonSteps() const {return m_implicitNewtonSteps; }
-    int setImplicitNewtonSteps(const double st) { m_implicitNewtonSteps = st; }
+    bool setImplicitNewtonSteps(const double st) { m_implicitNewtonSteps = st; }
 
     inline double implicitNewtonAutomaticDampingCoeff() const {return m_implicitNewtonAutomaticDampingCoeff; }
     void setImplicitNewtonAutomaticDampingCoeff(const double df) { m_implicitNewtonAutomaticDampingCoeff = df; }
 
     inline int implicitNewtonDampingNumberToIncrease() const {return m_implicitNewtonDampingNumberToIncrease; }
-    int setImplicitNewtonDampingNumberToIncrease(const double nti) { m_implicitNewtonDampingNumberToIncrease = nti; }
+    bool setImplicitNewtonDampingNumberToIncrease(const double nti) { m_implicitNewtonDampingNumberToIncrease = nti; }
 
     // Picard settings
     inline bool picardAndersonAcceleration() const {return m_picardAndersonAcceleration; }
