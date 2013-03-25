@@ -22,12 +22,31 @@
 #include "sceneview_geometry.h"
 #include "sceneview_post2d.h"
 #include "hermes2d/coupling.h"
-#include "hermes2d/solutionstore.h"
 
 PyProblem::PyProblem(bool clearproblem)
 {
     if (clearproblem)
         clear();
+}
+
+void PyProblem::clear()
+{
+    Agros2D::scene()->clear();
+}
+
+void PyProblem::clearSolution()
+{
+    if (!Agros2D::problem()->isSolved())
+        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
+
+    Agros2D::problem()->clearSolution();
+    currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
+}
+
+void PyProblem::refresh()
+{
+    Agros2D::scene()->invalidate();
+    currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyProblem::setCoordinateType(const char *coordinateType)
@@ -36,6 +55,8 @@ void PyProblem::setCoordinateType(const char *coordinateType)
         Agros2D::problem()->config()->setCoordinateType(coordinateTypeFromStringKey(QString(coordinateType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(coordinateTypeStringKeys())).toStdString());
+
+    Agros2D::scene()->invalidate();
 }
 
 void PyProblem::setMeshType(const char *meshType)
@@ -56,7 +77,7 @@ void PyProblem::setMatrixSolver(const char *matrixSolver)
 
 void PyProblem::setFrequency(const double frequency)
 {
-    if (frequency >= 0.0)
+    if (frequency > 0.0)
         Agros2D::problem()->config()->setFrequency(frequency);
     else
         throw out_of_range(QObject::tr("The frequency must be positive.").toStdString());
@@ -141,23 +162,6 @@ void PyProblem::checkExistingFields(QString sourceField, QString targetField)
 
     if (!Agros2D::problem()->fieldInfos().contains(targetField))
         throw logic_error(QObject::tr("Target field '%1' is not defined.").arg(targetField).toStdString());
-}
-
-void PyProblem::clear()
-{
-    Agros2D::scene()->clear();
-}
-
-void PyProblem::clearSolution()
-{
-    Agros2D::problem()->clearSolution();
-    currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
-}
-
-void PyProblem::refresh()
-{
-    Agros2D::scene()->invalidate();
-    currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyProblem::mesh()

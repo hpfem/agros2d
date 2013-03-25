@@ -87,7 +87,6 @@ class PyProblem
 
 public:
         void clear();
-
         void checkExistingFields(QString sourceField, QString targetField);
 };
 
