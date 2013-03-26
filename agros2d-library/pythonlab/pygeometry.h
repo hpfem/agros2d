@@ -44,6 +44,9 @@ class PyGeometry
         int addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, map<char *, int> refinements, map<char*, char*> boundaries);
         int addLabel(double x, double y, double area, map<char *, int> refinements, map<char*, int> orders, map<char*, char*> materials);
 
+        void modifyEdge(int index, double angle, map<char *, int> refinements, map<char*, char*> boundaries);
+        void modifyLabel(int index, double area, map<char *, int> refinements, map<char*, int> orders, map<char*, char*> materials);
+
         int nodesCount() { return Agros2D::scene()->nodes->count(); }
         int edgesCount() { return Agros2D::scene()->edges->count(); }
         int labelsCount() { return Agros2D::scene()->labels->count(); }

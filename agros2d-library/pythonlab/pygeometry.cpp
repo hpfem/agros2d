@@ -137,6 +137,29 @@ int PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angl
     return Agros2D::scene()->edges->items().indexOf(edge);
 }
 
+void PyGeometry::modifyEdge(int index, double angle, map<char *, int> refinements, map<char *, char *> boundaries)
+{
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnEdges->trigger();
+
+    if (Agros2D::scene()->edges->isEmpty())
+        throw out_of_range(QObject::tr("No edges are defined.").toStdString());
+
+    if (index < 0 || index >= Agros2D::scene()->edges->length())
+        throw out_of_range(QObject::tr("Edge index must be between 0 and '%1'.").arg(Agros2D::scene()->edges->length()-1).toStdString());
+
+    if (angle > 90.0 || angle < 0.0)
+        throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
+
+    SceneEdge *edge = Agros2D::scene()->edges->items().at(index);
+
+    edge->setAngle(angle);
+    setRefinementsOnEdge(edge, refinements);
+    setBoundaries(edge, boundaries);
+
+    Agros2D::scene()->invalidate();
+}
+
 void PyGeometry::setBoundaries(SceneEdge *edge, map<char *, char *> boundaries)
 {
     for (map<char*, char*>::iterator i = boundaries.begin(); i != boundaries.end(); ++i)
@@ -208,6 +231,30 @@ int PyGeometry::addLabel(double x, double y, double area, map<char *, int> refin
     Agros2D::scene()->addLabel(label);
 
     return Agros2D::scene()->labels->items().indexOf(label);
+}
+
+void PyGeometry::modifyLabel(int index, double area, map<char *, int> refinements, map<char *, int> orders, map<char *, char *> materials)
+{
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnLabels->trigger();
+
+    if (Agros2D::scene()->labels->isEmpty())
+        throw out_of_range(QObject::tr("No labels are defined.").toStdString());
+
+    if (index < 0 || index >= Agros2D::scene()->labels->length())
+        throw out_of_range(QObject::tr("Label index must be between 0 and '%1'.").arg(Agros2D::scene()->labels->length()-1).toStdString());
+
+    if (area < 0.0)
+        throw out_of_range(QObject::tr("Area must be positive.").toStdString());
+
+    SceneLabel *label = Agros2D::scene()->labels->at(index);
+
+    label->setArea(area);
+    setMaterials(label, materials);
+    setRefinements(label, refinements);
+    setPolynomialOrders(label, orders);
+
+    Agros2D::scene()->invalidate();
 }
 
 void PyGeometry::setMaterials(SceneLabel *label, map<char *, char *> materials)
@@ -472,6 +519,7 @@ void PyGeometry::selectLabelByPoint(double x, double y)
 void PyGeometry::selectNone()
 {
     Agros2D::scene()->selectNone();
+
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
@@ -479,6 +527,7 @@ void PyGeometry::selectNone()
 void PyGeometry::moveSelection(double dx, double dy, bool copy)
 {
     Agros2D::scene()->transformTranslate(Point(dx, dy), copy);
+
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
@@ -486,6 +535,7 @@ void PyGeometry::moveSelection(double dx, double dy, bool copy)
 void PyGeometry::rotateSelection(double x, double y, double angle, bool copy)
 {
     Agros2D::scene()->transformRotate(Point(x, y), angle, copy);
+
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
@@ -493,6 +543,7 @@ void PyGeometry::rotateSelection(double x, double y, double angle, bool copy)
 void PyGeometry::scaleSelection(double x, double y, double scale, bool copy)
 {
     Agros2D::scene()->transformScale(Point(x, y), scale, copy);
+
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
@@ -500,6 +551,7 @@ void PyGeometry::scaleSelection(double x, double y, double scale, bool copy)
 void PyGeometry::removeSelection()
 {
     Agros2D::scene()->deleteSelected();
+
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }

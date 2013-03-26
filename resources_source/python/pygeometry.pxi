@@ -20,6 +20,9 @@ cdef extern from "../../agros2d-library/pythonlab/pygeometry.h":
         int addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, map[char *, int] refinements, map[char*, char*] boundaries) except +
         int addLabel(double x, double y, double area, map[char *, int] refinements, map[char*, int] orders, map[char*, char*] materials) except +
 
+        void modifyEdge(int index, double angle, map[char *, int] refinements, map[char*, char*] boundaries) except +
+        void modifyLabel(int index, double area, map[char *, int] refinements, map[char*, int] orders, map[char*, char*] materials) except +
+
         int nodesCount()
         int edgesCount()
         int labelsCount()
@@ -149,6 +152,24 @@ cdef class __Geometry__:
 
         return self.thisptr.addEdgeByNodes(start_node_index, end_node_index, angle, refinements_map, boundaries_map)
 
+    # modify_edge(index, angle, refinements, boundaries)
+    def modify_edge(self, index, angle = 0.0, refinements = {}, boundaries = {}):
+        cdef map[char*, int] refinements_map
+        cdef pair[char*, int] refinement
+        for key in refinements:
+            refinement.first = key
+            refinement.second = refinements[key]
+            refinements_map.insert(refinement)
+
+        cdef map[char*, char*] boundaries_map
+        cdef pair[char*, char *] boundary
+        for key in boundaries:
+            boundary.first = key
+            boundary.second = boundaries[key]
+            boundaries_map.insert(boundary)
+
+        self.thisptr.modifyEdge(index, angle, refinements_map, boundaries_map)
+
     # remove_edges(edges)
     def remove_edges(self, edges = []):
         """Remove edges by indexes.
@@ -200,6 +221,31 @@ cdef class __Geometry__:
             materials_map.insert(material)
 
         return self.thisptr.addLabel(x, y, area, refinements_map, orders_map, materials_map)
+
+    # modify_label(index, area, refinements, orders, materials)
+    def modify_label(self, index, area = 0.0, refinements = {}, orders = {}, materials = {}):
+        cdef map[char*, int] refinements_map
+        cdef pair[char*, int] refinement
+        for key in refinements:
+            refinement.first = key
+            refinement.second = refinements[key]
+            refinements_map.insert(refinement)
+
+        cdef map[char*, int] orders_map
+        cdef pair[char*, int] order
+        for key in orders:
+            order.first = key
+            order.second = orders[key]
+            orders_map.insert(order)
+
+        cdef map[char*, char*] materials_map
+        cdef pair[char*, char *] material
+        for key in materials:
+            material.first = key
+            material.second = materials[key]
+            materials_map.insert(material)
+
+        self.thisptr.modifyLabel(index, area, refinements_map, orders_map, materials_map)
 
     # remove_labels(index)
     def remove_labels(self, labels = []):
