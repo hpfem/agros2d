@@ -51,6 +51,33 @@ cdef extern from "../../agros2d-library/pythonlab/pygeometry.h":
         void zoomOut()
         void zoomRegion(double, double, double, double)
 
+cdef vector[int] list_to_int_vector(list):
+    cdef vector[int] int_vector
+    for item in list:
+        int_vector.push_back(item)
+
+    return int_vector
+
+cdef map[char*, int] dictionary_to_int_map(dictionary):
+    cdef map[char*, int] int_map
+    cdef pair[char*, int] row
+    for key in dictionary:
+        row.first = key
+        row.second = dictionary[key]
+        int_map.insert(row)
+
+    return int_map
+
+cdef map[char*, char*] dictionary_to_char_map(dictionary):
+    cdef map[char*, char*] char_map
+    cdef pair[char*, char*] row
+    for key in dictionary:
+        row.first = key
+        row.second = dictionary[key]
+        char_map.insert(row)
+
+    return char_map
+
 cdef class __Geometry__:
     cdef PyGeometry *thisptr
 
@@ -85,10 +112,7 @@ cdef class __Geometry__:
         Keyword arguments:
         nodes -- list of indexes of removed nodes (default [] - remove all nodes)
         """
-        cdef vector[int] nodes_vector
-        for node in nodes:
-            nodes_vector.push_back(node)
-
+        cdef vector[int] nodes_vector = list_to_int_vector(nodes)
         self.thisptr.removeNodes(nodes_vector)
 
     # add_edge(x1, y1, x2, y2, angle, refinements, boundaries)
@@ -106,20 +130,8 @@ cdef class __Geometry__:
         refinements -- refinement towards edge {'field' : refinement} (default {})
         boundaries -- boundary condition {'field' : 'boundary name'} (default {})
         """
-
-        cdef map[char*, int] refinements_map
-        cdef pair[char*, int] refinement
-        for key in refinements:
-            refinement.first = key
-            refinement.second = refinements[key]
-            refinements_map.insert(refinement)
-
-        cdef map[char*, char*] boundaries_map
-        cdef pair[char*, char *] boundary
-        for key in boundaries:
-            boundary.first = key
-            boundary.second = boundaries[key]
-            boundaries_map.insert(boundary)
+        cdef map[char*, int] refinements_map = dictionary_to_int_map(refinements)
+        cdef map[char*, char*] boundaries_map = dictionary_to_char_map(boundaries)
 
         return self.thisptr.addEdge(x1, y1, x2, y2, angle, refinements_map, boundaries_map)
 
@@ -136,37 +148,15 @@ cdef class __Geometry__:
         refinements -- refinement towards edge {'field' : refinement} (default {})
         boundaries -- boundary condition {'field' : 'boundary name'} (default {})
         """
-        cdef map[char*, int] refinements_map
-        cdef pair[char*, int] refinement
-        for key in refinements:
-            refinement.first = key
-            refinement.second = refinements[key]
-            refinements_map.insert(refinement)
-
-        cdef map[char*, char*] boundaries_map
-        cdef pair[char*, char *] boundary
-        for key in boundaries:
-            boundary.first = key
-            boundary.second = boundaries[key]
-            boundaries_map.insert(boundary)
+        cdef map[char*, int] refinements_map = dictionary_to_int_map(refinements)
+        cdef map[char*, char*] boundaries_map = dictionary_to_char_map(boundaries)
 
         return self.thisptr.addEdgeByNodes(start_node_index, end_node_index, angle, refinements_map, boundaries_map)
 
     # modify_edge(index, angle, refinements, boundaries)
     def modify_edge(self, index, angle = 0.0, refinements = {}, boundaries = {}):
-        cdef map[char*, int] refinements_map
-        cdef pair[char*, int] refinement
-        for key in refinements:
-            refinement.first = key
-            refinement.second = refinements[key]
-            refinements_map.insert(refinement)
-
-        cdef map[char*, char*] boundaries_map
-        cdef pair[char*, char *] boundary
-        for key in boundaries:
-            boundary.first = key
-            boundary.second = boundaries[key]
-            boundaries_map.insert(boundary)
+        cdef map[char*, int] refinements_map = dictionary_to_int_map(refinements)
+        cdef map[char*, char*] boundaries_map = dictionary_to_char_map(boundaries)
 
         self.thisptr.modifyEdge(index, angle, refinements_map, boundaries_map)
 
@@ -179,9 +169,7 @@ cdef class __Geometry__:
         Keyword arguments:
         edges -- list of indexes of removed edges (default [] - remove all edges)
         """
-        cdef vector[int] edges_vector
-        for edge in edges:
-            edges_vector.push_back(edge)
+        cdef vector[int] edges_vector = list_to_int_vector(edges)
 
         self.thisptr.removeEdges(edges_vector)
 
@@ -199,51 +187,17 @@ cdef class __Geometry__:
         orders -- polynomial order of area elements {'field' : refinement} (default {})
         materials -- materials {'field' : 'material name'} (default {})
         """
-        cdef map[char*, int] refinements_map
-        cdef pair[char*, int] refinement
-        for key in refinements:
-            refinement.first = key
-            refinement.second = refinements[key]
-            refinements_map.insert(refinement)
-
-        cdef map[char*, int] orders_map
-        cdef pair[char*, int] order
-        for key in orders:
-            order.first = key
-            order.second = orders[key]
-            orders_map.insert(order)
-
-        cdef map[char*, char*] materials_map
-        cdef pair[char*, char *] material
-        for key in materials:
-            material.first = key
-            material.second = materials[key]
-            materials_map.insert(material)
+        cdef map[char*, int] refinements_map = dictionary_to_int_map(refinements)
+        cdef map[char*, int] orders_map = dictionary_to_int_map(orders)
+        cdef map[char*, char*] materials_map = dictionary_to_char_map(materials)
 
         return self.thisptr.addLabel(x, y, area, refinements_map, orders_map, materials_map)
 
     # modify_label(index, area, refinements, orders, materials)
     def modify_label(self, index, area = 0.0, refinements = {}, orders = {}, materials = {}):
-        cdef map[char*, int] refinements_map
-        cdef pair[char*, int] refinement
-        for key in refinements:
-            refinement.first = key
-            refinement.second = refinements[key]
-            refinements_map.insert(refinement)
-
-        cdef map[char*, int] orders_map
-        cdef pair[char*, int] order
-        for key in orders:
-            order.first = key
-            order.second = orders[key]
-            orders_map.insert(order)
-
-        cdef map[char*, char*] materials_map
-        cdef pair[char*, char *] material
-        for key in materials:
-            material.first = key
-            material.second = materials[key]
-            materials_map.insert(material)
+        cdef map[char*, int] refinements_map = dictionary_to_int_map(refinements)
+        cdef map[char*, int] orders_map = dictionary_to_int_map(orders)
+        cdef map[char*, char*] materials_map = dictionary_to_char_map(materials)
 
         self.thisptr.modifyLabel(index, area, refinements_map, orders_map, materials_map)
 
@@ -256,9 +210,7 @@ cdef class __Geometry__:
         Keyword arguments:
         labels -- list of indexes of removed labels (default [] - remove all labels)
         """
-        cdef vector[int] labels_vector
-        for label in labels:
-            labels_vector.push_back(label)
+        cdef vector[int] labels_vector = list_to_int_vector(labels)
 
         self.thisptr.removeLabels(labels_vector)
 
@@ -283,9 +235,7 @@ cdef class __Geometry__:
         Keyword arguments:
         nodes -- list of index (default is [] - select all nodes)
         """
-        cdef vector[int] nodes_vector
-        for node in nodes:
-            nodes_vector.push_back(node)
+        cdef vector[int] nodes_vector = list_to_int_vector(nodes)
 
         self.thisptr.selectNodes(nodes_vector)
 
@@ -298,9 +248,7 @@ cdef class __Geometry__:
         Keyword arguments:
         edges -- list of index (default is []  - select all edges)
         """
-        cdef vector[int] edges_vector
-        for edge in edges:
-            edges_vector.push_back(edge)
+        cdef vector[int] edges_vector = list_to_int_vector(edges)
 
         self.thisptr.selectEdges(edges_vector)
 
@@ -313,9 +261,7 @@ cdef class __Geometry__:
         Keyword arguments:
         labels -- list of index (default is [] - select all labels)
         """
-        cdef vector[int] labels_vector
-        for label in labels:
-            labels_vector.push_back(label)
+        cdef vector[int] labels_vector = list_to_int_vector(labels)
 
         self.thisptr.selectLabels(labels_vector)
 
