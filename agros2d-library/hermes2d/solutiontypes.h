@@ -92,9 +92,6 @@ public:
 
     void createEmpty(int numComp);
 
-    void saveToFile(const QString &baseName, FieldSolutionID solutionID);
-    void loadFromFile(const QString &baseName, FieldSolutionID solutionID);
-
 private:
     Hermes::vector<SpaceSharedPtr<Scalar> > m_spaces;
     Hermes::vector<MeshFunctionSharedPtr<Scalar> > m_solutions;

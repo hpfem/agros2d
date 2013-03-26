@@ -145,6 +145,9 @@ namespace Hermes
       this->on_initialization();
 
       dp->assemble(this->jacobian, this->residual);
+      this->info("\tLinear solver asseble solution duration: %f s.\n", this->last());
+      this->tick();
+
       if(this->output_rhsOn && (this->output_rhsIterations == -1 || this->output_rhsIterations >= 1))
       {
         char* fileName = new char[this->RhsFilename.length() + 5];

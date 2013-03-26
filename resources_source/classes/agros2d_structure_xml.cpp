@@ -67,6 +67,30 @@ namespace XMLStructure
   // element_data
   // 
 
+  const element_data::files_type& element_data::
+  files () const
+  {
+    return this->files_.get ();
+  }
+
+  element_data::files_type& element_data::
+  files ()
+  {
+    return this->files_.get ();
+  }
+
+  void element_data::
+  files (const files_type& x)
+  {
+    this->files_.set (x);
+  }
+
+  void element_data::
+  files (::std::auto_ptr< files_type > x)
+  {
+    this->files_.set (x);
+  }
+
   const element_data::field_id_type& element_data::
   field_id () const
   {
@@ -222,6 +246,122 @@ namespace XMLStructure
   {
     this->dofs_ = x;
   }
+
+
+  // files
+  // 
+
+  const files::file_sequence& files::
+  file () const
+  {
+    return this->file_;
+  }
+
+  files::file_sequence& files::
+  file ()
+  {
+    return this->file_;
+  }
+
+  void files::
+  file (const file_sequence& s)
+  {
+    this->file_ = s;
+  }
+
+
+  // file
+  // 
+
+  const file::array_id_type& file::
+  array_id () const
+  {
+    return this->array_id_.get ();
+  }
+
+  file::array_id_type& file::
+  array_id ()
+  {
+    return this->array_id_.get ();
+  }
+
+  void file::
+  array_id (const array_id_type& x)
+  {
+    this->array_id_.set (x);
+  }
+
+  const file::mesh_filename_type& file::
+  mesh_filename () const
+  {
+    return this->mesh_filename_.get ();
+  }
+
+  file::mesh_filename_type& file::
+  mesh_filename ()
+  {
+    return this->mesh_filename_.get ();
+  }
+
+  void file::
+  mesh_filename (const mesh_filename_type& x)
+  {
+    this->mesh_filename_.set (x);
+  }
+
+  void file::
+  mesh_filename (::std::auto_ptr< mesh_filename_type > x)
+  {
+    this->mesh_filename_.set (x);
+  }
+
+  const file::space_filename_type& file::
+  space_filename () const
+  {
+    return this->space_filename_.get ();
+  }
+
+  file::space_filename_type& file::
+  space_filename ()
+  {
+    return this->space_filename_.get ();
+  }
+
+  void file::
+  space_filename (const space_filename_type& x)
+  {
+    this->space_filename_.set (x);
+  }
+
+  void file::
+  space_filename (::std::auto_ptr< space_filename_type > x)
+  {
+    this->space_filename_.set (x);
+  }
+
+  const file::solution_filename_type& file::
+  solution_filename () const
+  {
+    return this->solution_filename_.get ();
+  }
+
+  file::solution_filename_type& file::
+  solution_filename ()
+  {
+    return this->solution_filename_.get ();
+  }
+
+  void file::
+  solution_filename (const solution_filename_type& x)
+  {
+    this->solution_filename_.set (x);
+  }
+
+  void file::
+  solution_filename (::std::auto_ptr< solution_filename_type > x)
+  {
+    this->solution_filename_.set (x);
+  }
 }
 
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
@@ -311,11 +451,31 @@ namespace XMLStructure
   //
 
   element_data::
-  element_data (const field_id_type& field_id,
+  element_data (const files_type& files,
+                const field_id_type& field_id,
                 const time_step_type& time_step,
                 const adaptivity_step_type& adaptivity_step,
                 const solution_type_type& solution_type)
   : ::xml_schema::type (),
+    files_ (files, ::xml_schema::flags (), this),
+    field_id_ (field_id, ::xml_schema::flags (), this),
+    time_step_ (time_step, ::xml_schema::flags (), this),
+    adaptivity_step_ (adaptivity_step, ::xml_schema::flags (), this),
+    solution_type_ (solution_type, ::xml_schema::flags (), this),
+    time_step_length_ (::xml_schema::flags (), this),
+    adaptivity_error_ (::xml_schema::flags (), this),
+    dofs_ (::xml_schema::flags (), this)
+  {
+  }
+
+  element_data::
+  element_data (::std::auto_ptr< files_type >& files,
+                const field_id_type& field_id,
+                const time_step_type& time_step,
+                const adaptivity_step_type& adaptivity_step,
+                const solution_type_type& solution_type)
+  : ::xml_schema::type (),
+    files_ (files, ::xml_schema::flags (), this),
     field_id_ (field_id, ::xml_schema::flags (), this),
     time_step_ (time_step, ::xml_schema::flags (), this),
     adaptivity_step_ (adaptivity_step, ::xml_schema::flags (), this),
@@ -331,6 +491,7 @@ namespace XMLStructure
                 ::xml_schema::flags f,
                 ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
+    files_ (x.files_, f, this),
     field_id_ (x.field_id_, f, this),
     time_step_ (x.time_step_, f, this),
     adaptivity_step_ (x.adaptivity_step_, f, this),
@@ -346,6 +507,7 @@ namespace XMLStructure
                 ::xml_schema::flags f,
                 ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    files_ (f, this),
     field_id_ (f, this),
     time_step_ (f, this),
     adaptivity_step_ (f, this),
@@ -356,7 +518,7 @@ namespace XMLStructure
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
-      ::xsd::cxx::xml::dom::parser< char > p (e, false, true);
+      ::xsd::cxx::xml::dom::parser< char > p (e, true, true);
       this->parse (p, f);
     }
   }
@@ -365,6 +527,36 @@ namespace XMLStructure
   parse (::xsd::cxx::xml::dom::parser< char >& p,
          ::xml_schema::flags f)
   {
+    for (; p.more_elements (); p.next_element ())
+    {
+      const ::xercesc::DOMElement& i (p.cur_element ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      // files
+      //
+      if (n.name () == "files" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< files_type > r (
+          files_traits::create (i, f, this));
+
+        if (!files_.present ())
+        {
+          this->files_.set (r);
+          continue;
+        }
+      }
+
+      break;
+    }
+
+    if (!files_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_element< char > (
+        "files",
+        "");
+    }
+
     while (p.more_attributes ())
     {
       const ::xercesc::DOMAttr& i (p.next_attribute ());
@@ -460,6 +652,206 @@ namespace XMLStructure
   ~element_data ()
   {
   }
+
+  // files
+  //
+
+  files::
+  files ()
+  : ::xml_schema::type (),
+    file_ (::xml_schema::flags (), this)
+  {
+  }
+
+  files::
+  files (const files& x,
+         ::xml_schema::flags f,
+         ::xml_schema::container* c)
+  : ::xml_schema::type (x, f, c),
+    file_ (x.file_, f, this)
+  {
+  }
+
+  files::
+  files (const ::xercesc::DOMElement& e,
+         ::xml_schema::flags f,
+         ::xml_schema::container* c)
+  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    file_ (f, this)
+  {
+    if ((f & ::xml_schema::flags::base) == 0)
+    {
+      ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+      this->parse (p, f);
+    }
+  }
+
+  void files::
+  parse (::xsd::cxx::xml::dom::parser< char >& p,
+         ::xml_schema::flags f)
+  {
+    for (; p.more_elements (); p.next_element ())
+    {
+      const ::xercesc::DOMElement& i (p.cur_element ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      // file
+      //
+      if (n.name () == "file" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< file_type > r (
+          file_traits::create (i, f, this));
+
+        this->file_.push_back (r);
+        continue;
+      }
+
+      break;
+    }
+  }
+
+  files* files::
+  _clone (::xml_schema::flags f,
+          ::xml_schema::container* c) const
+  {
+    return new class files (*this, f, c);
+  }
+
+  files::
+  ~files ()
+  {
+  }
+
+  // file
+  //
+
+  file::
+  file (const array_id_type& array_id,
+        const mesh_filename_type& mesh_filename,
+        const space_filename_type& space_filename,
+        const solution_filename_type& solution_filename)
+  : ::xml_schema::type (),
+    array_id_ (array_id, ::xml_schema::flags (), this),
+    mesh_filename_ (mesh_filename, ::xml_schema::flags (), this),
+    space_filename_ (space_filename, ::xml_schema::flags (), this),
+    solution_filename_ (solution_filename, ::xml_schema::flags (), this)
+  {
+  }
+
+  file::
+  file (const file& x,
+        ::xml_schema::flags f,
+        ::xml_schema::container* c)
+  : ::xml_schema::type (x, f, c),
+    array_id_ (x.array_id_, f, this),
+    mesh_filename_ (x.mesh_filename_, f, this),
+    space_filename_ (x.space_filename_, f, this),
+    solution_filename_ (x.solution_filename_, f, this)
+  {
+  }
+
+  file::
+  file (const ::xercesc::DOMElement& e,
+        ::xml_schema::flags f,
+        ::xml_schema::container* c)
+  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    array_id_ (f, this),
+    mesh_filename_ (f, this),
+    space_filename_ (f, this),
+    solution_filename_ (f, this)
+  {
+    if ((f & ::xml_schema::flags::base) == 0)
+    {
+      ::xsd::cxx::xml::dom::parser< char > p (e, false, true);
+      this->parse (p, f);
+    }
+  }
+
+  void file::
+  parse (::xsd::cxx::xml::dom::parser< char >& p,
+         ::xml_schema::flags f)
+  {
+    while (p.more_attributes ())
+    {
+      const ::xercesc::DOMAttr& i (p.next_attribute ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      if (n.name () == "array_id" && n.namespace_ ().empty ())
+      {
+        this->array_id_.set (array_id_traits::create (i, f, this));
+        continue;
+      }
+
+      if (n.name () == "mesh_filename" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< mesh_filename_type > r (
+          mesh_filename_traits::create (i, f, this));
+
+        this->mesh_filename_.set (r);
+        continue;
+      }
+
+      if (n.name () == "space_filename" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< space_filename_type > r (
+          space_filename_traits::create (i, f, this));
+
+        this->space_filename_.set (r);
+        continue;
+      }
+
+      if (n.name () == "solution_filename" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< solution_filename_type > r (
+          solution_filename_traits::create (i, f, this));
+
+        this->solution_filename_.set (r);
+        continue;
+      }
+    }
+
+    if (!array_id_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "array_id",
+        "");
+    }
+
+    if (!mesh_filename_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "mesh_filename",
+        "");
+    }
+
+    if (!space_filename_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "space_filename",
+        "");
+    }
+
+    if (!solution_filename_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "solution_filename",
+        "");
+    }
+  }
+
+  file* file::
+  _clone (::xml_schema::flags f,
+          ::xml_schema::container* c) const
+  {
+    return new class file (*this, f, c);
+  }
+
+  file::
+  ~file ()
+  {
+  }
 }
 
 #include <ostream>
@@ -491,6 +883,7 @@ namespace XMLStructure
   ::std::ostream&
   operator<< (::std::ostream& o, const element_data& i)
   {
+    o << ::std::endl << "files: " << i.files ();
     o << ::std::endl << "field_id: " << i.field_id ();
     o << ::std::endl << "time_step: " << i.time_step ();
     o << ::std::endl << "adaptivity_step: " << i.adaptivity_step ();
@@ -510,6 +903,29 @@ namespace XMLStructure
       o << ::std::endl << "dofs: " << *i.dofs ();
     }
 
+    return o;
+  }
+
+  ::std::ostream&
+  operator<< (::std::ostream& o, const files& i)
+  {
+    for (files::file_const_iterator
+         b (i.file ().begin ()), e (i.file ().end ());
+         b != e; ++b)
+    {
+      o << ::std::endl << "file: " << *b;
+    }
+
+    return o;
+  }
+
+  ::std::ostream&
+  operator<< (::std::ostream& o, const file& i)
+  {
+    o << ::std::endl << "array_id: " << i.array_id ();
+    o << ::std::endl << "mesh_filename: " << i.mesh_filename ();
+    o << ::std::endl << "space_filename: " << i.space_filename ();
+    o << ::std::endl << "solution_filename: " << i.solution_filename ();
     return o;
   }
 }
@@ -989,6 +1405,17 @@ namespace XMLStructure
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
+    // files
+    //
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "files",
+          e));
+
+      s << i.files ();
+    }
+
     // field_id
     //
     {
@@ -1067,6 +1494,76 @@ namespace XMLStructure
           e));
 
       a << *i.dofs ();
+    }
+  }
+
+  void
+  operator<< (::xercesc::DOMElement& e, const files& i)
+  {
+    e << static_cast< const ::xml_schema::type& > (i);
+
+    // file
+    //
+    for (files::file_const_iterator
+         b (i.file ().begin ()), n (i.file ().end ());
+         b != n; ++b)
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "file",
+          e));
+
+      s << *b;
+    }
+  }
+
+  void
+  operator<< (::xercesc::DOMElement& e, const file& i)
+  {
+    e << static_cast< const ::xml_schema::type& > (i);
+
+    // array_id
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "array_id",
+          e));
+
+      a << i.array_id ();
+    }
+
+    // mesh_filename
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "mesh_filename",
+          e));
+
+      a << i.mesh_filename ();
+    }
+
+    // space_filename
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "space_filename",
+          e));
+
+      a << i.space_filename ();
+    }
+
+    // solution_filename
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "solution_filename",
+          e));
+
+      a << i.solution_filename ();
     }
   }
 }

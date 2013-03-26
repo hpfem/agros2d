@@ -836,6 +836,8 @@ void Solver<Scalar>::solveInitialTimeStep()
         }
     }
 
+    QList<SolutionStore::SolutionRunTimeDetails::FileName> fileNames;
+
     BlockSolutionID solutionID(m_block, 0, 0, SolutionMode_Normal);
     SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(),
                                                   0.0,

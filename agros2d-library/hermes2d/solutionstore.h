@@ -29,12 +29,24 @@ public:
 
     struct SolutionRunTimeDetails
     {
-        SolutionRunTimeDetails(double time_step_length = 0.0, double error = 0.0, int DOFs = 0)
-            : time_step_length(time_step_length), adaptivity_error(error), DOFs(DOFs) {}
+        struct FileName
+        {
+            FileName(QString meshFileName = "", QString spaceFileName = "", QString solutionFileName = "")
+                : meshFileName(meshFileName), spaceFileName(spaceFileName), solutionFileName(solutionFileName) {}
+
+            QString meshFileName;
+            QString spaceFileName;
+            QString solutionFileName;
+        };
+
+        SolutionRunTimeDetails(double time_step_length = 0, double error = 0, int DOFs = 0, QList<FileName> fileNames = QList<FileName>())
+            : time_step_length(time_step_length), adaptivity_error(error), DOFs(DOFs), fileNames(fileNames) {}
 
         double time_step_length;
         double adaptivity_error;
-        int DOFs;
+        int DOFs;       
+
+        QList<FileName> fileNames;
     };
 
     bool contains(FieldSolutionID solutionID) const;

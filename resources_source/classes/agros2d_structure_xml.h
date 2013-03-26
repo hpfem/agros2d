@@ -255,6 +255,8 @@ namespace XMLStructure
 {
   class structure;
   class element_data;
+  class files;
+  class file;
 }
 
 
@@ -326,6 +328,23 @@ namespace XMLStructure
   class element_data: public ::xml_schema::type
   {
     public:
+    // files
+    // 
+    typedef ::XMLStructure::files files_type;
+    typedef ::xsd::cxx::tree::traits< files_type, char > files_traits;
+
+    const files_type&
+    files () const;
+
+    files_type&
+    files ();
+
+    void
+    files (const files_type& x);
+
+    void
+    files (::std::auto_ptr< files_type > p);
+
     // field_id
     // 
     typedef ::xml_schema::string field_id_type;
@@ -444,7 +463,14 @@ namespace XMLStructure
 
     // Constructors.
     //
-    element_data (const field_id_type&,
+    element_data (const files_type&,
+                  const field_id_type&,
+                  const time_step_type&,
+                  const adaptivity_step_type&,
+                  const solution_type_type&);
+
+    element_data (::std::auto_ptr< files_type >&,
+                  const field_id_type&,
                   const time_step_type&,
                   const adaptivity_step_type&,
                   const solution_type_type&);
@@ -472,6 +498,7 @@ namespace XMLStructure
            ::xml_schema::flags);
 
     protected:
+    ::xsd::cxx::tree::one< files_type > files_;
     ::xsd::cxx::tree::one< field_id_type > field_id_;
     ::xsd::cxx::tree::one< time_step_type > time_step_;
     ::xsd::cxx::tree::one< adaptivity_step_type > adaptivity_step_;
@@ -479,6 +506,160 @@ namespace XMLStructure
     time_step_length_optional time_step_length_;
     adaptivity_error_optional adaptivity_error_;
     dofs_optional dofs_;
+  };
+
+  class files: public ::xml_schema::type
+  {
+    public:
+    // file
+    // 
+    typedef ::XMLStructure::file file_type;
+    typedef ::xsd::cxx::tree::sequence< file_type > file_sequence;
+    typedef file_sequence::iterator file_iterator;
+    typedef file_sequence::const_iterator file_const_iterator;
+    typedef ::xsd::cxx::tree::traits< file_type, char > file_traits;
+
+    const file_sequence&
+    file () const;
+
+    file_sequence&
+    file ();
+
+    void
+    file (const file_sequence& s);
+
+    // Constructors.
+    //
+    files ();
+
+    files (const ::xercesc::DOMElement& e,
+           ::xml_schema::flags f = 0,
+           ::xml_schema::container* c = 0);
+
+    files (const files& x,
+           ::xml_schema::flags f = 0,
+           ::xml_schema::container* c = 0);
+
+    virtual files*
+    _clone (::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0) const;
+
+    virtual 
+    ~files ();
+
+    // Implementation.
+    //
+    protected:
+    void
+    parse (::xsd::cxx::xml::dom::parser< char >&,
+           ::xml_schema::flags);
+
+    protected:
+    file_sequence file_;
+  };
+
+  class file: public ::xml_schema::type
+  {
+    public:
+    // array_id
+    // 
+    typedef ::xml_schema::int_ array_id_type;
+    typedef ::xsd::cxx::tree::traits< array_id_type, char > array_id_traits;
+
+    const array_id_type&
+    array_id () const;
+
+    array_id_type&
+    array_id ();
+
+    void
+    array_id (const array_id_type& x);
+
+    // mesh_filename
+    // 
+    typedef ::xml_schema::string mesh_filename_type;
+    typedef ::xsd::cxx::tree::traits< mesh_filename_type, char > mesh_filename_traits;
+
+    const mesh_filename_type&
+    mesh_filename () const;
+
+    mesh_filename_type&
+    mesh_filename ();
+
+    void
+    mesh_filename (const mesh_filename_type& x);
+
+    void
+    mesh_filename (::std::auto_ptr< mesh_filename_type > p);
+
+    // space_filename
+    // 
+    typedef ::xml_schema::string space_filename_type;
+    typedef ::xsd::cxx::tree::traits< space_filename_type, char > space_filename_traits;
+
+    const space_filename_type&
+    space_filename () const;
+
+    space_filename_type&
+    space_filename ();
+
+    void
+    space_filename (const space_filename_type& x);
+
+    void
+    space_filename (::std::auto_ptr< space_filename_type > p);
+
+    // solution_filename
+    // 
+    typedef ::xml_schema::string solution_filename_type;
+    typedef ::xsd::cxx::tree::traits< solution_filename_type, char > solution_filename_traits;
+
+    const solution_filename_type&
+    solution_filename () const;
+
+    solution_filename_type&
+    solution_filename ();
+
+    void
+    solution_filename (const solution_filename_type& x);
+
+    void
+    solution_filename (::std::auto_ptr< solution_filename_type > p);
+
+    // Constructors.
+    //
+    file (const array_id_type&,
+          const mesh_filename_type&,
+          const space_filename_type&,
+          const solution_filename_type&);
+
+    file (const ::xercesc::DOMElement& e,
+          ::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0);
+
+    file (const file& x,
+          ::xml_schema::flags f = 0,
+          ::xml_schema::container* c = 0);
+
+    virtual file*
+    _clone (::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0) const;
+
+    virtual 
+    ~file ();
+
+    // Implementation.
+    //
+    protected:
+    void
+    parse (::xsd::cxx::xml::dom::parser< char >&,
+           ::xml_schema::flags);
+
+    protected:
+    ::xsd::cxx::tree::one< array_id_type > array_id_;
+    ::xsd::cxx::tree::one< mesh_filename_type > mesh_filename_;
+    ::xsd::cxx::tree::one< space_filename_type > space_filename_;
+    ::xsd::cxx::tree::one< solution_filename_type > solution_filename_;
   };
 }
 
@@ -491,6 +672,12 @@ namespace XMLStructure
 
   ::std::ostream&
   operator<< (::std::ostream&, const element_data&);
+
+  ::std::ostream&
+  operator<< (::std::ostream&, const files&);
+
+  ::std::ostream&
+  operator<< (::std::ostream&, const file&);
 }
 
 #include <iosfwd>
@@ -678,6 +865,12 @@ namespace XMLStructure
 
   void
   operator<< (::xercesc::DOMElement&, const element_data&);
+
+  void
+  operator<< (::xercesc::DOMElement&, const files&);
+
+  void
+  operator<< (::xercesc::DOMElement&, const file&);
 }
 
 #include <xsd/cxx/post.hxx>
