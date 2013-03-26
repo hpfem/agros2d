@@ -220,6 +220,7 @@ void ProblemConfigView::load(QDomElement *config)
     orderLabel = readConfig("View/OrderLabel", ORDERLABEL);
 
     // particle tracing
+    particleButcherTableType = (Hermes::ButcherTableType) readConfig("View/ParticleButcherTableType", PARTICLEBUTCHERTABLETYPE);
     particleIncludeRelativisticCorrection = readConfig("View/ParticleIncludeRelativisticCorrection", PARTICLEINCLUDERELATIVISTICCORRECTION);
     particleMass = readConfig("View/ParticleMass", PARTICLEMASS);
     particleConstant = readConfig("View/ParticleConstant", PARTICLECONSTANT);
@@ -396,6 +397,7 @@ void ProblemConfigView::save(QDomElement *config)
     writeConfig("View/OrderLabel", orderLabel);
 
     // particle tracing
+    writeConfig("View/ParticleButcherTableType", particleButcherTableType);
     writeConfig("View/ParticleIncludeRelativisticCorrection", particleIncludeRelativisticCorrection);
     writeConfig("View/ParticleMass", particleMass);
     writeConfig("View/ParticleConstant", particleConstant);

@@ -70,6 +70,12 @@ ParticleTracingWidget::~ParticleTracingWidget()
 void ParticleTracingWidget::createControls()
 {
     // particle tracing
+    cmbParticleButcherTableType = new QComboBox(this);
+    cmbParticleButcherTableType->addItem(tr("Heun-Euler (2,1)"), Hermes::Explicit_HEUN_EULER_2_12_embedded);
+    cmbParticleButcherTableType->addItem(tr("Bogacki-Shampine (2,3)"), Hermes::Explicit_BOGACKI_SHAMPINE_4_23_embedded);
+    cmbParticleButcherTableType->addItem(tr("Fehlberg (4,5)"), Hermes::Explicit_FEHLBERG_6_45_embedded);
+    cmbParticleButcherTableType->addItem(tr("Cash-Karp (4,5)"), Hermes::Explicit_CASH_KARP_6_45_embedded);
+    cmbParticleButcherTableType->addItem(tr("Dormand-Prince (4,5)"), Hermes::Explicit_DORMAND_PRINCE_7_45_embedded);
     chkParticleIncludeRelativisticCorrection = new QCheckBox(tr("Relativistic correction"));
     txtParticleNumberOfParticles = new QSpinBox(this);
     txtParticleNumberOfParticles->setMinimum(1);
@@ -222,15 +228,17 @@ void ParticleTracingWidget::createControls()
     widgetForces->setLayout(layoutForces);
 
     // solver
-    QGridLayout *gridLayoutSolver = new QGridLayout();
-    gridLayoutSolver->addWidget(chkParticleIncludeRelativisticCorrection, 0, 0);
-    gridLayoutSolver->addWidget(new QLabel(QString("<i>m</i><sub>p</sub> = m / (1 - v<sup>2</sup>/c<sup>2</sup>)<sup>1/2</sup>")), 0, 1);
-    gridLayoutSolver->addWidget(new QLabel(tr("Maximum relative error (%):")), 1, 0);
-    gridLayoutSolver->addWidget(txtParticleMaximumRelativeError, 1, 1);
-    gridLayoutSolver->addWidget(new QLabel(tr("Minimum step (m):")), 2, 0);
-    gridLayoutSolver->addWidget(txtParticleMinimumStep, 2, 1);
-    gridLayoutSolver->addWidget(new QLabel(tr("Maximum number of steps:")), 3, 0);
-    gridLayoutSolver->addWidget(txtParticleMaximumNumberOfSteps, 3, 1);
+    QGridLayout *gridLayoutSolver = new QGridLayout();    
+    gridLayoutSolver->addWidget(new QLabel(tr("Butcher tableau:")), 0, 0);
+    gridLayoutSolver->addWidget(cmbParticleButcherTableType, 0, 1);
+    gridLayoutSolver->addWidget(chkParticleIncludeRelativisticCorrection, 1, 0);
+    gridLayoutSolver->addWidget(new QLabel(QString("<i>m</i><sub>p</sub> = m / (1 - v<sup>2</sup>/c<sup>2</sup>)<sup>1/2</sup>")), 1, 1);
+    gridLayoutSolver->addWidget(new QLabel(tr("Maximum relative error (%):")), 2, 0);
+    gridLayoutSolver->addWidget(txtParticleMaximumRelativeError, 2, 1);
+    gridLayoutSolver->addWidget(new QLabel(tr("Minimum step (m):")), 3, 0);
+    gridLayoutSolver->addWidget(txtParticleMinimumStep, 3, 1);
+    gridLayoutSolver->addWidget(new QLabel(tr("Maximum number of steps:")), 4, 0);
+    gridLayoutSolver->addWidget(txtParticleMaximumNumberOfSteps, 4, 1);
     gridLayoutSolver->addWidget(new QLabel(""), 10, 0);
     gridLayoutSolver->setRowStretch(10, 1);
 
@@ -290,6 +298,7 @@ void ParticleTracingWidget::createControls()
 void ParticleTracingWidget::updateControls()
 {
     // particle tracing
+    cmbParticleButcherTableType->setCurrentIndex(cmbParticleButcherTableType->findData(Agros2D::problem()->configView()->particleButcherTableType));
     chkParticleIncludeRelativisticCorrection->setChecked(Agros2D::problem()->configView()->particleIncludeRelativisticCorrection);
     txtParticleNumberOfParticles->setValue(Agros2D::problem()->configView()->particleNumberOfParticles);
     txtParticleStartingRadius->setValue(Agros2D::problem()->configView()->particleStartingRadius);
@@ -333,6 +342,7 @@ void ParticleTracingWidget::updateControls()
 
 void ParticleTracingWidget::doParticleDefault()
 {
+    cmbParticleButcherTableType->setCurrentIndex(PARTICLEBUTCHERTABLETYPE);
     txtParticleNumberOfParticles->setValue(PARTICLENUMBEROFPARTICLES);
     txtParticleStartingRadius->setValue(PARTICLESTARTINGRADIUS);
     chkParticleIncludeRelativisticCorrection->setChecked(PARTICLEINCLUDERELATIVISTICCORRECTION);
@@ -368,6 +378,7 @@ void ParticleTracingWidget::refresh()
 void ParticleTracingWidget::doApply()
 {
     // particle tracing
+    Agros2D::problem()->configView()->particleButcherTableType = (Hermes::ButcherTableType) cmbParticleButcherTableType->itemData(cmbParticleButcherTableType->currentIndex()).toInt();
     Agros2D::problem()->configView()->particleIncludeRelativisticCorrection = chkParticleIncludeRelativisticCorrection->isChecked();
     Agros2D::problem()->configView()->particleNumberOfParticles = txtParticleNumberOfParticles->value();
     Agros2D::problem()->configView()->particleStartingRadius = txtParticleStartingRadius->value();

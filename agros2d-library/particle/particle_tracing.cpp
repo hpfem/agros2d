@@ -86,11 +86,8 @@ void ParticleTracing::clear()
     m_velocityMax = -numeric_limits<double>::max();
 }
 
-bool ParticleTracing::newtonEquations(double step,
-                                      Point3 position,
-                                      Point3 velocity,
-                                      Point3 *newposition,
-                                      Point3 *newvelocity)
+Point3 ParticleTracing::force(Point3 position,
+                              Point3 velocity)
 {
     Point3 totalFieldForce;
     foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
@@ -157,7 +154,7 @@ bool ParticleTracing::newtonEquations(double step,
             catch (AgrosException e)
             {
                 qDebug() << "Particle Tracing warning: " << e.what();
-                return false;
+                return Point3();
             }
         }
         totalFieldForce = totalFieldForce + fieldForce;
@@ -176,6 +173,15 @@ bool ParticleTracing::newtonEquations(double step,
     // Total force
     Point3 totalForce = totalFieldForce + forceDrag + forceCustom;
 
+    return totalForce;
+}
+
+bool ParticleTracing::newtonEquations(double step,
+                                      Point3 position,
+                                      Point3 velocity,
+                                      Point3 *newposition,
+                                      Point3 *newvelocity)
+{
     // relativistic correction
     double mass = Agros2D::problem()->configView()->particleMass;
     if (Agros2D::problem()->configView()->particleIncludeRelativisticCorrection)
@@ -187,7 +193,7 @@ bool ParticleTracing::newtonEquations(double step,
     }
 
     // Total acceleration
-    Point3 totalAccel = totalForce / mass;
+    Point3 totalAccel = force(position, velocity) / mass;
 
     if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
     {
@@ -213,6 +219,10 @@ bool ParticleTracing::newtonEquations(double step,
 
 void ParticleTracing::computeTrajectoryParticle(const Point3 initialPosition, const Point3 initialVelocity)
 {
+    Hermes::ButcherTable butcher(Agros2D::problem()->configView()->particleButcherTableType);
+    QVector<Point3> kp(butcher.get_size());
+    QVector<Point3> kv(butcher.get_size());
+
     clear();
 
     QTime timePart;
@@ -243,74 +253,50 @@ void ParticleTracing::computeTrajectoryParticle(const Point3 initialPosition, co
         maxStepsGlobal++;
 
         // Runge-Kutta steps
-        Point3 newPosition;
-        Point3 newVelocity;
+        Point3 newPositionH;
+        Point3 newVelocityH;
 
         int maxStepsRKF = 0;
         while (!stopComputation && maxStepsRKF < 100)
         {
-            // Runge-Kutta-Fehlberg adaptive method
-            Point3 k1np;
-            Point3 k1nv;
-            if (!newtonEquations(dt,
-                                 position,
-                                 velocity,
-                                 &k1np, &k1nv))
-                stopComputation = true;
+            for (int k = 0; k < butcher.get_size(); k++)
+            {
+                Point3 pos = position;
+                Point3 vel = velocity;
+                for (int l = 0; l < butcher.get_size(); l++)
+                {
+                    if (l < k)
+                    {
+                        pos = pos + kp[l] * butcher.get_A(k, l);
+                        vel = vel + kv[l] * butcher.get_A(k, l);
+                    }
+                }
 
-            Point3 k2np;
-            Point3 k2nv;
-            if (!newtonEquations(dt,
-                                 position + k1np * 1./4.,
-                                 velocity + k1nv * 1./4.,
-                                 &k2np, &k2nv))
-                stopComputation = true;
+                if (!newtonEquations(dt, pos, vel, &kp[k], &kv[k]))
+                    stopComputation = true;
+            }
 
-            Point3 k3np;
-            Point3 k3nv;
-            if (!newtonEquations(dt,
-                                 position + k1np * 3./32. + k2np * 9./32.,
-                                 velocity + k1nv * 3./32. + k2nv * 9./32.,
-                                 &k3np, &k3nv))
-                stopComputation = true;
+            Point3 newPositionL = position;
+            Point3 newVelocityL = velocity;
+            for (int k = 0; k < butcher.get_size() - 1; k++)
+            {
+                newPositionL = newPositionL + kp[k] * butcher.get_B2(k);
+                newVelocityL = newVelocityL + kv[k] * butcher.get_B2(k);
+            }
 
-            Point3 k4np;
-            Point3 k4nv;
-            if (!newtonEquations(dt,
-                                 position + k1np * 1932./2197. - k2np * 7200./2197. + k3np * 7296./2197.,
-                                 velocity + k1nv * 1932./2197. - k2nv * 7200./2197. + k3nv * 7296./2197.,
-                                 &k4np, &k4nv))
-                stopComputation = true;
-
-            Point3 k5np;
-            Point3 k5nv;
-            if (!newtonEquations(dt,
-                                 position + k1np * 439./216. - k2np * 8. + k3np * 3680./513. - k4np * 845./4104.,
-                                 velocity + k1nv * 439./216. - k2nv * 8. + k3nv * 3680./513. - k4nv * 845./4104.,
-                                 &k5np, &k5nv))
-                stopComputation = true;
-
-            Point3 k6np;
-            Point3 k6nv;
-            if (!newtonEquations(dt,
-                                 position - k1np * 8./27. + k2np * 2. - k3np * 3544./2565. + k4np * 1859./4104. - k5np * 11./40.,
-                                 velocity - k1nv * 8./27. + k2nv * 2. - k3nv * 3544./2565. + k4nv * 1859./4104. - k5nv * 11./40.,
-                                 &k6np, &k6nv))
-                stopComputation = true;
-
-            // Runge-Kutta order 4
-            Point3 np4 = position + k1np * 25./216. + k3np * 1408./2565. + k4np * 2197./4104. - k5np * 1./5.;
-            // Point3 nv4 = v + k1nv * 25/216 + k3nv * 1408/2565 + k4nv * 2197/4104 - k5nv * 1/5;
-
-            // Runge-Kutta order 5
-            newPosition = position + k1np * 16./135. + k3np * 6656./12825. + k4np * 28561./56430. - k5np * 9./50. + k6np * 2./55.;
-            newVelocity = velocity + k1nv * 16./135. + k3nv * 6656./12825. + k4nv * 28561./56430. - k5nv * 9./50. + k6nv * 2./55.;
+            newPositionH = position;
+            newVelocityH = velocity;
+            for (int k = 0; k < butcher.get_size(); k++)
+            {
+                newPositionH = newPositionH + kp[k] * butcher.get_B(k);
+                newVelocityH = newVelocityH + kv[k] * butcher.get_B(k);
+            }
 
             // optimal step estimation
-            double absError = abs(newPosition.magnitude() - np4.magnitude());
-            double relError = abs(absError / newPosition.magnitude());
-            double currentStepLength = (position - newPosition).magnitude();
-            double currentStepVelocity = (velocity - newVelocity).magnitude();
+            double absError = abs(newPositionH.magnitude() - newPositionL.magnitude());
+            double relError = abs(absError / newPositionH.magnitude());
+            double currentStepLength = (position - newPositionH).magnitude();
+            double currentStepVelocity = (velocity - newVelocityH).magnitude();
 
             // qDebug() << np5.toString();
             // qDebug() << "abs. error: " << absError << ", rel. error: " << relError << ", time step: " << dt << "current step: " << currentStep;
@@ -327,13 +313,15 @@ void ParticleTracing::computeTrajectoryParticle(const Point3 initialPosition, co
             {
                 // decrease step
                 dt /= 3.0;
+                // qDebug() << "decreased" << dt;
                 continue;
             }
             // relative tolerance
             else if ((relError < relErrorMin || relError < EPS_ZERO))
             {
                 // increase step
-                dt *= 2.0;
+                dt *= 1.1;
+                // qDebug() << "increased" << dt;
             }
             break;
         }
@@ -342,7 +330,7 @@ void ParticleTracing::computeTrajectoryParticle(const Point3 initialPosition, co
         QMap<SceneEdge *, Point> intersections;
         foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
         {
-            QList<Point> incts = intersection(Point(position.x, position.y), Point(newPosition.x, newPosition.y),
+            QList<Point> incts = intersection(Point(position.x, position.y), Point(newPositionH.x, newPositionH.y),
                                               Point(), 0.0, 0.0,
                                               edge->nodeStart()->point(), edge->nodeEnd()->point(),
                                               edge->center(), edge->radius(), edge->angle());
@@ -380,15 +368,15 @@ void ParticleTracing::computeTrajectoryParticle(const Point3 initialPosition, co
 
             if(impact)
             {
-                newPosition.x = intersect.x;
-                newPosition.y = intersect.y;
+                newPositionH.x = intersect.x;
+                newPositionH.y = intersect.y;
 
                 stopComputation = true;
             }
             else
             {
                 // input vector moved to the origin
-                Point vectin = Point(newPosition.x, newPosition.y) - intersect;
+                Point vectin = Point(newPositionH.x, newPositionH.y) - intersect;
 
                 // tangent vector
                 Point tangent;
@@ -402,21 +390,21 @@ void ParticleTracing::computeTrajectoryParticle(const Point3 initialPosition, co
                                              intersect.y + (2.0*tangent.x*tangent.y * vectin.x + ((tangent.y * tangent.y) - (tangent.x * tangent.x)) * vectin.y));
 
                 double ratio = (Point(position.x, position.y) - intersect).magnitude()
-                        / (Point(newPosition.x, newPosition.y) - Point(position.x, position.y)).magnitude();
+                        / (Point(newPositionH.x, newPositionH.y) - Point(position.x, position.y)).magnitude();
 
                 // output point
                 // newPosition.x = intersect.x + (((tangent.x * tangent.x) - (tangent.y * tangent.y)) * vectin.x + 2.0*tangent.x*tangent.y * vectin.y);
                 // newPosition.y = intersect.y + (2.0*tangent.x*tangent.y * vectin.x + ((tangent.y * tangent.y) - (tangent.x * tangent.x)) * vectin.y);
-                newPosition.x = intersect.x;
-                newPosition.y = intersect.y;
+                newPositionH.x = intersect.x;
+                newPositionH.y = intersect.y;
 
                 // output vector
                 Point vectout = (idealReflectedPosition - intersect).normalizePoint();
 
                 // velocity in the direction of output vector
-                Point3 oldv = newVelocity;
-                newVelocity.x = vectout.x * oldv.magnitude() * Agros2D::problem()->configView()->particleCoefficientOfRestitution;
-                newVelocity.y = vectout.y * oldv.magnitude() * Agros2D::problem()->configView()->particleCoefficientOfRestitution;
+                Point3 oldv = newVelocityH;
+                newVelocityH.x = vectout.x * oldv.magnitude() * Agros2D::problem()->configView()->particleCoefficientOfRestitution;
+                newVelocityH.y = vectout.y * oldv.magnitude() * Agros2D::problem()->configView()->particleCoefficientOfRestitution;
 
                 // set new timestep
                 dt = dt * ratio;
@@ -426,8 +414,8 @@ void ParticleTracing::computeTrajectoryParticle(const Point3 initialPosition, co
         }
 
         // new values
-        velocity = newVelocity;
-        position = newPosition;
+        velocity = newVelocityH;
+        position = newPositionH;
 
         // add to the lists
         m_timesList.append(m_timesList.last() + dt);

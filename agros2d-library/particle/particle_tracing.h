@@ -81,6 +81,9 @@ private:
     QMap<FieldInfo *, MeshCache *> m_meshCache;
     QMap<FieldInfo *, Hermes::Hermes2D::Element *> m_activeElement;
 
+    Point3 force(Point3 position,
+                                  Point3 velocity);
+
     bool newtonEquations(double step,
                          Point3 position,
                          Point3 velocity,

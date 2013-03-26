@@ -227,6 +227,7 @@ public:
     bool paletteFilter;
 
     // particle tracing
+    Hermes::ButcherTableType particleButcherTableType;
     bool particleIncludeRelativisticCorrection;
     double particleMass;
     double particleConstant;

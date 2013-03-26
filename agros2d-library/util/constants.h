@@ -118,6 +118,7 @@ const PaletteOrderType ORDERPALETTEORDERTYPE = PaletteOrder_Hermes;
 const bool ORDERLABEL = false;
 
 // particle
+const Hermes::ButcherTableType PARTICLEBUTCHERTABLETYPE = Hermes::Explicit_FEHLBERG_6_45_embedded;
 const bool PARTICLEINCLUDERELATIVISTICCORRECTION = true;
 const int PARTICLENUMBEROFPARTICLES = 1;
 const double PARTICLESTARTINGRADIUS = 0;

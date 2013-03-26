@@ -45,6 +45,7 @@ private:
     SceneViewParticleTracing *m_sceneViewParticleTracing;
 
     // particle tracing
+    QComboBox *cmbParticleButcherTableType;
     QCheckBox *chkParticleIncludeRelativisticCorrection;
     QSpinBox *txtParticleNumberOfParticles;
     LineEditDouble *txtParticleStartingRadius;
