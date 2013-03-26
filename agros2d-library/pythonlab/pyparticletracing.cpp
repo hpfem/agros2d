@@ -30,8 +30,20 @@ void PyParticleTracing::solve()
     if (!Agros2D::problem()->isSolved())
         throw invalid_argument(QObject::tr("Problem is not solved.").toStdString());
 
+    // initial position
+    Point3 initialPosition;
+    initialPosition.x = Agros2D::problem()->configView()->particleStart.x;
+    initialPosition.y = Agros2D::problem()->configView()->particleStart.y;
+    initialPosition.z = 0.0;
+
+    // initial velocity
+    Point3 initialVelocity;
+    initialVelocity.x = Agros2D::problem()->configView()->particleStartVelocity.x;
+    initialVelocity.y = Agros2D::problem()->configView()->particleStartVelocity.y;
+    initialVelocity.z = 0.0;
+
     ParticleTracing particleTracing;
-    particleTracing.computeTrajectoryParticle(false);
+    particleTracing.computeTrajectoryParticle(initialPosition, initialVelocity);
 
     m_positions = particleTracing.positions();
     m_velocities = particleTracing.velocities();

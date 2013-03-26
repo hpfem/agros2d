@@ -1119,7 +1119,31 @@ void SceneViewParticleTracing::processParticleTracing()
             ParticleTracing particleTracing;
             try
             {
-                particleTracing.computeTrajectoryParticle(k > 0);
+                // initial position
+                Point3 initialPosition;
+                initialPosition.x = Agros2D::problem()->configView()->particleStart.x;
+                initialPosition.y = Agros2D::problem()->configView()->particleStart.y;
+                initialPosition.z = 0.0;
+
+                // initial velocity
+                Point3 initialVelocity;
+                initialVelocity.x = Agros2D::problem()->configView()->particleStartVelocity.x;
+                initialVelocity.y = Agros2D::problem()->configView()->particleStartVelocity.y;
+                initialVelocity.z = 0.0;
+
+                // random point
+                if (k > 0)
+                {
+                    Point3 dp(rand() * (Agros2D::problem()->configView()->particleStartingRadius) / RAND_MAX,
+                              rand() * (Agros2D::problem()->configView()->particleStartingRadius) / RAND_MAX,
+                              (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ? 0.0 : rand() * 2.0*M_PI / RAND_MAX);
+
+                    initialPosition = Point3(-Agros2D::problem()->configView()->particleStartingRadius / 2,
+                                             -Agros2D::problem()->configView()->particleStartingRadius / 2,
+                                             (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ? 0.0 : -1.0*M_PI) + initialPosition + dp;
+                }
+
+                particleTracing.computeTrajectoryParticle(initialPosition, initialVelocity);
             }
             catch (AgrosException& e)
             {

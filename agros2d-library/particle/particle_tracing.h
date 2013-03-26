@@ -40,7 +40,7 @@ public:
 
     void clear();
 
-    void computeTrajectoryParticle(bool randomPoint);
+    void computeTrajectoryParticle(const Point3 initialPosition, const Point3 initialVelocity);
 
     inline QList<Point3> positions() const { return m_positionsList; }
     inline QList<Point3> velocities() const { return m_velocitiesList; }

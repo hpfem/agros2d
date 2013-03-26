@@ -211,40 +211,16 @@ bool ParticleTracing::newtonEquations(double step,
     return true;
 }
 
-void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
+void ParticleTracing::computeTrajectoryParticle(const Point3 initialPosition, const Point3 initialVelocity)
 {
     clear();
 
     QTime timePart;
     timePart.start();
 
-    // initial position
-    Point3 position;
-    position.x = Agros2D::problem()->configView()->particleStart.x;
-    position.y = Agros2D::problem()->configView()->particleStart.y;
-
-    // random point
-    if (randomPoint)
-    {
-        int trials = 0;
-        while (true)
-        {
-            Point3 dp(rand() * (Agros2D::problem()->configView()->particleStartingRadius) / RAND_MAX,
-                      rand() * (Agros2D::problem()->configView()->particleStartingRadius) / RAND_MAX,
-                      (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ? 0.0 : rand() * 2.0*M_PI / RAND_MAX);
-
-            position = Point3(-Agros2D::problem()->configView()->particleStartingRadius / 2,
-                              -Agros2D::problem()->configView()->particleStartingRadius / 2,
-                              (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ? 0.0 : -1.0*M_PI) + position + dp;
-
-            trials++;
-            if (trials > 10)
-                break;
-        }
-    }
-
-    // initial velocity
-    Point3 velocity;
+    // initial position and velocity
+    Point3 position = initialPosition;
+    Point3 velocity = initialVelocity;
     velocity.x = Agros2D::problem()->configView()->particleStartVelocity.x;
     velocity.y = Agros2D::problem()->configView()->particleStartVelocity.y;
 
@@ -260,9 +236,6 @@ void ParticleTracing::computeTrajectoryParticle(bool randomPoint)
     double relErrorMax = 1e-3;
     double dt = Agros2D::problem()->configView()->particleStartVelocity.magnitude() > 0 ? qMax(bound.width(), bound.height()) / Agros2D::problem()->configView()->particleStartVelocity.magnitude() / 10
                                                                                         : 1e-11;
-    // QTime time;
-    // time.start();
-
     bool stopComputation = false;
     int maxStepsGlobal = 0;
     while (!stopComputation && (maxStepsGlobal < Agros2D::problem()->configView()->particleMaximumNumberOfSteps - 1))
