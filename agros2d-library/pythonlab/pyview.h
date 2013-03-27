@@ -39,6 +39,11 @@ class PostHermes;
 struct PyView
 {
     void saveImageToFile(const char *file, int width, int height);
+
+    void zoomBestFit();
+    void zoomIn();
+    void zoomOut();
+    void zoomRegion(double x1, double y1, double x2, double y2);
 };
 
 // view config
@@ -75,6 +80,7 @@ struct PyViewConfig
     inline bool getRulersShow() { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool(); }
 
     // todo: (Franta) font, size of nodes and edges and labels, colors
+
 };
 
 // view mesh

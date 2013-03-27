@@ -12,6 +12,11 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
     cdef cppclass PyView:
         void saveImageToFile(char *file, int width, int height)  except +
 
+        void zoomBestFit()
+        void zoomIn()
+        void zoomOut()
+        void zoomRegion(double, double, double, double)
+
     # PyViewConfig
     cdef cppclass PyViewConfig:
         void setField(char *fieldid) except +
@@ -425,5 +430,17 @@ cdef class __View__:
 
     def save_image(self, char *file, int width = 0, int height = 0):
         self.thisptr.saveImageToFile(file, width, height)
+
+    def zoom_best_fit(self):
+        self.thisptr.zoomBestFit()
+
+    def zoom_in(self):
+        self.thisptr.zoomIn()
+
+    def zoom_out(self):
+        self.thisptr.zoomOut()
+
+    def zoom_region(self, double x1, double y1, double x2, double y2):
+        self.thisptr.zoomRegion(x1, y1, x2, y2)
 
 view = __View__()

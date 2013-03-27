@@ -553,27 +553,3 @@ void PyGeometry::removeSelection()
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
-
-void PyGeometry::zoomBestFit()
-{
-    if (!silentMode())
-        currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomBestFit();
-}
-
-void PyGeometry::zoomIn()
-{
-    if (!silentMode())
-        currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomIn();
-}
-
-void PyGeometry::zoomOut()
-{
-    if (!silentMode())
-        currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomOut();
-}
-
-void PyGeometry::zoomRegion(double x1, double y1, double x2, double y2)
-{
-    if (!silentMode())
-        currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomRegion(Point(x1, y1), Point(x2, y2));
-}

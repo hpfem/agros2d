@@ -38,18 +38,19 @@ class PyGeometry
 
         void activate();
 
-        // elements
+        // add operations
         int addNode(double x, double y);
         int addEdge(double x1, double y1, double x2, double y2, double angle, map<char *, int> refinements, map<char*, char*> boundaries);
         int addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, map<char *, int> refinements, map<char*, char*> boundaries);
         int addLabel(double x, double y, double area, map<char *, int> refinements, map<char*, int> orders, map<char*, char*> materials);
 
+        inline int nodesCount() { return Agros2D::scene()->nodes->count(); }
+        inline int edgesCount() { return Agros2D::scene()->edges->count(); }
+        inline int labelsCount() { return Agros2D::scene()->labels->count(); }
+
+        // modify operations
         void modifyEdge(int index, double angle, map<char *, int> refinements, map<char*, char*> boundaries);
         void modifyLabel(int index, double area, map<char *, int> refinements, map<char*, int> orders, map<char*, char*> materials);
-
-        int nodesCount() { return Agros2D::scene()->nodes->count(); }
-        int edgesCount() { return Agros2D::scene()->edges->count(); }
-        int labelsCount() { return Agros2D::scene()->labels->count(); }
 
         // remove operations
         void removeNodes(vector<int> nodes);
@@ -72,12 +73,6 @@ class PyGeometry
         void rotateSelection(double x, double y, double angle, bool copy);
         void scaleSelection(double x, double y, double scale, bool copy);
         void removeSelection();
-
-        // zoom operations
-        void zoomBestFit();
-        void zoomIn();
-        void zoomOut();
-        void zoomRegion(double x1, double y1, double x2, double y2);
 
 private:
         void setBoundaries(SceneEdge *edge, map<char *, char *> boundaries);

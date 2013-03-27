@@ -489,3 +489,27 @@ void PyView::saveImageToFile(const char *file, int width, int height)
             currentPythonEngineAgros()->sceneViewPost3D()->saveImageToFile(file, width, height);
     }
 }
+
+void PyView::zoomBestFit()
+{
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomBestFit();
+}
+
+void PyView::zoomIn()
+{
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomIn();
+}
+
+void PyView::zoomOut()
+{
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomOut();
+}
+
+void PyView::zoomRegion(double x1, double y1, double x2, double y2)
+{
+    if (!silentMode())
+        currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomRegion(Point(x1, y1), Point(x2, y2));
+}
