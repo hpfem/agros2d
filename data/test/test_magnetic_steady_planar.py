@@ -83,8 +83,8 @@ testwm = agros2d.test("Energy density", point["wm"], 67.727733)
 testpj = agros2d.test("Losses density ", point["pj"], 3977.255622)
 testJiv = agros2d.test("Current density - induced velocity", point["Jivr"], -1.987738e5)
 testJr = agros2d.test("Current density - total", point["Jr"], -1.987738e5)
-testFx = agros2d.test("Lorentz force - x", point["Flrx"], -1975.551246)
-testFy = agros2d.test("Lorentz force - y", point["Flry"], -1671.99571)
+testFx = agros2d.test("Lorentz force - x", point["Flx"], -1975.551246)
+testFy = agros2d.test("Lorentz force - y", point["Fly"], -1671.99571)
 
 # volume integral
 volume = magnetic.volume_integrals([5])

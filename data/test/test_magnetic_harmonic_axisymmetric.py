@@ -76,10 +76,8 @@ testJit_real = agros2d.test("Current density - induced transform - real", point[
 testJit_imag = agros2d.test("Current density - induced transform - imag", point["Jiti"], -3478.665629)
 testJ_real = agros2d.test("Current density - total - real", point["Jr"], -16.47024)
 testJ_imag = agros2d.test("Current density - total - imag", point["Ji"], -3478.665629)
-testFr_real = agros2d.test("Lorentz force - r - real", point["Flrr"], 1.011098)
-testFr_imag = agros2d.test("Lorentz force - r - imag", point["Flir"], -331.92607)
-testFz_real = agros2d.test("Lorentz force - z - real", point["Flrz"], 1.300012)
-testFz_imag = agros2d.test("Lorentz force - z - imag", point["Fliz"], 95.960227)
+testFr = agros2d.test("Lorentz force - r", point["Flr"], 0.505549)
+testFz = agros2d.test("Lorentz force - z", point["Flz"], 0.650006)
 
 # volume integral
 volume = magnetic.volume_integrals([2])
@@ -98,7 +96,7 @@ print("Test: Magnetic harmonic - axisymmetric: " + str(testA and testA_real and 
                                                        and testB and testBr_real and testBr_imag and testBz_real and testBz_imag
                                                        and testH and testHr_real and testHr_imag and testHz_real and testHz_imag
                                                        and testJit_real and testJit_imag and testJ_real and testJ_imag
-                                                       and testFr_real and testFz_real and testFr_imag and testFz_imag
+                                                       and testFr and testFz 
                                                        and testIe_real and testIe_imag and testIit_real and testIit_imag and testI_real and testI_imag
                                                        and testpj and testwm and testWm and testPj
                                                        and testFLr and testFLr))

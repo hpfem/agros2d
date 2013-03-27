@@ -88,8 +88,8 @@ testHz = agros2d.test("Magnetic intensity - z", point["Hrz"], 494.39852)
 testwm = agros2d.test("Energy density", point["wm"], 50.704118)
 
 point = magnetic.local_values(0.0199415, 0.0609942)
-testFr_real = agros2d.test("Lorentz force - r - real", point["Flrr"], -1.237274e5)
-testFz_real = agros2d.test("Lorentz force - z - real", point["Flrz"], -41951.726164)
+testFr_real = agros2d.test("Lorentz force - r - real", point["Flr"], -1.237274e5)
+testFz_real = agros2d.test("Lorentz force - z - real", point["Flz"], -41951.726164)
 
 # volume integral
 volume = magnetic.volume_integrals([1])
