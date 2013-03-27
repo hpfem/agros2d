@@ -231,8 +231,6 @@ void ParticleTracing::computeTrajectoryParticle(const Point3 initialPosition, co
     // initial position and velocity
     Point3 position = initialPosition;
     Point3 velocity = initialVelocity;
-    velocity.x = Agros2D::problem()->configView()->particleStartVelocity.x;
-    velocity.y = Agros2D::problem()->configView()->particleStartVelocity.y;
 
     // position and velocity cache
     m_positionsList.append(position);
