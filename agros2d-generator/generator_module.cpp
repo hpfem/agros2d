@@ -1359,33 +1359,48 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
     }
 }
 
+class ValueGenerator
+{
+public:
+    ValueGenerator(int initValue) : m_nextValue(initValue) {}
+    QString value()
+    {
+        m_nextValue++;
+        return QString::number(m_nextValue);
+    }
+
+private:
+    int m_nextValue;
+};
+
 QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType,
-                                                             const QString &expr)
+                                                             const QString &expr, int generatorStartValue)
 {
     try
     {
         int numOfSol = Agros2DGenerator::numberOfSolutions(m_module->general().analyses(), analysisType);
 
         QMap<QString, QString> dict;
+        ValueGenerator generator(generatorStartValue);
 
         // coordinates
         if (coordinateType == CoordinateType_Planar)
         {
-            dict["x"] = "1.0";
-            dict["y"] = "1.0";
-            dict["tx"] = "1";
-            dict["ty"] = "1";
-            dict["nx"] = "1";
-            dict["ny"] = "1";
+            dict["x"] = generator.value();
+            dict["y"] = generator.value();
+            dict["tx"] = generator.value();
+            dict["ty"] = generator.value();
+            dict["nx"] = generator.value();
+            dict["ny"] = generator.value();
         }
         else
         {
-            dict["r"] = "1.0";
-            dict["z"] = "1.0";
-            dict["tr"] = "1";
-            dict["tz"] = "1";
-            dict["nr"] = "1";
-            dict["nz"] = "1";
+            dict["r"] = generator.value();
+            dict["z"] = generator.value();
+            dict["tr"] = generator.value();
+            dict["tz"] = generator.value();
+            dict["nr"] = generator.value();
+            dict["nz"] = generator.value();
         }
 
         // constants
@@ -1396,63 +1411,62 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
 
         // functions
         // scalar field
-        dict["uval"] = "1.0";
-        dict["vval"] = "1.0";
-        dict["upval"] = "1";
-        dict["uptval"] = "1";
+        dict["uval"] = generator.value();
+        dict["vval"] = generator.value();
+        dict["upval"] = generator.value();
+        dict["uptval"] = generator.value();
 
         // vector field
-        dict["uval0"] = "1";
-        dict["uval1"] = "1";
-        dict["vval0"] = "1";
-        dict["vval1"] = "1";
-        dict["ucurl"] = "1";
-        dict["vcurl"] = "1";
-        dict["upcurl"] = "1";
+        dict["uval0"] = generator.value();
+        dict["uval1"] = generator.value();
+        dict["vval0"] = generator.value();
+        dict["vval1"] = generator.value();
+        dict["ucurl"] = generator.value();
+        dict["vcurl"] = generator.value();
+        dict["upcurl"] = generator.value();
 
         dict["deltat"] = "Agros2D::problem()->actualTimeStepLength()";
-        dict["timedermat"] = "1";
-        dict["timedervec"] = "1";
-        dict["timederres"] = "1";
+        dict["timedermat"] = generator.value();
+        dict["timedervec"] = generator.value();
+        dict["timederres"] = generator.value();
 
         if (coordinateType == CoordinateType_Planar)
         {
             // scalar field
-            dict["udx"] = "1.0";
-            dict["vdx"] = "1.0";
-            dict["udy"] = "1.0";
-            dict["vdy"] = "1.0";
-            dict["updx"] = "1";
-            dict["updy"] = "1";
-            dict["uptdx"] = "1";
-            dict["uptdy"] = "1";
+            dict["udx"] = generator.value();
+            dict["vdx"] = generator.value();
+            dict["udy"] = generator.value();
+            dict["vdy"] = generator.value();
+            dict["updx"] = generator.value();
+            dict["updy"] = generator.value();
+            dict["uptdx"] = generator.value();
+            dict["uptdy"] = generator.value();
         }
         else
         {
             // scalar field
-            dict["udr"] = "1.0";
-            dict["vdr"] = "1.0";
-            dict["udz"] = "1.0";
-            dict["vdz"] = "1.0";
-            dict["updr"] = "1";
-            dict["updz"] = "1";
-            dict["uptdr"] = "1";
-            dict["uptdz"] = "1";
+            dict["udr"] = generator.value();
+            dict["vdr"] = generator.value();
+            dict["udz"] = generator.value();
+            dict["vdz"] = generator.value();
+            dict["updr"] = generator.value();
+            dict["updz"] = generator.value();
+            dict["uptdr"] = generator.value();
+            dict["uptdz"] = generator.value();
         }
 
         for (int i = 1; i < numOfSol + 1; i++)
         {
-            dict[QString("value%1").arg(i)] = QString("1");
-
+            dict[QString("value%1").arg(i)] = generator.value();
             if (coordinateType == CoordinateType_Planar)
             {
-                dict[QString("dx%1").arg(i)] = QString("1");
-                dict[QString("dy%1").arg(i)] = QString("1");
+                dict[QString("dx%1").arg(i)] = generator.value();
+                dict[QString("dy%1").arg(i)] = generator.value();
             }
             else
             {
-                dict[QString("dr%1").arg(i)] = QString("1");
-                dict[QString("dz%1").arg(i)] = QString("1");
+                dict[QString("dr%1").arg(i)] = generator.value();
+                dict[QString("dz%1").arg(i)] = generator.value();
             }
         }
 
@@ -1472,8 +1486,8 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
                 else
                 {
                     // nonlinear material
-                    dict[QString::fromStdString(quantity.shortname().get())] = "1";
-                    dict["d" + QString::fromStdString(quantity.shortname().get())] = "1";
+                    dict[QString::fromStdString(quantity.shortname().get())] = generator.value();
+                    dict["d" + QString::fromStdString(quantity.shortname().get())] = generator.value();
                 }
             }
         }
@@ -1493,12 +1507,12 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
                 else if (dep == "space")
                 {
                     // spacedep boundary condition
-                    dict[QString::fromStdString(quantity.shortname().get())] = "1";
+                    dict[QString::fromStdString(quantity.shortname().get())] = generator.value();
                 }
                 else if (dep == "time-space")
                 {
                     // spacedep boundary condition
-                    dict[QString::fromStdString(quantity.shortname().get())] = "1";
+                    dict[QString::fromStdString(quantity.shortname().get())] = generator.value();
                 }
             }
         }
@@ -1741,10 +1755,14 @@ void Agros2DGeneratorModule::generateForm(Form form, ctemplate::TemplateDictiona
                 // qDebug() << generateDocWeakFormExpression(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
                 //                                         coordinateType, linearityType, expression);
 
-                // expression check
-                QString exprCppCheck = parseWeakFormExpressionCheck(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
-                                                                    coordinateType, linearityType, expression);
-                field->SetValue("EXPRESSION_CHECK", exprCppCheck.toStdString());
+                // expression check to find areas, where the form is zero and does not need to be registered
+                // two check with different values are done to minimize probability of getting zero value by coincidence
+                QString exprCppCheck1 = parseWeakFormExpressionCheck(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
+                                                                    coordinateType, linearityType, expression, 1);
+                field->SetValue("EXPRESSION_CHECK_1", exprCppCheck1.toStdString());
+                QString exprCppCheck2 = parseWeakFormExpressionCheck(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
+                                                                    coordinateType, linearityType, expression, 17);
+                field->SetValue("EXPRESSION_CHECK_2", exprCppCheck2.toStdString());
 
                 // add weakform
                 field = output.AddSectionDictionary("SOURCE");
