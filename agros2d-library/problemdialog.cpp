@@ -767,8 +767,8 @@ void CouplingsWidget::fillComboBox()
         comboBox->addItem(couplingTypeString(CouplingType_None), CouplingType_None);
         comboBox->addItem(couplingTypeString(CouplingType_Weak), CouplingType_Weak);
 
-        // todo: temporarily removed
-        //comboBox->addItem(couplingTypeString(CouplingType_Hard), CouplingType_Hard);
+        if(Agros2D::configComputer()->experimentalFeatures)
+            comboBox->addItem(couplingTypeString(CouplingType_Hard), CouplingType_Hard);
     }
 }
 

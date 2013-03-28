@@ -50,8 +50,9 @@ public:
     bool deleteMeshFiles;
     bool deleteHermesMeshFile;
 
-    // discrete
+    // development
     bool saveMatrixRHS;
+    bool experimentalFeatures;
 
     // cache
     int cacheSize;

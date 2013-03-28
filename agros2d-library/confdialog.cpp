@@ -65,8 +65,9 @@ void ConfigComputerDialog::load()
     // show result in line edit value widget
     chkLineEditValueShowResult->setChecked(Agros2D::configComputer()->lineEditValueShowResult);
 
-    // discrete
+    // development
     chkDiscreteSaveMatrixRHS->setChecked(Agros2D::configComputer()->saveMatrixRHS);
+    chkExperimentalFeatures->setChecked(Agros2D::configComputer()->experimentalFeatures);
 
     // number of threads
     txtNumOfThreads->setValue(Agros2D::configComputer()->numberOfThreads);
@@ -117,8 +118,9 @@ void ConfigComputerDialog::save()
     // show result in line edit value widget
     Agros2D::configComputer()->lineEditValueShowResult = chkLineEditValueShowResult->isChecked();
 
-    // discrete
+    // development
     Agros2D::configComputer()->saveMatrixRHS = chkDiscreteSaveMatrixRHS->isChecked();
+    Agros2D::configComputer()->experimentalFeatures = chkExperimentalFeatures->isChecked();
 
     // number of threads
     Agros2D::configComputer()->numberOfThreads = txtNumOfThreads->value();
@@ -294,16 +296,18 @@ QWidget *ConfigComputerDialog::createSolverWidget()
     grpSolver->setLayout(layoutSolver);
 
     chkDiscreteSaveMatrixRHS = new QCheckBox(tr("Save matrix and RHS"));
+    chkExperimentalFeatures = new QCheckBox(tr("Allow experimental features"));
 
-    QGridLayout *layoutDiscrete = new QGridLayout();
-    layoutDiscrete->addWidget(chkDiscreteSaveMatrixRHS, 0, 0, 1, 2);
+    QGridLayout *layoutDevelopment = new QGridLayout();
+    layoutDevelopment->addWidget(chkDiscreteSaveMatrixRHS, 0, 0, 1, 2);
+    layoutDevelopment->addWidget(chkExperimentalFeatures, 1, 0, 1, 2);
 
-    QGroupBox *grpDiscrete = new QGroupBox(tr("Discrete problem"));
-    grpDiscrete->setLayout(layoutDiscrete);
+    QGroupBox *grpDevelopment = new QGroupBox(tr("Development"));
+    grpDevelopment->setLayout(layoutDevelopment);
 
     QVBoxLayout *layoutGeneral = new QVBoxLayout();
     layoutGeneral->addWidget(grpSolver);
-    layoutGeneral->addWidget(grpDiscrete);
+    layoutGeneral->addWidget(grpDevelopment);
     layoutGeneral->addStretch();
 
     QWidget *solverGeneralWidget = new QWidget(this);

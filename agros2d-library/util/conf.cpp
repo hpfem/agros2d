@@ -57,8 +57,9 @@ void Config::load()
     deleteMeshFiles = settings.value("Solver/DeleteTriangleMeshFiles", true).toBool();
     deleteHermesMeshFile = settings.value("Solver/DeleteHermes2DMeshFile", true).toBool();
 
-    // discrete
+    // development
     saveMatrixRHS = settings.value("SceneViewSettings/SaveMatrixAndRHS", SAVEMATRIXANDRHS).toBool();
+    experimentalFeatures = settings.value("SceneViewSettings/ExperimentalFeatures", EXPERIMENTALFEATURES).toBool();
 
     // cache size
     cacheSize = settings.value("Solution/CacheSize", CACHE_SIZE).toInt();
@@ -94,8 +95,10 @@ void Config::save()
     settings.setValue("Solver/DeleteTriangleMeshFiles", deleteMeshFiles);
     settings.setValue("Solver/DeleteHermes2DMeshFile", deleteHermesMeshFile);
 
-    // discrete
+    // development
     settings.setValue("SceneViewSettings/SaveMatrixAndRHS", saveMatrixRHS);
+    settings.setValue("SceneViewSettings/ExperimentalFeatures", experimentalFeatures);
+
 
     // cache size
     settings.setValue("Solution/CacheSize", cacheSize);

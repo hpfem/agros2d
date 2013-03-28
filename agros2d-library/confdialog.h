@@ -76,8 +76,9 @@ private:
     // log std out
     QCheckBox *chkLogStdOut;
 
-    // discrete
+    // development
     QCheckBox *chkDiscreteSaveMatrixRHS;
+    QCheckBox *chkExperimentalFeatures;
 
     // cache
     QSpinBox *txtCacheSize;

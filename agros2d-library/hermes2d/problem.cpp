@@ -547,7 +547,7 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
     }
 
     if (Agros2D::configComputer()->saveMatrixRHS)
-        Agros2D::log()->printWarning(tr("Solver"), tr("Matrix and RHS will be saved on the disk and this will slow down the calculation (you may disable it in appllication settings)"));
+        Agros2D::log()->printWarning(tr("Solver"), tr("Matrix and RHS will be saved on the disk and this will slow down the calculation. You may disable it in appllication settings."));
 
     try
     {

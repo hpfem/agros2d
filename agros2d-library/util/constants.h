@@ -78,6 +78,8 @@ const bool MESHCURVILINEARELEMENTS = true;
 const bool SAVEMATRIXANDRHS = false;
 const QString DISCRETEDIRECTORY = "discrete";
 
+const bool EXPERIMENTALFEATURES = false;
+
 // post2d
 const int PALETTEENTRIES = 256;
 const int PALETTESTEPSMIN = 3;
