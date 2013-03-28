@@ -23,9 +23,9 @@
 #include "sceneview_post2d.h"
 #include "hermes2d/coupling.h"
 
-PyProblem::PyProblem(bool clearproblem)
+PyProblem::PyProblem(bool clearProblem)
 {
-    if (clearproblem)
+    if (clearProblem)
         clear();
 }
 

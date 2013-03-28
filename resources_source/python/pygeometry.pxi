@@ -27,23 +27,23 @@ cdef extern from "../../agros2d-library/pythonlab/pygeometry.h":
         int edgesCount()
         int labelsCount()
 
-        void removeNodes(vector[int]) except +
-        void removeEdges(vector[int]) except +
-        void removeLabels(vector[int]) except +
+        void removeNodes(vector[int] nodes) except +
+        void removeEdges(vector[int] edges) except +
+        void removeLabels(vector[int] labels) except +
 
-        void selectNodes(vector[int]) except +
-        void selectEdges(vector[int]) except +
-        void selectLabels(vector[int]) except +
+        void selectNodes(vector[int] nodes) except +
+        void selectEdges(vector[int] edges) except +
+        void selectLabels(vector[int] labels) except +
 
-        void selectNodeByPoint(double, double) except +
-        void selectEdgeByPoint(double, double) except +
-        void selectLabelByPoint(double, double) except +
+        void selectNodeByPoint(double x, double y) except +
+        void selectEdgeByPoint(double x, double y) except +
+        void selectLabelByPoint(double x, double y) except +
 
         void selectNone()
 
-        void moveSelection(double, double, bool)
-        void rotateSelection(double, double, double, bool)
-        void scaleSelection(double, double, double, bool)
+        void moveSelection(double dx, double dy, bool copy)
+        void rotateSelection(double x, double y, double angle, bool copy)
+        void scaleSelection(double x, double y, double scale, bool copy)
         void removeSelection()
 
 cdef vector[int] list_to_int_vector(list):
@@ -221,15 +221,15 @@ cdef class __Geometry__:
         self.thisptr.removeLabels(labels_vector)
 
     def nodes_count(self):
-        """ Return count of existing nodes. """
+        """Return count of existing nodes."""
         return self.thisptr.nodesCount()
 
     def edges_count(self):
-        """ Return count of existing edges. """
+        """Return count of existing edges."""
         return self.thisptr.edgesCount()
 
     def labels_count(self):
-        """ Return count of existing labels. """
+        """Return count of existing labels."""
         return self.thisptr.labelsCount()
 
     def select_nodes(self, nodes = []):
@@ -340,11 +340,11 @@ cdef class __Geometry__:
         self.thisptr.scaleSelection(x, y, scale, int(copy))
 
     def remove_selection(self):
-        """ Remove selected objects (nodes, edges or labels). """
+        """Remove selected objects (nodes, edges or labels)."""
         self.thisptr.removeSelection()
 
     def select_none(self):
-        """ Unselect all objects (nodes, edges or labels). """
+        """Unselect all objects (nodes, edges or labels)."""
         self.thisptr.selectNone()
 
 geometry = __Geometry__()

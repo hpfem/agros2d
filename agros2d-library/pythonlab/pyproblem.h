@@ -27,11 +27,12 @@
 class PyProblem
 {
     public:
-        PyProblem(bool clearproblem);
+        PyProblem(bool clearProblem);
         ~PyProblem() {}
 
         // clear and refresh
         void clearSolution();
+        void clear();
         void refresh();
 
         // coordinate type
@@ -85,8 +86,7 @@ class PyProblem
         // time steps
         void timeStepsLength(vector<double> &steps);
 
-public:
-        void clear();
+private:
         void checkExistingFields(QString sourceField, QString targetField);
 };
 

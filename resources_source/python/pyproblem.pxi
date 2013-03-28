@@ -61,105 +61,113 @@ cdef class __Problem__:
     def __dealloc__(self):
         del self.thisptr
 
-    # clear
     def clear(self):
+        """Clear problem."""
         self.thisptr.clear()
 
-    # clear solution
     def clear_solution(self):
+        """Clear solution."""
         self.thisptr.clearSolution()
 
-    # refresh
     def refresh(self):
+        """Refresh preprocessor and postprocessor."""
         self.thisptr.refresh()
 
-    # coordinate type
     property coordinate_type:
         def __get__(self):
             return self.thisptr.getCoordinateType()
         def __set__(self, coordinate_type):
             self.thisptr.setCoordinateType(coordinate_type)
 
-    # mesh type
     property mesh_type:
         def __get__(self):
             return self.thisptr.getMeshType()
         def __set__(self, mesh_type):
             self.thisptr.setMeshType(mesh_type)
 
-    # matrix solver
     property matrix_solver:
         def __get__(self):
             return self.thisptr.getMatrixSolver()
         def __set__(self, matrix_solver):
             self.thisptr.setMatrixSolver(matrix_solver)
 
-    # frequency
     property frequency:
         def __get__(self):
             return self.thisptr.getFrequency()
         def __set__(self, frequency):
             self.thisptr.setFrequency(frequency)
 
-    # time step method
     property time_step_method:
         def __get__(self):
             return self.thisptr.getTimeStepMethod()
         def __set__(self, time_step_method):
             self.thisptr.setTimeStepMethod(time_step_method)
 
-    # time method order
     property time_method_order:
         def __get__(self):
             return self.thisptr.getTimeMethodOrder()
         def __set__(self, time_method_order):
             self.thisptr.setTimeMethodOrder(time_method_order)
 
-    # time method tolerance
     property time_method_tolerance:
         def __get__(self):
             return self.thisptr.getTimeMethodTolerance()
         def __set__(self, time_method_tolerance):
             self.thisptr.setTimeMethodTolerance(time_method_tolerance)
 
-    # time total
     property time_total:
         def __get__(self):
             return self.thisptr.getTimeTotal()
         def __set__(self, time_total):
             self.thisptr.setTimeTotal(time_total)
 
-    # time steps
     property time_steps:
         def __get__(self):
             return self.thisptr.getNumConstantTimeSteps()
         def __set__(self, time_steps):
             self.thisptr.setNumConstantTimeSteps(time_steps)
 
-    # coupling type
     def get_coupling_type(self, source_field, target_field):
-        return self.thisptr.getCouplingType(source_field, target_field)
-    def set_coupling_type(self, source_field, target_field, type):
-            self.thisptr.setCouplingType(source_field, target_field, type)
+        """Return type of coupling.
 
-    # mesh
+        get_coupling_type(source_field, target_field)
+
+        Keyword arguments:
+        source_field -- source field id
+        target_field -- target field id
+        """
+        return self.thisptr.getCouplingType(source_field, target_field)
+
+    def set_coupling_type(self, source_field, target_field, type):
+        """Set type of coupling.
+
+        set_coupling_type(source_field, target_field, type)
+
+        Keyword arguments:
+        source_field -- source field id
+        target_field -- target field id
+        type -- coupling type
+        """
+        self.thisptr.setCouplingType(source_field, target_field, type)
+
     def mesh(self):
+        """Area discretization."""
         self.thisptr.mesh()
 
-    # solve
     def solve(self):
+        """Solve problem."""
         self.thisptr.solve()
 
-    # adaptive step
     def solve_adaptive_step(self):
+        """Solve one adaptive step."""
         self.thisptr.solveAdaptiveStep()
 
-    # elapsed time
     def elapsed_time(self):
+        """Return elapsed time in seconds."""
         return self.thisptr.timeElapsed()
 
-    # time steps length
     def time_steps_length(self):
+        """Return a list of time steps length."""
         cdef vector[double] steps_vector
         self.thisptr.timeStepsLength(steps_vector)
 
@@ -169,8 +177,8 @@ cdef class __Problem__:
 
         return steps
 
-    # time steps total
     def time_steps_total(self):
+        """Return a list of time steps."""
         steps = self.time_steps_length()
         time = [0.0]
         for step in steps:
@@ -179,7 +187,7 @@ cdef class __Problem__:
         return time
 
 __problem__ = __Problem__()
-def problem(int clear = False):
+def problem(clear = False):
     if (clear):
         __problem__.clear()
     return __problem__
