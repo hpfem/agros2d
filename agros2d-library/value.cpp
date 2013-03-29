@@ -21,9 +21,7 @@
 
 #include "util/global.h"
 #include "logview.h"
-#include "gui/chart.h"
 #include "pythonlab/pythonengine_agros.h"
-#include "datatabledialog.h"
 #include "hermes2d/problem_config.h"
 #include "parser/lex.h"
 
