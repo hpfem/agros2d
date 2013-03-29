@@ -75,6 +75,7 @@ class PyGeometry
         void removeSelection();
 
 private:
+        void testAngle(double angle);
         void setBoundaries(SceneEdge *edge, map<char *, char *> boundaries);
         void setMaterials(SceneLabel *label, map<char *, char *> materials);
 

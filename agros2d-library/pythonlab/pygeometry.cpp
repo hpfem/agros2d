@@ -62,8 +62,7 @@ int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle
     if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric && (x1 < 0.0 || x2 < 0.0))
         throw out_of_range(QObject::tr("Radial component must be greater then or equal to zero.").toStdString());
 
-    if (angle > 90.0 || angle < 0.0)
-        throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
+    testAngle(angle);
 
     foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
     {
@@ -109,8 +108,7 @@ int PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angl
     if (nodeEndIndex > (Agros2D::scene()->nodes->length() - 1) || nodeEndIndex < 0)
         throw out_of_range(QObject::tr("Node with index '%1' does not exist.").arg(nodeEndIndex).toStdString());
 
-    if (angle > 90.0 || angle < 0.0)
-        throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
+    testAngle(angle);
 
     foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
     {
@@ -148,8 +146,7 @@ void PyGeometry::modifyEdge(int index, double angle, map<char *, int> refinement
     if (index < 0 || index >= Agros2D::scene()->edges->length())
         throw out_of_range(QObject::tr("Edge index must be between 0 and '%1'.").arg(Agros2D::scene()->edges->length()-1).toStdString());
 
-    if (angle > 90.0 || angle < 0.0)
-        throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
+    testAngle(angle);
 
     SceneEdge *edge = Agros2D::scene()->edges->items().at(index);
 
@@ -158,6 +155,12 @@ void PyGeometry::modifyEdge(int index, double angle, map<char *, int> refinement
     setBoundaries(edge, boundaries);
 
     Agros2D::scene()->invalidate();
+}
+
+void PyGeometry::testAngle(double angle)
+{
+    if (angle > 90.0 || angle < 0.0)
+        throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
 }
 
 void PyGeometry::setBoundaries(SceneEdge *edge, map<char *, char *> boundaries)
