@@ -46,6 +46,9 @@ SOURCES += value.cpp \
     gui/groupbox.cpp \
     gui/latexviewer.cpp \
     gui/physicalfield.cpp \
+    gui/valuetimedialog.cpp \
+    gui/valuedatatabledialog.cpp \
+    gui/valuelineedit.cpp \
     hermes2d/marker.cpp \
     hermes2d/module.cpp \
     hermes2d/solver.cpp \
@@ -83,7 +86,6 @@ SOURCES += value.cpp \
     resultsview.cpp \
     examplesdialog.cpp \
     datatable.cpp \
-    datatabledialog.cpp \
     materialbrowserdialog.cpp \
     sceneedge.cpp \
     scenelabel.cpp \
@@ -127,6 +129,9 @@ HEADERS += value.h \
     gui/scenewidget.h \
     gui/latexviewer.h \
     gui/physicalfield.h \
+    gui/valuetimedialog.h \
+    gui/valuedatatabledialog.h \
+    gui/valuelineedit.h \
     hermes2d/marker.h \
     hermes2d/module.h \
     hermes2d/problem.h \
@@ -169,7 +174,6 @@ HEADERS += value.h \
     resultsview.h \
     examplesdialog.h \
     datatable.h \
-    datatabledialog.h \
     materialbrowserdialog.h \
     confdialog.h \
     hermes2d/solver.h \

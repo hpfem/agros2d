@@ -25,75 +25,44 @@
 #include "pythonlab/pythonengine_agros.h"
 #include "datatabledialog.h"
 #include "hermes2d/problem_config.h"
-
-Value::Value(FieldInfo *fieldInfo, const QString &value, const DataTable &table)
-    : m_fieldInfo(fieldInfo), m_isEvaluated(false), m_table(table)
-{
-    setText(value.isEmpty() ? "0" : value);
-}
-
-Value::Value(FieldInfo *fieldInfo, const QString &str, bool evaluateExpression)
-    : m_fieldInfo(fieldInfo), m_isEvaluated(false), m_table(DataTable())
-{
-    fromString(str);
-
-    if (evaluateExpression)
-        evaluate(true);
-}
-
-Value::Value(FieldInfo *fieldInfo, double value)
-    : m_fieldInfo(fieldInfo), m_isEvaluated(true), m_table(DataTable())
-{
-    m_text = QString::number(value);
-    m_number = value;
-}
-
-Value::Value(const QString &str, bool evaluateExpression)
-    : m_fieldInfo(NULL), m_isEvaluated(false), m_table(DataTable())
-{
-    fromString(str);
-
-    if (evaluateExpression)
-        evaluate(true);
-}
+#include "parser/lex.h"
 
 Value::Value(double value)
-    : m_fieldInfo(NULL), m_isEvaluated(true), m_table(DataTable())
+    : m_isEvaluated(true), m_isTimeDependent(false), m_isCoordinateDependent(false), m_time(0.0), m_point(Point()), m_table(DataTable())
 {
     m_text = QString::number(value);
     m_number = value;
 }
 
 Value::Value(double value, std::vector<double> x, std::vector<double> y)
-    : m_fieldInfo(NULL), m_isEvaluated(true), m_table(DataTable())
+    : m_isEvaluated(true), m_isTimeDependent(false), m_isCoordinateDependent(false), m_time(0.0), m_point(Point()), m_table(DataTable())
 {
+    assert(x.size() == y.size());
+
     m_text = QString::number(value);
     m_number = value;
     m_table.add(x, y);
+}
+
+Value::Value(const QString &value)
+    : m_isEvaluated(false), m_isTimeDependent(false), m_isCoordinateDependent(false), m_time(0.0), m_point(Point()), m_table(DataTable())
+{
+    parseFromString(value.isEmpty() ? "0" : value);
 }
 
 Value::Value(const QString &value, std::vector<double> x, std::vector<double> y)
-    : m_fieldInfo(NULL), m_isEvaluated(false), m_table(DataTable())
+    : m_isEvaluated(false), m_isTimeDependent(false), m_isCoordinateDependent(false), m_time(0.0), m_point(Point()), m_table(DataTable())
 {
-    m_text = value;
-    m_number = 0.0;
+    assert(x.size() == y.size());
+
+    parseFromString(value.isEmpty() ? "0" : value);
     m_table.add(x, y);
 }
 
-Value::Value(FieldInfo *fieldInfo, double value, std::vector<double> x, std::vector<double> y)
-    : m_fieldInfo(fieldInfo), m_isEvaluated(true), m_table(DataTable())
+Value::Value(const QString &value, const DataTable &table)
+    : m_isEvaluated(false), m_isTimeDependent(false), m_isCoordinateDependent(false), m_time(0.0), m_point(Point()), m_table(table)
 {
-    m_text = QString::number(value);
-    m_number = value;
-    m_table.add(x, y);
-}
-
-Value::Value(FieldInfo *fieldInfo, const QString &value, std::vector<double> x, std::vector<double> y)
-    : m_fieldInfo(fieldInfo), m_isEvaluated(false), m_table(DataTable())
-{
-    m_text = value;
-    m_number = 0.0;
-    m_table.add(x, y);
+    parseFromString(value.isEmpty() ? "0" : value);
 }
 
 Value::~Value()
@@ -108,69 +77,108 @@ bool Value::hasExpression()
 
 bool Value::hasTable() const
 {
-    if (m_fieldInfo)
-        return (m_table.size() > 0);
-    else
-        return false;
-
-    /*
-    if (m_fieldInfo)
-        if (m_fieldInfo->linearityType() == LinearityType_Linear)
-            return false;
-        else
-            return (m_table.size() > 0);
-    else
-        return false;
-    */
+    return (m_table.size() > 0);
 }
 
-double Value::number()
+bool Value::evaluateAtPoint(const Point &point)
 {
-    if (!m_isEvaluated)
-        evaluate(true);
-
-    return m_number;
+    m_point = point;
+    return evaluate();
 }
 
-double Value::value(double key)
+bool Value::evaluateAtTime(double time)
 {
-    // TODO: fix if (!hasTable())
-    if (m_table.size() == 0)
-        return number();
-    else
+    m_time = time;
+    return evaluate();
+}
+
+bool Value::evaluateAtTimeAndPoint(double time, const Point &point)
+{
+    m_time = time;
+    m_point = point;
+    return evaluate();
+}
+
+double Value::numberAtPoint(const Point &point)
+{
+    // force evaluate
+    evaluateAtPoint(point);
+
+    return number();
+}
+
+double Value::numberAtTime(double time)
+{
+    // force evaluate
+    evaluateAtTime(time);
+
+    return number();
+}
+
+double Value::numberAtTimeAndPoint(double time, const Point &point)
+{
+    // force evaluate
+    evaluateAtTimeAndPoint(time, point);
+
+    return number();
+}
+
+double Value::numberFromTable(double key)
+{
+    if (Agros2D::problem()->isNonlinear() && hasTable())
         return m_table.value(key);
+    else
+        return number();
 }
 
-Hermes::Ord Value::value(Hermes::Ord key)
+Hermes::Ord Value::numberFromTable(Hermes::Ord key)
 {
     return Hermes::Ord(1);
 }
 
-double Value::value(const Point &point)
+double Value::derivativeFromTable(double key)
 {
-    evaluate(point, true);
-
-    return number();
-}
-
-double Value::value(double time, const Point &point)
-{
-    evaluate(time, point, true);
-
-    return number();
-}
-
-double Value::derivative(double key)
-{
-    if ((m_fieldInfo->linearityType() == LinearityType_Newton) && hasTable())
+    if (Agros2D::problem()->isNonlinear() && hasTable())
         return m_table.derivative(key);
     else
         return 0.0;
 }
 
-Hermes::Ord Value::derivative(Hermes::Ord key)
+Hermes::Ord Value::derivativeFromTable(Hermes::Ord key)
 {
     return Hermes::Ord(1);
+}
+
+void Value::setText(const QString &str)
+{
+    m_isEvaluated = false;
+    m_text = str;
+
+    m_isTimeDependent = false;
+    m_isCoordinateDependent = false;
+
+    LexicalAnalyser lex;
+    lex.setExpression(m_text);
+    foreach (Token token, lex.tokens())
+    {
+        if (token.type() == ParserTokenType_VARIABLE)
+        {
+            if (token.toString() == "time")
+                m_isTimeDependent = true;
+            if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
+            {
+                if (token.toString() == "x" || token.toString() == "y")
+                    m_isCoordinateDependent = true;
+            }
+            else
+            {
+                if (token.toString() == "r" || token.toString() == "z")
+                    m_isCoordinateDependent = true;
+            }
+        }
+    }
+
+    evaluate();
 }
 
 QString Value::toString() const
@@ -181,7 +189,7 @@ QString Value::toString() const
         return m_text + ";" + m_table.toString();
 }
 
-void Value::fromString(const QString &str)
+void Value::parseFromString(const QString &str)
 {
     m_table.clear();
 
@@ -200,41 +208,47 @@ void Value::fromString(const QString &str)
     }
 }
 
-bool Value::evaluate(bool quiet)
+bool Value::evaluate()
 {
-    return evaluate(0.0, Point(), quiet);
+    return evaluateExpression(m_text);
 }
 
-bool Value::evaluate(double time, bool quiet)
+bool Value::evaluateExpression(const QString &expression)
 {
-    return evaluate(time, Point(), quiet);
-}
+    // speed up
+    if ((expression == "0") || (expression == "0.0"))
+    {
+        m_number = 0.0;
+        m_isEvaluated = true;
+        return true;
+    }
 
-bool Value::evaluate(const Point &point, bool quiet)
-{
-    return evaluate(0.0, point, quiet);
-}
-
-bool Value::evaluate(double time, const Point &point, bool quiet)
-{
     bool signalBlocked = currentPythonEngineAgros()->signalsBlocked();
     currentPythonEngineAgros()->blockSignals(true);
 
-    // eval time and space
-    if (m_fieldInfo)
+    if (m_isCoordinateDependent && !m_isTimeDependent)
     {
         if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
-            currentPythonEngineAgros()->runExpression(QString("time = %1; x = %2; y = %3").arg(time).arg(point.x).arg(point.y), false);
+            currentPythonEngineAgros()->runExpression(QString("x = %1; y = %2").arg(m_point.x).arg(m_point.y), false);
         else
-            currentPythonEngineAgros()->runExpression(QString("time = %1; r = %2; z = %3").arg(time).arg(point.x).arg(point.y), false);
+            currentPythonEngineAgros()->runExpression(QString("r = %1; z = %2").arg(m_point.x).arg(m_point.y), false);
     }
-    else
+
+    if (m_isTimeDependent && !m_isCoordinateDependent)
     {
-        currentPythonEngineAgros()->runExpression(QString("time = %1").arg(time), false);
+        currentPythonEngineAgros()->runExpression(QString("time = %1").arg(m_time), false);
+    }
+
+    if (m_isCoordinateDependent && m_isTimeDependent)
+    {
+        if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
+            currentPythonEngineAgros()->runExpression(QString("time = %1; x = %2; y = %3").arg(m_time).arg(m_point.x).arg(m_point.y), false);
+        else
+            currentPythonEngineAgros()->runExpression(QString("time = %1; r = %2; z = %3").arg(m_time).arg(m_point.x).arg(m_point.y), false);
     }
 
     // eval expression
-    ExpressionResult expressionResult = currentPythonEngineAgros()->runExpression(m_text, true);
+    ExpressionResult expressionResult = currentPythonEngineAgros()->runExpression(expression, true);
     if (expressionResult.error.isEmpty())
     {
         m_number = expressionResult.value;
@@ -250,458 +264,3 @@ bool Value::evaluate(double time, const Point &point, bool quiet)
     m_isEvaluated = expressionResult.error.isEmpty();
     return m_isEvaluated;
 }
-
-// ***********************************************************************************
-
-ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin)
-    : QWidget(parent), m_fieldInfo(NULL), m_hasTimeDep(hasTimeDep), m_hasNonlin(hasNonlin),
-      m_minimum(-numeric_limits<double>::max()),
-      m_minimumSharp(-numeric_limits<double>::max()),
-      m_maximum(numeric_limits<double>::max()),
-      m_maximumSharp(numeric_limits<double>::max())
-{
-    // create controls
-    txtLineEdit = new QLineEdit(this);
-    txtLineEdit->setToolTip(tr("This textedit allows using variables."));
-    txtLineEdit->setText("0");
-    connect(txtLineEdit, SIGNAL(textChanged(QString)), this, SLOT(evaluate()));
-    //connect(txtLineEdit, SIGNAL(textChanged(QString)), this, SIGNAL(textChanged(QString)));
-    connect(txtLineEdit, SIGNAL(editingFinished()), this, SIGNAL(editingFinished()));
-
-    lblValue = new QLabel(this);
-    lblInfo = new QLabel();
-
-#ifdef Q_WS_MAC
-    btnDataTableDelete = new QToolButton();
-    btnDataTableDelete->setIcon(icon("remove-item"));
-    btnDataTableDelete->setMaximumHeight(txtLineEdit->height() - 4);
-#else
-    btnDataTableDelete = new QPushButton(icon("remove-item"), "");
-    btnDataTableDelete->setMaximumSize(btnDataTableDelete->sizeHint());
-#endif
-    connect(btnDataTableDelete, SIGNAL(clicked()), this, SLOT(doOpenDataTableDelete()));
-
-#ifdef Q_WS_MAC
-    btnDataTableDialog = new QToolButton();
-    btnDataTableDialog->setIcon(icon("three-dots"));
-    btnDataTableDialog->setMaximumHeight(txtLineEdit->height() - 4);
-#else
-    btnDataTableDialog = new QPushButton(icon("three-dots"), "");
-    btnDataTableDialog->setMaximumSize(btnDataTableDialog->sizeHint());
-#endif
-    connect(btnDataTableDialog, SIGNAL(clicked()), this, SLOT(doOpenDataTableDialog()));
-
-    // timedep value
-#ifdef Q_WS_MAC
-    btnEditTimeDep = new QToolButton();
-    btnEditTimeDep->setIcon(icon("three-dots"));
-    btnEditTimeDep->setMaximumHeight(txtLineEdit->height() - 4);
-#else
-    btnEditTimeDep = new QPushButton(icon("three-dots"), "");
-#endif
-    connect(btnEditTimeDep, SIGNAL(clicked()), this, SLOT(doOpenValueTimeDialog()));
-
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->setMargin(0);
-    layout->addWidget(txtLineEdit, 1);
-    layout->addWidget(lblInfo, 1);
-    layout->addWidget(lblValue, 0, Qt::AlignRight);
-    layout->addWidget(btnEditTimeDep, 0, Qt::AlignRight);
-    layout->addWidget(btnDataTableDelete, 0, Qt::AlignRight);
-    layout->addWidget(btnDataTableDialog, 0, Qt::AlignRight);
-
-    setLayout(layout);
-
-    setLayoutValue();
-    evaluate();
-}
-
-ValueLineEdit::~ValueLineEdit()
-{
-}
-
-void ValueLineEdit::setNumber(double value)
-{
-    txtLineEdit->setText(QString::number(value));
-    evaluate();
-}
-
-double ValueLineEdit::number()
-{
-    if (evaluate())
-        return m_number;
-    else
-        return 0.0;
-}
-
-void ValueLineEdit::setValue(const Value &value)
-{
-    m_fieldInfo = value.fieldInfo();
-
-    txtLineEdit->setText(value.text());
-
-    m_table = DataTable(value.table().pointsVector(),
-                        value.table().valuesVector());
-
-    setLayoutValue();
-    evaluate();
-}
-
-Value ValueLineEdit::value()
-{
-    return Value(m_fieldInfo, txtLineEdit->text(),
-                 DataTable(m_table.pointsVector(),
-                           m_table.valuesVector()));
-}
-
-bool ValueLineEdit::evaluate(bool quiet)
-{
-    bool isOk = false;
-    bool valueChanged = false;
-
-    if (!m_hasNonlin || m_table.size() == 0)
-    {
-        Value val = value();
-
-        btnEditTimeDep->setVisible(m_hasTimeDep && m_fieldInfo && m_fieldInfo->analysisType() == AnalysisType_Transient);
-
-        if (val.evaluate(quiet))
-        {
-            if (val.number() <= m_minimumSharp)
-            {
-                setValueLabel(QString("<= %1").arg(m_minimumSharp), QColor(Qt::blue), true);
-            }
-            else if (val.number() >= m_maximumSharp)
-            {
-                setValueLabel(QString(">= %1").arg(m_maximumSharp), QColor(Qt::blue), true);
-            }
-            else if (val.number() < m_minimum)
-            {
-                setValueLabel(QString("< %1").arg(m_minimum), QColor(Qt::blue), true);
-            }
-            else if (val.number() > m_maximum)
-            {
-                setValueLabel(QString("> %1").arg(m_maximum), QColor(Qt::blue), true);
-            }
-            else if (!checkCondition(val.number()))
-            {
-                setValueLabel(QString("%1").arg(m_condition), QColor(Qt::red), true);
-            }
-            else
-            {
-                double evaluatedNumber = val.number();
-                valueChanged = (evaluatedNumber != m_number);
-                m_number = evaluatedNumber;
-                setValueLabel(QString("%1").arg(m_number, 0, 'g', 3), QApplication::palette().color(QPalette::WindowText),
-                              Agros2D::configComputer()->lineEditValueShowResult);
-                isOk = true;
-            }
-        }
-        else
-        {
-            setValueLabel(tr("error"), QColor(Qt::red), true);
-            setFocus();
-        }
-    }
-    else
-    {
-        // table
-        isOk = true;
-    }
-
-    if (isOk)
-    {
-        emit evaluated(false);
-        if(valueChanged)
-        {
-            QString textValue = QString("%1").arg(m_number);
-            emit textChanged(textValue);
-        }
-        return true;
-    }
-    else
-    {
-        emit evaluated(true);
-        return false;
-    }
-}
-
-bool ValueLineEdit::checkCondition(double value)
-{
-    if (m_condition.isEmpty()) return true;
-
-    bool isOK = false;
-
-    // FIXME: (Franta) replace -> LEX?
-    QString condition = m_condition;
-    condition.replace(QString("value"), QString::number(value));
-
-    ExpressionResult result = currentPythonEngineAgros()->runExpression(condition, true);
-
-    if (result.error.isEmpty())
-    {
-        if (!(fabs(result.value) < EPS_ZERO))
-            isOK = true;
-    }
-    else
-    {
-        QPalette palette = txtLineEdit->palette();
-        palette.setColor(QPalette::Text, QColor(Qt::red));
-        txtLineEdit->setPalette(palette);
-
-        txtLineEdit->setToolTip(tr("Condition couldn't be evaluated:\n%1").arg(result.error));
-        isOK = true;
-    }
-
-    return isOK;
-}
-
-void ValueLineEdit::setLayoutValue()
-{
-    txtLineEdit->setVisible(false);
-    lblValue->setVisible(false);
-    lblInfo->setVisible(false);
-    btnDataTableDelete->setVisible(false);
-    btnDataTableDialog->setVisible(false);
-
-    if ((!m_hasNonlin) || (m_hasNonlin && m_table.size() == 0))
-    {
-        txtLineEdit->setVisible(true);
-        lblValue->setVisible(true);
-    }
-    if (m_hasNonlin && m_table.size() > 0)
-    {
-        if (!m_labelX.isEmpty() && !m_labelY.isEmpty())
-            lblInfo->setText(tr("nonlinear %1(%2)").arg(m_labelY).arg(m_labelX));
-        else
-            lblInfo->setText(tr("nonlinear"));
-        lblInfo->setVisible(true);
-        btnDataTableDelete->setVisible(true);
-    }
-
-    btnDataTableDialog->setVisible(m_hasNonlin);
-    btnEditTimeDep->setVisible(m_hasTimeDep && m_fieldInfo && m_fieldInfo->analysisType() == AnalysisType_Transient);
-}
-
-void ValueLineEdit::setValueLabel(const QString &text, QColor color, bool isVisible)
-{
-    lblValue->setText(text);
-    QPalette palette = lblValue->palette();
-    palette.setColor(QPalette::WindowText, color);
-    lblValue->setPalette(palette);
-    lblValue->setVisible(isVisible);
-}
-
-QSize ValueLineEdit::sizeHint() const
-{
-    return QSize(100, 10);
-}
-
-void ValueLineEdit::focusInEvent(QFocusEvent *event)
-{
-    txtLineEdit->setFocus(event->reason());
-}
-
-void ValueLineEdit::doOpenValueTimeDialog()
-{
-    ValueTimeDialog dialog;
-    dialog.setValue(Value(txtLineEdit->text()));
-
-    if (dialog.exec() == QDialog::Accepted)
-    {
-        txtLineEdit->setText(dialog.value().text());
-        evaluate();
-    }
-}
-
-void ValueLineEdit::doOpenDataTableDelete()
-{
-    m_table.clear();
-
-    setLayoutValue();
-    evaluate();
-}
-
-void ValueLineEdit::doOpenDataTableDialog()
-{
-    DataTableDialog dataTableDialog(this, m_labelX, m_labelY);
-    dataTableDialog.setCubicSpline(m_table);
-    if (dataTableDialog.exec() == QDialog::Accepted)
-        m_table = dataTableDialog.table();
-
-    setLayoutValue();
-    evaluate();
-}
-
-// ****************************************************************************************************************
-
-ValueTimeDialog::ValueTimeDialog(QWidget *parent) : QDialog(parent)
-{
-    setWindowIcon(icon("timefunction"));
-    setWindowTitle(tr("Time function"));
-
-    createControls();
-    plotFunction();
-
-    setMinimumSize(600, 400);
-
-    QSettings settings;
-    restoreGeometry(settings.value("ValueTimeDialog/Geometry", saveGeometry()).toByteArray());
-}
-
-ValueTimeDialog::~ValueTimeDialog()
-{
-    QSettings settings;
-    settings.setValue("ValueTimeDialog/Geometry", saveGeometry());
-}
-
-void ValueTimeDialog::setValue(Value value)
-{
-    txtLineEdit->setText(value.text());
-
-    // plot
-    plotFunction();
-}
-
-void ValueTimeDialog::createControls()
-{
-    lblInfoError = new QLabel();
-
-    QPalette palette = lblInfoError->palette();
-    palette.setColor(QPalette::WindowText, Qt::red);
-    lblInfoError->setPalette(palette);
-
-    txtLineEdit = new QLineEdit(this);
-    connect(txtLineEdit, SIGNAL(textChanged(QString)), this, SLOT(checkExpression()));
-
-    txtTimeTotal = new ValueLineEdit();
-    txtTimeTotal->setValue(Agros2D::problem()->config()->timeTotal());
-
-    cmbPresets = new QComboBox();
-    cmbPresets->addItem(tr("select a preset..."));
-    cmbPresets->addItem(tr("constant"), "1.0");
-    cmbPresets->addItem(tr("step"), QString("1.0*(time<%1)"));
-    cmbPresets->addItem(tr("sine wave"), QString("1.0*sin(2*pi*1.0/%1*time)"));
-    cmbPresets->addItem(tr("exp. step"), "1.0*(exp(-10/%1*time) - exp(-20/%1*time))");
-    connect(cmbPresets, SIGNAL(currentIndexChanged(int)), this, SLOT(presetsChanged(int)));
-
-    // chart
-    chart = new Chart(this);
-    // axis labels
-    chart->setAxisTitle(QwtPlot::xBottom, tr("time"));
-    chart->setAxisTitle(QwtPlot::yLeft, tr("value"));
-
-    chartCurve = new QwtPlotCurve();
-    chartCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
-    chartCurve->setStyle(QwtPlotCurve::NoCurve);
-    chartCurve->setCurveAttribute(QwtPlotCurve::Inverted);
-    chartCurve->setYAxis(QwtPlot::yLeft);
-    // chartCurve->setSymbol(QwtSymbol(QwtSymbol::Diamond, Qt::red, QPen(Qt::blue, 1), QSize(10,10)));
-    chartCurve->attach(chart);
-
-    QGridLayout *controlsLayout = new QGridLayout();
-    controlsLayout->addWidget(chart, 0, 0, 1, 4);
-    controlsLayout->addWidget(new QLabel(tr("Function:")), 1, 0);
-    controlsLayout->addWidget(txtLineEdit, 1, 1);
-    controlsLayout->setColumnStretch(1, 1);
-    controlsLayout->addWidget(cmbPresets, 1, 2, 1, 2);
-    controlsLayout->addWidget(new QLabel(tr("Total time:")), 2, 2);
-    controlsLayout->addWidget(txtTimeTotal, 2, 3);
-    controlsLayout->addWidget(new QLabel(tr("Error:")), 2, 0);
-    controlsLayout->addWidget(lblInfoError, 2, 1, 3, 1, Qt::AlignTop);
-    controlsLayout->addWidget(new QLabel(""), 2, 1);
-    controlsLayout->addWidget(new QLabel(""), 3, 1);
-
-    // dialog buttons
-    btnOk = new QPushButton(tr("Ok"));
-    btnOk->setDefault(true);
-    connect(btnOk, SIGNAL(clicked()), this, SLOT(doAccept()));
-    btnClose = new QPushButton(tr("Close"));
-    connect(btnClose, SIGNAL(clicked()), this, SLOT(doReject()));
-    // btnPlot = new QPushButton(tr("Plot"));
-    // connect(btnPlot, SIGNAL(clicked()), this, SLOT(plotFunction()));
-
-    QHBoxLayout *layoutButtons = new QHBoxLayout();
-    layoutButtons->addStretch();
-    // layoutButtons->addWidget(btnPlot);
-    layoutButtons->addWidget(btnOk);
-    layoutButtons->addWidget(btnClose);
-
-    // layout
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addLayout(controlsLayout);
-    layout->addLayout(layoutButtons);
-
-    setLayout(layout);
-}
-
-void ValueTimeDialog::presetsChanged(int index)
-{
-    if (cmbPresets->currentIndex() > 0)
-    {
-        if (txtTimeTotal->value().evaluate())
-        {
-            QString preset = cmbPresets->itemData(cmbPresets->currentIndex()).toString().arg(txtTimeTotal->value().number() / 2.0);
-
-            txtLineEdit->setText(preset);
-            cmbPresets->setCurrentIndex(0);
-
-            plotFunction();
-        }
-    }
-}
-
-void ValueTimeDialog::checkExpression()
-{
-    // eval time
-    currentPythonEngineAgros()->runExpression(QString("time = %1").arg(0.0), false);
-
-    // eval expression
-    ExpressionResult expressionResult;
-    expressionResult = currentPythonEngineAgros()->runExpression(txtLineEdit->text(), true);
-    lblInfoError->setText(expressionResult.error.trimmed());
-    if (expressionResult.error.isEmpty())
-        plotFunction();
-    else
-        txtLineEdit->setFocus();
-}
-
-void ValueTimeDialog::plotFunction()
-{
-    // plot solution
-    int count = 200;
-
-    double *xval = new double[count];
-    double *yval = new double[count];
-
-    double totalTime = txtTimeTotal->value().number();
-
-    // time step
-    double dt = totalTime / (count + 1);
-
-    Value val(txtLineEdit->text());
-    for (int i = 0; i < count; i++)
-    {
-        xval[i] = i*dt;
-
-        if (!val.evaluate(xval[i], true))
-            break;
-        yval[i] = val.number();
-    }
-
-    chart->setData(xval, yval, count);
-
-    delete [] xval;
-    delete [] yval;
-}
-
-void ValueTimeDialog::doAccept()
-{
-    accept();
-}
-
-void ValueTimeDialog::doReject()
-{
-    reject();
-}
-

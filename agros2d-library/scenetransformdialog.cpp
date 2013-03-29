@@ -20,6 +20,7 @@
 #include "scenetransformdialog.h"
 
 #include "util/global.h"
+#include "gui/valuelineedit.h"
 
 #include "scene.h"
 #include "hermes2d/problem.h"

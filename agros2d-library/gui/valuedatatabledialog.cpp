@@ -17,7 +17,7 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include "datatabledialog.h"
+#include "valuedatatabledialog.h"
 
 #include "pythonlab/pythonengine_agros.h"
 #include "materialbrowserdialog.h"
@@ -25,7 +25,7 @@
 #include "gui/chart.h"
 #include "qwt_symbol.h"
 
-DataTableDialog::DataTableDialog(QWidget *parent, const QString &labelX, const QString &labelY)
+ValueDataTableDialog::ValueDataTableDialog(QWidget *parent, const QString &labelX, const QString &labelY)
     : QDialog(parent), m_labelX(labelX), m_labelY(labelY), m_table(DataTable())
 {
     setWindowIcon(icon("scene-function"));
@@ -45,7 +45,7 @@ DataTableDialog::DataTableDialog(QWidget *parent, const QString &labelX, const Q
     chartDerivative->setVisible(chkDerivative->isChecked());
 }
 
-DataTableDialog::~DataTableDialog()
+ValueDataTableDialog::~ValueDataTableDialog()
 {
     QSettings settings;
     settings.setValue("DataTableDialog/Geometry", saveGeometry());
@@ -53,7 +53,7 @@ DataTableDialog::~DataTableDialog()
     settings.setValue("DataTableDialog/Markers", chkMarkers->isChecked());
 }
 
-void DataTableDialog::setCubicSpline(DataTable table)
+void ValueDataTableDialog::setCubicSpline(DataTable table)
 {
     m_table = table;
 
@@ -68,7 +68,7 @@ void DataTableDialog::setCubicSpline(DataTable table)
     QTimer::singleShot(0, this, SLOT(doPlot()));
 }
 
-bool DataTableDialog::parseTable(bool addToTable)
+bool ValueDataTableDialog::parseTable(bool addToTable)
 {
     lblInfoError->setText("");
 
@@ -143,7 +143,7 @@ bool DataTableDialog::parseTable(bool addToTable)
     return procesOK;
 }
 
-void DataTableDialog::createControls()
+void ValueDataTableDialog::createControls()
 {
     lblLabelX = new QLabel(m_labelX);
     lblLabelY = new QLabel(m_labelY);
@@ -238,7 +238,7 @@ void DataTableDialog::createControls()
     setLayout(layout);
 }
 
-void DataTableDialog::textChanged()
+void ValueDataTableDialog::textChanged()
 {
     lblInfoX->setText(QString("%1").arg(lstX->toPlainText().trimmed().split("\n").size()));
     lblInfoY->setText(QString("%1").arg(lstY->toPlainText().trimmed().split("\n").size()));
@@ -247,7 +247,7 @@ void DataTableDialog::textChanged()
     parseTable(false);
 }
 
-void DataTableDialog::gotoLine(QPlainTextEdit *lst, int lineNumber)
+void ValueDataTableDialog::gotoLine(QPlainTextEdit *lst, int lineNumber)
 {
     if (lineNumber >= lst->document()->lineCount())
         lineNumber = lst->document()->lineCount() - 1;
@@ -268,7 +268,7 @@ void DataTableDialog::gotoLine(QPlainTextEdit *lst, int lineNumber)
     lst->ensureCursorVisible();
 }
 
-void DataTableDialog::highlightCurrentLine(QPlainTextEdit *lst)
+void ValueDataTableDialog::highlightCurrentLine(QPlainTextEdit *lst)
 {
     lst->blockSignals(true);
 
@@ -287,19 +287,19 @@ void DataTableDialog::highlightCurrentLine(QPlainTextEdit *lst)
     lst->blockSignals(false);
 }
 
-void DataTableDialog::highlightCurrentLineX()
+void ValueDataTableDialog::highlightCurrentLineX()
 {
     highlightCurrentLine(lstX);
     gotoLine(lstY, lstX->textCursor().blockNumber());
 }
 
-void DataTableDialog::highlightCurrentLineY()
+void ValueDataTableDialog::highlightCurrentLineY()
 {
     highlightCurrentLine(lstY);
     gotoLine(lstX, lstY->textCursor().blockNumber());
 }
 
-void DataTableDialog::doPlot()
+void ValueDataTableDialog::doPlot()
 {
     chartValueCurveMarkers->setVisible(chkMarkers->isChecked());
 
@@ -348,12 +348,12 @@ void DataTableDialog::doPlot()
     delete [] derivativesSpline;
 }
 
-void DataTableDialog::doShowDerivativeClicked()
+void ValueDataTableDialog::doShowDerivativeClicked()
 {
     chartDerivative->setVisible(chkDerivative->isChecked());
 }
 
-void DataTableDialog::doMaterialBrowser()
+void ValueDataTableDialog::doMaterialBrowser()
 {
     MaterialBrowserDialog materialBrowserDialog(this);
     if (materialBrowserDialog.showDialog(true) == QDialog::Accepted)
@@ -370,17 +370,17 @@ void DataTableDialog::doMaterialBrowser()
     }
 }
 
-void DataTableDialog::load()
+void ValueDataTableDialog::load()
 {
 
 }
 
-bool DataTableDialog::save()
+bool ValueDataTableDialog::save()
 {
     return parseTable();
 }
 
-void DataTableDialog::doAccept()
+void ValueDataTableDialog::doAccept()
 {
     if (save())
     {
@@ -388,12 +388,12 @@ void DataTableDialog::doAccept()
     }
 }
 
-void DataTableDialog::doReject()
+void ValueDataTableDialog::doReject()
 {
     reject();
 }
 
-DataTable DataTableDialog::table()
+DataTable ValueDataTableDialog::table()
 {
     return m_table;
 }

@@ -21,6 +21,7 @@
 
 #include "util.h"
 #include "util/global.h"
+#include "gui/valuelineedit.h"
 
 #include "scene.h"
 #include "sceneedge.h"

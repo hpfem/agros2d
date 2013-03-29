@@ -47,15 +47,15 @@ const QHash<QString, Value> Marker::values() const
     return m_values;
 }
 
-void Marker::evaluate(QString id, double time)
+bool Marker::evaluate(const QString &id, double time)
 {
-    m_values[id].evaluate(time, false);
+    return m_values[id].evaluateAtTime(time);
 }
 
 bool Marker::evaluateAllVariables()
 {
     foreach (QString key, m_values.keys())
-        if (!m_values[key].evaluate())
+        if (!evaluate(key, 0.0))
             return false;
 
     return true;

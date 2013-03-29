@@ -23,6 +23,7 @@
 #include "util/global.h"
 
 #include "gui/common.h"
+#include "gui/valuelineedit.h"
 
 #include "scene.h"
 #include "hermes2d.h"

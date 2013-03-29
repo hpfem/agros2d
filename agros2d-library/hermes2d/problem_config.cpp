@@ -81,7 +81,7 @@ const double initialTimeStepRatio = 500;
 double ProblemConfig::initialTimeStepLength()
 {
     if(timeStepMethod() == TimeStepMethod_BDFTolerance)
-        return timeTotal().value() / initialTimeStepRatio;
+        return timeTotal().number() / initialTimeStepRatio;
     else if(timeStepMethod() == TimeStepMethod_BDFNumSteps)
         return constantTimeStepLength() / 3.;
     else if (timeStepMethod() == TimeStepMethod_Fixed)

@@ -23,6 +23,7 @@
 
 #include "gui/common.h"
 #include "gui/latexviewer.h"
+#include "gui/valuelineedit.h"
 
 #include "scenemarker.h"
 #include "hermes2d/module.h"

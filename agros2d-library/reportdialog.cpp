@@ -23,6 +23,7 @@
 
 #include "util/constants.h"
 #include "util/global.h"
+#include "gui/valuelineedit.h"
 
 #include "scene.h"
 #include "scenebasic.h"

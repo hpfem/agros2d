@@ -22,6 +22,7 @@
 #include "util.h"
 #include "util/global.h"
 #include "util/loops.h"
+#include "gui/valuelineedit.h"
 
 #include "scene.h"
 #include "scenebasic.h"

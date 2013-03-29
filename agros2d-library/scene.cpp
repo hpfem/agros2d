@@ -1398,7 +1398,7 @@ void Scene::readFromFile(const QString &fileName)
             Module::BoundaryType boundaryType = field->boundaryType(type);
             foreach (Module::BoundaryTypeVariable variable, boundaryType.variables())
                 boundary->setValue(variable.id(),
-                                   Value(field, element.toElement().attribute(variable.id(), "0")));
+                                   Value(element.toElement().attribute(variable.id(), "0")));
 
             Agros2D::scene()->addBoundary(boundary);
 
@@ -1431,7 +1431,7 @@ void Scene::readFromFile(const QString &fileName)
             foreach (Module::MaterialTypeVariable variable, field->materialTypeVariables())
             {
                 material->setValue(variable.id(),
-                                   Value(field, element.toElement().attribute(variable.id(), "0")));
+                                   Value(element.toElement().attribute(variable.id(), "0")));
             }
 
             // add material

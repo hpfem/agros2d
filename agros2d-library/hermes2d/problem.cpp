@@ -405,7 +405,7 @@ int Problem::timeToTimeStep(double time) const
     for(int ts = 0; ts < m_timeStepLengths.size(); ts++)
     {
         timeSum += m_timeStepLengths.at(ts);
-        if(fabs(timeSum - time) < 1e-9* config()->timeTotal().value())
+        if(fabs(timeSum - time) < 1e-9* config()->timeTotal().number())
             return ts+1;
     }
 
@@ -417,12 +417,12 @@ int Problem::timeToTimeStep(double time) const
 bool Problem::defineActualTimeStepLength(double ts)
 {
     // todo: do properly
-    const double eps = 1e-9 * config()->timeTotal().value();
-    assert(actualTime() < config()->timeTotal().value() + eps);
-    if(actualTime() > config()->timeTotal().value() - eps)
+    const double eps = 1e-9 * config()->timeTotal().number();
+    assert(actualTime() < config()->timeTotal().number() + eps);
+    if(actualTime() > config()->timeTotal().number() - eps)
         return false;
     else{
-        double alteredTS = min(ts, config()->timeTotal().value() - actualTime());
+        double alteredTS = min(ts, config()->timeTotal().number() - actualTime());
         m_timeStepLengths.push_back(alteredTS);
         return true;
     }

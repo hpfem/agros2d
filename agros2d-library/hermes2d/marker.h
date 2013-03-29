@@ -51,7 +51,7 @@ public:
     QString fieldId();
 
     /// ????
-    void evaluate(QString id, double time);
+    bool evaluate(const QString &id, double time);
 
     /// returns true if all OK
     bool evaluateAllVariables();

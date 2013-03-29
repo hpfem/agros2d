@@ -242,15 +242,9 @@ void PyField::addBoundary(const char *name, const char *type, map<char*, double>
             {
                 assigned = true;
                 if (expressions.count((*i).first) == 0)
-                    values[variable.id()] = Value(m_fieldInfo,
-                                                  (*i).second,
-                                                  vector<double>(),
-                                                  vector<double>());
+                    values[variable.id()] = Value((*i).second);
                 else
-                    values[variable.id()] = Value(m_fieldInfo,
-                                                  expressions[(*i).first],
-                            vector<double>(),
-                            vector<double>());
+                    values[variable.id()] = Value(expressions[(*i).first]);
                 break;
             }
         }
@@ -291,15 +285,9 @@ void PyField::setBoundary(const char *name, const char *type, map<char*, double>
             {
                 assigned = true;
                 if (expressions.count((*i).first) == 0)
-                    sceneBoundary->setValue(QString((*i).first), Value(m_fieldInfo,
-                                                                       (*i).second,
-                                                                       vector<double>(),
-                                                                       vector<double>()));
+                    sceneBoundary->setValue(QString((*i).first), Value((*i).second));
                 else
-                    sceneBoundary->setValue(QString((*i).first), Value(m_fieldInfo,
-                                                                       expressions[(*i).first],
-                                            vector<double>(),
-                                            vector<double>()));
+                    sceneBoundary->setValue(QString((*i).first), Value(expressions[(*i).first]));
                 break;
             }
         }
@@ -347,13 +335,11 @@ void PyField::addMaterial(char *name, map<char*, double> parameters,
 
                 assigned = true;
                 if (expressions.count((*i).first) == 0)
-                    values[variable.id()] = Value(m_fieldInfo,
-                                                  (*i).second,
+                    values[variable.id()] = Value((*i).second,
                                                   (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
                                                   (leny > 0) ? nonlin_y[(*i).first] : vector<double>());
                 else
-                    values[variable.id()] = Value(m_fieldInfo,
-                                                  expressions[(*i).first],
+                    values[variable.id()] = Value(expressions[(*i).first],
                             (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
                         (leny > 0) ? nonlin_y[(*i).first] : vector<double>());
                 break;
@@ -396,13 +382,11 @@ void PyField::setMaterial(char *name, map<char*, double> parameters,
 
                 assigned = true;
                 if (expressions.count((*i).first) == 0)
-                    sceneMaterial->setValue(QString((*i).first), Value(m_fieldInfo,
-                                                                       (*i).second,
+                    sceneMaterial->setValue(QString((*i).first), Value((*i).second,
                                                                        (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
                                                                        (leny > 0) ? nonlin_y[(*i).first] : vector<double>()));
                 else
-                    sceneMaterial->setValue(QString((*i).first), Value(m_fieldInfo,
-                                                                       expressions[(*i).first],
+                    sceneMaterial->setValue(QString((*i).first), Value(expressions[(*i).first],
                                             (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
                                             (leny > 0) ? nonlin_y[(*i).first] : vector<double>()));
                 break;

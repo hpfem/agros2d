@@ -17,8 +17,8 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#ifndef TIMEFUNCTION_H
-#define TIMEFUNCTION_H
+#ifndef VALUE_H
+#define VALUE_H
 
 #include "util.h"
 #include "util/point.h"
@@ -36,166 +36,64 @@ class AGROS_API Value
 public:
     Value(double value = 0.0);
     Value(double value, std::vector<double> x, std::vector<double> y);
-    Value(const QString &value, bool evaluateExpression = true);
+
+    Value(const QString &value);
     Value(const QString &value, std::vector<double> x, std::vector<double> y);
-    Value(FieldInfo *fieldInfo, double value);
-    Value(FieldInfo *fieldInfo, double value, std::vector<double> x, std::vector<double> y);
-    Value(FieldInfo *fieldInfo, const QString &value, const DataTable &m_table);
-    Value(FieldInfo *fieldInfo, const QString &value, bool evaluateExpression = true);
-    Value(FieldInfo *fieldInfo, const QString &value, std::vector<double> x, std::vector<double> y);
+    Value(const QString &value, const DataTable &table);
+
     ~Value();
 
-    double number();
+    // expression
+    inline double number() { assert(m_isEvaluated); return m_number; }
+    double numberAtPoint(const Point &point);
+    double numberAtTime(double time);
+    double numberAtTimeAndPoint(double time, const Point &point);
 
     bool hasExpression();
+    inline bool isTimeDependent() const { return m_isTimeDependent; }
+    inline bool isCoordinateDependent() const { return m_isCoordinateDependent; }
 
-    inline DataTable table() const { return m_table; }
+    bool evaluateAtPoint(const Point &point);
+    bool evaluateAtTime(double time);
+    bool evaluateAtTimeAndPoint(double time, const Point &point);
+
+    // table
+    double numberFromTable(double key);
+    Hermes::Ord numberFromTable(Hermes::Ord ord);
+    double derivativeFromTable(double key);
+    Hermes::Ord derivativeFromTable(Hermes::Ord ord);
+
     bool hasTable() const;
 
-    double value(double key = 0.0);
-    double value(const Point &point);
-    double value(double time, const Point &point);
-    Hermes::Ord value(Hermes::Ord ord);
-    double derivative(double key = 0.0);
-    Hermes::Ord derivative(Hermes::Ord ord);
-
-    bool evaluate(bool quiet = false);
-    bool evaluate(double time, bool quiet);
-    bool evaluate(const Point &point, bool quiet);
-    bool evaluate(double time, const Point &point, bool quiet = false);
-
-    QString toString() const;
-    void fromString(const QString &str);
-
-    inline void setText(const QString &str) { m_isEvaluated = false; m_text = str; }
+    void setText(const QString &str);
     inline QString text() const { return m_text; }
 
-    inline FieldInfo *fieldInfo() const { return m_fieldInfo; }
+    QString toString() const;
+    void parseFromString(const QString &str);
 
-private:
-    FieldInfo *m_fieldInfo;
-    bool m_isEvaluated;
-    QString m_text;
-    double m_number;
-
-    DataTable m_table;
-};
-
-// ****************************************************************************************************
-
-class ValueLineEdit : public QWidget
-{
-    Q_OBJECT
-
-public:
-    ValueLineEdit(QWidget *parent = 0, bool hasTimeDep = false, bool hasNonlin = false);
-    ~ValueLineEdit();
-
-    double number();
-    void setNumber(double number);
-
-    Value value();
-    void setValue(const Value &value);
-
-    inline void setMinimum(double min) { m_minimum = min; }
-    inline void setMinimumSharp(double min) { m_minimumSharp = min; }
-    inline void setMaximum(double max) { m_maximum = max; }
-    inline void setMaximumSharp(double max) { m_maximumSharp = max; }
-    inline void setCondition(QString condition) { m_condition = condition; }
-
-    inline void setLabelX(const QString &labelX) { m_labelX = labelX; }
-    inline QString labelX() const { return m_labelX; }
-    inline void setLabelY(const QString &labelY) { m_labelY = labelY; }
-    inline QString labelY() const { return m_labelY; }
-
-public slots:
-    bool evaluate(bool quiet = true);
-    bool checkCondition(double value);
-
-signals:
-    void editingFinished();
-    void textChanged(QString);
-    void evaluated(bool isError);
+    inline DataTable table() const { return m_table; }
 
 protected:
-    virtual QSize sizeHint() const;
-    void focusInEvent(QFocusEvent *event);
 
 private:
-    FieldInfo *m_fieldInfo;
+    bool m_isEvaluated;
 
-    double m_minimum;
-    double m_minimumSharp;
-    double m_maximum;
-    double m_maximumSharp;
+    // expression
     double m_number;
+    QString m_text;
+    double m_time;
+    Point m_point;
+    bool m_isTimeDependent;
+    bool m_isCoordinateDependent;
 
-    QString m_condition;
-
-    bool m_hasTimeDep;
-    bool m_hasNonlin;
+    // table
     DataTable m_table;
-    QString m_labelX;
-    QString m_labelY;
 
-    QLineEdit *txtLineEdit;
-    QLabel *lblValue;
-    QLabel *lblInfo;
+    // evaluate
+    bool evaluate();
+    bool evaluateExpression(const QString &expression);
 
-#ifdef Q_WS_MAC
-    QToolButton *btnEditTimeDep;
-    QToolButton *btnDataTableDelete;
-    QToolButton *btnDataTableDialog;
-#else
-    QPushButton *btnEditTimeDep;
-    QPushButton *btnDataTableDelete;
-    QPushButton *btnDataTableDialog;
-#endif
-
-    void setLayoutValue();
-    void setValueLabel(const QString &text, QColor color, bool isVisible);
-
-private slots:
-    void doOpenValueTimeDialog();
-    void doOpenDataTableDelete();
-    void doOpenDataTableDialog();
+    friend class ValueLineEdit;
 };
 
-// ****************************************************************************************************
-
-class ValueTimeDialog: public QDialog
-{
-    Q_OBJECT
-
-public:
-    ValueTimeDialog(QWidget *parent = 0);
-    ~ValueTimeDialog();
-
-    Value value() const { return Value(txtLineEdit->text()); }
-    void setValue(Value value);
-
-private:
-    ChartBasic *chart;
-    QwtPlotCurve *chartCurve;
-
-    QPushButton *btnOk;
-    QPushButton *btnClose;
-    QPushButton *btnPlot;
-
-    QLabel *lblInfoError;
-    QLineEdit *txtLineEdit;
-    ValueLineEdit *txtTimeTotal;
-    QComboBox *cmbPresets;
-
-    void createControls();
-
-private slots:
-    void doAccept();
-    void doReject();
-
-    void checkExpression();
-    void plotFunction();
-    void presetsChanged(int index);
-};
-
-#endif // TIMEFUNCTION_H
+#endif // VALUE_H

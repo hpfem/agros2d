@@ -188,12 +188,12 @@ void LexicalAnalyser::setExpression(const QString &expr)
     }
 
     int i = 0;
-    while(i < m_tokens.count() - 1)
+    while (i < m_tokens.count() - 1)
     {
         if ((m_tokens[i].type() == ParserTokenType_NUMBER) && (m_tokens[i+1].type() != ParserTokenType_OPERATOR))
         {
             QString lexem = "";
-            while(((m_tokens[i+1].type() != ParserTokenType_OPERATOR) && (i < m_tokens.count()-1)))
+            while ((i < m_tokens.count()-1) && ((m_tokens[i+1].type() != ParserTokenType_OPERATOR)))
             {
                 lexem += m_tokens[i].toString();
                 i++;
@@ -201,9 +201,9 @@ void LexicalAnalyser::setExpression(const QString &expr)
             qDebug() << "Invalid number format:" << lexem + m_tokens[i].toString();
         }
 
-        if ((m_tokens[i].type() == ParserTokenType_VARIABLE) && (m_tokens[i+1].type() != ParserTokenType_OPERATOR))
+        if ((m_tokens[i].type() == ParserTokenType_VARIABLE) && (i < m_tokens.count()-1) && (m_tokens[i+1].type() != ParserTokenType_OPERATOR))
         {
-            qDebug() << "Synatax error in expression " << m_tokens[i].toString() + " " + m_tokens[i+1].toString();
+            qDebug() << "Syntax error in expression " << m_tokens[i].toString() + " " + m_tokens[i+1].toString();
         }
         i++;
     }

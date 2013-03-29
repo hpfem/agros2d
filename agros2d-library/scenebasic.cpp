@@ -20,6 +20,7 @@
 #include "scenebasic.h"
 
 #include "util/global.h"
+#include "gui/valuelineedit.h"
 
 #include "scenenode.h"
 #include "sceneedge.h"
