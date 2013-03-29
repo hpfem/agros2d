@@ -189,8 +189,6 @@ QString Value::toString() const
 
 void Value::parseFromString(const QString &str)
 {
-    m_table.clear();
-
     if (str.contains(";"))
     {
         // string and table
