@@ -66,4 +66,4 @@ volume = flow.volume_integrals([0])
 surface = flow.surface_integrals([0])
 # testI = agros2d.test("Current", surface["Ir"], 3629.425713)
 
-print("Test: Incompressible flow - planar: " + str(testp and testv and testvx and testvy))
+print("Test: Incompressible flow - axisymmetric: " + str(testp and testv and testvx and testvy))
