@@ -105,6 +105,7 @@ SOURCES += value.cpp \
     pythonlab/pygeometry.cpp \
     pythonlab/pyview.cpp \
     pythonlab/pyparticletracing.cpp \
+    pythonlab/remotecontrol.cpp \
     particle/particle_tracing.cpp \
     particle/mesh_hash.cpp \
     ../resources_source/classes/module_xml.cpp \
@@ -199,6 +200,7 @@ HEADERS += value.h \
     pythonlab/pygeometry.h \
     pythonlab/pyview.h \
     pythonlab/pyparticletracing.h \
+    pythonlab/remotecontrol.h \
     particle/particle_tracing.h \
     particle/mesh_hash.h
 

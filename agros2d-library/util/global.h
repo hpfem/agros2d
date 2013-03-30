@@ -24,12 +24,12 @@
 #include "util/enums.h"
 
 class Problem;
-class ProblemConfigView;
 class Config;
 class SolutionStore;
 class Log;
 class Scene;
 class PluginInterface;
+class ScriptEngineRemote;
 
 class AGROS_API Agros2D
 {
@@ -56,6 +56,7 @@ private:
     Problem *m_problem;
     SolutionStore *m_solutionStore;
     Log *m_log;
+    ScriptEngineRemote *m_scriptEngineRemote;
 };
 
 #endif /* GLOBAL_H */

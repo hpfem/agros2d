@@ -8,6 +8,7 @@ SUBDIRS += agros2d-library
 SUBDIRS += agros2d-binary
 SUBDIRS += agros2d-solver
 SUBDIRS += agros2d-generator
+SUBDIRS += agros2d-remote
 
 CONFIG += ordered
 TEMPLATE = subdirs

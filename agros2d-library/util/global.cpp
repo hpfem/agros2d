@@ -26,6 +26,7 @@
 #include "scene.h"
 
 #include "pythonlab/pythonengine_agros.h"
+#include "pythonlab/remotecontrol.h"
 
 #include "hermes2d/module.h"
 
@@ -40,6 +41,9 @@ Agros2D::Agros2D()
 {
     m_problem = new Problem();
     m_scene = new Scene();
+
+    // script remote
+    m_scriptEngineRemote = new ScriptEngineRemote();
 
     QObject::connect(m_problem, SIGNAL(fieldsChanged()), m_scene, SLOT(doFieldsChanged()));
     QObject::connect(m_scene, SIGNAL(invalidated()), m_problem, SLOT(clearSolution()));
@@ -66,6 +70,7 @@ void Agros2D::clear()
     delete m_singleton.data()->m_configComputer;
     delete m_singleton.data()->m_solutionStore;
     delete m_singleton.data()->m_log;
+    delete m_singleton.data()->m_scriptEngineRemote;
 }
 
 void Agros2D::createSingleton()
