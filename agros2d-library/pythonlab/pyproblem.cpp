@@ -93,7 +93,7 @@ void PyProblem::setTimeStepMethod(const std::string timeStepMethod)
 
 void PyProblem::setTimeMethodOrder(const int timeMethodOrder)
 {
-    if (timeMethodOrder >= 1)
+    if (timeMethodOrder >= 1 && timeMethodOrder <= 3)
         Agros2D::problem()->config()->setTimeOrder(timeMethodOrder);
     else
         throw out_of_range(QObject::tr("Number of time method order must be greater then 1.").toStdString());

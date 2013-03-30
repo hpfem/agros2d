@@ -71,11 +71,11 @@ class TestGeometry(TestCase):
 
     def test_add_edge_with_boundaries(self):
         with self.assertRaises(ValueError):
-            self.geometry.add_edge(0, 0, 1, 1, boundaries = {'field' : 'bc'})
+            self.geometry.add_edge(0, 0, 1, 1, boundaries = {'wrong_field' : 'wrong_boundary_condition'})
 
         agros2d.field('electrostatic').add_boundary("Potential", "electrostatic_potential", {"electrostatic_potential" : 1000})
         with self.assertRaises(ValueError):
-            self.geometry.add_edge(0, 0, 1, 1, boundaries = {'electrostatic' : 'bc'})
+            self.geometry.add_edge(0, 0, 1, 1, boundaries = {'electrostatic' : 'wrong_boundary_condition'})
 
         self.assertEqual(self.geometry.add_edge(0, 0, 1, 1, boundaries = {'electrostatic' : 'Potential'}), 0)
 
