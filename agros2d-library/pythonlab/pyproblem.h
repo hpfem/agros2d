@@ -36,24 +36,24 @@ class PyProblem
         void refresh();
 
         // coordinate type
-        inline const char *getCoordinateType() { return coordinateTypeToStringKey(Agros2D::problem()->config()->coordinateType()).toStdString().c_str(); }
-        void setCoordinateType(const char *coordinateType);
+        inline const std::string getCoordinateType() { return coordinateTypeToStringKey(Agros2D::problem()->config()->coordinateType()).toStdString(); }
+        void setCoordinateType(const std::string coordinateType);
 
         // mesh type
-        inline const char *getMeshType() { return meshTypeToStringKey(Agros2D::problem()->config()->meshType()).toStdString().c_str(); }
-        void setMeshType(const char *meshType);
+        inline const std::string getMeshType() { return meshTypeToStringKey(Agros2D::problem()->config()->meshType()).toStdString(); }
+        void setMeshType(const std::string meshType);
 
         // matrix solver
-        inline const char *getMatrixSolver() { return matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()).toStdString().c_str(); }
-        void setMatrixSolver(const char *matrixSolver);
+        inline const std::string getMatrixSolver() { return matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()).toStdString(); }
+        void setMatrixSolver(const std::string matrixSolver);
 
         // frequency
         inline double getFrequency() { return Agros2D::problem()->config()->frequency(); }
         void setFrequency(const double frequency);
 
         // time step method
-        inline const char *getTimeStepMethod() { return timeStepMethodToStringKey(Agros2D::problem()->config()->timeStepMethod()).toStdString().c_str(); }
-        void setTimeStepMethod(const char *timeStepMethod);
+        inline const std::string getTimeStepMethod() { return timeStepMethodToStringKey(Agros2D::problem()->config()->timeStepMethod()).toStdString(); }
+        void setTimeStepMethod(const std::string timeStepMethod);
 
         // time method order
         inline int getTimeMethodOrder() { return Agros2D::problem()->config()->timeOrder(); }
@@ -72,8 +72,8 @@ class PyProblem
         void setNumConstantTimeSteps(const int timeSteps);
 
         // coupling
-        char *getCouplingType(const char *sourceField, const char *targetField);
-        void setCouplingType(const char *sourceField, const char *targetField, const char *type);
+        std::string getCouplingType(const std::string sourceField, const std::string targetField);
+        void setCouplingType(const std::string sourceField, const std::string targetField, const std::string type);
 
         //mesh and solve
         void mesh();

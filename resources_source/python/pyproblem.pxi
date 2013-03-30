@@ -1,6 +1,12 @@
 from libcpp.vector cimport vector
 from libcpp cimport bool
 
+cdef extern from "<string>" namespace "std":
+    cdef cppclass string:
+        string()
+        string(char *)
+        char * c_str()
+
 cdef extern from "limits.h":
     int c_INT_MIN "INT_MIN"
     int c_INT_MAX "INT_MAX"
@@ -15,20 +21,20 @@ cdef extern from "../../agros2d-library/pythonlab/pyproblem.h":
         void clearSolution() except +
         void refresh()
 
-        char *getCoordinateType()
-        void setCoordinateType(char *coordinateType) except +
+        string getCoordinateType()
+        void setCoordinateType(string coordinateType) except +
 
-        char *getMeshType()
-        void setMeshType(char *meshType) except +
+        string getMeshType()
+        void setMeshType(string meshType) except +
 
-        char *getMatrixSolver()
-        void setMatrixSolver(char *matrixSolver) except +
+        string getMatrixSolver()
+        void setMatrixSolver(string matrixSolver) except +
 
         double getFrequency()
         void setFrequency(double frequency) except +
 
-        char *getTimeStepMethod()
-        void setTimeStepMethod(char *timeStepMethod) except +
+        string getTimeStepMethod()
+        void setTimeStepMethod(string timeStepMethod) except +
 
         int getTimeMethodOrder()
         void setTimeMethodOrder(int timeMethodOrder) except +
@@ -42,8 +48,8 @@ cdef extern from "../../agros2d-library/pythonlab/pyproblem.h":
         int getNumConstantTimeSteps()
         void setNumConstantTimeSteps(int timeSteps) except +
 
-        char *getCouplingType(char *sourceField, char *targetField) except +
-        void setCouplingType(char *sourceField, char *targetField, char *type) except +
+        string getCouplingType(string sourceField, string targetField) except +
+        void setCouplingType(string sourceField, string targetField, string type) except +
 
         void mesh() except +
         void solve() except +
@@ -75,21 +81,21 @@ cdef class __Problem__:
 
     property coordinate_type:
         def __get__(self):
-            return self.thisptr.getCoordinateType()
+            return self.thisptr.getCoordinateType().c_str()
         def __set__(self, coordinate_type):
-            self.thisptr.setCoordinateType(coordinate_type)
+            self.thisptr.setCoordinateType(string(coordinate_type))
 
     property mesh_type:
         def __get__(self):
-            return self.thisptr.getMeshType()
+            return self.thisptr.getMeshType().c_str()
         def __set__(self, mesh_type):
-            self.thisptr.setMeshType(mesh_type)
+            self.thisptr.setMeshType(string(mesh_type))
 
     property matrix_solver:
         def __get__(self):
-            return self.thisptr.getMatrixSolver()
+            return self.thisptr.getMatrixSolver().c_str()
         def __set__(self, matrix_solver):
-            self.thisptr.setMatrixSolver(matrix_solver)
+            self.thisptr.setMatrixSolver(string(matrix_solver))
 
     property frequency:
         def __get__(self):
@@ -99,9 +105,9 @@ cdef class __Problem__:
 
     property time_step_method:
         def __get__(self):
-            return self.thisptr.getTimeStepMethod()
+            return self.thisptr.getTimeStepMethod().c_str()
         def __set__(self, time_step_method):
-            self.thisptr.setTimeStepMethod(time_step_method)
+            self.thisptr.setTimeStepMethod(string(time_step_method))
 
     property time_method_order:
         def __get__(self):
@@ -136,7 +142,7 @@ cdef class __Problem__:
         source_field -- source field id
         target_field -- target field id
         """
-        return self.thisptr.getCouplingType(source_field, target_field)
+        return self.thisptr.getCouplingType(string(source_field), string(target_field)).c_str()
 
     def set_coupling_type(self, source_field, target_field, type):
         """Set type of coupling.
@@ -148,7 +154,7 @@ cdef class __Problem__:
         target_field -- target field id
         type -- coupling type
         """
-        self.thisptr.setCouplingType(source_field, target_field, type)
+        self.thisptr.setCouplingType(string(source_field), string(target_field), string(type))
 
     def mesh(self):
         """Area discretization."""

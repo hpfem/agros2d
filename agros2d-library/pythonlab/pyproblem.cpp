@@ -49,28 +49,28 @@ void PyProblem::refresh()
     currentPythonEngineAgros()->postHermes()->refresh();
 }
 
-void PyProblem::setCoordinateType(const char *coordinateType)
+void PyProblem::setCoordinateType(const std::string coordinateType)
 {
-    if (coordinateTypeStringKeys().contains(QString(coordinateType)))
-        Agros2D::problem()->config()->setCoordinateType(coordinateTypeFromStringKey(QString(coordinateType)));
+    if (coordinateTypeStringKeys().contains(QString::fromStdString(coordinateType)))
+        Agros2D::problem()->config()->setCoordinateType(coordinateTypeFromStringKey(QString::fromStdString(coordinateType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(coordinateTypeStringKeys())).toStdString());
 
     Agros2D::scene()->invalidate();
 }
 
-void PyProblem::setMeshType(const char *meshType)
+void PyProblem::setMeshType(const std::string meshType)
 {
-    if (meshTypeStringKeys().contains(QString(meshType)))
-        Agros2D::problem()->config()->setMeshType(meshTypeFromStringKey(QString(meshType)));
+    if (meshTypeStringKeys().contains(QString::fromStdString(meshType)))
+        Agros2D::problem()->config()->setMeshType(meshTypeFromStringKey(QString::fromStdString(meshType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(meshTypeStringKeys())).toStdString());
 }
 
-void PyProblem::setMatrixSolver(const char *matrixSolver)
+void PyProblem::setMatrixSolver(const string matrixSolver)
 {
-    if (matrixSolverTypeStringKeys().contains(QString(matrixSolver)))
-        Agros2D::problem()->config()->setMatrixSolver(matrixSolverTypeFromStringKey(QString(matrixSolver)));
+    if (matrixSolverTypeStringKeys().contains(QString::fromStdString(matrixSolver)))
+        Agros2D::problem()->config()->setMatrixSolver(matrixSolverTypeFromStringKey(QString::fromStdString(matrixSolver)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(matrixSolverTypeStringKeys())).toStdString());
 }
@@ -83,10 +83,10 @@ void PyProblem::setFrequency(const double frequency)
         throw out_of_range(QObject::tr("The frequency must be positive.").toStdString());
 }
 
-void PyProblem::setTimeStepMethod(const char *timeStepMethod)
+void PyProblem::setTimeStepMethod(const std::string timeStepMethod)
 {
-    if (timeStepMethodStringKeys().contains(QString(timeStepMethod)))
-        Agros2D::problem()->config()->setTimeStepMethod((TimeStepMethod) timeStepMethodFromStringKey(QString(timeStepMethod)));
+    if (timeStepMethodStringKeys().contains(QString::fromStdString(timeStepMethod)))
+        Agros2D::problem()->config()->setTimeStepMethod((TimeStepMethod) timeStepMethodFromStringKey(QString::fromStdString(timeStepMethod)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(timeStepMethodStringKeys())).toStdString());
 }
@@ -123,33 +123,39 @@ void PyProblem::setTimeTotal(const double timeTotal)
         throw out_of_range(QObject::tr("The total time must be positive.").toStdString());
 }
 
-char *PyProblem::getCouplingType(const char *sourceField, const char *targetField)
+string PyProblem::getCouplingType(const string sourceField, const string targetField)
 {
-    checkExistingFields(QString(sourceField), QString(targetField));
+    QString source = QString::fromStdString(sourceField);
+    QString target = QString::fromStdString(targetField);
 
-    if (Agros2D::problem()->hasCoupling(QString(sourceField), QString(targetField)))
+    checkExistingFields(source, target);
+
+    if (Agros2D::problem()->hasCoupling(source, target))
     {
-        CouplingInfo *couplingInfo = Agros2D::problem()->couplingInfo(QString(sourceField), QString(targetField));
-        return const_cast<char*>(couplingTypeToStringKey(couplingInfo->couplingType()).toStdString().c_str());
+        CouplingInfo *couplingInfo = Agros2D::problem()->couplingInfo(source, target);
+        return couplingTypeToStringKey(couplingInfo->couplingType()).toStdString();
     }
     else
-        throw logic_error(QObject::tr("Coupling '%1' + '%2' doesn't exists.").arg(QString(sourceField)).arg(QString(targetField)).toStdString());
+        throw logic_error(QObject::tr("Coupling '%1' + '%2' doesn't exists.").arg(source).arg(target).toStdString());
 }
 
-void PyProblem::setCouplingType(const char *sourceField, const char *targetField, const char *type)
+void PyProblem::setCouplingType(const string sourceField, const string targetField, const string type)
 {
-    checkExistingFields(QString(sourceField), QString(targetField));
+    QString source = QString::fromStdString(sourceField);
+    QString target = QString::fromStdString(targetField);
 
-    if (Agros2D::problem()->hasCoupling(QString(sourceField), QString(targetField)))
+    checkExistingFields(source, target);
+
+    if (Agros2D::problem()->hasCoupling(source, target))
     {
-        CouplingInfo *couplingInfo = Agros2D::problem()->couplingInfo(QString(sourceField), QString(targetField));
-        if (couplingTypeStringKeys().contains(QString(type)))
-            couplingInfo->setCouplingType(couplingTypeFromStringKey(QString(type)));
+        CouplingInfo *couplingInfo = Agros2D::problem()->couplingInfo(source, target);
+        if (couplingTypeStringKeys().contains(QString::fromStdString(type)))
+            couplingInfo->setCouplingType(couplingTypeFromStringKey(QString::fromStdString(type)));
         else
             throw invalid_argument(QObject::tr("Invalid coupling type key. Valid keys: %1").arg(stringListToString(couplingTypeStringKeys())).toStdString());
     }
     else
-        throw logic_error(QObject::tr("Coupling '%1' + '%2' doesn't exists.").arg(QString(sourceField)).arg(QString(targetField)).toStdString());
+        throw logic_error(QObject::tr("Coupling '%1' + '%2' doesn't exists.").arg(source).arg(target).toStdString());
 }
 
 void PyProblem::checkExistingFields(QString sourceField, QString targetField)
