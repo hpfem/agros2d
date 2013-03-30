@@ -43,7 +43,7 @@ Agros2D::Agros2D()
     m_scene = new Scene();
 
     // script remote
-    m_scriptEngineRemote = new ScriptEngineRemote();
+    m_scriptEngineRemoteLocal = new ScriptEngineRemoteLocal();
 
     QObject::connect(m_problem, SIGNAL(fieldsChanged()), m_scene, SLOT(doFieldsChanged()));
     QObject::connect(m_scene, SIGNAL(invalidated()), m_problem, SLOT(clearSolution()));
@@ -70,7 +70,7 @@ void Agros2D::clear()
     delete m_singleton.data()->m_configComputer;
     delete m_singleton.data()->m_solutionStore;
     delete m_singleton.data()->m_log;
-    delete m_singleton.data()->m_scriptEngineRemote;
+    delete m_singleton.data()->m_scriptEngineRemoteLocal;
 }
 
 void Agros2D::createSingleton()

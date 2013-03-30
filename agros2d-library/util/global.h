@@ -29,7 +29,7 @@ class SolutionStore;
 class Log;
 class Scene;
 class PluginInterface;
-class ScriptEngineRemote;
+class ScriptEngineRemoteLocal;
 
 class AGROS_API Agros2D
 {
@@ -56,7 +56,7 @@ private:
     Problem *m_problem;
     SolutionStore *m_solutionStore;
     Log *m_log;
-    ScriptEngineRemote *m_scriptEngineRemote;
+    ScriptEngineRemoteLocal *m_scriptEngineRemoteLocal;
 };
 
 #endif /* GLOBAL_H */

@@ -22,12 +22,12 @@
 
 #include "../util/util.h"
 
-class AGROS_API ScriptEngineRemote : public QObject
+class AGROS_API ScriptEngineRemoteLocal : public QLocalServer
 {
     Q_OBJECT
 public:
-    ScriptEngineRemote();
-    ~ScriptEngineRemote();
+    ScriptEngineRemoteLocal();
+    ~ScriptEngineRemoteLocal();
 
 private slots:
     void connected();
@@ -39,7 +39,6 @@ private slots:
 private:
     QString command;
 
-    QLocalServer *m_server;
     QLocalSocket *m_server_socket;
     QLocalSocket *m_client_socket;
 };

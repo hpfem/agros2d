@@ -21,41 +21,39 @@
 
 #include "pythonengine_agros.h"
 
-ScriptEngineRemote::ScriptEngineRemote()
+ScriptEngineRemoteLocal::ScriptEngineRemoteLocal()
 {
     // server
-    m_server = new QLocalServer();
-    QLocalServer::removeServer("agros2d-server");
-    if (!m_server->listen("agros2d-server"))
+    removeServer("agros2d-server");
+    if (!listen("agros2d-server"))
     {
-        qWarning() << tr("Error: Unable to start the server (agros2d-server): %1.").arg(m_server->errorString());
+        qWarning() << tr("Error: Unable to start the server (agros2d-server): %1.").arg(errorString());
         return;
     }
 
-    connect(m_server, SIGNAL(newConnection()), this, SLOT(connected()));
+    connect(this, SIGNAL(newConnection()), this, SLOT(connected()));
 }
 
-ScriptEngineRemote::~ScriptEngineRemote()
+ScriptEngineRemoteLocal::~ScriptEngineRemoteLocal()
 {
-    delete m_server;
 }
 
-void ScriptEngineRemote::connected()
+void ScriptEngineRemoteLocal::connected()
 {
     command = "";
 
-    m_server_socket = m_server->nextPendingConnection();
+    m_server_socket = nextPendingConnection();
     connect(m_server_socket, SIGNAL(readyRead()), this, SLOT(readCommand()));
     connect(m_server_socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
 }
 
-void ScriptEngineRemote::readCommand()
+void ScriptEngineRemoteLocal::readCommand()
 {
     QTextStream in(m_server_socket);
     command = in.readAll();
 }
 
-void ScriptEngineRemote::disconnected()
+void ScriptEngineRemoteLocal::disconnected()
 {
     m_server_socket->deleteLater();
 
@@ -84,7 +82,7 @@ void ScriptEngineRemote::disconnected()
     delete m_client_socket;
 }
 
-void ScriptEngineRemote::displayError(QLocalSocket::LocalSocketError socketError)
+void ScriptEngineRemoteLocal::displayError(QLocalSocket::LocalSocketError socketError)
 {
     switch (socketError) {
     case QLocalSocket::ServerNotFoundError:
