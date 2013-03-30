@@ -60,7 +60,7 @@ point = acoustic.local_values(-0.084614, 0.053416)
 testp = agros2d.test("Acoustic pressure", point["p"], 0.003064)
 testp_real = agros2d.test("Acoustic pressure - real", point["pr"], 0.002322)
 testp_imag = agros2d.test("Acoustic pressure - imag", point["pi"], 0.001999)
-testSPL = agros2d.test("Acoustic sound level", point["SPL"], 40.695085)
+testSPL = agros2d.test("Acoustic sound level", point["SPL"], 40.695085, 8)
 
 # volume integral
 volume = acoustic.volume_integrals([0])
