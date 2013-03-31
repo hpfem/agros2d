@@ -40,14 +40,14 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         int getNonlinearSteps()
         void setNonlinearSteps(int nonlinearSteps) except +
 
-        double getDampingCoeff()
-        void setDampingCoeff(double dampingCoeff) except +
+        double getNewtonDampingCoeff()
+        void setNewtonDampingCoeff(double dampingCoeff) except +
 
-        bool getAutomaticDamping()
-        void setAutomaticDamping(bool automaticDamping)
+        bool getNewtonAutomaticDamping()
+        void setNewtonAutomaticDamping(bool automaticDamping)
 
-        int getDampingNumberToIncrease()
-        void setDampingNumberToIncrease(int dampingNumberToIncrease) except +
+        int getNewtonDampingNumberToIncrease()
+        void setNewtonDampingNumberToIncrease(int dampingNumberToIncrease) except +
 
         bool getPicardAndersonAcceleration()
         void setPicardAndersonAcceleration(bool acceleration) except +
@@ -80,11 +80,11 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         void setTimeSkip(double timeSkip) except +
 
         void addBoundary(char*, char*, map[char*, double] parameters, map[char*, char*] expressions) except +
-        void setBoundary(char*, char*, map[char*, double] parameters, map[char*, char*] expressions) except +
+        void modifyBoundary(char*, char*, map[char*, double] parameters, map[char*, char*] expressions) except +
         void removeBoundary(char*)
 
         void addMaterial(char *id, map[char*, double] parameters, map[char*, char*] expressions, map[char*, vector[double]] nonlin_x, map[char*, vector[double]] nonlin_y) except +
-        void setMaterial(char* name, map[char*, double] parameters, map[char*, char*] expressions, map[char*, vector[double]] nonlin_x, map[char*, vector[double]] nonlin_y) except +
+        void modifyMaterial(char* name, map[char*, double] parameters, map[char*, char*] expressions, map[char*, vector[double]] nonlin_x, map[char*, vector[double]] nonlin_y) except +
         void removeMaterial(char* name)
 
         void solve()
@@ -156,23 +156,23 @@ cdef class __Field__:
     # damping coeff
     property damping_coeff:
         def __get__(self):
-            return self.thisptr.getDampingCoeff()
+            return self.thisptr.getNewtonDampingCoeff()
         def __set__(self, damping_coeff):
-            self.thisptr.setDampingCoeff(damping_coeff)
+            self.thisptr.setNewtonDampingCoeff(damping_coeff)
 
     # automatic damping
     property automatic_damping:
         def __get__(self):
-            return self.thisptr.getAutomaticDamping()
+            return self.thisptr.getNewtonAutomaticDamping()
         def __set__(self, automatic_damping):
-            self.thisptr.setAutomaticDamping(automatic_damping)
+            self.thisptr.setNewtonAutomaticDamping(automatic_damping)
 
     # damping number to increase
     property damping_number_to_increase:
         def __get__(self):
-            return self.thisptr.getDampingNumberToIncrease()
+            return self.thisptr.getNewtonDampingNumberToIncrease()
         def __set__(self, damping_number_to_increase):
-            self.thisptr.setDampingNumberToIncrease(damping_number_to_increase)
+            self.thisptr.setNewtonDampingNumberToIncrease(damping_number_to_increase)
 
     # anderson acceleration
     property anderson_acceleration:
@@ -273,7 +273,7 @@ cdef class __Field__:
 
         self.thisptr.addBoundary(name, type, parameters_map, expression_map)
 
-    def set_boundary(self, char *name, char *type = "", parameters = {}):
+    def modify_boundary(self, char *name, char *type = "", parameters = {}):
         cdef map[char*, double] parameters_map
         cdef pair[char*, double] parameter
 
@@ -298,7 +298,7 @@ cdef class __Field__:
             parameter.second = val
             parameters_map.insert(parameter)
 
-        self.thisptr.setBoundary(name, type, parameters_map, expression_map)
+        self.thisptr.modifyBoundary(name, type, parameters_map, expression_map)
 
     def remove_boundary(self, char *name):
         self.thisptr.removeBoundary(name)
@@ -352,7 +352,7 @@ cdef class __Field__:
 
         self.thisptr.addMaterial(name, parameters_map, expression_map, nonlin_x_map, nonlin_y_map)
 
-    def set_material(self, char *name, parameters = {}):
+    def modify_material(self, char *name, parameters = {}):
         cdef map[char*, double] parameters_map
         cdef pair[char*, double] parameter
 
@@ -398,7 +398,7 @@ cdef class __Field__:
             parameter.second = val
             parameters_map.insert(parameter)
 
-        self.thisptr.setMaterial(name, parameters_map, expression_map, nonlin_x_map, nonlin_y_map)
+        self.thisptr.modifyMaterial(name, parameters_map, expression_map, nonlin_x_map, nonlin_y_map)
 
     def remove_material(self, char *name):
         self.thisptr.removeMaterial(name)

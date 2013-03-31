@@ -36,8 +36,6 @@ class PyField
         PyField(char *fieldId);
         ~PyField() {}
 
-        FieldInfo *fieldInfo();
-
         // field id
         inline const char *fieldId() { return m_fieldInfo->fieldId().toStdString().c_str(); }
 
@@ -66,20 +64,20 @@ class PyField
         void setNonlinearSteps(const int nonlinearSteps);
 
         // damping coefficient
-        inline double getDampingCoeff() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->newtonDampingCoeff(); }
-        void setDampingCoeff(const double dampingCoeff);
+        inline double getNewtonDampingCoeff() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->newtonDampingCoeff(); }
+        void setNewtonDampingCoeff(const double dampingCoeff);
 
         // automatic damping
-        inline bool getAutomaticDamping() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->newtonAutomaticDamping(); }
-        void setAutomaticDamping(const bool automaticDamping);
+        inline bool getNewtonAutomaticDamping() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->newtonAutomaticDamping(); }
+        void setNewtonAutomaticDamping(const bool automaticDamping);
 
         // automatic damping coefficient
-        inline double getAutomaticDampingCoeff() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->newtonAutomaticDampingCoeff(); }
-        void setAutomaticDampingCoeff(const double dampingCoeff);
+        inline double getNewtonAutomaticDampingCoeff() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->newtonAutomaticDampingCoeff(); }
+        void setNewtonAutomaticDampingCoeff(const double dampingCoeff);
 
         // steps to increase damping coeff
-        inline int getDampingNumberToIncrease() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->newtonDampingNumberToIncrease(); }
-        void setDampingNumberToIncrease(const int dampingNumberToIncrease);
+        inline int getNewtonDampingNumberToIncrease() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->newtonDampingNumberToIncrease(); }
+        void setNewtonDampingNumberToIncrease(const int dampingNumberToIncrease);
 
         // picard anderson acceleration
         inline bool getPicardAndersonAcceleration() { return Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->picardAndersonAcceleration(); }
@@ -125,7 +123,7 @@ class PyField
         void addBoundary(char const *name, const char *type,
                          map<char*, double> parameters,
                          map<char*, char* > expressions);
-        void setBoundary(const char *name, const char *type,
+        void modifyBoundary(const char *name, const char *type,
                          map<char*, double> parameters,
                          map<char *, char *> expressions);
         void removeBoundary(char *name);
@@ -135,7 +133,7 @@ class PyField
                          map<char *, char *> expressions,
                          map<char*, vector<double> > nonlin_x,
                          map<char*, vector<double> > nonlin_y);
-        void setMaterial(char *name, map<char*, double> parameters,
+        void modifyMaterial(char *name, map<char*, double> parameters,
                          map<char*, char* > expressions,
                          map<char *, vector<double> > nonlin_x,
                          map<char *, vector<double> > nonlin_y);
