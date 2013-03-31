@@ -54,7 +54,7 @@ int PyGeometry::addNode(double x, double y)
 }
 
 int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle,
-                        map<char*, int> refinements, map<char*, char*> boundaries)
+                        map<std::string, int> refinements, map<std::string, std::string> boundaries)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnEdges->trigger();
@@ -92,7 +92,7 @@ int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle
 }
 
 int PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle,
-                               map<char *, int> refinements, map<char*, char*> boundaries)
+                               map<std::string, int> refinements, map<std::string, std::string> boundaries)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnEdges->trigger();
@@ -135,7 +135,7 @@ int PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angl
     return Agros2D::scene()->edges->items().indexOf(edge);
 }
 
-void PyGeometry::modifyEdge(int index, double angle, map<char *, int> refinements, map<char *, char *> boundaries)
+void PyGeometry::modifyEdge(int index, double angle, map<std::string, int> refinements, map<std::string, std::string> boundaries)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnEdges->trigger();
@@ -163,17 +163,20 @@ void PyGeometry::testAngle(double angle)
         throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
 }
 
-void PyGeometry::setBoundaries(SceneEdge *edge, map<char *, char *> boundaries)
+void PyGeometry::setBoundaries(SceneEdge *edge, map<std::string, std::string> boundaries)
 {
-    for (map<char*, char*>::iterator i = boundaries.begin(); i != boundaries.end(); ++i)
+    for (map<std::string, std::string>::iterator i = boundaries.begin(); i != boundaries.end(); ++i)
     {
-        if (!Agros2D::problem()->hasField(QString((*i).first)))
-            throw invalid_argument(QObject::tr("Invalid field id '%1'.").arg(QString((*i).first)).toStdString());
+        QString field = QString::fromStdString((*i).first);
+        QString marker = QString::fromStdString((*i).second);
+
+        if (!Agros2D::problem()->hasField(field))
+            throw invalid_argument(QObject::tr("Invalid field id '%1'.").arg(field).toStdString());
 
         bool assigned = false;
-        foreach (SceneBoundary *boundary, Agros2D::scene()->boundaries->filter(Agros2D::problem()->fieldInfo(QString((*i).first))).items())
+        foreach (SceneBoundary *boundary, Agros2D::scene()->boundaries->filter(Agros2D::problem()->fieldInfo(field)).items())
         {
-            if (boundary->name() == QString((*i).second))
+            if (boundary->name() == marker)
             {
                 assigned = true;
                 edge->addMarker(boundary);
@@ -182,25 +185,28 @@ void PyGeometry::setBoundaries(SceneEdge *edge, map<char *, char *> boundaries)
         }
 
         if (!assigned)
-            throw invalid_argument(QObject::tr("Boundary condition '%1' doesn't exists.").arg(QString((*i).second)).toStdString());
+            throw invalid_argument(QObject::tr("Boundary condition '%1' doesn't exists.").arg(marker).toStdString());
     }
 }
 
-void PyGeometry::setRefinementsOnEdge(SceneEdge *edge, map<char *, int> refinements)
+void PyGeometry::setRefinementsOnEdge(SceneEdge *edge, map<std::string, int> refinements)
 {
-    for (map<char*, int>::iterator i = refinements.begin(); i != refinements.end(); ++i)
+    for (map<std::string, int>::iterator i = refinements.begin(); i != refinements.end(); ++i)
     {
-        if (!Agros2D::problem()->hasField(QString((*i).first)))
-            throw invalid_argument(QObject::tr("Invalid field id '%1'.").arg(QString((*i).first)).toStdString());
+        QString field = QString::fromStdString((*i).first);
+        int refinement = (*i).second;
 
-        if (((*i).second < 0) || ((*i).second > 10))
-            throw out_of_range(QObject::tr("Number of refinements '%1' is out of range (0 - 10).").arg((*i).second).toStdString());
+        if (!Agros2D::problem()->hasField(field))
+            throw invalid_argument(QObject::tr("Invalid field id '%1'.").arg(field).toStdString());
 
-        Agros2D::problem()->fieldInfo(QString((*i).first))->setEdgeRefinement(edge, (*i).second);
+        if ((refinement < 0) || (refinement > 10))
+            throw out_of_range(QObject::tr("Number of refinements '%1' is out of range (0 - 10).").arg(refinement).toStdString());
+
+        Agros2D::problem()->fieldInfo(field)->setEdgeRefinement(edge, refinement);
     }
 }
 
-int PyGeometry::addLabel(double x, double y, double area, map<char *, int> refinements, map<char *, int> orders, map<char *, char *> materials)
+int PyGeometry::addLabel(double x, double y, double area, map<std::string, int> refinements, map<std::string, int> orders, map<std::string, std::string> materials)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnLabels->trigger();
@@ -236,7 +242,7 @@ int PyGeometry::addLabel(double x, double y, double area, map<char *, int> refin
     return Agros2D::scene()->labels->items().indexOf(label);
 }
 
-void PyGeometry::modifyLabel(int index, double area, map<char *, int> refinements, map<char *, int> orders, map<char *, char *> materials)
+void PyGeometry::modifyLabel(int index, double area, map<std::string, int> refinements, map<std::string, int> orders, map<std::string, std::string> materials)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnLabels->trigger();
@@ -260,58 +266,67 @@ void PyGeometry::modifyLabel(int index, double area, map<char *, int> refinement
     Agros2D::scene()->invalidate();
 }
 
-void PyGeometry::setMaterials(SceneLabel *label, map<char *, char *> materials)
+void PyGeometry::setMaterials(SceneLabel *label, map<std::string, std::string> materials)
 {
-    for( map<char*, char*>::iterator i = materials.begin(); i != materials.end(); ++i)
+    for( map<std::string, std::string>::iterator i = materials.begin(); i != materials.end(); ++i)
     {
-        if (!Agros2D::problem()->hasField(QString((*i).first)))
-            throw invalid_argument(QObject::tr("Invalid field id '%1'.").arg(QString((*i).first)).toStdString());
+        QString field = QString::fromStdString((*i).first);
+        QString marker = QString::fromStdString((*i).second);
 
-        if (QString((*i).second) != "none")
+        if (!Agros2D::problem()->hasField(field))
+            throw invalid_argument(QObject::tr("Invalid field id '%1'.").arg(field).toStdString());
+
+        if (marker != "none")
         {
 
             bool assigned = false;
-            foreach (SceneMaterial *sceneMaterial, Agros2D::scene()->materials->filter(Agros2D::problem()->fieldInfo(QString((*i).first))).items())
+            foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(Agros2D::problem()->fieldInfo(field)).items())
             {
-                if ((sceneMaterial->fieldId() == QString((*i).first)) && (sceneMaterial->name() == QString((*i).second)))
+                if ((material->fieldId() == field) && (material->name() == marker))
                 {
                     assigned = true;
-                    label->addMarker(sceneMaterial);
+                    label->addMarker(material);
                     break;
                 }
             }
 
             if (!assigned)
-                throw invalid_argument(QObject::tr("Material '%1' doesn't exists.").arg(QString((*i).second)).toStdString());
+                throw invalid_argument(QObject::tr("Material '%1' doesn't exists.").arg(marker).toStdString());
         }
     }
 }
 
-void PyGeometry::setRefinements(SceneLabel *label, map<char *, int> refinements)
+void PyGeometry::setRefinements(SceneLabel *label, map<std::string, int> refinements)
 {
-    for (map<char*, int>::iterator i = refinements.begin(); i != refinements.end(); ++i)
+    for (map<std::string, int>::iterator i = refinements.begin(); i != refinements.end(); ++i)
     {
-        if (!Agros2D::problem()->hasField(QString((*i).first)))
-            throw invalid_argument(QObject::tr("Invalid field id '%1'.").arg(QString((*i).first)).toStdString());
+        QString field = QString::fromStdString((*i).first);
+        int refinement = (*i).second;
 
-        if (((*i).second < 0) || ((*i).second > 10))
-            throw out_of_range(QObject::tr("Number of refinements '%1' is out of range (0 - 10).").arg((*i).second).toStdString());
+        if (!Agros2D::problem()->hasField(field))
+            throw invalid_argument(QObject::tr("Invalid field id '%1'.").arg(field).toStdString());
 
-        Agros2D::problem()->fieldInfo(QString((*i).first))->setLabelRefinement(label, (*i).second);
+        if ((refinement < 0) || (refinement > 10))
+            throw out_of_range(QObject::tr("Number of refinements '%1' is out of range (0 - 10).").arg(refinement).toStdString());
+
+        Agros2D::problem()->fieldInfo(field)->setLabelRefinement(label, refinement);
     }
 }
 
-void PyGeometry::setPolynomialOrders(SceneLabel *label, map<char *, int> orders)
+void PyGeometry::setPolynomialOrders(SceneLabel *label, map<std::string, int> orders)
 {
-    for (map<char*, int>::iterator i = orders.begin(); i != orders.end(); ++i)
+    for (map<std::string, int>::iterator i = orders.begin(); i != orders.end(); ++i)
     {
-        if (!Agros2D::problem()->hasField(QString((*i).first)))
-            throw invalid_argument(QObject::tr("Invalid field id '%1'.").arg(QString((*i).first)).toStdString());
+        QString field = QString::fromStdString((*i).first);
+        int order = (*i).second;
 
-        if (((*i).second < 1) || ((*i).second > 10))
-            throw out_of_range(QObject::tr("Polynomial order '%1' is out of range (1 - 10).").arg((*i).second).toStdString());
+        if (!Agros2D::problem()->hasField(field))
+            throw invalid_argument(QObject::tr("Invalid field id '%1'.").arg(field).toStdString());
 
-        Agros2D::problem()->fieldInfo(QString((*i).first))->setLabelPolynomialOrder(label, (*i).second);
+        if ((order < 1) || (order > 10))
+            throw out_of_range(QObject::tr("Polynomial order '%1' is out of range (1 - 10).").arg(order).toStdString());
+
+        Agros2D::problem()->fieldInfo(field)->setLabelPolynomialOrder(label, order);
     }
 }
 
