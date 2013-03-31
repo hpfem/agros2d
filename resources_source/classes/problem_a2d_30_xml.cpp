@@ -117,28 +117,22 @@ namespace XMLProblem
     this->config_.set (x);
   }
 
-  const document::version_optional& document::
+  const document::version_type& document::
   version () const
   {
-    return this->version_;
+    return this->version_.get ();
   }
 
-  document::version_optional& document::
+  document::version_type& document::
   version ()
   {
-    return this->version_;
+    return this->version_.get ();
   }
 
   void document::
   version (const version_type& x)
   {
     this->version_.set (x);
-  }
-
-  void document::
-  version (const version_optional& x)
-  {
-    this->version_ = x;
   }
 
 
@@ -2229,24 +2223,26 @@ namespace XMLProblem
   document::
   document (const geometry_type& geometry,
             const problem_type& problem,
-            const config_type& config)
+            const config_type& config,
+            const version_type& version)
   : ::xml_schema::type (),
     geometry_ (geometry, ::xml_schema::flags (), this),
     problem_ (problem, ::xml_schema::flags (), this),
     config_ (config, ::xml_schema::flags (), this),
-    version_ (::xml_schema::flags (), this)
+    version_ (version, ::xml_schema::flags (), this)
   {
   }
 
   document::
   document (::std::auto_ptr< geometry_type >& geometry,
             ::std::auto_ptr< problem_type >& problem,
-            ::std::auto_ptr< config_type >& config)
+            ::std::auto_ptr< config_type >& config,
+            const version_type& version)
   : ::xml_schema::type (),
     geometry_ (geometry, ::xml_schema::flags (), this),
     problem_ (problem, ::xml_schema::flags (), this),
     config_ (config, ::xml_schema::flags (), this),
-    version_ (::xml_schema::flags (), this)
+    version_ (version, ::xml_schema::flags (), this)
   {
   }
 
@@ -2366,6 +2362,13 @@ namespace XMLProblem
         this->version_.set (version_traits::create (i, f, this));
         continue;
       }
+    }
+
+    if (!version_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "version",
+        "");
     }
   }
 
@@ -6144,11 +6147,7 @@ namespace XMLProblem
     o << ::std::endl << "geometry: " << i.geometry ();
     o << ::std::endl << "problem: " << i.problem ();
     o << ::std::endl << "config: " << i.config ();
-    if (i.version ())
-    {
-      o << ::std::endl << "version: " << *i.version ();
-    }
-
+    o << ::std::endl << "version: " << i.version ();
     return o;
   }
 
@@ -7032,14 +7031,13 @@ namespace XMLProblem
 
     // version
     //
-    if (i.version ())
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
           "version",
           e));
 
-      a << *i.version ();
+      a << i.version ();
     }
   }
 

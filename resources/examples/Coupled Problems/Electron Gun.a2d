@@ -1,190 +1,408 @@
-<?xml version="1.0" encoding="utf-8"?>
-<document version="2.1">
-    <geometry>
-        <nodes>
-            <node x="0" y="0" id="0"/>
-            <node x="0.01" y="0" id="1"/>
-            <node x="0.0175" y="0.015" id="2"/>
-            <node x="0.0175" y="0.0325" id="3"/>
-            <node x="0.02" y="0.0325" id="4"/>
-            <node x="0.02" y="0.0125" id="5"/>
-            <node x="0.0125" y="-0.0025" id="6"/>
-            <node x="0" y="-0.0025" id="7"/>
-            <node x="0.02" y="0.0375" id="8"/>
-            <node x="0.014375" y="0.036875" id="9"/>
-            <node x="0.01" y="0.0325" id="10"/>
-            <node x="0.0075" y="0.105" id="11"/>
-            <node x="0.01" y="0.105" id="12"/>
-            <node x="0.01" y="0.04" id="13"/>
-            <node x="0.02" y="0.04" id="14"/>
-            <node x="0" y="0.205" id="15"/>
-            <node x="0.1425" y="0.205" id="16"/>
-            <node x="0" y="-0.05" id="17"/>
-            <node x="0.1425" y="-0.05" id="18"/>
-            <node x="0.0125" y="0.04750000000000001" id="19"/>
-            <node x="0.0125" y="0.0625" id="20"/>
-            <node x="0.025" y="0.0625" id="21"/>
-            <node x="0.025" y="0.04750000000000001" id="22"/>
-            <node x="0.0125" y="0.0675" id="23"/>
-            <node x="0.028125" y="0.0675" id="24"/>
-            <node x="0.028125" y="0.08500000000000001" id="25"/>
-            <node x="0.0125" y="0.08500000000000001" id="26"/>
-            <node x="0.0125" y="0.1125" id="27"/>
-            <node x="0.0125" y="0.0925" id="28"/>
-            <node x="0.028125" y="0.0925" id="29"/>
-            <node x="0.028125" y="0.1125" id="30"/>
-            <node x="0.0075" y="0.033125" id="31"/>
-            <node x="0.008125" y="0.0325" id="32"/>
-            <node x="0.018125" y="0.033125" id="33"/>
-            <node x="0.019375" y="0.033125" id="34"/>
-            <node x="0.020625" y="0.038125" id="35"/>
-            <node x="0.020625" y="0.039375" id="36"/>
-            <node x="0.015625" y="0.0375" id="37"/>
-            <node x="0.01125" y="0.033125" id="38"/>
-        </nodes>
-        <edges>
-            <edge end="1" id="0" start="0" angle="0"/>
-            <edge end="6" id="1" start="7" angle="0"/>
-            <edge end="5" id="2" start="6" angle="0"/>
-            <edge end="1" id="3" start="2" angle="0"/>
-            <edge end="3" id="4" start="2" angle="0"/>
-            <edge end="5" id="5" start="4" angle="0"/>
-            <edge end="13" id="6" start="14" angle="0"/>
-            <edge end="12" id="7" start="13" angle="0"/>
-            <edge end="11" id="8" start="12" angle="0"/>
-            <edge end="16" id="9" start="15" angle="0"/>
-            <edge end="18" id="10" start="16" angle="0"/>
-            <edge end="17" id="11" start="18" angle="0"/>
-            <edge end="17" id="12" start="7" angle="0"/>
-            <edge end="15" id="13" start="0" angle="0"/>
-            <edge end="30" id="14" start="27" angle="0"/>
-            <edge end="29" id="15" start="30" angle="0"/>
-            <edge end="28" id="16" start="27" angle="0"/>
-            <edge end="29" id="17" start="28" angle="0"/>
-            <edge end="26" id="18" start="25" angle="0"/>
-            <edge end="23" id="19" start="26" angle="0"/>
-            <edge end="24" id="20" start="23" angle="0"/>
-            <edge end="24" id="21" start="25" angle="0"/>
-            <edge end="20" id="22" start="21" angle="0"/>
-            <edge end="19" id="23" start="20" angle="0"/>
-            <edge end="22" id="24" start="19" angle="0"/>
-            <edge end="22" id="25" start="21" angle="0"/>
-            <edge end="7" id="26" start="0" angle="0"/>
-            <edge end="31" id="27" start="11" angle="0"/>
-            <edge end="32" id="28" start="31" angle="90"/>
-            <edge end="10" id="29" start="32" angle="0"/>
-            <edge end="34" id="30" start="33" angle="0"/>
-            <edge end="34" id="31" start="4" angle="90"/>
-            <edge end="3" id="32" start="33" angle="90"/>
-            <edge end="9" id="33" start="37" angle="40"/>
-            <edge end="8" id="34" start="37" angle="0"/>
-            <edge end="35" id="35" start="8" angle="90"/>
-            <edge end="36" id="36" start="35" angle="0"/>
-            <edge end="14" id="37" start="36" angle="90"/>
-            <edge end="38" id="38" start="10" angle="50"/>
-            <edge end="9" id="39" start="38" angle="0"/>
-        </edges>
-        <labels>
-            <label x="0.009024400396361274" y="0.09586965215507907" id="0" area="0"/>
-            <label x="0.113751" y="-0.0199931" id="1" area="0"/>
-            <label x="0.0196829" y="0.101357" id="2" area="0"/>
-            <label x="0.01823034026424085" y="0.07931294273337662" id="3" area="0"/>
-            <label x="0.01872964026424085" y="0.05551554273337663" id="4" area="0"/>
-            <label x="0.0150981" y="0.00681121" id="5" area="0"/>
-        </labels>
-    </geometry>
-    <problem time_order="2" frequency="0" time_method="adaptive_numsteps" time_method_tolerance="0.1" matrix_solver="umfpack" coordinate_type="axisymmetric" mesh_type="triangle" time_steps="10" time_total="1">
-        <fields>
-            <field field_id="electrostatic" initial_condition="0" polynomial_order="2" number_of_refinements="1" time_skip="0" analysis_type="steadystate">
-                <refinement>
-                    <edges/>
-                    <labels/>
-                </refinement>
-                <polynomial_order/>
-                <adaptivity adaptivity_type="disabled" adaptivity_back_steps="1523" adaptivity_redone_each="1524" adaptivity_tolerance="1" adaptivity_steps="0"/>
-                <solver linearity_type="linear" picard_anderson_acceleration="1" newton_automatic_damping="1" picard_anderson_beta="0.2" picard_anderson_vectors="3" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
-                <boundaries>
-                    <boundary electrostatic_potential="0" type="electrostatic_potential" id="1" name="Anode">
-                        <edge edge="6"/>
-                        <edge edge="7"/>
-                        <edge edge="8"/>
-                        <edge edge="27"/>
-                        <edge edge="28"/>
-                        <edge edge="29"/>
-                        <edge edge="33"/>
-                        <edge edge="34"/>
-                        <edge edge="35"/>
-                        <edge edge="36"/>
-                        <edge edge="37"/>
-                        <edge edge="38"/>
-                        <edge edge="39"/>
-                    </boundary>
-                    <boundary electrostatic_potential="-7000" type="electrostatic_potential" id="2" name="Cathode">
-                        <edge edge="0"/>
-                        <edge edge="1"/>
-                        <edge edge="2"/>
-                        <edge edge="3"/>
-                        <edge edge="4"/>
-                        <edge edge="5"/>
-                        <edge edge="30"/>
-                        <edge edge="31"/>
-                        <edge edge="32"/>
-                    </boundary>
-                    <boundary type="electrostatic_surface_charge_density" id="3" name="Neumann" electrostatic_surface_charge_density="0">
-                        <edge edge="9"/>
-                        <edge edge="10"/>
-                        <edge edge="11"/>
-                        <edge edge="12"/>
-                        <edge edge="13"/>
-                        <edge edge="26"/>
-                    </boundary>
-                </boundaries>
-                <materials>
-                    <material id="1" electrostatic_charge_density="0" name="Air - electrostatic" electrostatic_permittivity="1">
-                        <label label="1"/>
-                        <label label="2"/>
-                        <label label="3"/>
-                        <label label="4"/>
-                    </material>
-                </materials>
-            </field>
-            <field field_id="magnetic" initial_condition="0" polynomial_order="2" number_of_refinements="1" time_skip="0" analysis_type="steadystate">
-                <refinement>
-                    <edges/>
-                    <labels/>
-                </refinement>
-                <polynomial_order/>
-                <adaptivity adaptivity_type="disabled" adaptivity_back_steps="100" adaptivity_redone_each="40" adaptivity_tolerance="1" adaptivity_steps="1"/>
-                <solver linearity_type="linear" picard_anderson_acceleration="1" newton_automatic_damping="1" picard_anderson_beta="0.2" picard_anderson_vectors="3" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
-                <boundaries>
-                    <boundary type="magnetic_potential" magnetic_potential_real="0" id="1" name="A = 0">
-                        <edge edge="9"/>
-                        <edge edge="10"/>
-                        <edge edge="11"/>
-                        <edge edge="12"/>
-                        <edge edge="13"/>
-                        <edge edge="26"/>
-                    </boundary>
-                </boundaries>
-                <materials>
-                    <material magnetic_current_density_external_real="0" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" id="1" magnetic_remanence_angle="0" name="Air - magnetostatic" magnetic_velocity_x="0" magnetic_velocity_y="0">
-                        <label label="0"/>
-                        <label label="1"/>
-                        <label label="5"/>
-                    </material>
-                    <material magnetic_current_density_external_real="2e7" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" id="2" magnetic_remanence_angle="0" name="Coil 1" magnetic_velocity_x="0" magnetic_velocity_y="0">
-                        <label label="4"/>
-                    </material>
-                    <material magnetic_current_density_external_real="2e7" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" id="3" magnetic_remanence_angle="0" name="Coil 2" magnetic_velocity_x="0" magnetic_velocity_y="0">
-                        <label label="3"/>
-                    </material>
-                    <material magnetic_current_density_external_real="2e7" magnetic_velocity_angular="0" magnetic_permeability="1" magnetic_conductivity="0" magnetic_remanence="0" id="4" magnetic_remanence_angle="0" name="Coil 3" magnetic_velocity_x="0" magnetic_velocity_y="0">
-                        <label label="2"/>
-                    </material>
-                </materials>
-            </field>
-        </fields>
-        <couplings/>
-    </problem>
-    <config View_ParticleMinimumStep="0.0004" View_MeshCurvilinearElements="1" View_ColorGrid_blue="200" View_ScalarRangeLog="0" View_ParticleMaximumNumberOfSteps="5000" View_ParticleShowBlendedFaces="1" View_ScalarDecimalPlace="2" View_ParticleShowPoints="0" View_OrderLabel="0" View_ColorContours_red="0" View_ParticleNumberOfParticles="1" View_ScalarView3DHeight="4" Adaptivity_MaxDofs="60000" View_ColorLabels_red="0" View_ColorGrid_red="200" View_ColorLabels_blue="0" View_SolidViewHide="" View_ColorEdges_blue="150" View_ParticleReflectOnBoundary="0" Adaptivity_Strategy="0" View_ColorEdges_green="0" View_VectorType="0" View_ColorBackground_blue="255" View_ColorInitialMesh_red="250" View_ColorCross_red="150" View_ColorVectors_blue="0" View_ShowScalarView="1" View_LinearizerQuality="normal" View_DeformScalar="1" View_ScalarRangeMax="5.684341886080801e-14" View_PaletteType="0" View_ShowPost3D="2" View_ShowVectorView="0" View_ParticleDragCoefficient="0" View_ParticleNumShowParticlesAxi="15" View_ColorContours_green="0" View_ScalarView3DBoundingBox="1" View_ChartHorizontalAxisReverse="0" View_ColorContours_blue="0" View_VectorProportional="1" View_ActiveField="electrostatic" View_ColorSolutionMesh_green="0" View_GridStep="0.000625" View_VectorNumber="100" View_ShowOrderView="1" View_MeshAngleSegmentsCount="3" View_ColorSolutionMesh_blue="0" View_EdgeWidth="2" View_ParticleCoefficientOfRestitution="0" Adaptivity_Threshold="0.3" Problem_Description="" View_ContoursCount="15" View_ColorVectors_green="0" View_OrderPaletteOrderType="0" Adaptivity_MeshRegularity="-1" View_VectorScale="0.8" View_ParticleMaximumRelativeError="0.01" Adaptivity_IsoOnly="0" View_ScalarView3DAngle="240" View_ChartHorizontalAxisPoints="200" View_ShowRulers="1" View_ShowContourView="0" View_ParticleStartingRadius="0" View_RulersFont="fontGoogleDroidMono10" View_ParticleMass="9.108999999999999e-31" View_ColorNodes_blue="0" View_ChartEndX="0" View_ChartEndY="0" View_PostFont="fontGoogleDroidMono14" View_ColorSolutionMesh_red="150" Adaptivity_ProjNormType="1" View_ScalarVariableComp="1" View_VectorVariable="electrostatic_electric_field" View_ParticleDragDensity="1.2041" View_ScalarView3DSolidGeometry="1" View_ColorLabels_green="150" View_ScalarView3DBackground="1" Adaptivity_FinerReference="0" View_ParticleColorByVelocity="1" View_ParticleIncludeRelativisticCorrection="1" Commands_Gmsh="%1 -2 &quot;%2.geo&quot;" View_ParticleStartVelocityX="0" View_PaletteSteps="30" View_ParticleStartVelocityY="0" View_ParticleCustomForceX="0" View_ParticleCustomForceY="0" View_ScalarRangeMin="-7000.000000000002" View_ParticleCustomForceZ="0" View_ColorVectors_red="0" View_VectorCenter="0" View_ShowSolutionMeshView="0" View_ChartTimeX="0" View_ChartTimeY="0" View_ContoursWidth="1" View_NodeSize="6" View_ColorCross_green="150" Adaptivity_ConvExp="1" View_ColorInitialMesh_blue="0" View_ParticleStartX="0.005" General_ZoomToMouse="1" View_ParticleStartY="0" View_ColorNodes_green="0" View_SnapToGrid="1" View_ScalarRangeAuto="1" View_VectorColor="1" View_ColorGrid_green="200" View_ParticleReflectOnDifferentMaterial="1" View_ParticleDragReferenceArea="1e-06" View_ParticleConstant="-1.602e-19" Problem_StartupScript="" Adaptivity_UseAniso="1" View_DeformContour="1" View_LabelSize="6" View_ColorInitialMesh_green="150" View_ColorCross_blue="150" View_ScalarView3DLighting="1" View_ShowAxes="1" View_ChartHorizontalAxis="0" View_ContourVariable="electrostatic_potential" View_ScalarVariable="electrostatic_potential" Commands_Triangle="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;" View_ShowScalarColorBar="1" View_ColorBackground_green="255" View_ShowInitialMeshView="1" View_ColorEdges_red="0" View_ColorNodes_red="150" View_DeformVector="1" View_PaletteFilter="0" View_ChartStartX="0" View_ChartStartY="0" View_ScalarRangeBase="10" View_ShowOrderColorBar="1" View_ColorBackground_red="255" View_ShowGrid="1"/>
-</document>
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<problem:document xmlns:problem="XMLProblem" version="3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_30_xml.xsd">
+
+  <geometry>
+    <nodes>
+      <node id="0" x="0" y="0"/>
+      <node id="1" x="0.01" y="0"/>
+      <node id="2" x="0.0175" y="0.015"/>
+      <node id="3" x="0.0175" y="0.0325"/>
+      <node id="4" x="0.02" y="0.0325"/>
+      <node id="5" x="0.02" y="0.0125"/>
+      <node id="6" x="0.0125" y="-0.0025"/>
+      <node id="7" x="0" y="-0.0025"/>
+      <node id="8" x="0.02" y="0.0375"/>
+      <node id="9" x="0.014375" y="0.036875"/>
+      <node id="10" x="0.01" y="0.0325"/>
+      <node id="11" x="0.0075" y="0.105"/>
+      <node id="12" x="0.01" y="0.105"/>
+      <node id="13" x="0.01" y="0.04"/>
+      <node id="14" x="0.02" y="0.04"/>
+      <node id="15" x="0" y="0.205"/>
+      <node id="16" x="0.1425" y="0.205"/>
+      <node id="17" x="0" y="-0.05"/>
+      <node id="18" x="0.1425" y="-0.05"/>
+      <node id="19" x="0.0125" y="0.0475"/>
+      <node id="20" x="0.0125" y="0.0625"/>
+      <node id="21" x="0.025" y="0.0625"/>
+      <node id="22" x="0.025" y="0.0475"/>
+      <node id="23" x="0.0125" y="0.0675"/>
+      <node id="24" x="0.028125" y="0.0675"/>
+      <node id="25" x="0.028125" y="0.085"/>
+      <node id="26" x="0.0125" y="0.085"/>
+      <node id="27" x="0.0125" y="0.1125"/>
+      <node id="28" x="0.0125" y="0.0925"/>
+      <node id="29" x="0.028125" y="0.0925"/>
+      <node id="30" x="0.028125" y="0.1125"/>
+      <node id="31" x="0.0075" y="0.033125"/>
+      <node id="32" x="0.008125" y="0.0325"/>
+      <node id="33" x="0.018125" y="0.033125"/>
+      <node id="34" x="0.019375" y="0.033125"/>
+      <node id="35" x="0.020625" y="0.038125"/>
+      <node id="36" x="0.020625" y="0.039375"/>
+      <node id="37" x="0.015625" y="0.0375"/>
+      <node id="38" x="0.01125" y="0.033125"/>
+    </nodes>
+    <edges>
+      <edge angle="0" end="1" id="0" start="0"/>
+      <edge angle="0" end="6" id="1" start="7"/>
+      <edge angle="0" end="5" id="2" start="6"/>
+      <edge angle="0" end="1" id="3" start="2"/>
+      <edge angle="0" end="3" id="4" start="2"/>
+      <edge angle="0" end="5" id="5" start="4"/>
+      <edge angle="0" end="13" id="6" start="14"/>
+      <edge angle="0" end="12" id="7" start="13"/>
+      <edge angle="0" end="11" id="8" start="12"/>
+      <edge angle="0" end="16" id="9" start="15"/>
+      <edge angle="0" end="18" id="10" start="16"/>
+      <edge angle="0" end="17" id="11" start="18"/>
+      <edge angle="0" end="17" id="12" start="7"/>
+      <edge angle="0" end="15" id="13" start="0"/>
+      <edge angle="0" end="30" id="14" start="27"/>
+      <edge angle="0" end="29" id="15" start="30"/>
+      <edge angle="0" end="28" id="16" start="27"/>
+      <edge angle="0" end="29" id="17" start="28"/>
+      <edge angle="0" end="26" id="18" start="25"/>
+      <edge angle="0" end="23" id="19" start="26"/>
+      <edge angle="0" end="24" id="20" start="23"/>
+      <edge angle="0" end="24" id="21" start="25"/>
+      <edge angle="0" end="20" id="22" start="21"/>
+      <edge angle="0" end="19" id="23" start="20"/>
+      <edge angle="0" end="22" id="24" start="19"/>
+      <edge angle="0" end="22" id="25" start="21"/>
+      <edge angle="0" end="7" id="26" start="0"/>
+      <edge angle="0" end="31" id="27" start="11"/>
+      <edge angle="90" end="32" id="28" start="31"/>
+      <edge angle="0" end="10" id="29" start="32"/>
+      <edge angle="0" end="34" id="30" start="33"/>
+      <edge angle="90" end="34" id="31" start="4"/>
+      <edge angle="90" end="3" id="32" start="33"/>
+      <edge angle="40" end="9" id="33" start="37"/>
+      <edge angle="0" end="8" id="34" start="37"/>
+      <edge angle="90" end="35" id="35" start="8"/>
+      <edge angle="0" end="36" id="36" start="35"/>
+      <edge angle="90" end="14" id="37" start="36"/>
+      <edge angle="50" end="38" id="38" start="10"/>
+      <edge angle="0" end="9" id="39" start="38"/>
+    </edges>
+    <labels>
+      <label area="0" id="0" x="0.0090244" y="0.0958697"/>
+      <label area="0" id="1" x="0.113751" y="-0.0199931"/>
+      <label area="0" id="2" x="0.0196829" y="0.101357"/>
+      <label area="0" id="3" x="0.0182303" y="0.0793129"/>
+      <label area="0" id="4" x="0.0187296" y="0.0555155"/>
+      <label area="0" id="5" x="0.0150981" y="0.00681121"/>
+    </labels>
+  </geometry>
+
+  <problem coordinate_type="axisymmetric" frequency="0" matrix_solver="umfpack" mesh_type="triangle" time_method="adaptive_numsteps" time_method_tolerance="0.1" time_order="2" time_steps="10" time_total="1">
+    <fields>
+      <field analysis_type="steadystate" field_id="electrostatic" initial_condition="0" number_of_refinements="1" polynomial_order="2" time_skip="0">
+        <refinement_edges/>
+        <refinement_labels/>
+        <polynomial_orders/>
+        <adaptivity adaptivity_back_steps="1523" adaptivity_redone_each="1524" adaptivity_steps="0" adaptivity_tolerance="1" adaptivity_type="disabled"/>
+        <solver linearity_type="linear" newton_automatic_damping="1" newton_automatic_damping_coeff="1" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.001" picard_anderson_acceleration="1" picard_anderson_beta="0.2" picard_anderson_vectors="3"/>
+        <boundaries>
+          <boundary id="1" name="Anode" type="electrostatic_potential">
+            <boundary_edges>
+              <boundary_edge id="6"/>
+              <boundary_edge id="7"/>
+              <boundary_edge id="8"/>
+              <boundary_edge id="27"/>
+              <boundary_edge id="28"/>
+              <boundary_edge id="29"/>
+              <boundary_edge id="33"/>
+              <boundary_edge id="34"/>
+              <boundary_edge id="35"/>
+              <boundary_edge id="36"/>
+              <boundary_edge id="37"/>
+              <boundary_edge id="38"/>
+              <boundary_edge id="39"/>
+            </boundary_edges>
+            <boundary_types>
+              <boundary_type key="electrostatic_potential" value="0"/>
+            </boundary_types>
+          </boundary>
+          <boundary id="2" name="Cathode" type="electrostatic_potential">
+            <boundary_edges>
+              <boundary_edge id="0"/>
+              <boundary_edge id="1"/>
+              <boundary_edge id="2"/>
+              <boundary_edge id="3"/>
+              <boundary_edge id="4"/>
+              <boundary_edge id="5"/>
+              <boundary_edge id="30"/>
+              <boundary_edge id="31"/>
+              <boundary_edge id="32"/>
+            </boundary_edges>
+            <boundary_types>
+              <boundary_type key="electrostatic_potential" value="-7000"/>
+            </boundary_types>
+          </boundary>
+          <boundary id="3" name="Neumann" type="electrostatic_surface_charge_density">
+            <boundary_edges>
+              <boundary_edge id="9"/>
+              <boundary_edge id="10"/>
+              <boundary_edge id="11"/>
+              <boundary_edge id="12"/>
+              <boundary_edge id="13"/>
+              <boundary_edge id="26"/>
+            </boundary_edges>
+            <boundary_types>
+              <boundary_type key="electrostatic_surface_charge_density" value="0"/>
+            </boundary_types>
+          </boundary>
+        </boundaries>
+        <materials>
+          <material id="4" name="Air - electrostatic">
+            <material_labels>
+              <material_label id="1"/>
+              <material_label id="2"/>
+              <material_label id="3"/>
+              <material_label id="4"/>
+            </material_labels>
+            <material_types>
+              <material_type key="electrostatic_charge_density" value="0"/>
+              <material_type key="electrostatic_permittivity" value="1"/>
+            </material_types>
+          </material>
+        </materials>
+      </field>
+      <field analysis_type="steadystate" field_id="magnetic" initial_condition="0" number_of_refinements="1" polynomial_order="2" time_skip="0">
+        <refinement_edges/>
+        <refinement_labels/>
+        <polynomial_orders/>
+        <adaptivity adaptivity_back_steps="100" adaptivity_redone_each="40" adaptivity_steps="1" adaptivity_tolerance="1" adaptivity_type="disabled"/>
+        <solver linearity_type="linear" newton_automatic_damping="1" newton_automatic_damping_coeff="0" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.001" picard_anderson_acceleration="1" picard_anderson_beta="0.2" picard_anderson_vectors="3"/>
+        <boundaries>
+          <boundary id="1" name="A = 0" type="magnetic_potential">
+            <boundary_edges>
+              <boundary_edge id="9"/>
+              <boundary_edge id="10"/>
+              <boundary_edge id="11"/>
+              <boundary_edge id="12"/>
+              <boundary_edge id="13"/>
+              <boundary_edge id="26"/>
+            </boundary_edges>
+            <boundary_types>
+              <boundary_type key="magnetic_potential_real" value="0"/>
+            </boundary_types>
+          </boundary>
+        </boundaries>
+        <materials>
+          <material id="2" name="Air - magnetostatic">
+            <material_labels>
+              <material_label id="0"/>
+              <material_label id="1"/>
+              <material_label id="5"/>
+            </material_labels>
+            <material_types>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
+              <material_type key="magnetic_conductivity" value="0"/>
+              <material_type key="magnetic_remanence" value="0"/>
+              <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_velocity_x" value="0"/>
+              <material_type key="magnetic_velocity_y" value="0"/>
+            </material_types>
+          </material>
+          <material id="2" name="Coil 1">
+            <material_labels>
+              <material_label id="4"/>
+            </material_labels>
+            <material_types>
+              <material_type key="magnetic_current_density_external_real" value="2e7"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
+              <material_type key="magnetic_conductivity" value="0"/>
+              <material_type key="magnetic_remanence" value="0"/>
+              <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_velocity_x" value="0"/>
+              <material_type key="magnetic_velocity_y" value="0"/>
+            </material_types>
+          </material>
+          <material id="2" name="Coil 2">
+            <material_labels>
+              <material_label id="3"/>
+            </material_labels>
+            <material_types>
+              <material_type key="magnetic_current_density_external_real" value="2e7"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
+              <material_type key="magnetic_conductivity" value="0"/>
+              <material_type key="magnetic_remanence" value="0"/>
+              <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_velocity_x" value="0"/>
+              <material_type key="magnetic_velocity_y" value="0"/>
+            </material_types>
+          </material>
+          <material id="2" name="Coil 3">
+            <material_labels>
+              <material_label id="2"/>
+            </material_labels>
+            <material_types>
+              <material_type key="magnetic_current_density_external_real" value="2e7"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
+              <material_type key="magnetic_conductivity" value="0"/>
+              <material_type key="magnetic_remanence" value="0"/>
+              <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_velocity_x" value="0"/>
+              <material_type key="magnetic_velocity_y" value="0"/>
+            </material_types>
+          </material>
+        </materials>
+      </field>
+    </fields>
+    <couplings/>
+  </problem>
+
+  <config>
+    <item key="Problem_StartupScript" value=""/>
+    <item key="Problem_Description" value=""/>
+    <item key="View_RulersFontFamily" value="Droid"/>
+    <item key="View_RulersFontPointSize" value="12"/>
+    <item key="View_PostFontFamily" value="Droid"/>
+    <item key="View_PostFontPointSize" value="16"/>
+    <item key="General_ZoomToMouse" value="1"/>
+    <item key="View_NodeSize" value="6"/>
+    <item key="View_EdgeWidth" value="2"/>
+    <item key="View_LabelSize" value="6"/>
+    <item key="View_ShowGrid" value="1"/>
+    <item key="View_GridStep" value="0.000625"/>
+    <item key="View_ShowRulers" value="1"/>
+    <item key="View_SnapToGrid" value="1"/>
+    <item key="View_ShowAxes" value="1"/>
+    <item key="View_ScalarView3DLighting" value="1"/>
+    <item key="View_ScalarView3DAngle" value="240"/>
+    <item key="View_ScalarView3DBackground" value="1"/>
+    <item key="View_ScalarView3DHeight" value="4"/>
+    <item key="View_ScalarView3DBoundingBox" value="1"/>
+    <item key="View_ScalarView3DSolidGeometry" value="1"/>
+    <item key="View_DeformScalar" value="1"/>
+    <item key="View_DeformContour" value="1"/>
+    <item key="View_DeformVector" value="1"/>
+    <item key="View_ColorBackground_red" value="255"/>
+    <item key="View_ColorBackground_green" value="255"/>
+    <item key="View_ColorBackground_blue" value="255"/>
+    <item key="View_ColorGrid_red" value="200"/>
+    <item key="View_ColorGrid_green" value="200"/>
+    <item key="View_ColorGrid_blue" value="200"/>
+    <item key="View_ColorCross_red" value="150"/>
+    <item key="View_ColorCross_green" value="150"/>
+    <item key="View_ColorCross_blue" value="150"/>
+    <item key="View_ColorNodes_red" value="150"/>
+    <item key="View_ColorNodes_green" value="0"/>
+    <item key="View_ColorNodes_blue" value="0"/>
+    <item key="View_ColorEdges_red" value="0"/>
+    <item key="View_ColorEdges_green" value="0"/>
+    <item key="View_ColorEdges_blue" value="150"/>
+    <item key="View_ColorLabels_red" value="0"/>
+    <item key="View_ColorLabels_green" value="150"/>
+    <item key="View_ColorLabels_blue" value="0"/>
+    <item key="View_ColorContours_red" value="0"/>
+    <item key="View_ColorContours_green" value="0"/>
+    <item key="View_ColorContours_blue" value="0"/>
+    <item key="View_ColorVectors_red" value="0"/>
+    <item key="View_ColorVectors_green" value="0"/>
+    <item key="View_ColorVectors_blue" value="0"/>
+    <item key="View_ColorInitialMesh_red" value="250"/>
+    <item key="View_ColorInitialMesh_green" value="150"/>
+    <item key="View_ColorInitialMesh_blue" value="0"/>
+    <item key="View_ColorSolutionMesh_red" value="150"/>
+    <item key="View_ColorSolutionMesh_green" value="0"/>
+    <item key="View_ColorSolutionMesh_blue" value="0"/>
+    <item key="View_ColorInitialMesh_red" value="250"/>
+    <item key="View_ColorInitialMesh_green" value="150"/>
+    <item key="View_ColorInitialMesh_blue" value="0"/>
+    <item key="View_ColorSolutionMesh_red" value="150"/>
+    <item key="View_ColorSolutionMesh_green" value="0"/>
+    <item key="View_ColorSolutionMesh_blue" value="0"/>
+    <item key="View_ActiveField" value="electrostatic"/>
+    <item key="View_ShowInitialMeshView" value="1"/>
+    <item key="View_ShowSolutionMeshView" value="0"/>
+    <item key="View_ShowPost3D" value="2"/>
+    <item key="View_ContourVariable" value="electrostatic_potential"/>
+    <item key="View_ShowContourView" value="0"/>
+    <item key="View_ContoursCount" value="15"/>
+    <item key="View_ContoursWidth" value="1"/>
+    <item key="View_ShowScalarView" value="1"/>
+    <item key="View_ShowScalarColorBar" value="1"/>
+    <item key="View_ScalarVariable" value="electrostatic_potential"/>
+    <item key="View_ScalarVariableComp" value="1"/>
+    <item key="View_PaletteType" value="0"/>
+    <item key="View_PaletteFilter" value="0"/>
+    <item key="View_PaletteSteps" value="30"/>
+    <item key="View_ScalarRangeLog" value="0"/>
+    <item key="View_ScalarRangeBase" value="10"/>
+    <item key="View_ScalarDecimalPlace" value="2"/>
+    <item key="View_ScalarRangeAuto" value="1"/>
+    <item key="View_ScalarRangeMin" value="-7000"/>
+    <item key="View_ScalarRangeMax" value="5.68434e-14"/>
+    <item key="View_ShowVectorView" value="0"/>
+    <item key="View_VectorVariable" value="electrostatic_electric_field"/>
+    <item key="View_VectorProportional" value="1"/>
+    <item key="View_VectorColor" value="1"/>
+    <item key="View_VectorNumber" value="100"/>
+    <item key="View_VectorScale" value="0.8"/>
+    <item key="View_VectorType" value="0"/>
+    <item key="View_VectorCenter" value="0"/>
+    <item key="View_ShowOrderView" value="1"/>
+    <item key="View_ShowOrderColorBar" value="1"/>
+    <item key="View_OrderPaletteOrderType" value="0"/>
+    <item key="View_OrderLabel" value="0"/>
+    <item key="View_ParticleButcherTableType" value="19"/>
+    <item key="View_ParticleIncludeRelativisticCorrection" value="1"/>
+    <item key="View_ParticleMass" value="9.109e-31"/>
+    <item key="View_ParticleConstant" value="-1.602e-19"/>
+    <item key="View_ParticleStartX" value="0.005"/>
+    <item key="View_ParticleStartY" value="0"/>
+    <item key="View_ParticleStartVelocityX" value="0"/>
+    <item key="View_ParticleStartVelocityY" value="0"/>
+    <item key="View_ParticleNumberOfParticles" value="1"/>
+    <item key="View_ParticleStartingRadius" value="0"/>
+    <item key="View_ParticleReflectOnDifferentMaterial" value="1"/>
+    <item key="View_ParticleReflectOnBoundary" value="0"/>
+    <item key="View_ParticleCoefficientOfRestitution" value="0"/>
+    <item key="View_ParticleMaximumRelativeError" value="0.01"/>
+    <item key="View_ParticleShowPoints" value="0"/>
+    <item key="View_ParticleShowBlendedFaces" value="1"/>
+    <item key="View_ParticleNumShowParticlesAxi" value="15"/>
+    <item key="View_ParticleColorByVelocity" value="1"/>
+    <item key="View_ParticleMaximumNumberOfSteps" value="5000"/>
+    <item key="View_ParticleMinimumStep" value="0.0004"/>
+    <item key="View_ParticleDragDensity" value="1.2041"/>
+    <item key="View_ParticleDragCoefficient" value="0"/>
+    <item key="View_ParticleDragReferenceArea" value="1e-06"/>
+    <item key="View_ParticleCustomForceX" value="0"/>
+    <item key="View_ParticleCustomForceY" value="0"/>
+    <item key="View_ParticleCustomForceZ" value="0"/>
+    <item key="View_ChartStartX" value="0"/>
+    <item key="View_ChartStartY" value="0"/>
+    <item key="View_ChartEndX" value="0"/>
+    <item key="View_ChartEndY" value="0"/>
+    <item key="View_ChartTimeX" value="0"/>
+    <item key="View_ChartTimeY" value="0"/>
+    <item key="View_ChartHorizontalAxis" value="0"/>
+    <item key="View_ChartHorizontalAxisReverse" value="0"/>
+    <item key="View_ChartHorizontalAxisPoints" value="200"/>
+    <item key="View_MeshAngleSegmentsCount" value="3"/>
+    <item key="View_MeshCurvilinearElements" value="1"/>
+    <item key="Adaptivity_MaxDofs" value="60000"/>
+    <item key="Adaptivity_IsoOnly" value="0"/>
+    <item key="Adaptivity_ConvExp" value="1"/>
+    <item key="Adaptivity_Threshold" value="0.3"/>
+    <item key="Adaptivity_Strategy" value="0"/>
+    <item key="Adaptivity_MeshRegularity" value="-1"/>
+    <item key="Adaptivity_ProjNormType" value="1"/>
+    <item key="Adaptivity_UseAniso" value="1"/>
+    <item key="Adaptivity_FinerReference" value="0"/>
+    <item key="View_LinearizerQuality" value="normal"/>
+    <item key="View_SolidViewHide" value=""/>
+    <item key="Commands_Triangle" value="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;"/>
+    <item key="Commands_Gmsh" value="%1 -2 &quot;%2.geo&quot;"/>
+  </config>
+
+</problem:document>

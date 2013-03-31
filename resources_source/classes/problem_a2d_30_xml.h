@@ -363,30 +363,28 @@ namespace XMLProblem
     // version
     // 
     typedef ::xml_schema::float_ version_type;
-    typedef ::xsd::cxx::tree::optional< version_type > version_optional;
     typedef ::xsd::cxx::tree::traits< version_type, char > version_traits;
 
-    const version_optional&
+    const version_type&
     version () const;
 
-    version_optional&
+    version_type&
     version ();
 
     void
     version (const version_type& x);
 
-    void
-    version (const version_optional& x);
-
     // Constructors.
     //
     document (const geometry_type&,
               const problem_type&,
-              const config_type&);
+              const config_type&,
+              const version_type&);
 
     document (::std::auto_ptr< geometry_type >&,
               ::std::auto_ptr< problem_type >&,
-              ::std::auto_ptr< config_type >&);
+              ::std::auto_ptr< config_type >&,
+              const version_type&);
 
     document (const ::xercesc::DOMElement& e,
               ::xml_schema::flags f = 0,
@@ -414,7 +412,7 @@ namespace XMLProblem
     ::xsd::cxx::tree::one< geometry_type > geometry_;
     ::xsd::cxx::tree::one< problem_type > problem_;
     ::xsd::cxx::tree::one< config_type > config_;
-    version_optional version_;
+    ::xsd::cxx::tree::one< version_type > version_;
   };
 
   class geometry: public ::xml_schema::type

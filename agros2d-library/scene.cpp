@@ -1517,8 +1517,15 @@ void Scene::readFromFile21(const QString &fileName)
 
 void Scene::readFromFile30(const QString &fileName)
 {
+    QFileInfo fileInfo(fileName);
+
     try
     {
+        clear();
+
+        Agros2D::problem()->config()->setFileName(fileName);
+        emit fileNameChanged(fileInfo.absoluteFilePath());
+
         blockSignals(true);
 
         // std::auto_ptr<XMLProblem::document> document_xsd = XMLProblem::document_((fileName + "3").toLatin1().data(), xml_schema::flags::dont_validate);
@@ -2069,6 +2076,8 @@ void Scene::writeToFile21(const QString &fileName)
 
 void Scene::writeToFile30(const QString &fileName)
 {
+    double version = 3.0;
+
     try
     {
         XMLProblem::fields fields;
@@ -2252,7 +2261,7 @@ void Scene::writeToFile30(const QString &fileName)
         // geometry
         XMLProblem::geometry geometry(nodes, edges, labels);
 
-        XMLProblem::document doc(geometry, problem, config);
+        XMLProblem::document doc(geometry, problem, config, version);
 
         std::string problem_schema_location("");
 

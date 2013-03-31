@@ -244,7 +244,7 @@
           </complexType>
         </element>
       </all>
-      <attribute name="version" type="float" />
+      <attribute name="version" type="float" use="required"/>
     </complexType>
   </element>
 </schema>

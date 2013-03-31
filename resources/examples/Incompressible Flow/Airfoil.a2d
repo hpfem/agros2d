@@ -1,151 +1,326 @@
-<?xml version="1.0" encoding="utf-8"?>
-<document version="2.1">
-    <geometry>
-        <nodes>
-            <node x="0.8848077530122079" y="-0.1236481776669303" id="0"/>
-            <node x="0.8375643194047672" y="-0.1036404796239434" id="1"/>
-            <node x="0.7899735894419928" y="-0.08560239708698093" id="2"/>
-            <node x="0.6947921295164438" y="-0.04952623201305596" id="3"/>
-            <node x="0.5994370214132275" y="-0.01443487469214316" id="4"/>
-            <node x="0.5039082651323445" y="0.01967167487575741" id="5"/>
-            <node x="0.4076849161407939" y="0.04983899343160912" id="6"/>
-            <node x="0.3104196780832417" y="0.07409746546938764" id="7"/>
-            <node x="0.2119389027820208" y="0.09146228323608066" id="8"/>
-            <node x="0.1117216457041307" y="0.09897902347265163" id="9"/>
-            <node x="0.0612136263565517" y="0.100472335759009" id="10"/>
-            <node x="0.009767906849571267" y="0.09664768617910049" id="11"/>
-            <node x="-0.01568579822853519" y="0.09626181340631516" id="12"/>
-            <node x="-0.04242449982137694" y="0.08858836326123948" id="13"/>
-            <node x="-0.06886799951218492" y="0.08258908629628454" id="14"/>
-            <node x="-0.08184726912528251" y="0.07950728925851697" id="15"/>
-            <node x="-0.09484219141506024" y="0.06501918912614464" id="16"/>
-            <node x="-0.08720368818988" y="0.05058685948759756" id="17"/>
-            <node x="-0.07537980617469481" y="0.04565879555832675" id="18"/>
-            <node x="-0.0507596123493896" y="0.04131759111665349" id="19"/>
-            <node x="-0.02613941852408441" y="0.03697638667498022" id="20"/>
-            <node x="-0.001519224698779201" y="0.03263518223330697" id="21"/>
-            <node x="0.04772116295183118" y="0.02395277334996045" id="22"/>
-            <node x="0.09730884695777552" y="0.01723997997263835" id="23"/>
-            <node x="0.1963973908808305" y="0.003321989341488057" id="24"/>
-            <node x="0.2951386384485518" y="-0.01256561679568668" id="25"/>
-            <node x="0.3937930619274395" y="-0.02894562680936752" id="26"/>
-            <node x="0.4922738372286602" y="-0.04631044457606052" id="27"/>
-            <node x="0.5905809643522141" y="-0.06466007009576577" id="28"/>
-            <node x="0.6887144432981011" y="-0.08399450336848326" id="29"/>
-            <node x="0.7866742740663211" y="-0.1043137443942129" id="30"/>
-            <node x="0.8355673653615975" y="-0.1149657687835838" id="31"/>
-            <node x="-1.500000000000001" y="-0.8500000000000001" id="32"/>
-            <node x="-1.500000000000001" y="0.8500000000000001" id="33"/>
-            <node x="5" y="0.85" id="34"/>
-            <node x="5" y="-0.85" id="35"/>
-        </nodes>
-        <edges>
-            <edge end="1" id="0" start="0" angle="0"/>
-            <edge end="2" id="1" start="1" angle="0"/>
-            <edge end="3" id="2" start="2" angle="0"/>
-            <edge end="4" id="3" start="3" angle="0"/>
-            <edge end="5" id="4" start="4" angle="0"/>
-            <edge end="6" id="5" start="5" angle="0"/>
-            <edge end="7" id="6" start="6" angle="0"/>
-            <edge end="8" id="7" start="7" angle="0"/>
-            <edge end="9" id="8" start="8" angle="0"/>
-            <edge end="10" id="9" start="9" angle="0"/>
-            <edge end="11" id="10" start="10" angle="0"/>
-            <edge end="12" id="11" start="11" angle="0"/>
-            <edge end="13" id="12" start="12" angle="0"/>
-            <edge end="14" id="13" start="13" angle="0"/>
-            <edge end="15" id="14" start="14" angle="5"/>
-            <edge end="16" id="15" start="15" angle="60"/>
-            <edge end="17" id="16" start="16" angle="60"/>
-            <edge end="18" id="17" start="17" angle="10"/>
-            <edge end="19" id="18" start="18" angle="0"/>
-            <edge end="20" id="19" start="19" angle="0"/>
-            <edge end="21" id="20" start="20" angle="0"/>
-            <edge end="22" id="21" start="21" angle="0"/>
-            <edge end="23" id="22" start="22" angle="0"/>
-            <edge end="24" id="23" start="23" angle="0"/>
-            <edge end="25" id="24" start="24" angle="0"/>
-            <edge end="26" id="25" start="25" angle="0"/>
-            <edge end="27" id="26" start="26" angle="0"/>
-            <edge end="28" id="27" start="27" angle="0"/>
-            <edge end="29" id="28" start="28" angle="0"/>
-            <edge end="30" id="29" start="29" angle="0"/>
-            <edge end="31" id="30" start="30" angle="0"/>
-            <edge end="0" id="31" start="31" angle="0"/>
-            <edge end="34" id="32" start="33" angle="0"/>
-            <edge end="35" id="33" start="34" angle="0"/>
-            <edge end="32" id="34" start="35" angle="0"/>
-            <edge end="32" id="35" start="33" angle="0"/>
-        </edges>
-        <labels>
-            <label x="0.2890205970000961" y="0.04072651952392475" id="0" area="0"/>
-            <label x="1.71743" y="0.461503" id="1" area="0"/>
-        </labels>
-    </geometry>
-    <problem time_order="1" frequency="0" time_method="fixed" time_method_tolerance="0.05" matrix_solver="umfpack" coordinate_type="planar" mesh_type="gmsh_quad" time_steps="2" time_total="1.0">
-        <fields>
-            <field field_id="flow" initial_condition="0" polynomial_order="2" number_of_refinements="1" time_skip="0" analysis_type="steadystate">
-                <refinement>
-                    <edges/>
-                    <labels/>
-                </refinement>
-                <polynomial_order/>
-                <adaptivity adaptivity_type="disabled" adaptivity_back_steps="0" adaptivity_redone_each="1" adaptivity_tolerance="1" adaptivity_steps="1"/>
-                <solver linearity_type="newton" newton_automatic_damping_coeff="0.8" picard_anderson_acceleration="1" newton_automatic_damping="1" picard_anderson_beta="0.2" picard_anderson_vectors="3" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.1"/>
-                <boundaries>
-                    <boundary type="flow_velocity" id="1" name="Inlet" flow_velocity_x="cos(y/0.85*pi/2)" flow_velocity_y="0">
-                        <edge edge="35"/>
-                    </boundary>
-                    <boundary type="flow_velocity" id="2" name="Wall" flow_velocity_x="0" flow_velocity_y="0">
-                        <edge edge="32"/>
-                        <edge edge="34"/>
-                    </boundary>
-                    <boundary type="flow_outlet" id="3" name="Outlet">
-                        <edge edge="33"/>
-                    </boundary>
-                    <boundary type="flow_velocity" id="4" name="Airfoil" flow_velocity_x="0" flow_velocity_y="0">
-                        <edge edge="0"/>
-                        <edge edge="1"/>
-                        <edge edge="2"/>
-                        <edge edge="3"/>
-                        <edge edge="4"/>
-                        <edge edge="5"/>
-                        <edge edge="6"/>
-                        <edge edge="7"/>
-                        <edge edge="8"/>
-                        <edge edge="9"/>
-                        <edge edge="10"/>
-                        <edge edge="11"/>
-                        <edge edge="12"/>
-                        <edge edge="13"/>
-                        <edge edge="14"/>
-                        <edge edge="15"/>
-                        <edge edge="16"/>
-                        <edge edge="17"/>
-                        <edge edge="18"/>
-                        <edge edge="19"/>
-                        <edge edge="20"/>
-                        <edge edge="21"/>
-                        <edge edge="22"/>
-                        <edge edge="23"/>
-                        <edge edge="24"/>
-                        <edge edge="25"/>
-                        <edge edge="26"/>
-                        <edge edge="27"/>
-                        <edge edge="28"/>
-                        <edge edge="29"/>
-                        <edge edge="30"/>
-                        <edge edge="31"/>
-                    </boundary>
-                </boundaries>
-                <materials>
-                    <material flow_density="1" flow_viscosity="0.001" id="1" flow_force_x="0" name="Air" flow_force_y="0">
-                        <label label="1"/>
-                    </material>
-                </materials>
-            </field>
-        </fields>
-        <couplings/>
-    </problem>
-    <config View_ParticleMinimumStep="0" View_MeshCurvilinearElements="1" View_ColorGrid_blue="200" View_ScalarRangeLog="0" View_ParticleMaximumNumberOfSteps="500" View_ParticleShowBlendedFaces="1" View_RulersFontFamily="Droid" View_ScalarDecimalPlace="2" View_ParticleShowPoints="0" View_OrderLabel="0" View_ColorContours_red="0" View_ParticleNumberOfParticles="1" View_ScalarView3DHeight="4" Adaptivity_MaxDofs="60000" View_ColorLabels_red="0" View_ColorGrid_red="200" View_ParticleButcherTableType="19" View_ColorLabels_blue="0" View_SolidViewHide="" View_ColorEdges_blue="150" View_ParticleReflectOnBoundary="0" Adaptivity_Strategy="0" View_ColorEdges_green="0" View_VectorType="0" View_ColorBackground_blue="255" View_ColorInitialMesh_red="250" View_ColorCross_red="150" View_ColorVectors_blue="0" View_ShowScalarView="1" View_LinearizerQuality="normal" View_DeformScalar="1" View_ScalarRangeMax="1.298957224761389" View_PaletteType="0" View_ShowPost3D="0" View_ShowVectorView="0" View_ParticleDragCoefficient="0" View_ParticleNumShowParticlesAxi="1" View_ColorContours_green="0" View_ScalarView3DBoundingBox="1" View_ChartHorizontalAxisReverse="0" View_ColorContours_blue="0" View_VectorProportional="1" View_ActiveField="" View_ColorSolutionMesh_green="0" View_GridStep="0.05" View_VectorNumber="50" View_PostFontFamily="Droid" View_ShowOrderView="1" View_MeshAngleSegmentsCount="3" View_ColorSolutionMesh_blue="0" View_EdgeWidth="2" View_ParticleCoefficientOfRestitution="0" Adaptivity_Threshold="0.3" Problem_Description="" View_ContoursCount="15" View_ColorVectors_green="0" View_OrderPaletteOrderType="0" Adaptivity_MeshRegularity="-1" View_VectorScale="0.6" View_ParticleMaximumRelativeError="0.01" Adaptivity_IsoOnly="0" View_ScalarView3DAngle="240" View_ChartHorizontalAxisPoints="200" View_ShowRulers="1" View_ShowContourView="0" View_ParticleStartingRadius="0" View_ParticleMass="9.108999999999999e-31" View_ColorNodes_blue="0" View_ChartEndX="0" View_ChartEndY="0" View_ColorSolutionMesh_red="150" Adaptivity_ProjNormType="1" View_ScalarVariableComp="2" View_VectorVariable="flow_velocity" View_ParticleDragDensity="1.2041" View_ScalarView3DSolidGeometry="1" View_RulersFontPointSize="12" View_ColorLabels_green="150" View_ScalarView3DBackground="1" View_ParticleColorByVelocity="1" Adaptivity_FinerReference="0" View_ParticleIncludeRelativisticCorrection="1" Commands_Gmsh="%1 -2 &quot;%2.geo&quot;" View_ParticleStartVelocityX="0" View_PaletteSteps="30" View_ParticleStartVelocityY="0" View_ParticleCustomForceX="0" View_ParticleCustomForceY="0" View_ScalarRangeMin="0" View_ParticleCustomForceZ="0" View_ColorVectors_red="0" View_VectorCenter="0" View_ShowSolutionMeshView="0" View_ChartTimeX="0" View_ChartTimeY="0" View_ContoursWidth="1" View_NodeSize="6" View_ColorCross_green="150" Adaptivity_ConvExp="1" View_ColorInitialMesh_blue="0" View_ParticleStartX="0" General_ZoomToMouse="1" View_ParticleStartY="0" View_ColorNodes_green="0" View_SnapToGrid="1" View_ScalarRangeAuto="1" View_VectorColor="1" View_ColorGrid_green="200" View_ParticleReflectOnDifferentMaterial="1" View_ParticleDragReferenceArea="1e-06" View_ParticleConstant="1.602e-19" Problem_StartupScript="" Adaptivity_UseAniso="1" View_DeformContour="1" View_LabelSize="6" View_ColorInitialMesh_green="150" View_ColorCross_blue="150" View_PostFontPointSize="16" View_ScalarView3DLighting="1" View_ShowAxes="1" View_ChartHorizontalAxis="0" View_ContourVariable="flow_velocity" View_ScalarVariable="flow_velocity" Commands_Triangle="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;" View_ShowScalarColorBar="1" View_ColorBackground_green="255" View_ShowInitialMeshView="1" View_ColorEdges_red="0" View_ColorNodes_red="150" View_DeformVector="1" View_PaletteFilter="0" View_ChartStartX="0" View_ChartStartY="0" View_ScalarRangeBase="10" View_ShowOrderColorBar="1" View_ColorBackground_red="255" View_ShowGrid="1"/>
-</document>
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<problem:document xmlns:problem="XMLProblem" version="3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_30_xml.xsd">
+
+  <geometry>
+    <nodes>
+      <node id="0" x="0.884808" y="-0.123648"/>
+      <node id="1" x="0.837564" y="-0.10364"/>
+      <node id="2" x="0.789974" y="-0.0856024"/>
+      <node id="3" x="0.694792" y="-0.0495262"/>
+      <node id="4" x="0.599437" y="-0.0144349"/>
+      <node id="5" x="0.503908" y="0.0196717"/>
+      <node id="6" x="0.407685" y="0.049839"/>
+      <node id="7" x="0.31042" y="0.0740975"/>
+      <node id="8" x="0.211939" y="0.0914623"/>
+      <node id="9" x="0.111722" y="0.098979"/>
+      <node id="10" x="0.0612136" y="0.100472"/>
+      <node id="11" x="0.00976791" y="0.0966477"/>
+      <node id="12" x="-0.0156858" y="0.0962618"/>
+      <node id="13" x="-0.0424245" y="0.0885884"/>
+      <node id="14" x="-0.068868" y="0.0825891"/>
+      <node id="15" x="-0.0818473" y="0.0795073"/>
+      <node id="16" x="-0.0948422" y="0.0650192"/>
+      <node id="17" x="-0.0872037" y="0.0505869"/>
+      <node id="18" x="-0.0753798" y="0.0456588"/>
+      <node id="19" x="-0.0507596" y="0.0413176"/>
+      <node id="20" x="-0.0261394" y="0.0369764"/>
+      <node id="21" x="-0.00151922" y="0.0326352"/>
+      <node id="22" x="0.0477212" y="0.0239528"/>
+      <node id="23" x="0.0973088" y="0.01724"/>
+      <node id="24" x="0.196397" y="0.00332199"/>
+      <node id="25" x="0.295139" y="-0.0125656"/>
+      <node id="26" x="0.393793" y="-0.0289456"/>
+      <node id="27" x="0.492274" y="-0.0463104"/>
+      <node id="28" x="0.590581" y="-0.0646601"/>
+      <node id="29" x="0.688714" y="-0.0839945"/>
+      <node id="30" x="0.786674" y="-0.104314"/>
+      <node id="31" x="0.835567" y="-0.114966"/>
+      <node id="32" x="-1.5" y="-0.85"/>
+      <node id="33" x="-1.5" y="0.85"/>
+      <node id="34" x="5" y="0.85"/>
+      <node id="35" x="5" y="-0.85"/>
+    </nodes>
+    <edges>
+      <edge angle="0" end="1" id="0" start="0"/>
+      <edge angle="0" end="2" id="1" start="1"/>
+      <edge angle="0" end="3" id="2" start="2"/>
+      <edge angle="0" end="4" id="3" start="3"/>
+      <edge angle="0" end="5" id="4" start="4"/>
+      <edge angle="0" end="6" id="5" start="5"/>
+      <edge angle="0" end="7" id="6" start="6"/>
+      <edge angle="0" end="8" id="7" start="7"/>
+      <edge angle="0" end="9" id="8" start="8"/>
+      <edge angle="0" end="10" id="9" start="9"/>
+      <edge angle="0" end="11" id="10" start="10"/>
+      <edge angle="0" end="12" id="11" start="11"/>
+      <edge angle="0" end="13" id="12" start="12"/>
+      <edge angle="0" end="14" id="13" start="13"/>
+      <edge angle="5" end="15" id="14" start="14"/>
+      <edge angle="60" end="16" id="15" start="15"/>
+      <edge angle="60" end="17" id="16" start="16"/>
+      <edge angle="10" end="18" id="17" start="17"/>
+      <edge angle="0" end="19" id="18" start="18"/>
+      <edge angle="0" end="20" id="19" start="19"/>
+      <edge angle="0" end="21" id="20" start="20"/>
+      <edge angle="0" end="22" id="21" start="21"/>
+      <edge angle="0" end="23" id="22" start="22"/>
+      <edge angle="0" end="24" id="23" start="23"/>
+      <edge angle="0" end="25" id="24" start="24"/>
+      <edge angle="0" end="26" id="25" start="25"/>
+      <edge angle="0" end="27" id="26" start="26"/>
+      <edge angle="0" end="28" id="27" start="27"/>
+      <edge angle="0" end="29" id="28" start="28"/>
+      <edge angle="0" end="30" id="29" start="29"/>
+      <edge angle="0" end="31" id="30" start="30"/>
+      <edge angle="0" end="0" id="31" start="31"/>
+      <edge angle="0" end="34" id="32" start="33"/>
+      <edge angle="0" end="35" id="33" start="34"/>
+      <edge angle="0" end="32" id="34" start="35"/>
+      <edge angle="0" end="32" id="35" start="33"/>
+    </edges>
+    <labels>
+      <label area="0" id="0" x="0.289021" y="0.0407265"/>
+      <label area="0" id="1" x="1.71743" y="0.461503"/>
+    </labels>
+  </geometry>
+
+  <problem coordinate_type="planar" frequency="0" matrix_solver="umfpack" mesh_type="gmsh_quad" time_method="fixed" time_method_tolerance="0.05" time_order="1" time_steps="2" time_total="1">
+    <fields>
+      <field analysis_type="steadystate" field_id="flow" initial_condition="0" number_of_refinements="1" polynomial_order="2" time_skip="0">
+        <refinement_edges/>
+        <refinement_labels/>
+        <polynomial_orders/>
+        <adaptivity adaptivity_back_steps="0" adaptivity_redone_each="1" adaptivity_steps="1" adaptivity_tolerance="1" adaptivity_type="disabled"/>
+        <solver linearity_type="newton" newton_automatic_damping="1" newton_automatic_damping_coeff="0" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.1" picard_anderson_acceleration="1" picard_anderson_beta="0.2" picard_anderson_vectors="3"/>
+        <boundaries>
+          <boundary id="1" name="Inlet" type="flow_velocity">
+            <boundary_edges>
+              <boundary_edge id="35"/>
+            </boundary_edges>
+            <boundary_types>
+              <boundary_type key="flow_velocity_x" value="cos(y/0.85*pi/2)"/>
+              <boundary_type key="flow_velocity_y" value="0"/>
+            </boundary_types>
+          </boundary>
+          <boundary id="2" name="Wall" type="flow_velocity">
+            <boundary_edges>
+              <boundary_edge id="32"/>
+              <boundary_edge id="34"/>
+            </boundary_edges>
+            <boundary_types>
+              <boundary_type key="flow_velocity_x" value="0"/>
+              <boundary_type key="flow_velocity_y" value="0"/>
+            </boundary_types>
+          </boundary>
+          <boundary id="3" name="Outlet" type="flow_outlet">
+            <boundary_edges>
+              <boundary_edge id="33"/>
+            </boundary_edges>
+            <boundary_types/>
+          </boundary>
+          <boundary id="4" name="Airfoil" type="flow_velocity">
+            <boundary_edges>
+              <boundary_edge id="0"/>
+              <boundary_edge id="1"/>
+              <boundary_edge id="2"/>
+              <boundary_edge id="3"/>
+              <boundary_edge id="4"/>
+              <boundary_edge id="5"/>
+              <boundary_edge id="6"/>
+              <boundary_edge id="7"/>
+              <boundary_edge id="8"/>
+              <boundary_edge id="9"/>
+              <boundary_edge id="10"/>
+              <boundary_edge id="11"/>
+              <boundary_edge id="12"/>
+              <boundary_edge id="13"/>
+              <boundary_edge id="14"/>
+              <boundary_edge id="15"/>
+              <boundary_edge id="16"/>
+              <boundary_edge id="17"/>
+              <boundary_edge id="18"/>
+              <boundary_edge id="19"/>
+              <boundary_edge id="20"/>
+              <boundary_edge id="21"/>
+              <boundary_edge id="22"/>
+              <boundary_edge id="23"/>
+              <boundary_edge id="24"/>
+              <boundary_edge id="25"/>
+              <boundary_edge id="26"/>
+              <boundary_edge id="27"/>
+              <boundary_edge id="28"/>
+              <boundary_edge id="29"/>
+              <boundary_edge id="30"/>
+              <boundary_edge id="31"/>
+            </boundary_edges>
+            <boundary_types>
+              <boundary_type key="flow_velocity_x" value="0"/>
+              <boundary_type key="flow_velocity_y" value="0"/>
+            </boundary_types>
+          </boundary>
+        </boundaries>
+        <materials>
+          <material id="5" name="Air">
+            <material_labels>
+              <material_label id="1"/>
+            </material_labels>
+            <material_types>
+              <material_type key="flow_density" value="1"/>
+              <material_type key="flow_viscosity" value="0.001"/>
+              <material_type key="flow_force_x" value="0"/>
+              <material_type key="flow_force_y" value="0"/>
+            </material_types>
+          </material>
+        </materials>
+      </field>
+    </fields>
+    <couplings/>
+  </problem>
+
+  <config>
+    <item key="Problem_StartupScript" value=""/>
+    <item key="Problem_Description" value=""/>
+    <item key="View_RulersFontFamily" value="Droid"/>
+    <item key="View_RulersFontPointSize" value="12"/>
+    <item key="View_PostFontFamily" value="Droid"/>
+    <item key="View_PostFontPointSize" value="16"/>
+    <item key="General_ZoomToMouse" value="1"/>
+    <item key="View_NodeSize" value="6"/>
+    <item key="View_EdgeWidth" value="2"/>
+    <item key="View_LabelSize" value="6"/>
+    <item key="View_ShowGrid" value="1"/>
+    <item key="View_GridStep" value="0.05"/>
+    <item key="View_ShowRulers" value="1"/>
+    <item key="View_SnapToGrid" value="1"/>
+    <item key="View_ShowAxes" value="1"/>
+    <item key="View_ScalarView3DLighting" value="1"/>
+    <item key="View_ScalarView3DAngle" value="240"/>
+    <item key="View_ScalarView3DBackground" value="1"/>
+    <item key="View_ScalarView3DHeight" value="4"/>
+    <item key="View_ScalarView3DBoundingBox" value="1"/>
+    <item key="View_ScalarView3DSolidGeometry" value="1"/>
+    <item key="View_DeformScalar" value="1"/>
+    <item key="View_DeformContour" value="1"/>
+    <item key="View_DeformVector" value="1"/>
+    <item key="View_ColorBackground_red" value="255"/>
+    <item key="View_ColorBackground_green" value="255"/>
+    <item key="View_ColorBackground_blue" value="255"/>
+    <item key="View_ColorGrid_red" value="200"/>
+    <item key="View_ColorGrid_green" value="200"/>
+    <item key="View_ColorGrid_blue" value="200"/>
+    <item key="View_ColorCross_red" value="150"/>
+    <item key="View_ColorCross_green" value="150"/>
+    <item key="View_ColorCross_blue" value="150"/>
+    <item key="View_ColorNodes_red" value="150"/>
+    <item key="View_ColorNodes_green" value="0"/>
+    <item key="View_ColorNodes_blue" value="0"/>
+    <item key="View_ColorEdges_red" value="0"/>
+    <item key="View_ColorEdges_green" value="0"/>
+    <item key="View_ColorEdges_blue" value="150"/>
+    <item key="View_ColorLabels_red" value="0"/>
+    <item key="View_ColorLabels_green" value="150"/>
+    <item key="View_ColorLabels_blue" value="0"/>
+    <item key="View_ColorContours_red" value="0"/>
+    <item key="View_ColorContours_green" value="0"/>
+    <item key="View_ColorContours_blue" value="0"/>
+    <item key="View_ColorVectors_red" value="0"/>
+    <item key="View_ColorVectors_green" value="0"/>
+    <item key="View_ColorVectors_blue" value="0"/>
+    <item key="View_ColorInitialMesh_red" value="250"/>
+    <item key="View_ColorInitialMesh_green" value="150"/>
+    <item key="View_ColorInitialMesh_blue" value="0"/>
+    <item key="View_ColorSolutionMesh_red" value="150"/>
+    <item key="View_ColorSolutionMesh_green" value="0"/>
+    <item key="View_ColorSolutionMesh_blue" value="0"/>
+    <item key="View_ColorInitialMesh_red" value="250"/>
+    <item key="View_ColorInitialMesh_green" value="150"/>
+    <item key="View_ColorInitialMesh_blue" value="0"/>
+    <item key="View_ColorSolutionMesh_red" value="150"/>
+    <item key="View_ColorSolutionMesh_green" value="0"/>
+    <item key="View_ColorSolutionMesh_blue" value="0"/>
+    <item key="View_ActiveField" value=""/>
+    <item key="View_ShowInitialMeshView" value="1"/>
+    <item key="View_ShowSolutionMeshView" value="0"/>
+    <item key="View_ShowPost3D" value="0"/>
+    <item key="View_ContourVariable" value="flow_velocity"/>
+    <item key="View_ShowContourView" value="0"/>
+    <item key="View_ContoursCount" value="15"/>
+    <item key="View_ContoursWidth" value="1"/>
+    <item key="View_ShowScalarView" value="1"/>
+    <item key="View_ShowScalarColorBar" value="1"/>
+    <item key="View_ScalarVariable" value="flow_velocity"/>
+    <item key="View_ScalarVariableComp" value="2"/>
+    <item key="View_PaletteType" value="0"/>
+    <item key="View_PaletteFilter" value="0"/>
+    <item key="View_PaletteSteps" value="30"/>
+    <item key="View_ScalarRangeLog" value="0"/>
+    <item key="View_ScalarRangeBase" value="10"/>
+    <item key="View_ScalarDecimalPlace" value="2"/>
+    <item key="View_ScalarRangeAuto" value="1"/>
+    <item key="View_ScalarRangeMin" value="0"/>
+    <item key="View_ScalarRangeMax" value="1.29896"/>
+    <item key="View_ShowVectorView" value="0"/>
+    <item key="View_VectorVariable" value="flow_velocity"/>
+    <item key="View_VectorProportional" value="1"/>
+    <item key="View_VectorColor" value="1"/>
+    <item key="View_VectorNumber" value="50"/>
+    <item key="View_VectorScale" value="0.6"/>
+    <item key="View_VectorType" value="0"/>
+    <item key="View_VectorCenter" value="0"/>
+    <item key="View_ShowOrderView" value="1"/>
+    <item key="View_ShowOrderColorBar" value="1"/>
+    <item key="View_OrderPaletteOrderType" value="0"/>
+    <item key="View_OrderLabel" value="0"/>
+    <item key="View_ParticleButcherTableType" value="19"/>
+    <item key="View_ParticleIncludeRelativisticCorrection" value="1"/>
+    <item key="View_ParticleMass" value="9.109e-31"/>
+    <item key="View_ParticleConstant" value="1.602e-19"/>
+    <item key="View_ParticleStartX" value="0"/>
+    <item key="View_ParticleStartY" value="0"/>
+    <item key="View_ParticleStartVelocityX" value="0"/>
+    <item key="View_ParticleStartVelocityY" value="0"/>
+    <item key="View_ParticleNumberOfParticles" value="1"/>
+    <item key="View_ParticleStartingRadius" value="0"/>
+    <item key="View_ParticleReflectOnDifferentMaterial" value="1"/>
+    <item key="View_ParticleReflectOnBoundary" value="0"/>
+    <item key="View_ParticleCoefficientOfRestitution" value="0"/>
+    <item key="View_ParticleMaximumRelativeError" value="0.01"/>
+    <item key="View_ParticleShowPoints" value="0"/>
+    <item key="View_ParticleShowBlendedFaces" value="1"/>
+    <item key="View_ParticleNumShowParticlesAxi" value="1"/>
+    <item key="View_ParticleColorByVelocity" value="1"/>
+    <item key="View_ParticleMaximumNumberOfSteps" value="500"/>
+    <item key="View_ParticleMinimumStep" value="0"/>
+    <item key="View_ParticleDragDensity" value="1.2041"/>
+    <item key="View_ParticleDragCoefficient" value="0"/>
+    <item key="View_ParticleDragReferenceArea" value="1e-06"/>
+    <item key="View_ParticleCustomForceX" value="0"/>
+    <item key="View_ParticleCustomForceY" value="0"/>
+    <item key="View_ParticleCustomForceZ" value="0"/>
+    <item key="View_ChartStartX" value="0"/>
+    <item key="View_ChartStartY" value="0"/>
+    <item key="View_ChartEndX" value="0"/>
+    <item key="View_ChartEndY" value="0"/>
+    <item key="View_ChartTimeX" value="0"/>
+    <item key="View_ChartTimeY" value="0"/>
+    <item key="View_ChartHorizontalAxis" value="0"/>
+    <item key="View_ChartHorizontalAxisReverse" value="0"/>
+    <item key="View_ChartHorizontalAxisPoints" value="200"/>
+    <item key="View_MeshAngleSegmentsCount" value="3"/>
+    <item key="View_MeshCurvilinearElements" value="1"/>
+    <item key="Adaptivity_MaxDofs" value="60000"/>
+    <item key="Adaptivity_IsoOnly" value="0"/>
+    <item key="Adaptivity_ConvExp" value="1"/>
+    <item key="Adaptivity_Threshold" value="0.3"/>
+    <item key="Adaptivity_Strategy" value="0"/>
+    <item key="Adaptivity_MeshRegularity" value="-1"/>
+    <item key="Adaptivity_ProjNormType" value="1"/>
+    <item key="Adaptivity_UseAniso" value="1"/>
+    <item key="Adaptivity_FinerReference" value="0"/>
+    <item key="View_LinearizerQuality" value="normal"/>
+    <item key="View_SolidViewHide" value=""/>
+    <item key="Commands_Triangle" value="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;"/>
+    <item key="Commands_Gmsh" value="%1 -2 &quot;%2.geo&quot;"/>
+  </config>
+
+</problem:document>
