@@ -60,15 +60,15 @@ class PyProblem
         void setTimeMethodOrder(const int timeMethodOrder);
 
         // time method tolerance
-        inline double getTimeMethodTolerance() { return Agros2D::problem()->config()->timeMethodTolerance().number(); }
+        inline double getTimeMethodTolerance() { return Agros2D::problem()->config()->timeMethodTolerance(); }
         void setTimeMethodTolerance(const double timeMethodTolerance);
 
         // time total
-        inline double getTimeTotal() { return Agros2D::problem()->config()->timeTotal().number(); }
+        inline double getTimeTotal() { return Agros2D::problem()->config()->timeTotal(); }
         void setTimeTotal(const double timeTotal);
 
         // time steps
-        inline int getNumConstantTimeSteps() { return Agros2D::problem()->config()->numConstantTimeSteps(); }
+        inline int getNumConstantTimeSteps() { return Agros2D::problem()->config()->timeNumConstantTimeSteps(); }
         void setNumConstantTimeSteps(const int timeSteps);
 
         // coupling

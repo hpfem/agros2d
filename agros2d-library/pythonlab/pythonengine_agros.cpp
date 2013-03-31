@@ -219,17 +219,17 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                        "problem.time_total = %3\n").
                 arg(timeStepMethodToStringKey(Agros2D::problem()->config()->timeStepMethod())).
                 arg(Agros2D::problem()->config()->timeOrder()).
-                arg(Agros2D::problem()->config()->timeTotal().toString());
+                arg(Agros2D::problem()->config()->timeTotal());
 
         if (Agros2D::problem()->config()->timeStepMethod() == TimeStepMethod_BDFTolerance)
         {
             str += QString("problem.time_method_tolerance = %3\n").
-                    arg(Agros2D::problem()->config()->timeMethodTolerance().toString());
+                    arg(Agros2D::problem()->config()->timeMethodTolerance());
         }
         else
         {
             str += QString("problem.time_steps = %5\n").
-                    arg(Agros2D::problem()->config()->numConstantTimeSteps());
+                    arg(Agros2D::problem()->config()->timeNumConstantTimeSteps());
         }
     }
 

@@ -30,6 +30,11 @@ class CouplingInfo;
 class Field;
 class Problem;
 
+namespace XMLProblem
+{
+    class config;
+}
+
 class ProblemConfig : public QObject
 {
     Q_OBJECT
@@ -54,13 +59,13 @@ public:
     void setFrequency(const double frequency) { m_frequency = frequency; emit changed(); }
 
     // transient problem
-    inline int numConstantTimeSteps() const { return m_numConstantTimeSteps; }
-    void setNumConstantTimeSteps(const int numConstantTimeSteps) { m_numConstantTimeSteps = numConstantTimeSteps; emit changed(); }
+    inline int timeNumConstantTimeSteps() const { return m_timeNumConstantTimeSteps; }
+    void setTimeNumConstantTimeSteps(const int numConstantTimeSteps) { m_timeNumConstantTimeSteps = numConstantTimeSteps; emit changed(); }
 
-    inline Value timeTotal() const { return m_timeTotal; }
-    void setTimeTotal(const Value &timeTotal) { m_timeTotal = timeTotal; emit changed(); }
+    inline double timeTotal() const { return m_timeTotal; }
+    void setTimeTotal(double timeTotal) { m_timeTotal = timeTotal; emit changed(); }
 
-    inline double constantTimeStepLength() { return m_timeTotal.number() / m_numConstantTimeSteps; }
+    inline double constantTimeStepLength() { return m_timeTotal / m_timeNumConstantTimeSteps; }
     double initialTimeStepLength();
 
     inline TimeStepMethod timeStepMethod() const {return m_timeStepMethod; }
@@ -70,8 +75,8 @@ public:
     int timeOrder() const { return m_timeOrder; }
     void setTimeOrder(int timeOrder) {m_timeOrder = timeOrder; }
 
-    inline Value timeMethodTolerance() const { return m_timeMethodTolerance; }
-    void setTimeMethodTolerance(Value timeMethodTolerance) {m_timeMethodTolerance = timeMethodTolerance; }
+    inline double timeMethodTolerance() const { return m_timeMethodTolerance; }
+    void setTimeMethodTolerance(double timeMethodTolerance) {m_timeMethodTolerance = timeMethodTolerance; }
 
     // matrix
     inline Hermes::MatrixSolverType matrixSolver() const { return m_matrixSolver; }
@@ -94,11 +99,11 @@ private:
     double m_frequency;
 
     // transient
-    Value m_timeTotal;
-    int m_numConstantTimeSteps;
+    double m_timeTotal;
+    int m_timeNumConstantTimeSteps;
     TimeStepMethod m_timeStepMethod;
     int m_timeOrder;
-    Value m_timeMethodTolerance;
+    double m_timeMethodTolerance;
 
     // matrix solver
     Hermes::MatrixSolverType m_matrixSolver;
@@ -280,13 +285,14 @@ public:
     QString commandTriangle;
     QString commandGmsh;
 
-    void load(QDomElement *config);
-    void save(QDomElement *config);
+    void load(QDomElement *config, XMLProblem::config *configxsd);
+    void save(QDomElement *config, XMLProblem::config *configxsd);
 
     void clear();
 
 private:
     QDomElement *eleConfig;
+    XMLProblem::config *configxsd;
 
     bool readConfig(const QString &key, bool defaultValue);
     int readConfig(const QString &key, int defaultValue);

@@ -81,7 +81,7 @@ void PyProblem::setTimeMethodOrder(const int timeMethodOrder)
 void PyProblem::setTimeMethodTolerance(const double timeMethodTolerance)
 {
     if (timeMethodTolerance > 0.0)
-        Agros2D::problem()->config()->setTimeMethodTolerance(Value(QString::number(timeMethodTolerance)));
+        Agros2D::problem()->config()->setTimeMethodTolerance(timeMethodTolerance);
     else
         throw out_of_range(QObject::tr("The time method tolerance must be positive.").toStdString());
 }
@@ -89,7 +89,7 @@ void PyProblem::setTimeMethodTolerance(const double timeMethodTolerance)
 void PyProblem::setNumConstantTimeSteps(const int timeSteps)
 {
     if (timeSteps >= 1)
-        Agros2D::problem()->config()->setNumConstantTimeSteps(timeSteps);
+        Agros2D::problem()->config()->setTimeNumConstantTimeSteps(timeSteps);
     else
         throw out_of_range(QObject::tr("Number of time steps must be greater then 1.").toStdString());
 }
@@ -97,7 +97,7 @@ void PyProblem::setNumConstantTimeSteps(const int timeSteps)
 void PyProblem::setTimeTotal(const double timeTotal)
 {
     if (timeTotal >= 0.0)
-        Agros2D::problem()->config()->setTimeTotal(Value(QString::number(timeTotal)));
+        Agros2D::problem()->config()->setTimeTotal(timeTotal);
     else
         throw out_of_range(QObject::tr("The total time must be positive.").toStdString());
 }

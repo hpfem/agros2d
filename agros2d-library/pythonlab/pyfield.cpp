@@ -211,10 +211,10 @@ void PyField::setInitialCondition(const double initialCondition)
 
 void PyField::setTimeSkip(const double timeSkip)
 {
-    if (timeSkip >= 0 && timeSkip <= Agros2D::problem()->config()->timeTotal().number())
+    if (timeSkip >= 0 && timeSkip <= Agros2D::problem()->config()->timeTotal())
         Agros2D::problem()->fieldInfo(m_fieldInfo->fieldId())->setTimeSkip(timeSkip);
     else
-        throw out_of_range(QObject::tr("Time skip is out of range (0 - %1).").arg(Agros2D::problem()->config()->timeTotal().number()).toStdString());
+        throw out_of_range(QObject::tr("Time skip is out of range (0 - %1).").arg(Agros2D::problem()->config()->timeTotal()).toStdString());
 }
 
 void PyField::addBoundary(const char *name, const char *type, map<char*, double> parameters, map<char *, char *> expressions)

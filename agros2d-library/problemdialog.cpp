@@ -1001,10 +1001,10 @@ void ProblemWidget::updateControls()
 
     // transient
     grpTransientAnalysis->setVisible(Agros2D::problem()->isTransient());
-    txtTransientSteps->setValue(Agros2D::problem()->config()->numConstantTimeSteps());
+    txtTransientSteps->setValue(Agros2D::problem()->config()->timeNumConstantTimeSteps());
     // txtTransientTimeStep->setEnabled(Agros2D::problem()->isTransient());
-    txtTransientTimeTotal->setValue(Agros2D::problem()->config()->timeTotal().number());
-    txtTransientTolerance->setValue(Agros2D::problem()->config()->timeMethodTolerance().number());
+    txtTransientTimeTotal->setValue(Agros2D::problem()->config()->timeTotal());
+    txtTransientTolerance->setValue(Agros2D::problem()->config()->timeMethodTolerance());
     // txtTransientTimeTotal->setEnabled(Agros2D::problem()->isTransient());
     txtTransientOrder->setValue(Agros2D::problem()->config()->timeOrder());
     cmbTransientMethod->setCurrentIndex(cmbTransientMethod->findData(Agros2D::problem()->config()->timeStepMethod()));
@@ -1055,7 +1055,7 @@ void ProblemWidget::changedWithClear()
     Agros2D::problem()->config()->setTimeStepMethod((TimeStepMethod) cmbTransientMethod->itemData(cmbTransientMethod->currentIndex()).toInt());
     Agros2D::problem()->config()->setTimeOrder(txtTransientOrder->value());
     Agros2D::problem()->config()->setTimeMethodTolerance(txtTransientTolerance->value());
-    Agros2D::problem()->config()->setNumConstantTimeSteps(txtTransientSteps->value());
+    Agros2D::problem()->config()->setTimeNumConstantTimeSteps(txtTransientSteps->value());
     Agros2D::problem()->config()->setTimeTotal(txtTransientTimeTotal->value());
 
     // matrix solver

@@ -670,7 +670,6 @@ void SolutionStore::saveRunTimeDetails()
 
         std::string mesh_schema_location("");
 
-        // TODO: set path more general
         mesh_schema_location.append(QString("%1/agros2d_structure_xml.xsd").arg(QFileInfo(datadir() + XSDROOT).absoluteFilePath()).toStdString());
         ::xml_schema::namespace_info namespace_info_mesh("XMLStructure", mesh_schema_location);
 

@@ -39,6 +39,8 @@
 #include "meshgenerator_gmsh.h"
 #include "logview.h"
 
+#include "../resources_source/classes/problem_a2d_30_xml.h"
+
 ProblemConfig::ProblemConfig(QWidget *parent) : QObject(parent)
 {
     clear();
@@ -61,9 +63,9 @@ void ProblemConfig::clear()
     // transient
     m_timeStepMethod = TimeStepMethod_BDFNumSteps;
     m_timeOrder = 2;
-    m_timeMethodTolerance = Value(0.1);
-    m_timeTotal = Value(1.0);
-    m_numConstantTimeSteps = 10;
+    m_timeMethodTolerance = 0.1;
+    m_timeTotal = 1.0;
+    m_timeNumConstantTimeSteps = 10;
 }
 
 bool ProblemConfig::isTransientAdaptive() const
@@ -81,7 +83,7 @@ const double initialTimeStepRatio = 500;
 double ProblemConfig::initialTimeStepLength()
 {
     if(timeStepMethod() == TimeStepMethod_BDFTolerance)
-        return timeTotal().number() / initialTimeStepRatio;
+        return timeTotal() / initialTimeStepRatio;
     else if(timeStepMethod() == TimeStepMethod_BDFNumSteps)
         return constantTimeStepLength() / 3.;
     else if (timeStepMethod() == TimeStepMethod_Fixed)
@@ -92,7 +94,7 @@ double ProblemConfig::initialTimeStepLength()
 
 // ********************************************************************************************
 
-ProblemConfigView::ProblemConfigView() : eleConfig(NULL)
+ProblemConfigView::ProblemConfigView() : eleConfig(NULL), configxsd(NULL)
 {
     clear();
 }
@@ -103,12 +105,13 @@ ProblemConfigView::~ProblemConfigView()
 
 void ProblemConfigView::clear()
 {
-    load(NULL);
+    load(NULL, NULL);
 }
 
-void ProblemConfigView::load(QDomElement *config)
+void ProblemConfigView::load(QDomElement *config, XMLProblem::config *configxsd)
 {
     eleConfig = config;
+    this->configxsd = configxsd;
 
     // FIX ME - EOL conversion
     QPlainTextEdit textEdit;
@@ -290,9 +293,10 @@ void ProblemConfigView::load(QDomElement *config)
     eleConfig = NULL;
 }
 
-void ProblemConfigView::save(QDomElement *config)
+void ProblemConfigView::save(QDomElement *config, XMLProblem::config *configxsd)
 {
     eleConfig = config;
+    this->configxsd = configxsd;
 
     writeConfig("Problem/StartupScript", startupScript);
     writeConfig("Problem/Description", description);
@@ -465,11 +469,17 @@ void ProblemConfigView::save(QDomElement *config)
 
 bool ProblemConfigView::readConfig(const QString &key, bool defaultValue)
 {
+    QString att = key; att.replace("/", "_");
     if (eleConfig)
     {
-        QString att = key; att.replace("/", "_");
         if (eleConfig->hasAttribute(att))
             return (eleConfig->attribute(att).toInt() == 1) ? true : false;
+    }
+    if (configxsd)
+    {
+        for (int i = 0; i < configxsd->item().size(); i ++)
+            if (configxsd->item().at(i).key() == att.toStdString())
+                return (configxsd->item().at(i).value() == "1") ? true : false;
     }
 
     return defaultValue;
@@ -477,11 +487,17 @@ bool ProblemConfigView::readConfig(const QString &key, bool defaultValue)
 
 int ProblemConfigView::readConfig(const QString &key, int defaultValue)
 {
+    QString att = key; att.replace("/", "_");
     if (eleConfig)
     {
-        QString att = key; att.replace("/", "_");
         if (eleConfig->hasAttribute(att))
             return eleConfig->attribute(att).toInt();
+    }
+    if (configxsd)
+    {
+        for (int i = 0; i < configxsd->item().size(); i ++)
+            if (configxsd->item().at(i).key() == att.toStdString())
+                return QString::fromStdString(configxsd->item().at(i).value()).toInt();
     }
 
     return defaultValue;
@@ -489,11 +505,17 @@ int ProblemConfigView::readConfig(const QString &key, int defaultValue)
 
 double ProblemConfigView::readConfig(const QString &key, double defaultValue)
 {
+    QString att = key; att.replace("/", "_");
     if (eleConfig)
     {
-        QString att = key; att.replace("/", "_");
         if (eleConfig->hasAttribute(att))
             return eleConfig->attribute(att).toDouble();
+    }
+    if (configxsd)
+    {
+        for (int i = 0; i < configxsd->item().size(); i ++)
+            if (configxsd->item().at(i).key() == att.toStdString())
+                return QString::fromStdString(configxsd->item().at(i).value()).toDouble();
     }
 
     return defaultValue;
@@ -501,11 +523,17 @@ double ProblemConfigView::readConfig(const QString &key, double defaultValue)
 
 QString ProblemConfigView::readConfig(const QString &key, const QString &defaultValue)
 {
+    QString att = key; att.replace("/", "_");
     if (eleConfig)
     {
-        QString att = key; att.replace("/", "_");
         if (eleConfig->hasAttribute(att))
             return eleConfig->attribute(att);
+    }
+    if (configxsd)
+    {
+        for (int i = 0; i < configxsd->item().size(); i ++)
+            if (configxsd->item().at(i).key() == att.toStdString())
+                return QString::fromStdString(configxsd->item().at(i).value());
     }
 
     return defaultValue;
@@ -513,19 +541,34 @@ QString ProblemConfigView::readConfig(const QString &key, const QString &default
 
 QColor ProblemConfigView::readConfig(const QString &key, const QColor &defaultValue)
 {
+    QString att = key; att.replace("/", "_");
     if (eleConfig)
     {
-        QString att = key; att.replace("/", "_");
-        if (eleConfig->hasAttribute(att))
-        {
-            QColor color;
+        QColor color = defaultValue;
 
+        if (eleConfig->hasAttribute(att + "_red"))
             color.setRed(eleConfig->attribute(att + "_red").toInt());
+        if (eleConfig->hasAttribute(att + "_green"))
             color.setGreen(eleConfig->attribute(att + "_green").toInt());
+        if (eleConfig->hasAttribute(att + "_blue"))
             color.setBlue(eleConfig->attribute(att + "_blue").toInt());
 
-            return color;
+        return color;
+    }
+    if (configxsd)
+    {
+        QColor color = defaultValue;
+
+        for (int i = 0; i < configxsd->item().size(); i ++)
+        {
+            if (configxsd->item().at(i).key() == att.toStdString() + "_red")
+                color.setRed(QString::fromStdString(configxsd->item().at(i).value()).toInt());
+            if (configxsd->item().at(i).key() == att.toStdString() + "_green")
+                color.setGreen(QString::fromStdString(configxsd->item().at(i).value()).toInt());
+            if (configxsd->item().at(i).key() == att.toStdString() + "_blue")
+                color.setBlue(QString::fromStdString(configxsd->item().at(i).value()).toInt());
         }
+        return color;
     }
 
     return defaultValue;
@@ -533,11 +576,17 @@ QColor ProblemConfigView::readConfig(const QString &key, const QColor &defaultVa
 
 QStringList ProblemConfigView::readConfig(const QString &key, const QStringList &defaultValue)
 {
+    QString att = key; att.replace("/", "_");
     if (eleConfig)
     {
-        QString att = key; att.replace("/", "_");
         if (eleConfig->hasAttribute(att))
             return eleConfig->attribute(att).split("|");
+    }
+    if (configxsd)
+    {
+        for (int i = 0; i < configxsd->item().size(); i ++)
+            if (configxsd->item().at(i).key() == att.toStdString())
+                return QString::fromStdString(configxsd->item().at(i).value()).split("|");
     }
 
     return defaultValue;
@@ -546,37 +595,61 @@ QStringList ProblemConfigView::readConfig(const QString &key, const QStringList 
 void ProblemConfigView::writeConfig(const QString &key, bool value)
 {
     QString att = key; att.replace("/", "_");
-    eleConfig->setAttribute(att, value);
+    if (eleConfig)
+        eleConfig->setAttribute(att, value);
+    if (configxsd)
+        configxsd->item().push_back(XMLProblem::item(att.toStdString(), QString::number(value).toStdString()));
 }
 
 void ProblemConfigView::writeConfig(const QString &key, int value)
 {
     QString att = key; att.replace("/", "_");
-    eleConfig->setAttribute(att, value);
+    if (eleConfig)
+        eleConfig->setAttribute(att, value);
+    if (configxsd)
+        configxsd->item().push_back(XMLProblem::item(att.toStdString(), QString::number(value).toStdString()));
 }
 
 void ProblemConfigView::writeConfig(const QString &key, double value)
 {
     QString att = key; att.replace("/", "_");
-    eleConfig->setAttribute(att, value);
+    if (eleConfig)
+        eleConfig->setAttribute(att, value);
+    if (configxsd)
+        configxsd->item().push_back(XMLProblem::item(att.toStdString(), QString::number(value).toStdString()));
 }
 
 void ProblemConfigView::writeConfig(const QString &key, const QString &value)
 {
     QString att = key; att.replace("/", "_");
-    eleConfig->setAttribute(att, value);
+    if (eleConfig)
+        eleConfig->setAttribute(att, value);
+    if (configxsd)
+        configxsd->item().push_back(XMLProblem::item(att.toStdString(), value.toStdString()));
 }
 
 void ProblemConfigView::writeConfig(const QString &key, const QColor &value)
 {
     QString att = key; att.replace("/", "_");
-    eleConfig->setAttribute(att + "_red", value.red());
-    eleConfig->setAttribute(att + "_green", value.green());
-    eleConfig->setAttribute(att + "_blue", value.blue());
+    if (eleConfig)
+    {
+        eleConfig->setAttribute(att + "_red", value.red());
+        eleConfig->setAttribute(att + "_green", value.green());
+        eleConfig->setAttribute(att + "_blue", value.blue());
+    }
+    if (configxsd)
+    {
+        configxsd->item().push_back(XMLProblem::item((att + "_red").toStdString(), QString::number(value.red()).toStdString()));
+        configxsd->item().push_back(XMLProblem::item((att + "_green").toStdString(), QString::number(value.green()).toStdString()));
+        configxsd->item().push_back(XMLProblem::item((att + "_blue").toStdString(), QString::number(value.blue()).toStdString()));
+    }
 }
 
 void ProblemConfigView::writeConfig(const QString &key, const QStringList &value)
 {
     QString att = key; att.replace("/", "_");
-    eleConfig->setAttribute(att, value.join("|"));
+    if (eleConfig)
+        eleConfig->setAttribute(att, value.join("|"));
+    if (configxsd)
+        configxsd->item().push_back(XMLProblem::item(att.toStdString(), value.join("|").toStdString()));
 }

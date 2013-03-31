@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema targetNamespace="XMLProblem" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:coupling="XMLProblem">
+  <element name="document">
+    <complexType>
+      <all>
+        <element name="geometry">
+          <complexType>
+            <all>
+              <element name="nodes">
+                <complexType>
+                  <sequence>
+                    <element maxOccurs="unbounded" name="node">
+                      <complexType>
+                        <attribute name="id" type="int" use="required"/>
+                        <attribute name="x" type="float" use="required"/>
+                        <attribute name="y" type="float" use="required"/>
+                      </complexType>
+                    </element>
+                  </sequence>
+                </complexType>
+              </element>
+              <element name="edges">
+                <complexType>
+                  <sequence>
+                    <element maxOccurs="unbounded" name="edge">
+                      <complexType>
+                        <attribute name="id" type="int" use="required"/>
+                        <attribute name="start" type="int" use="required"/>
+                        <attribute name="end" type="int" use="required"/>
+                        <attribute name="angle" type="float" use="required"/>
+                      </complexType>
+                    </element>
+                  </sequence>
+                </complexType>
+              </element>
+              <element name="labels">
+                <complexType>
+                  <sequence>
+                    <element maxOccurs="unbounded" name="label">
+                      <complexType>
+                        <attribute name="id" type="int" use="required"/>
+                        <attribute name="x" type="float" use="required"/>
+                        <attribute name="y" type="float" use="required"/>
+                        <attribute name="area" type="float" use="required"/>
+                      </complexType>
+                    </element>
+                  </sequence>
+                </complexType>
+              </element>
+            </all>
+          </complexType>
+        </element>
+        <element name="problem">
+          <complexType>
+            <all>
+              <element name="fields">
+                <complexType>
+                  <sequence>
+                    <element minOccurs="0" maxOccurs="unbounded" name="field">
+                      <complexType>
+                        <sequence>
+                          <element name="refinement_edges">
+                            <complexType>
+                              <sequence>
+                                <element minOccurs="0" maxOccurs="unbounded" name="refinement_edge">
+                                  <complexType>
+                                    <attribute name="refinement_edge_id" type="int" use="required" />
+                                    <attribute name="refinement_edge_number" type="int" use="required" />
+                                  </complexType>
+                                </element>
+                              </sequence>
+                            </complexType>
+                          </element>
+                          <element name="refinement_labels">
+                            <complexType>
+                              <sequence>
+                                <element minOccurs="0" maxOccurs="unbounded" name="refinement_label">
+                                  <complexType>
+                                    <attribute name="refinement_label_id" type="int" use="required" />
+                                    <attribute name="refinement_label_number" type="int" use="required" />
+                                  </complexType>
+                                </element>
+                              </sequence>
+                            </complexType>
+                          </element>
+                          <element name="polynomial_orders">
+                            <complexType>
+                              <sequence>
+                                <element minOccurs="0" maxOccurs="unbounded" name="polynomial_order">
+                                  <complexType>
+                                    <attribute name="polynomial_order_id" type="int" use="required" />
+                                    <attribute name="polynomial_order_number" type="int" use="required" />
+                                  </complexType>
+                                </element>
+                              </sequence>
+                            </complexType>
+                          </element>
+                          <element name="adaptivity">
+                            <complexType>
+                              <attribute name="adaptivity_type" type="string" use="required" />
+                              <attribute name="adaptivity_steps" type="int" use="required" />
+                              <attribute name="adaptivity_tolerance" type="float" use="required" />
+                              <attribute name="adaptivity_back_steps" type="int" use="required" />
+                              <attribute name="adaptivity_redone_each" type="int" use="required" />
+                            </complexType>
+                          </element>
+                          <element name="solver">
+                            <complexType>
+                              <attribute name="linearity_type" type="string" use="required"/>
+                              <attribute name="nonlinear_steps" type="int" use="required"/>
+                              <attribute name="nonlinear_tolerance" type="float" use="required"/>
+                              <attribute name="newton_damping_coeff" type="float" use="required"/>
+                              <attribute name="newton_automatic_damping" type="int" use="required"/>
+                              <attribute name="newton_automatic_damping_coeff" type="float" use="required"/>
+                              <attribute name="newton_damping_number_to_increase" type="int" use="required"/>
+                              <attribute name="picard_anderson_acceleration" type="int" use="required"/>
+                              <attribute name="picard_anderson_beta" type="float" use="required"/>
+                              <attribute name="picard_anderson_vectors" type="int" use="required"/>
+                            </complexType>
+                          </element>
+                          <element name="boundaries">
+                            <complexType>
+                              <sequence>
+                                <element name="boundary" minOccurs="0" maxOccurs="unbounded" >
+                                <complexType>
+                                  <sequence>
+                                    <element name="boundary_edges" minOccurs="1" maxOccurs="1">
+                                      <complexType>
+                                        <sequence>
+                                          <element name="boundary_edge" minOccurs="0" maxOccurs="unbounded">
+                                            <complexType>
+                                              <attribute name="id" type="int" use="required" />
+                                            </complexType>
+                                          </element>
+                                        </sequence>
+                                      </complexType>
+                                    </element>
+                                    <element name="boundary_types" minOccurs="1" maxOccurs="1">
+                                      <complexType>
+                                        <sequence>
+                                          <element name="boundary_type" minOccurs="0" maxOccurs="unbounded">
+                                            <complexType>
+                                              <attribute name="key" type="string" use="required" />
+                                              <attribute name="value" type="string" use="required" />
+                                            </complexType>
+                                          </element>
+                                        </sequence>
+                                      </complexType>
+                                    </element>
+                                  </sequence>
+                                  <attribute name="type" type="string" use="required" />
+                                  <attribute name="id" type="int" use="required" />
+                                  <attribute name="name" type="string" use="required" />
+                                </complexType>
+                              </element>
+                              </sequence>
+                            </complexType>
+                          </element>
+                          <element name="materials">
+                          <complexType>
+                            <sequence>
+                              <element name="material" minOccurs="0" maxOccurs="unbounded" >
+                              <complexType>
+                                <sequence>
+                                  <element name="material_labels" minOccurs="1" maxOccurs="1">
+                                    <complexType>
+                                      <sequence>
+                                        <element name="material_label" minOccurs="0" maxOccurs="unbounded">
+                                          <complexType>
+                                            <attribute name="id" type="int" use="required" />
+                                          </complexType>
+                                        </element>
+                                      </sequence>
+                                    </complexType>
+                                  </element>
+                                  <element name="material_types" minOccurs="1" maxOccurs="1">
+                                    <complexType>
+                                      <sequence>
+                                        <element name="material_type" minOccurs="0" maxOccurs="unbounded">
+                                          <complexType>
+                                            <attribute name="key" type="string" use="required" />
+                                            <attribute name="value" type="string" use="required" />
+                                          </complexType>
+                                        </element>
+                                      </sequence>
+                                    </complexType>
+                                  </element>
+                                </sequence>
+                                <attribute name="id" type="int" use="required" />
+                                <attribute name="name" type="string" use="required" />
+                              </complexType>
+                            </element>
+                            </sequence>
+                          </complexType>
+                          </element>
+                        </sequence>
+                        <attribute name="field_id" type="string" use="required" />
+                        <attribute name="analysis_type" type="string" use="required" />
+                        <attribute name="number_of_refinements" type="int" use="required" />
+                        <attribute name="polynomial_order" type="int" use="required" />
+                        <attribute name="initial_condition" type="float" use="required" />
+                        <attribute name="time_skip" type="int" use="required" />
+                      </complexType>
+                    </element>
+                  </sequence>
+                </complexType>
+              </element>
+              <element name="couplings">
+                <complexType>
+                  <sequence>
+                    <element name="coupling" minOccurs="0" maxOccurs="unbounded">
+                      <complexType>
+                        <attribute name="id" type="string" use="required" />
+                        <attribute name="type" type="string" use="required" />
+                        <attribute name="source_fieldid" type="string" use="required" />
+                        <attribute name="target_fieldid" type="string" use="required" />
+                      </complexType>
+                    </element>
+                  </sequence>
+                </complexType>
+              </element>
+            </all>
+            <attribute name="coordinate_type" type="string" use="required"/>
+            <attribute name="mesh_type" type="string" use="required" />
+            <attribute name="matrix_solver" type="string" use="required" />
+            <attribute name="frequency" type="float" use="required" />
+            <attribute name="time_method" type="string" use="required" />
+            <attribute name="time_total" type="float" use="required" />
+            <attribute name="time_steps" type="int" use="required" />
+            <attribute name="time_order" type="int" use="required" />
+            <attribute name="time_method_tolerance" type="float" use="required" />
+          </complexType>
+        </element>
+        <element name="config">
+          <complexType>
+            <sequence>
+              <element maxOccurs="unbounded" name="item">
+                <complexType>
+                  <attribute name="key" type="string" use="required"/>
+                  <attribute name="value" type="string" use="required"/>
+                </complexType>
+              </element>
+            </sequence>
+          </complexType>
+        </element>
+      </all>
+      <attribute name="version" type="float" />
+    </complexType>
+  </element>
+</schema>

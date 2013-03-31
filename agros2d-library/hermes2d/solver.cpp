@@ -466,7 +466,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
 template <typename Scalar>
 NextTimeStep Solver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivityStep)
 {
-    double timeTotal = Agros2D::problem()->config()->timeTotal().number();
+    double timeTotal = Agros2D::problem()->config()->timeTotal();
 
     // TODO: move to some config?
     const double relativeTimeStepLen = Agros2D::problem()->actualTimeStepLength() / timeTotal;
@@ -524,7 +524,7 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivity
     double TOL;
     if(Agros2D::problem()->config()->timeStepMethod() == TimeStepMethod_BDFTolerance)
     {
-        TOL = Agros2D::problem()->config()->timeMethodTolerance().number();
+        TOL = Agros2D::problem()->config()->timeMethodTolerance();
     }
     else if(Agros2D::problem()->config()->timeStepMethod() == TimeStepMethod_BDFNumSteps)
     {

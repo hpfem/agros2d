@@ -405,7 +405,7 @@ int Problem::timeToTimeStep(double time) const
     for(int ts = 0; ts < m_timeStepLengths.size(); ts++)
     {
         timeSum += m_timeStepLengths.at(ts);
-        if(fabs(timeSum - time) < 1e-9* config()->timeTotal().number())
+        if(fabs(timeSum - time) < 1e-9* config()->timeTotal())
             return ts+1;
     }
 
@@ -417,12 +417,12 @@ int Problem::timeToTimeStep(double time) const
 bool Problem::defineActualTimeStepLength(double ts)
 {
     // todo: do properly
-    const double eps = 1e-9 * config()->timeTotal().number();
-    assert(actualTime() < config()->timeTotal().number() + eps);
-    if(actualTime() > config()->timeTotal().number() - eps)
+    const double eps = 1e-9 * config()->timeTotal();
+    assert(actualTime() < config()->timeTotal() + eps);
+    if(actualTime() > config()->timeTotal() - eps)
         return false;
     else{
-        double alteredTS = min(ts, config()->timeTotal().number() - actualTime());
+        double alteredTS = min(ts, config()->timeTotal() - actualTime());
         m_timeStepLengths.push_back(alteredTS);
         return true;
     }
@@ -464,9 +464,9 @@ void Problem::solveInit(bool reCreateStructure)
     // check problem settings
     if (Agros2D::problem()->isTransient())
     {
-        if (!Agros2D::problem()->config()->timeTotal().number() > 0.0)
+        if (!Agros2D::problem()->config()->timeTotal() > 0.0)
             throw AgrosSolverException(tr("Total time is zero"));
-        if (!Agros2D::problem()->config()->timeMethodTolerance().number() > 0.0)
+        if (!Agros2D::problem()->config()->timeMethodTolerance() > 0.0)
             throw AgrosSolverException(tr("Time method tolerance is zero"));
     }
 
@@ -819,14 +819,14 @@ void Problem::stepMessage(Block* block)
             Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
                                          QObject::tr("Transient step %1 (%2%)").
                                          arg(actualTimeStep()).
-                                         arg(int(100*actualTime()/config()->timeTotal().number())));
+                                         arg(int(100*actualTime()/config()->timeTotal())));
         }
         else
         {
             Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
                                          QObject::tr("Transient step %1/%2").
                                          arg(actualTimeStep()).
-                                         arg(config()->numConstantTimeSteps()));
+                                         arg(config()->timeNumConstantTimeSteps()));
         }
     }
     else

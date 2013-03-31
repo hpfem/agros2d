@@ -53,6 +53,8 @@
 
 #include "../3rdparty/quazip/JlCompress.h"
 
+#include "../resources_source/classes/problem_a2d_30_xml.h"
+
 QString generateSvgGeometry(QList<SceneEdge*> edges)
 {
     RectPoint boundingBox = SceneEdgeContainer::boundingBox(edges);
@@ -659,8 +661,8 @@ bool Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle
         m_undoStack->push(new SceneNodeCommandAddMulti(newPoints));
 
         // unselect old
-//        foreach(Point point, points)
-//            getNode(point)->setSelected(false);
+        //        foreach(Point point, points)
+        //            getNode(point)->setSelected(false);
         //probably faster:
         nodes->setSelected(false);
 
@@ -720,8 +722,8 @@ bool Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle
 
         if(! obstructEdge)
         {
-//            SceneEdge newEdge(newNodeStart, newNodeEnd, edge->angle());
-//            m_undoStack->push(newEdge.getAddCommand());
+            //            SceneEdge newEdge(newNodeStart, newNodeEnd, edge->angle());
+            //            m_undoStack->push(newEdge.getAddCommand());
             edgeStartPointsToAdd.push_back(newPointStart);
             edgeEndPointsToAdd.push_back(newPointEnd);
             edgeAnglesToAdd.push_back(edge->angle());
@@ -1148,6 +1150,21 @@ void Scene::readFromFile(const QString &fileName)
 
     Agros2D::log()->printMessage(tr("Problem"), tr("Loading problem from disk"));
 
+    try
+    {
+        readFromFile30(fileName);
+    }
+    catch (AgrosException &e)
+    {
+        Agros2D::log()->printError(tr("Problem"), e.toString());
+        readFromFile21(fileName);
+    }
+}
+
+void Scene::readFromFile21(const QString &fileName)
+{
+    QFileInfo fileInfo(fileName);
+
     QDomDocument doc;
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly))
@@ -1182,7 +1199,7 @@ void Scene::readFromFile(const QString &fileName)
                                   tr("File %1 must be converted to the new version. Do you want to convert and replace current file?").arg(fileName),
                                   tr("&Yes"), tr("&No")) == 0)
         {
-            QString out = transformXML(fileName, datadir() + "/resources/xslt/problem_a2d_xml.xsl");
+            QString out = transformXML(fileName, datadir() + "/resources/xslt/problem_a2d_20_21_xml.xsl");
 
             doc.setContent(out);
             eleDoc = doc.documentElement();
@@ -1203,7 +1220,7 @@ void Scene::readFromFile(const QString &fileName)
     /*
     try
     {
-        validateXML(fileName, datadir() + "/resources/xsd/problem_a2d_xml.xsd");
+        validateXML(fileName, datadir() + "/resources/xsd/problem_a2d_21_xml.xsd");
     }
     catch (AgrosException &e)
     {
@@ -1274,12 +1291,12 @@ void Scene::readFromFile(const QString &fileName)
     Agros2D::problem()->config()->setFrequency(eleProblemInfo.toElement().attribute("frequency", "0").toDouble());
 
     // transient
-    Agros2D::problem()->config()->setNumConstantTimeSteps(eleProblemInfo.toElement().attribute("time_steps", "2").toInt());
-    Agros2D::problem()->config()->setTimeTotal(Value(eleProblemInfo.toElement().attribute("time_total", "1.0")));
+    Agros2D::problem()->config()->setTimeNumConstantTimeSteps(eleProblemInfo.toElement().attribute("time_steps", "2").toInt());
+    Agros2D::problem()->config()->setTimeTotal(eleProblemInfo.toElement().attribute("time_total", "1.0").toDouble());
     Agros2D::problem()->config()->setTimeOrder(eleProblemInfo.toElement().attribute("time_order", "1").toInt());
     Agros2D::problem()->config()->setTimeStepMethod(timeStepMethodFromStringKey(
                                                         eleProblemInfo.toElement().attribute("time_method", timeStepMethodToStringKey(TimeStepMethod_Fixed))));
-    Agros2D::problem()->config()->setTimeMethodTolerance(eleProblemInfo.toElement().attribute("time_method_tolerance", "0.05"));
+    Agros2D::problem()->config()->setTimeMethodTolerance(eleProblemInfo.toElement().attribute("time_method_tolerance", "0.05").toDouble());
 
     // matrix solver
     Agros2D::problem()->config()->setMatrixSolver(matrixSolverTypeFromStringKey(eleProblemInfo.toElement().attribute("matrix_solver",
@@ -1287,7 +1304,7 @@ void Scene::readFromFile(const QString &fileName)
 
     // read config
     QDomElement config = eleDoc.elementsByTagName("config").at(0).toElement();
-    Agros2D::problem()->configView()->load(&config);
+    Agros2D::problem()->configView()->load(&config, NULL);
 
     // field ***************************************************************************************************************
 
@@ -1498,6 +1515,232 @@ void Scene::readFromFile(const QString &fileName)
     currentPythonEngineAgros()->runScript(Agros2D::problem()->configView()->startupScript);
 }
 
+void Scene::readFromFile30(const QString &fileName)
+{
+    try
+    {
+        blockSignals(true);
+
+        // std::auto_ptr<XMLProblem::document> document_xsd = XMLProblem::document_((fileName + "3").toLatin1().data(), xml_schema::flags::dont_validate);
+        std::auto_ptr<XMLProblem::document> document_xsd = XMLProblem::document_((fileName).toLatin1().data(), xml_schema::flags::dont_validate);
+        XMLProblem::document *doc = document_xsd.get();
+
+        // coordinate type
+        Agros2D::problem()->config()->setCoordinateType(coordinateTypeFromStringKey(QString::fromStdString(doc->problem().coordinate_type())));
+        // mesh type
+        Agros2D::problem()->config()->setMeshType(meshTypeFromStringKey(QString::fromStdString(doc->problem().mesh_type())));
+        // matrix solver
+        Agros2D::problem()->config()->setMatrixSolver(matrixSolverTypeFromStringKey(QString::fromStdString(doc->problem().matrix_solver())));
+
+        // harmonic
+        Agros2D::problem()->config()->setFrequency(doc->problem().frequency());
+
+        // transient
+        Agros2D::problem()->config()->setTimeNumConstantTimeSteps(doc->problem().time_steps());
+        Agros2D::problem()->config()->setTimeTotal(doc->problem().time_total());
+        Agros2D::problem()->config()->setTimeOrder(doc->problem().time_order());
+        Agros2D::problem()->config()->setTimeStepMethod(timeStepMethodFromStringKey(QString::fromStdString(doc->problem().time_method())));
+        Agros2D::problem()->config()->setTimeMethodTolerance(doc->problem().time_method_tolerance());
+
+        Agros2D::problem()->configView()->load(NULL, &doc->config());
+
+        // nodes
+        for (unsigned int i = 0; i < doc->geometry().nodes().node().size(); i++)
+        {
+            XMLProblem::node node = doc->geometry().nodes().node().at(i);
+
+            Point point = Point(node.x(),
+                                node.y());
+
+            addNode(new SceneNode(point));
+        }
+
+        // edges
+        for (unsigned int i = 0; i < doc->geometry().edges().edge().size(); i++)
+        {
+            XMLProblem::edge edge = doc->geometry().edges().edge().at(i);
+
+            SceneNode *nodeFrom = nodes->at(edge.start());
+            SceneNode *nodeTo = nodes->at(edge.end());
+
+            addEdge(new SceneEdge(nodeFrom, nodeTo, edge.angle()));
+        }
+
+        // labels
+        for (unsigned int i = 0; i < doc->geometry().labels().label().size(); i++)
+        {
+            XMLProblem::label label = doc->geometry().labels().label().at(i);
+
+            addLabel(new SceneLabel(Point(label.x(), label.y()), label.area()));
+        }
+
+        for (unsigned int i = 0; i < doc->problem().fields().field().size(); i++)
+        {
+            XMLProblem::field field = doc->problem().fields().field().at(i);
+
+            FieldInfo *fieldInfo = new FieldInfo(QString::fromStdString(field.field_id()));
+
+            // analysis type
+            fieldInfo->setAnalysisType(analysisTypeFromStringKey(QString::fromStdString(field.analysis_type())));
+            // number of refinements
+            fieldInfo->setNumberOfRefinements(field.number_of_refinements());
+            // polynomial order
+            fieldInfo->setPolynomialOrder(field.polynomial_order());
+            // initial condition
+            fieldInfo->setInitialCondition(field.initial_condition());
+            // time steps skip
+            fieldInfo->setTimeSkip(field.time_skip());
+
+            // edge refinement
+            for (unsigned int j = 0; j < field.refinement_edges().refinement_edge().size(); j++)
+            {
+                XMLProblem::refinement_edge edge = field.refinement_edges().refinement_edge().at(j);
+
+                fieldInfo->setEdgeRefinement(Agros2D::scene()->edges->items().at(edge.refinement_edge_id()), edge.refinement_edge_number());
+            }
+
+            // label refinement
+            for (unsigned int j = 0; j < field.refinement_labels().refinement_label().size(); j++)
+            {
+                XMLProblem::refinement_label label = field.refinement_labels().refinement_label().at(j);
+
+                fieldInfo->setLabelRefinement(Agros2D::scene()->labels->items().at(label.refinement_label_id()), label.refinement_label_number());
+            }
+
+            // polynomial order
+            for (unsigned int j = 0; j < field.polynomial_orders().polynomial_order().size(); j++)
+            {
+                XMLProblem::polynomial_order order = field.polynomial_orders().polynomial_order().at(j);
+
+                fieldInfo->setLabelPolynomialOrder(Agros2D::scene()->labels->items().at(order.polynomial_order_id()), order.polynomial_order_number());
+            }
+
+            // adaptivity
+            fieldInfo->setAdaptivityType(adaptivityTypeFromStringKey(QString::fromStdString(field.adaptivity().adaptivity_type())));
+            fieldInfo->setAdaptivitySteps(field.adaptivity().adaptivity_steps());
+            fieldInfo->setAdaptivityTolerance(field.adaptivity().adaptivity_tolerance());
+            fieldInfo->setAdaptivityBackSteps(field.adaptivity().adaptivity_back_steps());
+            fieldInfo->setAdaptivityRedoneEach(field.adaptivity().adaptivity_redone_each());
+
+            fieldInfo->setLinearityType(linearityTypeFromStringKey(QString::fromStdString(field.solver().linearity_type())));
+            fieldInfo->setNonlinearSteps(field.solver().nonlinear_steps());
+            fieldInfo->setNonlinearTolerance(field.solver().nonlinear_tolerance());
+            fieldInfo->setNewtonDampingCoeff(field.solver().newton_damping_coeff());
+            fieldInfo->setNewtonDampingNumberToIncrease(field.solver().newton_damping_number_to_increase());
+            fieldInfo->setNewtonAutomaticDamping(field.solver().newton_automatic_damping());
+            fieldInfo->setNewtonAutomaticDampingCoeff(field.solver().newton_automatic_damping_coeff());
+            fieldInfo->setPicardAndersonAcceleration(field.solver().picard_anderson_acceleration());
+            fieldInfo->setPicardAndersonBeta(field.solver().picard_anderson_beta());
+            fieldInfo->setPicardAndersonNumberOfLastVectors(field.solver().picard_anderson_vectors());
+
+            // boundary conditions
+            for (unsigned int j = 0; j < field.boundaries().boundary().size(); j++)
+            {
+                XMLProblem::boundary boundary = field.boundaries().boundary().at(j);
+
+                // read marker
+                SceneBoundary *bound = new SceneBoundary(fieldInfo,
+                                                         QString::fromStdString(boundary.name()),
+                                                         QString::fromStdString(boundary.type()));
+
+                // default values
+                Module::BoundaryType boundaryType = fieldInfo->boundaryType(QString::fromStdString(boundary.type()));
+                foreach (Module::BoundaryTypeVariable variable, boundaryType.variables())
+                    bound->setValue(variable.id(), Value());
+
+                for (unsigned int k = 0; k < boundary.boundary_types().boundary_type().size(); k++)
+                {
+                    XMLProblem::boundary_type type = boundary.boundary_types().boundary_type().at(k);
+
+                    bound->setValue(QString::fromStdString(type.key()), Value(QString::fromStdString(type.value())));
+                }
+
+                Agros2D::scene()->addBoundary(bound);
+
+                // add boundary to the edge marker
+                for (unsigned int k = 0; k < boundary.boundary_edges().boundary_edge().size(); k++)
+                {
+                    XMLProblem::boundary_edge edge = boundary.boundary_edges().boundary_edge().at(k);
+
+                    edges->at(edge.id())->addMarker(bound);
+                }
+            }
+
+            // materials
+            for (unsigned int j = 0; j < field.materials().material().size(); j++)
+            {
+                XMLProblem::material material = field.materials().material().at(j);
+
+                // read marker
+                SceneMaterial *mat = new SceneMaterial(fieldInfo,
+                                                       QString::fromStdString(material.name()));
+
+                // default values
+                foreach (Module::MaterialTypeVariable variable, fieldInfo->materialTypeVariables())
+                {
+                    mat->setValue(variable.id(), Value());
+                }
+
+                for (unsigned int k = 0; k < material.material_types().material_type().size(); k++)
+                {
+                    XMLProblem::material_type type = material.material_types().material_type().at(k);
+
+                    mat->setValue(QString::fromStdString(type.key()), Value(QString::fromStdString(type.value())));
+                }
+
+                Agros2D::scene()->addMaterial(mat);
+
+                // add boundary to the edge marker
+                for (unsigned int k = 0; k < material.material_labels().material_label().size(); k++)
+                {
+                    XMLProblem::material_label label = material.material_labels().material_label().at(k);
+
+                    labels->at(label.id())->addMarker(mat);
+                }
+            }
+
+            // add missing none markers
+            edges->addMissingFieldMarkers(fieldInfo);
+            labels->addMissingFieldMarkers(fieldInfo);
+
+            // add field
+            Agros2D::problem()->addField(fieldInfo);
+        }
+
+        // couplings
+        Agros2D::problem()->synchronizeCouplings();
+
+        for (unsigned int i = 0; i < doc->problem().couplings().coupling().size(); i++)
+        {
+             XMLProblem::coupling coupling = doc->problem().couplings().coupling().at(i);
+
+             if (Agros2D::problem()->hasCoupling(QString::fromStdString(coupling.source_fieldid()),
+                                                 QString::fromStdString(coupling.target_fieldid())))
+             {
+                 CouplingInfo *couplingInfo = Agros2D::problem()->couplingInfo(QString::fromStdString(coupling.source_fieldid()),
+                                                                               QString::fromStdString(coupling.target_fieldid()));
+                 couplingInfo->setCouplingType(couplingTypeFromStringKey(QString::fromStdString(coupling.type())));
+             }
+        }
+
+        blockSignals(false);
+
+        m_loopsInfo->processPolygonTriangles();
+
+        // default values
+        emit invalidated();
+        emit defaultValues();
+
+        // run script
+        currentPythonEngineAgros()->runScript(Agros2D::problem()->configView()->startupScript);
+    }
+    catch (const xml_schema::exception& e)
+    {
+        blockSignals(false);
+        throw AgrosException(QString::fromStdString(e.what()));
+    }
+}
+
 void Scene::writeToFile(const QString &fileName, bool saveLastProblemDir)
 {
     QSettings settings;
@@ -1512,6 +1755,12 @@ void Scene::writeToFile(const QString &fileName, bool saveLastProblemDir)
         }
     }
 
+    writeToFile21(fileName);
+    writeToFile30(fileName);
+}
+
+void Scene::writeToFile21(const QString &fileName)
+{
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
@@ -1598,11 +1847,11 @@ void Scene::writeToFile(const QString &fileName, bool saveLastProblemDir)
     eleProblem.setAttribute("frequency", Agros2D::problem()->config()->frequency());
 
     // transient
-    eleProblem.setAttribute("time_steps", Agros2D::problem()->config()->numConstantTimeSteps());
-    eleProblem.setAttribute("time_total", Agros2D::problem()->config()->timeTotal().text());
+    eleProblem.setAttribute("time_steps", Agros2D::problem()->config()->timeNumConstantTimeSteps());
+    eleProblem.setAttribute("time_total", Agros2D::problem()->config()->timeTotal());
     eleProblem.setAttribute("time_order", QString::number(Agros2D::problem()->config()->timeOrder()));
     eleProblem.setAttribute("time_method", timeStepMethodToStringKey(Agros2D::problem()->config()->timeStepMethod()));
-    eleProblem.setAttribute("time_method_tolerance", Agros2D::problem()->config()->timeMethodTolerance().text());
+    eleProblem.setAttribute("time_method_tolerance", Agros2D::problem()->config()->timeMethodTolerance());
 
     // matrix solver
     eleProblem.setAttribute("matrix_solver", matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()));
@@ -1799,7 +2048,7 @@ void Scene::writeToFile(const QString &fileName, bool saveLastProblemDir)
     // save config
     QDomElement eleConfig = doc.createElement("config");
     eleDoc.appendChild(eleConfig);
-    Agros2D::problem()->configView()->save(&eleConfig);
+    Agros2D::problem()->configView()->save(&eleConfig, NULL);
 
     QTextStream out(&file);
     doc.save(out, 4);
@@ -1816,6 +2065,211 @@ void Scene::writeToFile(const QString &fileName, bool saveLastProblemDir)
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
+}
+
+void Scene::writeToFile30(const QString &fileName)
+{
+    try
+    {
+        XMLProblem::fields fields;
+        // fields
+        foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
+        {
+            XMLProblem::refinement_edges refinement_edges;
+            QMapIterator<SceneEdge *, int> edgeIterator(fieldInfo->edgesRefinement());
+            while (edgeIterator.hasNext()) {
+                edgeIterator.next();
+
+                refinement_edges.refinement_edge().push_back(XMLProblem::refinement_edge(Agros2D::scene()->edges->items().indexOf(edgeIterator.key()),
+                                                                                         edgeIterator.value()));
+            }
+
+            XMLProblem::refinement_labels refinement_labels;
+            QMapIterator<SceneLabel *, int> labelIterator(fieldInfo->labelsRefinement());
+            while (labelIterator.hasNext()) {
+                labelIterator.next();
+
+                refinement_labels.refinement_label().push_back(XMLProblem::refinement_label(Agros2D::scene()->labels->items().indexOf(labelIterator.key()),
+                                                                                            labelIterator.value()));
+            }
+
+            XMLProblem::polynomial_orders polynomial_orders;
+            QMapIterator<SceneLabel *, int> labelOrderIterator(fieldInfo->labelsPolynomialOrder());
+            while (labelOrderIterator.hasNext()) {
+                labelOrderIterator.next();
+
+                polynomial_orders.polynomial_order().push_back(XMLProblem::polynomial_order(Agros2D::scene()->labels->items().indexOf(labelOrderIterator.key()),
+                                                                                            labelOrderIterator.value()));
+            }
+
+            XMLProblem::adaptivity adaptivity(adaptivityTypeToStringKey(fieldInfo->adaptivityType()).toStdString(),
+                                              fieldInfo->adaptivitySteps(),
+                                              fieldInfo->adaptivityTolerance(),
+                                              fieldInfo->adaptivityBackSteps(),
+                                              fieldInfo->adaptivityRedoneEach());
+
+            XMLProblem::solver solver(linearityTypeToStringKey(fieldInfo->linearityType()).toStdString(),
+                                      fieldInfo->nonlinearSteps(),
+                                      fieldInfo->nonlinearTolerance(),
+                                      fieldInfo->newtonDampingCoeff(),
+                                      fieldInfo->newtonAutomaticDamping(),
+                                      (int) fieldInfo->newtonAutomaticDampingCoeff(),
+                                      fieldInfo->newtonDampingNumberToIncrease(),
+                                      (int) fieldInfo->picardAndersonAcceleration(),
+                                      fieldInfo->picardAndersonBeta(),
+                                      fieldInfo->picardAndersonNumberOfLastVectors());
+
+            XMLProblem::boundaries boundaries;
+            int iboundary = 1;
+            foreach (SceneBoundary *bound, this->boundaries->filter(fieldInfo).items())
+            {
+                // add edges
+                XMLProblem::boundary_edges boundary_edges;
+                foreach (SceneEdge *edge, edges->items())
+                    if (edge->hasMarker(bound))
+                        boundary_edges.boundary_edge().push_back(XMLProblem::boundary_edge(edges->items().indexOf(edge)));
+
+                XMLProblem::boundary_types boundary_types;
+                const QHash<QString, Value> values = bound->values();
+                for (QHash<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+                    boundary_types.boundary_type().push_back(XMLProblem::boundary_type(it.key().toStdString(), it.value().toString().toStdString()));
+
+                XMLProblem::boundary boundary(boundary_edges,
+                                              boundary_types,
+                                              (bound->type() == "") ? "none" : bound->type().toStdString(),
+                                              iboundary,
+                                              bound->name().toStdString());
+
+
+                boundaries.boundary().push_back(boundary);
+
+                iboundary++;
+            }
+
+            // materials
+            XMLProblem::materials materials;
+            int imaterial = 1;
+            foreach (SceneMaterial *mat, this->materials->filter(fieldInfo).items())
+            {
+                // add edges
+                XMLProblem::material_labels material_labels;
+                foreach (SceneLabel *label, labels->items())
+                    if (label->hasMarker(mat))
+                        material_labels.material_label().push_back(XMLProblem::material_label(labels->items().indexOf(label)));
+
+                XMLProblem::material_types material_types;
+                const QHash<QString, Value> values = mat->values();
+                for (QHash<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+                    material_types.material_type().push_back(XMLProblem::material_type(it.key().toStdString(), it.value().toString().toStdString()));
+
+                XMLProblem::material material(material_labels,
+                                              material_types,
+                                              iboundary,
+                                              mat->name().toStdString());
+
+                materials.material().push_back(material);
+
+                imaterial++;
+            }
+
+            XMLProblem::field field(refinement_edges,
+                                    refinement_labels,
+                                    polynomial_orders,
+                                    adaptivity,
+                                    solver,
+                                    boundaries,
+                                    materials,
+                                    fieldInfo->fieldId().toStdString(),
+                                    analysisTypeToStringKey(fieldInfo->analysisType()).toStdString(),
+                                    fieldInfo->numberOfRefinements(),
+                                    fieldInfo->polynomialOrder(),
+                                    fieldInfo->initialCondition(),
+                                    fieldInfo->timeSkip());
+
+            fields.field().push_back(field);
+        }
+
+        XMLProblem::couplings couplings;
+        foreach (CouplingInfo *couplingInfo, Agros2D::problem()->couplingInfos())
+        {
+            couplings.coupling().push_back(XMLProblem::coupling(couplingInfo->couplingId().toStdString(),
+                                                                couplingTypeToStringKey(couplingInfo->couplingType()).toStdString(),
+                                                                couplingInfo->sourceField()->fieldId().toStdString(),
+                                                                couplingInfo->targetField()->fieldId().toStdString()));
+        }
+
+        XMLProblem::config config;
+        Agros2D::problem()->configView()->save(NULL, &config);
+
+        XMLProblem::problem problem(fields,
+                                    couplings,
+                                    coordinateTypeToStringKey(Agros2D::problem()->config()->coordinateType()).toStdString(),
+                                    meshTypeToStringKey(Agros2D::problem()->config()->meshType()).toStdString(),
+                                    matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()).toStdString(),
+                                    Agros2D::problem()->config()->frequency(),
+                                    timeStepMethodToStringKey(Agros2D::problem()->config()->timeStepMethod()).toStdString(),
+                                    Agros2D::problem()->config()->timeTotal(),
+                                    Agros2D::problem()->config()->timeNumConstantTimeSteps(),
+                                    Agros2D::problem()->config()->timeOrder(),
+                                    Agros2D::problem()->config()->timeMethodTolerance());
+
+        // nodes
+        XMLProblem::nodes nodes;
+        int inode = 0;
+        foreach (SceneNode *node, this->nodes->items())
+        {
+            nodes.node().push_back(XMLProblem::node(inode,
+                                                    node->point().x,
+                                                    node->point().y));
+            inode++;
+        }
+
+        // edges
+        XMLProblem::edges edges;
+        int iedge = 0;
+        foreach (SceneEdge *edge, this->edges->items())
+        {
+            edges.edge().push_back(XMLProblem::edge(iedge,
+                                                    this->nodes->items().indexOf(edge->nodeStart()),
+                                                    this->nodes->items().indexOf(edge->nodeEnd()),
+                                                    edge->angle()));
+            iedge++;
+        }
+
+        // labels
+        XMLProblem::labels labels;
+        int ilabel = 0;
+        foreach (SceneLabel *label, this->labels->items())
+        {
+            labels.label().push_back(XMLProblem::label(ilabel,
+                                                       label->point().x,
+                                                       label->point().y,
+                                                       label->area()));
+
+            ilabel++;
+        }
+
+        // geometry
+        XMLProblem::geometry geometry(nodes, edges, labels);
+
+        XMLProblem::document doc(geometry, problem, config);
+
+        std::string problem_schema_location("");
+
+        problem_schema_location.append(QString("%1/problem_a2d_30_xml.xsd").arg(QFileInfo(datadir() + XSDROOT).absoluteFilePath()).toStdString());
+        ::xml_schema::namespace_info namespace_info_problem("XMLProblem", problem_schema_location);
+
+        ::xml_schema::namespace_infomap namespace_info_map;
+        namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("problem", namespace_info_problem));
+
+        // std::ofstream out((fileName + "3").toLatin1().data());
+        std::ofstream out((fileName).toLatin1().data());
+        XMLProblem::document_(out, doc, namespace_info_map);
+    }
+    catch (const xml_schema::exception& e)
+    {
+        throw AgrosException(QString::fromStdString(e.what()));
+    }
 }
 
 void Scene::readSolutionFromFile(const QString &fileName)
