@@ -18,12 +18,12 @@ cdef extern from "limits.h":
 
 cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
     cdef cppclass PyField:
-        PyField(char *field_id) except +
+        PyField(string fieldId) except +
 
-        char *fieldId()
+        string fieldId()
 
-        char *getAnalysisType()
-        void setAnalysisType(char* analysisType) except +
+        string getAnalysisType()
+        void setAnalysisType(string analysisType) except +
 
         int getNumberOfRefinements()
         void setNumberOfRefinements(int numberOfRefinements) except +
@@ -31,8 +31,8 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         int getPolynomialOrder()
         void setPolynomialOrder(int polynomialOrder) except +
 
-        char *getLinearityType()
-        void setLinearityType(char* linearityType) except +
+        string getLinearityType()
+        void setLinearityType(string linearityType) except +
 
         double getNonlinearTolerance()
         void setNonlinearTolerance(double nonlinearTolerance) except +
@@ -58,8 +58,8 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         int getPicardAndersonNumberOfLastVectors()
         void setPicardAndersonNumberOfLastVectors(int number) except +
 
-        char *getAdaptivityType()
-        void setAdaptivityType(char* adaptivityType) except +
+        string getAdaptivityType()
+        void setAdaptivityType(string adaptivityType) except +
 
         double getAdaptivityTolerance()
         void setAdaptivityTolerance(double adaptivityTolerance) except +
@@ -79,44 +79,107 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         double getTimeSkip()
         void setTimeSkip(double timeSkip) except +
 
-        void addBoundary(char*, char*, map[char*, double] parameters, map[char*, char*] expressions) except +
-        void modifyBoundary(char*, char*, map[char*, double] parameters, map[char*, char*] expressions) except +
-        void removeBoundary(char*)
+        void addBoundary(string, string, map[string, double] parameters, map[string, string] expressions) except +
+        void modifyBoundary(string, string, map[string, double] parameters, map[string, string] expressions) except +
+        void removeBoundary(string)
 
-        void addMaterial(char *id, map[char*, double] parameters, map[char*, char*] expressions, map[char*, vector[double]] nonlin_x, map[char*, vector[double]] nonlin_y) except +
-        void modifyMaterial(char* name, map[char*, double] parameters, map[char*, char*] expressions, map[char*, vector[double]] nonlin_x, map[char*, vector[double]] nonlin_y) except +
-        void removeMaterial(char* name)
+        void addMaterial(string id, map[string, double] parameters, map[string, string] expressions, map[string, vector[double]] nonlin_x, map[string, vector[double]] nonlin_y) except +
+        void modifyMaterial(string name, map[string, double] parameters, map[string, string] expressions, map[string, vector[double]] nonlin_x, map[string, vector[double]] nonlin_y) except +
+        void removeMaterial(string name)
 
         void solve()
 
-        void localValues(double x, double y, int timeStep, int adaptivityStep, char *solutionType, map[string, double] results) except +
-        void surfaceIntegrals(vector[int], int timeStep, int adaptivityStep, char *solutionType, map[string, double] results) except +
-        void volumeIntegrals(vector[int], int timeStep, int adaptivityStep, char *solutionType, map[string, double] results) except +
+        void localValues(double x, double y, int timeStep, int adaptivityStep, string solutionType, map[string, double] results) except +
+        void surfaceIntegrals(vector[int], int timeStep, int adaptivityStep, string solutionType, map[string, double] results) except +
+        void volumeIntegrals(vector[int], int timeStep, int adaptivityStep, string solutionType, map[string, double] results) except +
 
         void initialMeshParameters(map[string , int] parameters) except +
         void solutionMeshParameters(map[string , int] parameters) except +
 
         void adaptivityInfo(vector[double] &error, vector[int] &dofs) except +
 
+cdef map[string, double] get_parameters_map(parameters):
+    cdef map[string, double] parameters_map
+    cdef pair[string, double] parameter
+
+    for key in parameters:
+        if isinstance(parameters[key], dict):
+            if ("value" in parameters[key]):
+                val = parameters[key]["value"]
+            else:
+                val = 0.0
+        else:
+            val = parameters[key]
+
+        parameter.first = string(key)
+        parameter.second = val
+        parameters_map.insert(parameter)
+
+    return parameters_map
+
+cdef map[string, string] get_expression_map(parameters):
+    cdef map[string, string] expression_map
+    cdef pair[string, string] expression
+
+    for key in parameters:
+        if ("expression" in parameters[key]):
+            expression.first = string(key)
+            expression.second = string(parameters[key]["expression"])
+            expression_map.insert(expression)
+
+    return expression_map
+
+cdef map[string, vector[double]] get_nonlin_x_map(parameters):
+    cdef map[string, vector[double]] nonlin_x_map
+    cdef pair[string, vector[double]] nonlin_x
+    cdef vector[double] x
+
+    for key in parameters:
+        if isinstance(parameters[key], dict):
+            if ("x" in parameters[key]):
+                for v in parameters[key]["x"]:
+                    x.push_back(v)
+                nonlin_x.first = string(key)
+                nonlin_x.second = x
+                nonlin_x_map.insert(nonlin_x)
+
+    return nonlin_x_map
+
+cdef map[string, vector[double]] get_nonlin_y_map(parameters):
+    cdef map[string, vector[double]] nonlin_y_map
+    cdef pair[string, vector[double]] nonlin_y
+    cdef vector[double] y
+
+    for key in parameters:
+        if isinstance(parameters[key], dict):
+            if ("y" in parameters[key]):
+                for v in parameters[key]["y"]:
+                    y.push_back(v)
+                nonlin_y.first = string(key)
+                nonlin_y.second = y
+                nonlin_y_map.insert(nonlin_y)
+
+    return nonlin_y_map
+
 cdef class __Field__:
     cdef PyField *thisptr
 
-    def __cinit__(self, char *field_id):
-        self.thisptr = new PyField(field_id)
+    def __cinit__(self, field_id):
+        self.thisptr = new PyField(string(field_id))
     def __dealloc__(self):
         del self.thisptr
 
     # field id
     property field_id:
         def __get__(self):
-            return self.thisptr.fieldId()
+            return self.thisptr.fieldId().c_str()
 
     # analysis type
     property analysis_type:
         def __get__(self):
-            return self.thisptr.getAnalysisType()
+            return self.thisptr.getAnalysisType().c_str()
         def __set__(self, field_id):
-            self.thisptr.setAnalysisType(field_id)
+            self.thisptr.setAnalysisType(string(field_id))
 
     # number of refinements
     property number_of_refinements:
@@ -135,9 +198,9 @@ cdef class __Field__:
     # linearity type
     property linearity_type:
         def __get__(self):
-            return self.thisptr.getLinearityType()
+            return self.thisptr.getLinearityType().c_str()
         def __set__(self, linearity_type):
-            self.thisptr.setLinearityType(linearity_type)
+            self.thisptr.setLinearityType(string(linearity_type))
 
     # nonlinear tolerance
     property nonlinear_tolerance:
@@ -198,9 +261,9 @@ cdef class __Field__:
     # adaptivity type
     property adaptivity_type:
         def __get__(self):
-            return self.thisptr.getAdaptivityType()
+            return self.thisptr.getAdaptivityType().c_str()
         def __set__(self, adaptivity_type):
-            self.thisptr.setAdaptivityType(adaptivity_type)
+            self.thisptr.setAdaptivityType(string(adaptivity_type))
 
     # adaptivity tolerance
     property adaptivity_tolerance:
@@ -246,172 +309,50 @@ cdef class __Field__:
             self.thisptr.setTimeSkip(skip)
 
     # boundaries
-    def add_boundary(self, char *name, char *type, parameters = {}):
-        cdef map[char*, double] parameters_map
-        cdef pair[char*, double] parameter
+    def add_boundary(self, name, type, parameters = {}):
+        cdef map[string, double] parameters_map = get_parameters_map(parameters)
+        cdef map[string, string] expression_map = get_expression_map(parameters)
 
-        cdef map[char*, char*] expression_map
-        cdef pair[char*, char*] expression
+        self.thisptr.addBoundary(string(name), string(type), parameters_map, expression_map)
 
-        for key in parameters:
-            if isinstance(parameters[key], dict):
-                if ("value" in parameters[key]):
-                    val = parameters[key]["value"]
-                else:
-                    val = 0.0
+    def modify_boundary(self, name, type = "", parameters = {}):
+        cdef map[string, double] parameters_map = get_parameters_map(parameters)
+        cdef map[string, string] expression_map = get_expression_map(parameters)
 
-                if ("expression" in parameters[key]):
-                    expression.first = key
-                    expression.second = parameters[key]["expression"]
-                    expression_map.insert(expression)
-            else:
-                val = parameters[key]
+        self.thisptr.modifyBoundary(string(name), string(type), parameters_map, expression_map)
 
-            parameter.first = key
-            parameter.second = val
-            parameters_map.insert(parameter)
-
-        self.thisptr.addBoundary(name, type, parameters_map, expression_map)
-
-    def modify_boundary(self, char *name, char *type = "", parameters = {}):
-        cdef map[char*, double] parameters_map
-        cdef pair[char*, double] parameter
-
-        cdef map[char*, char*] expression_map
-        cdef pair[char*, char*] expression
-
-        for key in parameters:
-            if isinstance(parameters[key], dict):
-                if ("value" in parameters[key]):
-                    val = parameters[key]["value"]
-                else:
-                    val = 0.0
-
-                if ("expression" in parameters[key]):
-                    expression.first = key
-                    expression.second = parameters[key]["expression"]
-                    expression_map.insert(expression)
-            else:
-                val = parameters[key]
-
-            parameter.first = key
-            parameter.second = val
-            parameters_map.insert(parameter)
-
-        self.thisptr.modifyBoundary(name, type, parameters_map, expression_map)
-
-    def remove_boundary(self, char *name):
-        self.thisptr.removeBoundary(name)
+    def remove_boundary(self, name):
+        self.thisptr.removeBoundary(string(name))
 
     # materials
-    def add_material(self, char *name, parameters = {}):
-        cdef map[char*, double] parameters_map
-        cdef pair[char*, double] parameter
+    def add_material(self, name, parameters = {}):
+        cdef map[string, double] parameters_map = get_parameters_map(parameters)
+        cdef map[string, string] expression_map = get_expression_map(parameters)
+        cdef map[string, vector[double]] nonlin_x_map = get_nonlin_x_map(parameters)
+        cdef map[string, vector[double]] nonlin_y_map = get_nonlin_y_map(parameters)
 
-        cdef map[char*, char*] expression_map
-        cdef pair[char*, char*] expression
+        self.thisptr.addMaterial(string(name), parameters_map, expression_map, nonlin_x_map, nonlin_y_map)
 
-        cdef map[char*, vector[double]] nonlin_x_map
-        cdef pair[char*, vector[double]] nonlin_x
-        cdef vector[double] x
-        cdef map[char*, vector[double]] nonlin_y_map
-        cdef pair[char*, vector[double]] nonlin_y
-        cdef vector[double] y
+    def modify_material(self, name, parameters = {}):
+        cdef map[string, double] parameters_map = get_parameters_map(parameters)
+        cdef map[string, string] expression_map = get_expression_map(parameters)
+        cdef map[string, vector[double]] nonlin_x_map = get_nonlin_x_map(parameters)
+        cdef map[string, vector[double]] nonlin_y_map = get_nonlin_y_map(parameters)
 
-        for key in parameters:
-            if isinstance(parameters[key], dict):
-                if ("value" in parameters[key]):
-                    val = parameters[key]["value"]
-                else:
-                    val = 0.0
+        self.thisptr.modifyMaterial(string(name), parameters_map, expression_map, nonlin_x_map, nonlin_y_map)
 
-                if ("expression" in parameters[key]):
-                    expression.first = key
-                    expression.second = parameters[key]["expression"]
-                    expression_map.insert(expression)
-
-                if ("x" in parameters[key]):
-                    for v in parameters[key]["x"]:
-                        x.push_back(v)
-                    nonlin_x.first = key
-                    nonlin_x.second = x
-                    nonlin_x_map.insert(nonlin_x)
-
-                if ("y" in parameters[key]):
-                    for v in parameters[key]["y"]:
-                        y.push_back(v)
-                    nonlin_y.first = key
-                    nonlin_y.second = y
-                    nonlin_y_map.insert(nonlin_y)
-            else:
-                val = parameters[key]
-
-            parameter.first = key
-            parameter.second = val
-            parameters_map.insert(parameter)
-
-        self.thisptr.addMaterial(name, parameters_map, expression_map, nonlin_x_map, nonlin_y_map)
-
-    def modify_material(self, char *name, parameters = {}):
-        cdef map[char*, double] parameters_map
-        cdef pair[char*, double] parameter
-
-        cdef map[char*, char*] expression_map
-        cdef pair[char*, char*] expression
-
-        cdef map[char*, vector[double]] nonlin_x_map
-        cdef pair[char*, vector[double]] nonlin_x
-        cdef vector[double] x
-        cdef map[char*, vector[double]] nonlin_y_map
-        cdef pair[char*, vector[double]] nonlin_y
-        cdef vector[double] y
-
-        for key in parameters:
-            if isinstance(parameters[key], dict):
-                if ("value" in parameters[key]):
-                    val = parameters[key]["value"]
-                else:
-                    val = 0.0
-
-                if ("expression" in parameters[key]):
-                    expression.first = key
-                    expression.second = parameters[key]["expression"]
-                    expression_map.insert(expression)
-
-                if ("x" in parameters[key]):
-                    for v in parameters[key]["x"]:
-                        x.push_back(v)
-                    nonlin_x.first = key
-                    nonlin_x.second = x
-                    nonlin_x_map.insert(nonlin_x)
-
-                if ("y" in parameters[key]):
-                    for v in parameters[key]["y"]:
-                        y.push_back(v)
-                    nonlin_y.first = key
-                    nonlin_y.second = y
-                    nonlin_y_map.insert(nonlin_y)
-            else:
-                val = parameters[key]
-
-            parameter.first = key
-            parameter.second = val
-            parameters_map.insert(parameter)
-
-        self.thisptr.modifyMaterial(name, parameters_map, expression_map, nonlin_x_map, nonlin_y_map)
-
-    def remove_material(self, char *name):
-        self.thisptr.removeMaterial(name)
+    def remove_material(self, name):
+        self.thisptr.removeMaterial(string(name))
 
     # local values
-    def local_values(self, double x, double y, time_step = None, adaptivity_step = None, char *solution_type = "normal"):
+    def local_values(self, x, y, time_step = None, adaptivity_step = None, solution_type = "normal"):
         out = dict()
         cdef map[string, double] results
 
         self.thisptr.localValues(x, y,
                                  int(-1 if time_step is None else time_step),
                                  int(-1 if adaptivity_step is None else adaptivity_step),
-                                 solution_type, results)
+                                 string(solution_type), results)
         it = results.begin()
         while it != results.end():
             out[deref(it).first.c_str()] = deref(it).second
@@ -420,7 +361,7 @@ cdef class __Field__:
         return out
 
     # surface integrals
-    def surface_integrals(self, edges = [], time_step = None, adaptivity_step = None, char *solution_type = "normal"):
+    def surface_integrals(self, edges = [], time_step = None, adaptivity_step = None, solution_type = "normal"):
         cdef vector[int] edges_vector
         for i in edges:
             edges_vector.push_back(i)
@@ -431,7 +372,7 @@ cdef class __Field__:
         self.thisptr.surfaceIntegrals(edges_vector,
                                       int(-1 if time_step is None else time_step),
                                       int(-1 if adaptivity_step is None else adaptivity_step),
-                                      solution_type, results)
+                                      string(solution_type), results)
         it = results.begin()
         while it != results.end():
             out[deref(it).first.c_str()] = deref(it).second
@@ -440,7 +381,7 @@ cdef class __Field__:
         return out
 
     # volume integrals
-    def volume_integrals(self, labels = [], time_step = None, adaptivity_step = None, char *solution_type = "normal"):
+    def volume_integrals(self, labels = [], time_step = None, adaptivity_step = None, solution_type = "normal"):
         cdef vector[int] labels_vector
         for i in labels:
             labels_vector.push_back(i)
@@ -451,7 +392,7 @@ cdef class __Field__:
         self.thisptr.volumeIntegrals(labels_vector,
                                      int(-1 if time_step is None else time_step),
                                      int(-1 if adaptivity_step is None else adaptivity_step),
-                                     solution_type, results)
+                                     string(solution_type), results)
         it = results.begin()
         while it != results.end():
             out[deref(it).first.c_str()] = deref(it).second
@@ -509,5 +450,5 @@ cdef class __Field__:
 
         return dofs
 
-def field(char *field_id):
+def field(field_id):
     return __Field__(field_id)

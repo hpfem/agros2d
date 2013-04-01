@@ -27,36 +27,41 @@
 #include "scenemarker.h"
 #include "sceneview_post2d.h"
 
-PyField::PyField(char *fieldId)
+PyField::PyField(std::string fieldId)
 {
     QMap<QString, QString> modules = Module::availableModules();
+    QString id = QString::fromStdString(fieldId);
 
-    if (modules.keys().contains(QString(fieldId)))
-        if (Agros2D::problem()->hasField(QString(fieldId)))
+    if (modules.keys().contains(id))
+    {
+        if (Agros2D::problem()->hasField(id))
         {
-            m_fieldInfo = Agros2D::problem()->fieldInfo(fieldId);
+            m_fieldInfo = Agros2D::problem()->fieldInfo(id);
         }
         else
         {
             try{
-                m_fieldInfo = new FieldInfo(fieldId);
+                m_fieldInfo = new FieldInfo(id);
             }
             catch(AgrosPluginException& e)
             {
-                throw invalid_argument(QObject::tr("Invalid field id. Plugin %1 cannot be loaded").arg(QString(fieldId)).toStdString());
+                throw invalid_argument(QObject::tr("Invalid field id. Plugin %1 cannot be loaded").arg(id).toStdString());
             }
 
             Agros2D::problem()->addField(m_fieldInfo);
         }
+    }
     else
+    {
         throw invalid_argument(QObject::tr("Invalid field id. Valid keys: %1").arg(stringListToString(modules.keys())).toStdString());
+    }
 }
 
-void PyField::setAnalysisType(const char *analysisType)
+void PyField::setAnalysisType(const std::string analysisType)
 {
-    if (m_fieldInfo->analyses().contains(analysisTypeFromStringKey(QString(analysisType))))
+    if (m_fieldInfo->analyses().contains(analysisTypeFromStringKey(QString::fromStdString(analysisType))))
     {
-        m_fieldInfo->setAnalysisType(analysisTypeFromStringKey(QString(analysisType)));
+        m_fieldInfo->setAnalysisType(analysisTypeFromStringKey(QString::fromStdString(analysisType)));
     }
     else
     {
@@ -84,10 +89,10 @@ void PyField::setPolynomialOrder(const int polynomialOrder)
         throw out_of_range(QObject::tr("Polynomial order is out of range (1 - 10).").toStdString());
 }
 
-void PyField::setLinearityType(const char *linearityType)
+void PyField::setLinearityType(const std::string linearityType)
 {
-    if (linearityTypeStringKeys().contains(QString(linearityType)))
-        m_fieldInfo->setLinearityType(linearityTypeFromStringKey(QString(linearityType)));
+    if (linearityTypeStringKeys().contains(QString::fromStdString(linearityType)))
+        m_fieldInfo->setLinearityType(linearityTypeFromStringKey(QString::fromStdString(linearityType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(linearityTypeStringKeys())).toStdString());
 }
@@ -158,10 +163,10 @@ void PyField::setPicardAndersonNumberOfLastVectors(const int number)
         throw out_of_range(QObject::tr("Number of last vector is out of range (1 - 5).").toStdString());
 }
 
-void PyField::setAdaptivityType(const char *adaptivityType)
+void PyField::setAdaptivityType(const std::string adaptivityType)
 {
-    if (adaptivityTypeStringKeys().contains(QString(adaptivityType)))
-        m_fieldInfo->setAdaptivityType(adaptivityTypeFromStringKey(QString(adaptivityType)));
+    if (adaptivityTypeStringKeys().contains(QString::fromStdString(adaptivityType)))
+        m_fieldInfo->setAdaptivityType(adaptivityTypeFromStringKey(QString::fromStdString(adaptivityType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(adaptivityTypeStringKeys())).toStdString());
 }
@@ -211,113 +216,113 @@ void PyField::setTimeSkip(const double timeSkip)
         throw out_of_range(QObject::tr("Time skip must be greater than or equal to zero.").toStdString());
 }
 
-void PyField::addBoundary(const char *name, const char *type, map<char*, double> parameters, map<char *, char *> expressions)
+void PyField::addBoundary(const std::string name, const std::string type, map<std::string, double> parameters, map<std::string, std::string> expressions)
 {
     // check boundaries with same name
     foreach (SceneBoundary *boundary, Agros2D::scene()->boundaries->filter(m_fieldInfo->fieldId()).items())
     {
-        if (boundary->name() == name)
-            throw invalid_argument(QObject::tr("Boundary condition '%1' already exists.").arg(QString(name)).toStdString());
+        if (boundary->name() == QString::fromStdString(name))
+            throw invalid_argument(QObject::tr("Boundary condition '%1' already exists.").arg(QString::fromStdString(name)).toStdString());
     }
 
-    if (!m_fieldInfo->boundaryTypeContains(QString(type)))
-        throw invalid_argument(QObject::tr("Wrong boundary type '%1'.").arg(type).toStdString());
+    if (!m_fieldInfo->boundaryTypeContains(QString::fromStdString(type)))
+        throw invalid_argument(QObject::tr("Wrong boundary type '%1'.").arg(QString::fromStdString(type)).toStdString());
 
-    Module::BoundaryType boundaryType = m_fieldInfo->boundaryType(QString(type));
+    Module::BoundaryType boundaryType = m_fieldInfo->boundaryType(QString::fromStdString(type));
 
     // browse boundary parameters
     QHash<QString, Value> values;
-    for (map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
+    for (map<std::string, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         bool assigned = false;
         foreach (Module::BoundaryTypeVariable variable, boundaryType.variables())
         {
-            if (variable.id() == QString((*i).first))
+            if (variable.id() == QString::fromStdString((*i).first))
             {
                 assigned = true;
                 if (expressions.count((*i).first) == 0)
                     values[variable.id()] = Value((*i).second);
                 else
-                    values[variable.id()] = Value(expressions[(*i).first]);
+                    values[variable.id()] = Value(QString::fromStdString(expressions[(*i).first]));
                 break;
             }
         }
 
         if (!assigned)
-            throw invalid_argument(QObject::tr("Wrong parameter '%1'.").arg(QString((*i).first)).toStdString());
+            throw invalid_argument(QObject::tr("Wrong parameter '%1'.").arg(QString::fromStdString((*i).first)).toStdString());
     }
 
-    Agros2D::scene()->addBoundary(new SceneBoundary(m_fieldInfo, name, type, values));
+    Agros2D::scene()->addBoundary(new SceneBoundary(m_fieldInfo, QString::fromStdString(name), QString::fromStdString(type), values));
 }
 
-void PyField::modifyBoundary(const char *name, const char *type, map<char*, double> parameters, map<char *, char *> expressions)
+void PyField::modifyBoundary(const std::string name, const std::string type, map<std::string, double> parameters, map<std::string, std::string> expressions)
 {
-    SceneBoundary *sceneBoundary = Agros2D::scene()->getBoundary(m_fieldInfo, QString(name));
+    SceneBoundary *sceneBoundary = Agros2D::scene()->getBoundary(m_fieldInfo, QString::fromStdString(name));
     if (sceneBoundary == NULL)
-        throw invalid_argument(QObject::tr("Boundary condition '%1' doesn't exists.").arg(name).toStdString());
+        throw invalid_argument(QObject::tr("Boundary condition '%1' doesn't exists.").arg(QString::fromStdString(name)).toStdString());
 
     // browse boundary types
     foreach (Module::BoundaryType boundaryType, sceneBoundary->fieldInfo()->boundaryTypes())
     {
-        if (QString(type) == boundaryType.id())
+        if (QString::fromStdString(type) == boundaryType.id())
         {
-            sceneBoundary->setType(QString(type));
+            sceneBoundary->setType(QString::fromStdString(type));
             break;
         }
         else
-            throw invalid_argument(QObject::tr("Wrong boundary type '%1'.").arg(type).toStdString());
+            throw invalid_argument(QObject::tr("Wrong boundary type '%1'.").arg(QString::fromStdString(type)).toStdString());
     }
 
     // browse boundary parameters
     Module::BoundaryType boundaryType = m_fieldInfo->boundaryType(sceneBoundary->type());
-    for (map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
+    for (map<std::string, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         bool assigned = false;
         foreach (Module::BoundaryTypeVariable variable, boundaryType.variables())
         {
-            if (variable.id() == QString((*i).first))
+            if (variable.id() == QString::fromStdString((*i).first))
             {
                 assigned = true;
                 if (expressions.count((*i).first) == 0)
-                    sceneBoundary->setValue(QString((*i).first), Value((*i).second));
+                    sceneBoundary->setValue(QString::fromStdString((*i).first), Value((*i).second));
                 else
-                    sceneBoundary->setValue(QString((*i).first), Value(expressions[(*i).first]));
+                    sceneBoundary->setValue(QString::fromStdString((*i).first), Value(QString::fromStdString(expressions[(*i).first])));
                 break;
             }
         }
 
         if (!assigned)
-            throw invalid_argument(QObject::tr("Wrong parameter '%1'.").arg(QString((*i).first)).toStdString());
+            throw invalid_argument(QObject::tr("Wrong parameter '%1'.").arg(QString::fromStdString((*i).first)).toStdString());
     }
 }
 
-void PyField::removeBoundary(char *name)
+void PyField::removeBoundary(std::string name)
 {
-    Agros2D::scene()->removeBoundary(Agros2D::scene()->getBoundary(m_fieldInfo, QString(name)));
+    Agros2D::scene()->removeBoundary(Agros2D::scene()->getBoundary(m_fieldInfo, QString::fromStdString(name)));
 }
 
-void PyField::addMaterial(char *name, map<char*, double> parameters,
-                          map<char*, char* > expressions,
-                          map<char*, vector<double> > nonlin_x,
-                          map<char*, vector<double> > nonlin_y)
+void PyField::addMaterial(std::string name, map<std::string, double> parameters,
+                          map<std::string, std::string> expressions,
+                          map<std::string, vector<double> > nonlin_x,
+                          map<std::string, vector<double> > nonlin_y)
 {
     // check materials with same name
     foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(m_fieldInfo->fieldId()).items())
     {
-        if (material->name() == name)
-            throw invalid_argument(QObject::tr("Material '%1' already exists.").arg(QString(name)).toStdString());
+        if (material->name() == QString::fromStdString(name))
+            throw invalid_argument(QObject::tr("Material '%1' already exists.").arg(QString::fromStdString(name)).toStdString());
     }
 
     // browse material parameters
     QHash<QString, Value> values;
-    for (std::map<char*, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
+    for (map<std::string, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         QList<Module::MaterialTypeVariable> materials = m_fieldInfo->materialTypeVariables();
 
         bool assigned = false;
         foreach (Module::MaterialTypeVariable variable, materials)
         {
-            if (variable.id() == QString((*i).first))
+            if (variable.id() == QString::fromStdString((*i).first))
             {
                 int lenx = ((nonlin_x.find((*i).first) != nonlin_x.end()) ? nonlin_x[(*i).first].size() : 0);
                 int leny = ((nonlin_y.find((*i).first) != nonlin_y.end()) ? nonlin_y[(*i).first].size() : 0);
@@ -333,7 +338,7 @@ void PyField::addMaterial(char *name, map<char*, double> parameters,
                                                   (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
                                                   (leny > 0) ? nonlin_y[(*i).first] : vector<double>());
                 else
-                    values[variable.id()] = Value(expressions[(*i).first],
+                    values[variable.id()] = Value(QString::fromStdString(expressions[(*i).first]),
                             (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
                         (leny > 0) ? nonlin_y[(*i).first] : vector<double>());
                 break;
@@ -341,30 +346,30 @@ void PyField::addMaterial(char *name, map<char*, double> parameters,
         }
 
         if (!assigned)
-            throw invalid_argument(QObject::tr("Wrong parameter '%1'.").arg(QString((*i).first)).toStdString());
+            throw invalid_argument(QObject::tr("Wrong parameter '%1'.").arg(QString::fromStdString((*i).first)).toStdString());
     }
 
-    Agros2D::scene()->addMaterial(new SceneMaterial(m_fieldInfo, QString(name), values));
+    Agros2D::scene()->addMaterial(new SceneMaterial(m_fieldInfo, QString::fromStdString(name), values));
 }
 
-void PyField::modifyMaterial(char *name, map<char*, double> parameters,
-                          map<char*, char* > expressions,
-                          map<char*, vector<double> > nonlin_x,
-                          map<char*, vector<double> > nonlin_y)
+void PyField::modifyMaterial(std::string name, map<std::string, double> parameters,
+                          map<std::string, std::string> expressions,
+                          map<std::string, vector<double> > nonlin_x,
+                          map<std::string, vector<double> > nonlin_y)
 {
-    SceneMaterial *sceneMaterial = Agros2D::scene()->getMaterial(m_fieldInfo, QString(name));
+    SceneMaterial *sceneMaterial = Agros2D::scene()->getMaterial(m_fieldInfo, QString::fromStdString(name));
 
     if (sceneMaterial == NULL)
-        throw invalid_argument(QObject::tr("Material '%1' doesn't exists.").arg(name).toStdString());
+        throw invalid_argument(QObject::tr("Material '%1' doesn't exists.").arg(QString::fromStdString(name)).toStdString());
 
-    for( map<char*, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
+    for( map<std::string, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
     {
         QList<Module::MaterialTypeVariable> materialVariables = m_fieldInfo->materialTypeVariables();
 
         bool assigned = false;
         foreach (Module::MaterialTypeVariable variable, materialVariables)
         {
-            if (variable.id() == QString((*i).first))
+            if (variable.id() == QString::fromStdString((*i).first))
             {
                 int lenx = ((nonlin_x.find((*i).first) != nonlin_x.end()) ? nonlin_x[(*i).first].size() : 0);
                 int leny = ((nonlin_y.find((*i).first) != nonlin_y.end()) ? nonlin_y[(*i).first].size() : 0);
@@ -376,11 +381,11 @@ void PyField::modifyMaterial(char *name, map<char*, double> parameters,
 
                 assigned = true;
                 if (expressions.count((*i).first) == 0)
-                    sceneMaterial->setValue(QString((*i).first), Value((*i).second,
+                    sceneMaterial->setValue(QString::fromStdString((*i).first), Value((*i).second,
                                                                        (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
                                                                        (leny > 0) ? nonlin_y[(*i).first] : vector<double>()));
                 else
-                    sceneMaterial->setValue(QString((*i).first), Value(expressions[(*i).first],
+                    sceneMaterial->setValue(QString::fromStdString((*i).first), Value(QString::fromStdString(expressions[(*i).first]),
                                             (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
                                             (leny > 0) ? nonlin_y[(*i).first] : vector<double>()));
                 break;
@@ -388,17 +393,17 @@ void PyField::modifyMaterial(char *name, map<char*, double> parameters,
         }
 
         if (!assigned)
-            throw invalid_argument(QObject::tr("Wrong parameter '%1'.").arg(QString((*i).first)).toStdString());
+            throw invalid_argument(QObject::tr("Wrong parameter '%1'.").arg(QString::fromStdString((*i).first)).toStdString());
     }
 }
 
-void PyField::removeMaterial(char *name)
+void PyField::removeMaterial(std::string name)
 {
-    Agros2D::scene()->removeMaterial(Agros2D::scene()->getMaterial(m_fieldInfo, QString(name)));
+    Agros2D::scene()->removeMaterial(Agros2D::scene()->getMaterial(m_fieldInfo, QString::fromStdString(name)));
 }
 
 void PyField::localValues(const double x, const double y, int timeStep, int adaptivityStep,
-                          const char *solutionType, map<std::string, double> &results)
+                          const std::string solutionType, map<std::string, double> &results)
 {
     map<std::string, double> values;
 
@@ -413,10 +418,10 @@ void PyField::localValues(const double x, const double y, int timeStep, int adap
 
         Point point(x, y);
 
-        if (!solutionTypeStringKeys().contains(QString(solutionType)))
+        if (!solutionTypeStringKeys().contains(QString::fromStdString(solutionType)))
             throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(solutionTypeStringKeys())).toStdString());
 
-        SolutionMode solutionMode = solutionTypeFromStringKey(QString(solutionType));
+        SolutionMode solutionMode = solutionTypeFromStringKey(QString::fromStdString(solutionType));
 
         // FIXME: (Franta) solutionMode have to be tested, but not here
         // FIXME: (Franta) finer solution is nor supported yet
@@ -463,7 +468,7 @@ void PyField::localValues(const double x, const double y, int timeStep, int adap
 }
 
 void PyField::surfaceIntegrals(vector<int> edges, int timeStep, int adaptivityStep,
-                               const char *solutionType, map<std::string, double> &results)
+                               const std::string solutionType, map<std::string, double> &results)
 {
     map<std::string, double> values;
 
@@ -501,10 +506,10 @@ void PyField::surfaceIntegrals(vector<int> edges, int timeStep, int adaptivitySt
             Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnEdges);
         }
 
-        if (!solutionTypeStringKeys().contains(QString(solutionType)))
+        if (!solutionTypeStringKeys().contains(QString::fromStdString(solutionType)))
             throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(solutionTypeStringKeys())).toStdString());
 
-        SolutionMode solutionMode = solutionTypeFromStringKey(QString(solutionType));
+        SolutionMode solutionMode = solutionTypeFromStringKey(QString::fromStdString(solutionType));
 
         // FIXME: (Franta) solutionMode have to be tested, but not here
         // FIXME: (Franta) finer solution is nor supported yet
@@ -542,7 +547,7 @@ void PyField::surfaceIntegrals(vector<int> edges, int timeStep, int adaptivitySt
 }
 
 void PyField::volumeIntegrals(vector<int> labels, int timeStep, int adaptivityStep,
-                              const char *solutionType, map<std::string, double> &results)
+                              const std::string solutionType, map<std::string, double> &results)
 {
     map<std::string, double> values;
 
@@ -587,10 +592,10 @@ void PyField::volumeIntegrals(vector<int> labels, int timeStep, int adaptivitySt
             Agros2D::scene()->selectAll(SceneGeometryMode_OperateOnLabels);
         }
 
-        if (!solutionTypeStringKeys().contains(QString(solutionType)))
+        if (!solutionTypeStringKeys().contains(QString::fromStdString(solutionType)))
             throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(solutionTypeStringKeys())).toStdString());
 
-        SolutionMode solutionMode = solutionTypeFromStringKey(QString(solutionType));
+        SolutionMode solutionMode = solutionTypeFromStringKey(QString::fromStdString(solutionType));
 
         // FIXME: (Franta) solutionMode have to be tested, but not here
         // FIXME: (Franta) finer solution is nor supported yet
