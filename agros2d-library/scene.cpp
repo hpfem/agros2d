@@ -1304,7 +1304,7 @@ void Scene::readFromFile21(const QString &fileName)
 
     // read config
     QDomElement config = eleDoc.elementsByTagName("config").at(0).toElement();
-    Agros2D::problem()->configView()->load(&config, NULL);
+    Agros2D::problem()->setting()->load21(&config);
 
     // field ***************************************************************************************************************
 
@@ -1512,7 +1512,7 @@ void Scene::readFromFile21(const QString &fileName)
     emit defaultValues();
 
     // run script
-    currentPythonEngineAgros()->runScript(Agros2D::problem()->configView()->startupScript);
+    currentPythonEngineAgros()->runScript(Agros2D::problem()->setting()->value(ProblemSetting::Problem_StartupScript).toString());
 }
 
 void Scene::readFromFile30(const QString &fileName)
@@ -1549,7 +1549,7 @@ void Scene::readFromFile30(const QString &fileName)
         Agros2D::problem()->config()->setTimeStepMethod(timeStepMethodFromStringKey(QString::fromStdString(doc->problem().time_method())));
         Agros2D::problem()->config()->setTimeMethodTolerance(doc->problem().time_method_tolerance());
 
-        Agros2D::problem()->configView()->load(NULL, &doc->config());
+        Agros2D::problem()->setting()->load(&doc->config());
 
         // nodes
         for (unsigned int i = 0; i < doc->geometry().nodes().node().size(); i++)
@@ -1739,7 +1739,7 @@ void Scene::readFromFile30(const QString &fileName)
         emit defaultValues();
 
         // run script
-        currentPythonEngineAgros()->runScript(Agros2D::problem()->configView()->startupScript);
+        currentPythonEngineAgros()->runScript(Agros2D::problem()->setting()->value(ProblemSetting::Problem_StartupScript).toString());
     }
     catch (const xml_schema::exception& e)
     {
@@ -2055,7 +2055,7 @@ void Scene::writeToFile21(const QString &fileName)
     // save config
     QDomElement eleConfig = doc.createElement("config");
     eleDoc.appendChild(eleConfig);
-    Agros2D::problem()->configView()->save(&eleConfig, NULL);
+    Agros2D::problem()->setting()->save21(&eleConfig);
 
     QTextStream out(&file);
     doc.save(out, 4);
@@ -2208,7 +2208,7 @@ void Scene::writeToFile30(const QString &fileName)
         }
 
         XMLProblem::config config;
-        Agros2D::problem()->configView()->save(NULL, &config);
+        Agros2D::problem()->setting()->save(&config);
 
         XMLProblem::problem problem(fields,
                                     couplings,

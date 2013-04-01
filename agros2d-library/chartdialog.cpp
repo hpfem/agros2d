@@ -133,17 +133,17 @@ void ChartWidget::updateControls()
         tbxAnalysisType->setCurrentWidget(widGeometry);
     }
 
-    txtStartX->setValue(Agros2D::problem()->configView()->chartStartX);
-    txtStartY->setValue(Agros2D::problem()->configView()->chartStartY);
-    txtEndX->setValue(Agros2D::problem()->configView()->chartEndX);
-    txtEndY->setValue(Agros2D::problem()->configView()->chartEndY);
-    txtTimeX->setValue(Agros2D::problem()->configView()->chartTimeX);
-    txtTimeY->setValue(Agros2D::problem()->configView()->chartTimeY);
-    radHorizontalAxisX->setChecked(Agros2D::problem()->configView()->chartHorizontalAxis == ChartAxis_X);
-    radHorizontalAxisY->setChecked(Agros2D::problem()->configView()->chartHorizontalAxis == ChartAxis_Y);
-    radHorizontalAxisLength->setChecked(Agros2D::problem()->configView()->chartHorizontalAxis == ChartAxis_Length);
-    txtHorizontalAxisPoints->setValue(Agros2D::problem()->configView()->chartHorizontalAxisPoints);
-    chkHorizontalAxisReverse->setChecked(Agros2D::problem()->configView()->chartHorizontalAxisReverse);
+    txtStartX->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ChartStartX).toDouble());
+    txtStartY->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ChartStartY).toDouble());
+    txtEndX->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ChartEndX).toDouble());
+    txtEndY->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ChartEndY).toDouble());
+    txtTimeX->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ChartTimeX).toDouble());
+    txtTimeY->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ChartTimeY).toDouble());
+    radHorizontalAxisX->setChecked((ChartAxisType) Agros2D::problem()->setting()->value(ProblemSetting::View_ChartHorizontalAxis).toInt() == ChartAxis_X);
+    radHorizontalAxisY->setChecked((ChartAxisType) Agros2D::problem()->setting()->value(ProblemSetting::View_ChartHorizontalAxis).toInt() == ChartAxis_Y);
+    radHorizontalAxisLength->setChecked((ChartAxisType) Agros2D::problem()->setting()->value(ProblemSetting::View_ChartHorizontalAxis).toInt() == ChartAxis_Length);
+    txtHorizontalAxisPoints->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ChartHorizontalAxisPoints).toInt());
+    chkHorizontalAxisReverse->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ChartHorizontalAxisReverse).toBool());
 
     createChartLine();
 }
@@ -556,20 +556,20 @@ void ChartWidget::doApply()
     if (!Agros2D::problem()->isSolved())
         return;
 
-    Agros2D::problem()->configView()->chartStartX = txtStartX->value();
-    Agros2D::problem()->configView()->chartStartY = txtStartY->value();
-    Agros2D::problem()->configView()->chartEndX = txtEndX->value();
-    Agros2D::problem()->configView()->chartEndY = txtEndY->value();
-    Agros2D::problem()->configView()->chartTimeX = txtTimeX->value();
-    Agros2D::problem()->configView()->chartTimeY = txtTimeY->value();
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ChartStartX, txtStartX->value());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ChartStartY, txtStartY->value());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ChartEndX, txtEndX->value());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ChartEndY, txtEndY->value());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ChartTimeX, txtTimeX->value());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ChartTimeY, txtTimeY->value());
     if (radHorizontalAxisX->isChecked())
-        Agros2D::problem()->configView()->chartHorizontalAxis = ChartAxis_X;
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ChartHorizontalAxis, ChartAxis_X);
     else if (radHorizontalAxisY->isChecked())
-        Agros2D::problem()->configView()->chartHorizontalAxis = ChartAxis_Y;
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ChartHorizontalAxis, ChartAxis_Y);
     else if (radHorizontalAxisLength->isChecked())
-        Agros2D::problem()->configView()->chartHorizontalAxis = ChartAxis_Length;
-    Agros2D::problem()->configView()->chartHorizontalAxisReverse = chkHorizontalAxisReverse->isChecked();
-    Agros2D::problem()->configView()->chartHorizontalAxisPoints = txtHorizontalAxisPoints->value();
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ChartHorizontalAxis, ChartAxis_Length);
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ChartHorizontalAxisReverse, chkHorizontalAxisReverse->isChecked());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ChartHorizontalAxisPoints, txtHorizontalAxisPoints->value());
 
     if (tbxAnalysisType->currentWidget() == widGeometry)
     {

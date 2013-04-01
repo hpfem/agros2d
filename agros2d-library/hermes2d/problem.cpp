@@ -48,7 +48,7 @@ Problem::Problem()
     m_isSolving = false;
 
     m_config = new ProblemConfig();
-    m_configView = new ProblemConfigView();
+    m_setting = new ProblemSetting();
 
     connect(m_config, SIGNAL(changed()), this, SLOT(clearSolution()));
 }
@@ -59,7 +59,7 @@ Problem::~Problem()
     clearFieldsAndConfig();
 
     delete m_config;
-    delete m_configView;
+    delete m_setting;
 }
 
 bool Problem::isMeshed() const
@@ -153,7 +153,7 @@ void Problem::clearFieldsAndConfig()
 
     // clear config
     m_config->clear();
-    m_configView->clear();
+    m_setting->clear();
 }
 
 void Problem::addField(FieldInfo *field)

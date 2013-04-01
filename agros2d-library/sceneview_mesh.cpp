@@ -157,28 +157,28 @@ void SceneViewMesh::paintGL()
     if (!isVisible()) return;
     makeCurrent();
 
-    glClearColor(Agros2D::problem()->configView()->colorBackground.redF(),
-                 Agros2D::problem()->configView()->colorBackground.greenF(),
-                 Agros2D::problem()->configView()->colorBackground.blueF(), 0);
+    glClearColor(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundRed).toInt() / 255.0,
+                 Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundGreen).toInt() / 255.0,
+                 Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundBlue).toInt() / 255.0, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glDisable(GL_DEPTH_TEST);
 
     // grid
-    if (Agros2D::problem()->configView()->showGrid) paintGrid();
+    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowGrid).toBool()) paintGrid();
 
     QTime time;
 
     // view
     if (Agros2D::problem()->isSolved() && m_postHermes->isProcessed())
     {
-        if (Agros2D::problem()->configView()->showOrderView) paintOrder();
-        if (Agros2D::problem()->configView()->showSolutionMeshView) paintSolutionMesh();
+        if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderView).toBool()) paintOrder();
+        if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowSolutionMeshView).toBool()) paintSolutionMesh();
     }
 
     // initial mesh
     if (Agros2D::problem()->isMeshed() && m_postHermes->isProcessed())
-        if (Agros2D::problem()->configView()->showInitialMeshView) paintInitialMesh();
+        if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowInitialMeshView).toBool()) paintInitialMesh();
 
     // geometry
     paintGeometry();
@@ -186,19 +186,20 @@ void SceneViewMesh::paintGL()
     if (Agros2D::problem()->isSolved() && m_postHermes->isProcessed())
     {
         // bars
-        if (Agros2D::problem()->configView()->showOrderView && Agros2D::problem()->configView()->showOrderColorBar)
+        if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderView).toBool()
+                && Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderColorBar).toBool())
             paintOrderColorBar();
     }
 
     // rulers
-    if (Agros2D::problem()->configView()->showRulers)
+    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool())
     {
         paintRulers();
         paintRulersHints();
     }
 
     // axes
-    if (Agros2D::problem()->configView()->showAxes) paintAxes();
+    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowAxes).toBool()) paintAxes();
 
     paintZoomRegion();
 }
@@ -210,10 +211,10 @@ void SceneViewMesh::paintGeometry()
     // edges
     foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
     {
-        glColor3d(Agros2D::problem()->configView()->colorEdges.redF(),
-                  Agros2D::problem()->configView()->colorEdges.greenF(),
-                  Agros2D::problem()->configView()->colorEdges.blueF());
-        glLineWidth(Agros2D::problem()->configView()->edgeWidth);
+        glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesRed).toInt() / 255.0,
+                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesGreen).toInt() / 255.0,
+                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesBlue).toInt() / 255.0);
+        glLineWidth(Agros2D::problem()->setting()->value(ProblemSetting::View_EdgeWidth).toInt());
 
         if (fabs(edge->angle()) < EPS_ZERO)
         {
@@ -262,9 +263,9 @@ void SceneViewMesh::paintInitialMesh()
         loadProjection2d(true);
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glColor3d(Agros2D::problem()->configView()->colorInitialMesh.redF(),
-                  Agros2D::problem()->configView()->colorInitialMesh.greenF(),
-                  Agros2D::problem()->configView()->colorInitialMesh.blueF());
+        glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorInitialMeshRed).toInt() / 255.0,
+                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorInitialMeshGreen).toInt() / 255.0,
+                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorInitialMeshBlue).toInt() / 255.0);
         glLineWidth(1.3);
 
         glEnableClientState(GL_VERTEX_ARRAY);
@@ -304,9 +305,9 @@ void SceneViewMesh::paintSolutionMesh()
         loadProjection2d(true);
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glColor3d(Agros2D::problem()->configView()->colorSolutionMesh.redF(),
-                  Agros2D::problem()->configView()->colorSolutionMesh.greenF(),
-                  Agros2D::problem()->configView()->colorSolutionMesh.blueF());
+        glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSolutionMeshRed).toInt() / 255.0,
+                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSolutionMeshGreen).toInt() / 255.0,
+                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSolutionMeshBlue).toInt() / 255.0);
         glLineWidth(1.3);
 
         glEnableClientState(GL_VERTEX_ARRAY);
@@ -383,7 +384,7 @@ void SceneViewMesh::paintOrder()
     }
 
     // paint labels
-    if (Agros2D::problem()->configView()->orderLabel)
+    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderView).toBool())
     {
         loadProjectionViewPort();
 
@@ -416,7 +417,7 @@ void SceneViewMesh::paintOrder()
 
 void SceneViewMesh::paintOrderColorBar()
 {
-    if (!Agros2D::problem()->isSolved() || !Agros2D::problem()->configView()->showOrderColorBar) return;
+    if (!Agros2D::problem()->isSolved() || !Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderColorBar).toBool()) return;
 
     // order scalar view
     m_postHermes->ordView().lock_data();
@@ -444,7 +445,7 @@ void SceneViewMesh::paintOrderColorBar()
     int textWidth = 6 * (m_charDataPost[GLYPH_M].x1 - m_charDataPost[GLYPH_M].x0);
     int textHeight = 2 * (m_charDataPost[GLYPH_M].y1 - m_charDataPost[GLYPH_M].y0);
     Point scaleSize = Point(20 + textWidth, (20 + max * (2 * textHeight) - textHeight / 2.0 + 2));
-    Point scaleBorder = Point(10.0, (Agros2D::problem()->configView()->showRulers) ? 1.8 * textHeight : 10.0);
+    Point scaleBorder = Point(10.0, (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool()) ? 1.8 * textHeight : 10.0);
     double scaleLeft = (width() - (20 + textWidth));
 
     // blended rectangle

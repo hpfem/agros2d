@@ -101,9 +101,9 @@ void SceneViewCommon::createFontTexture()
         if (glIsTexture(m_textureLabelRulers))
             glDeleteTextures(1, &m_textureLabelRulers);
         glGenTextures(1, &m_textureLabelRulers);
-        m_textureLabelRulersName = Agros2D::problem()->configView()->rulersFont;
-        m_textureLabelRulersSize = Agros2D::problem()->configView()->rulersFontSize;
-        initFont(m_textureLabelRulers, m_charDataRulers, Agros2D::problem()->configView()->rulersFont, Agros2D::problem()->configView()->rulersFontSize);
+        m_textureLabelRulersName = Agros2D::problem()->setting()->value(ProblemSetting::View_RulersFontFamily).toString();
+        m_textureLabelRulersSize = Agros2D::problem()->setting()->value(ProblemSetting::View_RulersFontPointSize).toInt();
+        initFont(m_textureLabelRulers, m_charDataRulers, m_textureLabelRulersName, m_textureLabelRulersSize);
     }
     // qDebug() << "textureLabelRulers: " << m_textureLabelRulers;
 
@@ -115,9 +115,9 @@ void SceneViewCommon::createFontTexture()
         if (glIsTexture(m_textureLabelPost))
             glDeleteTextures(1, &m_textureLabelPost);
         glGenTextures(1, &m_textureLabelPost);
-        m_textureLabelPostName = Agros2D::problem()->configView()->rulersFont;
-        m_textureLabelPostSize = Agros2D::problem()->configView()->postFontSize;
-        initFont(m_textureLabelPost, m_charDataPost, Agros2D::problem()->configView()->postFont, Agros2D::problem()->configView()->postFontSize);
+        m_textureLabelPostName = Agros2D::problem()->setting()->value(ProblemSetting::View_PostFontFamily).toString();
+        m_textureLabelPostSize = Agros2D::problem()->setting()->value(ProblemSetting::View_PostFontPointSize).toInt();
+        initFont(m_textureLabelPost, m_charDataPost, m_textureLabelPostName, m_textureLabelPostSize);
     }
     // qDebug() << "textureLabelPost: " << m_textureLabelPost;
 }
@@ -134,9 +134,9 @@ void SceneViewCommon::setupViewport(int w, int h)
 
 void SceneViewCommon::printRulersAt(int penX, int penY, const QString &text)
 {
-    glColor3d(Agros2D::problem()->configView()->colorCross.darker().redF(),
-              Agros2D::problem()->configView()->colorCross.darker().greenF(),
-              Agros2D::problem()->configView()->colorCross.darker().blueF());
+    glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossRed).toInt() / 255.0 * 2.0/3.0,
+              Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossGreen).toInt() / 255.0 * 2.0/3.0,
+              Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossBlue).toInt() / 255.0 * 2.0/3.0);
 
     glBindTexture(GL_TEXTURE_2D, m_textureLabelRulers);
     printAt(penX, penY, text, m_charDataRulers);

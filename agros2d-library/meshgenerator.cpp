@@ -57,7 +57,7 @@ bool MeshGenerator::writeToHermes()
 
     // curved edges
     XMLMesh::curves_type curves;
-    if (Agros2D::problem()->configView()->curvilinearElements)
+    if (Agros2D::problem()->setting()->value(ProblemSetting::View_MeshCurvilinearElements).toBool())
     {
         for (int i = 0; i<edgeList.count(); i++)
         {

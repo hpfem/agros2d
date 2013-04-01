@@ -122,28 +122,28 @@ void PyViewConfig::setActiveSolutionType(const char *solutionType)
 
 void PyViewConfig::setGridShow(bool show)
 {
-    Agros2D::problem()->configView()->showGrid = show;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowGrid, show);
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewConfig::setGridStep(double step)
 {
-    Agros2D::problem()->configView()->gridStep = step;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_GridStep, step);
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewConfig::setAxesShow(bool show)
 {
-    Agros2D::problem()->configView()->showAxes = show;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowAxes, show);
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewConfig::setRulersShow(bool show)
 {
-    Agros2D::problem()->configView()->showRulers = show;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowRulers, show);
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
@@ -159,35 +159,35 @@ void PyViewMesh::activate()
 
 void PyViewMesh::setInitialMeshViewShow(bool show)
 {
-    Agros2D::problem()->configView()->showInitialMeshView = show;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowInitialMeshView, show);
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewMesh::setSolutionMeshViewShow(bool show)
 {
-    Agros2D::problem()->configView()->showSolutionMeshView = show;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowSolutionMeshView, show);
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewMesh::setOrderViewShow(bool show)
 {
-    Agros2D::problem()->configView()->showOrderView = show;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowOrderView, show);
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewMesh::setOrderViewColorBar(bool show)
 {
-    Agros2D::problem()->configView()->showOrderColorBar = show;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowOrderColorBar, show);
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewMesh::setOrderViewLabel(bool show)
 {
-    Agros2D::problem()->configView()->orderLabel = show;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowOrderLabel, show);
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
@@ -196,7 +196,7 @@ void PyViewMesh::setOrderViewPalette(char* palette)
 {
     if (paletteOrderTypeStringKeys().contains(QString(palette)))
     {
-        Agros2D::problem()->configView()->orderPaletteOrderType = paletteOrderTypeFromStringKey(QString(palette));
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_OrderPaletteOrderType, paletteOrderTypeFromStringKey(QString(palette)));
         if (!silentMode())
             currentPythonEngineAgros()->postHermes()->refresh();
     }
@@ -216,7 +216,7 @@ void PyViewPost::setScalarViewVariable(char* var)
         list.append(variable.id());
         if (variable.id() == QString(var))
         {
-            Agros2D::problem()->configView()->scalarVariable = QString(var);
+            Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariable, QString(var));
             currentPythonEngineAgros()->postHermes()->refresh();
             return;
         }
@@ -229,7 +229,7 @@ void PyViewPost::setScalarViewVariableComp(char* component)
 {
     if (physicFieldVariableCompTypeStringKeys().contains(QString(component)))
     {
-        Agros2D::problem()->configView()->scalarVariableComp = physicFieldVariableCompFromStringKey(QString(component));
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariableComp, physicFieldVariableCompFromStringKey(QString(component)));
         currentPythonEngineAgros()->postHermes()->refresh();
     }
     else
@@ -240,7 +240,7 @@ void PyViewPost::setScalarViewPalette(char* palette)
 {
     if (paletteTypeStringKeys().contains(QString(palette)))
     {
-        Agros2D::problem()->configView()->paletteType = paletteTypeFromStringKey(QString(palette));
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_PaletteType, paletteTypeFromStringKey(QString(palette)));
         currentPythonEngineAgros()->postHermes()->refresh();
     }
     else
@@ -251,7 +251,7 @@ void PyViewPost::setScalarViewPaletteQuality(char* quality)
 {
     if (paletteQualityStringKeys().contains(QString(quality)))
     {
-        Agros2D::problem()->configView()->linearizerQuality = paletteQualityFromStringKey(QString(quality));
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_LinearizerQuality, paletteQualityFromStringKey(QString(quality)));
         currentPythonEngineAgros()->postHermes()->refresh();
     }
     else
@@ -262,7 +262,7 @@ void PyViewPost::setScalarViewPaletteSteps(int steps)
 {
     if (steps >= PALETTESTEPSMIN && steps <= PALETTESTEPSMAX)
     {
-        Agros2D::problem()->configView()->paletteSteps = steps;
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_PaletteSteps, steps);
         currentPythonEngineAgros()->postHermes()->refresh();
     }
     else
@@ -271,25 +271,25 @@ void PyViewPost::setScalarViewPaletteSteps(int steps)
 
 void PyViewPost::setScalarViewPaletteFilter(bool filter)
 {
-    Agros2D::problem()->configView()->paletteFilter = filter;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_PaletteFilter, filter);
     currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewPost::setScalarViewRangeLog(bool log)
 {
-    Agros2D::problem()->configView()->scalarRangeLog = log;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeLog, log);
     currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewPost::setScalarViewRangeBase(double base)
 {
-    Agros2D::problem()->configView()->scalarRangeBase = base;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeBase, base);
     currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewPost::setScalarViewColorBar(bool show)
 {
-    Agros2D::problem()->configView()->showScalarColorBar = show;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowScalarColorBar, show);
     currentPythonEngineAgros()->postHermes()->refresh();
 }
 
@@ -297,7 +297,7 @@ void PyViewPost::setScalarViewDecimalPlace(int place)
 {
     if (place >= SCALARDECIMALPLACEMIN && place <= SCALARDECIMALPLACEMAX)
     {
-        Agros2D::problem()->configView()->scalarDecimalPlace = place;
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarDecimalPlace, place);
         currentPythonEngineAgros()->postHermes()->refresh();
     }
     else
@@ -306,19 +306,19 @@ void PyViewPost::setScalarViewDecimalPlace(int place)
 
 void PyViewPost::setScalarViewRangeAuto(bool autoRange)
 {
-    Agros2D::problem()->configView()->scalarRangeAuto = autoRange;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeAuto, autoRange);
     currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewPost::setScalarViewRangeMin(double min)
 {
-    Agros2D::problem()->configView()->scalarRangeMin = min;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeMin, min);
     currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewPost::setScalarViewRangeMax(double max)
 {
-    Agros2D::problem()->configView()->scalarRangeMax = max;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeMax, max);
     currentPythonEngineAgros()->postHermes()->refresh();
 }
 
@@ -334,14 +334,14 @@ void PyViewPost2D::activate()
 
 void PyViewPost2D::setScalarViewShow(bool show)
 {
-    Agros2D::problem()->configView()->showScalarView = show;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowScalarView, show);
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewPost2D::setContourShow(bool show)
 {
-    Agros2D::problem()->configView()->showContourView = show;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowContourView, show);
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
@@ -350,7 +350,7 @@ void PyViewPost2D::setContourCount(int count)
 {
     if (count >= CONTOURSCOUNTMIN && count <= CONTOURSCOUNTMAX)
     {
-        Agros2D::problem()->configView()->contoursCount = count;
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ContoursCount, count);
         if (!silentMode())
             currentPythonEngineAgros()->postHermes()->refresh();
     }
@@ -369,7 +369,7 @@ void PyViewPost2D::setContourVariable(char* var)
 
             if (variable.id() == QString(var))
             {
-                Agros2D::problem()->configView()->contourVariable = QString(var);
+                Agros2D::problem()->setting()->setValue(ProblemSetting::View_ContourVariable, QString(var));
                 if (!silentMode())
                     currentPythonEngineAgros()->postHermes()->refresh();
                 return;
@@ -382,7 +382,7 @@ void PyViewPost2D::setContourVariable(char* var)
 
 void PyViewPost2D::setVectorShow(bool show)
 {
-    Agros2D::problem()->configView()->showVectorView = show;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowVectorView, show);
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
@@ -391,7 +391,7 @@ void PyViewPost2D::setVectorCount(int count)
 {
     if (count >= VECTORSCOUNTMIN && count <= VECTORSCOUNTMAX)
     {
-        Agros2D::problem()->configView()->vectorCount = count;
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorCount, count);
         if (!silentMode())
             currentPythonEngineAgros()->postHermes()->refresh();
     }
@@ -403,7 +403,7 @@ void PyViewPost2D::setVectorScale(double scale)
 {
     if (scale >= VECTORSSCALEMIN && scale <= VECTORSSCALEMAX)
     {
-        Agros2D::problem()->configView()->vectorScale = scale;
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorScale, scale);
         if (!silentMode())
             currentPythonEngineAgros()->postHermes()->refresh();
     }
@@ -419,7 +419,7 @@ void PyViewPost2D::setVectorVariable(char* var)
         list.append(variable.id());
         if (variable.id() == QString(var))
         {
-            Agros2D::problem()->configView()->vectorVariable = QString(var);
+            Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorVariable, QString(var));
             if (!silentMode())
                 currentPythonEngineAgros()->postHermes()->refresh();
             return;
@@ -431,14 +431,14 @@ void PyViewPost2D::setVectorVariable(char* var)
 
 void PyViewPost2D::setVectorProportional(bool show)
 {
-    Agros2D::problem()->configView()->vectorProportional = show;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorProportional, show);
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewPost2D::setVectorColor(bool show)
 {
-    Agros2D::problem()->configView()->vectorColor = show;
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorColor, show);
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
@@ -465,7 +465,7 @@ void PyViewPost3D::setPost3DMode(char* mode)
 {
     if (sceneViewPost3DModeStringKeys().contains(QString(mode)))
     {
-        Agros2D::problem()->configView()->showPost3D = sceneViewPost3DModeFromStringKey(QString(mode));
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarView3DMode, sceneViewPost3DModeFromStringKey(QString(mode)));
         if (!silentMode())
             currentPythonEngineAgros()->postHermes()->refresh();
     }

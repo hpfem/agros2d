@@ -158,9 +158,9 @@ void ReportDialog::defaultValues()
     chkFigureGeometry->setChecked(true);
     txtFigureWidth->setValue(Value("600"));
     txtFigureHeight->setValue(Value("400"));
-    chkFigureShowGrid->setChecked(Agros2D::problem()->configView()->showGrid);
-    chkFigureShowRulers->setChecked(Agros2D::problem()->configView()->showRulers);
-    chkFigureShowAxes->setChecked(Agros2D::problem()->configView()->showAxes);
+    chkFigureShowGrid->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ShowGrid).toBool());
+    chkFigureShowRulers->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool());
+    chkFigureShowAxes->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ShowAxes).toBool());
 }
 
 void ReportDialog::setControls()

@@ -104,7 +104,7 @@ private:
     QLabel *lblStrategy;
     QComboBox *cmbMeshRegularity;
     QComboBox *cmbProjNormType;
-    QCheckBox *chkUseAnIso;
+    QCheckBox *chkUseAniso;
     QCheckBox *chkFinerReference;
 
     // commands

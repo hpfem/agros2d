@@ -74,88 +74,98 @@ PostprocessorWidget::PostprocessorWidget(PostHermes *postHermes,
 void PostprocessorWidget::loadBasic()
 {
     // show
-    chkShowInitialMeshView->setChecked(Agros2D::problem()->configView()->showInitialMeshView);
-    chkShowSolutionMeshView->setChecked(Agros2D::problem()->configView()->showSolutionMeshView);
-    chkShowOrderView->setChecked(Agros2D::problem()->configView()->showOrderView);
+    chkShowInitialMeshView->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ShowInitialMeshView).toBool());
+    chkShowSolutionMeshView->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ShowSolutionMeshView).toBool());
+    chkShowOrderView->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderView).toBool());
 
-    radPost3DNone->setChecked(Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_None);
-    radPost3DScalarField3D->setChecked(Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3D);
-    radPost3DScalarField3DSolid->setChecked(Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3DSolid);
-    radPost3DModel->setChecked(Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_Model);
+    radPost3DNone->setChecked((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt() == SceneViewPost3DMode_None);
+    radPost3DScalarField3D->setChecked((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt() == SceneViewPost3DMode_ScalarView3D);
+    radPost3DScalarField3DSolid->setChecked((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt() == SceneViewPost3DMode_ScalarView3DSolid);
+    radPost3DModel->setChecked((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt() == SceneViewPost3DMode_Model);
     doPostprocessorGroupClicked(butPost3DGroup->checkedButton());
 
-    chkShowPost2DContourView->setChecked(Agros2D::problem()->configView()->showContourView);
-    chkShowPost2DVectorView->setChecked(Agros2D::problem()->configView()->showVectorView);
-    chkShowPost2DScalarView->setChecked(Agros2D::problem()->configView()->showScalarView);
+    chkShowPost2DContourView->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ShowContourView).toBool());
+    chkShowPost2DVectorView->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ShowVectorView).toBool());
+    chkShowPost2DScalarView->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ShowScalarView).toBool());
 
     // contour field
-    cmbPost2DContourVariable->setCurrentIndex(cmbPost2DContourVariable->findData(Agros2D::problem()->configView()->contourVariable));
+    cmbPost2DContourVariable->setCurrentIndex(cmbPost2DContourVariable->findData(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString()));
     if (cmbPost2DContourVariable->currentIndex() == -1 && cmbPost2DContourVariable->count() > 0)
     {
         // set first variable
         cmbPost2DContourVariable->setCurrentIndex(0);
     }
-    Agros2D::problem()->configView()->contourVariable = cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()).toString();
+    if (cmbPost2DContourVariable->count() > 0 && cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()) != QVariant::Invalid)
+    {
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ContourVariable,
+                                                cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()).toString());
+    }
 
     // scalar field
-    cmbPostScalarFieldVariable->setCurrentIndex(cmbPostScalarFieldVariable->findData(Agros2D::problem()->configView()->scalarVariable));
+    cmbPostScalarFieldVariable->setCurrentIndex(cmbPostScalarFieldVariable->findData(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()));
     if (cmbPostScalarFieldVariable->currentIndex() == -1 && cmbPostScalarFieldVariable->count() > 0)
     {
         // set first variable
         cmbPostScalarFieldVariable->setCurrentIndex(0);
     }
-    Agros2D::problem()->configView()->scalarVariable = cmbPostScalarFieldVariable->itemData(cmbPostScalarFieldVariable->currentIndex()).toString();
-    doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
-    Agros2D::problem()->configView()->scalarVariableComp = (PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt();
+    if (cmbPostScalarFieldVariable->count() > 0)
+    {
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariable, cmbPostScalarFieldVariable->itemData(cmbPostScalarFieldVariable->currentIndex()).toString());
+        doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariableComp, (PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt());
+    }
 
     // vector field
-    cmbPost2DVectorFieldVariable->setCurrentIndex(cmbPost2DVectorFieldVariable->findData(Agros2D::problem()->configView()->vectorVariable));
     if (cmbPost2DVectorFieldVariable->currentIndex() == -1 && cmbPost2DVectorFieldVariable->count() > 0)
     {
         // set first variable
         cmbPost2DVectorFieldVariable->setCurrentIndex(0);
     }
-    Agros2D::problem()->configView()->vectorVariable = cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString();
+    if (cmbPost2DVectorFieldVariable->count() > 0)
+    {
+        cmbPost2DVectorFieldVariable->setCurrentIndex(cmbPost2DVectorFieldVariable->findData(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()));
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorVariable, cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString());
+    }
 }
 
 void PostprocessorWidget::loadAdvanced()
 {
     // scalar field
-    chkShowScalarColorBar->setChecked(Agros2D::problem()->configView()->showScalarColorBar);
-    cmbPalette->setCurrentIndex(cmbPalette->findData(Agros2D::problem()->configView()->paletteType));
-    chkPaletteFilter->setChecked(Agros2D::problem()->configView()->paletteFilter);
+    chkShowScalarColorBar->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ShowScalarColorBar).toBool());
+    cmbPalette->setCurrentIndex(cmbPalette->findData((PaletteType) Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteType).toInt()));
+    chkPaletteFilter->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteFilter).toBool());
     doPaletteFilter(chkPaletteFilter->checkState());
-    txtPaletteSteps->setValue(Agros2D::problem()->configView()->paletteSteps);
-    cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData(Agros2D::problem()->configView()->linearizerQuality));
+    txtPaletteSteps->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteSteps).toInt());
+    cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData((PaletteQuality) Agros2D::problem()->setting()->value(ProblemSetting::View_LinearizerQuality).toInt()));
 
     // contours
-    txtContoursCount->setValue(Agros2D::problem()->configView()->contoursCount);
-    txtContourWidth->setValue(Agros2D::problem()->configView()->contourWidth);
+    txtContoursCount->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ContoursCount).toInt());
+    txtContourWidth->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ContoursWidth).toDouble());
 
     // vector field
-    chkVectorProportional->setChecked(Agros2D::problem()->configView()->vectorProportional);
-    chkVectorColor->setChecked(Agros2D::problem()->configView()->vectorColor);
-    txtVectorCount->setValue(Agros2D::problem()->configView()->vectorCount);
+    chkVectorProportional->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorProportional).toBool());
+    chkVectorColor->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorColor).toBool());
+    txtVectorCount->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorCount).toInt());
     txtVectorCount->setToolTip(tr("Width and height of bounding box over vector count."));
-    txtVectorScale->setValue(Agros2D::problem()->configView()->vectorScale);
-    cmbVectorType->setCurrentIndex(cmbVectorType->findData(Agros2D::problem()->configView()->vectorType));
-    cmbVectorCenter->setCurrentIndex(cmbVectorCenter->findData(Agros2D::problem()->configView()->vectorCenter));
+    txtVectorScale->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorScale).toDouble());
+    cmbVectorType->setCurrentIndex(cmbVectorType->findData((VectorType) Agros2D::problem()->setting()->value(ProblemSetting::View_VectorType).toInt()));
+    cmbVectorCenter->setCurrentIndex(cmbVectorCenter->findData((VectorCenter) Agros2D::problem()->setting()->value(ProblemSetting::View_VectorCenter).toInt()));
 
     // order view
-    chkShowOrderColorbar->setChecked(Agros2D::problem()->configView()->showOrderColorBar);
-    cmbOrderPaletteOrder->setCurrentIndex(cmbOrderPaletteOrder->findData(Agros2D::problem()->configView()->orderPaletteOrderType));
-    chkOrderLabel->setChecked(Agros2D::problem()->configView()->orderLabel);
+    chkShowOrderColorbar->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderColorBar).toBool());
+    cmbOrderPaletteOrder->setCurrentIndex(cmbOrderPaletteOrder->findData((PaletteOrderType) Agros2D::problem()->setting()->value(ProblemSetting::View_OrderPaletteOrderType).toInt()));
+    chkOrderLabel->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderLabel).toBool());
 
     // advanced
     // scalar field
-    chkScalarFieldRangeLog->setChecked(Agros2D::problem()->configView()->scalarRangeLog);
+    chkScalarFieldRangeLog->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeLog).toBool());
     doScalarFieldLog(chkScalarFieldRangeLog->checkState());
-    txtScalarFieldRangeBase->setText(QString::number(Agros2D::problem()->configView()->scalarRangeBase));
-    txtScalarDecimalPlace->setValue(Agros2D::problem()->configView()->scalarDecimalPlace);
-    chkScalarFieldRangeAuto->setChecked(Agros2D::problem()->configView()->scalarRangeAuto);
+    txtScalarFieldRangeBase->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeBase).toDouble());
+    txtScalarDecimalPlace->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarDecimalPlace).toInt());
+    chkScalarFieldRangeAuto->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool());
     doScalarFieldRangeAuto(chkScalarFieldRangeAuto->checkState());
-    txtScalarFieldRangeMin->setValue(Agros2D::problem()->configView()->scalarRangeMin);
-    txtScalarFieldRangeMax->setValue(Agros2D::problem()->configView()->scalarRangeMax);
+    txtScalarFieldRangeMin->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble());
+    txtScalarFieldRangeMax->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble());
 
     // solid
     lstSolidMaterials->clear();
@@ -166,7 +176,7 @@ void PostprocessorWidget::loadAdvanced()
             QListWidgetItem *item = new QListWidgetItem(lstSolidMaterials);
             item->setText(material->name());
             item->setData(Qt::UserRole, material->variant());
-            if (Agros2D::problem()->configView()->solidViewHide.contains(material->name()))
+            if (Agros2D::problem()->setting()->value(ProblemSetting::View_SolidViewHide).toStringList().contains(material->name()))
                 item->setCheckState(Qt::Unchecked);
             else
                 item->setCheckState(Qt::Checked);
@@ -178,78 +188,76 @@ void PostprocessorWidget::loadAdvanced()
 
 void PostprocessorWidget::saveBasic()
 {
-    // active field
-    Agros2D::problem()->configView()->activeField = fieldWidget->selectedField()->fieldId();
-
-    Agros2D::problem()->configView()->showInitialMeshView = chkShowInitialMeshView->isChecked();
-    Agros2D::problem()->configView()->showSolutionMeshView = chkShowSolutionMeshView->isChecked();
-    Agros2D::problem()->configView()->showOrderView = chkShowOrderView->isChecked();
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowInitialMeshView, chkShowInitialMeshView->isChecked());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowSolutionMeshView, chkShowSolutionMeshView->isChecked());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowOrderView, chkShowOrderView->isChecked());
 
     // show
-    if (radPost3DNone->isChecked()) Agros2D::problem()->configView()->showPost3D = SceneViewPost3DMode_None;
-    if (radPost3DScalarField3D->isChecked()) Agros2D::problem()->configView()->showPost3D = SceneViewPost3DMode_ScalarView3D;
-    if (radPost3DScalarField3DSolid->isChecked()) Agros2D::problem()->configView()->showPost3D = SceneViewPost3DMode_ScalarView3DSolid;
-    if (radPost3DModel->isChecked()) Agros2D::problem()->configView()->showPost3D = SceneViewPost3DMode_Model;
+    if (radPost3DNone->isChecked()) Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarView3DMode, SceneViewPost3DMode_None);
+    if (radPost3DScalarField3D->isChecked()) Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarView3DMode, SceneViewPost3DMode_ScalarView3D);
+    if (radPost3DScalarField3DSolid->isChecked()) Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarView3DMode, SceneViewPost3DMode_ScalarView3DSolid);
+    if (radPost3DModel->isChecked()) Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarView3DMode, SceneViewPost3DMode_Model);
 
-    Agros2D::problem()->configView()->showContourView = chkShowPost2DContourView->isChecked();
-    Agros2D::problem()->configView()->showScalarView = chkShowPost2DScalarView->isChecked();
-    Agros2D::problem()->configView()->showVectorView = chkShowPost2DVectorView->isChecked();
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowContourView, chkShowPost2DContourView->isChecked());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowScalarView, chkShowPost2DScalarView->isChecked());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowVectorView, chkShowPost2DVectorView->isChecked());
 
     // contour field
-    Agros2D::problem()->configView()->contourVariable = cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()).toString();
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ContourVariable, cmbPost2DContourVariable->itemData(cmbPost2DContourVariable->currentIndex()).toString());
 
     // scalar field
-    Agros2D::problem()->configView()->scalarVariable = cmbPostScalarFieldVariable->itemData(cmbPostScalarFieldVariable->currentIndex()).toString();
-    Agros2D::problem()->configView()->scalarVariableComp = (PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt();
-    Agros2D::problem()->configView()->scalarRangeAuto = chkScalarFieldRangeAuto->isChecked();
-    Agros2D::problem()->configView()->scalarRangeMin = txtScalarFieldRangeMin->value();
-    Agros2D::problem()->configView()->scalarRangeMax = txtScalarFieldRangeMax->value();
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariable, cmbPostScalarFieldVariable->itemData(cmbPostScalarFieldVariable->currentIndex()).toString());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariableComp, (PhysicFieldVariableComp) cmbPostScalarFieldVariableComp->itemData(cmbPostScalarFieldVariableComp->currentIndex()).toInt());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeAuto, chkScalarFieldRangeAuto->isChecked());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeMin, txtScalarFieldRangeMin->value());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeMax, txtScalarFieldRangeMax->value());
 
     // vector field
-    Agros2D::problem()->configView()->vectorVariable = cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString();
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorVariable, cmbPost2DVectorFieldVariable->itemData(cmbPost2DVectorFieldVariable->currentIndex()).toString());
 }
 
 void PostprocessorWidget::saveAdvanced()
 {
     // scalar field
-    Agros2D::problem()->configView()->showScalarColorBar = chkShowScalarColorBar->isChecked();
-    Agros2D::problem()->configView()->paletteType = (PaletteType) cmbPalette->itemData(cmbPalette->currentIndex()).toInt();
-    Agros2D::problem()->configView()->paletteFilter = chkPaletteFilter->isChecked();
-    Agros2D::problem()->configView()->paletteSteps = txtPaletteSteps->value();
-    Agros2D::problem()->configView()->linearizerQuality = (PaletteQuality) cmbLinearizerQuality->itemData(cmbLinearizerQuality->currentIndex()).toInt();
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowScalarColorBar, chkShowScalarColorBar->isChecked());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_PaletteType, (PaletteType) cmbPalette->itemData(cmbPalette->currentIndex()).toInt());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_PaletteFilter, chkPaletteFilter->isChecked());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_PaletteSteps, txtPaletteSteps->value());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_LinearizerQuality, (PaletteQuality) cmbLinearizerQuality->itemData(cmbLinearizerQuality->currentIndex()).toInt());
 
     // contours
-    Agros2D::problem()->configView()->contoursCount = txtContoursCount->value();
-    Agros2D::problem()->configView()->contourWidth = txtContourWidth->value();
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ContoursCount, txtContoursCount->value());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ContoursWidth, txtContourWidth->value());
 
     // vector field
-    Agros2D::problem()->configView()->vectorProportional = chkVectorProportional->isChecked();
-    Agros2D::problem()->configView()->vectorColor = chkVectorColor->isChecked();
-    Agros2D::problem()->configView()->vectorCount = txtVectorCount->value();
-    Agros2D::problem()->configView()->vectorScale = txtVectorScale->value();
-    Agros2D::problem()->configView()->vectorType = (VectorType) cmbVectorType->itemData(cmbVectorType->currentIndex()).toInt();
-    Agros2D::problem()->configView()->vectorCenter = (VectorCenter) cmbVectorCenter->itemData(cmbVectorCenter->currentIndex()).toInt();
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorProportional, chkVectorProportional->isChecked());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorColor, chkVectorColor->isChecked());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorCount, txtVectorCount->value());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorScale, txtVectorScale->value());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorType, (VectorType) cmbVectorType->itemData(cmbVectorType->currentIndex()).toInt());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorCenter, (VectorCenter) cmbVectorCenter->itemData(cmbVectorCenter->currentIndex()).toInt());
 
     // order view
-    Agros2D::problem()->configView()->showOrderColorBar = chkShowOrderColorbar->isChecked();
-    Agros2D::problem()->configView()->orderPaletteOrderType = (PaletteOrderType) cmbOrderPaletteOrder->itemData(cmbOrderPaletteOrder->currentIndex()).toInt();
-    Agros2D::problem()->configView()->orderLabel = chkOrderLabel->isChecked();
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowOrderColorBar, chkShowOrderColorbar->isChecked());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_OrderPaletteOrderType, (PaletteOrderType) cmbOrderPaletteOrder->itemData(cmbOrderPaletteOrder->currentIndex()).toInt());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowOrderLabel, chkOrderLabel->isChecked());
 
     // scalar view
-    Agros2D::problem()->configView()->scalarRangeLog = chkScalarFieldRangeLog->isChecked();
-    Agros2D::problem()->configView()->scalarRangeBase = txtScalarFieldRangeBase->text().toDouble();
-    Agros2D::problem()->configView()->scalarDecimalPlace = txtScalarDecimalPlace->value();
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeLog, chkScalarFieldRangeLog->isChecked());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeBase, txtScalarFieldRangeBase->text().toDouble());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarDecimalPlace, txtScalarDecimalPlace->value());
 
     // solid
-    Agros2D::problem()->configView()->solidViewHide.clear();
+    QStringList hideList;
     for (int i = 0; i < lstSolidMaterials->count(); i++)
     {
         if (lstSolidMaterials->item(i)->checkState() == Qt::Unchecked)
         {
             SceneMaterial *material = lstSolidMaterials->item(i)->data(Qt::UserRole).value<SceneMaterial *>();
-            Agros2D::problem()->configView()->solidViewHide.append(material->name());
+            hideList.append(material->name());
         }
     }
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_SolidViewHide, hideList);
 }
 
 void PostprocessorWidget::createControls()
@@ -564,7 +572,7 @@ QWidget *PostprocessorWidget::postScalarAdvancedWidget()
 
     // log scale
     chkScalarFieldRangeLog = new QCheckBox(tr("Log. scale"));
-    txtScalarFieldRangeBase = new LineEditDouble(SCALARFIELDRANGEBASE);
+    txtScalarFieldRangeBase = new LineEditDouble(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ScalarRangeBase).toDouble());
     connect(chkScalarFieldRangeLog, SIGNAL(stateChanged(int)), this, SLOT(doScalarFieldLog(int)));
 
     QPalette palette;
@@ -929,8 +937,8 @@ void PostprocessorWidget::doApply()
     // read auto range values
     if (chkScalarFieldRangeAuto->isChecked())
     {
-        txtScalarFieldRangeMin->setValue(Agros2D::problem()->configView()->scalarRangeMin);
-        txtScalarFieldRangeMax->setValue(Agros2D::problem()->configView()->scalarRangeMax);
+        txtScalarFieldRangeMin->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble());
+        txtScalarFieldRangeMax->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble());
     }
 
     // refresh
@@ -961,32 +969,32 @@ void PostprocessorWidget::doSolidExpandCollapse(bool collapsed)
 
 void PostprocessorWidget::doScalarFieldDefault()
 {
-    cmbPalette->setCurrentIndex(cmbPalette->findData((PaletteType) PALETTETYPE));
-    chkPaletteFilter->setChecked(PALETTEFILTER);
-    txtPaletteSteps->setValue(PALETTESTEPS);
-    cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData(PaletteQuality_Normal));
-    chkShowScalarColorBar->setChecked(SHOWSCALARCOLORBAR);
-    chkScalarFieldRangeLog->setChecked(SCALARFIELDRANGELOG);
-    txtScalarFieldRangeBase->setValue(SCALARFIELDRANGEBASE);
-    txtScalarDecimalPlace->setValue(SCALARDECIMALPLACE);
+    cmbPalette->setCurrentIndex(cmbPalette->findData((PaletteType) Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_PaletteType).toInt()));
+    chkPaletteFilter->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_PaletteFilter).toBool());
+    txtPaletteSteps->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_PaletteSteps).toInt());
+    cmbLinearizerQuality->setCurrentIndex(cmbLinearizerQuality->findData((PaletteQuality) Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_LinearizerQuality).toInt()));
+    chkShowScalarColorBar->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ShowScalarColorBar).toBool());
+    chkScalarFieldRangeLog->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ScalarRangeLog).toBool());
+    txtScalarFieldRangeBase->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ScalarRangeBase).toInt());
+    txtScalarDecimalPlace->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ScalarDecimalPlace).toInt());
 }
 
 void PostprocessorWidget::doContoursVectorsDefault()
 {
-    txtContoursCount->setValue(CONTOURSCOUNT);
-    chkVectorProportional->setChecked(VECTORPROPORTIONAL);
-    chkVectorColor->setChecked(VECTORCOLOR);
-    txtVectorCount->setValue(VECTORCOUNT);
-    txtVectorScale->setValue(VECTORSCALE);
-    cmbVectorType->setCurrentIndex(cmbVectorType->findData(VECTORTYPE));
-    cmbVectorCenter->setCurrentIndex(cmbVectorCenter->findData(VECTORCENTER));
+    txtContoursCount->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ContoursCount).toInt());
+    chkVectorProportional->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_VectorProportional).toBool());
+    chkVectorColor->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_VectorColor).toBool());
+    txtVectorCount->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_VectorCount).toInt());
+    txtVectorScale->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_VectorScale).toDouble());
+    cmbVectorType->setCurrentIndex(cmbVectorType->findData((VectorType) Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_VectorType).toInt()));
+    cmbVectorCenter->setCurrentIndex(cmbVectorCenter->findData((VectorCenter) Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_VectorCenter).toInt()));
 }
 
 void PostprocessorWidget::doOrderDefault()
 {
-    cmbOrderPaletteOrder->setCurrentIndex(cmbOrderPaletteOrder->findData((PaletteOrderType) ORDERPALETTEORDERTYPE));
-    chkShowOrderColorbar->setChecked(SHOWORDERCOLORBAR);
-    chkOrderLabel->setChecked(ORDERLABEL);
+    cmbOrderPaletteOrder->setCurrentIndex(cmbOrderPaletteOrder->findData((PaletteOrderType) Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_OrderPaletteOrderType).toInt()));
+    chkShowOrderColorbar->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ShowOrderColorBar).toBool());
+    chkOrderLabel->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ShowOrderLabel).toBool());
 }
 
 void PostprocessorWidget::doScalarFieldRangeMinChanged()

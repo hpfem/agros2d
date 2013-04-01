@@ -74,8 +74,8 @@ void PythonEngineAgros::runPythonHeader()
         script += Agros2D::configComputer()->globalScript + "\n";
 
     // startup script
-    if (!Agros2D::problem()->configView()->startupScript.trimmed().isEmpty())
-        script += Agros2D::problem()->configView()->startupScript + "\n";
+    if (!Agros2D::problem()->setting()->value(ProblemSetting::Problem_StartupScript).toString().trimmed().isEmpty())
+        script += Agros2D::problem()->setting()->value(ProblemSetting::Problem_StartupScript).toString() + "\n";
 
     // run script
     if (!script.trimmed().isEmpty())
@@ -194,10 +194,10 @@ QString createPythonFromModel(StartupScript_Type startupScript)
     str += "import agros2d\n\n";
 
     // startup script
-    if (!Agros2D::problem()->configView()->startupScript.trimmed().isEmpty())
+    if (!Agros2D::problem()->setting()->value(ProblemSetting::Problem_StartupScript).toString().trimmed().isEmpty())
     {
         str += "# startup script\n";
-        str += Agros2D::problem()->configView()->startupScript;
+        str += Agros2D::problem()->setting()->value(ProblemSetting::Problem_StartupScript).toString();
         str += "\n\n";
     }
 

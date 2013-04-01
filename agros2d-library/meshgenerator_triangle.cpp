@@ -79,9 +79,9 @@ bool MeshGeneratorTriangle::mesh()
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "triangle"))
             triangleBinary = QApplication::applicationDirPath() + QDir::separator() + "triangle";
 
-        m_process->start(QString(Agros2D::problem()->configView()->commandTriangle).
-                              arg(triangleBinary).
-                              arg(tempProblemFileName()));
+        m_process->start(Agros2D::problem()->setting()->value(ProblemSetting::Commands_Triangle).toString().
+                         arg(triangleBinary).
+                         arg(tempProblemFileName()));
 
         // execute an event loop to process the request (nearly-synchronous)
         QEventLoop eventLoop;
@@ -527,7 +527,7 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
             {
                 // add additional node
                 nodeList.append(Point((nodeList[elementList[i].node[0]].x + nodeList[elementList[i].node[1]].x + nodeList[elementList[i].node[2]].x) / 3.0,
-                                      (nodeList[elementList[i].node[0]].y + nodeList[elementList[i].node[1]].y + nodeList[elementList[i].node[2]].y) / 3.0));
+                        (nodeList[elementList[i].node[0]].y + nodeList[elementList[i].node[1]].y + nodeList[elementList[i].node[2]].y) / 3.0));
 
                 // add three quad elements
                 for (int nd = 0; nd < 3; nd++)
@@ -536,9 +536,9 @@ bool MeshGeneratorTriangle::readTriangleMeshFormat()
                             if ((elementList[i].node[(nd + 0) % 3] == elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 1) % 3]) &&
                                     (elementList[i].node[(nd + 1) % 3] == elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 0) % 3]))
                                 elementList.append(MeshElement(elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 1) % 3],
-                                                               elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 2) % 3],
-                                                               elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 0) % 3],
-                                                               nodeList.count() - 1, elementList[i].marker));
+                                        elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 2) % 3],
+                                        elementList[elementList[i].neigh[neigh]].node[(neigh_nd + 0) % 3],
+                                        nodeList.count() - 1, elementList[i].marker));
 
                 elementList[i].isUsed = false;
                 elementList[i].isActive = false;

@@ -180,8 +180,8 @@ int SceneEdge::segments() const
 {
     double division = 40.0;
     int segments = m_angle/division + 1;
-    if (segments < Agros2D::problem()->configView()->angleSegmentsCount)
-        segments = Agros2D::problem()->configView()->angleSegmentsCount; // minimum segments
+    if (segments < Agros2D::problem()->setting()->value(ProblemSetting::View_MeshAngleSegmentsCount).toInt())
+        segments = Agros2D::problem()->setting()->value(ProblemSetting::View_MeshAngleSegmentsCount).toInt(); // minimum segments
 
     return segments;
 }

@@ -11,7 +11,7 @@ class CouplingInfo;
 class Field;
 class Problem;
 class ProblemConfig;
-class ProblemConfigView;
+class ProblemSetting;
 
 /// intented as central for solution process
 /// shielded from gui and QT
@@ -41,7 +41,7 @@ public:
     ~Problem();
 
     inline ProblemConfig *config() const { return m_config; }
-    inline ProblemConfigView *configView() const { return m_configView; }
+    inline ProblemSetting *setting() const { return m_setting; }
 
     void createStructure();
 
@@ -110,7 +110,7 @@ public:
 
 private:
     ProblemConfig *m_config;
-    ProblemConfigView *m_configView;
+    ProblemSetting *m_setting;
 
     QList<Block*> m_blocks;
 

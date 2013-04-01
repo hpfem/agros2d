@@ -149,7 +149,7 @@ Point3 ParticleTracing::force(Point3 position,
             {
                 fieldForce = fieldInfo->plugin()->force(fieldInfo, m_meshCache[fieldInfo]->timeStep, m_meshCache[fieldInfo]->adaptivityStep, m_meshCache[fieldInfo]->solutionMode,
                                                         activeElement, material, position, velocity)
-                        * Agros2D::problem()->configView()->particleConstant;
+                        * Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleConstant).toDouble();
             }
             catch (AgrosException e)
             {
@@ -160,7 +160,9 @@ Point3 ParticleTracing::force(Point3 position,
         totalFieldForce = totalFieldForce + fieldForce;
     }
     // custom force
-    Point3 forceCustom = Agros2D::problem()->configView()->particleCustomForce;
+    Point3 forceCustom = Point3(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleCustomForceX).toDouble(),
+                                Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleCustomForceY).toDouble(),
+                                Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleCustomForceZ).toDouble());
 
     // Drag force
     Point3 velocityReal = (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ?
@@ -168,7 +170,10 @@ Point3 ParticleTracing::force(Point3 position,
     Point3 forceDrag;
     if (velocityReal.magnitude() > 0.0)
         forceDrag = velocityReal.normalizePoint() *
-                - 0.5 * Agros2D::problem()->configView()->particleDragDensity * velocityReal.magnitude() * velocityReal.magnitude() * Agros2D::problem()->configView()->particleDragCoefficient * Agros2D::problem()->configView()->particleDragReferenceArea;
+                - 0.5 * Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleDragDensity).toDouble()
+                * velocityReal.magnitude() * velocityReal.magnitude()
+                * Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleDragCoefficient).toDouble()
+                * Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleDragReferenceArea).toDouble();
 
     // Total force
     Point3 totalForce = totalFieldForce + forceDrag + forceCustom;
@@ -183,11 +188,11 @@ bool ParticleTracing::newtonEquations(double step,
                                       Point3 *newvelocity)
 {
     // relativistic correction
-    double mass = Agros2D::problem()->configView()->particleMass;
-    if (Agros2D::problem()->configView()->particleIncludeRelativisticCorrection)
+    double mass = Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMass).toDouble();
+    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleIncludeRelativisticCorrection).toBool())
     {
         if (velocity.magnitude() < SPEEDOFLIGHT)
-            mass = Agros2D::problem()->configView()->particleMass / (sqrt(1.0 - (velocity.magnitude() * velocity.magnitude()) / (SPEEDOFLIGHT * SPEEDOFLIGHT)));
+            mass = mass / (sqrt(1.0 - (velocity.magnitude() * velocity.magnitude()) / (SPEEDOFLIGHT * SPEEDOFLIGHT)));
         else
             throw AgrosException(tr("Velocity is greater then speed of light."));
     }
@@ -219,7 +224,7 @@ bool ParticleTracing::newtonEquations(double step,
 
 void ParticleTracing::computeTrajectoryParticle(const Point3 initialPosition, const Point3 initialVelocity)
 {
-    Hermes::ButcherTable butcher(Agros2D::problem()->configView()->particleButcherTableType);
+    Hermes::ButcherTable butcher((Hermes::ButcherTableType) Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleButcherTableType).toInt());
     QVector<Point3> kp(butcher.get_size());
     QVector<Point3> kv(butcher.get_size());
 
@@ -239,14 +244,18 @@ void ParticleTracing::computeTrajectoryParticle(const Point3 initialPosition, co
 
     RectPoint bound = Agros2D::scene()->boundingBox();
 
-    double minStep = (Agros2D::problem()->configView()->particleMinimumStep > 0.0) ? Agros2D::problem()->configView()->particleMinimumStep : min(bound.width(), bound.height()) / 80.0;
-    double relErrorMin = (Agros2D::problem()->configView()->particleMaximumRelativeError > 0.0) ? Agros2D::problem()->configView()->particleMaximumRelativeError/100 : 1e-6;
+    double minStep = (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMinimumStep).toDouble() > 0.0)
+            ? Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMinimumStep).toDouble() :
+              min(bound.width(), bound.height()) / 80.0;
+    double relErrorMin = (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumRelativeError).toDouble() > 0.0)
+            ? Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumRelativeError).toDouble() / 100 : 1e-6;
     double relErrorMax = 1e-3;
-    double dt = Agros2D::problem()->configView()->particleStartVelocity.magnitude() > 0 ? qMax(bound.width(), bound.height()) / Agros2D::problem()->configView()->particleStartVelocity.magnitude() / 10
-                                                                                        : 1e-11;
+    double dt = velocity.magnitude() > 0
+            ? qMax(bound.width(), bound.height()) / velocity.magnitude() / 10 : 1e-11;
+
     bool stopComputation = false;
     int maxStepsGlobal = 0;
-    while (!stopComputation && (maxStepsGlobal < Agros2D::problem()->configView()->particleMaximumNumberOfSteps - 1))
+    while (!stopComputation && (maxStepsGlobal < Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumNumberOfSteps).toInt() - 1))
     {
         maxStepsGlobal++;
 
@@ -356,11 +365,11 @@ void ParticleTracing::computeTrajectoryParticle(const Point3 initialPosition, co
             bool impact = false;
             foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
             {
-                if ((Agros2D::problem()->configView()->particleCoefficientOfRestitution < EPS_ZERO) || // no reflection
+                if ((Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleCoefficientOfRestitution).toDouble() < EPS_ZERO) || // no reflection
                         (crossingEdge->marker(fieldInfo) == Agros2D::scene()->boundaries->getNone(fieldInfo)
-                         && !Agros2D::problem()->configView()->particleReflectOnDifferentMaterial) || // inner edge
+                         && !Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleReflectOnDifferentMaterial).toBool()) || // inner edge
                         (crossingEdge->marker(fieldInfo) != Agros2D::scene()->boundaries->getNone(fieldInfo)
-                         && !Agros2D::problem()->configView()->particleReflectOnBoundary)) // boundary
+                         && !Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleReflectOnBoundary).toBool())) // boundary
                     impact = true;
             }
 
@@ -401,8 +410,8 @@ void ParticleTracing::computeTrajectoryParticle(const Point3 initialPosition, co
 
                 // velocity in the direction of output vector
                 Point3 oldv = newVelocityH;
-                newVelocityH.x = vectout.x * oldv.magnitude() * Agros2D::problem()->configView()->particleCoefficientOfRestitution;
-                newVelocityH.y = vectout.y * oldv.magnitude() * Agros2D::problem()->configView()->particleCoefficientOfRestitution;
+                newVelocityH.x = vectout.x * oldv.magnitude() * Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleCoefficientOfRestitution).toDouble();
+                newVelocityH.y = vectout.y * oldv.magnitude() * Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleCoefficientOfRestitution).toDouble();
 
                 // set new timestep
                 dt = dt * ratio;

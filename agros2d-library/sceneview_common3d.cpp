@@ -127,15 +127,15 @@ void SceneViewCommon3D::paintBackground()
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     glBegin(GL_QUADS);
-    if (Agros2D::problem()->configView()->scalarView3DBackground)
+    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DBackground).toBool())
         glColor3d(0.99, 0.99, 0.99);
     else
-        glColor3d(Agros2D::problem()->configView()->colorBackground.redF(),
-                  Agros2D::problem()->configView()->colorBackground.greenF(),
-                  Agros2D::problem()->configView()->colorBackground.blueF());
+        glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundRed).toInt() / 255.0,
+                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundGreen).toInt() / 255.0,
+                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundBlue).toInt() / 255.0);
     glVertex3d(-1.0, -1.0, 0.0);
     glVertex3d(1.0, -1.0, 0.0);
-    if (Agros2D::problem()->configView()->scalarView3DBackground)
+    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DBackground).toBool())
         glColor3d(0.44, 0.56, 0.89);
     glVertex3d(1.0, 1.0, 0.0);
     glVertex3d(-1.0, 1.0, 0.0);
@@ -279,7 +279,7 @@ void SceneViewCommon3D::loadProjection3d(bool setScene, bool plane)
             }
         }
 
-        glScaled(m_scale3d, m_scale3d, m_scale3d);       
+        glScaled(m_scale3d, m_scale3d, m_scale3d);
     }
 }
 
@@ -292,7 +292,7 @@ void SceneViewCommon3D::setZoom(double power)
 
 void SceneViewCommon3D::initLighting()
 {
-    if (Agros2D::problem()->configView()->scalarView3DLighting) // || Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_Model)
+    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DLighting).toBool()) // || Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_Model)
     {
         // environment
         float light_specular[] = {  1.0f, 1.0f, 1.0f, 1.0f };

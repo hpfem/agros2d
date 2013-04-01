@@ -101,9 +101,9 @@ void SceneViewPost3D::paintGL()
     if (!isVisible()) return;
     makeCurrent();
 
-    glClearColor(Agros2D::problem()->configView()->colorBackground.redF(),
-                 Agros2D::problem()->configView()->colorBackground.greenF(),
-                 Agros2D::problem()->configView()->colorBackground.blueF(), 0);
+    glClearColor(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundRed).toInt() / 255.0,
+                 Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundGreen).toInt() / 255.0,
+                 Agros2D::problem()->setting()->value(ProblemSetting::View_ColorBackgroundBlue).toInt() / 255.0, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // gradient background
@@ -111,31 +111,31 @@ void SceneViewPost3D::paintGL()
 
     if (Agros2D::problem()->isMeshed())
     {
-        if (Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_Model) paintScalarField3DSolid();
+        if (((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt()) == SceneViewPost3DMode_Model) paintScalarField3DSolid();
     }
 
     if (Agros2D::problem()->isSolved() && m_postHermes->isProcessed())
     {
-        if (Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3D) paintScalarField3D();
-        if (Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3DSolid) paintScalarField3DSolid();
+        if (((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt()) == SceneViewPost3DMode_ScalarView3D) paintScalarField3D();
+        if (((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt()) == SceneViewPost3DMode_ScalarView3DSolid) paintScalarField3DSolid();
 
         // bars
-        if (Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3D ||
-                Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3DSolid)
-            paintScalarFieldColorBar(Agros2D::problem()->configView()->scalarRangeMin, Agros2D::problem()->configView()->scalarRangeMax);
+        if (((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt()) == SceneViewPost3DMode_ScalarView3D ||
+                ((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt()) == SceneViewPost3DMode_ScalarView3DSolid)
+            paintScalarFieldColorBar(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble(), Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble());
     }
 
-    switch (Agros2D::problem()->configView()->showPost3D)
+    switch ((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt())
     {
     case SceneViewPost3DMode_ScalarView3D:
     case SceneViewPost3DMode_ScalarView3DSolid:
     {
         if (Agros2D::problem()->isSolved() && m_postHermes->isProcessed())
         {
-            Module::LocalVariable localVariable = postHermes()->activeViewField()->localVariable(Agros2D::problem()->configView()->scalarVariable);
-            QString text = Agros2D::problem()->configView()->scalarVariable != "" ? localVariable.name() : "";
-            if (Agros2D::problem()->configView()->scalarVariableComp != PhysicFieldVariableComp_Scalar)
-                text += " - " + physicFieldVariableCompString(Agros2D::problem()->configView()->scalarVariableComp);
+            Module::LocalVariable localVariable = postHermes()->activeViewField()->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString());
+            QString text = Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString().isEmpty() ? "" : localVariable.name();
+            if ((PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt() != PhysicFieldVariableComp_Scalar)
+                text += " - " + physicFieldVariableCompString((PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
 
             emit labelCenter(text);
         }
@@ -148,7 +148,7 @@ void SceneViewPost3D::paintGL()
         emit labelCenter(tr("Postprocessor 3D"));
     }
 
-    if (Agros2D::problem()->configView()->showAxes) paintAxes();
+    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowAxes).toBool()) paintAxes();
 }
 
 void SceneViewPost3D::resizeGL(int w, int h)
@@ -166,7 +166,7 @@ void SceneViewPost3D::paintScalarField3D()
     if (!Agros2D::problem()->isSolved()) return;
     if (!m_postHermes->scalarIsPrepared()) return;
 
-    loadProjection3d(true, Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3D);
+    loadProjection3d(true, ((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt()) == SceneViewPost3DMode_ScalarView3D);
 
     if (m_listScalarField3D == -1)
     {
@@ -188,9 +188,9 @@ void SceneViewPost3D::paintScalarField3D()
         glEnable(GL_DEPTH_TEST);
 
         // range
-        double irange = 1.0 / (Agros2D::problem()->configView()->scalarRangeMax - Agros2D::problem()->configView()->scalarRangeMin);
+        double irange = 1.0 / (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble() - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble());
         // special case: constant solution
-        if (fabs(Agros2D::problem()->configView()->scalarRangeMin - Agros2D::problem()->configView()->scalarRangeMax) < EPS_ZERO)
+        if (fabs(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble() - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble()) < EPS_ZERO)
         {
             irange = 1.0;
         }
@@ -207,7 +207,7 @@ void SceneViewPost3D::paintScalarField3D()
         double max = qMax(rect.width(), rect.height());
 
         glPushMatrix();
-        glScaled(1.0, 1.0, max / Agros2D::problem()->configView()->scalarView3DHeight * fabs(irange));
+        glScaled(1.0, 1.0, max / Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DHeight).toDouble() * fabs(irange));
 
         // scalar view
         initLighting();
@@ -215,7 +215,7 @@ void SceneViewPost3D::paintScalarField3D()
         double *normal = new double[3];
 
         // set texture for coloring
-        if (Agros2D::problem()->configView()->scalarView3DLighting)
+        if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DLighting).toBool())
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
         else
             glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
@@ -241,28 +241,28 @@ void SceneViewPost3D::paintScalarField3D()
             point[2].y = linVert[linTris[i][2]][1];
             value[2]   = linVert[linTris[i][2]][2];
 
-            if (!Agros2D::problem()->configView()->scalarRangeAuto)
+            if (!Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
             {
                 double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                if (avgValue < Agros2D::problem()->configView()->scalarRangeMin || avgValue > Agros2D::problem()->configView()->scalarRangeMax)
+                if (avgValue < Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble() || avgValue > Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble())
                     continue;
             }
 
             double delta = 0.0;
 
-            if (Agros2D::problem()->configView()->scalarView3DLighting)
+            if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DLighting).toBool())
             {
-                computeNormal(point[0].x, point[0].y, - delta - (value[0] - Agros2D::problem()->configView()->scalarRangeMin),
-                        point[1].x, point[1].y, - delta - (value[1] - Agros2D::problem()->configView()->scalarRangeMin),
-                        point[2].x, point[2].y, - delta - (value[2] - Agros2D::problem()->configView()->scalarRangeMin),
+                computeNormal(point[0].x, point[0].y, - delta - (value[0] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()),
+                        point[1].x, point[1].y, - delta - (value[1] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()),
+                        point[2].x, point[2].y, - delta - (value[2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()),
                         normal);
 
                 glNormal3d(normal[0], normal[1], normal[2]);
             }
             for (int j = 0; j < 3; j++)
             {
-                glTexCoord1d((value[j] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
-                glVertex3d(point[j].x, point[j].y, - delta - (value[j] - Agros2D::problem()->configView()->scalarRangeMin));
+                glTexCoord1d((value[j] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
+                glVertex3d(point[j].x, point[j].y, - delta - (value[j] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()));
             }
         }
         glEnd();
@@ -301,10 +301,10 @@ void SceneViewPost3D::paintScalarField3D()
         glDisable(GL_POLYGON_OFFSET_FILL);
 
         // bounding box
-        if (Agros2D::problem()->configView()->scalarView3DBoundingBox)
+        if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DBoundingBox).toBool())
         {
             double borderXY = max * 0.05;
-            double borderZ = (Agros2D::problem()->configView()->scalarRangeMax - Agros2D::problem()->configView()->scalarRangeMin) * 0.05;
+            double borderZ = (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble() - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * 0.05;
 
             glBegin(GL_LINES);
             glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, borderZ);
@@ -316,23 +316,23 @@ void SceneViewPost3D::paintScalarField3D()
             glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, borderZ);
             glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, borderZ);
 
-            glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, - (Agros2D::problem()->configView()->scalarRangeMax - Agros2D::problem()->configView()->scalarRangeMin) - borderZ);
-            glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, - (Agros2D::problem()->configView()->scalarRangeMax - Agros2D::problem()->configView()->scalarRangeMin) - borderZ);
-            glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, - (Agros2D::problem()->configView()->scalarRangeMax - Agros2D::problem()->configView()->scalarRangeMin) - borderZ);
-            glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, - (Agros2D::problem()->configView()->scalarRangeMax - Agros2D::problem()->configView()->scalarRangeMin) - borderZ);
-            glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, - (Agros2D::problem()->configView()->scalarRangeMax - Agros2D::problem()->configView()->scalarRangeMin) - borderZ);
-            glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, - (Agros2D::problem()->configView()->scalarRangeMax - Agros2D::problem()->configView()->scalarRangeMin) - borderZ);
-            glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, - (Agros2D::problem()->configView()->scalarRangeMax - Agros2D::problem()->configView()->scalarRangeMin) - borderZ);
-            glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, - (Agros2D::problem()->configView()->scalarRangeMax - Agros2D::problem()->configView()->scalarRangeMin) - borderZ);
+            glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, - (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble() - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) - borderZ);
+            glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, - (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble() - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) - borderZ);
+            glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, - (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble() - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) - borderZ);
+            glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, - (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble() - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) - borderZ);
+            glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, - (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble() - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) - borderZ);
+            glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, - (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble() - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) - borderZ);
+            glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, - (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble() - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) - borderZ);
+            glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, - (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble() - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) - borderZ);
 
             glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, borderZ);
-            glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, - (Agros2D::problem()->configView()->scalarRangeMax - Agros2D::problem()->configView()->scalarRangeMin) - borderZ);
+            glVertex3d(rect.start.x - borderXY, rect.start.y - borderXY, - (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble() - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) - borderZ);
             glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, borderZ);
-            glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, - (Agros2D::problem()->configView()->scalarRangeMax - Agros2D::problem()->configView()->scalarRangeMin) - borderZ);
+            glVertex3d(rect.end.x + borderXY, rect.start.y - borderXY, - (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble() - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) - borderZ);
             glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, borderZ);
-            glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, - (Agros2D::problem()->configView()->scalarRangeMax - Agros2D::problem()->configView()->scalarRangeMin) - borderZ);
+            glVertex3d(rect.end.x + borderXY, rect.end.y + borderXY, - (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble() - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) - borderZ);
             glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, borderZ);
-            glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, - (Agros2D::problem()->configView()->scalarRangeMax - Agros2D::problem()->configView()->scalarRangeMin) - borderZ);
+            glVertex3d(rect.start.x - borderXY, rect.end.y + borderXY, - (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble() - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) - borderZ);
             glEnd();
         }
 
@@ -340,10 +340,10 @@ void SceneViewPost3D::paintScalarField3D()
         foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
         {
 
-            glColor3d(Agros2D::problem()->configView()->colorEdges.redF(),
-                      Agros2D::problem()->configView()->colorEdges.greenF(),
-                      Agros2D::problem()->configView()->colorEdges.blueF());
-            glLineWidth(Agros2D::problem()->configView()->edgeWidth);
+            glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesRed).toInt() / 255.0,
+                      Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesGreen).toInt() / 255.0,
+                      Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesBlue).toInt() / 255.0);
+            glLineWidth(Agros2D::problem()->setting()->value(ProblemSetting::View_EdgeWidth).toInt());
 
             if (edge->isStraight())
             {
@@ -389,9 +389,9 @@ void SceneViewPost3D::paintScalarField3D()
 void SceneViewPost3D::paintScalarField3DSolid()
 {
     if (!Agros2D::problem()->isSolved()) return;
-    if (Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3DSolid && !m_postHermes->scalarIsPrepared()) return;
+    if (((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt()) == SceneViewPost3DMode_ScalarView3DSolid && !m_postHermes->scalarIsPrepared()) return;
 
-    loadProjection3d(true, Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3D);
+    loadProjection3d(true, ((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt()) == SceneViewPost3DMode_ScalarView3D);
 
     if (m_listScalarField3DSolid == -1)
     {
@@ -400,7 +400,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
         m_listScalarField3DSolid = glGenLists(1);
         glNewList(m_listScalarField3DSolid, GL_COMPILE);
 
-        bool isModel = (Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_Model);
+        bool isModel = (((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt()) == SceneViewPost3DMode_Model);
 
         glPushMatrix();
 
@@ -416,17 +416,17 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
         RectPoint rect = Agros2D::scene()->boundingBox();
         double max = qMax(rect.width(), rect.height());
-        double depth = max / Agros2D::problem()->configView()->scalarView3DHeight;
+        double depth = max / Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DHeight).toDouble();
 
         // range
-        double irange = 1.0 / (Agros2D::problem()->configView()->scalarRangeMax - Agros2D::problem()->configView()->scalarRangeMin);
+        double irange = 1.0 / (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble() - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble());
         // special case: constant solution
-        if (fabs(Agros2D::problem()->configView()->scalarRangeMin - Agros2D::problem()->configView()->scalarRangeMax) < EPS_ZERO)
+        if (fabs(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble() - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble()) < EPS_ZERO)
         {
             irange = 1.0;
         }
 
-        double phi = Agros2D::problem()->configView()->scalarView3DAngle;
+        double phi = Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DAngle).toDouble();
 
         m_postHermes->linScalarView().lock_data();
 
@@ -493,18 +493,18 @@ void SceneViewPost3D::paintScalarField3DSolid()
                 SceneMaterial *material = label->marker(postHermes()->activeViewField());
 
                 // hide material
-                if (Agros2D::problem()->configView()->solidViewHide.contains(material->name()))
+                if (Agros2D::problem()->setting()->value(ProblemSetting::View_SolidViewHide).toStringList().contains(material->name()))
                     continue;
 
-                if (!Agros2D::problem()->configView()->scalarRangeAuto)
+                if (!Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
                 {
                     double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                    if (avgValue < Agros2D::problem()->configView()->scalarRangeMin || avgValue > Agros2D::problem()->configView()->scalarRangeMax)
+                    if (avgValue < Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble() || avgValue > Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble())
                         continue;
                 }
 
                 // z = - depth / 2.0
-                if (Agros2D::problem()->configView()->scalarView3DLighting || isModel)
+                if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DLighting).toBool() || isModel)
                 {
                     computeNormal(point[0].x, point[0].y, -depth/2.0,
                             point[1].x, point[1].y, -depth/2.0,
@@ -515,12 +515,12 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
                 for (int j = 0; j < 3; j++)
                 {
-                    if (!isModel) glTexCoord1d((value[j] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                    if (!isModel) glTexCoord1d((value[j] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
                     glVertex3d(point[j].x, point[j].y, -depth/2.0);
                 }
 
                 // z = + depth / 2.0
-                if (Agros2D::problem()->configView()->scalarView3DLighting || isModel)
+                if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DLighting).toBool() || isModel)
                 {
                     computeNormal(point[0].x, point[0].y, depth/2.0,
                             point[1].x, point[1].y, depth/2.0,
@@ -531,7 +531,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
 
                 for (int j = 0; j < 3; j++)
                 {
-                    if (!isModel) glTexCoord1d((value[j] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                    if (!isModel) glTexCoord1d((value[j] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
                     glVertex3d(point[j].x, point[j].y, depth/2.0);
                 }
             }
@@ -555,13 +555,13 @@ void SceneViewPost3D::paintScalarField3DSolid()
                     SceneMaterial *material = label->marker(postHermes()->activeViewField());
 
                     // hide material
-                    if (Agros2D::problem()->configView()->solidViewHide.contains(material->name()))
+                    if (Agros2D::problem()->setting()->value(ProblemSetting::View_SolidViewHide).toStringList().contains(material->name()))
                         continue;
 
                     // length
                     for (int k = 0; k < 3; k++)
                     {
-                        if (Agros2D::problem()->configView()->scalarView3DLighting || isModel)
+                        if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DLighting).toBool() || isModel)
                         {
                             computeNormal(point[k].x, point[k].y, -depth/2.0,
                                           point[(k + 1) % 3].x, point[(k + 1) % 3].y, -depth/2.0,
@@ -570,14 +570,14 @@ void SceneViewPost3D::paintScalarField3DSolid()
                             glNormal3d(normal[0], normal[1], normal[2]);
                         }
 
-                        if (!isModel) glTexCoord1d((value[k] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                        if (!isModel) glTexCoord1d((value[k] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
                         glVertex3d(point[k].x, point[k].y, -depth/2.0);
-                        if (!isModel) glTexCoord1d((value[(k + 1) % 3] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                        if (!isModel) glTexCoord1d((value[(k + 1) % 3] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
                         glVertex3d(point[(k + 1) % 3].x, point[(k + 1) % 3].y, -depth/2.0);
 
-                        if (!isModel) glTexCoord1d((value[(k + 1) % 3] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                        if (!isModel) glTexCoord1d((value[(k + 1) % 3] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
                         glVertex3d(point[(k + 1) % 3].x, point[(k + 1) % 3].y, depth/2.0);
-                        if (!isModel) glTexCoord1d((value[k] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                        if (!isModel) glTexCoord1d((value[k] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
                         glVertex3d(point[k].x, point[k].y, depth/2.0);
                     }
                 }
@@ -602,19 +602,19 @@ void SceneViewPost3D::paintScalarField3DSolid()
                 SceneMaterial *material = label->marker(postHermes()->activeViewField());
 
                 // hide material
-                if (Agros2D::problem()->configView()->solidViewHide.contains(material->name()))
+                if (Agros2D::problem()->setting()->value(ProblemSetting::View_SolidViewHide).toStringList().contains(material->name()))
                     continue;
 
-                if (!Agros2D::problem()->configView()->scalarRangeAuto)
+                if (!Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
                 {
                     double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                    if (avgValue < Agros2D::problem()->configView()->scalarRangeMin || avgValue > Agros2D::problem()->configView()->scalarRangeMax)
+                    if (avgValue < Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble() || avgValue > Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble())
                         continue;
                 }
 
                 for (int j = 0; j < 2; j++)
                 {
-                    if (Agros2D::problem()->configView()->scalarView3DLighting || isModel)
+                    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DLighting).toBool() || isModel)
                     {
                         computeNormal(point[0].x * cos(j*phi/180.0*M_PI), point[0].y, point[0].x * sin(j*phi/180.0*M_PI),
                                 point[1].x * cos(j*phi/180.0*M_PI), point[1].y, point[1].x * sin(j*phi/180.0*M_PI),
@@ -623,11 +623,11 @@ void SceneViewPost3D::paintScalarField3DSolid()
                         glNormal3d(normal[0], normal[1], normal[2]);
                     }
 
-                    glTexCoord1d((value[0] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                    glTexCoord1d((value[0] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
                     glVertex3d(point[0].x * cos(j*phi/180.0*M_PI), point[0].y, point[0].x * sin(j*phi/180.0*M_PI));
-                    glTexCoord1d((value[1] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                    glTexCoord1d((value[1] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
                     glVertex3d(point[1].x * cos(j*phi/180.0*M_PI), point[1].y, point[1].x * sin(j*phi/180.0*M_PI));
-                    glTexCoord1d((value[2] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                    glTexCoord1d((value[2] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
                     glVertex3d(point[2].x * cos(j*phi/180.0*M_PI), point[2].y, point[2].x * sin(j*phi/180.0*M_PI));
                 }
             }
@@ -650,13 +650,13 @@ void SceneViewPost3D::paintScalarField3DSolid()
                     SceneMaterial *material = label->marker(postHermes()->activeViewField());
 
                     // hide material
-                    if (Agros2D::problem()->configView()->solidViewHide.contains(material->name()))
+                    if (Agros2D::problem()->setting()->value(ProblemSetting::View_SolidViewHide).toStringList().contains(material->name()))
                         continue;
 
-                    if (!Agros2D::problem()->configView()->scalarRangeAuto)
+                    if (!Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
                     {
                         double avgValue = (value[0] + value[1] + value[2]) / 3.0;
-                        if (avgValue < Agros2D::problem()->configView()->scalarRangeMin || avgValue > Agros2D::problem()->configView()->scalarRangeMax)
+                        if (avgValue < Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble() || avgValue > Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble())
                             continue;
                     }
 
@@ -669,7 +669,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
                         for (int j = 0; j < count + 1; j++)
                         {
 
-                            if (Agros2D::problem()->configView()->scalarView3DLighting || isModel)
+                            if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DLighting).toBool() || isModel)
                             {
                                 computeNormal(point[k].x * cos((j+0)*step/180.0*M_PI), point[k].y, point[k].x * sin((j+0)*step/180.0*M_PI),
                                               point[(k + 1) % 3].x * cos((j+0)*step/180.0*M_PI), point[(k + 1) % 3].y, point[(k + 1) % 3].x * sin((j+0)*step/180.0*M_PI),
@@ -678,9 +678,9 @@ void SceneViewPost3D::paintScalarField3DSolid()
                                 glNormal3d(normal[0], normal[1], normal[2]);
                             }
 
-                            if (!isModel) glTexCoord1d((value[k] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                            if (!isModel) glTexCoord1d((value[k] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
                             glVertex3d(point[k].x * cos((j+0)*step/180.0*M_PI), point[k].y, point[k].x * sin((j+0)*step/180.0*M_PI));
-                            if (!isModel) glTexCoord1d((value[(k + 1) % 3] - Agros2D::problem()->configView()->scalarRangeMin) * irange);
+                            if (!isModel) glTexCoord1d((value[(k + 1) % 3] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
                             glVertex3d(point[(k + 1) % 3].x * cos((j+0)*step/180.0*M_PI), point[(k + 1) % 3].y, point[(k + 1) % 3].x * sin((j+0)*step/180.0*M_PI));
                         }
                         glEnd();
@@ -706,7 +706,7 @@ void SceneViewPost3D::paintScalarField3DSolid()
         }
 
         // geometry
-        if (Agros2D::problem()->configView()->scalarView3DSolidGeometry)
+        if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DSolidGeometry).toBool())
         {
             glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
             glEnable(GL_LINE_SMOOTH);

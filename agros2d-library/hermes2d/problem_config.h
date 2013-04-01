@@ -112,201 +112,190 @@ private:
     MeshType m_meshType;
 };
 
-class ProblemConfigView : public QObject
+class ProblemSetting : public QObject
 {
     Q_OBJECT
 
 public:
-    ProblemConfigView();
-    ~ProblemConfigView();
+    ProblemSetting();
+    ~ProblemSetting();
 
-    QString startupScript;
-    QString description;
+    enum Type
+    {
+        Unknown,
+        Problem_StartupScript,
+        Problem_Description,
+        View_RulersFontFamily,
+        View_RulersFontPointSize,
+        View_PostFontFamily,
+        View_PostFontPointSize,
+        View_ZoomToMouse,
+        View_NodeSize,
+        View_EdgeWidth,
+        View_LabelSize,
+        View_ShowGrid,
+        View_GridStep,
+        View_ShowRulers,
+        View_SnapToGrid,
+        View_ShowAxes,
+        View_ScalarView3DMode,
+        View_ScalarView3DLighting,
+        View_ScalarView3DAngle,
+        View_ScalarView3DBackground,
+        View_ScalarView3DHeight,
+        View_ScalarView3DBoundingBox,
+        View_ScalarView3DSolidGeometry,
+        View_DeformScalar,
+        View_DeformContour,
+        View_DeformVector,
+        View_ColorBackgroundRed,
+        View_ColorBackgroundGreen,
+        View_ColorBackgroundBlue,
+        View_ColorGridRed,
+        View_ColorGridGreen,
+        View_ColorGridBlue,
+        View_ColorCrossRed,
+        View_ColorCrossGreen,
+        View_ColorCrossBlue,
+        View_ColorNodesRed,
+        View_ColorNodesGreen,
+        View_ColorNodesBlue,
+        View_ColorEdgesRed,
+        View_ColorEdgesGreen,
+        View_ColorEdgesBlue,
+        View_ColorLabelsRed,
+        View_ColorLabelsGreen,
+        View_ColorLabelsBlue,
+        View_ColorContoursRed,
+        View_ColorContoursGreen,
+        View_ColorContoursBlue,
+        View_ColorVectorsRed,
+        View_ColorVectorsGreen,
+        View_ColorVectorsBlue,
+        View_ColorInitialMeshRed,
+        View_ColorInitialMeshGreen,
+        View_ColorInitialMeshBlue,
+        View_ColorSolutionMeshRed,
+        View_ColorSolutionMeshGreen,
+        View_ColorSolutionMeshBlue,
+        View_ColorSelectedRed,
+        View_ColorSelectedGreen,
+        View_ColorSelectedBlue,
+        View_ColorHighlightedRed,
+        View_ColorHighlightedGreen,
+        View_ColorHighlightedBlue,
+        View_ColorCrossedRed,
+        View_ColorCrossedGreen,
+        View_ColorCrossedBlue,
+        View_ShowInitialMeshView,
+        View_ShowSolutionMeshView,
+        View_ContourVariable,
+        View_ShowContourView,
+        View_ContoursCount,
+        View_ContoursWidth,
+        View_ShowScalarView,
+        View_ShowScalarColorBar,
+        View_ScalarVariable,
+        View_ScalarVariableComp,
+        View_PaletteType,
+        View_PaletteFilter,
+        View_PaletteSteps,
+        View_ScalarRangeLog,
+        View_ScalarRangeBase,
+        View_ScalarDecimalPlace,
+        View_ScalarRangeAuto,
+        View_ScalarRangeMin,
+        View_ScalarRangeMax,
+        View_ShowVectorView,
+        View_VectorVariable,
+        View_VectorProportional,
+        View_VectorColor,
+        View_VectorCount,
+        View_VectorScale,
+        View_VectorType,
+        View_VectorCenter,
+        View_ShowOrderView,
+        View_ShowOrderColorBar,
+        View_ShowOrderLabel,
+        View_OrderPaletteOrderType,
+        View_ParticleButcherTableType,
+        View_ParticleIncludeRelativisticCorrection,
+        View_ParticleMass,
+        View_ParticleConstant,
+        View_ParticleStartX,
+        View_ParticleStartY,
+        View_ParticleStartVelocityX,
+        View_ParticleStartVelocityY,
+        View_ParticleNumberOfParticles,
+        View_ParticleStartingRadius,
+        View_ParticleReflectOnDifferentMaterial,
+        View_ParticleReflectOnBoundary,
+        View_ParticleCoefficientOfRestitution,
+        View_ParticleMaximumRelativeError,
+        View_ParticleShowPoints,
+        View_ParticleShowBlendedFaces,
+        View_ParticleNumShowParticlesAxi,
+        View_ParticleColorByVelocity,
+        View_ParticleMaximumNumberOfSteps,
+        View_ParticleMinimumStep,
+        View_ParticleDragDensity,
+        View_ParticleDragCoefficient,
+        View_ParticleDragReferenceArea,
+        View_ParticleCustomForceX,
+        View_ParticleCustomForceY,
+        View_ParticleCustomForceZ,
+        View_ChartStartX,
+        View_ChartStartY,
+        View_ChartEndX,
+        View_ChartEndY,
+        View_ChartTimeX,
+        View_ChartTimeY,
+        View_ChartHorizontalAxis,
+        View_ChartHorizontalAxisReverse,
+        View_ChartHorizontalAxisPoints,
+        View_MeshAngleSegmentsCount,
+        View_MeshCurvilinearElements,
+        View_LinearizerQuality,
+        View_SolidViewHide,
+        Adaptivity_MaxDofs,
+        Adaptivity_IsoOnly,
+        Adaptivity_ConvExp,
+        Adaptivity_Threshold,
+        Adaptivity_Strategy,
+        Adaptivity_MeshRegularity,
+        Adaptivity_ProjNormType,
+        Adaptivity_UseAniso,
+        Adaptivity_FinerReference,
+        Commands_Triangle,
+        Commands_Gmsh
+    };
 
-    // font
-    QString rulersFont;
-    int rulersFontSize;
-    QString postFont;
-    int postFontSize;
-
-    // zoom
-    bool zoomToMouse;
-
-    // geometry
-    double nodeSize;
-    double edgeWidth;
-    double labelSize;
-
-    // rulers
-    bool showRulers;
-
-    // colors
-    QColor colorBackground;
-    QColor colorGrid;
-    QColor colorCross;
-    QColor colorNodes;
-    QColor colorEdges;
-    QColor colorLabels;
-    QColor colorContours;
-    QColor colorVectors;
-    QColor colorInitialMesh;
-    QColor colorSolutionMesh;
-    QColor colorHighlighted;
-    QColor colorCrossed;
-    QColor colorSelected;
-    QColor colorNotConnected;
-
-    // grid
-    bool showGrid;
-    double gridStep;
-    bool snapToGrid;
-
-    // axes
-    bool showAxes;
-
-    // deformations
-    bool deformScalar;
-    bool deformContour;
-    bool deformVector;
-
-    // 3d
-    bool scalarView3DLighting;
-    bool scalarView3DSolidGeometry;
-    double scalarView3DAngle;
-    bool scalarView3DBackground;
-    double scalarView3DHeight;
-    bool scalarView3DBoundingBox;
-
-    // active field
-    QString activeField;
-
-    // post3d
-    SceneViewPost3DMode showPost3D;
-
-    // linearizer quality
-    PaletteQuality linearizerQuality;
-
-    // contour
-    bool showContourView;
-    QString contourVariable;
-    int contoursCount;
-    double contourWidth;
-
-    // scalar view
-    bool showScalarView;
-    QString scalarVariable;
-    PhysicFieldVariableComp scalarVariableComp;
-    bool scalarRangeAuto;
-    double scalarRangeMin;
-    double scalarRangeMax;
-    bool scalarRangeLog;
-    double scalarRangeBase;
-    int scalarDecimalPlace;
-
-    // vector view
-    bool showVectorView;
-    QString vectorVariable;
-    bool vectorProportional;
-    bool vectorColor;
-    int vectorCount;
-    double vectorScale;
-    VectorType vectorType;
-    VectorCenter vectorCenter;
-
-    // mesh
-    bool showInitialMeshView;
-    bool showSolutionMeshView;
-    int angleSegmentsCount;
-    bool curvilinearElements;
-
-    // order view
-    bool showOrderView;
-    bool showOrderColorBar;
-    PaletteOrderType orderPaletteOrderType;
-    bool orderLabel;
-
-    // palette
-    bool showScalarColorBar;
-    PaletteType paletteType;
-    int paletteSteps;
-    bool paletteFilter;
-
-    // particle tracing
-    Hermes::ButcherTableType particleButcherTableType;
-    bool particleIncludeRelativisticCorrection;
-    double particleMass;
-    double particleConstant;
-    double particleMaximumRelativeError;
-    double particleMinimumStep;
-    int particleMaximumNumberOfSteps;
-    bool particleReflectOnDifferentMaterial;
-    bool particleReflectOnBoundary;
-    double particleCoefficientOfRestitution;
-    Point particleStart;
-    Point particleStartVelocity;
-    Point particleAcceleration;
-    Point3 particleCustomForce;
-    int particleNumberOfParticles;
-    double particleStartingRadius;
-    bool particleColorByVelocity;
-    bool particleShowPoints;
-    bool particleShowBlendedFaces;
-    int particleNumShowParticlesAxi;
-    double particleDragDensity;
-    double particleDragCoefficient;
-    double particleDragReferenceArea;
-
-    // chart
-    double chartStartX;
-    double chartStartY;
-    double chartEndX;
-    double chartEndY;
-    double chartTimeX;
-    double chartTimeY;
-    ChartAxisType chartHorizontalAxis;
-    bool chartHorizontalAxisReverse;
-    double chartHorizontalAxisPoints;
-
-    // solid view
-    QStringList solidViewHide;
-
-    // adaptivity
-    int maxDofs;
-    bool isoOnly;
-    double convExp;
-    double threshold;
-    int strategy;
-    int meshRegularity;
-    Hermes::Hermes2D::ProjNormType projNormType;
-    bool useAniso;
-    bool finerReference;
-
-    // command argument
-    QString commandTriangle;
-    QString commandGmsh;
-
-    void load(QDomElement *config, XMLProblem::config *configxsd);
-    void save(QDomElement *config, XMLProblem::config *configxsd);
+    void load21(QDomElement *config);
+    void save21(QDomElement *config);
+    void load(XMLProblem::config *configxsd);
+    void save(XMLProblem::config *configxsd);
 
     void clear();
 
+    inline QString typeToStringKey(Type type) { return m_settingKey[type]; }
+    inline Type stringKeyToType(const QString &key) { return m_settingKey.key(key); }
+
+    inline QVariant value(Type type) {  return m_setting[type]; }
+    inline void setValue(Type type, int value) {  m_setting[type] = value; }
+    inline void setValue(Type type, double value) {  m_setting[type] = value; }
+    inline void setValue(Type type, bool value) {  m_setting[type] = value; }
+    inline void setValue(Type type, const QString &value) { m_setting[type] = value; }
+    inline void setValue(Type type, const QStringList &value) { m_setting[type] = value; }
+
+    inline QVariant defaultValue(Type type) {  return m_settingDefault[type]; }
+
 private:
-    QDomElement *eleConfig;
-    XMLProblem::config *configxsd;
+    QMap<Type, QVariant> m_setting;
+    QMap<Type, QVariant> m_settingDefault;
+    QMap<Type, QString> m_settingKey;
 
-    bool readConfig(const QString &key, bool defaultValue);
-    int readConfig(const QString &key, int defaultValue);
-    double readConfig(const QString &key, double defaultValue);
-    QString readConfig(const QString &key, const QString &defaultValue);
-    QColor readConfig(const QString &key, const QColor &defaultValue);
-    QStringList readConfig(const QString &key, const QStringList &defaultValue);
-
-    void writeConfig(const QString &key, bool value);
-    void writeConfig(const QString &key, int value);
-    void writeConfig(const QString &key, double value);
-    void writeConfig(const QString &key, const QString &value);
-    void writeConfig(const QString &key, const QColor &value);
-    void writeConfig(const QString &key, const QStringList &value);
+    void setDefaultValues();
+    void setStringKeys();
 };
 
 #endif // PROBLEM_CONFIG_H

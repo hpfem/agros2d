@@ -66,9 +66,9 @@ bool MeshGeneratorGMSH::mesh()
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "gmsh"))
             gmshBinary = QApplication::applicationDirPath() + QDir::separator() + "gmsh";
 
-        m_process->start(QString(Agros2D::problem()->configView()->commandGmsh).
-                          arg(gmshBinary).
-                          arg(tempProblemFileName()));
+        m_process->start(Agros2D::problem()->setting()->value(ProblemSetting::Commands_Gmsh).toString().
+                         arg(gmshBinary).
+                         arg(tempProblemFileName()));
 
         // execute an event loop to process the request (nearly-synchronous)
         QEventLoop eventLoop;
@@ -120,7 +120,7 @@ void MeshGeneratorGMSH::meshGmshCreated(int exitCode)
             QFile::remove(tempProblemFileName() + ".geo");
             QFile::remove(tempProblemFileName() + ".msh");
             QFile::remove(tempProblemFileName() + ".gmsh.out");
-            QFile::remove(tempProblemFileName() + ".gmsh.err");            
+            QFile::remove(tempProblemFileName() + ".gmsh.err");
         }
         else
         {
@@ -316,14 +316,14 @@ bool MeshGeneratorGMSH::writeToGmsh()
         }
     }
 
-//    outLoops.append(QString("Physical Surface(1) = {"));
-//    for(int i = 0; i < surfaceCount; i++)
-//    {
-//        outLoops.append(QString("%1").arg(i+1));
-//        if(i < surfaceCount - 1)
-//            outLoops.append(",");
-//    }
-//    outLoops.append(QString("};\n"));
+    //    outLoops.append(QString("Physical Surface(1) = {"));
+    //    for(int i = 0; i < surfaceCount; i++)
+    //    {
+    //        outLoops.append(QString("%1").arg(i+1));
+    //        if(i < surfaceCount - 1)
+    //            outLoops.append(",");
+    //    }
+    //    outLoops.append(QString("};\n"));
 
     // quad mesh
     if (Agros2D::problem()->config()->meshType() == MeshType_GMSH_Quad ||

@@ -61,7 +61,7 @@ PostHermes::~PostHermes()
 
 void PostHermes::processInitialMesh()
 {
-    if (Agros2D::problem()->isMeshed() && (m_activeViewField) && Agros2D::problem()->configView()->showInitialMeshView)
+    if (Agros2D::problem()->isMeshed() && (m_activeViewField) && (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowInitialMeshView).toBool()))
     {
         Agros2D::log()->printMessage(tr("Mesh View"), tr("Initial mesh with %1 elements").arg(m_activeViewField->initialMesh()->get_num_active_elements()));
 
@@ -80,7 +80,7 @@ void PostHermes::processInitialMesh()
 
 void PostHermes::processSolutionMesh()
 {
-    if ((Agros2D::problem()->isSolved()) && (m_activeViewField) && (Agros2D::problem()->configView()->showSolutionMeshView))
+    if ((Agros2D::problem()->isSolved()) && (m_activeViewField) && (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowSolutionMeshView).toBool()))
     {
         // ERROR: FIX component(0)
         Agros2D::log()->printMessage(tr("Mesh View"), tr("Solution mesh with %1 elements").arg(activeMultiSolutionArray().solutions().at(0)->get_mesh()->get_num_active_elements()));
@@ -97,7 +97,7 @@ void PostHermes::processSolutionMesh()
 void PostHermes::processOrder()
 {
     // init linearizer for order view
-    if ((Agros2D::problem()->isSolved()) && (m_activeViewField) && (Agros2D::problem()->configView()->showOrderView))
+    if ((Agros2D::problem()->isSolved()) && (m_activeViewField) && (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderView).toBool()))
     {
         Agros2D::log()->printMessage(tr("Mesh View"), tr("Polynomial order"));
 
@@ -109,41 +109,41 @@ void PostHermes::processOrder()
 
 void PostHermes::processRangeContour()
 {
-    if (Agros2D::problem()->isSolved() && m_activeViewField && Agros2D::problem()->configView()->showContourView)
+    if (Agros2D::problem()->isSolved() && m_activeViewField && (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowContourView).toBool()))
     {
         bool contains = false;
         foreach (Module::LocalVariable variable, m_activeViewField->viewScalarVariables())
         {
-            if (variable.id() == Agros2D::problem()->configView()->contourVariable)
+            if (variable.id() == Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString())
             {
                 contains = true;
                 break;
             }
         }
 
-        if (Agros2D::problem()->configView()->contourVariable == "" || !contains)
+        if (Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString() == "" || !contains)
         {
             // default values
-            Agros2D::problem()->configView()->contourVariable = m_activeViewField->defaultViewScalarVariable().id();
+            Agros2D::problem()->setting()->setValue(ProblemSetting::View_ContourVariable, m_activeViewField->defaultViewScalarVariable().id());
         }
 
-        Agros2D::log()->printMessage(tr("Post View"), tr("Contour view (%1)").arg(Agros2D::problem()->configView()->contourVariable));
+        Agros2D::log()->printMessage(tr("Post View"), tr("Contour view (%1)").arg(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString()));
 
-        QString variableName = Agros2D::problem()->configView()->contourVariable;
+        QString variableName = Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString();
         Module::LocalVariable variable = m_activeViewField->localVariable(variableName);
 
         Hermes::Hermes2D::Filter<double> *slnContourView = NULL;
         if (variable.isScalar())
-            slnContourView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->configView()->contourVariable),
+            slnContourView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString()),
                                               PhysicFieldVariableComp_Scalar);
         else
-            slnContourView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->configView()->contourVariable),
+            slnContourView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString()),
                                               PhysicFieldVariableComp_Magnitude);
 
         m_linContourView.free();
 
         // deformed shape
-        if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->configView()->deformContour)
+        if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformContour).toBool())
         {
             Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<MeshFunctionSharedPtr<double> >(activeMultiSolutionArray().solutions().at(0),
                                                                                                                                                  activeMultiSolutionArray().solutions().at(1)));
@@ -164,36 +164,38 @@ void PostHermes::processRangeContour()
         // process solution
         m_linContourView.process_solution(slnContourView,
                                           Hermes::Hermes2D::H2D_FN_VAL_0,
-                                          paletteQualityToDouble(Agros2D::problem()->configView()->linearizerQuality));
+                                          paletteQualityToDouble((PaletteQuality) Agros2D::problem()->setting()->value(ProblemSetting::View_LinearizerQuality).toDouble()));
     }
 }
 
 void PostHermes::processRangeScalar()
 {
-    if ((Agros2D::problem()->isSolved()) && (m_activeViewField) && ((Agros2D::problem()->configView()->showScalarView) || (Agros2D::problem()->configView()->showPost3D == SceneViewPost3DMode_ScalarView3D)))
+    if ((Agros2D::problem()->isSolved()) && (m_activeViewField)
+            && ((Agros2D::problem()->setting()->value(ProblemSetting::View_ShowScalarView).toBool())
+                || (((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt()) == SceneViewPost3DMode_ScalarView3D)))
     {
         bool contains = false;
         foreach (Module::LocalVariable variable, m_activeViewField->viewScalarVariables())
         {
-            if (variable.id() == Agros2D::problem()->configView()->scalarVariable)
+            if (variable.id() == Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString())
             {
                 contains = true;
                 break;
             }
         }
 
-        if (Agros2D::problem()->configView()->scalarVariable == "" || !contains)
+        if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString() == "" || !contains)
         {
             // default values
             Module::LocalVariable variable = m_activeViewField->defaultViewScalarVariable();
-            Agros2D::problem()->configView()->scalarVariable = variable.id();
-            Agros2D::problem()->configView()->scalarVariableComp = variable.isScalar() ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude;
+            Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariable, variable.id());
+            Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariableComp, variable.isScalar() ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude);
         }
 
-        Agros2D::log()->printMessage(tr("Post View"), tr("Scalar view (%1)").arg(Agros2D::problem()->configView()->scalarVariable));
+        Agros2D::log()->printMessage(tr("Post View"), tr("Scalar view (%1)").arg(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()));
 
-        Hermes::Hermes2D::Filter<double> *slnScalarView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->configView()->scalarVariable),
-                                                                           Agros2D::problem()->configView()->scalarVariableComp);
+        Hermes::Hermes2D::Filter<double> *slnScalarView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
+                                                                           (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
 
         // QTime time;
         // time.start();
@@ -201,7 +203,7 @@ void PostHermes::processRangeScalar()
         m_linScalarView.free();
 
         // deformed shape
-        if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->configView()->deformScalar)
+        if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformScalar).toBool())
         {
             Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<MeshFunctionSharedPtr<double> >(activeMultiSolutionArray().solutions().at(0),
                                                                                                                                                  activeMultiSolutionArray().solutions().at(1)));
@@ -222,14 +224,14 @@ void PostHermes::processRangeScalar()
         // process solution
         m_linScalarView.process_solution(slnScalarView,
                                          Hermes::Hermes2D::H2D_FN_VAL_0,
-                                         paletteQualityToDouble(Agros2D::problem()->configView()->linearizerQuality));
+                                         paletteQualityToDouble((PaletteQuality) Agros2D::problem()->setting()->value(ProblemSetting::View_LinearizerQuality).toInt()));
 
         // qDebug() << "process scalar: " << time.elapsed();
 
-        if (Agros2D::problem()->configView()->scalarRangeAuto)
+        if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
         {
-            Agros2D::problem()->configView()->scalarRangeMin = m_linScalarView.get_min_value();
-            Agros2D::problem()->configView()->scalarRangeMax = m_linScalarView.get_max_value();
+            Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeMin, m_linScalarView.get_min_value());
+            Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeMax, m_linScalarView.get_max_value());
 
             // Adjust the min-max if they are very close to each other.
             /*
@@ -251,36 +253,36 @@ void PostHermes::processRangeScalar()
 
 void PostHermes::processRangeVector()
 {
-    if ((Agros2D::problem()->isSolved()) && (m_activeViewField) && (Agros2D::problem()->configView()->showVectorView))
+    if ((Agros2D::problem()->isSolved()) && (m_activeViewField) && (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowVectorView).toBool()))
     {
         bool contains = false;
         foreach (Module::LocalVariable variable, m_activeViewField->viewVectorVariables())
         {
-            if (variable.id() == Agros2D::problem()->configView()->vectorVariable)
+            if (variable.id() == Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString())
             {
                 contains = true;
                 break;
             }
         }
 
-        if (Agros2D::problem()->configView()->vectorVariable == "" || !contains)
+        if (Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString() == "" || !contains)
         {
             // default values
-            Agros2D::problem()->configView()->vectorVariable = m_activeViewField->defaultViewVectorVariable().id();
+            Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorVariable, m_activeViewField->defaultViewVectorVariable().id());
         }
 
-        Agros2D::log()->printMessage(tr("Post View"), tr("Vector view (%1)").arg(Agros2D::problem()->configView()->vectorVariable));
+        Agros2D::log()->printMessage(tr("Post View"), tr("Vector view (%1)").arg(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()));
 
-        Hermes::Hermes2D::Filter<double> *slnVectorXView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->configView()->vectorVariable),
+        Hermes::Hermes2D::Filter<double> *slnVectorXView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
                                                                             PhysicFieldVariableComp_X);
 
-        Hermes::Hermes2D::Filter<double> *slnVectorYView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->configView()->vectorVariable),
+        Hermes::Hermes2D::Filter<double> *slnVectorYView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
                                                                             PhysicFieldVariableComp_Y);
 
         m_vecVectorView.free();
 
         // deformed shape
-        if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->configView()->deformVector)
+        if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformVector).toBool())
         {
             Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<MeshFunctionSharedPtr<double> >(activeMultiSolutionArray().solutions().at(0),
                                                                                                                                                  activeMultiSolutionArray().solutions().at(1)));
@@ -490,7 +492,8 @@ void SceneViewPostInterface::initializeGL()
 
 const QVector3D SceneViewPostInterface::paletteColor2(const int pos) const
 {
-    int n = (int) (pos / (PALETTEENTRIES / Agros2D::problem()->configView()->paletteSteps)) * (PALETTEENTRIES / Agros2D::problem()->configView()->paletteSteps);
+    int n = (int) (pos / (PALETTEENTRIES / Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteSteps).toInt()))
+            * (PALETTEENTRIES / Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteSteps).toInt());
 
     if (n < 0)
         n = 0;
@@ -498,7 +501,7 @@ const QVector3D SceneViewPostInterface::paletteColor2(const int pos) const
         n = PALETTEENTRIES - 1;
 
     const double *colors = NULL;
-    switch (Agros2D::problem()->configView()->paletteType)
+    switch ((PaletteType) Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteType).toInt())
     {
     case Palette_Agros2D:
         colors = paletteDataAgros2D[n];
@@ -510,7 +513,7 @@ const QVector3D SceneViewPostInterface::paletteColor2(const int pos) const
 
 const double* SceneViewPostInterface::paletteColor(double x) const
 {
-    switch (Agros2D::problem()->configView()->paletteType)
+    switch ((PaletteType) Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteType).toInt())
     {
     case Palette_Agros2D:
     {
@@ -635,14 +638,14 @@ const double* SceneViewPostInterface::paletteColor(double x) const
     }
         break;
     default:
-        qWarning() << QString("Undefined: %1.").arg(Agros2D::problem()->configView()->paletteType);
+        qWarning() << QString("Undefined: %1.").arg(((PaletteType) Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteType).toInt()));
         return NULL;
     }
 }
 
 const double* SceneViewPostInterface::paletteColorOrder(int n) const
 {
-    switch (Agros2D::problem()->configView()->orderPaletteOrderType)
+    switch ((PaletteOrderType) Agros2D::problem()->setting()->value(ProblemSetting::View_OrderPaletteOrderType).toInt())
     {
     case PaletteOrder_Hermes:
         return paletteOrderHermes[n];
@@ -673,14 +676,15 @@ const double* SceneViewPostInterface::paletteColorOrder(int n) const
     case PaletteOrder_BWDesc:
         return paletteOrderBWDesc[n];
     default:
-        qWarning() << QString("Undefined: %1.").arg(Agros2D::problem()->configView()->orderPaletteOrderType);
+        qWarning() << QString("Undefined: %1.").arg(Agros2D::problem()->setting()->value(ProblemSetting::View_OrderPaletteOrderType).toInt());
         return NULL;
     }
 }
 
 void SceneViewPostInterface::paletteCreate()
 {
-    int paletteSteps = Agros2D::problem()->configView()->paletteFilter ? 100 : Agros2D::problem()->configView()->paletteSteps;
+    int paletteSteps = Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteFilter).toBool()
+            ? 100 : Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteSteps).toInt();
 
     unsigned char palette[256][3];
     for (int i = 0; i < paletteSteps; i++)
@@ -698,7 +702,7 @@ void SceneViewPostInterface::paletteCreate()
         glDeleteTextures(1, &m_textureScalar);
     glGenTextures(1, &m_textureScalar);
 
-    int palFilter = Agros2D::problem()->configView()->paletteFilter ? GL_LINEAR : GL_NEAREST;
+    int palFilter = Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteFilter).toBool() ? GL_LINEAR : GL_NEAREST;
     glBindTexture(GL_TEXTURE_1D, m_textureScalar);
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, palFilter);
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, palFilter);
@@ -706,7 +710,7 @@ void SceneViewPostInterface::paletteCreate()
     glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 
     // adjust palette
-    if (Agros2D::problem()->configView()->paletteFilter)
+    if (Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteFilter).toBool())
     {
         m_texScale = (double) (paletteSteps-1) / 256.0;
         m_texShift = 0.5 / 256.0;
@@ -720,7 +724,7 @@ void SceneViewPostInterface::paletteCreate()
 
 void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
 {
-    if (!Agros2D::problem()->isSolved() || !Agros2D::problem()->configView()->showScalarColorBar) return;
+    if (!Agros2D::problem()->isSolved() || !Agros2D::problem()->setting()->value(ProblemSetting::View_ShowScalarColorBar).toBool()) return;
 
     loadProjectionViewPort();
 
@@ -728,10 +732,11 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     glTranslated(-width() / 2.0, -height() / 2.0, 0.0);
 
     // dimensions
-    int textWidth = (m_charDataPost[GLYPH_M].x1 - m_charDataPost[GLYPH_M].x0) * (QString::number(-1.0, '+e', Agros2D::problem()->configView()->scalarDecimalPlace).length() + 1);
+    int textWidth = (m_charDataPost[GLYPH_M].x1 - m_charDataPost[GLYPH_M].x0)
+            * (QString::number(-1.0, '+e', Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarDecimalPlace).toInt()).length() + 1);
     int textHeight = 2 * (m_charDataPost[GLYPH_M].y1 - m_charDataPost[GLYPH_M].y0);
     Point scaleSize = Point(45.0 + textWidth, 20*textHeight); // height() - 20.0
-    Point scaleBorder = Point(10.0, (Agros2D::problem()->configView()->showRulers) ? 1.8 * textHeight : 10.0);
+    Point scaleBorder = Point(10.0, (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool()) ? 1.8 * textHeight : 10.0);
     double scaleLeft = (width() - (45.0 + textWidth));
     int numTicks = 11;
 
@@ -799,24 +804,25 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
     for (int i = 1; i < numTicks+1; i++)
     {
         double value = 0.0;
-        if (!Agros2D::problem()->configView()->scalarRangeLog)
+        if (!Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeLog).toBool())
             value = min + (double) (i-1) / (numTicks-1) * (max - min);
         else
-            value = min + (double) pow(Agros2D::problem()->configView()->scalarRangeBase, ((i-1) / (numTicks-1)))/Agros2D::problem()->configView()->scalarRangeBase * (max - min);
+            value = min + (double) pow(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeBase).toInt(),
+                                       ((i-1) / (numTicks-1)))/Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeBase).toInt() * (max - min);
 
         if (fabs(value) < EPS_ZERO) value = 0.0;
         double tickY = (scaleSize.y - 60.0) / (numTicks - 1.0);
 
         printPostAt(scaleLeft + 33.0 + ((value >= 0.0) ? (m_charDataPost[GLYPH_M].x1 - m_charDataPost[GLYPH_M].x0) : 0.0),
                     scaleBorder.y + 10.0 + (i-1)*tickY - textHeight / 4.0,
-                    QString::number(value, '+e', Agros2D::problem()->configView()->scalarDecimalPlace));
+                    QString::number(value, '+e', Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarDecimalPlace).toInt()));
     }
 
     // variable
-    Module::LocalVariable localVariable = postHermes()->activeViewField()->localVariable(Agros2D::problem()->configView()->scalarVariable);
+    Module::LocalVariable localVariable = postHermes()->activeViewField()->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString());
     QString str = QString("%1 (%2)").
-            arg(Agros2D::problem()->configView()->scalarVariable != "" ? localVariable.shortname() : "").
-            arg(Agros2D::problem()->configView()->scalarVariable != "" ? localVariable.unit() : "");
+            arg(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString().isEmpty() ? "" : localVariable.shortname()).
+            arg(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString().isEmpty() ? "" : localVariable.unit());
 
     printPostAt(scaleLeft + scaleSize.x / 2.0 - (m_charDataPost[GLYPH_M].x1 - m_charDataPost[GLYPH_M].x0) * str.count() / 2.0,
                 scaleBorder.y + scaleSize.y - 20.0,

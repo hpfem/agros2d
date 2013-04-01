@@ -94,562 +94,387 @@ double ProblemConfig::initialTimeStepLength()
 
 // ********************************************************************************************
 
-ProblemConfigView::ProblemConfigView() : eleConfig(NULL), configxsd(NULL)
+ProblemSetting::ProblemSetting()
 {
+    setStringKeys();
+    setDefaultValues();
+
     clear();
 }
 
-ProblemConfigView::~ProblemConfigView()
+ProblemSetting::~ProblemSetting()
 {
 }
 
-void ProblemConfigView::clear()
+void ProblemSetting::clear()
 {
-    load(NULL, NULL);
+    // set default values and types
+    m_setting.clear();
+    setDefaultValues();
+
+    m_setting = m_settingDefault;
 }
 
-void ProblemConfigView::load(QDomElement *config, XMLProblem::config *configxsd)
+void ProblemSetting::setStringKeys()
 {
-    eleConfig = config;
-    this->configxsd = configxsd;
+    m_settingKey[Problem_StartupScript] = "Problem_StartupScript";
+    m_settingKey[Problem_Description] = "Problem_Description";
+    m_settingKey[View_RulersFontFamily] = "View_RulersFontFamily";
+    m_settingKey[View_RulersFontPointSize] = "View_RulersFontPointSize";
+    m_settingKey[View_PostFontFamily] = "View_PostFontFamily";
+    m_settingKey[View_PostFontPointSize] = "View_PostFontPointSize";
+    m_settingKey[View_ZoomToMouse] = "View_ZoomToMouse";
+    m_settingKey[View_NodeSize] = "View_NodeSize";
+    m_settingKey[View_EdgeWidth] = "View_EdgeWidth";
+    m_settingKey[View_LabelSize] = "View_LabelSize";
+    m_settingKey[View_ShowGrid] = "View_ShowGrid";
+    m_settingKey[View_GridStep] = "View_GridStep";
+    m_settingKey[View_ShowRulers] = "View_ShowRulers";
+    m_settingKey[View_SnapToGrid] = "View_SnapToGrid";
+    m_settingKey[View_ShowAxes] = "View_ShowAxes";
+    m_settingKey[View_ScalarView3DMode] = "View_ScalarView3DMode";
+    m_settingKey[View_ScalarView3DLighting] = "View_ScalarView3DLighting";
+    m_settingKey[View_ScalarView3DAngle] = "View_ScalarView3DAngle";
+    m_settingKey[View_ScalarView3DBackground] = "View_ScalarView3DBackground";
+    m_settingKey[View_ScalarView3DHeight] = "View_ScalarView3DHeight";
+    m_settingKey[View_ScalarView3DBoundingBox] = "View_ScalarView3DBoundingBox";
+    m_settingKey[View_ScalarView3DSolidGeometry] = "View_ScalarView3DSolidGeometry";
+    m_settingKey[View_DeformScalar] = "View_DeformScalar";
+    m_settingKey[View_DeformContour] = "View_DeformContour";
+    m_settingKey[View_DeformVector] = "View_DeformVector";
+    m_settingKey[View_ColorBackgroundRed] = "View_ColorBackgroundRed";
+    m_settingKey[View_ColorBackgroundGreen] = "View_ColorBackgroundGreen";
+    m_settingKey[View_ColorBackgroundBlue] = "View_ColorBackgroundBlue";
+    m_settingKey[View_ColorGridRed] = "View_ColorGridRed";
+    m_settingKey[View_ColorGridGreen] = "View_ColorGridGreen";
+    m_settingKey[View_ColorGridBlue] = "View_ColorGridBlue";
+    m_settingKey[View_ColorCrossRed] = "View_ColorCrossRed";
+    m_settingKey[View_ColorCrossGreen] = "View_ColorCrossGreen";
+    m_settingKey[View_ColorCrossBlue] = "View_ColorCrossBlue";
+    m_settingKey[View_ColorNodesRed] = "View_ColorNodesRed";
+    m_settingKey[View_ColorNodesGreen] = "View_ColorNodesGreen";
+    m_settingKey[View_ColorNodesBlue] = "View_ColorNodesBlue";
+    m_settingKey[View_ColorEdgesRed] = "View_ColorEdgesRed";
+    m_settingKey[View_ColorEdgesGreen] = "View_ColorEdgesGreen";
+    m_settingKey[View_ColorEdgesBlue] = "View_ColorEdgesBlue";
+    m_settingKey[View_ColorLabelsRed] = "View_ColorLabelsRed";
+    m_settingKey[View_ColorLabelsGreen] = "View_ColorLabelsGreen";
+    m_settingKey[View_ColorLabelsBlue] = "View_ColorLabelsBlue";
+    m_settingKey[View_ColorContoursRed] = "View_ColorContoursRed";
+    m_settingKey[View_ColorContoursGreen] = "View_ColorContoursGreen";
+    m_settingKey[View_ColorContoursBlue] = "View_ColorContoursBlue";
+    m_settingKey[View_ColorVectorsRed] = "View_ColorVectorsRed";
+    m_settingKey[View_ColorVectorsGreen] = "View_ColorVectorsGreen";
+    m_settingKey[View_ColorVectorsBlue] = "View_ColorVectorsBlue";
+    m_settingKey[View_ColorInitialMeshRed] = "View_ColorInitialMeshRed";
+    m_settingKey[View_ColorInitialMeshGreen] = "View_ColorInitialMeshGreen";
+    m_settingKey[View_ColorInitialMeshBlue] = "View_ColorInitialMeshBlue";
+    m_settingKey[View_ColorSolutionMeshRed] = "View_ColorSolutionMeshRed";
+    m_settingKey[View_ColorSolutionMeshGreen] = "View_ColorSolutionMeshGreen";
+    m_settingKey[View_ColorSolutionMeshBlue] = "View_ColorSolutionMeshBlue";
+    m_settingKey[View_ColorHighlightedRed] = "View_ColorHighlightedRed";
+    m_settingKey[View_ColorHighlightedGreen] = "View_ColorHighlightedGreen";
+    m_settingKey[View_ColorHighlightedBlue] = "View_ColorHighlightedBlue";
+    m_settingKey[View_ColorSelectedRed] = "View_ColorSelectedRed";
+    m_settingKey[View_ColorSelectedGreen] = "View_ColorSelectedGreen";
+    m_settingKey[View_ColorSelectedBlue] = "View_ColorSelectedBlue";
+    m_settingKey[View_ColorCrossedRed] = "View_ColorCrossedRed";
+    m_settingKey[View_ColorCrossedGreen] = "View_ColorCrossedGreen";
+    m_settingKey[View_ColorCrossedBlue] = "View_ColorCrossedBlue";
+    m_settingKey[View_ShowInitialMeshView] = "View_ShowInitialMeshView";
+    m_settingKey[View_ShowSolutionMeshView] = "View_ShowSolutionMeshView";
+    m_settingKey[View_ContourVariable] = "View_ContourVariable";
+    m_settingKey[View_ShowContourView] = "View_ShowContourView";
+    m_settingKey[View_ContoursCount] = "View_ContoursCount";
+    m_settingKey[View_ContoursWidth] = "View_ContoursWidth";
+    m_settingKey[View_ShowScalarView] = "View_ShowScalarView";
+    m_settingKey[View_ShowScalarColorBar] = "View_ShowScalarColorBar";
+    m_settingKey[View_ScalarVariable] = "View_ScalarVariable";
+    m_settingKey[View_ScalarVariableComp] = "View_ScalarVariableComp";
+    m_settingKey[View_PaletteType] = "View_PaletteType";
+    m_settingKey[View_PaletteFilter] = "View_PaletteFilter";
+    m_settingKey[View_PaletteSteps] = "View_PaletteSteps";
+    m_settingKey[View_ScalarRangeLog] = "View_ScalarRangeLog";
+    m_settingKey[View_ScalarRangeBase] = "View_ScalarRangeBase";
+    m_settingKey[View_ScalarDecimalPlace] = "View_ScalarDecimalPlace";
+    m_settingKey[View_ScalarRangeAuto] = "View_ScalarRangeAuto";
+    m_settingKey[View_ScalarRangeMin] = "View_ScalarRangeMin";
+    m_settingKey[View_ScalarRangeMax] = "View_ScalarRangeMax";
+    m_settingKey[View_ShowVectorView] = "View_ShowVectorView";
+    m_settingKey[View_VectorVariable] = "View_VectorVariable";
+    m_settingKey[View_VectorProportional] = "View_VectorProportional";
+    m_settingKey[View_VectorColor] = "View_VectorColor";
+    m_settingKey[View_VectorCount] = "View_VectorCount";
+    m_settingKey[View_VectorScale] = "View_VectorScale";
+    m_settingKey[View_VectorType] = "View_VectorType";
+    m_settingKey[View_VectorCenter] = "View_VectorCenter";
+    m_settingKey[View_ShowOrderView] = "View_ShowOrderView";
+    m_settingKey[View_ShowOrderLabel] = "View_ShowOrderLabel";
+    m_settingKey[View_ShowOrderColorBar] = "View_ShowOrderColorBar";
+    m_settingKey[View_OrderPaletteOrderType] = "View_OrderPaletteOrderType";
+    m_settingKey[View_ParticleButcherTableType] = "View_ParticleButcherTableType";
+    m_settingKey[View_ParticleIncludeRelativisticCorrection] = "View_ParticleIncludeRelativisticCorrection";
+    m_settingKey[View_ParticleMass] = "View_ParticleMass";
+    m_settingKey[View_ParticleConstant] = "View_ParticleConstant";
+    m_settingKey[View_ParticleStartX] = "View_ParticleStartX";
+    m_settingKey[View_ParticleStartY] = "View_ParticleStartY";
+    m_settingKey[View_ParticleStartVelocityX] = "View_ParticleStartVelocityX";
+    m_settingKey[View_ParticleStartVelocityY] = "View_ParticleStartVelocityY";
+    m_settingKey[View_ParticleNumberOfParticles] = "View_ParticleNumberOfParticles";
+    m_settingKey[View_ParticleStartingRadius] = "View_ParticleStartingRadius";
+    m_settingKey[View_ParticleReflectOnDifferentMaterial] = "View_ParticleReflectOnDifferentMaterial";
+    m_settingKey[View_ParticleReflectOnBoundary] = "View_ParticleReflectOnBoundary";
+    m_settingKey[View_ParticleCoefficientOfRestitution] = "View_ParticleCoefficientOfRestitution";
+    m_settingKey[View_ParticleMaximumRelativeError] = "View_ParticleMaximumRelativeError";
+    m_settingKey[View_ParticleShowPoints] = "View_ParticleShowPoints";
+    m_settingKey[View_ParticleShowBlendedFaces] = "View_ParticleShowBlendedFaces";
+    m_settingKey[View_ParticleNumShowParticlesAxi] = "View_ParticleNumShowParticlesAxi";
+    m_settingKey[View_ParticleColorByVelocity] = "View_ParticleColorByVelocity";
+    m_settingKey[View_ParticleMaximumNumberOfSteps] = "View_ParticleMaximumNumberOfSteps";
+    m_settingKey[View_ParticleMinimumStep] = "View_ParticleMinimumStep";
+    m_settingKey[View_ParticleDragDensity] = "View_ParticleDragDensity";
+    m_settingKey[View_ParticleDragCoefficient] = "View_ParticleDragCoefficient";
+    m_settingKey[View_ParticleDragReferenceArea] = "View_ParticleDragReferenceArea";
+    m_settingKey[View_ParticleCustomForceX] = "View_ParticleCustomForceX";
+    m_settingKey[View_ParticleCustomForceY] = "View_ParticleCustomForceY";
+    m_settingKey[View_ParticleCustomForceZ] = "View_ParticleCustomForceZ";
+    m_settingKey[View_ChartStartX] = "View_ChartStartX";
+    m_settingKey[View_ChartStartY] = "View_ChartStartY";
+    m_settingKey[View_ChartEndX] = "View_ChartEndX";
+    m_settingKey[View_ChartEndY] = "View_ChartEndY";
+    m_settingKey[View_ChartTimeX] = "View_ChartTimeX";
+    m_settingKey[View_ChartTimeY] = "View_ChartTimeY";
+    m_settingKey[View_ChartHorizontalAxis] = "View_ChartHorizontalAxis";
+    m_settingKey[View_ChartHorizontalAxisReverse] = "View_ChartHorizontalAxisReverse";
+    m_settingKey[View_ChartHorizontalAxisPoints] = "View_ChartHorizontalAxisPoints";
+    m_settingKey[View_MeshAngleSegmentsCount] = "View_MeshAngleSegmentsCount";
+    m_settingKey[View_MeshCurvilinearElements] = "View_MeshCurvilinearElements";
+    m_settingKey[View_LinearizerQuality] = "View_LinearizerQuality";
+    m_settingKey[View_SolidViewHide] = "View_SolidViewHide";
+    m_settingKey[Adaptivity_MaxDofs] = "Adaptivity_MaxDofs";
+    m_settingKey[Adaptivity_IsoOnly] = "Adaptivity_IsoOnly";
+    m_settingKey[Adaptivity_ConvExp] = "Adaptivity_ConvExp";
+    m_settingKey[Adaptivity_Threshold] = "Adaptivity_Threshold";
+    m_settingKey[Adaptivity_Strategy] = "Adaptivity_Strategy";
+    m_settingKey[Adaptivity_MeshRegularity] = "Adaptivity_MeshRegularity";
+    m_settingKey[Adaptivity_ProjNormType] = "Adaptivity_ProjNormType";
+    m_settingKey[Adaptivity_UseAniso] = "Adaptivity_UseAniso";
+    m_settingKey[Adaptivity_FinerReference] = "Adaptivity_FinerReference";
+    m_settingKey[Commands_Triangle] = "Commands_Triangle";
+    m_settingKey[Commands_Gmsh] = "Commands_Gmsh";
+}
+
+void ProblemSetting::setDefaultValues()
+{
+    m_settingDefault.clear();
+
+    m_settingDefault[Problem_StartupScript] = QString();
+    m_settingDefault[Problem_Description] = QString();
+    m_settingDefault[View_RulersFontFamily] = QString("Droid");
+    m_settingDefault[View_RulersFontPointSize] = 12;
+    m_settingDefault[View_PostFontFamily] = QString("Droid");
+    m_settingDefault[View_PostFontPointSize] = 16;
+    m_settingDefault[View_ZoomToMouse] = true;
+    m_settingDefault[View_NodeSize] = 6;
+    m_settingDefault[View_EdgeWidth] = 2;
+    m_settingDefault[View_LabelSize] = 6;
+    m_settingDefault[View_ShowGrid] = true;
+    m_settingDefault[View_GridStep] = 0.05;
+    m_settingDefault[View_ShowRulers] = true;
+    m_settingDefault[View_SnapToGrid] = true;
+    m_settingDefault[View_ShowAxes] = true;
+    m_settingDefault[View_ScalarView3DMode] = SceneViewPost3DMode_None;
+    m_settingDefault[View_ScalarView3DLighting] = true;
+    m_settingDefault[View_ScalarView3DAngle] = 240.0;
+    m_settingDefault[View_ScalarView3DBackground] = true;
+    m_settingDefault[View_ScalarView3DHeight] = 4.0;
+    m_settingDefault[View_ScalarView3DBoundingBox] = true;
+    m_settingDefault[View_ScalarView3DSolidGeometry] = true;
+    m_settingDefault[View_DeformScalar] = true;
+    m_settingDefault[View_DeformContour] = true;
+    m_settingDefault[View_DeformVector] = true;
+    m_settingDefault[View_ColorBackgroundRed] = 255;
+    m_settingDefault[View_ColorBackgroundGreen] = 255;
+    m_settingDefault[View_ColorBackgroundBlue] = 255;
+    m_settingDefault[View_ColorGridRed] = 200;
+    m_settingDefault[View_ColorGridGreen] = 200;
+    m_settingDefault[View_ColorGridBlue] = 200;
+    m_settingDefault[View_ColorCrossRed] = 150;
+    m_settingDefault[View_ColorCrossGreen] = 150;
+    m_settingDefault[View_ColorCrossBlue] = 150;
+    m_settingDefault[View_ColorNodesRed] = 150;
+    m_settingDefault[View_ColorNodesGreen] = 0;
+    m_settingDefault[View_ColorNodesBlue] = 0;
+    m_settingDefault[View_ColorEdgesRed] = 0;
+    m_settingDefault[View_ColorEdgesGreen] = 0;
+    m_settingDefault[View_ColorEdgesBlue] = 150;
+    m_settingDefault[View_ColorLabelsRed] = 0;
+    m_settingDefault[View_ColorLabelsGreen] = 150;
+    m_settingDefault[View_ColorLabelsBlue] = 0;
+    m_settingDefault[View_ColorContoursRed] = 0;
+    m_settingDefault[View_ColorContoursGreen] = 0;
+    m_settingDefault[View_ColorContoursBlue] = 0;
+    m_settingDefault[View_ColorVectorsRed] = 0;
+    m_settingDefault[View_ColorVectorsGreen] = 0;
+    m_settingDefault[View_ColorVectorsBlue] = 0;
+    m_settingDefault[View_ColorInitialMeshRed] = 250;
+    m_settingDefault[View_ColorInitialMeshGreen] = 202;
+    m_settingDefault[View_ColorInitialMeshBlue] = 119;
+    m_settingDefault[View_ColorSolutionMeshRed] = 150;
+    m_settingDefault[View_ColorSolutionMeshGreen] = 70;
+    m_settingDefault[View_ColorSolutionMeshBlue] = 0;
+    m_settingDefault[View_ColorSelectedRed] = 150;
+    m_settingDefault[View_ColorSelectedGreen] = 0;
+    m_settingDefault[View_ColorSelectedBlue] = 0;
+    m_settingDefault[View_ColorHighlightedRed] = 250;
+    m_settingDefault[View_ColorHighlightedGreen] = 150;
+    m_settingDefault[View_ColorHighlightedBlue] = 0;
+    m_settingDefault[View_ColorCrossedRed] = 255;
+    m_settingDefault[View_ColorCrossedGreen] = 0;
+    m_settingDefault[View_ColorCrossedBlue] = 0;
+    m_settingDefault[View_ShowInitialMeshView] = true;
+    m_settingDefault[View_ShowSolutionMeshView] = false;
+    m_settingDefault[View_ContourVariable] = QString();
+    m_settingDefault[View_ShowContourView] = false;
+    m_settingDefault[View_ContoursCount] = 15;
+    m_settingDefault[View_ContoursWidth] = 1.0;
+    m_settingDefault[View_ShowScalarView] = true;
+    m_settingDefault[View_ShowScalarColorBar] = true;
+    m_settingDefault[View_ScalarVariable] = QString();
+    m_settingDefault[View_ScalarVariableComp] = PhysicFieldVariableComp_Undefined;
+    m_settingDefault[View_PaletteType] = Palette_Agros2D;
+    m_settingDefault[View_PaletteFilter] = false;
+    m_settingDefault[View_PaletteSteps] = 30;
+    m_settingDefault[View_ScalarRangeLog] = false;
+    m_settingDefault[View_ScalarRangeBase] = 10;
+    m_settingDefault[View_ScalarDecimalPlace] = 4;
+    m_settingDefault[View_ScalarRangeAuto] = true;
+    m_settingDefault[View_ScalarRangeMin] = 0.0;
+    m_settingDefault[View_ScalarRangeMax] = 1.0;
+    m_settingDefault[View_ShowVectorView] = false;
+    m_settingDefault[View_VectorVariable] = QString();
+    m_settingDefault[View_VectorProportional] = true;
+    m_settingDefault[View_VectorColor] = true;
+    m_settingDefault[View_VectorCount] = 50;
+    m_settingDefault[View_VectorScale] = 0.6;
+    m_settingDefault[View_VectorType] = VectorType_Arrow;
+    m_settingDefault[View_VectorCenter] = VectorCenter_Tail;
+    m_settingDefault[View_ShowOrderView] = true;
+    m_settingDefault[View_ShowOrderLabel] = false;
+    m_settingDefault[View_ShowOrderColorBar] = true;
+    m_settingDefault[View_OrderPaletteOrderType] = PaletteOrder_Hermes;
+    m_settingDefault[View_ParticleButcherTableType] = Hermes::Explicit_FEHLBERG_6_45_embedded;
+    m_settingDefault[View_ParticleIncludeRelativisticCorrection] = true;
+    m_settingDefault[View_ParticleMass] = 9.109e-31;
+    m_settingDefault[View_ParticleConstant] = 1.602e-19;
+    m_settingDefault[View_ParticleStartX] = 0.0;
+    m_settingDefault[View_ParticleStartY] = 0.0;
+    m_settingDefault[View_ParticleStartVelocityX] = 0.0;
+    m_settingDefault[View_ParticleStartVelocityY] = 0.0;
+    m_settingDefault[View_ParticleNumberOfParticles] = 1;
+    m_settingDefault[View_ParticleStartingRadius] = 0.0;
+    m_settingDefault[View_ParticleReflectOnDifferentMaterial] = false;
+    m_settingDefault[View_ParticleReflectOnBoundary] = false;
+    m_settingDefault[View_ParticleCoefficientOfRestitution] = 0.0;
+    m_settingDefault[View_ParticleMaximumRelativeError] = 0.01;
+    m_settingDefault[View_ParticleShowPoints] = false;
+    m_settingDefault[View_ParticleShowBlendedFaces] = true;
+    m_settingDefault[View_ParticleNumShowParticlesAxi] = 1;
+    m_settingDefault[View_ParticleColorByVelocity] = true;
+    m_settingDefault[View_ParticleMaximumNumberOfSteps] = 500;
+    m_settingDefault[View_ParticleMinimumStep] = 0.0;
+    m_settingDefault[View_ParticleDragDensity] = 1.2041;
+    m_settingDefault[View_ParticleDragCoefficient] = 0.0;
+    m_settingDefault[View_ParticleDragReferenceArea] = 0.0;
+    m_settingDefault[View_ParticleCustomForceX] = 0.0;
+    m_settingDefault[View_ParticleCustomForceY] = 0.0;
+    m_settingDefault[View_ParticleCustomForceZ] = 0.0;
+    m_settingDefault[View_ChartStartX] = 0.0;
+    m_settingDefault[View_ChartStartY] = 0.0;
+    m_settingDefault[View_ChartEndX] = 0.0;
+    m_settingDefault[View_ChartEndY] = 0.0;
+    m_settingDefault[View_ChartTimeX] = 0.0;
+    m_settingDefault[View_ChartTimeY] = 0.0;
+    m_settingDefault[View_ChartHorizontalAxis] = ChartAxis_Length;
+    m_settingDefault[View_ChartHorizontalAxisReverse] = false;
+    m_settingDefault[View_ChartHorizontalAxisPoints] = 200;
+    m_settingDefault[View_MeshAngleSegmentsCount] = 3;
+    m_settingDefault[View_MeshCurvilinearElements] = true;
+    m_settingDefault[View_LinearizerQuality] = PaletteQuality_Normal;
+    m_settingDefault[View_SolidViewHide] = QStringList();
+    m_settingDefault[Adaptivity_MaxDofs] = 60e3;
+    m_settingDefault[Adaptivity_IsoOnly] = false;
+    m_settingDefault[Adaptivity_ConvExp] = 1.0;
+    m_settingDefault[Adaptivity_Threshold] = 0.3;
+    m_settingDefault[Adaptivity_Strategy] = 0;
+    m_settingDefault[Adaptivity_MeshRegularity] = -1;
+    m_settingDefault[Adaptivity_ProjNormType] = Hermes::Hermes2D::HERMES_H1_NORM;
+    m_settingDefault[Adaptivity_UseAniso] = true;
+    m_settingDefault[Adaptivity_FinerReference] = false;
+    m_settingDefault[Commands_Triangle] = "%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 \"%2\"";
+    m_settingDefault[Commands_Gmsh] = "%1 -2 \"%2.geo\"";
+}
+
+void ProblemSetting::load21(QDomElement *config)
+{
+    // default
+    m_setting = m_settingDefault;
 
     // FIX ME - EOL conversion
-    QPlainTextEdit textEdit;
-    textEdit.setPlainText(readConfig("Problem/StartupScript", QString()));
-    startupScript = textEdit.toPlainText();
-
-    description = readConfig("Problem/Description", QString());
-
-    // active field
-    activeField = readConfig("View/ActiveField", QString());
-
-    // font
-    rulersFont = readConfig("View/RulersFontFamily", RULERSFONT);
-    rulersFontSize = readConfig("View/RulersFontPointSize", RULERSFONTSIZE);
-    postFont = readConfig("View/PostFontFamily", POSTFONT);
-    postFontSize = readConfig("View/PostFontPointSize", POSTFONTSIZE);
-
-    // geometry
-    nodeSize = readConfig("View/NodeSize", GEOMETRYNODESIZE);
-    edgeWidth = readConfig("View/EdgeWidth", GEOMETRYEDGEWIDTH);
-    labelSize = readConfig("View/LabelSize", GEOMETRYLABELSIZE);
-
-    // zoom and grid
-    zoomToMouse = readConfig("View/ZoomToMouse", ZOOMTOMOUSE);
-    showGrid = readConfig("View/ShowGrid", SHOWGRID);
-    gridStep = readConfig("View/GridStep", GRIDSTEP);
-
-    // rulers
-    showRulers = readConfig("View/ShowRulers", SHOWRULERS);
-    // snap to grid
-    snapToGrid = readConfig("View/SnapToGrid", SNAPTOGRID);
-
-    // axes
-    showAxes = readConfig("View/ShowAxes", SHOWAXES);
-
-    // 3d
-    scalarView3DLighting = readConfig("View/ScalarView3DLighting", VIEW3DLIGHTING);
-    scalarView3DAngle = readConfig("View/ScalarView3DAngle", VIEW3DANGLE);
-    scalarView3DBackground = readConfig("View/ScalarView3DBackground", VIEW3DBACKGROUND);
-    scalarView3DHeight = readConfig("View/ScalarView3DHeight", VIEW3DHEIGHT);
-    scalarView3DBoundingBox = readConfig("View/ScalarView3DBoundingBox", VIEW3DBOUNDINGBOX);
-    scalarView3DSolidGeometry = readConfig("View/ScalarView3DSolidGeometry", VIEW3DSOLIDGEOMETRY);
-
-    // deformations
-    deformScalar = readConfig("View/DeformScalar", DEFORMSCALAR);
-    deformContour = readConfig("View/DeformContour", DEFORMCONTOUR);
-    deformVector = readConfig("View/DeformVector", DEFORMVECTOR);
-
-    // colors
-    colorBackground = readConfig("View/ColorBackground", COLORBACKGROUND);
-    colorGrid = readConfig("View/ColorGrid", COLORGRID);
-    colorCross = readConfig("View/ColorCross", COLORCROSS);
-    colorNodes = readConfig("View/ColorNodes", COLORNODES);
-    colorEdges = readConfig("View/ColorEdges", COLOREDGES);
-    colorLabels = readConfig("View/ColorLabels", COLORLABELS);
-    colorContours = readConfig("View/ColorContours", COLORCONTOURS);
-    colorVectors = readConfig("View/ColorVectors", COLORVECTORS);
-    colorInitialMesh = readConfig("View/ColorInitialMesh", COLORINITIALMESH);
-    colorSolutionMesh = readConfig("View/ColorSolutionMesh", COLORSOLUTIONMESH);
-    colorHighlighted = readConfig("View/ColorHighlighted", COLORHIGHLIGHTED);
-    colorSelected = readConfig("View/ColorSelected", COLORSELECTED);
-    colorCrossed = readConfig("View/ColorCrossed", COLORCROSSED);
-    colorNotConnected = readConfig("View/ColorCrossed", COLORNOTCONNECTED);
-
-    // view
-    showPost3D = (SceneViewPost3DMode) readConfig("View/ShowPost3D", (int) SCALARSHOWPOST3D);
-
-    // mesh
-    showInitialMeshView = readConfig("View/ShowInitialMeshView", SHOWINITIALMESHVIEW);
-    showSolutionMeshView = readConfig("View/ShowSolutionMeshView", SHOWSOLUTIONMESHVIEW);
-
-    // contour
-    showContourView = readConfig("View/ShowContourView", SHOWCONTOURVIEW);
-    contourVariable = readConfig("View/ContourVariable", QString());
-    contoursCount = readConfig("View/ContoursCount", CONTOURSCOUNT);
-    contourWidth = readConfig("View/ContoursWidth", CONTOURSWIDTH);
-
-    // scalar view
-    showScalarView = readConfig("View/ShowScalarView", SHOWSCALARVIEW);
-    showScalarColorBar = readConfig("View/ShowScalarColorBar", SHOWSCALARCOLORBAR);
-    scalarVariable = readConfig("View/ScalarVariable", QString());
-    scalarVariableComp = (PhysicFieldVariableComp) readConfig("View/ScalarVariableComp", (int) PhysicFieldVariableComp_Scalar);
-    // scalarVariable3D = readConfig("View/ScalarVariable3D", QString());
-    // scalarVariable3DComp = (PhysicFieldVariableComp) readConfig("View/ScalarVariable3DComp", (int) PhysicFieldVariableComp_Scalar);
-    paletteType = (PaletteType) readConfig("View/PaletteType", PALETTETYPE);
-    paletteFilter = readConfig("View/PaletteFilter", PALETTEFILTER);
-    paletteSteps = readConfig("View/PaletteSteps", PALETTESTEPS);
-    scalarRangeLog = readConfig("View/ScalarRangeLog", SCALARFIELDRANGELOG);
-    scalarRangeBase = readConfig("View/ScalarRangeBase", SCALARFIELDRANGEBASE);
-    scalarDecimalPlace = readConfig("View/ScalarDecimalPlace", SCALARDECIMALPLACE);
-    scalarRangeAuto = readConfig("View/ScalarRangeAuto", SCALARRANGEAUTO);
-    scalarRangeMin = readConfig("View/ScalarRangeMin", SCALARRANGEMIN);
-    scalarRangeMax = readConfig("View/ScalarRangeMax", SCALARRANGEMAX);
-
-    // vector view
-    showVectorView = readConfig("View/ShowVectorView", SHOWVECTORVIEW);
-    vectorVariable = readConfig("View/VectorVariable", QString());
-    vectorProportional = readConfig("View/VectorProportional", VECTORPROPORTIONAL);
-    vectorColor = readConfig("View/VectorColor", VECTORCOLOR);
-    vectorCount = readConfig("View/VectorNumber", VECTORCOUNT);
-    vectorScale = readConfig("View/VectorScale", VECTORSCALE);
-    vectorType = (VectorType) readConfig("View/VectorType", (int) VECTORTYPE);
-    vectorCenter = (VectorCenter) readConfig("View/VectorCenter", (int) VECTORCENTER);
-
-    // order view
-    showOrderView = readConfig("View/ShowOrderView", SHOWORDERVIEW);
-    showOrderColorBar = readConfig("View/ShowOrderColorBar", SHOWORDERCOLORBAR);
-    orderPaletteOrderType = (PaletteOrderType) readConfig("View/OrderPaletteOrderType", ORDERPALETTEORDERTYPE);
-    orderLabel = readConfig("View/OrderLabel", ORDERLABEL);
-
-    // particle tracing
-    particleButcherTableType = (Hermes::ButcherTableType) readConfig("View/ParticleButcherTableType", PARTICLEBUTCHERTABLETYPE);
-    particleIncludeRelativisticCorrection = readConfig("View/ParticleIncludeRelativisticCorrection", PARTICLEINCLUDERELATIVISTICCORRECTION);
-    particleMass = readConfig("View/ParticleMass", PARTICLEMASS);
-    particleConstant = readConfig("View/ParticleConstant", PARTICLECONSTANT);
-    particleStart.x = readConfig("View/ParticleStartX", PARTICLESTARTX);
-    particleStart.y = readConfig("View/ParticleStartY", PARTICLESTARTY);
-    particleStartVelocity.x = readConfig("View/ParticleStartVelocityX", PARTICLESTARTVELOCITYX);
-    particleStartVelocity.y = readConfig("View/ParticleStartVelocityY", PARTICLESTARTVELOCITYY);
-    particleNumberOfParticles = readConfig("View/ParticleNumberOfParticles", PARTICLENUMBEROFPARTICLES);
-    particleStartingRadius = readConfig("View/ParticleStartingRadius", PARTICLESTARTINGRADIUS);
-    particleReflectOnDifferentMaterial = readConfig("View/ParticleReflectOnDifferentMaterial", PARTICLEREFLECTONDIFFERENTMATERIAL);
-    particleReflectOnBoundary = readConfig("View/ParticleReflectOnBoundary", PARTICLEREFLECTONBOUNDARY);
-    particleCoefficientOfRestitution = readConfig("View/ParticleCoefficientOfRestitution", PARTICLECOEFFICIENTOFRESTITUTION);
-    particleMaximumRelativeError = readConfig("View/ParticleMaximumRelativeError", PARTICLEMAXIMUMRELATIVEERROR);
-    particleShowPoints = readConfig("View/ParticleShowPoints", PARTICLESHOWPOINTS);
-    particleShowBlendedFaces = readConfig("View/ParticleShowBlendedFaces", PARTICLESHOWBLENDEDFACES);
-    particleNumShowParticlesAxi = readConfig("View/ParticleNumShowParticlesAxi", PARTICLENUMSHOWPARTICLESAXI);
-    particleColorByVelocity = readConfig("View/ParticleColorByVelocity", PARTICLECOLORBYVELOCITY);
-    particleMaximumNumberOfSteps = readConfig("View/ParticleMaximumNumberOfSteps", PARTICLEMAXIMUMNUMBEROFSTEPS);
-    particleMinimumStep = readConfig("View/ParticleMinimumStep", PARTICLEMINIMUMSTEP);
-    particleDragDensity = readConfig("View/ParticleDragDensity", PARTICLEDRAGDENSITY);
-    particleDragCoefficient = readConfig("View/ParticleDragCoefficient", PARTICLEDRAGCOEFFICIENT);
-    particleDragReferenceArea = readConfig("View/ParticleDragReferenceArea", PARTICLEDRAGREFERENCEAREA);
-    particleCustomForce.x = readConfig("View/ParticleCustomForceX", PARTICLECUSTOMFORCEX);
-    particleCustomForce.y = readConfig("View/ParticleCustomForceY", PARTICLECUSTOMFORCEY);
-    particleCustomForce.z = readConfig("View/ParticleCustomForceZ", PARTICLECUSTOMFORCEZ);
-
-    // chart
-    chartStartX = readConfig("View/ChartStartX", CHARTSTARTX);
-    chartStartY = readConfig("View/ChartStartY", CHARTSTARTY);
-    chartEndX = readConfig("View/ChartEndX", CHARTENDX);
-    chartEndY = readConfig("View/ChartEndY", CHARTENDY);
-    chartTimeX = readConfig("View/ChartTimeX", CHARTTIMEX);
-    chartTimeY = readConfig("View/ChartTimeY", CHARTTIMEY);
-    chartHorizontalAxis = (ChartAxisType) readConfig("View/ChartHorizontalAxis", CHARTHORIZONTALAXIS);
-    chartHorizontalAxisReverse = readConfig("View/ChartHorizontalAxisReverse", CHARTHORIZONTALAXISREVERSE);
-    chartHorizontalAxisPoints = readConfig("View/ChartHorizontalAxisPoints", CHARTHORIZONTALAXISPOINTS);
-
-    // mesh
-    angleSegmentsCount = readConfig("View/MeshAngleSegmentsCount", MESHANGLESEGMENTSCOUNT);
-    curvilinearElements = readConfig("View/MeshCurvilinearElements", MESHCURVILINEARELEMENTS);
-
-    // adaptivity
-    maxDofs = readConfig("Adaptivity/MaxDofs", MAX_DOFS);
-    isoOnly = readConfig("Adaptivity/IsoOnly", ADAPTIVITY_ISOONLY);
-    convExp = readConfig("Adaptivity/ConvExp", ADAPTIVITY_CONVEXP);
-    threshold = readConfig("Adaptivity/Threshold", ADAPTIVITY_THRESHOLD);
-    strategy = readConfig("Adaptivity/Strategy", ADAPTIVITY_STRATEGY);
-    meshRegularity = readConfig("Adaptivity/MeshRegularity", ADAPTIVITY_MESHREGULARITY);
-    projNormType = (Hermes::Hermes2D::ProjNormType) readConfig("Adaptivity/ProjNormType", ADAPTIVITY_PROJNORMTYPE);
-    useAniso = readConfig("Adaptivity/UseAniso", ADAPTIVITY_ANISO);
-    finerReference = readConfig("Adaptivity/FinerReference", ADAPTIVITY_FINER_REFERENCE_H_AND_P);
-
-    // linearizer quality
-    QString quality = readConfig("View/LinearizerQuality", paletteQualityToStringKey(PALETTEQUALITY));
-    linearizerQuality = paletteQualityFromStringKey(quality);
-
-    // solid view
-    solidViewHide = readConfig("View/SolidViewHide", QStringList());
-
-    // command argument
-    commandGmsh = readConfig("Commands/Gmsh", COMMANDS_GMSH);
-    commandTriangle = readConfig("Commands/Triangle", COMMANDS_TRIANGLE);
-    // add quadratic elements (added points on the middle of edge used by rough triangle division)
-    if (!commandTriangle.contains("-o2"))
-        commandTriangle = COMMANDS_TRIANGLE;
-
-    eleConfig = NULL;
+    // QPlainTextEdit textEdit;
+    // textEdit.setPlainText(readConfig("Problem/StartupScript", QString()));
+    // startupScript = textEdit.toPlainText();
 }
 
-void ProblemConfigView::save(QDomElement *config, XMLProblem::config *configxsd)
+void ProblemSetting::save21(QDomElement *config)
 {
-    eleConfig = config;
-    this->configxsd = configxsd;
-
-    writeConfig("Problem/StartupScript", startupScript);
-    writeConfig("Problem/Description", description);
-
-    // font
-    writeConfig("View/RulersFontFamily", rulersFont);
-    writeConfig("View/RulersFontPointSize", rulersFontSize);
-    writeConfig("View/PostFontFamily", postFont);
-    writeConfig("View/PostFontPointSize", postFontSize);
-
-    // zoom
-    writeConfig("General/ZoomToMouse", zoomToMouse);
-
-    // geometry
-    writeConfig("View/NodeSize", nodeSize);
-    writeConfig("View/EdgeWidth", edgeWidth);
-    writeConfig("View/LabelSize", labelSize);
-
-    // grid
-    writeConfig("View/ShowGrid", showGrid);
-    writeConfig("View/GridStep", gridStep);
-
-    // rulers
-    writeConfig("View/ShowRulers", showRulers);
-    // snap to grid
-    writeConfig("View/SnapToGrid", snapToGrid);
-
-    // axes
-    writeConfig("View/ShowAxes", showAxes);
-
-    // 3d
-    writeConfig("View/ScalarView3DLighting", scalarView3DLighting);
-    writeConfig("View/ScalarView3DAngle", scalarView3DAngle);
-    writeConfig("View/ScalarView3DBackground", scalarView3DBackground);
-    writeConfig("View/ScalarView3DHeight", scalarView3DHeight);
-    writeConfig("View/ScalarView3DBoundingBox", scalarView3DBoundingBox);
-    writeConfig("View/ScalarView3DSolidGeometry", scalarView3DSolidGeometry);
-
-    // deformations
-    writeConfig("View/DeformScalar", deformScalar);
-    writeConfig("View/DeformContour", deformContour);
-    writeConfig("View/DeformVector", deformVector);
-
-    // colors
-    writeConfig("View/ColorBackground", colorBackground);
-    writeConfig("View/ColorGrid", colorGrid);
-    writeConfig("View/ColorCross", colorCross);
-    writeConfig("View/ColorNodes", colorNodes);
-    writeConfig("View/ColorEdges", colorEdges);
-    writeConfig("View/ColorLabels", colorLabels);
-    writeConfig("View/ColorContours", colorContours);
-    writeConfig("View/ColorVectors", colorVectors);
-    writeConfig("View/ColorInitialMesh", colorInitialMesh);
-    writeConfig("View/ColorSolutionMesh", colorSolutionMesh);
-    writeConfig("View/ColorInitialMesh", colorHighlighted);
-    writeConfig("View/ColorSolutionMesh", colorSelected);
-
-    // active field
-    writeConfig("View/ActiveField", activeField);
-
-    // mesh
-    writeConfig("View/ShowInitialMeshView", showInitialMeshView);
-    writeConfig("View/ShowSolutionMeshView", showSolutionMeshView);
-
-    writeConfig("View/ShowPost3D", showPost3D);
-
-    // contour
-    writeConfig("View/ContourVariable", contourVariable);
-    writeConfig("View/ShowContourView", showContourView);
-    writeConfig("View/ContoursCount", contoursCount);
-    writeConfig("View/ContoursWidth", contourWidth);
-
-    // scalar view
-    writeConfig("View/ShowScalarView", showScalarView);
-    writeConfig("View/ShowScalarColorBar", showScalarColorBar);
-    writeConfig("View/ScalarVariable", scalarVariable);
-    writeConfig("View/ScalarVariableComp", scalarVariableComp);
-    writeConfig("View/PaletteType", paletteType);
-    writeConfig("View/PaletteFilter", paletteFilter);
-    writeConfig("View/PaletteSteps", paletteSteps);
-    writeConfig("View/ScalarRangeLog", scalarRangeLog);
-    writeConfig("View/ScalarRangeBase", scalarRangeBase);
-    writeConfig("View/ScalarDecimalPlace", scalarDecimalPlace);
-    writeConfig("View/ScalarRangeAuto", scalarRangeAuto);
-    writeConfig("View/ScalarRangeMin", scalarRangeMin);
-    writeConfig("View/ScalarRangeMax", scalarRangeMax);
-
-    // vector view
-    writeConfig("View/ShowVectorView", showVectorView);
-    writeConfig("View/VectorVariable", vectorVariable);
-    writeConfig("View/VectorProportional", vectorProportional);
-    writeConfig("View/VectorColor", vectorColor);
-    writeConfig("View/VectorNumber", vectorCount);
-    writeConfig("View/VectorScale", vectorScale);
-    writeConfig("View/VectorType", vectorType);
-    writeConfig("View/VectorCenter", vectorCenter);
-
-    // order view
-    writeConfig("View/ShowOrderView", showOrderView);
-    writeConfig("View/ShowOrderColorBar", showOrderColorBar);
-    writeConfig("View/OrderPaletteOrderType", orderPaletteOrderType);
-    writeConfig("View/OrderLabel", orderLabel);
-
-    // particle tracing
-    writeConfig("View/ParticleButcherTableType", particleButcherTableType);
-    writeConfig("View/ParticleIncludeRelativisticCorrection", particleIncludeRelativisticCorrection);
-    writeConfig("View/ParticleMass", particleMass);
-    writeConfig("View/ParticleConstant", particleConstant);
-    writeConfig("View/ParticleStartX", particleStart.x);
-    writeConfig("View/ParticleStartY", particleStart.y);
-    writeConfig("View/ParticleStartVelocityX", particleStartVelocity.x);
-    writeConfig("View/ParticleStartVelocityY", particleStartVelocity.y);
-    writeConfig("View/ParticleNumberOfParticles", particleNumberOfParticles);
-    writeConfig("View/ParticleStartingRadius", particleStartingRadius);
-    writeConfig("View/ParticleReflectOnDifferentMaterial", particleReflectOnDifferentMaterial);
-    writeConfig("View/ParticleReflectOnBoundary", particleReflectOnBoundary);
-    writeConfig("View/ParticleCoefficientOfRestitution", particleCoefficientOfRestitution);
-    writeConfig("View/ParticleMaximumRelativeError", particleMaximumRelativeError);
-    writeConfig("View/ParticleShowPoints", particleShowPoints);
-    writeConfig("View/ParticleShowBlendedFaces", particleShowBlendedFaces);
-    writeConfig("View/ParticleNumShowParticlesAxi", particleNumShowParticlesAxi);
-    writeConfig("View/ParticleColorByVelocity", particleColorByVelocity);
-    writeConfig("View/ParticleMaximumNumberOfSteps", particleMaximumNumberOfSteps);
-    writeConfig("View/ParticleMinimumStep", particleMinimumStep);
-    writeConfig("View/ParticleDragDensity", particleDragDensity);
-    writeConfig("View/ParticleDragCoefficient", particleDragCoefficient);
-    writeConfig("View/ParticleDragReferenceArea", particleDragReferenceArea);
-    writeConfig("View/ParticleCustomForceX", particleCustomForce.x);
-    writeConfig("View/ParticleCustomForceY", particleCustomForce.y);
-    writeConfig("View/ParticleCustomForceZ", particleCustomForce.z);
-
-    // chart
-    writeConfig("View/ChartStartX", chartStartX);
-    writeConfig("View/ChartStartY", chartStartY);
-    writeConfig("View/ChartEndX", chartEndX);
-    writeConfig("View/ChartEndY", chartEndY);
-    writeConfig("View/ChartTimeX", chartTimeX);
-    writeConfig("View/ChartTimeY", chartTimeY);
-    writeConfig("View/ChartHorizontalAxis", chartHorizontalAxis);
-    writeConfig("View/ChartHorizontalAxisReverse", chartHorizontalAxisReverse);
-    writeConfig("View/ChartHorizontalAxisPoints", chartHorizontalAxisPoints);
-
-    // mesh
-    writeConfig("View/MeshAngleSegmentsCount", angleSegmentsCount);
-    writeConfig("View/MeshCurvilinearElements", curvilinearElements);
-
-    // adaptivity
-    writeConfig("Adaptivity/MaxDofs", maxDofs);
-    writeConfig("Adaptivity/IsoOnly", isoOnly);
-    writeConfig("Adaptivity/ConvExp", convExp);
-    writeConfig("Adaptivity/Threshold", threshold);
-    writeConfig("Adaptivity/Strategy", strategy);
-    writeConfig("Adaptivity/MeshRegularity", meshRegularity);
-    writeConfig("Adaptivity/ProjNormType", projNormType);
-    writeConfig("Adaptivity/UseAniso", useAniso);
-    writeConfig("Adaptivity/FinerReference", finerReference);
-
-    // linearizer quality
-    writeConfig("View/LinearizerQuality", paletteQualityToStringKey(linearizerQuality));
-
-    // solid view
-    writeConfig("View/SolidViewHide", solidViewHide);
-
-    // command argument
-    writeConfig("Commands/Triangle", commandTriangle);
-    writeConfig("Commands/Gmsh", commandGmsh);
-
-    eleConfig = NULL;
+    /*
+    if (if (eleConfig->hasAttribute(att))
+            return eleConfig->attribute(att).toDouble();)
+    */
 }
 
-bool ProblemConfigView::readConfig(const QString &key, bool defaultValue)
+void ProblemSetting::load(XMLProblem::config *configxsd)
 {
-    QString att = key; att.replace("/", "_");
-    if (eleConfig)
+    // default
+    m_setting = m_settingDefault;
+
+    for (int i = 0; i < configxsd->item().size(); i ++)
     {
-        if (eleConfig->hasAttribute(att))
-            return (eleConfig->attribute(att).toInt() == 1) ? true : false;
-    }
-    if (configxsd)
-    {
-        for (int i = 0; i < configxsd->item().size(); i ++)
-            if (configxsd->item().at(i).key() == att.toStdString())
-                return (configxsd->item().at(i).value() == "1") ? true : false;
-    }
+        Type key = stringKeyToType(QString::fromStdString(configxsd->item().at(i).key()));
 
-    return defaultValue;
-}
-
-int ProblemConfigView::readConfig(const QString &key, int defaultValue)
-{
-    QString att = key; att.replace("/", "_");
-    if (eleConfig)
-    {
-        if (eleConfig->hasAttribute(att))
-            return eleConfig->attribute(att).toInt();
-    }
-    if (configxsd)
-    {
-        for (int i = 0; i < configxsd->item().size(); i ++)
-            if (configxsd->item().at(i).key() == att.toStdString())
-                return QString::fromStdString(configxsd->item().at(i).value()).toInt();
-    }
-
-    return defaultValue;
-}
-
-double ProblemConfigView::readConfig(const QString &key, double defaultValue)
-{
-    QString att = key; att.replace("/", "_");
-    if (eleConfig)
-    {
-        if (eleConfig->hasAttribute(att))
-            return eleConfig->attribute(att).toDouble();
-    }
-    if (configxsd)
-    {
-        for (int i = 0; i < configxsd->item().size(); i ++)
-            if (configxsd->item().at(i).key() == att.toStdString())
-                return QString::fromStdString(configxsd->item().at(i).value()).toDouble();
-    }
-
-    return defaultValue;
-}
-
-QString ProblemConfigView::readConfig(const QString &key, const QString &defaultValue)
-{
-    QString att = key; att.replace("/", "_");
-    if (eleConfig)
-    {
-        if (eleConfig->hasAttribute(att))
-            return eleConfig->attribute(att);
-    }
-    if (configxsd)
-    {
-        for (int i = 0; i < configxsd->item().size(); i ++)
-            if (configxsd->item().at(i).key() == att.toStdString())
-                return QString::fromStdString(configxsd->item().at(i).value());
-    }
-
-    return defaultValue;
-}
-
-QColor ProblemConfigView::readConfig(const QString &key, const QColor &defaultValue)
-{
-    QString att = key; att.replace("/", "_");
-    if (eleConfig)
-    {
-        QColor color = defaultValue;
-
-        if (eleConfig->hasAttribute(att + "_red"))
-            color.setRed(eleConfig->attribute(att + "_red").toInt());
-        if (eleConfig->hasAttribute(att + "_green"))
-            color.setGreen(eleConfig->attribute(att + "_green").toInt());
-        if (eleConfig->hasAttribute(att + "_blue"))
-            color.setBlue(eleConfig->attribute(att + "_blue").toInt());
-
-        return color;
-    }
-    if (configxsd)
-    {
-        QColor color = defaultValue;
-
-        for (int i = 0; i < configxsd->item().size(); i ++)
+        if (m_settingDefault.keys().contains(key))
         {
-            if (configxsd->item().at(i).key() == att.toStdString() + "_red")
-                color.setRed(QString::fromStdString(configxsd->item().at(i).value()).toInt());
-            if (configxsd->item().at(i).key() == att.toStdString() + "_green")
-                color.setGreen(QString::fromStdString(configxsd->item().at(i).value()).toInt());
-            if (configxsd->item().at(i).key() == att.toStdString() + "_blue")
-                color.setBlue(QString::fromStdString(configxsd->item().at(i).value()).toInt());
+            if (m_settingDefault[key].type() == QVariant::Double)
+                m_setting[key] = QString::fromStdString(configxsd->item().at(i).value()).toDouble();
+            else if (m_settingDefault[key].type() == QVariant::Int)
+                m_setting[key] = QString::fromStdString(configxsd->item().at(i).value()).toInt();
+            else if (m_settingDefault[key].type() == QVariant::Bool)
+                m_setting[key] = (QString::fromStdString(configxsd->item().at(i).value()) == "1");
+            else if (m_settingDefault[key].type() == QVariant::String)
+                m_setting[key] = QString::fromStdString(configxsd->item().at(i).value());
+            else if (m_settingDefault[key].type() == QVariant::StringList)
+                m_setting[key] = QString::fromStdString(configxsd->item().at(i).value()).split("|");
+            else
+                qDebug() << "Key not found" << QString::fromStdString(configxsd->item().at(i).key()) << QString::fromStdString(configxsd->item().at(i).value());
         }
-        return color;
     }
 
-    return defaultValue;
+    // FIX ME - EOL conversion
+    // QPlainTextEdit textEdit;
+    // textEdit.setPlainText(readConfig("Problem/StartupScript", QString()));
+    // startupScript = textEdit.toPlainText();
 }
 
-QStringList ProblemConfigView::readConfig(const QString &key, const QStringList &defaultValue)
-{
-    QString att = key; att.replace("/", "_");
-    if (eleConfig)
+void ProblemSetting::save(XMLProblem::config *configxsd)
+{    
+    foreach (Type key, m_setting.keys())
     {
-        if (eleConfig->hasAttribute(att))
-            return eleConfig->attribute(att).split("|");
+        if (m_settingDefault[key].type() == QVariant::StringList)
+            configxsd->item().push_back(XMLProblem::item(typeToStringKey(key).toStdString(), m_setting[key].toStringList().join("|").toStdString()));
+        else if (m_settingDefault[key].type() == QVariant::Bool)
+            configxsd->item().push_back(XMLProblem::item(typeToStringKey(key).toStdString(), QString::number(m_setting[key].toInt()).toStdString()));
+        else
+            configxsd->item().push_back(XMLProblem::item(typeToStringKey(key).toStdString(), m_setting[key].toString().toStdString()));
     }
-    if (configxsd)
-    {
-        for (int i = 0; i < configxsd->item().size(); i ++)
-            if (configxsd->item().at(i).key() == att.toStdString())
-                return QString::fromStdString(configxsd->item().at(i).value()).split("|");
-    }
-
-    return defaultValue;
-}
-
-void ProblemConfigView::writeConfig(const QString &key, bool value)
-{
-    QString att = key; att.replace("/", "_");
-    if (eleConfig)
-        eleConfig->setAttribute(att, value);
-    if (configxsd)
-        configxsd->item().push_back(XMLProblem::item(att.toStdString(), QString::number(value).toStdString()));
-}
-
-void ProblemConfigView::writeConfig(const QString &key, int value)
-{
-    QString att = key; att.replace("/", "_");
-    if (eleConfig)
-        eleConfig->setAttribute(att, value);
-    if (configxsd)
-        configxsd->item().push_back(XMLProblem::item(att.toStdString(), QString::number(value).toStdString()));
-}
-
-void ProblemConfigView::writeConfig(const QString &key, double value)
-{
-    QString att = key; att.replace("/", "_");
-    if (eleConfig)
-        eleConfig->setAttribute(att, value);
-    if (configxsd)
-        configxsd->item().push_back(XMLProblem::item(att.toStdString(), QString::number(value).toStdString()));
-}
-
-void ProblemConfigView::writeConfig(const QString &key, const QString &value)
-{
-    QString att = key; att.replace("/", "_");
-    if (eleConfig)
-        eleConfig->setAttribute(att, value);
-    if (configxsd)
-        configxsd->item().push_back(XMLProblem::item(att.toStdString(), value.toStdString()));
-}
-
-void ProblemConfigView::writeConfig(const QString &key, const QColor &value)
-{
-    QString att = key; att.replace("/", "_");
-    if (eleConfig)
-    {
-        eleConfig->setAttribute(att + "_red", value.red());
-        eleConfig->setAttribute(att + "_green", value.green());
-        eleConfig->setAttribute(att + "_blue", value.blue());
-    }
-    if (configxsd)
-    {
-        configxsd->item().push_back(XMLProblem::item((att + "_red").toStdString(), QString::number(value.red()).toStdString()));
-        configxsd->item().push_back(XMLProblem::item((att + "_green").toStdString(), QString::number(value.green()).toStdString()));
-        configxsd->item().push_back(XMLProblem::item((att + "_blue").toStdString(), QString::number(value.blue()).toStdString()));
-    }
-}
-
-void ProblemConfigView::writeConfig(const QString &key, const QStringList &value)
-{
-    QString att = key; att.replace("/", "_");
-    if (eleConfig)
-        eleConfig->setAttribute(att, value.join("|"));
-    if (configxsd)
-        configxsd->item().push_back(XMLProblem::item(att.toStdString(), value.join("|").toStdString()));
 }
