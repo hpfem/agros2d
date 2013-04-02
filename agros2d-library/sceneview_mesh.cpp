@@ -384,7 +384,7 @@ void SceneViewMesh::paintOrder()
     }
 
     // paint labels
-    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderView).toBool())
+    if (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderLabel).toBool())
     {
         loadProjectionViewPort();
 
