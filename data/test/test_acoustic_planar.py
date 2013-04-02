@@ -34,7 +34,6 @@ geometry = agros2d.geometry
 # edges
 geometry.add_edge(-0.4, 0.05, 0.1, 0.2, boundaries = {"acoustic" : "Matched boundary"})
 geometry.add_edge(0.1, -0.2, -0.4, -0.05, boundaries = {"acoustic" : "Matched boundary"})
-geometry.add_edge(0.1, -0.2, -0.4, -0.05, boundaries = {"acoustic" : "Matched boundary"})
 geometry.add_edge(-0.4, 0.05, -0.4, -0.05, boundaries = {"acoustic" : "Matched boundary"})
 geometry.add_edge(-0.18, -0.06, -0.17, -0.05, boundaries = {"acoustic" : "Source"}, angle=90)
 geometry.add_edge(-0.17, -0.05, -0.18, -0.04, boundaries = {"acoustic" : "Source"}, angle=90)
