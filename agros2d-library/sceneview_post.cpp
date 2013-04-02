@@ -164,7 +164,7 @@ void PostHermes::processRangeContour()
         // process solution
         m_linContourView.process_solution(slnContourView,
                                           Hermes::Hermes2D::H2D_FN_VAL_0,
-                                          paletteQualityToDouble((PaletteQuality) Agros2D::problem()->setting()->value(ProblemSetting::View_LinearizerQuality).toDouble()));
+                                          paletteQualityToDouble((PaletteQuality) Agros2D::problem()->setting()->value(ProblemSetting::View_LinearizerQuality).toInt()));
     }
 }
 
@@ -807,7 +807,7 @@ void SceneViewPostInterface::paintScalarFieldColorBar(double min, double max)
         if (!Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeLog).toBool())
             value = min + (double) (i-1) / (numTicks-1) * (max - min);
         else
-            value = min + (double) pow(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeBase).toInt(),
+            value = min + (double) pow((double) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeBase).toInt(),
                                        ((i-1) / (numTicks-1)))/Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeBase).toInt() * (max - min);
 
         if (fabs(value) < EPS_ZERO) value = 0.0;

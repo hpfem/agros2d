@@ -362,7 +362,8 @@ void SceneViewPost2D::paintScalarField()
             for (int j = 0; j < 3; j++)
             {
                 if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeLog).toBool())
-                    glTexCoord1d(log10(1.0 + (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeBase).toInt()-1.0)*(value[j] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange)/log10(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeBase).toInt()));
+                    glTexCoord1d(log10((double) (1 + (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeBase).toInt() - 1))
+                                        * (value[j] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange) / log10((double) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeBase).toInt()));
                 else
                     glTexCoord1d((value[j] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
                 glVertex2d(point[j].x, point[j].y);
