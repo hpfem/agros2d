@@ -264,8 +264,6 @@ void PyGeometry::setMaterials(SceneLabel *label, map<char *, char *> materials)
         if (!Agros2D::problem()->hasField(QString((*i).first)))
             throw invalid_argument(QObject::tr("Invalid field id '%1'.").arg(QString((*i).first)).toStdString());
 
-        qDebug() << QString((*i).second);
-
         if (QString((*i).second) != "none")
         {
 
