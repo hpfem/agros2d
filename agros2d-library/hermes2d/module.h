@@ -230,7 +230,7 @@ private:
 
 struct Space
 {
-    Space(int i = 1, Hermes::Hermes2D::SpaceType type = Hermes::Hermes2D::HERMES_H1_SPACE, int orderAdjust = 0)
+    Space(int i = 1, Hermes::Hermes2D::SpaceType type = Hermes::Hermes2D::HERMES_INVALID_SPACE, int orderAdjust = 0)
         : m_i(i), m_type(type), m_orderAdjust(orderAdjust) {}
 
     // expressions

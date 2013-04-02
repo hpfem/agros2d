@@ -584,11 +584,17 @@ void Solver<Scalar>::createInitialSpace()
 //        MeshSharedPtr oneInitialMesh(new Hermes::Hermes2D::Mesh());
 //        oneInitialMesh->copy(fieldInfo->initialMesh());
 
+        QMap<int, Module::Space> fieldSpaces = fieldInfo->spaces();
+
         // create space
         for (int i = 0; i < fieldInfo->numberOfSolutions(); i++)
         {
+            // spaces in module are numbered from 1!
+            int spaceI = i + 1;
+            assert(fieldSpaces.contains(spaceI));
+
             Space<Scalar> *oneSpace = NULL;
-            switch (fieldInfo->spaces()[i].type())
+            switch (fieldSpaces[spaceI].type())
             {
             case HERMES_L2_SPACE:
                 oneSpace = new L2Space<Scalar>(fieldInfo->initialMesh(), fieldInfo->polynomialOrder() + fieldInfo->spaces()[i+1].orderAdjust());
