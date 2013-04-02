@@ -54,7 +54,7 @@ int PyGeometry::addNode(double x, double y)
 }
 
 int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle,
-                        map<std::string, int> refinements, map<std::string, std::string> boundaries)
+                        const map<std::string, int> &refinements, const map<std::string, std::string> &boundaries)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnEdges->trigger();
@@ -92,7 +92,7 @@ int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle
 }
 
 int PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle,
-                               map<std::string, int> refinements, map<std::string, std::string> boundaries)
+                               const map<std::string, int> &refinements, const map<std::string, std::string> &boundaries)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnEdges->trigger();
@@ -135,7 +135,7 @@ int PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angl
     return Agros2D::scene()->edges->items().indexOf(edge);
 }
 
-void PyGeometry::modifyEdge(int index, double angle, map<std::string, int> refinements, map<std::string, std::string> boundaries)
+void PyGeometry::modifyEdge(int index, double angle, const map<std::string, int> &refinements, const map<std::string, std::string> &boundaries)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnEdges->trigger();
@@ -163,9 +163,9 @@ void PyGeometry::testAngle(double angle)
         throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
 }
 
-void PyGeometry::setBoundaries(SceneEdge *edge, map<std::string, std::string> boundaries)
+void PyGeometry::setBoundaries(SceneEdge *edge, const map<std::string, std::string> &boundaries)
 {
-    for (map<std::string, std::string>::iterator i = boundaries.begin(); i != boundaries.end(); ++i)
+    for (map<std::string, std::string>::const_iterator i = boundaries.begin(); i != boundaries.end(); ++i)
     {
         QString field = QString::fromStdString((*i).first);
         QString marker = QString::fromStdString((*i).second);
@@ -189,9 +189,9 @@ void PyGeometry::setBoundaries(SceneEdge *edge, map<std::string, std::string> bo
     }
 }
 
-void PyGeometry::setRefinementsOnEdge(SceneEdge *edge, map<std::string, int> refinements)
+void PyGeometry::setRefinementsOnEdge(SceneEdge *edge, const map<std::string, int> &refinements)
 {
-    for (map<std::string, int>::iterator i = refinements.begin(); i != refinements.end(); ++i)
+    for (map<std::string, int>::const_iterator i = refinements.begin(); i != refinements.end(); ++i)
     {
         QString field = QString::fromStdString((*i).first);
         int refinement = (*i).second;
@@ -206,7 +206,8 @@ void PyGeometry::setRefinementsOnEdge(SceneEdge *edge, map<std::string, int> ref
     }
 }
 
-int PyGeometry::addLabel(double x, double y, double area, map<std::string, int> refinements, map<std::string, int> orders, map<std::string, std::string> materials)
+int PyGeometry::addLabel(double x, double y, double area, const map<std::string, int> &refinements,
+                         const map<std::string, int> &orders, const map<std::string, std::string> &materials)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnLabels->trigger();
@@ -242,7 +243,8 @@ int PyGeometry::addLabel(double x, double y, double area, map<std::string, int> 
     return Agros2D::scene()->labels->items().indexOf(label);
 }
 
-void PyGeometry::modifyLabel(int index, double area, map<std::string, int> refinements, map<std::string, int> orders, map<std::string, std::string> materials)
+void PyGeometry::modifyLabel(int index, double area, const map<std::string, int> &refinements,
+                             const map<std::string, int> &orders, const map<std::string, std::string> &materials)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnLabels->trigger();
@@ -266,9 +268,9 @@ void PyGeometry::modifyLabel(int index, double area, map<std::string, int> refin
     Agros2D::scene()->invalidate();
 }
 
-void PyGeometry::setMaterials(SceneLabel *label, map<std::string, std::string> materials)
+void PyGeometry::setMaterials(SceneLabel *label, const map<std::string, std::string> &materials)
 {
-    for( map<std::string, std::string>::iterator i = materials.begin(); i != materials.end(); ++i)
+    for( map<std::string, std::string>::const_iterator i = materials.begin(); i != materials.end(); ++i)
     {
         QString field = QString::fromStdString((*i).first);
         QString marker = QString::fromStdString((*i).second);
@@ -296,9 +298,9 @@ void PyGeometry::setMaterials(SceneLabel *label, map<std::string, std::string> m
     }
 }
 
-void PyGeometry::setRefinements(SceneLabel *label, map<std::string, int> refinements)
+void PyGeometry::setRefinements(SceneLabel *label, const map<std::string, int> &refinements)
 {
-    for (map<std::string, int>::iterator i = refinements.begin(); i != refinements.end(); ++i)
+    for (map<std::string, int>::const_iterator i = refinements.begin(); i != refinements.end(); ++i)
     {
         QString field = QString::fromStdString((*i).first);
         int refinement = (*i).second;
@@ -313,9 +315,9 @@ void PyGeometry::setRefinements(SceneLabel *label, map<std::string, int> refinem
     }
 }
 
-void PyGeometry::setPolynomialOrders(SceneLabel *label, map<std::string, int> orders)
+void PyGeometry::setPolynomialOrders(SceneLabel *label, const map<std::string, int> &orders)
 {
-    for (map<std::string, int>::iterator i = orders.begin(); i != orders.end(); ++i)
+    for (map<std::string, int>::const_iterator i = orders.begin(); i != orders.end(); ++i)
     {
         QString field = QString::fromStdString((*i).first);
         int order = (*i).second;
@@ -330,7 +332,7 @@ void PyGeometry::setPolynomialOrders(SceneLabel *label, map<std::string, int> or
     }
 }
 
-void PyGeometry::removeNodes(vector<int> nodes)
+void PyGeometry::removeNodes(const vector<int> &nodes)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnNodes->trigger();
@@ -338,7 +340,7 @@ void PyGeometry::removeNodes(vector<int> nodes)
 
     if (!nodes.empty())
     {
-        for (vector<int>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+        for (vector<int>::const_iterator it = nodes.begin(); it != nodes.end(); ++it)
         {
             if ((*it >= 0) && (*it < Agros2D::scene()->nodes->length()))
                 Agros2D::scene()->nodes->at(*it)->setSelected(true);
@@ -355,7 +357,7 @@ void PyGeometry::removeNodes(vector<int> nodes)
         currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
-void PyGeometry::removeEdges(vector<int> edges)
+void PyGeometry::removeEdges(const vector<int> &edges)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnEdges->trigger();
@@ -363,7 +365,7 @@ void PyGeometry::removeEdges(vector<int> edges)
 
     if (!edges.empty())
     {
-        for (vector<int>::iterator it = edges.begin(); it != edges.end(); ++it)
+        for (vector<int>::const_iterator it = edges.begin(); it != edges.end(); ++it)
         {
             if ((*it >= 0) && (*it < Agros2D::scene()->edges->length()))
                 Agros2D::scene()->edges->at(*it)->setSelected(true);
@@ -380,7 +382,7 @@ void PyGeometry::removeEdges(vector<int> edges)
         currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
-void PyGeometry::removeLabels(vector<int> labels)
+void PyGeometry::removeLabels(const vector<int> &labels)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnLabels->trigger();
@@ -388,7 +390,7 @@ void PyGeometry::removeLabels(vector<int> labels)
 
     if (!labels.empty())
     {
-        for (vector<int>::iterator it = labels.begin(); it != labels.end(); ++it)
+        for (vector<int>::const_iterator it = labels.begin(); it != labels.end(); ++it)
         {
             if ((*it >= 0) && (*it < Agros2D::scene()->labels->length()))
                 Agros2D::scene()->labels->at(*it)->setSelected(true);
@@ -405,7 +407,7 @@ void PyGeometry::removeLabels(vector<int> labels)
         currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
-void PyGeometry::selectNodes(vector<int> nodes)
+void PyGeometry::selectNodes(const vector<int> &nodes)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnNodes->trigger();
@@ -413,7 +415,7 @@ void PyGeometry::selectNodes(vector<int> nodes)
 
     if (!nodes.empty())
     {
-        for (vector<int>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+        for (vector<int>::const_iterator it = nodes.begin(); it != nodes.end(); ++it)
         {
             if ((*it >= 0) && (*it < Agros2D::scene()->nodes->length()))
                 Agros2D::scene()->nodes->at(*it)->setSelected(true);
@@ -431,7 +433,7 @@ void PyGeometry::selectNodes(vector<int> nodes)
 
 }
 
-void PyGeometry::selectEdges(vector<int> edges)
+void PyGeometry::selectEdges(const vector<int> &edges)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnEdges->trigger();
@@ -439,7 +441,7 @@ void PyGeometry::selectEdges(vector<int> edges)
 
     if (!edges.empty())
     {
-        for (vector<int>::iterator it = edges.begin(); it != edges.end(); ++it)
+        for (vector<int>::const_iterator it = edges.begin(); it != edges.end(); ++it)
         {
             if ((*it >= 0) && (*it < Agros2D::scene()->edges->length()))
                 Agros2D::scene()->edges->at(*it)->setSelected(true);
@@ -456,7 +458,7 @@ void PyGeometry::selectEdges(vector<int> edges)
         currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
-void PyGeometry::selectLabels(vector<int> labels)
+void PyGeometry::selectLabels(const vector<int> &labels)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnLabels->trigger();
@@ -464,7 +466,7 @@ void PyGeometry::selectLabels(vector<int> labels)
 
     if (!labels.empty())
     {
-        for (vector<int>::iterator it = labels.begin(); it != labels.end(); ++it)
+        for (vector<int>::const_iterator it = labels.begin(); it != labels.end(); ++it)
         {
             if ((*it >= 0) && (*it < Agros2D::scene()->labels->length()))
                 Agros2D::scene()->labels->at(*it)->setSelected(true);

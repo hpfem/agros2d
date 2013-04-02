@@ -40,27 +40,32 @@ class PyGeometry
 
         // add operations
         int addNode(double x, double y);
-        int addEdge(double x1, double y1, double x2, double y2, double angle, map<std::string, int> refinements, map<std::string, std::string> boundaries);
-        int addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, map<std::string, int> refinements, map<std::string, std::string> boundaries);
-        int addLabel(double x, double y, double area, map<std::string, int> refinements, map<std::string, int> orders, map<std::string, std::string> materials);
+        int addEdge(double x1, double y1, double x2, double y2, double angle,
+                    const map<std::string, int> &refinements, const map<std::string, std::string> &boundaries);
+        int addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle,
+                           const map<std::string, int> &refinements, const map<std::string, std::string> &boundaries);
+        int addLabel(double x, double y, double area, const map<std::string, int> &refinements,
+                     const map<std::string, int> &orders, const map<std::string, std::string> &materials);
 
         inline int nodesCount() { return Agros2D::scene()->nodes->count(); }
         inline int edgesCount() { return Agros2D::scene()->edges->count(); }
         inline int labelsCount() { return Agros2D::scene()->labels->count(); }
 
         // modify operations
-        void modifyEdge(int index, double angle, map<std::string, int> refinements, map<std::string, std::string> boundaries);
-        void modifyLabel(int index, double area, map<std::string, int> refinements, map<std::string, int> orders, map<std::string, std::string> materials);
+        void modifyEdge(int index, double angle, const map<std::string, int> &refinements,
+                        const map<std::string, std::string> &boundaries);
+        void modifyLabel(int index, double area, const map<std::string, int> &refinements,
+                         const map<std::string, int> &orders, const map<std::string, std::string> &materials);
 
         // remove operations
-        void removeNodes(vector<int> nodes);
-        void removeEdges(vector<int> edges);
-        void removeLabels(vector<int> labels);
+        void removeNodes(const vector<int> &nodes);
+        void removeEdges(const vector<int> &edges);
+        void removeLabels(const vector<int> &labels);
 
         // select operations
-        void selectNodes(vector<int> nodes);
-        void selectEdges(vector<int> edges);
-        void selectLabels(vector<int> labels);
+        void selectNodes(const vector<int> &nodes);
+        void selectEdges(const vector<int> &edges);
+        void selectLabels(const vector<int> &labels);
 
         void selectNodeByPoint(double x, double y);
         void selectEdgeByPoint(double x, double y);
@@ -76,11 +81,11 @@ class PyGeometry
 
 private:
         void testAngle(double angle);
-        void setBoundaries(SceneEdge *edge, map<std::string, std::string> boundaries);
-        void setMaterials(SceneLabel *label, map<std::string, std::string> materials);
-        void setRefinementsOnEdge(SceneEdge *edge, map<std::string, int> refinements);
-        void setRefinements(SceneLabel *label, map<std::string, int> refinements);
-        void setPolynomialOrders(SceneLabel *label, map<std::string, int> orders);
+        void setBoundaries(SceneEdge *edge, const map<std::string, std::string> &boundaries);
+        void setMaterials(SceneLabel *label, const map<std::string, std::string> &materials);
+        void setRefinementsOnEdge(SceneEdge *edge, const map<std::string, int> &refinements);
+        void setRefinements(SceneLabel *label, const map<std::string, int> &refinements);
+        void setPolynomialOrders(SceneLabel *label, const map<std::string, int> &orders);
 };
 
 #endif // PYTHONLABGEOMETRY_H

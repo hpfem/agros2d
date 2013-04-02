@@ -22,19 +22,19 @@ cdef extern from "../../agros2d-library/pythonlab/pyproblem.h":
         void refresh()
 
         string getCoordinateType()
-        void setCoordinateType(string coordinateType) except +
+        void setCoordinateType(string &coordinateType) except +
 
         string getMeshType()
-        void setMeshType(string meshType) except +
+        void setMeshType(string &meshType) except +
 
         string getMatrixSolver()
-        void setMatrixSolver(string matrixSolver) except +
+        void setMatrixSolver(string &matrixSolver) except +
 
         double getFrequency()
         void setFrequency(double frequency) except +
 
         string getTimeStepMethod()
-        void setTimeStepMethod(string timeStepMethod) except +
+        void setTimeStepMethod(string &timeStepMethod) except +
 
         int getTimeMethodOrder()
         void setTimeMethodOrder(int timeMethodOrder) except +
@@ -48,15 +48,15 @@ cdef extern from "../../agros2d-library/pythonlab/pyproblem.h":
         int getNumConstantTimeSteps()
         void setNumConstantTimeSteps(int timeSteps) except +
 
-        string getCouplingType(string sourceField, string targetField) except +
-        void setCouplingType(string sourceField, string targetField, string type) except +
+        string getCouplingType(string &sourceField, string &targetField) except +
+        void setCouplingType(string &sourceField, string &targetField, string &type) except +
 
         void mesh() except +
         void solve() except +
         void solveAdaptiveStep() except +
 
         double timeElapsed() except +
-        void timeStepsLength(vector[double] steps) except +
+        void timeStepsLength(vector[double] &steps) except +
 
 cdef class __Problem__:
     cdef PyProblem *thisptr

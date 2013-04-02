@@ -16,24 +16,24 @@ cdef extern from "../../agros2d-library/pythonlab/pygeometry.h":
         void activate()
 
         int addNode(double x, double y) except +
-        int addEdge(double x1, double y1, double x2, double y2, double angle, map[string, int] refinements, map[string, string] boundaries) except +
-        int addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, map[string, int] refinements, map[string, string] boundaries) except +
-        int addLabel(double x, double y, double area, map[string, int] refinements, map[string, int] orders, map[string, string] materials) except +
+        int addEdge(double x1, double y1, double x2, double y2, double angle, map[string, int] &refinements, map[string, string] &boundaries) except +
+        int addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, map[string, int] &refinements, map[string, string] &boundaries) except +
+        int addLabel(double x, double y, double area, map[string, int] &refinements, map[string, int] &orders, map[string, string] &materials) except +
 
-        void modifyEdge(int index, double angle, map[string, int] refinements, map[string, string] boundaries) except +
-        void modifyLabel(int index, double area, map[string, int] refinements, map[string, int] orders, map[string, string] materials) except +
+        void modifyEdge(int index, double angle, map[string, int] &refinements, map[string, string] &boundaries) except +
+        void modifyLabel(int index, double area, map[string, int] &refinements, map[string, int] &orders, map[string, string] &materials) except +
 
         int nodesCount()
         int edgesCount()
         int labelsCount()
 
-        void removeNodes(vector[int] nodes) except +
-        void removeEdges(vector[int] edges) except +
-        void removeLabels(vector[int] labels) except +
+        void removeNodes(vector[int] &nodes) except +
+        void removeEdges(vector[int] &edges) except +
+        void removeLabels(vector[int] &labels) except +
 
-        void selectNodes(vector[int] nodes) except +
-        void selectEdges(vector[int] edges) except +
-        void selectLabels(vector[int] labels) except +
+        void selectNodes(vector[int] &nodes) except +
+        void selectEdges(vector[int] &edges) except +
+        void selectLabels(vector[int] &labels) except +
 
         void selectNodeByPoint(double x, double y) except +
         void selectEdgeByPoint(double x, double y) except +

@@ -22,7 +22,7 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
 
         string fieldId()
 
-        string& getAnalysisType()
+        string getAnalysisType()
         void setAnalysisType(string &analysisType) except +
 
         int getNumberOfRefinements()
@@ -31,7 +31,7 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         int getPolynomialOrder()
         void setPolynomialOrder(int polynomialOrder) except +
 
-        string& getLinearityType()
+        string getLinearityType()
         void setLinearityType(string &linearityType) except +
 
         double getNonlinearTolerance()
@@ -58,7 +58,7 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         int getPicardAndersonNumberOfLastVectors()
         void setPicardAndersonNumberOfLastVectors(int number) except +
 
-        string& getAdaptivityType()
+        string getAdaptivityType()
         void setAdaptivityType(string &adaptivityType) except +
 
         double getAdaptivityTolerance()

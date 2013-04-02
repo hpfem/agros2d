@@ -34,10 +34,10 @@ class PyField
         ~PyField() {}
 
         // field id
-        inline const std::string& fieldId() { return m_fieldInfo->fieldId().toStdString(); }
+        inline std::string fieldId() { return m_fieldInfo->fieldId().toStdString(); }
 
         // analysis type
-        inline const std::string& getAnalysisType() { return analysisTypeToStringKey(m_fieldInfo->analysisType()).toStdString(); }
+        inline std::string getAnalysisType() { return analysisTypeToStringKey(m_fieldInfo->analysisType()).toStdString(); }
         void setAnalysisType(const std::string &analysisType);
 
         // number of refinements
@@ -49,7 +49,7 @@ class PyField
         void setPolynomialOrder(int polynomialOrder);
 
         // linearity type
-        inline const std::string& getLinearityType() { return linearityTypeToStringKey(m_fieldInfo->linearityType()).toStdString(); }
+        inline std::string getLinearityType() { return linearityTypeToStringKey(m_fieldInfo->linearityType()).toStdString(); }
         void setLinearityType(const std::string &linearityType);
 
         // nonlinear tolerance
@@ -89,7 +89,7 @@ class PyField
         void setPicardAndersonNumberOfLastVectors(int number);
 
         // adaptivity type
-        inline const std::string& getAdaptivityType() { return adaptivityTypeToStringKey(m_fieldInfo->adaptivityType()).toStdString(); }
+        inline std::string getAdaptivityType() { return adaptivityTypeToStringKey(m_fieldInfo->adaptivityType()).toStdString(); }
         void setAdaptivityType(const std::string &adaptivityType);
 
         // adaptivity tolerance
