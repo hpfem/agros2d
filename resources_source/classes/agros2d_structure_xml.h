@@ -256,7 +256,9 @@ namespace XMLStructure
   class structure;
   class element_data;
   class files;
+  class newton_residuals;
   class file;
+  class residual;
 }
 
 
@@ -344,6 +346,23 @@ namespace XMLStructure
 
     void
     files (::std::auto_ptr< files_type > p);
+
+    // newton_residuals
+    // 
+    typedef ::XMLStructure::newton_residuals newton_residuals_type;
+    typedef ::xsd::cxx::tree::traits< newton_residuals_type, char > newton_residuals_traits;
+
+    const newton_residuals_type&
+    newton_residuals () const;
+
+    newton_residuals_type&
+    newton_residuals ();
+
+    void
+    newton_residuals (const newton_residuals_type& x);
+
+    void
+    newton_residuals (::std::auto_ptr< newton_residuals_type > p);
 
     // field_id
     // 
@@ -464,12 +483,14 @@ namespace XMLStructure
     // Constructors.
     //
     element_data (const files_type&,
+                  const newton_residuals_type&,
                   const field_id_type&,
                   const time_step_type&,
                   const adaptivity_step_type&,
                   const solution_type_type&);
 
     element_data (::std::auto_ptr< files_type >&,
+                  ::std::auto_ptr< newton_residuals_type >&,
                   const field_id_type&,
                   const time_step_type&,
                   const adaptivity_step_type&,
@@ -499,6 +520,7 @@ namespace XMLStructure
 
     protected:
     ::xsd::cxx::tree::one< files_type > files_;
+    ::xsd::cxx::tree::one< newton_residuals_type > newton_residuals_;
     ::xsd::cxx::tree::one< field_id_type > field_id_;
     ::xsd::cxx::tree::one< time_step_type > time_step_;
     ::xsd::cxx::tree::one< adaptivity_step_type > adaptivity_step_;
@@ -556,6 +578,56 @@ namespace XMLStructure
 
     protected:
     file_sequence file_;
+  };
+
+  class newton_residuals: public ::xml_schema::type
+  {
+    public:
+    // residual
+    // 
+    typedef ::XMLStructure::residual residual_type;
+    typedef ::xsd::cxx::tree::sequence< residual_type > residual_sequence;
+    typedef residual_sequence::iterator residual_iterator;
+    typedef residual_sequence::const_iterator residual_const_iterator;
+    typedef ::xsd::cxx::tree::traits< residual_type, char > residual_traits;
+
+    const residual_sequence&
+    residual () const;
+
+    residual_sequence&
+    residual ();
+
+    void
+    residual (const residual_sequence& s);
+
+    // Constructors.
+    //
+    newton_residuals ();
+
+    newton_residuals (const ::xercesc::DOMElement& e,
+                      ::xml_schema::flags f = 0,
+                      ::xml_schema::container* c = 0);
+
+    newton_residuals (const newton_residuals& x,
+                      ::xml_schema::flags f = 0,
+                      ::xml_schema::container* c = 0);
+
+    virtual newton_residuals*
+    _clone (::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0) const;
+
+    virtual 
+    ~newton_residuals ();
+
+    // Implementation.
+    //
+    protected:
+    void
+    parse (::xsd::cxx::xml::dom::parser< char >&,
+           ::xml_schema::flags);
+
+    protected:
+    residual_sequence residual_;
   };
 
   class file: public ::xml_schema::type
@@ -661,6 +733,53 @@ namespace XMLStructure
     ::xsd::cxx::tree::one< space_filename_type > space_filename_;
     ::xsd::cxx::tree::one< solution_filename_type > solution_filename_;
   };
+
+  class residual: public ::xml_schema::type
+  {
+    public:
+    // value
+    // 
+    typedef ::xml_schema::float_ value_type;
+    typedef ::xsd::cxx::tree::traits< value_type, char > value_traits;
+
+    const value_type&
+    value () const;
+
+    value_type&
+    value ();
+
+    void
+    value (const value_type& x);
+
+    // Constructors.
+    //
+    residual (const value_type&);
+
+    residual (const ::xercesc::DOMElement& e,
+              ::xml_schema::flags f = 0,
+              ::xml_schema::container* c = 0);
+
+    residual (const residual& x,
+              ::xml_schema::flags f = 0,
+              ::xml_schema::container* c = 0);
+
+    virtual residual*
+    _clone (::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0) const;
+
+    virtual 
+    ~residual ();
+
+    // Implementation.
+    //
+    protected:
+    void
+    parse (::xsd::cxx::xml::dom::parser< char >&,
+           ::xml_schema::flags);
+
+    protected:
+    ::xsd::cxx::tree::one< value_type > value_;
+  };
 }
 
 #include <iosfwd>
@@ -677,7 +796,13 @@ namespace XMLStructure
   operator<< (::std::ostream&, const files&);
 
   ::std::ostream&
+  operator<< (::std::ostream&, const newton_residuals&);
+
+  ::std::ostream&
   operator<< (::std::ostream&, const file&);
+
+  ::std::ostream&
+  operator<< (::std::ostream&, const residual&);
 }
 
 #include <iosfwd>
@@ -870,7 +995,13 @@ namespace XMLStructure
   operator<< (::xercesc::DOMElement&, const files&);
 
   void
+  operator<< (::xercesc::DOMElement&, const newton_residuals&);
+
+  void
   operator<< (::xercesc::DOMElement&, const file&);
+
+  void
+  operator<< (::xercesc::DOMElement&, const residual&);
 }
 
 #include <xsd/cxx/post.hxx>

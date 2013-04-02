@@ -31,13 +31,29 @@ class ExactSolutionScalarAgros;
 
 class SceneBoundary;
 
+template <typename Scalar>
+class NewtonSolverAgros : public Hermes::Hermes2D::NewtonSolver<Scalar>
+{
+public:
+    NewtonSolverAgros();
+
+    virtual void on_initialization();
+    virtual void on_step_begin();
+    virtual void on_step_end();
+    virtual void on_finish();
+
+    inline QList<double> residuals() const { return m_residuals; }
+
+protected:
+    QList<double> m_residuals;
+};
+
 struct NextTimeStep
 {
     NextTimeStep(double len, bool ref = false) : length(len), refuse(ref) {}
     double length;
     bool refuse;
 };
-
 
 template <typename Scalar>
 class HermesSolverContainer
@@ -96,8 +112,10 @@ public:
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() { return m_newtonSolver; }
     virtual void setWeakFormulation(const Hermes::Hermes2D::WeakForm<Scalar>* wf) { m_newtonSolver->set_weak_formulation(wf); }
 
+    NewtonSolverAgros<Scalar> *solver() const { return m_newtonSolver; }
+
 private:
-    Hermes::Hermes2D::NewtonSolver<Scalar> *m_newtonSolver;
+    NewtonSolverAgros<Scalar> *m_newtonSolver;
 };
 
 template <typename Scalar>
@@ -169,7 +187,6 @@ private:
     void setActualSpaces(Hermes::vector<SpaceSharedPtr<Scalar> > spaces);
     Hermes::vector<SpaceSharedPtr<Scalar> > actualSpaces() { return m_actualSpaces;}
     Hermes::vector<SpaceSharedPtr<Scalar> > deepMeshAndSpaceCopy(Hermes::vector<SpaceSharedPtr<Scalar> > spaces, bool createReference);
-    void addSolutionToStore(BlockSolutionID id, Scalar* solutionVector);
 };
 
 #endif // SOLVER_H

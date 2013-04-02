@@ -29,6 +29,7 @@ public:
 
     struct SolutionRunTimeDetails
     {
+    public:
         struct FileName
         {
             FileName(QString meshFileName = "", QString spaceFileName = "", QString solutionFileName = "")
@@ -39,14 +40,27 @@ public:
             QString solutionFileName;
         };
 
-        SolutionRunTimeDetails(double time_step_length = 0, double error = 0, int DOFs = 0, QList<FileName> fileNames = QList<FileName>())
-            : time_step_length(time_step_length), adaptivity_error(error), DOFs(DOFs), fileNames(fileNames) {}
+        SolutionRunTimeDetails(double time_step_length = 0, double error = 0, int DOFs = 0)
+            : m_timeStepLength(time_step_length), m_adaptivityError(error), m_DOFs(DOFs) {}
 
-        double time_step_length;
-        double adaptivity_error;
-        int DOFs;       
+        inline double timeStepLength() const { return m_timeStepLength; }
+        inline void setTimeStepLength(double value) { m_timeStepLength = value; }
+        inline double adaptivityError() const { return m_adaptivityError; }
+        inline void setAdaptivityError(double value) { m_adaptivityError = value; }
+        inline int DOFs() const { return m_DOFs; }
+        inline void setDOFs(int value) { m_DOFs = value; }
+        inline QList<FileName> fileNames() const { return m_fileNames; }
+        inline void setFileNames(QList<FileName> value) { m_fileNames = value; }
+        inline QList<double> newtonResidual() const { return m_newtonResidual; }
+        inline void setNewtonResidual(QList<double> value) { m_newtonResidual = value; }
 
-        QList<FileName> fileNames;
+    private:
+        double m_timeStepLength;
+        double m_adaptivityError;
+        int m_DOFs;
+
+        QList<FileName> m_fileNames;
+        QList<double> m_newtonResidual;
     };
 
     bool contains(FieldSolutionID solutionID) const;

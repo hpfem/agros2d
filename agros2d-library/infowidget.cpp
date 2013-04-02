@@ -250,6 +250,27 @@ void InfoWidget::showInfo()
                 field->SetValue("INITIAL_MESH_NODES", tr("%1 nodes").arg(fieldInfo->initialMesh()->get_num_vertex_nodes()).toStdString());
                 field->SetValue("INITIAL_MESH_ELEMENTS", tr("%1 elements").arg(fieldInfo->initialMesh()->get_num_active_elements()).toStdString());
 
+                if (Agros2D::problem()->isSolved() && (fieldInfo->linearityType() == LinearityType_Newton))
+                {
+                    field->ShowSection("MESH_SOLUTION_NEWTON_SECTION");
+
+                    int timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo, SolutionMode_Normal);
+                    int adaptiveStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal);
+
+                    SolutionStore::SolutionRunTimeDetails runTime = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(fieldInfo, timeStep, adaptiveStep, SolutionMode_Normal));
+                    QString newtonResiduals = "[";
+                    for (int i = 0; i < runTime.newtonResidual().size(); i++)
+                        newtonResiduals += QString("[%1, %2], ").arg(i+1).arg(runTime.newtonResidual().at(i));
+                    newtonResiduals += "]";
+
+                    // chart newton residual vs. steps
+                    QString commandResidual = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_newton_residuals_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true }, xaxes: [ { axisLabel: 'steps (-)' } ], yaxes: [ { axisLabel: 'Newton residual (-)' } ] });});</script>").
+                            arg(fieldInfo->fieldId()).
+                            arg(newtonResiduals);
+
+                    field->SetValue("NEWTON_RESIDUAL_CHART", commandResidual.toStdString());
+                }
+
                 if (Agros2D::problem()->isSolved() && (fieldInfo->adaptivityType() != AdaptivityType_None))
                 {
                     field->SetValue("SOLUTION_MESH_LABEL", tr("Solution mesh:").toStdString());
@@ -259,7 +280,7 @@ void InfoWidget::showInfo()
 
                     int timeStep = Agros2D::solutionStore()->timeLevels(fieldInfo).count() - 1;
                     int adaptiveSteps = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal);
-                    error = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(fieldInfo, timeStep, adaptiveSteps, SolutionMode_Normal)).adaptivity_error;
+                    error = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(fieldInfo, timeStep, adaptiveSteps, SolutionMode_Normal)).adaptivityError();
 
                     QString dataDOFs = "[";
                     QString dataError = "[";
@@ -269,8 +290,8 @@ void InfoWidget::showInfo()
 
                         // qDebug() << structure.adaptivity_error;
 
-                        dataDOFs += QString("[%1, %2], ").arg(i+1).arg(runTime.DOFs);
-                        dataError += QString("[%1, %2], ").arg(i+1).arg(runTime.adaptivity_error);
+                        dataDOFs += QString("[%1, %2], ").arg(i+1).arg(runTime.DOFs());
+                        dataError += QString("[%1, %2], ").arg(i+1).arg(runTime.adaptivityError());
                     }
                     dataDOFs += "]";
                     dataError += "]";

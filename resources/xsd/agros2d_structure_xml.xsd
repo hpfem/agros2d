@@ -19,7 +19,18 @@
 					  </element>
 			        </sequence>
 			      </complexType>
-			    </element>  
+			    </element> 
+				<element name="newton_residuals">
+			      <complexType>
+		            <sequence>
+			          <element minOccurs="1" maxOccurs="unbounded" name="residual">
+			            <complexType>
+						  <attribute name="value" type="float" use="required" />
+						</complexType>
+					  </element>
+			        </sequence>
+			      </complexType>
+			    </element>  			     
 	        </all>
 		    <attribute name="field_id" type="string" use="required" />
 		    <attribute name="time_step" type="integer" use="required" />

@@ -91,6 +91,30 @@ namespace XMLStructure
     this->files_.set (x);
   }
 
+  const element_data::newton_residuals_type& element_data::
+  newton_residuals () const
+  {
+    return this->newton_residuals_.get ();
+  }
+
+  element_data::newton_residuals_type& element_data::
+  newton_residuals ()
+  {
+    return this->newton_residuals_.get ();
+  }
+
+  void element_data::
+  newton_residuals (const newton_residuals_type& x)
+  {
+    this->newton_residuals_.set (x);
+  }
+
+  void element_data::
+  newton_residuals (::std::auto_ptr< newton_residuals_type > x)
+  {
+    this->newton_residuals_.set (x);
+  }
+
   const element_data::field_id_type& element_data::
   field_id () const
   {
@@ -270,6 +294,28 @@ namespace XMLStructure
   }
 
 
+  // newton_residuals
+  // 
+
+  const newton_residuals::residual_sequence& newton_residuals::
+  residual () const
+  {
+    return this->residual_;
+  }
+
+  newton_residuals::residual_sequence& newton_residuals::
+  residual ()
+  {
+    return this->residual_;
+  }
+
+  void newton_residuals::
+  residual (const residual_sequence& s)
+  {
+    this->residual_ = s;
+  }
+
+
   // file
   // 
 
@@ -362,6 +408,28 @@ namespace XMLStructure
   {
     this->solution_filename_.set (x);
   }
+
+
+  // residual
+  // 
+
+  const residual::value_type& residual::
+  value () const
+  {
+    return this->value_.get ();
+  }
+
+  residual::value_type& residual::
+  value ()
+  {
+    return this->value_.get ();
+  }
+
+  void residual::
+  value (const value_type& x)
+  {
+    this->value_.set (x);
+  }
 }
 
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
@@ -452,12 +520,14 @@ namespace XMLStructure
 
   element_data::
   element_data (const files_type& files,
+                const newton_residuals_type& newton_residuals,
                 const field_id_type& field_id,
                 const time_step_type& time_step,
                 const adaptivity_step_type& adaptivity_step,
                 const solution_type_type& solution_type)
   : ::xml_schema::type (),
     files_ (files, ::xml_schema::flags (), this),
+    newton_residuals_ (newton_residuals, ::xml_schema::flags (), this),
     field_id_ (field_id, ::xml_schema::flags (), this),
     time_step_ (time_step, ::xml_schema::flags (), this),
     adaptivity_step_ (adaptivity_step, ::xml_schema::flags (), this),
@@ -470,12 +540,14 @@ namespace XMLStructure
 
   element_data::
   element_data (::std::auto_ptr< files_type >& files,
+                ::std::auto_ptr< newton_residuals_type >& newton_residuals,
                 const field_id_type& field_id,
                 const time_step_type& time_step,
                 const adaptivity_step_type& adaptivity_step,
                 const solution_type_type& solution_type)
   : ::xml_schema::type (),
     files_ (files, ::xml_schema::flags (), this),
+    newton_residuals_ (newton_residuals, ::xml_schema::flags (), this),
     field_id_ (field_id, ::xml_schema::flags (), this),
     time_step_ (time_step, ::xml_schema::flags (), this),
     adaptivity_step_ (adaptivity_step, ::xml_schema::flags (), this),
@@ -492,6 +564,7 @@ namespace XMLStructure
                 ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     files_ (x.files_, f, this),
+    newton_residuals_ (x.newton_residuals_, f, this),
     field_id_ (x.field_id_, f, this),
     time_step_ (x.time_step_, f, this),
     adaptivity_step_ (x.adaptivity_step_, f, this),
@@ -508,6 +581,7 @@ namespace XMLStructure
                 ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     files_ (f, this),
+    newton_residuals_ (f, this),
     field_id_ (f, this),
     time_step_ (f, this),
     adaptivity_step_ (f, this),
@@ -547,6 +621,20 @@ namespace XMLStructure
         }
       }
 
+      // newton_residuals
+      //
+      if (n.name () == "newton_residuals" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< newton_residuals_type > r (
+          newton_residuals_traits::create (i, f, this));
+
+        if (!newton_residuals_.present ())
+        {
+          this->newton_residuals_.set (r);
+          continue;
+        }
+      }
+
       break;
     }
 
@@ -554,6 +642,13 @@ namespace XMLStructure
     {
       throw ::xsd::cxx::tree::expected_element< char > (
         "files",
+        "");
+    }
+
+    if (!newton_residuals_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_element< char > (
+        "newton_residuals",
         "");
     }
 
@@ -723,6 +818,76 @@ namespace XMLStructure
   {
   }
 
+  // newton_residuals
+  //
+
+  newton_residuals::
+  newton_residuals ()
+  : ::xml_schema::type (),
+    residual_ (::xml_schema::flags (), this)
+  {
+  }
+
+  newton_residuals::
+  newton_residuals (const newton_residuals& x,
+                    ::xml_schema::flags f,
+                    ::xml_schema::container* c)
+  : ::xml_schema::type (x, f, c),
+    residual_ (x.residual_, f, this)
+  {
+  }
+
+  newton_residuals::
+  newton_residuals (const ::xercesc::DOMElement& e,
+                    ::xml_schema::flags f,
+                    ::xml_schema::container* c)
+  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    residual_ (f, this)
+  {
+    if ((f & ::xml_schema::flags::base) == 0)
+    {
+      ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+      this->parse (p, f);
+    }
+  }
+
+  void newton_residuals::
+  parse (::xsd::cxx::xml::dom::parser< char >& p,
+         ::xml_schema::flags f)
+  {
+    for (; p.more_elements (); p.next_element ())
+    {
+      const ::xercesc::DOMElement& i (p.cur_element ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      // residual
+      //
+      if (n.name () == "residual" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< residual_type > r (
+          residual_traits::create (i, f, this));
+
+        this->residual_.push_back (r);
+        continue;
+      }
+
+      break;
+    }
+  }
+
+  newton_residuals* newton_residuals::
+  _clone (::xml_schema::flags f,
+          ::xml_schema::container* c) const
+  {
+    return new class newton_residuals (*this, f, c);
+  }
+
+  newton_residuals::
+  ~newton_residuals ()
+  {
+  }
+
   // file
   //
 
@@ -852,6 +1017,76 @@ namespace XMLStructure
   ~file ()
   {
   }
+
+  // residual
+  //
+
+  residual::
+  residual (const value_type& value)
+  : ::xml_schema::type (),
+    value_ (value, ::xml_schema::flags (), this)
+  {
+  }
+
+  residual::
+  residual (const residual& x,
+            ::xml_schema::flags f,
+            ::xml_schema::container* c)
+  : ::xml_schema::type (x, f, c),
+    value_ (x.value_, f, this)
+  {
+  }
+
+  residual::
+  residual (const ::xercesc::DOMElement& e,
+            ::xml_schema::flags f,
+            ::xml_schema::container* c)
+  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    value_ (f, this)
+  {
+    if ((f & ::xml_schema::flags::base) == 0)
+    {
+      ::xsd::cxx::xml::dom::parser< char > p (e, false, true);
+      this->parse (p, f);
+    }
+  }
+
+  void residual::
+  parse (::xsd::cxx::xml::dom::parser< char >& p,
+         ::xml_schema::flags f)
+  {
+    while (p.more_attributes ())
+    {
+      const ::xercesc::DOMAttr& i (p.next_attribute ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      if (n.name () == "value" && n.namespace_ ().empty ())
+      {
+        this->value_.set (value_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    if (!value_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "value",
+        "");
+    }
+  }
+
+  residual* residual::
+  _clone (::xml_schema::flags f,
+          ::xml_schema::container* c) const
+  {
+    return new class residual (*this, f, c);
+  }
+
+  residual::
+  ~residual ()
+  {
+  }
 }
 
 #include <ostream>
@@ -884,6 +1119,7 @@ namespace XMLStructure
   operator<< (::std::ostream& o, const element_data& i)
   {
     o << ::std::endl << "files: " << i.files ();
+    o << ::std::endl << "newton_residuals: " << i.newton_residuals ();
     o << ::std::endl << "field_id: " << i.field_id ();
     o << ::std::endl << "time_step: " << i.time_step ();
     o << ::std::endl << "adaptivity_step: " << i.adaptivity_step ();
@@ -920,12 +1156,32 @@ namespace XMLStructure
   }
 
   ::std::ostream&
+  operator<< (::std::ostream& o, const newton_residuals& i)
+  {
+    for (newton_residuals::residual_const_iterator
+         b (i.residual ().begin ()), e (i.residual ().end ());
+         b != e; ++b)
+    {
+      o << ::std::endl << "residual: " << *b;
+    }
+
+    return o;
+  }
+
+  ::std::ostream&
   operator<< (::std::ostream& o, const file& i)
   {
     o << ::std::endl << "array_id: " << i.array_id ();
     o << ::std::endl << "mesh_filename: " << i.mesh_filename ();
     o << ::std::endl << "space_filename: " << i.space_filename ();
     o << ::std::endl << "solution_filename: " << i.solution_filename ();
+    return o;
+  }
+
+  ::std::ostream&
+  operator<< (::std::ostream& o, const residual& i)
+  {
+    o << ::std::endl << "value: " << i.value ();
     return o;
   }
 }
@@ -1416,6 +1672,17 @@ namespace XMLStructure
       s << i.files ();
     }
 
+    // newton_residuals
+    //
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "newton_residuals",
+          e));
+
+      s << i.newton_residuals ();
+    }
+
     // field_id
     //
     {
@@ -1518,6 +1785,26 @@ namespace XMLStructure
   }
 
   void
+  operator<< (::xercesc::DOMElement& e, const newton_residuals& i)
+  {
+    e << static_cast< const ::xml_schema::type& > (i);
+
+    // residual
+    //
+    for (newton_residuals::residual_const_iterator
+         b (i.residual ().begin ()), n (i.residual ().end ());
+         b != n; ++b)
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "residual",
+          e));
+
+      s << *b;
+    }
+  }
+
+  void
   operator<< (::xercesc::DOMElement& e, const file& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
@@ -1564,6 +1851,23 @@ namespace XMLStructure
           e));
 
       a << i.solution_filename ();
+    }
+  }
+
+  void
+  operator<< (::xercesc::DOMElement& e, const residual& i)
+  {
+    e << static_cast< const ::xml_schema::type& > (i);
+
+    // value
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "value",
+          e));
+
+      a << i.value ();
     }
   }
 }

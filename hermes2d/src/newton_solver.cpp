@@ -293,7 +293,6 @@ namespace Hermes
       }
 
       // The Newton's loop.
-      double residual_norm;
       double last_residual_norm;
       int it = 1;
       int successfulSteps = 0;
@@ -344,37 +343,37 @@ namespace Hermes
           Solution<Scalar>::vector_to_solutions(residual, static_cast<DiscreteProblem<Scalar>*>(this->dp)->get_spaces(), solutions, dir_lift_false);
 
           // Calculate the norm.
-          residual_norm = Global<Scalar>::calc_norms(solutionsPtrs);
+          current_residual_norm = Global<Scalar>::calc_norms(solutionsPtrs);
         }
         else
         {
           // Calculate the l2-norm of residual vector, this is the traditional way.
           if(it == 1)
-            last_residual_norm = residual_norm = Global<Scalar>::get_l2_norm(residual);
+            last_residual_norm = current_residual_norm = Global<Scalar>::get_l2_norm(residual);
           else
           {
-            last_residual_norm = residual_norm;
-            residual_norm = Global<Scalar>::get_l2_norm(residual);
+            last_residual_norm = current_residual_norm;
+            current_residual_norm = Global<Scalar>::get_l2_norm(residual);
           }
         }
 
         // Info for the user.
         if(it == 1)
         {
-          this->info("\tNewton: initial residual norm: %g", residual_norm);
+          this->info("\tNewton: initial residual norm: %g", current_residual_norm);
 
-          initial_residual_norm = residual_norm;
+          initial_residual_norm = current_residual_norm;
         }
         else
         {
-          this->info("\tNewton: iteration %d, residual norm: %g", it - 1, residual_norm);
-          if(!this->manual_damping && !((residual_norm > max_allowed_residual_norm) || (residual_norm < newton_tol && it > 1)))
+          this->info("\tNewton: iteration %d, residual norm: %g", it - 1, current_residual_norm);
+          if(!this->manual_damping && !((current_residual_norm > max_allowed_residual_norm) || (current_residual_norm < newton_tol && it > 1)))
           {
-            if(residual_norm < last_residual_norm * this->sufficient_improvement_factor)
+            if(current_residual_norm < last_residual_norm * this->sufficient_improvement_factor)
             {
               if(++successfulSteps >= this->necessary_successful_steps_to_increase)
                 this->currentDampingCofficient = std::min(this->initial_auto_damping_coefficient, 2 * this->currentDampingCofficient);
-              if(residual_norm < last_residual_norm)
+              if(current_residual_norm < last_residual_norm)
                 this->info("\t Newton: step successful, calculation continues with damping coefficient: %g.", this->currentDampingCofficient);
             }
             else
@@ -404,7 +403,7 @@ namespace Hermes
         }
 
         // If maximum allowed residual norm is exceeded, fail.
-        if(residual_norm > max_allowed_residual_norm)
+        if(current_residual_norm > max_allowed_residual_norm)
         {
           this->tick();
           this->info("\tNewton: solution duration: %f s.\n", this->last());
@@ -418,12 +417,12 @@ namespace Hermes
 
           delete [] coeff_vec_back;
           
-          throw Exceptions::ValueException("residual norm", residual_norm, max_allowed_residual_norm);
+          throw Exceptions::ValueException("residual norm", current_residual_norm, max_allowed_residual_norm);
         }
 
         // If residual norm is within tolerance, return 'true'.
         // This is the only correct way of ending.
-        double residual_norm_for_decision = this->newton_tol_relative ? residual_norm / initial_residual_norm : residual_norm;
+        double residual_norm_for_decision = this->newton_tol_relative ? current_residual_norm / initial_residual_norm : current_residual_norm;
         if(residual_norm_for_decision < newton_tol && it > 1)
         {
           // We want to return the solution in a different structure.
@@ -475,7 +474,7 @@ namespace Hermes
 
         // Add \deltaY^{n + 1} to Y^n.
         // The good case.
-        if(residual_norm < last_residual_norm * this->sufficient_improvement_factor || this->manual_damping || it == 1)
+        if(current_residual_norm < last_residual_norm * this->sufficient_improvement_factor || this->manual_damping || it == 1)
         {
           memcpy(coeff_vec_back, coeff_vec, sizeof(Scalar)*ndof);
           for (int i = 0; i < ndof; i++)

@@ -683,8 +683,8 @@ void PyField::adaptivityInfo(vector<double> &error, vector<int> &dofs)
         for (int i = 0; i < adaptiveSteps; i++)
         {
             SolutionStore::SolutionRunTimeDetails runTime = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(fieldInfo(), timeStep, i, SolutionMode_Normal)); // TODO: (Franta) wrapper
-            error.push_back(runTime.adaptivity_error);
-            dofs.push_back(runTime.DOFs);
+            error.push_back(runTime.adaptivityError());
+            dofs.push_back(runTime.DOFs());
         }
     }
     else

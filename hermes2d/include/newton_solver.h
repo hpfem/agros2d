@@ -216,6 +216,7 @@ namespace Hermes
       double min_allowed_damping_coeff;
 
       double currentDampingCofficient;
+      double current_residual_norm;
       
       /// Manual / auto.
       bool manual_damping;

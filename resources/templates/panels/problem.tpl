@@ -186,11 +186,15 @@
     {{/MESH_SOLUTION_ADAPTIVITY_PARAMETERS_SECTION}}
     {{/MESH_PARAMETERS_SECTION}}
 </table>
+{{#MESH_SOLUTION_NEWTON_SECTION}}
+<div style="text-align: center; width: 100%; height: 160px;">Newton residual<br/><div id="chart_newton_residuals_{{PHYSICAL_FIELD_ID}}" style="width: 100%; height: 90%;"></div></div>
+{{/MESH_SOLUTION_NEWTON_SECTION}}
 {{#MESH_SOLUTION_ADAPTIVITY_PARAMETERS_SECTION}}
 <div style="text-align: center; width: 100%; height: 160px;">Relative error<br/><div id="chart_error_steps_{{PHYSICAL_FIELD_ID}}" style="width: 100%; height: 90%;"></div></div>
 <div style="text-align: center; width: 100%; height: 160px;">DOFs<br/><div id="chart_dofs_steps_{{PHYSICAL_FIELD_ID}}" style="width: 100%; height: 90%;"></div></div>
 {{/MESH_SOLUTION_ADAPTIVITY_PARAMETERS_SECTION}}
 </div>
+{{NEWTON_RESIDUAL_CHART}}
 {{ERROR_STEPS_CHART}}
 {{DOFS_STEPS_CHART}}
 {{/FIELD_SECTION}}

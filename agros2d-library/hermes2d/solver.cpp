@@ -41,6 +41,35 @@ using namespace Hermes::Hermes2D;
 
 int DEBUG_COUNTER = 0;
 
+template <typename Scalar>
+NewtonSolverAgros<Scalar>::NewtonSolverAgros() : NewtonSolver<Scalar>()
+{
+}
+
+template <typename Scalar>
+void NewtonSolverAgros<Scalar>::on_initialization()
+{
+    m_residuals.clear();
+}
+
+template <typename Scalar>
+void NewtonSolverAgros<Scalar>::on_step_begin()
+{
+}
+
+template <typename Scalar>
+void NewtonSolverAgros<Scalar>::on_step_end()
+{
+    m_residuals.append(this->current_residual_norm);
+}
+
+template <typename Scalar>
+void NewtonSolverAgros<Scalar>::on_finish()
+{
+    // last norm
+    m_residuals.append(this->current_residual_norm);
+}
+
 void processSolverOutput(const char* aha)
 {
     QString str = QString(aha).trimmed();
@@ -104,7 +133,7 @@ void LinearSolverContainer<Scalar>::solve(Scalar* solutionVector)
 template <typename Scalar>
 NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolverContainer<Scalar>(block)
 {
-    m_newtonSolver = new NewtonSolver<Scalar>();
+    m_newtonSolver = new NewtonSolverAgros<Scalar>();
     m_newtonSolver->set_verbose_output(true);
     m_newtonSolver->set_verbose_callback(processSolverOutput);
     m_newtonSolver->set_newton_tol(block->nonlinearTolerance(), false);
@@ -356,24 +385,6 @@ void Solver<Scalar>::clearActualSpaces()
 }
 
 template <typename Scalar>
-void Solver<Scalar>::addSolutionToStore(BlockSolutionID solutionID, Scalar* solutionVector)
-{
-    assert(solutionID.solutionMode == SolutionMode_Normal);
-    Hermes::vector<SpaceSharedPtr<Scalar> > newSpaces = actualSpaces();
-    //Hermes::vector<SpaceSharedPtr<Scalar> > newSpaces = deepMeshAndSpaceCopy(actualSpaces(), false);
-
-    Hermes::vector<MeshSharedPtr> newMeshes = spacesMeshes(newSpaces);
-    Hermes::vector<MeshFunctionSharedPtr<Scalar> > newSolutions = createSolutions<Scalar>(newMeshes);
-    Solution<Scalar>::vector_to_solutions(solutionVector, newSpaces, newSolutions);
-
-    SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(),
-                                                  0.0,
-                                                  Hermes::Hermes2D::Space<double>::get_num_dofs(newSpaces));
-
-    Agros2D::solutionStore()->addSolution(solutionID, MultiArray<Scalar>(newSpaces, newSolutions), runTime);
-}
-
-template <typename Scalar>
 Scalar *Solver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
                                         Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
                                         int adaptivityStep,
@@ -449,8 +460,18 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
             delete bdf2Table;
 
         // output
+        Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions = createSolutions<Scalar>(spacesMeshes(actualSpaces()));
+        Solution<Scalar>::vector_to_solutions(solutionVector, actualSpaces(), solutions);
+
         BlockSolutionID solutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal);
-        addSolutionToStore(solutionID, solutionVector);
+        SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(),
+                                                      0.0,
+                                                      Hermes::Hermes2D::Space<double>::get_num_dofs(actualSpaces()));
+
+        if (dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer))
+            runTime.setNewtonResidual(dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer)->solver()->residuals());
+
+        Agros2D::solutionStore()->addSolution(solutionID, MultiArray<Scalar>(actualSpaces(), solutions), runTime);
     }
     catch (AgrosSolverException e)
     {
@@ -728,7 +749,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
     BlockSolutionID referenceSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Reference);
     SolutionStore::SolutionRunTimeDetails runTimeRef(Agros2D::problem()->actualTimeStepLength(),
                                                      0.0,
-                                                     Hermes::Hermes2D::Space<double>::get_num_dofs(spacesRef));
+                                                     Hermes::Hermes2D::Space<double>::get_num_dofs(spacesRef));   
     Agros2D::solutionStore()->addSolution(referenceSolutionID, MultiArray<Scalar>(spacesRef, solutionsRef), runTimeRef);
 
     // copy spaces and create empty solutions
@@ -745,6 +766,9 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
     SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(),
                                                   0.0,
                                                   Hermes::Hermes2D::Space<double>::get_num_dofs(actualSpaces()));
+    if (dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer))
+        runTime.setNewtonResidual(dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer)->solver()->residuals());
+
     MultiArray<Scalar> msa(actualSpaces(), solutions);
     Agros2D::solutionStore()->addSolution(solutionID, msa, runTime);
 
@@ -783,7 +807,7 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep, bool f
         // get run time
         SolutionStore::SolutionRunTimeDetails runTime = Agros2D::solutionStore()->multiSolutionRunTimeDetail(solutionID);
         // set error
-        runTime.adaptivity_error = error;
+        runTime.setAdaptivityError(error);
         // replace runtime
         Agros2D::solutionStore()->multiSolutionRunTimeDetailReplace(solutionID, runTime);
     }

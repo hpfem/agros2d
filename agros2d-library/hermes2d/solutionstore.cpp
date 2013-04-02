@@ -97,8 +97,8 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
             foreach (FieldSolutionID searchSolutionID, m_multiSolutionCacheIDOrder)
             {
                 SolutionRunTimeDetails searchRunTime = m_multiSolutionRunTimeDetails[searchSolutionID];
-                if ((runTime.fileNames[i].meshFileName == searchRunTime.fileNames[i].meshFileName) &&
-                        (runTime.fileNames[i].spaceFileName == searchRunTime.fileNames[i].spaceFileName))
+                if ((runTime.fileNames()[i].meshFileName == searchRunTime.fileNames()[i].meshFileName) &&
+                        (runTime.fileNames()[i].spaceFileName == searchRunTime.fileNames()[i].spaceFileName))
                 {
                     space = m_multiSolutionCache[searchSolutionID].spaces().at(i);
                     break;
@@ -109,7 +109,7 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
             if (!space.get())
             {
                 // load the mesh file
-                Hermes::vector<MeshSharedPtr> meshes = Module::readMeshFromFile(QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames[i].meshFileName));
+                Hermes::vector<MeshSharedPtr> meshes = Module::readMeshFromFile(QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[i].meshFileName));
                 MeshSharedPtr mesh;
                 int j = 0;
                 foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
@@ -131,7 +131,7 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
                         essentialBcs = block->bcs().at(j + block->offset(block->field(fieldInfo)));
                     }
 
-                    space = Space<double>::load(QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames[i].spaceFileName).arg(j).toLatin1().data(), mesh, false, essentialBcs);
+                    space = Space<double>::load(QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[i].spaceFileName).arg(j).toLatin1().data(), mesh, false, essentialBcs);
                 }
                 catch (Hermes::Exceptions::Exception &e)
                 {
@@ -143,7 +143,7 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
             // read solution
             Solution<double> *sln = new Solution<double>();
             sln->set_validation(false);
-            sln->load((QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames[i].solutionFileName).arg(i)).toLatin1().data(), space);
+            sln->load((QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[i].solutionFileName).arg(i)).toLatin1().data(), space);
 
             msa.append(space, sln);
         }
@@ -186,8 +186,10 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArray<double> m
     assert(solutionID.adaptivityStep >= 0);
 
     // save soloution
+    QList<SolutionRunTimeDetails::FileName> fileNames;
     for (int i = 0; i < multiSolution.size(); i++)
-        runTime.fileNames.append(SolutionRunTimeDetails::FileName());
+        fileNames.append(SolutionRunTimeDetails::FileName());
+    runTime.setFileNames(fileNames);
 
     QString baseFN = baseStoreFileName(solutionID);
     FieldSolutionID previous = lastTimeAndAdaptiveSolution(solutionID.group, solutionID.solutionMode);
@@ -199,17 +201,17 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArray<double> m
         for (int i = 0; i < multiSolution.size(); i++)
         {
             if (ma.spaces().at(i).get()->get_mesh() == multiSolution.spaces().at(i).get()->get_mesh())
-                runTime.fileNames[i].meshFileName = str.fileNames[i].meshFileName;
+                runTime.fileNames()[i].meshFileName = str.fileNames()[i].meshFileName;
 
             if (ma.spaces().at(i).get() == multiSolution.spaces().at(i).get())
-                runTime.fileNames[i].spaceFileName = str.fileNames[i].spaceFileName;
+                runTime.fileNames()[i].spaceFileName = str.fileNames()[i].spaceFileName;
         }
     }
 
     // meshes
     for (int i = 0; i < multiSolution.size(); i++)
     {
-        if (runTime.fileNames[i].meshFileName.isEmpty())
+        if (runTime.fileNames()[i].meshFileName.isEmpty())
         {
             Hermes::vector<MeshSharedPtr> meshes;
             foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
@@ -223,31 +225,31 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArray<double> m
             QString meshFN = QString("%1_%2.mesh").arg(baseFN).arg(i);
             Module::writeMeshToFile(meshFN, meshes);
 
-            runTime.fileNames[i].meshFileName = QFileInfo(meshFN).fileName();
+            runTime.fileNames()[i].meshFileName = QFileInfo(meshFN).fileName();
         }
     }
 
     // spaces
     for (int i = 0; i < multiSolution.size(); i++)
     {
-        if (runTime.fileNames[i].spaceFileName.isEmpty())
+        if (runTime.fileNames()[i].spaceFileName.isEmpty())
         {
             QString spaceFN = QString("%1_%2.spc").arg(baseFN).arg(i);
             multiSolution.spaces().at(i)->save(spaceFN.toLatin1().data());
 
-            runTime.fileNames[i].spaceFileName = QFileInfo(spaceFN).fileName();
+            runTime.fileNames()[i].spaceFileName = QFileInfo(spaceFN).fileName();
         }
     }
 
     // solutions
     for (int i = 0; i < multiSolution.size(); i++)
     {
-        if (runTime.fileNames[i].solutionFileName.isEmpty())
+        if (runTime.fileNames()[i].solutionFileName.isEmpty())
         {
             QString solutionFN = QString("%1_%2.sln").arg(baseFN).arg(i);
             dynamic_cast<Hermes::Hermes2D::Solution<double> *>(multiSolution.solutions().at(i).get())->save(solutionFN.toLatin1().data());
 
-            runTime.fileNames[i].solutionFileName = QFileInfo(solutionFN).fileName();
+            runTime.fileNames()[i].solutionFileName = QFileInfo(solutionFN).fileName();
         }
     }
 
@@ -622,8 +624,7 @@ void SolutionStore::loadRunTimeDetails()
             m_multiSolutionRunTimeDetails.insert(solutionID,
                                                  SolutionRunTimeDetails(data.time_step_length().get(),
                                                                         data.adaptivity_error().get(),
-                                                                        data.dofs().get(),
-                                                                        fileNames));
+                                                                        data.dofs().get()));
         }
     }
     catch (const xml_schema::exception& e)
@@ -647,13 +648,20 @@ void SolutionStore::saveRunTimeDetails()
             for (int solutionIndex = 0; solutionIndex < solutionID.group->numberOfSolutions(); solutionIndex++)
             {
                 files.file().push_back(XMLStructure::file(solutionIndex,
-                                                          str.fileNames[solutionIndex].meshFileName.toStdString(),
-                                                          str.fileNames[solutionIndex].spaceFileName.toStdString(),
-                                                          str.fileNames[solutionIndex].solutionFileName.toStdString()));
+                                                          str.fileNames()[solutionIndex].meshFileName.toStdString(),
+                                                          str.fileNames()[solutionIndex].spaceFileName.toStdString(),
+                                                          str.fileNames()[solutionIndex].solutionFileName.toStdString()));
+            }
+
+            XMLStructure::newton_residuals newton_residuals;
+            for (int iteration = 0; iteration < str.newtonResidual().size(); iteration++)
+            {
+                newton_residuals.residual().push_back(str.newtonResidual().at(iteration));
             }
 
             // solution id
             XMLStructure::element_data data(files,
+                                            newton_residuals,
                                             solutionID.group->fieldId().toStdString(),
                                             solutionID.timeStep,
                                             solutionID.adaptivityStep,
@@ -661,9 +669,9 @@ void SolutionStore::saveRunTimeDetails()
 
 
             // properties
-            data.time_step_length().set(str.time_step_length);
-            data.adaptivity_error().set(str.adaptivity_error);
-            data.dofs().set(str.DOFs);
+            data.time_step_length().set(str.timeStepLength());
+            data.adaptivity_error().set(str.adaptivityError());
+            data.dofs().set(str.DOFs());
 
             structure.element_data().push_back(data);
         }
