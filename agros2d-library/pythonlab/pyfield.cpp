@@ -339,8 +339,8 @@ void PyField::addMaterial(std::string name, map<std::string, double> parameters,
                                                   (leny > 0) ? nonlin_y[(*i).first] : vector<double>());
                 else
                     values[variable.id()] = Value(QString::fromStdString(expressions[(*i).first]),
-                            (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
-                        (leny > 0) ? nonlin_y[(*i).first] : vector<double>());
+                                                  (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
+                                                  (leny > 0) ? nonlin_y[(*i).first] : vector<double>());
                 break;
             }
         }
@@ -353,9 +353,9 @@ void PyField::addMaterial(std::string name, map<std::string, double> parameters,
 }
 
 void PyField::modifyMaterial(std::string name, map<std::string, double> parameters,
-                          map<std::string, std::string> expressions,
-                          map<std::string, vector<double> > nonlin_x,
-                          map<std::string, vector<double> > nonlin_y)
+                             map<std::string, std::string> expressions,
+                             map<std::string, vector<double> > nonlin_x,
+                             map<std::string, vector<double> > nonlin_y)
 {
     SceneMaterial *sceneMaterial = Agros2D::scene()->getMaterial(m_fieldInfo, QString::fromStdString(name));
 
@@ -382,12 +382,12 @@ void PyField::modifyMaterial(std::string name, map<std::string, double> paramete
                 assigned = true;
                 if (expressions.count((*i).first) == 0)
                     sceneMaterial->setValue(QString::fromStdString((*i).first), Value((*i).second,
-                                                                       (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
-                                                                       (leny > 0) ? nonlin_y[(*i).first] : vector<double>()));
+                                                                                      (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
+                                                                                      (leny > 0) ? nonlin_y[(*i).first] : vector<double>()));
                 else
                     sceneMaterial->setValue(QString::fromStdString((*i).first), Value(QString::fromStdString(expressions[(*i).first]),
-                                            (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
-                                            (leny > 0) ? nonlin_y[(*i).first] : vector<double>()));
+                                                                                      (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
+                                                                                      (leny > 0) ? nonlin_y[(*i).first] : vector<double>()));
                 break;
             }
         }
@@ -591,22 +591,22 @@ void PyField::volumeIntegrals(vector<int> labels, int timeStep, int adaptivitySt
     results = values;
 }
 
-void PyField::initialMeshParameters(map<string, int> &parameters)
+void PyField::initialMeshInfo(map<string, int> &info)
 {
     if (!Agros2D::problem()->isMeshed())
         throw logic_error(QObject::tr("Problem is not meshed.").toStdString());
 
-    parameters["nodes"] = m_fieldInfo->initialMesh()->get_num_vertex_nodes();
-    parameters["elements"] = m_fieldInfo->initialMesh()->get_num_active_elements();
+    info["nodes"] = m_fieldInfo->initialMesh()->get_num_vertex_nodes();
+    info["elements"] = m_fieldInfo->initialMesh()->get_num_active_elements();
 
     if (Agros2D::problem()->isSolved())
     {
         MultiArray<double> msa = Agros2D::solutionStore()->multiArray(FieldSolutionID(m_fieldInfo, 0, 0, SolutionMode_Normal));
-        parameters["dofs"] = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spaces());
+        info["dofs"] = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spaces());
     }
 }
 
-void PyField::solutionMeshParameters(int timeStep, int adaptivityStep, const string solutionType, map<string, int> &parameters)
+void PyField::solutionMeshInfo(int timeStep, int adaptivityStep, const string solutionType, map<string, int> &info)
 {
     if (!Agros2D::problem()->isSolved())
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
@@ -620,30 +620,31 @@ void PyField::solutionMeshParameters(int timeStep, int adaptivityStep, const str
     // TODO: (Franta) time and adaptivity step in gui vs. implementation
     MultiArray<double> msa = Agros2D::solutionStore()->multiArray(FieldSolutionID(m_fieldInfo, timeStep, adaptivityStep, solutionMode));
 
-    parameters["nodes"] = msa.solutions().at(0)->get_mesh()->get_num_vertex_nodes();
-    parameters["elements"] = msa.solutions().at(0)->get_mesh()->get_num_active_elements();
-    parameters["dofs"] = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spaces());
+    info["nodes"] = msa.solutions().at(0)->get_mesh()->get_num_vertex_nodes();
+    info["elements"] = msa.solutions().at(0)->get_mesh()->get_num_active_elements();
+    info["dofs"] = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spaces());
 }
 
-void PyField::adaptivityInfo(vector<double> &error, vector<int> &dofs)
+void PyField::adaptivityInfo(int timeStep, const string solutionType, vector<double> &error, vector<int> &dofs)
 {
     if (!Agros2D::problem()->isSolved())
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
 
-    if (m_fieldInfo->adaptivityType() != AdaptivityType_None)
-    {
-        int timeStep = Agros2D::solutionStore()->timeLevels(m_fieldInfo).count() - 1;
-        int adaptiveSteps = Agros2D::solutionStore()->lastAdaptiveStep(m_fieldInfo, SolutionMode_Normal) + 1;
-
-        for (int i = 0; i < adaptiveSteps; i++)
-        {
-            SolutionStore::SolutionRunTimeDetails runTime = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(m_fieldInfo, timeStep, i, SolutionMode_Normal)); // TODO: (Franta) wrapper
-            error.push_back(runTime.adaptivity_error);
-            dofs.push_back(runTime.DOFs);
-        }
-    }
-    else
+    if (m_fieldInfo->adaptivityType() == AdaptivityType_None)
         throw logic_error(QObject::tr("Solution is not adaptive.").toStdString());
+
+    SolutionMode solutionMode = getSolutionMode(QString::fromStdString(solutionType));
+
+    // set time step if -1 (default parameter - last steps)
+    timeStep = getTimeStep(timeStep, solutionMode);
+
+    int adaptiveSteps = Agros2D::solutionStore()->lastAdaptiveStep(m_fieldInfo, solutionMode) + 1;
+    for (int i = 0; i < adaptiveSteps; i++)
+    {
+        SolutionStore::SolutionRunTimeDetails runTime = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(m_fieldInfo, timeStep, i, solutionMode));
+        error.push_back(runTime.adaptivity_error);
+        dofs.push_back(runTime.DOFs);
+    }
 }
 
 SolutionMode PyField::getSolutionMode(QString solutionType)
@@ -672,7 +673,7 @@ int PyField::getAdaptivityStep(int adaptivityStep, int timeStep, SolutionMode so
     if (adaptivityStep == -1)
         adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(m_fieldInfo, solutionMode, timeStep);
     else if (adaptivityStep < 0 || adaptivityStep > m_fieldInfo->adaptivitySteps()-1)
-            throw out_of_range(QObject::tr("Adaptivity step is out of range. (0 to %1).").arg(m_fieldInfo->adaptivitySteps()-1).toStdString());
+        throw out_of_range(QObject::tr("Adaptivity step is out of range. (0 to %1).").arg(m_fieldInfo->adaptivitySteps()-1).toStdString());
 
     return adaptivityStep;
 }

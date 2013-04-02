@@ -89,14 +89,14 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
 
         void solve()
 
-        void localValues(double x, double y, int timeStep, int adaptivityStep, string solutionType, map[string, double] results) except +
-        void surfaceIntegrals(vector[int], int timeStep, int adaptivityStep, string solutionType, map[string, double] results) except +
-        void volumeIntegrals(vector[int], int timeStep, int adaptivityStep, string solutionType, map[string, double] results) except +
+        void localValues(double x, double y, int timeStep, int adaptivityStep, string solutionType, map[string, double] &results) except +
+        void surfaceIntegrals(vector[int], int timeStep, int adaptivityStep, string solutionType, map[string, double] &results) except +
+        void volumeIntegrals(vector[int], int timeStep, int adaptivityStep, string solutionType, map[string, double] &results) except +
 
-        void initialMeshParameters(map[string , int] parameters) except +
-        void solutionMeshParameters(int timeStep, int adaptivityStep, string solutionType, map[string , int] parameters) except +
+        void initialMeshInfo(map[string , int] &info) except +
+        void solutionMeshInfo(int timeStep, int adaptivityStep, string solutionType, map[string , int] &info) except +
 
-        void adaptivityInfo(vector[double] &error, vector[int] &dofs) except +
+        void adaptivityInfo(int timeStep, string solutionType, vector[double] &error, vector[int] &dofs) except +
 
 cdef map[string, double] get_parameters_map(parameters):
     cdef map[string, double] parameters_map
@@ -400,58 +400,51 @@ cdef class __Field__:
 
         return out
 
-    # initial mesh parameters
-    def initial_mesh_parameters(self):
-        parameters = dict()
-        cdef map[string, int] parameters_map
+    # initial mesh info
+    def initial_mesh_info(self):
+        info = dict()
+        cdef map[string, int] info_map
 
-        self.thisptr.initialMeshParameters(parameters_map)
-        it = parameters_map.begin()
-        while it != parameters_map.end():
-            parameters[deref(it).first.c_str()] = deref(it).second
+        self.thisptr.initialMeshInfo(info_map)
+        it = info_map.begin()
+        while it != info_map.end():
+            info[deref(it).first.c_str()] = deref(it).second
             incr(it)
 
-        return parameters
+        return info
 
-    # solution mesh parameters
-    def solution_mesh_parameters(self, time_step = None, adaptivity_step = None, solution_type = "normal"):
-        parameters = dict()
-        cdef map[string, int] parameters_map
+    # solution mesh info
+    def solution_mesh_info(self, time_step = None, adaptivity_step = None, solution_type = "normal"):
+        info = dict()
+        cdef map[string, int] info_map
 
-        self.thisptr.solutionMeshParameters(int(-1 if time_step is None else time_step),
-                                            int(-1 if adaptivity_step is None else adaptivity_step),
-                                            string(solution_type), parameters_map)
+        self.thisptr.solutionMeshInfo(int(-1 if time_step is None else time_step),
+                                      int(-1 if adaptivity_step is None else adaptivity_step),
+                                      string(solution_type), info_map)
 
-        it = parameters_map.begin()
-        while it != parameters_map.end():
-            parameters[deref(it).first.c_str()] = deref(it).second
+        it = info_map.begin()
+        while it != info_map.end():
+            info[deref(it).first.c_str()] = deref(it).second
             incr(it)
 
-        return parameters
+        return info
 
-    # relative error
-    def relative_error(self):
+    # adaptivity info
+    def adaptivity_info(self, time_step = None, solution_type = 'normal'):
         cdef vector[double] error_vector
         cdef vector[int] dofs_vector
-        self.thisptr.adaptivityInfo(error_vector, dofs_vector)
+        self.thisptr.adaptivityInfo(int(-1 if time_step is None else time_step),
+                                    string(solution_type), error_vector, dofs_vector)
 
         error = list()
         for i in range(error_vector.size()):
             error.append(error_vector[i])
 
-        return error
-
-    # dofs
-    def dofs(self):
-        cdef vector[double] error_vector
-        cdef vector[int] dofs_vector
-        self.thisptr.adaptivityInfo(error_vector, dofs_vector)
-
         dofs = list()
         for i in range(dofs_vector.size()):
             dofs.append(dofs_vector[i])
 
-        return dofs
+        return {'error' : error, 'dofs' : dofs}
 
 def field(field_id):
     return __Field__(field_id)

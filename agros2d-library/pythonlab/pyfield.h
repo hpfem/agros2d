@@ -148,12 +148,12 @@ class PyField
         void surfaceIntegrals(vector<int> edges, int timeStep, int adaptivityStep, const std::string solutionType, map<std::string, double> &results);
         void volumeIntegrals(vector<int> labels, int timeStep, int adaptivityStep, const std::string solutionType, map<std::string, double> &results);
 
-        // mesh parameters
-        void initialMeshParameters(map<std::string, int> &parameters);
-        void solutionMeshParameters(int timeStep, int adaptivityStep, const string solutionType, map<std::string, int> &parameters);
+        // mesh info
+        void initialMeshInfo(map<std::string, int> &info);
+        void solutionMeshInfo(int timeStep, int adaptivityStep, const string solutionType, map<std::string, int> &info);
 
-        // adaptivity parameters
-        void adaptivityInfo(vector<double> &error, vector<int> &dofs);
+        // adaptivity info
+        void adaptivityInfo(int timeStep, const string solutionType, vector<double> &error, vector<int> &dofs);
 };
 
 #endif // PYTHONLABFIELD_H
