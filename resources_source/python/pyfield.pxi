@@ -94,7 +94,7 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         void volumeIntegrals(vector[int], int timeStep, int adaptivityStep, string solutionType, map[string, double] results) except +
 
         void initialMeshParameters(map[string , int] parameters) except +
-        void solutionMeshParameters(map[string , int] parameters) except +
+        void solutionMeshParameters(int timeStep, int adaptivityStep, string solutionType, map[string , int] parameters) except +
 
         void adaptivityInfo(vector[double] &error, vector[int] &dofs) except +
 
@@ -414,11 +414,14 @@ cdef class __Field__:
         return parameters
 
     # solution mesh parameters
-    def solution_mesh_parameters(self):
+    def solution_mesh_parameters(self, time_step = None, adaptivity_step = None, solution_type = "normal"):
         parameters = dict()
         cdef map[string, int] parameters_map
 
-        self.thisptr.solutionMeshParameters(parameters_map)
+        self.thisptr.solutionMeshParameters(int(-1 if time_step is None else time_step),
+                                            int(-1 if adaptivity_step is None else adaptivity_step),
+                                            string(solution_type), parameters_map)
+
         it = parameters_map.begin()
         while it != parameters_map.end():
             parameters[deref(it).first.c_str()] = deref(it).second

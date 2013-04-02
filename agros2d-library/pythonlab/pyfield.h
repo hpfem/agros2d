@@ -32,6 +32,10 @@ class PyField
     private:
         FieldInfo *m_fieldInfo;
 
+        SolutionMode getSolutionMode(QString solutionType);
+        int getTimeStep(int timeStep, SolutionMode solutionMode);
+        int getAdaptivityStep(int adaptivityStep, int timeStep, SolutionMode solutionMode);
+
     public:
         PyField(std::string fieldId);
         ~PyField() {}
@@ -146,7 +150,7 @@ class PyField
 
         // mesh parameters
         void initialMeshParameters(map<std::string, int> &parameters);
-        void solutionMeshParameters(map<std::string, int> &parameters);
+        void solutionMeshParameters(int timeStep, int adaptivityStep, const string solutionType, map<std::string, int> &parameters);
 
         // adaptivity parameters
         void adaptivityInfo(vector<double> &error, vector<int> &dofs);
