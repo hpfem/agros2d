@@ -22,8 +22,8 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
 
         string fieldId()
 
-        string getAnalysisType()
-        void setAnalysisType(string analysisType) except +
+        string& getAnalysisType()
+        void setAnalysisType(string &analysisType) except +
 
         int getNumberOfRefinements()
         void setNumberOfRefinements(int numberOfRefinements) except +
@@ -31,8 +31,8 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         int getPolynomialOrder()
         void setPolynomialOrder(int polynomialOrder) except +
 
-        string getLinearityType()
-        void setLinearityType(string linearityType) except +
+        string& getLinearityType()
+        void setLinearityType(string &linearityType) except +
 
         double getNonlinearTolerance()
         void setNonlinearTolerance(double nonlinearTolerance) except +
@@ -58,8 +58,8 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         int getPicardAndersonNumberOfLastVectors()
         void setPicardAndersonNumberOfLastVectors(int number) except +
 
-        string getAdaptivityType()
-        void setAdaptivityType(string adaptivityType) except +
+        string& getAdaptivityType()
+        void setAdaptivityType(string &adaptivityType) except +
 
         double getAdaptivityTolerance()
         void setAdaptivityTolerance(double adaptivityTolerance) except +
@@ -79,24 +79,37 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         double getTimeSkip()
         void setTimeSkip(double timeSkip) except +
 
-        void addBoundary(string, string, map[string, double] parameters, map[string, string] expressions) except +
-        void modifyBoundary(string, string, map[string, double] parameters, map[string, string] expressions) except +
-        void removeBoundary(string)
+        void addBoundary(string &name, string &type,
+                         map[string, double] &parameters,
+                         map[string, string] &expressions) except +
+        void modifyBoundary(string &name, string &type,
+                            map[string, double] &parameters,
+                            map[string, string] &expressions) except +
+        void removeBoundary(string &name)
 
-        void addMaterial(string id, map[string, double] parameters, map[string, string] expressions, map[string, vector[double]] nonlin_x, map[string, vector[double]] nonlin_y) except +
-        void modifyMaterial(string name, map[string, double] parameters, map[string, string] expressions, map[string, vector[double]] nonlin_x, map[string, vector[double]] nonlin_y) except +
-        void removeMaterial(string name)
+        void addMaterial(string &name, map[string, double] &parameters,
+                         map[string, string] &expressions,
+                         map[string, vector[double]] &nonlin_x,
+                         map[string, vector[double]] &nonlin_y) except +
+        void modifyMaterial(string &name, map[string, double] &parameters,
+                            map[string, string] &expressions,
+                            map[string, vector[double]] &nonlin_x,
+                            map[string, vector[double]] &nonlin_y) except +
+        void removeMaterial(string &name)
 
         void solve()
 
-        void localValues(double x, double y, int timeStep, int adaptivityStep, string solutionType, map[string, double] &results) except +
-        void surfaceIntegrals(vector[int], int timeStep, int adaptivityStep, string solutionType, map[string, double] &results) except +
-        void volumeIntegrals(vector[int], int timeStep, int adaptivityStep, string solutionType, map[string, double] &results) except +
+        void localValues(double x, double y, int timeStep, int adaptivityStep,
+                         string &solutionType, map[string, double] &results) except +
+        void surfaceIntegrals(vector[int], int timeStep, int adaptivityStep,
+                              string &solutionType, map[string, double] &results) except +
+        void volumeIntegrals(vector[int], int timeStep, int adaptivityStep,
+                             string &solutionType, map[string, double] &results) except +
 
         void initialMeshInfo(map[string , int] &info) except +
-        void solutionMeshInfo(int timeStep, int adaptivityStep, string solutionType, map[string , int] &info) except +
+        void solutionMeshInfo(int timeStep, int adaptivityStep, string &solutionType, map[string , int] &info) except +
 
-        void adaptivityInfo(int timeStep, string solutionType, vector[double] &error, vector[int] &dofs) except +
+        void adaptivityInfo(int timeStep, string &solutionType, vector[double] &error, vector[int] &dofs) except +
 
 cdef map[string, double] get_parameters_map(parameters):
     cdef map[string, double] parameters_map

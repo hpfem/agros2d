@@ -57,7 +57,7 @@ PyField::PyField(std::string fieldId)
     }
 }
 
-void PyField::setAnalysisType(const std::string analysisType)
+void PyField::setAnalysisType(const std::string &analysisType)
 {
     if (m_fieldInfo->analyses().contains(analysisTypeFromStringKey(QString::fromStdString(analysisType))))
     {
@@ -73,7 +73,7 @@ void PyField::setAnalysisType(const std::string analysisType)
     }
 }
 
-void PyField::setNumberOfRefinements(const int numberOfRefinements)
+void PyField::setNumberOfRefinements(int numberOfRefinements)
 {
     if (numberOfRefinements >= 0 && numberOfRefinements <= 5)
         m_fieldInfo->setNumberOfRefinements(numberOfRefinements);
@@ -81,7 +81,7 @@ void PyField::setNumberOfRefinements(const int numberOfRefinements)
         throw out_of_range(QObject::tr("Number of refinements is out of range (0 - 5).").toStdString());
 }
 
-void PyField::setPolynomialOrder(const int polynomialOrder)
+void PyField::setPolynomialOrder(int polynomialOrder)
 {
     if (polynomialOrder > 0 && polynomialOrder <= 10)
         m_fieldInfo->setPolynomialOrder(polynomialOrder);
@@ -89,7 +89,7 @@ void PyField::setPolynomialOrder(const int polynomialOrder)
         throw out_of_range(QObject::tr("Polynomial order is out of range (1 - 10).").toStdString());
 }
 
-void PyField::setLinearityType(const std::string linearityType)
+void PyField::setLinearityType(const std::string &linearityType)
 {
     if (linearityTypeStringKeys().contains(QString::fromStdString(linearityType)))
         m_fieldInfo->setLinearityType(linearityTypeFromStringKey(QString::fromStdString(linearityType)));
@@ -97,7 +97,7 @@ void PyField::setLinearityType(const std::string linearityType)
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(linearityTypeStringKeys())).toStdString());
 }
 
-void PyField::setNonlinearTolerance(const double nonlinearTolerance)
+void PyField::setNonlinearTolerance(double nonlinearTolerance)
 {
     if (nonlinearTolerance > 0.0)
         m_fieldInfo->setNonlinearTolerance(nonlinearTolerance);
@@ -105,7 +105,7 @@ void PyField::setNonlinearTolerance(const double nonlinearTolerance)
         throw out_of_range(QObject::tr("Nonlinearity tolerance must be positive.").toStdString());
 }
 
-void PyField::setNonlinearSteps(const int nonlinearSteps)
+void PyField::setNonlinearSteps(int nonlinearSteps)
 {
     if (nonlinearSteps >= 1 && nonlinearSteps <= 100)
         m_fieldInfo->setNonlinearSteps(nonlinearSteps);
@@ -113,7 +113,7 @@ void PyField::setNonlinearSteps(const int nonlinearSteps)
         throw out_of_range(QObject::tr("Nonlinearity steps is out of range (1 - 100).").toStdString());
 }
 
-void PyField::setNewtonDampingCoeff(const double dampingCoeff)
+void PyField::setNewtonDampingCoeff(double dampingCoeff)
 {
     if (dampingCoeff > 0 && dampingCoeff <= 1)
         m_fieldInfo->setNewtonDampingCoeff(dampingCoeff);
@@ -121,12 +121,12 @@ void PyField::setNewtonDampingCoeff(const double dampingCoeff)
         throw out_of_range(QObject::tr("Newton damping coefficient is out of range (0 - 1).").toStdString());
 }
 
-void PyField::setNewtonAutomaticDamping(const bool automaticDamping)
+void PyField::setNewtonAutomaticDamping(bool automaticDamping)
 {
     m_fieldInfo->setNewtonAutomaticDamping(automaticDamping);
 }
 
-void PyField::setNewtonAutomaticDampingCoeff(const double dampingCoeff)
+void PyField::setNewtonAutomaticDampingCoeff(double dampingCoeff)
 {
     if (dampingCoeff > 0 && dampingCoeff <= 1)
         m_fieldInfo->setNewtonAutomaticDampingCoeff(dampingCoeff);
@@ -134,7 +134,7 @@ void PyField::setNewtonAutomaticDampingCoeff(const double dampingCoeff)
         throw out_of_range(QObject::tr("Newton automatic damping coefficient is out of range (0 - 1).").toStdString());
 }
 
-void PyField::setNewtonDampingNumberToIncrease(const int dampingNumberToIncrease)
+void PyField::setNewtonDampingNumberToIncrease(int dampingNumberToIncrease)
 {
     if (dampingNumberToIncrease >= 1 && dampingNumberToIncrease <= 5)
         m_fieldInfo->setNewtonAutomaticDamping(dampingNumberToIncrease);
@@ -142,12 +142,12 @@ void PyField::setNewtonDampingNumberToIncrease(const int dampingNumberToIncrease
         throw out_of_range(QObject::tr("Number of steps needed to increase the damping coefficient is out of range (1 - 5).").toStdString());
 }
 
-void PyField::setPicardAndersonAcceleration(const bool acceleration)
+void PyField::setPicardAndersonAcceleration(bool acceleration)
 {
     m_fieldInfo->setPicardAndersonAcceleration(acceleration);
 }
 
-void PyField::setPicardAndersonBeta(const double beta)
+void PyField::setPicardAndersonBeta(double beta)
 {
     if (beta > 0 && beta <= 1)
         m_fieldInfo->setPicardAndersonBeta(beta);
@@ -155,7 +155,7 @@ void PyField::setPicardAndersonBeta(const double beta)
         throw out_of_range(QObject::tr("Anderson coefficient is out of range (0 - 1).").toStdString());
 }
 
-void PyField::setPicardAndersonNumberOfLastVectors(const int number)
+void PyField::setPicardAndersonNumberOfLastVectors(int number)
 {
     if (number >= 1 && number <= 5)
         m_fieldInfo->setPicardAndersonNumberOfLastVectors(number);
@@ -163,7 +163,7 @@ void PyField::setPicardAndersonNumberOfLastVectors(const int number)
         throw out_of_range(QObject::tr("Number of last vector is out of range (1 - 5).").toStdString());
 }
 
-void PyField::setAdaptivityType(const std::string adaptivityType)
+void PyField::setAdaptivityType(const std::string &adaptivityType)
 {
     if (adaptivityTypeStringKeys().contains(QString::fromStdString(adaptivityType)))
         m_fieldInfo->setAdaptivityType(adaptivityTypeFromStringKey(QString::fromStdString(adaptivityType)));
@@ -171,7 +171,7 @@ void PyField::setAdaptivityType(const std::string adaptivityType)
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(adaptivityTypeStringKeys())).toStdString());
 }
 
-void PyField::setAdaptivityTolerance(const double adaptivityTolerance)
+void PyField::setAdaptivityTolerance(double adaptivityTolerance)
 {
     if (adaptivityTolerance > 0.0)
         m_fieldInfo->setAdaptivityTolerance(adaptivityTolerance);
@@ -179,7 +179,7 @@ void PyField::setAdaptivityTolerance(const double adaptivityTolerance)
         throw out_of_range(QObject::tr("Adaptivity tolerance must be positive.").toStdString());
 }
 
-void PyField::setAdaptivitySteps(const int adaptivitySteps)
+void PyField::setAdaptivitySteps(int adaptivitySteps)
 {
     if (adaptivitySteps >= 1 && adaptivitySteps <= 100)
         m_fieldInfo->setAdaptivitySteps(adaptivitySteps);
@@ -187,7 +187,7 @@ void PyField::setAdaptivitySteps(const int adaptivitySteps)
         throw out_of_range(QObject::tr("Adaptivity steps is out of range (1 - 100).").toStdString());
 }
 
-void PyField::setAdaptivityBackSteps(const int adaptivityBackSteps)
+void PyField::setAdaptivityBackSteps(int adaptivityBackSteps)
 {
     if (adaptivityBackSteps >= 0 && adaptivityBackSteps <= 100)
         m_fieldInfo->setAdaptivityBackSteps(adaptivityBackSteps);
@@ -195,7 +195,7 @@ void PyField::setAdaptivityBackSteps(const int adaptivityBackSteps)
         throw out_of_range(QObject::tr("Adaptivity back steps is out of range (0 - 100).").toStdString());
 }
 
-void PyField::setAdaptivityRedoneEach(const int adaptivityRedoneEach)
+void PyField::setAdaptivityRedoneEach(int adaptivityRedoneEach)
 {
     if (adaptivityRedoneEach >= 1 && adaptivityRedoneEach <= 100)
         m_fieldInfo->setAdaptivityRedoneEach(adaptivityRedoneEach);
@@ -203,12 +203,12 @@ void PyField::setAdaptivityRedoneEach(const int adaptivityRedoneEach)
         throw out_of_range(QObject::tr("Adaptivity back steps is out of range (0 - 100).").toStdString());
 }
 
-void PyField::setInitialCondition(const double initialCondition)
+void PyField::setInitialCondition(double initialCondition)
 {
     m_fieldInfo->setInitialCondition(initialCondition);
 }
 
-void PyField::setTimeSkip(const double timeSkip)
+void PyField::setTimeSkip(double timeSkip)
 {
     if (timeSkip >= 0)
         m_fieldInfo->setTimeSkip(timeSkip);
@@ -216,7 +216,9 @@ void PyField::setTimeSkip(const double timeSkip)
         throw out_of_range(QObject::tr("Time skip must be greater than or equal to zero.").toStdString());
 }
 
-void PyField::addBoundary(const std::string name, const std::string type, map<std::string, double> parameters, map<std::string, std::string> expressions)
+void PyField::addBoundary(const std::string &name, const std::string &type,
+                          const map<std::string, double> &parameters,
+                          const map<std::string, std::string> &expressions)
 {
     // check boundaries with same name
     foreach (SceneBoundary *boundary, Agros2D::scene()->boundaries->filter(m_fieldInfo->fieldId()).items())
@@ -232,7 +234,7 @@ void PyField::addBoundary(const std::string name, const std::string type, map<st
 
     // browse boundary parameters
     QHash<QString, Value> values;
-    for (map<std::string, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
+    for (map<std::string, double>::const_iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         bool assigned = false;
         foreach (Module::BoundaryTypeVariable variable, boundaryType.variables())
@@ -243,7 +245,7 @@ void PyField::addBoundary(const std::string name, const std::string type, map<st
                 if (expressions.count((*i).first) == 0)
                     values[variable.id()] = Value((*i).second);
                 else
-                    values[variable.id()] = Value(QString::fromStdString(expressions[(*i).first]));
+                    values[variable.id()] = Value(QString::fromStdString(expressions.at((*i).first)));
                 break;
             }
         }
@@ -255,7 +257,9 @@ void PyField::addBoundary(const std::string name, const std::string type, map<st
     Agros2D::scene()->addBoundary(new SceneBoundary(m_fieldInfo, QString::fromStdString(name), QString::fromStdString(type), values));
 }
 
-void PyField::modifyBoundary(const std::string name, const std::string type, map<std::string, double> parameters, map<std::string, std::string> expressions)
+void PyField::modifyBoundary(const std::string &name, const std::string &type,
+                             const map<std::string, double> &parameters,
+                             const map<std::string, std::string> &expressions)
 {
     SceneBoundary *sceneBoundary = Agros2D::scene()->getBoundary(m_fieldInfo, QString::fromStdString(name));
     if (sceneBoundary == NULL)
@@ -275,7 +279,7 @@ void PyField::modifyBoundary(const std::string name, const std::string type, map
 
     // browse boundary parameters
     Module::BoundaryType boundaryType = m_fieldInfo->boundaryType(sceneBoundary->type());
-    for (map<std::string, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
+    for (map<std::string, double>::const_iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         bool assigned = false;
         foreach (Module::BoundaryTypeVariable variable, boundaryType.variables())
@@ -286,7 +290,7 @@ void PyField::modifyBoundary(const std::string name, const std::string type, map
                 if (expressions.count((*i).first) == 0)
                     sceneBoundary->setValue(QString::fromStdString((*i).first), Value((*i).second));
                 else
-                    sceneBoundary->setValue(QString::fromStdString((*i).first), Value(QString::fromStdString(expressions[(*i).first])));
+                    sceneBoundary->setValue(QString::fromStdString((*i).first), Value(QString::fromStdString(expressions.at((*i).first))));
                 break;
             }
         }
@@ -296,15 +300,15 @@ void PyField::modifyBoundary(const std::string name, const std::string type, map
     }
 }
 
-void PyField::removeBoundary(std::string name)
+void PyField::removeBoundary(const std::string &name)
 {
     Agros2D::scene()->removeBoundary(Agros2D::scene()->getBoundary(m_fieldInfo, QString::fromStdString(name)));
 }
 
-void PyField::addMaterial(std::string name, map<std::string, double> parameters,
-                          map<std::string, std::string> expressions,
-                          map<std::string, vector<double> > nonlin_x,
-                          map<std::string, vector<double> > nonlin_y)
+void PyField::addMaterial(const std::string &name, const map<std::string, double> &parameters,
+                          const map<std::string, std::string> &expressions,
+                          const map<std::string, vector<double> > &nonlin_x,
+                          const map<std::string, vector<double> > &nonlin_y)
 {
     // check materials with same name
     foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(m_fieldInfo->fieldId()).items())
@@ -315,7 +319,7 @@ void PyField::addMaterial(std::string name, map<std::string, double> parameters,
 
     // browse material parameters
     QHash<QString, Value> values;
-    for (map<std::string, double>::iterator i = parameters.begin(); i != parameters.end(); ++i)
+    for (map<std::string, double>::const_iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         QList<Module::MaterialTypeVariable> materials = m_fieldInfo->materialTypeVariables();
 
@@ -324,8 +328,8 @@ void PyField::addMaterial(std::string name, map<std::string, double> parameters,
         {
             if (variable.id() == QString::fromStdString((*i).first))
             {
-                int lenx = ((nonlin_x.find((*i).first) != nonlin_x.end()) ? nonlin_x[(*i).first].size() : 0);
-                int leny = ((nonlin_y.find((*i).first) != nonlin_y.end()) ? nonlin_y[(*i).first].size() : 0);
+                int lenx = ((nonlin_x.find((*i).first) != nonlin_x.end()) ? nonlin_x.at((*i).first).size() : 0);
+                int leny = ((nonlin_y.find((*i).first) != nonlin_y.end()) ? nonlin_y.at((*i).first).size() : 0);
                 if (lenx != leny)
                     if (lenx > leny)
                         throw invalid_argument(QObject::tr("Size doesn't match (%1 > %2).").arg(lenx).arg(leny).toStdString());
@@ -335,12 +339,12 @@ void PyField::addMaterial(std::string name, map<std::string, double> parameters,
                 assigned = true;
                 if (expressions.count((*i).first) == 0)
                     values[variable.id()] = Value((*i).second,
-                                                  (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
-                                                  (leny > 0) ? nonlin_y[(*i).first] : vector<double>());
+                                                  (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
+                                                  (leny > 0) ? nonlin_y.at((*i).first) : vector<double>());
                 else
-                    values[variable.id()] = Value(QString::fromStdString(expressions[(*i).first]),
-                                                  (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
-                                                  (leny > 0) ? nonlin_y[(*i).first] : vector<double>());
+                    values[variable.id()] = Value(QString::fromStdString(expressions.at((*i).first)),
+                                                  (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
+                                                  (leny > 0) ? nonlin_y.at((*i).first) : vector<double>());
                 break;
             }
         }
@@ -352,17 +356,17 @@ void PyField::addMaterial(std::string name, map<std::string, double> parameters,
     Agros2D::scene()->addMaterial(new SceneMaterial(m_fieldInfo, QString::fromStdString(name), values));
 }
 
-void PyField::modifyMaterial(std::string name, map<std::string, double> parameters,
-                             map<std::string, std::string> expressions,
-                             map<std::string, vector<double> > nonlin_x,
-                             map<std::string, vector<double> > nonlin_y)
+void PyField::modifyMaterial(const std::string &name, const map<std::string, double> &parameters,
+                             const map<std::string, std::string> &expressions,
+                             const map<std::string, vector<double> > &nonlin_x,
+                             const map<std::string, vector<double> > &nonlin_y)
 {
     SceneMaterial *sceneMaterial = Agros2D::scene()->getMaterial(m_fieldInfo, QString::fromStdString(name));
 
     if (sceneMaterial == NULL)
         throw invalid_argument(QObject::tr("Material '%1' doesn't exists.").arg(QString::fromStdString(name)).toStdString());
 
-    for( map<std::string, double>::iterator i=parameters.begin(); i!=parameters.end(); ++i)
+    for( map<std::string, double>::const_iterator i=parameters.begin(); i!=parameters.end(); ++i)
     {
         QList<Module::MaterialTypeVariable> materialVariables = m_fieldInfo->materialTypeVariables();
 
@@ -371,8 +375,8 @@ void PyField::modifyMaterial(std::string name, map<std::string, double> paramete
         {
             if (variable.id() == QString::fromStdString((*i).first))
             {
-                int lenx = ((nonlin_x.find((*i).first) != nonlin_x.end()) ? nonlin_x[(*i).first].size() : 0);
-                int leny = ((nonlin_y.find((*i).first) != nonlin_y.end()) ? nonlin_y[(*i).first].size() : 0);
+                int lenx = ((nonlin_x.find((*i).first) != nonlin_x.end()) ? nonlin_x.at((*i).first).size() : 0);
+                int leny = ((nonlin_y.find((*i).first) != nonlin_y.end()) ? nonlin_y.at((*i).first).size() : 0);
                 if (lenx != leny)
                     if (lenx > leny)
                         throw invalid_argument(QObject::tr("Size doesn't match (%1 > %2).").arg(lenx).arg(leny).toStdString());
@@ -382,12 +386,12 @@ void PyField::modifyMaterial(std::string name, map<std::string, double> paramete
                 assigned = true;
                 if (expressions.count((*i).first) == 0)
                     sceneMaterial->setValue(QString::fromStdString((*i).first), Value((*i).second,
-                                                                                      (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
-                                                                                      (leny > 0) ? nonlin_y[(*i).first] : vector<double>()));
+                                                                                      (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
+                                                                                      (leny > 0) ? nonlin_y.at((*i).first) : vector<double>()));
                 else
-                    sceneMaterial->setValue(QString::fromStdString((*i).first), Value(QString::fromStdString(expressions[(*i).first]),
-                                                                                      (lenx > 0) ? nonlin_x[(*i).first] : vector<double>(),
-                                                                                      (leny > 0) ? nonlin_y[(*i).first] : vector<double>()));
+                    sceneMaterial->setValue(QString::fromStdString((*i).first), Value(QString::fromStdString(expressions.at((*i).first)),
+                                                                                      (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
+                                                                                      (leny > 0) ? nonlin_y.at((*i).first) : vector<double>()));
                 break;
             }
         }
@@ -397,13 +401,13 @@ void PyField::modifyMaterial(std::string name, map<std::string, double> paramete
     }
 }
 
-void PyField::removeMaterial(std::string name)
+void PyField::removeMaterial(const std::string &name)
 {
     Agros2D::scene()->removeMaterial(Agros2D::scene()->getMaterial(m_fieldInfo, QString::fromStdString(name)));
 }
 
-void PyField::localValues(const double x, const double y, int timeStep, int adaptivityStep,
-                          const std::string solutionType, map<std::string, double> &results)
+void PyField::localValues(double x, double y, int timeStep, int adaptivityStep,
+                          const std::string &solutionType, map<std::string, double> &results)
 {
     map<std::string, double> values;
 
@@ -453,8 +457,8 @@ void PyField::localValues(const double x, const double y, int timeStep, int adap
     results = values;
 }
 
-void PyField::surfaceIntegrals(vector<int> edges, int timeStep, int adaptivityStep,
-                               const std::string solutionType, map<std::string, double> &results)
+void PyField::surfaceIntegrals(const vector<int> &edges, int timeStep, int adaptivityStep,
+                               const std::string &solutionType, map<std::string, double> &results)
 {
     map<std::string, double> values;
 
@@ -470,7 +474,7 @@ void PyField::surfaceIntegrals(vector<int> edges, int timeStep, int adaptivitySt
 
         if (!edges.empty())
         {
-            for (vector<int>::iterator it = edges.begin(); it != edges.end(); ++it)
+            for (vector<int>::const_iterator it = edges.begin(); it != edges.end(); ++it)
             {
                 if ((*it >= 0) && (*it < Agros2D::scene()->edges->length()))
                 {
@@ -518,8 +522,8 @@ void PyField::surfaceIntegrals(vector<int> edges, int timeStep, int adaptivitySt
     results = values;
 }
 
-void PyField::volumeIntegrals(vector<int> labels, int timeStep, int adaptivityStep,
-                              const std::string solutionType, map<std::string, double> &results)
+void PyField::volumeIntegrals(const vector<int> &labels, int timeStep, int adaptivityStep,
+                              const std::string &solutionType, map<std::string, double> &results)
 {
     map<std::string, double> values;
 
@@ -535,7 +539,7 @@ void PyField::volumeIntegrals(vector<int> labels, int timeStep, int adaptivitySt
 
         if (!labels.empty())
         {
-            for (vector<int>::iterator it = labels.begin(); it != labels.end(); ++it)
+            for (vector<int>::const_iterator it = labels.begin(); it != labels.end(); ++it)
             {
                 if ((*it >= 0) && (*it < Agros2D::scene()->labels->length()))
                 {
@@ -591,7 +595,7 @@ void PyField::volumeIntegrals(vector<int> labels, int timeStep, int adaptivitySt
     results = values;
 }
 
-void PyField::initialMeshInfo(map<string, int> &info)
+void PyField::initialMeshInfo(map<std::string, int> &info)
 {
     if (!Agros2D::problem()->isMeshed())
         throw logic_error(QObject::tr("Problem is not meshed.").toStdString());
@@ -606,7 +610,7 @@ void PyField::initialMeshInfo(map<string, int> &info)
     }
 }
 
-void PyField::solutionMeshInfo(int timeStep, int adaptivityStep, const string solutionType, map<string, int> &info)
+void PyField::solutionMeshInfo(int timeStep, int adaptivityStep, const std::string &solutionType, map<std::string, int> &info)
 {
     if (!Agros2D::problem()->isSolved())
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
@@ -625,7 +629,7 @@ void PyField::solutionMeshInfo(int timeStep, int adaptivityStep, const string so
     info["dofs"] = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spaces());
 }
 
-void PyField::adaptivityInfo(int timeStep, const string solutionType, vector<double> &error, vector<int> &dofs)
+void PyField::adaptivityInfo(int timeStep, const std::string &solutionType, vector<double> &error, vector<int> &dofs)
 {
     if (!Agros2D::problem()->isSolved())
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
