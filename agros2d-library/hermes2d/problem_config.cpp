@@ -420,18 +420,34 @@ void ProblemSetting::load21(QDomElement *config)
     // default
     m_setting = m_settingDefault;
 
-    // FIX ME - EOL conversion
-    // QPlainTextEdit textEdit;
-    // textEdit.setPlainText(readConfig("Problem/StartupScript", QString()));
-    // startupScript = textEdit.toPlainText();
+    for (int i = 0; i < config->attributes().count(); i++)
+    {
+        QDomNode attribute = config->attributes().item(i);
+
+        Type key = stringKeyToType(attribute.toAttr().name());
+
+        if (m_settingDefault.keys().contains(key))
+        {
+            if (m_settingDefault[key].type() == QVariant::Double)
+                m_setting[key] = attribute.toAttr().value().toDouble();
+            else if (m_settingDefault[key].type() == QVariant::Int)
+                m_setting[key] = attribute.toAttr().value().toInt();
+            else if (m_settingDefault[key].type() == QVariant::Bool)
+                m_setting[key] = (attribute.toAttr().value() == "1");
+            else if (m_settingDefault[key].type() == QVariant::String)
+                m_setting[key] = attribute.toAttr().value();
+            else if (m_settingDefault[key].type() == QVariant::StringList)
+                m_setting[key] = attribute.toAttr().value().split("|");
+            else
+                qDebug() << "Key not found" << attribute.toAttr().name() << attribute.toAttr().value();
+        }
+    }
 }
 
 void ProblemSetting::save21(QDomElement *config)
 {
-    /*
-    if (if (eleConfig->hasAttribute(att))
-            return eleConfig->attribute(att).toDouble();)
-    */
+    // not implemented
+    // use save(...)
 }
 
 void ProblemSetting::load(XMLProblem::config *configxsd)
