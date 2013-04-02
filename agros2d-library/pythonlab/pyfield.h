@@ -20,13 +20,9 @@
 #ifndef PYTHONLABFIELD_H
 #define PYTHONLABFIELD_H
 
-#include "util.h"
 #include "util/global.h"
-
 #include "hermes2d/field.h"
-#include "hermes2d/problem.h"
 
-// field
 class PyField
 {
     public:

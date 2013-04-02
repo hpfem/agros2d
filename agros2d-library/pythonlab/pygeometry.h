@@ -20,15 +20,11 @@
 #ifndef PYTHONLABGEOMETRY_H
 #define PYTHONLABGEOMETRY_H
 
-#include "util.h"
 #include "util/global.h"
-
 #include "scene.h"
 #include "scenenode.h"
 #include "sceneedge.h"
 #include "scenelabel.h"
-
-class SceneViewPreprocessor;
 
 class PyGeometry
 {

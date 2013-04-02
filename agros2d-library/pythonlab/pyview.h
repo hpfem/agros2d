@@ -20,20 +20,9 @@
 #ifndef PYTHONLABVIEW_H
 #define PYTHONLABVIEW_H
 
-#include "util.h"
 #include "util/global.h"
-
-#include "scene.h"
-#include "hermes2d/field.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
-
-class Solution;
-class SceneViewPreprocessor;
-class SceneViewMesh;
-class SceneViewPost2D;
-class SceneViewPost3D;
-class PostHermes;
 
 // view
 struct PyView
