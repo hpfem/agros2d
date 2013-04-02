@@ -1372,7 +1372,7 @@ public:
     QString value()
     {
         m_nextValue++;
-        return QString::number(m_nextValue);
+        return QString::number(m_nextValue) + ".0"; // MSVC fix pow(int, double) doesn't work
     }
 
 private:
