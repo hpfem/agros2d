@@ -71,11 +71,9 @@ void ParticleTracingWidget::createControls()
 {
     // particle tracing
     cmbParticleButcherTableType = new QComboBox(this);
-    cmbParticleButcherTableType->addItem(tr("Heun-Euler (2,1)"), Hermes::Explicit_HEUN_EULER_2_12_embedded);
-    cmbParticleButcherTableType->addItem(tr("Bogacki-Shampine (2,3)"), Hermes::Explicit_BOGACKI_SHAMPINE_4_23_embedded);
-    cmbParticleButcherTableType->addItem(tr("Fehlberg (4,5)"), Hermes::Explicit_FEHLBERG_6_45_embedded);
-    cmbParticleButcherTableType->addItem(tr("Cash-Karp (4,5)"), Hermes::Explicit_CASH_KARP_6_45_embedded);
-    cmbParticleButcherTableType->addItem(tr("Dormand-Prince (4,5)"), Hermes::Explicit_DORMAND_PRINCE_7_45_embedded);
+    foreach (QString key, butcherTableTypeStringKeys())
+        cmbParticleButcherTableType->addItem(butcherTableTypeString(butcherTableTypeFromStringKey(key)), butcherTableTypeFromStringKey(key));
+
     chkParticleIncludeRelativisticCorrection = new QCheckBox(tr("Relativistic correction"));
     txtParticleNumberOfParticles = new QSpinBox(this);
     txtParticleNumberOfParticles->setMinimum(1);

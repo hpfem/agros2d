@@ -45,6 +45,7 @@ static QMap<PaletteOrderType, QString> paletteOrderTypeList;
 static QMap<VectorType, QString> vectorTypeList;
 static QMap<VectorCenter, QString> vectorCenterList;
 static QMap<DataTableType, QString> dataTableTypeList;
+static QMap<Hermes::ButcherTableType, QString> butcherTableTypeList;
 
 QStringList coordinateTypeStringKeys() { return coordinateTypeList.values(); }
 QString coordinateTypeToStringKey(CoordinateType coordinateType) { return coordinateTypeList[coordinateType]; }
@@ -122,6 +123,10 @@ QStringList dataTableTypeStringKeys() { return dataTableTypeList.values(); }
 QString dataTableTypeToStringKey(DataTableType dataTableType) { return dataTableTypeList[dataTableType]; }
 DataTableType dataTableTypeFromStringKey(const QString &dataTableType) { return dataTableTypeList.key(dataTableType); }
 
+QStringList butcherTableTypeStringKeys() { return butcherTableTypeList.values(); }
+QString butcherTableTypeToStringKey(Hermes::ButcherTableType tableType) { return butcherTableTypeList[tableType]; }
+Hermes::ButcherTableType butcherTableTypeFromStringKey(const QString &tableType) { return butcherTableTypeList.key(tableType); }
+
 void initLists()
 {
     // coordinate list
@@ -158,10 +163,10 @@ void initLists()
     timeStepMethodList.insert(TimeStepMethod_Fixed, "fixed");
     timeStepMethodList.insert(TimeStepMethod_BDFTolerance, "adaptive");
     timeStepMethodList.insert(TimeStepMethod_BDFNumSteps, "adaptive_numsteps");
-//    timeStepMethodList.insert(TimeStepMethod_BDF2, "bdf2_adaptive");
-//    timeStepMethodList.insert(TimeStepMethod_BDF2Combine, "bdf2_combine");
-//    timeStepMethodList.insert(TimeStepMethod_FixedBDF2B, "fixed_bdf2b");
-//    timeStepMethodList.insert(TimeStepMethod_FixedCombine, "fixed_combine");
+    //    timeStepMethodList.insert(TimeStepMethod_BDF2, "bdf2_adaptive");
+    //    timeStepMethodList.insert(TimeStepMethod_BDF2Combine, "bdf2_combine");
+    //    timeStepMethodList.insert(TimeStepMethod_FixedBDF2B, "fixed_bdf2b");
+    //    timeStepMethodList.insert(TimeStepMethod_FixedCombine, "fixed_combine");
 
     // PHYSICFIELDVARIABLECOMP
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Undefined, "");
@@ -265,6 +270,13 @@ void initLists()
     dataTableTypeList.insert(DataTableType_CubicSpline, "cubic_spline");
     dataTableTypeList.insert(DataTableType_PiecewiseLinear, "piecewise_linear");
     dataTableTypeList.insert(DataTableType_Constant, "constant");
+
+    // ButcherTableType
+    butcherTableTypeList.insert(Hermes::Explicit_HEUN_EULER_2_12_embedded, "heun-euler");
+    butcherTableTypeList.insert(Hermes::Explicit_BOGACKI_SHAMPINE_4_23_embedded, "bogacki-shampine");
+    butcherTableTypeList.insert(Hermes::Explicit_FEHLBERG_6_45_embedded, "fehlberg");
+    butcherTableTypeList.insert(Hermes::Explicit_CASH_KARP_6_45_embedded, "cash-karp");
+    butcherTableTypeList.insert(Hermes::Explicit_DORMAND_PRINCE_7_45_embedded, "dormand-prince");
 }
 
 QString errorNormString(Hermes::Hermes2D::ProjNormType projNormType)
@@ -603,6 +615,26 @@ QString dataTableTypeString(DataTableType dataTableType)
         return QObject::tr("Constant");
     default:
         std::cerr << "Data table type '" + QString::number(dataTableType).toStdString() + "' is not implemented. dataTableTypeString(DataTableType dataTableType)" << endl;
+        throw;
+    }
+}
+
+QString butcherTableTypeString(Hermes::ButcherTableType tableType)
+{
+    switch (tableType)
+    {
+    case Hermes::Explicit_HEUN_EULER_2_12_embedded:
+        return QObject::tr("Heun-Euler (2,1)");
+    case Hermes::Explicit_BOGACKI_SHAMPINE_4_23_embedded:
+        return QObject::tr("Bogacki-Shampine (2,3)");
+    case Hermes::Explicit_FEHLBERG_6_45_embedded:
+        return QObject::tr("Fehlberg (4,5)");
+    case Hermes::Explicit_CASH_KARP_6_45_embedded:
+        return QObject::tr("Cash-Karp (4,5)");
+    case Hermes::Explicit_DORMAND_PRINCE_7_45_embedded:
+        return QObject::tr("Dormand-Prince (4,5)");
+    default:
+        std::cerr << "Butcherot table type'" + QString::number(tableType).toStdString() + "' is not implemented. butcherTableTypeString(Hermes::ButcherTableType tableType)" << endl;
         throw;
     }
 }

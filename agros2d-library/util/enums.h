@@ -347,5 +347,10 @@ AGROS_API QStringList dataTableTypeStringKeys();
 AGROS_API QString dataTableTypeToStringKey(DataTableType dataTableType);
 AGROS_API DataTableType dataTableTypeFromStringKey(const QString &dataTableType);
 
-#endif // UTIL_ENUMS_H
+// butcher table type
+AGROS_API QString butcherTableTypeString(Hermes::ButcherTableType tableType);
+AGROS_API QStringList butcherTableTypeStringKeys();
+AGROS_API QString butcherTableTypeToStringKey(Hermes::ButcherTableType tableType);
+AGROS_API Hermes::ButcherTableType butcherTableTypeFromStringKey(const QString &tableType);
 
+#endif // UTIL_ENUMS_H
