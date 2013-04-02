@@ -111,7 +111,7 @@ namespace Hermes
       /// Returns space type.
       virtual SpaceType get_space_type() const = 0;
 
-    protected:
+    public:
       /// Returns a complete set of indices of bubble functions for an element of the given order.
       int* get_bubble_indices(int order, ElementMode2D mode) const;
 

@@ -87,6 +87,7 @@ namespace Hermes
     template<typename Scalar> class H1Space;
     template<typename Scalar> class HcurlSpace;
     template<typename Scalar> class HdivSpace;
+    template<typename Scalar> class ConstSpace;
 
     /** @defgroup spaces FEM Spaces
     * \brief Collection of classes that represent and specify FE spaces.
