@@ -118,8 +118,7 @@ void ValueLineEdit::setValue(const Value &value)
 {
     txtLineEdit->setText(value.text());
 
-    m_table = DataTable(value.table().pointsVector(),
-                        value.table().valuesVector());
+    m_table = value.table();
 
     setLayoutValue();
     evaluate();
@@ -127,9 +126,7 @@ void ValueLineEdit::setValue(const Value &value)
 
 Value ValueLineEdit::value()
 {
-    return Value(txtLineEdit->text(),
-                 DataTable(m_table.pointsVector(),
-                           m_table.valuesVector()));
+    return Value(txtLineEdit->text(), m_table);
 }
 
 bool ValueLineEdit::evaluate(bool quiet)
