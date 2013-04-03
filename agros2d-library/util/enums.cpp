@@ -44,6 +44,7 @@ static QMap<PaletteQuality, QString> paletteQualityList;
 static QMap<PaletteOrderType, QString> paletteOrderTypeList;
 static QMap<VectorType, QString> vectorTypeList;
 static QMap<VectorCenter, QString> vectorCenterList;
+static QMap<DataTableType, QString> dataTableTypeList;
 
 QStringList coordinateTypeStringKeys() { return coordinateTypeList.values(); }
 QString coordinateTypeToStringKey(CoordinateType coordinateType) { return coordinateTypeList[coordinateType]; }
@@ -116,6 +117,10 @@ VectorType vectorTypeFromStringKey(const QString &vectorType) { return vectorTyp
 QStringList vectorCenterStringKeys() { return vectorCenterList.values(); }
 QString vectorCenterToStringKey(VectorCenter vectorCenter) { return vectorCenterList[vectorCenter]; }
 VectorCenter vectorCenterFromStringKey(const QString &vectorCenter) { return vectorCenterList.key(vectorCenter); }
+
+QStringList dataTableTypeStringKeys() { return dataTableTypeList.values(); }
+QString dataTableTypeToStringKey(DataTableType dataTableType) { return dataTableTypeList[dataTableType]; }
+DataTableType dataTableTypeFromStringKey(const QString &dataTableType) { return dataTableTypeList.key(dataTableType); }
 
 void initLists()
 {
@@ -255,6 +260,11 @@ void initLists()
     vectorCenterList.insert(VectorCenter_Tail, "tail");
     vectorCenterList.insert(VectorCenter_Head, "head");
     vectorCenterList.insert(VectorCenter_Center, "center");
+
+    // DataTableType
+    dataTableTypeList.insert(DataTableType_CubicSpline, "cubic_spline");
+    dataTableTypeList.insert(DataTableType_PiecewiseLinear, "piecewise_linear");
+    dataTableTypeList.insert(DataTableType_Constant, "constant");
 }
 
 QString errorNormString(Hermes::Hermes2D::ProjNormType projNormType)
@@ -577,6 +587,22 @@ QString linearityTypeString(LinearityType linearityType)
         return QObject::tr("Newton's method");
     default:
         std::cerr << "Linearity type '" + QString::number(linearityType).toStdString() + "' is not implemented. linearityTypeString(LinearityType linearityType)" << endl;
+        throw;
+    }
+}
+
+QString dataTableTypeString(DataTableType dataTableType)
+{
+    switch (dataTableType)
+    {
+    case DataTableType_CubicSpline:
+        return QObject::tr("Cubic spline");
+    case DataTableType_PiecewiseLinear:
+        return QObject::tr("Piecewise linear");
+    case DataTableType_Constant:
+        return QObject::tr("Constant");
+    default:
+        std::cerr << "Data table type '" + QString::number(dataTableType).toStdString() + "' is not implemented. dataTableTypeString(DataTableType dataTableType)" << endl;
         throw;
     }
 }

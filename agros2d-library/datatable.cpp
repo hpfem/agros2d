@@ -76,6 +76,7 @@ void DataTable::setImplicit()
 {
     m_spline = NULL;
     m_linear = NULL;
+    m_constant = NULL;
     m_type = DataTableType_CubicSpline;
 }
 
@@ -91,6 +92,10 @@ double DataTable::value(double x)
     else if(m_type == DataTableType_CubicSpline)
     {
         return m_spline->value(x);
+    }
+    else if(m_type == DataTableType_Constant)
+    {
+        return m_constant->value(x);
     }
     else
         assert(0);
@@ -108,6 +113,10 @@ double DataTable::derivative(double x)
     else if(m_type == DataTableType_CubicSpline)
     {
         return m_spline->derivative(x);
+    }
+    else if(m_type == DataTableType_Constant)
+    {
+        return m_constant->derivative(x);
     }
     else
         assert(0);
@@ -127,17 +136,24 @@ void DataTable::inValidate()
         delete m_spline;
         m_spline = NULL;
     }
+    else if(m_type == DataTableType_Constant)
+    {
+        delete m_constant;
+        m_constant = NULL;
+    }
     else
         assert(0);
 
     assert(m_linear == NULL);
     assert(m_spline == NULL);
+    assert(m_constant == NULL);
 }
 
 void DataTable::validate()
 {
     assert(m_linear == NULL);
     assert(m_spline == NULL);
+    assert(m_constant == NULL);
 
     if(m_type == DataTableType_PiecewiseLinear)
     {
@@ -147,6 +163,10 @@ void DataTable::validate()
     {
         m_spline = new Hermes::Hermes2D::CubicSpline(m_points, m_values, 0.0, 0.0);
         m_spline->calculate_coeffs();
+    }
+    else if(m_type == DataTableType_Constant)
+    {
+        m_constant = new ConstantTable(m_points, m_values);
     }
     else
         assert(0);
@@ -266,6 +286,26 @@ void DataTable::fromString(const std::string &str)
     assert(m_points.size() == m_values.size());
 }
 
+
+ConstantTable::ConstantTable(Hermes::vector<double> points, Hermes::vector<double> values)
+{
+    double sum = 0;
+    int size = values.size();
+    for(int i = 0; i < size; i++)
+        sum += values[i];
+
+    m_value = sum / size;
+}
+
+double ConstantTable::value(double x)
+{
+    return m_value;
+}
+
+double ConstantTable::derivative(double x)
+{
+    return 0;
+}
 
 PiecewiseLinear::PiecewiseLinear(Hermes::vector<double> points, Hermes::vector<double> values)
     : m_points(points), m_values(values)

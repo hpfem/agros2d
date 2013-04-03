@@ -21,28 +21,36 @@
 #define DATATABLE_H
 
 #include "util.h"
+#include "util/enums.h"
 #include "spline.h"
-
-enum DataTableType
-{
-    DataTableType_CubicSpline,
-    DataTableType_PiecewiseLinear
-};
 
 class PiecewiseLinear
 {
 public:
     PiecewiseLinear(Hermes::vector<double> points, Hermes::vector<double> values);
-    int leftIndex(double x);
     double value(double x);
     double derivative(double x);
 
 private:
+    int leftIndex(double x);
+
     Hermes::vector<double> m_points;
     Hermes::vector<double> m_values;
 
     Hermes::vector<double> m_derivatives;
     int m_size;
+};
+
+// for testing.. returns average value. Simple "linearization" of the problem
+class ConstantTable
+{
+public:
+    ConstantTable(Hermes::vector<double> points, Hermes::vector<double> values);
+    double value(double x);
+    double derivative(double x);
+
+private:
+    double m_value;
 };
 
 class DataTable
@@ -88,6 +96,7 @@ private:
 
     Hermes::Hermes2D::CubicSpline *m_spline;
     PiecewiseLinear *m_linear;
+    ConstantTable *m_constant;
 };
 
 

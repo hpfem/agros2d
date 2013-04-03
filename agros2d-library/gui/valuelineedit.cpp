@@ -303,7 +303,7 @@ void ValueLineEdit::doOpenDataTableDelete()
 void ValueLineEdit::doOpenDataTableDialog()
 {
     ValueDataTableDialog dataTableDialog(this, m_labelX, m_labelY);
-    dataTableDialog.setCubicSpline(m_table);
+    dataTableDialog.setDataTable(m_table);
     if (dataTableDialog.exec() == QDialog::Accepted)
         m_table = dataTableDialog.table();
 
