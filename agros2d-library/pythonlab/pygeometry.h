@@ -43,9 +43,9 @@ class PyGeometry
         int addLabel(double x, double y, double area, const map<std::string, int> &refinements,
                      const map<std::string, int> &orders, const map<std::string, std::string> &materials);
 
-        inline int nodesCount() { return Agros2D::scene()->nodes->count(); }
-        inline int edgesCount() { return Agros2D::scene()->edges->count(); }
-        inline int labelsCount() { return Agros2D::scene()->labels->count(); }
+        inline int nodesCount() const { return Agros2D::scene()->nodes->count(); }
+        inline int edgesCount() const { return Agros2D::scene()->edges->count(); }
+        inline int labelsCount() const { return Agros2D::scene()->labels->count(); }
 
         // modify operations
         void modifyEdge(int index, double angle, const map<std::string, int> &refinements,
@@ -76,7 +76,7 @@ class PyGeometry
         void removeSelection();
 
 private:
-        void testAngle(double angle);
+        void testAngle(double angle) const;
         void setBoundaries(SceneEdge *edge, const map<std::string, std::string> &boundaries);
         void setMaterials(SceneLabel *label, const map<std::string, std::string> &materials);
         void setRefinementsOnEdge(SceneEdge *edge, const map<std::string, int> &refinements);

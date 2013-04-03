@@ -30,86 +30,86 @@ class PyField
         ~PyField() {}
 
         // field id
-        inline std::string fieldId() { return m_fieldInfo->fieldId().toStdString(); }
+        inline std::string fieldId() const { return m_fieldInfo->fieldId().toStdString(); }
 
         // analysis type
-        inline std::string getAnalysisType() { return analysisTypeToStringKey(m_fieldInfo->analysisType()).toStdString(); }
+        inline std::string getAnalysisType() const { return analysisTypeToStringKey(m_fieldInfo->analysisType()).toStdString(); }
         void setAnalysisType(const std::string &analysisType);
 
         // number of refinements
-        inline int getNumberOfRefinements() { return m_fieldInfo->numberOfRefinements(); }
+        inline int getNumberOfRefinements() const { return m_fieldInfo->numberOfRefinements(); }
         void setNumberOfRefinements(int numberOfRefinements);
 
         // polynomial order
-        inline int getPolynomialOrder() { return m_fieldInfo->polynomialOrder(); }
+        inline int getPolynomialOrder() const { return m_fieldInfo->polynomialOrder(); }
         void setPolynomialOrder(int polynomialOrder);
 
         // linearity type
-        inline std::string getLinearityType() { return linearityTypeToStringKey(m_fieldInfo->linearityType()).toStdString(); }
+        inline std::string getLinearityType() const { return linearityTypeToStringKey(m_fieldInfo->linearityType()).toStdString(); }
         void setLinearityType(const std::string &linearityType);
 
         // nonlinear tolerance
-        inline double getNonlinearTolerance() { return m_fieldInfo->nonlinearTolerance(); }
+        inline double getNonlinearTolerance() const { return m_fieldInfo->nonlinearTolerance(); }
         void setNonlinearTolerance(double nonlinearTolerance);
 
         // nonlinear steps
-        inline int getNonlinearSteps() { return m_fieldInfo->nonlinearSteps(); }
+        inline int getNonlinearSteps() const { return m_fieldInfo->nonlinearSteps(); }
         void setNonlinearSteps(int nonlinearSteps);
 
         // damping coefficient
-        inline double getNewtonDampingCoeff() { return m_fieldInfo->newtonDampingCoeff(); }
+        inline double getNewtonDampingCoeff() const { return m_fieldInfo->newtonDampingCoeff(); }
         void setNewtonDampingCoeff(double dampingCoeff);
 
         // automatic damping
-        inline bool getNewtonAutomaticDamping() { return m_fieldInfo->newtonAutomaticDamping(); }
+        inline bool getNewtonAutomaticDamping() const { return m_fieldInfo->newtonAutomaticDamping(); }
         void setNewtonAutomaticDamping(bool automaticDamping);
 
         // automatic damping coefficient
-        inline double getNewtonAutomaticDampingCoeff() { return m_fieldInfo->newtonAutomaticDampingCoeff(); }
+        inline double getNewtonAutomaticDampingCoeff() const { return m_fieldInfo->newtonAutomaticDampingCoeff(); }
         void setNewtonAutomaticDampingCoeff(double dampingCoeff);
 
         // steps to increase damping coeff
-        inline int getNewtonDampingNumberToIncrease() { return m_fieldInfo->newtonDampingNumberToIncrease(); }
+        inline int getNewtonDampingNumberToIncrease() const { return m_fieldInfo->newtonDampingNumberToIncrease(); }
         void setNewtonDampingNumberToIncrease(int dampingNumberToIncrease);
 
         // picard anderson acceleration
-        inline bool getPicardAndersonAcceleration() { return m_fieldInfo->picardAndersonAcceleration(); }
+        inline bool getPicardAndersonAcceleration() const { return m_fieldInfo->picardAndersonAcceleration(); }
         void setPicardAndersonAcceleration(bool acceleration);
 
         // picard anderson beta
-        inline double getPicardAndersonBeta() { return m_fieldInfo->picardAndersonBeta(); }
+        inline double getPicardAndersonBeta() const { return m_fieldInfo->picardAndersonBeta(); }
         void setPicardAndersonBeta(double beta);
 
         // picard anderson number of last vectors
-        inline int getPicardAndersonNumberOfLastVectors() { return m_fieldInfo->picardAndersonNumberOfLastVectors(); }
+        inline int getPicardAndersonNumberOfLastVectors() const { return m_fieldInfo->picardAndersonNumberOfLastVectors(); }
         void setPicardAndersonNumberOfLastVectors(int number);
 
         // adaptivity type
-        inline std::string getAdaptivityType() { return adaptivityTypeToStringKey(m_fieldInfo->adaptivityType()).toStdString(); }
+        inline std::string getAdaptivityType() const { return adaptivityTypeToStringKey(m_fieldInfo->adaptivityType()).toStdString(); }
         void setAdaptivityType(const std::string &adaptivityType);
 
         // adaptivity tolerance
-        inline double getAdaptivityTolerance() { return m_fieldInfo->adaptivityTolerance(); }
+        inline double getAdaptivityTolerance() const { return m_fieldInfo->adaptivityTolerance(); }
         void setAdaptivityTolerance(double adaptivityTolerance);
 
         // adaptivity steps
-        inline int getAdaptivitySteps() { return m_fieldInfo->adaptivitySteps(); }
+        inline int getAdaptivitySteps() const { return m_fieldInfo->adaptivitySteps(); }
         void setAdaptivitySteps(int adaptivitySteps);
 
         // adaptivity back steps
-        inline int getAdaptivityBackSteps() { return m_fieldInfo->adaptivityBackSteps(); }
+        inline int getAdaptivityBackSteps() const { return m_fieldInfo->adaptivityBackSteps(); }
         void setAdaptivityBackSteps(int adaptivityBackSteps);
 
         //adaptivity redone each
-        inline int getAdaptivityRedoneEach() { return m_fieldInfo->adaptivityRedoneEach(); }
+        inline int getAdaptivityRedoneEach() const { return m_fieldInfo->adaptivityRedoneEach(); }
         void setAdaptivityRedoneEach(int adaptivityRedoneEach);
 
         // initial condition
-        inline double getInitialCondition() { return m_fieldInfo->initialCondition(); }
+        inline double getInitialCondition() const { return m_fieldInfo->initialCondition(); }
         void setInitialCondition(double initialCondition);
 
         // time steps skip
-        inline int getTimeSkip() { return m_fieldInfo->timeSkip(); }
+        inline int getTimeSkip() const { return m_fieldInfo->timeSkip(); }
         void setTimeSkip(double timeSkip);
 
         // boundaries
@@ -134,25 +134,25 @@ class PyField
 
         // local values, integrals
         void localValues(double x, double y, int timeStep, int adaptivityStep,
-                         const std::string &solutionType, map<std::string, double> &results);
+                         const std::string &solutionType, map<std::string, double> &results) const;
         void surfaceIntegrals(const vector<int> &edges, int timeStep, int adaptivityStep,
-                              const std::string &solutionType, map<std::string, double> &results);
+                              const std::string &solutionType, map<std::string, double> &results) const;
         void volumeIntegrals(const vector<int> &labels, int timeStep, int adaptivityStep,
-                             const std::string &solutionType, map<std::string, double> &results);
+                             const std::string &solutionType, map<std::string, double> &results) const;
 
         // mesh info
-        void initialMeshInfo(map<std::string, int> &info);
-        void solutionMeshInfo(int timeStep, int adaptivityStep, const std::string &solutionType, map<std::string, int> &info);
+        void initialMeshInfo(map<std::string, int> &info) const;
+        void solutionMeshInfo(int timeStep, int adaptivityStep, const std::string &solutionType, map<std::string, int> &info) const;
 
         // adaptivity info
-        void adaptivityInfo(int timeStep, const std::string &solutionType, vector<double> &error, vector<int> &dofs);
+        void adaptivityInfo(int timeStep, const std::string &solutionType, vector<double> &error, vector<int> &dofs) const;
 
 private:
     FieldInfo *m_fieldInfo;
 
-    SolutionMode getSolutionMode(QString solutionType);
-    int getTimeStep(int timeStep, SolutionMode solutionMode);
-    int getAdaptivityStep(int adaptivityStep, int timeStep, SolutionMode solutionMode);
+    SolutionMode getSolutionMode(const QString &solutionType) const;
+    int getTimeStep(int timeStep, SolutionMode solutionMode) const;
+    int getAdaptivityStep(int adaptivityStep, int timeStep, SolutionMode solutionMode) const;
 };
 
 #endif // PYTHONLABFIELD_H

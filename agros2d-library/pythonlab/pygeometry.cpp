@@ -19,15 +19,9 @@
 
 #include "pythonlab/pygeometry.h"
 #include "pythonlab/pythonengine_agros.h"
-
 #include "hermes2d/problem_config.h"
-
-#include "sceneview_common.h"
 #include "sceneview_geometry.h"
 #include "scenemarker.h"
-#include "scenenode.h"
-#include "sceneedge.h"
-#include "scenelabel.h"
 
 void PyGeometry::activate()
 {
@@ -157,9 +151,9 @@ void PyGeometry::modifyEdge(int index, double angle, const map<std::string, int>
     Agros2D::scene()->invalidate();
 }
 
-void PyGeometry::testAngle(double angle)
+void PyGeometry::testAngle(double angle) const
 {
-    if (angle > 90.0 || angle < 0.0)
+    if (angle < 0.0 || angle > 90.0)
         throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
 }
 

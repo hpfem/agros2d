@@ -19,10 +19,6 @@
 
 #include "pythonlab/pyparticletracing.h"
 #include "pythonlab/pythonengine_agros.h"
-
-#include "sceneview_post2d.h"
-#include "sceneview_post3d.h"
-
 #include "particle/particle_tracing.h"
 
 void PyParticleTracing::solve()
@@ -52,7 +48,7 @@ void PyParticleTracing::solve()
 
 void PyParticleTracing::positions(vector<double> &x,
                                   vector<double> &y,
-                                  vector<double> &z)
+                                  vector<double> &z) const
 {
     for (int i = 0; i < length(); i++)
     {
@@ -64,7 +60,7 @@ void PyParticleTracing::positions(vector<double> &x,
 
 void PyParticleTracing::velocities(vector<double> &x,
                                    vector<double> &y,
-                                   vector<double> &z)
+                                   vector<double> &z) const
 {
     for (int i = 0; i < length(); i++)
     {
@@ -74,7 +70,7 @@ void PyParticleTracing::velocities(vector<double> &x,
     }
 }
 
-void PyParticleTracing::times(vector<double> &time)
+void PyParticleTracing::times(vector<double> &time) const
 {
     if (m_times.isEmpty())
         throw logic_error(QObject::tr("Trajectories of particles are not solved.").toStdString());
@@ -83,7 +79,7 @@ void PyParticleTracing::times(vector<double> &time)
         time.push_back(m_times[i]);
 }
 
-void PyParticleTracing::getInitialPosition(vector<double> &position)
+void PyParticleTracing::getInitialPosition(vector<double> &position) const
 {
     position.push_back(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartX).toDouble());
     position.push_back(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartY).toDouble());
@@ -105,7 +101,7 @@ void PyParticleTracing::setInitialPosition(const vector<double> &position)
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleStartY, y);
 }
 
-void PyParticleTracing::getInitialVelocity(vector<double> &velocity)
+void PyParticleTracing::getInitialVelocity(vector<double> &velocity) const
 {
     velocity.push_back(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartVelocityX).toDouble());
     velocity.push_back(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartVelocityY).toDouble());
@@ -177,11 +173,16 @@ void PyParticleTracing::setCustomForce(const vector<double> &force)
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleCustomForceZ, force[2]);
 }
 
-void PyParticleTracing::getCustomForce(vector<double> &force)
+void PyParticleTracing::getCustomForce(vector<double> &force) const
 {
     force.push_back(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleCustomForceX).toDouble());
     force.push_back(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleCustomForceY).toDouble());
     force.push_back(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleCustomForceZ).toDouble());
+}
+
+std::string PyParticleTracing::getButcherTableType() const
+{
+    return butcherTableTypeToStringKey((Hermes::ButcherTableType) Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleButcherTableType).toInt()).toStdString();
 }
 
 void PyParticleTracing::setButcherTableType(const std::string &tableType)

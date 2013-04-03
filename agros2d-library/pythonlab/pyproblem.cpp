@@ -123,7 +123,7 @@ void PyProblem::setTimeTotal(double timeTotal)
         throw out_of_range(QObject::tr("The total time must be positive.").toStdString());
 }
 
-std::string PyProblem::getCouplingType(const std::string &sourceField, const std::string &targetField)
+std::string PyProblem::getCouplingType(const std::string &sourceField, const std::string &targetField) const
 {
     QString source = QString::fromStdString(sourceField);
     QString target = QString::fromStdString(targetField);
@@ -158,7 +158,7 @@ void PyProblem::setCouplingType(const std::string &sourceField, const std::strin
         throw logic_error(QObject::tr("Coupling '%1' + '%2' doesn't exists.").arg(source).arg(target).toStdString());
 }
 
-void PyProblem::checkExistingFields(QString sourceField, QString targetField)
+void PyProblem::checkExistingFields(const QString &sourceField, const QString &targetField) const
 {
     if (Agros2D::problem()->fieldInfos().isEmpty())
         throw logic_error(QObject::tr("No fields are defined.").toStdString());
@@ -239,7 +239,7 @@ void PyProblem::solveAdaptiveStep()
     }
 }
 
-double PyProblem::timeElapsed()
+double PyProblem::timeElapsed() const
 {
     if (!Agros2D::problem()->isSolved())
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
@@ -249,7 +249,7 @@ double PyProblem::timeElapsed()
     return time;
 }
 
-void PyProblem::timeStepsLength(vector<double> &steps)
+void PyProblem::timeStepsLength(vector<double> &steps) const
 {
     if (!Agros2D::problem()->isTransient())
         throw logic_error(QObject::tr("Problem is not transient.").toStdString());

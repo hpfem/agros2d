@@ -19,12 +19,9 @@
 
 #include "pythonlab/pyfield.h"
 #include "pythonlab/pythonengine_agros.h"
-
 #include "hermes2d/plugin_interface.h"
 #include "hermes2d/problem_config.h"
 #include "hermes2d/solutionstore.h"
-
-#include "scenemarker.h"
 #include "sceneview_post2d.h"
 
 PyField::PyField(std::string fieldId)
@@ -407,7 +404,7 @@ void PyField::removeMaterial(const std::string &name)
 }
 
 void PyField::localValues(double x, double y, int timeStep, int adaptivityStep,
-                          const std::string &solutionType, map<std::string, double> &results)
+                          const std::string &solutionType, map<std::string, double> &results) const
 {
     map<std::string, double> values;
 
@@ -458,7 +455,7 @@ void PyField::localValues(double x, double y, int timeStep, int adaptivityStep,
 }
 
 void PyField::surfaceIntegrals(const vector<int> &edges, int timeStep, int adaptivityStep,
-                               const std::string &solutionType, map<std::string, double> &results)
+                               const std::string &solutionType, map<std::string, double> &results) const
 {
     map<std::string, double> values;
 
@@ -523,7 +520,7 @@ void PyField::surfaceIntegrals(const vector<int> &edges, int timeStep, int adapt
 }
 
 void PyField::volumeIntegrals(const vector<int> &labels, int timeStep, int adaptivityStep,
-                              const std::string &solutionType, map<std::string, double> &results)
+                              const std::string &solutionType, map<std::string, double> &results) const
 {
     map<std::string, double> values;
 
@@ -595,7 +592,7 @@ void PyField::volumeIntegrals(const vector<int> &labels, int timeStep, int adapt
     results = values;
 }
 
-void PyField::initialMeshInfo(map<std::string, int> &info)
+void PyField::initialMeshInfo(map<std::string, int> &info) const
 {
     if (!Agros2D::problem()->isMeshed())
         throw logic_error(QObject::tr("Problem is not meshed.").toStdString());
@@ -610,7 +607,7 @@ void PyField::initialMeshInfo(map<std::string, int> &info)
     }
 }
 
-void PyField::solutionMeshInfo(int timeStep, int adaptivityStep, const std::string &solutionType, map<std::string, int> &info)
+void PyField::solutionMeshInfo(int timeStep, int adaptivityStep, const std::string &solutionType, map<std::string, int> &info) const
 {
     if (!Agros2D::problem()->isSolved())
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
@@ -629,7 +626,7 @@ void PyField::solutionMeshInfo(int timeStep, int adaptivityStep, const std::stri
     info["dofs"] = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spaces());
 }
 
-void PyField::adaptivityInfo(int timeStep, const std::string &solutionType, vector<double> &error, vector<int> &dofs)
+void PyField::adaptivityInfo(int timeStep, const std::string &solutionType, vector<double> &error, vector<int> &dofs) const
 {
     if (!Agros2D::problem()->isSolved())
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
@@ -651,7 +648,7 @@ void PyField::adaptivityInfo(int timeStep, const std::string &solutionType, vect
     }
 }
 
-SolutionMode PyField::getSolutionMode(QString solutionType)
+SolutionMode PyField::getSolutionMode(const QString &solutionType) const
 {
     if (!solutionTypeStringKeys().contains(solutionType))
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(solutionTypeStringKeys())).toStdString());
@@ -662,7 +659,7 @@ SolutionMode PyField::getSolutionMode(QString solutionType)
     return solutionTypeFromStringKey(solutionType);
 }
 
-int PyField::getTimeStep(int timeStep, SolutionMode solutionMode)
+int PyField::getTimeStep(int timeStep, SolutionMode solutionMode) const
 {
     if (timeStep == -1)
         timeStep = Agros2D::solutionStore()->lastTimeStep(m_fieldInfo, solutionMode);
@@ -672,7 +669,7 @@ int PyField::getTimeStep(int timeStep, SolutionMode solutionMode)
     return timeStep;
 }
 
-int PyField::getAdaptivityStep(int adaptivityStep, int timeStep, SolutionMode solutionMode)
+int PyField::getAdaptivityStep(int adaptivityStep, int timeStep, SolutionMode solutionMode) const
 {
     if (adaptivityStep == -1)
         adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(m_fieldInfo, solutionMode, timeStep);

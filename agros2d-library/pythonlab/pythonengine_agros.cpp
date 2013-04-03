@@ -18,32 +18,10 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "pythonlab/pythonengine_agros.h"
-
-#include "util/constants.h"
-#include "util/global.h"
-
 #include "../resources_source/python/agros2d.cpp"
-
-#include "sceneview_common.h"
-#include "sceneview_geometry.h"
-#include "sceneview_mesh.h"
-#include "sceneview_post2d.h"
-#include "sceneview_post3d.h"
-#include "sceneview_particle.h"
-#include "scenenode.h"
-#include "sceneedge.h"
-#include "scenelabel.h"
-#include "scenemarker.h"
-#include "scenemarkerdialog.h"
-#include "datatable.h"
 #include "logview.h"
-
 #include "hermes2d/plugin_interface.h"
 #include "hermes2d/module.h"
-
-#include "hermes2d/problem.h"
-#include "hermes2d/coupling.h"
-
 #include <Python.h>
 
 // current python engine agros

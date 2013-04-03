@@ -31,11 +31,11 @@ public:
     ~PyParticleTracing() {}
 
     // initial position
-    void getInitialPosition(vector<double> &position);
+    void getInitialPosition(vector<double> &position) const;
     void setInitialPosition(const vector<double> &position);
 
     // initial velocity
-    void getInitialVelocity(vector<double> &velocity);
+    void getInitialVelocity(vector<double> &velocity) const;
     void setInitialVelocity(const vector<double> &velocity);
 
     // number of particles
@@ -54,47 +54,60 @@ public:
     inline double getParticleCharge() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleConstant).toDouble(); }
     void setParticleCharge(double charge);
 
-    // drag force
+    // drag force density
     inline double getDragForceDensity() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleDragDensity).toDouble(); }
     void setDragForceDensity(double density);
+
+    // drag force reference area
     inline double getDragForceReferenceArea() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleDragReferenceArea).toDouble(); }
     void setDragForceReferenceArea(double area);
+
+    // drag force coefficient
     inline double getDragForceCoefficient() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleDragCoefficient).toDouble(); }
     void setDragForceCoefficient(double coeff);
 
     // custom force
-    void getCustomForce(vector<double> &force);
+    void getCustomForce(vector<double> &force) const;
     void setCustomForce(const vector<double> &force);
 
-    // solver
-    inline std::string getButcherTableType() const
-    {
-        return butcherTableTypeToStringKey((Hermes::ButcherTableType) Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleButcherTableType).toInt()).toStdString();
-    }
+    // butcher table
+    std::string getButcherTableType() const;
     void setButcherTableType(const std::string &tableType);
+
+    // relativistic correction
     inline bool getIncludeRelativisticCorrection() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleIncludeRelativisticCorrection).toBool(); }
     void setIncludeRelativisticCorrection(bool include);
+
+    // get maximum relative error
     inline double getMaximumRelativeError() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumRelativeError).toDouble(); }
     void setMaximumRelativeError(double error);
+
+    // maximum number of steps
     inline int getMaximumNumberOfSteps() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumNumberOfSteps).toInt(); }
     void setMaximumNumberOfSteps(int steps);
+
+    // minimum step
     inline int getMinimumStep() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMinimumStep).toInt(); }
     void setMinimumStep(int step);
 
-    // reflection
+    // reflection on different material
     inline bool getReflectOnDifferentMaterial() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleReflectOnDifferentMaterial).toBool(); }
     void setReflectOnDifferentMaterial(bool reflect);
+
+    // reflection on boundary
     inline bool getReflectOnBoundary() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleReflectOnBoundary).toBool(); }
     void setReflectOnBoundary(bool reflect);
+
+    // coefficient of restitution
     inline double getCoefficientOfRestitution() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleCoefficientOfRestitution).toDouble(); }
     void setCoefficientOfRestitution(double coeff);
 
+    // solve
     void solve();
-
+    void positions(vector<double> &x, vector<double> &y, vector<double> &z) const;
+    void velocities(vector<double> &x, vector<double> &y, vector<double> &z) const;
+    void times(vector<double> &time) const;
     inline int length() const { return m_positions.length(); }
-    void positions(vector<double> &x, vector<double> &y, vector<double> &z);
-    void velocities(vector<double> &x, vector<double> &y, vector<double> &z);
-    void times(vector<double> &time);
 
 private:
     // position and velocity
