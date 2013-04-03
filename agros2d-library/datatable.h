@@ -67,6 +67,7 @@ public:
     double value(double x);
     double derivative(double x);
     int size() const;
+    DataTableType type() const {return m_type;}
     void clear();
 
     double minKey() const;

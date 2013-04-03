@@ -201,6 +201,7 @@ void ValueDataTableDialog::createControls()
     cmbType->addItem(dataTableTypeString(DataTableType_CubicSpline), DataTableType_CubicSpline);
     cmbType->addItem(dataTableTypeString(DataTableType_PiecewiseLinear), DataTableType_PiecewiseLinear);
     cmbType->addItem(dataTableTypeString(DataTableType_Constant), DataTableType_Constant);
+    cmbType->setCurrentIndex(m_table.type());
     connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged()));
 
     QGridLayout *layoutSettings = new QGridLayout();
