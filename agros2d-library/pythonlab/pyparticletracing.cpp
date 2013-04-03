@@ -185,6 +185,14 @@ void PyParticleTracing::getCustomForce(double &x, double &y, double &z)
     z = Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleCustomForceZ).toDouble();
 }
 
+void PyParticleTracing::setButcherTableType(const std::string &tableType)
+{
+    if (butcherTableTypeStringKeys().contains(QString::fromStdString(tableType)))
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleButcherTableType, butcherTableTypeFromStringKey(QString::fromStdString(tableType)));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(butcherTableTypeStringKeys())).toStdString());
+}
+
 void PyParticleTracing::setIncludeRelativisticCorrection(bool include)
 {
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleIncludeRelativisticCorrection, include);

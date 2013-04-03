@@ -1,6 +1,12 @@
 from libcpp.vector cimport vector
 from libcpp cimport bool
 
+cdef extern from "<string>" namespace "std":
+    cdef cppclass string:
+        string()
+        string(char *)
+        char * c_str()
+
 cdef extern from "limits.h":
     int c_INT_MIN "INT_MIN"
     int c_INT_MAX "INT_MAX"
@@ -11,32 +17,23 @@ cdef extern from "../../agros2d-library/pythonlab/pyparticletracing.h":
     cdef cppclass PyParticleTracing:
         PyParticleTracing()
 
-        void setNumberOfParticles(int particles)  except +
-        int getNumberOfParticles()
-        void setStartingRadius(double radius) except +
-        double getStartingRadius()
-
         void setInitialPosition(double x, double y) except +
         void getInitialPosition(double x, double y)
 
         void setInitialVelocity(double x, double y)
         void getInitialVelocity(double x, double y)
 
+        int getNumberOfParticles()
+        void setNumberOfParticles(int particles)  except +
+
+        double getStartingRadius()
+        void setStartingRadius(double radius) except +
+
         void setParticleMass(double mass) except +
         double getParticleMass()
 
         void setParticleCharge(double charge)
         double getParticleCharge()
-
-        void setIncludeRelativisticCorrection(bool incl)
-        bool getIncludeRelativisticCorrection()
-
-        void setReflectOnDifferentMaterial(bool reflect)
-        bool getReflectOnDifferentMaterial()
-        void setReflectOnBoundary(bool reflect)
-        bool getReflectOnBoundary()
-        void setCoefficientOfRestitution(double coeff)
-        double getCoefficientOfRestitution()
 
         void setDragForceDensity(double rho) except +
         double getDragForceDensity()
@@ -48,12 +45,24 @@ cdef extern from "../../agros2d-library/pythonlab/pyparticletracing.h":
         void setCustomForce(double x, double y, double z) except +
         void getCustomForce(double x, double y, double z) except +
 
+        void setIncludeRelativisticCorrection(bool incl)
+        bool getIncludeRelativisticCorrection()
+
+        void setButcherTableType(string &tableType) except +
+        string getButcherTableType()
         void setMaximumTolerance(double tolerance) except +
         double getMaximumTolerance()
         void setMaximumNumberOfSteps(int steps) except +
         int getMaximumNumberOfSteps()
         void setMinimumStep(double step) except +
         double getMinimumStep()
+
+        void setReflectOnDifferentMaterial(bool reflect)
+        bool getReflectOnDifferentMaterial()
+        void setReflectOnBoundary(bool reflect)
+        bool getReflectOnBoundary()
+        void setCoefficientOfRestitution(double coeff)
+        double getCoefficientOfRestitution()
 
         void solve() except +
 
@@ -221,6 +230,13 @@ cdef class __ParticleTracing__:
             return x, y, z
         def __set__(self, xyz):
             self.thisptr.setCustomForce(xyz[0], xyz[1], xyz[2])
+
+    # butcher table type
+    property butcher_table_type:
+        def __get__(self):
+            return self.thisptr.getButcherTableType().c_str()
+        def __set__(self, table_type):
+            self.thisptr.setButcherTableType(string(table_type))
 
     # maximum number of steps
     property maximum_number_of_steps:
