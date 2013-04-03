@@ -284,6 +284,7 @@ namespace Hermes
 
         Transformations();
         Transformations(const Transformations* t);
+        void operator=(const Transformations* t);
         Transformations(const Hermes::vector<unsigned int>& t);
 
         void copy_from(const Hermes::vector<unsigned int>& t);
@@ -314,12 +315,20 @@ namespace Hermes
       MeshSharedPtr mesh;
 
       /*** Transformations. ***/
+      static const unsigned int H2D_INITIAL_NEIGHBOR_NUMBER_GUESS = 32;
 
-      LightArray< Transformations* > central_transformations;     ///< Array of transformations of the central element to each neighbor
-                                                                  ///< (in a go-down neighborhood; stored as on \c Transformation structure
-                                                                  ///< for each neighbor).
-      LightArray< Transformations* > neighbor_transformations;    ///< Array of transformations of the neighbor to the central element (go-up).
+      Transformations** central_transformations;  ///< Array of transformations of the central element to each neighbor
+                                                                    ///< (in a go-down neighborhood; stored as on \c Transformation structure
+                                                                    ///< for each neighbor).
 
+      void add_central_transformations(Transformations* to_add, int position, bool replace = false);
+      unsigned int central_transformations_size;
+      unsigned int central_transformations_alloc_size;
+      Transformations** neighbor_transformations; ///< Array of transformations of the neighbor to the central element (go-up).
+
+      void add_neighbor_transformations(Transformations* to_add, int position, bool replace = false);
+      unsigned int neighbor_transformations_size;
+      unsigned int neighbor_transformations_alloc_size;
       uint64_t original_central_el_transform;                  ///< Sub-element transformation of any function that comes from the
                                                                ///< assembly, before transforms from \c transformations are pushed to it.
 

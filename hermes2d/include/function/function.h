@@ -16,6 +16,7 @@
 #ifndef __H2D_FUNCTION_H
 #define __H2D_FUNCTION_H
 
+#include "sub_element_map.h"
 #include "transformable.h"
 #include "../quadrature/quad.h"
 #include "exceptions.h"
@@ -183,10 +184,14 @@ namespace Hermes
 
         Scalar data[1];       ///< value tables. The length may vary.
 
-      private:
-        Node(const Node& org) {}; ///< Copy constructor is disabled.
-
-        Node& operator=(const Node& other) { return *this; }; ///< Assignment is not allowed.
+      public:
+        static void DeallocationFunction(LightArray<Node*>* data)
+        {
+          for(unsigned int k = 0; k < data->get_size(); k++)
+            if(data->present(k))
+              ::free(data->get(k));
+          delete data;
+        }
       };
 
       /// \brief Returns the polynomial degree of the function at given edge. To be overridden in derived classes.
@@ -201,16 +206,13 @@ namespace Hermes
       int num_components; ///< number of vector components
 
       /// Table of Node tables, for each possible transformation there can be a different Node table.
-      std::map<uint64_t, LightArray<Node*>*>* sub_tables;
+      SubElementMap<LightArray<Node*> >* sub_tables;
 
       /// Table of nodes.
       LightArray<Node*>* nodes;
 
       /// Current Node.
       Node* cur_node;
-
-      /// Nodes for the overflow sub-element transformation.
-      LightArray<Node*>* overflow_nodes;
 
       /// With changed sub-element mapping, there comes the need for a change of the current
       /// Node table nodes.
@@ -223,15 +225,7 @@ namespace Hermes
 
       int cur_quad;     ///< active quadrature (index into 'quads')
 
-      int total_mem;    ///< total memory in bytes used by the tables
-
-      int max_mem;      ///< peak memory usage
-
       Node* new_node(int mask, int num_points); ///< allocates a new Node structure
-
-      virtual void  handle_overflow_idx() = 0;
-
-      void replace_cur_node(Node* node);
 
       static void check_params(int component, Node* cur_node, int num_components);
 

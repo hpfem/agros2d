@@ -141,15 +141,7 @@ namespace Hermes
       void free();
 
       /// For internal use only.
-      void force_transform(uint64_t sub_idx, Trf* ctm)
-      {
-        this->sub_idx = sub_idx;
-        stack[top] = *ctm;
-        this->ctm = stack + top;
-        update_cur_node();
-        if(is_const)
-          calc_const_inv_ref_map();
-      }
+      void force_transform(uint64_t sub_idx, Trf* ctm);
 
       Quad2D* quad_2d;
 
@@ -175,33 +167,18 @@ namespace Hermes
         double* phys_x[H2D_MAX_TABLES];
         double* phys_y[H2D_MAX_TABLES];
         double3* tan[H2D_MAX_NUMBER_EDGES];
+        
+        int num_tables;
       };
 
       /// Table of RefMap::Nodes, indexed by a sub-element mapping.
-      std::map<uint64_t, Node*> nodes;
+      SubElementMap<Node> nodes;
 
       Node* cur_node;
 
       Node* overflow;
 
-      void update_cur_node()
-      {
-        Node* updated_node = new Node;
-
-        if(sub_idx > H2D_MAX_IDX) {
-          delete updated_node;
-          cur_node = handle_overflow();
-        }
-        else {
-          if(nodes.insert(std::make_pair(sub_idx, updated_node)).second == false)
-            /// The value had already existed.
-            delete updated_node;
-          else
-            /// The value had not existed.
-            init_node(updated_node);
-          cur_node = nodes[sub_idx];
-        }
-      }
+      void update_cur_node();
 
       void calc_inv_ref_map(int order);
 
@@ -225,7 +202,12 @@ namespace Hermes
 
       void init_node(Node* pp);
 
-      void free_node(Node* node);
+      static void free_node(Node* node);
+
+      static void DeallocationFunction(Node* data)
+      {
+        free_node(data);
+      }
 
       Node* handle_overflow();
 
@@ -240,6 +222,7 @@ namespace Hermes
       double2  lin_coeffs[H2D_MAX_NUMBER_EDGES];
       template<typename T> friend class MeshFunction;
       template<typename T> friend class DiscreteProblem;
+      template<typename T> friend class DiscreteProblemCache;
       template<typename T> friend class DiscreteProblemLinear;
       template<typename T> friend class Solution;
       template<typename T> friend class ExactSolution;

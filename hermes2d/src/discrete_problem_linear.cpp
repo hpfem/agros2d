@@ -78,7 +78,7 @@ namespace Hermes
       int num_threads_used = Hermes2DApi.get_integral_param_value(Hermes::Hermes2D::numThreads);
 
       // Check that the block scaling table have proper dimension.
-      if(block_weights != NULL)
+      if(block_weights)
         if(block_weights->get_size() != this->wf->get_neq())
           throw Exceptions::LengthException(6, block_weights->get_size(),this-> wf->get_neq());
 
@@ -93,24 +93,24 @@ namespace Hermes
       }
 
       // Structures that cloning will be done into.
-      PrecalcShapeset*** pss = new PrecalcShapeset**[num_threads_used];
-      PrecalcShapeset*** spss = new PrecalcShapeset**[num_threads_used];
       RefMap*** refmaps = new RefMap**[num_threads_used];
       AsmList<Scalar>*** als = new AsmList<Scalar>**[num_threads_used];
+      AsmList<Scalar>**** alsSurface = new AsmList<Scalar>***[num_threads_used];
       WeakForm<Scalar>** weakforms = new WeakForm<Scalar>*[num_threads_used];
+      PrecalcShapeset*** pss = new PrecalcShapeset**[num_threads_used];
 
       // Fill these structures.
-      this->init_assembling(NULL, pss, spss, refmaps, NULL, als, weakforms);
+      this->init_assembling(NULL, pss, refmaps, NULL, als, alsSurface, weakforms, num_threads_used);
 
       // Vector of meshes.
       Hermes::vector<MeshSharedPtr > meshes;
-      for(unsigned int space_i = 0; space_i < this->spaces.size(); space_i++)
+      for(unsigned int space_i = 0; space_i < this->spaces_size; space_i++)
         meshes.push_back(this->spaces[space_i]->get_mesh());
       for(unsigned int ext_i = 0; ext_i < this->wf->ext.size(); ext_i++)
         meshes.push_back(this->wf->ext[ext_i]->get_mesh());
       for(unsigned int form_i = 0; form_i < this->wf->get_forms().size(); form_i++)
         for(unsigned int ext_i = 0; ext_i < this->wf->get_forms()[form_i]->ext.size(); ext_i++)
-          if(this->wf->get_forms()[form_i]->ext[ext_i] != NULL)
+          if(this->wf->get_forms()[form_i]->ext[ext_i])
             meshes.push_back(this->wf->get_forms()[form_i]->ext[ext_i]->get_mesh());
 
       Traverse trav_master(true);
@@ -120,8 +120,10 @@ namespace Hermes
       Hermes::vector<Transformable *>* fns = new Hermes::vector<Transformable *>[num_threads_used];
       for(unsigned int i = 0; i < num_threads_used; i++)
       {
-        for (unsigned j = 0; j < this->spaces.size(); j++)
+        for (unsigned j = 0; j < this->spaces_size; j++)
+        {
           fns[i].push_back(pss[i][j]);
+        }
         for (unsigned j = 0; j < this->wf->ext.size(); j++)
         {
           fns[i].push_back(weakforms[i]->ext[j].get());
@@ -130,7 +132,7 @@ namespace Hermes
         for(unsigned int form_i = 0; form_i < this->wf->get_forms().size(); form_i++)
         {
           for(unsigned int ext_i = 0; ext_i < this->wf->get_forms()[form_i]->ext.size(); ext_i++)
-            if(this->wf->get_forms()[form_i]->ext[ext_i] != NULL)
+            if(this->wf->get_forms()[form_i]->ext[ext_i])
             {
               fns[i].push_back(weakforms[i]->get_forms()[form_i]->ext[ext_i].get());
               weakforms[i]->get_forms()[form_i]->ext[ext_i]->set_quad_2d(&g_quad_2d_std);
@@ -138,46 +140,81 @@ namespace Hermes
         }
       }
 
-#pragma omp parallel shared(mat, rhs) num_threads(num_threads_used)
+#pragma omp parallel num_threads(num_threads_used)
       {
         int thread_number = omp_get_thread_num();
         int start = (num_states / num_threads_used) * thread_number;
         int end = (num_states / num_threads_used) * (thread_number + 1);
         if(thread_number == num_threads_used - 1)
           end = num_states;
+
+        AsmList<Scalar>** current_als = als[thread_number];
+        AsmList<Scalar>*** current_als_surface = alsSurface[thread_number];
+        RefMap** current_refmaps = refmaps[thread_number];
+        WeakForm<Scalar>* current_weakform = weakforms[thread_number];
+        PrecalcShapeset** current_pss = pss[thread_number];
+
+        PrecalcShapeset** current_spss = new PrecalcShapeset*[this->spaces_size];
+        if(this->DG_matrix_forms_present || this->DG_vector_forms_present)
+          for (unsigned int j = 0; j < this->spaces_size; j++)
+            current_spss[j] = new PrecalcShapeset(current_pss[j]);
+
+        int order;
+
         for(int state_i = start; state_i < end; state_i++)
         {
-          if(this->caughtException != NULL)
+          if(this->caughtException)
             break;
           try
           {
-            Traverse::State current_state;
-            current_state = states[state_i];
+            Traverse::State* current_state = states[state_i];
+
             for(int j = 0; j < fns[thread_number].size(); j++)
             {
-              if(current_state.e[j] != NULL)
+              if(current_state->e[j])
               {
-                fns[thread_number][j]->set_active_element(current_state.e[j]);
-                fns[thread_number][j]->set_transform(current_state.sub_idx[j]);
+                fns[thread_number][j]->set_active_element(current_state->e[j]);
+                fns[thread_number][j]->set_transform(current_state->sub_idx[j]);
+              }
+            }
+            
+            bool state_skipped = true;
+            for(int j = 0; j < this->spaces_size; j++)
+            {
+              if(current_state->e[j])
+              {
+                this->spaces[j]->get_element_assembly_list(current_state->e[j], current_als[j]);
+                if(this->DG_matrix_forms_present || this->DG_vector_forms_present)
+                {
+                  current_spss[j]->set_active_element(current_state->e[j]);
+                  current_spss[j]->set_master_transform();
+                }
+                current_refmaps[j]->set_active_element(current_state->e[j]);
+                current_refmaps[j]->force_transform(current_pss[j]->get_transform(), current_pss[j]->get_ctm());
+                state_skipped = false;
               }
             }
 
-            PrecalcShapeset** current_pss = pss[thread_number];
-            PrecalcShapeset** current_spss = spss[thread_number];
-            RefMap** current_refmaps = refmaps[thread_number];
-            AsmList<Scalar>** current_als = als[thread_number];
-            WeakForm<Scalar>* current_weakform = weakforms[thread_number];
+            if(state_skipped)
+              continue;
 
-            // One state is a collection of (virtual) elements sharing
-            // the same physical location on (possibly) different meshes.
-            // This is then the same element of the virtual union mesh.
-            // The proper sub-element mappings to all the functions of
-            // this stage is supplied by the function Traverse::get_next_state()
-            // called in the while loop.
-            this->assemble_one_state(current_pss, current_spss, current_refmaps, NULL, current_als, &current_state, current_weakform);
+            typename DiscreteProblemCache<Scalar>::CacheRecord* cache_record;
+            if(!this->do_not_use_cache)
+              cache_record = this->get_state_cache(current_state, current_pss, current_refmaps, NULL, current_als, current_als_surface, current_weakform, order);
+            else
+            {
+              cache_record = new typename DiscreteProblemCache<Scalar>::CacheRecord();
+              order = this->calculate_order(current_state, current_refmaps, NULL, current_weakform);
+              cache_record->init(this->spaces, current_state, current_pss, current_refmaps, NULL, current_als, current_als_surface, current_weakform, order);
+            }
+
+            this->assemble_one_state(cache_record, current_refmaps, NULL, current_als, current_state, current_weakform);
 
             if(this->DG_matrix_forms_present || this->DG_vector_forms_present)
-              this->assemble_one_DG_state(current_pss, current_spss, current_refmaps, NULL, current_als, &current_state, current_weakform->mfDG, current_weakform->vfDG, &fns[thread_number].front(), current_weakform);
+              this->assemble_one_DG_state(current_pss, current_spss, current_refmaps, NULL, current_als, current_state, current_weakform->mfDG, current_weakform->vfDG, &fns[thread_number].front(), current_weakform);
+
+            if(this->do_not_use_cache)
+              delete cache_record;
           }
           catch(Hermes::Exceptions::Exception& e)
           {
@@ -190,13 +227,20 @@ namespace Hermes
               this->caughtException = new std::exception(e);
           }
         }
+
+        if(this->DG_matrix_forms_present || this->DG_vector_forms_present)
+         for (unsigned int j = 0; j < this->spaces_size; j++)
+            delete current_spss[j];
+        delete [] current_spss;
       }
 
-      this->deinit_assembling(pss, spss, refmaps, NULL, als, weakforms);
+      this->cache.free_unused();
+
+      this->deinit_assembling(pss, refmaps, NULL, als, alsSurface, weakforms, num_threads_used);
 
       for(int i = 0; i < num_states; i++)
         delete states[i];
-      ::free(states);
+      free(states);
 
       for(unsigned int i = 0; i < num_threads_used; i++)
       {
@@ -205,9 +249,9 @@ namespace Hermes
       delete [] fns;
 
       /// \todo Should this be really here? Or in assemble()?
-      if(this->current_mat != NULL)
+      if(this->current_mat)
         this->current_mat->finish();
-      if(this->current_rhs != NULL)
+      if(this->current_rhs)
         this->current_rhs->finish();
 
       if(this->DG_matrix_forms_present || this->DG_vector_forms_present)
@@ -218,7 +262,14 @@ namespace Hermes
           element_to_set_nonvisited->visited = false;
       }
 
-      if(this->caughtException != NULL)
+      Element* e;
+      for(unsigned int space_i = 0; space_i < this->spaces_size; space_i++)
+      {
+        for_all_active_elements(e, this->spaces[space_i]->get_mesh())
+          this->spaces[space_i]->edata[e->id].changed_in_last_adaptation = false;
+      }
+
+      if(this->caughtException)
         throw *(this->caughtException);
     }
 
@@ -243,7 +294,7 @@ namespace Hermes
         int local_ext_count = form->ext.size();
         local_ext = new Func<Scalar>*[local_ext_count];
         for(int ext_i = 0; ext_i < local_ext_count; ext_i++)
-          if(form->ext[ext_i] != NULL)
+          if(form->ext[ext_i])
             local_ext[ext_i] = current_state->e[ext_i] == NULL ? NULL : init_fn(form->ext[ext_i].get(), order);
           else
             local_ext[ext_i] = NULL;
@@ -337,7 +388,7 @@ namespace Hermes
       if(form->ext.size() > 0)
       {
         for(int ext_i = 0; ext_i < form->ext.size(); ext_i++)
-          if(form->ext[ext_i] != NULL)
+          if(form->ext[ext_i])
           {
             local_ext[ext_i]->free_fn();
             delete local_ext[ext_i];

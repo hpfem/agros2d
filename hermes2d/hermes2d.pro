@@ -153,8 +153,10 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     DEFINES += HAVE_LOG2
 
     INCLUDEPATH += /usr/include/suitesparse
+    INCLUDEPATH += /usr/include/google
     LIBS += -lumfpack
     LIBS += -lxerces-c
+    LIBS += -ltcmalloc_minimal
     LIBS += -lstdc++
 
     # mumps
@@ -182,6 +184,7 @@ macx-g++ {
     LIBS += -L/opt/local/lib
     LIBS += -L/usr/lib
     LIBS += -lpthread
+    LIBS += -llibtcmalloc_minimal
     LIBS += -lumfpack
     LIBS += -lamd
     LIBS += -lblas
@@ -214,6 +217,7 @@ win32-msvc2010 {
     LIBS += -Lc:/hpfem/hermes/dependencies/lib
     LIBS += -Ld:/hpfem/hermes/dependencies/lib
     LIBS += -llibumfpack
+    LIBS += -llibtcmalloc_minimal
     LIBS += -llibamd
     # LIBS += -lblas
     LIBS += -lpthreadVCE2

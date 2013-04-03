@@ -41,11 +41,9 @@ namespace Hermes
       : Transformable()
     {
       order = 0;
-      max_mem = total_mem = 0;
       cur_node = NULL;
       sub_tables = NULL;
       nodes = NULL;
-      overflow_nodes = NULL;
       memset(quads, 0, sizeof(quads));
     }
 
@@ -202,32 +200,25 @@ namespace Hermes
       Scalar* data = node->data;
       for (int j = 0; j < num_components; j++) {
         for (int i = 0; i < 6; i++)
-          if(mask & idx2mask[i][j]) {
+          if(mask & idx2mask[i][j]) 
+          {
             node->values[j][i] = data;
             data += num_points;
           }
       }
 
-      total_mem += size;
-      if(max_mem < total_mem) max_mem = total_mem;
       return node;
     }
 
     template<typename Scalar>
     void Function<Scalar>::update_nodes_ptr()
     {
-      if(sub_idx > H2D_MAX_IDX)
-        handle_overflow_idx();
-      else {
-        typename std::map<uint64_t, LightArray<Node*>*>::iterator it = sub_tables->find(sub_idx);
-        if(it == sub_tables->end())
-        {
-          this->nodes = new LightArray<Node*>;
-          sub_tables->insert(std::pair<uint64_t, LightArray<Node*>*>(sub_idx, this->nodes));
-        }
-        else
-          this->nodes = it->second;
-      }
+      bool to_add = true;
+      typename SubElementMap<LightArray<Node*> >::Node* node_array = sub_tables->get(sub_idx, to_add);
+      if(to_add)
+        node_array->data = this->nodes = new LightArray<Node*>(2, 2);
+      else
+        this->nodes = node_array->data;
     }
 
     template<typename Scalar>
@@ -236,17 +227,6 @@ namespace Hermes
       this->sub_idx = sub_idx;
       this->ctm = ctm;
       update_nodes_ptr();
-    }
-
-    template<typename Scalar>
-    void Function<Scalar>::replace_cur_node(Node* node)
-    {
-      if(node == NULL) throw Exceptions::NullException(1);
-      if(cur_node != NULL) {
-        total_mem -= cur_node->size;
-        ::free(cur_node);
-      }
-      cur_node = node;
     }
 
     template class HERMES_API Function<double>;

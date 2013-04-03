@@ -1,3 +1,7 @@
+import time
+
+start = time.time()
+
 # electrostatic
 execfile("test_electrostatic_planar.py") 
 execfile("test_electrostatic_axisymmetric.py")
@@ -53,3 +57,7 @@ execfile("test_adaptivity_electrostatic.py")
 
 # scripting
 # execfile("test_scripting.py")
+
+stop = time.time()
+
+print("\nTotal time: " + str(stop - start))

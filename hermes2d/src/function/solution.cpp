@@ -87,20 +87,15 @@ namespace Hermes
     template<typename Scalar>
     bool Solution<Scalar>::static_verbose_output = false;
 
-    template<>
-    void Solution<double>::init()
+    template<typename Scalar>
+    void Solution<Scalar>::init()
     {
-      memset(tables, 0, sizeof(tables));
       memset(elems,  0, sizeof(elems));
       memset(oldest, 0, sizeof(oldest));
       transform = true;
       sln_type = HERMES_UNDEF;
       this->num_components = 0;
       e_last = NULL;
-
-      for(int i = 0; i < 4; i++)
-        for(int j = 0; j < 4; j++)
-          tables[i][j] = new std::map<uint64_t, LightArray<struct Function<double>::Node*>*>;
 
       mono_coeffs = NULL;
       elem_coeffs[0] = elem_coeffs[1] = NULL;
@@ -111,31 +106,6 @@ namespace Hermes
 
       this->set_quad_2d(&g_quad_2d_std);
     }
-
-		template<>
-		void Solution<std::complex<double> >::init()
-		{
-			memset(tables, 0, sizeof(tables));
-			memset(elems,  0, sizeof(elems));
-			memset(oldest, 0, sizeof(oldest));
-			transform = true;
-			sln_type = HERMES_UNDEF;
-			this->num_components = 0;
-			e_last = NULL;
-
-			for(int i = 0; i < 4; i++)
-				for(int j = 0; j < 4; j++)
-					tables[i][j] = new std::map<uint64_t, LightArray<struct Function<std::complex<double> >::Node*>*>;
-
-			mono_coeffs = NULL;
-			elem_coeffs[0] = elem_coeffs[1] = NULL;
-			elem_orders = NULL;
-			dxdy_buffer = NULL;
-			num_coeffs = num_elems = 0;
-			num_dofs = -1;
-
-			this->set_quad_2d(&g_quad_2d_std);
-		}
 
     template<>
     Solution<double>::Solution()
@@ -259,26 +229,17 @@ namespace Hermes
     template<typename Scalar>
     void Solution<Scalar>::free_tables()
     {
-      for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
-          if(tables[i][j] != NULL)
-          {
-            for(typename std::map<uint64_t, LightArray<struct Function<Scalar>::Node*>*>::iterator it = tables[i][j]->begin(); it != tables[i][j]->end(); it++)
-            {
-              for(unsigned int l = 0; l < it->second->get_size(); l++)
-                if(it->second->present(l))
-                  ::free(it->second->get(l));
-              delete it->second;
-            }
-            tables[i][j]->clear();
-            delete tables[i][j];
-            tables[i][j] = NULL;
-            elems[i][j] = NULL;
-          }
+      for (int i = 0; i < H2D_MAX_QUADRATURES; i++)
+        for (int j = 0; j < H2D_SOLUTION_ELEMENT_CACHE_SIZE; j++)
+        {
+          tables[i][j].run_for_all(Function<Scalar>::Node::DeallocationFunction);
+          tables[i][j].clear();
+          elems[i][j] = NULL;
+        }
     }
 
-    template<>
-    void Solution<double>::free()
+    template<typename Scalar>
+    void Solution<Scalar>::free()
     {
       if(mono_coeffs  != NULL) { delete [] mono_coeffs;   mono_coeffs = NULL;  }
       if(elem_orders != NULL) { delete [] elem_orders;  elem_orders = NULL; }
@@ -293,37 +254,14 @@ namespace Hermes
         free_tables();
     }
 
-		template<>
-		void Solution<std::complex<double> >::free()
-		{
-			if(mono_coeffs  != NULL) { delete [] mono_coeffs;   mono_coeffs = NULL;  }
-			if(elem_orders != NULL) { delete [] elem_orders;  elem_orders = NULL; }
-			if(dxdy_buffer != NULL) { delete [] dxdy_buffer;  dxdy_buffer = NULL; }
-
-			for (int i = 0; i < this->num_components; i++)
-				if(elem_coeffs[i] != NULL)
-				{ delete [] elem_coeffs[i];  elem_coeffs[i] = NULL; }
-
-				e_last = NULL;
-
-				free_tables();
-		}
-
-		template<>
-    Solution<double>::~Solution()
+    template<typename Scalar>
+    Solution<Scalar>::~Solution()
     {
       free();
       space_type = HERMES_INVALID_SPACE;
     }
 
-    template<>
-    Solution<std::complex<double> >::~Solution()
-    {
-      free();
-      space_type = HERMES_INVALID_SPACE;
-    }
-
-    static struct mono_lu_init
+    static class mono_lu_init
     {
     public:
 
@@ -808,7 +746,8 @@ namespace Hermes
     template<typename Scalar>
     void Solution<Scalar>::enable_transform(bool enable)
     {
-      if(transform != enable) free_tables();
+      if(transform != enable)
+        free_tables();
       transform = enable;
     }
 
@@ -882,31 +821,19 @@ namespace Hermes
       MeshFunction<Scalar>::set_active_element(e);
 
       // try finding an existing table for e
-      for (cur_elem = 0; cur_elem < 4; cur_elem++)
+      for (cur_elem = 0; cur_elem < H2D_SOLUTION_ELEMENT_CACHE_SIZE; cur_elem++)
         if(elems[this->cur_quad][cur_elem] == e)
           break;
 
       // if not found, free the oldest one and use its slot
-      if(cur_elem >= 4)
+      if(cur_elem >= H2D_SOLUTION_ELEMENT_CACHE_SIZE)
       {
-        if(tables[this->cur_quad][oldest[this->cur_quad]] != NULL)
-        {
-          for(typename std::map<uint64_t, LightArray<struct Function<Scalar>::Node*>*>::iterator it = tables[this->cur_quad][oldest[this->cur_quad]]->begin(); it != tables[this->cur_quad][oldest[this->cur_quad]]->end(); it++)
-          {
-            for(unsigned int l = 0; l < it->second->get_size(); l++)
-              if(it->second->present(l))
-                ::free(it->second->get(l));
-            delete it->second;
-          }
-          delete tables[this->cur_quad][oldest[this->cur_quad]];
-          tables[this->cur_quad][oldest[this->cur_quad]] = NULL;
-          elems[this->cur_quad][oldest[this->cur_quad]] = NULL;
-        }
-
-        tables[this->cur_quad][oldest[this->cur_quad]] = new std::map<uint64_t, LightArray<struct Function<Scalar>::Node*>*>;
+        tables[this->cur_quad][oldest[this->cur_quad]].run_for_all(Function<Scalar>::Node::DeallocationFunction);
+        tables[this->cur_quad][oldest[this->cur_quad]].clear();
+        elems[this->cur_quad][oldest[this->cur_quad]] = NULL;
 
         cur_elem = oldest[this->cur_quad];
-        if(++oldest[this->cur_quad] >= 4)
+        if(++oldest[this->cur_quad] >= H2D_SOLUTION_ELEMENT_CACHE_SIZE)
           oldest[this->cur_quad] = 0;
 
         elems[this->cur_quad][cur_elem] = e;
@@ -936,7 +863,7 @@ namespace Hermes
       else
         throw Hermes::Exceptions::Exception("Uninitialized solution.");
 
-      this->sub_tables = tables[this->cur_quad][cur_elem];
+      this->sub_tables = &tables[this->cur_quad][cur_elem];
 
       this->update_nodes_ptr();
     }

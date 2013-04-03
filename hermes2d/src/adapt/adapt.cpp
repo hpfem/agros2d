@@ -151,7 +151,7 @@ namespace Hermes
 
       for (int i = 0; i < this->num; i++)
         for (int j = 0; j < this->num; j++)
-          if(error_form[i][j] != NULL && own_forms[i][j])
+          if(error_form[i][j] && own_forms[i][j])
           {
             delete error_form[i][j];
             own_forms[i][j] = false;
@@ -159,6 +159,7 @@ namespace Hermes
 
       for(int i = 0; i < H2D_MAX_COMPONENTS; i++)
         delete [] own_forms[i];
+      delete [] own_forms;
     }
 
     template<typename Scalar>
@@ -183,7 +184,7 @@ namespace Hermes
       for (int j = 0; j < this->num; j++)
       {
         meshes[j] = this->spaces[j]->get_mesh();
-        if(rsln[j] != NULL)
+        if(rsln[j])
         {
           rsln[j]->set_quad_2d(&g_quad_2d_std);
           rsln[j]->enable_transform(false);
@@ -295,9 +296,10 @@ namespace Hermes
       }
 
       // RefinementSelectors cloning.
-      RefinementSelectors::Selector<Scalar>*** global_refinement_selectors = new RefinementSelectors::Selector<Scalar>**[Hermes::Hermes2D::Hermes2DApi.get_integral_param_value(Hermes::Hermes2D::numThreads)];
+      int num_threads_used = Hermes2DApi.get_integral_param_value(Hermes::Hermes2D::numThreads);
+      RefinementSelectors::Selector<Scalar>*** global_refinement_selectors = new RefinementSelectors::Selector<Scalar>**[num_threads_used];
 
-      for(unsigned int i = 0; i < Hermes2DApi.get_integral_param_value(Hermes::Hermes2D::numThreads); i++)
+      for(unsigned int i = 0; i < num_threads_used; i++)
       {
         global_refinement_selectors[i] = new RefinementSelectors::Selector<Scalar>*[refinement_selectors.size()];
         for (unsigned int j = 0; j < refinement_selectors.size(); j++)
@@ -307,27 +309,31 @@ namespace Hermes
           else
           {
             global_refinement_selectors[i][j] = refinement_selectors[j]->clone();
-            if(dynamic_cast<RefinementSelectors::ProjBasedSelector<Scalar>*>(global_refinement_selectors[i][j]) != NULL)
+            RefinementSelectors::ProjBasedSelector<Scalar>* proj_based_selector_i_j = dynamic_cast<RefinementSelectors::ProjBasedSelector<Scalar>*>(global_refinement_selectors[i][j]);
+            RefinementSelectors::ProjBasedSelector<Scalar>* proj_based_selector_j = dynamic_cast<RefinementSelectors::ProjBasedSelector<Scalar>*>(refinement_selectors[j]);
+            RefinementSelectors::ProjBasedSelector<Scalar>* optimum_selector_i_j = dynamic_cast<RefinementSelectors::ProjBasedSelector<Scalar>*>(global_refinement_selectors[i][j]);
+            RefinementSelectors::ProjBasedSelector<Scalar>* optimum_selector_j = dynamic_cast<RefinementSelectors::ProjBasedSelector<Scalar>*>(refinement_selectors[j]);
+            if(proj_based_selector_i_j)
             {
-              dynamic_cast<RefinementSelectors::ProjBasedSelector<Scalar>*>(global_refinement_selectors[i][j])->cached_shape_vals_valid = dynamic_cast<RefinementSelectors::ProjBasedSelector<Scalar>*>(refinement_selectors[j])->cached_shape_vals_valid;
-              dynamic_cast<RefinementSelectors::ProjBasedSelector<Scalar>*>(global_refinement_selectors[i][j])->cached_shape_ortho_vals = dynamic_cast<RefinementSelectors::ProjBasedSelector<Scalar>*>(refinement_selectors[j])->cached_shape_ortho_vals;
-              dynamic_cast<RefinementSelectors::ProjBasedSelector<Scalar>*>(global_refinement_selectors[i][j])->cached_shape_vals = dynamic_cast<RefinementSelectors::ProjBasedSelector<Scalar>*>(refinement_selectors[j])->cached_shape_vals;
+              proj_based_selector_i_j->cached_shape_vals_valid = proj_based_selector_j->cached_shape_vals_valid;
+              proj_based_selector_i_j->cached_shape_ortho_vals = proj_based_selector_j->cached_shape_ortho_vals;
+              proj_based_selector_i_j->cached_shape_vals = proj_based_selector_j->cached_shape_vals;
             }
-            if(dynamic_cast<RefinementSelectors::OptimumSelector<Scalar>*>(global_refinement_selectors[i][j]) != NULL)
-              dynamic_cast<RefinementSelectors::OptimumSelector<Scalar>*>(global_refinement_selectors[i][j])->num_shapes = dynamic_cast<RefinementSelectors::OptimumSelector<Scalar>*>(refinement_selectors[j])->num_shapes;
+            if(optimum_selector_i_j)
+              optimum_selector_i_j->num_shapes = optimum_selector_j->num_shapes;
           }
         }
       }
 
       // Solution cloning.
-      Solution<Scalar>*** rslns = new Solution<Scalar>**[Hermes2DApi.get_integral_param_value(Hermes::Hermes2D::numThreads)];
+      Solution<Scalar>*** rslns = new Solution<Scalar>**[num_threads_used];
 
-      for(unsigned int i = 0; i < Hermes2DApi.get_integral_param_value(Hermes::Hermes2D::numThreads); i++)
+      for(unsigned int i = 0; i < num_threads_used; i++)
       {
         rslns[i] = new Solution<Scalar>*[this->num];
         for (int j = 0; j < this->num; j++)
         {
-          if(rsln[j] != NULL)
+          if(rsln[j])
             rslns[i][j] = static_cast<Solution<Scalar>* >(rsln[j]->clone());
         }
       }
@@ -336,12 +342,11 @@ namespace Hermes
       this->info("Adaptivity: data preparation duration: %f s.", this->last());
 
       // For statistics.
-      int num_threads_used = Hermes2DApi.get_integral_param_value(Hermes::Hermes2D::numThreads);
       int num_elements_for_refinenement = ids.size();
       int* numberOfCandidates = new int[num_elements_for_refinenement];
 
       // Parallel section
-#pragma omp parallel shared(elem_inx_to_proc, meshes, current_orders) num_threads(num_threads_used)
+#pragma omp parallel num_threads(num_threads_used)
       {
         int thread_number = omp_get_thread_num();
         int start = (num_elements_for_refinenement / num_threads_used) * thread_number;
@@ -368,10 +373,13 @@ namespace Hermes
               elem_inx_to_proc.push_back(elem_ref);
             }
 
-						if(dynamic_cast<Hermes::Hermes2D::RefinementSelectors::OptimumSelector<Scalar>*>(current_refinement_selectors[components[id_to_refine]]) != NULL)
-								numberOfCandidates[id_to_refine] = dynamic_cast<Hermes::Hermes2D::RefinementSelectors::OptimumSelector<Scalar>*>(current_refinement_selectors[components[id_to_refine]])->get_candidates().size();
-            else
-								numberOfCandidates[id_to_refine] = 0;
+            if(this->get_verbose_output())
+            {
+						  if(dynamic_cast<Hermes::Hermes2D::RefinementSelectors::OptimumSelector<Scalar>*>(current_refinement_selectors[components[id_to_refine]]))
+								  numberOfCandidates[id_to_refine] = dynamic_cast<Hermes::Hermes2D::RefinementSelectors::OptimumSelector<Scalar>*>(current_refinement_selectors[components[id_to_refine]])->get_candidates().size();
+              else
+								  numberOfCandidates[id_to_refine] = 0;
+            }
           }
           catch(Hermes::Exceptions::Exception& exception)
           {
@@ -388,14 +396,19 @@ namespace Hermes
 
       if(this->caughtException == NULL)
       {
-        int averageNumberOfCandidates = 0;
-        for(int i = 0; i < num_elements_for_refinenement; i++)
-            averageNumberOfCandidates += numberOfCandidates[i];
-        averageNumberOfCandidates = averageNumberOfCandidates / num_elements_for_refinenement;
+        if(this->get_verbose_output())
+        {
+          int averageNumberOfCandidates = 0;
+          for(int i = 0; i < num_elements_for_refinenement; i++)
+              averageNumberOfCandidates += numberOfCandidates[i];
+          averageNumberOfCandidates = averageNumberOfCandidates / num_elements_for_refinenement;
 
-        this->info("Adaptivity: total number of refined Elements: %i.", num_elements_for_refinenement);
-        this->info("Adaptivity: average number of candidates per refined Element: %i.", averageNumberOfCandidates);
+          this->info("Adaptivity: total number of refined Elements: %i.", num_elements_for_refinenement);
+          this->info("Adaptivity: average number of candidates per refined Element: %i.", averageNumberOfCandidates);
+        }
       }
+
+      delete [] numberOfCandidates;
 
       this->tick();
       this->info("Adaptivity: refinement selection duration: %f s.", this->last());
@@ -414,10 +427,10 @@ namespace Hermes
 
       for(unsigned int i = 0; i < num_threads_used; i++)
       {
-        if(rslns[i] != NULL)
+        if(rslns[i])
         {
           for (unsigned int j = 0; j < this->num; j++)
-            if(rsln[j] != NULL)
+            if(rsln[j])
               delete rslns[i][j];
           delete [] rslns[i];
         }
@@ -428,7 +441,7 @@ namespace Hermes
         delete [] idx[i];
       delete [] idx;
 
-      if(this->caughtException != NULL)
+      if(this->caughtException)
         throw *(this->caughtException);
       
       //apply refinements
@@ -455,7 +468,7 @@ namespace Hermes
       }
 
       for (int j = 0; j < this->num; j++)
-        if(rsln[j] != NULL)
+        if(rsln[j])
           rsln[j]->enable_transform(true);
 
       //store for the user to retrieve
@@ -868,7 +881,7 @@ namespace Hermes
 
       // FIXME: Memory leak - always for i == j (see the constructor), may happen for i != j
       //        if user does not delete previously set error forms by himself.
-      if(own_forms[i][j] && error_form[i][j] != NULL)
+      if(own_forms[i][j] && error_form[i][j])
         delete error_form[i][j];
       error_form[i][j] = form;
       norm_form[i][j] = error_form[i][j];
@@ -1092,7 +1105,8 @@ namespace Hermes
         int max = meshes[i]->get_max_element_id();
         if(solutions_for_adapt)
         {
-          if(errors[i] != NULL) delete [] errors[i];
+          if(errors[i])
+            delete [] errors[i];
           errors[i] = new double[max];
           memset(errors[i], 0, sizeof(double) * max);
         }
@@ -1109,13 +1123,13 @@ namespace Hermes
       // Calculate error.
       Traverse::State * ee;
       trav.begin(2 * num, meshes, tr);
-      while ((ee = trav.get_next_state()) != NULL)
+      while (ee = trav.get_next_state())
       {
         for (i = 0; i < num; i++)
         {
           for (j = 0; j < num; j++)
           {
-            if(error_form[i][j] != NULL)
+            if(error_form[i][j])
             {
               double err, nrm;
               err = eval_error(error_form[i][j], sln[i], sln[j], rsln[i], rsln[j]);
@@ -1134,7 +1148,7 @@ namespace Hermes
       trav.finish();
 
       // Store the calculation for each solution component separately.
-      if(component_errors != NULL)
+      if(component_errors)
       {
         component_errors->clear();
         for (int i = 0; i < num; i++)

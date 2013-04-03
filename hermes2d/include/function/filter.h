@@ -43,6 +43,8 @@ namespace Hermes
       virtual ~Filter();
 
       virtual void reinit();
+      
+      inline SpaceType get_space_type() const { return space_type; };
 
       /// State querying helpers.
       inline std::string getClassName() const { return "Filter"; }
@@ -76,13 +78,15 @@ namespace Hermes
       /// The highest layer (in contrast to the PrecalcShapeset class) is represented
       /// here only by this array.
 #ifdef _MSC_VER // For Visual Studio compiler the latter does not compile.
-      std::map<uint64_t, LightArray<Node*>*> tables[H2D_MAX_QUADRATURES];
+      SubElementMap<LightArray<Node*> > tables[H2D_MAX_QUADRATURES];
 #else
-      std::map<uint64_t, LightArray<struct Filter<Scalar>::Node*>*> tables[H2D_MAX_QUADRATURES];
+      SubElementMap<LightArray<struct Filter<Scalar>::Node*> > tables[H2D_MAX_QUADRATURES];
 #endif
 
       bool unimesh;
 
+      SpaceType space_type;
+      
       UniData** unidata;
 
       void copy_base(Filter* flt);

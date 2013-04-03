@@ -68,11 +68,6 @@ namespace Hermes
       /// \brief Frees all precalculated tables.
       virtual void free();
 
-      /// Virtual function handling overflows. Has to be virtual, because
-      /// the necessary iterators in the templated class do not work with GCC.
-      virtual void handle_overflow_idx();
-
-
       /// Returns the index of the active shape (can be negative if the shape is constrained).
       int get_active_shape() const;
 
@@ -101,7 +96,7 @@ namespace Hermes
       /// The highest and most complicated one maps a key formed by
       /// quadrature table selector (0-7), mode of the shape function (triangle/quad),
       /// and shape function index to a table from the middle layer.
-      LightArray<std::map<uint64_t, LightArray<Node*>*>*> tables;
+      LightArray<SubElementMap<LightArray<Node*> >*> tables;
 
       int index;
 
@@ -127,6 +122,7 @@ namespace Hermes
       template<typename T> friend class Solution;
       template<typename T> friend class DiscontinuousFunc;
       template<typename T> friend class DiscreteProblem;
+      template<typename T> friend class DiscreteProblemLinear;
       template<typename T> friend class NeighborSearch;
       friend class CurvMap;
     };

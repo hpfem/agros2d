@@ -69,6 +69,13 @@ namespace Hermes
       for(int i = 0; i < this->num; i++)
         meshes[i] = this->sln[i]->get_mesh();
       this->mesh = meshes[0];
+      
+      Solution<Scalar>* sln = dynamic_cast<Solution<Scalar>*>(this->sln[0].get());
+      if (sln == NULL)
+        this->space_type = HERMES_INVALID_SPACE;
+      else
+        this->space_type = sln->get_space_type();
+      
       unimesh = false;
 
       for (int i = 1; i < num; i++)
@@ -84,6 +91,10 @@ namespace Hermes
           unimesh = true;
           break;
         }
+        
+        sln = dynamic_cast<Solution<Scalar>*>(this->sln[i].get());
+        if(sln == NULL || sln->get_space_type() != this->space_type)
+          this->space_type = HERMES_INVALID_SPACE;
       }
 
       if(unimesh)
@@ -137,13 +148,7 @@ namespace Hermes
         }
       }
 
-      for(typename std::map<uint64_t, LightArray<struct Filter<Scalar>::Node*>*>::iterator it = tables[this->cur_quad].begin(); it != tables[this->cur_quad].end(); it++)
-      {
-        for(unsigned int l = 0; l < it->second->get_size(); l++)
-          if(it->second->present(l))
-            ::free(it->second->get(l));
-        delete it->second;
-      }
+      tables[this->cur_quad].run_for_all(Function<Scalar>::Node::DeallocationFunction);
       tables[this->cur_quad].clear();
 
       this->sub_tables = &tables[this->cur_quad];
@@ -157,13 +162,7 @@ namespace Hermes
     {
       for (int i = 0; i < H2D_MAX_QUADRATURES; i++)
       {
-        for(typename std::map<uint64_t, LightArray<struct Filter<Scalar>::Node*>*>::iterator it = tables[i].begin(); it != tables[i].end(); it++)
-        {
-          for(unsigned int l = 0; l < it->second->get_size(); l++)
-            if(it->second->present(l))
-              ::free(it->second->get(l));
-          delete it->second;
-        }
+        tables[i].run_for_all(Function<Scalar>::Node::DeallocationFunction);
         tables[i].clear();
       }
 
@@ -219,7 +218,7 @@ namespace Hermes
     SimpleFilter<Scalar>::SimpleFilter() : Filter<Scalar>()
     {
     }
-    
+
     template<typename Scalar>
     SimpleFilter<Scalar>::SimpleFilter(Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions, const Hermes::vector<int> items)
     {
@@ -371,7 +370,7 @@ namespace Hermes
       this->unimesh = false;
     }
 
-     ComplexFilter::ComplexFilter(MeshFunctionSharedPtr<std::complex<double> > solution, int item) : Filter<double>()
+    ComplexFilter::ComplexFilter(MeshFunctionSharedPtr<std::complex<double> > solution, int item) : Filter<double>()
     {
       this->num = 0;
       this->unimesh = false;
@@ -390,17 +389,7 @@ namespace Hermes
     {
       for (int i = 0; i < H2D_MAX_QUADRATURES; i++)
       {
-#ifdef _MSC_VER // For Visual Studio compiler the latter does not compile.
-        for(std::map<uint64_t, LightArray<Node*>*>::iterator it = tables[i].begin(); it != tables[i].end(); it++)
-#else
-        for(std::map<uint64_t, LightArray<struct Function<double>::Node*>*>::iterator it = tables[i].begin(); it != tables[i].end(); it++)
-#endif
-        {
-          for(unsigned int l = 0; l < it->second->get_size(); l++)
-            if(it->second->present(l))
-              ::free(it->second->get(l));
-          delete it->second;
-        }
+        tables[i].run_for_all(Function<double>::Node::DeallocationFunction);
         tables[i].clear();
       }
     }
@@ -419,13 +408,7 @@ namespace Hermes
 
       memset(sln_sub, 0, sizeof(sln_sub));
 
-      for(std::map<uint64_t, LightArray<struct Function<double>::Node*>*>::iterator it = tables[this->cur_quad].begin(); it != tables[this->cur_quad].end(); it++)
-      {
-        for(unsigned int l = 0; l < it->second->get_size(); l++)
-          if(it->second->present(l))
-            ::free(it->second->get(l));
-        delete it->second;
-      }
+      tables[this->cur_quad].run_for_all(Function<double>::Node::DeallocationFunction);
       tables[this->cur_quad].clear();
 
       this->sub_tables = &tables[this->cur_quad];
@@ -697,7 +680,7 @@ namespace Hermes
       this->num = 1;
       Filter<double>::init();
     };
-    
+
     BottomValFilter::~BottomValFilter()
     {
     }
@@ -1051,7 +1034,7 @@ namespace Hermes
     }
 
     VonMisesFilter::VonMisesFilter(MeshFunctionSharedPtr<double>* solutions, int num, double lambda, double mu,
-        int cyl, int item1, int item2): Filter<double>(solutions, num)
+      int cyl, int item1, int item2): Filter<double>(solutions, num)
     {
       this->mu = mu;
       this->lambda = lambda;

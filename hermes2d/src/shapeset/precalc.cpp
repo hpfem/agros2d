@@ -21,7 +21,7 @@ namespace Hermes
 {
   namespace Hermes2D
   {
-    PrecalcShapeset::PrecalcShapeset(Shapeset* shapeset) : Function<double>()
+    PrecalcShapeset::PrecalcShapeset(Shapeset* shapeset) : Function<double>(), tables(6, 64)
     {
       if(shapeset == NULL)
         throw Exceptions::NullException(0);
@@ -33,7 +33,7 @@ namespace Hermes
       set_quad_2d(&g_quad_2d_std);
     }
 
-    PrecalcShapeset::PrecalcShapeset(PrecalcShapeset* pss) : Function<double>()
+    PrecalcShapeset::PrecalcShapeset(PrecalcShapeset* pss) : Function<double>(), tables(6, 64)
     {
       while (pss->is_slave())
         pss = pss->master_pss;
@@ -55,19 +55,6 @@ namespace Hermes
       Function<double>::set_quad_2d(quad_2d);
     }
 
-    void PrecalcShapeset::handle_overflow_idx()
-    {
-      if(overflow_nodes != NULL)
-      {
-        for(unsigned int i = 0; i < overflow_nodes->get_size(); i++)
-          if(overflow_nodes->present(i))
-            ::free(overflow_nodes->get(i));
-        delete overflow_nodes;
-      }
-      nodes = new LightArray<Node *>;
-      overflow_nodes = nodes;
-    }
-
     void PrecalcShapeset::set_active_shape(int index)
     {
       // Key creation.
@@ -76,13 +63,13 @@ namespace Hermes
       if(master_pss == NULL)
       {
         if(!tables.present(key))
-          tables.add(new std::map<uint64_t, LightArray<Node*>*>, key);
+          tables.add(new SubElementMap<LightArray<Node*> >, key);
         sub_tables = tables.get(key);
       }
       else
       {
         if(!master_pss->tables.present(key))
-          master_pss->tables.add(new std::map<uint64_t, LightArray<Node*>*>, key);
+          master_pss->tables.add(new SubElementMap<LightArray<Node*> >, key);
         sub_tables = master_pss->tables.get(key);
       }
 
@@ -132,6 +119,7 @@ namespace Hermes
         assert(nodes->get(order) == cur_node);
         ::free(nodes->get(order));
       }
+
       nodes->add(node, order);
       cur_node = node;
     }
@@ -143,23 +131,10 @@ namespace Hermes
       for(unsigned int i = 0; i < tables.get_size(); i++)
         if(tables.present(i))
         {
-          for(std::map<uint64_t, LightArray<Node*>*>::iterator it = tables.get(i)->begin(); it != tables.get(i)->end(); it++)
-          {
-            for(unsigned int k = 0; k < it->second->get_size(); k++)
-              if(it->second->present(k))
-                ::free(it->second->get(k));
-            delete it->second;
-          }
+          tables.get(i)->run_for_all(Node::DeallocationFunction);
           delete tables.get(i);
         }
 
-        if(overflow_nodes != NULL)
-        {
-          for(unsigned int i = 0; i < overflow_nodes->get_size(); i++)
-            if(overflow_nodes->present(i))
-              ::free(overflow_nodes->get(i));
-          delete overflow_nodes;
-        }
     }
 
     extern PrecalcShapeset ref_map_pss;

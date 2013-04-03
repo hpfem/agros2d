@@ -20,6 +20,7 @@
 
 #include <vector>
 #include <limits.h>
+#include "tcmalloc.h"
 
 #ifndef INVALID_IDX
 #define INVALID_IDX      INT_MAX
@@ -285,8 +286,9 @@ namespace Hermes
     class LightArray
     {
     protected:
-      Hermes::vector<TYPE*> pages; //\todo standard array for maximum access speed
-      Hermes::vector<bool*> presence; //\todo standard array for maximum access speed
+      TYPE** pages;
+      int page_count;
+      bool ** presence;
       unsigned int size;
 
       const unsigned int page_bits;
@@ -295,34 +297,57 @@ namespace Hermes
 
     public:
 
-      LightArray(unsigned int page_bits = 9) : page_bits(page_bits), page_size(1 << page_bits), page_mask((1 << page_bits) - 1)
+      LightArray(unsigned int page_bits = 9, unsigned int default_page_count = 512) : page_bits(page_bits), page_size(1 << page_bits), page_mask((1 << page_bits) - 1), page_count(default_page_count)
       {
         size = 0;
+        pages = (TYPE**)malloc(page_count * sizeof(TYPE*));
+        presence = (bool**)malloc(page_count * sizeof(bool*));
+
+        for(int i = 0; i < page_count; i++)
+        {
+          pages[i] = (TYPE*)malloc(page_size*sizeof(TYPE));
+          presence[i] = (bool*)calloc(page_size, sizeof(bool));
+        }
+      }
+
+      void clear()
+      {
+        for(unsigned int i = 0; i < page_count; i++)
+        {
+          memset(presence[i], 0, page_size * sizeof(bool));
+        }
       }
 
       ~LightArray()
       {
-        for(unsigned int i = 0; i < pages.size(); i++)
+        for(unsigned int i = 0; i < page_count; i++)
         {
-          delete [] pages[i];
-          delete [] presence[i];
+          free(pages[i]);
+          free(presence[i]);
         }
-        pages.clear();
-        presence.clear();
+        free(pages);
+        free(presence);
       }
 
       /// Adds a new item to the array.
       void add(TYPE item, unsigned int id)
       {
         TYPE* temp;
-        while(id >= pages.size() * page_size)
-        {
-          TYPE* new_page = new TYPE[page_size];
-          pages.push_back(new_page);
 
-          bool* new_page_presence = new bool[page_size];
-          memset(new_page_presence, 0, page_size * sizeof(bool));
-          presence.push_back(new_page_presence);
+        if(id >= page_count * page_size)
+        {
+          int new_page_count = page_count + ((id - (page_count * page_size)) / page_size) + 2;
+
+          pages = (TYPE**)realloc(pages, new_page_count * sizeof(TYPE*));
+          presence = (bool**)realloc(presence, new_page_count * sizeof(bool*));
+
+          for(int i = page_count; i < new_page_count; i++)
+          {
+            pages[i] = (TYPE*)malloc(page_size*sizeof(TYPE));
+            presence[i] = (bool*)calloc(page_size, sizeof(bool));
+          }
+
+          page_count = new_page_count;
         }
 
         temp = pages[id >> page_bits] + (id & page_mask);

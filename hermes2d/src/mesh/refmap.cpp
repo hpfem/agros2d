@@ -157,7 +157,8 @@ namespace Hermes
 
     void RefMap::set_active_element(Element* e)
     {
-      if(e != element) free();
+      if(e != element)
+        free();
 
       ref_map_pss.set_active_element(e);
       num_tables = quad_2d->get_num_tables(e->get_mode());
@@ -920,54 +921,70 @@ namespace Hermes
     void RefMap::init_node(Node* pp)
     {
       memset(pp->inv_ref_map, 0, num_tables * sizeof(double2x2*));
+      memset(pp->jacobian, 0, num_tables * sizeof(double*));
       memset(pp->second_ref_map, 0, num_tables * sizeof(double3x2*));
       memset(pp->phys_x, 0, num_tables * sizeof(double*));
       memset(pp->phys_y, 0, num_tables * sizeof(double*));
       memset(pp->tan, 0, sizeof(pp->tan));
+      pp->num_tables = this->num_tables;
     }
 
     void RefMap::free_node(Node* node)
     {
       // destroy all precalculated tables
-      for (int i = 0; i < num_tables; i++)
+      for (int i = 0; i < node->num_tables; i++)
       {
         if(node->inv_ref_map[i] != NULL)
-        {
           delete [] node->inv_ref_map[i];
+
+        if(node->jacobian[i] != NULL)
           delete [] node->jacobian[i];
-        }
-        if(node->second_ref_map[i] != NULL) delete [] node->second_ref_map[i];
-        if(node->phys_x[i] != NULL) delete [] node->phys_x[i];
-        if(node->phys_y[i] != NULL) delete [] node->phys_y[i];
+
+        if(node->second_ref_map[i] != NULL)
+          delete [] node->second_ref_map[i];
+
+        if(node->phys_x[i] != NULL)
+          delete [] node->phys_x[i];
+
+        if(node->phys_y[i] != NULL)
+          delete [] node->phys_y[i];
       }
 
-      for (int i = 0; i < 4; i++)
+      for (int i = 0; i < H2D_MAX_NUMBER_EDGES; i++)
         if(node->tan[i] != NULL)
           delete [] node->tan[i];
 
       delete node;
     }
 
-    void RefMap::free()
+     void RefMap::update_cur_node()
     {
-      std::map<uint64_t, Node*>::iterator it;
-
-      for (it = nodes.begin(); it != nodes.end(); ++it)
-        free_node(it->second);
-      nodes.clear();
-      if(overflow != NULL)
+      bool to_add = true;
+      SubElementMap<Node>::Node* node_array = this->nodes.get(sub_idx, to_add);
+      if(to_add)
       {
-        free_node(overflow); delete overflow; overflow = NULL;
+        cur_node = new Node;
+        init_node(cur_node);
+        node_array->data = cur_node;
       }
+      else
+        cur_node = node_array->data;
     }
 
-    RefMap::Node* RefMap::handle_overflow()
+    void RefMap::force_transform(uint64_t sub_idx, Trf* ctm)
     {
-      if(overflow != NULL)
-        free_node(overflow);
-      overflow = new Node;
-      init_node(overflow);
-      return overflow;
+      this->sub_idx = sub_idx;
+      stack[top] = *ctm;
+      this->ctm = stack + top;
+      update_cur_node();
+      if(is_const)
+        calc_const_inv_ref_map();
+    }
+
+    void RefMap::free()
+    {
+      nodes.run_for_all(DeallocationFunction);
+      nodes.clear();
     }
   }
 }

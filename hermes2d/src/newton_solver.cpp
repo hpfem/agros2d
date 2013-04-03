@@ -87,6 +87,12 @@ namespace Hermes
     }
 
     template<typename Scalar>
+    void NewtonSolver<Scalar>::free_cache()
+    {
+      static_cast<DiscreteProblem<Scalar>*>(this->dp)->free_cache();
+    }
+
+    template<typename Scalar>
     void NewtonSolver<Scalar>::set_weak_formulation(const WeakForm<Scalar>* wf)
     {
       (static_cast<DiscreteProblem<Scalar>*>(this->dp))->set_weak_formulation(wf);
@@ -319,11 +325,6 @@ namespace Hermes
           fclose(rhs_file);
           delete [] fileName;
         }
-        
-        Element* e;
-        for(unsigned int i = 0; i < static_cast<DiscreteProblem<Scalar>*>(this->dp)->get_spaces().size(); i++)
-          for_all_active_elements(e, static_cast<DiscreteProblem<Scalar>*>(this->dp)->get_spaces()[i]->get_mesh())
-            static_cast<DiscreteProblem<Scalar>*>(this->dp)->get_spaces()[i]->edata[e->id].changed_in_last_adaptation = false;
 
         // Measure the residual norm.
         if(residual_as_function)
@@ -587,11 +588,6 @@ namespace Hermes
           residual->dump(rhs_file, this->RhsVarname.c_str(), this->RhsFormat, this->rhs_number_format);
           fclose(rhs_file);
         }
-
-        Element* e;
-        for(unsigned int i = 0; i < static_cast<DiscreteProblem<Scalar>*>(this->dp)->get_spaces().size(); i++)
-          for_all_active_elements(e, static_cast<DiscreteProblem<Scalar>*>(this->dp)->get_spaces()[i]->get_mesh())
-            static_cast<DiscreteProblem<Scalar>*>(this->dp)->get_spaces()[i]->edata[e->id].changed_in_last_adaptation = false;
 
         // Measure the residual norm.
         if(residual_as_function)

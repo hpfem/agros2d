@@ -67,6 +67,9 @@ namespace Hermes
       /// \param son[in] Son element number in the range[0-3] for triangles and[0-7] for quads.
       virtual void push_transform(int son);
 
+      /// If this changes, NeighborSearch::H2D_MAX_NEIGHBORS must change too.
+      static const unsigned int H2D_MAX_TRN_LEVEL = 15;
+
     protected:
 
       Transformable();
@@ -96,7 +99,6 @@ namespace Hermes
 
       static void push_transforms(std::set<Transformable *>& transformables, int son);
       static void pop_transforms(std::set<Transformable *>& transformables);
-      static const unsigned int H2D_MAX_TRN_LEVEL = 15;
 
       /// The active element.
       Element* element;
@@ -121,6 +123,7 @@ namespace Hermes
       template<typename T> friend class Function;
       template<typename T> friend class DiscontinuousFunc;
       template<typename T> friend class DiscreteProblem;
+      template<typename T> friend class DiscreteProblemCache;
       template<typename T> friend class DiscreteProblemLinear;
       template<typename T> friend class NeighborSearch;
       friend class CurvMap;

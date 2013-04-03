@@ -19,12 +19,12 @@
 
 #ifdef _WINDOWS
 template<typename Scalar>
-MeshFunctionSharedPtr<Scalar>::MeshFunctionSharedPtr(Hermes::Hermes2D::MeshFunction<Scalar> * ptr) : std::tr1::shared_ptr<Hermes::Hermes2D::MeshFunction<Scalar> >(ptr)
+MeshFunctionSharedPtr<Scalar>::MeshFunctionSharedPtr(Hermes::Hermes2D::MeshFunction<Scalar> * ptr) : std::shared_ptr<Hermes::Hermes2D::MeshFunction<Scalar> >(ptr)
 {
 }
 
 template<typename Scalar>
-MeshFunctionSharedPtr<Scalar>::MeshFunctionSharedPtr(const MeshFunctionSharedPtr& other) : std::tr1::shared_ptr<Hermes::Hermes2D::MeshFunction<Scalar> >(other)
+MeshFunctionSharedPtr<Scalar>::MeshFunctionSharedPtr(const MeshFunctionSharedPtr& other) : std::shared_ptr<Hermes::Hermes2D::MeshFunction<Scalar> >(other)
 {
 }
 
@@ -95,13 +95,6 @@ namespace Hermes
     MeshFunction<Scalar>::~MeshFunction()
     {
       delete refmap;
-      if(this->overflow_nodes != NULL)
-      {
-        for(unsigned int i = 0; i < this->overflow_nodes->get_size(); i++)
-          if(this->overflow_nodes->present(i))
-            ::free(this->overflow_nodes->get(i));
-        delete this->overflow_nodes;
-      }
       free();
     }
 
@@ -131,6 +124,7 @@ namespace Hermes
       }
       catch(std::exception& e)
       {
+        std::cout << e.what();
         okay = false;
       }
       return okay;
@@ -304,19 +298,6 @@ namespace Hermes
       mode = e->get_mode();
       refmap->set_active_element(e);
       Function<Scalar>::reset_transform();
-    }
-
-    template<typename Scalar>
-    void MeshFunction<Scalar>::handle_overflow_idx()
-    {
-      if(this->overflow_nodes != NULL) {
-        for(unsigned int i = 0; i < this->overflow_nodes->get_size(); i++)
-          if(this->overflow_nodes->present(i))
-            ::free(this->overflow_nodes->get(i));
-        delete this->overflow_nodes;
-      }
-      this->nodes = new LightArray<typename Function<Scalar>::Node *>;
-      this->overflow_nodes = this->nodes;
     }
 
     template<typename Scalar>

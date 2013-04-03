@@ -27,12 +27,12 @@
 
 #ifdef _WINDOWS
 template<typename Scalar>
-SpaceSharedPtr<Scalar>::SpaceSharedPtr(Hermes::Hermes2D::Space<Scalar> * ptr) : std::tr1::shared_ptr<Hermes::Hermes2D::Space<Scalar> >(ptr)
+SpaceSharedPtr<Scalar>::SpaceSharedPtr(Hermes::Hermes2D::Space<Scalar> * ptr) : std::shared_ptr<Hermes::Hermes2D::Space<Scalar> >(ptr)
 {
 }
 
 template<typename Scalar>
-SpaceSharedPtr<Scalar>::SpaceSharedPtr(const SpaceSharedPtr& other) : std::tr1::shared_ptr<Hermes::Hermes2D::Space<Scalar> >(other)
+SpaceSharedPtr<Scalar>::SpaceSharedPtr(const SpaceSharedPtr& other) : std::shared_ptr<Hermes::Hermes2D::Space<Scalar> >(other)
 {
 }
 
@@ -782,15 +782,15 @@ namespace Hermes
       Element *e;
       for_all_active_elements(e, coarse_space->get_mesh())
       {
-        if(this->coarse_space->edata[e->id].changed_in_last_adaptation)
+        bool to_set = this->coarse_space->edata[e->id].changed_in_last_adaptation;
         {
           if(ref_space->mesh->get_element(e->id)->active)
-            ref_space->edata[e->id].changed_in_last_adaptation = true;
+            ref_space->edata[e->id].changed_in_last_adaptation = to_set;
           else
             for(unsigned int i = 0; i < 4; i++)
               if(ref_space->mesh->get_element(e->id)->sons[i] != NULL)
                 if(ref_space->mesh->get_element(e->id)->sons[i]->active)
-                  ref_space->edata[ref_space->mesh->get_element(e->id)->sons[i]->id].changed_in_last_adaptation = true;
+                  ref_space->edata[ref_space->mesh->get_element(e->id)->sons[i]->id].changed_in_last_adaptation = to_set;
         }
       }
     }
@@ -944,7 +944,6 @@ namespace Hermes
           throw
             Hermes::Exceptions::Exception("Uninitialized element order in Space::assign_dofs().");
         }
-        this->edata[e->id].changed_in_last_adaptation = true;
       }
 
       this->first_dof = next_dof = first_dof;
@@ -1019,7 +1018,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void Space<Scalar>::get_element_assembly_list(Element* e, AsmList<Scalar>* al, unsigned int first_dof) const
+    void Space<Scalar>::get_element_assembly_list(Element* e, AsmList<Scalar>* al) const
     {
       this->check();
       // some checks
@@ -1039,7 +1038,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void Space<Scalar>::get_boundary_assembly_list(Element* e, int surf_num, AsmList<Scalar>* al, unsigned int first_dof) const
+    void Space<Scalar>::get_boundary_assembly_list(Element* e, int surf_num, AsmList<Scalar>* al) const
     {
       this->check();
       al->cnt = 0;
