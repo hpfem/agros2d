@@ -1,18 +1,3 @@
-from libcpp.vector cimport vector
-from libcpp cimport bool
-
-cdef extern from "<string>" namespace "std":
-    cdef cppclass string:
-        string()
-        string(char *)
-        char * c_str()
-
-cdef extern from "limits.h":
-    int c_INT_MIN "INT_MIN"
-    int c_INT_MAX "INT_MAX"
-    int c_DOUBLE_MIN "DOUBLE_MIN"
-    int c_DOUBLE_MAX "DOUBLE_MAX"
-
 cdef extern from "../../agros2d-library/pythonlab/pyparticletracing.h":
     cdef cppclass PyParticleTracing:
         PyParticleTracing()
@@ -70,13 +55,6 @@ cdef extern from "../../agros2d-library/pythonlab/pyparticletracing.h":
         void positions(vector[double] &x, vector[double] &y, vector[double] &z)
         void velocities(vector[double] &x, vector[double] &y, vector[double] &z)
         void times(vector[double] &times)
-
-cdef object double_vector_to_list(vector[double] vector):
-    out = list()
-    for i in range(vector.size()):
-        out.append(vector[i])
-
-    return out
 
 cdef vector[double] list_to_double_vector(list):
     cdef vector[double] vector
