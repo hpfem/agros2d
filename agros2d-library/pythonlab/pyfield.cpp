@@ -646,8 +646,8 @@ void PyField::adaptivityInfo(int timeStep, const std::string &solutionType, vect
     for (int i = 0; i < adaptiveSteps; i++)
     {
         SolutionStore::SolutionRunTimeDetails runTime = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(m_fieldInfo, timeStep, i, solutionMode));
-        error.push_back(runTime.adaptivity_error);
-        dofs.push_back(runTime.DOFs);
+        error.push_back(runTime.adaptivityError());
+        dofs.push_back(runTime.DOFs());
     }
 }
 
