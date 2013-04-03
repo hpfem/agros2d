@@ -17,59 +17,73 @@ cdef extern from "../../agros2d-library/pythonlab/pyparticletracing.h":
     cdef cppclass PyParticleTracing:
         PyParticleTracing()
 
-        void setInitialPosition(double x, double y) except +
-        void getInitialPosition(double x, double y)
+        void getInitialPosition(vector[double] &position)
+        void setInitialPosition(vector[double] &position) except +
 
-        void setInitialVelocity(double x, double y)
-        void getInitialVelocity(double x, double y)
+        void getInitialVelocity(vector[double] &velocity)
+        void setInitialVelocity(vector[double] &velocity)
 
-        int getNumberOfParticles()
         void setNumberOfParticles(int particles)  except +
+        int getNumberOfParticles()
 
-        double getStartingRadius()
         void setStartingRadius(double radius) except +
+        double getStartingRadius()
 
-        void setParticleMass(double mass) except +
         double getParticleMass()
+        void setParticleMass(double mass) except +
 
-        void setParticleCharge(double charge)
         double getParticleCharge()
+        void setParticleCharge(double charge)
 
-        void setDragForceDensity(double rho) except +
         double getDragForceDensity()
-        void setDragForceReferenceArea(double area) except +
+        void setDragForceDensity(double rho) except +
         double getDragForceReferenceArea()
-        void setDragForceCoefficient(double coeff) except +
+        void setDragForceReferenceArea(double area) except +
         double getDragForceCoefficient()
+        void setDragForceCoefficient(double coeff) except +
 
-        void setCustomForce(double x, double y, double z) except +
-        void getCustomForce(double x, double y, double z) except +
+        void getCustomForce(vector[double] &force) except +
+        void setCustomForce(vector[double] &force) except +
 
-        void setIncludeRelativisticCorrection(bool incl)
         bool getIncludeRelativisticCorrection()
+        void setIncludeRelativisticCorrection(bool incl)
 
-        void setButcherTableType(string &tableType) except +
         string getButcherTableType()
-        void setMaximumTolerance(double tolerance) except +
-        double getMaximumTolerance()
-        void setMaximumNumberOfSteps(int steps) except +
+        void setButcherTableType(string &tableType) except +
+        double getMaximumRelativeError()
+        void setMaximumRelativeError(double tolerance) except +
         int getMaximumNumberOfSteps()
-        void setMinimumStep(double step) except +
+        void setMaximumNumberOfSteps(int steps) except +
         double getMinimumStep()
+        void setMinimumStep(double step) except +
 
-        void setReflectOnDifferentMaterial(bool reflect)
         bool getReflectOnDifferentMaterial()
-        void setReflectOnBoundary(bool reflect)
+        void setReflectOnDifferentMaterial(bool reflect)
         bool getReflectOnBoundary()
-        void setCoefficientOfRestitution(double coeff)
+        void setReflectOnBoundary(bool reflect)
         double getCoefficientOfRestitution()
+        void setCoefficientOfRestitution(double coeff)
 
         void solve() except +
 
         int length()
-        void positions(vector[double] x, vector[double] y, vector[double] z)
-        void velocities(vector[double] x, vector[double] y, vector[double] z)
-        void times(vector[double] times)
+        void positions(vector[double] &x, vector[double] &y, vector[double] &z)
+        void velocities(vector[double] &x, vector[double] &y, vector[double] &z)
+        void times(vector[double] &times)
+
+cdef object double_vector_to_list(vector[double] vector):
+    out = list()
+    for i in range(vector.size()):
+        out.append(vector[i])
+
+    return out
+
+cdef vector[double] list_to_double_vector(list):
+    cdef vector[double] vector
+    for item in list:
+        vector.push_back(item)
+
+    return vector
 
 cdef class __ParticleTracing__:
     cdef PyParticleTracing *thisptr
@@ -78,6 +92,31 @@ cdef class __ParticleTracing__:
         self.thisptr = new PyParticleTracing()
     def __dealloc__(self):
         del self.thisptr
+
+    # solve
+    def solve(self):
+        self.thisptr.solve()
+
+    # length
+    def length(self):
+        return self.thisptr.length()
+
+    # positions - x, y, z or r, z, phi
+    def positions(self):
+        cdef vector[double] x, y, z
+        self.thisptr.positions(x, y, z)
+        return double_vector_to_list(x), double_vector_to_list(y), double_vector_to_list(z)
+
+    # velocities - x, y, z or r, z, phi
+    def velocities(self):
+        cdef vector[double] vx, vy, vz
+        self.thisptr.velocities(vx, vy, vz)
+        return double_vector_to_list(vx), double_vector_to_list(vy), double_vector_to_list(vz)
+    # times
+    def times(self):
+        cdef vector[double] time
+        self.thisptr.times(time)
+        return double_vector_to_list(time)
 
     # number of particles
     property number_of_particles:
@@ -93,72 +132,23 @@ cdef class __ParticleTracing__:
         def __set__(self, dispersion):
             self.thisptr.setStartingRadius(dispersion)
 
-    # solve
-    def solve(self):
-        self.thisptr.solve()
-
-    # length
-    def length(self):
-        return self.thisptr.length()
-
-    # positions - x, y, z or r, z, phi
-    def positions(self):
-        outx = list()
-        outy = list()
-        outz = list()
-        cdef vector[double] x
-        cdef vector[double] y
-        cdef vector[double] z
-        self.thisptr.positions(x, y, z)
-        for i in range(self.thisptr.length()):
-            outx.append(x[i])
-            outy.append(y[i])
-            outz.append(z[i])
-        return outx, outy, outz
-
-    # velocities - x, y, z or r, z, phi
-    def velocities(self):
-        outx = list()
-        outy = list()
-        outz = list()
-        cdef vector[double] x
-        cdef vector[double] y
-        cdef vector[double] z
-        self.thisptr.velocities(x, y, z)
-        for i in range(self.thisptr.length()):
-            outx.append(x[i])
-            outy.append(y[i])
-            outz.append(z[i])
-        return outx, outy, outz
-
-    # times
-    def times(self):
-        outtime = list()
-        cdef vector[double] time
-        self.thisptr.times(time)
-        for i in range(self.thisptr.length()):
-            outtime.append(time[i])
-        return outtime
-
     # initial position
     property initial_position:
         def __get__(self):
-            cdef double x = 0.0
-            cdef double y = 0.0
-            self.thisptr.getInitialPosition(x, y)
-            return x, y
-        def __set__(self, xy):
-            self.thisptr.setInitialPosition(xy[0], xy[1])
+            cdef vector[double] position
+            self.thisptr.getInitialPosition(position)
+            return double_vector_to_list(position)
+        def __set__(self, position):
+            self.thisptr.setInitialPosition(list_to_double_vector(position))
 
     # initial velocity
     property initial_velocity:
         def __get__(self):
-            cdef double x = 0.0
-            cdef double y = 0.0
-            self.thisptr.getInitialVelocity(x, y)
-            return x, y
-        def __set__(self, xy):
-            self.thisptr.setInitialVelocity(xy[0], xy[1])
+            cdef vector[double] velocity
+            self.thisptr.getInitialVelocity(velocity)
+            return double_vector_to_list(velocity)
+        def __set__(self, velocity):
+            self.thisptr.setInitialVelocity(list_to_double_vector(velocity))
 
     # mass
     property mass:
@@ -205,8 +195,8 @@ cdef class __ParticleTracing__:
     property drag_force_density:
         def __get__(self):
             return self.thisptr.getDragForceDensity()
-        def __set__(self, rho):
-            self.thisptr.setDragForceDensity(rho)
+        def __set__(self, density):
+            self.thisptr.setDragForceDensity(density)
 
     property drag_force_reference_area:
         def __get__(self):
@@ -223,13 +213,11 @@ cdef class __ParticleTracing__:
     # custom force
     property custom_force:
         def __get__(self):
-            cdef double x = 0.0
-            cdef double y = 0.0
-            cdef double z = 0.0
-            self.thisptr.getCustomForce(x, y, z)
-            return x, y, z
-        def __set__(self, xyz):
-            self.thisptr.setCustomForce(xyz[0], xyz[1], xyz[2])
+            cdef vector[double] force
+            self.thisptr.getCustomForce(force)
+            return double_vector_to_list(force)
+        def __set__(self, force):
+            self.thisptr.setCustomForce(list_to_double_vector(force))
 
     # butcher table type
     property butcher_table_type:
@@ -245,12 +233,12 @@ cdef class __ParticleTracing__:
         def __set__(self, steps):
             self.thisptr.setMaximumNumberOfSteps(steps)
 
-    # tolerance
-    property tolerance:
+    # maximum relative error
+    property maximum_relative_error:
         def __get__(self):
-            return self.thisptr.getMaximumTolerance()
+            return self.thisptr.getMaximumRelativeError()
         def __set__(self, tolerance):
-            self.thisptr.setMaximumTolerance(tolerance)
+            self.thisptr.setMaximumRelativeError(tolerance)
 
     # minimum step
     property minimum_step:

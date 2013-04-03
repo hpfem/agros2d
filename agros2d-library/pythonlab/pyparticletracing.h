@@ -31,20 +31,12 @@ public:
     ~PyParticleTracing() {}
 
     // initial position
-    void getInitialPosition(double &x, double &y)
-    {
-        x = Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartX).toDouble();
-        y = Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartY).toDouble();
-    }
-    void setInitialPosition(double x, double y);
+    void getInitialPosition(vector<double> &position);
+    void setInitialPosition(const vector<double> &position);
 
     // initial velocity
-    void getInitialVelocity(double &x, double &y)
-    {
-        x = Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartVelocityX).toDouble();
-        y = Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleStartVelocityY).toDouble();
-    }
-    void setInitialVelocity(double x, double y);
+    void getInitialVelocity(vector<double> &velocity);
+    void setInitialVelocity(const vector<double> &velocity);
 
     // number of particles
     inline int getNumberOfParticles() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleNumberOfParticles).toInt(); }
@@ -64,15 +56,15 @@ public:
 
     // drag force
     inline double getDragForceDensity() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleDragDensity).toDouble(); }
-    void setDragForceDensity(double rho);
+    void setDragForceDensity(double density);
     inline double getDragForceReferenceArea() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleDragReferenceArea).toDouble(); }
     void setDragForceReferenceArea(double area);
     inline double getDragForceCoefficient() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleDragCoefficient).toDouble(); }
     void setDragForceCoefficient(double coeff);
 
     // custom force
-    void getCustomForce(double &x, double &y, double &z);
-    void setCustomForce(double x, double y, double z);
+    void getCustomForce(vector<double> &force);
+    void setCustomForce(const vector<double> &force);
 
     // solver
     inline std::string getButcherTableType() const
@@ -82,8 +74,8 @@ public:
     void setButcherTableType(const std::string &tableType);
     inline bool getIncludeRelativisticCorrection() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleIncludeRelativisticCorrection).toBool(); }
     void setIncludeRelativisticCorrection(bool include);
-    inline double getMaximumTolerance() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumRelativeError).toDouble(); }
-    void setMaximumTolerance(double tolerance);
+    inline double getMaximumRelativeError() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumRelativeError).toDouble(); }
+    void setMaximumRelativeError(double error);
     inline int getMaximumNumberOfSteps() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumNumberOfSteps).toInt(); }
     void setMaximumNumberOfSteps(int steps);
     inline int getMinimumStep() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMinimumStep).toInt(); }
@@ -99,10 +91,10 @@ public:
 
     void solve();
 
-    inline int length() { return m_positions.length(); }
+    inline int length() const { return m_positions.length(); }
     void positions(vector<double> &x, vector<double> &y, vector<double> &z);
     void velocities(vector<double> &x, vector<double> &y, vector<double> &z);
-    void times(std::vector<double> &time);
+    void times(vector<double> &time);
 
 private:
     // position and velocity
