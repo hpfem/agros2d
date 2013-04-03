@@ -118,8 +118,7 @@ QString createPythonFromModel(StartupScript_Type startupScript);
 
 // ************************************************************************************
 
-// functions
-void pyOpenDocument(char *str);
-void pySaveDocument(char *str);
+void openFile(const std::string &file);
+void saveFile(const std::string &file);
 
 #endif // PYTHONENGINEAGROS_H

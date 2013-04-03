@@ -594,26 +594,26 @@ QString createPythonFromModel(StartupScript_Type startupScript)
 
 // ************************************************************************************
 
-void pyOpenDocument(char *str)
+void openFile(const std::string &file)
 {
     try
     {
-        Agros2D::scene()->readFromFile(QString(str));
+        Agros2D::scene()->readFromFile(QString::fromStdString(file));
     }
     catch (AgrosException &e)
     {
-        throw invalid_argument(e.toString().toStdString());
+        throw logic_error(e.toString().toStdString());
     }
 }
 
-void pySaveDocument(char *str)
+void saveFile(const std::string &file)
 {
     try
     {
-        Agros2D::scene()->writeToFile(QString(str), false);
+        Agros2D::scene()->writeToFile(QString::fromStdString(file), false);
     }
     catch (AgrosException &e)
     {
-        throw invalid_argument(e.toString().toStdString());
+        throw logic_error(e.toString().toStdString());
     }
 }

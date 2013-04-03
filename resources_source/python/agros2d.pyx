@@ -63,11 +63,11 @@ include "pyparticletracing.pxi"
 
 # minor wrappers
 cdef extern from "../../agros2d-library/pythonlab/pythonengine_agros.h":
-    void pyOpenDocument(char *str) except +
-    void pySaveDocument(char *str) except +
+    void openFile(string &file) except +
+    void saveFile(string &file) except +
 
-def open_document(char *str):
-    pyOpenDocument(str)
+def open_file(file):
+    openFile(string(file))
 
-def save_document(char *str):
-    pySaveDocument(str)
+def save_file(file):
+    saveFile(string(file))
