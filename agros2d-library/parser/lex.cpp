@@ -90,68 +90,8 @@ void LexicalAnalyser::setPatterns()
 
 void LexicalAnalyser::setExpression(const QString &expr)
 {
-    // ToDo: Don't erase white characters
-    // QString exprTrimmed = expr.trimmed().replace(" ", "");
     QString exprTrimmed = expr.trimmed();
 
-    //    QStringList operators;
-    //    QStringList functions;
-    //    QList<Terminals>  terminals;
-
-    //    sortByLength(m_variables);
-    //    terminals.append(Terminals(ParserTokenType_VARIABLE, m_variables));
-
-    //    operators << "(" << ")" << "+" << "**" << "-" << "*" << "/" << "^" << "==" << "&&" << "||" << "<=" << ">=" << "!=" << "<" << ">" << "=" << "?" << ":" << ",";
-    //    sortByLength(operators);
-    //    terminals.append(Terminals(ParserTokenType_OPERATOR, operators));
-    //    functions << "sin" << "cos" << "asin" <<  "acos" << "atan" << "sinh" << "cosh" <<
-    //                 "tanh" << "asinh" << "acosh" << "atanh" << "log2" << "log10" << "log" <<
-    //                 "exp" << "sqrt" << "sign" << "abs" << "min" << "max" << "sum" << "avg" << "pow";
-    //    // TODO: conflict "tan" with "tanx", "tany", "tanr", "tanz" in surface forms
-
-    //    sortByLength(functions);
-    //    terminals.append(Terminals(ParserTokenType_FUNCTION, functions));
-
-    //    int pos = 0;
-
-    //    QRegExp r_exp = QRegExp("[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?");
-
-    //    int loop_counter = 0;
-    //    int n = exprTrimmed.count();
-    //    int old_pos = 0;
-    //    int nesting_level = 0;
-
-    //    while ((pos < n) && (loop_counter < n))
-    //    {
-    //        loop_counter++;
-    //        int index = r_exp.indexIn(exprTrimmed, pos);
-
-    //        if(index == pos)
-    //        {
-    //            QString text = r_exp.capturedTexts().takeFirst();
-    //            Token symbol(ParserTokenType_NUMBER, text, nesting_level, pos);
-    //            pos += text.count();
-    //            m_tokens.append(symbol);
-    //        }
-
-    //        foreach(Terminals terminal_symbols, terminals)
-    //        {
-    //            terminal_symbols.find(exprTrimmed, m_tokens, pos, nesting_level);
-    //        }
-
-    //        if (old_pos == pos)
-    //        {
-    //            throw ParserException(QString("Unexpected symbol '%1' on position %2 in expression '%3'").arg(exprTrimmed[pos]).arg(pos).arg(expr),
-    //                                  expr,
-    //                                  pos,
-    //                                  exprTrimmed.at(pos));
-    //            break;
-    //        }
-    //        else
-    //        {
-    //            old_pos = pos;
-    //        }
-    //    }
 
     int index = 0;
     int position = 0;

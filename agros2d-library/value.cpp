@@ -156,7 +156,18 @@ void Value::setText(const QString &str)
     m_isCoordinateDependent = false;
 
     LexicalAnalyser lex;
-    lex.setExpression(m_text);
+
+    // ToDo: Improve
+    try
+    {
+        lex.setExpression(m_text);
+    }
+
+    catch(ParserException e)
+    {
+        // Nothing to do at this point.
+    }
+
     foreach (Token token, lex.tokens())
     {
         if (token.type() == ParserTokenType_VARIABLE)
