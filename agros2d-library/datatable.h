@@ -23,31 +23,51 @@
 #include "util.h"
 #include "spline.h"
 
-class DataTable : public Hermes::Hermes2D::CubicSpline
+enum DataTableType
+{
+    DataTableType_CubicSpline,
+    DataTableType_PiecewiseLinear
+};
+
+class PiecewiseLinear
+{
+public:
+    PiecewiseLinear(Hermes::vector<double> points, Hermes::vector<double> values);
+    int leftIndex(double x);
+    double value(double x);
+    double derivative(double x);
+
+private:
+    Hermes::vector<double> m_points;
+    Hermes::vector<double> m_values;
+
+    Hermes::vector<double> m_derivatives;
+    int m_size;
+};
+
+class DataTable
 {
 public:
     DataTable();
     DataTable(Hermes::vector<double> points, Hermes::vector<double> values);
-    DataTable(double key, double value);
-    DataTable(double *keys, double *values, int count);
 
-    void clear();
-    void remove(double key);
+    void setValues(Hermes::vector<double> points, Hermes::vector<double> values);
+    void setValues(vector<double> points, vector<double> values);
+    void setValues(double *keys, double *values, int count);
+    void setType(DataTableType type);
 
-    void add(double key, double value, bool calculate);
-    void add(double *keys, double *values, int count);
-    void add(Hermes::vector<double> points, Hermes::vector<double> values);
-    void add(vector<double> points, vector<double> values);
-
+    double value(double x);
+    double derivative(double x);
     int size() const;
+    void clear();
 
-    double minKey();
-    double maxKey();
-    double minValue();
-    double maxValue();
+    double minKey() const;
+    double maxKey() const;
+    double minValue() const;
+    double maxValue() const;
 
-    inline Hermes::vector<double> pointsVector() { return points; }
-    inline Hermes::vector<double> valuesVector() { return values; }
+    inline Hermes::vector<double> pointsVector() { return m_points; }
+    inline Hermes::vector<double> valuesVector() { return m_values; }
 
     QString toString() const;
     QString toStringX() const;
@@ -55,9 +75,20 @@ public:
     void fromString(const std::string &str);
     inline void fromString(const QString &str) { fromString(str.toStdString()); }
 
-    // void save(const char *filename, double start, double end, int count);
-
 private:
+    void inValidate();
+    void validate();
+
+    void setImplicit();
+
+    Hermes::vector<double> m_points;
+    Hermes::vector<double> m_values;
+    bool m_valid;
+    DataTableType m_type;
+
+    Hermes::Hermes2D::CubicSpline *m_spline;
+    PiecewiseLinear *m_linear;
 };
+
 
 #endif // DATATABLE_H

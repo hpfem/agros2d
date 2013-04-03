@@ -19,164 +19,179 @@
 
 #include "datatable.h"
 
-DataTable::DataTable()
-    : Hermes::Hermes2D::CubicSpline(Hermes::vector<double>(), Hermes::vector<double>(), 0.0, 0.0)
+DataTable::DataTable() : m_valid(false)
 {
+    setImplicit();
 }
 
 DataTable::DataTable(Hermes::vector<double> points, Hermes::vector<double> values)
-    : Hermes::Hermes2D::CubicSpline(Hermes::vector<double>(), Hermes::vector<double>(), 0.0, 0.0)
+    : m_valid(false), m_points(points), m_values(values)
 {
-    add(points, values);
-}
-
-DataTable::DataTable(double key, double value)
-    : Hermes::Hermes2D::CubicSpline(Hermes::vector<double>(), Hermes::vector<double>(), 0.0, 0.0)
-{
-    add(key, value);
-}
-
-DataTable::DataTable(double *keys, double *values, int count)
-    : Hermes::Hermes2D::CubicSpline(Hermes::vector<double>(), Hermes::vector<double>(), 0.0, 0.0)
-{
-    add(keys, values, count);
+    setImplicit();
 }
 
 void DataTable::clear()
 {
-    points.clear();
-    values.clear();
-
-    this->calculate_coeffs();
+    setValues(Hermes::vector<double>(), Hermes::vector<double>());
 }
 
-void DataTable::remove(double key)
+void DataTable::setValues(Hermes::vector<double> points, Hermes::vector<double> values)
 {
-    Hermes::vector<double>::iterator ip = points.begin();
-    Hermes::vector<double>::iterator iv = values.begin();
-
-    while (ip != points.end())
-    {
-        if (fabs((*ip) - key) < EPS_ZERO)
-        {
-            ip = points.erase(ip);
-            iv = values.erase(iv);
-
-            break;
-        }
-        ++ip;
-        ++iv;
-    }
+    inValidate();
+    m_points = points;
+    m_values = values;
 }
 
-void DataTable::add(double key, double value, bool calculate)
-{
-    Hermes::vector<double>::iterator ip = points.begin();
-    Hermes::vector<double>::iterator iv = values.begin();
-
-    // first value
-    if (key < (*ip))
-    {
-        points.insert(ip, key);
-        values.insert(iv, value);
-    }
-
-
-    while (ip != points.end())
-    {
-        // key already exists -> replace value
-        if (((*ip) - key) < EPS_ZERO)
-        {
-            (*iv) = value;
-            break;
-        }
-
-        ++ip;
-        ++iv;
-    }
-
-    // last value
-    if (key > (*ip))
-    {
-        points.push_back(key);
-        values.push_back(value);
-    }
-
-    calculate_coeffs();
-}
-
-void DataTable::add(double *keys, double *values, int count)
-{
-    for (int i = 0; i < count; i++)
-    {
-        this->points.push_back(keys[i]);
-        this->values.push_back(values[i]);
-    }
-
-    calculate_coeffs();
-}
-
-void DataTable::add(vector<double> points, vector<double> values)
+void DataTable::setValues(vector<double> points, vector<double> values)
 {
     assert(points.size() == values.size());
 
+    inValidate();
+    m_points.clear();
+    m_values.clear();
     for (int i = 0; i < points.size(); i++)
     {
-        this->points.push_back(points[i]);
-        this->values.push_back(values[i]);
+        m_points.push_back(points[i]);
+        m_values.push_back(values[i]);
     }
-
-    calculate_coeffs();
 }
 
-void DataTable::add(Hermes::vector<double> points, Hermes::vector<double> values)
+void DataTable::setValues(double *keys, double *values, int count)
 {
-    assert(points.size() == values.size());
+    inValidate();
+    for (int i = 0; i < count; i++)
+    {
+        m_points.push_back(keys[i]);
+        m_values.push_back(values[i]);
+    }
+}
 
-    this->points = points;
-    this->values = values;
+void DataTable::setType(DataTableType type)
+{
+    inValidate();
+    m_type = type;
+}
 
-    calculate_coeffs();
+void DataTable::setImplicit()
+{
+    m_spline = NULL;
+    m_linear = NULL;
+    m_type = DataTableType_CubicSpline;
+}
+
+double DataTable::value(double x)
+{
+    if(! m_valid)
+        validate();
+
+    if(m_type == DataTableType_PiecewiseLinear)
+    {
+        return m_linear->value(x);
+    }
+    else if(m_type == DataTableType_CubicSpline)
+    {
+        return m_spline->value(x);
+    }
+    else
+        assert(0);
+}
+
+double DataTable::derivative(double x)
+{
+    if(! m_valid)
+        validate();
+
+    if(m_type == DataTableType_PiecewiseLinear)
+    {
+        return m_linear->derivative(x);
+    }
+    else if(m_type == DataTableType_CubicSpline)
+    {
+        return m_spline->derivative(x);
+    }
+    else
+        assert(0);
+}
+
+void DataTable::inValidate()
+{
+    m_valid = false;
+
+    if(m_type == DataTableType_PiecewiseLinear)
+    {
+        delete m_linear;
+        m_linear = NULL;
+    }
+    else if(m_type == DataTableType_CubicSpline)
+    {
+        delete m_spline;
+        m_spline = NULL;
+    }
+    else
+        assert(0);
+
+    assert(m_linear == NULL);
+    assert(m_spline == NULL);
+}
+
+void DataTable::validate()
+{
+    assert(m_linear == NULL);
+    assert(m_spline == NULL);
+
+    if(m_type == DataTableType_PiecewiseLinear)
+    {
+        m_linear = new PiecewiseLinear(m_points, m_values);
+    }
+    else if(m_type == DataTableType_CubicSpline)
+    {
+        m_spline = new Hermes::Hermes2D::CubicSpline(m_points, m_values, 0.0, 0.0);
+        m_spline->calculate_coeffs();
+    }
+    else
+        assert(0);
+
+    m_valid = true;
 }
 
 int DataTable::size() const
 {
-    assert(points.size() == values.size());
+    assert(m_points.size() == m_values.size());
 
-    return points.size();
+    return m_points.size();
 }
 
-double DataTable::minKey()
-{   
+double DataTable::minKey() const
+{
     double min = 0.0;
-    foreach (double point, points)
+    foreach (double point, m_points)
         min = std::min(point, min);
 
     return min;
 }
 
-double DataTable::maxKey()
+double DataTable::maxKey() const
 {
     double max = 0.0;
-    foreach (double point, points)
+    foreach (double point, m_points)
         max = std::max(point, max);
 
     return max;
 }
 
-double DataTable::minValue()
+double DataTable::minValue() const
 {
     double min = 0.0;
-    foreach (double value, values)
+    foreach (double value, m_values)
         min = std::min(value, min);
 
     return min;
 }
 
-double DataTable::maxValue()
+double DataTable::maxValue() const
 {
     double max = 0.0;
-    foreach (double value, values)
+    foreach (double value, m_values)
         max = std::max(value, max);
 
     return max;
@@ -191,10 +206,10 @@ QString DataTable::toStringX() const
 {
     QString str;
 
-    for (int i = 0; i < points.size(); i++)
+    for (int i = 0; i < m_points.size(); i++)
     {
-        str += QString::number(points[i]);
-        if (i < points.size() - 1)
+        str += QString::number(m_points[i]);
+        if (i < m_points.size() - 1)
             str += ",";
     }
 
@@ -205,10 +220,10 @@ QString DataTable::toStringY() const
 {
     QString str;
 
-    for (int i = 0; i < values.size(); i++)
+    for (int i = 0; i < m_values.size(); i++)
     {
-        str += QString::number(values[i]);
-        if (i < values.size() - 1)
+        str += QString::number(m_values[i]);
+        if (i < m_values.size() - 1)
             str += ",";
     }
 
@@ -217,9 +232,11 @@ QString DataTable::toStringY() const
 
 void DataTable::fromString(const std::string &str)
 {
+    inValidate();
+
     // clear
-    points.clear();
-    values.clear();
+    m_points.clear();
+    m_values.clear();
 
     std::string::const_iterator pos = std::find(str.begin(), str.end(), ';');
 
@@ -232,7 +249,7 @@ void DataTable::fromString(const std::string &str)
     std::istringstream i_keys(str_keys);
     while (i_keys >> number)
     {
-        points.push_back(number);
+        m_points.push_back(number);
         if (i_keys.peek() == ',')
             i_keys.ignore();
     }
@@ -241,14 +258,66 @@ void DataTable::fromString(const std::string &str)
     std::istringstream i_values(str_values);
     while (i_values >> number)
     {
-        values.push_back(number);
+        m_values.push_back(number);
         if (i_values.peek() == ',')
             i_values.ignore();
     }
 
-    assert(points.size() == values.size());
+    assert(m_points.size() == m_values.size());
+}
 
-    calculate_coeffs();
+
+PiecewiseLinear::PiecewiseLinear(Hermes::vector<double> points, Hermes::vector<double> values)
+    : m_points(points), m_values(values)
+{
+    assert(m_points.size() == m_values.size());
+    m_size = m_points.size();
+
+    for(int i = 0; i < m_size - 1; i++)
+    {
+        m_derivatives.push_back((m_values[i+1] - m_values[i]) / (m_points[i+1] - m_points[i]));
+    }
+}
+
+int PiecewiseLinear::leftIndex(double x)
+{
+  int i_left = 0;
+  int i_right = m_size - 1;
+  assert(i_right >= 0);
+
+  if(x < m_points[i_left]) return -1;
+  if(x > m_points[i_right]) return i_right;
+
+  while (i_left + 1 < i_right)
+  {
+    int i_mid = (i_left + i_right) / 2;
+    if(m_points[i_mid] < x) i_left = i_mid;
+    else i_right = i_mid;
+  }
+
+  return i_left;
+}
+
+double PiecewiseLinear::value(double x)
+{
+    int leftIdx = leftIndex(x);
+    if(leftIdx == -1)
+        return m_values[0];
+    else if(leftIdx == m_size - 1)
+        return m_values[m_size - 1];
+    else
+        return m_values[leftIdx] + m_derivatives[leftIdx] * (x - m_points[leftIdx]);
+}
+
+double PiecewiseLinear::derivative(double x)
+{
+    int leftIdx = leftIndex(x);
+    if(leftIdx == -1)
+        return 0;
+    else if(leftIdx == m_size - 1)
+        return 0;
+    else
+        return m_derivatives[leftIdx];
 }
 
 /*

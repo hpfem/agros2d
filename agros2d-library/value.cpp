@@ -39,7 +39,7 @@ Value::Value(double value, std::vector<double> x, std::vector<double> y)
 
     m_text = QString::number(value);
     m_number = value;
-    m_table.add(x, y);
+    m_table.setValues(x, y);
 }
 
 Value::Value(const QString &value)
@@ -54,7 +54,7 @@ Value::Value(const QString &value, std::vector<double> x, std::vector<double> y)
     assert(x.size() == y.size());
 
     parseFromString(value.isEmpty() ? "0" : value);
-    m_table.add(x, y);
+    m_table.setValues(x, y);
 }
 
 Value::Value(const QString &value, const DataTable &table)

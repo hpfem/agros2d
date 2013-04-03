@@ -131,7 +131,7 @@ bool ValueDataTableDialog::parseTable(bool addToTable)
     if (addToTable)
     {
         m_table.clear();
-        m_table.add(keys, values, count);
+        m_table.setValues(keys, values, count);
     }
 
     delete [] keys;

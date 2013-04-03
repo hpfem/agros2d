@@ -28,7 +28,6 @@
 
 class QwtPlotCurve;
 class ChartBasic;
-class DataTable;
 class FieldInfo;
 class ValueLineEdit;
 
