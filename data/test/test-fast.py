@@ -1,3 +1,8 @@
+# 192 sekund - debug verze, baterka, nova cache, tccache
+# 236 sekund - debug verze, baterka, stara cache
+# 135 sekund - release verze, baterka, stara cache
+# 127 sekund - release verze, baterka, nova cache, tccache
+
 import time
 
 start = time.time()
