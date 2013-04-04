@@ -72,12 +72,28 @@ void DataTable::setType(DataTableType type)
     m_type = type;
 }
 
+void DataTable::setSplineFirstDerivatives(bool fd)
+{
+    inValidate();
+    m_splineFirstDerivatives = fd;
+}
+
+void DataTable::setExtrapolateConstant(bool ec)
+{
+    inValidate();
+    m_extrapolateConstant = ec;
+}
+
+
 void DataTable::setImplicit()
 {
     m_spline = NULL;
     m_linear = NULL;
     m_constant = NULL;
     m_type = DataTableType_CubicSpline;
+    m_splineFirstDerivatives = true;
+    m_extrapolateConstant = true;
+
 }
 
 double DataTable::value(double x)
@@ -161,7 +177,7 @@ void DataTable::validate()
     }
     else if(m_type == DataTableType_CubicSpline)
     {
-        m_spline = new Hermes::Hermes2D::CubicSpline(m_points, m_values, 0.0, 0.0);
+        m_spline = new Hermes::Hermes2D::CubicSpline(m_points, m_values, 0.0, 0.0, m_splineFirstDerivatives, m_splineFirstDerivatives, !m_extrapolateConstant, !m_extrapolateConstant);
         m_spline->calculate_coeffs();
     }
     else if(m_type == DataTableType_Constant)
@@ -254,6 +270,10 @@ QString DataTable::toStringSetting() const
 {
     QString str;
     str += dataTableTypeToStringKey(m_type);
+    str += ",";
+    str += QString::number(int(m_splineFirstDerivatives));
+    str += ",";
+    str += QString::number(int(m_extrapolateConstant));
     // todo: add more settings here, separated by comas
 
     return str;
@@ -262,7 +282,15 @@ QString DataTable::toStringSetting() const
 void DataTable::propertiesFromString(const QString &str)
 {
     QStringList lst = str.split(",");
-    m_type = dataTableTypeFromStringKey(lst.at(0));
+    if(lst.size() >= 1)
+        m_type = dataTableTypeFromStringKey(lst.at(0));
+
+    if(lst.size() >= 2)
+        m_splineFirstDerivatives = lst.at(1).toInt();
+
+    if(lst.size() >= 3)
+        m_extrapolateConstant = lst.at(2).toInt();
+
     // todo: read more settings here
 }
 

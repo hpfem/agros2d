@@ -62,12 +62,18 @@ public:
     void setValues(Hermes::vector<double> points, Hermes::vector<double> values);
     void setValues(vector<double> points, vector<double> values);
     void setValues(double *keys, double *values, int count);
+
     void setType(DataTableType type);
+    void setSplineFirstDerivatives(bool fd);
+    void setExtrapolateConstant(bool ec);
 
     double value(double x);
     double derivative(double x);
     int size() const;
     DataTableType type() const {return m_type;}
+    bool splineFirstDerivatives() const {return m_splineFirstDerivatives; }
+    bool extrapolateConstant() const {return m_extrapolateConstant; }
+
     void clear();
 
     double minKey() const;
@@ -94,7 +100,10 @@ private:
     Hermes::vector<double> m_points;
     Hermes::vector<double> m_values;
     bool m_valid;
+
     DataTableType m_type;
+    bool m_splineFirstDerivatives;
+    bool m_extrapolateConstant;
 
     Hermes::Hermes2D::CubicSpline *m_spline;
     PiecewiseLinear *m_linear;

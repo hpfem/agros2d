@@ -61,7 +61,12 @@ private:
 
     QCheckBox *chkDerivative;
     QCheckBox *chkMarkers;
+
     QComboBox *cmbType;
+    QRadioButton *radFirstDerivative;
+    QRadioButton *radSecondDerivative;
+    QRadioButton *radExtrapolateConstant;
+    QRadioButton *radExtrapolateLinear;
 
     QPushButton *btnOk;
     QPushButton *btnClose;
@@ -87,6 +92,8 @@ private slots:
     void doShowDerivativeClicked();
     void doMaterialBrowser();
     void doTypeChanged();
+    void doSplineDerivativeChanged();
+    void doExtrapolateChanged();
 };
 
 #endif // DATATABLEDIALOG_H

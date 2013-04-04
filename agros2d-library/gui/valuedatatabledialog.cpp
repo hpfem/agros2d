@@ -205,11 +205,38 @@ void ValueDataTableDialog::createControls()
     cmbType->setCurrentIndex(m_table.type());
     connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged()));
 
+
+    radFirstDerivative = new QRadioButton("First");
+    radSecondDerivative = new QRadioButton("Second");
+    QButtonGroup *derivativeGroup = new QButtonGroup();
+    derivativeGroup->addButton(radFirstDerivative);
+    derivativeGroup->addButton(radSecondDerivative);
+    radFirstDerivative->setChecked(m_table.splineFirstDerivatives());
+    radSecondDerivative->setChecked(!m_table.splineFirstDerivatives());
+    connect(radFirstDerivative, SIGNAL(clicked()), this, SLOT(doSplineDerivativeChanged()));
+    connect(radSecondDerivative, SIGNAL(clicked()), this, SLOT(doSplineDerivativeChanged()));
+
+    radExtrapolateConstant = new QRadioButton("Constant");
+    radExtrapolateLinear = new QRadioButton("Linear function");
+    QButtonGroup *extrapolatinGroup = new QButtonGroup();
+    extrapolatinGroup->addButton(radExtrapolateConstant);
+    extrapolatinGroup->addButton(radExtrapolateLinear);
+    radExtrapolateConstant->setChecked(m_table.extrapolateConstant());
+    radExtrapolateLinear->setChecked(!m_table.extrapolateConstant());
+    connect(radExtrapolateConstant, SIGNAL(clicked()), this, SLOT(doExtrapolateChanged()));
+    connect(radExtrapolateLinear, SIGNAL(clicked()), this, SLOT(doExtrapolateChanged()));
+
     QGridLayout *layoutSettings = new QGridLayout();
     layoutSettings->addWidget(chkMarkers, 3, 0, 1, 2);
     layoutSettings->addWidget(chkDerivative, 4, 0, 1, 2);
-    layoutSettings->addWidget(new QLabel(tr("Type")), 5, 0, 1, 2);
-    layoutSettings->addWidget(cmbType, 5, 1, 1, 2);
+    layoutSettings->addWidget(new QLabel(tr("Interpolation")), 5, 0, 1, 1);
+    layoutSettings->addWidget(cmbType, 5, 1, 1, 1);
+    layoutSettings->addWidget(new QLabel(tr("Derivative to be zero at endpoints:")), 6, 0, 1, 2);
+    layoutSettings->addWidget(radFirstDerivative, 7, 0, 1, 1);
+    layoutSettings->addWidget(radSecondDerivative, 7, 1, 1, 1);
+    layoutSettings->addWidget(new QLabel(tr("Extrapolate as:")), 8, 0, 1, 2);
+    layoutSettings->addWidget(radExtrapolateConstant, 9, 0, 1, 1);
+    layoutSettings->addWidget(radExtrapolateLinear, 9, 1, 1, 1);
 
     QGridLayout *controlsLayout = new QGridLayout();
     controlsLayout->addWidget(lblLabelX, 0, 0);
@@ -336,7 +363,16 @@ void ValueDataTableDialog::doPlot()
 
     // interpolation
     int countSpline = count*1e3;
-    double dx = (m_table.maxKey() - m_table.minKey()) / (countSpline);
+    double keyLength = m_table.maxKey() - m_table.minKey();
+    double keyStart = m_table.minKey();
+    if(1)
+    {
+        double overlap = 0.15;
+        keyStart -= keyLength * overlap;
+        keyLength *= (1 + 2*overlap);
+    }
+
+    double dx = keyLength / (countSpline);
 
     double *keysSpline = new double[countSpline];
     double *valuesSpline = new double[countSpline];
@@ -345,7 +381,7 @@ void ValueDataTableDialog::doPlot()
     // spline
     for (int i = 0; i < countSpline; i++)
     {
-        keysSpline[i] = m_table.minKey() + (i * dx);
+        keysSpline[i] = keyStart + (i * dx);
         valuesSpline[i] = m_table.value(keysSpline[i]);
         derivativesSpline[i] = m_table.derivative(keysSpline[i]);
     }
@@ -366,6 +402,20 @@ void ValueDataTableDialog::doShowDerivativeClicked()
 void ValueDataTableDialog::doTypeChanged()
 {
     m_table.setType(DataTableType(cmbType->currentIndex()));
+    doPlot();
+}
+
+void ValueDataTableDialog::doSplineDerivativeChanged()
+{
+    assert(radFirstDerivative->isChecked() != radSecondDerivative->isChecked());
+    m_table.setSplineFirstDerivatives(radFirstDerivative->isChecked());
+    doPlot();
+}
+
+void ValueDataTableDialog::doExtrapolateChanged()
+{
+    assert(radExtrapolateConstant->isChecked() != radExtrapolateLinear->isChecked());
+    m_table.setExtrapolateConstant(radExtrapolateConstant->isChecked());
     doPlot();
 }
 
