@@ -231,18 +231,37 @@ void ValueDataTableDialog::createControls()
     connect(radExtrapolateConstant, SIGNAL(clicked()), this, SLOT(doExtrapolateChanged()));
     connect(radExtrapolateLinear, SIGNAL(clicked()), this, SLOT(doExtrapolateChanged()));
 
-    QGridLayout *layoutSettings = new QGridLayout();
-    layoutSettings->addWidget(chkMarkers, 3, 0, 1, 2);
-    layoutSettings->addWidget(chkDerivative, 4, 0, 1, 2);
-    layoutSettings->addWidget(chkExtrapolation, 5, 0, 1, 2);
-    layoutSettings->addWidget(new QLabel(tr("Interpolation")), 6, 0, 1, 1);
-    layoutSettings->addWidget(cmbType, 6, 1, 1, 1);
-    layoutSettings->addWidget(new QLabel(tr("Derivative to be zero at endpoints:")), 7, 0, 1, 2);
-    layoutSettings->addWidget(radFirstDerivative, 8, 0, 1, 1);
-    layoutSettings->addWidget(radSecondDerivative, 8, 1, 1, 1);
-    layoutSettings->addWidget(new QLabel(tr("Extrapolate as:")), 9, 0, 1, 2);
-    layoutSettings->addWidget(radExtrapolateConstant, 10, 0, 1, 1);
-    layoutSettings->addWidget(radExtrapolateLinear, 10, 1, 1, 1);
+    QGridLayout *layoutView = new QGridLayout();
+    layoutView->addWidget(chkMarkers, 0, 0, 1, 2);
+    layoutView->addWidget(chkDerivative, 1, 0, 1, 2);
+    layoutView->addWidget(chkExtrapolation, 2, 0, 1, 2);
+
+    QGroupBox *grpView = new QGroupBox(tr("View"));
+    grpView->setLayout(layoutView);
+
+    QGridLayout *layoutType = new QGridLayout();
+    layoutType->addWidget(new QLabel(tr("Interpolation")), 0, 0, 1, 1);
+    layoutType->addWidget(cmbType, 0, 1, 1, 1);
+
+    QGroupBox *grpType = new QGroupBox();
+    grpType->setLayout(layoutType);
+
+    QGridLayout *layoutInterpolation = new QGridLayout();
+    layoutInterpolation->addWidget(new QLabel(tr("Derivative to be zero at endpoints:")), 0, 0, 1, 2);
+    layoutInterpolation->addWidget(radFirstDerivative, 1, 0, 1, 1);
+    layoutInterpolation->addWidget(radSecondDerivative, 1, 1, 1, 1);
+    layoutInterpolation->addWidget(new QLabel(tr("Extrapolate as:")), 2, 0, 1, 2);
+    layoutInterpolation->addWidget(radExtrapolateConstant, 3, 0, 1, 1);
+    layoutInterpolation->addWidget(radExtrapolateLinear, 3, 1, 1, 1);
+
+    grpInterpolation = new QGroupBox(tr("Spline properties"));
+    grpInterpolation->setLayout(layoutInterpolation);
+    grpInterpolation->setEnabled(m_table.type() == DataTableType_CubicSpline);
+
+    QVBoxLayout *layoutSettings = new QVBoxLayout();
+    layoutSettings->addWidget(grpView);
+    layoutSettings->addWidget(grpType);
+    layoutSettings->addWidget(grpInterpolation);
 
     QGridLayout *controlsLayout = new QGridLayout();
     controlsLayout->addWidget(lblLabelX, 0, 0);
@@ -408,6 +427,7 @@ void ValueDataTableDialog::doShowDerivativeClicked()
 void ValueDataTableDialog::doTypeChanged()
 {
     m_table.setType(DataTableType(cmbType->currentIndex()));
+    grpInterpolation->setEnabled(m_table.type() == DataTableType_CubicSpline);
     doPlot();
 }
 
