@@ -61,6 +61,7 @@ private:
 
     QCheckBox *chkDerivative;
     QCheckBox *chkMarkers;
+    QCheckBox *chkExtrapolation;
 
     QComboBox *cmbType;
     QRadioButton *radFirstDerivative;

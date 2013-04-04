@@ -44,6 +44,7 @@ ValueDataTableDialog::ValueDataTableDialog(DataTable table, QWidget *parent, con
     restoreGeometry(settings.value("DataTableDialog/Geometry", saveGeometry()).toByteArray());
     chkDerivative->setChecked(settings.value("DataTableDialog/Derivative", false).toBool());
     chkMarkers->setChecked(settings.value("DataTableDialog/Markers", true).toBool());
+    chkExtrapolation->setChecked(settings.value("DataTableDialog/Extrapolation", true).toBool());
 
     chartDerivative->setVisible(chkDerivative->isChecked());
 }
@@ -54,6 +55,7 @@ ValueDataTableDialog::~ValueDataTableDialog()
     settings.setValue("DataTableDialog/Geometry", saveGeometry());
     settings.setValue("DataTableDialog/Derivative", chkDerivative->isChecked());
     settings.setValue("DataTableDialog/Markers", chkMarkers->isChecked());
+    settings.setValue("DataTableDialog/Extrapolation", chkExtrapolation->isChecked());
 }
 
 void ValueDataTableDialog::processDataTable()
@@ -194,6 +196,9 @@ void ValueDataTableDialog::createControls()
     chkMarkers = new QCheckBox(tr("Show markers"));
     connect(chkMarkers, SIGNAL(clicked()), this, SLOT(doPlot()));
 
+    chkExtrapolation = new QCheckBox(tr("Show extrapolation"));
+    connect(chkExtrapolation, SIGNAL(clicked()), this, SLOT(doPlot()));
+
     chkDerivative = new QCheckBox(tr("Derivative chart"));
     connect(chkDerivative, SIGNAL(clicked()), this, SLOT(doShowDerivativeClicked()));
     doShowDerivativeClicked();
@@ -229,14 +234,15 @@ void ValueDataTableDialog::createControls()
     QGridLayout *layoutSettings = new QGridLayout();
     layoutSettings->addWidget(chkMarkers, 3, 0, 1, 2);
     layoutSettings->addWidget(chkDerivative, 4, 0, 1, 2);
-    layoutSettings->addWidget(new QLabel(tr("Interpolation")), 5, 0, 1, 1);
-    layoutSettings->addWidget(cmbType, 5, 1, 1, 1);
-    layoutSettings->addWidget(new QLabel(tr("Derivative to be zero at endpoints:")), 6, 0, 1, 2);
-    layoutSettings->addWidget(radFirstDerivative, 7, 0, 1, 1);
-    layoutSettings->addWidget(radSecondDerivative, 7, 1, 1, 1);
-    layoutSettings->addWidget(new QLabel(tr("Extrapolate as:")), 8, 0, 1, 2);
-    layoutSettings->addWidget(radExtrapolateConstant, 9, 0, 1, 1);
-    layoutSettings->addWidget(radExtrapolateLinear, 9, 1, 1, 1);
+    layoutSettings->addWidget(chkExtrapolation, 5, 0, 1, 2);
+    layoutSettings->addWidget(new QLabel(tr("Interpolation")), 6, 0, 1, 1);
+    layoutSettings->addWidget(cmbType, 6, 1, 1, 1);
+    layoutSettings->addWidget(new QLabel(tr("Derivative to be zero at endpoints:")), 7, 0, 1, 2);
+    layoutSettings->addWidget(radFirstDerivative, 8, 0, 1, 1);
+    layoutSettings->addWidget(radSecondDerivative, 8, 1, 1, 1);
+    layoutSettings->addWidget(new QLabel(tr("Extrapolate as:")), 9, 0, 1, 2);
+    layoutSettings->addWidget(radExtrapolateConstant, 10, 0, 1, 1);
+    layoutSettings->addWidget(radExtrapolateLinear, 10, 1, 1, 1);
 
     QGridLayout *controlsLayout = new QGridLayout();
     controlsLayout->addWidget(lblLabelX, 0, 0);
@@ -365,7 +371,7 @@ void ValueDataTableDialog::doPlot()
     int countSpline = count*1e3;
     double keyLength = m_table.maxKey() - m_table.minKey();
     double keyStart = m_table.minKey();
-    if(1)
+    if(chkExtrapolation->isChecked())
     {
         double overlap = 0.15;
         keyStart -= keyLength * overlap;
