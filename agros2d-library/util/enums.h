@@ -219,6 +219,14 @@ enum VectorCenter
     VectorCenter_Center
 };
 
+enum DataTableType
+{
+    DataTableType_CubicSpline,
+    DataTableType_PiecewiseLinear,
+    DataTableType_Constant
+};
+
+
 AGROS_API QString stringListToString(const QStringList &list);
 
 // keys
@@ -332,6 +340,12 @@ AGROS_API QString vectorCenterString(VectorCenter vectorCenter);
 AGROS_API QStringList vectorCenterStringKeys();
 AGROS_API QString vectorCenterToStringKey(VectorCenter vectorCenter);
 AGROS_API VectorCenter vectorCenterFromStringKey(const QString &vectorCenter);
+
+// data table type
+AGROS_API QString dataTableTypeString(DataTableType dataTableType);
+AGROS_API QStringList dataTableTypeStringKeys();
+AGROS_API QString dataTableTypeToStringKey(DataTableType dataTableType);
+AGROS_API DataTableType dataTableTypeFromStringKey(const QString &dataTableType);
 
 #endif // UTIL_ENUMS_H
 

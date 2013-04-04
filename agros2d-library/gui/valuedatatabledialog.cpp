@@ -53,7 +53,7 @@ ValueDataTableDialog::~ValueDataTableDialog()
     settings.setValue("DataTableDialog/Markers", chkMarkers->isChecked());
 }
 
-void ValueDataTableDialog::setCubicSpline(DataTable table)
+void ValueDataTableDialog::setDataTable(DataTable table)
 {
     m_table = table;
 
@@ -131,7 +131,7 @@ bool ValueDataTableDialog::parseTable(bool addToTable)
     if (addToTable)
     {
         m_table.clear();
-        m_table.add(keys, values, count);
+        m_table.setValues(keys, values, count);
     }
 
     delete [] keys;
@@ -197,9 +197,18 @@ void ValueDataTableDialog::createControls()
     connect(chkDerivative, SIGNAL(clicked()), this, SLOT(doShowDerivativeClicked()));
     doShowDerivativeClicked();
 
+    cmbType = new QComboBox();
+    cmbType->addItem(dataTableTypeString(DataTableType_CubicSpline), DataTableType_CubicSpline);
+    cmbType->addItem(dataTableTypeString(DataTableType_PiecewiseLinear), DataTableType_PiecewiseLinear);
+    cmbType->addItem(dataTableTypeString(DataTableType_Constant), DataTableType_Constant);
+    cmbType->setCurrentIndex(m_table.type());
+    connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged()));
+
     QGridLayout *layoutSettings = new QGridLayout();
     layoutSettings->addWidget(chkMarkers, 3, 0, 1, 2);
     layoutSettings->addWidget(chkDerivative, 4, 0, 1, 2);
+    layoutSettings->addWidget(new QLabel(tr("Type")), 5, 0, 1, 2);
+    layoutSettings->addWidget(cmbType, 5, 1, 1, 2);
 
     QGridLayout *controlsLayout = new QGridLayout();
     controlsLayout->addWidget(lblLabelX, 0, 0);
@@ -351,6 +360,12 @@ void ValueDataTableDialog::doPlot()
 void ValueDataTableDialog::doShowDerivativeClicked()
 {
     chartDerivative->setVisible(chkDerivative->isChecked());
+}
+
+void ValueDataTableDialog::doTypeChanged()
+{
+    m_table.setType(DataTableType(cmbType->currentIndex()));
+    doPlot();
 }
 
 void ValueDataTableDialog::doMaterialBrowser()

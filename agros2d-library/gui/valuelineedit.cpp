@@ -118,8 +118,7 @@ void ValueLineEdit::setValue(const Value &value)
 {
     txtLineEdit->setText(value.text());
 
-    m_table = DataTable(value.table().pointsVector(),
-                        value.table().valuesVector());
+    m_table = value.table();
 
     setLayoutValue();
     evaluate();
@@ -127,9 +126,7 @@ void ValueLineEdit::setValue(const Value &value)
 
 Value ValueLineEdit::value()
 {
-    return Value(txtLineEdit->text(),
-                 DataTable(m_table.pointsVector(),
-                           m_table.valuesVector()));
+    return Value(txtLineEdit->text(), m_table);
 }
 
 bool ValueLineEdit::evaluate(bool quiet)
@@ -303,7 +300,7 @@ void ValueLineEdit::doOpenDataTableDelete()
 void ValueLineEdit::doOpenDataTableDialog()
 {
     ValueDataTableDialog dataTableDialog(this, m_labelX, m_labelY);
-    dataTableDialog.setCubicSpline(m_table);
+    dataTableDialog.setDataTable(m_table);
     if (dataTableDialog.exec() == QDialog::Accepted)
         m_table = dataTableDialog.table();
 

@@ -21,33 +21,62 @@
 #define DATATABLE_H
 
 #include "util.h"
+#include "util/enums.h"
 #include "spline.h"
 
-class DataTable : public Hermes::Hermes2D::CubicSpline
+class PiecewiseLinear
+{
+public:
+    PiecewiseLinear(Hermes::vector<double> points, Hermes::vector<double> values);
+    double value(double x);
+    double derivative(double x);
+
+private:
+    int leftIndex(double x);
+
+    Hermes::vector<double> m_points;
+    Hermes::vector<double> m_values;
+
+    Hermes::vector<double> m_derivatives;
+    int m_size;
+};
+
+// for testing.. returns average value. Simple "linearization" of the problem
+class ConstantTable
+{
+public:
+    ConstantTable(Hermes::vector<double> points, Hermes::vector<double> values);
+    double value(double x);
+    double derivative(double x);
+
+private:
+    double m_value;
+};
+
+class DataTable
 {
 public:
     DataTable();
     DataTable(Hermes::vector<double> points, Hermes::vector<double> values);
-    DataTable(double key, double value);
-    DataTable(double *keys, double *values, int count);
 
-    void clear();
-    void remove(double key);
+    void setValues(Hermes::vector<double> points, Hermes::vector<double> values);
+    void setValues(vector<double> points, vector<double> values);
+    void setValues(double *keys, double *values, int count);
+    void setType(DataTableType type);
 
-    void add(double key, double value, bool calculate);
-    void add(double *keys, double *values, int count);
-    void add(Hermes::vector<double> points, Hermes::vector<double> values);
-    void add(vector<double> points, vector<double> values);
-
+    double value(double x);
+    double derivative(double x);
     int size() const;
+    DataTableType type() const {return m_type;}
+    void clear();
 
-    double minKey();
-    double maxKey();
-    double minValue();
-    double maxValue();
+    double minKey() const;
+    double maxKey() const;
+    double minValue() const;
+    double maxValue() const;
 
-    inline Hermes::vector<double> pointsVector() { return points; }
-    inline Hermes::vector<double> valuesVector() { return values; }
+    inline Hermes::vector<double> pointsVector() { return m_points; }
+    inline Hermes::vector<double> valuesVector() { return m_values; }
 
     QString toString() const;
     QString toStringX() const;
@@ -55,9 +84,21 @@ public:
     void fromString(const std::string &str);
     inline void fromString(const QString &str) { fromString(str.toStdString()); }
 
-    // void save(const char *filename, double start, double end, int count);
-
 private:
+    void inValidate();
+    void validate();
+
+    void setImplicit();
+
+    Hermes::vector<double> m_points;
+    Hermes::vector<double> m_values;
+    bool m_valid;
+    DataTableType m_type;
+
+    Hermes::Hermes2D::CubicSpline *m_spline;
+    PiecewiseLinear *m_linear;
+    ConstantTable *m_constant;
 };
+
 
 #endif // DATATABLE_H

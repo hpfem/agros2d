@@ -35,7 +35,7 @@ public:
     ~ValueDataTableDialog();
 
     DataTable table();
-    void setCubicSpline(DataTable table);
+    void setDataTable(DataTable table);
 
 private:
     // captions
@@ -61,6 +61,7 @@ private:
 
     QCheckBox *chkDerivative;
     QCheckBox *chkMarkers;
+    QComboBox *cmbType;
 
     QPushButton *btnOk;
     QPushButton *btnClose;
@@ -85,6 +86,7 @@ private slots:
     void doPlot();
     void doShowDerivativeClicked();
     void doMaterialBrowser();
+    void doTypeChanged();
 };
 
 #endif // DATATABLEDIALOG_H
