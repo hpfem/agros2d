@@ -219,7 +219,7 @@ double DataTable::maxValue() const
 
 QString DataTable::toString() const
 {
-    return (toStringX() + ";" + toStringY());
+    return (toStringSetting() + "$" + toStringX() + ";" + toStringY());
 }
 
 QString DataTable::toStringX() const
@@ -250,40 +250,52 @@ QString DataTable::toStringY() const
     return str;
 }
 
-void DataTable::fromString(const std::string &str)
+QString DataTable::toStringSetting() const
+{
+    QString str;
+    str += dataTableTypeToStringKey(m_type);
+    // todo: add more settings here, separated by comas
+
+    return str;
+}
+
+void DataTable::propertiesFromString(const QString &str)
+{
+    QStringList lst = str.split(",");
+    m_type = dataTableTypeFromStringKey(lst.at(0));
+    // todo: read more settings here
+}
+
+void DataTable::fromString(const QString &str)
 {
     inValidate();
+    setImplicit();
 
     // clear
     m_points.clear();
     m_values.clear();
 
-    std::string::const_iterator pos = std::find(str.begin(), str.end(), ';');
-
-    std::string str_keys(str.begin(), pos);
-    std::string str_values(pos + 1, str.end());
-
-    double number;
-
-    // keys
-    std::istringstream i_keys(str_keys);
-    while (i_keys >> number)
+    QString rest(str);
+    if(str.contains("$"))
     {
-        m_points.push_back(number);
-        if (i_keys.peek() == ',')
-            i_keys.ignore();
+        QStringList list = str.split("$");
+        propertiesFromString(list.at(0));
+        rest = list.at(1);
     }
 
-    // values
-    std::istringstream i_values(str_values);
-    while (i_values >> number)
-    {
-        m_values.push_back(number);
-        if (i_values.peek() == ',')
-            i_values.ignore();
-    }
+    QStringList lst = rest.split(";");
+    assert(lst.size() == 2);
+
+    QStringList lstPts = lst.at(0).split(",");
+    foreach (QString numStr, lstPts)
+        m_points.push_back(numStr.toDouble());
+
+    QStringList lstVal = lst.at(1).split(",");
+    foreach (QString numStr, lstVal)
+        m_values.push_back(numStr.toDouble());
 
     assert(m_points.size() == m_values.size());
+    assert(! m_points.empty());
 }
 
 

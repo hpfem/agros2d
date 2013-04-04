@@ -81,14 +81,15 @@ public:
     QString toString() const;
     QString toStringX() const;
     QString toStringY() const;
-    void fromString(const std::string &str);
-    inline void fromString(const QString &str) { fromString(str.toStdString()); }
+    QString toStringSetting() const;
+    void fromString(const QString &str);
 
 private:
     void inValidate();
     void validate();
 
     void setImplicit();
+    void propertiesFromString(const QString &str);
 
     Hermes::vector<double> m_points;
     Hermes::vector<double> m_values;

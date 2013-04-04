@@ -206,7 +206,7 @@ void Value::parseFromString(const QString &str)
         QStringList lst = str.split(";");
         this->setText(lst.at(0));
 
-        m_table.fromString((lst.at(1) + ";" + lst.at(2)).toStdString());
+        m_table.fromString((lst.at(1) + ";" + lst.at(2)));
     }
     else
     {
