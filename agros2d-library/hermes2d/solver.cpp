@@ -113,7 +113,7 @@ template <typename Scalar>
 LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block) : HermesSolverContainer<Scalar>(block)
 {
     m_linearSolver = new LinearSolver<Scalar>();
-    m_linearSolver->set_verbose_output(true);
+    m_linearSolver->set_verbose_output(false);
 }
 
 template <typename Scalar>
