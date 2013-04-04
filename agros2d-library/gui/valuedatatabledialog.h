@@ -31,11 +31,11 @@ class ValueDataTableDialog: public QDialog
     Q_OBJECT
 
 public:
-    ValueDataTableDialog(QWidget *parent = 0, const QString &labelX = "x", const QString &labelY = "y");
+    ValueDataTableDialog(DataTable table, QWidget *parent = 0, const QString &labelX = "x", const QString &labelY = "y");
     ~ValueDataTableDialog();
 
     DataTable table();
-    void setDataTable(DataTable table);
+    void processDataTable();
 
 private:
     // captions

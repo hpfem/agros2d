@@ -25,14 +25,17 @@
 #include "gui/chart.h"
 #include "qwt_symbol.h"
 
-ValueDataTableDialog::ValueDataTableDialog(QWidget *parent, const QString &labelX, const QString &labelY)
-    : QDialog(parent), m_labelX(labelX), m_labelY(labelY), m_table(DataTable())
+ValueDataTableDialog::ValueDataTableDialog(DataTable table, QWidget *parent, const QString &labelX, const QString &labelY)
+    : QDialog(parent), m_labelX(labelX), m_labelY(labelY), m_table(table)
 {
     setWindowIcon(icon("scene-function"));
     setWindowTitle(tr("Data Table"));
 
+
     createControls();
     load();
+
+    processDataTable();
     doPlot();
 
     setMinimumSize(600, 400);
@@ -53,14 +56,12 @@ ValueDataTableDialog::~ValueDataTableDialog()
     settings.setValue("DataTableDialog/Markers", chkMarkers->isChecked());
 }
 
-void ValueDataTableDialog::setDataTable(DataTable table)
+void ValueDataTableDialog::processDataTable()
 {
-    m_table = table;
-
-    for (int i = 0; i < table.pointsVector().size(); i++)
+    for (int i = 0; i < m_table.pointsVector().size(); i++)
     {
-        lstX->appendPlainText(QString::number(table.pointsVector().at(i)));
-        lstY->appendPlainText(QString::number(table.valuesVector().at(i)));
+        lstX->appendPlainText(QString::number(m_table.pointsVector().at(i)));
+        lstY->appendPlainText(QString::number(m_table.valuesVector().at(i)));
     }
 
     // plot

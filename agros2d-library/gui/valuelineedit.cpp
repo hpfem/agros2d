@@ -299,8 +299,7 @@ void ValueLineEdit::doOpenDataTableDelete()
 
 void ValueLineEdit::doOpenDataTableDialog()
 {
-    ValueDataTableDialog dataTableDialog(this, m_labelX, m_labelY);
-    dataTableDialog.setDataTable(m_table);
+    ValueDataTableDialog dataTableDialog(m_table, this, m_labelX, m_labelY);
     if (dataTableDialog.exec() == QDialog::Accepted)
         m_table = dataTableDialog.table();
 
