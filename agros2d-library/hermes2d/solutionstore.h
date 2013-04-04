@@ -27,17 +27,26 @@ class AGROS_API SolutionStore
 public:
     ~SolutionStore();
 
-    struct SolutionRunTimeDetails
+    class SolutionRunTimeDetails
     {
     public:
-        struct FileName
+        class FileName
         {
+        public:
             FileName(QString meshFileName = "", QString spaceFileName = "", QString solutionFileName = "")
-                : meshFileName(meshFileName), spaceFileName(spaceFileName), solutionFileName(solutionFileName) {}
+                : m_meshFileName(meshFileName), m_spaceFileName(spaceFileName), m_solutionFileName(solutionFileName) {}
 
-            QString meshFileName;
-            QString spaceFileName;
-            QString solutionFileName;
+            inline QString meshFileName() const { return m_meshFileName; }
+            inline void setMeshFileName(const QString &value) { m_meshFileName = value; }
+            inline QString spaceFileName() const { return m_spaceFileName; }
+            inline void setSpaceFileName(const QString &value) { m_spaceFileName = value; }
+            inline QString solutionFileName() const { return m_solutionFileName; }
+            inline void setSolutionFileName(const QString &value) { m_solutionFileName = value; }
+
+        private:
+            QString m_meshFileName;
+            QString m_spaceFileName;
+            QString m_solutionFileName;
         };
 
         SolutionRunTimeDetails(double time_step_length = 0, double error = 0, int DOFs = 0)
