@@ -211,8 +211,8 @@ void ValueDataTableDialog::createControls()
     connect(cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(doTypeChanged()));
 
 
-    radFirstDerivative = new QRadioButton("First");
-    radSecondDerivative = new QRadioButton("Second");
+    radFirstDerivative = new QRadioButton(tr("First"));
+    radSecondDerivative = new QRadioButton(tr("Second"));
     QButtonGroup *derivativeGroup = new QButtonGroup();
     derivativeGroup->addButton(radFirstDerivative);
     derivativeGroup->addButton(radSecondDerivative);
@@ -221,8 +221,8 @@ void ValueDataTableDialog::createControls()
     connect(radFirstDerivative, SIGNAL(clicked()), this, SLOT(doSplineDerivativeChanged()));
     connect(radSecondDerivative, SIGNAL(clicked()), this, SLOT(doSplineDerivativeChanged()));
 
-    radExtrapolateConstant = new QRadioButton("Constant");
-    radExtrapolateLinear = new QRadioButton("Linear function");
+    radExtrapolateConstant = new QRadioButton(tr("Constant"));
+    radExtrapolateLinear = new QRadioButton(tr("Linear function"));
     QButtonGroup *extrapolatinGroup = new QButtonGroup();
     extrapolatinGroup->addButton(radExtrapolateConstant);
     extrapolatinGroup->addButton(radExtrapolateLinear);
@@ -231,26 +231,24 @@ void ValueDataTableDialog::createControls()
     connect(radExtrapolateConstant, SIGNAL(clicked()), this, SLOT(doExtrapolateChanged()));
     connect(radExtrapolateLinear, SIGNAL(clicked()), this, SLOT(doExtrapolateChanged()));
 
-    QGridLayout *layoutView = new QGridLayout();
-    layoutView->addWidget(chkMarkers, 0, 0, 1, 2);
-    layoutView->addWidget(chkDerivative, 1, 0, 1, 2);
-    layoutView->addWidget(chkExtrapolation, 2, 0, 1, 2);
+    QVBoxLayout *layoutView = new QVBoxLayout();
+    layoutView->addWidget(chkMarkers);
+    layoutView->addWidget(chkDerivative);
+    layoutView->addWidget(chkExtrapolation);
+    layoutView->addStretch();
 
     QGroupBox *grpView = new QGroupBox(tr("View"));
     grpView->setLayout(layoutView);
 
     QGridLayout *layoutType = new QGridLayout();
-    layoutType->addWidget(new QLabel(tr("Interpolation")), 0, 0, 1, 1);
-    layoutType->addWidget(cmbType, 0, 1, 1, 1);
-
-    QGroupBox *grpType = new QGroupBox();
-    grpType->setLayout(layoutType);
+    layoutType->addWidget(new QLabel(tr("Interpolation")), 0, 0);
+    layoutType->addWidget(cmbType, 0, 1);
 
     QGridLayout *layoutInterpolation = new QGridLayout();
-    layoutInterpolation->addWidget(new QLabel(tr("Derivative to be zero at endpoints:")), 0, 0, 1, 2);
+    layoutInterpolation->addWidget(new QLabel(tr("Derivative to be zero at endpoints")), 0, 0, 1, 2);
     layoutInterpolation->addWidget(radFirstDerivative, 1, 0, 1, 1);
     layoutInterpolation->addWidget(radSecondDerivative, 1, 1, 1, 1);
-    layoutInterpolation->addWidget(new QLabel(tr("Extrapolate as:")), 2, 0, 1, 2);
+    layoutInterpolation->addWidget(new QLabel(tr("Extrapolate as")), 2, 0, 1, 2);
     layoutInterpolation->addWidget(radExtrapolateConstant, 3, 0, 1, 1);
     layoutInterpolation->addWidget(radExtrapolateLinear, 3, 1, 1, 1);
 
@@ -259,20 +257,26 @@ void ValueDataTableDialog::createControls()
     grpInterpolation->setEnabled(m_table.type() == DataTableType_CubicSpline);
 
     QVBoxLayout *layoutSettings = new QVBoxLayout();
-    layoutSettings->addWidget(grpView);
-    layoutSettings->addWidget(grpType);
+    layoutSettings->addLayout(layoutType);
     layoutSettings->addWidget(grpInterpolation);
+    layoutSettings->addWidget(grpView);
 
-    QGridLayout *controlsLayout = new QGridLayout();
-    controlsLayout->addWidget(lblLabelX, 0, 0);
-    controlsLayout->addWidget(lblInfoX, 0, 1, 1, 1, Qt::AlignRight);
-    controlsLayout->addWidget(lstX, 1, 0, 1, 2);
-    controlsLayout->addWidget(lblLabelY, 0, 2);
-    controlsLayout->addWidget(lblInfoY, 0, 3, 1, 1, Qt::AlignRight);
-    controlsLayout->addWidget(lstY, 1, 2, 1, 2);
-    controlsLayout->addWidget(lblInfoError, 2, 0, 1, 4);
-    controlsLayout->addLayout(layoutSettings, 3, 0, 1, 5);
-    controlsLayout->addLayout(chartLayout, 1, 5, 4, 1);
+    QGridLayout *tableLayout = new QGridLayout();
+    tableLayout->addWidget(lblLabelX, 0, 0);
+    tableLayout->addWidget(lblInfoX, 0, 1, 1, 1, Qt::AlignRight);
+    tableLayout->addWidget(lstX, 1, 0, 1, 2);
+    tableLayout->addWidget(lblLabelY, 0, 2);
+    tableLayout->addWidget(lblInfoY, 0, 3, 1, 1, Qt::AlignRight);
+    tableLayout->addWidget(lstY, 1, 2, 1, 2);
+    tableLayout->addWidget(lblInfoError, 2, 0, 1, 4);
+
+    QVBoxLayout *leftLayout = new QVBoxLayout();
+    leftLayout->addLayout(tableLayout, 1);
+    leftLayout->addLayout(layoutSettings);
+
+    QHBoxLayout *controlsLayout = new QHBoxLayout();
+    controlsLayout->addLayout(leftLayout);
+    controlsLayout->addLayout(chartLayout, 1);
 
     // dialog buttons
     btnOk = new QPushButton(tr("Ok"));
