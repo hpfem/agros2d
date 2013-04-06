@@ -114,6 +114,7 @@ LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block) : HermesSolve
 {
     m_linearSolver = new LinearSolver<Scalar>();
     m_linearSolver->set_verbose_output(false);
+    m_linearSolver->set_do_not_use_cache();
 }
 
 template <typename Scalar>
