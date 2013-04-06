@@ -26,8 +26,6 @@
 
 #include "datatable.h"
 
-class QwtPlotCurve;
-class ChartBasic;
 class DataTable;
 class FieldInfo;
 

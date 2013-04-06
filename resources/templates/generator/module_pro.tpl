@@ -54,10 +54,8 @@ win32-msvc2010 {
     LIBS += -Lc:/hpfem/hermes/dependencies/lib
     LIBS += -Ld:/hpfem/hermes/dependencies/lib
     LIBS += -Lc:/Python27/libs
-    LIBS += -L../../../qwt-6.0.1/lib
 
     LIBS += -lvcomp
-    LIBS += -lqwt
     LIBS += -lpython27
     LIBS += -llibumfpack
     LIBS += -llibamd

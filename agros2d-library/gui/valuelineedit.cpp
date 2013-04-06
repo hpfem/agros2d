@@ -23,7 +23,6 @@
 #include "util/conf.h"
 #include "gui/valuetimedialog.h"
 #include "gui/valuedatatabledialog.h"
-#include "gui/chart.h"
 
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
@@ -299,7 +298,7 @@ void ValueLineEdit::doOpenDataTableDelete()
 
 void ValueLineEdit::doOpenDataTableDialog()
 {
-    ValueDataTableDialog dataTableDialog(m_table, this, m_labelX, m_labelY);
+    ValueDataTableDialog dataTableDialog(m_table, this, m_labelX, m_labelY, m_title);
     if (dataTableDialog.exec() == QDialog::Accepted)
         m_table = dataTableDialog.table();
 

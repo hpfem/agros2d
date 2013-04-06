@@ -23,15 +23,14 @@
 #include "util.h"
 #include "datatable.h"
 
-class QwtPlotCurve;
-class Chart;
+class QCustomPlot;
 
 class ValueDataTableDialog: public QDialog
 {
     Q_OBJECT
 
 public:
-    ValueDataTableDialog(DataTable table, QWidget *parent = 0, const QString &labelX = "x", const QString &labelY = "y");
+    ValueDataTableDialog(DataTable table, QWidget *parent = 0, const QString &labelX = "x", const QString &labelY = "y", const QString &title = "");
     ~ValueDataTableDialog();
 
     DataTable table();
@@ -39,14 +38,14 @@ public:
 
 private:
     // captions
+    QString m_title;
     QString m_labelX;
     QString m_labelY;
 
     // charts
     DataTable m_table;
-    Chart *chartValue;
-    QwtPlotCurve *chartValueCurveMarkers;
-    Chart *chartDerivative;
+    QCustomPlot *chartValue;
+    QCustomPlot *chartDerivative;
 
     // values
     QPlainTextEdit *lstX;

@@ -21,13 +21,14 @@
 
 #include "util/global.h"
 #include "gui/valuelineedit.h"
-#include "gui/chart.h"
 
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 
 #include "pythonlab/pythonengine.h"
 #include "pythonlab/pythonengine_agros.h"
+
+#include "qcustomplot/qcustomplot.h"
 
 ValueTimeDialog::ValueTimeDialog(QWidget *parent) : QDialog(parent)
 {
@@ -80,21 +81,15 @@ void ValueTimeDialog::createControls()
     connect(cmbPresets, SIGNAL(currentIndexChanged(int)), this, SLOT(presetsChanged(int)));
 
     // chart
-    chart = new Chart(this);
+    chart = new QCustomPlot();
     // axis labels
-    chart->setAxisTitle(QwtPlot::xBottom, tr("time"));
-    chart->setAxisTitle(QwtPlot::yLeft, tr("value"));
-
-    chartCurve = new QwtPlotCurve();
-    chartCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
-    chartCurve->setStyle(QwtPlotCurve::NoCurve);
-    chartCurve->setCurveAttribute(QwtPlotCurve::Inverted);
-    chartCurve->setYAxis(QwtPlot::yLeft);
-    // chartCurve->setSymbol(QwtSymbol(QwtSymbol::Diamond, Qt::red, QPen(Qt::blue, 1), QSize(10,10)));
-    chartCurve->attach(chart);
+    chart->xAxis->setLabel(tr("time"));
+    chart->yAxis->setLabel(tr("value"));
+    chart->addGraph();
 
     QGridLayout *controlsLayout = new QGridLayout();
     controlsLayout->addWidget(chart, 0, 0, 1, 4);
+    controlsLayout->setRowStretch(0, 1);
     controlsLayout->addWidget(new QLabel(tr("Function:")), 1, 0);
     controlsLayout->addWidget(txtLineEdit, 1, 1);
     controlsLayout->setColumnStretch(1, 1);
@@ -165,28 +160,27 @@ void ValueTimeDialog::plotFunction()
     // plot solution
     int count = 200;
 
-    double *xval = new double[count];
-    double *yval = new double[count];
-
     double totalTime = txtTimeTotal->value().number();
 
     // time step
     double dt = totalTime / (count + 1);
 
+    QVector<double> pointsVector;
+    QVector<double> valuesVector;
+
     Value val(txtLineEdit->text());
     for (int i = 0; i < count; i++)
     {
-        xval[i] = i*dt;
-
-        if (!val.evaluateAtTime(xval[i]))
+        if (!val.evaluateAtTime(i*dt))
             break;
-        yval[i] = val.number();
+
+        pointsVector.append(i*dt);
+        valuesVector.append(val.number());
     }
 
-    chart->setData(xval, yval, count);
-
-    delete [] xval;
-    delete [] yval;
+    chart->graph(0)->setData(pointsVector, valuesVector);
+    chart->rescaleAxes();
+    chart->replot();
 }
 
 void ValueTimeDialog::doAccept()

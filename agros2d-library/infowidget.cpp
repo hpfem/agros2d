@@ -22,7 +22,6 @@
 #include "util/constants.h"
 #include "util/global.h"
 
-#include "gui/chart.h"
 #include "gui/common.h"
 
 #include "scene.h"

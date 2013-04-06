@@ -34,12 +34,12 @@
 #include "hermes2d/problem_config.h"
 #include "pythonlab/pythonengine_agros.h"
 
-#include "gui/chart.h"
 #include "gui/common.h"
 #include "gui/lineeditdouble.h"
 #include "gui/physicalfield.h"
 
 #include <QSvgRenderer>
+#include "qcustomplot/qcustomplot.h"
 
 QList<Point> ChartLine::getPoints()
 {
@@ -74,7 +74,13 @@ ChartView::ChartView(QWidget *parent) : QWidget(parent)
     connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(setControls()));
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
 
-    m_chart = new Chart(this);
+    m_chart = new QCustomPlot(this);
+    m_chart->setInteractions(QCustomPlot::iRangeDrag | QCustomPlot::iRangeZoom);
+    m_chart->setRangeDrag(Qt::Horizontal|Qt::Vertical);
+    m_chart->setRangeZoom(Qt::Horizontal|Qt::Vertical);
+    m_chart->addGraph();
+
+    m_chart->graph(0)->setLineStyle(QCPGraph::lsLine);
 
     QHBoxLayout *layoutMain = new QHBoxLayout();
     layoutMain->addWidget(m_chart);
@@ -188,13 +194,13 @@ void ChartWidget::createControls()
     btnSaveImage->setDefault(false);
     btnSaveImage->setEnabled(false);
     btnSaveImage->setText(tr("Save image"));
-    connect(btnSaveImage, SIGNAL(clicked()), m_chart->chart(), SLOT(saveImage()));
+    connect(btnSaveImage, SIGNAL(clicked()), this, SLOT(doSaveImage()));
 
     btnExportData = new QPushButton();
     btnExportData->setDefault(false);
     btnExportData->setEnabled(false);
     btnExportData->setText(tr("Export"));
-    connect(btnExportData, SIGNAL(clicked()), SLOT(doExportData()));
+    connect(btnExportData, SIGNAL(clicked()), this, SLOT(doExportData()));
 
     // geometry
     lblStartX = new QLabel("X:");
@@ -351,10 +357,10 @@ void ChartWidget::createControls()
     setLayout(layout);
 }
 
-QList<double> ChartWidget::horizontalAxisValues(ChartLine *chartLine)
+QVector<double> ChartWidget::horizontalAxisValues(ChartLine *chartLine)
 {
     QList<Point> points = chartLine->getPoints();
-    QList<double> xval;
+    QVector<double> xval;
 
     if (radHorizontalAxisLength->isChecked())
     {
@@ -393,15 +399,15 @@ void ChartWidget::plotGeometry()
     int count = txtHorizontalAxisPoints->value();
 
     // chart
-    m_chart->chart()->setAxisTitle(QwtPlot::yLeft, QString("%1 (%2)").
-                                   arg(physicFieldVariable.name()).
-                                   arg(physicFieldVariable.unit()));
+    m_chart->chart()->xAxis->setLabel(QString("%1 (%2)").
+                                      arg(physicFieldVariable.name()).
+                                      arg(physicFieldVariable.unit()));
 
     QString text;
     if (radHorizontalAxisLength->isChecked()) text = tr("Length (m)");
     if (radHorizontalAxisX->isChecked()) text = Agros2D::problem()->config()->labelX() + " (m)";
     if (radHorizontalAxisY->isChecked()) text = Agros2D::problem()->config()->labelY() + " (m)";
-    m_chart->chart()->setAxisTitle(QwtPlot::xBottom, text);
+    m_chart->chart()->yAxis->setLabel(text);
 
     // table
     QStringList head = headers();
@@ -413,8 +419,8 @@ void ChartWidget::plotGeometry()
     createChartLine();
 
     QList<Point> points = chartLine.getPoints();
-    QList<double> xval = horizontalAxisValues(&chartLine);
-    QList<double> yval;
+    QVector<double> xval = horizontalAxisValues(&chartLine);
+    QVector<double> yval;
 
     foreach (Module::LocalVariable variable, fieldWidget->selectedField()->localPointVariables())
     {
@@ -447,7 +453,7 @@ void ChartWidget::plotGeometry()
         }
     }
 
-    assert(xval.length() == yval.length());
+    assert(xval.count() == yval.count());
 
     // reverse x axis
     if (chkHorizontalAxisReverse->isChecked())
@@ -460,7 +466,9 @@ void ChartWidget::plotGeometry()
         }
     }
 
-    m_chart->chart()->setData(xval, yval);
+    m_chart->chart()->graph(0)->setData(xval, yval);
+    m_chart->chart()->rescaleAxes();
+    m_chart->chart()->replot();
 }
 
 void ChartWidget::plotTime()
@@ -476,17 +484,15 @@ void ChartWidget::plotTime()
     QList<double> timeLevels = Agros2D::solutionStore()->timeLevels(fieldWidget->selectedField());
 
     // chart
-    m_chart->chart()->setAxisTitle(QwtPlot::yLeft, QString("%1 (%2)").
-                                   arg(physicFieldVariable.name()).
-                                   arg(physicFieldVariable.unit()));
+    m_chart->chart()->xAxis->setLabel(QString("%1 (%2)").
+                                      arg(physicFieldVariable.name()).
+                                      arg(physicFieldVariable.unit()));
 
-    m_chart->chart()->setAxisTitle(QwtPlot::xBottom, tr("time (s)"));
+    m_chart->chart()->yAxis->setLabel(tr("time (s)"));
 
     // table
-    QStringList head = headers();
-
-    QList<double> xval;
-    QList<double> yval;
+    QVector<double> xval;
+    QVector<double> yval;
 
     createChartLine();
 
@@ -524,7 +530,9 @@ void ChartWidget::plotTime()
         }
     }
 
-    m_chart->chart()->setData(xval, yval);
+    m_chart->chart()->graph(0)->setData(xval, yval);
+    m_chart->chart()->rescaleAxes();
+    m_chart->chart()->replot();
 }
 
 QStringList ChartWidget::headers()
@@ -581,8 +589,8 @@ void ChartWidget::doApply()
         plotTime();
     }
 
-    btnSaveImage->setEnabled(m_chart->chart()->curve()->dataSize() > 0);
-    btnExportData->setEnabled(m_chart->chart()->curve()->dataSize() > 0);
+    btnSaveImage->setEnabled(m_chart->chart()->graph()->data()->size() > 0);
+    btnExportData->setEnabled(m_chart->chart()->graph()->data()->size() > 0);
 }
 
 void ChartWidget::doField()
@@ -698,6 +706,35 @@ void ChartWidget::doExportData()
         settings.setValue("General/LastDataDir", fileInfo.absolutePath());
 
     file.close();
+}
+
+void ChartWidget::doSaveImage()
+{
+    QSettings settings;
+    QString dir = settings.value("General/LastDataDir").toString();
+
+    QString selectedFilter;
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save image"), dir, tr("PNG files (*.png)"), &selectedFilter);
+    if (fileName.isEmpty())
+    {
+        cerr << "Incorrect file name." << endl;
+        return;
+    }
+
+    QFileInfo fileInfo(fileName);
+
+    // open file for write
+    if (fileInfo.suffix().isEmpty())
+        fileName = fileName + ".png";
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        cerr << "Could not create " + fileName.toStdString() + " file." << endl;
+        return;
+    }
+
+    m_chart->chart()->savePng(fileName, 1024, 768);
 }
 
 QMap<QString, double> ChartWidget::getData(Point point, int timeStep, int adaptivityStep, SolutionMode solutionType)

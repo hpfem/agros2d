@@ -36,9 +36,6 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     LIBS += -lpthread
     LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
     LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
-    # qwt
-    INCLUDEPATH += /usr/include/qwt
-    LIBS += -lqwt
 
     # mumps
     contains(CONFIG, WITH_MUMPS) {
@@ -70,15 +67,12 @@ macx-g++ {
     INCLUDEPATH += /opt/local/include/ufsparse
     INCLUDEPATH += ../3rdparty/ctemplate/osx
     INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.7
-    INCLUDEPATH += ../../qwt-6.0.1/src
 
     LIBS += -L/opt/local/lib
     LIBS += -L/usr/lib
     LIBS += -L/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config
-    LIBS += -L../../qwt-6.0.1/lib
     LIBS += -lpthread
     LIBS += -lpython2.7
-    LIBS += -lqwt
     LIBS += -lumfpack
     LIBS += -lamd
     LIBS += -lblas
@@ -95,7 +89,6 @@ win32-msvc2010 {
     DEFINES += "popen=_popen"
 
     INCLUDEPATH += c:/Python27/include
-    INCLUDEPATH += ../../qwt-6.0.1/src
     INCLUDEPATH += ../3rdparty/ctemplate/windows
     INCLUDEPATH += c:/hpfem/hermes/dependencies/include
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
@@ -109,7 +102,6 @@ win32-msvc2010 {
     LIBS += -Ld:/hpfem/hermes/dependencies/lib
 
     LIBS += -Lc:/Python27/libs
-    LIBS += -L../../qwt-6.0.1/lib
     LIBS += -lvcomp
     
     LIBS += -llibumfpack
@@ -121,12 +113,10 @@ win32-msvc2010 {
 
     CONFIG(release, debug|release) {
         LIBS += -lxerces-c_static_3
-        LIBS += -lqwt
         LIBS += -lpython27
     }
     CONFIG(debug, debug|release) {
         LIBS += -lxerces-c_static_3D
-        LIBS += -lqwtd
         LIBS += -lpython27_d
     }
 }

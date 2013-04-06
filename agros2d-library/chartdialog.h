@@ -21,13 +21,11 @@
 #define CHARTDIALOG_H
 
 #include "util.h"
-#include "gui/chart.h"
 #include "hermes2d/plugin_interface.h"
 
 #include <QSvgWidget>
 #include <QSvgRenderer>
 
-class ChartBasic;
 class LineEditDouble;
 class LineEditDouble;
 class LocalValue;
@@ -35,6 +33,7 @@ class FieldInfo;
 class SceneViewPost2D;
 class PhysicalFieldWidget;
 class SceneViewPreprocessorChart;
+class QCustomPlot;
 
 namespace Module
 {
@@ -71,13 +70,13 @@ public:
 
     QAction *actSceneModeChart;
 
-    inline ChartBasic *chart() { return m_chart; }
+    inline QCustomPlot *chart() { return m_chart; }
 
 public slots:
     void setControls();
 
 private:
-    Chart *m_chart;
+    QCustomPlot *m_chart;
 };
 
 class ChartWidget : public QWidget
@@ -140,7 +139,7 @@ private:
 
     void createControls();
 
-    QList<double> horizontalAxisValues(ChartLine *chartLine);
+    QVector<double> horizontalAxisValues(ChartLine *chartLine);
 
     void plotGeometry();
     void plotTime();
@@ -156,6 +155,7 @@ private slots:
     void doField();
     void doFieldVariable(int index);
     void doExportData();
+    void doSaveImage();
     QMap<QString, double> getData(Point point, int timeStep, int adaptivityStep, SolutionMode solutionType);
 
     void createChartLine();

@@ -200,8 +200,9 @@ ValueLineEdit *SceneFieldWidgetMaterial::addValueEditWidget(const Module::Dialog
                                                     (variable.isNonlinear() && m_material->fieldInfo()->linearityType() != LinearityType_Linear));
             if (variable.isNonlinear())
             {
-                edit->setLabelX(row.shortnameDependenceHtml());
-                edit->setLabelY(row.shortnameHtml());
+                edit->setTitle(row.name());
+                edit->setLabelX(row.shortnameDependence());
+                edit->setLabelY(row.shortname());
             }
             return edit;
         }

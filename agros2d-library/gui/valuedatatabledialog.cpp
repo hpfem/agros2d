@@ -22,11 +22,10 @@
 #include "pythonlab/pythonengine_agros.h"
 #include "materialbrowserdialog.h"
 
-#include "gui/chart.h"
-#include "qwt_symbol.h"
+#include "qcustomplot/qcustomplot.h"
 
-ValueDataTableDialog::ValueDataTableDialog(DataTable table, QWidget *parent, const QString &labelX, const QString &labelY)
-    : QDialog(parent), m_labelX(labelX), m_labelY(labelY), m_table(table)
+ValueDataTableDialog::ValueDataTableDialog(DataTable table, QWidget *parent, const QString &labelX, const QString &labelY, const QString &title)
+    : QDialog(parent), m_labelX(labelX), m_labelY(labelY), m_table(table), m_title(title)
 {
     setWindowIcon(icon("scene-function"));
     setWindowTitle(tr("Data Table"));
@@ -159,25 +158,32 @@ void ValueDataTableDialog::createControls()
     lblInfoError->setPalette(palette);
 
     // chart
-    chartValue = new Chart(this);
-    // axis labels
-    chartValue->setAxisTitle(QwtPlot::xBottom, m_labelX);
-    chartValue->setAxisTitle(QwtPlot::yLeft, m_labelY);
+    chartValue = new QCustomPlot(this);
+    chartValue->setInteractions(QCustomPlot::iRangeDrag | QCustomPlot::iRangeZoom);
+    chartValue->setRangeDrag(Qt::Horizontal|Qt::Vertical);
+    chartValue->setRangeZoom(Qt::Horizontal|Qt::Vertical);
+    chartValue->xAxis->setLabel(m_labelX);
+    chartValue->yAxis->setLabel(m_labelY);
+    chartValue->addGraph();
+    chartValue->addGraph();
 
-    chartValueCurveMarkers = new QwtPlotCurve();
-    chartValueCurveMarkers->setRenderHint(QwtPlotItem::RenderAntialiased);
-    chartValueCurveMarkers->setStyle(QwtPlotCurve::NoCurve);
-    chartValueCurveMarkers->setCurveAttribute(QwtPlotCurve::Inverted);
-    chartValueCurveMarkers->setYAxis(QwtPlot::yLeft);
-    chartValueCurveMarkers->setSymbol(new QwtSymbol(QwtSymbol::Diamond, QColor(Qt::black), QColor(Qt::black), QSize(5, 5)));
-    chartValueCurveMarkers->attach(chartValue);
+    chartValue->graph(0)->setLineStyle(QCPGraph::lsLine);
+    chartValue->graph(1)->setLineStyle(QCPGraph::lsNone);
+    chartValue->graph(1)->setScatterStyle(QCP::ssDisc);
+    chartValue->graph(1)->setScatterSize(7.0);
+    chartValue->graph(1)->setPen(QPen(Qt::gray));
 
-    chartDerivative = new Chart(this);
-    // axis labels
-    chartDerivative->setAxisTitle(QwtPlot::xBottom, m_labelX);
-    chartDerivative->setAxisTitle(QwtPlot::yLeft, QString("d%1/d%2").arg(m_labelY).arg(m_labelX));
+    chartDerivative = new QCustomPlot(this);
+    chartDerivative->setInteractions(QCustomPlot::iRangeDrag | QCustomPlot::iRangeZoom);
+    chartDerivative->setRangeDrag(Qt::Horizontal|Qt::Vertical);
+    chartDerivative->setRangeZoom(Qt::Horizontal|Qt::Vertical);
+    chartDerivative->xAxis->setLabel(m_labelX);
+    chartDerivative->yAxis->setLabel(QString("d%1/d%2").arg(m_labelY).arg(m_labelX));
+    chartDerivative->addGraph();
 
-    QGridLayout *chartLayout = new QGridLayout();
+    chartDerivative->graph(0)->setLineStyle(QCPGraph::lsLine);
+
+    QVBoxLayout *chartLayout = new QVBoxLayout();
     chartLayout->addWidget(chartValue);
     chartLayout->addWidget(chartDerivative);
 
@@ -367,8 +373,6 @@ void ValueDataTableDialog::highlightCurrentLineY()
 
 void ValueDataTableDialog::doPlot()
 {
-    chartValueCurveMarkers->setVisible(chkMarkers->isChecked());
-
     parseTable();
 
     // points
@@ -377,18 +381,14 @@ void ValueDataTableDialog::doPlot()
     Hermes::vector<double> pointsVector = m_table.pointsVector();
     Hermes::vector<double> valuesVector = m_table.valuesVector();
 
-    double *keys = new double[pointsVector.size()];
-    double *values = new double[valuesVector.size()];
+    QVector<double> pointsMarkersVector;
+    QVector<double> valuesMarkersVector;
+
     for (int i = 0; i < pointsVector.size(); i++)
     {
-        keys[i] = pointsVector[i];
-        values[i] = valuesVector[i];
+        pointsMarkersVector.append(pointsVector[i]);
+        valuesMarkersVector.append(valuesVector[i]);
     }
-
-    chartValueCurveMarkers->setSamples(keys, values, count);
-
-    delete [] keys;
-    delete [] values;
 
     // interpolation
     int countSpline = count*1e3;
@@ -403,24 +403,29 @@ void ValueDataTableDialog::doPlot()
 
     double dx = keyLength / (countSpline);
 
-    double *keysSpline = new double[countSpline];
-    double *valuesSpline = new double[countSpline];
-    double *derivativesSpline = new double[countSpline];
+    QVector<double> keysSpline;
+    QVector<double> valuesSpline;
+    QVector<double> derivativesSpline;
 
     // spline
     for (int i = 0; i < countSpline; i++)
     {
-        keysSpline[i] = keyStart + (i * dx);
-        valuesSpline[i] = m_table.value(keysSpline[i]);
-        derivativesSpline[i] = m_table.derivative(keysSpline[i]);
+        keysSpline.append(keyStart + (i * dx));
+        valuesSpline.append(m_table.value(keysSpline[i]));
+        derivativesSpline.append(m_table.derivative(keysSpline[i]));
     }
 
-    chartValue->setData(keysSpline, valuesSpline, countSpline);
-    chartDerivative->setData(keysSpline, derivativesSpline, countSpline);
+    chartValue->graph(0)->setData(keysSpline, valuesSpline);
+    if (chkMarkers->isChecked())
+        chartValue->graph(1)->setData(pointsMarkersVector, valuesMarkersVector);
+    else
+        chartValue->graph(1)->clearData();
+    chartValue->rescaleAxes();
+    chartValue->replot();
 
-    delete [] keysSpline;
-    delete [] valuesSpline;
-    delete [] derivativesSpline;
+    chartDerivative->graph(0)->setData(keysSpline, derivativesSpline);
+    chartDerivative->rescaleAxes();
+    chartDerivative->replot();
 }
 
 void ValueDataTableDialog::doShowDerivativeClicked()

@@ -22,8 +22,7 @@
 
 #include "util.h"
 
-class QwtPlotCurve;
-class ChartBasic;
+class QCustomPlot;
 
 class AGROS_API Log: public QObject
 {
@@ -99,10 +98,9 @@ private:
 
      QLabel *memoryLabel;
 
-     QwtPlotCurve *m_curve;
-     ChartBasic *m_chart;
-     QList<double> m_chartStep;
-     QList<double> m_chartNorm;
+     QCustomPlot *m_chart;
+     QVector<double> m_chartStep;
+     QVector<double> m_chartNorm;
 
      void createControls();
 

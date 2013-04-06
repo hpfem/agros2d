@@ -21,10 +21,11 @@
 
 #include "util/global.h"
 #include "util/system_utils.h"
-#include "gui/chart.h"
 
 #include "scene.h"
 #include "hermes2d/problem.h"
+
+#include "qcustomplot/qcustomplot.h"
 
 Log::Log()
 {
@@ -220,17 +221,21 @@ void LogDialog::createControls()
     logWidget = new LogWidget(this);
     memoryLabel = new QLabel("                                                         ");
 
-    m_chart = new ChartBasic(this);
-    m_chart->setVisible(false);
+    m_chart = new QCustomPlot(this);
     m_chart->setMinimumWidth(300);
+    m_chart->xAxis->setTickStep(1.0);
+    m_chart->xAxis->setAutoTickStep(false);
+    m_chart->addGraph();
+
+    m_chart->graph(0)->setLineStyle(QCPGraph::lsLine);
 
     if (Agros2D::problem()->isNonlinear())
     {
         m_chart->setVisible(true);
 
         // axes
-        m_chart->setAxisTitle(QwtPlot::yLeft, tr("error"));
-        m_chart->setAxisTitle(QwtPlot::xBottom, tr("iteration"));
+        m_chart->xAxis->setLabel(tr("iteration"));
+        m_chart->yAxis->setLabel(tr("error"));
     }
 
     QPushButton *btnClose = new QPushButton(tr("Close"));
@@ -269,10 +274,12 @@ void LogDialog::printMessage(const QString &module, const QString &message, bool
 
             if (ok)
             {
-                m_chartStep.append(m_chartStep.length() + 1);
+                m_chartStep.append(m_chartStep.count() + 1);
                 m_chartNorm.append(error);
 
-                m_chart->setData(m_chartStep, m_chartNorm);
+                m_chart->graph(0)->setData(m_chartStep, m_chartNorm);
+                m_chart->rescaleAxes();
+                m_chart->replot();
             }
         }
         else

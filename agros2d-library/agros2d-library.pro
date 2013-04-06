@@ -39,7 +39,6 @@ SOURCES += value.cpp \
     util/enums.cpp \
     util/loops.cpp \
     gui/common.cpp \
-    gui/chart.cpp \
     gui/imageloader.cpp \ 
     gui/htmledit.cpp \
     gui/scenewidget.cpp \
@@ -125,7 +124,6 @@ HEADERS += value.h \
     util/loops.h \
     util/enums.h \
     gui/common.h \
-    gui/chart.h \
     gui/imageloader.h \
     gui/htmledit.h \
     gui/scenewidget.h \
@@ -261,15 +259,12 @@ macx-g++ {
     INCLUDEPATH += /opt/local/include
     INCLUDEPATH += /opt/local/include/ufsparse
     INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python2.7
-    INCLUDEPATH += ../../qwt-6.0.1/src
 
     LIBS += -L/opt/local/lib
     LIBS += -L/usr/lib
     LIBS += -L/Library/Frameworks/Python.framework/Versions/2.7/3rdparty/python2.7/config
-    LIBS += -L../../qwt-6.0.1/lib
     LIBS += -lpthread
     LIBS += -lpython2.7
-    LIBS += -lqwt
     LIBS += -lumfpack
     LIBS += -lamd
     LIBS += -lblas
@@ -301,7 +296,6 @@ win32-msvc2010 {
     HEADERS += ../pythonlab-library/singleapp/qtsingleapplication.h
 
     INCLUDEPATH += c:/Python27/include
-    INCLUDEPATH += ../../qwt-6.0.1/src
     INCLUDEPATH += ../3rdparty/ctemplate/windows
     INCLUDEPATH += c:/hpfem/hermes/dependencies/include
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include

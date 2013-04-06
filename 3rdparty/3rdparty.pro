@@ -40,7 +40,8 @@ SOURCES += dxflib/dl_writer_ascii.cpp \
     quazip/quazipfile.cpp \
     quazip/quazipnewinfo.cpp \
     quazip/unzip.c \
-    quazip/zip.c
+    quazip/zip.c \
+    qcustomplot/qcustomplot.cpp
 
 HEADERS += \
     quazip/crypt.h \
@@ -59,6 +60,7 @@ HEADERS += \
     quazip/quazipnewinfo.h \
     quazip/unzip.h \
     quazip/zip.h \
+    qcustomplot/qcustomplot.h \
     stb_truetype/stb_truetype.h
 
 linux-g++|linux-g++-64|linux-g++-32|linux-clang {

@@ -26,8 +26,7 @@
 
 #include "datatable.h"
 
-class QwtPlotCurve;
-class ChartBasic;
+class QCustomPlot;
 class FieldInfo;
 class ValueLineEdit;
 
@@ -43,8 +42,7 @@ public:
     void setValue(Value value);
 
 private:
-    ChartBasic *chart;
-    QwtPlotCurve *chartCurve;
+    QCustomPlot *chart;
 
     QPushButton *btnOk;
     QPushButton *btnClose;

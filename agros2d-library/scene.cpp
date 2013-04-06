@@ -32,7 +32,6 @@
 #include "sceneedge.h"
 #include "scenelabel.h"
 #include "scenemarkerdialog.h"
-#include "scenefunction.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/plugin_interface.h"
 
@@ -2121,8 +2120,8 @@ void Scene::writeToFile30(const QString &fileName)
                                       fieldInfo->nonlinearSteps(),
                                       fieldInfo->nonlinearTolerance(),
                                       fieldInfo->newtonDampingCoeff(),
-                                      fieldInfo->newtonAutomaticDamping(),
-                                      (int) fieldInfo->newtonAutomaticDampingCoeff(),
+                                      (int) fieldInfo->newtonAutomaticDamping(),
+                                      fieldInfo->newtonAutomaticDampingCoeff(),
                                       fieldInfo->newtonDampingNumberToIncrease(),
                                       (int) fieldInfo->picardAndersonAcceleration(),
                                       fieldInfo->picardAndersonBeta(),

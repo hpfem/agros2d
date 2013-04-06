@@ -26,8 +26,6 @@
 
 #include "datatable.h"
 
-class QwtPlotCurve;
-class ChartBasic;
 class DataTable;
 class FieldInfo;
 
@@ -51,6 +49,8 @@ public:
     inline void setMaximumSharp(double max) { m_maximumSharp = max; }
     inline void setCondition(QString condition) { m_condition = condition; }
 
+    inline void setTitle(const QString &title) { m_title = title; }
+    inline QString title() const { return m_title; }
     inline void setLabelX(const QString &labelX) { m_labelX = labelX; }
     inline QString labelX() const { return m_labelX; }
     inline void setLabelY(const QString &labelY) { m_labelY = labelY; }
@@ -81,6 +81,7 @@ private:
     bool m_hasTimeDep;
     bool m_hasNonlin;
     DataTable m_table;
+    QString m_title;
     QString m_labelX;
     QString m_labelY;
 
