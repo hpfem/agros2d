@@ -502,18 +502,40 @@ void Problem::solveInit(bool reCreateStructure)
     }
 }
 
+
+CalculationThread::CalculationThread(bool adaptiveStep, bool commandLine) : adaptiveStep(adaptiveStep), commandLine(commandLine)
+{
+
+}
+
+void CalculationThread::run()
+{
+    Agros2D::problem()->solve(adaptiveStep, commandLine);
+}
+
+void Problem::doAbortSolve()
+{
+    m_abortSolve = true;
+}
+
 void Problem::solve()
 {
-    solve(false, false);
+    CalculationThread* thread = new CalculationThread(false, false);
+    thread->start(QThread::TimeCriticalPriority);
+    //solve(false, false);
 }
 
 void Problem::solveCommandLine()
 {
+//    MyThread* thread = new MyThread(false, true);
+//    thread->start(QThread::TimeCriticalPriority);
     solve(false, true);
 }
 
 void Problem::solveAdaptiveStep()
 {
+    CalculationThread* thread = new CalculationThread(true, false);
+    thread->start(QThread::TimeCriticalPriority);
     solve(true, false);
 }
 
@@ -521,6 +543,7 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
 {
     if (isSolving())
         return;
+    m_abortSolve = false;
 
     if (numTransientFields() > 1)
     {

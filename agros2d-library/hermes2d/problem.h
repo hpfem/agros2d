@@ -13,6 +13,29 @@ class Problem;
 class ProblemConfig;
 class ProblemSetting;
 
+class CalculationThread : public QThread
+{
+   Q_OBJECT
+
+public:
+    CalculationThread(bool adaptiveStep, bool commandLine);
+
+public slots:
+    void stopRunning();
+
+protected:
+   virtual void run();
+
+signals:
+   void signalValueUpdated(QString);
+
+private:
+    bool isRunning;
+    bool adaptiveStep;
+    bool commandLine;
+};
+
+
 /// intented as central for solution process
 /// shielded from gui and QT
 /// holds data describing individual fields, means of coupling and solutions
@@ -35,6 +58,7 @@ public slots:
     // clear problem
     void clearSolution();
     void clearFieldsAndConfig();
+    void doAbortSolve();
 
 public:
     Problem();
@@ -108,6 +132,8 @@ public:
     void readInitialMeshesFromFile();
     void readSolutionsFromFile();
 
+    bool abortSolve() { return m_abortSolve; }
+
 private:
     ProblemConfig *m_config;
     ProblemSetting *m_setting;
@@ -122,6 +148,8 @@ private:
     bool m_isSolving;
     bool m_isSolved;
 
+    bool m_abortSolve;
+
     QList<double> m_timeStepLengths;
     // int m_timeStep;
 
@@ -135,6 +163,7 @@ private:
 
     void solveAdaptiveStepAction();
     void stepMessage(Block* block);
+    friend class CalculationThread;
 };
 
 #endif // PROBLEM_H

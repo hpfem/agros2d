@@ -239,7 +239,8 @@ void LogDialog::createControls()
         m_chart->yAxis->setLabel(tr("error"));
     }
 
-    QPushButton *btnClose = new QPushButton(tr("Close"));
+    QPushButton *btnClose = new QPushButton(tr("Abort"));
+    connect(btnClose, SIGNAL(clicked()), Agros2D::problem(), SLOT(doAbortSolve()));
     connect(btnClose, SIGNAL(clicked()), this, SLOT(close()));
 
     QHBoxLayout *layoutStatus = new QHBoxLayout();
