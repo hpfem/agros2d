@@ -4,7 +4,7 @@ Requirements installation
 First install the following free packages:
 - Hermes (http://hpfem.org/hermes)
 - Digia Qt (http://qt.digia.com)
-- Qwt (http://qwt.sourceforge.net)
+- QCustomChart (http://www.workslikeclockwork.com/index.php/components/qt-plotting-widget/)
 - Python (http://www.python.org)
 - dxflib (http://www.ribbonsoft.com)
 - ctemplate (http://code.google.com/p/ctemplate)
@@ -17,7 +17,7 @@ First install the following free packages:
 
 If you are using a Debian-like system, install the required libraries by following commands:
 
-$ sudo apt-get install libqt4-dev libqt4-opengl-dev qt4-dev-tools qt4-qmake g++ libqwt6 libgwt-dev
+$ sudo apt-get install libqt4-dev libqt4-opengl-dev qt4-dev-tools qt4-qmake g++ 
 $ sudo apt-get install cython python-dev xsdcxx libxerces-c-dev
 $ sudo apt-get install triangle-bin gmsh libsuitesparse-dev libmumps-seq-dev libsuperlu3-dev libsuitesparse-dev ffmpeg
 
