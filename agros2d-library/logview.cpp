@@ -222,6 +222,7 @@ void LogDialog::createControls()
     memoryLabel = new QLabel("                                                         ");
 
     m_chart = new QCustomPlot(this);
+    m_chart->setVisible(false);
     m_chart->setMinimumWidth(300);
     m_chart->xAxis->setTickStep(1.0);
     m_chart->xAxis->setAutoTickStep(false);
