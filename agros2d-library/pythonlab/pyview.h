@@ -27,7 +27,7 @@
 struct PyView
 {
     // save image
-    void saveImageToFile(const char *file, int width, int height);
+    void saveImageToFile(const std::string &file, int width, int height);
 
     // zoom
     void zoomBestFit();
@@ -40,18 +40,18 @@ struct PyViewConfig
 {
     // grid
     void setGridShow(bool show) { set(ProblemSetting::View_ShowGrid, show); }
-    inline bool getGridShow() { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowGrid).toBool(); }
+    inline bool getGridShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowGrid).toBool(); }
 
     void setGridStep(double step);
-    inline double getGridStep() { return Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble(); }
+    inline double getGridStep() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble(); }
 
     // axes
     void setAxesShow(bool show) { set(ProblemSetting::View_ShowAxes, show); }
-    inline bool getAxesShow() { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowAxes).toBool(); }
+    inline bool getAxesShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowAxes).toBool(); }
 
     // rulers
     void setRulersShow(bool show) { set(ProblemSetting::View_ShowRulers, show); }
-    inline bool getRulersShow() { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool(); }
+    inline bool getRulersShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool(); }
 
 private:
     void set(ProblemSetting::Type type, QVariant value);
@@ -60,20 +60,20 @@ private:
 struct PyViewMeshAndPost
 {
     // field
-    void setField(const char *fieldid);
-    char* getField();
+    void setField(const std::string &fieldid);
+    std::string getField() const;
 
     // time step
     void setActiveTimeStep(int timeStep);
-    int getActiveTimeStep();
+    int getActiveTimeStep() const;
 
     // adaptivity step
     void setActiveAdaptivityStep(int adaptivityStep);
-    int getActiveAdaptivityStep();
+    int getActiveAdaptivityStep() const;
 
     // solution type
-    void setActiveSolutionType(const char *solutionType);
-    char* getActiveSolutionType();
+    void setActiveSolutionType(const std::string &solutionType);
+    std::string getActiveSolutionType() const;
 };
 
 struct PyViewMesh
@@ -101,8 +101,11 @@ struct PyViewMesh
     inline bool getOrderViewLabel() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderLabel).toBool(); }
 
     // order pallete
-    void setOrderViewPalette(char* palette);
-    inline const char* getOrderViewPalette() const { return const_cast<char*>(paletteOrderTypeToStringKey((PaletteOrderType) Agros2D::problem()->setting()->value(ProblemSetting::View_OrderPaletteOrderType).toInt()).toStdString().c_str()); }
+    void setOrderViewPalette(const std::string & palette);
+    inline std::string getOrderViewPalette() const
+    {
+        return paletteOrderTypeToStringKey((PaletteOrderType) Agros2D::problem()->setting()->value(ProblemSetting::View_OrderPaletteOrderType).toInt()).toStdString();
+    }
 
 private:
     void set(ProblemSetting::Type type, QVariant value);
@@ -111,16 +114,25 @@ private:
 struct PyViewPost
 {
     // scalar view variable
-    void setScalarViewVariable(char* var);
-    inline const char* getScalarViewVariable() const { return const_cast<char*>(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString().toStdString().c_str()); }
-    void setScalarViewVariableComp(char* component);
-    inline const char* getScalarViewVariableComp() const { return const_cast<char*>(physicFieldVariableCompToStringKey((PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt()).toStdString().c_str()); }
+    void setScalarViewVariable(const std::string & var);
+    inline std::string getScalarViewVariable() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString().toStdString(); }
+    void setScalarViewVariableComp(const std::string & component);
+    inline std::string getScalarViewVariableComp() const
+    {
+        return physicFieldVariableCompToStringKey((PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt()).toStdString();
+    }
 
     // scalar view palete
-    void setScalarViewPalette(char* palette);
-    inline const char* getScalarViewPalette() const { return const_cast<char*>(paletteTypeToStringKey((PaletteType) Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteType).toInt()).toStdString().c_str()); }
-    void setScalarViewPaletteQuality(char* quality);
-    inline const char* getScalarViewPaletteQuality() const { return const_cast<char*>(paletteQualityToStringKey((PaletteQuality) Agros2D::problem()->setting()->value(ProblemSetting::View_LinearizerQuality).toInt()).toStdString().c_str()); }
+    void setScalarViewPalette(const std::string & palette);
+    inline std::string getScalarViewPalette() const
+    {
+        return paletteTypeToStringKey((PaletteType) Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteType).toInt()).toStdString();
+    }
+    void setScalarViewPaletteQuality(const std::string & quality);
+    inline std::string getScalarViewPaletteQuality() const
+    {
+        return paletteQualityToStringKey((PaletteQuality) Agros2D::problem()->setting()->value(ProblemSetting::View_LinearizerQuality).toInt()).toStdString();
+    }
     void setScalarViewPaletteSteps(int steps);
     inline int getScalarViewPaletteSteps() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteSteps).toInt(); }
     void setScalarViewPaletteFilter(bool filter);
@@ -156,8 +168,8 @@ struct PyViewPost2D
     inline bool getContourShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowContourView).toBool(); }
     void setContourCount(int count);
     inline int getContourCount() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ContoursCount).toInt(); }
-    void setContourVariable(char* var);
-    inline const char* getContourVariable() const { return const_cast<char*>(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString().toStdString().c_str()); }
+    void setContourVariable(const std::string & var);
+    inline std::string getContourVariable() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString().toStdString(); }
 
     // vector view
     void setVectorShow(bool show) { set(ProblemSetting::View_ShowVectorView, show); }
@@ -166,8 +178,8 @@ struct PyViewPost2D
     inline int getVectorCount() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_VectorCount).toInt(); }
     void setVectorScale(double scale);
     inline double getVectorScale() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_VectorScale).toDouble(); }
-    void setVectorVariable(char* var);
-    inline const char* getVectorVariable() const { return const_cast<char*>(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString().toStdString().c_str()); }
+    void setVectorVariable(const std::string & var);
+    inline std::string getVectorVariable() const { return const_cast<char*>(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString().toStdString().c_str()); }
     void setVectorProportional(bool show) { set(ProblemSetting::View_VectorProportional, show); }
     inline bool getVectorProportional() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_VectorProportional).toBool(); }
     void setVectorColor(bool show) { set(ProblemSetting::View_VectorColor, show); }
@@ -182,8 +194,11 @@ struct PyViewPost3D
     void activate();
 
     // mode
-    void setPost3DMode(char* mode);
-    inline const char* getPost3DMode() const { return const_cast<char*>(sceneViewPost3DModeToStringKey((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt()).toStdString().c_str()); }
+    void setPost3DMode(const std::string & mode);
+    inline std::string getPost3DMode() const
+    {
+        return sceneViewPost3DModeToStringKey((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt()).toStdString();
+    }
 
 };
 

@@ -1,12 +1,12 @@
 cdef extern from "../../agros2d-library/pythonlab/pyview.h":
     # PyView
     cdef cppclass PyView:
-        void saveImageToFile(char *file, int width, int height)  except +
+        void saveImageToFile(string &file, int width, int height)  except +
 
         void zoomBestFit()
         void zoomIn()
         void zoomOut()
-        void zoomRegion(double, double, double, double)
+        void zoomRegion(double x1, double y2, double x2, double y2)
 
     # PyViewConfig
     cdef cppclass PyViewConfig:
@@ -24,8 +24,8 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
 
     # PyViewMeshAndSolve
     cdef cppclass PyViewMeshAndPost:
-        void setField(char *fieldid) except +
-        char *getField() except +
+        void setField(string &fieldid) except +
+        string getField() except +
 
         void setActiveTimeStep(int timeStep) except +
         int getActiveTimeStep() except +
@@ -33,8 +33,8 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
         void setActiveAdaptivityStep(int adaptiveStep) except +
         int getActiveAdaptivityStep() except +
 
-        void setActiveSolutionType(char *solutionType) except +
-        char *getActiveSolutionType() except +
+        void setActiveSolutionType(string &solutionType) except +
+        string getActiveSolutionType() except +
 
     # PyViewMesh
     cdef cppclass PyViewMesh:
@@ -51,19 +51,19 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
         bool getOrderViewColorBar()
         void setOrderViewLabel(bool show)
         bool getOrderViewLabel()
-        void setOrderViewPalette(char *palette) except +
-        char* getOrderViewPalette()
+        void setOrderViewPalette(string &palette) except +
+        string getOrderViewPalette()
 
     # PyViewPost
     cdef cppclass PyViewPost:
-        void setScalarViewVariable(char *variable) except +
-        char *getScalarViewVariable()
-        void setScalarViewVariableComp(char *component) except +
-        char *getScalarViewVariableComp()
-        void setScalarViewPalette(char *palette) except +
-        char *getScalarViewPalette()
-        void setScalarViewPaletteQuality(char *quality) except +
-        char *getScalarViewPaletteQuality()
+        void setScalarViewVariable(string &variable) except +
+        string getScalarViewVariable()
+        void setScalarViewVariableComp(string &component) except +
+        string getScalarViewVariableComp()
+        void setScalarViewPalette(string &palette) except +
+        string getScalarViewPalette()
+        void setScalarViewPaletteQuality(string &quality) except +
+        string getScalarViewPaletteQuality()
 
         void setScalarViewPaletteSteps(int steps) except +
         int getScalarViewPaletteSteps()
@@ -98,8 +98,8 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
         bool getContourShow()
         void setContourCount(int count) except +
         int getContourCount()
-        void setContourVariable(char *variable) except +
-        char *getContourVariable()
+        void setContourVariable(string &variable) except +
+        string getContourVariable()
 
         void setVectorShow(bool show)
         bool getVectorShow()
@@ -107,8 +107,8 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
         int getVectorCount()
         void setVectorScale(double scale) except +
         int getVectorScale()
-        void setVectorVariable(char *variable) except +
-        char *getVectorVariable()
+        void setVectorVariable(string &variable) except +
+        string getVectorVariable()
         void setVectorProportional(bool show)
         bool getVectorProportional()
         void setVectorColor(bool show)
@@ -121,8 +121,8 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
     cdef cppclass PyViewPost3D:
         void activate()
 
-        void setPost3DMode(char *mode) except +
-        char *getPost3DMode()
+        void setPost3DMode(string &mode) except +
+        string getPost3DMode()
 
     # PyViewParticleTracing
     cdef cppclass PyViewParticleTracing:
@@ -172,9 +172,9 @@ cdef class __ViewMeshAndPost__:
 
     property field:
         def __get__(self):
-            return self.thisptrmp.getField()
+            return self.thisptrmp.getField().c_str()
         def __set__(self, id):
-            self.thisptrmp.setField(id)
+            self.thisptrmp.setField(string(id))
 
     property time_step:
         def __get__(self):
@@ -190,9 +190,9 @@ cdef class __ViewMeshAndPost__:
 
     property solution_type:
         def __get__(self):
-            return self.thisptrmp.getActiveSolutionType()
+            return self.thisptrmp.getActiveSolutionType().c_str()
         def __set__(self, solution_type):
-            self.thisptrmp.setActiveSolutionType(solution_type)
+            self.thisptrmp.setActiveSolutionType(string(solution_type))
 
 # ViewMesh
 cdef class __ViewMesh__(__ViewMeshAndPost__):
@@ -238,9 +238,9 @@ cdef class __ViewMesh__(__ViewMeshAndPost__):
 
     property order_palette:
         def __get__(self):
-            return self.thisptr.getOrderViewPalette()
+            return self.thisptr.getOrderViewPalette().c_str()
         def __set__(self, palette):
-            self.thisptr.setOrderViewPalette(palette)
+            self.thisptr.setOrderViewPalette(string(palette))
 
 # ViewPost
 cdef class __ViewPost__(__ViewMeshAndPost__):
@@ -253,27 +253,27 @@ cdef class __ViewPost__(__ViewMeshAndPost__):
 
     property scalar_variable:
         def __get__(self):
-            return self.thisptrp.getScalarViewVariable()
+            return self.thisptrp.getScalarViewVariable().c_str()
         def __set__(self, variable):
-            self.thisptrp.setScalarViewVariable(variable)
+            self.thisptrp.setScalarViewVariable(string(variable))
 
     property scalar_component:
         def __get__(self):
-            return self.thisptrp.getScalarViewVariableComp()
+            return self.thisptrp.getScalarViewVariableComp().c_str()
         def __set__(self, component):
-            self.thisptrp.setScalarViewVariableComp(component)
+            self.thisptrp.setScalarViewVariableComp(string(component))
 
     property scalar_palette:
         def __get__(self):
-            return self.thisptrp.getScalarViewPalette()
+            return self.thisptrp.getScalarViewPalette().c_str()
         def __set__(self, palette):
-            self.thisptrp.setScalarViewPalette(palette)
+            self.thisptrp.setScalarViewPalette(string(palette))
 
     property scalar_palette_quality:
         def __get__(self):
-            return self.thisptrp.getScalarViewPaletteQuality()
+            return self.thisptrp.getScalarViewPaletteQuality().c_str()
         def __set__(self, quality):
-            self.thisptrp.setScalarViewPaletteQuality(quality)
+            self.thisptrp.setScalarViewPaletteQuality(string(quality))
 
     property scalar_palette_steps:
         def __get__(self):
@@ -361,9 +361,9 @@ cdef class __ViewPost2D__(__ViewPost__):
 
     property contours_variable:
         def __get__(self):
-            return self.thisptr.getContourVariable()
+            return self.thisptr.getContourVariable().c_str()
         def __set__(self, variable):
-            self.thisptr.setContourVariable(variable)
+            self.thisptr.setContourVariable(string(variable))
 
     property vectors:
         def __get__(self):
@@ -385,9 +385,9 @@ cdef class __ViewPost2D__(__ViewPost__):
 
     property vectors_variable:
         def __get__(self):
-            return self.thisptr.getVectorVariable()
+            return self.thisptr.getVectorVariable().c_str()
         def __set__(self, variable):
-            self.thisptr.setVectorVariable(variable)
+            self.thisptr.setVectorVariable(string(variable))
 
     property vectors_proportional:
         def __get__(self):
@@ -415,9 +415,9 @@ cdef class __ViewPost3D__(__ViewPost__):
 
     property mode:
         def __get__(self):
-            return self.thisptr.getPost3DMode()
+            return self.thisptr.getPost3DMode().c_str()
         def __set__(self, mode):
-            self.thisptr.setPost3DMode(mode)
+            self.thisptr.setPost3DMode(string(mode))
 
 # ViewParticleTracing
 cdef class __ViewParticleTracing__:
@@ -447,8 +447,8 @@ cdef class __View__:
     post3d = __ViewPost3D__()
     particle_tracing = __ViewParticleTracing__()
 
-    def save_image(self, char *file, int width = 0, int height = 0):
-        self.thisptr.saveImageToFile(file, width, height)
+    def save_image(self, file, width = 0, height = 0):
+        self.thisptr.saveImageToFile(string(file), width, height)
 
     def zoom_best_fit(self):
         self.thisptr.zoomBestFit()
@@ -459,7 +459,7 @@ cdef class __View__:
     def zoom_out(self):
         self.thisptr.zoomOut()
 
-    def zoom_region(self, double x1, double y1, double x2, double y2):
+    def zoom_region(self, x1, y1, x2, y2):
         self.thisptr.zoomRegion(x1, y1, x2, y2)
 
 view = __View__()
