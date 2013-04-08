@@ -10,18 +10,6 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
 
     # PyViewConfig
     cdef cppclass PyViewConfig:
-        void setField(char *fieldid) except +
-        char *getField() except +
-
-        void setActiveTimeStep(int timeStep) except +
-        int getActiveTimeStep() except +
-
-        void setActiveAdaptivityStep(int adaptiveStep) except +
-        int getActiveAdaptivityStep() except +
-
-        void setActiveSolutionType(char *solutionType) except +
-        char *getActiveSolutionType() except +
-
         void setGridShow(bool show)
         bool getGridShow()
 
@@ -33,6 +21,20 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
 
         void setRulersShow(bool show)
         bool getRulersShow()
+
+    # PyViewMeshAndSolve
+    cdef cppclass PyViewMeshAndPost:
+        void setField(char *fieldid) except +
+        char *getField() except +
+
+        void setActiveTimeStep(int timeStep) except +
+        int getActiveTimeStep() except +
+
+        void setActiveAdaptivityStep(int adaptiveStep) except +
+        int getActiveAdaptivityStep() except +
+
+        void setActiveSolutionType(char *solutionType) except +
+        char *getActiveSolutionType() except +
 
     # PyViewMesh
     cdef cppclass PyViewMesh:
@@ -122,6 +124,10 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
         void setPost3DMode(char *mode) except +
         char *getPost3DMode()
 
+    # PyViewParticleTracing
+    cdef cppclass PyViewParticleTracing:
+        void activate()
+
 # ViewConfig
 cdef class __ViewConfig__:
     cdef PyViewConfig *thisptr
@@ -130,30 +136,6 @@ cdef class __ViewConfig__:
         self.thisptr = new PyViewConfig()
     def __dealloc__(self):
         del self.thisptr
-
-    property field:
-        def __get__(self):
-            return self.thisptr.getField()
-        def __set__(self, id):
-            self.thisptr.setField(id)
-
-    property time_step:
-        def __get__(self):
-            return self.thisptr.getActiveTimeStep()
-        def __set__(self, time_step):
-            self.thisptr.setActiveTimeStep(time_step)
-
-    property adaptivity_step:
-        def __get__(self):
-            return self.thisptr.getActiveAdaptivityStep()
-        def __set__(self, adaptivity_step):
-            self.thisptr.setActiveAdaptivityStep(adaptivity_step)
-
-    property solution_type:
-        def __get__(self):
-            return self.thisptr.getActiveSolutionType()
-        def __set__(self, solution_type):
-            self.thisptr.setActiveSolutionType(solution_type)
 
     property grid:
         def __get__(self):
@@ -179,8 +161,41 @@ cdef class __ViewConfig__:
         def __set__(self, show):
             self.thisptr.setRulersShow(show)
 
+# ViewMeshAndPost
+cdef class __ViewMeshAndPost__:
+    cdef PyViewMeshAndPost *thisptrmp
+
+    def __cinit__(self):
+        self.thisptrmp = new PyViewMeshAndPost()
+    def __dealloc__(self):
+        del self.thisptrmp
+
+    property field:
+        def __get__(self):
+            return self.thisptrmp.getField()
+        def __set__(self, id):
+            self.thisptrmp.setField(id)
+
+    property time_step:
+        def __get__(self):
+            return self.thisptrmp.getActiveTimeStep()
+        def __set__(self, time_step):
+            self.thisptrmp.setActiveTimeStep(time_step)
+
+    property adaptivity_step:
+        def __get__(self):
+            return self.thisptrmp.getActiveAdaptivityStep()
+        def __set__(self, adaptivity_step):
+            self.thisptrmp.setActiveAdaptivityStep(adaptivity_step)
+
+    property solution_type:
+        def __get__(self):
+            return self.thisptrmp.getActiveSolutionType()
+        def __set__(self, solution_type):
+            self.thisptrmp.setActiveSolutionType(solution_type)
+
 # ViewMesh
-cdef class __ViewMesh__:
+cdef class __ViewMesh__(__ViewMeshAndPost__):
     cdef PyViewMesh *thisptr
 
     def __cinit__(self):
@@ -228,181 +243,193 @@ cdef class __ViewMesh__:
             self.thisptr.setOrderViewPalette(palette)
 
 # ViewPost
-cdef class __ViewPost__:
-    cdef PyViewPost *thisptr
+cdef class __ViewPost__(__ViewMeshAndPost__):
+    cdef PyViewPost *thisptrp
 
-    # scalar view
+    def __cinit__(self):
+        self.thisptrp = new PyViewPost()
+    def __dealloc__(self):
+        del self.thisptrp
+
     property scalar_variable:
         def __get__(self):
-            return self.thisptr.getScalarViewVariable()
+            return self.thisptrp.getScalarViewVariable()
         def __set__(self, variable):
-            self.thisptr.setScalarViewVariable(variable)
+            self.thisptrp.setScalarViewVariable(variable)
 
     property scalar_component:
         def __get__(self):
-            return self.thisptr.getScalarViewVariableComp()
+            return self.thisptrp.getScalarViewVariableComp()
         def __set__(self, component):
-            self.thisptr.setScalarViewVariableComp(component)
+            self.thisptrp.setScalarViewVariableComp(component)
 
     property scalar_palette:
         def __get__(self):
-            return self.thisptr.getScalarViewPalette()
+            return self.thisptrp.getScalarViewPalette()
         def __set__(self, palette):
-            self.thisptr.setScalarViewPalette(palette)
+            self.thisptrp.setScalarViewPalette(palette)
 
     property scalar_palette_quality:
         def __get__(self):
-            return self.thisptr.getScalarViewPaletteQuality()
+            return self.thisptrp.getScalarViewPaletteQuality()
         def __set__(self, quality):
-            self.thisptr.setScalarViewPaletteQuality(quality)
+            self.thisptrp.setScalarViewPaletteQuality(quality)
 
     property scalar_palette_steps:
         def __get__(self):
-            return self.thisptr.getScalarViewPaletteSteps()
+            return self.thisptrp.getScalarViewPaletteSteps()
         def __set__(self, steps):
-            self.thisptr.setScalarViewPaletteSteps(steps)
+            self.thisptrp.setScalarViewPaletteSteps(steps)
 
     property scalar_palette_filter:
         def __get__(self):
-            return self.thisptr.getScalarViewPaletteFilter()
+            return self.thisptrp.getScalarViewPaletteFilter()
         def __set__(self, filter):
-            self.thisptr.setScalarViewPaletteFilter(filter)
+            self.thisptrp.setScalarViewPaletteFilter(filter)
 
     property scalar_log_scale:
         def __get__(self):
-            return self.thisptr.getScalarViewRangeLog()
+            return self.thisptrp.getScalarViewRangeLog()
         def __set__(self, log):
-            self.thisptr.setScalarViewRangeLog(log)
+            self.thisptrp.setScalarViewRangeLog(log)
 
     property scalar_log_base:
         def __get__(self):
-            return self.thisptr.getScalarViewRangeBase()
+            return self.thisptrp.getScalarViewRangeBase()
         def __set__(self, base):
-            self.thisptr.setScalarViewRangeBase(base)
+            self.thisptrp.setScalarViewRangeBase(base)
 
     property scalar_color_bar:
         def __get__(self):
-            return self.thisptr.getScalarViewColorBar()
+            return self.thisptrp.getScalarViewColorBar()
         def __set__(self, show):
-            self.thisptr.setScalarViewColorBar(show)
+            self.thisptrp.setScalarViewColorBar(show)
 
     property scalar_decimal_place:
         def __get__(self):
-            return self.thisptr.getScalarViewDecimalPlace()
+            return self.thisptrp.getScalarViewDecimalPlace()
         def __set__(self, place):
-            self.thisptr.setScalarViewDecimalPlace(place)
+            self.thisptrp.setScalarViewDecimalPlace(place)
 
     property scalar_auto_range:
         def __get__(self):
-            return self.thisptr.getScalarViewRangeAuto()
+            return self.thisptrp.getScalarViewRangeAuto()
         def __set__(self, range_auto):
-            self.thisptr.setScalarViewRangeAuto(range_auto)
+            self.thisptrp.setScalarViewRangeAuto(range_auto)
 
     property scalar_range_min:
         def __get__(self):
-            return self.thisptr.getScalarViewRangeMin()
+            return self.thisptrp.getScalarViewRangeMin()
         def __set__(self, min):
-            self.thisptr.setScalarViewRangeMin(min)
+            self.thisptrp.setScalarViewRangeMin(min)
 
     property scalar_range_max:
         def __get__(self):
-            return self.thisptr.getScalarViewRangeMax()
+            return self.thisptrp.getScalarViewRangeMax()
         def __set__(self, max):
-            self.thisptr.setScalarViewRangeMax(max)
+            self.thisptrp.setScalarViewRangeMax(max)
 
 # ViewPost2D
 cdef class __ViewPost2D__(__ViewPost__):
-    cdef PyViewPost2D *thisptr2d
+    cdef PyViewPost2D *thisptr
 
     def __cinit__(self):
-        self.thisptr2d = new PyViewPost2D()
+        self.thisptr = new PyViewPost2D()
     def __dealloc__(self):
-        del self.thisptr2d
+        del self.thisptr
 
     def activate(self):
-        self.thisptr2d.activate()
+        self.thisptr.activate()
 
-    # scalar
     property scalar:
         def __get__(self):
-            return self.thisptr2d.getScalarViewShow()
+            return self.thisptr.getScalarViewShow()
         def __set__(self, show):
-            self.thisptr2d.setScalarViewShow(show)
+            self.thisptr.setScalarViewShow(show)
 
-    # contour
     property contours:
         def __get__(self):
-            return self.thisptr2d.getContourShow()
+            return self.thisptr.getContourShow()
         def __set__(self, show):
-            self.thisptr2d.setContourShow(show)
+            self.thisptr.setContourShow(show)
 
     property contours_count:
         def __get__(self):
-            return self.thisptr2d.getContourCount()
+            return self.thisptr.getContourCount()
         def __set__(self, count):
-            self.thisptr2d.setContourCount(count)
+            self.thisptr.setContourCount(count)
 
     property contours_variable:
         def __get__(self):
-            return self.thisptr2d.getContourVariable()
+            return self.thisptr.getContourVariable()
         def __set__(self, variable):
-            self.thisptr2d.setContourVariable(variable)
+            self.thisptr.setContourVariable(variable)
 
-    # vector
     property vectors:
         def __get__(self):
-            return self.thisptr2d.getVectorShow()
+            return self.thisptr.getVectorShow()
         def __set__(self, show):
-            self.thisptr2d.setVectorShow(show)
+            self.thisptr.setVectorShow(show)
 
     property vectors_count:
         def __get__(self):
-            return self.thisptr2d.getVectorCount()
+            return self.thisptr.getVectorCount()
         def __set__(self, count):
-            self.thisptr2d.setVectorCount(count)
+            self.thisptr.setVectorCount(count)
 
     property vectors_scale:
         def __get__(self):
-            return self.thisptr2d.getVectorScale()
+            return self.thisptr.getVectorScale()
         def __set__(self, count):
-            self.thisptr2d.setVectorScale(count)
+            self.thisptr.setVectorScale(count)
 
     property vectors_variable:
         def __get__(self):
-            return self.thisptr2d.getVectorVariable()
+            return self.thisptr.getVectorVariable()
         def __set__(self, variable):
-            self.thisptr2d.setVectorVariable(variable)
+            self.thisptr.setVectorVariable(variable)
 
     property vectors_proportional:
         def __get__(self):
-            return self.thisptr2d.getVectorProportional()
+            return self.thisptr.getVectorProportional()
         def __set__(self, show):
-            self.thisptr2d.setVectorProportional(show)
+            self.thisptr.setVectorProportional(show)
 
     property vectors_color:
         def __get__(self):
-            return self.thisptr2d.getVectorColor()
+            return self.thisptr.getVectorColor()
         def __set__(self, show):
-            self.thisptr2d.setVectorColor(show)
+            self.thisptr.setVectorColor(show)
 
 # ViewPost3D
 cdef class __ViewPost3D__(__ViewPost__):
-    cdef PyViewPost3D *thisptr3d
-
-    def activate(self):
-        self.thisptr3d.activate()
+    cdef PyViewPost3D *thisptr
 
     def __cinit__(self):
-        self.thisptr3d = new PyViewPost3D()
+        self.thisptr = new PyViewPost3D()
     def __dealloc__(self):
-        del self.thisptr3d
+        del self.thisptr
 
-    # mode
+    def activate(self):
+        self.thisptr.activate()
+
     property mode:
         def __get__(self):
-            return self.thisptr3d.getPost3DMode()
+            return self.thisptr.getPost3DMode()
         def __set__(self, mode):
-            self.thisptr3d.setPost3DMode(mode)
+            self.thisptr.setPost3DMode(mode)
+
+# ViewParticleTracing
+cdef class __ViewParticleTracing__:
+    cdef PyViewParticleTracing *thisptr
+
+    def __cinit__(self):
+        self.thisptr = new PyViewParticleTracing()
+    def __dealloc__(self):
+        del self.thisptr
+
+    def activate(self):
+        self.thisptr.activate()
 
 # View
 cdef class __View__:
@@ -418,6 +445,7 @@ cdef class __View__:
     mesh = __ViewMesh__()
     post2d = __ViewPost2D__()
     post3d = __ViewPost3D__()
+    particle_tracing = __ViewParticleTracing__()
 
     def save_image(self, char *file, int width = 0, int height = 0):
         self.thisptr.saveImageToFile(file, width, height)
