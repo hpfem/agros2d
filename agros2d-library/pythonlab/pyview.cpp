@@ -72,32 +72,28 @@ void PyView::zoomRegion(double x1, double y1, double x2, double y2)
 
 // ************************************************************************************
 
-void PyViewConfig::setGridShow(bool show)
+void PyViewConfig::set(ProblemSetting::Type type, QVariant value)
 {
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowGrid, show);
+    switch(value.type())
+    {
+    case QVariant::Bool:
+        Agros2D::problem()->setting()->setValue(type, value.toBool());
+        break;
+    case QVariant::Double:
+        Agros2D::problem()->setting()->setValue(type, value.toDouble());
+        break;
+    }
+
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewConfig::setGridStep(double step)
 {
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_GridStep, step);
-    if (!silentMode())
-        currentPythonEngineAgros()->postHermes()->refresh();
-}
-
-void PyViewConfig::setAxesShow(bool show)
-{
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowAxes, show);
-    if (!silentMode())
-        currentPythonEngineAgros()->postHermes()->refresh();
-}
-
-void PyViewConfig::setRulersShow(bool show)
-{
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowRulers, show);
-    if (!silentMode())
-        currentPythonEngineAgros()->postHermes()->refresh();
+    if (step > 0.0)
+        set(ProblemSetting::View_GridStep, step);
+    else
+        throw out_of_range(QObject::tr("Grid step must be positive.").toStdString());
 }
 
 // ************************************************************************************
@@ -195,42 +191,22 @@ void PyViewMeshAndPost::setActiveSolutionType(const char *solutionType)
 
 void PyViewMesh::activate()
 {
-    if (Agros2D::problem()->isMeshed())
-        if (!silentMode())
-            currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
+    if (Agros2D::problem()->isMeshed() && !silentMode())
+        currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
 }
 
-void PyViewMesh::setInitialMeshViewShow(bool show)
+void PyViewMesh::set(ProblemSetting::Type type, QVariant value)
 {
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowInitialMeshView, show);
-    if (!silentMode())
-        currentPythonEngineAgros()->postHermes()->refresh();
-}
+    if (!Agros2D::problem()->isMeshed())
+        throw logic_error(QObject::tr("Problem is not meshed.").toStdString());
 
-void PyViewMesh::setSolutionMeshViewShow(bool show)
-{
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowSolutionMeshView, show);
-    if (!silentMode())
-        currentPythonEngineAgros()->postHermes()->refresh();
-}
+    switch(value.type())
+    {
+    case QVariant::Bool:
+        Agros2D::problem()->setting()->setValue(type, value.toBool());
+        break;
+    }
 
-void PyViewMesh::setOrderViewShow(bool show)
-{
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowOrderView, show);
-    if (!silentMode())
-        currentPythonEngineAgros()->postHermes()->refresh();
-}
-
-void PyViewMesh::setOrderViewColorBar(bool show)
-{
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowOrderColorBar, show);
-    if (!silentMode())
-        currentPythonEngineAgros()->postHermes()->refresh();
-}
-
-void PyViewMesh::setOrderViewLabel(bool show)
-{
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowOrderLabel, show);
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
@@ -369,21 +345,22 @@ void PyViewPost::setScalarViewRangeMax(double max)
 
 void PyViewPost2D::activate()
 {
-    if (Agros2D::problem()->isSolved())
-        if (!silentMode())
+    if (Agros2D::problem()->isSolved() && !silentMode())
             currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
 }
 
-void PyViewPost2D::setScalarViewShow(bool show)
+void PyViewPost2D::set(ProblemSetting::Type type, QVariant value)
 {
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowScalarView, show);
-    if (!silentMode())
-        currentPythonEngineAgros()->postHermes()->refresh();
-}
+    if (!Agros2D::problem()->isSolved())
+        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
 
-void PyViewPost2D::setContourShow(bool show)
-{
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowContourView, show);
+    switch(value.type())
+    {
+    case QVariant::Bool:
+        Agros2D::problem()->setting()->setValue(type, value.toBool());
+        break;
+    }
+
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
@@ -420,13 +397,6 @@ void PyViewPost2D::setContourVariable(char* var)
     }
 
     throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
-}
-
-void PyViewPost2D::setVectorShow(bool show)
-{
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowVectorView, show);
-    if (!silentMode())
-        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 void PyViewPost2D::setVectorCount(int count)
@@ -469,20 +439,6 @@ void PyViewPost2D::setVectorVariable(char* var)
     }
 
     throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
-}
-
-void PyViewPost2D::setVectorProportional(bool show)
-{
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorProportional, show);
-    if (!silentMode())
-        currentPythonEngineAgros()->postHermes()->refresh();
-}
-
-void PyViewPost2D::setVectorColor(bool show)
-{
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorColor, show);
-    if (!silentMode())
-        currentPythonEngineAgros()->postHermes()->refresh();
 }
 
 // ************************************************************************************
