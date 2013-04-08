@@ -391,8 +391,10 @@ Scalar *Solver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
                                         int adaptivityStep,
                                         Hermes::vector<MeshFunctionSharedPtr<Scalar> > previousSolution)
 {
-    if(Agros2D::problem()->abortSolve())
+    if(Agros2D::problem()->abortSolve()){
+        Agros2D::problem()->atStopCalculation();
         throw(AgrosSolverException("Calculation aborted"));
+    }
 
 
     Hermes::HermesCommonApi.set_integral_param_value(Hermes::matrixSolverType, Agros2D::problem()->config()->matrixSolver());

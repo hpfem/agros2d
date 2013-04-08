@@ -12,6 +12,7 @@ class Field;
 class Problem;
 class ProblemConfig;
 class ProblemSetting;
+class PyProblem;
 
 class CalculationThread : public QThread
 {
@@ -48,6 +49,9 @@ signals:
     void meshed();
     void solved();
 
+    /// abort was called sometime before and now the calculation has been really stopped
+    void calculationStoped();
+
     /// emited when an field is added or removed. Menus need to adjusted
     void fieldsChanged();
 
@@ -75,6 +79,7 @@ public:
     void solve();
     void solveCommandLine();
     void solveAdaptiveStep();
+    void atStopCalculation();
 
     // check geometry
     bool checkGeometry();
@@ -164,6 +169,7 @@ private:
     void solveAdaptiveStepAction();
     void stepMessage(Block* block);
     friend class CalculationThread;
+    friend class PyProblem;
 };
 
 #endif // PROBLEM_H

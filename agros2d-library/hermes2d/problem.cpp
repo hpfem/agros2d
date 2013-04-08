@@ -508,6 +508,11 @@ CalculationThread::CalculationThread(bool adaptiveStep, bool commandLine) : adap
 
 }
 
+void Problem::atStopCalculation()
+{
+    emit calculationStoped();
+}
+
 void CalculationThread::run()
 {
     Agros2D::problem()->solve(adaptiveStep, commandLine);
@@ -515,6 +520,7 @@ void CalculationThread::run()
 
 void Problem::doAbortSolve()
 {
+    Agros2D::log()->printError(QObject::tr("Solver"), QObject::tr("Aborting calculation..."));
     m_abortSolve = true;
 }
 
@@ -522,7 +528,6 @@ void Problem::solve()
 {
     CalculationThread* thread = new CalculationThread(false, false);
     thread->start(QThread::TimeCriticalPriority);
-    //solve(false, false);
 }
 
 void Problem::solveCommandLine()
@@ -536,7 +541,6 @@ void Problem::solveAdaptiveStep()
 {
     CalculationThread* thread = new CalculationThread(true, false);
     thread->start(QThread::TimeCriticalPriority);
-    solve(true, false);
 }
 
 void Problem::solve(bool adaptiveStepOnly, bool commandLine)

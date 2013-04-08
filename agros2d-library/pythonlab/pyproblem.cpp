@@ -198,7 +198,7 @@ void PyProblem::solve()
 {
     Agros2D::scene()->invalidate();
 
-    Agros2D::problem()->solve();
+    Agros2D::problem()->solve(false, false);
     if (Agros2D::problem()->isSolved())
     {
         // trigger postprocessor
@@ -221,7 +221,7 @@ void PyProblem::solve()
 void PyProblem::solveAdaptiveStep()
 {
     Agros2D::scene()->invalidate();
-    Agros2D::problem()->solveAdaptiveStep();
+    Agros2D::problem()->solve(false, false);
 
     if (Agros2D::problem()->isSolved())
     {
