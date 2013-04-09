@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "runge_kutta.h"
+#include "solver/runge_kutta.h"
 #include "discrete_problem.h"
 #include "projections/ogprojection.h"
 #include "projections/localprojection.h"
@@ -23,7 +23,7 @@ namespace Hermes
   namespace Hermes2D
   {
     template<typename Scalar>
-    RungeKutta<Scalar>::RungeKutta(const WeakForm<Scalar>* wf, Hermes::vector<SpaceSharedPtr<Scalar> > spaces, ButcherTable* bt)
+    RungeKutta<Scalar>::RungeKutta(WeakForm<Scalar>* wf, Hermes::vector<SpaceSharedPtr<Scalar> > spaces, ButcherTable* bt)
       : wf(wf), bt(bt), num_stages(bt->get_size()), stage_wf_right(bt->get_size() * spaces.size()),
       stage_wf_left(spaces.size()), start_from_zero_K_vector(false), block_diagonal_jacobian(false), residual_as_vector(true), iteration(0),
       freeze_jacobian(false), newton_tol(1e-6), newton_max_iter(20), newton_damping_coeff(1.0), newton_max_allowed_residual_norm(1e10)
@@ -62,7 +62,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    RungeKutta<Scalar>::RungeKutta(const WeakForm<Scalar>* wf, SpaceSharedPtr<Scalar> space, ButcherTable* bt)
+    RungeKutta<Scalar>::RungeKutta(WeakForm<Scalar>* wf, SpaceSharedPtr<Scalar> space, ButcherTable* bt)
       : wf(wf), bt(bt), num_stages(bt->get_size()), stage_wf_right(bt->get_size() * 1),
       stage_wf_left(1), start_from_zero_K_vector(false), block_diagonal_jacobian(false), residual_as_vector(true), iteration(0),
       freeze_jacobian(false), newton_tol(1e-6), newton_max_iter(20), newton_damping_coeff(1.0), newton_max_allowed_residual_norm(1e10)
@@ -96,7 +96,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void RungeKutta<Scalar>::set_spaces(Hermes::vector<SpaceSharedPtr<Scalar> > spaces)
+    void RungeKutta<Scalar>::set_spaces(Hermes::vector<SpaceSharedPtr<Scalar> >& spaces)
     {
       bool delete_K_vector = false;
       for(unsigned int i = 0; i < spaces.size(); i++)
@@ -126,11 +126,11 @@ namespace Hermes
       vector_left = new Scalar[num_stages*  Space<Scalar>::get_num_dofs(this->spaces)];
 
       if(this->stage_dp_left != NULL)
-        static_cast<DiscreteProblem<Scalar>*>(this->stage_dp_left)->set_spaces(this->spaces);
+        this->stage_dp_left->set_spaces(this->spaces);
     }
 
     template<typename Scalar>
-    void RungeKutta<Scalar>::set_space(SpaceSharedPtr<Scalar> space)
+    void RungeKutta<Scalar>::set_space(SpaceSharedPtr<Scalar>& space)
     {
       bool delete_K_vector = false;
       if(space->get_seq() != this->spaces_seqs[0])
@@ -156,11 +156,11 @@ namespace Hermes
       vector_left = new Scalar[num_stages*  Space<Scalar>::get_num_dofs(this->spaces)];
 
       if(this->stage_dp_left != NULL)
-        static_cast<DiscreteProblem<Scalar>*>(this->stage_dp_left)->set_space(space);
+        this->stage_dp_left->set_space(space);
     }
 
     template<typename Scalar>
-    Hermes::vector<SpaceSharedPtr<Scalar> > RungeKutta<Scalar>::get_spaces() const
+    Hermes::vector<SpaceSharedPtr<Scalar> >& RungeKutta<Scalar>::get_spaces()
     {
       return this->spaces;
     }
@@ -189,7 +189,7 @@ namespace Hermes
       // in a form suitable for the Newton's method: k_i - f(...) = 0. At the end, matrix_left and vector_left
       // are added to matrix_right and vector_right, respectively.
       this->stage_dp_left = new DiscreteProblem<Scalar>(&stage_wf_left, spaces);
-      
+
       // All Spaces of the problem.
       Hermes::vector<SpaceSharedPtr<Scalar> > stage_spaces_vector;
 
@@ -200,8 +200,6 @@ namespace Hermes
           stage_spaces_vector.push_back(spaces[space_i]);
 
       this->stage_dp_right = new DiscreteProblem<Scalar>(&stage_wf_right, stage_spaces_vector);
-
-      stage_dp_right->set_RK(spaces.size());
 
       // Prepare residuals of stage solutions.
       if(!residual_as_vector)
@@ -338,6 +336,7 @@ namespace Hermes
           stage_spaces_vector.push_back(ref_space_creator.create_ref_space());
         }
 
+      Space<Scalar>::assign_dofs(stage_spaces_vector);
       this->stage_dp_right->set_spaces(stage_spaces_vector);
 
       // Zero utility vectors.
@@ -350,7 +349,7 @@ namespace Hermes
       // The corresponding part of the global residual vector is obtained
       // just by multiplication with the stage vector K.
       // FIXME: This should not be repeated if spaces have not changed.
-      stage_dp_left->assemble(matrix_left, NULL);
+      stage_dp_left->assemble(matrix_left);
 
       // The Newton's loop.
       double residual_norm;
@@ -375,7 +374,8 @@ namespace Hermes
         // Assemble the block Jacobian matrix of the stationary residual F.
         // Diagonal blocks are created even if empty, so that matrix_left can be added later.
         bool force_diagonal_blocks = true;
-        stage_dp_right->assemble(u_ext_vec, NULL, vector_right, force_diagonal_blocks);
+        stage_dp_right->set_RK(spaces.size(), force_diagonal_blocks, this->bt);
+        stage_dp_right->assemble(u_ext_vec, NULL, vector_right);
 
         // Finalizing the residual vector.
         vector_right->add_vector(vector_left);
@@ -436,7 +436,8 @@ namespace Hermes
           // Assemble the block Jacobian matrix of the stationary residual F
           // Diagonal blocks are created even if empty, so that matrix_left
           // can be added later.
-          stage_dp_right->assemble(u_ext_vec, matrix_right, NULL, force_diagonal_blocks);
+          stage_dp_right->set_RK(spaces.size(), force_diagonal_blocks);
+          stage_dp_right->assemble(u_ext_vec, matrix_right, NULL);
 
           // Adding the block mass matrix M to matrix_right. This completes the
           // resulting tensor Jacobian.

@@ -33,7 +33,7 @@ template <typename Scalar>
 class ExactSolutionScalarAgros;
 
 template <typename Scalar>
-class Solver;
+class ProblemSolver;
 
 template <typename Scalar>
 class WeakFormAgros;
@@ -46,7 +46,7 @@ public:
     Block(QList<FieldInfo*> fieldInfos, QList<CouplingInfo*> couplings);
     ~Block();
 
-    Solver<double> *prepareSolver();
+    ProblemSolver<double> *prepareSolver();
     void createBoundaryConditions();
 
     inline WeakFormAgros<double> *weakForm() { return m_wf;}

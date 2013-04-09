@@ -698,13 +698,13 @@ void Problem::solveAction()
 
     assert(isMeshed());
 
-    QMap<Block*, Solver<double> *> solvers;
+    QMap<Block*, ProblemSolver<double> *> solvers;
 
     Agros2D::log()->printMessage(QObject::tr("Problem"), QObject::tr("Solving problem"));
 
     foreach (Block* block, m_blocks)
     {
-        Solver<double> *solver = block->prepareSolver();
+        ProblemSolver<double> *solver = block->prepareSolver();
         if (!solver)
         {
             qDeleteAll(solvers);
@@ -800,7 +800,7 @@ void Problem::solveAdaptiveStepAction()
     assert(actualTimeStep() == 0);
     assert(m_blocks.size() == 1);
     Block* block = m_blocks.at(0);
-    Solver<double> *solver = block->prepareSolver();
+    ProblemSolver<double> *solver = block->prepareSolver();
     if (!solver)
         throw AgrosSolverException(tr("Cannot create solver."));
 

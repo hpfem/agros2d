@@ -145,9 +145,9 @@ void Block::setWeakForm(WeakFormAgros<double> *wf)
     if (m_wf) delete m_wf; m_wf = wf;
 }
 
-Solver<double> *Block::prepareSolver()
+ProblemSolver<double> *Block::prepareSolver()
 {
-    Solver<double> *solver = new Solver<double>();
+    ProblemSolver<double> *solver = new ProblemSolver<double>();
 
     foreach (Field* field, m_fields)
     {

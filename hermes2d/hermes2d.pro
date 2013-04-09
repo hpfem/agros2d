@@ -40,9 +40,7 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 ../hermes_common/src/hermes_function.cpp \
                 ../hermes_common/src/exceptions.cpp \
                 ../hermes_common/src/mixins.cpp \
-                ../hermes_common/src/solvers/dp_interface.cpp \
                 ../hermes_common/src/solvers/linear_matrix_solver.cpp \
-                ../hermes_common/src/solvers/nonlinear_solver.cpp \
                 ../hermes_common/src/solvers/epetra.cpp \
                 ../hermes_common/src/solvers/aztecoo_solver.cpp \
                 ../hermes_common/src/solvers/amesos_solver.cpp \
@@ -58,9 +56,12 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 src/mixins2d.cpp \
                 src/forms.cpp \
                 src/asmlist.cpp \
-                src/linear_solver.cpp \
-                src/newton_solver.cpp \
-                src/picard_solver.cpp \
+                src/solver/linear_solver.cpp \
+                src/solver/nonlinear_solver.cpp \
+                src/solver/newton_solver.cpp \
+                src/solver/picard_solver.cpp \
+                src/solver/runge_kutta.cpp \
+                src/solver/solver.cpp \
                 src/adapt/adapt.cpp \
                 # src/adapt/kelly_type_adapt.cpp \
                 src/boundary_conditions/essential_boundary_conditions.cpp \
@@ -124,8 +125,12 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 src/neighbor.cpp \
                 src/graph.cpp \
                 src/discrete_problem.cpp \
-                src/discrete_problem_linear.cpp \
-                src/runge_kutta.cpp \
+                src/discrete_problem/discrete_problem_cache.cpp \
+                src/discrete_problem/discrete_problem_form_assembler.cpp \
+                src/discrete_problem/discrete_problem_helpers.cpp \
+                src/discrete_problem/discrete_problem_integration_order_calculator.cpp \
+                src/discrete_problem/discrete_problem_selective_assembler.cpp \
+                src/discrete_problem/discrete_problem_thread_assembler.cpp \
                 src/spline.cpp \
                 src/global.cpp
 

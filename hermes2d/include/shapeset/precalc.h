@@ -40,15 +40,6 @@ namespace Hermes
       /// \param shapeset[in] Pointer to the shapeset to be precalculated.
       PrecalcShapeset(Shapeset* shapeset);
 
-      /// \brief Constructs a slave precalculated shapeset class.
-      /// \details The slave instance does not hold any precalculated tables.
-      /// Instead, it refers to those contained in the master instance. However,
-      /// the slave can have different shape function active, different transform
-      /// selected, etc. Slave pss's are used for test functions when calling
-      /// bilinear forms, inside Solution so as not to disrupt user's pss, etc.
-      /// \param master_pss[in] Master precalculated shapeset pointer.
-      PrecalcShapeset(PrecalcShapeset* master_pss);
-
       /// Destructor.
       virtual ~PrecalcShapeset();
 
@@ -73,9 +64,6 @@ namespace Hermes
 
       /// Returns a pointer to the shapeset which is being precalculated.
       Shapeset* get_shapeset() const;
-
-      /// For internal use only.
-      void set_master_transform();
 
       /// Returns the polynomial order of the active shape function on given edge.
       virtual int get_edge_fn_order(int edge);
@@ -102,11 +90,6 @@ namespace Hermes
 
       int max_index[H2D_NUM_MODES];
 
-      PrecalcShapeset* master_pss;
-
-      /// Returns true iff this is a precalculated shapeset for test functions.
-      bool is_slave() const;
-
       virtual void precalculate(int order, int mask);
 
       void update_max_index();
@@ -122,7 +105,8 @@ namespace Hermes
       template<typename T> friend class Solution;
       template<typename T> friend class DiscontinuousFunc;
       template<typename T> friend class DiscreteProblem;
-      template<typename T> friend class DiscreteProblemLinear;
+      template<typename T> friend class DiscreteProblemDGAssembler;
+      template<typename T> friend class DiscreteProblemThreadAssembler;
       template<typename T> friend class NeighborSearch;
       friend class CurvMap;
     };

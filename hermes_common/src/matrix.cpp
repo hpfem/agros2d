@@ -29,7 +29,6 @@
 #include "solvers/amesos_solver.h"
 #include "solvers/petsc_solver.h"
 #include "solvers/mumps_solver.h"
-#include "solvers/newton_solver_nox.h"
 #include "solvers/aztecoo_solver.h"
 #include "qsort.h"
 #include "api.h"
@@ -115,6 +114,12 @@ void Hermes::Algebra::DenseMatrixOperations::choldc(double **a, int n, double p[
       else a[j][i] = sum / p[i];
     }
   }
+}
+
+template<typename Scalar>
+void Hermes::Algebra::Matrix<Scalar>::set_row_zero(unsigned int n)
+{
+  throw Hermes::Exceptions::MethodNotOverridenException("Matrix<Scalar>::set");
 }
 
 template<typename Scalar>

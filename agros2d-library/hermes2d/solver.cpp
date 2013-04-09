@@ -60,14 +60,20 @@ void NewtonSolverAgros<Scalar>::on_step_begin()
 template <typename Scalar>
 void NewtonSolverAgros<Scalar>::on_step_end()
 {
-    m_residuals.append(this->current_residual_norm);
+
+    double initial_residual_norm;
+    double previous_residual_norm;
+    double residual_norm;
+    int iteration;
+
+    m_residuals.append(this->previous_residual_norm);
 }
 
 template <typename Scalar>
 void NewtonSolverAgros<Scalar>::on_finish()
 {
     // last norm
-    m_residuals.append(this->current_residual_norm);
+    m_residuals.append(this->previous_residual_norm);
 }
 
 void processSolverOutput(const char* aha)
@@ -235,7 +241,7 @@ void PicardSolverContainer<Scalar>::solve(Scalar* solutionVector)
 }
 
 template <typename Scalar>
-Solver<Scalar>::~Solver()
+ProblemSolver<Scalar>::~ProblemSolver()
 {
     clearActualSpaces();
 
@@ -245,7 +251,7 @@ Solver<Scalar>::~Solver()
 }
 
 template <typename Scalar>
-void Solver<Scalar>::init(Block* block)
+void ProblemSolver<Scalar>::init(Block* block)
 {
     m_block = block;
 
@@ -265,7 +271,7 @@ void Solver<Scalar>::init(Block* block)
 }
 
 template <typename Scalar>
-void Solver<Scalar>::initSelectors(Hermes::vector<ProjNormType>& projNormType,
+void ProblemSolver<Scalar>::initSelectors(Hermes::vector<ProjNormType>& projNormType,
                                    Hermes::vector<RefinementSelectors::Selector<Scalar> *>& selectors)
 {
     // set adaptivity selector
@@ -318,7 +324,7 @@ void Solver<Scalar>::initSelectors(Hermes::vector<ProjNormType>& projNormType,
 }
 
 template <typename Scalar>
-void Solver<Scalar>::deleteSelectors(Hermes::vector<RefinementSelectors::Selector<Scalar> *>& selectors)
+void ProblemSolver<Scalar>::deleteSelectors(Hermes::vector<RefinementSelectors::Selector<Scalar> *>& selectors)
 {
     foreach(RefinementSelectors::Selector<Scalar> *select, selectors)
         delete select;
@@ -326,7 +332,7 @@ void Solver<Scalar>::deleteSelectors(Hermes::vector<RefinementSelectors::Selecto
 }
 
 template <typename Scalar>
-Hermes::vector<SpaceSharedPtr<Scalar> > Solver<Scalar>::deepMeshAndSpaceCopy(Hermes::vector<SpaceSharedPtr<Scalar> > spaces, bool createReference)
+Hermes::vector<SpaceSharedPtr<Scalar> > ProblemSolver<Scalar>::deepMeshAndSpaceCopy(Hermes::vector<SpaceSharedPtr<Scalar> > spaces, bool createReference)
 {
     Hermes::vector<SpaceSharedPtr<Scalar> > newSpaces;
     int totalComp = 0;
@@ -373,20 +379,20 @@ Hermes::vector<SpaceSharedPtr<Scalar> > Solver<Scalar>::deepMeshAndSpaceCopy(Her
 }
 
 template <typename Scalar>
-void Solver<Scalar>::setActualSpaces(Hermes::vector<SpaceSharedPtr<Scalar> > spaces)
+void ProblemSolver<Scalar>::setActualSpaces(Hermes::vector<SpaceSharedPtr<Scalar> > spaces)
 {
     clearActualSpaces();
     m_actualSpaces = spaces;
 }
 
 template <typename Scalar>
-void Solver<Scalar>::clearActualSpaces()
+void ProblemSolver<Scalar>::clearActualSpaces()
 {
     m_actualSpaces.clear();
 }
 
 template <typename Scalar>
-Scalar *Solver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
+Scalar *ProblemSolver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
                                         Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
                                         int adaptivityStep,
                                         Hermes::vector<MeshFunctionSharedPtr<Scalar> > previousSolution)
@@ -412,7 +418,7 @@ Scalar *Solver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
 }
 
 template <typename Scalar>
-void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
+void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
 {
     // to be used as starting vector for the Newton solver
     MultiArray<Scalar> previousTSMultiSolutionArray;
@@ -434,7 +440,8 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
         Module::updateTimeFunctions(Agros2D::problem()->actualTime());
     m_block->updateExactSolutionFunctions();
 
-    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(actualSpaces(), Agros2D::problem()->actualTime());
+    Hermes::vector<SpaceSharedPtr<Scalar> > spaces = actualSpaces();
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(spaces, Agros2D::problem()->actualTime());
 
     BDF2Table* bdf2Table = NULL;
     if (m_block->isTransient())
@@ -486,7 +493,7 @@ void Solver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
 }
 
 template <typename Scalar>
-NextTimeStep Solver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivityStep)
+NextTimeStep ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivityStep)
 {
     double timeTotal = Agros2D::problem()->config()->timeTotal();
 
@@ -587,7 +594,7 @@ NextTimeStep Solver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivity
 }
 
 template <typename Scalar>
-void Solver<Scalar>::createInitialSpace()
+void ProblemSolver<Scalar>::createInitialSpace()
 {
     // read mesh from file
     if (!Agros2D::problem()->isMeshed())
@@ -659,7 +666,7 @@ void Solver<Scalar>::createInitialSpace()
 }
 
 template <typename Scalar>
-void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
+void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
 {
     //    SolutionMode solutionMode = solutionExists ? SolutionMode_Normal : SolutionMode_NonExisting;
     //    MultiSolutionArray<Scalar> msa = Agros2D::solutionStore()->multiSolution(BlockSolutionID(m_block, timeStep, adaptivityStep, solutionMode));
@@ -711,7 +718,8 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
     m_block->updateExactSolutionFunctions();
 
     // todo: delete? delam to pro referencni... (zkusit)
-    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(actualSpaces(), Agros2D::problem()->actualTime());
+    Hermes::vector<SpaceSharedPtr<Scalar> > spaces = actualSpaces();
+    Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(spaces, Agros2D::problem()->actualTime());
 
     BDF2Table* bdf2Table = NULL;
     if(m_block->isTransient())
@@ -778,7 +786,7 @@ void Solver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivityStep)
 }
 
 template <typename Scalar>
-bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep, bool forceAdaptation)
+bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep, bool forceAdaptation)
 {
     MultiArray<Scalar> msa = Agros2D::solutionStore()->multiArray(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Normal));
     MultiArray<Scalar> msaRef = Agros2D::solutionStore()->multiArray(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Reference));
@@ -851,7 +859,7 @@ bool Solver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep, bool f
 }
 
 template <typename Scalar>
-void Solver<Scalar>::solveInitialTimeStep()
+void ProblemSolver<Scalar>::solveInitialTimeStep()
 {
     Agros2D::log()->printDebug(m_solverID, QObject::tr("Initial time step"));
 
@@ -884,7 +892,7 @@ void Solver<Scalar>::solveInitialTimeStep()
 }
 
 template <typename Scalar>
-void Solver<Scalar>::resumeAdaptivityProcess(int adaptivityStep)
+void ProblemSolver<Scalar>::resumeAdaptivityProcess(int adaptivityStep)
 {
     BlockSolutionID solID(m_block, 0, adaptivityStep, SolutionMode_Normal);
     MultiArray<Scalar> msa = Agros2D::solutionStore()->multiArray(solID);
@@ -901,4 +909,4 @@ void Solver<Scalar>::resumeAdaptivityProcess(int adaptivityStep)
 template class LinearSolverContainer<double>;
 template class NewtonSolverContainer<double>;
 template class PicardSolverContainer<double>;
-template class Solver<double>;
+template class ProblemSolver<double>;
