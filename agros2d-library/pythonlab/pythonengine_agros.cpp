@@ -169,7 +169,7 @@ QString createPythonFromModel(StartupScript_Type startupScript)
     QString str;
 
     // import modules
-    str += "import agros2d\n\n";
+    str += "import agros2d as a2d\n\n";
 
     // startup script
     if (!Agros2D::problem()->setting()->value(ProblemSetting::Problem_StartupScript).toString().trimmed().isEmpty())
@@ -181,7 +181,7 @@ QString createPythonFromModel(StartupScript_Type startupScript)
 
     // model
     str += "# problem\n";
-    str += QString("problem = agros2d.problem(clear = True)\n");
+    str += QString("problem = a2d.problem(clear = True)\n");
     str += QString("problem.coordinate_type = \"%1\"\n").arg(coordinateTypeToStringKey(Agros2D::problem()->config()->coordinateType()));
     str += QString("problem.mesh_type = \"%1\"\n").arg(meshTypeToStringKey(Agros2D::problem()->config()->meshType()));
     str += QString("problem.matrix_solver = \"%1\"\n").arg(matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()));
@@ -217,8 +217,8 @@ QString createPythonFromModel(StartupScript_Type startupScript)
     {
         str += QString("# %1\n").arg(fieldInfo->fieldId());
 
-        // str += QString("%1 = agros2d.field(field_id = \"%2\")\n").
-        str += QString("%1 = agros2d.field(\"%2\")\n").
+        // str += QString("%1 = a2d.field(field_id = \"%2\")\n").
+        str += QString("%1 = a2d.field(\"%2\")\n").
                 arg(fieldInfo->fieldId()).
                 arg(fieldInfo->fieldId());
         str += QString("%1.analysis_type = \"%2\"\n").
@@ -424,7 +424,7 @@ QString createPythonFromModel(StartupScript_Type startupScript)
 
     // geometry
     str += "# geometry\n";
-    str += "geometry = agros2d.geometry\n";
+    str += "geometry = a2d.geometry\n";
 
     // edges
     if (Agros2D::scene()->edges->count() > 0)
@@ -565,7 +565,7 @@ QString createPythonFromModel(StartupScript_Type startupScript)
             str += ")\n";
         }
     }
-    str += "geometry.zoom_best_fit()";
+    str += "a2d.view.zoom_best_fit()";
 
     return str;
 }

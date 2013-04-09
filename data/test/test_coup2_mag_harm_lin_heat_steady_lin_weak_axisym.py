@@ -70,7 +70,7 @@ geometry.add_label(0.087409, 0.293345, materials = {"heat" : "Steel", "magnetic"
 geometry.add_label(0.132733, 0.0478408, materials = {"heat" : "Insulation", "magnetic" : "Insulation"})
 geometry.add_label(0.378237, 0.221582, materials = {"heat" : "none", "magnetic" : "Copper"})
 
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()

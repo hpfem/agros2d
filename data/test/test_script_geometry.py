@@ -1,17 +1,17 @@
-import agros2d
+import agros2d as a2d
 from unittest import TestCase
 
 from math import pi, sqrt
 
 class TestGeometry(TestCase):
     def setUp(self):
-        self.problem = agros2d.problem(clear = True)
-        self.geometry = agros2d.geometry
+        self.problem = a2d.problem(clear = True)
+        self.geometry = a2d.geometry
 
     def model(self):
-        self.problem = agros2d.problem(clear = True)
+        self.problem = a2d.problem(clear = True)
 
-        self.electrostatic = agros2d.field("electrostatic")
+        self.electrostatic = a2d.field("electrostatic")
         self.electrostatic.add_boundary("Source", "electrostatic_potential", {"electrostatic_potential" : 10})
         self.electrostatic.add_boundary("Ground", "electrostatic_potential", {"electrostatic_potential" : 0})
         self.electrostatic.add_boundary("Neumann", "electrostatic_surface_charge_density", {"electrostatic_surface_charge_density" : 0})
@@ -20,7 +20,7 @@ class TestGeometry(TestCase):
         self.a = 1.0
         self.b = 1.0
 
-        self.geometry = agros2d.geometry
+        self.geometry = a2d.geometry
         self.geometry.add_edge(0, 0, self.a, 0, boundaries = {"electrostatic" : "Neumann"})
         self.geometry.add_edge(self.a, 0, self.a, self.b, boundaries = {"electrostatic" : "Ground"})
         self.geometry.add_edge(self.a, self.b, 0, self.b, boundaries = {"electrostatic" : "Neumann"})
@@ -73,7 +73,7 @@ class TestGeometry(TestCase):
         with self.assertRaises(ValueError):
             self.geometry.add_edge(0, 0, 1, 1, boundaries = {'wrong_field' : 'wrong_boundary_condition'})
 
-        agros2d.field('electrostatic').add_boundary("Potential", "electrostatic_potential", {"electrostatic_potential" : 1000})
+        a2d.field('electrostatic').add_boundary("Potential", "electrostatic_potential", {"electrostatic_potential" : 1000})
         with self.assertRaises(ValueError):
             self.geometry.add_edge(0, 0, 1, 1, boundaries = {'electrostatic' : 'wrong_boundary_condition'})
 
@@ -83,7 +83,7 @@ class TestGeometry(TestCase):
         with self.assertRaises(ValueError):
             self.geometry.add_edge(0, 0, 1, 1, refinements = {'field' : 1})
 
-        agros2d.field('electrostatic')
+        a2d.field('electrostatic')
         with self.assertRaises(IndexError):
             self.geometry.add_edge(0, 0, 1, 1, refinements = {'electrostatic' : -1})
 
@@ -144,9 +144,9 @@ class TestGeometry(TestCase):
 
 class TestGeometryTransformations(TestCase):
     def model(self):
-        self.problem = agros2d.problem(clear = True)
+        self.problem = a2d.problem(clear = True)
 
-        self.electrostatic = agros2d.field("electrostatic")
+        self.electrostatic = a2d.field("electrostatic")
         self.electrostatic.add_boundary("Source", "electrostatic_potential", {"electrostatic_potential" : 10})
         self.electrostatic.add_boundary("Ground", "electrostatic_potential", {"electrostatic_potential" : 0})
         self.electrostatic.add_boundary("Neumann", "electrostatic_surface_charge_density", {"electrostatic_surface_charge_density" : 0})
@@ -155,7 +155,7 @@ class TestGeometryTransformations(TestCase):
         self.a = 1
         self.b = 1
 
-        self.geometry = agros2d.geometry
+        self.geometry = a2d.geometry
         self.geometry.add_edge(0, 0, self.a, 0, boundaries = {"electrostatic" : "Neumann"})
         self.geometry.add_edge(self.a, 0, self.a, self.b, boundaries = {"electrostatic" : "Ground"})
         self.geometry.add_edge(self.a, self.b, 0, self.b, boundaries = {"electrostatic" : "Neumann"})

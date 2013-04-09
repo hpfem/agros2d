@@ -80,6 +80,8 @@ geometry.add_label(0.0497159, 0.00460215, materials = {"current" : "none", "elas
 geometry.add_label(0.204343, 0.00622128, materials = {"current" : "none", "elasticity" : "none", "heat" : "Material"})
 geometry.add_label(0.276729, -0.0804181, materials = {"current" : "none", "elasticity" : "Material", "heat" : "Material"})
 
+agros2d.view.zoom_best_fit()
+
 # solve problem
 problem.solve()
 

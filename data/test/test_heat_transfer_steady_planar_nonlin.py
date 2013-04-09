@@ -54,7 +54,7 @@ geometry.add_edge(-0.25, -0.05, -0.25, -0.25, boundaries = {"heat" : "Left"})
 geometry.add_label(-0.0150215, 0.018161, materials = {"heat" : "Material"})
 geometry.add_label(-0.183934, 0.0732177, materials = {"heat" : "Material - nonlin"})
 
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()

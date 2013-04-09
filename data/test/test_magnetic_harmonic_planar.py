@@ -57,7 +57,7 @@ geometry.add_label(0.00778124, 0.00444642, materials = {"magnetic" : "Cond 1"}, 
 geometry.add_label(-0.0111161, -0.00311249, materials = {"magnetic" : "Cond 2"}, area=1e-05)
 geometry.add_label(0.016868, -0.0186625, materials = {"magnetic" : "Magnet"}, area=0)
 
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()

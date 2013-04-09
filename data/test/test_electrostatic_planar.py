@@ -56,7 +56,7 @@ geometry.add_label(10.3839, 15.7187, materials = {"electrostatic" : "Source"})
 geometry.add_label(3.37832, 15.8626, materials = {"electrostatic" : "Air"})
 geometry.add_label(12.3992, 0.556005, materials = {"electrostatic" : "Dieletric"})
 
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()

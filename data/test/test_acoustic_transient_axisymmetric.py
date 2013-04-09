@@ -52,7 +52,7 @@ geometry.add_edge(0.4, 1, 0.3, 0.9, angle = 90, boundaries = {"acoustic" : "Pres
 geometry.add_label(0.663165, 1.16386, materials = {"acoustic" : "Air"})
 geometry.add_label(0.387614, 0.929226, materials = {"acoustic" : "none"})
 
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()

@@ -56,6 +56,8 @@ geometry.add_label(0.235433, 0.273031, materials = {"magnetic" : "air"})
 geometry.add_label(0.00629508, 0.0397221, materials = {"magnetic" : "steel"})
 geometry.add_label(0.125663, 0.0344, materials = {"magnetic" : "coil"})
 
+agros2d.view.zoome_best_fit()
+
 # solve problem
 problem.solve()
 

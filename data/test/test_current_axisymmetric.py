@@ -41,8 +41,7 @@ geometry.add_edge(0.35, 0.45, 0, 0.45, boundaries = {"current" : "Voltage"})
 # labels
 geometry.add_label(0.0933957, 0.350253, materials = {"current" : "Copper"})
 
-
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()

@@ -74,7 +74,7 @@ geometry.add_label(0.00870469, 0.000204637, materials = {"electrostatic" : "air"
 geometry.add_label(0.027331, 0.0261643, materials = {"electrostatic" : "air", "magnetic" : "Air"})
 geometry.add_label(0.00883433, 0.00543334, materials = {"electrostatic" : "air", "magnetic" : "Coil 1"})
 geometry.add_label(0.00902444, -0.0168831, materials = {"electrostatic" : "air", "magnetic" : "Coil 2"})
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 problem.solve()
 

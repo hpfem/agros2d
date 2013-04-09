@@ -79,7 +79,7 @@ geometry.add_label(0.173639, 0.0106815, materials = {"current" : "Mild steel", "
 geometry.add_label(0.160202, -0.00535067, materials = {"current" : "Aluminium", "elasticity" : "Aluminium", "heat" : "Aluminium"})
 geometry.add_label(0.116793, 0.00774503, materials = {"current" : "none", "elasticity" : "none", "heat" : "none"})
 
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()

@@ -53,7 +53,7 @@ geometry.add_label(0.0379, 0.051, materials = {"electrostatic" : "Dielectric n.2
 geometry.add_label(0.0284191, 0.123601, materials = {"electrostatic" : "Air"})
 
 # solve
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 problem.solve()
 
 # point value

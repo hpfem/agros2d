@@ -70,7 +70,7 @@ geometry.add_label(0.0173943, -0.00630466, materials = {"magnetic" : "Iron"})
 geometry.add_label(0.00305095, 0.0688963, materials = {"magnetic" : "Civka 2"})
 geometry.add_label(-0.00501291, 0.0328188, materials = {"magnetic" : "Civka 1"})
 
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()

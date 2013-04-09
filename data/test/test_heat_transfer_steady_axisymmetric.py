@@ -43,7 +43,7 @@ geometry.add_edge(0.02, 0.04, 0.02, 0.1, boundaries = {"heat" : "Inlet"})
 # labels
 geometry.add_label(0.0460134, 0.0867717, materials = {"heat" : "Material"}, area=0.0003)
 
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()

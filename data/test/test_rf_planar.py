@@ -53,7 +53,7 @@ geometry.add_edge(0.086, 0, 0.16, 0, 0, boundaries = {"rf" : "Perfect electric c
 # labels
 geometry.add_label(0.0359418, 0.0109393, materials = {"rf" : "Air"})
 
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()

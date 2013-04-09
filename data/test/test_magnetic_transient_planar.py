@@ -57,7 +57,7 @@ geometry.add_edge(0.000192, 0.000576, 0, 0.000768, 90, boundaries = {"none"})
 geometry.add_label(0.000585418, 0.00126858, 0, 0, materials = {"Air"})
 geometry.add_label(0.000109549, 8.6116e-05, 0, 0, materials = {"Copper"})
 
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()

@@ -41,7 +41,7 @@ geometry.add_edge(0.0035, 0, 0, 0.0035, boundaries = {"magnetic" : "A = 0"}, ang
 # labels
 geometry.add_label(0, 0, materials = {"magnetic" : "Zelezo"}, area = 5e-07)
 
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()

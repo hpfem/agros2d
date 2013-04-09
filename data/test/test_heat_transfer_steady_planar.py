@@ -46,7 +46,7 @@ geometry.add_edge(0.1, 0.1, 0.1, 0, boundaries = {"heat" : "T outer"})
 geometry.add_label(0.0553981, 0.124595, materials = {"heat" : "Material 1"}, area=0.0003)
 geometry.add_label(0.070091, 0.068229, materials = {"heat" : "Material 2"}, area=0.0003)
 
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()

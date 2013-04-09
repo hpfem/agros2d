@@ -46,7 +46,7 @@ geometry.add_edge(0.15, -0.55, 0.15, -0.5, boundaries = {"flow" : "wall"})
 
 geometry.add_label(0.127882, 0.157169, materials = {"flow" : "fluid"})
 
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()

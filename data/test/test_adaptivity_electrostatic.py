@@ -39,7 +39,7 @@ geometry.add_edge(0, -0.25, 0.25, 0, angle = 90, boundaries = {"electrostatic" :
 geometry.add_edge(0.25, 0, 0, 0.25, angle = 90, boundaries = {"electrostatic" : "Ground"})
 
 geometry.add_label(0.879551, 0.764057, area = 0.06, materials = {"electrostatic" : "Air"})
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 problem.solve()
 

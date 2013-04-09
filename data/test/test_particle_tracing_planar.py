@@ -57,7 +57,7 @@ geometry.add_label(0.0805206, 0.0216256, materials = {"electrostatic" : "Screen"
 geometry.add_label(0.0504445, 0.0129438, materials = {"electrostatic" : "none"})
 geometry.add_label(0.0452163, -0.0148758, materials = {"electrostatic" : "none"})
 geometry.add_label(0.109507, 0.050865, materials = {"electrostatic" : "Air"})
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 problem.solve()
 

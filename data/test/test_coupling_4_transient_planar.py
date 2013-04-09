@@ -72,7 +72,7 @@ geometry.add_label(-0.15, 0.4, materials = {"current" : "none", "heat" : "Fe"})
 geometry.add_label(-0.123246, 0.198947, materials = {"current" : "none", "heat" : "Fe (source)"})
 geometry.add_label(0.05, 0.378655, materials = {"current" : "none", "heat" : "Fe (source)"})
 
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 problem.solve()
 

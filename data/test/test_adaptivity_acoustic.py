@@ -37,7 +37,7 @@ geometry.add_edge(0.025, -0.2, 0, -0.2, boundaries = {"acoustic" : "Source"})
 geometry.add_edge(0, 0.3, 0, -0.2, boundaries = {"acoustic" : "Wall"})
 
 geometry.add_label(0.109723, 0.176647, materials = {"acoustic" : "Air"})
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 problem.solve()
 

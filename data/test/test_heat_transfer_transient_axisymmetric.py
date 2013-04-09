@@ -76,7 +76,7 @@ geometry.add_label(0.0163723, 0.144289, materials = {"heat" : "Cu"})
 geometry.add_label(0.00380689, 0.151055, materials = {"heat" : "Air"})
 geometry.add_label(0.0112064, 0.0336487, materials = {"heat" : "Brass"})
 
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()

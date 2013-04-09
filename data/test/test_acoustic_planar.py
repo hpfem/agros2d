@@ -49,7 +49,7 @@ geometry.add_label(-0.0814934, 0.0707097, materials = {"acoustic" : "Air"})
 geometry.add_label(-0.181474, -0.0504768)
 geometry.add_label(0.0314514, 0.0411749)
 
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()

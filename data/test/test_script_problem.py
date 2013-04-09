@@ -1,9 +1,9 @@
-import agros2d
+import agros2d as a2d
 from unittest import TestCase
 
 class TestProblem(TestCase):
     def setUp(self):
-        self.problem = agros2d.problem(clear = True)
+        self.problem = a2d.problem(clear = True)
 
     """ coordinate_type """
     def test_coordinate_type(self):

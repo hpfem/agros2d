@@ -71,7 +71,7 @@ geometry.add_label(0.0141705, 0.12445, materials = {"magnetic" : "Air"})
 geometry.add_label(0.0346923, 0.0892198, materials = {"magnetic" : "Fe"})
 geometry.add_label(0.036093, 0.0654078, materials = {"magnetic" : "Magnet"})
 
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()

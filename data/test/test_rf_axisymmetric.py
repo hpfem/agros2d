@@ -55,7 +55,7 @@ geometry.add_edge(0.3, -0.05, 0.85, -0.1, boundaries = {"rf" : "PMC"})
 geometry.add_label(0.399371, 0.440347, materials = {"rf" : "Air"})
 geometry.add_label(0.484795, -0.434246, materials = {"rf" : "none"})
 geometry.add_label(0.57193, 0.0710058, materials = {"rf" : "none"})
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 problem.solve()
 

@@ -65,7 +65,7 @@ geometry.add_label(0.143596, -0.364811, 0, materials = {"magnetic" : "Magnet"})
 geometry.add_label(0.310203, 0.631164, 0, materials = {"magnetic" : "Air"})
 geometry.add_label(-0.295858, -0.182894, 0, materials = {"magnetic" : "Velocity"})
 
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()

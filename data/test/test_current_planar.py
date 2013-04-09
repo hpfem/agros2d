@@ -48,7 +48,7 @@ geometry.add_label(0.3, 0.670924, materials = {"current" : "mat 1"})
 geometry.add_label(0.105779, 0.364111, materials = {"current" : "mat 2"})
 geometry.add_label(0.394296, 0.203668, materials = {"current" : "mat 3"})
 
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()

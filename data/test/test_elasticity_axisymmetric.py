@@ -49,7 +49,7 @@ geometry.add_label(0.0823077, 0.11114, materials = {"elasticity" : "Material 1"}
 geometry.add_label(1.48989, 0.108829, materials = {"elasticity" : "Material 3"})
 geometry.add_label(1.20588, 0.108829, materials = {"elasticity" : "Material 2"})
 
-geometry.zoom_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()
