@@ -20,6 +20,7 @@
 #ifndef PYTHONLABVIEW_H
 #define PYTHONLABVIEW_H
 
+#include "pythonlab/pythonengine_agros.h"
 #include "util/global.h"
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
@@ -39,65 +40,74 @@ struct PyView
 struct PyViewConfig
 {
     // grid
-    void setGridShow(bool show) { set(ProblemSetting::View_ShowGrid, show); }
+    void setGridShow(bool show) { setProblemSetting(ProblemSetting::View_ShowGrid, show); }
     inline bool getGridShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowGrid).toBool(); }
 
     void setGridStep(double step);
     inline double getGridStep() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble(); }
 
     // axes
-    void setAxesShow(bool show) { set(ProblemSetting::View_ShowAxes, show); }
+    void setAxesShow(bool show) { setProblemSetting(ProblemSetting::View_ShowAxes, show); }
     inline bool getAxesShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowAxes).toBool(); }
 
     // rulers
-    void setRulersShow(bool show) { set(ProblemSetting::View_ShowRulers, show); }
+    void setRulersShow(bool show) { setProblemSetting(ProblemSetting::View_ShowRulers, show); }
     inline bool getRulersShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool(); }
 
-private:
-    void set(ProblemSetting::Type type, QVariant value);
+    void setProblemSetting(ProblemSetting::Type type, bool value);
 };
 
 struct PyViewMeshAndPost
 {
     // field
     void setField(const std::string &fieldId);
-    std::string getField() const;
+    inline std::string getField() const
+    {
+        return currentPythonEngineAgros()->postHermes()->activeViewField()->fieldId().toStdString();
+    }
 
     // time step
     void setActiveTimeStep(int timeStep);
-    int getActiveTimeStep() const;
+    inline int getActiveTimeStep() const { return currentPythonEngineAgros()->postHermes()->activeTimeStep(); }
 
     // adaptivity step
     void setActiveAdaptivityStep(int adaptivityStep);
-    int getActiveAdaptivityStep() const;
+    inline int getActiveAdaptivityStep() const { return currentPythonEngineAgros()->postHermes()->activeAdaptivityStep(); }
 
     // solution type
     void setActiveSolutionType(const std::string &solutionType);
-    std::string getActiveSolutionType() const;
+    inline std::string getActiveSolutionType() const
+    {
+        return solutionTypeToStringKey(currentPythonEngineAgros()->postHermes()->activeAdaptivitySolutionType()).toStdString();
+    }
+
+    void setProblemSetting(ProblemSetting::Type type, bool value);
+    void setProblemSetting(ProblemSetting::Type type, int value);
+    void setProblemSetting(ProblemSetting::Type type, double value);
 };
 
-struct PyViewMesh
+struct PyViewMesh : PyViewMeshAndPost
 {
     void activate();
 
     // initial mesh
-    void setInitialMeshViewShow(bool show) {set(ProblemSetting::View_ShowInitialMeshView, show); }
+    void setInitialMeshViewShow(bool show) { PyViewMeshAndPost::setProblemSetting(ProblemSetting::View_ShowInitialMeshView, show); }
     inline bool getInitialMeshViewShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowInitialMeshView).toBool(); }
 
     // solution mesh
-    void setSolutionMeshViewShow(bool show) {set(ProblemSetting::View_ShowSolutionMeshView, show); }
+    void setSolutionMeshViewShow(bool show) { setProblemSetting(ProblemSetting::View_ShowSolutionMeshView, show); }
     inline bool getSolutionMeshViewShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowSolutionMeshView).toBool(); }
 
     // polynomial order
-    void setOrderViewShow(bool show) {set(ProblemSetting::View_ShowOrderView, show); }
+    void setOrderViewShow(bool show) { setProblemSetting(ProblemSetting::View_ShowOrderView, show); }
     inline bool getOrderViewShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderView).toBool(); }
 
     // order color bar
-    void setOrderViewColorBar(bool show) {set(ProblemSetting::View_ShowOrderColorBar, show); }
+    void setOrderViewColorBar(bool show) { setProblemSetting(ProblemSetting::View_ShowOrderColorBar, show); }
     inline bool getOrderViewColorBar() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderColorBar).toBool(); }
 
     // order labels
-    void setOrderViewLabel(bool show) {set(ProblemSetting::View_ShowOrderLabel, show); }
+    void setOrderViewLabel(bool show) { setProblemSetting(ProblemSetting::View_ShowOrderLabel, show); }
     inline bool getOrderViewLabel() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderLabel).toBool(); }
 
     // order pallete
@@ -106,12 +116,9 @@ struct PyViewMesh
     {
         return paletteOrderTypeToStringKey((PaletteOrderType) Agros2D::problem()->setting()->value(ProblemSetting::View_OrderPaletteOrderType).toInt()).toStdString();
     }
-
-private:
-    void set(ProblemSetting::Type type, QVariant value);
 };
 
-struct PyViewPost
+struct PyViewPost : PyViewMeshAndPost
 {
     // scalar view variable
     void setScalarViewVariable(const std::string &var);
@@ -135,39 +142,36 @@ struct PyViewPost
     }
     void setScalarViewPaletteSteps(int steps);
     inline int getScalarViewPaletteSteps() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteSteps).toInt(); }
-    void setScalarViewPaletteFilter(bool filter) { set(ProblemSetting::View_PaletteFilter, filter); }
+    void setScalarViewPaletteFilter(bool filter) { setProblemSetting(ProblemSetting::View_PaletteFilter, filter); }
     inline bool getScalarViewPaletteFilter() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteFilter).toBool(); }
-    void setScalarViewColorBar(bool show) { set(ProblemSetting::View_ShowScalarColorBar, show); }
+    void setScalarViewColorBar(bool show) { setProblemSetting(ProblemSetting::View_ShowScalarColorBar, show); }
     inline bool getScalarViewColorBar() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowScalarColorBar).toBool(); }
     void setScalarViewDecimalPlace(int place);
     inline int getScalarViewDecimalPlace() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarDecimalPlace).toInt(); }
 
     // scalar view range
-    void setScalarViewRangeAuto(bool autoRange) { set(ProblemSetting::View_ScalarRangeAuto, autoRange); }
+    void setScalarViewRangeAuto(bool autoRange) { setProblemSetting(ProblemSetting::View_ScalarRangeAuto, autoRange); }
     inline bool getScalarViewRangeAuto() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool(); }
-    void setScalarViewRangeMin(double min) { set(ProblemSetting::View_ScalarRangeMin, min); }
+    void setScalarViewRangeMin(double min) { setProblemSetting(ProblemSetting::View_ScalarRangeMin, min); }
     inline double getScalarViewRangeMin() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble(); }
-    void setScalarViewRangeMax(double max) { set(ProblemSetting::View_ScalarRangeMax, max); }
+    void setScalarViewRangeMax(double max) { setProblemSetting(ProblemSetting::View_ScalarRangeMax, max); }
     inline double getScalarViewRangeMax() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble(); }
-    void setScalarViewRangeLog(bool log) { set(ProblemSetting::View_ScalarRangeLog, log); }
+    void setScalarViewRangeLog(bool log) { setProblemSetting(ProblemSetting::View_ScalarRangeLog, log); }
     inline bool getScalarViewRangeLog() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeLog).toBool(); }
     void setScalarViewRangeBase(double base);
     inline double getScalarViewRangeBase() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeBase).toDouble(); }
-
-private:
-    void set(ProblemSetting::Type type, QVariant value);
 };
 
-struct PyViewPost2D
+struct PyViewPost2D : PyViewMeshAndPost
 {
     void activate();
 
     // scalar view
-    void setScalarViewShow(bool show) { set(ProblemSetting::View_ShowScalarView, show); }
+    void setScalarViewShow(bool show) { setProblemSetting(ProblemSetting::View_ShowScalarView, show); }
     inline bool getScalarViewShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowScalarView).toBool(); }
 
     // contour view
-    void setContourShow(bool show) { set(ProblemSetting::View_ShowContourView, show); }
+    void setContourShow(bool show) { setProblemSetting(ProblemSetting::View_ShowContourView, show); }
     inline bool getContourShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowContourView).toBool(); }
     void setContourCount(int count);
     inline int getContourCount() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ContoursCount).toInt(); }
@@ -175,7 +179,7 @@ struct PyViewPost2D
     inline std::string getContourVariable() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString().toStdString(); }
 
     // vector view
-    void setVectorShow(bool show) { set(ProblemSetting::View_ShowVectorView, show); }
+    void setVectorShow(bool show) { setProblemSetting(ProblemSetting::View_ShowVectorView, show); }
     inline bool getVectorShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowVectorView).toBool(); }
     void setVectorCount(int count);
     inline int getVectorCount() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_VectorCount).toInt(); }
@@ -183,13 +187,10 @@ struct PyViewPost2D
     inline double getVectorScale() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_VectorScale).toDouble(); }
     void setVectorVariable(const std::string &var);
     inline std::string getVectorVariable() const { return const_cast<char*>(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString().toStdString().c_str()); }
-    void setVectorProportional(bool show) { set(ProblemSetting::View_VectorProportional, show); }
+    void setVectorProportional(bool show) { setProblemSetting(ProblemSetting::View_VectorProportional, show); }
     inline bool getVectorProportional() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_VectorProportional).toBool(); }
-    void setVectorColor(bool show) { set(ProblemSetting::View_VectorColor, show); }
+    void setVectorColor(bool show) { setProblemSetting(ProblemSetting::View_VectorColor, show); }
     inline bool getVectorColor() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_VectorColor).toBool(); }
-
-private:
-    void set(ProblemSetting::Type type, QVariant value);
 };
 
 struct PyViewPost3D
@@ -208,9 +209,6 @@ struct PyViewPost3D
 struct PyViewParticleTracing
 {
     void activate();
-
-    // void setParticleShow(bool show);
-    // inline bool getParticleShow() const { return Agros2D::problem()->configView()->showParticleView; }
 };
 
 #endif // PYTHONLABVIEW_H

@@ -32,10 +32,10 @@ class SceneViewPost2D : public SceneViewCommon2D
 {
     Q_OBJECT
 
-public slots:   
+public slots:
     void selectByMarker();
     void selectPoint();
-    void doPostprocessorModeGroup(QAction *action);    
+    void doPostprocessorModeGroup(QAction *action);
     virtual void clear();
     void exportVTKScalarView(const QString &fileName = QString());
 
