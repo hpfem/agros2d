@@ -16,12 +16,11 @@
 #ifndef __H2D_SPACE_H
 #define __H2D_SPACE_H
 
-#include "../mesh/mesh.h"
 #include "../shapeset/shapeset.h"
 #include "asmlist.h"
+#include "../boundary_conditions/essential_boundary_conditions.h"
 #include "../mesh/traverse.h"
 #include "../quadrature/quad_all.h"
-#include "../boundary_conditions/essential_boundary_conditions.h"
 
 using namespace Hermes::Algebra::DenseMatrixOperations;
 
@@ -51,8 +50,6 @@ public:
 
 };
 
-
-
 namespace Hermes
 {
   namespace Hermes2D
@@ -66,17 +63,18 @@ namespace Hermes
       {
       public:
         /// Sets new spaces for the instance.
-        virtual void set_spaces(Hermes::vector<SpaceSharedPtr<Scalar> > spaces) = 0;
-        virtual void set_space(SpaceSharedPtr<Scalar> space) = 0;
+        virtual void set_spaces(Hermes::vector<SpaceSharedPtr<Scalar> >& spaces) = 0;
+        virtual void set_space(SpaceSharedPtr<Scalar>& space);
         /// Get all spaces as a Hermes::vector.
-        virtual Hermes::vector<SpaceSharedPtr<Scalar> > get_spaces() const = 0;
-        virtual SpaceSharedPtr<Scalar> get_space(int n) const;
+        virtual Hermes::vector<SpaceSharedPtr<Scalar> >& get_spaces();
+        virtual SpaceSharedPtr<Scalar>& get_space(int n);
       };
     }
 
     template<typename Scalar> class Adapt;
     template<typename Scalar> class DiscreteProblem;
-    template<typename Scalar> class DiscreteProblemLinear;
+    template<typename Scalar> class DiscreteProblemDGAssembler;
+    template<typename Scalar> class DiscreteProblemThreadAssembler;
     namespace Views
     {
       template<typename Scalar> class BaseView;
@@ -286,9 +284,9 @@ namespace Hermes
 
       virtual Scalar* get_bc_projection(SurfPos* surf_pos, int order, EssentialBoundaryCondition<Scalar> *bc) = 0;
 
-      static void update_essential_bc_values(Hermes::vector<SpaceSharedPtr<Scalar> > spaces, double time);
+      static void update_essential_bc_values(Hermes::vector<SpaceSharedPtr<Scalar> >& spaces, double time);
 
-      static void update_essential_bc_values(SpaceSharedPtr<Scalar> space, double time);
+      static void update_essential_bc_values(SpaceSharedPtr<Scalar>& space, double time);
 
       /// Internal. Return type of this space (H1 = HERMES_H1_SPACE, Hcurl = HERMES_HCURL_SPACE,
       /// Hdiv = HERMES_HDIV_SPACE, L2 = HERMES_L2_SPACE)
@@ -326,6 +324,9 @@ namespace Hermes
       int get_bubble_functions_count();
 
       static unsigned int get_instance_count();
+      
+      /// Internal. Used by DiscreteProblem to detect changes in the space.
+      int get_seq() const;
 
     protected:
       static unsigned int instance_count;
@@ -440,8 +441,6 @@ namespace Hermes
 
       void free_bc_data();
 
-      /// Internal. Used by DiscreteProblem to detect changes in the space.
-      int get_seq() const;
       template<typename T> friend class OGProjection;
       template<typename T> friend class NewtonSolver;
       template<typename T> friend class PicardSolver;
@@ -460,7 +459,8 @@ namespace Hermes
       template<typename T> friend class Views::VectorBaseView;
       friend class Adapt<Scalar>;
       friend class DiscreteProblem<Scalar>;
-      friend class DiscreteProblemLinear<Scalar>;
+      friend class DiscreteProblemDGAssembler<Scalar>;
+      friend class DiscreteProblemThreadAssembler<Scalar>;
       template<typename T> friend class CalculationContinuity;
     };
   }

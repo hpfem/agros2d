@@ -39,8 +39,8 @@
 
 #include "mesh/mesh_reader_h2d.h"
 
-#include "newton_solver.h"
-#include "picard_solver.h"
+#include "solver/newton_solver.h"
+#include "solver/picard_solver.h"
 
 #include "util/constants.h"
 

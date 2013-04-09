@@ -15,12 +15,9 @@
 
 #include "exact_solution.h"
 #include "forms.h"
-
 #include "solution_h2d_xml.h"
 #include "ogprojection.h"
 #include "api2d.h"
-
-#include <iostream>
 #include <algorithm>
 
 namespace Hermes
@@ -897,7 +894,6 @@ namespace Hermes
     void Solution<Scalar>::transform_values(int order, struct Function<Scalar>::Node* node, int newmask, int oldmask, int np)
     {
       double2x2 *mat, *m;
-      double3x2 *mat2, *mm;
       int i, mstep = 0;
 
       // H1 space
@@ -908,7 +904,7 @@ namespace Hermes
         {
           this->update_refmap();
           mat = this->refmap->get_inv_ref_map(order);
-          mat2 = this->refmap->get_second_ref_map(order);
+          double3x2 *mm, *mat2 = this->refmap->get_second_ref_map(order);
           for (i = 0, m = mat, mm = mat2; i < np; i++, m++, mm++)
           {
             Scalar vx = node->values[0][1][i];

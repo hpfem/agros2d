@@ -60,6 +60,13 @@ namespace Hermes
         /// Constructor.
         /// Sets defaults (see individual set methods for values of those).
         MatrixRhsOutput();
+
+        /// Processes the matrix.
+        void process_matrix_output(SparseMatrix<Scalar>* matrix, int iteration);
+        
+        /// Processes the matrix.
+        void process_vector_output(Vector<Scalar>* rhs, int iteration);
+
         /// Sets this instance to output the matrix in several first iterations.
         /// \param[in] firstIterations Only during so many first iterations. Default: -1 meaning, that during all iterations, the matrix will be saved.
         void output_matrix(int firstIterations = -1);
@@ -111,26 +118,6 @@ namespace Hermes
         std::string RhsVarname;
         EMatrixDumpFormat RhsFormat;
 		char* rhs_number_format;
-      };
-
-      /// \ingroup g_mixins2d
-      /// Mixin that intermediate DiscreteProblemCache settings.
-      class HERMES_API DiscreteProblemCacheSettings
-      {
-      public:
-        DiscreteProblemCacheSettings();
-
-        /// Free data and memory stored in the cache.
-        /// This allows for its subsequent usage, so it can be used as a periodical cache cleaning.
-        /// Note that the cache ONLY STORES WHAT IT NEEDS, the no-more needed cache records are
-        /// deleted after the first assembly where they are not needed.
-        virtual void free_cache() = 0;
-
-        /// If the cache should not be used for any reason.
-        void set_do_not_use_cache();
-
-      private:
-        bool do_not_use_cache;
       };
     }
   }

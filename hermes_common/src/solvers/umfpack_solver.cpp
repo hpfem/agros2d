@@ -151,6 +151,14 @@ namespace Hermes
       }
     }
 
+    
+    template<typename Scalar>
+    void CSCMatrix<Scalar>::set_row_zero(unsigned int n)
+    {
+      for(int i = 0; i < Ap[n + 1] - Ap[n]; i++)
+        Ax[Ap[n] + i] = Scalar(0);
+    }
+
     template<typename Scalar>
     Scalar CSCMatrix<Scalar>::get(unsigned int m, unsigned int n)
     {

@@ -17,13 +17,16 @@
 #define __H2D_TRAVERSE_H
 
 #include "hermes_common.h"
+#include "mesh.h"
+
 #include <hash_set>
 
 namespace Hermes
 {
   namespace Hermes2D
   {
-    namespace Views{
+    namespace Views
+    {
       class Orderizer;
       class Linearizer;
       class Vectorizer;
@@ -79,7 +82,6 @@ namespace Hermes
     {
     public:
       Traverse(bool master = false);
-    private:
       class State
       {
       public:
@@ -90,24 +92,27 @@ namespace Hermes
         uint64_t rep_subidx;
         int rep_i;
         ~State();
+        int isurf;
       private:
         State();
         //void operator=(const State * other);
         static State* clone(const State * other);
         void push_transform(int son, int i, bool is_triangle = false);
+        bool is_triangle();
         uint64_t get_transform(int i);
         bool visited;
         uint64_t* sub_idx;
         Rect  cr;
         Rect* er;
         int num;
-        int isurf;
       friend class Traverse;
       friend class Views::Linearizer;
       friend class Views::Vectorizer;
       template<typename T> friend class DiscreteProblemCache;
       template<typename Scalar> friend class DiscreteProblem;
-      template<typename Scalar> friend class DiscreteProblemLinear;
+      template<typename T> friend class DiscreteProblemAssemblyData;
+      template<typename T> friend class DiscreteProblemDGAssembler;
+      template<typename T> friend class DiscreteProblemThreadAssembler;
       };
 
       void begin(int n, MeshSharedPtr* meshes, Transformable** fn = NULL);
@@ -151,7 +156,9 @@ namespace Hermes
       template<typename T> friend class KellyTypeAdapt;
       template<typename T> friend class DiscreteProblem;
       template<typename T> friend class DiscreteProblemCache;
-      template<typename T> friend class DiscreteProblemLinear;
+      template<typename T> friend class DiscreteProblemDGAssembler;
+      template<typename T> friend class DiscreteProblemIntegrationOrderCalculator;
+      template<typename T> friend class DiscreteProblemAssemblyData;
       template<typename T> friend class Filter;
       template<typename T> friend class SimpleFilter;
       template<typename T> friend class Global;
