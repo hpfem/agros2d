@@ -101,15 +101,32 @@ void PyViewConfig::setGridStep(double step)
 
 // ************************************************************************************
 
-void PyViewMeshAndPost::setField(const std::string & fieldid)
+void PyViewMeshAndPost::setField(const std::string &fieldId)
 {
     if (!Agros2D::problem()->isSolved())
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
 
-    if (!Agros2D::problem()->hasField(QString::fromStdString(fieldid)))
+    if (!Agros2D::problem()->hasField(QString::fromStdString(fieldId)))
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(Agros2D::problem()->fieldInfos().keys())).toStdString());
 
-    currentPythonEngineAgros()->postHermes()->setActiveViewField(Agros2D::problem()->fieldInfo(fieldid));
+    FieldInfo *fieldInfo = Agros2D::problem()->fieldInfo(QString::fromStdString(fieldId));
+    SolutionMode solutionType = currentPythonEngineAgros()->postHermes()->activeAdaptivitySolutionType();
+    int timeStep = currentPythonEngineAgros()->postHermes()->activeTimeStep();
+
+    if (fieldInfo->adaptivityType() == AdaptivityType_None)
+        solutionType = SolutionMode_Normal;
+
+    if (!Agros2D::solutionStore()->timeLevels(fieldInfo).contains(Agros2D::problem()->timeStepToTotalTime(timeStep)))
+        timeStep = Agros2D::solutionStore()->lastTimeStep(fieldInfo, solutionType);
+
+    // set last adaptivity step (keeping of previous step can be misleading)
+    int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, solutionType, timeStep);
+
+    currentPythonEngineAgros()->postHermes()->setActiveViewField(fieldInfo);
+    currentPythonEngineAgros()->postHermes()->setActiveTimeStep(timeStep);
+    currentPythonEngineAgros()->postHermes()->setActiveAdaptivityStep(adaptivityStep);
+    currentPythonEngineAgros()->postHermes()->setActiveAdaptivitySolutionType(solutionType);
+
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
@@ -135,7 +152,12 @@ void PyViewMeshAndPost::setActiveTimeStep(int timeStep)
         throw out_of_range(QObject::tr("Field '%1' does not have solution for time step %2 (%3 s).").arg(fieldInfo->fieldId()).
                            arg(timeStep).arg(Agros2D::problem()->timeStepToTotalTime(timeStep)).toStdString());
 
+    SolutionMode solutionType = currentPythonEngineAgros()->postHermes()->activeAdaptivitySolutionType();
+    int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, solutionType, timeStep);
+
     currentPythonEngineAgros()->postHermes()->setActiveTimeStep(timeStep);
+    currentPythonEngineAgros()->postHermes()->setActiveAdaptivityStep(adaptivityStep);
+
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
@@ -162,9 +184,11 @@ void PyViewMeshAndPost::setActiveAdaptivityStep(int adaptivityStep)
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
 
     if (adaptivityStep < 0 || adaptivityStep >= currentPythonEngineAgros()->postHermes()->activeViewField()->adaptivitySteps())
-        throw out_of_range(QObject::tr("Adaptivity step for active field (%1) must be in the range from 0 to %2.").arg(currentPythonEngineAgros()->postHermes()->activeViewField()->fieldId()).arg(currentPythonEngineAgros()->postHermes()->activeViewField()->adaptivitySteps() - 1).toStdString());
+        throw out_of_range(QObject::tr("Adaptivity step for active field (%1) must be in the range from 0 to %2.").arg(currentPythonEngineAgros()->postHermes()->activeViewField()->fieldId()).
+                           arg(currentPythonEngineAgros()->postHermes()->activeViewField()->adaptivitySteps() - 1).toStdString());
 
     currentPythonEngineAgros()->postHermes()->setActiveAdaptivityStep(adaptivityStep);
+
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }
@@ -185,7 +209,11 @@ void PyViewMeshAndPost::setActiveSolutionType(const std::string &solutionType)
     if (!solutionTypeStringKeys().contains(QString::fromStdString(solutionType)))
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(solutionTypeStringKeys())).toStdString());
 
-    currentPythonEngineAgros()->postHermes()->setActiveAdaptivitySolutionType(solutionTypeFromStringKey(QString::fromStdString(solutionType)));
+    if (currentPythonEngineAgros()->postHermes()->activeViewField()->adaptivityType() != AdaptivityType_None)
+        currentPythonEngineAgros()->postHermes()->setActiveAdaptivitySolutionType(solutionTypeFromStringKey(QString::fromStdString(solutionType)));
+    else
+        throw logic_error(QObject::tr("Field '%1' was solved with space adaptivity.").arg(currentPythonEngineAgros()->postHermes()->activeViewField()->fieldId()).toStdString());
+
     if (!silentMode())
         currentPythonEngineAgros()->postHermes()->refresh();
 }

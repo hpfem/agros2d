@@ -60,7 +60,7 @@ private:
 struct PyViewMeshAndPost
 {
     // field
-    void setField(const std::string &fieldid);
+    void setField(const std::string &fieldId);
     std::string getField() const;
 
     // time step
