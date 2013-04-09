@@ -177,21 +177,12 @@
       </module:localvariable>
       <module:localvariable id="magnetic_potential_real" name="Vector potential - real" shortname="Ar" shortname_html="&lt;i>A&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="A_\mathrm{r}" type="scalar" unit="Wb/m" unit_html="Wb.m&lt;sup>-1&lt;/sup>" unit_latex="Wb \cdot m^{-1}">
         <module:expression analysistype="steadystate" axi="value1" planar="value1"/>
-        <module:expression analysistype="harmonic" axi="value1" planar="value1"/>
+        <module:expression analysistype="harmonic" axi="value1+value3" planar="value1+value3"/>
         <module:expression analysistype="transient" axi="value1" planar="value1"/>
       </module:localvariable>
       <module:localvariable id="magnetic_potential_imag" name="Vector potential - imag" shortname="Ai" shortname_html="&lt;i>A&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="A_\mathrm{i}" type="scalar" unit="Wb/m" unit_html="Wb.m&lt;sup>-1&lt;/sup>" unit_latex="Wb \cdot m^{-1}">
-        <module:expression analysistype="harmonic" axi="value2" planar="value2"/>
+        <module:expression analysistype="harmonic" axi="value2+value4" planar="value2+value4"/>
       </module:localvariable>
-
-      <module:localvariable id="potential_schift_real" name="Potential schift - real" shortname="Sr" shortname_html="&lt;i>S&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="S_\mathrm{r}" type="scalar" unit="Wb/m" unit_html="Wb.m&lt;sup>-1&lt;/sup>" unit_latex="Wb \cdot m^{-1}">
-        <module:expression analysistype="harmonic" axi="value3" planar="value3"/>
-      </module:localvariable>
-
-      <module:localvariable id="potential_schift_imag" name="Potential schift - imag" shortname="Si" shortname_html="&lt;i>S&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="S_\mathrm{i}" type="scalar" unit="Wb/m" unit_html="Wb.m&lt;sup>-1&lt;/sup>" unit_latex="Wb \cdot m^{-1}">
-        <module:expression analysistype="harmonic" axi="value4" planar="value4"/>
-      </module:localvariable>
-
       <module:localvariable id="magnetic_flux_density" name="Flux density" shortname="B" shortname_html="&lt;i>B&lt;/i>" shortname_latex="B" type="scalar" unit="T" unit_html="T" unit_latex="T">
         <module:expression analysistype="harmonic" axi="sqrt(dz1*dz1 + (dr1 + tern(r > 0, value1/r, 0.0))^2 + dz2*dz2 + (dr2 + tern(r > 0, value2/r, 0.0))^2)" planar="sqrt(dy1*dy1 + dx1*dx1 + dy2*dy2 + dx2*dx2)"/>
       </module:localvariable>
@@ -265,23 +256,6 @@
         <module:expression analysistype="harmonic" axi="sqrt((2 * PI * f * ma_gamma * (value2+value4))^2+(- 2 * PI * f * ma_gamma * (value1+value3))^2)" planar="sqrt((2 * PI * f * ma_gamma * (value2+value4))^2+(- 2 * PI * f * ma_gamma * (value1+value3))^2)"/>
       </module:localvariable>
 
-
-      <module:localvariable id="magnetic_current_density_induced_transform_real1" name="Current IT orig - real" shortname="Jitrorig" shortname_html="&lt;i>Jorig&lt;/i>&lt;sub>itr&lt;/sub>" shortname_latex="J_\mathrm{itr}" type="scalar" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
-        <module:expression analysistype="harmonic" axi="2 * PI * f * ma_gamma * (value2)" planar="2 * PI * f * ma_gamma * (value2)"/>
-      </module:localvariable>
-      <module:localvariable id="magnetic_current_density_induced_transform_imag1" name="Current IT orig - imag" shortname="Jitiorig" shortname_html="&lt;i>Jorig&lt;/i>&lt;sub>iti&lt;/sub>" shortname_latex="J_\mathrm{iti}" type="scalar" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
-        <module:expression analysistype="harmonic" axi="- 2 * PI * f * ma_gamma * (value1)" planar="- 2 * PI * f * ma_gamma * (value1)"/>
-      </module:localvariable>
-
-      <module:localvariable id="magnetic_current_density_induced_transform_real2" name="Current IT schift - real" shortname="Jitrsch" shortname_html="&lt;i>Jsch&lt;/i>&lt;sub>itr&lt;/sub>" shortname_latex="J_\mathrm{itr}" type="scalar" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
-        <module:expression analysistype="harmonic" axi="2 * PI * f * ma_gamma * (value4)" planar="2 * PI * f * ma_gamma * (value4)"/>
-      </module:localvariable>
-      <module:localvariable id="magnetic_current_density_induced_transform_imag2" name="Current IT schift - imag" shortname="Jitisch" shortname_html="&lt;i>Jsch&lt;/i>&lt;sub>iti&lt;/sub>" shortname_latex="J_\mathrm{iti}" type="scalar" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
-        <module:expression analysistype="harmonic" axi="- 2 * PI * f * ma_gamma * (value3)" planar="- 2 * PI * f * ma_gamma * (value3)"/>
-      </module:localvariable>
-
-
-
       <module:localvariable id="magnetic_current_density_induced_transform_real" name="Current dens. - ind. transform - real" shortname="Jitr" shortname_html="&lt;i>J&lt;/i>&lt;sub>itr&lt;/sub>" shortname_latex="J_\mathrm{itr}" type="scalar" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
         <module:expression analysistype="harmonic" axi="2 * PI * f * ma_gamma * (value2+value4)" planar="2 * PI * f * ma_gamma * (value2+value4)"/>
       </module:localvariable>
@@ -342,10 +316,10 @@
         <module:expression analysistype="harmonic" axi="ma_Jei" planar="ma_Jei"/>
       </module:volumeintegral>
       <module:volumeintegral id="magnetic_current_induced_transform_real" name="Current - ind. transform - real" shortname="Iitr" shortname_html="&lt;i>I&lt;/i>&lt;sub>itr&lt;/sub>" shortname_latex="I_\mathrm{itr}" unit="A" unit_html="" unit_latex="">
-        <module:expression analysistype="harmonic" axi="2 * PI * f * ma_gamma * value2" planar="2 * PI * f * ma_gamma * value2"/>
+        <module:expression analysistype="harmonic" axi="2 * PI * f * ma_gamma * (value2 + value4)" planar="2 * PI * f * ma_gamma * (value2 + value4) "/>
       </module:volumeintegral>
       <module:volumeintegral id="magnetic_current_induced_transform_imag" name="Current - ind. transform - imag" shortname="Iiti" shortname_html="&lt;i>I&lt;/i>&lt;sub>iti&lt;/sub>" shortname_latex="I_\mathrm{iti}" unit="A" unit_html="" unit_latex="">
-        <module:expression analysistype="harmonic" axi="- 2 * PI * f * ma_gamma * value1" planar="- 2 * PI * f * ma_gamma * value1"/>
+        <module:expression analysistype="harmonic" axi="- 2 * PI * f * ma_gamma * (value1 + value3)" planar="- 2 * PI * f * ma_gamma * (value1 + value3)"/>
       </module:volumeintegral>
       <module:volumeintegral id="magnetic_current_total_real" name="Current - total - real" shortname="Ir" shortname_html="&lt;i>I&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="I_\mathrm{r}" unit="A" unit_html="" unit_latex="">
         <module:expression analysistype="steadystate" axi="ma_Jer - ma_gamma * (ma_vy * dz1)" planar="ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1)"/>

@@ -27,7 +27,7 @@ namespace Hermes
       lsize = 0;
 
       // set uniform poly order in elements
-      this->set_uniform_order_internal(1, HERMES_ANY_INT);
+      this->set_uniform_order_internal(0, HERMES_ANY_INT);
 
       // enumerate basis functions
       this->assign_dofs();
@@ -123,7 +123,7 @@ namespace Hermes
       typename Space<Scalar>::ElementData* ed = &this->edata[e->id];
       if(!ed->n) return;
 
-      ed->order = 1;
+      assert(ed->order == 0);
 
       int* indices = this->shapeset->get_bubble_indices(ed->order, e->get_mode());
       //assert(ed->order == 1);

@@ -912,8 +912,6 @@ void ProblemSolver<Scalar>::createInitialSpace()
 
         QMap<int, Module::Space> fieldSpaces = fieldInfo->spaces();
 
-        QMap<int, Module::Space> fieldSpaces = fieldInfo->spaces();
-
         // create space
         for (int i = 0; i < fieldInfo->numberOfSolutions(); i++)
         {
