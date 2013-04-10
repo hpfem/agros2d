@@ -41,6 +41,7 @@ class PostprocessorWidget;
 class PythonScriptingConsoleView;
 class TooltipView;
 class LogView;
+class LogDialog;
 
 class ChartWidget;
 class PythonLabAgros;
@@ -86,6 +87,7 @@ private slots:
     void doCreateMesh();
     void doSolve();
     void doSolveAdaptiveStep();
+    void doSolveFinished();
 
     void doScriptEditor();
     void doScriptEditorRunScript(const QString &fileName = "");
@@ -236,6 +238,8 @@ private:
     QSplitter *splitter;
 
     LogStdOut *logStdOut;
+
+    LogDialog *logDialog;
 
     void setRecentFiles();
 

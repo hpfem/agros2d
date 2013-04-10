@@ -393,6 +393,8 @@ Scalar *Solver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
 {
     if(Agros2D::problem()->abortSolve()){
         Agros2D::problem()->atStopCalculation();
+        delete m_hermesSolverContainer;
+        m_hermesSolverContainer = NULL;
         throw(AgrosSolverException("Calculation aborted"));
     }
 

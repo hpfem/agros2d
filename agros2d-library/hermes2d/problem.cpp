@@ -516,6 +516,7 @@ void Problem::atStopCalculation()
 void CalculationThread::run()
 {
     Agros2D::problem()->solve(adaptiveStep, commandLine);
+
 }
 
 void Problem::doAbortSolve()
@@ -528,6 +529,7 @@ void Problem::solve()
 {
     CalculationThread* thread = new CalculationThread(false, false);
     thread->start(QThread::TimeCriticalPriority);
+
 }
 
 void Problem::solveCommandLine()

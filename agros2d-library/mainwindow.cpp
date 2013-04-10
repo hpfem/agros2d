@@ -124,6 +124,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(setControls()));
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
 
+    connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(doSolveFinished()));
+    connect(Agros2D::problem(), SIGNAL(calculationStoped()), this, SLOT(doSolveFinished()));
+    logDialog = NULL;
+
     connect(tabViewLayout, SIGNAL(currentChanged(int)), this, SLOT(setControls()));
     connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(setControls()));
     connect(Agros2D::scene(), SIGNAL(fileNameChanged(QString)), this, SLOT(doSetWindowTitle(QString)));
@@ -1218,18 +1222,26 @@ void MainWindow::doCreateMesh()
 
 void MainWindow::doSolve()
 {
-    LogDialog *logDialog = new LogDialog(this, tr("Solver"));
+    assert(logDialog == NULL);
+    logDialog = new LogDialog(this, tr("Solver"));
     logDialog->show();
 
     // solve problem
-    try
-    {
-        Agros2D::problem()->solve();
-    }
-    catch (AgrosSolverException &e)
-    {
-    }
+    Agros2D::problem()->solve();
+}
 
+void MainWindow::doSolveAdaptiveStep()
+{
+    assert(logDialog == NULL);
+    logDialog = new LogDialog(this, tr("Adaptive step"));
+    logDialog->show();
+
+    // solve problem
+    Agros2D::problem()->solveAdaptiveStep();
+}
+
+void MainWindow::doSolveFinished()
+{
     if (Agros2D::problem()->isSolved())
     {
         sceneViewPost2D->actSceneModePost2D->trigger();
@@ -1240,46 +1252,16 @@ void MainWindow::doSolve()
         // raise postprocessor
         postprocessorWidget->raise();
 
-        // successful run
+    }
+
+    if(logDialog)
+    {
         logDialog->close();
+        delete logDialog;
+        logDialog = NULL;
+        setFocus();
+        activateWindow();
     }
-
-    // Agros2D::problem()->clearFieldsAndConfig();
-    // QApplication::exit();
-
-    setFocus();
-    activateWindow();
-}
-
-void MainWindow::doSolveAdaptiveStep()
-{
-    LogDialog *logDialog = new LogDialog(this, tr("Adaptive step"));
-    logDialog->show();
-
-    // solve problem
-    try
-    {
-        Agros2D::problem()->solveAdaptiveStep();
-    }
-    catch (AgrosSolverException &e)
-    {
-    }
-
-    if (Agros2D::problem()->isSolved())
-    {
-        sceneViewPost2D->actSceneModePost2D->trigger();
-
-        resultsView->showEmpty();
-
-        // raise postprocessor
-        postprocessorWidget->raise();
-
-        // successful run
-        logDialog->close();
-    }
-
-    setFocus();
-    activateWindow();
 }
 
 void MainWindow::doFullScreen()

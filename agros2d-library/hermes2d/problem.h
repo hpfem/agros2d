@@ -21,8 +21,8 @@ class CalculationThread : public QThread
 public:
     CalculationThread(bool adaptiveStep, bool commandLine);
 
-public slots:
-    void stopRunning();
+//public slots:
+//    void stopRunning();
 
 protected:
    virtual void run();
