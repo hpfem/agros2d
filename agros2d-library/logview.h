@@ -93,6 +93,8 @@ public:
     LogDialog(QWidget *parent = 0, const QString &title = tr("Progress..."));
     ~LogDialog();
 
+    void closeEvent(QCloseEvent *e);
+
 private:
      LogWidget *logWidget;
 

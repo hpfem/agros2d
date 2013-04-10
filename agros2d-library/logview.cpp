@@ -208,6 +208,14 @@ LogDialog::LogDialog(QWidget *parent, const QString &title) : QDialog(parent)
     restoreGeometry(settings.value("LogDialog/Geometry", saveGeometry()).toByteArray());
 }
 
+
+void LogDialog::closeEvent(QCloseEvent *e)
+{
+    if(Agros2D::problem()->isSolving() && (!Agros2D::problem()->abortSolve()))
+        e->ignore();
+}
+
+
 LogDialog::~LogDialog()
 {
     QSettings settings;

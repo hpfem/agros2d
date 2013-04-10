@@ -1256,8 +1256,7 @@ void MainWindow::doSolveFinished()
 
     if(logDialog)
     {
-        logDialog->close();
-        delete logDialog;
+        // logDialog has been deleted on close, set to NULL
         logDialog = NULL;
         setFocus();
         activateWindow();
