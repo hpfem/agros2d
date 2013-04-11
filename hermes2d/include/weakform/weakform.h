@@ -36,7 +36,6 @@ namespace Hermes
     template<typename Scalar> class DiscreteProblemCache;
     template<typename Scalar> class DiscreteProblemSelectiveAssembler;
     template<typename Scalar> class DiscreteProblemIntegrationOrderCalculator;
-    template<typename Scalar> class DiscreteProblemFormAssembler;
     template<typename Scalar> class RungeKutta;
     template<typename Scalar> class Space;
     template<typename Scalar> class MeshFunction;
@@ -321,7 +320,6 @@ namespace Hermes
       friend class DiscreteProblemIntegrationOrderCalculator<Scalar>;
       friend class DiscreteProblemSelectiveAssembler<Scalar>;
       friend class DiscreteProblemThreadAssembler<Scalar>;
-      friend class DiscreteProblemFormAssembler<Scalar>;
     };
 
     /// \brief Abstract, base class for matrix form - i.e. a single integral in the bilinear form on the left hand side of the variational formulation of a (system of) PDE.<br>

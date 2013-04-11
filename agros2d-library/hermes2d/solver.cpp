@@ -66,14 +66,16 @@ void NewtonSolverAgros<Scalar>::on_step_end()
     double residual_norm;
     int iteration;
 
-    m_residuals.append(this->previous_residual_norm);
+    Hermes::Mixins::OutputAttachable::Parameter<double> norm = this->residual_norm();
+    m_residuals.append(this->get_parameter_value(norm));
 }
 
 template <typename Scalar>
 void NewtonSolverAgros<Scalar>::on_finish()
 {
     // last norm
-    m_residuals.append(this->previous_residual_norm);
+    Hermes::Mixins::OutputAttachable::Parameter<double> norm = this->residual_norm();
+    m_residuals.append(this->get_parameter_value(norm));
 }
 
 void processSolverOutput(const char* aha)
@@ -143,8 +145,8 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
     m_newtonSolver = new NewtonSolverAgros<Scalar>();
     m_newtonSolver->set_verbose_output(true);
     m_newtonSolver->set_verbose_callback(processSolverOutput);
-    m_newtonSolver->set_newton_tol(block->nonlinearTolerance(), false);
-    m_newtonSolver->set_newton_max_iter(block->nonlinearSteps());
+    m_newtonSolver->set_tolerance(block->nonlinearTolerance());
+    m_newtonSolver->set_max_allowed_iterations(block->nonlinearSteps());
     m_newtonSolver->set_max_allowed_residual_norm(1e15);
     if (block->newtonAutomaticDamping())
     {
@@ -194,8 +196,8 @@ PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block) : HermesSolve
     m_picardSolver = new PicardSolver<Scalar>();
     m_picardSolver->set_verbose_output(true);
     m_picardSolver->set_verbose_callback(processSolverOutput);
-    m_picardSolver->set_picard_tol(block->nonlinearTolerance());
-    m_picardSolver->set_picard_max_iter(block->nonlinearSteps());
+    m_picardSolver->set_tolerance(block->nonlinearTolerance());
+    m_picardSolver->set_max_allowed_iterations(block->nonlinearSteps());
     if (block->picardAndersonAcceleration())
     {
         m_picardSolver->use_Anderson_acceleration(true);
