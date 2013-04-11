@@ -150,7 +150,7 @@ namespace Hermes
       }
 
       // Account for the previous time level solution previously inserted at the back of ext.
-      if(this->rungeKutta)
+      if(rungeKutta)
         u_ext += form->u_ext_offset;
 
       // Actual form-specific calculation.
@@ -208,7 +208,7 @@ namespace Hermes
       }
 
       // Insert the local stiffness matrix into the global one.
-      this->current_mat->add(current_als_i->cnt, current_als_j->cnt, local_stiffness_matrix, current_als_i->dof, current_als_j->dof);
+      current_mat->add(current_als_i->cnt, current_als_j->cnt, local_stiffness_matrix, current_als_i->dof, current_als_j->dof);
 
       // Insert also the off-diagonal (anti-)symmetric block, if required.
       if(tra)
@@ -217,7 +217,7 @@ namespace Hermes
           chsgn(local_stiffness_matrix, current_als_i->cnt, current_als_j->cnt);
         transpose(local_stiffness_matrix, current_als_i->cnt, current_als_j->cnt);
 
-        this->current_mat->add(current_als_j->cnt, current_als_i->cnt, local_stiffness_matrix, current_als_j->dof, current_als_i->dof);
+        current_mat->add(current_als_j->cnt, current_als_i->cnt, local_stiffness_matrix, current_als_j->dof, current_als_i->dof);
       }
 
       if(form->ext.size() > 0)
@@ -231,7 +231,7 @@ namespace Hermes
           delete [] local_ext;
       }
 
-      if(this->rungeKutta)
+      if(rungeKutta)
         u_ext -= form->u_ext_offset;
 
       // Cleanup.
@@ -259,7 +259,7 @@ namespace Hermes
       }
 
       // Account for the previous time level solution previously inserted at the back of ext.
-      if(this->rungeKutta)
+      if(rungeKutta)
         u_ext += form->u_ext_offset;
 
       // Actual form-specific calculation.
@@ -280,7 +280,7 @@ namespace Hermes
         else
           val = form->value(n_quadrature_points, jacobian_x_weights, u_ext, v, geometry, local_ext) * form->scaling_factor * current_als_i->coef[i];
 
-        this->current_rhs->add(current_als_i->dof[i], val);
+        current_rhs->add(current_als_i->dof[i], val);
       }
 
       if(form->ext.size() > 0)
@@ -294,7 +294,7 @@ namespace Hermes
           delete [] local_ext;
       }
 
-      if(this->rungeKutta)
+      if(rungeKutta)
         u_ext -= form->u_ext_offset;
     }
     

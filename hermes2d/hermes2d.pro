@@ -126,11 +126,14 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 src/graph.cpp \
                 src/discrete_problem.cpp \
                 src/discrete_problem/discrete_problem_cache.cpp \
-                src/discrete_problem/discrete_problem_form_assembler.cpp \
+                # src/discrete_problem/discrete_problem_form_assembler.cpp \
                 src/discrete_problem/discrete_problem_helpers.cpp \
                 src/discrete_problem/discrete_problem_integration_order_calculator.cpp \
                 src/discrete_problem/discrete_problem_selective_assembler.cpp \
                 src/discrete_problem/discrete_problem_thread_assembler.cpp \
+                src/discrete_problem/dg/discrete_problem_dg_assembler.cpp \
+                src/discrete_problem/dg/multimesh_dg_neighbor_tree.cpp \
+                src/discrete_problem/dg/multimesh_dg_neighbor_tree_node.cpp \
                 src/spline.cpp \
                 src/global.cpp
 
