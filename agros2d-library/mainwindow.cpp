@@ -125,7 +125,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
 
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(doSolveFinished()));
-    connect(Agros2D::problem(), SIGNAL(calculationStoped()), this, SLOT(doSolveFinished()));
+    //connect(Agros2D::problem(), SIGNAL(calculationStoped()), this, SLOT(doSolveFinished()));
     logDialog = NULL;
 
     connect(tabViewLayout, SIGNAL(currentChanged(int)), this, SLOT(setControls()));

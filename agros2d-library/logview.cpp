@@ -249,7 +249,7 @@ void LogDialog::createControls()
 
     QPushButton *btnClose = new QPushButton(tr("Abort"));
     connect(btnClose, SIGNAL(clicked()), Agros2D::problem(), SLOT(doAbortSolve()));
-    connect(Agros2D::problem(), SIGNAL(calculationStoped()), this, SLOT(close()));
+    //connect(Agros2D::problem(), SIGNAL(calculationStoped()), this, SLOT(close()));
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(close()));
 
     QHBoxLayout *layoutStatus = new QHBoxLayout();

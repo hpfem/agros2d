@@ -508,11 +508,6 @@ CalculationThread::CalculationThread(bool adaptiveStep, bool commandLine) : adap
 
 }
 
-void Problem::atStopCalculation()
-{
-    emit calculationStoped();
-}
-
 void CalculationThread::run()
 {
     Agros2D::problem()->solve(adaptiveStep, commandLine);
@@ -717,7 +712,7 @@ void Problem::solveAction()
 
     NextTimeStep nextTimeStep(config()->initialTimeStepLength());
     bool doNextTimeStep = true;
-    while (doNextTimeStep)
+    while (doNextTimeStep && !m_abortSolve)
     {
         foreach (Block* block, m_blocks)
         {
@@ -738,7 +733,7 @@ void Problem::solveAction()
                     // adaptivity
                     int adaptStep = 1;
                     bool continueAdaptivity = true;
-                    while (continueAdaptivity && (adaptStep <= block->adaptivitySteps()))
+                    while (continueAdaptivity && (adaptStep <= block->adaptivitySteps()) && !m_abortSolve)
                     {
                         // solve problem
                         solvers[block]->solveReferenceAndProject(actualTimeStep(), adaptStep - 1);
@@ -771,6 +766,9 @@ void Problem::solveAction()
             doNextTimeStep = defineActualTimeStepLength(nextTimeStep.length);
         }
     }
+
+//    if(m_abortSolve)
+//        emit calculationStoped();
 
     // delete solvers
     qDeleteAll(solvers);
