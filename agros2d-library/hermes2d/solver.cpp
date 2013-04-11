@@ -60,12 +60,6 @@ void NewtonSolverAgros<Scalar>::on_step_begin()
 template <typename Scalar>
 void NewtonSolverAgros<Scalar>::on_step_end()
 {
-
-    double initial_residual_norm;
-    double previous_residual_norm;
-    double residual_norm;
-    int iteration;
-
     Hermes::Mixins::OutputAttachable::Parameter<double> norm = this->residual_norm();
     m_residuals.append(this->get_parameter_value(norm));
 }
@@ -148,6 +142,7 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
     m_newtonSolver->set_tolerance(block->nonlinearTolerance());
     m_newtonSolver->set_max_allowed_iterations(block->nonlinearSteps());
     m_newtonSolver->set_max_allowed_residual_norm(1e15);
+    m_newtonSolver->set_convergence_measurement(NewtonSolver<Scalar>::RelativeToInitialNorm);
     if (block->newtonAutomaticDamping())
     {
         m_newtonSolver->set_initial_auto_damping_coeff(block->newtonAutomaticDampingCoeff());
