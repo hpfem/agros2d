@@ -82,7 +82,7 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
 
     if (!m_multiSolutionCache.contains(solutionID))
     {
-        // qDebug() << "Read from disk: " << solutionID.toString();
+         qDebug() << "Read from disk: " << solutionID.toString();
 
         FieldInfo *fieldInfo = solutionID.group;
         Block *block = Agros2D::problem()->blockOfField(fieldInfo);
@@ -90,17 +90,18 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
         MultiArray<double> msa;
         SolutionRunTimeDetails runTime = m_multiSolutionRunTimeDetails[solutionID];
 
-        for (int i = 0; i < solutionID.group->numberOfSolutions(); i++)
+        for (int fieldCompIdx = 0; fieldCompIdx < solutionID.group->numberOfSolutions(); fieldCompIdx++)
         {
             // reuse space and mesh
             SpaceSharedPtr<double> space;
             foreach (FieldSolutionID searchSolutionID, m_multiSolutionCacheIDOrder)
             {
                 SolutionRunTimeDetails searchRunTime = m_multiSolutionRunTimeDetails[searchSolutionID];
-                if ((runTime.fileNames()[i].meshFileName() == searchRunTime.fileNames()[i].meshFileName()) &&
-                        (runTime.fileNames()[i].spaceFileName() == searchRunTime.fileNames()[i].spaceFileName()))
+                if ((fieldCompIdx < searchRunTime.fileNames().size()) &&
+                        (runTime.fileNames()[fieldCompIdx].meshFileName() == searchRunTime.fileNames()[fieldCompIdx].meshFileName()) &&
+                        (runTime.fileNames()[fieldCompIdx].spaceFileName() == searchRunTime.fileNames()[fieldCompIdx].spaceFileName()))
                 {
-                    space = m_multiSolutionCache[searchSolutionID].spaces().at(i);
+                    space = m_multiSolutionCache[searchSolutionID].spaces().at(fieldCompIdx);
                     break;
                 }
             }
@@ -109,29 +110,30 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
             if (!space.get())
             {
                 // load the mesh file
-                Hermes::vector<MeshSharedPtr> meshes = Module::readMeshFromFile(QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[i].meshFileName()));
+                Hermes::vector<MeshSharedPtr> meshes = Module::readMeshFromFile(QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].meshFileName()));
                 MeshSharedPtr mesh;
-                int j = 0;
+                int globalFieldIdx = 0;
                 foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
                 {
                     if (fieldInfo == solutionID.group)
                     {
-                        mesh = meshes.at(j);
+                        mesh = meshes.at(globalFieldIdx);
                         break;
                     }
-                    j++;
+                    globalFieldIdx++;
                 }
                 assert(mesh);
 
                 try
                 {
                     EssentialBCs<double>* essentialBcs = NULL;
-                    if(fieldInfo->spaces()[j].type() != HERMES_L2_SPACE)
+                    if(fieldInfo->spaces()[fieldCompIdx].type() != HERMES_L2_SPACE)
                     {
-                        essentialBcs = block->bcs().at(j + block->offset(block->field(fieldInfo)));
+                        int bcIndex = fieldCompIdx + block->offset(block->field(fieldInfo));
+                        essentialBcs = block->bcs().at(bcIndex);
                     }
-
-                    space = Space<double>::load(QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[i].spaceFileName()).arg(j).toLatin1().data(), mesh, false, essentialBcs);
+                    QString spaceFileName = QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].spaceFileName());
+                    space = Space<double>::load(spaceFileName.toLatin1().data(), mesh, false, essentialBcs);
                 }
                 catch (Hermes::Exceptions::Exception &e)
                 {
@@ -143,7 +145,7 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
             // read solution
             Solution<double> *sln = new Solution<double>();
             sln->set_validation(false);
-            sln->load((QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[i].solutionFileName()).arg(i)).toLatin1().data(), space);
+            sln->load((QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].solutionFileName())).toLatin1().data(), space);
 
             msa.append(space, sln);
         }
@@ -151,7 +153,7 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
         // insert to the cache
         insertMultiSolutionToCache(solutionID, msa);
 
-        //printDebugCacheStatus();
+        printDebugCacheStatus();
 
         return msa;
     }
