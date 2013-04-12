@@ -116,6 +116,7 @@ void Problem::clearSolution()
 {
     m_isSolved = false;
     m_isSolving = false;
+
     // m_timeStep = 0;
     m_lastTimeElapsed = QTime(0, 0);
     m_timeStepLengths.clear();
@@ -776,6 +777,9 @@ void Problem::solveAction()
 
 void Problem::solveAdaptiveStepAction()
 {
+    m_isSolved = false;
+    m_isSolving = false;
+
     try
     {
         solveInit(false);
