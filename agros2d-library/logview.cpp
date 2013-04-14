@@ -211,7 +211,7 @@ LogDialog::LogDialog(QWidget *parent, const QString &title) : QDialog(parent)
 
 void LogDialog::closeEvent(QCloseEvent *e)
 {
-    if(Agros2D::problem()->isSolving() && (!Agros2D::problem()->abortSolve()))
+    if(Agros2D::problem()->isSolving())
         e->ignore();
 }
 

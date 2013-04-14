@@ -49,9 +49,6 @@ signals:
     void meshed();
     void solved();
 
-    /// abort was called sometime before and now the calculation has been really stopped
-    //void calculationStoped();
-
     /// emited when an field is added or removed. Menus need to adjusted
     void fieldsChanged();
 
@@ -86,8 +83,6 @@ public:
     bool isSolved() const {  return m_isSolved; }
     bool isMeshed() const;
     bool isSolving() const { return m_isSolving; }
-
-    bool abortSolve() const { return m_abortSolve; }
 
     bool isTransient() const;
     int numTransientFields() const;
