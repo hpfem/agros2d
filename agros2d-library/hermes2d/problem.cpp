@@ -50,6 +50,8 @@ Problem::Problem()
     m_config = new ProblemConfig();
     m_setting = new ProblemSetting();
 
+    m_isNonlinear = false;
+
     connect(m_config, SIGNAL(changed()), this, SLOT(clearSolution()));
 }
 
@@ -103,7 +105,7 @@ bool Problem::isHarmonic() const
     return false;
 }
 
-bool Problem::isNonlinear() const
+bool Problem::determineIsNonlinear() const
 {
     foreach (FieldInfo* fieldInfo, m_fieldInfos)
         if (fieldInfo->linearityType() != LinearityType_Linear)
@@ -199,6 +201,8 @@ void Problem::createStructure()
     foreach (Block* block, m_blocks)
         delete block;
     m_blocks.clear();
+
+    m_isNonlinear = determineIsNonlinear();
 
     synchronizeCouplings();
 

@@ -87,7 +87,8 @@ public:
     bool isTransient() const;
     int numTransientFields() const;
     bool isHarmonic() const;
-    bool isNonlinear() const;
+    inline bool isNonlinear() const { return m_isNonlinear; }
+    bool determineIsNonlinear() const;
     int numAdaptiveFields() const;
 
     inline QMap<QString, FieldInfo *> fieldInfos() const { return m_fieldInfos; }
@@ -148,6 +149,9 @@ private:
     bool m_isSolved;
 
     bool m_abortSolve;
+
+    // determined in create structure to speed up the calculation
+    bool m_isNonlinear;
 
     QList<double> m_timeStepLengths;
     // int m_timeStep;

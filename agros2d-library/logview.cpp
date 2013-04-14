@@ -238,7 +238,7 @@ void LogDialog::createControls()
 
     m_chart->graph(0)->setLineStyle(QCPGraph::lsLine);
 
-    if (Agros2D::problem()->isNonlinear())
+    if (Agros2D::problem()->determineIsNonlinear())
     {
         m_chart->setVisible(true);
 
