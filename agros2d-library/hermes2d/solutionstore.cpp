@@ -82,7 +82,7 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
 
     if (!m_multiSolutionCache.contains(solutionID))
     {
-         qDebug() << "Read from disk: " << solutionID.toString();
+        //qDebug() << "Read from disk: " << solutionID.toString();
 
         FieldInfo *fieldInfo = solutionID.group;
         Block *block = Agros2D::problem()->blockOfField(fieldInfo);
@@ -153,7 +153,7 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
         // insert to the cache
         insertMultiSolutionToCache(solutionID, msa);
 
-        printDebugCacheStatus();
+        //printDebugCacheStatus();
 
         return msa;
     }
