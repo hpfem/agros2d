@@ -35,11 +35,17 @@ public:
     inline void printWarning(const QString &module, const QString &message, bool escaped = true) { emit warningMsg(module, message, escaped); }
     inline void printDebug(const QString &module, const QString &message, bool escaped = true) { emit debugMsg(module, message, escaped); }
 
+    inline void setNonlinearTable(QVector<double> step, QVector<double> error) { emit nonlinearTable(step, error); }
+    inline void setAdaptivityTable(QVector<double> step, QVector<double> error) { emit nonlinearTable(step, error); }
+
 signals:
     void messageMsg(const QString &module, const QString &message, bool escaped);
     void errorMsg(const QString &module, const QString &message, bool escaped);
     void warningMsg(const QString &module, const QString &message, bool escaped);
     void debugMsg(const QString &module, const QString &message, bool escaped);
+
+    void nonlinearTable(QVector<double> step, QVector<double> error);
+    void adaptivityTable(QVector<double> step, QVector<double> error);
 };
 
 class AGROS_API LogWidget : public QPlainTextEdit
@@ -100,15 +106,17 @@ private:
 
      QLabel *memoryLabel;
 
-     QCustomPlot *m_chart;
-     QVector<double> m_chartStep;
-     QVector<double> m_chartNorm;
+     QCustomPlot *m_nonlinearChart;
+     QCustomPlot *m_adaptivityChart;
 
      void createControls();
 
 private slots:
      void printMessage(const QString &module, const QString &message, bool escaped = true);
      void refreshStatus();
+
+     void nonlinearTable(QVector<double> step, QVector<double> error);
+     void adaptivityTable(QVector<double> step, QVector<double> error);
 };
 
 class AGROS_API LogStdOut : public QObject

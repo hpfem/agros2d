@@ -49,7 +49,7 @@ NewtonSolverAgros<Scalar>::NewtonSolverAgros() : NewtonSolver<Scalar>()
 template <typename Scalar>
 void NewtonSolverAgros<Scalar>::on_initialization()
 {
-    m_residuals.clear();
+    m_errors.clear();
 }
 
 template <typename Scalar>
@@ -60,22 +60,51 @@ void NewtonSolverAgros<Scalar>::on_step_begin()
 template <typename Scalar>
 void NewtonSolverAgros<Scalar>::on_step_end()
 {
-    Hermes::Mixins::OutputAttachable::Parameter<double> norm = this->residual_norm();
-    m_residuals.append(this->get_parameter_value(norm));
+    Hermes::Mixins::OutputAttachable::Parameter<int> iteration = this->iteration();
+    Hermes::Mixins::OutputAttachable::Parameter<double> initial_residual_norm = this->initial_residual_norm();
+    Hermes::Mixins::OutputAttachable::Parameter<double> previous_residual_norm = this->previous_residual_norm();
+    Hermes::Mixins::OutputAttachable::Parameter<double> residual_norm = this->residual_norm();
+
+    m_steps.append(this->get_parameter_value(iteration));
+
+    switch(this->current_convergence_measurement)
+    {
+    case Hermes::Hermes2D::NewtonSolver<Scalar>::RelativeToInitialNorm:
+        m_errors.append(1.0 - (this->get_parameter_value(initial_residual_norm) - this->get_parameter_value(residual_norm)) / this->get_parameter_value(initial_residual_norm));
+        break;
+    case Hermes::Hermes2D::NewtonSolver<Scalar>::RelativeToPreviousNorm:
+        m_errors.append(1.0 - (this->get_parameter_value(previous_residual_norm) - this->get_parameter_value(residual_norm)) / this->get_parameter_value(previous_residual_norm));
+        break;
+    case Hermes::Hermes2D::NewtonSolver<Scalar>::RatioToInitialNorm:
+        m_errors.append(this->get_parameter_value(residual_norm) / this->get_parameter_value(initial_residual_norm));
+        break;
+    case Hermes::Hermes2D::NewtonSolver<Scalar>::RatioToPreviousNorm:
+        m_errors.append(this->get_parameter_value(residual_norm) / this->get_parameter_value(previous_residual_norm));
+        break;
+    case Hermes::Hermes2D::NewtonSolver<Scalar>::AbsoluteNorm:
+        m_errors.append(this->get_parameter_value(residual_norm));
+        break;
+    default:
+        qDebug() << "Unknown ConvergenceMeasurement in NewtonSolver.";
+    }
+
+    qDebug() << "iteration: " << m_steps.last() << ", error: " << m_errors.last();
+
+    Agros2D::log()->setNonlinearTable(m_steps, m_errors);
 }
 
 template <typename Scalar>
 void NewtonSolverAgros<Scalar>::on_finish()
 {
     // last norm
-    Hermes::Mixins::OutputAttachable::Parameter<double> norm = this->residual_norm();
-    m_residuals.append(this->get_parameter_value(norm));
+    on_step_end();
 }
 
 void processSolverOutput(const char* aha)
 {
     QString str = QString(aha).trimmed();
-    Agros2D::log()->printMessage(QObject::tr("Solver"), str.replace("---- ", ""));
+    // Agros2D::log()->printMessage(QObject::tr("Solver"), str.replace("---- ", ""));
+    Agros2D::log()->printMessage(QObject::tr("Solver"), str);
 }
 
 template <typename Scalar>
@@ -269,7 +298,7 @@ void ProblemSolver<Scalar>::init(Block* block)
 
 template <typename Scalar>
 void ProblemSolver<Scalar>::initSelectors(Hermes::vector<ProjNormType>& projNormType,
-                                   Hermes::vector<RefinementSelectors::Selector<Scalar> *>& selectors)
+                                          Hermes::vector<RefinementSelectors::Selector<Scalar> *>& selectors)
 {
     // set adaptivity selector
     RefinementSelectors::Selector<Scalar> *select = NULL;
@@ -390,9 +419,9 @@ void ProblemSolver<Scalar>::clearActualSpaces()
 
 template <typename Scalar>
 Scalar *ProblemSolver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
-                                        Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
-                                        int adaptivityStep,
-                                        Hermes::vector<MeshFunctionSharedPtr<Scalar> > previousSolution)
+                                               Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
+                                               int adaptivityStep,
+                                               Hermes::vector<MeshFunctionSharedPtr<Scalar> > previousSolution)
 {
     Hermes::HermesCommonApi.set_integral_param_value(Hermes::matrixSolverType, Agros2D::problem()->config()->matrixSolver());
 
@@ -474,7 +503,7 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
                                                       Hermes::Hermes2D::Space<double>::get_num_dofs(actualSpaces()));
 
         if (dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer))
-            runTime.setNewtonResidual(dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer)->solver()->residuals());
+            runTime.setNewtonResidual(dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer)->solver()->errors());
 
         Agros2D::solutionStore()->addSolution(solutionID, MultiArray<Scalar>(actualSpaces(), solutions), runTime);
     }
@@ -607,8 +636,8 @@ void ProblemSolver<Scalar>::createInitialSpace()
 
 
         // create copy of initial mesh, for all components only one mesh
-//        MeshSharedPtr oneInitialMesh(new Hermes::Hermes2D::Mesh());
-//        oneInitialMesh->copy(fieldInfo->initialMesh());
+        //        MeshSharedPtr oneInitialMesh(new Hermes::Hermes2D::Mesh());
+        //        oneInitialMesh->copy(fieldInfo->initialMesh());
 
         QMap<int, Module::Space> fieldSpaces = fieldInfo->spaces();
 
@@ -755,7 +784,7 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
     BlockSolutionID referenceSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Reference);
     SolutionStore::SolutionRunTimeDetails runTimeRef(Agros2D::problem()->actualTimeStepLength(),
                                                      0.0,
-                                                     Hermes::Hermes2D::Space<double>::get_num_dofs(spacesRef));   
+                                                     Hermes::Hermes2D::Space<double>::get_num_dofs(spacesRef));
     Agros2D::solutionStore()->addSolution(referenceSolutionID, MultiArray<Scalar>(spacesRef, solutionsRef), runTimeRef);
 
     // copy spaces and create empty solutions
@@ -773,7 +802,7 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
                                                   0.0,
                                                   Hermes::Hermes2D::Space<double>::get_num_dofs(actualSpaces()));
     if (dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer))
-        runTime.setNewtonResidual(dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer)->solver()->residuals());
+        runTime.setNewtonResidual(dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer)->solver()->errors());
 
     MultiArray<Scalar> msa(actualSpaces(), solutions);
     Agros2D::solutionStore()->addSolution(solutionID, msa, runTime);

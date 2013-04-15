@@ -192,13 +192,13 @@ namespace Hermes
         switch(this->current_convergence_measurement)
         {
         case RelativeToInitialNorm:
-          if(((1 - residual_norm / initial_residual_norm) < this->newton_tolerance) && iteration > 1)
+          if((((1.0 - (initial_residual_norm - residual_norm) / initial_residual_norm)) < this->newton_tolerance) && iteration > 1)
             return Converged;
           else
             return NotConverged;
           break;
         case RelativeToPreviousNorm:
-          if(((1 - residual_norm / initial_residual_norm) < this->newton_tolerance) && iteration > 1)
+          if((((1.0 - (previous_residual_norm - residual_norm) / previous_residual_norm)) < this->newton_tolerance) && iteration > 1)
             return Converged;
           else
             return NotConverged;
@@ -410,7 +410,7 @@ namespace Hermes
         this->process_vector_output(this->residual, it);
       
         // Current residual norm && current_damping_coefficient.
-        double residual_norm = this->calculate_residual_norm();
+        residual_norm = this->calculate_residual_norm();
 
         // Initial residual norm.
         if(it == 1)
