@@ -67,6 +67,9 @@ public:
     inline double nonlinearTolerance() const { return m_nonlinearTolerance; }
     void setNonlinearTolerance(const double nt) { m_nonlinearTolerance = nt; emit changed(); }
 
+    inline Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement nonlinearConvergenceMeasurement() const { return m_nonlinearConvergenceMeasurement; }
+    void setNonlinearConvergenceMeasurement(Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement cm) { m_nonlinearConvergenceMeasurement = cm; emit changed(); }
+
     // Newton settings
     inline bool newtonAutomaticDamping() const {return m_newtonAutomaticDamping; }
     void setNewtonAutomaticDamping(const bool ad) { m_newtonAutomaticDamping = ad; emit changed(); }
@@ -249,6 +252,7 @@ private:
     int m_nonlinearSteps;
 
     // newton
+    Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement m_nonlinearConvergenceMeasurement;
     double m_newtonDampingCoeff;
     double m_newtonAutomaticDampingCoeff;
     bool m_newtonAutomaticDamping;

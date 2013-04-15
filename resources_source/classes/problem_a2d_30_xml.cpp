@@ -1465,6 +1465,36 @@ namespace XMLProblem
     this->nonlinear_tolerance_.set (x);
   }
 
+  const solver::nonlinear_convergence_measurement_optional& solver::
+  nonlinear_convergence_measurement () const
+  {
+    return this->nonlinear_convergence_measurement_;
+  }
+
+  solver::nonlinear_convergence_measurement_optional& solver::
+  nonlinear_convergence_measurement ()
+  {
+    return this->nonlinear_convergence_measurement_;
+  }
+
+  void solver::
+  nonlinear_convergence_measurement (const nonlinear_convergence_measurement_type& x)
+  {
+    this->nonlinear_convergence_measurement_.set (x);
+  }
+
+  void solver::
+  nonlinear_convergence_measurement (const nonlinear_convergence_measurement_optional& x)
+  {
+    this->nonlinear_convergence_measurement_ = x;
+  }
+
+  void solver::
+  nonlinear_convergence_measurement (::std::auto_ptr< nonlinear_convergence_measurement_type > x)
+  {
+    this->nonlinear_convergence_measurement_.set (x);
+  }
+
   const solver::newton_damping_coeff_type& solver::
   newton_damping_coeff () const
   {
@@ -4566,6 +4596,7 @@ namespace XMLProblem
     linearity_type_ (linearity_type, ::xml_schema::flags (), this),
     nonlinear_steps_ (nonlinear_steps, ::xml_schema::flags (), this),
     nonlinear_tolerance_ (nonlinear_tolerance, ::xml_schema::flags (), this),
+    nonlinear_convergence_measurement_ (::xml_schema::flags (), this),
     newton_damping_coeff_ (newton_damping_coeff, ::xml_schema::flags (), this),
     newton_automatic_damping_ (newton_automatic_damping, ::xml_schema::flags (), this),
     newton_automatic_damping_coeff_ (newton_automatic_damping_coeff, ::xml_schema::flags (), this),
@@ -4584,6 +4615,7 @@ namespace XMLProblem
     linearity_type_ (x.linearity_type_, f, this),
     nonlinear_steps_ (x.nonlinear_steps_, f, this),
     nonlinear_tolerance_ (x.nonlinear_tolerance_, f, this),
+    nonlinear_convergence_measurement_ (x.nonlinear_convergence_measurement_, f, this),
     newton_damping_coeff_ (x.newton_damping_coeff_, f, this),
     newton_automatic_damping_ (x.newton_automatic_damping_, f, this),
     newton_automatic_damping_coeff_ (x.newton_automatic_damping_coeff_, f, this),
@@ -4602,6 +4634,7 @@ namespace XMLProblem
     linearity_type_ (f, this),
     nonlinear_steps_ (f, this),
     nonlinear_tolerance_ (f, this),
+    nonlinear_convergence_measurement_ (f, this),
     newton_damping_coeff_ (f, this),
     newton_automatic_damping_ (f, this),
     newton_automatic_damping_coeff_ (f, this),
@@ -4645,6 +4678,15 @@ namespace XMLProblem
       if (n.name () == "nonlinear_tolerance" && n.namespace_ ().empty ())
       {
         this->nonlinear_tolerance_.set (nonlinear_tolerance_traits::create (i, f, this));
+        continue;
+      }
+
+      if (n.name () == "nonlinear_convergence_measurement" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< nonlinear_convergence_measurement_type > r (
+          nonlinear_convergence_measurement_traits::create (i, f, this));
+
+        this->nonlinear_convergence_measurement_.set (r);
         continue;
       }
 
@@ -6377,6 +6419,11 @@ namespace XMLProblem
     o << ::std::endl << "linearity_type: " << i.linearity_type ();
     o << ::std::endl << "nonlinear_steps: " << i.nonlinear_steps ();
     o << ::std::endl << "nonlinear_tolerance: " << i.nonlinear_tolerance ();
+    if (i.nonlinear_convergence_measurement ())
+    {
+      o << ::std::endl << "nonlinear_convergence_measurement: " << *i.nonlinear_convergence_measurement ();
+    }
+
     o << ::std::endl << "newton_damping_coeff: " << i.newton_damping_coeff ();
     o << ::std::endl << "newton_automatic_damping: " << i.newton_automatic_damping ();
     o << ::std::endl << "newton_automatic_damping_coeff: " << i.newton_automatic_damping_coeff ();
@@ -7850,6 +7897,18 @@ namespace XMLProblem
           e));
 
       a << i.nonlinear_tolerance ();
+    }
+
+    // nonlinear_convergence_measurement
+    //
+    if (i.nonlinear_convergence_measurement ())
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "nonlinear_convergence_measurement",
+          e));
+
+      a << *i.nonlinear_convergence_measurement ();
     }
 
     // newton_damping_coeff

@@ -166,6 +166,7 @@ void FieldInfo::clear()
 
     // linearity
     m_linearityType = LinearityType_Linear;
+    m_nonlinearConvergenceMeasurement = Hermes::Hermes2D::NewtonSolver<double>::RelativeToInitialNorm;
     m_nonlinearTolerance = m_implicitNewtonTolerance;
     m_nonlinearSteps = m_implicitNewtonSteps;
     m_newtonDampingCoeff = m_implicitNewtonDampingCoeff;

@@ -170,6 +170,7 @@ void FieldWidget::createContent()
 
     // linearity
     cmbLinearityType = new QComboBox();
+    cmbNonlinearConvergenceMeasurement = new QComboBox();
     txtNonlinearSteps = new QSpinBox(this);
     txtNonlinearSteps->setMinimum(1);
     txtNonlinearSteps->setMaximum(100);
@@ -274,18 +275,20 @@ void FieldWidget::createContent()
     layoutLinearity->addWidget(txtNonlinearTolerance, 1, 1);
     layoutLinearity->addWidget(new QLabel(tr("Steps:")), 2, 0);
     layoutLinearity->addWidget(txtNonlinearSteps, 2, 1);
-    layoutLinearity->addWidget(lblNewtonDampingCoeff, 3, 0);
-    layoutLinearity->addWidget(txtNewtonDampingCoeff, 3, 1);
-    layoutLinearity->addWidget(chkNewtonAutomaticDamping, 4, 0, 1, 2);
-    layoutLinearity->addWidget(lblNewtonAutomaticDampingCoeff, 5, 0);
-    layoutLinearity->addWidget(txtNewtonAutomaticDampingCoeff, 5, 1);
-    layoutLinearity->addWidget(lblNewtonDampingNumberToIncrease, 6, 0);
-    layoutLinearity->addWidget(txtNewtonDampingNumberToIncrease, 6, 1);
-    layoutLinearity->addWidget(chkPicardAndersonAcceleration, 7, 0, 1, 2);
-    layoutLinearity->addWidget(lblPicardAndersonBeta, 8, 0);
-    layoutLinearity->addWidget(txtPicardAndersonBeta, 8, 1);
-    layoutLinearity->addWidget(lblPicardAndersonNumberOfLastVectors, 9, 0);
-    layoutLinearity->addWidget(txtPicardAndersonNumberOfLastVectors, 9, 1);
+    layoutLinearity->addWidget(new QLabel(tr("Convergence:")), 3, 0);
+    layoutLinearity->addWidget(cmbNonlinearConvergenceMeasurement, 3, 1);
+    layoutLinearity->addWidget(lblNewtonDampingCoeff, 4, 0);
+    layoutLinearity->addWidget(txtNewtonDampingCoeff, 4, 1);
+    layoutLinearity->addWidget(chkNewtonAutomaticDamping, 5, 0, 1, 2);
+    layoutLinearity->addWidget(lblNewtonAutomaticDampingCoeff, 6, 0);
+    layoutLinearity->addWidget(txtNewtonAutomaticDampingCoeff, 6, 1);
+    layoutLinearity->addWidget(lblNewtonDampingNumberToIncrease, 7, 0);
+    layoutLinearity->addWidget(txtNewtonDampingNumberToIncrease, 7, 1);
+    layoutLinearity->addWidget(chkPicardAndersonAcceleration, 8, 0, 1, 2);
+    layoutLinearity->addWidget(lblPicardAndersonBeta, 9, 0);
+    layoutLinearity->addWidget(txtPicardAndersonBeta, 9, 1);
+    layoutLinearity->addWidget(lblPicardAndersonNumberOfLastVectors, 10, 0);
+    layoutLinearity->addWidget(txtPicardAndersonNumberOfLastVectors, 10, 1);
 
     QGroupBox *grpLinearity = new QGroupBox(tr("Solver"));
     grpLinearity->setLayout(layoutLinearity);
@@ -328,6 +331,11 @@ void FieldWidget::createContent()
 
 void FieldWidget::fillComboBox()
 {
+    cmbNonlinearConvergenceMeasurement->clear();
+    foreach (QString key, nonlinearSolverConvergenceMeasurementStringKeys())
+        cmbNonlinearConvergenceMeasurement->addItem(nonlinearSolverConvergenceMeasurementString(nonlinearSolverConvergenceMeasurementFromStringKey(key)),
+                                                    nonlinearSolverConvergenceMeasurementFromStringKey(key));
+
     cmbAdaptivityType->clear();
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_None), AdaptivityType_None);
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_H), AdaptivityType_H);
@@ -369,6 +377,7 @@ void FieldWidget::load()
     txtTransientTimeSkip->setValue(m_fieldInfo->timeSkip());
     // linearity
     cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(m_fieldInfo->linearityType()));
+    cmbNonlinearConvergenceMeasurement->setCurrentIndex(cmbNonlinearConvergenceMeasurement->findData(m_fieldInfo->nonlinearConvergenceMeasurement()));
     txtNonlinearSteps->setValue(m_fieldInfo->nonlinearSteps());
     txtNonlinearTolerance->setValue(m_fieldInfo->nonlinearTolerance());
     chkNewtonAutomaticDamping->setChecked(m_fieldInfo->newtonAutomaticDamping());
@@ -406,6 +415,7 @@ bool FieldWidget::save()
     m_fieldInfo->setLinearityType((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt());
     m_fieldInfo->setNonlinearSteps(txtNonlinearSteps->value());
     m_fieldInfo->setNonlinearTolerance(txtNonlinearTolerance->value());
+    m_fieldInfo->setNonlinearConvergenceMeasurement((Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement) cmbNonlinearConvergenceMeasurement->itemData(cmbNonlinearConvergenceMeasurement->currentIndex()).toInt());
     m_fieldInfo->setNewtonAutomaticDamping(chkNewtonAutomaticDamping->isChecked());
     m_fieldInfo->setNewtonDampingCoeff(txtNewtonDampingCoeff->value());
     m_fieldInfo->setNewtonAutomaticDampingCoeff(txtNewtonAutomaticDampingCoeff->value());
@@ -467,6 +477,7 @@ void FieldWidget::doLinearityTypeChanged(int index)
 {
     txtNonlinearSteps->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
     txtNonlinearTolerance->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
+    cmbNonlinearConvergenceMeasurement->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
 
     chkNewtonAutomaticDamping->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
     lblNewtonDampingCoeff->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
@@ -529,7 +540,7 @@ FieldDialog::FieldDialog(FieldInfo *fieldInfo, QWidget *parent) : QDialog(parent
 
     setLayout(layout);
 
-    setMaximumSize(sizeHint());
+    // setMaximumSize(sizeHint());
 
     QSettings settings;
     restoreGeometry(settings.value("FieldDialog/Geometry", saveGeometry()).toByteArray());

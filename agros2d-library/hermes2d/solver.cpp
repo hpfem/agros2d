@@ -142,7 +142,7 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
     m_newtonSolver->set_tolerance(block->nonlinearTolerance());
     m_newtonSolver->set_max_allowed_iterations(block->nonlinearSteps());
     m_newtonSolver->set_max_allowed_residual_norm(1e15);
-    m_newtonSolver->set_convergence_measurement(NewtonSolver<Scalar>::RelativeToInitialNorm);
+    m_newtonSolver->set_convergence_measurement(block->nonlinearConvergenceMeasurement());
     if (block->newtonAutomaticDamping())
     {
         m_newtonSolver->set_initial_auto_damping_coeff(block->newtonAutomaticDampingCoeff());

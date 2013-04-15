@@ -117,6 +117,7 @@ private:
     // linearity
     QSpinBox *txtNonlinearSteps;
     LineEditDouble *txtNonlinearTolerance;
+    QComboBox *cmbNonlinearConvergenceMeasurement;
     QCheckBox *chkNewtonAutomaticDamping;
     QLabel *lblNewtonDampingCoeff;
     LineEditDouble *txtNewtonDampingCoeff;
