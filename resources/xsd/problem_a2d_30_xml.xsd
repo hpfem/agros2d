@@ -109,6 +109,7 @@
                               <attribute name="linearity_type" type="string" use="required"/>
                               <attribute name="nonlinear_steps" type="int" use="required"/>
                               <attribute name="nonlinear_tolerance" type="float" use="required"/>
+                              <attribute name="nonlinear_convergence_measurement" type="string" use="optional"/>
                               <attribute name="newton_damping_coeff" type="float" use="required"/>
                               <attribute name="newton_automatic_damping" type="int" use="required"/>
                               <attribute name="newton_automatic_damping_coeff" type="float" use="required"/>

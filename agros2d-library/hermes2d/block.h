@@ -74,6 +74,9 @@ public:
     // maximal nonlinear steps of individual fields
     int nonlinearSteps() const;
 
+    // convergence method
+    Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement nonlinearConvergenceMeasurement() const;
+
     // use only if true for all fields
     bool newtonAutomaticDamping() const;
 

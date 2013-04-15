@@ -2081,6 +2081,27 @@ namespace XMLProblem
     void
     nonlinear_tolerance (const nonlinear_tolerance_type& x);
 
+    // nonlinear_convergence_measurement
+    // 
+    typedef ::xml_schema::string nonlinear_convergence_measurement_type;
+    typedef ::xsd::cxx::tree::optional< nonlinear_convergence_measurement_type > nonlinear_convergence_measurement_optional;
+    typedef ::xsd::cxx::tree::traits< nonlinear_convergence_measurement_type, char > nonlinear_convergence_measurement_traits;
+
+    const nonlinear_convergence_measurement_optional&
+    nonlinear_convergence_measurement () const;
+
+    nonlinear_convergence_measurement_optional&
+    nonlinear_convergence_measurement ();
+
+    void
+    nonlinear_convergence_measurement (const nonlinear_convergence_measurement_type& x);
+
+    void
+    nonlinear_convergence_measurement (const nonlinear_convergence_measurement_optional& x);
+
+    void
+    nonlinear_convergence_measurement (::std::auto_ptr< nonlinear_convergence_measurement_type > p);
+
     // newton_damping_coeff
     // 
     typedef ::xml_schema::float_ newton_damping_coeff_type;
@@ -2218,6 +2239,7 @@ namespace XMLProblem
     ::xsd::cxx::tree::one< linearity_type_type > linearity_type_;
     ::xsd::cxx::tree::one< nonlinear_steps_type > nonlinear_steps_;
     ::xsd::cxx::tree::one< nonlinear_tolerance_type > nonlinear_tolerance_;
+    nonlinear_convergence_measurement_optional nonlinear_convergence_measurement_;
     ::xsd::cxx::tree::one< newton_damping_coeff_type > newton_damping_coeff_;
     ::xsd::cxx::tree::one< newton_automatic_damping_type > newton_automatic_damping_;
     ::xsd::cxx::tree::one< newton_automatic_damping_coeff_type > newton_automatic_damping_coeff_;

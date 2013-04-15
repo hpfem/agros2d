@@ -4,7 +4,7 @@
   <module:general id="flow" name="Incompressible flow">
     <module:description>Incompressible flow model using Navier-Stokes equations.</module:description>
     <module:analyses>
-      <module:analysis id="steadystate" name="Steady state" solutions="3" type="steadystate" newton_tolerance="0.1" newton_steps="10" newton_damping_coef="1.0" newton_automatic_damping_coef="1.0" newton_steps_back="1"/>
+      <module:analysis id="steadystate" name="Steady state" solutions="3" type="steadystate"  newton_tolerance="0.1" newton_steps="10" newton_damping_coef="1.0" newton_automatic_damping_coef="1.0" newton_steps_back="1"/>
     </module:analyses>
   </module:general>
 

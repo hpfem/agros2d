@@ -353,4 +353,10 @@ AGROS_API QStringList butcherTableTypeStringKeys();
 AGROS_API QString butcherTableTypeToStringKey(Hermes::ButcherTableType tableType);
 AGROS_API Hermes::ButcherTableType butcherTableTypeFromStringKey(const QString &tableType);
 
+// nonlinear measurement method
+AGROS_API QString nonlinearSolverConvergenceMeasurementString(Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement measurement);
+AGROS_API QStringList nonlinearSolverConvergenceMeasurementStringKeys();
+AGROS_API QString nonlinearSolverConvergenceMeasurementToStringKey(Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement measurement);
+AGROS_API Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement nonlinearSolverConvergenceMeasurementFromStringKey(const QString &measurement);
+
 #endif // UTIL_ENUMS_H

@@ -46,6 +46,7 @@ static QMap<VectorType, QString> vectorTypeList;
 static QMap<VectorCenter, QString> vectorCenterList;
 static QMap<DataTableType, QString> dataTableTypeList;
 static QMap<Hermes::ButcherTableType, QString> butcherTableTypeList;
+static QMap<Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement, QString> nonlinearSolverConvergenceMeasurementList;
 
 QStringList coordinateTypeStringKeys() { return coordinateTypeList.values(); }
 QString coordinateTypeToStringKey(CoordinateType coordinateType) { return coordinateTypeList[coordinateType]; }
@@ -126,6 +127,13 @@ DataTableType dataTableTypeFromStringKey(const QString &dataTableType) { return 
 QStringList butcherTableTypeStringKeys() { return butcherTableTypeList.values(); }
 QString butcherTableTypeToStringKey(Hermes::ButcherTableType tableType) { return butcherTableTypeList[tableType]; }
 Hermes::ButcherTableType butcherTableTypeFromStringKey(const QString &tableType) { return butcherTableTypeList.key(tableType); }
+
+QStringList nonlinearSolverConvergenceMeasurementStringKeys() { return nonlinearSolverConvergenceMeasurementList.values(); }
+QString nonlinearSolverConvergenceMeasurementToStringKey(Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement measurement) { return nonlinearSolverConvergenceMeasurementList[measurement]; }
+Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement nonlinearSolverConvergenceMeasurementFromStringKey(const QString &measurement) { return nonlinearSolverConvergenceMeasurementList.key(measurement); }
+
+static QMap<Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement, QString> List;
+
 
 void initLists()
 {
@@ -277,6 +285,12 @@ void initLists()
     butcherTableTypeList.insert(Hermes::Explicit_FEHLBERG_6_45_embedded, "fehlberg");
     butcherTableTypeList.insert(Hermes::Explicit_CASH_KARP_6_45_embedded, "cash-karp");
     butcherTableTypeList.insert(Hermes::Explicit_DORMAND_PRINCE_7_45_embedded, "dormand-prince");
+
+    nonlinearSolverConvergenceMeasurementList.insert(Hermes::Hermes2D::NewtonSolver<double>::RelativeToInitialNorm, "relative_to_initial_norm");
+    nonlinearSolverConvergenceMeasurementList.insert(Hermes::Hermes2D::NewtonSolver<double>::RelativeToPreviousNorm, "relative_to_previous_norm");
+    nonlinearSolverConvergenceMeasurementList.insert(Hermes::Hermes2D::NewtonSolver<double>::RatioToInitialNorm, "ratio_to_initial_norm");
+    nonlinearSolverConvergenceMeasurementList.insert(Hermes::Hermes2D::NewtonSolver<double>::RatioToPreviousNorm, "ratio_to_previous_norm");
+    nonlinearSolverConvergenceMeasurementList.insert(Hermes::Hermes2D::NewtonSolver<double>::AbsoluteNorm, "absolute_norm");
 }
 
 QString errorNormString(Hermes::Hermes2D::ProjNormType projNormType)
@@ -634,7 +648,28 @@ QString butcherTableTypeString(Hermes::ButcherTableType tableType)
     case Hermes::Explicit_DORMAND_PRINCE_7_45_embedded:
         return QObject::tr("Dormand-Prince (4,5)");
     default:
-        std::cerr << "Butcherot table type'" + QString::number(tableType).toStdString() + "' is not implemented. butcherTableTypeString(Hermes::ButcherTableType tableType)" << endl;
+        std::cerr << "Butcher table type'" + QString::number(tableType).toStdString() + "' is not implemented. butcherTableTypeString(Hermes::ButcherTableType tableType)" << endl;
+        throw;
+    }
+}
+
+
+QString nonlinearSolverConvergenceMeasurementString(Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement measurement)
+{
+    switch (measurement)
+    {
+    case Hermes::Hermes2D::NewtonSolver<double>::AbsoluteNorm:
+        return QObject::tr("Absolute norm");
+    case Hermes::Hermes2D::NewtonSolver<double>::RelativeToInitialNorm:
+        return QObject::tr("Relative to initial norm");
+    case Hermes::Hermes2D::NewtonSolver<double>::RelativeToPreviousNorm:
+        return QObject::tr("Relative to previous norm");
+    case Hermes::Hermes2D::NewtonSolver<double>::RatioToInitialNorm:
+        return QObject::tr("Ratio to initial norm");
+    case Hermes::Hermes2D::NewtonSolver<double>::RatioToPreviousNorm:
+        return QObject::tr("Ratio to previous norm");
+    default:
+        std::cerr << "Convergence measurement type'" + QString::number(measurement).toStdString() + "' is not implemented. nonlinearSolverConvergenceMeasurementString(Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement measurement)" << endl;
         throw;
     }
 }

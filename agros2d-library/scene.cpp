@@ -1628,9 +1628,12 @@ void Scene::readFromFile30(const QString &fileName)
             fieldInfo->setAdaptivityBackSteps(field.adaptivity().adaptivity_back_steps());
             fieldInfo->setAdaptivityRedoneEach(field.adaptivity().adaptivity_redone_each());
 
-            fieldInfo->setLinearityType(linearityTypeFromStringKey(QString::fromStdString(field.solver().linearity_type())));
+            fieldInfo->setLinearityType(linearityTypeFromStringKey(QString::fromStdString(field.solver().linearity_type())));            
             fieldInfo->setNonlinearSteps(field.solver().nonlinear_steps());
             fieldInfo->setNonlinearTolerance(field.solver().nonlinear_tolerance());
+            fieldInfo->setNonlinearConvergenceMeasurement(field.solver().nonlinear_convergence_measurement().present()
+                                                       ? nonlinearSolverConvergenceMeasurementFromStringKey(QString::fromStdString(field.solver().nonlinear_convergence_measurement().get()))
+                                                       : Hermes::Hermes2D::NewtonSolver<double>::RelativeToInitialNorm);
             fieldInfo->setNewtonDampingCoeff(field.solver().newton_damping_coeff());
             fieldInfo->setNewtonDampingNumberToIncrease(field.solver().newton_damping_number_to_increase());
             fieldInfo->setNewtonAutomaticDamping(field.solver().newton_automatic_damping());
@@ -2126,6 +2129,8 @@ void Scene::writeToFile30(const QString &fileName)
                                       (int) fieldInfo->picardAndersonAcceleration(),
                                       fieldInfo->picardAndersonBeta(),
                                       fieldInfo->picardAndersonNumberOfLastVectors());
+
+            solver.nonlinear_convergence_measurement() = nonlinearSolverConvergenceMeasurementToStringKey(fieldInfo->nonlinearConvergenceMeasurement()).toStdString();
 
             XMLProblem::boundaries boundaries;
             int iboundary = 1;
