@@ -60,8 +60,8 @@ public:
         inline void setDOFs(int value) { m_DOFs = value; }
         inline QList<FileName> fileNames() const { return m_fileNames; }
         inline void setFileNames(QList<FileName> value) { m_fileNames = value; }
-        inline QList<double> newtonResidual() const { return m_newtonResidual; }
-        inline void setNewtonResidual(QList<double> value) { m_newtonResidual = value; }
+        inline QVector<double> newtonResidual() const { return m_newtonResidual; }
+        inline void setNewtonResidual(QVector<double> value) { m_newtonResidual = value; }
 
     private:
         double m_timeStepLength;
@@ -69,7 +69,7 @@ public:
         int m_DOFs;
 
         QList<FileName> m_fileNames;
-        QList<double> m_newtonResidual;
+        QVector<double> m_newtonResidual;
     };
 
     bool contains(FieldSolutionID solutionID) const;

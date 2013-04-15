@@ -29,6 +29,7 @@
 
 Log::Log()
 {
+    qRegisterMetaType<QVector<double>   >("QVector<double>");
 }
 
 // *******************************************************************************************************
@@ -225,27 +226,39 @@ LogDialog::~LogDialog()
 void LogDialog::createControls()
 {
     connect(Agros2D::log(), SIGNAL(messageMsg(QString, QString, bool)), this, SLOT(printMessage(QString, QString, bool)));
+    connect(Agros2D::log(), SIGNAL(nonlinearTable(QVector<double>, QVector<double>)), this, SLOT(nonlinearTable(QVector<double>,QVector<double>)));
+    connect(Agros2D::log(), SIGNAL(adaptivityTable(QVector<double>, QVector<double>)), this, SLOT(adaptivityTable(QVector<double>, QVector<double>)));
 
     logWidget = new LogWidget(this);
     memoryLabel = new QLabel("                                                         ");
 
-    m_chart = new QCustomPlot(this);
-    m_chart->setVisible(false);
-    m_chart->setMinimumWidth(300);
-    m_chart->xAxis->setTickStep(1.0);
-    m_chart->xAxis->setAutoTickStep(false);
-    m_chart->addGraph();
+    m_nonlinearChart = new QCustomPlot(this);
+    m_nonlinearChart->setVisible(false);
+    m_nonlinearChart->setMinimumWidth(300);
+    m_nonlinearChart->xAxis->setTickStep(1.0);
+    m_nonlinearChart->xAxis->setAutoTickStep(false);
+    m_nonlinearChart->xAxis->setLabel(tr("iteration"));
+    m_nonlinearChart->yAxis->setLabel(tr("error"));
+    m_nonlinearChart->addGraph();
 
-    m_chart->graph(0)->setLineStyle(QCPGraph::lsLine);
+    m_nonlinearChart->graph(0)->setLineStyle(QCPGraph::lsLine);
 
     if (Agros2D::problem()->determineIsNonlinear())
     {
-        m_chart->setVisible(true);
+        m_nonlinearChart->setVisible(true);
 
-        // axes
-        m_chart->xAxis->setLabel(tr("iteration"));
-        m_chart->yAxis->setLabel(tr("error"));
     }
+
+    m_adaptivityChart = new QCustomPlot(this);
+    m_adaptivityChart->setVisible(false);
+    m_adaptivityChart->setMinimumWidth(300);
+    m_adaptivityChart->xAxis->setTickStep(1.0);
+    m_adaptivityChart->xAxis->setAutoTickStep(false);
+    m_adaptivityChart->xAxis->setLabel(tr("iteration"));
+    m_adaptivityChart->yAxis->setLabel(tr("error"));
+    m_adaptivityChart->addGraph();
+
+    m_adaptivityChart->graph(0)->setLineStyle(QCPGraph::lsLine);
 
     QPushButton *btnClose = new QPushButton(tr("Abort"));
     connect(btnClose, SIGNAL(clicked()), Agros2D::problem(), SLOT(doAbortSolve()));
@@ -258,7 +271,7 @@ void LogDialog::createControls()
 
     QHBoxLayout *layoutHorizontal = new QHBoxLayout();
     layoutHorizontal->addWidget(logWidget, 1);
-    layoutHorizontal->addWidget(m_chart, 0);
+    layoutHorizontal->addWidget(m_nonlinearChart, 0);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addLayout(layoutHorizontal);
@@ -269,6 +282,7 @@ void LogDialog::createControls()
 
 void LogDialog::printMessage(const QString &module, const QString &message, bool escaped)
 {
+    /*
     if (Agros2D::problem()->isNonlinear())
     {
         QString strNewton = "residual norm:";
@@ -288,9 +302,9 @@ void LogDialog::printMessage(const QString &module, const QString &message, bool
                 m_chartStep.append(m_chartStep.count() + 1);
                 m_chartNorm.append(error);
 
-                m_chart->graph(0)->setData(m_chartStep, m_chartNorm);
-                m_chart->rescaleAxes();
-                m_chart->replot();
+                m_nonlinearChart->graph(0)->setData(m_chartStep, m_chartNorm);
+                m_nonlinearChart->rescaleAxes();
+                m_nonlinearChart->replot();
             }
         }
         else
@@ -299,8 +313,23 @@ void LogDialog::printMessage(const QString &module, const QString &message, bool
             // m_chartNorm.clear();
         }
     }
+    */
 
     refreshStatus();
+}
+
+void LogDialog::nonlinearTable(QVector<double> step, QVector<double> error)
+{
+    m_nonlinearChart->graph(0)->setData(step, error);
+    m_nonlinearChart->rescaleAxes();
+    m_nonlinearChart->replot();
+}
+
+void LogDialog::adaptivityTable(QVector<double> step, QVector<double> error)
+{
+    m_adaptivityChart->graph(0)->setData(step, error);
+    m_adaptivityChart->rescaleAxes();
+    m_adaptivityChart->replot();
 }
 
 void LogDialog::refreshStatus()

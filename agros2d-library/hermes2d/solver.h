@@ -42,10 +42,12 @@ public:
     virtual void on_step_end();
     virtual void on_finish();
 
-    inline QList<double> residuals() const { return m_residuals; }
+    inline QVector<double> steps() const { return m_steps; }
+    inline QVector<double> errors() const { return m_errors; }
 
 protected:
-    QList<double> m_residuals;
+    QVector<double> m_steps;
+    QVector<double> m_errors;
 };
 
 struct NextTimeStep
