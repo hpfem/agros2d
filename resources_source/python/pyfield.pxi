@@ -117,10 +117,11 @@ cdef map[string, string] get_expression_map(parameters):
     cdef pair[string, string] expression
 
     for key in parameters:
-        if ("expression" in parameters[key]):
-            expression.first = string(key)
-            expression.second = string(parameters[key]["expression"])
-            expression_map.insert(expression)
+        if isinstance(parameters[key], dict):
+            if ("expression" in parameters[key]):
+                expression.first = string(key)
+                expression.second = string(parameters[key]["expression"])
+                expression_map.insert(expression)
 
     return expression_map
 
