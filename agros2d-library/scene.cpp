@@ -1633,7 +1633,7 @@ void Scene::readFromFile30(const QString &fileName)
             fieldInfo->setNonlinearTolerance(field.solver().nonlinear_tolerance());
             fieldInfo->setNonlinearConvergenceMeasurement(field.solver().nonlinear_convergence_measurement().present()
                                                        ? nonlinearSolverConvergenceMeasurementFromStringKey(QString::fromStdString(field.solver().nonlinear_convergence_measurement().get()))
-                                                       : Hermes::Hermes2D::NewtonSolver<double>::RelativeToInitialNorm);
+                                                       : Hermes::Hermes2D::NewtonSolver<double>::AbsoluteNorm);
             fieldInfo->setNewtonDampingCoeff(field.solver().newton_damping_coeff());
             fieldInfo->setNewtonDampingNumberToIncrease(field.solver().newton_damping_number_to_increase());
             fieldInfo->setNewtonAutomaticDamping(field.solver().newton_automatic_damping());
