@@ -61,14 +61,9 @@ Block::~Block()
     {
         for (Hermes::vector<Hermes::Hermes2D::EssentialBoundaryCondition<double> *>::const_iterator it = bc->begin(); it < bc->end(); ++it)
         {
-            // delete function
-            Hermes::Hermes2D::ExactSolutionScalar<double> *exact_solution = static_cast<Hermes::Hermes2D::DefaultEssentialBCNonConst<double> *>(*it)->exact_solution;
-            delete exact_solution;
-
             // delete bc
             delete *it;
         }
-
 
         delete bc;
     }
@@ -114,8 +109,8 @@ void Block::createBoundaryConditions()
                 foreach (FormInfo form, boundaryType.essential())
                 {
                     // exact solution - Dirichlet BC
-                    ExactSolutionScalarAgros<double> *function = fieldInfo->plugin()->exactSolution(problemId, &form, fieldInfo->initialMesh());
-                    function->setMarkerSource(boundary);
+                    MeshFunctionSharedPtr<double> function = MeshFunctionSharedPtr<double>(fieldInfo->plugin()->exactSolution(problemId, &form, fieldInfo->initialMesh()));
+                    static_cast<ExactSolutionScalarAgros<double> *>(function.get())->setMarkerSource(boundary);
 
                     // save function - boundary pairs, so thay can be easily updated in each time step;
                     m_exactSolutionFunctions[function] = boundary;
@@ -133,10 +128,10 @@ void Block::createBoundaryConditions()
 
 void Block::updateExactSolutionFunctions()
 {
-    foreach(ExactSolutionScalarAgros<double>* function, m_exactSolutionFunctions.keys())
+    foreach(MeshFunctionSharedPtr<double> function, m_exactSolutionFunctions.keys())
     {
         SceneBoundary* boundary = m_exactSolutionFunctions[function];
-        function->setMarkerSource(boundary);
+        static_cast<ExactSolutionScalarAgros<double> *>(function.get())->setMarkerSource(boundary);
     }
 }
 

@@ -70,10 +70,10 @@ void NewtonSolverAgros<Scalar>::on_step_end()
     switch(this->current_convergence_measurement)
     {
     case Hermes::Hermes2D::NewtonSolver<Scalar>::RelativeToInitialNorm:
-        m_errors.append(1.0 - (this->get_parameter_value(initial_residual_norm) - this->get_parameter_value(residual_norm)) / this->get_parameter_value(initial_residual_norm));
+        m_errors.append(1.0 - this->get_parameter_value(residual_norm) / this->get_parameter_value(initial_residual_norm));
         break;
     case Hermes::Hermes2D::NewtonSolver<Scalar>::RelativeToPreviousNorm:
-        m_errors.append(1.0 - (this->get_parameter_value(previous_residual_norm) - this->get_parameter_value(residual_norm)) / this->get_parameter_value(previous_residual_norm));
+        m_errors.append(1.0 - this->get_parameter_value(residual_norm) / this->get_parameter_value(previous_residual_norm));
         break;
     case Hermes::Hermes2D::NewtonSolver<Scalar>::RatioToInitialNorm:
         m_errors.append(this->get_parameter_value(residual_norm) / this->get_parameter_value(initial_residual_norm));
