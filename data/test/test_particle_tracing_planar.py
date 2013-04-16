@@ -73,7 +73,7 @@ tracing.reflect_on_boundary = False
 tracing.coefficient_of_restitution = 0
 
 tracing.maximum_number_of_steps = 1e3
-tracing.tolerance = 0.0001
+tracing.maximum_relative_error = 0.0001
 tracing.minimum_step = 0.0003
 
 tracing.initial_position = (0.01, 0.0)
