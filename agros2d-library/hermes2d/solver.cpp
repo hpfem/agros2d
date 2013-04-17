@@ -64,6 +64,7 @@ void NewtonSolverAgros<Scalar>::on_step_end()
     Hermes::Mixins::OutputAttachable::Parameter<double> initial_residual_norm = this->initial_residual_norm();
     Hermes::Mixins::OutputAttachable::Parameter<double> previous_residual_norm = this->previous_residual_norm();
     Hermes::Mixins::OutputAttachable::Parameter<double> residual_norm = this->residual_norm();
+    Hermes::Mixins::OutputAttachable::Parameter<double> current_damping_coefficient = this->current_damping_coefficient();
 
     m_steps.append(this->get_parameter_value(iteration));
 
@@ -88,7 +89,10 @@ void NewtonSolverAgros<Scalar>::on_step_end()
         qDebug() << "Unknown ConvergenceMeasurement in NewtonSolver.";
     }
 
-    qDebug() << "iteration: " << m_steps.last() << ", error: " << m_errors.last();
+    Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("Iteration: %1, damping coeff.: %2, error: %3")
+                                 .arg(this->get_parameter_value(iteration))
+                                 .arg(this->get_parameter_value(current_damping_coefficient))
+                                 .arg(m_errors.last()));
 
     Agros2D::log()->setNonlinearTable(m_steps, m_errors);
 }
@@ -145,7 +149,9 @@ LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block) : HermesSolve
 {
     m_linearSolver = new LinearSolver<Scalar>();
     m_linearSolver->set_verbose_output(false);
-    m_linearSolver->set_do_not_use_cache();
+    if (!block->isTransient())
+        m_linearSolver->set_do_not_use_cache();
+    m_linearSolver->set_jacobian_constant(true);
 }
 
 template <typename Scalar>
@@ -167,7 +173,7 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
 {
     m_newtonSolver = new NewtonSolverAgros<Scalar>();
     m_newtonSolver->set_verbose_output(true);
-    m_newtonSolver->set_verbose_callback(processSolverOutput);
+    // m_newtonSolver->set_verbose_callback(processSolverOutput);
     m_newtonSolver->set_tolerance(block->nonlinearTolerance());
     m_newtonSolver->set_max_allowed_iterations(block->nonlinearSteps());
     m_newtonSolver->set_max_allowed_residual_norm(1e15);
@@ -428,8 +434,11 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
     try
     {
         m_hermesSolverContainer->projectPreviousSolution(initialSolutionVector, spaces, previousSolution);
+        // if (Agros2D::problem()->actualTimeStep() == 1)
+        // {
         m_hermesSolverContainer->setTableSpaces()->set_spaces(spaces);
         m_hermesSolverContainer->setWeakFormulation(m_block->weakForm());
+        // }
         m_hermesSolverContainer->setMatrixRhsOutput(m_solverCode, adaptivityStep);
 
         m_hermesSolverContainer->solve(initialSolutionVector);

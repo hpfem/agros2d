@@ -295,6 +295,10 @@ QString createPythonFromModel(StartupScript_Type startupScript)
         // newton
         if (fieldInfo->linearityType() == LinearityType_Newton)
         {
+            str += QString("%1.nonlinear_convergence_measurement = \"%2\"\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(nonlinearSolverConvergenceMeasurementToStringKey(fieldInfo->nonlinearConvergenceMeasurement()));
+
             str += QString("%1.automatic_damping = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg((fieldInfo->newtonAutomaticDamping()) ? "True" : "False");

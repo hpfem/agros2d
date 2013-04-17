@@ -48,6 +48,10 @@ class PyField
         inline std::string getLinearityType() const { return linearityTypeToStringKey(m_fieldInfo->linearityType()).toStdString(); }
         void setLinearityType(const std::string &linearityType);
 
+        // convergence measurement
+        inline std::string getNonlinearConvergenceMeasurement() const { return nonlinearSolverConvergenceMeasurementToStringKey(m_fieldInfo->nonlinearConvergenceMeasurement()).toStdString(); }
+        void setNonlinearConvergenceMeasurement(const std::string &nonlinearConvergenceMeasurement);
+
         // nonlinear tolerance
         inline double getNonlinearTolerance() const { return m_fieldInfo->nonlinearTolerance(); }
         void setNonlinearTolerance(double nonlinearTolerance);

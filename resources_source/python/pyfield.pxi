@@ -16,6 +16,9 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         string getLinearityType()
         void setLinearityType(string &linearityType) except +
 
+        string getNonlinearConvergenceMeasurement()
+        void setNonlinearConvergenceMeasurement(string &nonlinearConvergenceMeasurement) except +
+
         double getNonlinearTolerance()
         void setNonlinearTolerance(double nonlinearTolerance) except +
 
@@ -27,6 +30,9 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
 
         bool getNewtonAutomaticDamping()
         void setNewtonAutomaticDamping(bool automaticDamping)
+
+        double getNewtonAutomaticDampingCoeff()
+        void setNewtonAutomaticDampingCoeff(double dampingCoeff) except +
 
         int getNewtonDampingNumberToIncrease()
         void setNewtonDampingNumberToIncrease(int dampingNumberToIncrease) except +
@@ -198,6 +204,13 @@ cdef class __Field__:
         def __set__(self, linearity_type):
             self.thisptr.setLinearityType(string(linearity_type))
 
+    # convergence measurement
+    property nonlinear_convergence_measurement:
+        def __get__(self):
+            return self.thisptr.getNonlinearConvergenceMeasurement().c_str()
+        def __set__(self, nonlinearConvergenceMeasurement):
+            self.thisptr.setNonlinearConvergenceMeasurement(string(nonlinearConvergenceMeasurement))
+
     # nonlinear tolerance
     property nonlinear_tolerance:
         def __get__(self):
@@ -225,6 +238,13 @@ cdef class __Field__:
             return self.thisptr.getNewtonAutomaticDamping()
         def __set__(self, automatic_damping):
             self.thisptr.setNewtonAutomaticDamping(automatic_damping)
+
+    # automatic damping coeff
+    property automatic_damping_coeff:
+        def __get__(self):
+            return self.thisptr.getNewtonAutomaticDampingCoeff()
+        def __set__(self, damping_coeff):
+            self.thisptr.setNewtonAutomaticDampingCoeff(damping_coeff)
 
     # damping number to increase
     property damping_number_to_increase:

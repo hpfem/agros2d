@@ -94,6 +94,14 @@ void PyField::setLinearityType(const std::string &linearityType)
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(linearityTypeStringKeys())).toStdString());
 }
 
+void PyField::setNonlinearConvergenceMeasurement(const std::string &nonlinearConvergenceMeasurement)
+{
+    if (nonlinearSolverConvergenceMeasurementStringKeys().contains(QString::fromStdString(nonlinearConvergenceMeasurement)))
+        m_fieldInfo->setNonlinearConvergenceMeasurement(nonlinearSolverConvergenceMeasurementFromStringKey(QString::fromStdString(nonlinearConvergenceMeasurement)));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(nonlinearSolverConvergenceMeasurementStringKeys())).toStdString());
+}
+
 void PyField::setNonlinearTolerance(double nonlinearTolerance)
 {
     if (nonlinearTolerance > 0.0)

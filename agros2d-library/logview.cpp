@@ -282,40 +282,7 @@ void LogDialog::createControls()
 }
 
 void LogDialog::printMessage(const QString &module, const QString &message, bool escaped)
-{
-    /*
-    if (Agros2D::problem()->isNonlinear())
-    {
-        QString strNewton = "residual norm:";
-        QString strPicard = "relative error:";
-
-        if (module == tr("Solver") && (message.contains(strNewton) || message.contains(strPicard)))
-        {
-            bool ok = false;
-            double error = 0.0;
-            if (message.contains(strNewton))
-                error = (message.right(message.length() - (message.indexOf(strNewton) + strNewton.length() + 1))).toDouble(&ok);
-            else if (message.contains(strPicard))
-                error = (message.right(message.length() - (message.indexOf(strPicard) + strPicard.length() + 1))).toDouble(&ok);
-
-            if (ok)
-            {
-                m_chartStep.append(m_chartStep.count() + 1);
-                m_chartNorm.append(error);
-
-                m_nonlinearChart->graph(0)->setData(m_chartStep, m_chartNorm);
-                m_nonlinearChart->rescaleAxes();
-                m_nonlinearChart->replot();
-            }
-        }
-        else
-        {
-            // m_chartStep.clear();
-            // m_chartNorm.clear();
-        }
-    }
-    */
-
+{   
     refreshStatus();
 }
 
