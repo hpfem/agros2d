@@ -198,7 +198,7 @@ void FieldWidget::createContent()
     lblNewtonMaximumStepsWithReusedJacobian = new QLabel(tr("Max. steps with reused Jacobian:"));
     txtNewtonMaximumStepsWithReusedJacobian = new QSpinBox(this);
     txtNewtonMaximumStepsWithReusedJacobian->setValue(m_fieldInfo->defaultValue(FieldInfo::NewtonSufficientImprovementFactorJacobian).toInt());
-    txtNewtonMaximumStepsWithReusedJacobian->setMinimum(1);
+    txtNewtonMaximumStepsWithReusedJacobian->setMinimum(0);
     txtNewtonMaximumStepsWithReusedJacobian->setMaximum(10);
 
     chkPicardAndersonAcceleration = new QCheckBox(tr("Use Anderson acceleration"));
@@ -286,22 +286,22 @@ void FieldWidget::createContent()
     layoutLinearity->addWidget(txtNonlinearTolerance, 2, 1);
     layoutLinearity->addWidget(new QLabel(tr("Steps:")), 3, 0);
     layoutLinearity->addWidget(txtNonlinearSteps, 3, 1);
-    layoutLinearity->addWidget(lblNewtonSufficientImprovementFactorJacobian, 4, 0);
-    layoutLinearity->addWidget(txtNewtonSufficientImprovementFactorJacobian, 4, 1);
-    layoutLinearity->addWidget(lblNewtonMaximumStepsWithReusedJacobian, 5, 0);
-    layoutLinearity->addWidget(txtNewtonMaximumStepsWithReusedJacobian, 5, 1);
-    layoutLinearity->addWidget(lblNewtonDampingCoeff, 6, 0);
-    layoutLinearity->addWidget(txtNewtonDampingCoeff, 6, 1);
-    layoutLinearity->addWidget(chkNewtonAutomaticDamping, 7, 0, 1, 2);
-    layoutLinearity->addWidget(lblNewtonAutomaticDampingCoeff, 8, 0);
-    layoutLinearity->addWidget(txtNewtonAutomaticDampingCoeff, 8, 1);
-    layoutLinearity->addWidget(lblNewtonDampingNumberToIncrease, 9, 0);
-    layoutLinearity->addWidget(txtNewtonDampingNumberToIncrease, 9, 1);
-    layoutLinearity->addWidget(chkPicardAndersonAcceleration, 10, 0, 1, 2);
-    layoutLinearity->addWidget(lblPicardAndersonBeta, 11, 0);
-    layoutLinearity->addWidget(txtPicardAndersonBeta, 11, 1);
-    layoutLinearity->addWidget(lblPicardAndersonNumberOfLastVectors, 12, 0);
-    layoutLinearity->addWidget(txtPicardAndersonNumberOfLastVectors, 12, 1);
+    layoutLinearity->addWidget(lblNewtonSufficientImprovementFactorJacobian, 4, 0, 1, 2);
+    layoutLinearity->addWidget(txtNewtonSufficientImprovementFactorJacobian, 5, 1);
+    layoutLinearity->addWidget(lblNewtonMaximumStepsWithReusedJacobian, 6, 0, 1, 2);
+    layoutLinearity->addWidget(txtNewtonMaximumStepsWithReusedJacobian, 7, 1);
+    layoutLinearity->addWidget(lblNewtonDampingCoeff, 8, 0);
+    layoutLinearity->addWidget(txtNewtonDampingCoeff, 8, 1);
+    layoutLinearity->addWidget(chkNewtonAutomaticDamping, 9, 0, 1, 2);
+    layoutLinearity->addWidget(lblNewtonAutomaticDampingCoeff, 10, 0);
+    layoutLinearity->addWidget(txtNewtonAutomaticDampingCoeff, 10, 1);
+    layoutLinearity->addWidget(lblNewtonDampingNumberToIncrease, 11, 0);
+    layoutLinearity->addWidget(txtNewtonDampingNumberToIncrease, 11, 1);
+    layoutLinearity->addWidget(chkPicardAndersonAcceleration, 12, 0, 1, 2);
+    layoutLinearity->addWidget(lblPicardAndersonBeta, 13, 0);
+    layoutLinearity->addWidget(txtPicardAndersonBeta, 13, 1);
+    layoutLinearity->addWidget(lblPicardAndersonNumberOfLastVectors, 14, 0);
+    layoutLinearity->addWidget(txtPicardAndersonNumberOfLastVectors, 14, 1);
 
     QGroupBox *grpLinearity = new QGroupBox(tr("Solver"));
     grpLinearity->setLayout(layoutLinearity);
@@ -358,7 +358,10 @@ void FieldWidget::fillComboBox()
     cmbLinearityType->addItem(linearityTypeString(LinearityType_Linear), LinearityType_Linear);
     // if (hermesField->hasNonlinearity())
     {
-        cmbLinearityType->addItem(linearityTypeString(LinearityType_Picard), LinearityType_Picard);
+        if (Agros2D::configComputer()->experimentalFeatures)
+        {
+            cmbLinearityType->addItem(linearityTypeString(LinearityType_Picard), LinearityType_Picard);
+        }
         cmbLinearityType->addItem(linearityTypeString(LinearityType_Newton), LinearityType_Newton);
     }
 
@@ -504,7 +507,9 @@ void FieldWidget::doLinearityTypeChanged(int index)
     txtNewtonAutomaticDampingCoeff->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
     lblNewtonDampingNumberToIncrease->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
     txtNewtonDampingNumberToIncrease->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
+    lblNewtonMaximumStepsWithReusedJacobian->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
     txtNewtonMaximumStepsWithReusedJacobian->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
+    lblNewtonSufficientImprovementFactorJacobian->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
     txtNewtonSufficientImprovementFactorJacobian->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
 
     doNewtonDampingChanged(-1);
