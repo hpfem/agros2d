@@ -482,11 +482,11 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
     try
     {
         m_hermesSolverContainer->projectPreviousSolution(initialSolutionVector, spaces, previousSolution);
-        // if (Agros2D::problem()->actualTimeStep() == 1)
-        // {
-        m_hermesSolverContainer->settableSpaces()->set_spaces(spaces);
-        m_hermesSolverContainer->setWeakFormulation(m_block->weakForm());
-        // }
+        if (Agros2D::problem()->actualTimeStep() == 1)
+        {
+            m_hermesSolverContainer->settableSpaces()->set_spaces(spaces);
+            m_hermesSolverContainer->setWeakFormulation(m_block->weakForm());
+        }
         m_hermesSolverContainer->setMatrixRhsOutput(m_solverCode, adaptivityStep);
 
         m_hermesSolverContainer->solve(initialSolutionVector);
@@ -534,9 +534,8 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
         bdf2Table->setPreviousSteps(Agros2D::problem()->timeStepLengths());
     }
 
-    m_block->setWeakForm(new WeakFormAgros<double>(m_block));
     m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());
-    m_block->weakForm()->registerForms(bdf2Table);
+    m_block->weakForm()->updateExtField(bdf2Table);
 
     // TODO: remove for linear solver
     Scalar *initialSolutionVector;
@@ -611,9 +610,8 @@ NextTimeStep ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
     bdf2Table->setPreviousSteps(Agros2D::problem()->timeStepLengths());
     //cout << "using time order" << min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt()) << endl;
 
-    m_block->setWeakForm(new WeakFormAgros<double>(m_block));
     m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());
-    m_block->weakForm()->registerForms(bdf2Table);
+    m_block->weakForm()->updateExtField(bdf2Table);
 
     // solve, for nonlinear solver use solution obtained by BDFA method as an initial vector
     // TODO: remove for linear solver
@@ -812,11 +810,8 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
         bdf2Table->setPreviousSteps(Agros2D::problem()->timeStepLengths());
     }
 
-    // TODO: wf should be created only at the beginning
-    // TODO: at least for the adaptivity, it should be ok to keep the form. For transiet step would be more complicated...
-    m_block->setWeakForm(new WeakFormAgros<double>(m_block));
     m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());
-    m_block->weakForm()->registerForms(bdf2Table);
+    m_block->weakForm()->updateExtField(bdf2Table);
 
     // create reference spaces
     Hermes::vector<SpaceSharedPtr<Scalar> > spacesRef = deepMeshAndSpaceCopy(actualSpaces(), true);

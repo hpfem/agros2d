@@ -110,7 +110,7 @@ template <typename Scalar>
 Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID problemId,
                                             const QString &area, FormInfo *form,
                                             Marker* markerSource, Material *markerTarget,
-                                            int offsetI, int offsetJ, int offsetTimeExt)
+                                            int offsetI, int offsetJ, int *offsetTimeExt)
 {
     QString fieldId = (problemId.analysisTypeTarget == AnalysisType_Undefined) ?
                 problemId.sourceFieldId : problemId.sourceFieldId + "-" + problemId.targetFieldId;
@@ -230,27 +230,6 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     if ((field->fieldInfo()->analysisType() == AnalysisType_Transient) && m_bdf2Table)
     {
         dynamic_cast<FormAgrosInterface *>(custom_form)->setTimeDiscretisationTable(&m_bdf2Table);
-
-        if((type == WeakForm_MatVol) || (type == WeakForm_VecVol))
-        {
-            Hermes::vector<MeshFunctionSharedPtr<Scalar> > previousSlns;
-
-            int lastTimeStep = Agros2D::problem()->actualTimeStep() - 1; // todo: check
-
-            for(int backLevel = 0; backLevel < m_bdf2Table->n(); backLevel++)
-            {
-                int timeStep = lastTimeStep - backLevel;
-                int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(field->fieldInfo(), SolutionMode_Normal, timeStep);
-                FieldSolutionID solutionID(field->fieldInfo(), timeStep, adaptivityStep, SolutionMode_Reference);
-                if(! Agros2D::solutionStore()->contains(solutionID))
-                    solutionID.solutionMode = SolutionMode_Normal;
-                assert(Agros2D::solutionStore()->contains(solutionID));
-
-                for (int comp = 0; comp < solutionID.group->numberOfSolutions(); comp++)
-                    previousSlns.push_back(Agros2D::solutionStore()->multiArray(solutionID).solutions().at(comp));
-            }
-            custom_form->set_ext(previousSlns);
-        }
     }
 
     addForm(type, custom_form);
@@ -258,7 +237,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
 
 template <typename Scalar>
 void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area, FormInfo form, int offsetI, int offsetJ,
-                                                 SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo, int offsetTimeExt)
+                                                 SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo, int* offsetTimeExt)
 {
     ProblemID problemId;
 
@@ -300,9 +279,8 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
 
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
+void WeakFormAgros<Scalar>::registerForms()
 {
-    m_bdf2Table = bdf2Table;
     foreach(Field* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
@@ -354,7 +332,7 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
                         if (materialSource != Agros2D::scene()->materials->getNone(couplingInfo->sourceField()))
                         {
                             registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), expression,
-                                                 m_block->offset(field), m_block->offset(field), materialSource, material, couplingInfo, 0);//bdf2Table->n() * fieldInfo->numberOfSolutions());
+                                                 m_block->offset(field), m_block->offset(field), materialSource, material, couplingInfo, &m_offsetTimeExt);
                         }
                     }
                 }
@@ -400,6 +378,8 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
 template <typename Scalar>
 void WeakFormAgros<Scalar>::updateExtField(BDF2Table* bdf2Table)
 {
+    m_bdf2Table = bdf2Table;
+
     FieldInfo* transientFieldInfo;
     CouplingInfo* couplingInfo;
     int numTransientFields = 0;
@@ -431,6 +411,32 @@ void WeakFormAgros<Scalar>::updateExtField(BDF2Table* bdf2Table)
 
     // at the present moment, block can be influenced (weakly coupled with) only one other field. Otherwise changes in offsetExtTime have to be done
     assert(numTotalCouplings <= 1);
+
+    if (numTransientFields >= 1)
+    {
+        assert(m_bdf2Table);
+
+        m_offsetTimeExt = m_bdf2Table->n() * transientFieldInfo->numberOfSolutions() ;
+
+        Hermes::vector<MeshFunctionSharedPtr<Scalar> > previousSlns;
+
+        int lastTimeStep = Agros2D::problem()->actualTimeStep() - 1; // todo: check
+
+        for(int backLevel = 0; backLevel < m_bdf2Table->n(); backLevel++)
+        {
+            int timeStep = lastTimeStep - backLevel;
+            int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(transientFieldInfo, SolutionMode_Normal, timeStep);
+            FieldSolutionID solutionID(transientFieldInfo, timeStep, adaptivityStep, SolutionMode_Reference);
+            if(! Agros2D::solutionStore()->contains(solutionID))
+                solutionID.solutionMode = SolutionMode_Normal;
+            assert(Agros2D::solutionStore()->contains(solutionID));
+
+            for (int comp = 0; comp < solutionID.group->numberOfSolutions(); comp++)
+                previousSlns.push_back(Agros2D::solutionStore()->multiArray(solutionID).solutions().at(comp));
+        }
+        this->set_ext(previousSlns);
+    }
+
 }
 
 // ***********************************************************************************************

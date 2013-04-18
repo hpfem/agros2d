@@ -50,7 +50,7 @@ MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID pr
     return NULL;
 }
 
-VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material, int offsetTimeExt)
+VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material, int *offsetTimeExt)
 {
     {{#VOLUME_VECTOR_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{SOURCE_ANALYSIS_TYPE}}) &&

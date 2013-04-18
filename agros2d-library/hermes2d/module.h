@@ -141,7 +141,7 @@ public:
     WeakFormAgros(Block* block);
     ~WeakFormAgros();
 
-    void registerForms(BDF2Table *bdf2Table);
+    void registerForms();
     void updateExtField(BDF2Table *bdf2Table);
 
 private:
@@ -151,7 +151,7 @@ private:
     // offsetTimeExt defines how many positions (0, ... offsetTimeExt - 1) in the ext array are reserved for previous time solutions
     // used for problems which are transient and weakly coupled at the same time
     void registerFormCoupling(WeakFormKind type, QString area, FormInfo form, int offsetI, int offsetJ, SceneMaterial *materialSource,
-                              SceneMaterial *materialTarget, CouplingInfo *couplingInfo, int offsetTimeExt);
+                              SceneMaterial *materialTarget, CouplingInfo *couplingInfo, int *offsetTimeExt);
     void addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar>* form);
 
     virtual Hermes::Hermes2D::WeakForm<Scalar>* clone() const { return new WeakFormAgros<Scalar>(m_block); }
@@ -159,6 +159,7 @@ private:
     Block* m_block;
 
     BDF2Table* m_bdf2Table;
+    int m_offsetTimeExt;
 };
 
 namespace Module

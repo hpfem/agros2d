@@ -276,6 +276,12 @@ void Problem::createStructure()
         m_blocks.append(new Block(blockFieldInfos, blockCouplingInfos));
     }
 
+    foreach (Block* block, m_blocks)
+    {
+        // todo: is released?
+        block->setWeakForm(new WeakFormAgros<double>(block));
+        block->weakForm()->registerForms();
+    }
 }
 
 bool Problem::mesh()
@@ -425,8 +431,11 @@ bool Problem::defineActualTimeStepLength(double ts)
     const double eps = 1e-9 * config()->value(ProblemConfig::TimeTotal).toDouble();
     assert(actualTime() < config()->value(ProblemConfig::TimeTotal).toDouble() + eps);
     if(actualTime() > config()->value(ProblemConfig::TimeTotal).toDouble() - eps)
+    {
         return false;
-    else{
+    }
+    else
+    {
         double alteredTS = min(ts, config()->value(ProblemConfig::TimeTotal).toDouble() - actualTime());
         m_timeStepLengths.push_back(alteredTS);
         return true;
