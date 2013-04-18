@@ -211,7 +211,7 @@ void WeakFormAgros<Scalar>::addForm(WeakFormKind type, Hermes::Hermes2D::Form<Sc
 }
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QString area, FormInfo form, int offsetI, int offsetJ, Marker* marker, BDF2Table* bdf2Table)
+void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QString area, FormInfo form, int offsetI, int offsetJ, Marker* marker)
 {
     ProblemID problemId;
 
@@ -227,9 +227,9 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     if (!custom_form) return;
 
     // set time discretisation table
-    if ((field->fieldInfo()->analysisType() == AnalysisType_Transient) && bdf2Table)
+    if ((field->fieldInfo()->analysisType() == AnalysisType_Transient) && m_bdf2Table)
     {
-        dynamic_cast<FormAgrosInterface *>(custom_form)->setTimeDiscretisationTable(bdf2Table);
+        dynamic_cast<FormAgrosInterface *>(custom_form)->setTimeDiscretisationTable(&m_bdf2Table);
 
         if((type == WeakForm_MatVol) || (type == WeakForm_VecVol))
         {
@@ -237,7 +237,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
 
             int lastTimeStep = Agros2D::problem()->actualTimeStep() - 1; // todo: check
 
-            for(int backLevel = 0; backLevel < bdf2Table->n(); backLevel++)
+            for(int backLevel = 0; backLevel < m_bdf2Table->n(); backLevel++)
             {
                 int timeStep = lastTimeStep - backLevel;
                 int adaptivityStep = Agros2D::solutionStore()->lastAdaptiveStep(field->fieldInfo(), SolutionMode_Normal, timeStep);
@@ -302,6 +302,7 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
 template <typename Scalar>
 void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
 {
+    m_bdf2Table = bdf2Table;
     foreach(Field* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
@@ -335,12 +336,12 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
             {
                 foreach (FormInfo expression, fieldInfo->wfMatrixVolume())
                     registerForm(WeakForm_MatVol, field, QString::number(labelNum), expression,
-                                 m_block->offset(field), m_block->offset(field), material, bdf2Table);
+                                 m_block->offset(field), m_block->offset(field), material);
 
 
                 foreach (FormInfo expression, fieldInfo->wfVectorVolume())
                     registerForm(WeakForm_VecVol, field, QString::number(labelNum), expression,
-                                 m_block->offset(field), m_block->offset(field), material, bdf2Table);
+                                 m_block->offset(field), m_block->offset(field), material);
 
                 // weak coupling
                 foreach(CouplingInfo* couplingInfo, field->couplingInfos())
@@ -353,7 +354,7 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
                         if (materialSource != Agros2D::scene()->materials->getNone(couplingInfo->sourceField()))
                         {
                             registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), expression,
-                                                 m_block->offset(field), m_block->offset(field), materialSource, material, couplingInfo, 0);// bdf2Table->n() * fieldInfo->numberOfSolutions());
+                                                 m_block->offset(field), m_block->offset(field), materialSource, material, couplingInfo, 0);//bdf2Table->n() * fieldInfo->numberOfSolutions());
                         }
                     }
                 }
@@ -394,6 +395,42 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
             }
         }
     }
+}
+
+template <typename Scalar>
+void WeakFormAgros<Scalar>::updateExtField(BDF2Table* bdf2Table)
+{
+    FieldInfo* transientFieldInfo;
+    CouplingInfo* couplingInfo;
+    int numTransientFields = 0;
+    int numTotalCouplings = 0;
+    foreach(Field* field, m_block->fields())
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if(fieldInfo->analysisType() == AnalysisType_Transient)
+        {
+            numTransientFields++;
+            transientFieldInfo = fieldInfo;
+
+            int numCouplings = field->couplingInfos().size();
+
+            // only one coupling for one field so far
+            assert(numCouplings <= 1);
+            if(numCouplings)
+            {
+                couplingInfo = field->couplingInfos().at(0);
+                assert(couplingInfo->isWeak());
+            }
+            numTotalCouplings += numCouplings;
+        }
+
+    }
+
+    // for more hard-coupled transient field changes in offsetExtTime have to be done
+    assert(numTransientFields <= 1);
+
+    // at the present moment, block can be influenced (weakly coupled with) only one other field. Otherwise changes in offsetExtTime have to be done
+    assert(numTotalCouplings <= 1);
 }
 
 // ***********************************************************************************************

@@ -119,7 +119,7 @@ public:
     inline Marker *markerTarget() { assert(m_markerTarget); return m_markerTarget; }
 
     // time discretisation table
-    inline void setTimeDiscretisationTable(BDF2Table* table) { m_table = table; }
+    inline void setTimeDiscretisationTable(BDF2Table** table) { m_table = table; }
 
     inline int offsetI() const {assert(m_offsetI != OFFSET_NON_DEF); return m_offsetI;}
     inline int offsetJ() const {assert(m_offsetI != OFFSET_NON_DEF); return m_offsetJ;}
@@ -130,7 +130,7 @@ protected:
     // target marker
     Marker *m_markerTarget;
     // time discretisation table
-    BDF2Table *m_table;
+    BDF2Table **m_table;
 
     // the offset of position in the stiffness matrix for the case of hard coupling; could be done some other way
     // for example, generated form ...something(heat_matrix_linear, etc)...._1_3 could have variables holding 1 and 3 (the original position,

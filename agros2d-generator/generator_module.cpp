@@ -1137,7 +1137,6 @@ LexicalAnalyser *Agros2DGeneratorModule::weakFormLexicalAnalyser(AnalysisType an
         lex->addVariable("deltat");
         lex->addVariable("timedermat");
         lex->addVariable("timedervec");
-        lex->addVariable("timederres");
     }
 
     // functions
@@ -1237,9 +1236,8 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
         dict["vcurl"] = "v->curl[i]";
         dict["upcurl"] = "u_ext[this->j]->curl[i]";
 
-        dict["timedermat"] = "this->m_table->matrixFormCoefficient()";
-        dict["timedervec"] = "this->m_table->vectorFormCoefficient(ext, this->j, this->m_markerSource->fieldInfo()->numberOfSolutions(), i)";
-        dict["timederres"] = "this->m_table->residualCoefficient()";
+        dict["timedermat"] = "(*this->m_table)->matrixFormCoefficient()";
+        dict["timedervec"] = "(*this->m_table)->vectorFormCoefficient(ext, this->j, this->m_markerSource->fieldInfo()->numberOfSolutions(), i)";
 
         if (coordinateType == CoordinateType_Planar)
         {
@@ -1434,7 +1432,6 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
         dict["deltat"] = "Agros2D::problem()->actualTimeStepLength()";
         dict["timedermat"] = generator.value();
         dict["timedervec"] = generator.value();
-        dict["timederres"] = generator.value();
 
         if (coordinateType == CoordinateType_Planar)
         {
@@ -1568,7 +1565,6 @@ QString Agros2DGeneratorModule::generateDocWeakFormExpression(AnalysisType analy
         dict["deltat"] = "\Delta t";
         dict["timedermat"] = "timedermat";
         dict["timedervec"] = "timedervec";
-        dict["timederres"] = "timederres";
         dict["udx"] = "\\frac{\\partial u}{\\partial x}";
         dict["vdx"] = "\\frac{\\partial v}{\\partial x}";
         dict["udy"] = "\\frac{\\partial u}{\\partial y}";
