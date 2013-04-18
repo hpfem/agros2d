@@ -187,8 +187,8 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
     m_newtonSolver->set_max_allowed_iterations(block->nonlinearSteps());
     m_newtonSolver->set_max_allowed_residual_norm(1e15);
     m_newtonSolver->set_convergence_measurement(block->nonlinearConvergenceMeasurement());
-    // m_newtonSolver->set_sufficient_improvement_factor_jacobian();
-    // m_newtonSolver->set_max_steps_with_reused_jacobian();
+    m_newtonSolver->set_sufficient_improvement_factor_jacobian(block->sufficientImprovementFactorJacobian());
+    m_newtonSolver->set_max_steps_with_reused_jacobian(block->maxStepsWithReusedJacobian());
     if (block->newtonAutomaticDamping())
     {
         m_newtonSolver->set_initial_auto_damping_coeff(block->newtonAutomaticDampingCoeff());

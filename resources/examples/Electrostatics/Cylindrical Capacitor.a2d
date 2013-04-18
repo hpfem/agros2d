@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/fmach/Projekty/Agros2D/agros2d/resources/xsd/problem_a2d_30_xml.xsd">
+<problem:document xmlns:problem="XMLProblem" version="3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_30_xml.xsd">
 
   <geometry>
     <nodes>
@@ -37,14 +37,14 @@
     </labels>
   </geometry>
 
-  <problem coordinate_type="axisymmetric" frequency="0" matrix_solver="umfpack" mesh_type="triangle" time_method="adaptive_numsteps" time_method_tolerance="0.1" time_order="2" time_steps="10" time_total="1">
+  <problem coordinate_type="axisymmetric" matrix_solver="umfpack" mesh_type="triangle">
     <fields>
-      <field analysis_type="steadystate" field_id="electrostatic" initial_condition="0" number_of_refinements="1" polynomial_order="4" time_skip="0">
+      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="electrostatic" linearity_type="linear">
         <refinement_edges>
-          <refinement_edge refinement_edge_id="12" refinement_edge_number="1"/>
-          <refinement_edge refinement_edge_id="6" refinement_edge_number="1"/>
           <refinement_edge refinement_edge_id="8" refinement_edge_number="1"/>
           <refinement_edge refinement_edge_id="1" refinement_edge_number="1"/>
+          <refinement_edge refinement_edge_id="12" refinement_edge_number="1"/>
+          <refinement_edge refinement_edge_id="6" refinement_edge_number="1"/>
         </refinement_edges>
         <refinement_labels/>
         <polynomial_orders/>
@@ -82,7 +82,7 @@
           </boundary>
         </boundaries>
         <materials>
-          <material id="4" name="Air">
+          <material id="1" name="Air">
             <material_labels>
               <material_label id="2"/>
             </material_labels>
@@ -91,7 +91,7 @@
               <material_type key="electrostatic_permittivity" value="1"/>
             </material_types>
           </material>
-          <material id="4" name="Dielectric 1">
+          <material id="2" name="Dielectric 1">
             <material_labels>
               <material_label id="0"/>
             </material_labels>
@@ -100,7 +100,7 @@
               <material_type key="electrostatic_permittivity" value="eps1"/>
             </material_types>
           </material>
-          <material id="4" name="Dielectric 2">
+          <material id="3" name="Dielectric 2">
             <material_labels>
               <material_label id="1"/>
             </material_labels>
@@ -110,9 +110,39 @@
             </material_types>
           </material>
         </materials>
+        <field_config>
+          <field_item field_key="NonlinearTolerance" field_value="0.001"/>
+          <field_item field_key="NonlinearSteps" field_value="10"/>
+          <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
+          <field_item field_key="NewtonAutomaticDamping" field_value="1"/>
+          <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NewtonDampingCoeff" field_value="1"/>
+          <field_item field_key="NewtonDampingNumberToIncrease" field_value="1"/>
+          <field_item field_key="NewtonSufficientImprovementFactorJacobian" field_value="0.4"/>
+          <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="3"/>
+          <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
+          <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
+          <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
+          <field_item field_key="SpaceNumberOfRefinements" field_value="1"/>
+          <field_item field_key="SpacePolynomialOrder" field_value="4"/>
+          <field_item field_key="AdaptivitySteps" field_value="1"/>
+          <field_item field_key="AdaptivityTolerance" field_value="1"/>
+          <field_item field_key="AdaptivityTransientBackSteps" field_value="100"/>
+          <field_item field_key="AdaptivityTransientRedoneEach" field_value="100"/>
+          <field_item field_key="TransientTimeSkip" field_value="0"/>
+          <field_item field_key="TransientInitialConditio" field_value="0"/>
+        </field_config>
       </field>
     </fields>
     <couplings/>
+    <problem_config>
+      <problem_item problem_key="Frequency" problem_value="0"/>
+      <problem_item problem_key="TimeMethod" problem_value="2"/>
+      <problem_item problem_key="TimeMethodTolerance" problem_value="0.1"/>
+      <problem_item problem_key="TimeOrder" problem_value="2"/>
+      <problem_item problem_key="TimeSteps" problem_value="10"/>
+      <problem_item problem_key="TimeTotal" problem_value="1"/>
+    </problem_config>
   </problem>
 
   <config>
@@ -131,7 +161,7 @@
     <item key="View_ShowRulers" value="1"/>
     <item key="View_SnapToGrid" value="1"/>
     <item key="View_ShowAxes" value="1"/>
-    <item key="View_ScalarView3DMode" value="0"/>
+    <item key="View_ScalarView3DMode" value="-1"/>
     <item key="View_ScalarView3DLighting" value="0"/>
     <item key="View_ScalarView3DAngle" value="240"/>
     <item key="View_ScalarView3DBackground" value="1"/>
@@ -189,7 +219,7 @@
     <item key="View_ShowScalarView" value="1"/>
     <item key="View_ShowScalarColorBar" value="1"/>
     <item key="View_ScalarVariable" value="electrostatic_potential"/>
-    <item key="View_ScalarVariableComp" value="1"/>
+    <item key="View_ScalarVariableComp" value="0"/>
     <item key="View_PaletteType" value="0"/>
     <item key="View_PaletteFilter" value="0"/>
     <item key="View_PaletteSteps" value="30"/>
@@ -197,7 +227,7 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="2"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="-1.11022302462516e-16"/>
+    <item key="View_ScalarRangeMin" value="-1.14560359083197e-16"/>
     <item key="View_ScalarRangeMax" value="10"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value="electrostatic_electric_field"/>
@@ -237,13 +267,13 @@
     <item key="View_ParticleCustomForceX" value="0"/>
     <item key="View_ParticleCustomForceY" value="0"/>
     <item key="View_ParticleCustomForceZ" value="0"/>
-    <item key="View_ChartStartX" value="0.01"/>
+    <item key="View_ChartStartX" value="0"/>
     <item key="View_ChartStartY" value="0"/>
-    <item key="View_ChartEndX" value="0.05"/>
+    <item key="View_ChartEndX" value="0"/>
     <item key="View_ChartEndY" value="0"/>
     <item key="View_ChartTimeX" value="0"/>
     <item key="View_ChartTimeY" value="0"/>
-    <item key="View_ChartHorizontalAxis" value="0"/>
+    <item key="View_ChartHorizontalAxis" value="2"/>
     <item key="View_ChartHorizontalAxisReverse" value="0"/>
     <item key="View_ChartHorizontalAxisPoints" value="200"/>
     <item key="View_MeshAngleSegmentsCount" value="3"/>

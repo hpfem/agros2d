@@ -389,8 +389,36 @@ int Block::newtonDampingNumberToIncrease() const
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if (fieldInfo->value(FieldInfo::NewtonDampingNumberToIncrease).toDouble() > number)
-            number = fieldInfo->value(FieldInfo::NewtonDampingNumberToIncrease).toDouble();
+        if (fieldInfo->value(FieldInfo::NewtonDampingNumberToIncrease).toInt() > number)
+            number = fieldInfo->value(FieldInfo::NewtonDampingNumberToIncrease).toInt();
+    }
+
+    return number;
+}
+
+double Block::sufficientImprovementFactorJacobian() const
+{
+    double number = 1.0;
+
+    foreach (Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if (fieldInfo->value(FieldInfo::NewtonSufficientImprovementFactorJacobian).toDouble() < number)
+            number = fieldInfo->value(FieldInfo::NewtonSufficientImprovementFactorJacobian).toDouble();
+    }
+
+    return number;
+}
+
+int Block::maxStepsWithReusedJacobian() const
+{
+    int number = 10;
+
+    foreach (Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if (fieldInfo->value(FieldInfo::NewtonMaximumStepsWithReusedJacobian).toInt() < number)
+            number = fieldInfo->value(FieldInfo::NewtonMaximumStepsWithReusedJacobian).toInt();
     }
 
     return number;

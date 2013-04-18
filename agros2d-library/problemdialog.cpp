@@ -504,6 +504,9 @@ void FieldWidget::doLinearityTypeChanged(int index)
     txtNewtonAutomaticDampingCoeff->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
     lblNewtonDampingNumberToIncrease->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
     txtNewtonDampingNumberToIncrease->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
+    txtNewtonMaximumStepsWithReusedJacobian->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
+    txtNewtonSufficientImprovementFactorJacobian->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
+
     doNewtonDampingChanged(-1);
 
     chkPicardAndersonAcceleration->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard);

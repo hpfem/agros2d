@@ -33,9 +33,9 @@
     </labels>
   </geometry>
 
-  <problem coordinate_type="axisymmetric" frequency="0" matrix_solver="umfpack" mesh_type="gmsh_quad" time_method="adaptive_numsteps" time_method_tolerance="0.1" time_order="2" time_steps="10" time_total="1">
+  <problem coordinate_type="axisymmetric" matrix_solver="umfpack" mesh_type="gmsh_quad">
     <fields>
-      <field field_id="flow">
+      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="flow" linearity_type="newton">
         <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>
@@ -92,33 +92,38 @@
           </material>
         </materials>
         <field_config>
-          <field_item field_key="FieldAnalysisType" field_value="1"/>
-          <field_item field_key="FieldLinearityType" field_value="3"/>
-          <field_item field_key="NonlinearTolerance" field_value="0.1"/>
+          <field_item field_key="NonlinearTolerance" field_value="0.01"/>
           <field_item field_key="NonlinearSteps" field_value="10"/>
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
           <field_item field_key="NewtonAutomaticDamping" field_value="1"/>
           <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
-          <field_item field_key="NewtonDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NewtonDampingCoeff" field_value="1"/>
           <field_item field_key="NewtonDampingNumberToIncrease" field_value="1"/>
           <field_item field_key="NewtonSufficientImprovementFactorJacobian" field_value="0.4"/>
           <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="3"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
-          <field_item field_key="SpaceNumberOfRefinements" field_value="1"/>
+          <field_item field_key="SpaceNumberOfRefinements" field_value="2"/>
           <field_item field_key="SpacePolynomialOrder" field_value="2"/>
-          <field_item field_key="AdaptivityAdaptivityType" field_value="3"/>
           <field_item field_key="AdaptivitySteps" field_value="1"/>
           <field_item field_key="AdaptivityTolerance" field_value="1"/>
-          <field_item field_key="AdaptivityTransientBackSteps" field_value="3"/>
-          <field_item field_key="AdaptivityTransientRedoneEach" field_value="5"/>
+          <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
+          <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
           <field_item field_key="TransientInitialConditio" field_value="0"/>
         </field_config>
       </field>
     </fields>
     <couplings/>
+    <problem_config>
+      <problem_item problem_key="Frequency" problem_value="0"/>
+      <problem_item problem_key="TimeMethod" problem_value="2"/>
+      <problem_item problem_key="TimeMethodTolerance" problem_value="0.1"/>
+      <problem_item problem_key="TimeOrder" problem_value="2"/>
+      <problem_item problem_key="TimeSteps" problem_value="10"/>
+      <problem_item problem_key="TimeTotal" problem_value="1"/>
+    </problem_config>
   </problem>
 
   <config>
@@ -137,7 +142,7 @@
     <item key="View_ShowRulers" value="1"/>
     <item key="View_SnapToGrid" value="1"/>
     <item key="View_ShowAxes" value="1"/>
-    <item key="View_ScalarView3DMode" value="0"/>
+    <item key="View_ScalarView3DMode" value="-1"/>
     <item key="View_ScalarView3DLighting" value="1"/>
     <item key="View_ScalarView3DAngle" value="240"/>
     <item key="View_ScalarView3DBackground" value="1"/>
@@ -249,7 +254,7 @@
     <item key="View_ChartEndY" value="0"/>
     <item key="View_ChartTimeX" value="0"/>
     <item key="View_ChartTimeY" value="0"/>
-    <item key="View_ChartHorizontalAxis" value="0"/>
+    <item key="View_ChartHorizontalAxis" value="2"/>
     <item key="View_ChartHorizontalAxisReverse" value="0"/>
     <item key="View_ChartHorizontalAxisPoints" value="200"/>
     <item key="View_MeshAngleSegmentsCount" value="3"/>

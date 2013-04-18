@@ -53,14 +53,12 @@
     </labels>
   </geometry>
 
-  <problem coordinate_type="planar" frequency="0" matrix_solver="umfpack" mesh_type="triangle" time_method="fixed" time_method_tolerance="0.05" time_order="1" time_steps="2" time_total="1">
+  <problem coordinate_type="planar" matrix_solver="umfpack" mesh_type="triangle">
     <fields>
-      <field analysis_type="steadystate" field_id="magnetic" initial_condition="0" number_of_refinements="0" polynomial_order="3" time_skip="0">
+      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="magnetic" linearity_type="newton">
         <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>
-        <adaptivity adaptivity_back_steps="0" adaptivity_redone_each="1" adaptivity_steps="1" adaptivity_tolerance="1" adaptivity_type="disabled"/>
-        <solver linearity_type="newton" newton_automatic_damping="1" newton_automatic_damping_coeff="0.8" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="5" picard_anderson_acceleration="1" picard_anderson_beta="0.2" picard_anderson_vectors="3"/>
         <boundaries>
           <boundary id="1" name="A = 0" type="magnetic_potential">
             <boundary_edges>
@@ -75,7 +73,7 @@
           </boundary>
         </boundaries>
         <materials>
-          <material id="2" name="Magnet 1">
+          <material id="1" name="Magnet 1">
             <material_labels>
               <material_label id="4"/>
             </material_labels>
@@ -105,7 +103,7 @@
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
           </material>
-          <material id="2" name="Iron">
+          <material id="3" name="Iron">
             <material_labels>
               <material_label id="1"/>
               <material_label id="2"/>
@@ -121,7 +119,7 @@
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
           </material>
-          <material id="2" name="Air">
+          <material id="4" name="Air">
             <material_labels>
               <material_label id="0"/>
             </material_labels>
@@ -137,9 +135,39 @@
             </material_types>
           </material>
         </materials>
+        <field_config>
+          <field_item field_key="NonlinearTolerance" field_value="0.001"/>
+          <field_item field_key="NonlinearSteps" field_value="20"/>
+          <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
+          <field_item field_key="NewtonAutomaticDamping" field_value="1"/>
+          <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NewtonDampingCoeff" field_value="1"/>
+          <field_item field_key="NewtonDampingNumberToIncrease" field_value="1"/>
+          <field_item field_key="NewtonSufficientImprovementFactorJacobian" field_value="0.5"/>
+          <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="5"/>
+          <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
+          <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
+          <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
+          <field_item field_key="SpaceNumberOfRefinements" field_value="0"/>
+          <field_item field_key="SpacePolynomialOrder" field_value="3"/>
+          <field_item field_key="AdaptivitySteps" field_value="1"/>
+          <field_item field_key="AdaptivityTolerance" field_value="1"/>
+          <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
+          <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
+          <field_item field_key="TransientTimeSkip" field_value="0"/>
+          <field_item field_key="TransientInitialConditio" field_value="0"/>
+        </field_config>
       </field>
     </fields>
     <couplings/>
+    <problem_config>
+      <problem_item problem_key="Frequency" problem_value="0"/>
+      <problem_item problem_key="TimeMethod" problem_value="0"/>
+      <problem_item problem_key="TimeMethodTolerance" problem_value="0.05"/>
+      <problem_item problem_key="TimeOrder" problem_value="1"/>
+      <problem_item problem_key="TimeSteps" problem_value="2"/>
+      <problem_item problem_key="TimeTotal" problem_value="1"/>
+    </problem_config>
   </problem>
 
   <config>
@@ -158,7 +186,7 @@
     <item key="View_ShowRulers" value="1"/>
     <item key="View_SnapToGrid" value="1"/>
     <item key="View_ShowAxes" value="1"/>
-    <item key="View_ScalarView3DMode" value="0"/>
+    <item key="View_ScalarView3DMode" value="-1"/>
     <item key="View_ScalarView3DLighting" value="1"/>
     <item key="View_ScalarView3DAngle" value="240"/>
     <item key="View_ScalarView3DBackground" value="1"/>
@@ -270,7 +298,7 @@
     <item key="View_ChartEndY" value="0"/>
     <item key="View_ChartTimeX" value="0"/>
     <item key="View_ChartTimeY" value="0"/>
-    <item key="View_ChartHorizontalAxis" value="0"/>
+    <item key="View_ChartHorizontalAxis" value="2"/>
     <item key="View_ChartHorizontalAxisReverse" value="0"/>
     <item key="View_ChartHorizontalAxisPoints" value="200"/>
     <item key="View_MeshAngleSegmentsCount" value="3"/>

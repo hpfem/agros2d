@@ -68,7 +68,7 @@
 
   <problem coordinate_type="axisymmetric" matrix_solver="umfpack" mesh_type="triangle">
     <fields>
-      <field field_id="heat">
+      <field adaptivity_type="disabled" analysis_type="transient" field_id="heat" linearity_type="linear">
         <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>
@@ -113,8 +113,8 @@
             </material_labels>
             <material_types>
               <material_type key="heat_volume_heat" value="0"/>
-              <material_type key="heat_conductivity" value="0.02"/>
               <material_type key="heat_velocity_x" value="0"/>
+              <material_type key="heat_conductivity" value="0.02"/>
               <material_type key="heat_density" value="1.2"/>
               <material_type key="heat_velocity_y" value="0"/>
               <material_type key="heat_specific_heat" value="1000"/>
@@ -127,8 +127,8 @@
             </material_labels>
             <material_types>
               <material_type key="heat_volume_heat" value="26000"/>
-              <material_type key="heat_conductivity" value="200"/>
               <material_type key="heat_velocity_x" value="0"/>
+              <material_type key="heat_conductivity" value="200"/>
               <material_type key="heat_density" value="8700"/>
               <material_type key="heat_velocity_y" value="0"/>
               <material_type key="heat_specific_heat" value="385"/>
@@ -142,8 +142,8 @@
             </material_labels>
             <material_types>
               <material_type key="heat_volume_heat" value="0"/>
-              <material_type key="heat_conductivity" value="60"/>
               <material_type key="heat_velocity_x" value="0"/>
+              <material_type key="heat_conductivity" value="60"/>
               <material_type key="heat_density" value="7800"/>
               <material_type key="heat_velocity_y" value="0"/>
               <material_type key="heat_specific_heat" value="460"/>
@@ -156,8 +156,8 @@
             </material_labels>
             <material_types>
               <material_type key="heat_volume_heat" value="0"/>
-              <material_type key="heat_conductivity" value="100"/>
               <material_type key="heat_velocity_x" value="0"/>
+              <material_type key="heat_conductivity" value="100"/>
               <material_type key="heat_density" value="8400"/>
               <material_type key="heat_velocity_y" value="0"/>
               <material_type key="heat_specific_heat" value="378"/>
@@ -166,8 +166,6 @@
           </material>
         </materials>
         <field_config>
-          <field_item field_key="FieldAnalysisType" field_value="2"/>
-          <field_item field_key="FieldLinearityType" field_value="1"/>
           <field_item field_key="NonlinearTolerance" field_value="0.001"/>
           <field_item field_key="NonlinearSteps" field_value="10"/>
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
@@ -182,11 +180,10 @@
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
           <field_item field_key="SpaceNumberOfRefinements" field_value="0"/>
           <field_item field_key="SpacePolynomialOrder" field_value="2"/>
-          <field_item field_key="AdaptivityAdaptivityType" field_value="3"/>
           <field_item field_key="AdaptivitySteps" field_value="5"/>
           <field_item field_key="AdaptivityTolerance" field_value="15"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
-          <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
+          <field_item field_key="AdaptivityTransientRedoneEach" field_value="0"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
           <field_item field_key="TransientInitialConditio" field_value="0"/>
         </field_config>
@@ -219,7 +216,7 @@
     <item key="View_ShowRulers" value="1"/>
     <item key="View_SnapToGrid" value="1"/>
     <item key="View_ShowAxes" value="1"/>
-    <item key="View_ScalarView3DMode" value="0"/>
+    <item key="View_ScalarView3DMode" value="-1"/>
     <item key="View_ScalarView3DLighting" value="0"/>
     <item key="View_ScalarView3DAngle" value="240"/>
     <item key="View_ScalarView3DBackground" value="1"/>

@@ -64,14 +64,12 @@
     </labels>
   </geometry>
 
-  <problem coordinate_type="planar" frequency="1000" matrix_solver="umfpack" mesh_type="triangle" time_method="fixed" time_method_tolerance="0.05" time_order="1" time_steps="2" time_total="0">
+  <problem coordinate_type="planar" matrix_solver="umfpack" mesh_type="triangle">
     <fields>
-      <field analysis_type="harmonic" field_id="magnetic" initial_condition="0" number_of_refinements="0" polynomial_order="2" time_skip="0">
+      <field adaptivity_type="disabled" analysis_type="harmonic" field_id="magnetic" linearity_type="linear">
         <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>
-        <adaptivity adaptivity_back_steps="0" adaptivity_redone_each="1" adaptivity_steps="1" adaptivity_tolerance="1" adaptivity_type="disabled"/>
-        <solver linearity_type="linear" newton_automatic_damping="1" newton_automatic_damping_coeff="0" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.001" picard_anderson_acceleration="1" picard_anderson_beta="0.2" picard_anderson_vectors="3"/>
         <boundaries>
           <boundary id="1" name="A = 0" type="magnetic_potential">
             <boundary_edges>
@@ -87,7 +85,7 @@
           </boundary>
         </boundaries>
         <materials>
-          <material id="2" name="Air">
+          <material id="1" name="Air">
             <material_labels>
               <material_label id="0"/>
               <material_label id="1"/>
@@ -121,7 +119,7 @@
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
           </material>
-          <material id="2" name="Conductor 2">
+          <material id="3" name="Conductor 2">
             <material_labels>
               <material_label id="3"/>
             </material_labels>
@@ -137,7 +135,7 @@
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
           </material>
-          <material id="2" name="Conductor 3">
+          <material id="4" name="Conductor 3">
             <material_labels>
               <material_label id="4"/>
             </material_labels>
@@ -154,9 +152,39 @@
             </material_types>
           </material>
         </materials>
+        <field_config>
+          <field_item field_key="NonlinearTolerance" field_value="0.001"/>
+          <field_item field_key="NonlinearSteps" field_value="10"/>
+          <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
+          <field_item field_key="NewtonAutomaticDamping" field_value="1"/>
+          <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NewtonDampingCoeff" field_value="1"/>
+          <field_item field_key="NewtonDampingNumberToIncrease" field_value="1"/>
+          <field_item field_key="NewtonSufficientImprovementFactorJacobian" field_value="0.4"/>
+          <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="3"/>
+          <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
+          <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
+          <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
+          <field_item field_key="SpaceNumberOfRefinements" field_value="0"/>
+          <field_item field_key="SpacePolynomialOrder" field_value="2"/>
+          <field_item field_key="AdaptivitySteps" field_value="1"/>
+          <field_item field_key="AdaptivityTolerance" field_value="1"/>
+          <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
+          <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
+          <field_item field_key="TransientTimeSkip" field_value="0"/>
+          <field_item field_key="TransientInitialConditio" field_value="0"/>
+        </field_config>
       </field>
     </fields>
     <couplings/>
+    <problem_config>
+      <problem_item problem_key="Frequency" problem_value="1000"/>
+      <problem_item problem_key="TimeMethod" problem_value="0"/>
+      <problem_item problem_key="TimeMethodTolerance" problem_value="0.05"/>
+      <problem_item problem_key="TimeOrder" problem_value="1"/>
+      <problem_item problem_key="TimeSteps" problem_value="2"/>
+      <problem_item problem_key="TimeTotal" problem_value="0"/>
+    </problem_config>
   </problem>
 
   <config>
@@ -166,7 +194,7 @@
     <item key="View_RulersFontPointSize" value="12"/>
     <item key="View_PostFontFamily" value="Droid"/>
     <item key="View_PostFontPointSize" value="16"/>
-    <item key="General_ZoomToMouse" value="1"/>
+    <item key="View_ZoomToMouse" value="1"/>
     <item key="View_NodeSize" value="6"/>
     <item key="View_EdgeWidth" value="2"/>
     <item key="View_LabelSize" value="6"/>
@@ -175,6 +203,7 @@
     <item key="View_ShowRulers" value="1"/>
     <item key="View_SnapToGrid" value="1"/>
     <item key="View_ShowAxes" value="1"/>
+    <item key="View_ScalarView3DMode" value="-1"/>
     <item key="View_ScalarView3DLighting" value="1"/>
     <item key="View_ScalarView3DAngle" value="240"/>
     <item key="View_ScalarView3DBackground" value="1"/>
@@ -184,46 +213,47 @@
     <item key="View_DeformScalar" value="1"/>
     <item key="View_DeformContour" value="1"/>
     <item key="View_DeformVector" value="1"/>
-    <item key="View_ColorBackground_red" value="255"/>
-    <item key="View_ColorBackground_green" value="255"/>
-    <item key="View_ColorBackground_blue" value="255"/>
-    <item key="View_ColorGrid_red" value="200"/>
-    <item key="View_ColorGrid_green" value="200"/>
-    <item key="View_ColorGrid_blue" value="200"/>
-    <item key="View_ColorCross_red" value="150"/>
-    <item key="View_ColorCross_green" value="150"/>
-    <item key="View_ColorCross_blue" value="150"/>
-    <item key="View_ColorNodes_red" value="150"/>
-    <item key="View_ColorNodes_green" value="0"/>
-    <item key="View_ColorNodes_blue" value="0"/>
-    <item key="View_ColorEdges_red" value="0"/>
-    <item key="View_ColorEdges_green" value="0"/>
-    <item key="View_ColorEdges_blue" value="150"/>
-    <item key="View_ColorLabels_red" value="0"/>
-    <item key="View_ColorLabels_green" value="150"/>
-    <item key="View_ColorLabels_blue" value="0"/>
-    <item key="View_ColorContours_red" value="0"/>
-    <item key="View_ColorContours_green" value="0"/>
-    <item key="View_ColorContours_blue" value="0"/>
-    <item key="View_ColorVectors_red" value="0"/>
-    <item key="View_ColorVectors_green" value="0"/>
-    <item key="View_ColorVectors_blue" value="0"/>
-    <item key="View_ColorInitialMesh_red" value="250"/>
-    <item key="View_ColorInitialMesh_green" value="150"/>
-    <item key="View_ColorInitialMesh_blue" value="0"/>
-    <item key="View_ColorSolutionMesh_red" value="150"/>
-    <item key="View_ColorSolutionMesh_green" value="0"/>
-    <item key="View_ColorSolutionMesh_blue" value="0"/>
-    <item key="View_ColorInitialMesh_red" value="250"/>
-    <item key="View_ColorInitialMesh_green" value="150"/>
-    <item key="View_ColorInitialMesh_blue" value="0"/>
-    <item key="View_ColorSolutionMesh_red" value="150"/>
-    <item key="View_ColorSolutionMesh_green" value="0"/>
-    <item key="View_ColorSolutionMesh_blue" value="0"/>
-    <item key="View_ActiveField" value="magnetic"/>
+    <item key="View_ColorBackgroundRed" value="255"/>
+    <item key="View_ColorBackgroundGreen" value="255"/>
+    <item key="View_ColorBackgroundBlue" value="255"/>
+    <item key="View_ColorGridRed" value="200"/>
+    <item key="View_ColorGridGreen" value="200"/>
+    <item key="View_ColorGridBlue" value="200"/>
+    <item key="View_ColorCrossRed" value="150"/>
+    <item key="View_ColorCrossGreen" value="150"/>
+    <item key="View_ColorCrossBlue" value="150"/>
+    <item key="View_ColorNodesRed" value="150"/>
+    <item key="View_ColorNodesGreen" value="0"/>
+    <item key="View_ColorNodesBlue" value="0"/>
+    <item key="View_ColorEdgesRed" value="0"/>
+    <item key="View_ColorEdgesGreen" value="0"/>
+    <item key="View_ColorEdgesBlue" value="150"/>
+    <item key="View_ColorLabelsRed" value="0"/>
+    <item key="View_ColorLabelsGreen" value="150"/>
+    <item key="View_ColorLabelsBlue" value="0"/>
+    <item key="View_ColorContoursRed" value="0"/>
+    <item key="View_ColorContoursGreen" value="0"/>
+    <item key="View_ColorContoursBlue" value="0"/>
+    <item key="View_ColorVectorsRed" value="0"/>
+    <item key="View_ColorVectorsGreen" value="0"/>
+    <item key="View_ColorVectorsBlue" value="0"/>
+    <item key="View_ColorInitialMeshRed" value="250"/>
+    <item key="View_ColorInitialMeshGreen" value="202"/>
+    <item key="View_ColorInitialMeshBlue" value="119"/>
+    <item key="View_ColorSolutionMeshRed" value="150"/>
+    <item key="View_ColorSolutionMeshGreen" value="70"/>
+    <item key="View_ColorSolutionMeshBlue" value="0"/>
+    <item key="View_ColorSelectedRed" value="150"/>
+    <item key="View_ColorSelectedGreen" value="0"/>
+    <item key="View_ColorSelectedBlue" value="0"/>
+    <item key="View_ColorHighlightedRed" value="250"/>
+    <item key="View_ColorHighlightedGreen" value="150"/>
+    <item key="View_ColorHighlightedBlue" value="0"/>
+    <item key="View_ColorCrossedRed" value="255"/>
+    <item key="View_ColorCrossedGreen" value="0"/>
+    <item key="View_ColorCrossedBlue" value="0"/>
     <item key="View_ShowInitialMeshView" value="1"/>
     <item key="View_ShowSolutionMeshView" value="0"/>
-    <item key="View_ShowPost3D" value="0"/>
     <item key="View_ContourVariable" value="magnetic_potential"/>
     <item key="View_ShowContourView" value="0"/>
     <item key="View_ContoursCount" value="15"/>
@@ -239,20 +269,20 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="2"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="7.74515e-06"/>
-    <item key="View_ScalarRangeMax" value="0.000912543"/>
+    <item key="View_ScalarRangeMin" value="7.74515177707257e-06"/>
+    <item key="View_ScalarRangeMax" value="0.000912543369599533"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value="magnetic_flux_density_real"/>
     <item key="View_VectorProportional" value="1"/>
     <item key="View_VectorColor" value="1"/>
-    <item key="View_VectorNumber" value="50"/>
+    <item key="View_VectorCount" value="50"/>
     <item key="View_VectorScale" value="0.6"/>
     <item key="View_VectorType" value="0"/>
     <item key="View_VectorCenter" value="0"/>
     <item key="View_ShowOrderView" value="1"/>
     <item key="View_ShowOrderColorBar" value="1"/>
+    <item key="View_ShowOrderLabel" value="0"/>
     <item key="View_OrderPaletteOrderType" value="0"/>
-    <item key="View_OrderLabel" value="0"/>
     <item key="View_ParticleButcherTableType" value="19"/>
     <item key="View_ParticleIncludeRelativisticCorrection" value="1"/>
     <item key="View_ParticleMass" value="9.109e-31"/>
@@ -285,11 +315,13 @@
     <item key="View_ChartEndY" value="0"/>
     <item key="View_ChartTimeX" value="0"/>
     <item key="View_ChartTimeY" value="0"/>
-    <item key="View_ChartHorizontalAxis" value="0"/>
+    <item key="View_ChartHorizontalAxis" value="2"/>
     <item key="View_ChartHorizontalAxisReverse" value="0"/>
     <item key="View_ChartHorizontalAxisPoints" value="200"/>
     <item key="View_MeshAngleSegmentsCount" value="4"/>
     <item key="View_MeshCurvilinearElements" value="1"/>
+    <item key="View_LinearizerQuality" value="0"/>
+    <item key="View_SolidViewHide" value=""/>
     <item key="Adaptivity_MaxDofs" value="60000"/>
     <item key="Adaptivity_IsoOnly" value="0"/>
     <item key="Adaptivity_ConvExp" value="1"/>
@@ -299,8 +331,6 @@
     <item key="Adaptivity_ProjNormType" value="1"/>
     <item key="Adaptivity_UseAniso" value="1"/>
     <item key="Adaptivity_FinerReference" value="0"/>
-    <item key="View_LinearizerQuality" value="normal"/>
-    <item key="View_SolidViewHide" value=""/>
     <item key="Commands_Triangle" value="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;"/>
     <item key="Commands_Gmsh" value="%1 -2 &quot;%2.geo&quot;"/>
   </config>
