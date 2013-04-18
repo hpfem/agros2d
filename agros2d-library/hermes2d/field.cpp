@@ -176,6 +176,10 @@ void FieldInfo::clear()
     m_edgesRefinement.clear();
     m_labelsRefinement.clear();
     m_labelsPolynomialOrder.clear();
+
+    m_analysisType = AnalysisType_Undefined;
+    m_linearityType = LinearityType_Linear;
+    m_adaptivityType = AdaptivityType_None;
 }
 
 void FieldInfo::refineMesh(MeshSharedPtr mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea)
