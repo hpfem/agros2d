@@ -257,6 +257,7 @@ namespace XMLModule
   class general;
   class analyses;
   class analysis;
+  class field_config;
   class constants;
   class constant;
   class macros;
@@ -291,6 +292,7 @@ namespace XMLModule
   class vector_form;
   class essential_form;
   class boundary;
+  class field_item;
 }
 
 
@@ -665,6 +667,27 @@ namespace XMLModule
   class analysis: public ::xml_schema::type
   {
     public:
+    // field_config
+    // 
+    typedef ::XMLModule::field_config field_config_type;
+    typedef ::xsd::cxx::tree::optional< field_config_type > field_config_optional;
+    typedef ::xsd::cxx::tree::traits< field_config_type, char > field_config_traits;
+
+    const field_config_optional&
+    field_config () const;
+
+    field_config_optional&
+    field_config ();
+
+    void
+    field_config (const field_config_type& x);
+
+    void
+    field_config (const field_config_optional& x);
+
+    void
+    field_config (::std::auto_ptr< field_config_type > p);
+
     // id
     // 
     typedef ::xml_schema::string id_type;
@@ -730,87 +753,12 @@ namespace XMLModule
     void
     type (::std::auto_ptr< type_type > p);
 
-    // newton_tolerance
-    // 
-    typedef ::xml_schema::double_ newton_tolerance_type;
-    typedef ::xsd::cxx::tree::traits< newton_tolerance_type, char, ::xsd::cxx::tree::schema_type::double_ > newton_tolerance_traits;
-
-    const newton_tolerance_type&
-    newton_tolerance () const;
-
-    newton_tolerance_type&
-    newton_tolerance ();
-
-    void
-    newton_tolerance (const newton_tolerance_type& x);
-
-    // newton_steps
-    // 
-    typedef ::xml_schema::integer newton_steps_type;
-    typedef ::xsd::cxx::tree::traits< newton_steps_type, char > newton_steps_traits;
-
-    const newton_steps_type&
-    newton_steps () const;
-
-    newton_steps_type&
-    newton_steps ();
-
-    void
-    newton_steps (const newton_steps_type& x);
-
-    // newton_damping_coef
-    // 
-    typedef ::xml_schema::double_ newton_damping_coef_type;
-    typedef ::xsd::cxx::tree::traits< newton_damping_coef_type, char, ::xsd::cxx::tree::schema_type::double_ > newton_damping_coef_traits;
-
-    const newton_damping_coef_type&
-    newton_damping_coef () const;
-
-    newton_damping_coef_type&
-    newton_damping_coef ();
-
-    void
-    newton_damping_coef (const newton_damping_coef_type& x);
-
-    // newton_automatic_damping_coef
-    // 
-    typedef ::xml_schema::double_ newton_automatic_damping_coef_type;
-    typedef ::xsd::cxx::tree::traits< newton_automatic_damping_coef_type, char, ::xsd::cxx::tree::schema_type::double_ > newton_automatic_damping_coef_traits;
-
-    const newton_automatic_damping_coef_type&
-    newton_automatic_damping_coef () const;
-
-    newton_automatic_damping_coef_type&
-    newton_automatic_damping_coef ();
-
-    void
-    newton_automatic_damping_coef (const newton_automatic_damping_coef_type& x);
-
-    // newton_steps_back
-    // 
-    typedef ::xml_schema::integer newton_steps_back_type;
-    typedef ::xsd::cxx::tree::traits< newton_steps_back_type, char > newton_steps_back_traits;
-
-    const newton_steps_back_type&
-    newton_steps_back () const;
-
-    newton_steps_back_type&
-    newton_steps_back ();
-
-    void
-    newton_steps_back (const newton_steps_back_type& x);
-
     // Constructors.
     //
     analysis (const id_type&,
               const name_type&,
               const solutions_type&,
-              const type_type&,
-              const newton_tolerance_type&,
-              const newton_steps_type&,
-              const newton_damping_coef_type&,
-              const newton_automatic_damping_coef_type&,
-              const newton_steps_back_type&);
+              const type_type&);
 
     analysis (const ::xercesc::DOMElement& e,
               ::xml_schema::flags f = 0,
@@ -835,15 +783,61 @@ namespace XMLModule
            ::xml_schema::flags);
 
     protected:
+    field_config_optional field_config_;
     ::xsd::cxx::tree::one< id_type > id_;
     ::xsd::cxx::tree::one< name_type > name_;
     ::xsd::cxx::tree::one< solutions_type > solutions_;
     ::xsd::cxx::tree::one< type_type > type_;
-    ::xsd::cxx::tree::one< newton_tolerance_type > newton_tolerance_;
-    ::xsd::cxx::tree::one< newton_steps_type > newton_steps_;
-    ::xsd::cxx::tree::one< newton_damping_coef_type > newton_damping_coef_;
-    ::xsd::cxx::tree::one< newton_automatic_damping_coef_type > newton_automatic_damping_coef_;
-    ::xsd::cxx::tree::one< newton_steps_back_type > newton_steps_back_;
+  };
+
+  class field_config: public ::xml_schema::type
+  {
+    public:
+    // field_item
+    // 
+    typedef ::XMLModule::field_item field_item_type;
+    typedef ::xsd::cxx::tree::sequence< field_item_type > field_item_sequence;
+    typedef field_item_sequence::iterator field_item_iterator;
+    typedef field_item_sequence::const_iterator field_item_const_iterator;
+    typedef ::xsd::cxx::tree::traits< field_item_type, char > field_item_traits;
+
+    const field_item_sequence&
+    field_item () const;
+
+    field_item_sequence&
+    field_item ();
+
+    void
+    field_item (const field_item_sequence& s);
+
+    // Constructors.
+    //
+    field_config ();
+
+    field_config (const ::xercesc::DOMElement& e,
+                  ::xml_schema::flags f = 0,
+                  ::xml_schema::container* c = 0);
+
+    field_config (const field_config& x,
+                  ::xml_schema::flags f = 0,
+                  ::xml_schema::container* c = 0);
+
+    virtual field_config*
+    _clone (::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0) const;
+
+    virtual 
+    ~field_config ();
+
+    // Implementation.
+    //
+    protected:
+    void
+    parse (::xsd::cxx::xml::dom::parser< char >&,
+           ::xml_schema::flags);
+
+    protected:
+    field_item_sequence field_item_;
   };
 
   class constants: public ::xml_schema::type
@@ -4475,6 +4469,75 @@ namespace XMLModule
     ::xsd::cxx::tree::one< name_type > name_;
     ::xsd::cxx::tree::one< equation_type > equation_;
   };
+
+  class field_item: public ::xml_schema::type
+  {
+    public:
+    // field_key
+    // 
+    typedef ::xml_schema::string field_key_type;
+    typedef ::xsd::cxx::tree::traits< field_key_type, char > field_key_traits;
+
+    const field_key_type&
+    field_key () const;
+
+    field_key_type&
+    field_key ();
+
+    void
+    field_key (const field_key_type& x);
+
+    void
+    field_key (::std::auto_ptr< field_key_type > p);
+
+    // field_value
+    // 
+    typedef ::xml_schema::string field_value_type;
+    typedef ::xsd::cxx::tree::traits< field_value_type, char > field_value_traits;
+
+    const field_value_type&
+    field_value () const;
+
+    field_value_type&
+    field_value ();
+
+    void
+    field_value (const field_value_type& x);
+
+    void
+    field_value (::std::auto_ptr< field_value_type > p);
+
+    // Constructors.
+    //
+    field_item (const field_key_type&,
+                const field_value_type&);
+
+    field_item (const ::xercesc::DOMElement& e,
+                ::xml_schema::flags f = 0,
+                ::xml_schema::container* c = 0);
+
+    field_item (const field_item& x,
+                ::xml_schema::flags f = 0,
+                ::xml_schema::container* c = 0);
+
+    virtual field_item*
+    _clone (::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0) const;
+
+    virtual 
+    ~field_item ();
+
+    // Implementation.
+    //
+    protected:
+    void
+    parse (::xsd::cxx::xml::dom::parser< char >&,
+           ::xml_schema::flags);
+
+    protected:
+    ::xsd::cxx::tree::one< field_key_type > field_key_;
+    ::xsd::cxx::tree::one< field_value_type > field_value_;
+  };
 }
 
 #include <iosfwd>
@@ -4492,6 +4555,9 @@ namespace XMLModule
 
   ::std::ostream&
   operator<< (::std::ostream&, const analysis&);
+
+  ::std::ostream&
+  operator<< (::std::ostream&, const field_config&);
 
   ::std::ostream&
   operator<< (::std::ostream&, const constants&);
@@ -4594,6 +4660,9 @@ namespace XMLModule
 
   ::std::ostream&
   operator<< (::std::ostream&, const boundary&);
+
+  ::std::ostream&
+  operator<< (::std::ostream&, const field_item&);
 }
 
 #include <iosfwd>
@@ -4789,6 +4858,9 @@ namespace XMLModule
   operator<< (::xercesc::DOMElement&, const analysis&);
 
   void
+  operator<< (::xercesc::DOMElement&, const field_config&);
+
+  void
   operator<< (::xercesc::DOMElement&, const constants&);
 
   void
@@ -4889,6 +4961,9 @@ namespace XMLModule
 
   void
   operator<< (::xercesc::DOMElement&, const boundary&);
+
+  void
+  operator<< (::xercesc::DOMElement&, const field_item&);
 }
 
 #include <xsd/cxx/post.hxx>

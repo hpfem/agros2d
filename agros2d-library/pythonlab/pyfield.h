@@ -37,11 +37,11 @@ class PyField
         void setAnalysisType(const std::string &analysisType);
 
         // number of refinements
-        inline int getNumberOfRefinements() const { return m_fieldInfo->numberOfRefinements(); }
+        inline int getNumberOfRefinements() const { return m_fieldInfo->value(FieldInfo::SpaceNumberOfRefinements).toInt(); }
         void setNumberOfRefinements(int numberOfRefinements);
 
         // polynomial order
-        inline int getPolynomialOrder() const { return m_fieldInfo->polynomialOrder(); }
+        inline int getPolynomialOrder() const { return m_fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt(); }
         void setPolynomialOrder(int polynomialOrder);
 
         // linearity type
@@ -49,43 +49,51 @@ class PyField
         void setLinearityType(const std::string &linearityType);
 
         // convergence measurement
-        inline std::string getNonlinearConvergenceMeasurement() const { return nonlinearSolverConvergenceMeasurementToStringKey(m_fieldInfo->nonlinearConvergenceMeasurement()).toStdString(); }
+        inline std::string getNonlinearConvergenceMeasurement() const { return nonlinearSolverConvergenceMeasurementToStringKey((Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement) m_fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()).toStdString(); }
         void setNonlinearConvergenceMeasurement(const std::string &nonlinearConvergenceMeasurement);
 
         // nonlinear tolerance
-        inline double getNonlinearTolerance() const { return m_fieldInfo->nonlinearTolerance(); }
+        inline double getNonlinearTolerance() const { return m_fieldInfo->value(FieldInfo::NonlinearTolerance).toDouble(); }
         void setNonlinearTolerance(double nonlinearTolerance);
 
         // nonlinear steps
-        inline int getNonlinearSteps() const { return m_fieldInfo->nonlinearSteps(); }
+        inline int getNonlinearSteps() const { return m_fieldInfo->value(FieldInfo::NonlinearSteps).toInt(); }
         void setNonlinearSteps(int nonlinearSteps);
 
         // damping coefficient
-        inline double getNewtonDampingCoeff() const { return m_fieldInfo->newtonDampingCoeff(); }
+        inline double getNewtonDampingCoeff() const { return m_fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble(); }
         void setNewtonDampingCoeff(double dampingCoeff);
 
         // automatic damping
-        inline bool getNewtonAutomaticDamping() const { return m_fieldInfo->newtonAutomaticDamping(); }
+        inline bool getNewtonAutomaticDamping() const { return m_fieldInfo->value(FieldInfo::NewtonAutomaticDamping).toBool(); }
         void setNewtonAutomaticDamping(bool automaticDamping);
 
         // automatic damping coefficient
-        inline double getNewtonAutomaticDampingCoeff() const { return m_fieldInfo->newtonAutomaticDampingCoeff(); }
+        inline double getNewtonAutomaticDampingCoeff() const { return m_fieldInfo->value(FieldInfo::NewtonAutomaticDampingCoeff).toDouble(); }
         void setNewtonAutomaticDampingCoeff(double dampingCoeff);
 
         // steps to increase damping coeff
-        inline int getNewtonDampingNumberToIncrease() const { return m_fieldInfo->newtonDampingNumberToIncrease(); }
+        inline int getNewtonDampingNumberToIncrease() const { return m_fieldInfo->value(FieldInfo::NewtonDampingNumberToIncrease).toInt(); }
         void setNewtonDampingNumberToIncrease(int dampingNumberToIncrease);
 
+        // sufficient improvement factor Jacobian
+        inline double getNewtonSufficientImprovementFactorJacobian() const { return m_fieldInfo->value(FieldInfo::NewtonSufficientImprovementFactorJacobian).toDouble(); }
+        void setNewtonSufficientImprovementFactorJacobian(double sufficientImprovementFactorJacobian);
+
+        // maximum steps with reused Jacobian
+        inline int getNewtonMaximumStepsWithReusedJacobian() const { return m_fieldInfo->value(FieldInfo::NewtonMaximumStepsWithReusedJacobian).toInt(); }
+        void setNewtonMaximumStepsWithReusedJacobian(int maximumStepsWithReusedJacobian);
+
         // picard anderson acceleration
-        inline bool getPicardAndersonAcceleration() const { return m_fieldInfo->picardAndersonAcceleration(); }
+        inline bool getPicardAndersonAcceleration() const { return m_fieldInfo->value(FieldInfo::PicardAndersonAcceleration).toBool(); }
         void setPicardAndersonAcceleration(bool acceleration);
 
         // picard anderson beta
-        inline double getPicardAndersonBeta() const { return m_fieldInfo->picardAndersonBeta(); }
+        inline double getPicardAndersonBeta() const { return m_fieldInfo->value(FieldInfo::PicardAndersonBeta).toDouble(); }
         void setPicardAndersonBeta(double beta);
 
         // picard anderson number of last vectors
-        inline int getPicardAndersonNumberOfLastVectors() const { return m_fieldInfo->picardAndersonNumberOfLastVectors(); }
+        inline int getPicardAndersonNumberOfLastVectors() const { return m_fieldInfo->value(FieldInfo::PicardAndersonNumberOfLastVectors).toInt(); }
         void setPicardAndersonNumberOfLastVectors(int number);
 
         // adaptivity type
@@ -93,27 +101,27 @@ class PyField
         void setAdaptivityType(const std::string &adaptivityType);
 
         // adaptivity tolerance
-        inline double getAdaptivityTolerance() const { return m_fieldInfo->adaptivityTolerance(); }
+        inline double getAdaptivityTolerance() const { return m_fieldInfo->value(FieldInfo::AdaptivityTolerance).toDouble(); }
         void setAdaptivityTolerance(double adaptivityTolerance);
 
         // adaptivity steps
-        inline int getAdaptivitySteps() const { return m_fieldInfo->adaptivitySteps(); }
+        inline int getAdaptivitySteps() const { return m_fieldInfo->value(FieldInfo::AdaptivitySteps).toInt(); }
         void setAdaptivitySteps(int adaptivitySteps);
 
         // adaptivity back steps
-        inline int getAdaptivityBackSteps() const { return m_fieldInfo->adaptivityBackSteps(); }
+        inline int getAdaptivityBackSteps() const { return m_fieldInfo->value(FieldInfo::AdaptivityTransientBackSteps).toInt(); }
         void setAdaptivityBackSteps(int adaptivityBackSteps);
 
         //adaptivity redone each
-        inline int getAdaptivityRedoneEach() const { return m_fieldInfo->adaptivityRedoneEach(); }
+        inline int getAdaptivityRedoneEach() const { return m_fieldInfo->value(FieldInfo::AdaptivityTransientRedoneEach).toInt(); }
         void setAdaptivityRedoneEach(int adaptivityRedoneEach);
 
         // initial condition
-        inline double getInitialCondition() const { return m_fieldInfo->initialCondition(); }
+        inline double getInitialCondition() const { return m_fieldInfo->value(FieldInfo::TransientInitialCondition).toDouble(); }
         void setInitialCondition(double initialCondition);
 
         // time steps skip
-        inline int getTimeSkip() const { return m_fieldInfo->timeSkip(); }
+        inline int getTimeSkip() const { return m_fieldInfo->value(FieldInfo::TransientTimeSkip).toInt(); }
         void setTimeSkip(double timeSkip);
 
         // boundaries

@@ -39,16 +39,27 @@
 
         <element name="analysis">
                 <complexType>
-                        <attribute name="id" use="required" type="string" />
-                        <attribute name="name" use="required" type="string" />
-                        <attribute name="solutions" use="required" type="integer" />
-                        <attribute name="type" use="required" type="string" />
-                        <attribute name="newton_tolerance" use="required" type="double" />
-                        <attribute name="newton_steps" use="required" type="integer" />
-                        <attribute name="newton_damping_coef" use="required" type="double" />
-                        <attribute name="newton_automatic_damping_coef" use="required" type="double" />
-                        <attribute name="newton_steps_back" use="required" type="integer" />
+                   <sequence>
+                        <element minOccurs="0" maxOccurs="1" ref="module:field_config" />
+                   </sequence>
+                   <attribute name="id" use="required" type="string" />
+                   <attribute name="name" use="required" type="string" />
+                   <attribute name="solutions" use="required" type="integer" />
+                   <attribute name="type" use="required" type="string" />
                 </complexType>
+        </element>
+
+        <element name="field_config">
+            <complexType>
+              <sequence>
+                <element minOccurs="0" maxOccurs="unbounded" name="field_item">
+                  <complexType>
+                    <attribute name="field_key" type="string" use="required"/>
+                    <attribute name="field_value" type="string" use="required"/>
+                  </complexType>
+                </element>
+              </sequence>
+            </complexType>
         </element>
 
         <element name="constants">

@@ -326,7 +326,7 @@ void ExamplesDialog::problemInfo(const QString &fileName)
             QDomNode eleFieldLinearity = eleField.toElement().elementsByTagName("solver").at(0);
 
             field->SetValue("LINEARITY_TYPE_LABEL", tr("Solver:").toStdString());
-            field->SetValue("LINEARITY_TYPE", linearityTypeString(linearityTypeFromStringKey(eleFieldLinearity.toElement().attribute("linearity_type"))).toStdString());
+            // field->SetValue("LINEARITY_TYPE", linearityTypeString(linearityTypeFromStringKey(eleFieldLinearity.toElement().attribute("linearity_type"))).toStdString());
 
             problemInfo.ShowSection("FIELD");
 

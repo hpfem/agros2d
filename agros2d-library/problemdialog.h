@@ -125,6 +125,10 @@ private:
     QSpinBox *txtNewtonDampingNumberToIncrease;
     QLabel *lblNewtonAutomaticDampingCoeff;
     LineEditDouble *txtNewtonAutomaticDampingCoeff;
+    QLabel *lblNewtonSufficientImprovementFactorJacobian;
+    QSpinBox *txtNewtonMaximumStepsWithReusedJacobian;
+    QLabel *lblNewtonMaximumStepsWithReusedJacobian;
+    LineEditDouble *txtNewtonSufficientImprovementFactorJacobian;
     QCheckBox *chkPicardAndersonAcceleration;
     QLabel *lblPicardAndersonBeta;
     LineEditDouble *txtPicardAndersonBeta;

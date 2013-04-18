@@ -168,7 +168,7 @@ bool SolutionStore::contains(FieldSolutionID solutionID) const
     return m_multiSolutions.contains(solutionID);
 }
 
-MultiArray<double> SolutionStore:: multiArray(BlockSolutionID solutionID)
+MultiArray<double> SolutionStore::multiArray(BlockSolutionID solutionID)
 {
     MultiArray<double> ma;
     foreach (Field *field, solutionID.group->fields())

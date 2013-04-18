@@ -28,17 +28,17 @@
 
 enum CoordinateType
 {
-    CoordinateType_Undefined,
-    CoordinateType_Planar,
-    CoordinateType_Axisymmetric
+    CoordinateType_Undefined = -1,
+    CoordinateType_Planar = 0,
+    CoordinateType_Axisymmetric = 1
 };
 
 enum AnalysisType
 {
-    AnalysisType_Undefined,
-    AnalysisType_SteadyState,
-    AnalysisType_Transient,
-    AnalysisType_Harmonic
+    AnalysisType_Undefined = -1,
+    AnalysisType_SteadyState = 1,
+    AnalysisType_Transient = 2,
+    AnalysisType_Harmonic = 3
 };
 
 enum AdaptivityType
@@ -52,25 +52,47 @@ enum AdaptivityType
 
 enum TimeStepMethod
 {
-    TimeStepMethod_Fixed,
-    TimeStepMethod_BDFTolerance,
-    TimeStepMethod_BDFNumSteps
+    TimeStepMethod_Undefined = -1,
+    TimeStepMethod_Fixed = 0,
+    TimeStepMethod_BDFTolerance = 1,
+    TimeStepMethod_BDFNumSteps = 2
 };
 
 enum LinearityType
 {
-    LinearityType_Undefined,
-    LinearityType_Linear,
-    LinearityType_Picard,
-    LinearityType_Newton
+    LinearityType_Undefined = -1,
+    LinearityType_Linear = 0,
+    LinearityType_Picard = 1,
+    LinearityType_Newton = 2
 };
 
 enum CouplingType
 {
-    CouplingType_Undefined,
-    CouplingType_None,
-    CouplingType_Weak,
-    CouplingType_Hard
+    CouplingType_Undefined = -1,
+    CouplingType_None = 0,
+    CouplingType_Weak = 1,
+    CouplingType_Hard = 2
+};
+
+enum MeshType
+{
+    MeshType_Undefined = -1,
+    MeshType_Triangle = 0,
+    MeshType_Triangle_QuadFineDivision = 1,
+    MeshType_Triangle_QuadRoughDivision = 2,
+    MeshType_Triangle_QuadJoin = 3,
+    MeshType_GMSH_Triangle = 4,
+    MeshType_GMSH_Quad = 5,
+    MeshType_GMSH_QuadDelaunay_Experimental = 6
+};
+
+enum PhysicFieldVariableComp
+{
+    PhysicFieldVariableComp_Undefined = -1,
+    PhysicFieldVariableComp_Scalar = 0,
+    PhysicFieldVariableComp_Magnitude = 1,
+    PhysicFieldVariableComp_X = 2,
+    PhysicFieldVariableComp_Y = 3
 };
 
 enum WeakFormKind
@@ -80,26 +102,6 @@ enum WeakFormKind
     WeakForm_VecVol,
     WeakForm_VecSurf,
     WeakForm_ExactSol
-};
-
-enum MeshType
-{
-    MeshType_Triangle,
-    MeshType_Triangle_QuadFineDivision,
-    MeshType_Triangle_QuadRoughDivision,
-    MeshType_Triangle_QuadJoin,
-    MeshType_GMSH_Triangle,
-    MeshType_GMSH_Quad,
-    MeshType_GMSH_QuadDelaunay_Experimental
-};
-
-enum PhysicFieldVariableComp
-{
-    PhysicFieldVariableComp_Undefined,
-    PhysicFieldVariableComp_Scalar,
-    PhysicFieldVariableComp_Magnitude,
-    PhysicFieldVariableComp_X,
-    PhysicFieldVariableComp_Y
 };
 
 enum SceneGeometryMode
@@ -184,11 +186,10 @@ enum ChartAxisType
 
 enum SceneViewPost3DMode
 {
-    //SceneViewPost3DMode_Undefined,
-    SceneViewPost3DMode_None,
-    SceneViewPost3DMode_ScalarView3D,
-    SceneViewPost3DMode_ScalarView3DSolid,
-    SceneViewPost3DMode_Model
+    SceneViewPost3DMode_None = -1,
+    SceneViewPost3DMode_ScalarView3D = 0,
+    SceneViewPost3DMode_ScalarView3DSolid = 1,
+    SceneViewPost3DMode_Model = 2
 };
 
 enum SceneTransformMode
@@ -221,11 +222,11 @@ enum VectorCenter
 
 enum DataTableType
 {
-    DataTableType_CubicSpline,
-    DataTableType_PiecewiseLinear,
-    DataTableType_Constant
+    DataTableType_Undefined = -1,
+    DataTableType_CubicSpline = 0,
+    DataTableType_PiecewiseLinear = 1,
+    DataTableType_Constant = 2
 };
-
 
 AGROS_API QString stringListToString(const QStringList &list);
 

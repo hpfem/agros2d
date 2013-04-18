@@ -194,7 +194,7 @@ SceneLabelMarker::SceneLabelMarker(SceneLabel *label, FieldInfo *fieldInfo, QWid
     QHBoxLayout *layoutAreaRefinement = new QHBoxLayout();
     layoutAreaRefinement->addWidget(chkAreaRefinement);
     layoutAreaRefinement->addWidget(txtAreaRefinement);
-    layoutAreaRefinement->addWidget(new QLabel(tr("Global refinement is %1.").arg(fieldInfo->numberOfRefinements())));
+    layoutAreaRefinement->addWidget(new QLabel(tr("Global refinement is %1.").arg(fieldInfo->value(FieldInfo::SpaceNumberOfRefinements).toInt())));
     layoutAreaRefinement->addStretch();
 
     // order
@@ -208,7 +208,7 @@ SceneLabelMarker::SceneLabelMarker(SceneLabel *label, FieldInfo *fieldInfo, QWid
     QHBoxLayout *layoutPolynomialOrder = new QHBoxLayout();
     layoutPolynomialOrder->addWidget(chkPolynomialOrder);
     layoutPolynomialOrder->addWidget(txtPolynomialOrder);
-    layoutPolynomialOrder->addWidget(new QLabel(tr("Global order is %1.").arg(fieldInfo->polynomialOrder())));
+    layoutPolynomialOrder->addWidget(new QLabel(tr("Global order is %1.").arg(fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt())));
     layoutPolynomialOrder->addStretch();
 
     QFormLayout *layoutBoundaries = new QFormLayout();
@@ -232,7 +232,7 @@ void SceneLabelMarker::load()
 
     // polynomial order
     int order = m_fieldInfo->labelPolynomialOrder(m_label);
-    chkPolynomialOrder->setChecked(order != m_fieldInfo->polynomialOrder());
+    chkPolynomialOrder->setChecked(order != m_fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt());
     txtPolynomialOrder->setEnabled(chkPolynomialOrder->isChecked());
     txtPolynomialOrder->setValue(order);
 }

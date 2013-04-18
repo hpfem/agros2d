@@ -48,8 +48,6 @@
         </refinement_edges>
         <refinement_labels/>
         <polynomial_orders/>
-        <adaptivity adaptivity_back_steps="100" adaptivity_redone_each="100" adaptivity_steps="1" adaptivity_tolerance="1" adaptivity_type="disabled"/>
-        <solver linearity_type="linear" newton_automatic_damping="1" newton_automatic_damping_coeff="1" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.001" picard_anderson_acceleration="1" picard_anderson_beta="0.2" picard_anderson_vectors="3"/>
         <boundaries>
           <boundary id="1" name="Source" type="electrostatic_potential">
             <boundary_edges>

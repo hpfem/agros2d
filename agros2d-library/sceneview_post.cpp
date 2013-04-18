@@ -402,27 +402,32 @@ void PostHermes::processMeshed()
 
 void PostHermes::processSolved()
 {
-    if (activeMultiSolutionArray().spaces().empty())
-        return;
-    if (activeMultiSolutionArray().solutions().empty())
-        return;
+    FieldSolutionID fsid(activeViewField(), activeTimeStep(), activeAdaptivityStep(), activeAdaptivitySolutionType());
+    if (Agros2D::solutionStore()->contains(fsid))
+    {
+        MultiArray<double> ma = Agros2D::solutionStore()->multiArray(fsid);
+        if (ma.spaces().empty())
+            return;
+        if (ma.solutions().empty())
+            return;
 
-    // temporary use 3/4 of max threads
-    int threads = omp_get_max_threads() * 3/4;
-    if (threads == 0)
-        threads = 1;
+        // temporary use 3/4 of max threads
+        int threads = omp_get_max_threads() * 3/4;
+        if (threads == 0)
+            threads = 1;
 
-    Hermes::Hermes2D::Hermes2DApi.set_integral_param_value(Hermes::Hermes2D::numThreads, threads);
+        Hermes::Hermes2D::Hermes2DApi.set_integral_param_value(Hermes::Hermes2D::numThreads, threads);
 
-    processSolutionMesh();
-    processOrder();
+        processSolutionMesh();
+        processOrder();
 
-    processRangeContour();
-    processRangeScalar();
-    processRangeVector();
+        processRangeContour();
+        processRangeScalar();
+        processRangeVector();
 
-    // restore settings
-    Hermes::Hermes2D::Hermes2DApi.set_integral_param_value(Hermes::Hermes2D::numThreads, Agros2D::configComputer()->numberOfThreads);
+        // restore settings
+        Hermes::Hermes2D::Hermes2DApi.set_integral_param_value(Hermes::Hermes2D::numThreads, Agros2D::configComputer()->numberOfThreads);
+    }
 }
 
 Hermes::Hermes2D::Filter<double> *PostHermes::viewScalarFilter(Module::LocalVariable physicFieldVariable,

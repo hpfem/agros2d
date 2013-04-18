@@ -48,27 +48,27 @@ class PyProblem
         void setMatrixSolver(const std::string &matrixSolver);
 
         // frequency
-        inline double getFrequency() const { return Agros2D::problem()->config()->frequency(); }
+        inline double getFrequency() const { return Agros2D::problem()->config()->value(ProblemConfig::Frequency).toDouble(); }
         void setFrequency(double frequency);
 
         // time step method
-        inline std::string getTimeStepMethod() const { return timeStepMethodToStringKey(Agros2D::problem()->config()->timeStepMethod()).toStdString(); }
+        inline std::string getTimeStepMethod() const { return timeStepMethodToStringKey((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()).toStdString(); }
         void setTimeStepMethod(const std::string &timeStepMethod);
 
         // time method order
-        inline int getTimeMethodOrder() const { return Agros2D::problem()->config()->timeOrder(); }
+        inline int getTimeMethodOrder() const { return Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt(); }
         void setTimeMethodOrder(int timeMethodOrder);
 
         // time method tolerance
-        inline double getTimeMethodTolerance() const { return Agros2D::problem()->config()->timeMethodTolerance(); }
+        inline double getTimeMethodTolerance() const { return Agros2D::problem()->config()->value(ProblemConfig::TimeMethodTolerance).toDouble(); }
         void setTimeMethodTolerance(double timeMethodTolerance);
 
         // time total
-        inline double getTimeTotal() const { return Agros2D::problem()->config()->timeTotal(); }
+        inline double getTimeTotal() const { return Agros2D::problem()->config()->value(ProblemConfig::TimeTotal).toDouble(); }
         void setTimeTotal(double timeTotal);
 
         // time steps
-        inline int getNumConstantTimeSteps() const { return Agros2D::problem()->config()->timeNumConstantTimeSteps(); }
+        inline int getNumConstantTimeSteps() const { return Agros2D::problem()->config()->value(ProblemConfig::TimeConstantTimeSteps).toInt(); }
         void setNumConstantTimeSteps(int timeSteps);
 
         // coupling

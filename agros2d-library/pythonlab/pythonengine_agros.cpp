@@ -188,26 +188,26 @@ QString createPythonFromModel(StartupScript_Type startupScript)
 
     if (Agros2D::problem()->isHarmonic())
         str += QString("problem.frequency = %1\n").
-                arg(Agros2D::problem()->config()->frequency());
+                arg(Agros2D::problem()->config()->value(ProblemConfig::Frequency).toDouble());
 
     if (Agros2D::problem()->isTransient())
     {
         str += QString("problem.time_step_method = \"%1\"\n"
                        "problem.time_method_order = %2\n"
                        "problem.time_total = %3\n").
-                arg(timeStepMethodToStringKey(Agros2D::problem()->config()->timeStepMethod())).
-                arg(Agros2D::problem()->config()->timeOrder()).
-                arg(Agros2D::problem()->config()->timeTotal());
+                arg(timeStepMethodToStringKey((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt())).
+                arg(Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt()).
+                arg(Agros2D::problem()->config()->value(ProblemConfig::TimeTotal).toDouble());
 
-        if (Agros2D::problem()->config()->timeStepMethod() == TimeStepMethod_BDFTolerance)
+        if (((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_BDFTolerance)
         {
             str += QString("problem.time_method_tolerance = %3\n").
-                    arg(Agros2D::problem()->config()->timeMethodTolerance());
+                    arg(Agros2D::problem()->config()->value(ProblemConfig::TimeMethodTolerance).toDouble());
         }
         else
         {
             str += QString("problem.time_steps = %5\n").
-                    arg(Agros2D::problem()->config()->timeNumConstantTimeSteps());
+                    arg(Agros2D::problem()->config()->value(ProblemConfig::TimeConstantTimeSteps).toInt());
         }
     }
 
@@ -231,25 +231,25 @@ QString createPythonFromModel(StartupScript_Type startupScript)
             {
                 str += QString("%1.initial_condition = %2\n").
                         arg(fieldInfo->fieldId()).
-                        arg(fieldInfo->initialCondition());
+                        arg(fieldInfo->value(FieldInfo::TransientInitialCondition).toDouble());
             }
             else
             {
                 str += QString("%1.time_skip = %2\n").
                         arg(fieldInfo->fieldId()).
-                        arg(fieldInfo->timeSkip());
+                        arg(fieldInfo->value(FieldInfo::TransientTimeSkip).toInt());
             }
         }
 
-        if (fieldInfo->numberOfRefinements() > 0)
+        if (fieldInfo->value(FieldInfo::SpaceNumberOfRefinements).toInt() > 0)
             str += QString("%1.number_of_refinements = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->numberOfRefinements());
+                    arg(fieldInfo->value(FieldInfo::SpaceNumberOfRefinements).toInt());
 
-        if (fieldInfo->polynomialOrder() > 0)
+        if (fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt() > 0)
             str += QString("%1.polynomial_order = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->polynomialOrder());
+                    arg(fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt());
 
         str += QString("%1.adaptivity_type = \"%2\"\n").
                 arg(fieldInfo->fieldId()).
@@ -259,21 +259,21 @@ QString createPythonFromModel(StartupScript_Type startupScript)
         {
             str += QString("%1.adaptivity_steps = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->adaptivitySteps());
+                    arg(fieldInfo->value(FieldInfo::AdaptivitySteps).toInt());
 
             str += QString("%1.adaptivity_tolerance = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->adaptivityTolerance());
+                    arg(fieldInfo->value(FieldInfo::AdaptivityTolerance).toDouble());
 
             if (Agros2D::problem()->isTransient())
             {
                 str += QString("%1.adaptivity_back_steps = %2\n").
                         arg(fieldInfo->fieldId()).
-                        arg(fieldInfo->adaptivityBackSteps());
+                        arg(fieldInfo->value(FieldInfo::AdaptivityTransientBackSteps).toInt());
 
                 str += QString("%1.adaptivity_redone = %2\n").
                         arg(fieldInfo->fieldId()).
-                        arg(fieldInfo->adaptivityRedoneEach());
+                        arg(fieldInfo->value(FieldInfo::AdaptivityTransientRedoneEach).toInt());
             }
         }
 
@@ -285,11 +285,11 @@ QString createPythonFromModel(StartupScript_Type startupScript)
         {
             str += QString("%1.nonlinear_tolerance = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->nonlinearTolerance());
+                    arg(fieldInfo->value(FieldInfo::NonlinearTolerance).toDouble());
 
             str += QString("%1.nonlinear_steps = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->nonlinearSteps());
+                    arg(fieldInfo->value(FieldInfo::NonlinearSteps).toInt());
         }
 
         // newton
@@ -297,26 +297,34 @@ QString createPythonFromModel(StartupScript_Type startupScript)
         {
             str += QString("%1.nonlinear_convergence_measurement = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
-                    arg(nonlinearSolverConvergenceMeasurementToStringKey(fieldInfo->nonlinearConvergenceMeasurement()));
+                    arg(nonlinearSolverConvergenceMeasurementToStringKey((Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()));
+
+            str += QString("%1.sufficient_improvement_factor_Jacobian = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(fieldInfo->value(FieldInfo::NewtonSufficientImprovementFactorJacobian).toDouble());
+
+            str += QString("%1.maximum_steps_with_reused_Jacobian = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(fieldInfo->value(FieldInfo::NewtonMaximumStepsWithReusedJacobian).toInt());
 
             str += QString("%1.automatic_damping = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg((fieldInfo->newtonAutomaticDamping()) ? "True" : "False");
+                    arg((fieldInfo->value(FieldInfo::NewtonAutomaticDamping).toBool()) ? "True" : "False");
 
-            if (fieldInfo->newtonAutomaticDamping())
+            if (fieldInfo->value(FieldInfo::NewtonAutomaticDamping).toBool())
             {
                 str += QString("%1.damping_number_to_increase = %2\n").
                         arg(fieldInfo->fieldId()).
-                        arg(fieldInfo->newtonDampingNumberToIncrease());
+                        arg(fieldInfo->value(FieldInfo::NewtonDampingNumberToIncrease).toInt());
                 str += QString("%1.automatic_damping_coeff = %2\n").
                         arg(fieldInfo->fieldId()).
-                        arg(fieldInfo->newtonAutomaticDampingCoeff());
+                        arg(fieldInfo->value(FieldInfo::NewtonAutomaticDampingCoeff).toDouble());
             }
             else
             {
                 str += QString("%1.damping_coeff = %2\n").
                         arg(fieldInfo->fieldId()).
-                        arg(fieldInfo->newtonDampingCoeff());
+                        arg(fieldInfo->value(FieldInfo::NewtonDampingCoeff).toInt());
             }
         }
 
@@ -325,17 +333,17 @@ QString createPythonFromModel(StartupScript_Type startupScript)
         {
             str += QString("%1.anderson_acceleration = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg((fieldInfo->picardAndersonAcceleration()) ? "True" : "False");
+                    arg((fieldInfo->value(FieldInfo::PicardAndersonAcceleration).toBool()) ? "True" : "False");
 
-            if (fieldInfo->picardAndersonAcceleration())
+            if (fieldInfo->value(FieldInfo::PicardAndersonAcceleration).toBool())
             {
                 str += QString("%1.anderson_beta = %2\n").
                         arg(fieldInfo->fieldId()).
-                        arg(fieldInfo->picardAndersonBeta());
+                        arg(fieldInfo->value(FieldInfo::PicardAndersonBeta).toDouble());
 
                 str += QString("%1.anderson_last_vectors = %2\n").
                         arg(fieldInfo->fieldId()).
-                        arg(fieldInfo->picardAndersonNumberOfLastVectors());
+                        arg(fieldInfo->value(FieldInfo::PicardAndersonNumberOfLastVectors).toInt());
             }
         }
 
@@ -536,7 +544,7 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                 QString orders = ", orders = {";
                 foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
                 {
-                    if (fieldInfo->labelPolynomialOrder(label) != fieldInfo->polynomialOrder())
+                    if (fieldInfo->labelPolynomialOrder(label) != fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt())
                     {
                         orders += QString("\"%1\" : %2, ").
                                 arg(fieldInfo->fieldId()).

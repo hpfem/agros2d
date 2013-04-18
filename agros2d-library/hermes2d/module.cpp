@@ -63,11 +63,28 @@ QMap<QString, QString> Module::availableModules()
 
         foreach (QString filename, list)
         {
-            std::auto_ptr<XMLModule::module> module_xsd = XMLModule::module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + filename.toStdString()).c_str());
-            XMLModule::module *mod = module_xsd.get();
+            try
+            {
+                std::auto_ptr<XMLModule::module> module_xsd = XMLModule::module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + filename.toStdString()).c_str());
 
-            // module name
-            modules[filename.left(filename.size() - 4)] = QString::fromStdString(mod->general().name());
+                XMLModule::module *mod = module_xsd.get();
+
+                // module name
+                modules[filename.left(filename.size() - 4)] = QString::fromStdString(mod->general().name());
+            }
+            catch (const xml_schema::expected_element& e)
+            {
+                throw AgrosException(QString("%1: %2").arg(QString::fromStdString(e.what())).arg(QString::fromStdString(e.name())));
+            }
+            catch (const xml_schema::expected_attribute& e)
+            {
+                throw AgrosException(QString("%1: %2").arg(QString::fromStdString(e.what())).arg(QString::fromStdString(e.name())));
+            }
+            catch (const xml_schema::exception& e)
+            {
+                qDebug() << e.what();
+                throw AgrosException(QString::fromStdString(e.what()));
+            }
         }
     }
 
@@ -104,7 +121,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
             plugin = Agros2D::problem()->couplingInfo(markerSource->fieldId(), markerTarget->fieldId())->plugin();
         else
             plugin = Agros2D::problem()->fieldInfo(fieldId)->plugin();
-        }
+    }
     catch(...)
     {
         assert(0);

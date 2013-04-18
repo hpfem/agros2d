@@ -363,6 +363,36 @@ namespace XMLModule
   // analysis
   // 
 
+  const analysis::field_config_optional& analysis::
+  field_config () const
+  {
+    return this->field_config_;
+  }
+
+  analysis::field_config_optional& analysis::
+  field_config ()
+  {
+    return this->field_config_;
+  }
+
+  void analysis::
+  field_config (const field_config_type& x)
+  {
+    this->field_config_.set (x);
+  }
+
+  void analysis::
+  field_config (const field_config_optional& x)
+  {
+    this->field_config_ = x;
+  }
+
+  void analysis::
+  field_config (::std::auto_ptr< field_config_type > x)
+  {
+    this->field_config_.set (x);
+  }
+
   const analysis::id_type& analysis::
   id () const
   {
@@ -453,94 +483,26 @@ namespace XMLModule
     this->type_.set (x);
   }
 
-  const analysis::newton_tolerance_type& analysis::
-  newton_tolerance () const
+
+  // field_config
+  // 
+
+  const field_config::field_item_sequence& field_config::
+  field_item () const
   {
-    return this->newton_tolerance_.get ();
+    return this->field_item_;
   }
 
-  analysis::newton_tolerance_type& analysis::
-  newton_tolerance ()
+  field_config::field_item_sequence& field_config::
+  field_item ()
   {
-    return this->newton_tolerance_.get ();
+    return this->field_item_;
   }
 
-  void analysis::
-  newton_tolerance (const newton_tolerance_type& x)
+  void field_config::
+  field_item (const field_item_sequence& s)
   {
-    this->newton_tolerance_.set (x);
-  }
-
-  const analysis::newton_steps_type& analysis::
-  newton_steps () const
-  {
-    return this->newton_steps_.get ();
-  }
-
-  analysis::newton_steps_type& analysis::
-  newton_steps ()
-  {
-    return this->newton_steps_.get ();
-  }
-
-  void analysis::
-  newton_steps (const newton_steps_type& x)
-  {
-    this->newton_steps_.set (x);
-  }
-
-  const analysis::newton_damping_coef_type& analysis::
-  newton_damping_coef () const
-  {
-    return this->newton_damping_coef_.get ();
-  }
-
-  analysis::newton_damping_coef_type& analysis::
-  newton_damping_coef ()
-  {
-    return this->newton_damping_coef_.get ();
-  }
-
-  void analysis::
-  newton_damping_coef (const newton_damping_coef_type& x)
-  {
-    this->newton_damping_coef_.set (x);
-  }
-
-  const analysis::newton_automatic_damping_coef_type& analysis::
-  newton_automatic_damping_coef () const
-  {
-    return this->newton_automatic_damping_coef_.get ();
-  }
-
-  analysis::newton_automatic_damping_coef_type& analysis::
-  newton_automatic_damping_coef ()
-  {
-    return this->newton_automatic_damping_coef_.get ();
-  }
-
-  void analysis::
-  newton_automatic_damping_coef (const newton_automatic_damping_coef_type& x)
-  {
-    this->newton_automatic_damping_coef_.set (x);
-  }
-
-  const analysis::newton_steps_back_type& analysis::
-  newton_steps_back () const
-  {
-    return this->newton_steps_back_.get ();
-  }
-
-  analysis::newton_steps_back_type& analysis::
-  newton_steps_back ()
-  {
-    return this->newton_steps_back_.get ();
-  }
-
-  void analysis::
-  newton_steps_back (const newton_steps_back_type& x)
-  {
-    this->newton_steps_back_.set (x);
+    this->field_item_ = s;
   }
 
 
@@ -3822,6 +3784,58 @@ namespace XMLModule
   {
     this->equation_.set (x);
   }
+
+
+  // field_item
+  // 
+
+  const field_item::field_key_type& field_item::
+  field_key () const
+  {
+    return this->field_key_.get ();
+  }
+
+  field_item::field_key_type& field_item::
+  field_key ()
+  {
+    return this->field_key_.get ();
+  }
+
+  void field_item::
+  field_key (const field_key_type& x)
+  {
+    this->field_key_.set (x);
+  }
+
+  void field_item::
+  field_key (::std::auto_ptr< field_key_type > x)
+  {
+    this->field_key_.set (x);
+  }
+
+  const field_item::field_value_type& field_item::
+  field_value () const
+  {
+    return this->field_value_.get ();
+  }
+
+  field_item::field_value_type& field_item::
+  field_value ()
+  {
+    return this->field_value_.get ();
+  }
+
+  void field_item::
+  field_value (const field_value_type& x)
+  {
+    this->field_value_.set (x);
+  }
+
+  void field_item::
+  field_value (::std::auto_ptr< field_value_type > x)
+  {
+    this->field_value_.set (x);
+  }
 }
 
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
@@ -4338,22 +4352,13 @@ namespace XMLModule
   analysis (const id_type& id,
             const name_type& name,
             const solutions_type& solutions,
-            const type_type& type,
-            const newton_tolerance_type& newton_tolerance,
-            const newton_steps_type& newton_steps,
-            const newton_damping_coef_type& newton_damping_coef,
-            const newton_automatic_damping_coef_type& newton_automatic_damping_coef,
-            const newton_steps_back_type& newton_steps_back)
+            const type_type& type)
   : ::xml_schema::type (),
+    field_config_ (::xml_schema::flags (), this),
     id_ (id, ::xml_schema::flags (), this),
     name_ (name, ::xml_schema::flags (), this),
     solutions_ (solutions, ::xml_schema::flags (), this),
-    type_ (type, ::xml_schema::flags (), this),
-    newton_tolerance_ (newton_tolerance, ::xml_schema::flags (), this),
-    newton_steps_ (newton_steps, ::xml_schema::flags (), this),
-    newton_damping_coef_ (newton_damping_coef, ::xml_schema::flags (), this),
-    newton_automatic_damping_coef_ (newton_automatic_damping_coef, ::xml_schema::flags (), this),
-    newton_steps_back_ (newton_steps_back, ::xml_schema::flags (), this)
+    type_ (type, ::xml_schema::flags (), this)
   {
   }
 
@@ -4362,15 +4367,11 @@ namespace XMLModule
             ::xml_schema::flags f,
             ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
+    field_config_ (x.field_config_, f, this),
     id_ (x.id_, f, this),
     name_ (x.name_, f, this),
     solutions_ (x.solutions_, f, this),
-    type_ (x.type_, f, this),
-    newton_tolerance_ (x.newton_tolerance_, f, this),
-    newton_steps_ (x.newton_steps_, f, this),
-    newton_damping_coef_ (x.newton_damping_coef_, f, this),
-    newton_automatic_damping_coef_ (x.newton_automatic_damping_coef_, f, this),
-    newton_steps_back_ (x.newton_steps_back_, f, this)
+    type_ (x.type_, f, this)
   {
   }
 
@@ -4379,19 +4380,15 @@ namespace XMLModule
             ::xml_schema::flags f,
             ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    field_config_ (f, this),
     id_ (f, this),
     name_ (f, this),
     solutions_ (f, this),
-    type_ (f, this),
-    newton_tolerance_ (f, this),
-    newton_steps_ (f, this),
-    newton_damping_coef_ (f, this),
-    newton_automatic_damping_coef_ (f, this),
-    newton_steps_back_ (f, this)
+    type_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
-      ::xsd::cxx::xml::dom::parser< char > p (e, false, true);
+      ::xsd::cxx::xml::dom::parser< char > p (e, true, true);
       this->parse (p, f);
     }
   }
@@ -4400,6 +4397,29 @@ namespace XMLModule
   parse (::xsd::cxx::xml::dom::parser< char >& p,
          ::xml_schema::flags f)
   {
+    for (; p.more_elements (); p.next_element ())
+    {
+      const ::xercesc::DOMElement& i (p.cur_element ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      // field_config
+      //
+      if (n.name () == "field_config" && n.namespace_ () == "XMLModule")
+      {
+        ::std::auto_ptr< field_config_type > r (
+          field_config_traits::create (i, f, this));
+
+        if (!this->field_config_)
+        {
+          this->field_config_.set (r);
+          continue;
+        }
+      }
+
+      break;
+    }
+
     while (p.more_attributes ())
     {
       const ::xercesc::DOMAttr& i (p.next_attribute ());
@@ -4438,36 +4458,6 @@ namespace XMLModule
         this->type_.set (r);
         continue;
       }
-
-      if (n.name () == "newton_tolerance" && n.namespace_ ().empty ())
-      {
-        this->newton_tolerance_.set (newton_tolerance_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "newton_steps" && n.namespace_ ().empty ())
-      {
-        this->newton_steps_.set (newton_steps_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "newton_damping_coef" && n.namespace_ ().empty ())
-      {
-        this->newton_damping_coef_.set (newton_damping_coef_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "newton_automatic_damping_coef" && n.namespace_ ().empty ())
-      {
-        this->newton_automatic_damping_coef_.set (newton_automatic_damping_coef_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "newton_steps_back" && n.namespace_ ().empty ())
-      {
-        this->newton_steps_back_.set (newton_steps_back_traits::create (i, f, this));
-        continue;
-      }
     }
 
     if (!id_.present ())
@@ -4497,41 +4487,6 @@ namespace XMLModule
         "type",
         "");
     }
-
-    if (!newton_tolerance_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "newton_tolerance",
-        "");
-    }
-
-    if (!newton_steps_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "newton_steps",
-        "");
-    }
-
-    if (!newton_damping_coef_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "newton_damping_coef",
-        "");
-    }
-
-    if (!newton_automatic_damping_coef_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "newton_automatic_damping_coef",
-        "");
-    }
-
-    if (!newton_steps_back_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "newton_steps_back",
-        "");
-    }
   }
 
   analysis* analysis::
@@ -4543,6 +4498,76 @@ namespace XMLModule
 
   analysis::
   ~analysis ()
+  {
+  }
+
+  // field_config
+  //
+
+  field_config::
+  field_config ()
+  : ::xml_schema::type (),
+    field_item_ (::xml_schema::flags (), this)
+  {
+  }
+
+  field_config::
+  field_config (const field_config& x,
+                ::xml_schema::flags f,
+                ::xml_schema::container* c)
+  : ::xml_schema::type (x, f, c),
+    field_item_ (x.field_item_, f, this)
+  {
+  }
+
+  field_config::
+  field_config (const ::xercesc::DOMElement& e,
+                ::xml_schema::flags f,
+                ::xml_schema::container* c)
+  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    field_item_ (f, this)
+  {
+    if ((f & ::xml_schema::flags::base) == 0)
+    {
+      ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+      this->parse (p, f);
+    }
+  }
+
+  void field_config::
+  parse (::xsd::cxx::xml::dom::parser< char >& p,
+         ::xml_schema::flags f)
+  {
+    for (; p.more_elements (); p.next_element ())
+    {
+      const ::xercesc::DOMElement& i (p.cur_element ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      // field_item
+      //
+      if (n.name () == "field_item" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< field_item_type > r (
+          field_item_traits::create (i, f, this));
+
+        this->field_item_.push_back (r);
+        continue;
+      }
+
+      break;
+    }
+  }
+
+  field_config* field_config::
+  _clone (::xml_schema::flags f,
+          ::xml_schema::container* c) const
+  {
+    return new class field_config (*this, f, c);
+  }
+
+  field_config::
+  ~field_config ()
   {
   }
 
@@ -8664,6 +8689,99 @@ namespace XMLModule
   ~boundary ()
   {
   }
+
+  // field_item
+  //
+
+  field_item::
+  field_item (const field_key_type& field_key,
+              const field_value_type& field_value)
+  : ::xml_schema::type (),
+    field_key_ (field_key, ::xml_schema::flags (), this),
+    field_value_ (field_value, ::xml_schema::flags (), this)
+  {
+  }
+
+  field_item::
+  field_item (const field_item& x,
+              ::xml_schema::flags f,
+              ::xml_schema::container* c)
+  : ::xml_schema::type (x, f, c),
+    field_key_ (x.field_key_, f, this),
+    field_value_ (x.field_value_, f, this)
+  {
+  }
+
+  field_item::
+  field_item (const ::xercesc::DOMElement& e,
+              ::xml_schema::flags f,
+              ::xml_schema::container* c)
+  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    field_key_ (f, this),
+    field_value_ (f, this)
+  {
+    if ((f & ::xml_schema::flags::base) == 0)
+    {
+      ::xsd::cxx::xml::dom::parser< char > p (e, false, true);
+      this->parse (p, f);
+    }
+  }
+
+  void field_item::
+  parse (::xsd::cxx::xml::dom::parser< char >& p,
+         ::xml_schema::flags f)
+  {
+    while (p.more_attributes ())
+    {
+      const ::xercesc::DOMAttr& i (p.next_attribute ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      if (n.name () == "field_key" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< field_key_type > r (
+          field_key_traits::create (i, f, this));
+
+        this->field_key_.set (r);
+        continue;
+      }
+
+      if (n.name () == "field_value" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< field_value_type > r (
+          field_value_traits::create (i, f, this));
+
+        this->field_value_.set (r);
+        continue;
+      }
+    }
+
+    if (!field_key_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "field_key",
+        "");
+    }
+
+    if (!field_value_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "field_value",
+        "");
+    }
+  }
+
+  field_item* field_item::
+  _clone (::xml_schema::flags f,
+          ::xml_schema::container* c) const
+  {
+    return new class field_item (*this, f, c);
+  }
+
+  field_item::
+  ~field_item ()
+  {
+  }
 }
 
 #include <ostream>
@@ -8723,15 +8841,28 @@ namespace XMLModule
   ::std::ostream&
   operator<< (::std::ostream& o, const analysis& i)
   {
+    if (i.field_config ())
+    {
+      o << ::std::endl << "field_config: " << *i.field_config ();
+    }
+
     o << ::std::endl << "id: " << i.id ();
     o << ::std::endl << "name: " << i.name ();
     o << ::std::endl << "solutions: " << i.solutions ();
     o << ::std::endl << "type: " << i.type ();
-    o << ::std::endl << "newton_tolerance: " << i.newton_tolerance ();
-    o << ::std::endl << "newton_steps: " << i.newton_steps ();
-    o << ::std::endl << "newton_damping_coef: " << i.newton_damping_coef ();
-    o << ::std::endl << "newton_automatic_damping_coef: " << i.newton_automatic_damping_coef ();
-    o << ::std::endl << "newton_steps_back: " << i.newton_steps_back ();
+    return o;
+  }
+
+  ::std::ostream&
+  operator<< (::std::ostream& o, const field_config& i)
+  {
+    for (field_config::field_item_const_iterator
+         b (i.field_item ().begin ()), e (i.field_item ().end ());
+         b != e; ++b)
+    {
+      o << ::std::endl << "field_item: " << *b;
+    }
+
     return o;
   }
 
@@ -9409,6 +9540,14 @@ namespace XMLModule
     o << ::std::endl << "equation: " << i.equation ();
     return o;
   }
+
+  ::std::ostream&
+  operator<< (::std::ostream& o, const field_item& i)
+  {
+    o << ::std::endl << "field_key: " << i.field_key ();
+    o << ::std::endl << "field_value: " << i.field_value ();
+    return o;
+  }
 }
 
 #include <istream>
@@ -10041,6 +10180,19 @@ namespace XMLModule
   {
     e << static_cast< const ::xml_schema::type& > (i);
 
+    // field_config
+    //
+    if (i.field_config ())
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "field_config",
+          "XMLModule",
+          e));
+
+      s << *i.field_config ();
+    }
+
     // id
     //
     {
@@ -10084,60 +10236,25 @@ namespace XMLModule
 
       a << i.type ();
     }
+  }
 
-    // newton_tolerance
+  void
+  operator<< (::xercesc::DOMElement& e, const field_config& i)
+  {
+    e << static_cast< const ::xml_schema::type& > (i);
+
+    // field_item
     //
+    for (field_config::field_item_const_iterator
+         b (i.field_item ().begin ()), n (i.field_item ().end ());
+         b != n; ++b)
     {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "newton_tolerance",
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "field_item",
           e));
 
-      a << ::xml_schema::as_double(i.newton_tolerance ());
-    }
-
-    // newton_steps
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "newton_steps",
-          e));
-
-      a << i.newton_steps ();
-    }
-
-    // newton_damping_coef
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "newton_damping_coef",
-          e));
-
-      a << ::xml_schema::as_double(i.newton_damping_coef ());
-    }
-
-    // newton_automatic_damping_coef
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "newton_automatic_damping_coef",
-          e));
-
-      a << ::xml_schema::as_double(i.newton_automatic_damping_coef ());
-    }
-
-    // newton_steps_back
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "newton_steps_back",
-          e));
-
-      a << i.newton_steps_back ();
+      s << *b;
     }
   }
 
@@ -11954,6 +12071,34 @@ namespace XMLModule
           e));
 
       a << i.equation ();
+    }
+  }
+
+  void
+  operator<< (::xercesc::DOMElement& e, const field_item& i)
+  {
+    e << static_cast< const ::xml_schema::type& > (i);
+
+    // field_key
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "field_key",
+          e));
+
+      a << i.field_key ();
+    }
+
+    // field_value
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "field_value",
+          e));
+
+      a << i.field_value ();
     }
   }
 }

@@ -43,13 +43,18 @@
 
 ProblemConfig::ProblemConfig(QWidget *parent) : QObject(parent)
 {
+    setStringKeys();
+    setDefaultValues();
+
     clear();
 }
 
 void ProblemConfig::clear()
 {
-    m_coordinateType = CoordinateType_Planar;
     m_fileName = "";
+
+    // coordinate type
+    m_coordinateType = CoordinateType_Planar;
 
     // matrix solver
     m_matrixSolver = Hermes::SOLVER_UMFPACK;
@@ -57,22 +62,17 @@ void ProblemConfig::clear()
     // mesh type
     m_meshType = MeshType_Triangle;
 
-    // harmonic
-    m_frequency = 0.0;
+    setDefaultValues();
 
-    // transient
-    m_timeStepMethod = TimeStepMethod_BDFNumSteps;
-    m_timeOrder = 2;
-    m_timeMethodTolerance = 0.1;
-    m_timeTotal = 1.0;
-    m_timeNumConstantTimeSteps = 10;
+    m_setting = m_settingDefault;
 }
 
 bool ProblemConfig::isTransientAdaptive() const
 {
-    if((m_timeStepMethod == TimeStepMethod_BDFTolerance) || (m_timeStepMethod == TimeStepMethod_BDFNumSteps))
+    if ((((TimeStepMethod) value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_BDFTolerance)
+            || (((TimeStepMethod) value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_BDFNumSteps))
         return true;
-    else if(m_timeStepMethod == TimeStepMethod_Fixed)
+    else if(((TimeStepMethod) value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_Fixed)
         return false;
 
     assert(0);
@@ -82,15 +82,76 @@ bool ProblemConfig::isTransientAdaptive() const
 const double initialTimeStepRatio = 500;
 double ProblemConfig::initialTimeStepLength()
 {
-    if(timeStepMethod() == TimeStepMethod_BDFTolerance)
-        return timeTotal() / initialTimeStepRatio;
-    else if(timeStepMethod() == TimeStepMethod_BDFNumSteps)
+    if (((TimeStepMethod) value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_BDFTolerance)
+        return value(ProblemConfig::TimeTotal).toDouble() / initialTimeStepRatio;
+    else if (((TimeStepMethod) value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_BDFNumSteps)
         return constantTimeStepLength() / 3.;
-    else if (timeStepMethod() == TimeStepMethod_Fixed)
+    else if (((TimeStepMethod) value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_Fixed)
         return constantTimeStepLength();
     else
         assert(0);
 }
+
+void ProblemConfig::load(XMLProblem::problem_config *configxsd)
+{
+    // default
+    m_setting = m_settingDefault;
+
+    for (int i = 0; i < configxsd->problem_item().size(); i ++)
+    {
+        Type key = stringKeyToType(QString::fromStdString(configxsd->problem_item().at(i).problem_key()));
+
+        if (m_settingDefault.keys().contains(key))
+        {
+            if (m_settingDefault[key].type() == QVariant::Double)
+                m_setting[key] = QString::fromStdString(configxsd->problem_item().at(i).problem_value()).toDouble();
+            else if (m_settingDefault[key].type() == QVariant::Int)
+                m_setting[key] = QString::fromStdString(configxsd->problem_item().at(i).problem_value()).toInt();
+            else if (m_settingDefault[key].type() == QVariant::Bool)
+                m_setting[key] = (QString::fromStdString(configxsd->problem_item().at(i).problem_value()) == "1");
+            else if (m_settingDefault[key].type() == QVariant::String)
+                m_setting[key] = QString::fromStdString(configxsd->problem_item().at(i).problem_value());
+            else
+                qDebug() << "Key not found" << QString::fromStdString(configxsd->problem_item().at(i).problem_key()) << QString::fromStdString(configxsd->problem_item().at(i).problem_value());
+        }
+    }
+}
+
+void ProblemConfig::save(XMLProblem::problem_config *configxsd)
+{
+    foreach (Type key, m_setting.keys())
+    {
+        if (m_settingDefault[key].type() == QVariant::StringList)
+            configxsd->problem_item().push_back(XMLProblem::problem_item(typeToStringKey(key).toStdString(), m_setting[key].toStringList().join("|").toStdString()));
+        else if (m_settingDefault[key].type() == QVariant::Bool)
+            configxsd->problem_item().push_back(XMLProblem::problem_item(typeToStringKey(key).toStdString(), QString::number(m_setting[key].toInt()).toStdString()));
+        else
+            configxsd->problem_item().push_back(XMLProblem::problem_item(typeToStringKey(key).toStdString(), m_setting[key].toString().toStdString()));
+    }
+}
+
+void ProblemConfig::setStringKeys()
+{
+    m_settingKey[Frequency] = "Frequency";
+    m_settingKey[TimeMethod] = "TimeMethod";
+    m_settingKey[TimeMethodTolerance] = "TimeMethodTolerance";
+    m_settingKey[TimeOrder] = "TimeOrder";
+    m_settingKey[TimeConstantTimeSteps] = "TimeSteps";
+    m_settingKey[TimeTotal] = "TimeTotal";
+}
+
+void ProblemConfig::setDefaultValues()
+{
+    m_settingDefault.clear();
+
+    m_settingDefault[Frequency] = 50.0;
+    m_settingDefault[TimeMethod] = TimeStepMethod_BDFNumSteps;
+    m_settingDefault[TimeMethodTolerance] = 0.05;
+    m_settingDefault[TimeOrder] = 2;
+    m_settingDefault[TimeConstantTimeSteps] = 10;
+    m_settingDefault[TimeTotal] = 15000;
+}
+
 
 // ********************************************************************************************
 
@@ -475,11 +536,6 @@ void ProblemSetting::load(XMLProblem::config *configxsd)
                 qDebug() << "Key not found" << QString::fromStdString(configxsd->item().at(i).key()) << QString::fromStdString(configxsd->item().at(i).value());
         }
     }
-
-    // FIX ME - EOL conversion
-    // QPlainTextEdit textEdit;
-    // textEdit.setPlainText(readConfig("Problem/StartupScript", QString()));
-    // startupScript = textEdit.toPlainText();
 }
 
 void ProblemSetting::save(XMLProblem::config *configxsd)

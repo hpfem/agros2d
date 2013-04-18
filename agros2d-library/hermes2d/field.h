@@ -30,6 +30,11 @@ namespace Module
     struct ModuleAgros;
 }
 
+namespace XMLProblem
+{
+    class field_config;
+}
+
 class ProblemConfig;
 class CouplingInfo;
 class LocalForceValue;
@@ -54,63 +59,45 @@ public:
     inline void clearInitialMesh() { m_initialMesh = MeshSharedPtr();}
     void setInitialMesh(MeshSharedPtr mesh);
 
+    enum Type
+    {
+        Unknown,
+        NonlinearTolerance,
+        NonlinearSteps,
+        NonlinearConvergenceMeasurement,
+        NewtonAutomaticDamping,
+        NewtonAutomaticDampingCoeff,
+        NewtonDampingCoeff,
+        NewtonDampingNumberToIncrease,
+        NewtonSufficientImprovementFactorJacobian,
+        NewtonMaximumStepsWithReusedJacobian,
+        PicardAndersonAcceleration,
+        PicardAndersonBeta,
+        PicardAndersonNumberOfLastVectors,
+        SpaceNumberOfRefinements,
+        SpacePolynomialOrder,
+        AdaptivitySteps,
+        AdaptivityTolerance,
+        AdaptivityTransientBackSteps,
+        AdaptivityTransientRedoneEach,
+        TransientTimeSkip,
+        TransientInitialCondition
+    };
+
+    // analysis type
     AnalysisType analysisType() const { return m_analysisType; }
     void setAnalysisType(const AnalysisType analysisType);
 
+    // linearity
     inline LinearityType linearityType() const {return m_linearityType; }
     void setLinearityType(const LinearityType lt) { m_linearityType = lt; emit changed(); }
 
-    // nonlinear settings
-    inline int nonlinearSteps() const { return m_nonlinearSteps; }
-    void setNonlinearSteps(const int ns) { m_nonlinearSteps = ns; emit changed(); }
+    // adaptivity
+    inline AdaptivityType adaptivityType() const { return m_adaptivityType; }
+    void setAdaptivityType(const AdaptivityType at) { m_adaptivityType = at; emit changed(); }
 
-    inline double nonlinearTolerance() const { return m_nonlinearTolerance; }
-    void setNonlinearTolerance(const double nt) { m_nonlinearTolerance = nt; emit changed(); }
-
-    inline Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement nonlinearConvergenceMeasurement() const { return m_nonlinearConvergenceMeasurement; }
-    void setNonlinearConvergenceMeasurement(Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement cm) { m_nonlinearConvergenceMeasurement = cm; emit changed(); }
-
-    // Newton settings
-    inline bool newtonAutomaticDamping() const {return m_newtonAutomaticDamping; }
-    void setNewtonAutomaticDamping(const bool ad) { m_newtonAutomaticDamping = ad; emit changed(); }
-
-    inline double newtonDampingCoeff() const {return m_newtonDampingCoeff; }
-    void setNewtonDampingCoeff(const double df) { m_newtonDampingCoeff = df; emit changed(); }
-
-    inline double newtonAutomaticDampingCoeff() const {return m_newtonAutomaticDampingCoeff; }
-    void setNewtonAutomaticDampingCoeff(const double df) { m_newtonAutomaticDampingCoeff = df; emit changed(); }
-
-    inline int newtonDampingNumberToIncrease() const {return m_newtonDampingNumberToIncrease; }
-    void setNewtonDampingNumberToIncrease(const int df) { m_newtonDampingNumberToIncrease = df; emit changed(); }
-
-    // implicit values
-    inline double implicitNewtonDampingCoeff() const {return m_implicitNewtonDampingCoeff; }
-    void setImplicitNewtonDampingCoeff(const double df) { m_implicitNewtonDampingCoeff = df; }
-
-    inline double implicitNewtonTolerance() const {return m_implicitNewtonTolerance; }
-    void setImplicitNewtonTolerance(const double tol) { m_implicitNewtonTolerance = tol; }
-
-    inline int implicitNewtonSteps() const {return m_implicitNewtonSteps; }
-    void setImplicitNewtonSteps(const double st) { m_implicitNewtonSteps = st; }
-
-    inline double implicitNewtonAutomaticDampingCoeff() const {return m_implicitNewtonAutomaticDampingCoeff; }
-    void setImplicitNewtonAutomaticDampingCoeff(const double df) { m_implicitNewtonAutomaticDampingCoeff = df; }
-
-    inline int implicitNewtonDampingNumberToIncrease() const {return m_implicitNewtonDampingNumberToIncrease; }
-    void setImplicitNewtonDampingNumberToIncrease(const double nti) { m_implicitNewtonDampingNumberToIncrease = nti; }
-
-    // Picard settings
-    inline bool picardAndersonAcceleration() const {return m_picardAndersonAcceleration; }
-    void setPicardAndersonAcceleration(const bool ab) { m_picardAndersonAcceleration = ab; emit changed(); }
-
-    inline double picardAndersonBeta() const {return m_picardAndersonBeta; }
-    void setPicardAndersonBeta(const double beta) { m_picardAndersonBeta = beta; emit changed(); }
-
-    inline int picardAndersonNumberOfLastVectors() const { return m_picardAndersonNumberOfLastVectors; }
-    void setPicardAndersonNumberOfLastVectors(const int nr) {m_picardAndersonNumberOfLastVectors = nr; emit changed(); }
-
-    inline int numberOfRefinements() const { return m_numberOfRefinements; }
-    void setNumberOfRefinements(const int nr) {m_numberOfRefinements = nr; emit changed(); }
+    // number of solutions
+    inline int numberOfSolutions() const { return m_numberOfSolutions; }
 
     const QMap<SceneEdge *, int> edgesRefinement() { return m_edgesRefinement; }
     int edgeRefinement(SceneEdge *edge);
@@ -127,29 +114,20 @@ public:
     void setLabelPolynomialOrder(SceneLabel *label, int order) { m_labelsPolynomialOrder[label] = order; }
     void removeLabelPolynomialOrder(SceneLabel *label) { m_labelsPolynomialOrder.remove(label); }
 
-    inline int polynomialOrder() const { return m_polynomialOrder; }
-    void setPolynomialOrder(const int po) { m_polynomialOrder = po; emit changed(); }
+    void load(XMLProblem::field_config *configxsd);
+    void save(XMLProblem::field_config *configxsd);
 
-    inline AdaptivityType adaptivityType() const { return m_adaptivityType; }
-    void setAdaptivityType(const AdaptivityType at) { m_adaptivityType = at; emit changed(); }
+    inline QString typeToStringKey(Type type) { return m_settingKey[type]; }
+    inline Type stringKeyToType(const QString &key) { return m_settingKey.key(key); }
 
-    inline int adaptivitySteps() const { return m_adaptivitySteps; }
-    void setAdaptivitySteps(const int as) { m_adaptivitySteps = as; emit changed(); }
+    inline QVariant value(Type type) const { return m_setting[type]; }
+    inline void setValue(Type type, int value, bool emitChanged = true) {  m_setting[type] = value; if (emitChanged) emit changed(); }
+    inline void setValue(Type type, double value, bool emitChanged = true) {  m_setting[type] = value; emit changed(); if (emitChanged) emit changed(); }
+    inline void setValue(Type type, bool value, bool emitChanged = true) {  m_setting[type] = value; emit changed(); if (emitChanged) emit changed(); }
+    inline void setValue(Type type, const QString &value, bool emitChanged = true) { m_setting[type] = value; emit changed(); if (emitChanged) emit changed(); }
+    inline void setValue(Type type, const QStringList &value, bool emitChanged = true) { m_setting[type] = value; emit changed(); if (emitChanged) emit changed(); }
 
-    inline double adaptivityTolerance() const { return m_adaptivityTolerance; }
-    void setAdaptivityTolerance(const double at) { m_adaptivityTolerance = at; emit changed(); }
-
-    inline int adaptivityBackSteps() const { return m_adaptivityBackSteps; }
-    void setAdaptivityBackSteps(const int abs) { m_adaptivityBackSteps = abs; emit changed(); }
-
-    inline int adaptivityRedoneEach() const { return m_adaptivityRedoneEach; }
-    void setAdaptivityRedoneEach(const int re) { m_adaptivityRedoneEach = re; emit changed(); }
-
-    inline double initialCondition() const { return m_initialCondition; }
-    void setInitialCondition(const double cond) { m_initialCondition = cond; emit changed(); }
-
-    inline double timeSkip() const { return m_timeSkip; }
-    void setTimeSkip(const double skip) { m_timeSkip = skip; emit changed(); }
+    inline QVariant defaultValue(Type type) {  return m_settingDefault[type]; }
 
     // refine mesh
     void refineMesh(MeshSharedPtr mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea);
@@ -162,9 +140,6 @@ public:
 
     // deformable shape
     bool hasDeformableShape() const;
-
-    // number of solutions
-    inline int numberOfSolutions() const { return m_numberOfSolutions; }
 
     // latex equation
     QString equation() const;
@@ -245,49 +220,22 @@ private:
     AnalysisType m_analysisType;
     // number of solutions cache
     int m_numberOfSolutions;
-
     // linearity
     LinearityType m_linearityType;
-    double m_nonlinearTolerance; // percent
-    int m_nonlinearSteps;
-
-    // newton
-    Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement m_nonlinearConvergenceMeasurement;
-    double m_newtonDampingCoeff;
-    double m_newtonAutomaticDampingCoeff;
-    bool m_newtonAutomaticDamping;
-    int m_newtonDampingNumberToIncrease;
-
-    // implicit newton parameters. May be different for individual fields, are loaded from xml file
-    double m_implicitNewtonTolerance;
-    int m_implicitNewtonSteps;
-    double m_implicitNewtonAutomaticDampingCoeff;
-    double m_implicitNewtonDampingCoeff;
-    int m_implicitNewtonDampingNumberToIncrease;
-
-    // picard
-    bool m_picardAndersonAcceleration;
-    double m_picardAndersonBeta;
-    int m_picardAndersonNumberOfLastVectors;
-
-    int m_numberOfRefinements;
-    int m_polynomialOrder;
+    // adaptivity
+    AdaptivityType m_adaptivityType;
 
     // TODO: (Franta) gmsh
     QMap<SceneEdge *, int> m_edgesRefinement;
     QMap<SceneLabel *, int> m_labelsRefinement;
-
     QMap<SceneLabel *, int> m_labelsPolynomialOrder;
 
-    AdaptivityType m_adaptivityType;
-    int m_adaptivitySteps;
-    double m_adaptivityTolerance; // percent
-    int m_adaptivityBackSteps;
-    int m_adaptivityRedoneEach;
+    QMap<Type, QVariant> m_setting;
+    QMap<Type, QVariant> m_settingDefault;
+    QMap<Type, QString> m_settingKey;
 
-    // transient
-    double m_initialCondition;
-    double m_timeSkip;
+    void setDefaultValues();
+    void setStringKeys();
 };
 
 ostream& operator<<(ostream& output, FieldInfo& id);

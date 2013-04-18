@@ -263,6 +263,30 @@ namespace XMLProblem
     this->couplings_.set (x);
   }
 
+  const problem::problem_config_type& problem::
+  problem_config () const
+  {
+    return this->problem_config_.get ();
+  }
+
+  problem::problem_config_type& problem::
+  problem_config ()
+  {
+    return this->problem_config_.get ();
+  }
+
+  void problem::
+  problem_config (const problem_config_type& x)
+  {
+    this->problem_config_.set (x);
+  }
+
+  void problem::
+  problem_config (::std::auto_ptr< problem_config_type > x)
+  {
+    this->problem_config_.set (x);
+  }
+
   const problem::coordinate_type_type& problem::
   coordinate_type () const
   {
@@ -333,120 +357,6 @@ namespace XMLProblem
   matrix_solver (::std::auto_ptr< matrix_solver_type > x)
   {
     this->matrix_solver_.set (x);
-  }
-
-  const problem::frequency_type& problem::
-  frequency () const
-  {
-    return this->frequency_.get ();
-  }
-
-  problem::frequency_type& problem::
-  frequency ()
-  {
-    return this->frequency_.get ();
-  }
-
-  void problem::
-  frequency (const frequency_type& x)
-  {
-    this->frequency_.set (x);
-  }
-
-  const problem::time_method_type& problem::
-  time_method () const
-  {
-    return this->time_method_.get ();
-  }
-
-  problem::time_method_type& problem::
-  time_method ()
-  {
-    return this->time_method_.get ();
-  }
-
-  void problem::
-  time_method (const time_method_type& x)
-  {
-    this->time_method_.set (x);
-  }
-
-  void problem::
-  time_method (::std::auto_ptr< time_method_type > x)
-  {
-    this->time_method_.set (x);
-  }
-
-  const problem::time_total_type& problem::
-  time_total () const
-  {
-    return this->time_total_.get ();
-  }
-
-  problem::time_total_type& problem::
-  time_total ()
-  {
-    return this->time_total_.get ();
-  }
-
-  void problem::
-  time_total (const time_total_type& x)
-  {
-    this->time_total_.set (x);
-  }
-
-  const problem::time_steps_type& problem::
-  time_steps () const
-  {
-    return this->time_steps_.get ();
-  }
-
-  problem::time_steps_type& problem::
-  time_steps ()
-  {
-    return this->time_steps_.get ();
-  }
-
-  void problem::
-  time_steps (const time_steps_type& x)
-  {
-    this->time_steps_.set (x);
-  }
-
-  const problem::time_order_type& problem::
-  time_order () const
-  {
-    return this->time_order_.get ();
-  }
-
-  problem::time_order_type& problem::
-  time_order ()
-  {
-    return this->time_order_.get ();
-  }
-
-  void problem::
-  time_order (const time_order_type& x)
-  {
-    this->time_order_.set (x);
-  }
-
-  const problem::time_method_tolerance_type& problem::
-  time_method_tolerance () const
-  {
-    return this->time_method_tolerance_.get ();
-  }
-
-  problem::time_method_tolerance_type& problem::
-  time_method_tolerance ()
-  {
-    return this->time_method_tolerance_.get ();
-  }
-
-  void problem::
-  time_method_tolerance (const time_method_tolerance_type& x)
-  {
-    this->time_method_tolerance_.set (x);
   }
 
 
@@ -579,6 +489,28 @@ namespace XMLProblem
   coupling (const coupling_sequence& s)
   {
     this->coupling_ = s;
+  }
+
+
+  // problem_config
+  // 
+
+  const problem_config::problem_item_sequence& problem_config::
+  problem_item () const
+  {
+    return this->problem_item_;
+  }
+
+  problem_config::problem_item_sequence& problem_config::
+  problem_item ()
+  {
+    return this->problem_item_;
+  }
+
+  void problem_config::
+  problem_item (const problem_item_sequence& s)
+  {
+    this->problem_item_ = s;
   }
 
 
@@ -919,54 +851,6 @@ namespace XMLProblem
     this->polynomial_orders_.set (x);
   }
 
-  const field::adaptivity_type& field::
-  adaptivity () const
-  {
-    return this->adaptivity_.get ();
-  }
-
-  field::adaptivity_type& field::
-  adaptivity ()
-  {
-    return this->adaptivity_.get ();
-  }
-
-  void field::
-  adaptivity (const adaptivity_type& x)
-  {
-    this->adaptivity_.set (x);
-  }
-
-  void field::
-  adaptivity (::std::auto_ptr< adaptivity_type > x)
-  {
-    this->adaptivity_.set (x);
-  }
-
-  const field::solver_type& field::
-  solver () const
-  {
-    return this->solver_.get ();
-  }
-
-  field::solver_type& field::
-  solver ()
-  {
-    return this->solver_.get ();
-  }
-
-  void field::
-  solver (const solver_type& x)
-  {
-    this->solver_.set (x);
-  }
-
-  void field::
-  solver (::std::auto_ptr< solver_type > x)
-  {
-    this->solver_.set (x);
-  }
-
   const field::boundaries_type& field::
   boundaries () const
   {
@@ -1013,6 +897,30 @@ namespace XMLProblem
   materials (::std::auto_ptr< materials_type > x)
   {
     this->materials_.set (x);
+  }
+
+  const field::field_config_type& field::
+  field_config () const
+  {
+    return this->field_config_.get ();
+  }
+
+  field::field_config_type& field::
+  field_config ()
+  {
+    return this->field_config_.get ();
+  }
+
+  void field::
+  field_config (const field_config_type& x)
+  {
+    this->field_config_.set (x);
+  }
+
+  void field::
+  field_config (::std::auto_ptr< field_config_type > x)
+  {
+    this->field_config_.set (x);
   }
 
   const field::field_id_type& field::
@@ -1063,76 +971,52 @@ namespace XMLProblem
     this->analysis_type_.set (x);
   }
 
-  const field::number_of_refinements_type& field::
-  number_of_refinements () const
+  const field::adaptivity_type_type& field::
+  adaptivity_type () const
   {
-    return this->number_of_refinements_.get ();
+    return this->adaptivity_type_.get ();
   }
 
-  field::number_of_refinements_type& field::
-  number_of_refinements ()
+  field::adaptivity_type_type& field::
+  adaptivity_type ()
   {
-    return this->number_of_refinements_.get ();
-  }
-
-  void field::
-  number_of_refinements (const number_of_refinements_type& x)
-  {
-    this->number_of_refinements_.set (x);
-  }
-
-  const field::polynomial_order_type& field::
-  polynomial_order () const
-  {
-    return this->polynomial_order_.get ();
-  }
-
-  field::polynomial_order_type& field::
-  polynomial_order ()
-  {
-    return this->polynomial_order_.get ();
+    return this->adaptivity_type_.get ();
   }
 
   void field::
-  polynomial_order (const polynomial_order_type& x)
+  adaptivity_type (const adaptivity_type_type& x)
   {
-    this->polynomial_order_.set (x);
-  }
-
-  const field::initial_condition_type& field::
-  initial_condition () const
-  {
-    return this->initial_condition_.get ();
-  }
-
-  field::initial_condition_type& field::
-  initial_condition ()
-  {
-    return this->initial_condition_.get ();
+    this->adaptivity_type_.set (x);
   }
 
   void field::
-  initial_condition (const initial_condition_type& x)
+  adaptivity_type (::std::auto_ptr< adaptivity_type_type > x)
   {
-    this->initial_condition_.set (x);
+    this->adaptivity_type_.set (x);
   }
 
-  const field::time_skip_type& field::
-  time_skip () const
+  const field::linearity_type_type& field::
+  linearity_type () const
   {
-    return this->time_skip_.get ();
+    return this->linearity_type_.get ();
   }
 
-  field::time_skip_type& field::
-  time_skip ()
+  field::linearity_type_type& field::
+  linearity_type ()
   {
-    return this->time_skip_.get ();
+    return this->linearity_type_.get ();
   }
 
   void field::
-  time_skip (const time_skip_type& x)
+  linearity_type (const linearity_type_type& x)
   {
-    this->time_skip_.set (x);
+    this->linearity_type_.set (x);
+  }
+
+  void field::
+  linearity_type (::std::auto_ptr< linearity_type_type > x)
+  {
+    this->linearity_type_.set (x);
   }
 
 
@@ -1236,6 +1120,58 @@ namespace XMLProblem
   }
 
 
+  // problem_item
+  // 
+
+  const problem_item::problem_key_type& problem_item::
+  problem_key () const
+  {
+    return this->problem_key_.get ();
+  }
+
+  problem_item::problem_key_type& problem_item::
+  problem_key ()
+  {
+    return this->problem_key_.get ();
+  }
+
+  void problem_item::
+  problem_key (const problem_key_type& x)
+  {
+    this->problem_key_.set (x);
+  }
+
+  void problem_item::
+  problem_key (::std::auto_ptr< problem_key_type > x)
+  {
+    this->problem_key_.set (x);
+  }
+
+  const problem_item::problem_value_type& problem_item::
+  problem_value () const
+  {
+    return this->problem_value_.get ();
+  }
+
+  problem_item::problem_value_type& problem_item::
+  problem_value ()
+  {
+    return this->problem_value_.get ();
+  }
+
+  void problem_item::
+  problem_value (const problem_value_type& x)
+  {
+    this->problem_value_.set (x);
+  }
+
+  void problem_item::
+  problem_value (::std::auto_ptr< problem_value_type > x)
+  {
+    this->problem_value_.set (x);
+  }
+
+
   // refinement_edges
   // 
 
@@ -1302,326 +1238,6 @@ namespace XMLProblem
   }
 
 
-  // adaptivity
-  // 
-
-  const adaptivity::adaptivity_type_type& adaptivity::
-  adaptivity_type () const
-  {
-    return this->adaptivity_type_.get ();
-  }
-
-  adaptivity::adaptivity_type_type& adaptivity::
-  adaptivity_type ()
-  {
-    return this->adaptivity_type_.get ();
-  }
-
-  void adaptivity::
-  adaptivity_type (const adaptivity_type_type& x)
-  {
-    this->adaptivity_type_.set (x);
-  }
-
-  void adaptivity::
-  adaptivity_type (::std::auto_ptr< adaptivity_type_type > x)
-  {
-    this->adaptivity_type_.set (x);
-  }
-
-  const adaptivity::adaptivity_steps_type& adaptivity::
-  adaptivity_steps () const
-  {
-    return this->adaptivity_steps_.get ();
-  }
-
-  adaptivity::adaptivity_steps_type& adaptivity::
-  adaptivity_steps ()
-  {
-    return this->adaptivity_steps_.get ();
-  }
-
-  void adaptivity::
-  adaptivity_steps (const adaptivity_steps_type& x)
-  {
-    this->adaptivity_steps_.set (x);
-  }
-
-  const adaptivity::adaptivity_tolerance_type& adaptivity::
-  adaptivity_tolerance () const
-  {
-    return this->adaptivity_tolerance_.get ();
-  }
-
-  adaptivity::adaptivity_tolerance_type& adaptivity::
-  adaptivity_tolerance ()
-  {
-    return this->adaptivity_tolerance_.get ();
-  }
-
-  void adaptivity::
-  adaptivity_tolerance (const adaptivity_tolerance_type& x)
-  {
-    this->adaptivity_tolerance_.set (x);
-  }
-
-  const adaptivity::adaptivity_back_steps_type& adaptivity::
-  adaptivity_back_steps () const
-  {
-    return this->adaptivity_back_steps_.get ();
-  }
-
-  adaptivity::adaptivity_back_steps_type& adaptivity::
-  adaptivity_back_steps ()
-  {
-    return this->adaptivity_back_steps_.get ();
-  }
-
-  void adaptivity::
-  adaptivity_back_steps (const adaptivity_back_steps_type& x)
-  {
-    this->adaptivity_back_steps_.set (x);
-  }
-
-  const adaptivity::adaptivity_redone_each_type& adaptivity::
-  adaptivity_redone_each () const
-  {
-    return this->adaptivity_redone_each_.get ();
-  }
-
-  adaptivity::adaptivity_redone_each_type& adaptivity::
-  adaptivity_redone_each ()
-  {
-    return this->adaptivity_redone_each_.get ();
-  }
-
-  void adaptivity::
-  adaptivity_redone_each (const adaptivity_redone_each_type& x)
-  {
-    this->adaptivity_redone_each_.set (x);
-  }
-
-
-  // solver
-  // 
-
-  const solver::linearity_type_type& solver::
-  linearity_type () const
-  {
-    return this->linearity_type_.get ();
-  }
-
-  solver::linearity_type_type& solver::
-  linearity_type ()
-  {
-    return this->linearity_type_.get ();
-  }
-
-  void solver::
-  linearity_type (const linearity_type_type& x)
-  {
-    this->linearity_type_.set (x);
-  }
-
-  void solver::
-  linearity_type (::std::auto_ptr< linearity_type_type > x)
-  {
-    this->linearity_type_.set (x);
-  }
-
-  const solver::nonlinear_steps_type& solver::
-  nonlinear_steps () const
-  {
-    return this->nonlinear_steps_.get ();
-  }
-
-  solver::nonlinear_steps_type& solver::
-  nonlinear_steps ()
-  {
-    return this->nonlinear_steps_.get ();
-  }
-
-  void solver::
-  nonlinear_steps (const nonlinear_steps_type& x)
-  {
-    this->nonlinear_steps_.set (x);
-  }
-
-  const solver::nonlinear_tolerance_type& solver::
-  nonlinear_tolerance () const
-  {
-    return this->nonlinear_tolerance_.get ();
-  }
-
-  solver::nonlinear_tolerance_type& solver::
-  nonlinear_tolerance ()
-  {
-    return this->nonlinear_tolerance_.get ();
-  }
-
-  void solver::
-  nonlinear_tolerance (const nonlinear_tolerance_type& x)
-  {
-    this->nonlinear_tolerance_.set (x);
-  }
-
-  const solver::nonlinear_convergence_measurement_optional& solver::
-  nonlinear_convergence_measurement () const
-  {
-    return this->nonlinear_convergence_measurement_;
-  }
-
-  solver::nonlinear_convergence_measurement_optional& solver::
-  nonlinear_convergence_measurement ()
-  {
-    return this->nonlinear_convergence_measurement_;
-  }
-
-  void solver::
-  nonlinear_convergence_measurement (const nonlinear_convergence_measurement_type& x)
-  {
-    this->nonlinear_convergence_measurement_.set (x);
-  }
-
-  void solver::
-  nonlinear_convergence_measurement (const nonlinear_convergence_measurement_optional& x)
-  {
-    this->nonlinear_convergence_measurement_ = x;
-  }
-
-  void solver::
-  nonlinear_convergence_measurement (::std::auto_ptr< nonlinear_convergence_measurement_type > x)
-  {
-    this->nonlinear_convergence_measurement_.set (x);
-  }
-
-  const solver::newton_damping_coeff_type& solver::
-  newton_damping_coeff () const
-  {
-    return this->newton_damping_coeff_.get ();
-  }
-
-  solver::newton_damping_coeff_type& solver::
-  newton_damping_coeff ()
-  {
-    return this->newton_damping_coeff_.get ();
-  }
-
-  void solver::
-  newton_damping_coeff (const newton_damping_coeff_type& x)
-  {
-    this->newton_damping_coeff_.set (x);
-  }
-
-  const solver::newton_automatic_damping_type& solver::
-  newton_automatic_damping () const
-  {
-    return this->newton_automatic_damping_.get ();
-  }
-
-  solver::newton_automatic_damping_type& solver::
-  newton_automatic_damping ()
-  {
-    return this->newton_automatic_damping_.get ();
-  }
-
-  void solver::
-  newton_automatic_damping (const newton_automatic_damping_type& x)
-  {
-    this->newton_automatic_damping_.set (x);
-  }
-
-  const solver::newton_automatic_damping_coeff_type& solver::
-  newton_automatic_damping_coeff () const
-  {
-    return this->newton_automatic_damping_coeff_.get ();
-  }
-
-  solver::newton_automatic_damping_coeff_type& solver::
-  newton_automatic_damping_coeff ()
-  {
-    return this->newton_automatic_damping_coeff_.get ();
-  }
-
-  void solver::
-  newton_automatic_damping_coeff (const newton_automatic_damping_coeff_type& x)
-  {
-    this->newton_automatic_damping_coeff_.set (x);
-  }
-
-  const solver::newton_damping_number_to_increase_type& solver::
-  newton_damping_number_to_increase () const
-  {
-    return this->newton_damping_number_to_increase_.get ();
-  }
-
-  solver::newton_damping_number_to_increase_type& solver::
-  newton_damping_number_to_increase ()
-  {
-    return this->newton_damping_number_to_increase_.get ();
-  }
-
-  void solver::
-  newton_damping_number_to_increase (const newton_damping_number_to_increase_type& x)
-  {
-    this->newton_damping_number_to_increase_.set (x);
-  }
-
-  const solver::picard_anderson_acceleration_type& solver::
-  picard_anderson_acceleration () const
-  {
-    return this->picard_anderson_acceleration_.get ();
-  }
-
-  solver::picard_anderson_acceleration_type& solver::
-  picard_anderson_acceleration ()
-  {
-    return this->picard_anderson_acceleration_.get ();
-  }
-
-  void solver::
-  picard_anderson_acceleration (const picard_anderson_acceleration_type& x)
-  {
-    this->picard_anderson_acceleration_.set (x);
-  }
-
-  const solver::picard_anderson_beta_type& solver::
-  picard_anderson_beta () const
-  {
-    return this->picard_anderson_beta_.get ();
-  }
-
-  solver::picard_anderson_beta_type& solver::
-  picard_anderson_beta ()
-  {
-    return this->picard_anderson_beta_.get ();
-  }
-
-  void solver::
-  picard_anderson_beta (const picard_anderson_beta_type& x)
-  {
-    this->picard_anderson_beta_.set (x);
-  }
-
-  const solver::picard_anderson_vectors_type& solver::
-  picard_anderson_vectors () const
-  {
-    return this->picard_anderson_vectors_.get ();
-  }
-
-  solver::picard_anderson_vectors_type& solver::
-  picard_anderson_vectors ()
-  {
-    return this->picard_anderson_vectors_.get ();
-  }
-
-  void solver::
-  picard_anderson_vectors (const picard_anderson_vectors_type& x)
-  {
-    this->picard_anderson_vectors_.set (x);
-  }
-
-
   // boundaries
   // 
 
@@ -1663,6 +1279,28 @@ namespace XMLProblem
   material (const material_sequence& s)
   {
     this->material_ = s;
+  }
+
+
+  // field_config
+  // 
+
+  const field_config::field_item_sequence& field_config::
+  field_item () const
+  {
+    return this->field_item_;
+  }
+
+  field_config::field_item_sequence& field_config::
+  field_item ()
+  {
+    return this->field_item_;
+  }
+
+  void field_config::
+  field_item (const field_item_sequence& s)
+  {
+    this->field_item_ = s;
   }
 
 
@@ -1995,6 +1633,58 @@ namespace XMLProblem
   name (::std::auto_ptr< name_type > x)
   {
     this->name_.set (x);
+  }
+
+
+  // field_item
+  // 
+
+  const field_item::field_key_type& field_item::
+  field_key () const
+  {
+    return this->field_key_.get ();
+  }
+
+  field_item::field_key_type& field_item::
+  field_key ()
+  {
+    return this->field_key_.get ();
+  }
+
+  void field_item::
+  field_key (const field_key_type& x)
+  {
+    this->field_key_.set (x);
+  }
+
+  void field_item::
+  field_key (::std::auto_ptr< field_key_type > x)
+  {
+    this->field_key_.set (x);
+  }
+
+  const field_item::field_value_type& field_item::
+  field_value () const
+  {
+    return this->field_value_.get ();
+  }
+
+  field_item::field_value_type& field_item::
+  field_value ()
+  {
+    return this->field_value_.get ();
+  }
+
+  void field_item::
+  field_value (const field_value_type& x)
+  {
+    this->field_value_.set (x);
+  }
+
+  void field_item::
+  field_value (::std::auto_ptr< field_value_type > x)
+  {
+    this->field_value_.set (x);
   }
 
 
@@ -2561,54 +2251,34 @@ namespace XMLProblem
   problem::
   problem (const fields_type& fields,
            const couplings_type& couplings,
+           const problem_config_type& problem_config,
            const coordinate_type_type& coordinate_type,
            const mesh_type_type& mesh_type,
-           const matrix_solver_type& matrix_solver,
-           const frequency_type& frequency,
-           const time_method_type& time_method,
-           const time_total_type& time_total,
-           const time_steps_type& time_steps,
-           const time_order_type& time_order,
-           const time_method_tolerance_type& time_method_tolerance)
+           const matrix_solver_type& matrix_solver)
   : ::xml_schema::type (),
     fields_ (fields, ::xml_schema::flags (), this),
     couplings_ (couplings, ::xml_schema::flags (), this),
+    problem_config_ (problem_config, ::xml_schema::flags (), this),
     coordinate_type_ (coordinate_type, ::xml_schema::flags (), this),
     mesh_type_ (mesh_type, ::xml_schema::flags (), this),
-    matrix_solver_ (matrix_solver, ::xml_schema::flags (), this),
-    frequency_ (frequency, ::xml_schema::flags (), this),
-    time_method_ (time_method, ::xml_schema::flags (), this),
-    time_total_ (time_total, ::xml_schema::flags (), this),
-    time_steps_ (time_steps, ::xml_schema::flags (), this),
-    time_order_ (time_order, ::xml_schema::flags (), this),
-    time_method_tolerance_ (time_method_tolerance, ::xml_schema::flags (), this)
+    matrix_solver_ (matrix_solver, ::xml_schema::flags (), this)
   {
   }
 
   problem::
   problem (::std::auto_ptr< fields_type >& fields,
            ::std::auto_ptr< couplings_type >& couplings,
+           ::std::auto_ptr< problem_config_type >& problem_config,
            const coordinate_type_type& coordinate_type,
            const mesh_type_type& mesh_type,
-           const matrix_solver_type& matrix_solver,
-           const frequency_type& frequency,
-           const time_method_type& time_method,
-           const time_total_type& time_total,
-           const time_steps_type& time_steps,
-           const time_order_type& time_order,
-           const time_method_tolerance_type& time_method_tolerance)
+           const matrix_solver_type& matrix_solver)
   : ::xml_schema::type (),
     fields_ (fields, ::xml_schema::flags (), this),
     couplings_ (couplings, ::xml_schema::flags (), this),
+    problem_config_ (problem_config, ::xml_schema::flags (), this),
     coordinate_type_ (coordinate_type, ::xml_schema::flags (), this),
     mesh_type_ (mesh_type, ::xml_schema::flags (), this),
-    matrix_solver_ (matrix_solver, ::xml_schema::flags (), this),
-    frequency_ (frequency, ::xml_schema::flags (), this),
-    time_method_ (time_method, ::xml_schema::flags (), this),
-    time_total_ (time_total, ::xml_schema::flags (), this),
-    time_steps_ (time_steps, ::xml_schema::flags (), this),
-    time_order_ (time_order, ::xml_schema::flags (), this),
-    time_method_tolerance_ (time_method_tolerance, ::xml_schema::flags (), this)
+    matrix_solver_ (matrix_solver, ::xml_schema::flags (), this)
   {
   }
 
@@ -2619,15 +2289,10 @@ namespace XMLProblem
   : ::xml_schema::type (x, f, c),
     fields_ (x.fields_, f, this),
     couplings_ (x.couplings_, f, this),
+    problem_config_ (x.problem_config_, f, this),
     coordinate_type_ (x.coordinate_type_, f, this),
     mesh_type_ (x.mesh_type_, f, this),
-    matrix_solver_ (x.matrix_solver_, f, this),
-    frequency_ (x.frequency_, f, this),
-    time_method_ (x.time_method_, f, this),
-    time_total_ (x.time_total_, f, this),
-    time_steps_ (x.time_steps_, f, this),
-    time_order_ (x.time_order_, f, this),
-    time_method_tolerance_ (x.time_method_tolerance_, f, this)
+    matrix_solver_ (x.matrix_solver_, f, this)
   {
   }
 
@@ -2638,15 +2303,10 @@ namespace XMLProblem
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     fields_ (f, this),
     couplings_ (f, this),
+    problem_config_ (f, this),
     coordinate_type_ (f, this),
     mesh_type_ (f, this),
-    matrix_solver_ (f, this),
-    frequency_ (f, this),
-    time_method_ (f, this),
-    time_total_ (f, this),
-    time_steps_ (f, this),
-    time_order_ (f, this),
-    time_method_tolerance_ (f, this)
+    matrix_solver_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -2693,6 +2353,20 @@ namespace XMLProblem
         }
       }
 
+      // problem_config
+      //
+      if (n.name () == "problem_config" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< problem_config_type > r (
+          problem_config_traits::create (i, f, this));
+
+        if (!problem_config_.present ())
+        {
+          this->problem_config_.set (r);
+          continue;
+        }
+      }
+
       break;
     }
 
@@ -2707,6 +2381,13 @@ namespace XMLProblem
     {
       throw ::xsd::cxx::tree::expected_element< char > (
         "couplings",
+        "");
+    }
+
+    if (!problem_config_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_element< char > (
+        "problem_config",
         "");
     }
 
@@ -2742,45 +2423,6 @@ namespace XMLProblem
         this->matrix_solver_.set (r);
         continue;
       }
-
-      if (n.name () == "frequency" && n.namespace_ ().empty ())
-      {
-        this->frequency_.set (frequency_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "time_method" && n.namespace_ ().empty ())
-      {
-        ::std::auto_ptr< time_method_type > r (
-          time_method_traits::create (i, f, this));
-
-        this->time_method_.set (r);
-        continue;
-      }
-
-      if (n.name () == "time_total" && n.namespace_ ().empty ())
-      {
-        this->time_total_.set (time_total_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "time_steps" && n.namespace_ ().empty ())
-      {
-        this->time_steps_.set (time_steps_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "time_order" && n.namespace_ ().empty ())
-      {
-        this->time_order_.set (time_order_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "time_method_tolerance" && n.namespace_ ().empty ())
-      {
-        this->time_method_tolerance_.set (time_method_tolerance_traits::create (i, f, this));
-        continue;
-      }
     }
 
     if (!coordinate_type_.present ())
@@ -2801,48 +2443,6 @@ namespace XMLProblem
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
         "matrix_solver",
-        "");
-    }
-
-    if (!frequency_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "frequency",
-        "");
-    }
-
-    if (!time_method_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "time_method",
-        "");
-    }
-
-    if (!time_total_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "time_total",
-        "");
-    }
-
-    if (!time_steps_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "time_steps",
-        "");
-    }
-
-    if (!time_order_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "time_order",
-        "");
-    }
-
-    if (!time_method_tolerance_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "time_method_tolerance",
         "");
     }
   }
@@ -3276,6 +2876,76 @@ namespace XMLProblem
 
   couplings::
   ~couplings ()
+  {
+  }
+
+  // problem_config
+  //
+
+  problem_config::
+  problem_config ()
+  : ::xml_schema::type (),
+    problem_item_ (::xml_schema::flags (), this)
+  {
+  }
+
+  problem_config::
+  problem_config (const problem_config& x,
+                  ::xml_schema::flags f,
+                  ::xml_schema::container* c)
+  : ::xml_schema::type (x, f, c),
+    problem_item_ (x.problem_item_, f, this)
+  {
+  }
+
+  problem_config::
+  problem_config (const ::xercesc::DOMElement& e,
+                  ::xml_schema::flags f,
+                  ::xml_schema::container* c)
+  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    problem_item_ (f, this)
+  {
+    if ((f & ::xml_schema::flags::base) == 0)
+    {
+      ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+      this->parse (p, f);
+    }
+  }
+
+  void problem_config::
+  parse (::xsd::cxx::xml::dom::parser< char >& p,
+         ::xml_schema::flags f)
+  {
+    for (; p.more_elements (); p.next_element ())
+    {
+      const ::xercesc::DOMElement& i (p.cur_element ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      // problem_item
+      //
+      if (n.name () == "problem_item" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< problem_item_type > r (
+          problem_item_traits::create (i, f, this));
+
+        this->problem_item_.push_back (r);
+        continue;
+      }
+
+      break;
+    }
+  }
+
+  problem_config* problem_config::
+  _clone (::xml_schema::flags f,
+          ::xml_schema::container* c) const
+  {
+    return new class problem_config (*this, f, c);
+  }
+
+  problem_config::
+  ~problem_config ()
   {
   }
 
@@ -3725,30 +3395,24 @@ namespace XMLProblem
   field (const refinement_edges_type& refinement_edges,
          const refinement_labels_type& refinement_labels,
          const polynomial_orders_type& polynomial_orders,
-         const adaptivity_type& adaptivity,
-         const solver_type& solver,
          const boundaries_type& boundaries,
          const materials_type& materials,
+         const field_config_type& field_config,
          const field_id_type& field_id,
          const analysis_type_type& analysis_type,
-         const number_of_refinements_type& number_of_refinements,
-         const polynomial_order_type& polynomial_order,
-         const initial_condition_type& initial_condition,
-         const time_skip_type& time_skip)
+         const adaptivity_type_type& adaptivity_type,
+         const linearity_type_type& linearity_type)
   : ::xml_schema::type (),
     refinement_edges_ (refinement_edges, ::xml_schema::flags (), this),
     refinement_labels_ (refinement_labels, ::xml_schema::flags (), this),
     polynomial_orders_ (polynomial_orders, ::xml_schema::flags (), this),
-    adaptivity_ (adaptivity, ::xml_schema::flags (), this),
-    solver_ (solver, ::xml_schema::flags (), this),
     boundaries_ (boundaries, ::xml_schema::flags (), this),
     materials_ (materials, ::xml_schema::flags (), this),
+    field_config_ (field_config, ::xml_schema::flags (), this),
     field_id_ (field_id, ::xml_schema::flags (), this),
     analysis_type_ (analysis_type, ::xml_schema::flags (), this),
-    number_of_refinements_ (number_of_refinements, ::xml_schema::flags (), this),
-    polynomial_order_ (polynomial_order, ::xml_schema::flags (), this),
-    initial_condition_ (initial_condition, ::xml_schema::flags (), this),
-    time_skip_ (time_skip, ::xml_schema::flags (), this)
+    adaptivity_type_ (adaptivity_type, ::xml_schema::flags (), this),
+    linearity_type_ (linearity_type, ::xml_schema::flags (), this)
   {
   }
 
@@ -3756,30 +3420,24 @@ namespace XMLProblem
   field (::std::auto_ptr< refinement_edges_type >& refinement_edges,
          ::std::auto_ptr< refinement_labels_type >& refinement_labels,
          ::std::auto_ptr< polynomial_orders_type >& polynomial_orders,
-         ::std::auto_ptr< adaptivity_type >& adaptivity,
-         ::std::auto_ptr< solver_type >& solver,
          ::std::auto_ptr< boundaries_type >& boundaries,
          ::std::auto_ptr< materials_type >& materials,
+         ::std::auto_ptr< field_config_type >& field_config,
          const field_id_type& field_id,
          const analysis_type_type& analysis_type,
-         const number_of_refinements_type& number_of_refinements,
-         const polynomial_order_type& polynomial_order,
-         const initial_condition_type& initial_condition,
-         const time_skip_type& time_skip)
+         const adaptivity_type_type& adaptivity_type,
+         const linearity_type_type& linearity_type)
   : ::xml_schema::type (),
     refinement_edges_ (refinement_edges, ::xml_schema::flags (), this),
     refinement_labels_ (refinement_labels, ::xml_schema::flags (), this),
     polynomial_orders_ (polynomial_orders, ::xml_schema::flags (), this),
-    adaptivity_ (adaptivity, ::xml_schema::flags (), this),
-    solver_ (solver, ::xml_schema::flags (), this),
     boundaries_ (boundaries, ::xml_schema::flags (), this),
     materials_ (materials, ::xml_schema::flags (), this),
+    field_config_ (field_config, ::xml_schema::flags (), this),
     field_id_ (field_id, ::xml_schema::flags (), this),
     analysis_type_ (analysis_type, ::xml_schema::flags (), this),
-    number_of_refinements_ (number_of_refinements, ::xml_schema::flags (), this),
-    polynomial_order_ (polynomial_order, ::xml_schema::flags (), this),
-    initial_condition_ (initial_condition, ::xml_schema::flags (), this),
-    time_skip_ (time_skip, ::xml_schema::flags (), this)
+    adaptivity_type_ (adaptivity_type, ::xml_schema::flags (), this),
+    linearity_type_ (linearity_type, ::xml_schema::flags (), this)
   {
   }
 
@@ -3791,16 +3449,13 @@ namespace XMLProblem
     refinement_edges_ (x.refinement_edges_, f, this),
     refinement_labels_ (x.refinement_labels_, f, this),
     polynomial_orders_ (x.polynomial_orders_, f, this),
-    adaptivity_ (x.adaptivity_, f, this),
-    solver_ (x.solver_, f, this),
     boundaries_ (x.boundaries_, f, this),
     materials_ (x.materials_, f, this),
+    field_config_ (x.field_config_, f, this),
     field_id_ (x.field_id_, f, this),
     analysis_type_ (x.analysis_type_, f, this),
-    number_of_refinements_ (x.number_of_refinements_, f, this),
-    polynomial_order_ (x.polynomial_order_, f, this),
-    initial_condition_ (x.initial_condition_, f, this),
-    time_skip_ (x.time_skip_, f, this)
+    adaptivity_type_ (x.adaptivity_type_, f, this),
+    linearity_type_ (x.linearity_type_, f, this)
   {
   }
 
@@ -3812,16 +3467,13 @@ namespace XMLProblem
     refinement_edges_ (f, this),
     refinement_labels_ (f, this),
     polynomial_orders_ (f, this),
-    adaptivity_ (f, this),
-    solver_ (f, this),
     boundaries_ (f, this),
     materials_ (f, this),
+    field_config_ (f, this),
     field_id_ (f, this),
     analysis_type_ (f, this),
-    number_of_refinements_ (f, this),
-    polynomial_order_ (f, this),
-    initial_condition_ (f, this),
-    time_skip_ (f, this)
+    adaptivity_type_ (f, this),
+    linearity_type_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -3882,34 +3534,6 @@ namespace XMLProblem
         }
       }
 
-      // adaptivity
-      //
-      if (n.name () == "adaptivity" && n.namespace_ ().empty ())
-      {
-        ::std::auto_ptr< adaptivity_type > r (
-          adaptivity_traits::create (i, f, this));
-
-        if (!adaptivity_.present ())
-        {
-          this->adaptivity_.set (r);
-          continue;
-        }
-      }
-
-      // solver
-      //
-      if (n.name () == "solver" && n.namespace_ ().empty ())
-      {
-        ::std::auto_ptr< solver_type > r (
-          solver_traits::create (i, f, this));
-
-        if (!solver_.present ())
-        {
-          this->solver_.set (r);
-          continue;
-        }
-      }
-
       // boundaries
       //
       if (n.name () == "boundaries" && n.namespace_ ().empty ())
@@ -3938,6 +3562,20 @@ namespace XMLProblem
         }
       }
 
+      // field_config
+      //
+      if (n.name () == "field_config" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< field_config_type > r (
+          field_config_traits::create (i, f, this));
+
+        if (!field_config_.present ())
+        {
+          this->field_config_.set (r);
+          continue;
+        }
+      }
+
       break;
     }
 
@@ -3962,20 +3600,6 @@ namespace XMLProblem
         "");
     }
 
-    if (!adaptivity_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_element< char > (
-        "adaptivity",
-        "");
-    }
-
-    if (!solver_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_element< char > (
-        "solver",
-        "");
-    }
-
     if (!boundaries_.present ())
     {
       throw ::xsd::cxx::tree::expected_element< char > (
@@ -3987,6 +3611,13 @@ namespace XMLProblem
     {
       throw ::xsd::cxx::tree::expected_element< char > (
         "materials",
+        "");
+    }
+
+    if (!field_config_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_element< char > (
+        "field_config",
         "");
     }
 
@@ -4014,27 +3645,21 @@ namespace XMLProblem
         continue;
       }
 
-      if (n.name () == "number_of_refinements" && n.namespace_ ().empty ())
+      if (n.name () == "adaptivity_type" && n.namespace_ ().empty ())
       {
-        this->number_of_refinements_.set (number_of_refinements_traits::create (i, f, this));
+        ::std::auto_ptr< adaptivity_type_type > r (
+          adaptivity_type_traits::create (i, f, this));
+
+        this->adaptivity_type_.set (r);
         continue;
       }
 
-      if (n.name () == "polynomial_order" && n.namespace_ ().empty ())
+      if (n.name () == "linearity_type" && n.namespace_ ().empty ())
       {
-        this->polynomial_order_.set (polynomial_order_traits::create (i, f, this));
-        continue;
-      }
+        ::std::auto_ptr< linearity_type_type > r (
+          linearity_type_traits::create (i, f, this));
 
-      if (n.name () == "initial_condition" && n.namespace_ ().empty ())
-      {
-        this->initial_condition_.set (initial_condition_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "time_skip" && n.namespace_ ().empty ())
-      {
-        this->time_skip_.set (time_skip_traits::create (i, f, this));
+        this->linearity_type_.set (r);
         continue;
       }
     }
@@ -4053,31 +3678,17 @@ namespace XMLProblem
         "");
     }
 
-    if (!number_of_refinements_.present ())
+    if (!adaptivity_type_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "number_of_refinements",
+        "adaptivity_type",
         "");
     }
 
-    if (!polynomial_order_.present ())
+    if (!linearity_type_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
-        "polynomial_order",
-        "");
-    }
-
-    if (!initial_condition_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "initial_condition",
-        "");
-    }
-
-    if (!time_skip_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "time_skip",
+        "linearity_type",
         "");
     }
   }
@@ -4224,6 +3835,99 @@ namespace XMLProblem
 
   coupling::
   ~coupling ()
+  {
+  }
+
+  // problem_item
+  //
+
+  problem_item::
+  problem_item (const problem_key_type& problem_key,
+                const problem_value_type& problem_value)
+  : ::xml_schema::type (),
+    problem_key_ (problem_key, ::xml_schema::flags (), this),
+    problem_value_ (problem_value, ::xml_schema::flags (), this)
+  {
+  }
+
+  problem_item::
+  problem_item (const problem_item& x,
+                ::xml_schema::flags f,
+                ::xml_schema::container* c)
+  : ::xml_schema::type (x, f, c),
+    problem_key_ (x.problem_key_, f, this),
+    problem_value_ (x.problem_value_, f, this)
+  {
+  }
+
+  problem_item::
+  problem_item (const ::xercesc::DOMElement& e,
+                ::xml_schema::flags f,
+                ::xml_schema::container* c)
+  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    problem_key_ (f, this),
+    problem_value_ (f, this)
+  {
+    if ((f & ::xml_schema::flags::base) == 0)
+    {
+      ::xsd::cxx::xml::dom::parser< char > p (e, false, true);
+      this->parse (p, f);
+    }
+  }
+
+  void problem_item::
+  parse (::xsd::cxx::xml::dom::parser< char >& p,
+         ::xml_schema::flags f)
+  {
+    while (p.more_attributes ())
+    {
+      const ::xercesc::DOMAttr& i (p.next_attribute ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      if (n.name () == "problem_key" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< problem_key_type > r (
+          problem_key_traits::create (i, f, this));
+
+        this->problem_key_.set (r);
+        continue;
+      }
+
+      if (n.name () == "problem_value" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< problem_value_type > r (
+          problem_value_traits::create (i, f, this));
+
+        this->problem_value_.set (r);
+        continue;
+      }
+    }
+
+    if (!problem_key_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "problem_key",
+        "");
+    }
+
+    if (!problem_value_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "problem_value",
+        "");
+    }
+  }
+
+  problem_item* problem_item::
+  _clone (::xml_schema::flags f,
+          ::xml_schema::container* c) const
+  {
+    return new class problem_item (*this, f, c);
+  }
+
+  problem_item::
+  ~problem_item ()
   {
   }
 
@@ -4437,385 +4141,6 @@ namespace XMLProblem
   {
   }
 
-  // adaptivity
-  //
-
-  adaptivity::
-  adaptivity (const adaptivity_type_type& adaptivity_type,
-              const adaptivity_steps_type& adaptivity_steps,
-              const adaptivity_tolerance_type& adaptivity_tolerance,
-              const adaptivity_back_steps_type& adaptivity_back_steps,
-              const adaptivity_redone_each_type& adaptivity_redone_each)
-  : ::xml_schema::type (),
-    adaptivity_type_ (adaptivity_type, ::xml_schema::flags (), this),
-    adaptivity_steps_ (adaptivity_steps, ::xml_schema::flags (), this),
-    adaptivity_tolerance_ (adaptivity_tolerance, ::xml_schema::flags (), this),
-    adaptivity_back_steps_ (adaptivity_back_steps, ::xml_schema::flags (), this),
-    adaptivity_redone_each_ (adaptivity_redone_each, ::xml_schema::flags (), this)
-  {
-  }
-
-  adaptivity::
-  adaptivity (const adaptivity& x,
-              ::xml_schema::flags f,
-              ::xml_schema::container* c)
-  : ::xml_schema::type (x, f, c),
-    adaptivity_type_ (x.adaptivity_type_, f, this),
-    adaptivity_steps_ (x.adaptivity_steps_, f, this),
-    adaptivity_tolerance_ (x.adaptivity_tolerance_, f, this),
-    adaptivity_back_steps_ (x.adaptivity_back_steps_, f, this),
-    adaptivity_redone_each_ (x.adaptivity_redone_each_, f, this)
-  {
-  }
-
-  adaptivity::
-  adaptivity (const ::xercesc::DOMElement& e,
-              ::xml_schema::flags f,
-              ::xml_schema::container* c)
-  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-    adaptivity_type_ (f, this),
-    adaptivity_steps_ (f, this),
-    adaptivity_tolerance_ (f, this),
-    adaptivity_back_steps_ (f, this),
-    adaptivity_redone_each_ (f, this)
-  {
-    if ((f & ::xml_schema::flags::base) == 0)
-    {
-      ::xsd::cxx::xml::dom::parser< char > p (e, false, true);
-      this->parse (p, f);
-    }
-  }
-
-  void adaptivity::
-  parse (::xsd::cxx::xml::dom::parser< char >& p,
-         ::xml_schema::flags f)
-  {
-    while (p.more_attributes ())
-    {
-      const ::xercesc::DOMAttr& i (p.next_attribute ());
-      const ::xsd::cxx::xml::qualified_name< char > n (
-        ::xsd::cxx::xml::dom::name< char > (i));
-
-      if (n.name () == "adaptivity_type" && n.namespace_ ().empty ())
-      {
-        ::std::auto_ptr< adaptivity_type_type > r (
-          adaptivity_type_traits::create (i, f, this));
-
-        this->adaptivity_type_.set (r);
-        continue;
-      }
-
-      if (n.name () == "adaptivity_steps" && n.namespace_ ().empty ())
-      {
-        this->adaptivity_steps_.set (adaptivity_steps_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "adaptivity_tolerance" && n.namespace_ ().empty ())
-      {
-        this->adaptivity_tolerance_.set (adaptivity_tolerance_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "adaptivity_back_steps" && n.namespace_ ().empty ())
-      {
-        this->adaptivity_back_steps_.set (adaptivity_back_steps_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "adaptivity_redone_each" && n.namespace_ ().empty ())
-      {
-        this->adaptivity_redone_each_.set (adaptivity_redone_each_traits::create (i, f, this));
-        continue;
-      }
-    }
-
-    if (!adaptivity_type_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "adaptivity_type",
-        "");
-    }
-
-    if (!adaptivity_steps_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "adaptivity_steps",
-        "");
-    }
-
-    if (!adaptivity_tolerance_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "adaptivity_tolerance",
-        "");
-    }
-
-    if (!adaptivity_back_steps_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "adaptivity_back_steps",
-        "");
-    }
-
-    if (!adaptivity_redone_each_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "adaptivity_redone_each",
-        "");
-    }
-  }
-
-  adaptivity* adaptivity::
-  _clone (::xml_schema::flags f,
-          ::xml_schema::container* c) const
-  {
-    return new class adaptivity (*this, f, c);
-  }
-
-  adaptivity::
-  ~adaptivity ()
-  {
-  }
-
-  // solver
-  //
-
-  solver::
-  solver (const linearity_type_type& linearity_type,
-          const nonlinear_steps_type& nonlinear_steps,
-          const nonlinear_tolerance_type& nonlinear_tolerance,
-          const newton_damping_coeff_type& newton_damping_coeff,
-          const newton_automatic_damping_type& newton_automatic_damping,
-          const newton_automatic_damping_coeff_type& newton_automatic_damping_coeff,
-          const newton_damping_number_to_increase_type& newton_damping_number_to_increase,
-          const picard_anderson_acceleration_type& picard_anderson_acceleration,
-          const picard_anderson_beta_type& picard_anderson_beta,
-          const picard_anderson_vectors_type& picard_anderson_vectors)
-  : ::xml_schema::type (),
-    linearity_type_ (linearity_type, ::xml_schema::flags (), this),
-    nonlinear_steps_ (nonlinear_steps, ::xml_schema::flags (), this),
-    nonlinear_tolerance_ (nonlinear_tolerance, ::xml_schema::flags (), this),
-    nonlinear_convergence_measurement_ (::xml_schema::flags (), this),
-    newton_damping_coeff_ (newton_damping_coeff, ::xml_schema::flags (), this),
-    newton_automatic_damping_ (newton_automatic_damping, ::xml_schema::flags (), this),
-    newton_automatic_damping_coeff_ (newton_automatic_damping_coeff, ::xml_schema::flags (), this),
-    newton_damping_number_to_increase_ (newton_damping_number_to_increase, ::xml_schema::flags (), this),
-    picard_anderson_acceleration_ (picard_anderson_acceleration, ::xml_schema::flags (), this),
-    picard_anderson_beta_ (picard_anderson_beta, ::xml_schema::flags (), this),
-    picard_anderson_vectors_ (picard_anderson_vectors, ::xml_schema::flags (), this)
-  {
-  }
-
-  solver::
-  solver (const solver& x,
-          ::xml_schema::flags f,
-          ::xml_schema::container* c)
-  : ::xml_schema::type (x, f, c),
-    linearity_type_ (x.linearity_type_, f, this),
-    nonlinear_steps_ (x.nonlinear_steps_, f, this),
-    nonlinear_tolerance_ (x.nonlinear_tolerance_, f, this),
-    nonlinear_convergence_measurement_ (x.nonlinear_convergence_measurement_, f, this),
-    newton_damping_coeff_ (x.newton_damping_coeff_, f, this),
-    newton_automatic_damping_ (x.newton_automatic_damping_, f, this),
-    newton_automatic_damping_coeff_ (x.newton_automatic_damping_coeff_, f, this),
-    newton_damping_number_to_increase_ (x.newton_damping_number_to_increase_, f, this),
-    picard_anderson_acceleration_ (x.picard_anderson_acceleration_, f, this),
-    picard_anderson_beta_ (x.picard_anderson_beta_, f, this),
-    picard_anderson_vectors_ (x.picard_anderson_vectors_, f, this)
-  {
-  }
-
-  solver::
-  solver (const ::xercesc::DOMElement& e,
-          ::xml_schema::flags f,
-          ::xml_schema::container* c)
-  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
-    linearity_type_ (f, this),
-    nonlinear_steps_ (f, this),
-    nonlinear_tolerance_ (f, this),
-    nonlinear_convergence_measurement_ (f, this),
-    newton_damping_coeff_ (f, this),
-    newton_automatic_damping_ (f, this),
-    newton_automatic_damping_coeff_ (f, this),
-    newton_damping_number_to_increase_ (f, this),
-    picard_anderson_acceleration_ (f, this),
-    picard_anderson_beta_ (f, this),
-    picard_anderson_vectors_ (f, this)
-  {
-    if ((f & ::xml_schema::flags::base) == 0)
-    {
-      ::xsd::cxx::xml::dom::parser< char > p (e, false, true);
-      this->parse (p, f);
-    }
-  }
-
-  void solver::
-  parse (::xsd::cxx::xml::dom::parser< char >& p,
-         ::xml_schema::flags f)
-  {
-    while (p.more_attributes ())
-    {
-      const ::xercesc::DOMAttr& i (p.next_attribute ());
-      const ::xsd::cxx::xml::qualified_name< char > n (
-        ::xsd::cxx::xml::dom::name< char > (i));
-
-      if (n.name () == "linearity_type" && n.namespace_ ().empty ())
-      {
-        ::std::auto_ptr< linearity_type_type > r (
-          linearity_type_traits::create (i, f, this));
-
-        this->linearity_type_.set (r);
-        continue;
-      }
-
-      if (n.name () == "nonlinear_steps" && n.namespace_ ().empty ())
-      {
-        this->nonlinear_steps_.set (nonlinear_steps_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "nonlinear_tolerance" && n.namespace_ ().empty ())
-      {
-        this->nonlinear_tolerance_.set (nonlinear_tolerance_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "nonlinear_convergence_measurement" && n.namespace_ ().empty ())
-      {
-        ::std::auto_ptr< nonlinear_convergence_measurement_type > r (
-          nonlinear_convergence_measurement_traits::create (i, f, this));
-
-        this->nonlinear_convergence_measurement_.set (r);
-        continue;
-      }
-
-      if (n.name () == "newton_damping_coeff" && n.namespace_ ().empty ())
-      {
-        this->newton_damping_coeff_.set (newton_damping_coeff_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "newton_automatic_damping" && n.namespace_ ().empty ())
-      {
-        this->newton_automatic_damping_.set (newton_automatic_damping_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "newton_automatic_damping_coeff" && n.namespace_ ().empty ())
-      {
-        this->newton_automatic_damping_coeff_.set (newton_automatic_damping_coeff_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "newton_damping_number_to_increase" && n.namespace_ ().empty ())
-      {
-        this->newton_damping_number_to_increase_.set (newton_damping_number_to_increase_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "picard_anderson_acceleration" && n.namespace_ ().empty ())
-      {
-        this->picard_anderson_acceleration_.set (picard_anderson_acceleration_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "picard_anderson_beta" && n.namespace_ ().empty ())
-      {
-        this->picard_anderson_beta_.set (picard_anderson_beta_traits::create (i, f, this));
-        continue;
-      }
-
-      if (n.name () == "picard_anderson_vectors" && n.namespace_ ().empty ())
-      {
-        this->picard_anderson_vectors_.set (picard_anderson_vectors_traits::create (i, f, this));
-        continue;
-      }
-    }
-
-    if (!linearity_type_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "linearity_type",
-        "");
-    }
-
-    if (!nonlinear_steps_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "nonlinear_steps",
-        "");
-    }
-
-    if (!nonlinear_tolerance_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "nonlinear_tolerance",
-        "");
-    }
-
-    if (!newton_damping_coeff_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "newton_damping_coeff",
-        "");
-    }
-
-    if (!newton_automatic_damping_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "newton_automatic_damping",
-        "");
-    }
-
-    if (!newton_automatic_damping_coeff_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "newton_automatic_damping_coeff",
-        "");
-    }
-
-    if (!newton_damping_number_to_increase_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "newton_damping_number_to_increase",
-        "");
-    }
-
-    if (!picard_anderson_acceleration_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "picard_anderson_acceleration",
-        "");
-    }
-
-    if (!picard_anderson_beta_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "picard_anderson_beta",
-        "");
-    }
-
-    if (!picard_anderson_vectors_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "picard_anderson_vectors",
-        "");
-    }
-  }
-
-  solver* solver::
-  _clone (::xml_schema::flags f,
-          ::xml_schema::container* c) const
-  {
-    return new class solver (*this, f, c);
-  }
-
-  solver::
-  ~solver ()
-  {
-  }
-
   // boundaries
   //
 
@@ -4953,6 +4278,76 @@ namespace XMLProblem
 
   materials::
   ~materials ()
+  {
+  }
+
+  // field_config
+  //
+
+  field_config::
+  field_config ()
+  : ::xml_schema::type (),
+    field_item_ (::xml_schema::flags (), this)
+  {
+  }
+
+  field_config::
+  field_config (const field_config& x,
+                ::xml_schema::flags f,
+                ::xml_schema::container* c)
+  : ::xml_schema::type (x, f, c),
+    field_item_ (x.field_item_, f, this)
+  {
+  }
+
+  field_config::
+  field_config (const ::xercesc::DOMElement& e,
+                ::xml_schema::flags f,
+                ::xml_schema::container* c)
+  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    field_item_ (f, this)
+  {
+    if ((f & ::xml_schema::flags::base) == 0)
+    {
+      ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+      this->parse (p, f);
+    }
+  }
+
+  void field_config::
+  parse (::xsd::cxx::xml::dom::parser< char >& p,
+         ::xml_schema::flags f)
+  {
+    for (; p.more_elements (); p.next_element ())
+    {
+      const ::xercesc::DOMElement& i (p.cur_element ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      // field_item
+      //
+      if (n.name () == "field_item" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< field_item_type > r (
+          field_item_traits::create (i, f, this));
+
+        this->field_item_.push_back (r);
+        continue;
+      }
+
+      break;
+    }
+  }
+
+  field_config* field_config::
+  _clone (::xml_schema::flags f,
+          ::xml_schema::container* c) const
+  {
+    return new class field_config (*this, f, c);
+  }
+
+  field_config::
+  ~field_config ()
   {
   }
 
@@ -5560,6 +4955,99 @@ namespace XMLProblem
 
   material::
   ~material ()
+  {
+  }
+
+  // field_item
+  //
+
+  field_item::
+  field_item (const field_key_type& field_key,
+              const field_value_type& field_value)
+  : ::xml_schema::type (),
+    field_key_ (field_key, ::xml_schema::flags (), this),
+    field_value_ (field_value, ::xml_schema::flags (), this)
+  {
+  }
+
+  field_item::
+  field_item (const field_item& x,
+              ::xml_schema::flags f,
+              ::xml_schema::container* c)
+  : ::xml_schema::type (x, f, c),
+    field_key_ (x.field_key_, f, this),
+    field_value_ (x.field_value_, f, this)
+  {
+  }
+
+  field_item::
+  field_item (const ::xercesc::DOMElement& e,
+              ::xml_schema::flags f,
+              ::xml_schema::container* c)
+  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    field_key_ (f, this),
+    field_value_ (f, this)
+  {
+    if ((f & ::xml_schema::flags::base) == 0)
+    {
+      ::xsd::cxx::xml::dom::parser< char > p (e, false, true);
+      this->parse (p, f);
+    }
+  }
+
+  void field_item::
+  parse (::xsd::cxx::xml::dom::parser< char >& p,
+         ::xml_schema::flags f)
+  {
+    while (p.more_attributes ())
+    {
+      const ::xercesc::DOMAttr& i (p.next_attribute ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      if (n.name () == "field_key" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< field_key_type > r (
+          field_key_traits::create (i, f, this));
+
+        this->field_key_.set (r);
+        continue;
+      }
+
+      if (n.name () == "field_value" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< field_value_type > r (
+          field_value_traits::create (i, f, this));
+
+        this->field_value_.set (r);
+        continue;
+      }
+    }
+
+    if (!field_key_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "field_key",
+        "");
+    }
+
+    if (!field_value_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "field_value",
+        "");
+    }
+  }
+
+  field_item* field_item::
+  _clone (::xml_schema::flags f,
+          ::xml_schema::container* c) const
+  {
+    return new class field_item (*this, f, c);
+  }
+
+  field_item::
+  ~field_item ()
   {
   }
 
@@ -6207,15 +5695,10 @@ namespace XMLProblem
   {
     o << ::std::endl << "fields: " << i.fields ();
     o << ::std::endl << "couplings: " << i.couplings ();
+    o << ::std::endl << "problem_config: " << i.problem_config ();
     o << ::std::endl << "coordinate_type: " << i.coordinate_type ();
     o << ::std::endl << "mesh_type: " << i.mesh_type ();
     o << ::std::endl << "matrix_solver: " << i.matrix_solver ();
-    o << ::std::endl << "frequency: " << i.frequency ();
-    o << ::std::endl << "time_method: " << i.time_method ();
-    o << ::std::endl << "time_total: " << i.time_total ();
-    o << ::std::endl << "time_steps: " << i.time_steps ();
-    o << ::std::endl << "time_order: " << i.time_order ();
-    o << ::std::endl << "time_method_tolerance: " << i.time_method_tolerance ();
     return o;
   }
 
@@ -6298,6 +5781,19 @@ namespace XMLProblem
   }
 
   ::std::ostream&
+  operator<< (::std::ostream& o, const problem_config& i)
+  {
+    for (problem_config::problem_item_const_iterator
+         b (i.problem_item ().begin ()), e (i.problem_item ().end ());
+         b != e; ++b)
+    {
+      o << ::std::endl << "problem_item: " << *b;
+    }
+
+    return o;
+  }
+
+  ::std::ostream&
   operator<< (::std::ostream& o, const item& i)
   {
     o << ::std::endl << "key: " << i.key ();
@@ -6340,16 +5836,13 @@ namespace XMLProblem
     o << ::std::endl << "refinement_edges: " << i.refinement_edges ();
     o << ::std::endl << "refinement_labels: " << i.refinement_labels ();
     o << ::std::endl << "polynomial_orders: " << i.polynomial_orders ();
-    o << ::std::endl << "adaptivity: " << i.adaptivity ();
-    o << ::std::endl << "solver: " << i.solver ();
     o << ::std::endl << "boundaries: " << i.boundaries ();
     o << ::std::endl << "materials: " << i.materials ();
+    o << ::std::endl << "field_config: " << i.field_config ();
     o << ::std::endl << "field_id: " << i.field_id ();
     o << ::std::endl << "analysis_type: " << i.analysis_type ();
-    o << ::std::endl << "number_of_refinements: " << i.number_of_refinements ();
-    o << ::std::endl << "polynomial_order: " << i.polynomial_order ();
-    o << ::std::endl << "initial_condition: " << i.initial_condition ();
-    o << ::std::endl << "time_skip: " << i.time_skip ();
+    o << ::std::endl << "adaptivity_type: " << i.adaptivity_type ();
+    o << ::std::endl << "linearity_type: " << i.linearity_type ();
     return o;
   }
 
@@ -6360,6 +5853,14 @@ namespace XMLProblem
     o << ::std::endl << "type: " << i.type ();
     o << ::std::endl << "source_fieldid: " << i.source_fieldid ();
     o << ::std::endl << "target_fieldid: " << i.target_fieldid ();
+    return o;
+  }
+
+  ::std::ostream&
+  operator<< (::std::ostream& o, const problem_item& i)
+  {
+    o << ::std::endl << "problem_key: " << i.problem_key ();
+    o << ::std::endl << "problem_value: " << i.problem_value ();
     return o;
   }
 
@@ -6403,38 +5904,6 @@ namespace XMLProblem
   }
 
   ::std::ostream&
-  operator<< (::std::ostream& o, const adaptivity& i)
-  {
-    o << ::std::endl << "adaptivity_type: " << i.adaptivity_type ();
-    o << ::std::endl << "adaptivity_steps: " << i.adaptivity_steps ();
-    o << ::std::endl << "adaptivity_tolerance: " << i.adaptivity_tolerance ();
-    o << ::std::endl << "adaptivity_back_steps: " << i.adaptivity_back_steps ();
-    o << ::std::endl << "adaptivity_redone_each: " << i.adaptivity_redone_each ();
-    return o;
-  }
-
-  ::std::ostream&
-  operator<< (::std::ostream& o, const solver& i)
-  {
-    o << ::std::endl << "linearity_type: " << i.linearity_type ();
-    o << ::std::endl << "nonlinear_steps: " << i.nonlinear_steps ();
-    o << ::std::endl << "nonlinear_tolerance: " << i.nonlinear_tolerance ();
-    if (i.nonlinear_convergence_measurement ())
-    {
-      o << ::std::endl << "nonlinear_convergence_measurement: " << *i.nonlinear_convergence_measurement ();
-    }
-
-    o << ::std::endl << "newton_damping_coeff: " << i.newton_damping_coeff ();
-    o << ::std::endl << "newton_automatic_damping: " << i.newton_automatic_damping ();
-    o << ::std::endl << "newton_automatic_damping_coeff: " << i.newton_automatic_damping_coeff ();
-    o << ::std::endl << "newton_damping_number_to_increase: " << i.newton_damping_number_to_increase ();
-    o << ::std::endl << "picard_anderson_acceleration: " << i.picard_anderson_acceleration ();
-    o << ::std::endl << "picard_anderson_beta: " << i.picard_anderson_beta ();
-    o << ::std::endl << "picard_anderson_vectors: " << i.picard_anderson_vectors ();
-    return o;
-  }
-
-  ::std::ostream&
   operator<< (::std::ostream& o, const boundaries& i)
   {
     for (boundaries::boundary_const_iterator
@@ -6455,6 +5924,19 @@ namespace XMLProblem
          b != e; ++b)
     {
       o << ::std::endl << "material: " << *b;
+    }
+
+    return o;
+  }
+
+  ::std::ostream&
+  operator<< (::std::ostream& o, const field_config& i)
+  {
+    for (field_config::field_item_const_iterator
+         b (i.field_item ().begin ()), e (i.field_item ().end ());
+         b != e; ++b)
+    {
+      o << ::std::endl << "field_item: " << *b;
     }
 
     return o;
@@ -6502,6 +5984,14 @@ namespace XMLProblem
     o << ::std::endl << "material_types: " << i.material_types ();
     o << ::std::endl << "id: " << i.id ();
     o << ::std::endl << "name: " << i.name ();
+    return o;
+  }
+
+  ::std::ostream&
+  operator<< (::std::ostream& o, const field_item& i)
+  {
+    o << ::std::endl << "field_key: " << i.field_key ();
+    o << ::std::endl << "field_value: " << i.field_value ();
     return o;
   }
 
@@ -7154,6 +6644,17 @@ namespace XMLProblem
       s << i.couplings ();
     }
 
+    // problem_config
+    //
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "problem_config",
+          e));
+
+      s << i.problem_config ();
+    }
+
     // coordinate_type
     //
     {
@@ -7185,72 +6686,6 @@ namespace XMLProblem
           e));
 
       a << i.matrix_solver ();
-    }
-
-    // frequency
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "frequency",
-          e));
-
-      a << i.frequency ();
-    }
-
-    // time_method
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "time_method",
-          e));
-
-      a << i.time_method ();
-    }
-
-    // time_total
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "time_total",
-          e));
-
-      a << i.time_total ();
-    }
-
-    // time_steps
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "time_steps",
-          e));
-
-      a << i.time_steps ();
-    }
-
-    // time_order
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "time_order",
-          e));
-
-      a << i.time_order ();
-    }
-
-    // time_method_tolerance
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "time_method_tolerance",
-          e));
-
-      a << i.time_method_tolerance ();
     }
   }
 
@@ -7368,6 +6803,26 @@ namespace XMLProblem
       ::xercesc::DOMElement& s (
         ::xsd::cxx::xml::dom::create_element (
           "coupling",
+          e));
+
+      s << *b;
+    }
+  }
+
+  void
+  operator<< (::xercesc::DOMElement& e, const problem_config& i)
+  {
+    e << static_cast< const ::xml_schema::type& > (i);
+
+    // problem_item
+    //
+    for (problem_config::problem_item_const_iterator
+         b (i.problem_item ().begin ()), n (i.problem_item ().end ());
+         b != n; ++b)
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "problem_item",
           e));
 
       s << *b;
@@ -7579,28 +7034,6 @@ namespace XMLProblem
       s << i.polynomial_orders ();
     }
 
-    // adaptivity
-    //
-    {
-      ::xercesc::DOMElement& s (
-        ::xsd::cxx::xml::dom::create_element (
-          "adaptivity",
-          e));
-
-      s << i.adaptivity ();
-    }
-
-    // solver
-    //
-    {
-      ::xercesc::DOMElement& s (
-        ::xsd::cxx::xml::dom::create_element (
-          "solver",
-          e));
-
-      s << i.solver ();
-    }
-
     // boundaries
     //
     {
@@ -7621,6 +7054,17 @@ namespace XMLProblem
           e));
 
       s << i.materials ();
+    }
+
+    // field_config
+    //
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "field_config",
+          e));
+
+      s << i.field_config ();
     }
 
     // field_id
@@ -7645,48 +7089,26 @@ namespace XMLProblem
       a << i.analysis_type ();
     }
 
-    // number_of_refinements
+    // adaptivity_type
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "number_of_refinements",
+          "adaptivity_type",
           e));
 
-      a << i.number_of_refinements ();
+      a << i.adaptivity_type ();
     }
 
-    // polynomial_order
+    // linearity_type
     //
     {
       ::xercesc::DOMAttr& a (
         ::xsd::cxx::xml::dom::create_attribute (
-          "polynomial_order",
+          "linearity_type",
           e));
 
-      a << i.polynomial_order ();
-    }
-
-    // initial_condition
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "initial_condition",
-          e));
-
-      a << i.initial_condition ();
-    }
-
-    // time_skip
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "time_skip",
-          e));
-
-      a << i.time_skip ();
+      a << i.linearity_type ();
     }
   }
 
@@ -7737,6 +7159,34 @@ namespace XMLProblem
           e));
 
       a << i.target_fieldid ();
+    }
+  }
+
+  void
+  operator<< (::xercesc::DOMElement& e, const problem_item& i)
+  {
+    e << static_cast< const ::xml_schema::type& > (i);
+
+    // problem_key
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "problem_key",
+          e));
+
+      a << i.problem_key ();
+    }
+
+    // problem_value
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "problem_value",
+          e));
+
+      a << i.problem_value ();
     }
   }
 
@@ -7801,195 +7251,6 @@ namespace XMLProblem
   }
 
   void
-  operator<< (::xercesc::DOMElement& e, const adaptivity& i)
-  {
-    e << static_cast< const ::xml_schema::type& > (i);
-
-    // adaptivity_type
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "adaptivity_type",
-          e));
-
-      a << i.adaptivity_type ();
-    }
-
-    // adaptivity_steps
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "adaptivity_steps",
-          e));
-
-      a << i.adaptivity_steps ();
-    }
-
-    // adaptivity_tolerance
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "adaptivity_tolerance",
-          e));
-
-      a << i.adaptivity_tolerance ();
-    }
-
-    // adaptivity_back_steps
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "adaptivity_back_steps",
-          e));
-
-      a << i.adaptivity_back_steps ();
-    }
-
-    // adaptivity_redone_each
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "adaptivity_redone_each",
-          e));
-
-      a << i.adaptivity_redone_each ();
-    }
-  }
-
-  void
-  operator<< (::xercesc::DOMElement& e, const solver& i)
-  {
-    e << static_cast< const ::xml_schema::type& > (i);
-
-    // linearity_type
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "linearity_type",
-          e));
-
-      a << i.linearity_type ();
-    }
-
-    // nonlinear_steps
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "nonlinear_steps",
-          e));
-
-      a << i.nonlinear_steps ();
-    }
-
-    // nonlinear_tolerance
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "nonlinear_tolerance",
-          e));
-
-      a << i.nonlinear_tolerance ();
-    }
-
-    // nonlinear_convergence_measurement
-    //
-    if (i.nonlinear_convergence_measurement ())
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "nonlinear_convergence_measurement",
-          e));
-
-      a << *i.nonlinear_convergence_measurement ();
-    }
-
-    // newton_damping_coeff
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "newton_damping_coeff",
-          e));
-
-      a << i.newton_damping_coeff ();
-    }
-
-    // newton_automatic_damping
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "newton_automatic_damping",
-          e));
-
-      a << i.newton_automatic_damping ();
-    }
-
-    // newton_automatic_damping_coeff
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "newton_automatic_damping_coeff",
-          e));
-
-      a << i.newton_automatic_damping_coeff ();
-    }
-
-    // newton_damping_number_to_increase
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "newton_damping_number_to_increase",
-          e));
-
-      a << i.newton_damping_number_to_increase ();
-    }
-
-    // picard_anderson_acceleration
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "picard_anderson_acceleration",
-          e));
-
-      a << i.picard_anderson_acceleration ();
-    }
-
-    // picard_anderson_beta
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "picard_anderson_beta",
-          e));
-
-      a << i.picard_anderson_beta ();
-    }
-
-    // picard_anderson_vectors
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "picard_anderson_vectors",
-          e));
-
-      a << i.picard_anderson_vectors ();
-    }
-  }
-
-  void
   operator<< (::xercesc::DOMElement& e, const boundaries& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
@@ -8023,6 +7284,26 @@ namespace XMLProblem
       ::xercesc::DOMElement& s (
         ::xsd::cxx::xml::dom::create_element (
           "material",
+          e));
+
+      s << *b;
+    }
+  }
+
+  void
+  operator<< (::xercesc::DOMElement& e, const field_config& i)
+  {
+    e << static_cast< const ::xml_schema::type& > (i);
+
+    // field_item
+    //
+    for (field_config::field_item_const_iterator
+         b (i.field_item ().begin ()), n (i.field_item ().end ());
+         b != n; ++b)
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "field_item",
           e));
 
       s << *b;
@@ -8221,6 +7502,34 @@ namespace XMLProblem
           e));
 
       a << i.name ();
+    }
+  }
+
+  void
+  operator<< (::xercesc::DOMElement& e, const field_item& i)
+  {
+    e << static_cast< const ::xml_schema::type& > (i);
+
+    // field_key
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "field_key",
+          e));
+
+      a << i.field_key ();
+    }
+
+    // field_value
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "field_value",
+          e));
+
+      a << i.field_value ();
     }
   }
 

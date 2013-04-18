@@ -178,7 +178,7 @@ double Block::timeSkip() const
         if (field->fieldInfo()->analysisType() == AnalysisType_Transient)
             continue;
 
-        double sActual = field->fieldInfo()->timeSkip();
+        double sActual = field->fieldInfo()->value(FieldInfo::TransientTimeSkip).toDouble();
         if ((skip == 0.) || (sActual < skip))
             skip = sActual;
     }
@@ -200,12 +200,12 @@ AdaptivityType Block::adaptivityType() const
 
 int Block::adaptivitySteps() const
 {
-    int as = m_fields.at(0)->fieldInfo()->adaptivitySteps();
+    int as = m_fields.at(0)->fieldInfo()->value(FieldInfo::AdaptivitySteps).toInt();
 
     foreach (Field *field, m_fields)
     {
         // todo: ensure in GUI
-        assert(field->fieldInfo()->adaptivitySteps() == as);
+        assert(field->fieldInfo()->value(FieldInfo::AdaptivitySteps).toInt() == as);
     }
 
     return as;
@@ -213,12 +213,12 @@ int Block::adaptivitySteps() const
 
 int Block::adaptivityBackSteps() const
 {
-    int abs = m_fields.at(0)->fieldInfo()->adaptivityBackSteps();
+    int abs = m_fields.at(0)->fieldInfo()->value(FieldInfo::AdaptivityTransientBackSteps).toInt();
 
     foreach (Field *field, m_fields)
     {
         // todo: ensure in GUI
-        assert(field->fieldInfo()->adaptivityBackSteps() == abs);
+        assert(field->fieldInfo()->value(FieldInfo::AdaptivityTransientBackSteps).toInt() == abs);
     }
 
     return abs;
@@ -226,12 +226,12 @@ int Block::adaptivityBackSteps() const
 
 int Block::adaptivityRedoneEach() const
 {
-    int re = m_fields.at(0)->fieldInfo()->adaptivityRedoneEach();
+    int re = m_fields.at(0)->fieldInfo()->value(FieldInfo::AdaptivityTransientRedoneEach).toInt();
 
     foreach (Field *field, m_fields)
     {
         // todo: ensure in GUI
-        assert(field->fieldInfo()->adaptivityRedoneEach() == re);
+        assert(field->fieldInfo()->value(FieldInfo::AdaptivityTransientRedoneEach).toInt() == re);
     }
 
     return re;
@@ -239,12 +239,12 @@ int Block::adaptivityRedoneEach() const
 
 double Block::adaptivityTolerance() const
 {
-    double at = m_fields.at(0)->fieldInfo()->adaptivityTolerance();
+    double at = m_fields.at(0)->fieldInfo()->value(FieldInfo::AdaptivityTolerance).toDouble();
 
     foreach (Field *field, m_fields)
     {
         // todo: ensure in GUI
-        assert(field->fieldInfo()->adaptivityTolerance() == at);
+        assert(field->fieldInfo()->value(FieldInfo::AdaptivityTolerance).toDouble() == at);
     }
 
     return at;
@@ -309,8 +309,8 @@ double Block::nonlinearTolerance() const
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if (fieldInfo->nonlinearTolerance() < tolerance)
-            tolerance = fieldInfo->nonlinearTolerance();
+        if (fieldInfo->value(FieldInfo::NonlinearTolerance).toDouble() < tolerance)
+            tolerance = fieldInfo->value(FieldInfo::NonlinearTolerance).toDouble();
     }
 
     return tolerance;
@@ -323,8 +323,8 @@ int Block::nonlinearSteps() const
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if (fieldInfo->nonlinearSteps() > steps)
-            steps = fieldInfo->nonlinearSteps();
+        if (fieldInfo->value(FieldInfo::NonlinearSteps).toInt() > steps)
+            steps = fieldInfo->value(FieldInfo::NonlinearSteps).toInt();
     }
 
     return steps;
@@ -336,7 +336,7 @@ Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement Block::nonlinearC
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        return fieldInfo->nonlinearConvergenceMeasurement();
+        return (Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt();
     }
 
     return Hermes::Hermes2D::NewtonSolver<double>::RelativeToInitialNorm;
@@ -347,7 +347,7 @@ bool Block::newtonAutomaticDamping() const
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if (!fieldInfo->newtonAutomaticDamping())
+        if (!fieldInfo->value(FieldInfo::NewtonAutomaticDamping).toBool())
             return false;
     }
 
@@ -361,8 +361,8 @@ double Block::newtonDampingCoeff() const
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if (fieldInfo->newtonDampingCoeff() < coeff)
-            coeff = fieldInfo->newtonDampingCoeff();
+        if (fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble() < coeff)
+            coeff = fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble();
     }
 
     return coeff;
@@ -375,8 +375,8 @@ double Block::newtonAutomaticDampingCoeff() const
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if (fieldInfo->newtonAutomaticDampingCoeff() < coeff)
-            coeff = fieldInfo->newtonAutomaticDampingCoeff();
+        if (fieldInfo->value(FieldInfo::NewtonAutomaticDampingCoeff).toDouble() < coeff)
+            coeff = fieldInfo->value(FieldInfo::NewtonAutomaticDampingCoeff).toDouble();
     }
 
     return coeff;
@@ -389,8 +389,8 @@ int Block::newtonDampingNumberToIncrease() const
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if (fieldInfo->newtonDampingNumberToIncrease() > number)
-            number = fieldInfo->newtonDampingNumberToIncrease();
+        if (fieldInfo->value(FieldInfo::NewtonDampingNumberToIncrease).toDouble() > number)
+            number = fieldInfo->value(FieldInfo::NewtonDampingNumberToIncrease).toDouble();
     }
 
     return number;
@@ -401,7 +401,7 @@ bool Block::picardAndersonAcceleration() const
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if (!fieldInfo->picardAndersonAcceleration())
+        if (!fieldInfo->value(FieldInfo::PicardAndersonAcceleration).toBool())
             return false;
     }
 
@@ -416,8 +416,8 @@ double Block::picardAndersonBeta() const
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         // TODO: check ">"
-        if (fieldInfo->picardAndersonBeta() > number)
-            number = fieldInfo->picardAndersonBeta();
+        if (fieldInfo->value(FieldInfo::PicardAndersonBeta).toDouble() > number)
+            number = fieldInfo->value(FieldInfo::PicardAndersonBeta).toDouble();
     }
 
     return number;
@@ -430,8 +430,8 @@ int Block::picardAndersonNumberOfLastVectors() const
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if (fieldInfo->picardAndersonNumberOfLastVectors() > number)
-            number = fieldInfo->picardAndersonNumberOfLastVectors();
+        if (fieldInfo->value(FieldInfo::PicardAndersonNumberOfLastVectors).toInt() > number)
+            number = fieldInfo->value(FieldInfo::PicardAndersonNumberOfLastVectors).toInt();
     }
 
     return number;

@@ -262,24 +262,26 @@ namespace XMLProblem
   class labels;
   class fields;
   class couplings;
+  class problem_config;
   class item;
   class node;
   class edge;
   class label;
   class field;
   class coupling;
+  class problem_item;
   class refinement_edges;
   class refinement_labels;
   class polynomial_orders;
-  class adaptivity;
-  class solver;
   class boundaries;
   class materials;
+  class field_config;
   class refinement_edge;
   class refinement_label;
   class polynomial_order;
   class boundary;
   class material;
+  class field_item;
   class boundary_edges;
   class boundary_types;
   class material_labels;
@@ -544,6 +546,23 @@ namespace XMLProblem
     void
     couplings (::std::auto_ptr< couplings_type > p);
 
+    // problem_config
+    // 
+    typedef ::XMLProblem::problem_config problem_config_type;
+    typedef ::xsd::cxx::tree::traits< problem_config_type, char > problem_config_traits;
+
+    const problem_config_type&
+    problem_config () const;
+
+    problem_config_type&
+    problem_config ();
+
+    void
+    problem_config (const problem_config_type& x);
+
+    void
+    problem_config (::std::auto_ptr< problem_config_type > p);
+
     // coordinate_type
     // 
     typedef ::xml_schema::string coordinate_type_type;
@@ -595,118 +614,21 @@ namespace XMLProblem
     void
     matrix_solver (::std::auto_ptr< matrix_solver_type > p);
 
-    // frequency
-    // 
-    typedef ::xml_schema::float_ frequency_type;
-    typedef ::xsd::cxx::tree::traits< frequency_type, char > frequency_traits;
-
-    const frequency_type&
-    frequency () const;
-
-    frequency_type&
-    frequency ();
-
-    void
-    frequency (const frequency_type& x);
-
-    // time_method
-    // 
-    typedef ::xml_schema::string time_method_type;
-    typedef ::xsd::cxx::tree::traits< time_method_type, char > time_method_traits;
-
-    const time_method_type&
-    time_method () const;
-
-    time_method_type&
-    time_method ();
-
-    void
-    time_method (const time_method_type& x);
-
-    void
-    time_method (::std::auto_ptr< time_method_type > p);
-
-    // time_total
-    // 
-    typedef ::xml_schema::float_ time_total_type;
-    typedef ::xsd::cxx::tree::traits< time_total_type, char > time_total_traits;
-
-    const time_total_type&
-    time_total () const;
-
-    time_total_type&
-    time_total ();
-
-    void
-    time_total (const time_total_type& x);
-
-    // time_steps
-    // 
-    typedef ::xml_schema::int_ time_steps_type;
-    typedef ::xsd::cxx::tree::traits< time_steps_type, char > time_steps_traits;
-
-    const time_steps_type&
-    time_steps () const;
-
-    time_steps_type&
-    time_steps ();
-
-    void
-    time_steps (const time_steps_type& x);
-
-    // time_order
-    // 
-    typedef ::xml_schema::int_ time_order_type;
-    typedef ::xsd::cxx::tree::traits< time_order_type, char > time_order_traits;
-
-    const time_order_type&
-    time_order () const;
-
-    time_order_type&
-    time_order ();
-
-    void
-    time_order (const time_order_type& x);
-
-    // time_method_tolerance
-    // 
-    typedef ::xml_schema::float_ time_method_tolerance_type;
-    typedef ::xsd::cxx::tree::traits< time_method_tolerance_type, char > time_method_tolerance_traits;
-
-    const time_method_tolerance_type&
-    time_method_tolerance () const;
-
-    time_method_tolerance_type&
-    time_method_tolerance ();
-
-    void
-    time_method_tolerance (const time_method_tolerance_type& x);
-
     // Constructors.
     //
     problem (const fields_type&,
              const couplings_type&,
+             const problem_config_type&,
              const coordinate_type_type&,
              const mesh_type_type&,
-             const matrix_solver_type&,
-             const frequency_type&,
-             const time_method_type&,
-             const time_total_type&,
-             const time_steps_type&,
-             const time_order_type&,
-             const time_method_tolerance_type&);
+             const matrix_solver_type&);
 
     problem (::std::auto_ptr< fields_type >&,
              ::std::auto_ptr< couplings_type >&,
+             ::std::auto_ptr< problem_config_type >&,
              const coordinate_type_type&,
              const mesh_type_type&,
-             const matrix_solver_type&,
-             const frequency_type&,
-             const time_method_type&,
-             const time_total_type&,
-             const time_steps_type&,
-             const time_order_type&,
-             const time_method_tolerance_type&);
+             const matrix_solver_type&);
 
     problem (const ::xercesc::DOMElement& e,
              ::xml_schema::flags f = 0,
@@ -733,15 +655,10 @@ namespace XMLProblem
     protected:
     ::xsd::cxx::tree::one< fields_type > fields_;
     ::xsd::cxx::tree::one< couplings_type > couplings_;
+    ::xsd::cxx::tree::one< problem_config_type > problem_config_;
     ::xsd::cxx::tree::one< coordinate_type_type > coordinate_type_;
     ::xsd::cxx::tree::one< mesh_type_type > mesh_type_;
     ::xsd::cxx::tree::one< matrix_solver_type > matrix_solver_;
-    ::xsd::cxx::tree::one< frequency_type > frequency_;
-    ::xsd::cxx::tree::one< time_method_type > time_method_;
-    ::xsd::cxx::tree::one< time_total_type > time_total_;
-    ::xsd::cxx::tree::one< time_steps_type > time_steps_;
-    ::xsd::cxx::tree::one< time_order_type > time_order_;
-    ::xsd::cxx::tree::one< time_method_tolerance_type > time_method_tolerance_;
   };
 
   class config: public ::xml_schema::type
@@ -1042,6 +959,56 @@ namespace XMLProblem
 
     protected:
     coupling_sequence coupling_;
+  };
+
+  class problem_config: public ::xml_schema::type
+  {
+    public:
+    // problem_item
+    // 
+    typedef ::XMLProblem::problem_item problem_item_type;
+    typedef ::xsd::cxx::tree::sequence< problem_item_type > problem_item_sequence;
+    typedef problem_item_sequence::iterator problem_item_iterator;
+    typedef problem_item_sequence::const_iterator problem_item_const_iterator;
+    typedef ::xsd::cxx::tree::traits< problem_item_type, char > problem_item_traits;
+
+    const problem_item_sequence&
+    problem_item () const;
+
+    problem_item_sequence&
+    problem_item ();
+
+    void
+    problem_item (const problem_item_sequence& s);
+
+    // Constructors.
+    //
+    problem_config ();
+
+    problem_config (const ::xercesc::DOMElement& e,
+                    ::xml_schema::flags f = 0,
+                    ::xml_schema::container* c = 0);
+
+    problem_config (const problem_config& x,
+                    ::xml_schema::flags f = 0,
+                    ::xml_schema::container* c = 0);
+
+    virtual problem_config*
+    _clone (::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0) const;
+
+    virtual 
+    ~problem_config ();
+
+    // Implementation.
+    //
+    protected:
+    void
+    parse (::xsd::cxx::xml::dom::parser< char >&,
+           ::xml_schema::flags);
+
+    protected:
+    problem_item_sequence problem_item_;
   };
 
   class item: public ::xml_schema::type
@@ -1436,40 +1403,6 @@ namespace XMLProblem
     void
     polynomial_orders (::std::auto_ptr< polynomial_orders_type > p);
 
-    // adaptivity
-    // 
-    typedef ::XMLProblem::adaptivity adaptivity_type;
-    typedef ::xsd::cxx::tree::traits< adaptivity_type, char > adaptivity_traits;
-
-    const adaptivity_type&
-    adaptivity () const;
-
-    adaptivity_type&
-    adaptivity ();
-
-    void
-    adaptivity (const adaptivity_type& x);
-
-    void
-    adaptivity (::std::auto_ptr< adaptivity_type > p);
-
-    // solver
-    // 
-    typedef ::XMLProblem::solver solver_type;
-    typedef ::xsd::cxx::tree::traits< solver_type, char > solver_traits;
-
-    const solver_type&
-    solver () const;
-
-    solver_type&
-    solver ();
-
-    void
-    solver (const solver_type& x);
-
-    void
-    solver (::std::auto_ptr< solver_type > p);
-
     // boundaries
     // 
     typedef ::XMLProblem::boundaries boundaries_type;
@@ -1503,6 +1436,23 @@ namespace XMLProblem
 
     void
     materials (::std::auto_ptr< materials_type > p);
+
+    // field_config
+    // 
+    typedef ::XMLProblem::field_config field_config_type;
+    typedef ::xsd::cxx::tree::traits< field_config_type, char > field_config_traits;
+
+    const field_config_type&
+    field_config () const;
+
+    field_config_type&
+    field_config ();
+
+    void
+    field_config (const field_config_type& x);
+
+    void
+    field_config (::std::auto_ptr< field_config_type > p);
 
     // field_id
     // 
@@ -1538,91 +1488,63 @@ namespace XMLProblem
     void
     analysis_type (::std::auto_ptr< analysis_type_type > p);
 
-    // number_of_refinements
+    // adaptivity_type
     // 
-    typedef ::xml_schema::int_ number_of_refinements_type;
-    typedef ::xsd::cxx::tree::traits< number_of_refinements_type, char > number_of_refinements_traits;
+    typedef ::xml_schema::string adaptivity_type_type;
+    typedef ::xsd::cxx::tree::traits< adaptivity_type_type, char > adaptivity_type_traits;
 
-    const number_of_refinements_type&
-    number_of_refinements () const;
+    const adaptivity_type_type&
+    adaptivity_type () const;
 
-    number_of_refinements_type&
-    number_of_refinements ();
+    adaptivity_type_type&
+    adaptivity_type ();
 
     void
-    number_of_refinements (const number_of_refinements_type& x);
-
-    // polynomial_order
-    // 
-    typedef ::xml_schema::int_ polynomial_order_type;
-    typedef ::xsd::cxx::tree::traits< polynomial_order_type, char > polynomial_order_traits;
-
-    const polynomial_order_type&
-    polynomial_order () const;
-
-    polynomial_order_type&
-    polynomial_order ();
+    adaptivity_type (const adaptivity_type_type& x);
 
     void
-    polynomial_order (const polynomial_order_type& x);
+    adaptivity_type (::std::auto_ptr< adaptivity_type_type > p);
 
-    // initial_condition
+    // linearity_type
     // 
-    typedef ::xml_schema::float_ initial_condition_type;
-    typedef ::xsd::cxx::tree::traits< initial_condition_type, char > initial_condition_traits;
+    typedef ::xml_schema::string linearity_type_type;
+    typedef ::xsd::cxx::tree::traits< linearity_type_type, char > linearity_type_traits;
 
-    const initial_condition_type&
-    initial_condition () const;
+    const linearity_type_type&
+    linearity_type () const;
 
-    initial_condition_type&
-    initial_condition ();
+    linearity_type_type&
+    linearity_type ();
 
     void
-    initial_condition (const initial_condition_type& x);
-
-    // time_skip
-    // 
-    typedef ::xml_schema::int_ time_skip_type;
-    typedef ::xsd::cxx::tree::traits< time_skip_type, char > time_skip_traits;
-
-    const time_skip_type&
-    time_skip () const;
-
-    time_skip_type&
-    time_skip ();
+    linearity_type (const linearity_type_type& x);
 
     void
-    time_skip (const time_skip_type& x);
+    linearity_type (::std::auto_ptr< linearity_type_type > p);
 
     // Constructors.
     //
     field (const refinement_edges_type&,
            const refinement_labels_type&,
            const polynomial_orders_type&,
-           const adaptivity_type&,
-           const solver_type&,
            const boundaries_type&,
            const materials_type&,
+           const field_config_type&,
            const field_id_type&,
            const analysis_type_type&,
-           const number_of_refinements_type&,
-           const polynomial_order_type&,
-           const initial_condition_type&,
-           const time_skip_type&);
+           const adaptivity_type_type&,
+           const linearity_type_type&);
 
     field (::std::auto_ptr< refinement_edges_type >&,
            ::std::auto_ptr< refinement_labels_type >&,
            ::std::auto_ptr< polynomial_orders_type >&,
-           ::std::auto_ptr< adaptivity_type >&,
-           ::std::auto_ptr< solver_type >&,
            ::std::auto_ptr< boundaries_type >&,
            ::std::auto_ptr< materials_type >&,
+           ::std::auto_ptr< field_config_type >&,
            const field_id_type&,
            const analysis_type_type&,
-           const number_of_refinements_type&,
-           const polynomial_order_type&,
-           const initial_condition_type&,
-           const time_skip_type&);
+           const adaptivity_type_type&,
+           const linearity_type_type&);
 
     field (const ::xercesc::DOMElement& e,
            ::xml_schema::flags f = 0,
@@ -1650,16 +1572,13 @@ namespace XMLProblem
     ::xsd::cxx::tree::one< refinement_edges_type > refinement_edges_;
     ::xsd::cxx::tree::one< refinement_labels_type > refinement_labels_;
     ::xsd::cxx::tree::one< polynomial_orders_type > polynomial_orders_;
-    ::xsd::cxx::tree::one< adaptivity_type > adaptivity_;
-    ::xsd::cxx::tree::one< solver_type > solver_;
     ::xsd::cxx::tree::one< boundaries_type > boundaries_;
     ::xsd::cxx::tree::one< materials_type > materials_;
+    ::xsd::cxx::tree::one< field_config_type > field_config_;
     ::xsd::cxx::tree::one< field_id_type > field_id_;
     ::xsd::cxx::tree::one< analysis_type_type > analysis_type_;
-    ::xsd::cxx::tree::one< number_of_refinements_type > number_of_refinements_;
-    ::xsd::cxx::tree::one< polynomial_order_type > polynomial_order_;
-    ::xsd::cxx::tree::one< initial_condition_type > initial_condition_;
-    ::xsd::cxx::tree::one< time_skip_type > time_skip_;
+    ::xsd::cxx::tree::one< adaptivity_type_type > adaptivity_type_;
+    ::xsd::cxx::tree::one< linearity_type_type > linearity_type_;
   };
 
   class coupling: public ::xml_schema::type
@@ -1767,6 +1686,75 @@ namespace XMLProblem
     ::xsd::cxx::tree::one< type_type > type_;
     ::xsd::cxx::tree::one< source_fieldid_type > source_fieldid_;
     ::xsd::cxx::tree::one< target_fieldid_type > target_fieldid_;
+  };
+
+  class problem_item: public ::xml_schema::type
+  {
+    public:
+    // problem_key
+    // 
+    typedef ::xml_schema::string problem_key_type;
+    typedef ::xsd::cxx::tree::traits< problem_key_type, char > problem_key_traits;
+
+    const problem_key_type&
+    problem_key () const;
+
+    problem_key_type&
+    problem_key ();
+
+    void
+    problem_key (const problem_key_type& x);
+
+    void
+    problem_key (::std::auto_ptr< problem_key_type > p);
+
+    // problem_value
+    // 
+    typedef ::xml_schema::string problem_value_type;
+    typedef ::xsd::cxx::tree::traits< problem_value_type, char > problem_value_traits;
+
+    const problem_value_type&
+    problem_value () const;
+
+    problem_value_type&
+    problem_value ();
+
+    void
+    problem_value (const problem_value_type& x);
+
+    void
+    problem_value (::std::auto_ptr< problem_value_type > p);
+
+    // Constructors.
+    //
+    problem_item (const problem_key_type&,
+                  const problem_value_type&);
+
+    problem_item (const ::xercesc::DOMElement& e,
+                  ::xml_schema::flags f = 0,
+                  ::xml_schema::container* c = 0);
+
+    problem_item (const problem_item& x,
+                  ::xml_schema::flags f = 0,
+                  ::xml_schema::container* c = 0);
+
+    virtual problem_item*
+    _clone (::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0) const;
+
+    virtual 
+    ~problem_item ();
+
+    // Implementation.
+    //
+    protected:
+    void
+    parse (::xsd::cxx::xml::dom::parser< char >&,
+           ::xml_schema::flags);
+
+    protected:
+    ::xsd::cxx::tree::one< problem_key_type > problem_key_;
+    ::xsd::cxx::tree::one< problem_value_type > problem_value_;
   };
 
   class refinement_edges: public ::xml_schema::type
@@ -1919,336 +1907,6 @@ namespace XMLProblem
     polynomial_order_sequence polynomial_order_;
   };
 
-  class adaptivity: public ::xml_schema::type
-  {
-    public:
-    // adaptivity_type
-    // 
-    typedef ::xml_schema::string adaptivity_type_type;
-    typedef ::xsd::cxx::tree::traits< adaptivity_type_type, char > adaptivity_type_traits;
-
-    const adaptivity_type_type&
-    adaptivity_type () const;
-
-    adaptivity_type_type&
-    adaptivity_type ();
-
-    void
-    adaptivity_type (const adaptivity_type_type& x);
-
-    void
-    adaptivity_type (::std::auto_ptr< adaptivity_type_type > p);
-
-    // adaptivity_steps
-    // 
-    typedef ::xml_schema::int_ adaptivity_steps_type;
-    typedef ::xsd::cxx::tree::traits< adaptivity_steps_type, char > adaptivity_steps_traits;
-
-    const adaptivity_steps_type&
-    adaptivity_steps () const;
-
-    adaptivity_steps_type&
-    adaptivity_steps ();
-
-    void
-    adaptivity_steps (const adaptivity_steps_type& x);
-
-    // adaptivity_tolerance
-    // 
-    typedef ::xml_schema::float_ adaptivity_tolerance_type;
-    typedef ::xsd::cxx::tree::traits< adaptivity_tolerance_type, char > adaptivity_tolerance_traits;
-
-    const adaptivity_tolerance_type&
-    adaptivity_tolerance () const;
-
-    adaptivity_tolerance_type&
-    adaptivity_tolerance ();
-
-    void
-    adaptivity_tolerance (const adaptivity_tolerance_type& x);
-
-    // adaptivity_back_steps
-    // 
-    typedef ::xml_schema::int_ adaptivity_back_steps_type;
-    typedef ::xsd::cxx::tree::traits< adaptivity_back_steps_type, char > adaptivity_back_steps_traits;
-
-    const adaptivity_back_steps_type&
-    adaptivity_back_steps () const;
-
-    adaptivity_back_steps_type&
-    adaptivity_back_steps ();
-
-    void
-    adaptivity_back_steps (const adaptivity_back_steps_type& x);
-
-    // adaptivity_redone_each
-    // 
-    typedef ::xml_schema::int_ adaptivity_redone_each_type;
-    typedef ::xsd::cxx::tree::traits< adaptivity_redone_each_type, char > adaptivity_redone_each_traits;
-
-    const adaptivity_redone_each_type&
-    adaptivity_redone_each () const;
-
-    adaptivity_redone_each_type&
-    adaptivity_redone_each ();
-
-    void
-    adaptivity_redone_each (const adaptivity_redone_each_type& x);
-
-    // Constructors.
-    //
-    adaptivity (const adaptivity_type_type&,
-                const adaptivity_steps_type&,
-                const adaptivity_tolerance_type&,
-                const adaptivity_back_steps_type&,
-                const adaptivity_redone_each_type&);
-
-    adaptivity (const ::xercesc::DOMElement& e,
-                ::xml_schema::flags f = 0,
-                ::xml_schema::container* c = 0);
-
-    adaptivity (const adaptivity& x,
-                ::xml_schema::flags f = 0,
-                ::xml_schema::container* c = 0);
-
-    virtual adaptivity*
-    _clone (::xml_schema::flags f = 0,
-            ::xml_schema::container* c = 0) const;
-
-    virtual 
-    ~adaptivity ();
-
-    // Implementation.
-    //
-    protected:
-    void
-    parse (::xsd::cxx::xml::dom::parser< char >&,
-           ::xml_schema::flags);
-
-    protected:
-    ::xsd::cxx::tree::one< adaptivity_type_type > adaptivity_type_;
-    ::xsd::cxx::tree::one< adaptivity_steps_type > adaptivity_steps_;
-    ::xsd::cxx::tree::one< adaptivity_tolerance_type > adaptivity_tolerance_;
-    ::xsd::cxx::tree::one< adaptivity_back_steps_type > adaptivity_back_steps_;
-    ::xsd::cxx::tree::one< adaptivity_redone_each_type > adaptivity_redone_each_;
-  };
-
-  class solver: public ::xml_schema::type
-  {
-    public:
-    // linearity_type
-    // 
-    typedef ::xml_schema::string linearity_type_type;
-    typedef ::xsd::cxx::tree::traits< linearity_type_type, char > linearity_type_traits;
-
-    const linearity_type_type&
-    linearity_type () const;
-
-    linearity_type_type&
-    linearity_type ();
-
-    void
-    linearity_type (const linearity_type_type& x);
-
-    void
-    linearity_type (::std::auto_ptr< linearity_type_type > p);
-
-    // nonlinear_steps
-    // 
-    typedef ::xml_schema::int_ nonlinear_steps_type;
-    typedef ::xsd::cxx::tree::traits< nonlinear_steps_type, char > nonlinear_steps_traits;
-
-    const nonlinear_steps_type&
-    nonlinear_steps () const;
-
-    nonlinear_steps_type&
-    nonlinear_steps ();
-
-    void
-    nonlinear_steps (const nonlinear_steps_type& x);
-
-    // nonlinear_tolerance
-    // 
-    typedef ::xml_schema::float_ nonlinear_tolerance_type;
-    typedef ::xsd::cxx::tree::traits< nonlinear_tolerance_type, char > nonlinear_tolerance_traits;
-
-    const nonlinear_tolerance_type&
-    nonlinear_tolerance () const;
-
-    nonlinear_tolerance_type&
-    nonlinear_tolerance ();
-
-    void
-    nonlinear_tolerance (const nonlinear_tolerance_type& x);
-
-    // nonlinear_convergence_measurement
-    // 
-    typedef ::xml_schema::string nonlinear_convergence_measurement_type;
-    typedef ::xsd::cxx::tree::optional< nonlinear_convergence_measurement_type > nonlinear_convergence_measurement_optional;
-    typedef ::xsd::cxx::tree::traits< nonlinear_convergence_measurement_type, char > nonlinear_convergence_measurement_traits;
-
-    const nonlinear_convergence_measurement_optional&
-    nonlinear_convergence_measurement () const;
-
-    nonlinear_convergence_measurement_optional&
-    nonlinear_convergence_measurement ();
-
-    void
-    nonlinear_convergence_measurement (const nonlinear_convergence_measurement_type& x);
-
-    void
-    nonlinear_convergence_measurement (const nonlinear_convergence_measurement_optional& x);
-
-    void
-    nonlinear_convergence_measurement (::std::auto_ptr< nonlinear_convergence_measurement_type > p);
-
-    // newton_damping_coeff
-    // 
-    typedef ::xml_schema::float_ newton_damping_coeff_type;
-    typedef ::xsd::cxx::tree::traits< newton_damping_coeff_type, char > newton_damping_coeff_traits;
-
-    const newton_damping_coeff_type&
-    newton_damping_coeff () const;
-
-    newton_damping_coeff_type&
-    newton_damping_coeff ();
-
-    void
-    newton_damping_coeff (const newton_damping_coeff_type& x);
-
-    // newton_automatic_damping
-    // 
-    typedef ::xml_schema::int_ newton_automatic_damping_type;
-    typedef ::xsd::cxx::tree::traits< newton_automatic_damping_type, char > newton_automatic_damping_traits;
-
-    const newton_automatic_damping_type&
-    newton_automatic_damping () const;
-
-    newton_automatic_damping_type&
-    newton_automatic_damping ();
-
-    void
-    newton_automatic_damping (const newton_automatic_damping_type& x);
-
-    // newton_automatic_damping_coeff
-    // 
-    typedef ::xml_schema::float_ newton_automatic_damping_coeff_type;
-    typedef ::xsd::cxx::tree::traits< newton_automatic_damping_coeff_type, char > newton_automatic_damping_coeff_traits;
-
-    const newton_automatic_damping_coeff_type&
-    newton_automatic_damping_coeff () const;
-
-    newton_automatic_damping_coeff_type&
-    newton_automatic_damping_coeff ();
-
-    void
-    newton_automatic_damping_coeff (const newton_automatic_damping_coeff_type& x);
-
-    // newton_damping_number_to_increase
-    // 
-    typedef ::xml_schema::int_ newton_damping_number_to_increase_type;
-    typedef ::xsd::cxx::tree::traits< newton_damping_number_to_increase_type, char > newton_damping_number_to_increase_traits;
-
-    const newton_damping_number_to_increase_type&
-    newton_damping_number_to_increase () const;
-
-    newton_damping_number_to_increase_type&
-    newton_damping_number_to_increase ();
-
-    void
-    newton_damping_number_to_increase (const newton_damping_number_to_increase_type& x);
-
-    // picard_anderson_acceleration
-    // 
-    typedef ::xml_schema::int_ picard_anderson_acceleration_type;
-    typedef ::xsd::cxx::tree::traits< picard_anderson_acceleration_type, char > picard_anderson_acceleration_traits;
-
-    const picard_anderson_acceleration_type&
-    picard_anderson_acceleration () const;
-
-    picard_anderson_acceleration_type&
-    picard_anderson_acceleration ();
-
-    void
-    picard_anderson_acceleration (const picard_anderson_acceleration_type& x);
-
-    // picard_anderson_beta
-    // 
-    typedef ::xml_schema::float_ picard_anderson_beta_type;
-    typedef ::xsd::cxx::tree::traits< picard_anderson_beta_type, char > picard_anderson_beta_traits;
-
-    const picard_anderson_beta_type&
-    picard_anderson_beta () const;
-
-    picard_anderson_beta_type&
-    picard_anderson_beta ();
-
-    void
-    picard_anderson_beta (const picard_anderson_beta_type& x);
-
-    // picard_anderson_vectors
-    // 
-    typedef ::xml_schema::int_ picard_anderson_vectors_type;
-    typedef ::xsd::cxx::tree::traits< picard_anderson_vectors_type, char > picard_anderson_vectors_traits;
-
-    const picard_anderson_vectors_type&
-    picard_anderson_vectors () const;
-
-    picard_anderson_vectors_type&
-    picard_anderson_vectors ();
-
-    void
-    picard_anderson_vectors (const picard_anderson_vectors_type& x);
-
-    // Constructors.
-    //
-    solver (const linearity_type_type&,
-            const nonlinear_steps_type&,
-            const nonlinear_tolerance_type&,
-            const newton_damping_coeff_type&,
-            const newton_automatic_damping_type&,
-            const newton_automatic_damping_coeff_type&,
-            const newton_damping_number_to_increase_type&,
-            const picard_anderson_acceleration_type&,
-            const picard_anderson_beta_type&,
-            const picard_anderson_vectors_type&);
-
-    solver (const ::xercesc::DOMElement& e,
-            ::xml_schema::flags f = 0,
-            ::xml_schema::container* c = 0);
-
-    solver (const solver& x,
-            ::xml_schema::flags f = 0,
-            ::xml_schema::container* c = 0);
-
-    virtual solver*
-    _clone (::xml_schema::flags f = 0,
-            ::xml_schema::container* c = 0) const;
-
-    virtual 
-    ~solver ();
-
-    // Implementation.
-    //
-    protected:
-    void
-    parse (::xsd::cxx::xml::dom::parser< char >&,
-           ::xml_schema::flags);
-
-    protected:
-    ::xsd::cxx::tree::one< linearity_type_type > linearity_type_;
-    ::xsd::cxx::tree::one< nonlinear_steps_type > nonlinear_steps_;
-    ::xsd::cxx::tree::one< nonlinear_tolerance_type > nonlinear_tolerance_;
-    nonlinear_convergence_measurement_optional nonlinear_convergence_measurement_;
-    ::xsd::cxx::tree::one< newton_damping_coeff_type > newton_damping_coeff_;
-    ::xsd::cxx::tree::one< newton_automatic_damping_type > newton_automatic_damping_;
-    ::xsd::cxx::tree::one< newton_automatic_damping_coeff_type > newton_automatic_damping_coeff_;
-    ::xsd::cxx::tree::one< newton_damping_number_to_increase_type > newton_damping_number_to_increase_;
-    ::xsd::cxx::tree::one< picard_anderson_acceleration_type > picard_anderson_acceleration_;
-    ::xsd::cxx::tree::one< picard_anderson_beta_type > picard_anderson_beta_;
-    ::xsd::cxx::tree::one< picard_anderson_vectors_type > picard_anderson_vectors_;
-  };
-
   class boundaries: public ::xml_schema::type
   {
     public:
@@ -2347,6 +2005,56 @@ namespace XMLProblem
 
     protected:
     material_sequence material_;
+  };
+
+  class field_config: public ::xml_schema::type
+  {
+    public:
+    // field_item
+    // 
+    typedef ::XMLProblem::field_item field_item_type;
+    typedef ::xsd::cxx::tree::sequence< field_item_type > field_item_sequence;
+    typedef field_item_sequence::iterator field_item_iterator;
+    typedef field_item_sequence::const_iterator field_item_const_iterator;
+    typedef ::xsd::cxx::tree::traits< field_item_type, char > field_item_traits;
+
+    const field_item_sequence&
+    field_item () const;
+
+    field_item_sequence&
+    field_item ();
+
+    void
+    field_item (const field_item_sequence& s);
+
+    // Constructors.
+    //
+    field_config ();
+
+    field_config (const ::xercesc::DOMElement& e,
+                  ::xml_schema::flags f = 0,
+                  ::xml_schema::container* c = 0);
+
+    field_config (const field_config& x,
+                  ::xml_schema::flags f = 0,
+                  ::xml_schema::container* c = 0);
+
+    virtual field_config*
+    _clone (::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0) const;
+
+    virtual 
+    ~field_config ();
+
+    // Implementation.
+    //
+    protected:
+    void
+    parse (::xsd::cxx::xml::dom::parser< char >&,
+           ::xml_schema::flags);
+
+    protected:
+    field_item_sequence field_item_;
   };
 
   class refinement_edge: public ::xml_schema::type
@@ -2774,6 +2482,75 @@ namespace XMLProblem
     ::xsd::cxx::tree::one< material_types_type > material_types_;
     ::xsd::cxx::tree::one< id_type > id_;
     ::xsd::cxx::tree::one< name_type > name_;
+  };
+
+  class field_item: public ::xml_schema::type
+  {
+    public:
+    // field_key
+    // 
+    typedef ::xml_schema::string field_key_type;
+    typedef ::xsd::cxx::tree::traits< field_key_type, char > field_key_traits;
+
+    const field_key_type&
+    field_key () const;
+
+    field_key_type&
+    field_key ();
+
+    void
+    field_key (const field_key_type& x);
+
+    void
+    field_key (::std::auto_ptr< field_key_type > p);
+
+    // field_value
+    // 
+    typedef ::xml_schema::string field_value_type;
+    typedef ::xsd::cxx::tree::traits< field_value_type, char > field_value_traits;
+
+    const field_value_type&
+    field_value () const;
+
+    field_value_type&
+    field_value ();
+
+    void
+    field_value (const field_value_type& x);
+
+    void
+    field_value (::std::auto_ptr< field_value_type > p);
+
+    // Constructors.
+    //
+    field_item (const field_key_type&,
+                const field_value_type&);
+
+    field_item (const ::xercesc::DOMElement& e,
+                ::xml_schema::flags f = 0,
+                ::xml_schema::container* c = 0);
+
+    field_item (const field_item& x,
+                ::xml_schema::flags f = 0,
+                ::xml_schema::container* c = 0);
+
+    virtual field_item*
+    _clone (::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0) const;
+
+    virtual 
+    ~field_item ();
+
+    // Implementation.
+    //
+    protected:
+    void
+    parse (::xsd::cxx::xml::dom::parser< char >&,
+           ::xml_schema::flags);
+
+    protected:
+    ::xsd::cxx::tree::one< field_key_type > field_key_;
+    ::xsd::cxx::tree::one< field_value_type > field_value_;
   };
 
   class boundary_edges: public ::xml_schema::type
@@ -3241,6 +3018,9 @@ namespace XMLProblem
   operator<< (::std::ostream&, const couplings&);
 
   ::std::ostream&
+  operator<< (::std::ostream&, const problem_config&);
+
+  ::std::ostream&
   operator<< (::std::ostream&, const item&);
 
   ::std::ostream&
@@ -3259,6 +3039,9 @@ namespace XMLProblem
   operator<< (::std::ostream&, const coupling&);
 
   ::std::ostream&
+  operator<< (::std::ostream&, const problem_item&);
+
+  ::std::ostream&
   operator<< (::std::ostream&, const refinement_edges&);
 
   ::std::ostream&
@@ -3268,16 +3051,13 @@ namespace XMLProblem
   operator<< (::std::ostream&, const polynomial_orders&);
 
   ::std::ostream&
-  operator<< (::std::ostream&, const adaptivity&);
-
-  ::std::ostream&
-  operator<< (::std::ostream&, const solver&);
-
-  ::std::ostream&
   operator<< (::std::ostream&, const boundaries&);
 
   ::std::ostream&
   operator<< (::std::ostream&, const materials&);
+
+  ::std::ostream&
+  operator<< (::std::ostream&, const field_config&);
 
   ::std::ostream&
   operator<< (::std::ostream&, const refinement_edge&);
@@ -3293,6 +3073,9 @@ namespace XMLProblem
 
   ::std::ostream&
   operator<< (::std::ostream&, const material&);
+
+  ::std::ostream&
+  operator<< (::std::ostream&, const field_item&);
 
   ::std::ostream&
   operator<< (::std::ostream&, const boundary_edges&);
@@ -3527,6 +3310,9 @@ namespace XMLProblem
   operator<< (::xercesc::DOMElement&, const couplings&);
 
   void
+  operator<< (::xercesc::DOMElement&, const problem_config&);
+
+  void
   operator<< (::xercesc::DOMElement&, const item&);
 
   void
@@ -3545,6 +3331,9 @@ namespace XMLProblem
   operator<< (::xercesc::DOMElement&, const coupling&);
 
   void
+  operator<< (::xercesc::DOMElement&, const problem_item&);
+
+  void
   operator<< (::xercesc::DOMElement&, const refinement_edges&);
 
   void
@@ -3554,16 +3343,13 @@ namespace XMLProblem
   operator<< (::xercesc::DOMElement&, const polynomial_orders&);
 
   void
-  operator<< (::xercesc::DOMElement&, const adaptivity&);
-
-  void
-  operator<< (::xercesc::DOMElement&, const solver&);
-
-  void
   operator<< (::xercesc::DOMElement&, const boundaries&);
 
   void
   operator<< (::xercesc::DOMElement&, const materials&);
+
+  void
+  operator<< (::xercesc::DOMElement&, const field_config&);
 
   void
   operator<< (::xercesc::DOMElement&, const refinement_edge&);
@@ -3579,6 +3365,9 @@ namespace XMLProblem
 
   void
   operator<< (::xercesc::DOMElement&, const material&);
+
+  void
+  operator<< (::xercesc::DOMElement&, const field_item&);
 
   void
   operator<< (::xercesc::DOMElement&, const boundary_edges&);

@@ -33,12 +33,24 @@ class Problem;
 namespace XMLProblem
 {
     class config;
+    class problem_config;
 }
 
 class ProblemConfig : public QObject
 {
     Q_OBJECT
 public:
+    enum Type
+    {
+        Unknown,
+        Frequency,
+        TimeMethod,
+        TimeMethodTolerance,
+        TimeOrder,
+        TimeConstantTimeSteps,
+        TimeTotal
+    };
+
     ProblemConfig(QWidget *parent = 0);
 
     inline QString labelX() { return ((m_coordinateType == CoordinateType_Planar) ? "X" : "R");  }
@@ -54,30 +66,6 @@ public:
     inline CoordinateType coordinateType() const { return m_coordinateType; }
     void setCoordinateType(const CoordinateType coordinateType) { m_coordinateType = coordinateType; emit changed(); }
 
-    // harmonic problem
-    inline double frequency() const { return m_frequency; }
-    void setFrequency(const double frequency) { m_frequency = frequency; emit changed(); }
-
-    // transient problem
-    inline int timeNumConstantTimeSteps() const { return m_timeNumConstantTimeSteps; }
-    void setTimeNumConstantTimeSteps(const int numConstantTimeSteps) { m_timeNumConstantTimeSteps = numConstantTimeSteps; emit changed(); }
-
-    inline double timeTotal() const { return m_timeTotal; }
-    void setTimeTotal(double timeTotal) { m_timeTotal = timeTotal; emit changed(); }
-
-    inline double constantTimeStepLength() { return m_timeTotal / m_timeNumConstantTimeSteps; }
-    double initialTimeStepLength();
-
-    inline TimeStepMethod timeStepMethod() const {return m_timeStepMethod; }
-    void setTimeStepMethod(TimeStepMethod timeStepMethod) { m_timeStepMethod = timeStepMethod; }
-    bool isTransientAdaptive() const;
-
-    int timeOrder() const { return m_timeOrder; }
-    void setTimeOrder(int timeOrder) {m_timeOrder = timeOrder; }
-
-    inline double timeMethodTolerance() const { return m_timeMethodTolerance; }
-    void setTimeMethodTolerance(double timeMethodTolerance) {m_timeMethodTolerance = timeMethodTolerance; }
-
     // matrix
     inline Hermes::MatrixSolverType matrixSolver() const { return m_matrixSolver; }
     void setMatrixSolver(const Hermes::MatrixSolverType matrixSolver) { m_matrixSolver = matrixSolver; emit changed(); }
@@ -85,6 +73,25 @@ public:
     // mesh
     inline MeshType meshType() const { return m_meshType; }
     void setMeshType(const MeshType meshType) { m_meshType = meshType; emit changed(); }
+
+
+    void load(XMLProblem::problem_config *configxsd);
+    void save(XMLProblem::problem_config *configxsd);
+
+    inline QString typeToStringKey(Type type) { return m_settingKey[type]; }
+    inline Type stringKeyToType(const QString &key) { return m_settingKey.key(key); }
+
+    inline QVariant value(Type type) const { return m_setting[type]; }
+    inline void setValue(Type type, int value, bool emitChanged = true) {  m_setting[type] = value; if (emitChanged) emit changed(); }
+    inline void setValue(Type type, double value, bool emitChanged = true) {  m_setting[type] = value; emit changed(); if (emitChanged) emit changed(); }
+    inline void setValue(Type type, bool value, bool emitChanged = true) {  m_setting[type] = value; emit changed(); if (emitChanged) emit changed(); }
+    inline void setValue(Type type, const QString &value, bool emitChanged = true) { m_setting[type] = value; emit changed(); if (emitChanged) emit changed(); }
+
+    inline QVariant defaultValue(Type type) {  return m_settingDefault[type]; }
+
+    inline double constantTimeStepLength() { return value(ProblemConfig::TimeTotal).toDouble() / value(ProblemConfig::TimeConstantTimeSteps).toInt(); }
+    double initialTimeStepLength();
+    bool isTransientAdaptive() const;
 
     void refresh() { emit changed(); }
 
@@ -95,21 +102,18 @@ private:
     QString m_fileName;
     CoordinateType m_coordinateType;
 
-    // harmonic
-    double m_frequency;
-
-    // transient
-    double m_timeTotal;
-    int m_timeNumConstantTimeSteps;
-    TimeStepMethod m_timeStepMethod;
-    int m_timeOrder;
-    double m_timeMethodTolerance;
-
     // matrix solver
     Hermes::MatrixSolverType m_matrixSolver;
 
     // mesh type
-    MeshType m_meshType;
+    MeshType m_meshType;   
+
+    QMap<Type, QVariant> m_setting;
+    QMap<Type, QVariant> m_settingDefault;
+    QMap<Type, QString> m_settingKey;
+
+    void setDefaultValues();
+    void setStringKeys();
 };
 
 class ProblemSetting : public QObject

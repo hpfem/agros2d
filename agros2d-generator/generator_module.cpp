@@ -1007,7 +1007,7 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
 
         // constants
         dict["PI"] = "M_PI";
-        dict["f"] = "Agros2D::problem()->config()->frequency()";
+        dict["f"] = "Agros2D::problem()->config()->value(ProblemConfig::Frequency).toDouble()";
         foreach (XMLModule::constant cnst, m_module->constants().constant())
             dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
 
@@ -1216,7 +1216,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
 
         // constants
         dict["PI"] = "M_PI";
-        dict["f"] = "Agros2D::problem()->config()->frequency()";
+        dict["f"] = "Agros2D::problem()->config()->value(ProblemConfig::Frequency).toDouble()";
         foreach (XMLModule::constant cnst, m_module->constants().constant())
             dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
 
@@ -1411,7 +1411,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
 
         // constants
         dict["PI"] = "M_PI";
-        dict["f"] = "Agros2D::problem()->config()->frequency()";
+        dict["f"] = "Agros2D::problem()->config()->value(ProblemConfig::Frequency).toDouble()";
         foreach (XMLModule::constant cnst, m_module->constants().constant())
             dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
 

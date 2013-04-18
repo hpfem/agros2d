@@ -174,23 +174,32 @@ void FieldWidget::createContent()
     txtNonlinearSteps = new QSpinBox(this);
     txtNonlinearSteps->setMinimum(1);
     txtNonlinearSteps->setMaximum(100);
-    txtNonlinearSteps->setValue(m_fieldInfo->implicitNewtonSteps());
-    txtNonlinearTolerance = new LineEditDouble(m_fieldInfo->implicitNewtonTolerance(), true);
+    txtNonlinearSteps->setValue(m_fieldInfo->defaultValue(FieldInfo::NonlinearSteps).toInt());
+    txtNonlinearTolerance = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::NonlinearTolerance).toDouble(), true);
     txtNonlinearTolerance->setBottom(0.0);
 
     chkNewtonAutomaticDamping = new QCheckBox(tr("Automatic damping"));
     connect(chkNewtonAutomaticDamping, SIGNAL(stateChanged(int)), this, SLOT(doNewtonDampingChanged(int)));
     lblNewtonDampingCoeff = new QLabel(tr("Damping factor:"));
-    txtNewtonDampingCoeff = new LineEditDouble(m_fieldInfo->implicitNewtonDampingCoeff(), true);
+    txtNewtonDampingCoeff = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::NewtonDampingCoeff).toDouble(), true);
     txtNewtonDampingCoeff->setBottom(0.0);
     lblNewtonAutomaticDampingCoeff = new QLabel(tr("Max. damping factor:"));
-    txtNewtonAutomaticDampingCoeff = new LineEditDouble(m_fieldInfo->implicitNewtonAutomaticDampingCoeff(), true);
+    txtNewtonAutomaticDampingCoeff = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::NewtonAutomaticDampingCoeff).toDouble(), true);
     txtNewtonAutomaticDampingCoeff->setBottom(0.0);
     lblNewtonDampingNumberToIncrease = new QLabel(tr("Steps to increase DF:"));
     txtNewtonDampingNumberToIncrease = new QSpinBox(this);
-    txtNewtonDampingNumberToIncrease->setValue(m_fieldInfo->implicitNewtonDampingNumberToIncrease());
+    txtNewtonDampingNumberToIncrease->setValue(m_fieldInfo->defaultValue(FieldInfo::NewtonDampingNumberToIncrease).toInt());
     txtNewtonDampingNumberToIncrease->setMinimum(1);
     txtNewtonDampingNumberToIncrease->setMaximum(5);
+    lblNewtonSufficientImprovementFactorJacobian = new QLabel(tr("Sufficient improvement factor Jacobian:"));
+    txtNewtonSufficientImprovementFactorJacobian = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::NewtonMaximumStepsWithReusedJacobian).toDouble(), true);
+    txtNewtonSufficientImprovementFactorJacobian->setBottom(0.0);
+    txtNewtonSufficientImprovementFactorJacobian->setTop(1.0);
+    lblNewtonMaximumStepsWithReusedJacobian = new QLabel(tr("Max. steps with reused Jacobian:"));
+    txtNewtonMaximumStepsWithReusedJacobian = new QSpinBox(this);
+    txtNewtonMaximumStepsWithReusedJacobian->setValue(m_fieldInfo->defaultValue(FieldInfo::NewtonSufficientImprovementFactorJacobian).toInt());
+    txtNewtonMaximumStepsWithReusedJacobian->setMinimum(1);
+    txtNewtonMaximumStepsWithReusedJacobian->setMaximum(10);
 
     chkPicardAndersonAcceleration = new QCheckBox(tr("Use Anderson acceleration"));
     connect(chkPicardAndersonAcceleration, SIGNAL(stateChanged(int)), this, SLOT(doPicardAndersonChanged(int)));
@@ -271,24 +280,28 @@ void FieldWidget::createContent()
     layoutLinearity->setColumnStretch(1, 1);
     layoutLinearity->addWidget(new QLabel(tr("Linearity:")), 0, 0);
     layoutLinearity->addWidget(cmbLinearityType, 0, 1);
-    layoutLinearity->addWidget(new QLabel(tr("Tolerance:")), 1, 0);
-    layoutLinearity->addWidget(txtNonlinearTolerance, 1, 1);
-    layoutLinearity->addWidget(new QLabel(tr("Steps:")), 2, 0);
-    layoutLinearity->addWidget(txtNonlinearSteps, 2, 1);
-    layoutLinearity->addWidget(new QLabel(tr("Convergence:")), 3, 0);
-    layoutLinearity->addWidget(cmbNonlinearConvergenceMeasurement, 3, 1);
-    layoutLinearity->addWidget(lblNewtonDampingCoeff, 4, 0);
-    layoutLinearity->addWidget(txtNewtonDampingCoeff, 4, 1);
-    layoutLinearity->addWidget(chkNewtonAutomaticDamping, 5, 0, 1, 2);
-    layoutLinearity->addWidget(lblNewtonAutomaticDampingCoeff, 6, 0);
-    layoutLinearity->addWidget(txtNewtonAutomaticDampingCoeff, 6, 1);
-    layoutLinearity->addWidget(lblNewtonDampingNumberToIncrease, 7, 0);
-    layoutLinearity->addWidget(txtNewtonDampingNumberToIncrease, 7, 1);
-    layoutLinearity->addWidget(chkPicardAndersonAcceleration, 8, 0, 1, 2);
-    layoutLinearity->addWidget(lblPicardAndersonBeta, 9, 0);
-    layoutLinearity->addWidget(txtPicardAndersonBeta, 9, 1);
-    layoutLinearity->addWidget(lblPicardAndersonNumberOfLastVectors, 10, 0);
-    layoutLinearity->addWidget(txtPicardAndersonNumberOfLastVectors, 10, 1);
+    layoutLinearity->addWidget(new QLabel(tr("Convergence:")), 1, 0);
+    layoutLinearity->addWidget(cmbNonlinearConvergenceMeasurement, 1, 1);
+    layoutLinearity->addWidget(new QLabel(tr("Tolerance:")), 2, 0);
+    layoutLinearity->addWidget(txtNonlinearTolerance, 2, 1);
+    layoutLinearity->addWidget(new QLabel(tr("Steps:")), 3, 0);
+    layoutLinearity->addWidget(txtNonlinearSteps, 3, 1);
+    layoutLinearity->addWidget(lblNewtonSufficientImprovementFactorJacobian, 4, 0);
+    layoutLinearity->addWidget(txtNewtonSufficientImprovementFactorJacobian, 4, 1);
+    layoutLinearity->addWidget(lblNewtonMaximumStepsWithReusedJacobian, 5, 0);
+    layoutLinearity->addWidget(txtNewtonMaximumStepsWithReusedJacobian, 5, 1);
+    layoutLinearity->addWidget(lblNewtonDampingCoeff, 6, 0);
+    layoutLinearity->addWidget(txtNewtonDampingCoeff, 6, 1);
+    layoutLinearity->addWidget(chkNewtonAutomaticDamping, 7, 0, 1, 2);
+    layoutLinearity->addWidget(lblNewtonAutomaticDampingCoeff, 8, 0);
+    layoutLinearity->addWidget(txtNewtonAutomaticDampingCoeff, 8, 1);
+    layoutLinearity->addWidget(lblNewtonDampingNumberToIncrease, 9, 0);
+    layoutLinearity->addWidget(txtNewtonDampingNumberToIncrease, 9, 1);
+    layoutLinearity->addWidget(chkPicardAndersonAcceleration, 10, 0, 1, 2);
+    layoutLinearity->addWidget(lblPicardAndersonBeta, 11, 0);
+    layoutLinearity->addWidget(txtPicardAndersonBeta, 11, 1);
+    layoutLinearity->addWidget(lblPicardAndersonNumberOfLastVectors, 12, 0);
+    layoutLinearity->addWidget(txtPicardAndersonNumberOfLastVectors, 12, 1);
 
     QGroupBox *grpLinearity = new QGroupBox(tr("Solver"));
     grpLinearity->setLayout(layoutLinearity);
@@ -365,64 +378,69 @@ void FieldWidget::load()
         cmbAnalysisType->setCurrentIndex(0);
     // adaptivity
     cmbAdaptivityType->setCurrentIndex(cmbAdaptivityType->findData(m_fieldInfo->adaptivityType()));
-    txtAdaptivitySteps->setValue(m_fieldInfo->adaptivitySteps());
-    txtAdaptivityTolerance->setValue(m_fieldInfo->adaptivityTolerance());
-    txtAdaptivityBackSteps->setValue(m_fieldInfo->adaptivityBackSteps());
-    txtAdaptivityRedoneEach->setValue(m_fieldInfo->adaptivityRedoneEach());
+    txtAdaptivitySteps->setValue(m_fieldInfo->value(FieldInfo::AdaptivitySteps).toInt());
+    txtAdaptivityTolerance->setValue(m_fieldInfo->value(FieldInfo::AdaptivityTolerance).toDouble());
+    txtAdaptivityBackSteps->setValue(m_fieldInfo->value(FieldInfo::AdaptivityTransientBackSteps).toInt());
+    txtAdaptivityRedoneEach->setValue(m_fieldInfo->value(FieldInfo::AdaptivityTransientRedoneEach).toInt());
     //mesh
-    txtNumberOfRefinements->setValue(m_fieldInfo->numberOfRefinements());
-    txtPolynomialOrder->setValue(m_fieldInfo->polynomialOrder());
+    txtNumberOfRefinements->setValue(m_fieldInfo->value(FieldInfo::SpaceNumberOfRefinements).toInt());
+    txtPolynomialOrder->setValue(m_fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt());
     // transient
-    txtTransientInitialCondition->setValue(m_fieldInfo->initialCondition());
-    txtTransientTimeSkip->setValue(m_fieldInfo->timeSkip());
+    txtTransientInitialCondition->setValue(m_fieldInfo->value(FieldInfo::TransientInitialCondition).toInt());
+    txtTransientTimeSkip->setValue(m_fieldInfo->value(FieldInfo::TransientTimeSkip).toDouble());
     // linearity
     cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(m_fieldInfo->linearityType()));
-    cmbNonlinearConvergenceMeasurement->setCurrentIndex(cmbNonlinearConvergenceMeasurement->findData(m_fieldInfo->nonlinearConvergenceMeasurement()));
-    txtNonlinearSteps->setValue(m_fieldInfo->nonlinearSteps());
-    txtNonlinearTolerance->setValue(m_fieldInfo->nonlinearTolerance());
-    chkNewtonAutomaticDamping->setChecked(m_fieldInfo->newtonAutomaticDamping());
-    txtNewtonDampingCoeff->setValue(m_fieldInfo->newtonDampingCoeff());
-    txtNewtonDampingCoeff->setEnabled(! m_fieldInfo->newtonAutomaticDamping());
+    cmbNonlinearConvergenceMeasurement->setCurrentIndex(cmbNonlinearConvergenceMeasurement->findData((Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement) m_fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()));
+    txtNonlinearSteps->setValue(m_fieldInfo->value(FieldInfo::NonlinearSteps).toInt());
+    txtNonlinearTolerance->setValue(m_fieldInfo->value(FieldInfo::NonlinearTolerance).toDouble());
+    chkNewtonAutomaticDamping->setChecked(m_fieldInfo->value(FieldInfo::NewtonAutomaticDamping).toBool());
+    txtNewtonDampingCoeff->setValue(m_fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble());
+    txtNewtonDampingCoeff->setEnabled(!m_fieldInfo->value(FieldInfo::NewtonAutomaticDamping).toBool());
+    txtNewtonMaximumStepsWithReusedJacobian->setValue(m_fieldInfo->value(FieldInfo::NewtonMaximumStepsWithReusedJacobian).toInt());
+    txtNewtonSufficientImprovementFactorJacobian->setValue(m_fieldInfo->value(FieldInfo::NewtonSufficientImprovementFactorJacobian).toDouble());
 
-    txtNewtonAutomaticDampingCoeff->setValue(m_fieldInfo->newtonAutomaticDampingCoeff());
-    txtNewtonAutomaticDampingCoeff->setEnabled(m_fieldInfo->newtonAutomaticDamping());
-    txtNewtonDampingNumberToIncrease->setValue(m_fieldInfo->newtonDampingNumberToIncrease());
-    txtNewtonDampingNumberToIncrease->setEnabled(m_fieldInfo->newtonAutomaticDamping());
-    chkPicardAndersonAcceleration->setChecked(m_fieldInfo->picardAndersonAcceleration());
-    txtPicardAndersonBeta->setValue(m_fieldInfo->picardAndersonBeta());
-    txtPicardAndersonNumberOfLastVectors->setValue(m_fieldInfo->picardAndersonNumberOfLastVectors());
+    txtNewtonAutomaticDampingCoeff->setValue(m_fieldInfo->value(FieldInfo::NewtonAutomaticDampingCoeff).toDouble());
+    txtNewtonAutomaticDampingCoeff->setEnabled(m_fieldInfo->value(FieldInfo::NewtonAutomaticDamping).toBool());
+    txtNewtonDampingNumberToIncrease->setValue(m_fieldInfo->value(FieldInfo::NewtonDampingNumberToIncrease).toDouble());
+    txtNewtonDampingNumberToIncrease->setEnabled(m_fieldInfo->value(FieldInfo::NewtonAutomaticDamping).toBool());
+    chkPicardAndersonAcceleration->setChecked(m_fieldInfo->value(FieldInfo::PicardAndersonAcceleration).toBool());
+    txtPicardAndersonBeta->setValue(m_fieldInfo->value(FieldInfo::PicardAndersonBeta).toDouble());
+    txtPicardAndersonNumberOfLastVectors->setValue(m_fieldInfo->value(FieldInfo::PicardAndersonNumberOfLastVectors).toInt());
 
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
 }
 
 bool FieldWidget::save()
 {
+    // analysis type
     m_fieldInfo->setAnalysisType((AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt());
-
     // adaptivity
     m_fieldInfo->setAdaptivityType((AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt());
-    m_fieldInfo->setAdaptivitySteps(txtAdaptivitySteps->value());
-    m_fieldInfo->setAdaptivityTolerance(txtAdaptivityTolerance->value());
-    m_fieldInfo->setAdaptivityBackSteps(txtAdaptivityBackSteps->value());
-    m_fieldInfo->setAdaptivityRedoneEach(txtAdaptivityRedoneEach->value());
+    m_fieldInfo->setValue(FieldInfo::AdaptivitySteps, txtAdaptivitySteps->value());
+    m_fieldInfo->setValue(FieldInfo::AdaptivityTolerance, txtAdaptivityTolerance->value());
+    m_fieldInfo->setValue(FieldInfo::AdaptivityTransientBackSteps, txtAdaptivityBackSteps->value());
+    m_fieldInfo->setValue(FieldInfo::AdaptivityTransientRedoneEach, txtAdaptivityRedoneEach->value());
     //mesh
-    m_fieldInfo->setNumberOfRefinements(txtNumberOfRefinements->value());
-    m_fieldInfo->setPolynomialOrder(txtPolynomialOrder->value());
+    m_fieldInfo->setValue(FieldInfo::SpaceNumberOfRefinements, txtNumberOfRefinements->value());
+    m_fieldInfo->setValue(FieldInfo::SpacePolynomialOrder, txtPolynomialOrder->value());
     // transient
-    m_fieldInfo->setInitialCondition(txtTransientInitialCondition->value());
-    m_fieldInfo->setTimeSkip(txtTransientTimeSkip->value());
+    m_fieldInfo->setValue(FieldInfo::TransientInitialCondition, txtTransientInitialCondition->value());
+    m_fieldInfo->setValue(FieldInfo::TransientTimeSkip, txtTransientTimeSkip->value());
     // linearity
     m_fieldInfo->setLinearityType((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt());
-    m_fieldInfo->setNonlinearSteps(txtNonlinearSteps->value());
-    m_fieldInfo->setNonlinearTolerance(txtNonlinearTolerance->value());
-    m_fieldInfo->setNonlinearConvergenceMeasurement((Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement) cmbNonlinearConvergenceMeasurement->itemData(cmbNonlinearConvergenceMeasurement->currentIndex()).toInt());
-    m_fieldInfo->setNewtonAutomaticDamping(chkNewtonAutomaticDamping->isChecked());
-    m_fieldInfo->setNewtonDampingCoeff(txtNewtonDampingCoeff->value());
-    m_fieldInfo->setNewtonAutomaticDampingCoeff(txtNewtonAutomaticDampingCoeff->value());
-    m_fieldInfo->setNewtonDampingNumberToIncrease(txtNewtonDampingNumberToIncrease->value());
-    m_fieldInfo->setPicardAndersonAcceleration(chkPicardAndersonAcceleration->isChecked());
-    m_fieldInfo->setPicardAndersonBeta(txtPicardAndersonBeta->value());
-    m_fieldInfo->setPicardAndersonNumberOfLastVectors(txtPicardAndersonNumberOfLastVectors->value());
+    m_fieldInfo->setValue(FieldInfo::NonlinearSteps, txtNonlinearSteps->value());
+    m_fieldInfo->setValue(FieldInfo::NonlinearTolerance, txtNonlinearTolerance->value());
+    m_fieldInfo->setValue(FieldInfo::NonlinearConvergenceMeasurement, (Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement) cmbNonlinearConvergenceMeasurement->itemData(cmbNonlinearConvergenceMeasurement->currentIndex()).toInt());
+    m_fieldInfo->setValue(FieldInfo::NewtonDampingCoeff, txtNewtonDampingCoeff->value());
+    m_fieldInfo->setValue(FieldInfo::NewtonAutomaticDamping, chkNewtonAutomaticDamping->isChecked());
+    m_fieldInfo->setValue(FieldInfo::NewtonAutomaticDampingCoeff, txtNewtonAutomaticDampingCoeff->value());
+    m_fieldInfo->setValue(FieldInfo::NewtonDampingNumberToIncrease, txtNewtonDampingNumberToIncrease->value());
+    m_fieldInfo->setValue(FieldInfo::NewtonMaximumStepsWithReusedJacobian, txtNewtonMaximumStepsWithReusedJacobian->value());
+    m_fieldInfo->setValue(FieldInfo::NewtonSufficientImprovementFactorJacobian, txtNewtonSufficientImprovementFactorJacobian->value());
+
+    m_fieldInfo->setValue(FieldInfo::PicardAndersonAcceleration, chkPicardAndersonAcceleration->isChecked());
+    m_fieldInfo->setValue(FieldInfo::PicardAndersonBeta, txtPicardAndersonBeta->value());
+    m_fieldInfo->setValue(FieldInfo::PicardAndersonNumberOfLastVectors, txtPicardAndersonNumberOfLastVectors->value());
 
     return true;
 }
@@ -646,8 +664,8 @@ void FieldsToobar::refresh()
                 .arg(analysisTypeString(fieldInfo->analysisType()))
                 .arg(adaptivityTypeString(fieldInfo->adaptivityType()))
                 .arg(linearityTypeString(fieldInfo->linearityType()))
-                .arg(fieldInfo->numberOfRefinements())
-                .arg(fieldInfo->polynomialOrder());
+                .arg(fieldInfo->value(FieldInfo::SpaceNumberOfRefinements).toInt())
+                .arg(fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt());
 
         QLabel *label = new QLabel(hint);
         label->setStyleSheet("QLabel { font-size: 8.5pt; }");
@@ -1007,18 +1025,18 @@ void ProblemWidget::updateControls()
 
     // harmonic magnetic
     grpHarmonicAnalysis->setVisible(Agros2D::problem()->isHarmonic());
-    txtFrequency->setValue(Agros2D::problem()->config()->frequency());
+    txtFrequency->setValue(Agros2D::problem()->config()->value(ProblemConfig::Frequency).toDouble());
     // txtFrequency->setEnabled(Agros2D::problem()->isHarmonic());
 
     // transient
     grpTransientAnalysis->setVisible(Agros2D::problem()->isTransient());
-    txtTransientSteps->setValue(Agros2D::problem()->config()->timeNumConstantTimeSteps());
+    txtTransientSteps->setValue(Agros2D::problem()->config()->value(ProblemConfig::TimeConstantTimeSteps).toInt());
     // txtTransientTimeStep->setEnabled(Agros2D::problem()->isTransient());
-    txtTransientTimeTotal->setValue(Agros2D::problem()->config()->timeTotal());
-    txtTransientTolerance->setValue(Agros2D::problem()->config()->timeMethodTolerance());
+    txtTransientTimeTotal->setValue(Agros2D::problem()->config()->value(ProblemConfig::TimeTotal).toDouble());
+    txtTransientTolerance->setValue(Agros2D::problem()->config()->value(ProblemConfig::TimeMethodTolerance).toDouble());
     // txtTransientTimeTotal->setEnabled(Agros2D::problem()->isTransient());
-    txtTransientOrder->setValue(Agros2D::problem()->config()->timeOrder());
-    cmbTransientMethod->setCurrentIndex(cmbTransientMethod->findData(Agros2D::problem()->config()->timeStepMethod()));
+    txtTransientOrder->setValue(Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt());
+    cmbTransientMethod->setCurrentIndex(cmbTransientMethod->findData((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeConstantTimeSteps).toInt()));
     if (cmbTransientMethod->currentIndex() == -1)
         cmbTransientMethod->setCurrentIndex(0);
 
@@ -1060,17 +1078,15 @@ void ProblemWidget::changedWithClear()
 
     Agros2D::problem()->config()->setCoordinateType((CoordinateType) cmbCoordinateType->itemData(cmbCoordinateType->currentIndex()).toInt());
     Agros2D::problem()->config()->setMeshType((MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt());
-
-    Agros2D::problem()->config()->setFrequency(txtFrequency->value());
-
-    Agros2D::problem()->config()->setTimeStepMethod((TimeStepMethod) cmbTransientMethod->itemData(cmbTransientMethod->currentIndex()).toInt());
-    Agros2D::problem()->config()->setTimeOrder(txtTransientOrder->value());
-    Agros2D::problem()->config()->setTimeMethodTolerance(txtTransientTolerance->value());
-    Agros2D::problem()->config()->setTimeNumConstantTimeSteps(txtTransientSteps->value());
-    Agros2D::problem()->config()->setTimeTotal(txtTransientTimeTotal->value());
-
     // matrix solver
     Agros2D::problem()->config()->setMatrixSolver((Hermes::MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt());
+
+    Agros2D::problem()->config()->setValue(ProblemConfig::Frequency, txtFrequency->value());
+    Agros2D::problem()->config()->setValue(ProblemConfig::TimeMethod, (TimeStepMethod) cmbTransientMethod->itemData(cmbTransientMethod->currentIndex()).toInt());
+    Agros2D::problem()->config()->setValue(ProblemConfig::TimeOrder, txtTransientOrder->value());
+    Agros2D::problem()->config()->setValue(ProblemConfig::TimeMethodTolerance, txtTransientTolerance->value());
+    Agros2D::problem()->config()->setValue(ProblemConfig::TimeConstantTimeSteps, txtTransientSteps->value());
+    Agros2D::problem()->config()->setValue(ProblemConfig::TimeTotal, txtTransientTimeTotal->value());
 
     // save couplings
     couplingsWidget->save();
@@ -1091,7 +1107,8 @@ void ProblemWidget::transientChanged()
     */
     lblTransientTimeStep->setText(QString("%1 s").arg(txtTransientTimeTotal->value() / txtTransientSteps->value()));
 
-    if(Agros2D::problem()->config()->timeStepMethod() == TimeStepMethod_BDFTolerance)
+
+    if (((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_BDFTolerance)
     {
         txtTransientTolerance->setEnabled(true);
         txtTransientSteps->setEnabled(false);
@@ -1100,7 +1117,7 @@ void ProblemWidget::transientChanged()
     {
         txtTransientTolerance->setEnabled(false);
         txtTransientSteps->setEnabled(true);
-        if(Agros2D::problem()->config()->timeStepMethod() == TimeStepMethod_Fixed)
+        if (((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_Fixed)
             lblTransientSteps->setText(tr("Number of steps:"));
         else
             lblTransientSteps->setText(tr("Aprox. number of steps:"));

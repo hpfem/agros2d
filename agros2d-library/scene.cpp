@@ -1287,15 +1287,15 @@ void Scene::readFromFile21(const QString &fileName)
                                                                                                          meshTypeToStringKey(MeshType_Triangle))));
 
     // harmonic
-    Agros2D::problem()->config()->setFrequency(eleProblemInfo.toElement().attribute("frequency", "0").toDouble());
+    Agros2D::problem()->config()->setValue(ProblemConfig::Frequency, eleProblemInfo.toElement().attribute("frequency", "0").toDouble());
 
     // transient
-    Agros2D::problem()->config()->setTimeNumConstantTimeSteps(eleProblemInfo.toElement().attribute("time_steps", "2").toInt());
-    Agros2D::problem()->config()->setTimeTotal(eleProblemInfo.toElement().attribute("time_total", "1.0").toDouble());
-    Agros2D::problem()->config()->setTimeOrder(eleProblemInfo.toElement().attribute("time_order", "1").toInt());
-    Agros2D::problem()->config()->setTimeStepMethod(timeStepMethodFromStringKey(
-                                                        eleProblemInfo.toElement().attribute("time_method", timeStepMethodToStringKey(TimeStepMethod_Fixed))));
-    Agros2D::problem()->config()->setTimeMethodTolerance(eleProblemInfo.toElement().attribute("time_method_tolerance", "0.05").toDouble());
+    Agros2D::problem()->config()->setValue(ProblemConfig::TimeConstantTimeSteps, eleProblemInfo.toElement().attribute("time_steps", "2").toInt());
+    Agros2D::problem()->config()->setValue(ProblemConfig::TimeTotal, eleProblemInfo.toElement().attribute("time_total", "1.0").toDouble());
+    Agros2D::problem()->config()->setValue(ProblemConfig::TimeOrder, eleProblemInfo.toElement().attribute("time_order", "1").toInt());
+    Agros2D::problem()->config()->setValue(ProblemConfig::TimeMethod, timeStepMethodFromStringKey(
+                                               eleProblemInfo.toElement().attribute("time_method", timeStepMethodToStringKey(TimeStepMethod_Fixed))));
+    Agros2D::problem()->config()->setValue(ProblemConfig::TimeMethodTolerance, eleProblemInfo.toElement().attribute("time_method_tolerance", "0.05").toDouble());
 
     // matrix solver
     Agros2D::problem()->config()->setMatrixSolver(matrixSolverTypeFromStringKey(eleProblemInfo.toElement().attribute("matrix_solver",
@@ -1320,13 +1320,13 @@ void Scene::readFromFile21(const QString &fileName)
                                                                                         analysisTypeToStringKey(AnalysisType_SteadyState))));
 
         // initial condition
-        field->setInitialCondition(eleField.toElement().attribute("initial_condition").toDouble());
+        field->setValue(FieldInfo::TransientInitialCondition, eleField.toElement().attribute("initial_condition").toDouble());
 
         // polynomial order
-        field->setPolynomialOrder(eleField.toElement().attribute("polynomial_order").toInt());
+        field->setValue(FieldInfo::SpacePolynomialOrder, eleField.toElement().attribute("polynomial_order").toInt());
 
         // number of refinements
-        field->setNumberOfRefinements(eleField.toElement().attribute("number_of_refinements").toInt());
+        field->setValue(FieldInfo::SpaceNumberOfRefinements, eleField.toElement().attribute("number_of_refinements").toInt());
 
         // edges refinement
         QDomNode eleRefinement = eleField.toElement().elementsByTagName("refinement").at(0);
@@ -1374,28 +1374,29 @@ void Scene::readFromFile21(const QString &fileName)
         QDomNode eleFieldAdaptivity = eleField.toElement().elementsByTagName("adaptivity").at(0);
 
         field->setAdaptivityType(adaptivityTypeFromStringKey(eleFieldAdaptivity.toElement().attribute("adaptivity_type")));
-        field->setAdaptivitySteps(eleFieldAdaptivity.toElement().attribute("adaptivity_steps").toInt());
-        field->setAdaptivityTolerance(eleFieldAdaptivity.toElement().attribute("adaptivity_tolerance").toDouble());
-        field->setAdaptivityBackSteps(eleFieldAdaptivity.toElement().attribute("adaptivity_back_steps").toInt());
-        field->setAdaptivityRedoneEach(eleFieldAdaptivity.toElement().attribute("adaptivity_redone_each").toInt());
+
+        field->setValue(FieldInfo::AdaptivitySteps, eleFieldAdaptivity.toElement().attribute("adaptivity_steps").toInt());
+        field->setValue(FieldInfo::AdaptivityTolerance, eleFieldAdaptivity.toElement().attribute("adaptivity_tolerance").toDouble());
+        field->setValue(FieldInfo::AdaptivityTransientBackSteps, eleFieldAdaptivity.toElement().attribute("adaptivity_back_steps").toInt());
+        field->setValue(FieldInfo::AdaptivityTransientRedoneEach, eleFieldAdaptivity.toElement().attribute("adaptivity_redone_each").toInt());
 
         // linearity
         QDomNode eleFieldLinearity = eleField.toElement().elementsByTagName("solver").at(0);
 
-        field->setLinearityType(linearityTypeFromStringKey(eleFieldLinearity.toElement().attribute("linearity_type",
-                                                                                                   linearityTypeToStringKey(LinearityType_Linear))));
-        field->setNonlinearSteps(eleFieldLinearity.toElement().attribute("nonlinear_steps", QString::number(field->implicitNewtonSteps())).toInt());
-        field->setNonlinearTolerance(eleFieldLinearity.toElement().attribute("nonlinear_tolerance", QString::number(field->implicitNewtonTolerance())).toDouble());
-        field->setNewtonDampingCoeff(eleFieldLinearity.toElement().attribute("newton_damping_coeff", QString::number(field->implicitNewtonDampingCoeff())).toDouble());
-        field->setNewtonAutomaticDampingCoeff(eleFieldLinearity.toElement().attribute("newton_automatic_damping_coeff", QString::number(field->implicitNewtonAutomaticDampingCoeff())).toDouble());
-        field->setNewtonAutomaticDamping(eleFieldLinearity.toElement().attribute("newton_automatic_damping", "1").toInt());
-        field->setNewtonDampingNumberToIncrease(eleFieldLinearity.toElement().attribute("newton_damping_number_to_increase", QString::number(field->implicitNewtonDampingNumberToIncrease())).toInt());
-        field->setPicardAndersonAcceleration(eleFieldLinearity.toElement().attribute("picard_anderson_acceleration", "1").toInt());
-        field->setPicardAndersonBeta(eleFieldLinearity.toElement().attribute("picard_anderson_beta", "0.2").toDouble());
-        field->setPicardAndersonNumberOfLastVectors(eleFieldLinearity.toElement().attribute("picard_anderson_vectors", "3").toInt());
+        field->setLinearityType(linearityTypeFromStringKey(eleFieldLinearity.toElement().attribute("linearity_type", linearityTypeToStringKey(LinearityType_Linear))));
+
+        field->setValue(FieldInfo::NonlinearSteps, eleFieldLinearity.toElement().attribute("nonlinear_steps", QString::number(field->defaultValue(FieldInfo::NonlinearSteps).toInt())).toInt());
+        field->setValue(FieldInfo::NonlinearTolerance, eleFieldLinearity.toElement().attribute("nonlinear_tolerance", QString::number(field->defaultValue(FieldInfo::NonlinearTolerance).toDouble())).toDouble());
+        field->setValue(FieldInfo::NewtonDampingCoeff, eleFieldLinearity.toElement().attribute("newton_damping_coeff", QString::number(field->defaultValue(FieldInfo::NewtonDampingCoeff).toDouble())).toDouble());
+        field->setValue(FieldInfo::NewtonAutomaticDamping, eleFieldLinearity.toElement().attribute("newton_automatic_damping", "1").toInt());
+        field->setValue(FieldInfo::NewtonAutomaticDampingCoeff, eleFieldLinearity.toElement().attribute("newton_automatic_damping_coeff", QString::number(field->defaultValue(FieldInfo::NewtonAutomaticDampingCoeff).toDouble())).toDouble());
+        field->setValue(FieldInfo::NewtonDampingNumberToIncrease, eleFieldLinearity.toElement().attribute("newton_damping_number_to_increase", QString::number(field->defaultValue(FieldInfo::NewtonDampingNumberToIncrease).toInt())).toInt());
+        field->setValue(FieldInfo::PicardAndersonAcceleration, eleFieldLinearity.toElement().attribute("picard_anderson_acceleration", "1").toInt());
+        field->setValue(FieldInfo::PicardAndersonBeta, eleFieldLinearity.toElement().attribute("picard_anderson_beta", "0.2").toDouble());
+        field->setValue(FieldInfo::PicardAndersonNumberOfLastVectors, eleFieldLinearity.toElement().attribute("picard_anderson_vectors", "3").toInt());
 
         // time steps skip
-        field->setTimeSkip(eleField.toElement().attribute("time_skip").toDouble());
+        field->setValue(FieldInfo::TransientTimeSkip, eleField.toElement().attribute("time_skip").toDouble());
 
         // boundary conditions
         QDomNode eleBoundaries = eleField.toElement().elementsByTagName("boundaries").at(0);
@@ -1538,16 +1539,9 @@ void Scene::readFromFile30(const QString &fileName)
         // matrix solver
         Agros2D::problem()->config()->setMatrixSolver(matrixSolverTypeFromStringKey(QString::fromStdString(doc->problem().matrix_solver())));
 
-        // harmonic
-        Agros2D::problem()->config()->setFrequency(doc->problem().frequency());
-
-        // transient
-        Agros2D::problem()->config()->setTimeNumConstantTimeSteps(doc->problem().time_steps());
-        Agros2D::problem()->config()->setTimeTotal(doc->problem().time_total());
-        Agros2D::problem()->config()->setTimeOrder(doc->problem().time_order());
-        Agros2D::problem()->config()->setTimeStepMethod(timeStepMethodFromStringKey(QString::fromStdString(doc->problem().time_method())));
-        Agros2D::problem()->config()->setTimeMethodTolerance(doc->problem().time_method_tolerance());
-
+        // problem config
+        Agros2D::problem()->config()->load(&doc->problem().problem_config());
+        // general config
         Agros2D::problem()->setting()->load(&doc->config());
 
         // nodes
@@ -1588,14 +1582,13 @@ void Scene::readFromFile30(const QString &fileName)
 
             // analysis type
             fieldInfo->setAnalysisType(analysisTypeFromStringKey(QString::fromStdString(field.analysis_type())));
-            // number of refinements
-            fieldInfo->setNumberOfRefinements(field.number_of_refinements());
-            // polynomial order
-            fieldInfo->setPolynomialOrder(field.polynomial_order());
-            // initial condition
-            fieldInfo->setInitialCondition(field.initial_condition());
-            // time steps skip
-            fieldInfo->setTimeSkip(field.time_skip());
+            // adaptivity
+            fieldInfo->setAdaptivityType(adaptivityTypeFromStringKey(QString::fromStdString(field.adaptivity_type())));
+            // linearity
+            fieldInfo->setLinearityType(linearityTypeFromStringKey(QString::fromStdString(field.linearity_type())));
+
+            // field config
+            fieldInfo->load(&field.field_config());
 
             // edge refinement
             for (unsigned int j = 0; j < field.refinement_edges().refinement_edge().size(); j++)
@@ -1620,27 +1613,6 @@ void Scene::readFromFile30(const QString &fileName)
 
                 fieldInfo->setLabelPolynomialOrder(Agros2D::scene()->labels->items().at(order.polynomial_order_id()), order.polynomial_order_number());
             }
-
-            // adaptivity
-            fieldInfo->setAdaptivityType(adaptivityTypeFromStringKey(QString::fromStdString(field.adaptivity().adaptivity_type())));
-            fieldInfo->setAdaptivitySteps(field.adaptivity().adaptivity_steps());
-            fieldInfo->setAdaptivityTolerance(field.adaptivity().adaptivity_tolerance());
-            fieldInfo->setAdaptivityBackSteps(field.adaptivity().adaptivity_back_steps());
-            fieldInfo->setAdaptivityRedoneEach(field.adaptivity().adaptivity_redone_each());
-
-            fieldInfo->setLinearityType(linearityTypeFromStringKey(QString::fromStdString(field.solver().linearity_type())));            
-            fieldInfo->setNonlinearSteps(field.solver().nonlinear_steps());
-            fieldInfo->setNonlinearTolerance(field.solver().nonlinear_tolerance());
-            fieldInfo->setNonlinearConvergenceMeasurement(field.solver().nonlinear_convergence_measurement().present()
-                                                       ? nonlinearSolverConvergenceMeasurementFromStringKey(QString::fromStdString(field.solver().nonlinear_convergence_measurement().get()))
-                                                       : Hermes::Hermes2D::NewtonSolver<double>::AbsoluteNorm);
-            fieldInfo->setNewtonDampingCoeff(field.solver().newton_damping_coeff());
-            fieldInfo->setNewtonDampingNumberToIncrease(field.solver().newton_damping_number_to_increase());
-            fieldInfo->setNewtonAutomaticDamping(field.solver().newton_automatic_damping());
-            fieldInfo->setNewtonAutomaticDampingCoeff(field.solver().newton_automatic_damping_coeff());
-            fieldInfo->setPicardAndersonAcceleration(field.solver().picard_anderson_acceleration());
-            fieldInfo->setPicardAndersonBeta(field.solver().picard_anderson_beta());
-            fieldInfo->setPicardAndersonNumberOfLastVectors(field.solver().picard_anderson_vectors());
 
             // boundary conditions
             for (unsigned int j = 0; j < field.boundaries().boundary().size(); j++)
@@ -1721,15 +1693,15 @@ void Scene::readFromFile30(const QString &fileName)
 
         for (unsigned int i = 0; i < doc->problem().couplings().coupling().size(); i++)
         {
-             XMLProblem::coupling coupling = doc->problem().couplings().coupling().at(i);
+            XMLProblem::coupling coupling = doc->problem().couplings().coupling().at(i);
 
-             if (Agros2D::problem()->hasCoupling(QString::fromStdString(coupling.source_fieldid()),
-                                                 QString::fromStdString(coupling.target_fieldid())))
-             {
-                 CouplingInfo *couplingInfo = Agros2D::problem()->couplingInfo(QString::fromStdString(coupling.source_fieldid()),
-                                                                               QString::fromStdString(coupling.target_fieldid()));
-                 couplingInfo->setCouplingType(couplingTypeFromStringKey(QString::fromStdString(coupling.type())));
-             }
+            if (Agros2D::problem()->hasCoupling(QString::fromStdString(coupling.source_fieldid()),
+                                                QString::fromStdString(coupling.target_fieldid())))
+            {
+                CouplingInfo *couplingInfo = Agros2D::problem()->couplingInfo(QString::fromStdString(coupling.source_fieldid()),
+                                                                              QString::fromStdString(coupling.target_fieldid()));
+                couplingInfo->setCouplingType(couplingTypeFromStringKey(QString::fromStdString(coupling.type())));
+            }
         }
 
         blockSignals(false);
@@ -1742,6 +1714,16 @@ void Scene::readFromFile30(const QString &fileName)
 
         // run script
         currentPythonEngineAgros()->runScript(Agros2D::problem()->setting()->value(ProblemSetting::Problem_StartupScript).toString());
+    }
+    catch (const xml_schema::expected_element& e)
+    {
+        blockSignals(false);
+        throw AgrosException(QString("%1: %2").arg(QString::fromStdString(e.what())).arg(QString::fromStdString(e.name())));
+    }
+    catch (const xml_schema::expected_attribute& e)
+    {
+        blockSignals(false);
+        throw AgrosException(QString("%1: %2").arg(QString::fromStdString(e.what())).arg(QString::fromStdString(e.name())));
     }
     catch (const xml_schema::exception& e)
     {
@@ -1764,12 +1746,15 @@ void Scene::writeToFile(const QString &fileName, bool saveLastProblemDir)
         }
     }
 
-    writeToFile21(fileName);
     writeToFile30(fileName);
 }
 
 void Scene::writeToFile21(const QString &fileName)
 {
+    // DEPRECATED
+    assert(0);
+
+    /*
     // save current locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
@@ -1853,7 +1838,7 @@ void Scene::writeToFile21(const QString &fileName)
     eleProblem.setAttribute("mesh_type", meshTypeToStringKey(Agros2D::problem()->config()->meshType()));
 
     // harmonic
-    eleProblem.setAttribute("frequency", Agros2D::problem()->config()->frequency());
+    eleProblem.setAttribute("frequency", Agros2D::problem()->config()->value(ProblemConfig::Frequency).toDouble());
 
     // transient
     eleProblem.setAttribute("time_steps", Agros2D::problem()->config()->timeNumConstantTimeSteps());
@@ -1880,7 +1865,7 @@ void Scene::writeToFile21(const QString &fileName)
         // initial condition
         eleField.setAttribute("initial_condition", fieldInfo->initialCondition());
         // polynomial order
-        eleField.setAttribute("polynomial_order", fieldInfo->polynomialOrder());
+        eleField.setAttribute("polynomial_order", fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt());
         // time steps skip
         eleField.setAttribute("time_skip", fieldInfo->timeSkip());
 
@@ -2074,6 +2059,7 @@ void Scene::writeToFile21(const QString &fileName)
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
+    */
 }
 
 void Scene::writeToFile30(const QString &fileName)
@@ -2112,25 +2098,6 @@ void Scene::writeToFile30(const QString &fileName)
                 polynomial_orders.polynomial_order().push_back(XMLProblem::polynomial_order(Agros2D::scene()->labels->items().indexOf(labelOrderIterator.key()),
                                                                                             labelOrderIterator.value()));
             }
-
-            XMLProblem::adaptivity adaptivity(adaptivityTypeToStringKey(fieldInfo->adaptivityType()).toStdString(),
-                                              fieldInfo->adaptivitySteps(),
-                                              fieldInfo->adaptivityTolerance(),
-                                              fieldInfo->adaptivityBackSteps(),
-                                              fieldInfo->adaptivityRedoneEach());
-
-            XMLProblem::solver solver(linearityTypeToStringKey(fieldInfo->linearityType()).toStdString(),
-                                      fieldInfo->nonlinearSteps(),
-                                      fieldInfo->nonlinearTolerance(),
-                                      fieldInfo->newtonDampingCoeff(),
-                                      (int) fieldInfo->newtonAutomaticDamping(),
-                                      fieldInfo->newtonAutomaticDampingCoeff(),
-                                      fieldInfo->newtonDampingNumberToIncrease(),
-                                      (int) fieldInfo->picardAndersonAcceleration(),
-                                      fieldInfo->picardAndersonBeta(),
-                                      fieldInfo->picardAndersonNumberOfLastVectors());
-
-            solver.nonlinear_convergence_measurement() = nonlinearSolverConvergenceMeasurementToStringKey(fieldInfo->nonlinearConvergenceMeasurement()).toStdString();
 
             XMLProblem::boundaries boundaries;
             int iboundary = 1;
@@ -2177,7 +2144,7 @@ void Scene::writeToFile30(const QString &fileName)
 
                 XMLProblem::material material(material_labels,
                                               material_types,
-                                              iboundary,
+                                              imaterial,
                                               mat->name().toStdString());
 
                 materials.material().push_back(material);
@@ -2185,19 +2152,19 @@ void Scene::writeToFile30(const QString &fileName)
                 imaterial++;
             }
 
+            XMLProblem::field_config field_config;
+            fieldInfo->save(&field_config);
+
             XMLProblem::field field(refinement_edges,
                                     refinement_labels,
                                     polynomial_orders,
-                                    adaptivity,
-                                    solver,
                                     boundaries,
                                     materials,
+                                    field_config,
                                     fieldInfo->fieldId().toStdString(),
                                     analysisTypeToStringKey(fieldInfo->analysisType()).toStdString(),
-                                    fieldInfo->numberOfRefinements(),
-                                    fieldInfo->polynomialOrder(),
-                                    fieldInfo->initialCondition(),
-                                    fieldInfo->timeSkip());
+                                    adaptivityTypeToStringKey(fieldInfo->adaptivityType()).toStdString(),
+                                    linearityTypeToStringKey(fieldInfo->linearityType()).toStdString());
 
             fields.field().push_back(field);
         }
@@ -2214,17 +2181,15 @@ void Scene::writeToFile30(const QString &fileName)
         XMLProblem::config config;
         Agros2D::problem()->setting()->save(&config);
 
+        XMLProblem::problem_config problem_config;
+        Agros2D::problem()->config()->save(&problem_config);
+
         XMLProblem::problem problem(fields,
                                     couplings,
+                                    problem_config,
                                     coordinateTypeToStringKey(Agros2D::problem()->config()->coordinateType()).toStdString(),
                                     meshTypeToStringKey(Agros2D::problem()->config()->meshType()).toStdString(),
-                                    matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()).toStdString(),
-                                    Agros2D::problem()->config()->frequency(),
-                                    timeStepMethodToStringKey(Agros2D::problem()->config()->timeStepMethod()).toStdString(),
-                                    Agros2D::problem()->config()->timeTotal(),
-                                    Agros2D::problem()->config()->timeNumConstantTimeSteps(),
-                                    Agros2D::problem()->config()->timeOrder(),
-                                    Agros2D::problem()->config()->timeMethodTolerance());
+                                    matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()).toStdString());
 
         // nodes
         XMLProblem::nodes nodes;

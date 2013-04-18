@@ -4,8 +4,13 @@
 #include "util.h"
 #include "util/global.h"
 
-class Hermes::Hermes2D::Element;
-
+namespace Hermes
+{
+namespace Hermes2D
+{
+class Element;
+}
+}
 
 class MeshHashElement
 {

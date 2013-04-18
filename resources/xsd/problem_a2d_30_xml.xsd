@@ -94,31 +94,7 @@
                                 </element>
                               </sequence>
                             </complexType>
-                          </element>
-                          <element name="adaptivity">
-                            <complexType>
-                              <attribute name="adaptivity_type" type="string" use="required" />
-                              <attribute name="adaptivity_steps" type="int" use="required" />
-                              <attribute name="adaptivity_tolerance" type="float" use="required" />
-                              <attribute name="adaptivity_back_steps" type="int" use="required" />
-                              <attribute name="adaptivity_redone_each" type="int" use="required" />
-                            </complexType>
-                          </element>
-                          <element name="solver">
-                            <complexType>
-                              <attribute name="linearity_type" type="string" use="required"/>
-                              <attribute name="nonlinear_steps" type="int" use="required"/>
-                              <attribute name="nonlinear_tolerance" type="float" use="required"/>
-                              <attribute name="nonlinear_convergence_measurement" type="string" use="optional"/>
-                              <attribute name="newton_damping_coeff" type="float" use="required"/>
-                              <attribute name="newton_automatic_damping" type="int" use="required"/>
-                              <attribute name="newton_automatic_damping_coeff" type="float" use="required"/>
-                              <attribute name="newton_damping_number_to_increase" type="int" use="required"/>
-                              <attribute name="picard_anderson_acceleration" type="int" use="required"/>
-                              <attribute name="picard_anderson_beta" type="float" use="required"/>
-                              <attribute name="picard_anderson_vectors" type="int" use="required"/>
-                            </complexType>
-                          </element>
+                          </element>                                                 
                           <element name="boundaries">
                             <complexType>
                               <sequence>
@@ -194,13 +170,23 @@
                             </sequence>
                           </complexType>
                           </element>
+                          <element name="field_config" maxOccurs="1" minOccurs="1">
+							  <complexType>
+								<sequence>
+								  <element maxOccurs="unbounded" name="field_item">
+									<complexType>
+									  <attribute name="field_key" type="string" use="required"/>
+									  <attribute name="field_value" type="string" use="required"/>
+									</complexType>
+								  </element>
+								</sequence>
+							  </complexType>
+                          </element>
                         </sequence>
                         <attribute name="field_id" type="string" use="required" />
-                        <attribute name="analysis_type" type="string" use="required" />
-                        <attribute name="number_of_refinements" type="int" use="required" />
-                        <attribute name="polynomial_order" type="int" use="required" />
-                        <attribute name="initial_condition" type="float" use="required" />
-                        <attribute name="time_skip" type="int" use="required" />
+                        <attribute name="analysis_type" type="string" use="required"/>
+                        <attribute name="adaptivity_type" type="string" use="required" />
+                        <attribute name="linearity_type" type="string" use="required" />
                       </complexType>
                     </element>
                   </sequence>
@@ -220,16 +206,22 @@
                   </sequence>
                 </complexType>
               </element>
+              <element name="problem_config" maxOccurs="1" minOccurs="1">
+                  <complexType>
+                    <sequence>
+                      <element maxOccurs="unbounded" name="problem_item">
+                        <complexType>
+                          <attribute name="problem_key" type="string" use="required"/>
+                          <attribute name="problem_value" type="string" use="required"/>
+                        </complexType>
+                      </element>
+                    </sequence>
+                  </complexType>
+              </element>
             </all>
             <attribute name="coordinate_type" type="string" use="required"/>
             <attribute name="mesh_type" type="string" use="required" />
             <attribute name="matrix_solver" type="string" use="required" />
-            <attribute name="frequency" type="float" use="required" />
-            <attribute name="time_method" type="string" use="required" />
-            <attribute name="time_total" type="float" use="required" />
-            <attribute name="time_steps" type="int" use="required" />
-            <attribute name="time_order" type="int" use="required" />
-            <attribute name="time_method_tolerance" type="float" use="required" />
           </complexType>
         </element>
         <element name="config">

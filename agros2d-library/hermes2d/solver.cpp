@@ -89,10 +89,19 @@ void NewtonSolverAgros<Scalar>::on_step_end()
         qDebug() << "Unknown ConvergenceMeasurement in NewtonSolver.";
     }
 
-    Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("Iteration: %1, damping coeff.: %2, error: %3")
-                                 .arg(this->get_parameter_value(iteration))
-                                 .arg(this->get_parameter_value(current_damping_coefficient))
-                                 .arg(m_errors.last()));
+
+    if (this->get_parameter_value(iteration) == 1)
+    {
+        Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("Initial step, error: %1")
+                                     .arg(m_errors.last()));
+    }
+    else
+    {
+        Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("Iteration: %1, damping coeff.: %2, error: %3")
+                                     .arg(this->get_parameter_value(iteration))
+                                     .arg(this->get_parameter_value(current_damping_coefficient))
+                                     .arg(m_errors.last()));
+    }
 
     Agros2D::log()->setNonlinearTable(m_steps, m_errors);
 }
@@ -178,6 +187,8 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
     m_newtonSolver->set_max_allowed_iterations(block->nonlinearSteps());
     m_newtonSolver->set_max_allowed_residual_norm(1e15);
     m_newtonSolver->set_convergence_measurement(block->nonlinearConvergenceMeasurement());
+    // m_newtonSolver->set_sufficient_improvement_factor_jacobian();
+    // m_newtonSolver->set_max_steps_with_reused_jacobian();
     if (block->newtonAutomaticDamping())
     {
         m_newtonSolver->set_initial_auto_damping_coeff(block->newtonAutomaticDampingCoeff());
@@ -482,7 +493,7 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     if (m_block->isTransient())
     {
         bdf2Table = new BDF2ATable();
-        bdf2Table->setOrder(min(timeStep, Agros2D::problem()->config()->timeOrder()));
+        bdf2Table->setOrder(min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt()));
         bdf2Table->setPreviousSteps(Agros2D::problem()->timeStepLengths());
     }
 
@@ -530,7 +541,7 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
 template <typename Scalar>
 NextTimeStep ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivityStep)
 {
-    double timeTotal = Agros2D::problem()->config()->timeTotal();
+    double timeTotal = Agros2D::problem()->config()->value(ProblemConfig::TimeTotal).toDouble();
 
     // TODO: move to some config?
     const double relativeTimeStepLen = Agros2D::problem()->actualTimeStepLength() / timeTotal;
@@ -538,7 +549,7 @@ NextTimeStep ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
     const double maxTimeStepLength = timeTotal / 10;
     const double maxToleranceMultiplyToAccept = 2.5; //3.0;
 
-    TimeStepMethod method = Agros2D::problem()->config()->timeStepMethod();
+    TimeStepMethod method = (TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt();
     if(method == TimeStepMethod_Fixed)
         return NextTimeStep(Agros2D::problem()->config()->constantTimeStepLength());
 
@@ -546,7 +557,7 @@ NextTimeStep ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
             Agros2D::solutionStore()->multiArray(Agros2D::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionMode_Normal));
 
     // todo: ensure this in gui
-    assert(Agros2D::problem()->config()->timeOrder() >= 2);
+    assert(Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt() >= 2);
 
     // todo: in the first step, I am acualy using order 1 and thus I am unable to decrease it!
     // this is not good, since the second step is not calculated (and the error of the first is not being checked)
@@ -557,11 +568,11 @@ NextTimeStep ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
     }
 
     BDF2Table* bdf2Table = new BDF2ATable();
-    int previouslyUsedOrder = min(timeStep, Agros2D::problem()->config()->timeOrder());
+    int previouslyUsedOrder = min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt());
     bdf2Table->setOrder(previouslyUsedOrder - 1);
 
     bdf2Table->setPreviousSteps(Agros2D::problem()->timeStepLengths());
-    //cout << "using time order" << min(timeStep, Agros2D::problem()->config()->timeOrder()) << endl;
+    //cout << "using time order" << min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt()) << endl;
 
     m_block->setWeakForm(new WeakFormAgros<double>(m_block));
     m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());
@@ -586,11 +597,11 @@ NextTimeStep ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
     //m_averageErrorToLenghtRatio = (m_averageErrorToLenghtRatio + actualRatio) / 2.;
 
     double TOL;
-    if(Agros2D::problem()->config()->timeStepMethod() == TimeStepMethod_BDFTolerance)
+    if (((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_BDFTolerance)
     {
-        TOL = Agros2D::problem()->config()->timeMethodTolerance();
+        TOL = Agros2D::problem()->config()->value(ProblemConfig::TimeMethodTolerance).toDouble();
     }
-    else if(Agros2D::problem()->config()->timeStepMethod() == TimeStepMethod_BDFNumSteps)
+    else if (((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_BDFNumSteps)
     {
         int desiredNumSteps = (timeTotal / Agros2D::problem()->config()->constantTimeStepLength());
         int remainingSteps = max(2, desiredNumSteps - timeStep);
@@ -608,7 +619,7 @@ NextTimeStep ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
     bool refuseThisStep = error > maxToleranceMultiplyToAccept  * TOL;
 
     // this guess is based on assymptotic considerations
-    double nextTimeStepLength = pow(TOL / error, 1.0 / (Agros2D::problem()->config()->timeOrder() + 1)) * Agros2D::problem()->actualTimeStepLength();
+    double nextTimeStepLength = pow(TOL / error, 1.0 / (Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt() + 1)) * Agros2D::problem()->actualTimeStepLength();
 
     nextTimeStepLength = min(nextTimeStepLength, maxTimeStepLength);
     nextTimeStepLength = min(nextTimeStepLength, Agros2D::problem()->actualTimeStepLength() * maxTimeStepRatio);
@@ -661,16 +672,16 @@ void ProblemSolver<Scalar>::createInitialSpace()
             switch (fieldSpaces[spaceI].type())
             {
             case HERMES_L2_SPACE:
-                oneSpace = new L2Space<Scalar>(fieldInfo->initialMesh(), fieldInfo->polynomialOrder() + fieldInfo->spaces()[i+1].orderAdjust());
+                oneSpace = new L2Space<Scalar>(fieldInfo->initialMesh(), fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt() + fieldInfo->spaces()[i+1].orderAdjust());
                 break;
             case HERMES_H1_SPACE:
-                oneSpace = new H1Space<Scalar>(fieldInfo->initialMesh(), m_block->bcs().at(i + m_block->offset(field)), fieldInfo->polynomialOrder() + fieldInfo->spaces()[i+1].orderAdjust());
+                oneSpace = new H1Space<Scalar>(fieldInfo->initialMesh(), m_block->bcs().at(i + m_block->offset(field)), fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt() + fieldInfo->spaces()[i+1].orderAdjust());
                 break;
             case HERMES_HCURL_SPACE:
-                oneSpace = new HcurlSpace<Scalar>(fieldInfo->initialMesh(), m_block->bcs().at(i + m_block->offset(field)), fieldInfo->polynomialOrder() + fieldInfo->spaces()[i+1].orderAdjust());
+                oneSpace = new HcurlSpace<Scalar>(fieldInfo->initialMesh(), m_block->bcs().at(i + m_block->offset(field)), fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt() + fieldInfo->spaces()[i+1].orderAdjust());
                 break;
             case HERMES_HDIV_SPACE:
-                oneSpace = new HdivSpace<Scalar>(fieldInfo->initialMesh(), m_block->bcs().at(i + m_block->offset(field)), fieldInfo->polynomialOrder() + fieldInfo->spaces()[i+1].orderAdjust());
+                oneSpace = new HdivSpace<Scalar>(fieldInfo->initialMesh(), m_block->bcs().at(i + m_block->offset(field)), fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt() + fieldInfo->spaces()[i+1].orderAdjust());
                 break;
             default:
                 assert(0);
@@ -684,7 +695,7 @@ void ProblemSolver<Scalar>::createInitialSpace()
             foreach(SceneLabel* label, Agros2D::scene()->labels->items())
             {
                 if (!label->marker(fieldInfo)->isNone() &&
-                        (fieldInfo->labelPolynomialOrder(label) != fieldInfo->polynomialOrder()))
+                        (fieldInfo->labelPolynomialOrder(label) != fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt()))
                 {
                     actualSpaces().at(i)->set_uniform_order(fieldInfo->labelPolynomialOrder(label),
                                                             QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString());
@@ -760,7 +771,7 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
     if(m_block->isTransient())
     {
         bdf2Table = new BDF2ATable();
-        bdf2Table->setOrder(min(timeStep, Agros2D::problem()->config()->timeOrder()));
+        bdf2Table->setOrder(min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt()));
         bdf2Table->setPreviousSteps(Agros2D::problem()->timeStepLengths());
     }
 
@@ -908,7 +919,7 @@ void ProblemSolver<Scalar>::solveInitialTimeStep()
         {
             // constant initial solution
             MeshSharedPtr mesh = actualSpaces().at(totalComp)->get_mesh();
-            ConstantSolution<double> *initial = new ConstantSolution<double>(mesh, field->fieldInfo()->initialCondition());
+            ConstantSolution<double> *initial = new ConstantSolution<double>(mesh, field->fieldInfo()->value(FieldInfo::TransientInitialCondition).toDouble());
             solutions.push_back(initial);
             totalComp++;
         }

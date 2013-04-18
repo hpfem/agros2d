@@ -120,7 +120,7 @@ void InfoWidget::showInfo()
 
     problemInfo.SetValue("HARMONIC_LABEL", tr("Harmonic analysis").toStdString());
     problemInfo.SetValue("HARMONIC_FREQUENCY_LABEL", tr("Frequency:").toStdString());
-    problemInfo.SetValue("HARMONIC_FREQUENCY", QString::number(Agros2D::problem()->config()->frequency()).toStdString() + " Hz");
+    problemInfo.SetValue("HARMONIC_FREQUENCY", QString::number(Agros2D::problem()->config()->value(ProblemConfig::Frequency).toDouble()).toStdString() + " Hz");
 
     if (Agros2D::problem()->isTransient())
     {
@@ -151,17 +151,17 @@ void InfoWidget::showInfo()
     }
     problemInfo.SetValue("TRANSIENT_LABEL", tr("Transient analysis").toStdString());
     problemInfo.SetValue("TRANSIENT_STEP_METHOD_LABEL", tr("Method:").toStdString());
-    problemInfo.SetValue("TRANSIENT_STEP_METHOD", timeStepMethodString(Agros2D::problem()->config()->timeStepMethod()).toStdString());
+    problemInfo.SetValue("TRANSIENT_STEP_METHOD", timeStepMethodString((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()).toStdString());
     problemInfo.SetValue("TRANSIENT_STEP_ORDER_LABEL", tr("Order:").toStdString());
-    problemInfo.SetValue("TRANSIENT_STEP_ORDER", QString::number(Agros2D::problem()->config()->timeOrder()).toStdString());
+    problemInfo.SetValue("TRANSIENT_STEP_ORDER", QString::number(Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt()).toStdString());
     problemInfo.SetValue("TRANSIENT_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
-    problemInfo.SetValue("TRANSIENT_TOLERANCE", QString::number(Agros2D::problem()->config()->timeMethodTolerance()).toStdString());
+    problemInfo.SetValue("TRANSIENT_TOLERANCE", QString::number(Agros2D::problem()->config()->value(ProblemConfig::TimeMethodTolerance).toDouble()).toStdString());
     problemInfo.SetValue("TRANSIENT_CONSTANT_STEP_LABEL", tr("Constant time step:").toStdString());
     problemInfo.SetValue("TRANSIENT_CONSTANT_STEP", QString::number(Agros2D::problem()->config()->constantTimeStepLength()).toStdString() + " s");
     problemInfo.SetValue("TRANSIENT_CONSTANT_NUM_STEPS_LABEL", tr("Number of const. time steps:").toStdString());
-    problemInfo.SetValue("TRANSIENT_CONSTANT_NUM_STEPS", QString::number(Agros2D::problem()->config()->timeNumConstantTimeSteps()).toStdString());
+    problemInfo.SetValue("TRANSIENT_CONSTANT_NUM_STEPS", QString::number(Agros2D::problem()->config()->value(ProblemConfig::TimeConstantTimeSteps).toInt()).toStdString());
     problemInfo.SetValue("TRANSIENT_TOTAL_LABEL", tr("Total time:").toStdString());
-    problemInfo.SetValue("TRANSIENT_TOTAL", QString::number(Agros2D::problem()->config()->timeTotal()).toStdString() + " s");
+    problemInfo.SetValue("TRANSIENT_TOTAL", QString::number(Agros2D::problem()->config()->value(ProblemConfig::TimeTotal).toDouble()).toStdString() + " s");
 
     problemInfo.SetValue("GEOMETRY_LABEL", tr("Geometry").toStdString());
     problemInfo.SetValue("GEOMETRY_NODES_LABEL", tr("Nodes:").toStdString());
@@ -193,14 +193,14 @@ void InfoWidget::showInfo()
             if (fieldInfo->analysisType() == AnalysisType_Transient)
             {
                 field->SetValue("INITIAL_CONDITION_LABEL", tr("Initial condition:").toStdString());
-                field->SetValue("INITIAL_CONDITION", QString::number(fieldInfo->initialCondition()).toStdString());
+                field->SetValue("INITIAL_CONDITION", QString::number(fieldInfo->value(FieldInfo::TransientInitialCondition).toDouble()).toStdString());
                 field->ShowSection("INITIAL_CONDITION_SECTION");
             }
 
             field->SetValue("REFINEMENS_NUMBER_LABEL", tr("Number of refinements:").toStdString());
-            field->SetValue("REFINEMENS_NUMBER", QString::number(fieldInfo->numberOfRefinements()).toStdString());
+            field->SetValue("REFINEMENS_NUMBER", QString::number(fieldInfo->value(FieldInfo::SpaceNumberOfRefinements).toInt()).toStdString());
             field->SetValue("POLYNOMIAL_ORDER_LABEL", tr("Polynomial order:").toStdString());
-            field->SetValue("POLYNOMIAL_ORDER", QString::number(fieldInfo->polynomialOrder()).toStdString());
+            field->SetValue("POLYNOMIAL_ORDER", QString::number(fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt()).toStdString());
 
             field->SetValue("ADAPTIVITY_TYPE_LABEL", tr("Adaptivity:").toStdString());
             field->SetValue("ADAPTIVITY_TYPE", adaptivityTypeString(fieldInfo->adaptivityType()).toStdString());
@@ -208,9 +208,9 @@ void InfoWidget::showInfo()
             if (fieldInfo->adaptivityType() != AdaptivityType_None)
             {
                 field->SetValue("ADAPTIVITY_STEPS_LABEL", tr("Steps:").toStdString());
-                field->SetValue("ADAPTIVITY_STEPS", QString::number(fieldInfo->adaptivitySteps()).toStdString());
+                field->SetValue("ADAPTIVITY_STEPS", QString::number(fieldInfo->value(FieldInfo::AdaptivitySteps).toInt()).toStdString());
                 field->SetValue("ADAPTIVITY_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
-                field->SetValue("ADAPTIVITY_TOLERANCE", QString::number(fieldInfo->adaptivityTolerance()).toStdString() + " %");
+                field->SetValue("ADAPTIVITY_TOLERANCE", QString::number(fieldInfo->value(FieldInfo::AdaptivityTolerance).toDouble()).toStdString() + " %");
                 field->ShowSection("ADAPTIVITY_PARAMETERS_SECTION");
             }
 
@@ -220,9 +220,9 @@ void InfoWidget::showInfo()
             if (fieldInfo->linearityType() != LinearityType_Linear)
             {
                 field->SetValue("NONLINEAR_STEPS_LABEL", tr("Steps:").toStdString());
-                field->SetValue("NONLINEAR_STEPS", QString::number(fieldInfo->nonlinearSteps()).toStdString());
+                field->SetValue("NONLINEAR_STEPS", QString::number(fieldInfo->value(FieldInfo::NonlinearSteps).toInt()).toStdString());
                 field->SetValue("NONLINEAR_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
-                field->SetValue("NONLINEAR_TOLERANCE", QString::number(fieldInfo->nonlinearTolerance()).toStdString());
+                field->SetValue("NONLINEAR_TOLERANCE", QString::number(fieldInfo->value(FieldInfo::NonlinearTolerance).toDouble()).toStdString());
                 field->ShowSection("SOLVER_PARAMETERS_SECTION");
             }
 
@@ -297,9 +297,9 @@ void InfoWidget::showInfo()
 
                     // error
                     QString prescribedError = QString("[[1, %1], [%2, %3]]").
-                            arg(fieldInfo->adaptivityTolerance()).
+                            arg(fieldInfo->value(FieldInfo::AdaptivityTolerance).toDouble()).
                             arg(adaptiveSteps + 1).
-                            arg(fieldInfo->adaptivityTolerance());
+                            arg(fieldInfo->value(FieldInfo::AdaptivityTolerance).toDouble());
 
                     // chart error vs. steps
                     QString commandError = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_error_steps_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } }, { data: %3, color: \"rgb(240, 0, 0)\" } ], { grid: { hoverable : true }, xaxes: [ { axisLabel: 'steps (-)' } ], yaxes: [ { axisLabel: 'Rel. error (%)' } ] });});</script>").

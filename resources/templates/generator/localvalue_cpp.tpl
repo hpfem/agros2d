@@ -78,7 +78,7 @@ void {{CLASS}}LocalValue::calculate()
                 {
 
                     // set variables
-                    value[k] = m_fieldInfo->initialCondition();
+                    value[k] = m_fieldInfo->value(FieldInfo::TransientInitialCondition).toDouble();
                     dudx[k] = 0;
                     dudy[k] = 0;
                 }

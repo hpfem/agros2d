@@ -410,7 +410,7 @@ int Problem::timeToTimeStep(double time) const
     for(int ts = 0; ts < m_timeStepLengths.size(); ts++)
     {
         timeSum += m_timeStepLengths.at(ts);
-        if(fabs(timeSum - time) < 1e-9* config()->timeTotal())
+        if(fabs(timeSum - time) < 1e-9* config()->value(ProblemConfig::TimeTotal).toDouble())
             return ts+1;
     }
 
@@ -422,12 +422,12 @@ int Problem::timeToTimeStep(double time) const
 bool Problem::defineActualTimeStepLength(double ts)
 {
     // todo: do properly
-    const double eps = 1e-9 * config()->timeTotal();
-    assert(actualTime() < config()->timeTotal() + eps);
-    if(actualTime() > config()->timeTotal() - eps)
+    const double eps = 1e-9 * config()->value(ProblemConfig::TimeTotal).toDouble();
+    assert(actualTime() < config()->value(ProblemConfig::TimeTotal).toDouble() + eps);
+    if(actualTime() > config()->value(ProblemConfig::TimeTotal).toDouble() - eps)
         return false;
     else{
-        double alteredTS = min(ts, config()->timeTotal() - actualTime());
+        double alteredTS = min(ts, config()->value(ProblemConfig::TimeTotal).toDouble() - actualTime());
         m_timeStepLengths.push_back(alteredTS);
         return true;
     }
@@ -469,9 +469,9 @@ void Problem::solveInit(bool reCreateStructure)
     // check problem settings
     if (Agros2D::problem()->isTransient())
     {
-        if (!Agros2D::problem()->config()->timeTotal() > 0.0)
+        if (!Agros2D::problem()->config()->value(ProblemConfig::TimeTotal).toDouble() > 0.0)
             throw AgrosSolverException(tr("Total time is zero"));
-        if (!Agros2D::problem()->config()->timeMethodTolerance() > 0.0)
+        if (!Agros2D::problem()->config()->value(ProblemConfig::TimeMethodTolerance).toDouble() > 0.0)
             throw AgrosSolverException(tr("Time method tolerance is zero"));
     }
 
@@ -516,7 +516,6 @@ CalculationThread::CalculationThread(bool adaptiveStep, bool commandLine) : adap
 void CalculationThread::run()
 {
     Agros2D::problem()->solve(adaptiveStep, commandLine);
-
 }
 
 void Problem::doAbortSolve()
@@ -527,9 +526,11 @@ void Problem::doAbortSolve()
 
 void Problem::solve()
 {
+    m_isSolved = false;
+    m_isSolving = false;
+
     CalculationThread* thread = new CalculationThread(false, false);
     thread->start(QThread::TimeCriticalPriority);
-
 }
 
 void Problem::solveCommandLine()
@@ -854,14 +855,14 @@ void Problem::stepMessage(Block* block)
             Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
                                          QObject::tr("Transient step %1 (%2%)").
                                          arg(actualTimeStep()).
-                                         arg(int(100*actualTime()/config()->timeTotal())));
+                                         arg(int(100*actualTime() / config()->value(ProblemConfig::TimeTotal).toDouble())));
         }
         else
         {
             Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields),
                                          QObject::tr("Transient step %1/%2").
                                          arg(actualTimeStep()).
-                                         arg(config()->timeNumConstantTimeSteps()));
+                                         arg(config()->value(ProblemConfig::TimeConstantTimeSteps).toInt()));
         }
     }
     else

@@ -29,6 +29,7 @@
 #include "logview.h"
 
 #include "../../resources_source/classes/module_xml.h"
+#include "../../resources_source/classes/problem_a2d_30_xml.h"
 
 Field::Field(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo)
 {
@@ -66,10 +67,14 @@ FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
 
     assert(m_plugin);
 
+    setStringKeys();
+    setDefaultValues();
+
+    clear();
+
     // default analysis
     setAnalysisType(analyses().begin().key());
 
-    clear();
 }
 
 FieldInfo::~FieldInfo()
@@ -83,24 +88,39 @@ void FieldInfo::setInitialMesh(MeshSharedPtr mesh)
     m_initialMesh = mesh;
 }
 
-
-void FieldInfo::setAnalysisType(const AnalysisType analysisType)
+void FieldInfo::setAnalysisType(AnalysisType at)
 {
-    m_analysisType = analysisType;
-
-    // number of soutions
-    m_numberOfSolutions = 0;
+    m_analysisType = at;
 
     foreach (XMLModule::analysis an, m_plugin->module()->general().analyses().analysis())
     {
-        if (an.type() == analysisTypeToStringKey(m_analysisType).toStdString())
+        if (an.type() == analysisTypeToStringKey(at).toStdString())
         {
             m_numberOfSolutions = an.solutions();
-            m_implicitNewtonTolerance = an.newton_tolerance();
-            m_implicitNewtonSteps = an.newton_steps();
-            m_implicitNewtonDampingCoeff = an.newton_damping_coef();
-            m_implicitNewtonAutomaticDampingCoeff = an.newton_automatic_damping_coef();
-            m_implicitNewtonDampingNumberToIncrease = an.newton_steps_back();
+
+            if (an.field_config().present())
+            {
+                for (int i = 0; i < an.field_config().get().field_item().size(); i ++)
+                {
+                    Type key = stringKeyToType(QString::fromStdString(an.field_config().get().field_item().at(i).field_key()));
+
+                    if (m_settingDefault.keys().contains(key))
+                    {
+                        if (m_settingDefault[key].type() == QVariant::Double)
+                            m_settingDefault[key] = QString::fromStdString(an.field_config().get().field_item().at(i).field_value()).toDouble();
+                        else if (m_settingDefault[key].type() == QVariant::Int)
+                            m_settingDefault[key] = QString::fromStdString(an.field_config().get().field_item().at(i).field_value()).toInt();
+                        else if (m_settingDefault[key].type() == QVariant::Bool)
+                            m_settingDefault[key] = (QString::fromStdString(an.field_config().get().field_item().at(i).field_value()) == "1");
+                        else if (m_settingDefault[key].type() == QVariant::String)
+                            m_settingDefault[key] = QString::fromStdString(an.field_config().get().field_item().at(i).field_value());
+                        else if (m_settingDefault[key].type() == QVariant::StringList)
+                            m_settingDefault[key] = QString::fromStdString(an.field_config().get().field_item().at(i).field_value()).split("|");
+                        else
+                            qDebug() << "Key not found" << QString::fromStdString(an.field_config().get().field_item().at(i).field_key()) << QString::fromStdString(an.field_config().get().field_item().at(i).field_value());
+                    }
+                }
+            }
         }
     }
 }
@@ -139,7 +159,7 @@ int FieldInfo::labelPolynomialOrder(SceneLabel *label)
             return i.value();
     }
 
-    return m_polynomialOrder;
+    return value(FieldInfo::SpacePolynomialOrder).toInt();
 }
 
 void FieldInfo::clear()
@@ -147,42 +167,22 @@ void FieldInfo::clear()
     // mesh
     clearInitialMesh();
 
-    m_numberOfRefinements = 1;
-    m_polynomialOrder = 2;
+    // set default values and types
+    m_setting.clear();
+    setDefaultValues();
+
+    m_setting = m_settingDefault;
 
     m_edgesRefinement.clear();
     m_labelsRefinement.clear();
-
     m_labelsPolynomialOrder.clear();
-
-    // adaptivity
-    m_adaptivityType = AdaptivityType_None;
-    m_adaptivitySteps = 0;
-    m_adaptivityTolerance = 1.0;
-
-    // transient
-    m_initialCondition = 0.0;
-    m_timeSkip = 0.0;
-
-    // linearity
-    m_linearityType = LinearityType_Linear;
-    m_nonlinearConvergenceMeasurement = Hermes::Hermes2D::NewtonSolver<double>::AbsoluteNorm;
-    m_nonlinearTolerance = m_implicitNewtonTolerance;
-    m_nonlinearSteps = m_implicitNewtonSteps;
-    m_newtonDampingCoeff = m_implicitNewtonDampingCoeff;
-    m_newtonAutomaticDampingCoeff = m_implicitNewtonAutomaticDampingCoeff;
-    m_newtonAutomaticDamping = true;
-    m_newtonDampingNumberToIncrease = m_implicitNewtonDampingNumberToIncrease;
-    m_picardAndersonAcceleration = true;
-    m_picardAndersonBeta = 0.2;
-    m_picardAndersonNumberOfLastVectors = 3;
 }
 
 void FieldInfo::refineMesh(MeshSharedPtr mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea)
 {
     // refine mesh - global
     if (refineGlobal)
-        for (int i = 0; i < numberOfRefinements(); i++)
+        for (int i = 0; i < value(FieldInfo::SpaceNumberOfRefinements).toInt(); i++)
             mesh->refine_all_elements(0);
 
     // refine mesh - boundary
@@ -237,7 +237,7 @@ QString FieldInfo::equation() const
     for (unsigned int i = 0; i < m_plugin->module()->volume().weakforms_volume().weakform_volume().size(); i++)
     {
         XMLModule::weakform_volume wf = m_plugin->module()->volume().weakforms_volume().weakform_volume().at(i);
-        if (wf.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+        if (wf.analysistype() == analysisTypeToStringKey(analysisType()).toStdString())
             return QString::fromStdString(wf.equation());
     }
 
@@ -287,7 +287,7 @@ QMap<int, Module::Space> FieldInfo::spaces() const
     QMap<int, Module::Space> spaces;
 
     foreach (XMLModule::space spc, m_plugin->module()->spaces().space())
-        if (spc.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+        if (spc.analysistype() == analysisTypeToStringKey(analysisType()).toStdString())
             foreach (XMLModule::space_config config, spc.space_config())
                 spaces[config.i()] = Module::Space(config.i(),
                                                    spaceTypeFromStringKey(QString::fromStdString(config.type())),
@@ -332,7 +332,7 @@ QList<Module::MaterialTypeVariable> FieldInfo::materialTypeVariables() const
     {
         XMLModule::weakform_volume wf = m_plugin->module()->volume().weakforms_volume().weakform_volume().at(i);
 
-        if (wf.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+        if (wf.analysistype() == analysisTypeToStringKey(analysisType()).toStdString())
         {
             for (unsigned int i = 0; i < wf.quantity().size(); i++)
             {
@@ -354,7 +354,7 @@ QList<Module::MaterialTypeVariable> FieldInfo::materialTypeVariables() const
                             isTimeDep = (QString::fromStdString(qty.dependence().get()) == "time");
 
                         materialTypeVariables.append(Module::MaterialTypeVariable(variable.id(), variable.shortname(),
-                                                                                        nonlinearExpression, isTimeDep));
+                                                                                  nonlinearExpression, isTimeDep));
                     }
                 }
             }
@@ -401,7 +401,7 @@ QList<Module::BoundaryType> FieldInfo::boundaryTypes() const
     {
         XMLModule::weakform_surface wf = m_plugin->module()->surface().weakforms_surface().weakform_surface().at(i);
 
-        if (wf.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+        if (wf.analysistype() == analysisTypeToStringKey(analysisType()).toStdString())
         {
             for (int i = 0; i < wf.boundary().size(); i++)
             {
@@ -457,7 +457,7 @@ Module::Force FieldInfo::force() const
     for (unsigned int i = 0; i < force.expression().size(); i++)
     {
         XMLModule::expression exp = force.expression().at(i);
-        if (exp.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+        if (exp.analysistype() == analysisTypeToStringKey(analysisType()).toStdString())
             return Module::Force((Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ? QString::fromStdString(exp.planar_x().get()) : QString::fromStdString(exp.axi_r().get()),
                                  (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ? QString::fromStdString(exp.planar_y().get()) : QString::fromStdString(exp.axi_z().get()),
                                  (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar) ? QString::fromStdString(exp.planar_z().get()) : QString::fromStdString(exp.axi_phi().get()));
@@ -503,12 +503,12 @@ QList<Module::LocalVariable> FieldInfo::localPointVariables() const
         for (unsigned int i = 0; i < lv.expression().size(); i++)
         {
             XMLModule::expression expr = lv.expression().at(i);
-            if (expr.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+            if (expr.analysistype() == analysisTypeToStringKey(analysisType()).toStdString())
             {
                 variables.append(Module::LocalVariable(this,
                                                        lv,
                                                        Agros2D::problem()->config()->coordinateType(),
-                                                       m_analysisType));
+                                                       analysisType()));
             }
         }
     }
@@ -548,7 +548,7 @@ QList<Module::Integral> FieldInfo::surfaceIntegrals() const
         for (unsigned int i = 0; i < sur.expression().size(); i++)
         {
             XMLModule::expression exp = sur.expression().at(i);
-            if (exp.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+            if (exp.analysistype() == analysisTypeToStringKey(analysisType()).toStdString())
             {
                 if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
                     expr = QString::fromStdString(exp.planar().get()).trimmed();
@@ -587,7 +587,7 @@ QList<Module::Integral> FieldInfo::volumeIntegrals() const
         for (unsigned int i = 0; i < vol.expression().size(); i++)
         {
             XMLModule::expression exp = vol.expression().at(i);
-            if (exp.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+            if (exp.analysistype() == analysisTypeToStringKey(analysisType()).toStdString())
             {
                 if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
                     expr = QString::fromStdString(exp.planar().get()).trimmed();
@@ -651,7 +651,7 @@ Module::LocalVariable FieldInfo::defaultViewScalarVariable() const
 {
     // scalar variables default
     foreach (XMLModule::default_ def, m_plugin->module()->postprocessor().view().scalar_view().default_())
-        if (def.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+        if (def.analysistype() == analysisTypeToStringKey(analysisType()).toStdString())
             return localVariable(QString::fromStdString(def.id()));
 
     assert(0);
@@ -661,7 +661,7 @@ Module::LocalVariable FieldInfo::defaultViewVectorVariable() const
 {
     // vector variables default
     foreach (XMLModule::default_ def, m_plugin->module()->postprocessor().view().vector_view().default_())
-        if (def.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+        if (def.analysistype() == analysisTypeToStringKey(analysisType()).toStdString())
             return(localVariable(QString::fromStdString(def.id())));
 
     assert(0);
@@ -676,16 +676,16 @@ QList<FormInfo> FieldInfo::wfMatrixVolume() const
     {
         XMLModule::weakform_volume wf = m_plugin->module()->volume().weakforms_volume().weakform_volume().at(i);
 
-        if (wf.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+        if (wf.analysistype() == analysisTypeToStringKey(analysisType()).toStdString())
         {
             // weakform
             for (unsigned int i = 0; i < wf.matrix_form().size(); i++)
             {
                 XMLModule::matrix_form form = wf.matrix_form().at(i);
                 weakForms.append(FormInfo(QString::fromStdString(form.id()),
-                                                 form.i(),
-                                                 form.j(),
-                                                 form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
+                                          form.i(),
+                                          form.j(),
+                                          form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
             }
         }
     }
@@ -701,7 +701,7 @@ QList<FormInfo> FieldInfo::wfVectorVolume() const
     {
         XMLModule::weakform_volume wf = m_plugin->module()->volume().weakforms_volume().weakform_volume().at(i);
 
-        if (wf.analysistype() == analysisTypeToStringKey(m_analysisType).toStdString())
+        if (wf.analysistype() == analysisTypeToStringKey(analysisType()).toStdString())
         {
             for (unsigned int i = 0; i < wf.vector_form().size(); i++)
             {
@@ -716,3 +716,92 @@ QList<FormInfo> FieldInfo::wfVectorVolume() const
     return weakForms;
 }
 
+void FieldInfo::load(XMLProblem::field_config *configxsd)
+{
+    // default
+    m_setting = m_settingDefault;
+
+    for (int i = 0; i < configxsd->field_item().size(); i ++)
+    {
+        Type key = stringKeyToType(QString::fromStdString(configxsd->field_item().at(i).field_key()));
+
+        if (m_settingDefault.keys().contains(key))
+        {
+            if (m_settingDefault[key].type() == QVariant::Double)
+                m_setting[key] = QString::fromStdString(configxsd->field_item().at(i).field_value()).toDouble();
+            else if (m_settingDefault[key].type() == QVariant::Int)
+                m_setting[key] = QString::fromStdString(configxsd->field_item().at(i).field_value()).toInt();
+            else if (m_settingDefault[key].type() == QVariant::Bool)
+                m_setting[key] = (QString::fromStdString(configxsd->field_item().at(i).field_value()) == "1");
+            else if (m_settingDefault[key].type() == QVariant::String)
+                m_setting[key] = QString::fromStdString(configxsd->field_item().at(i).field_value());
+            else if (m_settingDefault[key].type() == QVariant::StringList)
+                m_setting[key] = QString::fromStdString(configxsd->field_item().at(i).field_value()).split("|");
+            else
+                qDebug() << "Key not found" << QString::fromStdString(configxsd->field_item().at(i).field_key()) << QString::fromStdString(configxsd->field_item().at(i).field_value());
+        }
+    }
+}
+
+void FieldInfo::save(XMLProblem::field_config *configxsd)
+{
+    foreach (Type key, m_setting.keys())
+    {
+        if (m_settingDefault[key].type() == QVariant::StringList)
+            configxsd->field_item().push_back(XMLProblem::field_item(typeToStringKey(key).toStdString(), m_setting[key].toStringList().join("|").toStdString()));
+        else if (m_settingDefault[key].type() == QVariant::Bool)
+            configxsd->field_item().push_back(XMLProblem::field_item(typeToStringKey(key).toStdString(), QString::number(m_setting[key].toInt()).toStdString()));
+        else
+            configxsd->field_item().push_back(XMLProblem::field_item(typeToStringKey(key).toStdString(), m_setting[key].toString().toStdString()));
+    }
+}
+
+void FieldInfo::setStringKeys()
+{
+    m_settingKey[NonlinearTolerance] = "NonlinearTolerance";
+    m_settingKey[NonlinearSteps] = "NonlinearSteps";
+    m_settingKey[NonlinearConvergenceMeasurement] = "NonlinearConvergenceMeasurement";
+    m_settingKey[NewtonAutomaticDamping] = "NewtonAutomaticDamping";
+    m_settingKey[NewtonAutomaticDampingCoeff] = "NewtonAutomaticDampingCoeff";
+    m_settingKey[NewtonDampingCoeff] = "NewtonDampingCoeff";
+    m_settingKey[NewtonDampingNumberToIncrease] = "NewtonDampingNumberToIncrease";
+    m_settingKey[NewtonSufficientImprovementFactorJacobian] = "NewtonSufficientImprovementFactorJacobian";
+    m_settingKey[NewtonMaximumStepsWithReusedJacobian] = "NewtonMaximumStepsWithReusedJacobian";
+    m_settingKey[PicardAndersonAcceleration] = "PicardAndersonAcceleration";
+    m_settingKey[PicardAndersonBeta] = "PicardAndersonBeta";
+    m_settingKey[PicardAndersonNumberOfLastVectors] = "PicardAndersonNumberOfLastVectors";
+    m_settingKey[SpaceNumberOfRefinements] = "SpaceNumberOfRefinements";
+    m_settingKey[SpacePolynomialOrder] = "SpacePolynomialOrder";
+    m_settingKey[AdaptivitySteps] = "AdaptivitySteps";
+    m_settingKey[AdaptivityTolerance] = "AdaptivityTolerance";
+    m_settingKey[AdaptivityTransientBackSteps] = "AdaptivityTransientBackSteps";
+    m_settingKey[AdaptivityTransientRedoneEach] = "AdaptivityTransientRedoneEach";
+    m_settingKey[TransientTimeSkip] = "TransientTimeSkip";
+    m_settingKey[TransientInitialCondition] = "TransientInitialConditio";
+}
+
+void FieldInfo::setDefaultValues()
+{
+    m_settingDefault.clear();
+
+    m_settingDefault[NonlinearTolerance] = 0.1;
+    m_settingDefault[NonlinearSteps] = 10;
+    m_settingDefault[NonlinearConvergenceMeasurement] = Hermes::Hermes2D::NewtonSolver<double>::AbsoluteNorm;
+    m_settingDefault[NewtonAutomaticDamping] = true;
+    m_settingDefault[NewtonAutomaticDampingCoeff] = 0.8;
+    m_settingDefault[NewtonDampingCoeff] = 0.8;
+    m_settingDefault[NewtonDampingNumberToIncrease] = 1.0;
+    m_settingDefault[NewtonSufficientImprovementFactorJacobian] = 0.4;
+    m_settingDefault[NewtonMaximumStepsWithReusedJacobian] = 3;
+    m_settingDefault[PicardAndersonAcceleration] = true;
+    m_settingDefault[PicardAndersonBeta] = 0.2;
+    m_settingDefault[PicardAndersonNumberOfLastVectors] = 3;
+    m_settingDefault[SpaceNumberOfRefinements] = 1;
+    m_settingDefault[SpacePolynomialOrder] = 2;
+    m_settingDefault[AdaptivitySteps] = 0;
+    m_settingDefault[AdaptivityTolerance] = 1.0;
+    m_settingDefault[AdaptivityTransientBackSteps] = 3;
+    m_settingDefault[AdaptivityTransientRedoneEach] = 5;
+    m_settingDefault[TransientTimeSkip] = 0.0;
+    m_settingDefault[TransientInitialCondition] = 0.0;
+}
