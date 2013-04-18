@@ -199,7 +199,7 @@ void FieldWidget::createContent()
     txtNewtonMaximumStepsWithReusedJacobian = new QSpinBox(this);
     txtNewtonMaximumStepsWithReusedJacobian->setValue(m_fieldInfo->defaultValue(FieldInfo::NewtonSufficientImprovementFactorJacobian).toInt());
     txtNewtonMaximumStepsWithReusedJacobian->setMinimum(0);
-    txtNewtonMaximumStepsWithReusedJacobian->setMaximum(10);
+    txtNewtonMaximumStepsWithReusedJacobian->setMaximum(100);
 
     chkPicardAndersonAcceleration = new QCheckBox(tr("Use Anderson acceleration"));
     connect(chkPicardAndersonAcceleration, SIGNAL(stateChanged(int)), this, SLOT(doPicardAndersonChanged(int)));
