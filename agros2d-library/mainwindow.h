@@ -239,8 +239,6 @@ private:
 
     LogStdOut *logStdOut;
 
-    LogDialog *logDialog;
-
     void setRecentFiles();
 
     void createActions();

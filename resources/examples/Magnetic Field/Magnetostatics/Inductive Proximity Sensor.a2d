@@ -82,6 +82,13 @@
           <boundary id="1" name="A = 0" type="magnetic_potential">
             <boundary_edges>
               <boundary_edge id="0"/>
+              <boundary_edge id="16"/>
+              <boundary_edge id="17"/>
+              <boundary_edge id="18"/>
+              <boundary_edge id="19"/>
+              <boundary_edge id="21"/>
+              <boundary_edge id="22"/>
+              <boundary_edge id="23"/>
             </boundary_edges>
             <boundary_types>
               <boundary_type key="magnetic_potential_real" value="0"/>
@@ -89,12 +96,14 @@
           </boundary>
         </boundaries>
         <materials>
-          <material id="1" name="Air">
-            <material_labels/>
+          <material id="2" name="Air">
+            <material_labels>
+              <material_label id="2"/>
+            </material_labels>
             <material_types>
               <material_type key="magnetic_current_density_external_real" value="0"/>
               <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
               <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
@@ -103,11 +112,13 @@
             </material_types>
           </material>
           <material id="2" name="Coil">
-            <material_labels/>
+            <material_labels>
+              <material_label id="1"/>
+            </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="1e6"/>
               <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
               <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
@@ -115,27 +126,29 @@
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
           </material>
-          <material id="3" name="Iron">
-            <material_labels/>
-            <material_types>
-              <material_type key="magnetic_current_density_external_real" value="0"/>
-              <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="0"/>
-              <material_type key="magnetic_conductivity" value="0"/>
-              <material_type key="magnetic_remanence" value="0"/>
-              <material_type key="magnetic_remanence_angle" value="0"/>
-              <material_type key="magnetic_velocity_x" value="0"/>
-              <material_type key="magnetic_velocity_y" value="0"/>
-            </material_types>
-          </material>
-          <material id="4" name="Target">
+          <material id="2" name="Iron">
             <material_labels>
               <material_label id="0"/>
             </material_labels>
             <material_types>
               <material_type key="magnetic_current_density_external_real" value="0"/>
               <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="0"/>
+              <material_type key="magnetic_permeability" value="700"/>
+              <material_type key="magnetic_conductivity" value="0"/>
+              <material_type key="magnetic_remanence" value="0"/>
+              <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_velocity_x" value="0"/>
+              <material_type key="magnetic_velocity_y" value="0"/>
+            </material_types>
+          </material>
+          <material id="2" name="Target">
+            <material_labels>
+              <material_label id="3"/>
+            </material_labels>
+            <material_types>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
+              <material_type key="magnetic_permeability" value="600"/>
               <material_type key="magnetic_conductivity" value="0"/>
               <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>

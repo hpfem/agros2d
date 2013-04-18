@@ -103,20 +103,49 @@
         <polynomial_orders/>
         <boundaries>
           <boundary id="1" name="Anode" type="electrostatic_potential">
-            <boundary_edges/>
+            <boundary_edges>
+              <boundary_edge id="6"/>
+              <boundary_edge id="7"/>
+              <boundary_edge id="8"/>
+              <boundary_edge id="27"/>
+              <boundary_edge id="28"/>
+              <boundary_edge id="29"/>
+              <boundary_edge id="33"/>
+              <boundary_edge id="34"/>
+              <boundary_edge id="35"/>
+              <boundary_edge id="36"/>
+              <boundary_edge id="37"/>
+              <boundary_edge id="38"/>
+              <boundary_edge id="39"/>
+            </boundary_edges>
             <boundary_types>
               <boundary_type key="electrostatic_potential" value="0"/>
             </boundary_types>
           </boundary>
           <boundary id="2" name="Cathode" type="electrostatic_potential">
-            <boundary_edges/>
+            <boundary_edges>
+              <boundary_edge id="0"/>
+              <boundary_edge id="1"/>
+              <boundary_edge id="2"/>
+              <boundary_edge id="3"/>
+              <boundary_edge id="4"/>
+              <boundary_edge id="5"/>
+              <boundary_edge id="30"/>
+              <boundary_edge id="31"/>
+              <boundary_edge id="32"/>
+            </boundary_edges>
             <boundary_types>
-              <boundary_type key="electrostatic_potential" value="0"/>
+              <boundary_type key="electrostatic_potential" value="-7000"/>
             </boundary_types>
           </boundary>
           <boundary id="3" name="Neumann" type="electrostatic_surface_charge_density">
             <boundary_edges>
-              <boundary_edge id="0"/>
+              <boundary_edge id="9"/>
+              <boundary_edge id="10"/>
+              <boundary_edge id="11"/>
+              <boundary_edge id="12"/>
+              <boundary_edge id="13"/>
+              <boundary_edge id="26"/>
             </boundary_edges>
             <boundary_types>
               <boundary_type key="electrostatic_surface_charge_density" value="0"/>
@@ -126,11 +155,14 @@
         <materials>
           <material id="1" name="Air - electrostatic">
             <material_labels>
-              <material_label id="0"/>
+              <material_label id="1"/>
+              <material_label id="2"/>
+              <material_label id="3"/>
+              <material_label id="4"/>
             </material_labels>
             <material_types>
               <material_type key="electrostatic_charge_density" value="0"/>
-              <material_type key="electrostatic_permittivity" value="0"/>
+              <material_type key="electrostatic_permittivity" value="1"/>
             </material_types>
           </material>
         </materials>
@@ -164,7 +196,12 @@
         <boundaries>
           <boundary id="1" name="A = 0" type="magnetic_potential">
             <boundary_edges>
-              <boundary_edge id="0"/>
+              <boundary_edge id="9"/>
+              <boundary_edge id="10"/>
+              <boundary_edge id="11"/>
+              <boundary_edge id="12"/>
+              <boundary_edge id="13"/>
+              <boundary_edge id="26"/>
             </boundary_edges>
             <boundary_types>
               <boundary_type key="magnetic_potential_real" value="0"/>
@@ -173,11 +210,15 @@
         </boundaries>
         <materials>
           <material id="1" name="Air - magnetostatic">
-            <material_labels/>
+            <material_labels>
+              <material_label id="0"/>
+              <material_label id="1"/>
+              <material_label id="5"/>
+            </material_labels>
             <material_types>
               <material_type key="magnetic_current_density_external_real" value="0"/>
               <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
               <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
@@ -186,11 +227,13 @@
             </material_types>
           </material>
           <material id="2" name="Coil 1">
-            <material_labels/>
+            <material_labels>
+              <material_label id="4"/>
+            </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="2e7"/>
               <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
               <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
@@ -199,11 +242,13 @@
             </material_types>
           </material>
           <material id="3" name="Coil 2">
-            <material_labels/>
+            <material_labels>
+              <material_label id="3"/>
+            </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="2e7"/>
               <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
               <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
@@ -213,12 +258,12 @@
           </material>
           <material id="4" name="Coil 3">
             <material_labels>
-              <material_label id="0"/>
+              <material_label id="2"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="2e7"/>
               <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
               <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
@@ -274,7 +319,7 @@
     <item key="View_EdgeWidth" value="2"/>
     <item key="View_LabelSize" value="6"/>
     <item key="View_ShowGrid" value="1"/>
-    <item key="View_GridStep" value="0.05"/>
+    <item key="View_GridStep" value="0.000625"/>
     <item key="View_ShowRulers" value="1"/>
     <item key="View_SnapToGrid" value="1"/>
     <item key="View_ShowAxes" value="1"/>
@@ -329,29 +374,29 @@
     <item key="View_ColorCrossedBlue" value="0"/>
     <item key="View_ShowInitialMeshView" value="1"/>
     <item key="View_ShowSolutionMeshView" value="0"/>
-    <item key="View_ContourVariable" value=""/>
+    <item key="View_ContourVariable" value="electrostatic_potential"/>
     <item key="View_ShowContourView" value="0"/>
     <item key="View_ContoursCount" value="15"/>
     <item key="View_ContoursWidth" value="1"/>
     <item key="View_ShowScalarView" value="1"/>
     <item key="View_ShowScalarColorBar" value="1"/>
-    <item key="View_ScalarVariable" value=""/>
-    <item key="View_ScalarVariableComp" value="-1"/>
+    <item key="View_ScalarVariable" value="electrostatic_potential"/>
+    <item key="View_ScalarVariableComp" value="0"/>
     <item key="View_PaletteType" value="0"/>
     <item key="View_PaletteFilter" value="0"/>
     <item key="View_PaletteSteps" value="30"/>
     <item key="View_ScalarRangeLog" value="0"/>
     <item key="View_ScalarRangeBase" value="10"/>
-    <item key="View_ScalarDecimalPlace" value="4"/>
+    <item key="View_ScalarDecimalPlace" value="2"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="0"/>
-    <item key="View_ScalarRangeMax" value="1"/>
+    <item key="View_ScalarRangeMin" value="-7000"/>
+    <item key="View_ScalarRangeMax" value="1.13686837721616e-13"/>
     <item key="View_ShowVectorView" value="0"/>
-    <item key="View_VectorVariable" value=""/>
+    <item key="View_VectorVariable" value="electrostatic_electric_field"/>
     <item key="View_VectorProportional" value="1"/>
     <item key="View_VectorColor" value="1"/>
     <item key="View_VectorCount" value="50"/>
-    <item key="View_VectorScale" value="0.6"/>
+    <item key="View_VectorScale" value="0.8"/>
     <item key="View_VectorType" value="0"/>
     <item key="View_VectorCenter" value="0"/>
     <item key="View_ShowOrderView" value="1"/>
@@ -361,26 +406,26 @@
     <item key="View_ParticleButcherTableType" value="19"/>
     <item key="View_ParticleIncludeRelativisticCorrection" value="1"/>
     <item key="View_ParticleMass" value="9.109e-31"/>
-    <item key="View_ParticleConstant" value="1.602e-19"/>
-    <item key="View_ParticleStartX" value="0"/>
+    <item key="View_ParticleConstant" value="-1.602e-19"/>
+    <item key="View_ParticleStartX" value="0.005"/>
     <item key="View_ParticleStartY" value="0"/>
     <item key="View_ParticleStartVelocityX" value="0"/>
     <item key="View_ParticleStartVelocityY" value="0"/>
     <item key="View_ParticleNumberOfParticles" value="1"/>
     <item key="View_ParticleStartingRadius" value="0"/>
-    <item key="View_ParticleReflectOnDifferentMaterial" value="0"/>
+    <item key="View_ParticleReflectOnDifferentMaterial" value="1"/>
     <item key="View_ParticleReflectOnBoundary" value="0"/>
     <item key="View_ParticleCoefficientOfRestitution" value="0"/>
     <item key="View_ParticleMaximumRelativeError" value="0.01"/>
     <item key="View_ParticleShowPoints" value="0"/>
     <item key="View_ParticleShowBlendedFaces" value="1"/>
-    <item key="View_ParticleNumShowParticlesAxi" value="1"/>
+    <item key="View_ParticleNumShowParticlesAxi" value="15"/>
     <item key="View_ParticleColorByVelocity" value="1"/>
-    <item key="View_ParticleMaximumNumberOfSteps" value="500"/>
-    <item key="View_ParticleMinimumStep" value="0"/>
+    <item key="View_ParticleMaximumNumberOfSteps" value="5000"/>
+    <item key="View_ParticleMinimumStep" value="0.0004"/>
     <item key="View_ParticleDragDensity" value="1.2041"/>
     <item key="View_ParticleDragCoefficient" value="0"/>
-    <item key="View_ParticleDragReferenceArea" value="0"/>
+    <item key="View_ParticleDragReferenceArea" value="1e-06"/>
     <item key="View_ParticleCustomForceX" value="0"/>
     <item key="View_ParticleCustomForceY" value="0"/>
     <item key="View_ParticleCustomForceZ" value="0"/>
@@ -390,12 +435,12 @@
     <item key="View_ChartEndY" value="0"/>
     <item key="View_ChartTimeX" value="0"/>
     <item key="View_ChartTimeY" value="0"/>
-    <item key="View_ChartHorizontalAxis" value="2"/>
+    <item key="View_ChartHorizontalAxis" value="0"/>
     <item key="View_ChartHorizontalAxisReverse" value="0"/>
     <item key="View_ChartHorizontalAxisPoints" value="200"/>
     <item key="View_MeshAngleSegmentsCount" value="3"/>
     <item key="View_MeshCurvilinearElements" value="1"/>
-    <item key="View_LinearizerQuality" value="4"/>
+    <item key="View_LinearizerQuality" value="0"/>
     <item key="View_SolidViewHide" value=""/>
     <item key="Adaptivity_MaxDofs" value="60000"/>
     <item key="Adaptivity_IsoOnly" value="0"/>

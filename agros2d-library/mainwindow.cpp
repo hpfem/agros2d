@@ -126,7 +126,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(doSolveFinished()));
     //connect(Agros2D::problem(), SIGNAL(calculationStoped()), this, SLOT(doSolveFinished()));
-    logDialog = NULL;
 
     connect(tabViewLayout, SIGNAL(currentChanged(int)), this, SLOT(setControls()));
     connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(setControls()));
@@ -1222,8 +1221,7 @@ void MainWindow::doCreateMesh()
 
 void MainWindow::doSolve()
 {
-    assert(logDialog == NULL);
-    logDialog = new LogDialog(this, tr("Solver"));
+    LogDialog *logDialog = new LogDialog(this, tr("Solver"));
     logDialog->show();
 
     // solve problem
@@ -1232,8 +1230,7 @@ void MainWindow::doSolve()
 
 void MainWindow::doSolveAdaptiveStep()
 {
-    assert(logDialog == NULL);
-    logDialog = new LogDialog(this, tr("Adaptive step"));
+    LogDialog *logDialog = new LogDialog(this, tr("Adaptive step"));
     logDialog->show();
 
     // solve problem
@@ -1254,13 +1251,8 @@ void MainWindow::doSolveFinished()
 
     }
 
-    if(logDialog)
-    {
-        // logDialog has been deleted on close, set to NULL
-        logDialog = NULL;
-        setFocus();
-        activateWindow();
-    }
+    setFocus();
+    activateWindow();
 }
 
 void MainWindow::doFullScreen()
