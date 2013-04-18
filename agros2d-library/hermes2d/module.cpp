@@ -110,7 +110,7 @@ template <typename Scalar>
 Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID problemId,
                                             const QString &area, FormInfo *form,
                                             Marker* markerSource, Material *markerTarget,
-                                            int offsetI, int offsetJ)
+                                            int offsetI, int offsetJ, int offsetTimeExt)
 {
     QString fieldId = (problemId.analysisTypeTarget == AnalysisType_Undefined) ?
                 problemId.sourceFieldId : problemId.sourceFieldId + "-" + problemId.targetFieldId;
@@ -160,7 +160,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
     else if (type == WeakForm_VecVol)
     {
         VectorFormVolAgros<double> *weakFormAgros = plugin->vectorFormVol(problemId, form, offsetI, offsetJ,
-                                                                          static_cast<Material *>(markerSource));
+                                                                          static_cast<Material *>(markerSource), offsetTimeExt);
         if (!weakFormAgros) return NULL;
 
         // source marker
@@ -221,7 +221,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     problemId.linearityType = field->fieldInfo()->linearityType();
 
     // compiled form
-    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId, area, &form, marker, NULL, offsetI, offsetJ);
+    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId, area, &form, marker, NULL, offsetI, offsetJ, 0);
 
     // weakform with zero coefficients
     if (!custom_form) return;
@@ -258,7 +258,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
 
 template <typename Scalar>
 void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area, FormInfo form, int offsetI, int offsetJ,
-                                                 SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo)
+                                                 SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo, int offsetTimeExt)
 {
     ProblemID problemId;
 
@@ -272,7 +272,7 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
 
     // compiled form
     Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId,
-                                                                      area, &form, materialSource, materialTarget, offsetI, offsetJ);
+                                                                      area, &form, materialSource, materialTarget, offsetI, offsetJ, offsetTimeExt);
     // weakform with zero coefficients
     if (!custom_form) return;
 
@@ -353,7 +353,7 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
                         if (materialSource != Agros2D::scene()->materials->getNone(couplingInfo->sourceField()))
                         {
                             registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), expression,
-                                                 m_block->offset(field), m_block->offset(field), materialSource, material, couplingInfo);
+                                                 m_block->offset(field), m_block->offset(field), materialSource, material, couplingInfo, 0);// bdf2Table->n() * fieldInfo->numberOfSolutions());
                         }
                     }
                 }
@@ -383,12 +383,12 @@ void WeakFormAgros<Scalar>::registerForms(BDF2Table* bdf2Table)
                     foreach (FormInfo pars, couplingInfo->wfMatrixVolume())
                         registerFormCoupling(WeakForm_MatVol, QString::number(labelNum), pars,
                                              m_block->offset(targetField) - sourceField->fieldInfo()->numberOfSolutions(), m_block->offset(sourceField),
-                                             sourceMaterial, targetMaterial, couplingInfo);
+                                             sourceMaterial, targetMaterial, couplingInfo, 0);
 
                     foreach (FormInfo pars, couplingInfo->wfVectorVolume())
                         registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), pars,
                                              m_block->offset(targetField) - sourceField->fieldInfo()->numberOfSolutions(), m_block->offset(sourceField),
-                                             sourceMaterial, targetMaterial, couplingInfo);
+                                             sourceMaterial, targetMaterial, couplingInfo, 0);
 
                 }
             }

@@ -92,8 +92,8 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerTarget(Marker *marker)
 
 {{#VOLUME_VECTOR_SOURCE}}
 template <typename Scalar>
-{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ)
-    : VectorFormVolAgros<Scalar>(i, offsetI, offsetJ), j(j)
+{{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ, int offsetTimeExt)
+    : VectorFormVolAgros<Scalar>(i, offsetI, offsetJ, offsetTimeExt), j(j)
 {
 }
 

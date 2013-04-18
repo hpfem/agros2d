@@ -447,8 +447,8 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
         m_hermesSolverContainer->projectPreviousSolution(initialSolutionVector, spaces, previousSolution);
         // if (Agros2D::problem()->actualTimeStep() == 1)
         // {
-        m_hermesSolverContainer->setTableSpaces()->set_spaces(spaces);
-        m_hermesSolverContainer->setWeakFormulation(m_block->weakForm());
+            m_hermesSolverContainer->settableSpaces()->set_spaces(spaces);
+            m_hermesSolverContainer->setWeakFormulation(m_block->weakForm());
         // }
         m_hermesSolverContainer->setMatrixRhsOutput(m_solverCode, adaptivityStep);
 
