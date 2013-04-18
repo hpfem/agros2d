@@ -1,7 +1,8 @@
 # 192 sekund - debug verze, baterka, nova cache, tccache
 # 236 sekund - debug verze, baterka, stara cache
 # 135 sekund - release verze, baterka, stara cache
-# 127 sekund - release verze, baterka, nova cache, tccache
+# 127 sekund - release verze, baterka, nova cache, tccache ( 3.4.2013)
+# 107 sekund - release verze, baterka, nova cache, tccache (18.4.2013)
 
 import time
 

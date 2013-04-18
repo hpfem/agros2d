@@ -1044,7 +1044,7 @@ void ProblemWidget::updateControls()
     txtTransientTolerance->setValue(Agros2D::problem()->config()->value(ProblemConfig::TimeMethodTolerance).toDouble());
     // txtTransientTimeTotal->setEnabled(Agros2D::problem()->isTransient());
     txtTransientOrder->setValue(Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt());
-    cmbTransientMethod->setCurrentIndex(cmbTransientMethod->findData((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeConstantTimeSteps).toInt()));
+    cmbTransientMethod->setCurrentIndex(cmbTransientMethod->findData((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()));
     if (cmbTransientMethod->currentIndex() == -1)
         cmbTransientMethod->setCurrentIndex(0);
 
