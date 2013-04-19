@@ -47,50 +47,74 @@ NewtonSolverAgros<Scalar>::NewtonSolverAgros() : NewtonSolver<Scalar>()
 }
 
 template <typename Scalar>
-void NewtonSolverAgros<Scalar>::on_initialization()
+bool NewtonSolverAgros<Scalar>::on_initialization()
 {
     m_errors.clear();
+    return !Agros2D::problem()->isAborted();
 }
 
 template <typename Scalar>
-void NewtonSolverAgros<Scalar>::on_step_begin()
+bool NewtonSolverAgros<Scalar>::on_step_begin()
 {
+    return !Agros2D::problem()->isAborted();
 }
 
 template <typename Scalar>
-void NewtonSolverAgros<Scalar>::on_step_end()
+bool NewtonSolverAgros<Scalar>::on_step_end()
 {
-    Hermes::Mixins::OutputAttachable::Parameter<int> iteration = this->iteration();
-    Hermes::Mixins::OutputAttachable::Parameter<double> initial_residual_norm = this->initial_residual_norm();
-    Hermes::Mixins::OutputAttachable::Parameter<double> previous_residual_norm = this->previous_residual_norm();
-    Hermes::Mixins::OutputAttachable::Parameter<double> residual_norm = this->residual_norm();
-    Hermes::Mixins::OutputAttachable::Parameter<double> current_damping_coefficient = this->current_damping_coefficient();
+    unsigned int iteration = this->get_parameter_value(this->iteration());
+    const Hermes::vector<double>& residual_norms = this->get_parameter_value(this->residual_norms());
+    const Hermes::vector<double>& solution_norms = this->get_parameter_value(this->solution_norms());
+    double solution_change_norm = this->get_parameter_value(this->solution_change_norm());
+    double current_damping_coefficient = this->get_parameter_value(this->current_damping_coefficient());
 
-    m_steps.append(this->get_parameter_value(iteration));
+    double initial_residual_norm = residual_norms[0];
+    double initial_solution_norm = solution_norms[0];
+
+    double current_residual_norm = residual_norms[iteration - 1];
+    double current_solution_norm = solution_norms[iteration - 1];
+
+    double previous_residual_norm = current_residual_norm;
+    double previous_solution_norm = current_solution_norm;
+    if (iteration > 1)
+    {
+        previous_residual_norm = residual_norms[iteration - 2];
+        previous_solution_norm = solution_norms[iteration - 2];
+    }
+
+    // add iteration
+    m_steps.append(iteration);
 
     switch(this->current_convergence_measurement)
     {
-    case Hermes::Hermes2D::NewtonSolver<Scalar>::RelativeToInitialNorm:
-        m_errors.append(1.0 - this->get_parameter_value(residual_norm) / this->get_parameter_value(initial_residual_norm));
+    case Hermes::Hermes2D::ResidualNormRelativeToInitial:
+        m_errors.append((initial_residual_norm - current_residual_norm) / initial_residual_norm);
         break;
-    case Hermes::Hermes2D::NewtonSolver<Scalar>::RelativeToPreviousNorm:
-        m_errors.append(1.0 - this->get_parameter_value(residual_norm) / this->get_parameter_value(previous_residual_norm));
+    case Hermes::Hermes2D::ResidualNormRelativeToPrevious:
+        m_errors.append((previous_residual_norm - current_residual_norm) / previous_residual_norm);
         break;
-    case Hermes::Hermes2D::NewtonSolver<Scalar>::RatioToInitialNorm:
-        m_errors.append(this->get_parameter_value(residual_norm) / this->get_parameter_value(initial_residual_norm));
+    case Hermes::Hermes2D::ResidualNormRatioToInitial:
+        m_errors.append(current_residual_norm / initial_residual_norm);
         break;
-    case Hermes::Hermes2D::NewtonSolver<Scalar>::RatioToPreviousNorm:
-        m_errors.append(this->get_parameter_value(residual_norm) / this->get_parameter_value(previous_residual_norm));
+    case Hermes::Hermes2D::ResidualNormRatioToPrevious:
+        m_errors.append(current_residual_norm / previous_residual_norm);
         break;
-    case Hermes::Hermes2D::NewtonSolver<Scalar>::AbsoluteNorm:
-        m_errors.append(this->get_parameter_value(residual_norm));
+    case Hermes::Hermes2D::ResidualNormAbsolute:
+        m_errors.append(current_residual_norm);
+        break;
+    case Hermes::Hermes2D::SolutionDistanceFromPreviousAbsolute:
+        m_errors.append(solution_change_norm);
+        break;
+    case Hermes::Hermes2D::SolutionDistanceFromPreviousRelative:
+        m_errors.append(solution_change_norm / current_solution_norm);
         break;
     default:
-        qDebug() << "Unknown ConvergenceMeasurement in NewtonSolver.";
+        throw AgrosException(QObject::tr("Convergence measurement '%1' doesn't exists.").arg(this->current_convergence_measurement));
     }
 
+    assert(m_steps.size() == m_errors.size());
 
-    if (this->get_parameter_value(iteration) == 1)
+    if (iteration == 1)
     {
         Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("Initial step, error: %1")
                                      .arg(m_errors.last()));
@@ -98,19 +122,19 @@ void NewtonSolverAgros<Scalar>::on_step_end()
     else
     {
         Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("Iteration: %1, damping coeff.: %2, error: %3")
-                                     .arg(this->get_parameter_value(iteration))
-                                     .arg(this->get_parameter_value(current_damping_coefficient))
+                                     .arg(iteration)
+                                     .arg(current_damping_coefficient)
                                      .arg(m_errors.last()));
     }
-
     Agros2D::log()->setNonlinearTable(m_steps, m_errors);
+
+    return !Agros2D::problem()->isAborted();
 }
 
 template <typename Scalar>
-void NewtonSolverAgros<Scalar>::on_finish()
+bool NewtonSolverAgros<Scalar>::on_finish()
 {
-    // last norm
-    on_step_end();
+    return !Agros2D::problem()->isAborted();
 }
 
 void processSolverOutput(const char* aha)
@@ -447,8 +471,8 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
         m_hermesSolverContainer->projectPreviousSolution(initialSolutionVector, spaces, previousSolution);
         // if (Agros2D::problem()->actualTimeStep() == 1)
         // {
-            m_hermesSolverContainer->settableSpaces()->set_spaces(spaces);
-            m_hermesSolverContainer->setWeakFormulation(m_block->weakForm());
+        m_hermesSolverContainer->settableSpaces()->set_spaces(spaces);
+        m_hermesSolverContainer->setWeakFormulation(m_block->weakForm());
         // }
         m_hermesSolverContainer->setMatrixRhsOutput(m_solverCode, adaptivityStep);
 

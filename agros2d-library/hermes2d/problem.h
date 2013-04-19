@@ -83,6 +83,7 @@ public:
     bool isSolved() const {  return m_isSolved; }
     bool isMeshed() const;
     bool isSolving() const { return m_isSolving; }
+    bool isAborted() const { return m_abortSolve; }
 
     bool isTransient() const;
     int numTransientFields() const;

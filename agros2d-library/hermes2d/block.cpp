@@ -330,16 +330,16 @@ int Block::nonlinearSteps() const
     return steps;
 }
 
-Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement Block::nonlinearConvergenceMeasurement() const
+Hermes::Hermes2D::NewtonSolverConvergenceMeasurement Block::nonlinearConvergenceMeasurement() const
 {
     // how to set properly?
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        return (Hermes::Hermes2D::NewtonSolver<double>::ConvergenceMeasurement) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt();
+        return (Hermes::Hermes2D::NewtonSolverConvergenceMeasurement) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt();
     }
 
-    return Hermes::Hermes2D::NewtonSolver<double>::RelativeToInitialNorm;
+    return Hermes::Hermes2D::ResidualNormAbsolute;
 }
 
 bool Block::newtonAutomaticDamping() const

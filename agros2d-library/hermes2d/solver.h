@@ -37,10 +37,10 @@ class NewtonSolverAgros : public Hermes::Hermes2D::NewtonSolver<Scalar>
 public:
     NewtonSolverAgros();
 
-    virtual void on_initialization();
-    virtual void on_step_begin();
-    virtual void on_step_end();
-    virtual void on_finish();
+    virtual bool on_initialization();
+    virtual bool on_step_begin();
+    virtual bool on_step_end();
+    virtual bool on_finish();
 
     inline QVector<double> steps() const { return m_steps; }
     inline QVector<double> errors() const { return m_errors; }

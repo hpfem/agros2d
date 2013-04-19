@@ -59,6 +59,7 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 src/solver/linear_solver.cpp \
                 src/solver/nonlinear_solver.cpp \
                 src/solver/newton_solver.cpp \
+                src/solver/newton_solver_convergence_measurement.cpp \
                 src/solver/picard_solver.cpp \
                 src/solver/runge_kutta.cpp \
                 src/solver/solver.cpp \
