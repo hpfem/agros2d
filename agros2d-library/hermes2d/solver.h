@@ -48,6 +48,8 @@ public:
 protected:
     QVector<double> m_steps;
     QVector<double> m_errors;
+
+    void setError();
 };
 
 struct NextTimeStep

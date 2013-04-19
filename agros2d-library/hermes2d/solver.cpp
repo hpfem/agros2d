@@ -50,6 +50,7 @@ template <typename Scalar>
 bool NewtonSolverAgros<Scalar>::on_initialization()
 {
     m_errors.clear();
+
     return !Agros2D::problem()->isAborted();
 }
 
@@ -61,6 +62,19 @@ bool NewtonSolverAgros<Scalar>::on_step_begin()
 
 template <typename Scalar>
 bool NewtonSolverAgros<Scalar>::on_step_end()
+{
+    setError();
+    return !Agros2D::problem()->isAborted();
+}
+
+template <typename Scalar>
+bool NewtonSolverAgros<Scalar>::on_finish()
+{
+    return !Agros2D::problem()->isAborted();
+}
+
+template <typename Scalar>
+void NewtonSolverAgros<Scalar>::setError()
 {
     unsigned int iteration = this->get_parameter_value(this->iteration());
     const Hermes::vector<double>& residual_norms = this->get_parameter_value(this->residual_norms());
@@ -126,15 +140,8 @@ bool NewtonSolverAgros<Scalar>::on_step_end()
                                      .arg(current_damping_coefficient)
                                      .arg(m_errors.last()));
     }
+
     Agros2D::log()->setNonlinearTable(m_steps, m_errors);
-
-    return !Agros2D::problem()->isAborted();
-}
-
-template <typename Scalar>
-bool NewtonSolverAgros<Scalar>::on_finish()
-{
-    return !Agros2D::problem()->isAborted();
 }
 
 void processSolverOutput(const char* aha)
