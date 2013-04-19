@@ -100,7 +100,7 @@
           <field_item field_key="NewtonDampingCoeff" field_value="1"/>
           <field_item field_key="NewtonDampingNumberToIncrease" field_value="1"/>
           <field_item field_key="NewtonSufficientImprovementFactorJacobian" field_value="0.4"/>
-          <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="3"/>
+          <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="10"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
@@ -200,7 +200,7 @@
     <item key="View_ShowScalarView" value="1"/>
     <item key="View_ShowScalarColorBar" value="1"/>
     <item key="View_ScalarVariable" value="flow_velocity"/>
-    <item key="View_ScalarVariableComp" value="2"/>
+    <item key="View_ScalarVariableComp" value="1"/>
     <item key="View_PaletteType" value="0"/>
     <item key="View_PaletteFilter" value="0"/>
     <item key="View_PaletteSteps" value="30"/>

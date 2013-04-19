@@ -1248,11 +1248,13 @@ void MainWindow::doSolveFinished()
 
         // raise postprocessor
         postprocessorWidget->raise();
-
     }
 
-    setFocus();
-    activateWindow();
+    if (!currentPythonEngineAgros()->isRunning())
+    {
+        setFocus();
+        activateWindow();
+    }
 }
 
 void MainWindow::doFullScreen()
