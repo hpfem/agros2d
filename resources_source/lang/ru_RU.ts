@@ -41,12 +41,12 @@
     <message>
         <location filename="../../src/gui/about.cpp" line="72"/>
         <source>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D is a multiplatform multiphysics application for the solution of partial differential equations (PDE) based on the &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library using higher order finite element method (&lt;i&gt;hp&lt;/i&gt;-FEM) with automatic adaptivity.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - main developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;FrantiÅ¡ek Mach&lt;/b&gt; - developer, Python script (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Pavel KÅ¯s&lt;/b&gt; - developer, coupled problems, time domain adaptivity (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;David PÃ¡nek&lt;/b&gt; - developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukÃ¡Å¡ Korous&lt;/b&gt; - developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukÃ¡Å¡ Koudela&lt;/b&gt; - developer - RF module (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - Polish translation (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;VÃ¡clav Kotlan&lt;/b&gt; - German translation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Petr KropÃ­k&lt;/b&gt; - University of West Bohemia, Pilsen&lt;br/&gt;&lt;b&gt;Denys Nikolayev&lt;/b&gt; - Russion and French translation, University of West Bohemia, Pilsen&lt;br/&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D — это кроссплатформенное мультифизическое приложение на базе библиотеки &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; для решения дифференциальных уравнений в частных производных методом конечных элементов высших порядков (&lt;i&gt;hp&lt;/i&gt;-FEM) с поддержкой автоматической адаптивности.&lt;br/&gt;&lt;br/&gt;Веб сайт: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Фейсбук: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Проблемы и решения: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Авторы:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; — главный разработчик (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Frantisek Mach&lt;/b&gt; — разработчик, Python script (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Pavel Kus&lt;/b&gt; — разработчик, связанные решения полей, адаптивность во временной области (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;David Pаnek&lt;/b&gt; — разработчик (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Lukas Korous&lt;/b&gt; — разработчик (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Lukas Koudela&lt;/b&gt; — разработчик, РЧ модуль (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Denys Nikolayev&lt;/b&gt; — русская и французская локализации (&lt;a href=&quot;http://deniq.com&quot;&gt;deniq.com&lt;/a&gt;, University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; — польская локализация (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;Vaclav Kotlan&lt;/b&gt; — немецкая локализация (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Petr Kropik&lt;/b&gt; — University of West Bohemia, Pilsen&lt;br/&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../src/gui/about.cpp" line="156"/>
         <source>&lt;h3&gt;Libraries&lt;/h3&gt;&lt;b&gt;Digia Qt:&lt;/b&gt; Digia Qt (&lt;a href=&quot;http://qt.digia.com/&quot;&gt;Qt - A cross-platform framework&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Qwt:&lt;/b&gt; Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Qt Widgets for Technical Applications&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Python:&lt;/b&gt; Python Programming Language (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;dxflib:&lt;/b&gt; Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;ctemplate:&lt;/b&gt; Simple but powerful template language for C++ (&lt;a href=&quot;http://code.google.com/p/ctemplate/&quot;&gt;ctemplate&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;poly2tri:&lt;/b&gt; A 2D constrained Delaunay triangulation library (&lt;a href=&quot;http://code.google.com/p/poly2tri/&quot;&gt;poly2tri&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Triangle:&lt;/b&gt; Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Gmsh:&lt;/b&gt; A three-dimensional finite element mesh generator (&lt;a href=&quot;http://geuz.org/gmsh&quot;&gt;Gmsh&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;UMFPACK:&lt;/b&gt; unsymmetric multifrontal sparse LU factorization package (&lt;a href=&quot;http://www.cise.ufl.edu/research/sparse/umfpack/&quot;&gt;UMFPACK&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;MUMPS:&lt;/b&gt; A MUltifrontal Massively Parallel sparse direct Solver (&lt;a href=&quot;http://graal.ens-lyon.fr/MUMPS/&quot;&gt;MUMPS&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;SuperLU:&lt;/b&gt; Direct solver for large sparse systems of linear equations (&lt;a href=&quot;http://crd-legacy.lbl.gov/~xiaoye/SuperLU/&quot;&gt;SuperLU&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;stb_truetype.h:&lt;/b&gt; TrueType processing library - Sean Barrett / RAD Game Tools (&lt;a href=&quot;http://nothings.org/&quot;&gt;stb&lt;/a&gt;)&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Libraries&lt;/h3&gt;&lt;b&gt;Digia Qt:&lt;/b&gt; Digia Qt (&lt;a href=&quot;http://qt.digia.com/&quot;&gt;Qt — Кроссплатформенный фреймворк&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Qwt:&lt;/b&gt; Qwt (&lt;a href=&quot;http://qwt.sourceforge.net/&quot;&gt;Виджеты Qt для представления числовых данных&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Python:&lt;/b&gt; Язык программирования Python (&lt;a href=&quot;http://www.python.org&quot;&gt;Python&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;dxflib:&lt;/b&gt; Andrew Mustun (&lt;a href=&quot;http://www.ribbonsoft.com/dxflib.html&quot;&gt;RibbonSoft&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;ctemplate:&lt;/b&gt; Язык темплейтов для C++ (&lt;a href=&quot;http://code.google.com/p/ctemplate/&quot;&gt;ctemplate&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;poly2tri:&lt;/b&gt; Библиотека 2D ограниченной триангуляции Делоне (&lt;a href=&quot;http://code.google.com/p/poly2tri/&quot;&gt;poly2tri&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Triangle:&lt;/b&gt; Jonathan Richard Shewchuk (&lt;a href=&quot;http://www.cs.cmu.edu/~quake/triangle.html&quot;&gt;Triangle&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;Gmsh:&lt;/b&gt; Генератор сетки конечных элементов (&lt;a href=&quot;http://geuz.org/gmsh&quot;&gt;Gmsh&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;UMFPACK:&lt;/b&gt; Пакет несимметричного мультифронтального разряженного LU-разложения (&lt;a href=&quot;http://www.cise.ufl.edu/research/sparse/umfpack/&quot;&gt;UMFPACK&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;MUMPS:&lt;/b&gt; Мультифронтальный массивно-параллельный разряженный прямой решатель (&lt;a href=&quot;http://graal.ens-lyon.fr/MUMPS/&quot;&gt;MUMPS&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;SuperLU:&lt;/b&gt; Прямой решатель для больших разряженных систем линейных уравнений (&lt;a href=&quot;http://crd-legacy.lbl.gov/~xiaoye/SuperLU/&quot;&gt;SuperLU&lt;/a&gt;)&lt;br/&gt;&lt;b&gt;stb_truetype.h:&lt;/b&gt; Библиотека TrueType — Sean Barrett / RAD Game Tools (&lt;a href=&quot;http://nothings.org/&quot;&gt;stb&lt;/a&gt;)&lt;br/&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Agros2D %1&lt;/h3&gt;Agros2D is a multiplatform multiphysics application for the solution of partial differential equations (PDE) based on the &lt;a href=&quot;http://hpfem.org/hermes2d/&quot;&gt;Hermes2D&lt;/a&gt; library using higher order finite element method (&lt;i&gt;hp&lt;/i&gt;-FEM) with automatic adaptivity.&lt;br/&gt;&lt;br/&gt;Web page: &lt;a href=&quot;http://agros2d.org/&quot;&gt;http://agros2d.org/&lt;/a&gt;&lt;br/&gt;Facebook: &lt;a href=&quot;http://www.facebook.com/pages/Agros2D/132524130149770?sk=info&quot;&gt;http://www.facebook.com/pages/Agros2D/...&lt;/a&gt;&lt;br/&gt;Issues: &lt;a href=&quot;http://github.com/hpfem/agros2d/issues&quot;&gt;http://github.com/hpfem/agros2d/issues&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Authors:&lt;/b&gt;&lt;p&gt;&lt;b&gt;Pavel Karban&lt;/b&gt; - main developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;FrantiÅ¡ek Mach&lt;/b&gt; - developer, documentation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Pavel KÅ¯s&lt;/b&gt; - developer, coupled problems, time domain adaptivity (University of West Bohemia, Prague)&lt;br/&gt;&lt;b&gt;David PÃ¡nek&lt;/b&gt; - developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukÃ¡Å¡ Korous&lt;/b&gt; - developer (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;LukÃ¡Å¡ Koudela&lt;/b&gt; - developer - RF module (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Bartosz Sawicki&lt;/b&gt; - Polish translation (Warsaw University of Technology, Warsaw)&lt;br/&gt;&lt;b&gt;VÃ¡clav Kotlan&lt;/b&gt; - German translation (University of West Bohemia, Pilsen)&lt;br/&gt;&lt;b&gt;Petr KropÃ­k&lt;/b&gt; - University of West Bohemia, Pilsen&lt;br/&gt;&lt;/p&gt;</source>
@@ -181,12 +181,12 @@
     <message>
         <location filename="../../src/chartdialog.cpp" line="68"/>
         <source>Chart</source>
-        <translation type="unfinished">График</translation>
+        <translation>График</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="69"/>
         <source>Ctrl+6</source>
-        <translation type="unfinished">Ctrl+6</translation>
+        <translation>Ctrl+6</translation>
     </message>
 </context>
 <context>
@@ -198,117 +198,117 @@
     <message>
         <location filename="../../src/chartdialog.cpp" line="164"/>
         <source>Variable:</source>
-        <translation type="unfinished">Переменная:</translation>
+        <translation>Переменная:</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="165"/>
         <source>Component:</source>
-        <translation type="unfinished"></translation>
+        <translation>Компонент:</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="167"/>
         <source>Variable</source>
-        <translation type="unfinished"></translation>
+        <translation>Переменная</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="178"/>
         <source>Line preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Предпросмотр</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="184"/>
         <source>Apply</source>
-        <translation type="unfinished">Применить</translation>
+        <translation>Применить</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="190"/>
         <source>Save image</source>
-        <translation type="unfinished">Сохранить изображение</translation>
+        <translation>Сохранить изображение</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="196"/>
         <source>Export</source>
-        <translation type="unfinished">Экспорт</translation>
+        <translation>Экспорт</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="222"/>
         <source>Start</source>
-        <translation type="unfinished">Начало</translation>
+        <translation>Начало</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="232"/>
         <source>End</source>
-        <translation type="unfinished">Конец</translation>
+        <translation>Конец</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="236"/>
         <source>Length</source>
-        <translation type="unfinished">Длина</translation>
+        <translation>Длина</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="258"/>
         <source>Horizontal axis</source>
-        <translation type="unfinished">Горизонтальная ось</translation>
+        <translation>Горизонтальная ось</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="266"/>
         <source>Reverse</source>
-        <translation type="unfinished">Реверсировать</translation>
+        <translation>Реверсировать</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="272"/>
         <source>Points:</source>
-        <translation type="unfinished">Точки:</translation>
+        <translation>Точки:</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="276"/>
         <source>Points and time step</source>
-        <translation type="unfinished">Точки и временной шаг</translation>
+        <translation>Точки и временной шаг</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="294"/>
         <source>Point</source>
-        <translation type="unfinished">Точка</translation>
+        <translation>Точка</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="326"/>
         <source>Geometry</source>
-        <translation type="unfinished">Геометрия</translation>
+        <translation>Геометрия</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="327"/>
         <source>Time</source>
-        <translation type="unfinished">Время</translation>
+        <translation>Время</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="401"/>
         <source>Length (m)</source>
-        <translation type="unfinished">Длина (м)</translation>
+        <translation>Длина (м)</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="483"/>
         <source>time (s)</source>
-        <translation type="unfinished">Время (с)</translation>
+        <translation>Время (с)</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="604"/>
         <source>Scalar</source>
-        <translation type="unfinished">Скаляр</translation>
+        <translation>Скаляр</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="608"/>
         <source>Magnitude</source>
-        <translation type="unfinished">Модуль</translation>
+        <translation>Модуль</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="623"/>
         <source>Export data to file</source>
-        <translation type="unfinished">Экспорт данных в файл</translation>
+        <translation>Экспорт данных в файл</translation>
     </message>
     <message>
         <location filename="../../src/chartdialog.cpp" line="623"/>
         <source>CSV files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -406,7 +406,7 @@
     <message>
         <location filename="../../src/confdialog.cpp" line="248"/>
         <source>Print application log to standard output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Печать журнала приложений на стандартный вывод.</translation>
     </message>
     <message>
         <location filename="../../src/confdialog.cpp" line="255"/>
@@ -697,7 +697,7 @@
     <message>
         <location filename="../../src/problemdialog.cpp" line="195"/>
         <source>Num. of last used iter.:</source>
-        <translation type="unfinished"></translation>
+        <translation>Номер последней итерации:</translation>
     </message>
     <message>
         <location filename="../../src/problemdialog.cpp" line="213"/>
@@ -769,7 +769,7 @@
     <message>
         <location filename="../../src/problemdialog.cpp" line="259"/>
         <source>Space adaptivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Пространственная адаптивность</translation>
     </message>
     <message>
         <source>Adaptivity</source>
@@ -1247,34 +1247,34 @@
     <message>
         <location filename="../../src/util/loops.cpp" line="298"/>
         <source>Intersection parity failed (tangent &gt; 10).</source>
-        <translation type="unfinished"></translation>
+        <translation>Нарушена четность пересечений (тангенс &gt; 10).</translation>
     </message>
     <message>
         <location filename="../../src/util/loops.cpp" line="585"/>
         <source>Some areas do not have a marker</source>
-        <translation type="unfinished">Отсутствует маркер у некоторых областей</translation>
+        <translation>Отсутствует маркер у некоторых областей</translation>
     </message>
     <message>
         <location filename="../../src/util/loops.cpp" line="592"/>
         <location filename="../../src/util/loops.cpp" line="674"/>
         <source>There is a label outside of the domain</source>
-        <translation type="unfinished"></translation>
+        <translation>Метка вне области</translation>
     </message>
     <message>
         <location filename="../../src/util/loops.cpp" line="612"/>
         <location filename="../../src/util/loops.cpp" line="648"/>
         <source>There is no label in some subdomain</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует метка в одной из подобластей</translation>
     </message>
     <message>
         <location filename="../../src/util/loops.cpp" line="664"/>
         <source>Unknown error</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестная ошибка</translation>
     </message>
     <message>
         <location filename="../../src/util/loops.cpp" line="692"/>
         <source>There is multiple labels in the domain</source>
-        <translation type="unfinished"></translation>
+        <translation>Несколько меток в одной области</translation>
     </message>
 </context>
 <context>
@@ -1387,7 +1387,7 @@
     <message>
         <location filename="../../src/mainwindow.cpp" line="299"/>
         <source>Open example...</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть пример…</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="302"/>
@@ -1760,17 +1760,17 @@ step</source>
     <message>
         <location filename="../../src/mainwindow.cpp" line="1151"/>
         <source>SVG files (*.svg)</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG файлы (*.svg)</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="1577"/>
         <source>Mesh files (*.mesh)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлы сетки (*.mesh)</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="1594"/>
         <source>The problem is not meshed</source>
-        <translation type="unfinished"></translation>
+        <translation>Проблема не дискретизирована</translation>
     </message>
     <message>
         <location filename="../../src/mainwindow.cpp" line="892"/>
@@ -1783,7 +1783,7 @@ step</source>
         <location filename="../../src/mainwindow.cpp" line="1037"/>
         <location filename="../../src/mainwindow.cpp" line="1594"/>
         <source>Problem</source>
-        <translation type="unfinished">Проблема</translation>
+        <translation>Проблема</translation>
     </message>
     <message>
         <source>PDF files (*.pdf);;EPS files (*.eps);;SVG files (*.svg)</source>
@@ -2008,7 +2008,7 @@ step</source>
     <message>
         <location filename="../../src/meshgenerator.cpp" line="230"/>
         <source>Boundary condition for %1 is not assigned on following edges: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Граничное условие для %1 не указано на ребрах: %2</translation>
     </message>
     <message>
         <source>Boundary condition is not assigned on following edges %1</source>
@@ -2038,42 +2038,42 @@ step</source>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="54"/>
         <source>GMSH geometry file was created</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл сетки GMSH успешно создан</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="88"/>
         <source>Could not start GMSH</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось запустить GMSH</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="97"/>
         <source>Mesh files were created</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлы сетки созданы</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="101"/>
         <source>Mesh was converted to Hermes2D mesh file</source>
-        <translation type="unfinished"></translation>
+        <translation>Сетка преобразована в файл Hermes2D</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="146"/>
         <source>Invalid number of nodes (%1 &lt; 3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверное количество узлов (%1 &lt; 3)</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="151"/>
         <source>Invalid number of edges (%1 &lt; 3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверное количество рёбер (%1 &lt; 3)d</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="165"/>
         <source>Could not create GMSH geometry file (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось создать файл GMSH сетки (%1)</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_gmsh.cpp" line="398"/>
         <source>Could not read GMSH mesh file</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось считать файл GMSH сетки</translation>
     </message>
     <message>
         <source>GMSH geo file was created.</source>
@@ -2140,52 +2140,52 @@ step</source>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="102"/>
         <source>Could not start Triangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось запустить Triangle</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="110"/>
         <source>Mesh files were created</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлы сетки созданы</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="115"/>
         <source>Mesh was converted to Hermes2D mesh file</source>
-        <translation type="unfinished"></translation>
+        <translation>Сетка преобразована в файл Hermes2D</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="166"/>
         <source>Invalid number of nodes (%1 &lt; 3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверное количество узлов (%1 &lt; 3)</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="171"/>
         <source>Invalid number of edges (%1 &lt; 3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверное количество рёбер (%1 &lt; 3)d</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="185"/>
         <source>Could not create Triangle poly mesh file (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось создать файл сетки Triangle (%1)</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="339"/>
         <source>Could not read Triangle node file</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось считать файл узлов Triangle</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="347"/>
         <source>Could not read Triangle edge file</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось считать файл рёбер Triangle</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="355"/>
         <source>Could not read Triangle elements file</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось считать файл элементов Triangle</translation>
     </message>
     <message>
         <location filename="../../src/meshgenerator_triangle.cpp" line="363"/>
         <source>Could not read Triangle neighbors elements file</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось считать файл соседних элементов Triangle</translation>
     </message>
     <message>
         <source>could not start Triangle</source>
@@ -2300,7 +2300,7 @@ step</source>
         <location filename="../../src/moduledialog.cpp" line="1707"/>
         <location filename="../../src/moduledialog.cpp" line="1766"/>
         <source>Weakforms</source>
-        <translation type="unfinished"></translation>
+        <translation>Вариационные формы</translation>
     </message>
     <message>
         <location filename="../../src/moduledialog.cpp" line="1549"/>
@@ -2799,7 +2799,7 @@ step</source>
     <message>
         <location filename="../../src/particle/particle_tracing.cpp" line="186"/>
         <source>Velocity is greater then speed of light.</source>
-        <translation type="unfinished"></translation>
+        <translation>Скорость превышает скорость света.</translation>
     </message>
 </context>
 <context>
@@ -2807,161 +2807,161 @@ step</source>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="73"/>
         <source>Relativistic correction</source>
-        <translation type="unfinished">Релятивистская поправка</translation>
+        <translation>Релятивистская поправка</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="100"/>
         <source>Reflection on different material</source>
-        <translation type="unfinished">Отскок от различных материалов</translation>
+        <translation>Отражение от различных материалов</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="101"/>
         <source>Reflection on boundary</source>
-        <translation type="unfinished">Отражение на границе</translation>
+        <translation>Отражение на границе</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="105"/>
         <source>Line color is controlled by velocity</source>
-        <translation type="unfinished">Цвет линии зависит от скорости</translation>
+        <translation>Цвет линии зависит от скорости</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="106"/>
         <source>Show points</source>
-        <translation type="unfinished">Показать точки</translation>
+        <translation>Показать точки</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="107"/>
         <source>Show blended faces</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать смешанные грани</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="134"/>
         <source>General</source>
-        <translation type="unfinished">Общее</translation>
+        <translation>Общее</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="147"/>
         <source>Initial particle position</source>
-        <translation type="unfinished">Исходное положение частицы</translation>
+        <translation>Исходное положение частицы</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="157"/>
         <source>Initial particle velocity</source>
-        <translation type="unfinished">Исходная скорость частицы</translation>
+        <translation>Исходная скорость частицы</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="167"/>
         <source>Coefficient of restitution (-):</source>
-        <translation type="unfinished">Коэффициент восстановления (-):</translation>
+        <translation>Коэффициент восстановления (-):</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="172"/>
         <location filename="../../src/sceneview_particle.cpp" line="258"/>
         <source>Reflection</source>
-        <translation type="unfinished">Отражение</translation>
+        <translation>Отражение</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="177"/>
         <location filename="../../src/sceneview_particle.cpp" line="189"/>
         <source>Equation:</source>
-        <translation type="unfinished">Уравнение:</translation>
+        <translation>Уравнение:</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="179"/>
         <source>Charge (C):</source>
-        <translation type="unfinished">Заряд (Кл):</translation>
+        <translation>Заряд (Кл):</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="182"/>
         <source>Lorentz force</source>
-        <translation type="unfinished">Сила Лоренца</translation>
+        <translation>Сила Лоренца</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="191"/>
         <source>Density (kg/m&lt;sup&gt;3&lt;/sup&gt;):</source>
-        <translation type="unfinished">Плотность (кг/м&lt;sup&gt;3&lt;/sup&gt;):</translation>
+        <translation>Плотность (кг/м&lt;sup&gt;3&lt;/sup&gt;):</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="193"/>
         <source>Reference area (m&lt;sup&gt;2&lt;/sup&gt;):</source>
-        <translation type="unfinished">Площадь (м&lt;sup&gt;2&lt;/sup&gt;):</translation>
+        <translation>Площадь (м&lt;sup&gt;2&lt;/sup&gt;):</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="195"/>
         <source>Coefficient (-):</source>
-        <translation type="unfinished">Коэффициент (-):</translation>
+        <translation>Коэффициент (-):</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="198"/>
         <source>Drag force</source>
-        <translation type="unfinished">Тормозящая сила</translation>
+        <translation>Тормозящая сила</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="210"/>
         <source>Custom force</source>
-        <translation type="unfinished"></translation>
+        <translation>Другая сила</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="228"/>
         <source>Maximum relative error (%):</source>
-        <translation type="unfinished">Макс. относительная погрешность (%):</translation>
+        <translation>Макс. относительная погрешность (%):</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="230"/>
         <source>Minimum step (m):</source>
-        <translation type="unfinished">Минимальный шаг (м):</translation>
+        <translation>Минимальный шаг (м):</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="232"/>
         <source>Maximum number of steps:</source>
-        <translation type="unfinished">Максимальное количество шагов:</translation>
+        <translation>Максимальное количество шагов:</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="237"/>
         <location filename="../../src/sceneview_particle.cpp" line="259"/>
         <source>Solver</source>
-        <translation type="unfinished">Решатель</translation>
+        <translation>Решатель</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="247"/>
         <source>Show particle multiple times:</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать частицу несколько раз:</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="252"/>
         <location filename="../../src/sceneview_particle.cpp" line="260"/>
         <source>Settings</source>
-        <translation type="unfinished">Настройки</translation>
+        <translation>Настройки</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="257"/>
         <source>Forces</source>
-        <translation type="unfinished"></translation>
+        <translation>Силы</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="125"/>
         <source>Equations:</source>
-        <translation type="unfinished">Уравнения:</translation>
+        <translation>Уравнения:</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="127"/>
         <source>Number of particles:</source>
-        <translation type="unfinished">Кол-во частиц:</translation>
+        <translation>Кол-во частиц:</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="129"/>
         <source>Particles dispersion (m):</source>
-        <translation type="unfinished">Дисперсия частиц (м):</translation>
+        <translation>Дисперсия частиц (м):</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="131"/>
         <source>Mass (kg):</source>
-        <translation type="unfinished">Масса (кг)</translation>
+        <translation>Масса (кг)</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="279"/>
         <source>Apply</source>
-        <translation type="unfinished">Применить</translation>
+        <translation>Применить</translation>
     </message>
 </context>
 <context>
@@ -2969,37 +2969,37 @@ step</source>
     <message>
         <location filename="../../src/gui/physicalfield.cpp" line="35"/>
         <source>Time step:</source>
-        <translation type="unfinished">Временной шаг:</translation>
+        <translation>Временной шаг:</translation>
     </message>
     <message>
         <location filename="../../src/gui/physicalfield.cpp" line="45"/>
         <source>Transient analysis</source>
-        <translation type="unfinished">Анализ переходных процессов</translation>
+        <translation>Анализ переходных процессов</translation>
     </message>
     <message>
         <location filename="../../src/gui/physicalfield.cpp" line="50"/>
         <source>Adaptivity step:</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаг адаптивности:</translation>
     </message>
     <message>
         <location filename="../../src/gui/physicalfield.cpp" line="53"/>
         <source>Adaptivity type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип адаптивности:</translation>
     </message>
     <message>
         <location filename="../../src/gui/physicalfield.cpp" line="64"/>
         <source>Space adaptivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Пространственная адаптивность</translation>
     </message>
     <message>
         <location filename="../../src/gui/physicalfield.cpp" line="71"/>
         <source>Physical field:</source>
-        <translation type="unfinished">Физическое поле:</translation>
+        <translation>Физическое поле:</translation>
     </message>
     <message>
         <location filename="../../src/gui/physicalfield.cpp" line="76"/>
         <source>Postprocessor settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки постпроцессора</translation>
     </message>
 </context>
 <context>
@@ -3045,44 +3045,44 @@ step</source>
         <location filename="../../src/sceneview_post.cpp" line="86"/>
         <location filename="../../src/sceneview_post.cpp" line="102"/>
         <source>Mesh View</source>
-        <translation type="unfinished"></translation>
+        <translation>Просмотр сетки</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="66"/>
         <source>Initial mesh with %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Исходная сетка с %1 элемент.</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="86"/>
         <source>Solution mesh with %1 elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Финальная сетка с %1 элемент.</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="102"/>
         <source>Polynomial order</source>
-        <translation type="unfinished">Порядок полинома</translation>
+        <translation>Порядок полинома</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="130"/>
         <location filename="../../src/sceneview_post.cpp" line="193"/>
         <location filename="../../src/sceneview_post.cpp" line="272"/>
         <source>Post View</source>
-        <translation type="unfinished"></translation>
+        <translation>Пост просмотр</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="130"/>
         <source>Contour view (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Контурный вид (%1)</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="193"/>
         <source>Scalar view (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Скалярный вид (%1)</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post.cpp" line="272"/>
         <source>Vector view (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Векторный вид (%1)</translation>
     </message>
     <message>
         <source>Particle Tracing</source>
@@ -3098,7 +3098,7 @@ step</source>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="139"/>
         <source>Width and height of bounding box over vector count.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="258"/>
@@ -3199,7 +3199,7 @@ step</source>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="697"/>
         <source>Number of vec.:</source>
-        <translation type="unfinished"></translation>
+        <translation>Кол-во вект.:</translation>
     </message>
     <message>
         <source>Show order colorbar</source>
@@ -3387,7 +3387,7 @@ step</source>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="319"/>
         <source>Show labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать метки</translation>
     </message>
     <message>
         <location filename="../../src/postprocessorview.cpp" line="628"/>
@@ -3597,17 +3597,17 @@ step</source>
     <message>
         <location filename="../../src/preprocessorview.cpp" line="308"/>
         <source>Tooltip_OperateOnNodes</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/preprocessorview.cpp" line="311"/>
         <source>Tooltip_OperateOnEdges</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/preprocessorview.cpp" line="314"/>
         <source>Tooltip_OperateOnLabels</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -3618,7 +3618,7 @@ step</source>
         <location filename="../../src/hermes2d/problem.cpp" line="311"/>
         <location filename="../../src/hermes2d/problem.cpp" line="319"/>
         <source>Mesh</source>
-        <translation type="unfinished">Сетка</translation>
+        <translation>Сетка</translation>
     </message>
     <message>
         <source>Mesh reader</source>
@@ -3628,37 +3628,37 @@ step</source>
         <location filename="../../src/hermes2d/problem.cpp" line="283"/>
         <location filename="../../src/hermes2d/problem.cpp" line="543"/>
         <source>No fields defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Не задано ни одно поле</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="295"/>
         <source>Geometry</source>
-        <translation type="unfinished">Геометрия</translation>
+        <translation>Геометрия</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="319"/>
         <source>An unknown exception occured and has been ignored</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестное исключение произошло и было проигнорировано</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="468"/>
         <source>Total time is zero</source>
-        <translation type="unfinished"></translation>
+        <translation>Общее время нулевое</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="470"/>
         <source>Time method tolerance is zero</source>
-        <translation type="unfinished"></translation>
+        <translation>Толерантность временного метода нулевая</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="494"/>
         <source>Could not create mesh</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось создать сетку</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="499"/>
         <source>No field defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Не задано ни одно поле</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="525"/>
@@ -3668,27 +3668,27 @@ step</source>
         <location filename="../../src/hermes2d/problem.cpp" line="548"/>
         <location filename="../../src/hermes2d/problem.cpp" line="589"/>
         <source>Solver</source>
-        <translation type="unfinished">Решатель</translation>
+        <translation>Решатель</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="525"/>
         <source>Coupling of more transient fields not possible at the moment.</source>
-        <translation type="unfinished"></translation>
+        <translation>Сочетание большего количество переходных полей на данный момент не возможно.</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="531"/>
         <source>Space adaptivity for transient coupled problems not possible at the moment.</source>
-        <translation type="unfinished"></translation>
+        <translation>Пространственная адаптивность для связанных переходных проблемна данный момент не возможна.</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="537"/>
         <source>Both space and time adaptivity at the same time not possible at the moment.</source>
-        <translation type="unfinished"></translation>
+        <translation>Одновременное использование временной и пространственной адаптивности на данный момент не возможно.</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="548"/>
         <source>Matrix and RHS will be saved on the disk and this will slow down the calculation (you may disable it in appllication settings)</source>
-        <translation type="unfinished"></translation>
+        <translation>Матрица и правая часть будет сохранена на диск. Это может замедлить вычисления (отключить сохранение можно в настройках приложения)</translation>
     </message>
     <message>
         <source>Warning: Matrix and RHS will be saved on the disk. This will slow down the calculation. You may disable it in Edit-&gt;Options-&gt;Solver menu.</source>
@@ -3705,12 +3705,12 @@ step</source>
         <location filename="../../src/hermes2d/problem.cpp" line="843"/>
         <location filename="../../src/hermes2d/problem.cpp" line="936"/>
         <source>Problem</source>
-        <translation type="unfinished">Проблема</translation>
+        <translation>Проблема</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="589"/>
         <source>An unknown exception occured in solver and has been ignored</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестное исключение произошло в решателе и было проигнорировано</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="843"/>
@@ -3720,7 +3720,7 @@ step</source>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="895"/>
         <source>Marker index is out of range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Индекс метки вне диапазона.</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="936"/>
@@ -4157,7 +4157,7 @@ step</source>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="665"/>
         <source>Run script: %1
 </source>
-        <translation type="unfinished">Выполнить скрипт: %</translation>
+        <translation>Выполнить скрипт: %1</translation>
     </message>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="780"/>
@@ -4182,7 +4182,7 @@ step</source>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="861"/>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="896"/>
         <source>Python scripts (*.py)</source>
-        <translation type="unfinished"></translation>
+        <translation>Python скрипты (*.py)</translation>
     </message>
     <message>
         <source>Python files (*.py)</source>
@@ -4235,7 +4235,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../pythonlab/pythonlab/pythoneditor.cpp" line="1091"/>
         <source>PythonLab - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Python Lab — %1</translation>
     </message>
     <message>
         <source>Python Lab - %1</source>
@@ -4301,22 +4301,22 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="102"/>
         <source>Variables</source>
-        <translation type="unfinished">Переменные</translation>
+        <translation>Переменные</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="106"/>
         <source>Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Значения</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="111"/>
         <source>Console output</source>
-        <translation type="unfinished"></translation>
+        <translation>Вывод консоли</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pythonengine_agros.cpp" line="119"/>
         <source>Startup script</source>
-        <translation type="unfinished">Сценарий запуска</translation>
+        <translation>Сценарий запуска</translation>
     </message>
 </context>
 <context>
@@ -4350,7 +4350,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/gui/common.cpp" line="181"/>
         <source>Initial step</source>
-        <translation type="unfinished"></translation>
+        <translation>Начальный шаг</translation>
     </message>
     <message>
         <location filename="../../src/gui/common.cpp" line="184"/>
@@ -4360,12 +4360,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/hermes2d/coupling.cpp" line="89"/>
         <source>Hard coupling is not available yet, switching to weak coupling</source>
-        <translation type="unfinished"></translation>
+        <translation>Сильное сопряжение не доступно да данный момент</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/coupling.cpp" line="199"/>
         <source>Couplings dir &apos;%1&apos; doesn&apos;t exists</source>
-        <translation type="unfinished">Сопряжения &apos;%1&apos; не существуют</translation>
+        <translation>Сопряжения &apos;%1&apos; не существуют</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/coupling.cpp" line="217"/>
@@ -4399,23 +4399,23 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="332"/>
         <source>Mesh generation</source>
-        <translation type="unfinished"></translation>
+        <translation>Генерирование сетки</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="498"/>
         <source>No fields defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Не задано ни одно поле</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="618"/>
         <source>Geometry</source>
-        <translation type="unfinished">Геометрия</translation>
+        <translation>Геометрия</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="672"/>
         <location filename="../../src/hermes2d/problem.cpp" line="761"/>
         <source>Solving problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Решение проблемы</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="817"/>
@@ -4429,22 +4429,22 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="818"/>
         <source>Transient step %1 (%2%)</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаг переходн. проц. %1 (%2%)</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="825"/>
         <source>Transient step %1/%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаг переходн. проц. %1/%2</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="833"/>
         <source>Field solving (single analysis)</source>
-        <translation type="unfinished"></translation>
+        <translation>Решение поля (одиночный анализ)</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="835"/>
         <source>Fields solving (coupled analysis)</source>
-        <translation type="unfinished"></translation>
+        <translation>Решение поля (сопряженный анализ)</translation>
     </message>
     <message>
         <source>transient step %1 (%2%)</source>
@@ -4465,7 +4465,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/hermes2d/problem.cpp" line="909"/>
         <source>Mesh reader (%1): boundary edges &apos;%2&apos; does not have a boundary condition</source>
-        <translation type="unfinished"></translation>
+        <translation>Сетка: (%1): граничные рёбра &apos;%2&apos; без граничных условий</translation>
     </message>
     <message>
         <source>Mesh reader (%1): boundary edges &apos;%2&apos; does not have a boundary marker</source>
@@ -4500,7 +4500,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/hermes2d/solver.cpp" line="572"/>
         <source>Problem is not meshed</source>
-        <translation type="unfinished"></translation>
+        <translation>Проблема не дискретизирована</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/solver.cpp" line="806"/>
@@ -4510,12 +4510,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/hermes2d/solver.cpp" line="793"/>
         <source>Adaptivity step (error = %1, DOFs = %2/%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаг адаптивности (погр. = %1, Ст. Своб. = %2/%3)</translation>
     </message>
     <message>
         <location filename="../../src/hermes2d/solver.cpp" line="821"/>
         <source>Initial time step</source>
-        <translation type="unfinished"></translation>
+        <translation>Начальный врем. шаг</translation>
     </message>
     <message>
         <source>adaptivity step (error = %1, DOFs = %2/%3)</source>
@@ -4528,7 +4528,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="46"/>
         <source>Invalid field id. Plugin %1 cannot be loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверное ID поля. Не удалось загрузить плагин %1</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="52"/>
@@ -4597,7 +4597,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="156"/>
         <source>Number of last vector must be between 1 and 5 .</source>
-        <translation type="unfinished"></translation>
+        <translation>Число последнего вектора должно быть от 1 до 5</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="172"/>
@@ -4627,7 +4627,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="218"/>
         <source>Boundary condition &apos;%1&apos; already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Граничное условие &apos;%1&apos; уже существует.</translation>
     </message>
     <message>
         <source>Boundary &apos;%1&apos; already exists.</source>
@@ -4682,20 +4682,20 @@ Do you want to save your changes?</source>
         <location filename="../../src/pythonlab/pyfield.cpp" line="526"/>
         <location filename="../../src/pythonlab/pyfield.cpp" line="612"/>
         <source>Reference solution doesn&apos;t exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует эталонное решение.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="443"/>
         <location filename="../../src/pythonlab/pyfield.cpp" line="531"/>
         <location filename="../../src/pythonlab/pyfield.cpp" line="617"/>
         <source>Time step is out of range (0 - %1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Врем. шаг вне диапазона (0–%1).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="448"/>
         <location filename="../../src/pythonlab/pyfield.cpp" line="536"/>
         <source>Adaptivity step is out of range. (0 to %2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаг адаптивности вне диапазона (0–%2).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="473"/>
@@ -4739,7 +4739,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="622"/>
         <source>Adaptivity step is out of range. (0 to %1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаг адаптивности вне диапазона (0–%1).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyfield.cpp" line="648"/>
@@ -4758,7 +4758,7 @@ Do you want to save your changes?</source>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="57"/>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="177"/>
         <source>Radial component must be greater then or equal to zero.</source>
-        <translation type="unfinished">Радиальная компонента должна быть больше или равна нулю.</translation>
+        <translation>Радиальная компонента должна быть больше или равна нулю.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="65"/>
@@ -4784,7 +4784,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="112"/>
         <source>Start node index is the same as index of end node.</source>
-        <translation type="unfinished"></translation>
+        <translation>Начальный и конечный индекс узла одинаковы.</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="115"/>
@@ -4823,17 +4823,17 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="373"/>
         <source>There are no nodes around the point [%1, %2].</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствуют узлы около точки [%1, %2].</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="390"/>
         <source>There are no edges around the point [%1, %2].</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствуют ребра около точки [%1, %2].</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pygeometry.cpp" line="407"/>
         <source>There are no labels around the point [%1, %2].</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствуют маркеры около точки [%1, %2].</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyparticletracing.cpp" line="82"/>
@@ -4944,7 +4944,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="65"/>
         <source>Field &apos;%1&apos; does not have solution for time step %2 (%3 s).</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует решение временного шага %2 для поля &apos;%1&apos; (%3 s).</translation>
     </message>
     <message>
         <location filename="../../src/pythonlab/pyview.cpp" line="95"/>
@@ -5097,7 +5097,7 @@ Do you want to save your changes?</source>
         <location filename="../../src/util/enums.cpp" line="339"/>
         <location filename="../../src/util/enums.cpp" line="465"/>
         <source>Finer</source>
-        <translation type="unfinished"></translation>
+        <translation>Точней</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="351"/>
@@ -5137,22 +5137,22 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/util/enums.cpp" line="385"/>
         <source>Matrix volume</source>
-        <translation type="unfinished">Матричный объем</translation>
+        <translation>Матричный объем</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="387"/>
         <source>Matrix surface</source>
-        <translation type="unfinished">Матричная поверхность</translation>
+        <translation>Матричная поверхность</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="389"/>
         <source>Vector volume</source>
-        <translation type="unfinished">Векторный объем</translation>
+        <translation>Векторный объем</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="391"/>
         <source>Vector surface</source>
-        <translation type="unfinished">Векторная поверхность</translation>
+        <translation>Векторная поверхность</translation>
     </message>
     <message>
         <source>Triangle</source>
@@ -5190,12 +5190,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/util/enums.cpp" line="403"/>
         <source>Triangle - triangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Triangle — треугольная</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="415"/>
         <source>GMSH - quad Delaunay</source>
-        <translation type="unfinished"></translation>
+        <translation>GMSH — четырёхугольная Delaunay</translation>
     </message>
     <message>
         <location filename="../../src/util/enums.cpp" line="453"/>
@@ -5385,7 +5385,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/util/xml.cpp" line="58"/>
         <source>File &apos;%1&apos; is not valid Agros2D problem file. Error (line %3, column %4): %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл &apos;%1&apos; не является файлом Agros2D. Ошибка (строка %3, колонка %4): %2</translation>
     </message>
     <message>
         <source>Value</source>
@@ -5398,7 +5398,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/util/loops.cpp" line="550"/>
         <source>Two loops connected by one edge.</source>
-        <translation type="unfinished"></translation>
+        <translation>Две петли соеденены одним ребром.</translation>
     </message>
     <message>
         <source>Solution</source>
@@ -5410,7 +5410,7 @@ Do you want to save your changes?</source>
         <location filename="../../src/hermes2d/problem.cpp" line="761"/>
         <location filename="../../src/value.cpp" line="244"/>
         <source>Problem</source>
-        <translation type="unfinished">Проблема</translation>
+        <translation>Проблема</translation>
     </message>
 </context>
 <context>
@@ -5675,7 +5675,7 @@ Do you want to save your changes?</source>
         <location filename="../../src/scene.cpp" line="636"/>
         <location filename="../../src/scene.cpp" line="717"/>
         <source>Geometry</source>
-        <translation type="unfinished">Геометрия</translation>
+        <translation>Геометрия</translation>
     </message>
     <message>
         <source>at least one boundary condition has to be assigned</source>
@@ -5762,12 +5762,12 @@ Do you want to save your changes?</source>
         <location filename="../../src/scene.cpp" line="1825"/>
         <location filename="../../src/scene.cpp" line="1865"/>
         <source>Problem</source>
-        <translation type="unfinished">Проблема</translation>
+        <translation>Проблема</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1149"/>
         <source>Loading problem from disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузка задачи с диска</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1154"/>
@@ -5826,7 +5826,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scene.cpp" line="1872"/>
         <source>Access denied &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Доступ запрещен &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1936"/>
@@ -5836,7 +5836,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scene.cpp" line="1950"/>
         <source>There are nodes which are connected to one edge only (red highlighted). This is not allowed in Agros.</source>
-        <translation type="unfinished"></translation>
+        <translation>Некоторые узлы не связаны (выделено красным). Все узлы должны быть соединены.</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1962"/>
@@ -5851,57 +5851,57 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scene.cpp" line="442"/>
         <source>At least one boundary condition has to be assigned</source>
-        <translation type="unfinished"></translation>
+        <translation>Как минимум одно граничное условие должно быть задано</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="446"/>
         <source>Invalid number of labels (%1 &lt; 1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверное кол-во меток &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="456"/>
         <source>At least one material has to be assigned</source>
-        <translation type="unfinished"></translation>
+        <translation>Хотя бы один материал должен быть назначен</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="460"/>
         <source>Invalid number of boundary conditions (%1 &lt; 1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверное кол-во граничных условий (%1 &lt; 1)</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="463"/>
         <source>Invalid number of materials (%1 &lt; 1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверное кол-во материалов (%1 &lt; 1)</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="636"/>
         <source>Geometry</source>
         <comment>Cannot perform transformation, existing point would be overwritten</comment>
-        <translation type="unfinished">Геометрия</translation>
+        <translation>Геометрия</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="717"/>
         <source>Geometry</source>
         <comment>Cannot perform transformation, existing edge would be overwritten</comment>
-        <translation type="unfinished">Геометрия</translation>
+        <translation>Геометрия</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1839"/>
         <location filename="../../src/scene.cpp" line="1844"/>
         <source>Initial mesh is corrupted (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Исходная сетка повреждена (%1)</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1872"/>
         <source>Solver</source>
-        <translation type="unfinished">Решатель</translation>
+        <translation>Решатель</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1839"/>
         <location filename="../../src/scene.cpp" line="1844"/>
         <location filename="../../src/scene.cpp" line="1857"/>
         <source>Mesh</source>
-        <translation type="unfinished">Сетка</translation>
+        <translation>Сетка</translation>
     </message>
     <message>
         <location filename="../../src/scene.cpp" line="1955"/>
@@ -5937,7 +5937,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scenemarkerdialog.cpp" line="430"/>
         <source>Boundary condition with the same name already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя граничного условия уже существует.</translation>
     </message>
     <message>
         <source>Boundary marker name already exists.</source>
@@ -5961,12 +5961,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/sceneedge.cpp" line="535"/>
         <source>Start node:</source>
-        <translation type="unfinished"></translation>
+        <translation>Начальный узел:</translation>
     </message>
     <message>
         <location filename="../../src/sceneedge.cpp" line="536"/>
         <source>End node:</source>
-        <translation type="unfinished"></translation>
+        <translation>Конечный узел:</translation>
     </message>
     <message>
         <location filename="../../src/sceneedge.cpp" line="537"/>
@@ -5981,17 +5981,17 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/sceneedge.cpp" line="547"/>
         <source>Swap direction</source>
-        <translation type="unfinished">Сменить направление</translation>
+        <translation>Сменить направление</translation>
     </message>
     <message>
         <location filename="../../src/sceneedge.cpp" line="612"/>
         <source>Start and end node are same.</source>
-        <translation type="unfinished"></translation>
+        <translation>Начальный и конечный узел одинаковы.</translation>
     </message>
     <message>
         <location filename="../../src/sceneedge.cpp" line="623"/>
         <source>Edge already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ребро уже существует.</translation>
     </message>
 </context>
 <context>
@@ -6056,7 +6056,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scenelabel.cpp" line="360"/>
         <source>Triangle area (m&lt;sup&gt;2&lt;/sup&gt;):</source>
-        <translation type="unfinished"></translation>
+        <translation>Площадь треугольника (м&lt;sup&gt;2&lt;/sup&gt;):</translation>
     </message>
     <message>
         <source>Triangle area (m):</source>
@@ -6147,7 +6147,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/scenemarkerdialog.cpp" line="523"/>
         <source>Material marker with the same name already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя маркера материала уже существует.</translation>
     </message>
     <message>
         <source>Material marker name already exists.</source>
@@ -6212,7 +6212,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/sceneview_common.cpp" line="389"/>
         <source>Problem</source>
-        <translation type="unfinished">Проблема</translation>
+        <translation>Проблема</translation>
     </message>
 </context>
 <context>
@@ -6235,7 +6235,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../src/sceneview_common3d.cpp" line="68"/>
         <source>View</source>
-        <translation type="unfinished">Вид</translation>
+        <translation>Вид</translation>
     </message>
     <message>
         <source>Projection to %1%2 plane.</source>
@@ -6294,55 +6294,56 @@ Do you want to save your changes?</source>
         <location filename="../../src/sceneview_particle.cpp" line="426"/>
         <source>Particle
 Tracing</source>
-        <translation type="unfinished"></translation>
+        <translation>Трассировка 
+частиц</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="427"/>
         <source>Ctrl+7</source>
-        <translation type="unfinished">Ctrl+7</translation>
+        <translation>Ctrl+7</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="1149"/>
         <location filename="../../src/sceneview_particle.h" line="104"/>
         <source>Particle Tracing</source>
-        <translation type="unfinished">Трассировка частиц</translation>
+        <translation>Трассировка частиц</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="464"/>
         <location filename="../../src/sceneview_particle.cpp" line="1126"/>
         <location filename="../../src/sceneview_particle.cpp" line="1134"/>
         <source>Particle tracing</source>
-        <translation type="unfinished">Трассировка частиц</translation>
+        <translation>Трассировка частиц</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="1048"/>
         <source>Vel.</source>
-        <translation type="unfinished">Скорость</translation>
+        <translation>Скорость</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="1111"/>
         <source>Post View</source>
-        <translation type="unfinished"></translation>
+        <translation>Пост просмотр</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="1111"/>
         <source>Particle view</source>
-        <translation type="unfinished"></translation>
+        <translation>Вид частиц</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="1126"/>
         <source>Particle tracing failed (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалась трассировка частиц (%1)</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="1134"/>
         <source>Catched unknown exception in particle tracing</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестное исключение произошло при трассировке частиц</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_particle.cpp" line="1149"/>
         <source>Particle %1: %2 steps, final time %3 s</source>
-        <translation type="unfinished">Частица %1: %2 шагов, общее время %3 с</translation>
+        <translation>Частица %1: %2 шагов, общее время %3 с</translation>
     </message>
 </context>
 <context>
@@ -6376,7 +6377,7 @@ Tracing</source>
     <message>
         <location filename="../../src/sceneview_post2d.cpp" line="91"/>
         <source>Nothing</source>
-        <translation type="unfinished"></translation>
+        <translation>Ничего</translation>
     </message>
     <message>
         <location filename="../../src/sceneview_post2d.cpp" line="94"/>
@@ -6655,7 +6656,7 @@ Tracing</source>
     <message>
         <location filename="../../src/collaboration.cpp" line="410"/>
         <source>Colaboration server could not be connected</source>
-        <translation type="unfinished"></translation>
+        <translation>Сервер не может быть подключен</translation>
     </message>
     <message>
         <source>Upload to server</source>
@@ -6680,7 +6681,7 @@ Tracing</source>
     <message>
         <location filename="../../src/settings.cpp" line="50"/>
         <source>Ctrl+8</source>
-        <translation type="unfinished">Ctrl+8</translation>
+        <translation>Ctrl+8</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="214"/>
@@ -6871,12 +6872,12 @@ Tracing</source>
     <message>
         <location filename="../../src/settings.cpp" line="612"/>
         <source>Refine all elements whose error is larger&lt;br/&gt;than &lt;b&gt;threshold&lt;/b&gt; times maximum element error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Улучшать все элементы с погрешностью&lt;br/&gt;более &lt;b&gt;порога&lt;/b&gt; умноженного на максимальную погрешность элемента.</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="615"/>
         <source>Refine all elements whose error is larger&lt;br/&gt;than &lt;b&gt;threshold&lt;/b&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>улучшать все элементы с погрешностью&lt;br/&gt;более &lt;b&gt;порога&lt;/b&gt;.</translation>
     </message>
     <message>
         <source>0</source>
@@ -6932,52 +6933,53 @@ Tracing</source>
     <message>
         <location filename="../../src/settings.cpp" line="293"/>
         <source>Zoom to mouse</source>
-        <translation type="unfinished"></translation>
+        <translation>Приблизить на указатель</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="363"/>
         <source>Gradient back.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>?</translatorcomment>
+        <translation>Обратный грандиент.</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="370"/>
         <source>Show edges</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать ребра</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="389"/>
         <source>Vectors</source>
-        <translation type="unfinished">Векторы</translation>
+        <translation>Векторы</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="430"/>
         <source>Angle seg. count:</source>
-        <translation type="unfinished"></translation>
+        <translation>Кол-во угловых сегментов:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="443"/>
         <source>Max. num. of DOFs:</source>
-        <translation type="unfinished"></translation>
+        <translation>Максимальное количество степеней свободы:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="450"/>
         <source>This parameter influences the selection of&lt;br /&gt; candidates in hp-adaptivity. Default value is 1.0.</source>
-        <translation type="unfinished"></translation>
+        <translation>Этот параметр влияет&lt;br/&gt;на отбор элементов для hp-адаптивности. Значение по умолчанию 1,0. </translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="455"/>
         <source>Quantitative parameter of the adaptivity with&lt;br/&gt;different meanings for adaptive strategies.</source>
-        <translation type="unfinished"></translation>
+        <translation>Количественный параметр адаптивности&lt;br/&gt;с различным смыслом, зависящим от стратегии адаптивности.</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="481"/>
         <source>Use hp ref. solution for h and p adaptivity</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать эталонное hp решение  для h и p адаптивности</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="487"/>
         <source>Conv. exp.:</source>
-        <translation type="unfinished">Сход. эксп.:</translation>
+        <translation>Сход. эксп.:</translation>
     </message>
     <message>
         <location filename="../../src/settings.cpp" line="490"/>
@@ -7072,7 +7074,7 @@ Tracing</source>
     <message>
         <location filename="../../src/settings.cpp" line="609"/>
         <source>Refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;) times total&lt;br/&gt;error is processed. If more elements have similar&lt;br/&gt;errors, refine all to keep the mesh symmetric.</source>
-        <translation type="unfinished"></translation>
+        <translation>Улучшать элементы до достижения sqrt(&lt;b&gt;порог&lt;/b&gt;) на суммарную погрешность.&lt;br/&gt;Если другие элементы содержат подобные погрешности, улучшать всё&lt;br/&gt; для симметрии сетки.</translation>
     </message>
     <message>
         <source>refine elements until sqrt(&lt;b&gt;threshold&lt;/b&gt;) times total error&lt;br/&gt;is processed. If more elements have similar errors, refine all&lt;br/&gt;to keep the mesh symmetric</source>
@@ -7233,12 +7235,12 @@ Tracing</source>
     <message>
         <location filename="../../src/videodialog.cpp" line="109"/>
         <source>Video Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Диалог видео</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="109"/>
         <source>The active field is not time dependent or adaptive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Активное поле не во временной области или не адаптивно</translation>
     </message>
     <message>
         <location filename="../../src/videodialog.cpp" line="139"/>
