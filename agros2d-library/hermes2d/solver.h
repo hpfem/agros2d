@@ -35,9 +35,10 @@ template <typename Scalar>
 class NewtonSolverAgros : public Hermes::Hermes2D::NewtonSolver<Scalar>
 {
 public:
-    NewtonSolverAgros();
+    NewtonSolverAgros(Block *block);
 
     virtual bool on_initialization();
+    virtual bool on_initial_step_end();
     virtual bool on_step_begin();
     virtual bool on_step_end();
     virtual bool on_finish();
@@ -46,6 +47,8 @@ public:
     inline QVector<double> errors() const { return m_errors; }
 
 protected:
+    Block* m_block;
+
     QVector<double> m_steps;
     QVector<double> m_errors;
 

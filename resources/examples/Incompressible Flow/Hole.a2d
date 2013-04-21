@@ -82,12 +82,12 @@
           <field_item field_key="NonlinearTolerance" field_value="0.1"/>
           <field_item field_key="NonlinearSteps" field_value="10"/>
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
-          <field_item field_key="NewtonAutomaticDamping" field_value="1"/>
+          <field_item field_key="NewtonAutomaticDamping" field_value="0"/>
           <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
           <field_item field_key="NewtonDampingCoeff" field_value="0.8"/>
           <field_item field_key="NewtonDampingNumberToIncrease" field_value="1"/>
           <field_item field_key="NewtonSufficientImprovementFactorJacobian" field_value="0.4"/>
-          <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="3"/>
+          <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="0"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
@@ -96,7 +96,7 @@
           <field_item field_key="AdaptivitySteps" field_value="1"/>
           <field_item field_key="AdaptivityTolerance" field_value="1"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
-          <field_item field_key="AdaptivityTransientRedoneEach" field_value="0"/>
+          <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
           <field_item field_key="TransientInitialConditio" field_value="0"/>
         </field_config>

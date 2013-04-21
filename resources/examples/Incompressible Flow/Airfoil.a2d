@@ -171,15 +171,15 @@
           </material>
         </materials>
         <field_config>
-          <field_item field_key="NonlinearTolerance" field_value="0.001"/>
+          <field_item field_key="NonlinearTolerance" field_value="0.01"/>
           <field_item field_key="NonlinearSteps" field_value="10"/>
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
-          <field_item field_key="NewtonAutomaticDamping" field_value="1"/>
+          <field_item field_key="NewtonAutomaticDamping" field_value="0"/>
           <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
-          <field_item field_key="NewtonDampingCoeff" field_value="1"/>
+          <field_item field_key="NewtonDampingCoeff" field_value="0.8"/>
           <field_item field_key="NewtonDampingNumberToIncrease" field_value="1"/>
-          <field_item field_key="NewtonSufficientImprovementFactorJacobian" field_value="0.4"/>
-          <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="0"/>
+          <field_item field_key="NewtonSufficientImprovementFactorJacobian" field_value="0.9"/>
+          <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="10"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>

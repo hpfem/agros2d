@@ -42,7 +42,8 @@ using namespace Hermes::Hermes2D;
 int DEBUG_COUNTER = 0;
 
 template <typename Scalar>
-NewtonSolverAgros<Scalar>::NewtonSolverAgros() : NewtonSolver<Scalar>()
+NewtonSolverAgros<Scalar>::NewtonSolverAgros(Block *block)
+    : NewtonSolver<Scalar>(), m_block(block)
 {
 }
 
@@ -51,6 +52,13 @@ bool NewtonSolverAgros<Scalar>::on_initialization()
 {
     m_errors.clear();
 
+    return !Agros2D::problem()->isAborted();
+}
+
+template <typename Scalar>
+bool NewtonSolverAgros<Scalar>::on_initial_step_end()
+{
+    setError();
     return !Agros2D::problem()->isAborted();
 }
 
@@ -81,6 +89,8 @@ void NewtonSolverAgros<Scalar>::setError()
     const Hermes::vector<double>& solution_norms = this->get_parameter_value(this->solution_norms());
     double solution_change_norm = this->get_parameter_value(this->solution_change_norm());
     double current_damping_coefficient = this->get_parameter_value(this->current_damping_coefficient());
+    unsigned int successful_steps_damping = this->get_parameter_value(this->successful_steps_damping());
+    unsigned int successful_steps_jacobian = this->get_parameter_value(this->successful_steps_jacobian());
 
     double initial_residual_norm = residual_norms[0];
     double initial_solution_norm = solution_norms[0];
@@ -130,25 +140,23 @@ void NewtonSolverAgros<Scalar>::setError()
 
     if (iteration == 1)
     {
-        Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("Initial step, error: %1")
+        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Initial step, error: %1")
                                      .arg(m_errors.last()));
     }
     else
     {
-        Agros2D::log()->printMessage(QObject::tr("Solver"), QObject::tr("Iteration: %1, damping coeff.: %2, error: %3")
+        if (successful_steps_jacobian == 0)
+            Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Results not improved, step restarted with new Jacobian"));
+        if (m_block->newtonAutomaticDamping() && successful_steps_damping == 0)
+            Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Results not improved, step restarted with new damping coefficient"));
+
+        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, damping coeff.: %2, error: %3")
                                      .arg(iteration)
                                      .arg(current_damping_coefficient)
                                      .arg(m_errors.last()));
     }
 
     Agros2D::log()->setNonlinearTable(m_steps, m_errors);
-}
-
-void processSolverOutput(const char* aha)
-{
-    QString str = QString(aha).trimmed();
-    // Agros2D::log()->printMessage(QObject::tr("Solver"), str.replace("---- ", ""));
-    Agros2D::log()->printMessage(QObject::tr("Solver"), str);
 }
 
 template <typename Scalar>
@@ -211,9 +219,8 @@ void LinearSolverContainer<Scalar>::solve(Scalar* solutionVector)
 template <typename Scalar>
 NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolverContainer<Scalar>(block)
 {
-    m_newtonSolver = new NewtonSolverAgros<Scalar>();
+    m_newtonSolver = new NewtonSolverAgros<Scalar>(block);
     m_newtonSolver->set_verbose_output(true);
-    // m_newtonSolver->set_verbose_callback(processSolverOutput);
     m_newtonSolver->set_tolerance(block->nonlinearTolerance());
     m_newtonSolver->set_max_allowed_iterations(block->nonlinearSteps());
     m_newtonSolver->set_max_allowed_residual_norm(1e15);
@@ -267,7 +274,6 @@ PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block) : HermesSolve
 {
     m_picardSolver = new PicardSolver<Scalar>();
     m_picardSolver->set_verbose_output(true);
-    m_picardSolver->set_verbose_callback(processSolverOutput);
     m_picardSolver->set_tolerance(block->nonlinearTolerance());
     m_picardSolver->set_max_allowed_iterations(block->nonlinearSteps());
     if (block->picardAndersonAcceleration())
