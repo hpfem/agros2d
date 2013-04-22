@@ -99,7 +99,9 @@ public:
     LogDialog(QWidget *parent = 0, const QString &title = tr("Progress..."));
     ~LogDialog();
 
-    void closeEvent(QCloseEvent *e);
+protected:
+    virtual void closeEvent(QCloseEvent *e);
+    virtual void reject();
 
 private:
      LogWidget *logWidget;
