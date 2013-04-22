@@ -482,11 +482,6 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
     try
     {
         m_hermesSolverContainer->projectPreviousSolution(initialSolutionVector, spaces, previousSolution);
-        if (Agros2D::problem()->actualTimeStep() == 1)
-        {
-            m_hermesSolverContainer->settableSpaces()->set_spaces(spaces);
-            m_hermesSolverContainer->setWeakFormulation(m_block->weakForm());
-        }
         m_hermesSolverContainer->setMatrixRhsOutput(m_solverCode, adaptivityStep);
 
         m_hermesSolverContainer->solve(initialSolutionVector);
@@ -744,6 +739,9 @@ void ProblemSolver<Scalar>::createInitialSpace()
 
     assert(!m_hermesSolverContainer);
     m_hermesSolverContainer = HermesSolverContainer<Scalar>::factory(m_block);
+
+    m_hermesSolverContainer->setWeakFormulation(m_block->weakForm());
+    m_hermesSolverContainer->settableSpaces()->set_spaces(m_actualSpaces);
 }
 
 template <typename Scalar>
@@ -824,6 +822,9 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
     // TODO: posledni parametr: predchozi reseni pro projekci!!
     // TODO: remove for linear solver
     Scalar *initialSolutionVector = new Scalar[Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spacesRef)];
+
+    // in adaptivity, in each step we use different spaces. This should be done some other way
+    m_hermesSolverContainer->settableSpaces()->set_spaces(spacesRef);
     Scalar *solutionVector = solveOneProblem(initialSolutionVector, spacesRef, adaptivityStep,
                                              Hermes::vector<MeshFunctionSharedPtr<Scalar> >());
     delete [] initialSolutionVector;

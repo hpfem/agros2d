@@ -25,6 +25,8 @@
 
 class Material;
 
+// todo: zrychlit, odebrat asserty, uchovavat rovnou alpha/gamma, atd
+
 class AGROS_API BDF2Table
 {
 public:
@@ -44,11 +46,11 @@ public:
 
     static void test();
 
-    double delta() { assert(m_calculated); return m_delta; }
+    inline double delta() { assert(m_calculated); return m_delta; }
 
 protected:
-    double* alpha() { assert(m_calculated); return m_alpha; }
-    double* gamma() { assert(m_calculated); return m_gamma; }
+    inline double* alpha() { assert(m_calculated); return m_alpha; }
+    inline double* gamma() { assert(m_calculated); return m_gamma; }
 
     double testCalcValue(double step, QList<double> values, double fVal, double fPrevVal);
 

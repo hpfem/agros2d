@@ -93,7 +93,7 @@ QMap<QString, QString> Module::availableModules()
 
 template <typename Scalar>
 WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
-    Hermes::Hermes2D::WeakForm<Scalar>(block->numSolutions()), m_block(block)
+    Hermes::Hermes2D::WeakForm<Scalar>(block->numSolutions()), m_block(block), m_bdf2Table(NULL), m_offsetTimeExt(0)
 {
 }
 
@@ -221,13 +221,13 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     problemId.linearityType = field->fieldInfo()->linearityType();
 
     // compiled form
-    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId, area, &form, marker, NULL, offsetI, offsetJ, 0);
+    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId, area, &form, marker, NULL, offsetI, offsetJ, NULL);
 
     // weakform with zero coefficients
     if (!custom_form) return;
 
     // set time discretisation table
-    if ((field->fieldInfo()->analysisType() == AnalysisType_Transient) && m_bdf2Table)
+    if (field->fieldInfo()->analysisType() == AnalysisType_Transient)
     {
         dynamic_cast<FormAgrosInterface *>(custom_form)->setTimeDiscretisationTable(&m_bdf2Table);
     }
@@ -259,20 +259,6 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
     //assert(field->m_couplingSources.size() <= 1);
 
     assert((type == WeakForm_MatVol) || (type == WeakForm_VecVol));
-
-    // push external solution for weak coupling
-    if (couplingInfo->isWeak())
-    {
-        Hermes::vector<MeshFunctionSharedPtr<Scalar> > couplingSlns;
-
-        FieldSolutionID solutionID = Agros2D::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionMode_Finer);
-        assert(solutionID.group->numberOfSolutions() <= maxSourceFieldComponents);
-
-        for (int comp = 0; comp < solutionID.group->numberOfSolutions(); comp++)
-            couplingSlns.push_back(Agros2D::solutionStore()->multiArray(solutionID).solutions().at(comp));
-
-        custom_form->set_ext(couplingSlns);
-    }
 
     addForm(type, custom_form);
 }
@@ -362,12 +348,12 @@ void WeakFormAgros<Scalar>::registerForms()
                     foreach (FormInfo pars, couplingInfo->wfMatrixVolume())
                         registerFormCoupling(WeakForm_MatVol, QString::number(labelNum), pars,
                                              m_block->offset(targetField) - sourceField->fieldInfo()->numberOfSolutions(), m_block->offset(sourceField),
-                                             sourceMaterial, targetMaterial, couplingInfo, 0);
+                                             sourceMaterial, targetMaterial, couplingInfo, NULL);
 
                     foreach (FormInfo pars, couplingInfo->wfVectorVolume())
                         registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), pars,
                                              m_block->offset(targetField) - sourceField->fieldInfo()->numberOfSolutions(), m_block->offset(sourceField),
-                                             sourceMaterial, targetMaterial, couplingInfo, 0);
+                                             sourceMaterial, targetMaterial, couplingInfo, NULL);
 
                 }
             }
@@ -391,19 +377,18 @@ void WeakFormAgros<Scalar>::updateExtField(BDF2Table* bdf2Table)
         {
             numTransientFields++;
             transientFieldInfo = fieldInfo;
-
-            int numCouplings = field->couplingInfos().size();
-
-            // only one coupling for one field so far
-            assert(numCouplings <= 1);
-            if(numCouplings)
-            {
-                couplingInfo = field->couplingInfos().at(0);
-                assert(couplingInfo->isWeak());
-            }
-            numTotalCouplings += numCouplings;
         }
 
+        int numCouplings = field->couplingInfos().size();
+
+        // only one coupling for one field so far
+        assert(numCouplings <= 1);
+        if(numCouplings)
+        {
+            couplingInfo = field->couplingInfos().at(0);
+            assert(couplingInfo->isWeak());
+        }
+        numTotalCouplings += numCouplings;
     }
 
     // for more hard-coupled transient field changes in offsetExtTime have to be done
@@ -412,13 +397,16 @@ void WeakFormAgros<Scalar>::updateExtField(BDF2Table* bdf2Table)
     // at the present moment, block can be influenced (weakly coupled with) only one other field. Otherwise changes in offsetExtTime have to be done
     assert(numTotalCouplings <= 1);
 
+    Hermes::vector<MeshFunctionSharedPtr<Scalar> > externalSlns;
+
+    m_offsetTimeExt = 0;
+
+    // first push previous solutions for transient forms
     if (numTransientFields >= 1)
     {
         assert(m_bdf2Table);
 
         m_offsetTimeExt = m_bdf2Table->n() * transientFieldInfo->numberOfSolutions() ;
-
-        Hermes::vector<MeshFunctionSharedPtr<Scalar> > previousSlns;
 
         int lastTimeStep = Agros2D::problem()->actualTimeStep() - 1; // todo: check
 
@@ -432,11 +420,24 @@ void WeakFormAgros<Scalar>::updateExtField(BDF2Table* bdf2Table)
             assert(Agros2D::solutionStore()->contains(solutionID));
 
             for (int comp = 0; comp < solutionID.group->numberOfSolutions(); comp++)
-                previousSlns.push_back(Agros2D::solutionStore()->multiArray(solutionID).solutions().at(comp));
+                externalSlns.push_back(Agros2D::solutionStore()->multiArray(solutionID).solutions().at(comp));
         }
-        this->set_ext(previousSlns);
     }
 
+    // push external solution for weak coupling
+    if(numTotalCouplings >= 1)
+    {
+        assert(externalSlns.size() == m_offsetTimeExt);
+
+        FieldSolutionID solutionID = Agros2D::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionMode_Finer);
+        assert(solutionID.group->numberOfSolutions() <= maxSourceFieldComponents);
+
+        for (int comp = 0; comp < solutionID.group->numberOfSolutions(); comp++)
+            externalSlns.push_back(Agros2D::solutionStore()->multiArray(solutionID).solutions().at(comp));
+    }
+
+
+    this->set_ext(externalSlns);
 }
 
 // ***********************************************************************************************
