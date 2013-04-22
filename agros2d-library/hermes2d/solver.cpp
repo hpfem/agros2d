@@ -521,16 +521,14 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     Hermes::vector<SpaceSharedPtr<Scalar> > spaces = actualSpaces();
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(spaces, Agros2D::problem()->actualTime());
 
-    BDF2Table* bdf2Table = NULL;
     if (m_block->isTransient())
     {
-        bdf2Table = new BDF2ATable();
-        bdf2Table->setOrder(min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt()));
-        bdf2Table->setPreviousSteps(Agros2D::problem()->timeStepLengths());
+        int order = min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt());
+        bool matrixUnchanged = m_block->weakForm()->bdf2Table()->setOrderAndPreviousSteps(order, Agros2D::problem()->timeStepLengths());
     }
 
     m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());
-    m_block->weakForm()->updateExtField(bdf2Table);
+    m_block->weakForm()->updateExtField();
 
     // TODO: remove for linear solver
     Scalar *initialSolutionVector;
@@ -540,9 +538,6 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
         Scalar *solutionVector = solveOneProblem(initialSolutionVector, actualSpaces(), adaptivityStep,
                                                  previousTSMultiSolutionArray.solutions());
         delete [] initialSolutionVector;
-
-        if (bdf2Table)
-            delete bdf2Table;
 
         // output
         Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions = createSolutions<Scalar>(spacesMeshes(actualSpaces()));
@@ -561,9 +556,6 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     catch (AgrosSolverException e)
     {
         delete [] initialSolutionVector;
-
-        if (bdf2Table)
-            delete bdf2Table;
 
         throw AgrosSolverException(QObject::tr("Solver failed: %1").arg(e.toString()));
     }
@@ -598,15 +590,10 @@ NextTimeStep ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
         return NextTimeStep(Agros2D::problem()->actualTimeStepLength());
     }
 
-    BDF2Table* bdf2Table = new BDF2ATable();
     int previouslyUsedOrder = min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt());
-    bdf2Table->setOrder(previouslyUsedOrder - 1);
-
-    bdf2Table->setPreviousSteps(Agros2D::problem()->timeStepLengths());
-    //cout << "using time order" << min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt()) << endl;
-
+    bool matrixUnchanged = m_block->weakForm()->bdf2Table()->setOrderAndPreviousSteps(previouslyUsedOrder - 1, Agros2D::problem()->timeStepLengths());
     m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());
-    m_block->weakForm()->updateExtField(bdf2Table);
+    m_block->weakForm()->updateExtField();
 
     // solve, for nonlinear solver use solution obtained by BDFA method as an initial vector
     // TODO: remove for linear solver
@@ -665,7 +652,6 @@ NextTimeStep ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
     if(refuseThisStep)
         Agros2D::log()->printDebug(m_solverID, "Time step refused");
 
-    delete bdf2Table;
     return NextTimeStep(nextTimeStepLength, refuseThisStep);
 }
 
@@ -800,16 +786,14 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
     Hermes::vector<SpaceSharedPtr<Scalar> > spaces = actualSpaces();
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(spaces, Agros2D::problem()->actualTime());
 
-    BDF2Table* bdf2Table = NULL;
     if(m_block->isTransient())
     {
-        bdf2Table = new BDF2ATable();
-        bdf2Table->setOrder(min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt()));
-        bdf2Table->setPreviousSteps(Agros2D::problem()->timeStepLengths());
+        int order = min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt());
+        bool matrixUnchanged = m_block->weakForm()->bdf2Table()->setOrderAndPreviousSteps(order, Agros2D::problem()->timeStepLengths());
     }
 
     m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());
-    m_block->weakForm()->updateExtField(bdf2Table);
+    m_block->weakForm()->updateExtField();
 
     // create reference spaces
     Hermes::vector<SpaceSharedPtr<Scalar> > spacesRef = deepMeshAndSpaceCopy(actualSpaces(), true);
@@ -859,9 +843,6 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
 
     MultiArray<Scalar> msa(actualSpaces(), solutions);
     Agros2D::solutionStore()->addSolution(solutionID, msa, runTime);
-
-    if (bdf2Table)
-        delete bdf2Table;
 }
 
 template <typename Scalar>

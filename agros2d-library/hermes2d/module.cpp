@@ -93,8 +93,9 @@ QMap<QString, QString> Module::availableModules()
 
 template <typename Scalar>
 WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
-    Hermes::Hermes2D::WeakForm<Scalar>(block->numSolutions()), m_block(block), m_bdf2Table(NULL), m_offsetTimeExt(0)
+    Hermes::Hermes2D::WeakForm<Scalar>(block->numSolutions()), m_block(block), m_offsetTimeExt(0)
 {
+    m_bdf2Table = new BDF2ATable;
 }
 
 template <typename Scalar>
@@ -104,6 +105,10 @@ WeakFormAgros<Scalar>::~WeakFormAgros()
         delete form;
 
     this->delete_all();
+
+    if(m_bdf2Table)
+        delete m_bdf2Table;
+    m_bdf2Table = NULL;
 }
 
 template <typename Scalar>
@@ -362,10 +367,8 @@ void WeakFormAgros<Scalar>::registerForms()
 }
 
 template <typename Scalar>
-void WeakFormAgros<Scalar>::updateExtField(BDF2Table* bdf2Table)
+void WeakFormAgros<Scalar>::updateExtField()
 {
-    m_bdf2Table = bdf2Table;
-
     FieldInfo* transientFieldInfo;
     CouplingInfo* couplingInfo;
     int numTransientFields = 0;

@@ -23,16 +23,19 @@
 #include "problem.h"
 #include "marker.h"
 
-void BDF2Table::setOrder(int order)
+bool BDF2Table::setOrderAndPreviousSteps(int order, QList<double> previousSteps)
 {
-    this->m_n = order;
-    m_calculated = false;
-}
+    bool matrixUnchanged = true;
+    if(this->m_n != order)
+        matrixUnchanged = false;
 
-void BDF2Table::setPreviousSteps(QList<double> previousSteps)
-{
+    this->m_n = order;
+
     int numSteps = previousSteps.length();
     assert(numSteps >= m_n);
+
+    if(m_actualTimeStep != previousSteps[numSteps - 1])
+        matrixUnchanged = false;
 
     m_actualTimeStep = previousSteps[numSteps-1];
     if(m_n >= 2)
@@ -42,7 +45,7 @@ void BDF2Table::setPreviousSteps(QList<double> previousSteps)
 
     recalculate();
 
-    m_calculated = true;
+    return matrixUnchanged;
 }
 
 double BDF2Table::vectorFormCoefficient(Hermes::Hermes2D::Func<double> **ext, int component, int numComponents, int integrationPoint)
@@ -51,10 +54,10 @@ double BDF2Table::vectorFormCoefficient(Hermes::Hermes2D::Func<double> **ext, in
 
     for(int ps = 0; ps < n(); ps++)
     {
-        coef += (-alpha()[ps + 1]/gamma()[0]) * ext[numComponents * ps + component]->val[integrationPoint];
+        coef += (-alpha()[ps + 1]) * ext[numComponents * ps + component]->val[integrationPoint];
     }
 
-    return coef / m_actualTimeStep;
+    return coef;
 }
 
 Hermes::Ord BDF2Table::vectorFormCoefficient(Hermes::Hermes2D::Func<Hermes::Ord> **ext, int component, int numComponents, int integrationPoint)
@@ -63,10 +66,10 @@ Hermes::Ord BDF2Table::vectorFormCoefficient(Hermes::Hermes2D::Func<Hermes::Ord>
 
     for(int ps = 0; ps < n(); ps++)
     {
-        coef += (-alpha()[ps + 1]/gamma()[0]) * ext[numComponents * ps + component]->val[integrationPoint];
+        coef += (-alpha()[ps + 1]) * ext[numComponents * ps + component]->val[integrationPoint];
     }
 
-    return coef / m_actualTimeStep;
+    return coef;
 }
 
 class Monomial
@@ -82,77 +85,24 @@ void BDF2ATable::recalculate()
 {
     if(m_n == 1)
     {
-        m_alpha[0] = 1.;
-        m_alpha[1] = -1.;
-        m_delta = -3./2.;
-        m_gamma[0] = 1.;
-        m_gamma[1] = 0.;
+        m_alpha[0] = 1. / m_actualTimeStep;
+        m_alpha[1] = -1. / m_actualTimeStep;
     }
     else if(m_n == 2)
     {
-        m_alpha[0] = (2*th[0] + 1) / (th[0] + 1);
-        m_alpha[1] = -th[0] - 1;
-        m_alpha[2] = th[0] * th[0] / (th[0] + 1);
-        m_delta = -2 * (th[0]*th[0] + 2*th[0] + 1) / (3*th[0] + 2);
-        m_gamma[0] = 1.;
-        m_gamma[1] = 0.;
+        m_alpha[0] = ((2*th[0] + 1) / (th[0] + 1)) / m_actualTimeStep;
+        m_alpha[1] = (-th[0] - 1) / m_actualTimeStep ;
+        m_alpha[2] = (th[0] * th[0] / (th[0] + 1)) / m_actualTimeStep;
     }
     else if(m_n == 3)
     {
         double t0 = th[0];
         double t1 = th[1];
-        m_alpha[0] = (4*t0*t1 + 3*t0*t0*t1 + t1 + 1 + 2*t0) / (t0 + 2*t0*t1 + 1 + t1 + t0*t0*t1);
-        m_alpha[1] = -(t0 + 2*t0*t1 + 1 + t1 + t0*t0*t1) / (1+t1);
-        m_alpha[2] = (t1 + t0*t1 + 1) * t0*t0 / (1+t0);
-        m_alpha[3] =  -(1+t0) * t0*t0 * t1*t1*t1 / (t0*t1*t1 + t0*t1 + 2*t1 + 1 + t1*t1);
+        m_alpha[0] = ((4*t0*t1 + 3*t0*t0*t1 + t1 + 1 + 2*t0) / (t0 + 2*t0*t1 + 1 + t1 + t0*t0*t1)) / m_actualTimeStep;
+        m_alpha[1] = (-(t0 + 2*t0*t1 + 1 + t1 + t0*t0*t1) / (1+t1)) / m_actualTimeStep;
+        m_alpha[2] = ((t1 + t0*t1 + 1) * t0*t0 / (1+t0)) / m_actualTimeStep;
+        m_alpha[3] = ( -(1+t0) * t0*t0 * t1*t1*t1 / (t0*t1*t1 + t0*t1 + 2*t1 + 1 + t1*t1)) / m_actualTimeStep;
 
-        Monomial m(t0, t1);
-
-        m_delta = -(3*m(4,2) + 10*m(3,2) + 13*m(2,2) + 8*m(1,2) + 2*m(0,2) + 5*m(3,1) + 13*m(2,1) + 12*m(1,1) + 4*m(0,1) + 2*m(2,0) + 4*m(1,0) + 2)/
-                (4*m(2,1) + 9*m(1,1) + 3*m(1,0) + 4*m(2,2) + 6*m(1,2) + 2 + 4*m(0,1) + 2*m(0,2));
-
-        m_gamma[0] = 1.;
-        m_gamma[1] = 0.;
-    }
-    else
-        assert(0);
-}
-
-void BDF2BTable::recalculate()
-{
-    if(m_n == 1)
-    {
-        m_alpha[0] = 1.;
-        m_alpha[1] = -1.;
-        m_delta = -1./2.;
-        m_gamma[0] = 2./3.;
-        m_gamma[1] = 1./3.;
-    }
-    else if(m_n == 2)
-    {
-        m_alpha[0] = 1.;
-        m_alpha[1] = -1.;
-        m_alpha[2] = 0.;
-        m_delta = -th[0] * (2*th[0] + 1) / (3*th[0] + 2);
-        m_gamma[0] = 1./2.;
-        m_gamma[1] = 1./2.;
-    }
-    else if(m_n == 3)
-    {
-        double t0 = th[0];
-        double t1 = th[1];
-        m_alpha[0] = 0.5 * (4*t0*t1 + 3*t0*t0*t1 + 2*t1 + 2 + 2*t0) / (t0 + 2*t0*t1 + 1 + t1 + t0*t0*t1);
-        m_alpha[1] = -0.5 * (2 + 2*t1 + t0*t0*t1) / (1 + t1);
-        m_alpha[2] = 0.5 * t0*t0*t0 * t1 / (1+t0);
-        m_alpha[3] = -0.5 * t0*t0*t0 * t1*t1*t1 / (t0*t1*t1 + t0*t1 + 2*t1 + 1 + t1*t1);
-
-        Monomial m(t0, t1);
-
-        m_delta = -t0 * (3*m(3,2) + 10*m(2,2) + 9*m(1,2) + 2*m(0,1) + 5*m(2,1) + 9*m(1,1) + 3*t1 + 2*t0 + 1)/
-                (4*m(2,1) + 9*m(1,1) + 3*m(1,0) + 4*m(2,2) + 6*m(1,2) + 2 + 4*m(0,1) + 2*m(0,2));
-
-        m_gamma[0] = 1./2.;
-        m_gamma[1] = 1./2.;
     }
     else
         assert(0);
@@ -171,9 +121,9 @@ double df(double x)
     return a * exp(a*x) / (exp(a) - 1);
 }
 
-double BDF2Table::testCalcValue(double step, QList<double> values, double fVal, double fPrevVal)
+double BDF2Table::testCalcValue(double step, QList<double> values, double fVal)
 {
-    double result = step * (m_gamma[0] * fVal + m_gamma[1] * fPrevVal);
+    double result = fVal;
 
     for(int i = 1; i <= m_n; i++)
     {
@@ -188,11 +138,6 @@ double BDF2Table::testCalcValue(double step, QList<double> values, double fVal, 
 void BDF2Table::test()
 {
     BDF2ATable tableA;
-    BDF2BTable tableB;
-
-    QList<double> constantSteps;
-    for(int i = 0; i < 5; i++)
-        constantSteps.append(1.);
 
     int numStepsArray[] = {100, 1000, 10000, 100000};
 
@@ -202,10 +147,12 @@ void BDF2Table::test()
         {
             int numSteps = numStepsArray[i];
             double step = 1./double(numSteps);
-            QList<double> vals, valsA, valsB;
-            vals.push_back(f(0));
+            QList<double> constantSteps;
+            for(int i = 0; i < 5; i++)
+                constantSteps.append(step);
+
+            QList<double>  valsA;
             valsA.push_back(f(0));
-            valsB.push_back(f(0));
             double actTime = 0;
             int realOrder;
             for(int s = 0; s < numSteps; s++)
@@ -221,29 +168,18 @@ void BDF2Table::test()
 
                 if(s <= 2)
                 {
-                    tableA.setOrder(realOrder);
-                    tableB.setOrder(realOrder);
-                    tableA.setPreviousSteps(constantSteps);
-                    tableB.setPreviousSteps(constantSteps);
+                    tableA.setOrderAndPreviousSteps(realOrder, constantSteps);
                 }
                 actTime += step;
-                double valA = tableA.testCalcValue(step, vals, df(actTime), df(actTime - step));
-                double valB = tableB.testCalcValue(step, vals, df(actTime), df(actTime - step));
-                double val = tableB.delta() * valA - tableA.delta() * valB;
-                vals.push_back(val);
 
-                valA = tableA.testCalcValue(step, valsA, df(actTime), df(actTime - step));
+                double valA = tableA.testCalcValue(step, valsA, df(actTime));
                 valsA.push_back(valA);
-                valB = tableB.testCalcValue(step, valsB, df(actTime), df(actTime - step));
-                valsB.push_back(valB);
             }
 
            // assert(fabs(actTime-1.) < 0.000000001);
 
             double errorA = valsA.last() - f(1);
-            double errorB = valsB.last() - f(1);
-            double error = vals.last() - f(1);
-            cout << "order " << order << ", step " << step << ", error " << error << "  (" << errorA << ", " << errorB << ")" << endl;
+            cout << "order " << order << ", step " << step << ", error " << errorA << endl;
         }
     }
 }

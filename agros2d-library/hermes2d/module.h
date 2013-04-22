@@ -142,7 +142,8 @@ public:
     ~WeakFormAgros();
 
     void registerForms();
-    void updateExtField(BDF2Table *bdf2Table);
+    void updateExtField();
+    inline BDF2Table* bdf2Table() { return m_bdf2Table; }
 
 private:
     // materialTarget has to be specified for coupling forms. couplingInfo only for weak couplings

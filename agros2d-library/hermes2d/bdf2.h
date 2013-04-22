@@ -30,29 +30,24 @@ class Material;
 class AGROS_API BDF2Table
 {
 public:
-    BDF2Table() : m_calculated(false) {}
-    void setOrder(int order);
-    void setPreviousSteps(QList<double> previousSteps);
+    BDF2Table() : m_n(-100) {}
+
+    // returns true if matrix unchanged
+    bool setOrderAndPreviousSteps(int order, QList<double> previousSteps);
 
     int n() { return m_n;}
     int order() { return m_n;}
 
-    inline double matrixFormCoefficient() { return alpha()[0] / gamma()[0] / m_actualTimeStep; }
+    inline double matrixFormCoefficient() {return m_alpha[0];}
     double vectorFormCoefficient(Hermes::Hermes2D::Func<double> **ext, int component, int numComponents, int integrationPoint);
     Hermes::Ord vectorFormCoefficient(Hermes::Hermes2D::Func<Hermes::Ord> **ext, int component, int numComponents, int integrationPoint);
-    inline double residualCoefficient()  { return -gamma()[1] / gamma()[0]; }
-
-    inline bool hasResidual() { return gamma()[1] != 0.0; }
 
     static void test();
 
-    inline double delta() { assert(m_calculated); return m_delta; }
-
 protected:
-    inline double* alpha() { assert(m_calculated); return m_alpha; }
-    inline double* gamma() { assert(m_calculated); return m_gamma; }
+    inline double* alpha() {return m_alpha; }
 
-    double testCalcValue(double step, QList<double> values, double fVal, double fPrevVal);
+    double testCalcValue(double step, QList<double> values, double fVal);
 
     virtual void recalculate() = 0;
 
@@ -60,17 +55,9 @@ protected:
     double th[10];
     double m_actualTimeStep;
     double m_alpha[10];
-    double m_delta;
-    double m_gamma[10];
-    bool m_calculated;
 };
 
 class BDF2ATable : public BDF2Table
-{
-    virtual void recalculate();
-};
-
-class BDF2BTable : public BDF2Table
 {
     virtual void recalculate();
 };
