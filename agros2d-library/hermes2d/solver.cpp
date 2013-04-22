@@ -199,7 +199,7 @@ LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block) : HermesSolve
     m_linearSolver->set_verbose_output(false);
     if (!block->isTransient())
         m_linearSolver->set_do_not_use_cache();
-    m_linearSolver->set_jacobian_constant(true);
+    this->m_constJacobianPossible = true;
 }
 
 template <typename Scalar>
@@ -207,6 +207,12 @@ LinearSolverContainer<Scalar>::~LinearSolverContainer()
 {
     delete m_linearSolver;
     m_linearSolver = NULL;
+}
+
+template <typename Scalar>
+void LinearSolverContainer<Scalar>::matrixUnchangedDueToBDF(bool unchanged)
+{
+    m_linearSolver->set_jacobian_constant(unchanged && this->m_constJacobianPossible);
 }
 
 template <typename Scalar>
@@ -525,6 +531,7 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     {
         int order = min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt());
         bool matrixUnchanged = m_block->weakForm()->bdf2Table()->setOrderAndPreviousSteps(order, Agros2D::problem()->timeStepLengths());
+        m_hermesSolverContainer->matrixUnchangedDueToBDF(matrixUnchanged);
     }
 
     m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());
@@ -592,6 +599,7 @@ NextTimeStep ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
 
     int previouslyUsedOrder = min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt());
     bool matrixUnchanged = m_block->weakForm()->bdf2Table()->setOrderAndPreviousSteps(previouslyUsedOrder - 1, Agros2D::problem()->timeStepLengths());
+    m_hermesSolverContainer->matrixUnchangedDueToBDF(matrixUnchanged);
     m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());
     m_block->weakForm()->updateExtField();
 
@@ -790,6 +798,7 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
     {
         int order = min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt());
         bool matrixUnchanged = m_block->weakForm()->bdf2Table()->setOrderAndPreviousSteps(order, Agros2D::problem()->timeStepLengths());
+        m_hermesSolverContainer->matrixUnchangedDueToBDF(matrixUnchanged);
     }
 
     m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());

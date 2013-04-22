@@ -66,7 +66,7 @@ template <typename Scalar>
 class HermesSolverContainer
 {
 public:
-    HermesSolverContainer(Block* block) : m_block(block), m_slnVector(NULL) {}
+    HermesSolverContainer(Block* block) : m_block(block), m_slnVector(NULL), m_constJacobianPossible(false) {}
     virtual ~HermesSolverContainer() {}
 
     virtual void solve(Scalar* solutionVector) = 0;
@@ -79,6 +79,8 @@ public:
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) = 0;
     void setMatrixRhsOutputGen(Hermes::Hermes2D::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep);
 
+    virtual void matrixUnchangedDueToBDF(bool unchanged) {}
+
     inline Scalar *slnVector() { return m_slnVector; }
 
     // solver factory
@@ -87,6 +89,8 @@ public:
 protected:
     Block* m_block;
     Scalar *m_slnVector;
+
+    bool m_constJacobianPossible;
 };
 
 template <typename Scalar>
@@ -100,6 +104,7 @@ public:
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_linearSolver, solverName, adaptivityStep); }
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* settableSpaces() { return m_linearSolver; }
     virtual void setWeakFormulation(Hermes::Hermes2D::WeakForm<Scalar>* wf) {m_linearSolver->set_weak_formulation(wf); }
+    virtual void matrixUnchangedDueToBDF(bool unchanged);
 private:
     Hermes::Hermes2D::LinearSolver<Scalar> *m_linearSolver;
 };
