@@ -23,8 +23,6 @@
 
 #include "util.h"
 
-
-
 #ifndef M_PI_2
 #define M_PI_2 1.57079632679489661923	/* pi/2 */
 #endif
@@ -34,6 +32,24 @@
 #endif
 
 const QString LANGUAGEROOT = QString("%1/resources%1lang").arg(QDir::separator());
+
+bool almostEqualRelAndAbs(double A, double B, double maxDiff, double maxRelDiff)
+{
+    // Check if the numbers are really close -- needed when comparing numbers near zero.
+    double diff = fabs(A - B);
+    if (diff <= maxDiff)
+        return true;
+
+    A = fabs(A);
+    B = fabs(B);
+    double largest = (B > A) ? B : A;
+
+    if (diff <= largest * maxRelDiff)
+        return true;
+
+    return false;
+}
+
 
 QString stringListToString(const QStringList &list)
 {

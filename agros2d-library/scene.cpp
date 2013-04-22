@@ -150,9 +150,9 @@ void DxfFilter::addArc(const DL_ArcData& a)
     while (angle2 >= 360.0) angle2 -= 360.0;
 
     // start node
-    SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(a.cx + a.radius*cos(angle1/180*M_PI), a.cy + a.radius*sin(angle1/180*M_PI))));
+    SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(a.cx + a.radius*cos(angle1/180.0*M_PI), a.cy + a.radius*sin(angle1/180.0*M_PI))));
     // end node
-    SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(a.cx + a.radius*cos(angle2/180*M_PI), a.cy + a.radius*sin(angle2/180*M_PI))));
+    SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(a.cx + a.radius*cos(angle2/180.0*M_PI), a.cy + a.radius*sin(angle2/180.0*M_PI))));
 
     // edge
     m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, (angle1 < angle2) ? angle2-angle1 : angle2+360.0-angle1)); // TODO: do it better

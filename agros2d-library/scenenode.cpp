@@ -97,7 +97,7 @@ SceneNode* SceneNodeContainer::get(const Point &point) const
 {
     foreach (SceneNode *nodeCheck, data)
     {
-        if ((nodeCheck->point() - point).magnitude() < 1e-12)
+        if (nodeCheck->point() == point)
             return nodeCheck;
     }
 

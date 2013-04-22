@@ -271,3 +271,15 @@ QDebug& operator<<(QDebug output, const Point& pt)
     output << "(" << pt.x << ", " << pt.y << ")";
     return output;
 }
+
+bool Point::operator !=(const Point &vec) const
+{
+    return (!almostEqualRelAndAbs(vec.x, x, POINT_ABS_ZERO, POINT_REL_ZERO)
+            || !almostEqualRelAndAbs(vec.y, y, POINT_ABS_ZERO, POINT_REL_ZERO));
+}
+
+bool Point::operator ==(const Point &vec) const
+{
+    return (almostEqualRelAndAbs(vec.x, x, POINT_ABS_ZERO, POINT_REL_ZERO)
+            && almostEqualRelAndAbs(vec.y, y, POINT_ABS_ZERO, POINT_REL_ZERO));
+}

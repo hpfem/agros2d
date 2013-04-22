@@ -26,6 +26,9 @@
 #include <cmath>
 #include <iostream>
 
+#define POINT_ABS_ZERO 1e-10
+#define POINT_REL_ZERO 1e-5
+
 struct Point;
 
 // return center
@@ -37,6 +40,7 @@ AGROS_API bool intersectionLines(const Point &p1s, const Point &p1e, const Point
 // intersection of two lines or line and arc
 AGROS_API QList<Point> intersection(const Point &p1s, const Point &p1e, const Point &center1, double radius1, double angle1,
                                     const Point &p2s, const Point &p2e, const Point &center2, double radius2, double angle2);
+
 
 struct AGROS_API  Point
 {
@@ -51,8 +55,8 @@ struct AGROS_API  Point
     inline Point operator/(double num) const { return Point(x / num, y / num); }
     inline double operator&(const Point &vec) const { return x*vec.x + y*vec.y; } // dot product
     inline double operator%(const Point &vec) const { return x*vec.y - y*vec.x; } // cross product
-    inline bool operator!=(const Point &vec) const { return ((fabs(vec.x-x) > 1e-12) || (fabs(vec.y-y) > 1e-12)); }
-    inline bool operator==(const Point &vec) const { return ((fabs(vec.x-x) < 1e-12) && (fabs(vec.y-y) < 1e-12)); }
+    bool operator!=(const Point &vec) const;
+    bool operator==(const Point &vec) const;
 
     inline double magnitude() const { return sqrt(x * x + y * y); }
     inline double magnitudeSquared() const { return (x * x + y * y); }

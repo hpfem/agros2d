@@ -88,6 +88,8 @@
 
 using namespace std;
 
+AGROS_API bool almostEqualRelAndAbs(double A, double B, double maxDiff, double maxRelDiff);
+
 // approximation of atan2(y, x).
 // maximum error of 0.0061 radians at 0.35 degrees
 AGROS_API inline double fastatan2(double y, double x)
