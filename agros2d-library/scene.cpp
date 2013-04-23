@@ -2240,9 +2240,11 @@ void Scene::writeToFile30(const QString &fileName)
         ::xml_schema::namespace_infomap namespace_info_map;
         namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("problem", namespace_info_problem));
 
-        // std::ofstream out((fileName + "3").toLatin1().data());
         std::ofstream out((fileName).toLatin1().data());
         XMLProblem::document_(out, doc, namespace_info_map);
+
+        if (QFileInfo(tempProblemFileName()).baseName() != QFileInfo(fileName).baseName())
+            emit fileNameChanged(QFileInfo(fileName).absoluteFilePath());
     }
     catch (const xml_schema::exception& e)
     {

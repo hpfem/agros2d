@@ -312,7 +312,10 @@ void DataTable::fromString(const QString &str)
     }
 
     QStringList lst = rest.split(";");
-    assert(lst.size() == 2);
+    if (lst.size() != 2)
+    {
+        throw AgrosException(QObject::tr("List doesn't contain two elements."));
+    }
 
     QStringList lstPts = lst.at(0).split(",");
     foreach (QString numStr, lstPts)
@@ -322,8 +325,12 @@ void DataTable::fromString(const QString &str)
     foreach (QString numStr, lstVal)
         m_values.push_back(numStr.toDouble());
 
-    assert(m_points.size() == m_values.size());
-    assert(! m_points.empty());
+    if (m_points.size() != m_values.size())
+    {
+        m_points.clear();
+        m_values.clear();
+        throw AgrosException(QObject::tr("Sizes of lists doesnt't match."));
+    }
 }
 
 
