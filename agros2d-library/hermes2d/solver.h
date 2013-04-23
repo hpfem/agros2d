@@ -43,6 +43,8 @@ public:
     virtual bool on_step_end();
     virtual bool on_finish();
 
+    void clearSteps();
+
     inline QVector<double> steps() const { return m_steps; }
     inline QVector<double> errors() const { return m_errors; }
 

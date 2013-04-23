@@ -82,6 +82,13 @@ bool NewtonSolverAgros<Scalar>::on_finish()
 }
 
 template <typename Scalar>
+void NewtonSolverAgros<Scalar>::clearSteps()
+{
+    m_steps.clear();
+    m_errors.clear();
+}
+
+template <typename Scalar>
 void NewtonSolverAgros<Scalar>::setError()
 {
     unsigned int iteration = this->get_parameter_value(this->iteration());
@@ -271,6 +278,7 @@ void NewtonSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVect
 template <typename Scalar>
 void NewtonSolverContainer<Scalar>::solve(Scalar* solutionVector)
 {
+    m_newtonSolver->clearSteps();
     m_newtonSolver->solve(solutionVector);
     this->m_slnVector = m_newtonSolver->get_sln_vector();
 }
