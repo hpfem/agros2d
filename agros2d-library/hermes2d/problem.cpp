@@ -579,7 +579,7 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
         return;
     }
 
-    if( isTransient() && config()->isTransientAdaptive() && config()->value(ProblemConfig::TimeOrder).toInt())
+    if( isTransient() && config()->isTransientAdaptive() && (config()->value(ProblemConfig::TimeOrder).toInt() == 1))
     {
 
         QMessageBox::critical(QApplication::activeWindow(), tr("Solver"), tr("Select higher order of time method to use adaptivity"));
