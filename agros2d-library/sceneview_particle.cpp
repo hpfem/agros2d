@@ -1094,7 +1094,7 @@ void SceneViewParticleTracing::clear()
 
 void SceneViewParticleTracing::clearParticleLists()
 {
-    // clear lists
+    // clear lists    
     foreach (QList<Point3> list, m_positionsList)
         list.clear();
     m_positionsList.clear();
@@ -1186,5 +1186,5 @@ void SceneViewParticleTracing::processParticleTracing()
         }
     }
 
-    updateGL();
+    refresh();
 }
