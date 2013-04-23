@@ -579,6 +579,13 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
         return;
     }
 
+    if( isTransient() && config()->isTransientAdaptive() && config()->value(ProblemConfig::TimeOrder).toInt())
+    {
+
+        QMessageBox::critical(QApplication::activeWindow(), tr("Solver"), tr("Select higher order of time method to use adaptivity"));
+        return;
+    }
+
     if (Agros2D::problem()->fieldInfos().count() == 0)
     {
         Agros2D::log()->printError(tr("Solver"), tr("No fields defined"));
