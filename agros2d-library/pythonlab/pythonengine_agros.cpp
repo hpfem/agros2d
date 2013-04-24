@@ -525,7 +525,7 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                 {
                     if (fieldInfo->labelRefinement(label) > 0)
                     {
-                        refinements += QString("\"%1\" : \"%2\", ").
+                        refinements += QString("\"%1\" : %2, ").
                                 arg(fieldInfo->fieldId()).
                                 arg(fieldInfo->labelRefinement(label));
 
