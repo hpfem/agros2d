@@ -76,7 +76,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
 
                         if (e->en[edge]->marker != -1)
                         {
-                            if (e->en[edge]->bnd == 1)
+                            if ((e->en[edge]->bnd == 1) && (!e->en[edge]->elem[1]))
                             {
                                 boundary = true;
                             }
