@@ -393,7 +393,7 @@ void FieldWidget::load()
     txtTransientTimeSkip->setValue(m_fieldInfo->value(FieldInfo::TransientTimeSkip).toDouble());
     // linearity
     cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(m_fieldInfo->linearityType()));
-    cmbNonlinearConvergenceMeasurement->setCurrentIndex(cmbNonlinearConvergenceMeasurement->findData((Hermes::Hermes2D::NewtonSolverConvergenceMeasurement) m_fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()));
+    cmbNonlinearConvergenceMeasurement->setCurrentIndex(cmbNonlinearConvergenceMeasurement->findData((Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) m_fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()));
     txtNonlinearSteps->setValue(m_fieldInfo->value(FieldInfo::NonlinearSteps).toInt());
     txtNonlinearTolerance->setValue(m_fieldInfo->value(FieldInfo::NonlinearTolerance).toDouble());
     chkNewtonAutomaticDamping->setChecked(m_fieldInfo->value(FieldInfo::NewtonAutomaticDamping).toBool());
@@ -433,7 +433,7 @@ bool FieldWidget::save()
     m_fieldInfo->setLinearityType((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt());
     m_fieldInfo->setValue(FieldInfo::NonlinearSteps, txtNonlinearSteps->value());
     m_fieldInfo->setValue(FieldInfo::NonlinearTolerance, txtNonlinearTolerance->value());
-    m_fieldInfo->setValue(FieldInfo::NonlinearConvergenceMeasurement, (Hermes::Hermes2D::NewtonSolverConvergenceMeasurement) cmbNonlinearConvergenceMeasurement->itemData(cmbNonlinearConvergenceMeasurement->currentIndex()).toInt());
+    m_fieldInfo->setValue(FieldInfo::NonlinearConvergenceMeasurement, (Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) cmbNonlinearConvergenceMeasurement->itemData(cmbNonlinearConvergenceMeasurement->currentIndex()).toInt());
     m_fieldInfo->setValue(FieldInfo::NewtonDampingCoeff, txtNewtonDampingCoeff->value());
     m_fieldInfo->setValue(FieldInfo::NewtonAutomaticDamping, chkNewtonAutomaticDamping->isChecked());
     m_fieldInfo->setValue(FieldInfo::NewtonAutomaticDampingCoeff, txtNewtonAutomaticDampingCoeff->value());

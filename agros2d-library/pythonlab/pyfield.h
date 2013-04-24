@@ -49,7 +49,7 @@ class PyField
         void setLinearityType(const std::string &linearityType);
 
         // convergence measurement
-        inline std::string getNonlinearConvergenceMeasurement() const { return nonlinearSolverConvergenceMeasurementToStringKey((Hermes::Hermes2D::NewtonSolverConvergenceMeasurement) m_fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()).toStdString(); }
+        inline std::string getNonlinearConvergenceMeasurement() const { return nonlinearSolverConvergenceMeasurementToStringKey((Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) m_fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()).toStdString(); }
         void setNonlinearConvergenceMeasurement(const std::string &nonlinearConvergenceMeasurement);
 
         // nonlinear tolerance

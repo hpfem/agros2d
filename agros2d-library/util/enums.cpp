@@ -46,7 +46,7 @@ static QMap<VectorType, QString> vectorTypeList;
 static QMap<VectorCenter, QString> vectorCenterList;
 static QMap<DataTableType, QString> dataTableTypeList;
 static QMap<Hermes::ButcherTableType, QString> butcherTableTypeList;
-static QMap<Hermes::Hermes2D::NewtonSolverConvergenceMeasurement, QString> nonlinearSolverConvergenceMeasurementList;
+static QMap<Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType, QString> nonlinearSolverConvergenceMeasurementList;
 
 QStringList coordinateTypeStringKeys() { return coordinateTypeList.values(); }
 QString coordinateTypeToStringKey(CoordinateType coordinateType) { return coordinateTypeList[coordinateType]; }
@@ -129,8 +129,8 @@ QString butcherTableTypeToStringKey(Hermes::ButcherTableType tableType) { return
 Hermes::ButcherTableType butcherTableTypeFromStringKey(const QString &tableType) { return butcherTableTypeList.key(tableType); }
 
 QStringList nonlinearSolverConvergenceMeasurementStringKeys() { return nonlinearSolverConvergenceMeasurementList.values(); }
-QString nonlinearSolverConvergenceMeasurementToStringKey(Hermes::Hermes2D::NewtonSolverConvergenceMeasurement measurement) { return nonlinearSolverConvergenceMeasurementList[measurement]; }
-Hermes::Hermes2D::NewtonSolverConvergenceMeasurement nonlinearSolverConvergenceMeasurementFromStringKey(const QString &measurement) { return nonlinearSolverConvergenceMeasurementList.key(measurement); }
+QString nonlinearSolverConvergenceMeasurementToStringKey(Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType measurement) { return nonlinearSolverConvergenceMeasurementList[measurement]; }
+Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType nonlinearSolverConvergenceMeasurementFromStringKey(const QString &measurement) { return nonlinearSolverConvergenceMeasurementList.key(measurement); }
 
 void initLists()
 {
@@ -653,7 +653,7 @@ QString butcherTableTypeString(Hermes::ButcherTableType tableType)
 }
 
 
-QString nonlinearSolverConvergenceMeasurementString(Hermes::Hermes2D::NewtonSolverConvergenceMeasurement measurement)
+QString nonlinearSolverConvergenceMeasurementString(Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType measurement)
 {
     switch (measurement)
     {
@@ -672,7 +672,7 @@ QString nonlinearSolverConvergenceMeasurementString(Hermes::Hermes2D::NewtonSolv
     case Hermes::Hermes2D::SolutionDistanceFromPreviousRelative:
         return QObject::tr("Relative solution distance from previous");
     default:
-        std::cerr << "Convergence measurement type'" + QString::number(measurement).toStdString() + "' is not implemented. nonlinearSolverConvergenceMeasurementString(Hermes::Hermes2D::NewtonSolverConvergenceMeasurement measurement)" << endl;
+        std::cerr << "Convergence measurement type'" + QString::number(measurement).toStdString() + "' is not implemented. nonlinearSolverConvergenceMeasurementString(Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType measurement)" << endl;
         throw;
     }
 }

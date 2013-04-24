@@ -297,7 +297,7 @@ QString createPythonFromModel(StartupScript_Type startupScript)
         {
             str += QString("%1.nonlinear_convergence_measurement = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
-                    arg(nonlinearSolverConvergenceMeasurementToStringKey((Hermes::Hermes2D::NewtonSolverConvergenceMeasurement) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()));
+                    arg(nonlinearSolverConvergenceMeasurementToStringKey((Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()));
 
             str += QString("%1.sufficient_improvement_factor_Jacobian = %2\n").
                     arg(fieldInfo->fieldId()).

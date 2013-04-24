@@ -75,7 +75,7 @@ public:
     int nonlinearSteps() const;
 
     // convergence method
-    Hermes::Hermes2D::NewtonSolverConvergenceMeasurement nonlinearConvergenceMeasurement() const;
+    Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType nonlinearConvergenceMeasurement() const;
 
     // use only if true for all fields
     bool newtonAutomaticDamping() const;

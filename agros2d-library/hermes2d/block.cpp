@@ -330,13 +330,13 @@ int Block::nonlinearSteps() const
     return steps;
 }
 
-Hermes::Hermes2D::NewtonSolverConvergenceMeasurement Block::nonlinearConvergenceMeasurement() const
+Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType Block::nonlinearConvergenceMeasurement() const
 {
     // how to set properly?
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        return (Hermes::Hermes2D::NewtonSolverConvergenceMeasurement) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt();
+        return (Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt();
     }
 
     return Hermes::Hermes2D::ResidualNormAbsolute;
