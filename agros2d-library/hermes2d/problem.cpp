@@ -596,7 +596,16 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
 
     try
     {
-        solveActionCatchExceptions(adaptiveStepOnly);
+        m_lastTimeElapsed = QTime();
+        QTime timeCounter = QTime();
+        timeCounter.start();
+
+        if (adaptiveStepOnly)
+            solveAdaptiveStepAction();
+        else
+            solveAction();
+
+        m_lastTimeElapsed = milisecondsToTime(timeCounter.elapsed());
 
         // delete temp file
         if (config()->fileName() == tempProblemFileName() + ".a2d")
@@ -619,12 +628,27 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
             m_isSolved = true;
         }
     }
+    catch (Hermes::Exceptions::Exception& e)
+    {
+        Agros2D::log()->printError(QObject::tr("Solver"), QString("%1").arg(e.what()));
+        m_isSolving = false;
+        return;
+    }
+    catch (AgrosGeometryException& e)
+    {
+        Agros2D::log()->printError(QObject::tr("Geometry"), e.what());
+        m_isSolving = false;
+        return;
+    }
+    catch (AgrosSolverException& e)
+    {
+        Agros2D::log()->printError(QObject::tr("Solver"), e.what());
+        m_isSolving = false;
+        return;
+    }
     catch (AgrosException& e)
     {
-        // message has been allready displayed
-        // originaly either Agros or Hermes exception has been risen, so it should be safe to catch it here and stop propagating
-        // however, this assumes that all the code in Hermes and Agros is exception-safe
-        // todo:  this is almost certainly not the case, at least for Agros. It should be further investigated
+        Agros2D::log()->printError(QObject::tr("Solver"), e.what());
         m_isSolving = false;
         return;
     }
@@ -639,59 +663,6 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
     }
 }
 
-void Problem::solveActionCatchExceptions(bool adaptiveStepOnly)
-{
-    m_lastTimeElapsed = QTime();
-    QTime timeCounter = QTime();
-    timeCounter.start();
-
-    try
-    {
-        if (adaptiveStepOnly)
-            solveAdaptiveStepAction();
-        else
-            solveAction();
-
-        m_lastTimeElapsed = milisecondsToTime(timeCounter.elapsed());
-    }
-    // ToDo: Create better system of exceptions
-    catch (Hermes::Exceptions::Exception& e)
-    {
-        Agros2D::log()->printError(QObject::tr("Solver"), QString("%1").arg(e.what()));
-        throw AgrosSolverException(e.what());
-    }
-    catch (AgrosGeometryException& e)
-    {
-        Agros2D::log()->printError(QObject::tr("Geometry"), e.what());
-        throw;
-    }
-    catch (AgrosSolverException& e)
-    {
-        Agros2D::log()->printError(QObject::tr("Solver"), e.what());
-        throw;
-    }
-    catch (AgrosException& e)
-    {
-        Agros2D::log()->printError(QObject::tr("Solver"), e.what());
-        throw;
-    }
-    catch (...)
-    {
-        throw;
-    }
-
-    // todo: somehow catch other exceptions - agros should not fail, but some message should be generated
-    //                        catch (...)
-    //                        {
-    //                            // Agros2D::log()->printError(tr("Solver"), QString::fromStdString(e.what()));
-    //                            return;
-    //                        }
-
-
-
-    // warning: in the case of exception, the program will not reach this place
-    // therefore the cleanup and stop of timeElapsed is done in solve / solveAdaptiveStep by calling solveFinished
-}
 
 //adaptivity step: from 0, if no adaptivity, than 0
 //time step: from 0 (initial condition), if block is not transient, calculate allways (todo: timeskipping)
