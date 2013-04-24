@@ -673,15 +673,7 @@ void Problem::solveAction()
     // clear solution
     clearSolution();
 
-    try
-    {
-        solveInit();
-    }
-    catch (...)
-    {
-        throw;
-        return;
-    }
+    solveInit();
 
     assert(isMeshed());
 
@@ -771,14 +763,7 @@ void Problem::solveAdaptiveStepAction()
     m_isSolved = false;
     m_isSolving = false;
 
-    try
-    {
-        solveInit(false);
-    }
-    catch (AgrosSolverException& e)
-    {
-        throw;
-    }
+    solveInit(false);
 
     assert(isMeshed());
 
@@ -887,14 +872,7 @@ void Problem::readInitialMeshesFromFile()
     QString fileName = QFileInfo(cacheProblemDir() + "/initial.mesh").absoluteFilePath();
     Hermes::Hermes2D::MeshReaderH2DXML meshloader;
     meshloader.set_validation(false);
-    try
-    {
-        meshloader.load(fileName.toStdString().c_str(), meshesVector);
-    }
-    catch (Hermes::Exceptions::MeshLoadFailureException& e)
-    {
-        throw Hermes::Exceptions::MeshLoadFailureException(e.what());
-    }
+    meshloader.load(fileName.toStdString().c_str(), meshesVector);
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);
