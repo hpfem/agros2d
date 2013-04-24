@@ -153,7 +153,7 @@ void NewtonSolverAgros<Scalar>::setError()
     }
     else
     {
-        if (successful_steps_jacobian == 0 && m_block->maxStepsWithReusedJacobian() > 0)
+        if (successful_steps_jacobian == 0 && iteration > 2 && m_block->maxStepsWithReusedJacobian() > 0)
             Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Results not improved, step restarted with new Jacobian"));
         if (m_block->newtonAutomaticDamping() && successful_steps_damping == 0)
             Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Results not improved, step restarted with new damping coefficient"));
