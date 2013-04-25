@@ -115,8 +115,11 @@ private:
     QSpinBox *txtPolynomialOrder;
 
     // linearity
+    QLabel *lblNonlinearSteps;
     QSpinBox *txtNonlinearSteps;
+    QLabel *lblNonlinearTolerance;
     LineEditDouble *txtNonlinearTolerance;
+    QLabel *lblNonlinearConvergence;
     QComboBox *cmbNonlinearConvergenceMeasurement;
     QLabel *lblNewtonDampingType;
     QComboBox *cmbNewtonDampingType;

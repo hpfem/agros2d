@@ -170,11 +170,14 @@ void FieldWidget::createContent()
 
     // linearity
     cmbLinearityType = new QComboBox();
+    lblNonlinearConvergence = new QLabel(tr("Convergence:"));
     cmbNonlinearConvergenceMeasurement = new QComboBox();
+    lblNonlinearSteps = new QLabel(tr("Steps:"));
     txtNonlinearSteps = new QSpinBox(this);
     txtNonlinearSteps->setMinimum(1);
     txtNonlinearSteps->setMaximum(100);
     txtNonlinearSteps->setValue(m_fieldInfo->defaultValue(FieldInfo::NonlinearSteps).toInt());
+    lblNonlinearTolerance = new QLabel(tr("Tolerance:"));
     txtNonlinearTolerance = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::NonlinearTolerance).toDouble(), true);
     txtNonlinearTolerance->setBottom(0.0);
 
@@ -265,11 +268,11 @@ void FieldWidget::createContent()
     layoutLinearity->setColumnStretch(1, 1);
     layoutLinearity->addWidget(new QLabel(tr("Linearity:")), 0, 0);
     layoutLinearity->addWidget(cmbLinearityType, 0, 1);
-    layoutLinearity->addWidget(new QLabel(tr("Convergence:")), 1, 0);
+    layoutLinearity->addWidget(lblNonlinearConvergence, 1, 0);
     layoutLinearity->addWidget(cmbNonlinearConvergenceMeasurement, 1, 1);
-    layoutLinearity->addWidget(new QLabel(tr("Tolerance:")), 2, 0);
+    layoutLinearity->addWidget(lblNonlinearTolerance, 2, 0);
     layoutLinearity->addWidget(txtNonlinearTolerance, 2, 1);
-    layoutLinearity->addWidget(new QLabel(tr("Steps:")), 3, 0);
+    layoutLinearity->addWidget(lblNonlinearSteps, 3, 0);
     layoutLinearity->addWidget(txtNonlinearSteps, 3, 1);
     layoutLinearity->addWidget(lblNewtonDampingType, 4, 0);
     layoutLinearity->addWidget(cmbNewtonDampingType, 4, 1);
@@ -463,15 +466,19 @@ void FieldWidget::doAdaptivityChanged(int index)
 
 void FieldWidget::doLinearityTypeChanged(int index)
 {
+
+    lblNonlinearSteps->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
     txtNonlinearSteps->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
+    lblNonlinearTolerance->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
     txtNonlinearTolerance->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
+    lblNonlinearConvergence->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
     cmbNonlinearConvergenceMeasurement->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
 
-    lblNewtonDampingType->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
-    cmbNewtonDampingType->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
-    lblNewtonDampingCoeff->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
-    txtNewtonDampingCoeff->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
-    chkReuseJacobian->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
+    lblNewtonDampingType->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
+    cmbNewtonDampingType->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
+    lblNewtonDampingCoeff->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
+    txtNewtonDampingCoeff->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
+    chkReuseJacobian->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
     doNewtonDampingChanged(-1);
 
     chkPicardAndersonAcceleration->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard);
@@ -484,7 +491,8 @@ void FieldWidget::doLinearityTypeChanged(int index)
 
 void FieldWidget::doNewtonDampingChanged(int index)
 {
-    txtNewtonDampingCoeff->setEnabled((DampingType)cmbNewtonDampingType->itemData(index).toInt() != DampingType_Off);
+    txtNewtonDampingCoeff->setEnabled(((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton) &&
+            ((DampingType)cmbNewtonDampingType->itemData(index).toInt() != DampingType_Off));
 }
 
 void FieldWidget::doPicardAndersonChanged(int index)
