@@ -4,7 +4,7 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 <xsl:output method="xml" version="1.0" encoding="utf-8"
-            omit-xml-declaration="yes" standalone="no"/>
+            omit-xml-declaration="yes"/>
 
 <xsl:template match="/">
     <xsl:element name="problem:document">
@@ -72,7 +72,7 @@
                                     </xsl:attribute>
                                 </xsl:element>
                             </xsl:for-each>
-                            
+
                             <!-- solver config -->
                             <xsl:for-each select="./solver/@*">
                                 <xsl:element name="field_item">
@@ -102,6 +102,9 @@
                     </xsl:element>
                 </xsl:for-each>
             </xsl:element>
+
+            <!-- couplings -->
+            <xsl:copy-of select="couplings"/>
         </xsl:element>
 
         <!-- config -->

@@ -39,7 +39,7 @@ SOURCES += value.cpp \
     util/enums.cpp \
     util/loops.cpp \
     gui/common.cpp \
-    gui/imageloader.cpp \ 
+    gui/imageloader.cpp \
     gui/htmledit.cpp \
     gui/scenewidget.cpp \
     gui/groupbox.cpp \
@@ -119,7 +119,7 @@ HEADERS += value.h \
     scene.h \
     util/global.h \
     util/constants.h \
-    util/conf.h \  
+    util/conf.h \
     util/xml.h \
     util/loops.h \
     util/enums.h \
@@ -225,6 +225,8 @@ OTHER_FILES += functions.py \
     ../resources/xsd/problem_a2d_21_xml.xsd \
     ../resources/xsd/problem_a2d_30_xml.xsd \
     ../resources/xslt/problem_a2d_20_21_xml.xsl \
+    ../resources/xslt/problem_a2d_30_xml.xsl\
+    ../resources/xslt/problem_a2d_31_xml.xsl\
     ../resources/modules/rf.xml \
     ../resources_source/python/agros2d.pyx \
     ../resources_source/python/pyproblem.pxi \
