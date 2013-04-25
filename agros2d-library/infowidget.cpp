@@ -228,27 +228,29 @@ void InfoWidget::showInfo()
                 field->SetValue("NONLINEAR_TOLERANCE", QString::number(fieldInfo->value(FieldInfo::NonlinearTolerance).toDouble()).toStdString());
 
                 field->SetValue("NONLINEAR_NEWTON_SUFFICIENT_IMPROVEMENT_FACTOR_JACOBIAN_LABEL", tr("Sufficient improvement factor Jacobian:").toStdString());
-                field->SetValue("NONLINEAR_NEWTON_SUFFICIENT_IMPROVEMENT_FACTOR_JACOBIAN", QString::number(fieldInfo->value(FieldInfo::NewtonSufficientImprovementFactorJacobian).toDouble()).toStdString());
+                //field->SetValue("NONLINEAR_NEWTON_SUFFICIENT_IMPROVEMENT_FACTOR_JACOBIAN", QString::number(fieldInfo->value(FieldInfo::NewtonSufficientImprovementFactorJacobian).toDouble()).toStdString());
                 field->SetValue("NONLINEAR_NEWTON_MAXIMUM_STEPS_WITH_REUSED_JACOBIAN_LABEL", tr("Maximum steps with reused Jacobian:").toStdString());
-                field->SetValue("NONLINEAR_NEWTON_MAXIMUM_STEPS_WITH_REUSED_JACOBIAN", QString::number(fieldInfo->value(FieldInfo::NewtonMaximumStepsWithReusedJacobian).toInt()).toStdString());
+                //field->SetValue("NONLINEAR_NEWTON_MAXIMUM_STEPS_WITH_REUSED_JACOBIAN", QString::number(fieldInfo->value(FieldInfo::NewtonMaximumStepsWithReusedJacobian).toInt()).toStdString());
 
-                if (fieldInfo->value(FieldInfo::NewtonAutomaticDamping).toBool())
-                {
-                    field->SetValue("NONLINEAR_AUTOMATIC_DAMPING_LABEL", tr("Automatic damping:").toStdString());
-                    field->SetValue("NONLINEAR_AUTOMATIC_DAMPING_FACTOR_LABEL", tr("Maximum damping factor:").toStdString());
-                    field->SetValue("NONLINEAR_AUTOMATIC_DAMPING_FACTOR", QString::number(fieldInfo->value(FieldInfo::NewtonAutomaticDampingCoeff).toDouble()).toStdString());
-                    field->SetValue("NONLINEAR_AUTOMATIC_DAMPING_INCREASE_LABEL", tr("Steps to increase:").toStdString());
-                    field->SetValue("NONLINEAR_AUTOMATIC_DAMPING_INCREASE", QString::number(fieldInfo->value(FieldInfo::NewtonDampingNumberToIncrease).toInt()).toStdString());
+                // todo: damping coeff in info
 
-                    field->ShowSection("SOLVER_NONLINEAR_NEWTON_AUTOMATIC_DAMPING_SECTION");
-                }
-                else
-                {
-                    field->SetValue("NONLINEAR_NONAUTOMATIC_DAMPING_FACTOR_LABEL", tr("Maximum damping factor:").toStdString());
-                    field->SetValue("NONLINEAR_NONAUTOMATIC_DAMPING_FACTOR", QString::number(fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble()).toStdString());
+//                if (fieldInfo->value(FieldInfo::NewtonAutomaticDamping).toBool())
+//                {
+//                    field->SetValue("NONLINEAR_AUTOMATIC_DAMPING_LABEL", tr("Automatic damping:").toStdString());
+//                    field->SetValue("NONLINEAR_AUTOMATIC_DAMPING_FACTOR_LABEL", tr("Maximum damping factor:").toStdString());
+//                    //field->SetValue("NONLINEAR_AUTOMATIC_DAMPING_FACTOR", QString::number(fieldInfo->value(FieldInfo::NewtonAutomaticDampingCoeff).toDouble()).toStdString());
+//                    field->SetValue("NONLINEAR_AUTOMATIC_DAMPING_INCREASE_LABEL", tr("Steps to increase:").toStdString());
+//                    //field->SetValue("NONLINEAR_AUTOMATIC_DAMPING_INCREASE", QString::number(fieldInfo->value(FieldInfo::NewtonDampingNumberToIncrease).toInt()).toStdString());
 
-                    field->ShowSection("SOLVER_NONLINEAR_NEWTON_NONAUTOMATIC_DAMPING_SECTION");
-                }
+//                    field->ShowSection("SOLVER_NONLINEAR_NEWTON_AUTOMATIC_DAMPING_SECTION");
+//                }
+//                else
+//                {
+//                    field->SetValue("NONLINEAR_NONAUTOMATIC_DAMPING_FACTOR_LABEL", tr("Maximum damping factor:").toStdString());
+//                    field->SetValue("NONLINEAR_NONAUTOMATIC_DAMPING_FACTOR", QString::number(fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble()).toStdString());
+
+//                    field->ShowSection("SOLVER_NONLINEAR_NEWTON_NONAUTOMATIC_DAMPING_SECTION");
+//                }
 
                 field->ShowSection("SOLVER_PARAMETERS_SECTION");
             }

@@ -126,41 +126,17 @@ void PyField::setNewtonDampingCoeff(double dampingCoeff)
         throw out_of_range(QObject::tr("Newton damping coefficient is out of range (0 - 1).").toStdString());
 }
 
-void PyField::setNewtonAutomaticDamping(bool automaticDamping)
+void PyField::setNewtonDampingType(std::string dampingType)
 {
-    m_fieldInfo->setValue(FieldInfo::NewtonAutomaticDamping, automaticDamping);
+    if (dampingTypeStringKeys().contains(QString::fromStdString(dampingType)))
+        m_fieldInfo->setValue(FieldInfo::NewtonDampingType, (DampingType) dampingTypeFromStringKey(QString::fromStdString(dampingType)));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(dampingTypeStringKeys())).toStdString());
 }
 
-void PyField::setNewtonAutomaticDampingCoeff(double dampingCoeff)
+void PyField::setNewtonReuseJacobian(bool reuse)
 {
-    if (dampingCoeff > 0 && dampingCoeff <= 1)
-        m_fieldInfo->setValue(FieldInfo::NewtonAutomaticDampingCoeff, dampingCoeff);
-    else
-        throw out_of_range(QObject::tr("Newton automatic damping coefficient is out of range (0 - 1).").toStdString());
-}
-
-void PyField::setNewtonDampingNumberToIncrease(int dampingNumberToIncrease)
-{
-    if (dampingNumberToIncrease >= 1 && dampingNumberToIncrease <= 5)
-        m_fieldInfo->setValue(FieldInfo::NewtonDampingNumberToIncrease, dampingNumberToIncrease);
-    else
-        throw out_of_range(QObject::tr("Number of steps needed to increase the damping coefficient is out of range (1 - 5).").toStdString());
-}
-
-void PyField::setNewtonSufficientImprovementFactorJacobian(double sufficientImprovementFactorJacobian)
-{
-    if (sufficientImprovementFactorJacobian >= 0.00001 && sufficientImprovementFactorJacobian <= 1.0)
-        m_fieldInfo->setValue(FieldInfo::NewtonSufficientImprovementFactorJacobian, sufficientImprovementFactorJacobian);
-    else
-        throw out_of_range(QObject::tr("Sufficient improvement factor Jacobian is out of range (0.00001 - 1.0).").toStdString());
-}
-
-void PyField::setNewtonMaximumStepsWithReusedJacobian(int maximumStepsWithReusedJacobian)
-{
-    if (maximumStepsWithReusedJacobian >= 1 && maximumStepsWithReusedJacobian <= 100)
-        m_fieldInfo->setValue(FieldInfo::NewtonMaximumStepsWithReusedJacobian, maximumStepsWithReusedJacobian);
-    else
-        throw out_of_range(QObject::tr("Maximum steps with reused Jacobian is out of range (1 - 100).").toStdString());
+    m_fieldInfo->setValue(FieldInfo::NewtonReuseJacobian, reuse);
 }
 
 void PyField::setPicardAndersonAcceleration(bool acceleration)

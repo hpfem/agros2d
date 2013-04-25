@@ -299,33 +299,18 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                     arg(fieldInfo->fieldId()).
                     arg(nonlinearSolverConvergenceMeasurementToStringKey((Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()));
 
-            str += QString("%1.sufficient_improvement_factor_Jacobian = %2\n").
+            str += QString("%1.damping_type = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->value(FieldInfo::NewtonSufficientImprovementFactorJacobian).toDouble());
+                    arg(dampingTypeToStringKey((DampingType)fieldInfo->value(FieldInfo::NewtonDampingType).toInt()));
 
-            str += QString("%1.maximum_steps_with_reused_Jacobian = %2\n").
+            str += QString("%1.damping_coeff = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->value(FieldInfo::NewtonMaximumStepsWithReusedJacobian).toInt());
+                    arg(fieldInfo->value(FieldInfo::NewtonDampingCoeff).toInt());
 
-            str += QString("%1.automatic_damping = %2\n").
+            str += QString("%1.reuse_jacobian = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg((fieldInfo->value(FieldInfo::NewtonAutomaticDamping).toBool()) ? "True" : "False");
+                    arg((fieldInfo->value(FieldInfo::NewtonReuseJacobian).toBool()) ? "True" : "False");
 
-            if (fieldInfo->value(FieldInfo::NewtonAutomaticDamping).toBool())
-            {
-                str += QString("%1.damping_number_to_increase = %2\n").
-                        arg(fieldInfo->fieldId()).
-                        arg(fieldInfo->value(FieldInfo::NewtonDampingNumberToIncrease).toInt());
-                str += QString("%1.automatic_damping_coeff = %2\n").
-                        arg(fieldInfo->fieldId()).
-                        arg(fieldInfo->value(FieldInfo::NewtonAutomaticDampingCoeff).toDouble());
-            }
-            else
-            {
-                str += QString("%1.damping_coeff = %2\n").
-                        arg(fieldInfo->fieldId()).
-                        arg(fieldInfo->value(FieldInfo::NewtonDampingCoeff).toInt());
-            }
         }
 
         // picard

@@ -342,16 +342,20 @@ Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType Block::nonlinearConverg
     return Hermes::Hermes2D::ResidualNormAbsolute;
 }
 
-bool Block::newtonAutomaticDamping() const
+DampingType Block::newtonDampingType() const
 {
+    DampingType blockDt = DampingType_Undefined;
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if (!fieldInfo->value(FieldInfo::NewtonAutomaticDamping).toBool())
-            return false;
+        DampingType dt = (DampingType)fieldInfo->value(FieldInfo::NewtonDampingType).toInt();
+        assert(dt != DampingType_Undefined);
+        if(blockDt != DampingType_Undefined)
+            assert (blockDt == dt);
+        blockDt = dt;
     }
 
-    return true;
+    return blockDt;
 }
 
 double Block::newtonDampingCoeff() const
@@ -368,60 +372,16 @@ double Block::newtonDampingCoeff() const
     return coeff;
 }
 
-double Block::newtonAutomaticDampingCoeff() const
+bool Block::newtonReuseJacobian() const
 {
-    double coeff = 1.0;
-
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if (fieldInfo->value(FieldInfo::NewtonAutomaticDampingCoeff).toDouble() < coeff)
-            coeff = fieldInfo->value(FieldInfo::NewtonAutomaticDampingCoeff).toDouble();
+        if (!fieldInfo->value(FieldInfo::NewtonReuseJacobian).toBool())
+            return false;
     }
 
-    return coeff;
-}
-
-int Block::newtonDampingNumberToIncrease() const
-{
-    int number = 0;
-
-    foreach (Field* field, m_fields)
-    {
-        FieldInfo* fieldInfo = field->fieldInfo();
-        if (fieldInfo->value(FieldInfo::NewtonDampingNumberToIncrease).toInt() > number)
-            number = fieldInfo->value(FieldInfo::NewtonDampingNumberToIncrease).toInt();
-    }
-
-    return number;
-}
-
-double Block::sufficientImprovementFactorJacobian() const
-{
-    double number = 1.0;
-
-    foreach (Field* field, m_fields)
-    {
-        FieldInfo* fieldInfo = field->fieldInfo();
-        if (fieldInfo->value(FieldInfo::NewtonSufficientImprovementFactorJacobian).toDouble() < number)
-            number = fieldInfo->value(FieldInfo::NewtonSufficientImprovementFactorJacobian).toDouble();
-    }
-
-    return number;
-}
-
-int Block::maxStepsWithReusedJacobian() const
-{
-    int number = 10;
-
-    foreach (Field* field, m_fields)
-    {
-        FieldInfo* fieldInfo = field->fieldInfo();
-        if (fieldInfo->value(FieldInfo::NewtonMaximumStepsWithReusedJacobian).toInt() < number)
-            number = fieldInfo->value(FieldInfo::NewtonMaximumStepsWithReusedJacobian).toInt();
-    }
-
-    return number;
+    return true;
 }
 
 bool Block::picardAndersonAcceleration() const
