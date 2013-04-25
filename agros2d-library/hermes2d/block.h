@@ -78,22 +78,13 @@ public:
     Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType nonlinearConvergenceMeasurement() const;
 
     // use only if true for all fields
-    bool newtonAutomaticDamping() const;
+    DampingType newtonDampingType() const;
 
     // minimal damping coefficient
     double newtonDampingCoeff() const;
 
-    // minimal automatic damping coefficient
-    double newtonAutomaticDampingCoeff() const;
-
-    // maximal damping number to increase in one step
-    int newtonDampingNumberToIncrease() const;
-
-    // ratio of the current residual norm and the previous residual norm necessary to deem a step 'successful'
-    double sufficientImprovementFactorJacobian() const;
-
-    // maximum number of steps (Newton iterations) that a jacobian can be reused if it is deemed a 'successful' reusal
-    int maxStepsWithReusedJacobian() const;
+    // reuse jacobian
+    bool newtonReuseJacobian() const;
 
     // use Anderson acceleration
     bool picardAndersonAcceleration() const;

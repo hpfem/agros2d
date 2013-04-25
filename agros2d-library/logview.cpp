@@ -172,11 +172,6 @@ void LogWidget::print(const QString &module, const QString &message, const QStri
 void LogWidget::welcomeMessage()
 {
     print("Agros2D", tr("version: %1").arg(QApplication::applicationVersion()), "green");
-
-    if (Agros2D::configComputer()->experimentalFeatures)
-        Agros2D::log()->printWarning(tr("Agros2D"), tr("Experimental features are allowed. It may lead to application fail. You may disable it in appllication settings."));
-
-
 }
 
 // *******************************************************************************************************

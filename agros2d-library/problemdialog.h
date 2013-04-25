@@ -115,20 +115,17 @@ private:
     QSpinBox *txtPolynomialOrder;
 
     // linearity
+    QLabel *lblNonlinearSteps;
     QSpinBox *txtNonlinearSteps;
+    QLabel *lblNonlinearTolerance;
     LineEditDouble *txtNonlinearTolerance;
+    QLabel *lblNonlinearConvergence;
     QComboBox *cmbNonlinearConvergenceMeasurement;
-    QCheckBox *chkNewtonAutomaticDamping;
+    QLabel *lblNewtonDampingType;
+    QComboBox *cmbNewtonDampingType;
+    QCheckBox *chkReuseJacobian;
     QLabel *lblNewtonDampingCoeff;
     LineEditDouble *txtNewtonDampingCoeff;
-    QLabel *lblNewtonDampingNumberToIncrease;
-    QSpinBox *txtNewtonDampingNumberToIncrease;
-    QLabel *lblNewtonAutomaticDampingCoeff;
-    LineEditDouble *txtNewtonAutomaticDampingCoeff;
-    QLabel *lblNewtonSufficientImprovementFactorJacobian;
-    QSpinBox *txtNewtonMaximumStepsWithReusedJacobian;
-    QLabel *lblNewtonMaximumStepsWithReusedJacobian;
-    LineEditDouble *txtNewtonSufficientImprovementFactorJacobian;
     QCheckBox *chkPicardAndersonAcceleration;
     QLabel *lblPicardAndersonBeta;
     LineEditDouble *txtPicardAndersonBeta;

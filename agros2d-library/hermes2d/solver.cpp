@@ -96,7 +96,8 @@ void NewtonSolverAgros<Scalar>::setError()
     const Hermes::vector<double>& residual_norms = this->get_parameter_value(this->residual_norms());
     const Hermes::vector<double>& solution_norms = this->get_parameter_value(this->solution_norms());
     double solution_change_norm = this->get_parameter_value(this->solution_change_norm());
-    double current_damping_coefficient = this->get_parameter_value(this->current_damping_coefficient());
+    const Hermes::vector<double>& damping_coefficients = this->get_parameter_value(this->damping_coefficients());
+    double current_damping_coefficient = damping_coefficients.at(damping_coefficients.size() - 1);
     unsigned int successful_steps_damping = this->get_parameter_value(this->successful_steps_damping());
     unsigned int successful_steps_jacobian = this->get_parameter_value(this->successful_steps_jacobian());
 
@@ -153,9 +154,9 @@ void NewtonSolverAgros<Scalar>::setError()
     }
     else
     {
-        if (successful_steps_jacobian == 0 && iteration > 2 && m_block->maxStepsWithReusedJacobian() > 0)
+        if (successful_steps_jacobian == 0 && iteration > 2 && Agros2D::problem()->setting()->value(ProblemSetting::Newton_MaxStepsReuseJacobian).toInt() > 0)
             Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Results not improved, step restarted with new Jacobian"));
-        if (m_block->newtonAutomaticDamping() && successful_steps_damping == 0)
+        if (m_block->newtonDampingType() == DampingType_Automatic && successful_steps_damping == 0)
             Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Results not improved, step restarted with new damping coefficient"));
 
         Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, damping coeff.: %2, error: %3")
@@ -239,15 +240,30 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
     m_newtonSolver->set_max_allowed_iterations(block->nonlinearSteps());
     m_newtonSolver->set_max_allowed_residual_norm(1e15);
     m_newtonSolver->set_convergence_measurement(block->nonlinearConvergenceMeasurement());
-    m_newtonSolver->set_sufficient_improvement_factor_jacobian(block->sufficientImprovementFactorJacobian());
-    m_newtonSolver->set_max_steps_with_reused_jacobian(block->maxStepsWithReusedJacobian());
-    if (block->newtonAutomaticDamping())
+    m_newtonSolver->set_sufficient_improvement_factor_jacobian(Agros2D::problem()->setting()->value(ProblemSetting::Newton_SufImprovJacobian).toDouble());
+
+    if(block->newtonReuseJacobian())
+        m_newtonSolver->set_max_steps_with_reused_jacobian(Agros2D::problem()->setting()->value(ProblemSetting::Newton_MaxStepsReuseJacobian).toInt());
+    else
+        m_newtonSolver->set_max_steps_with_reused_jacobian(0);
+
+    if (block->newtonDampingType() == DampingType_Off)
     {
-        m_newtonSolver->set_initial_auto_damping_coeff(block->newtonAutomaticDampingCoeff());
-        m_newtonSolver->set_necessary_successful_steps_to_increase(block->newtonDampingNumberToIncrease());
+        m_newtonSolver->set_manual_damping_coeff(true, 1.);
+    }
+    else if (block->newtonDampingType() == DampingType_Fixed)
+    {
+        m_newtonSolver->set_manual_damping_coeff(true, block->newtonDampingCoeff());
+    }
+    else if (block->newtonDampingType() == DampingType_Automatic)
+    {
+        m_newtonSolver->set_initial_auto_damping_coeff(block->newtonDampingCoeff());
+        m_newtonSolver->set_necessary_successful_steps_to_increase(Agros2D::problem()->setting()->value(ProblemSetting::Newton_StepsToIncreaseDF).toInt());
     }
     else
-        m_newtonSolver->set_manual_damping_coeff(true, block->newtonDampingCoeff());
+    {
+        assert(0);
+    }
 }
 
 template <typename Scalar>
@@ -494,19 +510,10 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
 {
     Hermes::HermesCommonApi.set_integral_param_value(Hermes::matrixSolverType, Agros2D::problem()->config()->matrixSolver());
 
-    try
-    {
-        m_hermesSolverContainer->projectPreviousSolution(initialSolutionVector, spaces, previousSolution);
-        m_hermesSolverContainer->setMatrixRhsOutput(m_solverCode, adaptivityStep);
+    m_hermesSolverContainer->projectPreviousSolution(initialSolutionVector, spaces, previousSolution);
+    m_hermesSolverContainer->setMatrixRhsOutput(m_solverCode, adaptivityStep);
 
-        m_hermesSolverContainer->solve(initialSolutionVector);
-    }
-    catch (Hermes::Exceptions::Exception& e)
-    {
-        QString error = QString("%1").arg(e.what());
-        // Agros2D::log()->printDebug(m_solverID, QObject::tr("Solver failed: %1").arg(error));
-        throw AgrosSolverException(QObject::tr("Solver failed: %1").arg(error));
-    }
+    m_hermesSolverContainer->solve(initialSolutionVector);
     return m_hermesSolverContainer->slnVector();
 }
 

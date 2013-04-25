@@ -36,6 +36,7 @@ static QMap<SolutionMode, QString> solutionTypeList;
 static QMap<AnalysisType, QString> analysisTypeList;
 static QMap<CouplingType, QString> couplingTypeList;
 static QMap<LinearityType, QString> linearityTypeList;
+static QMap<DampingType, QString> dampingTypeList;
 static QMap<MeshType, QString> meshTypeList;
 static QMap<Hermes::MatrixSolverType, QString> matrixSolverTypeList;
 static QMap<Hermes::Hermes2D::SpaceType, QString> spaceTypeList;
@@ -87,6 +88,10 @@ SolutionMode solutionTypeFromStringKey(const QString &solutionType) { return sol
 QStringList linearityTypeStringKeys() { return linearityTypeList.values(); }
 QString linearityTypeToStringKey(LinearityType linearityType) { return linearityTypeList[linearityType]; }
 LinearityType linearityTypeFromStringKey(const QString &linearityType) { return linearityTypeList.key(linearityType); }
+
+QStringList dampingTypeStringKeys() { return dampingTypeList.values(); }
+QString dampingTypeToStringKey(DampingType dampingType) { return dampingTypeList[dampingType]; }
+DampingType dampingTypeFromStringKey(const QString &dampingType) { return dampingTypeList.key(dampingType); }
 
 QStringList matrixSolverTypeStringKeys() { return matrixSolverTypeList.values(); }
 QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType) { return matrixSolverTypeList[matrixSolverType]; }
@@ -221,6 +226,12 @@ void initLists()
     linearityTypeList.insert(LinearityType_Linear, "linear");
     linearityTypeList.insert(LinearityType_Picard, "picard");
     linearityTypeList.insert(LinearityType_Newton, "newton");
+
+    // DampingType
+    dampingTypeList.insert(DampingType_Undefined, "");
+    dampingTypeList.insert(DampingType_Off, "off");
+    dampingTypeList.insert(DampingType_Automatic, "automatic");
+    dampingTypeList.insert(DampingType_Fixed, "fixed");
 
     // PaletteType
     paletteTypeList.insert(Palette_Agros2D, "agros2d");
@@ -612,6 +623,22 @@ QString linearityTypeString(LinearityType linearityType)
         return QObject::tr("Newton's method");
     default:
         std::cerr << "Linearity type '" + QString::number(linearityType).toStdString() + "' is not implemented. linearityTypeString(LinearityType linearityType)" << endl;
+        throw;
+    }
+}
+
+QString dampingTypeString(DampingType dampingType)
+{
+    switch (dampingType)
+    {
+    case DampingType_Off:
+        return QObject::tr("No damping");
+    case DampingType_Fixed:
+        return QObject::tr("Fixed");
+    case DampingType_Automatic:
+        return QObject::tr("Automatic");
+    default:
+        std::cerr << "Damping type '" + QString::number(dampingType).toStdString() + "' is not implemented. dampingTypeString(DampingType dampingType)" << endl;
         throw;
     }
 }

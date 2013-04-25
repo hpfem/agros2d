@@ -28,20 +28,11 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         double getNewtonDampingCoeff()
         void setNewtonDampingCoeff(double dampingCoeff) except +
 
-        bool getNewtonAutomaticDamping()
-        void setNewtonAutomaticDamping(bool automaticDamping)
+        string getNewtonDampingType()
+        void setNewtonDampingType(string &dampingType) except +
 
-        double getNewtonAutomaticDampingCoeff()
-        void setNewtonAutomaticDampingCoeff(double dampingCoeff) except +
-
-        int getNewtonDampingNumberToIncrease()
-        void setNewtonDampingNumberToIncrease(int dampingNumberToIncrease) except +
-
-        double getNewtonSufficientImprovementFactorJacobian()
-        void setNewtonSufficientImprovementFactorJacobian(double sufficientImprovementFactorJacobian) except +
-
-        int getNewtonMaximumStepsWithReusedJacobian()
-        void setNewtonMaximumStepsWithReusedJacobian(int maximumStepsWithReusedJacobian) except +
+        bool getNewtonReuseJacobian()
+        void setNewtonReuseJacobian(bool reuse) except +
 
         bool getPicardAndersonAcceleration()
         void setPicardAndersonAcceleration(bool acceleration) except +
@@ -238,40 +229,19 @@ cdef class __Field__:
         def __set__(self, damping_coeff):
             self.thisptr.setNewtonDampingCoeff(damping_coeff)
 
-    # automatic damping
-    property automatic_damping:
+    # damping type
+    property damping_type:
         def __get__(self):
-            return self.thisptr.getNewtonAutomaticDamping()
-        def __set__(self, automatic_damping):
-            self.thisptr.setNewtonAutomaticDamping(automatic_damping)
+            return self.thisptr.getNewtonDampingType().c_str()
+        def __set__(self, damping_type):
+            self.thisptr.setNewtonDampingType(string(damping_type))
 
-    # automatic damping coeff
-    property automatic_damping_coeff:
+    # reuse jacobian
+    property reuse_jacobian:
         def __get__(self):
-            return self.thisptr.getNewtonAutomaticDampingCoeff()
-        def __set__(self, damping_coeff):
-            self.thisptr.setNewtonAutomaticDampingCoeff(damping_coeff)
-
-    # damping number to increase
-    property damping_number_to_increase:
-        def __get__(self):
-            return self.thisptr.getNewtonDampingNumberToIncrease()
-        def __set__(self, damping_number_to_increase):
-            self.thisptr.setNewtonDampingNumberToIncrease(damping_number_to_increase)
-
-    # sufficient improvement factor Jacobian
-    property sufficient_improvement_factor_Jacobian:
-        def __get__(self):
-            return self.thisptr.getNewtonSufficientImprovementFactorJacobian()
-        def __set__(self, sufficientImprovementFactorJacobian):
-            self.thisptr.setNewtonSufficientImprovementFactorJacobian(sufficientImprovementFactorJacobian)
-
-    # maximum steps with reused Jacobian
-    property maximum_steps_with_reused_Jacobian:
-        def __get__(self):
-            return self.thisptr.getNewtonMaximumStepsWithReusedJacobian()
-        def __set__(self, maximumStepsWithReusedJacobian):
-            self.thisptr.setNewtonMaximumStepsWithReusedJacobian(maximumStepsWithReusedJacobian)
+            return self.thisptr.getNewtonReuseJacobian()
+        def __set__(self, reuse):
+            self.thisptr.setNewtonReuseJacobian(reuse)
 
     # anderson acceleration
     property anderson_acceleration:

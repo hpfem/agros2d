@@ -1388,9 +1388,8 @@ void Scene::readFromFile21(const QString &fileName)
         field->setValue(FieldInfo::NonlinearSteps, eleFieldLinearity.toElement().attribute("nonlinear_steps", QString::number(field->defaultValue(FieldInfo::NonlinearSteps).toInt())).toInt());
         field->setValue(FieldInfo::NonlinearTolerance, eleFieldLinearity.toElement().attribute("nonlinear_tolerance", QString::number(field->defaultValue(FieldInfo::NonlinearTolerance).toDouble())).toDouble());
         field->setValue(FieldInfo::NewtonDampingCoeff, eleFieldLinearity.toElement().attribute("newton_damping_coeff", QString::number(field->defaultValue(FieldInfo::NewtonDampingCoeff).toDouble())).toDouble());
-        field->setValue(FieldInfo::NewtonAutomaticDamping, eleFieldLinearity.toElement().attribute("newton_automatic_damping", "1").toInt());
-        field->setValue(FieldInfo::NewtonAutomaticDampingCoeff, eleFieldLinearity.toElement().attribute("newton_automatic_damping_coeff", QString::number(field->defaultValue(FieldInfo::NewtonAutomaticDampingCoeff).toDouble())).toDouble());
-        field->setValue(FieldInfo::NewtonDampingNumberToIncrease, eleFieldLinearity.toElement().attribute("newton_damping_number_to_increase", QString::number(field->defaultValue(FieldInfo::NewtonDampingNumberToIncrease).toInt())).toInt());
+        field->setValue(FieldInfo::NewtonDampingType,  dampingTypeFromStringKey(eleFieldLinearity.toElement().attribute("newton_damping_type")));
+        field->setValue(FieldInfo::NewtonReuseJacobian,  eleFieldLinearity.toElement().attribute("newton_reuse_jacobian", "1").toInt());
         field->setValue(FieldInfo::PicardAndersonAcceleration, eleFieldLinearity.toElement().attribute("picard_anderson_acceleration", "1").toInt());
         field->setValue(FieldInfo::PicardAndersonBeta, eleFieldLinearity.toElement().attribute("picard_anderson_beta", "0.2").toDouble());
         field->setValue(FieldInfo::PicardAndersonNumberOfLastVectors, eleFieldLinearity.toElement().attribute("picard_anderson_vectors", "3").toInt());

@@ -65,24 +65,12 @@ class PyField
         void setNewtonDampingCoeff(double dampingCoeff);
 
         // automatic damping
-        inline bool getNewtonAutomaticDamping() const { return m_fieldInfo->value(FieldInfo::NewtonAutomaticDamping).toBool(); }
-        void setNewtonAutomaticDamping(bool automaticDamping);
+        inline std::string getNewtonDampingType() const { return dampingTypeToStringKey((DampingType)m_fieldInfo->value(FieldInfo::NewtonDampingType).toInt()).toStdString(); }
+        void setNewtonDampingType(std::string dampingType);
 
-        // automatic damping coefficient
-        inline double getNewtonAutomaticDampingCoeff() const { return m_fieldInfo->value(FieldInfo::NewtonAutomaticDampingCoeff).toDouble(); }
-        void setNewtonAutomaticDampingCoeff(double dampingCoeff);
-
-        // steps to increase damping coeff
-        inline int getNewtonDampingNumberToIncrease() const { return m_fieldInfo->value(FieldInfo::NewtonDampingNumberToIncrease).toInt(); }
-        void setNewtonDampingNumberToIncrease(int dampingNumberToIncrease);
-
-        // sufficient improvement factor Jacobian
-        inline double getNewtonSufficientImprovementFactorJacobian() const { return m_fieldInfo->value(FieldInfo::NewtonSufficientImprovementFactorJacobian).toDouble(); }
-        void setNewtonSufficientImprovementFactorJacobian(double sufficientImprovementFactorJacobian);
-
-        // maximum steps with reused Jacobian
-        inline int getNewtonMaximumStepsWithReusedJacobian() const { return m_fieldInfo->value(FieldInfo::NewtonMaximumStepsWithReusedJacobian).toInt(); }
-        void setNewtonMaximumStepsWithReusedJacobian(int maximumStepsWithReusedJacobian);
+        // newton reuse jacobian
+        inline bool getNewtonReuseJacobian() const { return m_fieldInfo->value(FieldInfo::NewtonReuseJacobian).toBool(); }
+        void setNewtonReuseJacobian(bool reuse);
 
         // picard anderson acceleration
         inline bool getPicardAndersonAcceleration() const { return m_fieldInfo->value(FieldInfo::PicardAndersonAcceleration).toBool(); }

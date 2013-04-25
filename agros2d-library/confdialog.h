@@ -78,7 +78,6 @@ private:
 
     // development
     QCheckBox *chkDiscreteSaveMatrixRHS;
-    QCheckBox *chkExperimentalFeatures;
 
     // cache
     QSpinBox *txtCacheSize;

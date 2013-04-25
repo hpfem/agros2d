@@ -66,6 +66,14 @@ enum LinearityType
     LinearityType_Newton = 2
 };
 
+enum DampingType
+{
+    DampingType_Undefined = -1,
+    DampingType_Automatic = 0,
+    DampingType_Fixed = 1,
+    DampingType_Off = 2
+};
+
 enum CouplingType
 {
     CouplingType_Undefined = -1,
@@ -306,6 +314,12 @@ AGROS_API QString linearityTypeString(LinearityType linearityType);
 AGROS_API QStringList linearityTypeStringKeys();
 AGROS_API QString linearityTypeToStringKey(LinearityType linearityType);
 AGROS_API LinearityType linearityTypeFromStringKey(const QString &linearityType);
+
+// damping type
+AGROS_API QString dampingTypeString(DampingType dampingType);
+AGROS_API QStringList dampingTypeStringKeys();
+AGROS_API QString dampingTypeToStringKey(DampingType dampingType);
+AGROS_API DampingType dampingTypeFromStringKey(const QString &dampingType);
 
 // scene view 3d mode
 AGROS_API QStringList sceneViewPost3DModeStringKeys();

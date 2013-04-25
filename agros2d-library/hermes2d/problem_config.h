@@ -270,6 +270,9 @@ public:
         Adaptivity_ProjNormType,
         Adaptivity_UseAniso,
         Adaptivity_FinerReference,
+        Newton_SufImprovJacobian,
+        Newton_MaxStepsReuseJacobian,
+        Newton_StepsToIncreaseDF,
         Commands_Triangle,
         Commands_Gmsh
     };

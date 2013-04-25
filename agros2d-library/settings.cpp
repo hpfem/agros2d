@@ -140,6 +140,11 @@ void SettingsWidget::load()
     chkUseAniso->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::Adaptivity_UseAniso).toBool());
     chkFinerReference->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::Adaptivity_FinerReference).toBool());
 
+    // newton
+    txtNewtonSufficientImprovementFactorJacobian->setValue(Agros2D::problem()->setting()->value(ProblemSetting::Newton_SufImprovJacobian).toDouble());
+    txtNewtonMaximumStepsWithReusedJacobian->setValue(Agros2D::problem()->setting()->value(ProblemSetting::Newton_MaxStepsReuseJacobian).toInt());
+    txtNewtonDampingNumberToIncrease->setValue(Agros2D::problem()->setting()->value(ProblemSetting::Newton_StepsToIncreaseDF).toInt());
+
     // command argument
     txtArgumentTriangle->setText(Agros2D::problem()->setting()->value(ProblemSetting::Commands_Triangle).toString());
     txtArgumentGmsh->setText(Agros2D::problem()->setting()->value(ProblemSetting::Commands_Gmsh).toString());
@@ -255,6 +260,11 @@ void SettingsWidget::save()
     Agros2D::problem()->setting()->setValue(ProblemSetting::Adaptivity_ProjNormType, (Hermes::Hermes2D::ProjNormType) cmbProjNormType->itemData(cmbProjNormType->currentIndex()).toInt());
     Agros2D::problem()->setting()->setValue(ProblemSetting::Adaptivity_UseAniso, chkUseAniso->isChecked());
     Agros2D::problem()->setting()->setValue(ProblemSetting::Adaptivity_FinerReference, chkFinerReference->isChecked());
+
+    // newton
+    Agros2D::problem()->setting()->setValue(ProblemSetting::Newton_SufImprovJacobian, txtNewtonSufficientImprovementFactorJacobian->value());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::Newton_MaxStepsReuseJacobian, txtNewtonMaximumStepsWithReusedJacobian->value());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::Newton_StepsToIncreaseDF, txtNewtonDampingNumberToIncrease->value());
 
     // command argument
     Agros2D::problem()->setting()->setValue(ProblemSetting::Commands_Triangle, txtArgumentTriangle->text());
@@ -565,6 +575,33 @@ QWidget *SettingsWidget::controlsMeshAndSolver()
     QGroupBox *grpAdaptivity = new QGroupBox("Adaptivity");
     grpAdaptivity->setLayout(layoutAdaptivity);
 
+    // newton
+    lblNewtonSufficientImprovementFactorJacobian = new QLabel(tr("Sufficient improvement factor Jacobian"));;
+    txtNewtonSufficientImprovementFactorJacobian = new LineEditDouble(0, true);
+    lblNewtonMaximumStepsWithReusedJacobian = new QLabel(tr("Max. steps with reused Jacobian"));
+    txtNewtonMaximumStepsWithReusedJacobian = new QSpinBox(this);
+    txtNewtonMaximumStepsWithReusedJacobian->setMinimum(0);
+    txtNewtonMaximumStepsWithReusedJacobian->setMaximum(100);
+    lblNewtonDampingNumberToIncrease = new QLabel(tr("Steps to increase DF"));
+    txtNewtonDampingNumberToIncrease = new QSpinBox(this);
+    txtNewtonDampingNumberToIncrease->setMinimum(1);
+    txtNewtonDampingNumberToIncrease->setMaximum(5);
+
+    QGridLayout *layoutNewtonSettings = new QGridLayout();
+    layoutNewtonSettings->addWidget(lblNewtonSufficientImprovementFactorJacobian, 0, 0);
+    layoutNewtonSettings->addWidget(txtNewtonSufficientImprovementFactorJacobian, 0, 1);
+    layoutNewtonSettings->addWidget(lblNewtonMaximumStepsWithReusedJacobian, 1, 0);
+    layoutNewtonSettings->addWidget(txtNewtonMaximumStepsWithReusedJacobian, 1, 1);
+    layoutNewtonSettings->addWidget(lblNewtonDampingNumberToIncrease, 2, 0);
+    layoutNewtonSettings->addWidget(txtNewtonDampingNumberToIncrease, 2, 1);
+
+    QVBoxLayout *layoutNewton = new QVBoxLayout();
+    layoutNewton->addLayout(layoutNewtonSettings);
+
+    QGroupBox *grpNewton = new QGroupBox("Newton solver");
+    grpNewton->setLayout(layoutNewton);
+
+
     // commands
     txtArgumentTriangle = new QLineEdit("");
     txtArgumentGmsh = new QLineEdit("");
@@ -583,6 +620,7 @@ QWidget *SettingsWidget::controlsMeshAndSolver()
     QVBoxLayout *layoutMeshAndSolver = new QVBoxLayout();
     layoutMeshAndSolver->addWidget(grpMesh);
     layoutMeshAndSolver->addWidget(grpAdaptivity);
+    layoutMeshAndSolver->addWidget(grpNewton);
     layoutMeshAndSolver->addWidget(grpCommands);
     layoutMeshAndSolver->addStretch();
     layoutMeshAndSolver->addWidget(btnMeshAndSolverDefault, 0, Qt::AlignLeft);
@@ -742,6 +780,10 @@ void SettingsWidget::doMeshAndSolverDefault()
     cmbProjNormType->setCurrentIndex(cmbProjNormType->findData((Hermes::Hermes2D::ProjNormType) Agros2D::problem()->setting()->defaultValue(ProblemSetting::Adaptivity_ProjNormType).toInt()));
     chkUseAniso->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Adaptivity_UseAniso).toBool());
     chkFinerReference->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Adaptivity_FinerReference).toBool());
+
+    txtNewtonDampingNumberToIncrease->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Newton_StepsToIncreaseDF).toInt());
+    txtNewtonMaximumStepsWithReusedJacobian->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Newton_MaxStepsReuseJacobian).toInt());
+    txtNewtonSufficientImprovementFactorJacobian->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Newton_SufImprovJacobian).toDouble());
 
     txtArgumentTriangle->setText(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Commands_Triangle).toString());
     txtArgumentGmsh->setText(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Commands_Gmsh).toString());
