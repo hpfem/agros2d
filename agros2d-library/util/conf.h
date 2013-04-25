@@ -52,7 +52,6 @@ public:
 
     // development
     bool saveMatrixRHS;
-    bool experimentalFeatures;
 
     // cache
     int cacheSize;

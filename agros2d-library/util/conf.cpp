@@ -59,7 +59,6 @@ void Config::load()
 
     // development
     saveMatrixRHS = settings.value("SceneViewSettings/SaveMatrixAndRHS", SAVEMATRIXANDRHS).toBool();
-    experimentalFeatures = settings.value("SceneViewSettings/ExperimentalFeatures", EXPERIMENTALFEATURES).toBool();
 
     // cache size
     cacheSize = settings.value("Solution/CacheSize", CACHE_SIZE).toInt();
@@ -97,7 +96,6 @@ void Config::save()
 
     // development
     settings.setValue("SceneViewSettings/SaveMatrixAndRHS", saveMatrixRHS);
-    settings.setValue("SceneViewSettings/ExperimentalFeatures", experimentalFeatures);
 
 
     // cache size

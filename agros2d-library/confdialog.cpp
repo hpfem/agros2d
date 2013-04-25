@@ -67,7 +67,6 @@ void ConfigComputerDialog::load()
 
     // development
     chkDiscreteSaveMatrixRHS->setChecked(Agros2D::configComputer()->saveMatrixRHS);
-    chkExperimentalFeatures->setChecked(Agros2D::configComputer()->experimentalFeatures);
 
     // number of threads
     txtNumOfThreads->setValue(Agros2D::configComputer()->numberOfThreads);
@@ -120,7 +119,6 @@ void ConfigComputerDialog::save()
 
     // development
     Agros2D::configComputer()->saveMatrixRHS = chkDiscreteSaveMatrixRHS->isChecked();
-    Agros2D::configComputer()->experimentalFeatures = chkExperimentalFeatures->isChecked();
 
     // number of threads
     Agros2D::configComputer()->numberOfThreads = txtNumOfThreads->value();
@@ -296,11 +294,9 @@ QWidget *ConfigComputerDialog::createSolverWidget()
     grpSolver->setLayout(layoutSolver);
 
     chkDiscreteSaveMatrixRHS = new QCheckBox(tr("Save matrix and RHS"));
-    chkExperimentalFeatures = new QCheckBox(tr("Allow experimental features"));
 
     QGridLayout *layoutDevelopment = new QGridLayout();
     layoutDevelopment->addWidget(chkDiscreteSaveMatrixRHS, 0, 0, 1, 2);
-    layoutDevelopment->addWidget(chkExperimentalFeatures, 1, 0, 1, 2);
 
     QGroupBox *grpDevelopment = new QGroupBox(tr("Development"));
     grpDevelopment->setLayout(layoutDevelopment);

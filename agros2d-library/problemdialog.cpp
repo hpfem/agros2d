@@ -339,14 +339,8 @@ void FieldWidget::fillComboBox()
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_HP), AdaptivityType_HP);
 
     cmbLinearityType->addItem(linearityTypeString(LinearityType_Linear), LinearityType_Linear);
-    // if (hermesField->hasNonlinearity())
-    {
-        if (Agros2D::configComputer()->experimentalFeatures)
-        {
-            cmbLinearityType->addItem(linearityTypeString(LinearityType_Picard), LinearityType_Picard);
-        }
-        cmbLinearityType->addItem(linearityTypeString(LinearityType_Newton), LinearityType_Newton);
-    }
+    //cmbLinearityType->addItem(linearityTypeString(LinearityType_Picard), LinearityType_Picard);
+    cmbLinearityType->addItem(linearityTypeString(LinearityType_Newton), LinearityType_Newton);
 
     QMapIterator<AnalysisType, QString> it(m_fieldInfo->analyses());
     while (it.hasNext())
@@ -767,9 +761,7 @@ void CouplingsWidget::fillComboBox()
     {
         comboBox->addItem(couplingTypeString(CouplingType_None), CouplingType_None);
         comboBox->addItem(couplingTypeString(CouplingType_Weak), CouplingType_Weak);
-
-        if(Agros2D::configComputer()->experimentalFeatures)
-            comboBox->addItem(couplingTypeString(CouplingType_Hard), CouplingType_Hard);
+        //comboBox->addItem(couplingTypeString(CouplingType_Hard), CouplingType_Hard);
     }
 }
 
