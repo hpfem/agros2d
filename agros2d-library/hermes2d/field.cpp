@@ -789,6 +789,7 @@ void FieldInfo::setDefaultValues()
     m_settingDefault[NonlinearConvergenceMeasurement] = Hermes::Hermes2D::ResidualNormAbsolute;
     m_settingDefault[NewtonDampingType] = DampingType_Automatic;
     m_settingDefault[NewtonDampingCoeff] = 0.8;
+    m_settingDefault[NewtonReuseJacobian] = true;
     m_settingDefault[PicardAndersonAcceleration] = true;
     m_settingDefault[PicardAndersonBeta] = 0.2;
     m_settingDefault[PicardAndersonNumberOfLastVectors] = 3;
