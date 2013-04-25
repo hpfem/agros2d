@@ -494,19 +494,10 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
 {
     Hermes::HermesCommonApi.set_integral_param_value(Hermes::matrixSolverType, Agros2D::problem()->config()->matrixSolver());
 
-    try
-    {
-        m_hermesSolverContainer->projectPreviousSolution(initialSolutionVector, spaces, previousSolution);
-        m_hermesSolverContainer->setMatrixRhsOutput(m_solverCode, adaptivityStep);
+    m_hermesSolverContainer->projectPreviousSolution(initialSolutionVector, spaces, previousSolution);
+    m_hermesSolverContainer->setMatrixRhsOutput(m_solverCode, adaptivityStep);
 
-        m_hermesSolverContainer->solve(initialSolutionVector);
-    }
-    catch (Hermes::Exceptions::Exception& e)
-    {
-        QString error = QString("%1").arg(e.what());
-        // Agros2D::log()->printDebug(m_solverID, QObject::tr("Solver failed: %1").arg(error));
-        throw AgrosSolverException(QObject::tr("Solver failed: %1").arg(error));
-    }
+    m_hermesSolverContainer->solve(initialSolutionVector);
     return m_hermesSolverContainer->slnVector();
 }
 
