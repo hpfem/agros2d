@@ -529,8 +529,8 @@ void CalculationThread::run()
 
 void Problem::doAbortSolve()
 {
-    Agros2D::log()->printError(QObject::tr("Solver"), QObject::tr("Aborting calculation..."));
     m_abortSolve = true;
+    Agros2D::log()->printError(QObject::tr("Solver"), QObject::tr("Aborting calculation..."));
 }
 
 void Problem::solve()

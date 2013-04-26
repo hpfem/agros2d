@@ -228,6 +228,7 @@ LogDialog::~LogDialog()
 void LogDialog::createControls()
 {
     connect(Agros2D::log(), SIGNAL(messageMsg(QString, QString, bool)), this, SLOT(printMessage(QString, QString, bool)));
+    connect(Agros2D::log(), SIGNAL(errorMsg(QString, QString, bool)), this, SLOT(printError(QString, QString, bool)));
     connect(Agros2D::log(), SIGNAL(nonlinearTable(QVector<double>, QVector<double>)), this, SLOT(nonlinearTable(QVector<double>,QVector<double>)));
     connect(Agros2D::log(), SIGNAL(adaptivityTable(QVector<double>, QVector<double>)), this, SLOT(adaptivityTable(QVector<double>, QVector<double>)));
 
@@ -263,13 +264,17 @@ void LogDialog::createControls()
 
     m_adaptivityChart->graph(0)->setLineStyle(QCPGraph::lsLine);
 
-    QPushButton *btnClose = new QPushButton(tr("Abort"));
-    connect(btnClose, SIGNAL(clicked()), Agros2D::problem(), SLOT(doAbortSolve()));
-    //connect(Agros2D::problem(), SIGNAL(calculationStoped()), this, SLOT(close()));
+    btnClose = new QPushButton(tr("Close"));
+    connect(btnClose, SIGNAL(clicked()), this, SLOT(close()));
+    btnClose->setEnabled(false);
+
+    btnAbort = new QPushButton(tr("Abort"));
+    connect(btnAbort, SIGNAL(clicked()), Agros2D::problem(), SLOT(doAbortSolve()));
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(close()));
 
     QHBoxLayout *layoutStatus = new QHBoxLayout();
     layoutStatus->addWidget(memoryLabel, 1, Qt::AlignLeft);
+    layoutStatus->addWidget(btnAbort, 0, Qt::AlignRight);
     layoutStatus->addWidget(btnClose, 0, Qt::AlignRight);
 
     QHBoxLayout *layoutHorizontal = new QHBoxLayout();
@@ -286,6 +291,12 @@ void LogDialog::createControls()
 void LogDialog::printMessage(const QString &module, const QString &message, bool escaped)
 {   
     refreshStatus();
+}
+
+void LogDialog::printError(const QString &module, const QString &message, bool escaped)
+{
+    btnAbort->setEnabled(false);
+    btnClose->setEnabled(true);
 }
 
 void LogDialog::nonlinearTable(QVector<double> step, QVector<double> error)
@@ -309,7 +320,13 @@ void LogDialog::refreshStatus()
     memoryLabel->setText(tr("Process Memory: %1 MB").arg(memory));
     logWidget->repaint();
     // memoryLabel->repaint();
-    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);   
+
+    if (Agros2D::problem()->isAborted() && isVisible())
+    {
+        btnAbort->setEnabled(false);
+        btnClose->setEnabled(true);
+    }
 }
 
 // *******************************************************************************************

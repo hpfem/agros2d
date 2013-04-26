@@ -137,14 +137,11 @@
         </materials>
         <field_config>
           <field_item field_key="NonlinearTolerance" field_value="0.001"/>
-          <field_item field_key="NonlinearSteps" field_value="20"/>
+          <field_item field_key="NonlinearSteps" field_value="40"/>
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
-          <field_item field_key="NewtonAutomaticDamping" field_value="1"/>
-          <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
-          <field_item field_key="NewtonDampingCoeff" field_value="1"/>
-          <field_item field_key="NewtonDampingNumberToIncrease" field_value="1"/>
-          <field_item field_key="NewtonSufficientImprovementFactorJacobian" field_value="0.8"/>
-          <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="20"/>
+          <field_item field_key="NewtonDampingType" field_value="1"/>
+          <field_item field_key="NewtonDampingCoeff" field_value="0.8"/>
+          <field_item field_key="" field_value="1"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
@@ -252,8 +249,8 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="2"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="-0.0231544090567038"/>
-    <item key="View_ScalarRangeMax" value="0.00114318506297602"/>
+    <item key="View_ScalarRangeMin" value="-0.0231544089789067"/>
+    <item key="View_ScalarRangeMax" value="0.00114318509141159"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value=""/>
     <item key="View_VectorProportional" value="1"/>
@@ -314,6 +311,9 @@
     <item key="Adaptivity_ProjNormType" value="1"/>
     <item key="Adaptivity_UseAniso" value="1"/>
     <item key="Adaptivity_FinerReference" value="0"/>
+    <item key="Newton_SufImprovJacobian" value="0.8"/>
+    <item key="Newton_MaxStepsReuseJacobian" value="20"/>
+    <item key="Newton_StepsToIncreaseDF" value="1"/>
     <item key="Commands_Triangle" value="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;"/>
     <item key="Commands_Gmsh" value="%1 -2 &quot;%2.geo&quot;"/>
   </config>

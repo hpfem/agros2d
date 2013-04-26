@@ -108,6 +108,9 @@ private:
 
      QLabel *memoryLabel;
 
+     QPushButton *btnClose;
+     QPushButton *btnAbort;
+
      QCustomPlot *m_nonlinearChart;
      QCustomPlot *m_adaptivityChart;
 
@@ -115,6 +118,7 @@ private:
 
 private slots:
      void printMessage(const QString &module, const QString &message, bool escaped = true);
+     void printError(const QString &module, const QString &message, bool escaped = true);
      void refreshStatus();
 
      void nonlinearTable(QVector<double> step, QVector<double> error);
