@@ -477,7 +477,7 @@ void ProblemSetting::setDefaultValues()
     m_settingDefault[Adaptivity_FinerReference] = false;
     m_settingDefault[Newton_MaxStepsReuseJacobian] = 20;
     m_settingDefault[Newton_StepsToIncreaseDF] = 1;
-    m_settingDefault[Newton_SufImprovJacobian] = 0.4;
+    m_settingDefault[Newton_SufImprovJacobian] = 0.8;
     m_settingDefault[Commands_Triangle] = "%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 \"%2\"";
     m_settingDefault[Commands_Gmsh] = "%1 -2 \"%2.geo\"";
 }
