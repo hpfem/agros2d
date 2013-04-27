@@ -36,17 +36,16 @@ Agros2DGeneratorCoupling::Agros2DGeneratorCoupling(const QString &couplingId)
     QDir root(QApplication::applicationDirPath());
     root.mkpath(QString("%1/%2").arg(GENERATOR_PLUGINROOT).arg(iD));
 
-    qDebug() << QString::fromStdString(datadir().toStdString() + COUPLINGROOT.toStdString() + "/" + couplingId.toStdString() + ".xml");
-    coupling_xsd = XMLCoupling::coupling_((datadir().toStdString() + COUPLINGROOT.toStdString() + "/" + couplingId.toStdString() + ".xml").c_str());
+    coupling_xsd = XMLCoupling::coupling_(compatibleFilename(datadir() + COUPLINGROOT + "/" + couplingId + ".xml").toStdString(), xml_schema::flags::dont_validate);
     m_coupling = coupling_xsd.get();
 
     QString sourceModuleId = QString::fromStdString(m_coupling->general().modules().source().id().c_str());
     QString targetModuleId = QString::fromStdString(m_coupling->general().modules().target().id().c_str());
 
-    m_source_module_xsd = XMLModule::module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + sourceModuleId.toStdString() + ".xml").c_str());
+    m_source_module_xsd = XMLModule::module_(compatibleFilename(datadir() + MODULEROOT + "/" + sourceModuleId + ".xml").toStdString(), xml_schema::flags::dont_validate);
     m_sourceModule = m_source_module_xsd.get();
 
-    m_target_module_xsd = XMLModule::module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + targetModuleId.toStdString() + ".xml").c_str());
+    m_target_module_xsd = XMLModule::module_(compatibleFilename(datadir() + MODULEROOT + "/" + targetModuleId + ".xml").toStdString(), xml_schema::flags::dont_validate);
     m_targetModule = m_target_module_xsd.get();
 
     QDir().mkdir(GENERATOR_PLUGINROOT + "/" + iD);

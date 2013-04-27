@@ -35,7 +35,7 @@ Agros2DGeneratorModule::Agros2DGeneratorModule(const QString &moduleId)
     root.mkpath(QString("%1/%2").arg(GENERATOR_PLUGINROOT).arg(moduleId));
 
     // read module
-    module_xsd = XMLModule::module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + moduleId.toStdString() + ".xml").c_str());
+    module_xsd = XMLModule::module_(compatibleFilename(datadir() + MODULEROOT + "/" + moduleId + ".xml").toStdString(), xml_schema::flags::dont_validate);
     m_module = module_xsd.get();
 
     QDir().mkdir(GENERATOR_PLUGINROOT + "/" + moduleId);
