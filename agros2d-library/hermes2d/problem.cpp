@@ -906,7 +906,7 @@ void Problem::readInitialMeshesFromFile()
     setlocale (LC_NUMERIC, "C");
 
     // load mesh from file
-    QString fileName = QFileInfo(cacheProblemDir() + "/initial.mesh").absoluteFilePath();
+    QString fileName = QFileInfo(cacheProblemDir() + "/initial.msh").absoluteFilePath();
     Hermes::Hermes2D::MeshReaderH2DXML meshloader;
     meshloader.set_validation(false);
     meshloader.load(fileName.toStdString().c_str(), meshesVector);

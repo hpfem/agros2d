@@ -223,7 +223,7 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArray<double> m
                     meshes.push_back(fieldInfo->initialMesh());
             }
 
-            QString meshFN = QString("%1_%2.mesh").arg(baseFN).arg(i);
+            QString meshFN = QString("%1_%2.msh").arg(baseFN).arg(i);
             Module::writeMeshToFile(meshFN, meshes);
 
             fileNames[i].setMeshFileName(QFileInfo(meshFN).fileName());
@@ -299,7 +299,7 @@ void SolutionStore::removeSolution(FieldSolutionID solutionID)
 
         for (int solutionIndex = 0; solutionIndex < solutionID.group->numberOfSolutions(); solutionIndex++)
         {
-            QString fnMesh = QString("%1_%2.mesh").arg(fn).arg(solutionIndex);
+            QString fnMesh = QString("%1_%2.msh").arg(fn).arg(solutionIndex);
             if (QFile::exists(fnMesh))
                 QFile::remove(fnMesh);
 

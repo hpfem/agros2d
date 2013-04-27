@@ -1558,11 +1558,11 @@ void MainWindow::doDocumentExportMeshFile()
         if (!fileName.isEmpty())
         {
             // remove existing file
-            if (QFile::exists(fileName + ".mesh"))
-                QFile::remove(fileName + ".mesh");
+            if (QFile::exists(fileName + ".msh"))
+                QFile::remove(fileName + ".msh");
 
             // copy file
-            QFile::copy(cacheProblemDir() + "/initial.mesh", fileName + ".mesh");
+            QFile::copy(cacheProblemDir() + "/initial.msh", fileName + ".msh");
             if (fileInfo.absoluteDir() != cacheProblemDir())
                 settings.setValue("General/LastMeshDir", fileInfo.absolutePath());
         }

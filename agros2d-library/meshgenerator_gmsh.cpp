@@ -113,7 +113,7 @@ void MeshGeneratorGMSH::meshGmshCreated(int exitCode)
             {
                 QFileInfo fileInfoOrig(Agros2D::problem()->config()->fileName());
 
-                QFile::copy(cacheProblemDir() + "/initial.mesh", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".mesh");
+                QFile::copy(cacheProblemDir() + "/initial.msh", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".msh");
             }
 
             //  remove gmsh temp files
@@ -125,7 +125,7 @@ void MeshGeneratorGMSH::meshGmshCreated(int exitCode)
         else
         {
             m_isError = true;
-            QFile::remove(Agros2D::problem()->config()->fileName() + ".mesh");
+            QFile::remove(Agros2D::problem()->config()->fileName() + ".msh");
         }
     }
     else

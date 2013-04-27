@@ -2261,7 +2261,7 @@ void Scene::readSolutionFromFile(const QString &fileName)
         JlCompress::extractDir(solutionFile, cacheProblemDir());
 
         // read mesh file
-        if (QFile::exists(QString("%1/initial.mesh").arg(cacheProblemDir())))
+        if (QFile::exists(QString("%1/initial.msh").arg(cacheProblemDir())))
         {
             try
             {

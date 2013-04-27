@@ -238,15 +238,20 @@ QString tempProblemDir()
 
 QString cacheProblemDir()
 {
-
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     static QString str = QString("%1/cache/%2").
             arg(QStandardPaths::writableLocation(QStandardPaths::CacheLocation)).
             arg(QString::number(QCoreApplication::applicationPid()));
 #else
+#ifdef Q_WS_WIN
+    static QString str = QString("%1/agros2d/%2/cache").
+            arg(QDir::temp().absolutePath()).
+            arg(QString::number(QCoreApplication::applicationPid()));
+#else
     static QString str = QString("%1/cache/%2").
             arg(QDesktopServices::storageLocation(QDesktopServices::CacheLocation)).
             arg(QString::number(QCoreApplication::applicationPid()));
+#endif
 #endif
 
     QDir dir(str);
