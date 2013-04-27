@@ -84,7 +84,7 @@ win32-msvc2010 {
     TARGET = ../../libs/agros_3rdparty
 
     # /openmp
-    QMAKE_CXXFLAGS += /MP /Zc:wchar_t
+    QMAKE_CXXFLAGS += /MP
     QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt
     QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
