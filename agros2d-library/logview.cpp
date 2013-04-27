@@ -322,11 +322,11 @@ void LogDialog::refreshStatus()
     // memoryLabel->repaint();
     QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);   
 
-    if (Agros2D::problem()->isAborted() && isVisible())
-    {
-        btnAbort->setEnabled(false);
-        btnClose->setEnabled(true);
-    }
+//    if (Agros2D::problem()->isAborted() && isVisible())
+//    {
+//        btnAbort->setEnabled(false);
+//        btnClose->setEnabled(true);
+//    }
 }
 
 // *******************************************************************************************
