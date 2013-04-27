@@ -6,6 +6,7 @@
 #include <QString>
 
 #include "util.h"
+#include "util/global.h"
 #include "mainwindow.h"
 
 class AgrosApplication : public QApplication
@@ -143,4 +144,8 @@ int main(int argc, char *argv[])
     w.show();
 
     return a.exec();
+
+    // remove temp and cache plugins
+    removeDirectory(cacheProblemDir());
+    removeDirectory(tempProblemDir());
 }

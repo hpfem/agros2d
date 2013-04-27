@@ -61,16 +61,16 @@ Agros2D::Agros2D()
 
 void Agros2D::clear()
 {
-    // remove temp and cache plugins
-    removeDirectory(cacheProblemDir());
-    removeDirectory(tempProblemDir());
-
     delete m_singleton.data()->m_scene;
     delete m_singleton.data()->m_problem;
     delete m_singleton.data()->m_configComputer;
     delete m_singleton.data()->m_solutionStore;
     delete m_singleton.data()->m_log;
     delete m_singleton.data()->m_scriptEngineRemoteLocal;
+
+    // remove temp and cache plugins
+    removeDirectory(cacheProblemDir());
+    removeDirectory(tempProblemDir());
 }
 
 void Agros2D::createSingleton()

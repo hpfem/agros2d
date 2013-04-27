@@ -241,13 +241,11 @@ MainWindow::~MainWindow()
     settings.setValue("MainWindow/SplitterState", splitter->saveState());
     settings.setValue("MainWindow/ControlPanel", actHideControlPanel->isChecked());
 
-    // remove temp and cache files
+    // remove temp and cache plugins
     removeDirectory(cacheProblemDir());
     removeDirectory(tempProblemDir());
 
     delete logStdOut;
-
-    Agros2D::clear();
 }
 
 void MainWindow::open(const QString &fileName)

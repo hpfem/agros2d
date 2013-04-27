@@ -150,7 +150,7 @@ AGROS_API QString tempProblemFileName();
 AGROS_API QTime milisecondsToTime(int ms);
 
 // remove directory content
-AGROS_API bool removeDirectory(const QDir &dir);
+AGROS_API bool removeDirectory(const QString &str);
 
 // sleep function
 AGROS_API void msleep(unsigned long msecs);

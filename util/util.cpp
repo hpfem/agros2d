@@ -295,13 +295,13 @@ QTime milisecondsToTime(int ms)
     return QTime(hours, mins, secs, tmp_ms);
 }
 
-bool removeDirectory(const QDir &dir)
+bool removeDirectory(const QString &str)
 {
     bool error = false;
 
-    if (dir.exists())
+    if (QDir(str).exists())
     {
-        QFileInfoList entries = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
+        QFileInfoList entries = QDir(str).entryInfoList(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
         int count = entries.size();
         for (int idx = 0; idx < count; idx++)
         {
@@ -309,7 +309,7 @@ bool removeDirectory(const QDir &dir)
             QString path = entryInfo.absoluteFilePath();
             if (entryInfo.isDir())
             {
-                error = removeDirectory(QDir(path));
+                error = removeDirectory(path);
             }
             else
             {
@@ -321,7 +321,7 @@ bool removeDirectory(const QDir &dir)
                 }
             }
         }
-        if (!dir.rmdir(dir.absolutePath()))
+        if (!QDir().rmdir(str))
             error = true;
     }
 
