@@ -1501,7 +1501,7 @@ void ModuleDialog::save()
         namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("module", namespace_info_mesh));
 
         XMLModule::module *module = m_module_xsd.get();
-        std::ofstream out((datadir().toStdString() + MODULEROOT.toStdString() + "/" + m_fieldId.toStdString() + ".xml").c_str());
+        std::ofstream out(compatibleFilename(datadir() + MODULEROOT + "/" + m_fieldId + ".xml").toStdString().c_str());
         XMLModule::module_(out, *module, namespace_info_map);
     }
     catch (const xml_schema::exception& e)

@@ -1527,8 +1527,7 @@ void Scene::readFromFile30(const QString &fileName)
 
         blockSignals(true);
 
-        // std::auto_ptr<XMLProblem::document> document_xsd = XMLProblem::document_((fileName + "3").toLatin1().data(), xml_schema::flags::dont_validate);
-        std::auto_ptr<XMLProblem::document> document_xsd = XMLProblem::document_((fileName).toLatin1().data(), xml_schema::flags::dont_validate);
+        std::auto_ptr<XMLProblem::document> document_xsd = XMLProblem::document_(compatibleFilename(fileName).toStdString(), xml_schema::flags::dont_validate);
         XMLProblem::document *doc = document_xsd.get();
 
         // coordinate type
@@ -2239,7 +2238,7 @@ void Scene::writeToFile30(const QString &fileName)
         ::xml_schema::namespace_infomap namespace_info_map;
         namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("problem", namespace_info_problem));
 
-        std::ofstream out((fileName).toLatin1().data());
+        std::ofstream out(compatibleFilename(fileName).toStdString().c_str());
         XMLProblem::document_(out, doc, namespace_info_map);
 
         if (QFileInfo(tempProblemFileName()).baseName() != QFileInfo(fileName).baseName())

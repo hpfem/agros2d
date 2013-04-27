@@ -55,7 +55,7 @@ ResultsView::ResultsView(PostHermes *postHermes, QWidget *parent)
     stylesheet.SetValue("FONTFAMILY", htmlFontFamily().toStdString());
     stylesheet.SetValue("FONTSIZE", (QString("%1").arg(htmlFontSize() - 1).toStdString()));
 
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style_results.css", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/style_results.css").toStdString(), ctemplate::DO_NOT_STRIP, &stylesheet, &style);
     m_cascadeStyleSheet = QString::fromStdString(style);
 
     // main widget
@@ -173,7 +173,7 @@ void ResultsView::showPoint()
     }
 
     // expand template
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/local_point_values.tpl", ctemplate::DO_NOT_STRIP, &localPointValues, &results);
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/local_point_values.tpl").toStdString(), ctemplate::DO_NOT_STRIP, &localPointValues, &results);
     webView->setHtml(QString::fromStdString(results));
 }
 
@@ -217,7 +217,7 @@ void ResultsView::showVolumeIntegral()
     }
 
     // expand template
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/integrals.tpl", ctemplate::DO_NOT_STRIP, &volumeIntegrals, &results);
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/integrals.tpl").toStdString(), ctemplate::DO_NOT_STRIP, &volumeIntegrals, &results);
     webView->setHtml(QString::fromStdString(results));
 }
 
@@ -260,7 +260,7 @@ void ResultsView::showSurfaceIntegral()
     }
 
     // expand template
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/integrals.tpl", ctemplate::DO_NOT_STRIP, &surfaceIntegrals, &results);
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/integrals.tpl").toStdString(), ctemplate::DO_NOT_STRIP, &surfaceIntegrals, &results);
     webView->setHtml(QString::fromStdString(results));
 }
 
@@ -279,7 +279,7 @@ void ResultsView::showNotSolved()
     empty.SetValue("LABEL", tr("Problem is not solved.").toStdString());
 
     // expand template
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/empty.tpl", ctemplate::DO_NOT_STRIP, &empty, &results);
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/empty.tpl").toStdString(), ctemplate::DO_NOT_STRIP, &empty, &results);
     webView->setHtml(QString::fromStdString(results));
 }
 

@@ -575,6 +575,6 @@ QString ReportDialog::replaceTemplates(const QString &fileNameTemplate)
     //    dict.SetValue("DEGREE", tr("deg.").toStdString());
 
     //    // expand template
-    //    ctemplate::ExpandTemplate(fileNameTemplate.toStdString(), ctemplate::DO_NOT_STRIP, &dict, &report);
+    //    ctemplate::ExpandTemplate(compatibleFilename(fileNameTemplate).toStdString(), ctemplate::DO_NOT_STRIP, &dict, &report);
     return  QString::fromStdString("");
 }

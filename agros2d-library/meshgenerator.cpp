@@ -251,7 +251,7 @@ bool MeshGenerator::writeToHermes()
     namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("mesh", namespace_info_mesh));
     namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("domain", namespace_info_domain));
 
-    std::ofstream out((cacheProblemDir() + "/initial.mesh").toLatin1().data());
+    std::ofstream out(compatibleFilename(cacheProblemDir() + "/initial.mesh").toStdString().c_str());
     ::xml_schema::flags parsing_flags = ::xml_schema::flags::dont_pretty_print;
     XMLSubdomains::domain_(out, xmldomain, namespace_info_map, "UTF-8", parsing_flags);
     out.close();

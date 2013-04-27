@@ -247,7 +247,7 @@ void Agros2DGenerator::createStructure()
     // generate documentation
     // expand template
     std::string doc_text;
-    ctemplate::ExpandTemplate(QString("%1/%2/doc_index.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+    ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/doc_index.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &doc_text);
 
     // save to file
@@ -266,7 +266,7 @@ void Agros2DGenerator::createStructure()
     // generate plugins project file
     // expand template
     std::string text;
-    ctemplate::ExpandTemplate(QString("%1/%2/plugins_pro.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT).toStdString(),
+    ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/plugins_pro.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
     // save to file
     writeStringContent(QString("%1/%2/plugins.pro").

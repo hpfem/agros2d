@@ -584,7 +584,7 @@ void SolutionStore::loadRunTimeDetails()
 
     try
     {
-        std::auto_ptr<XMLStructure::structure> structure_xsd = XMLStructure::structure_(fn.toLatin1().data(), xml_schema::flags::dont_validate);
+        std::auto_ptr<XMLStructure::structure> structure_xsd = XMLStructure::structure_(compatibleFilename(fn).toStdString(), xml_schema::flags::dont_validate);
         XMLStructure::structure *structure = structure_xsd.get();
 
         int time_step = 0;
@@ -690,7 +690,7 @@ void SolutionStore::saveRunTimeDetails()
         ::xml_schema::namespace_infomap namespace_info_map;
         namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("structure", namespace_info_mesh));
 
-        std::ofstream out(fn.toLatin1().data());
+        std::ofstream out(compatibleFilename(fn).toStdString().c_str());
         XMLStructure::structure_(out, structure, namespace_info_map);
     }
     catch (const xml_schema::exception& e)

@@ -313,7 +313,7 @@ bool MaterialEditDialog::writeMaterial()
         ::xml_schema::namespace_infomap namespace_info_map;
         namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("material", namespace_info_mesh));
 
-        std::ofstream out(m_fileName.toLatin1().data());
+        std::ofstream out(compatibleFilename(m_fileName).toStdString().c_str());
         XMLMaterial::material_(out, material, namespace_info_map);
 
         return true;
@@ -373,7 +373,7 @@ MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent),
     stylesheet.SetValue("FONTFAMILY", htmlFontFamily().toStdString());
     stylesheet.SetValue("FONTSIZE", (QString("%1").arg(htmlFontSize()).toStdString()));
 
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style_common.css", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/style_common.css").toStdString(), ctemplate::DO_NOT_STRIP, &stylesheet, &style);
     m_cascadeStyleSheet = QString::fromStdString(style);
 
     trvMaterial = new QTreeWidget(this);
@@ -627,7 +627,7 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
 
         }
 
-        ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/material.tpl", ctemplate::DO_NOT_STRIP, &materialInfo, &info);
+        ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/material.tpl").toStdString(), ctemplate::DO_NOT_STRIP, &materialInfo, &info);
 
         // setHtml(...) doesn't work
         // webView->setHtml(QString::fromStdString(info));

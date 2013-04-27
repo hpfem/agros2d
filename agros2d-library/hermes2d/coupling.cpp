@@ -49,7 +49,7 @@ QMap<QString, QString> availableCouplings()
 
         foreach (QString filename, list)
         {
-            std::auto_ptr<XMLCoupling::coupling> coupling_xsd = XMLCoupling::coupling_((datadir().toStdString() + COUPLINGROOT.toStdString() + "/" + filename.toStdString()).c_str());
+            std::auto_ptr<XMLCoupling::coupling> coupling_xsd = XMLCoupling::coupling_(compatibleFilename(datadir() + COUPLINGROOT + "/" + filename).toStdString(), xml_schema::flags::dont_validate);
             XMLCoupling::coupling *mod = coupling_xsd.get();
 
             // module name

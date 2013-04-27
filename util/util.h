@@ -130,6 +130,9 @@ AGROS_API QStringList availableLanguages();
 // get icon with respect to actual theme
 AGROS_API QIcon icon(const QString &name);
 
+// windows short name
+AGROS_API QString compatibleFilename(const QString &fileName);
+
 // get datadir
 AGROS_API QString datadir();
 

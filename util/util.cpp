@@ -23,6 +23,10 @@
 
 #include "util.h"
 
+#ifdef Q_WS_WIN
+#include "Windows.h"
+#endif
+
 #ifndef M_PI_2
 #define M_PI_2 1.57079632679489661923	/* pi/2 */
 #endif
@@ -184,6 +188,25 @@ QIcon icon(const QString &name)
     if (QFile::exists(":/" + name + ".png")) return QIcon(":/" + name + ".png");
 
     return QIcon();
+}
+
+QString compatibleFilename(const QString &fileName)
+{
+    QString out = QFileInfo(fileName).absoluteFilePath();
+
+#ifdef Q_WS_WIN
+    TCHAR szshortpath[4096];
+
+    GetShortPathName(out.replace("/", "\\\\").utf16(), szshortpath, 4096);
+#ifdef UNICODE
+    out = QString::fromWCharArray(szshortpath);
+#else
+    out = QString::fromLocal8Bit(szshortpath);
+#endif
+
+#endif
+
+    return out;
 }
 
 QString datadir()

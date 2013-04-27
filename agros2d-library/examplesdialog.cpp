@@ -57,7 +57,7 @@ ExamplesDialog::ExamplesDialog(QWidget *parent) : QDialog(parent)
     stylesheet.SetValue("FONTFAMILY", htmlFontFamily().toStdString());
     stylesheet.SetValue("FONTSIZE", (QString("%1").arg(htmlFontSize()).toStdString()));
 
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/style_common.css", ctemplate::DO_NOT_STRIP, &stylesheet, &style);
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/style_common.css").toStdString(), ctemplate::DO_NOT_STRIP, &stylesheet, &style);
     m_cascadeStyleSheet = QString::fromStdString(style);
 
     lstProblems = new QTreeWidget(this);
@@ -215,8 +215,7 @@ void ExamplesDialog::problemInfo(const QString &fileName)
 
         try
         {
-            // std::auto_ptr<XMLProblem::document> document_xsd = XMLProblem::document_((fileName + "3").toLatin1().data(), xml_schema::flags::dont_validate);
-            std::auto_ptr<XMLProblem::document> document_xsd = XMLProblem::document_((fileName).toLatin1().data(), xml_schema::flags::dont_validate);
+            std::auto_ptr<XMLProblem::document> document_xsd = XMLProblem::document_(compatibleFilename(fileName).toStdString(), xml_schema::flags::dont_validate);
             XMLProblem::document *doc = document_xsd.get();
 
             // template

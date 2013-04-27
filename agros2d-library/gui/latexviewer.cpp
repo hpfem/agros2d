@@ -87,7 +87,7 @@ void LaTeXViewer::showLaTeX()
     problemInfo.SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
     problemInfo.SetValue("LATEX_SOURCE", m_latexSource.toStdString());
 
-    ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/latex.tpl", ctemplate::DO_NOT_STRIP, &problemInfo, &info);
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/latex.tpl").toStdString(), ctemplate::DO_NOT_STRIP, &problemInfo, &info);
 
     writeStringContent(tempProblemDir() + "/latex.html", QString::fromStdString(info));
 

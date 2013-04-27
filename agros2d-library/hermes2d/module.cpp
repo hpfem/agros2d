@@ -65,7 +65,7 @@ QMap<QString, QString> Module::availableModules()
         {
             try
             {
-                std::auto_ptr<XMLModule::module> module_xsd = XMLModule::module_((datadir().toStdString() + MODULEROOT.toStdString() + "/" + filename.toStdString()).c_str());
+                std::auto_ptr<XMLModule::module> module_xsd = XMLModule::module_(compatibleFilename(datadir() + MODULEROOT + "/" + filename).toStdString(), xml_schema::flags::dont_validate);
 
                 XMLModule::module *mod = module_xsd.get();
 
@@ -648,44 +648,6 @@ AGROS_API void Module::updateTimeFunctions(double time)
                 foreach (Module::BoundaryTypeVariable variable, boundaryType.variables())
                     if (variable.isTimeDep() && boundary->fieldInfo()->analysisType() == AnalysisType_Transient)
                         boundary->evaluate(variable.id(), time);
-}
-
-void Module::readMeshDirtyFix()
-{
-    // fix precalulating matrices for mapping of curved elements
-
-    // save locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
-
-    std::ostringstream os;
-    os << "vertices = [" << std::endl <<
-          "  [ 0, 0 ]," << std::endl <<
-          "  [ 1, 0 ]," << std::endl <<
-          "  [ 0, 1 ]" << std::endl <<
-          "]" << std::endl << std::endl <<
-          "elements = [" << std::endl <<
-          "  [ 0, 1, 2, \"element_0\" ]" << std::endl << std::endl <<
-          "boundaries = [" << std::endl <<
-          "  [ 0, 1, \"0\" ]," << std::endl <<
-          "  [ 1, 2, \"0\" ]," << std::endl <<
-          "  [ 2, 0, \"0\" ]" << std::endl <<
-          "]" << std::endl << std::endl <<
-          "curves = [" << std::endl <<
-          "  [ 0, 1, 90 ]" << std::endl <<
-          "]" << std::endl;
-
-    MeshSharedPtr mesh(new Hermes::Hermes2D::Mesh);
-    Hermes::Hermes2D::MeshReaderH2D meshloader;
-
-    std::ofstream outputFile((tempProblemDir().toStdString() + "/dummy.mesh").c_str(), fstream::out);
-    outputFile << os.str();
-    outputFile.close();
-
-    meshloader.load((tempProblemDir().toStdString() + "/dummy.mesh").c_str(), mesh);
-
-    // set system locale
-    setlocale(LC_NUMERIC, plocale);
 }
 
 Hermes::vector<MeshSharedPtr> Module::readMeshFromFile(const QString &fileName)
