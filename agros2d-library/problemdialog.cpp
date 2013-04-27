@@ -491,7 +491,7 @@ void FieldWidget::doLinearityTypeChanged(int index)
 
 void FieldWidget::doNewtonDampingChanged(int index)
 {
-    txtNewtonDampingCoeff->setEnabled(((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton) &&
+    txtNewtonDampingCoeff->setEnabled(((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() == LinearityType_Newton) &&
             ((DampingType)cmbNewtonDampingType->itemData(index).toInt() != DampingType_Off));
 }
 
