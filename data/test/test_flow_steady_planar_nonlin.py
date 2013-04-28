@@ -25,6 +25,7 @@ flow.nonlinear_tolerance = 0.001
 flow.nonlinear_steps = 10
 flow.damping_type = "automatic"
 flow.damping_coeff = 1.0
+flow.reuse_jacobian = False
 
 flow.add_boundary("Inlet", "flow_velocity", {"flow_velocity_x" : { "expression" : "cos((y-0.135)/0.035*pi/2)" }, "flow_velocity_y" : 0})
 flow.add_boundary("Wall", "flow_velocity", {"flow_velocity_x" : 0, "flow_velocity_y" : 0})

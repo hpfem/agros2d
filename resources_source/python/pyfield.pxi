@@ -31,6 +31,15 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         string getNewtonDampingType()
         void setNewtonDampingType(string &dampingType) except +
 
+        int getNewtonDampingNumberToIncrease()
+        void setNewtonDampingNumberToIncrease(int dampingNumberToIncrease) except +
+
+        double getNewtonSufficientImprovementFactorJacobian()
+        void setNewtonSufficientImprovementFactorJacobian(double sufficientImprovementFactorJacobian) except +
+
+        int getNewtonMaximumStepsWithReusedJacobian()
+        void setNewtonMaximumStepsWithReusedJacobian(int maximumStepsWithReusedJacobian) except +
+
         bool getNewtonReuseJacobian()
         void setNewtonReuseJacobian(bool reuse) except +
 
@@ -242,6 +251,27 @@ cdef class __Field__:
             return self.thisptr.getNewtonReuseJacobian()
         def __set__(self, reuse):
             self.thisptr.setNewtonReuseJacobian(reuse)
+
+    # damping number to increase
+    property damping_number_to_increase:
+        def __get__(self):
+            return self.thisptr.getNewtonDampingNumberToIncrease()
+        def __set__(self, damping_number_to_increase):
+            self.thisptr.setNewtonDampingNumberToIncrease(damping_number_to_increase)
+
+    # sufficient improvement factor Jacobian
+    property sufficient_improvement_factor_Jacobian:
+        def __get__(self):
+            return self.thisptr.getNewtonSufficientImprovementFactorJacobian()
+        def __set__(self, sufficientImprovementFactorJacobian):
+            self.thisptr.setNewtonSufficientImprovementFactorJacobian(sufficientImprovementFactorJacobian)
+
+    # maximum steps with reused Jacobian
+    property maximum_steps_with_reused_Jacobian:
+        def __get__(self):
+            return self.thisptr.getNewtonMaximumStepsWithReusedJacobian()
+        def __set__(self, maximumStepsWithReusedJacobian):
+            self.thisptr.setNewtonMaximumStepsWithReusedJacobian(maximumStepsWithReusedJacobian)
 
     # anderson acceleration
     property anderson_acceleration:

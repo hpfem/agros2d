@@ -139,6 +139,30 @@ void PyField::setNewtonReuseJacobian(bool reuse)
     m_fieldInfo->setValue(FieldInfo::NewtonReuseJacobian, reuse);
 }
 
+void PyField::setNewtonDampingNumberToIncrease(int dampingNumberToIncrease)
+{
+    if (dampingNumberToIncrease >= 1 && dampingNumberToIncrease <= 5)
+        m_fieldInfo->setValue(FieldInfo::NewtonStepsToIncreaseDF, dampingNumberToIncrease);
+    else
+        throw out_of_range(QObject::tr("Number of steps needed to increase the damping coefficient is out of range (1 - 5).").toStdString());
+}
+
+void PyField::setNewtonSufficientImprovementFactorJacobian(double sufficientImprovementFactorJacobian)
+{
+    if (sufficientImprovementFactorJacobian >= 0.00001 && sufficientImprovementFactorJacobian <= 1.0)
+        m_fieldInfo->setValue(FieldInfo::NewtonSufImprovJacobian, sufficientImprovementFactorJacobian);
+    else
+        throw out_of_range(QObject::tr("Sufficient improvement factor Jacobian is out of range (0.00001 - 1.0).").toStdString());
+}
+
+void PyField::setNewtonMaximumStepsWithReusedJacobian(int maximumStepsWithReusedJacobian)
+{
+    if (maximumStepsWithReusedJacobian >= 1 && maximumStepsWithReusedJacobian <= 100)
+        m_fieldInfo->setValue(FieldInfo::NewtonMaxStepsReuseJacobian, maximumStepsWithReusedJacobian);
+    else
+        throw out_of_range(QObject::tr("Maximum steps with reused Jacobian is out of range (1 - 100).").toStdString());
+}
+
 void PyField::setPicardAndersonAcceleration(bool acceleration)
 {
     m_fieldInfo->setValue(FieldInfo::PicardAndersonAcceleration, acceleration);

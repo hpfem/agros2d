@@ -6,6 +6,14 @@ problem.coordinate_type = "axisymmetric"
 problem.mesh_type = "gmsh_quad"
 problem.matrix_solver = "umfpack"
 
+# disable view
+agros2d.view.mesh.initial_mesh = False
+agros2d.view.mesh.solution_mesh = False
+agros2d.view.mesh.order = False
+agros2d.view.post2d.scalar = False
+agros2d.view.post2d.contours = False
+agros2d.view.post2d.vectors = False
+
 # fields
 # flow
 flow = agros2d.field("flow")
@@ -18,6 +26,7 @@ flow.nonlinear_tolerance = 0.0001
 flow.nonlinear_steps = 10
 flow.damping_type = "automatic"
 flow.damping_coeff = 1.0
+flow.reuse_jacobian = False
 #flow.maximum_steps_with_reused_Jacobian = 10
 #flow.sufficient_improvement_factor_Jacobian = 0.8
 

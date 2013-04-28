@@ -20,8 +20,12 @@ magnetic.analysis_type = "steadystate"
 magnetic.number_of_refinements = 1
 magnetic.polynomial_order = 2
 magnetic.linearity_type = "newton"
-magnetic.nonlinear_tolerance = 0.3
-magnetic.nonlinear_steps = 10
+magnetic.nonlinear_tolerance = 0.2
+magnetic.nonlinear_steps = 20
+magnetic.damping_type = "fixed"
+magnetic.reuse_jacobian = True
+magnetic.maximum_steps_with_reused_Jacobian = 10
+magnetic.sufficient_improvement_factor_Jacobian = 0.9
 
 magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
 
@@ -65,7 +69,7 @@ geometry.add_edge(-0.028, 0.04, -0.03, 0.038, boundaries = {}, angle = 90)
 
 # labels
 geometry.add_label(0.076268, 0.119048, materials = {"magnetic" : "Air"})
-geometry.add_label(-0.0126334, 0.0554136, materials = {"magnetic" : "Iron"}, area = 1e-05)
+geometry.add_label(-0.0126334, 0.0554136, materials = {"magnetic" : "Iron"}, area = 2e-05)
 geometry.add_label(0.0173943, -0.00630466, materials = {"magnetic" : "Iron"})
 geometry.add_label(0.00305095, 0.0688963, materials = {"magnetic" : "Civka 2"})
 geometry.add_label(-0.00501291, 0.0328188, materials = {"magnetic" : "Civka 1"})
