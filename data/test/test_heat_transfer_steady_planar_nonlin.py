@@ -21,12 +21,11 @@ heat.number_of_refinements = 2
 heat.polynomial_order = 2
 heat.linearity_type = "newton"
 heat.nonlinear_tolerance = 0.001
-heat.nonlinear_steps = 20
-heat.damping_coeff = 1.0
-heat.automatic_damping = True
-heat.damping_number_to_increase = 1
-heat.maximum_steps_with_reused_Jacobian = 10
-heat.sufficient_improvement_factor_Jacobian = 0.3
+heat.nonlinear_steps = 30
+heat.damping_type = "automatic"
+heat.damping_coeff = 0.8
+#heat.maximum_steps_with_reused_Jacobian = 10
+#heat.sufficient_improvement_factor_Jacobian = 0.3
 
 heat.add_boundary("Left", "heat_temperature", {"heat_temperature" : 10})
 heat.add_boundary("Radiace", "heat_heat_flux", {"heat_convection_external_temperature" : 0, "heat_convection_heat_transfer_coefficient" : 0, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 20, "heat_radiation_emissivity" : 0.9})
