@@ -384,6 +384,48 @@ bool Block::newtonReuseJacobian() const
     return true;
 }
 
+int Block::newtonStepsToIncreaseDF() const
+{
+    int number = 0;
+
+    foreach (Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if (fieldInfo->value(FieldInfo::NewtonStepsToIncreaseDF).toInt() > number)
+            number = fieldInfo->value(FieldInfo::NewtonStepsToIncreaseDF).toInt();
+    }
+
+    return number;
+}
+
+double Block::newtonSufficientImprovementFactorJacobian() const
+{
+    double number = 1.0;
+
+    foreach (Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if (fieldInfo->value(FieldInfo::NewtonSufImprovJacobian).toDouble() < number)
+            number = fieldInfo->value(FieldInfo::NewtonSufImprovJacobian).toDouble();
+    }
+
+    return number;
+}
+
+int Block::newtonMaxStepsWithReusedJacobian() const
+{
+    int number = 10;
+
+    foreach (Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if (fieldInfo->value(FieldInfo::NewtonMaxStepsReuseJacobian).toInt() < number)
+            number = fieldInfo->value(FieldInfo::NewtonMaxStepsReuseJacobian).toInt();
+    }
+
+    return number;
+}
+
 bool Block::picardAndersonAcceleration() const
 {
     foreach (Field* field, m_fields)

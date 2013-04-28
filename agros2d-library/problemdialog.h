@@ -29,6 +29,7 @@ class CouplingInfo;
 class LineEditDouble;
 class ValueLineEdit;
 class LaTeXViewer;
+class CollapsableGroupBoxButton;
 
 class FieldInfo;
 
@@ -102,10 +103,13 @@ private:
     // main
     QComboBox *cmbAnalysisType;
 
+    // adaptivity
     QComboBox *cmbAdaptivityType;
     QSpinBox *txtAdaptivitySteps;
     LineEditDouble *txtAdaptivityTolerance;
+    QLabel *lblAdaptivityBackSteps;
     QSpinBox *txtAdaptivityBackSteps;
+    QLabel *lblAdaptivityRedoneEach;
     QSpinBox *txtAdaptivityRedoneEach;
 
     QComboBox *cmbLinearityType;
@@ -123,9 +127,15 @@ private:
     QComboBox *cmbNonlinearConvergenceMeasurement;
     QLabel *lblNewtonDampingType;
     QComboBox *cmbNewtonDampingType;
-    QCheckBox *chkReuseJacobian;
+    QCheckBox *chkNewtonReuseJacobian;
     QLabel *lblNewtonDampingCoeff;
     LineEditDouble *txtNewtonDampingCoeff;
+    QLabel *lblNewtonSufficientImprovementFactorJacobian;
+    LineEditDouble *txtNewtonSufficientImprovementFactorJacobian;
+    QLabel *lblNewtonMaximumStepsWithReusedJacobian;
+    QSpinBox *txtNewtonMaximumStepsWithReusedJacobian;
+    QLabel *lblNewtonDampingNumberToIncrease;
+    QSpinBox *txtNewtonDampingNumberToIncrease;
     QCheckBox *chkPicardAndersonAcceleration;
     QLabel *lblPicardAndersonBeta;
     LineEditDouble *txtPicardAndersonBeta;
@@ -149,6 +159,8 @@ private slots:
     void doNewtonDampingChanged(int index);
     void doPicardAndersonChanged(int index);
     void doShowEquation();
+    void doSolverExpandCollapse(bool collapsed);
+    void doAdaptivityExpandCollapse(bool collapsed);
 };
 
 class FieldDialog : public QDialog

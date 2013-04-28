@@ -107,14 +107,6 @@ private:
     QCheckBox *chkUseAniso;
     QCheckBox *chkFinerReference;
 
-    // newton
-    QLabel *lblNewtonSufficientImprovementFactorJacobian;
-    LineEditDouble *txtNewtonSufficientImprovementFactorJacobian;
-    QLabel *lblNewtonMaximumStepsWithReusedJacobian;
-    QSpinBox *txtNewtonMaximumStepsWithReusedJacobian;
-    QLabel *lblNewtonDampingNumberToIncrease;
-    QSpinBox *txtNewtonDampingNumberToIncrease;
-
     // commands
     QLineEdit *txtArgumentTriangle;
     QLineEdit *txtArgumentGmsh;

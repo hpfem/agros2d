@@ -269,10 +269,7 @@ public:
         Adaptivity_MeshRegularity,
         Adaptivity_ProjNormType,
         Adaptivity_UseAniso,
-        Adaptivity_FinerReference,
-        Newton_SufImprovJacobian,
-        Newton_MaxStepsReuseJacobian,
-        Newton_StepsToIncreaseDF,
+        Adaptivity_FinerReference,        
         Commands_Triangle,
         Commands_Gmsh
     };

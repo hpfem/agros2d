@@ -154,7 +154,7 @@ void NewtonSolverAgros<Scalar>::setError()
     }
     else
     {
-        if (successful_steps_jacobian == 0 && iteration > 2 && Agros2D::problem()->setting()->value(ProblemSetting::Newton_MaxStepsReuseJacobian).toInt() > 0)
+        if (successful_steps_jacobian == 0 && iteration > 2 && m_block->newtonMaxStepsWithReusedJacobian() > 0)
             Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Results not improved, step restarted with new Jacobian"));
         if (m_block->newtonDampingType() == DampingType_Automatic && successful_steps_damping == 0)
             Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Results not improved, step restarted with new damping coefficient"));
@@ -240,10 +240,10 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
     m_newtonSolver->set_max_allowed_iterations(block->nonlinearSteps());
     m_newtonSolver->set_max_allowed_residual_norm(1e15);
     m_newtonSolver->set_convergence_measurement(block->nonlinearConvergenceMeasurement());
-    m_newtonSolver->set_sufficient_improvement_factor_jacobian(Agros2D::problem()->setting()->value(ProblemSetting::Newton_SufImprovJacobian).toDouble());
+    m_newtonSolver->set_sufficient_improvement_factor_jacobian(block->newtonSufficientImprovementFactorJacobian());
 
     if(block->newtonReuseJacobian())
-        m_newtonSolver->set_max_steps_with_reused_jacobian(Agros2D::problem()->setting()->value(ProblemSetting::Newton_MaxStepsReuseJacobian).toInt());
+        m_newtonSolver->set_max_steps_with_reused_jacobian(block->newtonMaxStepsWithReusedJacobian());
     else
         m_newtonSolver->set_max_steps_with_reused_jacobian(0);
 
@@ -258,7 +258,7 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
     else if (block->newtonDampingType() == DampingType_Automatic)
     {
         m_newtonSolver->set_initial_auto_damping_coeff(block->newtonDampingCoeff());
-        m_newtonSolver->set_necessary_successful_steps_to_increase(Agros2D::problem()->setting()->value(ProblemSetting::Newton_StepsToIncreaseDF).toInt());
+        m_newtonSolver->set_necessary_successful_steps_to_increase(block->newtonStepsToIncreaseDF());
     }
     else
     {

@@ -321,9 +321,6 @@ void ProblemSetting::setStringKeys()
     m_settingKey[Adaptivity_ProjNormType] = "Adaptivity_ProjNormType";
     m_settingKey[Adaptivity_UseAniso] = "Adaptivity_UseAniso";
     m_settingKey[Adaptivity_FinerReference] = "Adaptivity_FinerReference";
-    m_settingKey[Newton_MaxStepsReuseJacobian] = "Newton_MaxStepsReuseJacobian";
-    m_settingKey[Newton_StepsToIncreaseDF] = "Newton_StepsToIncreaseDF";
-    m_settingKey[Newton_SufImprovJacobian] = "Newton_SufImprovJacobian";
     m_settingKey[Commands_Triangle] = "Commands_Triangle";
     m_settingKey[Commands_Gmsh] = "Commands_Gmsh";
 }
@@ -475,9 +472,6 @@ void ProblemSetting::setDefaultValues()
     m_settingDefault[Adaptivity_ProjNormType] = Hermes::Hermes2D::HERMES_H1_NORM;
     m_settingDefault[Adaptivity_UseAniso] = true;
     m_settingDefault[Adaptivity_FinerReference] = false;
-    m_settingDefault[Newton_MaxStepsReuseJacobian] = 20;
-    m_settingDefault[Newton_StepsToIncreaseDF] = 1;
-    m_settingDefault[Newton_SufImprovJacobian] = 0.8;
     m_settingDefault[Commands_Triangle] = "%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 \"%2\"";
     m_settingDefault[Commands_Gmsh] = "%1 -2 \"%2.geo\"";
 }

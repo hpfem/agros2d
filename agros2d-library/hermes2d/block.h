@@ -86,6 +86,15 @@ public:
     // reuse jacobian
     bool newtonReuseJacobian() const;
 
+    // maximal damping number to increase in one step
+    int newtonStepsToIncreaseDF() const;
+
+    // ratio of the current residual norm and the previous residual norm necessary to deem a step 'successful'
+    double newtonSufficientImprovementFactorJacobian() const;
+
+    // maximum number of steps (Newton iterations) that a jacobian can be reused if it is deemed a 'successful' reusal
+    int newtonMaxStepsWithReusedJacobian() const;
+
     // use Anderson acceleration
     bool picardAndersonAcceleration() const;
 
