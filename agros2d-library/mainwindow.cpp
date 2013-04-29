@@ -1550,17 +1550,19 @@ void MainWindow::doDocumentExportMeshFile()
         QSettings settings;
         QString dir = settings.value("General/LastMeshDir").toString();
 
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Export mesh file"), dir, tr("Mesh files (*.mesh)"));
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Export mesh file"), dir, tr("Mesh files (*.msh)"));
         QFileInfo fileInfo(fileName);
 
         if (!fileName.isEmpty())
         {
+            if (fileInfo.suffix() != "msh") fileName += ".msh";
+
             // remove existing file
             if (QFile::exists(fileName + ".msh"))
                 QFile::remove(fileName + ".msh");
 
             // copy file
-            QFile::copy(cacheProblemDir() + "/initial.msh", fileName + ".msh");
+            QFile::copy(cacheProblemDir() + "/initial.msh", fileName);
             if (fileInfo.absoluteDir() != cacheProblemDir())
                 settings.setValue("General/LastMeshDir", fileInfo.absolutePath());
         }
