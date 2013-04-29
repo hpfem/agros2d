@@ -29,7 +29,6 @@ class CouplingInfo;
 class LineEditDouble;
 class ValueLineEdit;
 class LaTeXViewer;
-class CollapsableGroupBoxButton;
 
 class FieldInfo;
 
@@ -159,8 +158,6 @@ private slots:
     void doNewtonDampingChanged(int index);
     void doPicardAndersonChanged(int index);
     void doShowEquation();
-    void doSolverExpandCollapse(bool collapsed);
-    void doAdaptivityExpandCollapse(bool collapsed);
 };
 
 class FieldDialog : public QDialog

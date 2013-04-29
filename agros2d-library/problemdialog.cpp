@@ -149,15 +149,11 @@ void FieldWidget::createContent()
     txtAdaptivityTolerance = new LineEditDouble(1.0, true);
     txtAdaptivityTolerance->setBottom(0.0);
     lblAdaptivityBackSteps = new QLabel(tr("Steps back in trans:"));
-    lblAdaptivityBackSteps->setVisible(false);
     txtAdaptivityBackSteps = new QSpinBox(this);
-    txtAdaptivityBackSteps->setVisible(false);
     txtAdaptivityBackSteps->setMinimum(0);
     txtAdaptivityBackSteps->setMaximum(100);
     lblAdaptivityRedoneEach = new QLabel(tr("Redone each trans st:"));
-    lblAdaptivityRedoneEach->setVisible(false);
     txtAdaptivityRedoneEach = new QSpinBox(this);
-    txtAdaptivityRedoneEach->setVisible(false);
     txtAdaptivityRedoneEach->setMinimum(1);
     txtAdaptivityRedoneEach->setMaximum(100);
 
@@ -197,19 +193,13 @@ void FieldWidget::createContent()
     chkNewtonReuseJacobian = new QCheckBox(tr("Reuse Jacobian if possible"));
 
     lblNewtonSufficientImprovementFactorJacobian = new QLabel(tr("Sufficient improvement factor Jacobian:"));;
-    lblNewtonSufficientImprovementFactorJacobian->setVisible(false);
     txtNewtonSufficientImprovementFactorJacobian = new LineEditDouble(0, true);
-    txtNewtonSufficientImprovementFactorJacobian->setVisible(false);
     lblNewtonMaximumStepsWithReusedJacobian = new QLabel(tr("Max. steps with reused Jacobian:"));
-    lblNewtonMaximumStepsWithReusedJacobian->setVisible(false);
     txtNewtonMaximumStepsWithReusedJacobian = new QSpinBox(this);
-    txtNewtonMaximumStepsWithReusedJacobian->setVisible(false);
     txtNewtonMaximumStepsWithReusedJacobian->setMinimum(0);
     txtNewtonMaximumStepsWithReusedJacobian->setMaximum(100);
     lblNewtonDampingNumberToIncrease = new QLabel(tr("Steps to increase DF:"));
-    lblNewtonDampingNumberToIncrease->setVisible(false);
     txtNewtonDampingNumberToIncrease = new QSpinBox(this);
-    txtNewtonDampingNumberToIncrease->setVisible(false);
     txtNewtonDampingNumberToIncrease->setMinimum(1);
     txtNewtonDampingNumberToIncrease->setMaximum(5);
 
@@ -237,11 +227,28 @@ void FieldWidget::createContent()
     QGridLayout *layoutGeneral = new QGridLayout();
     layoutGeneral->setColumnMinimumWidth(0, columnMinimumWidth());
     layoutGeneral->setColumnStretch(1, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Type of analysis:")), 0, 0);
+    layoutGeneral->addWidget(new QLabel(tr("Analysis:")), 0, 0);
     layoutGeneral->addWidget(cmbAnalysisType, 0, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Solver:")), 1, 0);
+    layoutGeneral->addWidget(cmbLinearityType, 1, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Adaptivity:")), 2, 0);
+    layoutGeneral->addWidget(cmbAdaptivityType, 2, 1);
 
     QGroupBox *grpGeneral = new QGroupBox(tr("General"));
     grpGeneral->setLayout(layoutGeneral);
+
+    // mesh
+    QGridLayout *layoutMesh = new QGridLayout();
+    layoutMesh->setColumnMinimumWidth(0, columnMinimumWidth());
+    layoutMesh->setColumnStretch(1, 1);
+    layoutMesh->addWidget(new QLabel(tr("Number of refinements:")), 0, 0);
+    layoutMesh->addWidget(txtNumberOfRefinements, 0, 1);
+    layoutMesh->addWidget(new QLabel(tr("Polynomial order:")), 1, 0);
+    layoutMesh->addWidget(txtPolynomialOrder, 1, 1);
+    layoutMesh->setRowStretch(50, 1);
+
+    QGroupBox *grpMesh = new QGroupBox(tr("Mesh parameters"));
+    grpMesh->setLayout(layoutMesh);
 
     // transient analysis
     QGridLayout *layoutTransientAnalysis = new QGridLayout();
@@ -251,91 +258,67 @@ void FieldWidget::createContent()
     layoutTransientAnalysis->addWidget(txtTransientInitialCondition, 0, 1);
     layoutTransientAnalysis->addWidget(new QLabel(tr("Time skip (s):")), 1, 0);
     layoutTransientAnalysis->addWidget(txtTransientTimeSkip, 1, 1);
+    layoutTransientAnalysis->setRowStretch(50, 1);
 
-    QGroupBox *grpTransientAnalysis = new QGroupBox(tr("Transient analysis"));
-    grpTransientAnalysis->setLayout(layoutTransientAnalysis);
-
-    // harmonic analysis
-    QGridLayout *layoutMesh = new QGridLayout();
-    layoutMesh->setColumnMinimumWidth(0, columnMinimumWidth());
-    layoutMesh->setColumnStretch(1, 1);
-    layoutMesh->addWidget(new QLabel(tr("Number of refinements:")), 0, 0);
-    layoutMesh->addWidget(txtNumberOfRefinements, 0, 1);
-    layoutMesh->addWidget(new QLabel(tr("Polynomial order:")), 1, 0);
-    layoutMesh->addWidget(txtPolynomialOrder, 1, 1);
-
-    QGroupBox *grpMesh = new QGroupBox(tr("Mesh parameters"));
-    grpMesh->setLayout(layoutMesh);
+    QWidget *widTransientAnalysis = new QWidget(this);
+    widTransientAnalysis->setLayout(layoutTransientAnalysis);
 
     // adaptivity
     QGridLayout *layoutAdaptivity = new QGridLayout();
     layoutAdaptivity->setColumnMinimumWidth(0, columnMinimumWidth());
     layoutAdaptivity->setColumnStretch(1, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Type:")), 0, 0);
-    layoutAdaptivity->addWidget(cmbAdaptivityType, 0, 1);
     layoutAdaptivity->addWidget(new QLabel(tr("Steps:")), 1, 0);
     layoutAdaptivity->addWidget(txtAdaptivitySteps, 1, 1);
     layoutAdaptivity->addWidget(new QLabel(tr("Tolerance (%):")), 2, 0);
     layoutAdaptivity->addWidget(txtAdaptivityTolerance, 2, 1);
-    // advanced
     layoutAdaptivity->addWidget(lblAdaptivityBackSteps, 3, 0);
     layoutAdaptivity->addWidget(txtAdaptivityBackSteps, 3, 1);
     layoutAdaptivity->addWidget(lblAdaptivityRedoneEach, 4, 0);
     layoutAdaptivity->addWidget(txtAdaptivityRedoneEach, 4, 1);
+    layoutAdaptivity->setRowStretch(50, 1);
 
-    CollapsableGroupBoxButton *grpAdaptivity = new CollapsableGroupBoxButton(tr("Space adaptivity"));
-    connect(grpAdaptivity, SIGNAL(collapseEvent(bool)), this, SLOT(doAdaptivityExpandCollapse(bool)));
-    grpAdaptivity->setCollapsed(true);
-    grpAdaptivity->setLayout(layoutAdaptivity);
+    QWidget *widAdaptivity = new QWidget(this);
+    widAdaptivity->setLayout(layoutAdaptivity);
 
     // linearity
     QGridLayout *layoutSolver = new QGridLayout();
     layoutSolver->setColumnMinimumWidth(0, columnMinimumWidth());
     layoutSolver->setColumnStretch(1, 1);
-    layoutSolver->addWidget(new QLabel(tr("Linearity:")), 0, 0);
-    layoutSolver->addWidget(cmbLinearityType, 0, 1, 1, 3);
     layoutSolver->addWidget(lblNonlinearConvergence, 1, 0);
-    layoutSolver->addWidget(cmbNonlinearConvergenceMeasurement, 1, 1, 1, 3);
+    layoutSolver->addWidget(cmbNonlinearConvergenceMeasurement, 1, 1);
     layoutSolver->addWidget(lblNonlinearTolerance, 2, 0);
     layoutSolver->addWidget(txtNonlinearTolerance, 2, 1);
-    layoutSolver->addWidget(lblNonlinearSteps, 2, 2);
-    layoutSolver->addWidget(txtNonlinearSteps, 2, 3);
+    layoutSolver->addWidget(lblNonlinearSteps, 3, 0);
+    layoutSolver->addWidget(txtNonlinearSteps, 3, 1);
     layoutSolver->addWidget(lblNewtonDampingType, 4, 0);
     layoutSolver->addWidget(cmbNewtonDampingType, 4, 1);
-    layoutSolver->addWidget(lblNewtonDampingCoeff, 4, 2);
-    layoutSolver->addWidget(txtNewtonDampingCoeff, 4, 3);
-    layoutSolver->addWidget(chkNewtonReuseJacobian, 6, 0, 1, 4);
-
-    // advanced
-    layoutSolver->addWidget(lblNewtonSufficientImprovementFactorJacobian, 20, 0, 1, 2);
-    layoutSolver->addWidget(txtNewtonSufficientImprovementFactorJacobian, 20, 2, 1, 2);
-    layoutSolver->addWidget(lblNewtonMaximumStepsWithReusedJacobian, 21, 0, 1, 2);
-    layoutSolver->addWidget(txtNewtonMaximumStepsWithReusedJacobian, 21, 2, 1, 2);
-    layoutSolver->addWidget(lblNewtonDampingNumberToIncrease, 22, 0, 1, 2);
-    layoutSolver->addWidget(txtNewtonDampingNumberToIncrease, 22, 2, 1, 2);
-
+    layoutSolver->addWidget(lblNewtonDampingCoeff, 5, 0);
+    layoutSolver->addWidget(txtNewtonDampingCoeff, 5, 1);
+    layoutSolver->addWidget(chkNewtonReuseJacobian, 6, 0, 1, 2);
+    layoutSolver->addWidget(lblNewtonSufficientImprovementFactorJacobian, 7, 0);
+    layoutSolver->addWidget(txtNewtonSufficientImprovementFactorJacobian, 7, 1);
+    layoutSolver->addWidget(lblNewtonMaximumStepsWithReusedJacobian, 8, 0);
+    layoutSolver->addWidget(txtNewtonMaximumStepsWithReusedJacobian, 8, 1);
+    layoutSolver->addWidget(lblNewtonDampingNumberToIncrease, 9, 0);
+    layoutSolver->addWidget(txtNewtonDampingNumberToIncrease, 9, 1);
+    layoutSolver->setRowStretch(50, 1);
     // layoutLinearity->addWidget(chkPicardAndersonAcceleration, 7, 0, 1, 2);
     // layoutLinearity->addWidget(lblPicardAndersonBeta, 8, 0);
     // layoutLinearity->addWidget(txtPicardAndersonBeta, 8, 1);
     // layoutLinearity->addWidget(lblPicardAndersonNumberOfLastVectors, 9, 0);
     // layoutLinearity->addWidget(txtPicardAndersonNumberOfLastVectors, 9, 1);
 
-    CollapsableGroupBoxButton *grpSolver = new CollapsableGroupBoxButton(tr("Solver"));
-    connect(grpSolver, SIGNAL(collapseEvent(bool)), this, SLOT(doSolverExpandCollapse(bool)));
-    grpSolver->setCollapsed(true);
-    grpSolver->setLayout(layoutSolver);
+    QWidget *widSolver = new QWidget(this);
+    widSolver->setLayout(layoutSolver);
 
     // left
     QVBoxLayout *layoutLeft = new QVBoxLayout();
     layoutLeft->addWidget(grpGeneral);
-    layoutLeft->addWidget(grpTransientAnalysis);
-    layoutLeft->addWidget(grpAdaptivity);
     layoutLeft->addStretch();
 
     // right
     QVBoxLayout *layoutRight = new QVBoxLayout();
     layoutRight->addWidget(grpMesh);
-    layoutRight->addWidget(grpSolver);
     layoutRight->addStretch();
 
     // both
@@ -349,34 +332,23 @@ void FieldWidget::createContent()
     layoutEquation->addWidget(equationImage);
     layoutEquation->addStretch();
 
+    // tabs
+    QTabWidget *tabWidget = new QTabWidget(this);
+    tabWidget->addTab(widSolver, tr("Solver"));
+    tabWidget->addTab(widAdaptivity, tr("Space adaptivity"));
+    tabWidget->addTab(widTransientAnalysis, tr("Transient analysis"));
+
     QGroupBox *grpEquation = new QGroupBox(tr("Partial differential equation"));
     grpEquation->setLayout(layoutEquation);
 
     QVBoxLayout *layoutProblem = new QVBoxLayout();
     layoutProblem->addWidget(grpEquation);
     layoutProblem->addLayout(layoutPanel);
+    layoutProblem->addWidget(tabWidget);
 
     setLayout(layoutProblem);
 
     setMinimumSize(sizeHint());
-}
-
-void FieldWidget::doSolverExpandCollapse(bool collapsed)
-{
-    lblNewtonSufficientImprovementFactorJacobian->setVisible(!collapsed);
-    txtNewtonSufficientImprovementFactorJacobian->setVisible(!collapsed);
-    lblNewtonMaximumStepsWithReusedJacobian->setVisible(!collapsed);
-    txtNewtonMaximumStepsWithReusedJacobian->setVisible(!collapsed);
-    lblNewtonDampingNumberToIncrease->setVisible(!collapsed);
-    txtNewtonDampingNumberToIncrease->setVisible(!collapsed);
-}
-
-void FieldWidget::doAdaptivityExpandCollapse(bool collapsed)
-{
-    lblAdaptivityBackSteps->setVisible(!collapsed);
-    txtAdaptivityBackSteps->setVisible(!collapsed);
-    lblAdaptivityRedoneEach->setVisible(!collapsed);
-    txtAdaptivityRedoneEach->setVisible(!collapsed);
 }
 
 void FieldWidget::fillComboBox()
