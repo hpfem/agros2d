@@ -58,7 +58,7 @@ bool NewtonSolverAgros<Scalar>::on_initialization()
 template <typename Scalar>
 bool NewtonSolverAgros<Scalar>::on_initial_step_end()
 {
-    setError();
+    setError(Phase_Init);
     return !Agros2D::problem()->isAborted();
 }
 
@@ -71,16 +71,28 @@ bool NewtonSolverAgros<Scalar>::on_step_begin()
 template <typename Scalar>
 bool NewtonSolverAgros<Scalar>::on_step_end()
 {
-    setError();
     return !Agros2D::problem()->isAborted();
 }
 
 template <typename Scalar>
 bool NewtonSolverAgros<Scalar>::on_finish()
 {
-    setError();
+    setError(Phase_Finished);
     return !Agros2D::problem()->isAborted();
 }
+
+template <typename Scalar>
+void NewtonSolverAgros<Scalar>::on_damping_factor_updated()
+{
+    setError(Phase_DFDetermined);
+}
+
+template <typename Scalar>
+void NewtonSolverAgros<Scalar>::on_reused_jacobian_step_begin()
+{
+    setError(Phase_JacobianReused);
+}
+
 
 template <typename Scalar>
 void NewtonSolverAgros<Scalar>::clearSteps()
@@ -90,7 +102,7 @@ void NewtonSolverAgros<Scalar>::clearSteps()
 }
 
 template <typename Scalar>
-void NewtonSolverAgros<Scalar>::setError()
+void NewtonSolverAgros<Scalar>::setError(Phase phase)
 {
     unsigned int iteration = this->get_parameter_value(this->iteration());
     const Hermes::vector<double>& residual_norms = this->get_parameter_value(this->residual_norms());
@@ -109,10 +121,12 @@ void NewtonSolverAgros<Scalar>::setError()
 
     double previous_residual_norm = current_residual_norm;
     double previous_solution_norm = current_solution_norm;
+    double previous_dampinig_coefficient = current_damping_coefficient;
     if (iteration > 1)
     {
         previous_residual_norm = residual_norms[iteration - 2];
         previous_solution_norm = solution_norms[iteration - 2];
+        previous_dampinig_coefficient = damping_coefficients.at(damping_coefficients.size() - 2);
     }
 
     // add iteration
@@ -147,23 +161,52 @@ void NewtonSolverAgros<Scalar>::setError()
 
     assert(m_steps.size() == m_errors.size());
 
-    if (iteration == 1)
+    if(phase == Phase_Init)
     {
+        assert(iteration == 1);
         Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Initial step, error: %1")
                                      .arg(m_errors.last()));
     }
-    else
+    else if (phase == Phase_DFDetermined)
     {
-        if (successful_steps_jacobian == 0 && iteration > 2 && m_block->newtonMaxStepsWithReusedJacobian() > 0)
-            Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Results not improved, step restarted with new Jacobian"));
-        if (m_block->newtonDampingType() == DampingType_Automatic && successful_steps_damping == 0)
-            Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Results not improved, step restarted with new damping coefficient"));
-
-        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, damping coeff.: %2, error: %3")
+        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, Jacobian recalculated, damping coeff.: %2, error: %3")
+                                     .arg(iteration)
+                                     .arg(previous_dampinig_coefficient)
+                                     .arg(m_errors.last()));
+    }
+    else if (phase == Phase_JacobianReused)
+    {
+        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, Jacobian reused, damping coeff.: %2, error: %3")
                                      .arg(iteration)
                                      .arg(current_damping_coefficient)
                                      .arg(m_errors.last()));
     }
+    else if (phase == Phase_Finished)
+    {
+        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, calculation finished, error: %2")
+                                     .arg(iteration)
+                                     .arg(m_errors.last()));
+    }
+    else
+        assert(0);
+
+//    if (iteration == 1)
+//    {
+//        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Initial step, error: %1")
+//                                     .arg(m_errors.last()));
+//    }
+//    else
+//    {
+//        if (successful_steps_jacobian == 0 && iteration > 2 && m_block->newtonMaxStepsWithReusedJacobian() > 0)
+//            Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Results not improved, step restarted with new Jacobian"));
+//        if (m_block->newtonDampingType() == DampingType_Automatic && successful_steps_damping == 0)
+//            Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Results not improved, step restarted with new damping coefficient"));
+
+//        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, damping coeff.: %2, error: %3")
+//                                     .arg(iteration)
+//                                     .arg(current_damping_coefficient)
+//                                     .arg(m_errors.last()));
+//    }
 
     Agros2D::log()->setNonlinearTable(m_steps, m_errors);
 }

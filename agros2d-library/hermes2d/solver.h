@@ -31,6 +31,13 @@ class ExactSolutionScalarAgros;
 
 class SceneBoundary;
 
+enum Phase  {
+    Phase_Init,
+    Phase_DFDetermined,
+    Phase_JacobianReused,
+    Phase_Finished
+};
+
 template <typename Scalar>
 class NewtonSolverAgros : public Hermes::Hermes2D::NewtonSolver<Scalar>
 {
@@ -42,6 +49,8 @@ public:
     virtual bool on_step_begin();
     virtual bool on_step_end();
     virtual bool on_finish();
+    virtual void on_damping_factor_updated();
+    virtual void on_reused_jacobian_step_begin();
 
     void clearSteps();
 
@@ -54,7 +63,7 @@ protected:
     QVector<double> m_steps;
     QVector<double> m_errors;
 
-    void setError();
+    void setError(Phase phase);
 };
 
 struct NextTimeStep
