@@ -182,6 +182,32 @@ cdef class __Geometry__:
 
         self.thisptr.removeLabels(labels_vector)
 
+    def add_rect(self, x0, y0, width, height, boundaries = {}, materials = None):
+        self.add_edge(x0, y0, (x0)+width, y0, boundaries=boundaries)
+        self.add_edge(x0+width, y0, (x0)+width, (y0)+height, boundaries=boundaries)
+        self.add_edge(x0+width, (y0)+height, x0, (y0)+height, boundaries=boundaries)
+        self.add_edge(x0, (y0)+height, x0, y0, boundaries=boundaries)
+
+        if (materials != None):
+            self.add_label((x0)+(width/2.0), (y0)+(height/2.0), materials=materials)
+
+    def add_circle(self, x0, y0, radius, boundaries = {}, materials = None):
+        self.add_edge(x0, (y0)-radius, (x0)+radius, y0, boundaries=boundaries, angle=90)
+        self.add_edge((x0)+radius, y0, x0, (y0)+radius, boundaries=boundaries, angle=90)
+        self.add_edge(x0, (y0)+radius, (x0)-radius, y0, boundaries=boundaries, angle=90)
+        self.add_edge((x0)-radius, y0, x0, (y0)-radius, boundaries=boundaries, angle=90)
+
+        if (materials != None):
+            geometry.add_label(x0, y0, materials=materials)
+
+    def add_semicircle(self, x0, y0, radius, boundaries = {}, materials = {}):
+        self.add_edge(x0, (y0)-radius, (x0)+radius, y0, boundaries=boundaries, angle=90)
+        self.add_edge((x0)+radius, y0, x0, (y0)+radius, boundaries=boundaries, angle=90)
+        self.add_edge(x0, (y0)+radius, x0, (y0)-radius, boundaries=boundaries, angle=0)
+
+        if (materials != None):
+            self.add_label((x0)+(radius/2.0), y0, materials=materials)
+
     def nodes_count(self):
         """Return count of existing nodes."""
         return self.thisptr.nodesCount()

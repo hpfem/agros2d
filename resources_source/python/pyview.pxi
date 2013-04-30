@@ -206,6 +206,11 @@ cdef class __ViewMesh__(__ViewMeshAndPost__):
     def activate(self):
         self.thisptr.activate()
 
+    def disable(self):
+      self.initial_mesh = False
+      self.solution_mesh = False
+      self.order = False
+
     property solution_mesh:
         def __get__(self):
             return self.thisptr.getSolutionMeshViewShow()
@@ -340,6 +345,11 @@ cdef class __ViewPost2D__(__ViewPost__):
 
     def activate(self):
         self.thisptr.activate()
+
+    def disable(self):
+      self.scalar = False
+      self.contours = False
+      self.vectors = False
 
     property scalar:
         def __get__(self):
