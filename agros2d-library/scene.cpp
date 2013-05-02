@@ -1156,7 +1156,56 @@ void Scene::readFromFile(const QString &fileName)
     catch (AgrosException &e)
     {
         Agros2D::log()->printError(tr("Problem"), e.toString());
-        readFromFile21(fileName);
+        transformFile(fileName);
+    }
+}
+
+void Scene::transformFile(const QString &fileName)
+{
+    QDomDocument doc;
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly))
+        throw AgrosException(tr("File '%1' cannot be opened (%2).").arg(fileName).arg(file.errorString()));
+
+    if (!doc.setContent(&file))
+    {
+        file.close();
+        throw AgrosException(tr("File '%1' is not valid Agros2D file.").arg(fileName));
+    }
+    file.close();
+
+    QDomElement eleDoc = doc.documentElement();
+    QString version = eleDoc.attribute("version");
+
+    if (version == "3")
+    {
+        QString tempFileName = tempProblemDir() + "/transform-3.1.a2d";
+        QFile tempFile(tempFileName);
+        if (!tempFile.open(QIODevice::WriteOnly))
+            throw AgrosException(tr("File cannot be saved (%2).").arg(tempFile.errorString()));
+
+        QTextStream stream(&tempFile);
+
+        stream << transformXML(fileName, datadir() + "/resources/xslt/problem_a2d_31_xml.xsl");
+        Agros2D::log()->printMessage(tr("Problem"), tr("File '%1' was transformed to version 3.1.").arg(fileName));
+
+        tempFile.close();
+        readFromFile(tempFileName);
+    }
+    else if (version == "2.1")
+    {
+        QString tempFileName = tempProblemDir() + "/transform-3.0.a2d";
+        QFile tempFile(tempFileName);
+        if (!tempFile.open(QIODevice::WriteOnly))
+            throw AgrosException(tr("File cannot be saved (%2).").arg(tempFile.errorString()));
+
+        QTextStream stream(&tempFile);
+
+        stream << transformXML(fileName, datadir() + "/resources/xslt/problem_a2d_30_xml.xsl");
+        Agros2D::log()->printMessage(tr("Problem"), tr("File '%1' was transformed to version 3.0.").arg(fileName));
+
+        tempFile.close();
+        readFromFile(tempFileName);
     }
 }
 

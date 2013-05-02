@@ -182,7 +182,7 @@
             </xsl:element>
 
             <!-- couplings -->
-            <xsl:copy-of select="couplings"/>
+            <xsl:copy-of select="/document/problem/couplings"/>
         </xsl:element>
 
         <!-- config -->

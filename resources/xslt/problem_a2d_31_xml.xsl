@@ -33,13 +33,13 @@
                           <xsl:value-of select ="@field_id"/>
                         </xsl:attribute>
                         <xsl:attribute name="adaptivity_type">
-                          <xsl:value-of select ="@adaptivity_type"/>
+                          <xsl:value-of select ="adaptivity/@adaptivity_type"/>
                         </xsl:attribute>
                         <xsl:attribute name="analysis_type">
                           <xsl:value-of select ="@analysis_type"/>
                         </xsl:attribute>
                         <xsl:attribute name="linearity_type">
-                          <xsl:value-of select ="@linearity_type"/>
+                          <xsl:value-of select ="solver/@linearity_type"/>
                         </xsl:attribute>
 
                         <xsl:copy-of select="refinement_edges"/>
@@ -88,6 +88,8 @@
                     </xsl:element>
                 </xsl:for-each>
             </xsl:element>
+
+            <xsl:copy-of select="problem:document/problem/couplings"/>
 
             <!-- problem config -->
             <xsl:element name="problem_config">
