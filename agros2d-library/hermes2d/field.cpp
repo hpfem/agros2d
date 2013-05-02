@@ -766,7 +766,8 @@ void FieldInfo::setStringKeys()
     m_settingKey[NonlinearSteps] = "NonlinearSteps";
     m_settingKey[NonlinearConvergenceMeasurement] = "NonlinearConvergenceMeasurement";
     m_settingKey[NewtonDampingType] = "NewtonDampingType";
-    m_settingKey[NewtonDampingCoeff] = "NewtonDampingCoeff";    
+    m_settingKey[NewtonDampingCoeff] = "NewtonDampingCoeff";
+    m_settingKey[NewtonReuseJacobian] = "NewtonReuseJacobian";
     m_settingKey[NewtonSufImprovJacobian] = "NewtonSufImprovJacobian";
     m_settingKey[NewtonMaxStepsReuseJacobian] = "NewtonMaxStepsReuseJacobian";
     m_settingKey[NewtonStepsToIncreaseDF] = "NewtonStepsToIncreaseDF";
@@ -780,7 +781,7 @@ void FieldInfo::setStringKeys()
     m_settingKey[AdaptivityTransientBackSteps] = "AdaptivityTransientBackSteps";
     m_settingKey[AdaptivityTransientRedoneEach] = "AdaptivityTransientRedoneEach";
     m_settingKey[TransientTimeSkip] = "TransientTimeSkip";
-    m_settingKey[TransientInitialCondition] = "TransientInitialConditio";
+    m_settingKey[TransientInitialCondition] = "TransientInitialCondition";
 }
 
 void FieldInfo::setDefaultValues()
