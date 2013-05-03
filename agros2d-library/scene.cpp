@@ -1160,7 +1160,6 @@ void Scene::readFromFile(const QString &fileName)
         try
         {
             transformFile(fileName);
-            Agros2D::log()->printMessage(tr("Problem"), tr("Data file was transformed to version 3.1 and saved to temp dictionary."));
         }
         catch (AgrosException &e)
         {
@@ -1188,11 +1187,20 @@ void Scene::transformFile(const QString &fileName)
 
     QString out;
     if (version == "3")
+    {
         out = transformXML(fileName, datadir() + "/resources/xslt/problem_a2d_31_xml.xsl");
+        version = "3.1";
+    }
     else if (version == "2.1")
+    {
         out = transformXML(fileName, datadir() + "/resources/xslt/problem_a2d_30_xml.xsl");
+        version = "3";
+    }
     else if (version.isEmpty() || version == "2.0")
+    {
         out = transformXML(fileName, datadir() + "/resources/xslt/problem_a2d_21_xml.xsl");
+        version = "2.1";
+    }
     else
         throw AgrosException(tr("File '%1' is not valid Agros2D file.").arg(fileName));
 
@@ -1205,6 +1213,7 @@ void Scene::transformFile(const QString &fileName)
     stream << out;
     tempFile.close();
 
+    Agros2D::log()->printMessage(tr("Problem"), tr("Data file was transformed to version %1 and saved to temp dictionary.").arg(version));
     readFromFile(tempFileName);
 }
 

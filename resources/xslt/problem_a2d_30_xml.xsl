@@ -76,7 +76,6 @@
                             </xsl:for-each>
                         </xsl:element>
 
-                        <!-- TODO: have to be tested -->
                         <!-- polynomial orders -->
                         <xsl:element name="polynomial_orders">
                             <xsl:for-each select="polynomial_order/label">
@@ -163,14 +162,16 @@
                                     <!-- types -->
                                     <xsl:element name="material_types">
                                         <xsl:for-each select="@*">
-                                            <xsl:element name="material_type">
-                                                <xsl:attribute name="key">
-                                                    <xsl:value-of select ="name(.)"/>
-                                                </xsl:attribute>
-                                                <xsl:attribute name="value">
-                                                    <xsl:value-of select="." />
-                                                </xsl:attribute>
-                                            </xsl:element>
+                                            <xsl:if test="not(name(.)='name') and not(name(.)='id') and not(name(.)='type')">
+                                                <xsl:element name="material_type">
+                                                    <xsl:attribute name="key">
+                                                        <xsl:value-of select ="name(.)"/>
+                                                    </xsl:attribute>
+                                                    <xsl:attribute name="value">
+                                                        <xsl:value-of select="." />
+                                                    </xsl:attribute>
+                                                </xsl:element>
+                                            </xsl:if>
                                         </xsl:for-each>
                                     </xsl:element>
                                 </xsl:element>
