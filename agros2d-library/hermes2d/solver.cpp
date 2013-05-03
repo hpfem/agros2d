@@ -126,8 +126,10 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
     {
         previous_residual_norm = residual_norms[iteration - 2];
         previous_solution_norm = solution_norms[iteration - 2];
-        previous_dampinig_coefficient = damping_coefficients.at(damping_coefficients.size() - 2);
     }
+    if(damping_coefficients.size() >= 2)
+        previous_dampinig_coefficient = damping_coefficients.at(damping_coefficients.size() - 2);
+
 
     // add iteration
     m_steps.append(iteration);

@@ -694,7 +694,7 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
         // todo: dangerous
         // catching all other exceptions. This is not save at all
         m_isSolving = false;
-        Agros2D::log()->printWarning(tr("Solver"), tr("An unknown exception occured in solver and has been ignored"));
+        Agros2D::log()->printError(tr("Solver"), tr("An unknown exception occured in solver and has been ignored"));
         qDebug() << "Solver: An unknown exception occured and has been ignored";
         return;
     }
