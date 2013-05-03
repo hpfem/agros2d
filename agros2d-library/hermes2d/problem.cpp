@@ -122,6 +122,7 @@ void Problem::clearSolution()
     // m_timeStep = 0;
     m_lastTimeElapsed = QTime(0, 0);
     m_timeStepLengths.clear();
+    m_timeHistory.clear();
 
     foreach (FieldInfo* fieldInfo, m_fieldInfos)
         fieldInfo->clearInitialMesh();
@@ -474,6 +475,7 @@ void Problem::solveInit(bool reCreateStructure)
 {
     m_isSolving = true;
     m_timeStepLengths.clear();
+    m_timeHistory.clear();
 
     // check problem settings
     if (Agros2D::problem()->isTransient())
@@ -731,7 +733,7 @@ void Problem::solveAction()
         solvers[block]->createInitialSpace();
     }
 
-    NextTimeStep nextTimeStep(config()->initialTimeStepLength());
+    TimeStepInfo nextTimeStep(config()->initialTimeStepLength());
     bool doNextTimeStep = true;
     while (doNextTimeStep && !m_abortSolve)
     {
@@ -770,7 +772,13 @@ void Problem::solveAction()
 
                 // TODO: space + time adaptivity
                 if (block->isTransient() && (actualTimeStep() >= 1))
+                {
                     nextTimeStep = solvers[block]->estimateTimeStepLength(actualTimeStep(), 0);
+
+                    //save actual time and indicator, whether calculation on this time was refused
+                    m_timeHistory.push_back(QPair<double, bool>(actualTime(), nextTimeStep.refuse));
+                    //qDebug() << nextTimeStep.length << ", " << actualTime() << ", " << nextTimeStep.refuse;
+                }
             }
         }
 
@@ -787,9 +795,6 @@ void Problem::solveAction()
             doNextTimeStep = defineActualTimeStepLength(nextTimeStep.length);
         }
     }
-
-//    if(m_abortSolve)
-//        emit calculationStoped();
 
     // delete solvers
     qDeleteAll(solvers);

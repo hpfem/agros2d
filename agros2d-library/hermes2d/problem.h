@@ -135,6 +135,8 @@ public:
     void readInitialMeshesFromFile();
     void readSolutionsFromFile();
 
+    QList<QPair<double, bool> > timeStepHistory() const { return m_timeHistory; }
+
 private:
     ProblemConfig *m_config;
     ProblemSetting *m_setting;
@@ -155,7 +157,7 @@ private:
     bool m_isNonlinear;
 
     QList<double> m_timeStepLengths;
-    // int m_timeStep;
+    QList<QPair<double, bool> > m_timeHistory;
 
     bool skipThisTimeStep(Block* block);
 

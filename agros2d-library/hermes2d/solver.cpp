@@ -630,7 +630,7 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
 }
 
 template <typename Scalar>
-NextTimeStep ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivityStep)
+TimeStepInfo ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int adaptivityStep)
 {
     double timeTotal = Agros2D::problem()->config()->value(ProblemConfig::TimeTotal).toDouble();
 
@@ -642,7 +642,7 @@ NextTimeStep ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
 
     TimeStepMethod method = (TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt();
     if(method == TimeStepMethod_Fixed)
-        return NextTimeStep(Agros2D::problem()->config()->constantTimeStepLength());
+        return TimeStepInfo(Agros2D::problem()->config()->constantTimeStepLength());
 
     MultiArray<Scalar> referenceCalculation =
             Agros2D::solutionStore()->multiArray(Agros2D::solutionStore()->lastTimeAndAdaptiveSolution(m_block, SolutionMode_Normal));
@@ -655,7 +655,7 @@ NextTimeStep ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
     if (timeStep == 1)
     {
         m_averageErrorToLenghtRatio = 0.;
-        return NextTimeStep(Agros2D::problem()->actualTimeStepLength());
+        return TimeStepInfo(Agros2D::problem()->actualTimeStepLength());
     }
 
     int previouslyUsedOrder = min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt());
@@ -721,7 +721,7 @@ NextTimeStep ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
     if(refuseThisStep)
         Agros2D::log()->printDebug(m_solverID, "Time step refused");
 
-    return NextTimeStep(nextTimeStepLength, refuseThisStep);
+    return TimeStepInfo(nextTimeStepLength, refuseThisStep);
 }
 
 template <typename Scalar>

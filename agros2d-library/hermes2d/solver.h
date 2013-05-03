@@ -66,9 +66,9 @@ protected:
     void setError(Phase phase);
 };
 
-struct NextTimeStep
+struct TimeStepInfo
 {
-    NextTimeStep(double len, bool ref = false) : length(len), refuse(ref) {}
+    TimeStepInfo(double len, bool ref = false) : length(len), refuse(ref) {}
     double length;
     bool refuse;
 };
@@ -174,7 +174,7 @@ public:
     void solveInitialTimeStep();
 
     // returns the value of the next time step lenght (for transient problems), using BDF2 approximation
-    NextTimeStep estimateTimeStepLength(int timeStep, int adaptivityStep);
+    TimeStepInfo estimateTimeStepLength(int timeStep, int adaptivityStep);
 
     void solveSimple(int timeStep, int adaptivityStep);
     void solveReferenceAndProject(int timeStep, int adaptivityStep);
