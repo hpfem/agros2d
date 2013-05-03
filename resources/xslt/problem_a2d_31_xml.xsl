@@ -39,7 +39,7 @@
                           <xsl:value-of select ="@analysis_type"/>
                         </xsl:attribute>
                         <xsl:attribute name="linearity_type">
-                          <xsl:value-of select ="solver/@linearity_type"/>
+                          <xsl:value-of select ="solver/@linearity_type"/>`
                         </xsl:attribute>
 
                         <xsl:copy-of select="refinement_edges"/>
@@ -98,7 +98,7 @@
                                    <xsl:variable name="fixed_damping" select="./solver/@newton_damping_coeff" />
                                    <xsl:choose>
                                        <xsl:when test="$automatic_damping=1">0</xsl:when>
-                                       <xsl:when test="$automatic_damping=0 and fixed_damping!=1">1</xsl:when>
+                                       <xsl:when test="$automatic_damping=0 and $fixed_damping!=1">1</xsl:when>
                                        <xsl:otherwise>2</xsl:otherwise>
                                    </xsl:choose>
                                </xsl:attribute>

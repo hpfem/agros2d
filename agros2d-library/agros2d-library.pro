@@ -224,7 +224,7 @@ OTHER_FILES += functions.py \
     ../resources/materials/Iron.xml \
     ../resources/xsd/problem_a2d_21_xml.xsd \
     ../resources/xsd/problem_a2d_30_xml.xsd \
-    ../resources/xslt/problem_a2d_20_21_xml.xsl \
+    ../resources/xslt/problem_a2d_21_xml.xsl \
     ../resources/xslt/problem_a2d_30_xml.xsl\
     ../resources/xslt/problem_a2d_31_xml.xsl\
     ../resources/modules/rf.xml \

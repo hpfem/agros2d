@@ -1151,12 +1151,21 @@ void Scene::readFromFile(const QString &fileName)
 
     try
     {
-        readFromFile30(fileName);
+        readFromFile31(fileName);
     }
     catch (AgrosException &e)
     {
         Agros2D::log()->printError(tr("Problem"), e.toString());
-        transformFile(fileName);
+
+        try
+        {
+            transformFile(fileName);
+            Agros2D::log()->printMessage(tr("Problem"), tr("Data file was transformed to version 3.1 and saved to temp dictionary."));
+        }
+        catch (AgrosException &e)
+        {
+            Agros2D::log()->printError(tr("Problem"), e.toString());
+        }
     }
 }
 
@@ -1177,36 +1186,26 @@ void Scene::transformFile(const QString &fileName)
     QDomElement eleDoc = doc.documentElement();
     QString version = eleDoc.attribute("version");
 
+    QString out;
     if (version == "3")
-    {
-        QString tempFileName = tempProblemDir() + "/transform-3.1.a2d";
-        QFile tempFile(tempFileName);
-        if (!tempFile.open(QIODevice::WriteOnly))
-            throw AgrosException(tr("File cannot be saved (%2).").arg(tempFile.errorString()));
-
-        QTextStream stream(&tempFile);
-
-        stream << transformXML(fileName, datadir() + "/resources/xslt/problem_a2d_31_xml.xsl");
-        Agros2D::log()->printMessage(tr("Problem"), tr("File '%1' was transformed to version 3.1.").arg(fileName));
-
-        tempFile.close();
-        readFromFile(tempFileName);
-    }
+        out = transformXML(fileName, datadir() + "/resources/xslt/problem_a2d_31_xml.xsl");
     else if (version == "2.1")
-    {
-        QString tempFileName = tempProblemDir() + "/transform-3.0.a2d";
-        QFile tempFile(tempFileName);
-        if (!tempFile.open(QIODevice::WriteOnly))
-            throw AgrosException(tr("File cannot be saved (%2).").arg(tempFile.errorString()));
+        out = transformXML(fileName, datadir() + "/resources/xslt/problem_a2d_30_xml.xsl");
+    else if (version.isEmpty() || version == "2.0")
+        out = transformXML(fileName, datadir() + "/resources/xslt/problem_a2d_21_xml.xsl");
+    else
+        throw AgrosException(tr("File '%1' is not valid Agros2D file.").arg(fileName));
 
-        QTextStream stream(&tempFile);
+    QString tempFileName = tempProblemDir() + QString("/%1-%2.a2d").arg(QFileInfo(file).baseName()).arg(version);
+    QFile tempFile(tempFileName);
+    if (!tempFile.open(QIODevice::WriteOnly))
+        throw AgrosException(tr("File cannot be saved (%2).").arg(tempFile.errorString()));
 
-        stream << transformXML(fileName, datadir() + "/resources/xslt/problem_a2d_30_xml.xsl");
-        Agros2D::log()->printMessage(tr("Problem"), tr("File '%1' was transformed to version 3.0.").arg(fileName));
+    QTextStream stream(&tempFile);
+    stream << out;
+    tempFile.close();
 
-        tempFile.close();
-        readFromFile(tempFileName);
-    }
+    readFromFile(tempFileName);
 }
 
 void Scene::readFromFile21(const QString &fileName)
@@ -1563,7 +1562,7 @@ void Scene::readFromFile21(const QString &fileName)
     currentPythonEngineAgros()->runScript(Agros2D::problem()->setting()->value(ProblemSetting::Problem_StartupScript).toString());
 }
 
-void Scene::readFromFile30(const QString &fileName)
+void Scene::readFromFile31(const QString &fileName)
 {
     QFileInfo fileInfo(fileName);
 

@@ -189,7 +189,7 @@ public:
     void readFromFile(const QString &fileName);
     void transformFile(const QString &fileName);
     void readFromFile21(const QString &fileName);
-    void readFromFile30(const QString &fileName);
+    void readFromFile31(const QString &fileName);
     void writeToFile(const QString &fileName, bool saveLastProblemDir = false);
     void writeToFile21(const QString &fileName);
     void writeToFile30(const QString &fileName);
