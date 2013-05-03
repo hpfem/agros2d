@@ -11,7 +11,50 @@
         <xsl:attribute name="version">3</xsl:attribute>
 
         <!-- geometry -->
-        <xsl:copy-of select="/document/geometry"/>
+        <xsl:element name="geometry">
+            <!-- nodes -->
+            <xsl:copy-of select="/document/geometry/nodes"/>
+
+            <!-- edges -->
+            <xsl:element name="edges">
+                <xsl:for-each select="/document/geometry/edges/edge">
+                    <xsl:element name="edge">
+                        <xsl:attribute name="id">
+                            <xsl:value-of select ="@id"/>
+                        </xsl:attribute>
+                        <xsl:attribute name="start">
+                          <xsl:value-of select ="@start"/>
+                        </xsl:attribute>
+                        <xsl:attribute name="end">
+                          <xsl:value-of select ="@end"/>
+                        </xsl:attribute>
+                        <xsl:attribute name="angle">
+                          <xsl:value-of select ="@angle"/>
+                        </xsl:attribute>
+                    </xsl:element>
+                </xsl:for-each>
+            </xsl:element>
+
+            <!-- edges -->
+            <xsl:element name="labels">
+                <xsl:for-each select="/document/geometry/labels/label">
+                    <xsl:element name="label">
+                        <xsl:attribute name="id">
+                            <xsl:value-of select ="@id"/>
+                        </xsl:attribute>
+                        <xsl:attribute name="x">
+                          <xsl:value-of select ="@x"/>
+                        </xsl:attribute>
+                        <xsl:attribute name="y">
+                          <xsl:value-of select ="@y"/>
+                        </xsl:attribute>
+                        <xsl:attribute name="area">
+                          <xsl:value-of select ="@area"/>
+                        </xsl:attribute>
+                    </xsl:element>
+                </xsl:for-each>
+            </xsl:element>
+        </xsl:element>
 
         <!-- problem -->
         <xsl:element name="problem">

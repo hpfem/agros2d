@@ -192,7 +192,7 @@ public:
     void readFromFile31(const QString &fileName);
     void writeToFile(const QString &fileName, bool saveLastProblemDir = false);
     void writeToFile21(const QString &fileName);
-    void writeToFile30(const QString &fileName);
+    void writeToFile31(const QString &fileName);
 
     void readSolutionFromFile(const QString &fileName);
     void writeSolutionToFile(const QString &fileName);

@@ -201,7 +201,6 @@
                         <xsl:choose>
                             <xsl:when test="$current_version!=null">
                                 <!-- transformation from version 2.0 -->
-                                <xsl:variable name="edges" select="/document/geometry/edges/*" />
                                 <xsl:for-each select="/document/problems/problem/edges/edge">
                                     <xsl:element name="boundary">
                                         <xsl:for-each select="@*">
@@ -440,7 +439,6 @@
                         <xsl:choose>
                             <xsl:when test="$current_version!=null">
                                 <!-- transformation from version 2.0 -->
-                                <xsl:variable name="labels" select="/document/geometry/labels/*" />
                                 <xsl:for-each select="/document/problems/problem/labels/label">
                                     <xsl:element name="material">
                                         <xsl:for-each select="@*">
@@ -456,7 +454,6 @@
                             </xsl:when>
                             <xsl:otherwise>
                                 <!-- transformation from version 1.0 -->
-                                <xsl:variable name="labels" select="/document/geometry/labels/*" />
                                 <xsl:variable name="physical_field" select="/document/problems/problem/@type" />
                                 <xsl:for-each select="/document/problems/problem/labels/label">
                                     <xsl:element name="material">

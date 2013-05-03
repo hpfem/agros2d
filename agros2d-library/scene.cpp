@@ -1202,7 +1202,7 @@ void Scene::transformFile(const QString &fileName)
         version = "2.1";
     }
     else
-        throw AgrosException(tr("File '%1' is not valid Agros2D file.").arg(fileName));
+        throw AgrosException(tr("File is not possible to transform."));
 
     QString tempFileName = tempProblemDir() + QString("/%1-%2.a2d").arg(QFileInfo(file).baseName()).arg(version);
     QFile tempFile(tempFileName);
@@ -1801,7 +1801,7 @@ void Scene::writeToFile(const QString &fileName, bool saveLastProblemDir)
         }
     }
 
-    writeToFile30(fileName);
+    writeToFile31(fileName);
 }
 
 void Scene::writeToFile21(const QString &fileName)
@@ -2117,9 +2117,9 @@ void Scene::writeToFile21(const QString &fileName)
     */
 }
 
-void Scene::writeToFile30(const QString &fileName)
+void Scene::writeToFile31(const QString &fileName)
 {
-    double version = 3.0;
+    double version = 3.1;
 
     try
     {
@@ -2289,7 +2289,7 @@ void Scene::writeToFile30(const QString &fileName)
 
         std::string problem_schema_location("");
 
-        problem_schema_location.append(QString("%1/problem_a2d_30_xml.xsd").arg(QFileInfo(datadir() + XSDROOT).absoluteFilePath()).toStdString());
+        problem_schema_location.append(QString("%1/problem_a2d_31_xml.xsd").arg(QFileInfo(datadir() + XSDROOT).absoluteFilePath()).toStdString());
         ::xml_schema::namespace_info namespace_info_problem("XMLProblem", problem_schema_location);
 
         ::xml_schema::namespace_infomap namespace_info_map;
