@@ -176,6 +176,17 @@
       <module:localvariable id="magnetic_potential_imag" name="Vector potential - imag" shortname="Ai" shortname_html="&lt;i>A&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="A_\mathrm{i}" type="scalar" unit="Wb/m" unit_html="Wb.m&lt;sup>-1&lt;/sup>" unit_latex="Wb \cdot m^{-1}">
         <module:expression analysistype="harmonic" axi="value2" planar="value2"/>
       </module:localvariable>
+      <module:localvariable id="magnetic_potential_lines" name="Vector potential lines" shortname="Al" shortname_html="&lt;i>A&lt;/i>&lt;sub>l&lt;/sub>" shortname_latex="A_\mathrm{l}" type="scalar" unit="Wb" unit_html="Wb" unit_latex="Wb">
+        <module:expression analysistype="harmonic" axi="sqrt(value1*value1 + value2*value2) * r" planar="sqrt(value1*value1 + value2*value2)"/>
+      </module:localvariable>
+      <module:localvariable id="magnetic_potential_lines_real" name="Vector potential lines - real" shortname="Alr" shortname_html="&lt;i>A&lt;/i>&lt;sub>lr&lt;/sub>" shortname_latex="A_\mathrm{lr}" type="scalar" unit="Wb" unit_html="Wb" unit_latex="Wb">
+        <module:expression analysistype="steadystate" axi="value1 * r" planar="value1"/>
+        <module:expression analysistype="harmonic" axi="value1 * r" planar="value1"/>
+        <module:expression analysistype="transient" axi="value1 * r" planar="value1"/>
+      </module:localvariable>
+      <module:localvariable id="magnetic_potential_lines_imag" name="Vector potential lines - imag" shortname="Ali" shortname_html="&lt;i>A&lt;/i>&lt;sub>li&lt;/sub>" shortname_latex="A_\mathrm{li}" type="scalar" unit="Wb" unit_html="Wb" unit_latex="Wb">
+        <module:expression analysistype="harmonic" axi="value2 * r" planar="value2"/>
+      </module:localvariable>
       <module:localvariable id="magnetic_flux_density" name="Flux density" shortname="B" shortname_html="&lt;i>B&lt;/i>" shortname_latex="B" type="scalar" unit="T" unit_html="T" unit_latex="T">
         <module:expression analysistype="harmonic" axi="sqrt(dz1*dz1 + (dr1 + tern(r > 0, value1/r, 0.0))^2 + dz2*dz2 + (dr2 + tern(r > 0, value2/r, 0.0))^2)" planar="sqrt(dy1*dy1 + dx1*dx1 + dy2*dy2 + dx2*dx2)"/>
       </module:localvariable>
