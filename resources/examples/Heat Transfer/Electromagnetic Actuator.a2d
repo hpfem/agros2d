@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/pkus/sources/agros2d-second/resources/xsd/problem_a2d_30_xml.xsd">
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
 
   <geometry>
     <nodes>
@@ -126,7 +126,7 @@
               <material_label id="2"/>
             </material_labels>
             <material_types>
-              <material_type key="heat_volume_heat" value="26000"/>
+              <material_type key="heat_volume_heat" value="2e5*(time&lt;5000)"/>
               <material_type key="heat_velocity_x" value="0"/>
               <material_type key="heat_conductivity" value="200"/>
               <material_type key="heat_density" value="8700"/>
@@ -171,7 +171,7 @@
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
           <field_item field_key="NewtonDampingType" field_value="0"/>
           <field_item field_key="NewtonDampingCoeff" field_value="1"/>
-          <field_item field_key="" field_value="1"/>
+          <field_item field_key="NewtonReuseJacobian" field_value="1"/>
           <field_item field_key="NewtonSufImprovJacobian" field_value="0.8"/>
           <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
           <field_item field_key="NewtonStepsToIncreaseDF" field_value="1"/>
@@ -185,17 +185,17 @@
           <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
           <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
-          <field_item field_key="TransientInitialConditio" field_value="293"/>
+          <field_item field_key="TransientInitialCondition" field_value="293.15"/>
         </field_config>
       </field>
     </fields>
     <couplings/>
     <problem_config>
       <problem_item problem_key="Frequency" problem_value="0"/>
-      <problem_item problem_key="TimeMethod" problem_value="2"/>
+      <problem_item problem_key="TimeMethod" problem_value="0"/>
       <problem_item problem_key="TimeMethodTolerance" problem_value="0.05"/>
       <problem_item problem_key="TimeOrder" problem_value="2"/>
-      <problem_item problem_key="TimeSteps" problem_value="3"/>
+      <problem_item problem_key="TimeSteps" problem_value="20"/>
       <problem_item problem_key="TimeTotal" problem_value="15000"/>
     </problem_config>
   </problem>
@@ -282,8 +282,8 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="2"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="302.537161922334"/>
-    <item key="View_ScalarRangeMax" value="319.269560208584"/>
+    <item key="View_ScalarRangeMin" value="304.843464997668"/>
+    <item key="View_ScalarRangeMax" value="315.163766217997"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value=""/>
     <item key="View_VectorProportional" value="1"/>
@@ -326,8 +326,8 @@
     <item key="View_ChartStartY" value="0"/>
     <item key="View_ChartEndX" value="0"/>
     <item key="View_ChartEndY" value="0"/>
-    <item key="View_ChartTimeX" value="0"/>
-    <item key="View_ChartTimeY" value="0"/>
+    <item key="View_ChartTimeX" value="0.013"/>
+    <item key="View_ChartTimeY" value="0.06"/>
     <item key="View_ChartHorizontalAxis" value="2"/>
     <item key="View_ChartHorizontalAxisReverse" value="0"/>
     <item key="View_ChartHorizontalAxisPoints" value="200"/>

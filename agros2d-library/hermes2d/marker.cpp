@@ -34,12 +34,12 @@ Marker::~Marker()
     m_values.clear();
 }
 
-Value Marker::value(QString id) const
+Value &Marker::value(QString id)
 {
     if (!id.isEmpty())
         return m_values[id];
 
-    return Value();
+    assert(0);
 }
 
 const QHash<QString, Value> Marker::values() const

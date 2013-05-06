@@ -44,9 +44,9 @@ public:
 
 private:
     {{#VARIABLE_SOURCE}}
-    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
+    mutable Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
     {{#VARIABLE_TARGET}}
-    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_TARGET}}
+    mutable Value *{{VARIABLE_SHORT}};{{/VARIABLE_TARGET}}
 };
 {{/VOLUME_MATRIX_SOURCE}}
 
@@ -71,9 +71,9 @@ private:
     unsigned int j;
 
     {{#VARIABLE_SOURCE}}
-    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
+    mutable Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
     {{#VARIABLE_TARGET}}
-    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_TARGET}}
+    mutable Value *{{VARIABLE_SHORT}};{{/VARIABLE_TARGET}}
 };
 {{/VOLUME_VECTOR_SOURCE}}  
 
@@ -94,7 +94,7 @@ public:
 
 private:
     {{#VARIABLE_SOURCE}}
-    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
+    mutable Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
 };
 {{/SURFACE_MATRIX_SOURCE}}
 
@@ -117,7 +117,7 @@ private:
     unsigned int j;
 
     {{#VARIABLE_SOURCE}}
-    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
+    mutable Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
 };
 {{/SURFACE_VECTOR_SOURCE}}
 
@@ -140,7 +140,7 @@ public:
 
 private:
     {{#VARIABLE_SOURCE}}
-    mutable Value {{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
+    mutable Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
 };
 {{/EXACT_SOURCE}}
 

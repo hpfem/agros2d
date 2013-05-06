@@ -71,7 +71,7 @@ void {{CLASS}}VolumeIntegral::calculate()
 
                 SceneMaterial *material = label->marker(m_fieldInfo);
 
-                {{#VARIABLE_MATERIAL}}Value material_{{MATERIAL_VARIABLE}} = material->value("{{MATERIAL_VARIABLE}}");
+                {{#VARIABLE_MATERIAL}}Value *material_{{MATERIAL_VARIABLE}} = &material->value("{{MATERIAL_VARIABLE}}");
                 {{/VARIABLE_MATERIAL}}
 
                 for_all_active_elements(e, mesh)

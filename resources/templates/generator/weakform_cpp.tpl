@@ -75,7 +75,7 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
     FormAgrosInterface::setMarkerSource(marker);
 
     {{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = &this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
 }
 
 template <typename Scalar>
@@ -84,7 +84,7 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerTarget(Marker *marker)
     FormAgrosInterface::setMarkerTarget(marker);
 
     {{#VARIABLE_TARGET}}
-    {{VARIABLE_SHORT}} = this->m_markerTarget->value("{{VARIABLE}}");{{/VARIABLE_TARGET}}
+    {{VARIABLE_SHORT}} = &this->m_markerTarget->value("{{VARIABLE}}");{{/VARIABLE_TARGET}}
 }
 {{/VOLUME_MATRIX_SOURCE}}
 
@@ -134,7 +134,7 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
     FormAgrosInterface::setMarkerSource(marker);
 
     {{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = &this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
 }
 
 template <typename Scalar>
@@ -143,7 +143,7 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerTarget(Marker *marker)
     FormAgrosInterface::setMarkerTarget(marker);
 
     {{#VARIABLE_TARGET}}
-    {{VARIABLE_SHORT}} = this->m_markerTarget->value("{{VARIABLE}}");{{/VARIABLE_TARGET}}
+    {{VARIABLE_SHORT}} = &this->m_markerTarget->value("{{VARIABLE}}");{{/VARIABLE_TARGET}}
 }
 {{/VOLUME_VECTOR_SOURCE}}
 
@@ -194,7 +194,7 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
     FormAgrosInterface::setMarkerSource(marker);
 
     {{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = &this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
 }
 {{/SURFACE_MATRIX_SOURCE}}
 
@@ -245,7 +245,7 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
     FormAgrosInterface::setMarkerSource(marker);
 
     {{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = &this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
 }
 {{/SURFACE_VECTOR_SOURCE}}
 
@@ -277,7 +277,7 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
     FormAgrosInterface::setMarkerSource(marker);
 
     {{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+    {{VARIABLE_SHORT}} = &this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
 }
 {{/EXACT_SOURCE}}
 

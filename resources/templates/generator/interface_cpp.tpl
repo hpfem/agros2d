@@ -128,7 +128,7 @@ IntegralValue *{{CLASS}}Interface::volumeIntegral(FieldInfo *fieldInfo, int time
 }
 
 Point3 {{CLASS}}Interface::force(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                                 Hermes::Hermes2D::Element *element, const SceneMaterial *material,
+                                 Hermes::Hermes2D::Element *element, SceneMaterial *material,
                                  const Point3 &point, const Point3 &velocity)
 {
     return force{{CLASS}}(fieldInfo, timeStep, adaptivityStep, solutionType, element, material, point, velocity);

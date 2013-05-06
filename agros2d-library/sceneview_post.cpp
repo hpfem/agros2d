@@ -434,10 +434,8 @@ Hermes::Hermes2D::Filter<double> *PostHermes::viewScalarFilter(Module::LocalVari
                                                                PhysicFieldVariableComp physicFieldVariableComp)
 {
     // update time functions
-    /*
-    if (m_fieldInfo->analysisType() == AnalysisType_Transient)
-        m_fieldInfo->module()->update_time_functions(Agros2D::problem()->time());
-    */
+    if (Agros2D::problem()->isTransient())
+        Module::updateTimeFunctions(Agros2D::problem()->timeStepToTotalTime(activeTimeStep()));
 
     Hermes::vector<MeshFunctionSharedPtr<double> > slns;
     for (int k = 0; k < activeViewField()->numberOfSolutions(); k++)

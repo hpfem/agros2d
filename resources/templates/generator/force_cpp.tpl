@@ -43,14 +43,14 @@ bool hasForce{{CLASS}}(FieldInfo *fieldInfo)
 }
 
 Point3 force{{CLASS}}(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                      Hermes::Hermes2D::Element *element, const SceneMaterial *material, const Point3 &point, const Point3 &velocity)
+                      Hermes::Hermes2D::Element *element, SceneMaterial *material, const Point3 &point, const Point3 &velocity)
 {
     int numberOfSolutions = fieldInfo->numberOfSolutions();
 
     FieldSolutionID fsid(fieldInfo, timeStep, adaptivityStep, solutionType);
     MultiArray<double> ma = Agros2D::solutionStore()->multiArray(fsid);
 
-    {{#VARIABLE_MATERIAL}}Value material_{{MATERIAL_VARIABLE}} = material->value("{{MATERIAL_VARIABLE}}");
+    {{#VARIABLE_MATERIAL}}Value *material_{{MATERIAL_VARIABLE}} = &material->value("{{MATERIAL_VARIABLE}}");
     {{/VARIABLE_MATERIAL}}
 
     Point3 res;

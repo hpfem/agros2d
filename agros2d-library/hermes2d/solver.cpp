@@ -581,10 +581,6 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     }
 
     // cout << QString("updating with time %1\n").arg(Agros2D::problem()->actualTime()).toStdString() << endl;
-
-    // update timedep values
-    foreach (Field* field, m_block->fields())
-        Module::updateTimeFunctions(Agros2D::problem()->actualTime());
     m_block->updateExactSolutionFunctions();
 
     Hermes::vector<SpaceSharedPtr<Scalar> > spaces = actualSpaces();
@@ -595,6 +591,9 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
         int order = min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt());
         bool matrixUnchanged = m_block->weakForm()->bdf2Table()->setOrderAndPreviousSteps(order, Agros2D::problem()->timeStepLengths());
         m_hermesSolverContainer->matrixUnchangedDueToBDF(matrixUnchanged);
+
+        // update timedep values
+        Module::updateTimeFunctions(Agros2D::problem()->actualTime());
     }
 
     m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());
@@ -798,7 +797,7 @@ void ProblemSolver<Scalar>::createInitialSpace()
     m_hermesSolverContainer = HermesSolverContainer<Scalar>::factory(m_block);
 
     m_hermesSolverContainer->setWeakFormulation(m_block->weakForm());
-    m_hermesSolverContainer->settableSpaces()->set_spaces(m_actualSpaces);
+    m_hermesSolverContainer->setTableSpaces()->set_spaces(m_actualSpaces);
 }
 
 template <typename Scalar>
@@ -880,7 +879,7 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
     Scalar *initialSolutionVector = new Scalar[Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spacesRef)];
 
     // in adaptivity, in each step we use different spaces. This should be done some other way
-    m_hermesSolverContainer->settableSpaces()->set_spaces(spacesRef);
+    m_hermesSolverContainer->setTableSpaces()->set_spaces(spacesRef);
     Scalar *solutionVector = solveOneProblem(initialSolutionVector, spacesRef, adaptivityStep,
                                              Hermes::vector<MeshFunctionSharedPtr<Scalar> >());
     delete [] initialSolutionVector;
