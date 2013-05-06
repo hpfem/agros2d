@@ -299,7 +299,7 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                     arg(fieldInfo->fieldId()).
                     arg(nonlinearSolverConvergenceMeasurementToStringKey((Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()));
 
-            str += QString("%1.damping_type = %2\n").
+            str += QString("%1.damping_type = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
                     arg(dampingTypeToStringKey((DampingType)fieldInfo->value(FieldInfo::NewtonDampingType).toInt()));
 
