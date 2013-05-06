@@ -228,11 +228,15 @@ win32-msvc2010 {
     LIBS += -llibumfpack
     LIBS += -llibtcmalloc_minimal
     LIBS += -llibamd
-    # LIBS += -lblas
     LIBS += -lpthreadVCE2
     LIBS += -lvcomp
     LIBS += -ladvapi32
     LIBS += -lws2_32
+
+    # superlu
+    DEFINES += WITH_SUPERLU
+    LIBS += -lsuperlu
+    LIBS += -llibblas
 
     CONFIG(release, debug|release) {
         LIBS += -lxerces-c_static_3
