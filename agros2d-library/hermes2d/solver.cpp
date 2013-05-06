@@ -109,7 +109,9 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
     const Hermes::vector<double>& solution_norms = this->get_parameter_value(this->solution_norms());
     double solution_change_norm = this->get_parameter_value(this->solution_change_norm());
     const Hermes::vector<double>& damping_coefficients = this->get_parameter_value(this->damping_coefficients());
-    double current_damping_coefficient = damping_coefficients.at(damping_coefficients.size() - 1);
+    double current_damping_coefficient = 1.;
+    if(damping_coefficients.size() >= 1)
+        current_damping_coefficient = damping_coefficients.at(damping_coefficients.size() - 1);
     unsigned int successful_steps_damping = this->get_parameter_value(this->successful_steps_damping());
     unsigned int successful_steps_jacobian = this->get_parameter_value(this->successful_steps_jacobian());
 

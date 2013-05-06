@@ -3659,24 +3659,6 @@ namespace XMLModule
     this->quantity_ = s;
   }
 
-  const boundary::matrix_form_sequence& boundary::
-  matrix_form () const
-  {
-    return this->matrix_form_;
-  }
-
-  boundary::matrix_form_sequence& boundary::
-  matrix_form ()
-  {
-    return this->matrix_form_;
-  }
-
-  void boundary::
-  matrix_form (const matrix_form_sequence& s)
-  {
-    this->matrix_form_ = s;
-  }
-
   const boundary::vector_form_sequence& boundary::
   vector_form () const
   {
@@ -3693,6 +3675,24 @@ namespace XMLModule
   vector_form (const vector_form_sequence& s)
   {
     this->vector_form_ = s;
+  }
+
+  const boundary::matrix_form_sequence& boundary::
+  matrix_form () const
+  {
+    return this->matrix_form_;
+  }
+
+  boundary::matrix_form_sequence& boundary::
+  matrix_form ()
+  {
+    return this->matrix_form_;
+  }
+
+  void boundary::
+  matrix_form (const matrix_form_sequence& s)
+  {
+    this->matrix_form_ = s;
   }
 
   const boundary::essential_form_sequence& boundary::
@@ -8521,8 +8521,8 @@ namespace XMLModule
             const equation_type& equation)
   : ::xml_schema::type (),
     quantity_ (::xml_schema::flags (), this),
-    matrix_form_ (::xml_schema::flags (), this),
     vector_form_ (::xml_schema::flags (), this),
+    matrix_form_ (::xml_schema::flags (), this),
     essential_form_ (::xml_schema::flags (), this),
     id_ (id, ::xml_schema::flags (), this),
     name_ (name, ::xml_schema::flags (), this),
@@ -8536,8 +8536,8 @@ namespace XMLModule
             ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     quantity_ (x.quantity_, f, this),
-    matrix_form_ (x.matrix_form_, f, this),
     vector_form_ (x.vector_form_, f, this),
+    matrix_form_ (x.matrix_form_, f, this),
     essential_form_ (x.essential_form_, f, this),
     id_ (x.id_, f, this),
     name_ (x.name_, f, this),
@@ -8551,8 +8551,8 @@ namespace XMLModule
             ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     quantity_ (f, this),
-    matrix_form_ (f, this),
     vector_form_ (f, this),
+    matrix_form_ (f, this),
     essential_form_ (f, this),
     id_ (f, this),
     name_ (f, this),
@@ -8586,17 +8586,6 @@ namespace XMLModule
         continue;
       }
 
-      // matrix_form
-      //
-      if (n.name () == "matrix_form" && n.namespace_ () == "XMLModule")
-      {
-        ::std::auto_ptr< matrix_form_type > r (
-          matrix_form_traits::create (i, f, this));
-
-        this->matrix_form_.push_back (r);
-        continue;
-      }
-
       // vector_form
       //
       if (n.name () == "vector_form" && n.namespace_ () == "XMLModule")
@@ -8605,6 +8594,17 @@ namespace XMLModule
           vector_form_traits::create (i, f, this));
 
         this->vector_form_.push_back (r);
+        continue;
+      }
+
+      // matrix_form
+      //
+      if (n.name () == "matrix_form" && n.namespace_ () == "XMLModule")
+      {
+        ::std::auto_ptr< matrix_form_type > r (
+          matrix_form_traits::create (i, f, this));
+
+        this->matrix_form_.push_back (r);
         continue;
       }
 
@@ -9514,18 +9514,18 @@ namespace XMLModule
       o << ::std::endl << "quantity: " << *b;
     }
 
-    for (boundary::matrix_form_const_iterator
-         b (i.matrix_form ().begin ()), e (i.matrix_form ().end ());
-         b != e; ++b)
-    {
-      o << ::std::endl << "matrix_form: " << *b;
-    }
-
     for (boundary::vector_form_const_iterator
          b (i.vector_form ().begin ()), e (i.vector_form ().end ());
          b != e; ++b)
     {
       o << ::std::endl << "vector_form: " << *b;
+    }
+
+    for (boundary::matrix_form_const_iterator
+         b (i.matrix_form ().begin ()), e (i.matrix_form ().end ());
+         b != e; ++b)
+    {
+      o << ::std::endl << "matrix_form: " << *b;
     }
 
     for (boundary::essential_form_const_iterator
@@ -11995,21 +11995,6 @@ namespace XMLModule
       s << *b;
     }
 
-    // matrix_form
-    //
-    for (boundary::matrix_form_const_iterator
-         b (i.matrix_form ().begin ()), n (i.matrix_form ().end ());
-         b != n; ++b)
-    {
-      ::xercesc::DOMElement& s (
-        ::xsd::cxx::xml::dom::create_element (
-          "matrix_form",
-          "XMLModule",
-          e));
-
-      s << *b;
-    }
-
     // vector_form
     //
     for (boundary::vector_form_const_iterator
@@ -12019,6 +12004,21 @@ namespace XMLModule
       ::xercesc::DOMElement& s (
         ::xsd::cxx::xml::dom::create_element (
           "vector_form",
+          "XMLModule",
+          e));
+
+      s << *b;
+    }
+
+    // matrix_form
+    //
+    for (boundary::matrix_form_const_iterator
+         b (i.matrix_form ().begin ()), n (i.matrix_form ().end ());
+         b != n; ++b)
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "matrix_form",
           "XMLModule",
           e));
 

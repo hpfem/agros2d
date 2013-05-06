@@ -282,6 +282,7 @@
                 </complexType>
         </element>
 
+
         <element name="weakform_surface">
                 <complexType>
                         <choice>
@@ -294,7 +295,7 @@
                                         </choice>
                                 </sequence>
                         </choice>
-                        <attribute name="analysistype" use="required" type="string" />                                                
+                        <attribute name="analysistype" use="required" type="string" />
                         <attribute name="default" type="string" />
                 </complexType>
         </element>
@@ -413,9 +414,9 @@
                 <complexType>
                         <sequence>
                                 <element minOccurs="0" maxOccurs="unbounded" ref="module:quantity" />
-                                <element minOccurs="0" maxOccurs="unbounded" ref="module:matrix_form" />
                                 <choice minOccurs="0" maxOccurs="unbounded">
                                         <element ref="module:vector_form" />
+                                        <element ref="module:matrix_form" />
                                         <element ref="module:essential_form" />
                                 </choice>
                         </sequence>

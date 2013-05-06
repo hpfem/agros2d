@@ -4330,23 +4330,6 @@ namespace XMLModule
     void
     quantity (const quantity_sequence& s);
 
-    // matrix_form
-    // 
-    typedef ::XMLModule::matrix_form matrix_form_type;
-    typedef ::xsd::cxx::tree::sequence< matrix_form_type > matrix_form_sequence;
-    typedef matrix_form_sequence::iterator matrix_form_iterator;
-    typedef matrix_form_sequence::const_iterator matrix_form_const_iterator;
-    typedef ::xsd::cxx::tree::traits< matrix_form_type, char > matrix_form_traits;
-
-    const matrix_form_sequence&
-    matrix_form () const;
-
-    matrix_form_sequence&
-    matrix_form ();
-
-    void
-    matrix_form (const matrix_form_sequence& s);
-
     // vector_form
     // 
     typedef ::XMLModule::vector_form vector_form_type;
@@ -4363,6 +4346,23 @@ namespace XMLModule
 
     void
     vector_form (const vector_form_sequence& s);
+
+    // matrix_form
+    // 
+    typedef ::XMLModule::matrix_form matrix_form_type;
+    typedef ::xsd::cxx::tree::sequence< matrix_form_type > matrix_form_sequence;
+    typedef matrix_form_sequence::iterator matrix_form_iterator;
+    typedef matrix_form_sequence::const_iterator matrix_form_const_iterator;
+    typedef ::xsd::cxx::tree::traits< matrix_form_type, char > matrix_form_traits;
+
+    const matrix_form_sequence&
+    matrix_form () const;
+
+    matrix_form_sequence&
+    matrix_form ();
+
+    void
+    matrix_form (const matrix_form_sequence& s);
 
     // essential_form
     // 
@@ -4462,8 +4462,8 @@ namespace XMLModule
 
     protected:
     quantity_sequence quantity_;
-    matrix_form_sequence matrix_form_;
     vector_form_sequence vector_form_;
+    matrix_form_sequence matrix_form_;
     essential_form_sequence essential_form_;
     ::xsd::cxx::tree::one< id_type > id_;
     ::xsd::cxx::tree::one< name_type > name_;
