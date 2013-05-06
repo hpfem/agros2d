@@ -65,7 +65,12 @@
               <xsl:value-of select ="/document/problem/@matrix_solver"/>
             </xsl:attribute>
             <xsl:attribute name="mesh_type">
-              <xsl:value-of select ="/document/problem/@mesh_type"/>
+                <xsl:choose>
+                    <xsl:when test="/document/problem/@mesh_type!=null">
+                        <xsl:value-of select="/document/problem/@mesh_type" />
+                    </xsl:when>
+                    <xsl:otherwise>triangle</xsl:otherwise>
+                </xsl:choose>
             </xsl:attribute>
 
             <!-- fields -->
@@ -226,7 +231,12 @@
             </xsl:element>
 
             <!-- couplings -->
-            <xsl:copy-of select="/document/problem/couplings"/>
+            <xsl:choose>
+                <xsl:when test="/document/problem/couplings!=null">
+                    <xsl:copy-of select="/document/problem/couplings"/>
+                </xsl:when>
+                <xsl:otherwise><xsl:element name="couplings"></xsl:element></xsl:otherwise>
+            </xsl:choose>
         </xsl:element>
 
         <!-- config -->

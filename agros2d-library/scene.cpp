@@ -1149,72 +1149,72 @@ void Scene::readFromFile(const QString &fileName)
 
     Agros2D::log()->printMessage(tr("Problem"), tr("Loading problem from disk"));
 
-    try
-    {
-        readFromFile31(fileName);
-    }
-    catch (AgrosException &e)
-    {
-        Agros2D::log()->printError(tr("Problem"), e.toString());
-
-        try
-        {
-            transformFile(fileName);
-        }
-        catch (AgrosException &e)
-        {
-            Agros2D::log()->printError(tr("Problem"), e.toString());
-        }
-    }
-}
-
-void Scene::transformFile(const QString &fileName)
-{
-    QDomDocument doc;
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly))
         throw AgrosException(tr("File '%1' cannot be opened (%2).").arg(fileName).arg(file.errorString()));
 
+    QDomDocument doc;
     if (!doc.setContent(&file))
     {
         file.close();
-        throw AgrosException(tr("File '%1' is not valid Agros2D file.").arg(fileName));
+        throw AgrosException(tr("File '%1' is not valid Agros2D data file.").arg(fileName));
     }
     file.close();
 
-    QDomElement eleDoc = doc.documentElement();
-    QString version = eleDoc.attribute("version");
+    double version = doc.documentElement().attribute("version").toDouble();
 
+    try
+    {
+        if (version == 3.1)
+            readFromFile31(fileName);
+        else
+        {
+            QString tempFileName = tempProblemDir() + QString("/%1.a2d").arg(QFileInfo(fileName).baseName());
+            transformFile(fileName, tempFileName, version);
+            readFromFile31(tempFileName);
+        }
+    }
+    catch (AgrosException &e)
+    {
+        Agros2D::log()->printError(tr("Problem"), e.toString());
+    }
+}
+
+void Scene::transformFile(const QString &fileName, const QString &tempFileName, double version)
+{
     QString out;
-    if (version == "3")
+
+    if (version == 3.1)
+    {
+        Agros2D::log()->printMessage(tr("Problem"), tr("Data file was transformed to new version and saved to temp dictionary."));
+        return;
+    }
+    else if (version == 3.0)
     {
         out = transformXML(fileName, datadir() + "/resources/xslt/problem_a2d_31_xml.xsl");
-        version = "3.1";
+        version = 3.1;
     }
-    else if (version == "2.1")
+    else if (version == 2.1)
     {
         out = transformXML(fileName, datadir() + "/resources/xslt/problem_a2d_30_xml.xsl");
-        version = "3";
+        version = 3.0;
     }
-    else if (version.isEmpty() || version == "2.0")
+    else if (version == 2.0 || version == 0.0)
     {
         out = transformXML(fileName, datadir() + "/resources/xslt/problem_a2d_21_xml.xsl");
-        version = "2.1";
+        version = 2.1;
     }
     else
-        throw AgrosException(tr("File is not possible to transform."));
+        throw AgrosException(tr("It is impossible to transform data file."));
 
-    QString tempFileName = tempProblemDir() + QString("/%1-%2.a2d").arg(QFileInfo(file).baseName()).arg(version);
     QFile tempFile(tempFileName);
     if (!tempFile.open(QIODevice::WriteOnly))
         throw AgrosException(tr("File cannot be saved (%2).").arg(tempFile.errorString()));
 
-    QTextStream stream(&tempFile);
-    stream << out;
+    QTextStream(&tempFile) << out;
     tempFile.close();
 
-    Agros2D::log()->printMessage(tr("Problem"), tr("Data file was transformed to version %1 and saved to temp dictionary.").arg(version));
-    readFromFile(tempFileName);
+    transformFile(tempFileName, tempFileName, version);
 }
 
 void Scene::readFromFile21(const QString &fileName)

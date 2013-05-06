@@ -187,7 +187,7 @@ public:
     void writeToDxf(const QString &fileName);
 
     void readFromFile(const QString &fileName);
-    void transformFile(const QString &fileName);
+    void transformFile(const QString &fileName, const QString &tempFileName, double version);
     void readFromFile21(const QString &fileName);
     void readFromFile31(const QString &fileName);
     void writeToFile(const QString &fileName, bool saveLastProblemDir = false);
