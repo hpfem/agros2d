@@ -63,7 +63,7 @@ for i in range(15):
 		geometry.select_edges([6, 7, 8])
 		geometry.move_selection(dr, 0, False)
 
-	problem.	solve()
+	problem.solve()
 	result = electrostatic.volume_integrals([0, 1, 2])
 
 	r.append(r1 + (i*dr))
