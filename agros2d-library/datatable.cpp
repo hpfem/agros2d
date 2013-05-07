@@ -176,8 +176,11 @@ void DataTable::validate()
         return;
     }
 
-    m_isBeingValidated = true;
+    assert(m_linear == NULL);
+    assert(m_spline == NULL);
+    assert(m_constant == NULL);
     assert(! m_valid);
+    m_isBeingValidated = true;
 
     if(m_type == DataTableType_PiecewiseLinear)
     {
@@ -185,8 +188,12 @@ void DataTable::validate()
     }
     else if(m_type == DataTableType_CubicSpline)
     {
-        m_spline = new Hermes::Hermes2D::CubicSpline(m_points, m_values, 0.0, 0.0, m_splineFirstDerivatives, m_splineFirstDerivatives, !m_extrapolateConstant, !m_extrapolateConstant);
-        m_spline->calculate_coeffs();
+        // first create object and calculate coeffs, than assign to m_spline
+        // otherwise probably some other thread interfered and caused application fail
+        // this is strange, though, since no other thread should be able to acces thanks to m_isBeingValidated check
+        Hermes::Hermes2D::CubicSpline *spline = new Hermes::Hermes2D::CubicSpline(m_points, m_values, 0.0, 0.0, m_splineFirstDerivatives, m_splineFirstDerivatives, !m_extrapolateConstant, !m_extrapolateConstant);
+        spline->calculate_coeffs();
+        m_spline = spline;
     }
     else if(m_type == DataTableType_Constant)
     {

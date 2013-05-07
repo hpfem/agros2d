@@ -81,8 +81,8 @@ public:
     double minValue() const;
     double maxValue() const;
 
-    inline Hermes::vector<double> pointsVector() { return m_points; }
-    inline Hermes::vector<double> valuesVector() { return m_values; }
+    inline Hermes::vector<double> pointsVector() const { return m_points; }
+    inline Hermes::vector<double> valuesVector() const { return m_values; }
 
     QString toString() const;
     QString toStringX() const;
