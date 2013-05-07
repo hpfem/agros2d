@@ -64,6 +64,9 @@ const QString COMMANDS_BUILD_PLUGIN = "./agros2d_plugin_compiler.sh %1";
 // cache size
 const int CACHE_SIZE = 10;
 
+// solver cache
+const bool USER_SOLVER_CACHE = false;
+
 const int NOT_FOUND_SO_FAR = -999;
 
 const int GLYPH_M = 77;

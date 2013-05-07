@@ -82,6 +82,9 @@ private:
     // cache
     QSpinBox *txtCacheSize;
 
+    // solver cache
+    QCheckBox *chkUseSolverCache;
+
     // threads
     QSpinBox *txtNumOfThreads;
 
