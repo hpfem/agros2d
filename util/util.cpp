@@ -195,6 +195,9 @@ QString compatibleFilename(const QString &fileName)
     QString out = QFileInfo(fileName).absoluteFilePath();
 
 #ifdef Q_WS_WIN
+    if (!QFile::exists(fileName))
+        out = QString("%1").arg(QFileInfo(fileName).absolutePath());
+
     TCHAR szshortpath[4096];
 
     GetShortPathName((LPCWSTR) out.replace("/", "\\\\").utf16(), szshortpath, 4096);
@@ -204,6 +207,8 @@ QString compatibleFilename(const QString &fileName)
     out = QString::fromLocal8Bit(szshortpath);
 #endif
 
+    if (!QFile::exists(fileName))
+        out = out + "/" + QFileInfo(fileName).fileName();
 #endif
 
     return out;
