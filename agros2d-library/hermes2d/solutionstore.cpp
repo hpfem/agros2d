@@ -690,7 +690,7 @@ void SolutionStore::saveRunTimeDetails()
         ::xml_schema::namespace_infomap namespace_info_map;
         namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("structure", namespace_info_mesh));
 
-        std::ofstream out(fn.toStdString().c_str());
+        std::ofstream out(compatibleFilename(fn).toStdString().c_str());
         XMLStructure::structure_(out, structure, namespace_info_map);
     }
     catch (const xml_schema::exception& e)

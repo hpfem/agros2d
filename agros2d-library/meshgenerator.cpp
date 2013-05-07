@@ -253,8 +253,7 @@ bool MeshGenerator::writeToHermes()
 
     QString fn = QString("%1/initial.msh").arg(cacheProblemDir());
 
-    // compatibleFilename doesn't work
-    std::ofstream out(fn.toStdString().c_str());
+    std::ofstream out(compatibleFilename(fn).toStdString().c_str());
     ::xml_schema::flags parsing_flags = ::xml_schema::flags::dont_pretty_print;
     XMLSubdomains::domain_(out, xmldomain, namespace_info_map, "UTF-8", parsing_flags);
     out.close();
