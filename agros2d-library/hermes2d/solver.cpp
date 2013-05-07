@@ -233,6 +233,8 @@ void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Hermes2D::Mixi
 template <typename Scalar>
 HermesSolverContainer<Scalar>* HermesSolverContainer<Scalar>::factory(Block* block)
 {
+    Hermes::HermesCommonApi.set_integral_param_value(Hermes::matrixSolverType, Agros2D::problem()->config()->matrixSolver());
+
     if (block->linearityType() == LinearityType_Linear)
     {
         return new LinearSolverContainer<Scalar>(block);
@@ -555,8 +557,6 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
                                                int adaptivityStep,
                                                Hermes::vector<MeshFunctionSharedPtr<Scalar> > previousSolution)
 {
-    Hermes::HermesCommonApi.set_integral_param_value(Hermes::matrixSolverType, Agros2D::problem()->config()->matrixSolver());
-
     m_hermesSolverContainer->projectPreviousSolution(initialSolutionVector, spaces, previousSolution);
     m_hermesSolverContainer->setMatrixRhsOutput(m_solverCode, adaptivityStep);
 
