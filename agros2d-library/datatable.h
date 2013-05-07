@@ -81,8 +81,8 @@ public:
     double minValue() const;
     double maxValue() const;
 
-    inline Hermes::vector<double> pointsVector() { return m_points; }
-    inline Hermes::vector<double> valuesVector() { return m_values; }
+    inline Hermes::vector<double> pointsVector() const { return m_points; }
+    inline Hermes::vector<double> valuesVector() const { return m_values; }
 
     QString toString() const;
     QString toStringX() const;
@@ -99,6 +99,9 @@ private:
 
     Hermes::vector<double> m_points;
     Hermes::vector<double> m_values;
+
+    //attempt to make it thread-safe
+    bool m_isBeingValidated;
     bool m_valid;
 
     DataTableType m_type;
