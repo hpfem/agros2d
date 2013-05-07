@@ -280,7 +280,6 @@ win32-msvc2010 {
     QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
-    DEFINES += WITH_SUPERLU
     DEFINES += XERCES_STATIC_LIBRARY
     DEFINES += AGROS_DLL
     DEFINES += _WINDOWS
@@ -302,6 +301,15 @@ win32-msvc2010 {
     INCLUDEPATH += ../3rdparty/ctemplate/windows
     INCLUDEPATH += c:/hpfem/hermes/dependencies/include
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
+}
+
+# mumps
+contains(CONFIG, WITH_MUMPS) {
+    DEFINES += WITH_MUMPS
+}
+# superlu
+contains(CONFIG, WITH_SUPERLU) {
+    DEFINES += WITH_SUPERLU
 }
 
 include(../agros2d.pri)

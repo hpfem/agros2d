@@ -233,10 +233,18 @@ win32-msvc2010 {
     LIBS += -ladvapi32
     LIBS += -lws2_32
 
+    # mumps
+    contains(CONFIG, WITH_MUMPS) {
+        DEFINES += WITH_MUMPS
+        LIBS += -ldmumps_seq
+        LIBS += -lzmumps_seq
+    }
     # superlu
-    DEFINES += WITH_SUPERLU
-    LIBS += -lsuperlu
-    LIBS += -llibblas
+    contains(CONFIG, WITH_SUPERLU) {
+        DEFINES += WITH_SUPERLU
+        LIBS += -lsuperlu
+        LIBS += -llibblas
+    }
 
     CONFIG(release, debug|release) {
         LIBS += -lxerces-c_static_3

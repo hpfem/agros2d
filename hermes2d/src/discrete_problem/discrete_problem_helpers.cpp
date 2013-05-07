@@ -74,13 +74,51 @@ namespace Hermes
         return this->wf;
       }
 
-      void DiscreteProblemCacheSettings::set_do_not_use_cache()
+      DiscreteProblemCacheSettings::DiscreteProblemCacheSettings() : 
+        do_not_use_cache(false),
+        report_cache_hits_and_misses(false),
+        cache_searches(0),
+        cache_record_found(0),
+        cache_record_found_reinit(0),
+        cache_record_not_found(0)
       {
-        this->do_not_use_cache = true;
       }
 
-      DiscreteProblemCacheSettings::DiscreteProblemCacheSettings() : do_not_use_cache(false)
+      void DiscreteProblemCacheSettings::set_do_not_use_cache(bool to_set)
       {
+        this->do_not_use_cache = to_set;
+      }
+
+      void DiscreteProblemCacheSettings::set_report_cache_hits_and_misses(bool to_set)
+      {
+        this->report_cache_hits_and_misses = to_set;
+      }
+
+      void DiscreteProblemCacheSettings::get_cache_hits_and_misses(int& cache_searches_, int& cache_record_found_, int& cache_record_found_reinit_, int& cache_record_not_found_)
+      {
+        if(!this->report_cache_hits_and_misses)
+          throw Exceptions::Exception("Asked for cache hits and misses, without turning on the calculation.");
+
+        cache_searches_ = this->cache_searches;
+        cache_record_found_ = this->cache_record_found;
+        cache_record_found_reinit_ = this->cache_record_found_reinit;
+        cache_record_not_found_ = this->cache_record_not_found;
+      }
+      
+      void DiscreteProblemCacheSettings::add_cache_hits_and_misses(DiscreteProblemCacheSettings* other)
+      {
+        this->cache_searches += other->cache_searches;
+        this->cache_record_found += other->cache_record_found;
+        this->cache_record_found_reinit += other->cache_record_found_reinit;
+        this->cache_record_not_found += other->cache_record_not_found;
+      }
+
+      void DiscreteProblemCacheSettings::zero_cache_hits_and_misses()
+      {
+        cache_searches = 0;
+        cache_record_found = 0;
+        cache_record_found_reinit = 0;
+        cache_record_not_found = 0;
       }
 
       template<typename Scalar>
