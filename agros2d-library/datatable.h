@@ -99,6 +99,9 @@ private:
 
     Hermes::vector<double> m_points;
     Hermes::vector<double> m_values;
+
+    //attempt to make it thread-safe
+    bool m_isBeingValidated;
     bool m_valid;
 
     DataTableType m_type;

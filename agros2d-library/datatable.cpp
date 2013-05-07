@@ -19,13 +19,13 @@
 
 #include "datatable.h"
 
-DataTable::DataTable() : m_valid(false)
+DataTable::DataTable() : m_valid(false), m_isBeingValidated(false)
 {
-    setImplicit();
+    setImplicit();    
 }
 
 DataTable::DataTable(Hermes::vector<double> points, Hermes::vector<double> values)
-    : m_valid(false), m_points(points), m_values(values)
+    : m_valid(false), m_isBeingValidated(false), m_points(points), m_values(values)
 {
     setImplicit();
 }
@@ -33,6 +33,7 @@ DataTable::DataTable(Hermes::vector<double> points, Hermes::vector<double> value
 void DataTable::clear()
 {
     setValues(Hermes::vector<double>(), Hermes::vector<double>());
+    m_isBeingValidated = false;
 }
 
 void DataTable::setValues(Hermes::vector<double> points, Hermes::vector<double> values)
@@ -141,6 +142,7 @@ double DataTable::derivative(double x)
 void DataTable::inValidate()
 {
     m_valid = false;
+    m_isBeingValidated = false;
 
     if(m_type == DataTableType_PiecewiseLinear)
     {
@@ -167,9 +169,15 @@ void DataTable::inValidate()
 
 void DataTable::validate()
 {
-    assert(m_linear == NULL);
-    assert(m_spline == NULL);
-    assert(m_constant == NULL);
+    if(m_isBeingValidated)
+    {
+        while(! m_valid)
+            ;
+        return;
+    }
+
+    m_isBeingValidated = true;
+    assert(! m_valid);
 
     if(m_type == DataTableType_PiecewiseLinear)
     {
@@ -188,6 +196,7 @@ void DataTable::validate()
         assert(0);
 
     m_valid = true;
+    m_isBeingValidated = false;
 }
 
 int DataTable::size() const
