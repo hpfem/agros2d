@@ -339,13 +339,12 @@ void PyField::addMaterial(const std::string &name, const map<std::string, double
     }
 
     // browse material parameters
+    QList<Module::MaterialTypeVariable> variables = m_fieldInfo->materialTypeVariables();
     QHash<QString, Value> values;
     for (map<std::string, double>::const_iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
-        QList<Module::MaterialTypeVariable> materials = m_fieldInfo->materialTypeVariables();
-
         bool assigned = false;
-        foreach (Module::MaterialTypeVariable variable, materials)
+        foreach (Module::MaterialTypeVariable variable, variables)
         {
             if (variable.id() == QString::fromStdString((*i).first))
             {
@@ -359,13 +358,17 @@ void PyField::addMaterial(const std::string &name, const map<std::string, double
 
                 assigned = true;
                 if (expressions.count((*i).first) == 0)
+                {
                     values[variable.id()] = Value((*i).second,
                                                   (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
                                                   (leny > 0) ? nonlin_y.at((*i).first) : vector<double>());
+                }
                 else
+                {
                     values[variable.id()] = Value(QString::fromStdString(expressions.at((*i).first)),
                                                   (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
                                                   (leny > 0) ? nonlin_y.at((*i).first) : vector<double>());
+                }
                 break;
             }
         }
@@ -406,13 +409,17 @@ void PyField::modifyMaterial(const std::string &name, const map<std::string, dou
 
                 assigned = true;
                 if (expressions.count((*i).first) == 0)
+                {
                     sceneMaterial->setValue(QString::fromStdString((*i).first), Value((*i).second,
                                                                                       (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
                                                                                       (leny > 0) ? nonlin_y.at((*i).first) : vector<double>()));
+                }
                 else
+                {
                     sceneMaterial->setValue(QString::fromStdString((*i).first), Value(QString::fromStdString(expressions.at((*i).first)),
                                                                                       (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
                                                                                       (leny > 0) ? nonlin_y.at((*i).first) : vector<double>()));
+                }
                 break;
             }
         }
