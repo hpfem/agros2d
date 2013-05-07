@@ -441,6 +441,7 @@ void SceneViewPost2D::paintScalarField()
         Point point[3];
         double value[3];
 
+        glLineWidth(1.0);
         glEnable(GL_POLYGON_OFFSET_FILL);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
