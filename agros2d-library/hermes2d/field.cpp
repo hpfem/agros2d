@@ -121,9 +121,38 @@ void FieldInfo::setAnalysisType(AnalysisType at)
                     }
                 }
             }
+
+            m_availableLinearityTypes = availableLinearityTypes(at);
         }
     }
 }
+
+QList<LinearityType> FieldInfo::availableLinearityTypes(AnalysisType at) const
+{
+    QList<LinearityType> availableLinearityTypes;
+    foreach (XMLModule::analysis an, m_plugin->module()->general().analyses().analysis())
+    {
+        if (an.type() == analysisTypeToStringKey(at).toStdString())
+        {
+            if (an.linearity_config().present())
+            {
+                for (int i = 0; i < an.linearity_config().get().linearity_item().size(); i ++)
+                {
+                    QString linearityTypeStr = QString::fromStdString(an.linearity_config().get().linearity_item().at(i).linearity_option());
+                    LinearityType linearityType = linearityTypeFromStringKey(linearityTypeStr);
+                    availableLinearityTypes.push_back(linearityType);
+                }
+            }
+            else
+            {
+                availableLinearityTypes.push_back(LinearityType_Linear);
+                availableLinearityTypes.push_back(LinearityType_Newton);
+            }
+        }
+    }
+    return availableLinearityTypes;
+}
+
 
 int FieldInfo::edgeRefinement(SceneEdge *edge)
 {

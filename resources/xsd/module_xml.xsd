@@ -40,7 +40,8 @@
         <element name="analysis">
                 <complexType>
                    <sequence>
-                        <element minOccurs="0" maxOccurs="1" ref="module:field_config" />
+                   <element minOccurs="0" maxOccurs="1" ref="module:field_config" />
+                   <element minOccurs="0" maxOccurs="1" ref="module:linearity_config" />
                    </sequence>
                    <attribute name="id" use="required" type="string" />
                    <attribute name="name" use="required" type="string" />
@@ -56,6 +57,18 @@
                   <complexType>
                     <attribute name="field_key" type="string" use="required"/>
                     <attribute name="field_value" type="string" use="required"/>
+                  </complexType>
+                </element>
+              </sequence>
+            </complexType>
+        </element>
+
+        <element name="linearity_config">
+            <complexType>
+              <sequence>
+                <element minOccurs="0" maxOccurs="unbounded" name="linearity_item">
+                  <complexType>
+                    <attribute name="linearity_option" type="string" use="required"/>
                   </complexType>
                 </element>
               </sequence>

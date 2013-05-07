@@ -368,9 +368,10 @@ void FieldWidget::fillComboBox()
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_P), AdaptivityType_P);
     cmbAdaptivityType->addItem(adaptivityTypeString(AdaptivityType_HP), AdaptivityType_HP);
 
-    cmbLinearityType->addItem(linearityTypeString(LinearityType_Linear), LinearityType_Linear);
-    //cmbLinearityType->addItem(linearityTypeString(LinearityType_Picard), LinearityType_Picard);
-    cmbLinearityType->addItem(linearityTypeString(LinearityType_Newton), LinearityType_Newton);
+    foreach(LinearityType linearityType, m_fieldInfo->availableLinearityTypes())
+    {
+        cmbLinearityType->addItem(linearityTypeString(linearityType), linearityType);
+    }
 
     QMapIterator<AnalysisType, QString> it(m_fieldInfo->analyses());
     while (it.hasNext())
@@ -471,8 +472,20 @@ void FieldWidget::doAnalysisTypeChanged(int index)
         if (otherFieldInfo->analysisType() == AnalysisType_Transient && otherFieldInfo->fieldId() != m_fieldInfo->fieldId())
             otherFieldIsTransient = true;
 
-    txtTransientTimeSkip->setEnabled((AnalysisType) cmbAnalysisType->itemData(index).toInt() != AnalysisType_Transient && otherFieldIsTransient);
+    AnalysisType analysisType = (AnalysisType) cmbAnalysisType->itemData(index).toInt();
+    txtTransientTimeSkip->setEnabled(analysisType != AnalysisType_Transient && otherFieldIsTransient);
 
+    LinearityType previousLinearityType = (LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt();
+    cmbLinearityType->clear();
+    int idx = 0, nextIndex = 0;
+    foreach(LinearityType linearityType, m_fieldInfo->availableLinearityTypes(analysisType))
+    {
+        cmbLinearityType->addItem(linearityTypeString(linearityType), linearityType);
+        if(linearityType == previousLinearityType)
+            nextIndex = idx;
+        idx++;
+    }
+    cmbLinearityType->setCurrentIndex(nextIndex);
     doShowEquation();
 }
 

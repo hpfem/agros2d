@@ -258,6 +258,7 @@ namespace XMLModule
   class analyses;
   class analysis;
   class field_config;
+  class linearity_config;
   class constants;
   class constant;
   class macros;
@@ -293,6 +294,7 @@ namespace XMLModule
   class essential_form;
   class boundary;
   class field_item;
+  class linearity_item;
 }
 
 
@@ -688,6 +690,27 @@ namespace XMLModule
     void
     field_config (::std::auto_ptr< field_config_type > p);
 
+    // linearity_config
+    // 
+    typedef ::XMLModule::linearity_config linearity_config_type;
+    typedef ::xsd::cxx::tree::optional< linearity_config_type > linearity_config_optional;
+    typedef ::xsd::cxx::tree::traits< linearity_config_type, char > linearity_config_traits;
+
+    const linearity_config_optional&
+    linearity_config () const;
+
+    linearity_config_optional&
+    linearity_config ();
+
+    void
+    linearity_config (const linearity_config_type& x);
+
+    void
+    linearity_config (const linearity_config_optional& x);
+
+    void
+    linearity_config (::std::auto_ptr< linearity_config_type > p);
+
     // id
     // 
     typedef ::xml_schema::string id_type;
@@ -784,6 +807,7 @@ namespace XMLModule
 
     protected:
     field_config_optional field_config_;
+    linearity_config_optional linearity_config_;
     ::xsd::cxx::tree::one< id_type > id_;
     ::xsd::cxx::tree::one< name_type > name_;
     ::xsd::cxx::tree::one< solutions_type > solutions_;
@@ -838,6 +862,56 @@ namespace XMLModule
 
     protected:
     field_item_sequence field_item_;
+  };
+
+  class linearity_config: public ::xml_schema::type
+  {
+    public:
+    // linearity_item
+    // 
+    typedef ::XMLModule::linearity_item linearity_item_type;
+    typedef ::xsd::cxx::tree::sequence< linearity_item_type > linearity_item_sequence;
+    typedef linearity_item_sequence::iterator linearity_item_iterator;
+    typedef linearity_item_sequence::const_iterator linearity_item_const_iterator;
+    typedef ::xsd::cxx::tree::traits< linearity_item_type, char > linearity_item_traits;
+
+    const linearity_item_sequence&
+    linearity_item () const;
+
+    linearity_item_sequence&
+    linearity_item ();
+
+    void
+    linearity_item (const linearity_item_sequence& s);
+
+    // Constructors.
+    //
+    linearity_config ();
+
+    linearity_config (const ::xercesc::DOMElement& e,
+                      ::xml_schema::flags f = 0,
+                      ::xml_schema::container* c = 0);
+
+    linearity_config (const linearity_config& x,
+                      ::xml_schema::flags f = 0,
+                      ::xml_schema::container* c = 0);
+
+    virtual linearity_config*
+    _clone (::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0) const;
+
+    virtual 
+    ~linearity_config ();
+
+    // Implementation.
+    //
+    protected:
+    void
+    parse (::xsd::cxx::xml::dom::parser< char >&,
+           ::xml_schema::flags);
+
+    protected:
+    linearity_item_sequence linearity_item_;
   };
 
   class constants: public ::xml_schema::type
@@ -4538,6 +4612,56 @@ namespace XMLModule
     ::xsd::cxx::tree::one< field_key_type > field_key_;
     ::xsd::cxx::tree::one< field_value_type > field_value_;
   };
+
+  class linearity_item: public ::xml_schema::type
+  {
+    public:
+    // linearity_option
+    // 
+    typedef ::xml_schema::string linearity_option_type;
+    typedef ::xsd::cxx::tree::traits< linearity_option_type, char > linearity_option_traits;
+
+    const linearity_option_type&
+    linearity_option () const;
+
+    linearity_option_type&
+    linearity_option ();
+
+    void
+    linearity_option (const linearity_option_type& x);
+
+    void
+    linearity_option (::std::auto_ptr< linearity_option_type > p);
+
+    // Constructors.
+    //
+    linearity_item (const linearity_option_type&);
+
+    linearity_item (const ::xercesc::DOMElement& e,
+                    ::xml_schema::flags f = 0,
+                    ::xml_schema::container* c = 0);
+
+    linearity_item (const linearity_item& x,
+                    ::xml_schema::flags f = 0,
+                    ::xml_schema::container* c = 0);
+
+    virtual linearity_item*
+    _clone (::xml_schema::flags f = 0,
+            ::xml_schema::container* c = 0) const;
+
+    virtual 
+    ~linearity_item ();
+
+    // Implementation.
+    //
+    protected:
+    void
+    parse (::xsd::cxx::xml::dom::parser< char >&,
+           ::xml_schema::flags);
+
+    protected:
+    ::xsd::cxx::tree::one< linearity_option_type > linearity_option_;
+  };
 }
 
 #include <iosfwd>
@@ -4558,6 +4682,9 @@ namespace XMLModule
 
   ::std::ostream&
   operator<< (::std::ostream&, const field_config&);
+
+  ::std::ostream&
+  operator<< (::std::ostream&, const linearity_config&);
 
   ::std::ostream&
   operator<< (::std::ostream&, const constants&);
@@ -4663,6 +4790,9 @@ namespace XMLModule
 
   ::std::ostream&
   operator<< (::std::ostream&, const field_item&);
+
+  ::std::ostream&
+  operator<< (::std::ostream&, const linearity_item&);
 }
 
 #include <iosfwd>
@@ -4861,6 +4991,9 @@ namespace XMLModule
   operator<< (::xercesc::DOMElement&, const field_config&);
 
   void
+  operator<< (::xercesc::DOMElement&, const linearity_config&);
+
+  void
   operator<< (::xercesc::DOMElement&, const constants&);
 
   void
@@ -4964,6 +5097,9 @@ namespace XMLModule
 
   void
   operator<< (::xercesc::DOMElement&, const field_item&);
+
+  void
+  operator<< (::xercesc::DOMElement&, const linearity_item&);
 }
 
 #include <xsd/cxx/post.hxx>

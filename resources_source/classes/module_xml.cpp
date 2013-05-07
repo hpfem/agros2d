@@ -393,6 +393,36 @@ namespace XMLModule
     this->field_config_.set (x);
   }
 
+  const analysis::linearity_config_optional& analysis::
+  linearity_config () const
+  {
+    return this->linearity_config_;
+  }
+
+  analysis::linearity_config_optional& analysis::
+  linearity_config ()
+  {
+    return this->linearity_config_;
+  }
+
+  void analysis::
+  linearity_config (const linearity_config_type& x)
+  {
+    this->linearity_config_.set (x);
+  }
+
+  void analysis::
+  linearity_config (const linearity_config_optional& x)
+  {
+    this->linearity_config_ = x;
+  }
+
+  void analysis::
+  linearity_config (::std::auto_ptr< linearity_config_type > x)
+  {
+    this->linearity_config_.set (x);
+  }
+
   const analysis::id_type& analysis::
   id () const
   {
@@ -503,6 +533,28 @@ namespace XMLModule
   field_item (const field_item_sequence& s)
   {
     this->field_item_ = s;
+  }
+
+
+  // linearity_config
+  // 
+
+  const linearity_config::linearity_item_sequence& linearity_config::
+  linearity_item () const
+  {
+    return this->linearity_item_;
+  }
+
+  linearity_config::linearity_item_sequence& linearity_config::
+  linearity_item ()
+  {
+    return this->linearity_item_;
+  }
+
+  void linearity_config::
+  linearity_item (const linearity_item_sequence& s)
+  {
+    this->linearity_item_ = s;
   }
 
 
@@ -3836,6 +3888,34 @@ namespace XMLModule
   {
     this->field_value_.set (x);
   }
+
+
+  // linearity_item
+  // 
+
+  const linearity_item::linearity_option_type& linearity_item::
+  linearity_option () const
+  {
+    return this->linearity_option_.get ();
+  }
+
+  linearity_item::linearity_option_type& linearity_item::
+  linearity_option ()
+  {
+    return this->linearity_option_.get ();
+  }
+
+  void linearity_item::
+  linearity_option (const linearity_option_type& x)
+  {
+    this->linearity_option_.set (x);
+  }
+
+  void linearity_item::
+  linearity_option (::std::auto_ptr< linearity_option_type > x)
+  {
+    this->linearity_option_.set (x);
+  }
 }
 
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
@@ -4355,6 +4435,7 @@ namespace XMLModule
             const type_type& type)
   : ::xml_schema::type (),
     field_config_ (::xml_schema::flags (), this),
+    linearity_config_ (::xml_schema::flags (), this),
     id_ (id, ::xml_schema::flags (), this),
     name_ (name, ::xml_schema::flags (), this),
     solutions_ (solutions, ::xml_schema::flags (), this),
@@ -4368,6 +4449,7 @@ namespace XMLModule
             ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     field_config_ (x.field_config_, f, this),
+    linearity_config_ (x.linearity_config_, f, this),
     id_ (x.id_, f, this),
     name_ (x.name_, f, this),
     solutions_ (x.solutions_, f, this),
@@ -4381,6 +4463,7 @@ namespace XMLModule
             ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     field_config_ (f, this),
+    linearity_config_ (f, this),
     id_ (f, this),
     name_ (f, this),
     solutions_ (f, this),
@@ -4413,6 +4496,20 @@ namespace XMLModule
         if (!this->field_config_)
         {
           this->field_config_.set (r);
+          continue;
+        }
+      }
+
+      // linearity_config
+      //
+      if (n.name () == "linearity_config" && n.namespace_ () == "XMLModule")
+      {
+        ::std::auto_ptr< linearity_config_type > r (
+          linearity_config_traits::create (i, f, this));
+
+        if (!this->linearity_config_)
+        {
+          this->linearity_config_.set (r);
           continue;
         }
       }
@@ -4568,6 +4665,76 @@ namespace XMLModule
 
   field_config::
   ~field_config ()
+  {
+  }
+
+  // linearity_config
+  //
+
+  linearity_config::
+  linearity_config ()
+  : ::xml_schema::type (),
+    linearity_item_ (::xml_schema::flags (), this)
+  {
+  }
+
+  linearity_config::
+  linearity_config (const linearity_config& x,
+                    ::xml_schema::flags f,
+                    ::xml_schema::container* c)
+  : ::xml_schema::type (x, f, c),
+    linearity_item_ (x.linearity_item_, f, this)
+  {
+  }
+
+  linearity_config::
+  linearity_config (const ::xercesc::DOMElement& e,
+                    ::xml_schema::flags f,
+                    ::xml_schema::container* c)
+  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    linearity_item_ (f, this)
+  {
+    if ((f & ::xml_schema::flags::base) == 0)
+    {
+      ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+      this->parse (p, f);
+    }
+  }
+
+  void linearity_config::
+  parse (::xsd::cxx::xml::dom::parser< char >& p,
+         ::xml_schema::flags f)
+  {
+    for (; p.more_elements (); p.next_element ())
+    {
+      const ::xercesc::DOMElement& i (p.cur_element ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      // linearity_item
+      //
+      if (n.name () == "linearity_item" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< linearity_item_type > r (
+          linearity_item_traits::create (i, f, this));
+
+        this->linearity_item_.push_back (r);
+        continue;
+      }
+
+      break;
+    }
+  }
+
+  linearity_config* linearity_config::
+  _clone (::xml_schema::flags f,
+          ::xml_schema::container* c) const
+  {
+    return new class linearity_config (*this, f, c);
+  }
+
+  linearity_config::
+  ~linearity_config ()
   {
   }
 
@@ -8782,6 +8949,79 @@ namespace XMLModule
   ~field_item ()
   {
   }
+
+  // linearity_item
+  //
+
+  linearity_item::
+  linearity_item (const linearity_option_type& linearity_option)
+  : ::xml_schema::type (),
+    linearity_option_ (linearity_option, ::xml_schema::flags (), this)
+  {
+  }
+
+  linearity_item::
+  linearity_item (const linearity_item& x,
+                  ::xml_schema::flags f,
+                  ::xml_schema::container* c)
+  : ::xml_schema::type (x, f, c),
+    linearity_option_ (x.linearity_option_, f, this)
+  {
+  }
+
+  linearity_item::
+  linearity_item (const ::xercesc::DOMElement& e,
+                  ::xml_schema::flags f,
+                  ::xml_schema::container* c)
+  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    linearity_option_ (f, this)
+  {
+    if ((f & ::xml_schema::flags::base) == 0)
+    {
+      ::xsd::cxx::xml::dom::parser< char > p (e, false, true);
+      this->parse (p, f);
+    }
+  }
+
+  void linearity_item::
+  parse (::xsd::cxx::xml::dom::parser< char >& p,
+         ::xml_schema::flags f)
+  {
+    while (p.more_attributes ())
+    {
+      const ::xercesc::DOMAttr& i (p.next_attribute ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      if (n.name () == "linearity_option" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< linearity_option_type > r (
+          linearity_option_traits::create (i, f, this));
+
+        this->linearity_option_.set (r);
+        continue;
+      }
+    }
+
+    if (!linearity_option_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "linearity_option",
+        "");
+    }
+  }
+
+  linearity_item* linearity_item::
+  _clone (::xml_schema::flags f,
+          ::xml_schema::container* c) const
+  {
+    return new class linearity_item (*this, f, c);
+  }
+
+  linearity_item::
+  ~linearity_item ()
+  {
+  }
 }
 
 #include <ostream>
@@ -8846,6 +9086,11 @@ namespace XMLModule
       o << ::std::endl << "field_config: " << *i.field_config ();
     }
 
+    if (i.linearity_config ())
+    {
+      o << ::std::endl << "linearity_config: " << *i.linearity_config ();
+    }
+
     o << ::std::endl << "id: " << i.id ();
     o << ::std::endl << "name: " << i.name ();
     o << ::std::endl << "solutions: " << i.solutions ();
@@ -8861,6 +9106,19 @@ namespace XMLModule
          b != e; ++b)
     {
       o << ::std::endl << "field_item: " << *b;
+    }
+
+    return o;
+  }
+
+  ::std::ostream&
+  operator<< (::std::ostream& o, const linearity_config& i)
+  {
+    for (linearity_config::linearity_item_const_iterator
+         b (i.linearity_item ().begin ()), e (i.linearity_item ().end ());
+         b != e; ++b)
+    {
+      o << ::std::endl << "linearity_item: " << *b;
     }
 
     return o;
@@ -9548,6 +9806,13 @@ namespace XMLModule
     o << ::std::endl << "field_value: " << i.field_value ();
     return o;
   }
+
+  ::std::ostream&
+  operator<< (::std::ostream& o, const linearity_item& i)
+  {
+    o << ::std::endl << "linearity_option: " << i.linearity_option ();
+    return o;
+  }
 }
 
 #include <istream>
@@ -10193,6 +10458,19 @@ namespace XMLModule
       s << *i.field_config ();
     }
 
+    // linearity_config
+    //
+    if (i.linearity_config ())
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "linearity_config",
+          "XMLModule",
+          e));
+
+      s << *i.linearity_config ();
+    }
+
     // id
     //
     {
@@ -10252,6 +10530,26 @@ namespace XMLModule
       ::xercesc::DOMElement& s (
         ::xsd::cxx::xml::dom::create_element (
           "field_item",
+          e));
+
+      s << *b;
+    }
+  }
+
+  void
+  operator<< (::xercesc::DOMElement& e, const linearity_config& i)
+  {
+    e << static_cast< const ::xml_schema::type& > (i);
+
+    // linearity_item
+    //
+    for (linearity_config::linearity_item_const_iterator
+         b (i.linearity_item ().begin ()), n (i.linearity_item ().end ());
+         b != n; ++b)
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "linearity_item",
           e));
 
       s << *b;
@@ -12099,6 +12397,23 @@ namespace XMLModule
           e));
 
       a << i.field_value ();
+    }
+  }
+
+  void
+  operator<< (::xercesc::DOMElement& e, const linearity_item& i)
+  {
+    e << static_cast< const ::xml_schema::type& > (i);
+
+    // linearity_option
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "linearity_option",
+          e));
+
+      a << i.linearity_option ();
     }
   }
 }

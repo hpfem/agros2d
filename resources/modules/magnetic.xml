@@ -5,12 +5,20 @@
     <module:description>Magnetic field ...</module:description>
     <module:analyses>
       <module:analysis id="steadystate" name="Steady state" solutions="1" type="steadystate">
-      <module:field_config>
-        <field_item field_key="NewtonDampingCoeff" field_value="0.8"/>
-        <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
-      </module:field_config>
+        <module:field_config>
+          <field_item field_key="NewtonDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
+        </module:field_config>
+        <module:linearity_config>
+          <linearity_item linearity_option="linear"/>
+          <linearity_item linearity_option="newton"/>
+        </module:linearity_config>
       </module:analysis>
-      <module:analysis id="harmonic" name="Harmonic" solutions="2" type="harmonic" />
+      <module:analysis id="harmonic" name="Harmonic" solutions="2" type="harmonic">
+      <module:linearity_config>
+        <linearity_item linearity_option="linear"/>
+      </module:linearity_config>
+      </module:analysis>
 <!--      <module:analysis id="transient" name="Transient" solutions="1" type="transient" />-->
     </module:analyses>
   </module:general>

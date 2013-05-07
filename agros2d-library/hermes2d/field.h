@@ -92,6 +92,8 @@ public:
     inline LinearityType linearityType() const {return m_linearityType; }
     void setLinearityType(const LinearityType lt) { m_linearityType = lt; emit changed(); }
 
+    QList<LinearityType> availableLinearityTypes(AnalysisType at) const;
+
     // adaptivity
     inline AdaptivityType adaptivityType() const { return m_adaptivityType; }
     void setAdaptivityType(const AdaptivityType at) { m_adaptivityType = at; emit changed(); }
@@ -198,7 +200,10 @@ public:
 
     // weak forms
     QList<FormInfo> wfMatrixVolume() const;
-    QList<FormInfo> wfVectorVolume() const;
+    QList<FormInfo> wfVectorVolume() const;        
+
+    QList<LinearityType> availableLinearityTypes() const {return m_availableLinearityTypes;}
+
 
 signals:
     void changed();
@@ -220,8 +225,11 @@ private:
     AnalysisType m_analysisType;
     // number of solutions cache
     int m_numberOfSolutions;
+
     // linearity
     LinearityType m_linearityType;
+    QList<LinearityType> m_availableLinearityTypes;
+
     // adaptivity
     AdaptivityType m_adaptivityType;
 
