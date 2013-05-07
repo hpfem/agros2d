@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/pkus/sources/agros2d-second/resources/xsd/problem_a2d_30_xml.xsd">
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/david/git/github/testovani/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
 
   <geometry>
     <nodes>
@@ -38,8 +38,11 @@
               <boundary_edge id="5"/>
             </boundary_edges>
             <boundary_types>
+              <boundary_type key="acoustic_pressure_imag" value="0"/>
               <boundary_type key="acoustic_normal_acceleration_real" value="0"/>
               <boundary_type key="acoustic_normal_acceleration_imag" value="0"/>
+              <boundary_type key="acoustic_impedance" value="0"/>
+              <boundary_type key="acoustic_pressure_real" value="0"/>
             </boundary_types>
           </boundary>
           <boundary id="2" name="Source" type="acoustic_pressure">
@@ -48,6 +51,9 @@
             </boundary_edges>
             <boundary_types>
               <boundary_type key="acoustic_pressure_imag" value="0"/>
+              <boundary_type key="acoustic_normal_acceleration_real" value="0"/>
+              <boundary_type key="acoustic_normal_acceleration_imag" value="0"/>
+              <boundary_type key="acoustic_impedance" value="0"/>
               <boundary_type key="acoustic_pressure_real" value="1"/>
             </boundary_types>
           </boundary>
@@ -56,7 +62,11 @@
               <boundary_edge id="0"/>
             </boundary_edges>
             <boundary_types>
+              <boundary_type key="acoustic_pressure_imag" value="0"/>
+              <boundary_type key="acoustic_normal_acceleration_real" value="0"/>
+              <boundary_type key="acoustic_normal_acceleration_imag" value="0"/>
               <boundary_type key="acoustic_impedance" value="1.25*343"/>
+              <boundary_type key="acoustic_pressure_real" value="0"/>
             </boundary_types>
           </boundary>
         </boundaries>
@@ -77,7 +87,7 @@
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
           <field_item field_key="NewtonDampingType" field_value="0"/>
           <field_item field_key="NewtonDampingCoeff" field_value="0.8"/>
-          <field_item field_key="" field_value="1"/>
+          <field_item field_key="NewtonReuseJacobian" field_value="1"/>
           <field_item field_key="NewtonSufImprovJacobian" field_value="0.8"/>
           <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
           <field_item field_key="NewtonStepsToIncreaseDF" field_value="1"/>
@@ -89,9 +99,9 @@
           <field_item field_key="AdaptivitySteps" field_value="25"/>
           <field_item field_key="AdaptivityTolerance" field_value="10"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
-          <field_item field_key="AdaptivityTransientRedoneEach" field_value="0"/>
+          <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
-          <field_item field_key="TransientInitialConditio" field_value="0"/>
+          <field_item field_key="TransientInitialCondition" field_value="0"/>
         </field_config>
       </field>
     </fields>
@@ -188,8 +198,8 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="-1.03105646040126"/>
-    <item key="View_ScalarRangeMax" value="1.00187424592685"/>
+    <item key="View_ScalarRangeMin" value="-1.03106278872379"/>
+    <item key="View_ScalarRangeMax" value="1.0023032573611"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value=""/>
     <item key="View_VectorProportional" value="1"/>
