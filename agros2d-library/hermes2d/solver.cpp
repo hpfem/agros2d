@@ -255,8 +255,13 @@ LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block) : HermesSolve
 {
     m_linearSolver = new LinearSolver<Scalar>();
     m_linearSolver->set_verbose_output(false);
-    if (!block->isTransient())
-        m_linearSolver->set_do_not_use_cache();
+
+    // solver cache
+    m_linearSolver->set_do_not_use_cache(true);
+    if (Agros2D::configComputer()->useSolverCache)
+        if (block->isTransient() || block->adaptivityType() != AdaptivityType_None)
+            m_linearSolver->set_do_not_use_cache(false);
+
     this->m_constJacobianPossible = true;
 }
 
@@ -313,6 +318,9 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
     {
         assert(0);
     }
+
+    // solver cache
+    m_newtonSolver->set_do_not_use_cache(!Agros2D::configComputer()->useSolverCache);
 }
 
 template <typename Scalar>
@@ -364,7 +372,9 @@ PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block) : HermesSolve
     }
     else
         m_picardSolver->use_Anderson_acceleration(false);
-    //m_picardSolver.data()->set_max_allowed_residual_norm(1e15);
+
+    // solver cache
+    m_picardSolver->set_do_not_use_cache(!Agros2D::configComputer()->useSolverCache);
 }
 
 template <typename Scalar>

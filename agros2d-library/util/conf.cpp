@@ -63,6 +63,9 @@ void Config::load()
     // cache size
     cacheSize = settings.value("Solution/CacheSize", CACHE_SIZE).toInt();
 
+    // solver cache
+    useSolverCache = settings.value("Solution/UseSolverCache", USER_SOLVER_CACHE).toBool();
+
     // number of threads
     numberOfThreads = settings.value("Parallel/NumberOfThreads", omp_get_max_threads()).toInt();
     if (numberOfThreads > omp_get_max_threads())
@@ -97,9 +100,11 @@ void Config::save()
     // development
     settings.setValue("SceneViewSettings/SaveMatrixAndRHS", saveMatrixRHS);
 
-
     // cache size
     settings.setValue("Solution/CacheSize", cacheSize);
+
+    // solver cache
+    settings.setValue("Solution/UseSolverCache", useSolverCache);
 
     // number of threads
     settings.setValue("Parallel/NumberOfThreads", numberOfThreads);

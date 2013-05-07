@@ -71,6 +71,9 @@ void ConfigComputerDialog::load()
     // number of threads
     txtNumOfThreads->setValue(Agros2D::configComputer()->numberOfThreads);
 
+    // solver cache
+    chkUseSolverCache->setChecked(Agros2D::configComputer()->useSolverCache);
+
     // delete files
     chkDeleteTriangleMeshFiles->setChecked(Agros2D::configComputer()->deleteMeshFiles);
     chkDeleteHermes2DMeshFile->setChecked(Agros2D::configComputer()->deleteHermesMeshFile);
@@ -132,6 +135,9 @@ void ConfigComputerDialog::save()
 
     // cache size
     Agros2D::configComputer()->cacheSize = txtCacheSize->value();
+
+    // solver cache
+    Agros2D::configComputer()->useSolverCache = chkUseSolverCache->isChecked();
 
     // std log
     Agros2D::configComputer()->showLogStdOut = chkLogStdOut->isChecked();
@@ -273,6 +279,7 @@ QWidget *ConfigComputerDialog::createSolverWidget()
     chkDeleteTriangleMeshFiles = new QCheckBox(tr("Delete files with initial mesh (Triangle)"));
     chkDeleteHermes2DMeshFile = new QCheckBox(tr("Delete files with solution mesh (Hermes2D)"));
     chkSaveWithSolution = new QCheckBox(tr("Save problem with solution"));
+    chkUseSolverCache = new QCheckBox(tr("Use solver cache (large memory requirements)"));
     txtCacheSize = new QSpinBox(this);
     txtCacheSize->setMinimum(2);
     txtCacheSize->setMaximum(50);
@@ -288,7 +295,8 @@ QWidget *ConfigComputerDialog::createSolverWidget()
     layoutSolver->addWidget(txtNumOfThreads, 2, 1);
     layoutSolver->addWidget(new QLabel(tr("Number of cache slots:")), 3, 0);
     layoutSolver->addWidget(txtCacheSize, 3, 1);
-    layoutSolver->addWidget(chkSaveWithSolution);
+    layoutSolver->addWidget(chkUseSolverCache, 4, 0, 1, 2);
+    layoutSolver->addWidget(chkSaveWithSolution, 5, 0, 1, 2);
 
     QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
     grpSolver->setLayout(layoutSolver);
