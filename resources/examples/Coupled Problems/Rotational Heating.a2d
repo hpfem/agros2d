@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_30_xml.xsd">
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
 
   <geometry>
     <nodes>
@@ -262,10 +262,10 @@
             <material_types>
               <material_type key="heat_volume_heat" value="0"/>
               <material_type key="heat_velocity_x" value="0"/>
-              <material_type key="heat_conductivity" value="236.11;cubic_spline,1,1$20,22.5253,25.0505,27.5758,30.101,32.6263,35.1515,37.6768,40.202,42.7273,45.2525,47.7778,50.303,52.8283,55.3535,57.8788,60.404,62.9293,65.4545,67.9798,70.5051,73.0303,75.5556,78.0808,80.6061,83.1313,85.6566,88.1818,90.7071,93.2323,95.7576,98.2828,100.808,103.333,105.859,108.384,110.909,113.434,115.96,118.485,121.01,123.535,126.061,128.586,131.111,133.636,136.162,138.687,141.212,143.737,146.263,148.788,151.313,153.838,156.364,158.889,161.414,163.939,166.465,168.99,171.515,174.04,176.566,179.091,181.616,184.141,186.667,189.192,191.717,194.242,196.768,199.293,201.818,204.343,206.869,209.394,211.919,214.444,216.97,219.495,222.02,224.545,227.071,229.596,232.121,234.646,237.172,239.697,242.222,244.747,247.273,249.798,252.323,254.848,257.374,259.899,262.424,264.949,267.475,270;236.11,236.628,237.04,237.263,237.476,237.679,237.872,238.055,238.229,238.393,238.549,238.696,238.834,238.964,239.085,239.199,239.305,239.403,239.494,239.577,239.654,239.723,239.786,239.842,239.892,239.936,239.973,240.005,240.031,240.051,240.066,240.076,240.08,240.08,240.074,240.064,240.049,240.03,240.007,239.979,239.947,239.911,239.872,239.828,239.781,239.731,239.677,239.62,239.559,239.496,239.429,239.36,239.287,239.213,239.135,239.055,238.972,238.887,238.8,238.711,238.619,238.526,238.43,238.333,238.233,238.132,238.03,237.925,237.819,237.712,237.603,237.492,237.38,237.267,237.153,237.037,236.92,236.802,236.684,236.564,236.443,236.321,236.198,236.074,235.949,235.824,235.698,235.571,235.443,235.315,235.186,235.056,234.926,234.795,234.663,234.531,234.399,234.265,234.132,233.998"/>
-              <material_type key="heat_density" value="2700.1;cubic_spline,1,1$20,22.5253,25.0505,27.5758,30.101,32.6263,35.1515,37.6768,40.202,42.7273,45.2525,47.7778,50.303,52.8283,55.3535,57.8788,60.404,62.9293,65.4545,67.9798,70.5051,73.0303,75.5556,78.0808,80.6061,83.1313,85.6566,88.1818,90.7071,93.2323,95.7576,98.2828,100.808,103.333,105.859,108.384,110.909,113.434,115.96,118.485,121.01,123.535,126.061,128.586,131.111,133.636,136.162,138.687,141.212,143.737,146.263,148.788,151.313,153.838,156.364,158.889,161.414,163.939,166.465,168.99,171.515,174.04,176.566,179.091,181.616,184.141,186.667,189.192,191.717,194.242,196.768,199.293,201.818,204.343,206.869,209.394,211.919,214.444,216.97,219.495,222.02,224.545,227.071,229.596,232.121,234.646,237.172,239.697,242.222,244.747,247.273,249.798,252.323,254.848,257.374,259.899,262.424,264.949,267.475,270;2700.1,2699.63,2699.16,2698.69,2698.22,2697.75,2697.27,2696.8,2696.32,2695.84,2695.36,2694.89,2694.41,2693.93,2693.44,2692.96,2692.48,2691.99,2691.51,2691.02,2690.54,2690.05,2689.56,2689.07,2688.59,2688.1,2687.6,2687.11,2686.62,2686.13,2685.63,2685.14,2684.64,2684.15,2683.65,2683.16,2682.66,2682.16,2681.66,2681.16,2680.66,2680.16,2679.66,2679.15,2678.65,2678.15,2677.64,2677.14,2676.63,2676.12,2675.62,2675.11,2674.6,2674.09,2673.58,2673.07,2672.56,2672.05,2671.53,2671.02,2670.51,2669.99,2669.48,2668.96,2668.44,2667.92,2667.4,2666.89,2666.36,2665.84,2665.32,2664.8,2664.28,2663.75,2663.23,2662.7,2662.17,2661.65,2661.12,2660.59,2660.06,2659.53,2659,2658.46,2657.93,2657.4,2656.86,2656.32,2655.79,2655.25,2654.71,2654.17,2653.63,2653.09,2652.55,2652,2651.46,2650.91,2650.36,2649.82"/>
+              <material_type key="heat_conductivity" value="236.11;cubic_spline,1,1$263.154,287.077,311,334.923,358.846,382.769,406.692,430.615,454.538,478.462,502.385,526.308,550.231,574.154,598.077,622,645.923,669.846,693.769,717.692,741.615,765.538,789.462,813.385,837.308,861.231,885.154,909.077,933;234.606,235.191,238.067,239.359,239.974,240.058,239.733,239.1,238.243,237.223,236.092,234.882,233.619,232.314,230.973,229.594,228.172,226.7,225.168,223.57,221.901,220.163,218.364,216.52,214.66,212.824,211.066,209.458,208.089"/>
+              <material_type key="heat_density" value="2700.1;cubic_spline,1,1$254.103,277.513,300.923,324.333,347.744,371.154,394.564,417.974,441.385,464.795,488.205,511.615,535.026,558.436,581.846,605.256,628.667,652.077,675.487,698.897,722.308,745.718,769.128,792.538,815.949,839.359,862.769,886.179,909.59,933;2707.22,2702.99,2698.66,2694.24,2689.75,2685.19,2680.58,2675.91,2671.17,2666.38,2661.52,2656.59,2651.58,2646.48,2641.29,2636.01,2630.62,2625.13,2619.53,2613.82,2608.01,2602.1,2596.11,2590.04,2583.92,2577.77,2571.62,2565.5,2559.46,2553.54"/>
               <material_type key="heat_velocity_y" value="0"/>
-              <material_type key="heat_specific_heat" value="893.601;cubic_spline,1,1$20,22.5253,25.0505,27.5758,30.101,32.6263,35.1515,37.6768,40.202,42.7273,45.2525,47.7778,50.303,52.8283,55.3535,57.8788,60.404,62.9293,65.4545,67.9798,70.5051,73.0303,75.5556,78.0808,80.6061,83.1313,85.6566,88.1818,90.7071,93.2323,95.7576,98.2828,100.808,103.333,105.859,108.384,110.909,113.434,115.96,118.485,121.01,123.535,126.061,128.586,131.111,133.636,136.162,138.687,141.212,143.737,146.263,148.788,151.313,153.838,156.364,158.889,161.414,163.939,166.465,168.99,171.515,174.04,176.566,179.091,181.616,184.141,186.667,189.192,191.717,194.242,196.768,199.293,201.818,204.343,206.869,209.394,211.919,214.444,216.97,219.495,222.02,224.545,227.071,229.596,232.121,234.646,237.172,239.697,242.222,244.747,247.273,249.798,252.323,254.848,257.374,259.899,262.424,264.949,267.475,270;893.601,895.322,897.013,898.676,900.312,901.923,903.51,905.075,906.619,908.144,909.65,911.115,912.593,914.06,915.517,916.964,918.401,919.829,921.246,922.655,924.054,925.443,926.824,928.195,929.558,930.912,932.257,933.594,934.922,936.242,937.554,938.858,940.154,941.442,942.723,943.996,945.262,946.521,947.772,949.017,950.254,951.485,952.709,953.927,955.138,956.344,957.543,958.736,959.923,961.104,962.28,963.451,964.616,965.775,966.93,968.08,969.225,970.365,971.5,972.631,973.758,974.881,975.999,977.113,978.224,979.331,980.434,981.534,982.63,983.724,984.814,985.901,986.985,988.067,989.146,990.223,991.297,992.369,993.439,994.507,995.573,996.638,997.701,998.762,999.822,1000.88,1001.94,1003,1004.05,1005.11,1006.16,1007.22,1008.27,1009.32,1010.38,1011.43,1012.49,1013.54,1014.6,1015.65"/>
+              <material_type key="heat_specific_heat" value="893.601;cubic_spline,1,1$270.872,292.231,313.59,334.949,356.308,377.667,399.026,420.385,441.744,463.103,484.462,505.821,527.179,548.538,569.897,591.256,612.615,633.974,655.333,676.692,698.051,719.41,740.769,762.128,783.487,804.846,826.205,847.564,868.923,890.282,911.641,933;876.862,892.967,906.764,919.191,930.926,942.044,952.62,962.732,972.454,981.865,991.039,1000.05,1008.98,1017.91,1026.9,1036.03,1045.39,1055.04,1065.07,1075.55,1086.55,1098.16,1110.44,1123.48,1137.35,1152.12,1167.88,1184.7,1202.65,1221.82,1242.27,1264.09"/>
               <material_type key="heat_velocity_angular" value="148.702"/>
             </material_types>
           </material>
@@ -274,23 +274,23 @@
           <field_item field_key="NonlinearTolerance" field_value="0.001"/>
           <field_item field_key="NonlinearSteps" field_value="20"/>
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
-          <field_item field_key="NewtonAutomaticDamping" field_value="1"/>
-          <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NewtonDampingType" field_value="0"/>
           <field_item field_key="NewtonDampingCoeff" field_value="1"/>
-          <field_item field_key="NewtonDampingNumberToIncrease" field_value="1"/>
-          <field_item field_key="NewtonSufficientImprovementFactorJacobian" field_value="0.4"/>
-          <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="3"/>
+          <field_item field_key="NewtonReuseJacobian" field_value="1"/>
+          <field_item field_key="NewtonSufImprovJacobian" field_value="0.8"/>
+          <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
+          <field_item field_key="NewtonStepsToIncreaseDF" field_value="1"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
           <field_item field_key="SpaceNumberOfRefinements" field_value="1"/>
           <field_item field_key="SpacePolynomialOrder" field_value="2"/>
-          <field_item field_key="AdaptivitySteps" field_value="0"/>
+          <field_item field_key="AdaptivitySteps" field_value="1"/>
           <field_item field_key="AdaptivityTolerance" field_value="1"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
-          <field_item field_key="AdaptivityTransientRedoneEach" field_value="0"/>
+          <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
-          <field_item field_key="TransientInitialConditio" field_value="20"/>
+          <field_item field_key="TransientInitialCondition" field_value="293.15"/>
         </field_config>
       </field>
       <field adaptivity_type="disabled" analysis_type="steadystate" field_id="magnetic" linearity_type="linear">
@@ -326,6 +326,7 @@
               <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="3.06327e+07"/>
               <material_type key="magnetic_remanence" value="0"/>
+              <material_type key="magnetic_current_density_external_imag" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
@@ -486,12 +487,12 @@
           <field_item field_key="NonlinearTolerance" field_value="0.001"/>
           <field_item field_key="NonlinearSteps" field_value="30"/>
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
-          <field_item field_key="NewtonAutomaticDamping" field_value="1"/>
-          <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NewtonDampingType" field_value="0"/>
           <field_item field_key="NewtonDampingCoeff" field_value="1"/>
-          <field_item field_key="NewtonDampingNumberToIncrease" field_value="1"/>
-          <field_item field_key="NewtonSufficientImprovementFactorJacobian" field_value="0.4"/>
-          <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="3"/>
+          <field_item field_key="NewtonReuseJacobian" field_value="1"/>
+          <field_item field_key="NewtonSufImprovJacobian" field_value="0.8"/>
+          <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
+          <field_item field_key="NewtonStepsToIncreaseDF" field_value="1"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
@@ -502,7 +503,7 @@
           <field_item field_key="AdaptivityTransientBackSteps" field_value="1"/>
           <field_item field_key="AdaptivityTransientRedoneEach" field_value="0"/>
           <field_item field_key="TransientTimeSkip" field_value="180"/>
-          <field_item field_key="TransientInitialConditio" field_value="0"/>
+          <field_item field_key="TransientInitialCondition" field_value="0"/>
         </field_config>
       </field>
     </fields>
@@ -586,14 +587,14 @@
     <item key="View_ColorCrossedBlue" value="0"/>
     <item key="View_ShowInitialMeshView" value="1"/>
     <item key="View_ShowSolutionMeshView" value="0"/>
-    <item key="View_ContourVariable" value="magnetic_potential_real"/>
+    <item key="View_ContourVariable" value="heat_temperature"/>
     <item key="View_ShowContourView" value="0"/>
     <item key="View_ContoursCount" value="15"/>
     <item key="View_ContoursWidth" value="1"/>
     <item key="View_ShowScalarView" value="1"/>
     <item key="View_ShowScalarColorBar" value="1"/>
-    <item key="View_ScalarVariable" value="magnetic_potential_real"/>
-    <item key="View_ScalarVariableComp" value="1"/>
+    <item key="View_ScalarVariable" value="heat_temperature"/>
+    <item key="View_ScalarVariableComp" value="0"/>
     <item key="View_PaletteType" value="0"/>
     <item key="View_PaletteFilter" value="0"/>
     <item key="View_PaletteSteps" value="30"/>
@@ -601,10 +602,10 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="2"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="269.003238319195"/>
-    <item key="View_ScalarRangeMax" value="270.831783574793"/>
+    <item key="View_ScalarRangeMin" value="23.0906159796529"/>
+    <item key="View_ScalarRangeMax" value="28.4731544734609"/>
     <item key="View_ShowVectorView" value="0"/>
-    <item key="View_VectorVariable" value="magnetic_flux_density_real"/>
+    <item key="View_VectorVariable" value=""/>
     <item key="View_VectorProportional" value="1"/>
     <item key="View_VectorColor" value="1"/>
     <item key="View_VectorCount" value="50"/>

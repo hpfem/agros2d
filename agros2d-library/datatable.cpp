@@ -199,7 +199,7 @@ int DataTable::size() const
 
 double DataTable::minKey() const
 {
-    double min = 0.0;
+    double min = numeric_limits<double>::max();
     foreach (double point, m_points)
         min = std::min(point, min);
 
@@ -208,7 +208,7 @@ double DataTable::minKey() const
 
 double DataTable::maxKey() const
 {
-    double max = 0.0;
+    double max = - numeric_limits<double>::max();
     foreach (double point, m_points)
         max = std::max(point, max);
 
@@ -217,7 +217,7 @@ double DataTable::maxKey() const
 
 double DataTable::minValue() const
 {
-    double min = 0.0;
+    double min = numeric_limits<double>::max();
     foreach (double value, m_values)
         min = std::min(value, min);
 
@@ -226,7 +226,7 @@ double DataTable::minValue() const
 
 double DataTable::maxValue() const
 {
-    double max = 0.0;
+    double max = - numeric_limits<double>::max();
     foreach (double value, m_values)
         max = std::max(value, max);
 

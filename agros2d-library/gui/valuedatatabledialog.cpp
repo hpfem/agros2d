@@ -391,17 +391,17 @@ void ValueDataTableDialog::doPlot()
     }
 
     // interpolation
-    int countSpline = count*1e3;
+    int countSpline = count * 1e3;
     double keyLength = m_table.maxKey() - m_table.minKey();
     double keyStart = m_table.minKey();
-    if(chkExtrapolation->isChecked())
+    if (chkExtrapolation->isChecked())
     {
         double overlap = 0.15;
         keyStart -= keyLength * overlap;
-        keyLength *= (1 + 2*overlap);
+        keyLength *= (1 + 2 * overlap);
     }
 
-    double dx = keyLength / (countSpline);
+    double dx = keyLength / (countSpline - 1);
 
     QVector<double> keysSpline;
     QVector<double> valuesSpline;
