@@ -145,11 +145,13 @@ cdef map[string, vector[double]] get_nonlin_x_map(parameters):
     for key in parameters:
         if isinstance(parameters[key], dict):
             if ("x" in parameters[key]):
-                for v in parameters[key]["x"]:
-                    x.push_back(v)
+                for value in parameters[key]["x"]:
+                    x.push_back(value)
+
                 nonlin_x.first = string(key)
                 nonlin_x.second = x
                 nonlin_x_map.insert(nonlin_x)
+                x.clear()
 
     return nonlin_x_map
 
@@ -160,12 +162,14 @@ cdef map[string, vector[double]] get_nonlin_y_map(parameters):
 
     for key in parameters:
         if isinstance(parameters[key], dict):
-            if ("y" in parameters[key]):
-                for v in parameters[key]["y"]:
-                    y.push_back(v)
-                nonlin_y.first = string(key)
-                nonlin_y.second = y
-                nonlin_y_map.insert(nonlin_y)
+          if ("y" in parameters[key]):
+              for value in parameters[key]["y"]:
+                  y.push_back(value)
+
+              nonlin_y.first = string(key)
+              nonlin_y.second = y
+              nonlin_y_map.insert(nonlin_y)
+              y.clear()
 
     return nonlin_y_map
 
