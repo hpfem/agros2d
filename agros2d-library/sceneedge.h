@@ -42,14 +42,15 @@ public:
 
     QList<SceneNode *> lyingNodes() const;
 
-    bool isLyingNode() const { return lyingNodes().length() > 0; }
-    bool isLyingOnPoint(const Point &point) const;
+    bool isLyingOnNode(const SceneNode *node) const;
+    bool hasLyingNode() const;
     bool isOutsideArea() const;
     bool isError() const;
     bool isCrossed() const; // very slow, use carefully
 
     inline Point center() const { return m_centerCache; }
     inline double radius() const { return m_radiusCache; }
+    inline Point vector() const { return m_vectorCache; }
     double distance(const Point &point) const;    
     double length() const;
     bool isStraight() const { return (fabs(m_angle) < EPS_ZERO); }
@@ -62,7 +63,6 @@ public:
     int showDialog(QWidget *parent, bool isNew = false);
 
     static SceneEdge *findClosestEdge(const Point &point);
-    static QList<SceneEdge *> findCrossings();
 
 private:
     SceneNode *m_nodeStart;
@@ -72,6 +72,7 @@ private:
     // cache
     Point m_centerCache;
     double m_radiusCache;
+    Point m_vectorCache;
     void computeCenterAndRadius();
 
     friend class SceneNode;
@@ -99,7 +100,6 @@ public:
     RectPoint boundingBox() const;
     static RectPoint boundingBox(QList<SceneEdge *> edges);
 };
-
 
 // *************************************************************************************************************************************
 

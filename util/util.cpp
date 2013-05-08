@@ -54,6 +54,52 @@ bool almostEqualRelAndAbs(double A, double B, double maxDiff, double maxRelDiff)
     return false;
 }
 
+// approximation of atan2(y, x).
+// maximum error of 0.0061 radians at 0.35 degrees
+double fastatan2(double y, double x)
+{
+    double abs_y = std::fabs(y) + 1e-8;
+
+    double angle;
+    double r;
+    if (x >= 0)
+    {
+        r = (x - abs_y) / (x + abs_y);
+        angle = 0.78539816339744830962;
+    }
+    else
+    {
+        r = (x + abs_y) / (abs_y - x);
+        angle = 3.0f * 0.78539816339744830962;
+    }
+    angle += (0.1821f * r*r - 0.9675f) * r;
+
+    return (y < 0) ? - angle : angle;
+}
+
+#define FAST_SIN_COS_SIZE 512
+
+static double *sin_table = NULL;
+double fastsin(double angle)
+{
+    while (angle < 0) angle += 2.0*M_PI;
+    while (angle >= 2.0*M_PI) angle -= 2.0*M_PI;
+
+    if (!sin_table)
+    {
+        sin_table = new double[FAST_SIN_COS_SIZE];
+        for (int i = 0; i < FAST_SIN_COS_SIZE; i++)
+            sin_table[i] = sin(2.0*M_PI * i / (double) FAST_SIN_COS_SIZE);
+    }
+
+    return sin_table[(int) (angle / (2.0*M_PI) * FAST_SIN_COS_SIZE)];
+}
+
+double fastcos(double angle)
+{
+   return fastsin(M_PI_2 - angle);
+}
+
 
 QString stringListToString(const QStringList &list)
 {

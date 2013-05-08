@@ -82,7 +82,7 @@ SceneNode *SceneNode::findClosestNode(const Point &point)
 
 SceneNode* SceneNodeContainer::get(SceneNode *node) const
 {
-    foreach (SceneNode *nodeCheck, data)
+    foreach (SceneNode *nodeCheck, m_data)
     {
         if (nodeCheck->point() == node->point())
         {
@@ -95,7 +95,7 @@ SceneNode* SceneNodeContainer::get(SceneNode *node) const
 
 SceneNode* SceneNodeContainer::get(const Point &point) const
 {
-    foreach (SceneNode *nodeCheck, data)
+    foreach (SceneNode *nodeCheck, m_data)
     {
         if (nodeCheck->point() == point)
             return nodeCheck;
@@ -117,7 +117,7 @@ RectPoint SceneNodeContainer::boundingBox() const
     Point min( numeric_limits<double>::max(),  numeric_limits<double>::max());
     Point max(-numeric_limits<double>::max(), -numeric_limits<double>::max());
 
-    foreach (SceneNode *node, data)
+    foreach (SceneNode *node, m_data)
     {
         min.x = qMin(min.x, node->point().x);
         max.x = qMax(max.x, node->point().x);
@@ -131,10 +131,10 @@ RectPoint SceneNodeContainer::boundingBox() const
 SceneNodeContainer SceneNodeContainer::selected()
 {
     SceneNodeContainer list;
-    foreach (SceneNode* item, this->data)
+    foreach (SceneNode* item, this->m_data)
     {
         if (item->isSelected())
-            list.data.push_back(item);
+            list.m_data.push_back(item);
     }
 
     return list;
@@ -143,10 +143,10 @@ SceneNodeContainer SceneNodeContainer::selected()
 SceneNodeContainer SceneNodeContainer::highlighted()
 {
     SceneNodeContainer list;
-    foreach (SceneNode* item, this->data)
+    foreach (SceneNode* item, this->m_data)
     {
         if (item->isHighlighted())
-            list.data.push_back(item);
+            list.m_data.push_back(item);
     }
 
     return list;
@@ -388,7 +388,24 @@ void SceneNodeCommandAddMulti::redo()
     Agros2D::scene()->invalidate();
 }
 
+bool SceneNode::isConnected() const
+{
+    foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+        if (edge->nodeStart() == this || edge->nodeEnd() == this)
+            return true;
 
+    return false;
+}
+
+bool SceneNode::isEndNode() const
+{
+    int connections = 0;
+    foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+        if (edge->nodeStart() == this || edge->nodeEnd() == this)
+            connections++;
+
+    return (connections == 1);
+}
 
 QList<SceneEdge *> SceneNode::connectedEdges() const
 {
@@ -402,30 +419,28 @@ QList<SceneEdge *> SceneNode::connectedEdges() const
     return edges;
 }
 
+int SceneNode::numberOfConnectedEdges() const
+{
+    return Agros2D::scene()->numberOfConnectedNodeEdges().value(const_cast<SceneNode *>(this));
+}
+
+bool SceneNode::hasLyingEdges() const
+{
+    return (lyingEdges().length() > 0);
+}
+
 QList<SceneEdge *> SceneNode::lyingEdges() const
 {
-    QList<SceneEdge *> edges;
-    edges.reserve(Agros2D::scene()->edges->count());
-
-    foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
-    {
-        if ((edge->nodeStart() == this) || (edge->nodeEnd() == this))
-            continue;
-
-        if (edge->isLyingOnPoint(m_point))
-            edges.append(edge);
-    }
-
-    return edges;
+    return Agros2D::scene()->lyingEdgeNodes().keys(const_cast<SceneNode *>(this));
 }
 
 bool SceneNode::isOutsideArea() const
 {
-    return  (Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric) &&
+    return (Agros2D::problem()->config()->coordinateType() == CoordinateType_Axisymmetric) &&
             (this->point().x < - EPS_ZERO);
 }
 
 bool SceneNode::isError()
 {
-    return (isOutsideArea() || connectedEdges().length() <= 1 || isLyingOnEdges());
+    return (isOutsideArea() || numberOfConnectedEdges() <= 1 || hasLyingEdges());
 }

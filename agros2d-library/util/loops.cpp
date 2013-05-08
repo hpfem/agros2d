@@ -773,7 +773,7 @@ void LoopsInfo::processPolygonTriangles()
             for (int j = 0; j < m_loops[i].size(); j++)
             {
                 SceneEdge *edge = m_scene->edges->items().at(m_loops[i][j].edge);
-                if ((edge->nodeStart()->connectedEdges().size() > 1) && (edge->nodeEnd()->connectedEdges().size() > 1))
+                if ((edge->nodeStart()->numberOfConnectedEdges() > 0) && (edge->nodeEnd()->numberOfConnectedEdges() > 0))
                 {
                     if (m_loops[i][j].reverse)
                         addEdgePoints(&polyline, SceneEdge(edge->nodeStart(), edge->nodeEnd(), edge->angle()), true);

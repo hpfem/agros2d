@@ -35,10 +35,11 @@ public:
     void setPoint(const Point &point);
 
     // geometry editor
-    bool isConnected() const { return connectedEdges().length() > 0; }
-    bool isEndNode() const {return connectedEdges().length() == 1; }
+    bool isConnected() const;
+    bool isEndNode() const;
     QList<SceneEdge *> connectedEdges() const;
-    bool isLyingOnEdges() const { return lyingEdges().length() > 0; }
+    int numberOfConnectedEdges() const;
+    bool hasLyingEdges() const;
     QList<SceneEdge *> lyingEdges() const;
     bool isOutsideArea() const;
     bool isError();

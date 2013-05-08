@@ -346,8 +346,8 @@ void SceneViewCommon::drawArc(const Point &point, double r, double startAngle, d
     {
         double arc = (startAngle + i*theta)/180.0*M_PI;
 
-        double x = r * cos(arc);
-        double y = r * sin(arc);
+        double x = r * fastcos(arc);
+        double y = r * fastsin(arc);
 
         glVertex3d(point.x + x, point.y + y, 0.0);
     }

@@ -952,9 +952,6 @@ void SceneViewPreprocessor::paintGeometry()
 {
     loadProjection2d(true);
 
-    // find crossings
-    QList<SceneEdge *> crossings = SceneEdge::findCrossings();
-
     // edges
     foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
     {
@@ -973,7 +970,7 @@ void SceneViewPreprocessor::paintGeometry()
                   Agros2D::problem()->setting()->value(ProblemSetting::View_ColorEdgesBlue).toInt() / 255.0);
         glLineWidth(Agros2D::problem()->setting()->value(ProblemSetting::View_EdgeWidth).toInt());
 
-        if (edge->isLyingNode() || edge->isOutsideArea() || crossings.contains(edge))
+        if (edge->hasLyingNode() || edge->isOutsideArea() || Agros2D::scene()->crossings().contains(edge))
         {
             glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossedRed).toInt() / 255.0,
                       Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossedGreen).toInt() / 255.0,
@@ -1006,7 +1003,8 @@ void SceneViewPreprocessor::paintGeometry()
         {
             Point center = edge->center();
             double radius = edge->radius();
-            double startAngle = atan2(center.y - edge->nodeStart()->point().y, center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
+            double startAngle = fastatan2(center.y - edge->nodeStart()->point().y,
+                                          center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
 
             drawArc(center, radius, startAngle, edge->angle());
         }
@@ -1039,22 +1037,31 @@ void SceneViewPreprocessor::paintGeometry()
         bool isError = false;
         if ((node->isSelected()) || (node->isHighlighted()) || (isError = node->isError()) )
         {
-            glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt() - 2.0);
+
 
             if (isError)
+            {
                 glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossedRed).toInt() / 255.0,
                           Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossedGreen).toInt() / 255.0,
                           Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossedBlue).toInt() / 255.0);
+                glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt() + 2.0);
+            }
 
             if (node->isHighlighted())
+            {
                 glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedRed).toInt() / 255.0,
                           Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedGreen).toInt() / 255.0,
                           Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedBlue).toInt() / 255.0);
+                glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt() - 2.0);
+            }
 
             if (node->isSelected())
+            {
                 glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedRed).toInt() / 255.0,
                           Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedGreen).toInt() / 255.0,
                           Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedBlue).toInt() / 255.0);
+                glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt() - 2.0);
+            }
 
             glBegin(GL_POINTS);
             glVertex2d(node->point().x, node->point().y);
@@ -1116,7 +1123,7 @@ void SceneViewPreprocessor::paintGeometry()
 
     try
     {
-        if (crossings.isEmpty())
+        if (Agros2D::scene()->crossings().isEmpty())
         {
             glEnable(GL_POLYGON_OFFSET_FILL);
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

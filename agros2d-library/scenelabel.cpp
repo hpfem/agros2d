@@ -127,7 +127,7 @@ SceneLabel *SceneLabel::findClosestLabel(const Point &point)
 
 SceneLabel* SceneLabelContainer::get(SceneLabel *label) const
 {
-    foreach (SceneLabel *labelCheck, data)
+    foreach (SceneLabel *labelCheck, m_data)
     {
         if (labelCheck->point() == label->point())
         {
@@ -140,7 +140,7 @@ SceneLabel* SceneLabelContainer::get(SceneLabel *label) const
 
 SceneLabel* SceneLabelContainer::get(const Point& point) const
 {
-    foreach (SceneLabel *labelCheck, data)
+    foreach (SceneLabel *labelCheck, m_data)
     {
         if (labelCheck->point() == point)
             return labelCheck;
@@ -154,7 +154,7 @@ RectPoint SceneLabelContainer::boundingBox() const
     Point min( numeric_limits<double>::max(),  numeric_limits<double>::max());
     Point max(-numeric_limits<double>::max(), -numeric_limits<double>::max());
 
-    foreach (SceneLabel *label, data)
+    foreach (SceneLabel *label, m_data)
     {
         min.x = qMin(min.x, label->point().x);
         max.x = qMax(max.x, label->point().x);

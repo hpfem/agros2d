@@ -65,19 +65,19 @@ template <typename BasicType>
 class AGROS_API SceneBasicContainer
 {
 public:
-    SceneBasicContainer() : data(QList<BasicType* >()) {}
+    SceneBasicContainer() : m_data(QList<BasicType* >()) {}
     ~SceneBasicContainer();
 
     /// items() should be removed step by step from the code.
     /// more methods operating with list data should be defined here
-    QList<BasicType*> items() { return data; }
+    QList<BasicType*> items() { return m_data; }
 
     virtual bool add(BasicType *item);
     virtual bool remove(BasicType *item);
     BasicType *at(int i);
-    inline int length() { return data.length(); }
+    inline int length() { return m_data.length(); }
     inline int count() {return length(); }
-    inline int isEmpty() { return data.isEmpty(); }
+    inline int isEmpty() { return m_data.isEmpty(); }
     void clear();
 
     /// selects or unselects all items
@@ -89,7 +89,7 @@ public:
     void deleteWithUndo(QString message);
 
 protected:
-    QList<BasicType*> data;
+    QList<BasicType*> m_data;
 
     QString containerName;
 };
