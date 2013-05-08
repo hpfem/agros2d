@@ -1037,7 +1037,7 @@ void SceneViewPreprocessor::paintGeometry()
         bool isError = false;
         if ((node->isSelected()) || (node->isHighlighted()) || (isError = node->isError()) )
         {
-            glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt() - 2.0);
+            glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt() + 3.0);
 
             if (isError)
                 glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossedRed).toInt() / 255.0,
