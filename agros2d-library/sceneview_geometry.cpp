@@ -1037,22 +1037,31 @@ void SceneViewPreprocessor::paintGeometry()
         bool isError = false;
         if ((node->isSelected()) || (node->isHighlighted()) || (isError = node->isError()) )
         {
-            glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt() + 3.0);
+
 
             if (isError)
+            {
                 glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossedRed).toInt() / 255.0,
                           Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossedGreen).toInt() / 255.0,
                           Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossedBlue).toInt() / 255.0);
+                glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt() + 2.0);
+            }
 
             if (node->isHighlighted())
+            {
                 glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedRed).toInt() / 255.0,
                           Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedGreen).toInt() / 255.0,
                           Agros2D::problem()->setting()->value(ProblemSetting::View_ColorHighlightedBlue).toInt() / 255.0);
+                glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt() - 2.0);
+            }
 
             if (node->isSelected())
+            {
                 glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedRed).toInt() / 255.0,
                           Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedGreen).toInt() / 255.0,
                           Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedBlue).toInt() / 255.0);
+                glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt() - 2.0);
+            }
 
             glBegin(GL_POINTS);
             glVertex2d(node->point().x, node->point().y);
