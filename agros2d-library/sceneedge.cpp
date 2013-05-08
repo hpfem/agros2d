@@ -57,27 +57,38 @@ void SceneEdge::swapDirection()
     computeCenterAndRadius();
 }
 
-bool SceneEdge::isLyingOnPoint(const Point &point) const
+bool SceneEdge::isLyingOnNode(const SceneNode *node) const
 {
+    // start or end node
+    if ((m_nodeStart == node) || (m_nodeEnd == node))
+        return false;
+
+    // general node
+    Point point = node->point();
+
     if (isStraight())
     {
-        double dx = m_nodeEnd->point().x - m_nodeStart->point().x;
-        double dy = m_nodeEnd->point().y - m_nodeStart->point().y;
+        double dx = m_vectorCache.x;
+        double dy = m_vectorCache.y;
 
-        double t = ((point.x - m_nodeStart->point().x)*dx + (point.y - m_nodeStart->point().y)*dy) / (dx*dx + dy*dy);
+        Point sp = m_nodeStart->point();
 
-        if (t > 1.0) t = 1.0;
-        if (t < 0.0) t = 0.0;
+        double t = ((point.x - sp.x)*dx + (point.y - sp.y)*dy);
 
-        Point p(m_nodeStart->point().x + t*dx,
-                m_nodeStart->point().y + t*dy);
+        if (t < 0.0)
+            t = 0.0;
+        else if (t > m_vectorCache.magnitudeSquared())
+            t = 1.0;
+        else
+            t /= m_vectorCache.magnitudeSquared();
+
+        Point p(sp.x + t*dx, sp.y + t*dy);
 
         return ((point - p).magnitudeSquared() < EPS_ZERO);
     }
     else
     {
-        Point c = center();
-        double dist = (point - c).magnitudeSquared();
+        double dist = (point - center()).magnitudeSquared();
 
         // point and radius are similar
         if (dist < EPS_ZERO)
@@ -159,21 +170,14 @@ bool SceneEdge::isCrossed() const
     return false;
 }
 
+bool SceneEdge::hasLyingNode() const
+{
+    return (lyingNodes().length() > 0);
+}
+
 QList<SceneNode *> SceneEdge::lyingNodes() const
 {
-    QList<SceneNode *> nodes;
-    nodes.reserve(3);
-
-    foreach (SceneNode *node, Agros2D::scene()->nodes->items())
-    {
-        if ((this->nodeStart() == node) || (this->nodeEnd() == node))
-            continue;
-
-        if (isLyingOnPoint(node->point()))
-            nodes.append(node);
-    }
-
-    return nodes;
+    return Agros2D::scene()->lyingEdgeNodes().values(const_cast<SceneEdge *>(this));
 }
 
 int SceneEdge::segments() const
@@ -201,7 +205,7 @@ bool SceneEdge::isOutsideArea() const
 
 bool SceneEdge::isError() const
 {
-    return (isLyingNode() || isOutsideArea() || isCrossed());
+    return (hasLyingNode() || isOutsideArea() || isCrossed());
 }
 
 int SceneEdge::showDialog(QWidget *parent, bool isNew)
@@ -228,6 +232,8 @@ void SceneEdge::computeCenterAndRadius()
         m_centerCache = Point();
 
     m_radiusCache = (m_centerCache - m_nodeStart->point()).magnitude();
+
+    m_vectorCache = m_nodeEnd->point() - m_nodeStart->point();
 }
 
 SceneEdge *SceneEdge::findClosestEdge(const Point &point)
@@ -248,52 +254,11 @@ SceneEdge *SceneEdge::findClosestEdge(const Point &point)
     return edgeClosest;
 }
 
-QList<SceneEdge *> SceneEdge::findCrossings()
-{
-    // qDebug() << "SceneEdge::findCrossings()";
-
-    QList<SceneEdge *> edges;
-    for (int i = 0; i < Agros2D::scene()->edges->count(); i++)
-    {
-        SceneEdge *edge = Agros2D::scene()->edges->at(i);
-
-        for (int j = i + 1; j < Agros2D::scene()->edges->count(); j++)
-        {
-            SceneEdge *edgeCheck = Agros2D::scene()->edges->at(j);
-
-            QList<Point> intersects;
-
-            // TODO: improve - add check of crossings of two arcs
-            if (edge->isStraight())
-                intersects = intersection(edge->nodeStart()->point(), edge->nodeEnd()->point(),
-                                          edgeCheck->center(), edge->radius(), edge->angle(),
-                                          edgeCheck->nodeStart()->point(), edgeCheck->nodeEnd()->point(),
-                                          edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle());
-
-            else
-                intersects = intersection(edgeCheck->nodeStart()->point(), edgeCheck->nodeEnd()->point(),
-                                          edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle(),
-                                          edge->nodeStart()->point(), edge->nodeEnd()->point(),
-                                          edge->center(), edge->radius(), edge->angle());
-
-            if (intersects.count() > 0)
-            {
-                if (!edges.contains(edgeCheck))
-                    edges.append(edgeCheck);
-                if (!edges.contains((edge)))
-                    edges.append(edge);
-            }
-        }
-    }
-
-    return edges;
-}
-
 //************************************************************************************************
 
 void SceneEdgeContainer::removeConnectedToNode(SceneNode *node)
 {
-    foreach (SceneEdge *edge, data)
+    foreach (SceneEdge *edge, m_data)
     {
         if ((edge->nodeStart() == node) || (edge->nodeEnd() == node))
         {
@@ -308,7 +273,7 @@ void SceneEdgeContainer::removeConnectedToNode(SceneNode *node)
 
 SceneEdge* SceneEdgeContainer::get(SceneEdge* edge) const
 {
-    foreach (SceneEdge *edgeCheck, data)
+    foreach (SceneEdge *edgeCheck, m_data)
     {
         if (((((edgeCheck->nodeStart() == edge->nodeStart()) && (edgeCheck->nodeEnd() == edge->nodeEnd())) &&
               (fabs(edgeCheck->angle() - edge->angle()) < EPS_ZERO)) ||
@@ -324,7 +289,7 @@ SceneEdge* SceneEdgeContainer::get(SceneEdge* edge) const
 
 SceneEdge* SceneEdgeContainer::get(const Point &pointStart, const Point &pointEnd, double angle) const
 {
-    foreach (SceneEdge *edgeCheck, data)
+    foreach (SceneEdge *edgeCheck, m_data)
     {
         if (((edgeCheck->nodeStart()->point() == pointStart) && (edgeCheck->nodeEnd()->point() == pointEnd)) && (edgeCheck->angle() == angle))
             return edgeCheck;
@@ -335,7 +300,7 @@ SceneEdge* SceneEdgeContainer::get(const Point &pointStart, const Point &pointEn
 
 SceneEdge* SceneEdgeContainer::get(const Point &pointStart, const Point &pointEnd) const
 {
-    foreach (SceneEdge *edgeCheck, data)
+    foreach (SceneEdge *edgeCheck, m_data)
     {
         if (((edgeCheck->nodeStart()->point() == pointStart) && (edgeCheck->nodeEnd()->point() == pointEnd)))
             return edgeCheck;
@@ -346,7 +311,7 @@ SceneEdge* SceneEdgeContainer::get(const Point &pointStart, const Point &pointEn
 
 RectPoint SceneEdgeContainer::boundingBox() const
 {
-    return SceneEdgeContainer::boundingBox(data);
+    return SceneEdgeContainer::boundingBox(m_data);
 }
 
 RectPoint SceneEdgeContainer::boundingBox(QList<SceneEdge *> edges)

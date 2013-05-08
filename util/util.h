@@ -59,15 +59,15 @@
 
 // Windows DLL export/import definitions
 #ifdef Q_WS_WIN
-  // DLL build
-  #ifdef AGROS_DLL
-    #define AGROS_API __declspec(dllexport)
-  // DLL usage
-  #else
-    #define AGROS_API __declspec(dllimport)
-  #endif
+// DLL build
+#ifdef AGROS_DLL
+#define AGROS_API __declspec(dllexport)
+// DLL usage
 #else
-  #define AGROS_API
+#define AGROS_API __declspec(dllimport)
+#endif
+#else
+#define AGROS_API
 #endif
 
 #include "util/point.h"
@@ -92,26 +92,9 @@ AGROS_API bool almostEqualRelAndAbs(double A, double B, double maxDiff, double m
 
 // approximation of atan2(y, x).
 // maximum error of 0.0061 radians at 0.35 degrees
-AGROS_API inline double fastatan2(double y, double x)
-{
-    double abs_y = std::fabs(y) + 1e-8;
-
-    double angle;
-    double r;
-    if (x >= 0)
-    {
-        r = (x - abs_y) / (x + abs_y);
-        angle = 0.78539816339744830962;
-    }
-    else
-    {
-        r = (x + abs_y) / (abs_y - x);
-        angle = 3.0f * 0.78539816339744830962;
-    }
-    angle += (0.1821f * r*r - 0.9675f) * r;
-
-    return (y < 0) ? - angle : angle;
-}
+AGROS_API double fastatan2(double y, double x);
+AGROS_API double fastsin(double angle);
+AGROS_API double fastcos(double angle);
 
 AGROS_API QString stringListToString(const QStringList &list);
 

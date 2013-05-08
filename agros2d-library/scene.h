@@ -180,6 +180,9 @@ public:
     void transformScale(const Point &point, double scaleFactor, bool copy);
 
     LoopsInfo *loopsInfo() const { return m_loopsInfo; }
+    QMultiMap<SceneEdge *, SceneNode *> lyingEdgeNodes() const { return m_lyingEdgeNodes; }
+    QMap<SceneNode *, int> numberOfConnectedNodeEdges() const { return m_numberOfConnectedNodeEdges; }
+    QList<SceneEdge *> crossings() const { return m_crossings; }
 
     inline void invalidate() { emit invalidated(); }
 
@@ -215,6 +218,9 @@ private:
     SolutionMode m_activeSolutionMode;
 
     LoopsInfo *m_loopsInfo;
+    QMultiMap<SceneEdge *, SceneNode *> m_lyingEdgeNodes;
+    QMap<SceneNode *, int> m_numberOfConnectedNodeEdges;
+    QList<SceneEdge *> m_crossings;
 
     void createActions();
 
@@ -226,6 +232,11 @@ private:
     void moveSelectedLabels(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
 
     void transform(QString name, SceneTransformMode mode, const Point &point, double angle, double scaleFactor, bool copy);
+
+    // find lying nodes on edges, number of connected edges and crossings
+    void findLyingEdgeNodes();
+    void findNumberOfConnectedNodeEdges();
+    void findCrossings();
 
     bool m_stopInvalidating;
 

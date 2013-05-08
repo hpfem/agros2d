@@ -501,6 +501,11 @@ void Scene::clear()
     // none label
     materials->add(new SceneMaterialNone());
 
+    // lying nodes
+    m_lyingEdgeNodes.clear();
+    m_numberOfConnectedNodeEdges.clear();
+    m_crossings.clear();
+
     blockSignals(false);
 
     emit cleared();
@@ -869,6 +874,10 @@ void Scene::doInvalidated()
 {
     actNewEdge->setEnabled((nodes->length() >= 2) && (boundaries->length() >= 1));
     actNewLabel->setEnabled(materials->length() >= 1);
+
+    findLyingEdgeNodes();
+    findNumberOfConnectedNodeEdges();
+    findCrossings();
 }
 
 void Scene::doNewNode(const Point &point)
@@ -1561,11 +1570,11 @@ void Scene::readFromFile21(const QString &fileName)
 
     blockSignals(false);
 
-    m_loopsInfo->processPolygonTriangles();
-
     // default values
     emit invalidated();
     emit defaultValues();
+
+    m_loopsInfo->processPolygonTriangles();
 
     // run script
     currentPythonEngineAgros()->runScript(Agros2D::problem()->setting()->value(ProblemSetting::Problem_StartupScript).toString());
@@ -1761,11 +1770,11 @@ void Scene::readFromFile31(const QString &fileName)
 
         blockSignals(false);
 
-        m_loopsInfo->processPolygonTriangles();
-
         // default values
         emit invalidated();
         emit defaultValues();
+
+        m_loopsInfo->processPolygonTriangles();
 
         // run script
         currentPythonEngineAgros()->runScript(Agros2D::problem()->setting()->value(ProblemSetting::Problem_StartupScript).toString());
@@ -2441,16 +2450,84 @@ void Scene::checkGeometryResult()
             throw AgrosGeometryException(tr("There are nodes which are connected to one edge only (red highlighted). This is not allowed in Agros."));
         }
 
-        if (node->isLyingOnEdges())
+        if (node->hasLyingEdges())
         {
             throw AgrosGeometryException(tr("There are nodes which lie on the edge but they are not connected to the edge. Remove these nodes first."));
         }
     }
 
-    QList<SceneEdge *> crossings = SceneEdge::findCrossings();
-    if (!crossings.isEmpty())
+    if (!m_crossings.isEmpty())
     {
         throw AgrosGeometryException(tr("There are crossings in the geometry (red highlighted). Remove the crossings first."));
     }
 }
 
+void Scene::findLyingEdgeNodes()
+{
+    m_lyingEdgeNodes.clear();
+
+    foreach (SceneEdge *edge, edges->items())
+    {
+        foreach (SceneNode *node, nodes->items())
+        {
+            if (edge->isLyingOnNode(node))
+            {
+                m_lyingEdgeNodes.insert(edge, node);
+            }
+        }
+    }
+}
+
+void Scene::findNumberOfConnectedNodeEdges()
+{
+    m_numberOfConnectedNodeEdges.clear();
+
+    foreach (SceneNode *node, nodes->items())
+    {
+        int connections = 0;
+        foreach (SceneEdge *edge, edges->items())
+        {
+            if (edge->nodeStart() == node || edge->nodeEnd() == node)
+                connections++;
+        }
+        m_numberOfConnectedNodeEdges.insert(node, connections);
+    }
+}
+
+void Scene::findCrossings()
+{
+    m_crossings.clear();
+
+    for (int i = 0; i < edges->count(); i++)
+    {
+        SceneEdge *edge = edges->at(i);
+
+        for (int j = i + 1; j < edges->count(); j++)
+        {
+            SceneEdge *edgeCheck = edges->at(j);
+
+            QList<Point> intersects;
+
+            // TODO: improve - add check of crossings of two arcs
+            if (edge->isStraight())
+                intersects = intersection(edge->nodeStart()->point(), edge->nodeEnd()->point(),
+                                          edgeCheck->center(), edge->radius(), edge->angle(),
+                                          edgeCheck->nodeStart()->point(), edgeCheck->nodeEnd()->point(),
+                                          edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle());
+
+            else
+                intersects = intersection(edgeCheck->nodeStart()->point(), edgeCheck->nodeEnd()->point(),
+                                          edgeCheck->center(), edgeCheck->radius(), edgeCheck->angle(),
+                                          edge->nodeStart()->point(), edge->nodeEnd()->point(),
+                                          edge->center(), edge->radius(), edge->angle());
+
+            if (intersects.count() > 0)
+            {
+                if (!m_crossings.contains(edgeCheck))
+                    m_crossings.append(edgeCheck);
+                if (!m_crossings.contains((edge)))
+                    m_crossings.append(edge);
+            }
+        }
+    }
+}
