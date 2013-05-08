@@ -651,8 +651,8 @@ TimeStepInfo ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
     const double maxTimeStepLength = timeTotal / 10;
     const double maxToleranceMultiplyToAccept = 2.5; //3.0;
 
-    TimeStepMethod method = (TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt();
-    if(method == TimeStepMethod_Fixed)
+    TimeStepMethod timeStepMethod = (TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt();
+    if(timeStepMethod == TimeStepMethod_Fixed)
         return TimeStepInfo(Agros2D::problem()->config()->constantTimeStepLength());
 
     MultiArray<Scalar> referenceCalculation =
@@ -694,11 +694,11 @@ TimeStepInfo ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
     //m_averageErrorToLenghtRatio = (m_averageErrorToLenghtRatio + actualRatio) / 2.;
 
     double TOL;
-    if (((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_BDFTolerance)
+    if (timeStepMethod == TimeStepMethod_BDFTolerance)
     {
         TOL = Agros2D::problem()->config()->value(ProblemConfig::TimeMethodTolerance).toDouble();
     }
-    else if (((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_BDFNumSteps)
+    else if (timeStepMethod == TimeStepMethod_BDFNumSteps)
     {
         int desiredNumSteps = (timeTotal / Agros2D::problem()->config()->constantTimeStepLength());
         int remainingSteps = max(2, desiredNumSteps - timeStep);
@@ -716,7 +716,8 @@ TimeStepInfo ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
     bool refuseThisStep = error > maxToleranceMultiplyToAccept  * TOL;
 
     // this guess is based on assymptotic considerations
-    double nextTimeStepLength = pow(TOL / error, 1.0 / (Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt() + 1)) * Agros2D::problem()->actualTimeStepLength();
+    int timeOrder = Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt();
+    double nextTimeStepLength = pow(TOL / error, 1.0 / (timeOrder + 1)) * Agros2D::problem()->actualTimeStepLength();
 
     nextTimeStepLength = min(nextTimeStepLength, maxTimeStepLength);
     nextTimeStepLength = min(nextTimeStepLength, Agros2D::problem()->actualTimeStepLength() * maxTimeStepRatio);
@@ -730,7 +731,7 @@ TimeStepInfo ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
                                arg(nextTimeStepLength).
                                arg(nextTimeStepLength / Agros2D::problem()->actualTimeStepLength()*100.));
     if(refuseThisStep)
-        Agros2D::log()->printDebug(m_solverID, "Time step refused");
+        Agros2D::log()->printMessage(m_solverID, "Transient step refused");
 
     return TimeStepInfo(nextTimeStepLength, refuseThisStep);
 }
