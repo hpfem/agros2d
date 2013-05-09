@@ -146,17 +146,20 @@ void DataTable::inValidate()
 
     if(m_type == DataTableType_PiecewiseLinear)
     {
-        delete m_linear;
+        if(m_linear)
+            delete m_linear;
         m_linear = NULL;
     }
     else if(m_type == DataTableType_CubicSpline)
     {
-        delete m_spline;
+        if(m_spline)
+            delete m_spline;
         m_spline = NULL;
     }
     else if(m_type == DataTableType_Constant)
     {
-        delete m_constant;
+        if(m_constant)
+            delete m_constant;
         m_constant = NULL;
     }
     else
