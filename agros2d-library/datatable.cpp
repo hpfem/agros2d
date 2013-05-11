@@ -315,8 +315,8 @@ void DataTable::propertiesFromString(const QString &str)
 
 void DataTable::fromString(const QString &str)
 {
-    inValidate();
     setImplicit();
+    inValidate();
 
     // clear
     m_points.clear();
