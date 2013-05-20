@@ -40,10 +40,10 @@ Agros2DGeneratorModule::Agros2DGeneratorModule(const QString &moduleId)
 
     QDir().mkdir(GENERATOR_PLUGINROOT + "/" + moduleId);
 
-    //documentation
-    QDir doc_root(QApplication::applicationDirPath());
-    doc_root.mkpath(QString("%1/%2").arg(GENERATOR_DOCROOT).arg(moduleId));
-    QDir().mkdir(GENERATOR_DOCROOT + "/" + moduleId);
+    // documentation
+    // QDir doc_root(QApplication::applicationDirPath());
+    // doc_root.mkpath(QString("%1/%2").arg(GENERATOR_DOCROOT).arg(moduleId));
+    // QDir().mkdir(GENERATOR_DOCROOT + "/" + moduleId);
 
     // variables
     foreach (XMLModule::quantity quantity, m_module->volume().quantity())
@@ -161,7 +161,7 @@ QString Agros2DGeneratorModule::capitalize(QString text)
 
 void Agros2DGeneratorModule::generatePluginDocumentationFiles()
 {
-    qDebug() << tr("%1: generating plugin documentation file.").arg(QString::fromStdString(m_module->general().id()));
+    // qDebug() << tr("%1: generating plugin documentation file.").arg(QString::fromStdString(m_module->general().id()));
     QString id = QString::fromStdString(m_module->general().id());
     QString name = QString::fromStdString(m_module->general().name());
     QString text = "";
