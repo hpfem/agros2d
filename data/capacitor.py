@@ -21,6 +21,16 @@ electrostatic.damping_type = "automatic"
 electrostatic.damping_coeff = 1
 electrostatic.reuse_jacobian = True
 
+# variables
+r1 = 0.01
+r2 = 0.03
+r3 = 0.05
+r4 = 0.055
+l = 0.2
+eps1 = 10
+eps2 = 3
+U = 10
+dr = 0.003
 
 # boundaries
 electrostatic.add_boundary("Source", "electrostatic_potential", {"electrostatic_potential" : 10})
@@ -35,19 +45,22 @@ electrostatic.add_material("Dielectric n.2", {"electrostatic_permittivity" : 3, 
 
 # geometry
 geometry = a2d.geometry
-geometry.add_edge(0, 0.16, 0, 0.08, boundaries = {"electrostatic" : "Neumann BC"})
-geometry.add_edge(0.01, 0.08, 0.01, 0, boundaries = {"electrostatic" : "Source"})
-geometry.add_edge(0.01, 0, 0.03, 0, boundaries = {"electrostatic" : "Neumann BC"})
-geometry.add_edge(0.03, 0, 0.03, 0.08)
-geometry.add_edge(0.03, 0.08, 0.05, 0.08)
-geometry.add_edge(0.05, 0, 0.03, 0, boundaries = {"electrostatic" : "Neumann BC"})
-geometry.add_edge(0.05, 0.08, 0.05, 0, boundaries = {"electrostatic" : "Ground"})
-geometry.add_edge(0.055, 0, 0.055, 0.08, boundaries = {"electrostatic" : "Ground"})
-geometry.add_edge(0.05, 0.08, 0.055, 0.08, boundaries = {"electrostatic" : "Ground"})
-geometry.add_edge(0.055, 0, 0.16, 0, boundaries = {"electrostatic" : "Neumann BC"})
-geometry.add_edge(0.16, 0, 0, 0.16, angle = 90, boundaries = {"electrostatic" : "Neumann BC"})
-geometry.add_edge(0.01, 0.08, 0.03, 0.08)
-geometry.add_edge(0.01, 0.08, 0, 0.08, boundaries = {"electrostatic" : "Source"})
+
+# edges
+geometry = a2d.geometry
+geometry.add_edge(0, 3/2*l, 0, l/2,  boundaries = {"electrostatic" : "Neumann BC"})
+geometry.add_edge(r1, l/2, r1, 0, boundaries = {"electrostatic" : "Source"})
+geometry.add_edge(r1, 0, r2, 0,  boundaries = {"electrostatic" : "Neumann BC"})
+geometry.add_edge(r2, 0, r2, l/2)
+geometry.add_edge(r2, l/2, r3, l/2)
+geometry.add_edge(r3, 0, r2, 0,  boundaries = {"electrostatic" : "Neumann BC"})
+geometry.add_edge(r3, l/2, r3, 0, boundaries = {"electrostatic" : "Ground"})
+geometry.add_edge(r4, 0, r4, l/2, boundaries = {"electrostatic" : "Ground"})
+geometry.add_edge(r3, l/2, r4, l/2, boundaries = {"electrostatic" : "Ground"})
+geometry.add_edge(r4, 0, 3/2*l, 0, boundaries = {"electrostatic" : "Neumann BC"})
+geometry.add_edge(3/2*l, 0, 0, 3/2*l, angle=90, boundaries = {"electrostatic" : "Neumann BC"})
+geometry.add_edge(r1, l/2, r2, l/2)
+geometry.add_edge(r1, l/2, 0, l/2, boundaries = {"electrostatic" : "Source"})
 
 geometry.add_label(0.019, 0.021, materials = {"electrostatic" : "Dielectric n.1"})
 geometry.add_label(0.0379, 0.051, materials = {"electrostatic" : "Dielectric n.2"})
@@ -65,7 +78,6 @@ for i in range(15):
 
 	problem.solve()
 	result = electrostatic.volume_integrals([0, 1, 2])
-
 	r.append(r1 + (i*dr))
 	C.append(2*2*result["We"]/(U^2))
 	print(r[-1], C[-1])
