@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/pkus/sources/agros2d-second/resources/xsd/problem_a2d_30_xml.xsd">
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
 
   <geometry>
     <nodes>
@@ -70,6 +70,8 @@
               <boundary_edge id="13"/>
             </boundary_edges>
             <boundary_types>
+              <boundary_type key="elasticity_force_x" value="0"/>
+              <boundary_type key="elasticity_force_y" value="0"/>
               <boundary_type key="elasticity_displacement_x" value="0"/>
               <boundary_type key="elasticity_displacement_y" value="0"/>
             </boundary_types>
@@ -80,8 +82,10 @@
               <boundary_edge id="9"/>
             </boundary_edges>
             <boundary_types>
+              <boundary_type key="elasticity_force_x" value="0"/>
               <boundary_type key="elasticity_force_y" value="0"/>
               <boundary_type key="elasticity_displacement_x" value="0"/>
+              <boundary_type key="elasticity_displacement_y" value="0"/>
             </boundary_types>
           </boundary>
           <boundary id="3" name="Upper" type="elasticity_free_free">
@@ -91,6 +95,8 @@
             <boundary_types>
               <boundary_type key="elasticity_force_x" value="0"/>
               <boundary_type key="elasticity_force_y" value="0"/>
+              <boundary_type key="elasticity_displacement_x" value="0"/>
+              <boundary_type key="elasticity_displacement_y" value="0"/>
             </boundary_types>
           </boundary>
         </boundaries>
@@ -100,11 +106,11 @@
               <material_label id="0"/>
             </material_labels>
             <material_types>
-              <material_type key="elasticity_poisson_ratio" value="0"/>
-              <material_type key="elasticity_young_modulus" value="0"/>
+              <material_type key="elasticity_poisson_ratio" value="0.33"/>
+              <material_type key="elasticity_young_modulus" value="1.135e11"/>
               <material_type key="elasticity_temperature_difference" value="0"/>
-              <material_type key="elasticity_alpha" value="0"/>
-              <material_type key="elasticity_temperature_reference" value="0"/>
+              <material_type key="elasticity_alpha" value="1.85e-5"/>
+              <material_type key="elasticity_temperature_reference" value="293.15"/>
               <material_type key="elasticity_volume_force_x" value="0"/>
               <material_type key="elasticity_volume_force_y" value="0"/>
             </material_types>
@@ -116,21 +122,21 @@
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
           <field_item field_key="NewtonDampingType" field_value="0"/>
           <field_item field_key="NewtonDampingCoeff" field_value="1"/>
-          <field_item field_key="" field_value="1"/>
+          <field_item field_key="NewtonReuseJacobian" field_value="1"/>
           <field_item field_key="NewtonSufImprovJacobian" field_value="0.8"/>
           <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
           <field_item field_key="NewtonStepsToIncreaseDF" field_value="1"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
-          <field_item field_key="SpaceNumberOfRefinements" field_value="0"/>
-          <field_item field_key="SpacePolynomialOrder" field_value="1"/>
+          <field_item field_key="SpaceNumberOfRefinements" field_value="1"/>
+          <field_item field_key="SpacePolynomialOrder" field_value="2"/>
           <field_item field_key="AdaptivitySteps" field_value="1"/>
           <field_item field_key="AdaptivityTolerance" field_value="1"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="100"/>
           <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
           <field_item field_key="TransientTimeSkip" field_value="60"/>
-          <field_item field_key="TransientInitialConditio" field_value="0"/>
+          <field_item field_key="TransientInitialCondition" field_value="0"/>
         </field_config>
       </field>
       <field adaptivity_type="disabled" analysis_type="transient" field_id="heat" linearity_type="linear">
@@ -176,10 +182,10 @@
             <material_types>
               <material_type key="heat_volume_heat" value="0"/>
               <material_type key="heat_velocity_x" value="0"/>
-              <material_type key="heat_conductivity" value="0"/>
-              <material_type key="heat_density" value="0"/>
+              <material_type key="heat_conductivity" value="120"/>
+              <material_type key="heat_density" value="8600"/>
               <material_type key="heat_velocity_y" value="0"/>
-              <material_type key="heat_specific_heat" value="0"/>
+              <material_type key="heat_specific_heat" value="380"/>
               <material_type key="heat_velocity_angular" value="0"/>
             </material_types>
           </material>
@@ -190,10 +196,10 @@
             <material_types>
               <material_type key="heat_volume_heat" value="0"/>
               <material_type key="heat_velocity_x" value="0"/>
-              <material_type key="heat_conductivity" value="0"/>
-              <material_type key="heat_density" value="0"/>
+              <material_type key="heat_conductivity" value="0.24"/>
+              <material_type key="heat_density" value="2220"/>
               <material_type key="heat_velocity_y" value="0"/>
-              <material_type key="heat_specific_heat" value="0"/>
+              <material_type key="heat_specific_heat" value="1050"/>
               <material_type key="heat_velocity_angular" value="0"/>
             </material_types>
           </material>
@@ -205,10 +211,10 @@
             <material_types>
               <material_type key="heat_volume_heat" value="0"/>
               <material_type key="heat_velocity_x" value="0"/>
-              <material_type key="heat_conductivity" value="0"/>
-              <material_type key="heat_density" value="0"/>
+              <material_type key="heat_conductivity" value="0.26"/>
+              <material_type key="heat_density" value="1150"/>
               <material_type key="heat_velocity_y" value="0"/>
-              <material_type key="heat_specific_heat" value="0"/>
+              <material_type key="heat_specific_heat" value="1100"/>
               <material_type key="heat_velocity_angular" value="0"/>
             </material_types>
           </material>
@@ -219,10 +225,10 @@
             <material_types>
               <material_type key="heat_volume_heat" value="0"/>
               <material_type key="heat_velocity_x" value="0"/>
-              <material_type key="heat_conductivity" value="0"/>
-              <material_type key="heat_density" value="0"/>
+              <material_type key="heat_conductivity" value="372"/>
+              <material_type key="heat_density" value="8800"/>
               <material_type key="heat_velocity_y" value="0"/>
-              <material_type key="heat_specific_heat" value="0"/>
+              <material_type key="heat_specific_heat" value="380"/>
               <material_type key="heat_velocity_angular" value="0"/>
             </material_types>
           </material>
@@ -233,21 +239,21 @@
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
           <field_item field_key="NewtonDampingType" field_value="0"/>
           <field_item field_key="NewtonDampingCoeff" field_value="1"/>
-          <field_item field_key="" field_value="1"/>
+          <field_item field_key="NewtonReuseJacobian" field_value="1"/>
           <field_item field_key="NewtonSufImprovJacobian" field_value="0.8"/>
           <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
           <field_item field_key="NewtonStepsToIncreaseDF" field_value="1"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
-          <field_item field_key="SpaceNumberOfRefinements" field_value="0"/>
-          <field_item field_key="SpacePolynomialOrder" field_value="1"/>
+          <field_item field_key="SpaceNumberOfRefinements" field_value="1"/>
+          <field_item field_key="SpacePolynomialOrder" field_value="2"/>
           <field_item field_key="AdaptivitySteps" field_value="1"/>
           <field_item field_key="AdaptivityTolerance" field_value="1"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
           <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
-          <field_item field_key="TransientInitialConditio" field_value="20"/>
+          <field_item field_key="TransientInitialCondition" field_value="293.15"/>
         </field_config>
       </field>
       <field adaptivity_type="disabled" analysis_type="harmonic" field_id="magnetic" linearity_type="linear">
@@ -255,14 +261,7 @@
         <refinement_labels/>
         <polynomial_orders/>
         <boundaries>
-          <boundary id="1" name="Antisymmetry" type="magnetic_potential">
-            <boundary_edges/>
-            <boundary_types>
-              <boundary_type key="magnetic_potential_imag" value="0"/>
-              <boundary_type key="magnetic_potential_real" value="0"/>
-            </boundary_types>
-          </boundary>
-          <boundary id="2" name="Fictional boundary" type="magnetic_potential">
+          <boundary id="1" name="Force line" type="magnetic_potential">
             <boundary_edges>
               <boundary_edge id="5"/>
               <boundary_edge id="6"/>
@@ -275,6 +274,8 @@
             <boundary_types>
               <boundary_type key="magnetic_potential_imag" value="0"/>
               <boundary_type key="magnetic_potential_real" value="0"/>
+              <boundary_type key="magnetic_surface_current_imag" value="0"/>
+              <boundary_type key="magnetic_surface_current_real" value="0"/>
             </boundary_types>
           </boundary>
         </boundaries>
@@ -282,6 +283,22 @@
           <material id="1" name="Brass">
             <material_labels>
               <material_label id="0"/>
+            </material_labels>
+            <material_types>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
+              <material_type key="magnetic_conductivity" value="1.25e+07"/>
+              <material_type key="magnetic_remanence" value="0"/>
+              <material_type key="magnetic_current_density_external_imag" value="0"/>
+              <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_velocity_x" value="0"/>
+              <material_type key="magnetic_velocity_y" value="0"/>
+            </material_types>
+          </material>
+          <material id="2" name="Teflon">
+            <material_labels>
+              <material_label id="3"/>
             </material_labels>
             <material_types>
               <material_type key="magnetic_current_density_external_real" value="0"/>
@@ -295,30 +312,14 @@
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
           </material>
-          <material id="2" name="Teflon">
-            <material_labels>
-              <material_label id="3"/>
-            </material_labels>
-            <material_types>
-              <material_type key="magnetic_current_density_external_real" value="0"/>
-              <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="0"/>
-              <material_type key="magnetic_conductivity" value="0"/>
-              <material_type key="magnetic_remanence" value="0"/>
-              <material_type key="magnetic_current_density_external_imag" value="0"/>
-              <material_type key="magnetic_remanence_angle" value="0"/>
-              <material_type key="magnetic_velocity_x" value="0"/>
-              <material_type key="magnetic_velocity_y" value="0"/>
-            </material_types>
-          </material>
           <material id="3" name="Copper">
             <material_labels>
               <material_label id="1"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="6e6"/>
               <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
               <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_current_density_external_imag" value="0"/>
@@ -335,7 +336,7 @@
             <material_types>
               <material_type key="magnetic_current_density_external_real" value="0"/>
               <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
               <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_current_density_external_imag" value="0"/>
@@ -351,7 +352,7 @@
             <material_types>
               <material_type key="magnetic_current_density_external_real" value="0"/>
               <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
               <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_current_density_external_imag" value="0"/>
@@ -367,27 +368,27 @@
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
           <field_item field_key="NewtonDampingType" field_value="0"/>
           <field_item field_key="NewtonDampingCoeff" field_value="1"/>
-          <field_item field_key="" field_value="1"/>
+          <field_item field_key="NewtonReuseJacobian" field_value="1"/>
           <field_item field_key="NewtonSufImprovJacobian" field_value="0.8"/>
           <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
           <field_item field_key="NewtonStepsToIncreaseDF" field_value="1"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
-          <field_item field_key="SpaceNumberOfRefinements" field_value="0"/>
-          <field_item field_key="SpacePolynomialOrder" field_value="1"/>
+          <field_item field_key="SpaceNumberOfRefinements" field_value="1"/>
+          <field_item field_key="SpacePolynomialOrder" field_value="3"/>
           <field_item field_key="AdaptivitySteps" field_value="1"/>
           <field_item field_key="AdaptivityTolerance" field_value="1"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="97"/>
           <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
           <field_item field_key="TransientTimeSkip" field_value="60"/>
-          <field_item field_key="TransientInitialConditio" field_value="0"/>
+          <field_item field_key="TransientInitialCondition" field_value="0"/>
         </field_config>
       </field>
     </fields>
     <couplings>
-      <coupling id="magnetic-heat" source_fieldid="magnetic" target_fieldid="heat" type="weak"/>
       <coupling id="heat-elasticity" source_fieldid="heat" target_fieldid="elasticity" type="weak"/>
+      <coupling id="magnetic-heat" source_fieldid="magnetic" target_fieldid="heat" type="weak"/>
     </couplings>
     <problem_config>
       <problem_item problem_key="Frequency" problem_value="1000"/>
@@ -405,7 +406,7 @@
     <item key="View_RulersFontFamily" value="Droid"/>
     <item key="View_RulersFontPointSize" value="12"/>
     <item key="View_PostFontFamily" value="Droid"/>
-    <item key="View_PostFontPointSize" value="16"/>
+    <item key="View_PostFontPointSize" value="20"/>
     <item key="View_ZoomToMouse" value="1"/>
     <item key="View_NodeSize" value="6"/>
     <item key="View_EdgeWidth" value="2"/>
@@ -466,14 +467,14 @@
     <item key="View_ColorCrossedBlue" value="0"/>
     <item key="View_ShowInitialMeshView" value="1"/>
     <item key="View_ShowSolutionMeshView" value="0"/>
-    <item key="View_ContourVariable" value=""/>
-    <item key="View_ShowContourView" value="0"/>
+    <item key="View_ContourVariable" value="magnetic_potential_lines"/>
+    <item key="View_ShowContourView" value="1"/>
     <item key="View_ContoursCount" value="15"/>
     <item key="View_ContoursWidth" value="1"/>
     <item key="View_ShowScalarView" value="1"/>
     <item key="View_ShowScalarColorBar" value="1"/>
-    <item key="View_ScalarVariable" value=""/>
-    <item key="View_ScalarVariableComp" value="-1"/>
+    <item key="View_ScalarVariable" value="magnetic_flux_density"/>
+    <item key="View_ScalarVariableComp" value="0"/>
     <item key="View_PaletteType" value="0"/>
     <item key="View_PaletteFilter" value="0"/>
     <item key="View_PaletteSteps" value="30"/>
@@ -481,10 +482,10 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="0"/>
-    <item key="View_ScalarRangeMax" value="1"/>
+    <item key="View_ScalarRangeMin" value="3.05026821165133e-21"/>
+    <item key="View_ScalarRangeMax" value="0.0909249883182401"/>
     <item key="View_ShowVectorView" value="0"/>
-    <item key="View_VectorVariable" value=""/>
+    <item key="View_VectorVariable" value="magnetic_flux_density_real"/>
     <item key="View_VectorProportional" value="1"/>
     <item key="View_VectorColor" value="1"/>
     <item key="View_VectorCount" value="50"/>

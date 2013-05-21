@@ -156,6 +156,7 @@ private slots:
     void doAdaptivityChanged(int index);
     void doLinearityTypeChanged(int index);
     void doNewtonDampingChanged(int index);
+    void doNewtonReuseJacobian(bool checked);
     void doPicardAndersonChanged(int index);
     void doShowEquation();
 };

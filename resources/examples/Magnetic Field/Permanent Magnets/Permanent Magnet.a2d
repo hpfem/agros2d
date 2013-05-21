@@ -1,55 +1,70 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_30_xml.xsd">
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
 
   <geometry>
     <nodes>
-      <node id="0" x="-0.05" y="-0.025"/>
-      <node id="1" x="0.05" y="-0.025"/>
+      <node id="0" x="-0.05" y="-0.01875"/>
+      <node id="1" x="0.05" y="-0.01875"/>
       <node id="2" x="0.05" y="-0.005"/>
       <node id="3" x="-0.05" y="-0.005"/>
       <node id="4" x="-0.05" y="0"/>
       <node id="5" x="0.05" y="0"/>
       <node id="6" x="-0.03" y="0"/>
       <node id="7" x="0.03" y="0"/>
-      <node id="8" x="-0.05" y="0.04"/>
-      <node id="9" x="0.05" y="0.04"/>
-      <node id="10" x="-0.03" y="0.04"/>
-      <node id="11" x="0.03" y="0.04"/>
-      <node id="12" x="-0.05" y="0.06"/>
-      <node id="13" x="0.05" y="0.06"/>
-      <node id="14" x="-0.15" y="-0.1"/>
-      <node id="15" x="0.15" y="-0.1"/>
-      <node id="16" x="0.15" y="0.15"/>
-      <node id="17" x="-0.15" y="0.15"/>
+      <node id="8" x="-0.025" y="0.04"/>
+      <node id="9" x="0.025" y="0.04"/>
+      <node id="10" x="-0.05" y="0.06"/>
+      <node id="11" x="0.05" y="0.06"/>
+      <node id="12" x="-0.15" y="-0.1"/>
+      <node id="13" x="0.15" y="-0.1"/>
+      <node id="14" x="0.15" y="0.15"/>
+      <node id="15" x="-0.15" y="0.15"/>
+      <node id="16" x="-0.05" y="0.025"/>
+      <node id="17" x="-0.03" y="0.025"/>
+      <node id="18" x="0.03" y="0.025"/>
+      <node id="19" x="0.05" y="0.025"/>
+      <node id="20" x="-0.03" y="0.035"/>
+      <node id="21" x="0.03" y="0.035"/>
+      <node id="22" x="-0.045" y="0.065"/>
+      <node id="23" x="0.045" y="0.065"/>
     </nodes>
     <edges>
       <edge angle="0" end="1" id="0" start="0"/>
       <edge angle="0" end="2" id="1" start="1"/>
-      <edge angle="0" end="3" id="2" start="2"/>
-      <edge angle="0" end="0" id="3" start="3"/>
-      <edge angle="0" end="8" id="4" start="12"/>
-      <edge angle="0" end="10" id="5" start="8"/>
-      <edge angle="0" end="6" id="6" start="10"/>
-      <edge angle="0" end="4" id="7" start="6"/>
-      <edge angle="0" end="8" id="8" start="4"/>
-      <edge angle="0" end="13" id="9" start="12"/>
-      <edge angle="0" end="9" id="10" start="13"/>
-      <edge angle="0" end="9" id="11" start="11"/>
-      <edge angle="0" end="9" id="12" start="5"/>
-      <edge angle="0" end="7" id="13" start="11"/>
-      <edge angle="0" end="5" id="14" start="7"/>
-      <edge angle="0" end="11" id="15" start="10"/>
-      <edge angle="0" end="15" id="16" start="14"/>
-      <edge angle="0" end="16" id="17" start="15"/>
-      <edge angle="0" end="17" id="18" start="16"/>
-      <edge angle="0" end="14" id="19" start="17"/>
+      <edge angle="0" end="0" id="2" start="3"/>
+      <edge angle="0" end="4" id="3" start="6"/>
+      <edge angle="0" end="5" id="4" start="7"/>
+      <edge angle="0" end="9" id="5" start="8"/>
+      <edge angle="0" end="13" id="6" start="12"/>
+      <edge angle="0" end="14" id="7" start="13"/>
+      <edge angle="0" end="15" id="8" start="14"/>
+      <edge angle="0" end="12" id="9" start="15"/>
+      <edge angle="0" end="17" id="10" start="16"/>
+      <edge angle="0" end="19" id="11" start="18"/>
+      <edge angle="0" end="16" id="12" start="4"/>
+      <edge angle="0" end="6" id="13" start="17"/>
+      <edge angle="0" end="7" id="14" start="18"/>
+      <edge angle="0" end="5" id="15" start="19"/>
+      <edge angle="0" end="20" id="16" start="17"/>
+      <edge angle="0" end="18" id="17" start="21"/>
+      <edge angle="0" end="16" id="18" start="10"/>
+      <edge angle="0" end="19" id="19" start="11"/>
+      <edge angle="90" end="20" id="20" start="8"/>
+      <edge angle="90" end="9" id="21" start="21"/>
+      <edge angle="90" end="23" id="22" start="11"/>
+      <edge angle="0" end="22" id="23" start="23"/>
+      <edge angle="90" end="10" id="24" start="22"/>
+      <edge angle="0" end="3" id="25" start="2"/>
+      <edge angle="0" end="3" id="26" start="4"/>
+      <edge angle="0" end="5" id="27" start="2"/>
     </edges>
     <labels>
       <label area="0" id="0" x="0.076268" y="0.119048"/>
-      <label area="1e-05" id="1" x="-0.0126334" y="0.0554136"/>
-      <label area="0" id="2" x="0.0131013" y="-0.0100926"/>
-      <label area="0" id="3" x="0.0374322" y="0.0301469"/>
-      <label area="0" id="4" x="-0.0402396" y="0.0315506"/>
+      <label area="1e-05" id="1" x="-0.0115251" y="0.0451226"/>
+      <label area="1e-05" id="2" x="0.0131013" y="-0.0100926"/>
+      <label area="1e-05" id="3" x="0.0407545" y="0.011874"/>
+      <label area="1e-05" id="4" x="-0.0408437" y="0.0140328"/>
+      <label area="7e-06" id="5" x="-0.0176017" y="0.0214307"/>
     </labels>
   </geometry>
 
@@ -62,10 +77,10 @@
         <boundaries>
           <boundary id="1" name="A = 0" type="magnetic_potential">
             <boundary_edges>
-              <boundary_edge id="16"/>
-              <boundary_edge id="17"/>
-              <boundary_edge id="18"/>
-              <boundary_edge id="19"/>
+              <boundary_edge id="6"/>
+              <boundary_edge id="7"/>
+              <boundary_edge id="8"/>
+              <boundary_edge id="9"/>
             </boundary_edges>
             <boundary_types>
               <boundary_type key="magnetic_potential_real" value="0"/>
@@ -83,6 +98,7 @@
               <material_type key="magnetic_permeability" value="1.11"/>
               <material_type key="magnetic_conductivity" value="0"/>
               <material_type key="magnetic_remanence" value="1.28"/>
+              <material_type key="magnetic_current_density_external_imag" value="0"/>
               <material_type key="magnetic_remanence_angle" value="Br_dir1"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
@@ -98,6 +114,7 @@
               <material_type key="magnetic_permeability" value="1.11"/>
               <material_type key="magnetic_conductivity" value="0"/>
               <material_type key="magnetic_remanence" value="1.28"/>
+              <material_type key="magnetic_current_density_external_imag" value="0"/>
               <material_type key="magnetic_remanence_angle" value="Br_dir2"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
@@ -114,6 +131,7 @@
               <material_type key="magnetic_permeability" value="995;cubic_spline,1,1$0,0.2,0.5,0.8,1.15,1.3,1.45,1.6,1.69;995,995,991,933,771,651,473,311,245"/>
               <material_type key="magnetic_conductivity" value="0"/>
               <material_type key="magnetic_remanence" value="0"/>
+              <material_type key="magnetic_current_density_external_imag" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
@@ -122,6 +140,7 @@
           <material id="4" name="Air">
             <material_labels>
               <material_label id="0"/>
+              <material_label id="5"/>
             </material_labels>
             <material_types>
               <material_type key="magnetic_current_density_external_real" value="0"/>
@@ -129,6 +148,7 @@
               <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
               <material_type key="magnetic_remanence" value="0"/>
+              <material_type key="magnetic_current_density_external_imag" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
@@ -136,12 +156,15 @@
           </material>
         </materials>
         <field_config>
-          <field_item field_key="NonlinearTolerance" field_value="0.001"/>
+          <field_item field_key="NonlinearTolerance" field_value="0.01"/>
           <field_item field_key="NonlinearSteps" field_value="40"/>
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
-          <field_item field_key="NewtonDampingType" field_value="1"/>
+          <field_item field_key="NewtonDampingType" field_value="0"/>
           <field_item field_key="NewtonDampingCoeff" field_value="0.8"/>
-          <field_item field_key="" field_value="1"/>
+          <field_item field_key="NewtonReuseJacobian" field_value="1"/>
+          <field_item field_key="NewtonSufImprovJacobian" field_value="0.9"/>
+          <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
+          <field_item field_key="NewtonStepsToIncreaseDF" field_value="1"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
@@ -152,7 +175,7 @@
           <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
           <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
-          <field_item field_key="TransientInitialConditio" field_value="0"/>
+          <field_item field_key="TransientInitialCondition" field_value="0"/>
         </field_config>
       </field>
     </fields>
@@ -179,7 +202,7 @@
     <item key="View_EdgeWidth" value="2"/>
     <item key="View_LabelSize" value="6"/>
     <item key="View_ShowGrid" value="1"/>
-    <item key="View_GridStep" value="0.05"/>
+    <item key="View_GridStep" value="0.005"/>
     <item key="View_ShowRulers" value="1"/>
     <item key="View_SnapToGrid" value="1"/>
     <item key="View_ShowAxes" value="1"/>
@@ -240,7 +263,7 @@
     <item key="View_ContoursWidth" value="1"/>
     <item key="View_ShowScalarView" value="1"/>
     <item key="View_ShowScalarColorBar" value="1"/>
-    <item key="View_ScalarVariable" value="magnetic_potential_real"/>
+    <item key="View_ScalarVariable" value="magnetic_permeability"/>
     <item key="View_ScalarVariableComp" value="0"/>
     <item key="View_PaletteType" value="0"/>
     <item key="View_PaletteFilter" value="0"/>
@@ -249,8 +272,8 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="2"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="-0.0231544089789067"/>
-    <item key="View_ScalarRangeMax" value="0.00114318509141159"/>
+    <item key="View_ScalarRangeMin" value="1"/>
+    <item key="View_ScalarRangeMax" value="996.311793412816"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value=""/>
     <item key="View_VectorProportional" value="1"/>
@@ -311,9 +334,6 @@
     <item key="Adaptivity_ProjNormType" value="1"/>
     <item key="Adaptivity_UseAniso" value="1"/>
     <item key="Adaptivity_FinerReference" value="0"/>
-    <item key="Newton_SufImprovJacobian" value="0.8"/>
-    <item key="Newton_MaxStepsReuseJacobian" value="20"/>
-    <item key="Newton_StepsToIncreaseDF" value="1"/>
     <item key="Commands_Triangle" value="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;"/>
     <item key="Commands_Gmsh" value="%1 -2 &quot;%2.geo&quot;"/>
   </config>

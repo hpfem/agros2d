@@ -137,11 +137,13 @@ class PyField
         void addMaterial(const std::string &name, const map<std::string, double> &parameters,
                          const map<std::string, std::string> &expressions,
                          const map<std::string, vector<double> > &nonlin_x,
-                         const map<std::string, vector<double> > &nonlin_y);
+                         const map<std::string, vector<double> > &nonlin_y,
+                         const map<std::string, map<std::string, std::string> > &settings_map);
         void modifyMaterial(const std::string &name, const map<std::string, double> &parameters,
                             const map<std::string, std::string> &expressions,
                             const map<std::string, vector<double> > &nonlin_x,
-                            const map<std::string, vector<double> > &nonlin_y);
+                            const map<std::string, vector<double> > &nonlin_y,
+                            const map<std::string, map<std::string, std::string> > &settings_map);
         void removeMaterial(const std::string &name);
 
         // local values, integrals

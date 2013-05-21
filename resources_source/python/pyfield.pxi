@@ -84,11 +84,13 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         void addMaterial(string &name, map[string, double] &parameters,
                          map[string, string] &expressions,
                          map[string, vector[double]] &nonlin_x,
-                         map[string, vector[double]] &nonlin_y) except +
+                         map[string, vector[double]] &nonlin_y,
+                         map[string, map[string, string]] &settings) except +
         void modifyMaterial(string &name, map[string, double] &parameters,
                             map[string, string] &expressions,
                             map[string, vector[double]] &nonlin_x,
-                            map[string, vector[double]] &nonlin_y) except +
+                            map[string, vector[double]] &nonlin_y,
+                            map[string, map[string, string]] &settings) except +
         void removeMaterial(string &name)
 
         void solve()
@@ -172,6 +174,39 @@ cdef map[string, vector[double]] get_nonlin_y_map(parameters):
               y.clear()
 
     return nonlin_y_map
+
+cdef map[string, map[string, string]] get_settings_map(parameters):
+    cdef map[string, map[string, string]] settings_map
+    cdef pair[string, map[string, string]] settings_map_pair
+    cdef map[string, string] settings
+    cdef pair[string, string] setting
+
+    for key in parameters:
+        if isinstance(parameters[key], dict):
+            if ("interpolation" in parameters[key]):
+                setting.first = "interpolation"
+                setting.second = string(parameters[key]["interpolation"])
+                settings.insert(setting)
+
+            if ("derivative_at_endpoints" in parameters[key]):
+                setting.first = "derivative_at_endpoints"
+                setting.second = string(parameters[key]["derivative_at_endpoints"])
+                settings.insert(setting)
+
+            if ("extrapolation" in parameters[key]):
+                setting.first = "extrapolation"
+                setting.second = string(parameters[key]["extrapolation"])
+                settings.insert(setting)
+
+        if (len(settings)):
+            settings_map_pair.first = string(key)
+            settings_map_pair.second = settings
+            settings_map.insert(settings_map_pair)
+
+            settings.clear()
+
+    return settings_map
+
 
 cdef class __Field__:
     cdef PyField *thisptr
@@ -370,16 +405,18 @@ cdef class __Field__:
         cdef map[string, string] expression_map = get_expression_map(parameters)
         cdef map[string, vector[double]] nonlin_x_map = get_nonlin_x_map(parameters)
         cdef map[string, vector[double]] nonlin_y_map = get_nonlin_y_map(parameters)
+        cdef map[string, map[string, string]] settings_map = get_settings_map(parameters)
 
-        self.thisptr.addMaterial(string(name), parameters_map, expression_map, nonlin_x_map, nonlin_y_map)
+        self.thisptr.addMaterial(string(name), parameters_map, expression_map, nonlin_x_map, nonlin_y_map, settings_map)
 
     def modify_material(self, name, parameters = {}):
         cdef map[string, double] parameters_map = get_parameters_map(parameters)
         cdef map[string, string] expression_map = get_expression_map(parameters)
         cdef map[string, vector[double]] nonlin_x_map = get_nonlin_x_map(parameters)
         cdef map[string, vector[double]] nonlin_y_map = get_nonlin_y_map(parameters)
+        cdef map[string, map[string, string]] settings_map = get_settings_map(parameters)
 
-        self.thisptr.modifyMaterial(string(name), parameters_map, expression_map, nonlin_x_map, nonlin_y_map)
+        self.thisptr.modifyMaterial(string(name), parameters_map, expression_map, nonlin_x_map, nonlin_y_map, settings_map)
 
     def remove_material(self, name):
         self.thisptr.removeMaterial(string(name))

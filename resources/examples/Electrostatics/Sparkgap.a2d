@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_30_xml.xsd">
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
 
   <geometry>
     <nodes>
@@ -82,23 +82,23 @@
           <field_item field_key="NonlinearTolerance" field_value="0.001"/>
           <field_item field_key="NonlinearSteps" field_value="10"/>
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
-          <field_item field_key="NewtonAutomaticDamping" field_value="1"/>
-          <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NewtonDampingType" field_value="0"/>
           <field_item field_key="NewtonDampingCoeff" field_value="1"/>
-          <field_item field_key="NewtonDampingNumberToIncrease" field_value="1"/>
-          <field_item field_key="NewtonSufficientImprovementFactorJacobian" field_value="0.4"/>
-          <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="3"/>
+          <field_item field_key="NewtonReuseJacobian" field_value="1"/>
+          <field_item field_key="NewtonSufImprovJacobian" field_value="0.8"/>
+          <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
+          <field_item field_key="NewtonStepsToIncreaseDF" field_value="1"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
           <field_item field_key="SpaceNumberOfRefinements" field_value="0"/>
           <field_item field_key="SpacePolynomialOrder" field_value="2"/>
-          <field_item field_key="AdaptivitySteps" field_value="10"/>
-          <field_item field_key="AdaptivityTolerance" field_value="5"/>
+          <field_item field_key="AdaptivitySteps" field_value="12"/>
+          <field_item field_key="AdaptivityTolerance" field_value="3"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
           <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
-          <field_item field_key="TransientInitialConditio" field_value="0"/>
+          <field_item field_key="TransientInitialCondition" field_value="0"/>
         </field_config>
       </field>
     </fields>
@@ -187,7 +187,7 @@
     <item key="View_ShowScalarView" value="1"/>
     <item key="View_ShowScalarColorBar" value="1"/>
     <item key="View_ScalarVariable" value="electrostatic_potential"/>
-    <item key="View_ScalarVariableComp" value="1"/>
+    <item key="View_ScalarVariableComp" value="0"/>
     <item key="View_PaletteType" value="0"/>
     <item key="View_PaletteFilter" value="0"/>
     <item key="View_PaletteSteps" value="30"/>
@@ -246,7 +246,7 @@
     <item key="View_ChartHorizontalAxisPoints" value="200"/>
     <item key="View_MeshAngleSegmentsCount" value="3"/>
     <item key="View_MeshCurvilinearElements" value="1"/>
-    <item key="View_LinearizerQuality" value="0"/>
+    <item key="View_LinearizerQuality" value="4"/>
     <item key="View_SolidViewHide" value=""/>
     <item key="Adaptivity_MaxDofs" value="60000"/>
     <item key="Adaptivity_IsoOnly" value="0"/>

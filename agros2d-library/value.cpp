@@ -32,7 +32,7 @@ Value::Value(double value)
     m_number = value;
 }
 
-Value::Value(double value, std::vector<double> x, std::vector<double> y)
+Value::Value(double value, std::vector<double> x, std::vector<double> y, DataTableType type, bool splineFirstDerivatives, bool extrapolateConstant)
     : m_isEvaluated(true), m_isTimeDependent(false), m_isCoordinateDependent(false), m_time(0.0), m_point(Point()), m_table(DataTable())
 {
     assert(x.size() == y.size());
@@ -40,6 +40,9 @@ Value::Value(double value, std::vector<double> x, std::vector<double> y)
     m_text = QString::number(value);
     m_number = value;
     m_table.setValues(x, y);
+    m_table.setType(type);
+    m_table.setSplineFirstDerivatives(splineFirstDerivatives);
+    m_table.setExtrapolateConstant(extrapolateConstant);
 }
 
 Value::Value(const QString &value)
@@ -48,13 +51,16 @@ Value::Value(const QString &value)
     parseFromString(value.isEmpty() ? "0" : value);
 }
 
-Value::Value(const QString &value, std::vector<double> x, std::vector<double> y)
+Value::Value(const QString &value, std::vector<double> x, std::vector<double> y, DataTableType type, bool splineFirstDerivatives, bool extrapolateConstant)
     : m_isEvaluated(false), m_isTimeDependent(false), m_isCoordinateDependent(false), m_time(0.0), m_point(Point()), m_table(DataTable())
 {
     assert(x.size() == y.size());
 
     parseFromString(value.isEmpty() ? "0" : value);
     m_table.setValues(x, y);
+    m_table.setType(type);
+    m_table.setSplineFirstDerivatives(splineFirstDerivatives);
+    m_table.setExtrapolateConstant(extrapolateConstant);
 }
 
 Value::Value(const QString &value, const DataTable &table)
@@ -70,6 +76,7 @@ Value::~Value()
 
 bool Value::hasExpression()
 {
+    evaluate();
     return (QString::number(number()) != text());
 }
 

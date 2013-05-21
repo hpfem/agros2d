@@ -141,6 +141,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(problemWidget, SIGNAL(changed()), sceneViewPreprocessor, SLOT(refresh()));
     connect(settingsWidget, SIGNAL(apply()), sceneViewPreprocessor, SLOT(refresh()));
     connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), preprocessorWidget, SLOT(loadTooltip(SceneGeometryMode)));
+    connect(currentPythonEngine(), SIGNAL(executedScript()), Agros2D::scene(), SLOT(doInvalidated()));
     connect(currentPythonEngine(), SIGNAL(executedScript()), Agros2D::scene()->loopsInfo(), SLOT(processPolygonTriangles()));
     currentPythonEngineAgros()->setSceneViewGeometry(sceneViewPreprocessor);
 

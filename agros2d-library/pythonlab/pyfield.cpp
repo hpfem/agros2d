@@ -329,7 +329,8 @@ void PyField::removeBoundary(const std::string &name)
 void PyField::addMaterial(const std::string &name, const map<std::string, double> &parameters,
                           const map<std::string, std::string> &expressions,
                           const map<std::string, vector<double> > &nonlin_x,
-                          const map<std::string, vector<double> > &nonlin_y)
+                          const map<std::string, vector<double> > &nonlin_y,
+                          const map<string, map<string, string> > &settings_map)
 {
     // check materials with same name
     foreach (SceneMaterial *material, Agros2D::scene()->materials->filter(m_fieldInfo->fieldId()).items())
@@ -356,19 +357,60 @@ void PyField::addMaterial(const std::string &name, const map<std::string, double
                     else
                         throw invalid_argument(QObject::tr("Size doesn't match (%1 < %2).").arg(lenx).arg(leny).toStdString());
 
+                DataTableType dataTableType = DataTableType_PiecewiseLinear;
+                bool splineFirstDerivatives = true;
+                bool extrapolateConstant = true;
+
+                if (settings_map.find((*i).first) != settings_map.end())
+                {
+                    map<string, string> settings = settings_map.at((*i).first);
+                    for (map<std::string, string>::const_iterator is = settings.begin(); is != settings.end(); ++is)
+                    {
+                        if (QString::fromStdString((*is).first) == "interpolation")
+                        {
+                            dataTableType = dataTableTypeFromStringKey(QString::fromStdString((*is).second));
+                            assert(dataTableType != DataTableType_Undefined);
+                        }
+
+                        if (QString::fromStdString((*is).first) == "extrapolation")
+                        {
+                            if (QString::fromStdString((*is).second) == "constant")
+                                extrapolateConstant = true;
+                            else if (QString::fromStdString((*is).second) == "linear")
+                                extrapolateConstant = false;
+                            else
+                                throw invalid_argument(QObject::tr("Invalid parameter '%1'. Valid parameters are 'constant' or 'linear'.").arg(QString::fromStdString((*is).second)).toStdString());
+                        }
+
+                        if (QString::fromStdString((*is).first) == "derivative_at_endpoints")
+                        {
+                            if (QString::fromStdString((*is).second) == "first")
+                                splineFirstDerivatives = true;
+                            else if (QString::fromStdString((*is).second) == "second")
+                                splineFirstDerivatives = false;
+                            else
+                                throw invalid_argument(QObject::tr("Invalid parameter '%1'. Valid parameters are 'first' or 'second'.").arg(QString::fromStdString((*is).second)).toStdString());
+                        }
+                    }
+                }
+
                 assigned = true;
+
                 if (expressions.count((*i).first) == 0)
                 {
                     values[variable.id()] = Value((*i).second,
                                                   (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
-                                                  (leny > 0) ? nonlin_y.at((*i).first) : vector<double>());
+                                                  (leny > 0) ? nonlin_y.at((*i).first) : vector<double>(),
+                                                  dataTableType, splineFirstDerivatives, extrapolateConstant);
                 }
                 else
                 {
                     values[variable.id()] = Value(QString::fromStdString(expressions.at((*i).first)),
                                                   (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
-                                                  (leny > 0) ? nonlin_y.at((*i).first) : vector<double>());
+                                                  (leny > 0) ? nonlin_y.at((*i).first) : vector<double>(),
+                                                  dataTableType, splineFirstDerivatives, extrapolateConstant);
                 }
+
                 break;
             }
         }
@@ -383,14 +425,15 @@ void PyField::addMaterial(const std::string &name, const map<std::string, double
 void PyField::modifyMaterial(const std::string &name, const map<std::string, double> &parameters,
                              const map<std::string, std::string> &expressions,
                              const map<std::string, vector<double> > &nonlin_x,
-                             const map<std::string, vector<double> > &nonlin_y)
+                             const map<std::string, vector<double> > &nonlin_y,
+                             const map<string, map<string, string> > &settings_map)
 {
     SceneMaterial *sceneMaterial = Agros2D::scene()->getMaterial(m_fieldInfo, QString::fromStdString(name));
 
     if (sceneMaterial == NULL)
         throw invalid_argument(QObject::tr("Material '%1' doesn't exists.").arg(QString::fromStdString(name)).toStdString());
 
-    for( map<std::string, double>::const_iterator i=parameters.begin(); i!=parameters.end(); ++i)
+    for (map<std::string, double>::const_iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         QList<Module::MaterialTypeVariable> materialVariables = m_fieldInfo->materialTypeVariables();
 
@@ -407,7 +450,45 @@ void PyField::modifyMaterial(const std::string &name, const map<std::string, dou
                     else
                         throw invalid_argument(QObject::tr("Size doesn't match (%1 < %2).").arg(lenx).arg(leny).toStdString());
 
+                DataTableType dataTableType = DataTableType_PiecewiseLinear;
+                bool splineFirstDerivatives = true;
+                bool extrapolateConstant = true;
+
+                if (settings_map.find((*i).first) != settings_map.end())
+                {
+                    map<string, string> settings = settings_map.at((*i).first);
+                    for (map<std::string, string>::const_iterator is = settings.begin(); is != settings.end(); ++is)
+                    {
+                        if (QString::fromStdString((*is).first) == "interpolation")
+                        {
+                            dataTableType = dataTableTypeFromStringKey(QString::fromStdString((*is).second));
+                            assert(dataTableType != DataTableType_Undefined);
+                        }
+
+                        if (QString::fromStdString((*is).first) == "extrapolation")
+                        {
+                            if (QString::fromStdString((*is).second) == "constant")
+                                extrapolateConstant = true;
+                            else if (QString::fromStdString((*is).second) == "linear")
+                                extrapolateConstant = false;
+                            else
+                                throw invalid_argument(QObject::tr("Invalid parameter '%1'. Valid parameters are 'constant' or 'linear'.").arg(QString::fromStdString((*is).second)).toStdString());
+                        }
+
+                        if (QString::fromStdString((*is).first) == "derivative_at_endpoints")
+                        {
+                            if (QString::fromStdString((*is).second) == "first")
+                                splineFirstDerivatives = true;
+                            else if (QString::fromStdString((*is).second) == "second")
+                                splineFirstDerivatives = false;
+                            else
+                                throw invalid_argument(QObject::tr("Invalid parameter '%1'. Valid parameters are 'first' or 'second'.").arg(QString::fromStdString((*is).second)).toStdString());
+                        }
+                    }
+                }
+
                 assigned = true;
+
                 if (expressions.count((*i).first) == 0)
                 {
                     sceneMaterial->setValue(QString::fromStdString((*i).first), Value((*i).second,
@@ -420,6 +501,7 @@ void PyField::modifyMaterial(const std::string &name, const map<std::string, dou
                                                                                       (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
                                                                                       (leny > 0) ? nonlin_y.at((*i).first) : vector<double>()));
                 }
+
                 break;
             }
         }

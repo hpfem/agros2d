@@ -33,10 +33,12 @@ class AGROS_API Value
 {
 public:
     Value(double value = 0.0);
-    Value(double value, std::vector<double> x, std::vector<double> y);
+    Value(double value,
+          std::vector<double> x, std::vector<double> y, DataTableType type = DataTableType_PiecewiseLinear, bool splineFirstDerivatives = true, bool extrapolateConstant = true);
 
     Value(const QString &value);
-    Value(const QString &value, std::vector<double> x, std::vector<double> y);
+    Value(const QString &value,
+          std::vector<double> x, std::vector<double> y, DataTableType type = DataTableType_PiecewiseLinear, bool splineFirstDerivatives = true, bool extrapolateConstant = true);
     Value(const QString &value, const DataTable &table);
 
     ~Value();

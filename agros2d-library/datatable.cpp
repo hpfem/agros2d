@@ -91,7 +91,7 @@ void DataTable::setImplicit()
     m_spline = NULL;
     m_linear = NULL;
     m_constant = NULL;
-    m_type = DataTableType_CubicSpline;
+    m_type = DataTableType_PiecewiseLinear;
     m_splineFirstDerivatives = true;
     m_extrapolateConstant = true;
 

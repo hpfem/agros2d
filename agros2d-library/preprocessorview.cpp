@@ -468,6 +468,7 @@ void PreprocessorWidget::doDelete()
             Agros2D::scene()->removeBoundary(objectBoundary);
         }
 
+        refresh();
         m_sceneViewPreprocessor->refresh();
     }
 }

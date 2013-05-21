@@ -241,15 +241,13 @@ QString createPythonFromModel(StartupScript_Type startupScript)
             }
         }
 
-        if (fieldInfo->value(FieldInfo::SpaceNumberOfRefinements).toInt() > 0)
-            str += QString("%1.number_of_refinements = %2\n").
+        str += QString("%1.number_of_refinements = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::SpaceNumberOfRefinements).toInt());
 
-        if (fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt() > 0)
-            str += QString("%1.polynomial_order = %2\n").
-                    arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt());
+        str += QString("%1.polynomial_order = %2\n").
+                arg(fieldInfo->fieldId()).
+                arg(fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt());
 
         str += QString("%1.adaptivity_type = \"%2\"\n").
                 arg(fieldInfo->fieldId()).
@@ -305,12 +303,23 @@ QString createPythonFromModel(StartupScript_Type startupScript)
 
             str += QString("%1.damping_coeff = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->value(FieldInfo::NewtonDampingCoeff).toInt());
+                    arg(fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble());
 
             str += QString("%1.reuse_jacobian = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg((fieldInfo->value(FieldInfo::NewtonReuseJacobian).toBool()) ? "True" : "False");
 
+            str += QString("%1.sufficient_improvement_factor_Jacobian = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(fieldInfo->value(FieldInfo::NewtonSufImprovJacobian).toDouble());
+
+            str += QString("%1.maximum_steps_with_reused_Jacobian = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(fieldInfo->value(FieldInfo::NewtonMaxStepsReuseJacobian).toInt());
+
+            str += QString("%1.damping_number_to_increase = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(fieldInfo->value(FieldInfo::NewtonStepsToIncreaseDF).toInt());
         }
 
         // picard
@@ -389,11 +398,14 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                                 arg(value.table().toStringX()).
                                 arg(value.table().toStringY());
                     else
-                        variables += QString("\"%1\" : { \"value\" : %2, \"x\" : [%3], \"y\" : [%4] }, ").
+                        variables += QString("\"%1\" : { \"value\" : %2, \"x\" : [%3], \"y\" : [%4], \"interpolation\" : \"%5\", \"extrapolation\" : \"%6\", \"derivative_at_endpoints\" : \"%7\" }, ").
                                 arg(variable.id()).
                                 arg(value.number()).
                                 arg(value.table().toStringX()).
-                                arg(value.table().toStringY());
+                                arg(value.table().toStringY()).
+                                arg(dataTableTypeToStringKey(value.table().type())).
+                                arg(value.table().extrapolateConstant() == true ? "constant" : "linear").
+                                arg(value.table().splineFirstDerivatives() == true ? "first" : "second");
                 }
                 else if (value.hasExpression() && startupScript == StartupScript_Variable)
                 {
