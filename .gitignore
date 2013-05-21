@@ -66,6 +66,8 @@ tmp
 agros2d_generator
 agros2d_pythonlab
 agros2d_solver
+agros2d_remote
+agros2d_pythonlab
 libs/
 plugins/
 resources_source/python/pythonlab.cpp
