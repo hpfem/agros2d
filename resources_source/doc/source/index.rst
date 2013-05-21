@@ -27,13 +27,13 @@ Getting Started
    ./getting_started/processing_results.rst
    ./getting_started/shortcut_keys.rst
 
-Mathematical Background
-^^^^^^^^^^^^^^^^^^^^^^^
+Modules Docummentation
+^^^^^^^^^^^^^^^^^^^^^^
 
 .. toctree::
    :maxdepth: 1
 
-   ./mathematical_background/index.rst
+   ./modules/index.rst
 
 Scripting
 ^^^^^^^^^
