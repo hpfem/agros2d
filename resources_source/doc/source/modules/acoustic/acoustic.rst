@@ -34,6 +34,3 @@ There are implemented three different kinds of boundary conditions
 
 .. math::
     \frac{1}{\rho} \frac{\partial \phas{p}}{\partial n_0} = - \mj \omega \frac{\phas{p}}{Z_0}
-    
-
-   
