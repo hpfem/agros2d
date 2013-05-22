@@ -184,21 +184,21 @@ cdef map[string, map[string, string]] get_settings_map(parameters):
     for key in parameters:
         if isinstance(parameters[key], dict):
             if ("interpolation" in parameters[key]):
-                setting.first = "interpolation"
+                setting.first = string("interpolation")
                 setting.second = string(parameters[key]["interpolation"])
                 settings.insert(setting)
 
             if ("derivative_at_endpoints" in parameters[key]):
-                setting.first = "derivative_at_endpoints"
+                setting.first = string("derivative_at_endpoints")
                 setting.second = string(parameters[key]["derivative_at_endpoints"])
                 settings.insert(setting)
 
             if ("extrapolation" in parameters[key]):
-                setting.first = "extrapolation"
+                setting.first = string("extrapolation")
                 setting.second = string(parameters[key]["extrapolation"])
                 settings.insert(setting)
 
-        if (len(settings)):
+        if (settings.size()):
             settings_map_pair.first = string(key)
             settings_map_pair.second = settings
             settings_map.insert(settings_map_pair)
