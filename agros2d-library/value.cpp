@@ -76,8 +76,10 @@ Value::~Value()
 
 bool Value::hasExpression()
 {
-    evaluate();
-    return (QString::number(number()) != text());
+    bool isNumeric = false;
+    text().toDouble(&isNumeric);
+
+    return !isNumeric;
 }
 
 bool Value::hasTable() const
