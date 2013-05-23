@@ -34,8 +34,10 @@ bool BDF2Table::setOrderAndPreviousSteps(int order, QList<double> previousSteps)
     int numSteps = previousSteps.length();
     assert(numSteps >= m_n);
 
-    if(m_actualTimeStep != previousSteps[numSteps - 1])
-        matrixUnchanged = false;
+    int numToCheckConst = min(order, numSteps);
+    for(int iCheck = 0; iCheck < numToCheckConst; iCheck++)
+        if(m_actualTimeStep != previousSteps[numSteps - 1 - iCheck])
+            matrixUnchanged = false;
 
     m_actualTimeStep = previousSteps[numSteps-1];
     if(m_n >= 2)
@@ -135,7 +137,7 @@ double BDF2Table::testCalcValue(double step, QList<double> values, double fVal)
     return result;
 }
 
-void BDF2Table::test()
+void BDF2Table::test(bool varyLength)
 {
     BDF2ATable tableA;
 
@@ -143,13 +145,15 @@ void BDF2Table::test()
 
     for(int order = 1; order <=3; order++)
     {
-        for(int i = 0; i < 4; i++)
+        for(int i = 1; i < 4; i++)
         {
             int numSteps = numStepsArray[i];
-            double step = 1./double(numSteps);
-            QList<double> constantSteps;
-            for(int i = 0; i < 5; i++)
-                constantSteps.append(step);
+            double constantStepLen = 1./double(numSteps);
+
+            if(varyLength)
+                numSteps = 3*numSteps/2;
+
+            QList<double> previousSteps;
 
             QList<double>  valsA;
             valsA.push_back(f(0));
@@ -157,6 +161,12 @@ void BDF2Table::test()
             int realOrder;
             for(int s = 0; s < numSteps; s++)
             {
+                double actualStepLen = constantStepLen;
+                if(varyLength && (s % 3))
+                    actualStepLen = constantStepLen/2.;
+
+                previousSteps.push_back(actualStepLen);
+
                 if(s == 0)
                     realOrder = 1;
 
@@ -168,18 +178,19 @@ void BDF2Table::test()
 
                 if(s <= 2)
                 {
-                    tableA.setOrderAndPreviousSteps(realOrder, constantSteps);
+                    tableA.setOrderAndPreviousSteps(realOrder, previousSteps);
                 }
-                actTime += step;
+                actTime += actualStepLen;
 
-                double valA = tableA.testCalcValue(step, valsA, df(actTime));
+                double valA = tableA.testCalcValue(actualStepLen, valsA, df(actTime));
                 valsA.push_back(valA);
             }
 
-           // assert(fabs(actTime-1.) < 0.000000001);
+            cout << "actTime " << actTime << ", step " << numSteps << endl;
+            assert(fabs(actTime-1.) < 0.000000001);
 
             double errorA = valsA.last() - f(1);
-            cout << "order " << order << ", step " << step << ", error " << errorA << endl;
+            cout << "order " << order << ", step " << 1./double(numSteps) << (varyLength ? " approx(alternate)" : " exact") << ", error " << errorA << endl;
         }
     }
 }

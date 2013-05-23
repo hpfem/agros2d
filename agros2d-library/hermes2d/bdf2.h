@@ -42,7 +42,7 @@ public:
     double vectorFormCoefficient(Hermes::Hermes2D::Func<double> **ext, int component, int numComponents, int integrationPoint);
     Hermes::Ord vectorFormCoefficient(Hermes::Hermes2D::Func<Hermes::Ord> **ext, int component, int numComponents, int integrationPoint);
 
-    static void test();
+    static void test(bool varyLength = false);
 
 protected:
     inline double* alpha() {return m_alpha; }

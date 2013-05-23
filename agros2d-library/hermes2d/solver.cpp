@@ -671,15 +671,18 @@ TimeStepInfo ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
 
     int previouslyUsedOrder = min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt());
     bool matrixUnchanged = m_block->weakForm()->bdf2Table()->setOrderAndPreviousSteps(previouslyUsedOrder - 1, Agros2D::problem()->timeStepLengths());
+    // using different order
+    assert(matrixUnchanged == false);
     m_hermesSolverContainer->matrixUnchangedDueToBDF(matrixUnchanged);
     m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());
     m_block->weakForm()->updateExtField();
 
-    // solve, for nonlinear solver use solution obtained by BDFA method as an initial vector
-    // TODO: remove for linear solver
+    // solutions obtained by time method of higher order in the original calculation
+    Hermes::vector<MeshFunctionSharedPtr<Scalar> > timeReferenceSolution;
+    if(timeStep > 0)
+            timeReferenceSolution = referenceCalculation.solutions();
     Scalar *initialSolutionVector = new Scalar[Hermes::Hermes2D::Space<Scalar>::get_num_dofs(actualSpaces())];
-    Scalar *solutionVector = solveOneProblem(initialSolutionVector, actualSpaces(), adaptivityStep,
-                                             timeStep > 0 ? referenceCalculation.solutions() : Hermes::vector<MeshFunctionSharedPtr<Scalar> >());
+    Scalar *solutionVector = solveOneProblem(initialSolutionVector, actualSpaces(), adaptivityStep, timeReferenceSolution);
     delete [] initialSolutionVector;
 
     Hermes::vector<MeshSharedPtr> meshes = spacesMeshes(actualSpaces());
