@@ -6,6 +6,24 @@ Description of Agros2D
 
 Main window
 ^^^^^^^^^^^
+When you start Agros2D, it opens to the *introductory mode* mode, where you can
+
+* create new problem,
+
+* perform basic settings fo the problem and add physical fields, 
+
+* open example problem, 
+
+* run PythonLab and work with scripts. 
+
+.. image:: ./main_window.png
+   :align: center
+   :scale: 50%
+   :alt: Main window
+   
+
+The important area of the Agros2D interface is *Mode selector*.   
+     
 
 Main window of Agros2D consists of several parts.
 
@@ -65,15 +83,11 @@ Main window of Agros2D consists of several parts.
 
   Status bar is used to display information about the type of problem, solution of the physical field and cursor position in workspace.
 
-.. image:: ./main_window.png
-   :align: center
-   :scale: 50%
-   :alt: Main window
 
-Script editor window
-^^^^^^^^^^^^^^^^^^^^
+PythonLab
+^^^^^^^^^
 
-The main part of the script editor window is editing area, which works with scripts. In the bottom of the window there is terminal panel. Script editor window also contains the file browser panel, menu bar and toolbar.
+The main part of the PythonLab is the editing area, which works with scripts. In the bottom of the window there is terminal panel. Script editor window also contains the file browser panel, menu bar and toolbar.
 
 .. image:: ./script_editor.png
    :align: center
