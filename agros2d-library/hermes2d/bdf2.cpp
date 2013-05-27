@@ -141,13 +141,15 @@ void BDF2Table::test(bool varyLength)
 {
     BDF2ATable tableA;
 
+    double results[3][4];
+
     int numStepsArray[] = {100, 1000, 10000, 100000};
 
     for(int order = 1; order <=3; order++)
     {
-        for(int i = 1; i < 4; i++)
+        for(int numStepsIdx = 0; numStepsIdx < 4; numStepsIdx++)
         {
-            int numSteps = numStepsArray[i];
+            int numSteps = numStepsArray[numStepsIdx];
             double constantStepLen = 1./double(numSteps);
 
             if(varyLength)
@@ -191,6 +193,22 @@ void BDF2Table::test(bool varyLength)
 
             double errorA = valsA.last() - f(1);
             cout << "order " << order << ", step " << 1./double(numSteps) << (varyLength ? " approx(alternate)" : " exact") << ", error " << errorA << endl;
+            results[order-1][numStepsIdx] = errorA;
         }
     }
+    cout << "errors = [";
+    for(int ord = 0; ord < 3; ord++)
+    {
+        cout << "[";
+        for(int st = 0; st < 4; st++)
+        {
+            cout << results[ord][st];
+            if(st < 3)
+                cout << ",";
+        }
+        cout << "]";
+        if(ord < 2)
+            cout << ",";
+    }
+    cout << "]"<< endl << endl;
 }
