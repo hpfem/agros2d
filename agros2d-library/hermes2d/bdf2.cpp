@@ -178,10 +178,7 @@ void BDF2Table::test(bool varyLength)
                 if((s == 2) && (order >= 3))
                     realOrder = 3;
 
-                if(s <= 2)
-                {
-                    tableA.setOrderAndPreviousSteps(realOrder, previousSteps);
-                }
+                tableA.setOrderAndPreviousSteps(realOrder, previousSteps);
                 actTime += actualStepLen;
 
                 double valA = tableA.testCalcValue(actualStepLen, valsA, df(actTime));
@@ -191,7 +188,7 @@ void BDF2Table::test(bool varyLength)
             cout << "actTime " << actTime << ", step " << numSteps << endl;
             assert(fabs(actTime-1.) < 0.000000001);
 
-            double errorA = valsA.last() - f(1);
+            double errorA = fabs(valsA.last() - f(1));
             cout << "order " << order << ", step " << 1./double(numSteps) << (varyLength ? " approx(alternate)" : " exact") << ", error " << errorA << endl;
             results[order-1][numStepsIdx] = errorA;
         }
