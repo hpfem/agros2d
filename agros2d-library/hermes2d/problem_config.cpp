@@ -149,7 +149,7 @@ void ProblemConfig::setDefaultValues()
     m_settingDefault[TimeMethodTolerance] = 0.05;
     m_settingDefault[TimeOrder] = 2;
     m_settingDefault[TimeConstantTimeSteps] = 10;
-    m_settingDefault[TimeTotal] = 15000;
+    m_settingDefault[TimeTotal] = 15000.0;
 }
 
 
