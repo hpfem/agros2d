@@ -275,11 +275,11 @@ private:
 // material property
 struct MaterialTypeVariable
 {
-    MaterialTypeVariable() : m_id(""), m_shortname(""), m_defaultValue(0),  m_expressionNonlinear(""), m_isTimeDep(false) {}
+    MaterialTypeVariable() : m_id(""), m_shortname(""), m_defaultValue(0),  m_expressionNonlinear(""), m_isTimeDep(false), m_isBool(false) {}
     MaterialTypeVariable(const QString &id, const QString &shortname,
-                         const QString &expressionNonlinear = "", bool isTimedep = false)
+                         const QString &expressionNonlinear = "", bool isTimedep = false, bool isBool = false)
         : m_id(id), m_shortname(shortname),
-          m_expressionNonlinear(expressionNonlinear), m_isTimeDep(isTimedep) {}
+          m_expressionNonlinear(expressionNonlinear), m_isTimeDep(isTimedep), m_isBool(isBool) {}
     MaterialTypeVariable(XMLModule::quantity quant);
 
     // id
@@ -291,6 +291,8 @@ struct MaterialTypeVariable
     inline bool isNonlinear() const { return !m_expressionNonlinear.isEmpty(); }
     // timedep
     inline bool isTimeDep() const { return m_isTimeDep; }
+    // show as checkbox
+    inline bool isBool() const {return m_isBool; }
 
 private:
     // id
@@ -303,6 +305,7 @@ private:
     QString m_expressionNonlinear;
     // timedep
     bool m_isTimeDep;
+    bool m_isBool;
 };
 
 // boundary condition type variable

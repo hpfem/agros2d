@@ -397,8 +397,12 @@ QList<Module::MaterialTypeVariable> FieldInfo::materialTypeVariables() const
                         if (qty.dependence().present())
                             isTimeDep = (QString::fromStdString(qty.dependence().get()) == "time");
 
+                        bool isBool = false;
+                        if(qty.type().present())
+                            isBool = (QString::fromStdString(qty.type().get()) == "bool");
+
                         materialTypeVariables.append(Module::MaterialTypeVariable(variable.id(), variable.shortname(),
-                                                                                  nonlinearExpression, isTimeDep));
+                                                                                        nonlinearExpression, isTimeDep, isBool));
                     }
                 }
             }
