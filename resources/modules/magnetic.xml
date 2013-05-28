@@ -112,17 +112,21 @@
         <module:matrix_form axi_linear="- 2 * PI * f * ma_gamma * uval * vval" axi_newton="- 2 * PI * f * ma_gamma * uval * vval" i="1" id="form" j="2" planar_linear="- 2 * PI * f * ma_gamma * uval * vval" planar_newton="- 2 * PI * f * ma_gamma * uval * vval"/>
         <module:matrix_form axi_linear="2 * PI * f * ma_gamma * uval * vval" axi_newton="2 * PI * f * ma_gamma * uval * vval" i="2" id="form" j="1" planar_linear="2 * PI * f * ma_gamma * uval * vval" planar_newton="2 * PI * f * ma_gamma * uval * vval"/>
 
-        <module:matrix_form i="1" j="4" axi_linear="0" axi_newton="0" planar_linear="- 2 * PI * f * ma_gamma * uval * vval" planar_newton="0" id="form"/>
-        <module:matrix_form i="2" j="3" axi_linear="0" axi_newton="0" planar_linear="2 * PI * f * ma_gamma * uval * vval" planar_newton="0" id="form"/>
-        <module:matrix_form i="3" j="1" axi_linear="0" axi_newton="0" planar_linear="uval" planar_newton="0" id="form"/>
-        <module:matrix_form i="4" j="2" axi_linear="0" axi_newton="0" planar_linear="uval" planar_newton="0" id="form"/>
-        <module:matrix_form i="3" j="3" axi_linear="0" axi_newton="0" planar_linear="1" planar_newton="0" id="form"/>
-        <module:matrix_form i="4" j="4" axi_linear="0" axi_newton="0" planar_linear="1" planar_newton="0" id="form"/>
+        <module:matrix_form i="1" j="4" axi_linear="0" axi_newton="0" planar_linear="- 2 * PI * f * ma_IPrescribed * ma_gamma * uval * vval" planar_newton="0" id="form"/>
+        <module:matrix_form i="2" j="3" axi_linear="0" axi_newton="0" planar_linear="2 * PI * f * ma_IPrescribed * ma_gamma * uval * vval" planar_newton="0" id="form"/>
+        <module:matrix_form i="3" j="1" axi_linear="0" axi_newton="0" planar_linear="-2 * PI * f * ma_gamma * ma_IPrescribed * uval" planar_newton="0" id="form"/>
+        <module:matrix_form i="4" j="2" axi_linear="0" axi_newton="0" planar_linear="2 * PI * f * ma_gamma * ma_IPrescribed * uval" planar_newton="0" id="form"/>
+        <module:matrix_form i="3" j="3" axi_linear="0" axi_newton="0" planar_linear="tern(ma_IPrescribed > 0, -2 * PI * f * ma_gamma, 1)" planar_newton="0" id="form"/>
+        <module:matrix_form i="4" j="4" axi_linear="0" axi_newton="0" planar_linear="tern(ma_IPrescribed > 0, 2 * PI * f * ma_gamma, 1)" planar_newton="0" id="form"/>
 
         <module:vector_form axi_linear="ma_Jer * vval - mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdr + cos((ma_Bra/180*PI)) * vdz)" axi_newton="1 / (ma_mur * MU0) * (updr * vdr + updz * vdz + upval * vdr / r) - ma_gamma * upval * ma_vy * vdz -ma_Jer * vval + mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdr + cos((ma_Bra/180*PI)) * vdz)" i="1" id="form" j="1" planar_linear="ma_Jer * vval + mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdx + cos((ma_Bra/180*PI)) * vdy)" planar_newton="1 / (ma_mur * MU0) * (updx * vdx + updy * vdy) - ma_gamma * upval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy) - ma_Jer * vval - mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdx + cos((ma_Bra/180*PI)) * vdy)"/>
         <module:vector_form axi_linear="ma_Jei * vval" axi_newton="1 / (ma_mur * MU0) * (updr * vdr + updz * vdz + upval * vdr / r) - ma_gamma * upval * ma_vy * vdz - ma_Jei * vval" i="2" id="form" j="2" planar_linear="ma_Jei * vval" planar_newton="1 / (ma_mur * MU0) * (updx * vdx + updy * vdy) - ma_gamma * upval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy) - ma_Jei * vval"/>
         <module:vector_form axi_linear="0" axi_newton="- 2 * PI * f * ma_gamma * upval * vval" i="1" id="form" j="2" planar_linear="0" planar_newton="- 2 * PI * f * ma_gamma * upval * vval"/>
         <module:vector_form axi_linear="0" axi_newton="2 * PI * f * ma_gamma * upval * vval" i="2" id="form" j="1" planar_linear="0" planar_newton="2 * PI * f * ma_gamma * upval * vval"/>
+
+        <module:vector_form i="3" j="3" axi_linear="0" axi_newton="0" planar_linear="ma_IPrescribed * ma_Iti" planar_newton="0" id="form"/>
+        <module:vector_form i="4" j="4" axi_linear="0" axi_newton="0" planar_linear="ma_IPrescribed * ma_Itr" planar_newton="0" id="form"/>
+
       </module:weakform_volume>
     </module:weakforms_volume>
   </module:volume>

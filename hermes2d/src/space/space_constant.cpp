@@ -16,8 +16,6 @@ namespace Hermes
     template<typename Scalar>
     void ConstSpace<Scalar>::init(Shapeset* shapeset)
     {
-        std::cout << "ConstSpace::init()" << std::endl;
-
         if(shapeset == NULL)
       {
         this->shapeset = new L2Shapeset;
