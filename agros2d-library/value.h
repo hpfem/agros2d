@@ -44,7 +44,7 @@ public:
     ~Value();
 
     // expression
-    inline double number() { assert(m_isEvaluated); return m_number; }
+    inline double number() const { assert(m_isEvaluated); return m_number; }
     double numberAtPoint(const Point &point, bool evaluate = true);
     double numberAtTime(double time, bool evaluate = true);
     double numberAtTimeAndPoint(double time, const Point &point, bool evaluate = true);

@@ -362,6 +362,8 @@ QList<Module::MaterialTypeVariable> FieldInfo::materialTypeVariables() const
                         XMLModule::quantity quant_ui = grp.quantity().at(i);
                         if ((quant_ui.id() == quant.id()) && quant_ui.default_().present())
                             quant.default_().set(quant_ui.default_().get());
+                        if ((quant_ui.id() == quant.id()) && quant_ui.is_bool().present())
+                            quant.is_bool().set(quant_ui.is_bool().get());
                     }
                 }
             }
@@ -397,12 +399,8 @@ QList<Module::MaterialTypeVariable> FieldInfo::materialTypeVariables() const
                         if (qty.dependence().present())
                             isTimeDep = (QString::fromStdString(qty.dependence().get()) == "time");
 
-                        bool isBool = false;
-                        if(qty.type().present())
-                            isBool = (QString::fromStdString(qty.type().get()) == "bool");
-
                         materialTypeVariables.append(Module::MaterialTypeVariable(variable.id(), variable.shortname(),
-                                                                                        nonlinearExpression, isTimeDep, isBool));
+                                                                                  nonlinearExpression, isTimeDep, variable.isBool()));
                     }
                 }
             }

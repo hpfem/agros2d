@@ -145,11 +145,17 @@ void SceneFieldWidget::createContent()
                 ids.append(row.id());
 
                 // label
-                labels.append(new QLabel(QString("%1 (%2):").
-                                         arg(row.shortnameHtml()).
-                                         arg(row.unitHtml())));
-                labels.at(labels.count() - 1)->setToolTip(row.name());
-                labels.at(labels.count() - 1)->setMinimumWidth(100);
+                if(textEdit->isBool())
+                {
+                    labels.append(new QLabel(row.name()));
+                }
+                else{
+                    labels.append(new QLabel(QString("%1 (%2):").
+                                             arg(row.shortnameHtml()).
+                                             arg(row.unitHtml())));
+                    labels.at(labels.count() - 1)->setToolTip(row.name());
+                    labels.at(labels.count() - 1)->setMinimumWidth(100);
+                }
 
                 // text edit
                 values.append(textEdit);
@@ -158,8 +164,17 @@ void SceneFieldWidget::createContent()
                 conditions.append(row.condition());
 
                 int index = layoutGroup->rowCount();
-                layoutGroup->addWidget(labels.at(labels.count() - 1), index, 0);
-                layoutGroup->addWidget(values.at(values.count() - 1), index, 1);
+                if(values.at(values.count() - 1)->isBool())
+                {
+                    values.at(values.count() - 1)->setTitle(row.name());
+                    layoutGroup->addWidget(values.at(values.count() - 1), index, 0,1,2);
+                    //layoutGroup->addWidget(labels.at(labels.count() - 1), index, 1);
+                }
+                else
+                {
+                    layoutGroup->addWidget(labels.at(labels.count() - 1), index, 0);
+                    layoutGroup->addWidget(values.at(values.count() - 1), index, 1);
+                }
             }
         }
 
@@ -196,7 +211,8 @@ ValueLineEdit *SceneFieldWidgetMaterial::addValueEditWidget(const Module::Dialog
         {
             ValueLineEdit *edit = new ValueLineEdit(this,
                                                     (variable.isTimeDep() && m_material->fieldInfo()->analysisType() == AnalysisType_Transient),
-                                                    (variable.isNonlinear() && m_material->fieldInfo()->linearityType() != LinearityType_Linear));
+                                                    (variable.isNonlinear() && m_material->fieldInfo()->linearityType() != LinearityType_Linear),
+                                                    variable.isBool());
             if (variable.isNonlinear())
             {
                 edit->setTitle(row.name());

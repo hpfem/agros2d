@@ -489,8 +489,10 @@ Module::MaterialTypeVariable::MaterialTypeVariable(XMLModule::quantity quant)
     if (quant.default_().present())
         m_defaultValue = quant.default_().get();
 
-    if (quant.type().present())
-        m_isBool = (QString::fromStdString(quant.type().get()) == "bool");
+    if (quant.is_bool().present())
+    {
+        m_isBool = (QString::fromStdString(quant.is_bool().get()) == "true");
+    }
 }
 
 // ***********************************************************************************************

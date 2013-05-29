@@ -279,7 +279,7 @@ struct MaterialTypeVariable
     MaterialTypeVariable(const QString &id, const QString &shortname,
                          const QString &expressionNonlinear = "", bool isTimedep = false, bool isBool = false)
         : m_id(id), m_shortname(shortname),
-          m_expressionNonlinear(expressionNonlinear), m_isTimeDep(isTimedep), m_isBool(isBool) {}
+          m_expressionNonlinear(expressionNonlinear), m_isTimeDep(isTimedep), m_isBool(isBool){}
     MaterialTypeVariable(XMLModule::quantity quant);
 
     // id

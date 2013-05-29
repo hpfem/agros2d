@@ -351,7 +351,7 @@
                         <attribute name="unit" type="string" />
                         <attribute name="unit_html" type="string" />
                         <attribute name="unit_latex" type="string" />
-                        <attribute name="type" type="string" />
+                        <attribute name="is_bool" type="string" />
                         <attribute name="only_if" type="string" />
 
                 </complexType>

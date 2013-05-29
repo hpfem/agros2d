@@ -183,7 +183,7 @@
       <module:group name="Source">
         <module:quantity id="magnetic_current_density_external_real" name="Current dens. - ext. - real" shortname="Jer" shortname_html="&lt;i>J&lt;/i>&lt;sub>r,ext&lt;/sub>" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
         <module:quantity id="magnetic_current_density_external_imag" name="Current dens. - ext. - imag" shortname="Jei" shortname_html="&lt;i>J&lt;/i>&lt;sub>i,ext&lt;/sub>" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
-        <module:quantity type="bool" id="magnetic_total_current_prescribed" name="Total current prescribed" shortname="IPrescribed" shortname_html="IPrescribed" unit="-" unit_html="-" unit_latex="-"/>
+        <module:quantity is_bool="true" id="magnetic_total_current_prescribed" name="Total current prescribed" shortname="IPrescribed" shortname_html="IPrescribed" unit="-" unit_html="-" unit_latex="-"/>
         <module:quantity only_if="magnetic_total_current_prescribed" id="magnetic_total_current_real" name="Total current - real" shortname="Itr" shortname_html="Itr" unit="A" unit_html="A" unit_latex="A"/>
         <module:quantity only_if="magnetic_total_current_prescribed" id="magnetic_total_current_imag" name="Total current - imag" shortname="Iti" shortname_html="Iti" unit="A" unit_html="A" unit_latex="A"/>
       </module:group>
