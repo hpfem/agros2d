@@ -159,21 +159,22 @@ void SceneFieldWidget::createContent()
 
                 // text edit
                 values.append(textEdit);
-                values.at(values.count() - 1)->setValue(Value(QString::number(row.defaultValue())));
+                textEdit->setValue(Value(QString::number(row.defaultValue())));
 
                 conditions.append(row.condition());
 
                 int index = layoutGroup->rowCount();
-                if(values.at(values.count() - 1)->isBool())
+                if(textEdit->isBool())
                 {
-                    values.at(values.count() - 1)->setTitle(row.name());
-                    layoutGroup->addWidget(values.at(values.count() - 1), index, 0,1,2);
-                    //layoutGroup->addWidget(labels.at(labels.count() - 1), index, 1);
+                    textEdit->setTitle(row.name());
+                    layoutGroup->addWidget(textEdit, index, 0,1,2);
+                    connect(textEdit, SIGNAL(enableFields(QString, bool)), this, SIGNAL(enableFields(QString, bool)));
                 }
                 else
                 {
                     layoutGroup->addWidget(labels.at(labels.count() - 1), index, 0);
-                    layoutGroup->addWidget(values.at(values.count() - 1), index, 1);
+                    layoutGroup->addWidget(textEdit, index, 1);
+                    connect(this, SIGNAL(enableFields(QString, bool)), textEdit, SLOT(doEnableFields(QString, bool)));
                 }
             }
         }
@@ -212,7 +213,7 @@ ValueLineEdit *SceneFieldWidgetMaterial::addValueEditWidget(const Module::Dialog
             ValueLineEdit *edit = new ValueLineEdit(this,
                                                     (variable.isTimeDep() && m_material->fieldInfo()->analysisType() == AnalysisType_Transient),
                                                     (variable.isNonlinear() && m_material->fieldInfo()->linearityType() != LinearityType_Linear),
-                                                    variable.isBool());
+                                                    variable.isBool(), variable.id(), variable.onlyIf());
             if (variable.isNonlinear())
             {
                 edit->setTitle(row.name());

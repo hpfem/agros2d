@@ -32,13 +32,15 @@
 #include "pythonlab/pythonengine_agros.h"
 
 
-ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin, bool isBool)
+ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin, bool isBool, QString id, QString onlyIf)
     : QWidget(parent), m_hasTimeDep(hasTimeDep), m_hasNonlin(hasNonlin),
       m_minimum(-numeric_limits<double>::max()),
       m_minimumSharp(-numeric_limits<double>::max()),
       m_maximum(numeric_limits<double>::max()),
       m_maximumSharp(numeric_limits<double>::max()),
       m_isBool(isBool),
+      m_id(id),
+      m_onlyIf(onlyIf),
       txtLineEdit(NULL),
       chkCheckBox(NULL)
 {
@@ -49,6 +51,7 @@ ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin, b
     {
         chkCheckBox = new QCheckBox(title(), this);
         connect(chkCheckBox, SIGNAL(stateChanged(int)), this, SLOT(evaluate()));
+        connect(chkCheckBox, SIGNAL(stateChanged(int)), this, SLOT(doCheckBoxStateChanged(int)));
     }
     else{
 
@@ -158,6 +161,21 @@ Value ValueLineEdit::value()
         return Value(int(chkCheckBox->isChecked()));
     else
         return Value(txtLineEdit->text(), m_table);
+}
+
+void ValueLineEdit::doCheckBoxStateChanged(int state)
+{
+    emit enableFields(m_id, state);
+}
+
+void ValueLineEdit::doEnableFields(QString id, bool checked)
+{
+    if(m_onlyIf == id)
+    {
+        assert(txtLineEdit);
+        assert(! m_isBool);
+        txtLineEdit->setEnabled(checked);
+    }
 }
 
 bool ValueLineEdit::evaluate(bool quiet)

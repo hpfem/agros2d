@@ -34,7 +34,7 @@ class ValueLineEdit : public QWidget
     Q_OBJECT
 
 public:
-    ValueLineEdit(QWidget *parent = 0, bool hasTimeDep = false, bool hasNonlin = false, bool isBool = false);
+    ValueLineEdit(QWidget *parent = 0, bool hasTimeDep = false, bool hasNonlin = false, bool isBool = false, QString id = QString(), QString onlyIf = QString());
     ~ValueLineEdit();
 
     double number();
@@ -56,15 +56,24 @@ public:
     inline void setLabelY(const QString &labelY) { m_labelY = labelY; }
     inline QString labelY() const { return m_labelY; }
     inline bool isBool() const {return m_isBool; }
+    inline QString id() const {return m_id; }
 
 public slots:
     bool evaluate(bool quiet = true);
     bool checkCondition(double value);
 
+    void doCheckBoxStateChanged(int state);
+
+    // for the case of text fields. Check value of QString against only_if from xml
+    void doEnableFields(QString id, bool checked);
+
 signals:
     void editingFinished();
     void textChanged(QString);
     void evaluated(bool isError);
+
+    // for the case of bool (checkbox). If state changed, emits its id and state
+    void enableFields(QString id, bool checked);
 
 protected:
     virtual QSize sizeHint() const;
@@ -73,6 +82,9 @@ protected:
 private:
     // if isBool, it is shown as checkbox, value is 0 or 1
     bool m_isBool;
+    // textbox enabled only if checkbox with this id is checked
+    QString m_onlyIf;
+    QString m_id;
 
     double m_minimum;
     double m_minimumSharp;
