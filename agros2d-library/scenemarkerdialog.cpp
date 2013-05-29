@@ -194,6 +194,12 @@ void SceneFieldWidget::createContent()
         }
     }
 
+    foreach(ValueLineEdit* valueLineEdit, values)
+    {
+        if(valueLineEdit->isBool())
+            valueLineEdit->doCheckBoxStateChanged();
+    }
+
     refresh();
 }
 

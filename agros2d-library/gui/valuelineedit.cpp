@@ -51,7 +51,7 @@ ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin, b
     {
         chkCheckBox = new QCheckBox(title(), this);
         connect(chkCheckBox, SIGNAL(stateChanged(int)), this, SLOT(evaluate()));
-        connect(chkCheckBox, SIGNAL(stateChanged(int)), this, SLOT(doCheckBoxStateChanged(int)));
+        connect(chkCheckBox, SIGNAL(stateChanged(int)), this, SLOT(doCheckBoxStateChanged()));
     }
     else{
 
@@ -163,9 +163,9 @@ Value ValueLineEdit::value()
         return Value(txtLineEdit->text(), m_table);
 }
 
-void ValueLineEdit::doCheckBoxStateChanged(int state)
+void ValueLineEdit::doCheckBoxStateChanged()
 {
-    emit enableFields(m_id, state);
+    emit enableFields(m_id, chkCheckBox->isChecked());
 }
 
 void ValueLineEdit::doEnableFields(QString id, bool checked)

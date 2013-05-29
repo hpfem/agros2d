@@ -62,7 +62,7 @@ public slots:
     bool evaluate(bool quiet = true);
     bool checkCondition(double value);
 
-    void doCheckBoxStateChanged(int state);
+    void doCheckBoxStateChanged();
 
     // for the case of text fields. Check value of QString against only_if from xml
     void doEnableFields(QString id, bool checked);
