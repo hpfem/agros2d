@@ -133,6 +133,7 @@ void PythonEngine::init()
     connect(this, SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
 
     // init python
+    PyEval_InitThreads();
     Py_Initialize();
 
     // read pythonlab functions
@@ -259,7 +260,9 @@ ScriptResult PythonEngine::runScript(const QString &script, const QString &fileN
 }
 
 ExpressionResult PythonEngine::runExpression(const QString &expression, bool returnValue)
-{
+{    
+    // PyGILState_STATE gstate = PyGILState_Ensure();
+
     runPythonHeader();
 
     QString exp;
@@ -322,6 +325,9 @@ ExpressionResult PythonEngine::runExpression(const QString &expression, bool ret
         expressionResult.traceback = error.traceback;
     }
     Py_XDECREF(output);
+
+    // release the thread, no Python API allowed beyond this point
+    // PyGILState_Release(gstate);
 
     emit executedExpression();
 

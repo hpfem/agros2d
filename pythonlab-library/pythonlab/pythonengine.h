@@ -60,8 +60,8 @@ private slots:
 
 private:
     QString m_stdOut;
-
-    QString m_functions;
+    QString m_functions;   
+    QMutex m_mutex;
 };
 
 // create custom python engine

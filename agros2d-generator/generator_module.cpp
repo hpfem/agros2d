@@ -1292,13 +1292,12 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
 
                     if (linearityType == LinearityType_Linear || nonlinearExpr.isEmpty())
                     {
-                        // if (dep.isEmpty())
+                        if (dep.isEmpty())
                         {
                             // linear material
                             dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->number()").
                                     arg(QString::fromStdString(quantity.shortname().get()));
                         }
-                        /*
                         else if (dep == "time")
                         {
                             // linear boundary condition
@@ -1317,7 +1316,6 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
                             dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtTimeAndPoint(Agros2D::problem()->actualTime(), Point(x, y))").
                                     arg(QString::fromStdString(quantity.shortname().get()));
                         }
-                        */
                     }
                     else
                     {
@@ -1502,13 +1500,32 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
         {
             if (quantity.shortname().present())
             {
+                QString dep = dependence(QString::fromStdString(quantity.id()), analysisType);
                 QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), analysisType, coordinateType);
 
                 if (linearityType == LinearityType_Linear || nonlinearExpr.isEmpty())
                 {
-                    // linear material
-                    dict[QString::fromStdString(quantity.shortname().get())] = QString("material->value(\"%1\").number()").
-                            arg(QString::fromStdString(quantity.id()));
+                    if (dep.isEmpty())
+                    {
+                        // linear material
+                        dict[QString::fromStdString(quantity.shortname().get())] = QString("material->value(\"%1\").number()").
+                                arg(QString::fromStdString(quantity.id()));
+                    }
+                    else if (dep == "time")
+                    {
+                        // timedep boundary condition
+                        dict[QString::fromStdString(quantity.shortname().get())] = generator.value();
+                    }
+                    else if (dep == "space")
+                    {
+                        // spacedep boundary condition
+                        dict[QString::fromStdString(quantity.shortname().get())] = generator.value();
+                    }
+                    else if (dep == "time-space")
+                    {
+                        // spacedep boundary condition
+                        dict[QString::fromStdString(quantity.shortname().get())] = generator.value();
+                    }
                 }
                 else
                 {
@@ -1525,11 +1542,16 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
             {
                 QString dep = dependence(QString::fromStdString(quantity.id()), analysisType);
 
-                if (dep.isEmpty() || dep == "time")
+                if (dep.isEmpty())
                 {
                     // linear boundary condition
                     dict[QString::fromStdString(quantity.shortname().get())] = QString("boundary->value(\"%1\").number()").
                             arg(QString::fromStdString(quantity.id()));
+                }
+                else if (dep == "time")
+                {
+                    // timedep boundary condition
+                    dict[QString::fromStdString(quantity.shortname().get())] = generator.value();
                 }
                 else if (dep == "space")
                 {
