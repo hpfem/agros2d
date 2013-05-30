@@ -1,5 +1,5 @@
-Editing Geometry
-================
+Preprocessor
+============
 
 Modes of Geometry Editing
 -------------------------
@@ -10,7 +10,7 @@ When editing geometry it is necessary to switch between the three basic modes.
 * Operations on edges
 * Operations on labels
 
-To switch between different modes you can use the corresponding items in the menu "Problem" or key F5 (Operate on nodes), F6 (Operate on edges) and F7 (Operate on labels).
+To switch between different modes you can use the corresponding items in the toolbar.
 
 Adding Components of Geometry
 -----------------------------
@@ -22,7 +22,7 @@ Nodes are basic elements for creating the geometry of the solved problem. You ha
 
 * Enter the coordinates directly
 
-  Select "Add node..." in the menu "Problem" (submenu "Add"), or by pressing Alt+N and entering the nodes coordinates.
+  Select "New node..." in the menu "Problem" (submenu "Add"), or press Alt+N and enter the new node coordinates. It is also possible to choose the item "New node" from the context menu. 
 
 * Use the mouse
 
@@ -39,7 +39,7 @@ To add an edge you must have at least two nodes in the geometry. You can add the
 
 * Use the coordinates of existing nodes
 
-  Select "Add edge..." in the menu "Problem" (submenu "Add"), or by pressing Alt+E and selecting start and end nodes coordinates.
+  Select "New edge..." in the menu "Problem" (submenu "Add"), or by pressing Alt+E and selecting start and end nodes coordinates.
 
 * Use the mouse
 
@@ -54,7 +54,7 @@ Labels are used to define individual areas. To add a label you can use the same 
 
 * Use both previous methods together,
 
-* Use both previous methods together.
+
 
 Editing Parameters of Existing Components
 -----------------------------------------
@@ -64,7 +64,7 @@ You can double left click on the requested element (node, edge, and label) for e
 Tips
 ----
 
-For easy creation of geometry you can use function snap to grid. You can also view rules in the workspace. Both options can be found under "View" in the aplication settings.
+For easy creation of geometry you can use function snap to grid.  You can also view rules in the workspace. Both options can be found under "View" in the aplication settings.
 
 Some operations can also be found in the context menu accessible by right clicking on the workspace or on the panel "Problem".
 

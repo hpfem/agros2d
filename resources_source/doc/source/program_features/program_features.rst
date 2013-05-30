@@ -27,12 +27,6 @@ You can write your own functions to use in your scripts. If you write these func
 
 .. index:: Agros2D Collaboration Server
 
-Agros2D Collaboration Server
-----------------------------
-
-Agros2D have basic functionality for work in groups - Agros2D Collaboration Server. This server is used to sharing Agros2D data files (*.a2d, *.py) and its versioning. You can use public server http://agros2d.org/collaboration/ (this server is designed to free users sharing and for examples) or your private server.
-
-.. index:: Remote Control, agros2d-remote
 
 Remote Control
 --------------
@@ -59,7 +53,7 @@ You can use commands described in the section :ref:`scripting`.
 Import and Export geometry, mesh, images and solutions
 ------------------------------------------------------
 
-Agros2D has the option to export and import geometry in AutoCAD DXF format (based on `dxflib http://www.ribbonsoft.com/dxflib.html`_), mesh in Hermes2D mesh file format, images from workspace and solution results in `VTK <http://www.vtk.org/>`_ (Visualization Toolkit). This functionality is available in submenu "Import/Export" in menu "File".
+Agros2D has the option to export and import geometry in AutoCAD DXF format (based on `dxflib <http://www.ribbonsoft.com/dxflib.html>`_), mesh in Hermes2D mesh file format, images from workspace and solution results in `VTK <http://www.vtk.org/>`_ (Visualization Toolkit). This functionality is available in submenu "Import/Export" in menu "File".
 
 .. index:: Report
 

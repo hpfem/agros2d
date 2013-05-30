@@ -14,6 +14,7 @@ Introduction
 
    ./introduction/about_agros2d.rst
    ./compilation/windows.rst
+   ./compilation/linux.rst
 
 Getting Started
 ^^^^^^^^^^^^^^^
@@ -91,6 +92,11 @@ Links
 
 Indices and Tables
 ------------------
+.. toctree::
+   :maxdepth: 1
+    glossary.rst
 
 * :ref:`genindex`
 * :ref:`glossary`
+
+

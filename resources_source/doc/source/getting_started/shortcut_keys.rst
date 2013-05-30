@@ -4,30 +4,6 @@ Shortcut Keys
 Basic shortcuts in main window
 ------------------------------
 
-* **F4**
-
-  Open script editor.
-
-* **F5**
-
-  Change mode to Operate on nodes.
-
-* **F6**
-
-  Change mode to Operate on edges.
-
-* **F7**
-
-  Change mode to Operate on labels.
-
-* **F8**
-
-  Change mode to Postprocessor.
-
-* **F12**
-
-  Open Problem properties dialog.
-
 * **Alt+N**
 
   Add node using coordinates.
@@ -55,6 +31,11 @@ Basic shortcuts in main window
 * **Alt+S**
 
   Solve problem.
+  
+* **F9** 
+
+  Run PythonLab.
+
 
 Basic shortcuts in script editor
 --------------------------------
@@ -71,9 +52,11 @@ Basic shortcuts in script editor
 
   Uncoment selected code.
 
-* **Alt+G**
+* **Alt+C**
 
-  Go to line.
+  Check Python script, the PyLint is used.
+  
+ 
 
 Advanced shortcuts
 ------------------
