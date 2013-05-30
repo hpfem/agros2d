@@ -1350,7 +1350,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
                     else if (dep == "time")
                     {
                         // linear boundary condition
-                        dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtTime(Agros2D::problem()->actualTime())").
+                        dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtTime(Agros2D::problem()->actualTime(), false)").
                                 arg(QString::fromStdString(quantity.shortname().get()));
                     }
                     else if (dep == "space")
