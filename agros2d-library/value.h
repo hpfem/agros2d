@@ -45,11 +45,11 @@ public:
 
     // expression
     inline double number() { assert(m_isEvaluated); return m_number; }
-    double numberAtPoint(const Point &point);
-    double numberAtTime(double time);
-    double numberAtTimeAndPoint(double time, const Point &point);
+    double numberAtPoint(const Point &point, bool evaluate = true);
+    double numberAtTime(double time, bool evaluate);
+    double numberAtTimeAndPoint(double time, const Point &point, bool evaluate = true);
 
-    bool hasExpression();
+    bool isNumber();
     inline bool isTimeDependent() const { return m_isTimeDependent; }
     inline bool isCoordinateDependent() const { return m_isCoordinateDependent; }
 

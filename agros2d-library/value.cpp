@@ -74,12 +74,20 @@ Value::~Value()
     m_table.clear();
 }
 
-bool Value::hasExpression()
+bool Value::isNumber()
 {
-    bool isNumeric = false;
-    text().toDouble(&isNumeric);
+    bool isInt = false;
+    text().toInt(&isInt);
+    if (isInt)
+        return true;
 
-    return !isNumeric;
+    bool isDouble = false;
+    text().toDouble(&isDouble);
+
+    if (isDouble)
+        return true;
+
+    return false;
 }
 
 bool Value::hasTable() const
@@ -106,26 +114,29 @@ bool Value::evaluateAtTimeAndPoint(double time, const Point &point)
     return evaluate();
 }
 
-double Value::numberAtPoint(const Point &point)
+double Value::numberAtPoint(const Point &point, bool evaluate)
 {
     // force evaluate
-    evaluateAtPoint(point);
+    if (evaluate)
+        evaluateAtPoint(point);
 
     return number();
 }
 
-double Value::numberAtTime(double time)
+double Value::numberAtTime(double time, bool evaluate)
 {
     // force evaluate
-    evaluateAtTime(time);
+    if (evaluate)
+        evaluateAtTime(time);
 
     return number();
 }
 
-double Value::numberAtTimeAndPoint(double time, const Point &point)
+double Value::numberAtTimeAndPoint(double time, const Point &point, bool evaluate)
 {
     // force evaluate
-    evaluateAtTimeAndPoint(time, point);
+    if (evaluate)
+        evaluateAtTimeAndPoint(time, point);
 
     return number();
 }
@@ -241,10 +252,22 @@ bool Value::evaluate()
 
 bool Value::evaluateExpression(const QString &expression)
 {
-    // speed up
-    if ((expression == "0") || (expression == "0.0"))
+    // speed up - int number
+    bool isInt = false;
+    double numInt = expression.toInt(&isInt);
+    if (isInt)
     {
-        m_number = 0.0;
+        m_number = numInt;
+        m_isEvaluated = true;
+        return true;
+    }
+
+    // speed up - double number
+    bool isDouble = false;
+    double numDouble = expression.toDouble(&isDouble);
+    if (isDouble)
+    {
+        m_number = numDouble;
         m_isEvaluated = true;
         return true;
     }

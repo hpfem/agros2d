@@ -261,6 +261,8 @@ ScriptResult PythonEngine::runScript(const QString &script, const QString &fileN
 
 ExpressionResult PythonEngine::runExpression(const QString &expression, bool returnValue)
 {    
+    ExpressionResult expressionResult;
+
     // PyGILState_STATE gstate = PyGILState_Ensure();
 
     runPythonHeader();
@@ -271,60 +273,63 @@ ExpressionResult PythonEngine::runExpression(const QString &expression, bool ret
     else
         exp = expression;
 
-    PyObject *output = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
-
-    ExpressionResult expressionResult;
-    if (output)
+#pragma omp atomic
     {
-        PyObject *type = NULL, *value = NULL, *traceback = NULL, *str = NULL;
-        PyErr_Fetch(&type, &value, &traceback);
+        PyObject *output = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
 
-        if (type != NULL && (str = PyObject_Str(type)) != NULL && (PyString_Check(str)))
+        if (output)
         {
-            Py_INCREF(str);
-            expressionResult.error = PyString_AsString(str);
-            Py_XDECREF(type);
-            Py_XDECREF(str);
+            PyObject *type = NULL, *value = NULL, *traceback = NULL, *str = NULL;
+            PyErr_Fetch(&type, &value, &traceback);
+
+            if (type != NULL && (str = PyObject_Str(type)) != NULL && (PyString_Check(str)))
+            {
+                Py_INCREF(str);
+                expressionResult.error = PyString_AsString(str);
+                Py_XDECREF(type);
+                Py_XDECREF(str);
+            }
+            else
+            {
+                // parse result
+                if (returnValue)
+                {
+                    PyObject *result = PyDict_GetItemString(m_dict, "result_pythonlab");
+
+
+                    if (result)
+                    {
+                        if ((QString(result->ob_type->tp_name) == "bool") ||
+                                (QString(result->ob_type->tp_name) == "int") ||
+                                (QString(result->ob_type->tp_name) == "float"))
+                        {
+                            Py_INCREF(result);
+                            PyArg_Parse(result, "d", &expressionResult.value);
+                            if (fabs(expressionResult.value) < EPS_ZERO)
+                                expressionResult.value = 0.0;
+                            Py_XDECREF(result);
+                        }
+                        else
+                        {
+                            qDebug() << tr("Type '%1' is not supported.").arg(result->ob_type->tp_name).arg(expression);
+                            expressionResult.error = tr("Type '%1' is not supported.").arg(result->ob_type->tp_name);
+                            expressionResult.value = 0.0;
+                        }
+                    }
+
+                    PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
+                }
+            }
         }
         else
         {
-            // parse result
-            if (returnValue)
-            {
-                PyObject *result = PyDict_GetItemString(m_dict, "result_pythonlab");
-
-
-                if (result)
-                {
-                    if ((QString(result->ob_type->tp_name) == "bool") ||
-                            (QString(result->ob_type->tp_name) == "int") ||
-                            (QString(result->ob_type->tp_name) == "float"))
-                    {
-                        Py_INCREF(result);
-                        PyArg_Parse(result, "d", &expressionResult.value);
-                        if (fabs(expressionResult.value) < EPS_ZERO)
-                            expressionResult.value = 0.0;
-                        Py_XDECREF(result);
-                    }
-                    else
-                    {
-                        qDebug() << tr("Type '%1' is not supported.").arg(result->ob_type->tp_name).arg(expression);
-                        expressionResult.error = tr("Type '%1' is not supported.").arg(result->ob_type->tp_name);
-                        expressionResult.value = 0.0;
-                    }
-                }
-
-                PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
-            }
+            ScriptResult error = parseError();
+            expressionResult.error = error.text;
+            expressionResult.traceback = error.traceback;
         }
+        Py_XDECREF(output);
+
     }
-    else
-    {
-        ScriptResult error = parseError();
-        expressionResult.error = error.text;
-        expressionResult.traceback = error.traceback;
-    }
-    Py_XDECREF(output);
 
     // release the thread, no Python API allowed beyond this point
     // PyGILState_Release(gstate);

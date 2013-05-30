@@ -7,8 +7,8 @@ problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 problem.time_step_method = "fixed"
 problem.time_method_order = 2
-problem.time_total = 0.8
-problem.time_steps = 20
+problem.time_total = 0.56
+problem.time_steps = 30
 
 # disable view
 agros2d.view.mesh.initial_mesh = False
@@ -22,14 +22,13 @@ agros2d.view.post2d.vectors = False
 magnetic = agros2d.field("magnetic")
 magnetic.analysis_type = "transient"
 magnetic.initial_condition = 0
-magnetic.number_of_refinements = 1
-magnetic.polynomial_order = 3
+magnetic.number_of_refinements = 3
+magnetic.polynomial_order = 2
 magnetic.adaptivity_type = "disabled"
 magnetic.linearity_type = "linear"
 
 # boundaries
 magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
-
 
 # materials
 magnetic.add_material("Air", {"magnetic_permeability" : 1, "magnetic_conductivity" : 0, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0, "magnetic_velocity_angular" : 0, "magnetic_current_density_external_real" : 0})
@@ -61,21 +60,19 @@ agros2d.view.zoom_best_fit()
 problem.solve()
 
 # point value
-point = magnetic.local_values(6.447965e-4, 9.432763e-5)
-testA = agros2d.test("Magnetic potential", point["Ar"], 7.574698e-9)
-testB = agros2d.test("Flux density", point["Br"], 7.107446e-6)
-testBx = agros2d.test("Flux density - x", point["Brr"], -3.451261e-6)
-testBy = agros2d.test("Flux density - y", point["Brz"], 6.213259e-6)
-testH = agros2d.test("Magnetic intensity", point["Hr"], 5.655926)
-testHx = agros2d.test("Magnetic intensity - x", point["Hrr"], -2.746426)
-testHy = agros2d.test("Magnetic intensity - y", point["Hrz"], 4.944354)
-testwm = agros2d.test("Energy density", point["wm"], 2.009959e-5)
-# testpj = agros2d.test("Losses density ", point["pj"], 63.874077)
-testpj = True
-testJer = agros2d.test("Current density - external", point["Je"], 2.5e5)
-# testJit = agros2d.test("Current density - induced transform", point["Jit"], -1.896608e5)
-testJitr = True
-# testJ = agros2d.test("Current density - total", point["Jr"], 60339.227467)
+point = magnetic.local_values(5.340e-02, -2.316e-02)
+testA = agros2d.test("Magnetic potential", point["Ar"], 7.830640839521959E-6)
+testB = agros2d.test("Flux density", point["Br"], 2.0742379689501055E-4)
+testBx = agros2d.test("Flux density - x", point["Brr"], 3.791088712073871E-5	)
+testBy = agros2d.test("Flux density - y", point["Brz"], 2.039298796447353E-4)
+testH = agros2d.test("Magnetic intensity", point["Hr"], 	165.06261295365127)
+testHx = agros2d.test("Magnetic intensity - x", point["Hrr"], 30.16852541132219)
+testHy = agros2d.test("Magnetic intensity - y", point["Hrz"], 162.28224194797457)
+testwm = agros2d.test("Energy density", point["wm"], 0.01711895704528477)
+testpj = agros2d.test("Losses density ", point["pj"], 0.6091562433085815)
+testJer = agros2d.test("Current density - external", point["Je"], 0.0)
+testJit = agros2d.test("Current density - induced transform", point["Jitr"], 5892.529666330849)
+testJ = agros2d.test("Current density - total", point["Jr"], 5892.529666330849)
 testJr = True
 
 # volume integral

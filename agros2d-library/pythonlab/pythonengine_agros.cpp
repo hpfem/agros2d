@@ -355,7 +355,7 @@ QString createPythonFromModel(StartupScript_Type startupScript)
             {
                 Value value = values[variable.id()];
 
-                if (value.hasExpression() && startupScript == StartupScript_Variable)
+                if (!value.isNumber() && startupScript == StartupScript_Variable)
                 {
                     variables += QString("\"%1\" : { \"expression\" : \"%2\" }, ").
                             arg(variable.id()).
@@ -391,7 +391,7 @@ QString createPythonFromModel(StartupScript_Type startupScript)
 
                 if (value.hasTable())
                 {
-                    if (value.hasExpression())
+                    if (!value.isNumber())
                         variables += QString("\"%1\" : { \"expression\" : \"%2\", \"x\" : [%3], \"y\" : [%4] }, ").
                                 arg(variable.id()).
                                 arg(value.text()).
@@ -407,7 +407,7 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                                 arg(value.table().extrapolateConstant() == true ? "constant" : "linear").
                                 arg(value.table().splineFirstDerivatives() == true ? "first" : "second");
                 }
-                else if (value.hasExpression() && startupScript == StartupScript_Variable)
+                else if (!value.isNumber() && startupScript == StartupScript_Variable)
                 {
                     variables += QString("\"%1\" : { \"expression\" : \"%2\" }, ").
                             arg(variable.id()).

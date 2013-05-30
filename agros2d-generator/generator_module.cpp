@@ -1301,18 +1301,21 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
                         else if (dep == "time")
                         {
                             // linear boundary condition
-                            dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtTime(Agros2D::problem()->actualTime())").
+                            // ERROR: Python expression evaluation doesn't work from weakform ("false" should be removed)
+                            dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtTime(Agros2D::problem()->actualTime(), false)").
                                     arg(QString::fromStdString(quantity.shortname().get()));
                         }
                         else if (dep == "space")
                         {
                             // spacedep boundary condition
+                            // ERROR: Python expression evaluation doesn't work from weakform - ERROR
                             dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtPoint(Point(x, y))").
                                     arg(QString::fromStdString(quantity.shortname().get()));
                         }
                         else if (dep == "time-space")
                         {
                             // spacedep boundary condition
+                            // ERROR: Python expression evaluation doesn't work from weakform - ERROR
                             dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtTimeAndPoint(Agros2D::problem()->actualTime(), Point(x, y))").
                                     arg(QString::fromStdString(quantity.shortname().get()));
                         }

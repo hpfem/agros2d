@@ -7,52 +7,44 @@ problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 problem.time_step_method = "fixed"
 problem.time_method_order = 2
-problem.time_total = 2e-06
-problem.time_steps = 20
+problem.time_total = 0.4
+problem.time_steps = 100
 
-# disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
-
-# fields
+# magnetic
 magnetic = agros2d.field("magnetic")
 magnetic.analysis_type = "transient"
-magnetic.number_of_refinements = 1
-magnetic.polynomial_order = 3
+magnetic.initial_condition = 0
+magnetic.number_of_refinements = 3
+magnetic.polynomial_order = 2
+magnetic.adaptivity_type = "disabled"
 magnetic.linearity_type = "linear"
-magnetic.nonlinear_tolerance = 0.001
-magnetic.nonlinear_steps = 10
 
 # boundaries
 magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
-magnetic.add_boundary("Neumann", "magnetic_surface_current", {"magnetic_surface_current_real" : 0})
 
 # materials
-magnetic.add_material("Air", {"magnetic_permeability" : 1}) 
-magnetic.add_material("Cu", {"magnetic_permeability" : 1, "magnetic_conductivity" : 57e6, "magnetic_current_density_external_real" : { "expression" : "5e6*sin(2*pi*1.0/1e-06*time)*(time<1e-6)" }})
+magnetic.add_material("Copper", {"magnetic_permeability" : 1, "magnetic_conductivity" : 57e6, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0, "magnetic_velocity_angular" : 0, "magnetic_current_density_external_real" : 0})
+magnetic.add_material("Coil", {"magnetic_permeability" : 1, "magnetic_conductivity" : 0, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0, "magnetic_velocity_angular" : 0, "magnetic_current_density_external_real" : { "expression" : "1e7*(exp(-10/0.7*time) - exp(-12/0.7*time))" }})
+magnetic.add_material("Air", {"magnetic_permeability" : 1, "magnetic_conductivity" : 0, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0, "magnetic_velocity_angular" : 0, "magnetic_current_density_external_real" : 0})
 
 # geometry
 geometry = agros2d.geometry
+geometry.add_edge(-0.75, 0.75, -0.75, -0.25, boundaries = {"magnetic" : "A = 0"})
+geometry.add_edge(-0.75, 0.75, 0.75, 0.75, boundaries = {"magnetic" : "A = 0"})
+geometry.add_edge(0.75, 0.75, 0.75, -0.25, boundaries = {"magnetic" : "A = 0"})
+geometry.add_edge(0.75, -0.25, -0.75, -0.25, boundaries = {"magnetic" : "A = 0"})
+geometry.add_edge(-0.25, 0, 0.2, 0.05)
+geometry.add_edge(0.1, 0.2, 0.2, 0.05)
+geometry.add_edge(0.1, 0.2, -0.2, 0.1)
+geometry.add_edge(-0.2, 0.1, -0.25, 0)
+geometry.add_edge(-0.2, 0.2, -0.05, 0.25)
+geometry.add_edge(-0.05, 0.35, -0.05, 0.25)
+geometry.add_edge(-0.05, 0.35, -0.2, 0.35)
+geometry.add_edge(-0.2, 0.35, -0.2, 0.2)
 
-# edges
-geometry.add_edge(0, 0.002, 0, 0.000768, boundaries = {"magnetic" : "Neumann"})
-geometry.add_edge(0, 0.000768, 0, 0, boundaries = {"magnetic" : "Neumann"})
-geometry.add_edge(0, 0, 0.000768, 0, boundaries = {"magnetic" : "Neumann"})
-geometry.add_edge(0.000768, 0, 0.002, 0, boundaries = {"magnetic" : "Neumann"})
-geometry.add_edge(0.002, 0, 0, 0.002, 90, boundaries = {"magnetic" : "A = 0"})
-geometry.add_edge(0.000768, 0, 0.000576, 0.000192, 90)
-geometry.add_edge(0.000576, 0.000192, 0.000384, 0.000192)
-geometry.add_edge(0.000192, 0.000384, 0.000384, 0.000192, 90)
-geometry.add_edge(0.000192, 0.000576, 0.000192, 0.000384)
-geometry.add_edge(0.000192, 0.000576, 0, 0.000768, 90)
-
-# labels
-geometry.add_label(0.000585418, 0.00126858, 0, 0, materials = {"magnetic" : "Air"})
-geometry.add_label(0.000109549, 8.6116e-05, 0, 0, materials = {"magnetic" : "Cu"})
+geometry.add_label(0.1879, 0.520366, materials = {"magnetic" : "Air"})
+geometry.add_label(-0.15588, 0.306142, materials = {"magnetic" : "Coil"})
+geometry.add_label(-0.00331733, 0.106999, materials = {"magnetic" : "Copper"})
 
 agros2d.view.zoom_best_fit()
 
@@ -60,8 +52,8 @@ agros2d.view.zoom_best_fit()
 problem.solve()
 
 # point value
-point = magnetic.local_values(6.447965e-4,9.432763e-5)
-testA = agros2d.test("Magnetic potential", point["Ar"], 7.574698e-9)
+point = magnetic.local_values(2.809e-02, 1.508e-01)
+testA = agros2d.test("Magnetic potential", point["Ar"], 3.517010264009889E-4)
 testB = agros2d.test("Flux density", point["Br"], 7.107446e-6)
 testBx = agros2d.test("Flux density - x", point["Brx"], -3.451261e-6)
 testBy = agros2d.test("Flux density - y", point["Bry"], 6.213259e-6)
@@ -72,8 +64,7 @@ testwm = agros2d.test("Energy density", point["wm"], 2.009959e-5)
 # testpj = agros2d.test("Losses density ", point["pj"], 63.874077)
 testpj = True
 testJer = agros2d.test("Current density - external", point["Je"], 2.5e5)
-# testJit = agros2d.test("Current density - induced transform", point["Jit"], -1.896608e5)
-testJitr = True
+testJit = agros2d.test("Current density - induced transform", point["Jitr"], 35786.60644641997)
 # testJ = agros2d.test("Current density - total", point["Jr"], 60339.227467)
 testJr = True
 

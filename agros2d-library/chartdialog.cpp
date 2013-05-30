@@ -484,11 +484,10 @@ void ChartWidget::plotTime()
     QList<double> timeLevels = Agros2D::solutionStore()->timeLevels(fieldWidget->selectedField());
 
     // chart
-    m_chart->chart()->xAxis->setLabel(QString("%1 (%2)").
+    m_chart->chart()->xAxis->setLabel(tr("time (s)"));
+    m_chart->chart()->yAxis->setLabel(QString("%1 (%2)").
                                       arg(physicFieldVariable.name()).
                                       arg(physicFieldVariable.unit()));
-
-    m_chart->chart()->yAxis->setLabel(tr("time (s)"));
 
     // table
     QVector<double> xval;
