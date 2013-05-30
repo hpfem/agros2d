@@ -54,34 +54,38 @@ problem.solve()
 # point value
 point = magnetic.local_values(2.809e-02, 1.508e-01)
 testA = agros2d.test("Magnetic potential", point["Ar"], 3.517010264009889E-4)
-testB = agros2d.test("Flux density", point["Br"], 7.107446e-6)
-testBx = agros2d.test("Flux density - x", point["Brx"], -3.451261e-6)
-testBy = agros2d.test("Flux density - y", point["Bry"], 6.213259e-6)
-testH = agros2d.test("Magnetic intensity", point["Hr"], 5.655926)
-testHx = agros2d.test("Magnetic intensity - x", point["Hrx"], -2.746426)
-testHy = agros2d.test("Magnetic intensity - y", point["Hry"], 4.944354)
-testwm = agros2d.test("Energy density", point["wm"], 2.009959e-5)
-# testpj = agros2d.test("Losses density ", point["pj"], 63.874077)
-testpj = True
-testJer = agros2d.test("Current density - external", point["Je"], 2.5e5)
-testJit = agros2d.test("Current density - induced transform", point["Jitr"], 35786.60644641997)
-# testJ = agros2d.test("Current density - total", point["Jr"], 60339.227467)
-testJr = True
+testB = agros2d.test("Flux density", point["Br"], 0.00106)
+testBx = agros2d.test("Flux density - x", point["Brx"], 4.33925e-4)
+testBy = agros2d.test("Flux density - y", point["Bry"], 9.63006e-4)
+testH = agros2d.test("Magnetic intensity", point["Hr"], 840.53975)
+testHx = agros2d.test("Magnetic intensity - x", point["Hrx"], 345.30615)
+testHy = agros2d.test("Magnetic intensity - y", point["Hry"], 766.3359)
+testwm = agros2d.test("Energy density", point["wm"], 0.44391)
+testpj = agros2d.test("Losses density ", point["pj"], 22.46809)
+testJitr = agros2d.test("Current density - induced transform", point["Jitr"], 35786.60645)
+testJr = agros2d.test("Current density - total", point["Jr"], 35786.60645)
+testFlx = agros2d.test("Lorenz force - x", point["Flx"], -34.46272)
+testFly = agros2d.test("Lorenz force - y", point["Fly"], 15.52869)
+
 
 # volume integral
-volume = magnetic.volume_integrals([1])
-# testWm = agros2d.test("Energy", volume["Wm"], 2.252801e-12)
+volume = magnetic.volume_integrals([2])
+#testWm = agros2d.test("Energy", volume["Wm"], 0.01043)
 testWm = True
-# testPj = agros2d.test("Losses", volume["Pj"], 6.475219e-6)
-testPj = True
-testIer = agros2d.test("Current - external", volume["Ier"], 0.062534)
-# testIit = agros2d.test("Current - induced transform", volume["Iitr"], -0.054546)
-testIitr = True
-# testI = agros2d.test("Current - total", volume["Ir"], 0.007989)
-testIr = True
+testPj = agros2d.test("Losses", volume["Pj"], 0.58805)
+testIntFlx = agros2d.test("Lorentz force integral - x", volume["Flx"], -0.01287)
+testIntFlx = agros2d.test("Lorentz force integral - y", volume["Fly"], 0.22042)
+testIitr = agros2d.test("Current - induced transform", volume["Iitr"], 632.02006)
+testIr1 = agros2d.test("Current - total1", volume["Ir"], 632.02006)
+
+volumeSource = magnetic.volume_integrals([1])
+testIr2 = agros2d.test("Current - total2", volumeSource["Ir"], 421.23575)
+testIer = agros2d.test("Current - external", volumeSource["Ier"], 421.23575)
+
+
 
 # surface integral
 # surface = magnetic.surface_integrals([0])
 
-print("Test: Magnetic transient - planar: " + str(point and testA and testB and testBx and testBy and testH and testHx and testHy and testwm and testpj 
-and testJer and testJitr and testJr and testWm and testPj and testIer and testIitr and testIr))
+print("Test: Magnetic transient - planar: " + str(point and testA and testB and testBx and testBy and testH and testHx and testHy and testwm and testpj
+and testJitr and testJr and testFlx and testFly and testWm and testPj and testIer and testIitr and testIr1 and testIr2))
