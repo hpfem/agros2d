@@ -2,13 +2,13 @@ Source: agros2d
 Section: science
 Priority: extra
 Maintainer: Pavel Karban <pkarban@gmail.com>
-Build-Depends: debhelper (>= 7), qt4-dev-tools (>= 4.7.0), libqt4-dev (>= 4.7.0), libqt4-opengl-dev (>= 4.7.0), libqtwebkit-dev (>= 2.1), libsuitesparse-dev (>= 3.2.0), python2.7-dev (>= 2.7.0), libssl-dev (>= 0.9.8), xsdcxx (>= 3.3.0), libxerces-c-dev (>= 3.1.0)
+Build-Depends: debhelper (>= 7), qt4-dev-tools (>= 4.7.0), libqt4-dev (>= 4.7.0), libqt4-opengl-dev (>= 4.7.0), libqtwebkit-dev (>= 2.1), libsuitesparse-dev (>= 3.2.0), python2.7-dev (>= 2.7.0), libssl-dev (>= 0.9.8), xsdcxx (>= 3.3.0), libxerces-c-dev (>= 3.1.0), libgoogle-perftools-dev (>= 2.0)
 Standards-Version: 3.8.0
 Homepage: http://agros2d.org
 
 Package: agros2d
 Architecture: any
-Depends: ${shlibs:Depends}, triangle-bin (>= 1.6), gmsh (>= 2.5.0), libamd2.2.0 (>= 3.4.0), libumfpack5.4.0 (>= 3.4.0), libblas3gf (>= 1.2), libqt4-sql (>= 4.7.0), libqt4-sql-sqlite (>= 4.7.0), libqt4-network (>= 4.7.0), libqtwebkit4 (>= 2.1), libxerces-c3.1 (>= 3.1.0)
+Depends: ${shlibs:Depends}, triangle-bin (>= 1.6), gmsh (>= 2.5.0), libamd2.2.0 (>= 3.4.0), libumfpack5.4.0 (>= 3.4.0), libblas3gf (>= 1.2), libqt4-sql (>= 4.7.0), libqt4-sql-sqlite (>= 4.7.0), libqt4-network (>= 4.7.0), libqtwebkit4 (>= 2.1), libxerces-c3.1 (>= 3.1.0), libtcmalloc-minimal4 (>= 2.0)
 Description: hp-FEM multiphysics application based on Hermes2D library
  Agros2D is a multiplatform C++ application for the solution of two-dimensional 
  problems described by partial differential equations (PDE), based on the Hermes2D library. 
