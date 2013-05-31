@@ -82,7 +82,9 @@ LoopsInfo::LoopsNodeEdgeData LoopsInfo::LoopsNode::continueLoop(int previousNode
 
     int nextIdx = (index + 1) % data.size();
     //cout << "continue loop " << previousNode << ", " << data[nextIdx].node << endl;
-    assert(!data.at(nextIdx).visited);
+    // assert(!data.at(nextIdx).visited);
+    if (data.at(nextIdx).visited)
+        throw AgrosGeometryException(QObject::tr("Node %1 already visited.").arg(nextIdx));
     data[nextIdx].visited = true;
     return data[nextIdx];
 }
