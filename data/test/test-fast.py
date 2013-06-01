@@ -59,7 +59,7 @@ execfile("test_particle_tracing_planar.py")
 execfile("test_particle_tracing_axisymmetric.py")
 
 # adaptivity
-#execfile("test_adaptivity_acoustic.py")
+execfile("test_adaptivity_acoustic.py")
 execfile("test_adaptivity_electrostatic.py")
 
 # scripting
