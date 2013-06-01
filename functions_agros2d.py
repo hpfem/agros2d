@@ -9,6 +9,6 @@ def test(text, value, normal, error = 0.03):
         return True
     test = abs((value - normal)/value) < error
     if (not test):    
-        print(text + ": Agros2D: " + str(value) + ", correct: " + str(normal) + ")")
+        print(text + ": Agros2D: " + str(value) + ", correct: " + str(normal) + ", error: " + "{:.4f}".format(abs(value - normal)/value) + "%)")
     return test
 setattr(agros2d, "test", test)
