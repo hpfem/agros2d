@@ -85,5 +85,5 @@ testI = agros2d.test("Current - total", volume["Ir"], 965.8993026017961)
 # surface integral
 # surface = magnetic.surface_integrals([0])
 
-print("Test: Magnetic transient - planar: " + str(point and testA and testB and testBx and testBy and testH and testHx and testHy and testwm and testpj 
+print("Test: Magnetic transient - axisymmetric: " + str(point and testA and testB and testBx and testBy and testH and testHx and testHy and testwm and testpj 
 and testJer and testJitr and testJr and testWm and testPj and testIer and testIit and testI))
