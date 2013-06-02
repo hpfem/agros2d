@@ -31,6 +31,7 @@ namespace Hermes
   enum HermesCommonApiParam
   {
     exceptionsPrintCallstack,
+    numThreads,
     matrixSolverType
   };
 
@@ -64,6 +65,6 @@ namespace Hermes
   };
 
   /// Global instance used inside Hermes which is also accessible to users.
-  extern HERMES_API Hermes::Api HermesCommonApi;
+  HERMES_COMMON_API extern Hermes::Api HermesCommonApi;
 }
 #endif

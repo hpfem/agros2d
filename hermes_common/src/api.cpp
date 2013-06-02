@@ -31,7 +31,7 @@ namespace Hermes
     this->default_val = default_val;
     this->user_set = false;
   }
-
+  
   Api::Api()
   {
     signal(SIGABRT, CallStack::dump);
@@ -40,6 +40,7 @@ namespace Hermes
     signal(SIGSEGV, CallStack::dump);
     signal(SIGTERM, CallStack::dump);
 
+    this->parameters.insert(std::pair<HermesCommonApiParam, Parameter*> (Hermes::numThreads,new Parameter(NUM_THREADS)));
     this->parameters.insert(std::pair<HermesCommonApiParam, Parameter*> (Hermes::exceptionsPrintCallstack,new Parameter(0)));
     this->parameters.insert(std::pair<HermesCommonApiParam, Parameter*> (Hermes::matrixSolverType,new Parameter(SOLVER_UMFPACK)));
 
@@ -71,5 +72,9 @@ namespace Hermes
     this->parameters.find(param)->second->user_val = value;
   }
 
+#if defined(WIN32) || defined(_WINDOWS)
+  __declspec(dllexport) Hermes::Api HermesCommonApi;
+#else
   Hermes::Api HermesCommonApi;
+#endif
 }

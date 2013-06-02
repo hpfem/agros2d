@@ -41,11 +41,13 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 ../hermes_common/src/hermes_function.cpp \
                 ../hermes_common/src/exceptions.cpp \
                 ../hermes_common/src/mixins.cpp \
+                ../hermes_common/src/cs_matrix.cpp \
                 ../hermes_common/src/solvers/linear_matrix_solver.cpp \
                 ../hermes_common/src/solvers/epetra.cpp \
                 ../hermes_common/src/solvers/aztecoo_solver.cpp \
                 ../hermes_common/src/solvers/amesos_solver.cpp \
                 ../hermes_common/src/solvers/mumps_solver.cpp \
+                ../hermes_common/src/solvers/paralution_solver.cpp \
                 ../hermes_common/src/solvers/superlu_solver.cpp \
                 ../hermes_common/src/solvers/superlu_solver_real.cpp \
                 ../hermes_common/src/solvers/superlu_solver_cplx.cpp \
@@ -180,6 +182,15 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
         DEFINES += WITH_SUPERLU
         INCLUDEPATH += /usr/include/superlu
         LIBS += -lsuperlu
+    }
+    # superlu
+    contains(CONFIG, WITH_PARALUTION) {
+        DEFINES += WITH_PARALUTION
+        INCLUDEPATH += ../../3rdparty/paralution/src
+        LIBS += -L../../3rdparty/paralution/build/lib
+        LIBS += -lparalution
+        # LIBS += -L/usr/lib/nvidia-319
+        # LIBS += -lOpenCL
     }
 }
 

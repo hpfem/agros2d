@@ -32,12 +32,18 @@ namespace Hermes
   enum MatrixSolverType
   {
     SOLVER_UMFPACK = 0,
+    SOLVER_PARALUTION,
     SOLVER_PETSC,
     SOLVER_MUMPS,
     SOLVER_SUPERLU,
     SOLVER_AMESOS,
     SOLVER_AZTECOO
   };
+
+  namespace Solvers
+  {
+    template <typename Scalar> class HERMES_API CSCIterator;
+  }
 
   /// \brief Namespace containing classes for vector / matrix operations.
   namespace Algebra
@@ -317,7 +323,7 @@ namespace Hermes
       /// @param[in] n    - the column where to set
       /// @param[in] v    - value
       virtual void set_row_zero(unsigned int n);
-      
+
       /// update the stiffness matrix
       ///
       /// @param[in] m    - the row where to update
@@ -437,7 +443,7 @@ namespace Hermes
       };
 
       /// Duplicate sparse matrix (including allocation).
-      virtual SparseMatrix* duplicate() { return (SparseMatrix*)NULL;};
+      virtual SparseMatrix* duplicate() { throw Exceptions::MethodNotOverridenException("SparseMatrix* duplicate()"); return NULL; };
 
       /// Get fill-in.
       virtual double get_fill_in() const = 0;
@@ -489,6 +495,11 @@ namespace Hermes
     class HERMES_API Vector : public Hermes::Mixins::Loggable
     {
     public:
+      /// Default constructor.
+      Vector();
+      /// Constructor of vector with specific size.
+      /// @param[in] size size of vector
+      Vector(unsigned int size);
       virtual ~Vector() { }
 
       /// allocate memory for storing ndofs elements

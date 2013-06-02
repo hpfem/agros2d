@@ -416,7 +416,7 @@ void PostHermes::processSolved()
         if (threads == 0)
             threads = 1;
 
-        Hermes::Hermes2D::Hermes2DApi.set_integral_param_value(Hermes::Hermes2D::numThreads, threads);
+        Hermes::HermesCommonApi.set_integral_param_value(Hermes::numThreads, threads);
 
         processSolutionMesh();
         processOrder();
@@ -426,7 +426,7 @@ void PostHermes::processSolved()
         processRangeVector();
 
         // restore settings
-        Hermes::Hermes2D::Hermes2DApi.set_integral_param_value(Hermes::Hermes2D::numThreads, Agros2D::configComputer()->numberOfThreads);
+        Hermes::HermesCommonApi.set_integral_param_value(Hermes::numThreads, Agros2D::configComputer()->numberOfThreads);
     }
 }
 

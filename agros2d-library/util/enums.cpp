@@ -212,6 +212,9 @@ void initLists()
 #ifdef WITH_SUPERLU
     matrixSolverTypeList.insert(Hermes::SOLVER_SUPERLU, "superlu");
 #endif
+#ifdef WITH_PARALUTION
+    matrixSolverTypeList.insert(Hermes::SOLVER_PARALUTION, "paralution");
+#endif
     // matrixSolverTypeList.insert(Hermes::SOLVER_PETSC, "petsc");
     // matrixSolverTypeList.insert(Hermes::SOLVER_AMESOS, "trilinos_amesos");
     // matrixSolverTypeList.insert(Hermes::SOLVER_AZTECOO, "trilinos_aztecoo");
@@ -601,6 +604,8 @@ QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType)
         return QObject::tr("MUMPS");
     case Hermes::SOLVER_SUPERLU:
         return QObject::tr("SuperLU");
+    case Hermes::SOLVER_PARALUTION:
+        return QObject::tr("PARALUTION");
     case Hermes::SOLVER_AMESOS:
         return QObject::tr("Trilinos/Amesos");
     case Hermes::SOLVER_AZTECOO:

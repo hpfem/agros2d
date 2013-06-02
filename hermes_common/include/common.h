@@ -57,9 +57,11 @@
 #include <iostream>
 #include <signal.h>
 
-#include "tcmalloc.h"
-
 #include "config.h"
+
+#ifdef WITH_TC_MALLOC
+  #include "tcmalloc.h"
+#endif
 
 #ifdef WITH_OPENMP
   #include <omp.h>
@@ -164,7 +166,7 @@ namespace Hermes
   /* function name */
   /** \def __CURRENT_FUNCTION
   *  \brief A platform-dependent string defining a current function. \internal */
-  #ifdef _WIN32 //Win32
+  #ifdef _WINDOWS
   # ifdef __MINGW32__ //MinGW
   #   define __CURRENT_FUNCTION __func__
   # else //MSVC and other compilers

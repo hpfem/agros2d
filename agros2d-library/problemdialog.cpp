@@ -1043,6 +1043,9 @@ void ProblemWidget::fillComboBox()
 #ifdef WITH_SUPERLU
     cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_SUPERLU), Hermes::SOLVER_SUPERLU);
 #endif
+#ifdef WITH_PARALUTION
+    cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PARALUTION), Hermes::SOLVER_PARALUTION);
+#endif
 
     cmbTransientMethod->addItem(timeStepMethodString(TimeStepMethod_Fixed), TimeStepMethod_Fixed);
     cmbTransientMethod->addItem(timeStepMethodString(TimeStepMethod_BDFTolerance), TimeStepMethod_BDFTolerance);
