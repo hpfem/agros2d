@@ -1,0 +1,34 @@
+@import url("default.css");
+
+body {
+	width: 800pt;
+	margin: auto;	
+	font-size: 80%;
+}
+
+a.reference {
+	color: MidnightBlue;
+	text-decoration: none;
+	font-size: 100%;
+}
+
+a.reference:hover {
+	text-decoration: none; 
+}
+
+a.reference em {
+	font-style: normal;
+}
+
+.figure  {		
+	float: left;
+	width: 33%; 
+}
+
+.figure .caption {
+	width: 100%; 
+}
+
+p {
+	clear: both;
+}

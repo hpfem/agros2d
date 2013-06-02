@@ -1,7 +1,7 @@
 .. highlight:: python
 
-Program Features
-================
+Advanced Topics
+===============
 
 .. index:: Startup Script
 

@@ -1,3 +1,5 @@
+.. _heat:
+
 Heat Transfer
 =============
 Heat transfer is a discipline of thermal engineering that concerns the exchange of thermal energy from one physical system to another. Heat transfer is classified into various mechanisms, such as heat conduction, convection and thermal radiation.

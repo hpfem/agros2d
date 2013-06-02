@@ -1,8 +1,6 @@
 Electrostatic Planar Capacitor
 ==============================
 
-This example demonstrates the basics of working with Agros2D. The resulting model can be found */data/electrostatic_planar_capacitor.a2d*.
-
 Introduction
 ------------
 

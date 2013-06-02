@@ -1,3 +1,5 @@
+.. _current:
+
 Current field
 =============
 Electric current is a flow of electric charge through a medium. This charge is typically carried by moving electrons in a conductor such as wire. It can also be carried by ions in an electrolyte, or by both ions and electrons in a plasma.

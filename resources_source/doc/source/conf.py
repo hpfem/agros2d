@@ -35,7 +35,7 @@ source_suffix = '.rst'
 source_encoding = 'utf-8'
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = 'contents'
 
 # General information about the project.
 project = u'Agros2D'
@@ -90,9 +90,14 @@ pygments_style = 'sphinx'
 
 # -- Options for HTML output ---------------------------------------------------
 
+# Add any paths that contain custom themes here, relative to this directory.
+html_theme_path = ['.']
+
+
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
 # Sphinx are currently 'default' and 'sphinxdoc'.
-html_theme = 'default'
+html_theme = 'dktheme'
+html_theme_path = ['.']
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -112,15 +117,13 @@ html_theme_options = {
 'headlinkcolor': '#3D5C7A',
 'codebgcolor': '#F5F5F5',
 'codetextcolor': '#000000',
-'relbarbgcolor': '#824513',
+'relbarbgcolor': '#4d4d4d', 
 'relbartextcolor': '#000000',
 'relbarlinkcolor': '#FFFFFF',
 'footerbgcolor': '#FFFFFF',
 'footertextcolor': '#000000',
 }
 
-# Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = []
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -249,7 +252,7 @@ latex_preamble = r"""
 """
 
 pngmath_latex_preamble = latex_preamble
-latex_elements = {"preamble": latex_preamble}
+pngmath_dvipng_args = ['-gamma 1.5', '-D 90', '-bg Transparent']
 
 # Documents to append as an appendix to all manuals.
 #latex_appendices = []
