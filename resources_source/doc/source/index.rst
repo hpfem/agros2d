@@ -46,6 +46,7 @@ Ilustrative example (:ref:`electrostatic-axisymmetric-sparkgap`):
 
 
 .. figure:: ./introduction/hp-fem/mesh-h(p=1).png 
+
     :align: left                                   
     :width: 150      
     :figwidth: 30%                                
@@ -125,14 +126,12 @@ Ilustrative example (:ref:`electrostatic-axisymmetric-sparkgap`):
 Curvilinear elements
 ^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: ./introduction/curvilinear_elements/elements.png
-   :align: left
+.. image:: ./introduction/curvilinear_elements/elements.png
+   :align: center
    :scale: 30%
    :alt: Curvilinear and normal elements at the same geometry
 
 Fig: Curvilinear and normal elements at the same ilustrative geometry
-
-Ilustrative example ():
 
 .. figure:: ./introduction/curvilinear_elements/mesh-normal_elements.png
    :align: left
@@ -163,6 +162,7 @@ Ilustrative example ():
    :scale: 50%
    :alt: Error
 
+
 .. figure:: ./introduction/curvilinear_elements/dofs.png
    :align: center
    :scale: 50%
@@ -180,6 +180,7 @@ Ilustrative example (:ref:`acoustic-axisymmetric-horn`):
    :scale: 50%
    :alt: Normal elements mesh
 
+
 .. figure:: ./introductio/triangular_or_quadrilateral_elements/mesh-triangles.png
    :align: center
    :scale: 50%
@@ -191,6 +192,7 @@ Fig.: Quadrilateral (left) and triangular (right) elements mesh
    :align: center
    :scale: 50%
    :alt: Quadrilateral elements
+
 
 .. figure:: ./introduction/triangular_or_quadrilateral_elements/polynomial_order-triangles.png
    :align: center
@@ -204,10 +206,12 @@ Fig.: Polynomial order on quadrilateral elements mesh (left) and triangular elem
    :scale: 50%
    :alt: Convergence
 
+
 .. figure:: ./introduction/triangular_or_quadrilateral_elements/error.png
    :align: center
    :scale: 50%
    :alt: Error
+
 
 .. figure:: ./introduction/triangular_or_quadrilateral_elements/dofs.png
    :align: center
