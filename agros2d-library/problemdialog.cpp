@@ -148,11 +148,19 @@ void FieldWidget::createContent()
     txtAdaptivitySteps->setMaximum(100);
     txtAdaptivityTolerance = new LineEditDouble(1.0, true);
     txtAdaptivityTolerance->setBottom(0.0);
-    lblAdaptivityBackSteps = new QLabel(tr("Steps back in trans:"));
+    txtAdaptivityThreshold = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::AdaptivityThreshold).toDouble(), true);
+    txtAdaptivityThreshold->setBottom(0.0);
+    cmbAdaptivityProjNormType = new QComboBox();
+    cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_NORM), Hermes::Hermes2D::HERMES_H1_NORM);
+    cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_L2_NORM), Hermes::Hermes2D::HERMES_L2_NORM);
+    cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_SEMINORM), Hermes::Hermes2D::HERMES_H1_SEMINORM);
+    chkAdaptivityUseAniso = new QCheckBox(tr("Use anisotropic refinements"));
+    chkAdaptivityFinerReference = new QCheckBox(tr("Use hp reference solution for h and p adaptivity"));
+    QLabel *lblAdaptivityBackSteps = new QLabel(tr("Steps back in trans:"));
     txtAdaptivityBackSteps = new QSpinBox(this);
     txtAdaptivityBackSteps->setMinimum(0);
     txtAdaptivityBackSteps->setMaximum(100);
-    lblAdaptivityRedoneEach = new QLabel(tr("Redone each trans st:"));
+    QLabel *lblAdaptivityRedoneEach = new QLabel(tr("Redone each trans st:"));
     txtAdaptivityRedoneEach = new QSpinBox(this);
     txtAdaptivityRedoneEach->setMinimum(1);
     txtAdaptivityRedoneEach->setMaximum(100);
@@ -273,10 +281,16 @@ void FieldWidget::createContent()
     layoutAdaptivity->addWidget(txtAdaptivitySteps, 1, 1);
     layoutAdaptivity->addWidget(new QLabel(tr("Tolerance (%):")), 2, 0);
     layoutAdaptivity->addWidget(txtAdaptivityTolerance, 2, 1);
-    layoutAdaptivity->addWidget(lblAdaptivityBackSteps, 3, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityBackSteps, 3, 1);
-    layoutAdaptivity->addWidget(lblAdaptivityRedoneEach, 4, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityRedoneEach, 4, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Threshold:")), 3, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityThreshold, 3, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Norm:")), 4, 0);
+    layoutAdaptivity->addWidget(cmbAdaptivityProjNormType, 4, 1);
+    layoutAdaptivity->addWidget(chkAdaptivityUseAniso, 5, 0, 1, 2);
+    layoutAdaptivity->addWidget(chkAdaptivityFinerReference, 6, 0, 1, 2);
+    layoutAdaptivity->addWidget(lblAdaptivityBackSteps, 7, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityBackSteps, 7, 1);
+    layoutAdaptivity->addWidget(lblAdaptivityRedoneEach, 8, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityRedoneEach, 8, 1);
     layoutAdaptivity->setRowStretch(50, 1);
 
     QWidget *widAdaptivity = new QWidget(this);
@@ -393,6 +407,10 @@ void FieldWidget::load()
     cmbAdaptivityType->setCurrentIndex(cmbAdaptivityType->findData(m_fieldInfo->adaptivityType()));
     txtAdaptivitySteps->setValue(m_fieldInfo->value(FieldInfo::AdaptivitySteps).toInt());
     txtAdaptivityTolerance->setValue(m_fieldInfo->value(FieldInfo::AdaptivityTolerance).toDouble());
+    txtAdaptivityThreshold->setValue(m_fieldInfo->value(FieldInfo::AdaptivityThreshold).toDouble());
+    cmbAdaptivityProjNormType->setCurrentIndex(cmbAdaptivityProjNormType->findData((Hermes::Hermes2D::NormType) m_fieldInfo->value(FieldInfo::AdaptivityProjNormType).toInt()));
+    chkAdaptivityUseAniso->setChecked(m_fieldInfo->value(FieldInfo::AdaptivityUseAniso).toBool());
+    chkAdaptivityFinerReference->setChecked(m_fieldInfo->value(FieldInfo::AdaptivityFinerReference).toBool());
     txtAdaptivityBackSteps->setValue(m_fieldInfo->value(FieldInfo::AdaptivityTransientBackSteps).toInt());
     txtAdaptivityRedoneEach->setValue(m_fieldInfo->value(FieldInfo::AdaptivityTransientRedoneEach).toInt());
     //mesh
@@ -427,6 +445,10 @@ bool FieldWidget::save()
     m_fieldInfo->setAdaptivityType((AdaptivityType) cmbAdaptivityType->itemData(cmbAdaptivityType->currentIndex()).toInt());
     m_fieldInfo->setValue(FieldInfo::AdaptivitySteps, txtAdaptivitySteps->value());
     m_fieldInfo->setValue(FieldInfo::AdaptivityTolerance, txtAdaptivityTolerance->value());
+    m_fieldInfo->setValue(FieldInfo::AdaptivityThreshold, txtAdaptivityThreshold->value());
+    m_fieldInfo->setValue(FieldInfo::AdaptivityProjNormType, (Hermes::Hermes2D::NormType) cmbAdaptivityProjNormType->itemData(cmbAdaptivityProjNormType->currentIndex()).toInt());
+    m_fieldInfo->setValue(FieldInfo::AdaptivityUseAniso, chkAdaptivityUseAniso->isChecked());
+    m_fieldInfo->setValue(FieldInfo::AdaptivityFinerReference, chkAdaptivityFinerReference->isChecked());
     m_fieldInfo->setValue(FieldInfo::AdaptivityTransientBackSteps, txtAdaptivityBackSteps->value());
     m_fieldInfo->setValue(FieldInfo::AdaptivityTransientRedoneEach, txtAdaptivityRedoneEach->value());
     //mesh
@@ -507,6 +529,10 @@ void FieldWidget::doAdaptivityChanged(int index)
 {
     txtAdaptivitySteps->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     txtAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+    txtAdaptivityThreshold->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+    cmbAdaptivityProjNormType->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+    chkAdaptivityUseAniso->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+    chkAdaptivityFinerReference->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     txtAdaptivityBackSteps->setEnabled(Agros2D::problem()->isTransient() && (AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     txtAdaptivityRedoneEach->setEnabled(Agros2D::problem()->isTransient() && (AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
 }

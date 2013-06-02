@@ -67,6 +67,10 @@ public:
     double adaptivityTolerance() const;
     int adaptivityBackSteps() const;
     int adaptivityRedoneEach() const;
+    double adaptivityThreshold() const;
+    Hermes::Hermes2D::NormType adaptivityNormType() const;
+    bool adaptivityUseAniso() const;
+    bool adaptivityFinerReference() const;
 
     // minimal nonlinear tolerance of individual fields
     double nonlinearTolerance() const;
@@ -112,7 +116,7 @@ public:
 
     inline Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> *> bcs() const { return m_bcs; }
 
-    Hermes::vector<Hermes::Hermes2D::ProjNormType> projNormTypeVector() const;
+    Hermes::vector<Hermes::Hermes2D::NormType> projNormTypeVector() const;
 
     void updateExactSolutionFunctions();
 

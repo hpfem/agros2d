@@ -20,41 +20,6 @@
 #include "api2d.h"
 #include "mesh_reader_h2d.h"
 
-
-#ifdef _WINDOWS
-MeshSharedPtr::MeshSharedPtr(Hermes::Hermes2D::Mesh* ptr) : std::shared_ptr<Hermes::Hermes2D::Mesh>(ptr)
-{
-}
-
-MeshSharedPtr::MeshSharedPtr(const MeshSharedPtr& other) : std::shared_ptr<Hermes::Hermes2D::Mesh>(other)
-{
-}
-
-void MeshSharedPtr::operator=(const MeshSharedPtr& other)
-{
-  std::shared_ptr<Hermes::Hermes2D::Mesh>::operator=(other);
-}
-#else
-MeshSharedPtr::MeshSharedPtr(Hermes::Hermes2D::Mesh* ptr) : std::tr1::shared_ptr<Hermes::Hermes2D::Mesh>(ptr)
-{
-}
-
-MeshSharedPtr::MeshSharedPtr(const MeshSharedPtr& other) : std::tr1::shared_ptr<Hermes::Hermes2D::Mesh>(other)
-{
-}
-
-void MeshSharedPtr::operator=(const MeshSharedPtr& other)
-{
-  std::tr1::shared_ptr<Hermes::Hermes2D::Mesh>::operator=(other);
-}
-#endif
-
-MeshSharedPtr::~MeshSharedPtr()
-{
-}
-
-
-
 namespace Hermes
 {
   namespace Hermes2D
@@ -2310,6 +2275,11 @@ namespace Hermes
       conversion_table.insert(std::pair<int, std::string>(this->min_marker_unused, user_marker));
       conversion_table_inverse.insert(std::pair<std::string, int>(user_marker, this->min_marker_unused));
       return this->min_marker_unused++;
+    }
+
+    int Mesh::MarkersConversion::size() const
+    {
+      return this->conversion_table.size();
     }
 
     Mesh::MarkersConversion::StringValid Mesh::MarkersConversion::get_user_marker(int internal_marker) const

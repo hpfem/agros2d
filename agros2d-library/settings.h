@@ -96,16 +96,6 @@ private:
     // adaptivity
     QLabel *lblMaxDofs;
     QSpinBox *txtMaxDOFs;
-    LineEditDouble *txtConvExp;
-    QLabel *lblConvExp;
-    LineEditDouble *txtThreshold;
-    QLabel *lblThreshold;
-    QComboBox *cmbStrategy;
-    QLabel *lblStrategy;
-    QComboBox *cmbMeshRegularity;
-    QComboBox *cmbProjNormType;
-    QCheckBox *chkUseAniso;
-    QCheckBox *chkFinerReference;
 
     // commands
     QLineEdit *txtArgumentTriangle;
@@ -144,7 +134,6 @@ private slots:
     void doColorsDefault();
     void doShowGridChanged();
     void doStartupScriptChanged();
-    void doStrategyChanged(int index);
 };
 
 // *************************************************************************

@@ -1,10 +1,6 @@
 #include "proj_based_selector.h"
+#include "hcurl_proj_based_selector.h"
 #include <algorithm>
-#include "global.h"
-#include "solution.h"
-#include "discrete_problem.h"
-#include "quad_all.h"
-#include "element_to_refine.h"
 #include "order_permutator.h"
 
 namespace Hermes
@@ -14,10 +10,10 @@ namespace Hermes
     namespace RefinementSelectors
     {
       template<typename Scalar>
-      ProjBasedSelector<Scalar>::ProjBasedSelector(CandList cand_list, double conv_exp, int
-        max_order, Shapeset* shapeset, const typename OptimumSelector<Scalar>::Range& vertex_order, const
-        typename OptimumSelector<Scalar>::Range& edge_bubble_order) :
-      OptimumSelector<Scalar>(cand_list, conv_exp, max_order, shapeset, vertex_order, edge_bubble_order),
+      ProjBasedSelector<Scalar>::ProjBasedSelector(CandList cand_list, int
+        max_order, Shapeset* shapeset, const Range& vertex_order, const
+        Range& edge_bubble_order) :
+      OptimumSelector<Scalar>(cand_list, max_order, shapeset, vertex_order, edge_bubble_order),
         warn_uniform_orders(false),
         error_weight_h(H2DRS_DEFAULT_ERR_WEIGHT_H),
         error_weight_p(H2DRS_DEFAULT_ERR_WEIGHT_P),
@@ -35,13 +31,6 @@ namespace Hermes
           for(int i = 0; i < H2DRS_MAX_ORDER + 2; i++)
             for(int k = 0; k < H2DRS_MAX_ORDER + 2; k++)
               proj_matrix_cache[m][i][k] = NULL;
-
-        //allocate caches
-        int max_inx = this->max_shape_inx[0];
-        for(int i = 1; i < H2D_NUM_MODES; i++)
-          max_inx = std::max(max_inx, this->max_shape_inx[i]);
-        nonortho_rhs_cache.resize(max_inx + 1);
-        ortho_rhs_cache.resize(max_inx + 1);
       }
 
       template<typename Scalar>
@@ -58,12 +47,9 @@ namespace Hermes
             }
         }
 
-        if(!this->isAClone)
-        {
-          delete [] cached_shape_vals_valid;
-          delete [] cached_shape_ortho_vals;
-          delete [] cached_shape_vals;
-        }
+        delete [] cached_shape_vals_valid;
+        delete [] cached_shape_ortho_vals;
+        delete [] cached_shape_vals;
       }
 
       template<typename Scalar>
@@ -123,28 +109,25 @@ namespace Hermes
       }
 
       template<typename Scalar>
-      void ProjBasedSelector<Scalar>::evaluate_cands_error(Element* e, MeshFunction<Scalar>* rsln, double* avg_error, double* dev_error)
+      void ProjBasedSelector<Scalar>::evaluate_cands_error(Hermes::vector<Cand>& candidates, Element* e, MeshFunction<Scalar>* rsln)
       {
         bool tri = e->is_triangle();
 
         // find range of orders
         typename OptimumSelector<Scalar>::CandsInfo info_h, info_p, info_aniso;
-        this->update_cands_info(info_h, info_p, info_aniso);
+        this->update_cands_info(candidates, info_h, info_p, info_aniso);
 
         // calculate squared projection errors of elements of candidates
         CandElemProjError herr[4], anisoerr[4], perr;
         calc_projection_errors(e, info_h, info_p, info_aniso, rsln, herr, perr, anisoerr);
 
         //evaluate errors and dofs
-        double sum_err = 0.0;
-        double sum_sqr_err = 0.0;
-        int num_processed = 0;
-        typename OptimumSelector<Scalar>::Cand& unrefined_c = this->candidates[0];
-        for (unsigned i = 0; i < this->candidates.size(); i++)
+        for (unsigned i = 0; i < candidates.size(); i++)
         {
-          typename OptimumSelector<Scalar>::Cand& c = this->candidates[i];
+          Cand& c = candidates[i];
           double error_squared = 0.0;
-          if(tri) { //triangle
+          if(tri)
+          {
             switch(c.split)
             {
             case H2D_REFINEMENT_H:
@@ -152,7 +135,8 @@ namespace Hermes
               for (int j = 0; j < H2D_MAX_ELEMENT_SONS; j++)
               {
                 int order = H2D_GET_H_ORDER(c.p[j]);
-                error_squared += herr[j][order][order];
+                c.errors[j] = herr[j][order][order];
+                error_squared += c.errors[j];
               }
               error_squared *= 0.25; //element of a candidate occupies 1/4 of the reference domain defined over a candidate
               break;
@@ -160,6 +144,7 @@ namespace Hermes
             case H2D_REFINEMENT_P:
               {
                 int order = H2D_GET_H_ORDER(c.p[0]);
+                c.errors[0] = perr[order][order];
                 error_squared = perr[order][order];
               }
               break;
@@ -168,7 +153,9 @@ namespace Hermes
               throw Hermes::Exceptions::Exception("Unknown split type \"%d\" at candidate %d", c.split, i);
             }
           }
-          else { //quad
+          else
+          {
+            //quad
             switch(c.split)
             {
             case H2D_REFINEMENT_H:
@@ -176,7 +163,8 @@ namespace Hermes
               for (int j = 0; j < H2D_MAX_ELEMENT_SONS; j++)
               {
                 int order_h = H2D_GET_H_ORDER(c.p[j]), order_v = H2D_GET_V_ORDER(c.p[j]);
-                error_squared += herr[j][order_h][order_v];
+                c.errors[j] = herr[j][order_h][order_v];
+                error_squared += c.errors[j];
               }
               error_squared *= 0.25; //element of a candidate occupies 1/4 of the reference domain defined over a candidate
               break;
@@ -186,7 +174,10 @@ namespace Hermes
               {
                 error_squared = 0.0;
                 for (int j = 0; j < 2; j++)
-                  error_squared += anisoerr[(c.split == H2D_REFINEMENT_ANISO_H) ? j : j + 2][H2D_GET_H_ORDER(c.p[j])][H2D_GET_V_ORDER(c.p[j])];
+                {
+                  c.errors[j] = anisoerr[(c.split == H2D_REFINEMENT_ANISO_H) ? j : j + 2][H2D_GET_H_ORDER(c.p[j])][H2D_GET_V_ORDER(c.p[j])];
+                  error_squared += c.errors[j];
+                }
                 error_squared *= 0.5;  //element of a candidate occupies 1/2 of the reference domain defined over a candidate
               }
               break;
@@ -194,7 +185,8 @@ namespace Hermes
             case H2D_REFINEMENT_P:
               {
                 int order_h = H2D_GET_H_ORDER(c.p[0]), order_v = H2D_GET_V_ORDER(c.p[0]);
-                error_squared = perr[order_h][order_v];
+                c.errors[0] = perr[order_h][order_v];
+                error_squared = c.errors[0];
               }
               break;
 
@@ -215,18 +207,7 @@ namespace Hermes
           case H2D_REFINEMENT_P: c.error *= error_weight_p; break;
           default: throw Hermes::Exceptions::Exception("Unknown split type \"%d\" at candidate %d", c.split, i);
           }
-
-          //calculate statistics
-          if(i == 0 || c.error <= unrefined_c.error)
-          {
-            sum_err += log10(c.error);
-            sum_sqr_err += Hermes::sqr(log10(c.error));
-            num_processed++;
-          }
         }
-
-        *avg_error = sum_err / num_processed;  // mean
-        *dev_error = sqrt(sum_sqr_err/num_processed - Hermes::sqr(*avg_error)); // deviation is square root of variance
       }
 
       template<typename Scalar>
@@ -242,16 +223,12 @@ namespace Hermes
 
         // everything is done on the reference domain
         Solution<Scalar>* rsln_sln = dynamic_cast<Solution<Scalar>*>(rsln);
-          if(rsln_sln != NULL)
-            rsln_sln->enable_transform(false);
+        if(rsln_sln != NULL)
+          rsln_sln->enable_transform(false);
 
         // obtain reference solution values on all four refined sons
         Scalar** rval[H2D_MAX_ELEMENT_SONS];
         Element* base_element = rsln->get_mesh()->get_element(e->id);
-        if(base_element->active)
-        {
-          this->info("Have you calculated element errors twice with solutions_for_adaptivity == true?");
-        };
 
         // value on base element.
         if(base_element->active)
@@ -424,6 +401,13 @@ namespace Hermes
               , info_p, perr);
           }
         }
+				const HcurlProjBasedSelector<Scalar>* hcurl_casted = dynamic_cast<const HcurlProjBasedSelector<Scalar>*>(this);
+        for (int son = 0; son < H2D_MAX_ELEMENT_SONS; son++)
+        {
+          if(hcurl_casted)
+            delete [] rval[son][HcurlProjBasedSelector<Scalar>::H2D_HCFE_CURL];
+          delete [] rval[son];
+        }
       }
 
       template<typename Scalar>
@@ -436,7 +420,7 @@ namespace Hermes
         )
       {
         //allocate space
-        int max_num_shapes = this->next_order_shape[mode][this->current_max_order];
+        int max_num_shapes = this->next_order_shape[mode][this->max_order == H2DRS_DEFAULT_ORDER ? H2DRS_MAX_ORDER : this->max_order];
         Scalar* right_side = new Scalar[max_num_shapes];
         int* shape_inxs = new int[max_num_shapes];
         int* indx = new int[max_num_shapes]; //solver data
@@ -450,11 +434,13 @@ namespace Hermes
         for(int i = 0; i < num_sub && ortho_svals_available; i++)
           ortho_svals_available &= !sub_ortho_svals[i]->empty();
 
-        //clenup of the cache
+        /// An array of cached right-hand side values.
+        Hermes::vector< ValueCacheItem<Scalar> > nonortho_rhs_cache;
+        Hermes::vector< ValueCacheItem<Scalar> > ortho_rhs_cache;
         for(int i = 0; i <= this->max_shape_inx[mode]; i++)
         {
-          nonortho_rhs_cache[i] = ValueCacheItem<Scalar>();
-          ortho_rhs_cache[i] = ValueCacheItem<Scalar>();
+          nonortho_rhs_cache.push_back(ValueCacheItem<Scalar>());
+          ortho_rhs_cache.push_back(ValueCacheItem<Scalar>());
         }
 
         //calculate for all orders

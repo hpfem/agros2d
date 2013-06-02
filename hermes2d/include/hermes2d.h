@@ -62,11 +62,6 @@
 #include "discrete_problem.h"
 #include "forms.h"
 
-#include "integrals/h1.h"
-#include "integrals/hcurl.h"
-#include "integrals/hdiv.h"
-#include "integrals/l2.h"
-
 #include "function/exact_solution.h"
 #include "function/solution.h"
 #include "function/mesh_function.h"
@@ -83,8 +78,7 @@
 #include "views/vector_base_view.h"
 #include "views/vector_view.h"
 
-#include "mesh/refinement_type.h"
-#include "mesh/element_to_refine.h"
+#include "refinement_selectors/element_to_refine.h"
 #include "refinement_selectors/selector.h"
 #include "refinement_selectors/order_permutator.h"
 #include "refinement_selectors/optimum_selector.h"
@@ -94,9 +88,10 @@
 #include "refinement_selectors/hcurl_proj_based_selector.h"
 
 #include "adapt/adapt.h"
+#include "adapt/error_calculator.h"
+#include "adapt/error_thread_calculator.h"
 #include "adapt/kelly_type_adapt.h"
-#include "neighbor.h"
-#include "projections/localprojection.h"
+#include "neighbor_search.h"
 #include "projections/ogprojection.h"
 #include "projections/ogprojection_nox.h"
 
@@ -107,6 +102,7 @@
 // No inclusions here.
 #else
 #include "weakform_library/weakforms_elasticity.h"
+#include "weakform_library/integrals_h1.h"
 #include "weakform_library/weakforms_h1.h"
 #include "weakform_library/weakforms_hcurl.h"
 #include "weakform_library/weakforms_maxwell.h"

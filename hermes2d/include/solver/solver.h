@@ -53,6 +53,9 @@ namespace Hermes
       Solver(WeakForm<Scalar>* wf, Hermes::vector<SpaceSharedPtr<Scalar> >& spaces);
       virtual ~Solver();
 
+      /// Basic solve method.
+      virtual void solve() = 0;
+
       /// Experimental
       /// \todo delete this?
       /// Method setting that the element values on an internal marker will be kept if reusable from a previous solution.
@@ -73,6 +76,9 @@ namespace Hermes
       virtual void set_time(double time);
       virtual void set_time_step(double time_step);
 
+      // Verbose output.
+      virtual void set_verbose_output(bool to_set);
+
       /// SettableSpaces helper.
       virtual void set_spaces(Hermes::vector<SpaceSharedPtr<Scalar> >& spaces);
       virtual Hermes::vector<SpaceSharedPtr<Scalar> >& get_spaces();
@@ -92,8 +98,22 @@ namespace Hermes
       /// If the cache should not be used for any reason.
       virtual void set_do_not_use_cache(bool to_set = true);
       
-      /// Reports cache hits and misses.
+      /// Report cache hits and misses.
       virtual void set_report_cache_hits_and_misses(bool to_set = true);
+
+      /// Set Reporting of UMFPACK numerical factorization data provided the used matrix solver is UMFPACK.
+      virtual void set_UMFPACK_output(bool to_set = true, bool with_output = false);
+      
+      /// Data values (types) for UMFPACK reporting.
+      enum UMFPACK_reporting_data_value
+      {
+        FactorizationSize = 0,
+        PeakMemoryUsage = 1,
+        Flops = 2
+      };
+      
+      /// Get UMFPACK numerical factorization data provided the used matrix solver is UMFPACK
+      virtual double get_UMFPACK_reporting_data(UMFPACK_reporting_data_value data_value);
 
     protected:
       /// Handle the jacobian re-calculation and re-usage of a previous one.
@@ -129,6 +149,12 @@ namespace Hermes
       /// For deciding if the jacobian is constant at this point.
       virtual bool reuse_jacobian_values();
 
+      /// Switch for UMFPACK reporting.
+      bool do_UMFPACK_reporting;
+
+      /// Data for UMFPACK reporting.
+      double UMFPACK_reporting_data[3];
+      
     private:
       void init();
     };

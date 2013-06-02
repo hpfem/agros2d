@@ -313,14 +313,6 @@ void ProblemSetting::setStringKeys()
     m_settingKey[View_LinearizerQuality] = "View_LinearizerQuality";
     m_settingKey[View_SolidViewHide] = "View_SolidViewHide";
     m_settingKey[Adaptivity_MaxDofs] = "Adaptivity_MaxDofs";
-    m_settingKey[Adaptivity_IsoOnly] = "Adaptivity_IsoOnly";
-    m_settingKey[Adaptivity_ConvExp] = "Adaptivity_ConvExp";
-    m_settingKey[Adaptivity_Threshold] = "Adaptivity_Threshold";
-    m_settingKey[Adaptivity_Strategy] = "Adaptivity_Strategy";
-    m_settingKey[Adaptivity_MeshRegularity] = "Adaptivity_MeshRegularity";
-    m_settingKey[Adaptivity_ProjNormType] = "Adaptivity_ProjNormType";
-    m_settingKey[Adaptivity_UseAniso] = "Adaptivity_UseAniso";
-    m_settingKey[Adaptivity_FinerReference] = "Adaptivity_FinerReference";
     m_settingKey[Commands_Triangle] = "Commands_Triangle";
     m_settingKey[Commands_Gmsh] = "Commands_Gmsh";
 }
@@ -464,14 +456,6 @@ void ProblemSetting::setDefaultValues()
     m_settingDefault[View_LinearizerQuality] = PaletteQuality_Normal;
     m_settingDefault[View_SolidViewHide] = QStringList();
     m_settingDefault[Adaptivity_MaxDofs] = 60e3;
-    m_settingDefault[Adaptivity_IsoOnly] = false;
-    m_settingDefault[Adaptivity_ConvExp] = 1.0;
-    m_settingDefault[Adaptivity_Threshold] = 0.3;
-    m_settingDefault[Adaptivity_Strategy] = 0;
-    m_settingDefault[Adaptivity_MeshRegularity] = -1;
-    m_settingDefault[Adaptivity_ProjNormType] = Hermes::Hermes2D::HERMES_H1_NORM;
-    m_settingDefault[Adaptivity_UseAniso] = true;
-    m_settingDefault[Adaptivity_FinerReference] = false;
     m_settingDefault[Commands_Triangle] = "%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 \"%2\"";
     m_settingDefault[Commands_Gmsh] = "%1 -2 \"%2.geo\"";
 }

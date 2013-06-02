@@ -29,6 +29,7 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     CONFIG += warn_off
 
     INCLUDEPATH += /usr/include/google
+    INCLUDEPATH += /usr/include/suitesparse
 
     LIBS += -L../../libs
 

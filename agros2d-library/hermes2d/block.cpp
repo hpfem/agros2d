@@ -239,15 +239,69 @@ int Block::adaptivityRedoneEach() const
 
 double Block::adaptivityTolerance() const
 {
-    double at = m_fields.at(0)->fieldInfo()->value(FieldInfo::AdaptivityTolerance).toDouble();
+    double tolerance = numeric_limits<double>::max();
+
+    foreach (Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if (fieldInfo->value(FieldInfo::AdaptivityTolerance).toDouble() < tolerance)
+            tolerance = fieldInfo->value(FieldInfo::AdaptivityTolerance).toDouble();
+    }
+
+    return tolerance;
+}
+
+double Block::adaptivityThreshold() const
+{
+    double threshold = numeric_limits<double>::max();
+
+    foreach (Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if (fieldInfo->value(FieldInfo::AdaptivityThreshold).toDouble() < threshold)
+            threshold = fieldInfo->value(FieldInfo::AdaptivityThreshold).toDouble();
+    }
+
+    return threshold;
+}
+
+Hermes::Hermes2D::NormType Block::adaptivityNormType() const
+{
+    Hermes::Hermes2D::NormType type = (Hermes::Hermes2D::NormType) m_fields.at(0)->fieldInfo()->value(FieldInfo::AdaptivityProjNormType).toInt();
 
     foreach (Field *field, m_fields)
     {
         // todo: ensure in GUI
-        assert(field->fieldInfo()->value(FieldInfo::AdaptivityTolerance).toDouble() == at);
+        assert((Hermes::Hermes2D::NormType) field->fieldInfo()->value(FieldInfo::AdaptivityProjNormType).toInt() == type);
     }
 
-    return at;
+    return type;
+}
+
+bool Block::adaptivityUseAniso() const
+{
+    bool useAniso = m_fields.at(0)->fieldInfo()->value(FieldInfo::AdaptivityUseAniso).toBool();
+
+    foreach (Field *field, m_fields)
+    {
+        // todo: ensure in GUI
+        assert(field->fieldInfo()->value(FieldInfo::AdaptivityUseAniso).toBool() == useAniso);
+    }
+
+    return useAniso;
+}
+
+bool Block::adaptivityFinerReference() const
+{
+    bool finerReference = m_fields.at(0)->fieldInfo()->value(FieldInfo::AdaptivityFinerReference).toBool();
+
+    foreach (Field *field, m_fields)
+    {
+        // todo: ensure in GUI
+        assert(field->fieldInfo()->value(FieldInfo::AdaptivityFinerReference).toBool() == finerReference );
+    }
+
+    return finerReference ;
 }
 
 int Block::numSolutions() const
@@ -304,7 +358,7 @@ LinearityType Block::linearityType() const
 
 double Block::nonlinearTolerance() const
 {
-    double tolerance = 10e20;
+    double tolerance = numeric_limits<double>::max();
 
     foreach (Field* field, m_fields)
     {
@@ -488,9 +542,9 @@ Field* Block::field(FieldInfo *fieldInfo) const
     return NULL;
 }
 
-Hermes::vector<Hermes::Hermes2D::ProjNormType> Block::projNormTypeVector() const
+Hermes::vector<Hermes::Hermes2D::NormType> Block::projNormTypeVector() const
 {
-    Hermes::vector<Hermes::Hermes2D::ProjNormType> vec;
+    Hermes::vector<Hermes::Hermes2D::NormType> vec;
 
     foreach (Field* field, m_fields)
     {

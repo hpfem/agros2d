@@ -1,9 +1,6 @@
-#include "global.h"
 #include "matrix.h"
-#include "solution.h"
-#include "shapeset/shapeset_h1_all.h"
-#include "element_to_refine.h"
 #include "h1_proj_based_selector.h"
+
 namespace Hermes
 {
   namespace Hermes2D
@@ -11,11 +8,8 @@ namespace Hermes
     namespace RefinementSelectors
     {
       template<typename Scalar>
-      const int H1ProjBasedSelector<Scalar>::H2DRS_MAX_H1_ORDER = H2DRS_MAX_ORDER;
-
-      template<typename Scalar>
-      H1ProjBasedSelector<Scalar>::H1ProjBasedSelector(CandList cand_list, double conv_exp, int max_order, H1Shapeset* user_shapeset)
-        : ProjBasedSelector<Scalar>(cand_list, conv_exp, max_order, user_shapeset == NULL ? new H1Shapeset() : user_shapeset, typename OptimumSelector<Scalar>::Range(1, 1), typename OptimumSelector<Scalar>::Range(2, H2DRS_MAX_H1_ORDER)), user_shapeset(user_shapeset == NULL ? false : true)
+      H1ProjBasedSelector<Scalar>::H1ProjBasedSelector(CandList cand_list, int max_order, H1Shapeset* user_shapeset)
+        : ProjBasedSelector<Scalar>(cand_list, max_order, user_shapeset == NULL ? new H1Shapeset() : user_shapeset, Range(1, 1), Range(2, H2DRS_MAX_ORDER)), user_shapeset(user_shapeset == NULL ? false : true)
       {
         if(user_shapeset != NULL)
         {
@@ -30,26 +24,16 @@ namespace Hermes
         if(!this->user_shapeset)
           delete this->shapeset;
       }
-      
-      template<typename Scalar>
-      Selector<Scalar>* H1ProjBasedSelector<Scalar>::clone()
-      {
-        H1ProjBasedSelector<Scalar>* newSelector = new H1ProjBasedSelector(this->cand_list, this->conv_exp, this->max_order, (H1Shapeset*)this->shapeset);
-        newSelector->set_error_weights(this->error_weight_h, this->error_weight_p, this->error_weight_aniso);
-        newSelector->isAClone = true;
-        return newSelector;
-      }
 
       template<typename Scalar>
-      void H1ProjBasedSelector<Scalar>::set_current_order_range(Element* element)
+      void H1ProjBasedSelector<Scalar>::get_current_order_range(Element* element, int& min_order_, int& max_order_)
       {
-        this->current_max_order = this->max_order;
         int max_element_order = (20 - element->iro_cache)/2 - 1;
-        if(this->current_max_order == H2DRS_DEFAULT_ORDER)
-          this->current_max_order = max_element_order; // default
+        if(this->max_order == H2DRS_DEFAULT_ORDER)
+          max_order_ = max_element_order;
         else
-          this->current_max_order = std::min(this->current_max_order, max_element_order); // user specified
-        this->current_min_order = 1;
+          max_order_ = std::min(this->max_order, max_element_order);
+        min_order_ = 1;
       }
 
       template<typename Scalar>
@@ -207,11 +191,10 @@ namespace Hermes
       Scalar** H1ProjBasedSelector<Scalar>::precalc_ref_solution(int inx_son, MeshFunction<Scalar>* rsln, Element* element, int intr_gip_order)
       {
         //fill with values
-        Scalar** rvals_son = precalc_rvals[inx_son];
+        Scalar** rvals_son = new Scalar*[H2D_H1FE_NUM];
         rvals_son[H2D_H1FE_VALUE] = rsln->get_fn_values(0);
         rvals_son[H2D_H1FE_DX] = rsln->get_dx_values(0);
         rvals_son[H2D_H1FE_DY] = rsln->get_dy_values(0);
-
         return rvals_son;
       }
 
@@ -245,7 +228,6 @@ namespace Hermes
 
               value += gip_points[j][H2D_GIP2D_W] * (value0*value1 + dx0*dx1 + dy0*dy1);
             }
-
             matrix_row[k] = value;
           }
         }
@@ -266,19 +248,7 @@ namespace Hermes
           shape_value[H2D_H1FE_VALUE] = sub_shape.svals[H2D_H1FE_VALUE][gip_inx];
           shape_value[H2D_H1FE_DX] = sub_shape.svals[H2D_H1FE_DX][gip_inx];
           shape_value[H2D_H1FE_DY] = sub_shape.svals[H2D_H1FE_DY][gip_inx];
-
-          ////DEBUG-BEGIN
-          //double ref_x = gip_pt[H2D_GIP2D_X] * sub_trf.trf->m[0] + sub_trf.trf->t[0];
-          //double ref_y = gip_pt[H2D_GIP2D_Y] * sub_trf.trf->m[1] + sub_trf.trf->t[1];
-          //Scalar shape_value[H2D_H1FE_NUM] = {0, 0, 0};
-          //shape_value[H2D_H1FE_VALUE] = shapeset->get_fn_value(sub_shape.inx, ref_x, ref_y, 0);
-          //shape_value[H2D_H1FE_DX] = shapeset->get_dx_value(sub_shape.inx, ref_x, ref_y, 0);
-          //shape_value[H2D_H1FE_DY] = shapeset->get_dy_value(sub_shape.inx, ref_x, ref_y, 0);
-          //error_if(std::abs(shape_value[H2D_H1FE_VALUE] - shape_valueA[H2D_H1FE_VALUE]) > 1E-15
-          //  || std::abs(shape_value[H2D_H1FE_DX] - shape_valueA[H2D_H1FE_DX]) > 1E-15
-          //  || std::abs(shape_value[H2D_H1FE_DY] - shape_valueA[H2D_H1FE_DY]) > 1E-15, "A1");
-          ////DEBUG-END
-
+          
           //get value of ref. solution
           Scalar ref_value[H2D_H1FE_NUM];
           ref_value[H2D_H1FE_VALUE] = sub_gip.rvals[H2D_H1FE_VALUE][gip_inx];
@@ -312,23 +282,8 @@ namespace Hermes
             proj_value[H2D_H1FE_DX] += elem_proj.shape_coeffs[i] * elem_proj.svals[shape_inx][H2D_H1FE_DX][gip_inx];
             proj_value[H2D_H1FE_DY] += elem_proj.shape_coeffs[i] * elem_proj.svals[shape_inx][H2D_H1FE_DY][gip_inx];
           }
-
-          ////DEBUG-BEGIN
-          //double ref_x = gip_pt[H2D_GIP2D_X] * sub_trf.trf->m[0] + sub_trf.trf->t[0];
-          //double ref_y = gip_pt[H2D_GIP2D_Y] * sub_trf.trf->m[1] + sub_trf.trf->t[1];
-          //Scalar proj_valueA[H2D_H1FE_NUM] = {0, 0, 0};
-          //for(int i = 0; i < elem_proj.num_shapes; i++)
+          
           {
-            //  int shape_inx = elem_proj.shape_inxs[i];
-            //  proj_valueA[H2D_H1FE_VALUE] += elem_proj.shape_coeffs[i] * shapeset->get_fn_value(shape_inx, ref_x, ref_y, 0);
-            //  proj_valueA[H2D_H1FE_DX] += elem_proj.shape_coeffs[i] * shapeset->get_dx_value(shape_inx, ref_x, ref_y, 0);
-            //  proj_valueA[H2D_H1FE_DY] += elem_proj.shape_coeffs[i] * shapeset->get_dy_value(shape_inx, ref_x, ref_y, 0);
-            //}
-            //error_if(std::abs(proj_value[H2D_H1FE_VALUE] - proj_valueA[H2D_H1FE_VALUE]) > 1E-15
-            //  || std::abs(proj_value[H2D_H1FE_DX] - proj_valueA[H2D_H1FE_DX]) > 1E-15
-            //  || std::abs(proj_value[H2D_H1FE_DY] - proj_valueA[H2D_H1FE_DY]) > 1E-15, "A2");
-            ////DEBUG-END
-
             //get value of ref. solution
             Scalar ref_value[3];
             ref_value[H2D_H1FE_VALUE] = sub_gip.rvals[H2D_H1FE_VALUE][gip_inx];
@@ -343,6 +298,7 @@ namespace Hermes
             total_error_squared += gip_pt[H2D_GIP2D_W] * error_squared;
           }
         }
+
         return total_error_squared;
       }
       template class HERMES_API H1ProjBasedSelector<double>;

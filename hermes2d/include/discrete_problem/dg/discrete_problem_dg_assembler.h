@@ -17,16 +17,13 @@
 #define __H2D_DISCRETE_PROBLEM_DG_ASSEMBLER_H
 
 #include "hermes_common.h"
-#include "adapt/adapt.h"
-#include "graph.h"
 #include "forms.h"
 #include "weakform/weakform.h"
 #include "function/function.h"
-#include "neighbor.h"
+#include "neighbor_search.h"
 #include "refinement_selectors/selector.h"
 #include "exceptions.h"
 #include "mixins2d.h"
-#include "multimesh_dg_neighbor_tree.h"
 #include "multimesh_dg_neighbor_tree.h"
 #include "discrete_problem/discrete_problem_selective_assembler.h"
 

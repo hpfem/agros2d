@@ -82,7 +82,7 @@ namespace Hermes
       using NonlinearSolver<Scalar>::solve;
       /// Solve.
       /// \param[in] coeff_vec initiall guess as a vector of coefficients wrt. basis functions.
-      virtual void solve(Scalar* coeff_vec = NULL);
+      virtual void solve(Scalar* coeff_vec);
 
       /// Sets the current convergence measurement.
       /// Default: AbsoluteNorm
@@ -114,7 +114,7 @@ namespace Hermes
       /// Default: default is the automatic damping, default coefficient if manual damping used is set by this method.
       /// \param[in] onOff on(true)-manual damping, off(false)-automatic damping.
       /// \param[in] coeff The (perpetual) damping coefficient in the case of manual damping. Ignored in the case of automatic damping.
-      void set_manual_damping_coeff(bool onOff, double coeff);
+      void set_manual_damping_coeff(bool onOff, double coeff = 1.0);
       
       /// Make the automatic damping start with this coefficient.
       /// This will also be the top bound for the coefficient.
@@ -180,7 +180,7 @@ namespace Hermes
       };
 
       /// Find out the state.
-      typename NewtonSolver<Scalar>::ConvergenceState get_convergence_state();
+      typename NewtonSolver<Scalar>::ConvergenceState get_convergence_state(Scalar* coeff_vec);
 
       /// Act upon the state.
       /// \return If the main loop in solve() should finalize after this.
@@ -189,11 +189,6 @@ namespace Hermes
 #pragma endregion
 
     protected:
-      /// \return Whether or not should the processing continue.
-      virtual void on_damping_factor_updated();
-      /// \return Whether or not should the processing continue.
-      virtual void on_reused_jacobian_step_begin();
-
       /// State querying helpers.
       virtual bool isOkay() const;
       inline std::string getClassName() const { return "NewtonSolver"; }
@@ -211,7 +206,7 @@ namespace Hermes
       double calculate_residual_norm();
 
       /// Calculates the new damping coefficient.
-      bool calculate_damping_coefficient(unsigned int& successful_steps);
+      double calculate_damping_coefficient(bool& damping_coefficient_drop, unsigned int& successful_steps);
 
       NewtonSolverConvergenceMeasurementType current_convergence_measurement;
       
@@ -263,7 +258,7 @@ namespace Hermes
       const OutputParameterUnsignedInt& successful_steps_damping() const { return this->p_successful_steps_damping; };
       const OutputParameterUnsignedInt& successful_steps_jacobian() const { return this->p_successful_steps_jacobian; };
       
-      const OutputParameterDoubleVector& damping_coefficients() const { return this->p_damping_coefficients; };
+      const OutputParameterDouble& current_damping_coefficient() const { return this->p_current_damping_coefficient; };
       const OutputParameterBool& residual_norm_drop() const { return this->p_residual_norm_drop; };
       const OutputParameterUnsignedInt& iteration() const { return this->p_iteration; };
 
@@ -274,7 +269,7 @@ namespace Hermes
       OutputParameterDouble p_solution_change_norm;
       OutputParameterUnsignedInt p_successful_steps_damping;
       OutputParameterUnsignedInt p_successful_steps_jacobian;
-      OutputParameterDoubleVector p_damping_coefficients;
+      OutputParameterDouble p_current_damping_coefficient;
       OutputParameterBool p_residual_norm_drop;
       OutputParameterUnsignedInt p_iteration;
 #pragma endregion

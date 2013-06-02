@@ -262,14 +262,6 @@ public:
         View_LinearizerQuality,
         View_SolidViewHide,
         Adaptivity_MaxDofs,
-        Adaptivity_IsoOnly,
-        Adaptivity_ConvExp,
-        Adaptivity_Threshold,
-        Adaptivity_Strategy,
-        Adaptivity_MeshRegularity,
-        Adaptivity_ProjNormType,
-        Adaptivity_UseAniso,
-        Adaptivity_FinerReference,        
         Commands_Triangle,
         Commands_Gmsh
     };

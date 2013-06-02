@@ -86,19 +86,38 @@ namespace Hermes
       // Assemble the residual always and the jacobian when necessary (nonconstant jacobian, not reusable, ...).
       this->conditionally_assemble();
       if(this->report_cache_hits_and_misses)
-          this->add_cache_hits_and_misses(this->dp);
+        this->add_cache_hits_and_misses(this->dp);
 
       this->process_matrix_output(this->jacobian, 1);
       this->process_vector_output(this->residual, 1);
 
-      this->matrix_solver->solve();
+      if(this->matrix_solver->solve())
+      {
+        if(this->do_UMFPACK_reporting)
+        {
+          UMFPackLinearMatrixSolver<Scalar>* umfpack_matrix_solver = (UMFPackLinearMatrixSolver<Scalar>*)this->matrix_solver;
+          if(this->matrix_solver->get_used_factorization_scheme() != HERMES_REUSE_FACTORIZATION_COMPLETELY)
+          {
+            this->UMFPACK_reporting_data[this->FactorizationSize] = umfpack_matrix_solver->Info[UMFPACK_NUMERIC_SIZE] * umfpack_matrix_solver->Info[UMFPACK_SIZE_OF_UNIT];
+            this->UMFPACK_reporting_data[this->PeakMemoryUsage] = umfpack_matrix_solver->Info[UMFPACK_PEAK_MEMORY] * umfpack_matrix_solver->Info[UMFPACK_SIZE_OF_UNIT];
+            this->UMFPACK_reporting_data[this->Flops] = umfpack_matrix_solver->Info[UMFPACK_FLOPS];
+          }
+          else
+            memset(this->UMFPACK_reporting_data, 0, 3 * sizeof(double));
+        }
+      }
+      else
+      {
+        this->on_finish();
+        throw Exceptions::LinearMatrixSolverException();
+      }
 
       this->sln_vector = this->matrix_solver->get_sln_vector();
 
       this->on_finish();
-      
+
       this->tick();
-      this->info("\tLinear solver solution duration: %f s.\n", this->last());
+      this->info("\tLinear solver solution duration: %f s.", this->last());
     }
 
     template class HERMES_API LinearSolver<double>;

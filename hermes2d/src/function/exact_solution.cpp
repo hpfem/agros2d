@@ -48,6 +48,42 @@ namespace Hermes
     }
 
     template<typename Scalar>
+    ExactSolutionConstantArray<Scalar>::ExactSolutionConstantArray(MeshSharedPtr mesh, Scalar* valueArray) : ExactSolutionScalar<Scalar>(mesh), valueArray(valueArray)
+    {
+    }
+
+    template<typename Scalar>
+    MeshFunction<Scalar>* ExactSolutionConstantArray<Scalar>::clone() const
+    {
+      return new ExactSolutionConstantArray<Scalar>(this->mesh, this->valueArray);
+    }
+
+    template<typename Scalar>
+    Scalar ExactSolutionConstantArray<Scalar>::value (double x, double y) const
+    {
+      return this->valueArray[this->element->id];
+    }
+
+    template<typename Scalar>
+    Ord ExactSolutionConstantArray<Scalar>::ord(Ord x, Ord y) const {
+      return Ord(0);
+    }
+
+    template<typename Scalar>
+    void ExactSolutionConstantArray<Scalar>::setArray(Scalar* valueArray)
+    {
+      valueArray = valueArray;
+    }
+
+    template<typename Scalar>
+    void ExactSolutionConstantArray<Scalar>::derivatives (double x, double y, Scalar& dx, Scalar& dy) const {
+      dx = 0;
+      dy = 0;
+    };
+
+
+
+    template<typename Scalar>
     ExactSolutionVector<Scalar>::ExactSolutionVector(MeshSharedPtr mesh) : ExactSolution<Scalar>(mesh)
     {
       this->num_components = 2;
@@ -83,7 +119,7 @@ namespace Hermes
         std::ofstream out(filename);
         ::xml_schema::flags parsing_flags = ::xml_schema::flags::dont_pretty_print;
         XMLSolution::solution_(out, xmlsolution, namespace_info_map, "UTF-8", parsing_flags);
-        
+
         out.close();
       }
       catch (const xml_schema::exception& e)
@@ -126,7 +162,10 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    ConstantSolution<Scalar>::ConstantSolution(MeshSharedPtr mesh, Scalar constant) : ExactSolutionScalar<Scalar>(mesh), constant(constant) {};
+    ConstantSolution<Scalar>::ConstantSolution(MeshSharedPtr mesh, Scalar constant) : ExactSolutionScalar<Scalar>(mesh), constant(constant)
+    {
+      this->order = 0;
+    };
 
     template<typename Scalar>
     Scalar ConstantSolution<Scalar>::value (double x, double y) const {
@@ -218,7 +257,10 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    ZeroSolution<Scalar>::ZeroSolution(MeshSharedPtr mesh) : ExactSolutionScalar<Scalar>(mesh) {};
+    ZeroSolution<Scalar>::ZeroSolution(MeshSharedPtr mesh) : ExactSolutionScalar<Scalar>(mesh)
+    {
+      this->order = 0;
+    };
 
     template<typename Scalar>
     Scalar ZeroSolution<Scalar>::value (double x, double y) const {
@@ -244,7 +286,7 @@ namespace Hermes
       return Ord(0);
     }
 
-    
+
     template<>
     void ConstantSolutionVector<double>::save(const char* filename) const
     {
@@ -307,7 +349,7 @@ namespace Hermes
         ::xml_schema::flags parsing_flags = ::xml_schema::flags::dont_pretty_print;
 
         XMLSolution::solution_(out, xmlsolution, namespace_info_map, "UTF-8", parsing_flags);
-        
+
         out.close();
       }
       catch (const xml_schema::exception& e)
@@ -317,7 +359,10 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    ConstantSolutionVector<Scalar>::ConstantSolutionVector(MeshSharedPtr mesh, Scalar constantX, Scalar constantY) : ExactSolutionVector<Scalar>(mesh), constantX(constantX), constantY(constantY) {};
+    ConstantSolutionVector<Scalar>::ConstantSolutionVector(MeshSharedPtr mesh, Scalar constantX, Scalar constantY) : ExactSolutionVector<Scalar>(mesh), constantX(constantX), constantY(constantY)
+    {
+      this->order = 0;
+    };
 
     template<typename Scalar>
     MeshFunction<Scalar>* ConstantSolutionVector<Scalar>::clone() const
@@ -367,10 +412,10 @@ namespace Hermes
         namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("solution", namespace_info_solution));
 
         std::ofstream out(filename);
-        
+
         ::xml_schema::flags parsing_flags = ::xml_schema::flags::dont_pretty_print;
         XMLSolution::solution_(out, xmlsolution, namespace_info_map, "UTF-8", parsing_flags);
-        
+
         out.close();
       }
       catch (const xml_schema::exception& e)
@@ -406,7 +451,7 @@ namespace Hermes
         std::ofstream out(filename);
         ::xml_schema::flags parsing_flags = ::xml_schema::flags::dont_pretty_print;
         XMLSolution::solution_(out, xmlsolution, namespace_info_map, "UTF-8", parsing_flags);
-        
+
         out.close();
       }
       catch (const xml_schema::exception& e)
@@ -416,7 +461,10 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    ZeroSolutionVector<Scalar>::ZeroSolutionVector(MeshSharedPtr mesh) : ExactSolutionVector<Scalar>(mesh) {};
+    ZeroSolutionVector<Scalar>::ZeroSolutionVector(MeshSharedPtr mesh) : ExactSolutionVector<Scalar>(mesh)
+    {
+      this->order = 0;
+    };
 
     template<typename Scalar>
     Scalar2<Scalar> ZeroSolutionVector<Scalar>::value (double x, double y) const {
@@ -445,6 +493,10 @@ namespace Hermes
 
     template HERMES_API class ExactSolutionScalar<double>;
     template HERMES_API class ExactSolutionScalar<std::complex<double> >;
+    
+    template HERMES_API class ExactSolutionConstantArray<double>;
+    template HERMES_API class ExactSolutionConstantArray<std::complex<double> >;
+    
     template HERMES_API class ExactSolutionVector<double>;
     template HERMES_API class ExactSolutionVector<std::complex<double> >;
     template HERMES_API class ConstantSolution<double>;

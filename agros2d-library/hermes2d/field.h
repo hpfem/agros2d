@@ -80,6 +80,10 @@ public:
         AdaptivityTolerance,
         AdaptivityTransientBackSteps,
         AdaptivityTransientRedoneEach,
+        AdaptivityThreshold,
+        AdaptivityProjNormType,
+        AdaptivityUseAniso,
+        AdaptivityFinerReference,
         TransientTimeSkip,
         TransientInitialCondition
     };

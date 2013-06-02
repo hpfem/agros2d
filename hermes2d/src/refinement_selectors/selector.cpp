@@ -1,7 +1,7 @@
 #include "global.h"
-#include "solution.h"
-#include "element_to_refine.h"
 #include "selector.h"
+#include "candidates.h"
+
 namespace Hermes
 {
   namespace Hermes2D
@@ -9,35 +9,16 @@ namespace Hermes
     namespace RefinementSelectors
     {
       template<typename Scalar>
-      Selector<Scalar>* HOnlySelector<Scalar>::clone()
-      {
-        return new HOnlySelector();
-      }
-
-      template<typename Scalar>
-      bool HOnlySelector<Scalar>::select_refinement(Element* element, int quad_order, MeshFunction<Scalar>* rsln, ElementToRefine& refinement)
+      bool HOnlySelector<Scalar>::select_refinement(Element* element, int order, MeshFunction<Scalar>* rsln, ElementToRefine& refinement)
       {
         refinement.split = H2D_REFINEMENT_H;
-        refinement.p[0] = refinement.p[1] = refinement.p[2] = refinement.p[3] = quad_order;
-        refinement.q[0] = refinement.q[1] = refinement.q[2] = refinement.q[3] = quad_order;
+        refinement.best_refinement_polynomial_order_type[H2D_REFINEMENT_H][0] = 
+          refinement.best_refinement_polynomial_order_type[H2D_REFINEMENT_H][1] = 
+          refinement.best_refinement_polynomial_order_type[H2D_REFINEMENT_H][2] = 
+          refinement.best_refinement_polynomial_order_type[H2D_REFINEMENT_H][3] = 
+          order;
+        ElementToRefine::copy_orders(refinement.refinement_polynomial_order, refinement.best_refinement_polynomial_order_type[H2D_REFINEMENT_H]);
         return true;
-      }
-
-      template<typename Scalar>
-      void HOnlySelector<Scalar>::generate_shared_mesh_orders(const Element* element, const int orig_quad_order, const int refinement, int tgt_quad_orders[H2D_MAX_ELEMENT_SONS], const int* suggested_quad_orders)
-      {
-        if(suggested_quad_orders != NULL)
-          for(int i = 0; i < H2D_MAX_ELEMENT_SONS; i++)
-            tgt_quad_orders[i] = suggested_quad_orders[i];
-        else
-          for(int i = 0; i < H2D_MAX_ELEMENT_SONS; i++)
-            tgt_quad_orders[i] = orig_quad_order;
-      }
-
-      template<typename Scalar>
-      Selector<Scalar>* POnlySelector<Scalar>::clone()
-      {
-        return new POnlySelector(this->max_order, this->order_h_inc, this->order_v_inc);
       }
 
       template<typename Scalar>
@@ -51,7 +32,7 @@ namespace Hermes
       }
 
       template<typename Scalar>
-      bool POnlySelector<Scalar>::select_refinement(Element* element, int quad_order, MeshFunction<Scalar>* rsln, ElementToRefine& refinement)
+      bool POnlySelector<Scalar>::select_refinement(Element* element, int order, MeshFunction<Scalar>* rsln, ElementToRefine& refinement)
       {
         refinement.split = H2D_REFINEMENT_P;
 
@@ -61,32 +42,19 @@ namespace Hermes
           max_allowed_order = H2DRS_MAX_ORDER;
 
         //calculate new order
-        int order_h = H2D_GET_H_ORDER(quad_order), order_v = H2D_GET_V_ORDER(quad_order);
+        int order_h = H2D_GET_H_ORDER(order), order_v = H2D_GET_V_ORDER(order);
         int new_order_h = std::min(max_allowed_order, order_h + order_h_inc);
         int new_order_v = std::min(max_allowed_order, order_v + order_v_inc);
         if(element->is_triangle())
-          refinement.p[0] = refinement.q[0] = new_order_h;
+          refinement.refinement_polynomial_order[0] = refinement.best_refinement_polynomial_order_type[H2D_REFINEMENT_P][0] = new_order_h;
         else
-          refinement.p[0] = refinement.q[0] = H2D_MAKE_QUAD_ORDER(new_order_h, new_order_v);
+          refinement.refinement_polynomial_order[0] = refinement.best_refinement_polynomial_order_type[H2D_REFINEMENT_P][0] = H2D_MAKE_QUAD_ORDER(new_order_h, new_order_v);
 
         //decide if successful
         if(new_order_h > order_h || new_order_v > order_v)
           return true;
         else
           return false;
-      }
-
-      template<typename Scalar>
-      void POnlySelector<Scalar>::generate_shared_mesh_orders(const Element* element, const int orig_quad_order, const int refinement, int tgt_quad_orders[H2D_MAX_ELEMENT_SONS], const int* suggested_quad_orders)
-      {
-        if(suggested_quad_orders != NULL)
-          tgt_quad_orders[0] = suggested_quad_orders[0];
-        else
-          tgt_quad_orders[0] = orig_quad_order;
-#ifdef _DEBUG
-        for(int i = 1; i < H2D_MAX_ELEMENT_SONS; i++)
-          tgt_quad_orders[i] = 0;
-#endif
       }
 
       template class HERMES_API Selector<double>;

@@ -43,14 +43,6 @@ namespace Hermes
       template<typename Scalar> class HcurlProjBasedSelector;
     };
 
-    enum SpaceType {
-      HERMES_H1_SPACE = 0,
-      HERMES_HCURL_SPACE = 1,
-      HERMES_HDIV_SPACE = 2,
-      HERMES_L2_SPACE = 3,
-      HERMES_INVALID_SPACE = -9999
-    };
-
     /// @ingroup spaces
     /// \brief Defines a set of shape functions.
     ///
@@ -103,6 +95,7 @@ namespace Hermes
 
       /// Returns the maximum poly degree for all shape functions.
       int get_max_order() const;
+      int get_min_order() const;
 
       /// Returns the highest shape function index.
       virtual int get_max_index(ElementMode2D mode) = 0;
@@ -155,7 +148,7 @@ namespace Hermes
       int**  index_to_order;
 
       double2 ref_vert[H2D_MAX_SOLUTION_COMPONENTS][H2D_MAX_NUMBER_VERTICES];
-      int max_order;
+      int max_order, min_order;
       int num_components;
 
       int ebias; ///< 2 for H1 shapesets, 0 for H(curl) shapesets. It is the order of the

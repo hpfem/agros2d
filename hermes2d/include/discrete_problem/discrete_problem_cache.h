@@ -22,7 +22,7 @@
 #include "forms.h"
 #include "weakform/weakform.h"
 #include "function/function.h"
-#include "neighbor.h"
+#include "neighbor_search.h"
 #include "refinement_selectors/selector.h"
 #include "exceptions.h"
 #include "mixins2d.h"
@@ -125,7 +125,7 @@ namespace Hermes
       /// Starting size of the recordTable.
       static const int DEFAULT_SIZE = 5e4;
       /// Average number of subelements.
-      static const int GUESS_NUMBER_OF_SUBELEMENTS = 16;
+      static const int GUESS_NUMBER_OF_SUBELEMENTS = 32;
       /// Starting size of the hashTable.
       static const int DEFAULT_HASH_TABLE_SIZE = DEFAULT_SIZE * GUESS_NUMBER_OF_SUBELEMENTS;
 #pragma endregion

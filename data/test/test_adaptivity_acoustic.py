@@ -14,7 +14,7 @@ acoustic.analysis_type = "harmonic"
 acoustic.polynomial_order = 1
 acoustic.adaptivity_type = "hp-adaptivity"
 acoustic.adaptivity_steps = 15
-acoustic.adaptivity_tolerance = 10
+acoustic.adaptivity_tolerance = 5
 acoustic.linearity_type = "linear"
 
 

@@ -33,7 +33,8 @@ INCLUDEPATH += include \
 SOURCES +=      ../hermes_common/src/api.cpp \
                 ../hermes_common/src/callstack.cpp \
                 ../hermes_common/src/matrix.cpp \
-                ../hermes_common/src/tables.cpp \
+                ../hermes_common/src/range.cpp \
+                ../hermes_common/src/table.cpp \
                 ../hermes_common/src/qsort.cpp \
                 ../hermes_common/src/c99_functions.cpp \
                 ../hermes_common/src/ord.cpp \
@@ -64,7 +65,8 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 src/solver/runge_kutta.cpp \
                 src/solver/solver.cpp \
                 src/adapt/adapt.cpp \
-                # src/adapt/kelly_type_adapt.cpp \
+                src/adapt/error_calculator.cpp \
+                src/adapt/error_thread_calculator.cpp \
                 src/boundary_conditions/essential_boundary_conditions.cpp \
                 src/function/transformable.cpp \
                 src/function/function.cpp \
@@ -83,17 +85,16 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 src/mesh/mesh_reader_h2d_xml.cpp \
                 src/mesh/mesh_reader_h2d.cpp \
                 src/mesh/subdomains_h2d_xml.cpp \
-                src/mesh/refinement_type.cpp \
                 src/mesh/traverse.cpp \
-                src/mesh/element_to_refine.cpp \
                 src/mesh/mesh.cpp \
                 src/mesh/refmap.cpp \
                 src/quadrature/limit_order.cpp \
                 src/quadrature/quad_std.cpp \
-                src/projections/localprojection.cpp \
                 src/projections/ogprojection.cpp \
                 src/projections/ogprojection_nox.cpp \
                 src/refinement_selectors/selector.cpp  \
+                src/refinement_selectors/candidates.cpp \
+                src/refinement_selectors/element_to_refine.cpp \
                 src/refinement_selectors/order_permutator.cpp  \
                 src/refinement_selectors/optimum_selector.cpp  \
                 src/refinement_selectors/proj_based_selector.cpp  \
@@ -123,7 +124,8 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 src/views/orderizer.cpp \
                 src/views/vectorizer.cpp \
                 src/weakform/weakform.cpp  \
-                src/neighbor.cpp \
+                src/neighbor_search.cpp \
+                src/norm_form.cpp \
                 src/graph.cpp \
                 src/discrete_problem.cpp \
                 src/discrete_problem/discrete_problem_cache.cpp \
@@ -135,8 +137,7 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 src/discrete_problem/dg/discrete_problem_dg_assembler.cpp \
                 src/discrete_problem/dg/multimesh_dg_neighbor_tree.cpp \
                 src/discrete_problem/dg/multimesh_dg_neighbor_tree_node.cpp \
-                src/spline.cpp \
-                src/global.cpp
+                src/spline.cpp
 
 HEADERS += \
     ../hermes_common/include/config.h \

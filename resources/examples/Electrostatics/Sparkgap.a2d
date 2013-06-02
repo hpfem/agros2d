@@ -93,10 +93,14 @@
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
           <field_item field_key="SpaceNumberOfRefinements" field_value="0"/>
           <field_item field_key="SpacePolynomialOrder" field_value="2"/>
-          <field_item field_key="AdaptivitySteps" field_value="12"/>
-          <field_item field_key="AdaptivityTolerance" field_value="3"/>
+          <field_item field_key="AdaptivitySteps" field_value="10"/>
+          <field_item field_key="AdaptivityTolerance" field_value="0.5"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
           <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
+          <field_item field_key="AdaptivityThreshold" field_value="0.7"/>
+          <field_item field_key="AdaptivityProjNormType" field_value="1"/>
+          <field_item field_key="AdaptivityUseAniso" field_value="1"/>
+          <field_item field_key="AdaptivityFinerReference" field_value="0"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
           <field_item field_key="TransientInitialCondition" field_value="0"/>
         </field_config>
@@ -249,14 +253,6 @@
     <item key="View_LinearizerQuality" value="4"/>
     <item key="View_SolidViewHide" value=""/>
     <item key="Adaptivity_MaxDofs" value="60000"/>
-    <item key="Adaptivity_IsoOnly" value="0"/>
-    <item key="Adaptivity_ConvExp" value="1"/>
-    <item key="Adaptivity_Threshold" value="0.3"/>
-    <item key="Adaptivity_Strategy" value="0"/>
-    <item key="Adaptivity_MeshRegularity" value="-1"/>
-    <item key="Adaptivity_ProjNormType" value="1"/>
-    <item key="Adaptivity_UseAniso" value="1"/>
-    <item key="Adaptivity_FinerReference" value="0"/>
     <item key="Commands_Triangle" value="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;"/>
     <item key="Commands_Gmsh" value="%1 -2 &quot;%2.geo&quot;"/>
   </config>

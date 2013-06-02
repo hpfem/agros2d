@@ -143,7 +143,7 @@ namespace Hermes
       for (i = 0; i < this->size; i++)
       {
         Ap[i] = pos;
-        pos += this->sort_and_store_indices(this->pages[i], Ai + pos, Ai + aisize);
+        pos += sort_and_store_indices(this->pages[i], Ai + pos, Ai + aisize);
       }
       Ap[i] = pos;
 

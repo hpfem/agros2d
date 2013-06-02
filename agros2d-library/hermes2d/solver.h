@@ -200,7 +200,7 @@ private:
     // to be used in advanced time step adaptivity
     double m_averageErrorToLenghtRatio;
 
-    void initSelectors(Hermes::vector<Hermes::Hermes2D::ProjNormType>& projNormType,
+    void initSelectors(Hermes::vector<Hermes::Hermes2D::NormType>& projNormType,
                        Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *>& selectors);
     void deleteSelectors(Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *>& selectors);
 

@@ -17,6 +17,7 @@
 #define __H2D_REFINEMENT_SELECTORS_L2_PROJ_BASED_SELECTOR_H
 
 #include "proj_based_selector.h"
+#include "shapeset/shapeset_l2_all.h"
 namespace Hermes
 {
   namespace Hermes2D
@@ -32,14 +33,11 @@ namespace Hermes
       public: //API
         /// Constructor.
         /** \param[in] cand_list A predefined list of candidates.
-        *  \param[in] conv_exp A conversion exponent, see evaluate_cands_score().
         *  \param[in] max_order A maximum order which considered. If ::H2DRS_DEFAULT_ORDER, a maximum order supported by the selector is used, see HcurlProjBasedSelector::H2DRS_MAX_L2_ORDER.
         *  \param[in] user_shapeset A shapeset. If NULL, it will use internal instance of the class L2Shapeset. */
-        L2ProjBasedSelector(CandList cand_list = H2D_HP_ANISO, double conv_exp = 1.0, int max_order = H2DRS_DEFAULT_ORDER, L2Shapeset* user_shapeset = NULL);
+        L2ProjBasedSelector(CandList cand_list = H2D_HP_ANISO, int max_order = H2DRS_DEFAULT_ORDER, L2Shapeset* user_shapeset = NULL);
         /// Destructor.
         ~L2ProjBasedSelector();
-        /// Cloning for paralelism.
-        virtual Selector<Scalar>* clone();
 
       protected: //overloads
         /// A function expansion of a function f used by this selector.
@@ -48,23 +46,16 @@ namespace Hermes
           H2D_L2FE_NUM = 1 ///< A total considered function expansion.
         };
 
-        static const int H2DRS_MAX_L2_ORDER; ///< A maximum used order in this L2-space selector.
-
-        Scalar* precalc_rvals[H2D_MAX_ELEMENT_SONS][H2D_L2FE_NUM]; ///< Array of arrays of precalculates. The first index is an index of a subdomain, the second index is an index of a function expansion (see enum LocalFuncExpansion).
-
         /// Sets OptimumSelector::current_max_order and OptimumSelector::current_min_order.
         /** The default order range is[1, 8]. If curved, the upper boundary of the range becomes lower.
         *  Overriden function. For details, see OptimumSelector::set_current_order_range().
         *  \todo Replace calculations inside with calculations that uses symbolic constants instead of fixed numbers.
         *  \todo The original implementation uses subtracts 1 in H1 and Hcurl while L2 subtracts 2. Why? */
-        virtual void set_current_order_range(Element* element);
+        virtual void get_current_order_range(Element* element, int& min_order, int& max_order);
 
         /// Returns an array of values of the reference solution at integration points.
         /**  Overriden function. For details, see ProjBasedSelector::precalc_ref_solution(). */
         virtual Scalar** precalc_ref_solution(int inx_son, MeshFunction<Scalar>* rsln, Element* element, int intr_gip_order);
-
-        /**  Overriden function. For details, see OptimumSelector::create_candidates(). */
-        void create_candidates(Element* e, int quad_order, int max_ha_quad_order, int max_p_quad_order);
 
         /// Calculates values of shape function at GIP for all transformations.
         /**  Overriden function. For details, see ProjBasedSelector::precalc_shapes(). */

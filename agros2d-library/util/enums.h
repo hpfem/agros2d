@@ -242,7 +242,7 @@ AGROS_API QString stringListToString(const QStringList &list);
 AGROS_API void initLists();
 
 // error norm
-AGROS_API QString errorNormString(Hermes::Hermes2D::ProjNormType projNormType);
+AGROS_API QString errorNormString(Hermes::Hermes2D::NormType projNormType);
 
 // coordinate type
 AGROS_API QString coordinateTypeString(CoordinateType coordinateType);

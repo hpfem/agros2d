@@ -80,8 +80,8 @@ public:
     void append(SpaceSharedPtr<Scalar> space, MeshFunctionSharedPtr<Scalar> solution);
     void append(Hermes::vector<SpaceSharedPtr<Scalar> > spaces, Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions);
 
-    Hermes::vector<SpaceSharedPtr<Scalar> > spaces() { return m_spaces; }
-    Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions() { return m_solutions; }
+    Hermes::vector<SpaceSharedPtr<Scalar> > &spaces() { return m_spaces; }
+    Hermes::vector<MeshFunctionSharedPtr<Scalar> > &solutions() { return m_solutions; }
 
     //Hermes::vector<const SpaceSharedPtr<Scalar> > spacesConst() { return m_spaces; }
 

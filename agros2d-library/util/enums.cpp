@@ -303,7 +303,7 @@ void initLists()
     nonlinearSolverConvergenceMeasurementList.insert(Hermes::Hermes2D::SolutionDistanceFromPreviousRelative, "solution_distance_from_previous_relative");
 }
 
-QString errorNormString(Hermes::Hermes2D::ProjNormType projNormType)
+QString errorNormString(Hermes::Hermes2D::NormType projNormType)
 {
     switch (projNormType)
     {

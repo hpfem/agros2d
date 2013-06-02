@@ -16,7 +16,6 @@
 #ifndef __H2D_REFINEMENT_PROJ_BASED_SELECTOR_H
 #define __H2D_REFINEMENT_PROJ_BASED_SELECTOR_H
 
-#include "../global.h"
 #include "optimum_selector.h"
 
 using namespace Hermes::Algebra::DenseMatrixOperations;
@@ -168,12 +167,11 @@ namespace Hermes
         /// Constructor.
         /** Intializes attributes, projection matrix cache (ProjBasedSelector::proj_matrix_cache), and allocates rhs cache (ProjBasedSelector::rhs_cache).
         *  \param[in] cand_list A predefined list of candidates.
-        *  \param[in] conv_exp A conversion exponent, see evaluate_cands_score().
         *  \param[in] max_order A maximum order which considered. If ::H2DRS_DEFAULT_ORDER, a maximum order supported by the selector is used.
         *  \param[in] shapeset A shapeset. It cannot be NULL.
         *  \param[in] vertex_order A range of orders for vertex functions. Use an empty range (i.e. Range()) to skip vertex functions.
         *  \param[in] edge_bubble_order A range of orders for edge and bubble functions. Use an empty range (i.e. Range()) to skip edge and bubble functions. */
-        ProjBasedSelector(CandList cand_list, double conv_exp, int max_order, Shapeset* shapeset, const typename OptimumSelector<Scalar>::Range& vertex_order, const typename OptimumSelector<Scalar>::Range& edge_bubble_order);
+        ProjBasedSelector(CandList cand_list, int max_order, Shapeset* shapeset, const Range& vertex_order, const Range& edge_bubble_order);
 
       protected: //internal logic
         /// True if the selector has already warned about possible inefficiency.
@@ -228,22 +226,13 @@ namespace Hermes
         *  If record is NULL, the corresponding matrix has to be calculated. */
         ProjMatrixCache proj_matrix_cache[H2D_NUM_MODES];
 
-        /// An array of cached right-hand side values.
-        /** The first index is an index of the shape function.
-        *
-        *  Contents of the array is valid in the method calc_error_cand_element().
-        *  The array is allocated in the constructor, the size of the array is equal to the maximum index of a shape function + 1.
-        *  \note It is kept here in order to avoid frequent reallocating. */
-        Hermes::vector< ValueCacheItem<Scalar> > nonortho_rhs_cache;
-        Hermes::vector< ValueCacheItem<Scalar> > ortho_rhs_cache;
-
         double error_weight_h; ///< A coefficient that multiplies error of H-candidate. The default value is ::H2DRS_DEFAULT_ERR_WEIGHT_H.
         double error_weight_p; ///< A coefficient that multiplies error of P-candidate. The default value is ::H2DRS_DEFAULT_ERR_WEIGHT_P.
         double error_weight_aniso; ///< A coefficient that multiplies error of ANISO-candidate. The default value is ::H2DRS_DEFAULT_ERR_WEIGHT_ANISO.
 
         /// Calculates error of candidates.
         /** Overriden function. For details, see OptimumSelector::evaluate_cands_error(). */
-        virtual void evaluate_cands_error(Element* e, MeshFunction<Scalar>* rsln, double* avg_error, double* dev_error);
+        virtual void evaluate_cands_error(Hermes::vector<Cand>& candidates, Element* e, MeshFunction<Scalar>* rsln);
 
         /// Calculates projection errors of an elements of candidates for all permutations of orders.
         /** Errors are not normalized and they are squared.

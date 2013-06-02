@@ -62,7 +62,7 @@ namespace Hermes
         }
       }
 
-      this->n_quadrature_points = init_geometry_points(current_refmaps[rep_space_i], this->order, this->geometry, this->jacobian_x_weights);
+      this->n_quadrature_points = init_geometry_points(current_refmaps, this->spaceCnt, this->order, this->geometry, this->jacobian_x_weights);
 
       if(current_state->isBnd && (current_wf->mfsurf.size() > 0 || current_wf->vfsurf.size() > 0))
       {
@@ -85,7 +85,7 @@ namespace Hermes
             this->fnsSurface[current_state->isurf] = NULL;
             continue;
           }
-          this->n_quadrature_pointsSurface[current_state->isurf] = init_surface_geometry_points(current_refmaps[rep_space_i], order, current_state->isurf, current_state->rep->marker, this->geometrySurface[current_state->isurf], this->jacobian_x_weightsSurface[current_state->isurf]);
+          this->n_quadrature_pointsSurface[current_state->isurf] = init_surface_geometry_points(current_refmaps, this->spaceCnt, order, current_state->isurf, current_state->rep->marker, this->geometrySurface[current_state->isurf], this->jacobian_x_weightsSurface[current_state->isurf]);
           this->orderSurface[current_state->isurf] = order;
           order = this->order;
 
@@ -249,7 +249,7 @@ namespace Hermes
     template<typename Scalar>
     bool DiscreteProblemCache<Scalar>::get_adaptivity(Element* rep, int rep_sub_idx, int rep_i, CacheRecord*& cache_record)
     {
-      int parent_son;
+      int parent_son = -1;
       for(int i = 0; i < 4; i++)
       {
         if(rep->parent->sons[i] == rep)
@@ -258,6 +258,10 @@ namespace Hermes
           break;
         }
       }
+
+#ifdef _DEBUG
+      assert(parent_son != -1);
+#endif
 
       int hash = this->get_hash_record(rep->parent->id, parent_son, rep_sub_idx, rep_i);
       if (this->hashTable[hash] == NULL)

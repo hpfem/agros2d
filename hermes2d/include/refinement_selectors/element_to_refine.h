@@ -16,7 +16,8 @@
 #ifndef __H2D_ELEMENT_TO_REFINE_H
 #define __H2D_ELEMENT_TO_REFINE_H
 
-#include "refinement_type.h"
+#include "global.h"
+
 namespace Hermes
 {
   namespace Hermes2D
@@ -47,11 +48,14 @@ namespace Hermes
       /// Assignment operator.
       ElementToRefine& operator=(const ElementToRefine& orig);
     private:
-      int id; ///< An ID of the element. -1 if invalid.
-      int comp; ///< An index of the component. -1 if invalid.
+      int id; ///< An ID of the element.
+      int comp; ///< An index of the component.
       int split; ///< Proposed refinement. Possible values are defined in the enum ::RefinementType.
-      int p[H2D_MAX_ELEMENT_SONS]; ///< Encoded orders of sons.
-      int q[H2D_MAX_ELEMENT_SONS]; ///< Encoded orders of the best H-refinement. These orders are used in a case multiple components shares a single mesh.
+      int refinement_polynomial_order[H2D_MAX_ELEMENT_SONS]; ///< Encoded orders of sons.
+      /// Encoded orders of the best refinement of a certaint type.
+      /// Indexed by enum RefinementType.
+      int best_refinement_polynomial_order_type[4][H2D_MAX_ELEMENT_SONS]; 
+      double errors[H2D_MAX_ELEMENT_SONS]; ///< Error of the selected candidate.
 
       /// Returns a number of sons.
       /** \return A number of sons of a given refinement. */
@@ -62,7 +66,9 @@ namespace Hermes
       *  \param[in] dest A destination array.
       *  \param[in] src A source arrapy. */
       static void copy_orders(int* dest, const int* src);
+      static void copy_errors(double* dest, const double* src);
       template<typename T> friend class Adapt;
+      template<typename T> friend class ErrorCalculator;
       template<typename T> friend class RefinementSelectors::Selector;
       template<typename T> friend class RefinementSelectors::HOnlySelector;
       template<typename T> friend class RefinementSelectors::POnlySelector;

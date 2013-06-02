@@ -16,8 +16,7 @@
 #include "solver/runge_kutta.h"
 #include "discrete_problem.h"
 #include "projections/ogprojection.h"
-#include "projections/localprojection.h"
-#include "weakform_library/weakforms_hcurl.h"
+#include "norm_form.h"
 namespace Hermes
 {
   namespace Hermes2D
@@ -38,8 +37,6 @@ namespace Hermes
 
       if(bt==NULL)
         throw Exceptions::NullException(2);
-
-      do_global_projections = true;
 
       matrix_right = create_matrix<Scalar>();
       matrix_left = create_matrix<Scalar>();
@@ -72,8 +69,6 @@ namespace Hermes
       this->spaces_mutable.push_back(space);
 
       if(bt==NULL) throw Exceptions::NullException(2);
-
-      do_global_projections = true;
 
       matrix_right = create_matrix<Scalar>();
       matrix_left = create_matrix<Scalar>();
@@ -269,12 +264,6 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void RungeKutta<Scalar>::use_local_projections()
-    {
-      do_global_projections = false;
-    }
-
-    template<typename Scalar>
     void RungeKutta<Scalar>::multiply_as_diagonal_block_matrix(SparseMatrix<Scalar>* matrix, int num_blocks,
       Scalar* source_vec, Scalar* target_vec)
     {
@@ -398,7 +387,7 @@ namespace Hermes
         // Measure the residual norm.
         if(residual_as_vector)
           // Calculate the l2-norm of residual vector.
-          residual_norm = Global<Scalar>::get_l2_norm(vector_right);
+          residual_norm = get_l2_norm(vector_right);
         else
         {
           // Translate residual vector into residual functions.
@@ -407,10 +396,12 @@ namespace Hermes
           add_dir_lift_vector.push_back(false);
           Solution<Scalar>::vector_to_solutions(vector_right, stage_dp_right->get_spaces(), residuals_vector, false);
           
-          Hermes::vector<MeshFunction<Scalar>*> meshFns;
+          Hermes::vector<MeshFunctionSharedPtr<Scalar> > meshFns;
           for(int i = 0; i < residuals_vector.size(); i++)
-            meshFns.push_back(residuals_vector[i].get());
-          residual_norm = Global<Scalar>::calc_norms(meshFns);
+            meshFns.push_back(residuals_vector[i]);
+
+          DefaultNormCalculator<Scalar, HERMES_L2_NORM> errorCalculator(meshFns.size());
+          residual_norm = errorCalculator.calculate_norms(meshFns);
         }
 
         // Info for the user.
@@ -487,27 +478,7 @@ namespace Hermes
       // FIXME - this projection is not needed when the
       //         spaces are the same (if spatial adaptivity is not used).
       Scalar* coeff_vec = new Scalar[ndof];
-      if(do_global_projections)
-      {
-        OGProjection<Scalar> ogProjection;
-        ogProjection.project_global(spaces, slns_time_prev, coeff_vec);
-      }
-      else
-      {
-        LocalProjection<Scalar> ogProjection;
-        ogProjection.project_local(spaces, slns_time_prev, coeff_vec);
-      }
-
-      if(do_global_projections)
-      {
-        OGProjection<Scalar> ogProjection;
-        ogProjection.project_global(spaces, slns_time_prev, coeff_vec);
-      }
-      else
-      {
-        LocalProjection<Scalar> ogProjection;
-        ogProjection.project_local(spaces, slns_time_prev, coeff_vec);
-      }
+      OGProjection<Scalar>::project_global(spaces, slns_time_prev, coeff_vec);
 
       // Calculate new time level solution in the stage space (u_{n + 1} = u_n + h \sum_{j = 1}^s b_j k_j).
       for (int i = 0; i < ndof; i++)
@@ -577,7 +548,7 @@ namespace Hermes
         if(spaces[component_i]->get_type() == HERMES_H1_SPACE
            || spaces[component_i]->get_type() == HERMES_L2_SPACE)
         {
-          MatrixFormVolL2<Scalar>* proj_form = new MatrixFormVolL2<Scalar>(component_i, component_i);
+          MatrixDefaultNormFormVol<Scalar>* proj_form = new MatrixDefaultNormFormVol<Scalar>(component_i, component_i, HERMES_L2_NORM);
           proj_form->areas.push_back(HERMES_ANY);
           proj_form->scaling_factor = 1.0;
           proj_form->u_ext_offset = 0;
@@ -586,7 +557,7 @@ namespace Hermes
         if(spaces[component_i]->get_type() == HERMES_HDIV_SPACE
            || spaces[component_i]->get_type() == HERMES_HCURL_SPACE)
         {
-          MatrixFormVolHCurl<Scalar>* proj_form = new MatrixFormVolHCurl<Scalar>(component_i, component_i);
+          MatrixDefaultNormFormVol<Scalar>* proj_form = new MatrixDefaultNormFormVol<Scalar>(component_i, component_i, HERMES_HCURL_NORM);
           proj_form->areas.push_back(HERMES_ANY);
           proj_form->scaling_factor = 1.0;
           proj_form->u_ext_offset = 0;

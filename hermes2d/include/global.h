@@ -42,22 +42,6 @@ static const std::string H2D_DG_INNER_EDGE = "-1234567";
 #define HERMES_DEFAULT_FUNCTION NULL
 #define HERMES_DEFAULT_SPLINE NULL
 
-/// Constant used by Adapt::calc_eror().
-#define HERMES_TOTAL_ERROR_REL  0x00  ///< A flag which defines interpretation of the total error. \ingroup g_adapt
-///  The total error is divided by the norm and therefore it should be in a range[0, 1].
-///  \note Used by Adapt::calc_errors_internal().. This flag is mutually exclusive with ::H2D_TOTAL_ERROR_ABS.
-#define HERMES_TOTAL_ERROR_ABS  0x01  ///< A flag which defines interpretation of the total error. \ingroup g_adapt
-///  The total error is absolute, i.e., it is an integral over squares of differencies.
-///  \note Used by Adapt::calc_errors_internal(). This flag is mutually exclusive with ::HERMES_TOTAL_ERROR_REL.
-#define HERMES_ELEMENT_ERROR_REL 0x00 ///< A flag which defines interpretation of an error of an element. \ingroup g_adapt
-///  An error of an element is a square of an error divided by a square of a norm of a corresponding component.
-///  When norms of 2 components are very different (e.g. microwave heating), it can help.
-///  Navier-stokes on different meshes work only when absolute error (see ::H2D_ELEMENT_ERROR_ABS) is used.
-///  \note Used by Adapt::calc_errors_internal(). This flag is mutually exclusive with ::H2D_ELEMENT_ERROR_ABS.
-#define HERMES_ELEMENT_ERROR_ABS 0x10 ///< A flag which defines interpretation of of an error of an element. \ingroup g_adapt
-///  An error of an element is a square of an asolute error, i.e., it is an integral over squares of differencies.
-///  \note Used by Adapt::calc_errors_internal(). This flag is mutually exclusive with ::HERMES_ELEMENT_ERROR_REL.
-
 /// A total number of valid transformation of a triangle to a sub-domain.
 static const int H2D_TRF_TRI_NUM = 4;
 /// A total number of valid transformation of a quad to a sub-domain.
@@ -109,54 +93,37 @@ namespace Hermes
 #define H2D_MAKE_QUAD_ORDER(h_encoded_order, v_encoded_order) (((v_encoded_order) << H2D_ORDER_BITS) + (h_encoded_order))
 #define H2D_MAKE_EDGE_ORDER(mode, edge, order) ((mode == HERMES_MODE_TRIANGLE || edge == 0 || edge == 2) ? H2D_GET_H_ORDER(order) : H2D_GET_V_ORDER(order))
 
-    /// Class for global functions.
     template<typename Scalar>
-    class HERMES_API Global : public Hermes::Mixins::Loggable
+    double get_l2_norm(Vector<Scalar>* vec)
     {
-    public:
-      Global() : Hermes::Mixins::Loggable() {};
-      friend void warn_order();
-    public:
-      /// Error calculation in Hermes, useful for non-adaptive computations.
-      // Note: coarse mesh sln has to be first, then
-      // ref_sln (because the abs. error is divided
-      // by the norm of the latter).
-      static double calc_rel_error(MeshFunction<Scalar>* sln1, MeshFunction<Scalar>* sln2, int norm_type);
-      static double calc_abs_error(MeshFunction<Scalar>* sln1, MeshFunction<Scalar>* sln2, int norm_type);
-      static double calc_norm(MeshFunction<Scalar>* sln, int norm_type);
-
-      /// Calculate norm of a (possibly vector-valued) solution.
-      /// Take norm from spaces where these solutions belong.
-      static double calc_norms(Hermes::vector<MeshFunctionSharedPtr<Scalar> > slns);
-      static double calc_abs_errors(Hermes::vector<MeshFunctionSharedPtr<Scalar> > slns1, Hermes::vector<MeshFunctionSharedPtr<Scalar> > slns2);
-      static double calc_rel_errors(Hermes::vector<MeshFunctionSharedPtr<Scalar> > slns1, Hermes::vector<MeshFunctionSharedPtr<Scalar> > slns2);
-
-      static double calc_norms(Hermes::vector<MeshFunction<Scalar>* > slns);
-      static double calc_abs_errors(Hermes::vector<MeshFunction<Scalar>* > slns1, Hermes::vector<MeshFunction<Scalar>* > slns2);
-      static double calc_rel_errors(Hermes::vector<MeshFunction<Scalar>* > slns1, Hermes::vector<MeshFunction<Scalar>* > slns2);
-
-      static double error_fn_l2(MeshFunction<Scalar>* sln1, MeshFunction<Scalar>* sln2, RefMap* ru, RefMap* rv);
-      static double norm_fn_l2(MeshFunction<Scalar>* sln, RefMap* ru);
-
-      static double error_fn_h1(MeshFunction<Scalar>* sln1, MeshFunction<Scalar>* sln2, RefMap* ru, RefMap* rv);
-      static double norm_fn_h1(MeshFunction<Scalar>* sln, RefMap* ru);
-
-      static double error_fn_hc(MeshFunction<Scalar>* sln1, MeshFunction<Scalar>* sln2, RefMap* ru, RefMap* rv);
-      static double norm_fn_hc(MeshFunction<Scalar>* sln, RefMap* ru);
-
-      static double error_fn_hcl2(MeshFunction<Scalar>* sln1, MeshFunction<Scalar>* sln2, RefMap* ru, RefMap* rv);
-      static double norm_fn_hcl2(MeshFunction<Scalar>* sln, RefMap* ru);
-
-      static double error_fn_hdiv(MeshFunction<Scalar>* sln1, MeshFunction<Scalar>* sln2, RefMap* ru, RefMap* rv);
-      static double norm_fn_hdiv(MeshFunction<Scalar>* sln, RefMap* ru);
-
-      static double get_l2_norm(Vector<Scalar>* vec);
-      static double get_l2_norm(Scalar* vec, int count);
+      Scalar val = 0;
+      for (unsigned int i = 0; i < vec->length(); i++)
+      {
+        Scalar inc = vec->get(i);
+        val = val + inc*conj(inc);
+      }
+      return sqrt(std::abs(val));
     };
+
+    template<typename Scalar>
+    double get_l2_norm(Scalar* vec, int count)
+    {
+      Scalar val = 0;
+      for (unsigned int i = 0; i < count; i++)
+      {
+        Scalar inc = vec[i];
+        val = val + inc*conj(inc);
+      }
+      return sqrt(std::abs(val));
+    }
+
+#define H2DRS_DEFAULT_ORDER -1 ///< A default order. Used to indicate an unkonwn order or a maximum support order.  \ingroup g_selectors
+#define H2DRS_MAX_ORDER 10 ///< A maximum order suported by refinement selectors. \ingroup g_selectors
+#define H2D_NUM_SHAPES_SIZE 12 ///< A maximum order suported by refinement selectors. \ingroup g_selectors
 
     /// Projection norms.
     /// Used in projections and adaptivity.
-    enum ProjNormType
+    enum NormType
     {
       HERMES_L2_NORM,
       HERMES_H1_NORM,
@@ -169,6 +136,30 @@ namespace Hermes
     enum ElementMode2D {
       HERMES_MODE_TRIANGLE = 0,
       HERMES_MODE_QUAD = 1
+    };
+
+    enum SpaceType {
+      HERMES_H1_SPACE = 0,
+      HERMES_HCURL_SPACE = 1,
+      HERMES_HDIV_SPACE = 2,
+      HERMES_L2_SPACE = 3,
+      HERMES_INVALID_SPACE = -9999
+    };
+
+    /// Geometrical type of weak forms.
+    enum GeomType
+    {
+      HERMES_PLANAR = 0,         // Planar problem.
+      HERMES_AXISYM_X = 1,       // Axisymmetric problem where x-axis is the axis of symmetry.
+      HERMES_AXISYM_Y = 2        // Axisymmetric problem where y-axis is the axis of symmetry.
+    };
+
+    /// Bilinear form symmetry flag, see WeakForm::add_matrix_form
+    enum SymFlag
+    {
+      HERMES_ANTISYM = -1,
+      HERMES_NONSYM = 0,
+      HERMES_SYM = 1
     };
   }
 }

@@ -77,6 +77,38 @@ namespace Hermes
 
       this->jacobian_reusable = false;
       this->constant_jacobian = false;
+
+      this->do_UMFPACK_reporting = false;
+    }
+
+    template<typename Scalar>
+    double Solver<Scalar>::get_UMFPACK_reporting_data(UMFPACK_reporting_data_value data_value)
+    {
+      return this->UMFPACK_reporting_data[data_value];
+    }
+
+    template<typename Scalar>
+     void Solver<Scalar>::set_UMFPACK_output(bool to_set, bool with_output)
+    {
+      if(!dynamic_cast<UMFPackLinearMatrixSolver<Scalar>*>(this->matrix_solver))
+      {
+        this->warn("A different solver than UMFPACK is used, ignoring the call to set_UMFPACK_reporting().");
+        return;
+      }
+
+      if(with_output)
+        ((UMFPackLinearMatrixSolver<Scalar>*)this->matrix_solver)->set_output_level(2);
+      else
+        ((UMFPackLinearMatrixSolver<Scalar>*)this->matrix_solver)->set_output_level(0);
+
+      this->do_UMFPACK_reporting = to_set;
+    }
+
+    template<typename Scalar>
+     void Solver<Scalar>::set_verbose_output(bool to_set)
+    {
+      Loggable::set_verbose_output(to_set);
+      this->matrix_solver->set_verbose_output(to_set);
     }
 
     template<typename Scalar>
@@ -190,12 +222,14 @@ namespace Hermes
       {
         if(this->reuse_jacobian_values() || force_reuse_jacobian_values)
         {
+          this->info("\tSolver: reusing Jacobian.");
           if(assemble_residual)
             this->dp->assemble(coeff_vec, this->residual);
           this->matrix_solver->set_factorization_scheme(HERMES_REUSE_FACTORIZATION_COMPLETELY);
         }
         else
         {
+          this->info("\tSolver: recalculating a reusable Jacobian.");
           this->matrix_solver->set_factorization_scheme(HERMES_REUSE_MATRIX_REORDERING_AND_SCALING);
           if(assemble_residual)
             this->dp->assemble(coeff_vec, this->jacobian, this->residual);
@@ -205,6 +239,7 @@ namespace Hermes
       }
       else
       {
+        this->info("\tSolver: Calculating Jacobian.");
         if(assemble_residual)
           this->dp->assemble(coeff_vec, this->jacobian, this->residual);
         else

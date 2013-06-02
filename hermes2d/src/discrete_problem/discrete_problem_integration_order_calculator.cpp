@@ -16,14 +16,13 @@
 #include "discrete_problem.h"
 #include "function/exact_solution.h"
 #include "global.h"
-#include "integrals/h1.h"
 #include "quadrature/limit_order.h"
 #include "mesh/traverse.h"
 #include "space/space.h"
 #include "shapeset/precalc.h"
 #include "mesh/refmap.h"
 #include "function/solution.h"
-#include "neighbor.h"
+#include "neighbor_search.h"
 #include "api2d.h"
 #include <algorithm>
 
@@ -151,7 +150,6 @@ namespace Hermes
 
       // Cleanup.
       deinit_ext_orders(form, u_ext_ord, ext_ord);
-      delete [] u_ext_ord;
       ou->free_ord();
       delete ou;
       ov->free_ord();
@@ -198,7 +196,6 @@ namespace Hermes
 
       // Cleanup.
       deinit_ext_orders(form, u_ext_ord, ext_ord);
-      delete [] u_ext_ord;
       ov->free_ord();
       delete ov;
 
@@ -249,6 +246,8 @@ namespace Hermes
         oi[i]->free_ord();
         delete oi[i];
       }
+      if(oi)
+        delete [] oi;
 
       if(oext)
       {

@@ -132,13 +132,6 @@ void SettingsWidget::load()
 
     // adaptivity
     txtMaxDOFs->setValue(Agros2D::problem()->setting()->value(ProblemSetting::Adaptivity_MaxDofs).toInt());
-    txtConvExp->setValue(Agros2D::problem()->setting()->value(ProblemSetting::Adaptivity_ConvExp).toDouble());
-    txtThreshold->setValue(Agros2D::problem()->setting()->value(ProblemSetting::Adaptivity_Threshold).toDouble());
-    cmbStrategy->setCurrentIndex(cmbStrategy->findData(Agros2D::problem()->setting()->value(ProblemSetting::Adaptivity_Strategy).toInt()));
-    cmbMeshRegularity->setCurrentIndex(cmbMeshRegularity->findData(Agros2D::problem()->setting()->value(ProblemSetting::Adaptivity_MeshRegularity).toInt()));
-    cmbProjNormType->setCurrentIndex(cmbProjNormType->findData((Hermes::Hermes2D::ProjNormType) Agros2D::problem()->setting()->value(ProblemSetting::Adaptivity_ProjNormType).toInt()));
-    chkUseAniso->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::Adaptivity_UseAniso).toBool());
-    chkFinerReference->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::Adaptivity_FinerReference).toBool());
 
     // command argument
     txtArgumentTriangle->setText(Agros2D::problem()->setting()->value(ProblemSetting::Commands_Triangle).toString());
@@ -248,13 +241,6 @@ void SettingsWidget::save()
 
     // adaptivity
     Agros2D::problem()->setting()->setValue(ProblemSetting::Adaptivity_MaxDofs, txtMaxDOFs->value());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::Adaptivity_ConvExp, txtConvExp->value());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::Adaptivity_Threshold, txtThreshold->value());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::Adaptivity_Strategy, cmbStrategy->itemData(cmbStrategy->currentIndex()).toInt());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::Adaptivity_MeshRegularity, cmbMeshRegularity->itemData(cmbMeshRegularity->currentIndex()).toInt());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::Adaptivity_ProjNormType, (Hermes::Hermes2D::ProjNormType) cmbProjNormType->itemData(cmbProjNormType->currentIndex()).toInt());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::Adaptivity_UseAniso, chkUseAniso->isChecked());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::Adaptivity_FinerReference, chkFinerReference->isChecked());
 
     // command argument
     Agros2D::problem()->setting()->setValue(ProblemSetting::Commands_Triangle, txtArgumentTriangle->text());
@@ -505,59 +491,10 @@ QWidget *SettingsWidget::controlsMeshAndSolver()
     txtMaxDOFs->setMaximum(1e9);
     txtMaxDOFs->setSingleStep(1e2);
 
-    txtConvExp = new LineEditDouble(Agros2D::problem()->setting()->value(ProblemSetting::Adaptivity_ConvExp).toDouble(), true);
-    lblConvExp = new QLabel(tr("This parameter influences the selection of<br /> candidates in hp-adaptivity. Default value is 1.0."));
-    lblConvExp->setFont(fnt);
-
-    txtThreshold = new LineEditDouble(Agros2D::problem()->setting()->value(ProblemSetting::Adaptivity_Threshold).toDouble(), true);
-    txtThreshold->setBottom(0.0);
-    lblThreshold = new QLabel(tr("Quantitative parameter of the adaptivity with<br/>different meanings for adaptive strategies."));
-    lblThreshold->setFont(fnt);
-
-    cmbStrategy = new QComboBox();
-    cmbStrategy->addItem("0", 0);
-    cmbStrategy->addItem("1", 1);
-    cmbStrategy->addItem("2", 2);
-    connect(cmbStrategy, SIGNAL(currentIndexChanged(int)), this, SLOT(doStrategyChanged(int)));
-    lblStrategy = new QLabel("");
-    lblStrategy->setFont(fnt);
-    doStrategyChanged(0);
-
-    cmbMeshRegularity = new QComboBox();
-    cmbMeshRegularity->addItem(tr("arbitrary level"), -1);
-    cmbMeshRegularity->addItem(tr("at most one-level"), 1);
-    cmbMeshRegularity->addItem(tr("at most two-level"), 2);
-    cmbMeshRegularity->addItem(tr("at most three-level"), 3);
-    cmbMeshRegularity->addItem(tr("at most four-level"), 4);
-    cmbMeshRegularity->addItem(tr("at most five-level"), 5);
-
-    cmbProjNormType = new QComboBox();
-    cmbProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_NORM), Hermes::Hermes2D::HERMES_H1_NORM);
-    cmbProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_L2_NORM), Hermes::Hermes2D::HERMES_L2_NORM);
-    cmbProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_SEMINORM), Hermes::Hermes2D::HERMES_H1_SEMINORM);
-
-    chkUseAniso = new QCheckBox(tr("Use anisotropic refinements"));
-    chkFinerReference = new QCheckBox(tr("Use hp ref. solution for h and p adaptivity"));
-
     QGridLayout *layoutAdaptivitySettings = new QGridLayout();
     layoutAdaptivitySettings->setColumnStretch(1, 1);
     layoutAdaptivitySettings->addWidget(lblMaxDofs, 0, 0);
     layoutAdaptivitySettings->addWidget(txtMaxDOFs, 0, 1, 1, 2);
-    layoutAdaptivitySettings->addWidget(new QLabel(tr("Conv. exp.:")), 2, 0);
-    layoutAdaptivitySettings->addWidget(txtConvExp, 2, 1);
-    layoutAdaptivitySettings->addWidget(lblConvExp, 3, 0, 1, 2);
-    layoutAdaptivitySettings->addWidget(new QLabel(tr("Strategy:")), 4, 0);
-    layoutAdaptivitySettings->addWidget(cmbStrategy, 4, 1);
-    layoutAdaptivitySettings->addWidget(lblStrategy, 5, 0, 1, 2);
-    layoutAdaptivitySettings->addWidget(new QLabel(tr("Threshold:")), 6, 0);
-    layoutAdaptivitySettings->addWidget(txtThreshold, 6, 1);
-    layoutAdaptivitySettings->addWidget(lblThreshold, 7, 0, 1, 2);
-    layoutAdaptivitySettings->addWidget(new QLabel(tr("Hanging nodes:")), 8, 0);
-    layoutAdaptivitySettings->addWidget(cmbMeshRegularity, 8, 1);
-    layoutAdaptivitySettings->addWidget(new QLabel(tr("Norm:")), 9, 0);
-    layoutAdaptivitySettings->addWidget(cmbProjNormType, 9, 1);
-    layoutAdaptivitySettings->addWidget(chkUseAniso, 10, 0, 1, 2);
-    layoutAdaptivitySettings->addWidget(chkFinerReference, 11, 0, 1, 2);
 
     QVBoxLayout *layoutAdaptivity = new QVBoxLayout();
     layoutAdaptivity->addLayout(layoutAdaptivitySettings);
@@ -658,26 +595,6 @@ QWidget *SettingsWidget::controlsColors()
     return colorsWidget;
 }
 
-void SettingsWidget::doStrategyChanged(int index)
-{
-
-
-    switch (index)
-    {
-    case 0:
-        lblStrategy->setText(tr("Refine elements until sqrt(<b>threshold</b>) times total<br/>error is processed. If more elements have similar<br/>errors, refine all to keep the mesh symmetric."));
-        break;
-    case 1:
-        lblStrategy->setText(tr("Refine all elements whose error is larger<br/>than <b>threshold</b> times maximum element error."));
-        break;
-    case 2:
-        lblStrategy->setText(tr("Refine all elements whose error is larger<br/>than <b>threshold</b>."));
-        break;
-    default:
-        break;
-    }
-}
-
 void SettingsWidget::setControls()
 {
 
@@ -735,13 +652,6 @@ void SettingsWidget::doMeshAndSolverDefault()
     chkMeshCurvilinearElements->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_MeshCurvilinearElements).toBool());
 
     txtMaxDOFs->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Adaptivity_MaxDofs).toInt());
-    txtConvExp->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Adaptivity_ConvExp).toDouble());
-    txtThreshold->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Adaptivity_Threshold).toDouble());
-    cmbStrategy->setCurrentIndex(cmbStrategy->findData(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Adaptivity_Strategy).toInt()));
-    cmbMeshRegularity->setCurrentIndex(cmbMeshRegularity->findData(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Adaptivity_MeshRegularity).toInt()));
-    cmbProjNormType->setCurrentIndex(cmbProjNormType->findData((Hermes::Hermes2D::ProjNormType) Agros2D::problem()->setting()->defaultValue(ProblemSetting::Adaptivity_ProjNormType).toInt()));
-    chkUseAniso->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Adaptivity_UseAniso).toBool());
-    chkFinerReference->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Adaptivity_FinerReference).toBool());
 
     txtArgumentTriangle->setText(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Commands_Triangle).toString());
     txtArgumentGmsh->setText(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Commands_Gmsh).toString());

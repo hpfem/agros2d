@@ -60,13 +60,18 @@ namespace Hermes
     }
 
     template<typename Scalar>
+    void NonlinearSolver<Scalar>::solve()
+    {
+      this->solve(NULL);
+    }
+
+    template<typename Scalar>
     void NonlinearSolver<Scalar>::solve(MeshFunctionSharedPtr<Scalar>& initial_guess)
     {
       if(this->dp->get_spaces().size() != 1)
         throw Hermes::Exceptions::ValueException("dp->get_spaces().size()", this->dp->get_spaces().size(), 1);
       Scalar* coeff_vec = new Scalar[Space<Scalar>::get_num_dofs(this->dp->get_spaces())];
-      OGProjection<Scalar> ogProj;
-      ogProj.project_global(this->dp->get_spaces()[0], initial_guess, coeff_vec);
+      OGProjection<Scalar>::project_global(this->dp->get_spaces()[0], initial_guess, coeff_vec);
       this->solve(coeff_vec);
       delete [] coeff_vec;
     }
@@ -75,8 +80,7 @@ namespace Hermes
     void NonlinearSolver<Scalar>::solve(Hermes::vector<MeshFunctionSharedPtr<Scalar> >& initial_guess)
     {
       Scalar* coeff_vec = new Scalar[Space<Scalar>::get_num_dofs(this->dp->get_spaces())];
-      OGProjection<Scalar> ogProj;
-      ogProj.project_global(this->dp->get_spaces(), initial_guess, coeff_vec);
+      OGProjection<Scalar>::project_global(this->dp->get_spaces(), initial_guess, coeff_vec);
       this->solve(coeff_vec);
       delete [] coeff_vec;
     }
