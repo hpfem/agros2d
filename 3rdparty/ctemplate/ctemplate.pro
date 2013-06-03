@@ -39,7 +39,6 @@ macx-g++ {
 }
 
 win32-msvc2010 {
-    CONFIG += staticlib
     TARGET = ../../../libs/agros_3rdparty_ctemplate
 
     QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
@@ -49,6 +48,7 @@ win32-msvc2010 {
 
     INCLUDEPATH += ctemplate
     INCLUDEPATH += windows
+    INCLUDEPATH += .
     INCLUDEPATH += c:/hpfem/hermes/dependencies/include
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 

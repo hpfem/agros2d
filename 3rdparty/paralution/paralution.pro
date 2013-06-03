@@ -63,6 +63,10 @@ win32-msvc2010 {
     QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt
     QMAKE_CXXFLAGS_RELEASE += -MD
     QMAKE_CXXFLAGS_DEBUG += -MDd
+
+
+    INCLUDEPATH += c:/hpfem/hermes/dependencies/include
+    INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 }
 
 macx-g++ {

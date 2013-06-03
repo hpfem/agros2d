@@ -13,6 +13,7 @@ contains(CONFIG, WITH_PARALUTION) {
     DEFINES += WITH_PARALUTION
     INCLUDEPATH += ../3rdparty/paralution/src
 
+    LIBS += -L../libs
     LIBS += -lagros_3rdparty_paralution
 }
 
@@ -174,7 +175,6 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
 
     INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/google
-    LIBS += -L../libs
     LIBS += -lumfpack
     LIBS += -lxerces-c
     LIBS += -ltcmalloc_minimal
