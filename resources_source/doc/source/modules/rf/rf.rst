@@ -1,3 +1,5 @@
+.. _rf:
+
 RF waves
 ========
 Solving TE waves in RF field.

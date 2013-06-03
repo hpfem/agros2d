@@ -1,102 +1,218 @@
-Agros2D Documentation
-=====================
-
-.. include:: basic_information.rst
-
-Documentation Content
----------------------
-
 Introduction
-^^^^^^^^^^^^
+============
 
-.. toctree::
-   :maxdepth: 1
+Agros2D is a multiplatform C++ application for the solution of partial differential equations (PDE) based on the
+`Hermes <http://hpfem.org/hermes>`_ library, developed by the `hpfem.org <http://hpfem.org>`_ group at the
+`University of West Bohemia in Pilsen <http://www.zcu.cz>`_. Agros2D is distributed under the
+`GNU General Public License <http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt>`_.
 
-   ./introduction/about_agros2d.rst
-   ./compilation/windows.rst
-   ./compilation/linux.rst
+Supported physical fields
+-------------------------
+.. sidebar:: Quick start
 
-Getting Started
-^^^^^^^^^^^^^^^
+  If you want to start working with the program Agros2D, go to the page: :ref:`getting_started`.
 
-.. toctree::
-   :maxdepth: 1
+* :ref:`acoustic` 
+* :ref:`current`
+* :ref:`elasticity`
+* :ref:`electrostatic`
+* :ref:`flow`
+* :ref:`heat`
+* :ref:`magnetic`
+* :ref:`rf`
 
-   ./getting_started/basic_control.rst
-   ./getting_started/editing_geometry.rst
-   ./getting_started/solving_problem.rst
-   ./getting_started/processing_results.rst
-   ./getting_started/shortcut_keys.rst
+Key Features
+------------
 
-Modules Docummentation
-^^^^^^^^^^^^^^^^^^^^^^
+Coupled physical fields
+^^^^^^^^^^^^^^^^^^^^^^^
+Agros2D supports coupling between physical fields, which means that it is possible to include several physical fields into one problem. There are two ways how 
+couple fields. There are two ways to couple physical fields: 
 
-.. toctree::
-   :maxdepth: 1
+*  Weak coupling - Fields are basically solved independently, but results of solution of one physical field are used as a source for another field.   
+*  Hard coupling - Physical fields influence each other, no particular field can be solved separately. 
 
-   ./modules/index.rst
+Agros2D allows using of both kinds of coupling. 
 
-Scripting
-^^^^^^^^^
+Nonlinear Problems
+^^^^^^^^^^^^^^^^^^
+Agros2D supports non-linear problems solving. At the moment Newton's and Picard's methods are implemented.
 
-.. toctree::
-   :maxdepth: 1
+Space and time adaptivity
+^^^^^^^^^^^^^^^^^^^^^^^^^
+The space and time adaptivity is one of unique features of the Hermes library and Agros2D.   
 
-   ./scripting/commands.rst
-   ./scripting/keyword_list.rst
+Ilustrative example (:ref:`electrostatic-axisymmetric-sparkgap`):
 
-Program Features
-^^^^^^^^^^^^^^^^
 
-.. toctree::
-   :maxdepth: 1
+.. figure:: ./introduction/hp-fem/mesh-h(p=1).png 
+    :align: left                                   
+    :width: 150      
+    :figwidth: 30%                                
+    :figclass: three_pictures
+    :alt: h-adaptivity (p=1)    
+    
+    
+    Fig. 1: *h*-adaptivity (p = 1)                        
 
-   ./program_features/program_features.rst
 
-Tutorials
-^^^^^^^^^
+.. figure:: ./introduction/hp-fem/mesh-h(p=2).png
+    :align: center
+    :width: 150
+    :figwidth: 30%
+    :figclass: three_pictures
+    :alt: h-adaptivity (p=2)
+    
+    Fig. 2: *h*-adaptivity (p = 2)
 
-.. toctree::
-   :maxdepth: 1
 
-   ./tutorials/electrostatic_planar_capacitor.rst
-   ./tutorials/electrostatic_axisymmetric_capacitor.rst
+.. figure:: ./introduction/hp-fem/mesh-hp.png
+    :align: right    
+    :width: 150
+    :figwidth: 30%
+    :figclass: three_pictures
+    :alt: hp-adaptivity
+   
+    Fig. 3: *hp*-adaptivity
 
-Examples
-^^^^^^^^
+ 
+.. figure:: ./introduction/hp-fem/polynomial_order-p.png
+   :align: left
+   :width: 150
+   :figwidth: 30%   
+   :figclass: three_pictures
+   :alt: p-adaptivity
 
-.. toctree::
-   :maxdepth: 1
+   Fig. 4: *p*-adaptivity   
+   
 
-   ./examples/acoustic_axisymmetric_horn.rst
-   ./examples/electrostatic_axisymmetric_sparkgap.rst
+.. figure:: ./introduction/hp-fem/polynomial_order-hp.png
+   :align: center
+   :width: 150
+   :figwidth: 30%   
+   :figclass: three_pictures
+   :alt: hp-adaptivity
+   
+   Fig. 5: *hp*-adaptivity 
 
-Changelog
-^^^^^^^^^
 
-.. toctree::
-   :maxdepth: 1
+.. figure:: ./introduction/hp-fem/convergence.png
+   :align: left
+   :width: 400
+   :figwidth: 45%   
+   :figclass: two-pictures
+   :alt: Convergence
 
-   ./changelog.rst
+   Fig. 6: Polynomial order (*p*-adaptivity and *hp*-adaptivity)
 
-Links
------
 
-* `Agros2D project homepage <http://agros2d.org>`_
-* `Agros2D online user documentation <http://hpfem.org/agros2d/help/index.html>`_
-* `Agros2D mailing list <http://groups.google.com/group/agros2d>`_
+.. figure:: ./introduction/hp-fem/error.png
+   :align: right
+   :width: 400
+   :figwidth: 45%   
+   :figclass: two-pictures
+   :alt: Error
+   
+   Fig. 7: Adaptivity charts
 
-* `Hermes project homepage <http://hpfem.org/hermes>`_
-* `Hermes online user documentation <http://hpfem.org/hermes/doc/index.html>`_
-* `Hermes mailing list <http://groups.google.com/group/hermes2d>`_ (Hermes2D)
+.. figure:: ./introduction/hp-fem/dofs.png
+   :align: left
+   :width: 400
+   :alt: DOFs
 
-Indices and Tables
-------------------
-.. toctree::
-   :maxdepth: 1
-    glossary.rst
+   Fig. 8: Adaptivity charts
 
-* :ref:`genindex`
-* :ref:`glossary`
+Curvilinear elements
+^^^^^^^^^^^^^^^^^^^^
 
+.. figure:: ./introduction/curvilinear_elements/elements.png
+   :align: left
+   :scale: 30%
+   :alt: Curvilinear and normal elements at the same geometry
+
+Fig: Curvilinear and normal elements at the same ilustrative geometry
+
+Ilustrative example ():
+
+.. figure:: ./introduction/curvilinear_elements/mesh-normal_elements.png
+   :align: left
+   :width: 400
+   :figwidth: 45%   
+   :figclass: two-pictures
+   :alt: Normal elements mesh
+   
+
+.. figure:: ./introduction/curvilinear_elements/mesh-curvilinear_elements.png
+   :align: center
+   :width: 400
+   :figwidth: 45%   
+   :figclass: two-pictures
+   :alt: Curvilinear elements mesh
+
+   Fig.: Normal (left) and curvilinear (right) meshes
+
+
+.. figure:: ./introduction/curvilinear_elements/convergence.png
+   :align: center
+   :figwidth: 45%   
+   :figclass: two-pictures
+   :alt: Convergence
+
+.. figure:: ./introduction/curvilinear_elements/error.png
+   :align: center
+   :scale: 50%
+   :alt: Error
+
+.. figure:: ./introduction/curvilinear_elements/dofs.png
+   :align: center
+   :scale: 50%
+   :alt: DOFs
+
+Fig.: Adaptivity charts (*hp*-adaptivity)
+
+Triangular or quadrilateral elements
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Ilustrative example (:ref:`acoustic-axisymmetric-horn`):
+
+.. figure:: ./introduction/triangular_or_quadrilateral_elements/mesh-quads.png
+   :align: center
+   :scale: 50%
+   :alt: Normal elements mesh
+
+.. figure:: ./introductio/triangular_or_quadrilateral_elements/mesh-triangles.png
+   :align: center
+   :scale: 50%
+   :alt: Curvilinear elements mesh
+
+Fig.: Quadrilateral (left) and triangular (right) elements mesh
+
+.. figure:: ./introduction/triangular_or_quadrilateral_elements/polynomial_order-quads.png
+   :align: center
+   :scale: 50%
+   :alt: Quadrilateral elements
+
+.. figure:: ./introduction/triangular_or_quadrilateral_elements/polynomial_order-triangles.png
+   :align: center
+   :scale: 50%
+   :alt: Triangular elements
+
+Fig.: Polynomial order on quadrilateral elements mesh (left) and triangular elements mesh (right)
+
+.. figure:: ./introduction/triangular_or_quadrilateral_elements/convergence.png
+   :align: center
+   :scale: 50%
+   :alt: Convergence
+
+.. figure:: ./introduction/triangular_or_quadrilateral_elements/error.png
+   :align: center
+   :scale: 50%
+   :alt: Error
+
+.. figure:: ./introduction/triangular_or_quadrilateral_elements/dofs.png
+   :align: center
+   :scale: 50%
+   :alt: DOFs
+
+Fig.: Adaptivity charts (*hp*-adaptivity)
 

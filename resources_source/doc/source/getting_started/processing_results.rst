@@ -8,12 +8,13 @@ Viewing of Results
 
 You can display your results using various pre-defined ways. All options can be set using the panel "Postprocessor properties".
 
-.. image:: ./postprocessor_properties.png
+.. figure:: ./postprocessor_properties.png
    :align: center
-   :scale: 50%
+   :width: 800px
+   :figwidth: 100%
    :alt: Postprocessor properties
 
-Fig. 1.: Mode Postprocessing 2D
+   Fig. 1.: Mode Postprocessing 2D
 
 Panel "Postprocessing" depends on solved physical field. For all fields there are posibilies to display scalar variables as a color map, to display contours of scalar fields or to display vector fields.
 It is possible to display advanced options which are hidden by default (see Fig. 1).       

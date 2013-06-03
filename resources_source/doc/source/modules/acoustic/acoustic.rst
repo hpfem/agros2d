@@ -1,3 +1,5 @@
+.. _acoustic:
+
 Acoustics
 =========
 Acoustics is the interdisciplinary science that deals with the study of all mechanical waves in gases, liquids and solids.
