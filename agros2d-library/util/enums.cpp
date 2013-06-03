@@ -31,6 +31,7 @@ static QMap<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QMap<SceneViewPost3DMode, QString> sceneViewPost3DModeList;
 static QMap<WeakFormKind, QString> weakFormList;
 static QMap<AdaptivityType, QString> adaptivityTypeList;
+static QMap<Hermes::Hermes2D::NormType, QString> adaptivityNormTypeList;
 static QMap<TimeStepMethod, QString> timeStepMethodList;
 static QMap<SolutionMode, QString> solutionTypeList;
 static QMap<AnalysisType, QString> analysisTypeList;
@@ -76,6 +77,10 @@ PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &phys
 QStringList adaptivityTypeStringKeys() { return adaptivityTypeList.values(); }
 QString adaptivityTypeToStringKey(AdaptivityType adaptivityType) { return adaptivityTypeList[adaptivityType]; }
 AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType) { return adaptivityTypeList.key(adaptivityType); }
+
+QStringList adaptivityNormTypeStringKeys() { return adaptivityNormTypeList.values(); }
+QString adaptivityNormTypeToStringKey(Hermes::Hermes2D::NormType adaptivityNormType) { return adaptivityNormTypeList[adaptivityNormType]; }
+Hermes::Hermes2D::NormType adaptivityNormTypeFromStringKey(const QString &adaptivityNormType) { return adaptivityNormTypeList.key(adaptivityNormType); }
 
 QStringList timeStepMethodStringKeys() { return timeStepMethodList.values(); }
 QString timeStepMethodToStringKey(TimeStepMethod timeStepMethod) { return timeStepMethodList[timeStepMethod]; }
@@ -198,6 +203,11 @@ void initLists()
     adaptivityTypeList.insert(AdaptivityType_H, "h-adaptivity");
     adaptivityTypeList.insert(AdaptivityType_P, "p-adaptivity");
     adaptivityTypeList.insert(AdaptivityType_HP, "hp-adaptivity");
+
+    // ADAPTIVITYNORMTYPE
+    adaptivityNormTypeList.insert(Hermes::Hermes2D::HERMES_H1_NORM, "h1_norm");
+    adaptivityNormTypeList.insert(Hermes::Hermes2D::HERMES_L2_NORM, "l2_norm");
+    adaptivityNormTypeList.insert(Hermes::Hermes2D::HERMES_H1_SEMINORM, "h1_seminorm");
 
     // SolutionType
     solutionTypeList.insert(SolutionMode_Normal, "normal");

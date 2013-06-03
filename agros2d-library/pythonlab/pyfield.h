@@ -108,6 +108,22 @@ class PyField
         inline int getAdaptivitySteps() const { return m_fieldInfo->value(FieldInfo::AdaptivitySteps).toInt(); }
         void setAdaptivitySteps(int adaptivitySteps);
 
+        // adaptivity threshold
+        inline double getAdaptivityThreshold() const { return m_fieldInfo->value(FieldInfo::AdaptivityThreshold).toDouble(); }
+        void setAdaptivityThreshold(double adaptivityThreshold);
+
+        // adaptivity norm
+        inline std::string getAdaptivityNormType() const { return adaptivityNormTypeToStringKey((Hermes::Hermes2D::NormType) m_fieldInfo->value(FieldInfo::AdaptivityProjNormType).toInt()).toStdString(); }
+        void setAdaptivityNormType(const std::string &adaptivityNormType);
+
+        // adaptivity anisotropic
+        inline bool getAdaptivityAnisotropic() const { return m_fieldInfo->value(FieldInfo::AdaptivityUseAniso).toBool(); }
+        void setAdaptivityAnisotropic(bool adaptivityAnisotropic);
+
+        // adaptivity finer reference
+        inline bool getAdaptivityFinerReference() const { return m_fieldInfo->value(FieldInfo::AdaptivityFinerReference).toBool(); }
+        void setAdaptivityFinerReference(bool adaptivityFinerReference);
+
         // adaptivity back steps
         inline int getAdaptivityBackSteps() const { return m_fieldInfo->value(FieldInfo::AdaptivityTransientBackSteps).toInt(); }
         void setAdaptivityBackSteps(int adaptivityBackSteps);

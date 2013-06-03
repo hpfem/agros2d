@@ -286,6 +286,12 @@ AGROS_API QStringList adaptivityTypeStringKeys();
 AGROS_API QString adaptivityTypeToStringKey(AdaptivityType adaptivityType);
 AGROS_API AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
 
+// adaptivity norm type
+AGROS_API QString errorNormString(Hermes::Hermes2D::NormType projNormType);
+AGROS_API QStringList adaptivityNormTypeStringKeys();
+AGROS_API QString adaptivityNormTypeToStringKey(Hermes::Hermes2D::NormType adaptivityNormType);
+AGROS_API Hermes::Hermes2D::NormType adaptivityNormTypeFromStringKey(const QString &adaptivityNormType);
+
 // time step method
 AGROS_API QString timeStepMethodString(TimeStepMethod timeStepMethod);
 AGROS_API QStringList timeStepMethodStringKeys();

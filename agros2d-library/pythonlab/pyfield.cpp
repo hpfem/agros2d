@@ -208,6 +208,32 @@ void PyField::setAdaptivitySteps(int adaptivitySteps)
         throw out_of_range(QObject::tr("Adaptivity steps is out of range (1 - 100).").toStdString());
 }
 
+void PyField::setAdaptivityThreshold(double adaptivityThreshold)
+{
+    if (adaptivityThreshold > 0.0)
+        m_fieldInfo->setValue(FieldInfo::AdaptivityThreshold, adaptivityThreshold);
+    else
+        throw out_of_range(QObject::tr("Adaptivity threshold must be positive.").toStdString());
+}
+
+void PyField::setAdaptivityNormType(const std::string &adaptivityNormType)
+{
+    if (adaptivityNormTypeStringKeys().contains(QString::fromStdString(adaptivityNormType)))
+        m_fieldInfo->setValue(FieldInfo::AdaptivityProjNormType, (Hermes::Hermes2D::NormType) adaptivityNormTypeFromStringKey(QString::fromStdString(adaptivityNormType)));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(adaptivityNormTypeStringKeys())).toStdString());
+}
+
+void PyField::setAdaptivityAnisotropic(bool adaptivityAnisotropic)
+{
+    m_fieldInfo->setValue(FieldInfo::AdaptivityUseAniso, adaptivityAnisotropic);
+}
+
+void PyField::setAdaptivityFinerReference(bool adaptivityFinerReference)
+{
+    m_fieldInfo->setValue(FieldInfo::AdaptivityFinerReference, adaptivityFinerReference);
+}
+
 void PyField::setAdaptivityBackSteps(int adaptivityBackSteps)
 {
     if (adaptivityBackSteps >= 0 && adaptivityBackSteps <= 100)

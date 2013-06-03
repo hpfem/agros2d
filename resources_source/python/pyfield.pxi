@@ -61,6 +61,18 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         int getAdaptivitySteps()
         void setAdaptivitySteps(int adaptivitySteps) except +
 
+        double getAdaptivityThreshold()
+        void setAdaptivityThreshold(double adaptivityThreshold)  except +
+
+        string getAdaptivityNormType()
+        void setAdaptivityNormType(string &adaptivityNormType) except +
+
+        bool getAdaptivityAnisotropic()
+        void setAdaptivityAnisotropic(bool adaptivityAnisotropic)
+
+        bool getAdaptivityFinerReference()
+        void setAdaptivityFinerReference(bool adaptivityFinerReference)
+
         int getAdaptivityBackSteps()
         void setAdaptivityBackSteps(int adaptivityBackSteps) except +
 
@@ -346,6 +358,34 @@ cdef class __Field__:
             return self.thisptr.getAdaptivityTolerance()
         def __set__(self, adaptivity_tolerance):
             self.thisptr.setAdaptivityTolerance(adaptivity_tolerance)
+
+    # adaptivity threshold
+    property adaptivity_threshold:
+        def __get__(self):
+            return self.thisptr.getAdaptivityThreshold()
+        def __set__(self, adaptivity_threshold):
+            self.thisptr.setAdaptivityThreshold(adaptivity_threshold)
+
+    # adaptivity norm type
+    property adaptivity_norm_type:
+        def __get__(self):
+            return self.thisptr.getAdaptivityNormType().c_str()
+        def __set__(self, adaptivity_norm_type):
+            self.thisptr.setAdaptivityNormType(string(adaptivity_norm_type))
+
+    # adaptivity anisotropic
+    property adaptivity_anisotropic:
+        def __get__(self):
+            return self.thisptr.getAdaptivityAnisotropic()
+        def __set__(self, adaptivity_anisotropic):
+            self.thisptr.setAdaptivityAnisotropic(adaptivity_anisotropic)
+
+    # adaptivity finer reference
+    property adaptivity_finer_reference:
+        def __get__(self):
+            return self.thisptr.getAdaptivityFinerReference()
+        def __set__(self, adaptivity_finer_reference):
+            self.thisptr.setAdaptivityFinerReference(adaptivity_finer_reference)
 
     # adaptivity back_steps
     property adaptivity_back_steps:
