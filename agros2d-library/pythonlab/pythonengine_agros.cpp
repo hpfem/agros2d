@@ -263,6 +263,22 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::AdaptivityTolerance).toDouble());
 
+            str += QString("%1.adaptivity_threshold = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(fieldInfo->value(FieldInfo::AdaptivityThreshold).toDouble());
+
+            str += QString("%1.adaptivity_norm_type = \"%2\"\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(adaptivityNormTypeToStringKey((Hermes::Hermes2D::NormType) fieldInfo->value(FieldInfo::AdaptivityProjNormType).toInt()));
+
+            str += QString("%1.adaptivity_anisotropic= %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg((fieldInfo->value(FieldInfo::AdaptivityUseAniso).toBool()) ? "True" : "False");
+
+            str += QString("%1.adaptivity_finer_reference= %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg((fieldInfo->value(FieldInfo::AdaptivityFinerReference).toBool()) ? "True" : "False");
+
             if (Agros2D::problem()->isTransient())
             {
                 str += QString("%1.adaptivity_back_steps = %2\n").
