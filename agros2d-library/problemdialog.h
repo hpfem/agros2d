@@ -106,7 +106,7 @@ private:
     QComboBox *cmbAdaptivityType;
     QSpinBox *txtAdaptivitySteps;
     LineEditDouble *txtAdaptivityTolerance;
-    LineEditDouble *txtAdaptivityThreshold;
+    QDoubleSpinBox *txtAdaptivityThreshold;
     QComboBox *cmbAdaptivityProjNormType;
     QCheckBox *chkAdaptivityUseAniso;
     QCheckBox *chkAdaptivityFinerReference;

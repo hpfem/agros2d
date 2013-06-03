@@ -332,7 +332,7 @@ void MainWindow::createActions()
 
     actHelp = new QAction(icon("help-contents"), tr("&Help"), this);
     actHelp->setShortcut(QKeySequence::HelpContents);
-    actHelp->setEnabled(false);
+    // actHelp->setEnabled(false);
     connect(actHelp, SIGNAL(triggered()), this, SLOT(doHelp()));
 
     actHelpShortCut = new QAction(icon(""), tr("&Shortcuts"), this);
@@ -549,7 +549,7 @@ void MainWindow::createMenus()
 #endif
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
-    // mnuHelp->addAction(actHelp);
+    mnuHelp->addAction(actHelp);
     // mnuHelp->addAction(actOnlineHelp);
     // mnuHelp->addAction(actHelpShortCut);
     // mnuHelp->addAction(actCollaborationServer);

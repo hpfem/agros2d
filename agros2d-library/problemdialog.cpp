@@ -148,8 +148,11 @@ void FieldWidget::createContent()
     txtAdaptivitySteps->setMaximum(100);
     txtAdaptivityTolerance = new LineEditDouble(1.0, true);
     txtAdaptivityTolerance->setBottom(0.0);
-    txtAdaptivityThreshold = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::AdaptivityThreshold).toDouble(), true);
-    txtAdaptivityThreshold->setBottom(0.0);
+    txtAdaptivityThreshold = new QDoubleSpinBox();
+    txtAdaptivityThreshold->setValue(m_fieldInfo->defaultValue(FieldInfo::AdaptivityThreshold).toDouble());
+    txtAdaptivityThreshold->setDecimals(2);
+    txtAdaptivityThreshold->setRange(0.01, 1.00);
+    txtAdaptivityThreshold->setSingleStep(0.01);
     cmbAdaptivityProjNormType = new QComboBox();
     cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_NORM), Hermes::Hermes2D::HERMES_H1_NORM);
     cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_L2_NORM), Hermes::Hermes2D::HERMES_L2_NORM);
