@@ -72,10 +72,6 @@ problem.solve()
 # in this test, total current is prescribed on several domains
 # mainly current densities are tested
 
-# induced current density does not match. The reason is, that in areas, where total current is given, 
-# comsol somehow alters external current density. Thus the total current density (=external+induced) matches, 
-# but neither external nor induced match
-
 # point value
 point1 = magnetic.local_values(0.0116, 0.0132)
 point2 = magnetic.local_values(-0.0123, 0.00536)
@@ -87,6 +83,27 @@ volume2 = magnetic.volume_integrals([2])
 volume3 = magnetic.volume_integrals([4])
 
 #Area 1
+testA_1 = a2d.test("Magnetic potential - 1", point1["A"], 0.0062725)
+testA_1_real = a2d.test("Magnetic potential - 1 - real", point1["Ar"], 0.00543)
+testA_1_imag = a2d.test("Magnetic potential - 1 - imag", point1["Ai"], 0.00314)
+testB_1 = a2d.test("Flux density - 1", point1["B"], 0.10789)
+testH_1 = a2d.test("Magnetic field - 1", point1["H"], 85856.68)
+testHx_1_real = a2d.test("Magnetic field - 1 - x - real", point1["Hrx"], -61409.68265)
+testHx_1_imag = a2d.test("Magnetic field - 1 - x - imag", point1["Hix"], -13675.94624)
+testHy_1_real = a2d.test("Magnetic field - 1 - y - real", point1["Hry"], 57956.23371)
+testHy_1_imag = a2d.test("Magnetic field - 1 - y - imag", point1["Hiy"], 7364.8575)
+testwm_1 = a2d.test("Energy density - 1", point1["wm"], 2315.787)
+testpj_1 = a2d.test("Losses density - 1 ", point1["pj"], 3.9578e7)
+
+#todo: ujasnit si, co ma byt u harmonickeho pole Lorentzova sila
+#to, co my pocitame se v comsolu shoduje s realnou slozkou veliciny "Lorentz force contribution, time average"
+#proc je v comsolu time average komplexni cislo???
+
+#ztraty v comsolu jsou i zaporne, co to znamena?
+
+testFx_1 = a2d.test("Lorentz force - 1 - x", point1["Flx"], -2.30979e6)
+testFy_1 = a2d.test("Lorentz force - 1 - y", point1["Fly"], -2.60749e6)
+
 testBx_1_real = a2d.test("Flux density - 1 - x - real", point1["Brx"], -0.07714)
 testBx_1_imag = a2d.test("Flux density - 1 - x - imag", point1["Bix"], -0.01711)
 testBy_1_real = a2d.test("Flux density - 1 - y - real", point1["Bry"], 0.07273)
@@ -105,6 +122,12 @@ testIit_1_real = a2d.test("Current - 1 - induced transform - real", volume1["Iit
 testIit_1_imag = a2d.test("Current - 1 - induced transform - imag", volume1["Iiti"], -18117.91)
 testI_1_real = a2d.test("Current - 1 - real", volume1["Ir"], 1e4)
 testI_1_imag = a2d.test("Current - 1 - imag", volume1["Ii"], 1e4)
+
+testWm = a2d.test("Energy - 1", volume1["Wm"], 2.24807)
+testPj = a2d.test("Losses - 1", volume1["Pj"], 8029.097)
+testFLx = a2d.test("Lorentz force - 1 - x", volume1["Flx"], 265.14584)
+testFLy = a2d.test("Lorentz force - 1 - y", volume1["Fly"], 8.32792)
+
 
 #Area 2
 testBx_2_real = a2d.test("Flux density - 2 - x - real", point2["Brx"], 0.01789)
@@ -145,6 +168,11 @@ testI_3_real = a2d.test("Current - 3 - real", volume3["Ir"], 0)
 testI_3_imag = a2d.test("Current - 3 - imag", volume3["Ii"], 0)
 
 print("Test: Magnetic harmonic - planar - current: " + str(
+	testA_1 and testA_1_real and testA_1_imag and testB_1 and 
+    testH_1 and testHx_1_real and testHx_1_imag and testHy_1_real and testHy_1_imag and
+
+	testwm_1 and testpj_1 and testFx_1 and testFy_1 and
+
     testBx_1_real and testBx_1_imag and testBy_1_real and testBy_1_imag and
     testJit_1_real and testJit_1_imag and testJe_1_real and testJe_1_imag and testJ_1_real and testJ_1_imag and
 	testIe_1_real and testIe_1_imag and testIit_1_real and testIit_1_imag and testI_1_real and testI_1_imag and
