@@ -147,7 +147,12 @@ testI_3_imag = a2d.test("Current - 3 - imag", volume3["Ii"], 0)
 print("Test: Magnetic harmonic - planar - current: " + str(
     testBx_1_real and testBx_1_imag and testBy_1_real and testBy_1_imag and
     testJit_1_real and testJit_1_imag and testJe_1_real and testJe_1_imag and testJ_1_real and testJ_1_imag and
+	testIe_1_real and testIe_1_imag and testIit_1_real and testIit_1_imag and testI_1_real and testI_1_imag and
+
     testBx_2_real and testBx_2_imag and testBy_2_real and testBy_2_imag and
     testJit_2_real and testJit_2_imag and testJ_2_real and testJ_2_imag and
+	testIe_2_real and testIe_2_imag and testIit_2_real and testIit_2_imag and testI_2_real and testI_2_imag and
+
     testBx_3_real and testBx_3_imag and testBy_3_real and testBy_3_imag and
-    testJit_3_real and testJit_3_imag and testJ_3_real and testJ_3_imag))
+    testJit_3_real and testJit_3_imag and testJ_3_real and testJ_3_imag and testJ_3_real and testJ_3_imag and
+	testIe_3_real and testIe_3_imag and testIit_3_real and testIit_3_imag and testI_3_real and testI_3_imag))
