@@ -127,6 +127,7 @@ namespace Hermes
     void CSMatrix<Scalar>::free()
     {
       nnz = 0;
+      /*
       if(Ap != NULL)
       {
         delete [] Ap;
@@ -142,6 +143,7 @@ namespace Hermes
         delete [] Ax;
         Ax = NULL;
       }
+      */
     }
 
     template<typename Scalar>

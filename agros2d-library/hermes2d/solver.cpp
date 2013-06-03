@@ -234,6 +234,7 @@ template <typename Scalar>
 HermesSolverContainer<Scalar>* HermesSolverContainer<Scalar>::factory(Block* block)
 {
     Hermes::HermesCommonApi.set_integral_param_value(Hermes::matrixSolverType, Agros2D::problem()->config()->matrixSolver());
+    Agros2D::log()->printDebug(QObject::tr("Solver"), QObject::tr("Linear solver: %1").arg(matrixSolverTypeString(Agros2D::problem()->config()->matrixSolver())));
 
     if (block->linearityType() == LinearityType_Linear)
     {

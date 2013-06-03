@@ -183,14 +183,10 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
         INCLUDEPATH += /usr/include/superlu
         LIBS += -lsuperlu
     }
-    # superlu
+    # paralution
     contains(CONFIG, WITH_PARALUTION) {
         DEFINES += WITH_PARALUTION
-        INCLUDEPATH += ../../3rdparty/paralution/src
-        LIBS += -L../../3rdparty/paralution/build/lib
-        LIBS += -lparalution
-        # LIBS += -L/usr/lib/nvidia-319
-        # LIBS += -lOpenCL
+        INCLUDEPATH += ../3rdparty/paralution/src
     }
 }
 

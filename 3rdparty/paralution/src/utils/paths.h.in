@@ -1,0 +1,2 @@
+#define kernelPath "@PROJECT_SOURCE_DIR@/src/base/ocl/"
+#define utilsPath "@PROJECT_SOURCE_DIR@/src/utils/"

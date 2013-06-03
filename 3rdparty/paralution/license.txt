@@ -1,0 +1,11 @@
+This version of PARALUTION software is released under GPLv3 license.
+By download and using the software you agree to complaint with the license, 
+see license-gpl.txt file for details.
+
+Some functions in the source code are adopted/modified (considered as derivative work) 
+from other open source software projects. For details see the functions definition
+(in the source code), the corresponding licenses are available in others/ directory.
+
+PARALUTION   www.paralution.com
+
+Copyright (C) 2012-2013 Dimitar Lukarski

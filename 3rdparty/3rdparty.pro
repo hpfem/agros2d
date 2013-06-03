@@ -43,6 +43,46 @@ SOURCES += dxflib/dl_writer_ascii.cpp \
     quazip/zip.c \
     qcustomplot/qcustomplot.cpp
 
+contains(CONFIG, WITH_PARALUTION) {
+SOURCES += paralution/src/base/backend_manager.cpp \
+    paralution/src/base/base_paralution.cpp \
+    paralution/src/base/global_matrix.cpp \
+    paralution/src/base/global_vector.cpp \
+    paralution/src/base/local_stencil.cpp \
+    paralution/src/base/operator.cpp \
+    paralution/src/base/base_matrix.cpp \
+    paralution/src/base/base_vector.cpp \
+    paralution/src/base/global_stencil.cpp \
+    paralution/src/base/local_matrix.cpp \
+    paralution/src/base/local_vector.cpp \
+    paralution/src/base/vector.cpp \
+    paralution/src/base/host/host_conversion.cpp \
+    paralution/src/base/host/host_matrix_coo.cpp \
+    paralution/src/base/host/host_matrix_dense.cpp \
+    paralution/src/base/host/host_matrix_ell.cpp \
+    paralution/src/base/host/host_matrix_mcsr.cpp \
+    paralution/src/base/host/host_matrix_bcsr.cpp \
+    paralution/src/base/host/host_matrix_csr.cpp \
+    paralution/src/base/host/host_matrix_dia.cpp \
+    paralution/src/base/host/host_matrix_hyb.cpp \
+    paralution/src/base/host/host_vector.cpp \
+    paralution/src/solvers/chebyshev.cpp \
+    paralution/src/solvers/iter_ctrl.cpp \
+    paralution/src/solvers/mixed_precision.cpp \
+    paralution/src/solvers/solver.cpp \
+    paralution/src/solvers/krylov/bicgstab.cpp \
+    paralution/src/solvers/krylov/cg.cpp \
+    paralution/src/solvers/krylov/gmres.cpp \
+    paralution/src/solvers/multigrid/multigrid_amg.cpp \
+    paralution/src/solvers/multigrid/multigrid.cpp \
+    paralution/src/solvers/preconditioners/preconditioner.cpp \
+    paralution/src/solvers/preconditioners/preconditioner_multicolored.cpp \
+    paralution/src/solvers/preconditioners/preconditioner_multicolored_gs.cpp \
+    paralution/src/solvers/preconditioners/preconditioner_multicolored_ilu.cpp \
+    paralution/src/solvers/preconditioners/preconditioner_multielimination.cpp \
+    paralution/src/utils/allocate_free.cpp
+}
+
 HEADERS += \
     quazip/crypt.h \
     quazip/ioapi.h \
