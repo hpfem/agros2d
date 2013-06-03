@@ -108,10 +108,10 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
     const Hermes::vector<double>& residual_norms = this->get_parameter_value(this->residual_norms());
     const Hermes::vector<double>& solution_norms = this->get_parameter_value(this->solution_norms());
     double solution_change_norm = this->get_parameter_value(this->solution_change_norm());
-    const Hermes::vector<double>& current_damping_coefficients = this->get_parameter_value(this->current_damping_coefficient());
-    double current_damping_coefficient = 1.;
-    if(current_damping_coefficients.size() >= 1)
-        current_damping_coefficient = current_damping_coefficients.at(current_damping_coefficients.size() - 1);
+    const Hermes::vector<double>& damping_coefficients = this->get_parameter_value(this->damping_coefficients());
+    double current_damping_coefficient = 1.0;
+    if (damping_coefficients.size() >= 1.0)
+        current_damping_coefficient = damping_coefficients.at(damping_coefficients.size() - 1);
     unsigned int successful_steps_damping = this->get_parameter_value(this->successful_steps_damping());
     unsigned int successful_steps_jacobian = this->get_parameter_value(this->successful_steps_jacobian());
 
@@ -129,8 +129,8 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
         previous_residual_norm = residual_norms[iteration - 2];
         previous_solution_norm = solution_norms[iteration - 2];
     }
-    if(current_damping_coefficients.size() >= 2)
-        previous_dampinig_coefficient = current_damping_coefficients.at(current_damping_coefficients.size() - 2);
+    if(damping_coefficients.size() >= 2)
+        previous_dampinig_coefficient = damping_coefficients.at(damping_coefficients.size() - 2);
 
 
     // add iteration
