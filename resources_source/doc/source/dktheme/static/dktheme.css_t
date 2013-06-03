@@ -20,15 +20,30 @@ a.reference em {
 	font-style: normal;
 }
 
-.figure  {		
-	float: left;
-	width: 33%; 
+.three-pictures  
+{			
+	float: left;			
 }
 
+
 .figure .caption {
-	width: 100%; 
+	width: 100%;
+}
+
+.align-right
+{
+	text-align: left;
+}
+
+.align-center
+{
+	text-align: left;
 }
 
 p {
+	clear: both;
+}
+
+h3 {
 	clear: both;
 }

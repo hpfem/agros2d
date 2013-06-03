@@ -46,58 +46,87 @@ Ilustrative example (:ref:`electrostatic-axisymmetric-sparkgap`):
 
 
 .. figure:: ./introduction/hp-fem/mesh-h(p=1).png 
-    :align: center                                   
-    :scale: 50%                                      
-    :alt: h-adaptivity (p=1)                        
+    :align: left                                   
+    :width: 150      
+    :figwidth: 30%                                
+    :figclass: three_pictures
+    :alt: h-adaptivity (p=1)    
+    
+    
+    Fig. 1: *h*-adaptivity (p = 1)                        
+
 
 .. figure:: ./introduction/hp-fem/mesh-h(p=2).png
     :align: center
-    :scale: 50%
-    :alt: h-adaptivity (p=1)
+    :width: 150
+    :figwidth: 30%
+    :figclass: three_pictures
+    :alt: h-adaptivity (p=2)
+    
+    Fig. 2: *h*-adaptivity (p = 2)
+
 
 .. figure:: ./introduction/hp-fem/mesh-hp.png
-    :align: center
-    :scale: 50%
+    :align: right    
+    :width: 150
+    :figwidth: 30%
+    :figclass: three_pictures
     :alt: hp-adaptivity
    
-    Fig.: Polynomial order (*p*-adaptivity and *hp*-adaptivity)
+    Fig. 3: *hp*-adaptivity
 
-Bla bla bla 
-
-.. image:: ./introduction/hp-fem/polynomial_order-p.png
-   :align: center
-   :scale: 50%
+ 
+.. figure:: ./introduction/hp-fem/polynomial_order-p.png
+   :align: left
+   :width: 150
+   :figwidth: 30%   
+   :figclass: three_pictures
    :alt: p-adaptivity
 
-.. image:: ./introduction/hp-fem/polynomial_order-hp.png
+   Fig. 4: *p*-adaptivity   
+   
+
+.. figure:: ./introduction/hp-fem/polynomial_order-hp.png
    :align: center
-   :scale: 50%
+   :width: 150
+   :figwidth: 30%   
+   :figclass: three_pictures
    :alt: hp-adaptivity
+   
+   Fig. 5: *hp*-adaptivity 
 
-Fig.: Polynomial order (*p*-adaptivity and *hp*-adaptivity)
 
-.. image:: ./introduction/hp-fem/convergence.png
-   :align: center
-   :scale: 50%
+.. figure:: ./introduction/hp-fem/convergence.png
+   :align: left
+   :width: 400
+   :figwidth: 45%   
+   :figclass: two-pictures
    :alt: Convergence
 
-.. image:: ./introduction/hp-fem/error.png
-   :align: center
-   :scale: 50%
-   :alt: Error
+   Fig. 6: Polynomial order (*p*-adaptivity and *hp*-adaptivity)
 
-.. image:: ./introduction/hp-fem/dofs.png
-   :align: center
-   :scale: 50%
+
+.. figure:: ./introduction/hp-fem/error.png
+   :align: right
+   :width: 400
+   :figwidth: 45%   
+   :figclass: two-pictures
+   :alt: Error
+   
+   Fig. 7: Adaptivity charts
+
+.. figure:: ./introduction/hp-fem/dofs.png
+   :align: left
+   :width: 400
    :alt: DOFs
 
-Fig.: Adaptivity charts
+   Fig. 8: Adaptivity charts
 
 Curvilinear elements
 ^^^^^^^^^^^^^^^^^^^^
 
-.. image:: ./introduction/curvilinear_elements/elements.png
-   :align: center
+.. figure:: ./introduction/curvilinear_elements/elements.png
+   :align: left
    :scale: 30%
    :alt: Curvilinear and normal elements at the same geometry
 
@@ -105,29 +134,36 @@ Fig: Curvilinear and normal elements at the same ilustrative geometry
 
 Ilustrative example ():
 
-.. image:: ./introduction/curvilinear_elements/mesh-normal_elements.png
-   :align: center
-   :scale: 50%
+.. figure:: ./introduction/curvilinear_elements/mesh-normal_elements.png
+   :align: left
+   :width: 400
+   :figwidth: 45%   
+   :figclass: two-pictures
    :alt: Normal elements mesh
+   
 
-.. image:: ./introduction/curvilinear_elements/mesh-curvilinear_elements.png
+.. figure:: ./introduction/curvilinear_elements/mesh-curvilinear_elements.png
    :align: center
-   :scale: 50%
+   :width: 400
+   :figwidth: 45%   
+   :figclass: two-pictures
    :alt: Curvilinear elements mesh
 
-Fig.: Normal (left) and curvilinear (right) meshes
+   Fig.: Normal (left) and curvilinear (right) meshes
 
-.. image:: ./introduction/curvilinear_elements/convergence.png
+
+.. figure:: ./introduction/curvilinear_elements/convergence.png
    :align: center
-   :scale: 50%
+   :figwidth: 45%   
+   :figclass: two-pictures
    :alt: Convergence
 
-.. image:: ./introduction/curvilinear_elements/error.png
+.. figure:: ./introduction/curvilinear_elements/error.png
    :align: center
    :scale: 50%
    :alt: Error
 
-.. image:: ./introduction/curvilinear_elements/dofs.png
+.. figure:: ./introduction/curvilinear_elements/dofs.png
    :align: center
    :scale: 50%
    :alt: DOFs
@@ -139,41 +175,41 @@ Triangular or quadrilateral elements
 
 Ilustrative example (:ref:`acoustic-axisymmetric-horn`):
 
-.. image:: ./introduction/triangular_or_quadrilateral_elements/mesh-quads.png
+.. figure:: ./introduction/triangular_or_quadrilateral_elements/mesh-quads.png
    :align: center
    :scale: 50%
    :alt: Normal elements mesh
 
-.. image:: ./introduction/triangular_or_quadrilateral_elements/mesh-triangles.png
+.. figure:: ./introductio/triangular_or_quadrilateral_elements/mesh-triangles.png
    :align: center
    :scale: 50%
    :alt: Curvilinear elements mesh
 
 Fig.: Quadrilateral (left) and triangular (right) elements mesh
 
-.. image:: ./introduction/triangular_or_quadrilateral_elements/polynomial_order-quads.png
+.. figure:: ./introduction/triangular_or_quadrilateral_elements/polynomial_order-quads.png
    :align: center
    :scale: 50%
    :alt: Quadrilateral elements
 
-.. image:: ./introduction/triangular_or_quadrilateral_elements/polynomial_order-triangles.png
+.. figure:: ./introduction/triangular_or_quadrilateral_elements/polynomial_order-triangles.png
    :align: center
    :scale: 50%
    :alt: Triangular elements
 
 Fig.: Polynomial order on quadrilateral elements mesh (left) and triangular elements mesh (right)
 
-.. image:: ./introduction/triangular_or_quadrilateral_elements/convergence.png
+.. figure:: ./introduction/triangular_or_quadrilateral_elements/convergence.png
    :align: center
    :scale: 50%
    :alt: Convergence
 
-.. image:: ./introduction/triangular_or_quadrilateral_elements/error.png
+.. figure:: ./introduction/triangular_or_quadrilateral_elements/error.png
    :align: center
    :scale: 50%
    :alt: Error
 
-.. image:: ./introduction/triangular_or_quadrilateral_elements/dofs.png
+.. figure:: ./introduction/triangular_or_quadrilateral_elements/dofs.png
    :align: center
    :scale: 50%
    :alt: DOFs
