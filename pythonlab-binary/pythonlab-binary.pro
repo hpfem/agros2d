@@ -8,7 +8,6 @@ TEMPLATE = app
 INCLUDEPATH += ../util \
        ../pythonlab-library
 
-LIBS += -lagros_3rdparty
 LIBS += -lagros_util
 LIBS += -lagros_pythonlab_library
 

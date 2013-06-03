@@ -8,6 +8,14 @@ DEFINES += NOGLUT
 DEFINES += WITH_UMFPACK
 DEFINES += H2D_DISABLE_MULTIMESH_TESTS
 
+# paralution
+contains(CONFIG, WITH_PARALUTION) {
+    DEFINES += WITH_PARALUTION
+    INCLUDEPATH += ../3rdparty/paralution/src
+
+    LIBS += -lagros_3rdparty_paralution
+}
+
 # set 'HERMES_DEBUG' in qtcreator
 contains(CONFIG, HERMES_DEBUG) {
     CONFIG += debug
@@ -166,6 +174,7 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
 
     INCLUDEPATH += /usr/include/suitesparse
     INCLUDEPATH += /usr/include/google
+    LIBS += -L../libs
     LIBS += -lumfpack
     LIBS += -lxerces-c
     LIBS += -ltcmalloc_minimal
@@ -182,11 +191,6 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
         DEFINES += WITH_SUPERLU
         INCLUDEPATH += /usr/include/superlu
         LIBS += -lsuperlu
-    }
-    # paralution
-    contains(CONFIG, WITH_PARALUTION) {
-        DEFINES += WITH_PARALUTION
-        INCLUDEPATH += ../3rdparty/paralution/src
     }
 }
 

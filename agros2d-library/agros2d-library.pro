@@ -14,6 +14,9 @@ linux-g++|linux-g++-64|linux-g++-32: CONFIG(release) {
     #system(cd ../ && ./agros2d.sh help)
 }
 
+LIBS += -lagros_pythonlab_library
+LIBS += -lagros2d_hermes2d
+
 CODECFORTR = UTF-8
 
 RC_FILE = ../resources_source/resources.rc
@@ -24,11 +27,6 @@ INCLUDEPATH += ../hermes2d/include/mesh/
 INCLUDEPATH += ../hermes_common/include
 INCLUDEPATH += ../pythonlab-library
 INCLUDEPATH += ../util
-
-LIBS += -lagros_3rdparty
-LIBS += -lagros_util
-LIBS += -lagros_pythonlab_library
-LIBS += -lagros2d_hermes2d
 
 SOURCES += value.cpp \
     scene.cpp \
