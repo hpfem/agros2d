@@ -62,4 +62,6 @@ VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID pr
     return NULL;
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 Q_EXPORT_PLUGIN2(agros2d_plugin_{{ID}}, {{CLASS}}Interface)
+#endif

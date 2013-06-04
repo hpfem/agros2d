@@ -1,4 +1,4 @@
-QT -= GUI
+QT += widgets printsupport
 CONFIG += qt
 OBJECTS_DIR = build
 MOC_DIR = build

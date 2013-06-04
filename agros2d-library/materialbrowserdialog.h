@@ -111,7 +111,11 @@ private slots:
     void doItemSelected(QTreeWidgetItem *item, int column);
     void doItemDoubleClicked(QTreeWidgetItem *item, int column);
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    void linkClicked(const QUrlQuery &url);
+#else
     void linkClicked(const QUrl &url);
+#endif
     void doEdit();
 };
 

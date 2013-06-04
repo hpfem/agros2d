@@ -399,15 +399,14 @@ void ChartWidget::plotGeometry()
     int count = txtHorizontalAxisPoints->value();
 
     // chart
-    m_chart->chart()->xAxis->setLabel(QString("%1 (%2)").
-                                      arg(physicFieldVariable.name()).
-                                      arg(physicFieldVariable.unit()));
-
     QString text;
     if (radHorizontalAxisLength->isChecked()) text = tr("Length (m)");
     if (radHorizontalAxisX->isChecked()) text = Agros2D::problem()->config()->labelX() + " (m)";
     if (radHorizontalAxisY->isChecked()) text = Agros2D::problem()->config()->labelY() + " (m)";
-    m_chart->chart()->yAxis->setLabel(text);
+    m_chart->chart()->xAxis->setLabel(text);
+    m_chart->chart()->yAxis->setLabel(QString("%1 (%2)").
+                                      arg(physicFieldVariable.name()).
+                                      arg(physicFieldVariable.unit()));
 
     // table
     QStringList head = headers();
