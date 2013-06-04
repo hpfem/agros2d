@@ -267,10 +267,6 @@ Agros2D discretizes 2D domains on the base of software Triangle that provides a 
 
    Fig.14: Adaptivity charts (*hp*-adaptivity)
 
-
-Triangular or quadrilateral elements
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 Ilustrative example (:ref:`acoustic-axisymmetric-horn`):
 
 .. figure:: ./introduction/triangular_or_quadrilateral_elements/mesh-quads.png
