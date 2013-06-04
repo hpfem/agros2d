@@ -444,7 +444,7 @@ void Scene::checkGeometryAssignement()
     }
 
     if (Agros2D::scene()->labels->length() < 1)
-        throw AgrosGeometryException(tr("Invalid number of labels (%1 < 1)").arg(Agros2D::scene()->labels->length()));
+        throw AgrosGeometryException(tr("At least one label has to be created"));
     else
     {
         // at least one material has to be assigned
