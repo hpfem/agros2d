@@ -513,7 +513,9 @@ void FieldWidget::doAnalysisTypeChanged(int index)
         idx++;
     }
     cmbLinearityType->setCurrentIndex(nextIndex);
+
     doShowEquation();
+    doAdaptivityChanged(cmbAdaptivityType->currentIndex());
 }
 
 void FieldWidget::doShowEquation()
@@ -536,8 +538,10 @@ void FieldWidget::doAdaptivityChanged(int index)
     cmbAdaptivityProjNormType->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     chkAdaptivityUseAniso->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     chkAdaptivityFinerReference->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
-    txtAdaptivityBackSteps->setEnabled(Agros2D::problem()->isTransient() && (AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
-    txtAdaptivityRedoneEach->setEnabled(Agros2D::problem()->isTransient() && (AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+
+    AnalysisType analysisType = (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt();
+    txtAdaptivityBackSteps->setEnabled(Agros2D::problem()->isTransient() && analysisType != AnalysisType_Transient && (AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+    txtAdaptivityRedoneEach->setEnabled(Agros2D::problem()->isTransient() && analysisType != AnalysisType_Transient && (AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
 }
 
 void FieldWidget::doLinearityTypeChanged(int index)
