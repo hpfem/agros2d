@@ -428,7 +428,7 @@ namespace Hermes
       case DF_PLAIN_ASCII:
         exit(1);
         {
-          const double zero_cutoff = 1e-10;
+          const double zero_cutoff = Hermes::epsilon;
           double *ascii_entry_buff = new double[nnz];
           int *ascii_entry_i = new int[nnz];
           int *ascii_entry_j = new int[nnz];
@@ -533,7 +533,7 @@ namespace Hermes
       case DF_PLAIN_ASCII:
         exit(1);
         {
-          const double zero_cutoff = 1e-10;
+          const double zero_cutoff = Hermes::epsilon;
           std::complex<double> *ascii_entry_buff = new std::complex<double>[nnz];
           int *ascii_entry_i = new int[nnz];
           int *ascii_entry_j = new int[nnz];
@@ -705,6 +705,22 @@ namespace Hermes
     {
       throw Exceptions::MethodNotImplementedException("CSRMatrix<double>::dump");
       return false;
+    }
+
+    template<typename Scalar>
+    void CSRMatrix<Scalar>::pre_add_ij(unsigned int row, unsigned int col)
+    {
+      CSMatrix<Scalar>::pre_add_ij(row, col);
+      return;
+
+      if(this->pages[row] == NULL || this->pages[row]->count >= this->PAGE_SIZE)
+      {
+        typename SparseMatrix<Scalar>::Page *new_page = new typename SparseMatrix<Scalar>::Page;
+        new_page->count = 0;
+        new_page->next = this->pages[row];
+        this->pages[row] = new_page;
+      }
+      this->pages[row]->idx[this->pages[row]->count++] = col;
     }
 
     template<>
