@@ -194,23 +194,23 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
     else
         assert(0);
 
-//    if (iteration == 1)
-//    {
-//        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Initial step, error: %1")
-//                                     .arg(m_errors.last()));
-//    }
-//    else
-//    {
-//        if (successful_steps_jacobian == 0 && iteration > 2 && m_block->newtonMaxStepsWithReusedJacobian() > 0)
-//            Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Results not improved, step restarted with new Jacobian"));
-//        if (m_block->newtonDampingType() == DampingType_Automatic && successful_steps_damping == 0)
-//            Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Results not improved, step restarted with new damping coefficient"));
+    //    if (iteration == 1)
+    //    {
+    //        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Initial step, error: %1")
+    //                                     .arg(m_errors.last()));
+    //    }
+    //    else
+    //    {
+    //        if (successful_steps_jacobian == 0 && iteration > 2 && m_block->newtonMaxStepsWithReusedJacobian() > 0)
+    //            Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Results not improved, step restarted with new Jacobian"));
+    //        if (m_block->newtonDampingType() == DampingType_Automatic && successful_steps_damping == 0)
+    //            Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Results not improved, step restarted with new damping coefficient"));
 
-//        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, damping coeff.: %2, error: %3")
-//                                     .arg(iteration)
-//                                     .arg(current_damping_coefficient)
-//                                     .arg(m_errors.last()));
-//    }
+    //        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, damping coeff.: %2, error: %3")
+    //                                     .arg(iteration)
+    //                                     .arg(current_damping_coefficient)
+    //                                     .arg(m_errors.last()));
+    //    }
 
     Agros2D::log()->setNonlinearTable(m_steps, m_errors);
 }
@@ -572,6 +572,16 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
     m_hermesSolverContainer->setMatrixRhsOutput(m_solverCode, adaptivityStep);
 
     m_hermesSolverContainer->solve(initialSolutionVector);
+
+    // linear solver statistics
+    LinearMatrixSolver<Scalar> *linearSolver = m_hermesSolverContainer->linearSolver();
+    if (IterSolver<Scalar> *iterLinearSolver = dynamic_cast<IterSolver<Scalar> *>(linearSolver))
+    {
+        Agros2D::log()->printDebug(QObject::tr("Solver"),
+                                   QObject::tr("Iterative solver statistics: %1 iterations")
+                                   .arg(iterLinearSolver->get_num_iters()));
+    }
+
     return m_hermesSolverContainer->slnVector();
 }
 
@@ -681,7 +691,7 @@ TimeStepInfo ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
     // solutions obtained by time method of higher order in the original calculation
     Hermes::vector<MeshFunctionSharedPtr<Scalar> > timeReferenceSolution;
     if(timeStep > 0)
-            timeReferenceSolution = referenceCalculation.solutions();
+        timeReferenceSolution = referenceCalculation.solutions();
     Scalar *initialSolutionVector = new Scalar[Hermes::Hermes2D::Space<Scalar>::get_num_dofs(actualSpaces())];
     Scalar *solutionVector = solveOneProblem(initialSolutionVector, actualSpaces(), adaptivityStep, timeReferenceSolution);
     delete [] initialSolutionVector;

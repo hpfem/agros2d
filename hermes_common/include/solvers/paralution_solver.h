@@ -179,7 +179,6 @@ namespace Hermes
       /// Utility.
       virtual int get_matrix_size();
 
-    private:
       /// Matrix to solve.
       ParalutionMatrix<Scalar> *matrix;
       /// Right hand side vector.

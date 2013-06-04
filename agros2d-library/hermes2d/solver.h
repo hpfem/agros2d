@@ -91,6 +91,7 @@ public:
     void setMatrixRhsOutputGen(Hermes::Hermes2D::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep);
 
     virtual void matrixUnchangedDueToBDF(bool unchanged) {}
+    virtual LinearMatrixSolver<Scalar> *linearSolver() = 0;
 
     inline Scalar *slnVector() { return m_slnVector; }
 
@@ -116,6 +117,8 @@ public:
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() { return m_linearSolver; }
     virtual void setWeakFormulation(Hermes::Hermes2D::WeakForm<Scalar>* wf) {m_linearSolver->set_weak_formulation(wf); }
     virtual void matrixUnchangedDueToBDF(bool unchanged);
+    virtual LinearMatrixSolver<Scalar> *linearSolver() { return m_linearSolver->get_linear_solver(); }
+
 private:
     Hermes::Hermes2D::LinearSolver<Scalar> *m_linearSolver;
 };
@@ -134,6 +137,7 @@ public:
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_newtonSolver, solverName, adaptivityStep); }
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() { return m_newtonSolver; }
     virtual void setWeakFormulation(Hermes::Hermes2D::WeakForm<Scalar>* wf) { m_newtonSolver->set_weak_formulation(wf); }
+    virtual LinearMatrixSolver<Scalar> *linearSolver() { return m_newtonSolver->get_linear_solver(); }
 
     NewtonSolverAgros<Scalar> *solver() const { return m_newtonSolver; }
 
@@ -155,6 +159,7 @@ public:
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_picardSolver, solverName, adaptivityStep); }
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() { return m_picardSolver; }
     virtual void setWeakFormulation(Hermes::Hermes2D::WeakForm<Scalar>* wf) { m_picardSolver->set_weak_formulation(wf); }
+    virtual LinearMatrixSolver<Scalar> *linearSolver() { return m_picardSolver->get_linear_solver(); }
 
 private:
     Hermes::Hermes2D::PicardSolver<Scalar> *m_picardSolver;

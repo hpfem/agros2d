@@ -23,7 +23,7 @@
 #ifdef WITH_PARALUTION
 #include "paralution_solver.h"
 
-#include "limits"
+#include <limits>
 
 namespace Hermes
 {
@@ -232,7 +232,7 @@ namespace Hermes
     ParalutionLinearMatrixSolver<Scalar>::ParalutionLinearMatrixSolver(ParalutionMatrix<Scalar> *matrix, ParalutionVector<Scalar> *rhs) : IterSolver<Scalar>(), matrix(matrix), rhs(rhs)
     {
       paralutionSolver = new paralution::CG<paralution::LocalMatrix<Scalar>, paralution::LocalVector<Scalar>, Scalar>();
-      this->set_max_iters(100);
+      this->set_max_iters(10000);
     }
 
     template<typename Scalar>
@@ -358,7 +358,7 @@ namespace Hermes
     template<typename Scalar>
     double ParalutionLinearMatrixSolver<Scalar>::get_residual()
     {
-      return 0.;
+      return this->paralutionSolver->GetCurrentResidual();
     }
 
     template<typename Scalar>
