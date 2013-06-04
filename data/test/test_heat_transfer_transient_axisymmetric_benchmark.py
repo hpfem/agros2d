@@ -57,4 +57,4 @@ problem.solve()
 point = heat.local_values(0.1, 0.3)
 testT = agros2d.test("Temperature", point["T"], 186.5, 0.0002) # permissible error 0.02 %
 
-print("Test: Heat transfer steady state - transient - axisymmetric: " + str(testT))
+print("Test: Heat transfer transient - axisymmetric benchmark: " + str(testT))
