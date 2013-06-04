@@ -126,7 +126,9 @@ namespace Hermes
       case Hermes::SOLVER_PARALUTION:
         {
 #ifdef WITH_PARALUTION
-          return new ParalutionLinearMatrixSolver<double>(static_cast<ParalutionMatrix<double>*>(matrix), static_cast<ParalutionVector<double>*>(rhs));
+          ParalutionLinearMatrixSolver<double> *solver = new ParalutionLinearMatrixSolver<double>(static_cast<ParalutionMatrix<double>*>(matrix), static_cast<ParalutionVector<double>*>(rhs));
+          solver->set_precond(new ParalutionPrecond<double>(ParalutionPrecond<double>::Jacobi));
+          return solver;
 #else
           throw Hermes::Exceptions::Exception("PARALUTION was not installed.");
 #endif
