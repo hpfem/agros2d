@@ -37,6 +37,11 @@ Source: agros2d_solver.exe; DestDir: {app}; DestName: Solver.exe
 Source: agros2d_remote.exe; DestDir: {app}; DestName: Remote.exe
 Source: agros2d_hermes2d.dll; DestDir: {app}; DestName: agros2d_hermes2d.dll
 Source: libs\*.dll; DestDir: {app}/libs
+Source: iconengines\*.dll; DestDir: {app}/iconengines
+Source: imageformats\*.dll; DestDir: {app}/imageformats
+Source: printsupport\*.dll; DestDir: {app}/printsupport
+Source: platforms\*.dll; DestDir: {app}/platforms
+Source: sqldrivers\*.dll; DestDir: {app}/sqldrivers
 Source: resources\images\agros2d.ico; DestDir: {app}; DestName: Agros2D.ico
 Source: COPYING; DestDir: {app}; DestName: COPYING
 Source: README; DestDir: {app}; DestName: README

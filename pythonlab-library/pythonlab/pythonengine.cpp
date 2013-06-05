@@ -349,7 +349,7 @@ QStringList PythonEngine::codeCompletion(const QString& code, int offset, const 
     if (QFile::exists(fileName))
     {
         exp = QString("result_rope_pythonlab = python_engine_get_completion_file(\"%1\", %2)").
-                arg(fileName).
+                arg(compatibleFilename(fileName)).
                 arg(offset);
     }
     else
@@ -430,7 +430,7 @@ QStringList PythonEngine::codePyFlakes(const QString& fileName)
 {
     QStringList out;
 
-    QString exp = QString("result_pyflakes_pythonlab = python_engine_pyflakes_check(\"%1\")").arg(fileName);
+    QString exp = QString("result_pyflakes_pythonlab = python_engine_pyflakes_check(\"%1\")").arg(compatibleFilename(fileName));
 
     PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
 
