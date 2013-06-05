@@ -134,12 +134,6 @@ HEADERS += value.h \
     hermes2d/module.h \
     hermes2d/problem.h \
     hermes2d/problem_config.h \
-    ../pythonlab/pythonlab/pythonconsole.h \
-    ../pythonlab/pythonlab/pythoncompleter.h \
-    ../pythonlab/pythonlab/pythonhighlighter.h \
-    ../pythonlab/pythonlab/pythonengine.h \
-    ../pythonlab/pythonlab/pythonbrowser.h \
-    ../pythonlab/pythonlab/pythoneditor.h \
     mainwindow.h \
     scenebasic.h \
     scenemarker.h \

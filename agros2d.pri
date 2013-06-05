@@ -14,10 +14,10 @@ DEFINES += WITH_OPENMP
 
 LIBS += -lagros_3rdparty_ctemplate
 LIBS += -lagros_3rdparty_qcustomplot
-LIBS += -lagros_3rdparty_stb_truetype
 LIBS += -lagros_3rdparty_dxflib
 LIBS += -lagros_3rdparty_poly2tri
 LIBS += -lagros_3rdparty_quazip
+#LIBS += -lagros_3rdparty_stb_truetype
 LIBS += -lagros_util
 
 # paralution
@@ -124,6 +124,7 @@ win32-msvc2010 {
     LIBS += -ladvapi32
     LIBS += -lws2_32
     LIBS += -lpsapi # process memory usage (system_utils.h)
+    LIBS += -lzlib
 
     CONFIG(release, debug|release) {
         LIBS += -lxerces-c_static_3
