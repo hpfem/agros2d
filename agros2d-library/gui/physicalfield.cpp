@@ -37,7 +37,7 @@ PhysicalFieldWidget::PhysicalFieldWidget(QWidget *parent) : QWidget(parent)
     layoutField->addWidget(new QLabel(tr("Physical field:")), 0, 0);
     layoutField->addWidget(cmbFieldInfo, 0, 1);
 
-    QGroupBox *grpField = new QGroupBox(tr("Postprocessor settings"));
+    QGroupBox *grpField = new QGroupBox(tr("Postprocessor settings"), this);
     grpField->setLayout(layoutField);
 
     // transient
@@ -51,9 +51,9 @@ PhysicalFieldWidget::PhysicalFieldWidget(QWidget *parent) : QWidget(parent)
     layoutTransient->addWidget(lblTimeStep, 0, 0);
     layoutTransient->addWidget(cmbTimeStep, 0, 1);
 
-    grpTime = new QGroupBox(tr("Transient analysis"));
-    grpTime->setLayout(layoutTransient);
+    grpTime = new QGroupBox(tr("Transient analysis"), this);
     grpTime->setVisible(false);
+    grpTime->setLayout(layoutTransient);
 
     // adaptivity
     lblAdaptivityStep = new QLabel(tr("Adaptivity step:"));
@@ -70,9 +70,9 @@ PhysicalFieldWidget::PhysicalFieldWidget(QWidget *parent) : QWidget(parent)
     layoutAdaptivity->addWidget(lblAdaptivitySolutionType, 1, 0);
     layoutAdaptivity->addWidget(cmbAdaptivitySolutionType, 1, 1);
 
-    grpAdaptivity = new QGroupBox(tr("Space adaptivity"));
-    grpAdaptivity->setLayout(layoutAdaptivity);
+    grpAdaptivity = new QGroupBox(tr("Space adaptivity"), this);
     grpAdaptivity->setVisible(false);
+    grpAdaptivity->setLayout(layoutAdaptivity);
 
     QVBoxLayout *layoutMain = new QVBoxLayout();
     layoutMain->setContentsMargins(0, 0, 0, 0);
