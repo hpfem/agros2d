@@ -129,7 +129,7 @@ void setGUIStyle(const QString &styleName)
 void setLanguage(const QString &locale)
 {
     // non latin-1 chars
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#if QT_VERSION < 0x050000
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf8"));
 #endif
 

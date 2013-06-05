@@ -252,10 +252,10 @@ void ServerDownloadDialog::httpFileFinished()
     accept();
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-void ServerDownloadDialog::linkClicked(const QUrlQuery &url)
-#else
+#if QT_VERSION < 0x050000
 void ServerDownloadDialog::linkClicked(const QUrl &url)
+#else
+void ServerDownloadDialog::linkClicked(const QUrlQuery &url)
 #endif
 {
     if (url.toString().startsWith(Agros2D::configComputer()->collaborationServerURL))

@@ -673,7 +673,7 @@ void PythonScriptingConsole::consoleMessage(const QString &message, const QColor
     QString str;
 
     str = "<span style=\"color: " + color.name() + ";\">";
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#if QT_VERSION < 0x050000
     str += Qt::escape(message);
 #else
     str += QString(message).toHtmlEscaped();

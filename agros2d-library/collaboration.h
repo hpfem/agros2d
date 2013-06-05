@@ -74,10 +74,10 @@ private slots:
     void doClose();
     void doLogin();
     void httpFileFinished();
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-     void linkClicked(const QUrlQuery &url);
-#else
+#if QT_VERSION < 0x050000
     void linkClicked(const QUrl &url);
+#else
+    void linkClicked(const QUrlQuery &url);
 #endif
 
 private:

@@ -667,10 +667,10 @@ void MaterialBrowserDialog::functionValues(const QString &function, double from,
     currentPythonEngineAgros()->runExpression("del agros2d_material", false);
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-void MaterialBrowserDialog::linkClicked(const QUrlQuery &url)
-#else
+#if QT_VERSION < 0x050000
 void MaterialBrowserDialog::linkClicked(const QUrl &url)
+#else
+void MaterialBrowserDialog::linkClicked(const QUrlQuery &url)
 #endif
 {
     QString search = "/property?";
