@@ -192,6 +192,12 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
         INCLUDEPATH += /usr/include/superlu
         LIBS += -lsuperlu
     }
+    # petsc
+    contains(CONFIG, WITH_PETSC) {
+        DEFINES += WITH_PETSC
+        INCLUDEPATH += /usr/lib/petscdir/3.2/include/
+        INCLUDEPATH += /usr/lib/openmpi/include/
+    }
 }
 
 macx-g++ {

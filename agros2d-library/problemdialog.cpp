@@ -1050,6 +1050,9 @@ void ProblemWidget::fillComboBox()
 #ifdef WITH_SUPERLU
     cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_SUPERLU), Hermes::SOLVER_SUPERLU);
 #endif
+#ifdef WITH_PETSC
+    cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PETSC), Hermes::SOLVER_PETSC);
+#endif
 #ifdef WITH_PARALUTION
     cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PARALUTION), Hermes::SOLVER_PARALUTION);
 #endif

@@ -225,7 +225,9 @@ void initLists()
 #ifdef WITH_PARALUTION
     matrixSolverTypeList.insert(Hermes::SOLVER_PARALUTION, "paralution");
 #endif
-    // matrixSolverTypeList.insert(Hermes::SOLVER_PETSC, "petsc");
+#ifdef WITH_PETSC
+    matrixSolverTypeList.insert(Hermes::SOLVER_PETSC, "petsc");
+#endif
     // matrixSolverTypeList.insert(Hermes::SOLVER_AMESOS, "trilinos_amesos");
     // matrixSolverTypeList.insert(Hermes::SOLVER_AZTECOO, "trilinos_aztecoo");
 

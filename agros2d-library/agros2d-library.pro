@@ -303,6 +303,11 @@ contains(CONFIG, WITH_MUMPS) {
 contains(CONFIG, WITH_SUPERLU) {
     DEFINES += WITH_SUPERLU
 }
+# petsc
+contains(CONFIG, WITH_PETSC) {
+    DEFINES += WITH_PETSC
+}
+
 
 include(../agros2d.pri)
 include(../agros2d_version.pri)
