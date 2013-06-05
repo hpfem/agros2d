@@ -965,9 +965,25 @@ bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep,
     // error calculation & adaptivity.
     DefaultErrorCalculator<double, HERMES_H1_NORM> errorCalculator(RelativeErrorToGlobalNorm, m_actualSpaces.size());
     // stopping criterion for an adaptivity step.
-    AdaptStoppingCriterionLevels<double> stoppingCriterion(m_block->adaptivityThreshold());
+    AdaptivityStoppingCriterion<Scalar> *stopingCriterion = NULL;
+    switch (m_block->adaptivityStoppingCriterionType())
+    {
+    case AdaptivityStoppingCriterionType_Cumulative:
+        stopingCriterion = new AdaptStoppingCriterionCumulative<double>(m_block->adaptivityThreshold());
+        break;
+    case AdaptivityStoppingCriterionType_SingleElement:
+        stopingCriterion = new AdaptStoppingCriterionSingleElement<double>(m_block->adaptivityThreshold());
+        break;
+    case AdaptivityStoppingCriterionType_Levels:
+        stopingCriterion = new AdaptStoppingCriterionLevels<double>(m_block->adaptivityThreshold());
+        break;
+    default:
+        assert(0);
+        break;
+    }
+
     // adaptivity
-    Adapt<Scalar> adaptivity(&errorCalculator, &stoppingCriterion);
+    Adapt<Scalar> adaptivity(&errorCalculator, stopingCriterion);
     adaptivity.set_spaces(m_actualSpaces);
     adaptivity.set_verbose_output(false);
 
@@ -1017,6 +1033,7 @@ bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep,
     }
 
     deleteSelectors(selector);
+    delete stopingCriterion;
 
     return adapt;
 }

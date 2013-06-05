@@ -810,6 +810,7 @@ void FieldInfo::setStringKeys()
     m_settingKey[AdaptivityTransientBackSteps] = "AdaptivityTransientBackSteps";
     m_settingKey[AdaptivityTransientRedoneEach] = "AdaptivityTransientRedoneEach";
     m_settingKey[AdaptivityThreshold] = "AdaptivityThreshold";
+    m_settingKey[AdaptivityStoppingCriterion] = "AdaptivityStoppingCriterion";
     m_settingKey[AdaptivityProjNormType] = "AdaptivityProjNormType";
     m_settingKey[AdaptivityUseAniso] = "AdaptivityUseAniso";
     m_settingKey[AdaptivityFinerReference] = "AdaptivityFinerReference";
@@ -839,6 +840,7 @@ void FieldInfo::setDefaultValues()
     m_settingDefault[AdaptivityTolerance] = 1.0;
     m_settingDefault[AdaptivityTransientBackSteps] = 3;
     m_settingDefault[AdaptivityTransientRedoneEach] = 5;
+    m_settingDefault[AdaptivityStoppingCriterion] = AdaptivityStoppingCriterionType_SingleElement;
     m_settingDefault[AdaptivityThreshold] = 0.6;
     m_settingDefault[AdaptivityProjNormType] = Hermes::Hermes2D::HERMES_H1_NORM;
     m_settingDefault[AdaptivityUseAniso] = true;

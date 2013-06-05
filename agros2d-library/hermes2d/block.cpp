@@ -251,6 +251,19 @@ double Block::adaptivityTolerance() const
     return tolerance;
 }
 
+AdaptivityStoppingCriterionType Block::adaptivityStoppingCriterionType() const
+{
+    AdaptivityStoppingCriterionType sc = (AdaptivityStoppingCriterionType) m_fields.at(0)->fieldInfo()->value(FieldInfo::AdaptivityStoppingCriterion).toInt();
+
+    foreach (Field *field, m_fields)
+    {
+        // todo: ensure in GUI
+        assert((AdaptivityStoppingCriterionType) field->fieldInfo()->value(FieldInfo::AdaptivityStoppingCriterion).toInt() == sc);
+    }
+
+    return sc;
+}
+
 double Block::adaptivityThreshold() const
 {
     double threshold = numeric_limits<double>::max();

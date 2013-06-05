@@ -31,6 +31,7 @@ static QMap<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QMap<SceneViewPost3DMode, QString> sceneViewPost3DModeList;
 static QMap<WeakFormKind, QString> weakFormList;
 static QMap<AdaptivityType, QString> adaptivityTypeList;
+static QMap<AdaptivityStoppingCriterionType, QString> adaptivityStoppingCriterionTypeList;
 static QMap<Hermes::Hermes2D::NormType, QString> adaptivityNormTypeList;
 static QMap<TimeStepMethod, QString> timeStepMethodList;
 static QMap<SolutionMode, QString> solutionTypeList;
@@ -77,6 +78,10 @@ PhysicFieldVariableComp physicFieldVariableCompFromStringKey(const QString &phys
 QStringList adaptivityTypeStringKeys() { return adaptivityTypeList.values(); }
 QString adaptivityTypeToStringKey(AdaptivityType adaptivityType) { return adaptivityTypeList[adaptivityType]; }
 AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType) { return adaptivityTypeList.key(adaptivityType); }
+
+QStringList adaptivityStoppingCriterionTypeStringKeys() { return adaptivityStoppingCriterionTypeList.values(); }
+QString adaptivityStoppingCriterionTypeToStringKey(AdaptivityStoppingCriterionType adaptivityStoppingCriterionType) { return adaptivityStoppingCriterionTypeList[adaptivityStoppingCriterionType]; }
+AdaptivityStoppingCriterionType adaptivityStoppingCriterionFromStringKey(const QString &adaptivityStoppingCriterionType) { return adaptivityStoppingCriterionTypeList.key(adaptivityStoppingCriterionType); }
 
 QStringList adaptivityNormTypeStringKeys() { return adaptivityNormTypeList.values(); }
 QString adaptivityNormTypeToStringKey(Hermes::Hermes2D::NormType adaptivityNormType) { return adaptivityNormTypeList[adaptivityNormType]; }
@@ -203,6 +208,12 @@ void initLists()
     adaptivityTypeList.insert(AdaptivityType_H, "h-adaptivity");
     adaptivityTypeList.insert(AdaptivityType_P, "p-adaptivity");
     adaptivityTypeList.insert(AdaptivityType_HP, "hp-adaptivity");
+
+    // AdaptivityStoppingCriterionType
+    adaptivityStoppingCriterionTypeList.insert(AdaptivityStoppingCriterionType_Undefined, "");
+    adaptivityStoppingCriterionTypeList.insert(AdaptivityStoppingCriterionType_Cumulative, "cumulative");
+    adaptivityStoppingCriterionTypeList.insert(AdaptivityStoppingCriterionType_SingleElement, "singleelement");
+    adaptivityStoppingCriterionTypeList.insert(AdaptivityStoppingCriterionType_Levels, "levels");
 
     // ADAPTIVITYNORMTYPE
     adaptivityNormTypeList.insert(Hermes::Hermes2D::HERMES_H1_NORM, "h1_norm");
@@ -422,6 +433,22 @@ QString adaptivityTypeString(AdaptivityType adaptivityType)
         return QObject::tr("hp-adaptivity");
     default:
         std::cerr << "Adaptivity type '" + QString::number(adaptivityType).toStdString() + "' is not implemented. adaptivityTypeString(AdaptivityType adaptivityType)" << endl;
+        throw;
+    }
+}
+
+QString adaptivityStoppingCriterionTypeString(AdaptivityStoppingCriterionType adaptivityStoppingCriterionType)
+{
+    switch (adaptivityStoppingCriterionType)
+    {
+    case AdaptivityStoppingCriterionType_Cumulative:
+        return QObject::tr("Cumulative");
+    case AdaptivityStoppingCriterionType_SingleElement:
+        return QObject::tr("Single element");
+    case AdaptivityStoppingCriterionType_Levels:
+        return QObject::tr("Levels");
+    default:
+        std::cerr << "Adaptivity stopping criterion type '" + QString::number(adaptivityStoppingCriterionType).toStdString() + "' is not implemented. adaptivityStoppingCriterionTypeString(AdaptivityStoppingCriterionType adaptivityStoppingCriterionType)" << endl;
         throw;
     }
 }

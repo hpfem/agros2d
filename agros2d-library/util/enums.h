@@ -50,6 +50,14 @@ enum AdaptivityType
     AdaptivityType_HP = 0
 };
 
+enum AdaptivityStoppingCriterionType
+{
+    AdaptivityStoppingCriterionType_Undefined = -1,
+    AdaptivityStoppingCriterionType_Cumulative = 0,
+    AdaptivityStoppingCriterionType_SingleElement = 1,
+    AdaptivityStoppingCriterionType_Levels = 2
+};
+
 enum TimeStepMethod
 {
     TimeStepMethod_Undefined = -1,
@@ -285,6 +293,12 @@ AGROS_API QString adaptivityTypeString(AdaptivityType adaptivityType);
 AGROS_API QStringList adaptivityTypeStringKeys();
 AGROS_API QString adaptivityTypeToStringKey(AdaptivityType adaptivityType);
 AGROS_API AdaptivityType adaptivityTypeFromStringKey(const QString &adaptivityType);
+
+// adaptivity stopping criterion type
+AGROS_API QString adaptivityStoppingCriterionTypeString(AdaptivityStoppingCriterionType adaptivityStoppingCriterionType);
+AGROS_API QStringList adaptivityStoppingCriterionTypeStringKeys();
+AGROS_API QString adaptivityStoppingCriterionTypeToStringKey(AdaptivityStoppingCriterionType adaptivityStoppingCriterionType);
+AGROS_API AdaptivityStoppingCriterionType adaptivityStoppingCriterionFromStringKey(const QString &adaptivityStoppingCriterionType);
 
 // adaptivity norm type
 AGROS_API QString errorNormString(Hermes::Hermes2D::NormType projNormType);

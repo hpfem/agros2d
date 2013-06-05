@@ -148,6 +148,15 @@ void FieldWidget::createContent()
     txtAdaptivitySteps->setMaximum(100);
     txtAdaptivityTolerance = new LineEditDouble(1.0, true);
     txtAdaptivityTolerance->setBottom(0.0);
+    cmbAdaptivityStoppingCriterionType = new QComboBox();
+    foreach (QString type, adaptivityStoppingCriterionTypeStringKeys())
+        if (adaptivityStoppingCriterionFromStringKey(type) != AdaptivityStoppingCriterionType_Undefined)
+            cmbAdaptivityStoppingCriterionType->addItem(adaptivityStoppingCriterionTypeString(adaptivityStoppingCriterionFromStringKey(type)),
+                                                        adaptivityStoppingCriterionFromStringKey(type));
+    QLabel *lblAdaptivityStoppingCriterionType = new QLabel(tr("<b>Cumulative</b>: cumulative processed error<br /><b>Single element</b>: maximum element error<br /><b>Levels</b>: elements with similar errors"));
+    QFont fnt = lblAdaptivityStoppingCriterionType->font();
+    fnt.setPixelSize(lblAdaptivityStoppingCriterionType->font().pointSize() - 1);
+    lblAdaptivityStoppingCriterionType->setFont(fnt);
     txtAdaptivityThreshold = new QDoubleSpinBox();
     txtAdaptivityThreshold->setValue(m_fieldInfo->defaultValue(FieldInfo::AdaptivityThreshold).toDouble());
     txtAdaptivityThreshold->setDecimals(2);
@@ -203,7 +212,6 @@ void FieldWidget::createContent()
     txtNewtonDampingCoeff->setBottom(0.0);
     chkNewtonReuseJacobian = new QCheckBox(tr("Reuse Jacobian if possible"));
     connect(chkNewtonReuseJacobian, SIGNAL(toggled(bool)), this, SLOT(doNewtonReuseJacobian(bool)));
-
 
     lblNewtonSufficientImprovementFactorJacobian = new QLabel(tr("Sufficient improvement factor Jacobian:"));;
     txtNewtonSufficientImprovementFactorJacobian = new LineEditDouble(0, true);
@@ -281,19 +289,22 @@ void FieldWidget::createContent()
     layoutAdaptivity->setColumnMinimumWidth(0, columnMinimumWidth());
     layoutAdaptivity->setColumnStretch(1, 1);
     layoutAdaptivity->addWidget(new QLabel(tr("Steps:")), 1, 0);
-    layoutAdaptivity->addWidget(txtAdaptivitySteps, 1, 1);
+    layoutAdaptivity->addWidget(txtAdaptivitySteps, 1, 1, 1, 3);
     layoutAdaptivity->addWidget(new QLabel(tr("Tolerance (%):")), 2, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityTolerance, 2, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Threshold:")), 3, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityThreshold, 3, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Norm:")), 4, 0);
-    layoutAdaptivity->addWidget(cmbAdaptivityProjNormType, 4, 1);
-    layoutAdaptivity->addWidget(chkAdaptivityUseAniso, 5, 0, 1, 2);
-    layoutAdaptivity->addWidget(chkAdaptivityFinerReference, 6, 0, 1, 2);
-    layoutAdaptivity->addWidget(lblAdaptivityBackSteps, 7, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityBackSteps, 7, 1);
-    layoutAdaptivity->addWidget(lblAdaptivityRedoneEach, 8, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityRedoneEach, 8, 1);
+    layoutAdaptivity->addWidget(txtAdaptivityTolerance, 2, 1, 1, 3);
+    layoutAdaptivity->addWidget(new QLabel(tr("Stopping criterion:")), 3, 0);
+    layoutAdaptivity->addWidget(cmbAdaptivityStoppingCriterionType, 3, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Threshold:")), 3, 2);
+    layoutAdaptivity->addWidget(txtAdaptivityThreshold, 3, 3);
+    layoutAdaptivity->addWidget(lblAdaptivityStoppingCriterionType, 4, 1, 1, 3);
+    layoutAdaptivity->addWidget(new QLabel(tr("Norm:")), 5, 0);
+    layoutAdaptivity->addWidget(cmbAdaptivityProjNormType, 5, 1, 1, 3);
+    layoutAdaptivity->addWidget(chkAdaptivityUseAniso, 6, 1, 1, 3);
+    layoutAdaptivity->addWidget(chkAdaptivityFinerReference, 7, 1, 1, 3);
+    layoutAdaptivity->addWidget(lblAdaptivityBackSteps, 8, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityBackSteps, 8, 1, 1, 3);
+    layoutAdaptivity->addWidget(lblAdaptivityRedoneEach, 9, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityRedoneEach, 9, 1, 1, 3);
     layoutAdaptivity->setRowStretch(50, 1);
 
     QWidget *widAdaptivity = new QWidget(this);
@@ -313,7 +324,7 @@ void FieldWidget::createContent()
     layoutSolver->addWidget(cmbNewtonDampingType, 4, 1);
     layoutSolver->addWidget(lblNewtonDampingCoeff, 5, 0);
     layoutSolver->addWidget(txtNewtonDampingCoeff, 5, 1);
-    layoutSolver->addWidget(chkNewtonReuseJacobian, 6, 0, 1, 2);
+    layoutSolver->addWidget(chkNewtonReuseJacobian, 6, 1, 1, 1);
     layoutSolver->addWidget(lblNewtonSufficientImprovementFactorJacobian, 7, 0);
     layoutSolver->addWidget(txtNewtonSufficientImprovementFactorJacobian, 7, 1);
     layoutSolver->addWidget(lblNewtonMaximumStepsWithReusedJacobian, 8, 0);
@@ -411,6 +422,7 @@ void FieldWidget::load()
     txtAdaptivitySteps->setValue(m_fieldInfo->value(FieldInfo::AdaptivitySteps).toInt());
     txtAdaptivityTolerance->setValue(m_fieldInfo->value(FieldInfo::AdaptivityTolerance).toDouble());
     txtAdaptivityThreshold->setValue(m_fieldInfo->value(FieldInfo::AdaptivityThreshold).toDouble());
+    cmbAdaptivityStoppingCriterionType->setCurrentIndex(cmbAdaptivityStoppingCriterionType->findData((AdaptivityStoppingCriterionType) m_fieldInfo->value(FieldInfo::AdaptivityStoppingCriterion).toInt()));
     cmbAdaptivityProjNormType->setCurrentIndex(cmbAdaptivityProjNormType->findData((Hermes::Hermes2D::NormType) m_fieldInfo->value(FieldInfo::AdaptivityProjNormType).toInt()));
     chkAdaptivityUseAniso->setChecked(m_fieldInfo->value(FieldInfo::AdaptivityUseAniso).toBool());
     chkAdaptivityFinerReference->setChecked(m_fieldInfo->value(FieldInfo::AdaptivityFinerReference).toBool());
@@ -449,6 +461,7 @@ bool FieldWidget::save()
     m_fieldInfo->setValue(FieldInfo::AdaptivitySteps, txtAdaptivitySteps->value());
     m_fieldInfo->setValue(FieldInfo::AdaptivityTolerance, txtAdaptivityTolerance->value());
     m_fieldInfo->setValue(FieldInfo::AdaptivityThreshold, txtAdaptivityThreshold->value());
+    m_fieldInfo->setValue(FieldInfo::AdaptivityStoppingCriterion, (AdaptivityStoppingCriterionType) cmbAdaptivityStoppingCriterionType->itemData(cmbAdaptivityStoppingCriterionType->currentIndex()).toInt());
     m_fieldInfo->setValue(FieldInfo::AdaptivityProjNormType, (Hermes::Hermes2D::NormType) cmbAdaptivityProjNormType->itemData(cmbAdaptivityProjNormType->currentIndex()).toInt());
     m_fieldInfo->setValue(FieldInfo::AdaptivityUseAniso, chkAdaptivityUseAniso->isChecked());
     m_fieldInfo->setValue(FieldInfo::AdaptivityFinerReference, chkAdaptivityFinerReference->isChecked());
@@ -535,6 +548,7 @@ void FieldWidget::doAdaptivityChanged(int index)
     txtAdaptivitySteps->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     txtAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     txtAdaptivityThreshold->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+    cmbAdaptivityStoppingCriterionType->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     cmbAdaptivityProjNormType->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     chkAdaptivityUseAniso->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     chkAdaptivityFinerReference->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);

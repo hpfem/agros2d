@@ -108,6 +108,7 @@ private:
     LineEditDouble *txtAdaptivityTolerance;
     QDoubleSpinBox *txtAdaptivityThreshold;
     QComboBox *cmbAdaptivityProjNormType;
+    QComboBox *cmbAdaptivityStoppingCriterionType;
     QCheckBox *chkAdaptivityUseAniso;
     QCheckBox *chkAdaptivityFinerReference;
     QSpinBox *txtAdaptivityBackSteps;
