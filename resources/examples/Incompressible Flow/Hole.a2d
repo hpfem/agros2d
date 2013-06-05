@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/david/git/github/testovani/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/fmach/Projekty/Agros2D/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
 
   <geometry>
     <nodes>
@@ -40,6 +40,7 @@
               <boundary_edge id="3"/>
             </boundary_edges>
             <boundary_types>
+              <boundary_type key="flow_pressure" value="0"/>
               <boundary_type key="flow_velocity_x" value="cos(y*pi/2)"/>
               <boundary_type key="flow_velocity_y" value="0"/>
             </boundary_types>
@@ -54,6 +55,7 @@
               <boundary_edge id="7"/>
             </boundary_edges>
             <boundary_types>
+              <boundary_type key="flow_pressure" value="0"/>
               <boundary_type key="flow_velocity_x" value="0"/>
               <boundary_type key="flow_velocity_y" value="0"/>
             </boundary_types>
@@ -62,7 +64,11 @@
             <boundary_edges>
               <boundary_edge id="1"/>
             </boundary_edges>
-            <boundary_types/>
+            <boundary_types>
+              <boundary_type key="flow_pressure" value="0"/>
+              <boundary_type key="flow_velocity_x" value="0"/>
+              <boundary_type key="flow_velocity_y" value="0"/>
+            </boundary_types>
           </boundary>
         </boundaries>
         <materials>
@@ -82,9 +88,9 @@
           <field_item field_key="NonlinearTolerance" field_value="0.1"/>
           <field_item field_key="NonlinearSteps" field_value="20"/>
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
-          <field_item field_key="NewtonDampingType" field_value="0"/>
-          <field_item field_key="NewtonDampingCoeff" field_value="0.1"/>
-          <field_item field_key="NewtonReuseJacobian" field_value="1"/>
+          <field_item field_key="NewtonDampingType" field_value="1"/>
+          <field_item field_key="NewtonDampingCoeff" field_value="1"/>
+          <field_item field_key="NewtonReuseJacobian" field_value="0"/>
           <field_item field_key="NewtonSufImprovJacobian" field_value="0.8"/>
           <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
           <field_item field_key="NewtonStepsToIncreaseDF" field_value="1"/>
@@ -97,6 +103,10 @@
           <field_item field_key="AdaptivityTolerance" field_value="1"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
           <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
+          <field_item field_key="AdaptivityThreshold" field_value="0.6"/>
+          <field_item field_key="AdaptivityProjNormType" field_value="1"/>
+          <field_item field_key="AdaptivityUseAniso" field_value="1"/>
+          <field_item field_key="AdaptivityFinerReference" field_value="0"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
           <field_item field_key="TransientInitialCondition" field_value="0"/>
         </field_config>
@@ -196,7 +206,7 @@
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
     <item key="View_ScalarRangeMin" value="0"/>
-    <item key="View_ScalarRangeMax" value="1"/>
+    <item key="View_ScalarRangeMax" value="1.95614920932207"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value=""/>
     <item key="View_VectorProportional" value="1"/>
@@ -249,14 +259,6 @@
     <item key="View_LinearizerQuality" value="4"/>
     <item key="View_SolidViewHide" value=""/>
     <item key="Adaptivity_MaxDofs" value="60000"/>
-    <item key="Adaptivity_IsoOnly" value="0"/>
-    <item key="Adaptivity_ConvExp" value="1"/>
-    <item key="Adaptivity_Threshold" value="0.3"/>
-    <item key="Adaptivity_Strategy" value="0"/>
-    <item key="Adaptivity_MeshRegularity" value="-1"/>
-    <item key="Adaptivity_ProjNormType" value="1"/>
-    <item key="Adaptivity_UseAniso" value="1"/>
-    <item key="Adaptivity_FinerReference" value="0"/>
     <item key="Commands_Triangle" value="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;"/>
     <item key="Commands_Gmsh" value="%1 -2 &quot;%2.geo&quot;"/>
   </config>
