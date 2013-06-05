@@ -216,6 +216,14 @@ void PyField::setAdaptivityThreshold(double adaptivityThreshold)
         throw out_of_range(QObject::tr("Adaptivity threshold must be positive.").toStdString());
 }
 
+void PyField::setAdaptivityStoppingCriterion(const std::string &adaptivityStoppingCriterion)
+{
+    if (adaptivityStoppingCriterionTypeStringKeys().contains(QString::fromStdString(adaptivityStoppingCriterion)))
+        m_fieldInfo->setValue(FieldInfo::AdaptivityStoppingCriterion, (AdaptivityStoppingCriterionType) adaptivityStoppingCriterionFromStringKey(QString::fromStdString(adaptivityStoppingCriterion)));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(adaptivityStoppingCriterionTypeStringKeys())).toStdString());
+}
+
 void PyField::setAdaptivityNormType(const std::string &adaptivityNormType)
 {
     if (adaptivityNormTypeStringKeys().contains(QString::fromStdString(adaptivityNormType)))

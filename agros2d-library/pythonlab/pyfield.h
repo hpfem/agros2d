@@ -112,6 +112,10 @@ class PyField
         inline double getAdaptivityThreshold() const { return m_fieldInfo->value(FieldInfo::AdaptivityThreshold).toDouble(); }
         void setAdaptivityThreshold(double adaptivityThreshold);
 
+        // adaptivity stopping criterion
+        inline std::string getAdaptivityStoppingCriterion() const { return adaptivityStoppingCriterionTypeToStringKey((AdaptivityStoppingCriterionType) m_fieldInfo->value(FieldInfo::AdaptivityStoppingCriterion).toInt()).toStdString(); }
+        void setAdaptivityStoppingCriterion(const std::string &adaptivityStoppingCriterion);
+
         // adaptivity norm
         inline std::string getAdaptivityNormType() const { return adaptivityNormTypeToStringKey((Hermes::Hermes2D::NormType) m_fieldInfo->value(FieldInfo::AdaptivityProjNormType).toInt()).toStdString(); }
         void setAdaptivityNormType(const std::string &adaptivityNormType);

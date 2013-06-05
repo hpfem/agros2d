@@ -64,6 +64,9 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         double getAdaptivityThreshold()
         void setAdaptivityThreshold(double adaptivityThreshold)  except +
 
+        string getAdaptivityStoppingCriterion()
+        void setAdaptivityStoppingCriterion(string &adaptivityStoppingCriterion) except +
+
         string getAdaptivityNormType()
         void setAdaptivityNormType(string &adaptivityNormType) except +
 
@@ -365,6 +368,13 @@ cdef class __Field__:
             return self.thisptr.getAdaptivityThreshold()
         def __set__(self, adaptivity_threshold):
             self.thisptr.setAdaptivityThreshold(adaptivity_threshold)
+
+    # adaptivity stopping criterion
+    property adaptivity_stopping_criterion:
+        def __get__(self):
+            return self.thisptr.getAdaptivityStoppingCriterion().c_str()
+        def __set__(self, adaptivity_stopping_criterion):
+            self.thisptr.setAdaptivityStoppingCriterion(string(adaptivity_stopping_criterion))
 
     # adaptivity norm type
     property adaptivity_norm_type:

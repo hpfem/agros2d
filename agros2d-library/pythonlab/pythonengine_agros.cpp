@@ -267,6 +267,10 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::AdaptivityThreshold).toDouble());
 
+            str += QString("%1.adaptivity_stopping_criterion = \"%2\"\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(adaptivityStoppingCriterionTypeToStringKey((AdaptivityStoppingCriterionType) fieldInfo->value(FieldInfo::AdaptivityStoppingCriterion).toInt()));
+
             str += QString("%1.adaptivity_norm_type = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
                     arg(adaptivityNormTypeToStringKey((Hermes::Hermes2D::NormType) fieldInfo->value(FieldInfo::AdaptivityProjNormType).toInt()));
