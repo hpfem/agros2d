@@ -194,7 +194,11 @@ Following figures show convergence curves for different types of adaptivity.
    :figclass: two-pictures
    :alt: Error
    
+<<<<<<< HEAD
    Fig. 7: dependence of relative error on number of steps
+=======
+   Fig. 8: dependence of relative error on number of steps
+>>>>>>> added tm module
 
 Multimesh Technology
 ^^^^^^^^^^^^^^^^^^^^
@@ -245,7 +249,7 @@ Agros2D discretizes 2D domains on the base of software Triangle that provides a 
    :figclass: two-pictures
    :alt: Convergence
    
-   Fig.12: 
+   Fig.12: Dependance of DOFs on relative error for linear and curvilinear elements. 
    
 
 .. figure:: ./introduction/curvilinear_elements/error.png
@@ -255,7 +259,7 @@ Agros2D discretizes 2D domains on the base of software Triangle that provides a 
    :figclass: two-pictures
    :alt: Error
 
-   Fig.13: 
+   Fig.13: Dependance of relative error on steps for linear and curvilinear elements. 
 
 
 .. figure:: ./introduction/curvilinear_elements/dofs.png
@@ -265,9 +269,9 @@ Agros2D discretizes 2D domains on the base of software Triangle that provides a 
    :figclass: two-pictures  
    :alt: DOFs
 
-   Fig.14: Adaptivity charts (*hp*-adaptivity)
+   Fig.14: Dependance of DOFs on steps for linear and curvilinear elements. 
 
-Ilustrative example (:ref:`acoustic-axisymmetric-horn`):
+
 
 .. figure:: ./introduction/triangular_or_quadrilateral_elements/mesh-quads.png
    :align: left

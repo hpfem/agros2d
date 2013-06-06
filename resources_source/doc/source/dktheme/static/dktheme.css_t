@@ -20,10 +20,12 @@ a.reference em {
 	font-style: normal;
 }
 
+
 .figure {
 	margin-top: 5px;
 	margin-bottom: 5px;		
 }
+
 
 .three-pictures  
 {			

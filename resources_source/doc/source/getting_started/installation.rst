@@ -1,67 +1,117 @@
-Agros2D installation 
+Agros2D installation
 ====================
+
+Ubuntu 12.04
+------------
+
+You can update your Ubuntu and Debian-like systems with packages from our PPA by adding ppa:pkarban/agros2d to your system’s Software Sources.
+
+ .. code-block:: none
  
-Compilation from source files
------------------------------
+   sudo add-apt-repository ppa:pkarban/agros2d
+   sudo apt-get update
+   sudo apt-get install agros2d 
  
+Development builds
+^^^^^^^^^^^^^^^^^^
+
+There’s also an Ubuntu PPA for development builds ppa:pkarban/agros2dunstable.
+
+Windows XP, Vista, 7
+--------------------
+Windows binary package can be downloaded from `Agros2D <http://www.agros2d.org/wp-content/plugins/download-monitor/download.php?id=8>`_.
+
+Beta version
+^^^^^^^^^^^^
+By their nature these releases are unstable and should not be used any place where your data is important. The package can be downloaded from `Agros2D Beta <http://www.agros2d.org/wp-content/plugins/download-monitor/download.php?id=10>`_.
+
+`Microsoft Visual C++ 2008 Redistributable Package <http://www.microsoft.com/en-us/download/details.aspx?id=29>`_ is required for Windows 7.
+
+Mac OSX
+-------
+We are sorry, but Mac OSX isn’t available right now. We are looking for tester and packager.
+
 Compilation under GNU/Linux
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------
 
-Download Source Codes
-"""""""""""""""""""""
+Requirements installation
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Download from the Git repository::
+First install the following free packages:
 
-  git clone git://github.com/hpfem/agros2d.git
+* Hermes (http://hpfem.org/hermes)
 
-Install Requirements
-""""""""""""""""""""
+* Digia Qt (http://qt.digia.com)
 
-Agros2D have following requirements:
+* QCustomChart (http://www.workslikeclockwork.com/index.php/components/qt-plotting-widget/)
 
-* `Hermes <http://www.hpfem.org/hermes>`_ ()
-* `Triangle <http://www.cs.cmu.edu/~quake/triangle.html>`_ ()
-* `Nokia Qt <http://www.qtsoftware.com/products>`_ ()
-* `Python <http://www.python.org>`_ ()
-* `dxflib <http://www.ribbonsoft.com/dxflib.html>`_ ()
-* `Qwt <http://qwt.sourceforge.net>`_ ()
-* `FFmpeg <http://ffmpeg.org>`_ ()
-* `Google Performance Tools <http://http://code.google.com/p/gperftools/wiki/GooglePerformanceTools>`_ ()
+* Python (http://www.python.org)
 
-If you are using a Debian-based system, install the required libraries with following command::
+* dxflib (http://www.ribbonsoft.com)
 
-  sudo apt-get install libqt4-dev libqt4-opengl-dev qt4-dev-tools qt4-qmake g++ cython 
-  libssl-dev libqwt5-qt4-dev triangle-bin python-dev python-sphinx ffmpeg libsuitesparse-dev 
-  libmumps-seq-dev libsuperlu3-dev libgoogle-perftools-dev 
+* ctemplate (http://code.google.com/p/ctemplate)
+
+* poly2tri (http://code.google.com/p/poly2tri)
+
+* Triangle (http://www.cs.cmu.edu/~quake/triangle.html)
+
+* Gmsh (http://geuz.org/gmsh/)
+
+* UMFPACK (http://www.cise.ufl.edu/research/sparse/umfpack/)
+
+* MUMPS (http://graal.ens-lyon.fr/MUMPS)
+
+* SuperLU (http://crd-legacy.lbl.gov/~xiaoye/SuperLU)
 
 
-Documentation
-"""""""""""""
+If you are using a Debian-like system, install the required libraries by following commands:
 
-::
+ .. code-block:: none
+ 
+      sudo apt-get install libqt4-dev libqt4-opengl-dev qt4-dev-tools qt4-qmake g++ 
+      sudo apt-get install cython python-dev xsdcxx libxerces-c-dev
+      sudo apt-get install triangle-bin gmsh libsuitesparse-dev libmumps-seq-dev libsuperlu3-dev libsuitesparse-dev ffmpeg
+      sudo apt-get install libgoogle-perftools-dev 
 
-  make html
-
-Localization
-""""""""""""
-
-::
-
-  lrelease ./lang/*.ts
+You can use defines WITH_UNITY (support for Unity application launcher) for Ubuntu 11.04 and higher.
+This defines needs package libunity-dev.
 
 Compilation
-"""""""""""
+^^^^^^^^^^^
 
-::
+In first step of compilation, you have to make makefiles and compile by following commands:
 
-  qmake agros2d.pro
-  make
+ .. code-block:: none
+   
+   qmake -r ./agros2d.pro
+   make
 
-The binary package can be build as follows:
+If you have more than one CPU, you can use “make -jN” where N is the number of CPUs of your computer.
+Next step is generating of plugins source code and their compilation:
 
-::
+ .. code-block:: none
+   
+   ./agros2d_generator
+   qmake ./plugins/plugins.pro
+   make -C ./plugins/
 
-  dpkg-buildpackage -sgpg -rfakeroot
+You can also use script agros2d.sh with parameter comp in simple way of automatic compilation.
+
+Generating of localization files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Agros2D is available in English, German, French, Russian, Czech and Polish translations. Localization
+files can be generated as follows:
+ 
+ .. code-block:: none
+ 
+   lrelease ./resources_source/lang/*.ts
+
+or using the agros2d.sh script
+
+ .. code-block:: none
+ 
+   ./agros2d.sh lang release
 
 Compilation under MS Windows
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
