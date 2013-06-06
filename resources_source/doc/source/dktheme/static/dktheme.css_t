@@ -20,7 +20,6 @@ a.reference em {
 	font-style: normal;
 }
 
-
 .three-pictures  
 {			
 	float: left;			
@@ -43,9 +42,8 @@ a.reference em {
 
 p {
 	clear: both;
-
 }
 
 h3 {
 	clear: both;
-}
+
