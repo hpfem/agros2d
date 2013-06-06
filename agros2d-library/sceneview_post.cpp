@@ -208,8 +208,8 @@ void PostHermes::processRangeScalar()
             if (!edge->isStraight())
                 minLength = qMin(minLength, edge->length());
         }
-        if (minLength < std::numeric_limits<double>::max())
-            m_linScalarView.set_curvature_epsilon(minLength * 2.0);
+        // if (minLength < std::numeric_limits<double>::max())
+        //    m_linScalarView.set_curvature_epsilon(minLength * 2.0);
 
         // deformed shape
         if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformScalar).toBool())

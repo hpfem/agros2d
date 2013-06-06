@@ -20,7 +20,7 @@ heat.analysis_type = "steadystate"
 heat.number_of_refinements = 2
 heat.polynomial_order = 2
 heat.linearity_type = "newton"
-heat.nonlinear_tolerance = 0.001
+heat.nonlinear_tolerance = 0.0001
 heat.nonlinear_steps = 30
 heat.damping_type = "automatic"
 heat.damping_coeff = 0.8
@@ -33,7 +33,7 @@ heat.add_boundary("Radiace", "heat_heat_flux", {"heat_convection_external_temper
 heat.add_boundary("Neumann", "heat_heat_flux", {"heat_convection_external_temperature" : 0, "heat_convection_heat_transfer_coefficient" : 0, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 0, "heat_radiation_emissivity" : 0})
 heat.add_boundary("Convection", "heat_heat_flux", {"heat_convection_external_temperature" : 20, "heat_convection_heat_transfer_coefficient" : 50, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 0, "heat_radiation_emissivity" : 0})
 
-heat.add_material("Material - nonlin", {"heat_conductivity" : { "x" : [0,100,200,290,500,1000], "y" : [210,280,380,430,310,190] }, "heat_volume_heat" : 2e6})
+heat.add_material("Material - nonlin", {"heat_conductivity" : { "x" : [0,100,200,290,500,1000], "y" : [210,280,380,430,310,190], "interpolation" : "cubic_spline", "extrapolation" : "constant", "derivative_at_endpoints" : "first"}, "heat_volume_heat" : 2e6})
 heat.add_material("Material", {"heat_conductivity" : 230, "heat_volume_heat" : 0})
 
 # geometry

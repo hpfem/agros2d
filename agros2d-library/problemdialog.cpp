@@ -46,7 +46,7 @@ FieldSelectDialog::FieldSelectDialog(QList<QString> fields, QWidget *parent) : Q
 
     lstFields = new QListWidget(this);
     lstFields->setIconSize(QSize(32, 32));
-    lstFields->setMinimumHeight(36*8);
+    lstFields->setMinimumHeight(36*9);
 
     QMapIterator<QString, QString> it(Module::availableModules());
     while (it.hasNext())
@@ -287,14 +287,17 @@ void FieldWidget::createContent()
     // adaptivity
     QGridLayout *layoutAdaptivity = new QGridLayout();
     layoutAdaptivity->setColumnMinimumWidth(0, columnMinimumWidth());
-    layoutAdaptivity->setColumnStretch(1, 1);
+    layoutAdaptivity->setColumnStretch(0, 1);
+    layoutAdaptivity->setColumnStretch(1, 3);
+    layoutAdaptivity->setColumnStretch(2, 1);
+    layoutAdaptivity->setColumnStretch(3, 3);
     layoutAdaptivity->addWidget(new QLabel(tr("Steps:")), 1, 0);
     layoutAdaptivity->addWidget(txtAdaptivitySteps, 1, 1, 1, 3);
     layoutAdaptivity->addWidget(new QLabel(tr("Tolerance (%):")), 2, 0);
     layoutAdaptivity->addWidget(txtAdaptivityTolerance, 2, 1, 1, 3);
     layoutAdaptivity->addWidget(new QLabel(tr("Stopping criterion:")), 3, 0);
     layoutAdaptivity->addWidget(cmbAdaptivityStoppingCriterionType, 3, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Threshold:")), 3, 2);
+    layoutAdaptivity->addWidget(new QLabel(tr("Threshold (%):")), 3, 2);
     layoutAdaptivity->addWidget(txtAdaptivityThreshold, 3, 3);
     layoutAdaptivity->addWidget(lblAdaptivityStoppingCriterionType, 4, 1, 1, 3);
     layoutAdaptivity->addWidget(new QLabel(tr("Norm:")), 5, 0);
@@ -302,9 +305,9 @@ void FieldWidget::createContent()
     layoutAdaptivity->addWidget(chkAdaptivityUseAniso, 6, 1, 1, 3);
     layoutAdaptivity->addWidget(chkAdaptivityFinerReference, 7, 1, 1, 3);
     layoutAdaptivity->addWidget(lblAdaptivityBackSteps, 8, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityBackSteps, 8, 1, 1, 3);
-    layoutAdaptivity->addWidget(lblAdaptivityRedoneEach, 9, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityRedoneEach, 9, 1, 1, 3);
+    layoutAdaptivity->addWidget(txtAdaptivityBackSteps, 8, 1);
+    layoutAdaptivity->addWidget(lblAdaptivityRedoneEach, 8, 2);
+    layoutAdaptivity->addWidget(txtAdaptivityRedoneEach, 8, 3);
     layoutAdaptivity->setRowStretch(50, 1);
 
     QWidget *widAdaptivity = new QWidget(this);
