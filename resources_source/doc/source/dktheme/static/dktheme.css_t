@@ -20,11 +20,22 @@ a.reference em {
 	font-style: normal;
 }
 
+
+.figure {
+	margin-top: 5px;
+	margin-bottom: 5px;		
+}
+
+
 .three-pictures  
 {			
 	float: left;			
 }
 
+.two-pictures  
+{			
+	float: left;			
+}
 
 .figure .caption {
 	width: 100%;
@@ -35,7 +46,7 @@ a.reference em {
 	text-align: left;
 }
 
-.align-center
+.align-center .three-pictures
 {
 	text-align: left;
 }
@@ -46,4 +57,4 @@ p {
 
 h3 {
 	clear: both;
-}
+

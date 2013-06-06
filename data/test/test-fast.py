@@ -39,8 +39,8 @@ execfile("test_acoustic_planar.py")
 execfile("test_acoustic_axisymmetric.py")
 
 # electromagnetic wave - TE
-execfile("test_rf_planar.py")
-execfile("test_rf_axisymmetric.py")
+execfile("test_rf_te_planar.py")
+execfile("test_rf_te_axisymmetric.py")
 
 # incompressible flow
 execfile("test_flow_steady_planar_nonlin.py") 

@@ -16,7 +16,7 @@ agros2d.view.post2d.contours = False
 agros2d.view.post2d.vectors = False
 
 # fields
-rf = agros2d.field("rf")
+rf = agros2d.field("rf_te")
 rf.analysis_type = "harmonic"
 rf.number_of_refinements = 3	
 rf.polynomial_order = 3
@@ -33,25 +33,25 @@ rf.add_material("Air", {"rf_te_permittivity" : 1, "rf_te_permeability" : 1, "rf_
 geometry = agros2d.geometry
 
 # edges
-geometry.add_edge(-0.01, 0.02286, -0.01, 0, 0, boundaries = {"rf" : "Surface current"})
-geometry.add_edge(0.06907, 0.02286, 0.076, 0.01593, 90, boundaries = {"rf" : "Perfect electric conductor"})
-geometry.add_edge(0.076, 0.01593, 0.081, 0.01593, 0, boundaries = {"rf" : "Perfect electric conductor"})
-geometry.add_edge(0.081, 0.01593, 0.081, 0.02286, 0, boundaries = {"rf" : "Perfect electric conductor"})
-geometry.add_edge(0.086, 0.00693, 0.086, 0, 0, boundaries = {"rf" : "Perfect electric conductor"})
-geometry.add_edge(0.086, 0.00693, 0.081, 0.00693, 0, boundaries = {"rf" : "Perfect electric conductor"})
-geometry.add_edge(0.081, 0.00693, 0.05907, 0, 20, boundaries = {"rf" : "Perfect electric conductor"})
-geometry.add_edge(-0.01, 0, 0.05907, 0, 0, boundaries = {"rf" : "Perfect electric conductor"})
-geometry.add_edge(0.17, 0.02286, 0.081, 0.02286, 0, boundaries = {"rf" : "Perfect electric conductor"})
-geometry.add_edge(0.06907, 0.02286, -0.01, 0.02286, 0, boundaries = {"rf" : "Perfect electric conductor"})
-geometry.add_edge(0.19286, 0, 0.17, 0.02286, 90, boundaries = {"rf" : "Perfect electric conductor"})
-geometry.add_edge(0.19286, 0, 0.19286, -0.04, 0, boundaries = {"rf" : "Perfect electric conductor"})
-geometry.add_edge(0.175, -0.04, 0.175, -0.015, 0, boundaries = {"rf" : "Perfect electric conductor"})
-geometry.add_edge(0.175, -0.015, 0.16, 0, 90, boundaries = {"rf" : "Perfect electric conductor"})
-geometry.add_edge(0.175, -0.04, 0.19286, -0.04, 0, boundaries = {"rf" : "Matched boundary"})
-geometry.add_edge(0.086, 0, 0.16, 0, 0, boundaries = {"rf" : "Perfect electric conductor"})
+geometry.add_edge(-0.01, 0.02286, -0.01, 0, 0, boundaries = {"rf_te" : "Surface current"})
+geometry.add_edge(0.06907, 0.02286, 0.076, 0.01593, 90, boundaries = {"rf_te" : "Perfect electric conductor"})
+geometry.add_edge(0.076, 0.01593, 0.081, 0.01593, 0, boundaries = {"rf_te" : "Perfect electric conductor"})
+geometry.add_edge(0.081, 0.01593, 0.081, 0.02286, 0, boundaries = {"rf_te" : "Perfect electric conductor"})
+geometry.add_edge(0.086, 0.00693, 0.086, 0, 0, boundaries = {"rf_te" : "Perfect electric conductor"})
+geometry.add_edge(0.086, 0.00693, 0.081, 0.00693, 0, boundaries = {"rf_te" : "Perfect electric conductor"})
+geometry.add_edge(0.081, 0.00693, 0.05907, 0, 20, boundaries = {"rf_te" : "Perfect electric conductor"})
+geometry.add_edge(-0.01, 0, 0.05907, 0, 0, boundaries = {"rf_te" : "Perfect electric conductor"})
+geometry.add_edge(0.17, 0.02286, 0.081, 0.02286, 0, boundaries = {"rf_te" : "Perfect electric conductor"})
+geometry.add_edge(0.06907, 0.02286, -0.01, 0.02286, 0, boundaries = {"rf_te" : "Perfect electric conductor"})
+geometry.add_edge(0.19286, 0, 0.17, 0.02286, 90, boundaries = {"rf_te" : "Perfect electric conductor"})
+geometry.add_edge(0.19286, 0, 0.19286, -0.04, 0, boundaries = {"rf_te" : "Perfect electric conductor"})
+geometry.add_edge(0.175, -0.04, 0.175, -0.015, 0, boundaries = {"rf_te" : "Perfect electric conductor"})
+geometry.add_edge(0.175, -0.015, 0.16, 0, 90, boundaries = {"rf_te" : "Perfect electric conductor"})
+geometry.add_edge(0.175, -0.04, 0.19286, -0.04, 0, boundaries = {"rf_te" : "Matched boundary"})
+geometry.add_edge(0.086, 0, 0.16, 0, 0, boundaries = {"rf_te" : "Perfect electric conductor"})
 
 # labels
-geometry.add_label(0.0359418, 0.0109393, materials = {"rf" : "Air"})
+geometry.add_label(0.0359418, 0.0109393, materials = {"rf_te" : "Air"})
 
 agros2d.view.zoom_best_fit()
 

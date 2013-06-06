@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <module:module xmlns:module="XMLModule" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLModule ../xsd/module_xml.xsd">
 
-  <module:general id="rf" name="RF waves">
+  <module:general id="rf_te" name="TE waves">
     <module:description>Solving TE waves in RF field.</module:description>
     <module:analyses>
-      <module:analysis id="harmonic" name="Harmonic" solutions="2" type="harmonic" />
+      <module:analysis id="harmonic" name="Harmonic" solutions="2" type="harmonic"/>
     </module:analyses>
   </module:general>
 
@@ -37,8 +37,8 @@
         <module:matrix_form axi_linear="- 1 / (rf_mur * MU0) * (r * udr * vdr + r * udz * vdz + (r > 0) * uval * vval/r + uval * vdr + vval * udr) + r * pow(2 * PI * f, 2) * rf_eps * EPS0 * uval * vval" axi_newton="- r * 1 / (rf_mur * MU0) * (udr * vdr + udz * vdz) + r * pow(2 * PI * f, 2) * rf_eps * EPS0 * uval * vval" i="2" id="form" j="2" planar_linear="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + pow(2 * PI * f, 2) * rf_eps * EPS0 * uval * vval" planar_newton="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + pow(2 * PI * f, 2) * rf_eps * EPS0 * uval * vval" symmetric="0"/>
         <module:matrix_form axi_linear="2 * PI * f * rf_gamma * uval * vval" axi_newton="0" i="1" id="form" j="2" planar_linear="2 * PI * f * rf_gamma * uval * vval" planar_newton="0"/>
         <module:matrix_form axi_linear="-2 * PI * f * rf_gamma * uval * vval" axi_newton="0" i="2" id="form" j="1" planar_linear="- 2 * PI * f * rf_gamma * uval * vval" planar_newton="0"/>
-        <module:vector_form axi_linear="rf_Jer * vval" axi_newton="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * pow(2 * PI * f, 2) * rf_eps * EPS0 * upval * vval - r * rf_Jer * vval" i="1" id="form" j="1" planar_linear="rf_Jer * vval" planar_newton="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + pow(2 * PI * f, 2) * rf_eps * EPS0 * upval * vval - rf_Jer * vval"/>
-        <module:vector_form axi_linear="rf_Jei * vval" axi_newton="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * pow(2 * PI * f, 2) * rf_eps * EPS0 * upval * vval - r * rf_Jei * vval" i="2" id="form" j="2" planar_linear="rf_Jei * vval" planar_newton="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + pow(2 * PI * f, 2) * rf_eps * EPS0 * upval * vval - rf_Jei * vval"/>
+        <module:vector_form axi_linear="- r * 2 * PI * f * rf_Jei * vval" axi_newton="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * pow(2 * PI * f, 2) * rf_eps * EPS0 * upval * vval - r * rf_Jer * vval" i="1" id="form" j="1" planar_linear="- 2 * PI * f * rf_Jei * vval" planar_newton="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + pow(2 * PI * f, 2) * rf_eps * EPS0 * upval * vval - rf_Jer * vval"/>
+        <module:vector_form axi_linear="r * 2 * PI * f * rf_Jer * vval" axi_newton="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * pow(2 * PI * f, 2) * rf_eps * EPS0 * upval * vval - r * rf_Jei * vval" i="2" id="form" j="2" planar_linear="2 * PI * f * rf_Jer * vval" planar_newton="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + pow(2 * PI * f, 2) * rf_eps * EPS0 * upval * vval - rf_Jei * vval"/>
       </module:weakform_volume>
     </module:weakforms_volume>
   </module:volume>
@@ -62,8 +62,8 @@
         <module:boundary equation="n \times H = n \times H_0" id="rf_te_magnetic_field" name="Magnetic field">
           <module:quantity id="rf_te_magnetic_field_real"/>
           <module:quantity id="rf_te_magnetic_field_imag"/>
-          <module:vector_form axi_linear="- rf_Hr * vval" axi_newton="rf_Hr * r * vval" i="1" id="form" j="1" planar_linear="- rf_Hr * vval" planar_newton="rf_Hr * vval"/>
-          <module:vector_form axi_linear="- rf_Hi * vval" axi_newton="rf_Hi * r * vval" i="2" id="form" j="2" planar_linear="- rf_Hi * vval" planar_newton="rf_Hi * vval"/>
+          <module:vector_form axi_linear="r * 2 * PI * f * rf_Hi * vval" axi_newton="r * 2 * PI * f * rf_Hi * vval" i="1" id="form" j="1" planar_linear="2 * PI * f * rf_Hi * vval" planar_newton="2 * PI * f * rf_Hi * vval"/>
+          <module:vector_form axi_linear="- r * 2 * PI * f * rf_Hr * vval" axi_newton="- r * 2 * PI * f * rf_Hr * vval" i="2" id="form" j="2" planar_linear="- 2 * PI * f * rf_Hr * vval" planar_newton="- 2 * PI * f * rf_Hr * vval"/>
         </module:boundary>
         <module:boundary equation="\faz{J}_{t} = - \frac{1}{\omega \mu} \frac{\partial \vecfaz{E}}{\partial n_0} = \faz{J}_0" id="rf_te_surface_current" name="Surface current">
           <module:quantity id="rf_te_surface_current_real"/>
@@ -75,8 +75,8 @@
           <module:quantity id="rf_te_impedance"/>
           <module:matrix_form axi_linear="r * 2 * PI * f / rf_Z0 * uval * vval" axi_newton="-r * 2 * PI * f / rf_Z0 * uval * vval" i="1" id="form" j="2" planar_linear="2 * PI * f / rf_Z0 * uval * vval" planar_newton="- 2 * PI * f / rf_Z0 * uval * vval"/>
           <module:matrix_form axi_linear="- r * 2 * PI * f / rf_Z0 * uval * vval" axi_newton="r * 2 * PI * f / rf_Z0 * uval * vval" i="2" id="form" j="1" planar_linear="- 2 * PI * f / rf_Z0 * uval * vval" planar_newton="2 * PI * f / rf_Z0 * uval * vval"/>
-          <module:vector_form axi_linear="0" axi_newton="r * 2 * PI * f / rf_Z0 * upval * vval" i="1" id="form" j="2" planar_linear="0" planar_newton="2 * PI * f / rf_Z0 * upval * vval"/>
-          <module:vector_form axi_linear="0" axi_newton="r * 2 * PI * f / rf_Z0 * upval * vval" i="2" id="form" j="1" planar_linear="0" planar_newton="2 * PI * f / rf_Z0 * upval * vval"/>
+          <module:vector_form axi_linear="0" axi_newton="r * 2 * PI * f / rf_Z0 * upval * vval" i="1" id="form" j="1" planar_linear="0" planar_newton="2 * PI * f / rf_Z0 * upval * vval"/>
+          <module:vector_form axi_linear="0" axi_newton="r * 2 * PI * f / rf_Z0 * upval * vval" i="2" id="form" j="2" planar_linear="0" planar_newton="2 * PI * f / rf_Z0 * upval * vval"/>
         </module:boundary>
       </module:weakform_surface>
     </module:weakforms_surface>

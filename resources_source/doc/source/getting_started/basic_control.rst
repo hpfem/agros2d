@@ -11,7 +11,7 @@ When you start Agros2D, it opens to the *introductory mode* mode, where you can
 
 * create new problem,
 
-* perform basic settings fo the problem and add physical fields, 
+* perform basic settings for the problem and add physical fields, 
 
 * open example problem, 
 

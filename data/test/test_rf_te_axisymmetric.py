@@ -17,7 +17,7 @@ agros2d.view.post2d.vectors = False
 
 # fields
 # rf
-rf = agros2d.field("rf")
+rf = agros2d.field("rf_te")
 rf.analysis_type = "harmonic"
 rf.number_of_refinements = 3
 rf.polynomial_order = 3
@@ -37,24 +37,24 @@ rf.add_material("Air", {"rf_te_permittivity" : 1, "rf_te_permeability" : 1, "rf_
 
 # geometry
 geometry = agros2d.geometry
-geometry.add_edge(0, 1, 0, -1, boundaries = {"rf" : "PEC"})
-geometry.add_edge(0, -1, 1, -1, boundaries = {"rf" : "Impedance"})
-geometry.add_edge(1, -1, 1, -0.75, boundaries = {"rf" : "Impedance"})
-geometry.add_edge(1, -0.75, 1.7, 0.65, boundaries = {"rf" : "Impedance"})
-geometry.add_edge(1.7, 0.65, 0.9, 0.35, boundaries = {"rf" : "Impedance"})
-geometry.add_edge(0.9, 0.35, 0, 1, boundaries = {"rf" : "Impedance"})
-geometry.add_edge(0.5, -0.25, 0.25, -0.5, angle = 90, boundaries = {"rf" : "Source"})
-geometry.add_edge(0.25, -0.5, 0.5, -0.75, angle = 90, boundaries = {"rf" : "Source"})
-geometry.add_edge(0.5, -0.75, 0.75, -0.5, angle = 90, boundaries = {"rf" : "Source"})
-geometry.add_edge(0.75, -0.5, 0.5, -0.25, angle = 90, boundaries = {"rf" : "Source"})
-geometry.add_edge(0.4, 0.25, 0.3, -0.05, boundaries = {"rf" : "PMC"})
-geometry.add_edge(0.4, 0.25, 0.75, 0.2, boundaries = {"rf" : "PMC"})
-geometry.add_edge(0.75, 0.2, 0.85, -0.1, boundaries = {"rf" : "PMC"})
-geometry.add_edge(0.3, -0.05, 0.85, -0.1, boundaries = {"rf" : "PMC"})
+geometry.add_edge(0, 1, 0, -1, boundaries = {"rf_te" : "PEC"})
+geometry.add_edge(0, -1, 1, -1, boundaries = {"rf_te" : "Impedance"})
+geometry.add_edge(1, -1, 1, -0.75, boundaries = {"rf_te" : "Impedance"})
+geometry.add_edge(1, -0.75, 1.7, 0.65, boundaries = {"rf_te" : "Impedance"})
+geometry.add_edge(1.7, 0.65, 0.9, 0.35, boundaries = {"rf_te" : "Impedance"})
+geometry.add_edge(0.9, 0.35, 0, 1, boundaries = {"rf_te" : "Impedance"})
+geometry.add_edge(0.5, -0.25, 0.25, -0.5, angle = 90, boundaries = {"rf_te" : "Source"})
+geometry.add_edge(0.25, -0.5, 0.5, -0.75, angle = 90, boundaries = {"rf_te" : "Source"})
+geometry.add_edge(0.5, -0.75, 0.75, -0.5, angle = 90, boundaries = {"rf_te" : "Source"})
+geometry.add_edge(0.75, -0.5, 0.5, -0.25, angle = 90, boundaries = {"rf_te" : "Source"})
+geometry.add_edge(0.4, 0.25, 0.3, -0.05, boundaries = {"rf_te" : "PMC"})
+geometry.add_edge(0.4, 0.25, 0.75, 0.2, boundaries = {"rf_te" : "PMC"})
+geometry.add_edge(0.75, 0.2, 0.85, -0.1, boundaries = {"rf_te" : "PMC"})
+geometry.add_edge(0.3, -0.05, 0.85, -0.1, boundaries = {"rf_te" : "PMC"})
 
-geometry.add_label(0.399371, 0.440347, materials = {"rf" : "Air"})
-geometry.add_label(0.484795, -0.434246, materials = {"rf" : "none"})
-geometry.add_label(0.57193, 0.0710058, materials = {"rf" : "none"})
+geometry.add_label(0.399371, 0.440347, materials = {"rf_te" : "Air"})
+geometry.add_label(0.484795, -0.434246, materials = {"rf_te" : "none"})
+geometry.add_label(0.57193, 0.0710058, materials = {"rf_te" : "none"})
 agros2d.view.zoom_best_fit()
 
 problem.solve()

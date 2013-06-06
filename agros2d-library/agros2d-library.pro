@@ -229,7 +229,9 @@ OTHER_FILES += functions.py \
     ../resources/xsd/subdomains_h2d_xml.xsd \
     ../resources/xsd/module_xml.xsd \
     ../resources/xsd/mesh_h2d_xml.xsd \
-    ../resources/xsd/coupling_xml.xsd
+    ../resources/xsd/coupling_xml.xsd \
+    ../resources/modules/rf_tm.xml \
+    ../resources/modules/rf_te.xml
 
 linux-clang {
     INCLUDEPATH += ../hermes2d/omp
