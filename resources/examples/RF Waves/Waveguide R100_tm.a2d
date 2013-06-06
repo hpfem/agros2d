@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/david/git/github/testovani/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/david/git/github/master/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
 
   <geometry>
     <nodes>
@@ -37,12 +37,12 @@
 
   <problem coordinate_type="planar" matrix_solver="umfpack" mesh_type="triangle">
     <fields>
-      <field adaptivity_type="disabled" analysis_type="harmonic" field_id="rf_te" linearity_type="linear">
+      <field adaptivity_type="disabled" analysis_type="harmonic" field_id="rf_tm" linearity_type="linear">
         <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>
         <boundaries>
-          <boundary id="1" name="Perfect electric conductor" type="rf_te_electric_field">
+          <boundary id="1" name="Perfect electric conductor" type="rf_tm_electric_field">
             <boundary_edges>
               <boundary_edge id="2"/>
               <boundary_edge id="3"/>
@@ -56,31 +56,31 @@
               <boundary_edge id="11"/>
             </boundary_edges>
             <boundary_types>
-              <boundary_type key="rf_te_electric_field_imag" value="0"/>
-              <boundary_type key="rf_te_electric_field_real" value="0"/>
+              <boundary_type key="rf_tm_electric_field_imag" value="0"/>
+              <boundary_type key="rf_tm_electric_field_real" value="0"/>
             </boundary_types>
           </boundary>
-          <boundary id="2" name="Matched boundary" type="rf_te_magnetic_field">
+          <boundary id="2" name="Matched boundary" type="rf_tm_magnetic_field">
             <boundary_edges>
               <boundary_edge id="0"/>
             </boundary_edges>
             <boundary_types>
-              <boundary_type key="rf_te_magnetic_field_imag" value="0"/>
-              <boundary_type key="rf_te_magnetic_field_real" value="0"/>
+              <boundary_type key="rf_tm_magnetic_field_imag" value="0"/>
+              <boundary_type key="rf_tm_magnetic_field_real" value="0"/>
             </boundary_types>
           </boundary>
-          <boundary id="3" name="Surface current" type="rf_te_electric_field">
+          <boundary id="3" name="Surface current" type="rf_tm_electric_field">
             <boundary_edges>
               <boundary_edge id="1"/>
             </boundary_edges>
             <boundary_types>
-              <boundary_type key="rf_te_impedance" value="0"/>
-              <boundary_type key="rf_te_electric_field_imag" value="0"/>
-              <boundary_type key="rf_te_magnetic_field_imag" value="0"/>
-              <boundary_type key="rf_te_surface_current_imag" value="0"/>
-              <boundary_type key="rf_te_electric_field_real" value="1"/>
-              <boundary_type key="rf_te_magnetic_field_real" value="0"/>
-              <boundary_type key="rf_te_surface_current_real" value="0"/>
+              <boundary_type key="rf_tm_impedance" value="0"/>
+              <boundary_type key="rf_tm_electric_field_imag" value="0"/>
+              <boundary_type key="rf_tm_magnetic_field_imag" value="0"/>
+              <boundary_type key="rf_tm_surface_current_imag" value="0"/>
+              <boundary_type key="rf_tm_electric_field_real" value="1"/>
+              <boundary_type key="rf_tm_magnetic_field_real" value="0"/>
+              <boundary_type key="rf_tm_surface_current_real" value="0"/>
             </boundary_types>
           </boundary>
         </boundaries>
@@ -90,11 +90,11 @@
               <material_label id="0"/>
             </material_labels>
             <material_types>
-              <material_type key="rf_te_conductivity" value="0"/>
-              <material_type key="rf_te_current_density_external_real" value="0"/>
-              <material_type key="rf_te_current_density_external_imag" value="0"/>
-              <material_type key="rf_te_permittivity" value="1"/>
-              <material_type key="rf_te_permeability" value="1"/>
+              <material_type key="rf_tm_conductivity" value="0"/>
+              <material_type key="rf_tm_current_density_external_real" value="0"/>
+              <material_type key="rf_tm_current_density_external_imag" value="0"/>
+              <material_type key="rf_tm_permittivity" value="1"/>
+              <material_type key="rf_tm_permeability" value="1"/>
             </material_types>
           </material>
         </materials>
@@ -117,6 +117,11 @@
           <field_item field_key="AdaptivityTolerance" field_value="1"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
           <field_item field_key="AdaptivityTransientRedoneEach" field_value="0"/>
+          <field_item field_key="AdaptivityStoppingCriterion" field_value="1"/>
+          <field_item field_key="AdaptivityThreshold" field_value="0.6"/>
+          <field_item field_key="AdaptivityProjNormType" field_value="1"/>
+          <field_item field_key="AdaptivityUseAniso" field_value="1"/>
+          <field_item field_key="AdaptivityFinerReference" field_value="0"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
           <field_item field_key="TransientInitialCondition" field_value="0"/>
         </field_config>
@@ -200,13 +205,13 @@
     <item key="View_ColorCrossedBlue" value="0"/>
     <item key="View_ShowInitialMeshView" value="1"/>
     <item key="View_ShowSolutionMeshView" value="0"/>
-    <item key="View_ContourVariable" value="rf_te_electric_field"/>
+    <item key="View_ContourVariable" value="rf_tm_electric_field"/>
     <item key="View_ShowContourView" value="0"/>
     <item key="View_ContoursCount" value="15"/>
     <item key="View_ContoursWidth" value="1"/>
     <item key="View_ShowScalarView" value="1"/>
     <item key="View_ShowScalarColorBar" value="1"/>
-    <item key="View_ScalarVariable" value="rf_te_electric_field"/>
+    <item key="View_ScalarVariable" value="rf_tm_electric_field"/>
     <item key="View_ScalarVariableComp" value="0"/>
     <item key="View_PaletteType" value="0"/>
     <item key="View_PaletteFilter" value="0"/>
@@ -216,7 +221,7 @@
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
     <item key="View_ScalarRangeMin" value="0"/>
-    <item key="View_ScalarRangeMax" value="1.6351090981017"/>
+    <item key="View_ScalarRangeMax" value="1.63510909810169"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value=""/>
     <item key="View_VectorProportional" value="1"/>
@@ -269,14 +274,6 @@
     <item key="View_LinearizerQuality" value="4"/>
     <item key="View_SolidViewHide" value=""/>
     <item key="Adaptivity_MaxDofs" value="60000"/>
-    <item key="Adaptivity_IsoOnly" value="0"/>
-    <item key="Adaptivity_ConvExp" value="1"/>
-    <item key="Adaptivity_Threshold" value="0.3"/>
-    <item key="Adaptivity_Strategy" value="0"/>
-    <item key="Adaptivity_MeshRegularity" value="-1"/>
-    <item key="Adaptivity_ProjNormType" value="1"/>
-    <item key="Adaptivity_UseAniso" value="1"/>
-    <item key="Adaptivity_FinerReference" value="0"/>
     <item key="Commands_Triangle" value="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;"/>
     <item key="Commands_Gmsh" value="%1 -2 &quot;%2.geo&quot;"/>
   </config>

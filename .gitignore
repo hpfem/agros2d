@@ -16,6 +16,7 @@ agros2d
 agros2d.pro.user
 agros2d-remote
 agros2d-remote.pro.user
+agros_pythonlab
 debian/files
 resources_source/doc/build
 resources/help
