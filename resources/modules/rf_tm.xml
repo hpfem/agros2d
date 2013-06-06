@@ -30,10 +30,10 @@
         <module:quantity id="rf_tm_permittivity"/>
         <module:quantity id="rf_tm_permeability"/>
         <module:quantity id="rf_tm_conductivity"/>
-        <module:matrix_form id="form" axi_linear="- r * 1 / (rf_eps * EPS0) * (udr * vdr + udz * vdz) + r * pow(2 * PI * f, 2) * rf_mur * MU0 * uval * vval" axi_newton="0" i="1" j="1" planar_linear="- 1 / (rf_eps * EPS0) * (udx * vdx + udy * vdy) + pow(2 * PI * f, 2) * rf_mur * MU0 * uval * vval" planar_newton="0" symmetric="0"/>
-        <module:matrix_form id="form" axi_linear="- r * 1 / (rf_eps * EPS0) * (udr * vdr + udz * vdz) + r * pow(2 * PI * f, 2) * rf_mur * MU0 * uval * vval" axi_newton="0" i="2" j="2" planar_linear="- 1 / (rf_eps * EPS0) * (udx * vdx + udy * vdy) + pow(2 * PI * f, 2) * rf_mur * MU0 * uval * vval" planar_newton="0" symmetric="0"/>
-        <module:matrix_form id="form" axi_linear="r * 2 * PI * f * rf_gamma * 1 / (rf_eps * EPS0) * uval * vval" axi_newton="0" i="1" j="2" planar_linear="2 * PI * f * rf_gamma * 1 / (rf_eps * EPS0) * uval * vval" planar_newton="0"/>
-        <module:matrix_form id="form" axi_linear="- r * 2 * PI * f * rf_gamma * 1 / (rf_eps * EPS0) * uval * vval" axi_newton="0" i="2" j="1" planar_linear="- 2 * PI * f * rf_gamma * 1 / (rf_eps * EPS0) * uval * vval" planar_newton="0"/>
+        <module:matrix_form id="form" axi_linear="- 1 / (rf_eps * EPS0) * (r * udr * vdr + r * udz * vdz + uval * vval/r + uval * vdr + vval * udr) + r * pow(2 * PI * f, 2) * rf_mur* MU0 * uval * vval" axi_newton="0" i="1" j="1" planar_linear="- 1 / (rf_eps * EPS0) * (udx * vdx + udy * vdy) + pow(2 * PI * f, 2) * rf_mur * MU0 * uval * vval" planar_newton="0" symmetric="0"/>
+        <module:matrix_form id="form" axi_linear="- 1 / (rf_eps * EPS0) * (r * udr * vdr + r * udz * vdz + uval * vval/r + uval * vdr + vval * udr) + r * pow(2 * PI * f, 2) * rf_mur* MU0 * uval * vval" axi_newton="0" i="2" j="2" planar_linear="- 1 / (rf_eps * EPS0) * (udx * vdx + udy * vdy) + pow(2 * PI * f, 2) * rf_mur * MU0 * uval * vval" planar_newton="0" symmetric="0"/>
+        <module:matrix_form id="form" axi_linear="2 * PI * f * rf_gamma * 1 / (rf_eps * EPS0) * uval * vval" axi_newton="0" i="1" j="2" planar_linear="2 * PI * f * rf_gamma * 1 / (rf_eps * EPS0) * uval * vval" planar_newton="0"/>
+        <module:matrix_form id="form" axi_linear="- 2 * PI * f * rf_gamma * 1 / (rf_eps * EPS0) * uval * vval" axi_newton="0" i="2" j="1" planar_linear="- 2 * PI * f * rf_gamma * 1 / (rf_eps * EPS0) * uval * vval" planar_newton="0"/>
         <module:vector_form id="form" axi_linear="0" axi_newton="0" i="1" j="1" planar_linear="0" planar_newton="0"/>
         <module:vector_form id="form" axi_linear="0" axi_newton="0" i="2" j="2" planar_linear="0" planar_newton="0"/>
      </module:weakform_volume>
@@ -60,15 +60,15 @@
         <module:boundary equation="n \times E = n \times E_0" id="rf_tm_electric_field" name="Electric field">
           <module:quantity id="rf_tm_electric_field_real"/>
           <module:quantity id="rf_tm_electric_field_imag"/>
-          <module:vector_form id="form" axi_linear="- 2 * PI * f * rf_Ei * r * vval" axi_newton="0" i="1" j="1" planar_linear="- 2 * PI * f * rf_Ei * vval" planar_newton="0"/>
-          <module:vector_form id="form" axi_linear="2 * PI * f * rf_Er * r * vval" axi_newton="0" i="2" j="2" planar_linear="2 * PI * f * rf_Er * vval" planar_newton="0"/>
+          <module:vector_form id="form" axi_linear="2 * PI * f * rf_Ei * r * vval" axi_newton="0" i="1" j="1" planar_linear="- 2 * PI * f * rf_Ei * vval" planar_newton="0"/>
+          <module:vector_form id="form" axi_linear="-2 * PI * f * rf_Er * r * vval" axi_newton="0" i="2" j="2" planar_linear="2 * PI * f * rf_Er * vval" planar_newton="0"/>
         </module:boundary>
         <module:boundary equation="\faz{J}_{t} = - \frac{\gamma}{\omega \varepsilon} \frac{\partial \vecfaz{H}}{\partial n_0} = \faz{J}_0" id="rf_tm_surface_current" name="Surface current">
           <module:quantity id="rf_tm_surface_current_real"/>
           <module:quantity id="rf_tm_surface_current_imag"/>
           <module:quantity id="rf_tm_conductivity"/>
-          <module:vector_form axi_linear="- 2 * PI * f * rf_Ji / gamma * r * vval" axi_newton="0" i="1" id="form" j="1" planar_linear="- 2 * PI * f / gamma * rf_Ji * vval" planar_newton="0"/>
-          <module:vector_form axi_linear="2 * PI * f * rf_Jr / gamma * r * vval" axi_newton="0" i="2" id="form" j="2" planar_linear="2 * PI * f / gamma * rf_Jr * vval" planar_newton="0"/>
+          <module:vector_form axi_linear="2 * PI * f * rf_Ji / gamma * r * vval" axi_newton="0" i="1" id="form" j="1" planar_linear="- 2 * PI * f / gamma * rf_Ji * vval" planar_newton="0"/>
+          <module:vector_form axi_linear="-2 * PI * f * rf_Jr / gamma * r * vval" axi_newton="0" i="2" id="form" j="2" planar_linear="2 * PI * f / gamma * rf_Jr * vval" planar_newton="0"/>
         </module:boundary>
         <module:boundary equation="- \frac{1}{\omega \varepsilon} \frac{\partial \vecfaz{H}}{\partial n_0} = \sqrt{\frac{\mu - \mj \gamma / \omega}{\varepsilon}} \vecfaz{H}" id="rf_tm_impedance" name="Impedance boundary condition">
           <module:quantity id="rf_tm_impedance"/>
