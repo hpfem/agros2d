@@ -11,6 +11,7 @@
   <module:constants>
     <module:constant id="EPS0" value="8.854e-12"/>
     <module:constant id="MU0" value="1.25664e-06"/>
+    <module:constant id="SMALL" value="1e-5"/>
   </module:constants>
 
   <module:spaces>
@@ -126,31 +127,31 @@
       <module:expression analysistype="harmonic" axi="rf_mur * MU0 * value2" planar="rf_mur * MU0 * value2"/>
     </module:localvariable>
     <module:localvariable id="rf_tm_displacement" name="Displacement" shortname="D" shortname_html="&lt;i>D&lt;/i>" shortname_latex="D" type="scalar" unit="C/m2" unit_html="C.m&lt;sup>-2&lt;/sup>" unit_latex="C \cdot m^{-2}">
-      <module:expression analysistype="harmonic" axi="sqrt(pow(rf_eps * EPS0 * (- 1 / (2 * PI * f * rf_eps * EPS0) * dz2) ,2) + pow(rf_eps * EPS0 * (1 / (2 * PI * f * rf_eps * EPS0) * (dr2 + (r > 0) * value2 / r)) ,2) + pow(rf_eps * EPS0 * (-1 / (2 * PI * f * rf_eps * EPS0) * dz1) ,2) + pow(rf_eps * EPS0 * (1 / (2 * PI * f * rf_eps * EPS0) * (dr1 + (r > 0) * value1 / r)) ,2))" planar="sqrt(pow(rf_eps * EPS0 * (- 1 / (2 * PI * f * rf_eps * EPS0) * dy2) ,2) + pow(1 / (2 * PI * f * rf_eps * EPS0) * dx2 ,2) + pow(rf_eps * EPS0 * (1 / (2 * PI * f * rf_eps * EPS0) * dy1) ,2) + pow(rf_eps * EPS0 * (- 1 / (2 * PI * f * rf_eps * EPS0) * dx1) ,2))"/>
+      <module:expression analysistype="harmonic" axi="sqrt(pow(rf_eps * EPS0 * (- 1 / (2 * PI * f * rf_eps * EPS0) * dz2) ,2) + pow(rf_eps * EPS0 * (1 / (2 * PI * f * rf_eps * EPS0) * (dr2 + (r > 0) * value2 / r)) ,2) + pow(rf_eps * EPS0 * (-1 / (2 * PI * f * rf_eps * EPS0) * dz1) ,2) + pow(rf_eps * EPS0 * (1 / (2 * PI * f * rf_eps * EPS0) * (dr1 + tern(r > SMALL, value1/r, dr1))) ,2))" planar="sqrt(pow(rf_eps * EPS0 * (- 1 / (2 * PI * f * rf_eps * EPS0) * dy2) ,2) + pow(1 / (2 * PI * f * rf_eps * EPS0) * dx2 ,2) + pow(rf_eps * EPS0 * (1 / (2 * PI * f * rf_eps * EPS0) * dy1) ,2) + pow(rf_eps * EPS0 * (- 1 / (2 * PI * f * rf_eps * EPS0) * dx1) ,2))"/>
     </module:localvariable>
     <module:localvariable id="rf_tm_displacement_real" name="Displacement - real" shortname="Dr" shortname_html="&lt;i>D&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="D_{r}" type="vector" unit="C/m2" unit_html="C.m&lt;sup>-2&lt;/sup>" unit_latex="C \cdot m^{-2}">
       <module:expression analysistype="harmonic" axi_r="rf_eps * EPS0 * (-1 / (2 * PI * f * rf_eps * EPS0) * dz2)" axi_z="rf_eps * EPS0 * (1 / (2 * PI * f * rf_eps * EPS0) * (dr2 + (r > 0) * value2 / r))" planar_x="rf_eps * EPS0 * (1 / (2 * PI * f * rf_eps * EPS0) * dy2)" planar_y="rf_eps * EPS0 * (- 1 / (2 * PI * f * rf_eps * EPS0) * dx1)"/>
     </module:localvariable>
     <module:localvariable id="rf_tm_displacement_imag" name="Displacement - imag" shortname="Di" shortname_html="&lt;i>D&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="D_{i}" type="vector" unit="C/m2" unit_html="C.m&lt;sup>-2&lt;/sup>" unit_latex="C \cdot m^{-2}">
-      <module:expression analysistype="harmonic" axi_r="rf_eps * EPS0 * (-1 / (2 * PI * f * rf_eps * EPS0) * dz1)" axi_z="rf_eps * EPS0 * (1 / (2 * PI * f * rf_eps * EPS0) * (dr1 + (r > 0) * value1 / r))" planar_x="rf_eps * EPS0 * (1 / (2 * PI * f * rf_eps * EPS0) * dy1)" planar_y="rf_eps * EPS0 * (- 1 / (2 * PI * f * rf_eps * EPS0) * dx1)"/>
+      <module:expression analysistype="harmonic" axi_r="rf_eps * EPS0 * (-1 / (2 * PI * f * rf_eps * EPS0) * dz1)" axi_z="rf_eps * EPS0 * (1 / (2 * PI * f * rf_eps * EPS0) * (dr1 + tern(r > SMALL, value1/r, dr1)))" planar_x="rf_eps * EPS0 * (1 / (2 * PI * f * rf_eps * EPS0) * dy1)" planar_y="rf_eps * EPS0 * (- 1 / (2 * PI * f * rf_eps * EPS0) * dx1)"/>
     </module:localvariable>
     <module:localvariable id="rf_tm_surface_current_real" name="Current density - real" shortname="Jr" shortname_html="&lt;i>J&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="J_{r}" type="vector" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
       <module:expression analysistype="harmonic" axi_r="rf_gamma * (-1 / (2 * PI * f * rf_eps * EPS0) * dz2)" axi_z="rf_gamma * (1 / (2 * PI * f * rf_eps * EPS0) * (dr2 + (r > 0) * value2 / r))" planar_x="rf_gamma * (1 / (2 * PI * f * rf_eps * EPS0) * dy2)" planar_y="rf_gamma * (- 1 / (2 * PI * f * rf_eps * EPS0) * dx2)"/>
     </module:localvariable>
     <module:localvariable id="rf_tm_surface_current_imag" name="Current density - imag" shortname="Ji" shortname_html="&lt;i>J&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="J_{i}" type="vector" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
-      <module:expression analysistype="harmonic"  axi_r="rf_gamma * (-1 / (2 * PI * f * rf_eps * EPS0) * dz1)" axi_z="rf_gamma * (1 / (2 * PI * f * rf_eps * EPS0) * (dr1 + (r > 0) * value1 / r))" planar_x="rf_gamma * (1 / (2 * PI * f * rf_eps * EPS0) * dy1)" planar_y="rf_gamma * (- 1 / (2 * PI * f * rf_eps * EPS0) * dx1)"/>
+      <module:expression analysistype="harmonic"  axi_r="rf_gamma * (-1 / (2 * PI * f * rf_eps * EPS0) * dz1)" axi_z="rf_gamma * (1 / (2 * PI * f * rf_eps * EPS0) * (dr1 + tern(r > SMALL, value1/r, dr1)))" planar_x="rf_gamma * (1 / (2 * PI * f * rf_eps * EPS0) * dy1)" planar_y="rf_gamma * (- 1 / (2 * PI * f * rf_eps * EPS0) * dx1)"/>
     </module:localvariable>
     <module:localvariable id="rf_tm_electric_field" name="Electric field" shortname="E" shortname_html="&lt;i>E&lt;/i>" shortname_latex="E" type="scalar" unit="V/m" unit_html="V.m&lt;sup>-1&lt;/sup>">
-      <module:expression analysistype="harmonic" axi="1 / (2 * PI * f * rf_eps * EPS0) * sqrt(pow(- dz2,2) + pow((dr2 + (r > 0) * value2 / r),2) + pow(- dz1,2) + pow((dr1 + (r > 0) * value1 / r), 2) )" planar="1 / (2 * PI * f * rf_eps * EPS0) * sqrt(pow(dy2,2) + pow(- dx2,2) + pow(dy1,2) + pow(- dx1,2))"/>
+      <module:expression analysistype="harmonic" axi="1 / (2 * PI * f * rf_eps * EPS0) * sqrt(pow(- dz2,2) + pow((dr2 + (r > 0) * value2 / r),2) + pow(- dz1,2) + pow((dr1 + tern(r > SMALL, value1/r, dr1)), 2) )" planar="1 / (2 * PI * f * rf_eps * EPS0) * sqrt(pow(dy2,2) + pow(- dx2,2) + pow(dy1,2) + pow(- dx1,2))"/>
     </module:localvariable>
     <module:localvariable id="rf_tm_electric_field_real" name="Electric field - real" shortname="Er" shortname_html="&lt;i>E&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="E_{r}" type="vector" unit="V/m" unit_html="V.m&lt;sup>-1&lt;/sup>" unit_latex="V \cdot m^{-1}">
       <module:expression analysistype="harmonic" axi_r="-1 / (2 * PI * f * rf_eps * EPS0) * dz2" axi_z="1 / (2 * PI * f * rf_eps * EPS0) * (dr2 + (r > 0) * value2 / r)" planar_x="1 / (2 * PI * f * rf_eps * EPS0) * dy2" planar_y="- 1 / (2 * PI * f * rf_eps * EPS0) * dx2"/>
     </module:localvariable>
     <module:localvariable id="rf_tm_electric_field_imag" name="Electric field - imag" shortname="Ei" shortname_html="&lt;i>E&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="E_{i}" type="vector" unit="V/m" unit_html="V.m&lt;sup>-1&lt;/sup>" unit_latex="V \cdot m^{-1}">
-      <module:expression analysistype="harmonic" axi_r="-1 / (2 * PI * f * rf_eps * EPS0) * dz1" axi_z="1 / (2 * PI * f * rf_eps * EPS0) * (dr1 + (r > 0) * value1 / r)" planar_x="1 / (2 * PI * f * rf_eps * EPS0) * dy1" planar_y="- 1 / (2 * PI * f * rf_eps * EPS0) * dx1"/>
+      <module:expression analysistype="harmonic" axi_r="-1 / (2 * PI * f * rf_eps * EPS0) * dz1" axi_z="1 / (2 * PI * f * rf_eps * EPS0) * (dr1 + tern(r > SMALL, value1/r, dr1))" planar_x="1 / (2 * PI * f * rf_eps * EPS0) * dy1" planar_y="- 1 / (2 * PI * f * rf_eps * EPS0) * dx1"/>
     </module:localvariable>
     <module:localvariable id="rf_tm_poynting_vector" name="Poynting vector" shortname="N" shortname_html="&lt;i>N&lt;/i>" shortname_latex="N" type="vector" unit="W/m2" unit_html="W.m&lt;sup>-2&lt;/sup>" unit_latex="W \cdot m^{-2}">
-      <module:expression analysistype="harmonic" axi_r="- 1 / (2 * PI * f * rf_eps * EPS0) * (dr2 + (r > 0) * value2 / r) * value1 + 1 / (2 * PI * f * rf_eps * EPS0) * (dr1 + (r > 0) * value1 / r) * value2" axi_z="-1 / (2 * PI * f * rf_eps * EPS0) * dz2 * value1 - (-1 / (2 * PI * f * rf_eps * EPS0) * dz1) * value2" planar_x="- 1 / (2 * PI * f * rf_eps * EPS0) * dx2 * value1 - (- 1 / (2 * PI * f * rf_eps * EPS0) * dx1) * value2" planar_y="- 1 / (2 * PI * f * rf_eps * EPS0) * dy2 * value1 + 1 / (2 * PI * f * rf_eps * EPS0) * dy1 * value2"/>
+      <module:expression analysistype="harmonic" axi_r="- 1 / (2 * PI * f * rf_eps * EPS0) * (dr2 + (r > 0) * value2 / r) * value1 + 1 / (2 * PI * f * rf_eps * EPS0) * (dr1 + tern(r > SMALL, value1/r, dr1)) * value2" axi_z="-1 / (2 * PI * f * rf_eps * EPS0) * dz2 * value1 - (-1 / (2 * PI * f * rf_eps * EPS0) * dz1) * value2" planar_x="- 1 / (2 * PI * f * rf_eps * EPS0) * dx2 * value1 - (- 1 / (2 * PI * f * rf_eps * EPS0) * dx1) * value2" planar_y="- 1 / (2 * PI * f * rf_eps * EPS0) * dy2 * value1 + 1 / (2 * PI * f * rf_eps * EPS0) * dy1 * value2"/>
     </module:localvariable>
     <module:localvariable id="rf_tm_permittivity" name="Permittivity" shortname="epsr" shortname_html="&lt;i>&amp;epsilon;&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="\varepsilon_{r}" type="scalar" unit="-" unit_html="-" unit_latex="-">
       <module:expression analysistype="harmonic" axi="rf_eps" planar="rf_eps"/>
