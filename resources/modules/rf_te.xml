@@ -54,8 +54,8 @@
     <module:weakforms_surface>
       <module:weakform_surface analysistype="harmonic" default="rf_te_electric_field">
         <module:boundary equation="\vecfaz{E} = \vecfaz{E}_0" id="rf_te_electric_field" name="Electric field">
-          <module:quantity id="rf_te_electric_field_real"/>
-          <module:quantity id="rf_te_electric_field_imag"/>
+          <module:quantity dependence="space" id="rf_te_electric_field_real"/>
+          <module:quantity dependence="space" id="rf_te_electric_field_imag"/>
           <module:essential_form axi_linear="rf_Er" axi_newton="rf_Er" i="1" id="form" planar_linear="rf_Er" planar_newton="rf_Er"/>
           <module:essential_form axi_linear="rf_Ei" axi_newton="rf_Ei" i="2" id="form" planar_linear="rf_Ei" planar_newton="rf_Ei"/>
         </module:boundary>

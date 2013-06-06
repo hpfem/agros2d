@@ -51,8 +51,8 @@
     <module:weakforms_surface>
       <module:weakform_surface analysistype="harmonic" default="rf_tm_magnetic_field">
         <module:boundary equation="\vecfaz{H} = \vecfaz{H}_0" id="rf_tm_magnetic_field" name="Magnetic field">
-          <module:quantity id="rf_tm_magnetic_field_real"/>
-          <module:quantity id="rf_tm_magnetic_field_imag"/>
+          <module:quantity dependence="space" id="rf_tm_magnetic_field_real"/>
+          <module:quantity dependence="space" id="rf_tm_magnetic_field_imag"/>
           <module:essential_form id="form" axi_linear="rf_Hr" axi_newton="0" i="1" planar_linear="rf_Hr" planar_newton="0"/>
           <module:essential_form id="form" axi_linear="rf_Hi" axi_newton="0" i="2" planar_linear="rf_Hi" planar_newton="0"/>
         </module:boundary>
