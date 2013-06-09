@@ -47,6 +47,7 @@ public slots:
 protected:
     QAction *actShow;
     QWidget *mainWidget;
+    QLabel *errorMessage;
     QString fileName;
 };
 

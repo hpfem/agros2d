@@ -41,23 +41,29 @@ FormScript::FormScript(const QString &fileName, QWidget *parent)
         file.open(QFile::ReadOnly);
         mainWidget = loader.load(&file, this);
         file.close();
-
-        foreach (QObject *object, mainWidget->children())
-        {
-            if (QDialogButtonBox *buttonBox = dynamic_cast<QDialogButtonBox  *>(object))
-            {
-                connect(buttonBox, SIGNAL(accepted()), this, SLOT(acceptForm()));
-                connect(buttonBox, SIGNAL(rejected()), this, SLOT(rejectForm()));
-            }
-        }
     }
     else
     {
         mainWidget = new QLabel(tr("File '%1' doesn't exists.").arg(fileName));
     }
 
+    // dialog buttons
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(acceptForm()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(rejectForm()));
+
+    // error
+    errorMessage = new QLabel();
+    errorMessage->setVisible(false);
+    QPalette palette = errorMessage->palette();
+    palette.setColor(QPalette::WindowText, Qt::red);
+    errorMessage->setPalette(palette);
+
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(mainWidget);
+    layout->addStretch();
+    layout->addWidget(errorMessage);
+    layout->addWidget(buttonBox);
     setLayout(layout);
 }
 
@@ -77,6 +83,9 @@ QAction *FormScript::action()
 
 int FormScript::show()
 {
+    errorMessage->clear();
+    errorMessage->setVisible(false);
+
     return exec();
 }
 
@@ -128,10 +137,22 @@ void FormScript::acceptForm()
                                   ctemplate::DO_NOT_STRIP, &script, &info);
 
         writeStringContent(tempProblemDir() + "/script.py", QString::fromStdString(info));
-        currentPythonEngineAgros()->runScript(QString::fromStdString(info));
-    }
+        ScriptResult result = currentPythonEngineAgros()->runScript(QString::fromStdString(info));
 
-    accept();
+        if (result.isError)
+        {
+            errorMessage->setVisible(true);
+            errorMessage->setText(result.text + "\n" + result.traceback);
+        }
+        else
+        {
+            accept();
+        }
+    }
+    else
+    {
+        accept();
+    }
 }
 
 void FormScript::rejectForm()
