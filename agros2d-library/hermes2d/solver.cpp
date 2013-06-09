@@ -236,18 +236,35 @@ HermesSolverContainer<Scalar>* HermesSolverContainer<Scalar>::factory(Block* blo
     Hermes::HermesCommonApi.set_integral_param_value(Hermes::matrixSolverType, Agros2D::problem()->config()->matrixSolver());
     Agros2D::log()->printDebug(QObject::tr("Solver"), QObject::tr("Linear solver: %1").arg(matrixSolverTypeString(Agros2D::problem()->config()->matrixSolver())));
 
+    HermesSolverContainer<Scalar> *solver = NULL;
+
     if (block->linearityType() == LinearityType_Linear)
     {
-        return new LinearSolverContainer<Scalar>(block);
+        solver = new LinearSolverContainer<Scalar>(block);
     }
     else if (block->linearityType() == LinearityType_Newton)
     {
-        return new NewtonSolverContainer<Scalar>(block);
+        solver = new NewtonSolverContainer<Scalar>(block);
     }
     else if (block->linearityType() == LinearityType_Picard)
     {
-        return new PicardSolverContainer<Scalar>(block);
+        solver = new PicardSolverContainer<Scalar>(block);
     }
+
+    assert(solver);
+
+    if (IterSolver<Scalar> *linearSolver = dynamic_cast<IterSolver<Scalar> *>(solver->linearSolver()))
+    {
+        linearSolver->set_max_iters(1000);
+        linearSolver->set_tolerance(1e-27, IterSolver<double>::AbsoluteTolerance);
+    }
+    if (ParalutionLinearMatrixSolver<Scalar> *linearSolver = dynamic_cast<ParalutionLinearMatrixSolver<Scalar> *>(solver->linearSolver()))
+    {
+        // linearSolver->set_precond(new Hermes::Preconditioners::ParalutionPrecond<Scalar>(Hermes::Preconditioners::ParalutionPrecond<Scalar>::ILU));
+        linearSolver->set_precond(new Hermes::Preconditioners::ParalutionPrecond<Scalar>(Hermes::Preconditioners::ParalutionPrecond<Scalar>::Jacobi));
+    }
+
+    return solver;
 }
 
 

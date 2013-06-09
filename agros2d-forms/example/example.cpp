@@ -17,7 +17,6 @@
 // University of Nevada, Reno (UNR) and University of West Bohemia, Pilsen
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
-#include <QUiLoader>
 #include "example.h"
 
 #include "util.h"

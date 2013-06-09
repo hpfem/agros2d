@@ -68,13 +68,15 @@ namespace Hermes
     }
 
     template<>
-    HERMES_API LinearMatrixSolver<double>* create_linear_solver(Matrix<double>* matrix, Vector<double>* rhs)
+    HERMES_API LinearMatrixSolver<double>* create_linear_solver(Matrix<double>* matrix, Vector<double>* rhs, bool use_direct_solver)
     {
       Vector<double>* rhs_dummy = NULL;
-      switch (Hermes::HermesCommonApi.get_integral_param_value(Hermes::matrixSolverType))
+      switch (use_direct_solver ? Hermes::HermesCommonApi.get_integral_param_value(Hermes::directMatrixSolverType) : Hermes::HermesCommonApi.get_integral_param_value(Hermes::matrixSolverType))
       {
       case Hermes::SOLVER_AZTECOO:
         {
+          if(use_direct_solver)
+            throw Hermes::Exceptions::Exception("The iterative solver AztecOO selected as a direct solver.");
 #if defined HAVE_AZTECOO && defined HAVE_EPETRA
           if(rhs != NULL) return new AztecOOSolver<double>(static_cast<EpetraMatrix<double>*>(matrix), static_cast<EpetraVector<double>*>(rhs));
           else return new AztecOOSolver<double>(static_cast<EpetraMatrix<double>*>(matrix), static_cast<EpetraVector<double>*>(rhs_dummy));
@@ -105,6 +107,8 @@ namespace Hermes
         }
       case Hermes::SOLVER_PETSC:
         {
+          if(use_direct_solver)
+            throw Hermes::Exceptions::Exception("The iterative solver PETSc selected as a direct solver.");
 #ifdef WITH_PETSC
           if(rhs != NULL) return new PetscLinearMatrixSolver<double>(static_cast<PetscMatrix<double>*>(matrix), static_cast<PetscVector<double>*>(rhs));
           else return new PetscLinearMatrixSolver<double>(static_cast<PetscMatrix<double>*>(matrix), static_cast<PetscVector<double>*>(rhs_dummy));
@@ -125,10 +129,10 @@ namespace Hermes
         }
       case Hermes::SOLVER_PARALUTION:
         {
+          if(use_direct_solver)
+            throw Hermes::Exceptions::Exception("The iterative solver PARALUTION selected as a direct solver.");
 #ifdef WITH_PARALUTION
-          ParalutionLinearMatrixSolver<double> *solver = new ParalutionLinearMatrixSolver<double>(static_cast<ParalutionMatrix<double>*>(matrix), static_cast<ParalutionVector<double>*>(rhs));
-          solver->set_precond(new ParalutionPrecond<double>(ParalutionPrecond<double>::Jacobi));
-          return solver;
+          return new ParalutionLinearMatrixSolver<double>(static_cast<ParalutionMatrix<double>*>(matrix), static_cast<ParalutionVector<double>*>(rhs));
 #else
           throw Hermes::Exceptions::Exception("PARALUTION was not installed.");
 #endif
@@ -151,13 +155,15 @@ namespace Hermes
     }
 
     template<>
-    HERMES_API LinearMatrixSolver<std::complex<double> >* create_linear_solver(Matrix<std::complex<double> >* matrix, Vector<std::complex<double> >* rhs)
+    HERMES_API LinearMatrixSolver<std::complex<double> >* create_linear_solver(Matrix<std::complex<double> >* matrix, Vector<std::complex<double> >* rhs, bool use_direct_solver)
     {
       Vector<std::complex<double> >* rhs_dummy = NULL;
-      switch (Hermes::HermesCommonApi.get_integral_param_value(Hermes::matrixSolverType))
+      switch (use_direct_solver ? Hermes::HermesCommonApi.get_integral_param_value(Hermes::directMatrixSolverType) : Hermes::HermesCommonApi.get_integral_param_value(Hermes::matrixSolverType))
       {
       case Hermes::SOLVER_AZTECOO:
         {
+          if(use_direct_solver)
+            throw Hermes::Exceptions::Exception("The iterative solver AztecOO selected as a direct solver.");
 #if defined HAVE_AZTECOO && defined HAVE_EPETRA
           if(rhs != NULL) return new AztecOOSolver<std::complex<double> >(static_cast<EpetraMatrix<std::complex<double> >*>(matrix), static_cast<EpetraVector<std::complex<double> >*>(rhs));
           else return new AztecOOSolver<std::complex<double> >(static_cast<EpetraMatrix<std::complex<double> >*>(matrix), static_cast<EpetraVector<std::complex<double> >*>(rhs_dummy));
@@ -188,6 +194,8 @@ namespace Hermes
         }
       case Hermes::SOLVER_PETSC:
         {
+          if(use_direct_solver)
+            throw Hermes::Exceptions::Exception("The iterative solver PETSc selected as a direct solver.");
 #ifdef WITH_PETSC
           if(rhs != NULL) return new PetscLinearMatrixSolver<std::complex<double> >(static_cast<PetscMatrix<std::complex<double> >*>(matrix), static_cast<PetscVector<std::complex<double> >*>(rhs));
           else return new PetscLinearMatrixSolver<std::complex<double> >(static_cast<PetscMatrix<std::complex<double> >*>(matrix), static_cast<PetscVector<std::complex<double> >*>(rhs_dummy));
@@ -208,6 +216,8 @@ namespace Hermes
         }
       case Hermes::SOLVER_PARALUTION:
         {
+          if(use_direct_solver)
+            throw Hermes::Exceptions::Exception("The iterative solver PARALUTION selected as a direct solver.");
 #ifdef WITH_PARALUTION
           throw Hermes::Exceptions::Exception("PARALUTION only works for real problems.");
 #else

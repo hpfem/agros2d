@@ -99,6 +99,8 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 src/mesh/traverse.cpp \
                 src/mesh/mesh.cpp \
                 src/mesh/refmap.cpp \
+                src/mesh/mesh_util.cpp \
+                src/mesh/element.cpp \
                 src/quadrature/limit_order.cpp \
                 src/quadrature/quad_std.cpp \
                 src/projections/ogprojection.cpp \
