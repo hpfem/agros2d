@@ -507,9 +507,6 @@ QWidget *PostprocessorWidget::controlsBasic()
     groupPost3d = post3DWidget();
 
     widgetsLayout = new QStackedLayout();
-    widgetsLayout->addWidget(groupMesh);
-    widgetsLayout->addWidget(groupPost2d);
-    widgetsLayout->addWidget(groupPost3d);
 
     QVBoxLayout *layoutBasic = new QVBoxLayout();
     layoutBasic->setContentsMargins(2, 2, 2, 3);
@@ -519,6 +516,10 @@ QWidget *PostprocessorWidget::controlsBasic()
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(layoutBasic);
+
+    widgetsLayout->addWidget(groupMesh);
+    widgetsLayout->addWidget(groupPost2d);
+    widgetsLayout->addWidget(groupPost3d);
 
     return widget;
 }
