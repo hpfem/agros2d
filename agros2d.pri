@@ -17,7 +17,6 @@ LIBS += -lagros_3rdparty_qcustomplot
 LIBS += -lagros_3rdparty_dxflib
 LIBS += -lagros_3rdparty_poly2tri
 LIBS += -lagros_3rdparty_quazip
-#LIBS += -lagros_3rdparty_stb_truetype
 LIBS += -lagros_util
 
 # paralution

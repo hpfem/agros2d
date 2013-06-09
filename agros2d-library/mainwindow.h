@@ -132,6 +132,7 @@ private:
     QMenu *mnuView;
     QMenu *mnuProblem;
     QMenu *mnuTools;
+    QMenu *mnuCustomForms;
     QMenu *mnuHelp;
 
     QToolBar *tlbFile;

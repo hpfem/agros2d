@@ -24,6 +24,7 @@
 
 #include "util/global.h"
 #include "util/checkversion.h"
+#include "util/form_interface.h"
 
 #include "scene.h"
 #include "scenebasic.h"
@@ -547,6 +548,14 @@ void MainWindow::createMenus()
     mnuTools->addSeparator();
     mnuTools->addAction(actOptions);
 #endif
+
+    // read custom forms
+    mnuTools->addSeparator();
+    mnuCustomForms = new QMenu(tr("Custom forms"), this);
+    mnuTools->addMenu(mnuCustomForms);
+    readCustomScripts(mnuCustomForms);
+    // mnuCustomForms->addSeparator();
+    // readCustomForms(mnuCustomForms);
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
     mnuHelp->addAction(actHelp);

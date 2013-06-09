@@ -1,6 +1,7 @@
 # agros2d - hp-FEM multiphysics application based on Hermes2D library
 OBJECTS_DIR = build
 MOC_DIR = build
+CONFIG += uitools
 
 TEMPLATE = lib
 
@@ -105,6 +106,8 @@ SOURCES += value.cpp \
     pythonlab/remotecontrol.cpp \
     particle/particle_tracing.cpp \
     particle/mesh_hash.cpp \
+    util/form_interface.cpp \
+    util/form_script.cpp \
     ../resources_source/classes/module_xml.cpp \
     ../resources_source/classes/coupling_xml.cpp \
     ../resources_source/classes/agros2d_structure_xml.cpp \
@@ -184,6 +187,8 @@ HEADERS += value.h \
     parser/lex.h \
     hermes2d/bdf2.h \
     hermes2d/plugin_interface.h \
+    util/form_interface.h \
+    util/form_script.h \
     gui/groupbox.h \
     pythonlab/pythonengine_agros.h \
     pythonlab/pyproblem.h \
