@@ -136,7 +136,7 @@ void FormScript::acceptForm()
         ctemplate::ExpandTemplate(compatibleFilename(scriptFileName).toStdString(),
                                   ctemplate::DO_NOT_STRIP, &script, &info);
 
-        writeStringContent(tempProblemDir() + "/script.py", QString::fromStdString(info));
+        // writeStringContent(tempProblemDir() + "/script.py", QString::fromStdString(info));
         ScriptResult result = currentPythonEngineAgros()->runScript(QString::fromStdString(info));
 
         if (result.isError)
