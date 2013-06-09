@@ -256,13 +256,16 @@ HermesSolverContainer<Scalar>* HermesSolverContainer<Scalar>::factory(Block* blo
     if (IterSolver<Scalar> *linearSolver = dynamic_cast<IterSolver<Scalar> *>(solver->linearSolver()))
     {
         linearSolver->set_max_iters(1000);
-        linearSolver->set_tolerance(1e-27, IterSolver<double>::AbsoluteTolerance);
+        linearSolver->set_tolerance(1e-30, IterSolver<double>::AbsoluteTolerance);
     }
+#ifdef WITH_PARALUTION
     if (ParalutionLinearMatrixSolver<Scalar> *linearSolver = dynamic_cast<ParalutionLinearMatrixSolver<Scalar> *>(solver->linearSolver()))
     {
+        linearSolver->set_solver_type(Hermes::Solvers::ParalutionLinearMatrixSolver<Scalar>::CG);
         // linearSolver->set_precond(new Hermes::Preconditioners::ParalutionPrecond<Scalar>(Hermes::Preconditioners::ParalutionPrecond<Scalar>::ILU));
         linearSolver->set_precond(new Hermes::Preconditioners::ParalutionPrecond<Scalar>(Hermes::Preconditioners::ParalutionPrecond<Scalar>::Jacobi));
     }
+#endif
 
     return solver;
 }

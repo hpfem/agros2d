@@ -2,6 +2,7 @@
 OBJECTS_DIR = build
 MOC_DIR = build
 CONFIG += uitools
+greaterThan(QT_MAJOR_VERSION, 4): QT += uitools
 
 TEMPLATE = lib
 
