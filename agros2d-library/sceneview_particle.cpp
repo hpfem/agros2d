@@ -1113,6 +1113,9 @@ void SceneViewParticleTracing::clearParticleLists()
 
 void SceneViewParticleTracing::processParticleTracing()
 {
+    QTime cpuTime;
+    cpuTime.start();
+
     clearParticleLists();
 
     if (Agros2D::problem()->isSolved())
@@ -1185,6 +1188,7 @@ void SceneViewParticleTracing::processParticleTracing()
                                          arg(particleTracing.times().last()));
         }
     }
+    Agros2D::log()->printDebug(tr("Particle Tracing"), tr("Total cpu time %1 ms").arg(cpuTime.elapsed()));
 
     refresh();
 }
