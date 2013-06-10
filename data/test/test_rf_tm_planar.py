@@ -7,7 +7,15 @@ problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 problem.frequency = 1e10
 
-# fields
+
+# disable view
+agros2d.view.mesh.initial_mesh = False
+agros2d.view.mesh.solution_mesh = False
+agros2d.view.mesh.order = False
+agros2d.view.post2d.scalar = False
+agros2d.view.post2d.contours = False
+agros2d.view.post2d.vectors = False
+
 # rf_tm
 rf_tm = a2d.field("rf_tm")
 rf_tm.analysis_type = "harmonic"
@@ -73,6 +81,7 @@ testDy_imag = agros2d.test("Electric displacement - y - imag", point["Diy"],-3.0
 #testNy = agros2d.test("Poynting vector - y", point["Ny"], -3.138616, 1)
 
 
-print("Test: RF TM - planar: " + str(testH and testH_real and testH_imag)) 
-# and testB and testBx_real and testBx_imag and testBy_real and testBy_imag and
-#testH and testHx_real and testHx_imag and testHy_real and testHy_imag and testNx and testNy))
+print("Test: RF TM - planar: " + str(testH and testH_real and testH_imag
+and testE and testEx_real and testEx_imag and testEy_real and testEy_imag and
+testD and testDx_real and testDx_imag and testDy_real and testDy_imag ))
+# and testNx and testNy))

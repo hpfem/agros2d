@@ -7,7 +7,14 @@ problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 problem.frequency = 1e+09
 
-# fields
+# disable view
+agros2d.view.mesh.initial_mesh = False
+agros2d.view.mesh.solution_mesh = False
+agros2d.view.mesh.order = False
+agros2d.view.post2d.scalar = False
+agros2d.view.post2d.contours = False
+agros2d.view.post2d.vectors = False
+
 # rf_tm
 rf_tm = a2d.field("rf_tm")
 rf_tm.analysis_type = "harmonic"
@@ -51,32 +58,32 @@ a2d.view.zoom_best_fit()
 
 problem.solve()
 
-#point = rf_tm.local_values(0.92463, -0.20118)
+point = rf_tm.local_values(0.92463, -0.20118)
+
+testH = agros2d.test("Magnetic field", point["H"], 0.5385)
+testHr = agros2d.test("Magnetic field - real", point["Hr"], 0.53821)
+testHi = agros2d.test("Magnetic field - imag", point["Hi"], 0.01767)
 #
-#testE = agros2d.test("Electric field", point["E"], 0.5385)
-#testEr = agros2d.test("Electric field - real", point["Er"], 0.53821)
-#testEi = agros2d.test("Electric field - imag", point["Ei"], 0.01767)
+testB = agros2d.test("Magnetic flux density", point["B"], 6.77389282698e-07)
+testBr = agros2d.test("Magnetic flux density - real", point["Br"], 6.77026796583e-07)
+testBi = agros2d.test("Magnetic flux density - imag", point["Bi"], 2.21575499861e-08)
 #
-#testD = agros2d.test("Displacement", point["D"], 4.768e-12)
-#testDr = agros2d.test("Displacement - real", point["Dr"], 4.7654e-12)
-#testDi = agros2d.test("Displacement - imag", point["Di"], 1.56463e-13)
+testE = agros2d.test("Electric field", point["E"], 274.025052067)
+testEr_real = agros2d.test("Electric field r component - real", point["Err"], 122.522812609)
+testEr_imag = agros2d.test("Electric field r component - imag", point["Eir"], -221.632582129)
+testEz_real = agros2d.test("Electric field z component - real", point["Erz"], -103.578888534)
+testEz_imag = agros2d.test("Electric field z component - imag", point["Eiz"], 15.1096637854)
 #
-#testH = agros2d.test("Magnetic field", point["H"], 0.00195)
-#testHr_real = agros2d.test("Magnetic field r component - real", point["Hrr"], -8.69388e-4)
-#testHr_imag = agros2d.test("Magnetic field r component - imag", point["Hir"], -0.00157)
-#testHz_real = agros2d.test("Magnetic field z component - real", point["Hrz"], 7.3442e-4)
-#testHz_imag = agros2d.test("Magnetic field z component - imag", point["Hiz"], 1.06797e-4)
-#
-#testB = agros2d.test("Magnetic flux density", point["B"], 2.4447e-9)
-#testBr_real = agros2d.test("Magnetic flux density r component - real", point["Brr"], -1.09251e-9)
-#testBr_imag = agros2d.test("Magnetic flux density r component - imag", point["Bir"], -1.9781e-9)
-#testBz_real = agros2d.test("Magnetic flux density z component - real", point["Brz"], 9.2291e-10)
-#testBz_imag = agros2d.test("Magnetic flux density z component - imag", point["Biz"], 1.34204e-10)
+testD = agros2d.test("Electric displacement", point["D"], 2.4447e-9)
+testDr_real = agros2d.test("Electric displacement r component - real", point["Drr"], 1.08481698284e-09)
+testDr_imag = agros2d.test("Electric displacement r component - imag", point["Dir"], -1.96233488217e-09)
+testDz_real = agros2d.test("Electric displacement z component - real", point["Drz"],-9.17087479076e-10)
+testDz_imag = agros2d.test("Electric displacement z component - imag", point["Diz"], 1.33780963155e-10)
 #
 #testNr = agros2d.test("Poynting vector r component", point["Nr"], 1.98583e-4)
 #testNz = agros2d.test("Poynting vector z component", point["Nz"], 2.47866e-4)
 #	
-#print("Test: RF TM - axisymmetric: " + str(testE and testEr and testEi and testD and 
-#  testDr and testDi and testH and testHr_real and testHr_imag and testHz_real and testHz_imag
-#  and testB and testBr_real and testBr_imag and testBz_real and testBz_imag
+print("Test: RF TM - axisymmetric: " + str(testH and testHr and testHi and testB and 
+  testBr and testBi and testE and testEr_real and testEr_imag and testEz_real and testEz_imag
+  and testD and testDr_real and testDr_imag and testDz_real and testDz_imag))
 #  and testNr and testNz))
