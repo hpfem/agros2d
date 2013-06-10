@@ -57,7 +57,7 @@ void {{CLASS}}LocalValue::calculate()
         double x = m_point.x;
         double y = m_point.y;
 
-        Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(m_fieldInfo->initialMesh(),
+        Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(false, m_fieldInfo->initialMesh(),
                                                                                                  m_point.x, m_point.y);
         if (e)
         {
