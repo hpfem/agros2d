@@ -72,8 +72,8 @@
         </module:boundary>
         <module:boundary equation="- \frac{1}{\omega \varepsilon} \frac{\partial \vecfaz{H}}{\partial n_0} = \sqrt{\frac{\mu - \mj \gamma / \omega}{\varepsilon}} \vecfaz{H}" id="rf_tm_impedance" name="Impedance boundary condition">
           <module:quantity id="rf_tm_impedance"/>
-          <module:matrix_form axi_linear="r * 2 * PI * f * rf_Z0 * uval * vval" axi_newton="0" i="1" id="form" j="2" planar_linear="2 * PI * f * rf_Z0 * uval * vval" planar_newton="0"/>
-          <module:matrix_form axi_linear="- r * 2 * PI * f * rf_Z0 * uval * vval" axi_newton="0" i="2" id="form" j="1" planar_linear="-2 * PI * f * rf_Z0 * uval * vval" planar_newton="0"/>
+          <module:matrix_form axi_linear="2 * r * PI * f * rf_Z0 * uval * vval" axi_newton="0" i="1" id="form" j="2" planar_linear="2 * PI * f * rf_Z0 * uval * vval" planar_newton="0"/>
+          <module:matrix_form axi_linear="-2 * r * PI * f * rf_Z0 * uval * vval" axi_newton="0" i="2" id="form" j="1" planar_linear="-2 * PI * f * rf_Z0 * uval * vval" planar_newton="0"/>
           <module:vector_form axi_linear="0" axi_newton="0" i="1" id="form" j="1" planar_linear="0" planar_newton="0"/>
           <module:vector_form axi_linear="0" axi_newton="0" i="2" id="form" j="2" planar_linear="0" planar_newton="0"/>
         </module:boundary>
@@ -127,7 +127,7 @@
       <module:expression analysistype="harmonic" axi="rf_mur * MU0 * value2" planar="rf_mur * MU0 * value2"/>
     </module:localvariable>
     <module:localvariable id="rf_tm_displacement" name="Displacement" shortname="D" shortname_html="&lt;i>D&lt;/i>" shortname_latex="D" type="scalar" unit="C/m2" unit_html="C.m&lt;sup>-2&lt;/sup>" unit_latex="C \cdot m^{-2}">
-      <module:expression analysistype="harmonic" axi="sqrt(pow(rf_eps * EPS0 * (- 1 / (2 * PI * f * rf_eps * EPS0) * dz2) ,2) + pow(rf_eps * EPS0 * (1 / (2 * PI * f * rf_eps * EPS0) * (dr2 + (r > 0) * value2 / r)) ,2) + pow(rf_eps * EPS0 * (-1 / (2 * PI * f * rf_eps * EPS0) * dz1) ,2) + pow(rf_eps * EPS0 * (1 / (2 * PI * f * rf_eps * EPS0) * (dr1 + tern(r > SMALL, value1/r, dr1))) ,2))" planar="sqrt(pow(rf_eps * EPS0 * (- 1 / (2 * PI * f * rf_eps * EPS0) * dy2) ,2) + pow(1 / (2 * PI * f * rf_eps * EPS0) * dx2 ,2) + pow(rf_eps * EPS0 * (1 / (2 * PI * f * rf_eps * EPS0) * dy1) ,2) + pow(rf_eps * EPS0 * (- 1 / (2 * PI * f * rf_eps * EPS0) * dx1) ,2))"/>
+      <module:expression analysistype="harmonic" axi="sqrt(pow((- 1 / (2 * PI * f) * dz2) ,2) + pow( (1 / (2 * PI * f) * (dr2 + (r > 0) * value2 / r)) ,2) + pow((-1 / (2 * PI * f) * dz1) ,2) + pow((1 / (2 * PI * f) * (dr1 + tern(r > SMALL, value1/r, dr1))) ,2))" planar="sqrt(pow((- 1 / (2 * PI * f) * dy2) ,2) + pow(1 / (2 * PI * f ) * dx2 ,2) + pow((1 / (2 * PI * f) * dy1) ,2) + pow((- 1 / (2 * PI * f) * dx1) ,2))"/>
     </module:localvariable>
     <module:localvariable id="rf_tm_displacement_real" name="Displacement - real" shortname="Dr" shortname_html="&lt;i>D&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="D_{r}" type="vector" unit="C/m2" unit_html="C.m&lt;sup>-2&lt;/sup>" unit_latex="C \cdot m^{-2}">
       <module:expression analysistype="harmonic" axi_r="rf_eps * EPS0 * (-1 / (2 * PI * f * rf_eps * EPS0) * dz2)" axi_z="rf_eps * EPS0 * (1 / (2 * PI * f * rf_eps * EPS0) * (dr2 + (r > 0) * value2 / r))" planar_x="rf_eps * EPS0 * (1 / (2 * PI * f * rf_eps * EPS0) * dy2)" planar_y="rf_eps * EPS0 * (- 1 / (2 * PI * f * rf_eps * EPS0) * dx1)"/>
