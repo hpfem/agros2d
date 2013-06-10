@@ -24,6 +24,11 @@
 
 #include "util.h"
 
+namespace XMLForm
+{
+  class form;
+}
+
 class AGROS_API FormScript : public FormInterface
 {
     Q_OBJECT
@@ -49,6 +54,13 @@ protected:
     QWidget *mainWidget;
     QLabel *errorMessage;
     QString fileName;
+
+private:
+    QString valueForWidget(XMLForm::form *doc, const QString &objectName, const QString &defaultValue);
+
+private slots:
+    void load();
+    void save();
 };
 
 #endif // FORM_SCRIPT_H

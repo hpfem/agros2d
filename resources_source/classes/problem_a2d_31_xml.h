@@ -31,8 +31,8 @@
 // in the accompanying FLOSSE file.
 //
 
-#ifndef CXX______RESOURCES_XSD_PROBLEM_A2D_30_XML_H
-#define CXX______RESOURCES_XSD_PROBLEM_A2D_30_XML_H
+#ifndef CXX______RESOURCES_XSD_PROBLEM_A2D_31_XML_H
+#define CXX______RESOURCES_XSD_PROBLEM_A2D_31_XML_H
 
 // Begin prologue.
 //
@@ -3401,4 +3401,4 @@ namespace XMLProblem
 //
 // End epilogue.
 
-#endif // CXX______RESOURCES_XSD_PROBLEM_A2D_30_XML_H
+#endif // CXX______RESOURCES_XSD_PROBLEM_A2D_31_XML_H

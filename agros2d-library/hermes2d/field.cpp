@@ -29,7 +29,7 @@
 #include "logview.h"
 
 #include "../../resources_source/classes/module_xml.h"
-#include "../../resources_source/classes/problem_a2d_30_xml.h"
+#include "../../resources_source/classes/problem_a2d_31_xml.h"
 
 Field::Field(FieldInfo *fieldInfo) : m_fieldInfo(fieldInfo)
 {
@@ -236,8 +236,15 @@ void FieldInfo::refineMesh(MeshSharedPtr mesh, bool refineGlobal, bool refineTow
     {
         foreach (SceneLabel *label, Agros2D::scene()->labels->items())
         {
-            mesh->refine_in_area(QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString(),
-                                 (labelRefinement(label) > 0) ? labelRefinement(label) : value(FieldInfo::SpaceNumberOfRefinements).toInt());
+            if (!label->marker(this)->isNone())
+            {
+                if (labelRefinement(label) > 0)
+                    mesh->refine_in_area(QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString(),
+                                         labelRefinement(label));
+                else if (refineGlobal)
+                    mesh->refine_in_area(QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString(),
+                                         value(FieldInfo::SpaceNumberOfRefinements).toInt());
+            }
         }
     }
 }

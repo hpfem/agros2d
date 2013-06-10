@@ -113,7 +113,8 @@ SOURCES += value.cpp \
     ../resources_source/classes/coupling_xml.cpp \
     ../resources_source/classes/agros2d_structure_xml.cpp \
     ../resources_source/classes/material_xml.cpp \
-    ../resources_source/classes/problem_a2d_30_xml.cpp \
+    ../resources_source/classes/problem_a2d_31_xml.cpp \
+    ../resources_source/classes/form_xml.cpp \
     ../hermes2d/src/mesh/subdomains_h2d_xml.cpp \
     ../hermes2d/src/mesh/mesh_h2d_xml.cpp
 
@@ -221,9 +222,9 @@ OTHER_FILES += functions.py \
     ../resources/materials/Aluminum.xml \
     ../resources/materials/Iron.xml \
     ../resources/xsd/problem_a2d_21_xml.xsd \
-    ../resources/xsd/problem_a2d_30_xml.xsd \
+    ../resources/xsd/problem_a2d_31_xml.xsd \
     ../resources/xslt/problem_a2d_21_xml.xsl \
-    ../resources/xslt/problem_a2d_30_xml.xsl\
+    ../resources/xslt/problem_a2d_31_xml.xsl\
     ../resources/xslt/problem_a2d_31_xml.xsl\
     ../resources/modules/rf.xml \
     ../resources_source/python/agros2d.pyx \

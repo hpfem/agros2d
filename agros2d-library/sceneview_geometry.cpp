@@ -1003,7 +1003,7 @@ void SceneViewPreprocessor::paintGeometry()
         {
             Point center = edge->center();
             double radius = edge->radius();
-            double startAngle = fastatan2(center.y - edge->nodeStart()->point().y,
+            double startAngle = atan2(center.y - edge->nodeStart()->point().y,
                                           center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
 
             drawArc(center, radius, startAngle, edge->angle());

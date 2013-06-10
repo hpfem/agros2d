@@ -39,7 +39,7 @@
 #include "meshgenerator_gmsh.h"
 #include "logview.h"
 
-#include "../resources_source/classes/problem_a2d_30_xml.h"
+#include "../resources_source/classes/problem_a2d_31_xml.h"
 
 ProblemConfig::ProblemConfig(QWidget *parent) : QObject(parent)
 {

@@ -52,7 +52,7 @@
 
 #include "../3rdparty/quazip/JlCompress.h"
 
-#include "../resources_source/classes/problem_a2d_30_xml.h"
+#include "../resources_source/classes/problem_a2d_31_xml.h"
 
 QString generateSvgGeometry(QList<SceneEdge*> edges)
 {
@@ -1205,7 +1205,7 @@ void Scene::transformFile(const QString &fileName, const QString &tempFileName, 
     }
     else if (version == 2.1)
     {
-        out = transformXML(fileName, datadir() + "/resources/xslt/problem_a2d_30_xml.xsl");
+        out = transformXML(fileName, datadir() + "/resources/xslt/problem_a2d_31_xml.xsl");
         version = 3.0;
     }
     else if (version == 2.0 || version == 0.0)

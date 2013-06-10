@@ -54,6 +54,8 @@ bool almostEqualRelAndAbs(double A, double B, double maxDiff, double maxRelDiff)
     return false;
 }
 
+#define FAST_TRIGONOMETRIC_SIZE 2048
+
 // approximation of atan2(y, x).
 // maximum error of 0.0061 radians at 0.35 degrees
 double fastatan2(double y, double x)
@@ -77,8 +79,6 @@ double fastatan2(double y, double x)
     return (y < 0) ? - angle : angle;
 }
 
-#define FAST_SIN_COS_SIZE 50000
-
 static double *sin_table = NULL;
 double fastsin(double angle)
 {
@@ -87,12 +87,12 @@ double fastsin(double angle)
 
     if (!sin_table)
     {
-        sin_table = new double[FAST_SIN_COS_SIZE];
-        for (int i = 0; i < FAST_SIN_COS_SIZE; i++)
-            sin_table[i] = sin(2.0*M_PI * i / (double) FAST_SIN_COS_SIZE);
+        sin_table = new double[FAST_TRIGONOMETRIC_SIZE];
+        for (int i = 0; i < FAST_TRIGONOMETRIC_SIZE; i++)
+            sin_table[i] = sin(2.0*M_PI * i / (double) (FAST_TRIGONOMETRIC_SIZE - 1));
     }
 
-    return sin_table[(int) (angle / (2.0*M_PI) * FAST_SIN_COS_SIZE)];
+    return sin_table[(int) (angle / (2.0*M_PI) * FAST_TRIGONOMETRIC_SIZE)];
 }
 
 double fastcos(double angle)

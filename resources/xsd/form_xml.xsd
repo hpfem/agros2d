@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema targetNamespace="XMLForm" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:coupling="XMLForm">
+  <element name="form">
+    <complexType>
+      <all>        
+        <element name="config">
+          <complexType>
+            <sequence>
+              <element maxOccurs="unbounded" name="item">
+                <complexType>
+                  <attribute name="key" type="string" use="required"/>
+                  <attribute name="value" type="string" use="required"/>
+                </complexType>
+              </element>
+            </sequence>
+          </complexType>
+        </element>
+      </all>
+    </complexType>
+  </element>
+</schema>

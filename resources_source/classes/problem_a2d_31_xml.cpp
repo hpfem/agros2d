@@ -38,7 +38,7 @@
 
 #include <xsd/cxx/pre.hxx>
 
-#include "problem_a2d_30_xml.h"
+#include "problem_a2d_31_xml.h"
 
 namespace XMLProblem
 {
