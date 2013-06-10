@@ -214,9 +214,11 @@ void FieldInfo::clear()
 void FieldInfo::refineMesh(MeshSharedPtr mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea)
 {
     // refine mesh - global
+    /*
     if (refineGlobal)
         for (int i = 0; i < value(FieldInfo::SpaceNumberOfRefinements).toInt(); i++)
             mesh->refine_all_elements(0);
+    */
 
     // refine mesh - boundary
     if (refineTowardsEdge)
@@ -234,9 +236,8 @@ void FieldInfo::refineMesh(MeshSharedPtr mesh, bool refineGlobal, bool refineTow
     {
         foreach (SceneLabel *label, Agros2D::scene()->labels->items())
         {
-            if (labelRefinement(label) > 0)
-                mesh->refine_in_area(QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString(),
-                                     labelRefinement(label));
+            mesh->refine_in_area(QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString(),
+                                 (labelRefinement(label) > 0) ? labelRefinement(label) : value(FieldInfo::SpaceNumberOfRefinements).toInt());
         }
     }
 }

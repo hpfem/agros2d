@@ -77,7 +77,7 @@ double fastatan2(double y, double x)
     return (y < 0) ? - angle : angle;
 }
 
-#define FAST_SIN_COS_SIZE 512
+#define FAST_SIN_COS_SIZE 50000
 
 static double *sin_table = NULL;
 double fastsin(double angle)

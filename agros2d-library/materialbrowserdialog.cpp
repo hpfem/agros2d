@@ -384,8 +384,8 @@ MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent),
     trvMaterial->setHeaderHidden(true);
     trvMaterial->setMinimumWidth(230);
 
-    connect(trvMaterial, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)),
-            this, SLOT(doItemDoubleClicked(QTreeWidgetItem *, int)));
+    // connect(trvMaterial, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)),
+    //        this, SLOT(doItemDoubleClicked(QTreeWidgetItem *, int)));
     connect(trvMaterial, SIGNAL(itemActivated(QTreeWidgetItem *, int)),
             this, SLOT(doItemSelected(QTreeWidgetItem *, int)));
     connect(trvMaterial, SIGNAL(itemPressed(QTreeWidgetItem *, int)),
