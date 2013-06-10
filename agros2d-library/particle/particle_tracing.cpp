@@ -44,7 +44,8 @@
 ParticleTracing::ParticleTracing(QObject *parent)
     : QObject(parent)
 {
-    // qDebug() << "Creating mesh hashes...";
+    QTime time;
+    time.start();
     foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
     {
         if(!fieldInfo->plugin()->hasForce(fieldInfo))
@@ -62,7 +63,7 @@ ParticleTracing::ParticleTracing(QObject *parent)
         // m_meshHashs[fieldInfo] = new MeshHash(fieldInfo->initialMesh());
         m_meshCache[fieldInfo] = new MeshCache(timeStep, adaptivityStep, solutionMode, sln->get_mesh(), new MeshHash(sln->get_mesh()));
     }
-    // qDebug() << "finished";
+    qDebug() << "mesh hashes created in " << time.elapsed();
 
     num_lookups = 0;
     num_fails = 0;
@@ -114,26 +115,28 @@ Point3 ParticleTracing::force(Point3 position,
 
         if (!elementIsValid)
         {
-            // first try this way
-            num_lookups++;
-            try{
-                activeElement = m_meshCache[fieldInfo]->meshHashes->getElement(position.x, position.y);
-            }
-            catch(...)
-            {
-                qDebug() << "Unknown exception catched in MeshHash";
-                activeElement = NULL;
-            }
+            m_activeElement[fieldInfo] = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(true, m_meshCache[fieldInfo]->mesh,
+                                                                                                   position.x, position.y);
+//            // first try this way
+//            num_lookups++;
+//            try{
+//                activeElement = m_meshCache[fieldInfo]->meshHashes->getElement(position.x, position.y);
+//            }
+//            catch(...)
+//            {
+//                qDebug() << "Unknown exception catched in MeshHash";
+//                activeElement = NULL;
+//            }
 
-            if(!activeElement)
-            {
-                num_fails++;
-                // check whole domain
-                m_activeElement[fieldInfo] = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(m_meshCache[fieldInfo]->mesh,
-                                                                                                       position.x, position.y);
-                // store active element
-                activeElement = m_activeElement[fieldInfo];
-            }
+//            if(!activeElement)
+//            {
+//                num_fails++;
+//                // check whole domain
+//                m_activeElement[fieldInfo] = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(false, m_meshCache[fieldInfo]->mesh,
+//                                                                                                       position.x, position.y);
+//                // store active element
+//                activeElement = m_activeElement[fieldInfo];
+//            }
 
         }
 
@@ -446,5 +449,5 @@ void ParticleTracing::computeTrajectoryParticle(const Point3 initialPosition, co
         if (velocity > m_velocityMax) m_velocityMax = velocity;
     }
 
-    // qDebug() << "total: " << timePart.elapsed();
+     qDebug() << "total particle: " << timePart.elapsed();
 }

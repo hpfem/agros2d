@@ -167,7 +167,7 @@ void SceneViewPost2D::mousePressEvent(QMouseEvent *event)
         // select volume integral area
         if (actPostprocessorModeVolumeIntegral->isChecked())
         {
-            Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(postHermes()->activeViewField()->initialMesh(), p.x, p.y);
+            Hermes::Hermes2D::Element *e = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(false, postHermes()->activeViewField()->initialMesh(), p.x, p.y);
             if (e)
             {
                 SceneLabel *label = Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().
