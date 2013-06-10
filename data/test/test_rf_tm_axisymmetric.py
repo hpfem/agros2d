@@ -18,7 +18,7 @@ agros2d.view.post2d.vectors = False
 # rf_tm
 rf_tm = a2d.field("rf_tm")
 rf_tm.analysis_type = "harmonic"
-rf_tm.number_of_refinements = 3
+rf_tm.number_of_refinements = 4
 rf_tm.polynomial_order = 3
 rf_tm.adaptivity_type = "disabled"
 rf_tm.linearity_type = "linear"
@@ -60,25 +60,25 @@ problem.solve()
 
 point = rf_tm.local_values(0.92463, -0.20118)
 
-testH = agros2d.test("Magnetic field", point["H"], 0.5385)
-testHr = agros2d.test("Magnetic field - real", point["Hr"], 0.53821)
-testHi = agros2d.test("Magnetic field - imag", point["Hi"], 0.01767)
+testH = agros2d.test("Magnetic field", point["H"], 0.53836)
+testHr = agros2d.test("Magnetic field - real", point["Hr"], 0.538097)
+testHi = agros2d.test("Magnetic field - imag", point["Hi"], 0.016823)
 #
-testB = agros2d.test("Magnetic flux density", point["B"], 6.77389282698e-07)
-testBr = agros2d.test("Magnetic flux density - real", point["Br"], 6.77026796583e-07)
-testBi = agros2d.test("Magnetic flux density - imag", point["Bi"], 2.21575499861e-08)
+testB = agros2d.test("Magnetic flux density", point["B"], 6.765228e-7)
+testBr = agros2d.test("Magnetic flux density - real", point["Br"], 6.761924e-7)
+testBi = agros2d.test("Magnetic flux density - imag", point["Bi"], 2.114032e-8)
 #
-testE = agros2d.test("Electric field", point["E"], 274.025052067)
-testEr_real = agros2d.test("Electric field r component - real", point["Err"], 122.522812609)
-testEr_imag = agros2d.test("Electric field r component - imag", point["Eir"], -221.632582129)
-testEz_real = agros2d.test("Electric field z component - real", point["Erz"], -103.578888534)
-testEz_imag = agros2d.test("Electric field z component - imag", point["Eiz"], 15.1096637854)
+testE = agros2d.test("Electric field", point["E"], 274.023386)
+testEr_real = agros2d.test("Electric field r component - real", point["Err"], 122.830044)
+testEr_imag = agros2d.test("Electric field r component - imag", point["Eir"], 221.565147)
+testEz_real = agros2d.test("Electric field z component - real", point["Erz"], -103.385085)
+testEz_imag = agros2d.test("Electric field z component - imag", point["Eiz"], -14.899843)
 #
 testD = agros2d.test("Electric displacement", point["D"], 2.4447e-9)
-testDr_real = agros2d.test("Electric displacement r component - real", point["Drr"], 1.08481698284e-09)
-testDr_imag = agros2d.test("Electric displacement r component - imag", point["Dir"], -1.96233488217e-09)
-testDz_real = agros2d.test("Electric displacement z component - real", point["Drz"],-9.17087479076e-10)
-testDz_imag = agros2d.test("Electric displacement z component - imag", point["Diz"], 1.33780963155e-10)
+testDr_real = agros2d.test("Electric displacement r component - real", point["Drr"], 1.08756e-9)
+testDr_imag = agros2d.test("Electric displacement r component - imag", point["Dir"], 1.961779e-9)
+testDz_real = agros2d.test("Electric displacement z component - real", point["Drz"],-9.15391e-10)
+testDz_imag = agros2d.test("Electric displacement z component - imag", point["Diz"], -1.31926e-10)
 #
 #testNr = agros2d.test("Poynting vector r component", point["Nr"], 1.98583e-4)
 #testNz = agros2d.test("Poynting vector z component", point["Nz"], 2.47866e-4)
