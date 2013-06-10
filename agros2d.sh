@@ -29,7 +29,7 @@ case "$1" in
                 mv -v $langPath/*.qm $langPathTarget
                 ;;
             update )
-                lupdate pythonlab-library/pythonlab-library.pro -ts $langPath/cs_CZ.ts $langPath/en_US.ts $langPath/pl_PL.ts $langPath/de_DE.ts $langPath/ru_RU.ts $langPath/fr_FR.ts
+                lupdate agros2d.pro -ts $langPath/cs_CZ.ts $langPath/en_US.ts $langPath/pl_PL.ts $langPath/de_DE.ts $langPath/ru_RU.ts $langPath/fr_FR.ts
                 lupdate plugins/plugins.pro -ts $langPath/plugin_cs_CZ.ts $langPath/plugin_en_US.ts $langPath/plugin_pl_PL.ts $langPath/plugin_ru_RU.ts $langPath/plugin_fr_FR.ts
                 ;;
             * )
