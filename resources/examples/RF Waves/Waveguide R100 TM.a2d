@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/david/git/github/master/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
 
   <geometry>
     <nodes>
@@ -42,7 +42,7 @@
         <refinement_labels/>
         <polynomial_orders/>
         <boundaries>
-          <boundary id="1" name="Perfect electric conductor" type="rf_tm_electric_field">
+          <boundary id="1" name="Perfect magnetic conductor" type="rf_tm_magnetic_field">
             <boundary_edges>
               <boundary_edge id="2"/>
               <boundary_edge id="3"/>
@@ -66,13 +66,13 @@
               <boundary_type key="rf_tm_magnetic_field_imag" value="0"/>
             </boundary_types>
           </boundary>
-          <boundary id="2" name="Matched boundary" type="rf_tm_magnetic_field">
+          <boundary id="2" name="Matched boundary" type="rf_tm_impedance">
             <boundary_edges>
               <boundary_edge id="0"/>
             </boundary_edges>
             <boundary_types>
               <boundary_type key="rf_tm_conductivity" value="0"/>
-              <boundary_type key="rf_tm_impedance" value="0"/>
+              <boundary_type key="rf_tm_impedance" value="377"/>
               <boundary_type key="rf_tm_surface_current_imag" value="0"/>
               <boundary_type key="rf_tm_electric_field_imag" value="0"/>
               <boundary_type key="rf_tm_electric_field_real" value="0"/>
@@ -81,7 +81,7 @@
               <boundary_type key="rf_tm_magnetic_field_imag" value="0"/>
             </boundary_types>
           </boundary>
-          <boundary id="3" name="Source" type="rf_tm_electric_field">
+          <boundary id="3" name="Source" type="rf_tm_magnetic_field">
             <boundary_edges>
               <boundary_edge id="1"/>
             </boundary_edges>
@@ -91,7 +91,7 @@
               <boundary_type key="rf_tm_surface_current_imag" value="0"/>
               <boundary_type key="rf_tm_electric_field_imag" value="0"/>
               <boundary_type key="rf_tm_electric_field_real" value="cos(y/0.01143*pi/2)"/>
-              <boundary_type key="rf_tm_magnetic_field_real" value="0"/>
+              <boundary_type key="rf_tm_magnetic_field_real" value="cos(y/0.01143*pi/2)"/>
               <boundary_type key="rf_tm_surface_current_real" value="0"/>
               <boundary_type key="rf_tm_magnetic_field_imag" value="0"/>
             </boundary_types>
@@ -224,8 +224,8 @@
     <item key="View_ContoursWidth" value="1"/>
     <item key="View_ShowScalarView" value="1"/>
     <item key="View_ShowScalarColorBar" value="1"/>
-    <item key="View_ScalarVariable" value="rf_tm_electric_field_real"/>
-    <item key="View_ScalarVariableComp" value="1"/>
+    <item key="View_ScalarVariable" value="rf_tm_magnetic_field"/>
+    <item key="View_ScalarVariableComp" value="0"/>
     <item key="View_PaletteType" value="0"/>
     <item key="View_PaletteFilter" value="0"/>
     <item key="View_PaletteSteps" value="30"/>
@@ -233,8 +233,8 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="1.54383826163058e-05"/>
-    <item key="View_ScalarRangeMax" value="12.6357206673446"/>
+    <item key="View_ScalarRangeMin" value="0"/>
+    <item key="View_ScalarRangeMax" value="1.30764335515363"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value=""/>
     <item key="View_VectorProportional" value="1"/>
