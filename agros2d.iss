@@ -29,13 +29,14 @@ WizardSmallImageFile=setup\files\SetupModernSmall.bmp
 
 [Files]
 Source: agros_util.dll; DestDir: {app}; DestName: agros_util.dll
+Source: agros2d_hermes2d.dll; DestDir: {app}; DestName: agros2d_hermes2d.dll
 Source: agros_pythonlab_library.dll; DestDir: {app}; DestName: agros_pythonlab_library.dll
 Source: agros_pythonlab.exe; DestDir: {app}; DestName: PythonLab.exe
 Source: agros2d_library.dll; DestDir: {app}; DestName: agros2d_library.dll
 Source: agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
 Source: agros2d_solver.exe; DestDir: {app}; DestName: Solver.exe
 Source: agros2d_remote.exe; DestDir: {app}; DestName: Remote.exe
-Source: agros2d_hermes2d.dll; DestDir: {app}; DestName: agros2d_hermes2d.dll
+Source: designer.exe; DestDir: {app}; DestName: Designer.exe
 Source: libs\*.dll; DestDir: {app}/libs
 Source: iconengines\*.dll; DestDir: {app}/iconengines
 Source: imageformats\*.dll; DestDir: {app}/imageformats
