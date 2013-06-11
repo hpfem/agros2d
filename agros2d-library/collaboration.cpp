@@ -252,17 +252,18 @@ void ServerDownloadDialog::httpFileFinished()
     accept();
 }
 
-#if QT_VERSION < 0x050000
 void ServerDownloadDialog::linkClicked(const QUrl &url)
-#else
-void ServerDownloadDialog::linkClicked(const QUrlQuery &url)
-#endif
 {
     if (url.toString().startsWith(Agros2D::configComputer()->collaborationServerURL))
     {
         if (url.toString().contains("problem_download.php?type=xml&id="))
+#if QT_VERSION < 0x050000
             readFromServerXML(url.queryItemValue("id").toInt(),
                               url.queryItemValue("version").toInt());
+#else
+            readFromServerXML(QUrlQuery(url).queryItemValue("id").toInt(),
+                              QUrlQuery(url).queryItemValue("version").toInt());
+#endif
         else
             load(url.toString());
     }

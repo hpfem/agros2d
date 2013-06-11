@@ -667,11 +667,7 @@ void MaterialBrowserDialog::functionValues(const QString &function, double from,
     currentPythonEngineAgros()->runExpression("del agros2d_material", false);
 }
 
-#if QT_VERSION < 0x050000
 void MaterialBrowserDialog::linkClicked(const QUrl &url)
-#else
-void MaterialBrowserDialog::linkClicked(const QUrlQuery &url)
-#endif
 {
     QString search = "/property?";
     if (url.toString().contains(search))
@@ -679,8 +675,13 @@ void MaterialBrowserDialog::linkClicked(const QUrlQuery &url)
         m_selected_x.clear();
         m_selected_y.clear();
 
+#if QT_VERSION < 0x050000
         QStringList keysString = url.queryItemValue("x").split(",");
         QStringList valuesString = url.queryItemValue("y").split(",");
+#else
+        QStringList keysString = QUrlQuery(url).queryItemValue("x").split(",");
+        QStringList valuesString = QUrlQuery(url).queryItemValue("y").split(",");
+#endif
 
         for (int j = 0; j < keysString.size(); j++)
         {
