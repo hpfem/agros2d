@@ -153,10 +153,6 @@ void FieldWidget::createContent()
         if (adaptivityStoppingCriterionFromStringKey(type) != AdaptivityStoppingCriterionType_Undefined)
             cmbAdaptivityStoppingCriterionType->addItem(adaptivityStoppingCriterionTypeString(adaptivityStoppingCriterionFromStringKey(type)),
                                                         adaptivityStoppingCriterionFromStringKey(type));
-    QLabel *lblAdaptivityStoppingCriterionType = new QLabel(tr("<b>Cumulative</b>: cumulative processed error<br /><b>Single element</b>: maximum element error<br /><b>Levels</b>: elements with similar errors"));
-    QFont fnt = lblAdaptivityStoppingCriterionType->font();
-    fnt.setPixelSize(lblAdaptivityStoppingCriterionType->font().pointSize() - 1);
-    lblAdaptivityStoppingCriterionType->setFont(fnt);
     txtAdaptivityThreshold = new QDoubleSpinBox();
     txtAdaptivityThreshold->setValue(m_fieldInfo->defaultValue(FieldInfo::AdaptivityThreshold).toDouble());
     txtAdaptivityThreshold->setDecimals(2);
@@ -287,27 +283,22 @@ void FieldWidget::createContent()
     // adaptivity
     QGridLayout *layoutAdaptivity = new QGridLayout();
     layoutAdaptivity->setColumnMinimumWidth(0, columnMinimumWidth());
-    layoutAdaptivity->setColumnStretch(0, 1);
-    layoutAdaptivity->setColumnStretch(1, 3);
-    layoutAdaptivity->setColumnStretch(2, 1);
-    layoutAdaptivity->setColumnStretch(3, 3);
     layoutAdaptivity->addWidget(new QLabel(tr("Steps:")), 1, 0);
-    layoutAdaptivity->addWidget(txtAdaptivitySteps, 1, 1, 1, 3);
+    layoutAdaptivity->addWidget(txtAdaptivitySteps, 1, 1);
     layoutAdaptivity->addWidget(new QLabel(tr("Tolerance (%):")), 2, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityTolerance, 2, 1, 1, 3);
+    layoutAdaptivity->addWidget(txtAdaptivityTolerance, 2, 1);
     layoutAdaptivity->addWidget(new QLabel(tr("Stopping criterion:")), 3, 0);
     layoutAdaptivity->addWidget(cmbAdaptivityStoppingCriterionType, 3, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Threshold (%):")), 3, 2);
-    layoutAdaptivity->addWidget(txtAdaptivityThreshold, 3, 3);
-    layoutAdaptivity->addWidget(lblAdaptivityStoppingCriterionType, 4, 1, 1, 3);
+    layoutAdaptivity->addWidget(new QLabel(tr("Threshold (%):")), 4, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityThreshold, 4, 1);
     layoutAdaptivity->addWidget(new QLabel(tr("Norm:")), 5, 0);
-    layoutAdaptivity->addWidget(cmbAdaptivityProjNormType, 5, 1, 1, 3);
-    layoutAdaptivity->addWidget(chkAdaptivityUseAniso, 6, 1, 1, 3);
-    layoutAdaptivity->addWidget(chkAdaptivityFinerReference, 7, 1, 1, 3);
+    layoutAdaptivity->addWidget(cmbAdaptivityProjNormType, 5, 1);
+    layoutAdaptivity->addWidget(chkAdaptivityUseAniso, 6, 1);
+    layoutAdaptivity->addWidget(chkAdaptivityFinerReference, 7, 1);
     layoutAdaptivity->addWidget(lblAdaptivityBackSteps, 8, 0);
     layoutAdaptivity->addWidget(txtAdaptivityBackSteps, 8, 1);
-    layoutAdaptivity->addWidget(lblAdaptivityRedoneEach, 8, 2);
-    layoutAdaptivity->addWidget(txtAdaptivityRedoneEach, 8, 3);
+    layoutAdaptivity->addWidget(lblAdaptivityRedoneEach, 9, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityRedoneEach, 9, 1);
     layoutAdaptivity->setRowStretch(50, 1);
 
     QWidget *widAdaptivity = new QWidget(this);
