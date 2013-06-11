@@ -42,10 +42,13 @@
             <item row="1" column="1">
              <widget class="QLineEdit" name="txtStatorDiameterInner">
               <property name="accessibleName">
-               <string>double</string>
+               <string/>
               </property>
               <property name="text">
                <string>1.250</string>
+              </property>
+              <property name="dataType" stdset="0">
+               <string>double</string>
               </property>
              </widget>
             </item>
@@ -59,10 +62,13 @@
             <item row="2" column="1">
              <widget class="QLineEdit" name="txtStatorSlots">
               <property name="accessibleName">
-               <string>int</string>
+               <string/>
               </property>
               <property name="text">
                <string>6</string>
+              </property>
+              <property name="dataType" stdset="0">
+               <string>int</string>
               </property>
              </widget>
             </item>
@@ -76,10 +82,13 @@
             <item row="0" column="1">
              <widget class="QLineEdit" name="txtStatorDiameterOuter">
               <property name="accessibleName">
-               <string>double</string>
+               <string/>
               </property>
               <property name="text">
                <string>1.800</string>
+              </property>
+              <property name="dataType" stdset="0">
+               <string>double</string>
               </property>
              </widget>
             </item>
@@ -99,10 +108,13 @@
             <item row="0" column="1">
              <widget class="QLineEdit" name="txtRotorDiameter">
               <property name="accessibleName">
-               <string>double</string>
+               <string/>
               </property>
               <property name="text">
                <string>1.200</string>
+              </property>
+              <property name="dataType" stdset="0">
+               <string>double</string>
               </property>
              </widget>
             </item>
@@ -123,10 +135,13 @@
             <item row="1" column="1">
              <widget class="QLineEdit" name="txtRotorSlots">
               <property name="accessibleName">
-               <string>int</string>
+               <string/>
               </property>
               <property name="text">
                <string>6</string>
+              </property>
+              <property name="dataType" stdset="0">
+               <string>int</string>
               </property>
              </widget>
             </item>
@@ -154,6 +169,9 @@
              <widget class="QLineEdit" name="txtShaftDiameter">
               <property name="text">
                <string>0.200</string>
+              </property>
+              <property name="dataType" stdset="0">
+               <string>double</string>
               </property>
              </widget>
             </item>

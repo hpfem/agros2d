@@ -200,7 +200,7 @@ cdef class __Geometry__:
         if (materials != None):
             geometry.add_label(x0, y0, materials=materials)
 
-    def add_semicircle(self, x0, y0, radius, boundaries = {}, materials = {}):
+    def add_semicircle(self, x0, y0, radius, boundaries = {}, materials = None):
         self.add_edge(x0, (y0)-radius, (x0)+radius, y0, boundaries=boundaries, angle=90)
         self.add_edge((x0)+radius, y0, x0, (y0)+radius, boundaries=boundaries, angle=90)
         self.add_edge(x0, (y0)+radius, x0, (y0)-radius, boundaries=boundaries, angle=0)
