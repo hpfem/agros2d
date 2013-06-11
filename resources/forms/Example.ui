@@ -77,7 +77,7 @@
      <item row="2" column="1">
       <widget class="QRadioButton" name="radioButton2">
        <property name="text">
-        <string>RadioButton</string>
+        <string>RadioButton 2</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -87,7 +87,7 @@
      <item row="1" column="1">
       <widget class="QRadioButton" name="radioButton1">
        <property name="text">
-        <string>RadioButton</string>
+        <string>RadioButton 1</string>
        </property>
       </widget>
      </item>

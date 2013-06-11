@@ -30,13 +30,67 @@
 #include "../../resources_source/classes/form_xml.h"
 
 FormScript::FormScript(const QString &fileName, QWidget *parent)
-    : FormInterface(parent), fileName(fileName)
+    : FormInterface(parent), fileName(fileName), mainWidget(NULL)
+{
+    actShow = new QAction(this);
+    connect(actShow, SIGNAL(triggered()), this, SLOT(show()));
+
+    process = new QProcess();
+    connect(process, SIGNAL(finished(int)), this, SLOT(designerFinished(int)));
+
+    // dialog buttons
+    QPushButton *btnLoad = new QPushButton(tr("Load"));
+    btnLoad->setDefault(false);
+    connect(btnLoad, SIGNAL(clicked()), this, SLOT(load()));
+    QPushButton *btnSave = new QPushButton(tr("Save"));
+    btnSave->setDefault(false);
+    connect(btnSave, SIGNAL(clicked()), this, SLOT(save()));
+    QPushButton *btnReload = new QPushButton(tr("Reload"));
+    btnReload->setDefault(false);
+    connect(btnReload, SIGNAL(clicked()), this, SLOT(reloadWidget()));
+    QPushButton *btnDesigner = new QPushButton(tr("Designer"));
+    btnDesigner->setDefault(false);
+    connect(btnDesigner, SIGNAL(clicked()), this, SLOT(designer()));
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    buttonBox->addButton(btnDesigner, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(btnReload, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(btnLoad, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(btnSave, QDialogButtonBox::ActionRole);    
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(acceptForm()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(rejectForm()));
+
+    // error
+    errorMessage = new QLabel();
+    errorMessage->setVisible(false);
+    QPalette palette = errorMessage->palette();
+    palette.setColor(QPalette::WindowText, Qt::red);
+    errorMessage->setPalette(palette);
+
+    QHBoxLayout *buttons = new QHBoxLayout();
+    buttons->addWidget(buttonBox);
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addStretch();
+    layout->addWidget(errorMessage);
+    layout->addLayout(buttons);
+    setLayout(layout);
+
+    loadWidget(fileName);
+}
+
+void FormScript::loadWidget(const QString &fileName)
 {
     QString name = QFileInfo(fileName).baseName();
-    setWindowTitle(name);
 
-    actShow = new QAction((name), this);
-    connect(actShow, SIGNAL(triggered()), this, SLOT(show()));
+    setWindowTitle(name);
+    actShow->setText(name);
+
+    if (mainWidget)
+    {
+        layout()->removeWidget(mainWidget);
+        delete mainWidget;
+    }
 
     if (QFile::exists(fileName))
     {
@@ -71,37 +125,41 @@ FormScript::FormScript(const QString &fileName, QWidget *parent)
         }
     }
 
-    // dialog buttons
-    QPushButton *btnLoad = new QPushButton(tr("Load"));
-    btnLoad->setDefault(false);
-    connect(btnLoad, SIGNAL(clicked()), this, SLOT(load()));
-    QPushButton *btnSave = new QPushButton(tr("Save"));
-    btnSave->setDefault(false);
-    connect(btnSave, SIGNAL(clicked()), this, SLOT(save()));
+    dynamic_cast<QVBoxLayout *>(layout())->insertWidget(0, mainWidget);
+}
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    buttonBox->addButton(btnLoad, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(btnSave, QDialogButtonBox::ActionRole);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(acceptForm()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(rejectForm()));
+void FormScript::reloadWidget()
+{
+    loadWidget(fileName);
+}
 
-    // error
-    errorMessage = new QLabel();
-    errorMessage->setVisible(false);
-    QPalette palette = errorMessage->palette();
-    palette.setColor(QPalette::WindowText, Qt::red);
-    errorMessage->setPalette(palette);
+void FormScript::designer()
+{
+    QString designerBinary = "designer";
+    if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "designer.exe"))
+        designerBinary = "\"" + QApplication::applicationDirPath() + QDir::separator() + "designer.exe\"";
+    if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "designer"))
+        designerBinary = QApplication::applicationDirPath() + QDir::separator() + "designer";
 
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(mainWidget);
-    layout->addStretch();
-    layout->addWidget(errorMessage);
-    layout->addWidget(buttonBox);
-    setLayout(layout);
+    process->start(QString("%1 \"%2\"").arg(designerBinary).arg(fileName));
+
+    // execute an event loop to process the request (nearly-synchronous)
+    QEventLoop eventLoop;
+    connect(process, SIGNAL(finished(int)), &eventLoop, SLOT(quit()));
+    eventLoop.exec();
+}
+
+void FormScript::designerFinished(int status)
+{
+    if (status == 0)
+    {
+        reloadWidget();
+    }
 }
 
 FormScript::~FormScript()
 {
+    delete process;
 }
 
 QString FormScript::formId()

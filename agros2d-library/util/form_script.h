@@ -55,12 +55,20 @@ protected:
     QLabel *errorMessage;
     QString fileName;
 
+    QProcess *process;
+
 private:
     QString valueForWidget(XMLForm::form *doc, const QString &objectName, const QString &defaultValue);
+
+    void loadWidget(const QString &fileName);
 
 private slots:
     void load();
     void save();
+
+    void reloadWidget();
+    void designer();
+    void designerFinished(int status);
 };
 
 #endif // FORM_SCRIPT_H
