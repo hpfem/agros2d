@@ -71,9 +71,6 @@ private slots:
     void reloadWidget();
     void designer();
     void designerFinished(int status);
-
-    void buttonBoxContextMenu(const QPoint& pos);
-    void buttonBoxContextMenu();
 };
 
 #endif // FORM_SCRIPT_H

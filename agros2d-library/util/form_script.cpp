@@ -40,9 +40,6 @@ FormScript::FormScript(const QString &fileName, QWidget *parent)
 
     // dialog buttons
     btnMore = new QPushButton(tr("More..."));
-    btnMore->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(btnMore, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(buttonBoxContextMenu(const QPoint&)));
-    connect(btnMore, SIGNAL(clicked()), this, SLOT(buttonBoxContextMenu()));
 
     QAction *actLoad = new QAction(tr("Load"), this);
     connect(actLoad, SIGNAL(triggered()), this, SLOT(load()));
@@ -60,6 +57,8 @@ FormScript::FormScript(const QString &fileName, QWidget *parent)
     menu->addSeparator();
     menu->addAction(actReload);
     menu->addAction(actDesigner);
+    
+    btnMore->setMenu(menu);
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);    
     buttonBox->addButton(btnMore, QDialogButtonBox::ActionRole);
@@ -83,16 +82,6 @@ FormScript::FormScript(const QString &fileName, QWidget *parent)
     setLayout(layout);
 
     loadWidget(fileName);
-}
-
-void FormScript::buttonBoxContextMenu()
-{
-    menu->exec(btnMore->mapToGlobal(QPoint(btnMore->pos().x(), btnMore->pos().y() + btnMore->height())));
-}
-
-void FormScript::buttonBoxContextMenu(const QPoint &pos)
-{
-    menu->exec(btnMore->mapToGlobal(pos));
 }
 
 void FormScript::loadWidget(const QString &fileName)
