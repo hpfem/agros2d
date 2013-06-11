@@ -39,24 +39,30 @@ FormScript::FormScript(const QString &fileName, QWidget *parent)
     connect(process, SIGNAL(finished(int)), this, SLOT(designerFinished(int)));
 
     // dialog buttons
-    QPushButton *btnLoad = new QPushButton(tr("Load"));
-    btnLoad->setDefault(false);
-    connect(btnLoad, SIGNAL(clicked()), this, SLOT(load()));
-    QPushButton *btnSave = new QPushButton(tr("Save"));
-    btnSave->setDefault(false);
-    connect(btnSave, SIGNAL(clicked()), this, SLOT(save()));
-    QPushButton *btnReload = new QPushButton(tr("Reload"));
-    btnReload->setDefault(false);
-    connect(btnReload, SIGNAL(clicked()), this, SLOT(reloadWidget()));
-    QPushButton *btnDesigner = new QPushButton(tr("Designer"));
-    btnDesigner->setDefault(false);
-    connect(btnDesigner, SIGNAL(clicked()), this, SLOT(designer()));
+    btnMore = new QPushButton(tr("More..."));
+    btnMore->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(btnMore, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(buttonBoxContextMenu(const QPoint&)));
+    connect(btnMore, SIGNAL(clicked()), this, SLOT(buttonBoxContextMenu()));
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    buttonBox->addButton(btnDesigner, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(btnReload, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(btnLoad, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(btnSave, QDialogButtonBox::ActionRole);    
+    QAction *actLoad = new QAction(tr("Load"), this);
+    connect(actLoad, SIGNAL(triggered()), this, SLOT(load()));
+    QAction *actSave = new QAction(tr("Save"), this);
+    connect(actSave, SIGNAL(triggered()), this, SLOT(save()));
+
+    QAction *actReload = new QAction(tr("Reload"), this);
+    connect(actReload, SIGNAL(triggered()), this, SLOT(reloadWidget()));
+    QAction *actDesigner = new QAction(tr("Designer"), this);
+    connect(actDesigner, SIGNAL(triggered()), this, SLOT(designer()));
+
+    menu = new QMenu();
+    menu->addAction(actLoad);
+    menu->addAction(actSave);
+    menu->addSeparator();
+    menu->addAction(actReload);
+    menu->addAction(actDesigner);
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);    
+    buttonBox->addButton(btnMore, QDialogButtonBox::ActionRole);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(acceptForm()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(rejectForm()));
 
@@ -77,6 +83,16 @@ FormScript::FormScript(const QString &fileName, QWidget *parent)
     setLayout(layout);
 
     loadWidget(fileName);
+}
+
+void FormScript::buttonBoxContextMenu()
+{
+    menu->exec(btnMore->mapToGlobal(QPoint(btnMore->pos().x(), btnMore->pos().y() + btnMore->height())));
+}
+
+void FormScript::buttonBoxContextMenu(const QPoint &pos)
+{
+    menu->exec(btnMore->mapToGlobal(pos));
 }
 
 void FormScript::loadWidget(const QString &fileName)
