@@ -56,17 +56,15 @@ FormScript::FormScript(const QString &fileName, QWidget *parent)
         // line edit
         if (QLineEdit *widget = dynamic_cast<QLineEdit *>(object))
         {
-            // trick - double validator
-            if (widget->accessibleName() == "double")
+            // double validator
+            if (widget->property("dataType") == "double")
             {
                 widget->setValidator(new QDoubleValidator(widget));
-                widget->setAccessibleName("");
             }
-            // trick - int validator
-            if (widget->accessibleName() == "int")
+            // int validator
+            if (widget->property("dataType") == "int")
             {
                 widget->setValidator(new QIntValidator(widget));
-                widget->setAccessibleName("");
             }
         }
     }
@@ -292,7 +290,7 @@ void FormScript::acceptForm()
 }
 
 void FormScript::rejectForm()
-{    
+{
     reject();
 }
 
