@@ -4,6 +4,14 @@ import agros2d
 import sys
 from math import *
 
+# interactive help hack
+__pydoc_help__ = help
+def __a2d_help__(obj = agros2d):
+    return __pydoc_help__(obj)
+
+help = __a2d_help__
+
+# test
 def test(text, value, normal, error = 0.03):
     if ((normal == 0.0) and (abs(value) < 1e-14)):
         return True
