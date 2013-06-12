@@ -34,8 +34,11 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         int getNewtonDampingNumberToIncrease()
         void setNewtonDampingNumberToIncrease(int dampingNumberToIncrease) except +
 
-        double getNewtonSufficientImprovementFactorJacobian()
-        void setNewtonSufficientImprovementFactorJacobian(double sufficientImprovementFactorJacobian) except +
+        double getNewtonSufficientImprovementFactorForJacobianReuse()
+        void setNewtonSufficientImprovementFactorForJacobianReuse(double sufficientImprovementFactorJacobian) except +
+
+        double getNewtonSufficientImprovementFactor()
+        void setNewtonSufficientImprovementFactor(double sufficientImprovementFactor) except +
 
         int getNewtonMaximumStepsWithReusedJacobian()
         void setNewtonMaximumStepsWithReusedJacobian(int maximumStepsWithReusedJacobian) except +
@@ -313,12 +316,19 @@ cdef class __Field__:
         def __set__(self, damping_number_to_increase):
             self.thisptr.setNewtonDampingNumberToIncrease(damping_number_to_increase)
 
-    # sufficient improvement factor Jacobian
-    property sufficient_improvement_factor_Jacobian:
+    # sufficient improvement factor for Jacobian reuse
+    property sufficient_improvement_factor_for_Jacobian_reuse:
         def __get__(self):
-            return self.thisptr.getNewtonSufficientImprovementFactorJacobian()
+            return self.thisptr.getNewtonSufficientImprovementFactorForJacobianReuse()
         def __set__(self, sufficientImprovementFactorJacobian):
-            self.thisptr.setNewtonSufficientImprovementFactorJacobian(sufficientImprovementFactorJacobian)
+            self.thisptr.setNewtonSufficientImprovementFactorForJacobianReuse(sufficientImprovementFactorJacobian)
+
+    # sufficient improvement factor
+    property sufficient_improvement_factor:
+        def __get__(self):
+            return self.thisptr.getNewtonSufficientImprovementFactor()
+        def __set__(self, sufficientImprovementFactor):
+            self.thisptr.setNewtonSufficientImprovementFactor(sufficientImprovementFactor)
 
     # maximum steps with reused Jacobian
     property maximum_steps_with_reused_Jacobian:

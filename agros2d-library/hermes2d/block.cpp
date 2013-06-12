@@ -465,15 +465,29 @@ int Block::newtonStepsToIncreaseDF() const
     return number;
 }
 
-double Block::newtonSufficientImprovementFactorJacobian() const
+double Block::newtonSufficientImprovementFactorForJacobianReuse() const
 {
-    double number = 1.0;
+    double number = 1e10;
 
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if (fieldInfo->value(FieldInfo::NewtonSufImprovJacobian).toDouble() < number)
-            number = fieldInfo->value(FieldInfo::NewtonSufImprovJacobian).toDouble();
+        if (fieldInfo->value(FieldInfo::NewtonSufImprovForJacobianReuse).toDouble() < number)
+            number = fieldInfo->value(FieldInfo::NewtonSufImprovForJacobianReuse).toDouble();
+    }
+
+    return number;
+}
+
+double Block::newtonSufficientImprovementFactor() const
+{
+    double number = 1e10;
+
+    foreach (Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if (fieldInfo->value(FieldInfo::NewtonSufImprov).toDouble() < number)
+            number = fieldInfo->value(FieldInfo::NewtonSufImprov).toDouble();
     }
 
     return number;

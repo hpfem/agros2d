@@ -80,9 +80,13 @@ class PyField
         inline int getNewtonDampingNumberToIncrease() const { return m_fieldInfo->value(FieldInfo::NewtonStepsToIncreaseDF).toInt(); }
         void setNewtonDampingNumberToIncrease(int dampingNumberToIncrease);
 
-        // sufficient improvement factor Jacobian
-        inline double getNewtonSufficientImprovementFactorJacobian() const { return m_fieldInfo->value(FieldInfo::NewtonSufImprovJacobian).toDouble(); }
-        void setNewtonSufficientImprovementFactorJacobian(double sufficientImprovementFactorJacobian);
+        // sufficient improvement factor for Jacobian reuse
+        inline double getNewtonSufficientImprovementFactorForJacobianReuse() const { return m_fieldInfo->value(FieldInfo::NewtonSufImprovForJacobianReuse).toDouble(); }
+        void setNewtonSufficientImprovementFactorForJacobianReuse(double sufficientImprovementFactorJacobian);
+
+        // sufficient improvement factor
+        inline double getNewtonSufficientImprovementFactor() const { return m_fieldInfo->value(FieldInfo::NewtonSufImprov).toDouble(); }
+        void setNewtonSufficientImprovementFactor(double sufficientImprovementFactor);
 
         // maximum steps with reused Jacobian
         inline int getNewtonMaximumStepsWithReusedJacobian() const { return m_fieldInfo->value(FieldInfo::NewtonMaxStepsReuseJacobian).toInt(); }

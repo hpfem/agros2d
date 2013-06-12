@@ -315,7 +315,8 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
     m_newtonSolver->set_max_allowed_iterations(block->nonlinearSteps());
     m_newtonSolver->set_max_allowed_residual_norm(1e15);
     m_newtonSolver->set_convergence_measurement(block->nonlinearConvergenceMeasurement());
-    m_newtonSolver->set_sufficient_improvement_factor_jacobian(block->newtonSufficientImprovementFactorJacobian());
+    m_newtonSolver->set_sufficient_improvement_factor_jacobian(block->newtonSufficientImprovementFactorForJacobianReuse());
+    m_newtonSolver->set_sufficient_improvement_factor(block->newtonSufficientImprovementFactor());
 
     if(block->newtonReuseJacobian())
         m_newtonSolver->set_max_steps_with_reused_jacobian(block->newtonMaxStepsWithReusedJacobian());

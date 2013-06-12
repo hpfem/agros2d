@@ -132,8 +132,10 @@ private:
     QCheckBox *chkNewtonReuseJacobian;
     QLabel *lblNewtonDampingCoeff;
     LineEditDouble *txtNewtonDampingCoeff;
-    QLabel *lblNewtonSufficientImprovementFactorJacobian;
-    LineEditDouble *txtNewtonSufficientImprovementFactorJacobian;
+    QLabel *lblNewtonSufficientImprovementFactorForJacobianReuse;
+    LineEditDouble *txtNewtonSufficientImprovementFactorForJacobianReuse;
+    QLabel *lblNewtonSufficientImprovementFactor;
+    LineEditDouble *txtNewtonSufficientImprovementFactor;
     QLabel *lblNewtonMaximumStepsWithReusedJacobian;
     QSpinBox *txtNewtonMaximumStepsWithReusedJacobian;
     QLabel *lblNewtonDampingNumberToIncrease;
