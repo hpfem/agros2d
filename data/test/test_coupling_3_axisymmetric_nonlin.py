@@ -40,7 +40,7 @@ heat.damping_number_to_increase = 1
 heat.damping_type = "fixed"
 heat.reuse_jacobian = True
 heat.maximum_steps_with_reused_Jacobian = 10
-heat.sufficient_improvement_factor_Jacobian = 0.9
+heat.sufficient_improvement_factor_for_Jacobian_reuse = 0.9
 
 heat.add_boundary("300 K", "heat_temperature", {"heat_temperature" : 300})
 heat.add_boundary("Flux", "heat_heat_flux", {"heat_convection_external_temperature" : 20, "heat_convection_heat_transfer_coefficient" : 20, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 20, "heat_radiation_emissivity" : 0.95})

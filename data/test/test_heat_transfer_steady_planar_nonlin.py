@@ -26,7 +26,7 @@ heat.damping_type = "automatic"
 heat.damping_coeff = 0.8
 heat.reuse_jacobian = True
 heat.maximum_steps_with_reused_Jacobian = 10
-heat.sufficient_improvement_factor_Jacobian = 0.3
+heat.sufficient_improvement_factor_for_Jacobian_reuse = 0.3
 
 heat.add_boundary("Left", "heat_temperature", {"heat_temperature" : 10})
 heat.add_boundary("Radiace", "heat_heat_flux", {"heat_convection_external_temperature" : 0, "heat_convection_heat_transfer_coefficient" : 0, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 20, "heat_radiation_emissivity" : 0.9})

@@ -7,6 +7,14 @@ problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 problem.frequency = 5000
 
+# disable view
+agros2d.view.mesh.initial_mesh = False
+agros2d.view.mesh.solution_mesh = False
+agros2d.view.mesh.order = False
+agros2d.view.post2d.scalar = False
+agros2d.view.post2d.contours = False
+agros2d.view.post2d.vectors = False
+
 # fields
 # acoustic
 acoustic = agros2d.field("acoustic")
@@ -14,7 +22,7 @@ acoustic.analysis_type = "harmonic"
 acoustic.polynomial_order = 1
 acoustic.adaptivity_type = "hp-adaptivity"
 acoustic.adaptivity_steps = 15
-acoustic.adaptivity_tolerance = 5
+acoustic.adaptivity_tolerance = 2
 acoustic.linearity_type = "linear"
 
 
