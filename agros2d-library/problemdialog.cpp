@@ -209,8 +209,10 @@ void FieldWidget::createContent()
     chkNewtonReuseJacobian = new QCheckBox(tr("Reuse Jacobian if possible"));
     connect(chkNewtonReuseJacobian, SIGNAL(toggled(bool)), this, SLOT(doNewtonReuseJacobian(bool)));
 
-    lblNewtonSufficientImprovementFactorJacobian = new QLabel(tr("Sufficient improvement factor Jacobian:"));;
-    txtNewtonSufficientImprovementFactorJacobian = new LineEditDouble(0, true);
+    lblNewtonSufficientImprovementFactorForJacobianReuse = new QLabel(tr("Sufficient improvement factor Jacobian:"));;
+    txtNewtonSufficientImprovementFactorForJacobianReuse = new LineEditDouble(0, true);
+    lblNewtonSufficientImprovementFactor = new QLabel(tr("Sufficient improvement factor:"));;
+    txtNewtonSufficientImprovementFactor = new LineEditDouble(0, true);
     lblNewtonMaximumStepsWithReusedJacobian = new QLabel(tr("Max. steps with reused Jacobian:"));
     txtNewtonMaximumStepsWithReusedJacobian = new QSpinBox(this);
     txtNewtonMaximumStepsWithReusedJacobian->setMinimum(0);
@@ -319,12 +321,14 @@ void FieldWidget::createContent()
     layoutSolver->addWidget(lblNewtonDampingCoeff, 5, 0);
     layoutSolver->addWidget(txtNewtonDampingCoeff, 5, 1);
     layoutSolver->addWidget(chkNewtonReuseJacobian, 6, 1, 1, 1);
-    layoutSolver->addWidget(lblNewtonSufficientImprovementFactorJacobian, 7, 0);
-    layoutSolver->addWidget(txtNewtonSufficientImprovementFactorJacobian, 7, 1);
+    layoutSolver->addWidget(lblNewtonSufficientImprovementFactorForJacobianReuse, 7, 0);
+    layoutSolver->addWidget(txtNewtonSufficientImprovementFactorForJacobianReuse, 7, 1);
     layoutSolver->addWidget(lblNewtonMaximumStepsWithReusedJacobian, 8, 0);
     layoutSolver->addWidget(txtNewtonMaximumStepsWithReusedJacobian, 8, 1);
     layoutSolver->addWidget(lblNewtonDampingNumberToIncrease, 9, 0);
     layoutSolver->addWidget(txtNewtonDampingNumberToIncrease, 9, 1);
+    layoutSolver->addWidget(lblNewtonSufficientImprovementFactor, 10, 0);
+    layoutSolver->addWidget(txtNewtonSufficientImprovementFactor, 10, 1);
     layoutSolver->setRowStretch(50, 1);
     // layoutLinearity->addWidget(chkPicardAndersonAcceleration, 7, 0, 1, 2);
     // layoutLinearity->addWidget(lblPicardAndersonBeta, 8, 0);
@@ -435,7 +439,8 @@ void FieldWidget::load()
     txtNonlinearTolerance->setValue(m_fieldInfo->value(FieldInfo::NonlinearTolerance).toDouble());
     cmbNewtonDampingType->setCurrentIndex(cmbNewtonDampingType->findData((DampingType) m_fieldInfo->value(FieldInfo::NewtonDampingType).toInt()));
     txtNewtonDampingCoeff->setValue(m_fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble());
-    txtNewtonSufficientImprovementFactorJacobian->setValue(m_fieldInfo->value(FieldInfo::NewtonSufImprovJacobian).toDouble());
+    txtNewtonSufficientImprovementFactorForJacobianReuse->setValue(m_fieldInfo->value(FieldInfo::NewtonSufImprovForJacobianReuse).toDouble());
+    txtNewtonSufficientImprovementFactor->setValue(m_fieldInfo->value(FieldInfo::NewtonSufImprov).toDouble());
     txtNewtonMaximumStepsWithReusedJacobian->setValue(m_fieldInfo->value(FieldInfo::NewtonMaxStepsReuseJacobian).toInt());
     txtNewtonDampingNumberToIncrease->setValue(m_fieldInfo->value(FieldInfo::NewtonStepsToIncreaseDF).toInt());
     chkNewtonReuseJacobian->setChecked((m_fieldInfo->value(FieldInfo::NewtonReuseJacobian)).toBool());
@@ -475,7 +480,8 @@ bool FieldWidget::save()
     m_fieldInfo->setValue(FieldInfo::NewtonDampingCoeff, txtNewtonDampingCoeff->value());
     m_fieldInfo->setValue(FieldInfo::NewtonDampingType, (DampingType) cmbNewtonDampingType->itemData(cmbNewtonDampingType->currentIndex()).toInt());
     m_fieldInfo->setValue(FieldInfo::NewtonReuseJacobian, chkNewtonReuseJacobian->isChecked());
-    m_fieldInfo->setValue(FieldInfo::NewtonSufImprovJacobian, txtNewtonSufficientImprovementFactorJacobian->value());
+    m_fieldInfo->setValue(FieldInfo::NewtonSufImprovForJacobianReuse, txtNewtonSufficientImprovementFactorForJacobianReuse->value());
+    m_fieldInfo->setValue(FieldInfo::NewtonSufImprov, txtNewtonSufficientImprovementFactor->value());
     m_fieldInfo->setValue(FieldInfo::NewtonMaxStepsReuseJacobian, txtNewtonMaximumStepsWithReusedJacobian->value());
     m_fieldInfo->setValue(FieldInfo::NewtonStepsToIncreaseDF, txtNewtonDampingNumberToIncrease->value());
     m_fieldInfo->setValue(FieldInfo::PicardAndersonAcceleration, chkPicardAndersonAcceleration->isChecked());
@@ -561,7 +567,8 @@ void FieldWidget::doLinearityTypeChanged(int index)
     cmbNewtonDampingType->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
     txtNewtonDampingCoeff->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
     chkNewtonReuseJacobian->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
-    txtNewtonSufficientImprovementFactorJacobian->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
+    txtNewtonSufficientImprovementFactorForJacobianReuse->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
+    txtNewtonSufficientImprovementFactor->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
     txtNewtonMaximumStepsWithReusedJacobian->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
     txtNewtonDampingNumberToIncrease->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
     doNewtonDampingChanged(-1);
@@ -583,7 +590,7 @@ void FieldWidget::doNewtonReuseJacobian(bool checked)
 {
     txtNewtonMaximumStepsWithReusedJacobian->setEnabled(((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() == LinearityType_Newton) &&
                                                         (chkNewtonReuseJacobian->isChecked()));
-    txtNewtonSufficientImprovementFactorJacobian->setEnabled(((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() == LinearityType_Newton) &&
+    txtNewtonSufficientImprovementFactorForJacobianReuse->setEnabled(((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() == LinearityType_Newton) &&
                                                              (chkNewtonReuseJacobian->isChecked()));
 }
 

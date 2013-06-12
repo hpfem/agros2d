@@ -95,7 +95,12 @@ public:
     int newtonStepsToIncreaseDF() const;
 
     // ratio of the current residual norm and the previous residual norm necessary to deem a step 'successful'
-    double newtonSufficientImprovementFactorJacobian() const;
+    // used to determine whether accept the step with reused Jacobian
+    double newtonSufficientImprovementFactorForJacobianReuse() const;
+
+    // Set the ratio of the current residual norm and the previous residual norm necessary to deem a step 'successful'.
+    // used to determine whether step can be accepted with given damping factor
+    double newtonSufficientImprovementFactor() const;
 
     // maximum number of steps (Newton iterations) that a jacobian can be reused if it is deemed a 'successful' reusal
     int newtonMaxStepsWithReusedJacobian() const;

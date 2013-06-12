@@ -329,9 +329,13 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                     arg(fieldInfo->fieldId()).
                     arg((fieldInfo->value(FieldInfo::NewtonReuseJacobian).toBool()) ? "True" : "False");
 
-            str += QString("%1.sufficient_improvement_factor_Jacobian = %2\n").
+            str += QString("%1.sufficient_improvement_factor_for_Jacobian_reuse = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->value(FieldInfo::NewtonSufImprovJacobian).toDouble());
+                    arg(fieldInfo->value(FieldInfo::NewtonSufImprovForJacobianReuse).toDouble());
+
+            str += QString("%1.sufficient_improvement_factor = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(fieldInfo->value(FieldInfo::NewtonSufImprov).toDouble());
 
             str += QString("%1.maximum_steps_with_reused_Jacobian = %2\n").
                     arg(fieldInfo->fieldId()).
