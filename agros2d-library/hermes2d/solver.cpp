@@ -302,14 +302,7 @@ void LinearSolverContainer<Scalar>::matrixUnchangedDueToBDF(bool unchanged)
 template <typename Scalar>
 void LinearSolverContainer<Scalar>::solve(Scalar* solutionVector)
 {
-    try
-    {
-        m_linearSolver->solve();
-    }
-    catch (Hermes::Exceptions::Exception &e)
-    {
-        qDebug() << "catch";
-    }
+    m_linearSolver->solve();
 
     this->m_slnVector = m_linearSolver->get_sln_vector();
 }
