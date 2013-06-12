@@ -303,6 +303,7 @@ void MainWindow::createActions()
     connect(actDocumentSaveGeometry, SIGNAL(triggered()), this, SLOT(doDocumentSaveGeometry()));
 
     actExamples = new QAction(tr("Open example..."), this);
+    actExamples->setShortcut(tr("Ctrl+Shift+O"));
     connect(actExamples, SIGNAL(triggered()), this, SLOT(doExamples()));
 
     actCreateVideo = new QAction(icon("video"), tr("Create &video..."), this);
