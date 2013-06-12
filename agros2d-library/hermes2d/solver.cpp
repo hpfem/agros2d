@@ -832,10 +832,12 @@ void ProblemSolver<Scalar>::createInitialSpace()
                 if (!label->marker(fieldInfo)->isNone() &&
                         (fieldInfo->labelPolynomialOrder(label) != fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt()))
                 {
-                    actualSpaces().at(i)->set_uniform_order(fieldInfo->labelPolynomialOrder(label),
-                                                            QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString());
+                    oneSpace->set_uniform_order(fieldInfo->labelPolynomialOrder(label),
+                                                QString::number(Agros2D::scene()->labels->items().indexOf(label)).toStdString());
                 }
             }
+
+            oneSpace->assign_dofs();
         }
 
         // delete temp initial mesh
