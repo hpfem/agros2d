@@ -104,6 +104,8 @@ win32-msvc2010 {
 
     #DEFINES += XERCES_STATIC_LIBRARY
     #DEFINES += XML_LIBRARY
+    DEFINES += AGROS_DLL
+    DEFINES += WITH_TC_MALLOC
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"
 
