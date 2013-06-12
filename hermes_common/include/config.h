@@ -10,12 +10,16 @@
 /* #undef EXTREME_QUAD */
 
 #define WITH_UMFPACK
+/* #define WITH_PARALUTION */
 /* #undef WITH_MUMPS */
 /* #undef WITH_SUPERLU */
 /* #undef WITH_PETSC */
 /* #undef WITH_HDF5 */
 /* #undef WITH_EXODUSII */
 /* #undef WITH_MPI */
+
+#define WITH_TC_MALLOC
+/* #undef UMFPACK_LONG_INT */
 
 // stacktrace
 /* #undef WITH_STACKTRACE */

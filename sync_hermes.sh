@@ -18,10 +18,10 @@ mkdir hermes_common/src
 mkdir hermes_common/include
 
 # copy files
-cp -R ../hermes/hermes2d/src/* hermes2d/src/
-cp -R ../hermes/hermes2d/include/* hermes2d/include/
-cp -R ../hermes/hermes_common/src/* hermes_common/src/
-cp -R ../hermes/hermes_common/include/* hermes_common/include/
+cp -u -R ../hermes/hermes2d/src/* hermes2d/src/
+cp -u -R ../hermes/hermes2d/include/* hermes2d/include/
+cp -u -R ../hermes/hermes_common/src/* hermes_common/src/
+cp -u -R ../hermes/hermes_common/include/* hermes_common/include/
 
 # remove weakform library
 rm -rf hermes2d/src/weakform_library
