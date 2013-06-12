@@ -59,10 +59,11 @@ def geometry_rotor_slots(N, A, B, C, D, E):
     e5 = geometry.add_edge(k8x, k8y, k6x, k6y)
     e6 = geometry.add_edge(k6x, k6y, k4x, k4y)
     e7 = geometry.add_edge(k4x, k4y, k2x, k2y)
-   
+
+    geometry.select_edges([e1, e2, e3, e4, e5, e6, e7])   
     for i in range(N-1):
-        geometry.select_edges([e1, e2, e3, e4, e5, e6, e7])
-        geometry.rotate_selection(0.0, 0.0, (i+1) * angle / pi * 180.0, True)
+        geometry.rotate_selection(0.0, 0.0, angle / pi * 180.0, True)
+
     for i in range(N):
         geometry.add_edge(- sqrt(k1x**2 + k1y**2) * cos(i * angle + atan(k1y / k1x)), - sqrt(k1x**2 + k1y**2) * sin(i * angle + atan(k1y / k1x)), - sqrt(k2x**2 + k2y**2) * cos(i * angle + atan(k2y / k2x)), - sqrt(k2x**2 + k2y**2) * sin(i * angle + atan(k2y / k2x)), abs(2.0 * atan(k1y / k1x)) / pi * 180.0)            
         geometry.add_edge(- sqrt(k2x**2 + k2y**2) * cos(i * angle + atan(k2y / k2x)), - sqrt(k2x**2 + k2y**2) * sin(i * angle + atan(k2y / k2x)), - sqrt(k1x**2 + k1y**2) * cos((i+1) * angle + atan(k1y / k1x)), - sqrt(k1x**2 + k1y**2) * sin((i+1) * angle + atan(k1y / k1x)), (angle - abs(2.0 * atan(k1y / k1x))) / pi * 180.0)            
@@ -103,9 +104,10 @@ def geometry_stator_slots(N, A, B, C, D, E):
     e8 = geometry.add_edge(k6x, k6y, k4x, k4y)
     e9 = geometry.add_edge(k4x, k4y, k2x, k2y)
     
-    for i in range(N-1):
-        geometry.select_edges([e1, e2, e3, e4, e5, e6, e7, e8, e9])
-        geometry.rotate_selection(0.0, 0.0, (i+1) * angle / pi * 180.0, True)
+    geometry.select_edges([e1, e2, e3, e4, e5, e6, e7, e8, e9])
+    for i in range(N-1):        
+        geometry.rotate_selection(0.0, 0.0, angle / pi * 180.0, True)
+
     for i in range(N):
         geometry.add_edge(- sqrt(k1x**2 + k1y**2) * cos(i * angle + atan(k1y / k1x)), - sqrt(k1x**2 + k1y**2) * sin(i * angle + atan(k1y / k1x)), - sqrt(k2x**2 + k2y**2) * cos(i * angle + atan(k2y / k2x)), - sqrt(k2x**2 + k2y**2) * sin(i * angle + atan(k2y / k2x)), abs(2.0 * atan(k1y / k1x)) / pi * 180.0)            
         geometry.add_edge(- sqrt(k2x**2 + k2y**2) * cos(i * angle + atan(k2y / k2x)), - sqrt(k2x**2 + k2y**2) * sin(i * angle + atan(k2y / k2x)), - sqrt(k1x**2 + k1y**2) * cos((i+1) * angle + atan(k1y / k1x)), - sqrt(k1x**2 + k1y**2) * sin((i+1) * angle + atan(k1y / k1x)), (angle - abs(2.0 * atan(k1y / k1x))) / pi * 180.0)            

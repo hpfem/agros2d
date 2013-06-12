@@ -875,9 +875,12 @@ void Scene::doInvalidated()
     actNewEdge->setEnabled((nodes->length() >= 2) && (boundaries->length() >= 1));
     actNewLabel->setEnabled(materials->length() >= 1);
 
-    findLyingEdgeNodes();
-    findNumberOfConnectedNodeEdges();
-    findCrossings();
+    if (currentPythonEngineAgros() && !currentPythonEngineAgros()->isRunning())
+    {
+        findLyingEdgeNodes();
+        findNumberOfConnectedNodeEdges();
+        findCrossings();
+    }
 }
 
 void Scene::doNewNode(const Point &point)

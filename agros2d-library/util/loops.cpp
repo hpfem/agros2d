@@ -26,6 +26,7 @@
 #include "sceneedge.h"
 #include "scenelabel.h"
 
+#include "pythonlab/pythonengine_agros.h"
 #include "util/global.h"
 #include "poly2tri.h"
 
@@ -758,6 +759,9 @@ QList<LoopsInfo::Triangle> LoopsInfo::triangulateLabel(const QList<Point> &polyl
 
 void LoopsInfo::processPolygonTriangles()
 {
+    if (currentPythonEngineAgros() && currentPythonEngineAgros()->isRunning())
+        return;
+
     m_polygonTriangles.clear();
 
     // TODO: rewrite to exceptions
