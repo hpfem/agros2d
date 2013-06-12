@@ -387,7 +387,7 @@ void Scene::removeBoundary(SceneBoundary *boundary)
     boundaries->remove(boundary);
     // delete boundary;
 
-    emit invalidated();
+    if (!currentPythonEngine()->isRunning()) emit invalidated();
 }
 
 void Scene::setBoundary(SceneBoundary *boundary)
@@ -420,7 +420,7 @@ void Scene::removeMaterial(SceneMaterial *material)
 
     // delete material;
 
-    emit invalidated();
+    if (!currentPythonEngine()->isRunning()) emit invalidated();
 }
 
 void Scene::setMaterial(SceneMaterial *material)
@@ -571,7 +571,7 @@ void Scene::deleteSelected()
 
     m_undoStack->endMacro();
 
-    emit invalidated();
+    if (!currentPythonEngine()->isRunning()) emit invalidated();
 }
 
 int Scene::selectedCount()
@@ -852,7 +852,7 @@ void Scene::transform(QString name, SceneTransformMode mode, const Point &point,
     if(!okNodes || !okEdges)
         nodes->setSelected(false);
 
-    emit invalidated();
+    if (!currentPythonEngine()->isRunning()) emit invalidated();
 }
 
 void Scene::transformTranslate(const Point &point, bool copy)
