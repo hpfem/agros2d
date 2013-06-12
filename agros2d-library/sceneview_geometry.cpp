@@ -25,6 +25,7 @@
 #include "util/constants.h"
 #include "logview.h"
 
+#include "pythonlab/pythonengine_agros.h"
 #include "scene.h"
 #include "hermes2d/problem.h"
 
@@ -204,6 +205,10 @@ void SceneViewPreprocessor::clear()
 
 void SceneViewPreprocessor::doSceneGeometryModeSet(QAction *action)
 {
+    // disable during script running
+    if (currentPythonEngineAgros()->isRunning())
+        return;
+
     if (actOperateOnNodes->isChecked())
         m_sceneMode = SceneGeometryMode_OperateOnNodes;
     else if (actOperateOnEdges->isChecked())
@@ -1004,7 +1009,7 @@ void SceneViewPreprocessor::paintGeometry()
             Point center = edge->center();
             double radius = edge->radius();
             double startAngle = atan2(center.y - edge->nodeStart()->point().y,
-                                          center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
+                                      center.x - edge->nodeStart()->point().x) / M_PI*180.0 - 180.0;
 
             drawArc(center, radius, startAngle, edge->angle());
         }
@@ -1037,8 +1042,6 @@ void SceneViewPreprocessor::paintGeometry()
         bool isError = false;
         if ((node->isSelected()) || (node->isHighlighted()) || (isError = node->isError()) )
         {
-
-
             if (isError)
             {
                 glColor3d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorCrossedRed).toInt() / 255.0,
@@ -1109,15 +1112,19 @@ void SceneViewPreprocessor::paintGeometry()
         if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
         {
             double radius = sqrt(label->area()/M_PI);
-            glColor3d(0, 0.95, 0.9);
-
-            glLineWidth(1.0);
-            glBegin(GL_LINE_LOOP);
-            for (int i = 0; i<360; i = i + 10)
+            if (radius > 0)
             {
-                glVertex2d(label->point().x + radius*cos(i/180.0*M_PI), label->point().y + radius*sin(i/180.0*M_PI));
+                glColor3d(0, 0.95, 0.9);
+
+                glLineWidth(1.0);
+                glBegin(GL_LINE_LOOP);
+                for (int i = 0; i<360; i = i + 10)
+                {
+                    glVertex2d(label->point().x + radius*fastcos(i/180.0*M_PI),
+                               label->point().y + radius*fastsin(i/180.0*M_PI));
+                }
+                glEnd();
             }
-            glEnd();
         }
     }
 

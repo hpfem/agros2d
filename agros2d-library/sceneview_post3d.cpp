@@ -361,7 +361,6 @@ void SceneViewPost3D::paintScalarField3D()
                 drawArc(center, radius, startAngle, edge->angle());
             }
 
-            glDisable(GL_LINE_STIPPLE);
             glLineWidth(1.0);
         }
 

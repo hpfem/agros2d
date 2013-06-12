@@ -95,7 +95,8 @@ void SceneViewCommon::createFontTexture()
 {
     // rulers font
     // TODO: doesn't work on windows
-    // if (m_textureLabelRulersName != Agros2D::problem()->configView()->rulersFont || m_textureLabelRulersSize != Agros2D::problem()->configView()->rulersFontSize)
+    if (m_textureLabelRulersName != Agros2D::problem()->setting()->value(ProblemSetting::View_RulersFontFamily).toString()
+            || m_textureLabelRulersSize != Agros2D::problem()->setting()->value(ProblemSetting::View_RulersFontPointSize).toInt())
     {
         makeCurrent();
         if (glIsTexture(m_textureLabelRulers))
@@ -109,7 +110,8 @@ void SceneViewCommon::createFontTexture()
 
     // rulers font
     // TODO: doesn't work on windows
-    // if (m_textureLabelPostName != Agros2D::problem()->configView()->postFont || m_textureLabelPostSize != Agros2D::problem()->configView()->postFontSize)
+    if (m_textureLabelPostName != Agros2D::problem()->setting()->value(ProblemSetting::View_PostFontFamily).toString()
+            || m_textureLabelPostSize != Agros2D::problem()->setting()->value(ProblemSetting::View_PostFontPointSize).toInt())
     {
         makeCurrent();
         if (glIsTexture(m_textureLabelPost))

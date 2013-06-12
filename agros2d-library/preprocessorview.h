@@ -48,7 +48,9 @@ protected:
 private:
     SceneViewPreprocessor *m_sceneViewPreprocessor;
 
-    QTextEdit *txtView;
+    QTextEdit *txtViewNodes;
+    QTextEdit *txtViewEdges;
+    QTextEdit *txtViewLabels;
     QTreeWidget *trvWidget;
     QSplitter *splitter;
 

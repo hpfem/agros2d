@@ -101,8 +101,21 @@ void PreprocessorWidget::createMenu()
 
 void PreprocessorWidget::createControls()
 {
-    txtView = new QTextEdit(this);
-    txtView->setReadOnly(true);
+    txtViewNodes = new QTextEdit(this);
+    txtViewNodes->setReadOnly(true);
+    txtViewNodes->setVisible(false);
+    txtViewNodes->setText(tr("Tooltip_OperateOnNodes"));
+
+    txtViewEdges = new QTextEdit(this);
+    txtViewEdges->setReadOnly(true);
+    txtViewEdges->setVisible(false);
+    txtViewEdges->setText(tr("Tooltip_OperateOnEdges"));
+
+    txtViewLabels = new QTextEdit(this);
+    txtViewLabels->setReadOnly(true);
+    txtViewLabels->setVisible(false);
+    txtViewLabels->setText(tr("Tooltip_OperateOnLabels"));
+
     loadTooltip(SceneGeometryMode_OperateOnNodes);
 
     trvWidget = new QTreeWidget(this);
@@ -113,10 +126,18 @@ void PreprocessorWidget::createControls()
     trvWidget->setColumnWidth(0, 150);
     trvWidget->setIndentation(12);
 
+    QHBoxLayout *layoutView = new QHBoxLayout();
+    layoutView->addWidget(txtViewNodes);
+    layoutView->addWidget(txtViewEdges);
+    layoutView->addWidget(txtViewLabels);
+
+    QWidget *view = new QWidget();
+    view->setLayout(layoutView);
+
     splitter = new QSplitter(this);
     splitter->setOrientation(Qt::Vertical);
     splitter->addWidget(trvWidget);
-    splitter->addWidget(txtView);
+    splitter->addWidget(view);
 
     QVBoxLayout *layoutMain = new QVBoxLayout();
     layoutMain->addWidget(splitter);
@@ -302,18 +323,9 @@ void PreprocessorWidget::refresh()
 
 void PreprocessorWidget::loadTooltip(SceneGeometryMode sceneMode)
 {
-    switch (sceneMode)
-    {
-    case SceneGeometryMode_OperateOnNodes:
-        txtView->setText(tr("Tooltip_OperateOnNodes"));
-        break;
-    case SceneGeometryMode_OperateOnEdges:
-        txtView->setText(tr("Tooltip_OperateOnEdges"));
-        break;
-    case SceneGeometryMode_OperateOnLabels:
-        txtView->setText(tr("Tooltip_OperateOnLabels"));
-        break;
-    }
+    txtViewNodes->setVisible(sceneMode == SceneGeometryMode_OperateOnNodes);
+    txtViewEdges->setVisible(sceneMode == SceneGeometryMode_OperateOnEdges);
+    txtViewLabels->setVisible(sceneMode == SceneGeometryMode_OperateOnLabels);
 }
 
 void PreprocessorWidget::doContextMenu(const QPoint &pos)

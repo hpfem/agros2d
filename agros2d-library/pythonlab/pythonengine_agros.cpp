@@ -136,7 +136,7 @@ void PythonLabAgros::scriptFinish()
         disconnect(Agros2D::log(), SIGNAL(errorMsg(QString, QString, bool)), this, SLOT(printError(QString, QString, bool)));
         disconnect(Agros2D::log(), SIGNAL(warningMsg(QString, QString, bool)), this, SLOT(printWarning(QString, QString, bool)));
         disconnect(Agros2D::log(), SIGNAL(debugMsg(QString, QString, bool)), this, SLOT(printDebug(QString, QString, bool)));
-    }
+    }      
 }
 
 void PythonLabAgros::printMessage(const QString &module, const QString &message, bool escaped)
