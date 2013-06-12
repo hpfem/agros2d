@@ -196,7 +196,8 @@ void FieldWidget::createContent()
     txtNonlinearSteps->setMinimum(1);
     txtNonlinearSteps->setMaximum(100);
     txtNonlinearSteps->setValue(m_fieldInfo->defaultValue(FieldInfo::NonlinearSteps).toInt());
-    lblNonlinearTolerance = new QLabel(tr("Tolerance:"));
+//    lblNonlinearTolerance = new QLabel(tr("Tolerance:"));
+    lblNonlinearTolerance = new QLabel(tr("is at most:"));
     txtNonlinearTolerance = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::NonlinearTolerance).toDouble(), true);
     txtNonlinearTolerance->setBottom(0.0);
 
@@ -209,15 +210,15 @@ void FieldWidget::createContent()
     chkNewtonReuseJacobian = new QCheckBox(tr("Reuse Jacobian if possible"));
     connect(chkNewtonReuseJacobian, SIGNAL(toggled(bool)), this, SLOT(doNewtonReuseJacobian(bool)));
 
-    lblNewtonSufficientImprovementFactorForJacobianReuse = new QLabel(tr("Sufficient improvement factor Jacobian:"));;
+    lblNewtonSufficientImprovementFactorForJacobianReuse = new QLabel(tr("Reuse Jacobian only if the ratio of new and old residual is at most:"));;
     txtNewtonSufficientImprovementFactorForJacobianReuse = new LineEditDouble(0, true);
-    lblNewtonSufficientImprovementFactor = new QLabel(tr("Sufficient improvement factor:"));;
+    lblNewtonSufficientImprovementFactor = new QLabel(tr("Use maximal damping such that the ratio of new and old residual is at most:"));;
     txtNewtonSufficientImprovementFactor = new LineEditDouble(0, true);
-    lblNewtonMaximumStepsWithReusedJacobian = new QLabel(tr("Max. steps with reused Jacobian:"));
+    lblNewtonMaximumStepsWithReusedJacobian = new QLabel(tr("Maximal number of steps with the same Jacobian:"));
     txtNewtonMaximumStepsWithReusedJacobian = new QSpinBox(this);
     txtNewtonMaximumStepsWithReusedJacobian->setMinimum(0);
     txtNewtonMaximumStepsWithReusedJacobian->setMaximum(100);
-    lblNewtonDampingNumberToIncrease = new QLabel(tr("Steps to increase damping factor:"));
+    lblNewtonDampingNumberToIncrease = new QLabel(tr("Minimal number of steps done before the damping factor increased again:"));
     txtNewtonDampingNumberToIncrease = new QSpinBox(this);
     txtNewtonDampingNumberToIncrease->setMinimum(1);
     txtNewtonDampingNumberToIncrease->setMaximum(5);
@@ -308,33 +309,59 @@ void FieldWidget::createContent()
 
     // linearity
     QGridLayout *layoutSolver = new QGridLayout();
-    layoutSolver->setColumnMinimumWidth(0, columnMinimumWidth());
-    layoutSolver->setColumnStretch(1, 1);
-    layoutSolver->addWidget(lblNonlinearConvergence, 1, 0);
-    layoutSolver->addWidget(cmbNonlinearConvergenceMeasurement, 1, 1);
-    layoutSolver->addWidget(lblNonlinearTolerance, 2, 0);
-    layoutSolver->addWidget(txtNonlinearTolerance, 2, 1);
-    layoutSolver->addWidget(lblNonlinearSteps, 3, 0);
-    layoutSolver->addWidget(txtNonlinearSteps, 3, 1);
-    layoutSolver->addWidget(lblNewtonDampingType, 4, 0);
-    layoutSolver->addWidget(cmbNewtonDampingType, 4, 1);
-    layoutSolver->addWidget(lblNewtonDampingCoeff, 5, 0);
-    layoutSolver->addWidget(txtNewtonDampingCoeff, 5, 1);
-    layoutSolver->addWidget(chkNewtonReuseJacobian, 6, 1, 1, 1);
-    layoutSolver->addWidget(lblNewtonSufficientImprovementFactorForJacobianReuse, 7, 0);
-    layoutSolver->addWidget(txtNewtonSufficientImprovementFactorForJacobianReuse, 7, 1);
-    layoutSolver->addWidget(lblNewtonMaximumStepsWithReusedJacobian, 8, 0);
-    layoutSolver->addWidget(txtNewtonMaximumStepsWithReusedJacobian, 8, 1);
-    layoutSolver->addWidget(lblNewtonDampingNumberToIncrease, 9, 0);
-    layoutSolver->addWidget(txtNewtonDampingNumberToIncrease, 9, 1);
-    layoutSolver->addWidget(lblNewtonSufficientImprovementFactor, 10, 0);
-    layoutSolver->addWidget(txtNewtonSufficientImprovementFactor, 10, 1);
-    layoutSolver->setRowStretch(50, 1);
+    //layoutSolver->setColumnMinimumWidth(0, columnMinimumWidth());
+
+    QGridLayout *layoutSolverConvergence = new QGridLayout();
+    //layoutSolverConvergence->setColumnMinimumWidth(0, columnMinimumWidth());
+
+    QGridLayout *layoutSolverDamping = new QGridLayout();
+    //layoutSolverDamping->setColumnMinimumWidth(0, columnMinimumWidth());
+
+    QGridLayout *layoutSolverReuse = new QGridLayout();
+
+//    layoutSolverConvergence->setColumnStretch(1,1);
+    //layoutSolverConvergence->addWidget(lblNonlinearConvergence, 1, 0);
+    layoutSolverConvergence->addWidget(new QLabel(tr("Maximum steps")), 1, 0);
+    //layoutSolverConvergence->addWidget(lblNonlinearSteps, 2, 1);
+    layoutSolverConvergence->addWidget(txtNonlinearSteps, 1, 1);
+    layoutSolverConvergence->addWidget(new QLabel(tr("and all the following are satisfied")), 1, 2);
+    layoutSolverConvergence->addWidget(cmbNonlinearConvergenceMeasurement, 2, 0);
+    layoutSolverConvergence->addWidget(lblNonlinearTolerance, 2, 1);
+    layoutSolverConvergence->addWidget(txtNonlinearTolerance, 2, 2);
+    //layoutSolverDamping->addWidget(lblNewtonDampingType, 1, 0);
+    //layoutSolverDamping->setColumnStretch(1, 1);
+    layoutSolverDamping->addWidget(cmbNewtonDampingType, 1, 0);
+    layoutSolverDamping->addWidget(lblNewtonDampingCoeff, 1, 1);
+    layoutSolverDamping->addWidget(txtNewtonDampingCoeff, 1, 2);
+    layoutSolverDamping->addWidget(lblNewtonDampingNumberToIncrease, 2, 0, 1, 2);
+    layoutSolverDamping->addWidget(txtNewtonDampingNumberToIncrease, 2, 2);
+    layoutSolverDamping->addWidget(lblNewtonSufficientImprovementFactor, 3, 0, 1, 2);
+    layoutSolverDamping->addWidget(txtNewtonSufficientImprovementFactor, 3, 2);
+
+    layoutSolverReuse->addWidget(chkNewtonReuseJacobian, 1, 0);
+    layoutSolverReuse->addWidget(lblNewtonSufficientImprovementFactorForJacobianReuse, 2, 0);
+    layoutSolverReuse->addWidget(txtNewtonSufficientImprovementFactorForJacobianReuse, 2, 1);
+    layoutSolverReuse->addWidget(lblNewtonMaximumStepsWithReusedJacobian, 3, 0);
+    layoutSolverReuse->addWidget(txtNewtonMaximumStepsWithReusedJacobian, 3, 1);
+    //layoutSolverReuse->setRowStretch(50, 1);
     // layoutLinearity->addWidget(chkPicardAndersonAcceleration, 7, 0, 1, 2);
     // layoutLinearity->addWidget(lblPicardAndersonBeta, 8, 0);
     // layoutLinearity->addWidget(txtPicardAndersonBeta, 8, 1);
     // layoutLinearity->addWidget(lblPicardAndersonNumberOfLastVectors, 9, 0);
     // layoutLinearity->addWidget(txtPicardAndersonNumberOfLastVectors, 9, 1);
+
+    QGroupBox *grpSolverConvergence = new QGroupBox(tr("Convergence"));
+    grpSolverConvergence->setLayout(layoutSolverConvergence);
+
+    QGroupBox *grpSolverDamping = new QGroupBox(tr("Damping"));
+    grpSolverDamping->setLayout(layoutSolverDamping);
+
+    QGroupBox *grpSolverReuse = new QGroupBox(tr("Jacobian reuse"));
+    grpSolverReuse->setLayout(layoutSolverReuse);
+
+    layoutSolver->addWidget(grpSolverConvergence);
+    layoutSolver->addWidget(grpSolverDamping);
+    layoutSolver->addWidget(grpSolverReuse);
 
     QWidget *widSolver = new QWidget(this);
     widSolver->setLayout(layoutSolver);
@@ -584,6 +611,11 @@ void FieldWidget::doNewtonDampingChanged(int index)
 {
     txtNewtonDampingCoeff->setEnabled(((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() == LinearityType_Newton) &&
                                       ((DampingType) cmbNewtonDampingType->itemData(index).toInt() != DampingType_Off));
+    txtNewtonDampingNumberToIncrease->setEnabled(((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() == LinearityType_Newton) &&
+                                                 ((DampingType) cmbNewtonDampingType->itemData(index).toInt() == DampingType_Automatic));
+    txtNewtonSufficientImprovementFactor->setEnabled(((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() == LinearityType_Newton) &&
+                                                     ((DampingType) cmbNewtonDampingType->itemData(index).toInt() == DampingType_Automatic));
+
 }
 
 void FieldWidget::doNewtonReuseJacobian(bool checked)
