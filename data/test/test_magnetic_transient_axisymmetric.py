@@ -10,7 +10,7 @@ problem.matrix_solver = "umfpack"
 problem.time_step_method = "fixed"
 problem.time_method_order = 2
 problem.time_total = 0.30
-problem.time_steps = 5
+problem.time_steps = 30
 
 # disable view
 agros2d.view.mesh.disable()
