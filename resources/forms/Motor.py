@@ -115,25 +115,25 @@ def geometry_stator_slots(N, A, B, C, D, E):
 
 def geometry_cooling_system(diameter, hole, angle, count):
 	for i in range(count):
-		geometry.add_circle(diameter / 2.0 * cos(angle * pi / 180.0 + i * 2*pi / count), diameter / 2.0 * sin(angle * pi / 180.0 + i * 2*pi / count), hole, materials = {"magnetic" : "Fe"})
+		geometry.add_circle(diameter / 2.0 * cos(angle * pi / 180.0 + i * 2*pi / count), diameter / 2.0 * sin(angle * pi / 180.0 + i * 2*pi / count), hole, materials = {"magnetic" : "Air"})
 
 # rotor
-geometry_rotor_slots(rotor_slots, 0.050, 0.040, 0.150, 0.030, 0.015)
+geometry_rotor_slots(rotor_slots, {{txtRotorSlotA_text}}, {{txtRotorSlotB_text}}, {{txtRotorSlotC_text}}, {{txtRotorSlotD_text}}, {{txtRotorSlotE_text}})
 geometry.add_label(1.1 * shaft_diameter / 2.0, 0.0, materials = {"magnetic" : "Fe"})
 
 # rotor cooling system
-geometry_cooling_system(0.700, 0.01, 0.0, 10)
-geometry_cooling_system(0.500, 0.01, 18.0, 10)
+geometry_cooling_system({{txtRotorCoolingSystemDiameter_text}}, {{txtRotorCoolingSystemHoleDiameter_text}}, {{txtRotorCoolingSystemAngle_text}}, {{txtRotorCoolingSystemCount_value}})
+# geometry_cooling_system(0.500, 0.01, 18.0, 10)
 
 # stator
-geometry_stator_slots(stator_slots, 0.060, 0.040, 0.050, 0.030, 0.015)
+geometry_stator_slots(stator_slots, {{txtStatorSlotA_text}}, {{txtStatorSlotB_text}}, {{txtStatorSlotC_text}}, {{txtStatorSlotD_text}}, {{txtStatorSlotE_text}})
 
 geometry.add_circle(0.0, 0.0, stator_diameter_outer / 2.0, boundaries = {"magnetic" : "A = 0"})
 geometry.add_label((stator_diameter_outer - 0.02 * stator_diameter_inner) / 2.0, 0.0, materials = {"magnetic" : "Fe"})
 
 # stator cooling system
-geometry_cooling_system(1.700, 0.01, 0.0, 10)
-geometry_cooling_system(1.620, 0.01, 18.0, 10)
+geometry_cooling_system({{txtStatorCoolingSystemDiameter_text}}, {{txtStatorCoolingSystemHoleDiameter_text}}, {{txtStatorCoolingSystemAngle_text}}, {{txtStatorCoolingSystemCount_value}})
+# geometry_cooling_system(1.620, 0.01, 18.0, 10)
 
 # shaft
 geometry.add_circle(0.0, 0.0, shaft_diameter / 2.0)

@@ -68,9 +68,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     if (Agros2D::configComputer()->showLogStdOut)
         logStdOut = new LogStdOut();
 
-    // FIXME: curve elements from script doesn't work
-    // Module::readMeshDirtyFix();
-
     createPythonEngine(new PythonEngineAgros());
 
     // temporary use 3/4 of max threads for PostHermes (linearizer)

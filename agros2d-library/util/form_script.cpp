@@ -32,6 +32,8 @@
 FormScript::FormScript(const QString &fileName, QWidget *parent)
     : FormInterface(parent), fileName(fileName), mainWidget(NULL)
 {
+    // setAttribute(Qt::WA_DeleteOnClose);
+
     actShow = new QAction(this);
     connect(actShow, SIGNAL(triggered()), this, SLOT(show()));
 
@@ -82,6 +84,8 @@ FormScript::FormScript(const QString &fileName, QWidget *parent)
     setLayout(layout);
 
     loadWidget(fileName);
+
+    resize(minimumSize());
 }
 
 void FormScript::loadWidget(const QString &fileName)
@@ -100,6 +104,7 @@ void FormScript::loadWidget(const QString &fileName)
     if (QFile::exists(fileName))
     {
         QUiLoader loader;
+        loader.setWorkingDirectory(QDir(datadir() + "/resources/forms"));
         QFile file(fileName);
         file.open(QFile::ReadOnly);
         mainWidget = loader.load(&file, this);
