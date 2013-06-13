@@ -317,7 +317,7 @@ cdef class __Field__:
             self.thisptr.setNewtonDampingNumberToIncrease(damping_number_to_increase)
 
     # sufficient improvement factor for Jacobian reuse
-    property sufficient_improvement_factor_for_Jacobian_reuse:
+    property sufficient_improvement_factor_for_jacobian_reuse:
         def __get__(self):
             return self.thisptr.getNewtonSufficientImprovementFactorForJacobianReuse()
         def __set__(self, sufficientImprovementFactorJacobian):
@@ -331,7 +331,7 @@ cdef class __Field__:
             self.thisptr.setNewtonSufficientImprovementFactor(sufficientImprovementFactor)
 
     # maximum steps with reused Jacobian
-    property maximum_steps_with_reused_Jacobian:
+    property maximum_steps_with_reused_jacobian:
         def __get__(self):
             return self.thisptr.getNewtonMaximumStepsWithReusedJacobian()
         def __set__(self, maximumStepsWithReusedJacobian):
