@@ -197,7 +197,7 @@ void FieldWidget::createContent()
     txtNonlinearSteps->setMaximum(100);
     txtNonlinearSteps->setValue(m_fieldInfo->defaultValue(FieldInfo::NonlinearSteps).toInt());
 //    lblNonlinearTolerance = new QLabel(tr("Tolerance:"));
-    lblNonlinearTolerance = new QLabel(tr("is at most:"));
+    lblNonlinearTolerance = new QLabel(tr("at most:"));
     txtNonlinearTolerance = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::NonlinearTolerance).toDouble(), true);
     txtNonlinearTolerance->setBottom(0.0);
 
@@ -210,15 +210,15 @@ void FieldWidget::createContent()
     chkNewtonReuseJacobian = new QCheckBox(tr("Reuse Jacobian if possible"));
     connect(chkNewtonReuseJacobian, SIGNAL(toggled(bool)), this, SLOT(doNewtonReuseJacobian(bool)));
 
-    lblNewtonSufficientImprovementFactorForJacobianReuse = new QLabel(tr("Reuse Jacobian only if the ratio of new and old residual is at most:"));;
+    lblNewtonSufficientImprovementFactorForJacobianReuse = new QLabel(tr("New/old residual ratio max. for Jacobian reuse"));;
     txtNewtonSufficientImprovementFactorForJacobianReuse = new LineEditDouble(0, true);
-    lblNewtonSufficientImprovementFactor = new QLabel(tr("Use maximal damping such that the ratio of new and old residual is at most:"));;
+    lblNewtonSufficientImprovementFactor = new QLabel(tr("New/old residual ratio max. for damping search"));;
     txtNewtonSufficientImprovementFactor = new LineEditDouble(0, true);
-    lblNewtonMaximumStepsWithReusedJacobian = new QLabel(tr("Maximal number of steps with the same Jacobian:"));
+    lblNewtonMaximumStepsWithReusedJacobian = new QLabel(tr("Max. number of steps with the same Jacobian:"));
     txtNewtonMaximumStepsWithReusedJacobian = new QSpinBox(this);
     txtNewtonMaximumStepsWithReusedJacobian->setMinimum(0);
     txtNewtonMaximumStepsWithReusedJacobian->setMaximum(100);
-    lblNewtonDampingNumberToIncrease = new QLabel(tr("Minimal number of steps done before the damping factor increased again:"));
+    lblNewtonDampingNumberToIncrease = new QLabel(tr("Num. steps before damping factor increased:"));
     txtNewtonDampingNumberToIncrease = new QSpinBox(this);
     txtNewtonDampingNumberToIncrease->setMinimum(1);
     txtNewtonDampingNumberToIncrease->setMaximum(5);
@@ -319,12 +319,12 @@ void FieldWidget::createContent()
 
     QGridLayout *layoutSolverReuse = new QGridLayout();
 
-//    layoutSolverConvergence->setColumnStretch(1,1);
+    //layoutSolverConvergence->setColumnStretch(1,2);
     //layoutSolverConvergence->addWidget(lblNonlinearConvergence, 1, 0);
     layoutSolverConvergence->addWidget(new QLabel(tr("Maximum steps")), 1, 0);
     //layoutSolverConvergence->addWidget(lblNonlinearSteps, 2, 1);
     layoutSolverConvergence->addWidget(txtNonlinearSteps, 1, 1);
-    layoutSolverConvergence->addWidget(new QLabel(tr("and all the following are satisfied")), 1, 2);
+    //layoutSolverConvergence->addWidget(new QLabel(tr("and all the following are satisfied")), 1, 2);
     layoutSolverConvergence->addWidget(cmbNonlinearConvergenceMeasurement, 2, 0);
     layoutSolverConvergence->addWidget(lblNonlinearTolerance, 2, 1);
     layoutSolverConvergence->addWidget(txtNonlinearTolerance, 2, 2);
