@@ -104,4 +104,4 @@ execfile("test_adaptivity_acoustic.py")
 execfile("test_adaptivity_electrostatic.py")
 
 # scripting
-# execfile("test_scripting.py")
+execfile("test_script.py")

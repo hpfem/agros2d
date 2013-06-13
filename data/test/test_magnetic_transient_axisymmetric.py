@@ -1,4 +1,6 @@
 import agros2d
+import time as timer
+start_time = timer.time()
 
 # problem
 problem = agros2d.problem(clear = True)
@@ -8,15 +10,11 @@ problem.matrix_solver = "umfpack"
 problem.time_step_method = "fixed"
 problem.time_method_order = 2
 problem.time_total = 0.30
-problem.time_steps = 50
+problem.time_steps = 5
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 magnetic = agros2d.field("magnetic")
@@ -85,5 +83,6 @@ testI = agros2d.test("Current - total", volume["Ir"], 965.8993026017961)
 # surface integral
 # surface = magnetic.surface_integrals([0])
 
-print("Test: Magnetic transient - axisymmetric: " + str(point and testA and testB and testBx and testBy and testH and testHx and testHy and testwm and testpj 
+elapsed_time = timer.time() - start_time
+print("Test: Magnetic transient - axisymmetric ({0}): ".format(round(elapsed_time, 3)) + str(point and testA and testB and testBx and testBy and testH and testHx and testHy and testwm and testpj 
 and testJer and testJitr and testJr and testWm and testPj and testIer and testIit and testI))

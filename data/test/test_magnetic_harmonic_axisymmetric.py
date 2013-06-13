@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -8,12 +10,8 @@ problem.matrix_solver = "umfpack"
 problem.frequency = 100
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 magnetic = agros2d.field("magnetic")
@@ -92,11 +90,13 @@ testPj = agros2d.test("Losses", volume["Pj"], 0.228758)
 testFLr = agros2d.test("Lorentz force - r", volume["Flx"], -4.018686e-4)
 testFLz = agros2d.test("Lorentz force - z", volume["Fly"], -1.233904e-5)
 
-print("Test: Magnetic harmonic - axisymmetric: " + str(testA and testA_real and testA_imag
-                                                       and testB and testBr_real and testBr_imag and testBz_real and testBz_imag
-                                                       and testH and testHr_real and testHr_imag and testHz_real and testHz_imag
-                                                       and testJit_real and testJit_imag and testJ_real and testJ_imag
-                                                       and testFr and testFz 
-                                                       and testIe_real and testIe_imag and testIit_real and testIit_imag and testI_real and testI_imag
-                                                       and testpj and testwm and testWm and testPj
-                                                       and testFLr and testFLr))
+result = str(testA and testA_real and testA_imag and testB and testBr_real and testBr_imag and testBz_real and testBz_imag
+             and testH and testHr_real and testHr_imag and testHz_real and testHz_imag
+             and testJit_real and testJit_imag and testJ_real and testJ_imag
+             and testFr and testFz 
+             and testIe_real and testIe_imag and testIit_real and testIit_imag and testI_real and testI_imag
+             and testpj and testwm and testWm and testPj
+             and testFLr and testFLr)
+
+elapsed_time = time() - start_time
+print("Test: Magnetic harmonic - axisymmetric ({0}): ".format(round(elapsed_time, 3)) + result)

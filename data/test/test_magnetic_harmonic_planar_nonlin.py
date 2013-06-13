@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -8,12 +10,8 @@ problem.matrix_solver = "umfpack"
 problem.frequency = 50
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 magnetic = agros2d.field("magnetic")
@@ -57,4 +55,5 @@ testJ_imag = agros2d.test("Current density - total - imag", point["Ji"], -3.1123
 volume = magnetic.volume_integrals([2])
 testWm = agros2d.test("Energy", volume["Wm"], 6.219017e-4)
 
-print("Test: Magnetic harmonic - nonlin - planar: " + str(point and testmur and testB and testJ_real and testJ_imag and testWm))
+elapsed_time = time() - start_time
+print("Test: Magnetic harmonic - nonlin - planar ({0}): ".format(round(elapsed_time, 3)) + str(point and testmur and testB and testJ_real and testJ_imag and testWm))

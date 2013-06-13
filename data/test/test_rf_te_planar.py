@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -8,12 +10,8 @@ problem.matrix_solver = "umfpack"
 problem.frequency = 1.6e10
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 rf = agros2d.field("rf_te")
@@ -87,7 +85,8 @@ testNy = agros2d.test("Poynting vector - y", point["Ny"], -3.138616, 1)
 # surface_integrals = rf.surface_integrals([1, 12])
 # testQ = agros2d.test("Electric charge", surface["Q"], -1.291778e-9)
 
-print("Test: RF TE - planar: " + str(
+elapsed_time = time() - start_time
+print("Test: RF TE - planar ({0}): ".format(round(elapsed_time, 3)) + str(
 testE and testE_real and testE_imag and 
 testB and testBx_real and testBx_imag and testBy_real and testBy_imag and
 testH and testHx_real and testHx_imag and testHy_real and testHy_imag and testNx and testNy))

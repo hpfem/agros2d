@@ -1,6 +1,8 @@
 # based on test_coupling_2_axisymmetric
 
 import agros2d
+from time import time
+start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -9,8 +11,9 @@ problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 problem.frequency = 50
 
-# palette quality
-agros2d.view.post2d.scalar_palette_quality = "extremely_coarse"
+# disable view
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 heat = agros2d.field("heat")
@@ -81,4 +84,5 @@ testA = agros2d.test("Magnetic - Vector potential", local_values_magnetic["A"], 
 local_values_heat = heat.local_values(0.2956, 0.2190)
 testT = agros2d.test("Heat transfer - Temperature", local_values_heat["T"], 975.749917)
 
-print("Test: Coupling 2 - axisymmetric, mag harm + heat steady, both lin, weak: " + str(testA and testT))
+elapsed_time = time() - start_time
+print("Test: Coupling 2 - axisymmetric, mag harm + heat steady, both lin, weak ({0}): ".format(round(elapsed_time, 3)) + str(testA and testT))

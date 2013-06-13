@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -11,12 +13,9 @@ problem.time_steps = 6
 problem.time_total = 60
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
+
 # fields
 current = agros2d.field("current")
 current.analysis_type = "steadystate"
@@ -87,4 +86,5 @@ testT2 = agros2d.test("Heat - Temperature 2", local_values_heat["T"], 25.002605)
 volume_integral_heat = heat.volume_integrals([0, 1, 2, 3, 4])
 testTvol = agros2d.test("Heat - Temperature volume", volume_integral_heat["T"], 8.498177)
 
-print("Test: Coupling 4 - transient - planar: " + str(testV and testJ and testT1 and testT2 and testTvol)) #testf
+elapsed_time = time() - start_time
+print("Test: Coupling 4 - transient - planar ({0}): ".format(round(elapsed_time, 3)) + str(testV and testJ and testT1 and testT2 and testTvol)) #testf

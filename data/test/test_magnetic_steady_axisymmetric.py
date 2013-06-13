@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -8,12 +10,8 @@ problem.matrix_solver = "umfpack"
 problem.frequency = 100
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 magnetic = agros2d.field("magnetic")
@@ -103,9 +101,8 @@ testFLz = agros2d.test("Lorentz force - z", volume["Fly"], -5.288991) # TODO: Fl
 surface = magnetic.surface_integrals([12, 13, 14, 15])
 #testFz = agros2d.test("Maxwell force - z", surface["Fy"], 0.368232)
 
-print("Test: Magnetic steady state - axisymmetric: " + str(point and testA
-                                                           and testB and testBr and testBz
-                                                           and testH and testHr and testHz
-                                                           and testFr_real and testFz_real
-                                                           and testwm and testWm
-                                                           and testFLr and testFLz))
+result = str(testA and testB and testBr and testBz and testH and testHr and testHz
+             and testFr_real and testFz_real and testwm and testWm and testFLr and testFLz)
+
+elapsed_time = time() - start_time
+print("Test: Magnetic steady state - axisymmetric ({0}): ".format(round(elapsed_time, 3)) + result)

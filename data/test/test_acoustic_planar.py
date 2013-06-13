@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -8,12 +10,8 @@ problem.matrix_solver = "umfpack"
 problem.frequency = 2000
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 acoustic = agros2d.field("acoustic")
@@ -72,4 +70,6 @@ surface = acoustic.surface_integrals([0])
 # testPs_imag = agros2d.test("Pressure - imag", surface["p_imag"], 4.437581e-5)
 
 # print("Test: Acoustic - planar: " + str(testp and testp_real and testp_imag and testSPL and testPv_real and testPv_imag and testPs_real and testPs_imag))
-print("Test: Acoustic - planar: " + str(testp and testp_real and testp_imag))
+
+elapsed_time = time() - start_time
+print("Test: Acoustic - planar ({0}): ".format(round(elapsed_time, 3)) + str(testp and testp_real and testp_imag))

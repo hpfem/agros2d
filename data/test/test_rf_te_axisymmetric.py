@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # problem
 problem = agros2d.problem(clear = True)
@@ -8,12 +10,8 @@ problem.matrix_solver = "umfpack"
 problem.frequency = 1e+09
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 # rf
@@ -83,8 +81,9 @@ testBz_imag = agros2d.test("Magnetic flux density z component - imag", point["Bi
 
 testNr = agros2d.test("Poynting vector r component", point["Nr"], 1.98583e-4)
 testNz = agros2d.test("Poynting vector z component", point["Nz"], 2.47866e-4)
-	
-print("Test: RF TE - axisymmetric: " + str(testE and testEr and testEi and testD and 
+
+elapsed_time = time() - start_time
+print("Test: RF TE - axisymmetric ({0}): ".format(round(elapsed_time, 3)) + str(testE and testEr and testEi and testD and 
   testDr and testDi and testH and testHr_real and testHr_imag and testHz_real and testHz_imag
   and testB and testBr_real and testBr_imag and testBz_real and testBz_imag
   and testNr and testNz))

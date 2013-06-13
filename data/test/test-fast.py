@@ -5,7 +5,6 @@
 # 107 sekund - release verze, baterka, nova cache, tccache (18.4.2013)
 
 import time
-
 start = time.time()
 
 # electrostatic
@@ -65,8 +64,7 @@ execfile("test_adaptivity_acoustic.py")
 execfile("test_adaptivity_electrostatic.py")
 
 # scripting
-# execfile("test_scripting.py")
+execfile("test_script.py")
 
 stop = time.time()
-
 print("\nTotal time: " + str(stop - start))

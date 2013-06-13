@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -7,12 +9,8 @@ problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 heat = agros2d.field("heat")
@@ -66,4 +64,5 @@ testTavg = agros2d.test("Temperature", volume["T"], 0.616202)
 surface = heat.surface_integrals([1])
 testFlux = agros2d.test("Heat flux", surface["f"], 199.0004)
 
-print("Test: Heat transfer steady state - axisymmetric: " + str(testT and testG and testGr and testGz and testF and testFr and testFz and testTavg and testFlux))
+elapsed_time = time() - start_time
+print("Test: Heat transfer steady state - axisymmetric ({0}): ".format(round(elapsed_time, 3)) + str(testT and testG and testGr and testGz and testF and testFr and testFz and testTavg and testFlux))

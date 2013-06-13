@@ -1,4 +1,6 @@
 import agros2d
+import time as timer
+start_time = timer.time()
 
 # problem
 problem = agros2d.problem(clear = True)
@@ -12,12 +14,8 @@ problem.time_total = 0.001
 problem.time_steps = 250
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 # acoustic
@@ -66,4 +64,5 @@ point = acoustic.local_values(0.042132, -0.072959)
 testp = agros2d.test("Acoustic pressure", point["pr"], 0.200436)
 # testSPL = agros2d.test("Acoustic sound level", point["SPL"], 77.055706)
 
-print("Test: Acoustic - transient - planar: " + str(testp))
+elapsed_time = timer.time() - start_time
+print("Test: Acoustic - transient - planar ({0}): ".format(round(elapsed_time, 3)) + str(testp))

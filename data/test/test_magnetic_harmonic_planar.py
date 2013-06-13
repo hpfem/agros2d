@@ -1,4 +1,7 @@
 import agros2d
+from time import time
+start_time = time()
+
 
 # model
 problem = agros2d.problem(clear = True)
@@ -8,12 +11,8 @@ problem.matrix_solver = "umfpack"
 problem.frequency = 50
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 magnetic = agros2d.field("magnetic")
@@ -21,7 +20,6 @@ magnetic.analysis_type = "harmonic"
 magnetic.number_of_refinements = 1
 magnetic.polynomial_order = 3
 magnetic.linearity_type = "linear"
-
 
 magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
 
@@ -64,7 +62,6 @@ problem.solve()
 
 # point value
 point = magnetic.local_values(0.012448, 0.016473)
-#print(point)
 testA = agros2d.test("Magnetic potential", point["A"], 0.001087)
 testA_real = agros2d.test("Magnetic potential - real", point["Ar"], 3.391642e-4)
 testA_imag = agros2d.test("Magnetic potential - imag", point["Ai"], -0.001033)
@@ -100,11 +97,13 @@ testPj = agros2d.test("Losses", volume["Pj"], 90.542962)
 testFLx = agros2d.test("Lorentz force - x", volume["Flx"], -11.228229)
 testFLy = agros2d.test("Lorentz force - y", volume["Fly"], -4.995809)
 
-print("Test: Magnetic harmonic - planar: " + str(testA and testA_real and testA_imag
-                                                 and testB and testBx_real and testBx_imag and testBy_real and testBy_imag
-                                                 and testH and testHx_real and testHy_real and testHx_imag and testHy_imag
-                                                 and testJit_real and testJit_imag and testJ_real and testJ_imag
-                                                 and testFx and testFy
-                                                 and testIe_real and testIe_imag and testIit_real and testIit_imag and testIr and testIi
-                                                 and testwm and testpj and testWm and testPj
-                                                 and testFLx and testFLy))
+result = str(testA and testA_real and testA_imag and testB and testBx_real and testBx_imag and testBy_real and testBy_imag
+             and testH and testHx_real and testHy_real and testHx_imag and testHy_imag
+             and testJit_real and testJit_imag and testJ_real and testJ_imag
+             and testFx and testFy
+             and testIe_real and testIe_imag and testIit_real and testIit_imag and testIr and testIi
+             and testwm and testpj and testWm and testPj
+             and testFLx and testFLy)
+
+elapsed_time = time() - start_time
+print("Test: Magnetic harmonic - planar ({0}): ".format(round(elapsed_time, 3)) + result)

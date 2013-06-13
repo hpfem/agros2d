@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # problem
 problem = agros2d.problem(clear = True)
@@ -8,12 +10,8 @@ problem.matrix_solver = "umfpack"
 problem.frequency = 5000
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 # acoustic
@@ -55,4 +53,6 @@ point1 = acoustic.local_values(7.544e-3, -0.145)
 test1 = agros2d.test("Acoustic pressure", point1["p"], 7.481e-1)
 point2 = acoustic.local_values(6.994e-2, 1.894e-2)
 test2 = agros2d.test("Acoustic pressure", point2["p"], 2.889e-1)
-print("Test: Adaptivity - acoustic: " + str(test1 and test2))
+
+elapsed_time = time() - start_time
+print("Test: Adaptivity - acoustic ({0}): ".format(round(elapsed_time, 3)) + str(test1 and test2))
