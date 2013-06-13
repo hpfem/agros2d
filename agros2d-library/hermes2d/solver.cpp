@@ -270,6 +270,26 @@ HermesSolverContainer<Scalar>* HermesSolverContainer<Scalar>::factory(Block* blo
     return solver;
 }
 
+template <typename Scalar>
+void HermesSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVector,
+                                                            Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
+                                                            Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions)
+{
+    if (solutions.empty())
+    {
+        int ndof = Space<Scalar>::get_num_dofs(spaces);
+        memset(solutionVector, 0, ndof*sizeof(Scalar));
+
+        solutionVector = NULL;
+    }
+    else
+    {
+        OGProjection<double> ogProjection;
+        ogProjection.project_global(spaces,
+                                    solutions,
+                                    solutionVector, this->m_block->projNormTypeVector());
+    }
+}
 
 template <typename Scalar>
 LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block) : HermesSolverContainer<Scalar>(block)
@@ -300,9 +320,9 @@ void LinearSolverContainer<Scalar>::matrixUnchangedDueToBDF(bool unchanged)
 }
 
 template <typename Scalar>
-void LinearSolverContainer<Scalar>::solve(Scalar* solutionVector)
+void LinearSolverContainer<Scalar>::solve(Scalar* previousSolutionVector)
 {
-    m_linearSolver->solve(solutionVector);
+    m_linearSolver->solve(previousSolutionVector);
 
     this->m_slnVector = m_linearSolver->get_sln_vector();
 }
@@ -354,29 +374,10 @@ NewtonSolverContainer<Scalar>::~NewtonSolverContainer()
 }
 
 template <typename Scalar>
-void NewtonSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVector,
-                                                            Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
-                                                            Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions)
-{
-    if (solutions.empty())
-    {
-        int ndof = Space<Scalar>::get_num_dofs(spaces);
-        memset(solutionVector, 0, ndof*sizeof(Scalar));
-    }
-    else
-    {
-        OGProjection<double> ogProjection;
-        ogProjection.project_global(spaces,
-                                    solutions,
-                                    solutionVector, this->m_block->projNormTypeVector());
-    }
-}
-
-template <typename Scalar>
-void NewtonSolverContainer<Scalar>::solve(Scalar* solutionVector)
+void NewtonSolverContainer<Scalar>::solve(Scalar* previousSolutionVector)
 {
     m_newtonSolver->clearSteps();
-    m_newtonSolver->solve(solutionVector);
+    m_newtonSolver->solve(previousSolutionVector);
     this->m_slnVector = m_newtonSolver->get_sln_vector();
 }
 
@@ -408,28 +409,9 @@ PicardSolverContainer<Scalar>::~PicardSolverContainer()
 }
 
 template <typename Scalar>
-void PicardSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVector,
-                                                            Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
-                                                            Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions)
+void PicardSolverContainer<Scalar>::solve(Scalar* previousSolutionVector)
 {
-    if (solutions.empty())
-    {
-        int ndof = Space<Scalar>::get_num_dofs(spaces);
-        memset(solutionVector, 0, ndof*sizeof(Scalar));
-    }
-    else
-    {
-        OGProjection<double> ogProjection;
-        ogProjection.project_global(spaces,
-                                    solutions,
-                                    solutionVector, this->m_block->projNormTypeVector());
-    }
-}
-
-template <typename Scalar>
-void PicardSolverContainer<Scalar>::solve(Scalar* solutionVector)
-{
-    m_picardSolver->solve(solutionVector);
+    m_picardSolver->solve(previousSolutionVector);
     this->m_slnVector = m_picardSolver->get_sln_vector();
 }
 
@@ -585,15 +567,18 @@ void ProblemSolver<Scalar>::clearActualSpaces()
 }
 
 template <typename Scalar>
-Scalar *ProblemSolver<Scalar>::solveOneProblem(Scalar* initialSolutionVector,
-                                               Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
+Scalar *ProblemSolver<Scalar>::solveOneProblem(Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
                                                int adaptivityStep,
                                                Hermes::vector<MeshFunctionSharedPtr<Scalar> > previousSolution)
 {
+    Scalar* initialSolutionVector = new Scalar[Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaces)];
+
     m_hermesSolverContainer->projectPreviousSolution(initialSolutionVector, spaces, previousSolution);
     m_hermesSolverContainer->setMatrixRhsOutput(m_solverCode, adaptivityStep);
 
     m_hermesSolverContainer->solve(initialSolutionVector);
+    if (initialSolutionVector)
+        delete [] initialSolutionVector;
 
     // linear solver statistics
     LinearMatrixSolver<Scalar> *linearSolver = m_hermesSolverContainer->linearSolver();
@@ -642,14 +627,10 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     m_block->weakForm()->set_current_time(Agros2D::problem()->actualTime());
     m_block->weakForm()->updateExtField();
 
-    // TODO: remove for linear solver
-    Scalar *initialSolutionVector;
     try
     {
-        initialSolutionVector = new Scalar[ndof];
-        Scalar *solutionVector = solveOneProblem(initialSolutionVector, actualSpaces(), adaptivityStep,
+        Scalar *solutionVector = solveOneProblem(actualSpaces(), adaptivityStep,
                                                  previousTSMultiSolutionArray.solutions());
-        delete [] initialSolutionVector;
 
         // output
         Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions = createSolutions<Scalar>(spacesMeshes(actualSpaces()));
@@ -667,8 +648,6 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     }
     catch (AgrosSolverException e)
     {
-        delete [] initialSolutionVector;
-
         throw AgrosSolverException(QObject::tr("Solver failed: %1").arg(e.toString()));
     }
 }
@@ -714,9 +693,7 @@ TimeStepInfo ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
     Hermes::vector<MeshFunctionSharedPtr<Scalar> > timeReferenceSolution;
     if(timeStep > 0)
         timeReferenceSolution = referenceCalculation.solutions();
-    Scalar *initialSolutionVector = new Scalar[Hermes::Hermes2D::Space<Scalar>::get_num_dofs(actualSpaces())];
-    Scalar *solutionVector = solveOneProblem(initialSolutionVector, actualSpaces(), adaptivityStep, timeReferenceSolution);
-    delete [] initialSolutionVector;
+    Scalar *solutionVector = solveOneProblem(actualSpaces(), adaptivityStep, timeReferenceSolution);
 
     Hermes::vector<MeshSharedPtr> meshes = spacesMeshes(actualSpaces());
     Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions = createSolutions<Scalar>(meshes);
@@ -927,15 +904,11 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(spacesRef, Agros2D::problem()->actualTime());
 
     // solve reference problem
-    // TODO: posledni parametr: predchozi reseni pro projekci!!
-    // TODO: remove for linear solver
-    Scalar *initialSolutionVector = new Scalar[Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spacesRef)];
 
     // in adaptivity, in each step we use different spaces. This should be done some other way
     m_hermesSolverContainer->setTableSpaces()->set_spaces(spacesRef);
-    Scalar *solutionVector = solveOneProblem(initialSolutionVector, spacesRef, adaptivityStep,
+    Scalar *solutionVector = solveOneProblem(spacesRef, adaptivityStep,
                                              Hermes::vector<MeshFunctionSharedPtr<Scalar> >());
-    delete [] initialSolutionVector;
 
     // output reference solution
     Hermes::vector<MeshSharedPtr> meshesRef = spacesMeshes(spacesRef);

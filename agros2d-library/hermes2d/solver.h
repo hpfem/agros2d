@@ -80,10 +80,11 @@ public:
     HermesSolverContainer(Block* block) : m_block(block), m_slnVector(NULL), m_constJacobianPossible(false) {}
     virtual ~HermesSolverContainer() {}
 
-    virtual void solve(Scalar* solutionVector) = 0;
-    virtual void projectPreviousSolution(Scalar* solutionVector,
-                                         Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
-                                         Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions) {}
+    void projectPreviousSolution(Scalar* solutionVector,
+                                 Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
+                                 Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions);
+
+    virtual void solve(Scalar* previousSolutionVector) = 0;
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() = 0;
     virtual void setWeakFormulation(Hermes::Hermes2D::WeakForm<Scalar>* wf) = 0;
 
@@ -112,7 +113,7 @@ public:
     LinearSolverContainer(Block* block);
     ~LinearSolverContainer();
 
-    void solve(Scalar* solutionVector);
+    void solve(Scalar* previousSolutionVector);
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_linearSolver, solverName, adaptivityStep); }
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() { return m_linearSolver; }
     virtual void setWeakFormulation(Hermes::Hermes2D::WeakForm<Scalar>* wf) {m_linearSolver->set_weak_formulation(wf); }
@@ -130,10 +131,7 @@ public:
     NewtonSolverContainer(Block* block);
     ~NewtonSolverContainer();
 
-    virtual void projectPreviousSolution(Scalar* solutionVector,
-                                         Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
-                                         Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions);
-    virtual void solve(Scalar* solutionVector);
+    virtual void solve(Scalar* previousSolutionVector);
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_newtonSolver, solverName, adaptivityStep); }
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() { return m_newtonSolver; }
     virtual void setWeakFormulation(Hermes::Hermes2D::WeakForm<Scalar>* wf) { m_newtonSolver->set_weak_formulation(wf); }
@@ -152,10 +150,7 @@ public:
     PicardSolverContainer(Block* block);
     ~PicardSolverContainer();
 
-    virtual void projectPreviousSolution(Scalar* solutionVector,
-                                         Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
-                                         Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions);
-    virtual void solve(Scalar* solutionVector);
+    virtual void solve(Scalar* previousSolutionVector);
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_picardSolver, solverName, adaptivityStep); }
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() { return m_picardSolver; }
     virtual void setWeakFormulation(Hermes::Hermes2D::WeakForm<Scalar>* wf) { m_picardSolver->set_weak_formulation(wf); }
@@ -209,7 +204,7 @@ private:
                        Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *>& selectors);
     void deleteSelectors(Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *>& selectors);
 
-    Scalar *solveOneProblem(Scalar* solutionVector, Hermes::vector<SpaceSharedPtr<Scalar> > spaces, int adaptivityStep, Hermes::vector<MeshFunctionSharedPtr<Scalar> > previousSolution = Hermes::vector<MeshFunctionSharedPtr<Scalar> >());
+    Scalar *solveOneProblem(Hermes::vector<SpaceSharedPtr<Scalar> > spaces, int adaptivityStep, Hermes::vector<MeshFunctionSharedPtr<Scalar> > previousSolution = Hermes::vector<MeshFunctionSharedPtr<Scalar> >());
 
     void clearActualSpaces();
     void setActualSpaces(Hermes::vector<SpaceSharedPtr<Scalar> > spaces);
