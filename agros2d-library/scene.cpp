@@ -1156,7 +1156,7 @@ void Scene::readFromFile(const QString &fileName)
 {
     QSettings settings;
     QFileInfo fileInfo(fileName);
-    if (fileInfo.absoluteDir() != tempProblemDir())
+    if (fileInfo.absoluteDir() != tempProblemDir() && !fileName.contains("resources/examples"))
         settings.setValue("General/LastProblemDir", fileInfo.absolutePath());
 
     Agros2D::log()->printMessage(tr("Problem"), tr("Loading problem from disk"));
