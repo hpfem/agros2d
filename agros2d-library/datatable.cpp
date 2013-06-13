@@ -21,13 +21,14 @@
 
 DataTable::DataTable() : m_valid(false), m_isBeingValidated(false)
 {
-    setImplicit();    
+    setImplicit();
 }
 
 DataTable::DataTable(Hermes::vector<double> points, Hermes::vector<double> values)
     : m_valid(false), m_isBeingValidated(false), m_points(points), m_values(values)
 {
     setImplicit();
+    checkTable();
 }
 
 void DataTable::clear()
@@ -41,6 +42,8 @@ void DataTable::setValues(Hermes::vector<double> points, Hermes::vector<double> 
     inValidate();
     m_points = points;
     m_values = values;
+
+    checkTable();
 }
 
 void DataTable::setValues(vector<double> points, vector<double> values)
@@ -55,6 +58,8 @@ void DataTable::setValues(vector<double> points, vector<double> values)
         m_points.push_back(points[i]);
         m_values.push_back(values[i]);
     }
+
+    checkTable();
 }
 
 void DataTable::setValues(double *keys, double *values, int count)
@@ -64,6 +69,32 @@ void DataTable::setValues(double *keys, double *values, int count)
     {
         m_points.push_back(keys[i]);
         m_values.push_back(values[i]);
+    }
+
+    checkTable();
+}
+
+void DataTable::checkTable()
+{
+    if (m_points.size() > m_values.size())
+    {
+        clear();
+        throw AgrosException(QObject::tr("Size doesn't match (%1 > %2).").arg(m_points.size()).arg(m_values.size()));
+    }
+
+    if (m_points.size() < m_values.size())
+    {
+        clear();
+        throw AgrosException(QObject::tr("Size doesn't match (%1 < %2).").arg(m_points.size()).arg(m_values.size()));
+    }
+
+    for (int i = 1; i < m_points.size(); i++)
+    {
+        if (m_points[i] < m_points[i-1])
+        {
+            clear();
+            throw AgrosException(QObject::tr("Points must be in ascending order (%1 < %2).").arg(m_points[i]).arg(m_points[i-1]));
+        }
     }
 }
 
@@ -99,10 +130,10 @@ void DataTable::setImplicit()
 
 double DataTable::value(double x)
 {
-    if(! m_valid)
+    if (!m_valid)
         validate();
 
-    if(m_type == DataTableType_PiecewiseLinear)
+    if (m_type == DataTableType_PiecewiseLinear)
     {
         return m_linear->value(x);
     }
@@ -120,7 +151,7 @@ double DataTable::value(double x)
 
 double DataTable::derivative(double x)
 {
-    if(! m_valid)
+    if(!m_valid)
         validate();
 
     if(m_type == DataTableType_PiecewiseLinear)
@@ -172,9 +203,9 @@ void DataTable::inValidate()
 
 void DataTable::validate()
 {
-    if(m_isBeingValidated)
+    if (m_isBeingValidated)
     {
-        while(! m_valid)
+        while(!m_valid)
             ;
         return;
     }
@@ -182,7 +213,7 @@ void DataTable::validate()
     assert(m_linear == NULL);
     assert(m_spline == NULL);
     assert(m_constant == NULL);
-    assert(! m_valid);
+    assert(!m_valid);
     m_isBeingValidated = true;
 
     if(m_type == DataTableType_PiecewiseLinear)
@@ -194,9 +225,24 @@ void DataTable::validate()
         // first create object and calculate coeffs, than assign to m_spline
         // otherwise probably some other thread interfered and caused application fail
         // this is strange, though, since no other thread should be able to acces thanks to m_isBeingValidated check
-        Hermes::Hermes2D::CubicSpline *spline = new Hermes::Hermes2D::CubicSpline(m_points, m_values, 0.0, 0.0, m_splineFirstDerivatives, m_splineFirstDerivatives, !m_extrapolateConstant, !m_extrapolateConstant);
-        spline->calculate_coeffs();
-        m_spline = spline;
+        try
+        {
+            Hermes::Hermes2D::CubicSpline *spline = new Hermes::Hermes2D::CubicSpline(m_points,
+                                                                                      m_values,
+                                                                                      0.0, 0.0,
+                                                                                      m_splineFirstDerivatives, m_splineFirstDerivatives,
+                                                                                      !m_extrapolateConstant, !m_extrapolateConstant);
+            spline->calculate_coeffs();
+            m_spline = spline;
+        }
+        catch (Hermes::Exceptions::Exception e)
+        {
+            m_valid = false;
+            m_isBeingValidated = false;
+
+            return;
+        }
+
     }
     else if(m_type == DataTableType_Constant)
     {
@@ -331,10 +377,6 @@ void DataTable::fromString(const QString &str)
     }
 
     QStringList lst = rest.split(";");
-    if (lst.size() != 2)
-    {
-        throw AgrosException(QObject::tr("List doesn't contain two elements."));
-    }
 
     QStringList lstPts = lst.at(0).split(",");
     foreach (QString numStr, lstPts)
@@ -344,12 +386,7 @@ void DataTable::fromString(const QString &str)
     foreach (QString numStr, lstVal)
         m_values.push_back(numStr.toDouble());
 
-    if (m_points.size() != m_values.size())
-    {
-        m_points.clear();
-        m_values.clear();
-        throw AgrosException(QObject::tr("Sizes of lists doesnt't match."));
-    }
+    checkTable();
 }
 
 
@@ -387,21 +424,21 @@ PiecewiseLinear::PiecewiseLinear(Hermes::vector<double> points, Hermes::vector<d
 
 int PiecewiseLinear::leftIndex(double x)
 {
-  int i_left = 0;
-  int i_right = m_size - 1;
-  assert(i_right >= 0);
+    int i_left = 0;
+    int i_right = m_size - 1;
+    assert(i_right >= 0);
 
-  if(x < m_points[i_left]) return -1;
-  if(x > m_points[i_right]) return i_right;
+    if(x < m_points[i_left]) return -1;
+    if(x > m_points[i_right]) return i_right;
 
-  while (i_left + 1 < i_right)
-  {
-    int i_mid = (i_left + i_right) / 2;
-    if(m_points[i_mid] < x) i_left = i_mid;
-    else i_right = i_mid;
-  }
+    while (i_left + 1 < i_right)
+    {
+        int i_mid = (i_left + i_right) / 2;
+        if(m_points[i_mid] < x) i_left = i_mid;
+        else i_right = i_mid;
+    }
 
-  return i_left;
+    return i_left;
 }
 
 double PiecewiseLinear::value(double x)

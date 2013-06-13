@@ -228,11 +228,11 @@ void Value::parseFromString(const QString &str)
 
         if (lst.size() > 2)
         {
-            try
+            // try
             {
                 m_table.fromString((lst.at(1) + ";" + lst.at(2)));
             }
-            catch (...)
+            // catch (...)
             {
                 // do nothing
             }

@@ -84,6 +84,8 @@ public:
     inline Hermes::vector<double> pointsVector() const { return m_points; }
     inline Hermes::vector<double> valuesVector() const { return m_values; }
 
+    void checkTable();
+
     QString toString() const;
     QString toStringX() const;
     QString toStringY() const;

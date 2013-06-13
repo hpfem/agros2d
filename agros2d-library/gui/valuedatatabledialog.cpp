@@ -114,9 +114,21 @@ bool ValueDataTableDialog::parseTable(bool addToTable)
         {
             lblInfoError->setText(tr("%1: cannot parse number (line %2).")
                                   .arg(m_labelX)
-                                  .arg(i));
+                                  .arg(i+1));
             procesOK = false;
             break;
+        }
+        else
+        {
+            if ((i > 0) && (keys[i] < keys[i-1]))
+            {
+                lblInfoError->setText(tr("%1: points must be in ascending order (line %2).")
+                                      .arg(m_labelX)
+                                      .arg(i+1));
+
+                procesOK = false;
+                break;
+            }
         }
 
         values[i] = y[i].toDouble(&ok);
@@ -124,7 +136,7 @@ bool ValueDataTableDialog::parseTable(bool addToTable)
         {
             lblInfoError->setText(tr("%1: cannot parse number (line %2).")
                                   .arg(m_labelY)
-                                  .arg(i));
+                                  .arg(i+1));
             procesOK = false;
             break;
         }

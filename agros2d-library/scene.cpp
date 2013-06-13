@@ -1797,6 +1797,11 @@ void Scene::readFromFile31(const QString &fileName)
         blockSignals(false);
         throw AgrosException(QString::fromStdString(e.what()));
     }
+    catch (AgrosException e)
+    {
+        blockSignals(false);
+        throw e;
+    }
 }
 
 void Scene::writeToFile(const QString &fileName, bool saveLastProblemDir)

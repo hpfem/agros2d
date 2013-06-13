@@ -438,19 +438,26 @@ void PyField::addMaterial(const std::string &name, const map<std::string, double
 
                 assigned = true;
 
-                if (expressions.count((*i).first) == 0)
+                try
                 {
-                    values[variable.id()] = Value((*i).second,
-                                                  (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
-                                                  (leny > 0) ? nonlin_y.at((*i).first) : vector<double>(),
-                                                  dataTableType, splineFirstDerivatives, extrapolateConstant);
+                    if (expressions.count((*i).first) == 0)
+                    {
+                        values[variable.id()] = Value((*i).second,
+                                                      (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
+                                                      (leny > 0) ? nonlin_y.at((*i).first) : vector<double>(),
+                                                      dataTableType, splineFirstDerivatives, extrapolateConstant);
+                    }
+                    else
+                    {
+                        values[variable.id()] = Value(QString::fromStdString(expressions.at((*i).first)),
+                                                      (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
+                                                      (leny > 0) ? nonlin_y.at((*i).first) : vector<double>(),
+                                                      dataTableType, splineFirstDerivatives, extrapolateConstant);
+                    }
                 }
-                else
+                catch (AgrosException e)
                 {
-                    values[variable.id()] = Value(QString::fromStdString(expressions.at((*i).first)),
-                                                  (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
-                                                  (leny > 0) ? nonlin_y.at((*i).first) : vector<double>(),
-                                                  dataTableType, splineFirstDerivatives, extrapolateConstant);
+                    throw invalid_argument(e.toString().toStdString());
                 }
 
                 break;
@@ -531,17 +538,24 @@ void PyField::modifyMaterial(const std::string &name, const map<std::string, dou
 
                 assigned = true;
 
-                if (expressions.count((*i).first) == 0)
+                try
                 {
-                    sceneMaterial->setValue(QString::fromStdString((*i).first), Value((*i).second,
-                                                                                      (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
-                                                                                      (leny > 0) ? nonlin_y.at((*i).first) : vector<double>()));
+                    if (expressions.count((*i).first) == 0)
+                    {
+                        sceneMaterial->setValue(QString::fromStdString((*i).first), Value((*i).second,
+                                                                                          (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
+                                                                                          (leny > 0) ? nonlin_y.at((*i).first) : vector<double>()));
+                    }
+                    else
+                    {
+                        sceneMaterial->setValue(QString::fromStdString((*i).first), Value(QString::fromStdString(expressions.at((*i).first)),
+                                                                                          (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
+                                                                                          (leny > 0) ? nonlin_y.at((*i).first) : vector<double>()));
+                    }
                 }
-                else
+                catch (AgrosException e)
                 {
-                    sceneMaterial->setValue(QString::fromStdString((*i).first), Value(QString::fromStdString(expressions.at((*i).first)),
-                                                                                      (lenx > 0) ? nonlin_x.at((*i).first) : vector<double>(),
-                                                                                      (leny > 0) ? nonlin_y.at((*i).first) : vector<double>()));
+                    throw invalid_argument(e.toString().toStdString());
                 }
 
                 break;
