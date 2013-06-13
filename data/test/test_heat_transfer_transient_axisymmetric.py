@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -12,12 +14,8 @@ problem.time_total = 10000
 problem.time_steps = 20
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 heat = agros2d.field("heat")
@@ -96,5 +94,5 @@ testTavg = agros2d.test("Temperature", volume["T"], 0.002839)
 surface = heat.surface_integrals([26])
 testFlux = agros2d.test("Heat flux", surface["f"], 0.032866, error = 0.05)
 
-# print("Test: Heat transfer transient - axisymmetric: " + str(testT and testF and testFr and testFz and testTavg and testFlux))
-print("Test: Heat transfer - transient - axisymmetric: " + str(testT and testF and testFr and testFz))
+elapsed_time = time() - start_time
+print("Test: Heat transfer - transient - axisymmetric ({0}): ".format(round(elapsed_time, 3)) + str(testT and testF and testFr and testFz and testTavg and testFlux))

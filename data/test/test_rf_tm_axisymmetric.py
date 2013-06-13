@@ -1,4 +1,6 @@
 import agros2d as a2d
+from time import time
+start_time = time()
 
 # problem
 problem = a2d.problem(clear = True)
@@ -8,12 +10,8 @@ problem.matrix_solver = "umfpack"
 problem.frequency = 1e+09
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+a2d.view.mesh.disable()
+a2d.view.post2d.disable()
 
 # rf_tm
 rf_tm = a2d.field("rf_tm")
@@ -60,30 +58,31 @@ problem.solve()
 
 point = rf_tm.local_values(0.92463, -0.20118)
 
-testH = agros2d.test("Magnetic field", point["H"], 0.53836)
-testHr = agros2d.test("Magnetic field - real", point["Hr"], 0.538097)
-testHi = agros2d.test("Magnetic field - imag", point["Hi"], 0.016823)
-#
-testB = agros2d.test("Magnetic flux density", point["B"], 6.765228e-7)
-testBr = agros2d.test("Magnetic flux density - real", point["Br"], 6.761924e-7)
-testBi = agros2d.test("Magnetic flux density - imag", point["Bi"], 2.114032e-8)
-#
-testE = agros2d.test("Electric field", point["E"], 274.023386)
-testEr_real = agros2d.test("Electric field r component - real", point["Err"], 122.830044)
-testEr_imag = agros2d.test("Electric field r component - imag", point["Eir"], 221.565147)
-testEz_real = agros2d.test("Electric field z component - real", point["Erz"], -103.385085)
-testEz_imag = agros2d.test("Electric field z component - imag", point["Eiz"], -14.899843)
-#
-testD = agros2d.test("Electric displacement", point["D"], 2.4447e-9)
-testDr_real = agros2d.test("Electric displacement r component - real", point["Drr"], 1.08756e-9)
-testDr_imag = agros2d.test("Electric displacement r component - imag", point["Dir"], 1.961779e-9)
-testDz_real = agros2d.test("Electric displacement z component - real", point["Drz"],-9.15391e-10)
-testDz_imag = agros2d.test("Electric displacement z component - imag", point["Diz"], -1.31926e-10)
-#
-#testNr = agros2d.test("Poynting vector r component", point["Nr"], 1.98583e-4)
-#testNz = agros2d.test("Poynting vector z component", point["Nz"], 2.47866e-4)
-#	
-print("Test: RF TM - axisymmetric: " + str(testH and testHr and testHi and testB and 
-  testBr and testBi and testE and testEr_real and testEr_imag and testEz_real and testEz_imag
-  and testD and testDr_real and testDr_imag and testDz_real and testDz_imag))
+testH = a2d.test("Magnetic field", point["H"], 0.53836)
+testHr = a2d.test("Magnetic field - real", point["Hr"], 0.538097)
+testHi = a2d.test("Magnetic field - imag", point["Hi"], 0.016823)
+
+testB = a2d.test("Magnetic flux density", point["B"], 6.765228e-7)
+testBr = a2d.test("Magnetic flux density - real", point["Br"], 6.761924e-7)
+testBi = a2d.test("Magnetic flux density - imag", point["Bi"], 2.114032e-8)
+
+testE = a2d.test("Electric field", point["E"], 274.023386)
+testEr_real = a2d.test("Electric field r component - real", point["Err"], 122.830044)
+testEr_imag = a2d.test("Electric field r component - imag", point["Eir"], 221.565147)
+testEz_real = a2d.test("Electric field z component - real", point["Erz"], -103.385085)
+testEz_imag = a2d.test("Electric field z component - imag", point["Eiz"], -14.899843)
+
+testD = a2d.test("Electric displacement", point["D"], 2.4447e-9)
+testDr_real = a2d.test("Electric displacement r component - real", point["Drr"], 1.08756e-9)
+testDr_imag = a2d.test("Electric displacement r component - imag", point["Dir"], 1.961779e-9)
+testDz_real = a2d.test("Electric displacement z component - real", point["Drz"],-9.15391e-10)
+testDz_imag = a2d.test("Electric displacement z component - imag", point["Diz"], -1.31926e-10)
+
+#testNr = a2d.test("Poynting vector r component", point["Nr"], 1.98583e-4)
+#testNz = a2d.test("Poynting vector z component", point["Nz"], 2.47866e-4)
+
+elapsed_time = time() - start_time
+print("Test: RF TM - axisymmetric ({0}): ".format(round(elapsed_time, 3)) + str(testH and testHr and testHi and testB
+and testBr and testBi and testE and testEr_real and testEr_imag and testEz_real and testEz_imag
+and testD and testDr_real and testDr_imag and testDz_real and testDz_imag))
 #  and testNr and testNz))

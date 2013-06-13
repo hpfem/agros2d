@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # problem
 problem = agros2d.problem(clear = True)
@@ -7,12 +9,8 @@ problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 # electrostatic
@@ -55,4 +53,6 @@ problem.solve()
 # only to see if adaptivity works, should be replaced with comsol values
 point = electrostatic.local_values(3.278e-2, 4.624e-1)
 test = agros2d.test("Electrostatic potential", point["V"], 5.569e2)
-print("Test: Adaptivity - electrostatic: " + str(test))
+
+elapsed_time = time() - start_time
+print("Test: Adaptivity - electrostatic ({0}): ".format(round(elapsed_time, 3)) + str(test))

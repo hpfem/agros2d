@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -7,12 +9,8 @@ problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 current = agros2d.field("current")
@@ -72,4 +70,5 @@ testPj = agros2d.test("Losses", volume["Pj"], 10070.23937)
 surface = current.surface_integrals([0])
 testI = agros2d.test("Current", surface["Ir"], 3629.425713)
 
-print("Test: Current field - planar: " + str(testV and testE and testEx and testEy and testJ and testJx and testJy and testpj and testI))
+elapsed_time = time() - start_time
+print("Test: Current field - planar ({0}): ".format(round(elapsed_time, 3)) + str(testV and testE and testEx and testEy and testJ and testJx and testJy and testpj and testI))

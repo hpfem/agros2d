@@ -1,6 +1,8 @@
 #based on test_coupling_1_planar
 
 import agros2d
+from time import time
+start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -8,8 +10,9 @@ problem.coordinate_type = "planar"
 problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 
-# palette quality
-agros2d.view.post2d.scalar_palette_quality = "extremely_coarse"
+# disable view
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 current = agros2d.field("current")
@@ -92,5 +95,5 @@ testT = agros2d.test("Heat transfer - Temperature", local_values_heat["T"], 40.6
 local_values_elasticity = elasticity.local_values(0.155787, 0.00713725)
 testD = agros2d.test("Thermoelasticity - Displacement", local_values_elasticity["d"], 1.592721e-4)
 
-print("Test: Coupling 1 - planar, all weak: " + str(testV and testT and testD))
-
+elapsed_time = time() - start_time
+print("Test: Coupling 1 - planar, all weak ({0}): ".format(round(elapsed_time, 3)) + str(testV and testT and testD))

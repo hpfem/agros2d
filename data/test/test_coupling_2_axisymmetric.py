@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -8,12 +10,8 @@ problem.matrix_solver = "umfpack"
 problem.frequency = 50
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 heat = agros2d.field("heat")
@@ -83,4 +81,5 @@ testA = agros2d.test("Magnetic - Vector potential", local_values_magnetic["A"], 
 local_values_heat = heat.local_values(0.2956, 0.2190)
 testT = agros2d.test("Heat transfer - Temperature", local_values_heat["T"], 975.749917)
 
-print("Test: Coupling 2 - axisymmetric: " + str(testA and testT))
+elapsed_time = time() - start_time
+print("Test: Coupling 2 - axisymmetric ({0}): ".format(round(elapsed_time, 3)) + str(testA and testT))

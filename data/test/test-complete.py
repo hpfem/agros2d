@@ -1,3 +1,6 @@
+import time as timer
+start = timer.time()
+
 # acoustic
 execfile("test_acoustic_planar.py") 
 execfile("test_acoustic_axisymmetric.py")
@@ -104,4 +107,7 @@ execfile("test_adaptivity_acoustic.py")
 execfile("test_adaptivity_electrostatic.py")
 
 # scripting
-# execfile("test_scripting.py")
+execfile("test_script.py")
+
+stop = timer.time()
+print("\nTotal time: " + str(stop - start))

@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -10,8 +12,9 @@ problem.time_method_order = 1
 problem.time_steps = 6
 problem.time_total = 60
 
-# palette quality
-agros2d.view.post2d.scalar_palette_quality = "extremely_coarse"
+# disable view
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 current = agros2d.field("current")
@@ -85,4 +88,5 @@ testT2 = agros2d.test("Heat - Temperature 2", local_values_heat["T"], 25.002605)
 volume_integral_heat = heat.volume_integrals([0, 1, 2, 3, 4])
 testTvol = agros2d.test("Heat - Temperature volume", volume_integral_heat["T"], 8.498177)
 
-print("Test: Coupling 4 - transient - planar, linear, weak: " + str(testV and testJ and testT1 and testT2 and testTvol)) #testf
+elapsed_time = time() - start_time
+print("Test: Coupling 4 - transient - planar, linear, weak ({0}): ".format(round(elapsed_time, 3)) + str(testV and testJ and testT1 and testT2 and testTvol)) #testf

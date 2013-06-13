@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -7,12 +9,8 @@ problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 elasticity = agros2d.field("elasticity")
@@ -75,4 +73,6 @@ testdy = agros2d.test("Displacement - y", point["dy"], -3.751169e-7, 0.1)
 # testI = agros2d.test("Current", surface["I"], 3629.425713)
 
 # print("Test: Structural mechanics - planar: " + str(testVonMises and testTresca and testu and testv and testD and testsxx and testsyy and testszz and testsxy and testexx and testeyy and testexy))
-print("Test: Structural mechanics - planar: " + str(testd and testdx and testdy))
+
+elapsed_time = time() - start_time
+print("Test: Structural mechanics - planar ({0}): ".format(round(elapsed_time, 3)) + str(testd and testdx and testdy))

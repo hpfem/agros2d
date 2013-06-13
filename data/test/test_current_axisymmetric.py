@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -7,12 +9,8 @@ problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 current = agros2d.field("current")
@@ -65,4 +63,5 @@ testPj = agros2d.test("Losses", volume["Pj"], 4.542019e9)
 surface = current.surface_integrals([1])
 testI = agros2d.test("Current", surface["Ir"], -2.166256e8)
 
-print("Test: Current field - axisymmetric: " + str(testV and testE and testEr and testEz and testJ and testJr and testJz and testpj and testI))
+elapsed_time = time() - start_time
+print("Test: Current field - axisymmetric ({0}): ".format(round(elapsed_time, 3)) + str(testV and testE and testEr and testEz and testJ and testJr and testJz and testpj and testI))

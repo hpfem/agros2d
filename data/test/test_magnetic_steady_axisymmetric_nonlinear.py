@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # problem
 problem = agros2d.problem(clear = True)
@@ -7,26 +9,20 @@ problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # magnetic
 magnetic = agros2d.field("magnetic")
 magnetic.analysis_type = "steadystate"
 magnetic.number_of_refinements = 2
 magnetic.polynomial_order = 2
-magnetic.adaptivity_type = "disabled"
 magnetic.linearity_type = "newton"
 magnetic.nonlinear_tolerance = 1
 magnetic.nonlinear_steps = 20
-magnetic.automatic_damping = True
+magnetic.damping_type = "automatic"
+magnetic.reuse_jacobian = True
 magnetic.damping_number_to_increase = 3
-
-
 
 # boundaries
 magnetic.add_boundary("A=0", "magnetic_potential", {"magnetic_potential_real" : 0})
@@ -56,7 +52,7 @@ geometry.add_label(0.235433, 0.273031, materials = {"magnetic" : "air"})
 geometry.add_label(0.00629508, 0.0397221, materials = {"magnetic" : "steel"})
 geometry.add_label(0.125663, 0.0344, materials = {"magnetic" : "coil"})
 
-agros2d.view.zoome_best_fit()
+agros2d.view.zoom_best_fit()
 
 # solve problem
 problem.solve()
@@ -88,9 +84,8 @@ testFLz = agros2d.test("Lorentz force - z", volume["Fly"], -0.00108431776502) # 
 surface = magnetic.surface_integrals([0, 1, 2, 3])
 #testFz = agros2d.test("Maxwell force - z", surface["Fy"], 0.368232)
 
-print("Test: Magnetic steady state - axisymmetric: " + str(point and testA
-                                                           and testB and testBr and testBz
-                                                           and testH and testHr and testHz
-                                                           and testFr_real and testFz_real
-                                                           and testwm and testWm
-                                                           and testFLr and testFLz))
+result = str(testA and testB and testBr and testBz and testH and testHr and testHz
+             and testFr_real and testFz_real and testwm and testWm and testFLr and testFLz)
+
+elapsed_time = time() - start_time
+print("Test: Magnetic steady state - axisymmetric ({0}): ".format(round(elapsed_time, 3)) + result)

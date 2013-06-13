@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # benchmark 
 #
@@ -18,12 +20,8 @@ problem.time_steps = 20
 problem.time_total = 190
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 # heat
@@ -57,4 +55,5 @@ problem.solve()
 point = heat.local_values(0.1, 0.3)
 testT = agros2d.test("Temperature", point["T"], 186.5, 0.0004) # permissible error 0.02 %
 
-print("Test: Heat transfer transient - axisymmetric benchmark: " + str(testT))
+elapsed_time = time() - start_time
+print("Test: Heat transfer transient - axisymmetric benchmark ({0}): ".format(round(elapsed_time, 3)) + str(testT))

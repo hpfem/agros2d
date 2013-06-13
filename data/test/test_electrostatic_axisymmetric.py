@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -7,12 +9,8 @@ problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 electrostatic = agros2d.field("electrostatic")
@@ -76,4 +74,5 @@ testEnergy = agros2d.test("Energy", volume["We"], 1.799349e-8)
 surface = electrostatic.surface_integrals([1, 12])
 testQ = agros2d.test("Electric charge", surface["Q"], -1.291778e-9)
 
-print("Test: Electrostatic - axisymmetric: " + str(testV and testE and testEr and testEz and testD and testDr and testDz and testwe and testEnergy and testQ))
+elapsed_time = time() - start_time
+print("Test: Electrostatic - axisymmetric ({0}): ".format(round(elapsed_time, 3)) + str(testV and testE and testEr and testEz and testD and testDr and testDz and testwe and testEnergy and testQ))

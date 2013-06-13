@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # problem
 problem = agros2d.problem(clear = True)
@@ -7,12 +9,8 @@ problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 # electrostatic
@@ -101,4 +99,5 @@ x, y, z = tracing.positions()
 
 testPosition = agros2d.test("Particle position", x[-1], 0.004637)
 
-print("Test: Particle tracing axisymmetric: " + str(testPosition))
+elapsed_time = time() - start_time
+print("Test: Particle tracing axisymmetric ({0}): ".format(round(elapsed_time, 3)) + str(testPosition))
