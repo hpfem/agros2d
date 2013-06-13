@@ -302,7 +302,7 @@ void LinearSolverContainer<Scalar>::matrixUnchangedDueToBDF(bool unchanged)
 template <typename Scalar>
 void LinearSolverContainer<Scalar>::solve(Scalar* solutionVector)
 {
-    m_linearSolver->solve();
+    m_linearSolver->solve(solutionVector);
 
     this->m_slnVector = m_linearSolver->get_sln_vector();
 }
