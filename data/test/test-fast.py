@@ -4,8 +4,8 @@
 # 127 sekund - release verze, baterka, nova cache, tccache ( 3.4.2013)
 # 107 sekund - release verze, baterka, nova cache, tccache (18.4.2013)
 
-import time
-start = time.time()
+import time as timer
+start = timer.time()
 
 # electrostatic
 execfile("test_electrostatic_planar.py") 
@@ -66,5 +66,5 @@ execfile("test_adaptivity_electrostatic.py")
 # scripting
 execfile("test_script.py")
 
-stop = time.time()
+stop = timer.time()
 print("\nTotal time: " + str(stop - start))
