@@ -85,7 +85,7 @@ void {{CLASS}}LocalValue::calculate()
                 else
                 {
                     // point values
-                    Hermes::Hermes2D::Func<double> *values = ma.solutions().at(k)->get_pt_value(m_point.x, m_point.y);
+                    Hermes::Hermes2D::Func<double> *values = ma.solutions().at(k)->get_pt_value(m_point.x, m_point.y, true);
 
                     // set variables
                     value[k] = values->val[0];

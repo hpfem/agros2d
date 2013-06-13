@@ -118,7 +118,7 @@ namespace Hermes
       {
         double midval[3][3];
 
-        if(level < LinearizerBase::get_max_level(fns[0]->get_active_element()->get_area(), fns[0]->get_fn_order()))
+        if(level < get_max_level(fns[0]->get_active_element(), fns[0]->get_fn_order(), fns[0]->get_mesh()))
         {
           int i;
           if(!(level & 1))
@@ -315,7 +315,7 @@ namespace Hermes
         a = (verts[a][2] > verts[b][2]) ? a : b;
         int flip = (a == iv1 || a == iv3) ? 1 : 0;
 
-        if(level < LinearizerBase::get_max_level(fns[0]->get_active_element()->get_area(), fns[0]->get_fn_order()))
+        if(level < get_max_level(fns[0]->get_active_element(), fns[0]->get_fn_order(), fns[0]->get_mesh()))
         {
           int i;
           if(!(level & 1)) // this is an optimization: do the following only every other time
@@ -522,7 +522,8 @@ namespace Hermes
         // Init the caught parallel exception message.
         this->exceptionMessageCaughtInParallelBlock.clear();
 
-        lock_data();
+        this->init_linearizer_base(sln);
+
         this->tick();
 
         // Initialization of 'global' stuff.
@@ -614,6 +615,8 @@ namespace Hermes
 
           for(int state_i = start; state_i < end; state_i++)
           {
+            if(!this->exceptionMessageCaughtInParallelBlock.empty())
+              break;
             try
             {
               Traverse::State* current_state = states[state_i];
@@ -639,6 +642,8 @@ namespace Hermes
 
           for(int state_i = start; state_i < end; state_i++)
           {
+            if(!this->exceptionMessageCaughtInParallelBlock.empty())
+              break;
             try
             {
               Traverse::State* current_state = states[state_i];
@@ -730,7 +735,7 @@ namespace Hermes
 
         if(!this->exceptionMessageCaughtInParallelBlock.empty())
         {
-          this->unlock_data();
+          this->deinit_linearizer_base();
           ::free(hash_table);
           ::free(info);
           throw Hermes::Exceptions::Exception(this->exceptionMessageCaughtInParallelBlock.c_str());
@@ -753,7 +758,7 @@ namespace Hermes
 
         find_min_max();
 
-        this->unlock_data();
+        this->deinit_linearizer_base();
 
         // select old quadratrues
         sln->set_quad_2d(old_quad);

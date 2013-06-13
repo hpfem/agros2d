@@ -76,7 +76,7 @@ Point3 force{{CLASS}}(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, So
         {
             // point values
             // point values
-            Hermes::Hermes2D::Func<double> *values = ma.solutions().at(k)->get_pt_value(point.x, point.y, element);
+            Hermes::Hermes2D::Func<double> *values = ma.solutions().at(k)->get_pt_value(point.x, point.y, true, element);
             if (!values)
             {
                 throw AgrosException(QObject::tr("Point [%1, %2] does not lie in any element").arg(x).arg(y));
