@@ -411,22 +411,12 @@ void PostHermes::processSolved()
         if (ma.solutions().empty())
             return;
 
-        // temporary use 3/4 of max threads
-        int threads = omp_get_max_threads() * 3/4;
-        if (threads == 0)
-            threads = 1;
-
-        Hermes::HermesCommonApi.set_integral_param_value(Hermes::numThreads, threads);
-
         processSolutionMesh();
         processOrder();
 
         processRangeContour();
         processRangeScalar();
         processRangeVector();
-
-        // restore settings
-        Hermes::HermesCommonApi.set_integral_param_value(Hermes::numThreads, Agros2D::configComputer()->numberOfThreads);
     }
 }
 

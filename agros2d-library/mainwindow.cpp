@@ -73,9 +73,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     createPythonEngine(new PythonEngineAgros());
 
-    // scene
+    // temporary use 3/4 of max threads for PostHermes (linearizer)
+    int threads = omp_get_max_threads() * 3/4;
+    if (threads == 0)
+        threads = 1;
+
+    Hermes::HermesCommonApi.set_integral_param_value(Hermes::numThreads, threads);
     postHermes = new PostHermes();
 
+    // scene
     sceneInfoWidget = new InfoWidget(sceneViewPreprocessor, this);
     sceneViewPreprocessor = new SceneViewPreprocessor(this);
     sceneViewMesh = new SceneViewMesh(postHermes, this);
