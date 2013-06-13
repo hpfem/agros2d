@@ -283,6 +283,7 @@ win32-msvc2010 {
 
     DEFINES += XERCES_STATIC_LIBRARY
     DEFINES += _WINDOWS
+    DEFINES += AGROS_DLL
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"
 

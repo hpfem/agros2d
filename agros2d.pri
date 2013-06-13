@@ -103,8 +103,7 @@ win32-msvc2010 {
     QMAKE_CXXFLAGS_DEBUG += -MDd
 
     #DEFINES += XERCES_STATIC_LIBRARY
-    #DEFINES += XML_LIBRARY
-    DEFINES += AGROS_DLL
+    #DEFINES += XML_LIBRARY    
     DEFINES += WITH_TC_MALLOC
     DEFINES += "finite=_finite"
     DEFINES += "popen=_popen"

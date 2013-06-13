@@ -25,7 +25,7 @@ magnetic.nonlinear_steps = 20
 magnetic.damping_type = "fixed"
 magnetic.reuse_jacobian = True
 magnetic.maximum_steps_with_reused_Jacobian = 10
-magnetic.sufficient_improvement_factor_Jacobian = 0.9
+magnetic.sufficient_improvement_factor_for_Jacobian_reuse = 0.9
 
 magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
 
