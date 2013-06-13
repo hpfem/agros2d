@@ -27,8 +27,8 @@ flow.nonlinear_steps = 10
 flow.damping_type = "automatic"
 flow.damping_coeff = 1.0
 flow.reuse_jacobian = False
-#flow.maximum_steps_with_reused_Jacobian = 10
-#flow.sufficient_improvement_factor_Jacobian = 0.8
+#flow.maximum_steps_with_reused_jacobian = 10
+#flow.sufficient_improvement_factor_for_jacobian_reuse = 0.8
 
 # boundaries
 flow.add_boundary("inlet", "flow_velocity", {"flow_velocity_x" : 0, "flow_velocity_y" : { "expression" : "-cos(r/0.25*pi/2)" }})
