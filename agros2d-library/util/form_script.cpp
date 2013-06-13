@@ -44,9 +44,9 @@ FormScript::FormScript(const QString &fileName, QWidget *parent)
     btnMore = new QPushButton(tr("More..."));
 
     QAction *actLoad = new QAction(tr("Load"), this);
-    connect(actLoad, SIGNAL(triggered()), this, SLOT(load()));
+    connect(actLoad, SIGNAL(triggered()), this, SLOT(loadFromFile()));
     QAction *actSave = new QAction(tr("Save"), this);
-    connect(actSave, SIGNAL(triggered()), this, SLOT(save()));
+    connect(actSave, SIGNAL(triggered()), this, SLOT(saveToFile()));
 
     QAction *actReload = new QAction(tr("Reload"), this);
     connect(actReload, SIGNAL(triggered()), this, SLOT(reloadWidget()));
@@ -201,7 +201,7 @@ QString FormScript::valueForWidget(XMLForm::form *doc, const QString &objectName
     return defaultValue;
 }
 
-void FormScript::load()
+void FormScript::loadFromFile()
 {
     QSettings settings;
     QString dir = settings.value("General/LastProblemDir", "data").toString();
@@ -242,7 +242,7 @@ void FormScript::load()
     }
 }
 
-void FormScript::save()
+void FormScript::saveToFile()
 {
     QSettings settings;
     QString dir = settings.value("General/LastProblemDir", "data").toString();

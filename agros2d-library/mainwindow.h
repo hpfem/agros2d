@@ -125,15 +125,9 @@ protected:
 private:
     QStringList recentFiles;
 
-    QMenu *mnuFile;
-    QMenu *mnuFileImportExport;
     QMenu *mnuRecentFiles;
-    QMenu *mnuEdit;
-    QMenu *mnuView;
-    QMenu *mnuProblem;
-    QMenu *mnuTools;
+    QMenu *mnuProblemAddBoundaryAndMaterial;
     QMenu *mnuCustomForms;
-    QMenu *mnuHelp;
 
     QToolBar *tlbFile;
     QToolBar *tlbEdit;

@@ -431,9 +431,9 @@ void MainWindow::createActions()
 
 void MainWindow::doFieldsChanged()
 {
-    // TODO: it is not necessary to create whole menu, it only needs to be adjusted
-    // TODO: what hapens to old menu object? Memory leaks???
-    createMenus();
+    // add boundaries and materials menu
+    mnuProblemAddBoundaryAndMaterial->clear();
+    Agros2D::scene()->addBoundaryAndMaterialMenuItems(mnuProblemAddBoundaryAndMaterial, this);
 }
 
 void MainWindow::createMenus()
@@ -441,7 +441,7 @@ void MainWindow::createMenus()
     menuBar()->clear();
 
     mnuRecentFiles = new QMenu(tr("&Recent files"), this);
-    mnuFileImportExport = new QMenu(tr("Import/Export"), this);
+    QMenu *mnuFileImportExport = new QMenu(tr("Import/Export"), this);
     mnuFileImportExport->addAction(actDocumentImportDXF);
     mnuFileImportExport->addAction(actDocumentExportDXF);
     mnuFileImportExport->addSeparator();
@@ -458,7 +458,7 @@ void MainWindow::createMenus()
     // mnuServer->addAction(actDocumentUploadToServer);
     // mnuServer->addAction(actCollaborationServer);
 
-    mnuFile = menuBar()->addMenu(tr("&File"));
+    QMenu *mnuFile = menuBar()->addMenu(tr("&File"));
     mnuFile->addAction(actDocumentNew);
     mnuFile->addAction(actExamples);
     mnuFile->addAction(actDocumentOpen);
@@ -477,7 +477,7 @@ void MainWindow::createMenus()
     mnuFile->addAction(actExit);
 #endif
 
-    mnuEdit = menuBar()->addMenu(tr("E&dit"));
+    QMenu *mnuEdit = menuBar()->addMenu(tr("E&dit"));
     mnuEdit->addAction(actUndo);
     mnuEdit->addAction(actRedo);
     mnuEdit->addSeparator();
@@ -497,7 +497,7 @@ void MainWindow::createMenus()
     mnuShowPanels->addAction(consoleView->toggleViewAction());
     mnuShowPanels->addAction(logView->toggleViewAction());
 
-    mnuView = menuBar()->addMenu(tr("&View"));
+    QMenu *mnuView = menuBar()->addMenu(tr("&View"));
     mnuView->addAction(problemWidget->actProperties);
     mnuView->addAction(sceneViewPreprocessor->actSceneModePreprocessor);
     mnuView->addAction(sceneViewMesh->actSceneModeMesh);
@@ -520,14 +520,14 @@ void MainWindow::createMenus()
     mnuView->addSeparator();
     mnuView->addAction(actFullScreen);
 
-    mnuProblem = menuBar()->addMenu(tr("&Problem"));
-    QMenu *mnuAdd = new QMenu(tr("&Add"), this);
-    mnuProblem->addMenu(mnuAdd);
-    mnuAdd->addAction(Agros2D::scene()->actNewNode);
-    mnuAdd->addAction(Agros2D::scene()->actNewEdge);
-    mnuAdd->addAction(Agros2D::scene()->actNewLabel);
-    mnuAdd->addSeparator();
-    Agros2D::scene()->addBoundaryAndMaterialMenuItems(mnuAdd, this);
+    QMenu *mnuProblem = menuBar()->addMenu(tr("&Problem"));
+    QMenu *mnuProblemAddGeometry = new QMenu(tr("&Add geometry"), this);
+    mnuProblem->addMenu(mnuProblemAddGeometry);
+    mnuProblemAddGeometry->addAction(Agros2D::scene()->actNewNode);
+    mnuProblemAddGeometry->addAction(Agros2D::scene()->actNewEdge);
+    mnuProblemAddGeometry->addAction(Agros2D::scene()->actNewLabel);
+    mnuProblemAddBoundaryAndMaterial = new QMenu(tr("&Add boundaries and materials"), this);
+    mnuProblem->addMenu(mnuProblemAddBoundaryAndMaterial);
     mnuProblem->addSeparator();
     mnuProblem->addAction(sceneViewPost2D->actPostprocessorModeNothing);
     mnuProblem->addAction(sceneViewPost2D->actPostprocessorModeLocalPointValue);
@@ -540,7 +540,7 @@ void MainWindow::createMenus()
     mnuProblem->addAction(actSolve);
     mnuProblem->addAction(actSolveAdaptiveStep);
 
-    mnuTools = menuBar()->addMenu(tr("&Tools"));
+    QMenu *mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actScriptEditor);
     mnuTools->addAction(actScriptEditorRunScript);
     mnuTools->addSeparator();
@@ -548,11 +548,6 @@ void MainWindow::createMenus()
     mnuTools->addSeparator();
     // mnuTools->addAction(actReport);
     mnuTools->addAction(actCreateVideo);
-#ifdef Q_WS_WIN
-    mnuTools->addSeparator();
-    mnuTools->addAction(actOptions);
-#endif
-
     // read custom forms
     mnuTools->addSeparator();
     mnuCustomForms = new QMenu(tr("Custom forms"), this);
@@ -560,8 +555,12 @@ void MainWindow::createMenus()
     readCustomScripts(mnuCustomForms);
     // mnuCustomForms->addSeparator();
     // readCustomForms(mnuCustomForms);
+#ifdef Q_WS_WIN
+    mnuTools->addSeparator();
+    mnuTools->addAction(actOptions);
+#endif
 
-    mnuHelp = menuBar()->addMenu(tr("&Help"));
+    QMenu *mnuHelp = menuBar()->addMenu(tr("&Help"));
     mnuHelp->addAction(actHelp);
     // mnuHelp->addAction(actOnlineHelp);
     // mnuHelp->addAction(actHelpShortCut);

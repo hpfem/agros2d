@@ -65,8 +65,8 @@ private:
     void loadWidget(const QString &fileName);
 
 private slots:
-    void load();
-    void save();
+    void loadFromFile();
+    void saveToFile();
 
     void reloadWidget();
     void designer();

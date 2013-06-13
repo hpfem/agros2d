@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>353</width>
-    <height>450</height>
+    <height>472</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabDimensions">
       <attribute name="title">
@@ -578,19 +578,6 @@
                 </property>
                </widget>
               </item>
-              <item>
-               <spacer name="verticalSpacer_7">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
              </layout>
             </item>
            </layout>
@@ -677,13 +664,31 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>tabWidget</tabstop>
   <tabstop>txtStatorDiameterOuter</tabstop>
   <tabstop>txtStatorDiameterInner</tabstop>
   <tabstop>txtStatorSlots</tabstop>
   <tabstop>txtRotorDiameter</tabstop>
   <tabstop>txtRotorSlots</tabstop>
   <tabstop>txtShaftDiameter</tabstop>
+  <tabstop>txtStatorSlotA</tabstop>
+  <tabstop>txtStatorSlotB</tabstop>
+  <tabstop>txtStatorSlotC</tabstop>
+  <tabstop>txtStatorSlotD</tabstop>
+  <tabstop>txtStatorSlotE</tabstop>
+  <tabstop>txtStatorCoolingSystemDiameter</tabstop>
+  <tabstop>txtStatorCoolingSystemHoleDiameter</tabstop>
+  <tabstop>txtStatorCoolingSystemAngle</tabstop>
+  <tabstop>txtStatorCoolingSystemCount</tabstop>
+  <tabstop>txtRotorSlotA</tabstop>
+  <tabstop>txtRotorSlotB</tabstop>
+  <tabstop>txtRotorSlotC</tabstop>
+  <tabstop>txtRotorSlotD</tabstop>
+  <tabstop>txtRotorSlotE</tabstop>
+  <tabstop>txtRotorCoolingSystemDiameter</tabstop>
+  <tabstop>txtRotorCoolingSystemHoleDiameter</tabstop>
+  <tabstop>txtRotorCoolingSystemAngle</tabstop>
+  <tabstop>txtRotorCoolingSystemCount</tabstop>
+  <tabstop>tabWidget</tabstop>
  </tabstops>
  <resources/>
  <connections/>
