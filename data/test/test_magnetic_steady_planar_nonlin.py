@@ -18,12 +18,12 @@ agros2d.view.post2d.vectors = False
 magnetic = agros2d.field("magnetic")
 magnetic.analysis_type = "steadystate"
 magnetic.number_of_refinements = 1
-magnetic.polynomial_order = 2
+magnetic.polynomial_order = 3
 magnetic.linearity_type = "newton"
-magnetic.nonlinear_tolerance = 0.2
+magnetic.nonlinear_tolerance = 0.1
 magnetic.nonlinear_steps = 20
 magnetic.damping_type = "fixed"
-magnetic.reuse_jacobian = True
+magnetic.reuse_jacobian = False
 magnetic.maximum_steps_with_reused_jacobian = 10
 magnetic.sufficient_improvement_factor_for_jacobian_reuse = 0.9
 
@@ -82,7 +82,7 @@ problem.solve()
 # point value
 point = magnetic.local_values(1.814e-02, -7.690e-03)
 testB = agros2d.test("Flux density", point["Br"], 1.819661)
-testmur = agros2d.test("Magnetic potential", point["mur"], 139.364773)
+testmur = agros2d.test("Permeability", point["mur"], 139.364773, 0.04)
 
 # volume integral
 volume = magnetic.volume_integrals([2])
