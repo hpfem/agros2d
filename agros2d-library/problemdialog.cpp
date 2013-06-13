@@ -323,7 +323,7 @@ void FieldWidget::createContent()
     //layoutSolverConvergence->addWidget(lblNonlinearConvergence, 1, 0);
     layoutSolverConvergence->addWidget(new QLabel(tr("Maximum steps")), 1, 0);
     //layoutSolverConvergence->addWidget(lblNonlinearSteps, 2, 1);
-    layoutSolverConvergence->addWidget(txtNonlinearSteps, 1, 1);
+    layoutSolverConvergence->addWidget(txtNonlinearSteps, 1, 2);
     //layoutSolverConvergence->addWidget(new QLabel(tr("and all the following are satisfied")), 1, 2);
     layoutSolverConvergence->addWidget(cmbNonlinearConvergenceMeasurement, 2, 0);
     layoutSolverConvergence->addWidget(lblNonlinearTolerance, 2, 1);
