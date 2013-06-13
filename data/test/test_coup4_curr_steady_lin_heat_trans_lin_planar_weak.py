@@ -1,3 +1,5 @@
+# based on test_coupling_4_transient_planar.py
+
 import agros2d
 from time import time
 start_time = time()
@@ -8,7 +10,7 @@ problem.coordinate_type = "planar"
 problem.mesh_type = "triangle"
 problem.matrix_solver = "umfpack"
 problem.time_step_method = "fixed"
-problem.time_method_order = 1
+problem.time_method_order = 2
 problem.time_steps = 6
 problem.time_total = 60
 

@@ -33,6 +33,8 @@ elasticity.analysis_type = "steadystate"
 elasticity.number_of_refinements = 1
 elasticity.polynomial_order = 3
 elasticity.linearity_type = "newton"
+elasticity.nonlinear_steps = 30
+
 
 elasticity.add_boundary("Fixed", "elasticity_fixed_fixed", {"elasticity_displacement_x" : 0, "elasticity_displacement_y" : 0})
 elasticity.add_boundary("Free", "elasticity_free_free", {"elasticity_force_x" : 0, "elasticity_force_y" : 0})
@@ -45,6 +47,7 @@ heat.analysis_type = "steadystate"
 heat.number_of_refinements = 1
 heat.polynomial_order = 3
 heat.linearity_type = "newton"
+heat.nonlinear_steps = 30
 
 heat.add_boundary("Zero flux", "heat_heat_flux", {"heat_convection_external_temperature" : 0, "heat_convection_heat_transfer_coefficient" : 0, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 0, "heat_radiation_emissivity" : 0})
 heat.add_boundary("Convection", "heat_heat_flux", {"heat_convection_external_temperature" : 20, "heat_convection_heat_transfer_coefficient" : 20, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 0, "heat_radiation_emissivity" : 0})

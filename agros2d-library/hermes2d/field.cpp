@@ -832,7 +832,7 @@ void FieldInfo::setDefaultValues()
     m_settingDefault.clear();
 
     m_settingDefault[NonlinearTolerance] = 0.1;
-    m_settingDefault[NonlinearSteps] = 10;
+    m_settingDefault[NonlinearSteps] = 30;
     m_settingDefault[NonlinearConvergenceMeasurement] = Hermes::Hermes2D::ResidualNormAbsolute;
     m_settingDefault[NewtonDampingType] = DampingType_Automatic;
     m_settingDefault[NewtonDampingCoeff] = 0.8;

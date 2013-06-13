@@ -21,7 +21,6 @@ current.number_of_refinements = 1
 current.polynomial_order = 2
 current.linearity_type = "newton"
 current.nonlinear_tolerance = 0.001
-current.nonlinear_steps = 10
 
 current.add_boundary("10 V", "current_potential", {"current_potential" : 10})
 current.add_boundary("0 V", "current_potential", {"current_potential" : 0})
@@ -35,7 +34,6 @@ heat.number_of_refinements = 2
 heat.polynomial_order = 3
 heat.linearity_type = "newton"
 heat.nonlinear_tolerance = 0.001
-heat.nonlinear_steps = 20
 
 heat.add_boundary("300 K", "heat_temperature", {"heat_temperature" : 300})
 heat.add_boundary("Flux", "heat_heat_flux", {"heat_convection_external_temperature" : 20, "heat_convection_heat_transfer_coefficient" : 20, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 20, "heat_radiation_emissivity" : 0.95})
@@ -48,7 +46,6 @@ elasticity.number_of_refinements = 1
 elasticity.polynomial_order = 3
 elasticity.linearity_type = "newton"
 elasticity.nonlinear_tolerance = 0.001
-elasticity.nonlinear_steps = 50
 
 elasticity.add_boundary("Fixed", "elasticity_fixed_fixed", {"elasticity_displacement_x" : 0, "elasticity_displacement_y" : 0})
 elasticity.add_boundary("Fixed free", "elasticity_fixed_free", {"elasticity_displacement_x" : 0, "elasticity_force_y" : 0})
