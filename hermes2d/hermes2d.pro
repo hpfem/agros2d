@@ -159,6 +159,8 @@ HEADERS += \
 linux-g++|linux-g++-64|linux-g++-32 {
     QMAKE_LFLAGS += -fopenmp
     QMAKE_CXXFLAGS += -fopenmp
+
+    INCLUDEPATH += /usr/include/google
 }
 
 linux-clang {
@@ -231,7 +233,6 @@ win32-msvc2010 {
     DEFINES += AGROS
     DEFINES += HERMES_FOR_AGROS
     DEFINES += XML_LIBRARY
-    DEFINES += WITH_TC_MALLOC
     DEFINES += WIN32
     DEFINES += _WINDOWS
     DEFINES += IMPLEMENT_C99
