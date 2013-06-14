@@ -181,7 +181,7 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     INCLUDEPATH += /usr/include/google
     LIBS += -lumfpack
     LIBS += -lxerces-c
-    LIBS += -ltcmalloc_minimal
+    # LIBS += -ltcmalloc_minimal
     LIBS += -lstdc++
 
     # mumps
@@ -248,7 +248,7 @@ win32-msvc2010 {
     LIBS += -Lc:/hpfem/hermes/dependencies/lib
     LIBS += -Ld:/hpfem/hermes/dependencies/lib
     LIBS += -llibumfpack
-    LIBS += -llibtcmalloc_minimal
+    # LIBS += -llibtcmalloc_minimal
     LIBS += -llibamd
     LIBS += -lpthreadVCE2
     LIBS += -lvcomp
