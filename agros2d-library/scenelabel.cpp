@@ -358,7 +358,7 @@ QLayout* SceneLabelDialog::createContent()
 
     // mesh
     QFormLayout *layoutMeshParameters = new QFormLayout();
-    layoutMeshParameters->addRow(tr("Triangle area (m<sup>2</sup>):"), layoutArea);
+    layoutMeshParameters->addRow(tr("Element area (Triangle) (m<sup>2</sup>):"), layoutArea);
 
     QGroupBox *grpMeshParameters = new QGroupBox(tr("Mesh parameters"));
     grpMeshParameters->setLayout(layoutMeshParameters);
