@@ -260,14 +260,13 @@ HermesSolverContainer<Scalar>* HermesSolverContainer<Scalar>::factory(Block* blo
     if (IterSolver<Scalar> *linearSolver = dynamic_cast<IterSolver<Scalar> *>(solver->linearSolver()))
     {
         linearSolver->set_max_iters(1000);
-        linearSolver->set_tolerance(1e-25, IterSolver<double>::AbsoluteTolerance);
+        linearSolver->set_tolerance(1e-15, IterSolver<double>::AbsoluteTolerance);
     }
 #ifdef WITH_PARALUTION
     if (ParalutionLinearMatrixSolver<Scalar> *linearSolver = dynamic_cast<ParalutionLinearMatrixSolver<Scalar> *>(solver->linearSolver()))
     {
         linearSolver->set_solver_type(Hermes::Solvers::ParalutionLinearMatrixSolver<Scalar>::BiCGStab);
         linearSolver->set_precond(new Hermes::Preconditioners::ParalutionPrecond<Scalar>(Hermes::Preconditioners::ParalutionPrecond<Scalar>::ILU));
-        // linearSolver->set_precond(new Hermes::Preconditioners::ParalutionPrecond<Scalar>(Hermes::Preconditioners::ParalutionPrecond<Scalar>::Jacobi));
     }
 #endif
 
@@ -283,8 +282,6 @@ void HermesSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVect
     {
         int ndof = Space<Scalar>::get_num_dofs(spaces);
         memset(solutionVector, 0, ndof*sizeof(Scalar));
-
-        solutionVector = NULL;
     }
     else
     {
@@ -581,8 +578,6 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Hermes::vector<SpaceSharedPtr<Sca
     m_hermesSolverContainer->setMatrixRhsOutput(m_solverCode, adaptivityStep);
 
     m_hermesSolverContainer->solve(initialSolutionVector);
-    if (initialSolutionVector)
-        delete [] initialSolutionVector;
 
     // linear solver statistics
     LinearMatrixSolver<Scalar> *linearSolver = m_hermesSolverContainer->linearSolver();
@@ -591,6 +586,11 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Hermes::vector<SpaceSharedPtr<Sca
         Agros2D::log()->printDebug(QObject::tr("Solver"),
                                    QObject::tr("Iterative solver statistics: %1 iterations")
                                    .arg(iterLinearSolver->get_num_iters()));
+    }
+    else
+    {
+        if (initialSolutionVector)
+           delete [] initialSolutionVector;
     }
 
     return m_hermesSolverContainer->slnVector();
@@ -601,7 +601,8 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
 {
     // to be used as starting vector for the Newton solver
     MultiArray<Scalar> previousTSMultiSolutionArray;
-    if((m_block->isTransient() && m_block->linearityType() != LinearityType_Linear) && (timeStep > 0))
+    // if ((m_block->isTransient() && m_block->linearityType() != LinearityType_Linear) && (timeStep > 0))
+    if ((m_block->isTransient()) && (timeStep > 0))
         previousTSMultiSolutionArray = Agros2D::solutionStore()->multiSolutionPreviousCalculatedTS(BlockSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal));
 
     // check for DOFs

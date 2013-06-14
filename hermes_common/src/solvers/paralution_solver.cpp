@@ -292,6 +292,7 @@ namespace Hermes
       // Create initial guess.
       paralution::LocalVector<Scalar> x;
       x.SetDataPtr(&initial_guess, "Initial guess", matrix->get_size());
+      // x.WriteFileASCII("/home/karban/ascii_initial.txt");
 
       // Handle the situation when rhs == 0(vector).
       if(std::abs(rhs->get_paralutionVector().Norm()) < Hermes::epsilon)
