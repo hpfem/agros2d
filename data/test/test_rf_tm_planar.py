@@ -24,7 +24,7 @@ rf_tm.linearity_type = "linear"
 
 # boundaries
 rf_tm.add_boundary("Perfect electric conductor", "rf_tm_magnetic_field", {"rf_tm_magnetic_field_real" : 0, "rf_tm_magnetic_field_imag" : 0})
-rf_tm.add_boundary("Matched boundary", "rf_tm_magnetic_field", {"rf_tm_magnetic_field_real" : 0, "rf_tm_magnetic_field_imag" : 0})
+rf_tm.add_boundary("Matched boundary", "rf_tm_impedance", {"rf_tm_impedance" : 377})
 rf_tm.add_boundary("Surface current", "rf_tm_magnetic_field", {"rf_tm_magnetic_field_real" : 1, "rf_tm_magnetic_field_imag" : 1})
 
 
@@ -74,11 +74,11 @@ testDx_real = a2d.test("Electric displacement - x - real", point["Drx"],-4.46036
 testDx_imag = a2d.test("Electric displacement - x - imag", point["Dix"],4.448611e-9)
 testDy_real = a2d.test("Electric displacement - y - real", point["Dry"], 3.025599e-9)
 testDy_imag = a2d.test("Electric displacement - y - imag", point["Diy"], -3.027227e-9)
-#testNx = a2d.test("Poynting vector - x", point["Nx"], 156.567066)
-#testNy = a2d.test("Poynting vector - y", point["Ny"], -3.138616, 1)
+testNx = a2d.test("Poynting vector - x", point["Nx"], 0.820297)
+point = rf_tm.local_values(1.841e-01, -3.055e-02)
+testNy = a2d.test("Poynting vector - y", point["Ny"], -1.880639)
 
 elapsed_time = time() - start_time
 print("Test: RF TM - planar ({0}): ".format(round(elapsed_time, 3)) + str(testH and testH_real and testH_imag
 and testE and testEx_real and testEx_imag and testEy_real and testEy_imag and
-testD and testDx_real and testDx_imag and testDy_real and testDy_imag ))
-# and testNx and testNy))
+testD and testDx_real and testDx_imag and testDy_real and testDy_imag  and testNx and testNy))
