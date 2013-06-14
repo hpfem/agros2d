@@ -88,7 +88,7 @@ void NewtonSolverAgros<Scalar>::on_damping_factor_updated()
 }
 
 template <typename Scalar>
-void NewtonSolverAgros<Scalar>::on_reused_jacobian_step_begin()
+void NewtonSolverAgros<Scalar>::on_reused_jacobian_step_end()
 {
     setError(Phase_JacobianReused);
 }
@@ -120,6 +120,9 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
 
     double current_residual_norm = residual_norms[iteration - 1];
     double current_solution_norm = solution_norms[iteration - 1];
+    QString resNorms;
+    for(int i = 0; i < iteration; i++)
+        resNorms = QObject::tr("%1%2, ").arg(resNorms).arg(residual_norms[i]);
 
     double previous_residual_norm = current_residual_norm;
     double previous_solution_norm = current_solution_norm;

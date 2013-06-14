@@ -50,7 +50,7 @@ public:
     virtual bool on_step_end();
     virtual bool on_finish();
     virtual void on_damping_factor_updated();
-    virtual void on_reused_jacobian_step_begin();
+    virtual void on_reused_jacobian_step_end();
 
     void clearSteps();
 
