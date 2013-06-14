@@ -48,6 +48,17 @@ SOURCES += src/base/backend_manager.cpp \
     src/utils/allocate_free.cpp \
     thirdparty/matrix-market/mmio.c
 
+linux-g++|linux-g++-64|linux-g++-32 {
+    QMAKE_LFLAGS += -fopenmp
+    QMAKE_CXXFLAGS += -fopenmp
+
+    INCLUDEPATH += /usr/include/google
+}
+
+linux-clang {
+    INCLUDEPATH += omp
+}
+
 linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     TARGET = ../../libs/agros_3rdparty_paralution
 }
