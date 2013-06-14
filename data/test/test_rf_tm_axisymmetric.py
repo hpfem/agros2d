@@ -78,11 +78,10 @@ testDr_imag = a2d.test("Electric displacement r component - imag", point["Dir"],
 testDz_real = a2d.test("Electric displacement z component - real", point["Drz"],-9.15391e-10)
 testDz_imag = a2d.test("Electric displacement z component - imag", point["Diz"], -1.31926e-10)
 
-#testNr = a2d.test("Poynting vector r component", point["Nr"], 1.98583e-4)
-#testNz = a2d.test("Poynting vector z component", point["Nz"], 2.47866e-4)
+testNr = a2d.test("Poynting vector r component", point["Nr"], 27.940976)
+testNz = a2d.test("Poynting vector z component", point["Nz"], 34.895617)
 
 elapsed_time = time() - start_time
 print("Test: RF TM - axisymmetric ({0}): ".format(round(elapsed_time, 3)) + str(testH and testHr and testHi and testB
 and testBr and testBi and testE and testEr_real and testEr_imag and testEz_real and testEz_imag
-and testD and testDr_real and testDr_imag and testDz_real and testDz_imag))
-#  and testNr and testNz))
+and testD and testDr_real and testDr_imag and testDz_real and testDz_imag and testNr and testNz))
