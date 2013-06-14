@@ -99,10 +99,7 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 
     // force number format
-    QLocale loc = QLocale::system(); // current locale
-    QLocale us(QLocale::English);
-    loc.setNumberOptions(us.numberOptions()); // borrow number options from the US locale
-    QLocale::setDefault(loc); // set as default
+    QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
 
     createPythonEngine();
     PythonEngine *pythonEngine = currentPythonEngine();
