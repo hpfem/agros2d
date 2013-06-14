@@ -123,13 +123,7 @@ void FormScript::loadWidget(const QString &fileName)
             // double validator
             if (widget->property("dataType") == "double")
             {
-                QDoubleValidator *validator = new QDoubleValidator(widget);
-                // force number format
-                QLocale loc = QLocale::system(); // current locale
-                loc.setNumberOptions(QLocale(QLocale::English).numberOptions()); // borrow number options from the US locale
-                validator->setLocale(loc);
-
-                widget->setValidator(validator);
+                widget->setValidator(new QDoubleValidator(widget));
             }
             // int validator
             if (widget->property("dataType") == "int")
