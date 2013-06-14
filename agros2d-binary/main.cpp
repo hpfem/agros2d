@@ -139,8 +139,7 @@ int main(int argc, char *argv[])
 
     // force number format
     QLocale loc = QLocale::system(); // current locale
-    QLocale us(QLocale::English);
-    loc.setNumberOptions(us.numberOptions()); // borrow number options from the US locale
+    loc.setNumberOptions(QLocale(QLocale::English).numberOptions()); // borrow number options from the US locale
     QLocale::setDefault(loc); // set as default
 
     // init indicator (ubuntu - unity, windows - overlay icon, macosx - ???)

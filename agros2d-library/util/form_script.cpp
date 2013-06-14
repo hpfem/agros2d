@@ -123,7 +123,13 @@ void FormScript::loadWidget(const QString &fileName)
             // double validator
             if (widget->property("dataType") == "double")
             {
-                widget->setValidator(new QDoubleValidator(widget));
+                QDoubleValidator *validator = new QDoubleValidator(widget);
+                // force number format
+                QLocale loc = QLocale::system(); // current locale
+                loc.setNumberOptions(QLocale(QLocale::English).numberOptions()); // borrow number options from the US locale
+                validator->setLocale(loc);
+
+                widget->setValidator(validator);
             }
             // int validator
             if (widget->property("dataType") == "int")
@@ -259,7 +265,14 @@ void FormScript::saveToFile()
     {
         // line edit
         if (QLineEdit *widget = dynamic_cast<QLineEdit  *>(object))
-            config.item().push_back(XMLForm::item(widget->objectName().toStdString(), widget->text().toStdString()));
+        {
+            // replace "," to "."
+            QString str = widget->text();
+            if (widget->property("dataType") == "double")
+                str = str.replace(",", ".");
+
+            config.item().push_back(XMLForm::item(widget->objectName().toStdString(), str.toStdString()));
+        }
         // radio button
         if (QRadioButton *widget = dynamic_cast<QRadioButton  *>(object))
             config.item().push_back(XMLForm::item(widget->objectName().toStdString(), widget->isChecked() ? "True" : "False"));
@@ -305,7 +318,12 @@ void FormScript::acceptForm()
             // line edit
             if (QLineEdit *widget = dynamic_cast<QLineEdit *>(object))
             {
-                script.SetValue(QString("%1_text").arg(widget->objectName()).toStdString(), widget->text().toStdString());
+                // replace "," to "."
+                QString str = widget->text();
+                if (widget->property("dataType") == "double")
+                    str = str.replace(",", ".");
+
+                script.SetValue(QString("%1_text").arg(widget->objectName()).toStdString(), str.toStdString());
             }
             // radio button
             if (QRadioButton *widget = dynamic_cast<QRadioButton *>(object))
