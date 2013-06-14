@@ -6,40 +6,51 @@
         <element minOccurs="1" maxOccurs="unbounded" name="element_data">
           <complexType>
             <all>
-				<element name="files">
-			      <complexType>
-		            <sequence>
-			          <element minOccurs="1" maxOccurs="unbounded" name="file">
-			            <complexType>
-						  <attribute name="array_id" type="int" use="required" />
-			              <attribute name="mesh_filename" type="string" use="required" />
-			              <attribute name="space_filename" type="string" use="required" />  
-			              <attribute name="solution_filename" type="string" use="required" />    
-						</complexType>
-					  </element>
-			        </sequence>
-			      </complexType>
-			    </element> 
-				<element name="newton_residuals">
-			      <complexType>
-		            <sequence>
-			          <element minOccurs="1" maxOccurs="unbounded" name="residual">
-			            <complexType>
-						  <attribute name="value" type="float" use="required" />
-						</complexType>
-					  </element>
-			        </sequence>
-			      </complexType>
-			    </element>  			     
-	        </all>
-		    <attribute name="field_id" type="string" use="required" />
-		    <attribute name="time_step" type="integer" use="required" />
-		    <attribute name="adaptivity_step" type="integer" use="required" />
-		    <attribute name="solution_type" type="string" use="required" />
+        <element name="files">
+            <complexType>
+                <sequence>
+                <element minOccurs="1" maxOccurs="unbounded" name="file">
+                  <complexType>
+              <attribute name="array_id" type="int" use="required" />
+                    <attribute name="mesh_filename" type="string" use="required" />
+                    <attribute name="space_filename" type="string" use="required" />  
+                    <attribute name="solution_filename" type="string" use="required" />    
+            </complexType>
+            </element>
+              </sequence>
+            </complexType>
+          </element> 
+        <element name="newton_residuals">
+            <complexType>
+                <sequence>
+                <element minOccurs="1" maxOccurs="unbounded" name="residual">
+                  <complexType>
+              <attribute name="value" type="float" use="required" />
+            </complexType>
+            </element>
+              </sequence>
+            </complexType>
+          </element>
+        <element name="newton_damping_coefficients">
+            <complexType>
+                <sequence>
+                <element minOccurs="1" maxOccurs="unbounded" name="damping_coefficient">
+                  <complexType>
+              <attribute name="value" type="float" use="required" />
+            </complexType>
+            </element>
+              </sequence>
+            </complexType>
+          </element>
+          </all>
+        <attribute name="field_id" type="string" use="required" />
+        <attribute name="time_step" type="integer" use="required" />
+        <attribute name="adaptivity_step" type="integer" use="required" />
+        <attribute name="solution_type" type="string" use="required" />
 
-		    <attribute name="time_step_length" type="double" use="optional" />
-		    <attribute name="adaptivity_error" type="double" use="optional" />
-		    <attribute name="dofs" type="int" use="optional" />
+        <attribute name="time_step_length" type="double" use="optional" />
+        <attribute name="adaptivity_error" type="double" use="optional" />
+        <attribute name="dofs" type="int" use="optional" />
           </complexType>
         </element>
       </sequence>

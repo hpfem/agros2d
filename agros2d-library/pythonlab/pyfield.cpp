@@ -800,21 +800,19 @@ void PyField::solverInfo(int timeStep, int adaptivityStep, const std::string &so
     if (!Agros2D::problem()->isSolved())
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
 
-    if (m_fieldInfo->linearityType() == LinearityType_Linear)
-        throw logic_error(QObject::tr("Field is linear.").toStdString());
-
     SolutionMode solutionMode = getSolutionMode(QString::fromStdString(solutionType));
 
-    // set time step if -1 (default parameter - last steps)
+    // step if -1 (default parameter - last steps)
     timeStep = getTimeStep(timeStep, solutionMode);
     adaptivityStep = getAdaptivityStep(adaptivityStep, timeStep, solutionMode);
 
     SolutionStore::SolutionRunTimeDetails runTime = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(m_fieldInfo, timeStep, adaptivityStep, solutionMode));
 
     for (int i = 0; i < runTime.newtonResidual().size(); i++)
-    {
         residual.push_back(runTime.newtonResidual().at(i));
-    }
+
+    for (int i = 0; i < runTime.newtonDamping().size(); i++)
+        dampingCoeff.push_back(runTime.newtonDamping().at(i));
 }
 
 void PyField::adaptivityInfo(int timeStep, const std::string &solutionType, vector<double> &error, vector<int> &dofs) const
@@ -830,8 +828,8 @@ void PyField::adaptivityInfo(int timeStep, const std::string &solutionType, vect
     // set time step if -1 (default parameter - last steps)
     timeStep = getTimeStep(timeStep, solutionMode);
 
-    int adaptiveSteps = Agros2D::solutionStore()->lastAdaptiveStep(m_fieldInfo, solutionMode) + 1;
-    for (int i = 0; i < adaptiveSteps; i++)
+    int adaptivitySteps = Agros2D::solutionStore()->lastAdaptiveStep(m_fieldInfo, solutionMode) + 1;
+    for (int i = 0; i < adaptivitySteps; i++)
     {
         SolutionStore::SolutionRunTimeDetails runTime = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(m_fieldInfo, timeStep, i, solutionMode));
         error.push_back(runTime.adaptivityError());

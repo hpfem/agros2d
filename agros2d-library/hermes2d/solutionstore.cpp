@@ -665,14 +665,20 @@ void SolutionStore::saveRunTimeDetails()
                 newton_residuals.residual().push_back(str.newtonResidual().at(iteration));
             }
 
+            XMLStructure::newton_damping_coefficients newton_damping_coefficients;
+            for (int iteration = 0; iteration < str.newtonDamping().size(); iteration++)
+            {
+                newton_damping_coefficients.damping_coefficient().push_back(str.newtonDamping().at(iteration));
+            }
+
             // solution id
             XMLStructure::element_data data(files,
                                             newton_residuals,
+                                            newton_damping_coefficients,
                                             solutionID.group->fieldId().toStdString(),
                                             solutionID.timeStep,
                                             solutionID.adaptivityStep,
                                             solutionTypeToStringKey(solutionID.solutionMode).toStdString());
-
 
             // properties
             data.time_step_length().set(str.timeStepLength());

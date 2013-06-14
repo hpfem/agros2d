@@ -55,12 +55,14 @@ public:
     void clearSteps();
 
     inline QVector<double> steps() const { return m_steps; }
+    inline QVector<double> damping() const { return m_damping; }
     inline QVector<double> errors() const { return m_errors; }
 
 protected:
     Block* m_block;
 
     QVector<double> m_steps;
+    QVector<double> m_damping;
     QVector<double> m_errors;
 
     void setError(Phase phase);

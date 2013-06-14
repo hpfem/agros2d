@@ -115,6 +115,30 @@ namespace XMLStructure
     this->newton_residuals_.set (x);
   }
 
+  const element_data::newton_damping_coefficients_type& element_data::
+  newton_damping_coefficients () const
+  {
+    return this->newton_damping_coefficients_.get ();
+  }
+
+  element_data::newton_damping_coefficients_type& element_data::
+  newton_damping_coefficients ()
+  {
+    return this->newton_damping_coefficients_.get ();
+  }
+
+  void element_data::
+  newton_damping_coefficients (const newton_damping_coefficients_type& x)
+  {
+    this->newton_damping_coefficients_.set (x);
+  }
+
+  void element_data::
+  newton_damping_coefficients (::std::auto_ptr< newton_damping_coefficients_type > x)
+  {
+    this->newton_damping_coefficients_.set (x);
+  }
+
   const element_data::field_id_type& element_data::
   field_id () const
   {
@@ -316,6 +340,28 @@ namespace XMLStructure
   }
 
 
+  // newton_damping_coefficients
+  // 
+
+  const newton_damping_coefficients::damping_coefficient_sequence& newton_damping_coefficients::
+  damping_coefficient () const
+  {
+    return this->damping_coefficient_;
+  }
+
+  newton_damping_coefficients::damping_coefficient_sequence& newton_damping_coefficients::
+  damping_coefficient ()
+  {
+    return this->damping_coefficient_;
+  }
+
+  void newton_damping_coefficients::
+  damping_coefficient (const damping_coefficient_sequence& s)
+  {
+    this->damping_coefficient_ = s;
+  }
+
+
   // file
   // 
 
@@ -430,6 +476,28 @@ namespace XMLStructure
   {
     this->value_.set (x);
   }
+
+
+  // damping_coefficient
+  // 
+
+  const damping_coefficient::value_type& damping_coefficient::
+  value () const
+  {
+    return this->value_.get ();
+  }
+
+  damping_coefficient::value_type& damping_coefficient::
+  value ()
+  {
+    return this->value_.get ();
+  }
+
+  void damping_coefficient::
+  value (const value_type& x)
+  {
+    this->value_.set (x);
+  }
 }
 
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
@@ -521,6 +589,7 @@ namespace XMLStructure
   element_data::
   element_data (const files_type& files,
                 const newton_residuals_type& newton_residuals,
+                const newton_damping_coefficients_type& newton_damping_coefficients,
                 const field_id_type& field_id,
                 const time_step_type& time_step,
                 const adaptivity_step_type& adaptivity_step,
@@ -528,6 +597,7 @@ namespace XMLStructure
   : ::xml_schema::type (),
     files_ (files, ::xml_schema::flags (), this),
     newton_residuals_ (newton_residuals, ::xml_schema::flags (), this),
+    newton_damping_coefficients_ (newton_damping_coefficients, ::xml_schema::flags (), this),
     field_id_ (field_id, ::xml_schema::flags (), this),
     time_step_ (time_step, ::xml_schema::flags (), this),
     adaptivity_step_ (adaptivity_step, ::xml_schema::flags (), this),
@@ -541,6 +611,7 @@ namespace XMLStructure
   element_data::
   element_data (::std::auto_ptr< files_type >& files,
                 ::std::auto_ptr< newton_residuals_type >& newton_residuals,
+                ::std::auto_ptr< newton_damping_coefficients_type >& newton_damping_coefficients,
                 const field_id_type& field_id,
                 const time_step_type& time_step,
                 const adaptivity_step_type& adaptivity_step,
@@ -548,6 +619,7 @@ namespace XMLStructure
   : ::xml_schema::type (),
     files_ (files, ::xml_schema::flags (), this),
     newton_residuals_ (newton_residuals, ::xml_schema::flags (), this),
+    newton_damping_coefficients_ (newton_damping_coefficients, ::xml_schema::flags (), this),
     field_id_ (field_id, ::xml_schema::flags (), this),
     time_step_ (time_step, ::xml_schema::flags (), this),
     adaptivity_step_ (adaptivity_step, ::xml_schema::flags (), this),
@@ -565,6 +637,7 @@ namespace XMLStructure
   : ::xml_schema::type (x, f, c),
     files_ (x.files_, f, this),
     newton_residuals_ (x.newton_residuals_, f, this),
+    newton_damping_coefficients_ (x.newton_damping_coefficients_, f, this),
     field_id_ (x.field_id_, f, this),
     time_step_ (x.time_step_, f, this),
     adaptivity_step_ (x.adaptivity_step_, f, this),
@@ -582,6 +655,7 @@ namespace XMLStructure
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     files_ (f, this),
     newton_residuals_ (f, this),
+    newton_damping_coefficients_ (f, this),
     field_id_ (f, this),
     time_step_ (f, this),
     adaptivity_step_ (f, this),
@@ -635,6 +709,20 @@ namespace XMLStructure
         }
       }
 
+      // newton_damping_coefficients
+      //
+      if (n.name () == "newton_damping_coefficients" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< newton_damping_coefficients_type > r (
+          newton_damping_coefficients_traits::create (i, f, this));
+
+        if (!newton_damping_coefficients_.present ())
+        {
+          this->newton_damping_coefficients_.set (r);
+          continue;
+        }
+      }
+
       break;
     }
 
@@ -649,6 +737,13 @@ namespace XMLStructure
     {
       throw ::xsd::cxx::tree::expected_element< char > (
         "newton_residuals",
+        "");
+    }
+
+    if (!newton_damping_coefficients_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_element< char > (
+        "newton_damping_coefficients",
         "");
     }
 
@@ -888,6 +983,76 @@ namespace XMLStructure
   {
   }
 
+  // newton_damping_coefficients
+  //
+
+  newton_damping_coefficients::
+  newton_damping_coefficients ()
+  : ::xml_schema::type (),
+    damping_coefficient_ (::xml_schema::flags (), this)
+  {
+  }
+
+  newton_damping_coefficients::
+  newton_damping_coefficients (const newton_damping_coefficients& x,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
+  : ::xml_schema::type (x, f, c),
+    damping_coefficient_ (x.damping_coefficient_, f, this)
+  {
+  }
+
+  newton_damping_coefficients::
+  newton_damping_coefficients (const ::xercesc::DOMElement& e,
+                               ::xml_schema::flags f,
+                               ::xml_schema::container* c)
+  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    damping_coefficient_ (f, this)
+  {
+    if ((f & ::xml_schema::flags::base) == 0)
+    {
+      ::xsd::cxx::xml::dom::parser< char > p (e, true, false);
+      this->parse (p, f);
+    }
+  }
+
+  void newton_damping_coefficients::
+  parse (::xsd::cxx::xml::dom::parser< char >& p,
+         ::xml_schema::flags f)
+  {
+    for (; p.more_elements (); p.next_element ())
+    {
+      const ::xercesc::DOMElement& i (p.cur_element ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      // damping_coefficient
+      //
+      if (n.name () == "damping_coefficient" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< damping_coefficient_type > r (
+          damping_coefficient_traits::create (i, f, this));
+
+        this->damping_coefficient_.push_back (r);
+        continue;
+      }
+
+      break;
+    }
+  }
+
+  newton_damping_coefficients* newton_damping_coefficients::
+  _clone (::xml_schema::flags f,
+          ::xml_schema::container* c) const
+  {
+    return new class newton_damping_coefficients (*this, f, c);
+  }
+
+  newton_damping_coefficients::
+  ~newton_damping_coefficients ()
+  {
+  }
+
   // file
   //
 
@@ -1087,6 +1252,76 @@ namespace XMLStructure
   ~residual ()
   {
   }
+
+  // damping_coefficient
+  //
+
+  damping_coefficient::
+  damping_coefficient (const value_type& value)
+  : ::xml_schema::type (),
+    value_ (value, ::xml_schema::flags (), this)
+  {
+  }
+
+  damping_coefficient::
+  damping_coefficient (const damping_coefficient& x,
+                       ::xml_schema::flags f,
+                       ::xml_schema::container* c)
+  : ::xml_schema::type (x, f, c),
+    value_ (x.value_, f, this)
+  {
+  }
+
+  damping_coefficient::
+  damping_coefficient (const ::xercesc::DOMElement& e,
+                       ::xml_schema::flags f,
+                       ::xml_schema::container* c)
+  : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
+    value_ (f, this)
+  {
+    if ((f & ::xml_schema::flags::base) == 0)
+    {
+      ::xsd::cxx::xml::dom::parser< char > p (e, false, true);
+      this->parse (p, f);
+    }
+  }
+
+  void damping_coefficient::
+  parse (::xsd::cxx::xml::dom::parser< char >& p,
+         ::xml_schema::flags f)
+  {
+    while (p.more_attributes ())
+    {
+      const ::xercesc::DOMAttr& i (p.next_attribute ());
+      const ::xsd::cxx::xml::qualified_name< char > n (
+        ::xsd::cxx::xml::dom::name< char > (i));
+
+      if (n.name () == "value" && n.namespace_ ().empty ())
+      {
+        this->value_.set (value_traits::create (i, f, this));
+        continue;
+      }
+    }
+
+    if (!value_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "value",
+        "");
+    }
+  }
+
+  damping_coefficient* damping_coefficient::
+  _clone (::xml_schema::flags f,
+          ::xml_schema::container* c) const
+  {
+    return new class damping_coefficient (*this, f, c);
+  }
+
+  damping_coefficient::
+  ~damping_coefficient ()
+  {
+  }
 }
 
 #include <ostream>
@@ -1120,6 +1355,7 @@ namespace XMLStructure
   {
     o << ::std::endl << "files: " << i.files ();
     o << ::std::endl << "newton_residuals: " << i.newton_residuals ();
+    o << ::std::endl << "newton_damping_coefficients: " << i.newton_damping_coefficients ();
     o << ::std::endl << "field_id: " << i.field_id ();
     o << ::std::endl << "time_step: " << i.time_step ();
     o << ::std::endl << "adaptivity_step: " << i.adaptivity_step ();
@@ -1169,6 +1405,19 @@ namespace XMLStructure
   }
 
   ::std::ostream&
+  operator<< (::std::ostream& o, const newton_damping_coefficients& i)
+  {
+    for (newton_damping_coefficients::damping_coefficient_const_iterator
+         b (i.damping_coefficient ().begin ()), e (i.damping_coefficient ().end ());
+         b != e; ++b)
+    {
+      o << ::std::endl << "damping_coefficient: " << *b;
+    }
+
+    return o;
+  }
+
+  ::std::ostream&
   operator<< (::std::ostream& o, const file& i)
   {
     o << ::std::endl << "array_id: " << i.array_id ();
@@ -1180,6 +1429,13 @@ namespace XMLStructure
 
   ::std::ostream&
   operator<< (::std::ostream& o, const residual& i)
+  {
+    o << ::std::endl << "value: " << i.value ();
+    return o;
+  }
+
+  ::std::ostream&
+  operator<< (::std::ostream& o, const damping_coefficient& i)
   {
     o << ::std::endl << "value: " << i.value ();
     return o;
@@ -1683,6 +1939,17 @@ namespace XMLStructure
       s << i.newton_residuals ();
     }
 
+    // newton_damping_coefficients
+    //
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "newton_damping_coefficients",
+          e));
+
+      s << i.newton_damping_coefficients ();
+    }
+
     // field_id
     //
     {
@@ -1805,6 +2072,26 @@ namespace XMLStructure
   }
 
   void
+  operator<< (::xercesc::DOMElement& e, const newton_damping_coefficients& i)
+  {
+    e << static_cast< const ::xml_schema::type& > (i);
+
+    // damping_coefficient
+    //
+    for (newton_damping_coefficients::damping_coefficient_const_iterator
+         b (i.damping_coefficient ().begin ()), n (i.damping_coefficient ().end ());
+         b != n; ++b)
+    {
+      ::xercesc::DOMElement& s (
+        ::xsd::cxx::xml::dom::create_element (
+          "damping_coefficient",
+          e));
+
+      s << *b;
+    }
+  }
+
+  void
   operator<< (::xercesc::DOMElement& e, const file& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
@@ -1856,6 +2143,23 @@ namespace XMLStructure
 
   void
   operator<< (::xercesc::DOMElement& e, const residual& i)
+  {
+    e << static_cast< const ::xml_schema::type& > (i);
+
+    // value
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "value",
+          e));
+
+      a << i.value ();
+    }
+  }
+
+  void
+  operator<< (::xercesc::DOMElement& e, const damping_coefficient& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
 

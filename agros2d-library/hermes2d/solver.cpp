@@ -212,6 +212,7 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
     //                                     .arg(m_errors.last()));
     //    }
 
+    m_damping.append(current_damping_coefficient);
     Agros2D::log()->setNonlinearTable(m_steps, m_errors);
 }
 
@@ -642,7 +643,12 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
                                                       Hermes::Hermes2D::Space<double>::get_num_dofs(actualSpaces()));
 
         if (dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer))
-            runTime.setNewtonResidual(dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer)->solver()->errors());
+        {
+            NewtonSolverAgros<Scalar> *solver = dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer)->solver();
+
+            runTime.setNewtonResidual(solver->errors());
+            runTime.setNewtonDamping(solver->damping());
+        }
 
         Agros2D::solutionStore()->addSolution(solutionID, MultiArray<Scalar>(actualSpaces(), solutions), runTime);
     }
@@ -936,7 +942,12 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
                                                   0.0,
                                                   Hermes::Hermes2D::Space<double>::get_num_dofs(actualSpaces()));
     if (dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer))
-        runTime.setNewtonResidual(dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer)->solver()->errors());
+    {
+        NewtonSolverAgros<Scalar> *solver = dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer)->solver();
+
+        runTime.setNewtonResidual(solver->errors());
+        runTime.setNewtonDamping(solver->damping());
+    }
 
     MultiArray<Scalar> msa(actualSpaces(), solutions);
     Agros2D::solutionStore()->addSolution(solutionID, msa, runTime);
