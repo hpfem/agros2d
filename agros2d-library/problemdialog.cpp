@@ -146,7 +146,7 @@ void FieldWidget::createContent()
     txtAdaptivitySteps = new QSpinBox(this);
     txtAdaptivitySteps->setMinimum(1);
     txtAdaptivitySteps->setMaximum(100);
-    txtAdaptivityTolerance = new LineEditDouble(1.0, true);
+    txtAdaptivityTolerance = new LineEditDouble(1.0);
     txtAdaptivityTolerance->setBottom(0.0);
     cmbAdaptivityStoppingCriterionType = new QComboBox();
     foreach (QString type, adaptivityStoppingCriterionTypeStringKeys())
@@ -183,8 +183,8 @@ void FieldWidget::createContent()
 
     // transient
     cmbAnalysisType = new QComboBox();
-    txtTransientInitialCondition = new LineEditDouble(0.0, true);
-    txtTransientTimeSkip = new LineEditDouble(0.0, true);
+    txtTransientInitialCondition = new LineEditDouble(0.0);
+    txtTransientTimeSkip = new LineEditDouble(0.0);
     txtTransientTimeSkip->setBottom(0.0);
 
     // linearity
@@ -198,22 +198,22 @@ void FieldWidget::createContent()
     txtNonlinearSteps->setValue(m_fieldInfo->defaultValue(FieldInfo::NonlinearSteps).toInt());
 //    lblNonlinearTolerance = new QLabel(tr("Tolerance:"));
     lblNonlinearTolerance = new QLabel(tr("at most:"));
-    txtNonlinearTolerance = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::NonlinearTolerance).toDouble(), true);
+    txtNonlinearTolerance = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::NonlinearTolerance).toDouble());
     txtNonlinearTolerance->setBottom(0.0);
 
     lblNewtonDampingType = new QLabel(tr("Damping:"));
     cmbNewtonDampingType = new QComboBox();
     connect(cmbNewtonDampingType, SIGNAL(currentIndexChanged(int)), this, SLOT(doNewtonDampingChanged(int)));
     lblNewtonDampingCoeff = new QLabel(tr("Factor:"));
-    txtNewtonDampingCoeff = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::NewtonDampingCoeff).toDouble(), true);
+    txtNewtonDampingCoeff = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::NewtonDampingCoeff).toDouble());
     txtNewtonDampingCoeff->setBottom(0.0);
     chkNewtonReuseJacobian = new QCheckBox(tr("Reuse Jacobian if possible"));
     connect(chkNewtonReuseJacobian, SIGNAL(toggled(bool)), this, SLOT(doNewtonReuseJacobian(bool)));
 
     lblNewtonSufficientImprovementFactorForJacobianReuse = new QLabel(tr("New/old residual ratio max. for Jacobian reuse"));;
-    txtNewtonSufficientImprovementFactorForJacobianReuse = new LineEditDouble(0, true);
+    txtNewtonSufficientImprovementFactorForJacobianReuse = new LineEditDouble();
     lblNewtonSufficientImprovementFactor = new QLabel(tr("New/old residual ratio max. for damping search"));;
-    txtNewtonSufficientImprovementFactor = new LineEditDouble(0, true);
+    txtNewtonSufficientImprovementFactor = new LineEditDouble();
     lblNewtonMaximumStepsWithReusedJacobian = new QLabel(tr("Max. number of steps with the same Jacobian:"));
     txtNewtonMaximumStepsWithReusedJacobian = new QSpinBox(this);
     txtNewtonMaximumStepsWithReusedJacobian->setMinimum(0);
@@ -226,7 +226,7 @@ void FieldWidget::createContent()
     chkPicardAndersonAcceleration = new QCheckBox(tr("Use Anderson acceleration"));
     connect(chkPicardAndersonAcceleration, SIGNAL(stateChanged(int)), this, SLOT(doPicardAndersonChanged(int)));
     lblPicardAndersonBeta = new QLabel(tr("Anderson beta:"));
-    txtPicardAndersonBeta = new LineEditDouble(0.2, true);
+    txtPicardAndersonBeta = new LineEditDouble(0.2);
     txtPicardAndersonBeta->setBottom(0.0);
     txtPicardAndersonBeta->setTop(1.0);
     lblPicardAndersonNumberOfLastVectors = new QLabel(tr("Num. of last used iter.:"));
@@ -996,7 +996,7 @@ void ProblemWidget::createControls()
     grpGeneral->setLayout(layoutGeneral);
 
     // harmonic
-    txtFrequency = new LineEditDouble(0, true);
+    txtFrequency = new LineEditDouble(0);
     txtFrequency->setBottom(0.0);
 
     // harmonic analysis
@@ -1013,9 +1013,9 @@ void ProblemWidget::createControls()
     txtTransientOrder = new QSpinBox();
     txtTransientOrder->setMinimum(1);
     txtTransientOrder->setMaximum(3);
-    txtTransientTimeTotal = new LineEditDouble(1.0, true);
+    txtTransientTimeTotal = new LineEditDouble(1.0);
     txtTransientTimeTotal->setBottom(0.0);
-    txtTransientTolerance = new LineEditDouble(0.1, true);
+    txtTransientTolerance = new LineEditDouble(0.1);
     txtTransientTolerance->setBottom(0.0);
     txtTransientSteps = new QSpinBox();
     txtTransientSteps->setMinimum(1);

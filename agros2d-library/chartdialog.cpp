@@ -208,13 +208,13 @@ void ChartWidget::createControls()
     lblEndX = new QLabel("X:");
     lblEndY = new QLabel("Y:");
 
-    txtStartX = new LineEditDouble(0.0, true);
-    txtStartY = new LineEditDouble(0.0, true);
+    txtStartX = new LineEditDouble(0.0);
+    txtStartY = new LineEditDouble(0.0);
     connect(txtStartX, SIGNAL(textChanged(QString)), this, SLOT(createChartLine()));
     connect(txtStartY, SIGNAL(textChanged(QString)), this, SLOT(createChartLine()));
 
-    txtEndX = new LineEditDouble(0.0, true);
-    txtEndY = new LineEditDouble(0.0, true);
+    txtEndX = new LineEditDouble(0.0);
+    txtEndY = new LineEditDouble(0.0);
     connect(txtEndX, SIGNAL(textChanged(QString)), this, SLOT(createChartLine()));
     connect(txtEndY, SIGNAL(textChanged(QString)), this, SLOT(createChartLine()));
 
@@ -286,8 +286,8 @@ void ChartWidget::createControls()
     lblPointX = new QLabel("X:");
     lblPointY = new QLabel("Y:");
 
-    txtTimeX = new LineEditDouble(0.0, true);
-    txtTimeY = new LineEditDouble(0.0, true);
+    txtTimeX = new LineEditDouble(0.0);
+    txtTimeY = new LineEditDouble(0.0);
     connect(txtTimeX, SIGNAL(textChanged(QString)), this, SLOT(createChartLine()));
     connect(txtTimeY, SIGNAL(textChanged(QString)), this, SLOT(createChartLine()));
 

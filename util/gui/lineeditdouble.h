@@ -31,13 +31,16 @@ class AGROS_API LineEditDouble : public QLineEdit
 {
     Q_OBJECT
 public:
-    LineEditDouble(double val = 0, bool validator = false, QWidget *parent = 0);
+    LineEditDouble(double val = 0, QWidget *parent = 0);
     ~LineEditDouble();
 
     inline void setBottom(double value) { if (m_validator) m_validator->setBottom(value); }
     inline void setTop(double value) { if (m_validator) m_validator->setTop(value); }
     inline double value() { return text().toDouble(); }
     inline void setValue(double value) { setText(QString::number(value)); }
+
+protected:
+    void keyPressEvent(QKeyEvent *event);
 
 private:
     QDoubleValidator *m_validator;

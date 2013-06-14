@@ -579,12 +579,12 @@ QWidget *PostprocessorWidget::postScalarAdvancedWidget()
     QPalette palette;
     palette.setColor(QPalette::WindowText, Qt::red);
 
-    txtScalarFieldRangeMin = new LineEditDouble(0.1, true);
+    txtScalarFieldRangeMin = new LineEditDouble(0.1);
     connect(txtScalarFieldRangeMin, SIGNAL(textChanged(QString)), this, SLOT(doScalarFieldRangeMinChanged()));
     lblScalarFieldRangeMinError = new QLabel("");
     lblScalarFieldRangeMinError->setPalette(palette);
     lblScalarFieldRangeMinError->setVisible(false);
-    txtScalarFieldRangeMax = new LineEditDouble(0.1, true);
+    txtScalarFieldRangeMax = new LineEditDouble(0.1);
     connect(txtScalarFieldRangeMax, SIGNAL(textChanged(QString)), this, SLOT(doScalarFieldRangeMaxChanged()));
     lblScalarFieldRangeMaxError = new QLabel("");
     lblScalarFieldRangeMaxError->setPalette(palette);

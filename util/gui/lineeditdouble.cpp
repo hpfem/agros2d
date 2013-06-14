@@ -21,14 +21,11 @@
 
 #include "../util.h"
 
-LineEditDouble::LineEditDouble(double val, bool validator, QWidget *parent)
+LineEditDouble::LineEditDouble(double val, QWidget *parent)
     : QLineEdit(parent), m_validator(NULL)
 {
-    if (validator)
-    {
-        m_validator = new QDoubleValidator(this);
-        setValidator(m_validator);
-    }
+    m_validator = new QDoubleValidator(this);
+    setValidator(m_validator);
 
     setValue(val);
 }
@@ -39,3 +36,8 @@ LineEditDouble::~LineEditDouble()
         delete m_validator;
 }
 
+void LineEditDouble::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() != Qt::Key_Comma)
+        QLineEdit::keyPressEvent(event);
+}

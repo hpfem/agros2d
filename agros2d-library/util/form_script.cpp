@@ -122,7 +122,7 @@ void FormScript::loadWidget(const QString &fileName)
         {
             // double validator
             if (widget->property("dataType") == "double")
-            {
+            {                
                 widget->setValidator(new QDoubleValidator(widget));
             }
             // int validator
