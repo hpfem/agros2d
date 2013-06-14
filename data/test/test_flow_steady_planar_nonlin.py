@@ -1,4 +1,6 @@
 import agros2d
+from time import time
+start_time = time()
 
 # problem
 problem = agros2d.problem(clear = True)
@@ -7,12 +9,8 @@ problem.mesh_type = "gmsh_quad_delaunay"
 problem.matrix_solver = "umfpack"
 
 # disable view
-agros2d.view.mesh.initial_mesh = False
-agros2d.view.mesh.solution_mesh = False
-agros2d.view.mesh.order = False
-agros2d.view.post2d.scalar = False
-agros2d.view.post2d.contours = False
-agros2d.view.post2d.vectors = False
+agros2d.view.mesh.disable()
+agros2d.view.post2d.disable()
 
 # fields
 # flow
@@ -78,4 +76,5 @@ volume = flow.volume_integrals([0])
 surface = flow.surface_integrals([0])
 # testI = agros2d.test("Current", surface["Ir"], 3629.425713)
 
-print("Test: Incompressible flow - planar: " + str(testp and testv and testvx and testvy))
+elapsed_time = time() - start_time
+print("Test: Incompressible flow - plana ({0}): ".format(round(elapsed_time, 3)) + str(testp and testv and testvx and testvy))
