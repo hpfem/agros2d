@@ -18,7 +18,7 @@
 /* #undef WITH_EXODUSII */
 /* #undef WITH_MPI */
 
-#define WITH_TC_MALLOC
+/* #define WITH_TC_MALLOC */
 /* #undef UMFPACK_LONG_INT */
 
 // stacktrace
