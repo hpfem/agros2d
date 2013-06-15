@@ -148,12 +148,15 @@ void PostHermes::processRangeContour()
             Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<MeshFunctionSharedPtr<double> >(activeMultiSolutionArray().solutions().at(0),
                                                                                                                                                  activeMultiSolutionArray().solutions().at(1)));
 
-            RectPoint rect = Agros2D::scene()->boundingBox();
-            double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
+            if (fabs(filter->get_approx_max_value() - filter->get_approx_min_value()) > EPS_ZERO)
+            {
+                RectPoint rect = Agros2D::scene()->boundingBox();
+                double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
 
-            m_linContourView.set_displacement(activeMultiSolutionArray().solutions().at(0),
-                                              activeMultiSolutionArray().solutions().at(1),
-                                              dmult);
+                m_linContourView.set_displacement(activeMultiSolutionArray().solutions().at(0),
+                                                  activeMultiSolutionArray().solutions().at(1),
+                                                  dmult);
+            }
             delete filter;
         }
         else
@@ -217,12 +220,15 @@ void PostHermes::processRangeScalar()
             Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<MeshFunctionSharedPtr<double> >(activeMultiSolutionArray().solutions().at(0),
                                                                                                                                                  activeMultiSolutionArray().solutions().at(1)));
 
-            RectPoint rect = Agros2D::scene()->boundingBox();
-            double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
+            if (fabs(filter->get_approx_max_value() - filter->get_approx_min_value()) > EPS_ZERO)
+            {
+                RectPoint rect = Agros2D::scene()->boundingBox();
+                double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
 
-            m_linScalarView.set_displacement(activeMultiSolutionArray().solutions().at(0),
-                                             activeMultiSolutionArray().solutions().at(1),
-                                             dmult);
+                m_linScalarView.set_displacement(activeMultiSolutionArray().solutions().at(0),
+                                                 activeMultiSolutionArray().solutions().at(1),
+                                                 dmult);
+            }
             delete filter;
         }
         else
@@ -295,13 +301,15 @@ void PostHermes::processRangeVector()
         {
             Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<MeshFunctionSharedPtr<double> >(activeMultiSolutionArray().solutions().at(0),
                                                                                                                                                  activeMultiSolutionArray().solutions().at(1)));
+            if (fabs(filter->get_approx_max_value() - filter->get_approx_min_value()) > EPS_ZERO)
+            {
+                RectPoint rect = Agros2D::scene()->boundingBox();
+                double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
 
-            RectPoint rect = Agros2D::scene()->boundingBox();
-            double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
-
-            m_vecVectorView.set_displacement(activeMultiSolutionArray().solutions().at(0),
-                                             activeMultiSolutionArray().solutions().at(1),
-                                             dmult);
+                m_vecVectorView.set_displacement(activeMultiSolutionArray().solutions().at(0),
+                                                 activeMultiSolutionArray().solutions().at(1),
+                                                 dmult);
+            }
             delete filter;
         }
         else
