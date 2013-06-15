@@ -427,38 +427,40 @@ QStringList PythonEngine::codeCompletion(const QString& code, int offset, const 
 }
 
 QStringList PythonEngine::codePyFlakes(const QString& fileName)
-{
+{    
     QStringList out;
 
-    QString exp = QString("result_pyflakes_pythonlab = python_engine_pyflakes_check(\"%1\")").arg(compatibleFilename(fileName));
-
-    PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
-
-    // parse result
-    PyObject *result = PyDict_GetItemString(m_dict, "result_pyflakes_pythonlab");
-    if (result)
+    if (!isRunning())
     {
-        Py_INCREF(result);
-        PyObject *list;
-        if (PyArg_Parse(result, "O", &list))
+        QString exp = QString("result_pyflakes_pythonlab = python_engine_pyflakes_check(\"%1\")").arg(compatibleFilename(fileName));
+
+        PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+
+        // parse result
+        PyObject *result = PyDict_GetItemString(m_dict, "result_pyflakes_pythonlab");
+        if (result)
         {
-            int count = PyList_Size(list);
-            for (int i = 0; i < count; i++)
+            Py_INCREF(result);
+            PyObject *list;
+            if (PyArg_Parse(result, "O", &list))
             {
-                PyObject *item = PyList_GetItem(list, i);
+                int count = PyList_Size(list);
+                for (int i = 0; i < count; i++)
+                {
+                    PyObject *item = PyList_GetItem(list, i);
 
-                QString str = PyString_AsString(item);
-                out.append(str);
+                    QString str = PyString_AsString(item);
+                    out.append(str);
+                }
             }
+            Py_DECREF(result);
         }
-        Py_DECREF(result);
-    }
 
-    PyRun_String("del result_pyflakes_pythonlab", Py_single_input, m_dict, m_dict);
+        PyRun_String("del result_pyflakes_pythonlab", Py_single_input, m_dict, m_dict);
+    }
 
     return out;
 }
-
 
 ScriptResult PythonEngine::parseError()
 {

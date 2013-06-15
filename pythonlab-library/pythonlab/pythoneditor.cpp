@@ -652,6 +652,9 @@ void PythonEditorDialog::createStatusBar()
 
 void PythonEditorDialog::doRunPython()
 {
+    if (pythonEngine->isRunning())
+        return;
+
     if (!scriptEditorWidget()->fileName.isEmpty())
         filBrowser->setDir(QFileInfo(scriptEditorWidget()->fileName).absolutePath());
 
