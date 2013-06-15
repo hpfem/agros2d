@@ -79,7 +79,7 @@ namespace Hermes
         if(this->level_map)
         {
           delete [] level_map;
-          this->level_map = NULL;
+          level_map = NULL;
         }
         this->empty = true;
       }
@@ -116,7 +116,10 @@ namespace Hermes
       {
         lock_data();
         if(this->level_map)
+        {
           delete [] level_map;
+          level_map = NULL;
+        }
         this->level_map = new int[sln->get_mesh()->get_num_elements()];
         memset(this->level_map, -1, sizeof(int) * sln->get_mesh()->get_num_elements());
       }
@@ -141,7 +144,7 @@ namespace Hermes
           double mesh_size_x = top_right_x - bottom_left_x, mesh_size_y = top_right_y - bottom_left_y;
 
           double mesh_size_times_threshold = LinearizerBase::large_elements_fraction_of_mesh_size_threshold * mesh_size_x * mesh_size_y;
-          double ratio = (LIN_MAX_LEVEL * std::pow(element_area / mesh_size_times_threshold, 0.2)) * (std::sqrt(polynomial_order - 1));
+          double ratio = (LIN_MAX_LEVEL * std::pow(element_area / mesh_size_times_threshold, 0.2)) * (std::sqrt((double)polynomial_order - 1));
           this->level_map[e->id] = std::min<int>(LIN_MAX_LEVEL, (int)ratio);
         }
 

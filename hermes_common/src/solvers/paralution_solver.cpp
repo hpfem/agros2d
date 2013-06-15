@@ -281,6 +281,8 @@ namespace Hermes
     template<typename Scalar>
     bool ParalutionLinearMatrixSolver<Scalar>::solve()
     {
+      if(this->sln)
+        delete [] this->sln;
       this->sln = new Scalar[this->get_matrix_size()];
       memset(this->sln, Scalar(0), this->get_matrix_size() * sizeof(Scalar));
       return this->solve(this->sln);
@@ -289,10 +291,19 @@ namespace Hermes
     template<typename Scalar>
     bool ParalutionLinearMatrixSolver<Scalar>::solve(Scalar* initial_guess)
     {
+      // Handle sln.
+      if(this->sln)
+          delete [] this->sln;
+      this->sln = new Scalar[this->get_matrix_size()];
+
       // Create initial guess.
+      if(initial_guess)
+        memcpy(this->sln, initial_guess, this->get_matrix_size() * sizeof(Scalar));
+      else
+        memset(this->sln, Scalar(0), this->get_matrix_size() * sizeof(Scalar));
+      
       paralution::LocalVector<Scalar> x;
-      x.SetDataPtr(&initial_guess, "Initial guess", matrix->get_size());
-      // x.WriteFileASCII("/home/karban/ascii_initial.txt");
+      x.SetDataPtr(&this->sln, "Initial guess", matrix->get_size());
 
       // Handle the situation when rhs == 0(vector).
       if(std::abs(rhs->get_paralutionVector().Norm()) < Hermes::epsilon)
@@ -335,6 +346,9 @@ namespace Hermes
 
       // Store num_iters.
       num_iters = paralutionSolver->GetIterationCount();
+
+      // Store final_residual
+      final_residual = paralutionSolver->GetCurrentResidual();
 
       // Destroy the paralution vector, keeping the data in sln.
       x.LeaveDataPtr(&this->sln);
@@ -379,7 +393,7 @@ namespace Hermes
     template<typename Scalar>
     double ParalutionLinearMatrixSolver<Scalar>::get_residual()
     {
-      return 0.;
+      return final_residual;
     }
 
     template<typename Scalar>

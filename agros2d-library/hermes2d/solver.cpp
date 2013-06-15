@@ -579,6 +579,9 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Hermes::vector<SpaceSharedPtr<Sca
 
     m_hermesSolverContainer->solve(initialSolutionVector);
 
+    if (initialSolutionVector)
+       delete [] initialSolutionVector;
+
     // linear solver statistics
     LinearMatrixSolver<Scalar> *linearSolver = m_hermesSolverContainer->linearSolver();
     if (IterSolver<Scalar> *iterLinearSolver = dynamic_cast<IterSolver<Scalar> *>(linearSolver))
@@ -586,11 +589,6 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Hermes::vector<SpaceSharedPtr<Sca
         Agros2D::log()->printDebug(QObject::tr("Solver"),
                                    QObject::tr("Iterative solver statistics: %1 iterations")
                                    .arg(iterLinearSolver->get_num_iters()));
-    }
-    else
-    {
-        if (initialSolutionVector)
-           delete [] initialSolutionVector;
     }
 
     return m_hermesSolverContainer->slnVector();
