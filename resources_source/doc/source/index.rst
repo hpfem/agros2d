@@ -194,11 +194,8 @@ Following figures show convergence curves for different types of adaptivity.
    :figclass: two-pictures
    :alt: Error
    
-<<<<<<< HEAD
-   Fig. 7: dependence of relative error on number of steps
-=======
    Fig. 8: dependence of relative error on number of steps
->>>>>>> added tm module
+
 
 Multimesh Technology
 ^^^^^^^^^^^^^^^^^^^^
