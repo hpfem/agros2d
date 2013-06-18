@@ -188,9 +188,14 @@ void PhysicalFieldWidget::updateControls()
         fillComboBoxFieldInfo(cmbFieldInfo);
         doFieldInfo(cmbFieldInfo->currentIndex());
     }
+    else
+    {
+        cmbFieldInfo->clear();
+        doFieldInfo(cmbFieldInfo->currentIndex());
+    }
 
     grpTime->setVisible(cmbTimeStep->count() > 1);
-    grpAdaptivity->setVisible(cmbAdaptivityStep->count() > 1);    
+    grpAdaptivity->setVisible(cmbAdaptivityStep->count() > 1);
 }
 
 void PhysicalFieldWidget::doFieldInfo(int index)
@@ -211,6 +216,11 @@ void PhysicalFieldWidget::doFieldInfo(int index)
         // set current field name
         m_currentFieldName = fieldName;
     }
+    else
+    {
+        cmbTimeStep->clear();
+        doTimeStep(-1);
+    }
 }
 
 void PhysicalFieldWidget::doTimeStep(int index)
@@ -223,8 +233,11 @@ void PhysicalFieldWidget::doTimeStep(int index)
             cmbAdaptivityStep->setCurrentIndex(cmbAdaptivityStep->count() - 1);
         }
         doAdaptivityStep(-1);
-
-        grpAdaptivity->setVisible(cmbAdaptivityStep->count() > 1);
+    }
+    else
+    {
+        cmbAdaptivityStep->clear();
+        doAdaptivityStep(-1);
     }
 }
 
