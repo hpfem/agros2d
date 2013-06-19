@@ -35,6 +35,8 @@ struct PyView
     void zoomIn();
     void zoomOut();
     void zoomRegion(double x1, double y1, double x2, double y2);
+
+    SceneViewCommon *currentSceneViewMode();
 };
 
 struct PyViewConfig

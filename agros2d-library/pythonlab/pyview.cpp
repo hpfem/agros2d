@@ -30,45 +30,48 @@
 #include "util/constants.h"
 #include "util/global.h"
 
+SceneViewCommon* PyView::currentSceneViewMode()
+{
+    if (currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->isChecked())
+        return currentPythonEngineAgros()->sceneViewPreprocessor();
+    else if (currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->isChecked())
+        return currentPythonEngineAgros()->sceneViewMesh();
+    else if (currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->isChecked())
+        return currentPythonEngineAgros()->sceneViewPost2D();
+    else if (currentPythonEngineAgros()->sceneViewPost3D()->actSceneModePost3D->isChecked())
+        return currentPythonEngineAgros()->sceneViewPost3D();
+    else if (currentPythonEngineAgros()->sceneViewParticleTracing()->actSceneModeParticleTracing->isChecked())
+        return currentPythonEngineAgros()->sceneViewParticleTracing();
+}
+
 void PyView::saveImageToFile(const std::string &file, int width, int height)
 {
     if (!silentMode())
-    {
-        if (currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->isChecked())
-            currentPythonEngineAgros()->sceneViewPreprocessor()->saveImageToFile(QString::fromStdString(file), width, height);
-        else if (currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->isChecked())
-            currentPythonEngineAgros()->sceneViewMesh()->saveImageToFile(QString::fromStdString(file), width, height);
-        else if (currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->isChecked())
-            currentPythonEngineAgros()->sceneViewPost2D()->saveImageToFile(QString::fromStdString(file), width, height);
-        else if (currentPythonEngineAgros()->sceneViewPost3D()->actSceneModePost3D->isChecked())
-            currentPythonEngineAgros()->sceneViewPost3D()->saveImageToFile(QString::fromStdString(file), width, height);
-        else if (currentPythonEngineAgros()->sceneViewParticleTracing()->actSceneModeParticleTracing->isChecked())
-            currentPythonEngineAgros()->sceneViewParticleTracing()->saveImageToFile(QString::fromStdString(file), width, height);
-    }
+        currentSceneViewMode()->saveImageToFile(QString::fromStdString(file), width, height);
 }
 
 void PyView::zoomBestFit()
 {
     if (!silentMode())
-        currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomBestFit();
+        currentSceneViewMode()->doZoomBestFit();
 }
 
 void PyView::zoomIn()
 {
     if (!silentMode())
-        currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomIn();
+        currentSceneViewMode()->doZoomIn();
 }
 
 void PyView::zoomOut()
 {
     if (!silentMode())
-        currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomOut();
+        currentSceneViewMode()->doZoomOut();
 }
 
 void PyView::zoomRegion(double x1, double y1, double x2, double y2)
 {
     if (!silentMode())
-        currentPythonEngineAgros()->sceneViewPreprocessor()->doZoomRegion(Point(x1, y1), Point(x2, y2));
+        currentSceneViewMode()->doZoomRegion(Point(x1, y1), Point(x2, y2));
 }
 
 // ************************************************************************************
