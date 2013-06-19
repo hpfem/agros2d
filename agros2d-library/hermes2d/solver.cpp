@@ -235,27 +235,27 @@ void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Hermes2D::Mixi
 }
 
 template <typename Scalar>
-HermesSolverContainer<Scalar>* HermesSolverContainer<Scalar>::factory(Block* block)
+QSharedPointer<HermesSolverContainer<Scalar> > HermesSolverContainer<Scalar>::factory(Block* block)
 {
     Hermes::HermesCommonApi.set_integral_param_value(Hermes::matrixSolverType, block->matrixSolver());
     Agros2D::log()->printDebug(QObject::tr("Solver"), QObject::tr("Linear solver: %1").arg(matrixSolverTypeString(block->matrixSolver())));
 
-    HermesSolverContainer<Scalar> *solver = NULL;
+    QSharedPointer<HermesSolverContainer<Scalar> > solver;
 
     if (block->linearityType() == LinearityType_Linear)
     {
-        solver = new LinearSolverContainer<Scalar>(block);
+        solver = QSharedPointer<HermesSolverContainer<Scalar> >(new LinearSolverContainer<Scalar>(block));
     }
     else if (block->linearityType() == LinearityType_Newton)
     {
-        solver = new NewtonSolverContainer<Scalar>(block);
+        solver = QSharedPointer<HermesSolverContainer<Scalar> >(new NewtonSolverContainer<Scalar>(block));
     }
     else if (block->linearityType() == LinearityType_Picard)
     {
-        solver = new PicardSolverContainer<Scalar>(block);
+        solver = QSharedPointer<HermesSolverContainer<Scalar> >(new PicardSolverContainer<Scalar>(block));
     }
 
-    assert(solver);
+    assert(!solver.isNull());
 
     if (IterSolver<Scalar> *linearSolver = dynamic_cast<IterSolver<Scalar> *>(solver->linearSolver()))
     {
@@ -263,7 +263,7 @@ HermesSolverContainer<Scalar>* HermesSolverContainer<Scalar>::factory(Block* blo
         linearSolver->set_tolerance(1e-15, IterSolver<double>::AbsoluteTolerance);
     }
 #ifdef WITH_PARALUTION
-    if (ParalutionLinearMatrixSolver<Scalar> *linearSolver = dynamic_cast<ParalutionLinearMatrixSolver<Scalar> *>(solver->linearSolver()))
+    if (ParalutionLinearMatrixSolver<Scalar> *linearSolver = dynamic_cast<ParalutionLinearMatrixSolver<Scalar> *>(solver.data()->linearSolver()))
     {
         linearSolver->set_solver_type(Hermes::Solvers::ParalutionLinearMatrixSolver<Scalar>::BiCGStab);
         linearSolver->set_precond(new Hermes::Preconditioners::ParalutionPrecond<Scalar>(Hermes::Preconditioners::ParalutionPrecond<Scalar>::ILU));
@@ -310,6 +310,7 @@ LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block) : HermesSolve
 template <typename Scalar>
 LinearSolverContainer<Scalar>::~LinearSolverContainer()
 {
+    qDebug() << "~LinearSolverContainer";
     delete m_linearSolver;
     m_linearSolver = NULL;
 }
@@ -420,10 +421,6 @@ template <typename Scalar>
 ProblemSolver<Scalar>::~ProblemSolver()
 {
     clearActualSpaces();
-
-    if (m_hermesSolverContainer)
-        delete m_hermesSolverContainer;
-    m_hermesSolverContainer = NULL;
 }
 
 template <typename Scalar>
@@ -644,9 +641,9 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
                                                       0.0,
                                                       Hermes::Hermes2D::Space<double>::get_num_dofs(actualSpaces()));
 
-        if (dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer))
+        if (dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer.data()))
         {
-            NewtonSolverAgros<Scalar> *solver = dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer)->solver();
+            NewtonSolverAgros<Scalar> *solver = dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer.data())->solver();
 
             runTime.setNewtonResidual(solver->errors());
             runTime.setNewtonDamping(solver->damping());
@@ -943,9 +940,9 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
     SolutionStore::SolutionRunTimeDetails runTime(Agros2D::problem()->actualTimeStepLength(),
                                                   0.0,
                                                   Hermes::Hermes2D::Space<double>::get_num_dofs(actualSpaces()));
-    if (dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer))
+    if (dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer.data()))
     {
-        NewtonSolverAgros<Scalar> *solver = dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer)->solver();
+        NewtonSolverAgros<Scalar> *solver = dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer.data())->solver();
 
         runTime.setNewtonResidual(solver->errors());
         runTime.setNewtonDamping(solver->damping());

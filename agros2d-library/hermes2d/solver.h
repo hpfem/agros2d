@@ -99,7 +99,7 @@ public:
     inline Scalar *slnVector() { return m_slnVector; }
 
     // solver factory
-    static HermesSolverContainer<Scalar> *factory(Block* block);
+    static QSharedPointer<HermesSolverContainer<Scalar> > factory(Block* block);
 
 protected:
     Block* m_block;
@@ -188,7 +188,7 @@ public:
 private:
     Block* m_block;
 
-    HermesSolverContainer<Scalar> *m_hermesSolverContainer;
+    QSharedPointer<HermesSolverContainer<Scalar> > m_hermesSolverContainer;
 
     Hermes::vector<SpaceSharedPtr<Scalar> > m_actualSpaces;
 
