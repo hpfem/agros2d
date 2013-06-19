@@ -310,7 +310,6 @@ LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block) : HermesSolve
 template <typename Scalar>
 LinearSolverContainer<Scalar>::~LinearSolverContainer()
 {
-    qDebug() << "~LinearSolverContainer";
     delete m_linearSolver;
     m_linearSolver = NULL;
 }
