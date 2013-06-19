@@ -12,9 +12,6 @@ cdef extern from "../../agros2d-library/pythonlab/pyproblem.h":
         string getMeshType()
         void setMeshType(string &meshType) except +
 
-        string getMatrixSolver()
-        void setMatrixSolver(string &matrixSolver) except +
-
         double getFrequency()
         void setFrequency(double frequency) except +
 
@@ -75,12 +72,6 @@ cdef class __Problem__:
             return self.thisptr.getMeshType().c_str()
         def __set__(self, mesh_type):
             self.thisptr.setMeshType(string(mesh_type))
-
-    property matrix_solver:
-        def __get__(self):
-            return self.thisptr.getMatrixSolver().c_str()
-        def __set__(self, matrix_solver):
-            self.thisptr.setMatrixSolver(string(matrix_solver))
 
     property frequency:
         def __get__(self):

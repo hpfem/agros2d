@@ -6,7 +6,6 @@ start_time = timer.time()
 problem = agros2d.problem(clear = True)
 problem.coordinate_type = "planar"
 problem.mesh_type = "triangle"
-problem.matrix_solver = "umfpack"
 problem.time_step_method = "fixed"
 problem.time_method_order = 2
 problem.time_method_tolerance = 1

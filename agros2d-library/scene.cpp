@@ -1366,10 +1366,6 @@ void Scene::readFromFile21(const QString &fileName)
                                                eleProblemInfo.toElement().attribute("time_method", timeStepMethodToStringKey(TimeStepMethod_Fixed))));
     Agros2D::problem()->config()->setValue(ProblemConfig::TimeMethodTolerance, eleProblemInfo.toElement().attribute("time_method_tolerance", "0.05").toDouble());
 
-    // matrix solver
-    Agros2D::problem()->config()->setMatrixSolver(matrixSolverTypeFromStringKey(eleProblemInfo.toElement().attribute("matrix_solver",
-                                                                                                                     matrixSolverTypeToStringKey(Hermes::SOLVER_UMFPACK))));
-
     // read config
     QDomElement config = eleDoc.elementsByTagName("config").at(0).toElement();
     Agros2D::problem()->setting()->load21(&config);
@@ -1387,6 +1383,10 @@ void Scene::readFromFile21(const QString &fileName)
         // analysis type
         field->setAnalysisType(analysisTypeFromStringKey(eleField.toElement().attribute("analysis_type",
                                                                                         analysisTypeToStringKey(AnalysisType_SteadyState))));
+
+        // matrix solver
+        field->setMatrixSolver(matrixSolverTypeFromStringKey(eleProblemInfo.toElement().attribute("matrix_solver",
+                                                                                                  matrixSolverTypeToStringKey(Hermes::SOLVER_UMFPACK))));
 
         // initial condition
         field->setValue(FieldInfo::TransientInitialCondition, eleField.toElement().attribute("initial_condition").toDouble());
@@ -1603,8 +1603,6 @@ void Scene::readFromFile31(const QString &fileName)
         Agros2D::problem()->config()->setCoordinateType(coordinateTypeFromStringKey(QString::fromStdString(doc->problem().coordinate_type())));
         // mesh type
         Agros2D::problem()->config()->setMeshType(meshTypeFromStringKey(QString::fromStdString(doc->problem().mesh_type())));
-        // matrix solver
-        Agros2D::problem()->config()->setMatrixSolver(matrixSolverTypeFromStringKey(QString::fromStdString(doc->problem().matrix_solver())));
 
         // problem config
         Agros2D::problem()->config()->load(&doc->problem().problem_config());
@@ -1653,6 +1651,9 @@ void Scene::readFromFile31(const QString &fileName)
             fieldInfo->setAdaptivityType(adaptivityTypeFromStringKey(QString::fromStdString(field.adaptivity_type())));
             // linearity
             fieldInfo->setLinearityType(linearityTypeFromStringKey(QString::fromStdString(field.linearity_type())));
+            // matrix solver
+            if (field.matrix_solver().present())
+                fieldInfo->setMatrixSolver(matrixSolverTypeFromStringKey(QString::fromStdString(field.matrix_solver().get())));
 
             // field config
             fieldInfo->load(&field.field_config());
@@ -2237,6 +2238,7 @@ void Scene::writeToFile31(const QString &fileName)
                                     analysisTypeToStringKey(fieldInfo->analysisType()).toStdString(),
                                     adaptivityTypeToStringKey(fieldInfo->adaptivityType()).toStdString(),
                                     linearityTypeToStringKey(fieldInfo->linearityType()).toStdString());
+            field.matrix_solver().set(matrixSolverTypeToStringKey(fieldInfo->matrixSolver()).toStdString());
 
             fields.field().push_back(field);
         }
@@ -2260,8 +2262,7 @@ void Scene::writeToFile31(const QString &fileName)
                                     couplings,
                                     problem_config,
                                     coordinateTypeToStringKey(Agros2D::problem()->config()->coordinateType()).toStdString(),
-                                    meshTypeToStringKey(Agros2D::problem()->config()->meshType()).toStdString(),
-                                    matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()).toStdString());
+                                    meshTypeToStringKey(Agros2D::problem()->config()->meshType()).toStdString());
 
         // nodes
         XMLProblem::nodes nodes;

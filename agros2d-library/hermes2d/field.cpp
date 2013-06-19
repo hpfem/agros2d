@@ -209,6 +209,7 @@ void FieldInfo::clear()
     m_analysisType = AnalysisType_Undefined;
     m_linearityType = LinearityType_Linear;
     m_adaptivityType = AdaptivityType_None;
+    m_matrixSolver = Hermes::SOLVER_UMFPACK;
 }
 
 void FieldInfo::refineMesh(MeshSharedPtr mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea)

@@ -200,6 +200,14 @@ void PyField::setAdaptivityType(const std::string &adaptivityType)
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(adaptivityTypeStringKeys())).toStdString());
 }
 
+void PyField::setMatrixSolver(const std::string &matrixSolver)
+{
+    if (matrixSolverTypeStringKeys().contains(QString::fromStdString(matrixSolver)))
+        m_fieldInfo->setMatrixSolver(matrixSolverTypeFromStringKey(QString::fromStdString(matrixSolver)));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(matrixSolverTypeStringKeys())).toStdString());
+}
+
 void PyField::setAdaptivityTolerance(double adaptivityTolerance)
 {
     if (adaptivityTolerance > 0.0)

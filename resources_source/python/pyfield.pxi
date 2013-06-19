@@ -16,6 +16,9 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         string getLinearityType()
         void setLinearityType(string &linearityType) except +
 
+        string getMatrixSolver()
+        void setMatrixSolver(string &matrixSolver) except +
+
         string getNonlinearConvergenceMeasurement()
         void setNonlinearConvergenceMeasurement(string &nonlinearConvergenceMeasurement) except +
 
@@ -268,6 +271,12 @@ cdef class __Field__:
             return self.thisptr.getLinearityType().c_str()
         def __set__(self, linearity_type):
             self.thisptr.setLinearityType(string(linearity_type))
+
+    property matrix_solver:
+        def __get__(self):
+            return self.thisptr.getMatrixSolver().c_str()
+        def __set__(self, matrix_solver):
+            self.thisptr.setMatrixSolver(string(matrix_solver))
 
     # convergence measurement
     property nonlinear_convergence_measurement:

@@ -597,38 +597,19 @@ namespace XMLProblem
     void
     mesh_type (::std::auto_ptr< mesh_type_type > p);
 
-    // matrix_solver
-    // 
-    typedef ::xml_schema::string matrix_solver_type;
-    typedef ::xsd::cxx::tree::traits< matrix_solver_type, char > matrix_solver_traits;
-
-    const matrix_solver_type&
-    matrix_solver () const;
-
-    matrix_solver_type&
-    matrix_solver ();
-
-    void
-    matrix_solver (const matrix_solver_type& x);
-
-    void
-    matrix_solver (::std::auto_ptr< matrix_solver_type > p);
-
     // Constructors.
     //
     problem (const fields_type&,
              const couplings_type&,
              const problem_config_type&,
              const coordinate_type_type&,
-             const mesh_type_type&,
-             const matrix_solver_type&);
+             const mesh_type_type&);
 
     problem (::std::auto_ptr< fields_type >&,
              ::std::auto_ptr< couplings_type >&,
              ::std::auto_ptr< problem_config_type >&,
              const coordinate_type_type&,
-             const mesh_type_type&,
-             const matrix_solver_type&);
+             const mesh_type_type&);
 
     problem (const ::xercesc::DOMElement& e,
              ::xml_schema::flags f = 0,
@@ -658,7 +639,6 @@ namespace XMLProblem
     ::xsd::cxx::tree::one< problem_config_type > problem_config_;
     ::xsd::cxx::tree::one< coordinate_type_type > coordinate_type_;
     ::xsd::cxx::tree::one< mesh_type_type > mesh_type_;
-    ::xsd::cxx::tree::one< matrix_solver_type > matrix_solver_;
   };
 
   class config: public ::xml_schema::type
@@ -1522,6 +1502,27 @@ namespace XMLProblem
     void
     linearity_type (::std::auto_ptr< linearity_type_type > p);
 
+    // matrix_solver
+    // 
+    typedef ::xml_schema::string matrix_solver_type;
+    typedef ::xsd::cxx::tree::optional< matrix_solver_type > matrix_solver_optional;
+    typedef ::xsd::cxx::tree::traits< matrix_solver_type, char > matrix_solver_traits;
+
+    const matrix_solver_optional&
+    matrix_solver () const;
+
+    matrix_solver_optional&
+    matrix_solver ();
+
+    void
+    matrix_solver (const matrix_solver_type& x);
+
+    void
+    matrix_solver (const matrix_solver_optional& x);
+
+    void
+    matrix_solver (::std::auto_ptr< matrix_solver_type > p);
+
     // Constructors.
     //
     field (const refinement_edges_type&,
@@ -1579,6 +1580,7 @@ namespace XMLProblem
     ::xsd::cxx::tree::one< analysis_type_type > analysis_type_;
     ::xsd::cxx::tree::one< adaptivity_type_type > adaptivity_type_;
     ::xsd::cxx::tree::one< linearity_type_type > linearity_type_;
+    matrix_solver_optional matrix_solver_;
   };
 
   class coupling: public ::xml_schema::type

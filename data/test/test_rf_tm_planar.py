@@ -6,7 +6,7 @@ start_time = time()
 problem = a2d.problem(clear = True)
 problem.coordinate_type = "planar"
 problem.mesh_type = "triangle"
-problem.matrix_solver = "umfpack"
+
 problem.frequency = 1e10
 
 # disable view

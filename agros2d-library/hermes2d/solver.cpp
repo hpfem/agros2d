@@ -237,8 +237,8 @@ void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Hermes2D::Mixi
 template <typename Scalar>
 HermesSolverContainer<Scalar>* HermesSolverContainer<Scalar>::factory(Block* block)
 {
-    Hermes::HermesCommonApi.set_integral_param_value(Hermes::matrixSolverType, Agros2D::problem()->config()->matrixSolver());
-    Agros2D::log()->printDebug(QObject::tr("Solver"), QObject::tr("Linear solver: %1").arg(matrixSolverTypeString(Agros2D::problem()->config()->matrixSolver())));
+    Hermes::HermesCommonApi.set_integral_param_value(Hermes::matrixSolverType, block->matrixSolver());
+    Agros2D::log()->printDebug(QObject::tr("Solver"), QObject::tr("Linear solver: %1").arg(matrixSolverTypeString(block->matrixSolver())));
 
     HermesSolverContainer<Scalar> *solver = NULL;
 

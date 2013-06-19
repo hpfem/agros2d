@@ -44,6 +44,10 @@ class PyField
         inline std::string getAdaptivityType() const { return adaptivityTypeToStringKey(m_fieldInfo->adaptivityType()).toStdString(); }
         void setAdaptivityType(const std::string &adaptivityType);
 
+        // matrix solver
+        inline std::string getMatrixSolver() const { return matrixSolverTypeToStringKey(m_fieldInfo->matrixSolver()).toStdString(); }
+        void setMatrixSolver(const std::string &matrixSolver);
+
         // number of refinements
         inline int getNumberOfRefinements() const { return m_fieldInfo->value(FieldInfo::SpaceNumberOfRefinements).toInt(); }
         void setNumberOfRefinements(int numberOfRefinements);

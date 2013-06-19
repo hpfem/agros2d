@@ -8,7 +8,7 @@ start_time = time()
 problem = agros2d.problem(clear = True)
 problem.coordinate_type = "axisymmetric"
 problem.mesh_type = "triangle"
-problem.matrix_solver = "umfpack"
+
 problem.frequency = 50
 problem.time_step_method = "fixed"
 problem.time_method_order = 1

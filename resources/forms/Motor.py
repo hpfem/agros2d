@@ -5,7 +5,7 @@ from math import *
 problem = a2d.problem(clear = True)
 problem.coordinate_type = "planar"
 problem.mesh_type = "triangle"
-problem.matrix_solver = "umfpack"
+
 
 # fields
 magnetic = agros2d.field("magnetic")

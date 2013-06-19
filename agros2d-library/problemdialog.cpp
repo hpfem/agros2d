@@ -173,6 +173,9 @@ void FieldWidget::createContent()
     txtAdaptivityRedoneEach->setMinimum(1);
     txtAdaptivityRedoneEach->setMaximum(100);
 
+    // matrix solver
+    cmbMatrixSolver = new QComboBox();
+
     // mesh
     txtNumberOfRefinements = new QSpinBox(this);
     txtNumberOfRefinements->setMinimum(0);
@@ -253,6 +256,8 @@ void FieldWidget::createContent()
     layoutGeneral->addWidget(cmbLinearityType, 1, 1);
     layoutGeneral->addWidget(new QLabel(tr("Adaptivity:")), 2, 0);
     layoutGeneral->addWidget(cmbAdaptivityType, 2, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Linear solver:")), 3, 0);
+    layoutGeneral->addWidget(cmbMatrixSolver, 3, 1);
 
     QGroupBox *grpGeneral = new QGroupBox(tr("General"));
     grpGeneral->setLayout(layoutGeneral);
@@ -434,6 +439,20 @@ void FieldWidget::fillComboBox()
         it.next();
         cmbAnalysisType->addItem(it.value(), it.key());
     }
+
+    cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_UMFPACK), Hermes::SOLVER_UMFPACK);
+#ifdef WITH_MUMPS
+    cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_MUMPS), Hermes::SOLVER_MUMPS);
+#endif
+#ifdef WITH_SUPERLU
+    cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_SUPERLU), Hermes::SOLVER_SUPERLU);
+#endif
+#ifdef WITH_PETSC
+    cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PETSC), Hermes::SOLVER_PETSC);
+#endif
+#ifdef WITH_PARALUTION
+    cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PARALUTION), Hermes::SOLVER_PARALUTION);
+#endif
 }
 
 void FieldWidget::load()
@@ -453,6 +472,8 @@ void FieldWidget::load()
     chkAdaptivityFinerReference->setChecked(m_fieldInfo->value(FieldInfo::AdaptivityFinerReference).toBool());
     txtAdaptivityBackSteps->setValue(m_fieldInfo->value(FieldInfo::AdaptivityTransientBackSteps).toInt());
     txtAdaptivityRedoneEach->setValue(m_fieldInfo->value(FieldInfo::AdaptivityTransientRedoneEach).toInt());
+    // matrix solver
+    cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(m_fieldInfo->matrixSolver()));
     //mesh
     txtNumberOfRefinements->setValue(m_fieldInfo->value(FieldInfo::SpaceNumberOfRefinements).toInt());
     txtPolynomialOrder->setValue(m_fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt());
@@ -493,6 +514,8 @@ bool FieldWidget::save()
     m_fieldInfo->setValue(FieldInfo::AdaptivityFinerReference, chkAdaptivityFinerReference->isChecked());
     m_fieldInfo->setValue(FieldInfo::AdaptivityTransientBackSteps, txtAdaptivityBackSteps->value());
     m_fieldInfo->setValue(FieldInfo::AdaptivityTransientRedoneEach, txtAdaptivityRedoneEach->value());
+    // matrix solver
+    m_fieldInfo->setMatrixSolver((Hermes::MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt());
     //mesh
     m_fieldInfo->setValue(FieldInfo::SpaceNumberOfRefinements, txtNumberOfRefinements->value());
     m_fieldInfo->setValue(FieldInfo::SpacePolynomialOrder, txtPolynomialOrder->value());
@@ -976,8 +999,6 @@ void ProblemWidget::createControls()
 
     // problem
     cmbCoordinateType = new QComboBox();
-    // matrix solver
-    cmbMatrixSolver = new QComboBox();
     // mesh type
     cmbMeshType = new QComboBox();
 
@@ -987,10 +1008,8 @@ void ProblemWidget::createControls()
     layoutGeneral->setColumnStretch(1, 1);
     layoutGeneral->addWidget(new QLabel(tr("Coordinate type:")), 0, 0);
     layoutGeneral->addWidget(cmbCoordinateType, 0, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Linear solver:")), 1, 0);
-    layoutGeneral->addWidget(cmbMatrixSolver, 1, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Mesh type:")), 2, 0);
-    layoutGeneral->addWidget(cmbMeshType, 2, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Mesh type:")), 1, 0);
+    layoutGeneral->addWidget(cmbMeshType, 1, 1);
 
     QGroupBox *grpGeneral = new QGroupBox(tr("General"));
     grpGeneral->setLayout(layoutGeneral);
@@ -1094,20 +1113,6 @@ void ProblemWidget::fillComboBox()
     cmbMeshType->addItem(meshTypeString(MeshType_GMSH_Quad), MeshType_GMSH_Quad);
     cmbMeshType->addItem(meshTypeString(MeshType_GMSH_QuadDelaunay_Experimental), MeshType_GMSH_QuadDelaunay_Experimental);
 
-    cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_UMFPACK), Hermes::SOLVER_UMFPACK);
-#ifdef WITH_MUMPS
-    cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_MUMPS), Hermes::SOLVER_MUMPS);
-#endif
-#ifdef WITH_SUPERLU
-    cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_SUPERLU), Hermes::SOLVER_SUPERLU);
-#endif
-#ifdef WITH_PETSC
-    cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PETSC), Hermes::SOLVER_PETSC);
-#endif
-#ifdef WITH_PARALUTION
-    cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PARALUTION), Hermes::SOLVER_PARALUTION);
-#endif
-
     cmbTransientMethod->addItem(timeStepMethodString(TimeStepMethod_Fixed), TimeStepMethod_Fixed);
     cmbTransientMethod->addItem(timeStepMethodString(TimeStepMethod_BDFTolerance), TimeStepMethod_BDFTolerance);
     cmbTransientMethod->addItem(timeStepMethodString(TimeStepMethod_BDFNumSteps), TimeStepMethod_BDFNumSteps);
@@ -1117,7 +1122,6 @@ void ProblemWidget::updateControls()
 {
     // disconnect signals
     cmbCoordinateType->disconnect();
-    cmbMatrixSolver->disconnect();
     cmbMeshType->disconnect();
 
     txtFrequency->disconnect();
@@ -1153,9 +1157,6 @@ void ProblemWidget::updateControls()
     if (cmbTransientMethod->currentIndex() == -1)
         cmbTransientMethod->setCurrentIndex(0);
 
-    // matrix solver
-    cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(Agros2D::problem()->config()->matrixSolver()));
-
     // couplings
     fieldsToolbar->refresh();
     couplingsWidget->refresh();
@@ -1166,7 +1167,6 @@ void ProblemWidget::updateControls()
 
     // connect signals
     connect(cmbCoordinateType, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
-    connect(cmbMatrixSolver, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
     connect(cmbMeshType, SIGNAL(currentIndexChanged(int)), this, SLOT(changedWithClear()));
 
     connect(txtFrequency, SIGNAL(textChanged(QString)), this, SLOT(changedWithClear()));
@@ -1191,8 +1191,6 @@ void ProblemWidget::changedWithClear()
 
     Agros2D::problem()->config()->setCoordinateType((CoordinateType) cmbCoordinateType->itemData(cmbCoordinateType->currentIndex()).toInt());
     Agros2D::problem()->config()->setMeshType((MeshType) cmbMeshType->itemData(cmbMeshType->currentIndex()).toInt());
-    // matrix solver
-    Agros2D::problem()->config()->setMatrixSolver((Hermes::MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt());
 
     Agros2D::problem()->config()->setValue(ProblemConfig::Frequency, txtFrequency->value());
     Agros2D::problem()->config()->setValue(ProblemConfig::TimeMethod, (TimeStepMethod) cmbTransientMethod->itemData(cmbTransientMethod->currentIndex()).toInt());

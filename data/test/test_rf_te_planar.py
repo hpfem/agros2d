@@ -6,7 +6,7 @@ start_time = time()
 problem = agros2d.problem(clear = True)
 problem.coordinate_type = "planar"
 problem.mesh_type = "triangle"
-problem.matrix_solver = "umfpack"
+
 problem.frequency = 1.6e10
 
 # disable view

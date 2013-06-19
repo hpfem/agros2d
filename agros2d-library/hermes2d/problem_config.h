@@ -66,10 +66,6 @@ public:
     inline CoordinateType coordinateType() const { return m_coordinateType; }
     void setCoordinateType(const CoordinateType coordinateType) { m_coordinateType = coordinateType; emit changed(); }
 
-    // matrix
-    inline Hermes::MatrixSolverType matrixSolver() const { return m_matrixSolver; }
-    void setMatrixSolver(const Hermes::MatrixSolverType matrixSolver) { m_matrixSolver = matrixSolver; emit changed(); }
-
     // mesh
     inline MeshType meshType() const { return m_meshType; }
     void setMeshType(const MeshType meshType) { m_meshType = meshType; emit changed(); }
@@ -101,9 +97,6 @@ signals:
 private:
     QString m_fileName;
     CoordinateType m_coordinateType;
-
-    // matrix solver
-    Hermes::MatrixSolverType m_matrixSolver;
 
     // mesh type
     MeshType m_meshType;   

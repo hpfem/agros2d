@@ -335,30 +335,6 @@ namespace XMLProblem
     this->mesh_type_.set (x);
   }
 
-  const problem::matrix_solver_type& problem::
-  matrix_solver () const
-  {
-    return this->matrix_solver_.get ();
-  }
-
-  problem::matrix_solver_type& problem::
-  matrix_solver ()
-  {
-    return this->matrix_solver_.get ();
-  }
-
-  void problem::
-  matrix_solver (const matrix_solver_type& x)
-  {
-    this->matrix_solver_.set (x);
-  }
-
-  void problem::
-  matrix_solver (::std::auto_ptr< matrix_solver_type > x)
-  {
-    this->matrix_solver_.set (x);
-  }
-
 
   // config
   // 
@@ -1017,6 +993,36 @@ namespace XMLProblem
   linearity_type (::std::auto_ptr< linearity_type_type > x)
   {
     this->linearity_type_.set (x);
+  }
+
+  const field::matrix_solver_optional& field::
+  matrix_solver () const
+  {
+    return this->matrix_solver_;
+  }
+
+  field::matrix_solver_optional& field::
+  matrix_solver ()
+  {
+    return this->matrix_solver_;
+  }
+
+  void field::
+  matrix_solver (const matrix_solver_type& x)
+  {
+    this->matrix_solver_.set (x);
+  }
+
+  void field::
+  matrix_solver (const matrix_solver_optional& x)
+  {
+    this->matrix_solver_ = x;
+  }
+
+  void field::
+  matrix_solver (::std::auto_ptr< matrix_solver_type > x)
+  {
+    this->matrix_solver_.set (x);
   }
 
 
@@ -2253,15 +2259,13 @@ namespace XMLProblem
            const couplings_type& couplings,
            const problem_config_type& problem_config,
            const coordinate_type_type& coordinate_type,
-           const mesh_type_type& mesh_type,
-           const matrix_solver_type& matrix_solver)
+           const mesh_type_type& mesh_type)
   : ::xml_schema::type (),
     fields_ (fields, ::xml_schema::flags (), this),
     couplings_ (couplings, ::xml_schema::flags (), this),
     problem_config_ (problem_config, ::xml_schema::flags (), this),
     coordinate_type_ (coordinate_type, ::xml_schema::flags (), this),
-    mesh_type_ (mesh_type, ::xml_schema::flags (), this),
-    matrix_solver_ (matrix_solver, ::xml_schema::flags (), this)
+    mesh_type_ (mesh_type, ::xml_schema::flags (), this)
   {
   }
 
@@ -2270,15 +2274,13 @@ namespace XMLProblem
            ::std::auto_ptr< couplings_type >& couplings,
            ::std::auto_ptr< problem_config_type >& problem_config,
            const coordinate_type_type& coordinate_type,
-           const mesh_type_type& mesh_type,
-           const matrix_solver_type& matrix_solver)
+           const mesh_type_type& mesh_type)
   : ::xml_schema::type (),
     fields_ (fields, ::xml_schema::flags (), this),
     couplings_ (couplings, ::xml_schema::flags (), this),
     problem_config_ (problem_config, ::xml_schema::flags (), this),
     coordinate_type_ (coordinate_type, ::xml_schema::flags (), this),
-    mesh_type_ (mesh_type, ::xml_schema::flags (), this),
-    matrix_solver_ (matrix_solver, ::xml_schema::flags (), this)
+    mesh_type_ (mesh_type, ::xml_schema::flags (), this)
   {
   }
 
@@ -2291,8 +2293,7 @@ namespace XMLProblem
     couplings_ (x.couplings_, f, this),
     problem_config_ (x.problem_config_, f, this),
     coordinate_type_ (x.coordinate_type_, f, this),
-    mesh_type_ (x.mesh_type_, f, this),
-    matrix_solver_ (x.matrix_solver_, f, this)
+    mesh_type_ (x.mesh_type_, f, this)
   {
   }
 
@@ -2305,8 +2306,7 @@ namespace XMLProblem
     couplings_ (f, this),
     problem_config_ (f, this),
     coordinate_type_ (f, this),
-    mesh_type_ (f, this),
-    matrix_solver_ (f, this)
+    mesh_type_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -2414,15 +2414,6 @@ namespace XMLProblem
         this->mesh_type_.set (r);
         continue;
       }
-
-      if (n.name () == "matrix_solver" && n.namespace_ ().empty ())
-      {
-        ::std::auto_ptr< matrix_solver_type > r (
-          matrix_solver_traits::create (i, f, this));
-
-        this->matrix_solver_.set (r);
-        continue;
-      }
     }
 
     if (!coordinate_type_.present ())
@@ -2436,13 +2427,6 @@ namespace XMLProblem
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
         "mesh_type",
-        "");
-    }
-
-    if (!matrix_solver_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "matrix_solver",
         "");
     }
   }
@@ -3412,7 +3396,8 @@ namespace XMLProblem
     field_id_ (field_id, ::xml_schema::flags (), this),
     analysis_type_ (analysis_type, ::xml_schema::flags (), this),
     adaptivity_type_ (adaptivity_type, ::xml_schema::flags (), this),
-    linearity_type_ (linearity_type, ::xml_schema::flags (), this)
+    linearity_type_ (linearity_type, ::xml_schema::flags (), this),
+    matrix_solver_ (::xml_schema::flags (), this)
   {
   }
 
@@ -3437,7 +3422,8 @@ namespace XMLProblem
     field_id_ (field_id, ::xml_schema::flags (), this),
     analysis_type_ (analysis_type, ::xml_schema::flags (), this),
     adaptivity_type_ (adaptivity_type, ::xml_schema::flags (), this),
-    linearity_type_ (linearity_type, ::xml_schema::flags (), this)
+    linearity_type_ (linearity_type, ::xml_schema::flags (), this),
+    matrix_solver_ (::xml_schema::flags (), this)
   {
   }
 
@@ -3455,7 +3441,8 @@ namespace XMLProblem
     field_id_ (x.field_id_, f, this),
     analysis_type_ (x.analysis_type_, f, this),
     adaptivity_type_ (x.adaptivity_type_, f, this),
-    linearity_type_ (x.linearity_type_, f, this)
+    linearity_type_ (x.linearity_type_, f, this),
+    matrix_solver_ (x.matrix_solver_, f, this)
   {
   }
 
@@ -3473,7 +3460,8 @@ namespace XMLProblem
     field_id_ (f, this),
     analysis_type_ (f, this),
     adaptivity_type_ (f, this),
-    linearity_type_ (f, this)
+    linearity_type_ (f, this),
+    matrix_solver_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -3660,6 +3648,15 @@ namespace XMLProblem
           linearity_type_traits::create (i, f, this));
 
         this->linearity_type_.set (r);
+        continue;
+      }
+
+      if (n.name () == "matrix_solver" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< matrix_solver_type > r (
+          matrix_solver_traits::create (i, f, this));
+
+        this->matrix_solver_.set (r);
         continue;
       }
     }
@@ -5698,7 +5695,6 @@ namespace XMLProblem
     o << ::std::endl << "problem_config: " << i.problem_config ();
     o << ::std::endl << "coordinate_type: " << i.coordinate_type ();
     o << ::std::endl << "mesh_type: " << i.mesh_type ();
-    o << ::std::endl << "matrix_solver: " << i.matrix_solver ();
     return o;
   }
 
@@ -5843,6 +5839,11 @@ namespace XMLProblem
     o << ::std::endl << "analysis_type: " << i.analysis_type ();
     o << ::std::endl << "adaptivity_type: " << i.adaptivity_type ();
     o << ::std::endl << "linearity_type: " << i.linearity_type ();
+    if (i.matrix_solver ())
+    {
+      o << ::std::endl << "matrix_solver: " << *i.matrix_solver ();
+    }
+
     return o;
   }
 
@@ -6676,17 +6677,6 @@ namespace XMLProblem
 
       a << i.mesh_type ();
     }
-
-    // matrix_solver
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "matrix_solver",
-          e));
-
-      a << i.matrix_solver ();
-    }
   }
 
   void
@@ -7109,6 +7099,18 @@ namespace XMLProblem
           e));
 
       a << i.linearity_type ();
+    }
+
+    // matrix_solver
+    //
+    if (i.matrix_solver ())
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "matrix_solver",
+          e));
+
+      a << *i.matrix_solver ();
     }
   }
 

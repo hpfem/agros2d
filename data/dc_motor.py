@@ -17,7 +17,6 @@ N = 45
 problem = agros2d.problem(clear = True)
 problem.coordinate_type = "planar"
 problem.mesh_type = "triangle"
-problem.matrix_solver = "umfpack"
 
 # fields
 # magnetic

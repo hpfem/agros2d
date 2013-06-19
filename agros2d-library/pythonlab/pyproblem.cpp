@@ -67,14 +67,6 @@ void PyProblem::setMeshType(const std::string &meshType)
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(meshTypeStringKeys())).toStdString());
 }
 
-void PyProblem::setMatrixSolver(const std::string &matrixSolver)
-{
-    if (matrixSolverTypeStringKeys().contains(QString::fromStdString(matrixSolver)))
-        Agros2D::problem()->config()->setMatrixSolver(matrixSolverTypeFromStringKey(QString::fromStdString(matrixSolver)));
-    else
-        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(matrixSolverTypeStringKeys())).toStdString());
-}
-
 void PyProblem::setFrequency(double frequency)
 {
     if (frequency > 0.0)

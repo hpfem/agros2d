@@ -187,6 +187,7 @@
                         <attribute name="analysis_type" type="string" use="required"/>
                         <attribute name="adaptivity_type" type="string" use="required" />
                         <attribute name="linearity_type" type="string" use="required" />
+                        <attribute name="matrix_solver" type="string" use="optional" />
                       </complexType>
                     </element>
                   </sequence>
@@ -220,8 +221,7 @@
               </element>
             </all>
             <attribute name="coordinate_type" type="string" use="required"/>
-            <attribute name="mesh_type" type="string" use="required" />
-            <attribute name="matrix_solver" type="string" use="required" />
+            <attribute name="mesh_type" type="string" use="required" />            
           </complexType>
         </element>
         <element name="config">

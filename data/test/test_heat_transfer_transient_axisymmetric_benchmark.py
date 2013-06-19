@@ -12,7 +12,7 @@ start_time = time()
 problem = agros2d.problem(clear = True)
 problem.coordinate_type = "axisymmetric"
 problem.mesh_type = "triangle"
-problem.matrix_solver = "umfpack"
+
 problem.time_step_method = "adaptive"
 problem.time_method_order = 3
 problem.time_method_tolerance = 1.0

@@ -58,6 +58,8 @@ public:
     LinearityType linearityType() const;
     bool isTransient() const;
 
+    Hermes::MatrixSolverType matrixSolver() const;
+
     // returns minimal time skip of individual fields
     double timeSkip() const;
     //bool skipThisTimeStep() const;

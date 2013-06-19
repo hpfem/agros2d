@@ -184,7 +184,6 @@ QString createPythonFromModel(StartupScript_Type startupScript)
     str += QString("problem = a2d.problem(clear = True)\n");
     str += QString("problem.coordinate_type = \"%1\"\n").arg(coordinateTypeToStringKey(Agros2D::problem()->config()->coordinateType()));
     str += QString("problem.mesh_type = \"%1\"\n").arg(meshTypeToStringKey(Agros2D::problem()->config()->meshType()));
-    str += QString("problem.matrix_solver = \"%1\"\n").arg(matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()));
 
     if (Agros2D::problem()->isHarmonic())
         str += QString("problem.frequency = %1\n").
@@ -224,6 +223,9 @@ QString createPythonFromModel(StartupScript_Type startupScript)
         str += QString("%1.analysis_type = \"%2\"\n").
                 arg(fieldInfo->fieldId()).
                 arg(analysisTypeToStringKey(fieldInfo->analysisType()));
+        str += QString("%1.matrix_solver = \"%2\"\n").
+                arg(fieldInfo->fieldId()).
+                arg(matrixSolverTypeToStringKey(fieldInfo->matrixSolver()));
 
         if (Agros2D::problem()->isTransient())
         {

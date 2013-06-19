@@ -115,6 +115,7 @@ private:
     QSpinBox *txtAdaptivityRedoneEach;
 
     QComboBox *cmbLinearityType;
+    QComboBox *cmbMatrixSolver;
 
     // mesh
     QSpinBox *txtNumberOfRefinements;
@@ -231,7 +232,6 @@ private:
 
     QComboBox *cmbCoordinateType;
     QComboBox *cmbMeshType;
-    QComboBox *cmbMatrixSolver;
 
     // harmonic
     QGroupBox *grpHarmonicAnalysis;

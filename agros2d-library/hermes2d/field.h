@@ -104,6 +104,10 @@ public:
     inline AdaptivityType adaptivityType() const { return m_adaptivityType; }
     void setAdaptivityType(const AdaptivityType at) { m_adaptivityType = at; emit changed(); }
 
+    // matrix
+    inline Hermes::MatrixSolverType matrixSolver() const { return m_matrixSolver; }
+    void setMatrixSolver(const Hermes::MatrixSolverType matrixSolver) { m_matrixSolver = matrixSolver; emit changed(); }
+
     // number of solutions
     inline int numberOfSolutions() const { return m_numberOfSolutions; }
 
@@ -238,6 +242,9 @@ private:
 
     // adaptivity
     AdaptivityType m_adaptivityType;
+
+    // matrix solver
+    Hermes::MatrixSolverType m_matrixSolver;
 
     // TODO: (Franta) gmsh
     QMap<SceneEdge *, int> m_edgesRefinement;

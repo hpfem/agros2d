@@ -369,6 +369,19 @@ LinearityType Block::linearityType() const
         assert(0);
 }
 
+Hermes::MatrixSolverType Block::matrixSolver() const
+{
+    Hermes::MatrixSolverType mt = m_fields.at(0)->fieldInfo()->matrixSolver();
+
+    foreach (Field *field, m_fields)
+    {
+        // todo: ensure in GUI
+        assert(field->fieldInfo()->matrixSolver() == mt);
+    }
+
+    return mt;
+}
+
 double Block::nonlinearTolerance() const
 {
     double tolerance = numeric_limits<double>::max();

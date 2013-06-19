@@ -43,10 +43,6 @@ class PyProblem
         inline std::string getMeshType() const { return meshTypeToStringKey(Agros2D::problem()->config()->meshType()).toStdString(); }
         void setMeshType(const std::string &meshType);
 
-        // matrix solver
-        inline std::string getMatrixSolver() const { return matrixSolverTypeToStringKey(Agros2D::problem()->config()->matrixSolver()).toStdString(); }
-        void setMatrixSolver(const std::string &matrixSolver);
-
         // frequency
         inline double getFrequency() const { return Agros2D::problem()->config()->value(ProblemConfig::Frequency).toDouble(); }
         void setFrequency(double frequency);

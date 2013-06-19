@@ -56,9 +56,6 @@ void ProblemConfig::clear()
     // coordinate type
     m_coordinateType = CoordinateType_Planar;
 
-    // matrix solver
-    m_matrixSolver = Hermes::SOLVER_UMFPACK;
-
     // mesh type
     m_meshType = MeshType_Triangle;
 

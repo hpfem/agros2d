@@ -4,7 +4,6 @@ import agros2d as a2d
 problem = a2d.problem(clear = True)
 problem.coordinate_type = "axisymmetric"
 problem.mesh_type = "triangle"
-problem.matrix_solver = "umfpack"
 
 # fields
 # electrostatic
