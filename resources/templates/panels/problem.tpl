@@ -96,6 +96,9 @@
 	<tr>
 		<td><b>{{LINEARITY_TYPE_LABEL}}</b></td><td>{{LINEARITY_TYPE}}</td>
 	</tr>
+	<tr>
+		<td><b>{{LINEARSOLVER_TYPE_LABEL}}</b></td><td>{{LINEARSOLVER_TYPE}}</td>
+	</tr>
 	{{#SOLVER_PARAMETERS_SECTION}}
 	<tr>
 		<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_STEPS_LABEL}}</b></td><td>{{NONLINEAR_STEPS}}</td>

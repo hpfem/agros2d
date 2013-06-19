@@ -252,8 +252,13 @@ void InfoWidget::showInfo()
 //                    field->ShowSection("SOLVER_NONLINEAR_NEWTON_NONAUTOMATIC_DAMPING_SECTION");
 //                }
 
+
+
                 field->ShowSection("SOLVER_PARAMETERS_SECTION");
             }
+
+            field->SetValue("LINEARSOLVER_TYPE_LABEL", tr("Linear solver:").toStdString());
+            field->SetValue("LINEARSOLVER_TYPE", matrixSolverTypeString(fieldInfo->matrixSolver()).toStdString());
 
             int solutionMeshNodes = 0;
             int solutionMeshElements = 0;
