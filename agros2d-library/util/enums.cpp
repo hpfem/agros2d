@@ -680,7 +680,11 @@ QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType)
 
 bool isMatrixSolverIterative(Hermes::MatrixSolverType type)
 {
+#ifdef WITH_PARALUTION
     return (type == Hermes::SOLVER_PARALUTION);
+#else
+    return false;
+#endif
 }
 
 QString linearityTypeString(LinearityType linearityType)
