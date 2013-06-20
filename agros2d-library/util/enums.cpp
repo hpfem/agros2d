@@ -521,11 +521,11 @@ QString meshTypeString(MeshType meshType)
     case MeshType_Triangle_QuadJoin:
         return QObject::tr("Triangle - quad join");
     case MeshType_GMSH_Triangle:
-        return QObject::tr("GMSH - triangle");
+        return QObject::tr("GMSH (exp.) - triangle");
     case MeshType_GMSH_Quad:
-        return QObject::tr("GMSH - quad");
+        return QObject::tr("GMSH (exp.) - quad");
     case MeshType_GMSH_QuadDelaunay_Experimental:
-        return QObject::tr("GMSH - quad Delaunay");
+        return QObject::tr("GMSH (exp.) - quad Delaunay");
     default:
         std::cerr << "Mesh type '" + QString::number(meshType).toStdString() + "' is not implemented. meshTypeString(MeshType meshType)" << endl;
         throw;
@@ -665,7 +665,7 @@ QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType)
     case Hermes::SOLVER_SUPERLU:
         return QObject::tr("SuperLU");
     case Hermes::SOLVER_PARALUTION:
-        return QObject::tr("PARALUTION (experimental)");
+        return QObject::tr("PARALUTION (exp.)");
     case Hermes::SOLVER_AMESOS:
         return QObject::tr("Trilinos/Amesos");
     case Hermes::SOLVER_AZTECOO:
