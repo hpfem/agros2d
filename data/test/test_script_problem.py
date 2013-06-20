@@ -27,16 +27,6 @@ class TestProblem(TestCase):
         with self.assertRaises(ValueError):
             self.problem.mesh_type = 'wrong_mesh_type'
 
-    """ matrix_solver """
-    def test_matrix_solver(self):
-        for type in ['umfpack']:
-            self.problem.matrix_solver = type
-            self.assertEqual(self.problem.matrix_solver, type)
-
-    def test_set_wrong_matrix_solver(self):
-        with self.assertRaises(ValueError):
-            self.problem.matrix_solver = 'wrong_matrix_solver'
-
     """ frequency """
     def test_frequency(self):
         self.problem.frequency = 50
