@@ -208,6 +208,41 @@ void PyField::setMatrixSolver(const std::string &matrixSolver)
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(matrixSolverTypeStringKeys())).toStdString());
 }
 
+void PyField::setLinearSolverAbsoluteTolerance(double absoluteTolerance)
+{
+    if (absoluteTolerance > 0.0)
+        m_fieldInfo->setValue(FieldInfo::LinearSolverIterToleranceAbsolute, absoluteTolerance);
+    else
+        throw out_of_range(QObject::tr("Absolute tolerance must be positive.").toStdString());
+}
+
+void PyField::setLinearSolverIterations(int numberOfIterations)
+{
+    if (numberOfIterations >= 1 && numberOfIterations <= 10000)
+        m_fieldInfo->setValue(FieldInfo::LinearSolverIterIters, numberOfIterations);
+    else
+        throw out_of_range(QObject::tr("Linear solver iterations is out of range (1 - 10000).").toStdString());
+}
+
+
+void PyField::setLinearSolverMethod(const std::string &linearSolverMethod)
+{
+    if (iterLinearSolverMethodStringKeys().contains(QString::fromStdString(linearSolverMethod)))
+        m_fieldInfo->setValue(FieldInfo::LinearSolverIterMethod,
+                              (Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType) iterLinearSolverMethodFromStringKey(QString::fromStdString(linearSolverMethod)));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(iterLinearSolverMethodStringKeys())).toStdString());
+}
+
+void PyField::setLinearSolverPreconditioner(const std::string &linearSolverPreconditioner)
+{
+    if (iterLinearSolverPreconditionerTypeStringKeys().contains(QString::fromStdString(linearSolverPreconditioner)))
+        m_fieldInfo->setValue(FieldInfo::LinearSolverIterPreconditioner,
+                              (Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) iterLinearSolverPreconditionerTypeFromStringKey(QString::fromStdString(linearSolverPreconditioner)));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(iterLinearSolverPreconditionerTypeStringKeys())).toStdString());
+}
+
 void PyField::setAdaptivityTolerance(double adaptivityTolerance)
 {
     if (adaptivityTolerance > 0.0)

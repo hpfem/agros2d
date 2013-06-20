@@ -48,6 +48,26 @@ class PyField
         inline std::string getMatrixSolver() const { return matrixSolverTypeToStringKey(m_fieldInfo->matrixSolver()).toStdString(); }
         void setMatrixSolver(const std::string &matrixSolver);
 
+        // linear solver absolute tolerance
+        inline double getLinearSolverAbsoluteTolerance() const { return m_fieldInfo->value(FieldInfo::LinearSolverIterToleranceAbsolute).toDouble(); }
+        void setLinearSolverAbsoluteTolerance(double absoluteTolerance);
+
+        // linear solver iterations
+        inline int getLinearSolverIterations() const { return m_fieldInfo->value(FieldInfo::LinearSolverIterIters).toInt(); }
+        void setLinearSolverIterations(int numberOfIterations);
+
+        // linear solver method
+        inline std::string getLinearSolverMethod() const {
+             return iterLinearSolverMethodToStringKey((Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType) m_fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()).toStdString();
+        }
+        void setLinearSolverMethod(const std::string &linearSolverMethod);
+
+        // linear solver preconditioner
+        inline std::string getLinearSolverPreconditioner() const {
+            return iterLinearSolverPreconditionerTypeToStringKey((Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) m_fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()).toStdString();
+        }
+        void setLinearSolverPreconditioner(const std::string &linearSolverPreconditioner);
+
         // number of refinements
         inline int getNumberOfRefinements() const { return m_fieldInfo->value(FieldInfo::SpaceNumberOfRefinements).toInt(); }
         void setNumberOfRefinements(int numberOfRefinements);

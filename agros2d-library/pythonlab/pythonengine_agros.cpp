@@ -136,7 +136,7 @@ void PythonLabAgros::scriptFinish()
         disconnect(Agros2D::log(), SIGNAL(errorMsg(QString, QString, bool)), this, SLOT(printError(QString, QString, bool)));
         disconnect(Agros2D::log(), SIGNAL(warningMsg(QString, QString, bool)), this, SLOT(printWarning(QString, QString, bool)));
         disconnect(Agros2D::log(), SIGNAL(debugMsg(QString, QString, bool)), this, SLOT(printDebug(QString, QString, bool)));
-    }      
+    }
 }
 
 void PythonLabAgros::printMessage(const QString &module, const QString &message, bool escaped)
@@ -226,6 +226,22 @@ QString createPythonFromModel(StartupScript_Type startupScript)
         str += QString("%1.matrix_solver = \"%2\"\n").
                 arg(fieldInfo->fieldId()).
                 arg(matrixSolverTypeToStringKey(fieldInfo->matrixSolver()));
+
+        if (fieldInfo->matrixSolver() == Hermes::SOLVER_PARALUTION)
+        {
+            str += QString("%1.linear_solver_method = \"%2\"\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(iterLinearSolverMethodToStringKey((Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()));
+            str += QString("%1.linear_solver_preconditioner = \"%2\"\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(iterLinearSolverPreconditionerTypeToStringKey((Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
+            str += QString("%1.linear_solver_tolerance = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(fieldInfo->value(FieldInfo::LinearSolverIterToleranceAbsolute).toDouble());
+            str += QString("%1.linear_solver_iterations = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(fieldInfo->value(FieldInfo::LinearSolverIterIters).toInt());
+        }
 
         if (Agros2D::problem()->isTransient())
         {

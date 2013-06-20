@@ -19,6 +19,18 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         string getMatrixSolver()
         void setMatrixSolver(string &matrixSolver) except +
 
+        double getLinearSolverAbsoluteTolerance()
+        void setLinearSolverAbsoluteTolerance(double absoluteTolerance) except +
+
+        int getLinearSolverIterations()
+        void setLinearSolverIterations(int numberOfIterations)  except +
+
+        string getLinearSolverMethod()
+        void setLinearSolverMethod(string &linearSolverMethod) except +
+
+        string getLinearSolverPreconditioner()
+        void setLinearSolverPreconditioner(string &linearSolverPreconditioner) except +
+
         string getNonlinearConvergenceMeasurement()
         void setNonlinearConvergenceMeasurement(string &nonlinearConvergenceMeasurement) except +
 
@@ -272,11 +284,40 @@ cdef class __Field__:
         def __set__(self, linearity_type):
             self.thisptr.setLinearityType(string(linearity_type))
 
+    # matrix solver
     property matrix_solver:
         def __get__(self):
             return self.thisptr.getMatrixSolver().c_str()
         def __set__(self, matrix_solver):
             self.thisptr.setMatrixSolver(string(matrix_solver))
+
+    # linear solver tolerance
+    property linear_solver_tolerance:
+        def __get__(self):
+            return self.thisptr.getLinearSolverAbsoluteTolerance()
+        def __set__(self, tolerance):
+            self.thisptr.setLinearSolverAbsoluteTolerance(tolerance)
+
+    # linear solver iterations
+    property linear_solver_iterations:
+        def __get__(self):
+            return self.thisptr.getLinearSolverIterations()
+        def __set__(self, iterations):
+            self.thisptr.setLinearSolverIterations(iterations)
+
+    # linear solver method
+    property linear_solver_method:
+        def __get__(self):
+            return self.thisptr.getLinearSolverMethod().c_str()
+        def __set__(self, method):
+            self.thisptr.setLinearSolverMethod(string(method))
+
+    # linear solver preconditioner
+    property linear_solver_preconditioner:
+        def __get__(self):
+            return self.thisptr.getLinearSolverPreconditioner().c_str()
+        def __set__(self, preconditioner):
+            self.thisptr.setLinearSolverPreconditioner(string(preconditioner))
 
     # convergence measurement
     property nonlinear_convergence_measurement:
