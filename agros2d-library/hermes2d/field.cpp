@@ -826,6 +826,10 @@ void FieldInfo::setStringKeys()
     m_settingKey[AdaptivityFinerReference] = "AdaptivityFinerReference";
     m_settingKey[TransientTimeSkip] = "TransientTimeSkip";
     m_settingKey[TransientInitialCondition] = "TransientInitialCondition";
+    m_settingKey[LinearSolverIterMethod] = "LinearSolverIterMethod";
+    m_settingKey[LinearSolverIterPreconditioner] = "LinearSolverIterPreconditioner";
+    m_settingKey[LinearSolverIterToleranceAbsolute] = "LinearSolverIterToleranceAbsolute";
+    m_settingKey[LinearSolverIterIters] = "LinearSolverIterIters";
 }
 
 void FieldInfo::setDefaultValues()
@@ -858,4 +862,8 @@ void FieldInfo::setDefaultValues()
     m_settingDefault[AdaptivityFinerReference] = false;
     m_settingDefault[TransientTimeSkip] = 0.0;
     m_settingDefault[TransientInitialCondition] = 0.0;
+    m_settingDefault[LinearSolverIterMethod] = Hermes::Solvers::ParalutionLinearMatrixSolver<double>::BiCGStab;
+    m_settingDefault[LinearSolverIterPreconditioner] = Hermes::Solvers::ParalutionPrecond<double>::ILU;
+    m_settingDefault[LinearSolverIterToleranceAbsolute] = 1e-16;
+    m_settingDefault[LinearSolverIterIters] = 1000;
 }

@@ -87,7 +87,11 @@ public:
         AdaptivityUseAniso,
         AdaptivityFinerReference,
         TransientTimeSkip,
-        TransientInitialCondition
+        TransientInitialCondition,
+        LinearSolverIterMethod,
+        LinearSolverIterPreconditioner,
+        LinearSolverIterToleranceAbsolute,
+        LinearSolverIterIters
     };
 
     // analysis type

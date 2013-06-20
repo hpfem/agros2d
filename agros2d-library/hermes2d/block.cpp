@@ -561,6 +561,62 @@ int Block::picardAndersonNumberOfLastVectors() const
     return number;
 }
 
+Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType Block::iterLinearSolverMethod() const
+{
+    Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType method
+            = (Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType) m_fields.at(0)->fieldInfo()->value(FieldInfo::LinearSolverIterMethod).toInt();
+
+    foreach (Field *field, m_fields)
+    {
+        // todo: ensure in GUI
+        assert((Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType) field->fieldInfo()->value(FieldInfo::LinearSolverIterMethod).toInt() == method );
+    }
+
+    return method ;
+}
+
+Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType Block::iterLinearSolverPreconditioner() const
+{
+    Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType type
+            = (Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) m_fields.at(0)->fieldInfo()->value(FieldInfo::LinearSolverIterPreconditioner).toInt();
+
+    foreach (Field *field, m_fields)
+    {
+        // todo: ensure in GUI
+        assert((Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) field->fieldInfo()->value(FieldInfo::LinearSolverIterPreconditioner).toInt() == type );
+    }
+
+    return type ;
+}
+
+double Block::iterLinearSolverToleranceAbsolute() const
+{
+    double coeff = 1.0;
+
+    foreach (Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if (fieldInfo->value(FieldInfo::LinearSolverIterToleranceAbsolute).toDouble() < coeff)
+            coeff = fieldInfo->value(FieldInfo::LinearSolverIterToleranceAbsolute).toDouble();
+    }
+
+    return coeff;
+}
+
+int Block::iterLinearSolverIters() const
+{
+    int iters = 1;
+
+    foreach (Field* field, m_fields)
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        if (fieldInfo->value(FieldInfo::LinearSolverIterIters).toInt() > iters)
+            iters = fieldInfo->value(FieldInfo::LinearSolverIterIters).toInt();
+    }
+
+    return iters;
+}
+
 bool Block::contains(FieldInfo *fieldInfo) const
 {
     foreach(Field* field, m_fields)

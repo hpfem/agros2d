@@ -116,6 +116,12 @@ public:
     // number of last vectors used for Anderson acceleration
     int picardAndersonNumberOfLastVectors() const;
 
+    // iterative linear solver
+    Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType iterLinearSolverMethod() const;
+    Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType iterLinearSolverPreconditioner() const;
+    double iterLinearSolverToleranceAbsolute() const;
+    int iterLinearSolverIters() const;
+
     bool contains(FieldInfo* fieldInfo) const;
     Field* field(FieldInfo* fieldInfo) const;
 

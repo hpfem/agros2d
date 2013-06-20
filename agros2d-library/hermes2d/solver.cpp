@@ -259,14 +259,14 @@ QSharedPointer<HermesSolverContainer<Scalar> > HermesSolverContainer<Scalar>::fa
 
     if (IterSolver<Scalar> *linearSolver = dynamic_cast<IterSolver<Scalar> *>(solver->linearSolver()))
     {
-        linearSolver->set_max_iters(1000);
-        linearSolver->set_tolerance(1e-15, IterSolver<double>::AbsoluteTolerance);
+        linearSolver->set_max_iters(block->iterLinearSolverIters());
+        linearSolver->set_tolerance(block->iterLinearSolverToleranceAbsolute());
     }
 #ifdef WITH_PARALUTION
     if (ParalutionLinearMatrixSolver<Scalar> *linearSolver = dynamic_cast<ParalutionLinearMatrixSolver<Scalar> *>(solver.data()->linearSolver()))
     {
-        linearSolver->set_solver_type(Hermes::Solvers::ParalutionLinearMatrixSolver<Scalar>::BiCGStab);
-        linearSolver->set_precond(new Hermes::Preconditioners::ParalutionPrecond<Scalar>(Hermes::Preconditioners::ParalutionPrecond<Scalar>::ILU));
+        linearSolver->set_solver_type(block->iterLinearSolverMethod());
+        linearSolver->set_precond(new Hermes::Preconditioners::ParalutionPrecond<Scalar>(block->iterLinearSolverPreconditioner()));
     }
 #endif
 
@@ -576,7 +576,7 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Hermes::vector<SpaceSharedPtr<Sca
     m_hermesSolverContainer->solve(initialSolutionVector);
 
     if (initialSolutionVector)
-       delete [] initialSolutionVector;
+        delete [] initialSolutionVector;
 
     // linear solver statistics
     LinearMatrixSolver<Scalar> *linearSolver = m_hermesSolverContainer->linearSolver();

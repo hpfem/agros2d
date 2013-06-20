@@ -89,6 +89,10 @@ public:
     FieldWidget(FieldInfo *m_fieldInfo, QWidget *parent);
 
     void createContent();
+    QWidget *createSolverWidget();
+    QWidget *createAdaptivityWidget();
+    QWidget *createTransientAnalysisWidget();
+    QWidget *createLinearSolverWidget();
 
     void load();
     bool save();
@@ -115,7 +119,7 @@ private:
     QSpinBox *txtAdaptivityRedoneEach;
 
     QComboBox *cmbLinearityType;
-    QComboBox *cmbMatrixSolver;
+    QComboBox *cmbLinearSolver;
 
     // mesh
     QSpinBox *txtNumberOfRefinements;
@@ -151,6 +155,12 @@ private:
     LineEditDouble *txtTransientInitialCondition;
     LineEditDouble *txtTransientTimeSkip;
 
+    // linear solver
+    QComboBox *cmbIterLinearSolverMethod;
+    QComboBox *cmbIterLinearSolverPreconditioner;
+    LineEditDouble *txtIterLinearSolverToleranceAbsolute;
+    QSpinBox *txtIterLinearSolverIters;
+
     // equation
     // LaTeXViewer *equationLaTeX;
     QLabel *equationImage;
@@ -161,6 +171,8 @@ private slots:
     void doAnalysisTypeChanged(int index);
     void doAdaptivityChanged(int index);
     void doLinearityTypeChanged(int index);
+    void doLinearSolverChanged(int index);
+
     void doNewtonDampingChanged(int index);
     void doNewtonReuseJacobian(bool checked);
     void doPicardAndersonChanged(int index);

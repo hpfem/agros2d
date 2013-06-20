@@ -257,8 +257,16 @@ void InfoWidget::showInfo()
                 field->ShowSection("SOLVER_PARAMETERS_SECTION");
             }
 
+            QString matrixSolver = matrixSolverTypeString(fieldInfo->matrixSolver());
+            if ((fieldInfo->matrixSolver() == Hermes::SOLVER_PARALUTION))
+                matrixSolver += tr(" (%1, %2) - iterative").
+                        arg(iterLinearSolverMethodString((Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt())).
+                        arg(iterLinearSolverPreconditionerTypeString((Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
+            else
+                matrixSolver += tr(" - direct");
+
             field->SetValue("LINEARSOLVER_TYPE_LABEL", tr("Linear solver:").toStdString());
-            field->SetValue("LINEARSOLVER_TYPE", matrixSolverTypeString(fieldInfo->matrixSolver()).toStdString());
+            field->SetValue("LINEARSOLVER_TYPE", matrixSolver.toStdString());
 
             int solutionMeshNodes = 0;
             int solutionMeshElements = 0;

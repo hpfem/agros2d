@@ -143,38 +143,14 @@ void FieldWidget::createContent()
     equationImage = new QLabel();
 
     cmbAdaptivityType = new QComboBox();
-    txtAdaptivitySteps = new QSpinBox(this);
-    txtAdaptivitySteps->setMinimum(1);
-    txtAdaptivitySteps->setMaximum(100);
-    txtAdaptivityTolerance = new LineEditDouble(1.0);
-    txtAdaptivityTolerance->setBottom(0.0);
-    cmbAdaptivityStoppingCriterionType = new QComboBox();
-    foreach (QString type, adaptivityStoppingCriterionTypeStringKeys())
-        if (adaptivityStoppingCriterionFromStringKey(type) != AdaptivityStoppingCriterionType_Undefined)
-            cmbAdaptivityStoppingCriterionType->addItem(adaptivityStoppingCriterionTypeString(adaptivityStoppingCriterionFromStringKey(type)),
-                                                        adaptivityStoppingCriterionFromStringKey(type));
-    txtAdaptivityThreshold = new QDoubleSpinBox();
-    txtAdaptivityThreshold->setValue(m_fieldInfo->defaultValue(FieldInfo::AdaptivityThreshold).toDouble());
-    txtAdaptivityThreshold->setDecimals(2);
-    txtAdaptivityThreshold->setRange(0.01, 1.00);
-    txtAdaptivityThreshold->setSingleStep(0.01);
-    cmbAdaptivityProjNormType = new QComboBox();
-    cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_NORM), Hermes::Hermes2D::HERMES_H1_NORM);
-    cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_L2_NORM), Hermes::Hermes2D::HERMES_L2_NORM);
-    cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_SEMINORM), Hermes::Hermes2D::HERMES_H1_SEMINORM);
-    chkAdaptivityUseAniso = new QCheckBox(tr("Use anisotropic refinements"));
-    chkAdaptivityFinerReference = new QCheckBox(tr("Use hp reference solution for h and p adaptivity"));
-    QLabel *lblAdaptivityBackSteps = new QLabel(tr("Steps back in trans:"));
-    txtAdaptivityBackSteps = new QSpinBox(this);
-    txtAdaptivityBackSteps->setMinimum(0);
-    txtAdaptivityBackSteps->setMaximum(100);
-    QLabel *lblAdaptivityRedoneEach = new QLabel(tr("Redone each trans st:"));
-    txtAdaptivityRedoneEach = new QSpinBox(this);
-    txtAdaptivityRedoneEach->setMinimum(1);
-    txtAdaptivityRedoneEach->setMaximum(100);
+    cmbAnalysisType = new QComboBox();
+    cmbLinearityType = new QComboBox();
+    cmbLinearSolver = new QComboBox();
 
-    // matrix solver
-    cmbMatrixSolver = new QComboBox();
+    connect(cmbAdaptivityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAdaptivityChanged(int)));
+    connect(cmbAnalysisType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAnalysisTypeChanged(int)));
+    connect(cmbLinearityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doLinearityTypeChanged(int)));
+    connect(cmbLinearSolver, SIGNAL(currentIndexChanged(int)), this, SLOT(doLinearSolverChanged(int)));
 
     // mesh
     txtNumberOfRefinements = new QSpinBox(this);
@@ -184,14 +160,82 @@ void FieldWidget::createContent()
     txtPolynomialOrder->setMinimum(1);
     txtPolynomialOrder->setMaximum(10);
 
-    // transient
-    cmbAnalysisType = new QComboBox();
-    txtTransientInitialCondition = new LineEditDouble(0.0);
-    txtTransientTimeSkip = new LineEditDouble(0.0);
-    txtTransientTimeSkip->setBottom(0.0);
+    // table
+    QGridLayout *layoutGeneral = new QGridLayout();
+    layoutGeneral->setColumnMinimumWidth(0, columnMinimumWidth());
+    layoutGeneral->setColumnStretch(1, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Analysis:")), 0, 0);
+    layoutGeneral->addWidget(cmbAnalysisType, 0, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Solver:")), 1, 0);
+    layoutGeneral->addWidget(cmbLinearityType, 1, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Adaptivity:")), 2, 0);
+    layoutGeneral->addWidget(cmbAdaptivityType, 2, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Linear solver:")), 3, 0);
+    layoutGeneral->addWidget(cmbLinearSolver, 3, 1);
 
+    QGroupBox *grpGeneral = new QGroupBox(tr("General"));
+    grpGeneral->setLayout(layoutGeneral);
+
+    // mesh
+    QGridLayout *layoutMesh = new QGridLayout();
+    layoutMesh->setColumnMinimumWidth(0, columnMinimumWidth());
+    layoutMesh->setColumnStretch(1, 1);
+    layoutMesh->addWidget(new QLabel(tr("Number of refinements:")), 0, 0);
+    layoutMesh->addWidget(txtNumberOfRefinements, 0, 1);
+    layoutMesh->addWidget(new QLabel(tr("Polynomial order:")), 1, 0);
+    layoutMesh->addWidget(txtPolynomialOrder, 1, 1);
+    layoutMesh->setRowStretch(50, 1);
+
+    QGroupBox *grpMesh = new QGroupBox(tr("Mesh parameters"));
+    grpMesh->setLayout(layoutMesh);
+
+    // left
+    QVBoxLayout *layoutLeft = new QVBoxLayout();
+    layoutLeft->addWidget(grpGeneral);
+    layoutLeft->addStretch();
+
+    // right
+    QVBoxLayout *layoutRight = new QVBoxLayout();
+    layoutRight->addWidget(grpMesh);
+    layoutRight->addStretch();
+
+    // both
+    QHBoxLayout *layoutPanel = new QHBoxLayout();
+    layoutPanel->addLayout(layoutLeft);
+    layoutPanel->addLayout(layoutRight);
+
+    // equation
+    QVBoxLayout *layoutEquation = new QVBoxLayout();
+    // layoutEquation->addWidget(equationLaTeX);
+    layoutEquation->addWidget(equationImage);
+    layoutEquation->addStretch();
+
+    // tabs
+    QTabWidget *tabWidget = new QTabWidget(this);
+    tabWidget->addTab(createSolverWidget(), tr("Solver"));
+    tabWidget->addTab(createAdaptivityWidget(), tr("Space adaptivity"));
+    tabWidget->addTab(createTransientAnalysisWidget(), tr("Transient analysis"));
+    tabWidget->addTab(createLinearSolverWidget(), tr("Linear solver"));
+
+    QGroupBox *grpEquation = new QGroupBox(tr("Partial differential equation"));
+    grpEquation->setLayout(layoutEquation);
+
+    QVBoxLayout *layoutProblem = new QVBoxLayout();
+    layoutProblem->addWidget(grpEquation);
+    layoutProblem->addLayout(layoutPanel);
+    layoutProblem->addWidget(tabWidget);
+
+    // fill combobox
+    fillComboBox();
+
+    setLayout(layoutProblem);
+
+    setMinimumSize(sizeHint());
+}
+
+QWidget *FieldWidget::createSolverWidget()
+{
     // linearity
-    cmbLinearityType = new QComboBox();
     lblNonlinearConvergence = new QLabel(tr("Convergence:"));
     cmbNonlinearConvergenceMeasurement = new QComboBox();
     lblNonlinearSteps = new QLabel(tr("Steps:"));
@@ -199,7 +243,7 @@ void FieldWidget::createContent()
     txtNonlinearSteps->setMinimum(1);
     txtNonlinearSteps->setMaximum(100);
     txtNonlinearSteps->setValue(m_fieldInfo->defaultValue(FieldInfo::NonlinearSteps).toInt());
-//    lblNonlinearTolerance = new QLabel(tr("Tolerance:"));
+    // lblNonlinearTolerance = new QLabel(tr("Tolerance:"));
     lblNonlinearTolerance = new QLabel(tr("at most:"));
     txtNonlinearTolerance = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::NonlinearTolerance).toDouble());
     txtNonlinearTolerance->setBottom(0.0);
@@ -213,9 +257,9 @@ void FieldWidget::createContent()
     chkNewtonReuseJacobian = new QCheckBox(tr("Reuse Jacobian if possible"));
     connect(chkNewtonReuseJacobian, SIGNAL(toggled(bool)), this, SLOT(doNewtonReuseJacobian(bool)));
 
-    lblNewtonSufficientImprovementFactorForJacobianReuse = new QLabel(tr("New/old residual ratio max. for Jacobian reuse"));;
+    lblNewtonSufficientImprovementFactorForJacobianReuse = new QLabel(tr("New/old residual ratio max. for Jacobian reuse:"));;
     txtNewtonSufficientImprovementFactorForJacobianReuse = new LineEditDouble();
-    lblNewtonSufficientImprovementFactor = new QLabel(tr("New/old residual ratio max. for damping search"));;
+    lblNewtonSufficientImprovementFactor = new QLabel(tr("New/old residual ratio max. for damping search:"));;
     txtNewtonSufficientImprovementFactor = new LineEditDouble();
     lblNewtonMaximumStepsWithReusedJacobian = new QLabel(tr("Max. number of steps with the same Jacobian:"));
     txtNewtonMaximumStepsWithReusedJacobian = new QSpinBox(this);
@@ -236,81 +280,6 @@ void FieldWidget::createContent()
     txtPicardAndersonNumberOfLastVectors = new QSpinBox(this);
     txtPicardAndersonNumberOfLastVectors->setMinimum(1);
     txtPicardAndersonNumberOfLastVectors->setMaximum(5);
-
-    connect(cmbAdaptivityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAdaptivityChanged(int)));
-    connect(cmbAnalysisType, SIGNAL(currentIndexChanged(int)), this, SLOT(doAnalysisTypeChanged(int)));
-    //connect(cmbAnalysisType, SIGNAL(currentIndexChanged(int)), m_problemDialog, SLOT(doFindCouplings()));
-
-    connect(cmbLinearityType, SIGNAL(currentIndexChanged(int)), this, SLOT(doLinearityTypeChanged(int)));
-
-    // fill combobox
-    fillComboBox();
-
-    // table
-    QGridLayout *layoutGeneral = new QGridLayout();
-    layoutGeneral->setColumnMinimumWidth(0, columnMinimumWidth());
-    layoutGeneral->setColumnStretch(1, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Analysis:")), 0, 0);
-    layoutGeneral->addWidget(cmbAnalysisType, 0, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Solver:")), 1, 0);
-    layoutGeneral->addWidget(cmbLinearityType, 1, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Adaptivity:")), 2, 0);
-    layoutGeneral->addWidget(cmbAdaptivityType, 2, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Linear solver:")), 3, 0);
-    layoutGeneral->addWidget(cmbMatrixSolver, 3, 1);
-
-    QGroupBox *grpGeneral = new QGroupBox(tr("General"));
-    grpGeneral->setLayout(layoutGeneral);
-
-    // mesh
-    QGridLayout *layoutMesh = new QGridLayout();
-    layoutMesh->setColumnMinimumWidth(0, columnMinimumWidth());
-    layoutMesh->setColumnStretch(1, 1);
-    layoutMesh->addWidget(new QLabel(tr("Number of refinements:")), 0, 0);
-    layoutMesh->addWidget(txtNumberOfRefinements, 0, 1);
-    layoutMesh->addWidget(new QLabel(tr("Polynomial order:")), 1, 0);
-    layoutMesh->addWidget(txtPolynomialOrder, 1, 1);
-    layoutMesh->setRowStretch(50, 1);
-
-    QGroupBox *grpMesh = new QGroupBox(tr("Mesh parameters"));
-    grpMesh->setLayout(layoutMesh);
-
-    // transient analysis
-    QGridLayout *layoutTransientAnalysis = new QGridLayout();
-    layoutTransientAnalysis->setColumnMinimumWidth(0, columnMinimumWidth());
-    layoutTransientAnalysis->setColumnStretch(1, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Initial condition:")), 0, 0);
-    layoutTransientAnalysis->addWidget(txtTransientInitialCondition, 0, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Time skip (s):")), 1, 0);
-    layoutTransientAnalysis->addWidget(txtTransientTimeSkip, 1, 1);
-    layoutTransientAnalysis->setRowStretch(50, 1);
-
-    QWidget *widTransientAnalysis = new QWidget(this);
-    widTransientAnalysis->setLayout(layoutTransientAnalysis);
-
-    // adaptivity
-    QGridLayout *layoutAdaptivity = new QGridLayout();
-    layoutAdaptivity->setColumnMinimumWidth(0, columnMinimumWidth());
-    layoutAdaptivity->addWidget(new QLabel(tr("Steps:")), 1, 0);
-    layoutAdaptivity->addWidget(txtAdaptivitySteps, 1, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Tolerance (%):")), 2, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityTolerance, 2, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Stopping criterion:")), 3, 0);
-    layoutAdaptivity->addWidget(cmbAdaptivityStoppingCriterionType, 3, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Threshold (%):")), 4, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityThreshold, 4, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Norm:")), 5, 0);
-    layoutAdaptivity->addWidget(cmbAdaptivityProjNormType, 5, 1);
-    layoutAdaptivity->addWidget(chkAdaptivityUseAniso, 6, 1);
-    layoutAdaptivity->addWidget(chkAdaptivityFinerReference, 7, 1);
-    layoutAdaptivity->addWidget(lblAdaptivityBackSteps, 8, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityBackSteps, 8, 1);
-    layoutAdaptivity->addWidget(lblAdaptivityRedoneEach, 9, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityRedoneEach, 9, 1);
-    layoutAdaptivity->setRowStretch(50, 1);
-
-    QWidget *widAdaptivity = new QWidget(this);
-    widAdaptivity->setLayout(layoutAdaptivity);
 
     // linearity
     QGridLayout *layoutSolver = new QGridLayout();
@@ -371,44 +340,119 @@ void FieldWidget::createContent()
     QWidget *widSolver = new QWidget(this);
     widSolver->setLayout(layoutSolver);
 
-    // left
-    QVBoxLayout *layoutLeft = new QVBoxLayout();
-    layoutLeft->addWidget(grpGeneral);
-    layoutLeft->addStretch();
+    return widSolver;
+}
 
-    // right
-    QVBoxLayout *layoutRight = new QVBoxLayout();
-    layoutRight->addWidget(grpMesh);
-    layoutRight->addStretch();
+QWidget *FieldWidget::createAdaptivityWidget()
+{
+    txtAdaptivitySteps = new QSpinBox(this);
+    txtAdaptivitySteps->setMinimum(1);
+    txtAdaptivitySteps->setMaximum(100);
+    txtAdaptivityTolerance = new LineEditDouble(1.0);
+    txtAdaptivityTolerance->setBottom(0.0);
+    cmbAdaptivityStoppingCriterionType = new QComboBox();
+    foreach (QString type, adaptivityStoppingCriterionTypeStringKeys())
+        if (adaptivityStoppingCriterionFromStringKey(type) != AdaptivityStoppingCriterionType_Undefined)
+            cmbAdaptivityStoppingCriterionType->addItem(adaptivityStoppingCriterionTypeString(adaptivityStoppingCriterionFromStringKey(type)),
+                                                        adaptivityStoppingCriterionFromStringKey(type));
+    txtAdaptivityThreshold = new QDoubleSpinBox();
+    txtAdaptivityThreshold->setValue(m_fieldInfo->defaultValue(FieldInfo::AdaptivityThreshold).toDouble());
+    txtAdaptivityThreshold->setDecimals(2);
+    txtAdaptivityThreshold->setRange(0.01, 1.00);
+    txtAdaptivityThreshold->setSingleStep(0.01);
+    cmbAdaptivityProjNormType = new QComboBox();
+    chkAdaptivityUseAniso = new QCheckBox(tr("Use anisotropic refinements"));
+    chkAdaptivityFinerReference = new QCheckBox(tr("Use hp reference solution for h and p adaptivity"));
+    QLabel *lblAdaptivityBackSteps = new QLabel(tr("Steps back in trans:"));
+    txtAdaptivityBackSteps = new QSpinBox(this);
+    txtAdaptivityBackSteps->setMinimum(0);
+    txtAdaptivityBackSteps->setMaximum(100);
+    QLabel *lblAdaptivityRedoneEach = new QLabel(tr("Redone each trans st:"));
+    txtAdaptivityRedoneEach = new QSpinBox(this);
+    txtAdaptivityRedoneEach->setMinimum(1);
+    txtAdaptivityRedoneEach->setMaximum(100);
 
-    // both
-    QHBoxLayout *layoutPanel = new QHBoxLayout();
-    layoutPanel->addLayout(layoutLeft);
-    layoutPanel->addLayout(layoutRight);
+    // adaptivity
+    QGridLayout *layoutAdaptivity = new QGridLayout();
+    layoutAdaptivity->setColumnMinimumWidth(0, columnMinimumWidth());
+    layoutAdaptivity->addWidget(new QLabel(tr("Steps:")), 1, 0);
+    layoutAdaptivity->addWidget(txtAdaptivitySteps, 1, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Tolerance (%):")), 2, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityTolerance, 2, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Stopping criterion:")), 3, 0);
+    layoutAdaptivity->addWidget(cmbAdaptivityStoppingCriterionType, 3, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Threshold (%):")), 4, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityThreshold, 4, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Norm:")), 5, 0);
+    layoutAdaptivity->addWidget(cmbAdaptivityProjNormType, 5, 1);
+    layoutAdaptivity->addWidget(chkAdaptivityUseAniso, 6, 1);
+    layoutAdaptivity->addWidget(chkAdaptivityFinerReference, 7, 1);
+    layoutAdaptivity->addWidget(lblAdaptivityBackSteps, 8, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityBackSteps, 8, 1);
+    layoutAdaptivity->addWidget(lblAdaptivityRedoneEach, 9, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityRedoneEach, 9, 1);
+    layoutAdaptivity->setRowStretch(50, 1);
 
-    // equation
-    QVBoxLayout *layoutEquation = new QVBoxLayout();
-    // layoutEquation->addWidget(equationLaTeX);
-    layoutEquation->addWidget(equationImage);
-    layoutEquation->addStretch();
+    QWidget *widAdaptivity = new QWidget(this);
+    widAdaptivity->setLayout(layoutAdaptivity);
 
-    // tabs
-    QTabWidget *tabWidget = new QTabWidget(this);
-    tabWidget->addTab(widSolver, tr("Solver"));
-    tabWidget->addTab(widAdaptivity, tr("Space adaptivity"));
-    tabWidget->addTab(widTransientAnalysis, tr("Transient analysis"));
+    return widAdaptivity;
+}
 
-    QGroupBox *grpEquation = new QGroupBox(tr("Partial differential equation"));
-    grpEquation->setLayout(layoutEquation);
+QWidget *FieldWidget::createTransientAnalysisWidget()
+{
+    // transient
+    txtTransientInitialCondition = new LineEditDouble(0.0);
+    txtTransientTimeSkip = new LineEditDouble(0.0);
+    txtTransientTimeSkip->setBottom(0.0);
 
-    QVBoxLayout *layoutProblem = new QVBoxLayout();
-    layoutProblem->addWidget(grpEquation);
-    layoutProblem->addLayout(layoutPanel);
-    layoutProblem->addWidget(tabWidget);
+    // transient analysis
+    QGridLayout *layoutTransientAnalysis = new QGridLayout();
+    layoutTransientAnalysis->setColumnMinimumWidth(0, columnMinimumWidth());
+    layoutTransientAnalysis->setColumnStretch(1, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Initial condition:")), 0, 0);
+    layoutTransientAnalysis->addWidget(txtTransientInitialCondition, 0, 1);
+    layoutTransientAnalysis->addWidget(new QLabel(tr("Time skip (s):")), 1, 0);
+    layoutTransientAnalysis->addWidget(txtTransientTimeSkip, 1, 1);
+    layoutTransientAnalysis->setRowStretch(50, 1);
 
-    setLayout(layoutProblem);
+    QWidget *widTransientAnalysis = new QWidget(this);
+    widTransientAnalysis->setLayout(layoutTransientAnalysis);
 
-    setMinimumSize(sizeHint());
+    return widTransientAnalysis;
+}
+
+QWidget *FieldWidget::createLinearSolverWidget()
+{
+    cmbIterLinearSolverMethod = new QComboBox();
+    cmbIterLinearSolverPreconditioner = new QComboBox();
+    txtIterLinearSolverToleranceAbsolute = new LineEditDouble(1e-15);
+    txtIterLinearSolverToleranceAbsolute->setBottom(0.0);
+    txtIterLinearSolverIters = new QSpinBox();
+    txtIterLinearSolverIters->setMinimum(1);
+    txtIterLinearSolverIters->setMaximum(10000);
+
+    QGridLayout *iterSolverLayout = new QGridLayout();
+    iterSolverLayout->addWidget(new QLabel("Method:"), 0, 0);
+    iterSolverLayout->addWidget(cmbIterLinearSolverMethod, 0, 1);
+    iterSolverLayout->addWidget(new QLabel("Preconditioner:"), 1, 0);
+    iterSolverLayout->addWidget(cmbIterLinearSolverPreconditioner, 1, 1);
+    iterSolverLayout->addWidget(new QLabel("Absolute tolerance:"), 2, 0);
+    iterSolverLayout->addWidget(txtIterLinearSolverToleranceAbsolute, 2, 1);
+    iterSolverLayout->addWidget(new QLabel("Maximim number of iterations:"), 3, 0);
+    iterSolverLayout->addWidget(txtIterLinearSolverIters, 3, 1);
+
+    QGroupBox *iterSolverGroup = new QGroupBox(tr("Iterative solver"));
+    iterSolverGroup->setLayout(iterSolverLayout);
+
+    QVBoxLayout *layoutLinearSolver = new QVBoxLayout();
+    layoutLinearSolver->addWidget(iterSolverGroup);
+    layoutLinearSolver->addStretch();
+
+    QWidget *widLinearSolver = new QWidget(this);
+    widLinearSolver->setLayout(layoutLinearSolver);
+
+    return widLinearSolver;
 }
 
 void FieldWidget::fillComboBox()
@@ -440,7 +484,7 @@ void FieldWidget::fillComboBox()
         cmbAnalysisType->addItem(it.value(), it.key());
     }
 
-    cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_UMFPACK), Hermes::SOLVER_UMFPACK);
+    cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_UMFPACK), Hermes::SOLVER_UMFPACK);
 #ifdef WITH_MUMPS
     cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_MUMPS), Hermes::SOLVER_MUMPS);
 #endif
@@ -451,8 +495,20 @@ void FieldWidget::fillComboBox()
     cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PETSC), Hermes::SOLVER_PETSC);
 #endif
 #ifdef WITH_PARALUTION
-    cmbMatrixSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PARALUTION), Hermes::SOLVER_PARALUTION);
+    cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PARALUTION), Hermes::SOLVER_PARALUTION);
 #endif
+
+    cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_NORM), Hermes::Hermes2D::HERMES_H1_NORM);
+    cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_L2_NORM), Hermes::Hermes2D::HERMES_L2_NORM);
+    cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_SEMINORM), Hermes::Hermes2D::HERMES_H1_SEMINORM);
+
+    cmbIterLinearSolverMethod->clear();
+    foreach (QString method, iterLinearSolverMethodStringKeys())
+        cmbIterLinearSolverMethod->addItem(iterLinearSolverMethodString(iterLinearSolverMethodFromStringKey(method)), iterLinearSolverMethodFromStringKey(method));
+
+    cmbIterLinearSolverPreconditioner->clear();
+    foreach (QString type, iterLinearSolverPreconditionerTypeStringKeys())
+        cmbIterLinearSolverPreconditioner->addItem(iterLinearSolverPreconditionerTypeString(iterLinearSolverPreconditionerTypeFromStringKey(type)), iterLinearSolverPreconditionerTypeFromStringKey(type));
 }
 
 void FieldWidget::load()
@@ -473,7 +529,7 @@ void FieldWidget::load()
     txtAdaptivityBackSteps->setValue(m_fieldInfo->value(FieldInfo::AdaptivityTransientBackSteps).toInt());
     txtAdaptivityRedoneEach->setValue(m_fieldInfo->value(FieldInfo::AdaptivityTransientRedoneEach).toInt());
     // matrix solver
-    cmbMatrixSolver->setCurrentIndex(cmbMatrixSolver->findData(m_fieldInfo->matrixSolver()));
+    cmbLinearSolver->setCurrentIndex(cmbLinearSolver->findData(m_fieldInfo->matrixSolver()));
     //mesh
     txtNumberOfRefinements->setValue(m_fieldInfo->value(FieldInfo::SpaceNumberOfRefinements).toInt());
     txtPolynomialOrder->setValue(m_fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt());
@@ -495,6 +551,11 @@ void FieldWidget::load()
     chkPicardAndersonAcceleration->setChecked(m_fieldInfo->value(FieldInfo::PicardAndersonAcceleration).toBool());
     txtPicardAndersonBeta->setValue(m_fieldInfo->value(FieldInfo::PicardAndersonBeta).toDouble());
     txtPicardAndersonNumberOfLastVectors->setValue(m_fieldInfo->value(FieldInfo::PicardAndersonNumberOfLastVectors).toInt());
+    // linear solver
+    cmbIterLinearSolverMethod->setCurrentIndex((Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType) cmbIterLinearSolverMethod->findData(m_fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()));
+    cmbIterLinearSolverPreconditioner->setCurrentIndex((Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) cmbIterLinearSolverPreconditioner->findData(m_fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
+    txtIterLinearSolverToleranceAbsolute->setValue(m_fieldInfo->value(FieldInfo::LinearSolverIterToleranceAbsolute).toDouble());
+    txtIterLinearSolverIters->setValue(m_fieldInfo->value(FieldInfo::LinearSolverIterIters).toInt());
 
     doAnalysisTypeChanged(cmbAnalysisType->currentIndex());
 }
@@ -515,7 +576,7 @@ bool FieldWidget::save()
     m_fieldInfo->setValue(FieldInfo::AdaptivityTransientBackSteps, txtAdaptivityBackSteps->value());
     m_fieldInfo->setValue(FieldInfo::AdaptivityTransientRedoneEach, txtAdaptivityRedoneEach->value());
     // matrix solver
-    m_fieldInfo->setMatrixSolver((Hermes::MatrixSolverType) cmbMatrixSolver->itemData(cmbMatrixSolver->currentIndex()).toInt());
+    m_fieldInfo->setMatrixSolver((Hermes::MatrixSolverType) cmbLinearSolver->itemData(cmbLinearSolver->currentIndex()).toInt());
     //mesh
     m_fieldInfo->setValue(FieldInfo::SpaceNumberOfRefinements, txtNumberOfRefinements->value());
     m_fieldInfo->setValue(FieldInfo::SpacePolynomialOrder, txtPolynomialOrder->value());
@@ -537,6 +598,11 @@ bool FieldWidget::save()
     m_fieldInfo->setValue(FieldInfo::PicardAndersonAcceleration, chkPicardAndersonAcceleration->isChecked());
     m_fieldInfo->setValue(FieldInfo::PicardAndersonBeta, txtPicardAndersonBeta->value());
     m_fieldInfo->setValue(FieldInfo::PicardAndersonNumberOfLastVectors, txtPicardAndersonNumberOfLastVectors->value());
+    // linear solver
+    m_fieldInfo->setValue(FieldInfo::LinearSolverIterMethod, cmbIterLinearSolverMethod->itemData(cmbIterLinearSolverMethod->currentIndex()).toInt());
+    m_fieldInfo->setValue(FieldInfo::LinearSolverIterPreconditioner, cmbIterLinearSolverPreconditioner->itemData(cmbIterLinearSolverPreconditioner->currentIndex()).toInt());
+    m_fieldInfo->setValue(FieldInfo::LinearSolverIterToleranceAbsolute, txtIterLinearSolverToleranceAbsolute->value());
+    m_fieldInfo->setValue(FieldInfo::LinearSolverIterIters, txtIterLinearSolverIters->value());
 
     return true;
 }
@@ -628,6 +694,16 @@ void FieldWidget::doLinearityTypeChanged(int index)
     txtPicardAndersonBeta->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard);
     txtPicardAndersonNumberOfLastVectors->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard);
     doPicardAndersonChanged(-1);
+}
+
+void FieldWidget::doLinearSolverChanged(int index)
+{
+    bool isIterative = ((Hermes::MatrixSolverType) cmbLinearSolver->itemData(cmbLinearSolver->currentIndex()).toInt() == Hermes::SOLVER_PARALUTION);
+
+    cmbIterLinearSolverMethod->setEnabled(isIterative);
+    cmbIterLinearSolverPreconditioner->setEnabled(isIterative);
+    txtIterLinearSolverToleranceAbsolute->setEnabled(isIterative);
+    txtIterLinearSolverIters->setEnabled(isIterative);
 }
 
 void FieldWidget::doNewtonDampingChanged(int index)

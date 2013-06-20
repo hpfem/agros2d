@@ -50,6 +50,8 @@ static QMap<VectorCenter, QString> vectorCenterList;
 static QMap<DataTableType, QString> dataTableTypeList;
 static QMap<Hermes::ButcherTableType, QString> butcherTableTypeList;
 static QMap<Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType, QString> nonlinearSolverConvergenceMeasurementList;
+static QMap<Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType, QString> iterLinearSolverMethodList;
+static QMap<Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType, QString> iterLinearSolverPreconditionerTypeList;
 
 QStringList coordinateTypeStringKeys() { return coordinateTypeList.values(); }
 QString coordinateTypeToStringKey(CoordinateType coordinateType) { return coordinateTypeList[coordinateType]; }
@@ -146,6 +148,14 @@ Hermes::ButcherTableType butcherTableTypeFromStringKey(const QString &tableType)
 QStringList nonlinearSolverConvergenceMeasurementStringKeys() { return nonlinearSolverConvergenceMeasurementList.values(); }
 QString nonlinearSolverConvergenceMeasurementToStringKey(Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType measurement) { return nonlinearSolverConvergenceMeasurementList[measurement]; }
 Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType nonlinearSolverConvergenceMeasurementFromStringKey(const QString &measurement) { return nonlinearSolverConvergenceMeasurementList.key(measurement); }
+
+QStringList iterLinearSolverMethodStringKeys() { return iterLinearSolverMethodList.values(); }
+QString iterLinearSolverMethodToStringKey(Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType type) { return iterLinearSolverMethodList[type]; }
+Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType iterLinearSolverMethodFromStringKey(const QString &type) { return iterLinearSolverMethodList.key(type); }
+
+QStringList iterLinearSolverPreconditionerTypeStringKeys() { return iterLinearSolverPreconditionerTypeList.values(); }
+QString iterLinearSolverPreconditionerTypeToStringKey(Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType type) { return iterLinearSolverPreconditionerTypeList[type]; }
+Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType iterLinearSolverPreconditionerTypeFromStringKey(const QString &type) { return iterLinearSolverPreconditionerTypeList.key(type); }
 
 void initLists()
 {
@@ -320,6 +330,7 @@ void initLists()
     butcherTableTypeList.insert(Hermes::Explicit_CASH_KARP_6_45_embedded, "cash-karp");
     butcherTableTypeList.insert(Hermes::Explicit_DORMAND_PRINCE_7_45_embedded, "dormand-prince");
 
+    // Newton solver
     nonlinearSolverConvergenceMeasurementList.insert(Hermes::Hermes2D::ResidualNormAbsolute, "residual_norm_absolute");
     nonlinearSolverConvergenceMeasurementList.insert(Hermes::Hermes2D::ResidualNormRelativeToInitial, "residual_norm_relative_to_initial");
     nonlinearSolverConvergenceMeasurementList.insert(Hermes::Hermes2D::ResidualNormRelativeToPrevious, "residual_norm_relative_to_previous");
@@ -327,6 +338,18 @@ void initLists()
     nonlinearSolverConvergenceMeasurementList.insert(Hermes::Hermes2D::ResidualNormRatioToPrevious, "residual_norm_ratio_to_previous");
     nonlinearSolverConvergenceMeasurementList.insert(Hermes::Hermes2D::SolutionDistanceFromPreviousAbsolute, "solution_distance_from_previous_absolute");
     nonlinearSolverConvergenceMeasurementList.insert(Hermes::Hermes2D::SolutionDistanceFromPreviousRelative, "solution_distance_from_previous_relative");
+
+    // Iterative solver
+    iterLinearSolverMethodList.insert(Hermes::Solvers::ParalutionLinearMatrixSolver<double>::CG, "cg");
+    iterLinearSolverMethodList.insert(Hermes::Solvers::ParalutionLinearMatrixSolver<double>::GMRES, "gmres");
+    iterLinearSolverMethodList.insert(Hermes::Solvers::ParalutionLinearMatrixSolver<double>::BiCGStab, "bicgstab");
+
+    iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::ParalutionPrecond<double>::Jacobi, "jacobi");
+    iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::ParalutionPrecond<double>::ILU, "ilu");
+    // iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::ParalutionPrecond<double>::MultiColoredSGS, "multicoloredsgs");
+    // iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::ParalutionPrecond<double>::MultiColoredILU, "multicoloredilu");
+    // iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::ParalutionPrecond<double>::IC, "ic");
+    // iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::ParalutionPrecond<double>::AIChebyshev, "aichebyshev");
 }
 
 QString errorNormString(Hermes::Hermes2D::NormType projNormType)
@@ -655,6 +678,11 @@ QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType)
     }
 }
 
+bool isMatrixSolverIterative(Hermes::MatrixSolverType type)
+{
+    return (type == Hermes::SOLVER_PARALUTION);
+}
+
 QString linearityTypeString(LinearityType linearityType)
 {
     switch (linearityType)
@@ -743,7 +771,45 @@ QString nonlinearSolverConvergenceMeasurementString(Hermes::Hermes2D::NewtonSolv
     case Hermes::Hermes2D::SolutionDistanceFromPreviousRelative:
         return QObject::tr("Relative solution distance from previous");
     default:
-        std::cerr << "Convergence measurement type'" + QString::number(measurement).toStdString() + "' is not implemented. nonlinearSolverConvergenceMeasurementString(Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType measurement)" << endl;
+        std::cerr << "Convergence measurement type '" + QString::number(measurement).toStdString() + "' is not implemented. nonlinearSolverConvergenceMeasurementString(Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType measurement)" << endl;
+        throw;
+    }
+}
+
+QString iterLinearSolverMethodString(Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType type)
+{
+    switch (type)
+    {
+    case Hermes::Solvers::ParalutionLinearMatrixSolver<double>::CG:
+        return QObject::tr("CG");
+    case Hermes::Solvers::ParalutionLinearMatrixSolver<double>::GMRES:
+        return QObject::tr("GMRES");
+    case Hermes::Solvers::ParalutionLinearMatrixSolver<double>::BiCGStab:
+        return QObject::tr("BiCGStab");
+    default:
+        std::cerr << "Iterative solver method '" + QString::number(type).toStdString() + "' is not implemented. iterLinearSolverTypeString(Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType type)" << endl;
+        throw;
+    }
+}
+
+QString iterLinearSolverPreconditionerTypeString(Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType type)
+{
+    switch (type)
+    {
+    case Hermes::Solvers::ParalutionPrecond<double>::Jacobi:
+        return QObject::tr("Jacobi");
+    case Hermes::Solvers::ParalutionPrecond<double>::ILU:
+        return QObject::tr("ILU");
+    case Hermes::Solvers::ParalutionPrecond<double>::MultiColoredSGS:
+        return QObject::tr("MultiColoredSGS");
+    case Hermes::Solvers::ParalutionPrecond<double>::MultiColoredILU:
+        return QObject::tr("MultiColoredILU");
+    case Hermes::Solvers::ParalutionPrecond<double>::IC:
+        return QObject::tr("IC");
+    case Hermes::Solvers::ParalutionPrecond<double>::AIChebyshev:
+        return QObject::tr("AIChebyshev");
+    default:
+        std::cerr << "Iterative solver preconditioner '" + QString::number(type).toStdString() + "' is not implemented. iterLinearSolverPreconditionerTypeString(Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType type)" << endl;
         throw;
     }
 }
