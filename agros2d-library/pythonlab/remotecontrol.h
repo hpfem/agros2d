@@ -37,10 +37,14 @@ private slots:
     void displayError(QLocalSocket::LocalSocketError socketError);
 
 private:
-    QString command;
+    QString m_clientName;
+    QString m_command;
 
     QLocalSocket *m_server_socket;
     QLocalSocket *m_client_socket;
+
+    QString clientName();
+    QString serverName();
 };
 
 #endif // REMOTECONTROL_H

@@ -21,11 +21,13 @@
 
 #include "pythonengine_agros.h"
 
+
 ScriptEngineRemoteLocal::ScriptEngineRemoteLocal()
-{
+{  
+    qDebug() << serverName();
     // server
-    removeServer("agros2d-server");
-    if (!listen("agros2d-server"))
+    removeServer(serverName());
+    if (!listen(serverName()))
     {
         qWarning() << tr("Error: Unable to start the server (agros2d-server): %1.").arg(errorString());
         return;
@@ -40,7 +42,7 @@ ScriptEngineRemoteLocal::~ScriptEngineRemoteLocal()
 
 void ScriptEngineRemoteLocal::connected()
 {
-    command = "";
+    m_command = "";
 
     m_server_socket = nextPendingConnection();
     connect(m_server_socket, SIGNAL(readyRead()), this, SLOT(readCommand()));
@@ -50,7 +52,16 @@ void ScriptEngineRemoteLocal::connected()
 void ScriptEngineRemoteLocal::readCommand()
 {
     QTextStream in(m_server_socket);
-    command = in.readAll();
+
+    QString comm = in.readAll();
+    qDebug() << "com: " << comm;
+    if (comm.startsWith("client:"))
+    {
+        m_clientName = comm.right(comm.length() - 7);
+        qDebug() << m_clientName;
+    }
+    else
+        m_command = comm;
 }
 
 void ScriptEngineRemoteLocal::disconnected()
@@ -58,15 +69,15 @@ void ScriptEngineRemoteLocal::disconnected()
     m_server_socket->deleteLater();
 
     ScriptResult result;
-    if (!command.isEmpty())
+    if (!m_command.isEmpty())
     {
-        result = currentPythonEngineAgros()->runScript(command);
+        result = currentPythonEngineAgros()->runScript(m_command);
     }
 
     m_client_socket = new QLocalSocket();
     connect(m_client_socket, SIGNAL(error(QLocalSocket::LocalSocketError)), this, SLOT(displayError(QLocalSocket::LocalSocketError)));
 
-    m_client_socket->connectToServer("agros2d-client");
+    m_client_socket->connectToServer(clientName());
     if (m_client_socket->waitForConnected(1000))
     {
         QTextStream out(m_client_socket);
@@ -94,4 +105,14 @@ void ScriptEngineRemoteLocal::displayError(QLocalSocket::LocalSocketError socket
     default:
         qWarning() << tr("Server error: The following error occurred: %1.").arg(m_client_socket->errorString());
     }
+}
+
+QString ScriptEngineRemoteLocal::clientName()
+{
+    return m_clientName;
+}
+
+QString ScriptEngineRemoteLocal::serverName()
+{
+    return QString("agros2d-server-%1").arg(QString::number(QCoreApplication::applicationPid()));
 }

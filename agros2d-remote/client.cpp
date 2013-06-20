@@ -1,11 +1,11 @@
 #include "client.h"
 
-Client::Client()
+Client::Client(int pid) : m_serverName(QString("agros2d-server-%1").arg(pid))
 {
     // server
     m_server = new QLocalServer();
-    QLocalServer::removeServer("agros2d-client");
-    if (!m_server->listen("agros2d-client"))
+    QLocalServer::removeServer(clientName());
+    if (!m_server->listen(clientName()))
     {
         cout << tr("Error: Unable to start the server (agros2d-client): %1.").arg(m_server->errorString()).toStdString() << endl;
         return;
@@ -27,7 +27,7 @@ void Client::run(const QString &command)
         m_client_socket = new QLocalSocket();
         connect(m_client_socket, SIGNAL(error(QLocalSocket::LocalSocketError)), this, SLOT(displayError(QLocalSocket::LocalSocketError)));
 
-        m_client_socket->connectToServer("agros2d-server");
+        m_client_socket->connectToServer(serverName());
         if (m_client_socket->waitForConnected(1000))
         {
             QTextStream out(m_client_socket);
@@ -83,4 +83,14 @@ void Client::displayError(QLocalSocket::LocalSocketError socketError)
         cout << tr("Client error: The following error occurred: %1.").arg(m_client_socket->errorString()).toStdString() << endl;
     }
     exit(0);
+}
+
+QString Client::clientName()
+{
+    return QString("agros2d-client-%1").arg(QString::number(QCoreApplication::applicationPid()));
+}
+
+QString Client::serverName()
+{
+    return m_serverName;
 }
