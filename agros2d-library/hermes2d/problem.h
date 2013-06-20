@@ -141,7 +141,7 @@ private:
     ProblemConfig *m_config;
     ProblemSetting *m_setting;
 
-    QList<Block*> m_blocks;
+    QList<Block *> m_blocks;
 
     QMap<QString, FieldInfo *> m_fieldInfos;
     QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > m_couplingInfos;

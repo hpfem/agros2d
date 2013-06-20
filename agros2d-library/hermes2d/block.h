@@ -46,7 +46,7 @@ public:
     Block(QList<FieldInfo*> fieldInfos, QList<CouplingInfo*> couplings);
     ~Block();
 
-    ProblemSolver<double> *prepareSolver();
+    QSharedPointer<ProblemSolver<double> > prepareSolver();
     void createBoundaryConditions();
 
     inline WeakFormAgros<double> *weakForm() { return m_wf;}

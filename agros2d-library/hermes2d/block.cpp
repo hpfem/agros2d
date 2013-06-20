@@ -140,21 +140,20 @@ void Block::setWeakForm(WeakFormAgros<double> *wf)
     if (m_wf) delete m_wf; m_wf = wf;
 }
 
-ProblemSolver<double> *Block::prepareSolver()
+QSharedPointer<ProblemSolver<double> > Block::prepareSolver()
 {
-    ProblemSolver<double> *solver = new ProblemSolver<double>();
+    QSharedPointer<ProblemSolver<double> > solver = QSharedPointer<ProblemSolver<double> >(new ProblemSolver<double>());
 
     foreach (Field* field, m_fields)
     {
         // evaluate all values
         if (!field->solveInitVariables())
         {
-            delete solver;
-            return NULL;
+            return QSharedPointer<ProblemSolver<double> >();
         }
     }
 
-    solver->init(this);
+    solver.data()->init(this);
 
     return solver;
 }

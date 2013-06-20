@@ -1028,6 +1028,9 @@ bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep,
         }
         catch (Hermes::Exceptions::Exception e)
         {
+            deleteSelectors(selector);
+            delete stopingCriterion;
+
             QString error = QString(e.what());
             Agros2D::log()->printDebug(m_solverID, QObject::tr("Adaptive process failed: %1").arg(error));
             throw;

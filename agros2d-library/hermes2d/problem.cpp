@@ -716,21 +716,18 @@ void Problem::solveAction()
 
     assert(isMeshed());
 
-    QMap<Block*, ProblemSolver<double> *> solvers;
+    QMap<Block*, QSharedPointer<ProblemSolver<double> > > solvers;
 
     Agros2D::log()->printMessage(QObject::tr("Problem"), QObject::tr("Solving problem"));
 
     foreach (Block* block, m_blocks)
     {
-        ProblemSolver<double> *solver = block->prepareSolver();
-        if (!solver)
-        {
-            qDeleteAll(solvers);
+        QSharedPointer<ProblemSolver<double> > solver = block->prepareSolver();
+        if (solver.isNull())
             throw AgrosSolverException(tr("Cannot create solver."));
-        }
 
         solvers[block] = solver;
-        solvers[block]->createInitialSpace();
+        solvers[block].data()->createInitialSpace();
     }
 
     TimeStepInfo nextTimeStep(config()->initialTimeStepLength());
@@ -795,9 +792,6 @@ void Problem::solveAction()
             doNextTimeStep = defineActualTimeStepLength(nextTimeStep.length);
         }
     }
-
-    // delete solvers
-    qDeleteAll(solvers);
 }
 
 void Problem::solveAdaptiveStepAction()
@@ -814,8 +808,8 @@ void Problem::solveAdaptiveStepAction()
     assert(actualTimeStep() == 0);
     assert(m_blocks.size() == 1);
     Block* block = m_blocks.at(0);
-    ProblemSolver<double> *solver = block->prepareSolver();
-    if (!solver)
+    QSharedPointer<ProblemSolver<double> > solver = block->prepareSolver();
+    if (solver.isNull())
         throw AgrosSolverException(tr("Cannot create solver."));
 
     int adaptStep = Agros2D::solutionStore()->lastAdaptiveStep(block, SolutionMode_Normal, 0);
@@ -825,18 +819,18 @@ void Problem::solveAdaptiveStepAction()
     {
         // it does not exist, problem has not been solved yet
         adaptStep = 0;
-        solver->createInitialSpace();
-        solver->solveReferenceAndProject(0, adaptStep);
+        solver.data()->createInitialSpace();
+        solver.data()->solveReferenceAndProject(0, adaptStep);
     }
     else
     {
-        solver->resumeAdaptivityProcess(adaptStep);
+        solver.data()->resumeAdaptivityProcess(adaptStep);
         if(adaptStepReference == NOT_FOUND_SO_FAR)
         {
             // previously simple solve was used
             BlockSolutionID sidRemove(block, 0, 0, SolutionMode_Normal);
             Agros2D::solutionStore()->removeSolution(sidRemove);
-            solver->solveReferenceAndProject(0, adaptStep);
+            solver.data()->solveReferenceAndProject(0, adaptStep);
         }
         else
         {
@@ -845,12 +839,8 @@ void Problem::solveAdaptiveStepAction()
         }
     }
 
-    solver->createAdaptedSpace(0, adaptStep + 1, true);
-    solver->solveReferenceAndProject(0, adaptStep + 1);
-
-
-    // delete solver
-    delete solver;
+    solver.data()->createAdaptedSpace(0, adaptStep + 1, true);
+    solver.data()->solveReferenceAndProject(0, adaptStep + 1);
 }
 
 void Problem::stepMessage(Block* block)
