@@ -19,13 +19,13 @@
 
 #include "datatable.h"
 
-DataTable::DataTable() : m_valid(false), m_isBeingValidated(false)
+DataTable::DataTable() : m_valid(false)
 {
     setImplicit();
 }
 
 DataTable::DataTable(Hermes::vector<double> points, Hermes::vector<double> values)
-    : m_valid(false), m_isBeingValidated(false), m_points(points), m_values(values)
+    : m_valid(false), m_points(points), m_values(values)
 {
     setImplicit();
     checkTable();
@@ -34,7 +34,6 @@ DataTable::DataTable(Hermes::vector<double> points, Hermes::vector<double> value
 void DataTable::clear()
 {
     setValues(Hermes::vector<double>(), Hermes::vector<double>());
-    m_isBeingValidated = false;
 }
 
 void DataTable::setValues(Hermes::vector<double> points, Hermes::vector<double> values)
@@ -173,7 +172,6 @@ double DataTable::derivative(double x)
 void DataTable::inValidate()
 {
     m_valid = false;
-    m_isBeingValidated = false;
 
     if(m_type == DataTableType_PiecewiseLinear)
     {
@@ -203,56 +201,55 @@ void DataTable::inValidate()
 
 void DataTable::validate()
 {
-    if (m_isBeingValidated)
+    QMutex mutex;
+    mutex.lock();
     {
-        while(!m_valid)
-            ;
-        return;
-    }
-
-    assert(m_linear == NULL);
-    assert(m_spline == NULL);
-    assert(m_constant == NULL);
-    assert(!m_valid);
-    m_isBeingValidated = true;
-
-    if(m_type == DataTableType_PiecewiseLinear)
-    {
-        m_linear = new PiecewiseLinear(m_points, m_values);
-    }
-    else if(m_type == DataTableType_CubicSpline)
-    {
-        // first create object and calculate coeffs, than assign to m_spline
-        // otherwise probably some other thread interfered and caused application fail
-        // this is strange, though, since no other thread should be able to acces thanks to m_isBeingValidated check
-        try
-        {
-            Hermes::Hermes2D::CubicSpline *spline = new Hermes::Hermes2D::CubicSpline(m_points,
-                                                                                      m_values,
-                                                                                      0.0, 0.0,
-                                                                                      m_splineFirstDerivatives, m_splineFirstDerivatives,
-                                                                                      !m_extrapolateConstant, !m_extrapolateConstant);
-            spline->calculate_coeffs();
-            m_spline = spline;
-        }
-        catch (Hermes::Exceptions::Exception e)
-        {
-            m_valid = false;
-            m_isBeingValidated = false;
-
+        // object may have been validated by other thread. In that case, leave.
+        if(m_valid)
             return;
+
+        assert(m_linear == NULL);
+        assert(m_spline == NULL);
+        assert(m_constant == NULL);
+        assert(!m_valid);
+
+        if(m_type == DataTableType_PiecewiseLinear)
+        {
+            m_linear = new PiecewiseLinear(m_points, m_values);
         }
+        else if(m_type == DataTableType_CubicSpline)
+        {
+            // first create object and calculate coeffs, than assign to m_spline
+            // otherwise probably some other thread interfered and caused application fail
+            // this is strange, though, since no other thread should be able to acces thanks to m_isBeingValidated check
+            try
+            {
+                Hermes::Hermes2D::CubicSpline *spline = new Hermes::Hermes2D::CubicSpline(m_points,
+                                                                                          m_values,
+                                                                                          0.0, 0.0,
+                                                                                          m_splineFirstDerivatives, m_splineFirstDerivatives,
+                                                                                          !m_extrapolateConstant, !m_extrapolateConstant);
+                spline->calculate_coeffs();
+                m_spline = spline;
+            }
+            catch (Hermes::Exceptions::Exception e)
+            {
+                m_valid = false;
+                qDebug() << "Exception thrown from Hermes::Hermes2D::CubicSpline has been ignored. DataTable not validated!";
+                return;
+            }
 
-    }
-    else if(m_type == DataTableType_Constant)
-    {
-        m_constant = new ConstantTable(m_points, m_values);
-    }
-    else
-        assert(0);
+        }
+        else if(m_type == DataTableType_Constant)
+        {
+            m_constant = new ConstantTable(m_points, m_values);
+        }
+        else
+            assert(0);
 
-    m_valid = true;
-    m_isBeingValidated = false;
+        m_valid = true;
+    }
+    mutex.unlock();
 }
 
 int DataTable::size() const
