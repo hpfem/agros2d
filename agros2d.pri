@@ -20,10 +20,8 @@ LIBS += -lagros_3rdparty_quazip
 LIBS += -lagros_util
 
 # paralution
-contains(CONFIG, WITH_PARALUTION) {
-    DEFINES += WITH_PARALUTION
-    INCLUDEPATH += ../3rdparty/paralution/src
-}
+DEFINES += WITH_PARALUTION
+INCLUDEPATH += ../3rdparty/paralution/src
 
 linux-g++|linux-g++-64|linux-g++-32 {
     QMAKE_LFLAGS += -fopenmp

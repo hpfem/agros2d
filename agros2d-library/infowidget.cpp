@@ -234,23 +234,23 @@ void InfoWidget::showInfo()
 
                 // todo: damping coeff in info
 
-//                if (fieldInfo->value(FieldInfo::NewtonAutomaticDamping).toBool())
-//                {
-//                    field->SetValue("NONLINEAR_AUTOMATIC_DAMPING_LABEL", tr("Automatic damping:").toStdString());
-//                    field->SetValue("NONLINEAR_AUTOMATIC_DAMPING_FACTOR_LABEL", tr("Maximum damping factor:").toStdString());
-//                    //field->SetValue("NONLINEAR_AUTOMATIC_DAMPING_FACTOR", QString::number(fieldInfo->value(FieldInfo::NewtonAutomaticDampingCoeff).toDouble()).toStdString());
-//                    field->SetValue("NONLINEAR_AUTOMATIC_DAMPING_INCREASE_LABEL", tr("Steps to increase:").toStdString());
-//                    //field->SetValue("NONLINEAR_AUTOMATIC_DAMPING_INCREASE", QString::number(fieldInfo->value(FieldInfo::NewtonDampingNumberToIncrease).toInt()).toStdString());
+                //                if (fieldInfo->value(FieldInfo::NewtonAutomaticDamping).toBool())
+                //                {
+                //                    field->SetValue("NONLINEAR_AUTOMATIC_DAMPING_LABEL", tr("Automatic damping:").toStdString());
+                //                    field->SetValue("NONLINEAR_AUTOMATIC_DAMPING_FACTOR_LABEL", tr("Maximum damping factor:").toStdString());
+                //                    //field->SetValue("NONLINEAR_AUTOMATIC_DAMPING_FACTOR", QString::number(fieldInfo->value(FieldInfo::NewtonAutomaticDampingCoeff).toDouble()).toStdString());
+                //                    field->SetValue("NONLINEAR_AUTOMATIC_DAMPING_INCREASE_LABEL", tr("Steps to increase:").toStdString());
+                //                    //field->SetValue("NONLINEAR_AUTOMATIC_DAMPING_INCREASE", QString::number(fieldInfo->value(FieldInfo::NewtonDampingNumberToIncrease).toInt()).toStdString());
 
-//                    field->ShowSection("SOLVER_NONLINEAR_NEWTON_AUTOMATIC_DAMPING_SECTION");
-//                }
-//                else
-//                {
-//                    field->SetValue("NONLINEAR_NONAUTOMATIC_DAMPING_FACTOR_LABEL", tr("Maximum damping factor:").toStdString());
-//                    field->SetValue("NONLINEAR_NONAUTOMATIC_DAMPING_FACTOR", QString::number(fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble()).toStdString());
+                //                    field->ShowSection("SOLVER_NONLINEAR_NEWTON_AUTOMATIC_DAMPING_SECTION");
+                //                }
+                //                else
+                //                {
+                //                    field->SetValue("NONLINEAR_NONAUTOMATIC_DAMPING_FACTOR_LABEL", tr("Maximum damping factor:").toStdString());
+                //                    field->SetValue("NONLINEAR_NONAUTOMATIC_DAMPING_FACTOR", QString::number(fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble()).toStdString());
 
-//                    field->ShowSection("SOLVER_NONLINEAR_NEWTON_NONAUTOMATIC_DAMPING_SECTION");
-//                }
+                //                    field->ShowSection("SOLVER_NONLINEAR_NEWTON_NONAUTOMATIC_DAMPING_SECTION");
+                //                }
 
 
 

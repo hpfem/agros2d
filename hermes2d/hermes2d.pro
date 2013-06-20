@@ -9,13 +9,11 @@ DEFINES += WITH_UMFPACK
 DEFINES += H2D_DISABLE_MULTIMESH_TESTS
 
 # paralution
-contains(CONFIG, WITH_PARALUTION) {
-    DEFINES += WITH_PARALUTION
-    INCLUDEPATH += ../3rdparty/paralution/src
+DEFINES += WITH_PARALUTION
+INCLUDEPATH += ../3rdparty/paralution/src
 
-    LIBS += -L../libs
-    LIBS += -lagros_3rdparty_paralution
-}
+LIBS += -L../libs
+LIBS += -lagros_3rdparty_paralution
 
 # set 'HERMES_DEBUG' in qtcreator
 contains(CONFIG, HERMES_DEBUG) {

@@ -262,13 +262,11 @@ QSharedPointer<HermesSolverContainer<Scalar> > HermesSolverContainer<Scalar>::fa
         linearSolver->set_max_iters(block->iterLinearSolverIters());
         linearSolver->set_tolerance(block->iterLinearSolverToleranceAbsolute());
     }
-#ifdef WITH_PARALUTION
     if (ParalutionLinearMatrixSolver<Scalar> *linearSolver = dynamic_cast<ParalutionLinearMatrixSolver<Scalar> *>(solver.data()->linearSolver()))
     {
         linearSolver->set_solver_type(block->iterLinearSolverMethod());
         linearSolver->set_precond(new Hermes::Preconditioners::ParalutionPrecond<Scalar>(block->iterLinearSolverPreconditioner()));
     }
-#endif
 
     return solver;
 }

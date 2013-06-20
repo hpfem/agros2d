@@ -237,14 +237,12 @@ void initLists()
 
     // MatrixSolverType
     matrixSolverTypeList.insert(Hermes::SOLVER_UMFPACK, "umfpack");
+    matrixSolverTypeList.insert(Hermes::SOLVER_PARALUTION, "paralution");
 #ifdef WITH_MUMPS
     matrixSolverTypeList.insert(Hermes::SOLVER_MUMPS, "mumps");
 #endif
 #ifdef WITH_SUPERLU
     matrixSolverTypeList.insert(Hermes::SOLVER_SUPERLU, "superlu");
-#endif
-#ifdef WITH_PARALUTION
-    matrixSolverTypeList.insert(Hermes::SOLVER_PARALUTION, "paralution");
 #endif
 #ifdef WITH_PETSC
     matrixSolverTypeList.insert(Hermes::SOLVER_PETSC, "petsc");
@@ -667,7 +665,7 @@ QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType)
     case Hermes::SOLVER_SUPERLU:
         return QObject::tr("SuperLU");
     case Hermes::SOLVER_PARALUTION:
-        return QObject::tr("PARALUTION");
+        return QObject::tr("PARALUTION (experimental)");
     case Hermes::SOLVER_AMESOS:
         return QObject::tr("Trilinos/Amesos");
     case Hermes::SOLVER_AZTECOO:
@@ -680,11 +678,7 @@ QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType)
 
 bool isMatrixSolverIterative(Hermes::MatrixSolverType type)
 {
-#ifdef WITH_PARALUTION
     return (type == Hermes::SOLVER_PARALUTION);
-#else
-    return false;
-#endif
 }
 
 QString linearityTypeString(LinearityType linearityType)

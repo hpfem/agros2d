@@ -407,5 +407,4 @@ AGROS_API QStringList iterLinearSolverPreconditionerTypeStringKeys();
 AGROS_API QString iterLinearSolverPreconditionerTypeToStringKey(Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType type);
 AGROS_API Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType iterLinearSolverPreconditionerTypeFromStringKey(const QString &type);
 
-
 #endif // UTIL_ENUMS_H
