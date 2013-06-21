@@ -13,15 +13,15 @@ contains(CONFIG, HERMES_DEBUG) {
 HEADERS += stb_truetype.h
 
 linux-g++|linux-g++-64|linux-g++-32|linux-clang {
-    TARGET = ../../libs/agros_3rdparty_stb_truetype
+    TARGET = ../libs/agros_3rdparty_stb_truetype
 }
 
 macx-g++ {
-    TARGET = ../../libs/agros_3rdparty_stb_truetype
+    TARGET = ../libs/agros_3rdparty_stb_truetype
 }
 
 win32-msvc2010 {
-    TARGET = ../../../libs/agros_3rdparty_stb_truetype
+    TARGET = ../../libs/agros_3rdparty_stb_truetype
 
     QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
     QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt

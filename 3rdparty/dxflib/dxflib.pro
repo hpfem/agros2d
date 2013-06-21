@@ -13,7 +13,7 @@ SOURCES += dl_writer_ascii.cpp \
     dl_dxf.cpp
 
 linux-g++|linux-g++-64|linux-g++-32|linux-clang {
-    TARGET = ../../libs/agros_3rdparty_dxflib
+    TARGET = ../libs/agros_3rdparty_dxflib
 }
 
 macx-g++ {    
@@ -21,7 +21,7 @@ macx-g++ {
 }
 
 win32-msvc2010 {
-    TARGET = ../../../libs/agros_3rdparty_dxflib
+    TARGET = ../../libs/agros_3rdparty_dxflib
 
     QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
     QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt

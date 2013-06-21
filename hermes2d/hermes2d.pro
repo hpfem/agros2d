@@ -13,6 +13,7 @@ DEFINES += WITH_PARALUTION
 INCLUDEPATH += ../3rdparty/paralution/src
 
 LIBS += -L../libs
+LIBS += -L../3rdparty/libs
 LIBS += -lagros_3rdparty_paralution
 
 # set 'HERMES_DEBUG' in qtcreator

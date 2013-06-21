@@ -53,13 +53,15 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     system(touch libs/libagros2d_plugin_flow.so)
     system(touch libs/libagros2d_plugin_heat.so)
     system(touch libs/libagros2d_plugin_magnetic.so)
-    system(touch libs/libagros2d_plugin_rf.so)
+    system(touch libs/libagros2d_plugin_rf_te.so)
+    system(touch libs/libagros2d_plugin_rf_tm.so)
     system(touch libs/libagros2d_plugin_current-heat.so)
     system(touch libs/libagros2d_plugin_heat-elasticity.so)
     system(touch libs/libagros2d_plugin_magnetic-heat.so)
     libs.path = $${PREFIX}/lib
-    libs.files = libs/*.so.1.0.0
-    libs.files += libs/libagros2d_plugin_*.so
+    #libs.files = libs/*.so.1.0.0
+    #libs.files += libs/libagros2d_plugin_*.so
+    libs.files = libs/*
 
     # install binary
     system(touch agros2d)

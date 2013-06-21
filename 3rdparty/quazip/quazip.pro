@@ -39,15 +39,15 @@ HEADERS += \
     quazipnewinfo.h
 
 linux-g++|linux-g++-64|linux-g++-32|linux-clang {
-    TARGET = ../../libs/agros_3rdparty_quazip
+    TARGET = ../libs/agros_3rdparty_quazip
 }
 
 macx-g++ {
-    TARGET = ../../libs/agros_3rdparty_quazip
+    TARGET = ../libs/agros_3rdparty_quazip
 }
 
 win32-msvc2010 {
-    TARGET = ../../../libs/agros_3rdparty_quazip
+    TARGET = ../../libs/agros_3rdparty_quazip
 
     QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
     QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt

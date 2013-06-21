@@ -60,15 +60,15 @@ linux-clang {
 }
 
 linux-g++|linux-g++-64|linux-g++-32|linux-clang {
-    TARGET = ../../libs/agros_3rdparty_paralution
+    TARGET = ../libs/agros_3rdparty_paralution
 }
 
 macx-g++ {
-    TARGET = ../../libs/agros_3rdparty_paralution
+    TARGET = ../libs/agros_3rdparty_paralution
 }
 
 win32-msvc2010 {
-    TARGET = ../../../libs/agros_3rdparty_paralution
+    TARGET = ../../libs/agros_3rdparty_paralution
 
     QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
     QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt

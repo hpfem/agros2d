@@ -39,6 +39,7 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     INCLUDEPATH += ../3rdparty/ctemplate/linux
 
     LIBS += -L../libs
+    LIBS += -L../3rdparty/libs
 
     LIBS += -lumfpack
     LIBS += -lxerces-c
@@ -113,9 +114,7 @@ win32-msvc2010 {
 
     LIBS += -L..
     LIBS += -L../libs
-    LIBS += -L../hermes2d/libs
     LIBS += -L../3rdparty/libs
-    LIBS += -L../weakform/libs
     LIBS += -Lc:/hpfem/hermes/dependencies/lib
     LIBS += -Ld:/hpfem/hermes/dependencies/lib
 
