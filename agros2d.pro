@@ -1,6 +1,6 @@
 # agros2d - hp-FEM multiphysics application based on Hermes2D library
-SUBDIRS += hermes2d
 SUBDIRS += 3rdparty
+SUBDIRS += hermes2d
 SUBDIRS += util
 SUBDIRS += pythonlab-library
 SUBDIRS += pythonlab-binary
