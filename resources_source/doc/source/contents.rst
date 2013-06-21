@@ -14,7 +14,7 @@ Agros2D documentation contents
    ./examples/examples.rst 
    ./modules/modules.rst
    
-   ./changelog.rst
+.. ./changelog.rst
    ./glossary.rst
 
 Links
