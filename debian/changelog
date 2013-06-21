@@ -1,8 +1,8 @@
-agros2d (3.0-ubuntu132) raring; urgency=low
+agros2d (3.0-ubuntu144) raring; urgency=low
 
   * field solution with the possibility of weak and hard coupling
   * adaptive transient analysis
-  * Newton and Picard solvers for nonlinear problems
+  * Newton solvers for nonlinear problems
   * material library
   * new preprocessor for fast modeling
   * quad meshing using GMSH

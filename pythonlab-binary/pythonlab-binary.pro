@@ -29,8 +29,10 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
 
     LIBS += -L../libs
 
-    LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
     LIBS += $$system(python -c "\"import distutils.sysconfig; print distutils.sysconfig.get_config_var('LOCALMODLIBS')\"")
+    LIBS += $$system(python -c "\"from distutils import sysconfig; print '-lpython'+sysconfig.get_config_var('VERSION')\"")
+    LIBS += -L/usr/lib
+    LIBS += -L/usr/lib/x86_64-linux-gnu
 }
 
 macx-g++ {

@@ -42,7 +42,6 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
 
     # libs
     system(mkdir libs)
-    system(touch libs/libagros_3rdparty.so.1.0.0)
     system(touch libs/libagros_util.so.1.0.0)
     system(touch libs/libagros_pythonlab_library.so.1.0.0)
     system(touch libs/libagros2d_hermes2d.so.1.0.0)
@@ -59,7 +58,8 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     system(touch libs/libagros2d_plugin_heat-elasticity.so)
     system(touch libs/libagros2d_plugin_magnetic-heat.so)
     libs.path = $${PREFIX}/lib
-    libs.files = libs/*
+    libs.files = libs/*.so.1.0.0
+    libs.files += libs/libagros2d_plugin_*.so
 
     # install binary
     system(touch agros2d)
@@ -71,13 +71,13 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     target_solver.files = agros2d_solver
 
     system(touch agros2d_pythonlab)
-    target_pytholab.path = $${PREFIX}/bin
-    target_pytholab.files = agros2d_pythonlab
+    target_pythonlab.path = $${PREFIX}/bin
+    target_pythonlab.files = agros_pythonlab
 
     # "make install" configuration options
     INSTALLS *= target \
         target_solver \
-        target_pytholab \
+        target_pythonlab \
         libs \
         resources \
         python_startup \
