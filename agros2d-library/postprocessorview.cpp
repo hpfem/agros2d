@@ -62,13 +62,7 @@ PostprocessorWidget::PostprocessorWidget(PostHermes *postHermes,
     createControls();
 
     loadBasic();
-    loadAdvanced();
-
-    connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(updateControls()));
-    connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(updateControls()));
-
-    connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(updateControls()));
-    connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(updateControls()));
+    loadAdvanced();    
 }
 
 void PostprocessorWidget::loadBasic()

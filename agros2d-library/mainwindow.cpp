@@ -119,6 +119,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     createToolBars();
     createMain();
 
+    // python engine
+    connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(setControls()));
+    connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(setControls()));
+
     // post hermes
     connect(problemWidget, SIGNAL(changed()), postHermes, SLOT(refresh()));
     connect(settingsWidget, SIGNAL(apply()), postHermes, SLOT(refresh()));
@@ -1503,21 +1507,11 @@ void MainWindow::setControls()
     }
 
     actDocumentExportMeshFile->setEnabled(Agros2D::problem()->isMeshed());
-
-    // actSolve->setEnabled(Agros2D::problem()->fieldInfos().count() > 0);
-//    actSolveAdaptiveStep->setEnabled(false);
-//    actSolveAdaptiveStep->setVisible(false);
     actSolveAdaptiveStep->setEnabled(Agros2D::problem()->fieldInfos().count() > 0 && Agros2D::problem()->fieldInfos().count() <= 1 && (!Agros2D::problem()->isTransient()) );
 
+    postprocessorWidget->refresh();
+
     setUpdatesEnabled(true);
-
-    QTimer::singleShot(0, postprocessorWidget, SLOT(updateControls()));
-
-    // set current timestep
-    //    cmbTimeStep->setCurrentIndex(Agros2D::problem()->timeStep());
-
-    //actProgressLog->setEnabled(Agros2D::problem()->configView()->enabledProgressLog);
-    //actApplicationLog->setEnabled(Agros2D::problem()->configView()->enabledApplicationLog);
 }
 
 void MainWindow::doHelp()

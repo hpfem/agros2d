@@ -40,6 +40,7 @@ void PyProblem::clearSolution()
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
 
     Agros2D::problem()->clearSolution();
+    Agros2D::scene()->invalidate();
     currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
 }
 
