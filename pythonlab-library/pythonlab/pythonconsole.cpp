@@ -680,7 +680,9 @@ void PythonScriptingConsole::consoleMessage(const QString &message, const QColor
 #endif
     str += "</span>";
 
-    insertHtml(str);
+    QTextCursor textCursor = this->textCursor();
+    textCursor.movePosition(QTextCursor::End);
+    textCursor.insertHtml(str);
 
     // repaint widget
     repaint();
