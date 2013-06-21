@@ -72,7 +72,7 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     target_solver.path = $${PREFIX}/bin
     target_solver.files = agros2d_solver
 
-    system(touch agros2d_pythonlab)
+    system(touch agros_pythonlab)
     target_pythonlab.path = $${PREFIX}/bin
     target_pythonlab.files = agros_pythonlab
 
