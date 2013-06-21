@@ -57,15 +57,13 @@ ParticleTracing::ParticleTracing(QObject *parent)
         FieldSolutionID fsid(fieldInfo, timeStep, adaptivityStep, solutionMode);
         MeshFunctionSharedPtr<double> sln = Agros2D::solutionStore()->multiArray(fsid).solutions().at(0);
 
-        m_meshCache[fieldInfo] = new MeshCache(timeStep, adaptivityStep, solutionMode, sln->get_mesh());
+        m_solutionIDs[fieldInfo] = FieldSolutionID(fieldInfo, timeStep, adaptivityStep, solutionMode);
+        m_meshes[fieldInfo] = sln->get_mesh();
     }
 }
 
 ParticleTracing::~ParticleTracing()
 {
-    foreach (MeshCache *cache, m_meshCache.values())
-        delete cache;
-    // qDebug() << QString("Total hash lookups %1, failed %2").arg(num_lookups).arg(num_fails);
 }
 
 void ParticleTracing::clear()
@@ -107,7 +105,7 @@ Point3 ParticleTracing::force(Point3 position,
 
         if (!elementIsValid)
         {
-            m_activeElement[fieldInfo] = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(true, m_meshCache[fieldInfo]->mesh,
+            m_activeElement[fieldInfo] = Hermes::Hermes2D::RefMap::element_on_physical_coordinates(true, m_meshes[fieldInfo],
                                                                                                    position.x, position.y);
         }
 
@@ -121,7 +119,7 @@ Point3 ParticleTracing::force(Point3 position,
 
             try
             {
-                fieldForce = fieldInfo->plugin()->force(fieldInfo, m_meshCache[fieldInfo]->timeStep, m_meshCache[fieldInfo]->adaptivityStep, m_meshCache[fieldInfo]->solutionMode,
+                fieldForce = fieldInfo->plugin()->force(fieldInfo, m_solutionIDs[fieldInfo].timeStep, m_solutionIDs[fieldInfo].adaptivityStep, m_solutionIDs[fieldInfo].solutionMode,
                                                         activeElement, material, position, velocity)
                         * Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleConstant).toDouble();
             }

@@ -26,9 +26,10 @@
 #include "util/global.h"
 #include "util/conf.h"
 
+#include "hermes2d/solutiontypes.h"
+
 class FieldInfo;
 class SceneMaterial;
-class MeshHash;
 
 class ParticleTracing : public QObject
 {
@@ -57,30 +58,11 @@ private:
     double m_velocityMin;
     double m_velocityMax;
 
-    struct MeshCache
-    {
-        MeshCache() : timeStep(0), adaptivityStep(0), solutionMode(SolutionMode_Normal) {}
-        MeshCache(int timeStep, int adaptivityStep, SolutionMode solutionMode, const MeshSharedPtr mesh)
-            : timeStep(timeStep), adaptivityStep(adaptivityStep), solutionMode(solutionMode), mesh(mesh)
-        {}
-
-        ~MeshCache()
-        {
-        }
-
-        int timeStep;
-        int adaptivityStep;
-        SolutionMode solutionMode;
-
-        const MeshSharedPtr mesh;
-        //MeshHash *meshHashes;
-    };
-
-    QMap<FieldInfo *, MeshCache *> m_meshCache;
+    QMap<FieldInfo *, FieldSolutionID> m_solutionIDs;
+    QMap<FieldInfo *, MeshSharedPtr> m_meshes;
     QMap<FieldInfo *, Hermes::Hermes2D::Element *> m_activeElement;
 
-    Point3 force(Point3 position,
-                                  Point3 velocity);
+    Point3 force(Point3 position, Point3 velocity);
 
     bool newtonEquations(double step,
                          Point3 position,
