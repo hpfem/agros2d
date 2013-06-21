@@ -66,12 +66,27 @@ First install the following free packages:
 
 If you are using a Debian-like system, install the required libraries by following commands:
 
- .. code-block:: none
+Compilation with QT4:
+
+.. code-block:: none
+
+   sudo apt-get install libqt4-dev libqt4-opengl-dev qt4-dev-tools qt4-qmake g++ 
+   sudo apt-get install cython python-dev xsdcxx libxerces-c-dev
+   sudo apt-get install triangle-bin gmsh libsuitesparse-dev libmumps-seq-dev libsuperlu3-dev libsuitesparse-dev ffmpeg
+   sudo apt-get install libgoogle-perftools-dev zlib1g-dev
+   sudo apt-get install libsqlite3-dev libgstreamer0.10-dev libxslt1-dev libgstreamermm-0.10-dev
+
+
+Compilation with QT5:
+
+.. code-block:: none
  
-      sudo apt-get install libqt4-dev libqt4-opengl-dev qt4-dev-tools qt4-qmake g++ 
-      sudo apt-get install cython python-dev xsdcxx libxerces-c-dev
-      sudo apt-get install triangle-bin gmsh libsuitesparse-dev libmumps-seq-dev libsuperlu3-dev libsuitesparse-dev ffmpeg
-      sudo apt-get install libgoogle-perftools-dev 
+   sudo apt-get install qt5-default qmlscene libqt5opengl5-dev qttools5-dev-tools qt5-qmake libqt5webkit5-dev qtxmlpatterns5-dev-tools libqt5svg5-dev qtlocation5-dev qtsensors5-dev qttools5-dev qtquick1-5-dev libqt5xmlpatterns5-dev qtdeclarative5-dev g++
+   sudo apt-get install cython python-dev xsdcxx libxerces-c-dev
+   sudo apt-get install triangle-bin gmsh libsuitesparse-dev libmumps-seq-dev libsuperlu3-dev libsuitesparse-dev ffmpeg
+   sudo apt-get install libgoogle-perftools-dev zlib1g-dev
+   sudo apt-get install libsqlite3-dev libgstreamer0.10-dev libxslt1-dev libgstreamermm-0.10-dev
+ 
 
 You can use defines WITH_UNITY (support for Unity application launcher) for Ubuntu 11.04 and higher.
 This defines needs package libunity-dev.

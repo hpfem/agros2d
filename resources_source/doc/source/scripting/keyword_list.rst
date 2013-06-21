@@ -1,38 +1,11 @@
 .. _keyword-list:
 
-************
+
 Keyword List
 ************
 
-Physical Fields
-===============
-
-Acoustic
---------
-
-Module Id: acoustic 
-
-Constants
-^^^^^^^^^
-+----+-------------------------+
-| Id | Value                   |
-+====+=========================+
-| P0 | :math:`2 \cdot 10^{-5}` |
-+----+-------------------------+
-
-Variables
-^^^^^^^^^
-+--------+------------------------------------------------+
-| Id     | Description                                    |
-+========+================================================+
-| ac_pr  | real part of acoustic pressure                 |
-+--------+------------------------------------------------+
-| ac_pi  | imaginary part of acoustic pressure            |
-+--------+------------------------------------------------+
-| ac_anr | real part of acoustic normal acceleration      |
-+--------+------------------------------------------------+
-| ac_ani | imaginary part of acoustic normal acceleration |
-+--------+------------------------------------------------+
+Preprocessor
+============
 
 
 Problem Types
@@ -41,102 +14,378 @@ Problem Types
 * planar
 * axisymmetric
 
-Adaptivity Types
-----------------
+Example of usage: 
 
-* disabled
-* h-adaptivity
-* p-adaptivity
-* hp-adaptivity
+.. code-block:: python
 
-Analysis Types
---------------
+   problem.coordinate_type = planar 
+
+
+Analysis type
+-------------
 
 * steadystate
 * transient
 * harmonic
 
-Linearity Types
+Example of usage:
+
+.. code-block:: python
+
+   acoustic = agros2d.field("acoustic")
+   acoustic.analysis_type = "harmonic"
+
+
+Coupling types
+--------------
+
+* hard 
+* weak
+* none
+
+Example of usage:
+
+.. code-block:: python
+   
+   problem = agros2d.problem(clear = True)
+   problem.set_coupling_type("current", "heat", "weak")
+
+
+
+Mesh types
+----------
+
+* triangle
+* triangle_quad_fine_division
+* triangle_quad_rough_division
+* triangle_quad_join
+* gmsh_triangle
+* gmsh_quad
+* gmsh_quad_delaunay
+
+Example of usage:
+.. code-block:: python
+   
+   problem = agros2d.problem(clear = True)
+   problem.mesh_type = "triangle"
+
+
+Solver settings
+===============
+
+
+Time step methods
+-----------------
+
+* fixed
+* adaptive
+* adaptive_numsteps
+* bdf2_adaptive, 
+* bdf2_combine, 
+* fixed_bdf2b, 
+* fixed_combine
+
+Adaptivity types
+----------------
+
+* disabled 
+* h-adaptivity
+* p-adaptivity
+* hp-adaptivity
+
+
+Adaptivity stopping criterion types
+-----------------------------------
+
+* cumulative
+* singleelement
+* levels
+
+
+Adaptivity norm types
+---------------------
+
+* h1_norm
+* l2_norm 
+* h1_seminorm     
+
+
+Solution types
+--------------
+
+* normal
+* reference
+* finer
+
+
+Matrix solver types
+-------------------
+* umfpack
+* paralution
+* mumps
+* superlu
+* petsc
+* trilinos_amesos
+* trilinos_aztecoo
+
+
+Space types
+-----------
+
+* h1
+* hcurl
+* hdiv
+* l2
+
+
+Non-linear solvers settings
+---------------------------
+
+Linearity types
 ---------------
 
 * linear
 * picard
 * newton
 
-Matrix Solver Types
+
+Damping types
+-------------
+
+* off
+* automatic
+* fixed
+
+Data table types
+----------------
+
+* cubic_spline 
+* piecewise_linear
+* constant
+   
+
+Butcher table types
 -------------------
 
-* umfpack
-* petsc
-* mumps
-* superlu
-* trilinos_amesos
-* trilinos_aztecoo
+* heun-euler 
+* bogacki-shampine 
+* fehlberg 
+* cash-karp
+* dormand-prince
 
-Boundary Conditions
+
+Newton solver types
 -------------------
 
-* none
+* residual_norm_absolute
+* residual_norm_relative_to_initial
+* residual_norm_relative_to_previous
+* residual_norm_ratio_to_initial
+* residual_norm_ratio_to_previous
+* solution_distance_from_previous_absolute
+* solution_distance_from_previous_relative
+
+Example of non-linear solver setting
+
+.. code-block:: python
+
+   heat = agros2d.field("heat")
+   heat.analysis_type = "steadystate"
+   heat.number_of_refinements = 2
+   heat.polynomial_order = 2
+   heat.linearity_type = "newton"
+   heat.nonlinear_tolerance = 0.0001
+   heat.nonlinear_steps = 30
+   heat.damping_type = "automatic"
+   heat.damping_coeff = 0.8
+   heat.reuse_jacobian = True
+   heat.maximum_steps_with_reused_jacobian = 10
+   heat.sufficient_improvement_factor_for_jacobian_reuse = 0.3
+
+
+Iterative solvers
+-----------------
+
+* cg
+* gmres
+* bicgstab, 
+
+
+Preconditioners
+---------------
+
+* jacobi
+* ilu
+* multicoloredsgs
+* multicoloredilu
+* aichebyshev
+
+
+Postprocessing
+==============
+
+Palette types
+-------------
+
+* agros2d
+* jet 
+* copper
+* hot
+* bone
+* pink
+* spring
+* summer
+* autumn
+* winter
+* hsv
+* bw_ascending
+* bw_descending
+    
+
+Palette quality
+---------------
+
+* extremely_coarse
+* extra_coarse
+* coarser
+* normal
+* fine
+* finer
+* extra_fine
+
+
+Palette order types
+-------------------
+
+* hermes
+* jet
+* copper
+* hot
+* bone
+* pink
+* spring
+* summer
+* autumn
+* winter
+* hsv
+* bw_ascending
+* bw_descending
+
+
+Vector types
+------------
+
+* arrow
+* cone
+
+
+Vector center types
+-------------------
+
+* tail
+* head
+* center
+
+
+Postprocessing 3D
+-----------------
+
+* scalar
+* scalarsolid
+* model
+
+
+Physical Fields
+===============
 
 General field
 ^^^^^^^^^^^^^
 
+* none
 * general_value
 * general_derivative
+
 
 Electrostatic field
 ^^^^^^^^^^^^^^^^^^^
 
+* none
 * electrostatic_potential
 * electrostatic_surface_charge_density
+
 
 Current field
 ^^^^^^^^^^^^^
 
-* current_potential
+* none
+* current_potential, 
 * current_inward_current_flow
+
 
 Magnetic field
 ^^^^^^^^^^^^^^
 
-* magnetic_vector_potential
-* magnetic_surface_current_density
+* none
+* magnetic_potential
+* magnetic_surface_current
+
+
 
 TE Waves
 ^^^^^^^^
-* rf_electric_field
-* rf_surface_current
-* rf_matched_boundary
-* rf_port
+
+* none
+* rf_te_electric_field
+* rf_te_magnetic_field
+* rf_te_surface_current
+* rf_te_impedance
+
+
+TM Waves
+^^^^^^^^
+
+* none
+* rf_te_electric_field
+* rf_te_magnetic_field
+* rf_te_surface_current
+* rf_te_impedance
+
 
 Heat transfer
 ^^^^^^^^^^^^^
-
-* heat_temperature
-* heat_heat_flux
+ 
+ * none
+ * heat_temperature
+ * heat_heat_flux
 
 Acoustic field
 ^^^^^^^^^^^^^^
+
 * acoustic_pressure
 * acoustic_normal_acceleration
 * acoustic_impedance
-* acoustic_matched_boundary
+
 
 Structural mechanics
 ^^^^^^^^^^^^^^^^^^^^
 
-* elasticity_fixed
-* elasticity_free
+* elasticity_fixed_fixed
+* elasticity_fixed_free
+* elasticity_free_fixed
+* elasticity_free_free
 
 Incompressible flow
 ^^^^^^^^^^^^^^^^^^^
+
 * flow_velocity
 * flow_pressure
 * flow_outlet
-* flow_wall
+* flow_symmetry
+
 
 Physic Field Variables
 ----------------------
+
 
 General field
 ^^^^^^^^^^^^^
@@ -144,6 +393,7 @@ General field
 * general_variable
 * general_gradient
 * general_constant
+
 
 Electrostatic field
 ^^^^^^^^^^^^^^^^^^^
@@ -153,73 +403,99 @@ Electrostatic field
 * electrostatic_displacement
 * electrostatic_energy_density
 * electrostatic_permittivity
+* electrostatic_charge_density
 
 Current field
 ^^^^^^^^^^^^^
 
 * current_potential
 * current_electic_field
-* current_current_density
-* current_power_losses
+* current_current_density_conductive_real
+* current_current_density_total_real
+* current_joule_losses
 * current_conductivity
 
 Magnetic field
 ^^^^^^^^^^^^^^
 
-* magnetic_vector_potential_real
-* magnetic_vector_potential_imag
-* magnetic_vector_potential
+* magnetic_potential
+* magnetic_potential_real
+* magnetic_potential_imag
+* magnetic_potential_lines
+* magnetic_potential_lines_real
+* magnetic_potential_lines_imag
+* magnetic_flux_density 
 * magnetic_flux_density_real
 * magnetic_flux_density_imag
-* magnetic_flux_density
+* magnetic_magnetic_field
 * magnetic_magnetic_field_real
 * magnetic_magnetic_field_imag
-* magnetic_magnetic_field
-* magnetic_current_density_imag
-* magnetic_current_density_imag
-* magnetic_current_density
-* magnetic_current_density_induced_transform_real
-* magnetic_current_density_induced_transform_imag
-* magnetic_current_density_induced_transform
-* magnetic_current_density_induced_velocity_real
-* magnetic_current_density_induced_velocity_imag
-* magnetic_current_density_induced_velocity
-* magnetic_current_density_total_real
-* magnetic_current_density_total_imag
-* magnetic_current_density_total
-* magnetic_power_losses
-* magnetic_lorentz_force
 * magnetic_energy_density
 * magnetic_permeability
 * magnetic_conductivity
 * magnetic_remanence
 * magnetic_velocity
+* magnetic_current_density_external
+* magnetic_current_density_external_real
+* magnetic_current_density_external_imag
+* magnetic_current_density_induced_velocity
+* magnetic_current_density_induced_velocity_real
+* magnetic_current_density_induced_velocity_imag
+* magnetic_current_density_induced_transform
+* magnetic_current_density_induced_transform_real
+* magnetic_current_density_induced_transform_imag
+* magnetic_current_density_total
+* magnetic_current_density_total_real
+* magnetic_current_density_total_imag 
+* magnetic_losses_density
+* magnetic_lorentz_force
+
 
 TE Waves
 ^^^^^^^^
 
-* rf_electric_field
-* rf_electric_field_real
-* rf_electric_field_imag
-* rf_magnetic_field
-* rf_magnetic_field_x_real
-* rf_magnetic_field_x_imag
-* rf_magnetic_field_y_real
-* rf_magnetic_field_y_imag
-* rf_magnetic_flux_density
-* rf_magnetic_flux_density_x_real
-* rf_magnetic_flux_density_x_imag
-* rf_magnetic_flux_density_y_real
-* rf_magnetic_flux_density_y_imag
-* rf_poynting_vector
-* rf_poynting_vector_x
-* rf_poynting_vector_y
-* rf_power_losses
-* rf_permittivity
-* rf_permeability
-* rf_conductivity
-* rf_current_density_real
-* rf_current_density_imag
+* rf_te_electric_field
+* rf_te_electric_field_real
+* rf_te_electric_field_imag
+* rf_te_displacement
+* rf_te_displacement_real
+* rf_te_displacement_imag
+* rf_te_surface_current_real
+* rf_te_surface_current_imag
+* rf_te_magnetic_field 
+* rf_te_magnetic_field_real
+* rf_te_magnetic_field_imag
+* rf_te_flux_density
+* rf_te_flux_density_real
+* rf_te_flux_density_imag
+* rf_te_poynting_vector
+* rf_te_permittivity
+* rf_te_permeability
+* rf_te_conductivity
+ 
+
+TM Waves
+^^^^^^^^
+
+* rf_te_electric_field
+* rf_te_electric_field_real
+* rf_te_electric_field_imag
+* rf_te_displacement
+* rf_te_displacement_real
+* rf_te_displacement_imag
+* rf_te_surface_current_real
+* rf_te_surface_current_imag
+* rf_te_magnetic_field 
+* rf_te_magnetic_field_real
+* rf_te_magnetic_field_imag
+* rf_te_flux_density
+* rf_te_flux_density_real
+* rf_te_flux_density_imag
+* rf_te_poynting_vector
+* rf_te_permittivity
+* rf_te_permeability
+* rf_te_conductivity
+
 
 Heat transfer
 ^^^^^^^^^^^^^
@@ -228,6 +504,11 @@ Heat transfer
 * heat_temperature_gradient
 * heat_heat_flux
 * heat_conductivity
+* heat_volume_heat
+* heat_density
+* heat_specific_heat
+* heat_velocity
+
 
 Acoustic field
 ^^^^^^^^^^^^^^
@@ -235,32 +516,37 @@ Acoustic field
 * acoustic_pressure
 * acoustic_pressure_real
 * acoustic_pressure_imag
-* acoustic_local_velocity
-* acoustic_local_acceleration
+* acoustic_sound_pressure_level
+* acoustic_local_acceleration_real
+* acoustic_local_acceleration_imag
+* acoustic_pressure_derivative
 * acoustic_density
 * acoustic_speed
+
 
 Structural mechanics
 ^^^^^^^^^^^^^^^^^^^^
 
-* elasticity_von_mises_stress
 * elasticity_displacement
-* strain_xx
-* strain_yy
-* strain_zz
-* strain_xy
-* stress_xx
-* stress_yy
-* stress_zz
-* stress_xy
+* elasticity_young_modulus
+* elasticity_von_mises_stress
+* elasticity_poisson_ratio
+* elasticity_inner_force
+* elasticity_alpha
+* elasticity_temperature_difference
+* elasticity_temperature_reference
+
 
 Incompressible flow
 ^^^^^^^^^^^^^^^^^^^
 
 * flow_velocity
-* flow_velocity_x
-* flow_velocity_y
-* flow_velocity
+* flow_pressure
+* flow_vorticity
+* flow_density
+* flow_viscosity
+* flow_inner_force
+
 
 Physic Field Variable Components
 --------------------------------
@@ -269,6 +555,7 @@ Physic Field Variable Components
 * magnitude
 * x (for axysimmetric problem types r)
 * y (for axysimmetric problem types z)
+
 
 Point Results
 -------------
@@ -330,15 +617,18 @@ Electrostatic field
 
 * l, S, Q
 
+
 Current field
 ^^^^^^^^^^^^^
 
 * l, S, I
 
+
 Magnetic field
 ^^^^^^^^^^^^^^
 
 * l, S, Fx, Fy
+
 
 TE Waves
 ^^^^^^^^
@@ -398,20 +688,24 @@ Heat transfer
 
 * V, S, T_avg, Gx_avg, Gy_avg, G_avg, Fx_avg, Fy_avg, F_avg
 
+
 Acoustic field
 ^^^^^^^^^^^^^^
 
 * V, S, p_real, p_imag
+
 
 Structural mechanics
 ^^^^^^^^^^^^^^^^^^^^
 
 * V, S
 
+
 Incompressible flow
 ^^^^^^^^^^^^^^^^^^^
 
 * V, S
+
 
 Modes
 -----
@@ -420,6 +714,7 @@ Modes
 * edge
 * label
 * postprocessor
+
 
 Postprocessor Views
 -------------------
