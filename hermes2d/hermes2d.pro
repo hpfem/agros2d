@@ -12,6 +12,9 @@ DEFINES += H2D_DISABLE_MULTIMESH_TESTS
 DEFINES += WITH_PARALUTION
 INCLUDEPATH += ../3rdparty/paralution/src
 
+# mumps
+DEFINES += WITH_MUMPS
+
 LIBS += -L../libs
 LIBS += -L../3rdparty/libs
 LIBS += -lagros_3rdparty_paralution
@@ -171,8 +174,6 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
 
     CONFIG += warn_off
 
-    # DEFINES += WITH_MUMPS
-    # DEFINES += WITH_SUPERLU
     DEFINES += HAVE_FMEMOPEN
     DEFINES += HAVE_LOG2
 
@@ -257,8 +258,17 @@ win32-msvc2010 {
     # mumps
     contains(CONFIG, WITH_MUMPS) {
         DEFINES += WITH_MUMPS
-        LIBS += -ldmumps_seq
-        LIBS += -lzmumps_seq
+
+        LIBS += -ldmumps_c
+        LIBS += -ldmumps_fortran
+        LIBS += -lzmumps_c
+        LIBS += -lzmumps_fortran
+        LIBS += -lmumps_common_c
+        LIBS += -llibseq_c
+        LIBS += -llibseq_fortran
+        LIBS += -lpord_c
+        LIBS += -lBLAS
+        LIBS += -lsvml_disp
     }
     # superlu
     contains(CONFIG, WITH_SUPERLU) {

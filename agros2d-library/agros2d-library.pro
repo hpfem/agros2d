@@ -16,6 +16,17 @@ linux-g++|linux-g++-64|linux-g++-32: CONFIG(release) {
     #system(cd ../ && ./agros2d.sh help)
 }
 
+# mumps
+DEFINES += WITH_MUMPS
+# superlu
+contains(CONFIG, WITH_SUPERLU) {
+    DEFINES += WITH_SUPERLU
+}
+# petsc
+contains(CONFIG, WITH_PETSC) {
+    DEFINES += WITH_PETSC
+}
+
 LIBS += -lagros_pythonlab_library
 LIBS += -lagros2d_hermes2d
 
@@ -303,20 +314,6 @@ win32-msvc2010 {
     INCLUDEPATH += c:/hpfem/hermes/dependencies/include
     INCLUDEPATH += d:/hpfem/hermes/dependencies/include
 }
-
-# mumps
-contains(CONFIG, WITH_MUMPS) {
-    DEFINES += WITH_MUMPS
-}
-# superlu
-contains(CONFIG, WITH_SUPERLU) {
-    DEFINES += WITH_SUPERLU
-}
-# petsc
-contains(CONFIG, WITH_PETSC) {
-    DEFINES += WITH_PETSC
-}
-
 
 include(../agros2d.pri)
 include(../agros2d_version.pri)
