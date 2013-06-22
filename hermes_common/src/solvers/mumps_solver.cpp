@@ -30,8 +30,8 @@ namespace Hermes
   {
     extern "C"
     {
-      extern void dmumps_c(DMUMPS_STRUC_C *mumps_param_ptr);
-      extern void zmumps_c(ZMUMPS_STRUC_C *mumps_param_ptr);
+//      extern void dmumps_c(DMUMPS_STRUC_C *mumps_param_ptr);
+//      extern void zmumps_c(ZMUMPS_STRUC_C *mumps_param_ptr);
     }
 
 #define USE_COMM_WORLD  -987654

@@ -185,11 +185,9 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     LIBS += -lstdc++
 
     # mumps
-    contains(CONFIG, WITH_MUMPS) {
-        DEFINES += WITH_MUMPS
-        LIBS += -ldmumps_seq
-        LIBS += -lzmumps_seq
-    }
+    DEFINES += WITH_MUMPS
+    LIBS += -ldmumps_seq
+    LIBS += -lzmumps_seq
     # superlu
     contains(CONFIG, WITH_SUPERLU) {
         DEFINES += WITH_SUPERLU
@@ -256,20 +254,18 @@ win32-msvc2010 {
     LIBS += -lws2_32
 
     # mumps
-    contains(CONFIG, WITH_MUMPS) {
-        DEFINES += WITH_MUMPS
+    DEFINES += WITH_MUMPS
 
-        LIBS += -ldmumps_c
-        LIBS += -ldmumps_fortran
-        LIBS += -lzmumps_c
-        LIBS += -lzmumps_fortran
-        LIBS += -lmumps_common_c
-        LIBS += -llibseq_c
-        LIBS += -llibseq_fortran
-        LIBS += -lpord_c
-        LIBS += -lBLAS
-        LIBS += -lsvml_disp
-    }
+    LIBS += -ldmumps_c
+    LIBS += -ldmumps_fortran
+    LIBS += -lzmumps_c
+    LIBS += -lzmumps_fortran
+    LIBS += -lmumps_common_c
+    LIBS += -llibseq_c
+    LIBS += -llibseq_fortran
+    LIBS += -lpord_c
+    LIBS += -lBLAS
+    LIBS += -lsvml_disp
     # superlu
     contains(CONFIG, WITH_SUPERLU) {
         DEFINES += WITH_SUPERLU
