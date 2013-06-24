@@ -8,25 +8,39 @@ Agros2D scripting reference guide
 Scripting in Agros2D is based on scripting language `Python <http://www.python.org>`_.
 
 
-Object *problem*
-----------------
+Class *problem*
+---------------
 
-Object *problem* associate general informations about solved task.    
+Class *problem* associate general informations about solved task.    
 
 
 Methods
 ^^^^^^^
 
-problem(clear)
-""""""""""""""
+**problem**\(clear)
+  Creates an instance of the class *problem*.  
 
-creates problem object
++-----------+------+---------+
+| Parameter | Type | Meaning |
++===========+======+=========+
+| clear     | bool |         |
++-----------+------+---------+
+
 
 Example of usage
 
 .. code-block:: python
     
    problem = agros2d.problem(clear = True)
+
+**solve**\()
+  Solves the problem.
+
+Example of usage
+
+.. code-block:: python
+
+   problem.solve()
 
 
 Variables
@@ -43,8 +57,8 @@ Variables
   
    
 
-Object *field*
---------------
+Class *field*
+-------------
 
 Object *field* associates informations specific for given physical field. 
 
@@ -52,10 +66,8 @@ Object *field* associates informations specific for given physical field.
 Methods
 ^^^^^^^
 
-field(Name <string>)
-""""""""""""""""""""
-  
-creates field object
+**field**\(Name)
+  creates field object
 
 Example of usage     
 
@@ -64,17 +76,38 @@ Example of usage
    heat = agros2d.field("heat")
      
 
-add_boundary(Name <String>, Type <String>, Value <Dict>)
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-  
-adds new boundary condition    
+**add_boundary**\(Name, Type, Value)
+  Adds new boundary condition to the problem.    
    
+.. tabularcolumns:: lll 
+
++---------------+----------+----------------------------------+
+| **Parameter** | **Type** | **Meaning**                      |
++---------------+----------+----------------------------------+
+| Name          | string   | Name of the boundary condition   |
++---------------+----------+----------------------------------+
+| Type          | string   || Type of the boundary condition  |
+|               |          || (See module documentation)      | 
++---------------+----------+----------------------------------+
+
+
+
 Example of usage
 
 .. code-block:: python
    
    heat.add_boundary("Left", "heat_temperature", {"heat_temperature" : 10})
                     
+
+**add_material**\(Name, Type, Value)
+  Adds new material to the problem.     
+   
+Example of usage
+
+.. code-block:: python
+   
+   heat.add_material("Material", {"heat_conductivity" : 230, "heat_volume_heat" : 0})
+
                                                          
 
 Variables
@@ -110,4 +143,39 @@ Solver settings
 +--------------------------------------------------+-----------------------------------------------------------------+----------------------------------+
 
 
+Class *geometry*
+----------------
 
+Class *geometry* associates informations about geometry of the model.
+ 
+Methods
+^^^^^^^
+
+geometry
+""""""""
+  
+creates geometry object
+
+Example of usage     
+
+.. code-block:: python
+      
+   geometry = agros2d.geometry
+   
+   
+add_edge(x1 <double>, x2 <double>, y1 <double>, y2 <double>, boundaries = <dict>, angle = <double> )
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+creates edge and assign boundary conditions
+
+Example of usage, edge with boundary condition
+
+.. code-block:: python
+
+   geometry.add_edge(-0.25, 0.25, -0.1, 0.1, boundaries = {"heat" : "Convection"}) 
+
+Example of usage, edge without boundary condition
+
+.. code-block:: python
+
+   geometry.add_edge(-0.25, 0.25, -0.1, 0.1, boundaries = {}) 
