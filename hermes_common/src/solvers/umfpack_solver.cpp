@@ -111,7 +111,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    Scalar UMFPackVector<Scalar>::get(unsigned int idx)
+    Scalar UMFPackVector<Scalar>::get(unsigned int idx) const
     {
       return v[idx];
     }
@@ -120,6 +120,19 @@ namespace Hermes
     void UMFPackVector<Scalar>::extract(Scalar *v) const
     {
       memcpy(v, this->v, this->size * sizeof(Scalar));
+    }
+    
+    template<typename Scalar>
+    void UMFPackVector<Scalar>::set_vector(Vector<Scalar>* vec)
+    {
+      assert(this->size == vec->length());
+      for (unsigned int i = 0; i < this->size; i++) this->v[i] = vec->get(i);
+    }
+    
+    template<typename Scalar>
+    void UMFPackVector<Scalar>::set_vector(Scalar* vec)
+    {
+      memcpy(this->v, vec, this->size * sizeof(Scalar));
     }
 
     template<typename Scalar>
@@ -240,7 +253,7 @@ namespace Hermes
 
     template<typename Scalar>
     UMFPackLinearMatrixSolver<Scalar>::UMFPackLinearMatrixSolver(UMFPackMatrix<Scalar> *m, UMFPackVector<Scalar> *rhs)
-      : DirectSolver<Scalar>(HERMES_FACTORIZE_FROM_SCRATCH), m(m), rhs(rhs), symbolic(NULL), numeric(NULL)
+      : DirectSolver<Scalar>(HERMES_CREATE_STRUCTURE_FROM_SCRATCH), m(m), rhs(rhs), symbolic(NULL), numeric(NULL)
     {
       umfpack_di_defaults(Control);
     }
@@ -261,15 +274,15 @@ namespace Hermes
     bool UMFPackLinearMatrixSolver<double>::setup_factorization()
     {
       // Perform both factorization phases for the first time.
-      if(factorization_scheme != HERMES_FACTORIZE_FROM_SCRATCH && symbolic == NULL && numeric == NULL)
-        factorization_scheme = HERMES_FACTORIZE_FROM_SCRATCH;
+      if(reuse_scheme != HERMES_CREATE_STRUCTURE_FROM_SCRATCH && symbolic == NULL && numeric == NULL)
+        reuse_scheme = HERMES_CREATE_STRUCTURE_FROM_SCRATCH;
       else
-        factorization_scheme = factorization_scheme;
+        reuse_scheme = reuse_scheme;
 
       int status;
-      switch(factorization_scheme)
+      switch(reuse_scheme)
       {
-      case HERMES_FACTORIZE_FROM_SCRATCH:
+      case HERMES_CREATE_STRUCTURE_FROM_SCRATCH:
         if(symbolic != NULL)
         {
           umfpack_di_free_symbolic(&symbolic);
@@ -313,15 +326,15 @@ namespace Hermes
     {
       // Perform both factorization phases for the first time.
       int eff_fact_scheme;
-      if(factorization_scheme != HERMES_FACTORIZE_FROM_SCRATCH && symbolic == NULL && numeric == NULL)
-        eff_fact_scheme = HERMES_FACTORIZE_FROM_SCRATCH;
+      if(reuse_scheme != HERMES_CREATE_STRUCTURE_FROM_SCRATCH && symbolic == NULL && numeric == NULL)
+        eff_fact_scheme = HERMES_CREATE_STRUCTURE_FROM_SCRATCH;
       else
-        eff_fact_scheme = factorization_scheme;
+        eff_fact_scheme = reuse_scheme;
 
       int status;
       switch(eff_fact_scheme)
       {
-      case HERMES_FACTORIZE_FROM_SCRATCH:
+      case HERMES_CREATE_STRUCTURE_FROM_SCRATCH:
         if(symbolic != NULL)
           umfpack_zi_free_symbolic(&symbolic);
 

@@ -566,18 +566,23 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Hermes::vector<SpaceSharedPtr<Sca
                                                int adaptivityStep,
                                                Hermes::vector<MeshFunctionSharedPtr<Scalar> > previousSolution)
 {
+    LinearMatrixSolver<Scalar> *linearSolver = m_hermesSolverContainer->linearSolver();
+    if (ParalutionLinearMatrixSolver<Scalar> *paralutionSolver = dynamic_cast<ParalutionLinearMatrixSolver<Scalar> *>(linearSolver))
+    {
+        if (m_block->isTransient())
+            paralutionSolver->set_reuse_scheme(HERMES_REUSE_MATRIX_STRUCTURE_COMPLETELY);
+    }
+
     Scalar* initialSolutionVector = new Scalar[Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaces)];
 
     m_hermesSolverContainer->projectPreviousSolution(initialSolutionVector, spaces, previousSolution);
     m_hermesSolverContainer->setMatrixRhsOutput(m_solverCode, adaptivityStep);
-
     m_hermesSolverContainer->solve(initialSolutionVector);
 
     if (initialSolutionVector)
         delete [] initialSolutionVector;
 
     // linear solver statistics
-    LinearMatrixSolver<Scalar> *linearSolver = m_hermesSolverContainer->linearSolver();
     if (IterSolver<Scalar> *iterLinearSolver = dynamic_cast<IterSolver<Scalar> *>(linearSolver))
     {
         Agros2D::log()->printDebug(QObject::tr("Solver"),

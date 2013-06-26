@@ -30,8 +30,10 @@ namespace Hermes
   {
     extern "C"
     {
-//      extern void dmumps_c(DMUMPS_STRUC_C *mumps_param_ptr);
-//      extern void zmumps_c(ZMUMPS_STRUC_C *mumps_param_ptr);
+#ifndef _WINDOWS
+      extern void dmumps_c(DMUMPS_STRUC_C *mumps_param_ptr);
+      extern void zmumps_c(ZMUMPS_STRUC_C *mumps_param_ptr);
+#endif
     }
 
 #define USE_COMM_WORLD  -987654
@@ -143,7 +145,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    Scalar MumpsMatrix<Scalar>::get(unsigned int m, unsigned int n)
+    Scalar MumpsMatrix<Scalar>::get(unsigned int m, unsigned int n) const
     {
       // Find m-th row in the n-th column.
       int mid = find_position(Ai + Ap[n], Ap[n + 1] - Ap[n], m);
@@ -324,7 +326,7 @@ namespace Hermes
 
     // Applies the matrix to vector_in and saves result to vector_out.
     template<typename Scalar>
-    void MumpsMatrix<Scalar>::multiply_with_vector(Scalar* vector_in, Scalar* vector_out)
+    void MumpsMatrix<Scalar>::multiply_with_vector(Scalar* vector_in, Scalar* vector_out) const
     {
       for(unsigned int i = 0;i<this->size;i++)
       {
@@ -492,7 +494,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    Scalar MumpsVector<Scalar>::get(unsigned int idx)
+    Scalar MumpsVector<Scalar>::get(unsigned int idx) const
     {
       return v[idx];
     }
@@ -720,15 +722,15 @@ namespace Hermes
     {
       // When called for the first time, all three phases (analysis, factorization,
       // solution) must be performed.
-      int eff_fact_scheme = this->factorization_scheme;
+      int eff_fact_scheme = this->reuse_scheme;
       if(!inited)
-        if( this->factorization_scheme == HERMES_REUSE_MATRIX_REORDERING ||
-          this->factorization_scheme == HERMES_REUSE_FACTORIZATION_COMPLETELY )
-          eff_fact_scheme = HERMES_FACTORIZE_FROM_SCRATCH;
+        if( this->reuse_scheme == HERMES_REUSE_MATRIX_REORDERING ||
+          this->reuse_scheme == HERMES_REUSE_MATRIX_STRUCTURE_COMPLETELY )
+          eff_fact_scheme = HERMES_CREATE_STRUCTURE_FROM_SCRATCH;
 
       switch (eff_fact_scheme)
       {
-      case HERMES_FACTORIZE_FROM_SCRATCH:
+      case HERMES_CREATE_STRUCTURE_FROM_SCRATCH:
         // (Re)initialize new instance.
         reinit();
 
@@ -763,7 +765,7 @@ namespace Hermes
           param.job = JOB_FACTORIZE_SOLVE;
         }
         break;
-      case HERMES_REUSE_FACTORIZATION_COMPLETELY:
+      case HERMES_REUSE_MATRIX_STRUCTURE_COMPLETELY:
         param.job = JOB_SOLVE;
         break;
       }

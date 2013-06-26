@@ -54,7 +54,7 @@ namespace Hermes
       virtual void alloc();
       virtual void free();
       virtual void finish();
-      virtual Scalar get(unsigned int m, unsigned int n);
+      virtual Scalar get(unsigned int m, unsigned int n) const;
       virtual void zero();
       virtual void add(unsigned int m, unsigned int n, Scalar v);
       virtual void add_to_diagonal(Scalar v);
@@ -81,7 +81,7 @@ namespace Hermes
       virtual void add_as_block(unsigned int i, unsigned int j, PetscMatrix* mat);
 
       // Applies the matrix to vector_in and saves result to vector_out.
-      void multiply_with_vector(Scalar* vector_in, Scalar* vector_out);
+      void multiply_with_vector(Scalar* vector_in, Scalar* vector_out) const;
 
       // Multiplies matrix with a Scalar.
       void multiply_with_Scalar(Scalar value);
@@ -119,7 +119,7 @@ namespace Hermes
       virtual void free();
       /// Finish manipulation with vector.
       virtual void finish();
-      virtual Scalar get(unsigned int idx);
+      virtual Scalar get(unsigned int idx) const;
       virtual void extract(Scalar *v) const;
       virtual void zero();
       virtual void change_sign();
