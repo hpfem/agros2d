@@ -5252,7 +5252,7 @@ Chcete tyto změny uložit?</translation>
     <message>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="186"/>
         <source>Iteration: %1, Jacobian reused, damping coeff.: %2, error: %3</source>
-        <translation>Iterace: %1, Jacobián byl pou6it znovu, faktor tlumení: %2, chyba: %3</translation>
+        <translation>Iterace: %1, Jacobián byl použit znovu, faktor tlumení: %2, chyba: %3</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/solver.cpp" line="193"/>
