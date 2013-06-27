@@ -567,11 +567,9 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Hermes::vector<SpaceSharedPtr<Sca
                                                Hermes::vector<MeshFunctionSharedPtr<Scalar> > previousSolution)
 {
     LinearMatrixSolver<Scalar> *linearSolver = m_hermesSolverContainer->linearSolver();
-    if (ParalutionLinearMatrixSolver<Scalar> *paralutionSolver = dynamic_cast<ParalutionLinearMatrixSolver<Scalar> *>(linearSolver))
-    {
-        if (m_block->isTransient())
-            paralutionSolver->set_reuse_scheme(HERMES_REUSE_MATRIX_STRUCTURE_COMPLETELY);
-    }
+
+    if (m_block->isTransient() || m_block->linearityType() == LinearityType_Newton)
+        linearSolver->set_reuse_scheme(HERMES_REUSE_MATRIX_STRUCTURE_COMPLETELY);
 
     Scalar* initialSolutionVector = new Scalar[Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaces)];
 
