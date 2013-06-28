@@ -568,8 +568,8 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Hermes::vector<SpaceSharedPtr<Sca
 {
     LinearMatrixSolver<Scalar> *linearSolver = m_hermesSolverContainer->linearSolver();
 
-    if (m_block->isTransient() || m_block->linearityType() == LinearityType_Newton)
-        linearSolver->set_reuse_scheme(HERMES_REUSE_MATRIX_STRUCTURE_COMPLETELY);
+    if (m_block->isTransient())
+        linearSolver->set_reuse_scheme(HERMES_REUSE_MATRIX_REORDERING);
 
     Scalar* initialSolutionVector = new Scalar[Hermes::Hermes2D::Space<Scalar>::get_num_dofs(spaces)];
 
