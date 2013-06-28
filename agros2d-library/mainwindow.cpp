@@ -736,7 +736,7 @@ void MainWindow::createMain()
     tlbLeftBar->addWidget(spacing);
     tlbLeftBar->addAction(actCreateMesh);
     tlbLeftBar->addAction(actSolve);
-    tlbLeftBar->addAction(actSolveAdaptiveStep);
+    // tlbLeftBar->addAction(actSolveAdaptiveStep);
     tlbLeftBar->addSeparator();
     tlbLeftBar->addAction(actScriptEditor);
 
