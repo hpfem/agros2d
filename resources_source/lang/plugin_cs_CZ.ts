@@ -356,7 +356,7 @@
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="613"/>
         <source>Von Misses stress</source>
-        <translation type="unfinished"></translation>
+        <translation>Von Misses hypotéza</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="616"/>
@@ -718,302 +718,320 @@
 <context>
     <name>MagneticInterface</name>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="676"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="796"/>
         <source>Magnetic field</source>
         <translation>Magnetické pole</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="682"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="802"/>
         <source>Steady state</source>
         <translation>Ustálený stav</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="685"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="805"/>
         <source>Harmonic</source>
         <translation>Harmonická analýza</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="688"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="808"/>
         <source>Transient</source>
         <translation>Přechodný děj</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="691"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="811"/>
         <source>Magnetic potential</source>
         <translation>Magnetický potenciál</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="694"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="814"/>
         <source>Surface current</source>
         <translation>Povrchový proud</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="697"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="817"/>
         <source>Material properties</source>
         <translation>Materiálové vlastnosti</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="700"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="820"/>
         <source>Permeability</source>
         <translation>Permeabilita</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="703"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="823"/>
         <source>Electrical conductivity</source>
         <translation>Elektrická vodivost</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="706"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="826"/>
         <source>Source</source>
         <translation>Zdroj</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="709"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="829"/>
         <source>Current dens. - ext. - real</source>
         <translation>Proudová hustota - ext. - reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="712"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="832"/>
         <source>Current dens. - ext. - imag</source>
         <translation>Proudová hustota - ext. - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="715"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="835"/>
         <source>Permanent magnet</source>
         <translation>Permanentní magnet</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="718"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="838"/>
         <source>Remanent flux density</source>
         <translation>Remanentní indukce</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="721"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="841"/>
         <source>Remanent flux density - angle</source>
         <translation>Remanentní indukce - úhel</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="724"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="844"/>
         <source>Velocity</source>
         <translation>Rychlost</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="727"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="847"/>
         <source>Velocity - x</source>
         <translation>Rychlost - x</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="730"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="850"/>
         <source>Velocity - y</source>
         <translation>Rychlost - y</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="733"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="853"/>
         <source>Velocity - angular</source>
         <translation>Rychlost - úhlová</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="736"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="856"/>
         <source>Vector potential - real</source>
         <translation>Vekt. potenciál - reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="739"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="859"/>
         <source>Vector potential - imag</source>
         <translation>Vekt. potenciál - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="742"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="862"/>
         <source>Surface current - real</source>
         <translation>Povrchový proud - reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="745"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="865"/>
         <source>Surface current - imag</source>
         <translation>Povrchový proud - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="748"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="868"/>
         <source>Vector potential</source>
         <translation>Vektorový potenciál</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="751"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="871"/>
+        <source>Vector potential lines</source>
+        <translation>Vektorový potenciál - siločáry</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="874"/>
+        <source>Vector potential lines - real</source>
+        <translation>Vektorový potenciál - siločáry - reál. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="877"/>
+        <source>Vector potential lines - imag</source>
+        <translation>Vektorový potenciál - siločáry - imag. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="880"/>
         <source>Flux density</source>
         <translation>Magnetická indukce</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="754"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="883"/>
         <source>Flux density - real</source>
         <translation>Magnetická indukce - reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="757"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="886"/>
         <source>Flux density - imag</source>
         <translation>Magnetická indukce - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="760"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="889"/>
         <source>Magnetic field - real</source>
         <translation>Intenzita mag. pole - reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="763"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="892"/>
         <source>Magnetic field - imag</source>
         <translation>Intenzita mag. pole - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="766"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="895"/>
         <source>Energy density</source>
         <translation>Hustota energie</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="769"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="898"/>
         <source>Conductivity</source>
         <translation>Vodivost</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="772"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="901"/>
         <source>Current dens. - ext.</source>
         <translation>Proudová hustota - ext.</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="775"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="904"/>
         <source>Current dens. - ind. velocity</source>
         <translation>Proudová hust. - ind. pohybem</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="778"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="907"/>
         <source>Current dens. - ind. velocity - real</source>
         <translation>Proudová hust. - ind. pohybem - reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="781"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="910"/>
         <source>Current dens. - ind. velocity - imag</source>
         <translation>Proudová hust. - ind. pohybem - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="784"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="913"/>
         <source>Current dens. - ind. transform</source>
         <translation>Proudová hust. - ind. změnou</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="787"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="916"/>
         <source>Current dens. - ind. transform - real</source>
         <translation>Proudová hust. - ind. změnou - reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="790"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="919"/>
         <source>Current dens. - ind. transform - imag</source>
         <translation>Proudová hust. - ind. změnou - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="793"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="922"/>
         <source>Current dens. - total</source>
         <translation>Proudová hust. - celková</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="796"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="925"/>
         <source>Current dens. - total - real</source>
         <translation>Proud. hustota - celková - reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="799"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="928"/>
         <source>Current dens. - total - imag</source>
         <translation>Proud. hustota - celková - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="802"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="931"/>
         <source>Losses density</source>
         <translation>Hustota ztrát</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="805"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="934"/>
+        <source>Lorentz force</source>
+        <translation>Lorentzova síla</translation>
+    </message>
+    <message>
         <source>Lorentz force - real</source>
-        <translation>Lorentzova síla - reál. složka</translation>
+        <translation type="obsolete">Lorentzova síla - reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="808"/>
         <source>Lorentz force - imag</source>
-        <translation>Lorentzova síla - imag. složka</translation>
+        <translation type="obsolete">Lorentzova síla - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="811"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="937"/>
         <source>Volume</source>
         <translation>Objem</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="814"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="940"/>
         <source>Cross section</source>
         <translation>Průřez</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="817"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="943"/>
         <source>Current - ext. - real</source>
         <translation>Proud - ext. - reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="820"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="946"/>
         <source>Current - ext. - imag</source>
         <translation>Proud - ext. - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="823"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="949"/>
         <source>Current - ind. transform - real</source>
         <translation>Proud - ind. změnou - reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="826"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="952"/>
         <source>Current - ind. transform - imag</source>
         <translation>Proud - ind. změnou - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="829"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="955"/>
         <source>Current - total - real</source>
         <translation>Proud - celkový -reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="832"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="958"/>
         <source>Current - total - imag</source>
         <translation>Proud - celkový - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="835"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="961"/>
         <source>Energy</source>
         <translation>Energie</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="838"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="964"/>
         <source>Power losses</source>
         <translation>Činné ztráty</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="841"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="967"/>
         <source>Torque</source>
         <translation>Moment</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="844"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="970"/>
         <source>Lorentz force - x</source>
         <translation>Lorentzova síla - x</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="847"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="973"/>
         <source>Lorentz force - y</source>
         <translation>Lorentzova síla . y</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="850"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="976"/>
         <source>Length</source>
         <translation>Délka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="853"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="979"/>
         <source>Surface</source>
         <translation>Plocha</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="860"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="986"/>
         <source>Magnetic field ...</source>
         <translation>Magnetické pole ...</translation>
     </message>
@@ -1028,7 +1046,8 @@
         <location filename="../../plugins/flow/flow_force.cpp" line="79"/>
         <location filename="../../plugins/heat/heat_force.cpp" line="82"/>
         <location filename="../../plugins/magnetic/magnetic_force.cpp" line="96"/>
-        <location filename="../../plugins/rf/rf_force.cpp" line="80"/>
+        <location filename="../../plugins/rf_te/rf_te_force.cpp" line="80"/>
+        <location filename="../../plugins/rf_tm/rf_tm_force.cpp" line="78"/>
         <source>Point [%1, %2] does not lie in any element</source>
         <translation>Bod [%1, %2] neleží v žádném elementu</translation>
     </message>
@@ -1036,164 +1055,459 @@
 <context>
     <name>RfInterface</name>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="544"/>
         <source>RF waves</source>
-        <translation type="unfinished">VF vlny</translation>
+        <translation type="obsolete">VF vlny</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="550"/>
         <source>Harmonic</source>
-        <translation type="unfinished">Harmonická analýza</translation>
+        <translation type="obsolete">Harmonická analýza</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="553"/>
         <source>Electric field</source>
-        <translation type="unfinished">Intenzita elektrické pole</translation>
+        <translation type="obsolete">Intenzita elektrické pole</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="556"/>
         <source>Magnetic field</source>
-        <translation type="unfinished">Intenzita magnetického pole</translation>
+        <translation type="obsolete">Intenzita magnetického pole</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="559"/>
         <source>Surface current</source>
-        <translation type="unfinished">Povrchový proud</translation>
+        <translation type="obsolete">Povrchový proud</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="562"/>
         <source>Impedance boundary condition</source>
-        <translation type="unfinished">Imedanční okrajová podmínka</translation>
+        <translation type="obsolete">Imedanční okrajová podmínka</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="565"/>
         <source>Permittivity</source>
-        <translation type="unfinished">Permitivita</translation>
+        <translation type="obsolete">Permitivita</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="568"/>
         <source>Permeability</source>
-        <translation type="unfinished">Permeabilita</translation>
+        <translation type="obsolete">Permeabilita</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="571"/>
         <source>Conductivity</source>
-        <translation type="unfinished">Vodivost</translation>
+        <translation type="obsolete">Vodivost</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="574"/>
         <source>Current dens. - ext. - real</source>
-        <translation type="unfinished">Proudová hustota - ext. - reál. složka</translation>
+        <translation type="obsolete">Proudová hustota - ext. - reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="577"/>
         <source>Current dens. - ext. - imag</source>
-        <translation type="unfinished">Proudová hustota - ext. - imag. složka</translation>
+        <translation type="obsolete">Proudová hustota - ext. - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="580"/>
         <source>Electric field - real</source>
-        <translation type="unfinished">Intenzita el. pole - reál. složka</translation>
+        <translation type="obsolete">Intenzita el. pole - reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="583"/>
         <source>Electric field - imag</source>
-        <translation type="unfinished">Intenzita el. pole - imag. složka</translation>
+        <translation type="obsolete">Intenzita el. pole - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="586"/>
         <source>Magnetic field - real</source>
-        <translation type="unfinished">Intenzita mag. pole - reál. složka</translation>
+        <translation type="obsolete">Intenzita mag. pole - reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="589"/>
         <source>Magnetic field - imag</source>
-        <translation type="unfinished">Intenzita mag. pole - imag. složka</translation>
+        <translation type="obsolete">Intenzita mag. pole - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="592"/>
         <source>Surface current - real</source>
-        <translation type="unfinished">Povrchový proud - reál. složka</translation>
+        <translation type="obsolete">Povrchový proud - reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="595"/>
         <source>Surface current - imag</source>
-        <translation type="unfinished">Povrchový proud - imag. složka</translation>
+        <translation type="obsolete">Povrchový proud - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="598"/>
         <source>Impedance</source>
-        <translation type="unfinished">Impedance</translation>
+        <translation type="obsolete">Impedance</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="601"/>
         <source>Displacement</source>
-        <translation type="unfinished">Elektrická indukce</translation>
+        <translation type="obsolete">Elektrická indukce</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="604"/>
         <source>Displacement - real</source>
-        <translation type="unfinished">El. indukce - reál. složka</translation>
+        <translation type="obsolete">El. indukce - reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="607"/>
         <source>Displacement - imag</source>
-        <translation type="unfinished">El. indukce - imag. složka</translation>
+        <translation type="obsolete">El. indukce - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="610"/>
         <source>Current density - real</source>
-        <translation type="unfinished">Proudová hustota - reál. složka</translation>
+        <translation type="obsolete">Proudová hustota - reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="613"/>
         <source>Current density - imag</source>
-        <translation type="unfinished">Proudová hustota - imag. složka</translation>
+        <translation type="obsolete">Proudová hustota - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="616"/>
         <source>Flux density</source>
-        <translation type="unfinished">Magnetická indukce</translation>
+        <translation type="obsolete">Magnetická indukce</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="619"/>
         <source>Flux density - real</source>
-        <translation type="unfinished">Magnetická indukce - reál. složka</translation>
+        <translation type="obsolete">Magnetická indukce - reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="622"/>
         <source>Flux density - imag</source>
-        <translation type="unfinished">Magnetická indukce - imag. složka</translation>
+        <translation type="obsolete">Magnetická indukce - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="625"/>
         <source>Poyting vector</source>
-        <translation type="unfinished">Poytingův vektor</translation>
+        <translation type="obsolete">Poytingův vektor</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="628"/>
         <source>Volume</source>
-        <translation type="unfinished">Objem</translation>
+        <translation type="obsolete">Objem</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="631"/>
         <source>Cross section</source>
-        <translation type="unfinished">Průřez</translation>
+        <translation type="obsolete">Průřez</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="634"/>
         <source>Length</source>
-        <translation type="unfinished">Délka</translation>
+        <translation type="obsolete">Délka</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="637"/>
         <source>Surface</source>
-        <translation type="unfinished">Plocha</translation>
+        <translation type="obsolete">Plocha</translation>
     </message>
     <message>
-        <location filename="../../plugins/rf/rf_interface.cpp" line="644"/>
         <source>Solving TE waves in RF field.</source>
-        <translation type="unfinished">Řešení telegrafních rovnic ve VF poli.</translation>
+        <translation type="obsolete">Řešení telegrafních rovnic ve VF poli.</translation>
+    </message>
+</context>
+<context>
+    <name>Rf_teInterface</name>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="544"/>
+        <source>TE waves</source>
+        <translation>TE vlny</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="550"/>
+        <source>Harmonic</source>
+        <translation>Harmonická analýza</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="553"/>
+        <source>Electric field</source>
+        <translation>Elektrické pole</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="556"/>
+        <source>Magnetic field</source>
+        <translation>Magnetické pole</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="559"/>
+        <source>Surface current</source>
+        <translation>Povrchový proud</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="562"/>
+        <source>Impedance boundary condition</source>
+        <translation>Impedanční okrajová podmínka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="565"/>
+        <source>Permittivity</source>
+        <translation>Permitivita</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="568"/>
+        <source>Permeability</source>
+        <translation>Permeabilita</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="571"/>
+        <source>Conductivity</source>
+        <translation>Vodivost</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="574"/>
+        <source>Current dens. - ext. - real</source>
+        <translation>Proudová hustota - ext. - reál. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="577"/>
+        <source>Current dens. - ext. - imag</source>
+        <translation>Proudová hustota - ext. - imag. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="580"/>
+        <source>Electric field - real</source>
+        <translation>Intenzita el. pole - reál. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="583"/>
+        <source>Electric field - imag</source>
+        <translation>Intenzita el. pole - imag. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="586"/>
+        <source>Magnetic field - real</source>
+        <translation>Intenzita mag. pole - reál. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="589"/>
+        <source>Magnetic field - imag</source>
+        <translation>Intenzita mag. pole - imag. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="592"/>
+        <source>Surface current - real</source>
+        <translation>Povrchový proud - reál. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="595"/>
+        <source>Surface current - imag</source>
+        <translation>Povrchový proud - imag. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="598"/>
+        <source>Impedance</source>
+        <translation>Impedance</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="601"/>
+        <source>Displacement</source>
+        <translation>Elektrická indukce</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="604"/>
+        <source>Displacement - real</source>
+        <translation>El. indukce - reál. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="607"/>
+        <source>Displacement - imag</source>
+        <translation>El. indukce - imag. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="610"/>
+        <source>Current density - real</source>
+        <translation>Proudová hustota - reál. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="613"/>
+        <source>Current density - imag</source>
+        <translation>Proudová hustota - imag. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="616"/>
+        <source>Flux density</source>
+        <translation>Magnetická indukce</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="619"/>
+        <source>Flux density - real</source>
+        <translation>Magnetická indukce - reál. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="622"/>
+        <source>Flux density - imag</source>
+        <translation>Magnetická indukce - imag. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="625"/>
+        <source>Poyting vector</source>
+        <translation>Poyntingův vektor</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="628"/>
+        <source>Volume</source>
+        <translation>Objem</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="631"/>
+        <source>Cross section</source>
+        <translation>Průřez</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="634"/>
+        <source>Length</source>
+        <translation>Délka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="637"/>
+        <source>Surface</source>
+        <translation>Plocha</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="644"/>
+        <source>Solving TE waves in RF field.</source>
+        <translation>Řešení TE vln ve VF poli.</translation>
+    </message>
+</context>
+<context>
+    <name>Rf_tmInterface</name>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="544"/>
+        <source>TM waves</source>
+        <translation>TM vlny</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="550"/>
+        <source>Harmonic</source>
+        <translation>Harmonická analýza</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="553"/>
+        <source>Magnetic field</source>
+        <translation>Magnetické pole</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="556"/>
+        <source>Electric field</source>
+        <translation>Elektrické pole</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="559"/>
+        <source>Surface current</source>
+        <translation>Povrchový proud</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="562"/>
+        <source>Impedance boundary condition</source>
+        <translation>Impedanční okrajová podmínka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="565"/>
+        <source>Permittivity</source>
+        <translation>Permitivita</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="568"/>
+        <source>Permeability</source>
+        <translation>Permeabilita</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="571"/>
+        <source>Conductivity</source>
+        <translation>Vodivost</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="574"/>
+        <source>Current dens. - ext. - real</source>
+        <translation>Proudová hustota - ext. - reál. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="577"/>
+        <source>Current dens. - ext. - imag</source>
+        <translation>Proudová hustota - ext. - imag. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="580"/>
+        <source>Electric field - real</source>
+        <translation>Intenzita el. pole - reál. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="583"/>
+        <source>Electric field - imag</source>
+        <translation>Intenzita el. pole - imag. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="586"/>
+        <source>Magnetic field - real</source>
+        <translation>Intenzita mag. pole - reál. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="589"/>
+        <source>Magnetic field - imag</source>
+        <translation>Intenzita mag. pole - imag. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="592"/>
+        <source>Surface current - real</source>
+        <translation>Povrchový proud - reál. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="595"/>
+        <source>Surface current - imag</source>
+        <translation>Povrchový proud - imag. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="598"/>
+        <source>Impedance</source>
+        <translation>Impedance</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="601"/>
+        <source>Flux density</source>
+        <translation>Magnetická indukce</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="604"/>
+        <source>Flux density - real</source>
+        <translation>Magnetická indukce - reál. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="607"/>
+        <source>Flux density - imag</source>
+        <translation>Magnetická indukce - imag. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="610"/>
+        <source>Displacement</source>
+        <translation>Elektrická indukce</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="613"/>
+        <source>Displacement - real</source>
+        <translation>El. indukce - reál. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="616"/>
+        <source>Displacement - imag</source>
+        <translation>El. indukce - imag. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="619"/>
+        <source>Current density - real</source>
+        <translation>Proudová hustota - reál. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="622"/>
+        <source>Current density - imag</source>
+        <translation>Proudová hustota - imag. složka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="625"/>
+        <source>Poynting vector</source>
+        <translation>Poytingův vektor</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="628"/>
+        <source>Volume</source>
+        <translation>Objem</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="631"/>
+        <source>Cross section</source>
+        <translation>Průřez</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="634"/>
+        <source>Length</source>
+        <translation>Délka</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="637"/>
+        <source>Surface</source>
+        <translation>Plocha</translation>
+    </message>
+    <message>
+        <location filename="../../plugins/rf_tm/rf_tm_interface.cpp" line="644"/>
+        <source>Solving TM waves in RF field.</source>
+        <translatorcomment>Řešení TM vln ve VF poli.</translatorcomment>
+        <translation></translation>
     </message>
 </context>
 </TS>
