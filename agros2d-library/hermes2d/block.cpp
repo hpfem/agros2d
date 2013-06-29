@@ -651,7 +651,7 @@ Hermes::vector<Hermes::Hermes2D::NormType> Block::projNormTypeVector() const
                 vec.push_back(Hermes::Hermes2D::HERMES_H1_NORM);
             else if (spaceType == Hermes::Hermes2D::HERMES_L2_SPACE)
                 vec.push_back(Hermes::Hermes2D::HERMES_L2_NORM);
-            else if (spaceType == Hermes::Hermes2D::HERMES_CONST_SPACE)
+            else if (spaceType == Hermes::Hermes2D::HERMES_UTILITY_L2_SPACES)
                 vec.push_back(Hermes::Hermes2D::HERMES_L2_NORM);
             else
                 assert(0);

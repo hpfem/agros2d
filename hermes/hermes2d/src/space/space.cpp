@@ -15,7 +15,6 @@
 
 #include "space_h1.h"
 #include "space_l2.h"
-#include "space_constant.h"
 #include "shapeset_hc_all.h"
 #include "shapeset_hd_all.h"
 #include "shapeset_h1_all.h"
@@ -938,8 +937,6 @@ namespace Hermes
 
       this->first_dof = next_dof = first_dof;
       this->stride = stride;
-
-      SpaceType tp = this->get_type();
 
       reset_dof_assignment();
       assign_vertex_dofs();
