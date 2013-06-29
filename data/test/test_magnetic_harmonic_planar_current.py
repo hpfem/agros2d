@@ -1,27 +1,24 @@
 import agros2d as a2d
+from time import time
+start_time = time()
+
 
 # problem
 problem = a2d.problem(clear = True)
 problem.coordinate_type = "planar"
 problem.mesh_type = "triangle"
-problem.matrix_solver = "umfpack"
+
 problem.frequency = 50
 
 # disable view
-a2d.view.mesh.initial_mesh = False
-a2d.view.mesh.solution_mesh = False
-a2d.view.mesh.order = False
-a2d.view.post2d.scalar = False
-a2d.view.post2d.contours = False
-a2d.view.post2d.vectors = False
+a2d.view.mesh.disable()
+a2d.view.post2d.disable()
 
 # fields
-# magnetic
 magnetic = a2d.field("magnetic")
 magnetic.analysis_type = "harmonic"
 magnetic.number_of_refinements = 1
 magnetic.polynomial_order = 3
-magnetic.adaptivity_type = "disabled"
 magnetic.linearity_type = "linear"
 
 
@@ -167,8 +164,7 @@ testIit_3_imag = a2d.test("Current - 3 - induced transform - imag", volume3["Iit
 testI_3_real = a2d.test("Current - 3 - real", volume3["Ir"], 0)
 testI_3_imag = a2d.test("Current - 3 - imag", volume3["Ii"], 0)
 
-print("Test: Magnetic harmonic - planar - current: " + str(
-	testA_1 and testA_1_real and testA_1_imag and testB_1 and 
+result = str(testA_1 and testA_1_real and testA_1_imag and testB_1 and 
     testH_1 and testHx_1_real and testHx_1_imag and testHy_1_real and testHy_1_imag and
 
 	testwm_1 and testpj_1 and testFx_1 and testFy_1 and
@@ -183,4 +179,7 @@ print("Test: Magnetic harmonic - planar - current: " + str(
 
     testBx_3_real and testBx_3_imag and testBy_3_real and testBy_3_imag and
     testJit_3_real and testJit_3_imag and testJ_3_real and testJ_3_imag and testJ_3_real and testJ_3_imag and
-	testIe_3_real and testIe_3_imag and testIit_3_real and testIit_3_imag and testI_3_real and testI_3_imag))
+	testIe_3_real and testIe_3_imag and testIit_3_real and testIit_3_imag and testI_3_real and testI_3_imag)
+
+elapsed_time = time() - start_time
+print("Test: Magnetic harmonic - planar - current ({0}): ".format(round(elapsed_time, 3)) + result)
