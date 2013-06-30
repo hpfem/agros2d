@@ -124,8 +124,8 @@
         <module:vector_form axi_linear="0" axi_newton="- 2 * PI * f * ma_gamma * upval * vval" i="1" id="form" j="2" planar_linear="0" planar_newton="- 2 * PI * f * ma_gamma * upval * vval"/>
         <module:vector_form axi_linear="0" axi_newton="2 * PI * f * ma_gamma * upval * vval" i="2" id="form" j="1" planar_linear="0" planar_newton="2 * PI * f * ma_gamma * upval * vval"/>
 
-        <module:vector_form i="3" j="3" axi_linear="ma_IPrescribed * (ma_Iti - ma_Jei)" axi_newton="0" planar_linear="ma_IPrescribed * (ma_Iti - ma_Jei)" planar_newton="0" id="form"/>
-        <module:vector_form i="4" j="4" axi_linear="ma_IPrescribed * (ma_Itr - ma_Jer)" axi_newton="0" planar_linear="ma_IPrescribed * (ma_Itr - ma_Jer)" planar_newton="0" id="form"/>
+        <module:vector_form i="3" j="3" axi_linear="ma_IPrescribed * (ma_Iti - ma_Jei)" axi_newton="0" planar_linear="ma_IPrescribed * (ma_Iti / area - ma_Jei)" planar_newton="0" id="form"/>
+        <module:vector_form i="4" j="4" axi_linear="ma_IPrescribed * (ma_Itr - ma_Jer)" axi_newton="0" planar_linear="ma_IPrescribed * (ma_Itr / area - ma_Jer)" planar_newton="0" id="form"/>
 
       </module:weakform_volume>
     </module:weakforms_volume>

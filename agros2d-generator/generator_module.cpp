@@ -1156,6 +1156,9 @@ LexicalAnalyser *Agros2DGeneratorModule::postprocessorLexicalAnalyser(AnalysisTy
         }
     }
 
+    // marker area
+    lex->addVariable("area");
+
     // TODO: duplicate
     // constants
     lex->addVariable("PI");
@@ -1433,6 +1436,10 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
         foreach (XMLModule::constant cnst, m_module->constants().constant())
             dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
 
+        // area of a label
+        // assumes, that this->getAreas has allways only one component (it is true at the moment, since in Agros we create one form for each label)
+        dict["area"] = "this->m_markerSource->fieldInfo()->initialMesh()->get_marker_area(this->m_markerSource->fieldInfo()->initialMesh()->get_element_markers_conversion().get_internal_marker(this->getAreas().at(0)).marker)";
+
         // functions
         // scalar field
         dict["uval"] = "u->val[i]";
@@ -1651,6 +1658,8 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
         dict["f"] = "Agros2D::problem()->config()->value(ProblemConfig::Frequency).toDouble()";
         foreach (XMLModule::constant cnst, m_module->constants().constant())
             dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
+
+        dict["area"] = "1";
 
         // functions
         // scalar field
