@@ -435,7 +435,6 @@ void WeakFormAgros<Scalar>::updateExtField()
         assert(externalSlns.size() == m_offsetTimeExt);
 
         FieldSolutionID solutionID = Agros2D::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionMode_Finer);
-        assert(solutionID.group->numberOfSolutions() <= maxSourceFieldComponents);
 
         for (int comp = 0; comp < solutionID.group->numberOfSolutions(); comp++)
             externalSlns.push_back(Agros2D::solutionStore()->multiArray(solutionID).solutions().at(comp));

@@ -131,9 +131,6 @@ struct FormInfo
     Hermes::Hermes2D::SymFlag sym;
 };
 
-const int maxSourceFieldComponents = 2;
-
-
 template <typename Scalar>
 class WeakFormAgros : public Hermes::Hermes2D::WeakForm<Scalar>
 {
