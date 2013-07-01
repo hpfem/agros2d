@@ -933,6 +933,26 @@ Výstup:
         <translation>Norma:</translation>
     </message>
     <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="436"/>
+        <source>Method:</source>
+        <translation>Metoda:</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="438"/>
+        <source>Preconditioner:</source>
+        <translation>Předpodmiňovač:</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="440"/>
+        <source>Absolute tolerance:</source>
+        <translation>Absolutní tolerance:</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="442"/>
+        <source>Maximum number of iterations:</source>
+        <translation>Maximální počet iterací:</translation>
+    </message>
+    <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="445"/>
         <source>Iterative solver</source>
         <translation>Iterativní řešič</translation>
