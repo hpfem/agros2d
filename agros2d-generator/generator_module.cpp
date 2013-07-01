@@ -41,9 +41,9 @@ Agros2DGeneratorModule::Agros2DGeneratorModule(const QString &moduleId)
     QDir().mkdir(GENERATOR_PLUGINROOT + "/" + moduleId);
 
     // documentation
-     QDir doc_root(QApplication::applicationDirPath());
-     doc_root.mkpath(QString("%1/%2").arg(GENERATOR_DOCROOT).arg(moduleId));
-     QDir().mkdir(GENERATOR_DOCROOT + "/" + moduleId);
+    QDir doc_root(QApplication::applicationDirPath());
+    doc_root.mkpath(QString("%1/%2").arg(GENERATOR_DOCROOT).arg(moduleId));
+    QDir().mkdir(GENERATOR_DOCROOT + "/" + moduleId);
 
     // variables
     foreach (XMLModule::quantity quantity, m_module->volume().quantity())
@@ -159,50 +159,123 @@ QString Agros2DGeneratorModule::capitalize(QString text)
     return text;
 }
 
-void Agros2DGeneratorModule::generatePluginDocumentationFiles()
+QString Agros2DGeneratorModule::table(QList<QStringList> table)
 {
-    qDebug() << tr("%1: generating plugin documentation file.").arg(QString::fromStdString(m_module->general().id()));
-    QString id = QString::fromStdString(m_module->general().id());
-    QString name = QString::fromStdString(m_module->general().name());
     QString text = "";
-    text += underline(name,'=');
-    text += QString::fromStdString(m_module->general().description()) + "\n";    
+    int columnsNumber = table.length();
+    int rowNumber = table.at(0).length();
 
-    text += "Constants: \n";
+    QList<int> columnWidths;
+    for(int i = 0; i < columnsNumber; i++)
+    {
+        columnWidths.append(0);
+        for(int j = 0; j < table.at(i).length(); j++)
+        {
+            if(columnWidths[i] < table.at(i).at(j).length())
+                columnWidths[i] = table.at(i).at(j).length();
+        }
+        columnWidths[i] += 3;
+    }
+
+    for(int k = 0; k < rowNumber; k++ )
+    {
+        text += "+";
+        for(int i = 0; i < columnsNumber; i++)
+        {
+            for(int j =0; j < columnWidths[i] - 1; j++)
+            {
+                if (k == 1)
+                    text += "=";
+                else
+                    text += "-";
+            }
+            text += "+";
+        }
+        text += "\n";
+
+        for(int i = 0; i < columnsNumber; i++)
+        {
+            QString item =  "| " + table.at(i).at(k) + " ";
+            int rest = columnWidths.at(i) - item.length();
+            qDebug() << rest;
+            QString fillRest(rest, ' ');
+            text += item + fillRest;
+        };
+        text += "|\n";
+    }
+    text += "+";
+    for(int i = 0; i < columnsNumber; i++)
+    {
+        for(int j =0; j < columnWidths[i] - 1; j++)
+        {
+            text += "-";
+        }
+        text += "+";
+    }
+    text += "\n\n";
+    return text;
+}
+
+void Agros2DGeneratorModule::generatePluginDocumentationFiles()
+{    
+    QString id = QString::fromStdString(m_module->general().id());
+    //    QString name = QString::fromStdString(m_module->general().name());
+    QString text = "";
+    //   text += underline(name,'=');
+    //   text += QString::fromStdString(m_module->general().description()) + "\n\n";
+
+    text += underline("Constants:",'-');
+    text += "\n\n";
+
+    QList<QStringList> constTable;
 
     foreach(XMLModule::constant con, m_module->constants().constant())
     {
         text += QString::fromStdString(con.id()) +  "    " + QString::number(con.value()) + "\n";
     }
 
-    text += "Postprocessor variables: \n";
+
+    text += "\n\n";
+    text += underline("Postprocessor variables:", '-');
+    text +=  "\n\n";
+
+
+    QStringList latexShortNames;
+    QStringList units;
+    QStringList descriptions;
+    QStringList shortNames;
+    QList<QStringList> variableTable;
+
+    latexShortNames.append("Name");
+    units.append("Unit");
+    descriptions.append("Description");
+    shortNames.append("Agros2D variable");
 
     foreach(XMLModule::localvariable var, m_module->postprocessor().localvariables().localvariable())
-    {
-        string shortNameLatex;
-         var.shortname_latex(shortNameLatex);
-
-        qDebug() << QString::fromStdString(shortNameLatex);
-        text += ":math:`" + QString::fromStdString(shortNameLatex) + "`" + " "
-                + " " + QString::fromStdString(var.unit().c_str()) +
-                +  " " + QString::fromStdString(var.name()) +
-                + "\n";
+    {        
+        shortNames.append(var.shortname().c_str());
+        if(var.shortname_latex().present())
+            latexShortNames.append(QString::fromStdString(":math:`" + var.shortname_latex().get() + "`"));
+        else latexShortNames.append(" ");
+        units.append(var.unit().c_str());
+        descriptions.append(QString::fromStdString(var.name()));        
     }
 
-    text += "";
+    variableTable.append(shortNames);
+    variableTable.append(latexShortNames);
+    variableTable.append(units);
+    variableTable.append(descriptions);    
+    text += table(variableTable);
 
+    text += "";
     text += m_docString;
-    m_docString = "";       
+    m_docString = "";
     // documentation - save to file
-    writeStringContent(QString("%1/%2/%3/%3.rst").
+    writeStringContent(QString("%1/%2/%3/%3_gen.rst").
                        arg(QApplication::applicationDirPath()).
                        arg(GENERATOR_DOCROOT).
                        arg(id),
                        text);
-    qDebug() << QString("%1/%2/%3/%3.rst").
-                arg(QApplication::applicationDirPath()).
-                arg(GENERATOR_DOCROOT).
-                arg(id);
 }
 
 void Agros2DGeneratorModule::generatePluginEquations()
@@ -1615,7 +1688,7 @@ template <typename Form, typename WeakForm>
 void Agros2DGeneratorModule::generateForm(Form form, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, XMLModule::boundary *boundary, int j)
 {
     foreach(LinearityType linearityType, Agros2DGenerator::linearityTypeList())
-    {        
+    {
         foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
         {
             QString expression = weakformExpression(coordinateType, linearityType, form);

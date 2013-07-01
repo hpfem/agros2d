@@ -244,19 +244,6 @@ void Agros2DGenerator::createStructure()
         field->SetValue("ID", moduleId.toStdString());
     }
 
-    // generate documentation
-
-        std::string doc_text;
-        ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/doc_index.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
-                           ctemplate::DO_NOT_STRIP, &output, &doc_text);
-
-    // save to file
-    writeStringContent(QString("%1/%2/index.rst").
-                      arg(QApplication::applicationDirPath()).
-                       arg(GENERATOR_DOCROOT),
-                      QString::fromStdString(doc_text));
-
-
     foreach (QString couplingId, couplings.keys())
     {
         ctemplate::TemplateDictionary *field = output.AddSectionDictionary("SOURCE");
