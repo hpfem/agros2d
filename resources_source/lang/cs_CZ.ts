@@ -108,42 +108,42 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../agros2d-generator/generator_module.cpp" line="184"/>
+        <location filename="../../agros2d-generator/generator_module.cpp" line="360"/>
         <source>%1: generating plugin equations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../agros2d-generator/generator_module.cpp" line="234"/>
+        <location filename="../../agros2d-generator/generator_module.cpp" line="410"/>
         <source>%1: generating plugin weakform source file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../agros2d-generator/generator_module.cpp" line="260"/>
+        <location filename="../../agros2d-generator/generator_module.cpp" line="436"/>
         <source>%1: generating plugin weakform header file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../agros2d-generator/generator_module.cpp" line="326"/>
+        <location filename="../../agros2d-generator/generator_module.cpp" line="498"/>
         <source>%1: generating plugin filter file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../agros2d-generator/generator_module.cpp" line="442"/>
+        <location filename="../../agros2d-generator/generator_module.cpp" line="614"/>
         <source>%1: generating plugin force file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../agros2d-generator/generator_module.cpp" line="528"/>
+        <location filename="../../agros2d-generator/generator_module.cpp" line="700"/>
         <source>%1: generating plugin local point file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../agros2d-generator/generator_module.cpp" line="603"/>
+        <location filename="../../agros2d-generator/generator_module.cpp" line="775"/>
         <source>%1: generating plugin surface integral file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../agros2d-generator/generator_module.cpp" line="674"/>
+        <location filename="../../agros2d-generator/generator_module.cpp" line="846"/>
         <source>%1: generating plugin volume integral file.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -688,27 +688,27 @@ Výstup:
 <context>
     <name>FieldDialog</name>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="741"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="725"/>
         <source>Delete field</source>
         <translation>Smazat pole</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="783"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="767"/>
         <source>Delete</source>
         <translation>Smazat</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="783"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="767"/>
         <source>Physical field &apos;%1&apos; will be pernamently deleted. Are you sure?</source>
         <translation>Fyzikální pole &apos;%1&apos; bude trvale smazáno. Jste si jistý(á)?</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="784"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="768"/>
         <source>&amp;Yes</source>
         <translation>&amp;Ano</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="784"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="768"/>
         <source>&amp;No</source>
         <translation>&amp;Ne</translation>
     </message>
@@ -728,7 +728,7 @@ Výstup:
         <translation type="obsolete">Druh analýzy:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="413"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="397"/>
         <source>Initial condition:</source>
         <translation>Počáteční podmínka:</translation>
     </message>
@@ -738,41 +738,90 @@ Výstup:
         <translation>Přechodový děj</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="183"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="171"/>
+        <source>Matrix solver:</source>
+        <translation>Maticový řešič:</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="181"/>
         <source>Number of refinements:</source>
         <translation>Počet zjemnění:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="364"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="185"/>
+        <source>Space adaptivity:</source>
+        <translation>Prostorová adaptivita:</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="218"/>
+        <source>Matrix solver</source>
+        <translation>Maticový řešič</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="284"/>
+        <source>Max. steps:</source>
+        <translation>Max. počet kroků:</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="288"/>
+        <source>Convergence measurement:</source>
+        <translation>Měření konvergence:</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="291"/>
+        <source>Damping type:</source>
+        <translation>Typ tlumení:</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="295"/>
+        <source>Max. residual ratio for factor decrease:</source>
+        <translation>Max. poměr residuálů pro snížení faktoru:</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="297"/>
+        <source>Min. steps for factor increased:</source>
+        <translation>Min. počet kroků ke zvýšení faktoru:</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="301"/>
+        <source>Max. residual ratio for Jacobian reuse:</source>
+        <translation>Max. poměr residuálů pro znovupoužití Jacobiánu:</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="303"/>
+        <source>Max. steps with the same Jacobian:</source>
+        <translation>Max. počet kroků se stejným Jacobiánem:</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="350"/>
         <source>Use anisotropic refinements</source>
         <translation>Použít anizotropní zjemnění</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="365"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="351"/>
         <source>Use hp reference solution for h and p adaptivity</source>
         <translation>Použít hp ref. řešení pro h a p adaptivitu</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="239"/>
         <source>Convergence:</source>
-        <translation>Konvergence</translation>
+        <translation type="obsolete">Konvergence</translation>
     </message>
     <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="286"/>
         <source>Tolerance:</source>
-        <translation type="obsolete">Tolerance:</translation>
+        <translation>Tolerance:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="251"/>
         <source>Damping:</source>
-        <translation>Tlumení:</translation>
+        <translation type="obsolete">Tlumení:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="254"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="293"/>
         <source>Factor:</source>
         <translation>Faktor:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="257"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="251"/>
         <source>Reuse Jacobian if possible</source>
         <translation>Pokud je možno, znovu použít Jacobián</translation>
     </message>
@@ -787,17 +836,15 @@ Výstup:
         <translation>Řešič:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="171"/>
         <source>Adaptivity:</source>
-        <translation>Adaptivita:</translation>
+        <translation type="obsolete">Adaptivita:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="173"/>
         <source>Linear solver:</source>
-        <translation>Řešič:</translation>
+        <translation type="obsolete">Řešič:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="185"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="183"/>
         <source>Polynomial order:</source>
         <translation>Řád polynomu:</translation>
     </message>
@@ -811,7 +858,7 @@ Výstup:
         <translation type="obsolete">Linearita:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="380"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="364"/>
         <source>Tolerance (%):</source>
         <translation>Tolerance (%):</translation>
     </message>
@@ -828,27 +875,35 @@ Výstup:
         <translation type="obsolete">Počet kroků ke zvýšení TF:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="273"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="263"/>
         <source>Use Anderson acceleration</source>
         <translation>Použít Andersonovo zrychlení</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="275"/>
         <source>Anderson beta:</source>
-        <translation>Andersonova beta:</translation>
+        <translation type="obsolete">Andersonova beta:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="279"/>
         <source>Num. of last used iter.:</source>
-        <translation>Poč. posled. použ. iter.:</translation>
+        <translation type="obsolete">Poč. posled. použ. iter.:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="176"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="174"/>
         <source>General</source>
         <translation>Základní</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="415"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="362"/>
+        <source>Maximum steps:</source>
+        <translation>Max. počet kroků:</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="368"/>
+        <source>Threshold:</source>
+        <translation>Práh:</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="399"/>
         <source>Time skip (s):</source>
         <translation>Časový skok (s):</translation>
     </message>
@@ -857,103 +912,102 @@ Výstup:
         <translation type="obsolete">Typ:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="241"/>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="378"/>
         <source>Steps:</source>
-        <translation>Počet kroků:</translation>
+        <translation type="obsolete">Počet kroků:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="247"/>
         <source>at most:</source>
-        <translation>nanejvýš:</translation>
+        <translation type="obsolete">nanejvýš:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="260"/>
         <source>New/old residual ratio max. for Jacobian reuse:</source>
-        <translation>Maximální poměr původního a současného residuálu pro znovupoužití Jacobiánu:</translation>
+        <translation type="obsolete">Maximální poměr původního a současného residuálu pro znovupoužití Jacobiánu:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="262"/>
         <source>New/old residual ratio max. for damping search:</source>
-        <translation>Maximální poměr původního a současného residuálu pro faktor tlumení:</translation>
+        <translation type="obsolete">Maximální poměr původního a současného residuálu pro faktor tlumení:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="264"/>
         <source>Max. number of steps with the same Jacobian:</source>
-        <translation>Max. počet kroků se stejným Jacobiánem:</translation>
+        <translation type="obsolete">Max. počet kroků se stejným Jacobiánem:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="268"/>
         <source>Num. steps before damping factor increased:</source>
-        <translation>Počet kroků ke zvýšení faktoru tlumení:</translation>
+        <translation type="obsolete">Počet kroků ke zvýšení faktoru tlumení:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="298"/>
         <source>Maximum steps</source>
-        <translation>Max. počet kroků</translation>
+        <translation type="obsolete">Max. počet kroků</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="327"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="313"/>
         <source>Convergence</source>
         <translation>Konvergence</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="330"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="316"/>
         <source>Damping</source>
         <translation>Tlumení</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="333"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="319"/>
         <source>Jacobian reuse</source>
         <translation>Znovupoužití Jacobiánu</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="366"/>
         <source>Steps back in trans:</source>
-        <translation>Počet zp. kroků v přech. ději:</translation>
+        <translation type="obsolete">Počet zp. kroků v přech. ději:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="370"/>
         <source>Redone each trans st:</source>
-        <translation>Přepočítat každý krok přech.děje:</translation>
+        <translation type="obsolete">Přepočítat každý krok přech.děje:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="382"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="366"/>
         <source>Stopping criterion:</source>
         <translation>Zastavovací kritérium:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="384"/>
         <source>Threshold (%):</source>
-        <translation>Prád (%):</translation>
+        <translation type="obsolete">Prád (%):</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="386"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="370"/>
         <source>Norm:</source>
         <translation>Norma:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="436"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="374"/>
+        <source>Steps back in transient:</source>
+        <translation>Počet kroků zpět v přech. ději:</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="376"/>
+        <source>Redone each trans. step:</source>
+        <translation>Přepočítat každý krok přech. děje:</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="420"/>
         <source>Method:</source>
         <translation>Metoda:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="438"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="422"/>
         <source>Preconditioner:</source>
         <translation>Předpodmiňovač:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="440"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="424"/>
         <source>Absolute tolerance:</source>
         <translation>Absolutní tolerance:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="442"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="426"/>
         <source>Maximum number of iterations:</source>
         <translation>Maximální počet iterací:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="445"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="429"/>
         <source>Iterative solver</source>
         <translation>Iterativní řešič</translation>
     </message>
@@ -968,9 +1022,8 @@ Výstup:
         <translation>Řešič</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="218"/>
         <source>Linear solver</source>
-        <translation>Lineární řešič</translation>
+        <translation type="obsolete">Lineární řešič</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="220"/>
@@ -981,12 +1034,12 @@ Výstup:
 <context>
     <name>FieldsToobar</name>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="819"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="803"/>
         <source>Add field</source>
         <translation>Přidat pole</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="864"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="848"/>
         <source>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Analysis:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Solver:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Adaptivity:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Number of ref. / order:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%4 / %5&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation>&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Analýza:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Řešič:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Adaptivita:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Počet zjemnění /řád:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;%4 / %5&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
@@ -3715,22 +3768,22 @@ oblasti</translation>
 <context>
     <name>ProblemWidget</name>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="1058"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="1042"/>
         <source>Properties</source>
         <translation>Vlastnosti</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="1059"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="1043"/>
         <source>Ctrl+1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="1071"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="1055"/>
         <source>Physical fields</source>
         <translation>Fyzikální pole</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="1083"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="1067"/>
         <source>Coordinate type:</source>
         <translation>Souřadnicový systém:</translation>
     </message>
@@ -3739,72 +3792,72 @@ oblasti</translation>
         <translation type="obsolete">Řešič:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="1085"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="1069"/>
         <source>Mesh type:</source>
         <translation>Typ sítě:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="1088"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="1072"/>
         <source>General</source>
         <translation>Základní</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="1098"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="1082"/>
         <source>Frequency (Hz):</source>
         <translation>Frekvence (Hz):</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="1101"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="1085"/>
         <source>Harmonic analysis</source>
         <translation>Harmonická analýza</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="1117"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="1101"/>
         <source>Number of constant steps:</source>
         <translation>Počet konstantních kroků:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="1123"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="1107"/>
         <source>Method:</source>
         <translation>Metoda:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="1125"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="1109"/>
         <source>Order:</source>
         <translation>Řád:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="1127"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="1111"/>
         <source>Tolerance:</source>
         <translation>Tolerance:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="1129"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="1113"/>
         <source>Total time (s):</source>
         <translation>Celkový čas (s):</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="1133"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="1117"/>
         <source>Constant time step:</source>
         <translation>Konstantní čas. krok:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="1136"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="1120"/>
         <source>Transient analysis</source>
         <translation>Přechodový děj</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="1149"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="1133"/>
         <source>Couplings</source>
         <translation>Sdružení</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="1299"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="1283"/>
         <source>Number of steps:</source>
         <translation>Počet kroků:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="1301"/>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="1285"/>
         <source>Aprox. number of steps:</source>
         <translation>Předpokládaný počet kroků:</translation>
     </message>
