@@ -168,10 +168,8 @@ void FieldWidget::createContent()
     layoutGeneral->addWidget(cmbAnalysisType, 0, 1);
     layoutGeneral->addWidget(new QLabel(tr("Solver:")), 1, 0);
     layoutGeneral->addWidget(cmbLinearityType, 1, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Adaptivity:")), 2, 0);
-    layoutGeneral->addWidget(cmbAdaptivityType, 2, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Linear solver:")), 3, 0);
-    layoutGeneral->addWidget(cmbLinearSolver, 3, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Matrix solver:")), 2, 0);
+    layoutGeneral->addWidget(cmbLinearSolver, 2, 1);
 
     QGroupBox *grpGeneral = new QGroupBox(tr("General"));
     grpGeneral->setLayout(layoutGeneral);
@@ -184,6 +182,8 @@ void FieldWidget::createContent()
     layoutMesh->addWidget(txtNumberOfRefinements, 0, 1);
     layoutMesh->addWidget(new QLabel(tr("Polynomial order:")), 1, 0);
     layoutMesh->addWidget(txtPolynomialOrder, 1, 1);
+    layoutMesh->addWidget(new QLabel(tr("Space adaptivity:")), 2, 0);
+    layoutMesh->addWidget(cmbAdaptivityType, 2, 1);
     layoutMesh->setRowStretch(50, 1);
 
     QGroupBox *grpMesh = new QGroupBox(tr("Mesh parameters"));
@@ -215,7 +215,7 @@ void FieldWidget::createContent()
     tabWidget->addTab(createSolverWidget(), tr("Solver"));
     tabWidget->addTab(createAdaptivityWidget(), tr("Space adaptivity"));
     tabWidget->addTab(createTransientAnalysisWidget(), tr("Transient analysis"));
-    tabWidget->addTab(createLinearSolverWidget(), tr("Linear solver"));
+    tabWidget->addTab(createLinearSolverWidget(), tr("Matrix solver"));
 
     QGroupBox *grpEquation = new QGroupBox(tr("Partial differential equation"));
     grpEquation->setLayout(layoutEquation);
@@ -236,47 +236,35 @@ void FieldWidget::createContent()
 QWidget *FieldWidget::createSolverWidget()
 {
     // linearity
-    lblNonlinearConvergence = new QLabel(tr("Convergence:"));
     cmbNonlinearConvergenceMeasurement = new QComboBox();
-    lblNonlinearSteps = new QLabel(tr("Steps:"));
     txtNonlinearSteps = new QSpinBox(this);
     txtNonlinearSteps->setMinimum(1);
     txtNonlinearSteps->setMaximum(100);
     txtNonlinearSteps->setValue(m_fieldInfo->defaultValue(FieldInfo::NonlinearSteps).toInt());
-    // lblNonlinearTolerance = new QLabel(tr("Tolerance:"));
-    lblNonlinearTolerance = new QLabel(tr("at most:"));
     txtNonlinearTolerance = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::NonlinearTolerance).toDouble());
     txtNonlinearTolerance->setBottom(0.0);
 
-    lblNewtonDampingType = new QLabel(tr("Damping:"));
     cmbNewtonDampingType = new QComboBox();
     connect(cmbNewtonDampingType, SIGNAL(currentIndexChanged(int)), this, SLOT(doNewtonDampingChanged(int)));
-    lblNewtonDampingCoeff = new QLabel(tr("Factor:"));
     txtNewtonDampingCoeff = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::NewtonDampingCoeff).toDouble());
     txtNewtonDampingCoeff->setBottom(0.0);
     chkNewtonReuseJacobian = new QCheckBox(tr("Reuse Jacobian if possible"));
     connect(chkNewtonReuseJacobian, SIGNAL(toggled(bool)), this, SLOT(doNewtonReuseJacobian(bool)));
 
-    lblNewtonSufficientImprovementFactorForJacobianReuse = new QLabel(tr("New/old residual ratio max. for Jacobian reuse:"));;
     txtNewtonSufficientImprovementFactorForJacobianReuse = new LineEditDouble();
-    lblNewtonSufficientImprovementFactor = new QLabel(tr("New/old residual ratio max. for damping search:"));;
     txtNewtonSufficientImprovementFactor = new LineEditDouble();
-    lblNewtonMaximumStepsWithReusedJacobian = new QLabel(tr("Max. number of steps with the same Jacobian:"));
     txtNewtonMaximumStepsWithReusedJacobian = new QSpinBox(this);
     txtNewtonMaximumStepsWithReusedJacobian->setMinimum(0);
     txtNewtonMaximumStepsWithReusedJacobian->setMaximum(100);
-    lblNewtonDampingNumberToIncrease = new QLabel(tr("Num. steps before damping factor increased:"));
     txtNewtonDampingNumberToIncrease = new QSpinBox(this);
     txtNewtonDampingNumberToIncrease->setMinimum(1);
     txtNewtonDampingNumberToIncrease->setMaximum(5);
 
     chkPicardAndersonAcceleration = new QCheckBox(tr("Use Anderson acceleration"));
     connect(chkPicardAndersonAcceleration, SIGNAL(stateChanged(int)), this, SLOT(doPicardAndersonChanged(int)));
-    lblPicardAndersonBeta = new QLabel(tr("Anderson beta:"));
     txtPicardAndersonBeta = new LineEditDouble(0.2);
     txtPicardAndersonBeta->setBottom(0.0);
     txtPicardAndersonBeta->setTop(1.0);
-    lblPicardAndersonNumberOfLastVectors = new QLabel(tr("Num. of last used iter.:"));
     txtPicardAndersonNumberOfLastVectors = new QSpinBox(this);
     txtPicardAndersonNumberOfLastVectors->setMinimum(1);
     txtPicardAndersonNumberOfLastVectors->setMaximum(5);
@@ -293,36 +281,34 @@ QWidget *FieldWidget::createSolverWidget()
 
     QGridLayout *layoutSolverReuse = new QGridLayout();
 
-    //layoutSolverConvergence->setColumnStretch(1,2);
-    //layoutSolverConvergence->addWidget(lblNonlinearConvergence, 1, 0);
-    layoutSolverConvergence->addWidget(new QLabel(tr("Maximum steps")), 1, 0);
-    //layoutSolverConvergence->addWidget(lblNonlinearSteps, 2, 1);
-    layoutSolverConvergence->addWidget(txtNonlinearSteps, 1, 2);
-    //layoutSolverConvergence->addWidget(new QLabel(tr("and all the following are satisfied")), 1, 2);
-    layoutSolverConvergence->addWidget(cmbNonlinearConvergenceMeasurement, 2, 0);
-    layoutSolverConvergence->addWidget(lblNonlinearTolerance, 2, 1);
-    layoutSolverConvergence->addWidget(txtNonlinearTolerance, 2, 2);
-    //layoutSolverDamping->addWidget(lblNewtonDampingType, 1, 0);
-    //layoutSolverDamping->setColumnStretch(1, 1);
-    layoutSolverDamping->addWidget(cmbNewtonDampingType, 1, 0);
-    layoutSolverDamping->addWidget(lblNewtonDampingCoeff, 1, 1);
-    layoutSolverDamping->addWidget(txtNewtonDampingCoeff, 1, 2);
-    layoutSolverDamping->addWidget(lblNewtonDampingNumberToIncrease, 2, 0, 1, 2);
-    layoutSolverDamping->addWidget(txtNewtonDampingNumberToIncrease, 2, 2);
-    layoutSolverDamping->addWidget(lblNewtonSufficientImprovementFactor, 3, 0, 1, 2);
-    layoutSolverDamping->addWidget(txtNewtonSufficientImprovementFactor, 3, 2);
+    layoutSolverConvergence->addWidget(new QLabel(tr("Max. steps:")), 1, 0);
+    layoutSolverConvergence->addWidget(txtNonlinearSteps, 1, 1);
+    layoutSolverConvergence->addWidget(new QLabel(tr("Tolerance:")), 1, 2);
+    layoutSolverConvergence->addWidget(txtNonlinearTolerance, 1, 3);
+    layoutSolverConvergence->addWidget(new QLabel(tr("Convergence measurement:")), 2, 0, 1, 3);
+    layoutSolverConvergence->addWidget(cmbNonlinearConvergenceMeasurement, 2, 3);
+
+    layoutSolverDamping->addWidget(new QLabel(tr("Damping type:")), 1, 0);
+    layoutSolverDamping->addWidget(cmbNewtonDampingType, 1, 1);
+    layoutSolverDamping->addWidget(new QLabel(tr("Factor:")), 1, 2);
+    layoutSolverDamping->addWidget(txtNewtonDampingCoeff, 1, 3);
+    layoutSolverDamping->addWidget(new QLabel(tr("Max. residual ratio for factor decrease:")), 2, 0, 1, 3);
+    layoutSolverDamping->addWidget(txtNewtonSufficientImprovementFactor, 2, 3);
+    layoutSolverDamping->addWidget(new QLabel(tr("Min. steps for factor increased:")), 3, 0, 1, 3);
+    layoutSolverDamping->addWidget(txtNewtonDampingNumberToIncrease, 3, 3);
 
     layoutSolverReuse->addWidget(chkNewtonReuseJacobian, 1, 0);
-    layoutSolverReuse->addWidget(lblNewtonSufficientImprovementFactorForJacobianReuse, 2, 0);
+    layoutSolverReuse->addWidget(new QLabel(tr("Max. residual ratio for Jacobian reuse:")), 2, 0);
     layoutSolverReuse->addWidget(txtNewtonSufficientImprovementFactorForJacobianReuse, 2, 1);
-    layoutSolverReuse->addWidget(lblNewtonMaximumStepsWithReusedJacobian, 3, 0);
+    layoutSolverReuse->addWidget(new QLabel(tr("Max. steps with the same Jacobian:")), 3, 0);
     layoutSolverReuse->addWidget(txtNewtonMaximumStepsWithReusedJacobian, 3, 1);
+
     //layoutSolverReuse->setRowStretch(50, 1);
-    // layoutLinearity->addWidget(chkPicardAndersonAcceleration, 7, 0, 1, 2);
-    // layoutLinearity->addWidget(lblPicardAndersonBeta, 8, 0);
-    // layoutLinearity->addWidget(txtPicardAndersonBeta, 8, 1);
-    // layoutLinearity->addWidget(lblPicardAndersonNumberOfLastVectors, 9, 0);
-    // layoutLinearity->addWidget(txtPicardAndersonNumberOfLastVectors, 9, 1);
+    //layoutLinearity->addWidget(chkPicardAndersonAcceleration, 7, 0, 1, 2);
+    //layoutLinearity->addWidget(new QLabel(tr("Anderson beta:")), 8, 0);
+    //layoutLinearity->addWidget(txtPicardAndersonBeta, 8, 1);
+    //layoutLinearity->addWidget(new QLabel(tr("Num. of last used iter.:")), 9, 0);
+    //layoutLinearity->addWidget(txtPicardAndersonNumberOfLastVectors, 9, 1);
 
     QGroupBox *grpSolverConvergence = new QGroupBox(tr("Convergence"));
     grpSolverConvergence->setLayout(layoutSolverConvergence);
@@ -363,11 +349,9 @@ QWidget *FieldWidget::createAdaptivityWidget()
     cmbAdaptivityProjNormType = new QComboBox();
     chkAdaptivityUseAniso = new QCheckBox(tr("Use anisotropic refinements"));
     chkAdaptivityFinerReference = new QCheckBox(tr("Use hp reference solution for h and p adaptivity"));
-    QLabel *lblAdaptivityBackSteps = new QLabel(tr("Steps back in trans:"));
     txtAdaptivityBackSteps = new QSpinBox(this);
     txtAdaptivityBackSteps->setMinimum(0);
     txtAdaptivityBackSteps->setMaximum(100);
-    QLabel *lblAdaptivityRedoneEach = new QLabel(tr("Redone each trans st:"));
     txtAdaptivityRedoneEach = new QSpinBox(this);
     txtAdaptivityRedoneEach->setMinimum(1);
     txtAdaptivityRedoneEach->setMaximum(100);
@@ -375,22 +359,22 @@ QWidget *FieldWidget::createAdaptivityWidget()
     // adaptivity
     QGridLayout *layoutAdaptivity = new QGridLayout();
     layoutAdaptivity->setColumnMinimumWidth(0, columnMinimumWidth());
-    layoutAdaptivity->addWidget(new QLabel(tr("Steps:")), 1, 0);
+    layoutAdaptivity->addWidget(new QLabel(tr("Maximum steps:")), 1, 0);
     layoutAdaptivity->addWidget(txtAdaptivitySteps, 1, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Tolerance (%):")), 2, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityTolerance, 2, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Stopping criterion:")), 3, 0);
-    layoutAdaptivity->addWidget(cmbAdaptivityStoppingCriterionType, 3, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Threshold (%):")), 4, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityThreshold, 4, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Norm:")), 5, 0);
-    layoutAdaptivity->addWidget(cmbAdaptivityProjNormType, 5, 1);
-    layoutAdaptivity->addWidget(chkAdaptivityUseAniso, 6, 1);
-    layoutAdaptivity->addWidget(chkAdaptivityFinerReference, 7, 1);
-    layoutAdaptivity->addWidget(lblAdaptivityBackSteps, 8, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityBackSteps, 8, 1);
-    layoutAdaptivity->addWidget(lblAdaptivityRedoneEach, 9, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityRedoneEach, 9, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Tolerance (%):")), 1, 2);
+    layoutAdaptivity->addWidget(txtAdaptivityTolerance, 1, 3);
+    layoutAdaptivity->addWidget(new QLabel(tr("Stopping criterion:")), 2, 0);
+    layoutAdaptivity->addWidget(cmbAdaptivityStoppingCriterionType, 2, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Threshold:")), 2, 2);
+    layoutAdaptivity->addWidget(txtAdaptivityThreshold, 2, 3);
+    layoutAdaptivity->addWidget(new QLabel(tr("Norm:")), 3, 0);
+    layoutAdaptivity->addWidget(cmbAdaptivityProjNormType, 3, 1, 1, 3);
+    layoutAdaptivity->addWidget(chkAdaptivityUseAniso, 4, 1, 1, 3);
+    layoutAdaptivity->addWidget(chkAdaptivityFinerReference, 5, 1, 1, 3);
+    layoutAdaptivity->addWidget(new QLabel(tr("Steps back in transient:")), 6, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityBackSteps, 6, 1, 1, 3);
+    layoutAdaptivity->addWidget(new QLabel(tr("Redone each trans. step:")), 7, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityRedoneEach, 7, 1, 1, 3);
     layoutAdaptivity->setRowStretch(50, 1);
 
     QWidget *widAdaptivity = new QWidget(this);
