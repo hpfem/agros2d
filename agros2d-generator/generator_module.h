@@ -71,7 +71,7 @@ private:
     QString generateDocWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType, const QString &expr, bool includeVariables = true);
     QString underline(QString text, char symbol);
     QString capitalize(QString text);
-    QString table(QList<QStringList>);
+    QString createTable(QList<QStringList>);
 };
 
 #endif // GENERATOR_MODULE_H

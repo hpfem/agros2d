@@ -206,3 +206,6 @@ Average energy:
 .. math::
 
    W_\mathrm{m} = \int_V \frac{1}{2} \vecphas{H} \vecphas{B} \dif V\,\,\,\mathrm{(N)}
+   
+
+.. include:: magnetic_gen.rst

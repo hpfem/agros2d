@@ -23,7 +23,7 @@ Fig. 2.: Example of using variables for adding a new boundary condition
 User Functions
 --------------
 
-You can write your own functions to use in your scripts. If you write these functions to the file *functions.py* in Agros2D root directory, then you will be able to use them in the same way as other commands. You can also use :ref:`predefined-functions`.
+You can write your own functions to use in your scripts. If you write these functions to the file *functions.py* in Agros2D root directory, then you will be able to use them in the same way as other commands. You can also use predefined-functions.
 
 .. index:: Agros2D Collaboration Server
 

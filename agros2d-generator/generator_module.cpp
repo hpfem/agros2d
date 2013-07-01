@@ -159,7 +159,7 @@ QString Agros2DGeneratorModule::capitalize(QString text)
     return text;
 }
 
-QString Agros2DGeneratorModule::table(QList<QStringList> table)
+QString Agros2DGeneratorModule::createTable(QList<QStringList> table)
 {
     QString text = "";
     int columnsNumber = table.length();
@@ -196,8 +196,7 @@ QString Agros2DGeneratorModule::table(QList<QStringList> table)
         for(int i = 0; i < columnsNumber; i++)
         {
             QString item =  "| " + table.at(i).at(k) + " ";
-            int rest = columnWidths.at(i) - item.length();
-            qDebug() << rest;
+            int rest = columnWidths.at(i) - item.length();            
             QString fillRest(rest, ' ');
             text += item + fillRest;
         };
@@ -224,30 +223,44 @@ void Agros2DGeneratorModule::generatePluginDocumentationFiles()
     //   text += underline(name,'=');
     //   text += QString::fromStdString(m_module->general().description()) + "\n\n";
 
+    /* Creates table of constants */
+
     text += underline("Constants:",'-');
-    text += "\n\n";
+    text += "\n";
 
-    QList<QStringList> constTable;
+    QList<QStringList> table;
+    QStringList names;
+    QStringList values;
 
+    names.append("Agros variable");
+    values.append("Units");
     foreach(XMLModule::constant con, m_module->constants().constant())
     {
-        text += QString::fromStdString(con.id()) +  "    " + QString::number(con.value()) + "\n";
+       names.append(QString::fromStdString(con.id()));
+       values.append(QString::number(con.value()));
     }
 
-
+    table.append(names);
+    table.append(values);
+    text += createTable(table);
     text += "\n\n";
+    table.clear();
+
+
+    /* Creates variable table */
+
     text += underline("Postprocessor variables:", '-');
-    text +=  "\n\n";
+    text +=  "\n";
 
 
     QStringList latexShortNames;
     QStringList units;
     QStringList descriptions;
     QStringList shortNames;
-    QList<QStringList> variableTable;
+
 
     latexShortNames.append("Name");
-    units.append("Unit");
+    units.append("Units");
     descriptions.append("Description");
     shortNames.append("Agros2D variable");
 
@@ -261,15 +274,79 @@ void Agros2DGeneratorModule::generatePluginDocumentationFiles()
         descriptions.append(QString::fromStdString(var.name()));        
     }
 
-    variableTable.append(shortNames);
-    variableTable.append(latexShortNames);
-    variableTable.append(units);
-    variableTable.append(descriptions);    
-    text += table(variableTable);
+    table.append(shortNames);
+    table.append(latexShortNames);
+    table.append(units);
+    table.append(descriptions);
+    text += createTable(table);
+    text += "\n\n";
+    table.clear();
 
-    text += "";
-    text += m_docString;
-    m_docString = "";
+    // Creates table of volume integrals
+    text += underline("Volume integrals:", '-');
+    text +=  "\n";
+
+    latexShortNames.clear();
+    units.clear();
+    descriptions.clear();
+    shortNames.clear();
+
+    latexShortNames.append("Name");
+    units.append("Units");
+    descriptions.append("Description");
+    shortNames.append("Agros2D variable");
+
+
+    foreach(XMLModule::volumeintegral volume_int, m_module->postprocessor().volumeintegrals().volumeintegral())
+    {
+        shortNames.append(volume_int.shortname().c_str());
+        if(volume_int.shortname_latex().present())
+            latexShortNames.append(QString::fromStdString(":math:`" + volume_int.shortname_latex().get() + "`"));
+        else latexShortNames.append(" ");
+        units.append(volume_int.unit().c_str());
+        descriptions.append(QString::fromStdString(volume_int.name()));
+    }
+
+    table.append(shortNames);
+    table.append(latexShortNames);
+    table.append(units);
+    table.append(descriptions);
+    text += createTable(table);
+    text += "\n\n";
+    table.clear();
+
+
+    // Creates table of volume integrals
+    text += underline("Surface integrals:", '-');
+    text +=  "\n";
+
+    latexShortNames.clear();
+    units.clear();
+    descriptions.clear();
+    shortNames.clear();
+
+    latexShortNames.append("Name");
+    units.append("Units");
+    descriptions.append("Description");
+    shortNames.append("Agros2D variable");
+
+
+    foreach(XMLModule::surfaceintegral surf_int, m_module->postprocessor().surfaceintegrals().surfaceintegral())
+    {
+        shortNames.append(surf_int.shortname().c_str());
+        if(surf_int.shortname_latex().present())
+            latexShortNames.append(QString::fromStdString(":math:`" + surf_int.shortname_latex().get() + "`"));
+        else latexShortNames.append(" ");
+        units.append(surf_int.unit().c_str());
+        descriptions.append(QString::fromStdString(surf_int.name()));
+    }
+
+    table.append(shortNames);
+    table.append(latexShortNames);
+    table.append(units);
+    table.append(descriptions);
+    text += createTable(table);
+
     // documentation - save to file
     writeStringContent(QString("%1/%2/%3/%3_gen.rst").
                        arg(QApplication::applicationDirPath()).
