@@ -110,5 +110,8 @@ Boundary conditions
 * *Impedance* is the Newton boundary condition in the form 
 
 .. math::
-    - \frac{1}{\omega \mu} \frac{\partial \vecphas{E}}{\partial n_0} = \sqrt{\frac{\varepsilon - \mj \sigma / \omega}{\mu}} \vecphas{E}          
+    - \frac{1}{\omega \mu} \frac{\partial \vecphas{E}}{\partial n_0} = \sqrt{\frac{\varepsilon - \mj \sigma / \omega}{\mu}} \vecphas{E} 
+    
+
+.. include:: /rf_te/rf_te_gen.rst         
  

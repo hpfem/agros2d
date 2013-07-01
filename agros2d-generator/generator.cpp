@@ -231,8 +231,8 @@ void Agros2DGenerator::createStructure()
     root.mkpath(GENERATOR_PLUGINROOT);
 
     // documentation
-    // QDir doc_root(QApplication::applicationDirPath());
-    // doc_root.mkpath(GENERATOR_DOCROOT);
+    QDir doc_root(QApplication::applicationDirPath());
+    doc_root.mkpath(GENERATOR_DOCROOT);
 
     ctemplate::TemplateDictionary output("project_output");
     QMap<QString, QString> modules = Module::availableModules();
@@ -243,19 +243,6 @@ void Agros2DGenerator::createStructure()
         ctemplate::TemplateDictionary *field = output.AddSectionDictionary("SOURCE");
         field->SetValue("ID", moduleId.toStdString());
     }
-
-    // generate documentation
-    // expand template
-    // std::string doc_text;
-    // ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/doc_index.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
-    //                         ctemplate::DO_NOT_STRIP, &output, &doc_text);
-
-    // save to file
-    // writeStringContent(QString("%1/%2/index.rst").
-    //                   arg(QApplication::applicationDirPath()).
-    //                   arg(GENERATOR_DOCROOT),
-    //                   QString::fromStdString(doc_text));
-
 
     foreach (QString couplingId, couplings.keys())
     {
@@ -308,7 +295,7 @@ void Agros2DGenerator::generateModule(const QString &moduleId)
     generator.generatePluginWeakFormFiles();
 
     // generates documentation
-    // generator.generatePluginDocumentationFiles();
+    generator.generatePluginDocumentationFiles();
 
     // generates equations
     generator.generatePluginEquations();
