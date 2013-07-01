@@ -433,13 +433,13 @@ QWidget *FieldWidget::createLinearSolverWidget()
     txtIterLinearSolverIters->setMaximum(10000);
 
     QGridLayout *iterSolverLayout = new QGridLayout();
-    iterSolverLayout->addWidget(new QLabel("Method:"), 0, 0);
+    iterSolverLayout->addWidget(new QLabel(tr("Method:")), 0, 0);
     iterSolverLayout->addWidget(cmbIterLinearSolverMethod, 0, 1);
-    iterSolverLayout->addWidget(new QLabel("Preconditioner:"), 1, 0);
+    iterSolverLayout->addWidget(new QLabel(tr("Preconditioner:")), 1, 0);
     iterSolverLayout->addWidget(cmbIterLinearSolverPreconditioner, 1, 1);
-    iterSolverLayout->addWidget(new QLabel("Absolute tolerance:"), 2, 0);
+    iterSolverLayout->addWidget(new QLabel(tr("Absolute tolerance:")), 2, 0);
     iterSolverLayout->addWidget(txtIterLinearSolverToleranceAbsolute, 2, 1);
-    iterSolverLayout->addWidget(new QLabel("Maximim number of iterations:"), 3, 0);
+    iterSolverLayout->addWidget(new QLabel(tr("Maximum number of iterations:")), 3, 0);
     iterSolverLayout->addWidget(txtIterLinearSolverIters, 3, 1);
 
     QGroupBox *iterSolverGroup = new QGroupBox(tr("Iterative solver"));

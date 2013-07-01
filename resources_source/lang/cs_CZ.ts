@@ -3689,7 +3689,7 @@ oblasti</translation>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="586"/>
         <source>Select higher order of time method to use adaptivity.</source>
-        <translation>Pro použití adaptivity vyberte vyšší řád časové metody</translation>
+        <translation>Pro použití adaptivity vyberte vyšší řád časové metody.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="597"/>
