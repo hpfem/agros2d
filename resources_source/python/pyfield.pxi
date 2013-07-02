@@ -469,22 +469,56 @@ cdef class __Field__:
 
     # boundaries
     def add_boundary(self, name, type, parameters = {}):
+        """Add new boundary condition.
+
+        add_boundary(name, type, parameters = {})
+
+        Keyword arguments:
+        name -- boundary condition name
+        type -- boundary contition type
+        parameters -- dict of boundary condition parameters (default is {})
+        """
         cdef map[string, double] parameters_map = get_parameters_map(parameters)
         cdef map[string, string] expression_map = get_expression_map(parameters)
 
         self.thisptr.addBoundary(string(name), string(type), parameters_map, expression_map)
 
     def modify_boundary(self, name, type = "", parameters = {}):
+        """Modify existing boundary condition.
+
+        modify_boundary(name, type = "", parameters = {})
+
+        Keyword arguments:
+        name -- boundary condition name
+        type -- boundary contition type (default is "")
+        parameters -- dict of boundary condition parameters (default is {})
+        """
         cdef map[string, double] parameters_map = get_parameters_map(parameters)
         cdef map[string, string] expression_map = get_expression_map(parameters)
 
         self.thisptr.modifyBoundary(string(name), string(type), parameters_map, expression_map)
 
     def remove_boundary(self, name):
+        """Remove existing boundary condition.
+
+        remove_boundary(name)
+
+        Keyword arguments:
+        name -- boundary condition name
+        """
         self.thisptr.removeBoundary(string(name))
 
     # materials
     def add_material(self, name, parameters = {}):
+        """Add new material.
+
+        add_material(name, type, parameters = {})
+
+        Keyword arguments:
+        name -- material name
+        type -- material type
+        parameters -- dict of material parameters (default is {})
+        """
         cdef map[string, double] parameters_map = get_parameters_map(parameters)
         cdef map[string, string] expression_map = get_expression_map(parameters)
         cdef map[string, vector[double]] nonlin_x_map = get_nonlin_x_map(parameters)
@@ -494,6 +528,15 @@ cdef class __Field__:
         self.thisptr.addMaterial(string(name), parameters_map, expression_map, nonlin_x_map, nonlin_y_map, settings_map)
 
     def modify_material(self, name, parameters = {}):
+        """Modify existing material.
+
+        modify_material(name, type = "", parameters = {})
+
+        Keyword arguments:
+        name -- material name
+        type -- material type (default is {})
+        parameters -- dict of material parameters (default is {})
+        """
         cdef map[string, double] parameters_map = get_parameters_map(parameters)
         cdef map[string, string] expression_map = get_expression_map(parameters)
         cdef map[string, vector[double]] nonlin_x_map = get_nonlin_x_map(parameters)
@@ -503,10 +546,28 @@ cdef class __Field__:
         self.thisptr.modifyMaterial(string(name), parameters_map, expression_map, nonlin_x_map, nonlin_y_map, settings_map)
 
     def remove_material(self, name):
+        """Remove existing material.
+
+        remove_material(name, type parameters = {})
+
+        Keyword arguments:
+        name -- material name
+        """
         self.thisptr.removeMaterial(string(name))
 
     # local values
     def local_values(self, x, y, time_step = None, adaptivity_step = None, solution_type = "normal"):
+        """Compute local values in point and return dictionary with results.
+
+        local_values(x, y, time_step = None, adaptivity_step = None, solution_type = "normal")
+
+        Keyword arguments:
+        x -- x or r coordinate of point
+        y -- y or z coordinate of point
+        time_step -- time step (default is None - use last time step)
+        adaptivity_step -- adaptivity step (default is None - use adaptive step)
+        solution_type -- solution type (default is "normal")
+        """
         out = dict()
         cdef map[string, double] results
 
@@ -523,6 +584,16 @@ cdef class __Field__:
 
     # surface integrals
     def surface_integrals(self, edges = [], time_step = None, adaptivity_step = None, solution_type = "normal"):
+        """Compute surface integrals on edges and return dictionary with results.
+
+        surface_integrals(edges = [], time_step = None, adaptivity_step = None, solution_type = "normal")
+
+        Keyword arguments:
+        edges -- list of edges (default is [] - compute integrals on all edges)
+        time_step -- time step (default is None - use last time step)
+        adaptivity_step -- adaptivity step (default is None - use adaptive step)
+        solution_type -- solution type (default is "normal")
+        """
         cdef vector[int] edges_vector
         for i in edges:
             edges_vector.push_back(i)
@@ -543,6 +614,16 @@ cdef class __Field__:
 
     # volume integrals
     def volume_integrals(self, labels = [], time_step = None, adaptivity_step = None, solution_type = "normal"):
+        """Compute volume integrals on labels and return dictionary with results.
+
+        volume_integrals(labels = [], time_step = None, adaptivity_step = None, solution_type = "normal")
+
+        Keyword arguments:
+        labels -- list of labels (default is [] - compute integrals on all labels)
+        time_step -- time step (default is None - use last time step)
+        adaptivity_step -- adaptivity step (default is None - use adaptive step)
+        solution_type -- solution type (default is "normal")
+        """
         cdef vector[int] labels_vector
         for i in labels:
             labels_vector.push_back(i)
@@ -563,6 +644,7 @@ cdef class __Field__:
 
     # mesh info
     def initial_mesh_info(self):
+        """Return dictionary with initial mesh info."""
         info = dict()
         cdef map[string, int] info_map
 
@@ -575,6 +657,15 @@ cdef class __Field__:
         return info
 
     def solution_mesh_info(self, time_step = None, adaptivity_step = None, solution_type = "normal"):
+        """Return dictionary with solution mesh info.
+
+        solution_mesh_info(time_step = None, adaptivity_step = None, solution_type = "normal")
+
+        Keyword arguments:
+        time_step -- time step (default is None - use last time step)
+        adaptivity_step -- adaptivity step (default is None - use adaptive step)
+        solution_type -- solution type (default is "normal")
+        """
         info = dict()
         cdef map[string, int] info_map
 
@@ -591,6 +682,15 @@ cdef class __Field__:
 
     # solver info
     def solver_info(self, time_step = None, adaptivity_step = None, solution_type = 'normal'):
+        """Return dictionary with solver info.
+
+        solver_info(time_step = None, adaptivity_step = None, solution_type = "normal")
+
+        Keyword arguments:
+        time_step -- time step (default is None - use last time step)
+        adaptivity_step -- adaptivity step (default is None - use adaptive step)
+        solution_type -- solution type (default is "normal")
+        """
         cdef vector[double] residual_vector
         cdef vector[double] damping_vector
         self.thisptr.solverInfo(int(-1 if time_step is None else time_step),
@@ -609,6 +709,14 @@ cdef class __Field__:
 
     # adaptivity info
     def adaptivity_info(self, time_step = None, solution_type = 'normal'):
+        """Return dictionary with adaptivity process info.
+
+        adaptivity_info(time_step = None, solution_type = "normal")
+
+        Keyword arguments:
+        time_step -- time step (default is None - use last time step)
+        solution_type -- solution type (default is "normal")
+        """
         cdef vector[double] error_vector
         cdef vector[int] dofs_vector
         self.thisptr.adaptivityInfo(int(-1 if time_step is None else time_step),

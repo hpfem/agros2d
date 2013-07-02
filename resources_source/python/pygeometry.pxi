@@ -183,6 +183,18 @@ cdef class __Geometry__:
         self.thisptr.removeLabels(labels_vector)
 
     def add_rect(self, x0, y0, width, height, boundaries = {}, materials = None):
+        """Add rect by start point (lower left node), width and height.
+
+        add_rect(x0, y0, width, height, boundaries = {}, materials = None)
+
+        Keyword arguments:
+        x0 -- x or r coordinate of start point
+        y0 -- y or z coordinate of start points
+        width -- width of rect
+        height -- height of rect
+        boundaries -- boundaries {'field' : refinement} (default {})
+        materials -- materials {'field' : 'material name'} (default None)
+        """
         self.add_edge(x0, y0, (x0)+width, y0, boundaries=boundaries)
         self.add_edge(x0+width, y0, (x0)+width, (y0)+height, boundaries=boundaries)
         self.add_edge(x0+width, (y0)+height, x0, (y0)+height, boundaries=boundaries)
@@ -192,6 +204,17 @@ cdef class __Geometry__:
             self.add_label((x0)+(width/2.0), (y0)+(height/2.0), materials=materials)
 
     def add_circle(self, x0, y0, radius, boundaries = {}, materials = None):
+        """Add circle by center point and radius.
+
+        add_circle(self, x0, y0, radius, boundaries = {}, materials = None)
+
+        Keyword arguments:
+        x0 -- x or r coordinate of center point
+        y0 -- y or z coordinate of center point
+        radius -- radius of center
+        boundaries -- boundaries {'field' : refinement} (default {})
+        materials -- materials {'field' : 'material name'} (default None)
+        """
         self.add_edge(x0, (y0)-radius, (x0)+radius, y0, boundaries=boundaries, angle=90)
         self.add_edge((x0)+radius, y0, x0, (y0)+radius, boundaries=boundaries, angle=90)
         self.add_edge(x0, (y0)+radius, (x0)-radius, y0, boundaries=boundaries, angle=90)
@@ -201,6 +224,17 @@ cdef class __Geometry__:
             geometry.add_label(x0, y0, materials=materials)
 
     def add_semicircle(self, x0, y0, radius, boundaries = {}, materials = None):
+        """Add semicircle by center point of full circle and radius.
+
+        add_semicircle(self, x0, y0, radius, boundaries = {}, materials = None)
+
+        Keyword arguments:
+        x0 -- x or r coordinate of center point
+        y0 -- y or z coordinate of center point
+        radius -- radius of center
+        boundaries -- boundaries {'field' : refinement} (default {})
+        materials -- materials {'field' : 'material name'} (default None)
+        """
         self.add_edge(x0, (y0)-radius, (x0)+radius, y0, boundaries=boundaries, angle=90)
         self.add_edge((x0)+radius, y0, x0, (y0)+radius, boundaries=boundaries, angle=90)
         self.add_edge(x0, (y0)+radius, x0, (y0)-radius, boundaries=boundaries, angle=0)
