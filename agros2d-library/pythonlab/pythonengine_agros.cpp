@@ -635,11 +635,14 @@ void openFile(const std::string &file)
     }
 }
 
-void saveFile(const std::string &file)
+void saveFile(const std::string &file, bool saveWithSolution)
 {
     try
     {
         Agros2D::scene()->writeToFile(QString::fromStdString(file), false);
+
+        if (saveWithSolution || silentMode())
+            Agros2D::scene()->writeSolutionToFile(QString::fromStdString(file));
     }
     catch (AgrosException &e)
     {

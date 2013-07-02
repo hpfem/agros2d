@@ -120,6 +120,6 @@ QString createPythonFromModel(StartupScript_Type startupScript);
 // ************************************************************************************
 
 void openFile(const std::string &file);
-void saveFile(const std::string &file);
+void saveFile(const std::string &file, bool saveWithSolution);
 
 #endif // PYTHONENGINEAGROS_H

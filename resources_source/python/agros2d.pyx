@@ -54,20 +54,19 @@ cdef map[string, string] dictionary_to_string_map(dictionary):
 
     return string_map
 
-# main wrappers
+# wrappers
 include "pyproblem.pxi"
 include "pyfield.pxi"
 include "pygeometry.pxi"
 include "pyview.pxi"
 include "pyparticletracing.pxi"
 
-# minor wrappers
 cdef extern from "../../agros2d-library/pythonlab/pythonengine_agros.h":
     void openFile(string &file) except +
-    void saveFile(string &file) except +
+    void saveFile(string &file, bool saveWithSolution) except +
 
 def open_file(file):
     openFile(string(file))
 
-def save_file(file):
-    saveFile(string(file))
+def save_file(file, save_with_solution = False):
+    saveFile(string(file), save_with_solution)
