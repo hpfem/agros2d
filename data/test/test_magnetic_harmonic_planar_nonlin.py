@@ -18,7 +18,7 @@ magnetic = agros2d.field("magnetic")
 magnetic.analysis_type = "harmonic"
 magnetic.number_of_refinements = 1
 magnetic.polynomial_order = 2
-magnetic.linearity_type = "newton"
+magnetic.solver = "newton"
 magnetic.nonlinear_tolerance = 0.001
 magnetic.nonlinear_steps = 15
 

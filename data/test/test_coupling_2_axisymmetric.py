@@ -17,7 +17,7 @@ heat = agros2d.field("heat")
 heat.analysis_type = "steadystate"
 heat.number_of_refinements = 1
 heat.polynomial_order = 2
-heat.linearity_type = "linear"
+heat.solver = "linear"
 heat.nonlinear_tolerance = 0.001
 heat.nonlinear_steps = 10
 

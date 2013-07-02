@@ -19,11 +19,11 @@ agros2d.view.post2d.disable()
 # magnetic
 magnetic = agros2d.field("magnetic")
 magnetic.analysis_type = "transient"
-magnetic.initial_condition = 0
+magnetic.transient_initial_condition = 0
 magnetic.number_of_refinements = 3
 magnetic.polynomial_order = 2
 magnetic.adaptivity_type = "disabled"
-magnetic.linearity_type = "linear"
+magnetic.solver = "linear"
 
 # boundaries
 magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})

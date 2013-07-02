@@ -19,7 +19,7 @@ electrostatic.analysis_type = "steadystate"
 electrostatic.number_of_refinements = 1
 electrostatic.polynomial_order = 2
 electrostatic.adaptivity_type = "disabled"
-electrostatic.linearity_type = "linear"
+electrostatic.solver = "linear"
 
 
 # boundaries
@@ -37,7 +37,7 @@ magnetic.analysis_type = "steadystate"
 magnetic.number_of_refinements = 2
 magnetic.polynomial_order = 2
 magnetic.adaptivity_type = "disabled"
-magnetic.linearity_type = "linear"
+magnetic.solver = "linear"
 
 
 # boundaries

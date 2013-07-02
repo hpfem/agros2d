@@ -27,10 +27,10 @@ agros2d.view.post2d.disable()
 # heat
 heat = agros2d.field("heat")
 heat.analysis_type = "transient"
-heat.initial_condition = 0
+heat.transient_initial_condition = 0
 heat.number_of_refinements = 2
 heat.polynomial_order = 3
-heat.linearity_type = "linear"
+heat.solver = "linear"
 
 heat.add_boundary("Symmetry", "heat_heat_flux", {"heat_convection_heat_transfer_coefficient" : 0, "heat_convection_external_temperature" : 0, "heat_radiation_emissivity" : 0, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 0})
 heat.add_boundary("Temperature", "heat_temperature", {"heat_temperature" : 1000})

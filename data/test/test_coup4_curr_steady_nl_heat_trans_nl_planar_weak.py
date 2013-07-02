@@ -22,7 +22,7 @@ agros2d.view.post2d.disable()
 current = agros2d.field("current")
 current.analysis_type = "steadystate"
 current.polynomial_order = 2
-current.linearity_type = "newton"
+current.solver = "newton"
 
 current.add_boundary("U = 0.1", "current_potential", {"current_potential" : 0.1})
 current.add_boundary("U = 0", "current_potential", {"current_potential" : 0})
@@ -33,8 +33,8 @@ current.add_material("Cu", {"current_conductivity" : 33e6})
 heat = agros2d.field("heat")
 heat.analysis_type = "transient"
 heat.polynomial_order = 2
-heat.linearity_type = "newton"
-heat.initial_condition = 20
+heat.solver = "newton"
+heat.transient_initial_condition = 20
 
 heat.add_boundary("Convection", "heat_heat_flux", {"heat_convection_external_temperature" : 20, "heat_convection_heat_transfer_coefficient" : 20, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 0, "heat_radiation_emissivity" : 0})
 heat.add_boundary("Zero heat flux", "heat_heat_flux", {"heat_convection_external_temperature" : 0, "heat_convection_heat_transfer_coefficient" : 0, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 0, "heat_radiation_emissivity" : 0})

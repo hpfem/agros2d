@@ -16,13 +16,13 @@ magnetic = agros2d.field("magnetic")
 magnetic.analysis_type = "steadystate"
 magnetic.number_of_refinements = 1
 magnetic.polynomial_order = 3
-magnetic.linearity_type = "newton"
+magnetic.solver = "newton"
 magnetic.nonlinear_tolerance = 0.1
 magnetic.nonlinear_steps = 20
-magnetic.damping_type = "fixed"
-magnetic.reuse_jacobian = False
-magnetic.maximum_steps_with_reused_jacobian = 10
-magnetic.sufficient_improvement_factor_for_jacobian_reuse = 0.9
+magnetic.newton_damping_type = "fixed"
+magnetic.newton_jacobian_reuse = False
+magnetic.newton_jacobian_reuse_steps = 10
+magnetic.newton_jacobian_reuse_ratio = 0.9
 
 magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
 

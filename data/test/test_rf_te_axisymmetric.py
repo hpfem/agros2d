@@ -20,7 +20,7 @@ rf.analysis_type = "harmonic"
 rf.number_of_refinements = 3
 rf.polynomial_order = 3
 rf.adaptivity_type = "disabled"
-rf.linearity_type = "linear"
+rf.solver = "linear"
 
 
 # boundaries

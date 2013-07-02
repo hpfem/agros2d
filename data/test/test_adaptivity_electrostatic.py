@@ -19,7 +19,7 @@ electrostatic.polynomial_order = 2
 electrostatic.adaptivity_type = "hp-adaptivity"
 electrostatic.adaptivity_steps = 10
 electrostatic.adaptivity_tolerance = 1
-electrostatic.linearity_type = "linear"
+electrostatic.solver = "linear"
 
 
 # boundaries

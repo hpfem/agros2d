@@ -19,11 +19,11 @@ agros2d.view.post2d.disable()
 # acoustic
 acoustic = agros2d.field("acoustic")
 acoustic.analysis_type = "transient"
-acoustic.initial_condition = 0
+acoustic.transient_initial_condition = 0
 acoustic.number_of_refinements = 2
 acoustic.polynomial_order = 2
 acoustic.adaptivity_type = "disabled"
-acoustic.linearity_type = "linear"
+acoustic.solver = "linear"
 
 
 # boundaries

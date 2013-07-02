@@ -229,16 +229,16 @@ QString createPythonFromModel(StartupScript_Type startupScript)
 
         if (fieldInfo->matrixSolver() == Hermes::SOLVER_PARALUTION)
         {
-            str += QString("%1.linear_solver_method = \"%2\"\n").
+            str += QString("%1.matrix_iterative_solver_method = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
                     arg(iterLinearSolverMethodToStringKey((Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()));
-            str += QString("%1.linear_solver_preconditioner = \"%2\"\n").
+            str += QString("%1.matrix_iterative_solver_preconditioner = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
                     arg(iterLinearSolverPreconditionerTypeToStringKey((Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
-            str += QString("%1.linear_solver_tolerance = %2\n").
+            str += QString("%1.matrix_iterative_solver_tolerance = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::LinearSolverIterToleranceAbsolute).toDouble());
-            str += QString("%1.linear_solver_iterations = %2\n").
+            str += QString("%1.matrix_iterative_solver_iterations = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::LinearSolverIterIters).toInt());
         }
@@ -247,13 +247,13 @@ QString createPythonFromModel(StartupScript_Type startupScript)
         {
             if (fieldInfo->analysisType() == analysisTypeFromStringKey("transient"))
             {
-                str += QString("%1.initial_condition = %2\n").
+                str += QString("%1.transient_initial_condition = %2\n").
                         arg(fieldInfo->fieldId()).
                         arg(fieldInfo->value(FieldInfo::TransientInitialCondition).toDouble());
             }
             else
             {
-                str += QString("%1.time_skip = %2\n").
+                str += QString("%1.transient_time_skip = %2\n").
                         arg(fieldInfo->fieldId()).
                         arg(fieldInfo->value(FieldInfo::TransientTimeSkip).toInt());
             }
@@ -293,7 +293,7 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                     arg(fieldInfo->fieldId()).
                     arg(adaptivityNormTypeToStringKey((Hermes::Hermes2D::NormType) fieldInfo->value(FieldInfo::AdaptivityProjNormType).toInt()));
 
-            str += QString("%1.adaptivity_anisotropic= %2\n").
+            str += QString("%1.adaptivity_anisotropic_refinement= %2\n").
                     arg(fieldInfo->fieldId()).
                     arg((fieldInfo->value(FieldInfo::AdaptivityUseAniso).toBool()) ? "True" : "False");
 
@@ -307,13 +307,13 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                         arg(fieldInfo->fieldId()).
                         arg(fieldInfo->value(FieldInfo::AdaptivityTransientBackSteps).toInt());
 
-                str += QString("%1.adaptivity_redone = %2\n").
+                str += QString("%1.adaptivity_redone_steps = %2\n").
                         arg(fieldInfo->fieldId()).
                         arg(fieldInfo->value(FieldInfo::AdaptivityTransientRedoneEach).toInt());
             }
         }
 
-        str += QString("%1.linearity_type = \"%2\"\n").
+        str += QString("%1.solver = \"%2\"\n").
                 arg(fieldInfo->fieldId()).
                 arg(linearityTypeToStringKey(fieldInfo->linearityType()));
 
@@ -335,31 +335,31 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                     arg(fieldInfo->fieldId()).
                     arg(nonlinearSolverConvergenceMeasurementToStringKey((Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()));
 
-            str += QString("%1.damping_type = \"%2\"\n").
+            str += QString("%1.newton_damping_type = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
                     arg(dampingTypeToStringKey((DampingType)fieldInfo->value(FieldInfo::NewtonDampingType).toInt()));
 
-            str += QString("%1.damping_coeff = %2\n").
+            str += QString("%1.newton_damping_factor = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble());
 
-            str += QString("%1.reuse_jacobian = %2\n").
+            str += QString("%1.newton_jacobian_reuse = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg((fieldInfo->value(FieldInfo::NewtonReuseJacobian).toBool()) ? "True" : "False");
 
-            str += QString("%1.sufficient_improvement_factor_for_jacobian_reuse = %2\n").
+            str += QString("%1.newton_jacobian_reuse_ratio = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::NewtonSufImprovForJacobianReuse).toDouble());
 
-            str += QString("%1.sufficient_improvement_factor = %2\n").
+            str += QString("%1.newton_damping_decrease_ratio = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::NewtonSufImprov).toDouble());
 
-            str += QString("%1.maximum_steps_with_reused_jacobian = %2\n").
+            str += QString("%1.newton_jacobian_reuse_steps = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::NewtonMaxStepsReuseJacobian).toInt());
 
-            str += QString("%1.damping_number_to_increase = %2\n").
+            str += QString("%1.newton_damping_increase_steps = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::NewtonStepsToIncreaseDF).toInt());
         }
@@ -367,17 +367,17 @@ QString createPythonFromModel(StartupScript_Type startupScript)
         // picard
         if (fieldInfo->linearityType() == LinearityType_Picard)
         {
-            str += QString("%1.anderson_acceleration = %2\n").
+            str += QString("%1.picard_anderson_acceleration = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg((fieldInfo->value(FieldInfo::PicardAndersonAcceleration).toBool()) ? "True" : "False");
 
             if (fieldInfo->value(FieldInfo::PicardAndersonAcceleration).toBool())
             {
-                str += QString("%1.anderson_beta = %2\n").
+                str += QString("%1.picard_anderson_beta = %2\n").
                         arg(fieldInfo->fieldId()).
                         arg(fieldInfo->value(FieldInfo::PicardAndersonBeta).toDouble());
 
-                str += QString("%1.anderson_last_vectors = %2\n").
+                str += QString("%1.picard_anderson_last_vectors = %2\n").
                         arg(fieldInfo->fieldId()).
                         arg(fieldInfo->value(FieldInfo::PicardAndersonNumberOfLastVectors).toInt());
             }

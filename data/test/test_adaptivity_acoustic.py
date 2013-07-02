@@ -20,7 +20,7 @@ acoustic.polynomial_order = 1
 acoustic.adaptivity_type = "hp-adaptivity"
 acoustic.adaptivity_steps = 15
 acoustic.adaptivity_tolerance = 2
-acoustic.linearity_type = "linear"
+acoustic.solver = "linear"
 
 
 # boundaries

@@ -19,7 +19,7 @@ electrostatic.analysis_type = "steadystate"
 electrostatic.number_of_refinements = 1
 electrostatic.polynomial_order = 2
 electrostatic.adaptivity_type = "disabled"
-electrostatic.linearity_type = "linear"
+electrostatic.solver = "linear"
 
 
 # boundaries

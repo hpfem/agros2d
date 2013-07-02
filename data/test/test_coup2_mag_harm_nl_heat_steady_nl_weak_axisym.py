@@ -20,7 +20,7 @@ heat = agros2d.field("heat")
 heat.analysis_type = "steadystate"
 heat.number_of_refinements = 1
 heat.polynomial_order = 2
-heat.linearity_type = "newton"
+heat.solver = "newton"
 heat.nonlinear_tolerance = 0.001
 
 heat.add_boundary("Symmetry", "heat_heat_flux", {"heat_convection_external_temperature" : 0, "heat_convection_heat_transfer_coefficient" : 0, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 0, "heat_radiation_emissivity" : 0})
@@ -34,7 +34,7 @@ magnetic = agros2d.field("magnetic")
 magnetic.analysis_type = "harmonic"
 magnetic.number_of_refinements = 1
 magnetic.polynomial_order = 2
-magnetic.linearity_type = "newton"
+magnetic.solver = "newton"
 magnetic.nonlinear_tolerance = 0.001
 
 magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_imag" : 0, "magnetic_potential_real" : 0})

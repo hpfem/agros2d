@@ -23,7 +23,7 @@ current = agros2d.field("current")
 current.analysis_type = "steadystate"
 current.number_of_refinements = 1
 current.polynomial_order = 2
-current.linearity_type = "linear"
+current.solver = "linear"
 current.nonlinear_tolerance = 0.001
 
 current.add_boundary("10 V", "current_potential", {"current_potential" : 10})
@@ -36,7 +36,7 @@ heat = agros2d.field("heat")
 heat.analysis_type = "transient"
 heat.number_of_refinements = 2
 heat.polynomial_order = 3
-heat.linearity_type = "newton"
+heat.solver = "newton"
 heat.nonlinear_tolerance = 0.001
 
 heat.add_boundary("300 K", "heat_temperature", {"heat_temperature" : 300})
@@ -48,7 +48,7 @@ elasticity = agros2d.field("elasticity")
 elasticity.analysis_type = "steadystate"
 elasticity.number_of_refinements = 1
 elasticity.polynomial_order = 3
-elasticity.linearity_type = "linear"
+elasticity.solver = "linear"
 elasticity.nonlinear_tolerance = 0.001
 
 elasticity.add_boundary("Fixed", "elasticity_fixed_fixed", {"elasticity_displacement_x" : 0, "elasticity_displacement_y" : 0})

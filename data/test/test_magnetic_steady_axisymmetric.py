@@ -18,7 +18,7 @@ magnetic = agros2d.field("magnetic")
 magnetic.analysis_type = "steadystate"
 magnetic.number_of_refinements = 0
 magnetic.polynomial_order = 7
-magnetic.linearity_type = "linear"
+magnetic.solver = "linear"
 
 magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
 

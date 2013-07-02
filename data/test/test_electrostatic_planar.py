@@ -16,7 +16,7 @@ electrostatic = agros2d.field("electrostatic")
 electrostatic.analysis_type = "steadystate"
 electrostatic.number_of_refinements = 2
 electrostatic.polynomial_order = 3
-electrostatic.linearity_type = "linear"
+electrostatic.solver = "linear"
 
 electrostatic.add_boundary("Neumann", "electrostatic_surface_charge_density", {"electrostatic_surface_charge_density" : 0})
 electrostatic.add_boundary("U = 0 V", "electrostatic_potential", {"electrostatic_potential" : 0})

@@ -17,7 +17,7 @@ current = agros2d.field("current")
 current.analysis_type = "steadystate"
 current.number_of_refinements = 1
 current.polynomial_order = 4
-current.linearity_type = "linear"
+current.solver = "linear"
 
 current.add_boundary("Neumann", "current_inward_current_flow", {"current_inward_current_flow" : 0})
 current.add_boundary("Ground", "current_potential", {"current_potential" : 0})

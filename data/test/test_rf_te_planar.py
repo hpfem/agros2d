@@ -18,7 +18,7 @@ rf = agros2d.field("rf_te")
 rf.analysis_type = "harmonic"
 rf.number_of_refinements = 3	
 rf.polynomial_order = 3
-rf.linearity_type = "linear"
+rf.solver = "linear"
 
 # boundaries
 rf.add_boundary("Perfect electric conductor", "rf_te_electric_field")

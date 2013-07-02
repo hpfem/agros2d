@@ -22,10 +22,10 @@ heat = agros2d.field("heat")
 heat.analysis_type = "transient"
 heat.number_of_refinements = 1
 heat.polynomial_order = 5
-heat.linearity_type = "linear"
+heat.solver = "linear"
 heat.nonlinear_tolerance = 0.001
 heat.nonlinear_steps = 10
-heat.initial_condition = 20
+heat.transient_initial_condition = 20
 
 heat.add_boundary("Flux", "heat_heat_flux", {"heat_heat_flux" : 0})
 heat.add_boundary("Convection", "heat_heat_flux", {"heat_convection_heat_transfer_coefficient" : 10, "heat_convection_external_temperature" : 20})

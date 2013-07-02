@@ -16,7 +16,7 @@ electrostatic = agros2d.field("electrostatic")
 electrostatic.analysis_type = "steadystate"
 electrostatic.number_of_refinements = 1
 electrostatic.polynomial_order = 5
-electrostatic.linearity_type = "linear"
+electrostatic.solver = "linear"
 
 electrostatic.add_boundary("Source electrode", "electrostatic_potential", {"electrostatic_potential" : 10})
 electrostatic.add_boundary("Ground electrode", "electrostatic_potential", {"electrostatic_potential" : 0})

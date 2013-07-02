@@ -17,7 +17,7 @@ heat = agros2d.field("heat")
 heat.analysis_type = "steadystate"
 heat.number_of_refinements = 2
 heat.polynomial_order = 3
-heat.linearity_type = "linear"
+heat.solver = "linear"
 
 heat.add_boundary("Neumann", "heat_heat_flux", {"heat_heat_flux" : 0, "heat_convection_heat_transfer_coefficient" : 0, "heat_convection_external_temperature" : 0})
 heat.add_boundary("Inlet", "heat_heat_flux", {"heat_heat_flux" : 500000, "heat_convection_heat_transfer_coefficient" : 0, "heat_convection_external_temperature" : 0})

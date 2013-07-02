@@ -18,7 +18,7 @@ heat = agros2d.field("heat")
 heat.analysis_type = "steadystate"
 heat.number_of_refinements = 2
 heat.polynomial_order = 3
-heat.linearity_type = "linear"
+heat.solver = "linear"
 
 heat.add_boundary("T inner", "heat_temperature", {"heat_temperature" : -15})
 heat.add_boundary("T outer", "heat_heat_flux", {"heat_heat_flux" : 0, "heat_convection_heat_transfer_coefficient" : 20, "heat_convection_external_temperature" : 20})
