@@ -292,9 +292,9 @@ QWidget *FieldWidget::createSolverWidget()
     layoutSolverDamping->addWidget(cmbNewtonDampingType, 1, 1);
     layoutSolverDamping->addWidget(new QLabel(tr("Factor:")), 1, 2);
     layoutSolverDamping->addWidget(txtNewtonDampingCoeff, 1, 3);
-    layoutSolverDamping->addWidget(new QLabel(tr("Max. residual ratio for factor decrease:")), 2, 0, 1, 3);
+    layoutSolverDamping->addWidget(new QLabel(tr("Min. residual ratio for factor decrease:")), 2, 0, 1, 3);
     layoutSolverDamping->addWidget(txtNewtonSufficientImprovementFactor, 2, 3);
-    layoutSolverDamping->addWidget(new QLabel(tr("Min. steps for factor increased:")), 3, 0, 1, 3);
+    layoutSolverDamping->addWidget(new QLabel(tr("Min. steps for factor increase:")), 3, 0, 1, 3);
     layoutSolverDamping->addWidget(txtNewtonDampingNumberToIncrease, 3, 3);
 
     layoutSolverReuse->addWidget(chkNewtonReuseJacobian, 1, 0);

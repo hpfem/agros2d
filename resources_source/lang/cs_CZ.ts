@@ -773,14 +773,12 @@ Výstup:
         <translation>Typ tlumení:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="295"/>
         <source>Max. residual ratio for factor decrease:</source>
-        <translation>Max. poměr residuálů pro snížení faktoru:</translation>
+        <translation type="obsolete">Max. poměr residuálů pro snížení faktoru:</translation>
     </message>
     <message>
-        <location filename="../../agros2d-library/problemdialog.cpp" line="297"/>
         <source>Min. steps for factor increased:</source>
-        <translation>Min. počet kroků ke zvýšení faktoru:</translation>
+        <translation type="obsolete">Min. počet kroků ke zvýšení faktoru:</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="301"/>
@@ -891,6 +889,16 @@ Výstup:
         <location filename="../../agros2d-library/problemdialog.cpp" line="174"/>
         <source>General</source>
         <translation>Základní</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="295"/>
+        <source>Min. residual ratio for factor decrease:</source>
+        <translation>Min. poměr residuálů pro snížení faktoru:</translation>
+    </message>
+    <message>
+        <location filename="../../agros2d-library/problemdialog.cpp" line="297"/>
+        <source>Min. steps for factor increase:</source>
+        <translation>Min. počet kroků ke zvýšení faktoru:</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/problemdialog.cpp" line="362"/>
