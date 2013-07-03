@@ -8,7 +8,7 @@ sys.path.insert(0, ".")
 
 # user functions
 def sgn(number):
-	return (number >= 0) and 1 or -1 
+	return (number >= 0) and 1 or -1
 
 # from rope.base.project import Project
 # pythonlab_rope_project = Project(".", ropefolder=None)
@@ -22,12 +22,12 @@ def python_engine_get_completion_string(code, offset):
     proposals_string = []
     for p in proposals:
         proposals_string.append(p.__str__())
-    
+
     return proposals_string
     # return [proposal.name for proposal in proposals]
 
 def python_engine_get_completion_string_dot(code):
-    try:      
+    try:
         return dir(eval(code))
     except:
         return []
@@ -40,11 +40,11 @@ def python_engine_get_completion_file(filename, offset):
 
     proposals_string = []
     try:
-        proposals = codeassist.code_assist(pythonlab_rope_project, code, offset, maxfixes=20) 
-        # proposals = codeassist.sorted_proposals(proposals)        
+        proposals = codeassist.code_assist(pythonlab_rope_project, code, offset, maxfixes=20)
+        # proposals = codeassist.sorted_proposals(proposals)
         for p in proposals:
             proposals_string.append(p.__str__())
-        
+
         return proposals_string
         # return [proposal.name for proposal in proposals]
     except:
@@ -76,12 +76,13 @@ def python_engine_pyflakes_check(filename):
         import pyflakes.checker as checker
 
         w = checker.Checker(tree, "")
-        w.messages.sort(lambda a, b: cmp(a.lineno, b.lineno))       
+        w.messages.sort(lambda a, b: cmp(a.lineno, b.lineno))
         return [warning.__str__() for warning in w.messages]
 
-# redirect std output
-class StdoutCatcher:
+# redirect stdout and stderr
+class CatchOutErr:
     def write(self, str):
         pythonlab.__stdout__(str)
 
-sys.stdout = StdoutCatcher()
+sys.stdout = CatchOutErr()
+sys.stderr = CatchOutErr()

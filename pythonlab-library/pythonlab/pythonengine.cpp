@@ -260,7 +260,7 @@ ScriptResult PythonEngine::runScript(const QString &script, const QString &fileN
 }
 
 ExpressionResult PythonEngine::runExpression(const QString &expression, bool returnValue)
-{    
+{
     ExpressionResult expressionResult;
 
     // PyGILState_STATE gstate = PyGILState_Ensure();
@@ -427,7 +427,7 @@ QStringList PythonEngine::codeCompletion(const QString& code, int offset, const 
 }
 
 QStringList PythonEngine::codePyFlakes(const QString& fileName)
-{    
+{
     QStringList out;
 
     if (!isRunning())
