@@ -65,9 +65,11 @@ int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle
             throw logic_error(QObject::tr("Edge already exist.").toStdString());
     }
 
-    SceneEdge *edge = new SceneEdge(Agros2D::scene()->addNode(new SceneNode(Point(x1, y1))),
-                                    Agros2D::scene()->addNode(new SceneNode(Point(x2, y2))),
-                                    angle);
+    SceneNode *nodeStart = new SceneNode(Point(x1, y1));
+    nodeStart = Agros2D::scene()->addNode(nodeStart);
+    SceneNode *nodeEnd = new SceneNode(Point(x2, y2));
+    nodeEnd = Agros2D::scene()->addNode(nodeEnd);
+    SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, angle);
 
     try
     {

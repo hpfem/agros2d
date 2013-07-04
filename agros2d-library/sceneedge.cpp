@@ -754,9 +754,11 @@ void SceneEdgeCommandAdd::undo()
 void SceneEdgeCommandAdd::redo()
 {
     // new edge
-    SceneEdge *edge = new SceneEdge(Agros2D::scene()->addNode(new SceneNode(m_pointStart)),
-                                    Agros2D::scene()->addNode(new SceneNode(m_pointEnd)),
-                                    m_angle);
+    SceneNode *nodeStart = new SceneNode(m_pointStart);
+    nodeStart = Agros2D::scene()->addNode(nodeStart);
+    SceneNode *nodeEnd = new SceneNode(m_pointEnd);
+    nodeEnd = Agros2D::scene()->addNode(nodeEnd);
+    SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, m_angle);
 
     foreach (QString fieldId, m_markers.keys())
     {
@@ -828,9 +830,11 @@ SceneEdgeCommandRemove::SceneEdgeCommandRemove(const Point &pointStart, const Po
 void SceneEdgeCommandRemove::undo()
 {
     // new edge
-    SceneEdge *edge = new SceneEdge(Agros2D::scene()->addNode(new SceneNode(m_pointStart)),
-                                    Agros2D::scene()->addNode(new SceneNode(m_pointEnd)),
-                                    m_angle);
+    SceneNode *nodeStart = new SceneNode(m_pointStart);
+    nodeStart = Agros2D::scene()->addNode(nodeStart);
+    SceneNode *nodeEnd = new SceneNode(m_pointEnd);
+    nodeEnd = Agros2D::scene()->addNode(nodeEnd);
+    SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, m_angle);
 
     foreach (QString fieldId, m_markers.keys())
     {
