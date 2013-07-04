@@ -21,6 +21,7 @@
 
 #include "util.h"
 #include "util/global.h"
+#include "util/loops.h"
 
 #include "scene.h"
 #include "hermes2d/problem.h"
@@ -363,7 +364,7 @@ void SceneViewPost2D::paintScalarField()
             {
                 if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeLog).toBool())
                     glTexCoord1d(log10((double) (1 + (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeBase).toInt() - 1))
-                                        * (value[j] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange) / log10((double) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeBase).toInt()));
+                                       * (value[j] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange) / log10((double) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeBase).toInt()));
                 else
                     glTexCoord1d((value[j] - Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble()) * irange);
                 glVertex2d(point[j].x, point[j].y);
@@ -1067,61 +1068,48 @@ void SceneViewPost2D::paintVectors()
 void SceneViewPost2D::paintPostprocessorSelectedVolume()
 {
     if (!Agros2D::problem()->isSolved()) return;
-    if (!m_postHermes->initialMeshIsPrepared()) return;
 
-    glEnable(GL_POLYGON_OFFSET_FILL);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glEnable(GL_DEPTH_TEST);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedRed).toInt() / 255.0,
-              Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedGreen).toInt() / 255.0,
-              Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedBlue).toInt() / 255.0,
-              0.5);
-
-    m_postHermes->linInitialMeshView().lock_data();
-
-    double3* linVert = m_postHermes->linInitialMeshView().get_vertices();
-    int3* linTris = m_postHermes->linInitialMeshView().get_triangles();
-    int* linTrisMarkers = m_postHermes->linInitialMeshView().get_triangle_markers();
-
-    // draw initial mesh
-    glEnable(GL_POLYGON_OFFSET_FILL);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedRed).toInt() / 255.0,
-              Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedGreen).toInt() / 255.0,
-              Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedBlue).toInt() / 255.0,
-              0.5);
-
-    // triangles
-    glBegin(GL_TRIANGLES);
-    for (int i = 0; i < m_postHermes->linInitialMeshView().get_num_triangles(); i++)
+    if (Agros2D::scene()->crossings().isEmpty())
     {
-        SceneLabel *label = Agros2D::scene()->labels->at(atoi(postHermes()->activeViewField()->initialMesh()->get_element_markers_conversion().get_user_marker(linTrisMarkers[i]).marker.c_str()));
-        if (label->isSelected())
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+        // blended rectangle
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glColor4d(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedRed).toInt() / 255.0,
+                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedGreen).toInt() / 255.0,
+                  Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedBlue).toInt() / 255.0,
+                  0.5);
+
+        QMapIterator<SceneLabel*, QList<LoopsInfo::Triangle> > i(Agros2D::scene()->loopsInfo()->polygonTriangles());
+        glBegin(GL_TRIANGLES);
+        while (i.hasNext())
         {
-            glVertex2d(linVert[linTris[i][0]][0], linVert[linTris[i][0]][1]);
-            glVertex2d(linVert[linTris[i][1]][0], linVert[linTris[i][1]][1]);
-            glVertex2d(linVert[linTris[i][2]][0], linVert[linTris[i][2]][1]);
+            i.next();
+
+            if (i.key()->isSelected())
+            {
+                foreach (LoopsInfo::Triangle triangle, i.value())
+                {
+                    glVertex2d(triangle.a.x, triangle.a.y);
+                    glVertex2d(triangle.b.x, triangle.b.y);
+                    glVertex2d(triangle.c.x, triangle.c.y);
+                }
+            }
         }
+        glEnd();
+
+        glDisable(GL_BLEND);
+        glDisable(GL_POLYGON_OFFSET_FILL);
     }
-    glEnd();
-
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_BLEND);
-    glDisable(GL_POLYGON_OFFSET_FILL);
-
-    m_postHermes->linInitialMeshView().unlock_data();
 }
 
 void SceneViewPost2D::paintPostprocessorSelectedSurface()
 {
     if (!Agros2D::problem()->isSolved()) return;
-    if (!m_postHermes->initialMeshIsPrepared()) return;
 
     // edges
     foreach (SceneEdge *edge, Agros2D::scene()->edges->items()) {

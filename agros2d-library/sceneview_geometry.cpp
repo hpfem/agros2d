@@ -1140,6 +1140,7 @@ void SceneViewPreprocessor::paintGeometry()
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+            glBegin(GL_TRIANGLES);
             QMapIterator<SceneLabel*, QList<LoopsInfo::Triangle> > i(Agros2D::scene()->loopsInfo()->polygonTriangles());
             while (i.hasNext())
             {
@@ -1158,15 +1159,14 @@ void SceneViewPreprocessor::paintGeometry()
                 else
                     glColor4f(0.3, 0.1, 0.7, 0.10);
 
-                glBegin(GL_TRIANGLES);
                 foreach (LoopsInfo::Triangle triangle, i.value())
                 {
                     glVertex2d(triangle.a.x, triangle.a.y);
                     glVertex2d(triangle.b.x, triangle.b.y);
                     glVertex2d(triangle.c.x, triangle.c.y);
                 }
-                glEnd();
             }
+            glEnd();
 
             glDisable(GL_BLEND);
             glDisable(GL_POLYGON_OFFSET_FILL);
