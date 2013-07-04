@@ -256,7 +256,7 @@
       </module:localvariable>
       <module:localvariable id="magnetic_current_density_external" name="Current dens. - ext." shortname="Je" shortname_html="&lt;i>J&lt;/i>&lt;sub>e&lt;/sub>" shortname_latex="J_\mathrm{e}" type="scalar" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
         <module:expression analysistype="steadystate" axi="ma_Jer" planar="ma_Jer"/>
-        <module:expression analysistype="harmonic" axi="sqrt(ma_Jer*ma_Jer+ma_Jei*ma_Jei)" planar="sqrt(ma_Jer*ma_Jer+ma_Jer*ma_Jer)"/>
+        <module:expression analysistype="harmonic" axi="sqrt(ma_Jer*ma_Jer+ma_Jei*ma_Jei)" planar="sqrt(ma_Jer*ma_Jer+ma_Jei*ma_Jei)"/>
         <module:expression analysistype="transient" axi="ma_Jer" planar="ma_Jer"/>
       </module:localvariable>
       <module:localvariable id="magnetic_current_density_external_real" name="Current dens. - ext. - real" shortname="Jer" shortname_html="&lt;i>J&lt;/i>&lt;sub>er&lt;/sub>" shortname_latex="J_\mathrm{er}" type="scalar" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
