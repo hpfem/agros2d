@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>353</width>
-    <height>453</height>
+    <width>323</width>
+    <height>517</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -205,6 +205,22 @@
         </widget>
        </item>
        <item>
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>Analysis</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="chkStaticCharacteristic">
+            <property name="text">
+             <string>Static characteristic F = f(z)</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -229,7 +245,6 @@
   <tabstop>txtCircuitRadius</tabstop>
   <tabstop>txtCircuitHeight</tabstop>
   <tabstop>txtIronPermeability</tabstop>
-  <tabstop>tabWidget</tabstop>
  </tabstops>
  <resources/>
  <connections/>
