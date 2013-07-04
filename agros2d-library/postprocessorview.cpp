@@ -932,9 +932,11 @@ void PostprocessorWidget::doApply()
     // read auto range values
     if (chkScalarFieldRangeAuto->isChecked())
     {
-        txtScalarFieldRangeMin->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble());
-        txtScalarFieldRangeMax->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble());
+        txtScalarFieldRangeMin->setValue(m_postHermes->linScalarView().get_min_value());
+        txtScalarFieldRangeMax->setValue(m_postHermes->linScalarView().get_max_value());
     }
+
+    refresh();
 
     // refresh
     emit apply();

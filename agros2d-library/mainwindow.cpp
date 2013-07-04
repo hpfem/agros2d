@@ -1509,7 +1509,7 @@ void MainWindow::setControls()
     actDocumentExportMeshFile->setEnabled(Agros2D::problem()->isMeshed());
     actSolveAdaptiveStep->setEnabled(Agros2D::problem()->fieldInfos().count() > 0 && Agros2D::problem()->fieldInfos().count() <= 1 && (!Agros2D::problem()->isTransient()) );
 
-    postprocessorWidget->refresh();
+    postprocessorWidget->updateControls();
 
     setUpdatesEnabled(true);
 }
