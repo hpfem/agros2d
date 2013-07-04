@@ -6,13 +6,12 @@ problem = a2d.problem(clear = True)
 problem.coordinate_type = "planar"
 problem.mesh_type = "triangle"
 
-
 # fields
 magnetic = agros2d.field("magnetic")
 magnetic.analysis_type = "steadystate"
 magnetic.number_of_refinements = 0
 magnetic.polynomial_order = 2
-magnetic.linearity_type = "linear"
+magnetic.solver = "linear"
 
 magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
 magnetic.add_material("Fe", {"magnetic_permeability" : 500}) 
