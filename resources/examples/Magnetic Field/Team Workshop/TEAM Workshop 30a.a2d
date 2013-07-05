@@ -220,12 +220,12 @@
               <material_label id="8"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="sqrt(2)*3.1e6*cos(-2.0*pi/3.0)"/>
+              <material_type key="magnetic_current_density_external_real" value="sqrt(2)*3.1e6*cos(2.0*pi/3.0)"/>
               <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
               <material_type key="magnetic_remanence" value="0"/>
-              <material_type key="magnetic_current_density_external_imag" value="sqrt(2)*3.1e6*sin(-2.0*pi/3.0)"/>
+              <material_type key="magnetic_current_density_external_imag" value="sqrt(2)*3.1e6*sin(2.0*pi/3.0)"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
@@ -236,12 +236,12 @@
               <material_label id="6"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="-sqrt(2)*3.1e6*cos(-2.0*pi/3.0)"/>
+              <material_type key="magnetic_current_density_external_real" value="-sqrt(2)*3.1e6*cos(2.0*pi/3.0)"/>
               <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
               <material_type key="magnetic_remanence" value="0"/>
-              <material_type key="magnetic_current_density_external_imag" value="-sqrt(2)*3.1e6*sin(-2.0*pi/3.0)"/>
+              <material_type key="magnetic_current_density_external_imag" value="-sqrt(2)*3.1e6*sin(2.0*pi/3.0)"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
@@ -252,12 +252,12 @@
               <material_label id="7"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="sqrt(2)*3.1e6*cos(-4.0*pi/3.0)"/>
+              <material_type key="magnetic_current_density_external_real" value="sqrt(2)*3.1e6*cos(4.0*pi/3.0)"/>
               <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
               <material_type key="magnetic_remanence" value="0"/>
-              <material_type key="magnetic_current_density_external_imag" value="sqrt(2)*3.1e6*sin(-4.0*pi/3.0)"/>
+              <material_type key="magnetic_current_density_external_imag" value="sqrt(2)*3.1e6*sin(4.0*pi/3.0)"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
@@ -268,12 +268,12 @@
               <material_label id="9"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="-sqrt(2)*3.1e6*cos(-4.0*pi/3.0)"/>
+              <material_type key="magnetic_current_density_external_real" value="-sqrt(2)*3.1e6*cos(4.0*pi/3.0)"/>
               <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
               <material_type key="magnetic_remanence" value="0"/>
-              <material_type key="magnetic_current_density_external_imag" value="-sqrt(2)*3.1e6*sin(-4.0*pi/3.0)"/>
+              <material_type key="magnetic_current_density_external_imag" value="-sqrt(2)*3.1e6*sin(4.0*pi/3.0)"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
@@ -398,7 +398,7 @@
     <item key="View_ContoursWidth" value="1"/>
     <item key="View_ShowScalarView" value="1"/>
     <item key="View_ShowScalarColorBar" value="1"/>
-    <item key="View_ScalarVariable" value="magnetic_current_density_total"/>
+    <item key="View_ScalarVariable" value="magnetic_current_density_external"/>
     <item key="View_ScalarVariableComp" value="0"/>
     <item key="View_PaletteType" value="0"/>
     <item key="View_PaletteFilter" value="0"/>
@@ -408,7 +408,7 @@
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
     <item key="View_ScalarRangeMin" value="0"/>
-    <item key="View_ScalarRangeMax" value="21878022.4876596"/>
+    <item key="View_ScalarRangeMax" value="4384062.04335659"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value=""/>
     <item key="View_VectorProportional" value="1"/>
