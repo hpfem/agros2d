@@ -25,6 +25,10 @@
       <node id="19" x="-0.0480417" y="-0.0198995"/>
       <node id="20" x="-0.0295641" y="0.0122459"/>
       <node id="21" x="-0.0295641" y="-0.0122459"/>
+      <node id="22" x="0" y="-0.5"/>
+      <node id="23" x="0.5" y="0"/>
+      <node id="24" x="0" y="0.5"/>
+      <node id="25" x="-0.5" y="0"/>
     </nodes>
     <edges>
       <edge angle="90" end="1" id="0" start="0"/>
@@ -51,14 +55,19 @@
       <edge angle="45" end="19" id="21" start="13"/>
       <edge angle="0" end="13" id="22" start="20"/>
       <edge angle="0" end="19" id="23" start="21"/>
+      <edge angle="90" end="23" id="24" start="22"/>
+      <edge angle="90" end="24" id="25" start="23"/>
+      <edge angle="90" end="25" id="26" start="24"/>
+      <edge angle="90" end="22" id="27" start="25"/>
     </edges>
     <labels>
       <label area="0" id="0" x="-0.0219459" y="0.0500867"/>
-      <label area="0" id="1" x="-0.00691988" y="0.00711759"/>
-      <label area="0" id="2" x="-0.0143011" y="0.021221"/>
-      <label area="0" id="3" x="-0.0186507" y="0.0351925"/>
-      <label area="0" id="4" x="-0.0426396" y="0.00276795"/>
-      <label area="0" id="5" x="0.0415852" y="-0.00289976"/>
+      <label area="6e-06" id="1" x="-0.00691988" y="0.00711759"/>
+      <label area="3e-06" id="2" x="-0.0143011" y="0.021221"/>
+      <label area="5e-06" id="3" x="-0.0186507" y="0.0351925"/>
+      <label area="5e-06" id="4" x="-0.0426396" y="0.00276795"/>
+      <label area="5e-06" id="5" x="0.0415852" y="-0.00289976"/>
+      <label area="0" id="6" x="-0.28823" y="0.248321"/>
     </labels>
   </geometry>
 
@@ -71,10 +80,10 @@
         <boundaries>
           <boundary id="1" name="A = 0" type="magnetic_potential">
             <boundary_edges>
-              <boundary_edge id="8"/>
-              <boundary_edge id="9"/>
-              <boundary_edge id="10"/>
-              <boundary_edge id="11"/>
+              <boundary_edge id="24"/>
+              <boundary_edge id="25"/>
+              <boundary_edge id="26"/>
+              <boundary_edge id="27"/>
             </boundary_edges>
             <boundary_types>
               <boundary_type key="magnetic_potential_imag" value="0"/>
@@ -134,6 +143,7 @@
           <material id="4" name="Air">
             <material_labels>
               <material_label id="3"/>
+              <material_label id="6"/>
             </material_labels>
             <material_types>
               <material_type key="magnetic_current_density_external_real" value="0"/>
@@ -194,7 +204,7 @@
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
-          <field_item field_key="SpaceNumberOfRefinements" field_value="2"/>
+          <field_item field_key="SpaceNumberOfRefinements" field_value="1"/>
           <field_item field_key="SpacePolynomialOrder" field_value="3"/>
           <field_item field_key="AdaptivitySteps" field_value="1"/>
           <field_item field_key="AdaptivityTolerance" field_value="1"/>
@@ -298,8 +308,8 @@
     <item key="View_ContoursWidth" value="1"/>
     <item key="View_ShowScalarView" value="1"/>
     <item key="View_ShowScalarColorBar" value="1"/>
-    <item key="View_ScalarVariable" value="magnetic_flux_density_real"/>
-    <item key="View_ScalarVariableComp" value="1"/>
+    <item key="View_ScalarVariable" value="magnetic_lorentz_torque"/>
+    <item key="View_ScalarVariableComp" value="0"/>
     <item key="View_PaletteType" value="0"/>
     <item key="View_PaletteFilter" value="0"/>
     <item key="View_PaletteSteps" value="30"/>
@@ -307,8 +317,8 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="4.75817742633347e-05"/>
-    <item key="View_ScalarRangeMax" value="0.2719436185061"/>
+    <item key="View_ScalarRangeMin" value="-4447.33288414997"/>
+    <item key="View_ScalarRangeMax" value="5050.14126599905"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value=""/>
     <item key="View_VectorProportional" value="1"/>

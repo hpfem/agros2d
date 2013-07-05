@@ -39,6 +39,10 @@
       <node id="33" x="0.03" y="0"/>
       <node id="34" x="0" y="0.03"/>
       <node id="35" x="-0.03" y="0"/>
+      <node id="36" x="0" y="-0.5"/>
+      <node id="37" x="0.5" y="0"/>
+      <node id="38" x="0" y="0.5"/>
+      <node id="39" x="-0.5" y="0"/>
     </nodes>
     <edges>
       <edge angle="90" end="1" id="0" start="0"/>
@@ -83,11 +87,15 @@
       <edge angle="90" end="34" id="39" start="33"/>
       <edge angle="90" end="35" id="40" start="34"/>
       <edge angle="90" end="32" id="41" start="35"/>
+      <edge angle="90" end="37" id="42" start="36"/>
+      <edge angle="90" end="38" id="43" start="37"/>
+      <edge angle="90" end="39" id="44" start="38"/>
+      <edge angle="90" end="36" id="45" start="39"/>
     </edges>
     <labels>
       <label area="0" id="0" x="-0.0219459" y="0.0500867"/>
-      <label area="0" id="1" x="-0.00691988" y="0.00711759"/>
-      <label area="0" id="2" x="-0.0143011" y="0.021221"/>
+      <label area="4e-06" id="1" x="-0.00691988" y="0.00711759"/>
+      <label area="4e-06" id="2" x="-0.0143011" y="0.021221"/>
       <label area="0" id="3" x="-0.000596728" y="0.039381"/>
       <label area="0" id="4" x="-0.0426396" y="0.00276795"/>
       <label area="0" id="5" x="0.0415852" y="-0.00289976"/>
@@ -95,6 +103,7 @@
       <label area="0" id="7" x="-0.0243368" y="0.0356746"/>
       <label area="0" id="8" x="-0.0197149" y="-0.0359635"/>
       <label area="0" id="9" x="0.0182706" y="-0.0336526"/>
+      <label area="0" id="10" x="-0.251489" y="0.301533"/>
     </labels>
   </geometry>
 
@@ -107,10 +116,10 @@
         <boundaries>
           <boundary id="1" name="A = 0" type="magnetic_potential">
             <boundary_edges>
-              <boundary_edge id="4"/>
-              <boundary_edge id="5"/>
-              <boundary_edge id="6"/>
-              <boundary_edge id="7"/>
+              <boundary_edge id="42"/>
+              <boundary_edge id="43"/>
+              <boundary_edge id="44"/>
+              <boundary_edge id="45"/>
             </boundary_edges>
             <boundary_types>
               <boundary_type key="magnetic_potential_imag" value="0"/>
@@ -170,6 +179,7 @@
           <material id="4" name="Air">
             <material_labels>
               <material_label id="3"/>
+              <material_label id="10"/>
             </material_labels>
             <material_types>
               <material_type key="magnetic_current_density_external_real" value="0"/>
@@ -296,7 +306,7 @@
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
           <field_item field_key="SpaceNumberOfRefinements" field_value="1"/>
           <field_item field_key="SpacePolynomialOrder" field_value="3"/>
-          <field_item field_key="AdaptivitySteps" field_value="1"/>
+          <field_item field_key="AdaptivitySteps" field_value="10"/>
           <field_item field_key="AdaptivityTolerance" field_value="1"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="3"/>
           <field_item field_key="AdaptivityTransientRedoneEach" field_value="5"/>
@@ -391,14 +401,14 @@
     <item key="View_ColorCrossedGreen" value="0"/>
     <item key="View_ColorCrossedBlue" value="0"/>
     <item key="View_ShowInitialMeshView" value="1"/>
-    <item key="View_ShowSolutionMeshView" value="0"/>
+    <item key="View_ShowSolutionMeshView" value="1"/>
     <item key="View_ContourVariable" value="magnetic_potential_real"/>
-    <item key="View_ShowContourView" value="1"/>
+    <item key="View_ShowContourView" value="0"/>
     <item key="View_ContoursCount" value="15"/>
     <item key="View_ContoursWidth" value="1"/>
     <item key="View_ShowScalarView" value="1"/>
     <item key="View_ShowScalarColorBar" value="1"/>
-    <item key="View_ScalarVariable" value="magnetic_current_density_external"/>
+    <item key="View_ScalarVariable" value="magnetic_lorentz_torque"/>
     <item key="View_ScalarVariableComp" value="0"/>
     <item key="View_PaletteType" value="0"/>
     <item key="View_PaletteFilter" value="0"/>
@@ -407,8 +417,8 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="0"/>
-    <item key="View_ScalarRangeMax" value="4384062.04335659"/>
+    <item key="View_ScalarRangeMin" value="-4273.49394953444"/>
+    <item key="View_ScalarRangeMax" value="5234.57896897403"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value=""/>
     <item key="View_VectorProportional" value="1"/>
