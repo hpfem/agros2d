@@ -200,6 +200,10 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
         INCLUDEPATH += /usr/lib/petscdir/3.2/include/
         INCLUDEPATH += /usr/lib/openmpi/include/
     }
+
+    contains(CONFIG, WITH_PARALUTION_OPENCL) {
+        LIBS += -lOpenCL
+    }
 }
 
 macx-g++ {

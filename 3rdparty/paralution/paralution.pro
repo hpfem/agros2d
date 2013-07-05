@@ -52,6 +52,22 @@ linux-g++|linux-g++-64|linux-g++-32 {
     QMAKE_LFLAGS += -fopenmp
     QMAKE_CXXFLAGS += -fopenmp
 
+    contains(CONFIG, WITH_PARALUTION_OPENCL) {
+        DEFINES += SUPPORT_OCL
+
+        SOURCES += src/base/ocl/ocl_allocate_free.cpp \
+            src/base/ocl/backend_ocl.cpp \
+            src/base/ocl/ocl_vector.cpp \
+            src/base/ocl/ocl_matrix_csr.cpp \
+            src/base/ocl/ocl_matrix_coo.cpp \
+            src/base/ocl/ocl_matrix_dense.cpp \
+            src/base/ocl/ocl_matrix_mcsr.cpp \
+            src/base/ocl/ocl_matrix_bcsr.cpp \
+            src/base/ocl/ocl_matrix_ell.cpp \
+            src/base/ocl/ocl_matrix_dia.cpp \
+            src/base/ocl/ocl_matrix_hyb.cpp
+    }
+
     INCLUDEPATH += /usr/include/google
 }
 

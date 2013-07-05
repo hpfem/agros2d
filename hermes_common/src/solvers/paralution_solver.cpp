@@ -368,6 +368,11 @@ namespace Hermes
       this->init_internal_solver();
 
       // Solve.
+      // matrix->get_paralutionMatrix().MoveToAccelerator();
+      // rhs->get_paralutionVector().MoveToAccelerator();
+      // x.MoveToAccelerator();
+      // paralutionSolver->Build();
+
       paralutionSolver->Solve(rhs->get_paralutionVector(), &x);
 
       // Store num_iters.
@@ -377,6 +382,7 @@ namespace Hermes
       final_residual = paralutionSolver->GetCurrentResidual();
 
       // Destroy the paralution vector, keeping the data in sln.
+      // x.MoveToHost();
       x.LeaveDataPtr(&this->sln);
 
       return true;
