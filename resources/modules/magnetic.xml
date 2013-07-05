@@ -118,7 +118,7 @@
     <module:weakforms_surface>
       <module:weakform_surface analysistype="steadystate" default="magnetic_potential">
         <module:boundary equation="A = A_0" id="magnetic_potential" name="Magnetic potential">
-          <module:quantity id="magnetic_potential_real"/>
+          <module:quantity dependence="space" id="magnetic_potential_real"/>
           <module:essential_form axi_linear="Ar" axi_newton="Ar" i="1" id="form" planar_linear="Ar" planar_newton="Ar"/>
         </module:boundary>
         <module:boundary equation="K = - \frac{1}{\mu} \frac{\partial A}{\partial n_0} = K_0" id="magnetic_surface_current" name="Surface current">
@@ -128,7 +128,7 @@
       </module:weakform_surface>
       <module:weakform_surface analysistype="transient" default="magnetic_potential">
         <module:boundary equation="A = A_0" id="magnetic_potential" name="Magnetic potential">
-          <module:quantity id="magnetic_potential_real"/>
+          <module:quantity dependence="space" id="magnetic_potential_real"/>
           <module:essential_form axi_linear="Ar" axi_newton="Ar" i="1" id="form" planar_linear="Ar" planar_newton="Ar"/>
         </module:boundary>
         <module:boundary equation="K = - \frac{1}{\mu} \frac{\partial A}{\partial n_0} = K_0" id="magnetic_surface_current" name="Surface current">
@@ -138,8 +138,8 @@
       </module:weakform_surface>
       <module:weakform_surface analysistype="harmonic" default="magnetic_potential">
         <module:boundary equation="\vecfaz{A} = \vecfaz{A}_0" id="magnetic_potential" name="Magnetic potential">
-          <module:quantity id="magnetic_potential_real"/>
-          <module:quantity id="magnetic_potential_imag"/>
+          <module:quantity dependence="space" id="magnetic_potential_real"/>
+          <module:quantity dependence="space" id="magnetic_potential_imag"/>
           <module:essential_form axi_linear="Ar" axi_newton="Ar" i="1" id="form" planar_linear="Ar" planar_newton="Ar"/>
           <module:essential_form axi_linear="Ai" axi_newton="Ai" i="2" id="form" planar_linear="Ai" planar_newton="Ai"/>
         </module:boundary>
