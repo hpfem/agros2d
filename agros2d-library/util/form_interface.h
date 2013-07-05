@@ -25,6 +25,8 @@
 #include "util.h"
 #include "hermes2d.h"
 
+class PythonScriptingConsoleView;
+
 // plugin interface
 class AGROS_API FormInterface : public QDialog
 {   
@@ -46,7 +48,7 @@ protected:
 
 // read forms
 void readCustomForms(QMenu *menu);
-void readCustomScripts(QMenu *menu);
+void readCustomScripts(QMenu *menu, PythonScriptingConsoleView *consoleView);
 
 QT_BEGIN_NAMESPACE
 Q_DECLARE_INTERFACE(FormInterface, "agros2d.FormInterface/1.0")

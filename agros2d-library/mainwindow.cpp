@@ -556,7 +556,7 @@ void MainWindow::createMenus()
     mnuTools->addSeparator();
     mnuCustomForms = new QMenu(tr("Custom forms"), this);
     mnuTools->addMenu(mnuCustomForms);
-    readCustomScripts(mnuCustomForms);
+    readCustomScripts(mnuCustomForms, consoleView);
     // mnuCustomForms->addSeparator();
     // readCustomForms(mnuCustomForms);
 #ifdef Q_WS_WIN

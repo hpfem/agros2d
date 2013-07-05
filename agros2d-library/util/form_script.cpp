@@ -29,8 +29,8 @@
 
 #include "../../resources_source/classes/form_xml.h"
 
-FormScript::FormScript(const QString &fileName, QWidget *parent)
-    : FormInterface(parent), fileName(fileName), mainWidget(NULL)
+FormScript::FormScript(const QString &fileName, PythonScriptingConsoleView *consoleView, QWidget *parent)
+    : FormInterface(parent), fileName(fileName), consoleView(consoleView), mainWidget(NULL)
 {
     // setAttribute(Qt::WA_DeleteOnClose);
 
@@ -351,16 +351,26 @@ void FormScript::acceptForm()
         ctemplate::ExpandTemplate(compatibleFilename(scriptFileName).toStdString(),
                                   ctemplate::DO_NOT_STRIP, &script, &info);
 
-        writeStringContent(tempProblemDir() + "/script.py", QString::fromStdString(info));
+        // writeStringContent(tempProblemDir() + "/script.py", QString::fromStdString(info));
+        consoleView->console()->consoleMessage(tr("Custom form: %1\n").
+                                               arg(windowTitle()),
+                                               Qt::gray);
+
+        consoleView->console()->connectStdOut();
         ScriptResult result = currentPythonEngineAgros()->runScript(QString::fromStdString(info));
+        consoleView->console()->disconnectStdOut();
 
         if (result.isError)
         {
             errorMessage->setVisible(true);
             errorMessage->setText(result.text + "\n" + result.traceback);
+
+            consoleView->console()->stdErr(result.text);
+            consoleView->console()->appendCommandPrompt();
         }
         else
         {
+            consoleView->console()->appendCommandPrompt();
             accept();
         }
     }
