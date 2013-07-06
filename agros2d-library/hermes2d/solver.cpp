@@ -607,6 +607,7 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
         Agros2D::log()->printDebug(m_solverID, QObject::tr("DOF is zero"));
         throw(AgrosSolverException("DOF is zero"));
     }
+    Agros2D::log()->printDebug(QObject::tr("Solver"), QObject::tr("Number of DOFs: %1").arg(ndof));
 
     // cout << QString("updating with time %1\n").arg(Agros2D::problem()->actualTime()).toStdString() << endl;
     m_block->updateExactSolutionFunctions();

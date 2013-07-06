@@ -609,6 +609,9 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
 
         m_lastTimeElapsed = milisecondsToTime(timeCounter.elapsed());
 
+        // elapsed time
+        Agros2D::log()->printDebug(QObject::tr("Solver"), QObject::tr("Elapsed time: %1").arg(m_lastTimeElapsed.toString("mm:ss.zzz")));
+
         // delete temp file
         if (config()->fileName() == tempProblemFileName() + ".a2d")
         {
@@ -875,7 +878,6 @@ void Problem::stepMessage(Block* block)
         else
             Agros2D::log()->printMessage(QObject::tr("Solver (%1)").arg(fields), QObject::tr("Fields solving (coupled analysis)"));
     }
-
 }
 
 
