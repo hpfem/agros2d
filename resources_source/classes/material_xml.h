@@ -258,7 +258,7 @@ namespace XMLMaterial
   class properties;
   class property;
   class constant;
-  class dependence;
+  class nonlinearity;
   class table;
   class function;
 }
@@ -497,26 +497,26 @@ namespace XMLMaterial
     void
     constant (::std::auto_ptr< constant_type > p);
 
-    // dependence
+    // nonlinearity
     // 
-    typedef ::XMLMaterial::dependence dependence_type;
-    typedef ::xsd::cxx::tree::optional< dependence_type > dependence_optional;
-    typedef ::xsd::cxx::tree::traits< dependence_type, char > dependence_traits;
+    typedef ::XMLMaterial::nonlinearity nonlinearity_type;
+    typedef ::xsd::cxx::tree::optional< nonlinearity_type > nonlinearity_optional;
+    typedef ::xsd::cxx::tree::traits< nonlinearity_type, char > nonlinearity_traits;
 
-    const dependence_optional&
-    dependence () const;
+    const nonlinearity_optional&
+    nonlinearity () const;
 
-    dependence_optional&
-    dependence ();
-
-    void
-    dependence (const dependence_type& x);
+    nonlinearity_optional&
+    nonlinearity ();
 
     void
-    dependence (const dependence_optional& x);
+    nonlinearity (const nonlinearity_type& x);
 
     void
-    dependence (::std::auto_ptr< dependence_type > p);
+    nonlinearity (const nonlinearity_optional& x);
+
+    void
+    nonlinearity (::std::auto_ptr< nonlinearity_type > p);
 
     // name
     // 
@@ -569,40 +569,6 @@ namespace XMLMaterial
     void
     unit (::std::auto_ptr< unit_type > p);
 
-    // dependence_shortname
-    // 
-    typedef ::xml_schema::string dependence_shortname_type;
-    typedef ::xsd::cxx::tree::traits< dependence_shortname_type, char > dependence_shortname_traits;
-
-    const dependence_shortname_type&
-    dependence_shortname () const;
-
-    dependence_shortname_type&
-    dependence_shortname ();
-
-    void
-    dependence_shortname (const dependence_shortname_type& x);
-
-    void
-    dependence_shortname (::std::auto_ptr< dependence_shortname_type > p);
-
-    // dependence_unit
-    // 
-    typedef ::xml_schema::string dependence_unit_type;
-    typedef ::xsd::cxx::tree::traits< dependence_unit_type, char > dependence_unit_traits;
-
-    const dependence_unit_type&
-    dependence_unit () const;
-
-    dependence_unit_type&
-    dependence_unit ();
-
-    void
-    dependence_unit (const dependence_unit_type& x);
-
-    void
-    dependence_unit (::std::auto_ptr< dependence_unit_type > p);
-
     // source
     // 
     typedef ::xml_schema::string source_type;
@@ -620,14 +586,66 @@ namespace XMLMaterial
     void
     source (::std::auto_ptr< source_type > p);
 
+    // nonlinearity_kind
+    // 
+    typedef ::xml_schema::string nonlinearity_kind_type;
+    typedef ::xsd::cxx::tree::traits< nonlinearity_kind_type, char > nonlinearity_kind_traits;
+
+    const nonlinearity_kind_type&
+    nonlinearity_kind () const;
+
+    nonlinearity_kind_type&
+    nonlinearity_kind ();
+
+    void
+    nonlinearity_kind (const nonlinearity_kind_type& x);
+
+    void
+    nonlinearity_kind (::std::auto_ptr< nonlinearity_kind_type > p);
+
+    // independent_shortname
+    // 
+    typedef ::xml_schema::string independent_shortname_type;
+    typedef ::xsd::cxx::tree::traits< independent_shortname_type, char > independent_shortname_traits;
+
+    const independent_shortname_type&
+    independent_shortname () const;
+
+    independent_shortname_type&
+    independent_shortname ();
+
+    void
+    independent_shortname (const independent_shortname_type& x);
+
+    void
+    independent_shortname (::std::auto_ptr< independent_shortname_type > p);
+
+    // independent_unit
+    // 
+    typedef ::xml_schema::string independent_unit_type;
+    typedef ::xsd::cxx::tree::traits< independent_unit_type, char > independent_unit_traits;
+
+    const independent_unit_type&
+    independent_unit () const;
+
+    independent_unit_type&
+    independent_unit ();
+
+    void
+    independent_unit (const independent_unit_type& x);
+
+    void
+    independent_unit (::std::auto_ptr< independent_unit_type > p);
+
     // Constructors.
     //
     property (const name_type&,
               const shortname_type&,
               const unit_type&,
-              const dependence_shortname_type&,
-              const dependence_unit_type&,
-              const source_type&);
+              const source_type&,
+              const nonlinearity_kind_type&,
+              const independent_shortname_type&,
+              const independent_unit_type&);
 
     property (const ::xercesc::DOMElement& e,
               ::xml_schema::flags f = 0,
@@ -653,13 +671,14 @@ namespace XMLMaterial
 
     protected:
     constant_optional constant_;
-    dependence_optional dependence_;
+    nonlinearity_optional nonlinearity_;
     ::xsd::cxx::tree::one< name_type > name_;
     ::xsd::cxx::tree::one< shortname_type > shortname_;
     ::xsd::cxx::tree::one< unit_type > unit_;
-    ::xsd::cxx::tree::one< dependence_shortname_type > dependence_shortname_;
-    ::xsd::cxx::tree::one< dependence_unit_type > dependence_unit_;
     ::xsd::cxx::tree::one< source_type > source_;
+    ::xsd::cxx::tree::one< nonlinearity_kind_type > nonlinearity_kind_;
+    ::xsd::cxx::tree::one< independent_shortname_type > independent_shortname_;
+    ::xsd::cxx::tree::one< independent_unit_type > independent_unit_;
   };
 
   class constant: public ::xml_schema::type
@@ -709,7 +728,7 @@ namespace XMLMaterial
     ::xsd::cxx::tree::one< value_type > value_;
   };
 
-  class dependence: public ::xml_schema::type
+  class nonlinearity: public ::xml_schema::type
   {
     public:
     // table
@@ -756,22 +775,22 @@ namespace XMLMaterial
 
     // Constructors.
     //
-    dependence ();
+    nonlinearity ();
 
-    dependence (const ::xercesc::DOMElement& e,
-                ::xml_schema::flags f = 0,
-                ::xml_schema::container* c = 0);
+    nonlinearity (const ::xercesc::DOMElement& e,
+                  ::xml_schema::flags f = 0,
+                  ::xml_schema::container* c = 0);
 
-    dependence (const dependence& x,
-                ::xml_schema::flags f = 0,
-                ::xml_schema::container* c = 0);
+    nonlinearity (const nonlinearity& x,
+                  ::xml_schema::flags f = 0,
+                  ::xml_schema::container* c = 0);
 
-    virtual dependence*
+    virtual nonlinearity*
     _clone (::xml_schema::flags f = 0,
             ::xml_schema::container* c = 0) const;
 
     virtual 
-    ~dependence ();
+    ~nonlinearity ();
 
     // Implementation.
     //
@@ -957,7 +976,7 @@ namespace XMLMaterial
   operator<< (::std::ostream&, const constant&);
 
   ::std::ostream&
-  operator<< (::std::ostream&, const dependence&);
+  operator<< (::std::ostream&, const nonlinearity&);
 
   ::std::ostream&
   operator<< (::std::ostream&, const table&);
@@ -1162,7 +1181,7 @@ namespace XMLMaterial
   operator<< (::xercesc::DOMElement&, const constant&);
 
   void
-  operator<< (::xercesc::DOMElement&, const dependence&);
+  operator<< (::xercesc::DOMElement&, const nonlinearity&);
 
   void
   operator<< (::xercesc::DOMElement&, const table&);

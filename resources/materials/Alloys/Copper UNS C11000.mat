@@ -4,23 +4,23 @@
   <material:general description="alloy with 99.0 Cu minimum (wt%)" name="Copper UNS C11000"/>
 
   <material:properties>
-    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" name="Thermal conductivity" shortname="&lt;i>&amp;lambda;&lt;/i>" source="ASM Handbook, vol 2, 10th edition, ASM International (1992)" unit="W/m.K">
+    <material:property nonlinearity_kind="function" independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Thermal conductivity" shortname="&lt;i>&amp;lambda;&lt;/i>" source="ASM Handbook, vol 2, 10th edition, ASM International (1992)" unit="W/m.K">
       <material:constant value="387.17"/>
-      <material:dependence>
+      <material:nonlinearity>
         <material:function body="def agros2d_material(t) :&#xA;&#x9;if t >= 194.0 and t &lt;= 973.0 :&#xA;&#x9;&#x9;return -4.525271e-07*t*t*t +6.661624e-04*t*t -3.752528e-01*t +4.513077e+02&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100&#xA;" interval_from="194" interval_to="973"/>
-      </material:dependence>
+      </material:nonlinearity>
     </material:property>
-    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" name="Specific heat" shortname="&lt;i>c&lt;/i>&lt;sub>p&lt;/sub>" source="G.K. White and S.J. Collocott, J. Phys. Chem. Ref. Data, vol 13, no 4, p1251 (1984)" unit="J/kg.K">
+    <material:property nonlinearity_kind="function" independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Specific heat" shortname="&lt;i>c&lt;/i>&lt;sub>p&lt;/sub>" source="G.K. White and S.J. Collocott, J. Phys. Chem. Ref. Data, vol 13, no 4, p1251 (1984)" unit="J/kg.K">
       <material:constant value="382.61"/>
-      <material:dependence>
+      <material:nonlinearity>
         <material:function body="def agros2d_material(t) :&#xA;&#x9;if t >= 293.0 and t &lt;= 1300.0 :&#xA;&#x9;&#x9;return 1.140747e-10*t*t*t*t -1.971221e-07*t*t*t +5.535252e-05*t*t +1.338348e-01*t +3.427640e+02&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100&#xA;" interval_from="293" interval_to="1300"/>
-      </material:dependence>
+      </material:nonlinearity>
     </material:property>
-    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" name="Density" shortname="&lt;i>&amp;rho;&lt;/i>" source="ASM Handbook, vol 2, 10th edition, ASM International (1992); calculated from the linear expansion" unit="kg/m&lt;sup>3&lt;/sup>">
+    <material:property nonlinearity_kind="function" independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Density" shortname="&lt;i>&amp;rho;&lt;/i>" source="ASM Handbook, vol 2, 10th edition, ASM International (1992); calculated from the linear expansion" unit="kg/m&lt;sup>3&lt;/sup>">
       <material:constant value="8889.5"/>
-      <material:dependence>
+      <material:nonlinearity>
         <material:function body="def agros2d_material(t) :&#xA;&#x9;if t >= 83.0 and t &lt;= 1373.0 :&#xA;&#x9;&#x9;return -1.475948e-04*t*t -3.630825e-01*t +9.008531e+03&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100&#xA;" interval_from="83" interval_to="1373"/>
-      </material:dependence>
+      </material:nonlinearity>
     </material:property>
   </material:properties>
 

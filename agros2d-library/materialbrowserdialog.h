@@ -26,6 +26,7 @@
 
 class LineEditDouble;
 class QCustomPlot;
+class ScriptEditor;
 
 class MaterialEditDialog : public QDialog
 {
@@ -43,9 +44,26 @@ protected:
 
     enum NonlinearityType
     {
-        Function = 0,
-        Table = 1
+        Function = 1,
+        Table = 2
     };
+
+    inline QString nonlinearityTypeToStringKey(NonlinearityType type)
+    {
+        if (type == MaterialEditDialog::Table)
+            return "table";
+        else
+            return "function";
+    }
+
+    inline NonlinearityType nonlinearityTypeFromStringKey(const QString &type)
+    {
+        if (type == "table")
+            return MaterialEditDialog::Table;
+        else
+            return MaterialEditDialog::Function;
+    }
+
 
 private:
     QString m_fileName;
@@ -63,39 +81,41 @@ private:
     QLineEdit *txtPropertyShortname;
     QLineEdit *txtPropertyUnit;
     QLineEdit *txtPropertySource;
-    QLineEdit *txtPropertyDependenceShortname;
-    QLineEdit *txtPropertyDependenceUnit;
-    QComboBox *cmbNonlinearDependence;
+    QLineEdit *txtPropertyIndependentVariableShortname;
+    QLineEdit *txtPropertyIndependentVariableUnit;
+    QComboBox *cmbPropertyNonlinearityType;
 
     LineEditDouble *txtPropertyConstant;
 
     QPlainTextEdit *txtPropertyTableKeys;
     QPlainTextEdit *txtPropertyTableValues;
 
-    QPlainTextEdit *txtPropertyFunction;
+    ScriptEditor *txtPropertyFunction;
     LineEditDouble *txtPropertyFunctionFrom;
     LineEditDouble *txtPropertyFunctionTo;
 
-    QWidget *widNonlinearTable;
-    QWidget *widNonlinearFunction;
-    QStackedLayout *layoutNonlinear;
+    QGroupBox *widNonlinearTable;
+    QGroupBox *widNonlinearFunction;
+    QGroupBox *widChartNonlinear;
+    QStackedLayout *layoutNonlinearType;
     QCustomPlot *chartNonlinear;
 
     QPushButton *btnDeleteProperty;
 
     QWidget *createPropertyGUI();
 
-    void readProperty(XMLMaterial::property prop = XMLMaterial::property("", "", "", "", "", ""));
-    XMLMaterial::property writeProperty();    
+    void readProperty(XMLMaterial::property prop = XMLMaterial::property("", "", "", "", "none", "", ""));
+    XMLMaterial::property writeProperty();
 
 private slots:
     void doAccept();
-    void addProperty(const QString &name = "", const QString &shortname = "", const QString &unit = "", const QString &dependenceShortname = "", const QString &dependenceUnit = "");
+    void addProperty(const QString &name = "", const QString &shortname = "", const QString &unit = "", const QString &nonlinearityKind = "",
+                     const QString &indepedentShortname = "", const QString &indepedentUnit = "");
     // TODO: more general
-    inline void addPropertyThermalConductivity() { addProperty("Thermal conductivity", "<i>&lambda;</i>", "W/m.K", "<i>T</i>", "K"); }
-    inline void addPropertySpecificHeat() { addProperty("Specific heat", "<i>c</i><sub>p</sub>", "J/kg.K", "<i>T</i>", "K"); }
-    inline void addPropertyDensity() { addProperty("Density", "<i>&rho;</i>", "kg/m<sup>3</sup>", "<i>T</i>", "K"); }
-    inline void addPropertyMagneticPermeability() { addProperty("Magnetic permeability", "<i>&mu;</i><sub>r</sub>", "-", "<i>B</i>", "T"); }
+    inline void addPropertyThermalConductivity() { addProperty("Thermal conductivity", "<i>&lambda;</i>", "W/m.K", "function", "<i>T</i>", "K"); }
+    inline void addPropertySpecificHeat() { addProperty("Specific heat", "<i>c</i><sub>p</sub>", "J/kg.K", "function", "<i>T</i>", "K"); }
+    inline void addPropertyDensity() { addProperty("Density", "<i>&rho;</i>", "kg/m<sup>3</sup>", "function", "<i>T</i>", "K"); }
+    inline void addPropertyMagneticPermeability() { addProperty("Magnetic permeability", "<i>&mu;</i><sub>r</sub>", "-", "function", "<i>B</i>", "T"); }
 
     void deleteProperty();
 
@@ -135,7 +155,7 @@ private:
     QList<double> m_selected_x;
     QList<double> m_selected_y;
 
-    bool m_select;    
+    bool m_select;
 
 private slots:
     void doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);

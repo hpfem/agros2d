@@ -4,23 +4,23 @@
   <material:general description="" name="Tin"/>
 
   <material:properties>
-    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" name="Thermal conductivity" shortname="&lt;i>&amp;lambda;&lt;/i>" source="W. Hemminger, High Temperatures-High Pressures, v17, p465 (1985) and C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)" unit="W/m.K">
+    <material:property nonlinearity_kind="function" independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Thermal conductivity" shortname="&lt;i>&amp;lambda;&lt;/i>" source="W. Hemminger, High Temperatures-High Pressures, v17, p465 (1985) and C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)" unit="W/m.K">
       <material:constant value="65"/>
-      <material:dependence>
+      <material:nonlinearity>
         <material:function body="def agros2d_material(t):&#xA;&#x9;if t >= 0.0 and t &lt; 4.0 :&#xA;&#x9;&#x9;return 8.291667e+02*t*t*t*t -7.025000e+03*t*t*t +1.312083e+04*t*t +1.137500e+04*t&#xA;&#x9;elif t >= 4.0 and t &lt; 14.0 :&#xA;&#x9;&#x9;return -4.038462e-01*t*t*t*t*t +2.279429e+01*t*t*t*t -5.205041e+02*t*t*t +6.076903e+03*t*t -3.692832e+04*t +9.647674e+04&#xA;&#x9;elif t >= 14.0 and t &lt; 30.0 :&#xA;&#x9;&#x9;return -9.478409e-04*t*t*t*t*t +1.266120e-01*t*t*t*t -6.745340e+00*t*t*t +1.800745e+02*t*t -2.431911e+03*t +1.366737e+04&#xA;&#x9;elif t >= 30.0 and t &lt; 40.0 :&#xA;&#x9;&#x9;return -2.838415e-05*t*t*t*t*t +5.937527e-03*t*t*t*t -4.901099e-01*t*t*t +2.007503e+01*t*t -4.134194e+02*t +3.623881e+03&#xA;&#x9;elif t >= 40.0 and t &lt; 144.0 :&#xA;&#x9;&#x9;return -1.221287e-08*t*t*t*t*t +6.656333e-06*t*t*t*t -1.470912e-03*t*t*t +1.672072e-01*t*t -1.005490e+01*t +3.459466e+02&#xA;&#x9;elif t >= 144.0 and t &lt;= 505.0 :&#xA;&#x9;&#x9;return -1.178383e-07*t*t*t +2.668174e-04*t*t -1.919946e-01*t +1.014997e+02&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100&#xA;&#xA;" interval_from="0" interval_to="505"/>
-      </material:dependence>
+      </material:nonlinearity>
     </material:property>
-    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" name="Specific heat" shortname="&lt;i>c&lt;/i>&lt;sub>p&lt;/sub>" source="B.J. McBride, S. Gordon and M.A. Reno, NASA Technical Paper 3287 (1993)" unit="J/kg.K">
+    <material:property nonlinearity_kind="function" independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Specific heat" shortname="&lt;i>c&lt;/i>&lt;sub>p&lt;/sub>" source="B.J. McBride, S. Gordon and M.A. Reno, NASA Technical Paper 3287 (1993)" unit="J/kg.K">
       <material:constant value="228"/>
-      <material:dependence>
+      <material:nonlinearity>
         <material:function body="def agros2d_material(t):&#xA;&#x9;if t >= 100.0 and t &lt;= 505.0 :&#xA;&#x9;&#x9;return -4.114243e-09*t*t*t*t +6.354655e-06*t*t*t -3.448775e-03*t*t +9.269819e-01*t +1.229970e+02&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100&#xA;&#xA;" interval_from="100" interval_to="505"/>
-      </material:dependence>
+      </material:nonlinearity>
     </material:property>
-    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" name="Density" shortname="&lt;i>&amp;rho;&lt;/i>" source="V.T. Deshpande and D.B. Sirdeshmukh, Acta Cryst., v14, p355 (1961)" unit="kg/m&lt;sup>3&lt;/sup>">
+    <material:property nonlinearity_kind="function" independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Density" shortname="&lt;i>&amp;rho;&lt;/i>" source="V.T. Deshpande and D.B. Sirdeshmukh, Acta Cryst., v14, p355 (1961)" unit="kg/m&lt;sup>3&lt;/sup>">
       <material:constant value="7300"/>
-      <material:dependence>
+      <material:nonlinearity>
         <material:function body="def agros2d_material(t):&#xA;&#x9;if t >= 293.0 and t &lt;= 424.0 :&#xA;&#x9;&#x9;return -4.399093e-04*t*t -2.563575e-01*t +7.412882e+03&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100&#xA;&#xA;" interval_from="293" interval_to="424"/>
-      </material:dependence>
+      </material:nonlinearity>
     </material:property>
   </material:properties>
 

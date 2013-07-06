@@ -100,17 +100,18 @@ void MaterialEditDialog::createControls()
 {    
     lstProperties = new QListWidget(this);
     lstProperties->setMouseTracking(true);
+    lstProperties->setMaximumWidth(200);
 
     connect(lstProperties, SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)), this, SLOT(doPropertyChanged(QListWidgetItem *, QListWidgetItem *)));
 
     txtName = new QLineEdit();
     txtDescription = new QLineEdit();
 
-    QGridLayout *layoutProperty = new QGridLayout();
-    layoutProperty->addWidget(new QLabel(tr("Name:")), 0, 0);
-    layoutProperty->addWidget(txtName, 0, 1);
-    layoutProperty->addWidget(new QLabel(tr("Description:")), 1, 0);
-    layoutProperty->addWidget(txtDescription, 2, 0, 1, 3);
+    QGridLayout *layoutNameAndDescription = new QGridLayout();
+    layoutNameAndDescription->addWidget(new QLabel(tr("Name:")), 0, 0);
+    layoutNameAndDescription->addWidget(txtName, 0, 1);
+    layoutNameAndDescription->addWidget(new QLabel(tr("Description:")), 1, 0);
+    layoutNameAndDescription->addWidget(txtDescription, 2, 0, 1, 3);
 
     QPushButton *btnAddProperty = new QPushButton(tr("Add..."));
     btnAddProperty->setDefault(false);
@@ -143,25 +144,84 @@ void MaterialEditDialog::createControls()
     btnDeleteProperty->setDefault(false);
     connect(btnDeleteProperty, SIGNAL(clicked()), this, SLOT(deleteProperty()));
 
-    QGridLayout *layoutProperties = new QGridLayout();
-    layoutProperties->addWidget(lstProperties, 0, 0, 1, 2);
-    layoutProperties->addWidget(btnAddProperty, 1, 0);
-    layoutProperties->addWidget(btnDeleteProperty, 1, 1);
+    QGridLayout *layoutList = new QGridLayout();
+    layoutList->addWidget(lstProperties, 0, 0, 1, 2);
+    layoutList->addWidget(btnAddProperty, 1, 0);
+    layoutList->addWidget(btnDeleteProperty, 1, 1);
 
     propertyGUI = createPropertyGUI();
 
-    QHBoxLayout *layoutMaterial = new QHBoxLayout();
-    layoutMaterial->addLayout(layoutProperties);
-    layoutMaterial->addWidget(propertyGUI, 1);
+    QHBoxLayout *layoutNonlinearProperties = new QHBoxLayout();
+    layoutNonlinearProperties->addLayout(layoutList);
+    layoutNonlinearProperties->addWidget(propertyGUI, 1);
+
+    // table
+    txtPropertyTableKeys = new QPlainTextEdit();
+    txtPropertyTableValues = new QPlainTextEdit();
+
+    QGridLayout *layoutTable = new QGridLayout();
+    layoutTable->addWidget(new QLabel(tr("Keys:")), 0, 0);
+    layoutTable->addWidget(txtPropertyTableKeys, 1, 0);
+    layoutTable->addWidget(new QLabel(tr("Values:")), 0, 1);
+    layoutTable->addWidget(txtPropertyTableValues, 1, 1);
+
+    widNonlinearTable = new QGroupBox(tr("Table"));
+    widNonlinearTable->setLayout(layoutTable);
+
+    // function
+    txtPropertyFunction = new ScriptEditor(currentPythonEngine(), this);
+    txtPropertyFunctionFrom = new LineEditDouble(0.0);
+    txtPropertyFunctionTo = new LineEditDouble(0.0);
+
+    QGridLayout *layoutFunction = new QGridLayout();
+    layoutFunction->addWidget(txtPropertyFunction, 0, 0, 1, 4);
+    layoutFunction->addWidget(new QLabel(tr("From:")), 1, 0);
+    layoutFunction->addWidget(txtPropertyFunctionFrom, 1, 1);
+    layoutFunction->addWidget(new QLabel(tr("To:")), 1, 2);
+    layoutFunction->addWidget(txtPropertyFunctionTo, 1, 3);
+    layoutFunction->setRowStretch(0, 1);
+
+    widNonlinearFunction = new QGroupBox(tr("Nonlinear function"));
+    widNonlinearFunction->setLayout(layoutFunction);
+
+    chartNonlinear = new QCustomPlot();
+    chartNonlinear->setInteractions(QCustomPlot::iRangeDrag | QCustomPlot::iRangeZoom);
+    chartNonlinear->setRangeDrag(Qt::Horizontal|Qt::Vertical);
+    chartNonlinear->setRangeZoom(Qt::Horizontal|Qt::Vertical);
+    chartNonlinear->setMinimumHeight(120);
+    chartNonlinear->addGraph();
+    chartNonlinear->graph(0)->setLineStyle(QCPGraph::lsLine);
+
+    QHBoxLayout *layoutChartNonlinear = new QHBoxLayout();
+    layoutChartNonlinear->addWidget(chartNonlinear);
+
+    widChartNonlinear = new QGroupBox(tr("Chart"));
+    widChartNonlinear->setLayout(layoutChartNonlinear);
+
+    layoutNonlinearType = new QStackedLayout();
+    layoutNonlinearType->addWidget(widNonlinearFunction);
+    layoutNonlinearType->addWidget(widNonlinearTable);
+
+    QHBoxLayout *layoutNonlinearChart = new QHBoxLayout();
+    layoutNonlinearChart->addLayout(layoutNonlinearType, 2);
+    layoutNonlinearChart->addWidget(widChartNonlinear, 1);
+
+    QVBoxLayout *layoutNonlinear = new QVBoxLayout();
+    layoutNonlinear->addLayout(layoutNonlinearProperties);
+    layoutNonlinear->addLayout(layoutNonlinearChart, 1);
 
     // dialog buttons
+    QPushButton *btnPlot = new QPushButton(tr("Plot"));
+    connect(btnPlot, SIGNAL(clicked()), this, SLOT(drawChart()));
+
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    buttonBox->addButton(btnPlot, QDialogButtonBox::ActionRole);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addLayout(layoutProperty);
-    layout->addLayout(layoutMaterial, 1);
+    layout->addLayout(layoutNameAndDescription);
+    layout->addLayout(layoutNonlinear, 1);
     layout->addStretch();
     layout->addWidget(buttonBox);
 
@@ -174,75 +234,15 @@ QWidget *MaterialEditDialog::createPropertyGUI()
     txtPropertyShortname = new QLineEdit();
     txtPropertyUnit = new QLineEdit();
     txtPropertySource = new QLineEdit();
-    txtPropertyDependenceShortname = new QLineEdit();
-    txtPropertyDependenceUnit = new QLineEdit();
-    cmbNonlinearDependence = new QComboBox();
-    cmbNonlinearDependence->addItem(tr("Function"), MaterialEditDialog::Function);
-    cmbNonlinearDependence->addItem(tr("Table"), MaterialEditDialog::Table);
-    connect(cmbNonlinearDependence, SIGNAL(activated(int)), this, SLOT(doNonlinearDependenceChanged(int)));
+    txtPropertyIndependentVariableShortname = new QLineEdit();
+    txtPropertyIndependentVariableUnit = new QLineEdit();
+    cmbPropertyNonlinearityType = new QComboBox();
+    cmbPropertyNonlinearityType->addItem(tr("Function"), MaterialEditDialog::Function);
+    cmbPropertyNonlinearityType->addItem(tr("Table"), MaterialEditDialog::Table);
+    connect(cmbPropertyNonlinearityType, SIGNAL(activated(int)), this, SLOT(doNonlinearDependenceChanged(int)));
 
     // constant
-    txtPropertyConstant = new LineEditDouble(0.0);
-
-    QGridLayout *layoutConstant = new QGridLayout();
-    layoutConstant->addWidget(new QLabel(tr("Value:")), 0, 0);
-    layoutConstant->addWidget(txtPropertyConstant, 0, 1);
-
-    QGroupBox *grpConstant = new QGroupBox(tr("Constant"));
-    grpConstant->setLayout(layoutConstant);
-
-    // table
-    txtPropertyTableKeys = new QPlainTextEdit();
-    txtPropertyTableValues = new QPlainTextEdit();
-    connect(txtPropertyTableKeys, SIGNAL(textChanged()), this, SLOT(drawChart()));
-    connect(txtPropertyTableValues, SIGNAL(textChanged()), this, SLOT(drawChart()));
-
-    QGridLayout *layoutTable = new QGridLayout();
-    layoutTable->addWidget(new QLabel(tr("Keys:")), 0, 0);
-    layoutTable->addWidget(txtPropertyTableKeys, 1, 0);
-    layoutTable->addWidget(new QLabel(tr("Values:")), 0, 1);
-    layoutTable->addWidget(txtPropertyTableValues, 1, 1);
-
-    widNonlinearTable = new QWidget();
-    widNonlinearTable->setLayout(layoutTable);
-
-    // function
-    txtPropertyFunction = new QPlainTextEdit();
-    txtPropertyFunctionFrom = new LineEditDouble(0.0);
-    txtPropertyFunctionTo = new LineEditDouble(0.0);
-    connect(txtPropertyFunction, SIGNAL(textChanged()), this, SLOT(drawChart()));
-    connect(txtPropertyFunctionFrom, SIGNAL(editingFinished()), this, SLOT(drawChart()));
-    connect(txtPropertyFunctionTo, SIGNAL(editingFinished()), this, SLOT(drawChart()));
-
-    QGridLayout *layoutFunction = new QGridLayout();
-    layoutFunction->addWidget(txtPropertyFunction, 0, 0, 1, 4);
-    layoutFunction->addWidget(new QLabel(tr("From:")), 1, 0);
-    layoutFunction->addWidget(txtPropertyFunctionFrom, 1, 1);
-    layoutFunction->addWidget(new QLabel(tr("To:")), 1, 2);
-    layoutFunction->addWidget(txtPropertyFunctionTo, 1, 3);
-    layoutFunction->setRowStretch(0, 1);
-
-    widNonlinearFunction = new QWidget();
-    widNonlinearFunction->setLayout(layoutFunction);
-
-    chartNonlinear = new QCustomPlot();
-    chartNonlinear->setInteractions(QCustomPlot::iRangeDrag | QCustomPlot::iRangeZoom);
-    chartNonlinear->setRangeDrag(Qt::Horizontal|Qt::Vertical);
-    chartNonlinear->setRangeZoom(Qt::Horizontal|Qt::Vertical);
-    chartNonlinear->setMinimumHeight(120);
-    chartNonlinear->addGraph();
-    chartNonlinear->graph(0)->setLineStyle(QCPGraph::lsLine);
-
-    layoutNonlinear = new QStackedLayout();
-    layoutNonlinear->addWidget(widNonlinearFunction);
-    layoutNonlinear->addWidget(widNonlinearTable);
-
-    QVBoxLayout *layoutNonlinearChart = new QVBoxLayout();
-    layoutNonlinearChart->addLayout(layoutNonlinear, 2);
-    layoutNonlinearChart->addWidget(chartNonlinear, 1);
-
-    QGroupBox *grpFunction = new QGroupBox(tr("Nonlinear dependence"));
-    grpFunction->setLayout(layoutNonlinearChart);
+    txtPropertyConstant = new LineEditDouble(0.0);  
 
     // table and function tab
     QGridLayout *layoutProperty = new QGridLayout();
@@ -254,16 +254,15 @@ QWidget *MaterialEditDialog::createPropertyGUI()
     layoutProperty->addWidget(txtPropertyShortname, 2, 1);
     layoutProperty->addWidget(new QLabel(tr("Unit:")), 3, 0);
     layoutProperty->addWidget(txtPropertyUnit, 3, 1);
-    layoutProperty->addWidget(new QLabel(tr("Dependence shortname:")), 2, 2);
-    layoutProperty->addWidget(txtPropertyDependenceShortname, 2, 3);
-    layoutProperty->addWidget(new QLabel(tr("Dependence unit:")), 3, 2);
-    layoutProperty->addWidget(txtPropertyDependenceUnit, 3, 3);
-    layoutProperty->addWidget(new QLabel(tr("Dependence type:")), 4, 2);
-    layoutProperty->addWidget(cmbNonlinearDependence, 4, 3);
-
-    layoutProperty->addWidget(grpConstant, 10, 0, 1, 4);
-    layoutProperty->addWidget(grpFunction, 11, 0, 1, 4);
-    layoutProperty->setRowStretch(11, 1);
+    layoutProperty->addWidget(new QLabel(tr("Constant value:")), 4, 0);
+    layoutProperty->addWidget(txtPropertyConstant, 4, 1);
+    layoutProperty->addWidget(new QLabel(tr("Kind of nonlinearity:")), 5, 0);
+    layoutProperty->addWidget(cmbPropertyNonlinearityType, 5, 1);
+    layoutProperty->addWidget(new QLabel(tr("Ind. var. shortname:")), 2, 2);
+    layoutProperty->addWidget(txtPropertyIndependentVariableShortname, 2, 3);
+    layoutProperty->addWidget(new QLabel(tr("Ind. var. unit:")), 3, 2);
+    layoutProperty->addWidget(txtPropertyIndependentVariableUnit, 3, 3);
+    layoutProperty->setRowStretch(11, 1);   
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(layoutProperty);
@@ -360,7 +359,8 @@ bool MaterialEditDialog::writeMaterial()
     }
 }
 
-void MaterialEditDialog::addProperty(const QString &name, const QString &shortname, const QString &unit, const QString &dependenceShortname, const QString &dependenceUnit)
+void MaterialEditDialog::addProperty(const QString &name, const QString &shortname, const QString &unit, const QString &nonlinearityKind,
+                                     const QString &indepedentShortname, const QString &indepedentUnit)
 {
     bool ok = false;
     QString propName = name;
@@ -376,9 +376,16 @@ void MaterialEditDialog::addProperty(const QString &name, const QString &shortna
         XMLMaterial::property prop(propName.toStdString(),
                                    shortname.toStdString(),
                                    unit.toStdString(),
-                                   dependenceShortname.toStdString(),
-                                   dependenceUnit.toStdString(),
-                                   "");
+                                   "",
+                                   nonlinearityKind.toStdString(),
+                                   indepedentShortname.toStdString(),
+                                   indepedentUnit.toStdString());
+
+        XMLMaterial::nonlinearity nonlinearity;
+        nonlinearity.function().set(XMLMaterial::function("def agros2d_material(t):\n"
+                                                          "    return 0.0",
+                                                        0, 100));
+        prop.nonlinearity().set(nonlinearity);
         m_properties.append(prop);
 
         // item
@@ -427,17 +434,12 @@ void MaterialEditDialog::readProperty(XMLMaterial::property prop)
     txtPropertyName->setText(QString::fromStdString(prop.name()));
     txtPropertyShortname->setText(QString::fromStdString(prop.shortname()));
     txtPropertyUnit->setText(QString::fromStdString(prop.unit()));
-    txtPropertyDependenceShortname->setText(QString::fromStdString(prop.dependence_shortname()));
-    txtPropertyDependenceUnit->setText(QString::fromStdString(prop.dependence_unit()));
     txtPropertySource->setText(QString::fromStdString(prop.source()));
+    cmbPropertyNonlinearityType->setCurrentIndex(cmbPropertyNonlinearityType->findData(nonlinearityTypeFromStringKey(QString::fromStdString(prop.nonlinearity_kind()))));
+    txtPropertyIndependentVariableShortname->setText(QString::fromStdString(prop.independent_shortname()));
+    txtPropertyIndependentVariableUnit->setText(QString::fromStdString(prop.independent_unit()));
 
     // clear
-    txtPropertyTableKeys->blockSignals(true);
-    txtPropertyTableValues->blockSignals(true);
-    txtPropertyFunction->blockSignals(true);
-    txtPropertyFunctionFrom->blockSignals(true);
-    txtPropertyFunctionTo->blockSignals(true);
-
     txtPropertyConstant->setValue(0.0);
     txtPropertyTableKeys->clear();
     txtPropertyTableValues->clear();
@@ -450,11 +452,11 @@ void MaterialEditDialog::readProperty(XMLMaterial::property prop)
         txtPropertyConstant->setValue(prop.constant().get().value());
 
     // table
-    if (prop.dependence().present())
+    if (prop.nonlinearity().present())
     {
-        if (prop.dependence().get().table().present())
+        if (prop.nonlinearity().get().table().present())
         {
-            XMLMaterial::table table = prop.dependence().get().table().get();
+            XMLMaterial::table table = prop.nonlinearity().get().table().get();
 
             txtPropertyTableKeys->setPlainText(QString::fromStdString(table.keys()));
             txtPropertyTableValues->setPlainText(QString::fromStdString(table.values()));
@@ -462,11 +464,11 @@ void MaterialEditDialog::readProperty(XMLMaterial::property prop)
     }
 
     // function
-    if (prop.dependence().present())
+    if (prop.nonlinearity().present())
     {
-        if (prop.dependence().get().function().present())
+        if (prop.nonlinearity().get().function().present())
         {
-            XMLMaterial::function function = prop.dependence().get().function().get();
+            XMLMaterial::function function = prop.nonlinearity().get().function().get();
 
             txtPropertyFunction->setPlainText(QString::fromStdString(function.body()));
             txtPropertyFunctionFrom->setValue(function.interval_from());
@@ -474,22 +476,7 @@ void MaterialEditDialog::readProperty(XMLMaterial::property prop)
         }
     }
 
-    if (!txtPropertyFunction->toPlainText().trimmed().isEmpty())
-    {
-        cmbNonlinearDependence->setCurrentIndex(cmbNonlinearDependence->findData(MaterialEditDialog::Function));
-        layoutNonlinear->setCurrentWidget(widNonlinearFunction);
-    }
-    else
-    {
-        cmbNonlinearDependence->setCurrentIndex(cmbNonlinearDependence->findData(MaterialEditDialog::Table));
-        layoutNonlinear->setCurrentWidget(widNonlinearTable);
-    }
-
-    txtPropertyTableKeys->blockSignals(false);
-    txtPropertyTableValues->blockSignals(false);
-    txtPropertyFunction->blockSignals(false);
-    txtPropertyFunctionFrom->blockSignals(false);
-    txtPropertyFunctionTo->blockSignals(false);
+    doNonlinearDependenceChanged(cmbPropertyNonlinearityType->currentIndex());
 
     // draw chart
     drawChart();
@@ -500,12 +487,12 @@ void MaterialEditDialog::drawChart()
     QVector<double> keys;
     QVector<double> values;
 
-    if (((NonlinearityType) cmbNonlinearDependence->itemData(cmbNonlinearDependence->currentIndex()).toInt()) == MaterialEditDialog::Function)
+    if (((NonlinearityType) cmbPropertyNonlinearityType->itemData(cmbPropertyNonlinearityType->currentIndex()).toInt()) == MaterialEditDialog::Function)
     {
         functionValues(txtPropertyFunction->toPlainText(),
                        txtPropertyFunctionFrom->value(),
                        txtPropertyFunctionTo->value(),
-                       40,
+                       80,
                        &keys, &values);
     }
     else
@@ -536,41 +523,42 @@ XMLMaterial::property MaterialEditDialog::writeProperty()
     XMLMaterial::property prop(txtPropertyName->text().toStdString(),
                                txtPropertyShortname->text().toStdString(),
                                txtPropertyUnit->text().toStdString(),
-                               txtPropertyDependenceShortname->text().toStdString(),
-                               txtPropertyDependenceUnit->text().toStdString(),
-                               txtPropertySource->text().toStdString());
+                               txtPropertySource->text().toStdString(),
+                               nonlinearityTypeToStringKey((NonlinearityType) cmbPropertyNonlinearityType->itemData(cmbPropertyNonlinearityType->currentIndex()).toInt()).toStdString(),
+                               txtPropertyIndependentVariableShortname->text().toStdString(),
+                               txtPropertyIndependentVariableUnit->text().toStdString());
 
     // constant
     prop.constant().set(XMLMaterial::constant(txtPropertyConstant->value()));
 
     // dependence
-    XMLMaterial::dependence dependence;
+    XMLMaterial::nonlinearity nonlinearity;
 
     // table
-    if (((NonlinearityType) cmbNonlinearDependence->itemData(cmbNonlinearDependence->currentIndex()).toInt()) == MaterialEditDialog::Function)
+    if (((NonlinearityType) cmbPropertyNonlinearityType->itemData(cmbPropertyNonlinearityType->currentIndex()).toInt()) == MaterialEditDialog::Function)
     {
         // function
-        dependence.function().set(XMLMaterial::function(txtPropertyFunction->toPlainText().toStdString(),
+        nonlinearity.function().set(XMLMaterial::function(txtPropertyFunction->toPlainText().toStdString(),
                                                         txtPropertyFunctionFrom->value(),
                                                         txtPropertyFunctionTo->value()));
     }
-    else
+    else if (((NonlinearityType) cmbPropertyNonlinearityType->itemData(cmbPropertyNonlinearityType->currentIndex()).toInt()) == MaterialEditDialog::Table)
     {
-        dependence.table().set(XMLMaterial::table(txtPropertyTableKeys->toPlainText().toStdString(),
+        nonlinearity.table().set(XMLMaterial::table(txtPropertyTableKeys->toPlainText().toStdString(),
                                                   txtPropertyTableValues->toPlainText().toStdString()));
     }
 
-    prop.dependence().set(dependence);
+    prop.nonlinearity().set(nonlinearity);
 
     return prop;
 }
 
 void MaterialEditDialog::doNonlinearDependenceChanged(int index)
 {
-    if (((NonlinearityType) cmbNonlinearDependence->itemData(cmbNonlinearDependence->currentIndex()).toInt()) == MaterialEditDialog::Function)
-        layoutNonlinear->setCurrentWidget(widNonlinearFunction);
-    else
-        layoutNonlinear->setCurrentWidget(widNonlinearTable);
+    if (((NonlinearityType) cmbPropertyNonlinearityType->itemData(cmbPropertyNonlinearityType->currentIndex()).toInt()) == MaterialEditDialog::Function)
+        layoutNonlinearType->setCurrentWidget(widNonlinearFunction);
+    else if (((NonlinearityType) cmbPropertyNonlinearityType->itemData(cmbPropertyNonlinearityType->currentIndex()).toInt()) == MaterialEditDialog::Table)
+        layoutNonlinearType->setCurrentWidget(widNonlinearTable);
 }
 
 void MaterialEditDialog::doPropertyChanged(QListWidgetItem *current, QListWidgetItem *previous)
@@ -726,8 +714,6 @@ void MaterialBrowserDialog::doItemDoubleClicked(QTreeWidgetItem *item, int colum
 
 void MaterialBrowserDialog::readMaterials()
 {
-    QTreeWidgetItem *currentItem = trvMaterial->currentItem();
-
     // clear listview
     trvMaterial->clear();
 
@@ -751,9 +737,11 @@ void MaterialBrowserDialog::readMaterials()
     dirUser.setFilter(QDir::Dirs | QDir::Files | QDir::NoSymLinks);
     readMaterials(dirUser, customMaterialsItem);
 
-    if (currentItem)
+    if (m_selectedFilename.isEmpty())
     {
-        trvMaterial->setCurrentItem(currentItem);
+        QList<QTreeWidgetItem *> items = trvMaterial->findItems(m_selectedFilename, Qt::MatchExactly);
+        if (items.count() > 1)
+            trvMaterial->setCurrentItem(items.at(items.count() - 1));
     }
 }
 
@@ -781,9 +769,9 @@ void MaterialBrowserDialog::readMaterials(QDir dir, QTreeWidgetItem *parentItem)
         }
         else if (fileInfo.suffix() == "mat")
         {
-            QTreeWidgetItem *exampleItem = new QTreeWidgetItem(parentItem);
-            exampleItem->setText(0, fileInfo.baseName());
-            exampleItem->setData(0, Qt::UserRole, fileInfo.absoluteFilePath());
+            QTreeWidgetItem *item = new QTreeWidgetItem(parentItem);
+            item->setText(0, fileInfo.baseName());
+            item->setData(0, Qt::UserRole, fileInfo.absoluteFilePath());
         }
     }
 }
@@ -822,10 +810,10 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
             propSection->SetValue("PROPERTY_UNIT_LABEL", tr("Unit:").toStdString());
             propSection->SetValue("PROPERTY_UNIT", prop.unit());
 
-            propSection->SetValue("PROPERTY_DEPENDENCE_SHORTNAME_LABEL", tr("Dependence variable:").toStdString());
-            propSection->SetValue("PROPERTY_DEPENDENCE_SHORTNAME", prop.dependence_shortname());
-            propSection->SetValue("PROPERTY_DEPENDENCE_UNIT_LABEL", tr("Dependence unit:").toStdString());
-            propSection->SetValue("PROPERTY_DEPENDENCE_UNIT", prop.dependence_unit());
+            propSection->SetValue("PROPERTY_INDEPENDENT_SHORTNAME_LABEL", tr("Independent variable:").toStdString());
+            propSection->SetValue("PROPERTY_INDEPENDENT_SHORTNAME", prop.independent_shortname());
+            propSection->SetValue("PROPERTY_INDEPENDENT_UNIT_LABEL", tr("Independent unit:").toStdString());
+            propSection->SetValue("PROPERTY_INDEPENDENT_UNIT", prop.independent_unit());
 
             if (m_select)
                 propSection->ShowSection("PROPERTY_SELECTABLE");
@@ -837,14 +825,14 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
                 propSection->SetValue("PROPERTY_CONSTANT", QString::number(constant.value()).toStdString());
             }
 
-            if (prop.dependence().present())
+            if (prop.nonlinearity().present())
             {
                 QVector<double> keys;
                 QVector<double> values;
 
-                if (prop.dependence().get().table().present())
+                if (prop.nonlinearity().get().table().present())
                 {
-                    XMLMaterial::table table = prop.dependence().get().table().get();
+                    XMLMaterial::table table = prop.nonlinearity().get().table().get();
 
                     QStringList keysString = QString::fromStdString(table.keys()).split("\n");
                     QStringList valuesString = QString::fromStdString(table.values()).split("\n");
@@ -859,9 +847,9 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
                     }
                 }
 
-                if (prop.dependence().get().function().present())
+                if (prop.nonlinearity().get().function().present())
                 {
-                    XMLMaterial::function function = prop.dependence().get().function().get();
+                    XMLMaterial::function function = prop.nonlinearity().get().function().get();
 
                     functionValues(QString::fromStdString(function.body()),
                                    function.interval_from(),
@@ -890,13 +878,13 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
                     propSection->SetValue("PROPERTY_CHART_SCRIPT", QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: false } } ], { grid: { hoverable : false }, xaxes: [ { axisLabel: '%3 (%4)' } ], yaxes: [ { axisLabel: '%5 (%6)' } ] });});</script>")
                                           .arg(id)
                                           .arg(chart)
-                                          .arg(QString::fromStdString(prop.dependence_shortname()))
-                                          .arg(QString::fromStdString(prop.dependence_unit()))
+                                          .arg(QString::fromStdString(prop.independent_shortname()))
+                                          .arg(QString::fromStdString(prop.independent_unit()))
                                           .arg(QString::fromStdString(prop.shortname()))
                                           .arg(QString::fromStdString(prop.unit())).toStdString());
 
-                    propSection->SetValue("PROPERTY_DEPENDENCE_X", keysString.toStdString());
-                    propSection->SetValue("PROPERTY_DEPENDENCE_Y", valuesString.toStdString());
+                    propSection->SetValue("PROPERTY_INDEPENDENT_X", keysString.toStdString());
+                    propSection->SetValue("PROPERTY_INDEPENDENT_Y", valuesString.toStdString());
                 }
             }
 
@@ -977,11 +965,8 @@ void MaterialBrowserDialog::doNew()
             XMLMaterial::material_(out, material, namespace_info_map);
 
             // select item and edit
-            readMaterials();
             m_selectedFilename = fileName;
-            QList<QTreeWidgetItem *> items = trvMaterial->findItems(name, Qt::MatchExactly);
-            if (items.count() > 1)
-                trvMaterial->setCurrentItem(items.at(items.count() - 1));
+            readMaterials();
 
             doEdit();
         }
@@ -1014,6 +999,8 @@ void MaterialBrowserDialog::doDelete()
                                   tr("&Yes"), tr("&No")) == 0)
         {
             QFile::remove(m_selectedFilename);
+            m_selectedFilename = "";
+
             readMaterials();
         }
     }

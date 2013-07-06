@@ -4,17 +4,17 @@
   <material:general description="70 Cu, 30 Zn (wt%)" name="Brass C26000"/>
 
   <material:properties>
-    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" name="Thermal conductivity" shortname="&lt;i>&amp;lambda;&lt;/i>" source="C.Y. Ho, M.W. Ackerman, K.Y. Wu, S.G. Oh and T.N. Havill, J. Phys, Chem. Ref. Data, v7(3), p959 (1978)" unit="W/m.K">
+    <material:property nonlinearity_kind="function" independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Thermal conductivity" shortname="&lt;i>&amp;lambda;&lt;/i>" source="C.Y. Ho, M.W. Ackerman, K.Y. Wu, S.G. Oh and T.N. Havill, J. Phys, Chem. Ref. Data, v7(3), p959 (1978)" unit="W/m.K">
       <material:constant value="120.7"/>
-      <material:dependence>
+      <material:nonlinearity>
         <material:function body="def agros2d_material(t) :&#xA;&#x9;if t >= 4.0 and t &lt; 25.0 :&#xA;&#x9;&#x9;return 1.563265e-04*t*t*t*t -1.078035e-02*t*t*t +2.349984e-01*t*t -2.222831e-01*t +1.663355e+00&#xA;&#x9;elif t >= 25.0 and t &lt; 80.0 :&#xA;&#x9;&#x9;return -8.112726e-07*t*t*t*t +2.688640e-04*t*t*t -3.393482e-02*t*t +2.240856e+00*t -3.097651e+00&#xA;&#x9;elif t >= 80.0 and t &lt; 273.0 :&#xA;&#x9;&#x9;return 8.160246e-09*t*t*t*t -6.551882e-06*t*t*t +1.465282e-03*t*t +2.004722e-01*t +4.101933e+01&#xA;&#x9;elif t >= 273.0 and t &lt;= 700.0 :&#xA;&#x9;&#x9;return -1.126189e-09*t*t*t*t +2.253105e-06*t*t*t -1.769220e-03*t*t +7.525353e-01*t +3.718885e+00&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="4" interval_to="700"/>
-      </material:dependence>
+      </material:nonlinearity>
     </material:property>
-    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" name="Density" shortname="&lt;i>&amp;rho;&lt;/i>" source="Low-Temperature Properties of Copper and Copper Alloys, #104/5 from Copper Development Assoc., Greenwich, CT" unit="kg/m&lt;sup>3&lt;/sup>">
+    <material:property nonlinearity_kind="function" independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Density" shortname="&lt;i>&amp;rho;&lt;/i>" source="Low-Temperature Properties of Copper and Copper Alloys, #104/5 from Copper Development Assoc., Greenwich, CT" unit="kg/m&lt;sup>3&lt;/sup>">
       <material:constant value="8530"/>
-      <material:dependence>
+      <material:nonlinearity>
         <material:function body="def agros2d_material(t) :&#xA;    &#x9;if t >= 20.0 and t &lt;= 293.0 :&#xA;&#x9;&#x9;return -8.958979e-09*t*t*t*t +8.393364e-06*t*t*t -3.070050e-03*t*t +7.216494e-02*t +8.627319e+03&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="20" interval_to="293"/>
-      </material:dependence>
+      </material:nonlinearity>
     </material:property>
   </material:properties>
 

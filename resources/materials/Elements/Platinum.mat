@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Platinum"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Thermal conductivity" nonlinearity_kind="function" shortname="&lt;i>&amp;lambda;&lt;/i>" source="C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)" unit="W/m.K">
+      <material:constant value="72"/>
+      <material:nonlinearity>
+        <material:function body="def agros2d_material(t):&#xA;&#x9;if t >= 0.0 and t &lt; 13.0 :&#xA;&#x9;&#x9;return -2.748296e-03*t*t*t*t*t +2.278691e-01*t*t*t*t -4.678988e+00*t*t*t +1.816709e+01*t*t +2.096991e+02*t&#xA;&#x9;elif t >= 13.0 and t &lt; 50.0 :&#xA;&#x9;&#x9;return 2.280531e-05*t*t*t*t*t -2.761393e-03*t*t*t*t +7.133190e-02*t*t*t +3.362113e+00*t*t -2.011759e+02*t +2.978797e+03&#xA;&#x9;elif t >= 50.0 and t &lt; 100.0 :&#xA;&#x9;&#x9;return -3.889706e-07*t*t*t*t*t +1.494028e-04*t*t*t*t -2.289560e-02*t*t*t +1.763533e+00*t*t -6.925658e+01*t +1.212843e+03&#xA;&#x9;elif t >= 100.0 and t &lt; 285.0 :&#xA;&#x9;&#x9;return -1.004522e-10*t*t*t*t*t +1.072687e-07*t*t*t*t -4.536814e-05*t*t*t +9.646914e-03*t*t -1.066855e+00*t +1.233886e+02&#xA;&#x9;elif t >= 285.0 and t &lt;= 2045.0 :&#xA;&#x9;&#x9;return -6.133801e-09*t*t*t +2.646931e-05*t*t -1.557887e-02*t +7.399627e+01&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="0" interval_to="2045"/>
+      </material:nonlinearity>
+    </material:property>
+    <material:property independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Specific heat" nonlinearity_kind="function" shortname="&lt;i>c&lt;/i>&lt;sub>p&lt;/sub>" source="G.T. Furukawa, M.L. Reilly and J.S. Gallagher, J. Phys. Chem. Ref. Data, v3, p163 (1974) and F. Righini, A. Rosso, High Temperatures-High Pressures, v12, p335 (1980)" unit="J/kg.K">
+      <material:constant value="132"/>
+      <material:nonlinearity>
+        <material:function body="def agros2d_material(t):&#xA;&#x9;if t >= 0.0 and t &lt; 19.0 :&#xA;&#x9;&#x9;return -1.325633e-06*t*t*t*t*t +5.174165e-05*t*t*t*t +3.449445e-04*t*t*t +1.129466e-03*t*t +3.281349e-02*t&#xA;&#x9;elif t >= 19.0 and t &lt; 119.0 :&#xA;&#x9;&#x9;return -3.445457e-08*t*t*t*t*t +1.359791e-05*t*t*t*t -2.010741e-03*t*t*t +1.283953e-01*t*t -1.986516e+00*t +1.030393e+01&#xA;&#x9;elif t >= 119.0 and t &lt; 290.0 :&#xA;&#x9;&#x9;return -2.455881e-08*t*t*t*t +2.453936e-05*t*t*t -9.418853e-03*t*t +1.721765e+00*t +4.467027e-01&#xA;&#x9;elif t >= 290.0 and t &lt;= 2000.0 :&#xA;&#x9;&#x9;return 7.556773e-09*t*t*t -1.836174e-05*t*t +3.986346e-02*t +1.222187e+02&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="0" interval_to="2000"/>
+      </material:nonlinearity>
+    </material:property>
+    <material:property independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Density" nonlinearity_kind="function" shortname="&lt;i>&amp;rho;&lt;/i>" source="T.A. Hahn and R.K. Kirby, Thermal Expansion - 1971, Editors M.G. Graham and H.E. Hagy, Pub. American Institute of Physics, p87 (1972) and J. Valentich, J. Materials Science, v14, p371 (1979) and F.C. Nix and D. MacNair, Physical Review, v60, p597 (1941) and E. Firzer, S. Weisenburger, High Temperatures-High Pressures, v4, p559 (1972) and R.K. Kirby, in Thermal Conductivity 24, Eds. P.S. Gaal, D.E. Apostolescu, p655 (1999)" unit="kg/m&lt;sup>3&lt;/sup>">
+      <material:constant value="21387"/>
+      <material:nonlinearity>
+        <material:function body="def agros2d_material(t):&#xA;&#x9;if t >= 10.0 and t &lt; 70.0 :&#xA;&#x9;&#x9;return -8.010422e-09*t*t*t*t*t +2.175230e-06*t*t*t*t -2.116082e-04*t*t*t +5.824972e-03*t*t -7.336997e-02*t +2.151245e+04&#xA;&#x9;elif t >= 70.0 and t &lt; 280.0 :&#xA;&#x9;&#x9;return -1.883994e-08*t*t*t*t +1.502256e-05*t*t*t -4.701280e-03*t*t +1.433013e-01*t +2.151032e+04&#xA;&#x9;elif t >= 280.0 and t &lt;= 1973.0 :&#xA;&#x9;&#x9;return 4.698968e-12*t*t*t*t -3.171806e-08*t*t*t -1.752500e-05*t*t -5.675783e-01*t +2.155719e+04&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="10" interval_to="1973"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

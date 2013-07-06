@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Titanium"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Thermal conductivity" nonlinearity_kind="function" shortname="&lt;i>&amp;lambda;&lt;/i>" source="MIL-HDBK-5H, 1 Dec 1998 p5-9 and C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)" unit="W/m.K">
+      <material:constant value="21"/>
+      <material:nonlinearity>
+        <material:function body="def agros2d_material(t):&#xA;&#x9;if t >= 0.0 and t &lt; 50.0 :&#xA;&#x9;&#x9;return 2.851803e-07*t*t*t*t*t -2.974167e-05*t*t*t*t +6.355161e-04*t*t*t -6.261944e-03*t*t +1.461290e+00*t&#xA;&#x9;elif t >= 50.0 and t &lt; 326.0 :&#xA;&#x9;&#x9;return 8.903946e-09*t*t*t*t -8.255595e-06*t*t*t +2.880920e-03*t*t -4.851624e-01*t +5.817412e+01&#xA;&#x9;elif t >= 326.0 and t &lt; 977.0 :&#xA;&#x9;&#x9;return 6.191111e-11*t*t*t*t -1.937431e-07*t*t*t +2.333310e-04*t*t -1.227486e-01*t +4.195804e+01&#xA;&#x9;elif t >= 977.0 and t &lt;= 1950.0 :&#xA;&#x9;&#x9;return 1.376649e-06*t*t +4.158454e-03*t +1.513513e+01&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="0" interval_to="1950"/>
+      </material:nonlinearity>
+    </material:property>
+    <material:property independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Specific heat" nonlinearity_kind="function" shortname="&lt;i>c&lt;/i>&lt;sub>p&lt;/sub>" source="B.J. McBride, S. Gordon and M.A. Reno, NASA Technical Paper 3287 (1993)" unit="J/kg.K">
+      <material:constant value="678"/>
+      <material:nonlinearity>
+        <material:function body="def agros2d_material(t):&#xA;&#x9;if t >= 100.0 and t &lt; 300.0 :&#xA;&#x9;&#x9;return -4.762589e-08*t*t*t*t +6.044771e-05*t*t*t -2.978493e-02*t*t +7.086583e+00*t -1.677468e+02&#xA;&#x9;elif t >= 300.0 and t &lt; 900.0 :&#xA;&#x9;&#x9;return -1.720171e-07*t*t*t +2.125930e-04*t*t +1.524656e-01*t +4.640520e+02&#xA;&#x9;elif t >= 900.0 and t &lt; 1156.0 :&#xA;&#x9;&#x9;return -3.171822e-08*t*t*t*t +1.335042e-04*t*t*t -2.048109e-01*t*t +1.367738e+02*t -3.306663e+04&#xA;&#x9;elif t >= 1156.0 and t &lt;= 1944.0 :&#xA;&#x9;&#x9;return 6.657229e-05*t*t +1.230479e-01*t +3.528258e+02&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="100" interval_to="1944"/>
+      </material:nonlinearity>
+    </material:property>
+    <material:property independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Density" nonlinearity_kind="function" shortname="&lt;i>&amp;rho;&lt;/i>" source="H.L. Laquer, Low Temperature Thermal Expansion of Various Materials, Dec. 9, 1952, ADA307613 and MIL-HDBK-5H, 1 Dec 1998 p5-9" unit="kg/m&lt;sup>3&lt;/sup>">
+      <material:constant value="4499"/>
+      <material:nonlinearity>
+        <material:function body="def agros2d_material(t):&#xA;&#x9;if t >= 0.0 and t &lt; 20.0 :&#xA;&#x9;&#x9;return 4.520168e+03&#xA;&#x9;elif t >= 20.0 and t &lt; 160.0 :&#xA;&#x9;&#x9;return -2.481938e-10*t*t*t*t*t +1.417353e-07*t*t*t*t -2.875466e-05*t*t*t +2.149145e-03*t*t -7.042247e-02*t +4.520925e+03&#xA;&#x9;elif t >= 160.0 and t &lt;= 1144.0 :&#xA;&#x9;&#x9;return -5.386443e-11*t*t*t*t +1.427212e-07*t*t*t -1.538843e-04*t*t -5.296616e-02*t +4.525567e+03&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="0" interval_to="1144"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

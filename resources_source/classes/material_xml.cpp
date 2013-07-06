@@ -207,34 +207,34 @@ namespace XMLMaterial
     this->constant_.set (x);
   }
 
-  const property::dependence_optional& property::
-  dependence () const
+  const property::nonlinearity_optional& property::
+  nonlinearity () const
   {
-    return this->dependence_;
+    return this->nonlinearity_;
   }
 
-  property::dependence_optional& property::
-  dependence ()
+  property::nonlinearity_optional& property::
+  nonlinearity ()
   {
-    return this->dependence_;
-  }
-
-  void property::
-  dependence (const dependence_type& x)
-  {
-    this->dependence_.set (x);
+    return this->nonlinearity_;
   }
 
   void property::
-  dependence (const dependence_optional& x)
+  nonlinearity (const nonlinearity_type& x)
   {
-    this->dependence_ = x;
+    this->nonlinearity_.set (x);
   }
 
   void property::
-  dependence (::std::auto_ptr< dependence_type > x)
+  nonlinearity (const nonlinearity_optional& x)
   {
-    this->dependence_.set (x);
+    this->nonlinearity_ = x;
+  }
+
+  void property::
+  nonlinearity (::std::auto_ptr< nonlinearity_type > x)
+  {
+    this->nonlinearity_.set (x);
   }
 
   const property::name_type& property::
@@ -309,54 +309,6 @@ namespace XMLMaterial
     this->unit_.set (x);
   }
 
-  const property::dependence_shortname_type& property::
-  dependence_shortname () const
-  {
-    return this->dependence_shortname_.get ();
-  }
-
-  property::dependence_shortname_type& property::
-  dependence_shortname ()
-  {
-    return this->dependence_shortname_.get ();
-  }
-
-  void property::
-  dependence_shortname (const dependence_shortname_type& x)
-  {
-    this->dependence_shortname_.set (x);
-  }
-
-  void property::
-  dependence_shortname (::std::auto_ptr< dependence_shortname_type > x)
-  {
-    this->dependence_shortname_.set (x);
-  }
-
-  const property::dependence_unit_type& property::
-  dependence_unit () const
-  {
-    return this->dependence_unit_.get ();
-  }
-
-  property::dependence_unit_type& property::
-  dependence_unit ()
-  {
-    return this->dependence_unit_.get ();
-  }
-
-  void property::
-  dependence_unit (const dependence_unit_type& x)
-  {
-    this->dependence_unit_.set (x);
-  }
-
-  void property::
-  dependence_unit (::std::auto_ptr< dependence_unit_type > x)
-  {
-    this->dependence_unit_.set (x);
-  }
-
   const property::source_type& property::
   source () const
   {
@@ -379,6 +331,78 @@ namespace XMLMaterial
   source (::std::auto_ptr< source_type > x)
   {
     this->source_.set (x);
+  }
+
+  const property::nonlinearity_kind_type& property::
+  nonlinearity_kind () const
+  {
+    return this->nonlinearity_kind_.get ();
+  }
+
+  property::nonlinearity_kind_type& property::
+  nonlinearity_kind ()
+  {
+    return this->nonlinearity_kind_.get ();
+  }
+
+  void property::
+  nonlinearity_kind (const nonlinearity_kind_type& x)
+  {
+    this->nonlinearity_kind_.set (x);
+  }
+
+  void property::
+  nonlinearity_kind (::std::auto_ptr< nonlinearity_kind_type > x)
+  {
+    this->nonlinearity_kind_.set (x);
+  }
+
+  const property::independent_shortname_type& property::
+  independent_shortname () const
+  {
+    return this->independent_shortname_.get ();
+  }
+
+  property::independent_shortname_type& property::
+  independent_shortname ()
+  {
+    return this->independent_shortname_.get ();
+  }
+
+  void property::
+  independent_shortname (const independent_shortname_type& x)
+  {
+    this->independent_shortname_.set (x);
+  }
+
+  void property::
+  independent_shortname (::std::auto_ptr< independent_shortname_type > x)
+  {
+    this->independent_shortname_.set (x);
+  }
+
+  const property::independent_unit_type& property::
+  independent_unit () const
+  {
+    return this->independent_unit_.get ();
+  }
+
+  property::independent_unit_type& property::
+  independent_unit ()
+  {
+    return this->independent_unit_.get ();
+  }
+
+  void property::
+  independent_unit (const independent_unit_type& x)
+  {
+    this->independent_unit_.set (x);
+  }
+
+  void property::
+  independent_unit (::std::auto_ptr< independent_unit_type > x)
+  {
+    this->independent_unit_.set (x);
   }
 
 
@@ -404,64 +428,64 @@ namespace XMLMaterial
   }
 
 
-  // dependence
+  // nonlinearity
   // 
 
-  const dependence::table_optional& dependence::
+  const nonlinearity::table_optional& nonlinearity::
   table () const
   {
     return this->table_;
   }
 
-  dependence::table_optional& dependence::
+  nonlinearity::table_optional& nonlinearity::
   table ()
   {
     return this->table_;
   }
 
-  void dependence::
+  void nonlinearity::
   table (const table_type& x)
   {
     this->table_.set (x);
   }
 
-  void dependence::
+  void nonlinearity::
   table (const table_optional& x)
   {
     this->table_ = x;
   }
 
-  void dependence::
+  void nonlinearity::
   table (::std::auto_ptr< table_type > x)
   {
     this->table_.set (x);
   }
 
-  const dependence::function_optional& dependence::
+  const nonlinearity::function_optional& nonlinearity::
   function () const
   {
     return this->function_;
   }
 
-  dependence::function_optional& dependence::
+  nonlinearity::function_optional& nonlinearity::
   function ()
   {
     return this->function_;
   }
 
-  void dependence::
+  void nonlinearity::
   function (const function_type& x)
   {
     this->function_.set (x);
   }
 
-  void dependence::
+  void nonlinearity::
   function (const function_optional& x)
   {
     this->function_ = x;
   }
 
-  void dependence::
+  void nonlinearity::
   function (::std::auto_ptr< function_type > x)
   {
     this->function_.set (x);
@@ -873,18 +897,20 @@ namespace XMLMaterial
   property (const name_type& name,
             const shortname_type& shortname,
             const unit_type& unit,
-            const dependence_shortname_type& dependence_shortname,
-            const dependence_unit_type& dependence_unit,
-            const source_type& source)
+            const source_type& source,
+            const nonlinearity_kind_type& nonlinearity_kind,
+            const independent_shortname_type& independent_shortname,
+            const independent_unit_type& independent_unit)
   : ::xml_schema::type (),
     constant_ (::xml_schema::flags (), this),
-    dependence_ (::xml_schema::flags (), this),
+    nonlinearity_ (::xml_schema::flags (), this),
     name_ (name, ::xml_schema::flags (), this),
     shortname_ (shortname, ::xml_schema::flags (), this),
     unit_ (unit, ::xml_schema::flags (), this),
-    dependence_shortname_ (dependence_shortname, ::xml_schema::flags (), this),
-    dependence_unit_ (dependence_unit, ::xml_schema::flags (), this),
-    source_ (source, ::xml_schema::flags (), this)
+    source_ (source, ::xml_schema::flags (), this),
+    nonlinearity_kind_ (nonlinearity_kind, ::xml_schema::flags (), this),
+    independent_shortname_ (independent_shortname, ::xml_schema::flags (), this),
+    independent_unit_ (independent_unit, ::xml_schema::flags (), this)
   {
   }
 
@@ -894,13 +920,14 @@ namespace XMLMaterial
             ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     constant_ (x.constant_, f, this),
-    dependence_ (x.dependence_, f, this),
+    nonlinearity_ (x.nonlinearity_, f, this),
     name_ (x.name_, f, this),
     shortname_ (x.shortname_, f, this),
     unit_ (x.unit_, f, this),
-    dependence_shortname_ (x.dependence_shortname_, f, this),
-    dependence_unit_ (x.dependence_unit_, f, this),
-    source_ (x.source_, f, this)
+    source_ (x.source_, f, this),
+    nonlinearity_kind_ (x.nonlinearity_kind_, f, this),
+    independent_shortname_ (x.independent_shortname_, f, this),
+    independent_unit_ (x.independent_unit_, f, this)
   {
   }
 
@@ -910,13 +937,14 @@ namespace XMLMaterial
             ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     constant_ (f, this),
-    dependence_ (f, this),
+    nonlinearity_ (f, this),
     name_ (f, this),
     shortname_ (f, this),
     unit_ (f, this),
-    dependence_shortname_ (f, this),
-    dependence_unit_ (f, this),
-    source_ (f, this)
+    source_ (f, this),
+    nonlinearity_kind_ (f, this),
+    independent_shortname_ (f, this),
+    independent_unit_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -949,16 +977,16 @@ namespace XMLMaterial
         }
       }
 
-      // dependence
+      // nonlinearity
       //
-      if (n.name () == "dependence" && n.namespace_ () == "XMLMaterial")
+      if (n.name () == "nonlinearity" && n.namespace_ () == "XMLMaterial")
       {
-        ::std::auto_ptr< dependence_type > r (
-          dependence_traits::create (i, f, this));
+        ::std::auto_ptr< nonlinearity_type > r (
+          nonlinearity_traits::create (i, f, this));
 
-        if (!this->dependence_)
+        if (!this->nonlinearity_)
         {
-          this->dependence_.set (r);
+          this->nonlinearity_.set (r);
           continue;
         }
       }
@@ -999,30 +1027,39 @@ namespace XMLMaterial
         continue;
       }
 
-      if (n.name () == "dependence_shortname" && n.namespace_ ().empty ())
-      {
-        ::std::auto_ptr< dependence_shortname_type > r (
-          dependence_shortname_traits::create (i, f, this));
-
-        this->dependence_shortname_.set (r);
-        continue;
-      }
-
-      if (n.name () == "dependence_unit" && n.namespace_ ().empty ())
-      {
-        ::std::auto_ptr< dependence_unit_type > r (
-          dependence_unit_traits::create (i, f, this));
-
-        this->dependence_unit_.set (r);
-        continue;
-      }
-
       if (n.name () == "source" && n.namespace_ ().empty ())
       {
         ::std::auto_ptr< source_type > r (
           source_traits::create (i, f, this));
 
         this->source_.set (r);
+        continue;
+      }
+
+      if (n.name () == "nonlinearity_kind" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< nonlinearity_kind_type > r (
+          nonlinearity_kind_traits::create (i, f, this));
+
+        this->nonlinearity_kind_.set (r);
+        continue;
+      }
+
+      if (n.name () == "independent_shortname" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< independent_shortname_type > r (
+          independent_shortname_traits::create (i, f, this));
+
+        this->independent_shortname_.set (r);
+        continue;
+      }
+
+      if (n.name () == "independent_unit" && n.namespace_ ().empty ())
+      {
+        ::std::auto_ptr< independent_unit_type > r (
+          independent_unit_traits::create (i, f, this));
+
+        this->independent_unit_.set (r);
         continue;
       }
     }
@@ -1048,24 +1085,31 @@ namespace XMLMaterial
         "");
     }
 
-    if (!dependence_shortname_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "dependence_shortname",
-        "");
-    }
-
-    if (!dependence_unit_.present ())
-    {
-      throw ::xsd::cxx::tree::expected_attribute< char > (
-        "dependence_unit",
-        "");
-    }
-
     if (!source_.present ())
     {
       throw ::xsd::cxx::tree::expected_attribute< char > (
         "source",
+        "");
+    }
+
+    if (!nonlinearity_kind_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "nonlinearity_kind",
+        "");
+    }
+
+    if (!independent_shortname_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "independent_shortname",
+        "");
+    }
+
+    if (!independent_unit_.present ())
+    {
+      throw ::xsd::cxx::tree::expected_attribute< char > (
+        "independent_unit",
         "");
     }
   }
@@ -1152,31 +1196,31 @@ namespace XMLMaterial
   {
   }
 
-  // dependence
+  // nonlinearity
   //
 
-  dependence::
-  dependence ()
+  nonlinearity::
+  nonlinearity ()
   : ::xml_schema::type (),
     table_ (::xml_schema::flags (), this),
     function_ (::xml_schema::flags (), this)
   {
   }
 
-  dependence::
-  dependence (const dependence& x,
-              ::xml_schema::flags f,
-              ::xml_schema::container* c)
+  nonlinearity::
+  nonlinearity (const nonlinearity& x,
+                ::xml_schema::flags f,
+                ::xml_schema::container* c)
   : ::xml_schema::type (x, f, c),
     table_ (x.table_, f, this),
     function_ (x.function_, f, this)
   {
   }
 
-  dependence::
-  dependence (const ::xercesc::DOMElement& e,
-              ::xml_schema::flags f,
-              ::xml_schema::container* c)
+  nonlinearity::
+  nonlinearity (const ::xercesc::DOMElement& e,
+                ::xml_schema::flags f,
+                ::xml_schema::container* c)
   : ::xml_schema::type (e, f | ::xml_schema::flags::base, c),
     table_ (f, this),
     function_ (f, this)
@@ -1188,7 +1232,7 @@ namespace XMLMaterial
     }
   }
 
-  void dependence::
+  void nonlinearity::
   parse (::xsd::cxx::xml::dom::parser< char >& p,
          ::xml_schema::flags f)
   {
@@ -1230,15 +1274,15 @@ namespace XMLMaterial
     }
   }
 
-  dependence* dependence::
+  nonlinearity* nonlinearity::
   _clone (::xml_schema::flags f,
           ::xml_schema::container* c) const
   {
-    return new class dependence (*this, f, c);
+    return new class nonlinearity (*this, f, c);
   }
 
-  dependence::
-  ~dependence ()
+  nonlinearity::
+  ~nonlinearity ()
   {
   }
 
@@ -1497,17 +1541,18 @@ namespace XMLMaterial
       o << ::std::endl << "constant: " << *i.constant ();
     }
 
-    if (i.dependence ())
+    if (i.nonlinearity ())
     {
-      o << ::std::endl << "dependence: " << *i.dependence ();
+      o << ::std::endl << "nonlinearity: " << *i.nonlinearity ();
     }
 
     o << ::std::endl << "name: " << i.name ();
     o << ::std::endl << "shortname: " << i.shortname ();
     o << ::std::endl << "unit: " << i.unit ();
-    o << ::std::endl << "dependence_shortname: " << i.dependence_shortname ();
-    o << ::std::endl << "dependence_unit: " << i.dependence_unit ();
     o << ::std::endl << "source: " << i.source ();
+    o << ::std::endl << "nonlinearity_kind: " << i.nonlinearity_kind ();
+    o << ::std::endl << "independent_shortname: " << i.independent_shortname ();
+    o << ::std::endl << "independent_unit: " << i.independent_unit ();
     return o;
   }
 
@@ -1519,7 +1564,7 @@ namespace XMLMaterial
   }
 
   ::std::ostream&
-  operator<< (::std::ostream& o, const dependence& i)
+  operator<< (::std::ostream& o, const nonlinearity& i)
   {
     if (i.table ())
     {
@@ -2100,17 +2145,17 @@ namespace XMLMaterial
       s << *i.constant ();
     }
 
-    // dependence
+    // nonlinearity
     //
-    if (i.dependence ())
+    if (i.nonlinearity ())
     {
       ::xercesc::DOMElement& s (
         ::xsd::cxx::xml::dom::create_element (
-          "dependence",
+          "nonlinearity",
           "XMLMaterial",
           e));
 
-      s << *i.dependence ();
+      s << *i.nonlinearity ();
     }
 
     // name
@@ -2146,28 +2191,6 @@ namespace XMLMaterial
       a << i.unit ();
     }
 
-    // dependence_shortname
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "dependence_shortname",
-          e));
-
-      a << i.dependence_shortname ();
-    }
-
-    // dependence_unit
-    //
-    {
-      ::xercesc::DOMAttr& a (
-        ::xsd::cxx::xml::dom::create_attribute (
-          "dependence_unit",
-          e));
-
-      a << i.dependence_unit ();
-    }
-
     // source
     //
     {
@@ -2177,6 +2200,39 @@ namespace XMLMaterial
           e));
 
       a << i.source ();
+    }
+
+    // nonlinearity_kind
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "nonlinearity_kind",
+          e));
+
+      a << i.nonlinearity_kind ();
+    }
+
+    // independent_shortname
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "independent_shortname",
+          e));
+
+      a << i.independent_shortname ();
+    }
+
+    // independent_unit
+    //
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "independent_unit",
+          e));
+
+      a << i.independent_unit ();
     }
   }
 
@@ -2198,7 +2254,7 @@ namespace XMLMaterial
   }
 
   void
-  operator<< (::xercesc::DOMElement& e, const dependence& i)
+  operator<< (::xercesc::DOMElement& e, const nonlinearity& i)
   {
     e << static_cast< const ::xml_schema::type& > (i);
 

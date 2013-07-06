@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Sodium"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Thermal conductivity" nonlinearity_kind="function" shortname="&lt;i>&amp;lambda;&lt;/i>" source="C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)" unit="W/m.K">
+      <material:constant value="141"/>
+      <material:nonlinearity>
+        <material:function body="def agros2d_material(t):&#xA;&#x9;if t >= 0.0 and t &lt; 8.0 :&#xA;&#x9;&#x9;return -5.851584e-01*t*t*t*t*t +1.601259e+01*t*t*t*t -1.433508e+02*t*t*t +2.853841e+02*t*t +1.486305e+03*t&#xA;&#x9;elif t >= 8.0 and t &lt; 25.0 :&#xA;&#x9;&#x9;return -5.204996e-03*t*t*t*t*t +4.799180e-01*t*t*t*t -1.790505e+01*t*t*t +3.448378e+02*t*t -3.556875e+03*t +1.692068e+04&#xA;&#x9;elif t >= 25.0 and t &lt; 50.0 :&#xA;&#x9;&#x9;return 1.199404e-03*t*t*t*t -1.991115e-01*t*t*t +1.254202e+01*t*t -3.600266e+02*t +4.197706e+03&#xA;&#x9;elif t >= 50.0 and t &lt; 90.0 :&#xA;&#x9;&#x9;return 2.461382e-05*t*t*t*t -7.155828e-03*t*t*t +7.906614e-01*t*t -3.973514e+01*t +9.090225e+02&#xA;&#x9;elif t >= 90.0 and t &lt; 173.0 :&#xA;&#x9;&#x9;return -9.702601e-06*t*t*t +3.587207e-03*t*t -3.567816e-01*t +1.455870e+02&#xA;&#x9;elif t >= 173.0 and t &lt;= 371.0 :&#xA;&#x9;&#x9;return 8.931309e-09*t*t*t*t -1.042568e-05*t*t*t +3.851285e-03*t*t -5.385009e-01*t +1.648097e+02&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100&#xA;&#xA;" interval_from="0" interval_to="371"/>
+      </material:nonlinearity>
+    </material:property>
+    <material:property independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Specific heat" nonlinearity_kind="function" shortname="&lt;i>c&lt;/i>&lt;sub>p&lt;/sub>" source="C.B. Alcock, M.W. Chase and V.P. Itkin, J. Phys. Chem. Ref. Data, v23(3), p385 (1994)" unit="J/kg.K">
+      <material:constant value="1225"/>
+      <material:nonlinearity>
+        <material:function body="def agros2d_material(t):&#xA;&#x9;if t >= 0.0 and t &lt; 4.0 :&#xA;&#x9;&#x9;return 2.183653e-02*t*t*t +2.020607e-14*t*t +5.915875e-02*t&#xA;&#x9;elif t >= 4.0 and t &lt; 15.0 :&#xA;&#x9;&#x9;return 1.446052e-02*t*t*t*t -4.706544e-01*t*t*t +5.744988e+00*t*t -2.651126e+01*t +4.217941e+01&#xA;&#x9;elif t >= 15.0 and t &lt; 50.0 :&#xA;&#x9;&#x9;return 2.819795e-04*t*t*t*t -4.280801e-02*t*t*t +2.188537e+00*t*t -2.651288e+01*t +1.162217e+02&#xA;&#x9;elif t >= 50.0 and t &lt; 140.0 :&#xA;&#x9;&#x9;return -3.174780e-06*t*t*t*t +1.760726e-03*t*t*t -3.713503e-01*t*t +3.698893e+01*t -4.480646e+02&#xA;&#x9;elif t >= 140.0 and t &lt;= 371.0 :&#xA;&#x9;&#x9;return 4.178072e-08*t*t*t*t -7.674586e-06*t*t*t -8.308278e-03*t*t +3.860906e+00*t +6.904801e+02&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="0" interval_to="371"/>
+      </material:nonlinearity>
+    </material:property>
+    <material:property independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Density" nonlinearity_kind="function" shortname="&lt;i>&amp;rho;&lt;/i>" source="S. Siegel and S.L. Quimby, Physical Review, v54, p76 (1938)" unit="kg/m&lt;sup>3&lt;/sup>">
+      <material:constant value="969"/>
+      <material:nonlinearity>
+        <material:function body="def agros2d_material(t):&#xA;&#x9;if t >= 80.0 and t &lt;= 300.0 :&#xA;&#x9;&#x9;return 8.339358e-07*t*t*t -6.254902e-04*t*t -4.446296e-02*t +1.015750e+03&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="80" interval_to="300"/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

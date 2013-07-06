@@ -30,13 +30,13 @@
 	<tr><td><b>{{PROPERTY_SHORTNAME_LABEL}}</b></td><td>{{PROPERTY_SHORTNAME}}</td><td rowspan="7"><div id="{{PROPERTY_CHART}}" style="width:400px;height:130px;"></div></td></tr>
 	<tr><td><b>{{PROPERTY_UNIT_LABEL}}</b></td><td>{{PROPERTY_UNIT}}</td></tr>
 	<tr><td><b>&nbsp;</b></td><td>&nbsp;</td></tr>
-	<tr><td><b>{{PROPERTY_DEPENDENCE_SHORTNAME_LABEL}}</b></td><td>{{PROPERTY_DEPENDENCE_SHORTNAME}}</td></tr>
-	<tr><td><b>{{PROPERTY_DEPENDENCE_UNIT_LABEL}}</b></td><td>{{PROPERTY_DEPENDENCE_UNIT}}</td></tr>
+	<tr><td><b>{{PROPERTY_INDEPENDENT_SHORTNAME_LABEL}}</b></td><td>{{PROPERTY_INDEPENDENT_SHORTNAME}}</td></tr>
+	<tr><td><b>{{PROPERTY_INDEPENDENT_UNIT_LABEL}}</b></td><td>{{PROPERTY_INDEPENDENT_UNIT}}</td></tr>
 	<tr><td><b>&nbsp;</b></td><td>&nbsp;</td></tr>
 	<tr><td><b>{{PROPERTY_CONSTANT_LABEL}}</b></td><td>{{PROPERTY_CONSTANT}} {{PROPERTY_UNIT}}</td></tr>
 </table>
 {{#PROPERTY_SELECTABLE}}
-<a href="property?id={{PROPERTY_ID}}&amp;constant={{PROPERTY_CONSTANT}}&amp;x={{PROPERTY_DEPENDENCE_X}}&amp;y={{PROPERTY_DEPENDENCE_Y}}" style="float: right;"><button>Select property</button></a>
+<a href="property?id={{PROPERTY_ID}}&amp;constant={{PROPERTY_CONSTANT}}&amp;x={{PROPERTY_INDEPENDENT_X}}&amp;y={{PROPERTY_INDEPENDENT_Y}}" style="float: right;"><button>Select property</button></a>
 {{/PROPERTY_SELECTABLE}}
 </div>
 </td>
