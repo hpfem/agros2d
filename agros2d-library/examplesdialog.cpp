@@ -68,12 +68,8 @@ ExamplesDialog::ExamplesDialog(QWidget *parent) : QDialog(parent)
     lstProblems->setHeaderHidden(true);
     lstProblems->setMinimumWidth(230);
 
-    connect(lstProblems, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)),
-            this, SLOT(doItemDoubleClicked(QTreeWidgetItem *, int)));
-    connect(lstProblems, SIGNAL(itemActivated(QTreeWidgetItem *, int)),
-            this, SLOT(doItemSelected(QTreeWidgetItem *, int)));
-    connect(lstProblems, SIGNAL(itemPressed(QTreeWidgetItem *, int)),
-            this, SLOT(doItemSelected(QTreeWidgetItem *, int)));
+    connect(lstProblems, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doItemDoubleClicked(QTreeWidgetItem *, int)));
+    connect(lstProblems, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(doItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
 
     QHBoxLayout *layoutSurface = new QHBoxLayout();
     layoutSurface->addWidget(lstProblems);
@@ -120,17 +116,18 @@ int ExamplesDialog::showDialog()
     return exec();
 }
 
-void ExamplesDialog::doItemSelected(QTreeWidgetItem *item, int column)
+void ExamplesDialog::doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
-    m_selectedFilename = item->data(0, Qt::UserRole).toString();
-    if (!m_selectedFilename.isEmpty())
+    webView->setHtml("");
+
+    if (current)
     {
-        problemInfo(m_selectedFilename);
-        buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
-    }
-    else
-    {
-        webView->setHtml("");
+        m_selectedFilename = current->data(0, Qt::UserRole).toString();
+        if (!m_selectedFilename.isEmpty())
+        {
+            problemInfo(m_selectedFilename);
+            buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
+        }
     }
 }
 

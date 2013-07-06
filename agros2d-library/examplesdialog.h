@@ -35,7 +35,7 @@ private slots:
     void doAccept();
     void doReject();
 
-    void doItemSelected(QTreeWidgetItem *item, int column);
+    void doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
     void doItemDoubleClicked(QTreeWidgetItem *item, int column);
 
 private:
