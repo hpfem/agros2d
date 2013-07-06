@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/fmach/Projekty/Agros2D/agros2d-current/resources/xsd/material_xml.xsd">
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
 
   <material:general description="Iron is a chemical element with the symbol Fe and atomic number 26. It is a metal in the first transition series. It is the most common element (by mass) forming the planet Earth as a whole, forming much of Earth's outer and inner core." name="Iron"/>
 
   <material:properties>
-    <material:property nonlinearity_kind="function" independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Thermal conductivity" shortname="&lt;i>&amp;lambda;&lt;/i>" source="C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)" unit="W/m.K">
+    <material:property independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Thermal conductivity" nonlinearity_kind="function" shortname="&lt;i>&amp;lambda;&lt;/i>" source="C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)" unit="W/m.K">
       <material:constant value="85"/>
       <material:nonlinearity>
         <material:function body="def agros2d_material(t) :&#xA;    if t >= 0.0 and t &lt; 20.0 :&#xA;        return 1.675048e-02*t*t*t*t -7.906936e-01*t*t*t +4.851772e+00*t*t +1.619832e+02*t&#xA;    elif t >= 20.0 and t &lt; 70.0 :&#xA;        return 5.882957e-06*t*t*t*t*t -1.490064e-03*t*t*t*t +1.373453e-01*t*t*t -5.081026e+00*t*t +2.388314e+01*t +2.218339e+03&#xA;    elif t >= 70.0 and t &lt; 150.0 :&#xA;        return 5.647112e-06*t*t*t*t -2.845324e-03*t*t*t +5.423243e-01*t*t -4.691385e+01*t +1.682900e+03&#xA;    elif t >= 150.0 and t &lt; 1183.0 :&#xA;        return -7.562752e-14*t*t*t*t*t +4.862049e-10*t*t*t*t -9.859391e-07*t*t*t +8.992200e-04*t*t -4.470943e-01*t +1.556355e+02&#xA;    elif t >= 1183.0 and t &lt;= 1810.0 :&#xA;        return -9.936321e-06*t*t +3.983086e-02*t -5.097463e+00&#xA;    else :&#xA;        return 1.000000e+100" interval_from="0" interval_to="1810"/>
       </material:nonlinearity>
     </material:property>
-    <material:property nonlinearity_kind="function" independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Specific heat" shortname="&lt;i>c&lt;/i>&lt;sub>p&lt;/sub>" source="P.D. Desai, J. Phys. Chem. Ref. Data, v15(3), p967 (1986)" unit="J/kg.K">
+    <material:property independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Specific heat" nonlinearity_kind="function" shortname="&lt;i>c&lt;/i>&lt;sub>p&lt;/sub>" source="P.D. Desai, J. Phys. Chem. Ref. Data, v15(3), p967 (1986)" unit="J/kg.K">
       <material:constant value="445"/>
       <material:nonlinearity>
         <material:function body="def agros2d_material(t) :&#xA;    if t >= 0.0 and t &lt; 20.0 :&#xA;        return 8.786827e-06*t*t*t*t +3.434114e-05*t*t*t +3.543513e-03*t*t +7.343790e-02*t +1.640777e-02&#xA;    elif t >= 20.0 and t &lt; 130.0 :&#xA;        return 5.251765e-08*t*t*t*t*t -1.807849e-05*t*t*t*t +1.972324e-03*t*t*t -5.588171e-02*t*t +9.005499e-01*t -4.129967e+00&#xA;    elif t >= 130.0 and t &lt; 500.0 :&#xA;        return -1.683141e-08*t*t*t*t +2.868283e-05*t*t*t -1.780930e-02*t*t +5.191206e+00*t -1.438118e+02&#xA;    elif t >= 500.0 and t &lt; 1000.0 :&#xA;        return 1.852870e-08*t*t*t*t -4.990048e-05*t*t*t +5.023704e-02*t*t -2.189081e+01*t +3.998510e+03&#xA;    elif t >= 1000.0 and t &lt; 1042.0 :&#xA;        return 6.672367e-04*t*t*t -1.889510e+00*t*t +1.783888e+03*t -5.606426e+05&#xA;    elif t >= 1042.0 and t &lt; 1184.0 :&#xA;        return 3.231248e-06*t*t*t*t -1.504264e-02*t*t*t +2.625897e+01*t*t -2.037174e+04*t +5.927268e+06&#xA;    elif t >= 1184.0 and t &lt; 1665.0 :&#xA;        return 1.496811e-01*t +4.295303e+02&#xA;    elif t >= 1665.0 and t &lt;= 1809.0 :&#xA;        return 1.778200e-01*t +4.402844e+02&#xA;    else :&#xA;        return 1.000000e+100" interval_from="0" interval_to="1809"/>
       </material:nonlinearity>
     </material:property>
-    <material:property nonlinearity_kind="function" independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Density" shortname="&lt;i>&amp;rho;&lt;/i>" source="F.C. Nix and D. MacNair, Physical Review, v60, p597 (1941); calculated from the linear expansion" unit="kg/m&lt;sup>3&lt;/sup>">
+    <material:property independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Density" nonlinearity_kind="function" shortname="&lt;i>&amp;rho;&lt;/i>" source="F.C. Nix and D. MacNair, Physical Review, v60, p597 (1941); calculated from the linear expansion" unit="kg/m&lt;sup>3&lt;/sup>">
       <material:constant value="7855"/>
       <material:nonlinearity>
         <material:function body="def agros2d_material(t) :&#xA;    if t >= 91.0 and t &lt; 190.0 :&#xA;        return -6.010914e-06*t*t*t +2.196832e-03*t*t -4.306436e-01*t +7.924000e+03&#xA;    elif t >= 190.0 and t &lt;= 960.0 :&#xA;        return 1.470685e-07*t*t*t -3.511597e-04*t*t -1.002710e-01*t +7.910967e+03&#xA;    else :&#xA;        return 1.000000e+100" interval_from="91" interval_to="960"/>
       </material:nonlinearity>
     </material:property>
-    <material:property nonlinearity_kind="function" independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="Product Reference Guide, Carpenter Technology Corporation" unit="-">
+    <material:property independent_shortname="&lt;i>B&lt;/i>" independent_unit="T" name="Magnetic permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="Product Reference Guide, Carpenter Technology Corporation" unit="-">
       <material:constant value="9300"/>
       <material:nonlinearity>
-        <material:table keys="0,0.4540,1.1733,1.4147,1.7552,1.8595,1.9037,1.9418" values="9300,9264,6717.2,4710.5,1664.8,763.14,453.7,194.13"/>
+        <material:table keys="0&#xA;0.4540&#xA;1.1733&#xA;1.4147&#xA;1.7552&#xA;1.8595&#xA;1.9037&#xA;1.9418" values="9300&#xA;9264&#xA;6717.2&#xA;4710.5&#xA;1664.8&#xA;763.14&#xA;453.7&#xA;194.13"/>
       </material:nonlinearity>
     </material:property>
   </material:properties>
