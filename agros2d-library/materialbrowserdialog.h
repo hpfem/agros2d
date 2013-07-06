@@ -128,6 +128,7 @@ private:
     QPushButton *btnNew;
     QPushButton *btnEdit;
     QPushButton *btnDelete;
+    QSpinBox *txtNumberOfSamples;
     QString m_selectedFilename;
     QString m_cascadeStyleSheet;
 

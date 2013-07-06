@@ -640,11 +640,17 @@ MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent),
     btnDelete->setEnabled(false);
     connect(btnDelete, SIGNAL(clicked()), this, SLOT(doDelete()));
 
+    txtNumberOfSamples = new QSpinBox();
+    txtNumberOfSamples->setMinimum(5);
+    txtNumberOfSamples->setMaximum(1000);
+
     QGridLayout *layoutProperties = new QGridLayout();
     layoutProperties->addWidget(trvMaterial, 0, 0, 1, 3);
-    layoutProperties->addWidget(btnNew, 1, 0);
-    layoutProperties->addWidget(btnEdit, 1, 1);
-    layoutProperties->addWidget(btnDelete, 1, 2);
+    layoutProperties->addWidget(new QLabel(tr("Number of samples:")), 1, 0, 1, 2);
+    layoutProperties->addWidget(txtNumberOfSamples, 1, 2);
+    layoutProperties->addWidget(btnNew, 2, 0);
+    layoutProperties->addWidget(btnEdit, 2, 1);
+    layoutProperties->addWidget(btnDelete, 2, 2);
 
     QHBoxLayout *layoutSurface = new QHBoxLayout();
     layoutSurface->addLayout(layoutProperties);
@@ -672,13 +678,15 @@ MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent),
     readMaterials();
 
     QSettings settings;
-    settings.setValue("MaterialBrowserDialog/Geometry", saveGeometry());
+    restoreGeometry(settings.value("MaterialBrowserDialog/Geometry", saveGeometry()).toByteArray());
+    txtNumberOfSamples->setValue(settings.value("MaterialBrowserDialog/NumberOfSamples", 40).toInt());
 }
 
 MaterialBrowserDialog::~MaterialBrowserDialog()
 {    
     QSettings settings;
     settings.setValue("MaterialBrowserDialog/Geometry", saveGeometry());
+    settings.setValue("MaterialBrowserDialog/NumberOfSamples", txtNumberOfSamples->value());
 }
 
 int MaterialBrowserDialog::showDialog(bool select)
@@ -858,7 +866,7 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
                     functionValues(QString::fromStdString(function.body()),
                                    function.interval_from(),
                                    function.interval_to(),
-                                   40,
+                                   txtNumberOfSamples->value(),
                                    &keys, &values);
                 }
 
