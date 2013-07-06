@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Nickel"/>
+
+  <material:properties>
+    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" name="Thermal conductivity" shortname="&lt;i>&amp;lambda;&lt;/i>" source="C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)" unit="W/m.K">
+      <material:constant value="91"/>
+      <material:dependence>
+        <material:function body="def agros2d_material(t) :&#xA;&#x9;if t >= 0.0 and t &lt; 18.0 :&#xA;&#x9;&#x9;return 1.304208e-03*t*t*t*t*t -2.700268e-02*t*t*t*t -4.089829e-01*t*t*t +2.199849e+00*t*t +2.140436e+02*t&#xA;&#x9;elif t >= 18.0 and t &lt; 30.0 :&#xA;&#x9;&#x9;return 3.189215e-04*t*t*t*t*t -5.321568e-02*t*t*t*t +3.410781e+00*t*t*t -1.039216e+02*t*t +1.431939e+03*t -5.208712e+03&#xA;&#x9;elif t >= 30.0 and t &lt; 90.0 :&#xA;&#x9;&#x9;return 6.040699e-05*t*t*t*t -2.121476e-02*t*t*t +2.761625e+00*t*t -1.610480e+02*t +3.817001e+03&#xA;&#x9;elif t >= 90.0 and t &lt; 223.0 :&#xA;&#x9;&#x9;return 3.493035e-07*t*t*t*t -2.776075e-04*t*t*t +8.276592e-02*t*t -1.121132e+01*t +7.007063e+02&#xA;&#x9;elif t >= 223.0 and t &lt; 630.0 :&#xA;&#x9;&#x9;return 1.131921e-09*t*t*t*t -2.193597e-06*t*t*t +1.648640e-03*t*t -6.437058e-01*t +1.853755e+02&#xA;&#x9;elif t >= 630.0 and t &lt;= 1500.0 :&#xA;&#x9;&#x9;return 2.143115e-02*t +5.042098e+01&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100&#xA;&#xA;" interval_from="0" interval_to="1500"/>
+      </material:dependence>
+    </material:property>
+    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" name="Specific heat" shortname="&lt;i>c&lt;/i>&lt;sub>p&lt;/sub>" source="B.J. McBride, S. Gordon and M.A. Reno, NASA Technical Paper 3287 (1993)" unit="J/kg.K">
+      <material:constant value="442"/>
+      <material:dependence>
+        <material:function body="def agros2d_material(t) :&#xA;&#x9;if t >= 100.0 and t &lt; 599.0 :&#xA;&#x9;&#x9;return -1.187679e-08*t*t*t*t +2.223124e-05*t*t*t -1.467413e-02*t*t +4.504691e+00*t -9.038582e+01&#xA;&#x9;elif t >= 599.0 and t &lt; 631.0 :&#xA;&#x9;&#x9;return 1.809085e-04*t*t*t -2.972179e-01*t*t +1.629617e+02*t -2.926106e+04&#xA;&#x9;elif t >= 631.0 and t &lt; 700.0 :&#xA;&#x9;&#x9;return 1.341446e-02*t*t -2.008609e+01*t +8.011774e+03&#xA;&#x9;elif t >= 700.0 and t &lt;= 1728.0 :&#xA;&#x9;&#x9;return -5.186512e-08*t*t*t +2.399215e-04*t*t -2.122174e-01*t +5.725331e+02&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100&#xA;&#xA;" interval_from="100" interval_to="1728"/>
+      </material:dependence>
+    </material:property>
+    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" name="Density" shortname="&lt;i>&amp;rho;&lt;/i>" source="F.C. Nix and D. MacNair, Physical Review, v60, p597 (1941) and P. Hidnert, J. Research National Bureau Standards, v58, p89 (1957); calculated from the linear expansion" unit="kg/m&lt;sup>3&lt;/sup>">
+      <material:constant value="8901"/>
+      <material:dependence>
+        <material:function body="def agros2d_material(t) :&#xA;&#x9;if t >= 81.0 and t &lt;= 1173.0 :&#xA;&#x9;&#x9;return -1.117427e-10*t*t*t*t +4.097446e-07*t*t*t -5.582955e-04*t*t -1.034728e-01*t +8.969428e+03&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100&#xA;&#xA;" interval_from="81" interval_to="1173"/>
+      </material:dependence>
+    </material:property>
+  </material:properties>
+
+</material:material>

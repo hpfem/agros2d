@@ -19,7 +19,7 @@
     <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" name="Density" shortname="&lt;i>&amp;rho;&lt;/i>" source="R.W. Meyerhoff and J.F. Smith, J. Applied Physics, v33, p219 (1962) and E.A. Owen and E.L. Yates, Phil. Mag. S7, v17, p113 (1934)" unit="kg/m&lt;sup>3&lt;/sup>">
       <material:constant value="7138"/>
       <material:dependence>
-        <material:function body="def agros2d_material(t):&#xA;&#x9;# R.W. Meyerhoff and J.F. Smith, J. Applied Physics, v33, p219 &#xA;&#x9;# (1962) and E.A. Owen and E.L. Yates, Phil. Mag. S7, v17, p113 &#xA;&#x9;# (1934)&#xA;&#x9;# data is in units of kg/m^3&#xA;&#x9;# t must be in degrees Kelvin for these equations&#xA;&#x9;if t >= 0.0 and t &lt; 300.0 :&#xA;&#x9;&#x9;return -1.986628e-08*t*t*t*t +1.518314e-05*t*t*t -4.442600e-03*t*t +1.347873e-02*t +7.280967e+03&#xA;&#x9;elif t >= 300.0 and t &lt;= 890.0 :&#xA;&#x9;&#x9;return -1.783429e-04*t*t -5.059331e-01*t +7.302000e+03&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100&#xA;&#xA;" interval_from="0" interval_to="890"/>
+        <material:function body="def agros2d_material(t):&#xA;&#x9;if t >= 0.0 and t &lt; 300.0 :&#xA;&#x9;&#x9;return -1.986628e-08*t*t*t*t +1.518314e-05*t*t*t -4.442600e-03*t*t +1.347873e-02*t +7.280967e+03&#xA;&#x9;elif t >= 300.0 and t &lt;= 890.0 :&#xA;&#x9;&#x9;return -1.783429e-04*t*t -5.059331e-01*t +7.302000e+03&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100&#xA;&#xA;" interval_from="0" interval_to="890"/>
       </material:dependence>
     </material:property>
   </material:properties>
