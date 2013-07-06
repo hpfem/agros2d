@@ -319,6 +319,29 @@ QString cacheProblemDir()
     return str;
 }
 
+QString userDataDir()
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    static QString str = QString("%1/cache/%2").
+            arg(QStandardPaths::writableLocation(QStandardPaths::DataLocation)).
+            arg(QString::number(QCoreApplication::applicationPid()));
+#else
+#ifdef Q_WS_WIN
+    static QString str = QString("%1/agros2d/").
+            arg(QDesktopServices::storageLocation(QDesktopServices::DataLocation));
+#else
+    static QString str = QString("%1").
+            arg(QDesktopServices::storageLocation(QDesktopServices::DataLocation));
+#endif
+#endif
+
+    QDir dir(str);
+    if (!dir.exists())
+        dir.mkpath(str);
+
+    return str;
+}
+
 QString tempProblemFileName()
 {
     return tempProblemDir() + "/temp";

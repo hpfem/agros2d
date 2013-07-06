@@ -126,6 +126,9 @@ AGROS_API QString externalFunctions();
 AGROS_API QString tempProblemDir();
 AGROS_API QString cacheProblemDir();
 
+// get user dir
+AGROS_API QString userDataDir();
+
 // get temp filename
 AGROS_API QString tempProblemFileName();
 

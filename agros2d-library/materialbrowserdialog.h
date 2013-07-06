@@ -22,7 +22,10 @@
 
 #include "util.h"
 
+#include "../resources_source/classes/material_xml.h";
+
 class LineEditDouble;
+class QCustomPlot;
 
 class MaterialEditDialog : public QDialog
 {
@@ -38,42 +41,68 @@ protected:
     void readMaterial();
     bool writeMaterial();
 
-private:
-    struct Property
+    enum NonlinearityType
     {
-        QLineEdit *txtName;
-        QLineEdit *txtShortname;
-        QLineEdit *txtUnit;
-        QLineEdit *txtSource;
-        QLineEdit *txtDependenceShortname;
-        QLineEdit *txtDependenceUnit;
-
-        LineEditDouble *txtConstant;
-
-        QTextEdit *txtTableKeys;
-        QTextEdit *txtTableValues;
-
-        QTextEdit *txtFunction;
-        LineEditDouble *txtFunctionFrom;
-        LineEditDouble *txtFunctionTo;
-
-        QTabWidget *tabTableAndFunction;
+        Function = 0,
+        Table = 1
     };
 
+private:
     QString m_fileName;
 
     QLineEdit *txtName;
     QLineEdit *txtDescription;
-    QList<Property> propertiesUI;
 
-    QTabWidget *tabProperties;
+    QListWidget *lstProperties;
+    QList<XMLMaterial::property> m_properties;
 
-    MaterialEditDialog::Property addPropertyUI(const QString &name);
+    // properties
+    QWidget *propertyGUI;
+
+    QLineEdit *txtPropertyName;
+    QLineEdit *txtPropertyShortname;
+    QLineEdit *txtPropertyUnit;
+    QLineEdit *txtPropertySource;
+    QLineEdit *txtPropertyDependenceShortname;
+    QLineEdit *txtPropertyDependenceUnit;
+    QComboBox *cmbNonlinearDependence;
+
+    LineEditDouble *txtPropertyConstant;
+
+    QPlainTextEdit *txtPropertyTableKeys;
+    QPlainTextEdit *txtPropertyTableValues;
+
+    QPlainTextEdit *txtPropertyFunction;
+    LineEditDouble *txtPropertyFunctionFrom;
+    LineEditDouble *txtPropertyFunctionTo;
+
+    QWidget *widNonlinearTable;
+    QWidget *widNonlinearFunction;
+    QStackedLayout *layoutNonlinear;
+    QCustomPlot *chartNonlinear;
+
+    QPushButton *btnDeleteProperty;
+
+    QWidget *createPropertyGUI();
+
+    void readProperty(XMLMaterial::property prop = XMLMaterial::property("", "", "", "", "", ""));
+    XMLMaterial::property writeProperty();    
 
 private slots:
     void doAccept();
-    void addProperty();
-    void closeProperty(int index);
+    void addProperty(const QString &name = "", const QString &shortname = "", const QString &unit = "", const QString &dependenceShortname = "", const QString &dependenceUnit = "");
+    // TODO: more general
+    inline void addPropertyThermalConductivity() { addProperty("Thermal conductivity", "<i>&lambda;</i>", "W/m.K", "<i>T</i>", "K"); }
+    inline void addPropertySpecificHeat() { addProperty("Specific heat", "<i>c</i><sub>p</sub>", "J/kg.K", "<i>T</i>", "K"); }
+    inline void addPropertyDensity() { addProperty("Density", "<i>&rho;</i>", "kg/m<sup>3</sup>", "<i>T</i>", "K"); }
+    inline void addPropertyMagneticPermeability() { addProperty("Magnetic permeability", "<i>&mu;</i><sub>r</sub>", "-", "<i>B</i>", "T"); }
+
+    void deleteProperty();
+
+    void doPropertyChanged(QListWidgetItem *current, QListWidgetItem *previous);
+    void doNonlinearDependenceChanged(int index);
+
+    void drawChart();
 };
 
 class MaterialBrowserDialog : public QDialog
@@ -96,23 +125,25 @@ protected:
 private:
     QWebView *webView;
     QTreeWidget *trvMaterial;
+    QPushButton *btnNew;
     QPushButton *btnEdit;
+    QPushButton *btnDelete;
     QString m_selectedFilename;
     QString m_cascadeStyleSheet;
 
     QList<double> m_selected_x;
     QList<double> m_selected_y;
 
-    bool m_select;
-
-    void functionValues(const QString &function, double from, double to, int count, QList<double> *keys, QList<double> *values);
+    bool m_select;    
 
 private slots:
-    void doItemSelected(QTreeWidgetItem *item, int column);
+    void doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
     void doItemDoubleClicked(QTreeWidgetItem *item, int column);
 
     void linkClicked(const QUrl &url);
+    void doNew();
     void doEdit();
+    void doDelete();
 };
 
 #endif // MATERIALBROWSERDIALOG_H

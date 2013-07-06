@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Zinc"/>
+
+  <material:properties>
+    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" name="Thermal conductivity" shortname="&lt;i>&amp;lambda;&lt;/i>" source="C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)" unit="W/m.K">
+      <material:constant value="115"/>
+      <material:dependence>
+        <material:function body="def agros2d_material(t):&#xA;&#x9;if t >= 0.0 and t &lt; 9.0 :&#xA;&#x9;&#x9;return 2.706808e-01*t*t*t*t*t -2.655161e+00*t*t*t*t -2.718274e+01*t*t*t +1.389875e+02*t*t +1.750994e+03*t&#xA;&#x9;elif t >= 9.0 and t &lt; 30.0 :&#xA;&#x9;&#x9;return -4.348847e-03*t*t*t*t*t +5.035428e-01*t*t*t*t -2.348013e+01*t*t*t +5.571501e+02*t*t -6.855608e+03*t +3.644601e+04&#xA;&#x9;elif t >= 30.0 and t &lt; 100.0 :&#xA;&#x9;&#x9;return -1.029048e-06*t*t*t*t*t +3.785208e-04*t*t*t*t -5.554990e-02*t*t*t +4.111120e+00*t*t -1.566486e+02*t +2.658764e+03&#xA;&#x9;elif t >= 100.0 and t &lt;= 693.0 :&#xA;&#x9;&#x9;return -5.778175e-05*t*t +1.274300e-02*t +1.168392e+02&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100&#xA;&#xA;" interval_from="0" interval_to="693"/>
+      </material:dependence>
+    </material:property>
+    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" name="Specific heat" shortname="&lt;i>c&lt;/i>&lt;sub>p&lt;/sub>" source="B.J. McBride, S. Gordon and M.A. Reno, NASA Technical Paper 3287 (1993)" unit="J/kg.K">
+      <material:constant value="388"/>
+      <material:dependence>
+        <material:function body="def agros2d_material(t):&#xA;&#x9;if t >= 100.0 and t &lt; 320.0 :&#xA;&#x9;&#x9;return -1.258998e-08*t*t*t*t +1.945167e-05*t*t*t -1.099511e-02*t*t +2.827810e+00*t +1.066220e+02&#xA;&#x9;elif t >= 320.0 and t &lt;= 693.0 :&#xA;&#x9;&#x9;return 7.366442e-07*t*t*t -7.026091e-04*t*t +3.410779e-01*t +3.297327e+02&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="100" interval_to="693"/>
+      </material:dependence>
+    </material:property>
+    <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" name="Density" shortname="&lt;i>&amp;rho;&lt;/i>" source="R.W. Meyerhoff and J.F. Smith, J. Applied Physics, v33, p219 (1962) and E.A. Owen and E.L. Yates, Phil. Mag. S7, v17, p113 (1934)" unit="kg/m&lt;sup>3&lt;/sup>">
+      <material:constant value="7138"/>
+      <material:dependence>
+        <material:function body="def agros2d_material(t):&#xA;&#x9;# R.W. Meyerhoff and J.F. Smith, J. Applied Physics, v33, p219 &#xA;&#x9;# (1962) and E.A. Owen and E.L. Yates, Phil. Mag. S7, v17, p113 &#xA;&#x9;# (1934)&#xA;&#x9;# data is in units of kg/m^3&#xA;&#x9;# t must be in degrees Kelvin for these equations&#xA;&#x9;if t >= 0.0 and t &lt; 300.0 :&#xA;&#x9;&#x9;return -1.986628e-08*t*t*t*t +1.518314e-05*t*t*t -4.442600e-03*t*t +1.347873e-02*t +7.280967e+03&#xA;&#x9;elif t >= 300.0 and t &lt;= 890.0 :&#xA;&#x9;&#x9;return -1.783429e-04*t*t -5.059331e-01*t +7.302000e+03&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100&#xA;&#xA;" interval_from="0" interval_to="890"/>
+      </material:dependence>
+    </material:property>
+  </material:properties>
+
+</material:material>

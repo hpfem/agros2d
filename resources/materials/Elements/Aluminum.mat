@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/fmach/Projekty/Agros2D/agros2d-current/resources/xsd/material_xml.xsd">
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
 
-  <material:general description="Aluminum is a chemical element in the boron group with symbol Al and atomic number 13. It is silvery white, and it is not soluble in water under normal circumstances." name="Aluminum"/>
+  <material:general description="Aluminum is a chemical element in the boron group with symbol Al and atomic number 13. It is silvery white, and it is not soluble in water under normal circumstances." name="Thermal conductivity"/>
 
   <material:properties>
     <material:property dependence_shortname="&lt;i>T&lt;/i>" dependence_unit="K" name="Thermal conductivity" shortname="&lt;i>&amp;lambda;&lt;/i>" source="C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)" unit="W/m.K">
