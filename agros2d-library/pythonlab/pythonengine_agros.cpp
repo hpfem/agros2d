@@ -60,6 +60,57 @@ void PythonEngineAgros::runPythonHeader()
         PyRun_String(script.toLatin1().data(), Py_file_input, m_dict, m_dict);
 }
 
+void PythonEngineAgros::materialValues(const QString &function, double from, double to,
+                                       QVector<double> *keys, QVector<double> *values, int count)
+{
+    if (function.isEmpty())
+        return;
+
+    // function
+    ExpressionResult expressionResult = runExpression(function, false);
+    if (!expressionResult.error.isEmpty())
+        qDebug() << "Function: " << expressionResult.error;
+
+    // prepare keys
+    double step = (to - from) / (count - 1);
+    QString keysVector = "[";
+    for (int i = 0; i < count; i++)
+    {
+        double key = from + i * step;
+        keys->append(key);
+
+        if (i == 0)
+            keysVector += QString("%1").arg(key + EPS_ZERO);
+        else if (i == (count - 1))
+            keysVector += QString(", %1]").arg(key - EPS_ZERO);
+        else
+            keysVector += QString(", %1").arg(key);
+    }
+
+    // run expression
+    runExpression(QString("agros2d_material_values = agros2d_material_eval(%1)").arg(keysVector), false);
+
+    // extract values
+    PyObject *result = PyDict_GetItemString(m_dict, "agros2d_material_values");
+    if (result)
+    {
+        Py_INCREF(result);
+        for (int i = 0; i < count; i++)
+            values->append(PyFloat_AsDouble(PyList_GetItem(result, i)));
+        Py_XDECREF(result);
+    }
+
+    // remove variables
+    runExpression("del agros2d_material; del agros2d_material_values", false);
+
+    // error during execution
+    if (keys->size() != values->size())
+    {
+        keys->clear();
+        values->clear();
+    }
+}
+
 PythonLabAgros::PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWidget *parent)
     : PythonEditorDialog(pythonEngine, args, parent)
 {

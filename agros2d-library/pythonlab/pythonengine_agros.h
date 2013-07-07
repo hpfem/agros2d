@@ -61,6 +61,9 @@ public:
     inline void setConsole(PythonScriptingConsole *console) { m_console = console; }
     inline void resetConsole() { m_console = NULL; }
 
+    void materialValues(const QString &function, double from, double to,
+                        QVector<double> *keys, QVector<double> *values, int count = 200);
+
 protected:
     virtual void addCustomExtensions();
     virtual void addCustomFunctions();

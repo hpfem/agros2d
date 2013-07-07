@@ -20,3 +20,10 @@ def test(text, value, normal, error = 0.03):
         print(text + ": Agros2D: " + str(value) + ", correct: " + str(normal) + ", error: " + "{:.4f}".format(abs(value - normal)/value*100) + "%)")
     return test
 setattr(agros2d, "test", test)
+
+def agros2d_material_eval(keys):
+    values = []
+    for i in range(len(keys)):
+        values.append(agros2d_material(keys[i]))
+
+    return values

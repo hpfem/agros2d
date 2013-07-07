@@ -42,35 +42,6 @@
 
 #include "pythonlab/pythonengine_agros.h"
 
-void functionValues(const QString &function, double from, double to, int count, QVector<double> *keys, QVector<double> *values)
-{
-    if (function.isEmpty())
-        return;
-
-    double step = ((to - from) - 2 * EPS_ZERO) / (count - 1);
-
-    ExpressionResult expressionResult = currentPythonEngineAgros()->runExpression(function, false);
-    if (!expressionResult.error.isEmpty())
-        qDebug() << "Function: " << expressionResult.error;
-
-    for (int i = 0; i < count; i++)
-    {
-        double key = from + i * step + EPS_ZERO;
-
-        ExpressionResult expressionResult = currentPythonEngineAgros()->runExpression(QString("agros2d_material(%1)").arg(key), true);
-        if (expressionResult.error.isEmpty())
-        {
-            keys->append(key);
-            values->append(expressionResult.value);
-        }
-        else
-        {
-            qDebug() << "Function eval: " << expressionResult.error;
-        }
-    }
-    currentPythonEngineAgros()->runExpression("del agros2d_material", false);
-}
-
 MaterialEditDialog::MaterialEditDialog(const QString &fileName, QWidget *parent) : QDialog(parent),
     m_fileName(fileName)
 {
@@ -242,7 +213,7 @@ QWidget *MaterialEditDialog::createPropertyGUI()
     connect(cmbPropertyNonlinearityType, SIGNAL(activated(int)), this, SLOT(doNonlinearDependenceChanged(int)));
 
     // constant
-    txtPropertyConstant = new LineEditDouble(0.0);  
+    txtPropertyConstant = new LineEditDouble(0.0);
 
     // table and function tab
     QGridLayout *layoutProperty = new QGridLayout();
@@ -262,7 +233,7 @@ QWidget *MaterialEditDialog::createPropertyGUI()
     layoutProperty->addWidget(txtPropertyIndependentVariableShortname, 2, 3);
     layoutProperty->addWidget(new QLabel(tr("Ind. var. unit:")), 3, 2);
     layoutProperty->addWidget(txtPropertyIndependentVariableUnit, 3, 3);
-    layoutProperty->setRowStretch(11, 1);   
+    layoutProperty->setRowStretch(11, 1);
 
     QWidget *widget = new QWidget(this);
     widget->setLayout(layoutProperty);
@@ -384,7 +355,7 @@ void MaterialEditDialog::addProperty(const QString &name, const QString &shortna
         XMLMaterial::nonlinearity nonlinearity;
         nonlinearity.function().set(XMLMaterial::function("def agros2d_material(t):\n"
                                                           "    return 0.0",
-                                                        0, 100));
+                                                          0, 100));
         prop.nonlinearity().set(nonlinearity);
         m_properties.append(prop);
 
@@ -489,11 +460,10 @@ void MaterialEditDialog::drawChart()
 
     if (((NonlinearityType) cmbPropertyNonlinearityType->itemData(cmbPropertyNonlinearityType->currentIndex()).toInt()) == MaterialEditDialog::Function)
     {
-        functionValues(txtPropertyFunction->toPlainText(),
-                       txtPropertyFunctionFrom->value(),
-                       txtPropertyFunctionTo->value(),
-                       80,
-                       &keys, &values);
+        currentPythonEngineAgros()->materialValues(txtPropertyFunction->toPlainText(),
+                                                   txtPropertyFunctionFrom->value(),
+                                                   txtPropertyFunctionTo->value(),
+                                                   &keys, &values, 500);
     }
     else
     {
@@ -539,13 +509,13 @@ XMLMaterial::property MaterialEditDialog::writeProperty()
     {
         // function
         nonlinearity.function().set(XMLMaterial::function(txtPropertyFunction->toPlainText().toStdString(),
-                                                        txtPropertyFunctionFrom->value(),
-                                                        txtPropertyFunctionTo->value()));
+                                                          txtPropertyFunctionFrom->value(),
+                                                          txtPropertyFunctionTo->value()));
     }
     else if (((NonlinearityType) cmbPropertyNonlinearityType->itemData(cmbPropertyNonlinearityType->currentIndex()).toInt()) == MaterialEditDialog::Table)
     {
         nonlinearity.table().set(XMLMaterial::table(txtPropertyTableKeys->toPlainText().toStdString(),
-                                                  txtPropertyTableValues->toPlainText().toStdString()));
+                                                    txtPropertyTableValues->toPlainText().toStdString()));
     }
 
     prop.nonlinearity().set(nonlinearity);
@@ -628,14 +598,8 @@ MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent),
     btnDelete->setEnabled(false);
     connect(btnDelete, SIGNAL(clicked()), this, SLOT(doDelete()));
 
-    txtNumberOfSamples = new QSpinBox();
-    txtNumberOfSamples->setMinimum(5);
-    txtNumberOfSamples->setMaximum(1000);
-
     QGridLayout *layoutProperties = new QGridLayout();
     layoutProperties->addWidget(trvMaterial, 0, 0, 1, 3);
-    layoutProperties->addWidget(new QLabel(tr("Number of samples:")), 1, 0, 1, 2);
-    layoutProperties->addWidget(txtNumberOfSamples, 1, 2);
     layoutProperties->addWidget(btnNew, 2, 0);
     layoutProperties->addWidget(btnEdit, 2, 1);
     layoutProperties->addWidget(btnDelete, 2, 2);
@@ -667,14 +631,12 @@ MaterialBrowserDialog::MaterialBrowserDialog(QWidget *parent) : QDialog(parent),
 
     QSettings settings;
     restoreGeometry(settings.value("MaterialBrowserDialog/Geometry", saveGeometry()).toByteArray());
-    txtNumberOfSamples->setValue(settings.value("MaterialBrowserDialog/NumberOfSamples", 40).toInt());
 }
 
 MaterialBrowserDialog::~MaterialBrowserDialog()
 {    
     QSettings settings;
     settings.setValue("MaterialBrowserDialog/Geometry", saveGeometry());
-    settings.setValue("MaterialBrowserDialog/NumberOfSamples", txtNumberOfSamples->value());
 }
 
 int MaterialBrowserDialog::showDialog(bool select)
@@ -851,11 +813,10 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
                 {
                     XMLMaterial::function function = prop.nonlinearity().get().function().get();
 
-                    functionValues(QString::fromStdString(function.body()),
-                                   function.interval_from(),
-                                   function.interval_to(),
-                                   txtNumberOfSamples->value(),
-                                   &keys, &values);
+                    currentPythonEngineAgros()->materialValues(QString::fromStdString(function.body()),
+                                                               function.interval_from(),
+                                                               function.interval_to(),
+                                                               &keys, &values);
                 }
 
                 if (keys.size() > 0)
