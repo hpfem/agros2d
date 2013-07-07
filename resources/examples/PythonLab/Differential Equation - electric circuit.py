@@ -27,5 +27,4 @@ pl.savefig(fn_chart, dpi=60)
 pl.close()
 
 # show in console
-pythonlab.html("RL circuit")
 pythonlab.image(fn_chart)

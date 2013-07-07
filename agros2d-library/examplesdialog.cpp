@@ -188,13 +188,23 @@ int ExamplesDialog::readProblems(QDir dir, QTreeWidgetItem *parentItem)
         {
             QList<QIcon> icons = problemIcons(fileInfo.absoluteFilePath());
 
-            QTreeWidgetItem *exampleItem = new QTreeWidgetItem(parentItem);
+            QTreeWidgetItem *exampleProblemItem = new QTreeWidgetItem(parentItem);
             if (icons.count() == 1)
-                exampleItem->setIcon(0, icons.at(0));
+                exampleProblemItem->setIcon(0, icons.at(0));
             else
-                exampleItem->setIcon(0, icon("fields/empty"));
-            exampleItem->setText(0, fileInfo.baseName());
-            exampleItem->setData(0, Qt::UserRole, fileInfo.absoluteFilePath());
+                exampleProblemItem->setIcon(0, icon("fields/empty"));
+            exampleProblemItem->setText(0, fileInfo.baseName());
+            exampleProblemItem->setData(0, Qt::UserRole, fileInfo.absoluteFilePath());
+
+            // increase counter
+            count++;
+        }
+        else if (fileInfo.suffix() == "py")
+        {
+            QTreeWidgetItem *examplePythonItem = new QTreeWidgetItem(parentItem);
+            examplePythonItem->setIcon(0, icon("pythonlab"));
+            examplePythonItem->setText(0, fileInfo.baseName());
+            examplePythonItem->setData(0, Qt::UserRole, fileInfo.absoluteFilePath());
 
             // increase counter
             count++;
@@ -210,118 +220,136 @@ void ExamplesDialog::problemInfo(const QString &fileName)
     {
         QFileInfo fileInfo(fileName);
 
-        try
+        // template
+        std::string info;
+        ctemplate::TemplateDictionary problemInfo("info");
+
+        // problem info
+        problemInfo.SetValue("AGROS2D", QDir(datadir() + TEMPLATEROOT).absolutePath().toStdString() + "/panels/agros2d_logo.png");
+
+        problemInfo.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
+        problemInfo.SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
+        problemInfo.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
+
+        problemInfo.SetValue("NAME_LABEL", tr("Name:").toStdString());
+        problemInfo.SetValue("NAME", fileInfo.baseName().toStdString());
+
+        QString templateName;
+        if (fileInfo.suffix() == "a2d")
         {
-            std::auto_ptr<XMLProblem::document> document_xsd = XMLProblem::document_(compatibleFilename(fileName).toStdString(), xml_schema::flags::dont_validate);
-            XMLProblem::document *doc = document_xsd.get();
+            templateName = "example_problem.tpl";
 
-            // template
-            std::string info;
-            ctemplate::TemplateDictionary problemInfo("info");
-
-            // problem info
-            problemInfo.SetValue("AGROS2D", QDir(datadir() + TEMPLATEROOT).absolutePath().toStdString() + "/panels/agros2d_logo.png");
-
-            problemInfo.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
-            problemInfo.SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
-            problemInfo.SetValue("BASIC_INFORMATION_LABEL", tr("Basic informations").toStdString());
-
-            problemInfo.SetValue("NAME_LABEL", tr("Name:").toStdString());
-            problemInfo.SetValue("NAME", fileInfo.baseName().toStdString());
-
-            problemInfo.SetValue("COORDINATE_TYPE_LABEL", tr("Coordinate type:").toStdString());
-            problemInfo.SetValue("COORDINATE_TYPE", coordinateTypeString(coordinateTypeFromStringKey(QString::fromStdString(doc->problem().coordinate_type()))).toStdString());
-
-            // nodes
-            QList<SceneNode *> nodes;
-            // nodes
-            for (unsigned int i = 0; i < doc->geometry().nodes().node().size(); i++)
+            try
             {
-                XMLProblem::node node = doc->geometry().nodes().node().at(i);
+                std::auto_ptr<XMLProblem::document> document_xsd = XMLProblem::document_(compatibleFilename(fileName).toStdString(), xml_schema::flags::dont_validate);
+                XMLProblem::document *doc = document_xsd.get();
 
-                Point point = Point(node.x(),
-                                    node.y());
+                problemInfo.SetValue("COORDINATE_TYPE_LABEL", tr("Coordinate type:").toStdString());
+                problemInfo.SetValue("COORDINATE_TYPE", coordinateTypeString(coordinateTypeFromStringKey(QString::fromStdString(doc->problem().coordinate_type()))).toStdString());
 
-                nodes.append(new SceneNode(point));
+                // nodes
+                QList<SceneNode *> nodes;
+                // nodes
+                for (unsigned int i = 0; i < doc->geometry().nodes().node().size(); i++)
+                {
+                    XMLProblem::node node = doc->geometry().nodes().node().at(i);
+
+                    Point point = Point(node.x(),
+                                        node.y());
+
+                    nodes.append(new SceneNode(point));
+                }
+
+                // edges
+                QList<SceneEdge *> edges;
+                for (unsigned int i = 0; i < doc->geometry().edges().edge().size(); i++)
+                {
+                    XMLProblem::edge edge = doc->geometry().edges().edge().at(i);
+
+                    SceneNode *nodeFrom = nodes.at(edge.start());
+                    SceneNode *nodeTo = nodes.at(edge.end());
+
+                    edges.append(new SceneEdge(nodeFrom, nodeTo, edge.angle()));
+                }
+
+                // geometry
+                QString geometry = generateSvgGeometry(edges);
+
+                // cleanup
+                foreach (SceneNode *node, nodes)
+                    delete node;
+                nodes.clear();
+                foreach (SceneEdge *edge, edges)
+                    delete edge;
+                edges.clear();
+
+                problemInfo.SetValue("GEOMETRY_LABEL", tr("Geometry").toStdString());
+                problemInfo.SetValue("GEOMETRY_NODES_LABEL", tr("Nodes:").toStdString());
+                problemInfo.SetValue("GEOMETRY_NODES", QString::number(doc->geometry().nodes().node().size()).toStdString());
+                problemInfo.SetValue("GEOMETRY_EDGES_LABEL", tr("Edges:").toStdString());
+                problemInfo.SetValue("GEOMETRY_EDGES", QString::number(doc->geometry().edges().edge().size()).toStdString());
+                problemInfo.SetValue("GEOMETRY_LABELS_LABEL", tr("Labels:").toStdString());
+                problemInfo.SetValue("GEOMETRY_LABELS", QString::number(doc->geometry().labels().label().size()).toStdString());
+                problemInfo.SetValue("GEOMETRY_SVG", geometry.toStdString());
+
+                problemInfo.SetValue("PHYSICAL_FIELD_MAIN_LABEL", tr("Physical fields").toStdString());
+
+                // fields
+                for (unsigned int i = 0; i < doc->problem().fields().field().size(); i++)
+                {
+                    XMLProblem::field field = doc->problem().fields().field().at(i);
+
+                    ctemplate::TemplateDictionary *fieldInfo = problemInfo.AddSectionDictionary("FIELD_SECTION");
+
+                    fieldInfo->SetValue("PHYSICAL_FIELD_LABEL", Module::availableModules()[QString::fromStdString(field.field_id())].toStdString());
+
+                    fieldInfo->SetValue("ANALYSIS_TYPE_LABEL", tr("Analysis:").toStdString());
+                    fieldInfo->SetValue("ANALYSIS_TYPE", analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(field.analysis_type()))).toStdString());
+
+                    fieldInfo->SetValue("LINEARITY_TYPE_LABEL", tr("Solver:").toStdString());
+                    fieldInfo->SetValue("LINEARITY_TYPE", linearityTypeString(linearityTypeFromStringKey(QString::fromStdString(field.linearity_type()))).toStdString());
+
+                    problemInfo.ShowSection("FIELD");
+                }
             }
-
-            // edges
-            QList<SceneEdge *> edges;
-            for (unsigned int i = 0; i < doc->geometry().edges().edge().size(); i++)
+            catch (...)
             {
-                XMLProblem::edge edge = doc->geometry().edges().edge().at(i);
 
-                SceneNode *nodeFrom = nodes.at(edge.start());
-                SceneNode *nodeTo = nodes.at(edge.end());
-
-                edges.append(new SceneEdge(nodeFrom, nodeTo, edge.angle()));
             }
+        }
 
-            // geometry
-            QString geometry = generateSvgGeometry(edges);
+        if (fileInfo.suffix() == "py")
+        {
+            templateName = "example_python.tpl";
 
-            // cleanup
-            foreach (SceneNode *node, nodes)
-                delete node;
-            nodes.clear();
-            foreach (SceneEdge *edge, edges)
-                delete edge;
-            edges.clear();
-
-            problemInfo.SetValue("GEOMETRY_LABEL", tr("Geometry").toStdString());
-            problemInfo.SetValue("GEOMETRY_NODES_LABEL", tr("Nodes:").toStdString());
-            problemInfo.SetValue("GEOMETRY_NODES", QString::number(doc->geometry().nodes().node().size()).toStdString());
-            problemInfo.SetValue("GEOMETRY_EDGES_LABEL", tr("Edges:").toStdString());
-            problemInfo.SetValue("GEOMETRY_EDGES", QString::number(doc->geometry().edges().edge().size()).toStdString());
-            problemInfo.SetValue("GEOMETRY_LABELS_LABEL", tr("Labels:").toStdString());
-            problemInfo.SetValue("GEOMETRY_LABELS", QString::number(doc->geometry().labels().label().size()).toStdString());
-            problemInfo.SetValue("GEOMETRY_SVG", geometry.toStdString());
-
-            problemInfo.SetValue("PHYSICAL_FIELD_MAIN_LABEL", tr("Physical fields").toStdString());
-
-            // fields
-            for (unsigned int i = 0; i < doc->problem().fields().field().size(); i++)
-            {
-                XMLProblem::field field = doc->problem().fields().field().at(i);
-
-                ctemplate::TemplateDictionary *fieldInfo = problemInfo.AddSectionDictionary("FIELD_SECTION");
-
-                fieldInfo->SetValue("PHYSICAL_FIELD_LABEL", Module::availableModules()[QString::fromStdString(field.field_id())].toStdString());
-
-                fieldInfo->SetValue("ANALYSIS_TYPE_LABEL", tr("Analysis:").toStdString());
-                fieldInfo->SetValue("ANALYSIS_TYPE", analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(field.analysis_type()))).toStdString());
-
-                fieldInfo->SetValue("LINEARITY_TYPE_LABEL", tr("Solver:").toStdString());
-                fieldInfo->SetValue("LINEARITY_TYPE", linearityTypeString(linearityTypeFromStringKey(QString::fromStdString(field.linearity_type()))).toStdString());
-
-                problemInfo.ShowSection("FIELD");
-            }
-
-            // details
-            QFileInfo fileInfo(fileName);
-            QString detailsFilename(QString("%1/%2/index.html").arg(fileInfo.absolutePath()).arg(fileInfo.baseName()));
-            if (QFile::exists(detailsFilename))
+            // python
+            if (QFile::exists(fileName))
             {
                 // replace current path in index.html
-                QString detail = readFileContent(detailsFilename);
-                detail = detail.replace("{{DIR}}", QString("%1/%2").arg(QUrl::fromLocalFile(fileInfo.absolutePath()).toString()).arg(fileInfo.baseName()));
-
-                problemInfo.SetValue("PROBLEM_DETAILS", detail.toStdString());
+                QString python = readFileContent(fileName   );
+                problemInfo.SetValue("PROBLEM_PYTHON", python.toStdString());
             }
-
-            ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/example.tpl", ctemplate::DO_NOT_STRIP, &problemInfo, &info);
-
-            // setHtml(...) doesn't work
-            // webView->setHtml(QString::fromStdString(info));
-
-            // load(...) works
-            writeStringContent(tempProblemDir() + "/example.html", QString::fromStdString(info));
-            webView->load(QUrl::fromLocalFile(tempProblemDir() + "/example.html"));
         }
-        catch (...)
+
+        // details
+        QString detailsFilename(QString("%1/%2/index.html").arg(fileInfo.absolutePath()).arg(fileInfo.baseName()));
+        if (QFile::exists(detailsFilename))
         {
+            // replace current path in index.html
+            QString detail = readFileContent(detailsFilename);
+            detail = detail.replace("{{DIR}}", QString("%1/%2").arg(QUrl::fromLocalFile(fileInfo.absolutePath()).toString()).arg(fileInfo.baseName()));
 
+            problemInfo.SetValue("PROBLEM_DETAILS", detail.toStdString());
         }
+
+        ctemplate::ExpandTemplate(datadir().toStdString() + TEMPLATEROOT.toStdString() + "/panels/" + templateName.toStdString(), ctemplate::DO_NOT_STRIP, &problemInfo, &info);
+
+        // setHtml(...) doesn't work
+        // webView->setHtml(QString::fromStdString(info));
+
+        // load(...) works
+        writeStringContent(tempProblemDir() + "/example.html", QString::fromStdString(info));
+        webView->load(QUrl::fromLocalFile(tempProblemDir() + "/example.html"));
     }
 }
 
