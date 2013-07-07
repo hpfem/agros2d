@@ -99,6 +99,15 @@ ExamplesDialog::ExamplesDialog(QWidget *parent) : QDialog(parent)
         doItemSelected(lstProblems->currentItem());
     }
     */
+
+    QSettings settings;
+    restoreGeometry(settings.value("ExamplesDialog/Geometry", saveGeometry()).toByteArray());
+}
+
+ExamplesDialog::~ExamplesDialog()
+{
+    QSettings settings;
+    settings.setValue("ExamplesDialog/Geometry", saveGeometry());
 }
 
 void ExamplesDialog::doAccept()

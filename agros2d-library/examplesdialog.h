@@ -27,6 +27,7 @@ class ExamplesDialog : public QDialog
     Q_OBJECT
 public:
     ExamplesDialog(QWidget *parent);
+    ~ExamplesDialog();
 
     int showDialog();
     inline QString selectedFilename() { return m_selectedFilename; }
