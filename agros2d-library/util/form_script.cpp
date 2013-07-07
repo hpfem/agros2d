@@ -104,7 +104,8 @@ void FormScript::loadWidget(const QString &fileName)
     if (QFile::exists(fileName))
     {
         QUiLoader loader;
-        loader.setWorkingDirectory(QDir(datadir() + "/resources/forms"));
+        // loader.setWorkingDirectory(QDir(datadir() + "/resources/forms"));
+        loader.setWorkingDirectory(QFileInfo(fileName).absoluteDir());
         QFile file(fileName);
         file.open(QFile::ReadOnly);
         mainWidget = loader.load(&file, this);

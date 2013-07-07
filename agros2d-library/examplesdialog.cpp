@@ -66,7 +66,7 @@ ExamplesDialog::ExamplesDialog(QWidget *parent) : QDialog(parent)
     lstProblems->setIndentation(15);
     lstProblems->setIconSize(QSize(24, 24));
     lstProblems->setHeaderHidden(true);
-    lstProblems->setMinimumWidth(230);
+    lstProblems->setMinimumWidth(260);
 
     connect(lstProblems, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doItemDoubleClicked(QTreeWidgetItem *, int)));
     connect(lstProblems, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(doItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
@@ -201,10 +201,24 @@ int ExamplesDialog::readProblems(QDir dir, QTreeWidgetItem *parentItem)
         }
         else if (fileInfo.suffix() == "py")
         {
-            QTreeWidgetItem *examplePythonItem = new QTreeWidgetItem(parentItem);
-            examplePythonItem->setIcon(0, icon("pythonlab"));
-            examplePythonItem->setText(0, fileInfo.baseName());
-            examplePythonItem->setData(0, Qt::UserRole, fileInfo.absoluteFilePath());
+            // skip ui python
+            if (!QFile::exists(fileInfo.absoluteFilePath().left(fileInfo.absoluteFilePath().length() - 3) + ".ui"))
+            {
+                QTreeWidgetItem *examplePythonItem = new QTreeWidgetItem(parentItem);
+                examplePythonItem->setIcon(0, icon("script-python"));
+                examplePythonItem->setText(0, fileInfo.baseName());
+                examplePythonItem->setData(0, Qt::UserRole, fileInfo.absoluteFilePath());
+
+                // increase counter
+                count++;
+            }
+        }
+        else if (fileInfo.suffix() == "ui")
+        {
+            QTreeWidgetItem *exampleFormItem = new QTreeWidgetItem(parentItem);
+            exampleFormItem->setIcon(0, icon("options-main"));
+            exampleFormItem->setText(0, fileInfo.baseName());
+            exampleFormItem->setData(0, Qt::UserRole, fileInfo.absoluteFilePath());
 
             // increase counter
             count++;
@@ -317,8 +331,7 @@ void ExamplesDialog::problemInfo(const QString &fileName)
 
             }
         }
-
-        if (fileInfo.suffix() == "py")
+        else if (fileInfo.suffix() == "py")
         {
             templateName = "example_python.tpl";
 
@@ -329,6 +342,10 @@ void ExamplesDialog::problemInfo(const QString &fileName)
                 QString python = readFileContent(fileName   );
                 problemInfo.SetValue("PROBLEM_PYTHON", python.toStdString());
             }
+        }
+        else if (fileInfo.suffix() == "ui")
+        {
+            templateName = "example_form.tpl";
         }
 
         // details

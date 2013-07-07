@@ -57,6 +57,8 @@
 #include "examplesdialog.h"
 #include "hermes2d/solver.h"
 
+#include "util/form_script.h"
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     setWindowIcon(icon("agros2d"));
@@ -1194,7 +1196,17 @@ void MainWindow::doExamples()
     {
         if (QFile::exists(examples->selectedFilename()))
         {
-            doDocumentOpen(examples->selectedFilename());
+            QFileInfo fileInfo(examples->selectedFilename());
+
+            if (fileInfo.suffix() == "a2d" && fileInfo.suffix() == "py")
+            {
+                doDocumentOpen(examples->selectedFilename());
+            }
+            else if (fileInfo.suffix() == "ui")
+            {
+                FormScript form(examples->selectedFilename(), consoleView, QApplication::activeWindow());
+                form.action()->trigger();
+            }
         }
     }
 
