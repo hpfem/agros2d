@@ -27,7 +27,7 @@
 <hr/>
 <table>
 	<p>{{PROPERTY_SOURCE}}</p>
-	<tr><td><b>{{PROPERTY_SHORTNAME_LABEL}}</b></td><td>{{PROPERTY_SHORTNAME}}</td><td rowspan="7"><div id="{{PROPERTY_CHART}}" style="width:400px;height:130px;"></div></td></tr>
+	<tr><td><b>{{PROPERTY_SHORTNAME_LABEL}}</b></td><td>{{PROPERTY_SHORTNAME}}</td><td rowspan="7"><div id="{{PROPERTY_CHART}}" style="width:400px;height:155px;"></div></td></tr>
 	<tr><td><b>{{PROPERTY_UNIT_LABEL}}</b></td><td>{{PROPERTY_UNIT}}</td></tr>
 	<tr><td><b>&nbsp;</b></td><td>&nbsp;</td></tr>
 	<tr><td><b>{{PROPERTY_INDEPENDENT_SHORTNAME_LABEL}}</b></td><td>{{PROPERTY_INDEPENDENT_SHORTNAME}}</td></tr>

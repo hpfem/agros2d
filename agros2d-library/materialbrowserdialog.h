@@ -84,6 +84,7 @@ private:
     QLineEdit *txtPropertyIndependentVariableShortname;
     QLineEdit *txtPropertyIndependentVariableUnit;
     QComboBox *cmbPropertyNonlinearityType;
+    QLabel *lblPropertyFunction;
 
     LineEditDouble *txtPropertyConstant;
 
@@ -122,6 +123,7 @@ private slots:
     void doPropertyChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void doNonlinearDependenceChanged(int index);
 
+    void setFunctionLabel();
     void drawChart();
 };
 

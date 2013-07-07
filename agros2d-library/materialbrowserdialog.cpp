@@ -203,14 +203,19 @@ QWidget *MaterialEditDialog::createPropertyGUI()
 {
     txtPropertyName = new QLineEdit();
     txtPropertyShortname = new QLineEdit();
+    connect(txtPropertyShortname, SIGNAL(textChanged(QString)), this, SLOT(setFunctionLabel()));
     txtPropertyUnit = new QLineEdit();
+    connect(txtPropertyUnit, SIGNAL(textChanged(QString)), this, SLOT(setFunctionLabel()));
     txtPropertySource = new QLineEdit();
     txtPropertyIndependentVariableShortname = new QLineEdit();
+    connect(txtPropertyIndependentVariableShortname, SIGNAL(textChanged(QString)), this, SLOT(setFunctionLabel()));
     txtPropertyIndependentVariableUnit = new QLineEdit();
+    connect(txtPropertyIndependentVariableUnit, SIGNAL(textChanged(QString)), this, SLOT(setFunctionLabel()));
     cmbPropertyNonlinearityType = new QComboBox();
     cmbPropertyNonlinearityType->addItem(tr("Function"), MaterialEditDialog::Function);
     cmbPropertyNonlinearityType->addItem(tr("Table"), MaterialEditDialog::Table);
     connect(cmbPropertyNonlinearityType, SIGNAL(activated(int)), this, SLOT(doNonlinearDependenceChanged(int)));
+    lblPropertyFunction = new QLabel();
 
     // constant
     txtPropertyConstant = new LineEditDouble(0.0);
@@ -233,6 +238,8 @@ QWidget *MaterialEditDialog::createPropertyGUI()
     layoutProperty->addWidget(txtPropertyIndependentVariableShortname, 2, 3);
     layoutProperty->addWidget(new QLabel(tr("Ind. var. unit:")), 3, 2);
     layoutProperty->addWidget(txtPropertyIndependentVariableUnit, 3, 3);
+    layoutProperty->addWidget(new QLabel(tr("Function:")), 5, 2);
+    layoutProperty->addWidget(lblPropertyFunction, 5, 3);
     layoutProperty->setRowStretch(11, 1);
 
     QWidget *widget = new QWidget(this);
@@ -246,7 +253,7 @@ void MaterialEditDialog::readMaterial()
     if (QFile::exists(m_fileName))
     {
         std::auto_ptr<XMLMaterial::material> material_xsd;
-        material_xsd = XMLMaterial::material_(m_fileName.toLatin1().data(), xml_schema::flags::dont_validate);
+        material_xsd = XMLMaterial::material_(compatibleFilename(m_fileName).toStdString(), xml_schema::flags::dont_validate);
         XMLMaterial::material *material = material_xsd.get();
 
         txtName->setText(QString::fromStdString(material->general().name()));
@@ -451,6 +458,15 @@ void MaterialEditDialog::readProperty(XMLMaterial::property prop)
 
     // draw chart
     drawChart();
+}
+
+void MaterialEditDialog::setFunctionLabel()
+{
+    lblPropertyFunction->setText(QString("%1 (%2) = function(%3 (%4))").
+                                 arg(txtPropertyShortname->text()).
+                                 arg(txtPropertyUnit->text()).
+                                 arg(txtPropertyIndependentVariableShortname->text()).
+                                 arg(txtPropertyIndependentVariableUnit->text()));
 }
 
 void MaterialEditDialog::drawChart()
@@ -740,126 +756,132 @@ void MaterialBrowserDialog::readMaterials(QDir dir, QTreeWidgetItem *parentItem)
 
 void MaterialBrowserDialog::materialInfo(const QString &fileName)
 {
+    // template
+    std::string info;
+    ctemplate::TemplateDictionary materialInfo("info");
+
     if (QFile::exists(fileName))
     {
-        std::auto_ptr<XMLMaterial::material> material_xsd;
-        material_xsd = XMLMaterial::material_(fileName.toLatin1().data(), xml_schema::flags::dont_validate);
-        XMLMaterial::material *material = material_xsd.get();
-
-        // template
-        std::string info;
-        ctemplate::TemplateDictionary materialInfo("info");
-
-        materialInfo.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
-        materialInfo.SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
-
-        materialInfo.SetValue("NAME", material->general().name());
-        if (material->general().description().present())
-            materialInfo.SetValue("DESCRIPTION", material->general().description().get());
-
-        // properties
-        for (unsigned int i = 0; i < material->properties().property().size(); i++)
+        try
         {
-            XMLMaterial::property prop = material->properties().property().at(i);
+            std::auto_ptr<XMLMaterial::material> material_xsd;
+            material_xsd = XMLMaterial::material_(compatibleFilename(fileName).toStdString(), xml_schema::flags::dont_validate);
+            XMLMaterial::material *material = material_xsd.get();
 
-            ctemplate::TemplateDictionary *propSection = materialInfo.AddSectionDictionary("PROPERTIES_SECTION");
+            materialInfo.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
+            materialInfo.SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
 
-            propSection->SetValue("PROPERTY_LABEL", prop.name());
-            propSection->SetValue("PROPERTY_SOURCE", prop.source());
+            materialInfo.SetValue("NAME", material->general().name());
+            if (material->general().description().present())
+                materialInfo.SetValue("DESCRIPTION", material->general().description().get());
 
-            propSection->SetValue("PROPERTY_SHORTNAME_LABEL", tr("Variable:").toStdString());
-            propSection->SetValue("PROPERTY_SHORTNAME", prop.shortname());
-            propSection->SetValue("PROPERTY_UNIT_LABEL", tr("Unit:").toStdString());
-            propSection->SetValue("PROPERTY_UNIT", prop.unit());
-
-            propSection->SetValue("PROPERTY_INDEPENDENT_SHORTNAME_LABEL", tr("Independent variable:").toStdString());
-            propSection->SetValue("PROPERTY_INDEPENDENT_SHORTNAME", prop.independent_shortname());
-            propSection->SetValue("PROPERTY_INDEPENDENT_UNIT_LABEL", tr("Independent unit:").toStdString());
-            propSection->SetValue("PROPERTY_INDEPENDENT_UNIT", prop.independent_unit());
-
-            if (m_select)
-                propSection->ShowSection("PROPERTY_SELECTABLE");
-
-            if (prop.constant().present())
+            // properties
+            for (unsigned int i = 0; i < material->properties().property().size(); i++)
             {
-                XMLMaterial::constant constant = prop.constant().get();
-                propSection->SetValue("PROPERTY_CONSTANT_LABEL", tr("Constant:").toStdString());
-                propSection->SetValue("PROPERTY_CONSTANT", QString::number(constant.value()).toStdString());
-            }
+                XMLMaterial::property prop = material->properties().property().at(i);
 
-            if (prop.nonlinearity().present())
-            {
-                QVector<double> keys;
-                QVector<double> values;
+                ctemplate::TemplateDictionary *propSection = materialInfo.AddSectionDictionary("PROPERTIES_SECTION");
 
-                if (prop.nonlinearity().get().table().present())
+                propSection->SetValue("PROPERTY_LABEL", prop.name());
+                propSection->SetValue("PROPERTY_SOURCE", prop.source());
+
+                propSection->SetValue("PROPERTY_SHORTNAME_LABEL", tr("Variable:").toStdString());
+                propSection->SetValue("PROPERTY_SHORTNAME", prop.shortname());
+                propSection->SetValue("PROPERTY_UNIT_LABEL", tr("Unit:").toStdString());
+                propSection->SetValue("PROPERTY_UNIT", prop.unit());
+
+                propSection->SetValue("PROPERTY_INDEPENDENT_SHORTNAME_LABEL", tr("Independent variable:").toStdString());
+                propSection->SetValue("PROPERTY_INDEPENDENT_SHORTNAME", prop.independent_shortname());
+                propSection->SetValue("PROPERTY_INDEPENDENT_UNIT_LABEL", tr("Independent unit:").toStdString());
+                propSection->SetValue("PROPERTY_INDEPENDENT_UNIT", prop.independent_unit());
+
+                if (m_select)
+                    propSection->ShowSection("PROPERTY_SELECTABLE");
+
+                if (prop.constant().present())
                 {
-                    XMLMaterial::table table = prop.nonlinearity().get().table().get();
+                    XMLMaterial::constant constant = prop.constant().get();
+                    propSection->SetValue("PROPERTY_CONSTANT_LABEL", tr("Constant:").toStdString());
+                    propSection->SetValue("PROPERTY_CONSTANT", QString::number(constant.value()).toStdString());
+                }
 
-                    QStringList keysString = QString::fromStdString(table.keys()).split("\n");
-                    QStringList valuesString = QString::fromStdString(table.values()).split("\n");
+                if (prop.nonlinearity().present())
+                {
+                    QVector<double> keys;
+                    QVector<double> values;
 
-                    for (int j = 0; j < keysString.size(); j++)
+                    if (prop.nonlinearity().get().table().present())
                     {
-                        if ((!keysString.at(j).isEmpty()) && (j < valuesString.count()) && (!valuesString.at(j).isEmpty()))
+                        XMLMaterial::table table = prop.nonlinearity().get().table().get();
+
+                        QStringList keysString = QString::fromStdString(table.keys()).split("\n");
+                        QStringList valuesString = QString::fromStdString(table.values()).split("\n");
+
+                        for (int j = 0; j < keysString.size(); j++)
                         {
-                            keys.append(keysString.at(j).toDouble());
-                            values.append(valuesString.at(j).toDouble());
+                            if ((!keysString.at(j).isEmpty()) && (j < valuesString.count()) && (!valuesString.at(j).isEmpty()))
+                            {
+                                keys.append(keysString.at(j).toDouble());
+                                values.append(valuesString.at(j).toDouble());
+                            }
                         }
                     }
-                }
 
-                if (prop.nonlinearity().get().function().present())
-                {
-                    XMLMaterial::function function = prop.nonlinearity().get().function().get();
-
-                    currentPythonEngineAgros()->materialValues(QString::fromStdString(function.body()),
-                                                               function.interval_from(),
-                                                               function.interval_to(),
-                                                               &keys, &values);
-                }
-
-                if (keys.size() > 0)
-                {
-                    QString keysString;
-                    QString valuesString;
-
-                    QString chart = "[";
-                    for (int i = 0; i < keys.size(); i++)
+                    if (prop.nonlinearity().get().function().present())
                     {
-                        chart += QString("[%1, %2], ").arg(keys[i]).arg(values[i]);
-                        keysString += QString("%1").arg(keys[i]) + ((i < keys.size() - 1) ? "," : "");
-                        valuesString += QString("%1").arg(values[i]) + ((i < keys.size() - 1) ? "," : "");
+                        XMLMaterial::function function = prop.nonlinearity().get().function().get();
+
+                        currentPythonEngineAgros()->materialValues(QString::fromStdString(function.body()),
+                                                                   function.interval_from(),
+                                                                   function.interval_to(),
+                                                                   &keys, &values);
                     }
-                    chart += "]";
 
-                    QString id = QUuid::createUuid().toString().remove("{").remove("}");
+                    if (keys.size() > 0)
+                    {
+                        QString keysString;
+                        QString valuesString;
 
-                    propSection->SetValue("PROPERTY_CHART", QString("chart_%1").arg(id).toStdString());
-                    propSection->SetValue("PROPERTY_CHART_SCRIPT", QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: false } } ], { grid: { hoverable : false }, xaxes: [ { axisLabel: '%3 (%4)' } ], yaxes: [ { axisLabel: '%5 (%6)' } ] });});</script>")
-                                          .arg(id)
-                                          .arg(chart)
-                                          .arg(QString::fromStdString(prop.independent_shortname()))
-                                          .arg(QString::fromStdString(prop.independent_unit()))
-                                          .arg(QString::fromStdString(prop.shortname()))
-                                          .arg(QString::fromStdString(prop.unit())).toStdString());
+                        QString chart = "[";
+                        for (int i = 0; i < keys.size(); i++)
+                        {
+                            chart += QString("[%1, %2], ").arg(keys[i]).arg(values[i]);
+                            keysString += QString("%1").arg(keys[i]) + ((i < keys.size() - 1) ? "," : "");
+                            valuesString += QString("%1").arg(values[i]) + ((i < keys.size() - 1) ? "," : "");
+                        }
+                        chart += "]";
 
-                    propSection->SetValue("PROPERTY_INDEPENDENT_X", keysString.toStdString());
-                    propSection->SetValue("PROPERTY_INDEPENDENT_Y", valuesString.toStdString());
+                        QString id = QUuid::createUuid().toString().remove("{").remove("}");
+
+                        propSection->SetValue("PROPERTY_CHART", QString("chart_%1").arg(id).toStdString());
+                        propSection->SetValue("PROPERTY_CHART_SCRIPT", QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_%1\"), [ { data: %2, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: false } } ], { grid: { hoverable : false }, xaxes: [ { axisLabel: '%3 (%4)' } ], yaxes: [ { axisLabel: '%5 (%6)' } ] });});</script>")
+                                              .arg(id)
+                                              .arg(chart)
+                                              .arg(QString::fromStdString(prop.independent_shortname()))
+                                              .arg(QString::fromStdString(prop.independent_unit()))
+                                              .arg(QString::fromStdString(prop.shortname()))
+                                              .arg(QString::fromStdString(prop.unit())).toStdString());
+
+                        propSection->SetValue("PROPERTY_INDEPENDENT_X", keysString.toStdString());
+                        propSection->SetValue("PROPERTY_INDEPENDENT_Y", valuesString.toStdString());
+                    }
                 }
             }
-
         }
-
-        ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/material.tpl").toStdString(), ctemplate::DO_NOT_STRIP, &materialInfo, &info);
-
-        // setHtml(...) doesn't work
-        // webView->setHtml(QString::fromStdString(info));
-
-        // load(...) works
-        writeStringContent(tempProblemDir() + "/material.html", QString::fromStdString(info));
-        webView->load(QUrl::fromLocalFile(tempProblemDir() + "/material.html"));
+        catch (const xml_schema::exception& e)
+        {
+            std::cerr << e << std::endl;
+        }
     }
+
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/material.tpl").toStdString(), ctemplate::DO_NOT_STRIP, &materialInfo, &info);
+
+    // setHtml(...) doesn't work
+    // webView->setHtml(QString::fromStdString(info));
+
+    // load(...) works
+    writeStringContent(tempProblemDir() + "/material.html", QString::fromStdString(info));
+    webView->load(QUrl::fromLocalFile(tempProblemDir() + "/material.html"));
 }
 
 void MaterialBrowserDialog::linkClicked(const QUrl &url)
