@@ -144,8 +144,8 @@ void ExamplesDialog::doItemDoubleClicked(QTreeWidgetItem *item, int column)
 {
     if (lstProblems->currentItem())
     {
-        m_selectedFilename = lstProblems->currentItem()->data(0, Qt::UserRole).toString();
-        accept();
+        if (!lstProblems->currentItem()->data(0, Qt::UserRole).toString().isEmpty())
+            accept();
     }
 }
 
