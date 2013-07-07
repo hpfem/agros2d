@@ -1,3 +1,6 @@
+# http://www.compumag.org/jsite/images/stories/TEAM/problem30a.pdf
+# http://www.compumag.org/jsite/images/stories/TEAM/problem30b.pdf
+
 import agros2d as a2d
 
 def model(omega):
