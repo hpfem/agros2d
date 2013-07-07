@@ -99,7 +99,7 @@ static PyObject *pythonTempname(PyObject* self, PyObject* pArgs)
             tempName = tempName + "." + str;
     }
 
-    return PyString_FromString((tempDir + tempName).toLatin1().data());
+    return PyString_FromString(compatibleFilename(tempDir + tempName).toLatin1().data());
 }
 
 static PyMethodDef pythonEngineFuntions[] =
