@@ -1198,7 +1198,7 @@ void MainWindow::doExamples()
         {
             QFileInfo fileInfo(examples->selectedFilename());
 
-            if (fileInfo.suffix() == "a2d" && fileInfo.suffix() == "py")
+            if (fileInfo.suffix() == "a2d" || fileInfo.suffix() == "py")
             {
                 doDocumentOpen(examples->selectedFilename());
             }

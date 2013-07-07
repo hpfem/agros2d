@@ -66,7 +66,7 @@ ExamplesDialog::ExamplesDialog(QWidget *parent) : QDialog(parent)
     lstProblems->setIndentation(15);
     lstProblems->setIconSize(QSize(24, 24));
     lstProblems->setHeaderHidden(true);
-    lstProblems->setMinimumWidth(260);
+    lstProblems->setMinimumWidth(320);
 
     connect(lstProblems, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doItemDoubleClicked(QTreeWidgetItem *, int)));
     connect(lstProblems, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(doItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
