@@ -84,7 +84,7 @@ FormScript::FormScript(const QString &fileName, PythonScriptingConsoleView *cons
     buttons->addWidget(buttonBox);
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addStretch();
+    // layout->addStretch();
     layout->addWidget(errorMessage);
     layout->addLayout(buttons);
     setLayout(layout);
