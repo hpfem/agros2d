@@ -1,5 +1,8 @@
 from unittest import TestLoader, TestResult
 
+import sys
+sys.path.append("script")
+
 import test_script_problem
 
 import test_script_geometry

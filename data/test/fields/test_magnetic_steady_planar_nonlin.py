@@ -18,11 +18,13 @@ magnetic.number_of_refinements = 1
 magnetic.polynomial_order = 3
 magnetic.solver = "newton"
 magnetic.nonlinear_tolerance = 0.1
-magnetic.nonlinear_steps = 20
+magnetic.nonlinear_steps = 40
+magnetic.nonlinear_convergence_measurement = "residual_norm_absolute"
 magnetic.newton_damping_type = "fixed"
-magnetic.newton_jacobian_reuse = False
-magnetic.newton_jacobian_reuse_steps = 10
+magnetic.newton_damping_factor = 0.6
+magnetic.newton_jacobian_reuse = True
 magnetic.newton_jacobian_reuse_ratio = 0.9
+magnetic.newton_jacobian_reuse_steps = 20
 
 magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0})
 
