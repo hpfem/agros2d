@@ -550,7 +550,10 @@ QList<PythonVariable> PythonEngine::variableList()
                 << "python_engine_get_completion_file" << "python_engine_get_completion_string"
                 << "python_engine_get_completion_string_dot" << "PythonLabRopeProject"
                 << "pythonlab_rope_project"
-                << "python_engine_pyflakes_check";
+                << "python_engine_pyflakes_check"
+                << "CatchOutErr"
+                << "agros2d_material_eval"
+                << "__a2d_help__";
 
     QStringList filter_type;
     filter_type << "builtin_function_or_method";
