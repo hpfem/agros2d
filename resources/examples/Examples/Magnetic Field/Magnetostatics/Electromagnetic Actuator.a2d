@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_30_xml.xsd">
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/fmach/Projekty/Agros2D/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
 
   <geometry>
     <nodes>
@@ -17,13 +17,13 @@
       <node id="11" x="0.012" y="0.012"/>
       <node id="12" x="0.028" y="0.012"/>
       <node id="13" x="0.028" y="0.088"/>
-      <node id="14" x="0" y="0.05"/>
-      <node id="15" x="0.009" y="0.05"/>
-      <node id="16" x="0.009" y="-0.02"/>
-      <node id="17" x="0" y="-0.02"/>
-      <node id="18" x="0" y="0.15"/>
-      <node id="19" x="0" y="-0.05"/>
-      <node id="20" x="0.1" y="0.05"/>
+      <node id="14" x="0" y="0.07"/>
+      <node id="15" x="0.009" y="0.07"/>
+      <node id="16" x="0.009" y="4.47035e-10"/>
+      <node id="17" x="0" y="4.47035e-10"/>
+      <node id="18" x="0" y="0.2"/>
+      <node id="19" x="0" y="-0.1"/>
+      <node id="20" x="0.15" y="0.05"/>
     </nodes>
     <edges>
       <edge angle="0" end="1" id="0" start="0"/>
@@ -53,14 +53,14 @@
     <labels>
       <label area="0" id="0" x="0.0348743" y="0.0347237"/>
       <label area="0" id="1" x="0.021206" y="0.0692964"/>
-      <label area="0" id="2" x="0.0141705" y="0.12445"/>
+      <label area="0" id="2" x="0.1" y="0.05"/>
       <label area="0" id="3" x="0.00512569" y="0.040852"/>
     </labels>
   </geometry>
 
-  <problem coordinate_type="axisymmetric" matrix_solver="umfpack" mesh_type="triangle">
+  <problem coordinate_type="axisymmetric" mesh_type="triangle">
     <fields>
-      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="magnetic" linearity_type="linear">
+      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="magnetic" linearity_type="linear" matrix_solver="mumps">
         <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>
@@ -132,12 +132,13 @@
           <field_item field_key="NonlinearTolerance" field_value="0.001"/>
           <field_item field_key="NonlinearSteps" field_value="10"/>
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
-          <field_item field_key="NewtonAutomaticDamping" field_value="1"/>
-          <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NewtonDampingType" field_value="0"/>
           <field_item field_key="NewtonDampingCoeff" field_value="1"/>
-          <field_item field_key="NewtonDampingNumberToIncrease" field_value="1"/>
-          <field_item field_key="NewtonSufficientImprovementFactorJacobian" field_value="0.4"/>
-          <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="3"/>
+          <field_item field_key="NewtonReuseJacobian" field_value="1"/>
+          <field_item field_key="NewtonSufImprovJacobian" field_value="0.8"/>
+          <field_item field_key="NewtonSufImprov" field_value="1.2"/>
+          <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
+          <field_item field_key="NewtonStepsToIncreaseDF" field_value="1"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
@@ -147,8 +148,17 @@
           <field_item field_key="AdaptivityTolerance" field_value="1"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
           <field_item field_key="AdaptivityTransientRedoneEach" field_value="0"/>
+          <field_item field_key="AdaptivityStoppingCriterion" field_value="1"/>
+          <field_item field_key="AdaptivityThreshold" field_value="0.6"/>
+          <field_item field_key="AdaptivityProjNormType" field_value="1"/>
+          <field_item field_key="AdaptivityUseAniso" field_value="1"/>
+          <field_item field_key="AdaptivityFinerReference" field_value="0"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
-          <field_item field_key="TransientInitialConditio" field_value="0"/>
+          <field_item field_key="TransientInitialCondition" field_value="0"/>
+          <field_item field_key="LinearSolverIterMethod" field_value="2"/>
+          <field_item field_key="LinearSolverIterPreconditioner" field_value="2"/>
+          <field_item field_key="LinearSolverIterToleranceAbsolute" field_value="1e-16"/>
+          <field_item field_key="LinearSolverIterIters" field_value="1000"/>
         </field_config>
       </field>
     </fields>
@@ -175,7 +185,7 @@
     <item key="View_EdgeWidth" value="2"/>
     <item key="View_LabelSize" value="6"/>
     <item key="View_ShowGrid" value="1"/>
-    <item key="View_GridStep" value="0.05"/>
+    <item key="View_GridStep" value="0.01"/>
     <item key="View_ShowRulers" value="1"/>
     <item key="View_SnapToGrid" value="1"/>
     <item key="View_ShowAxes" value="1"/>
@@ -299,14 +309,6 @@
     <item key="View_LinearizerQuality" value="0"/>
     <item key="View_SolidViewHide" value="Air"/>
     <item key="Adaptivity_MaxDofs" value="60000"/>
-    <item key="Adaptivity_IsoOnly" value="0"/>
-    <item key="Adaptivity_ConvExp" value="1"/>
-    <item key="Adaptivity_Threshold" value="0.3"/>
-    <item key="Adaptivity_Strategy" value="0"/>
-    <item key="Adaptivity_MeshRegularity" value="-1"/>
-    <item key="Adaptivity_ProjNormType" value="1"/>
-    <item key="Adaptivity_UseAniso" value="1"/>
-    <item key="Adaptivity_FinerReference" value="0"/>
     <item key="Commands_Triangle" value="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;"/>
     <item key="Commands_Gmsh" value="%1 -2 &quot;%2.geo&quot;"/>
   </config>
