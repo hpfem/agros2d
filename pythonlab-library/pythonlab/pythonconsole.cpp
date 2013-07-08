@@ -107,7 +107,7 @@ void PythonScriptingConsole::stdErr(const QString& str)
         consoleMessage(strList[i], Qt::red);
 }
 
-void PythonScriptingConsole::stdImage(const QString &fileName)
+void PythonScriptingConsole::stdImage(const QString &fileName, int width, int height)
 {
     QString fn = fileName;
     if (!QFile::exists(fileName))
@@ -125,10 +125,19 @@ void PythonScriptingConsole::stdImage(const QString &fileName)
         textDocument->addResource(QTextDocument::ImageResource, uri, QVariant (image));
         QTextCursor cursor = textCursor();
         QTextImageFormat imageFormat;
-        imageFormat.setWidth(image.width());
-        imageFormat.setHeight(image.height());
+        imageFormat.setWidth((width > 0) ? width : image.width());
+        if (width > 0 && height > 0)
+            imageFormat.setHeight(height); // user width and height
+        else if (width > 0 && height == 0)
+            imageFormat.setHeight(width * image.height() / image.width()); // keep aspect
+        else if (width == 0 && height == 0)
+            imageFormat.setHeight(image.height());  // original width and height
         imageFormat.setName(uri.toString());
         cursor.insertImage(imageFormat);
+
+        cursor.movePosition(QTextCursor::End);
+        setTextCursor(cursor);
+
 
         // appendCommandPrompt();
     }
@@ -257,7 +266,7 @@ void PythonScriptingConsole::connectStdOut(const QString &currentPath)
     connect(pythonEngine, SIGNAL(pythonClear()), this, SLOT(stdClear()));
     connect(pythonEngine, SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
     connect(pythonEngine, SIGNAL(pythonShowHtml(QString)), this, SLOT(stdHtml(QString)));
-    connect(pythonEngine, SIGNAL(pythonShowImage(QString)), this, SLOT(stdImage(QString)));
+    connect(pythonEngine, SIGNAL(pythonShowImage(QString, int, int)), this, SLOT(stdImage(QString, int, int)));
 }
 
 void PythonScriptingConsole::disconnectStdOut()
@@ -265,7 +274,7 @@ void PythonScriptingConsole::disconnectStdOut()
     disconnect(pythonEngine, SIGNAL(pythonClear()), this, SLOT(stdClear()));
     disconnect(pythonEngine, SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
     disconnect(pythonEngine, SIGNAL(pythonShowHtml(QString)), this, SLOT(stdHtml(QString)));
-    disconnect(pythonEngine, SIGNAL(pythonShowImage(QString)), this, SLOT(stdImage(QString)));
+    disconnect(pythonEngine, SIGNAL(pythonShowImage(QString, int, int)), this, SLOT(stdImage(QString, int, int)));
 }
 
 int PythonScriptingConsole::commandPromptPosition() {

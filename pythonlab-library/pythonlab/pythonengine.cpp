@@ -56,9 +56,11 @@ PyObject* pythonStdout(PyObject* self, PyObject* pArgs)
 PyObject* pythonShowFigure(PyObject* self, PyObject* pArgs)
 {
     char *str = NULL;
-    if (PyArg_ParseTuple(pArgs, "s", &str))
+    int width = 0;
+    int height = 0;
+    if (PyArg_ParseTuple(pArgs, "s|ii", &str, &width, &height))
     {
-        emit currentPythonEngine()->pythonShowImageCommand(QString(str));
+        emit currentPythonEngine()->pythonShowImageCommand(QString(str), width, height);
         Py_RETURN_NONE;
     }
     return NULL;
@@ -161,9 +163,9 @@ void PythonEngine::pythonShowMessageCommand(const QString &message)
         emit pythonShowMessage(message);
 }
 
-void PythonEngine::pythonShowImageCommand(const QString &fileName)
+void PythonEngine::pythonShowImageCommand(const QString &fileName, int width, int height)
 {
-    emit pythonShowImage(fileName);
+    emit pythonShowImage(fileName, width, height);
 }
 
 void PythonEngine::pythonShowHtmlCommand(const QString &fileName)

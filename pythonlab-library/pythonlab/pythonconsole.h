@@ -81,7 +81,7 @@ public slots:
     // output html
     void stdHtml(const QString& str);
     // output image
-    void stdImage(const QString &fileName);
+    void stdImage(const QString &fileName, int width = 0, int height = 0);
 
     void insertCompletion(const QString& completion);
 

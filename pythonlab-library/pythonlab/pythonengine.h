@@ -19,7 +19,7 @@ signals:
     void pythonClear();
     void pythonShowMessage(const QString &);
     void pythonShowHtml(const QString &);
-    void pythonShowImage(const QString &);
+    void pythonShowImage(const QString &, int, int);
 
     void executedExpression();
     void executedScript();
@@ -34,7 +34,7 @@ public:
     void pythonClearCommand();
     void pythonShowMessageCommand(const QString &message);
     void pythonShowHtmlCommand(const QString &fileName);
-    void pythonShowImageCommand(const QString &fileName);
+    void pythonShowImageCommand(const QString &fileName, int width = 0, int height = 0);
 
     ScriptResult runScript(const QString &script, const QString &fileName = "");
     ExpressionResult runExpression(const QString &expression, bool returnValue);

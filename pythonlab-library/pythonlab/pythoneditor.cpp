@@ -838,7 +838,7 @@ void PythonEditorDialog::doFileOpen(const QString &file)
 
         doCurrentPageChanged(tabWidget->currentIndex());
 
-        if (fileInfo.absoluteDir() != tempProblemDir())
+        if (fileInfo.absoluteDir() != tempProblemDir() && !fileName.contains("resources/examples"))
             settings.setValue("General/LastDir", fileInfo.absolutePath());
     }
 }
