@@ -25,6 +25,12 @@
 #include "util.h"
 #include "util/constants.h"
 
+#include "util/global.h"
+#include "scene.h"
+#include "scenenode.h"
+#include "sceneedge.h"
+#include "scenelabel.h"
+
 #include "pythonlab/pythonengine_agros.h"
 
 #include "../../resources_source/classes/form_xml.h"
@@ -62,7 +68,7 @@ FormScript::FormScript(const QString &fileName, PythonScriptingConsoleView *cons
     
     btnMore->setMenu(menu);
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);    
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     buttonBox->addButton(btnMore, QDialogButtonBox::ActionRole);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(acceptForm()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(rejectForm()));
@@ -123,7 +129,7 @@ void FormScript::loadWidget(const QString &fileName)
         {
             // double validator
             if (widget->property("dataType") == "double")
-            {                
+            {
                 widget->setValidator(new QRegExpValidator(QRegExp("^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?")));
                 // widget->setValidator(new QDoubleValidator(widget));
             }
@@ -141,6 +147,113 @@ void FormScript::loadWidget(const QString &fileName)
 void FormScript::reloadWidget()
 {
     loadWidget(fileName);
+    showWidget();
+}
+
+void FormScript::showWidget()
+{
+    foreach (QWidget *object, mainWidget->findChildren<QWidget *>())
+    {
+        // list widget
+        if (QListWidget *widget = dynamic_cast<QListWidget *>(object))
+        {
+            // preprocessor - labels
+            if (widget->property("dataType") == "nodes")
+            {
+                QList<int> nodes;
+                for (int i = 0; i < widget->count(); i++)
+                    if (widget->item(i)->checkState() == Qt::Checked)
+                        nodes.append(i);
+
+                widget->clear();
+
+                int i = 0;
+                foreach (SceneNode *node, Agros2D::scene()->nodes->items())
+                {
+                    QListWidgetItem *item = new QListWidgetItem(widget);
+
+                    item->setText(QString("%1 - [%2; %3]").
+                                  arg(i).
+                                  arg(node->point().x, 0, 'e', 2).
+                                  arg(node->point().y, 0, 'e', 2));
+                    item->setIcon(icon("scene-node"));
+                    item->setData(Qt::UserRole, node->variant());
+                    if (nodes.contains(i))
+                        item->setCheckState(Qt::Checked);
+                    else
+                        item->setCheckState(Qt::Unchecked);
+
+                    widget->addItem(item);
+
+                    i++;
+                }
+            }
+            // preprocessor - edges
+            if (widget->property("dataType") == "edges")
+            {
+                QList<int> edges;
+                for (int i = 0; i < widget->count(); i++)
+                    if (widget->item(i)->checkState() == Qt::Checked)
+                        edges.append(i);
+
+                widget->clear();
+
+                int i = 0;
+                foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+                {
+                    QListWidgetItem *item = new QListWidgetItem(widget);
+
+                    item->setText(QString("%1 - %2 m").
+                                  arg(i).
+                                  arg((edge->angle() < EPS_ZERO) ?
+                                          sqrt(Hermes::sqr(edge->nodeEnd()->point().x - edge->nodeStart()->point().x) + Hermes::sqr(edge->nodeEnd()->point().y - edge->nodeStart()->point().y)) :
+                                          edge->radius() * edge->angle() / 180.0 * M_PI, 0, 'e', 2));
+                    item->setIcon(icon("scene-edge"));
+                    item->setData(Qt::UserRole, edge->variant());
+                    if (edges.contains(i))
+                        item->setCheckState(Qt::Checked);
+                    else
+                        item->setCheckState(Qt::Unchecked);
+
+                    widget->addItem(item);
+
+                    i++;
+                }
+            }
+            // preprocessor - labels
+            if (widget->property("dataType") == "labels")
+            {
+                QList<int> labels;
+                for (int i = 0; i < widget->count(); i++)
+                    if (widget->item(i)->checkState() == Qt::Checked)
+                        labels.append(i);
+
+                widget->clear();
+
+                int i = 0;
+                foreach (SceneLabel *label, Agros2D::scene()->labels->items())
+                {
+                    QListWidgetItem *item = new QListWidgetItem(widget);
+
+                    item->setText(QString("%1 - [%2; %3]").
+                                  arg(i).
+                                  arg(label->point().x, 0, 'e', 2).
+                                  arg(label->point().y, 0, 'e', 2));
+                    item->setIcon(icon("scene-label"));
+                    item->setData(Qt::UserRole, label->variant());
+                    item->setCheckState(Qt::Unchecked);
+                    if (labels.contains(i))
+                        item->setCheckState(Qt::Checked);
+                    else
+                        item->setCheckState(Qt::Unchecked);
+
+                    widget->addItem(item);
+
+                    i++;
+                }
+            }
+        }
+    }
 }
 
 void FormScript::designer()
@@ -164,6 +277,7 @@ void FormScript::designerFinished(int status)
     if (status == 0)
     {
         reloadWidget();
+        showWidget();
     }
 }
 
@@ -186,6 +300,8 @@ int FormScript::show()
 {
     errorMessage->clear();
     errorMessage->setVisible(false);
+
+    showWidget();
 
     return exec();
 }
@@ -346,6 +462,25 @@ void FormScript::acceptForm()
             if (QDoubleSpinBox *widget = dynamic_cast<QDoubleSpinBox  *>(object))
             {
                 script.SetValue(QString("%1_value").arg(widget->objectName()).toStdString(), QString::number(widget->value()).toStdString());
+            }
+            // list widget
+            if (QListWidget *widget = dynamic_cast<QListWidget *>(object))
+            {
+                // preprocessor - nodes, edges or labels
+                if ((widget->property("dataType") == "nodes") || (widget->property("dataType") == "edges") || (widget->property("dataType") == "labels"))
+                {
+                    QString out = "[";
+                    for (int i = 0; i < widget->count(); i++)
+                    {
+                        if (widget->item(i)->checkState() == Qt::Checked)
+                            out += QString("%1, ").arg(i);
+                    }
+                    if (out.length() > 1)
+                        out = out.left(out.count() - 2);
+                    out += "]";
+
+                    script.SetValue(QString("%1_list").arg(widget->objectName()).toStdString(), out.toStdString());
+                }
             }
         }
 

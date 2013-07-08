@@ -73,6 +73,7 @@ private slots:
     void saveToFile();
 
     void reloadWidget();
+    void showWidget();
     void designer();
     void designerFinished(int status);
 };
