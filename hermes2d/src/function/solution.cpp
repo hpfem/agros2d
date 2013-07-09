@@ -1618,8 +1618,6 @@ namespace Hermes
           this->num_coeffs = bson_iterator_int(&it_coeffs);
           this->num_elems = bson_iterator_int(&it_orders);
 
-          // std::cout << this->num_coeffs << ", " << this->num_elems << ", " << this->num_components << std::endl;
-
           this->mono_coeffs = new double[num_coeffs];
           memset(this->mono_coeffs, 0, this->num_coeffs*sizeof(double));
 
@@ -1636,7 +1634,6 @@ namespace Hermes
           while (bson_iterator_next(&it))
           {
             this->mono_coeffs[index_coeff] = bson_iterator_double(&it);
-            // std::cout << this->mono_coeffs[index_coeff] << std::endl;
             index_coeff++;
           }
 
@@ -1648,7 +1645,6 @@ namespace Hermes
           while (bson_iterator_next(&it))
           {
             this->elem_orders[index_order] = bson_iterator_int(&it);
-            // std::cout << this->elem_orders[index_order] << std::endl;
             index_order++;
           }
 
@@ -1657,10 +1653,8 @@ namespace Hermes
           bson_iterator_subobject_init(&it_components, &sub, 0);
           bson_iterator_init(&it, &sub);
           int index_comp = 0;
-          while (bson_type type = bson_iterator_next(&it))
+          while (bson_iterator_next(&it))
           {
-              // std::cout << "comp " << type << std::endl;
-
               bson sub_coeffs;
               bson_iterator_subobject_init(&it, &sub_coeffs, 0);
               bson_iterator it_coeffs;
@@ -1670,8 +1664,6 @@ namespace Hermes
               while (bson_iterator_next(&it_coeffs))
               {
                   this->elem_coeffs[index_comp][index_coeff] = bson_iterator_int(&it_coeffs);
-                  // std::cout << index_comp << ", " << index_coeff << " = " << this->elem_coeffs[index_comp][index_coeff] << std::endl;
-
                   index_coeff++;
               }
 
