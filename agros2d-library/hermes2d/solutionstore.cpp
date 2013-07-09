@@ -145,11 +145,11 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
             // read solution
             Solution<double> *sln = new Solution<double>();
             sln->set_validation(false);
-            QTime time;
-            time.start();
+            // QTime time;
+            // time.start();
             sln->load_bson((QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].solutionFileName())).toLatin1().data(), space);
             // sln->load((QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].solutionFileName())).toLatin1().data(), space);
-            qDebug() << "LOAD" << time.elapsed();
+            // qDebug() << "LOAD" << time.elapsed();
 
             msa.append(space, sln);
         }
@@ -252,11 +252,11 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArray<double> m
         if (fileNames[i].solutionFileName().isEmpty())
         {
             QString solutionFN = QString("%1_%2.sln").arg(baseFN).arg(i);
-            QTime time;
-            time.start();
+            // QTime time;
+            // time.start();
             // dynamic_cast<Hermes::Hermes2D::Solution<double> *>(multiSolution.solutions().at(i).get())->save(solutionFN.toLatin1().data());
             dynamic_cast<Hermes::Hermes2D::Solution<double> *>(multiSolution.solutions().at(i).get())->save_bson(solutionFN.toLatin1().data());
-            qDebug() << "SAVE" << time.elapsed();
+            // qDebug() << "SAVE" << time.elapsed();
 
             fileNames[i].setSolutionFileName(QFileInfo(solutionFN).fileName());
         }
