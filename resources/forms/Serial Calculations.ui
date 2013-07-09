@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>330</width>
-    <height>513</height>
+    <width>371</width>
+    <height>546</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Loops:</string>
+        <string>Number of steps:</string>
        </property>
       </widget>
      </item>
@@ -43,61 +43,36 @@
          <string>Geometry transformation</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_3">
-         <item row="2" column="0">
-          <widget class="QGroupBox" name="groupBox">
-           <property name="title">
-            <string>Move</string>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_2">
-            <item row="0" column="2">
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>Y:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_2">
-              <property name="text">
-               <string>X:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="txtMoveX">
-              <property name="accessibleName">
-               <string/>
-              </property>
-              <property name="text">
-               <string>0.0</string>
-              </property>
-              <property name="dataType" stdset="0">
-               <string>double</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="3">
-             <widget class="QLineEdit" name="txtMoveY">
-              <property name="accessibleName">
-               <string/>
-              </property>
-              <property name="text">
-               <string>0.0</string>
-              </property>
-              <property name="dataType" stdset="0">
-               <string>double</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
          <item row="4" column="0">
           <widget class="QGroupBox" name="groupBox_3">
            <property name="title">
             <string>Scale</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_8">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_10">
+              <property name="text">
+               <string>X:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_11">
+              <property name="text">
+               <string>Y:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="txtScaleY">
+              <property name="text">
+               <string>0.0</string>
+              </property>
+              <property name="dataType" stdset="0">
+               <string>double</string>
+              </property>
+             </widget>
+            </item>
             <item row="0" column="1">
              <widget class="QLineEdit" name="txtScaleX">
               <property name="text">
@@ -109,37 +84,13 @@
              </widget>
             </item>
             <item row="0" column="2">
-             <widget class="QLabel" name="label_11">
-              <property name="text">
-               <string>Y:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_10">
-              <property name="text">
-               <string>X:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="3">
-             <widget class="QLineEdit" name="txtScaleY">
-              <property name="text">
-               <string>0.0</string>
-              </property>
-              <property name="dataType" stdset="0">
-               <string>double</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
              <widget class="QLabel" name="label_12">
               <property name="text">
                <string>Scaling factor:</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1" colspan="3">
+            <item row="0" column="3">
              <widget class="QLineEdit" name="txtScaleFactor">
               <property name="text">
                <string>0.0</string>
@@ -212,16 +163,9 @@
          <item row="3" column="0">
           <widget class="QGroupBox" name="groupBox_2">
            <property name="title">
-            <string>Rotate</string>
+            <string>Rotation</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_4">
-            <item row="0" column="2">
-             <widget class="QLabel" name="label_8">
-              <property name="text">
-               <string>Y:</string>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="1">
              <widget class="QLineEdit" name="txtRotateX">
               <property name="text">
@@ -239,14 +183,14 @@
               </property>
              </widget>
             </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_9">
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_8">
               <property name="text">
-               <string>Angle</string>
+               <string>Y:</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="3">
+            <item row="1" column="1">
              <widget class="QLineEdit" name="txtRotateY">
               <property name="text">
                <string>0.0</string>
@@ -256,7 +200,14 @@
               </property>
              </widget>
             </item>
-            <item row="2" column="1" colspan="3">
+            <item row="0" column="2">
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>Angle:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3">
              <widget class="QLineEdit" name="txtRotateAngle">
               <property name="text">
                <string>0.0</string>
@@ -267,12 +218,11 @@
              </widget>
             </item>
            </layout>
-           <zorder>groupBox_4</zorder>
            <zorder>label_7</zorder>
-           <zorder>label_9</zorder>
-           <zorder>label_8</zorder>
            <zorder>txtRotateX</zorder>
+           <zorder>label_8</zorder>
            <zorder>txtRotateY</zorder>
+           <zorder>label_9</zorder>
            <zorder>txtRotateAngle</zorder>
           </widget>
          </item>
@@ -288,6 +238,55 @@
             </size>
            </property>
           </spacer>
+         </item>
+         <item row="2" column="0">
+          <widget class="QGroupBox" name="groupBox">
+           <property name="title">
+            <string>Displacement</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_2">
+            <item row="0" column="2">
+             <widget class="QLineEdit" name="txtMoveX">
+              <property name="accessibleName">
+               <string/>
+              </property>
+              <property name="text">
+               <string>0.0</string>
+              </property>
+              <property name="dataType" stdset="0">
+               <string>double</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>X:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>Y:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QLineEdit" name="txtMoveY">
+              <property name="accessibleName">
+               <string/>
+              </property>
+              <property name="text">
+               <string>0.0</string>
+              </property>
+              <property name="dataType" stdset="0">
+               <string>double</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -328,7 +327,7 @@
          <item row="2" column="0">
           <widget class="QCheckBox" name="chkSolve">
            <property name="text">
-            <string>Solve problem in each loop</string>
+            <string>Solve problem in each step</string>
            </property>
            <property name="checked">
             <bool>true</bool>
