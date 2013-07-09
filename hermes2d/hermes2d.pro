@@ -20,6 +20,7 @@ DEFINES += WITH_MUMPS
 LIBS += -L../libs
 LIBS += -L../3rdparty/libs
 LIBS += -lagros_3rdparty_paralution
+LIBS += -lagros_3rdparty_bson
 
 # set 'HERMES_DEBUG' in qtcreator
 contains(CONFIG, HERMES_DEBUG) {

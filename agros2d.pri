@@ -7,6 +7,7 @@ INCLUDEPATH += ./ \
     ../3rdparty/dxflib \
     ../3rdparty/rapidxml \
     ../3rdparty/poly2tri \
+    ../3rdparty/bson \
     ../3rdparty/quazip \
     ../pythonlab
 
