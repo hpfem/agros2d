@@ -1,9 +1,9 @@
 import agros2d as a2d
 
-nodes = [{{txtNodes_text}}]
-edges = [{{txtEdges_text}}]
-labels = [{{txtLabels_text}}]
-loops = {{txtLoops_text}}
+nodes = {{lstNodes_list}}
+edges = {{lstEdges_list}}
+labels = {{lstLabels_list}}
+steps = {{txtSteps_text}}
 
 move_x = {{txtMoveX_text}}
 move_y = {{txtMoveY_text}}
@@ -40,7 +40,7 @@ def calculate():
 results = list()
 results.append(calculate())
 
-for loop in range(loops):
+for loop in range(steps):
   if (nodes):
     geometry.select_nodes(nodes)
     transform()
