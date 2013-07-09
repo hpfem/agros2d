@@ -160,6 +160,7 @@ QWidget *AboutDialog::createLibraries()
                                          "<b>Python:</b> Python Programming Language (<a href=\"http://www.python.org\">Python</a>)<br/>"
                                          "<b>dxflib:</b> Andrew Mustun (<a href=\"http://www.ribbonsoft.com/dxflib.html\">RibbonSoft</a>)<br/>"
                                          "<b>ctemplate:</b> Simple but powerful template language for C++ (<a href=\"http://code.google.com/p/ctemplate/\">ctemplate</a>)<br/>"
+                                         "<b>BSON:</b> BSON implementation (<a href=\"https://github.com/mongodb/mongo-c-driver/\">mongo-c-driver</a>)<br/>"
                                          "<b>poly2tri:</b> A 2D constrained Delaunay triangulation library (<a href=\"http://code.google.com/p/poly2tri/\">poly2tri</a>)<br/>"
                                          "<b>stb_truetype.h:</b> TrueType processing library - Sean Barrett / RAD Game Tools (<a href=\"http://nothings.org/\">stb</a>)<br/>"
                                          "<b>Triangle:</b> Jonathan Richard Shewchuk (<a href=\"http://www.cs.cmu.edu/~quake/triangle.html\">Triangle</a>)<br/>"
