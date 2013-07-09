@@ -16,6 +16,9 @@
 #include "solution_h2d_xml.h"
 #include "exact_solution.h"
 #include "api2d.h"
+
+#include "bson.h"
+
 namespace Hermes
 {
   namespace Hermes2D
@@ -166,6 +169,48 @@ namespace Hermes
       {
         throw Hermes::Exceptions::SolutionSaveFailureException(e.what());
       }
+    }
+
+    template<>
+    void ConstantSolution<double>::save_bson(const char* filename) const
+    {
+      if(this->sln_type == HERMES_SLN)
+      {
+        Solution<double>::save(filename);
+        return;
+      }
+
+      // bson
+      bson bw;
+      bson_init(&bw);
+      bson_append_new_oid(&bw, "_id");
+      bson_append_new_oid(&bw, "user_id");
+
+      bson_append_bool(&bw, "exact", true);
+
+      bson_append_start_object(&bw, "values");
+      bson_append_double(&bw, "value", this->constant);
+      bson_append_finish_object(&bw);
+
+      bson_append_int(&bw, "components_count", this->num_components);
+
+      bson_finish(&bw);
+
+      // bson_print(&bw);
+
+      FILE *fpw;
+      fpw = fopen(filename, "wb");
+      const char *dataw = (const char *) bson_data(&bw);
+      fwrite(dataw, bson_size(&bw), 1, fpw);
+      fclose(fpw);
+
+      bson_destroy(&bw);
+    }
+
+    template<>
+    void ConstantSolution<std::complex<double> >::save_bson(const char* filename) const
+    {
+        assert(0);
     }
 
     template<typename Scalar>

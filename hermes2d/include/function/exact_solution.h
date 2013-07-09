@@ -160,6 +160,7 @@ namespace Hermes
 
       /// Saves the exact solution to an XML file.
       void save(const char* filename) const;
+      void save_bson(const char* filename) const;
 
     protected:
       Scalar constant;

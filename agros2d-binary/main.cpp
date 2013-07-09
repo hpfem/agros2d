@@ -143,6 +143,62 @@ int main(int argc, char *argv[])
     // init indicator (ubuntu - unity, windows - overlay icon, macosx - ???)
     Indicator::init();
 
+    // bson
+    /*
+    bson br;
+    bson_init(&br);
+    bson_append_new_oid(&br, "_id");
+    bson_append_new_oid(&br, "user_id");
+
+    bson_append_start_array(&br, "items");
+    bson_append_start_object(&br, "0");
+    bson_append_string(&br, "name", "John Coltrane: Impressions");
+    bson_append_int(&br, "price", 1099);
+    bson_append_finish_object(&br);
+
+    bson_append_start_object(&br, "1");
+    bson_append_string(&br, "name", "Larry Young: Unity");
+    bson_append_int(&br, "price", 1199);
+    bson_append_finish_object(&br);
+    bson_append_finish_object(&br);
+
+    bson_append_start_object(&br, "address");
+    bson_append_string(&br, "street", "59 18th St.");
+    bson_append_int(&br, "zip", 10010);
+    bson_append_finish_object(&br);
+
+    bson_append_int(&br, "total", 2298);
+
+    bson_finish(&br);
+
+    FILE *fpw;
+    fpw = fopen("pokus.bson", "wb");
+    const char *dataw = (const char *) bson_data(&br);
+    fwrite(dataw, bson_size(&br), 1, fpw);
+    fclose(fpw);
+
+    bson_destroy(&br);
+
+    FILE *fpr;
+    fpr = fopen("pokus.bson", "rb");
+
+    // file size:
+    fseek (fpr, 0, SEEK_END);
+    int size = ftell(fpr);
+    rewind(fpr);
+
+    // allocate memory to contain the whole file:
+    char *datar = (char*) malloc (sizeof(char)*size);
+    fread(datar, size, 1, fpr);
+    fclose(fpr);
+
+
+    bson bw;
+    bson_init_finished_data(&bw, datar, 0);
+    bson_print(&bw);
+    bson_destroy(&bw);
+    */
+
     MainWindow w;
     w.show();
 
