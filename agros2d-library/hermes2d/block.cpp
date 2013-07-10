@@ -560,21 +560,21 @@ int Block::picardAndersonNumberOfLastVectors() const
     return number;
 }
 
-Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType Block::iterLinearSolverMethod() const
+Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType Block::iterParalutionLinearSolverMethod() const
 {
-    Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType method
-            = (Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType) m_fields.at(0)->fieldInfo()->value(FieldInfo::LinearSolverIterMethod).toInt();
+    Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType method
+            = (Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType) m_fields.at(0)->fieldInfo()->value(FieldInfo::LinearSolverIterMethod).toInt();
 
     foreach (Field *field, m_fields)
     {
         // todo: ensure in GUI
-        assert((Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType) field->fieldInfo()->value(FieldInfo::LinearSolverIterMethod).toInt() == method );
+        assert((Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType) field->fieldInfo()->value(FieldInfo::LinearSolverIterMethod).toInt() == method );
     }
 
     return method ;
 }
 
-Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType Block::iterLinearSolverPreconditioner() const
+Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType Block::iterParalutionLinearSolverPreconditioner() const
 {
     Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType type
             = (Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) m_fields.at(0)->fieldInfo()->value(FieldInfo::LinearSolverIterPreconditioner).toInt();

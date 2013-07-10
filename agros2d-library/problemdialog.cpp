@@ -478,7 +478,7 @@ void FieldWidget::fillComboBox()
 #ifdef WITH_PETSC
     cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PETSC), Hermes::SOLVER_PETSC);
 #endif
-    cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PARALUTION), Hermes::SOLVER_PARALUTION);
+    cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PARALUTION_ITERATIVE), Hermes::SOLVER_PARALUTION_ITERATIVE);
 
     cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_NORM), Hermes::Hermes2D::HERMES_H1_NORM);
     cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_L2_NORM), Hermes::Hermes2D::HERMES_L2_NORM);
@@ -534,7 +534,7 @@ void FieldWidget::load()
     txtPicardAndersonBeta->setValue(m_fieldInfo->value(FieldInfo::PicardAndersonBeta).toDouble());
     txtPicardAndersonNumberOfLastVectors->setValue(m_fieldInfo->value(FieldInfo::PicardAndersonNumberOfLastVectors).toInt());
     // linear solver
-    cmbIterLinearSolverMethod->setCurrentIndex((Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType) cmbIterLinearSolverMethod->findData(m_fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()));
+    cmbIterLinearSolverMethod->setCurrentIndex((Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType) cmbIterLinearSolverMethod->findData(m_fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()));
     cmbIterLinearSolverPreconditioner->setCurrentIndex((Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) cmbIterLinearSolverPreconditioner->findData(m_fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
     txtIterLinearSolverToleranceAbsolute->setValue(m_fieldInfo->value(FieldInfo::LinearSolverIterToleranceAbsolute).toDouble());
     txtIterLinearSolverIters->setValue(m_fieldInfo->value(FieldInfo::LinearSolverIterIters).toInt());
@@ -680,7 +680,7 @@ void FieldWidget::doLinearityTypeChanged(int index)
 
 void FieldWidget::doLinearSolverChanged(int index)
 {
-    bool isIterative = ((Hermes::MatrixSolverType) cmbLinearSolver->itemData(cmbLinearSolver->currentIndex()).toInt() == Hermes::SOLVER_PARALUTION);
+    bool isIterative = ((Hermes::MatrixSolverType) cmbLinearSolver->itemData(cmbLinearSolver->currentIndex()).toInt() == Hermes::SOLVER_PARALUTION_ITERATIVE);
 
     cmbIterLinearSolverMethod->setEnabled(isIterative);
     cmbIterLinearSolverPreconditioner->setEnabled(isIterative);

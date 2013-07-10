@@ -10,7 +10,7 @@
 /* #undef EXTREME_QUAD */
 
 #define WITH_UMFPACK
-/* #define WITH_PARALUTION */
+#define WITH_PARALUTION
 /* #undef WITH_MUMPS */
 /* #undef WITH_SUPERLU */
 /* #undef WITH_PETSC */

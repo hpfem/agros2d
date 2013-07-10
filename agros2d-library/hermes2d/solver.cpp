@@ -104,14 +104,14 @@ void NewtonSolverAgros<Scalar>::clearSteps()
 template <typename Scalar>
 void NewtonSolverAgros<Scalar>::setError(Phase phase)
 {
-    unsigned int iteration = this->get_parameter_value(this->iteration());
+    int iteration = this->get_current_iteration_number() - 1;
     const Hermes::vector<double>& residual_norms = this->get_parameter_value(this->residual_norms());
     const Hermes::vector<double>& solution_norms = this->get_parameter_value(this->solution_norms());
-    double solution_change_norm = this->get_parameter_value(this->solution_change_norm());
-    const Hermes::vector<double>& damping_coefficients = this->get_parameter_value(this->damping_coefficients());
-    double current_damping_coefficient = 1.0;
-    if (damping_coefficients.size() >= 1.0)
-        current_damping_coefficient = damping_coefficients.at(damping_coefficients.size() - 1);
+    const Hermes::vector<double>& solution_change_norms = this->get_parameter_value(this->solution_change_norms());
+    const Hermes::vector<double>& damping_factors = this->get_parameter_value(this->damping_factors());
+    double current_damping_factor = 1.0;
+    if (damping_factors.size() >= 1.0)
+        current_damping_factor = damping_factors.at(damping_factors.size() - 1);
     unsigned int successful_steps_damping = this->get_parameter_value(this->successful_steps_damping());
     unsigned int successful_steps_jacobian = this->get_parameter_value(this->successful_steps_jacobian());
 
@@ -120,20 +120,21 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
 
     double current_residual_norm = residual_norms[iteration - 1];
     double current_solution_norm = solution_norms[iteration - 1];
+    double current_solution_change_norm = solution_change_norms[iteration - 1];
     QString resNorms;
     for(int i = 0; i < iteration; i++)
         resNorms = QObject::tr("%1%2, ").arg(resNorms).arg(residual_norms[i]);
 
     double previous_residual_norm = current_residual_norm;
     double previous_solution_norm = current_solution_norm;
-    double previous_dampinig_coefficient = current_damping_coefficient;
+    double previous_damping_factors = current_damping_factor;
     if (iteration > 1)
     {
         previous_residual_norm = residual_norms[iteration - 2];
         previous_solution_norm = solution_norms[iteration - 2];
     }
-    if(damping_coefficients.size() >= 2)
-        previous_dampinig_coefficient = damping_coefficients.at(damping_coefficients.size() - 2);
+    if(damping_factors.size() >= 2)
+        previous_damping_factors = damping_factors.at(damping_factors.size() - 2);
 
 
     // add iteration
@@ -157,10 +158,10 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
         m_errors.append(current_residual_norm);
         break;
     case Hermes::Hermes2D::SolutionDistanceFromPreviousAbsolute:
-        m_errors.append(solution_change_norm);
+        m_errors.append(current_solution_change_norm);
         break;
     case Hermes::Hermes2D::SolutionDistanceFromPreviousRelative:
-        m_errors.append(solution_change_norm / current_solution_norm);
+        m_errors.append(current_solution_change_norm / current_solution_norm);
         break;
     default:
         throw AgrosException(QObject::tr("Convergence measurement '%1' doesn't exists.").arg(this->current_convergence_measurement));
@@ -178,14 +179,14 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
     {
         Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, Jacobian recalculated, damping coeff.: %2, error: %3")
                                      .arg(iteration)
-                                     .arg(previous_dampinig_coefficient)
+                                     .arg(previous_damping_factors)
                                      .arg(m_errors.last()));
     }
     else if (phase == Phase_JacobianReused)
     {
         Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, Jacobian reused, damping coeff.: %2, error: %3")
                                      .arg(iteration)
-                                     .arg(current_damping_coefficient)
+                                     .arg(current_damping_factor)
                                      .arg(m_errors.last()));
     }
     else if (phase == Phase_Finished)
@@ -215,7 +216,7 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
     //                                     .arg(m_errors.last()));
     //    }
 
-    m_damping.append(current_damping_coefficient);
+    m_damping.append(current_damping_factor);
     Agros2D::log()->setNonlinearTable(m_steps, m_errors);
 }
 
@@ -262,10 +263,10 @@ QSharedPointer<HermesSolverContainer<Scalar> > HermesSolverContainer<Scalar>::fa
         linearSolver->set_max_iters(block->iterLinearSolverIters());
         linearSolver->set_tolerance(block->iterLinearSolverToleranceAbsolute());
     }
-    if (ParalutionLinearMatrixSolver<Scalar> *linearSolver = dynamic_cast<ParalutionLinearMatrixSolver<Scalar> *>(solver.data()->linearSolver()))
+    if (IterativeParalutionLinearMatrixSolver<Scalar> *linearSolver = dynamic_cast<IterativeParalutionLinearMatrixSolver<Scalar> *>(solver.data()->linearSolver()))
     {
-        linearSolver->set_solver_type(block->iterLinearSolverMethod());
-        linearSolver->set_precond(new Hermes::Preconditioners::ParalutionPrecond<Scalar>(block->iterLinearSolverPreconditioner()));
+        linearSolver->set_solver_type(block->iterParalutionLinearSolverMethod());
+        linearSolver->set_precond(new Hermes::Preconditioners::ParalutionPrecond<Scalar>(block->iterParalutionLinearSolverPreconditioner()));
     }
 
     return solver;
@@ -331,7 +332,7 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
 {
     m_newtonSolver = new NewtonSolverAgros<Scalar>(block);
     m_newtonSolver->set_verbose_output(true);
-    m_newtonSolver->set_tolerance(block->nonlinearTolerance());
+    m_newtonSolver->set_tolerance(block->nonlinearTolerance(), block->nonlinearConvergenceMeasurement());
     m_newtonSolver->set_max_allowed_iterations(block->nonlinearSteps());
     m_newtonSolver->set_max_allowed_residual_norm(1e15);
     m_newtonSolver->set_convergence_measurement(block->nonlinearConvergenceMeasurement());

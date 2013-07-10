@@ -85,8 +85,8 @@ namespace Hermes
       virtual void solve(Scalar* coeff_vec);
 
       /// Sets the current convergence measurement.
-      /// Default: AbsoluteNorm
-      void set_convergence_measurement(NewtonSolverConvergenceMeasurementType measurement);
+      /// Default: none.
+      void set_convergence_measurement(int measurement);
 
       /// Sets the maximum allowed norm of the residual during the calculation.
       /// Default: 1E9
@@ -102,8 +102,10 @@ namespace Hermes
       void set_residual_as_function();
 
       /// Set the residual norm tolerance for ending the Newton's loop.
-      /// Default: 1E-8.
-      void set_tolerance(double newton_tol);
+      /// Default: this->set_tolerance(1e-8, ResidualNormAbsolute);
+      /// \param[in] handleMultipleTolerancesAnd If true, multiple tolerances defined will have to be all fulfilled in order to proclaim
+      /// solution as a correct one. If false, only one will be enough.
+      void set_tolerance(double newton_tol, NewtonSolverConvergenceMeasurementType toleranceType, bool handleMultipleTolerancesAnd = false);
 
 #pragma region damping-public
       /// Sets minimum damping coefficient.
@@ -213,14 +215,22 @@ namespace Hermes
       double calculate_residual_norm();
 
       /// Calculates the new damping coefficient.
-      bool calculate_damping_coefficient(unsigned int& successful_steps);
+      bool calculate_damping_factor(unsigned int& successful_steps);
 
-      NewtonSolverConvergenceMeasurementType current_convergence_measurement;
+      int current_convergence_measurement;
       
       /// Internal setting of default values (see individual set methods).
       void init_newton();
 
-      double newton_tolerance;
+      /// Tolerances for all NewtonSolverConvergenceMeasurementType numbered sequentially as the enum NewtonSolverConvergenceMeasurementType is.
+      double newton_tolerance[NewtonSolverConvergenceMeasurementTypeCount];
+
+      /// info about set tolerances.
+      bool newton_tolerance_set[NewtonSolverConvergenceMeasurementTypeCount];
+
+      /// If true, multiple tolerances defined will have to be all fulfilled in order to proclaim
+      /// solution as a correct one. If false, only one will be enough.
+      bool handleMultipleTolerancesAnd;
 
       /// Maximum allowed residual norm. If this number is exceeded, the methods solve() return 'false'.
       /// By default set to 1E6.
@@ -229,18 +239,24 @@ namespace Hermes
 
       bool residual_as_function;
 
+      /// Shortcut method for getting the current iteration.
+      int get_current_iteration_number();
+
+      /// Output info about the step.
+      void step_info();
+
 #pragma region damping-private
       /// Manual / auto.
       bool manual_damping;
 
       /// Manual.
-      double manual_damping_coefficient;
+      double manual_damping_factor;
 
       /// Auto.
       /// The ratio between two damping coeffs when changing.
       double auto_damping_ratio;
       /// The initial (and maximum) damping coefficient
-      double initial_auto_damping_coefficient;
+      double initial_auto_damping_factor;
       /// Sufficient improvement for continuing.
       double sufficient_improvement_factor;
       /// necessary number of steps to increase back the damping coeff.
@@ -264,30 +280,28 @@ namespace Hermes
       // For derived classes - read-only access.
       const OutputParameterDoubleVector& residual_norms() const { return this->p_residual_norms; };
       const OutputParameterDoubleVector& solution_norms() const { return this->p_solution_norms; };
-      const OutputParameterDouble& solution_change_norm() const { return this->p_solution_change_norm; };
+      const OutputParameterDoubleVector& solution_change_norms() const { return this->p_solution_change_norms; };
       const OutputParameterUnsignedInt& successful_steps_damping() const { return this->p_successful_steps_damping; };
       const OutputParameterUnsignedInt& successful_steps_jacobian() const { return this->p_successful_steps_jacobian; };
       
-      const OutputParameterDoubleVector& damping_coefficients() const { return this->p_damping_coefficients; };
+      const OutputParameterDoubleVector& damping_factors() const { return this->p_damping_factors; };
       const OutputParameterBool& residual_norm_drop() const { return this->p_residual_norm_drop; };
-      const OutputParameterUnsignedInt& iteration() const { return this->p_iteration; };
-      const OutputParameterUnsignedInt& iteration_with_recalculated_jacobian() const { return this->p_iteration_with_recalculated_jacobian; };
+      const OutputParameterBoolVector& iterations_with_recalculated_jacobian() const { return this->p_iterations_with_recalculated_jacobian; };
 
     private:
       // Parameters for OutputAttachable mixin.
+      OutputParameterBoolVector p_iterations_with_recalculated_jacobian;
       OutputParameterDoubleVector p_residual_norms;
       OutputParameterDoubleVector p_solution_norms;
-      OutputParameterDouble p_solution_change_norm;
+      OutputParameterDoubleVector p_solution_change_norms;
       OutputParameterUnsignedInt p_successful_steps_damping;
       OutputParameterUnsignedInt p_successful_steps_jacobian;
-      OutputParameterDoubleVector p_damping_coefficients;
+      OutputParameterDoubleVector p_damping_factors;
       OutputParameterBool p_residual_norm_drop;
-      OutputParameterUnsignedInt p_iteration;
-      OutputParameterUnsignedInt p_iteration_with_recalculated_jacobian;
 #pragma endregion
 
     private:
-      Scalar* coeff_vec_back;
+			Scalar* coeff_vec_back;
       int ndof;
 
       friend class NewtonSolverConvergenceMeasurement<Scalar>;

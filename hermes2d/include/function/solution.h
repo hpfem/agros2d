@@ -73,7 +73,9 @@ namespace Hermes
     /// 'p' is the polynomial degree.
     ///
     template<typename Scalar>
-    class HERMES_API Solution : public MeshFunction<Scalar>, public Hermes2D::Mixins::XMLParsing
+    class HERMES_API Solution : 
+      public MeshFunction<Scalar>,
+      public Hermes2D::Mixins::XMLParsing
     {
     public:
       Solution();
@@ -83,7 +85,8 @@ namespace Hermes
       virtual ~Solution();
 
       /// State querying helpers.
-      inline std::string getClassName() const { return "Solution"; }
+      virtual bool isOkay() const;
+      virtual inline std::string getClassName() const { return "Solution"; }
 
       virtual void copy(const MeshFunction<Scalar>* sln);
 
@@ -93,12 +96,16 @@ namespace Hermes
       /// Saves the complete solution (i.e., including the internal copy of the mesh and
       /// element orders) to an XML file.
       virtual void save(const char* filename) const;
+#ifdef WITH_BSON
       virtual void save_bson(const char* filename) const;
+#endif
 
       /// Loads the solution from a file previously created by Solution::save(). This completely
       /// restores the solution in the memory.
       void load(const char* filename, SpaceSharedPtr<Scalar> space);
+#ifdef WITH_BSON
       void load_bson(const char* filename, SpaceSharedPtr<Scalar> space);
+#endif
 
       /// Returns solution value or derivatives at element e, in its reference domain point (xi1, xi2).
       /// 'item' controls the returned value: 0 = value, 1 = dx, 2 = dy, 3 = dxx, 4 = dyy, 5 = dxy.
@@ -241,6 +248,13 @@ namespace Hermes
       void free_tables();
 
       Element* e_last; ///< last visited element when getting solution values at specific points
+
+      /// Internal, checks the compliance of the passed space type and owned space type.
+      void check_space_type_compliance(const char* space_type_to_check) const;
+
+      /// Special internal method for loading exact solutions.
+      void load_exact_solution(int number_of_components, SpaceSharedPtr<Scalar> space, bool complexness,
+        double x_real, double y_real, double x_complex, double y_complex);
 
       friend class RefMap;
       template<typename T> friend class KellyTypeAdapt;

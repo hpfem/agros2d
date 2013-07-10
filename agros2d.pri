@@ -11,6 +11,9 @@ INCLUDEPATH += ./ \
     ../3rdparty/quazip \
     ../pythonlab
 
+# bson
+DEFINES += WITH_BSON
+
 DEFINES += WITH_OPENMP
 
 LIBS += -lagros_3rdparty_ctemplate

@@ -10,6 +10,9 @@ DEFINES += H2D_DISABLE_MULTIMESH_TESTS
 
 INCLUDEPATH += ../3rdparty/bson
 
+# bson
+DEFINES += WITH_BSON
+
 # paralution
 DEFINES += WITH_PARALUTION
 INCLUDEPATH += ../3rdparty/paralution/src

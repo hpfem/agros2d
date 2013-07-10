@@ -229,7 +229,7 @@ void PyField::setLinearSolverMethod(const std::string &linearSolverMethod)
 {
     if (iterLinearSolverMethodStringKeys().contains(QString::fromStdString(linearSolverMethod)))
         m_fieldInfo->setValue(FieldInfo::LinearSolverIterMethod,
-                              (Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType) iterLinearSolverMethodFromStringKey(QString::fromStdString(linearSolverMethod)));
+                              (Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType) iterLinearSolverMethodFromStringKey(QString::fromStdString(linearSolverMethod)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(iterLinearSolverMethodStringKeys())).toStdString());
 }

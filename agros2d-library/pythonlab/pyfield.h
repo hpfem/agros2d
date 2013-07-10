@@ -58,7 +58,7 @@ class PyField
 
         // linear solver method
         inline std::string getLinearSolverMethod() const {
-             return iterLinearSolverMethodToStringKey((Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType) m_fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()).toStdString();
+             return iterLinearSolverMethodToStringKey((Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType) m_fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()).toStdString();
         }
         void setLinearSolverMethod(const std::string &linearSolverMethod);
 

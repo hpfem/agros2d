@@ -396,10 +396,10 @@ AGROS_API QString nonlinearSolverConvergenceMeasurementToStringKey(Hermes::Herme
 AGROS_API Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType nonlinearSolverConvergenceMeasurementFromStringKey(const QString &measurement);
 
 // iterative solver - method
-AGROS_API QString iterLinearSolverMethodString(Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType type);
+AGROS_API QString iterLinearSolverMethodString(Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType type);
 AGROS_API QStringList iterLinearSolverMethodStringKeys();
-AGROS_API QString iterLinearSolverMethodToStringKey(Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType type);
-AGROS_API Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType iterLinearSolverMethodFromStringKey(const QString &type);
+AGROS_API QString iterLinearSolverMethodToStringKey(Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType type);
+AGROS_API Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType iterLinearSolverMethodFromStringKey(const QString &type);
 
 // iterative solver - preconditioner
 AGROS_API QString iterLinearSolverPreconditionerTypeString(Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType type);

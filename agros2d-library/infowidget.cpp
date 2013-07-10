@@ -258,9 +258,9 @@ void InfoWidget::showInfo()
             }
 
             QString matrixSolver = matrixSolverTypeString(fieldInfo->matrixSolver());
-            if ((fieldInfo->matrixSolver() == Hermes::SOLVER_PARALUTION))
+            if ((fieldInfo->matrixSolver() == Hermes::SOLVER_PARALUTION_ITERATIVE))
                 matrixSolver += tr(" (%1, %2) - iterative").
-                        arg(iterLinearSolverMethodString((Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt())).
+                        arg(iterLinearSolverMethodString((Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt())).
                         arg(iterLinearSolverPreconditionerTypeString((Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
             else
                 matrixSolver += tr(" - direct");

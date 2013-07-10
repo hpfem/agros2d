@@ -42,6 +42,11 @@ namespace Hermes
 
       inline std::string getClassName() const { return "ExactSolution"; }
 
+      /// Saves the exact solution to an XML file.
+      virtual void save(const char* filename) const;
+#ifdef WITH_BSON
+      virtual void save_bson(const char* filename) const;
+#endif
     protected:
       /// For scaling of the solution.
       Scalar exact_multiplicator;
@@ -160,7 +165,9 @@ namespace Hermes
 
       /// Saves the exact solution to an XML file.
       void save(const char* filename) const;
+#ifdef WITH_BSON
       void save_bson(const char* filename) const;
+#endif
 
     protected:
       Scalar constant;
@@ -180,9 +187,6 @@ namespace Hermes
 
       virtual Ord ord(Ord x, Ord y) const;
       virtual MeshFunction<Scalar>* clone() const;
-
-      /// Saves the exact solution to an XML file.
-      void save(const char* filename) const;
     };
 
     /// @ingroup meshFunctions
@@ -202,6 +206,9 @@ namespace Hermes
 
       /// Saves the exact solution to an XML file.
       void save(const char* filename) const;
+#ifdef WITH_BSON
+      void save_bson(const char* filename) const;
+#endif
     protected:
       Scalar constantX;
       Scalar constantY;
@@ -221,9 +228,6 @@ namespace Hermes
 
       virtual Ord ord(Ord x, Ord y) const;
       virtual MeshFunction<Scalar>* clone() const;
-
-      /// Saves the exact solution to an XML file.
-      void save(const char* filename) const;
     };
   }
 }

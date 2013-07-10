@@ -117,8 +117,8 @@ public:
     int picardAndersonNumberOfLastVectors() const;
 
     // iterative linear solver
-    Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType iterLinearSolverMethod() const;
-    Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType iterLinearSolverPreconditioner() const;
+    Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType iterParalutionLinearSolverMethod() const;
+    Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType iterParalutionLinearSolverPreconditioner() const;
     double iterLinearSolverToleranceAbsolute() const;
     int iterLinearSolverIters() const;
 

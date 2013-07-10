@@ -50,7 +50,7 @@ static QMap<VectorCenter, QString> vectorCenterList;
 static QMap<DataTableType, QString> dataTableTypeList;
 static QMap<Hermes::ButcherTableType, QString> butcherTableTypeList;
 static QMap<Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType, QString> nonlinearSolverConvergenceMeasurementList;
-static QMap<Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType, QString> iterLinearSolverMethodList;
+static QMap<Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType, QString> iterLinearSolverMethodList;
 static QMap<Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType, QString> iterLinearSolverPreconditionerTypeList;
 
 QStringList coordinateTypeStringKeys() { return coordinateTypeList.values(); }
@@ -150,8 +150,8 @@ QString nonlinearSolverConvergenceMeasurementToStringKey(Hermes::Hermes2D::Newto
 Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType nonlinearSolverConvergenceMeasurementFromStringKey(const QString &measurement) { return nonlinearSolverConvergenceMeasurementList.key(measurement); }
 
 QStringList iterLinearSolverMethodStringKeys() { return iterLinearSolverMethodList.values(); }
-QString iterLinearSolverMethodToStringKey(Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType type) { return iterLinearSolverMethodList[type]; }
-Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType iterLinearSolverMethodFromStringKey(const QString &type) { return iterLinearSolverMethodList.key(type); }
+QString iterLinearSolverMethodToStringKey(Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType type) { return iterLinearSolverMethodList[type]; }
+Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType iterLinearSolverMethodFromStringKey(const QString &type) { return iterLinearSolverMethodList.key(type); }
 
 QStringList iterLinearSolverPreconditionerTypeStringKeys() { return iterLinearSolverPreconditionerTypeList.values(); }
 QString iterLinearSolverPreconditionerTypeToStringKey(Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType type) { return iterLinearSolverPreconditionerTypeList[type]; }
@@ -237,7 +237,8 @@ void initLists()
 
     // MatrixSolverType
     matrixSolverTypeList.insert(Hermes::SOLVER_UMFPACK, "umfpack");
-    matrixSolverTypeList.insert(Hermes::SOLVER_PARALUTION, "paralution");
+    matrixSolverTypeList.insert(Hermes::SOLVER_PARALUTION_ITERATIVE, "paralution_iterative");
+    matrixSolverTypeList.insert(Hermes::SOLVER_PARALUTION_AMG, "paralution_amg");
 #ifdef WITH_MUMPS
     matrixSolverTypeList.insert(Hermes::SOLVER_MUMPS, "mumps");
 #endif
@@ -338,9 +339,9 @@ void initLists()
     nonlinearSolverConvergenceMeasurementList.insert(Hermes::Hermes2D::SolutionDistanceFromPreviousRelative, "solution_distance_from_previous_relative");
 
     // Iterative solver
-    iterLinearSolverMethodList.insert(Hermes::Solvers::ParalutionLinearMatrixSolver<double>::CG, "cg");
-    iterLinearSolverMethodList.insert(Hermes::Solvers::ParalutionLinearMatrixSolver<double>::GMRES, "gmres");
-    iterLinearSolverMethodList.insert(Hermes::Solvers::ParalutionLinearMatrixSolver<double>::BiCGStab, "bicgstab");
+    iterLinearSolverMethodList.insert(Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::CG, "cg");
+    iterLinearSolverMethodList.insert(Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::GMRES, "gmres");
+    iterLinearSolverMethodList.insert(Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::BiCGStab, "bicgstab");
 
     iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::ParalutionPrecond<double>::Jacobi, "jacobi");
     iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::ParalutionPrecond<double>::ILU, "ilu");
@@ -664,8 +665,10 @@ QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType)
         return QObject::tr("MUMPS");
     case Hermes::SOLVER_SUPERLU:
         return QObject::tr("SuperLU");
-    case Hermes::SOLVER_PARALUTION:
-        return QObject::tr("PARALUTION (exp.)");
+    case Hermes::SOLVER_PARALUTION_ITERATIVE:
+        return QObject::tr("PARALUTION iter. (exp.)");
+    case Hermes::SOLVER_PARALUTION_AMG:
+        return QObject::tr("PARALUTION AMG (exp.)");
     case Hermes::SOLVER_AMESOS:
         return QObject::tr("Trilinos/Amesos");
     case Hermes::SOLVER_AZTECOO:
@@ -678,7 +681,7 @@ QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType)
 
 bool isMatrixSolverIterative(Hermes::MatrixSolverType type)
 {
-    return (type == Hermes::SOLVER_PARALUTION);
+    return ((type == Hermes::SOLVER_PARALUTION_ITERATIVE) || (type == Hermes::SOLVER_PARALUTION_AMG));
 }
 
 QString linearityTypeString(LinearityType linearityType)
@@ -774,18 +777,18 @@ QString nonlinearSolverConvergenceMeasurementString(Hermes::Hermes2D::NewtonSolv
     }
 }
 
-QString iterLinearSolverMethodString(Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType type)
+QString iterLinearSolverMethodString(Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType type)
 {
     switch (type)
     {
-    case Hermes::Solvers::ParalutionLinearMatrixSolver<double>::CG:
+    case Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::CG:
         return QObject::tr("CG");
-    case Hermes::Solvers::ParalutionLinearMatrixSolver<double>::GMRES:
+    case Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::GMRES:
         return QObject::tr("GMRES");
-    case Hermes::Solvers::ParalutionLinearMatrixSolver<double>::BiCGStab:
+    case Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::BiCGStab:
         return QObject::tr("BiCGStab");
     default:
-        std::cerr << "Iterative solver method '" + QString::number(type).toStdString() + "' is not implemented. iterLinearSolverTypeString(Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType type)" << endl;
+        std::cerr << "Iterative solver method '" + QString::number(type).toStdString() + "' is not implemented. iterLinearSolverTypeString(Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType type)" << endl;
         throw;
     }
 }

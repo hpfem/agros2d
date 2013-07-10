@@ -863,7 +863,7 @@ void FieldInfo::setDefaultValues()
     m_settingDefault[AdaptivityFinerReference] = false;
     m_settingDefault[TransientTimeSkip] = 0.0;
     m_settingDefault[TransientInitialCondition] = 0.0;
-    m_settingDefault[LinearSolverIterMethod] = Hermes::Solvers::ParalutionLinearMatrixSolver<double>::BiCGStab;
+    m_settingDefault[LinearSolverIterMethod] = Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::BiCGStab;
     m_settingDefault[LinearSolverIterPreconditioner] = Hermes::Solvers::ParalutionPrecond<double>::ILU;
     m_settingDefault[LinearSolverIterToleranceAbsolute] = 1e-16;
     m_settingDefault[LinearSolverIterIters] = 1000;

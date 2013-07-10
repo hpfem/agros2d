@@ -278,11 +278,11 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                 arg(fieldInfo->fieldId()).
                 arg(matrixSolverTypeToStringKey(fieldInfo->matrixSolver()));
 
-        if (fieldInfo->matrixSolver() == Hermes::SOLVER_PARALUTION)
+        if (fieldInfo->matrixSolver() == Hermes::SOLVER_PARALUTION_ITERATIVE)
         {
             str += QString("%1.matrix_iterative_solver_method = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
-                    arg(iterLinearSolverMethodToStringKey((Hermes::Solvers::ParalutionLinearMatrixSolver<double>::ParalutionSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()));
+                    arg(iterLinearSolverMethodToStringKey((Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()));
             str += QString("%1.matrix_iterative_solver_preconditioner = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
                     arg(iterLinearSolverPreconditionerTypeToStringKey((Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
