@@ -147,7 +147,9 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
             sln->set_validation(false);
             // QTime time;
             // time.start();
-            sln->load_bson((QString("%1/%2").arg(compatibleFilename(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].solutionFileName()))).toStdString().c_str(), space);
+            sln->load_bson(QString("%1/%2").
+                            arg(compatibleFilename(cacheProblemDir())).
+                            arg(runTime.fileNames()[fieldCompIdx].solutionFileName()).toStdString().c_str(), space);
             // sln->load((QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].solutionFileName())).toLatin1().data(), space);
             // qDebug() << "LOAD" << time.elapsed();
 
