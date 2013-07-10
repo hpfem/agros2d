@@ -248,7 +248,7 @@ void ExamplesDialog::problemInfo(const QString &fileName)
         ctemplate::TemplateDictionary problemInfo("info");
 
         // problem info
-        problemInfo.SetValue("AGROS2D", QDir(datadir() + TEMPLATEROOT).absolutePath().toStdString() + "/panels/agros2d_logo.png");
+        problemInfo.SetValue("AGROS2D", "file:///" + compatibleFilename(QDir(datadir() + TEMPLATEROOT + "/panels/agros2d_logo.png").absolutePath()).toStdString());
 
         problemInfo.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
         problemInfo.SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
