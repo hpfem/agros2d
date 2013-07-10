@@ -112,6 +112,9 @@
         <module:matrix_form axi_linear="- 2 * PI * f * ma_gamma * uval * vval" axi_newton="- 2 * PI * f * ma_gamma * uval * vval" i="1" id="form" j="2" planar_linear="- 2 * PI * f * ma_gamma * uval * vval" planar_newton="- 2 * PI * f * ma_gamma * uval * vval"/>
         <module:matrix_form axi_linear="2 * PI * f * ma_gamma * uval * vval" axi_newton="2 * PI * f * ma_gamma * uval * vval" i="2" id="form" j="1" planar_linear="2 * PI * f * ma_gamma * uval * vval" planar_newton="2 * PI * f * ma_gamma * uval * vval"/>
 
+        <module:matrix_form i="1" j="3" axi_linear="1 / (ma_mur * MU0) * ma_IPrescribed * (uval * vdr / r)" axi_newton="0" planar_linear="0" planar_newton="0" id="form"/>
+        <module:matrix_form i="2" j="4" axi_linear="1 / (ma_mur * MU0) * ma_IPrescribed * (uval * vdr / r)" axi_newton="0" planar_linear="0" planar_newton="0" id="form"/>
+
         <module:matrix_form i="1" j="4" axi_linear="- 2 * PI * f * ma_gamma * ma_IPrescribed * uval * vval" axi_newton="0" planar_linear="- 2 * PI * f * ma_gamma * ma_IPrescribed * uval * vval" planar_newton="0" id="form"/>
         <module:matrix_form i="2" j="3" axi_linear="2 * PI * f * ma_gamma * ma_IPrescribed * uval * vval" axi_newton="0" planar_linear="2 * PI * f * ma_gamma * ma_IPrescribed * uval * vval" planar_newton="0" id="form"/>
         <module:matrix_form i="3" j="1" axi_linear="-2 * PI * f * ma_gamma * ma_IPrescribed * uval" axi_newton="0" planar_linear="-2 * PI * f * ma_gamma * ma_IPrescribed * uval" planar_newton="0" id="form"/>
