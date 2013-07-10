@@ -34,10 +34,22 @@ Log::Log()
 
 // *******************************************************************************************************
 
-LogWidget::LogWidget(QWidget *parent) : QPlainTextEdit(parent)
+LogWidget::LogWidget(QWidget *parent) : QWidget(parent),
+    m_printCounter(0)
 {
-    setReadOnly(true);
-    setMinimumSize(160, 160);
+    textLog = new QPlainTextEdit();
+    textLog->setReadOnly(true);
+    textLog->setMinimumSize(160, 160);
+
+    memoryLabel = new QLabel("                                                         ");
+    refreshMemory();
+
+    QVBoxLayout *layoutMain = new QVBoxLayout();
+    layoutMain->setContentsMargins(0, 0, 0, 0);
+    layoutMain->addWidget(textLog);
+    layoutMain->addWidget(memoryLabel, 0, Qt::AlignLeft);
+
+    setLayout(layoutMain);
 
     createActions();
 
@@ -56,8 +68,8 @@ LogWidget::LogWidget(QWidget *parent) : QPlainTextEdit(parent)
     connect(Agros2D::log(), SIGNAL(warningMsg(QString, QString, bool)), this, SLOT(printWarning(QString, QString, bool)));
     connect(Agros2D::log(), SIGNAL(debugMsg(QString, QString, bool)), this, SLOT(printDebug(QString, QString, bool)));
 
-    setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
+    textLog->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(textLog, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(contextMenu(const QPoint &)));
 }
 
 void LogWidget::contextMenu(const QPoint &pos)
@@ -80,10 +92,10 @@ void LogWidget::createActions()
     connect(actShowDebug, SIGNAL(triggered()), this, SLOT(showDebug()));
 
     actClear = new QAction(icon(""), tr("Clear"), this);
-    connect(actClear, SIGNAL(triggered()), this, SLOT(clear()));
+    connect(actClear, SIGNAL(triggered()), textLog, SLOT(clear()));
 
     actCopy = new QAction(icon(""), tr("Copy"), this);
-    connect(actCopy, SIGNAL(triggered()), this, SLOT(copy()));
+    connect(actCopy, SIGNAL(triggered()), textLog, SLOT(copy()));
 }
 
 void LogWidget::showTimestamp()
@@ -123,11 +135,11 @@ void LogWidget::printDebug(const QString &module, const QString &message, bool e
 
 void LogWidget::print(const QString &module, const QString &message, const QString &color, bool escaped)
 {
-    setUpdatesEnabled(false);
+    textLog->setUpdatesEnabled(false);
 
-    QTextCursor cursor = textCursor();
+    QTextCursor cursor = textLog->textCursor();
     cursor.movePosition(QTextCursor::End);
-    setTextCursor(cursor);
+    textLog->setTextCursor(cursor);
 
     QString str;
 
@@ -163,15 +175,46 @@ void LogWidget::print(const QString &module, const QString &message, const QStri
     if (!color.isEmpty())
         str += "</span>";
 
-    setUpdatesEnabled(true);
-    appendHtml(str);
+    textLog->setUpdatesEnabled(true);
+    textLog->appendHtml(str);
 
-    ensureCursorVisible();
+    textLog->ensureCursorVisible();
+    repaint();
+
+    // force run process events
+    m_printCounter++;
+    if (m_printCounter == 15)
+    {
+        // reset counter and process events
+        m_printCounter = 0;
+        QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);        
+    }
+    if (m_printCounter % 3 == 0)
+    {
+        if (isMemoryLabelVisible())
+            refreshMemory();
+    }
 }
 
 void LogWidget::welcomeMessage()
 {
     print("Agros2D", tr("version: %1").arg(QApplication::applicationVersion()), "green");
+}
+
+bool LogWidget::isMemoryLabelVisible() const
+{
+    return memoryLabel->isVisible();
+}
+
+void LogWidget::setMemoryLabelVisible(bool visible)
+{
+    memoryLabel->setVisible(visible);
+}
+
+void LogWidget::refreshMemory()
+{
+    int memory = getCurrentRSS() / 1024 / 1024;
+    memoryLabel->setText(tr("Physical memory: %1 MB").arg(memory));
 }
 
 // *******************************************************************************************************
@@ -204,7 +247,6 @@ LogDialog::LogDialog(QWidget *parent, const QString &title) : QDialog(parent)
     restoreGeometry(settings.value("LogDialog/Geometry", saveGeometry()).toByteArray());
 }
 
-
 void LogDialog::closeEvent(QCloseEvent *e)
 {
     if (Agros2D::problem()->isSolving())
@@ -233,7 +275,7 @@ void LogDialog::createControls()
     connect(Agros2D::log(), SIGNAL(adaptivityTable(QVector<double>, QVector<double>)), this, SLOT(adaptivityTable(QVector<double>, QVector<double>)));
 
     logWidget = new LogWidget(this);
-    memoryLabel = new QLabel("                                                         ");
+    logWidget->setMemoryLabelVisible(false);
 
     m_nonlinearChart = new QCustomPlot(this);
     m_nonlinearChart->setVisible(false);
@@ -250,7 +292,6 @@ void LogDialog::createControls()
     if (Agros2D::problem()->determineIsNonlinear())
     {
         m_nonlinearChart->setVisible(true);
-
     }
 
     m_adaptivityChart = new QCustomPlot(this);
@@ -273,7 +314,7 @@ void LogDialog::createControls()
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(close()));
 
     QHBoxLayout *layoutStatus = new QHBoxLayout();
-    layoutStatus->addWidget(memoryLabel, 1, Qt::AlignLeft);
+    layoutStatus->addStretch();
     layoutStatus->addWidget(btnAbort, 0, Qt::AlignRight);
     layoutStatus->addWidget(btnClose, 0, Qt::AlignRight);
 
@@ -289,8 +330,7 @@ void LogDialog::createControls()
 }
 
 void LogDialog::printMessage(const QString &module, const QString &message, bool escaped)
-{   
-    refreshStatus();
+{       
 }
 
 void LogDialog::printError(const QString &module, const QString &message, bool escaped)
@@ -311,22 +351,6 @@ void LogDialog::adaptivityTable(QVector<double> step, QVector<double> error)
     m_adaptivityChart->graph(0)->setData(step, error);
     m_adaptivityChart->rescaleAxes();
     m_adaptivityChart->replot();
-}
-
-void LogDialog::refreshStatus()
-{
-    int memory = getCurrentRSS() / 1024 / 1024;
-
-    memoryLabel->setText(tr("Process Memory: %1 MB").arg(memory));
-    logWidget->repaint();
-    // memoryLabel->repaint();
-    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);   
-
-//    if (Agros2D::problem()->isAborted() && isVisible())
-//    {
-//        btnAbort->setEnabled(false);
-//        btnClose->setEnabled(true);
-//    }
 }
 
 // *******************************************************************************************

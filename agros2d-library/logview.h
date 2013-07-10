@@ -48,13 +48,16 @@ signals:
     void adaptivityTable(QVector<double> step, QVector<double> error);
 };
 
-class AGROS_API LogWidget : public QPlainTextEdit
+class AGROS_API LogWidget : public QWidget
 {
     Q_OBJECT
 public:
     LogWidget(QWidget *parent = 0);
 
     void welcomeMessage();
+
+    bool isMemoryLabelVisible() const;
+    void setMemoryLabelVisible(bool visible = true);
 
 private slots:
     void contextMenu(const QPoint &pos);
@@ -72,14 +75,22 @@ protected:
                const QString &color = "", bool escaped = true);
 
 private:
-     QMenu *mnuInfo;
+    QMenu *mnuInfo;
 
-     QAction *actShowTimestamp;
-     QAction *actShowDebug;
-     QAction *actClear;
-     QAction *actCopy;
+    QPlainTextEdit *textLog;
+    QLabel *memoryLabel;
 
-     void createActions();
+    QAction *actShowTimestamp;
+    QAction *actShowDebug;
+    QAction *actClear;
+    QAction *actCopy;
+
+    int m_printCounter;
+
+    void createActions();
+
+private slots:
+    void refreshMemory();
 };
 
 class LogView : public QDockWidget
@@ -89,7 +100,7 @@ public:
     LogView(QWidget *parent = 0);
 
 private:
-     LogWidget *logWidget;
+    LogWidget *logWidget;
 };
 
 class AGROS_API LogDialog : public QDialog
@@ -104,25 +115,22 @@ protected:
     virtual void reject();
 
 private:
-     LogWidget *logWidget;
+    LogWidget *logWidget;
 
-     QLabel *memoryLabel;
+    QPushButton *btnClose;
+    QPushButton *btnAbort;
 
-     QPushButton *btnClose;
-     QPushButton *btnAbort;
+    QCustomPlot *m_nonlinearChart;
+    QCustomPlot *m_adaptivityChart;
 
-     QCustomPlot *m_nonlinearChart;
-     QCustomPlot *m_adaptivityChart;
-
-     void createControls();
+    void createControls();
 
 private slots:
-     void printMessage(const QString &module, const QString &message, bool escaped = true);
-     void printError(const QString &module, const QString &message, bool escaped = true);
-     void refreshStatus();
+    void printMessage(const QString &module, const QString &message, bool escaped = true);
+    void printError(const QString &module, const QString &message, bool escaped = true);
 
-     void nonlinearTable(QVector<double> step, QVector<double> error);
-     void adaptivityTable(QVector<double> step, QVector<double> error);
+    void nonlinearTable(QVector<double> step, QVector<double> error);
+    void adaptivityTable(QVector<double> step, QVector<double> error);
 };
 
 class AGROS_API LogStdOut : public QObject
