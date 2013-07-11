@@ -227,7 +227,7 @@ void ParticleTracingWidget::createControls()
 
     // solver
     QGridLayout *gridLayoutSolver = new QGridLayout();
-    gridLayoutSolver->addWidget(new QLabel(tr("Butcher table:")), 0, 0);
+    gridLayoutSolver->addWidget(new QLabel(tr("Butcher tableau:")), 0, 0);
     gridLayoutSolver->addWidget(cmbParticleButcherTableType, 0, 1);
     gridLayoutSolver->addWidget(chkParticleIncludeRelativisticCorrection, 1, 0);
     gridLayoutSolver->addWidget(new QLabel(QString("<i>m</i><sub>p</sub> = m / (1 - v<sup>2</sup>/c<sup>2</sup>)<sup>1/2</sup>")), 1, 1);
