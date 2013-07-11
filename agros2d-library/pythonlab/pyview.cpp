@@ -87,7 +87,42 @@ void PyViewConfig::setGridStep(double step)
     if (step < 0.0)
         throw out_of_range(QObject::tr("Grid step must be positive.").toStdString());
 
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_GridStep, step);
+    if (!silentMode())
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_GridStep, step);
+}
+
+void PyViewConfig::setFontFamily(ProblemSetting::Type type, const std::string &family)
+{
+    if (silentMode())
+        return;
+
+    QStringList filter;
+    filter << "*.ttf";
+    QStringList list = QDir(datadir() + "/resources/fonts").entryList(filter);
+
+    foreach (QString fileName, list)
+        list.replaceInStrings(fileName, QFileInfo(fileName).baseName());
+
+    foreach (QString fileName, list)
+    {
+        if (fileName.toStdString() == family)
+        {
+            Agros2D::problem()->setting()->setValue(type, QString::fromStdString(family));
+            return;
+        }
+
+    }
+
+    throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
+}
+
+void PyViewConfig::setFontPointSize(ProblemSetting::Type type, int size)
+{
+    if (size < 6 || size > 40)
+        throw out_of_range(QObject::tr("Font size must be in the range from 6 to 40.").toStdString());
+
+    if (!silentMode())
+        Agros2D::problem()->setting()->setValue(type, size);
 }
 
 // ************************************************************************************

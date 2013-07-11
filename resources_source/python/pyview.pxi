@@ -22,6 +22,16 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
         void setRulersShow(bool show)
         bool getRulersShow()
 
+        void setPostFontFamily(string &family) except +
+        string getPostFontFamily()
+        void setPostFontPointSize(int size) except +
+        int getPostFontPointSize()
+
+        void setRulersFontFamily(string &family) except +
+        string getRulersFontFamily()
+        void setRulersFontPointSize(int size) except +
+        int getRulersFontPointSize()
+
     # PyViewMeshAndSolve
     cdef cppclass PyViewMeshAndPost:
         void setActiveTimeStep(int timeStep) except +
@@ -167,6 +177,31 @@ cdef class __ViewConfig__:
             return self.thisptr.getRulersShow()
         def __set__(self, show):
             self.thisptr.setRulersShow(show)
+
+    property post_font_family:
+        def __get__(self):
+            return self.thisptr.getPostFontFamily().c_str()
+        def __set__(self, family):
+            self.thisptr.setPostFontFamily(string(family))
+
+    property post_font_size:
+        def __get__(self):
+            return self.thisptr.getPostFontPointSize()
+        def __set__(self, size):
+            self.thisptr.setPostFontPointSize(size)
+
+    property rulers_font_family:
+        def __get__(self):
+            return self.thisptr.getRulersFontFamily().c_str()
+        def __set__(self, family):
+            self.thisptr.setRulersFontFamily(string(family))
+
+    property rulers_font_size:
+        def __get__(self):
+            return self.thisptr.getRulersFontPointSize()
+        def __set__(self, size):
+            self.thisptr.setRulersFontPointSize(size)
+
 
 # ViewMeshAndPost
 cdef class __ViewMeshAndPost__:

@@ -56,6 +56,28 @@ struct PyViewConfig
     void setRulersShow(bool show) { setProblemSetting(ProblemSetting::View_ShowRulers, show); }
     inline bool getRulersShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowRulers).toBool(); }
 
+    // fonts
+    void setFontFamily(ProblemSetting::Type type, const std::string &family);
+    void setFontPointSize(ProblemSetting::Type type, int size);
+
+    void setPostFontFamily(const std::string &family) { setFontFamily(ProblemSetting::View_PostFontFamily, family); }
+    inline std::string getPostFontFamily() const
+    {
+        return Agros2D::problem()->setting()->value(ProblemSetting::View_PostFontFamily).toString().toStdString();
+    }
+
+    void setPostFontPointSize(int size) { setFontPointSize(ProblemSetting::View_PostFontPointSize, size); }
+    inline int getPostFontPointSize() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_PostFontPointSize).toInt(); }
+
+    void setRulersFontFamily(const std::string &family) { setFontFamily(ProblemSetting::View_RulersFontFamily, family); }
+    inline std::string getRulersFontFamily() const
+    {
+        return Agros2D::problem()->setting()->value(ProblemSetting::View_RulersFontFamily).toString().toStdString();
+    }
+
+    void setRulersFontPointSize(int size) { setFontPointSize(ProblemSetting::View_RulersFontPointSize, size); }
+    inline int getRulersFontPointSize() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_RulersFontFamily).toInt(); }
+
     void setProblemSetting(ProblemSetting::Type type, bool value);
 };
 
