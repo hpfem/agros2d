@@ -104,6 +104,7 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 src/mesh/mesh_reader_h2d_xml.cpp \
                 src/mesh/mesh_reader_h2d.cpp \
                 src/mesh/subdomains_h2d_xml.cpp \
+                src/mesh/mesh_reader_h2d_bson.cpp \
                 src/mesh/traverse.cpp \
                 src/mesh/mesh.cpp \
                 src/mesh/refmap.cpp \

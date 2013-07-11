@@ -18,8 +18,8 @@
 /* #undef WITH_EXODUSII */
 /* #undef WITH_MPI */
 
-/* #define WITH_TC_MALLOC */
-#define WITH_BSON
+/* #undef WITH_TC_MALLOC */
+/* #undef WITH_BSON */
 /* #undef UMFPACK_LONG_INT */
 
 // stacktrace
