@@ -18,6 +18,8 @@ INCLUDEPATH += ../../hermes2d/include
 INCLUDEPATH += ../../hermes_common/include
 INCLUDEPATH += ../../agros2d-library
 
+INCLUDEPATH += ../3rdparty/bson
+
 LIBS += -lagros_util
 LIBS += -lagros_pythonlab_library
 LIBS += -lagros2d_hermes2d
