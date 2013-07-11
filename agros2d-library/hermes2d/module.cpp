@@ -668,7 +668,7 @@ Hermes::vector<MeshSharedPtr> Module::readMeshFromFile(const QString &fileName)
     meshloader.set_validation(false);
     try
     {
-        meshloader.load(QFileInfo(fileName).absoluteFilePath().toStdString().c_str(), meshes);
+        meshloader.load(compatibleFilename(QFileInfo(fileName).absoluteFilePath()).toStdString().c_str(), meshes);
     }
     catch (Hermes::Exceptions::MeshLoadFailureException& e)
     {
@@ -693,7 +693,7 @@ void Module::writeMeshToFile(const QString &fileName, Hermes::vector<MeshSharedP
 
     Hermes::Hermes2D::MeshReaderH2DXML meshloader;
     meshloader.set_validation(false);
-    meshloader.save(QFileInfo(fileName).absoluteFilePath().toStdString().c_str(), meshes);
+    meshloader.save(compatibleFilename(QFileInfo(fileName).absoluteFilePath()).toStdString().c_str(), meshes);
 
     // qDebug() << milisecondsToTime(time.elapsed()).toString("hh:mm:ss.zzz");
 

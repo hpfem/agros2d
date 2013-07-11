@@ -133,7 +133,7 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
                         essentialBcs = block->bcs().at(bcIndex);
                     }
                     QString spaceFileName = QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].spaceFileName());
-                    space = Space<double>::load(spaceFileName.toLatin1().data(), mesh, false, essentialBcs);
+                    space = Space<double>::load(compatibleFilename(spaceFileName).toStdString().c_str(), mesh, false, essentialBcs);
                 }
                 catch (Hermes::Exceptions::Exception &e)
                 {
@@ -242,7 +242,7 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArray<double> m
         if (fileNames[i].spaceFileName().isEmpty())
         {
             QString spaceFN = QString("%1_%2.spc").arg(baseFN).arg(i);
-            multiSolution.spaces().at(i)->save(spaceFN.toLatin1().data());
+            multiSolution.spaces().at(i)->save(compatibleFilename(spaceFN).toStdString().c_str());
 
             fileNames[i].setSpaceFileName(QFileInfo(spaceFN).fileName());
         }
