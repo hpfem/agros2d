@@ -47,7 +47,16 @@ cdef extern from "../../agros2d-library/pythonlab/pyparticletracing.h":
         bool getReflectOnBoundary()
         void setReflectOnBoundary(bool reflect)
         double getCoefficientOfRestitution()
-        void setCoefficientOfRestitution(double coeff)
+        void setCoefficientOfRestitution(double coeff)  except +
+
+        bool getColorByVelocity()
+        void setColorByVelocity(bool show)
+        bool getShowPoints()
+        void setShowPoints(bool show)
+        bool getShowBlendedFaces()
+        void setShowBlendedFaces(bool show)
+        int getNumShowParticlesAxi()
+        void setNumShowParticlesAxi(int particles)  except +
 
         void solve() except +
 
@@ -207,5 +216,29 @@ cdef class __ParticleTracing__:
             return self.thisptr.getMinimumStep()
         def __set__(self, step):
             self.thisptr.setMinimumStep(step)
+
+    property collor_by_velocity:
+        def __get__(self):
+            return self.thisptr.getColorByVelocity()
+        def __set__(self, show):
+            self.thisptr.setColorByVelocity(show)
+
+    property show_points:
+        def __get__(self):
+            return self.thisptr.getShowPoints()
+        def __set__(self, show):
+            self.thisptr.setShowPoints(show)
+
+    property blended_faces:
+        def __get__(self):
+            return self.thisptr.getShowBlendedFaces()
+        def __set__(self, show):
+            self.thisptr.setShowBlendedFaces(show)
+
+    property multiple_show_particles:
+        def __get__(self):
+            return self.thisptr.getNumShowParticlesAxi()
+        def __set__(self, particles):
+            self.thisptr.setNumShowParticlesAxi(particles)
 
 particle_tracing = __ParticleTracing__()

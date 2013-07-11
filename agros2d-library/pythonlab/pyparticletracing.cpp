@@ -115,7 +115,7 @@ void PyParticleTracing::setInitialVelocity(const vector<double> &velocity)
 
 void PyParticleTracing::setNumberOfParticles(int particles)
 {
-    if (particles < 1 && particles > 200)
+    if (particles < 1 || particles > 200)
         throw out_of_range(QObject::tr("Number of particles is out of range (1 - 200).").toStdString());
 
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleNumberOfParticles, particles);
@@ -180,17 +180,12 @@ void PyParticleTracing::getCustomForce(vector<double> &force) const
     force.push_back(Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleCustomForceZ).toDouble());
 }
 
-std::string PyParticleTracing::getButcherTableType() const
-{
-    return butcherTableTypeToStringKey((Hermes::ButcherTableType) Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleButcherTableType).toInt()).toStdString();
-}
-
 void PyParticleTracing::setButcherTableType(const std::string &tableType)
 {
-    if (butcherTableTypeStringKeys().contains(QString::fromStdString(tableType)))
-        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleButcherTableType, butcherTableTypeFromStringKey(QString::fromStdString(tableType)));
-    else
+    if (!butcherTableTypeStringKeys().contains(QString::fromStdString(tableType)))
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(butcherTableTypeStringKeys())).toStdString());
+
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleButcherTableType, butcherTableTypeFromStringKey(QString::fromStdString(tableType)));
 }
 
 void PyParticleTracing::setMaximumRelativeError(double error)
@@ -203,7 +198,7 @@ void PyParticleTracing::setMaximumRelativeError(double error)
 
 void PyParticleTracing::setMaximumNumberOfSteps(int steps)
 {
-    if (steps < 10 && steps > 100000)
+    if (steps < 10 || steps > 1e5)
         throw out_of_range(QObject::tr("Maximum number of steps is out of range (10 - 1e5).").toStdString());
 
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleMaximumNumberOfSteps, steps);
@@ -217,25 +212,18 @@ void PyParticleTracing::setMinimumStep(int step)
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleMinimumStep, step);
 }
 
-void PyParticleTracing::setIncludeRelativisticCorrection(bool include)
-{
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleIncludeRelativisticCorrection, include);
-}
-
-void PyParticleTracing::setReflectOnDifferentMaterial(bool reflect)
-{
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleReflectOnDifferentMaterial, reflect);
-}
-
-void PyParticleTracing::setReflectOnBoundary(bool reflect)
-{
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleReflectOnBoundary, reflect);
-}
-
 void PyParticleTracing::setCoefficientOfRestitution(double coeff)
 {
-    if (coeff < 0.0 && coeff > 1.0)
+    if (coeff < 0.0 || coeff > 1.0)
         throw out_of_range(QObject::tr("Coefficient of restitution must be between 0 (collide inelastically) and 1 (collide elastically).").toStdString());
 
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleCoefficientOfRestitution, coeff);
+}
+
+void PyParticleTracing::setNumShowParticlesAxi(int particles)
+{
+    if (particles < 1 || particles > 500)
+        throw out_of_range(QObject::tr("Number of multiple show particles is out of range (1 - 500).").toStdString());
+
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleNumShowParticlesAxi, particles);
 }

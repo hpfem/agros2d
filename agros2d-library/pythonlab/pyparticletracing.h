@@ -71,12 +71,15 @@ public:
     void setCustomForce(const vector<double> &force);
 
     // butcher table
-    std::string getButcherTableType() const;
+    std::string getButcherTableType() const
+    {
+        return butcherTableTypeToStringKey((Hermes::ButcherTableType) Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleButcherTableType).toInt()).toStdString();
+    }
     void setButcherTableType(const std::string &tableType);
 
     // relativistic correction
     inline bool getIncludeRelativisticCorrection() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleIncludeRelativisticCorrection).toBool(); }
-    void setIncludeRelativisticCorrection(bool include);
+    void setIncludeRelativisticCorrection(bool include) { Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleIncludeRelativisticCorrection, include); }
 
     // get maximum relative error
     inline double getMaximumRelativeError() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleMaximumRelativeError).toDouble(); }
@@ -92,15 +95,31 @@ public:
 
     // reflection on different material
     inline bool getReflectOnDifferentMaterial() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleReflectOnDifferentMaterial).toBool(); }
-    void setReflectOnDifferentMaterial(bool reflect);
+    void setReflectOnDifferentMaterial(bool reflect) { Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleReflectOnDifferentMaterial, reflect); }
 
     // reflection on boundary
     inline bool getReflectOnBoundary() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleReflectOnBoundary).toBool(); }
-    void setReflectOnBoundary(bool reflect);
+    void setReflectOnBoundary(bool reflect) { Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleReflectOnBoundary, reflect); }
 
     // coefficient of restitution
     inline double getCoefficientOfRestitution() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleCoefficientOfRestitution).toDouble(); }
     void setCoefficientOfRestitution(double coeff);
+
+    // collor by velocity
+    inline bool getColorByVelocity() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleColorByVelocity).toBool(); }
+    void setColorByVelocity(bool show) { Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleColorByVelocity, show); }
+
+    // show points
+    inline bool getShowPoints() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleShowPoints).toBool(); }
+    void setShowPoints(bool show) { Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleShowPoints, show); }
+
+    // blended faces
+    inline bool getShowBlendedFaces() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleShowBlendedFaces).toBool(); }
+    void setShowBlendedFaces(bool show) { Agros2D::problem()->setting()->setValue(ProblemSetting::View_ParticleShowBlendedFaces, show); }
+
+    // multiple show particles
+    inline int getNumShowParticlesAxi() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleNumShowParticlesAxi).toInt(); }
+    void setNumShowParticlesAxi(int particles);
 
     // solve
     void solve();
