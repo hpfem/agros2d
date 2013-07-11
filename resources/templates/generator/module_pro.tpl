@@ -8,7 +8,6 @@ MOC_DIR = ../build
 
 DEFINES += WITH_PARALUTION
 INCLUDEPATH += ../../3rdparty/paralution/src
-
 INCLUDEPATH += ../../3rdparty/bson
 
 INCLUDEPATH += ../../hermes2d/include \
@@ -19,8 +18,6 @@ INCLUDEPATH += ../../util
 INCLUDEPATH += ../../hermes2d/include
 INCLUDEPATH += ../../hermes_common/include
 INCLUDEPATH += ../../agros2d-library
-
-INCLUDEPATH += ../../3rdparty/bson
 
 LIBS += -lagros_util
 LIBS += -lagros_pythonlab_library
