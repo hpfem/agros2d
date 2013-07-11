@@ -9,6 +9,8 @@ MOC_DIR = ../build
 DEFINES += WITH_PARALUTION
 INCLUDEPATH += ../../3rdparty/paralution/src
 
+INCLUDEPATH += ../../3rdparty/bson
+
 INCLUDEPATH += ../../hermes2d/include \
     ../../hermes_common/include \
     ../../3rdparty/dxflib
