@@ -13,7 +13,7 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
         void setGridShow(bool show)
         bool getGridShow()
 
-        void setGridStep(double step)
+        void setGridStep(double step) except +
         double getGridStep()
 
         void setAxesShow(bool show)
@@ -24,38 +24,41 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
 
     # PyViewMeshAndSolve
     cdef cppclass PyViewMeshAndPost:
-        void setField(string &fieldid) except +
-        string getField() except +
-
         void setActiveTimeStep(int timeStep) except +
-        int getActiveTimeStep() except +
+        int getActiveTimeStep()
 
         void setActiveAdaptivityStep(int adaptiveStep) except +
-        int getActiveAdaptivityStep() except +
+        int getActiveAdaptivityStep()
 
         void setActiveSolutionType(string &solutionType) except +
-        string getActiveSolutionType() except +
+        string getActiveSolutionType()
 
     # PyViewMesh
     cdef cppclass PyViewMesh:
-        void activate()
+        void activate() except +
 
-        void setInitialMeshViewShow(bool show)
+        void setField(string &fieldid) except +
+        string getField()
+
+        void setInitialMeshViewShow(bool show) except +
         bool getInitialMeshViewShow()
-        void setSolutionMeshViewShow(bool show)
+        void setSolutionMeshViewShow(bool show) except +
         bool getSolutionMeshViewShow()
 
-        void setOrderViewShow(bool show)
+        void setOrderViewShow(bool show) except +
         bool getOrderViewShow()
-        void setOrderViewColorBar(bool show)
+        void setOrderViewColorBar(bool show) except +
         bool getOrderViewColorBar()
-        void setOrderViewLabel(bool show)
+        void setOrderViewLabel(bool show) except +
         bool getOrderViewLabel()
         void setOrderViewPalette(string &palette) except +
         string getOrderViewPalette()
 
     # PyViewPost
     cdef cppclass PyViewPost:
+        void setField(string &fieldid) except +
+        string getField()
+
         void setScalarViewVariable(string &variable) except +
         string getScalarViewVariable()
         void setScalarViewVariableComp(string &component) except +
@@ -67,41 +70,41 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
 
         void setScalarViewPaletteSteps(int steps) except +
         int getScalarViewPaletteSteps()
-        void setScalarViewPaletteFilter(bool filter)
+        void setScalarViewPaletteFilter(bool filter) except +
         bool getScalarViewPaletteFilter()
 
-        void setScalarViewRangeLog(bool log)
+        void setScalarViewRangeLog(bool log) except +
         bool getScalarViewRangeLog()
-        void setScalarViewRangeBase(double base)
+        void setScalarViewRangeBase(double base) except +
         double getScalarViewRangeBase()
 
-        void setScalarViewColorBar(bool show)
+        void setScalarViewColorBar(bool show) except +
         bool getScalarViewColorBar()
         void setScalarViewDecimalPlace(int place) except +
         int getScalarViewDecimalPlace()
 
-        void setScalarViewRangeAuto(bool autoRange)
+        void setScalarViewRangeAuto(bool autoRange) except +
         bool getScalarViewRangeAuto()
-        void setScalarViewRangeMin(double min)
+        void setScalarViewRangeMin(double min) except +
         double getScalarViewRangeMin()
-        void setScalarViewRangeMax(double max)
+        void setScalarViewRangeMax(double max) except +
         double getScalarViewRangeMax()
 
     # PyViewPost2D
     cdef cppclass PyViewPost2D:
-        void activate()
+        void activate() except +
 
-        void setScalarViewShow(bool show)
+        void setScalarViewShow(bool show) except +
         bool getScalarViewShow()
 
-        void setContourShow(bool show)
+        void setContourShow(bool show) except +
         bool getContourShow()
         void setContourCount(int count) except +
         int getContourCount()
         void setContourVariable(string &variable) except +
         string getContourVariable()
 
-        void setVectorShow(bool show)
+        void setVectorShow(bool show) except +
         bool getVectorShow()
         void setVectorCount(int count) except +
         int getVectorCount()
@@ -109,24 +112,24 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
         int getVectorScale()
         void setVectorVariable(string &variable) except +
         string getVectorVariable()
-        void setVectorProportional(bool show)
+        void setVectorProportional(bool show) except +
         bool getVectorProportional()
-        void setVectorColor(bool show)
+        void setVectorColor(bool show) except +
         bool getVectorColor()
 
-        void setParticleShow(bool show)
+        void setParticleShow(bool show) except +
         bool getParticleShow()
 
     # PyViewPost3D
     cdef cppclass PyViewPost3D:
-        void activate()
+        void activate() except +
 
         void setPost3DMode(string &mode) except +
         string getPost3DMode()
 
     # PyViewParticleTracing
     cdef cppclass PyViewParticleTracing:
-        void activate()
+        void activate() except +
 
 # ViewConfig
 cdef class __ViewConfig__:
@@ -170,12 +173,6 @@ cdef class __ViewMeshAndPost__:
     def __dealloc__(self):
         del self.thisptrmp
 
-    property field:
-        def __get__(self):
-            return self.thisptrmp.getField().c_str()
-        def __set__(self, id):
-            self.thisptrmp.setField(string(id))
-
     property time_step:
         def __get__(self):
             return self.thisptrmp.getActiveTimeStep()
@@ -210,6 +207,12 @@ cdef class __ViewMesh__(__ViewMeshAndPost__):
       self.initial_mesh = False
       self.solution_mesh = False
       self.order = False
+
+    property field:
+        def __get__(self):
+            return self.thisptr.getField().c_str()
+        def __set__(self, id):
+            self.thisptr.setField(string(id))
 
     property solution_mesh:
         def __get__(self):
@@ -255,6 +258,12 @@ cdef class __ViewPost__(__ViewMeshAndPost__):
         self.thisptrp = new PyViewPost()
     def __dealloc__(self):
         del self.thisptrp
+
+    property field:
+        def __get__(self):
+            return self.thisptrp.getField().c_str()
+        def __set__(self, id):
+            self.thisptrp.setField(string(id))
 
     property scalar_variable:
         def __get__(self):

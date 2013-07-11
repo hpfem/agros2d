@@ -61,13 +61,6 @@ struct PyViewConfig
 
 struct PyViewMeshAndPost
 {
-    // field
-    void setField(const std::string &fieldId);
-    inline std::string getField() const
-    {
-        return currentPythonEngineAgros()->postHermes()->activeViewField()->fieldId().toStdString();
-    }
-
     // time step
     void setActiveTimeStep(int timeStep);
     inline int getActiveTimeStep() const { return currentPythonEngineAgros()->postHermes()->activeTimeStep(); }
@@ -82,18 +75,21 @@ struct PyViewMeshAndPost
     {
         return solutionTypeToStringKey(currentPythonEngineAgros()->postHermes()->activeAdaptivitySolutionType()).toStdString();
     }
-
-    void setProblemSetting(ProblemSetting::Type type, bool value);
-    void setProblemSetting(ProblemSetting::Type type, int value);
-    void setProblemSetting(ProblemSetting::Type type, double value);
 };
 
 struct PyViewMesh : PyViewMeshAndPost
 {
     void activate();
 
+    // field
+    void setField(const std::string &fieldId);
+    inline std::string getField() const
+    {
+        return currentPythonEngineAgros()->postHermes()->activeViewField()->fieldId().toStdString();
+    }
+
     // initial mesh
-    void setInitialMeshViewShow(bool show) { PyViewMeshAndPost::setProblemSetting(ProblemSetting::View_ShowInitialMeshView, show); }
+    void setInitialMeshViewShow(bool show) { setProblemSetting(ProblemSetting::View_ShowInitialMeshView, show); }
     inline bool getInitialMeshViewShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowInitialMeshView).toBool(); }
 
     // solution mesh
@@ -118,10 +114,21 @@ struct PyViewMesh : PyViewMeshAndPost
     {
         return paletteOrderTypeToStringKey((PaletteOrderType) Agros2D::problem()->setting()->value(ProblemSetting::View_OrderPaletteOrderType).toInt()).toStdString();
     }
+
+    void setProblemSetting(ProblemSetting::Type type, bool value);
 };
 
 struct PyViewPost : PyViewMeshAndPost
 {
+    void checkExistingSolution();
+
+    // field
+    void setField(const std::string &fieldId);
+    inline std::string getField() const
+    {
+        return currentPythonEngineAgros()->postHermes()->activeViewField()->fieldId().toStdString();
+    }
+
     // scalar view variable
     void setScalarViewVariable(const std::string &var);
     inline std::string getScalarViewVariable() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString().toStdString(); }
@@ -162,9 +169,13 @@ struct PyViewPost : PyViewMeshAndPost
     inline bool getScalarViewRangeLog() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeLog).toBool(); }
     void setScalarViewRangeBase(double base);
     inline double getScalarViewRangeBase() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeBase).toDouble(); }
+
+    void setProblemSetting(ProblemSetting::Type type, bool value);
+    void setProblemSetting(ProblemSetting::Type type, int value);
+    void setProblemSetting(ProblemSetting::Type type, double value);
 };
 
-struct PyViewPost2D : PyViewMeshAndPost
+struct PyViewPost2D : PyViewPost
 {
     void activate();
 
