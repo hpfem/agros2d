@@ -186,10 +186,12 @@ struct PyViewPost2D : PyViewPost
     // contour view
     void setContourShow(bool show) { setProblemSetting(ProblemSetting::View_ShowContourView, show); }
     inline bool getContourShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowContourView).toBool(); }
-    void setContourCount(int count);
-    inline int getContourCount() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ContoursCount).toInt(); }
     void setContourVariable(const std::string &var);
     inline std::string getContourVariable() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString().toStdString(); }
+    void setContourCount(int count);
+    inline int getContourCount() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ContoursCount).toDouble(); }
+    void setContourWidth(double width);
+    inline double getContourWidth() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ContoursCount).toDouble(); }
 
     // vector view
     void setVectorShow(bool show) { setProblemSetting(ProblemSetting::View_ShowVectorView, show); }
@@ -199,11 +201,21 @@ struct PyViewPost2D : PyViewPost
     void setVectorScale(double scale);
     inline double getVectorScale() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_VectorScale).toDouble(); }
     void setVectorVariable(const std::string &var);
-    inline std::string getVectorVariable() const { return const_cast<char*>(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString().toStdString().c_str()); }
+    inline std::string getVectorVariable() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString().toStdString(); }
     void setVectorProportional(bool show) { setProblemSetting(ProblemSetting::View_VectorProportional, show); }
     inline bool getVectorProportional() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_VectorProportional).toBool(); }
     void setVectorColor(bool show) { setProblemSetting(ProblemSetting::View_VectorColor, show); }
     inline bool getVectorColor() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_VectorColor).toBool(); }
+    void setVectorType(const std::string &type);
+    inline std::string getVectorType() const
+    {
+        return vectorTypeToStringKey((VectorType) Agros2D::problem()->setting()->value(ProblemSetting::View_VectorType).toInt()).toStdString();
+    }
+    void setVectorCenter(const std::string &center);
+    inline std::string getVectorCenter() const
+    {
+        return vectorCenterToStringKey((VectorCenter) Agros2D::problem()->setting()->value(ProblemSetting::View_VectorCenter).toInt()).toStdString();
+    }
 };
 
 struct PyViewPost3D

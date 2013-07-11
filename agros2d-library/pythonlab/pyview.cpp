@@ -352,14 +352,6 @@ void PyViewPost2D::activate()
     }
 }
 
-void PyViewPost2D::setContourCount(int count)
-{
-    if (count < CONTOURSCOUNTMIN || count > CONTOURSCOUNTMAX)
-        throw invalid_argument(QObject::tr("Contour count must be in the range from %1 to %2.").arg(CONTOURSCOUNTMIN).arg(CONTOURSCOUNTMAX).toStdString());
-
-    setProblemSetting(ProblemSetting::View_ContoursCount, count);
-}
-
 void PyViewPost2D::setContourVariable(const std::string &var)
 {
     checkExistingSolution();
@@ -383,6 +375,22 @@ void PyViewPost2D::setContourVariable(const std::string &var)
     }
 
     throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
+}
+
+void PyViewPost2D::setContourCount(int count)
+{
+    if (count < CONTOURSCOUNTMIN || count > CONTOURSCOUNTMAX)
+        throw invalid_argument(QObject::tr("Contour count must be in the range from %1 to %2.").arg(CONTOURSCOUNTMIN).arg(CONTOURSCOUNTMAX).toStdString());
+
+    setProblemSetting(ProblemSetting::View_ContoursCount, count);
+}
+
+void PyViewPost2D::setContourWidth(double width)
+{
+    if (width < 0.1 || width > 5.0)
+        throw invalid_argument(QObject::tr("Contour width must be in the range from 0.1 to 5.0.").toStdString());
+
+    setProblemSetting(ProblemSetting::View_ContoursWidth, width);
 }
 
 void PyViewPost2D::setVectorCount(int count)
@@ -418,6 +426,24 @@ void PyViewPost2D::setVectorVariable(const std::string &var)
     }
 
     throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
+}
+
+void PyViewPost2D::setVectorType(const std::string &type)
+{
+    if (!vectorTypeStringKeys().contains(QString::fromStdString(type)))
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(vectorTypeStringKeys())).toStdString());
+
+    if (!silentMode())
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorType, vectorTypeFromStringKey(QString::fromStdString(type)));
+}
+
+void PyViewPost2D::setVectorCenter(const std::string &center)
+{
+    if (!vectorCenterStringKeys().contains(QString::fromStdString(center)))
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(vectorCenterStringKeys())).toStdString());
+
+    if (!silentMode())
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorCenter, vectorCenterFromStringKey(QString::fromStdString(center)));
 }
 
 // ************************************************************************************

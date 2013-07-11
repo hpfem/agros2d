@@ -116,6 +116,10 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
         bool getVectorProportional()
         void setVectorColor(bool show) except +
         bool getVectorColor()
+        void setVectorType(string &type) except +
+        string getVectorType()
+        void setVectorCenter(string &center) except +
+        string getVectorCenter()
 
         void setParticleShow(bool show) except +
         bool getParticleShow()
@@ -419,6 +423,18 @@ cdef class __ViewPost2D__(__ViewPost__):
             return self.thisptr.getVectorColor()
         def __set__(self, show):
             self.thisptr.setVectorColor(show)
+
+    property vectors_type:
+        def __get__(self):
+            return self.thisptr.getVectorType().c_str()
+        def __set__(self, type):
+            self.thisptr.setVectorType(string(type))
+
+    property vectors_center:
+        def __get__(self):
+            return self.thisptr.getVectorCenter().c_str()
+        def __set__(self, center):
+            self.thisptr.setVectorCenter(string(center))
 
 # ViewPost3D
 cdef class __ViewPost3D__(__ViewPost__):
