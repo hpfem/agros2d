@@ -97,7 +97,7 @@ namespace Hermes
       /// element orders) to an XML file.
       virtual void save(const char* filename) const;
 #ifdef WITH_BSON
-      virtual void save_bson(const char* filename) const;
+      void save_bson(const char* filename) const;
 #endif
 
       /// Loads the solution from a file previously created by Solution::save(). This completely
