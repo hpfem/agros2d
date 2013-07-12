@@ -749,7 +749,7 @@ void PythonEditorDialog::doStartedScript()
     scriptEditorWidget()->setCursor(Qt::BusyCursor);
 
     actRunPython->setEnabled(false);
-    actStopPython->setEnabled(true);
+    // actStopPython->setEnabled(true);
 
     // QApplication::processEvents();
 }
@@ -761,7 +761,7 @@ void PythonEditorDialog::doExecutedScript()
     scriptEditorWidget()->setCursor(Qt::ArrowCursor);
 
     actRunPython->setEnabled(true);
-    actStopPython->setEnabled(false);
+    // actStopPython->setEnabled(false);
 
     txtEditor->setFocus();
     activateWindow();
