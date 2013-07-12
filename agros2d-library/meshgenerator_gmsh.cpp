@@ -66,7 +66,8 @@ bool MeshGeneratorGMSH::mesh()
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "gmsh"))
             gmshBinary = QApplication::applicationDirPath() + QDir::separator() + "gmsh";
 
-        m_process->start(Agros2D::problem()->setting()->value(ProblemSetting::Commands_Gmsh).toString().
+        QString triangleGMSH = "%1 -2 \"%2.geo\"";
+        m_process->start(triangleGMSH.
                          arg(gmshBinary).
                          arg(tempProblemFileName()));
 

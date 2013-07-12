@@ -253,9 +253,7 @@ public:
         View_MeshAngleSegmentsCount,
         View_MeshCurvilinearElements,
         View_LinearizerQuality,
-        View_SolidViewHide,
-        Commands_Triangle,
-        Commands_Gmsh
+        View_SolidViewHide
     };
 
     void load21(QDomElement *config);

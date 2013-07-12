@@ -93,10 +93,6 @@ private:
     QSpinBox *txtMeshAngleSegmentsCount;
     QCheckBox *chkMeshCurvilinearElements;
 
-    // commands
-    QLineEdit *txtArgumentTriangle;
-    QLineEdit *txtArgumentGmsh;
-
     // script and description
     // startup script
     ScriptEditor *txtStartupScript;

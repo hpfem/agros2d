@@ -79,7 +79,8 @@ bool MeshGeneratorTriangle::mesh()
         if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "triangle"))
             triangleBinary = QApplication::applicationDirPath() + QDir::separator() + "triangle";
 
-        m_process->start(Agros2D::problem()->setting()->value(ProblemSetting::Commands_Triangle).toString().
+        QString triangleCommand = "%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 \"%2\"";
+        m_process->start(triangleCommand.
                          arg(triangleBinary).
                          arg(tempProblemFileName()));
 

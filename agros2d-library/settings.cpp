@@ -129,10 +129,6 @@ void SettingsWidget::load()
     // mesh and solver
     txtMeshAngleSegmentsCount->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_MeshAngleSegmentsCount).toInt());
     chkMeshCurvilinearElements->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_MeshCurvilinearElements).toBool());
-
-    // command argument
-    txtArgumentTriangle->setText(Agros2D::problem()->setting()->value(ProblemSetting::Commands_Triangle).toString());
-    txtArgumentGmsh->setText(Agros2D::problem()->setting()->value(ProblemSetting::Commands_Gmsh).toString());
 }
 
 void SettingsWidget::save()
@@ -235,10 +231,6 @@ void SettingsWidget::save()
     // mesh and solver
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_MeshAngleSegmentsCount, txtMeshAngleSegmentsCount->value());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_MeshCurvilinearElements, chkMeshCurvilinearElements->isChecked());
-
-    // command argument
-    Agros2D::problem()->setting()->setValue(ProblemSetting::Commands_Triangle, txtArgumentTriangle->text());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::Commands_Gmsh, txtArgumentGmsh->text());
 }
 
 void SettingsWidget::createControls()
@@ -479,24 +471,9 @@ QWidget *SettingsWidget::controlsMeshAndSolver()
     QFont fnt = font();
     fnt.setPointSize(fnt.pointSize() - 1);
 
-    // commands
-    txtArgumentTriangle = new QLineEdit("");
-    txtArgumentGmsh = new QLineEdit("");
-
-    // default
-    QGridLayout *layoutCommands = new QGridLayout();
-    layoutCommands->addWidget(new QLabel(tr("Triangle")), 0, 0);
-    layoutCommands->addWidget(txtArgumentTriangle, 1, 0);
-    layoutCommands->addWidget(new QLabel(tr("GMSH")), 2, 0);
-    layoutCommands->addWidget(txtArgumentGmsh, 3, 0);
-
-    QGroupBox *grpCommands = new QGroupBox("Commands");
-    grpCommands->setLayout(layoutCommands);
-
     // layout mesh and solver
     QVBoxLayout *layoutMeshAndSolver = new QVBoxLayout();
     layoutMeshAndSolver->addWidget(grpMesh);
-    layoutMeshAndSolver->addWidget(grpCommands);
     layoutMeshAndSolver->addStretch();
     layoutMeshAndSolver->addWidget(btnMeshAndSolverDefault, 0, Qt::AlignLeft);
 
@@ -626,9 +603,6 @@ void SettingsWidget::doMeshAndSolverDefault()
 {
     txtMeshAngleSegmentsCount->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_MeshAngleSegmentsCount).toInt());
     chkMeshCurvilinearElements->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_MeshCurvilinearElements).toBool());
-
-    txtArgumentTriangle->setText(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Commands_Triangle).toString());
-    txtArgumentGmsh->setText(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Commands_Gmsh).toString());
 }
 
 void SettingsWidget::doColorsDefault()
