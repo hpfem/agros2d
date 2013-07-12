@@ -224,6 +224,8 @@ ScriptResult PythonEngine::runScript(const QString &script, const QString &fileN
     m_isRunning = true;
     m_stdOut = "";
 
+    emit startedScript();
+
     QSettings settings;
     // enable user module deleter
     if (settings.value("PythonEngine/UserModuleDeleter", true).toBool())

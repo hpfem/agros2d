@@ -23,6 +23,7 @@ signals:
 
     void executedExpression();
     void executedScript();
+    void startedScript();
 
 public:
     PythonEngine() {}

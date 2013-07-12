@@ -110,6 +110,7 @@ private slots:
     void doOnlineHelp();
     void doCheckVersion();
     void doAbout();
+    void disableControls();
     void setControls();
     void clear();
 
@@ -120,6 +121,7 @@ protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dragLeaveEvent(QDragLeaveEvent *event);
     void dropEvent(QDropEvent *event);
+    void showEvent(QShowEvent *event);
     void closeEvent(QCloseEvent *event);
 
 private:

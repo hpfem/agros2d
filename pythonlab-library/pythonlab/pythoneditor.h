@@ -122,6 +122,7 @@ public slots:
     void onOtherInstanceMessage(const QString &msg);
 
 protected:
+    void closeEvent(QCloseEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
     void dragLeaveEvent(QDragLeaveEvent *event);
     void dropEvent(QDropEvent *event);
@@ -135,10 +136,8 @@ protected:
     QStringList recentFiles;
 
     // gui
-    FileBrowser *filBrowser;
-
+    FileBrowser *fileBrowser;
     ScriptEditor *txtEditor;
-
     PythonScriptingConsoleView *consoleView;
     PythonScriptingHistoryView *consoleHistoryView;
     PythonBrowserView *variablesView;
@@ -154,7 +153,9 @@ protected:
     QMenu *mnuHelp;
 
     QToolBar *tlbFile;
+    QToolBar *tlbEdit;
     QToolBar *tlbTools;
+    QToolBar *tlbRun;
 
     QAction *actFileNew;
     QAction *actFileOpen;
@@ -203,6 +204,7 @@ protected:
     void createStatusBar();
 
     void setRecentFiles();
+    void setEnabledControls(bool state);
 
     inline PythonEditorWidget *scriptEditorWidget() { return dynamic_cast<PythonEditorWidget *>(tabWidget->currentWidget()); }
 
@@ -218,6 +220,9 @@ private slots:
     void doOptionsEnablePyFlakes();
     void doOptionsEnablePyLint();
     void doOptionsPrintStacktrace();
+
+    void doStartedScript();
+    void doExecutedScript();
 };
 
 class AGROS_API ScriptEditor : public PlainTextEditParenthesis

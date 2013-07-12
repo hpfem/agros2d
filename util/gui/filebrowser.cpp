@@ -64,6 +64,10 @@ QString FileBrowser::basePath()
 
 void FileBrowser::setDir(const QString &path)
 {
+    if (path == m_basePath)
+        return;
+
+    setUpdatesEnabled(false);
     clear();
 
     QDir dir(path, m_nameFilter, QDir::DirsFirst);
@@ -89,6 +93,8 @@ void FileBrowser::setDir(const QString &path)
             }
         }
     }
+
+    setUpdatesEnabled(true);
 
     m_basePath = dir.canonicalPath();
     emit directoryChanged(m_basePath);

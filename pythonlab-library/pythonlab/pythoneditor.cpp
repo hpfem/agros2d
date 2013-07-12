@@ -261,7 +261,7 @@ PythonEditorDialog::PythonEditorDialog(PythonEngine *pythonEngine, QStringList a
     createViews();
     createControls();
 
-    filBrowser->refresh();
+    fileBrowser->refresh();
 
     QSettings settings;
 
@@ -269,12 +269,11 @@ PythonEditorDialog::PythonEditorDialog(PythonEngine *pythonEngine, QStringList a
     connect(actReplaceTabsWithSpaces, SIGNAL(triggered()), this, SLOT(doReplaceTabsWithSpaces()));
     connect(actCheckPyLint, SIGNAL(triggered()), this, SLOT(doPyLintPython()));
 
+    connect(pythonEngine, SIGNAL(startedScript()), this, SLOT(doStartedScript()));
+    connect(pythonEngine, SIGNAL(executedScript()), this, SLOT(doExecutedScript()));
+
     // macx
     setUnifiedTitleAndToolBarOnMac(true);
-
-    restoreGeometry(settings.value("PythonEditorDialog/Geometry", saveGeometry()).toByteArray());
-    recentFiles = settings.value("PythonEditorDialog/RecentFiles").value<QStringList>();
-    restoreState(settings.value("PythonEditorDialog/State", saveState()).toByteArray());
 
     // set recent files
     setRecentFiles();
@@ -293,6 +292,10 @@ PythonEditorDialog::PythonEditorDialog(PythonEngine *pythonEngine, QStringList a
     }
 
     setAcceptDrops(true);
+
+    restoreGeometry(settings.value("PythonEditorDialog/Geometry", saveGeometry()).toByteArray());
+    recentFiles = settings.value("PythonEditorDialog/RecentFiles").value<QStringList>();
+    restoreState(settings.value("PythonEditorDialog/State", saveState()).toByteArray());
 }
 
 PythonEditorDialog::~PythonEditorDialog()
@@ -301,6 +304,22 @@ PythonEditorDialog::~PythonEditorDialog()
     settings.setValue("PythonEditorDialog/Geometry", saveGeometry());
     settings.setValue("PythonEditorDialog/State", saveState());
     settings.setValue("PythonEditorDialog/RecentFiles", recentFiles);
+}
+
+void PythonEditorDialog::closeEvent(QCloseEvent *event)
+{
+    // check script editor
+    closeTabs();
+
+    if (!isScriptModified())
+        event->accept();
+    else
+    {
+        event->ignore();
+        // show script editor
+        if (isScriptModified())
+            show();
+    }
 }
 
 void PythonEditorDialog::dragEnterEvent(QDragEnterEvent *event)
@@ -530,7 +549,7 @@ void PythonEditorDialog::createControls()
     tlbFile->addAction(actFileOpen);
     tlbFile->addAction(actFileSave);
 
-    QToolBar *tlbEdit = addToolBar(tr("Edit"));
+    tlbEdit = addToolBar(tr("Edit"));
 #ifdef Q_WS_MAC
     tlbEdit->setFixedHeight(iconHeight);
     tlbEdit->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
@@ -543,13 +562,20 @@ void PythonEditorDialog::createControls()
     tlbEdit->addAction(actCopy);
     tlbEdit->addAction(actPaste);
 
+    tlbRun = addToolBar(tr("Run"));
+#ifdef Q_WS_MAC
+    tlbRun->setFixedHeight(iconHeight);
+    tlbRun->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
+#endif
+    tlbRun->setObjectName("Run");
+    tlbRun->addAction(actRunPython);
+
     tlbTools = addToolBar(tr("Tools"));
 #ifdef Q_WS_MAC
     tlbTools->setFixedHeight(iconHeight);
     tlbTools->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
 #endif
     tlbTools->setObjectName("Tools");
-    tlbTools->addAction(actRunPython);
     tlbTools->addAction(actCheckPyLint);
 
     // path
@@ -560,7 +586,7 @@ void PythonEditorDialog::createControls()
     btnPath->setMaximumSize(btnPath->sizeHint());
 
     connect(btnPath, SIGNAL(clicked()), this, SLOT(doPathChangeDir()));
-    connect(filBrowser, SIGNAL(directoryChanged(QString)), lblPath, SLOT(setText(QString)));
+    connect(fileBrowser, SIGNAL(directoryChanged(QString)), lblPath, SLOT(setText(QString)));
 
     QToolBar *tlbPath = addToolBar(tr("Path"));
 #ifdef Q_WS_MAC
@@ -573,7 +599,7 @@ void PythonEditorDialog::createControls()
     tlbPath->addWidget(btnPath);
 
     // contents
-    tabWidget = new QTabWidget;
+    tabWidget = new QTabWidget(this);
     tabWidget->setDocumentMode(true);
     tabWidget->setMovable(true);
 
@@ -585,8 +611,6 @@ void PythonEditorDialog::createControls()
     tabWidget->setCornerWidget(btnNewTab, Qt::TopLeftCorner);
     connect(btnNewTab, SIGNAL(clicked()), this, SLOT(doFileNew()));
 
-    doFileNew();
-
     connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(doCloseTab(int)));
     connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(doCurrentPageChanged(int)));
 
@@ -597,12 +621,14 @@ void PythonEditorDialog::createControls()
     QWidget *widget = new QWidget(this);
     widget->setLayout(layout);
 
-    // recent files
-    setRecentFiles();
-
     setCentralWidget(widget);
 
     connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(doDataChanged()));
+
+    // new file
+    doFileNew();
+    // recent files
+    setRecentFiles();
 }
 
 void PythonEditorDialog::createViews()
@@ -610,14 +636,14 @@ void PythonEditorDialog::createViews()
     QSettings settings;
 
     // file browser
-    filBrowser = new FileBrowser(this);
-    filBrowser->setNameFilter("*.py");
-    filBrowser->setDir(settings.value("PythonEditorDialog/WorkDir", datadir()).value<QString>());
+    fileBrowser = new FileBrowser(this);
+    fileBrowser->setNameFilter("*.py");
+    fileBrowser->setDir(settings.value("PythonEditorDialog/WorkDir", datadir()).value<QString>());
 
-    connect(filBrowser, SIGNAL(fileItemDoubleClick(QString)), this, SLOT(doFileItemDoubleClick(QString)));
+    connect(fileBrowser, SIGNAL(fileItemDoubleClick(QString)), this, SLOT(doFileItemDoubleClick(QString)));
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(filBrowser);
+    layout->addWidget(fileBrowser);
     layout->setContentsMargins(0, 0, 0, 7);
 
     QWidget *widget = new QWidget(this);
@@ -656,21 +682,12 @@ void PythonEditorDialog::doRunPython()
         return;
 
     if (!scriptEditorWidget()->fileName().isEmpty())
-        filBrowser->setDir(QFileInfo(scriptEditorWidget()->fileName()).absolutePath());
-
-    // disable controls
-    consoleView->setEnabled(false);
-    scriptEditorWidget()->setCursor(Qt::BusyCursor);
-    QApplication::processEvents();
+        fileBrowser->setDir(QFileInfo(scriptEditorWidget()->fileName()).absolutePath());
 
     // run script
     consoleView->console()->consoleMessage(tr("Run script: %1\n").arg(tabWidget->tabText(tabWidget->currentIndex()).replace("* ", "")), Qt::gray);
 
     scriptPrepare();
-
-    // benchmark
-    QTime time;
-    time.start();
 
     // connect stdout and set current path
     consoleView->console()->connectStdOut(QFile::exists(scriptEditorWidget()->fileName()) ?
@@ -714,13 +731,39 @@ void PythonEditorDialog::doRunPython()
     consoleView->console()->appendCommandPrompt();
 
     scriptFinish();
+}
 
+void PythonEditorDialog::doStartedScript()
+{
+    // disable controls    
+    setEnabledControls(false);
+    scriptEditorWidget()->setCursor(Qt::BusyCursor);
+
+    // QApplication::processEvents();
+}
+
+void PythonEditorDialog::doExecutedScript()
+{
     // enable controls
-    consoleView->setEnabled(true);
+    setEnabledControls(true);
     scriptEditorWidget()->setCursor(Qt::ArrowCursor);
 
     txtEditor->setFocus();
     activateWindow();
+}
+
+void PythonEditorDialog::setEnabledControls(bool state)
+{
+    tlbFile->setEnabled(state);
+    tlbEdit->setEnabled(state);
+    tlbTools->setEnabled(state);
+
+    txtEditor->setEnabled(state);
+    consoleView->setEnabled(state);
+    consoleHistoryView->setEnabled(state);
+    consoleHistoryView->setEnabled(state);
+    variablesView->setEnabled(state);
+    fileBrowserView->setEnabled(state);
 }
 
 void PythonEditorDialog::doReplaceTabsWithSpaces()
@@ -731,7 +774,7 @@ void PythonEditorDialog::doReplaceTabsWithSpaces()
 void PythonEditorDialog::doPyLintPython()
 {
     if (!scriptEditorWidget()->fileName().isEmpty())
-        filBrowser->setDir(QFileInfo(scriptEditorWidget()->fileName()).absolutePath());
+        fileBrowser->setDir(QFileInfo(scriptEditorWidget()->fileName()).absolutePath());
 
     // analyse by pylint
     scriptEditorWidget()->pyLintAnalyse();
@@ -779,9 +822,9 @@ void PythonEditorDialog::doFileItemDoubleClick(const QString &path)
 void PythonEditorDialog::doPathChangeDir()
 {
     QFileDialog::Options options = QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly;
-    QString directory = QFileDialog::getExistingDirectory(this, tr("Select directory"), filBrowser->basePath(), options);
+    QString directory = QFileDialog::getExistingDirectory(this, tr("Select directory"), fileBrowser->basePath(), options);
     if (!directory.isEmpty())
-        filBrowser->setDir(directory);
+        fileBrowser->setDir(directory);
 }
 
 void PythonEditorDialog::doFileNew()

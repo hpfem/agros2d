@@ -107,6 +107,7 @@ void PythonBrowserView::doContextMenu(const QPoint &point)
 
 void PythonBrowserView::executed()
 {
+    trvBrowser->setUpdatesEnabled(false);
     trvBrowser->setSortingEnabled(false);
 
     if (trvVariables) variableExpanded = trvVariables->isExpanded();
@@ -221,6 +222,7 @@ void PythonBrowserView::executed()
     }
 
     trvBrowser->setSortingEnabled(true);
+    trvBrowser->setUpdatesEnabled(true);
 }
 
 void PythonBrowserView::executeCommand(QTreeWidgetItem *item, int role)

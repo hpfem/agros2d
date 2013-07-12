@@ -111,7 +111,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // problem
     problemWidget = new ProblemWidget(this);
 
-    scriptEditorDialog = new PythonLabAgros(currentPythonEngine(), QStringList(), this);
+    scriptEditorDialog = new PythonLabAgros(currentPythonEngine(), QStringList(), NULL);
     // collaborationDownloadDialog = new ServerDownloadDialog(this);
     sceneTransformDialog = new SceneTransformDialog(sceneViewPreprocessor, this);
 
@@ -122,6 +122,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     createMain();
 
     // python engine
+    connect(currentPythonEngineAgros(), SIGNAL(startedScript()), this, SLOT(disableControls()));
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(setControls()));
     connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(setControls()));
 
@@ -211,36 +212,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     actHideControlPanel->setChecked(settings.value("MainWindow/ControlPanel", true).toBool());
     doHideControlPanel();
 
-    setControls();
-
-    // parameters
-    QStringList args = QCoreApplication::arguments();
-    for (int i = 1; i < args.count(); i++)
-    {
-        if (args[i] == "--verbose" || args[i] == "/verbose")
-            continue;
-
-        if (args[i] == "--run" || args[i] == "-r" || args[i] == "/r")
-        {
-            QString scriptName = args[++i];
-
-            if (QFile::exists(scriptName))
-            {
-                consoleView->console()->connectStdOut();
-                currentPythonEngineAgros()->runScript(readFileContent(scriptName));
-                consoleView->console()->disconnectStdOut();
-            }
-            else
-            {
-                qWarning() << "Script " << scriptName << "not found.";
-            }
-
-            continue;
-        }
-
-        QString fileName = args[i];
-        open(fileName);
-    }
+    setControls();    
 }
 
 MainWindow::~MainWindow()
@@ -1406,9 +1378,18 @@ void MainWindow::clear()
     setControls();
 }
 
+void MainWindow::disableControls()
+{
+    setEnabled(false);
+}
+
 void MainWindow::setControls()
 {
+    if (currentPythonEngine()->isRunning())
+        return;
+
     setUpdatesEnabled(false);
+    setEnabled(true);
 
     actDocumentSaveSolution->setEnabled(Agros2D::problem()->isSolved());
 
@@ -1607,6 +1588,40 @@ void MainWindow::doLoadBackground()
     }
 }
 
+void MainWindow::showEvent(QShowEvent *event)
+{
+    // qDebug() << event->spontaneous();
+
+    // parameters
+    QStringList args = QCoreApplication::arguments();
+    for (int i = 1; i < args.count(); i++)
+    {
+        if (args[i] == "--verbose" || args[i] == "/verbose")
+            continue;
+
+        if (args[i] == "--run" || args[i] == "-r" || args[i] == "/r")
+        {
+            QString scriptName = args[++i];
+
+            if (QFile::exists(scriptName))
+            {
+                consoleView->console()->connectStdOut();
+                currentPythonEngineAgros()->runScript(readFileContent(scriptName));
+                consoleView->console()->disconnectStdOut();
+            }
+            else
+            {
+                qWarning() << "Script " << scriptName << "not found.";
+            }
+
+            continue;
+        }
+
+        QString fileName = args[i];
+        open(fileName);
+    }
+}
+
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     // WILL BE FIXED
@@ -1622,17 +1637,4 @@ void MainWindow::closeEvent(QCloseEvent *event)
         if (scriptEditorDialog->isScriptModified()) scriptEditorDialog->show();
     }
     */
-
-    // check script editor
-    scriptEditorDialog->closeTabs();
-
-    if (!scriptEditorDialog->isScriptModified())
-        event->accept();
-    else
-    {
-        event->ignore();
-        // show script editor
-        if (scriptEditorDialog->isScriptModified())
-            scriptEditorDialog->show();
-    }
 }
