@@ -228,7 +228,7 @@ void PyViewMesh::setOrderViewPalette(const std::string &palette)
 
 void PyViewMesh::setProblemSetting(ProblemSetting::Type type, bool value)
 {
-    if (!Agros2D::problem()->isMeshed())
+    if (!Agros2D::problem()->isMeshed() && !currentPythonEngineAgros()->isRunning())
         throw logic_error(QObject::tr("Problem is not meshed.").toStdString());
 
     if (!silentMode())
