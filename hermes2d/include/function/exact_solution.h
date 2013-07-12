@@ -45,7 +45,7 @@ namespace Hermes
       /// Saves the exact solution to an XML file.
       virtual void save(const char* filename) const;
 #ifdef WITH_BSON
-      void save_bson(const char* filename) const;
+      virtual void save_bson(const char* filename) const;
 #endif
     protected:
       /// For scaling of the solution.
