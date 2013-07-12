@@ -33,7 +33,7 @@ const QString TABS = "    ";
 PythonEditorWidget::PythonEditorWidget(PythonEngine *pythonEngine, QWidget *parent)
     : QWidget(parent), pythonEngine(pythonEngine)
 {
-    fileName = "";
+    m_fileName = "";
 
     createControls();
 
@@ -655,8 +655,8 @@ void PythonEditorDialog::doRunPython()
     if (pythonEngine->isRunning())
         return;
 
-    if (!scriptEditorWidget()->fileName.isEmpty())
-        filBrowser->setDir(QFileInfo(scriptEditorWidget()->fileName).absolutePath());
+    if (!scriptEditorWidget()->fileName().isEmpty())
+        filBrowser->setDir(QFileInfo(scriptEditorWidget()->fileName()).absolutePath());
 
     // disable controls
     consoleView->setEnabled(false);
@@ -673,26 +673,26 @@ void PythonEditorDialog::doRunPython()
     time.start();
 
     // connect stdout and set current path
-    consoleView->console()->connectStdOut(QFile::exists(scriptEditorWidget()->fileName) ?
-                                              QFileInfo(scriptEditorWidget()->fileName).absolutePath() : "");
+    consoleView->console()->connectStdOut(QFile::exists(scriptEditorWidget()->fileName()) ?
+                                              QFileInfo(scriptEditorWidget()->fileName()).absolutePath() : "");
 
     ScriptResult result;
     if (txtEditor->textCursor().hasSelection())
     {
         result = pythonEngine->runScript(txtEditor->textCursor().selectedText().replace(0x2029, "\n"), "");
     }
-    else if (scriptEditorWidget()->fileName.isEmpty())
+    else if (scriptEditorWidget()->fileName().isEmpty())
     {
         result = pythonEngine->runScript(txtEditor->toPlainText());
     }
     else
     {
-        if (!scriptEditorWidget()->fileName.isEmpty() &&
-                QFile::exists(scriptEditorWidget()->fileName))
+        if (!scriptEditorWidget()->fileName().isEmpty() &&
+                QFile::exists(scriptEditorWidget()->fileName()))
             doFileSave();
 
         result = pythonEngine->runScript(txtEditor->toPlainText(),
-                                         QFileInfo(scriptEditorWidget()->fileName).absoluteFilePath());
+                                         QFileInfo(scriptEditorWidget()->fileName()).absoluteFilePath());
     }
     // disconnect stdout
     consoleView->console()->disconnectStdOut();
@@ -730,8 +730,8 @@ void PythonEditorDialog::doReplaceTabsWithSpaces()
 
 void PythonEditorDialog::doPyLintPython()
 {
-    if (!scriptEditorWidget()->fileName.isEmpty())
-        filBrowser->setDir(QFileInfo(scriptEditorWidget()->fileName).absolutePath());
+    if (!scriptEditorWidget()->fileName().isEmpty())
+        filBrowser->setDir(QFileInfo(scriptEditorWidget()->fileName()).absolutePath());
 
     // analyse by pylint
     scriptEditorWidget()->pyLintAnalyse();
@@ -813,7 +813,7 @@ void PythonEditorDialog::doFileOpen(const QString &file)
         for (int i = 0; i < tabWidget->count(); i++)
         {
             PythonEditorWidget *scriptEditorWidgetTmp = dynamic_cast<PythonEditorWidget *>(tabWidget->widget(i));
-            if (scriptEditorWidgetTmp->fileName == fileName)
+            if (scriptEditorWidgetTmp->fileName() == fileName)
             {
                 tabWidget->setCurrentIndex(i);
                 QMessageBox::information(this, tr("Information"), tr("Script is already opened."));
@@ -829,8 +829,8 @@ void PythonEditorDialog::doFileOpen(const QString &file)
             scriptEditor = scriptEditorWidget();
         }
 
-        scriptEditor->fileName = fileName;
-        txtEditor->setPlainText(readFileContent(scriptEditor->fileName));
+        scriptEditor->setFileName(fileName);
+        txtEditor->setPlainText(readFileContent(scriptEditor->fileName()));
 
         setRecentFiles();
 
@@ -859,16 +859,16 @@ void PythonEditorDialog::doFileSave()
     QString dir = settings.value("General/LastDir", "data").toString();
 
     // save dialog
-    if (scriptEditorWidget()->fileName.isEmpty())
-        scriptEditorWidget()->fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python scripts (*.py)"));
+    if (scriptEditorWidget()->fileName().isEmpty())
+        scriptEditorWidget()->setFileName(QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python scripts (*.py)")));
 
     // write text
-    if (!scriptEditorWidget()->fileName.isEmpty())
+    if (!scriptEditorWidget()->fileName().isEmpty())
     {
-        QFileInfo fileInfo(scriptEditorWidget()->fileName);
-        if (fileInfo.suffix() != "py") scriptEditorWidget()->fileName += ".py";
+        QFileInfo fileInfo(scriptEditorWidget()->fileName());
+        if (fileInfo.suffix() != "py") scriptEditorWidget()->fileName() += ".py";
 
-        QFile fileName(scriptEditorWidget()->fileName);
+        QFile fileName(scriptEditorWidget()->fileName());
         if (fileName.open(QFile::WriteOnly | QFile::Text))
         {
             QTextStream out(&fileName);
@@ -883,7 +883,7 @@ void PythonEditorDialog::doFileSave()
         else
         {
             // throw AgrosException(tr("File '%1' cannot be saved.").arg(scriptEditorWidget()->fileName));
-            qDebug() << tr("File '%1' cannot be saved.").arg(scriptEditorWidget()->fileName);
+            qDebug() << tr("File '%1' cannot be saved.").arg(scriptEditorWidget()->fileName());
         }
 
         if (fileInfo.absoluteDir() != tempProblemDir())
@@ -899,7 +899,7 @@ void PythonEditorDialog::doFileSaveAs()
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python scripts (*.py)"));
     if (!fileName.isEmpty())
     {
-        scriptEditorWidget()->fileName = fileName;
+        scriptEditorWidget()->setFileName(fileName);
         doFileSave();
 
         QFileInfo fileInfo(fileName);
@@ -1009,9 +1009,9 @@ void PythonEditorDialog::doCloseTab(int index)
     tabWidget->setCurrentIndex(index);
 
     QString fileName = tr("Untitled");
-    if (!scriptEditorWidget()->fileName.isEmpty())
+    if (!scriptEditorWidget()->fileName().isEmpty())
     {
-        QFileInfo fileInfo(scriptEditorWidget()->fileName);
+        QFileInfo fileInfo(scriptEditorWidget()->fileName());
         fileName = fileInfo.completeBaseName();
     }
 
@@ -1086,9 +1086,9 @@ void PythonEditorDialog::doCurrentPageChanged(int index)
     tabWidget->cornerWidget(Qt::TopLeftCorner)->setEnabled(true);
 
     QString fileName = tr("Untitled");
-    if (!scriptEditorWidget()->fileName.isEmpty())
+    if (!scriptEditorWidget()->fileName().isEmpty())
     {
-        QFileInfo fileInfo(scriptEditorWidget()->fileName);
+        QFileInfo fileInfo(scriptEditorWidget()->fileName());
         fileName = fileInfo.completeBaseName();
     }
     setWindowTitle(tr("PythonLab - %1").arg(fileName));
@@ -1107,9 +1107,9 @@ void PythonEditorDialog::doCurrentDocumentChanged(bool changed)
 {
     // modified
     QString fileName = tr("Untitled");
-    if (!scriptEditorWidget()->fileName.isEmpty())
+    if (!scriptEditorWidget()->fileName().isEmpty())
     {
-        QFileInfo fileInfo(scriptEditorWidget()->fileName);
+        QFileInfo fileInfo(scriptEditorWidget()->fileName());
         fileName = fileInfo.completeBaseName();
     }
 
@@ -1124,9 +1124,9 @@ void PythonEditorDialog::setRecentFiles()
     if (!tabWidget) return;
 
     // recent files
-    if (!scriptEditorWidget()->fileName.isEmpty())
+    if (!scriptEditorWidget()->fileName().isEmpty())
     {
-        QFileInfo fileInfo(scriptEditorWidget()->fileName);
+        QFileInfo fileInfo(scriptEditorWidget()->fileName());
         if (recentFiles.indexOf(fileInfo.absoluteFilePath()) == -1)
             recentFiles.insert(0, fileInfo.absoluteFilePath());
         else

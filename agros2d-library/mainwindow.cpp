@@ -111,7 +111,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // problem
     problemWidget = new ProblemWidget(this);
 
-    scriptEditorDialog = new PythonLabAgros(currentPythonEngine(), QApplication::arguments(), this);
+    scriptEditorDialog = new PythonLabAgros(currentPythonEngine(), QStringList(), this);
     // collaborationDownloadDialog = new ServerDownloadDialog(this);
     sceneTransformDialog = new SceneTransformDialog(sceneViewPreprocessor, this);
 
@@ -986,6 +986,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             // python script
             scriptEditorDialog->doFileOpen(fileNameDocument);
             scriptEditorDialog->showDialog();
+            scriptEditorDialog->activateWindow();
             return;
         }
 

@@ -183,13 +183,13 @@ void LogWidget::print(const QString &module, const QString &message, const QStri
 
     // force run process events
     m_printCounter++;
-    if (m_printCounter == 15)
+    if (m_printCounter == 20)
     {
         // reset counter and process events
         m_printCounter = 0;
-        QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);        
+        QApplication::processEvents();
     }
-    if (m_printCounter % 3 == 0)
+    if (m_printCounter % 10 == 0)
     {
         if (isMemoryLabelVisible())
             refreshMemory();

@@ -57,8 +57,7 @@ struct ExpressionResult;
 class AGROS_API PythonEditorWidget : public QWidget
 {
     Q_OBJECT
-public:
-    QString fileName;
+public:    
     ScriptEditor *txtEditor;
     QTreeWidget *trvPyLint;
     SearchWidget *searchWidget;
@@ -67,11 +66,15 @@ public:
     PythonEditorWidget(PythonEngine *pythonEngine, QWidget *parent);
     ~PythonEditorWidget();
 
+    inline QString fileName() { return m_fileName; }
+    inline void setFileName(const QString &fileName) { m_fileName = QFileInfo(fileName).absoluteFilePath(); }
+
 public slots:
     void pyLintAnalyse();
     void pyFlakesAnalyse();
 
 private:
+    QString m_fileName;
     PythonEngine *pythonEngine;
 
     void createControls();
