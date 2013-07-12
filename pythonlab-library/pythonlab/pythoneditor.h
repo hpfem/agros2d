@@ -90,7 +90,7 @@ class AGROS_API PythonEditorDialog : public QMainWindow
     Q_OBJECT
 public:
     PythonEditorDialog(PythonEngine *pythonEngine, QStringList args, QWidget *parent = 0);
-    virtual ~PythonEditorDialog();
+    ~PythonEditorDialog();
 
     void showDialog();
     void closeTabs();
@@ -184,6 +184,7 @@ protected:
     QAction *actGotoLine;
 
     QAction *actRunPython;
+    // QAction *actStopPython;
     QAction *actReplaceTabsWithSpaces;
     QAction *actCheckPyLint;
 

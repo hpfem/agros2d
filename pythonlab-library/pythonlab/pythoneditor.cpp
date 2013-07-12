@@ -47,6 +47,9 @@ PythonEditorWidget::PythonEditorWidget(PythonEngine *pythonEngine, QWidget *pare
 PythonEditorWidget::~PythonEditorWidget()
 {
     QSettings settings;
+
+    settings.setValue("PythonEditorWidget/Geometry", saveGeometry());
+    settings.setValue("PythonEditorWidget/SplitterState", splitter->saveState());
     settings.setValue("PythonEditorWidget/SplitterState", splitter->saveState());
     settings.setValue("PythonEditorWidget/SplitterGeometry", splitter->saveGeometry());
     settings.setValue("PythonEditorWidget/EditorHeight", txtEditor->height());
@@ -86,9 +89,10 @@ void PythonEditorWidget::createControls()
 
     setLayout(layout);
 
+    restoreGeometry(settings.value("PythonEditorWidget/Geometry", saveGeometry()).toByteArray());
     splitter->restoreState(settings.value("PythonEditorWidget/SplitterState").toByteArray());
     splitter->restoreGeometry(settings.value("PythonEditorWidget/SplitterGeometry").toByteArray());
-    txtEditor->resize(txtEditor->width(), settings.value("PythonEditorWidget/EditorHeight").toInt());
+    txtEditor->resize(txtEditor->height(), settings.value("PythonEditorWidget/EditorHeight").toInt());
 }
 
 void PythonEditorWidget::pyLintAnalyse()
@@ -434,6 +438,9 @@ void PythonEditorDialog::createActions()
     actRunPython = new QAction(icon("run"), tr("&Run Python script"), this);
     actRunPython->setShortcut(QKeySequence(tr("Ctrl+R")));
 
+    // actStopPython = new QAction(icon("stop"), tr("Stop Python script"), this);
+    // actStopPython->setEnabled(false);
+
     actReplaceTabsWithSpaces = new QAction(icon(""), tr("Replace tabs with spaces"), this);
 
     QSettings settings;
@@ -519,6 +526,7 @@ void PythonEditorDialog::createControls()
 
     mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actRunPython);
+    // mnuTools->addAction(actStopPython);
     mnuTools->addAction(actCheckPyLint);
     mnuTools->addSeparator();
     mnuTools->addAction(actReplaceTabsWithSpaces);
@@ -569,6 +577,7 @@ void PythonEditorDialog::createControls()
 #endif
     tlbRun->setObjectName("Run");
     tlbRun->addAction(actRunPython);
+    // tlbRun->addAction(actStopPython);
 
     tlbTools = addToolBar(tr("Tools"));
 #ifdef Q_WS_MAC
@@ -579,7 +588,7 @@ void PythonEditorDialog::createControls()
     tlbTools->addAction(actCheckPyLint);
 
     // path
-    QLabel *lblPath = new QLabel(this);
+    QLabel *lblPath = new QLabel();
     lblPath->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QPushButton *btnPath = new QPushButton(icon("three-dots"), "");
@@ -594,7 +603,7 @@ void PythonEditorDialog::createControls()
     tlbPath->setStyleSheet("QToolButton { border: 0px; padding: 0px; margin: 0px; }");
 #endif
     tlbPath->setObjectName("Path");
-    tlbPath->addWidget(new QLabel(tr("Working directory: "), this));
+    tlbPath->addWidget(new QLabel(tr("Working directory: ")));
     tlbPath->addWidget(lblPath);
     tlbPath->addWidget(btnPath);
 
@@ -739,6 +748,9 @@ void PythonEditorDialog::doStartedScript()
     setEnabledControls(false);
     scriptEditorWidget()->setCursor(Qt::BusyCursor);
 
+    actRunPython->setEnabled(false);
+    actStopPython->setEnabled(true);
+
     // QApplication::processEvents();
 }
 
@@ -747,6 +759,9 @@ void PythonEditorDialog::doExecutedScript()
     // enable controls
     setEnabledControls(true);
     scriptEditorWidget()->setCursor(Qt::ArrowCursor);
+
+    actRunPython->setEnabled(true);
+    actStopPython->setEnabled(false);
 
     txtEditor->setFocus();
     activateWindow();

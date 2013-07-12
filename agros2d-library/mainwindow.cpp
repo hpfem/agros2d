@@ -228,7 +228,8 @@ MainWindow::~MainWindow()
     removeDirectory(cacheProblemDir());
     removeDirectory(tempProblemDir());
 
-    delete logStdOut;
+    delete logStdOut;    
+    delete scriptEditorDialog;
 }
 
 void MainWindow::open(const QString &fileName)
