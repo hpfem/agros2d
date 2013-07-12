@@ -219,7 +219,7 @@ void PythonEngine::deleteUserModules()
     PyErr_Clear();
 }
 
-ScriptResult PythonEngine::runScript(const QString &script, const QString &fileName)
+bool PythonEngine::runScript(const QString &script, const QString &fileName)
 {
     m_isRunning = true;
     m_stdOut = "";
@@ -244,23 +244,17 @@ ScriptResult PythonEngine::runScript(const QString &script, const QString &fileN
     // run
     if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
 
-    ScriptResult scriptResult;
+    bool successfulRun = false;
     if (output)
-    {
-        scriptResult.isError = false;
-        scriptResult.text = m_stdOut.trimmed();
-    }
-    else
-    {
-        scriptResult = parseError();
-    }
+        successfulRun = true;
+
     Py_XDECREF(output);
 
     m_isRunning = false;
 
     emit executedScript();
 
-    return scriptResult;
+    return successfulRun;
 }
 
 ExpressionResult PythonEngine::runExpression(const QString &expression, bool returnValue)

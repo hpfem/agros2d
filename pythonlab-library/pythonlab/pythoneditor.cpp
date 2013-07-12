@@ -702,14 +702,14 @@ void PythonEditorDialog::doRunPython()
     consoleView->console()->connectStdOut(QFile::exists(scriptEditorWidget()->fileName()) ?
                                               QFileInfo(scriptEditorWidget()->fileName()).absolutePath() : "");
 
-    ScriptResult result;
+    bool successfulRun = false;
     if (txtEditor->textCursor().hasSelection())
     {
-        result = pythonEngine->runScript(txtEditor->textCursor().selectedText().replace(0x2029, "\n"), "");
+        successfulRun = pythonEngine->runScript(txtEditor->textCursor().selectedText().replace(0x2029, "\n"), "");
     }
     else if (scriptEditorWidget()->fileName().isEmpty())
     {
-        result = pythonEngine->runScript(txtEditor->toPlainText());
+        successfulRun = pythonEngine->runScript(txtEditor->toPlainText());
     }
     else
     {
@@ -717,14 +717,18 @@ void PythonEditorDialog::doRunPython()
                 QFile::exists(scriptEditorWidget()->fileName()))
             doFileSave();
 
-        result = pythonEngine->runScript(txtEditor->toPlainText(),
-                                         QFileInfo(scriptEditorWidget()->fileName()).absoluteFilePath());
+        successfulRun = pythonEngine->runScript(txtEditor->toPlainText(), QFileInfo(scriptEditorWidget()->fileName()).absoluteFilePath());
     }
+
+
     // disconnect stdout
     consoleView->console()->disconnectStdOut();
 
-    if (result.isError)
+    if (!successfulRun)
     {
+        // parse error
+        ScriptResult result = pythonEngine->parseError();
+
         consoleView->console()->stdErr(result.text);
 
         QSettings settings;
@@ -744,7 +748,7 @@ void PythonEditorDialog::doRunPython()
 
 void PythonEditorDialog::doStartedScript()
 {
-    // disable controls    
+    // disable controls
     setEnabledControls(false);
     scriptEditorWidget()->setCursor(Qt::BusyCursor);
 
