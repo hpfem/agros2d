@@ -1012,9 +1012,8 @@ bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep,
         Agros2D::solutionStore()->multiSolutionRunTimeDetailReplace(solutionID, runTime);
     }
 
-    // todo: otazku zda uz neni moc dofu jsem mel vyresit nekde drive
-    bool adapt = error >= m_block->adaptivityTolerance() && Hermes::Hermes2D::Space<Scalar>::get_num_dofs(actualSpaces())
-            < Agros2D::problem()->setting()->value(ProblemSetting::Adaptivity_MaxDofs).toInt();
+    // adaptive tolerance
+    bool adapt = error >= m_block->adaptivityTolerance();
 
     // allways adapt when forcing adaptation, to be used in solveAdaptiveStep
     adapt = adapt || forceAdaptation;

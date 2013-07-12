@@ -93,10 +93,6 @@ private:
     QSpinBox *txtMeshAngleSegmentsCount;
     QCheckBox *chkMeshCurvilinearElements;
 
-    // adaptivity
-    QLabel *lblMaxDofs;
-    QSpinBox *txtMaxDOFs;
-
     // commands
     QLineEdit *txtArgumentTriangle;
     QLineEdit *txtArgumentGmsh;

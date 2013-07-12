@@ -130,9 +130,6 @@ void SettingsWidget::load()
     txtMeshAngleSegmentsCount->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_MeshAngleSegmentsCount).toInt());
     chkMeshCurvilinearElements->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_MeshCurvilinearElements).toBool());
 
-    // adaptivity
-    txtMaxDOFs->setValue(Agros2D::problem()->setting()->value(ProblemSetting::Adaptivity_MaxDofs).toInt());
-
     // command argument
     txtArgumentTriangle->setText(Agros2D::problem()->setting()->value(ProblemSetting::Commands_Triangle).toString());
     txtArgumentGmsh->setText(Agros2D::problem()->setting()->value(ProblemSetting::Commands_Gmsh).toString());
@@ -238,9 +235,6 @@ void SettingsWidget::save()
     // mesh and solver
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_MeshAngleSegmentsCount, txtMeshAngleSegmentsCount->value());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_MeshCurvilinearElements, chkMeshCurvilinearElements->isChecked());
-
-    // adaptivity
-    Agros2D::problem()->setting()->setValue(ProblemSetting::Adaptivity_MaxDofs, txtMaxDOFs->value());
 
     // command argument
     Agros2D::problem()->setting()->setValue(ProblemSetting::Commands_Triangle, txtArgumentTriangle->text());
@@ -485,23 +479,6 @@ QWidget *SettingsWidget::controlsMeshAndSolver()
     QFont fnt = font();
     fnt.setPointSize(fnt.pointSize() - 1);
 
-    lblMaxDofs = new QLabel(tr("Max. num. of DOFs:"));
-    txtMaxDOFs = new QSpinBox(this);
-    txtMaxDOFs->setMinimum(1e2);
-    txtMaxDOFs->setMaximum(1e9);
-    txtMaxDOFs->setSingleStep(1e2);
-
-    QGridLayout *layoutAdaptivitySettings = new QGridLayout();
-    layoutAdaptivitySettings->setColumnStretch(1, 1);
-    layoutAdaptivitySettings->addWidget(lblMaxDofs, 0, 0);
-    layoutAdaptivitySettings->addWidget(txtMaxDOFs, 0, 1, 1, 2);
-
-    QVBoxLayout *layoutAdaptivity = new QVBoxLayout();
-    layoutAdaptivity->addLayout(layoutAdaptivitySettings);
-
-    QGroupBox *grpAdaptivity = new QGroupBox("Adaptivity");
-    grpAdaptivity->setLayout(layoutAdaptivity);
-
     // commands
     txtArgumentTriangle = new QLineEdit("");
     txtArgumentGmsh = new QLineEdit("");
@@ -519,7 +496,6 @@ QWidget *SettingsWidget::controlsMeshAndSolver()
     // layout mesh and solver
     QVBoxLayout *layoutMeshAndSolver = new QVBoxLayout();
     layoutMeshAndSolver->addWidget(grpMesh);
-    layoutMeshAndSolver->addWidget(grpAdaptivity);
     layoutMeshAndSolver->addWidget(grpCommands);
     layoutMeshAndSolver->addStretch();
     layoutMeshAndSolver->addWidget(btnMeshAndSolverDefault, 0, Qt::AlignLeft);
@@ -650,8 +626,6 @@ void SettingsWidget::doMeshAndSolverDefault()
 {
     txtMeshAngleSegmentsCount->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_MeshAngleSegmentsCount).toInt());
     chkMeshCurvilinearElements->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_MeshCurvilinearElements).toBool());
-
-    txtMaxDOFs->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Adaptivity_MaxDofs).toInt());
 
     txtArgumentTriangle->setText(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Commands_Triangle).toString());
     txtArgumentGmsh->setText(Agros2D::problem()->setting()->defaultValue(ProblemSetting::Commands_Gmsh).toString());

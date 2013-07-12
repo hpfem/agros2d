@@ -254,7 +254,6 @@ public:
         View_MeshCurvilinearElements,
         View_LinearizerQuality,
         View_SolidViewHide,
-        Adaptivity_MaxDofs,
         Commands_Triangle,
         Commands_Gmsh
     };
