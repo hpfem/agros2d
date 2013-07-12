@@ -273,6 +273,9 @@
         <module:expression analysistype="harmonic" axi="- ma_gamma * (ma_vy * dz1)" planar="- ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1)"/>
         <module:expression analysistype="transient" axi="- ma_gamma * (ma_vy * dz1)" planar="- ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1)"/>
       </module:localvariable>
+      <module:localvariable id="magnetic_current_density_induced_velocity_imag" name="Current dens. - ind. velocity - imag" shortname="Jivi" shortname_html="&lt;i>J&lt;/i>&lt;sub>ivi&lt;/sub>" shortname_latex="J_\mathrm{ivi}" type="scalar" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
+        <module:expression analysistype="harmonic" axi="- ma_gamma * (ma_vy * dz2)" planar="- ma_gamma * ((ma_vx - ma_va * y) * dx2 + (ma_vy + ma_va * x) * dy2)"/>
+      </module:localvariable>
       <module:localvariable id="magnetic_current_density_induced_transform" name="Current dens. - ind. transform" shortname="Jit" shortname_html="&lt;i>J&lt;/i>&lt;sub>it&lt;/sub>" shortname_latex="J_\mathrm{it}" type="scalar" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
         <module:expression analysistype="harmonic" axi="sqrt((2 * PI * f * ma_gamma * value2)^2+(- 2 * PI * f * ma_gamma * value1)^2)" planar="sqrt((2 * PI * f * ma_gamma * value2)^2+(- 2 * PI * f * ma_gamma * value1)^2)"/>
       </module:localvariable>
