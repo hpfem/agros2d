@@ -68,10 +68,9 @@ void ScriptEngineRemoteLocal::disconnected()
 {
     m_server_socket->deleteLater();
 
-    ScriptResult result;
     if (!m_command.isEmpty())
     {
-        result = currentPythonEngineAgros()->runScript(m_command);
+        bool successfulRun = currentPythonEngineAgros()->runScript(m_command);
     }
 
     m_client_socket = new QLocalSocket();
@@ -80,6 +79,8 @@ void ScriptEngineRemoteLocal::disconnected()
     m_client_socket->connectToServer(clientName());
     if (m_client_socket->waitForConnected(1000))
     {
+        ScriptResult result = currentPythonEngineAgros()->parseError();
+
         QTextStream out(m_client_socket);
         out << result.text;
         out.flush();

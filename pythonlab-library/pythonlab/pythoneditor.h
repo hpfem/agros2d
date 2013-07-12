@@ -184,7 +184,7 @@ protected:
     QAction *actGotoLine;
 
     QAction *actRunPython;
-    // QAction *actStopPython;
+    QAction *actStopPython;
     QAction *actReplaceTabsWithSpaces;
     QAction *actCheckPyLint;
 
@@ -211,6 +211,7 @@ protected:
 
 private slots:
     void doRunPython();
+    void doStopScript();
     void doReplaceTabsWithSpaces();
     void doPyLintPython();
     void doFileItemDoubleClick(const QString &path);

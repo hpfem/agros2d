@@ -87,6 +87,14 @@ static PyObject* pythonClear(PyObject* self, PyObject* pArgs)
     return NULL;
 }
 
+int scriptQuit(void *)
+{
+    PyErr_SetString(PyExc_SystemError, "Script interrupted.");
+    PyErr_SetInterrupt();
+
+    return -1;
+}
+
 static PyObject *pythonTempname(PyObject* self, PyObject* pArgs)
 {
     QString tempDir = tempProblemDir() + "/temp/";
@@ -157,6 +165,11 @@ void PythonEngine::init()
     PyRun_String(m_functions.toLatin1().data(), Py_file_input, m_dict, m_dict);
 }
 
+void PythonEngine::stopScript()
+{
+    Py_AddPendingCall(&scriptQuit, NULL);
+}
+
 void PythonEngine::pythonShowMessageCommand(const QString &message)
 {
     if (message != "\n\n")
@@ -224,6 +237,8 @@ bool PythonEngine::runScript(const QString &script, const QString &fileName)
     m_isRunning = true;
     m_stdOut = "";
 
+    PyGILState_STATE gstate = PyGILState_Ensure();
+
     emit startedScript();
 
     QSettings settings;
@@ -252,6 +267,9 @@ bool PythonEngine::runScript(const QString &script, const QString &fileName)
 
     m_isRunning = false;
 
+    // release the thread, no Python API allowed beyond this point
+    PyGILState_Release(gstate);
+
     emit executedScript();
 
     return successfulRun;
@@ -260,8 +278,6 @@ bool PythonEngine::runScript(const QString &script, const QString &fileName)
 ExpressionResult PythonEngine::runExpression(const QString &expression, bool returnValue)
 {
     ExpressionResult expressionResult;
-
-    // PyGILState_STATE gstate = PyGILState_Ensure();
 
     runPythonHeader();
 
@@ -328,9 +344,6 @@ ExpressionResult PythonEngine::runExpression(const QString &expression, bool ret
         Py_XDECREF(output);
 
     }
-
-    // release the thread, no Python API allowed beyond this point
-    // PyGILState_Release(gstate);
 
     emit executedExpression();
 

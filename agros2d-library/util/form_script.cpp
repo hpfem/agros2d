@@ -493,21 +493,23 @@ void FormScript::acceptForm()
                                                Qt::gray);
 
         consoleView->console()->connectStdOut();
-        ScriptResult result = currentPythonEngineAgros()->runScript(QString::fromStdString(info));
+        bool successfulRun = currentPythonEngineAgros()->runScript(QString::fromStdString(info));
         consoleView->console()->disconnectStdOut();
 
-        if (result.isError)
+        if (successfulRun)
         {
+            consoleView->console()->appendCommandPrompt();
+            accept();
+        }
+        else
+        {
+            ScriptResult result = currentPythonEngineAgros()->parseError();
+
             errorMessage->setVisible(true);
             errorMessage->setText(result.text + "\n" + result.traceback);
 
             consoleView->console()->stdErr(result.text);
             consoleView->console()->appendCommandPrompt();
-        }
-        else
-        {
-            consoleView->console()->appendCommandPrompt();
-            accept();
         }
     }
     else

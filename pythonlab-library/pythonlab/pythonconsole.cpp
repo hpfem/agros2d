@@ -148,7 +148,7 @@ void PythonScriptingConsole::welcomeMessage()
     QTextEdit::clear();
 
     connectStdOut();
-    pythonEngine->runExpression("import sys; v = sys.version + \" on \" + sys.platform; print(v); del v;", false);
+    pythonEngine->runScript("import sys; v = sys.version + \" on \" + sys.platform; print(v); del v;");
     disconnectStdOut();
     appendCommandPrompt();
 }

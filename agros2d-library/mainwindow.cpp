@@ -1325,11 +1325,14 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
                                                Qt::gray);
 
         consoleView->console()->connectStdOut();
-        ScriptResult result = currentPythonEngineAgros()->runScript(readFileContent(fileNameScript), fileNameScript);
+        bool successfulRun = currentPythonEngineAgros()->runScript(readFileContent(fileNameScript), fileNameScript);
         consoleView->console()->disconnectStdOut();
 
-        if (result.isError)
+        if (!successfulRun)
+        {
+            ScriptResult result = currentPythonEngineAgros()->parseError();
             consoleView->console()->stdErr(result.text);
+        }
 
         consoleView->console()->appendCommandPrompt();
 

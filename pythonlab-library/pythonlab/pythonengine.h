@@ -47,6 +47,9 @@ public:
     QStringList codePyFlakes(const QString& fileName);
     QList<PythonVariable> variableList();
 
+public slots:
+    void stopScript();
+
 protected:
     PyObject *m_dict;
     bool m_isRunning;
@@ -57,7 +60,7 @@ protected:
     virtual void runPythonHeader() {}
 
 private slots:
-    void stdOut(const QString &message);
+    void stdOut(const QString &message);    
 
 private:
     QString m_stdOut;

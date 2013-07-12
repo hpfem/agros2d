@@ -123,23 +123,26 @@ void AgrosSolver::runScript()
     connect(currentPythonEngineAgros(), SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
     connect(currentPythonEngineAgros(), SIGNAL(pythonShowHtml(QString)), this, SLOT(stdHtml(QString)));
 
-    ScriptResult result = currentPythonEngineAgros()->runScript(readFileContent(m_fileName), m_fileName);
-    if (result.isError)
-    {
-        Agros2D::log()->printMessage(tr("Scripting Engine"), tr("%1\nLine: %2\nStacktrace:\n%3\n").
-                                  arg(result.text).
-                                  arg(result.line).
-                                  arg(result.traceback));
+    bool successfulRun= currentPythonEngineAgros()->runScript(readFileContent(m_fileName), m_fileName);
 
-        QApplication::exit(-1);
-    }
-    else
+    if (successfulRun)
     {
         Agros2D::log()->printMessage(tr("Solver"), tr("Problem was solved in %1").arg(milisecondsToTime(time.elapsed()).toString("mm:ss.zzz")));
 
         Agros2D::scene()->clear();
         Agros2D::clear();
         QApplication::exit(0);
+    }
+    else
+    {
+        ScriptResult result = currentPythonEngineAgros()->parseError();
+
+        Agros2D::log()->printMessage(tr("Scripting Engine"), tr("%1\nLine: %2\nStacktrace:\n%3\n").
+                                  arg(result.text).
+                                  arg(result.line).
+                                  arg(result.traceback));
+
+        QApplication::exit(-1);
     }
 }
 

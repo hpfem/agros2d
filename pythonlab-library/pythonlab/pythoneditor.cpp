@@ -270,6 +270,7 @@ PythonEditorDialog::PythonEditorDialog(PythonEngine *pythonEngine, QStringList a
     QSettings settings;
 
     connect(actRunPython, SIGNAL(triggered()), this, SLOT(doRunPython()));
+    connect(actStopPython, SIGNAL(triggered()), this, SLOT(doStopScript()));
     connect(actReplaceTabsWithSpaces, SIGNAL(triggered()), this, SLOT(doReplaceTabsWithSpaces()));
     connect(actCheckPyLint, SIGNAL(triggered()), this, SLOT(doPyLintPython()));
 
@@ -438,8 +439,8 @@ void PythonEditorDialog::createActions()
     actRunPython = new QAction(icon("run"), tr("&Run Python script"), this);
     actRunPython->setShortcut(QKeySequence(tr("Ctrl+R")));
 
-    // actStopPython = new QAction(icon("stop"), tr("Stop Python script"), this);
-    // actStopPython->setEnabled(false);
+    actStopPython = new QAction(icon("stop"), tr("Stop Python script"), this);
+    actStopPython->setEnabled(false);
 
     actReplaceTabsWithSpaces = new QAction(icon(""), tr("Replace tabs with spaces"), this);
 
@@ -526,7 +527,7 @@ void PythonEditorDialog::createControls()
 
     mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actRunPython);
-    // mnuTools->addAction(actStopPython);
+    mnuTools->addAction(actStopPython);
     mnuTools->addAction(actCheckPyLint);
     mnuTools->addSeparator();
     mnuTools->addAction(actReplaceTabsWithSpaces);
@@ -577,7 +578,7 @@ void PythonEditorDialog::createControls()
 #endif
     tlbRun->setObjectName("Run");
     tlbRun->addAction(actRunPython);
-    // tlbRun->addAction(actStopPython);
+    tlbRun->addAction(actStopPython);
 
     tlbTools = addToolBar(tr("Tools"));
 #ifdef Q_WS_MAC
@@ -746,6 +747,12 @@ void PythonEditorDialog::doRunPython()
     scriptFinish();
 }
 
+void PythonEditorDialog::doStopScript()
+{
+    currentPythonEngine()->stopScript();
+    QApplication::processEvents();
+}
+
 void PythonEditorDialog::doStartedScript()
 {
     // disable controls
@@ -753,7 +760,7 @@ void PythonEditorDialog::doStartedScript()
     scriptEditorWidget()->setCursor(Qt::BusyCursor);
 
     actRunPython->setEnabled(false);
-    // actStopPython->setEnabled(true);
+    actStopPython->setEnabled(true);
 
     // QApplication::processEvents();
 }
@@ -765,7 +772,7 @@ void PythonEditorDialog::doExecutedScript()
     scriptEditorWidget()->setCursor(Qt::ArrowCursor);
 
     actRunPython->setEnabled(true);
-    // actStopPython->setEnabled(false);
+    actStopPython->setEnabled(false);
 
     txtEditor->setFocus();
     activateWindow();

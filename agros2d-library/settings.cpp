@@ -144,9 +144,9 @@ void SettingsWidget::save()
     if (!txtStartupScript->toPlainText().isEmpty())
     {
         currentPythonEngineAgros()->blockSignals(true);
-        ScriptResult scriptResult = currentPythonEngineAgros()->runScript(txtStartupScript->toPlainText());
+        bool successfulRun = currentPythonEngineAgros()->runScript(txtStartupScript->toPlainText());
         currentPythonEngineAgros()->blockSignals(false);
-        if (scriptResult.isError)
+        if (!successfulRun)
             return;
     }
 
@@ -710,10 +710,14 @@ void SettingsWidget::doStartupScriptChanged()
     if (!txtStartupScript->toPlainText().isEmpty())
     {
         currentPythonEngineAgros()->blockSignals(true);
-        ScriptResult scriptResult = currentPythonEngineAgros()->runScript(txtStartupScript->toPlainText());
+        bool successfulRun = currentPythonEngineAgros()->runScript(txtStartupScript->toPlainText());
         currentPythonEngineAgros()->blockSignals(false);
-        if (scriptResult.isError)
-            lblStartupScriptError->setText(QObject::tr("Error: %1").arg(scriptResult.text));
+
+        if (!successfulRun)
+        {
+            ScriptResult result = currentPythonEngineAgros()->parseError();
+            lblStartupScriptError->setText(QObject::tr("Error: %1").arg(result.text));
+        }
     }
 }
 
