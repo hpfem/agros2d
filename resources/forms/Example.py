@@ -10,6 +10,17 @@ print("comboBox_index = {{comboBox_index}}")
 print("spinBox_value = {{spinBox_value}}")
 print("doubleSpinBox_value = {{doubleSpinBox_value}}")
 
+# preprocessor
 print("lstNodes_list = {{lstNodes_list}}")
 print("lstEdges_list = {{lstEdges_list}}")
 print("lstLabels_list = {{lstLabels_list}}")
+
+# postprocessor
+print("trvLocalValues_fieldid = {{trvLocalValues_fieldid}}")
+print("trvLocalValues_variable = {{trvLocalValues_variable}}")
+
+print("trvSurfaceIntegrals_fieldid = {{trvSurfaceIntegrals_fieldid}}")
+print("trvSurfaceIntegrals_variable = {{trvSurfaceIntegrals_variable}}")
+
+print("trvVolumeIntegrals_fieldid = {{trvVolumeIntegrals_fieldid}}")
+print("trvVolumeIntegrals_variable = {{trvVolumeIntegrals_variable}}")

@@ -139,6 +139,15 @@ void FormScript::loadWidget(const QString &fileName)
                 widget->setValidator(new QIntValidator(widget));
             }
         }
+        // tree widget
+        if (QTreeWidget *widget = dynamic_cast<QTreeWidget *>(object))
+        {
+            // postprocessor - local values
+            if (widget->property("dataType") == "local_values" || (widget->property("dataType") == "surface_integrals") || (widget->property("dataType") == "volume_integrals"))
+            {
+                widget->setHeaderHidden(true);
+            }
+        }
     }
 
     dynamic_cast<QVBoxLayout *>(layout())->insertWidget(0, mainWidget);
@@ -251,6 +260,143 @@ void FormScript::showWidget()
 
                     i++;
                 }
+            }
+        }
+        // tree widget
+        if (QTreeWidget *widget = dynamic_cast<QTreeWidget *>(object))
+        {
+            QFont fnt = widget->font();
+            fnt.setBold(true);
+
+            // postprocessor - local values
+            if (widget->property("dataType") == "local_values")
+            {
+                QString selectedFieldid = "";
+                QString selectedVariable = "";
+                QTreeWidgetItem *selectedItem = NULL;
+                if (widget->currentItem())
+                {
+                    selectedVariable = widget->currentItem()->data(0, Qt::UserRole).toString();
+                    selectedFieldid = widget->currentItem()->data(1, Qt::UserRole).toString();
+                }
+
+                widget->clear();
+
+                foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
+                {
+                    QTreeWidgetItem *itemField = new QTreeWidgetItem(widget);
+
+                    itemField->setText(0, fieldInfo->name());
+                    itemField->setData(0, Qt::UserRole, "");
+                    itemField->setData(1, Qt::UserRole, "");
+                    itemField->setFont(0, fnt);
+                    itemField->setExpanded(true);
+
+                    widget->addTopLevelItem(itemField);
+
+                    foreach (Module::LocalVariable variable, fieldInfo->localPointVariables())
+                    {
+                        QTreeWidgetItem *item = new QTreeWidgetItem(itemField);
+
+                        item->setText(0, variable.name());
+                        item->setData(0, Qt::UserRole, variable.shortname());
+                        item->setData(1, Qt::UserRole, fieldInfo->fieldId());
+
+                        if ((!selectedVariable.isEmpty()) && (!selectedFieldid.isEmpty())
+                                && (selectedVariable == variable.shortname()) && (selectedFieldid == fieldInfo->fieldId()))
+                            selectedItem = item;
+                    }
+                }
+
+                if (selectedItem)
+                    widget->setCurrentItem(selectedItem);
+            }
+            // postprocessor - surface integrals
+            if (widget->property("dataType") == "surface_integrals")
+            {
+                QString selectedFieldid = "";
+                QString selectedVariable = "";
+                QTreeWidgetItem *selectedItem = NULL;
+                if (widget->currentItem())
+                {
+                    selectedVariable = widget->currentItem()->data(0, Qt::UserRole).toString();
+                    selectedFieldid = widget->currentItem()->data(1, Qt::UserRole).toString();
+                }
+
+                widget->clear();
+
+                foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
+                {
+                    QTreeWidgetItem *itemField = new QTreeWidgetItem(widget);
+
+                    itemField->setText(0, fieldInfo->name());
+                    itemField->setData(0, Qt::UserRole, "");
+                    itemField->setData(1, Qt::UserRole, "");
+                    itemField->setFont(0, fnt);
+                    itemField->setExpanded(true);
+
+                    widget->addTopLevelItem(itemField);
+
+                    foreach (Module::Integral variable, fieldInfo->surfaceIntegrals())
+                    {
+                        QTreeWidgetItem *item = new QTreeWidgetItem(itemField);
+
+                        item->setText(0, variable.name());
+                        item->setData(0, Qt::UserRole, variable.shortname());
+                        item->setData(1, Qt::UserRole, fieldInfo->fieldId());
+
+                        if ((!selectedVariable.isEmpty()) && (!selectedFieldid.isEmpty())
+                                && (selectedVariable == variable.shortname()) && (selectedFieldid == fieldInfo->fieldId()))
+                            selectedItem = item;
+                    }
+                }
+
+                if (selectedItem)
+                    widget->setCurrentItem(selectedItem);
+
+            }
+            // postprocessor - volume integrals
+            if (widget->property("dataType") == "volume_integrals")
+            {
+                QString selectedFieldid = "";
+                QString selectedVariable = "";
+                QTreeWidgetItem *selectedItem = NULL;
+                if (widget->currentItem())
+                {
+                    selectedVariable = widget->currentItem()->data(0, Qt::UserRole).toString();
+                    selectedFieldid = widget->currentItem()->data(1, Qt::UserRole).toString();
+                }
+
+                widget->clear();
+
+                foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
+                {
+                    QTreeWidgetItem *itemField = new QTreeWidgetItem(widget);
+
+                    itemField->setText(0, fieldInfo->name());
+                    itemField->setData(0, Qt::UserRole, "");
+                    itemField->setData(1, Qt::UserRole, "");
+                    itemField->setFont(0, fnt);
+                    itemField->setExpanded(true);
+
+                    widget->addTopLevelItem(itemField);
+
+                    foreach (Module::Integral variable, fieldInfo->volumeIntegrals())
+                    {
+                        QTreeWidgetItem *item = new QTreeWidgetItem(itemField);
+
+                        item->setText(0, variable.name());
+                        item->setData(0, Qt::UserRole, variable.shortname());
+                        item->setData(1, Qt::UserRole, fieldInfo->fieldId());
+
+                        if ((!selectedVariable.isEmpty()) && (!selectedFieldid.isEmpty())
+                                && (selectedVariable == variable.shortname()) && (selectedFieldid == fieldInfo->fieldId()))
+                            selectedItem = item;
+                    }
+                }
+
+                if (selectedItem)
+                    widget->setCurrentItem(selectedItem);
             }
         }
     }
@@ -480,6 +626,19 @@ void FormScript::acceptForm()
                     out += "]";
 
                     script.SetValue(QString("%1_list").arg(widget->objectName()).toStdString(), out.toStdString());
+                }
+            }
+            // tree widget
+            if (QTreeWidget *widget = dynamic_cast<QTreeWidget *>(object))
+            {
+                // postprocessor - local values
+                if (widget->property("dataType") == "local_values" || (widget->property("dataType") == "surface_integrals") || (widget->property("dataType") == "volume_integrals"))
+                {
+                    if (widget->currentItem())
+                    {
+                        script.SetValue(QString("%1_variable").arg(widget->objectName()).toStdString(), widget->currentItem()->data(0, Qt::UserRole).toString().toStdString());
+                        script.SetValue(QString("%1_fieldid").arg(widget->objectName()).toStdString(), widget->currentItem()->data(1, Qt::UserRole).toString().toStdString());
+                    }
                 }
             }
         }
