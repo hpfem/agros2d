@@ -16,6 +16,11 @@ scale_x = {{txtScaleX_text}}
 scale_y = {{txtScaleY_text}}
 scale_factor = {{txtScaleFactor_text}}
 
+local_values = list()
+surface_integrals = list()
+volume_integrals = list()
+expression = list()
+
 problem = a2d.problem()
 geometry = a2d.geometry
 
@@ -35,12 +40,24 @@ def calculate():
   if ({{chkSolve_checked}}):
     problem.solve()
 
-  return {{txtExpression_text}}
+    if ('{{trvLocalValues_variable}}'):
+      field = a2d.field('{{trvLocalValues_fieldid}}')
+      local_values.append(field.local_values({{txtLocalValuesX_text}},
+                                     {{txtLocalValuesY_text}})['{{trvLocalValues_variable}}'])
 
-results = list()
-results.append(calculate())
+    if ('{{trvSurfaceIntefrals_variable}}'):
+      field = a2d.field('{{trvSurfaceIntegrals_fieldid}}')
+      surface_integrals.append(field.surface_integrals({{lstSurfaceIntegralsEdges_list}})['{{trvSurfaceIntegrals_variable}}'])
 
-for loop in range(steps):
+    if ('{{trvVolumeIntegrals_variable}}'):
+      field = a2d.field('{{trvVolumeIntegrals_fieldid}}')
+      volume_integrals.append(field.volume_integrals({{lstSurfaceIntegralsEdges_list}})['{{trvVolumeIntegrals_variable}}'])
+
+  if ('{{txtExpression_text}}'):
+    expression.append({{txtExpression_text}})
+
+calculate()
+for step in range(steps):
   if (nodes):
     geometry.select_nodes(nodes)
     transform()
@@ -53,6 +70,16 @@ for loop in range(steps):
     geometry.select_labels(labels)
     transform()
 
-  results.append(calculate())
+  calculate()
 
-print(results)
+if (local_values):
+  print('{{trvLocalValues_variable}} = {0}'.format(local_values))
+
+if (surface_integrals):
+  print('{{trvSurfaceIntegrals_variable}} = {0}'.format(surface_integrals))
+
+if (volume_integrals):
+  print('{{trvVolumeIntegrals_variable}} = {0}'.format(volume_integrals))
+
+if (expression):
+  print('expression = {0}'.format(expression))
