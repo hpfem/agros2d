@@ -55,49 +55,6 @@ class MagneticModel:
 
     a2d.view.zoom_best_fit()
 
-  def move_core(self, dz):
-    self.geometry.select_edges([14, 15, 16, 17])
-    self.geometry.move_selection(0, dz, False)
-    self.geometry.select_labels([3])
-    self.geometry.move_selection(0, dz, False)
-
-  def static_characteristic(self, steps):
-    dz = Harm / (steps - 1)
-
-    zWm = []
-    Wm = []
-    for i in range(steps):
-      if i > 0:
-        self.move_core(-dz)
-
-      self.problem.solve()
-      a2d.view.zoom_best_fit()
-      zWm.append(i*dz)
-      Wm.append(self.magnetic.volume_integrals([])["Wm"])
-
-    zFm = []
-    Fm = []
-    for i in range(steps - 1):
-      Fm.append((Wm[i] - Wm[i+1]) / dz)
-      zFm.append(zWm[i] + dz / 2)
-
-    import pylab as pl
-    pl.figure()
-    pl.subplot(2,1,1)
-    pl.title("Magnetic energy")
-    pl.plot(zWm, Wm)
-    pl.grid(True)
-    pl.xlabel("z (m)")
-    pl.ylabel("Wm (J)")
-
-    pl.subplot(2,1,2)
-    pl.plot(zFm, Fm)
-    pl.title("Force")
-    pl.grid(True)
-    pl.xlabel("z (m)")
-    pl.ylabel("F (N)")
-    pl.show()
-
 Rarm = {{txtArmatureRadius_text}}
 Harm = {{txtArmatureHeight_text}}
 Rcir = {{txtCircuitRadius_text}}
@@ -121,6 +78,3 @@ Next = 1500
 """
 
 magnetic_model = MagneticModel(Rarm, Harm, Rcir, Hcir, delta, mur_iron, Iext, Next)
-
-if ({{chkStaticCharacteristic_checked}}):
-  magnetic_model.static_characteristic(10)
