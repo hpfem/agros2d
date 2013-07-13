@@ -151,7 +151,7 @@ void FormScript::loadWidget(const QString &fileName)
         // tree widget
         if (QTreeWidget *widget = dynamic_cast<QTreeWidget *>(object))
         {
-            // postprocessor - local values
+            // postprocessor - local values, surface integrals, volume integrals
             if (widget->property("dataType") == "local_values" || (widget->property("dataType") == "surface_integrals") || (widget->property("dataType") == "volume_integrals"))
             {
                 widget->setHeaderHidden(true);
@@ -484,6 +484,9 @@ void FormScript::loadFromFile()
 
         foreach (QWidget *object, mainWidget->findChildren<QWidget *>())
         {
+            if (object->objectName().startsWith("qt_"))
+                continue;
+
             // line edit
             if (QLineEdit *widget = dynamic_cast<QLineEdit *>(object))
                 widget->setText(valueForWidget(doc, widget->objectName(), ""));
@@ -506,6 +509,48 @@ void FormScript::loadFromFile()
             // double spinbox
             if (QDoubleSpinBox *widget = dynamic_cast<QDoubleSpinBox  *>(object))
                 widget->setValue(valueForWidget(doc, widget->objectName(), "0.0").toDouble());
+            // check list widget
+            if (QListWidget *widget = dynamic_cast<QListWidget *>(object))
+            {
+                QStringList itemsString = valueForWidget(doc, widget->objectName(), "").split(",");
+                QList<int> items;
+                foreach (QString itemString, itemsString)
+                    items.append(itemString.toDouble());
+
+                for (int i = 0; i < widget->count(); i++)
+                    if (items.contains(i))
+                        widget->item(i)->setCheckState(Qt::Checked);
+                    else
+                        widget->item(i)->setCheckState(Qt::Unchecked);
+            }
+            // local values, surface and volume integrals tree widget
+            if (QTreeWidget *widget = dynamic_cast<QTreeWidget *>(object))
+            {
+                QStringList itemsString = valueForWidget(doc, widget->objectName(), "").split("$");
+
+                QString selectedVariable = "";
+                QString selectedFieldid = "";
+                if (itemsString.count() == 2)
+                {
+                    selectedVariable = itemsString.at(0);
+                    selectedFieldid = itemsString.at(1);
+                }
+
+                if ((!selectedFieldid.isEmpty()) && (!selectedVariable.isEmpty()))
+                {
+                    for (int field = 0; field < widget->topLevelItemCount(); field++)
+                    {
+                        QTreeWidgetItem *fieldItem = widget->topLevelItem(field);
+                        for (int i = 0; i < fieldItem->childCount(); i++)
+                        {
+                            QTreeWidgetItem *item = fieldItem->child(i);
+
+                            if ((selectedVariable == item->data(0, Qt::UserRole)) && (selectedFieldid == item->data(1, Qt::UserRole)))
+                                widget->setCurrentItem(item);
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -525,6 +570,9 @@ void FormScript::saveToFile()
 
     foreach (QWidget *object, mainWidget->findChildren<QWidget *>())
     {
+        if (object->objectName().startsWith("qt_"))
+            continue;
+
         // line edit
         if (QLineEdit *widget = dynamic_cast<QLineEdit  *>(object))
         {
@@ -550,6 +598,37 @@ void FormScript::saveToFile()
         // double spinbox
         if (QDoubleSpinBox *widget = dynamic_cast<QDoubleSpinBox  *>(object))
             config.item().push_back(XMLForm::item(widget->objectName().toStdString(), QString::number(widget->value()).toStdString()));
+        // list widget
+        if (QListWidget *widget = dynamic_cast<QListWidget *>(object))
+        {
+            // preprocessor - nodes, edges or labels
+            if ((widget->property("dataType") == "nodes") || (widget->property("dataType") == "edges") || (widget->property("dataType") == "labels"))
+            {
+                QString out;
+                for (int i = 0; i < widget->count(); i++)
+                {
+                    if (widget->item(i)->checkState() == Qt::Checked)
+                        out += QString("%1,").arg(i);
+                }
+                if (out.length() > 1)
+                    out = out.left(out.count() - 1);
+
+                config.item().push_back(XMLForm::item(widget->objectName().toStdString(), out.toStdString()));
+            }
+        }
+        // tree widget
+        if (QTreeWidget *widget = dynamic_cast<QTreeWidget *>(object))
+        {
+            // postprocessor - local values, surface integrals, volume integrals
+            if (widget->property("dataType") == "local_values" || (widget->property("dataType") == "surface_integrals") || (widget->property("dataType") == "volume_integrals"))
+            {
+                if (widget->currentItem())
+                    config.item().push_back(XMLForm::item(widget->objectName().toStdString(),
+                                                          (QString("%1$%2")
+                                                           .arg(widget->currentItem()->data(0, Qt::UserRole).toString())
+                                                           .arg(widget->currentItem()->data(1, Qt::UserRole).toString())).toStdString()));
+            }
+        }
     }
 
     XMLForm::form doc(config);
@@ -635,7 +714,7 @@ void FormScript::acceptForm()
             // tree widget
             if (QTreeWidget *widget = dynamic_cast<QTreeWidget *>(object))
             {
-                // postprocessor - local values
+                // postprocessor - local values, surface integrals, volume integrals
                 if (widget->property("dataType") == "local_values" || (widget->property("dataType") == "surface_integrals") || (widget->property("dataType") == "volume_integrals"))
                 {
                     if (widget->currentItem())

@@ -14,13 +14,7 @@ electrostatic.polynomial_order = 1
 electrostatic.adaptivity_type = "hp-adaptivity"
 electrostatic.adaptivity_steps = 4
 electrostatic.adaptivity_tolerance = 0.1
-electrostatic.linearity_type = "newton"
-electrostatic.nonlinear_tolerance = 0.001
-electrostatic.nonlinear_steps = 10
-electrostatic.nonlinear_convergence_measurement = "residual_norm_absolute"
-electrostatic.damping_type = "automatic"
-electrostatic.damping_coeff = 1
-electrostatic.reuse_jacobian = True
+
 
 # variables
 r1 = 0.01

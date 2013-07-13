@@ -7,7 +7,7 @@ print("radioButton2_checked = {{radioButton2_checked}}")
 print("checkBox_checked = {{checkBox_checked}}")
 print("comboBox_text = {{comboBox_text}}")
 print("comboBox_index = {{comboBox_index}}")
-print("spinBox_value = {{spinBox_value}}")
+print("intSpinBox_value = {{intSpinBox_value}}")
 print("doubleSpinBox_value = {{doubleSpinBox_value}}")
 
 # preprocessor
