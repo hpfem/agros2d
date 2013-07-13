@@ -8,6 +8,7 @@ MOC_DIR = ../build
 
 DEFINES += WITH_PARALUTION
 INCLUDEPATH += ../../3rdparty/paralution/src
+DEFINES += WITH_BSON
 INCLUDEPATH += ../../3rdparty/bson
 
 INCLUDEPATH += ../../hermes2d/include \
