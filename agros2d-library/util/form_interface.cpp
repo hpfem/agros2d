@@ -64,7 +64,7 @@ void readCustomForms(QMenu *menu)
     }
 }
 
-void readCustomScripts(QMenu *menu, PythonScriptingConsoleView *consoleView)
+void readCustomScripts(QMenu *menu, PythonScriptingConsoleView *consoleView, QWidget *parent)
 {
     QDir dir(datadir() + "/resources/forms");
 
@@ -79,7 +79,7 @@ void readCustomScripts(QMenu *menu, PythonScriptingConsoleView *consoleView)
         {
             // QSharedPointer<FormScript> form = QSharedPointer<FormScript>(new FormScript(fn));
             // menu->addAction(form.data()->action());
-            FormScript *form = new FormScript(fn, consoleView, QApplication::activeWindow());
+            FormScript *form = new FormScript(fn, consoleView, parent);
             menu->addAction(form->action());
         }
     }

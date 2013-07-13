@@ -48,7 +48,7 @@ protected:
 
 // read forms
 void readCustomForms(QMenu *menu);
-void readCustomScripts(QMenu *menu, PythonScriptingConsoleView *consoleView);
+void readCustomScripts(QMenu *menu, PythonScriptingConsoleView *consoleView, QWidget *parent);
 
 QT_BEGIN_NAMESPACE
 Q_DECLARE_INTERFACE(FormInterface, "agros2d.FormInterface/1.0")

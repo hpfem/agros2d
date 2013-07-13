@@ -91,7 +91,16 @@ FormScript::FormScript(const QString &fileName, PythonScriptingConsoleView *cons
 
     loadWidget(fileName);
 
-    resize(minimumSize());
+    QSettings settings;
+    restoreGeometry(settings.value(QString("FormScript/Geometry_%1").arg(QFileInfo(fileName).baseName()), saveGeometry()).toByteArray());
+}
+
+FormScript::~FormScript()
+{
+    QSettings settings;
+    settings.setValue(QString("FormScript/Geometry_%1").arg(QFileInfo(fileName).baseName()), saveGeometry());
+
+    delete process;
 }
 
 void FormScript::loadWidget(const QString &fileName)
@@ -425,11 +434,6 @@ void FormScript::designerFinished(int status)
         reloadWidget();
         showWidget();
     }
-}
-
-FormScript::~FormScript()
-{
-    delete process;
 }
 
 QString FormScript::formId()

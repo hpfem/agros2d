@@ -531,7 +531,7 @@ void MainWindow::createMenus()
     mnuTools->addSeparator();
     mnuCustomForms = new QMenu(tr("Custom forms"), this);
     mnuTools->addMenu(mnuCustomForms);
-    readCustomScripts(mnuCustomForms, consoleView);
+    readCustomScripts(mnuCustomForms, consoleView, this);
     // mnuCustomForms->addSeparator();
     // readCustomForms(mnuCustomForms);
 #ifdef Q_WS_WIN
@@ -1178,7 +1178,7 @@ void MainWindow::doExamples()
             }
             else if (fileInfo.suffix() == "ui")
             {
-                FormScript form(examples->selectedFilename(), consoleView, QApplication::activeWindow());
+                FormScript form(examples->selectedFilename(), consoleView, this);
                 form.action()->trigger();
             }
         }
