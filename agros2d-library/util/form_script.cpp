@@ -448,7 +448,7 @@ QAction *FormScript::action()
 
 int FormScript::show()
 {
-    showForm();
+    return showForm();
 }
 
 int FormScript::showForm(const QString &fileName)
