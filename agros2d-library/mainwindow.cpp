@@ -1202,7 +1202,7 @@ void MainWindow::doExamples()
             else if (fileInfo.suffix() == "ui")
             {
                 FormScript form(examples->selectedFilename(), consoleView, this);
-                form.action()->trigger();
+                form.showForm(examples->selectedFormFilename());
             }
         }
     }

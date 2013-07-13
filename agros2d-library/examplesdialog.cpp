@@ -46,10 +46,14 @@ ExamplesDialog::ExamplesDialog(QWidget *parent) : QDialog(parent)
     setModal(true);
 
     m_selectedFilename = "";
+    m_selectedFormFilename = "";
 
     // problem information
     webView = new QWebView();
     webView->page()->setNetworkAccessManager(networkAccessManager());
+    webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+
+    connect(webView->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
 
     // stylesheet
     std::string style;
@@ -146,6 +150,26 @@ void ExamplesDialog::doItemDoubleClicked(QTreeWidgetItem *item, int column)
     {
         if (!lstProblems->currentItem()->data(0, Qt::UserRole).toString().isEmpty())
             accept();
+    }
+}
+
+void ExamplesDialog::linkClicked(const QUrl &url)
+{
+    QString search = "/open?";
+    if (url.toString().contains(search))
+    {
+#if QT_VERSION < 0x050000
+        QString fileName = url.queryItemValue("filename");
+        QString form = url.queryItemValue("form");
+#else
+        QString fileName = QUrlQuery(url).queryItemValue("filename");
+        QString form = QUrlQuery(url).queryItemValue("form");
+#endif
+
+        m_selectedFilename = QUrl(fileName).toString(QUrl::RemoveScheme);
+        m_selectedFormFilename = QUrl(form).toString(QUrl::RemoveScheme);;
+
+        accept();
     }
 }
 
@@ -364,6 +388,7 @@ void ExamplesDialog::problemInfo(const QString &fileName)
             // replace current path in index.html
             QString detail = readFileContent(detailsFilename);
             detail = detail.replace("{{DIR}}", QString("%1/%2").arg(QUrl::fromLocalFile(fileInfo.absolutePath()).toString()).arg(fileInfo.baseName()));
+            detail = detail.replace("{{RESOURCES}}", QUrl::fromLocalFile(QString("%1/resources/").arg(QDir(datadir()).absolutePath())).toString());
 
             problemInfo.SetValue("PROBLEM_DETAILS", detail.toStdString());
         }

@@ -48,8 +48,12 @@ public:
 
 public slots:
     virtual int show();
+    virtual int showForm(const QString &fileName = "");
     virtual void acceptForm();
     virtual void rejectForm();
+
+    void loadFromFile(const QString &fileName = "");
+    void saveToFile(const QString &fileName = "");
 
 protected:
     QAction *actShow;
@@ -69,9 +73,6 @@ private:
     void loadWidget(const QString &fileName);
 
 private slots:
-    void loadFromFile();
-    void saveToFile();
-
     void reloadWidget();
     void showWidget();
     void designer();

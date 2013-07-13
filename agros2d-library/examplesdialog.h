@@ -31,6 +31,7 @@ public:
 
     int showDialog();
     inline QString selectedFilename() { return m_selectedFilename; }
+    inline QString selectedFormFilename() { return m_selectedFormFilename; }
 
 private slots:
     void doAccept();
@@ -39,12 +40,15 @@ private slots:
     void doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
     void doItemDoubleClicked(QTreeWidgetItem *item, int column);
 
+    void linkClicked(const QUrl &url);
+
 private:
     QWebView *webView;
     QString m_cascadeStyleSheet;
 
     QTreeWidget *lstProblems;
     QString m_selectedFilename;
+    QString m_selectedFormFilename;
 
     QDialogButtonBox *buttonBox;
 

@@ -448,13 +448,22 @@ QAction *FormScript::action()
 
 int FormScript::show()
 {
+    showForm();
+}
+
+int FormScript::showForm(const QString &fileName)
+{
     errorMessage->clear();
     errorMessage->setVisible(false);
 
     showWidget();
 
+    if (!fileName.isEmpty())
+        loadFromFile(fileName);
+
     return exec();
 }
+
 
 QString FormScript::valueForWidget(XMLForm::form *doc, const QString &objectName, const QString &defaultValue)
 {
@@ -469,17 +478,25 @@ QString FormScript::valueForWidget(XMLForm::form *doc, const QString &objectName
     return defaultValue;
 }
 
-void FormScript::loadFromFile()
+void FormScript::loadFromFile(const QString &fileName)
 {
-    QSettings settings;
-    QString dir = settings.value("General/LastProblemDir", "data").toString();
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("Agros2D form files (*.frm)"));
+    QString fn = fileName;
 
-    if (fileName.isEmpty()) return;
-
-    if (QFile::exists(fileName))
+    if (fn.isEmpty())
     {
-        std::auto_ptr<XMLForm::form> form_xsd = XMLForm::form_(compatibleFilename(fileName).toStdString(), xml_schema::flags::dont_validate);
+        QSettings settings;
+        QString dir = settings.value("FormScript/LastProblemDir", "").toString();
+        fn = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("Agros2D form files (*.frm)"));
+    }
+
+    if (fn.isEmpty()) return;
+
+    if (QFile::exists(fn))
+    {
+        QSettings settings;
+        settings.setValue("FormScript/LastProblemDir", QFileInfo(fn).absolutePath());
+
+        std::auto_ptr<XMLForm::form> form_xsd = XMLForm::form_(compatibleFilename(fn).toStdString(), xml_schema::flags::dont_validate);
         XMLForm::form *doc = form_xsd.get();
 
         foreach (QWidget *object, mainWidget->findChildren<QWidget *>())
@@ -512,16 +529,21 @@ void FormScript::loadFromFile()
             // check list widget
             if (QListWidget *widget = dynamic_cast<QListWidget *>(object))
             {
-                QStringList itemsString = valueForWidget(doc, widget->objectName(), "").split(",");
-                QList<int> items;
-                foreach (QString itemString, itemsString)
-                    items.append(itemString.toDouble());
+                QString itemsString = valueForWidget(doc, widget->objectName(), "");
+                if (!itemsString.isEmpty())
+                {
+                    QStringList itemsStringList = itemsString.split(",");
 
-                for (int i = 0; i < widget->count(); i++)
-                    if (items.contains(i))
-                        widget->item(i)->setCheckState(Qt::Checked);
-                    else
-                        widget->item(i)->setCheckState(Qt::Unchecked);
+                    QList<int> items;
+                    foreach (QString itemString, itemsStringList)
+                        items.append(itemString.toDouble());
+
+                    for (int i = 0; i < widget->count(); i++)
+                        if (items.contains(i))
+                            widget->item(i)->setCheckState(Qt::Checked);
+                        else
+                            widget->item(i)->setCheckState(Qt::Unchecked);
+                }
             }
             // local values, surface and volume integrals tree widget
             if (QTreeWidget *widget = dynamic_cast<QTreeWidget *>(object))
@@ -555,16 +577,24 @@ void FormScript::loadFromFile()
     }
 }
 
-void FormScript::saveToFile()
-{
+void FormScript::saveToFile(const QString &fileName)
+{   
+    QString fn = fileName;
+
+    if (fn.isEmpty())
+    {
+        QSettings settings;
+        QString dir = settings.value("FormScript/LastProblemDir", "").toString();
+        fn = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Agros2D form files (*.frm)"));
+    }
+
+    if (fn.isEmpty()) return;
+
+    QFileInfo fileInfo(fn);
+    if (fileInfo.suffix().toLower() != "frm") fn += ".frm";
+
     QSettings settings;
-    QString dir = settings.value("General/LastProblemDir", "data").toString();
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Agros2D form files (*.frm)"));
-
-    if (fileName.isEmpty()) return;
-
-    QFileInfo fileInfo(fileName);
-    if (fileInfo.suffix().toLower() != "frm") fileName += ".frm";
+    settings.setValue("FormScript/LastProblemDir", QFileInfo(fn).absolutePath());
 
     XMLForm::config config;
 
@@ -641,7 +671,7 @@ void FormScript::saveToFile()
     ::xml_schema::namespace_infomap namespace_info_map;
     namespace_info_map.insert(std::pair<std::basic_string<char>, xml_schema::namespace_info>("problem", namespace_info_problem));
 
-    std::ofstream out(compatibleFilename(fileName).toStdString().c_str());
+    std::ofstream out(compatibleFilename(fn).toStdString().c_str());
     XMLForm::form_(out, doc, namespace_info_map);
 }
 
