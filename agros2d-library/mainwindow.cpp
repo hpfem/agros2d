@@ -212,7 +212,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     actHideControlPanel->setChecked(settings.value("MainWindow/ControlPanel", true).toBool());
     doHideControlPanel();
 
-    setControls();    
+    setControls();
 }
 
 MainWindow::~MainWindow()
@@ -228,7 +228,7 @@ MainWindow::~MainWindow()
     removeDirectory(cacheProblemDir());
     removeDirectory(tempProblemDir());
 
-    delete logStdOut;    
+    delete logStdOut;
     delete scriptEditorDialog;
 }
 
@@ -1201,8 +1201,25 @@ void MainWindow::doExamples()
             }
             else if (fileInfo.suffix() == "ui")
             {
-                FormScript form(examples->selectedFilename(), consoleView, this);
-                form.showForm(examples->selectedFormFilename());
+                // try to open standard form
+                bool customForm = false;
+                foreach (QAction *action, mnuCustomForms->actions())
+                {
+                    if (FormScript *form = dynamic_cast<FormScript *>(action->parent()))
+                    {
+                        if (QFileInfo(form->fileName()).absoluteFilePath() == QFileInfo(examples->selectedFilename()).absoluteFilePath())
+                        {
+                            customForm = true;
+                            form->showForm(examples->selectedFormFilename());
+                        }
+                    }
+                }
+                if (!customForm)
+                {
+                    // example form
+                    FormScript form(examples->selectedFilename(), consoleView, this);
+                    form.showForm(examples->selectedFormFilename());
+                }
             }
         }
     }

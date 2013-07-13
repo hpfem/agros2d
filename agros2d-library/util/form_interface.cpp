@@ -77,8 +77,6 @@ void readCustomScripts(QMenu *menu, PythonScriptingConsoleView *consoleView, QWi
         QString fn = QString("%1/%2").arg(dir.absolutePath()).arg(filename);
         if (QFile::exists(fn))
         {
-            // QSharedPointer<FormScript> form = QSharedPointer<FormScript>(new FormScript(fn));
-            // menu->addAction(form.data()->action());
             FormScript *form = new FormScript(fn, consoleView, parent);
             menu->addAction(form->action());
         }

@@ -40,20 +40,21 @@ class AGROS_API FormScript : public FormInterface
 #endif
 
 public:
-    FormScript(const QString &fileName = "", PythonScriptingConsoleView *consoleView = NULL, QWidget *parent = 0);
+    FormScript(const QString &m_fileName = "", PythonScriptingConsoleView *consoleView = NULL, QWidget *parent = 0);
     virtual ~FormScript();
 
     virtual QString formId();
     virtual QAction *action();
+    inline QString fileName() { return m_fileName; }
 
 public slots:
     virtual int show();
-    virtual int showForm(const QString &fileName = "");
+    virtual int showForm(const QString &m_fileName = "");
     virtual void acceptForm();
     virtual void rejectForm();
 
-    void loadFromFile(const QString &fileName = "");
-    void saveToFile(const QString &fileName = "");
+    void loadFromFile(const QString &m_fileName = "");
+    void saveToFile(const QString &m_fileName = "");
 
 protected:
     QAction *actShow;
@@ -61,7 +62,7 @@ protected:
     QMenu *menu;
     QPushButton *btnMore;
     QLabel *errorMessage;
-    QString fileName;
+    QString m_fileName;
 
     QProcess *process;
 
@@ -70,7 +71,7 @@ protected:
 private:
     QString valueForWidget(XMLForm::form *doc, const QString &objectName, const QString &defaultValue);
 
-    void loadWidget(const QString &fileName);
+    void loadWidget(const QString &m_fileName);
 
 private slots:
     void reloadWidget();

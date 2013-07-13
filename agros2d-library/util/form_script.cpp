@@ -36,7 +36,7 @@
 #include "../../resources_source/classes/form_xml.h"
 
 FormScript::FormScript(const QString &fileName, PythonScriptingConsoleView *consoleView, QWidget *parent)
-    : FormInterface(parent), fileName(fileName), consoleView(consoleView), mainWidget(NULL)
+    : FormInterface(parent), m_fileName(fileName), consoleView(consoleView), mainWidget(NULL)
 {
     // setAttribute(Qt::WA_DeleteOnClose);
 
@@ -98,7 +98,7 @@ FormScript::FormScript(const QString &fileName, PythonScriptingConsoleView *cons
 FormScript::~FormScript()
 {
     QSettings settings;
-    settings.setValue(QString("FormScript/Geometry_%1").arg(QFileInfo(fileName).baseName()), saveGeometry());
+    settings.setValue(QString("FormScript/Geometry_%1").arg(QFileInfo(m_fileName).baseName()), saveGeometry());
 
     delete process;
 }
@@ -164,7 +164,7 @@ void FormScript::loadWidget(const QString &fileName)
 
 void FormScript::reloadWidget()
 {
-    loadWidget(fileName);
+    loadWidget(m_fileName);
     showWidget();
 }
 
@@ -419,7 +419,7 @@ void FormScript::designer()
     if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "designer"))
         designerBinary = QApplication::applicationDirPath() + QDir::separator() + "designer";
 
-    process->start(QString("%1 \"%2\"").arg(designerBinary).arg(fileName));
+    process->start(QString("%1 \"%2\"").arg(designerBinary).arg(m_fileName));
 
     // execute an event loop to process the request (nearly-synchronous)
     QEventLoop eventLoop;
@@ -438,7 +438,7 @@ void FormScript::designerFinished(int status)
 
 QString FormScript::formId()
 {
-    return QString("script_").arg(QFileInfo(fileName).baseName());
+    return QString("script_").arg(QFileInfo(m_fileName).baseName());
 }
 
 QAction *FormScript::action()
@@ -677,7 +677,7 @@ void FormScript::saveToFile(const QString &fileName)
 
 void FormScript::acceptForm()
 {
-    QString scriptFileName = QString("%1/%2.py").arg(QFileInfo(fileName).absolutePath()).arg(QFileInfo(fileName).baseName());
+    QString scriptFileName = QString("%1/%2.py").arg(QFileInfo(m_fileName).absolutePath()).arg(QFileInfo(m_fileName).baseName());
 
     if (QFile::exists(scriptFileName))
     {
