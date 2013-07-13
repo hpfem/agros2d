@@ -166,8 +166,8 @@ void ExamplesDialog::linkClicked(const QUrl &url)
         QString form = QUrlQuery(url).queryItemValue("form");
 #endif
 
-        m_selectedFilename = QUrl(fileName).toString(QUrl::RemoveScheme);
-        m_selectedFormFilename = QUrl(form).toString(QUrl::RemoveScheme);;
+        m_selectedFilename = QUrl(fileName).toLocalFile();
+        m_selectedFormFilename = QUrl(form).toLocalFile();
 
         accept();
     }

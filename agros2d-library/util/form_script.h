@@ -49,7 +49,7 @@ public:
 
 public slots:
     virtual int show();
-    virtual int showForm(const QString &m_fileName = "");
+    int showForm(const QString &m_fileName = "");
     virtual void acceptForm();
     virtual void rejectForm();
 
