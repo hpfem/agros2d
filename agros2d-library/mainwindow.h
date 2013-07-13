@@ -72,6 +72,7 @@ private slots:
     void doDocumentSave();
     void doDocumentSaveAs();
     void doDocumentSaveSolution();
+    void doDocumentDeleteSolution();
     void doDocumentUploadToServer();
     void doDocumentClose();
     void doDocumentImportDXF();
@@ -143,6 +144,7 @@ private:
     // QAction *actDocumentDownloadFromServer;
     QAction *actDocumentSave;
     QAction *actDocumentSaveSolution;
+    QAction *actDocumentDeleteSolution;
     QAction *actDocumentSaveAs;
     // QAction *actDocumentUploadToServer;
     QAction *actDocumentClose;

@@ -257,6 +257,8 @@ void MainWindow::createActions()
 
     actDocumentSaveSolution = new QAction(icon(""), tr("Save solution"), this);
     connect(actDocumentSaveSolution, SIGNAL(triggered()), this, SLOT(doDocumentSaveSolution()));
+    actDocumentDeleteSolution = new QAction(icon(""), tr("Delete solution"), this);
+    connect(actDocumentDeleteSolution, SIGNAL(triggered()), this, SLOT(doDocumentDeleteSolution()));
 
     actDocumentSaveAs = new QAction(icon("document-save-as"), tr("Save &As..."), this);
     actDocumentSaveAs->setShortcuts(QKeySequence::SaveAs);
@@ -444,8 +446,10 @@ void MainWindow::createMenus()
     mnuFile->addMenu(mnuRecentFiles);
     mnuFile->addSeparator();
     mnuFile->addAction(actDocumentSave);
-    mnuFile->addAction(actDocumentSaveSolution);
     mnuFile->addAction(actDocumentSaveAs);
+    mnuFile->addSeparator();
+    mnuFile->addAction(actDocumentSaveSolution);
+    mnuFile->addAction(actDocumentDeleteSolution);
     mnuFile->addSeparator();
     mnuFile->addMenu(mnuFileImportExport);
     // mnuFile->addMenu(mnuServer);
@@ -1010,6 +1014,25 @@ void MainWindow::doDocumentSaveSolution()
     if (QFile::exists(Agros2D::problem()->config()->fileName()))
     {
         Agros2D::scene()->writeSolutionToFile(Agros2D::problem()->config()->fileName());
+        setControls();
+    }
+}
+
+void MainWindow::doDocumentDeleteSolution()
+{
+    QFileInfo fileInfo(Agros2D::problem()->config()->fileName());
+    QString solutionFN = QString("%1/%2.sol").arg(fileInfo.absolutePath()).arg(fileInfo.baseName());
+
+    if (QFile::exists(Agros2D::problem()->config()->fileName()))
+    {
+        if (!QFile(solutionFN).remove())
+            Agros2D::log()->printError(tr("Solution"), tr("Access denied '%1'").arg(solutionFN));
+
+        setControls();
+    }
+    else
+    {
+        Agros2D::log()->printError(tr("Solution"), tr("Solution '%1' doesn't exists.").arg(solutionFN));
     }
 }
 
@@ -1396,6 +1419,9 @@ void MainWindow::setControls()
     setEnabled(true);
 
     actDocumentSaveSolution->setEnabled(Agros2D::problem()->isSolved());
+
+    QFileInfo fileInfo(Agros2D::problem()->config()->fileName());
+    actDocumentDeleteSolution->setEnabled(!Agros2D::problem()->config()->fileName().isEmpty() && QFile::exists(QString("%1/%2.sol").arg(fileInfo.absolutePath()).arg(fileInfo.baseName())));
 
     // set controls
     Agros2D::scene()->actTransform->setEnabled(false);
