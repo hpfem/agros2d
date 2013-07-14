@@ -265,9 +265,9 @@ PythonEditorDialog::PythonEditorDialog(PythonEngine *pythonEngine, QStringList a
     createViews();
     createControls();
 
-    fileBrowser->refresh();
-
     QSettings settings;
+    fileBrowser->setDir(settings.value("PythonEditorDialog/WorkDir", datadir()).value<QString>());
+    fileBrowser->refresh();
 
     connect(actRunPython, SIGNAL(triggered()), this, SLOT(doRunPython()));
     connect(actStopPython, SIGNAL(triggered()), this, SLOT(doStopScript()));
@@ -279,9 +279,6 @@ PythonEditorDialog::PythonEditorDialog(PythonEngine *pythonEngine, QStringList a
 
     // macx
     setUnifiedTitleAndToolBarOnMac(true);
-
-    // set recent files
-    setRecentFiles();
 
     // parameters
     for (int i = 1; i < args.count(); i++)
@@ -301,6 +298,9 @@ PythonEditorDialog::PythonEditorDialog(PythonEngine *pythonEngine, QStringList a
     restoreGeometry(settings.value("PythonEditorDialog/Geometry", saveGeometry()).toByteArray());
     recentFiles = settings.value("PythonEditorDialog/RecentFiles").value<QStringList>();
     restoreState(settings.value("PythonEditorDialog/State", saveState()).toByteArray());
+
+    // set recent files
+    setRecentFiles();
 }
 
 PythonEditorDialog::~PythonEditorDialog()
@@ -643,13 +643,9 @@ void PythonEditorDialog::createControls()
 
 void PythonEditorDialog::createViews()
 {
-    QSettings settings;
-
     // file browser
     fileBrowser = new FileBrowser(this);
     fileBrowser->setNameFilter("*.py");
-    fileBrowser->setDir(settings.value("PythonEditorDialog/WorkDir", datadir()).value<QString>());
-
     connect(fileBrowser, SIGNAL(fileItemDoubleClick(QString)), this, SLOT(doFileItemDoubleClick(QString)));
 
     QVBoxLayout *layout = new QVBoxLayout();
@@ -749,6 +745,8 @@ void PythonEditorDialog::doRunPython()
 
 void PythonEditorDialog::doStopScript()
 {
+    actStopPython->setEnabled(false);
+
     currentPythonEngine()->stopScript();
     QApplication::processEvents();
 }
@@ -863,7 +861,7 @@ void PythonEditorDialog::doFileNew()
 void PythonEditorDialog::doFileOpen(const QString &file)
 {
     QSettings settings;
-    QString dir = settings.value("General/LastDir", "data").toString();
+    QString dir = settings.value("PythonEditorDialog/WorkDir").toString();
 
     // open dialog
     QString fileName = file;
@@ -908,7 +906,7 @@ void PythonEditorDialog::doFileOpen(const QString &file)
         doCurrentPageChanged(tabWidget->currentIndex());
 
         if (fileInfo.absoluteDir() != tempProblemDir() && !fileName.contains("resources/examples"))
-            settings.setValue("General/LastDir", fileInfo.absolutePath());
+            settings.setValue("PythonEditorDialog/WorkDir", fileInfo.absolutePath());
     }
 }
 
@@ -925,7 +923,7 @@ void PythonEditorDialog::doFileOpenRecent(QAction *action)
 void PythonEditorDialog::doFileSave()
 {
     QSettings settings;
-    QString dir = settings.value("General/LastDir", "data").toString();
+    QString dir = settings.value("PythonEditorDialog/WorkDir").toString();
 
     // save dialog
     if (scriptEditorWidget()->fileName().isEmpty())
@@ -956,14 +954,14 @@ void PythonEditorDialog::doFileSave()
         }
 
         if (fileInfo.absoluteDir() != tempProblemDir())
-            settings.setValue("General/LastDir", fileInfo.absolutePath());
+            settings.setValue("PythonEditorDialog/WorkDir", fileInfo.absolutePath());
     }
 }
 
 void PythonEditorDialog::doFileSaveAs()
 {
     QSettings settings;
-    QString dir = settings.value("General/LastDir", "data").toString();
+    QString dir = settings.value("PythonEditorDialog/WorkDirr").toString();
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python scripts (*.py)"));
     if (!fileName.isEmpty())
@@ -973,14 +971,14 @@ void PythonEditorDialog::doFileSaveAs()
 
         QFileInfo fileInfo(fileName);
         if (fileInfo.absoluteDir() != tempProblemDir())
-            settings.setValue("General/LastDir", fileInfo.absolutePath());
+            settings.setValue("PythonEditorDialog/WorkDir", fileInfo.absolutePath());
     }
 }
 
 void PythonEditorDialog::doFileSaveConsoleAs()
 {
     QSettings settings;
-    QString dir = settings.value("General/LastDir", "data").toString();
+    QString dir = settings.value("PythonEditorDialog/WorkDir").toString();
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Html files (*.html)"));
     if (!fileName.isEmpty())
@@ -996,7 +994,7 @@ void PythonEditorDialog::doFileSaveConsoleAs()
 
 
         if (fileInfo.absoluteDir() != tempProblemDir())
-            settings.setValue("General/LastDir", fileInfo.absolutePath());
+            settings.setValue("PythonEditorDialog/WorkDir", fileInfo.absolutePath());
     }
 }
 
