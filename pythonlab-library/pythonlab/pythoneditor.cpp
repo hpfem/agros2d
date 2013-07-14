@@ -140,19 +140,20 @@ void PythonEditorWidget::pyLintAnalyse()
     processPyLint.setStandardErrorFile(tempProblemFileName() + ".pylint.err");
     connect(&processPyLint, SIGNAL(finished(int)), this, SLOT(pyLintAnalyseStopped(int)));
 
+#ifdef Q_WS_X11
     QString pylintBinary = datadir() + "/resources/python/pylint_lab";
-    /*
-    if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "pylint"))
-        pylintBinary = "\"" + QApplication::applicationDirPath() + QDir::separator() + "pylint\"";
-    if (QFile::exists(QApplication::applicationDirPath() + QDir::separator() + "pylint"))
-        pylintBinary = QApplication::applicationDirPath() + QDir::separator() + "pylint";
-    */
+#endif
+#ifdef Q_WS_WIN
+    QString pylintBinary = datadir() + "/resources/python/pylint_lab.bat";
+#endif
+
     QString test = txtEditor->toPlainText();
     writeStringContent(tempProblemFileName() + ".pylint.py", &test);
 
     QStringList arguments;
     arguments << "-i" << "yes" << tempProblemFileName() + ".pylint.py";
 
+    processPyLint.setWorkingDirectory(datadir() + "/resources/python");
     processPyLint.start(pylintBinary, arguments);
 
     if (!processPyLint.waitForStarted())
