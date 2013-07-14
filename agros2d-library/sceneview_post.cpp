@@ -296,23 +296,23 @@ void PostHermes::processRangeVector()
 
         m_vecVectorView.free();
 
-        // deformed shape
-        if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformVector).toBool())
-        {
-            Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<MeshFunctionSharedPtr<double> >(activeMultiSolutionArray().solutions().at(0),
-                                                                                                                                                 activeMultiSolutionArray().solutions().at(1)));
-            if (fabs(filter->get_approx_max_value() - filter->get_approx_min_value()) > EPS_ZERO)
-            {
-                RectPoint rect = Agros2D::scene()->boundingBox();
-                double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
+        //// deformed shape
+        //if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformVector).toBool())
+        //{
+        //    Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<MeshFunctionSharedPtr<double> >(activeMultiSolutionArray().solutions().at(0),
+        //                                                                                                                                         activeMultiSolutionArray().solutions().at(1)));
+        //    if (fabs(filter->get_approx_max_value() - filter->get_approx_min_value()) > EPS_ZERO)
+        //    {
+        //        RectPoint rect = Agros2D::scene()->boundingBox();
+        //        double dmult = qMax(rect.width(), rect.height()) / filter->get_approx_max_value() / 15.0;
 
-                m_vecVectorView.set_displacement(activeMultiSolutionArray().solutions().at(0),
-                                                 activeMultiSolutionArray().solutions().at(1),
-                                                 dmult);
-            }
-            delete filter;
-        }
-        else
+        //        m_vecVectorView.set_displacement(activeMultiSolutionArray().solutions().at(0),
+        //                                         activeMultiSolutionArray().solutions().at(1),
+        //                                         dmult);
+        //    }
+        //    delete filter;
+        //}
+        //else
         {
             m_vecVectorView.set_displacement(NULL, NULL);
         }
