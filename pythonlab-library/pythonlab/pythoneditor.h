@@ -179,8 +179,7 @@ protected:
 
     QAction *actIndentSelection;
     QAction *actUnindentSelection;
-    QAction *actCommentSelection;
-    QAction *actUncommentSelection;
+    QAction *actCommentAndUncommentSelection;
     QAction *actGotoLine;
 
     QAction *actRunPython;
@@ -257,8 +256,8 @@ private slots:
 
     void indentSelection();
     void unindentSelection();
-    void commentSelection();
-    void uncommentSelection();
+    void indentAndUnindentSelection(bool doIndent);
+    void commentAndUncommentSelection();
 
     void insertCompletion(const QString& completion);
 

@@ -29,6 +29,42 @@
 #include "gui/about.h"
 
 const QString TABS = "    ";
+const int TABS_SIZE = 4;
+
+int firstNonSpace(const QString& text)
+{
+    int i = 0;
+    while (i < text.size())
+    {
+        if (!text.at(i).isSpace())
+            return i;
+        ++i;
+    }
+    return i;
+}
+
+int indentedColumn(int column, bool doIndent)
+{
+    int aligned = (column / TABS_SIZE) * TABS_SIZE;
+    if (doIndent)
+        return aligned + TABS_SIZE;
+    if (aligned < column)
+        return aligned;
+    return qMax(0, aligned - TABS_SIZE);
+}
+
+int columnAt(const QString& text, int position)
+{
+    int column = 0;
+    for (int i = 0; i < position; ++i)
+    {
+        if (text.at(i) == QLatin1Char('\t'))
+            column = column - (column % TABS_SIZE) + TABS_SIZE;
+        else
+            ++column;
+    }
+    return column;
+}
 
 PythonEditorWidget::PythonEditorWidget(PythonEngine *pythonEngine, QWidget *parent)
     : QWidget(parent), pythonEngine(pythonEngine)
@@ -428,10 +464,8 @@ void PythonEditorDialog::createActions()
     actIndentSelection = new QAction(icon(""), tr("Indent"), this);
     actUnindentSelection = new QAction(icon(""), tr("Unindent"), this);
 
-    actCommentSelection = new QAction(icon(""), tr("Comment"), this);
-    // actCommentSelection->setShortcut(tr("Ctrl+"));
-    actUncommentSelection = new QAction(icon(""), tr("Uncomment"), this);
-    actUncommentSelection->setShortcut(tr("Ctrl+U"));
+    actCommentAndUncommentSelection = new QAction(icon(""), tr("Toggle comment selection"), this);
+    actCommentAndUncommentSelection->setShortcut(tr("Ctrl+/"));
 
     actGotoLine = new QAction(icon(""), tr("Goto line"), this);
     actGotoLine->setShortcut(tr("Alt+G"));
@@ -520,8 +554,7 @@ void PythonEditorDialog::createControls()
     mnuEdit->addAction(actIndentSelection);
     mnuEdit->addAction(actUnindentSelection);
     mnuEdit->addSeparator();
-    mnuEdit->addAction(actCommentSelection);
-    mnuEdit->addAction(actUncommentSelection);
+    mnuEdit->addAction(actCommentAndUncommentSelection);
     mnuEdit->addSeparator();
     mnuEdit->addAction(actGotoLine);
 
@@ -1122,10 +1155,8 @@ void PythonEditorDialog::doCurrentPageChanged(int index)
     connect(actIndentSelection, SIGNAL(triggered()), txtEditor, SLOT(indentSelection()));
     actUnindentSelection->disconnect();
     connect(actUnindentSelection, SIGNAL(triggered()), txtEditor, SLOT(unindentSelection()));
-    actCommentSelection->disconnect();
-    connect(actCommentSelection, SIGNAL(triggered()), txtEditor, SLOT(commentSelection()));
-    actUncommentSelection->disconnect();
-    connect(actUncommentSelection, SIGNAL(triggered()), txtEditor, SLOT(uncommentSelection()));
+    actCommentAndUncommentSelection->disconnect();
+    connect(actCommentAndUncommentSelection, SIGNAL(triggered()), txtEditor, SLOT(commentAndUncommentSelection()));
     actGotoLine->disconnect();
     connect(actGotoLine, SIGNAL(triggered()), txtEditor, SLOT(gotoLine()));
 
@@ -1263,8 +1294,28 @@ void ScriptEditor::resizeEvent(QResizeEvent *e)
     lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
 }
 
+void ScriptEditor::updateLineNumberAreaWidth(int /* newBlockCount */)
+{
+    setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
+}
+
+void ScriptEditor::updateLineNumberArea(const QRect &rect, int dy)
+{
+    if (dy)
+        lineNumberArea->scroll(0, dy);
+    else
+        lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());
+
+    if (rect.contains(viewport()->rect()))
+        updateLineNumberAreaWidth(0);
+}
+
 void ScriptEditor::keyPressEvent(QKeyEvent *event)
 {
+    QTextCursor cursor = textCursor();
+    int oldPos = cursor.position();
+    int indent = firstNonSpace(cursor.block().text());
+
     if (completer && completer->popup()->isVisible())
     {
         // The following keys are forwarded by the completer to the widget
@@ -1283,25 +1334,73 @@ void ScriptEditor::keyPressEvent(QKeyEvent *event)
         }
     }
 
-    if (event->key() == Qt::Key_Tab)
+    if (event->key() == Qt::Key_Tab && !(event->modifiers() & Qt::ShiftModifier))
     {
-        if (textCursor().hasSelection())
+        if (!textCursor().hasSelection())
         {
+            // insert 4 spaces instead of tab
+            textCursor().insertText(QString(4, ' '));
+        }
+        else
+        {
+            // indent the selection
             indentSelection();
-            return;
         }
     }
-
-    if (event->key() == Qt::Key_Backtab)
+    else if (event->key() == Qt::Key_Backtab && (event->modifiers() & Qt::ShiftModifier))
     {
-        if (textCursor().hasSelection())
+        if (!textCursor().hasSelection())
         {
+            // moves position backward 4 spaces
+            QTextCursor cursor = textCursor();
+            cursor.setPosition(cursor.position() - 4, QTextCursor::MoveAnchor);
+            setTextCursor(cursor);
+        }
+        else
+        {
+            // unindent the selection
             unindentSelection();
-            return;
         }
     }
+    else if ((event->key() == Qt::Key_Backspace) && (document()->characterAt(oldPos - 1) == ' '))
+    {
+        cursor.beginEditBlock();
+        // determine selection to delete
+        int newPos = oldPos - 4;
+        cursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::MoveAnchor);
+        int startPosOfLine = cursor.position();
+        if (newPos < startPosOfLine)
+            newPos = startPosOfLine;
+        // make selection
+        cursor.setPosition(oldPos, QTextCursor::MoveAnchor);
+        cursor.setPosition(newPos, QTextCursor::KeepAnchor);
+        cursor.deleteChar();
+        cursor.endEditBlock();
+        setTextCursor(cursor);
+    }
+    else if ((event->key() == Qt::Key_Return) && (indent))
+    {
+        cursor.beginEditBlock();
 
-    QPlainTextEdit::keyPressEvent(event);
+        // add 1 extra indent if current line begins a code block
+        bool inCodeBlock = false;
+        if (QRegExp("\\:").indexIn(cursor.block().text()) != -1)
+        {
+            indent += TABS_SIZE;
+            inCodeBlock = true;
+        }
+
+        cursor.insertBlock();
+        QString spaces(indent, true ? QLatin1Char(' ') : QLatin1Char('\t'));
+        cursor.insertText(spaces);
+
+        cursor.endEditBlock();
+        setTextCursor(cursor);
+    }
+    else
+    {
+        QPlainTextEdit::keyPressEvent(event);
+    }
 
     if ((event->key() == Qt::Key_Space && event->modifiers() & Qt::ControlModifier)
             || completer->popup()->isVisible())
@@ -1337,112 +1436,121 @@ void ScriptEditor::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void ScriptEditor::updateLineNumberAreaWidth(int /* newBlockCount */)
-{
-    setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
-}
-
-void ScriptEditor::updateLineNumberArea(const QRect &rect, int dy)
-{
-    if (dy)
-        lineNumberArea->scroll(0, dy);
-    else
-        lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());
-
-    if (rect.contains(viewport()->rect()))
-        updateLineNumberAreaWidth(0);
-}
-
 void ScriptEditor::indentSelection()
 {
-    QTextCursor cursor = textCursor();
-    if (cursor.hasSelection())
-    {
-        bool go = true;
-        int start = cursor.selectionStart();
-        int end = cursor.selectionEnd();
-
-        cursor.setPosition(start, QTextCursor::MoveAnchor);
-        cursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::MoveAnchor);
-
-        while (cursor.position() < end && go)
-        {
-            cursor.insertText("\t");
-            end++;
-            go = cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor);
-        }
-    }
+    indentAndUnindentSelection(true);
 }
 
 void ScriptEditor::unindentSelection()
 {
-    QTextCursor cursor = textCursor();
-    if (cursor.hasSelection())
-    {
-        bool go = true;
-        int start = cursor.selectionStart();
-        int end = cursor.selectionEnd();
-
-        cursor.setPosition(start, QTextCursor::MoveAnchor);
-        cursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::MoveAnchor);
-
-        while (cursor.position() < end && go)
-        {
-            cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-            if (cursor.selectedText() == "\t")
-            {
-                cursor.removeSelectedText();
-                end--;
-            }
-            go = cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor);
-        }
-    }
+    indentAndUnindentSelection(false);
 }
 
-void ScriptEditor::commentSelection()
+void ScriptEditor::indentAndUnindentSelection(bool doIndent)
 {
     QTextCursor cursor = textCursor();
-    if (cursor.hasSelection())
+    cursor.beginEditBlock();
+
+    // indent or unindent the selected lines
+    int pos = cursor.position();
+    int anchor = cursor.anchor();
+    int start = qMin(anchor, pos);
+    int end = qMax(anchor, pos);
+
+    QTextDocument *doc = document();
+    QTextBlock startBlock = doc->findBlock(start);
+    QTextBlock endBlock = doc->findBlock(end-1).next();
+
+    for (QTextBlock block = startBlock; block != endBlock; block = block.next())
     {
-        bool go = true;
-        int start = cursor.selectionStart();
-        int end = cursor.selectionEnd();
+        QString text = block.text();
+        if (doIndent)
+        {
+            int indentPosition = firstNonSpace(text);
+            cursor.setPosition(block.position() + indentPosition);
+            cursor.insertText(QString(TABS_SIZE, ' '));
+        }
+        else
+        {
+            int indentPosition = firstNonSpace(text);
+            int targetColumn = indentedColumn(columnAt(text, indentPosition), false);
+            cursor.setPosition(block.position() + indentPosition);
+            cursor.setPosition(block.position() + targetColumn, QTextCursor::KeepAnchor);
+            cursor.removeSelectedText();
+        }
+    }
 
-        cursor.setPosition(start, QTextCursor::MoveAnchor);
+    // reselect the selected lines
+    cursor.setPosition(startBlock.position());
+    cursor.setPosition(endBlock.previous().position(), QTextCursor::KeepAnchor);
+    cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
+
+    cursor.endEditBlock();
+    setTextCursor(cursor);
+}
+
+void ScriptEditor::commentAndUncommentSelection()
+{
+    QTextCursor cursor = textCursor();
+    cursor.beginEditBlock();
+
+    // previous selection state
+    int selStart = cursor.selectionStart();
+    int selEnd = cursor.selectionEnd();
+    cursor.setPosition(selEnd, QTextCursor::MoveAnchor);
+    int blockEnd = cursor.blockNumber();
+
+    // extend selStart to first blocks's start-of-block
+    // extend selEnd to last block's end-of-block
+    cursor.setPosition(selStart, QTextCursor::MoveAnchor);
+    cursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::MoveAnchor);
+    selStart = cursor.position();
+    cursor.setPosition(selEnd, QTextCursor::MoveAnchor);
+    cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::MoveAnchor);
+    selEnd = cursor.position();
+
+    // process first block
+    cursor.setPosition(selStart, QTextCursor::MoveAnchor);
+    QRegExp commentPattern("^#");
+    if (commentPattern.indexIn(cursor.block().text()) == -1)
+    {
+        // comment it, if the block does not starts with '#'
+        cursor.insertText("#");
+        selEnd += 1;
+    }
+    else
+    {
+        // else uncomment it
+        cursor.setPosition(selStart + commentPattern.matchedLength(), QTextCursor::KeepAnchor);
+        cursor.deleteChar();
+        selEnd -= 1;
+    }
+
+    // loop through all blocks
+    while (cursor.blockNumber() < blockEnd)
+    {
+        cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor);
         cursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::MoveAnchor);
-
-        while (cursor.position() < end && go)
+        if (commentPattern.indexIn(cursor.block().text()) == -1)
         {
             cursor.insertText("#");
-            end++;
-            go = cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor);
+            selEnd += 1;
         }
-    }
-}
-
-void ScriptEditor::uncommentSelection()
-{
-    QTextCursor cursor = textCursor();
-    if (cursor.hasSelection())
-    {
-        bool go = true;
-        int start = cursor.selectionStart();
-        int end = cursor.selectionEnd();
-
-        cursor.setPosition(start, QTextCursor::MoveAnchor);
-        cursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::MoveAnchor);
-
-        while (cursor.position() < end && go)
+        else
         {
-            cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-            if (cursor.selectedText() == "#")
-            {
-                cursor.removeSelectedText();
-                end--;
-            }
-            go = cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor);
+            cursor.setPosition(cursor.position() + commentPattern.matchedLength(), QTextCursor::KeepAnchor);
+            cursor.deleteChar();
+            selEnd -= 1;
         }
     }
+
+    // restore selection state
+    cursor.setPosition(selStart, QTextCursor::MoveAnchor);
+    cursor.setPosition(selEnd, QTextCursor::KeepAnchor);
+
+    // update
+    cursor.endEditBlock();
+    setTextCursor(cursor);
 }
 
 void ScriptEditor::gotoLine(int line, bool isError)
