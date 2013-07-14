@@ -903,7 +903,6 @@ void SceneViewParticleTracing::paintParticleTracing()
                 if (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleShowPoints).toBool())
                 {
                     glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt() * 3.0/5.0);
-
                     glBegin(GL_POINTS);
                     for (int i = 0; i < m_positionsList[k].length(); i++)
                     {
@@ -943,9 +942,9 @@ void SceneViewParticleTracing::paintParticleTracing()
                     glEnd();
 
                     // points
-                    glBegin(GL_POINTS);
                     if (Agros2D::problem()->setting()->value(ProblemSetting::View_ParticleShowPoints).toBool())
                     {
+                        glBegin(GL_POINTS);
                         glPointSize(Agros2D::problem()->setting()->value(ProblemSetting::View_NodeSize).toInt() * 3.0/5.0);
                         for (int i = 0; i < m_positionsList[k].length(); i++)
                         {
@@ -953,8 +952,8 @@ void SceneViewParticleTracing::paintParticleTracing()
                                        m_positionsList[k][i].y,
                                        m_positionsList[k][i].x * sin(m_positionsList[k][i].z + l * stepAngle/180.0 * M_PI));
                         }
+                        glEnd();
                     }
-                    glEnd();
                 }
             }
         }
