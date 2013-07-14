@@ -112,7 +112,11 @@ def get_handler(debug=False, syslog=False, logfile=None, rotation_parameters=Non
     else:
         try:
             if rotation_parameters is None:
-                handler = logging.FileHandler(logfile)
+                if os.name == 'posix' and sys.version_info >= (2, 6):
+                    from logging.handlers import WatchedFileHandler
+                    handler = WatchedFileHandler(logfile)
+                else:
+                    handler = logging.FileHandler(logfile)
             else:
                 from logging.handlers import TimedRotatingFileHandler
                 handler = TimedRotatingFileHandler(
@@ -132,9 +136,20 @@ def get_threshold(debug=False, logthreshold=None):
                                                           logthreshold))
     return logthreshold
 
-def get_formatter(logformat=LOG_FORMAT, logdateformat=LOG_DATE_FORMAT):
+def _colorable_terminal():
     isatty = hasattr(sys.__stdout__, 'isatty') and sys.__stdout__.isatty()
-    if isatty and sys.platform != 'win32':
+    if not isatty:
+        return False
+    if os.name == 'nt':
+        try:
+            from colorama import init as init_win32_colors
+        except ImportError:
+            return False
+        init_win32_colors()
+    return True
+
+def get_formatter(logformat=LOG_FORMAT, logdateformat=LOG_DATE_FORMAT):
+    if _colorable_terminal():
         fmt = ColorFormatter(logformat, logdateformat)
         def col_fact(record):
             if 'XXX' in record.message:

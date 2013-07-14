@@ -1,4 +1,4 @@
-# copyright 2003-2011 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
+# copyright 2003-2012 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
 # contact http://www.logilab.fr/ -- mailto:contact@logilab.fr
 #
 # This file is part of logilab-common.
@@ -16,12 +16,14 @@
 # You should have received a copy of the GNU Lesser General Public License along
 # with logilab-common.  If not, see <http://www.gnu.org/licenses/>.
 """Date manipulation helper functions."""
+from __future__ import division
 
 __docformat__ = "restructuredtext en"
 
 import math
 import re
-from locale import getpreferredencoding
+import sys
+from locale import getlocale, LC_TIME
 from datetime import date, time, datetime, timedelta
 from time import strptime as time_strptime
 from calendar import monthrange, timegm
@@ -278,32 +280,54 @@ def last_day(somedate):
 
 def ustrftime(somedate, fmt='%Y-%m-%d'):
     """like strftime, but returns a unicode string instead of an encoded
-    string which' may be problematic with localized date.
-
-    encoding is guessed by locale.getpreferredencoding()
+    string which may be problematic with localized date.
     """
-    encoding = getpreferredencoding(do_setlocale=False) or 'UTF-8'
-    try:
-        return unicode(somedate.strftime(str(fmt)), encoding)
-    except ValueError, exc:
-        if somedate.year >= 1900:
-            raise
-        # datetime is not happy with dates before 1900
-        # we try to work around this, assuming a simple
-        # format string
-        fields = {'Y': somedate.year,
-                  'm': somedate.month,
-                  'd': somedate.day,
-                  }
-        if isinstance(somedate, datetime):
-            fields.update({'H': somedate.hour,
-                           'M': somedate.minute,
-                           'S': somedate.second})
-        fmt = re.sub('%([YmdHMS])', r'%(\1)02d', fmt)
-        return unicode(fmt) % fields
+    if sys.version_info >= (3, 3):
+        # datetime.date.strftime() supports dates since year 1 in Python >=3.3.
+        return somedate.strftime(fmt)
+    else:
+        try:
+            if sys.version_info < (3, 0):
+                encoding = getlocale(LC_TIME)[1] or 'ascii'
+                return unicode(somedate.strftime(str(fmt)), encoding)
+            else:
+                return somedate.strftime(fmt)
+        except ValueError, exc:
+            if somedate.year >= 1900:
+                raise
+            # datetime is not happy with dates before 1900
+            # we try to work around this, assuming a simple
+            # format string
+            fields = {'Y': somedate.year,
+                      'm': somedate.month,
+                      'd': somedate.day,
+                      }
+            if isinstance(somedate, datetime):
+                fields.update({'H': somedate.hour,
+                               'M': somedate.minute,
+                               'S': somedate.second})
+            fmt = re.sub('%([YmdHMS])', r'%(\1)02d', fmt)
+            return unicode(fmt) % fields
 
 def utcdatetime(dt):
+    if dt.tzinfo is None:
+        return dt
     return datetime(*dt.utctimetuple()[:7])
 
 def utctime(dt):
+    if dt.tzinfo is None:
+        return dt
     return (dt + dt.utcoffset() + dt.dst()).replace(tzinfo=None)
+
+def datetime_to_seconds(date):
+    """return the number of seconds since the begining of the day for that date
+    """
+    return date.second+60*date.minute + 3600*date.hour
+
+def timedelta_to_days(delta):
+    """return the time delta as a number of seconds"""
+    return delta.days + delta.seconds / (3600*24)
+
+def timedelta_to_seconds(delta):
+    """return the time delta as a fraction of days"""
+    return delta.days*(3600*24) + delta.seconds

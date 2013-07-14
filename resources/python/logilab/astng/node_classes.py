@@ -1,7 +1,5 @@
-# copyright 2003-2010 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
+# copyright 2003-2013 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
 # contact http://www.logilab.fr/ -- mailto:contact@logilab.fr
-# copyright 2003-2010 Sylvain Thenault, all rights reserved.
-# contact mailto:thenault@gmail.com
 #
 # This file is part of logilab-astng.
 #
@@ -24,7 +22,7 @@ import sys
 
 from logilab.astng.exceptions import NoDefault
 from logilab.astng.bases import (NodeNG, Statement, Instance, InferenceContext,
-                                 _infer_stmts, YES)
+                                 _infer_stmts, YES, BUILTINS)
 from logilab.astng.mixins import BlockRangeMixIn, AssignTypeMixin, \
                                  ParentAssignTypeMixin, FromImportMixIn
 
@@ -38,13 +36,18 @@ def unpack_infer(stmt, context=None):
             for infered_elt in unpack_infer(elt, context):
                 yield infered_elt
         return
+    # if infered is a final node, return it and stop
     infered = stmt.infer(context).next()
-    if infered is stmt or infered is YES:
+    if infered is stmt:
         yield infered
         return
+    # else, infer recursivly, except YES object that should be returned as is
     for infered in stmt.infer(context):
-        for inf_inf in unpack_infer(infered, context):
-            yield inf_inf
+        if infered is YES:
+            yield infered
+        else:
+            for inf_inf in unpack_infer(infered, context):
+                yield inf_inf
 
 
 def are_exclusive(stmt1, stmt2, exceptions=None):
@@ -434,7 +437,7 @@ class Const(NodeNG, Instance):
 
     def getitem(self, index, context=None):
         if isinstance(self.value, basestring):
-            return self.value[index]
+            return Const(self.value[index])
         raise TypeError('%r (value=%s)' % (self, self.value))
 
     def has_dynamic_getattr(self):
@@ -489,7 +492,7 @@ class Dict(NodeNG, Instance):
                           for k,v in items.iteritems()]
 
     def pytype(self):
-        return '__builtin__.dict'
+        return '%s.dict' % BUILTINS
 
     def get_children(self):
         """get children of a Dict node"""
@@ -507,14 +510,16 @@ class Dict(NodeNG, Instance):
     def itered(self):
         return self.items[::2]
 
-    def getitem(self, key, context=None):
-        for i in xrange(0, len(self.items), 2):
-            for inferedkey in self.items[i].infer(context):
+    def getitem(self, lookup_key, context=None):
+        for key, value in self.items:
+            for inferedkey in key.infer(context):
                 if inferedkey is YES:
                     continue
-                if isinstance(inferedkey, Const) and inferedkey.value == key:
-                    return self.items[i+1]
-        raise IndexError(key)
+                if isinstance(inferedkey, Const) and inferedkey.value == lookup_key:
+                    return value
+        # This should raise KeyError, but all call sites only catch
+        # IndexError. Let's leave it like that for now.
+        raise IndexError(lookup_key)
 
 
 class Discard(Statement):
@@ -664,7 +669,7 @@ class List(NodeNG, Instance, ParentAssignTypeMixin):
             self.elts = [const_factory(e) for e in elts]
 
     def pytype(self):
-        return '__builtin__.list'
+        return '%s.list' % BUILTINS
 
     def getitem(self, index, context=None):
         return self.elts[index]
@@ -731,7 +736,7 @@ class Set(NodeNG, Instance, ParentAssignTypeMixin):
             self.elts = [const_factory(e) for e in elts]
 
     def pytype(self):
-        return '__builtin__.set' # XXX __builtin__ vs builtins
+        return '%s.set' % BUILTINS
 
     def itered(self):
         return self.elts
@@ -744,7 +749,7 @@ class Slice(NodeNG):
     upper = None
     step = None
 
-class Starred(NodeNG):
+class Starred(NodeNG, ParentAssignTypeMixin):
     """class representing a Starred node"""
     _astng_fields = ('value',)
     value = None
@@ -813,7 +818,7 @@ class Tuple(NodeNG, Instance, ParentAssignTypeMixin):
             self.elts = [const_factory(e) for e in elts]
 
     def pytype(self):
-        return '__builtin__.tuple'
+        return '%s.tuple' % BUILTINS
 
     def getitem(self, index, context=None):
         return self.elts[index]
@@ -885,13 +890,15 @@ _update_const_classes()
 
 def const_factory(value):
     """return an astng node for a python value"""
+    # XXX we should probably be stricter here and only consider stuff in
+    # CONST_CLS or do better treatment: in case where value is not in CONST_CLS,
+    # we should rather recall the builder on this value than returning an empty
+    # node (another option being that const_factory shouldn't be called with something
+    # not in CONST_CLS)
+    assert not isinstance(value, NodeNG)
     try:
         return CONST_CLS[value.__class__](value)
     except (KeyError, AttributeError):
-        # some constants (like from gtk._gtk) don't have their class in
-        # CONST_CLS, though we can "assert isinstance(value, tuple(CONST_CLS))"
-        if isinstance(value, tuple(CONST_CLS)):
-            return Const(value)
         node = EmptyNode()
         node.object = value
-        return None
+        return node

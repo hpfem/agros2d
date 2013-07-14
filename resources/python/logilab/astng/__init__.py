@@ -1,19 +1,5 @@
-# This program is free software; you can redistribute it and/or modify it under
-# the terms of the GNU Lesser General Public License as published by the Free Software
-# Foundation; either version 2 of the License, or (at your option) any later
-# version.
-#
-# This program is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License along with
-# this program; if not, write to the Free Software Foundation, Inc.,
-# 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-# copyright 2003-2010 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
+# copyright 2003-2013 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
 # contact http://www.logilab.fr/ -- mailto:contact@logilab.fr
-# copyright 2003-2010 Sylvain Thenault, all rights reserved.
-# contact mailto:thenault@gmail.com
 #
 # This file is part of logilab-astng.
 #
@@ -36,7 +22,7 @@ python source code for projects such as pychecker, pyreverse,
 pylint... Well, actually the development of this library is essentially
 governed by pylint's needs.
 
-It extends class defined in the compiler.ast [1] module with some
+It extends class defined in the python's _ast module with some
 additional methods and attributes. Instance attributes are added by a
 builder object, which can either generate extended ast (let's call
 them astng ;) by visiting an existent ast tree or by inspecting living
@@ -52,10 +38,10 @@ Main modules are:
   constructed tree for quick access
 
 * builder contains the class responsible to build astng trees
-
-
 """
 __doctype__ = "restructuredtext en"
+
+import sys
 
 # WARNING: internal imports order matters !
 
@@ -80,3 +66,14 @@ from logilab.astng.manager import ASTNGManager, Project
 MANAGER = ASTNGManager()
 del ASTNGManager
 
+# load brain plugins
+from os import listdir
+from os.path import join, dirname
+BRAIN_MODULES_DIR = join(dirname(__file__), 'brain')
+if BRAIN_MODULES_DIR not in sys.path:
+    # add it to the end of the list so user path take precedence
+    sys.path.append(BRAIN_MODULES_DIR)
+# load modules in this directory
+for module in listdir(BRAIN_MODULES_DIR):
+    if module.endswith('.py'):
+        __import__(module[:-3])

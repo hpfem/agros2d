@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# copyright 2003-2011 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
+# copyright 2003-2012 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
 # contact http://www.logilab.fr/ -- mailto:contact@logilab.fr
 #
 # This file is part of logilab-common.
@@ -53,8 +53,10 @@ import warnings
 from shutil import rmtree
 from operator import itemgetter
 from ConfigParser import ConfigParser
-from logilab.common.deprecation import deprecated
 from itertools import dropwhile
+
+from logilab.common.deprecation import deprecated
+from logilab.common.compat import builtins
 
 import unittest as unittest_legacy
 if not getattr(unittest_legacy, "__package__", None):
@@ -62,7 +64,7 @@ if not getattr(unittest_legacy, "__package__", None):
         import unittest2 as unittest
         from unittest2 import SkipTest
     except ImportError:
-        sys.exit("You have to install python-unittest2 to use this module")
+        raise ImportError("You have to install python-unittest2 to use %s" % __name__)
 else:
     import unittest
     from unittest import SkipTest
@@ -122,6 +124,21 @@ __unittest = 1
 def with_tempdir(callable):
     """A decorator ensuring no temporary file left when the function return
     Work only for temporary file create with the tempfile module"""
+    if is_generator(callable):
+        def proxy(*args, **kwargs):
+            old_tmpdir = tempfile.gettempdir()
+            new_tmpdir = tempfile.mkdtemp(prefix="temp-lgc-")
+            tempfile.tempdir = new_tmpdir
+            try:
+                for x in callable(*args, **kwargs):
+                    yield x
+            finally:
+                try:
+                    rmtree(new_tmpdir, ignore_errors=True)
+                finally:
+                    tempfile.tempdir = old_tmpdir
+        return proxy
+
     @wraps(callable)
     def proxy(*args, **kargs):
 
@@ -484,8 +501,8 @@ class TestCase(unittest.TestCase):
 
     def __init__(self, methodName='runTest'):
         super(TestCase, self).__init__(methodName)
-        # internal API changed in python2.5
-        if sys.version_info >= (2, 5):
+        # internal API changed in python2.4 and needed by DocTestCase
+        if sys.version_info >= (2, 4):
             self.__exc_info = sys.exc_info
             self.__testMethodName = self._testMethodName
         else:
@@ -950,7 +967,7 @@ succeeded test into", osp.join(os.getcwd(), FILE_RESTART)
     def assertTextEquals(self, text1, text2, junk=None,
             msg_prefix='Text differ', striplines=False):
         """compare two multiline strings (using difflib and splitlines())
-        
+
         :param text1: a Python BaseString
         :param text2: a second Python Basestring
         :param junk: List of Caracters
@@ -1022,7 +1039,7 @@ succeeded test into", osp.join(os.getcwd(), FILE_RESTART)
                 partial_iter = True
 
 
-                self.assert_(ipath_a == ipath_b,
+                self.assertTrue(ipath_a == ipath_b,
                     "unexpected %s in %s while looking %s from %s" %
                     (ipath_a, path_a, ipath_b, path_b))
 
@@ -1080,9 +1097,9 @@ succeeded test into", osp.join(os.getcwd(), FILE_RESTART)
                 msg = '%r is not an instance of %s but of %s'
             msg = msg % (obj, klass, type(obj))
         if strict:
-            self.assert_(obj.__class__ is klass, msg)
+            self.assertTrue(obj.__class__ is klass, msg)
         else:
-            self.assert_(isinstance(obj, klass), msg)
+            self.assertTrue(isinstance(obj, klass), msg)
 
     @deprecated('Please use assertIsNone instead.')
     def assertNone(self, obj, msg=None):
@@ -1092,14 +1109,14 @@ succeeded test into", osp.join(os.getcwd(), FILE_RESTART)
         """
         if msg is None:
             msg = "reference to %r when None expected"%(obj,)
-        self.assert_( obj is None, msg )
+        self.assertTrue( obj is None, msg )
 
     @deprecated('Please use assertIsNotNone instead.')
     def assertNotNone(self, obj, msg=None):
         """assert obj is not None"""
         if msg is None:
             msg = "unexpected reference to None"
-        self.assert_( obj is not None, msg )
+        self.assertTrue( obj is not None, msg )
 
     @deprecated('Non-standard. Please use assertAlmostEqual instead.')
     def assertFloatAlmostEquals(self, obj, other, prec=1e-5,
@@ -1117,7 +1134,7 @@ succeeded test into", osp.join(os.getcwd(), FILE_RESTART)
             msg = "%r != %r" % (obj, other)
         if relative:
             prec = prec*math.fabs(obj)
-        self.assert_(math.fabs(obj - other) < prec, msg)
+        self.assertTrue(math.fabs(obj - other) < prec, msg)
 
     def failUnlessRaises(self, excClass, callableObj=None, *args, **kwargs):
         """override default failUnlessRaises method to return the raised
@@ -1166,6 +1183,10 @@ succeeded test into", osp.join(os.getcwd(), FILE_RESTART)
 
     assertRaises = failUnlessRaises
 
+    if not hasattr(unittest.TestCase, 'assertItemsEqual'):
+        # python 3.2 has deprecated assertSameElements and is missing
+        # assertItemsEqual
+        assertItemsEqual = unittest.TestCase.assertSameElements
 
 import doctest
 
@@ -1207,11 +1228,21 @@ class DocTest(TestCase):
             finder = DocTestFinder(skipped=self.skipped)
             if sys.version_info >= (2, 4):
                 suite = doctest.DocTestSuite(self.module, test_finder=finder)
+                if sys.version_info >= (2, 5):
+                    # XXX iirk
+                    doctest.DocTestCase._TestCase__exc_info = sys.exc_info
             else:
                 suite = doctest.DocTestSuite(self.module)
         except AttributeError:
             suite = SkippedSuite()
-        return suite.run(result)
+        # doctest may gork the builtins dictionnary
+        # This happen to the "_" entry used by gettext
+        old_builtins = builtins.__dict__.copy()
+        try:
+            return suite.run(result)
+        finally:
+            builtins.__dict__.clear()
+            builtins.__dict__.update(old_builtins)
     run = __call__
 
     def test(self):

@@ -1,6 +1,6 @@
 # pylint: disable=W0611
 #
-# Copyright (c) 2003-2010 LOGILAB S.A. (Paris, FRANCE).
+# Copyright (c) 2003-2013 LOGILAB S.A. (Paris, FRANCE).
 # http://www.logilab.fr/ -- mailto:contact@logilab.fr
 #
 # This program is free software; you can redistribute it and/or modify it under
@@ -20,9 +20,11 @@
 
 import re
 import string
+
 from logilab import astng
 from logilab.astng import scoped_nodes
 from logilab.common.compat import builtins
+
 BUILTINS_NAME = builtins.__name__
 
 COMP_NODE_TYPES = astng.ListComp, astng.SetComp, astng.DictComp, astng.GenExpr
@@ -65,7 +67,7 @@ def clobber_in_except(node):
             if (stmts and
                 not isinstance(stmts[0].ass_type(),
                                (astng.Assign, astng.AugAssign, astng.ExceptHandler))):
-                return (True, (name, 'outer scope (line %i)' % (stmts[0].lineno,)))
+                return (True, (name, 'outer scope (line %s)' % (stmts[0].fromlineno,)))
     return (False, None)
 
 
@@ -365,6 +367,7 @@ def is_super_call(expr):
     return (isinstance(expr, astng.CallFunc) and
         isinstance(expr.func, astng.Name) and
         expr.func.name == 'super')
+
 def is_attr_private(attrname):
     """Check that attribute name is private (at least two leading underscores,
     at most one trailing underscore)

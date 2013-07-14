@@ -1,19 +1,5 @@
-# This program is free software; you can redistribute it and/or modify it under
-# the terms of the GNU Lesser General Public License as published by the Free Software
-# Foundation; either version 2 of the License, or (at your option) any later
-# version.
-#
-# This program is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License along with
-# this program; if not, write to the Free Software Foundation, Inc.,
-# 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-# copyright 2003-2010 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
+# copyright 2003-2013 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
 # contact http://www.logilab.fr/ -- mailto:contact@logilab.fr
-# copyright 2003-2010 Sylvain Thenault, all rights reserved.
-# contact mailto:thenault@gmail.com
 #
 # This file is part of logilab-astng.
 #
@@ -46,7 +32,6 @@ from _ast import (Expr as Discard, Str,
     Eq, Gt, GtE, In, Is, IsNot, Lt, LtE, NotEq, NotIn,
     )
 
-from logilab.astng.exceptions import ASTNGBuildingException
 from logilab.astng import nodes as new
 
 
@@ -117,11 +102,15 @@ def _lineno_parent(oldnode, newnode, parent):
     newnode.parent = parent
     if hasattr(oldnode, 'lineno'):
         newnode.lineno = oldnode.lineno
+    if hasattr(oldnode, 'col_offset'):
+        newnode.col_offset = oldnode.col_offset
 
 def _set_infos(oldnode, newnode, parent):
     newnode.parent = parent
     if hasattr(oldnode, 'lineno'):
         newnode.lineno = oldnode.lineno
+    if hasattr(oldnode, 'col_offset'):
+        newnode.col_offset = oldnode.col_offset
     newnode.set_line_info(newnode.last_child()) # set_line_info accepts None
 
 
@@ -219,6 +208,8 @@ class TreeRebuilder(object):
                     if isinstance(meth, new.Function):
                         if func_name in ('classmethod', 'staticmethod'):
                             meth.type = func_name
+                        elif func_name == 'classproperty': # see lgc.decorators
+                            meth.type = 'classmethod'
                         meth.extra_decorators.append(newnode.value)
                 except (AttributeError, KeyError):
                     continue
@@ -463,7 +454,7 @@ class TreeRebuilder(object):
     def visit_from(self, node, parent):
         """visit a From node by returning a fresh instance of it"""
         names = [(alias.name, alias.asname) for alias in node.names]
-        newnode = new.From(node.module or '', names, node.level)
+        newnode = new.From(node.module or '', names, node.level or None)
         _set_infos(node, newnode, parent)
         # store From names to add them to locals after building
         self._from_nodes.append(newnode)
@@ -494,9 +485,11 @@ class TreeRebuilder(object):
                 newnode.type = 'method'
         if newnode.decorators is not None:
             for decorator_expr in newnode.decorators.nodes:
-                if isinstance(decorator_expr, new.Name) and \
-                       decorator_expr.name in ('classmethod', 'staticmethod'):
-                    newnode.type = decorator_expr.name
+                if isinstance(decorator_expr, new.Name):
+                    if decorator_expr.name in ('classmethod', 'staticmethod'):
+                        newnode.type = decorator_expr.name
+                    elif decorator_expr.name == 'classproperty':
+                        newnode.type = 'classmethod'
         frame.set_local(newnode.name, newnode)
         return newnode
 
@@ -704,7 +697,7 @@ class TreeRebuilder(object):
         return newnode
 
     def visit_set(self, node, parent):
-        """visit a Tuple node by returning a fresh instance of it"""
+        """visit a Set node by returning a fresh instance of it"""
         newnode = new.Set()
         _lineno_parent(node, newnode, parent)
         newnode.elts = [self.visit(child, newnode) for child in node.elts]
@@ -792,13 +785,13 @@ class TreeRebuilder(object):
         return newnode
 
     def visit_with(self, node, parent):
-        """visit a With node by returning a fresh instance of it"""
         newnode = new.With()
         _lineno_parent(node, newnode, parent)
-        newnode.expr = self.visit(node.context_expr, newnode)
+        _node = getattr(node, 'items', [node])[0] # python 3.3 XXX
+        newnode.expr = self.visit(_node.context_expr, newnode)
         self.asscontext = "Ass"
-        if node.optional_vars is not None:
-            newnode.vars = self.visit(node.optional_vars, newnode)
+        if _node.optional_vars is not None:
+            newnode.vars = self.visit(_node.optional_vars, newnode)
         self.asscontext = None
         newnode.body = [self.visit(child, newnode) for child in node.body]
         newnode.set_line_info(newnode.last_child())
@@ -861,6 +854,32 @@ class TreeRebuilder3k(TreeRebuilder):
         newnode.set_line_info(newnode.last_child())
         return newnode
 
+    def visit_try(self, node, parent):
+        # python 3.3 introduce a new Try node replacing TryFinally/TryExcept nodes
+        if node.finalbody:
+            newnode = new.TryFinally()
+            _lineno_parent(node, newnode, parent)
+            newnode.finalbody = [self.visit(n, newnode) for n in node.finalbody]
+            if node.handlers:
+                excnode = new.TryExcept()
+                _lineno_parent(node, excnode, parent)
+                excnode.body = [self.visit(child, newnode) for child in node.body]
+                excnode.handlers = [self.visit(child, newnode) for child in node.handlers]
+                excnode.orelse = [self.visit(child, newnode) for child in node.orelse]
+                newnode.body = [excnode]
+            else:
+                newnode.body = [self.visit(child, newnode) for child in node.body]
+        elif node.handlers:
+            newnode = new.TryExcept()
+            _lineno_parent(node, newnode, parent)
+            newnode.body = [self.visit(child, newnode) for child in node.body]
+            newnode.handlers = [self.visit(child, newnode) for child in node.handlers]
+            newnode.orelse = [self.visit(child, newnode) for child in node.orelse]
+        newnode.set_line_info(newnode.last_child())
+        return newnode
+
+    def visit_yieldfrom(self, node, parent):
+        return self.visit_yield(node, parent)
 
 if sys.version_info >= (3, 0):
     TreeRebuilder = TreeRebuilder3k

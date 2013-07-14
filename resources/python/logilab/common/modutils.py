@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# copyright 2003-2011 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
+# copyright 2003-2012 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
 # contact http://www.logilab.fr/ -- mailto:contact@logilab.fr
 #
 # This file is part of logilab-common.
@@ -34,6 +34,7 @@ import os
 from os.path import splitext, join, abspath, isdir, dirname, exists, basename
 from imp import find_module, load_module, C_BUILTIN, PY_COMPILED, PKG_DIRECTORY
 from distutils.sysconfig import get_config_var, get_python_lib, get_python_version
+from distutils.errors import DistutilsPlatformError
 
 try:
     import zipimport
@@ -53,12 +54,18 @@ from logilab.common import STD_BLACKLIST, _handle_blacklist
 if sys.platform.startswith('win'):
     PY_SOURCE_EXTS = ('py', 'pyw')
     PY_COMPILED_EXTS = ('dll', 'pyd')
-    STD_LIB_DIR = get_python_lib(standard_lib=1)
 else:
     PY_SOURCE_EXTS = ('py',)
     PY_COMPILED_EXTS = ('so',)
-    # extend lib dir with some arch-dependant paths
-    STD_LIB_DIR = join(get_config_var("LIBDIR"), "python%s" % get_python_version())
+
+try:
+    STD_LIB_DIR = get_python_lib(standard_lib=1)
+# get_python_lib(standard_lib=1) is not available on pypy, set STD_LIB_DIR to
+# non-valid path, see https://bugs.pypy.org/issue1164
+except DistutilsPlatformError:
+    STD_LIB_DIR = '//'
+
+EXT_LIB_DIR = get_python_lib()
 
 BUILTIN_MODULES = dict(zip(sys.builtin_module_names,
                            [1]*len(sys.builtin_module_names)))
@@ -75,7 +82,7 @@ class LazyObject(object):
         self.obj = obj
         self._imported = None
 
-    def __getobj(self):
+    def _getobj(self):
         if self._imported is None:
            self._imported = getattr(load_module_from_name(self.module),
                                     self.obj)
@@ -85,14 +92,14 @@ class LazyObject(object):
         try:
             return super(LazyObject, self).__getattribute__(attr)
         except AttributeError, ex:
-            return getattr(self.__getobj(), attr)
+            return getattr(self._getobj(), attr)
 
     def __call__(self, *args, **kwargs):
-        return self.__getobj()(*args, **kwargs)
+        return self._getobj()(*args, **kwargs)
 
 
 def load_module_from_name(dotted_name, path=None, use_sys=1):
-    """Load a Python module from it's name.
+    """Load a Python module from its name.
 
     :type dotted_name: str
     :param dotted_name: python name of a module or package
@@ -117,7 +124,7 @@ def load_module_from_name(dotted_name, path=None, use_sys=1):
 
 
 def load_module_from_modpath(parts, path=None, use_sys=1):
-    """Load a python module from it's splitted name.
+    """Load a python module from its splitted name.
 
     :type parts: list(str) or tuple(str)
     :param parts:
@@ -150,6 +157,9 @@ def load_module_from_modpath(parts, path=None, use_sys=1):
         module = None
         if len(modpath) != len(parts):
             # even with use_sys=False, should try to get outer packages from sys.modules
+            module = sys.modules.get(curname)
+        elif use_sys:
+            # because it may have been indirectly loaded through a parent
             module = sys.modules.get(curname)
         if module is None:
             mp_file, mp_filename, mp_desc = find_module(part, path)
@@ -230,10 +240,7 @@ def modpath_from_file(filename, extrapath=None):
                     return extrapath[path_].split('.') + submodpath
     for path in sys.path:
         path = abspath(path)
-        if path and base[:len(path)] == path:
-            if filename.find('site-packages') != -1 and \
-                   path.find('site-packages') == -1:
-                continue
+        if path and base.startswith(path):
             modpath = [pkg for pkg in base[len(path):].split(os.sep) if pkg]
             if _check_init(path, modpath[:-1]):
                 return modpath
@@ -493,13 +500,11 @@ def is_standard_module(modname, std_path=(STD_LIB_DIR,)):
     if filename is None:
         return 1
     filename = abspath(filename)
+    if filename.startswith(EXT_LIB_DIR):
+        return 0
     for path in std_path:
-        path = abspath(path)
-        if filename.startswith(path):
-            pfx_len = len(path)
-            if filename[pfx_len+1:pfx_len+14] != 'site-packages':
-                return 1
-            return 0
+        if filename.startswith(abspath(path)):
+            return 1
     return False
 
 

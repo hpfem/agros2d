@@ -1,5 +1,5 @@
 # pylint: disable=W0622,C0103
-# Copyright (c) 2003-2012 LOGILAB S.A. (Paris, FRANCE).
+# Copyright (c) 2003-2013 LOGILAB S.A. (Paris, FRANCE).
 # http://www.logilab.fr/ -- mailto:contact@logilab.fr
 #
 # This program is free software; you can redistribute it and/or modify it under
@@ -18,16 +18,14 @@
 
 modname = distname = 'pylint'
 
-numversion = (0, 26, 0)
+numversion = (0, 28, 0)
 version = '.'.join([str(num) for num in numversion])
 
-install_requires = ['logilab-common >= 0.53.0', 'logilab-astng >= 0.21.1']
+install_requires = ['logilab-common >= 0.53.0', 'logilab-astng >= 0.24.3']
 
 license = 'GPL'
-copyright = 'Logilab S.A.'
 description = "python code static checker"
-web = "http://www.logilab.org/project/%s" % distname
-ftp = "ftp://ftp.logilab.org/pub/%s" % modname
+web = 'http://www.pylint.org'
 mailinglist = "mailto://python-projects@lists.logilab.org"
 author = 'Logilab'
 author_email = 'python-projects@lists.logilab.org'

@@ -94,6 +94,7 @@ class CommandLine(dict):
         assert not self.check_duplicated_command or force or not cls.name in self, \
                'a command %s is already defined' % cls.name
         self[cls.name] = cls
+        return cls
 
     def run(self, args):
         """main command line access point:
@@ -120,6 +121,7 @@ class CommandLine(dict):
         if rcfile is not None and arg in ('-C', '--rc-file'):
             try:
                 rcfile = args.pop(0)
+                arg = args.pop(0)
             except IndexError:
                 self.usage_and_exit(1)
         try:

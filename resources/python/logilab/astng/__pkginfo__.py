@@ -1,7 +1,5 @@
-# copyright 2003-2010 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
+# copyright 2003-2013 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
 # contact http://www.logilab.fr/ -- mailto:contact@logilab.fr
-# copyright 2003-2010 Sylvain Thenault, all rights reserved.
-# contact mailto:thenault@gmail.com
 #
 # This file is part of logilab-astng.
 #
@@ -24,7 +22,7 @@ distname = 'logilab-astng'
 modname = 'astng'
 subpackage_of = 'logilab'
 
-numversion = (0, 21, 1)
+numversion = (0, 24, 3)
 version = '.'.join([str(num) for num in numversion])
 
 install_requires = ['logilab-common >= 0.53.0']
@@ -40,5 +38,13 @@ ftp = "ftp://ftp.logilab.org/pub/%s" % modname
 description = "rebuild a new abstract syntax tree from Python's ast"
 
 from os.path import join
-include_dirs = [join('test', 'regrtest_data'),
+include_dirs = ['brain',
+                join('test', 'regrtest_data'),
                 join('test', 'data'), join('test', 'data2')]
+
+classifiers = ["Topic :: Software Development :: Libraries :: Python Modules",
+               "Topic :: Software Development :: Quality Assurance",
+               "Programming Language :: Python",
+               "Programming Language :: Python :: 2",
+               "Programming Language :: Python :: 3",
+               ]

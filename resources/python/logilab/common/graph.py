@@ -226,10 +226,10 @@ def get_cycles(graph_dict, vertices=None):
     if vertices is None:
         vertices = graph_dict.keys()
     for vertice in vertices:
-        _get_cycles(graph_dict, vertice, [], result)
+        _get_cycles(graph_dict, [], set(), result, vertice)
     return result
 
-def _get_cycles(graph_dict, vertice=None, path=None, result=None):
+def _get_cycles(graph_dict, path, visited, result, vertice):
     """recursive function doing the real work for get_cycles"""
     if vertice in path:
         cycle = [vertice]
@@ -248,7 +248,10 @@ def _get_cycles(graph_dict, vertice=None, path=None, result=None):
     path.append(vertice)
     try:
         for node in graph_dict[vertice]:
-            _get_cycles(graph_dict, node, path, result)
+            # don't check already visited nodes again
+            if node not in visited:
+                _get_cycles(graph_dict, path, visited, result, node)
+                visited.add(node)
     except KeyError:
         pass
     path.pop()

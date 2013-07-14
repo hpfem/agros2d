@@ -386,10 +386,15 @@ a metaclass class method.'}
                 self.add_message('W0212', node=node, args=attrname)
                 return
 
+            # If the expression begins with a call to super, that's ok.
+            if isinstance(node.expr, astng.CallFunc) and \
+               isinstance(node.expr.func, astng.Name) and \
+               node.expr.func.name == 'super':
+                return
+
             # We are in a class, one remaining valid cases, Klass._attr inside
             # Klass
             if not (callee == klass.name or callee in klass.basenames):
-
                 self.add_message('W0212', node=node, args=attrname)
 
     def visit_name(self, node):
@@ -637,8 +642,8 @@ def _ancestors_to_call(klass_node, method='__init__'):
     to_call = {}
     for base_node in klass_node.ancestors(recurs=False):
         try:
-            to_call[base_node] = base_node.local_attr(method)[-1]
-        except astng.NotFoundError:
+            to_call[base_node] = base_node.igetattr(method).next()
+        except astng.InferenceError:
             continue
     return to_call
 

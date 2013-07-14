@@ -1,7 +1,101 @@
-ChangeLog for PyLint
+ChangeLog for Pylint
 ====================
 
---
+2013-04-25  --  0.28.0
+    * bitbucket #1: fix "dictionary changed size during iteration" crash
+
+    * #74013: new E1310[bad-str-strip-call] message warning when a call to a
+      {l,r,}strip method contains duplicate characters (patch by Torsten Marek)
+
+    * #123233: new E0108[duplicate-argument-name] message reporting duplicate
+      argument names
+
+    * #81378: emit W0120[useless-else-on-loop] for loops without break
+
+    * #124660: internal dependencies should not appear in external dependencies
+      report
+
+    * #124662: fix name error causing crash when symbols are included in output
+      messages
+
+    * #123285: apply pragmas for warnings attached to lines to physical source
+      code lines
+
+    * #123259: do not emit E0105 for yield expressions inside lambdas
+
+    * #123892: don't crash when attempting to show source code line that can't
+      be encoded with the current locale settings
+
+    * Simplify checks for dangerous default values by unifying tests for all
+      different mutable compound literals.
+
+    * Improve the description for E1124[redundant-keyword-arg]
+
+
+
+2013-02-26  --  0.27.0
+    * #20693: replace pylint.el by Ian Eure version (patch by J.Kotta)
+
+    * #105327: add support for --disable=all option and deprecate the
+      'disable-all' inline directive in favour of 'skip-file' (patch by
+      A.Fayolle)
+
+    * #110840: add messages I0020 and I0021 for reporting of suppressed
+      messages and useless suppression pragmas. (patch by Torsten Marek)
+
+    * #112728: add warning E0604 for non-string objects in __all__
+      (patch by Torsten Marek)
+
+    * #120657: add warning W0110/deprecated-lambda when a map/filter
+      of a lambda could be a comprehension (patch by Martin Pool)
+
+    * #113231: logging checker now looks at instances of Logger classes
+      in addition to the base logging module. (patch by Mike Bryant)
+
+    * #111799: don't warn about octal escape sequence, but warn about \o
+      which is not octal in Python (patch by Martin Pool)
+
+    * #110839: bind <F5> to Run button in pylint-gui
+
+    * #115580: fix erroneous W0212 (access to protected member) on super call
+      (patch by Martin Pool)
+
+    * #110853: fix a crash when an __init__ method in a base class has been
+      created by assignment rather than direct function definition (patch by
+      Torsten Marek)
+
+    * #110838: fix pylint-gui crash when include-ids is activated (patch by
+      Omega Weapon)
+
+    * #112667: fix emission of reimport warnings for mixed imports and extend
+      the testcase (patch by Torsten Marek)
+
+    * #112698: fix crash related to non-inferable __all__ attributes and
+      invalid __all__ contents (patch by Torsten Marek)
+
+    * Python 3 related fixes:
+
+    * #110213: fix import of checkers broken with python 3.3, causing
+        "No such message id W0704" breakage
+
+    * #120635: redefine cmp function used in pylint.reporters
+
+    * Include full warning id for I0020 and I0021 and make sure to flush
+      warnings after each module, not at the end of the pylint run.
+      (patch by Torsten Marek)
+
+    * Changed the regular expression for inline options so that it must be
+      preceeded by a # (patch by Torsten Marek)
+
+    * Make dot output for import graph predictable and not depend
+      on ordering of strings in hashes. (patch by Torsten Marek)
+
+    * Add hooks for import path setup and move pylint's sys.path
+      modifications into them. (patch by Torsten Marek)
+
+
+
+2012-10-05  --  0.26.0
     * #106534: add --ignore-imports option to code similarity checking
       and 'symilar' command line tool (patch by Ry4an Brase)
 
@@ -39,6 +133,7 @@ ChangeLog for PyLint
       installed with python3 (#72022, #82417, #76910)
 
 
+
 2012-07-17  --  0.25.2
     * #93591: Correctly emit warnings about clobbered variable names when an
       except handler contains a tuple of names instead of a single name.
@@ -67,6 +162,7 @@ ChangeLog for PyLint
       when using a regexp value set
 
     * fix potential crashes with utils.safe_infer raising InferenceError
+
 
 
 2011-12-08  --  0.25.1

@@ -29,37 +29,28 @@ from pylint.checkers import BaseChecker, EmptyReport
 def get_first_import(node, context, name, base, level):
     """return the node where [base.]<name> is imported or None if not found
     """
+    fullname = '%s.%s' % (base, name) if base else name
+
     first = None
     found = False
-    for first in context.values():
+    for first in context.body:
+        if first is node:
+            continue
+        if first.scope() is node.scope() and first.fromlineno > node.fromlineno:
+            continue
         if isinstance(first, astng.Import):
-            if name in [iname[0] for iname in first.names]:
+            if any(fullname == iname[0] for iname in first.names):
                 found = True
                 break
         elif isinstance(first, astng.From):
-            if base == first.modname and level == first.level and \
-                   name in [iname[0] for iname in first.names]:
+            if level == first.level and any(
+                fullname == '%s.%s' % (first.modname, iname[0]) for iname in first.names):
                 found = True
                 break
-    if found and first is not node and not are_exclusive(first, node):
+    if found and not are_exclusive(first, node):
         return first
 
 # utilities to represents import dependencies as tree and dot graph ###########
-
-def filter_dependencies_info(dep_info, package_dir, mode='external'):
-    """filter external or internal dependencies from dep_info (return a
-    new dictionary containing the filtered modules only)
-    """
-    if mode == 'external':
-        filter_func = lambda x: not is_standard_module(x, (package_dir,))
-    else:
-        assert mode == 'internal'
-        filter_func = lambda x: is_standard_module(x, (package_dir,))
-    result = {}
-    for importee, importers in dep_info.iteritems():
-        if filter_func(importee):
-            result[importee] = importers
-    return result
 
 def make_tree_defs(mod_files_list):
     """get a list of 2-uple (module, list_of_files_which_import_this_module),
@@ -102,14 +93,14 @@ def dependencies_graph(filename, dep_info):
     done = {}
     printer = DotBackend(filename[:-4], rankdir = "LR")
     printer.emit('URL="." node[shape="box"]')
-    for modname, dependencies in dep_info.iteritems():
+    for modname, dependencies in sorted(dep_info.iteritems()):
         done[modname] = 1
         printer.emit_node(modname)
         for modname in dependencies:
             if modname not in done:
                 done[modname] = 1
                 printer.emit_node(modname)
-    for depmodname, dependencies in dep_info.iteritems():
+    for depmodname, dependencies in sorted(dep_info.iteritems()):
         for modname in dependencies:
             printer.emit_edge(modname, depmodname)
     printer.generate(filename)
@@ -307,7 +298,7 @@ given file (report RP0402 must not be disabled)'}
                 importedmodname, set())
             if not context_name in importedmodnames:
                 importedmodnames.add(context_name)
-            if is_standard_module( importedmodname, (self.package_dir(),) ):
+            if is_standard_module(importedmodname, (self.package_dir(),)):
                 # update import graph
                 mgraph = self.import_graph.setdefault(context_name, set())
                 if not importedmodname in mgraph:
@@ -319,7 +310,7 @@ given file (report RP0402 must not be disabled)'}
             if mod_path == mod_name or mod_path.startswith(mod_name + '.'):
                 self.add_message('W0402', node=node, args=mod_path)
 
-    def _check_reimport(self, node, name, basename=None, level=0):
+    def _check_reimport(self, node, name, basename=None, level=None):
         """check if the import is necessary (i.e. not already done)"""
         if 'W0404' not in self.active_msgs:
             return
@@ -327,7 +318,7 @@ given file (report RP0402 must not be disabled)'}
         root = node.root()
         contexts = [(frame, level)]
         if root is not frame:
-            contexts.append((root, 0))
+            contexts.append((root, None))
         for context, level in contexts:
             first = get_first_import(node, context, name, basename, level)
             if first is not None:
@@ -367,8 +358,11 @@ given file (report RP0402 must not be disabled)'}
         cache them
         """
         if self.__ext_dep_info is None:
-            self.__ext_dep_info = filter_dependencies_info(
-                self.stats['dependencies'], self.package_dir(), 'external')
+            package = self.linter.base_name
+            self.__ext_dep_info = result = {}
+            for importee, importers in self.stats['dependencies'].iteritems():
+                if not importee.startswith(package):
+                    result[importee] = importers
         return self.__ext_dep_info
 
     def _internal_dependencies_info(self):
@@ -376,8 +370,11 @@ given file (report RP0402 must not be disabled)'}
         cache them
         """
         if self.__int_dep_info is None:
-            self.__int_dep_info = filter_dependencies_info(
-                self.stats['dependencies'], self.package_dir(), 'internal')
+            package = self.linter.base_name
+            self.__int_dep_info = result = {}
+            for importee, importers in self.stats['dependencies'].iteritems():
+                if importee.startswith(package):
+                    result[importee] = importers
         return self.__int_dep_info
 
 

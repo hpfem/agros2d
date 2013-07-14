@@ -1,5 +1,4 @@
-# Copyright (c) 2003-2010 Sylvain Thenault (thenault@gmail.com).
-# Copyright (c) 2003-2012 LOGILAB S.A. (Paris, FRANCE).
+# Copyright (c) 2003-2013 LOGILAB S.A. (Paris, FRANCE).
 # http://www.logilab.fr/ -- mailto:contact@logilab.fr
 #
 # This program is free software; you can redistribute it and/or modify it under
@@ -16,7 +15,7 @@
 # 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 """ %prog [options] module_or_package
 
-  Check that a module satisfy a coding standard (and more !).
+  Check that a module satisfies a coding standard (and more !).
 
     %prog --help
 
@@ -48,7 +47,8 @@ from logilab.astng import MANAGER, nodes, ASTNGBuildingException
 from logilab.astng.__pkginfo__ import version as astng_version
 
 from pylint.utils import (PyLintASTWalker, UnknownMessage, MessagesHandlerMixIn,
-                          ReportsHandlerMixIn, MSG_TYPES, expand_modules)
+                          ReportsHandlerMixIn, MSG_TYPES, expand_modules,
+                          WarningScope)
 from pylint.interfaces import ILinter, IRawChecker, IASTNGChecker
 from pylint.checkers import (BaseRawChecker, EmptyReport,
                              table_lines_from_stats)
@@ -60,7 +60,7 @@ from pylint import config
 from pylint.__pkginfo__ import version
 
 
-OPTION_RGX = re.compile(r'\s*#*\s*pylint:(.*)')
+OPTION_RGX = re.compile(r'\s*#.*\bpylint:(.*)')
 REPORTER_OPT_MAP = {'text': TextReporter,
                     'parseable': ParseableTextReporter,
                     'msvs': VSTextReporter,
@@ -94,7 +94,7 @@ MSGS = {
               Please report such errors !'),
     'F0003': ('ignored builtin module %s',
               'ignored-builtin-module',
-              'Used to indicate that the user asked to analyze a builtin module\
+              'Used to indicate that the user asked to analyze a builtin module \
               which has been skipped.'),
     'F0004': ('unexpected inferred value %s',
               'unexpected-inferred-value',
@@ -126,6 +126,21 @@ MSGS = {
     'I0013': ('Ignoring entire file',
               'file-ignored',
               'Used to inform that the file will not be checked'),
+    'I0014': ('Used deprecated directive "pylint:disable-all" or "pylint:disable=all"',
+              'deprecated-disable-all',
+              'You should preferably use "pylint:skip-file" as this directive '
+              'has a less confusing name. Do this only if you are sure that all '
+              'people running Pylint on your code have version >= 0.26'),
+    'I0020': ('Suppressed %s (from line %d)',
+              'suppressed-message',
+              'A message was triggered on a line, but suppressed explicitly '
+              'by a disable= comment in the file. This message is not '
+              'generated for messages that are ignored due to configuration '
+              'settings.'),
+    'I0021': ('Useless suppression of %s',
+              'useless-suppression',
+              'Reported when a message is explicitly disabled for a line or '
+              'a block of code, but never triggered.'),
 
 
     'E0001': ('%s',
@@ -240,17 +255,25 @@ This is used by the global evaluation report (RP0004).'}),
                   'group': 'Messages control',
                   'help' : 'Enable the message, report, category or checker with the '
                   'given id(s). You can either give multiple identifier '
-                  'separated by comma (,) or put this option multiple time.'}),
+                  'separated by comma (,) or put this option multiple time. '
+                  'See also the "--disable" option for examples. '}),
 
                 ('disable',
                  {'type' : 'csv', 'metavar': '<msg ids>',
                   'short': 'd',
                   'group': 'Messages control',
                   'help' : 'Disable the message, report, category or checker '
-                  'with the given id(s). You can either give multiple identifier'
-                  ' separated by comma (,) or put this option multiple time '
+                  'with the given id(s). You can either give multiple identifiers'
+                  ' separated by comma (,) or put this option multiple times '
                   '(only on the command line, not in the configuration file '
-                  'where it should appear only once).'}),
+                  'where it should appear only once).'
+                  'You can also use "--disable=all" to disable everything first '
+                  'and then reenable specific checks. For example, if you want '
+                  'to run only the similarities checker, you can use '
+                  '"--disable=all --enable=similarities". '
+                  'If you want to run only the classes checker, but have no '
+                  'Warning level messages displayed, use'
+                  '"--disable=all --enable=classes --disable=W"'}),
                )
 
     option_groups = (
@@ -306,6 +329,17 @@ This is used by the global evaluation report (RP0004).'}),
     def load_default_plugins(self):
         from pylint import checkers
         checkers.initialize(self)
+
+    def prepare_import_path(self, args):
+        """Prepare sys.path for running the linter checks."""
+        if len(args) == 1:
+            sys.path.insert(0, _get_python_path(args[0]))
+        else:
+            sys.path.insert(0, os.getcwd())
+
+    def cleanup_import_path(self):
+        """Revert any changes made to sys.path in prepare_import_path."""
+        sys.path.pop(0)
 
     def load_plugin_modules(self, modnames):
         """take a list of module names which are pylint plugins and load
@@ -410,7 +444,9 @@ This is used by the global evaluation report (RP0004).'}),
             match = OPTION_RGX.search(line)
             if match is None:
                 continue
-            if match.group(1).strip() == "disable-all":
+            if match.group(1).strip() == "disable-all" or match.group(1).strip() == 'skip-file':
+                if match.group(1).strip() == "disable-all":
+                    self.add_message('I0014', line=start[0])
                 self.add_message('I0013', line=start[0])
                 self._ignore_file = True
                 return
@@ -426,11 +462,16 @@ This is used by the global evaluation report (RP0004).'}),
                     meth = self._options_methods[opt]
                 except KeyError:
                     meth = self._bw_options_methods[opt]
-                    warn('%s is deprecated, replace it by %s (%s, line %s)' % (
+                    warn('%s is deprecated, replace it with %s (%s, line %s)' % (
                         opt, opt.split('-')[0], self.current_file, line),
                          DeprecationWarning)
                 for msgid in splitstrip(value):
                     try:
+                        if (opt, msgid) == ('disable', 'all'):
+                            self.add_message('I0014', line=start[0])
+                            self.add_message('I0013', line=start[0])
+                            self._ignore_file = True
+                            return
                         meth(msgid, 'module', start[0])
                     except UnknownMessage:
                         self.add_message('E0012', args=msgid, line=start[0])
@@ -465,16 +506,25 @@ This is used by the global evaluation report (RP0004).'}),
             firstchildlineno = last
         for msgid, lines in msg_state.iteritems():
             for lineno, state in lines.items():
+                original_lineno = lineno
                 if first <= lineno <= last:
-                    if lineno > firstchildlineno:
-                        state = True
-                    # set state for all lines for this block
-                    first, last = node.block_range(lineno)
-                    for line in xrange(first, last+1):
+                    # Set state for all lines for this block, if the
+                    # warning is applied to nodes.
+                    if self._messages[msgid].scope == WarningScope.NODE:
+                        if lineno > firstchildlineno:
+                            state = True
+                        first_, last_ = node.block_range(lineno)
+                    else:
+                        first_ = lineno
+                        last_ = last
+                    for line in xrange(first_, last_+1):
                         # do not override existing entries
                         if not line in self._module_msgs_state.get(msgid, ()):
                             if line in lines: # state change in the same block
                                 state = lines[line]
+                                original_lineno = line
+                            if not state:
+                                self._suppression_mapping[(msgid, line)] = original_lineno
                             try:
                                 self._module_msgs_state[msgid][line] = state
                             except KeyError:
@@ -540,6 +590,7 @@ This is used by the global evaluation report (RP0004).'}),
             # if it's actually a c extension)
             self.current_file = astng.file
             self.check_astng_module(astng, walker, rawcheckers)
+            self._add_suppression_messages()
         # notify global end
         self.set_current_module('')
         self.stats['statement'] = walker.nbstatements
@@ -578,7 +629,8 @@ This is used by the global evaluation report (RP0004).'}),
         # messages which are only detected in the .close step)
         if modname:
             self._module_msgs_state = {}
-            self._module_msg_cats_state = {}
+            self._raw_module_msgs_state = {}
+            self._ignored_msgs = {}
 
     def get_astng(self, filepath, modname):
         """return a astng representation for a module"""
@@ -606,8 +658,11 @@ This is used by the global evaluation report (RP0004).'}),
             if self._ignore_file:
                 return False
             # walk ast to collect line numbers
+            for msg, lines in self._module_msgs_state.iteritems():
+                self._raw_module_msgs_state[msg] = lines.copy()
             orig_state = self._module_msgs_state.copy()
             self._module_msgs_state = {}
+            self._suppression_mapping = {}
             self.collect_block_lines(astng, orig_state)
             for checker in rawcheckers:
                 checker.process_module(astng)
@@ -649,6 +704,18 @@ This is used by the global evaluation report (RP0004).'}),
                 config.save_results(self.stats, self.base_name)
 
     # specific reports ########################################################
+
+    def _add_suppression_messages(self):
+        for warning, lines in self._raw_module_msgs_state.iteritems():
+            for line, enable in lines.iteritems():
+                if not enable and (warning, line) not in self._ignored_msgs:
+                    self.add_message('I0021', line, None,
+                                     (self.get_msg_display_string(warning),))
+        # don't use iteritems here, _ignored_msgs may be modified by add_message
+        for (warning, from_), lines in self._ignored_msgs.items():
+            for line in lines:
+                self.add_message('I0020', line, None,
+                                 (self.get_msg_display_string(warning), from_))
 
     def report_evaluation(self, sect, stats, previous_stats):
         """make the global evaluation report"""
@@ -793,8 +860,8 @@ group are mutually exclusive.'),
                 'rcfile':       (self.cb_set_rcfile, True),
                 'load-plugins': (self.cb_add_plugins, True),
                 })
-        except ArgumentPreprocessingError, e:
-            print >> sys.stderr, 'Argument %s expects a value.' % (e.args[0],)
+        except ArgumentPreprocessingError, ex:
+            print >> sys.stderr, 'Argument %s expects a value.' % (ex.args[0],)
             sys.exit(32)
 
         self.linter = linter = self.LinterClass((
@@ -888,6 +955,8 @@ are done by default'''}),
         level=1)
         # read configuration
         linter.disable('W0704')
+        linter.disable('I0020')
+        linter.disable('I0021')
         linter.read_config_file()
         # is there some additional plugins in the file configuration, in
         config_parser = linter.cfgfile_parser
@@ -913,10 +982,7 @@ are done by default'''}),
             sys.exit(32)
         # insert current working directory to the python path to have a correct
         # behaviour
-        if len(args) == 1:
-            sys.path.insert(0, _get_python_path(args[0]))
-        else:
-            sys.path.insert(0, os.getcwd())
+        linter.prepare_import_path(args)
         if self.linter.config.profile:
             print >> sys.stderr, '** profiled run'
             import cProfile, pstats
@@ -927,7 +993,7 @@ are done by default'''}),
             data.print_stats(30)
         else:
             linter.check(args)
-        sys.path.pop(0)
+        linter.cleanup_import_path()
         if exit:
             sys.exit(self.linter.msg_status)
 

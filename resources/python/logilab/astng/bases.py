@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
-# copyright 2003-2010 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
+# copyright 2003-2013 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
 # contact http://www.logilab.fr/ -- mailto:contact@logilab.fr
-# copyright 2003-2010 Sylvain Thenault, all rights reserved.
-# contact mailto:thenault@gmail.com
 #
 # This file is part of logilab-astng.
 #
@@ -24,17 +21,23 @@ inference utils.
 
 __docformat__ = "restructuredtext en"
 
+import sys
+from contextlib import contextmanager
 
-from logilab.common.compat import builtins
-from logilab.astng.exceptions import InferenceError, ASTNGError, \
-                                       NotFoundError, UnresolvableName
-from logilab.astng.as_string import as_string
+from logilab.astng.exceptions import (InferenceError, ASTNGError,
+                                      NotFoundError, UnresolvableName)
 
-BUILTINS_NAME = builtins.__name__
+
+if sys.version_info >= (3, 0):
+    BUILTINS = 'builtins'
+else:
+    BUILTINS = '__builtin__'
+
 
 class Proxy(object):
     """a simple proxy object"""
-    _proxied = None
+
+    _proxied = None # proxied object may be set by class or by instance
 
     def __init__(self, proxied=None):
         if proxied is not None:
@@ -77,6 +80,12 @@ class InferenceContext(object):
         clone.callcontext = self.callcontext
         clone.boundnode = self.boundnode
         return clone
+
+    @contextmanager
+    def restore_path(self):
+        path = set(self.path)
+        yield
+        self.path = path
 
 def copy_context(context):
     if context is not None:
@@ -122,6 +131,8 @@ class _Yes(object):
     def __repr__(self):
         return 'YES'
     def __getattribute__(self, name):
+        if name == 'next':
+            raise AttributeError('next method should not be called')
         if name.startswith('__') and name.endswith('__'):
             # to avoid inspection pb
             return super(_Yes, self).__getattribute__(name)
@@ -177,7 +188,7 @@ class Instance(Proxy):
         """wrap bound methods of attrs in a InstanceMethod proxies"""
         for attr in attrs:
             if isinstance(attr, UnboundMethod):
-                if BUILTINS_NAME + '.property' in attr.decoratornames():
+                if BUILTINS + '.property' in attr.decoratornames():
                     for infered in attr.infer_call_result(self, context):
                         yield infered
                 else:
@@ -242,7 +253,7 @@ class UnboundMethod(Proxy):
         # If we're unbound method __new__ of builtin object, the result is an
         # instance of the class given as first argument.
         if (self._proxied.name == '__new__' and
-                self._proxied.parent.frame().qname() == '__builtin__.object'):
+                self._proxied.parent.frame().qname() == '%s.object' % BUILTINS):
             return (x is YES and x or Instance(x) for x in caller.args[0].infer())
         return self._proxied.infer_call_result(caller, context)
 
@@ -263,12 +274,15 @@ class BoundMethod(UnboundMethod):
 
 
 class Generator(Instance):
-    """a special node representing a generator"""
+    """a special node representing a generator.
+
+    Proxied class is set once for all in raw_building.
+    """
     def callable(self):
-        return True
+        return False
 
     def pytype(self):
-        return '__builtin__.generator'
+        return '%s.generator' % BUILTINS
 
     def display_type(self):
         return 'Generator'
@@ -336,6 +350,7 @@ class NodeNG(object):
     lineno = None
     fromlineno = None
     tolineno = None
+    col_offset = None
     # parent node in the tree
     parent = None
     # attributes containing child node(s) redefined in most concrete classes:
@@ -551,15 +566,12 @@ class NodeNG(object):
         return False
 
     def as_string(self):
-        return as_string(self)
+        from logilab.astng.as_string import to_code
+        return to_code(self)
 
     def repr_tree(self, ids=False):
-        """print a nice astng tree representation.
-
-        :param ids: if true, we also print the ids (usefull for debugging)"""
-        result = []
-        _repr_tree(self, result, ids=ids)
-        return "\n".join(result)
+        from logilab.astng.as_string import dump
+        return dump(self)
 
 
 class Statement(NodeNG):
@@ -581,39 +593,3 @@ class Statement(NodeNG):
         index = stmts.index(self)
         if index >= 1:
             return stmts[index -1]
-
-INDENT = "    "
-
-def _repr_tree(node, result, indent='', _done=None, ids=False):
-    """built a tree representation of a node as a list of lines"""
-    if _done is None:
-        _done = set()
-    if not hasattr(node, '_astng_fields'): # not a astng node
-        return
-    if node in _done:
-        result.append( indent + 'loop in tree: %s' % node )
-        return
-    _done.add(node)
-    node_str = str(node)
-    if ids:
-        node_str += '  . \t%x' % id(node)
-    result.append( indent + node_str )
-    indent += INDENT
-    for field in node._astng_fields:
-        value = getattr(node, field)
-        if isinstance(value, (list, tuple) ):
-            result.append(  indent + field + " = [" )
-            for child in value:
-                if isinstance(child, (list, tuple) ):
-                    # special case for Dict # FIXME
-                    _repr_tree(child[0], result, indent, _done, ids)
-                    _repr_tree(child[1], result, indent, _done, ids)
-                    result.append(indent + ',')
-                else:
-                    _repr_tree(child, result, indent, _done, ids)
-            result.append(  indent + "]" )
-        else:
-            result.append(  indent + field + " = " )
-            _repr_tree(value, result, indent, _done, ids)
-
-

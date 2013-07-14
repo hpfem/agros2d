@@ -1,7 +1,5 @@
-# copyright 2003-2010 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
+# copyright 2003-2013 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
 # contact http://www.logilab.fr/ -- mailto:contact@logilab.fr
-# copyright 2003-2010 Sylvain Thenault, all rights reserved.
-# contact mailto:thenault@gmail.com
 #
 # This file is part of logilab-astng.
 #
@@ -17,9 +15,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License along
 # with logilab-astng. If not, see <http://www.gnu.org/licenses/>.
-"""The ASTNGBuilder makes astng from living object and / or from compiler.ast
-
-With python >= 2.5, the internal _ast module is used instead
+"""The ASTNGBuilder makes astng from living object and / or from _ast
 
 The builder is not thread safe and can't be used to parse different sources
 at the same time.
@@ -27,8 +23,8 @@ at the same time.
 
 __docformat__ = "restructuredtext en"
 
-import sys, re
-from os.path import splitext, basename, dirname, exists, abspath
+import sys
+from os.path import splitext, basename, exists, abspath
 
 from logilab.common.modutils import modpath_from_file
 
@@ -60,7 +56,7 @@ if sys.version_info >= (3, 0):
 else:
     import re
 
-    _ENCODING_RGX = re.compile("[^#]*#*.*coding[:=]\s*([^\s]+)")
+    _ENCODING_RGX = re.compile("\s*#+.*coding[:=]\s*([-\w.]+)")
 
     def _guess_encoding(string):
         """get encoding from a python file as string or return None if not found
@@ -90,6 +86,7 @@ class ASTNGBuilder(InspectBuilder):
     rebuilder = TreeRebuilder()
 
     def __init__(self, manager=None):
+        InspectBuilder.__init__(self)
         self._manager = manager or MANAGER
 
     def module_build(self, module, modname=None):
@@ -121,33 +118,30 @@ class ASTNGBuilder(InspectBuilder):
             raise ASTNGBuildingException(exc)
         except LookupError, exc: # unknown encoding
             raise ASTNGBuildingException(exc)
-        # get module name if necessary, *before modifying sys.path*
+        # get module name if necessary
         if modname is None:
             try:
                 modname = '.'.join(modpath_from_file(path))
             except ImportError:
                 modname = splitext(basename(path))[0]
         # build astng representation
-        try:
-            sys.path.insert(0, dirname(path)) # XXX (syt) iirk
-            node = self.string_build(data, modname, path)
-        finally:
-            sys.path.pop(0)
+        node = self.string_build(data, modname, path)
         node.file_encoding = encoding
-        node.file_stream = stream
         return node
 
     def string_build(self, data, modname='', path=None):
         """build astng from source code string and return rebuilded astng"""
         module = self._data_build(data, modname, path)
-        if self._manager is not None:
-            self._manager.astng_cache[module.name] = module
+        self._manager.astng_cache[module.name] = module
         # post tree building steps after we stored the module in the cache:
         for from_node in module._from_nodes:
             self.add_from_names_to_locals(from_node)
         # handle delayed assattr nodes
         for delayed in module._delayed_assattr:
             self.delayed_assattr(delayed)
+        if modname:
+            for transformer in self._manager.transformers:
+                transformer(module)
         return module
 
     def _data_build(self, data, modname, path):

@@ -1,7 +1,5 @@
-# copyright 2003-2010 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
+# copyright 2003-2013 LOGILAB S.A. (Paris, FRANCE), all rights reserved.
 # contact http://www.logilab.fr/ -- mailto:contact@logilab.fr
-# copyright 2003-2010 Sylvain Thenault, all rights reserved.
-# contact mailto:thenault@gmail.com
 #
 # This file is part of logilab-astng.
 #
@@ -21,6 +19,7 @@
 new local scope in the language definition : Module, Class, Function (and
 Lambda, GenExpr, DictComp and SetComp to some extent).
 """
+from __future__ import with_statement
 
 __doctype__ = "restructuredtext en"
 
@@ -30,14 +29,14 @@ from itertools import chain
 from logilab.common.compat import builtins
 from logilab.common.decorators import cached
 
-from logilab.astng.exceptions import NotFoundError, NoDefault, \
+from logilab.astng.exceptions import NotFoundError, \
      ASTNGBuildingException, InferenceError
 from logilab.astng.node_classes import Const, DelName, DelAttr, \
-     Dict, From, List, Name, Pass, Raise, Return, Tuple, Yield, \
-     are_exclusive, LookupMixIn, const_factory as cf, unpack_infer
+     Dict, From, List, Pass, Raise, Return, Tuple, Yield, \
+     LookupMixIn, const_factory as cf, unpack_infer
 from logilab.astng.bases import NodeNG, InferenceContext, Instance,\
      YES, Generator, UnboundMethod, BoundMethod, _infer_stmts, copy_context, \
-     BUILTINS_NAME
+     BUILTINS
 from logilab.astng.mixins import FilterStmtsMixin
 from logilab.astng.bases import Statement
 from logilab.astng.manager import ASTNGManager
@@ -218,6 +217,9 @@ class Module(LocalsDictNodeNG):
     # the file from which as been extracted the astng representation. It may
     # be None if the representation has been built from a built-in module
     file = None
+    # encoding of python source file, so we can get unicode out of it (python2
+    # only)
+    file_encoding = None
     # the module name
     name = None
     # boolean for astng built from source (i.e. ast)
@@ -241,6 +243,12 @@ class Module(LocalsDictNodeNG):
         self.locals = self.globals = {}
         self.body = []
 
+    @property
+    def file_stream(self):
+        if self.file is not None:
+            return open(self.file)
+        return None
+
     def block_range(self, lineno):
         """return block line numbers.
 
@@ -257,19 +265,19 @@ class Module(LocalsDictNodeNG):
         return self._scope_lookup(node, name, offset)
 
     def pytype(self):
-        return '__builtin__.module'
+        return '%s.module' % BUILTINS
 
     def display_type(self):
         return 'Module'
 
-    def getattr(self, name, context=None):
+    def getattr(self, name, context=None, ignore_locals=False):
         if name in self.special_attributes:
             if name == '__file__':
                 return [cf(self.file)] + self.locals.get(name, [])
             if name == '__path__' and self.package:
                 return [List()] + self.locals.get(name, [])
             return std_special_attributes(self, name)
-        if name in self.locals:
+        if not ignore_locals and name in self.locals:
             return self.locals[name]
         if self.package:
             try:
@@ -313,7 +321,7 @@ class Module(LocalsDictNodeNG):
         """module has no sibling"""
         return
 
-    if sys.version_info < (2, 7):
+    if sys.version_info < (2, 8):
         def absolute_import_activated(self):
             for stmt in self.locals.get('absolute_import', ()):
                 if isinstance(stmt, From) and stmt.modname == '__future__':
@@ -324,6 +332,8 @@ class Module(LocalsDictNodeNG):
 
     def import_module(self, modname, relative_only=False, level=None):
         """import the given module considering self as context"""
+        if relative_only and level is None:
+            level = 0
         absmodname = self.relative_to_absolute_name(modname, level)
         try:
             return MANAGER.astng_from_module_name(absmodname)
@@ -342,6 +352,8 @@ class Module(LocalsDictNodeNG):
         # XXX this returns non sens when called on an absolute import
         # like 'pylint.checkers.logilab.astng.utils'
         # XXX doesn't return absolute name if self.name isn't absolute name
+        if self.absolute_import_activated() and level is None:
+            return modname
         if level:
             if self.package:
                 level = level - 1
@@ -454,6 +466,7 @@ else:
 
 class Lambda(LocalsDictNodeNG, FilterStmtsMixin):
     _astng_fields = ('args', 'body',)
+    name = '<lambda>'
 
     # function's type, 'function' | 'method' | 'staticmethod' | 'classmethod'
     type = 'function'
@@ -465,8 +478,8 @@ class Lambda(LocalsDictNodeNG, FilterStmtsMixin):
 
     def pytype(self):
         if 'method' in self.type:
-            return '__builtin__.instancemethod'
-        return '__builtin__.function'
+            return '%s.instancemethod' % BUILTINS
+        return '%s.function' % BUILTINS
 
     def display_type(self):
         if 'method' in self.type:
@@ -503,6 +516,7 @@ class Lambda(LocalsDictNodeNG, FilterStmtsMixin):
             frame = self
         return frame._scope_lookup(node, name, offset)
 
+
 class Function(Statement, Lambda):
     _astng_fields = ('decorators', 'args', 'body')
 
@@ -526,7 +540,8 @@ class Function(Statement, Lambda):
         self.fromlineno = self.lineno
         # lineno is the line number of the first decorator, we want the def statement lineno
         if self.decorators is not None:
-            self.fromlineno += len(self.decorators.nodes)
+            self.fromlineno += sum(node.tolineno - node.lineno + 1
+                                   for node in self.decorators.nodes)
         self.tolineno = lastchild.tolineno
         self.blockstart_tolineno = self.args.tolineno
 
@@ -590,14 +605,14 @@ class Function(Statement, Lambda):
         """return true if this is a generator function"""
         # XXX should be flagged, not computed
         try:
-            return self.nodes_of_class(Yield, skip_klass=Function).next()
+            return self.nodes_of_class(Yield, skip_klass=(Function, Lambda)).next()
         except StopIteration:
             return False
 
     def infer_call_result(self, caller, context=None):
         """infer what a function is returning when called"""
         if self.is_generator():
-            yield Generator(self)
+            yield Generator()
             return
         returns = self.nodes_of_class(Return, skip_klass=Function)
         for returnnode in returns:
@@ -722,8 +737,8 @@ class Class(Statement, LocalsDictNodeNG, FilterStmtsMixin):
 
     def pytype(self):
         if self.newstyle:
-            return '__builtin__.type'
-        return '__builtin__.classobj'
+            return '%s.type' % BUILTINS
+        return '%s.classobj' % BUILTINS
 
     def display_type(self):
         return 'Class'
@@ -761,29 +776,30 @@ class Class(Statement, LocalsDictNodeNG, FilterStmtsMixin):
         """
         # FIXME: should be possible to choose the resolution order
         # XXX inference make infinite loops possible here (see BaseTransformer
-        # manipulation in the builder module for instance !)
+        # manipulation in the builder module for instance)
         yielded = set([self])
         if context is None:
             context = InferenceContext()
         for stmt in self.bases:
-            try:
-                for baseobj in stmt.infer(context):
-                    if not isinstance(baseobj, Class):
-                        # duh ?
-                        continue
-                    if baseobj in yielded:
-                        continue # cf xxx above
-                    yielded.add(baseobj)
-                    yield baseobj
-                    if recurs:
-                        for grandpa in baseobj.ancestors(True, context):
-                            if grandpa in yielded:
-                                continue # cf xxx above
-                            yielded.add(grandpa)
-                            yield grandpa
-            except InferenceError:
-                # XXX log error ?
-                continue
+            with context.restore_path():
+                try:
+                    for baseobj in stmt.infer(context):
+                        if not isinstance(baseobj, Class):
+                            # duh ?
+                            continue
+                        if baseobj in yielded:
+                            continue # cf xxx above
+                        yielded.add(baseobj)
+                        yield baseobj
+                        if recurs:
+                            for grandpa in baseobj.ancestors(True, context):
+                                if grandpa in yielded:
+                                    continue # cf xxx above
+                                yielded.add(grandpa)
+                                yield grandpa
+                except InferenceError:
+                    # XXX log error ?
+                    continue
 
     def local_attr_ancestors(self, name, context=None):
         """return an iterator on astng representation of parent classes
@@ -830,7 +846,7 @@ class Class(Statement, LocalsDictNodeNG, FilterStmtsMixin):
           its parent classes
         """
         values = self.instance_attrs.get(name, [])
-        # get if from the first parent implementing it if any
+        # get all values from parents
         for class_node in self.instance_attr_ancestors(name, context):
             values += class_node.instance_attrs[name]
         if not values:
@@ -853,15 +869,14 @@ class Class(Statement, LocalsDictNodeNG, FilterStmtsMixin):
         if name in self.special_attributes:
             if name == '__module__':
                 return [cf(self.root().qname())] + values
-            # FIXME : what is expected by passing the list of ancestors to cf:
-            # you can just do [cf(tuple())] + values without breaking any test
+            # FIXME: do we really need the actual list of ancestors?
+            # returning [Tuple()] + values don't break any test
             # this is ticket http://www.logilab.org/ticket/52785
-            if name == '__bases__':
-                return [cf(tuple(self.ancestors(recurs=False, context=context)))] + values
             # XXX need proper meta class handling + MRO implementation
-            if name == '__mro__' and self.newstyle:
-                # XXX mro is read-only but that's not our job to detect that
-                return [cf(tuple(self.ancestors(recurs=True, context=context)))] + values
+            if name == '__bases__' or (name == '__mro__' and self.newstyle):
+                node = Tuple()
+                node.items = self.ancestors(recurs=True, context=context)
+                return [node] + values
             return std_special_attributes(self, name)
         # don't modify the list in self.locals!
         values = list(values)
@@ -913,7 +928,7 @@ class Class(Statement, LocalsDictNodeNG, FilterStmtsMixin):
             #if self.newstyle: XXX cause an infinite recursion error
             try:
                 getattribute = self.getattr('__getattribute__', context)[0]
-                if getattribute.root().name != BUILTINS_NAME:
+                if getattribute.root().name != BUILTINS:
                     # class has a custom __getattribute__ defined
                     return True
             except NotFoundError:
@@ -960,5 +975,3 @@ class Class(Statement, LocalsDictNodeNG, FilterStmtsMixin):
                 yield iface
         if missing:
             raise InferenceError()
-
-
