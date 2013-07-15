@@ -1,8 +1,8 @@
 [Setup]
 
 #define AppName "Agros2D"
-#define AppVersion "3.0.0.4214"
-#define AppDate "2013-07-13"
+#define AppVersion "3.0.0.4240"
+#define AppDate "2013-07-15"
 #define OutputBaseFileName "Agros2D" + "_" + AppVersion
 
 AppName={#AppName}
@@ -49,7 +49,6 @@ Source: README; DestDir: {app}; DestName: README
 Source: README_Python.txt; DestDir: {app}; DestName: README_Python.txt
 Source: functions_pythonlab.py; DestDir: {app}; DestName: functions_pythonlab.py
 Source: functions_agros2d.py; DestDir: {app}; DestName: functions_agros2d.py
-Source: data\test\*.py; DestDir: {app}/data/test; Flags: recursesubdirs
 Source: resources\*; DestDir: {app}/resources; Flags: recursesubdirs
 Source: DLLs\*; DestDir: {app}/DLLs; Flags: recursesubdirs
 Source: Lib\*; DestDir: {app}/Lib; Flags: recursesubdirs
