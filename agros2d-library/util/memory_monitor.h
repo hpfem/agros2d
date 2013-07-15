@@ -23,7 +23,7 @@
 #include "util.h"
 #include "util/enums.h"
 
-class MemoryMonitor : public QObject
+class AGROS_API MemoryMonitor : public QObject
 {
     Q_OBJECT
 
