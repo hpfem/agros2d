@@ -948,6 +948,11 @@
         <translation>Lorentzova síla</translation>
     </message>
     <message>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="937"/>
+        <source>Lorentz torque</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Lorentz force - real</source>
         <translation type="obsolete">Lorentzova síla - reál. složka</translation>
     </message>
@@ -956,82 +961,87 @@
         <translation type="obsolete">Lorentzova síla - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="937"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="940"/>
         <source>Volume</source>
         <translation>Objem</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="940"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="943"/>
         <source>Cross section</source>
         <translation>Průřez</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="943"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="946"/>
         <source>Current - ext. - real</source>
         <translation>Proud - ext. - reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="946"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="949"/>
         <source>Current - ext. - imag</source>
         <translation>Proud - ext. - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="949"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="952"/>
         <source>Current - ind. transform - real</source>
         <translation>Proud - ind. změnou - reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="952"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="955"/>
         <source>Current - ind. transform - imag</source>
         <translation>Proud - ind. změnou - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="955"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="958"/>
+        <source>Current - velocity - real</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="961"/>
         <source>Current - total - real</source>
         <translation>Proud - celkový -reál. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="958"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="964"/>
         <source>Current - total - imag</source>
         <translation>Proud - celkový - imag. složka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="961"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="967"/>
         <source>Energy</source>
         <translation>Energie</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="964"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="970"/>
         <source>Power losses</source>
         <translation>Činné ztráty</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="967"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="973"/>
         <source>Torque</source>
         <translation>Moment</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="970"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="976"/>
         <source>Lorentz force - x</source>
         <translation>Lorentzova síla - x</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="973"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="979"/>
         <source>Lorentz force - y</source>
         <translation>Lorentzova síla . y</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="976"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="982"/>
         <source>Length</source>
         <translation>Délka</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="979"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="985"/>
         <source>Surface</source>
         <translation>Plocha</translation>
     </message>
     <message>
-        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="986"/>
+        <location filename="../../plugins/magnetic/magnetic_interface.cpp" line="992"/>
         <source>Magnetic field ...</source>
         <translation>Magnetické pole ...</translation>
     </message>
@@ -1317,8 +1327,12 @@
     </message>
     <message>
         <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="625"/>
+        <source>Poynting vector</source>
+        <translation type="unfinished">Poytingův vektor</translation>
+    </message>
+    <message>
         <source>Poyting vector</source>
-        <translation>Poyntingův vektor</translation>
+        <translation type="obsolete">Poyntingův vektor</translation>
     </message>
     <message>
         <location filename="../../plugins/rf_te/rf_te_interface.cpp" line="628"/>
