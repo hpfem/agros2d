@@ -92,7 +92,7 @@ int scriptQuit(void *)
     PyErr_SetString(PyExc_SystemError, "Script interrupted.");
     PyErr_SetInterrupt();
 
-    return -1;
+    return 0;
 }
 
 static PyObject *pythonTempname(PyObject* self, PyObject* pArgs)
