@@ -258,12 +258,7 @@ QSharedPointer<HermesSolverContainer<Scalar> > HermesSolverContainer<Scalar>::fa
 
     assert(!solver.isNull());
 
-    if (IterSolver<Scalar> *linearSolver = dynamic_cast<IterSolver<Scalar> *>(solver->linearSolver()))
-    {
-        linearSolver->set_max_iters(block->iterLinearSolverIters());
-        linearSolver->set_tolerance(block->iterLinearSolverToleranceAbsolute());
-    }
-    if (AMGSolver<Scalar> *linearSolver = dynamic_cast<AMGSolver<Scalar> *>(solver->linearSolver()))
+    if (LoopSolver<Scalar> *linearSolver = dynamic_cast<LoopSolver<Scalar> *>(solver->linearSolver()))
     {
         linearSolver->set_max_iters(block->iterLinearSolverIters());
         linearSolver->set_tolerance(block->iterLinearSolverToleranceAbsolute());
@@ -591,16 +586,10 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Hermes::vector<SpaceSharedPtr<Sca
         delete [] initialSolutionVector;
 
     // linear solver statistics
-    int numIters = 0;
-    if (IterSolver<Scalar> *iterLinearSolver = dynamic_cast<IterSolver<Scalar> *>(linearSolver))
-        numIters = iterLinearSolver->get_num_iters();
-    if (AMGSolver<Scalar> *amgLinearSolver = dynamic_cast<AMGSolver<Scalar> *>(linearSolver))
-        numIters = amgLinearSolver->get_num_iters();
-
-    if (numIters > 0)
+    if (LoopSolver<Scalar> *iterLinearSolver = dynamic_cast<LoopSolver<Scalar> *>(linearSolver))
         Agros2D::log()->printDebug(QObject::tr("Solver"),
                                    QObject::tr("Iterative solver statistics: %1 iterations")
-                                   .arg(numIters));
+                                   .arg(iterLinearSolver->get_num_iters()));
 
     return m_hermesSolverContainer->slnVector();
 }
