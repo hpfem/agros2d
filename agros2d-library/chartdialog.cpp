@@ -465,9 +465,8 @@ void ChartWidget::plotGeometry()
         }
     }
 
+
     m_chart->chart()->graph(0)->setData(xval, yval);
-    m_chart->chart()->rescaleAxes();
-    m_chart->chart()->replot();
 }
 
 void ChartWidget::plotTime()
@@ -529,8 +528,6 @@ void ChartWidget::plotTime()
     }
 
     m_chart->chart()->graph(0)->setData(xval, yval);
-    m_chart->chart()->rescaleAxes();
-    m_chart->chart()->replot();
 }
 
 QStringList ChartWidget::headers()
@@ -586,6 +583,29 @@ void ChartWidget::doApply()
     {
         plotTime();
     }
+
+    // rescale axis
+    double min = numeric_limits<double>::max();
+    double max = - numeric_limits<double>::max();
+    for (int i = 0; i < m_chart->chart()->graph(0)->data()->values().count(); i++)
+    {
+        double value = m_chart->chart()->graph(0)->data()->values().at(i).value;
+        if (value < min) min = value;
+        if (value > max) max = value;
+    }
+
+    if ((max - min) < EPS_ZERO)
+    {
+        m_chart->chart()->graph(0)->valueAxis()->setRange(min - 1, min + 1);
+        m_chart->chart()->graph(0)->keyAxis()->setRange(m_chart->chart()->graph(0)->data()->keys().first(),
+                                                        m_chart->chart()->graph(0)->data()->keys().last());
+    }
+    else
+    {
+        m_chart->chart()->rescaleAxes();
+    }
+    m_chart->chart()->replot();
+
 
     btnSaveImage->setEnabled(m_chart->chart()->graph()->data()->size() > 0);
     btnExportData->setEnabled(m_chart->chart()->graph()->data()->size() > 0);
