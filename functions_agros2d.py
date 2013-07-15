@@ -27,3 +27,9 @@ def agros2d_material_eval(keys):
         values.append(agros2d_material(keys[i]))
 
     return values
+
+def memory_chart():
+    time, usage = agros2d.memory_usage()
+    pythonlab.chart(time, usage, "t (s)", "Mem (MB)")
+
+setattr(agros2d, "memory_chart", memory_chart)

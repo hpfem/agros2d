@@ -35,7 +35,8 @@ void MemoryMonitor::refreshMemory()
 {
     int memory = currentMemoryUsage();
     // append memory to map
-    m_memoryMap.insert(m_memoryMap.count() * interval() / 1000, memory);
+    m_memoryTime.append(((m_memoryTime.isEmpty()) ? 0 : m_memoryTime.last()) + interval() / 1000);
+    m_memoryUsage.append(memory);
 
     emit refreshMemory(memory);
 }
@@ -47,10 +48,10 @@ int MemoryMonitor::currentMemoryUsage() const
 
 int MemoryMonitor::lastMemoryUsage() const
 {
-    return m_memoryMap.values().last();
+    return (m_memoryUsage.isEmpty()) ? 0 : m_memoryUsage.last();
 }
 
 int MemoryMonitor::appTime() const
 {
-    return m_memoryMap.keys().last();
+    return (m_memoryTime.isEmpty()) ? 0 : m_memoryTime.last();
 }

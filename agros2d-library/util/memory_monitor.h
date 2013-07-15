@@ -33,6 +33,8 @@ public:
     int currentMemoryUsage() const;
     int lastMemoryUsage() const;
     int appTime() const;
+    inline QList<int> memoryTime() const { return m_memoryTime; }
+    inline QList<int> memoryUsage() const { return m_memoryUsage; }
 
     inline void setInterval(int inter) { m_memoryTimer->setInterval(inter); }
     inline int interval() { return m_memoryTimer->interval(); }
@@ -42,7 +44,8 @@ signals:
 
 private:
     QTimer *m_memoryTimer;
-    QMap<int, int> m_memoryMap;
+    QList<int> m_memoryTime;
+    QList<int> m_memoryUsage;
 
 private slots:
     void refreshMemory();

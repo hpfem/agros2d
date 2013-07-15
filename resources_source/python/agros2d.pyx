@@ -64,9 +64,27 @@ include "pyparticletracing.pxi"
 cdef extern from "../../agros2d-library/pythonlab/pythonengine_agros.h":
     void openFile(string &file) except +
     void saveFile(string &file, bool saveWithSolution) except +
+    int appTime()
+    void memoryUsage(vector[int] &time, vector[int] &usage)
 
 def open_file(file):
     openFile(string(file))
 
 def save_file(file, save_with_solution = False):
     saveFile(string(file), save_with_solution)
+
+def app_time():
+    return appTime()
+
+def memory_usage():
+    cdef vector[int] time_vector
+    cdef vector[int] usage_vector
+    memoryUsage(time_vector, usage_vector)
+
+    time = list()
+    usage = list()
+    for i in range(time_vector.size()):
+        time.append(time_vector[i])
+        usage.append(usage_vector[i])
+
+    return time, usage

@@ -23,6 +23,7 @@
 #include "hermes2d/plugin_interface.h"
 #include "hermes2d/module.h"
 #include <Python.h>
+#include "util/memory_monitor.h"
 
 // current python engine agros
 AGROS_API PythonEngineAgros *currentPythonEngineAgros()
@@ -701,3 +702,13 @@ void saveFile(const std::string &file, bool saveWithSolution)
     }
 }
 
+int appTime()
+{
+    return Agros2D::memoryMonitor()->appTime();
+}
+
+void memoryUsage(std::vector<int> &time, std::vector<int> &usage)
+{
+    time = Agros2D::memoryMonitor()->memoryTime().toVector().toStdVector();
+    usage = Agros2D::memoryMonitor()->memoryUsage().toVector().toStdVector();
+}
