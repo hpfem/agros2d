@@ -479,6 +479,7 @@ void FieldWidget::fillComboBox()
     cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PETSC), Hermes::SOLVER_PETSC);
 #endif
     cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PARALUTION_ITERATIVE), Hermes::SOLVER_PARALUTION_ITERATIVE);
+    cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PARALUTION_AMG), Hermes::SOLVER_PARALUTION_AMG);
 
     cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_NORM), Hermes::Hermes2D::HERMES_H1_NORM);
     cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_L2_NORM), Hermes::Hermes2D::HERMES_L2_NORM);
@@ -680,7 +681,8 @@ void FieldWidget::doLinearityTypeChanged(int index)
 
 void FieldWidget::doLinearSolverChanged(int index)
 {
-    bool isIterative = ((Hermes::MatrixSolverType) cmbLinearSolver->itemData(cmbLinearSolver->currentIndex()).toInt() == Hermes::SOLVER_PARALUTION_ITERATIVE);
+    Hermes::MatrixSolverType solverType = (Hermes::MatrixSolverType) cmbLinearSolver->itemData(cmbLinearSolver->currentIndex()).toInt();
+    bool isIterative = ((solverType == Hermes::SOLVER_PARALUTION_ITERATIVE) || (solverType == Hermes::SOLVER_PARALUTION_AMG));
 
     cmbIterLinearSolverMethod->setEnabled(isIterative);
     cmbIterLinearSolverPreconditioner->setEnabled(isIterative);

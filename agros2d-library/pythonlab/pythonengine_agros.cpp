@@ -279,7 +279,7 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                 arg(fieldInfo->fieldId()).
                 arg(matrixSolverTypeToStringKey(fieldInfo->matrixSolver()));
 
-        if (fieldInfo->matrixSolver() == Hermes::SOLVER_PARALUTION_ITERATIVE)
+        if ((fieldInfo->matrixSolver() == Hermes::SOLVER_PARALUTION_ITERATIVE) || (fieldInfo->matrixSolver() == Hermes::SOLVER_PARALUTION_AMG))
         {
             str += QString("%1.matrix_iterative_solver_method = \"%2\"\n").
                     arg(fieldInfo->fieldId()).

@@ -345,8 +345,8 @@ void initLists()
 
     iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::ParalutionPrecond<double>::Jacobi, "jacobi");
     iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::ParalutionPrecond<double>::ILU, "ilu");
-    // iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::ParalutionPrecond<double>::MultiColoredSGS, "multicoloredsgs");
-    // iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::ParalutionPrecond<double>::MultiColoredILU, "multicoloredilu");
+    iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::ParalutionPrecond<double>::MultiColoredSGS, "multicoloredsgs");
+    iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::ParalutionPrecond<double>::MultiColoredILU, "multicoloredilu");
     // iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::ParalutionPrecond<double>::IC, "ic");
     // iterLinearSolverPreconditionerTypeList.insert(Hermes::Solvers::ParalutionPrecond<double>::AIChebyshev, "aichebyshev");
 }

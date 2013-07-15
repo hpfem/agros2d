@@ -262,6 +262,10 @@ void InfoWidget::showInfo()
                 matrixSolver += tr(" (%1, %2) - iterative").
                         arg(iterLinearSolverMethodString((Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt())).
                         arg(iterLinearSolverPreconditionerTypeString((Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
+            else if ((fieldInfo->matrixSolver() == Hermes::SOLVER_PARALUTION_AMG))
+                matrixSolver += tr(" (%1, %2) - AMG").
+                        arg(iterLinearSolverMethodString((Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt())).
+                        arg(iterLinearSolverPreconditionerTypeString((Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
             else
                 matrixSolver += tr(" - direct");
 

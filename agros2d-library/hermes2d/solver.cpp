@@ -263,10 +263,19 @@ QSharedPointer<HermesSolverContainer<Scalar> > HermesSolverContainer<Scalar>::fa
         linearSolver->set_max_iters(block->iterLinearSolverIters());
         linearSolver->set_tolerance(block->iterLinearSolverToleranceAbsolute());
     }
+    if (AMGSolver<Scalar> *linearSolver = dynamic_cast<AMGSolver<Scalar> *>(solver->linearSolver()))
+    {
+        linearSolver->set_max_iters(block->iterLinearSolverIters());
+        linearSolver->set_tolerance(block->iterLinearSolverToleranceAbsolute());
+    }
     if (IterativeParalutionLinearMatrixSolver<Scalar> *linearSolver = dynamic_cast<IterativeParalutionLinearMatrixSolver<Scalar> *>(solver.data()->linearSolver()))
     {
         linearSolver->set_solver_type(block->iterParalutionLinearSolverMethod());
         linearSolver->set_precond(new Hermes::Preconditioners::ParalutionPrecond<Scalar>(block->iterParalutionLinearSolverPreconditioner()));
+    }
+    if (AMGParalutionLinearMatrixSolver<Scalar> *linearSolver = dynamic_cast<AMGParalutionLinearMatrixSolver<Scalar> *>(solver.data()->linearSolver()))
+    {
+        linearSolver->set_smoother(block->iterParalutionLinearSolverMethod(), block->iterParalutionLinearSolverPreconditioner());
     }
 
     return solver;
@@ -582,12 +591,16 @@ Scalar *ProblemSolver<Scalar>::solveOneProblem(Hermes::vector<SpaceSharedPtr<Sca
         delete [] initialSolutionVector;
 
     // linear solver statistics
+    int numIters = 0;
     if (IterSolver<Scalar> *iterLinearSolver = dynamic_cast<IterSolver<Scalar> *>(linearSolver))
-    {
+        numIters = iterLinearSolver->get_num_iters();
+    if (AMGSolver<Scalar> *amgLinearSolver = dynamic_cast<AMGSolver<Scalar> *>(linearSolver))
+        numIters = amgLinearSolver->get_num_iters();
+
+    if (numIters > 0)
         Agros2D::log()->printDebug(QObject::tr("Solver"),
                                    QObject::tr("Iterative solver statistics: %1 iterations")
-                                   .arg(iterLinearSolver->get_num_iters()));
-    }
+                                   .arg(numIters));
 
     return m_hermesSolverContainer->slnVector();
 }
