@@ -125,4 +125,7 @@ QString createPythonFromModel(StartupScript_Type startupScript);
 void openFile(const std::string &file);
 void saveFile(const std::string &file, bool saveWithSolution);
 
+int appTime();
+void memoryUsage(std::vector<int> &time, std::vector<int> &usage);
+
 #endif // PYTHONENGINEAGROS_H
