@@ -79,6 +79,24 @@ def python_engine_pyflakes_check(filename):
         w.messages.sort(lambda a, b: cmp(a.lineno, b.lineno))
         return [warning.__str__() for warning in w.messages]
 
+# plot chart
+def plot_chart(x, y, xlabel = "", ylabel = ""):
+    import pylab as pl
+
+    pl.close()
+    pl.plot(x, y)
+    pl.grid(True)
+    pl.xlabel(xlabel)
+    pl.ylabel(ylabel)
+    fn_chart = pythonlab.tempname("png")
+    pl.savefig(fn_chart, dpi=60)
+    pl.close()
+    
+    # show in console
+    pythonlab.image(fn_chart)
+
+pythonlab.plot_chart = plot_chart
+        
 # redirect stdout and stderr
 class CatchOutErr:
     def write(self, str):
