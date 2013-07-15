@@ -20,7 +20,7 @@
 #include "logview.h"
 
 #include "util/global.h"
-#include "util/system_utils.h"
+#include "util/memory_monitor.h"
 
 #include "scene.h"
 #include "hermes2d/problem.h"
@@ -43,7 +43,6 @@ LogWidget::LogWidget(QWidget *parent) : QWidget(parent),
 
     memoryLabel = new QLabel("                                                         ");
     memoryLabel->setVisible(false);
-    refreshMemory();
 
     QVBoxLayout *layoutMain = new QVBoxLayout();
     layoutMain->setContentsMargins(0, 0, 0, 0);
@@ -97,9 +96,6 @@ void LogWidget::createActions()
 
     actCopy = new QAction(icon(""), tr("Copy"), this);
     connect(actCopy, SIGNAL(triggered()), textLog, SLOT(copy()));
-
-    memoryTimer = new QTimer(this);
-    connect(memoryTimer, SIGNAL(timeout()), this, SLOT(refreshMemory()));
 }
 
 void LogWidget::showTimestamp()
@@ -210,15 +206,15 @@ void LogWidget::setMemoryLabelVisible(bool visible)
     memoryLabel->setVisible(visible);
 
     if (visible)
-        memoryTimer->start(3000);
+        connect(Agros2D::memoryMonitor(), SIGNAL(refreshMemory(int)), this, SLOT(refreshMemory(int)));
     else
-        memoryTimer->stop();
+        disconnect(Agros2D::memoryMonitor(), SIGNAL(refreshMemory(int)), this, SLOT(refreshMemory(int)));
 }
 
-void LogWidget::refreshMemory()
+void LogWidget::refreshMemory(int usage)
 {
-    int memory = getCurrentRSS() / 1024 / 1024;
-    memoryLabel->setText(tr("Physical memory: %1 MB").arg(memory));
+    // show memory usage
+    memoryLabel->setText(tr("Physical memory: %1 MB").arg(usage));
     memoryLabel->repaint();
 }
 

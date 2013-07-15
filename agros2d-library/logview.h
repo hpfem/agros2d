@@ -76,7 +76,6 @@ protected:
 
 private:
     QMenu *mnuInfo;
-    QTimer *memoryTimer;
 
     QPlainTextEdit *textLog;
     QLabel *memoryLabel;
@@ -91,7 +90,7 @@ private:
     void createActions();
 
 private slots:
-    void refreshMemory();
+    void refreshMemory(int usage);
 };
 
 class LogView : public QDockWidget

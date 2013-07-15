@@ -700,3 +700,4 @@ void saveFile(const std::string &file, bool saveWithSolution)
         throw logic_error(e.toString().toStdString());
     }
 }
+

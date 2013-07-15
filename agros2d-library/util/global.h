@@ -30,6 +30,7 @@ class Log;
 class Scene;
 class PluginInterface;
 class ScriptEngineRemoteLocal;
+class MemoryMonitor;
 
 class AGROS_API Agros2D
 {
@@ -45,6 +46,7 @@ public:
     static inline Problem *problem() { return Agros2D::singleton()->m_problem; }
     static inline SolutionStore *solutionStore() { return Agros2D::singleton()->m_solutionStore; }
     static inline Log *log() { return Agros2D::singleton()->m_log; }
+    static inline MemoryMonitor *memoryMonitor() { return Agros2D::singleton()->m_memoryMonitor; }
 
     static PluginInterface *loadPlugin(const QString &plugin);
 
@@ -57,6 +59,7 @@ private:
     SolutionStore *m_solutionStore;
     Log *m_log;
     ScriptEngineRemoteLocal *m_scriptEngineRemoteLocal;
+    MemoryMonitor *m_memoryMonitor;
 };
 
 #endif /* GLOBAL_H */

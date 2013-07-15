@@ -83,7 +83,7 @@ def python_engine_pyflakes_check(filename):
 def plot_chart(x, y, xlabel = "", ylabel = ""):
     import pylab as pl
 
-    pl.close()
+    pl.figure()
     pl.plot(x, y)
     pl.grid(True)
     pl.xlabel(xlabel)
@@ -95,7 +95,7 @@ def plot_chart(x, y, xlabel = "", ylabel = ""):
     # show in console
     pythonlab.image(fn_chart)
 
-pythonlab.plot_chart = plot_chart
+setattr(pythonlab, "plot_chart", plot_chart)
         
 # redirect stdout and stderr
 class CatchOutErr:

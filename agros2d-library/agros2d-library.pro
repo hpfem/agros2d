@@ -46,6 +46,7 @@ SOURCES += value.cpp \
     confdialog.cpp \
     util/conf.cpp \
     util/global.cpp \
+    util/memory_monitor.cpp \
     util/xml.cpp \
     util/enums.cpp \
     util/loops.cpp \
@@ -132,6 +133,7 @@ SOURCES += value.cpp \
 HEADERS += value.h \
     scene.h \
     util/global.h \
+    util/memory_monitor.h \
     util/constants.h \
     util/conf.h \
     util/xml.h \
