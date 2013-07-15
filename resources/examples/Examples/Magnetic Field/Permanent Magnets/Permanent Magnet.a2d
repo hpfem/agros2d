@@ -158,7 +158,7 @@
         <field_config>
           <field_item field_key="NonlinearTolerance" field_value="0.01"/>
           <field_item field_key="NonlinearSteps" field_value="40"/>
-          <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
+          <field_item field_key="NonlinearConvergenceMeasurement" field_value="16"/>
           <field_item field_key="NewtonDampingType" field_value="1"/>
           <field_item field_key="NewtonDampingCoeff" field_value="0.6"/>
           <field_item field_key="NewtonReuseJacobian" field_value="1"/>
@@ -335,9 +335,6 @@
     <item key="View_MeshCurvilinearElements" value="1"/>
     <item key="View_LinearizerQuality" value="0"/>
     <item key="View_SolidViewHide" value=""/>
-    <item key="Adaptivity_MaxDofs" value="60000"/>
-    <item key="Commands_Triangle" value="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;"/>
-    <item key="Commands_Gmsh" value="%1 -2 &quot;%2.geo&quot;"/>
   </config>
 
 </problem:document>

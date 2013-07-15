@@ -84,9 +84,9 @@
     </labels>
   </geometry>
 
-  <problem coordinate_type="planar" matrix_solver="umfpack" mesh_type="gmsh_quad">
+  <problem coordinate_type="planar" mesh_type="gmsh_quad">
     <fields>
-      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="flow" linearity_type="newton">
+      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="flow" linearity_type="newton" matrix_solver="mumps">
         <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>
@@ -173,7 +173,7 @@
         <field_config>
           <field_item field_key="NonlinearTolerance" field_value="0.01"/>
           <field_item field_key="NonlinearSteps" field_value="40"/>
-          <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
+          <field_item field_key="NonlinearConvergenceMeasurement" field_value="16"/>
           <field_item field_key="NewtonDampingType" field_value="1"/>
           <field_item field_key="NewtonDampingCoeff" field_value="1"/>
           <field_item field_key="NewtonReuseJacobian" field_value="0"/>
@@ -197,6 +197,10 @@
           <field_item field_key="AdaptivityFinerReference" field_value="0"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
           <field_item field_key="TransientInitialCondition" field_value="0"/>
+          <field_item field_key="LinearSolverIterMethod" field_value="2"/>
+          <field_item field_key="LinearSolverIterPreconditioner" field_value="2"/>
+          <field_item field_key="LinearSolverIterToleranceAbsolute" field_value="1e-16"/>
+          <field_item field_key="LinearSolverIterIters" field_value="1000"/>
         </field_config>
       </field>
     </fields>
@@ -294,7 +298,7 @@
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
     <item key="View_ScalarRangeMin" value="0"/>
-    <item key="View_ScalarRangeMax" value="1.29013348343489"/>
+    <item key="View_ScalarRangeMax" value="1.29050960044753"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value=""/>
     <item key="View_VectorProportional" value="1"/>
@@ -346,9 +350,6 @@
     <item key="View_MeshCurvilinearElements" value="1"/>
     <item key="View_LinearizerQuality" value="4"/>
     <item key="View_SolidViewHide" value=""/>
-    <item key="Adaptivity_MaxDofs" value="60000"/>
-    <item key="Commands_Triangle" value="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;"/>
-    <item key="Commands_Gmsh" value="%1 -2 &quot;%2.geo&quot;"/>
   </config>
 
 </problem:document>
