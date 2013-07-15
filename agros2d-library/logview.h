@@ -76,6 +76,7 @@ protected:
 
 private:
     QMenu *mnuInfo;
+    QTimer *memoryTimer;
 
     QPlainTextEdit *textLog;
     QLabel *memoryLabel;

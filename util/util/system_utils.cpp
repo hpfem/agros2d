@@ -56,7 +56,7 @@
  * memory use) measured in bytes, or zero if the value cannot be
  * determined on this OS.
  */
-int getPeakRSS( )
+long getPeakRSS( )
 {
 #if defined(_WIN32)
     /* Windows -------------------------------------------------- */
@@ -98,7 +98,7 @@ int getPeakRSS( )
  * Returns the current resident set size (physical memory use) measured
  * in bytes, or zero if the value cannot be determined on this OS.
  */
-int getCurrentRSS()
+long getCurrentRSS()
 {
 #if defined(_WIN32)
     /* Windows -------------------------------------------------- */

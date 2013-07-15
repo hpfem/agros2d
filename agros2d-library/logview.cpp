@@ -42,6 +42,7 @@ LogWidget::LogWidget(QWidget *parent) : QWidget(parent),
     textLog->setMinimumSize(160, 160);
 
     memoryLabel = new QLabel("                                                         ");
+    memoryLabel->setVisible(false);
     refreshMemory();
 
     QVBoxLayout *layoutMain = new QVBoxLayout();
@@ -96,6 +97,9 @@ void LogWidget::createActions()
 
     actCopy = new QAction(icon(""), tr("Copy"), this);
     connect(actCopy, SIGNAL(triggered()), textLog, SLOT(copy()));
+
+    memoryTimer = new QTimer(this);
+    connect(memoryTimer, SIGNAL(timeout()), this, SLOT(refreshMemory()));
 }
 
 void LogWidget::showTimestamp()
@@ -189,11 +193,6 @@ void LogWidget::print(const QString &module, const QString &message, const QStri
         m_printCounter = 0;
         QApplication::processEvents();
     }
-    if (m_printCounter % 10 == 0)
-    {
-        if (isMemoryLabelVisible())
-            refreshMemory();
-    }
 }
 
 void LogWidget::welcomeMessage()
@@ -209,12 +208,18 @@ bool LogWidget::isMemoryLabelVisible() const
 void LogWidget::setMemoryLabelVisible(bool visible)
 {
     memoryLabel->setVisible(visible);
+
+    if (visible)
+        memoryTimer->start(3000);
+    else
+        memoryTimer->stop();
 }
 
 void LogWidget::refreshMemory()
 {
     int memory = getCurrentRSS() / 1024 / 1024;
     memoryLabel->setText(tr("Physical memory: %1 MB").arg(memory));
+    memoryLabel->repaint();
 }
 
 // *******************************************************************************************************
@@ -224,6 +229,7 @@ LogView::LogView(QWidget *parent) : QDockWidget(tr("Applicaton log"), parent)
     setObjectName("LogView");
 
     logWidget = new LogWidget(this);
+    logWidget->setMemoryLabelVisible(true);
     logWidget->welcomeMessage();
 
     setWidget(logWidget);
