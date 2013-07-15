@@ -499,7 +499,7 @@ void PythonEditorDialog::createActions()
     actOptionsPrintStacktrace->setChecked(settings.value("PythonEditorWidget/PrintStacktrace", true).toBool());
     connect(actOptionsPrintStacktrace, SIGNAL(triggered()), this, SLOT(doOptionsPrintStacktrace()));
 
-    actOptionsEnableUseProfiler = new QAction(icon(""), tr("Use profiler"), this);
+    actOptionsEnableUseProfiler = new QAction(icon(""), tr("Profiler enabled"), this);
     actOptionsEnableUseProfiler->setCheckable(true);
     actOptionsEnableUseProfiler->setChecked(settings.value("PythonEditorWidget/UseProfiler", true).toBool());
     connect(actOptionsEnableUseProfiler, SIGNAL(triggered()), this, SLOT(doOptionsEnableUseProfiler()));
