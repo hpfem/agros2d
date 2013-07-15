@@ -11,7 +11,50 @@ struct PythonVariable
     QVariant value;
 };
 
-class AGROS_API PythonEngine : public QObject
+class AGROS_API PythonEngineProfiler
+{
+public:
+    inline bool isProfiler() const { return m_profiler; }
+    inline void setProfiler(bool prof) { m_profiler = prof; }
+
+    inline void profilerAddLine(int line)
+    {
+        m_profilerLines.append(line);;
+        m_profilerTimes.append(m_profilerTime.elapsed());
+    }
+    inline QMap<int, int> profilerAccumulatedLines() const { return m_profilerAccumulatedLines; }
+    inline QMap<int, int> profilerAccumulatedTimes() const { return m_profilerAccumulatedTimes; }
+
+    inline int profilerMaxAccumulatedLine() const { return m_profilerMaxAccumulatedLine; }
+    inline int profilerMaxAccumulatedTime() const { return m_profilerMaxAccumulatedTime; }
+    inline int profilerMaxAccumulatedCallLine() const { return m_profilerMaxAccumulatedCallLine; }
+    inline int profilerMaxAccumulatedCall() const { return m_profilerMaxAccumulatedCall; }
+
+    void startProfiler();
+    void finishProfiler();
+
+    inline void setProfilerFileName(const QString &fileName) { m_profilerFileName = fileName; }
+    inline QString profilerFileName() { return m_profilerFileName; }
+
+
+private:
+    bool m_profiler;
+
+    QTime m_profilerTime;
+    QList<int> m_profilerTimes;
+    QList<int> m_profilerLines;
+    QMap<int, int> m_profilerAccumulatedLines;
+    QMap<int, int> m_profilerAccumulatedTimes;
+
+    int m_profilerMaxAccumulatedLine;
+    int m_profilerMaxAccumulatedTime;
+    int m_profilerMaxAccumulatedCallLine;
+    int m_profilerMaxAccumulatedCall;
+
+    QString m_profilerFileName;
+};
+
+class AGROS_API PythonEngine : public QObject, public PythonEngineProfiler
 {
     Q_OBJECT
 

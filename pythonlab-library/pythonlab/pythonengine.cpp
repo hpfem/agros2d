@@ -124,6 +124,91 @@ static PyMethodDef pythonEngineFuntions[] =
 
 // ****************************************************************************
 
+// tracing
+int traceFunction(PyObject *obj, _frame *frame, int what, PyObject *arg)
+{
+    PyObject *str = PyObject_Str(frame->f_code->co_filename);
+    if (str)
+    {
+        QString fileName = QString::fromStdString(PyString_AsString(str));
+        Py_DECREF(str);
+
+        if (!currentPythonEngine()->profilerFileName().isEmpty() && fileName.contains(currentPythonEngine()->profilerFileName()))
+        {
+            // catch line change events, print the filename and line number
+            if (what == PyTrace_LINE)
+            {
+                currentPythonEngine()->profilerAddLine(frame->f_lineno);
+                // qDebug() << "PyTrace_LINE: " << fileName << ": " << frame->f_lineno;
+            }
+            // catch line change events, print the filename and line number
+            if (what == PyTrace_CALL)
+            {
+                // qDebug() << "PyTrace_CALL: " << fileName << ": " << frame->f_lineno;
+            }
+            // catch line change events, print the filename and line number
+            if (what == PyTrace_RETURN)
+            {
+                // qDebug() << "PyTrace_RETURN: " << fileName << ": " << frame->f_lineno;
+            }
+        }
+    }
+
+    return 0;
+}
+
+void PythonEngineProfiler::startProfiler()
+{
+    if (m_profiler)
+    {
+        // set trace callback
+        PyEval_SetTrace(traceFunction, NULL);
+        m_profilerTime.restart();
+        profilerAddLine(0);
+    }
+}
+
+void PythonEngineProfiler::finishProfiler()
+{
+    if (m_profiler)
+    {
+        // add last time
+        profilerAddLine(m_profilerLines.last() + 1);
+        // remove trace callback
+        PyEval_SetTrace(NULL, NULL);
+
+        assert(m_profilerLines.count() == m_profilerTimes.count());
+        // clear accumulated lines and times
+        m_profilerAccumulatedLines.clear();
+        m_profilerAccumulatedTimes.clear();
+        // store accumulated time
+        m_profilerMaxAccumulatedCall = 0;
+        m_profilerMaxAccumulatedTime = 0;
+        for (int i = 1; i < m_profilerLines.count(); i++)
+        {
+            m_profilerAccumulatedLines[m_profilerLines.at(i-1)]++;
+            m_profilerAccumulatedTimes[m_profilerLines.at(i-1)] += (m_profilerTimes.at(i) - m_profilerTimes.at(i - 1));
+
+            if (m_profilerAccumulatedTimes[m_profilerLines.at(i-1)] > m_profilerMaxAccumulatedTime)
+            {
+                m_profilerMaxAccumulatedLine = m_profilerLines.at(i-1);
+                m_profilerMaxAccumulatedTime = m_profilerAccumulatedTimes[m_profilerLines.at(i-1)];
+            }
+            if (m_profilerAccumulatedLines[m_profilerLines.at(i-1)] > m_profilerMaxAccumulatedCall)
+            {
+                m_profilerMaxAccumulatedCallLine = m_profilerLines.at(i-1);
+                m_profilerMaxAccumulatedCall = m_profilerAccumulatedLines[m_profilerLines.at(i-1)];
+            }
+        }
+        // clear temp variables
+        m_profilerLines.clear();
+        m_profilerTimes.clear();
+    }
+}
+
+
+// ****************************************************************************
+
 PythonEngine::~PythonEngine()
 {
     // finalize and garbage python
@@ -138,6 +223,7 @@ void PythonEngine::init()
 {
     m_isRunning = false;
     m_stdOut = "";
+    setProfiler(false);
 
     // connect stdout
     connect(this, SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
@@ -257,7 +343,10 @@ bool PythonEngine::runScript(const QString &script, const QString &fileName)
     // compile
     PyObject *code = Py_CompileString(script.toLatin1().data(), fileName.toLatin1().data(), Py_file_input);
     // run
+    setProfilerFileName(fileName);
+    startProfiler();
     if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
+    finishProfiler();
 
     bool successfulRun = false;
     if (output)

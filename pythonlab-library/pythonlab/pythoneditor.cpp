@@ -499,6 +499,11 @@ void PythonEditorDialog::createActions()
     actOptionsPrintStacktrace->setChecked(settings.value("PythonEditorWidget/PrintStacktrace", true).toBool());
     connect(actOptionsPrintStacktrace, SIGNAL(triggered()), this, SLOT(doOptionsPrintStacktrace()));
 
+    actOptionsEnableUseProfiler = new QAction(icon(""), tr("Use profiler"), this);
+    actOptionsEnableUseProfiler->setCheckable(true);
+    actOptionsEnableUseProfiler->setChecked(settings.value("PythonEditorWidget/UseProfiler", true).toBool());
+    connect(actOptionsEnableUseProfiler, SIGNAL(triggered()), this, SLOT(doOptionsEnableUseProfiler()));
+
     actExit = new QAction(icon("application-exit"), tr("E&xit"), this);
     actExit->setShortcut(tr("Ctrl+Q"));
     connect(actExit, SIGNAL(triggered()), this, SLOT(close()));
@@ -571,6 +576,8 @@ void PythonEditorDialog::createControls()
     mnuOptions->addAction(actOptionsEnablePyLint);
     mnuOptions->addSeparator();
     mnuOptions->addAction(actOptionsPrintStacktrace);
+    mnuOptions->addSeparator();
+    mnuOptions->addAction(actOptionsEnableUseProfiler);
 
     mnuHelp = menuBar()->addMenu(tr("&Help"));
     // mnuHelp->addAction(actHelp);
@@ -724,14 +731,16 @@ void PythonEditorDialog::doRunPython()
     if (!scriptEditorWidget()->fileName().isEmpty())
         fileBrowser->setDir(QFileInfo(scriptEditorWidget()->fileName()).absolutePath());
 
-    // run script
-    consoleView->console()->consoleMessage(tr("Run script: %1\n").arg(tabWidget->tabText(tabWidget->currentIndex()).replace("* ", "")), Qt::gray);
-
     scriptPrepare();
 
     // connect stdout and set current path
     consoleView->console()->connectStdOut(QFile::exists(scriptEditorWidget()->fileName()) ?
                                               QFileInfo(scriptEditorWidget()->fileName()).absolutePath() : "");
+
+    // run script
+    QTime time;
+    time.start();
+    consoleView->console()->consoleMessage(tr("Run script: %1\n").arg(tabWidget->tabText(tabWidget->currentIndex()).replace("* ", "")), Qt::gray);
 
     bool successfulRun = false;
     if (txtEditor->textCursor().hasSelection())
@@ -748,9 +757,22 @@ void PythonEditorDialog::doRunPython()
                 QFile::exists(scriptEditorWidget()->fileName()))
             doFileSave();
 
+        // set profiler
+        QSettings settings;
+        pythonEngine->setProfiler(settings.value("PythonEditorWidget/UseProfiler", false).toBool());
+
         successfulRun = pythonEngine->runScript(txtEditor->toPlainText(), QFileInfo(scriptEditorWidget()->fileName()).absoluteFilePath());
+
+        // set profiled
+        txtEditor->setProfiled(pythonEngine->isProfiler());
+        // refresh
+        txtEditor->setPlainText(txtEditor->toPlainText());
+        // remove profiler
+        pythonEngine->setProfiler(false);
     }
 
+    // run script
+    consoleView->console()->consoleMessage(tr("Finish script: %1\n").arg(milisecondsToTime(time.elapsed()).toString("hh:mm:ss.zzz")), Qt::gray);
 
     // disconnect stdout
     consoleView->console()->disconnectStdOut();
@@ -859,6 +881,15 @@ void PythonEditorDialog::doOptionsEnablePyLint()
 
     QSettings settings;
     settings.setValue("PythonEditorWidget/EnablePyLint", actOptionsEnablePyLint->isChecked());
+}
+
+void PythonEditorDialog::doOptionsEnableUseProfiler()
+{
+    QSettings settings;
+    settings.setValue("PythonEditorWidget/UseProfiler", actOptionsEnableUseProfiler->isChecked());
+
+    // refresh
+    txtEditor->setPlainText(txtEditor->toPlainText());
 }
 
 void PythonEditorDialog::doFileItemDoubleClick(const QString &path)
@@ -1257,7 +1288,7 @@ bool PythonEditorDialog::isScriptModified()
 // ********************************************************************************
 
 ScriptEditor::ScriptEditor(PythonEngine *pythonEngine, QWidget *parent)
-    : PlainTextEditParenthesis(parent), pythonEngine(pythonEngine)
+    : PlainTextEditParenthesis(parent), pythonEngine(pythonEngine), m_isProfiled(false)
 {
     lineNumberArea = new ScriptEditorLineNumberArea(this);
 
@@ -1303,9 +1334,13 @@ void ScriptEditor::updateLineNumberAreaWidth(int /* newBlockCount */)
 void ScriptEditor::updateLineNumberArea(const QRect &rect, int dy)
 {
     if (dy)
+    {
         lineNumberArea->scroll(0, dy);
+    }
     else
+    {
         lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());
+    }
 
     if (rect.contains(viewport()->rect()))
         updateLineNumberAreaWidth(0);
@@ -1605,7 +1640,16 @@ void ScriptEditor::highlightCurrentLine(bool isError)
 
 void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
-    const QBrush bookmarkBrushPyFlakes(Qt::red);
+    // line numbers
+    const QBrush bookmarkBrushPyFlakes(QColor(Qt::red).lighter());
+
+    int timesWidth = 0;
+    int callWidth = 0;
+    if (isProfiled())
+    {
+        timesWidth = fontMetrics().width(QLatin1Char('9')) * QString::number(pythonEngine->profilerMaxAccumulatedTime()).length() + 1;
+        callWidth = fontMetrics().width(QLatin1Char('9')) * QString::number(pythonEngine->profilerMaxAccumulatedCall()).length() + 1;
+    }
 
     QPainter painter(lineNumberArea);
     painter.fillRect(event->rect(), Qt::lightGray);
@@ -1619,16 +1663,36 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
     {
         if (block.isVisible() && bottom >= event->rect().top())
         {
-            // draw number
-            QString number = QString::number(blockNumber + 1);
-            painter.setPen(Qt::black);
-            painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
-                             Qt::AlignRight, number);
+            // line number
+            QString lineNumber = QString::number(blockNumber + 1);
 
             // draw rect
             if (errorMessagesPyFlakes.contains(blockNumber + 1))
-                painter.fillRect(2, top+2, 8, fontMetrics().height()-4,
+                painter.fillRect(0, top, lineNumberArea->width(), fontMetrics().height(),
                                  bookmarkBrushPyFlakes);
+
+            // draw line number
+            painter.setPen(Qt::black);
+            painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
+                             Qt::AlignRight, lineNumber);
+
+            // draw profiler number
+            if (isProfiled())
+            {
+                if (pythonEngine->profilerAccumulatedTimes().value(blockNumber + 1) > 0)
+                {
+                    QString number = QString::number(pythonEngine->profilerAccumulatedTimes().value(blockNumber + 1));
+                    painter.setPen(Qt::darkBlue);
+                    painter.drawText(0, top, timesWidth,
+                                     fontMetrics().height(),
+                                     Qt::AlignRight, number);
+
+                    number = QString::number(pythonEngine->profilerAccumulatedLines().value(blockNumber + 1));
+                    painter.setPen(Qt::darkGreen);
+                    painter.drawText(0, top, timesWidth + callWidth + 3, fontMetrics().height(),
+                                     Qt::AlignRight, number);
+                }
+            }
         }
 
         block = block.next();
@@ -1659,6 +1723,12 @@ int ScriptEditor::lineNumberAreaWidth()
     while (max >= 10) {
         max /= 10;
         ++digits;
+    }
+
+    if (isProfiled())
+    {
+        digits += QString::number(pythonEngine->profilerMaxAccumulatedTime()).length() +
+                QString::number(pythonEngine->profilerMaxAccumulatedCall()).length();
     }
 
     int space = 15 + fontMetrics().width(QLatin1Char('9')) * digits;

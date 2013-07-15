@@ -190,6 +190,7 @@ protected:
     QAction *actOptionsEnablePyLint;
     QAction *actOptionsEnablePyFlakes;
     QAction *actOptionsPrintStacktrace;
+    QAction *actOptionsEnableUseProfiler;
 
     QAction *actHelp;
     QAction *actHelpKeywordList;
@@ -221,6 +222,7 @@ private slots:
     void doOptionsEnablePyFlakes();
     void doOptionsEnablePyLint();
     void doOptionsPrintStacktrace();
+    void doOptionsEnableUseProfiler();
 
     void doStartedScript();
     void doExecutedScript();
@@ -241,6 +243,9 @@ public:
     int lineNumberAreaWidth();
 
     void replaceTabsWithSpaces();
+
+    inline bool isProfiled() const { return m_isProfiled; }
+    inline void setProfiled(bool prof) { m_isProfiled = prof; }
 
 public slots:
     void gotoLine(int line = -1, bool isError = false);
@@ -266,6 +271,9 @@ private:
     QCompleter* completer;
 
     QWidget *lineNumberArea;
+
+    // profiler
+    bool m_isProfiled;
 };
 
 class AGROS_API ScriptEditorLineNumberArea : public QWidget
