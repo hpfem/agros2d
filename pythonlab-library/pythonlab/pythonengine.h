@@ -14,8 +14,7 @@ struct PythonVariable
 class AGROS_API PythonEngineProfiler
 {
 public:
-    inline bool isProfiler() const { return m_profiler; }
-    inline void setProfiler(bool prof) { m_profiler = prof; }
+    PythonEngineProfiler() {}
 
     inline void profilerAddLine(int line)
     {
@@ -38,8 +37,6 @@ public:
 
 
 private:
-    bool m_profiler;
-
     QTime m_profilerTime;
     QList<int> m_profilerTimes;
     QList<int> m_profilerLines;
@@ -80,7 +77,7 @@ public:
     void pythonShowHtmlCommand(const QString &fileName);
     void pythonShowImageCommand(const QString &fileName, int width = 0, int height = 0);
 
-    bool runScript(const QString &script, const QString &fileName = "");
+    bool runScript(const QString &script, const QString &fileName = "", bool useProfiler = false);
     ExpressionResult runExpression(const QString &expression, bool returnValue);
     ScriptResult parseError();
     inline bool isRunning() { return m_isRunning; }

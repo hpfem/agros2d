@@ -159,51 +159,47 @@ int traceFunction(PyObject *obj, _frame *frame, int what, PyObject *arg)
 
 void PythonEngineProfiler::startProfiler()
 {
-    if (m_profiler)
-    {
-        // set trace callback
-        PyEval_SetTrace(traceFunction, NULL);
-        m_profilerTime.restart();
-        profilerAddLine(0);
-    }
+    // set trace callback
+    PyEval_SetTrace(traceFunction, NULL);
+    m_profilerTime.restart();
+    profilerAddLine(0);
 }
 
 void PythonEngineProfiler::finishProfiler()
 {
-    if (m_profiler)
+    // add last time
+    profilerAddLine(m_profilerLines.last() + 1);
+
+    // remove trace callback
+    PyEval_SetTrace(NULL, NULL);
+
+    assert(m_profilerLines.count() == m_profilerTimes.count());
+    // clear accumulated lines and times
+    m_profilerAccumulatedLines.clear();
+    m_profilerAccumulatedTimes.clear();
+    // store accumulated time
+    m_profilerMaxAccumulatedCall = 0;
+    m_profilerMaxAccumulatedTime = 0;
+    for (int i = 1; i < m_profilerLines.count(); i++)
     {
-        // add last time
-        profilerAddLine(m_profilerLines.last() + 1);
-        // remove trace callback
-        PyEval_SetTrace(NULL, NULL);
+        m_profilerAccumulatedLines[m_profilerLines.at(i-1)]++;
+        m_profilerAccumulatedTimes[m_profilerLines.at(i-1)] += (m_profilerTimes.at(i) - m_profilerTimes.at(i - 1));
 
-        assert(m_profilerLines.count() == m_profilerTimes.count());
-        // clear accumulated lines and times
-        m_profilerAccumulatedLines.clear();
-        m_profilerAccumulatedTimes.clear();
-        // store accumulated time
-        m_profilerMaxAccumulatedCall = 0;
-        m_profilerMaxAccumulatedTime = 0;
-        for (int i = 1; i < m_profilerLines.count(); i++)
+        if (m_profilerAccumulatedTimes[m_profilerLines.at(i-1)] > m_profilerMaxAccumulatedTime)
         {
-            m_profilerAccumulatedLines[m_profilerLines.at(i-1)]++;
-            m_profilerAccumulatedTimes[m_profilerLines.at(i-1)] += (m_profilerTimes.at(i) - m_profilerTimes.at(i - 1));
-
-            if (m_profilerAccumulatedTimes[m_profilerLines.at(i-1)] > m_profilerMaxAccumulatedTime)
-            {
-                m_profilerMaxAccumulatedLine = m_profilerLines.at(i-1);
-                m_profilerMaxAccumulatedTime = m_profilerAccumulatedTimes[m_profilerLines.at(i-1)];
-            }
-            if (m_profilerAccumulatedLines[m_profilerLines.at(i-1)] > m_profilerMaxAccumulatedCall)
-            {
-                m_profilerMaxAccumulatedCallLine = m_profilerLines.at(i-1);
-                m_profilerMaxAccumulatedCall = m_profilerAccumulatedLines[m_profilerLines.at(i-1)];
-            }
+            m_profilerMaxAccumulatedLine = m_profilerLines.at(i-1);
+            m_profilerMaxAccumulatedTime = m_profilerAccumulatedTimes[m_profilerLines.at(i-1)];
         }
-        // clear temp variables
-        m_profilerLines.clear();
-        m_profilerTimes.clear();
+        if (m_profilerAccumulatedLines[m_profilerLines.at(i-1)] > m_profilerMaxAccumulatedCall)
+        {
+            m_profilerMaxAccumulatedCallLine = m_profilerLines.at(i-1);
+            m_profilerMaxAccumulatedCall = m_profilerAccumulatedLines[m_profilerLines.at(i-1)];
+        }
     }
+
+    // clear temp variables
+    m_profilerLines.clear();
+    m_profilerTimes.clear();
 }
 
 
@@ -223,7 +219,6 @@ void PythonEngine::init()
 {
     m_isRunning = false;
     m_stdOut = "";
-    setProfiler(false);
 
     // connect stdout
     connect(this, SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
@@ -318,7 +313,7 @@ void PythonEngine::deleteUserModules()
     PyErr_Clear();
 }
 
-bool PythonEngine::runScript(const QString &script, const QString &fileName)
+bool PythonEngine::runScript(const QString &script, const QString &fileName, bool useProfiler)
 {
     m_isRunning = true;
     m_stdOut = "";
@@ -343,10 +338,14 @@ bool PythonEngine::runScript(const QString &script, const QString &fileName)
     // compile
     PyObject *code = Py_CompileString(script.toLatin1().data(), fileName.toLatin1().data(), Py_file_input);
     // run
-    setProfilerFileName(fileName);
-    startProfiler();
+    if (useProfiler)
+    {
+        setProfilerFileName(fileName);
+        startProfiler();
+    }
     if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
-    finishProfiler();
+    if (useProfiler)
+        finishProfiler();
 
     bool successfulRun = false;
     if (output)
