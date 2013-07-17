@@ -767,6 +767,15 @@ void PythonEditorDialog::doRunPython()
 
         // set profiled
         txtEditor->setProfiled(useProfiler);
+
+        txtEditor->setProfilerAccumulatedLines(currentPythonEngine()->profilerAccumulatedLines());
+        txtEditor->setProfilerAccumulatedTimes(currentPythonEngine()->profilerAccumulatedTimes());
+
+        txtEditor->setProfilerMaxAccumulatedLine(currentPythonEngine()->profilerMaxAccumulatedLine());
+        txtEditor->setProfilerMaxAccumulatedTime(currentPythonEngine()->profilerMaxAccumulatedTime());
+        txtEditor->setProfilerMaxAccumulatedCallLine(currentPythonEngine()->profilerMaxAccumulatedCallLine());
+        txtEditor->setProfilerMaxAccumulatedCall(currentPythonEngine()->profilerMaxAccumulatedCall());
+
         // refresh
         txtEditor->setPlainText(txtEditor->toPlainText());
     }
@@ -1317,7 +1326,6 @@ ScriptEditor::ScriptEditor(PythonEngine *pythonEngine, QWidget *parent)
 
 ScriptEditor::~ScriptEditor()
 {
-    delete lineNumberArea;
     delete completer;
 }
 
@@ -1650,8 +1658,8 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
     int callWidth = 0;
     if (isProfiled())
     {
-        timesWidth = fontMetrics().width(QLatin1Char('9')) * QString::number(pythonEngine->profilerMaxAccumulatedTime()).length() + 1;
-        callWidth = fontMetrics().width(QLatin1Char('9')) * QString::number(pythonEngine->profilerMaxAccumulatedCall()).length() + 1;
+        timesWidth = fontMetrics().width(QLatin1Char('9')) * QString::number(profilerMaxAccumulatedTime()).length() + 1;
+        callWidth = fontMetrics().width(QLatin1Char('9')) * QString::number(profilerMaxAccumulatedCall()).length() + 1;
     }
 
     QPainter painter(lineNumberArea);
@@ -1682,15 +1690,15 @@ void ScriptEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
             // draw profiler number
             if (isProfiled())
             {
-                if (pythonEngine->profilerAccumulatedTimes().value(blockNumber + 1) > 0)
+                if (profilerAccumulatedTimes().value(blockNumber + 1) > 0)
                 {
-                    QString number = QString::number(pythonEngine->profilerAccumulatedTimes().value(blockNumber + 1));
+                    QString number = QString::number(profilerAccumulatedTimes().value(blockNumber + 1));
                     painter.setPen(Qt::darkBlue);
                     painter.drawText(0, top, timesWidth,
                                      fontMetrics().height(),
                                      Qt::AlignRight, number);
 
-                    number = QString::number(pythonEngine->profilerAccumulatedLines().value(blockNumber + 1));
+                    number = QString::number(profilerAccumulatedLines().value(blockNumber + 1));
                     painter.setPen(Qt::darkGreen);
                     painter.drawText(0, top, timesWidth + callWidth + 3, fontMetrics().height(),
                                      Qt::AlignRight, number);
@@ -1730,8 +1738,8 @@ int ScriptEditor::lineNumberAreaWidth()
 
     if (isProfiled())
     {
-        digits += QString::number(pythonEngine->profilerMaxAccumulatedTime()).length() +
-                QString::number(pythonEngine->profilerMaxAccumulatedCall()).length();
+        digits += QString::number(profilerMaxAccumulatedTime()).length() +
+                QString::number(profilerMaxAccumulatedCall()).length();
     }
 
     int space = 15 + fontMetrics().width(QLatin1Char('9')) * digits;

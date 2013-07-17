@@ -247,6 +247,20 @@ public:
     inline bool isProfiled() const { return m_isProfiled; }
     inline void setProfiled(bool prof) { m_isProfiled = prof; }
 
+    inline QMap<int, int> profilerAccumulatedLines() const { return m_profilerAccumulatedLines; }
+    inline void setProfilerAccumulatedLines(QMap<int, int> lines) { m_profilerAccumulatedLines = lines; }
+    inline QMap<int, int> profilerAccumulatedTimes() const { return m_profilerAccumulatedTimes; }
+    inline void setProfilerAccumulatedTimes(QMap<int, int> times) { m_profilerAccumulatedTimes = times; }
+
+    inline int profilerMaxAccumulatedLine() const { return m_profilerMaxAccumulatedLine; }
+    inline void setProfilerMaxAccumulatedLine(int val) { m_profilerMaxAccumulatedLine = val; }
+    inline int profilerMaxAccumulatedTime() const { return m_profilerMaxAccumulatedTime; }
+    inline void setProfilerMaxAccumulatedTime(int val) { m_profilerMaxAccumulatedTime = val; }
+    inline int profilerMaxAccumulatedCallLine() const { return m_profilerMaxAccumulatedCallLine; }
+    inline void setProfilerMaxAccumulatedCallLine(int val) { m_profilerMaxAccumulatedCallLine = val; }
+    inline int profilerMaxAccumulatedCall() const { return m_profilerMaxAccumulatedCall; }
+    inline void setProfilerMaxAccumulatedCall(int val) { m_profilerMaxAccumulatedCall = val; }
+
 public slots:
     void gotoLine(int line = -1, bool isError = false);
 
@@ -274,6 +288,14 @@ private:
 
     // profiler
     bool m_isProfiled;
+
+    QMap<int, int> m_profilerAccumulatedLines;
+    QMap<int, int> m_profilerAccumulatedTimes;
+
+    int m_profilerMaxAccumulatedLine;
+    int m_profilerMaxAccumulatedTime;
+    int m_profilerMaxAccumulatedCallLine;
+    int m_profilerMaxAccumulatedCall;
 };
 
 class AGROS_API ScriptEditorLineNumberArea : public QWidget
