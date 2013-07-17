@@ -72,8 +72,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     createPythonEngine(new PythonEngineAgros());
 
-    // temporary use 3/4 of max threads for PostHermes (linearizer)
-    int threads = omp_get_max_threads() * 3/4;
+    // use maximum number of threads for PostHermes (linearizer)
+    int threads = omp_get_max_threads();
     if (threads == 0)
         threads = 1;
 
