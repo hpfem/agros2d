@@ -72,8 +72,6 @@ namespace Hermes
       /// This method saves multiple meshes according to subdomains in the vector meshes.
       void save(const char *filename, Hermes::vector<MeshSharedPtr > meshes);
 
-      void load(std::auto_ptr<XMLSubdomains::domain> & parsed_xml_domain, Hermes::vector<MeshSharedPtr > meshes);
-
     protected:
       /// Internal method loading contents of parsed_xml_mesh into mesh.
       void load(std::auto_ptr<XMLMesh::mesh> & parsed_xml_mesh, MeshSharedPtr mesh, std::map<unsigned int, unsigned int>& vertex_is);

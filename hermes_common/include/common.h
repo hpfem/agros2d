@@ -30,6 +30,7 @@
 #include <math.h>
 #include <time.h>
 #include <float.h>
+#include <limits>
 #include <errno.h>
 #include <cmath>
 
@@ -56,6 +57,7 @@
 #include <cstring>
 #include <iostream>
 #include <signal.h>
+#include <utility>
 
 #include "config.h"
 
@@ -74,6 +76,22 @@
   inline int omp_get_num_threads( ) { return 1; }
   inline int omp_get_thread_num( ) { return 0; }
 #endif
+
+/// Int types handling.
+#ifdef JU_WIN
+typedef __int8           int8_t;
+typedef __int16          int16_t;
+typedef __int32          int32_t;
+typedef __int64          int64_t;
+
+typedef unsigned __int8  uint8_t;
+typedef unsigned __int16 uint16_t;
+typedef unsigned __int32 uint32_t;
+typedef unsigned __int64 uint64_t;
+#else
+#include <inttypes.h>
+#endif
+
 
 typedef int int2[2];
 typedef int int3[3];
@@ -122,21 +140,6 @@ public:
     return val[idx];
   }
 };
-
-/// Int types handling.
-#ifdef JU_WIN
-typedef __int8           int8_t;
-typedef __int16          int16_t;
-typedef __int32          int32_t;
-typedef __int64          int64_t;
-
-typedef unsigned __int8  uint8_t;
-typedef unsigned __int16 uint16_t;
-typedef unsigned __int32 uint32_t;
-typedef unsigned __int64 uint64_t;
-#else
-#include <inttypes.h>
-#endif
 
 // Pi.
 #ifndef M_PI
