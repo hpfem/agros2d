@@ -46,6 +46,7 @@ Problem::Problem()
     m_lastTimeElapsed = QTime(0, 0);
     m_isSolved = false;
     m_isSolving = false;
+    m_abortSolve = false;
 
     m_config = new ProblemConfig();
     m_setting = new ProblemSetting();
@@ -118,6 +119,7 @@ void Problem::clearSolution()
 {
     m_isSolved = false;
     m_isSolving = false;
+    m_abortSolve = false;
 
     // m_timeStep = 0;
     m_lastTimeElapsed = QTime(0, 0);
@@ -540,6 +542,7 @@ void Problem::solve()
     m_isSolved = false;
     m_isSolving = false;
 
+
     CalculationThread* thread = new CalculationThread(false, false);
     thread->start(QThread::TimeCriticalPriority);
 }
@@ -619,18 +622,16 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
             config()->setFileName("");
         }
 
+        m_abortSolve = false;
+        m_isSolving = false;
+        m_isSolved = true;
+
         if (!commandLine)
         {
-            m_isSolving = false;
-            m_isSolved = true;
             emit solved();
 
             // close indicator progress
             Indicator::closeProgress();
-        }
-        else
-        {
-            m_isSolved = true;
         }
     }
     catch (Hermes::Hermes2D::NewtonSolver<double>::NewtonException& e)
@@ -735,7 +736,7 @@ void Problem::solveAction()
 
     TimeStepInfo nextTimeStep(config()->initialTimeStepLength());
     bool doNextTimeStep = true;
-    while (doNextTimeStep && !m_abortSolve)
+    do
     {
         foreach (Block* block, m_blocks)
         {
@@ -794,7 +795,7 @@ void Problem::solveAction()
 
             doNextTimeStep = defineActualTimeStepLength(nextTimeStep.length);
         }
-    }
+    } while (doNextTimeStep && !m_abortSolve);
 }
 
 void Problem::solveAdaptiveStepAction()

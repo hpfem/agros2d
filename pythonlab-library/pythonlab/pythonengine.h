@@ -88,7 +88,7 @@ public:
     QList<PythonVariable> variableList();
 
 public slots:
-    void stopScript();
+    virtual void abortScript();
 
 protected:
     PyObject *m_dict;

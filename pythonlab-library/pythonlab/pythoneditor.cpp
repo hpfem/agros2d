@@ -806,7 +806,7 @@ void PythonEditorDialog::doStopScript()
     // run script
     consoleView->console()->consoleMessage(tr("Script is being aborted.\n"), Qt::blue);
 
-    currentPythonEngine()->stopScript();
+    currentPythonEngine()->abortScript();
     QApplication::processEvents();
 }
 

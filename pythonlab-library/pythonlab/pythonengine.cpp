@@ -246,7 +246,7 @@ void PythonEngine::init()
     PyRun_String(m_functions.toLatin1().data(), Py_file_input, m_dict, m_dict);
 }
 
-void PythonEngine::stopScript()
+void PythonEngine::abortScript()
 {
     Py_AddPendingCall(&scriptQuit, NULL);
 }

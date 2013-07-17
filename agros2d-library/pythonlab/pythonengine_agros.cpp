@@ -61,6 +61,14 @@ void PythonEngineAgros::runPythonHeader()
         PyRun_String(script.toLatin1().data(), Py_file_input, m_dict, m_dict);
 }
 
+void PythonEngineAgros::abortScript()
+{
+    if (Agros2D::problem()->isSolving())
+        Agros2D::problem()->doAbortSolve();
+
+    PythonEngine::abortScript();
+}
+
 void PythonEngineAgros::materialValues(const QString &function, double from, double to,
                                        QVector<double> *keys, QVector<double> *values, int count)
 {

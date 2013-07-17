@@ -64,6 +64,9 @@ public:
     void materialValues(const QString &function, double from, double to,
                         QVector<double> *keys, QVector<double> *values, int count = 200);
 
+public slots:
+    virtual void abortScript();
+
 protected:
     virtual void addCustomExtensions();
     virtual void addCustomFunctions();
