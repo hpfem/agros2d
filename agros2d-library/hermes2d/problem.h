@@ -132,7 +132,7 @@ public:
     void refuseLastTimeStepLength();
 
     // read initial meshes and solution
-    void readInitialMeshesFromFile();
+    void readInitialMeshesFromFile(std::auto_ptr<XMLSubdomains::domain> xmldomain = std::auto_ptr<XMLSubdomains::domain>());
     void readSolutionsFromFile();
 
     QList<QPair<double, bool> > timeStepHistory() const { return m_timeHistory; }

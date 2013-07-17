@@ -36,7 +36,7 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 
-MeshGenerator::MeshGenerator() : QObject(), m_process(NULL)
+MeshGenerator::MeshGenerator() : QObject(), m_process(NULL), m_xmldomain(NULL)
 {
 }
 
@@ -236,8 +236,8 @@ bool MeshGenerator::writeToHermes()
         }
     }
 
-    XMLSubdomains::domain xmldomain(vertices, elements, edges, subdomains);
-    xmldomain.curves().set(curves);
+    m_xmldomain = std::auto_ptr<XMLSubdomains::domain>(new XMLSubdomains::domain(vertices, elements, edges, subdomains));
+    m_xmldomain.get()->curves().set(curves);
 
     std::string mesh_schema_location(Hermes::Hermes2D::Hermes2DApi.get_text_param_value(Hermes::Hermes2D::xmlSchemasDirPath));
     mesh_schema_location.append("/mesh_h2d_xml.xsd");
@@ -255,7 +255,7 @@ bool MeshGenerator::writeToHermes()
 
     std::ofstream out(compatibleFilename(fn).toStdString().c_str());
     ::xml_schema::flags parsing_flags = ::xml_schema::flags::dont_pretty_print;
-    XMLSubdomains::domain_(out, xmldomain, namespace_info_map, "UTF-8", parsing_flags);
+    XMLSubdomains::domain_(out, *m_xmldomain.get(), namespace_info_map, "UTF-8", parsing_flags);
     out.close();
 
     return true;

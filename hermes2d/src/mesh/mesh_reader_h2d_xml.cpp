@@ -146,15 +146,6 @@ namespace Hermes
 
     void MeshReaderH2DXML::load(const char *filename, Hermes::vector<MeshSharedPtr > meshes)
     {
-      for(unsigned int meshes_i = 0; meshes_i < meshes.size(); meshes_i++)
-      {
-        meshes.at(meshes_i)->free();
-      }
-
-      MeshSharedPtr global_mesh(new Mesh);
-
-      try
-      {
         ::xml_schema::flags parsing_flags = 0;
         if(!this->validate)
           parsing_flags = xml_schema::flags::dont_validate;
@@ -162,6 +153,20 @@ namespace Hermes
         // init
         std::auto_ptr<XMLSubdomains::domain> parsed_xml_domain (XMLSubdomains::domain_(filename, parsing_flags));
 
+        load(parsed_xml_domain, meshes);
+    }
+
+    void MeshReaderH2DXML::load(std::auto_ptr<XMLSubdomains::domain> & parsed_xml_domain, Hermes::vector<MeshSharedPtr > meshes)
+    {
+        for(unsigned int meshes_i = 0; meshes_i < meshes.size(); meshes_i++)
+        {
+          meshes.at(meshes_i)->free();
+        }
+
+      MeshSharedPtr global_mesh(new Mesh);
+
+      try
+      {
         std::map<int, int> vertex_is;
         std::map<int, int> element_is;
         std::map<int, int> edge_is;

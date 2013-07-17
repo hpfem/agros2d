@@ -22,6 +22,12 @@
 
 #include "util.h"
 #include "util/loops.h"
+#include "auto_ptr.h"
+
+namespace XMLSubdomains
+{
+    class domain;
+};
 
 class AGROS_API MeshGenerator : public QObject
 {
@@ -32,6 +38,8 @@ public:
     virtual ~MeshGenerator();
 
     virtual bool mesh() = 0;
+
+    inline std::auto_ptr<XMLSubdomains::domain> xmldomain() { return m_xmldomain; }
 
 protected:
     struct MeshEdge
@@ -155,6 +163,8 @@ protected:
 
     bool m_isError;
     QProcess *m_process;
+
+    std::auto_ptr<XMLSubdomains::domain> m_xmldomain;
 };
 
 #endif //MESHGENERATOR_H

@@ -373,7 +373,7 @@ bool Problem::meshAction()
         // load mesh
         try
         {
-            readInitialMeshesFromFile();
+            readInitialMeshesFromFile(meshGenerator->xmldomain());
 
             delete meshGenerator;
             return true;
@@ -549,8 +549,8 @@ void Problem::solve()
 
 void Problem::solveCommandLine()
 {
-//    MyThread* thread = new MyThread(false, true);
-//    thread->start(QThread::TimeCriticalPriority);
+    //    MyThread* thread = new MyThread(false, true);
+    //    thread->start(QThread::TimeCriticalPriority);
     solve(false, true);
 }
 
@@ -882,7 +882,7 @@ void Problem::stepMessage(Block* block)
 }
 
 
-void Problem::readInitialMeshesFromFile()
+void Problem::readInitialMeshesFromFile(std::auto_ptr<XMLSubdomains::domain> xmldomain)
 {
     Agros2D::log()->printMessage(tr("Problem"), tr("Loading initial mesh from disk"));
 
@@ -899,18 +899,28 @@ void Problem::readInitialMeshesFromFile()
         meshes[fieldInfo] = mesh;
     }
 
-    // save locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
-
-    // load mesh from file
-    QString fileName = QFileInfo(cacheProblemDir() + "/initial.msh").absoluteFilePath();
     Hermes::Hermes2D::MeshReaderH2DXML meshloader;
-    meshloader.set_validation(false);
-    meshloader.load(fileName.toStdString().c_str(), meshesVector);
+    if (!xmldomain.get())
+    {
+        // read from file
+        // save locale
+        char *plocale = setlocale (LC_NUMERIC, "");
+        setlocale (LC_NUMERIC, "C");
 
-    // set system locale
-    setlocale(LC_NUMERIC, plocale);
+        // load mesh from file
+        QString fileName = QFileInfo(cacheProblemDir() + "/initial.msh").absoluteFilePath();
+        meshloader.set_validation(false);
+        meshloader.load(fileName.toStdString().c_str(), meshesVector);
+
+        // set system locale
+        setlocale(LC_NUMERIC, plocale);
+    }
+    else
+    {
+        // read from memory
+        std::auto_ptr<XMLSubdomains::domain> xml(xmldomain);
+        meshloader.load(xml, meshesVector);
+    }
 
     QSet<int> boundaries;
     foreach (FieldInfo *fieldInfo, m_fieldInfos)
