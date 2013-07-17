@@ -650,7 +650,7 @@ AGROS_API void Module::updateTimeFunctions(double time)
                         boundary->evaluate(variable.id(), time);
 }
 
-Hermes::vector<MeshSharedPtr> Module::readMeshFromFile(const QString &fileName)
+Hermes::vector<MeshSharedPtr> Module::readMeshFromFileXML(const QString &fileName)
 {
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -668,7 +668,10 @@ Hermes::vector<MeshSharedPtr> Module::readMeshFromFile(const QString &fileName)
     meshloader.set_validation(false);
     try
     {
+        // QTime time;
+        // time.start();
         meshloader.load(compatibleFilename(QFileInfo(fileName).absoluteFilePath()).toStdString().c_str(), meshes);
+        // qDebug() << "xml mesh load" << time.elapsed();
     }
     catch (Hermes::Exceptions::MeshLoadFailureException& e)
     {
@@ -682,23 +685,51 @@ Hermes::vector<MeshSharedPtr> Module::readMeshFromFile(const QString &fileName)
     return meshes;
 }
 
-void Module::writeMeshToFile(const QString &fileName, Hermes::vector<MeshSharedPtr> meshes)
+Hermes::vector<MeshSharedPtr> Module::readMeshFromFileBSON(const QString &fileName)
+{
+    Hermes::vector<MeshSharedPtr > meshes;
+    int numMeshes = Agros2D::problem()->fieldInfos().count();
+    for(int i = 0; i < numMeshes; i++)
+    {
+        MeshSharedPtr mesh(new Hermes::Hermes2D::Mesh());
+        meshes.push_back(mesh);
+    }
+
+    Hermes::Hermes2D::MeshReaderH2DBSON meshloader;
+    try
+    {
+        // QTime time;
+        // time.start();
+        meshloader.load(compatibleFilename(QFileInfo(fileName).absoluteFilePath()).toStdString().c_str(), meshes);
+        // qDebug() << "bson mesh load" << time.elapsed();
+    }
+    catch (Hermes::Exceptions::MeshLoadFailureException& e)
+    {
+        qDebug() << e.what();
+        throw Hermes::Exceptions::MeshLoadFailureException(e.what());
+    }
+
+    return meshes;
+}
+
+void Module::writeMeshToFileXML(const QString &fileName, Hermes::vector<MeshSharedPtr> meshes)
 {
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
-    // QTime time;
-    // time.start();
-
     Hermes::Hermes2D::MeshReaderH2DXML meshloader;
     meshloader.set_validation(false);
     meshloader.save(compatibleFilename(QFileInfo(fileName).absoluteFilePath()).toStdString().c_str(), meshes);
 
-    // qDebug() << milisecondsToTime(time.elapsed()).toString("hh:mm:ss.zzz");
-
     // set system locale
     setlocale(LC_NUMERIC, plocale);
+}
+
+void Module::writeMeshToFileBSON(const QString &fileName, Hermes::vector<MeshSharedPtr> meshes)
+{
+    Hermes::Hermes2D::MeshReaderH2DBSON meshloader;
+    meshloader.save(compatibleFilename(QFileInfo(fileName).absoluteFilePath()).toStdString().c_str(), meshes);
 }
 
 template class WeakFormAgros<double>;

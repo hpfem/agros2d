@@ -403,6 +403,7 @@ namespace Hermes
 
       friend class MeshHashGrid;
       friend class MeshReaderH2D;
+      friend class MeshReaderH2DBSON;
       friend class MeshReaderH2DXML;
       friend class MeshReaderH1DXML;
       friend class MeshReaderExodusII;
@@ -413,7 +414,6 @@ namespace Hermes
       friend class WeakForm<std::complex<double> >;
       template<typename Scalar> friend class Adapt;
       friend class KellyTypeAdapt<double>;
-      template<typename Scalar> friend class Global;
       friend class KellyTypeAdapt<std::complex<double> >;
       template<typename Scalar> friend class Solution;
       template<typename Scalar> friend class Filter;

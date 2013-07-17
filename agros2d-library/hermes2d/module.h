@@ -491,8 +491,10 @@ AGROS_API void updateTimeFunctions(double time);
 AGROS_API QMap<QString, QString> availableModules();
 
 // read and write mesh
-Hermes::vector<MeshSharedPtr> readMeshFromFile(const QString &fileName);
-void writeMeshToFile(const QString &fileName, Hermes::vector<MeshSharedPtr> meshes);
+Hermes::vector<MeshSharedPtr> readMeshFromFileBSON(const QString &fileName);
+Hermes::vector<MeshSharedPtr> readMeshFromFileXML(const QString &fileName);
+void writeMeshToFileXML(const QString &fileName, Hermes::vector<MeshSharedPtr> meshes);
+void writeMeshToFileBSON(const QString &fileName, Hermes::vector<MeshSharedPtr> meshes);
 
 }
 

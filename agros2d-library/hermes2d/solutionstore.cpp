@@ -110,7 +110,13 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
             if (!space.get())
             {
                 // load the mesh file
-                Hermes::vector<MeshSharedPtr> meshes = Module::readMeshFromFile(QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].meshFileName()));
+                QString fn = QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].meshFileName());
+                Hermes::vector<MeshSharedPtr> meshes;
+                if (QFileInfo(fn).suffix() == "msh")
+                    meshes = Module::readMeshFromFileXML(fn);
+                else
+                    meshes = Module::readMeshFromFileBSON(fn);
+
                 MeshSharedPtr mesh;
                 int globalFieldIdx = 0;
                 foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
@@ -230,8 +236,10 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArray<double> m
                     meshes.push_back(fieldInfo->initialMesh());
             }
 
-            QString meshFN = QString("%1_%2.msh").arg(baseFN).arg(i);
-            Module::writeMeshToFile(meshFN, meshes);
+            // QString meshFN = QString("%1_%2.msh").arg(baseFN).arg(i);
+            // Module::writeMeshToFileXML(meshFN, meshes);
+            QString meshFN = QString("%1_%2.mbs").arg(baseFN).arg(i);
+            Module::writeMeshToFileBSON(meshFN, meshes);
 
             fileNames[i].setMeshFileName(QFileInfo(meshFN).fileName());
         }
