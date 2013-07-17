@@ -1,4 +1,4 @@
-agros2d (3.0-ubuntu174) raring; urgency=low
+agros2d (3.0-ubuntu176) raring; urgency=low
 
   * field solution with the possibility of weak and hard coupling
   * adaptive transient analysis
