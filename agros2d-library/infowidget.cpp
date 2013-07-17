@@ -95,6 +95,9 @@ void InfoWidget::refresh()
 
 void InfoWidget::showInfo()
 {
+    if (currentPythonEngine()->isRunning())
+        return;
+
     // template
     std::string info;
     ctemplate::TemplateDictionary problemInfo("info");
