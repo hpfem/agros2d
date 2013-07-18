@@ -81,3 +81,7 @@ tcl
 *.geo
 *.node
 *.edge
+*.gen
+.project
+resources_source/doc/source/modules/rf_te/
+resources_source/doc/source/modules/rf_tm/

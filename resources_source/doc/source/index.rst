@@ -110,7 +110,7 @@ The particular kinds of adaptivity are realized in the following manner:
 * *hp*-adaptivity--combination of both above ways . This way belongs to the most flexible and powerful techniques characterized by an extremely fast (exponential) convergence of results. A typical possibility of its application is depicted in Fig. 3 and Fig. 5. 
 
 
-Ilustrative example (:ref:`electrostatic-axisymmetric-sparkgap`):
+Ilustrative example
 
 
 .. figure:: ./introduction/hp-fem/mesh-h(p=1).png 

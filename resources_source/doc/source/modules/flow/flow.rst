@@ -39,4 +39,4 @@ Boundary conditions
 .. math::
     v_r = 0,\,\,\, \frac{\partial v_z}{\partial n} = 0.
     
-.. include:: flow_gen.rst
+.. include:: flow.gen

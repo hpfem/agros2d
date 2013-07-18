@@ -62,4 +62,4 @@ Boundary conditions
 .. math::
     \frac{1}{\rho} \frac{\partial p}{\partial n_0} = - \frac{1}{Z_0} \frac{\partial p}{\partial t}.
   
-.. include:: acoustic_gen.rst
+.. include:: acoustic.gen
