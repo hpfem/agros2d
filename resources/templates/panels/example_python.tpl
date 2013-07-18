@@ -112,9 +112,8 @@
 <p>{{DESCRIPTION}}</p>
 </div>
 
-<pre><code data-language="python">{{PROBLEM_PYTHON}}</code></pre>
-
-
 {{PROBLEM_DETAILS}}
+
+<pre><code data-language="python">{{PROBLEM_PYTHON}}</code></pre>
 
 <div class="cleaner"></div>
