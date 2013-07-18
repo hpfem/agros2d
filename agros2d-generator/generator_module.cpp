@@ -348,7 +348,7 @@ void Agros2DGeneratorModule::generatePluginDocumentationFiles()
     text += createTable(table);
 
     // documentation - save to file
-    writeStringContent(QString("%1/%2/%3/%3_gen.rst").
+    writeStringContent(QString("%1/%2/%3/%3.gen").
                        arg(QApplication::applicationDirPath()).
                        arg(GENERATOR_DOCROOT).
                        arg(id),

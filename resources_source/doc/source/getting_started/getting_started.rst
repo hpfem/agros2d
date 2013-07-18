@@ -7,12 +7,8 @@ This document is ment to cover the most important steps necessary for common usa
 .. toctree::
    :maxdepth: 1
 
-   installation
-   basic_control
-   editing_geometry
-   solving_problem
-   processing_results
-   shortcut_keys
+   basic_control     
+   processing_results   
 
 First sections deals with the installation of program Agros2D under different platforms. 
 Because Agros2D is as an open source project, it is also possible to compile binary version from source files.

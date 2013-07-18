@@ -113,5 +113,5 @@ Boundary conditions
     - \frac{1}{\omega \mu} \frac{\partial \vecphas{E}}{\partial n_0} = \sqrt{\frac{\varepsilon - \mj \sigma / \omega}{\mu}} \vecphas{E} 
     
 
-.. include:: /rf_te/rf_te_gen.rst         
+.. include:: ../rf_te/rf_te.gen         
  
