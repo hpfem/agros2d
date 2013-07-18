@@ -42,7 +42,6 @@
 #include "chartdialog.h"
 #include "confdialog.h"
 #include "pythonlab/pythonengine_agros.h"
-#include "reportdialog.h"
 #include "videodialog.h"
 #include "problemdialog.h"
 #include "collaboration.h"
@@ -372,9 +371,6 @@ void MainWindow::createActions()
     actScriptEditorRunScript = new QAction(icon("script"), tr("Run &script..."), this);
     connect(actScriptEditorRunScript, SIGNAL(triggered()), this, SLOT(doScriptEditorRunScript()));
 
-    // actReport = new QAction(icon("report"), tr("&Report..."), this);
-    // connect(actReport, SIGNAL(triggered()), this, SLOT(doReport()));
-
     actMaterialBrowser = new QAction(icon(""), tr("Material browser..."), this);
     actMaterialBrowser->setShortcut(QKeySequence(tr("Ctrl+M")));
     connect(actMaterialBrowser, SIGNAL(triggered()), this, SLOT(doMaterialBrowser()));
@@ -529,7 +525,6 @@ void MainWindow::createMenus()
     mnuTools->addSeparator();
     mnuTools->addAction(actMaterialBrowser);
     mnuTools->addSeparator();
-    // mnuTools->addAction(actReport);
     mnuTools->addAction(actCreateVideo);
     // read custom forms
     mnuTools->addSeparator();
@@ -1317,12 +1312,6 @@ void MainWindow::doOptions()
     }
 
     activateWindow();
-}
-
-void MainWindow::doReport()
-{
-    ReportDialog reportDialog(sceneViewPost2D, this);
-    reportDialog.showDialog();
 }
 
 void MainWindow::doTransform()
