@@ -88,7 +88,6 @@ SOURCES += value.cpp \
     chartdialog.cpp \
     problemdialog.cpp \
     scenetransformdialog.cpp \
-    reportdialog.cpp \
     videodialog.cpp \
     scenemarkerselectdialog.cpp \
     logview.cpp \
@@ -176,7 +175,6 @@ HEADERS += value.h \
     chartdialog.h \
     problemdialog.h \
     scenetransformdialog.h \
-    reportdialog.h \
     videodialog.h \
     scenemarkerselectdialog.h \
     logview.h \

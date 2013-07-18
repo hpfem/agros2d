@@ -45,7 +45,6 @@ class LogDialog;
 
 class ChartWidget;
 class PythonLabAgros;
-class ReportDialog;
 class ServerDownloadDialog;
 class SceneTransformDialog;
 class SceneViewWidget;
@@ -94,7 +93,6 @@ private slots:
     void doScriptEditorRunScript(const QString &fileName = "");
     void doOptions();
     void doTransform();
-    void doReport();
     void doMaterialBrowser();
     void doCreateVideo();
 
@@ -173,7 +171,6 @@ private:
 
     QAction *actScriptEditor;
     QAction *actScriptEditorRunScript;
-    // QAction *actReport;
     QAction *actMaterialBrowser;
     QAction *actCreateVideo;
 
