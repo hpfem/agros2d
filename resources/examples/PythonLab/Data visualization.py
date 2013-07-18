@@ -48,10 +48,9 @@ width = 0.9
 
 pl.figure()
 pl.title("Number of commits in agros2d.git")
-pl.bar(ind, commits, width, color=(0,0,0.75))
+pl.bar(ind, commits, width, color=(0.0,0.0,0.75))
 pl.xticks(ind+width/2.0, month)
 pl.ylabel("Number of commits")
-pl.legend(loc='lower left')
 pl.grid(True)
 
 chart_file = pythonlab.tempname("png")

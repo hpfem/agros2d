@@ -43,4 +43,4 @@ Current:
    I = \int_S J_\mathrm{n} \dif S = \int_S \sigma \frac{\partial \varphi}{\partial n} \dif S\,\,\,\mathrm{(A)}
    
    
-.. include:: current_gen.rst
+.. include:: current.gen
