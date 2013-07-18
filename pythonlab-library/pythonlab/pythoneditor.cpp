@@ -1409,7 +1409,10 @@ void ScriptEditor::keyPressEvent(QKeyEvent *event)
             unindentSelection();
         }
     }
-    else if ((event->key() == Qt::Key_Backspace) && (document()->characterAt(oldPos - 1) == ' '))
+    else if ((event->key() == Qt::Key_Backspace) && (document()->characterAt(oldPos - 1) == ' ')
+                                                 && (document()->characterAt(oldPos - 2) == ' ')
+                                                 && (document()->characterAt(oldPos - 3) == ' ')
+                                                 && (document()->characterAt(oldPos - 4) == ' '))
     {
         cursor.beginEditBlock();
         // determine selection to delete
