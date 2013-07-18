@@ -43,7 +43,10 @@
 		span.recent_filename { 		  
 			color: #949494;
 			font-size: 80%;
-		}				
+		}	
+		ul.recent {
+			padding-left: 20px;
+		}
 	</style>
     <script language="javascript" type="text/javascript" src="{{PANELS_DIRECTORY}}/js/jquery.js"></script>
     <script language="javascript" type="text/javascript" src="{{PANELS_DIRECTORY}}/js/jquery.flot.js"></script>
@@ -79,7 +82,7 @@
 <div class="section">
 <h2>{{RECENT_PROBLEMS_LABEL}}</h2>
 <hr/>
-<ul>
+<ul class="recent">
 {{#RECENT_PROBLEM_SECTION}}
 <li><a href="open?filename={{PROBLEM_FILENAME}}" class="recent_name">{{PROBLEM_BASE}}</a><br />
 	<span class="recent_filename">{{PROBLEM_FILENAME}}</span></li>
@@ -91,7 +94,7 @@
 <div class="section">
 <h2>{{RECENT_SCRIPTS_LABEL}}</h2>
 <hr/>
-<ul>
+<ul class="recent">
 {{#RECENT_SCRIPT_SECTION}}
 <li><a href="open?filename={{SCRIPT_FILENAME}}" class="recent_name">{{SCRIPT_BASE}}</a><br />
 	<span class="recent_filename">{{SCRIPT_FILENAME}}</span></li>
