@@ -33,13 +33,6 @@ namespace Hermes
 
     void MeshReaderH2DXML::load(const char *filename, MeshSharedPtr mesh)
     {
-      if(!mesh)
-        throw Exceptions::NullException(1);
-
-      mesh->free();
-
-      std::map<unsigned int, unsigned int> vertex_is;
-
       try
       {
         ::xml_schema::flags parsing_flags = 0;
@@ -49,6 +42,26 @@ namespace Hermes
         // init
         std::auto_ptr<XMLMesh::mesh> parsed_xml_mesh(XMLMesh::mesh_(filename, parsing_flags));
         
+        // load
+        load(parsed_xml_mesh, mesh);
+      }
+      catch (const xml_schema::exception& e)
+      {
+        throw Hermes::Exceptions::MeshLoadFailureException(e.what());
+      }
+    }
+
+    void MeshReaderH2DXML::load(std::auto_ptr<XMLMesh::mesh> & parsed_xml_mesh, MeshSharedPtr mesh)
+    {
+      if(!mesh)
+        throw Exceptions::NullException(1);
+
+      mesh->free();
+
+      try
+      {
+        std::map<unsigned int, unsigned int> vertex_is;
+
         // load
         load(parsed_xml_mesh, mesh, vertex_is);
         
@@ -145,6 +158,8 @@ namespace Hermes
 
     void MeshReaderH2DXML::load(const char *filename, Hermes::vector<MeshSharedPtr > meshes)
     {
+      try
+      {
         ::xml_schema::flags parsing_flags = 0;
         if(!this->validate)
           parsing_flags = xml_schema::flags::dont_validate;
@@ -152,7 +167,12 @@ namespace Hermes
         // init
         std::auto_ptr<XMLSubdomains::domain> parsed_xml_domain (XMLSubdomains::domain_(filename, parsing_flags));
 
-        load(parsed_xml_domain, meshes);
+        this->load(parsed_xml_domain, meshes);
+      }
+      catch (const xml_schema::exception& e)
+      {
+        throw Hermes::Exceptions::MeshLoadFailureException(e.what());
+      }
     }
 
     void MeshReaderH2DXML::load(std::auto_ptr<XMLSubdomains::domain> & parsed_xml_domain, Hermes::vector<MeshSharedPtr > meshes)

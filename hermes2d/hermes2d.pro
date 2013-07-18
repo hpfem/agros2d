@@ -144,6 +144,7 @@ SOURCES +=      ../hermes_common/src/api.cpp \
                 src/views/linearizer_base.cpp \
                 src/views/linearizer.cpp \
                 src/views/orderizer.cpp \
+                src/views/orderizer_quad.cpp \
                 src/views/vectorizer.cpp \
                 src/weakform/weakform.cpp  \
                 src/neighbor_search.cpp \
