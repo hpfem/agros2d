@@ -26,9 +26,6 @@
 
 #include "hermes2d/solutiontypes.h"
 
-#include <dl_dxf.h>
-#include <dl_creationadapter.h>
-
 struct HermesElectrostatic;
 struct HermesField;
 
@@ -59,19 +56,9 @@ class Log;
 
 class PluginInterface;
 
+class DxfFilterdxflib;
+
 QString generateSvgGeometry(QList<SceneEdge *> edges);
-
-class DxfFilter : public DL_CreationAdapter
-{
-public:
-    DxfFilter(Scene *scene);
-
-    void addArc(const DL_ArcData& a);
-    void addLine(const DL_LineData& l);
-    void addCircle(const DL_CircleData& c);
-private:
-    Scene *m_scene;
-};
 
 class AGROS_API NewMarkerAction : public QAction
 {

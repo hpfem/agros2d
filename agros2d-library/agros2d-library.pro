@@ -50,6 +50,7 @@ SOURCES += value.cpp \
     util/xml.cpp \
     util/enums.cpp \
     util/loops.cpp \
+    util/dxf_filter.cpp \
     gui/common.cpp \
     gui/imageloader.cpp \
     gui/htmledit.cpp \
@@ -139,6 +140,7 @@ HEADERS += value.h \
     util/xml.h \
     util/loops.h \
     util/enums.h \
+    util/dxf_filter.h \
     gui/common.h \
     gui/imageloader.h \
     gui/htmledit.h \
