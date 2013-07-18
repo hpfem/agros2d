@@ -35,6 +35,13 @@ public:
     InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent = 0);
     ~InfoWidget();
 
+    inline void setRecentProblemFiles(QStringList *recentProblemFiles) { m_recentProblemFiles = recentProblemFiles; }
+    inline void setRecentScriptFiles(QStringList *recentScriptFiles) { m_recentScriptFiles = recentScriptFiles; }
+
+signals:
+    void open(const QString &fileName);
+    void examples(const QString &groupName);
+
 public slots:
     void refresh();
 
@@ -44,8 +51,14 @@ private:
 
     QWebView *webView;
 
+    QStringList *m_recentProblemFiles;
+    QStringList *m_recentScriptFiles;
+
 private slots:
+    void showWelcome();
     void showInfo();
+
+    void linkClicked(const QUrl &url);
 };
 
 #endif // SCENEINFOVIEW_H

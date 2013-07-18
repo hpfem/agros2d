@@ -79,8 +79,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     Hermes::HermesCommonApi.set_integral_param_value(Hermes::numThreads, threads);
     postHermes = new PostHermes();
 
-    // scene
+    // scene - info widget
     sceneInfoWidget = new InfoWidget(sceneViewPreprocessor, this);
+    sceneInfoWidget->setRecentProblemFiles(&recentFiles);
+    connect(sceneInfoWidget, SIGNAL(open(QString)), this, SLOT(doDocumentOpen(QString)));
+    connect(sceneInfoWidget, SIGNAL(examples(QString)), this, SLOT(doExamples(QString)));
+
+    // scene
     sceneViewPreprocessor = new SceneViewPreprocessor(this);
     sceneViewMesh = new SceneViewMesh(postHermes, this);
     sceneViewPost2D = new SceneViewPost2D(postHermes, this);
@@ -110,7 +115,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // problem
     problemWidget = new ProblemWidget(this);
 
-    scriptEditorDialog = new PythonLabAgros(currentPythonEngine(), QStringList(), NULL);
+    scriptEditorDialog = new PythonEditorAgrosDialog(currentPythonEngine(), QStringList(), NULL);
+    sceneInfoWidget->setRecentScriptFiles(scriptEditorDialog->recentFiles());
     // collaborationDownloadDialog = new ServerDownloadDialog(this);
     sceneTransformDialog = new SceneTransformDialog(sceneViewPreprocessor, this);
 
@@ -229,11 +235,6 @@ MainWindow::~MainWindow()
 
     delete logStdOut;
     delete scriptEditorDialog;
-}
-
-void MainWindow::open(const QString &fileName)
-{
-    doDocumentOpen(fileName);
 }
 
 void MainWindow::createActions()
@@ -1181,18 +1182,18 @@ void MainWindow::doDocumentSaveGeometry()
     }
 }
 
-void MainWindow::doExamples()
+void MainWindow::doExamples(const QString &groupName)
 {
-    ExamplesDialog *examples = new ExamplesDialog(this);
-    if (examples->showDialog() == QDialog::Accepted)
+    ExamplesDialog examples(this);
+    if (examples.showDialog(groupName) == QDialog::Accepted)
     {
-        if (QFile::exists(examples->selectedFilename()))
+        if (QFile::exists(examples.selectedFilename()))
         {
-            QFileInfo fileInfo(examples->selectedFilename());
+            QFileInfo fileInfo(examples.selectedFilename());
 
             if (fileInfo.suffix() == "a2d" || fileInfo.suffix() == "py")
             {
-                doDocumentOpen(examples->selectedFilename());
+                doDocumentOpen(examples.selectedFilename());
             }
             else if (fileInfo.suffix() == "ui")
             {
@@ -1202,24 +1203,22 @@ void MainWindow::doExamples()
                 {
                     if (FormScript *form = dynamic_cast<FormScript *>(action->parent()))
                     {
-                        if (QFileInfo(form->fileName()).absoluteFilePath() == QFileInfo(examples->selectedFilename()).absoluteFilePath())
+                        if (QFileInfo(form->fileName()).absoluteFilePath() == QFileInfo(examples.selectedFilename()).absoluteFilePath())
                         {
                             customForm = true;
-                            form->showForm(examples->selectedFormFilename());
+                            form->showForm(examples.selectedFormFilename());
                         }
                     }
                 }
                 if (!customForm)
                 {
                     // example form
-                    FormScript form(examples->selectedFilename(), consoleView, this);
-                    form.showForm(examples->selectedFormFilename());
+                    FormScript form(examples.selectedFilename(), consoleView, this);
+                    form.showForm(examples.selectedFormFilename());
                 }
             }
         }
     }
-
-    delete examples;
 }
 
 void MainWindow::doCreateVideo()
@@ -1654,7 +1653,7 @@ void MainWindow::showEvent(QShowEvent *event)
         }
 
         QString fileName = args[i];
-        open(fileName);
+        doDocumentOpen(fileName);
     }
 }
 

@@ -96,6 +96,8 @@ public:
     void closeTabs();
     bool isScriptModified();
 
+    QStringList *recentFiles() { return &m_recentFiles; }
+
 public slots:
     void doFileNew();
     void doFileOpen(const QString &file = QString());
@@ -133,7 +135,7 @@ protected:
 protected:
     PythonEngine *pythonEngine;
 
-    QStringList recentFiles;
+    QStringList m_recentFiles;
 
     // gui
     FileBrowser *fileBrowser;

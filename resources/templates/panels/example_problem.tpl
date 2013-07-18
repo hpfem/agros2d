@@ -97,3 +97,6 @@
 {{PROBLEM_DETAILS}}
 
 <div class="cleaner"></div>
+
+</body>
+</html>

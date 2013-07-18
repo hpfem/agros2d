@@ -33,6 +33,7 @@
 #include "sceneview_geometry.h"
 #include "scenemarker.h"
 #include "scenemarkerdialog.h"
+#include "examplesdialog.h"
 #include "pythonlab/pythonengine_agros.h"
 #include "hermes2d/module.h"
 #include "hermes2d/coupling.h"
@@ -45,14 +46,18 @@
 
 #include "hermes2d.h"
 
-InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent): QWidget(parent)
+InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent)
+    : QWidget(parent), m_recentProblemFiles(NULL), m_recentScriptFiles(NULL)
 {
     this->m_sceneViewGeometry = sceneView;
 
     // problem information
     webView = new QWebView();
     webView->page()->setNetworkAccessManager(networkAccessManager());
+    webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     webView->setMinimumSize(200, 200);
+
+    connect(webView->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));
 
     // stylesheet
     std::string style;
@@ -90,7 +95,85 @@ InfoWidget::~InfoWidget()
 void InfoWidget::refresh()
 {
     // QTimer::singleShot(0, this, SLOT(showInfo()));
-    showInfo();
+
+    if (Agros2D::problem()->fieldInfos().count() == 0)
+        showWelcome();
+    else
+        showInfo();
+}
+
+void InfoWidget::showWelcome()
+{
+    if (currentPythonEngine()->isRunning())
+        return;
+
+    // template
+    std::string info;
+    ctemplate::TemplateDictionary problemInfo("info");
+
+    problemInfo.SetValue("AGROS2D", "file:///" + compatibleFilename(QDir(datadir() + TEMPLATEROOT + "/panels/agros2d_logo.png").absolutePath()).toStdString());
+
+    problemInfo.SetValue("STYLESHEET", m_cascadeStyleSheet.toStdString());
+    problemInfo.SetValue("PANELS_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg(TEMPLATEROOT + "/panels")).toString().toStdString());
+    problemInfo.SetValue("EXAMPLES_DIRECTORY", QUrl::fromLocalFile(QString("%1%2").arg(QDir(datadir()).absolutePath()).arg("/resources/examples")).toString().toStdString());
+
+    problemInfo.SetValue("GETTING_STARTED_LABEL", tr("Getting Started").toStdString());
+
+    // read root examples
+    problemInfo.SetValue("EXAMPLES_LABEL", tr("Examples and Tutorials").toStdString());
+    QDir dir(QString("%1/resources/examples").arg(datadir()));
+    dir.setFilter(QDir::Dirs | QDir::Files | QDir::NoSymLinks);
+
+    QFileInfoList listExamples = dir.entryInfoList();
+    for (int i = 0; i < listExamples.size(); ++i)
+    {
+        QFileInfo fileInfo = listExamples.at(i);
+        if (fileInfo.fileName() == "." || fileInfo.fileName() == "..")
+            continue;
+
+        if (fileInfo.isDir())
+        {
+            ctemplate::TemplateDictionary *example = problemInfo.AddSectionDictionary("EXAMPLE_SECTION");
+
+            example->SetValue("EXAMPLE_GROUP", fileInfo.fileName().toStdString());
+        }
+    }
+
+    // recent problem files
+    problemInfo.SetValue("RECENT_PROBLEMS_LABEL", tr("Recent Problems").toStdString());
+    if (m_recentProblemFiles)
+    {
+        for (int i = 0; i < qMin(10, m_recentProblemFiles->count()); i++)
+        {
+            ctemplate::TemplateDictionary *recent = problemInfo.AddSectionDictionary("RECENT_PROBLEM_SECTION");
+            recent->SetValue("PROBLEM_FILENAME", m_recentProblemFiles->at(i).toStdString());
+            recent->SetValue("PROBLEM_BASE", QFileInfo(m_recentProblemFiles->at(i)).baseName().toStdString());
+        }
+    }
+
+    // recent script files
+    problemInfo.SetValue("RECENT_SCRIPTS_LABEL", tr("Recent Python Scripts").toStdString());
+    if (m_recentScriptFiles)
+    {
+        for (int i = 0; i < qMin(10, m_recentScriptFiles->count()); i++)
+        {
+            ctemplate::TemplateDictionary *recent = problemInfo.AddSectionDictionary("RECENT_SCRIPT_SECTION");
+            recent->SetValue("SCRIPT_FILENAME", m_recentScriptFiles->at(i).toStdString());
+            recent->SetValue("SCRIPT_BASE", QFileInfo(m_recentScriptFiles->at(i)).baseName().toStdString());
+        }
+    }
+
+    // links
+    problemInfo.SetValue("LINKS_LABEL", tr("Links").toStdString());
+
+    ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/welcome.tpl").toStdString(), ctemplate::DO_NOT_STRIP, &problemInfo, &info);
+
+    // setHtml(...) doesn't work
+    // webView->setHtml(QString::fromStdString(info));
+
+    // load(...) works
+    writeStringContent(tempProblemDir() + "/info.html", QString::fromStdString(info));
+    webView->load(QUrl::fromLocalFile(tempProblemDir() + "/info.html"));
 }
 
 void InfoWidget::showInfo()
@@ -419,4 +502,32 @@ void InfoWidget::showInfo()
     // load(...) works
     writeStringContent(tempProblemDir() + "/info.html", QString::fromStdString(info));
     webView->load(QUrl::fromLocalFile(tempProblemDir() + "/info.html"));
+}
+
+void InfoWidget::linkClicked(const QUrl &url)
+{
+    if (url.toString().contains("/example?"))
+    {
+#if QT_VERSION < 0x050000
+        QString group = url.queryItemValue("group");
+#else
+        QString group = QUrlQuery(url).queryItemValue("group");
+#endif
+        emit examples(group);
+    }
+    else if (url.toString().contains("/open?"))
+    {
+#if QT_VERSION < 0x050000
+        QString fileName = url.queryItemValue("filename");
+#else
+        QString fileName = QUrlQuery(url).queryItemValue("filename");
+#endif
+
+        if (QFile::exists(fileName))
+            emit open(fileName);
+    }
+    else
+    {
+        QDesktopServices::openUrl(url.toString());
+    }
 }

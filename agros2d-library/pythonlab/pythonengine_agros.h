@@ -84,12 +84,12 @@ private:
     PythonScriptingConsole *m_console;
 };
 
-class AGROS_API PythonLabAgros : public PythonEditorDialog
+class AGROS_API PythonEditorAgrosDialog : public PythonEditorDialog
 {
     Q_OBJECT
 public:
-    PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWidget *parent);
-    ~PythonLabAgros();
+    PythonEditorAgrosDialog(PythonEngine *pythonEngine, QStringList args, QWidget *parent);
+    ~PythonEditorAgrosDialog();
 
 protected:
     virtual void scriptPrepare();
