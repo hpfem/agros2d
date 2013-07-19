@@ -8,9 +8,10 @@ Agros2D is a multiplatform C++ application for the solution of partial different
 
 Supported physical fields
 -------------------------
-#.. sidebar:: Quick start
-#
-#  If you want to start working with the program Agros2D, go to the page: :ref:`getting_started`.
+ 
+..  .. sidebar:: Quick start
+
+.. If you want to start working with the program Agros2D, go to the page: :ref:`getting_started`.
 
 * :ref:`acoustic` 
 * :ref:`current`

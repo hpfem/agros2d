@@ -315,7 +315,7 @@ Postprocessing 3D
 Physical Fields
 ===============
 
-Available variables are described in the module docummentation.
+Available constants and variables are described in the  documentation of corresponding module.
 
 * :ref:`acoustic` 
 * :ref:`current`
