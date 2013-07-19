@@ -668,10 +668,7 @@ Hermes::vector<MeshSharedPtr> Module::readMeshFromFileXML(const QString &fileNam
     meshloader.set_validation(false);
     try
     {
-        // QTime time;
-        // time.start();
         meshloader.load(compatibleFilename(QFileInfo(fileName).absoluteFilePath()).toStdString().c_str(), meshes);
-        // qDebug() << "xml mesh load" << time.elapsed();
     }
     catch (Hermes::Exceptions::MeshLoadFailureException& e)
     {
@@ -698,6 +695,8 @@ Hermes::vector<MeshSharedPtr> Module::readMeshFromFileBSON(const QString &fileNa
     Hermes::Hermes2D::MeshReaderH2DBSON meshloader;
     try
     {
+        Hermes::HermesCommonApi.set_integral_param_value(Hermes::checkMeshesOnLoad, false);
+
         // QTime time;
         // time.start();
         meshloader.load(compatibleFilename(QFileInfo(fileName).absoluteFilePath()).toStdString().c_str(), meshes);

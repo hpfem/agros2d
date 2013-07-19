@@ -138,7 +138,7 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
                         int bcIndex = fieldCompIdx + block->offset(block->field(fieldInfo));
                         essentialBcs = block->bcs().at(bcIndex);
                     }
-                    QString spaceFileName = QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].spaceFileName());
+                    QString spaceFileName = QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].spaceFileName());       
                     // space = Space<double>::load(compatibleFilename(spaceFileName).toStdString().c_str(), mesh, false, essentialBcs);
                     space = Space<double>::load_bson(compatibleFilename(spaceFileName).toStdString().c_str(), mesh, essentialBcs);
                 }

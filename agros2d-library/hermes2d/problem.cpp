@@ -901,6 +901,8 @@ void Problem::readInitialMeshesFromFile(std::auto_ptr<XMLSubdomains::domain> xml
         meshes[fieldInfo] = mesh;
     }
 
+    Hermes::HermesCommonApi.set_integral_param_value(Hermes::checkMeshesOnLoad, false);
+
     Hermes::Hermes2D::MeshReaderH2DXML meshloader;
     if (!xmldomain.get())
     {
