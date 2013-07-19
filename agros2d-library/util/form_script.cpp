@@ -65,7 +65,7 @@ FormScript::FormScript(const QString &fileName, PythonScriptingConsoleView *cons
     menu->addSeparator();
     menu->addAction(actReload);
     menu->addAction(actDesigner);
-    
+
     btnMore->setMenu(menu);
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -194,7 +194,6 @@ void FormScript::showWidget()
                                   arg(i).
                                   arg(node->point().x, 0, 'e', 2).
                                   arg(node->point().y, 0, 'e', 2));
-                    item->setIcon(icon("scene-node"));
                     item->setData(Qt::UserRole, node->variant());
                     if (nodes.contains(i))
                         item->setCheckState(Qt::Checked);
@@ -226,7 +225,6 @@ void FormScript::showWidget()
                                   arg((edge->angle() < EPS_ZERO) ?
                                           sqrt(Hermes::sqr(edge->nodeEnd()->point().x - edge->nodeStart()->point().x) + Hermes::sqr(edge->nodeEnd()->point().y - edge->nodeStart()->point().y)) :
                                           edge->radius() * edge->angle() / 180.0 * M_PI, 0, 'e', 2));
-                    item->setIcon(icon("scene-edge"));
                     item->setData(Qt::UserRole, edge->variant());
                     if (edges.contains(i))
                         item->setCheckState(Qt::Checked);
@@ -257,7 +255,6 @@ void FormScript::showWidget()
                                   arg(i).
                                   arg(label->point().x, 0, 'e', 2).
                                   arg(label->point().y, 0, 'e', 2));
-                    item->setIcon(icon("scene-label"));
                     item->setData(Qt::UserRole, label->variant());
                     item->setCheckState(Qt::Unchecked);
                     if (labels.contains(i))
@@ -578,7 +575,7 @@ void FormScript::loadFromFile(const QString &fileName)
 }
 
 void FormScript::saveToFile(const QString &fileName)
-{   
+{
     QString fn = fileName;
 
     if (fn.isEmpty())

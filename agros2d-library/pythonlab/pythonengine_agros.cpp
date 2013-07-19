@@ -120,7 +120,7 @@ void PythonEngineAgros::materialValues(const QString &function, double from, dou
     }
 }
 
-PythonLabAgros::PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWidget *parent)
+PythonEditorAgrosDialog::PythonEditorAgrosDialog(PythonEngine *pythonEngine, QStringList args, QWidget *parent)
     : PythonEditorDialog(pythonEngine, args, parent)
 {
     QSettings settings;
@@ -163,7 +163,7 @@ PythonLabAgros::PythonLabAgros(PythonEngine *pythonEngine, QStringList args, QWi
     mnuOptions->addMenu(mnuStartupScript);
 }
 
-PythonLabAgros::~PythonLabAgros()
+PythonEditorAgrosDialog::~PythonEditorAgrosDialog()
 {
     QSettings settings;
     settings.setValue("PythonEditorDialog/StartupScriptVariables", actStartupScriptVariables->isChecked());
@@ -171,13 +171,13 @@ PythonLabAgros::~PythonLabAgros()
     settings.setValue("PythonEditorDialog/ConsoleOutput", actConsoleOutput->isChecked());
 }
 
-void PythonLabAgros::doCreatePythonFromModel()
+void PythonEditorAgrosDialog::doCreatePythonFromModel()
 {
     StartupScript_Type type = actStartupScriptVariables->isChecked() ? StartupScript_Variable : StartupScript_Value;
     txtEditor->setPlainText(createPythonFromModel(type));
 }
 
-void PythonLabAgros::scriptPrepare()
+void PythonEditorAgrosDialog::scriptPrepare()
 {
     if (actConsoleOutput->isChecked())
     {
@@ -188,7 +188,7 @@ void PythonLabAgros::scriptPrepare()
     }
 }
 
-void PythonLabAgros::scriptFinish()
+void PythonEditorAgrosDialog::scriptFinish()
 {
     if (actConsoleOutput->isChecked())
     {
@@ -199,22 +199,22 @@ void PythonLabAgros::scriptFinish()
     }
 }
 
-void PythonLabAgros::printMessage(const QString &module, const QString &message, bool escaped)
+void PythonEditorAgrosDialog::printMessage(const QString &module, const QString &message, bool escaped)
 {
     consoleView->console()->consoleMessage(QString("%1: %2\n").arg(module).arg(message), Qt::gray);
 }
 
-void PythonLabAgros::printError(const QString &module, const QString &message, bool escaped)
+void PythonEditorAgrosDialog::printError(const QString &module, const QString &message, bool escaped)
 {
     consoleView->console()->consoleMessage(QString("%1: %2\n").arg(module).arg(message), Qt::red);
 }
 
-void PythonLabAgros::printWarning(const QString &module, const QString &message, bool escaped)
+void PythonEditorAgrosDialog::printWarning(const QString &module, const QString &message, bool escaped)
 {
     consoleView->console()->consoleMessage(QString("%1: %2\n").arg(module).arg(message), Qt::green);
 }
 
-void PythonLabAgros::printDebug(const QString &module, const QString &message, bool escaped)
+void PythonEditorAgrosDialog::printDebug(const QString &module, const QString &message, bool escaped)
 {
 #ifndef QT_NO_DEBUG_OUTPUT
     consoleView->console()->consoleMessage(QString("%1: %2\n").arg(module).arg(message), Qt::lightGray);

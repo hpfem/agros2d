@@ -47,6 +47,7 @@ ExamplesDialog::ExamplesDialog(QWidget *parent) : QDialog(parent)
 
     m_selectedFilename = "";
     m_selectedFormFilename = "";
+    m_expandedGroup = "";
 
     // problem information
     webView = new QWebView();
@@ -93,16 +94,7 @@ ExamplesDialog::ExamplesDialog(QWidget *parent) : QDialog(parent)
 
     setLayout(layout);
 
-    readProblems();
-
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
-    /*
-    if (lstProblems->count() > 0)
-    {
-        lstProblems->setCurrentRow(0);
-        doItemSelected(lstProblems->currentItem());
-    }
-    */
 
     QSettings settings;
     restoreGeometry(settings.value("ExamplesDialog/Geometry", saveGeometry()).toByteArray());
@@ -124,8 +116,16 @@ void ExamplesDialog::doReject()
     reject();
 }
 
-int ExamplesDialog::showDialog()
+int ExamplesDialog::showDialog(const QString &expandedGroup)
 {
+    m_expandedGroup = expandedGroup;
+
+    readProblems();
+
+    QList<QTreeWidgetItem *> items = lstProblems->findItems(m_expandedGroup, Qt::MatchExactly);
+    if (items.count() == 1)
+        lstProblems->setCurrentItem(items.at(0));
+
     return exec();
 }
 
@@ -203,7 +203,11 @@ int ExamplesDialog::readProblems(QDir dir, QTreeWidgetItem *parentItem)
             QTreeWidgetItem *dirItem = new QTreeWidgetItem(parentItem);
             dirItem->setText(0, fileInfo.fileName());
             dirItem->setFont(0, fnt);
-            dirItem->setExpanded(true);
+            // expand group
+            if (m_expandedGroup.isEmpty()
+                    || (parentItem != lstProblems->invisibleRootItem())
+                    || (m_expandedGroup == fileInfo.fileName()) && parentItem == lstProblems->invisibleRootItem())
+                dirItem->setExpanded(true);
 
             // recursive read
             int numberOfProblems = readProblems(fileInfo.absoluteFilePath(), dirItem);

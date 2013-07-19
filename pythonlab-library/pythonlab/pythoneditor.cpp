@@ -333,7 +333,7 @@ PythonEditorDialog::PythonEditorDialog(PythonEngine *pythonEngine, QStringList a
     setAcceptDrops(true);
 
     restoreGeometry(settings.value("PythonEditorDialog/Geometry", saveGeometry()).toByteArray());
-    recentFiles = settings.value("PythonEditorDialog/RecentFiles").value<QStringList>();
+    m_recentFiles = settings.value("PythonEditorDialog/RecentFiles").value<QStringList>();
     restoreState(settings.value("PythonEditorDialog/State", saveState()).toByteArray());
 
     // set recent files
@@ -345,7 +345,7 @@ PythonEditorDialog::~PythonEditorDialog()
     QSettings settings;
     settings.setValue("PythonEditorDialog/Geometry", saveGeometry());
     settings.setValue("PythonEditorDialog/State", saveState());
-    settings.setValue("PythonEditorDialog/RecentFiles", recentFiles);
+    settings.setValue("PythonEditorDialog/RecentFiles", m_recentFiles);
 }
 
 void PythonEditorDialog::closeEvent(QCloseEvent *event)
@@ -1269,18 +1269,18 @@ void PythonEditorDialog::setRecentFiles()
     if (!scriptEditorWidget()->fileName().isEmpty())
     {
         QFileInfo fileInfo(scriptEditorWidget()->fileName());
-        if (recentFiles.indexOf(fileInfo.absoluteFilePath()) == -1)
-            recentFiles.insert(0, fileInfo.absoluteFilePath());
+        if (m_recentFiles.indexOf(fileInfo.absoluteFilePath()) == -1)
+            m_recentFiles.insert(0, fileInfo.absoluteFilePath());
         else
-            recentFiles.move(recentFiles.indexOf(fileInfo.absoluteFilePath()), 0);
+            m_recentFiles.move(m_recentFiles.indexOf(fileInfo.absoluteFilePath()), 0);
 
-        while (recentFiles.count() > 15) recentFiles.removeLast();
+        while (m_recentFiles.count() > 15) m_recentFiles.removeLast();
     }
 
     mnuRecentFiles->clear();
-    for (int i = 0; i<recentFiles.count(); i++)
+    for (int i = 0; i<m_recentFiles.count(); i++)
     {
-        QAction *actMenuRecentItem = new QAction(recentFiles[i], this);
+        QAction *actMenuRecentItem = new QAction(m_recentFiles[i], this);
         actFileOpenRecentGroup->addAction(actMenuRecentItem);
         mnuRecentFiles->addAction(actMenuRecentItem);
     }
@@ -1409,7 +1409,10 @@ void ScriptEditor::keyPressEvent(QKeyEvent *event)
             unindentSelection();
         }
     }
-    else if ((event->key() == Qt::Key_Backspace) && (document()->characterAt(oldPos - 1) == ' '))
+    else if ((event->key() == Qt::Key_Backspace) && (document()->characterAt(oldPos - 1) == ' ')
+                                                 && (document()->characterAt(oldPos - 2) == ' ')
+                                                 && (document()->characterAt(oldPos - 3) == ' ')
+                                                 && (document()->characterAt(oldPos - 4) == ' '))
     {
         cursor.beginEditBlock();
         // determine selection to delete

@@ -44,7 +44,7 @@ class LogView;
 class LogDialog;
 
 class ChartWidget;
-class PythonLabAgros;
+class PythonEditorAgrosDialog;
 class ServerDownloadDialog;
 class SceneTransformDialog;
 class SceneViewWidget;
@@ -58,8 +58,6 @@ class AGROS_API MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
-    void open(const QString &fileName);
 
 private slots:
     inline void doSetWindowTitle(const QString &name) { setWindowTitle("Agros2D - " + name); }
@@ -80,7 +78,7 @@ private slots:
     void doDocumentSaveImage();
     void doDocumentSaveGeometry();
     void doLoadBackground();
-    void doExamples();
+    void doExamples(const QString &groupName = "");
 
     void doMouseSceneModeChanged(MouseSceneMode mouseSceneMode);
 
@@ -227,7 +225,7 @@ private:
     PythonScriptingConsoleView *consoleView;
     LogView *logView;
 
-    PythonLabAgros *scriptEditorDialog;
+    PythonEditorAgrosDialog *scriptEditorDialog;
     ServerDownloadDialog *collaborationDownloadDialog;
     SceneTransformDialog *sceneTransformDialog;
 

@@ -29,7 +29,7 @@ public:
     ExamplesDialog(QWidget *parent);
     ~ExamplesDialog();
 
-    int showDialog();
+    int showDialog(const QString &expandedGroup = "");
     inline QString selectedFilename() { return m_selectedFilename; }
     inline QString selectedFormFilename() { return m_selectedFormFilename; }
 
@@ -49,6 +49,8 @@ private:
     QTreeWidget *lstProblems;
     QString m_selectedFilename;
     QString m_selectedFormFilename;
+
+    QString m_expandedGroup;
 
     QDialogButtonBox *buttonBox;
 

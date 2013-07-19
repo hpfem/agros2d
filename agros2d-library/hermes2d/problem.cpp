@@ -601,6 +601,8 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
 
     try
     {
+        Hermes::HermesCommonApi.set_integral_param_value(Hermes::numThreads, Agros2D::configComputer()->numberOfThreads);
+
         m_lastTimeElapsed = QTime();
         QTime timeCounter = QTime();
         timeCounter.start();
