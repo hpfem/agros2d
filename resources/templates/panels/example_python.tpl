@@ -98,6 +98,7 @@
 </head>
 <body>
 
+
 <img style="float: right; margin-right: 10px; margin-top: 12px;" src="{{AGROS2D}}" /> 
 <h1>{{NAME}}</h1>
 <div>
@@ -112,9 +113,9 @@
 <p>{{DESCRIPTION}}</p>
 </div>
 
+{{PROBLEM_DETAILS}}
+
 <pre><code data-language="python">{{PROBLEM_PYTHON}}</code></pre>
 
-
-{{PROBLEM_DETAILS}}
 
 <div class="cleaner"></div>
