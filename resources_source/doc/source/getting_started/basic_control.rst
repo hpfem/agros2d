@@ -53,7 +53,7 @@ The main part of the chart window is the area to display the chart or data. You 
 
 .. image:: ./chart.png
    :align: center
-   :scale: 50%
+   :width: 800
    :alt: Chart window
 
    
@@ -62,9 +62,9 @@ PythonLab
 
 The main part of the PythonLab is the editing area, which works with scripts. In the bottom of the window there is terminal panel. Script editor window also contains the file browser panel, menu bar and toolbar.
 
-.. image:: ./script_editor.png
+.. image:: ./pythonlab.png
    :align: center
-   :scale: 50%
+   :width: 800
    :alt: Script editor window
 
 

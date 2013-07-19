@@ -244,6 +244,48 @@ void Agros2DGeneratorModule::generatePluginDocumentationFiles()
     table.append(values);
     text += createTable(table);
     text += "\n\n";
+    names.clear();
+    values.clear();
+    table.clear();
+
+    // Creates volume variables table
+    text += underline("Volume variables:",'-');
+    text += "\n";
+
+    names.append("Volume (material) variable");
+    values.append("Agros2D variable");
+    foreach(XMLModule::quantity quantity, m_module->volume().quantity())
+    {
+        values.append(QString::fromStdString(quantity.id().c_str()));
+        names.append(QString::fromStdString(quantity.shortname().get()));
+    }
+
+    table.append(values);
+    table.append(names);
+    text += createTable(table);
+    text += "\n\n";
+    names.clear();
+    values.clear();
+    table.clear();
+
+    // Creates surface variables table
+    text += underline("Surface (boundary) variables:",'-');
+    text += "\n";
+
+    names.append("Surface variable");
+    values.append("Agros2D variable");
+    foreach(XMLModule::quantity quantity, m_module->surface().quantity())
+    {
+        values.append(QString::fromStdString(quantity.id().c_str()));
+        names.append(QString::fromStdString(quantity.shortname().get()));
+    }
+
+    table.append(values);
+    table.append(names);
+    text += createTable(table);
+    text += "\n\n";
+    names.clear();
+    values.clear();
     table.clear();
 
 

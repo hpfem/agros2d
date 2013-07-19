@@ -81,14 +81,14 @@ Example of usage
    
 .. tabularcolumns:: lll 
 
-+---------------+----------+----------------------------------+
-| **Parameter** | **Type** | **Meaning**                      |
-+---------------+----------+----------------------------------+
-| Name          | string   | Name of the boundary condition   |
-+---------------+----------+----------------------------------+
-| Type          | string   || Type of the boundary condition  |
-|               |          || (See module documentation)      | 
-+---------------+----------+----------------------------------+
++---------------+----------+--------------------------------+--------------------------------+-+
+| **Parameter** | **Type** | **Meaning**                    |                                  |
++---------------+----------+--------------------------------+--------------------------------+-+
+| Name          | string   | Name of the boundary condition |                                  |
++---------------+----------+--------------------------------+--------------------------------+-+
+| Type          | string   |                                | Type of the boundary condition | |
+|               |          |                                | (See module documentation)     | |
++---------------+----------+--------------------------------+--------------------------------+-+
 
 
 
@@ -163,8 +163,8 @@ Example of usage
    geometry = agros2d.geometry
    
    
-add_edge(x1 <double>, x2 <double>, y1 <double>, y2 <double>, boundaries = <dict>, angle = <double> )
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+**add_edge**\(x1 <double>, x2 <double>, y1 <double>, y2 <double>, boundaries = <dict>, angle = <double> )
+
 
 creates edge and assign boundary conditions
 
