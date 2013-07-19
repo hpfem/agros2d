@@ -30,27 +30,37 @@
 #include "sceneedge.h"
 #include "scenelabel.h"
 
-
-DxfFilterdxflib::DxfFilterdxflib(Scene *scene)
+DxfInterfaceDXFRW::DxfInterfaceDXFRW(Scene *scene, const QString &fileName)
 {
     this->m_scene = scene;
+    dxf = new dxfRW(fileName.toStdString().c_str());
 }
 
-void DxfFilterdxflib::addLine(const DL_LineData &l)
+void DxfInterfaceDXFRW::read()
+{
+   dxf->read(this, true);
+}
+
+void DxfInterfaceDXFRW::write()
+{
+    dxf->write(this, DRW::AC1015, false);
+}
+
+void DxfInterfaceDXFRW::addLine(const DRW_Line &l)
 {
     // start node
-    SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(l.x1, l.y1)));
+    SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(l.basePoint.x, l.basePoint.y)));
     // end node
-    SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(l.x2, l.y2)));
+    SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(l.secPoint.x, l.secPoint.y)));
 
     // edge
-    m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd,  0)); // TODO: do it better
+    m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, 0));
 }
 
-void DxfFilterdxflib::addArc(const DL_ArcData& a)
+void DxfInterfaceDXFRW::addArc(const DRW_Arc& a)
 {
-    double angle1 = a.angle1;
-    double angle2 = a.angle2;
+    double angle1 = a.staangle / M_PI * 180.0;
+    double angle2 = a.endangle / M_PI * 180.0;
 
     while (angle1 < 0.0) angle1 += 360.0;
     while (angle1 >= 360.0) angle1 -= 360.0;
@@ -58,21 +68,23 @@ void DxfFilterdxflib::addArc(const DL_ArcData& a)
     while (angle2 >= 360.0) angle2 -= 360.0;
 
     // start node
-    SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(a.cx + a.radius*cos(angle1/180.0*M_PI), a.cy + a.radius*sin(angle1/180.0*M_PI))));
+    SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(a.basePoint.x + a.radious*cos(angle1/180.0*M_PI),
+                                                                a.basePoint.y + a.radious*sin(angle1/180.0*M_PI))));
     // end node
-    SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(a.cx + a.radius*cos(angle2/180.0*M_PI), a.cy + a.radius*sin(angle2/180.0*M_PI))));
+    SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(a.basePoint.x + a.radious*cos(angle2/180.0*M_PI),
+                                                              a.basePoint.y + a.radious*sin(angle2/180.0*M_PI))));
 
     // edge
-    m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, (angle1 < angle2) ? angle2-angle1 : angle2+360.0-angle1)); // TODO: do it better
+    m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, (angle1 < angle2) ? angle2-angle1 : angle2+360.0-angle1));
 }
 
-void DxfFilterdxflib::addCircle(const DL_CircleData& c)
+void DxfInterfaceDXFRW::addCircle(const DRW_Circle &c)
 {
     // nodes
-    SceneNode *node1 = m_scene->addNode(new SceneNode(Point(c.cx + c.radius, c.cy)));
-    SceneNode *node2 = m_scene->addNode(new SceneNode(Point(c.cx, c.cy + c.radius)));
-    SceneNode *node3 = m_scene->addNode(new SceneNode(Point(c.cx - c.radius, c.cy)));
-    SceneNode *node4 = m_scene->addNode(new SceneNode(Point(c.cx, c.cy - c.radius)));
+    SceneNode *node1 = m_scene->addNode(new SceneNode(Point(c.basePoint.x + c.radious, c.basePoint.y)));
+    SceneNode *node2 = m_scene->addNode(new SceneNode(Point(c.basePoint.x, c.basePoint.y + c.radious)));
+    SceneNode *node3 = m_scene->addNode(new SceneNode(Point(c.basePoint.x - c.radious, c.basePoint.y)));
+    SceneNode *node4 = m_scene->addNode(new SceneNode(Point(c.basePoint.x, c.basePoint.y - c.radious)));
 
     // edges
     m_scene->addEdge(new SceneEdge(node1, node2, 90));
@@ -81,125 +93,85 @@ void DxfFilterdxflib::addCircle(const DL_CircleData& c)
     m_scene->addEdge(new SceneEdge(node4, node1, 90));
 }
 
-// *******************************************************************************
-
-void readFromDxfdxflib(const QString &fileName)
+void DxfInterfaceDXFRW::addPolyline(const DRW_Polyline& data)
 {
-    // save current locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
-
-    Agros2D::scene()->blockSignals(true);
-
-    DxfFilterdxflib *filter = new DxfFilterdxflib(Agros2D::scene());
-    DL_Dxf* dxf = new DL_Dxf();
-    if (!dxf->in(fileName.toStdString(), filter))
+    for (int i = 0; i < data.vertlist.size() - 1; i++)
     {
-        qCritical() << fileName << " could not be opened.";
-        return;
+        DRW_Vertex *vertStart = data.vertlist.at(i);
+        DRW_Vertex *vertEnd = data.vertlist.at(i+1);
+
+        SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(vertStart->basePoint.x, vertStart->basePoint.y)));
+        SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(vertEnd->basePoint.x, vertEnd->basePoint.y)));
+
+        m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, 0.0));
     }
-
-    delete dxf;
-    delete filter;
-
-    Agros2D::scene()->blockSignals(false);
-    Agros2D::scene()->invalidate();
-
-    // set system locale
-    setlocale(LC_NUMERIC, plocale);
 }
 
-void writeToDxfdxflib(const QString &fileName)
+void DxfInterfaceDXFRW::addLWPolyline(const DRW_LWPolyline& data)
 {
+    for (int i = 0; i < data.vertlist.size() - 1; i++)
+    {
+        DRW_Vertex2D *vertStart = data.vertlist.at(i);
+        DRW_Vertex2D *vertEnd = data.vertlist.at(i+1);
+
+        SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(vertStart->x, vertStart->y)));
+        SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(vertEnd->x, vertEnd->y)));
+
+        m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, 0.0));
+    }
+}
+
+void DxfInterfaceDXFRW::addSpline(const DRW_Spline *data)
+{
+    // 1st order
+    if (data->degree == 1)
+    {
+        // first and last point
+        DRW_Coord *vertStart = data->controllist.at(0);
+        DRW_Coord *vertEnd = data->controllist.at(data->controllist.size() - 1);
+
+        SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(vertStart->x, vertStart->y)));
+        SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(vertEnd->x, vertEnd->y)));
+
+        m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, 0.0));
+    }
+    else if (data->degree > 1)
+    {
+        qDebug() << "spline > 1nd order - not implemented";
+
+        // first and last point
+        DRW_Coord *vertStart = data->controllist.at(0);
+        DRW_Coord *vertEnd = data->controllist.at(data->controllist.size() - 1);
+
+        SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(vertStart->x, vertStart->y)));
+        SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(vertEnd->x, vertEnd->y)));
+
+        m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, 0.0));
+    }
+}
+
+void DxfInterfaceDXFRW::writeHeader(DRW_Header& data)
+{
+    // bounding box
     RectPoint box = Agros2D::scene()->boundingBox();
 
-    // save current locale
-    char *plocale = setlocale (LC_NUMERIC, "");
-    setlocale (LC_NUMERIC, "C");
+    DRW_Variant *curr = NULL;
 
-    DL_Dxf* dxf = new DL_Dxf();
-    DL_Codes::version exportVersion = DL_Codes::AC1015;
-    DL_WriterA *dw = dxf->out(fileName.toLatin1().data(), exportVersion);
-    if (dw == NULL) {
-        qCritical() << fileName << " could not be opened.";
-        return;
-    }
+    curr = new DRW_Variant();
+    curr->addCoord(new DRW_Coord());
+    curr->setCoordX(box.start.x);
+    curr->setCoordY(box.start.y);
+    data.vars["$EXTMIN"] = curr;
 
-    dxf->writeHeader(*dw);
-    // int variable:
-    dw->dxfString(9, "$INSUNITS");
-    dw->dxfInt(70, 4);
-    // real (double, float) variable:
-    dw->dxfString(9, "$DIMEXE");
-    dw->dxfReal(40, 1.25);
-    // string variable:
-    dw->dxfString(9, "$TEXTSTYLE");
-    dw->dxfString(7, "Standard");
-    // vector variable:
-    dw->dxfString(9, "$LIMMIN");
-    dw->dxfReal(10, 0.0);
-    dw->dxfReal(20, 0.0);
-    dw->sectionEnd();
-    dw->sectionTables();
-    dxf->writeVPort(*dw);
-    dw->tableLineTypes(25);
-    dxf->writeLineType(*dw, DL_LineTypeData("BYBLOCK", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("BYLAYER", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("CONTINUOUS", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("ACAD_ISO02W100", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("ACAD_ISO03W100", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("ACAD_ISO04W100", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("ACAD_ISO05W100", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("BORDER", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("BORDER2", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("BORDERX2", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("CENTER", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("CENTER2", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("CENTERX2", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("DASHDOT", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("DASHDOT2", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("DASHDOTX2", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("DASHED", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("DASHED2", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("DASHEDX2", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("DIVIDE", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("DIVIDE2", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("DIVIDEX2", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("DOT", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("DOT2", 0));
-    dxf->writeLineType(*dw, DL_LineTypeData("DOTX2", 0));
-    dw->tableEnd();
+    curr = new DRW_Variant();
+    curr->addCoord(new DRW_Coord());
+    curr->setCoordX(box.end.x);
+    curr->setCoordY(box.end.y);
+    data.vars["$EXTMAX"] =curr;
+}
 
-    int numberOfLayers = 1;
-    dw->tableLayers(numberOfLayers);
-
-    dxf->writeLayer(*dw,
-                    DL_LayerData("main", 0),
-                    DL_Attributes(
-                        std::string(""),            // leave empty
-                        DL_Codes::black,            // default color
-                        qMax(box.width(), box.height())/100.0,   // default width
-                        "CONTINUOUS"));             // default line style
-
-    dw->tableEnd();
-    dxf->writeStyle(*dw);
-    dxf->writeView(*dw);
-    dxf->writeUcs(*dw);
-
-    dw->tableAppid(1);
-    dw->tableAppidEntry(0x12);
-    dw->dxfString(2, "ACAD");
-    dw->dxfInt(70, 0);
-    dw->tableEnd();
-    dxf->writeDimStyle(*dw, 1, 1, 1, 1, 1);
-    dxf->writeBlockRecord(*dw);
-    dw->tableEnd();
-    dw->sectionEnd();
-    dw->sectionBlocks();
-
-    dw->sectionEnd();
-    dw->sectionEntities();
-
+void DxfInterfaceDXFRW::writeEntities()
+{
     // edges
     foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
     {
@@ -211,7 +183,18 @@ void writeToDxfdxflib(const QString &fileName)
             double x2 = edge->nodeEnd()->point().x;
             double y2 = edge->nodeEnd()->point().y;
 
-            dxf->writeLine(*dw, DL_LineData(x1, y1, 0.0, x2, y2, 0.0), DL_Attributes("main", 256, -1, "BYLAYER"));
+            DRW_Line line;
+            line.basePoint.x = x1;
+            line.basePoint.y = y1;
+            line.secPoint.x = x2;
+            line.secPoint.y = y2;
+            line.layer = "AGROS2D";
+            line.color = 256;
+            line.color24 = -1;
+            line.lWeight = DRW_LW_Conv::widthDefault;
+            line.lineType = "BYLAYER";
+
+            dxf->writeLine(&line);
         }
         else
         {
@@ -227,18 +210,57 @@ void writeToDxfdxflib(const QString &fileName)
             while (angle2 < 0.0) angle2 += 360.0;
             while (angle2 >= 360.0) angle2 -= 360.0;
 
-            dxf->writeArc(*dw, DL_ArcData(cx, cy, 0.0, radius, angle1, angle2), DL_Attributes("main", 256, -1, "BYLAYER"));
+            DRW_Arc arc;
+            arc.basePoint.x = cx;
+            arc.basePoint.y = cy;
+            arc.radious = radius;
+            arc.staangle = angle1 / 180.0 * M_PI;
+            arc.endangle = angle2 / 180.0 * M_PI;
+            arc.layer = "AGROS2D";
+            arc.color = 256;
+            arc.color24 = -1;
+            arc.lWeight = DRW_LW_Conv::widthDefault;
+            arc.lineType = "BYLAYER";
+
+            dxf->writeArc(&arc);
         }
     }
+}
 
-    dw->sectionEnd();
-    dxf->writeObjects(*dw);
-    dxf->writeObjectsEnd(*dw);
-    dw->dxfEOF();
-    dw->close();
 
-    delete dw;
-    delete dxf;
+// *******************************************************************************
+
+void readFromDXF(const QString &fileName)
+{
+    // save current locale
+    char *plocale = setlocale (LC_NUMERIC, "");
+    setlocale (LC_NUMERIC, "C");
+
+    Agros2D::scene()->blockSignals(true);
+
+    DxfInterfaceDXFRW filter(Agros2D::scene(), fileName);
+    filter.read();
+
+    Agros2D::scene()->blockSignals(false);
+    Agros2D::scene()->invalidate();
+
+    // set system locale
+    setlocale(LC_NUMERIC, plocale);
+}
+
+void writeToDXF(const QString &fileName)
+{
+    // save current locale
+    char *plocale = setlocale (LC_NUMERIC, "");
+    setlocale (LC_NUMERIC, "C");
+
+    Agros2D::scene()->blockSignals(true);
+
+    DxfInterfaceDXFRW filter(Agros2D::scene(), fileName);
+    filter.write();
+
+    Agros2D::scene()->blockSignals(false);
+    Agros2D::scene()->invalidate();
 
     // set system locale
     setlocale(LC_NUMERIC, plocale);

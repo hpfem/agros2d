@@ -1,6 +1,5 @@
 SUBDIRS += paralution
 SUBDIRS += ctemplate
-SUBDIRS += dxflib
 SUBDIRS += libdxfrw
 SUBDIRS += poly2tri
 SUBDIRS += qcustomplot

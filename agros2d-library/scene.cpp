@@ -942,13 +942,13 @@ void Scene::doFieldsChanged()
 
 void Scene::writeToDxf(const QString &fileName)
 {
-    writeToDxfdxflib(fileName);
+    writeToDXF(fileName);
 }
 
 
 void Scene::readFromDxf(const QString &fileName)
 {
-    readFromDxfdxflib(fileName);
+    readFromDXF(fileName);
 }
 
 void Scene::readFromFile(const QString &fileName)

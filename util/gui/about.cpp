@@ -158,7 +158,7 @@ QWidget *AboutDialog::createLibraries()
                                          "<b>Digia Qt:</b> Digia Qt (<a href=\"http://qt.digia.com/\">Qt - A cross-platform framework</a>)<br/>"
                                          "<b>QCustomChart:</b> QCustomChart (<a href=\"http://www.workslikeclockwork.com/index.php/components/qt-plotting-widget/\">A simple plotting widget for Qt</a>)<br/>"
                                          "<b>Python:</b> Python Programming Language (<a href=\"http://www.python.org\">Python</a>)<br/>"
-                                         "<b>dxflib:</b> Andrew Mustun (<a href=\"http://www.ribbonsoft.com/dxflib.html\">RibbonSoft</a>)<br/>"
+                                         "<b>libdxfrw:</b> LibreCAD DXF library (<a href=\"http://sourceforge.net/projects/libdxfrw/\">libdxfrw</a>)<br/>"
                                          "<b>ctemplate:</b> Simple but powerful template language for C++ (<a href=\"http://code.google.com/p/ctemplate/\">ctemplate</a>)<br/>"
                                          "<b>BSON:</b> BSON implementation (<a href=\"https://github.com/mongodb/mongo-c-driver/\">mongo-c-driver</a>)<br/>"
                                          "<b>poly2tri:</b> A 2D constrained Delaunay triangulation library (<a href=\"http://code.google.com/p/poly2tri/\">poly2tri</a>)<br/>"

@@ -5,6 +5,7 @@ INCLUDEPATH += ./ \
     ../3rdparty \
     ../3rdparty/ctemplate \
     ../3rdparty/dxflib \
+    ../3rdparty/libdxfrw \
     ../3rdparty/rapidxml \
     ../3rdparty/poly2tri \
     ../3rdparty/bson \
@@ -19,6 +20,7 @@ DEFINES += WITH_OPENMP
 LIBS += -lagros_3rdparty_ctemplate
 LIBS += -lagros_3rdparty_qcustomplot
 LIBS += -lagros_3rdparty_dxflib
+LIBS += -lagros_3rdparty_libdxfrw
 LIBS += -lagros_3rdparty_poly2tri
 LIBS += -lagros_3rdparty_quazip
 LIBS += -lagros_3rdparty_bson

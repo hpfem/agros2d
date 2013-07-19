@@ -23,7 +23,7 @@ LIBS += -lagros2d_library
 HEADERS      += example.h
 SOURCES      += example.cpp
 
-INCLUDEPATH += ../../3rdparty/dxflib
+INCLUDEPATH += ../../3rdparty/libdxfrw
 INCLUDEPATH += ../../3rdparty
 
 linux-clang {

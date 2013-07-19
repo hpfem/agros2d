@@ -13,7 +13,7 @@ INCLUDEPATH += ../../3rdparty/bson
 
 INCLUDEPATH += ../../hermes2d/include \
     ../../hermes_common/include \
-    ../../3rdparty/dxflib
+    ../../3rdparty/libdxfrw
 
 INCLUDEPATH += ../../util
 INCLUDEPATH += ../../hermes2d/include
