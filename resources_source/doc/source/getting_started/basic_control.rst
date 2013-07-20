@@ -19,7 +19,7 @@ When you start Agros2D, it opens to the *introductory mode* mode, where you can
 
 .. image:: ./main_window.png
    :align: center
-   :scale: 50%
+   :scale: 100%
    :alt: Main window
    
 
@@ -44,6 +44,12 @@ The important area of the Agros2D interface is *Mode selector*.  There are avail
 
 Bellow the *Mode selector* are located buttons for running of most important actions. You can create mesh, solve the whole problem, run just one adaptive step or switch to PythonLab which is a tool for work with scripts.  
  
+Red numbers in the picture above shows the basic work-flow: 
+
+1) create the new problem,
+2) go to the properties mode and set basic problem properties,
+3) go to the preprocessor mode and prepare your problem,
+4) solve problem.
 
 
 Chart window
