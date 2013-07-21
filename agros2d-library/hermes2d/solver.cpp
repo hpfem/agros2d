@@ -173,7 +173,8 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
     }
 
     assert(m_steps.size() == m_errors.size());
-    assert(m_steps.size() == iteration + 1);
+    if(phase != Phase_Finished)
+        assert(m_steps.size() == iteration + 1);
 
     if(phase == Phase_Init)
     {
