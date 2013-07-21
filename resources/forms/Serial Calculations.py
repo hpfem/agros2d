@@ -1,85 +1,112 @@
 import agros2d as a2d
+from math import sqrt
 
-nodes = {{lstNodes_list}}
-edges = {{lstEdges_list}}
-labels = {{lstLabels_list}}
-steps = {{txtSteps_text}}
+def transform():
+    if ({{radDisplacement_checked}}):
+      geometry.move_selection({{txtMoveX_text}}, {{txtMoveY_text}})
+    elif ({{radRotation_checked}}):
+      geometry.rotate_selection({{txtRotateX_text}}, {{txtRotateY_text}}, {{txtRotateAngle_text}})
+    elif ({{radScale_checked}}):
+      geometry.scale_selection({{txtScaleX_text}}, {{txtScaleY_text}}, {{txtScaleFactor_text}})
 
-move_x = {{txtMoveX_text}}
-move_y = {{txtMoveY_text}}
+    geometry.select_none()
+    a2d.view.zoom_best_fit()
 
-rotate_x = {{txtRotateX_text}}
-rotate_y = {{txtRotateY_text}}
-rotate_angle = {{txtRotateAngle_text}}
+def calculate():
+    if ({{chkSolve_checked}}):
+        problem.solve()
 
-scale_x = {{txtScaleX_text}}
-scale_y = {{txtScaleY_text}}
-scale_factor = {{txtScaleFactor_text}}
+        if ('{{trvLocalValues_variable}}'):
+            field = a2d.field('{{trvLocalValues_fieldid}}')
+            result = field.local_values({{txtLocalValuesX_text}},
+                                        {{txtLocalValuesY_text}})['{{trvLocalValues_variable}}']
+            results['local'].append(result)
 
-local_values = list()
-surface_integrals = list()
-volume_integrals = list()
-expression = list()
+        if ('{{trvSurfaceIntefrals_variable}}'):
+            field = a2d.field('{{trvSurfaceIntegrals_fieldid}}')
+            result = field.surface_integrals({{lstSurfaceIntegralsEdges_list}})['{{trvSurfaceIntegrals_variable}}']
+            results['surface'].append(result)
+
+        if ('{{trvVolumeIntegrals_variable}}'):
+            field = a2d.field('{{trvVolumeIntegrals_fieldid}}')
+            result = field.volume_integrals({{lstSurfaceIntegralsEdges_list}})['{{trvVolumeIntegrals_variable}}']
+            results['volume'].append(result)
+
+    if ('{{txtExpression_text}}'):
+        results['expression'].append({{txtExpression_text}})
+
+def derivative(values, positions):
+    values_derivative = list()
+    derivative_positions = list()
+    for i in range(len(values) - 1):
+        step = positions[i+1]-positions[i]
+        values_derivative.append((values[i]-values[i+1]) / step)
+        derivative_positions.append(positions[i] + step/2.0)
+
+    return values_derivative, derivative_positions
+
+def eval_and_print(variable, value):
+    globals()[variable] = value
+    print('{0} = {1}'.format(variable, value))
+
+results = {'transformation' : [0],
+           'local' : list(), 'surface' : list(), 'volume' : list(),
+           'expression' : list()}
 
 problem = a2d.problem()
 geometry = a2d.geometry
 
-def transform():
-  if (move_x != 0.0 or move_y != 0.0):
-    geometry.move_selection(move_x, move_y)
-
-  if (rotate_angle != 0.0):
-    geometry.rotate_selection(rotate_x, rotate_y, rotate_angle)
-
-  if (scale_factor != 0.0):
-    geometry.scale_selection(scale_x, scale_y, scale_factor)
-
-  geometry.select_none()
-
-def calculate():
-  if ({{chkSolve_checked}}):
-    problem.solve()
-
-    if ('{{trvLocalValues_variable}}'):
-      field = a2d.field('{{trvLocalValues_fieldid}}')
-      local_values.append(field.local_values({{txtLocalValuesX_text}},
-                                     {{txtLocalValuesY_text}})['{{trvLocalValues_variable}}'])
-
-    if ('{{trvSurfaceIntefrals_variable}}'):
-      field = a2d.field('{{trvSurfaceIntegrals_fieldid}}')
-      surface_integrals.append(field.surface_integrals({{lstSurfaceIntegralsEdges_list}})['{{trvSurfaceIntegrals_variable}}'])
-
-    if ('{{trvVolumeIntegrals_variable}}'):
-      field = a2d.field('{{trvVolumeIntegrals_fieldid}}')
-      volume_integrals.append(field.volume_integrals({{lstSurfaceIntegralsEdges_list}})['{{trvVolumeIntegrals_variable}}'])
-
-  if ('{{txtExpression_text}}'):
-    expression.append({{txtExpression_text}})
-
 calculate()
-for step in range(steps):
-  if (nodes):
-    geometry.select_nodes(nodes)
-    transform()
+for step in range({{txtSteps_text}}+1):
+    if ({{lstNodes_list}}):
+        geometry.select_nodes({{lstNodes_list}})
+        transform()
 
-  if (edges):
-    geometry.select_edges(edges)
-    transform()
+    if ({{lstEdges_list}}):
+        geometry.select_edges({{lstEdges_list}})
+        transform()
 
-  if (labels):
-    geometry.select_labels(labels)
-    transform()
+    if ({{lstLabels_list}}):
+        geometry.select_labels({{lstLabels_list}})
+        transform()
 
-  calculate()
+    if ({{radDisplacement_checked}}):
+        results['transformation'].append(results['transformation'][-1] + sqrt(({{txtMoveX_text}})**2 + ({{txtMoveY_text}})**2))
+    elif ({{radRotation_checked}}):
+      results['transformation'].append(results['transformation'][-1] + {{txtRotateAngle_text}})
+    elif ({{radScale_checked}}):
+      results['transformation'].append(results['transformation'][-1] + {{txtScaleFactor_text}})
 
-if (local_values):
-  print('{{trvLocalValues_variable}} = {0}'.format(local_values))
+    calculate()
 
-if (surface_integrals):
-  print('{{trvSurfaceIntegrals_variable}} = {0}'.format(surface_integrals))
+if (results['local']):
+  eval_and_print('{{trvLocalValues_variable}}', results['local'])
 
-if (volume_integrals):
-  print('{{trvVolumeIntegrals_variable}} = {0}'.format(volume_integrals))
+if (results['surface']):
+  eval_and_print('{{trvSurfaceIntegrals_variable}}', results['surface'])
 
-if (expression):
-  print('expression = {0}'.format(expression))
+if (results['volume']):
+  eval_and_print('{{trvVolumeIntegrals_variable}}', results['volume'])
+
+eval_and_print('s', results['transformation'])
+
+ds = []
+if ({{chkLocalValueDerivative_checked}} and results['local']):
+    values_derivative, ds = derivative(results['local'], results['transformation'])
+    eval_and_print('d{{trvLocalValues_variable}}', values_derivative)
+    
+if ({{chkSurfaceIntegralDerivative_checked}} and results['surface']):
+    values_derivative, ds = derivative(results['surface'], results['transformation'])
+    eval_and_print('d{{trvSurfaceIntegrals_variable}}', values_derivative)
+
+if ({{chkVolumeIntegralDerivative_checked}} and results['volume']):
+    values_derivative, ds = derivative(results['volume'], results['transformation'])
+    eval_and_print('d{{trvVolumeIntegrals_variable}}', values_derivative)
+
+if ({{chkLocalValueDerivative_checked}} or
+    {{chkSurfaceIntegralDerivative_checked}} or
+    {{chkVolumeIntegralDerivative_checked}}):
+        eval_and_print('ds', ds)
+
+if (results['expression']):
+  eval_and_print('expression_results', results['expression'])

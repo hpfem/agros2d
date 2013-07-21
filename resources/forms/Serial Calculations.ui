@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabObjects">
       <attribute name="title">
@@ -437,7 +437,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QCheckBox" name="chkLocalValuesDerivative">
+              <widget class="QCheckBox" name="chkLocalValueDerivative">
                <property name="text">
                 <string>Compute derivative</string>
                </property>
