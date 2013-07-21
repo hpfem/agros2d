@@ -1,0 +1,96 @@
+<h2>Electrostatic Planar Capacitor</h2>
+
+<h3>Introduction</h3>
+<p>Capacitor is a passive electrical component, which consists of electrodes that are separated by a dielectric and have different electrical potential. It is used to store electric charge. The basic type of the capacitor is a plate capacitor. For more information visit http://en.wikipedia.org/wiki/Capacitor. </p>
+
+
+<h3>Preprocessing</h3>
+
+<p>Select "New" in the menu "File" and choose <it>Electrostatic field</it>, from dialog window.
+Program enters the properties settings mode. Here, choose <it>Coordinate type</it> "planar".
+Then click on the symbol of electrostatic field and set following values: </p>
+<ul>
+<li>Analysis: Steady state</li>
+<li>Solver: Linear</li>
+<li>Matrix solver: MUMPS </li>
+<li>Number of refinements: 1</li>
+<li>Polynomial order: 2</li>
+<li>Space adaptivity: Disabled</li>
+</ul>
+
+<div class="image">
+<img src="{{DIR}}/properties.png" />
+<div>Fig. 1.: Editing of proprties of the problem</div>
+</div>
+
+<h3>Geometry</h3>
+
+<ul>
+<li>Nodes</li>
+Select "Operate on nodes" in the menu "Problem" and place 6 points with coordinates [0.1, 0.0], [0.2, 0.0], [0.0, 0.2], [0.0, 0.3], [0.1, 0.2] and [0.2, 0.3]. You can move mouse to requested place and press left button together with Ctrl key, or by pressing Alt+N and entering the node coordinates.
+<li>Edges</li>
+Select "Operate on edges" in the menu "Problem" and draw 6 edges according to the definition area. Press Ctrl key and select start and end node of the line, or press Alt+E and select these points from a list.
+<li>Labels</li>
+Select "Operate on labels" in menu "Problem" and place block label into an inner area. To place label you can use left mouse button together with Ctrl key or pressing Alt+L and entering the label point coordinates.
+</ul>
+
+<div class="image">
+<img src="{{DIR}}/geometry_editing.png" />
+<div>Fig. 2.: Editing of the geometry</div>
+</div>
+
+<h4>Boundary conditions</h4>
+Select "New boundary condition" from the menu "Problem", or press Alt+B and gradually define three boundary conditions.
+
+<ul>
+<li>Name: Source electrode</li>
+<li>BC type: Fixed voltage</li>
+<li>Value: 30</li>
+</ul>
+
+<ul>
+<li>Name: Ground electrode</li>
+<li>BC type: Fixed voltage</li>
+<li>Value: 0</li>
+</ul>
+
+<ul>
+<li>Name: Neumann BC</li>
+<li>BC type: Surface charge density</li>
+<li>Value: 0</li>
+</ul>
+
+<h3>Materials</h3>
+
+<p>Select "New material" from the menu "Problem", or press Alt+M and define dielectric material embedded between the electrodes.</p>
+<ul>
+<li>Name: Dieletric</li>
+<li>Permitivity: 10</li>
+<li>Charge density (C/m3): 0</li> 
+</ul>
+
+<h3>Processing<h3>
+<h4>Mesh</h4>
+<p>Select "Mesh area" from the menu "Problem".</p>
+
+<h4>Solve</h4>
+<p>Select "Solve problem" from the menu "Problem", or press Alt+S.</p> <br/>
+
+<h2>Postprocessing<h2>
+<h3>Calculation of capacity</h3>
+<p>Select "Volume integrals" from the toolbar and click into the area "Dielectric". In panel "Volume integrals" you ca find value of "Energy" in group "Electrostatic field".</p>
+
+<div class="image">
+<img src="{{DIR}}/volume_integrals.png" />
+<div>Fig. 3.: Volume integrals calculation</div>
+</div>
+
+Capacity of the capacitor can be then calculated according to formula</p>
+<div class="image">
+<img src="{{DIR}}/eq_energy.png" alt="W_e = 4 \cdot \frac{1}{2} CU^2,"/>
+</div>
+which can be adjusted to
+<div class="image">
+<img src="{{DIR}}/eq_capacity.png" alt="C = \frac{4 \cdot 2 \cdot W_e}{U^2}."/>
+</div>
+
