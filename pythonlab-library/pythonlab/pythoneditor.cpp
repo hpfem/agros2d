@@ -501,7 +501,7 @@ void PythonEditorDialog::createActions()
 
     actOptionsEnableUseProfiler = new QAction(icon(""), tr("Profiler enabled"), this);
     actOptionsEnableUseProfiler->setCheckable(true);
-    actOptionsEnableUseProfiler->setChecked(settings.value("PythonEditorWidget/UseProfiler", true).toBool());
+    actOptionsEnableUseProfiler->setChecked(settings.value("PythonEditorWidget/UseProfiler", false).toBool());
     connect(actOptionsEnableUseProfiler, SIGNAL(triggered()), this, SLOT(doOptionsEnableUseProfiler()));
 
     actExit = new QAction(icon("application-exit"), tr("E&xit"), this);
