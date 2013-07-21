@@ -542,7 +542,6 @@ void Problem::solve()
     m_isSolved = false;
     m_isSolving = false;
 
-
     CalculationThread* thread = new CalculationThread(false, false);
     thread->start(QThread::TimeCriticalPriority);
 }

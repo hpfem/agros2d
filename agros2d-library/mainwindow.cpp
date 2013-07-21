@@ -1240,6 +1240,9 @@ void MainWindow::doCreateVideo()
 
 void MainWindow::doCreateMesh()
 {
+    actCreateMesh->setEnabled(false);
+    actSolve->setEnabled(false);
+
     LogDialog *logDialog = new LogDialog(this, tr("Mesh"));
     logDialog->show();
 
@@ -1257,6 +1260,9 @@ void MainWindow::doCreateMesh()
 
 void MainWindow::doSolve()
 {
+    actCreateMesh->setEnabled(false);
+    actSolve->setEnabled(false);
+
     LogDialog *logDialog = new LogDialog(this, tr("Solver"));
     logDialog->show();
 
@@ -1422,6 +1428,9 @@ void MainWindow::setControls()
 
     setUpdatesEnabled(false);
     setEnabled(true);
+
+    actCreateMesh->setEnabled(!Agros2D::problem()->isSolving());
+    actSolve->setEnabled(!Agros2D::problem()->isSolving());
 
     actDocumentSaveSolution->setEnabled(Agros2D::problem()->isSolved());
 

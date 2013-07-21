@@ -8,8 +8,8 @@
 
 		div.example {
 		  float: left;
-		  width: 128px;
-		  height: 148px;
+		  width: 96px;
+		  height: 116px;
 		  vertical-align: bottom;
 		  text-align: center;
 		  padding-left: 8px;
@@ -66,7 +66,7 @@
 {{#EXAMPLE_SECTION}}
 <div class="example">
 <a href="example?group={{EXAMPLE_GROUP}}" class="example">
-<img src="{{EXAMPLES_DIRECTORY}}/{{EXAMPLE_GROUP}}.png" alt="" with="128" height="128" /><br />
+<img src="{{EXAMPLES_DIRECTORY}}/{{EXAMPLE_GROUP}}.png" alt="" with="96" height="96" /><br />
 <strong>{{EXAMPLE_GROUP}}</strong>
 </a>
 </div>
