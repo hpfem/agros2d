@@ -30,31 +30,41 @@
 #include "sceneedge.h"
 #include "scenelabel.h"
 
-DxfInterfaceDXFRW::DxfInterfaceDXFRW(Scene *scene, const QString &fileName)
+DxfInterfaceDXFRW::DxfInterfaceDXFRW(Scene *scene, const QString &fileName) : m_isBlock(false)
 {
     this->m_scene = scene;
-    dxf = new dxfRW(fileName.toStdString().c_str());
+    m_dxf = new dxfRW(fileName.toStdString().c_str());
 }
 
 void DxfInterfaceDXFRW::read()
 {
-   dxf->read(this, true);
+    m_isBlock = false;
+
+    m_dxf->read(this, true);
 }
 
 void DxfInterfaceDXFRW::write()
 {
-    dxf->write(this, DRW::AC1015, false);
+    m_dxf->write(this, DRW::AC1015, false);
 }
 
 void DxfInterfaceDXFRW::addLine(const DRW_Line &l)
 {
-    // start node
-    SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(l.basePoint.x, l.basePoint.y)));
-    // end node
-    SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(l.secPoint.x, l.secPoint.y)));
+    if (!m_isBlock)
+    {
+        // start node
+        SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(l.basePoint.x, l.basePoint.y)));
+        // end node
+        SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(l.secPoint.x, l.secPoint.y)));
 
-    // edge
-    m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, 0));
+        // edge
+        m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, 0));
+    }
+    else
+    {
+        m_activeInsert.lines[m_activeInsert.blockName].append(l);
+        // qDebug() << m_activeInsert.lines[m_activeInsert.blockName].count() << l.basePoint.x << l.basePoint.y << l.secPoint.x << l.secPoint.y;
+    }
 }
 
 void DxfInterfaceDXFRW::addArc(const DRW_Arc& a)
@@ -67,30 +77,36 @@ void DxfInterfaceDXFRW::addArc(const DRW_Arc& a)
     while (angle2 < 0.0) angle2 += 360.0;
     while (angle2 >= 360.0) angle2 -= 360.0;
 
-    // start node
-    SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(a.basePoint.x + a.radious*cos(angle1/180.0*M_PI),
-                                                                a.basePoint.y + a.radious*sin(angle1/180.0*M_PI))));
-    // end node
-    SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(a.basePoint.x + a.radious*cos(angle2/180.0*M_PI),
-                                                              a.basePoint.y + a.radious*sin(angle2/180.0*M_PI))));
+    if (!m_isBlock)
+    {
+        // start node
+        SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(a.basePoint.x + a.radious*cos(angle1/180.0*M_PI),
+                                                                    a.basePoint.y + a.radious*sin(angle1/180.0*M_PI))));
+        // end node
+        SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(a.basePoint.x + a.radious*cos(angle2/180.0*M_PI),
+                                                                  a.basePoint.y + a.radious*sin(angle2/180.0*M_PI))));
 
-    // edge
-    m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, (angle1 < angle2) ? angle2-angle1 : angle2+360.0-angle1));
+        // edge
+        m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, (angle1 < angle2) ? angle2-angle1 : angle2+360.0-angle1));
+    }
 }
 
 void DxfInterfaceDXFRW::addCircle(const DRW_Circle &c)
 {
-    // nodes
-    SceneNode *node1 = m_scene->addNode(new SceneNode(Point(c.basePoint.x + c.radious, c.basePoint.y)));
-    SceneNode *node2 = m_scene->addNode(new SceneNode(Point(c.basePoint.x, c.basePoint.y + c.radious)));
-    SceneNode *node3 = m_scene->addNode(new SceneNode(Point(c.basePoint.x - c.radious, c.basePoint.y)));
-    SceneNode *node4 = m_scene->addNode(new SceneNode(Point(c.basePoint.x, c.basePoint.y - c.radious)));
+    if (!m_isBlock)
+    {
+        // nodes
+        SceneNode *node1 = m_scene->addNode(new SceneNode(Point(c.basePoint.x + c.radious, c.basePoint.y)));
+        SceneNode *node2 = m_scene->addNode(new SceneNode(Point(c.basePoint.x, c.basePoint.y + c.radious)));
+        SceneNode *node3 = m_scene->addNode(new SceneNode(Point(c.basePoint.x - c.radious, c.basePoint.y)));
+        SceneNode *node4 = m_scene->addNode(new SceneNode(Point(c.basePoint.x, c.basePoint.y - c.radious)));
 
-    // edges
-    m_scene->addEdge(new SceneEdge(node1, node2, 90));
-    m_scene->addEdge(new SceneEdge(node2, node3, 90));
-    m_scene->addEdge(new SceneEdge(node3, node4, 90));
-    m_scene->addEdge(new SceneEdge(node4, node1, 90));
+        // edges
+        m_scene->addEdge(new SceneEdge(node1, node2, 90));
+        m_scene->addEdge(new SceneEdge(node2, node3, 90));
+        m_scene->addEdge(new SceneEdge(node3, node4, 90));
+        m_scene->addEdge(new SceneEdge(node4, node1, 90));
+    }
 }
 
 void DxfInterfaceDXFRW::addPolyline(const DRW_Polyline& data)
@@ -150,6 +166,54 @@ void DxfInterfaceDXFRW::addSpline(const DRW_Spline *data)
     }
 }
 
+void DxfInterfaceDXFRW::addBlock(const DRW_Block& data)
+{
+    m_activeInsert.blockName = QString::fromStdString(data.name);
+    m_activeInsert.lines.clear();
+    m_isBlock = true;
+
+    // qDebug() << "addBlock" << QString::fromStdString(data.name);
+}
+
+void DxfInterfaceDXFRW::setBlock(const int handle)
+{
+    // qDebug() << "setBlock" << handle;
+}
+
+void DxfInterfaceDXFRW::endBlock()
+{
+    // qDebug() << "endBlock";
+
+    m_isBlock = false;
+}
+
+void DxfInterfaceDXFRW::addInsert(const DRW_Insert& data)
+{
+    // qDebug() << "Insert " << m_activeInsert.lines.count() << QString::fromStdString(data.name) << m_activeInsert.lines[QString::fromStdString(data.name)].count();
+    // line
+    foreach (DRW_Line line, m_activeInsert.lines[QString::fromStdString(data.name)])
+    {
+        // DRW_Line newLine;
+
+        // newLine.basePoint.x = line.basePoint.x + data.basePoint.x * cos(data.angle);
+        // newLine.basePoint.y = line.basePoint.y + data.basePoint.y * sin(data.angle);
+        // newLine.secPoint.x = line.secPoint.x + data.basePoint.x * cos(data.angle);
+        // newLine.secPoint.y = line.secPoint.y + data.basePoint.y * sin(data.angle);
+
+        // addLine(newLine);
+
+        /*
+        qDebug() << "Insert: " << QString::fromStdString(data.name)
+                 << ", basepoint " << data.basePoint.x << data.basePoint.y
+                 << ", scale " << data.xscale << data.yscale
+                 << ", rotate " << data.angle
+                 << ", space " << data.rowspace << data.colspace;
+        */
+    }
+
+
+}
+
 void DxfInterfaceDXFRW::writeHeader(DRW_Header& data)
 {
     // bounding box
@@ -194,7 +258,7 @@ void DxfInterfaceDXFRW::writeEntities()
             line.lWeight = DRW_LW_Conv::widthDefault;
             line.lineType = "BYLAYER";
 
-            dxf->writeLine(&line);
+            m_dxf->writeLine(&line);
         }
         else
         {
@@ -222,7 +286,7 @@ void DxfInterfaceDXFRW::writeEntities()
             arc.lWeight = DRW_LW_Conv::widthDefault;
             arc.lineType = "BYLAYER";
 
-            dxf->writeArc(&arc);
+            m_dxf->writeArc(&arc);
         }
     }
 }

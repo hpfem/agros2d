@@ -40,6 +40,10 @@ public:
     virtual void addPolyline(const DRW_Polyline& data);
     virtual void addLWPolyline(const DRW_LWPolyline& data);
     virtual void addSpline(const DRW_Spline* data);
+    virtual void addBlock(const DRW_Block& data);
+    virtual void setBlock(const int handle);
+    virtual void endBlock();
+    virtual void addInsert(const DRW_Insert& data);
 
     // Methods from DRW_CreationInterface:
     virtual void addHeader(const DRW_Header* data) {}
@@ -48,16 +52,12 @@ public:
     virtual void addDimStyle(const DRW_Dimstyle& data) {}
     virtual void addVport(const DRW_Vport& data) {}
     virtual void addTextStyle(const DRW_Textstyle& data) {}
-    virtual void addBlock(const DRW_Block& data) {}
-    virtual void setBlock(const int handle) {}
-    virtual void endBlock() {}
     virtual void addPoint(const DRW_Point& data) {}
     virtual void addRay(const DRW_Ray& data) {}
     virtual void addXline(const DRW_Xline& data) {}
     virtual void addEllipse(const DRW_Ellipse& data) {}
     virtual void addText(const DRW_Text& data) {}    
     virtual void addKnot(const DRW_Entity&) {}
-    virtual void addInsert(const DRW_Insert& data) {}
     virtual void addTrace(const DRW_Trace& data) {}
     virtual void addSolid(const DRW_Solid& data) {}
     virtual void addMText(const DRW_MText& data) {}
@@ -90,7 +90,27 @@ public:
 
 private:
     Scene *m_scene;
-    dxfRW* dxf;
+    dxfRW *m_dxf;
+
+    struct DXFInsert
+    {
+        QString blockName;
+
+        QMap<QString, QList<DRW_Line> > lines;
+
+        void clear()
+        {
+            blockName.clear();
+
+            // entities
+            lines.clear();
+        }
+
+        inline bool isEmpty() { return blockName.isEmpty(); }
+    };
+
+    bool m_isBlock;
+    DXFInsert m_activeInsert;
 };
 
 void readFromDXF(const QString &fileName);
