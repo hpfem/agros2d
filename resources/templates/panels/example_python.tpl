@@ -115,6 +115,7 @@
 
 {{PROBLEM_DETAILS}}
 
+<h2>Script</h2>
 <pre><code data-language="python">{{PROBLEM_PYTHON}}</code></pre>
 
 <div class="cleaner"></div>
