@@ -379,7 +379,7 @@
     <item key="View_ShowScalarView" value="1"/>
     <item key="View_ShowScalarColorBar" value="1"/>
     <item key="View_ScalarVariable" value="magnetic_flux_density_real"/>
-    <item key="View_ScalarVariableComp" value="2"/>
+    <item key="View_ScalarVariableComp" value="1"/>
     <item key="View_PaletteType" value="0"/>
     <item key="View_PaletteFilter" value="0"/>
     <item key="View_PaletteSteps" value="30"/>
