@@ -200,19 +200,7 @@ void PostHermes::processRangeScalar()
         Hermes::Hermes2D::Filter<double> *slnScalarView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
                                                                            (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
 
-        // QTime time;
-        // time.start();
-        // qDebug() << "process scalar: start";
         m_linScalarView.free();
-
-        double minLength = std::numeric_limits<double>::max();
-        foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
-        {
-            if (!edge->isStraight())
-                minLength = qMin(minLength, edge->length());
-        }
-        // if (minLength < std::numeric_limits<double>::max())
-        //    m_linScalarView.set_curvature_epsilon(minLength * 2.0);
 
         // deformed shape
         if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformScalar).toBool())
@@ -241,27 +229,10 @@ void PostHermes::processRangeScalar()
                                          Hermes::Hermes2D::H2D_FN_VAL_0,
                                          paletteQualityToDouble((PaletteQuality) Agros2D::problem()->setting()->value(ProblemSetting::View_LinearizerQuality).toInt()));
 
-        // qDebug() << "process scalar: " << time.elapsed();
-
         if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool())
         {
             Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeMin, m_linScalarView.get_min_value());
             Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarRangeMax, m_linScalarView.get_max_value());
-
-            // Adjust the min-max if they are very close to each other.
-            /*
-            double maxAbsValue = std::max(std::abs(Agros2D::problem()->configView()->scalarRangeMax), std::abs(Agros2D::problem()->configView()->scalarRangeMin));
-            double distanceBetweenMinMax = Agros2D::problem()->configView()->scalarRangeMax - Agros2D::problem()->configView()->scalarRangeMin;
-
-            // Let us keep this above 1%.
-            if(distanceBetweenMinMax / maxAbsValue < 1e-2)
-            {
-                // And extend the distance symmetrically.
-                double middleValue = (Agros2D::problem()->configView()->scalarRangeMin + Agros2D::problem()->configView()->scalarRangeMax) / 2.;
-                Agros2D::problem()->configView()->scalarRangeMin = middleValue - 0.5 * 1e-2 * maxAbsValue;
-                Agros2D::problem()->configView()->scalarRangeMax = middleValue + 0.5 * 1e-2 * maxAbsValue;
-            }
-            */
         }
     }
 }
