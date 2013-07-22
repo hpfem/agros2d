@@ -1,7 +1,5 @@
 .. highlight:: python
 
-.. _scripting:
-
 Agros2D scripting reference guide
 =================================
 
@@ -82,9 +80,9 @@ Example of usage
 .. tabularcolumns:: lll 
 
 +---------------+----------+--------------------------------+--------------------------------+-+
-| **Parameter** | **Type** | **Meaning**                    |                                  |
+| **Parameter** | **Type** | **Meaning**                    |                                | |
 +---------------+----------+--------------------------------+--------------------------------+-+
-| Name          | string   | Name of the boundary condition |                                  |
+| Name          | string   | Name of the boundary condition |                                | |
 +---------------+----------+--------------------------------+--------------------------------+-+
 | Type          | string   |                                | Type of the boundary condition | |
 |               |          |                                | (See module documentation)     | |

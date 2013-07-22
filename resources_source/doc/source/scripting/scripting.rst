@@ -4,5 +4,5 @@ Scripting
 .. toctree::
   :maxdepth: 1
 
-  commands
+  scripting_guide
   keyword_list
