@@ -485,20 +485,15 @@ void ConfigComputerDialog::readModulesAndCouplings()
     }
 
     treeCouplings->clear();
-    QMapIterator<QString, QString> itCouplings(availableCouplings());
-    while (itCouplings.hasNext())
+    foreach (QString couplingId, couplingList()->availableCouplings())
     {
-        itCouplings.next();
-
         QTreeWidgetItem *item = new QTreeWidgetItem(treeCouplings);
-        item->setText(0, itCouplings.value());
-        item->setData(0, Qt::UserRole, itCouplings.key());
+        item->setText(0, couplingId);
+        item->setData(0, Qt::UserRole, couplingId);
 
         try
         {
-            foreach (QString plugin, QStringList(itCouplings.key()))
-                Agros2D::loadPlugin(plugin);
-
+            Agros2D::loadPlugin(couplingId);
             item->setText(1, tr("available"));
         }
         catch (AgrosPluginException e)

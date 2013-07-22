@@ -1013,7 +1013,7 @@ void Problem::synchronizeCouplings()
             if(sourceField == targetField)
                 continue;
             QPair<FieldInfo*, FieldInfo*> fieldInfosPair(sourceField, targetField);
-            if (isCouplingAvailable(sourceField, targetField)){
+            if (couplingList()->isCouplingAvailable(sourceField, targetField)){
                 if (!m_couplingInfos.contains(fieldInfosPair))
                 {
                     m_couplingInfos[fieldInfosPair] = new CouplingInfo(sourceField, targetField);
@@ -1029,7 +1029,7 @@ void Problem::synchronizeCouplings()
     {
         if (!(m_fieldInfos.contains(couplingInfo->sourceField()->fieldId()) &&
               m_fieldInfos.contains(couplingInfo->targetField()->fieldId()) &&
-              isCouplingAvailable(couplingInfo->sourceField(), couplingInfo->targetField())))
+              couplingList()->isCouplingAvailable(couplingInfo->sourceField(), couplingInfo->targetField())))
         {
             m_couplingInfos.remove(QPair<FieldInfo*, FieldInfo*>(couplingInfo->sourceField(), couplingInfo->targetField()));
 

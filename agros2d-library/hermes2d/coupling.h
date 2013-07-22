@@ -30,10 +30,29 @@ class FieldInfo;
 class ProblemConfig;
 class PluginInterface;
 
-// available couplings
-AGROS_API QMap<QString, QString> availableCouplings();
 
-AGROS_API bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField);
+class CouplingList
+{
+public:
+    struct Item
+    {
+        QString sourceField;
+        AnalysisType sourceAnalysisType;
+        QString targetField;
+        AnalysisType targetAnalysisType;
+    };
+
+    CouplingList();
+
+    QList<QString> availableCouplings();
+    bool isCouplingAvailable(FieldInfo *sourceField, FieldInfo *targetField);
+
+private:
+    QList<Item> m_couplings;
+};
+
+// cached coupling list
+AGROS_API CouplingList *couplingList();
 
 class AGROS_API CouplingInfo
 {

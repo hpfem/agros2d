@@ -56,7 +56,8 @@ FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
         m_fieldId = fieldId;
 
     // read plugin
-    try{
+    try
+    {
         m_plugin = Agros2D::loadPlugin(m_fieldId);
     }
     catch (AgrosPluginException &e)

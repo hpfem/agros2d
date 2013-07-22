@@ -210,11 +210,11 @@ void Agros2DGenerator::run()
     {
         // generate one module or coupling
         QMap<QString, QString> modules = Module::availableModules();
-        QMap<QString, QString> couplings = availableCouplings();
+        QList<QString> couplings = couplingList()->availableCouplings();
 
         if (modules.keys().contains(args[1]))
             generateModule(args[1]);
-        else if (couplings.keys().contains(args[1]))
+        else if (couplings.contains(args[1]))
             generateCoupling(args[1]);
     }
     else
@@ -236,7 +236,7 @@ void Agros2DGenerator::createStructure()
 
     ctemplate::TemplateDictionary output("project_output");
     QMap<QString, QString> modules = Module::availableModules();
-    QMap<QString, QString> couplings = availableCouplings();
+    QList<QString> couplings = couplingList()->availableCouplings();
 
     foreach (QString moduleId, modules.keys())
     {
@@ -244,7 +244,7 @@ void Agros2DGenerator::createStructure()
         field->SetValue("ID", moduleId.toStdString());
     }
 
-    foreach (QString couplingId, couplings.keys())
+    foreach (QString couplingId, couplings)
     {
         ctemplate::TemplateDictionary *field = output.AddSectionDictionary("SOURCE");
         field->SetValue("ID", couplingId.toStdString());
@@ -267,7 +267,7 @@ void Agros2DGenerator::createStructure()
 void Agros2DGenerator::generateSources()
 {
     QMap<QString, QString> modules = Module::availableModules();
-    QMap<QString, QString> couplings = availableCouplings();
+    QList<QString> couplings = couplingList()->availableCouplings();
 
     foreach (QString moduleId, modules.keys())
     {
@@ -275,7 +275,7 @@ void Agros2DGenerator::generateSources()
         generateDocumentation(moduleId);
     }
 
-    foreach (QString couplingId, couplings.keys())
+    foreach (QString couplingId, couplings)
     {
         generateCoupling(couplingId);
     }

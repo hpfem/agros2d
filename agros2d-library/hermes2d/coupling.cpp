@@ -34,30 +34,71 @@
 
 #include "../../resources_source/classes/coupling_xml.h"
 
-QMap<QString, QString> availableCouplings()
+static CouplingList *m_couplingList = NULL;
+CouplingList *couplingList()
 {
-    static QMap<QString, QString> couplings;
+    if (!m_couplingList)
+        m_couplingList = new CouplingList();
 
-    // read modules
-    if (couplings.size() == 0)
+    return m_couplingList;
+}
+
+CouplingList::CouplingList()
+{
+    // read couplings
+    QDir dir(datadir() + COUPLINGROOT);
+
+    QStringList filter;
+    filter << "*.xml";
+    QStringList list = dir.entryList(filter);
+
+    foreach (QString filename, list)
     {
-        QDir dir(datadir() + COUPLINGROOT);
+        std::auto_ptr<XMLCoupling::coupling> coupling_xsd = XMLCoupling::coupling_(compatibleFilename(datadir() + COUPLINGROOT + "/" + filename).toStdString(),
+                                                                                   xml_schema::flags::dont_validate & xml_schema::flags::dont_initialize);
+        XMLCoupling::coupling *coup = coupling_xsd.get();
 
-        QStringList filter;
-        filter << "*.xml";
-        QStringList list = dir.entryList(filter);
-
-        foreach (QString filename, list)
+        // check whether coupling is available for values of source and target fields such as analysis type
+        for (int i = 0; i < coup->volume().weakforms_volume().weakform_volume().size(); i++)
         {
-            std::auto_ptr<XMLCoupling::coupling> coupling_xsd = XMLCoupling::coupling_(compatibleFilename(datadir() + COUPLINGROOT + "/" + filename).toStdString(), xml_schema::flags::dont_validate);
-            XMLCoupling::coupling *mod = coupling_xsd.get();
+            XMLCoupling::weakform_volume wf = coup->volume().weakforms_volume().weakform_volume().at(i);
 
-            // module name
-            couplings[filename.left(filename.size() - 4)] = QString::fromStdString(mod->general().name());
+            CouplingList::Item item;
+
+            item.sourceField = QString::fromStdString(coup->general().modules().source().id());
+            item.sourceAnalysisType = analysisTypeFromStringKey(QString::fromStdString(wf.sourceanalysis()));
+            item.targetField = QString::fromStdString(coup->general().modules().target().id());
+            item.targetAnalysisType = analysisTypeFromStringKey(QString::fromStdString(wf.targetanalysis()));
+
+            m_couplings.append(item);
         }
+    }
+}
+
+QList<QString> CouplingList::availableCouplings()
+{
+    QList<QString> couplings;
+
+    foreach (Item item, m_couplings)
+    {
+        QString couplingId = QString("%1-%2").arg(item.sourceField).arg(item.targetField);
+        if (!couplings.contains(couplingId))
+            couplings.append(couplingId);
     }
 
     return couplings;
+}
+
+bool CouplingList::isCouplingAvailable(FieldInfo *sourceField, FieldInfo *targetField)
+{
+    foreach (Item item, m_couplings)
+    {
+        if (item.sourceAnalysisType == sourceField->analysisType() && item.targetAnalysisType == targetField->analysisType()
+                && item.sourceField == sourceField->fieldId() && item.targetField == targetField->fieldId())
+            return true;
+    }
+
+    return false;
 }
 
 CouplingInfo::CouplingInfo(FieldInfo *sourceField,
@@ -189,55 +230,4 @@ LinearityType CouplingInfo::linearityType()
         assert(sourceField()->linearityType() == targetField()->linearityType());
 
     return targetField()->linearityType();
-}
-
-bool isCouplingAvailable(FieldInfo* sourceField, FieldInfo* targetField)
-{
-    QDir dir(datadir() + COUPLINGROOT);
-    if (!dir.exists())
-        qDebug() << QObject::tr("Couplings dir '%1' doesn't exists").arg(datadir() + COUPLINGROOT);
-
-    QStringList filter;
-    filter << "*.xml";
-    QStringList list = dir.entryList(filter);
-
-    foreach (QString filename, list)
-    {
-        // read name
-        std::auto_ptr<XMLCoupling::coupling> couplings_xsd;
-        try{
-            couplings_xsd = XMLCoupling::coupling_((datadir() + COUPLINGROOT + QDir::separator() + filename).toLatin1().data());
-        }
-        catch(xsd::cxx::tree::exception<char>& e)
-        {
-            cout << e;
-            std::stringstream str;
-            str << e;
-            Agros2D::log()->printError(QObject::tr("Solver"),QObject::tr("Unable to read coupling file %1: %2").arg(filename).arg(QString::fromStdString(str.str())));
-            return false;
-        }
-
-        XMLCoupling::coupling *coup = couplings_xsd.get();
-
-        // module name
-        QString sourceFieldStr(QString::fromStdString(coup->general().modules().source().id()));
-        QString targetFieldStr(QString::fromStdString(coup->general().modules().target().id()));
-
-        if ((sourceFieldStr == sourceField->fieldId()) && (targetFieldStr == targetField->fieldId()))
-        {
-            // check whether coupling is available for values of source and target fields such as analysis type
-            for (int i = 0; i < coup->volume().weakforms_volume().weakform_volume().size(); i++)
-            {
-                XMLCoupling::weakform_volume wf = coup->volume().weakforms_volume().weakform_volume().at(i);
-
-                if ((wf.sourceanalysis() == analysisTypeToStringKey(sourceField->analysisType()).toStdString()) &&
-                        (wf.targetanalysis() == analysisTypeToStringKey(targetField->analysisType()).toStdString()))
-                {
-                    return true;
-                }
-            }
-        }
-    }
-
-    return false;
 }
