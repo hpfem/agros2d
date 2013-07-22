@@ -6,27 +6,27 @@
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="760"/>
         <source>Acoustics</source>
-        <translation type="unfinished"></translation>
+        <translation>Dźwięk</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="766"/>
         <source>Harmonic</source>
-        <translation type="unfinished"></translation>
+        <translation>Harmoniczny</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="769"/>
         <source>Transient</source>
-        <translation type="unfinished"></translation>
+        <translation>Po czasie</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="772"/>
         <source>Pressure</source>
-        <translation type="unfinished"></translation>
+        <translation>Ciśnienie</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="775"/>
         <source>Normal acceleration</source>
-        <translation type="unfinished"></translation>
+        <translation>Przyspieszenie normalne</translation>
     </message>
     <message>
         <location filename="../../plugins/acoustic/acoustic_interface.cpp" line="778"/>
