@@ -625,7 +625,7 @@ bool Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle
         SceneNode *obstructNode = getNode(newPoint);
         if (obstructNode && !obstructNode->isSelected())
         {
-            Agros2D::log()->printWarning(tr("Geometry"), tr("Geometry", "Cannot perform transformation, existing point would be overwritten"));
+            Agros2D::log()->printWarning(tr("Geometry"), tr("Cannot perform transformation, existing point would be overwritten"));
             return false;
         }
 
@@ -706,7 +706,7 @@ bool Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle
         SceneEdge *obstructEdge = getEdge(newPointStart, newPointEnd);
         if (obstructEdge && !obstructEdge->isSelected())
         {
-            Agros2D::log()->printWarning(tr("Geometry"), tr("Geometry", "Cannot perform transformation, existing edge would be overwritten"));
+            Agros2D::log()->printWarning(tr("Geometry"), tr("Cannot perform transformation, existing edge would be overwritten"));
             return false;
         }
 
