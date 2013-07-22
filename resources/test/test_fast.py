@@ -1,5 +1,8 @@
+import agros2d as a2d
 import time as timer
 start = timer.time()
+
+start_time, start_memory = a2d.memory_usage()
 
 # fields
 print("Physical fields")
@@ -79,4 +82,6 @@ execfile("test_script.py")
 
 
 stop = timer.time()
-print("\nTotal time: " + str(stop - start))
+print("Total time: " + str(stop - start)) + " s"
+stop_time, stop_memory = a2d.memory_usage()
+print("Used memory: " + str(stop_memory[-1] - start_memory[-1])) + " MB"
