@@ -165,6 +165,22 @@ private:
     QList<Point> m_points;
 };
 
+class SceneNodeCommandRemoveMulti : public QUndoCommand
+{
+public:
+    SceneNodeCommandRemoveMulti(QList<Point> points,  QUndoCommand *parent = 0);
+    void undo();
+    void redo();
+
+private:
+    // nodes
+    QList<Point> m_nodePoints;
+    // edges
+    QList<Point> m_edgePointStart;
+    QList<Point> m_edgePointEnd;
+    QList<QMap<QString, QString> > m_edgeMarkers;
+    QList<double> m_edgeAngle;
+};
 
 
 #endif // SCENENODE_H

@@ -818,6 +818,62 @@ void SceneEdgeCommandAddMulti::redo()
     Agros2D::scene()->invalidate();
 }
 
+SceneEdgeCommandRemoveMulti::SceneEdgeCommandRemoveMulti(QList<Point> pointsStart, QList<Point> pointsEnd,
+                                                   QList<double> angles, QList<QMap<QString, QString> > markers, QUndoCommand *parent) : QUndoCommand(parent)
+{
+    assert(pointsStart.size() == pointsEnd.size());
+    assert(pointsStart.size() == angles.size());
+    m_pointsStart = pointsStart;
+    m_pointsEnd = pointsEnd;
+    m_angles = angles;
+    m_markers = markers;
+}
+
+void SceneEdgeCommandRemoveMulti::undo()
+{
+    Agros2D::scene()->stopInvalidating(true);
+
+    for (int i = 0; i < m_pointsStart.size(); i++)
+    {
+        SceneNode *nodeStart = Agros2D::scene()->getNode(m_pointsStart[i]);
+        SceneNode *nodeEnd = Agros2D::scene()->getNode(m_pointsEnd[i]);
+        assert(nodeStart && nodeEnd);
+        SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, m_angles[i]);
+
+        foreach (QString fieldId, m_markers[i].keys())
+        {
+            if (Agros2D::problem()->hasField(fieldId))
+            {
+                SceneBoundary *boundary = Agros2D::scene()->boundaries->filter(Agros2D::problem()->fieldInfo(fieldId)).get(m_markers[i][fieldId]);
+
+                if (!boundary)
+                    boundary = Agros2D::scene()->boundaries->getNone(Agros2D::problem()->fieldInfo(fieldId));
+
+                // add marker
+                edge->addMarker(boundary);
+            }
+        }
+
+        // add edge to the list
+        Agros2D::scene()->addEdge(edge);
+    }
+
+    Agros2D::scene()->stopInvalidating(false);
+    Agros2D::scene()->invalidate();
+}
+
+void SceneEdgeCommandRemoveMulti::redo()
+{
+    Agros2D::scene()->stopInvalidating(true);
+    for(int i = 0; i < m_pointsStart.size(); i++)
+    {
+        Agros2D::scene()->edges->remove(Agros2D::scene()->getEdge(m_pointsStart[i], m_pointsEnd[i], m_angles[i]));
+    }
+
+    Agros2D::scene()->stopInvalidating(false);
+    Agros2D::scene()->invalidate();
+}
+
 SceneEdgeCommandRemove::SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QMap<QString, QString> &markers,
                                                double angle, QUndoCommand *parent) : QUndoCommand(parent)
 {

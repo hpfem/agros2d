@@ -86,8 +86,6 @@ public:
     /// highlights or unhighlights all items
     void setHighlighted(bool value = true);
 
-    void deleteWithUndo(QString message);
-
 protected:
     QList<BasicType*> m_data;
 

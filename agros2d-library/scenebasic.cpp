@@ -203,17 +203,6 @@ void SceneBasicContainer<BasicType>::setHighlighted(bool value)
         item->setHighlighted(value);
 }
 
-template <typename BasicType>
-void SceneBasicContainer<BasicType>::deleteWithUndo(QString message)
-{
-    foreach (BasicType *node, m_data)
-    {
-        Agros2D::scene()->undoStack()->beginMacro(message);
-        Agros2D::scene()->undoStack()->push(node->getRemoveCommand());
-        Agros2D::scene()->undoStack()->endMacro();
-    }
-}
-
 template class SceneBasicContainer<SceneNode>;
 template class SceneBasicContainer<SceneEdge>;
 template class SceneBasicContainer<SceneLabel>;

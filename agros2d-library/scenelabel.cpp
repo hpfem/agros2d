@@ -643,3 +643,54 @@ void SceneLabelCommandEdit::redo()
         Agros2D::scene()->invalidate();
     }
 }
+
+SceneLabelCommandRemoveMulti::SceneLabelCommandRemoveMulti(QList<Point> points, QList<QMap<QString, QString> > markers, QList<double> areas, QUndoCommand *parent) : QUndoCommand(parent)
+{
+    assert(points.size() == markers.size());
+    assert(points.size() == areas.size());
+    m_points = points;
+    m_areas = areas;
+    m_markers = markers;
+}
+
+void SceneLabelCommandRemoveMulti::undo()
+{
+    Agros2D::scene()->stopInvalidating(true);
+
+    for (int i = 0; i < m_points.size(); i++)
+    {
+        SceneLabel *label = new SceneLabel(m_points[i], m_areas[i]);
+
+        foreach (QString fieldId, m_markers[i].keys())
+        {
+            if (Agros2D::problem()->hasField(fieldId))
+            {
+                SceneMaterial *material = Agros2D::scene()->materials->filter(Agros2D::problem()->fieldInfo(fieldId)).get(m_markers[i][fieldId]);
+
+                if (!material)
+                    material = Agros2D::scene()->materials->getNone(Agros2D::problem()->fieldInfo(fieldId));
+
+                // add marker
+                label->addMarker(material);
+            }
+        }
+
+        // add label to the list
+        Agros2D::scene()->addLabel(label);
+    }
+
+    Agros2D::scene()->stopInvalidating(false);
+    Agros2D::scene()->invalidate();
+}
+
+void SceneLabelCommandRemoveMulti::redo()
+{
+    Agros2D::scene()->stopInvalidating(true);
+    for(int i = 0; i < m_points.size(); i++)
+    {
+        Agros2D::scene()->labels->remove(Agros2D::scene()->getLabel(m_points[i]));
+    }
+
+    Agros2D::scene()->stopInvalidating(false);
+    Agros2D::scene()->invalidate();
+}

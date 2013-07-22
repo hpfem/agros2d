@@ -260,7 +260,8 @@ SceneNode *Scene::addNode(SceneNode *node)
     }
 
     nodes->add(node);
-    if (!currentPythonEngine()->isRunning()) emit invalidated();
+    if (!currentPythonEngine()->isRunning() && !m_stopInvalidating)
+        emit invalidated();
 
     checkNodeConnect(node);
 
@@ -315,7 +316,7 @@ SceneLabel *Scene::addLabel(SceneLabel *label)
     }
 
     labels->add(label);
-    if (!currentPythonEngine()->isRunning()) emit invalidated();
+    if (!currentPythonEngine()->isRunning() && !m_stopInvalidating) emit invalidated();
 
     return label;
 }
@@ -516,9 +517,40 @@ void Scene::deleteSelected()
 {
     m_undoStack->beginMacro(tr("Delete selected"));
 
-    nodes->selected().deleteWithUndo(tr("Remove node"));
-    edges->selected().deleteWithUndo(tr("Remove edge"));
-    labels->selected().deleteWithUndo(tr("Remove label"));
+    // nodes
+    QList<Point> selectedNodePoints;
+    foreach (SceneNode *node, Agros2D::scene()->nodes->selected().items())
+        selectedNodePoints.append(node->point());
+    if (!selectedNodePoints.isEmpty())
+        Agros2D::scene()->undoStack()->push(new SceneNodeCommandRemoveMulti(selectedNodePoints));
+
+    // edges
+    QList<Point> selectedEdgePointsStart;
+    QList<Point> selectedEdgePointsEnd;
+    QList<double> selectedEdgeAngles;
+    QList<QMap<QString, QString> > selectedEdgeMarkers;
+    foreach (SceneEdge *edge, Agros2D::scene()->edges->selected().items())
+    {
+        selectedEdgePointsStart.append(edge->nodeStart()->point());
+        selectedEdgePointsEnd.append(edge->nodeEnd()->point());
+        selectedEdgeAngles.append(edge->angle());
+        selectedEdgeMarkers.append(edge->markersKeys());
+    }
+    if (!selectedEdgePointsStart.isEmpty())
+        Agros2D::scene()->undoStack()->push(new SceneEdgeCommandRemoveMulti(selectedEdgePointsStart, selectedEdgePointsEnd, selectedEdgeAngles, selectedEdgeMarkers));
+
+    // labels
+    QList<Point> selectedLabelPointsStart;
+    QList<double> selectedLabelAreas;
+    QList<QMap<QString, QString> > selectedLabelMarkers;
+    foreach (SceneLabel *label, Agros2D::scene()->labels->selected().items())
+    {
+        selectedLabelPointsStart.append(label->point());
+        selectedLabelAreas.append(label->area());
+        selectedLabelMarkers.append(label->markersKeys());
+    }
+    if (!selectedLabelPointsStart.isEmpty())
+        Agros2D::scene()->undoStack()->push(new SceneLabelCommandRemoveMulti(selectedLabelPointsStart, selectedLabelMarkers, selectedLabelAreas));
 
     m_undoStack->endMacro();
 

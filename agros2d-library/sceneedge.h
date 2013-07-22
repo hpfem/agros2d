@@ -213,6 +213,21 @@ private:
     QList<double> m_angles;
 };
 
+class SceneEdgeCommandRemoveMulti : public QUndoCommand
+{
+public:
+    SceneEdgeCommandRemoveMulti(QList<Point> pointStarts, QList<Point> pointEnds,
+                                QList<double> angles, QList<QMap<QString, QString> > markers, QUndoCommand *parent = 0);
+    void undo();
+    void redo();
+
+private:
+    QList<Point> m_pointsStart;
+    QList<Point> m_pointsEnd;
+    QList<QMap<QString, QString> > m_markers;
+    QList<double> m_angles;
+};
+
 class SceneEdgeCommandRemove : public QUndoCommand
 {
 public:

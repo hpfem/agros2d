@@ -194,5 +194,18 @@ private:
     Point m_pointNew;
 };
 
+class SceneLabelCommandRemoveMulti : public QUndoCommand
+{
+public:
+    SceneLabelCommandRemoveMulti(QList<Point> points, QList<QMap<QString, QString> > markers, QList<double> areas, QUndoCommand *parent = 0);
+    void undo();
+    void redo();
+
+private:
+    // nodes
+    QList<Point> m_points;
+    QList<QMap<QString, QString> > m_markers;
+    QList<double> m_areas;
+};
 
 #endif // SCENELABEL_H

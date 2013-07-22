@@ -388,6 +388,84 @@ void SceneNodeCommandAddMulti::redo()
     Agros2D::scene()->invalidate();
 }
 
+SceneNodeCommandRemoveMulti::SceneNodeCommandRemoveMulti(QList<Point> points, QUndoCommand *parent) : QUndoCommand(parent)
+{
+    m_nodePoints = points;
+}
+
+void SceneNodeCommandRemoveMulti::undo()
+{
+    Agros2D::scene()->stopInvalidating(true);
+
+    // new nodes
+    foreach(Point point, m_nodePoints)
+    {
+        Agros2D::scene()->addNode(new SceneNode(point));
+    }
+
+    // new edges
+    for (int i = 0; i < m_edgePointStart.count(); i++)
+    {
+        SceneNode *nodeStart = Agros2D::scene()->getNode(m_edgePointStart[i]);
+        SceneNode *nodeEnd = Agros2D::scene()->getNode(m_edgePointEnd[i]);
+        assert(nodeStart && nodeEnd);
+        SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, m_edgeAngle[i]);
+
+        foreach (QString fieldId, m_edgeMarkers[i].keys())
+        {
+            if (Agros2D::problem()->hasField(fieldId))
+            {
+                SceneBoundary *boundary = Agros2D::scene()->boundaries->filter(Agros2D::problem()->fieldInfo(fieldId)).get(m_edgeMarkers[i][fieldId]);
+
+                if (!boundary)
+                    boundary = Agros2D::scene()->boundaries->getNone(Agros2D::problem()->fieldInfo(fieldId));
+
+                // add marker
+                edge->addMarker(boundary);
+            }
+        }
+
+        // add edge to the list
+        Agros2D::scene()->addEdge(edge);
+    }
+
+    Agros2D::scene()->stopInvalidating(false);
+    Agros2D::scene()->invalidate();
+}
+
+void SceneNodeCommandRemoveMulti::redo()
+{
+    m_edgePointStart.clear();
+    m_edgePointEnd.clear();
+    m_edgeAngle.clear();
+    m_edgeMarkers.clear();
+
+    Agros2D::scene()->stopInvalidating(true);
+
+    foreach (Point point, m_nodePoints)
+    {
+        SceneNode *node = Agros2D::scene()->getNode(point);
+        if (node)
+        {
+            QList<SceneEdge *> connectedEdges = node->connectedEdges();
+            foreach (SceneEdge *edge, connectedEdges)
+            {
+                m_edgePointStart.append(edge->nodeStart()->point());
+                m_edgePointEnd.append(edge->nodeEnd()->point());
+                m_edgeMarkers.append(edge->markersKeys());
+                m_edgeAngle.append(edge->angle());
+
+                Agros2D::scene()->edges->remove(edge);
+            }
+
+            Agros2D::scene()->nodes->remove(node);
+        }
+    }
+
+    Agros2D::scene()->stopInvalidating(false);
+    Agros2D::scene()->invalidate();
+}
+
 bool SceneNode::isConnected() const
 {
     foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
