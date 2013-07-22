@@ -95,12 +95,15 @@ InfoWidget::~InfoWidget()
 
 void InfoWidget::refresh()
 {
-    // QTimer::singleShot(0, this, SLOT(showInfo()));
-
     if (Agros2D::problem()->fieldInfos().count() == 0)
-        showWelcome();
+        QTimer::singleShot(0, this, SLOT(showWelcome()));
     else
-        showInfo();
+        QTimer::singleShot(0, this, SLOT(showInfo()));
+
+    // if (Agros2D::problem()->fieldInfos().count() == 0)
+    //     showWelcome();
+    // else
+    //     showInfo();
 }
 
 void InfoWidget::showWelcome()
