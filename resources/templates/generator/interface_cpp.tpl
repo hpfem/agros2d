@@ -35,16 +35,23 @@
 
 #include "../../resources_source/classes/module_xml.h"
 
+static XMLModule::module *module_module = NULL;
+
 {{CLASS}}Interface::{{CLASS}}Interface() : PluginInterface()
-{
+{    
     // xml module description
-    std::auto_ptr<XMLModule::module> module_xsd = XMLModule::module_((datadir() + MODULEROOT + QDir::separator() + "{{ID}}.xml").toStdString());
-    m_module = module_xsd.release();
+    if (!module_module)
+    {
+        std::auto_ptr<XMLModule::module> module_xsd = XMLModule::module_((datadir() + MODULEROOT + QDir::separator() + "{{ID}}.xml").toStdString(),
+                                                                         xml_schema::flags::dont_validate & xml_schema::flags::dont_initialize);
+        module_module = module_xsd.release();
+    }
+    m_module = module_module;
 }
 
 {{CLASS}}Interface::~{{CLASS}}Interface()
 {
-    delete m_module;
+    // delete m_module;
 }
 
 MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material)

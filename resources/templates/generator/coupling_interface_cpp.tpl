@@ -26,16 +26,23 @@
 #include "util/global.h"
 #include "util/constants.h"
 
+static XMLCoupling::coupling *module_coupling = NULL;
+
 {{CLASS}}Interface::{{CLASS}}Interface() : PluginInterface()
 {
     // xml coupling description
-    std::auto_ptr<XMLCoupling::coupling> coupling_xsd = XMLCoupling::coupling_((datadir() + COUPLINGROOT + QDir::separator() + "{{ID}}.xml").toStdString());
-    m_coupling = coupling_xsd.release();
+    if (!module_coupling)
+    {
+        std::auto_ptr<XMLCoupling::coupling> coupling_xsd = XMLCoupling::coupling_((datadir() + COUPLINGROOT + QDir::separator() + "{{ID}}.xml").toStdString(),
+                                                                                   xml_schema::flags::dont_validate & xml_schema::flags::dont_initialize);
+        module_coupling = coupling_xsd.release();
+    }
+    m_coupling = module_coupling;
 }
 
 {{CLASS}}Interface::~{{CLASS}}Interface()
 {
-    delete m_coupling;
+    // delete m_coupling;
 }
 
 MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material)
