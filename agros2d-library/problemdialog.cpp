@@ -789,17 +789,48 @@ FieldsToobar::FieldsToobar(QWidget *parent) : QWidget(parent)
     connect(Agros2D::problem(), SIGNAL(fieldsChanged()), this, SLOT(refresh()));
     connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
 
-    connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(refresh()));
+    connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(refresh()));   
 
     refresh();
 }
 
 void FieldsToobar::createControls()
 {
-    buttonBar = new QButtonGroup(this);
+    QButtonGroup *buttonBar = new QButtonGroup(this);
     connect(buttonBar, SIGNAL(buttonClicked(int)), this, SLOT(fieldDialog(int)));
 
-    layoutFields = new QGridLayout();
+    QGridLayout *layoutFields = new QGridLayout();
+
+    // buttons and labels
+    int numberOfFields = Module::availableModules().count();
+
+    int row = 0;
+    for (int i = 0; i < numberOfFields; i++)
+    {
+        QLabel *label = new QLabel(this);
+        label->setVisible(false);
+        label->setStyleSheet("QLabel { font-size: 8.5pt; }");
+
+        QToolButton *button = new QToolButton(this);
+        button->setVisible(false);
+        button->setMinimumWidth(columnMinimumWidth());
+        button->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+        button->setStyleSheet("QToolButton { font-size: 8pt; }");
+        button->setIconSize(QSize(36, 36));
+
+        // add to button bar
+        buttonBar->addButton(button, row);
+
+        // add to layout
+        layoutFields->addWidget(button, row, 0);
+        layoutFields->addWidget(label, row, 1);
+
+        // add to lists
+        buttons.append(button);
+        labels.append(label);
+
+        row++;
+    }
 
     // dialog buttons
     QPushButton *btnAddField = new QPushButton(tr("Add field")); // icon("tabadd")
@@ -827,23 +858,7 @@ void FieldsToobar::refresh()
 
     setUpdatesEnabled(false);
 
-    // fields
-    buttonBar->buttons().clear();
-    fields.clear();
-
-    foreach (QToolButton *button, buttons)
-    {
-        layoutFields->removeWidget(button);
-        delete button;
-    }
-    buttons.clear();
-    foreach (QLabel *label, labels)
-    {
-        layoutFields->removeWidget(label);
-        delete label;
-    }
-    labels.clear();
-
+    // fields    
     int row = 0;
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
@@ -859,28 +874,19 @@ void FieldsToobar::refresh()
                 .arg(fieldInfo->value(FieldInfo::SpaceNumberOfRefinements).toInt())
                 .arg(fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt());
 
-        QLabel *label = new QLabel(hint);
-        label->setStyleSheet("QLabel { font-size: 8.5pt; }");
+        labels[row]->setText(hint);
+        labels[row]->setVisible(true);
 
-        QToolButton *button = new QToolButton();
-        button->setMinimumWidth(columnMinimumWidth());
-        button->setText(fieldInfo->name());
-        button->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-        button->setStyleSheet("QToolButton { font-size: 8pt; }");
-        button->setIconSize(QSize(36, 36));
-        button->setIcon(icon("fields/" + fieldInfo->fieldId()));
-
-        // add to layout
-        layoutFields->addWidget(button, row, 0);
-        layoutFields->addWidget(label, row, 1);
-
-        // add to lists
-        buttonBar->addButton(button, row);
-        fields.append(fieldInfo);
-        buttons.append(button);
-        labels.append(label);
+        buttons[row]->setText(fieldInfo->name());
+        buttons[row]->setIcon(icon("fields/" + fieldInfo->fieldId()));
+        buttons[row]->setVisible(true);
 
         row++;
+    }
+    for (int i = row; i < buttons.count(); i++)
+    {
+        labels[i]->setVisible(false);
+        buttons[i]->setVisible(false);
     }
 
     setUpdatesEnabled(true);
@@ -888,7 +894,7 @@ void FieldsToobar::refresh()
 
 void FieldsToobar::fieldDialog(int index)
 {
-    FieldInfo *fieldInfo = fields[index];
+    FieldInfo *fieldInfo = Agros2D::problem()->fieldInfos().values().at(index);
     if (fieldInfo)
     {
         FieldDialog fieldDialog(fieldInfo, this);
@@ -978,7 +984,7 @@ void CouplingsWidget::createContent()
 
     setLayout(layoutTable);
 
-    setUpdatesEnabled(true);
+    setUpdatesEnabled(true);    
 }
 
 void CouplingsWidget::fillComboBox()

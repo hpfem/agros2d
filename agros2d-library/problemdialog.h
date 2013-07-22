@@ -198,9 +198,6 @@ public slots:
     void refresh();
 
 private:
-    QGridLayout *layoutFields;
-    QButtonGroup *buttonBar;
-    QList<FieldInfo *> fields;
     QList<QToolButton *> buttons;
     QList<QLabel *> labels;
 
