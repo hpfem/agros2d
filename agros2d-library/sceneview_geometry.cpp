@@ -997,7 +997,7 @@ void SceneViewPreprocessor::paintGeometry()
             glLineWidth(Agros2D::problem()->setting()->value(ProblemSetting::View_EdgeWidth).toInt() + 2.0);
         }
 
-        if (edge->isStraight())
+        if (fabs(edge->angle()) < 5) // if (edge->isStraight())
         {
             glBegin(GL_LINES);
             glVertex2d(edge->nodeStart()->point().x, edge->nodeStart()->point().y);
