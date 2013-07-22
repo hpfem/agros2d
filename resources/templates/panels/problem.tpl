@@ -110,28 +110,11 @@
 		<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_TOLERANCE_LABEL}}</b></td><td>{{NONLINEAR_TOLERANCE}}</td>
 	</tr>	
 	<tr>
-		<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_NEWTON_SUFFICIENT_IMPROVEMENT_FACTOR_JACOBIAN_LABEL}}</b></td><td>{{NONLINEAR_NEWTON_SUFFICIENT_IMPROVEMENT_FACTOR_JACOBIAN}}</td>
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_NEWTON_DAMPING_FACTOR_LABEL}}</b></td><td>{{NONLINEAR_NEWTON_DAMPING_FACTOR}}</td>
 	</tr>
 	<tr>
-		<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_NEWTON_MAXIMUM_STEPS_WITH_REUSED_JACOBIAN_LABEL}}</b></td><td>{{NONLINEAR_NEWTON_MAXIMUM_STEPS_WITH_REUSED_JACOBIAN}}</td>
-	</tr>
-	
-	{{#SOLVER_NONLINEAR_NEWTON_AUTOMATIC_DAMPING_SECTION}}
-	<tr>
-		<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_AUTOMATIC_DAMPING_LABEL}}</b></td><td>&nbsp;</td>
-	</tr>
-	<tr>
-		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_AUTOMATIC_DAMPING_FACTOR_LABEL}}</b></td><td>{{NONLINEAR_AUTOMATIC_DAMPING_FACTOR}}</td>
-	</tr>
-	<tr>
-		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_AUTOMATIC_DAMPING_INCREASE_LABEL}}</b></td><td>{{NONLINEAR_AUTOMATIC_DAMPING_INCREASE}}</td>
-	</tr>			
-	{{/SOLVER_NONLINEAR_NEWTON_AUTOMATIC_DAMPING_SECTION}}	
-	{{#SOLVER_NONLINEAR_NEWTON_NONAUTOMATIC_DAMPING_SECTION}}
-	<tr>
-		<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_NONAUTOMATIC_DAMPING_FACTOR_LABEL}}</b></td><td>{{NONLINEAR_NONAUTOMATIC_DAMPING_FACTOR}}</td>
-	</tr>
-	{{/SOLVER_NONLINEAR_NEWTON_NONAUTOMATIC_DAMPING_SECTION}}	
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_NEWTON_REUSE_JACOBIAN_LABEL}}</b></td><td>{{NONLINEAR_NEWTON_REUSE_JACOBIAN}}</td>
+	</tr>	
 	{{/SOLVER_PARAMETERS_SECTION}}
 	<tr>
 		<td><b>{{ADAPTIVITY_TYPE_LABEL}}</b></td><td>{{ADAPTIVITY_TYPE}}</td>

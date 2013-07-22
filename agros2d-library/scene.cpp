@@ -316,7 +316,8 @@ SceneLabel *Scene::addLabel(SceneLabel *label)
     }
 
     labels->add(label);
-    if (!currentPythonEngine()->isRunning() && !m_stopInvalidating) emit invalidated();
+    if (!currentPythonEngine()->isRunning() && !m_stopInvalidating)
+        emit invalidated();
 
     return label;
 }
@@ -419,6 +420,7 @@ void Scene::checkGeometryAssignement()
 void Scene::clear()
 {
     blockSignals(true);
+    stopInvalidating(true);
 
     m_undoStack->clear();
 
@@ -458,6 +460,7 @@ void Scene::clear()
     m_numberOfConnectedNodeEdges.clear();
     m_crossings.clear();
 
+    stopInvalidating(false);
     blockSignals(false);
 
     emit cleared();
@@ -1426,6 +1429,7 @@ void Scene::readFromFile31(const QString &fileName)
         emit fileNameChanged(fileInfo.absoluteFilePath());
 
         blockSignals(true);
+        stopInvalidating(true);
 
         std::auto_ptr<XMLProblem::document> document_xsd = XMLProblem::document_(compatibleFilename(fileName).toStdString(), xml_schema::flags::dont_validate);
         XMLProblem::document *doc = document_xsd.get();
@@ -1603,6 +1607,7 @@ void Scene::readFromFile31(const QString &fileName)
             }
         }
 
+        stopInvalidating(false);
         blockSignals(false);
 
         // default values

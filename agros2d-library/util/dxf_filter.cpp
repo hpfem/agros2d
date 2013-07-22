@@ -316,10 +316,12 @@ void readFromDXF(const QString &fileName)
     setlocale (LC_NUMERIC, "C");
 
     Agros2D::scene()->blockSignals(true);
+    Agros2D::scene()->stopInvalidating(true);
 
     DxfInterfaceDXFRW filter(Agros2D::scene(), fileName);
     filter.read();
 
+    Agros2D::scene()->stopInvalidating(false);
     Agros2D::scene()->blockSignals(false);
     Agros2D::scene()->invalidate();
 
