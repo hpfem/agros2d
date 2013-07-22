@@ -63,31 +63,39 @@ void DxfInterfaceDXFRW::addLine(const DRW_Line &l)
     else
     {
         m_activeInsert.lines[m_activeInsert.blockName].append(l);
-        // qDebug() << m_activeInsert.lines[m_activeInsert.blockName].count() << l.basePoint.x << l.basePoint.y << l.secPoint.x << l.secPoint.y;
     }
 }
 
 void DxfInterfaceDXFRW::addArc(const DRW_Arc& a)
 {
-    double angle1 = a.staangle / M_PI * 180.0;
-    double angle2 = a.endangle / M_PI * 180.0;
-
-    while (angle1 < 0.0) angle1 += 360.0;
-    while (angle1 >= 360.0) angle1 -= 360.0;
-    while (angle2 < 0.0) angle2 += 360.0;
-    while (angle2 >= 360.0) angle2 -= 360.0;
-
     if (!m_isBlock)
     {
+        double angle1 = a.staangle / M_PI * 180.0;
+        double angle2 = a.endangle / M_PI * 180.0;
+
+        while (angle1 < 0.0) angle1 += 360.0;
+        while (angle1 >= 360.0) angle1 -= 360.0;
+        while (angle2 < 0.0) angle2 += 360.0;
+        while (angle2 >= 360.0) angle2 -= 360.0;
+
         // start node
         SceneNode *nodeStart = m_scene->addNode(new SceneNode(Point(a.basePoint.x + a.radious*cos(angle1/180.0*M_PI),
                                                                     a.basePoint.y + a.radious*sin(angle1/180.0*M_PI))));
         // end node
         SceneNode *nodeEnd = m_scene->addNode(new SceneNode(Point(a.basePoint.x + a.radious*cos(angle2/180.0*M_PI),
                                                                   a.basePoint.y + a.radious*sin(angle2/180.0*M_PI))));
+        if (fabs(nodeStart->point().x - 960.04) < 0.001)
+        {
+            SceneEdge *e = new SceneEdge(nodeStart, nodeEnd, (angle1 < angle2) ? angle2-angle1 : angle2+360.0-angle1);
+            qDebug() << "EDGE: " << e->center().x << e->center().y;
+        }
 
         // edge
         m_scene->addEdge(new SceneEdge(nodeStart, nodeEnd, (angle1 < angle2) ? angle2-angle1 : angle2+360.0-angle1));
+    }
+    else
+    {
+        m_activeInsert.arcs[m_activeInsert.blockName].append(a);
     }
 }
 
@@ -169,7 +177,7 @@ void DxfInterfaceDXFRW::addSpline(const DRW_Spline *data)
 void DxfInterfaceDXFRW::addBlock(const DRW_Block& data)
 {
     m_activeInsert.blockName = QString::fromStdString(data.name);
-    m_activeInsert.lines.clear();
+    // m_activeInsert.lines.clear();
     m_isBlock = true;
 
     // qDebug() << "addBlock" << QString::fromStdString(data.name);
@@ -189,29 +197,36 @@ void DxfInterfaceDXFRW::endBlock()
 
 void DxfInterfaceDXFRW::addInsert(const DRW_Insert& data)
 {
-    // qDebug() << "Insert " << m_activeInsert.lines.count() << QString::fromStdString(data.name) << m_activeInsert.lines[QString::fromStdString(data.name)].count();
     // line
     foreach (DRW_Line line, m_activeInsert.lines[QString::fromStdString(data.name)])
     {
-        // DRW_Line newLine;
+        DRW_Line newLine;
 
-        // newLine.basePoint.x = line.basePoint.x + data.basePoint.x * cos(data.angle);
-        // newLine.basePoint.y = line.basePoint.y + data.basePoint.y * sin(data.angle);
-        // newLine.secPoint.x = line.secPoint.x + data.basePoint.x * cos(data.angle);
-        // newLine.secPoint.y = line.secPoint.y + data.basePoint.y * sin(data.angle);
+        newLine.basePoint.x = (data.basePoint.x + data.xscale * sqrt(line.basePoint.x*line.basePoint.x + line.basePoint.y*line.basePoint.y) * cos(atan2(line.basePoint.y, line.basePoint.x) + data.angle / 180.0 * M_PI));
+        newLine.basePoint.y = (data.basePoint.y + data.yscale * sqrt(line.basePoint.x*line.basePoint.x + line.basePoint.y*line.basePoint.y) * sin(atan2(line.basePoint.y, line.basePoint.x) + data.angle / 180.0 * M_PI));
+        newLine.secPoint.x = (data.basePoint.x + data.xscale * sqrt(line.secPoint.x*line.secPoint.x + line.secPoint.y*line.secPoint.y) * cos(atan2(line.secPoint.y, line.secPoint.x) + data.angle / 180.0 * M_PI));
+        newLine.secPoint.y = (data.basePoint.y + data.yscale * sqrt(line.secPoint.x*line.secPoint.x + line.secPoint.y*line.secPoint.y) * sin(atan2(line.secPoint.y, line.secPoint.x) + data.angle / 180.0 * M_PI));
 
-        // addLine(newLine);
-
-        /*
-        qDebug() << "Insert: " << QString::fromStdString(data.name)
-                 << ", basepoint " << data.basePoint.x << data.basePoint.y
-                 << ", scale " << data.xscale << data.yscale
-                 << ", rotate " << data.angle
-                 << ", space " << data.rowspace << data.colspace;
-        */
+        addLine(newLine);
     }
+    // arcs
+    foreach (DRW_Arc arc, m_activeInsert.arcs[QString::fromStdString(data.name)])
+    {
+        DRW_Arc newArc;
 
+        newArc.basePoint.x = (data.basePoint.x + data.xscale * sqrt(arc.basePoint.x*arc.basePoint.x + arc.basePoint.y*arc.basePoint.y) * cos(atan2(arc.basePoint.y, arc.basePoint.x) + data.angle / 180.0 * M_PI));
+        newArc.basePoint.y = (data.basePoint.y + data.yscale * sqrt(arc.basePoint.x*arc.basePoint.x + arc.basePoint.y*arc.basePoint.y) * sin(atan2(arc.basePoint.y, arc.basePoint.x) + data.angle / 180.0 * M_PI));
+        newArc.radious = arc.radious;
+        newArc.staangle = arc.staangle + data.angle / 180.0 * M_PI;
+        newArc.endangle = arc.endangle + data.angle / 180.0 * M_PI;
 
+        // qDebug() << "base: " << newArc.basePoint.x << newArc.basePoint.y <<
+        //             "data angle: " << data.angle
+        //          << "arc : " << arc.staangle / M_PI * 180.0 << arc.endangle / M_PI * 180.0
+        //          << atan2(arc.basePoint.y, arc.basePoint.x) / M_PI * 180.0 << data.xscale << data.yscale;
+
+        addArc(newArc);
+    }
 }
 
 void DxfInterfaceDXFRW::writeHeader(DRW_Header& data)

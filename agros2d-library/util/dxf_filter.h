@@ -97,6 +97,7 @@ private:
         QString blockName;
 
         QMap<QString, QList<DRW_Line> > lines;
+        QMap<QString, QList<DRW_Arc> > arcs;
 
         void clear()
         {
