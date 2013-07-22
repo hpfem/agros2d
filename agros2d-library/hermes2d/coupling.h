@@ -31,7 +31,7 @@ class ProblemConfig;
 class PluginInterface;
 
 
-class CouplingList
+class AGROS_API CouplingList
 {
 public:
     struct Item
