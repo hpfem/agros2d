@@ -302,7 +302,6 @@ void SceneViewCommon::refresh()
     createFontTexture();
 
     paintGL();
-    updateGL();
 }
 
 void SceneViewCommon::doMaterialGroup(QAction *action)

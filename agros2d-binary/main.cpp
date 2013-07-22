@@ -15,7 +15,7 @@ public:
     AgrosApplication(int& argc, char ** argv) : QApplication(argc, argv) {}
 
     // reimplemented from QApplication so we can throw exceptions in slots
-    virtual bool notify(QObject *receiver, QEvent *event)
+    bool notify(QObject *receiver, QEvent *event)
     {
         try
         {

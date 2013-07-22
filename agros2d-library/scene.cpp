@@ -91,10 +91,10 @@ QString generateSvgGeometry(QList<SceneEdge*> edges)
                 double arc1 = (startAngle + i*theta)/180.0*M_PI;
                 double arc2 = (startAngle + (i+1)*theta)/180.0*M_PI;
 
-                double x1 = radius * cos(arc1);
-                double y1 = radius * sin(arc1);
-                double x2 = radius * cos(arc2);
-                double y2 = radius * sin(arc2);
+                double x1 = radius * fastcos(arc1);
+                double y1 = radius * fastsin(arc1);
+                double x2 = radius * fastcos(arc2);
+                double y2 = radius * fastsin(arc2);
 
                 str += QString("<line x1=\"%1\" y1=\"%2\" x2=\"%3\" y2=\"%4\" />\n").
                         arg(center.x + x1).
