@@ -83,14 +83,15 @@ def python_engine_pyflakes_check(filename):
 def chart(x, y, xlabel = "", ylabel = ""):
     import pylab as pl
 
-    pl.figure()
+    fig = pl.figure()
     pl.plot(x, y)
     pl.grid(True)
     pl.xlabel(xlabel)
     pl.ylabel(ylabel)
     fn_chart = pythonlab.tempname("png")
     pl.savefig(fn_chart, dpi=60)
-    pl.close()
+    pl.clf()
+    pl.close(fig)
     
     # show in console
     pythonlab.image(fn_chart)
