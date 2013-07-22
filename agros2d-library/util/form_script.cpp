@@ -139,7 +139,7 @@ void FormScript::loadWidget(const QString &fileName)
             // double validator
             if (widget->property("dataType") == "double")
             {
-                widget->setValidator(new QRegExpValidator(QRegExp("^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?")));
+                widget->setValidator(new QRegExpValidator(QRegExp("^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?"), widget));
                 // widget->setValidator(new QDoubleValidator(widget));
             }
             // int validator
