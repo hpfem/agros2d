@@ -39,6 +39,7 @@ public:
 private slots:
     void doClose();
     void doTransform();
+    void doCopyChecked(bool checked);
 
 protected:
     void createControls();

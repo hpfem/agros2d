@@ -120,7 +120,10 @@ void SceneTransformDialog::createControls()
 
     // copy
     chkCopy = new QCheckBox(tr("Copy objects"));
+    connect(chkCopy, SIGNAL(toggled(bool)), this, SLOT(doCopyChecked(bool)));
     chkWithMarkers = new QCheckBox(tr("Copy with markers"));
+    chkWithMarkers->setChecked(true);
+    chkWithMarkers->setEnabled(false);
 
     // dialog buttons
     QPushButton *btnApply = new QPushButton(tr("Apply"));
@@ -149,6 +152,11 @@ void SceneTransformDialog::createControls()
     layout->addLayout(layoutButtonBox);
 
     setLayout(layout);
+}
+
+void SceneTransformDialog::doCopyChecked(bool checked)
+{
+    chkWithMarkers->setEnabled(chkCopy->isChecked());
 }
 
 void SceneTransformDialog::doClose()
