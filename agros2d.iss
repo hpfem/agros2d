@@ -57,7 +57,6 @@ Source: *.dll; DestDir: {app};
 Source: triangle.exe; DestDir: {app}; DestName: triangle.exe
 Source: GMSH.exe; DestDir: {app}; DestName: GMSH.exe
 Source: python.exe; DestDir: {app}; DestName: python.exe
-Source: pythonw.exe; DestDir: {app}; DestName: pythonw.exe
 
 [Icons]
 Name: {group}\Agros2D; Filename: {app}\Agros2D.exe; WorkingDir: {app}
