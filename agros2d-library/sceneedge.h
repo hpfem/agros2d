@@ -30,7 +30,7 @@ class SceneEdgeCommandRemove;
 class AGROS_API SceneEdge : public MarkedSceneBasic<SceneBoundary>
 {
 public:
-    SceneEdge(SceneNode *m_nodeStart, SceneNode *m_nodeEnd, double m_angle);
+    SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle);
 
     inline SceneNode *nodeStart() const { return m_nodeStart; }
     inline void setNodeStart(SceneNode *nodeStart) { m_nodeStart = nodeStart; computeCenterAndRadius(); }

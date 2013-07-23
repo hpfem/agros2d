@@ -694,3 +694,78 @@ void SceneLabelCommandRemoveMulti::redo()
     Agros2D::scene()->stopInvalidating(false);
     Agros2D::scene()->invalidate();
 }
+
+SceneLabelCommandMoveMulti::SceneLabelCommandMoveMulti(QList<Point> points, QList<Point> pointsNew, QUndoCommand *parent) : QUndoCommand(parent)
+{
+    m_points = points;
+    m_pointsNew = pointsNew;
+}
+
+void SceneLabelCommandMoveMulti::moveAll(QList<Point> moveFrom, QList<Point> moveTo)
+{
+    assert(moveFrom.size() == moveTo.size());
+    QList<SceneLabel*> labels;
+    for(int i = 0; i < moveFrom.size(); i++)
+    {
+        Point point = moveFrom[i];
+        SceneLabel *label = Agros2D::scene()->getLabel(point);
+        labels.push_back(label);
+    }
+
+    for(int i = 0; i < moveFrom.size(); i++)
+    {
+        Point pointNew = moveTo[i];
+        SceneLabel *label = labels[i];
+        if (label)
+        {
+            label->setPoint(pointNew);
+        }
+    }
+}
+
+void SceneLabelCommandMoveMulti::undo()
+{
+    moveAll(m_pointsNew, m_points);
+    Agros2D::scene()->invalidate();
+}
+
+void SceneLabelCommandMoveMulti::redo()
+{
+    moveAll(m_points, m_pointsNew);
+    Agros2D::scene()->invalidate();
+}
+
+SceneLabelCommandAddMulti::SceneLabelCommandAddMulti(QList<Point> points, QList<double> areas, QUndoCommand *parent) : QUndoCommand(parent)
+{
+    m_points = points;
+    m_areas = areas;
+}
+
+void SceneLabelCommandAddMulti::undo()
+{
+    Agros2D::scene()->stopInvalidating(true);
+    foreach(Point point, m_points)
+    {
+        SceneLabel *label = Agros2D::scene()->getLabel(point);
+        if (label)
+        {
+            Agros2D::scene()->labels->remove(label);
+        }
+    }
+
+    Agros2D::scene()->stopInvalidating(false);
+    Agros2D::scene()->invalidate();
+}
+
+void SceneLabelCommandAddMulti::redo()
+{
+    Agros2D::scene()->stopInvalidating(true);
+
+    for(int i = 0; i < m_points.size(); i++)
+    {
+        Agros2D::scene()->addLabel(new SceneLabel(m_points[i], m_areas[i]));
+    }
+
+    Agros2D::scene()->stopInvalidating(false);
+    Agros2D::scene()->invalidate();
+}

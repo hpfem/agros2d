@@ -31,7 +31,7 @@ class FieldInfo;
 class AGROS_API SceneLabel : public MarkedSceneBasic<SceneMaterial>
 {
 public:
-    SceneLabel(const Point &m_point, double m_area);
+    SceneLabel(const Point &point, double area);
 
     inline virtual SceneMaterial* marker(FieldInfo *fieldInfo) { return MarkedSceneBasic<SceneMaterial>::marker(fieldInfo); }
     inline Point point() const { return m_point; }
@@ -205,6 +205,32 @@ private:
     // nodes
     QList<Point> m_points;
     QList<QMap<QString, QString> > m_markers;
+    QList<double> m_areas;
+};
+
+class SceneLabelCommandMoveMulti : public QUndoCommand
+{
+public:
+    SceneLabelCommandMoveMulti(QList<Point> points, QList<Point> pointsNew,  QUndoCommand *parent = 0);
+    void undo();
+    void redo();
+
+private:
+    static void moveAll(QList<Point> moveFrom, QList<Point> moveTo);
+
+    QList<Point> m_points;
+    QList<Point> m_pointsNew;
+};
+
+class SceneLabelCommandAddMulti : public QUndoCommand
+{
+public:
+    SceneLabelCommandAddMulti(QList<Point> points,  QList<double> areas, QUndoCommand *parent = 0);
+    void undo();
+    void redo();
+
+private:
+    QList<Point> m_points;
     QList<double> m_areas;
 };
 

@@ -29,7 +29,7 @@ class QDomElement;
 class SceneNode : public SceneBasic
 {
 public:
-    SceneNode(const Point &m_point);
+    SceneNode(const Point &point);
 
     inline Point point() const { return m_point; }
     void setPoint(const Point &point);
@@ -150,6 +150,8 @@ public:
     void redo();
 
 private:
+    static void moveAll(QList<Point> moveFrom, QList<Point> moveTo);
+
     QList<Point> m_points;
     QList<Point> m_pointsNew;
 };

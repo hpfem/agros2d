@@ -214,7 +214,7 @@ private:
     // false if cannot (obstruct nodes)
     bool moveSelectedNodes(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
     bool moveSelectedEdges(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
-    void moveSelectedLabels(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
+    bool moveSelectedLabels(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
 
     void transform(QString name, SceneTransformMode mode, const Point &point, double angle, double scaleFactor, bool copy);
 

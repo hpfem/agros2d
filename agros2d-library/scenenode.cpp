@@ -325,7 +325,7 @@ SceneNodeCommandMoveMulti::SceneNodeCommandMoveMulti(QList<Point> points, QList<
     m_pointsNew = pointsNew;
 }
 
-void moveAll(QList<Point> moveFrom, QList<Point> moveTo)
+void SceneNodeCommandMoveMulti::moveAll(QList<Point> moveFrom, QList<Point> moveTo)
 {
     assert(moveFrom.size() == moveTo.size());
     QList<SceneNode*> nodes;
@@ -349,13 +349,21 @@ void moveAll(QList<Point> moveFrom, QList<Point> moveTo)
 
 void SceneNodeCommandMoveMulti::undo()
 {
+    Agros2D::scene()->stopInvalidating(true);
+
     moveAll(m_pointsNew, m_points);
+
+    Agros2D::scene()->stopInvalidating(false);
     Agros2D::scene()->invalidate();
 }
 
 void SceneNodeCommandMoveMulti::redo()
 {
+    Agros2D::scene()->stopInvalidating(true);
+
     moveAll(m_points, m_pointsNew);
+
+    Agros2D::scene()->stopInvalidating(false);
     Agros2D::scene()->invalidate();
 }
 
@@ -366,6 +374,7 @@ SceneNodeCommandAddMulti::SceneNodeCommandAddMulti(QList<Point> points, QUndoCom
 
 void SceneNodeCommandAddMulti::undo()
 {
+    Agros2D::scene()->stopInvalidating(true);
     foreach(Point point, m_points)
     {
         SceneNode *node = Agros2D::scene()->getNode(point);
@@ -375,16 +384,20 @@ void SceneNodeCommandAddMulti::undo()
         }
     }
 
+    Agros2D::scene()->stopInvalidating(false);
     Agros2D::scene()->invalidate();
 }
 
 void SceneNodeCommandAddMulti::redo()
 {
+    Agros2D::scene()->stopInvalidating(true);
+
     foreach(Point point, m_points)
     {
         Agros2D::scene()->addNode(new SceneNode(point));
     }
 
+    Agros2D::scene()->stopInvalidating(false);
     Agros2D::scene()->invalidate();
 }
 

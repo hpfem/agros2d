@@ -791,10 +791,14 @@ SceneEdgeCommandAddMulti::SceneEdgeCommandAddMulti(QList<Point> pointStarts, QLi
 
 void SceneEdgeCommandAddMulti::undo()
 {
+    Agros2D::scene()->stopInvalidating(true);
+
     for(int i = 0; i < m_pointStarts.size(); i++)
     {
         Agros2D::scene()->edges->remove(Agros2D::scene()->getEdge(m_pointStarts[i], m_pointEnds[i], m_angles[i]));
     }
+
+    Agros2D::scene()->stopInvalidating(false);
     Agros2D::scene()->invalidate();
 }
 

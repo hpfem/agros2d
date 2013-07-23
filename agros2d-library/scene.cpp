@@ -330,7 +330,8 @@ SceneLabel *Scene::getLabel(const Point &point)
 void Scene::addBoundary(SceneBoundary *boundary)
 {
     boundaries->add(boundary);
-    if (!currentPythonEngine()->isRunning()) emit invalidated();
+    if (!currentPythonEngine()->isRunning() && !m_stopInvalidating)
+        emit invalidated();
 }
 
 void Scene::removeBoundary(SceneBoundary *boundary)
@@ -340,7 +341,8 @@ void Scene::removeBoundary(SceneBoundary *boundary)
     boundaries->remove(boundary);
     // delete boundary;
 
-    if (!currentPythonEngine()->isRunning()) emit invalidated();
+    if (!currentPythonEngine()->isRunning() && !m_stopInvalidating)
+        emit invalidated();
 }
 
 void Scene::setBoundary(SceneBoundary *boundary)
@@ -357,7 +359,8 @@ SceneBoundary *Scene::getBoundary(FieldInfo *field, const QString &name)
 void Scene::addMaterial(SceneMaterial *material)
 {
     this->materials->add(material);
-    if (!currentPythonEngine()->isRunning()) emit invalidated();
+    if (!currentPythonEngine()->isRunning() && !m_stopInvalidating)
+        emit invalidated();
 }
 
 
@@ -373,7 +376,8 @@ void Scene::removeMaterial(SceneMaterial *material)
 
     // delete material;
 
-    if (!currentPythonEngine()->isRunning()) emit invalidated();
+    if (!currentPythonEngine()->isRunning() && !m_stopInvalidating)
+        emit invalidated();
 }
 
 void Scene::setMaterial(SceneMaterial *material)
@@ -557,7 +561,8 @@ void Scene::deleteSelected()
 
     m_undoStack->endMacro();
 
-    if (!currentPythonEngine()->isRunning()) emit invalidated();
+    if (!currentPythonEngine()->isRunning())
+        emit invalidated();
 }
 
 int Scene::selectedCount()
@@ -650,10 +655,6 @@ bool Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle
     {
         m_undoStack->push(new SceneNodeCommandAddMulti(newPoints));
 
-        // unselect old
-        //        foreach(Point point, points)
-        //            getNode(point)->setSelected(false);
-        //probably faster:
         nodes->setSelected(false);
 
         // select new
@@ -712,8 +713,6 @@ bool Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle
 
         if(! obstructEdge)
         {
-            //            SceneEdge newEdge(newNodeStart, newNodeEnd, edge->angle());
-            //            m_undoStack->push(newEdge.getAddCommand());
             edgeStartPointsToAdd.push_back(newPointStart);
             edgeEndPointsToAdd.push_back(newPointEnd);
             edgeAnglesToAdd.push_back(edge->angle());
@@ -736,91 +735,64 @@ bool Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle
     return true;
 }
 
-void Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
+bool Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
 {
-    QList<QPair<double, SceneLabel *> > selectedLabels;
+    QList<Point> points, newPoints, pointsToSelect;
+    QList<double> newAreas;
 
-    foreach (SceneLabel *label, labels->items())
+    foreach (SceneLabel *label, labels->selected().items())
     {
-        if (label->isSelected())
-        {
-            QPair<double, SceneLabel *> pair;
+        Point newPoint = calculateNewPoint(mode, label->point(), point, angle, scaleFactor);
 
-            Point newPoint;
-            if (mode == SceneTransformMode_Translate)
+        SceneLabel *obstructLabel = getLabel(newPoint);
+        if (obstructLabel && !obstructLabel->isSelected())
+        {
+            Agros2D::log()->printWarning(tr("Geometry"), tr("Cannot perform transformation, existing label would be overwritten"));
+            return false;
+        }
+
+        points.push_back(label->point());
+
+        // when copying, add only those points, that did not exist
+        // when moving, add all, because if poit on place where adding exist, it will be moved away (otherwise it would be obstruct node and function would not reach this point)
+        if(copy)
+        {
+            if(obstructLabel)
             {
-                newPoint = label->point() + point;
-                // projection of the point to the real axis of the displacement vector
-                pair.first = label->point().x * cos(point.angle()) + label->point().y * sin(point.angle());
+                pointsToSelect.push_back(newPoint);
             }
-            else if (mode == SceneTransformMode_Rotate)
+            else
             {
-                double distanceLabel = (label->point() - point).magnitude();
-                double angleLabel = (label->point() - point).angle()/M_PI*180;
-
-                newPoint = point + Point(distanceLabel * cos((angleLabel + angle)/180.0*M_PI), distanceLabel * sin((angleLabel + angle)/180.0*M_PI));
-
-                // projection of the point to the tangential axis of the displacement vector
-                pair.first = 0;
+                newPoints.push_back(newPoint);
+                newAreas.push_back(label->area());
             }
-            else if (mode == SceneTransformMode_Scale)
-            {
-                newPoint = point + (label->point() - point) * scaleFactor;
-                pair.first = ((abs(scaleFactor) > 1) ? 1.0 : -1.0) * (label->point() - point).magnitude();
-            }
-
-            SceneLabel *obstructLabel = getLabel(newPoint);
-            if (obstructLabel && !obstructLabel->isSelected())
-                return;
-
-            pair.second = label;
-            selectedLabels.append(pair);
-        }
-    }
-
-    qSort(selectedLabels.begin(), selectedLabels.end(), qGreater<QPair<double, SceneLabel *> >());
-
-    for (int i = 0; i < selectedLabels.count(); i++)
-    {
-        SceneLabel *label = selectedLabels[i].second;
-
-        Point newPoint;
-        if (mode == SceneTransformMode_Translate)
-        {
-            newPoint = label->point() + point;
-        }
-        else if (mode == SceneTransformMode_Rotate)
-        {
-            double distanceLabel = (label->point() - point).magnitude();
-            double angleLabel = (label->point() - point).angle()/M_PI*180;
-
-            newPoint = point + Point(distanceLabel * cos((angleLabel + angle)/180.0*M_PI), distanceLabel * sin((angleLabel + angle)/180.0*M_PI));
-        }
-        else if (mode == SceneTransformMode_Scale)
-        {
-            newPoint = point + (label->point() - point) * scaleFactor;
-        }
-
-        if (!copy)
-        {
-            m_undoStack->push(new SceneLabelCommandEdit(label->point(), newPoint));
-            label->setPoint(newPoint);
         }
         else
         {
-            SceneLabel *labelNew = new SceneLabel(newPoint,
-                                                  label->area());
-            SceneLabel *labelAdded = addLabel(labelNew);
-
-            if (labelAdded == labelNew)
-                m_undoStack->push(label->getAddCommand());
-
-            labelAdded->setSelected(true);
-            label->setSelected(false);
+            newPoints.push_back(newPoint);
+            newAreas.push_back(label->area());
         }
     }
 
-    selectedLabels.clear();
+    if(copy)
+    {
+        m_undoStack->push(new SceneLabelCommandAddMulti(newPoints, newAreas));
+
+        labels->setSelected(false);
+
+        // select new
+        foreach(Point point, newPoints)
+            getLabel(point)->setSelected(true);
+
+        foreach(Point point, pointsToSelect)
+            getLabel(point)->setSelected(true);
+    }
+    else
+    {
+        m_undoStack->push(new SceneLabelCommandMoveMulti(points, newPoints));
+    }
+
+    return true;
 }
 
 void Scene::transform(QString name, SceneTransformMode mode, const Point &point, double angle, double scaleFactor, bool copy)
@@ -838,7 +810,8 @@ void Scene::transform(QString name, SceneTransformMode mode, const Point &point,
     if(!okNodes || !okEdges)
         nodes->setSelected(false);
 
-    if (!currentPythonEngine()->isRunning()) emit invalidated();
+    if (!currentPythonEngine()->isRunning())
+        emit invalidated();
 }
 
 void Scene::transformTranslate(const Point &point, bool copy)
