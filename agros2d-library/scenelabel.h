@@ -225,13 +225,14 @@ private:
 class SceneLabelCommandAddMulti : public QUndoCommand
 {
 public:
-    SceneLabelCommandAddMulti(QList<Point> points,  QList<double> areas, QUndoCommand *parent = 0);
+    SceneLabelCommandAddMulti(QList<Point> points, QList<QMap<QString, QString> > markers,  QList<double> areas, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
 private:
     QList<Point> m_points;
     QList<double> m_areas;
+    QList<QMap<QString, QString> > m_markers;
 };
 
 #endif // SCENELABEL_H

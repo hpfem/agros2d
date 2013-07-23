@@ -70,6 +70,7 @@ private:
     ValueLineEdit *txtScaleFactor;
 
     QCheckBox *chkCopy;
+    QCheckBox *chkWithMarkers;
 };
 
 #endif // SCENETRANSFORMDIALOG_H

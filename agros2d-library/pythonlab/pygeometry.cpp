@@ -538,25 +538,25 @@ void PyGeometry::selectNone()
         currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
-void PyGeometry::moveSelection(double dx, double dy, bool copy)
+void PyGeometry::moveSelection(double dx, double dy, bool copy, bool withMarkers)
 {
-    Agros2D::scene()->transformTranslate(Point(dx, dy), copy);
+    Agros2D::scene()->transformTranslate(Point(dx, dy), copy, withMarkers);
 
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
-void PyGeometry::rotateSelection(double x, double y, double angle, bool copy)
+void PyGeometry::rotateSelection(double x, double y, double angle, bool copy, bool withMarkers)
 {
-    Agros2D::scene()->transformRotate(Point(x, y), angle, copy);
+    Agros2D::scene()->transformRotate(Point(x, y), angle, copy, withMarkers);
 
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
 
-void PyGeometry::scaleSelection(double x, double y, double scale, bool copy)
+void PyGeometry::scaleSelection(double x, double y, double scale, bool copy, bool withMarkers)
 {
-    Agros2D::scene()->transformScale(Point(x, y), scale, copy);
+    Agros2D::scene()->transformScale(Point(x, y), scale, copy, withMarkers);
 
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();

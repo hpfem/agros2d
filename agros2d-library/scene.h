@@ -160,9 +160,9 @@ public:
     void highlightNone();
     int highlightedCount();
 
-    void transformTranslate(const Point &point, bool copy);
-    void transformRotate(const Point &point, double angle, bool copy);
-    void transformScale(const Point &point, double scaleFactor, bool copy);
+    void transformTranslate(const Point &point, bool copy, bool withMarkers);
+    void transformRotate(const Point &point, double angle, bool copy, bool withMarkers);
+    void transformScale(const Point &point, double scaleFactor, bool copy, bool withMarkers);
 
     LoopsInfo *loopsInfo() const { return m_loopsInfo; }
     QMultiMap<SceneEdge *, SceneNode *> lyingEdgeNodes() const { return m_lyingEdgeNodes; }
@@ -213,10 +213,10 @@ private:
 
     // false if cannot (obstruct nodes)
     bool moveSelectedNodes(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
-    bool moveSelectedEdges(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
-    bool moveSelectedLabels(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy);
+    bool moveSelectedEdges(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy, bool withMarkers);
+    bool moveSelectedLabels(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy, bool withMarkers);
 
-    void transform(QString name, SceneTransformMode mode, const Point &point, double angle, double scaleFactor, bool copy);
+    void transform(QString name, SceneTransformMode mode, const Point &point, double angle, double scaleFactor, bool copy, bool withMarkers);
 
     // find lying nodes on edges, number of connected edges and crossings
     void findLyingEdgeNodes();

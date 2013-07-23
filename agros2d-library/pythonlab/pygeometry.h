@@ -70,9 +70,9 @@ class PyGeometry
         void selectNone();
 
         // transform operations
-        void moveSelection(double dx, double dy, bool copy);
-        void rotateSelection(double x, double y, double angle, bool copy);
-        void scaleSelection(double x, double y, double scale, bool copy);
+        void moveSelection(double dx, double dy, bool copy, bool withMarkers);
+        void rotateSelection(double x, double y, double angle, bool copy, bool withMarkers);
+        void scaleSelection(double x, double y, double scale, bool copy, bool withMarkers);
         void removeSelection();
 
 private:

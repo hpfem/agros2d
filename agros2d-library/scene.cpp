@@ -672,7 +672,7 @@ bool Scene::moveSelectedNodes(SceneTransformMode mode, Point point, double angle
     return true;
 }
 
-bool Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
+bool Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy, bool withMarkers)
 {
     QList<SceneEdge *> selectedEdges;
 
@@ -692,6 +692,7 @@ bool Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle
     QList<QPair<Point, Point> > newEdgeEndPoints;
     QList<Point> edgeStartPointsToAdd, edgeEndPointsToAdd;
     QList<double> edgeAnglesToAdd;
+    QList<QMap<QString, QString> > edgeMarkersToAdd;
 
     foreach (SceneEdge *edge, selectedEdges)
     {
@@ -716,6 +717,9 @@ bool Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle
             edgeStartPointsToAdd.push_back(newPointStart);
             edgeEndPointsToAdd.push_back(newPointEnd);
             edgeAnglesToAdd.push_back(edge->angle());
+
+            if(withMarkers)
+                edgeMarkersToAdd.append(edge->markersKeys());
         }
 
         newEdgeEndPoints.push_back(QPair<Point, Point>(newPointStart, newPointEnd));
@@ -723,7 +727,7 @@ bool Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle
 
     edges->setSelected(false);
 
-    m_undoStack->push(new SceneEdgeCommandAddMulti(edgeStartPointsToAdd, edgeEndPointsToAdd, edgeAnglesToAdd));
+    m_undoStack->push(new SceneEdgeCommandAddMulti(edgeStartPointsToAdd, edgeEndPointsToAdd, edgeAnglesToAdd, edgeMarkersToAdd));
 
     for(int i = 0; i < newEdgeEndPoints.size(); i++)
     {
@@ -735,10 +739,11 @@ bool Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle
     return true;
 }
 
-bool Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy)
+bool Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angle, double scaleFactor, bool copy, bool withMarkers)
 {
     QList<Point> points, newPoints, pointsToSelect;
     QList<double> newAreas;
+    QList<QMap<QString, QString> > newMarkers;
 
     foreach (SceneLabel *label, labels->selected().items())
     {
@@ -765,6 +770,9 @@ bool Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angl
             {
                 newPoints.push_back(newPoint);
                 newAreas.push_back(label->area());
+                if(withMarkers)
+                    newMarkers.append(label->markersKeys());
+
             }
         }
         else
@@ -776,7 +784,7 @@ bool Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angl
 
     if(copy)
     {
-        m_undoStack->push(new SceneLabelCommandAddMulti(newPoints, newAreas));
+        m_undoStack->push(new SceneLabelCommandAddMulti(newPoints, newMarkers, newAreas));
 
         labels->setSelected(false);
 
@@ -795,15 +803,15 @@ bool Scene::moveSelectedLabels(SceneTransformMode mode, Point point, double angl
     return true;
 }
 
-void Scene::transform(QString name, SceneTransformMode mode, const Point &point, double angle, double scaleFactor, bool copy)
+void Scene::transform(QString name, SceneTransformMode mode, const Point &point, double angle, double scaleFactor, bool copy, bool withMarkers)
 {
     m_undoStack->beginMacro(name);
 
     bool okNodes, okEdges = true;
     okNodes = moveSelectedNodes(mode, point, angle, scaleFactor, copy);
     if(okNodes)
-        okEdges = moveSelectedEdges(mode, point, angle, scaleFactor, copy);
-    moveSelectedLabels(mode, point, angle, scaleFactor, copy);
+        okEdges = moveSelectedEdges(mode, point, angle, scaleFactor, copy, withMarkers);
+    moveSelectedLabels(mode, point, angle, scaleFactor, copy, withMarkers);
 
     m_undoStack->endMacro();
 
@@ -814,19 +822,19 @@ void Scene::transform(QString name, SceneTransformMode mode, const Point &point,
         emit invalidated();
 }
 
-void Scene::transformTranslate(const Point &point, bool copy)
+void Scene::transformTranslate(const Point &point, bool copy, bool withMarkers)
 {
-    transform(tr("Translation"), SceneTransformMode_Translate, point, 0.0, 0.0, copy);
+    transform(tr("Translation"), SceneTransformMode_Translate, point, 0.0, 0.0, copy, withMarkers);
 }
 
-void Scene::transformRotate(const Point &point, double angle, bool copy)
+void Scene::transformRotate(const Point &point, double angle, bool copy, bool withMarkers)
 {
-    transform(tr("Rotation"), SceneTransformMode_Rotate, point, angle, 0.0, copy);
+    transform(tr("Rotation"), SceneTransformMode_Rotate, point, angle, 0.0, copy, withMarkers);
 }
 
-void Scene::transformScale(const Point &point, double scaleFactor, bool copy)
+void Scene::transformScale(const Point &point, double scaleFactor, bool copy, bool withMarkers)
 {
-    transform(tr("Scale"), SceneTransformMode_Scale, point, 0.0, scaleFactor, copy);
+    transform(tr("Scale"), SceneTransformMode_Scale, point, 0.0, scaleFactor, copy, withMarkers);
 }
 
 void Scene::doInvalidated()

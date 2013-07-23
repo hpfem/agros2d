@@ -30,9 +30,9 @@ cdef extern from "../../agros2d-library/pythonlab/pygeometry.h":
 
         void selectNone()
 
-        void moveSelection(double dx, double dy, bool copy)
-        void rotateSelection(double x, double y, double angle, bool copy)
-        void scaleSelection(double x, double y, double scale, bool copy)
+        void moveSelection(double dx, double dy, bool copy, bool withMarkers)
+        void rotateSelection(double x, double y, double angle, bool copy, bool withMarkers)
+        void scaleSelection(double x, double y, double scale, bool copy, bool withMarkers)
         void removeSelection()
 
 cdef class __Geometry__:
@@ -323,43 +323,46 @@ cdef class __Geometry__:
         """
         self.thisptr.selectLabelByPoint(x, y)
 
-    def move_selection(self, dx, dy, int copy = False):
+    def move_selection(self, dx, dy, int copy = False, int withMarkers = True):
         """Move selected object (nodes, edges or labels).
 
-        move_selection(dx, dy, copy = False)
+        move_selection(dx, dy, copy = False, withMarkers = True)
 
         Keyword arguments:
         dx -- movement in x axis
         dy -- movement in y axis
         copy -- make a copy of moved objects (default is False)
+        withMarkers -- copy with materials or boundary conditions (default is True)
         """
-        self.thisptr.moveSelection(dx, dy, int(copy))
+        self.thisptr.moveSelection(dx, dy, int(copy), int(withMarkers))
 
-    def rotate_selection(self, x, y, angle, copy = False):
+    def rotate_selection(self, x, y, angle, copy = False, int withMarkers = True):
         """Rotate selected object (nodes, edges or labels) around the point.
 
-        rotate_selection(x, y, angle, copy = False)
+        rotate_selection(x, y, angle, copy = False, withMarkers = True)
 
         Keyword arguments:
         x -- x or r coordinate of point
         y -- y or r coordinate of point
         angle -- angle of rotation
         copy -- make a copy of moved objects (default is False)
+        withMarkers -- copy with materials or boundary conditions (default is True)
         """
-        self.thisptr.rotateSelection(x, y, angle, int(copy))
+        self.thisptr.rotateSelection(x, y, angle, int(copy), int(withMarkers))
 
-    def scale_selection(self, x, y, scale, copy = False):
+    def scale_selection(self, x, y, scale, copy = False, int withMarkers = True):
         """Scale selected object (nodes, edges or labels).
 
-        scale_selection(x, y, scale, copy = False)
+        scale_selection(x, y, scale, copy = False, withMarkers = True)
 
         Keyword arguments:
         x -- x or r coordinate of point
         y -- y or r coordinate of point
         scale -- scale factor
         copy -- make a copy of moved objects (default is False)
+        withMarkers -- copy with materials or boundary conditions (default is True)
         """
-        self.thisptr.scaleSelection(x, y, scale, int(copy))
+        self.thisptr.scaleSelection(x, y, scale, int(copy), int(withMarkers))
 
     def remove_selection(self):
         """Remove selected objects (nodes, edges or labels)."""

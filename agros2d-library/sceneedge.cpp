@@ -780,13 +780,14 @@ void SceneEdgeCommandAdd::redo()
 }
 
 SceneEdgeCommandAddMulti::SceneEdgeCommandAddMulti(QList<Point> pointStarts, QList<Point> pointEnds,
-                                                   QList<double> angles, QUndoCommand *parent) : QUndoCommand(parent)
+                                                   QList<double> angles, QList<QMap<QString, QString> > markers, QUndoCommand *parent) : QUndoCommand(parent)
 {
     assert(pointStarts.size() == pointEnds.size());
     assert(pointStarts.size() == angles.size());
     m_pointStarts = pointStarts;
     m_pointEnds = pointEnds;
     m_angles = angles;
+    m_markers = markers;
 }
 
 void SceneEdgeCommandAddMulti::undo()
@@ -814,6 +815,23 @@ void SceneEdgeCommandAddMulti::redo()
         {
             SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, m_angles[i]);
 
+            // if markers are not empty, the operation was performed with "withMarkers = True"
+            if(!m_markers.empty())
+            {
+                foreach (QString fieldId, m_markers[i].keys())
+                {
+                    if (Agros2D::problem()->hasField(fieldId))
+                    {
+                        SceneBoundary *boundary = Agros2D::scene()->boundaries->filter(Agros2D::problem()->fieldInfo(fieldId)).get(m_markers[i][fieldId]);
+
+                        if (!boundary)
+                            boundary = Agros2D::scene()->boundaries->getNone(Agros2D::problem()->fieldInfo(fieldId));
+
+                        // add marker
+                        edge->addMarker(boundary);
+                    }
+                }
+            }
             // add edge to the list
             Agros2D::scene()->addEdge(edge);
         }

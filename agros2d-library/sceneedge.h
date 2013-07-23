@@ -203,7 +203,7 @@ class SceneEdgeCommandAddMulti : public QUndoCommand
 {
 public:
     SceneEdgeCommandAddMulti(QList<Point> pointStarts, QList<Point> pointEnds,
-                        QList<double> angles, QUndoCommand *parent = 0);
+                        QList<double> angles, QList<QMap<QString, QString> > markers, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
@@ -211,6 +211,7 @@ private:
     QList<Point> m_pointStarts;
     QList<Point> m_pointEnds;
     QList<double> m_angles;
+    QList<QMap<QString, QString> > m_markers;
 };
 
 class SceneEdgeCommandRemoveMulti : public QUndoCommand

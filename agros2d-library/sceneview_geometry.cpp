@@ -426,7 +426,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                     dp.y = 0;
                     len.x = 0;
 
-                    Agros2D::scene()->transformTranslate(dp, false);
+                    Agros2D::scene()->transformTranslate(dp, false, true);
                 }
 
                 if (fabs(len.y) > Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble())
@@ -435,12 +435,12 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                     dp.y = (len.y > 0) ? Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble() : -Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble();
                     len.y = 0;
 
-                    Agros2D::scene()->transformTranslate(dp, false);
+                    Agros2D::scene()->transformTranslate(dp, false, true);
                 }
             }
             else
             {
-                Agros2D::scene()->transformTranslate(dp, false);
+                Agros2D::scene()->transformTranslate(dp, false, true);
             }
         }
         else if (m_sceneMode == SceneGeometryMode_OperateOnEdges)
@@ -456,7 +456,7 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                     dp.y = 0;
                     len.x = 0;
 
-                    Agros2D::scene()->transformTranslate(dp, false);
+                    Agros2D::scene()->transformTranslate(dp, false, true);
                 }
 
                 if (fabs(len.y) > Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble())
@@ -465,17 +465,17 @@ void SceneViewPreprocessor::mouseMoveEvent(QMouseEvent *event)
                     dp.y = (len.y > 0) ? Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble() : -Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble();
                     len.y = 0;
 
-                    Agros2D::scene()->transformTranslate(dp, false);
+                    Agros2D::scene()->transformTranslate(dp, false, true);
                 }
             }
             else
             {
-                Agros2D::scene()->transformTranslate(dp, false);
+                Agros2D::scene()->transformTranslate(dp, false, true);
             }
         }
         else if (m_sceneMode == SceneGeometryMode_OperateOnLabels)
         {
-            Agros2D::scene()->transformTranslate(dp, false);
+            Agros2D::scene()->transformTranslate(dp, false, true);
         }
 
         updateGL();
