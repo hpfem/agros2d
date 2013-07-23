@@ -38,7 +38,7 @@ macx-g++ {
             .
 }
 
-win32-msvc2010 {
+win32-msvc2010|win32-msvc2012 {
     TARGET = ../../libs/agros_3rdparty_ctemplate
 
     QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t

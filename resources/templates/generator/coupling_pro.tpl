@@ -40,7 +40,7 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
     DESTDIR = ../../libs
 }
 
-win32-msvc2010 {
+win32-msvc2010|win32-msvc2012 {
     QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t /Zc:wchar_t
     QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt
     QMAKE_CXXFLAGS_RELEASE += -MD

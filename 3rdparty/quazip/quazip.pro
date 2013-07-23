@@ -46,7 +46,7 @@ macx-g++ {
     TARGET = ../libs/agros_3rdparty_quazip
 }
 
-win32-msvc2010 {
+win32-msvc2010|win32-msvc2012 {
     TARGET = ../../libs/agros_3rdparty_quazip
 
     QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t

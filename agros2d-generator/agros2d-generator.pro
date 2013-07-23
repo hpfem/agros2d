@@ -38,7 +38,7 @@ macx-g++ {
     #INSTALLS += target
 }
 
-win32-msvc2010 {
+win32-msvc2010|win32-msvc2012 {
     QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt
     CONFIG += console
 

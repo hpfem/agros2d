@@ -23,7 +23,7 @@ macx-g++ {
     #INSTALLS += target
 }
 
-win32-msvc2010 {
+win32-msvc2010|win32-msvc2012 {
     QMAKE_LFLAGS += /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt
 
     LIBS += -L..
@@ -96,7 +96,7 @@ macx-g++ {
     LIBS += -lpython2.7
 }
 
-win32-msvc2010 {
+win32-msvc2010|win32-msvc2012 {
     # /openmp
     QMAKE_CXXFLAGS += /MP 
     QMAKE_CXXFLAGS_RELEASE += -MD

@@ -5,6 +5,7 @@
     <module:description>Solving TE waves in RF field.</module:description>
     <module:analyses>
       <module:analysis id="harmonic" name="Harmonic" solutions="2" type="harmonic"/>
+      <module:analysis id="transient" name="Transient" solutions="2" type="transient" />
     </module:analyses>
   </module:general>
 
@@ -16,6 +17,10 @@
 
   <module:spaces>
     <module:space analysistype="harmonic">
+      <module:space_config i="1" orderadjust="0" type="h1"/>
+      <module:space_config i="2" orderadjust="0" type="h1"/>
+    </module:space>
+    <module:space analysistype="transient">
       <module:space_config i="1" orderadjust="0" type="h1"/>
       <module:space_config i="2" orderadjust="0" type="h1"/>
     </module:space>
@@ -41,6 +46,17 @@
         <module:vector_form axi_linear="- r * 2 * PI * f * rf_Jei * vval" axi_newton="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * pow(2 * PI * f, 2) * rf_eps * EPS0 * upval * vval - r * rf_Jer * vval" i="1" id="form" j="1" planar_linear="- 2 * PI * f * rf_Jei * vval" planar_newton="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + pow(2 * PI * f, 2) * rf_eps * EPS0 * upval * vval - rf_Jer * vval"/>
         <module:vector_form axi_linear="r * 2 * PI * f * rf_Jer * vval" axi_newton="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * pow(2 * PI * f, 2) * rf_eps * EPS0 * upval * vval - r * rf_Jei * vval" i="2" id="form" j="2" planar_linear="2 * PI * f * rf_Jer * vval" planar_newton="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + pow(2 * PI * f, 2) * rf_eps * EPS0 * upval * vval - rf_Jei * vval"/>
       </module:weakform_volume>
+      <module:weakform_volume analysistype="transient" equation="-\, \div \left( \frac{1}{\rho}\,\, \grad p \right) + \frac{1}{\rho  c^2} \frac{\partial^2 p}{\partial t^2} = 0">
+        <module:quantity id="rf_te_permittivity"/>
+        <module:quantity id="rf_te_permeability"/>
+        <module:quantity id="rf_te_conductivity"/>
+        <module:matrix_form axi_linear="- 1 / (rf_mur * MU0) * r * (udr * vdr + udz * vdz)" axi_newton="- 1 / (rf_mur * MU0) * r * (udr * vdr + udz * vdz)" i="1" id="form" j="1" planar_linear="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy)" planar_newton="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy)" symmetric="1"/>
+        <module:matrix_form axi_linear="rf_eps * EPS0 * timedermat * r * uval * vval" axi_newton="rf_eps * EPS0 * timedermat * r * uval * vval" i="1" id="form" j="2" planar_linear="rf_eps * EPS0 * timedermat * uval * vval" planar_newton="rf_eps * EPS0 * timedermat * uval * vval"/>
+        <module:matrix_form axi_linear="- r * uval * vval" axi_newton="- r * uval * vval" i="2" id="form" j="2" planar_linear="- uval * vval" planar_newton="- uval * vval" symmetric="1"/>
+        <module:matrix_form axi_linear="timedermat * r * uval * vval" axi_newton="timedermat * r * uval * vval" i="2" id="form" j="1" planar_linear="timedermat * uval * vval" planar_newton="timedermat * uval * vval"/>
+        <module:vector_form axi_linear="rf_eps * EPS0 * r * timedervec * vval" axi_newton="-rf_eps * EPS0 * r * timedervec * vval +  - 1 / (rf_mur * MU0) * r * (dr1 * vdr +dz1 * vdz) + rf_eps * EPS0 * timedermat * r * value2 * vval" i="1" id="form" j="2" planar_linear="rf_eps * EPS0 * timedervec * vval" planar_newton="-rf_eps * EPS0 * timedervec * vval + - 1 / (rf_mur * MU0) * (dx1 * vdx +dy1 * vdy) + rf_eps * EPS0 * timedermat * value2 * vval"/>
+        <module:vector_form axi_linear="timedervec * r * vval" axi_newton="- timedervec * r * vval + timedermat * value1 * vval - value2 * r * vval" i="2" id="form" j="1" planar_linear="timedervec * vval" planar_newton="- timedervec * vval + timedermat * value1 * vval - value2 * vval"/>
+        </module:weakform_volume>
     </module:weakforms_volume>
   </module:volume>
 
@@ -52,6 +68,7 @@
     <module:quantity id="rf_te_surface_current_real" shortname="rf_Jr"/>
     <module:quantity id="rf_te_surface_current_imag" shortname="rf_Ji"/>
     <module:quantity id="rf_te_impedance" shortname="rf_Z0"/>
+    <module:quantity id="rf_te_electric_field_time_derivative" shortname="rf_dEr"/>
     <module:weakforms_surface>
       <module:weakform_surface analysistype="harmonic" default="rf_te_electric_field">
         <module:boundary equation="\vecfaz{E} = \vecfaz{E}_0" id="rf_te_electric_field" name="Electric field">
@@ -80,6 +97,19 @@
           <module:vector_form axi_linear="0" axi_newton="r * 2 * PI * f / rf_Z0 * upval * vval" i="2" id="form" j="2" planar_linear="0" planar_newton="2 * PI * f / rf_Z0 * upval * vval"/>
         </module:boundary>
       </module:weakform_surface>
+      <module:weakform_surface analysistype="transient" default="rf_te_electric_field">
+        <module:boundary equation="E = E_0" id="rf_te_electric_field" name="Pressure">
+          <module:quantity dependence="time" id="rf_te_electric_field_real"/>
+          <module:quantity dependence="time" id="rf_te_electric_field_time_derivative"/>
+          <module:essential_form axi_linear="rf_Er" axi_newton="rf_Er" i="1" id="form" planar_linear="rf_Er" planar_newton="rf_Er"/>
+          <module:essential_form axi_linear="rf_dEr" axi_newton="rf_dEr" i="2" id="form" planar_linear="rf_dEr" planar_newton="rf_dEr"/>
+        </module:boundary>
+        <module:boundary equation="J_{t} = - \frac{1}{\mu} \frac{\partial \vec{E}}{\partial n_0} = J_0" id="rf_te_surface_current_real" name="Surface current">
+          <module:quantity dependence="time" id="rf_te_surface_current_real"/>
+          <module:vector_form axi_linear="rf_Jr * r * vval" axi_newton="- rf_Jr * r * vval" i="1" id="form" j="1" planar_linear="rf_Jr * vval" planar_newton="- rf_Jr * vval"/>
+          <module:vector_form axi_linear="0" axi_newton="0" i="2" id="form" j="2" planar_linear="0" planar_newton="0"/>
+        </module:boundary>
+      </module:weakform_surface>
     </module:weakforms_surface>
   </module:surface>
 
@@ -96,6 +126,7 @@
     <module:gui type="surface">
       <module:group>
         <module:quantity id="rf_te_electric_field_real" name="Electric field - real" shortname="Er" shortname_html="&lt;i>E&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="E_{r}" unit="V/m" unit_html="V.m&lt;sup>-1&lt;/sup>" unit_latex="V \cdot m^{-1}"/>
+        <module:quantity id="rf_te_electric_field_time_derivative" name="Time derivative electric field" shortname="Ert" shortname_html="&lt;i>E&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="dE_{r}" unit="V/m.s" unit_html="V.m&lt;sup>-1&lt;/sup>.s&lt;sup>-1&lt;/sup>" unit_latex="V \cdot m^{-1} s^{-1}"/>
         <module:quantity id="rf_te_electric_field_imag" name="Electric field - imag" shortname="Ei" shortname_html="&lt;i>E&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="E_{i}" unit="V/m" unit_html="V.m&lt;sup>-1&lt;/sup>" unit_latex="V \cdot m^{-1}"/>
         <module:quantity id="rf_te_magnetic_field_real" name="Magnetic field - real" shortname="Hr" shortname_html="&lt;i>H&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="H_{r}" unit="A/m" unit_html="A.m&lt;sup>-1&lt;/sup>" unit_latex="A \cdot m^{-1}"/>
         <module:quantity id="rf_te_magnetic_field_imag" name="Magnetic field - imag" shortname="Hi" shortname_html="&lt;i>H&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="H_{i}" unit="A/m" unit_html="A.m&lt;sup>-1&lt;/sup>" unit_latex="A \cdot m^{-1}"/>
@@ -113,6 +144,7 @@
       </module:localvariable>
       <module:localvariable id="rf_te_electric_field_real" name="Electric field - real" shortname="Er" shortname_html="&lt;i>E&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="E_{r}" type="scalar" unit="V/m" unit_html="V.m&lt;sup>-1&lt;/sup>" unit_latex="V \cdot m^{-1}">
         <module:expression analysistype="harmonic" axi="value1" planar="value1"/>
+        <module:expression analysistype="transient" axi="value1" planar="value1"/>
       </module:localvariable>
       <module:localvariable id="rf_te_electric_field_imag" name="Electric field - imag" shortname="Ei" shortname_html="&lt;i>E&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="E_{i}" type="scalar" unit="V/m" unit_html="V.m&lt;sup>-1&lt;/sup>" unit_latex="V \cdot m^{-1}">
         <module:expression analysistype="harmonic" axi="value2" planar="value2"/>
@@ -166,14 +198,17 @@
     <module:view>
       <module:scalar_view>
         <module:default analysistype="harmonic" id="rf_te_electric_field_real"/>
+        <module:default analysistype="transient" id="rf_te_electric_field_real"/>
       </module:scalar_view>
       <module:vector_view>
         <module:default analysistype="harmonic" id="rf_te_electric_field_real"/>
+        <module:default analysistype="transient" id="rf_te_electric_field_real"/>
       </module:vector_view>
     </module:view>
     <module:volumeintegrals>
       <module:volumeintegral id="rf_te_volume" name="Volume" shortname="V" shortname_html="&lt;i>V&lt;/i>" shortname_latex="V" unit="m3" unit_html="m&lt;sup>3&lt;/sup>" unit_latex="m^{3}">
         <module:expression analysistype="harmonic" axi="2.0 * PI * r" planar="1.0"/>
+        <module:expression analysistype="transient" axi="2.0 * PI * r" planar="1.0"/>
       </module:volumeintegral>
       <module:volumeintegral id="rf_te_cross_section" name="Cross section" shortname="S" shortname_html="&lt;i>S&lt;/i>" shortname_latex="S" unit="m2" unit_html="m&lt;sup>2&lt;/sup>" unit_latex="m^{2}">
         <module:expression analysistype="harmonic" axi="1.0" planar="1.0"/>
@@ -185,6 +220,7 @@
     <module:surfaceintegrals>
       <module:surfaceintegral id="rf_te_length" name="Length" shortname="l" shortname_html="&lt;i>l&lt;/i>" shortname_latex="l" unit="m" unit_html="m" unit_latex="m">
         <module:expression analysistype="harmonic" axi="1.0" planar="1.0"/>
+        <module:expression analysistype="transient" axi="1.0" planar="1.0"/>
       </module:surfaceintegral>
       <module:surfaceintegral id="rf_te_surface" name="Surface" shortname="S" shortname_html="&lt;i>S&lt;/i>" shortname_latex="S" unit="m2" unit_html="m&lt;sup>2&lt;/sup>" unit_latex="m^{2}">
         <module:expression analysistype="harmonic" axi="2.0 * PI * r" planar="1.0"/>

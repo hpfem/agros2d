@@ -43,7 +43,7 @@ macx-g++ {
     TARGET = ../libs/agros_util
 }
 
-win32-msvc2010 {
+win32-msvc2010|win32-msvc2012 {
     TARGET = ../../agros_util
 
     # /openmp

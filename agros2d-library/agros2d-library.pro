@@ -286,7 +286,7 @@ macx-g++ {
     LIBS += -lblas
 }
 
-win32-msvc2010 {
+win32-msvc2010|win32-msvc2012 {
     TARGET = ../../agros2d_library
 
     QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t

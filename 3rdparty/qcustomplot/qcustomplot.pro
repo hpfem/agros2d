@@ -21,7 +21,7 @@ macx-g++ {
     TARGET = ../libs/agros_3rdparty_qcustomplot
 }
 
-win32-msvc2010 {
+win32-msvc2010|win32-msvc2012 {
     TARGET = ../../libs/agros_3rdparty_qcustomplot
 
     QMAKE_CXXFLAGS += /MP /openmp /Zc:wchar_t
