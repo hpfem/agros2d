@@ -254,6 +254,23 @@ SceneEdge *SceneEdge::findClosestEdge(const Point &point)
     return edgeClosest;
 }
 
+void SceneEdge::addMarkersFromStrings(QMap<QString, QString> markers)
+{
+    foreach (QString fieldId, markers.keys())
+    {
+        if (Agros2D::problem()->hasField(fieldId))
+        {
+            SceneBoundary *boundary = Agros2D::scene()->boundaries->filter(Agros2D::problem()->fieldInfo(fieldId)).get(markers[fieldId]);
+
+            if (!boundary)
+                boundary = Agros2D::scene()->boundaries->getNone(Agros2D::problem()->fieldInfo(fieldId));
+
+            // add marker
+            addMarker(boundary);
+        }
+    }
+}
+
 //************************************************************************************************
 
 void SceneEdgeContainer::removeConnectedToNode(SceneNode *node)
@@ -760,19 +777,7 @@ void SceneEdgeCommandAdd::redo()
     nodeEnd = Agros2D::scene()->addNode(nodeEnd);
     SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, m_angle);
 
-    foreach (QString fieldId, m_markers.keys())
-    {
-        if (Agros2D::problem()->hasField(fieldId))
-        {
-            SceneBoundary *boundary = Agros2D::scene()->boundaries->filter(Agros2D::problem()->fieldInfo(fieldId)).get(m_markers[fieldId]);
-
-            if (!boundary)
-                boundary = Agros2D::scene()->boundaries->getNone(Agros2D::problem()->fieldInfo(fieldId));
-
-            // add marker
-            edge->addMarker(boundary);
-        }
-    }
+    edge->addMarkersFromStrings(m_markers);
 
     // add edge to the list
     Agros2D::scene()->addEdge(edge);
@@ -818,19 +823,7 @@ void SceneEdgeCommandAddMulti::redo()
             // if markers are not empty, the operation was performed with "withMarkers = True"
             if(!m_markers.empty())
             {
-                foreach (QString fieldId, m_markers[i].keys())
-                {
-                    if (Agros2D::problem()->hasField(fieldId))
-                    {
-                        SceneBoundary *boundary = Agros2D::scene()->boundaries->filter(Agros2D::problem()->fieldInfo(fieldId)).get(m_markers[i][fieldId]);
-
-                        if (!boundary)
-                            boundary = Agros2D::scene()->boundaries->getNone(Agros2D::problem()->fieldInfo(fieldId));
-
-                        // add marker
-                        edge->addMarker(boundary);
-                    }
-                }
+                edge->addMarkersFromStrings(m_markers[i]);
             }
             // add edge to the list
             Agros2D::scene()->addEdge(edge);
@@ -862,19 +855,7 @@ void SceneEdgeCommandRemoveMulti::undo()
         assert(nodeStart && nodeEnd);
         SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, m_angles[i]);
 
-        foreach (QString fieldId, m_markers[i].keys())
-        {
-            if (Agros2D::problem()->hasField(fieldId))
-            {
-                SceneBoundary *boundary = Agros2D::scene()->boundaries->filter(Agros2D::problem()->fieldInfo(fieldId)).get(m_markers[i][fieldId]);
-
-                if (!boundary)
-                    boundary = Agros2D::scene()->boundaries->getNone(Agros2D::problem()->fieldInfo(fieldId));
-
-                // add marker
-                edge->addMarker(boundary);
-            }
-        }
+        edge->addMarkersFromStrings(m_markers[i]);
 
         // add edge to the list
         Agros2D::scene()->addEdge(edge);
@@ -914,19 +895,7 @@ void SceneEdgeCommandRemove::undo()
     nodeEnd = Agros2D::scene()->addNode(nodeEnd);
     SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, m_angle);
 
-    foreach (QString fieldId, m_markers.keys())
-    {
-        if (Agros2D::problem()->hasField(fieldId))
-        {
-            SceneBoundary *boundary = Agros2D::scene()->boundaries->filter(Agros2D::problem()->fieldInfo(fieldId)).get(m_markers[fieldId]);
-
-            if (!boundary)
-                boundary = Agros2D::scene()->boundaries->getNone(Agros2D::problem()->fieldInfo(fieldId));
-
-            // add marker
-            edge->addMarker(boundary);
-        }
-    }
+    edge->addMarkersFromStrings(m_markers);
 
     // add edge to the list
     Agros2D::scene()->addEdge(edge);

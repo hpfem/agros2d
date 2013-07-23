@@ -123,6 +123,24 @@ SceneLabel *SceneLabel::findClosestLabel(const Point &point)
     return NULL;
 }
 
+void SceneLabel::addMarkersFromStrings(QMap<QString, QString> markers)
+{
+    foreach (QString fieldId, markers.keys())
+    {
+        if (Agros2D::problem()->hasField(fieldId))
+        {
+            SceneMaterial *material = Agros2D::scene()->materials->filter(Agros2D::problem()->fieldInfo(fieldId)).get(markers[fieldId]);
+
+            if (!material)
+                material = Agros2D::scene()->materials->getNone(Agros2D::problem()->fieldInfo(fieldId));
+
+            // add marker
+            addMarker(material);
+        }
+    }
+
+}
+
 //****************************************************************************************************
 
 SceneLabel* SceneLabelContainer::get(SceneLabel *label) const
@@ -562,19 +580,7 @@ void SceneLabelCommandAdd::redo()
     // new edge
     SceneLabel *label = new SceneLabel(m_point, m_area);
 
-    foreach (QString fieldId, m_markers.keys())
-    {
-        if (Agros2D::problem()->hasField(fieldId))
-        {
-            SceneMaterial *material = Agros2D::scene()->materials->filter(Agros2D::problem()->fieldInfo(fieldId)).get(m_markers[fieldId]);
-
-            if (!material)
-                material = Agros2D::scene()->materials->getNone(Agros2D::problem()->fieldInfo(fieldId));
-
-            // add marker
-            label->addMarker(material);
-        }
-    }
+    label->addMarkersFromStrings(m_markers);
 
     // add edge to the list
     Agros2D::scene()->addLabel(label);;
@@ -593,19 +599,7 @@ void SceneLabelCommandRemove::undo()
     // new edge
     SceneLabel *label = new SceneLabel(m_point, m_area);
 
-    foreach (QString fieldId, m_markers.keys())
-    {
-        if (Agros2D::problem()->hasField(fieldId))
-        {
-            SceneMaterial *material = Agros2D::scene()->materials->filter(Agros2D::problem()->fieldInfo(fieldId)).get(m_markers[fieldId]);
-
-            if (!material)
-                material = Agros2D::scene()->materials->getNone(Agros2D::problem()->fieldInfo(fieldId));
-
-            // add marker
-            label->addMarker(material);
-        }
-    }
+    label->addMarkersFromStrings(m_markers);
 
     // add edge to the list
     Agros2D::scene()->addLabel(label);
@@ -661,19 +655,7 @@ void SceneLabelCommandRemoveMulti::undo()
     {
         SceneLabel *label = new SceneLabel(m_points[i], m_areas[i]);
 
-        foreach (QString fieldId, m_markers[i].keys())
-        {
-            if (Agros2D::problem()->hasField(fieldId))
-            {
-                SceneMaterial *material = Agros2D::scene()->materials->filter(Agros2D::problem()->fieldInfo(fieldId)).get(m_markers[i][fieldId]);
-
-                if (!material)
-                    material = Agros2D::scene()->materials->getNone(Agros2D::problem()->fieldInfo(fieldId));
-
-                // add marker
-                label->addMarker(material);
-            }
-        }
+        label->addMarkersFromStrings(m_markers[i]);
 
         // add label to the list
         Agros2D::scene()->addLabel(label);
@@ -769,19 +751,7 @@ void SceneLabelCommandAddMulti::redo()
         // if markers are not empty, the operation was performed with "withMarkers = True"
         if(!m_markers.empty())
         {
-            foreach (QString fieldId, m_markers[i].keys())
-            {
-                if (Agros2D::problem()->hasField(fieldId))
-                {
-                    SceneMaterial *material = Agros2D::scene()->materials->filter(Agros2D::problem()->fieldInfo(fieldId)).get(m_markers[i][fieldId]);
-
-                    if (!material)
-                        material = Agros2D::scene()->materials->getNone(Agros2D::problem()->fieldInfo(fieldId));
-
-                    // add marker
-                    label->addMarker(material);
-                }
-            }
+            label->addMarkersFromStrings(m_markers[i]);
         }
 
         Agros2D::scene()->addLabel(label);

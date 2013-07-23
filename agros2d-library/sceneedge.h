@@ -64,6 +64,8 @@ public:
 
     static SceneEdge *findClosestEdge(const Point &point);
 
+    void addMarkersFromStrings(QMap<QString, QString> markers);
+
 private:
     SceneNode *m_nodeStart;
     SceneNode *m_nodeEnd;

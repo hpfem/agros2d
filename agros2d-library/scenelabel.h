@@ -51,6 +51,8 @@ public:
 
     static SceneLabel *findClosestLabel(const Point &point);
 
+    void addMarkersFromStrings(QMap<QString, QString> markers);
+
 private:
     Point m_point;
     double m_area;
