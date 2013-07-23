@@ -32,9 +32,7 @@
 
 SceneViewCommon* PyView::currentSceneViewMode()
 {
-    if (currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->isChecked())
-        return currentPythonEngineAgros()->sceneViewPreprocessor();
-    else if (currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->isChecked())
+    if (currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->isChecked())
         return currentPythonEngineAgros()->sceneViewMesh();
     else if (currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->isChecked())
         return currentPythonEngineAgros()->sceneViewPost2D();
@@ -42,6 +40,9 @@ SceneViewCommon* PyView::currentSceneViewMode()
         return currentPythonEngineAgros()->sceneViewPost3D();
     else if (currentPythonEngineAgros()->sceneViewParticleTracing()->actSceneModeParticleTracing->isChecked())
         return currentPythonEngineAgros()->sceneViewParticleTracing();
+
+    // default
+    return currentPythonEngineAgros()->sceneViewPreprocessor();
 }
 
 void PyView::saveImageToFile(const std::string &file, int width, int height)
