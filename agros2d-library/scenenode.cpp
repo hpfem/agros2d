@@ -424,19 +424,7 @@ void SceneNodeCommandRemoveMulti::undo()
         assert(nodeStart && nodeEnd);
         SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, m_edgeAngle[i]);
 
-        foreach (QString fieldId, m_edgeMarkers[i].keys())
-        {
-            if (Agros2D::problem()->hasField(fieldId))
-            {
-                SceneBoundary *boundary = Agros2D::scene()->boundaries->filter(Agros2D::problem()->fieldInfo(fieldId)).get(m_edgeMarkers[i][fieldId]);
-
-                if (!boundary)
-                    boundary = Agros2D::scene()->boundaries->getNone(Agros2D::problem()->fieldInfo(fieldId));
-
-                // add marker
-                edge->addMarker(boundary);
-            }
-        }
+        edge->addMarkersFromStrings(m_edgeMarkers[i]);
 
         // add edge to the list
         Agros2D::scene()->addEdge(edge);

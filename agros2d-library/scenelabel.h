@@ -196,18 +196,38 @@ private:
     Point m_pointNew;
 };
 
-class SceneLabelCommandRemoveMulti : public QUndoCommand
+class SceneLabelCommandAddOrRemoveMulti : public QUndoCommand
 {
 public:
-    SceneLabelCommandRemoveMulti(QList<Point> points, QList<QMap<QString, QString> > markers, QList<double> areas, QUndoCommand *parent = 0);
-    void undo();
-    void redo();
+    SceneLabelCommandAddOrRemoveMulti(QList<Point> points, QList<QMap<QString, QString> > markers, QList<double> areas, QUndoCommand *parent = 0);
+    void add();
+    void remove();
 
 private:
     // nodes
     QList<Point> m_points;
     QList<QMap<QString, QString> > m_markers;
     QList<double> m_areas;
+};
+
+class SceneLabelCommandAddMulti : public SceneLabelCommandAddOrRemoveMulti
+{
+public:
+    SceneLabelCommandAddMulti(QList<Point> points, QList<QMap<QString, QString> > markers,  QList<double> areas, QUndoCommand *parent = 0) :
+        SceneLabelCommandAddOrRemoveMulti(points, markers, areas, parent) {}
+
+    void undo() { remove(); }
+    void redo() { add(); }
+};
+
+class SceneLabelCommandRemoveMulti : public SceneLabelCommandAddOrRemoveMulti
+{
+public:
+    SceneLabelCommandRemoveMulti(QList<Point> points, QList<QMap<QString, QString> > markers,  QList<double> areas, QUndoCommand *parent = 0) :
+        SceneLabelCommandAddOrRemoveMulti(points, markers, areas, parent) {}
+
+    void undo() { add(); }
+    void redo() { remove(); }
 };
 
 class SceneLabelCommandMoveMulti : public QUndoCommand
@@ -222,19 +242,6 @@ private:
 
     QList<Point> m_points;
     QList<Point> m_pointsNew;
-};
-
-class SceneLabelCommandAddMulti : public QUndoCommand
-{
-public:
-    SceneLabelCommandAddMulti(QList<Point> points, QList<QMap<QString, QString> > markers,  QList<double> areas, QUndoCommand *parent = 0);
-    void undo();
-    void redo();
-
-private:
-    QList<Point> m_points;
-    QList<double> m_areas;
-    QList<QMap<QString, QString> > m_markers;
 };
 
 #endif // SCENELABEL_H

@@ -638,45 +638,6 @@ void SceneLabelCommandEdit::redo()
     }
 }
 
-SceneLabelCommandRemoveMulti::SceneLabelCommandRemoveMulti(QList<Point> points, QList<QMap<QString, QString> > markers, QList<double> areas, QUndoCommand *parent) : QUndoCommand(parent)
-{
-    assert(points.size() == markers.size());
-    assert(points.size() == areas.size());
-    m_points = points;
-    m_areas = areas;
-    m_markers = markers;
-}
-
-void SceneLabelCommandRemoveMulti::undo()
-{
-    Agros2D::scene()->stopInvalidating(true);
-
-    for (int i = 0; i < m_points.size(); i++)
-    {
-        SceneLabel *label = new SceneLabel(m_points[i], m_areas[i]);
-
-        label->addMarkersFromStrings(m_markers[i]);
-
-        // add label to the list
-        Agros2D::scene()->addLabel(label);
-    }
-
-    Agros2D::scene()->stopInvalidating(false);
-    Agros2D::scene()->invalidate();
-}
-
-void SceneLabelCommandRemoveMulti::redo()
-{
-    Agros2D::scene()->stopInvalidating(true);
-    for(int i = 0; i < m_points.size(); i++)
-    {
-        Agros2D::scene()->labels->remove(Agros2D::scene()->getLabel(m_points[i]));
-    }
-
-    Agros2D::scene()->stopInvalidating(false);
-    Agros2D::scene()->invalidate();
-}
-
 SceneLabelCommandMoveMulti::SceneLabelCommandMoveMulti(QList<Point> points, QList<Point> pointsNew, QUndoCommand *parent) : QUndoCommand(parent)
 {
     m_points = points;
@@ -717,14 +678,14 @@ void SceneLabelCommandMoveMulti::redo()
     Agros2D::scene()->invalidate();
 }
 
-SceneLabelCommandAddMulti::SceneLabelCommandAddMulti(QList<Point> points, QList<QMap<QString, QString> > markers, QList<double> areas, QUndoCommand *parent) : QUndoCommand(parent)
+SceneLabelCommandAddOrRemoveMulti::SceneLabelCommandAddOrRemoveMulti(QList<Point> points, QList<QMap<QString, QString> > markers, QList<double> areas, QUndoCommand *parent) : QUndoCommand(parent)
 {
     m_points = points;
     m_areas = areas;
     m_markers = markers;
 }
 
-void SceneLabelCommandAddMulti::undo()
+void SceneLabelCommandAddOrRemoveMulti::remove()
 {
     Agros2D::scene()->stopInvalidating(true);
     foreach(Point point, m_points)
@@ -740,7 +701,7 @@ void SceneLabelCommandAddMulti::undo()
     Agros2D::scene()->invalidate();
 }
 
-void SceneLabelCommandAddMulti::redo()
+void SceneLabelCommandAddOrRemoveMulti::add()
 {
     Agros2D::scene()->stopInvalidating(true);
 
@@ -748,7 +709,7 @@ void SceneLabelCommandAddMulti::redo()
     {
         SceneLabel *label = new SceneLabel(m_points[i], m_areas[i]);
 
-        // if markers are not empty, the operation was performed with "withMarkers = True"
+        // if markers are not empty, we were deleting or copying "withMarkers = True"
         if(!m_markers.empty())
         {
             label->addMarkersFromStrings(m_markers[i]);

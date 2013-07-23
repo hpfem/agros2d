@@ -201,13 +201,13 @@ private:
     double m_angle;
 };
 
-class SceneEdgeCommandAddMulti : public QUndoCommand
+class SceneEdgeCommandAddOrRemoveMulti : public QUndoCommand
 {
 public:
-    SceneEdgeCommandAddMulti(QList<Point> pointStarts, QList<Point> pointEnds,
+    SceneEdgeCommandAddOrRemoveMulti(QList<Point> pointStarts, QList<Point> pointEnds,
                         QList<double> angles, QList<QMap<QString, QString> > markers, QUndoCommand *parent = 0);
-    void undo();
-    void redo();
+    void add();
+    void remove();
 
 private:
     QList<Point> m_pointStarts;
@@ -216,19 +216,26 @@ private:
     QList<QMap<QString, QString> > m_markers;
 };
 
-class SceneEdgeCommandRemoveMulti : public QUndoCommand
+class SceneEdgeCommandRemoveMulti : public SceneEdgeCommandAddOrRemoveMulti
 {
 public:
     SceneEdgeCommandRemoveMulti(QList<Point> pointStarts, QList<Point> pointEnds,
-                                QList<double> angles, QList<QMap<QString, QString> > markers, QUndoCommand *parent = 0);
-    void undo();
-    void redo();
+                                QList<double> angles, QList<QMap<QString, QString> > markers, QUndoCommand *parent = 0)
+        : SceneEdgeCommandAddOrRemoveMulti(pointStarts, pointEnds, angles, markers, parent) {}
 
-private:
-    QList<Point> m_pointsStart;
-    QList<Point> m_pointsEnd;
-    QList<QMap<QString, QString> > m_markers;
-    QList<double> m_angles;
+    void undo() { add(); }
+    void redo() { remove(); }
+};
+
+class SceneEdgeCommandAddMulti : public SceneEdgeCommandAddOrRemoveMulti
+{
+public:
+    SceneEdgeCommandAddMulti(QList<Point> pointStarts, QList<Point> pointEnds,
+                                QList<double> angles, QList<QMap<QString, QString> > markers, QUndoCommand *parent = 0)
+        : SceneEdgeCommandAddOrRemoveMulti(pointStarts, pointEnds, angles, markers, parent) {}
+
+    void undo() { remove(); }
+    void redo() { add(); }
 };
 
 class SceneEdgeCommandRemove : public QUndoCommand

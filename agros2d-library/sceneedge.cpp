@@ -784,7 +784,7 @@ void SceneEdgeCommandAdd::redo()
     Agros2D::scene()->invalidate();
 }
 
-SceneEdgeCommandAddMulti::SceneEdgeCommandAddMulti(QList<Point> pointStarts, QList<Point> pointEnds,
+SceneEdgeCommandAddOrRemoveMulti::SceneEdgeCommandAddOrRemoveMulti(QList<Point> pointStarts, QList<Point> pointEnds,
                                                    QList<double> angles, QList<QMap<QString, QString> > markers, QUndoCommand *parent) : QUndoCommand(parent)
 {
     assert(pointStarts.size() == pointEnds.size());
@@ -795,7 +795,7 @@ SceneEdgeCommandAddMulti::SceneEdgeCommandAddMulti(QList<Point> pointStarts, QLi
     m_markers = markers;
 }
 
-void SceneEdgeCommandAddMulti::undo()
+void SceneEdgeCommandAddOrRemoveMulti::remove()
 {
     Agros2D::scene()->stopInvalidating(true);
 
@@ -808,7 +808,7 @@ void SceneEdgeCommandAddMulti::undo()
     Agros2D::scene()->invalidate();
 }
 
-void SceneEdgeCommandAddMulti::redo()
+void SceneEdgeCommandAddOrRemoveMulti::add()
 {
     Agros2D::scene()->stopInvalidating(true);
     for(int i = 0; i < m_pointStarts.size(); i++)
@@ -820,7 +820,7 @@ void SceneEdgeCommandAddMulti::redo()
         {
             SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, m_angles[i]);
 
-            // if markers are not empty, the operation was performed with "withMarkers = True"
+            // if markers are not empty, we were deleting or copying "withMarkers = True"
             if(!m_markers.empty())
             {
                 edge->addMarkersFromStrings(m_markers[i]);
@@ -829,50 +829,6 @@ void SceneEdgeCommandAddMulti::redo()
             Agros2D::scene()->addEdge(edge);
         }
     }
-    Agros2D::scene()->stopInvalidating(false);
-    Agros2D::scene()->invalidate();
-}
-
-SceneEdgeCommandRemoveMulti::SceneEdgeCommandRemoveMulti(QList<Point> pointsStart, QList<Point> pointsEnd,
-                                                   QList<double> angles, QList<QMap<QString, QString> > markers, QUndoCommand *parent) : QUndoCommand(parent)
-{
-    assert(pointsStart.size() == pointsEnd.size());
-    assert(pointsStart.size() == angles.size());
-    m_pointsStart = pointsStart;
-    m_pointsEnd = pointsEnd;
-    m_angles = angles;
-    m_markers = markers;
-}
-
-void SceneEdgeCommandRemoveMulti::undo()
-{
-    Agros2D::scene()->stopInvalidating(true);
-
-    for (int i = 0; i < m_pointsStart.size(); i++)
-    {
-        SceneNode *nodeStart = Agros2D::scene()->getNode(m_pointsStart[i]);
-        SceneNode *nodeEnd = Agros2D::scene()->getNode(m_pointsEnd[i]);
-        assert(nodeStart && nodeEnd);
-        SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, m_angles[i]);
-
-        edge->addMarkersFromStrings(m_markers[i]);
-
-        // add edge to the list
-        Agros2D::scene()->addEdge(edge);
-    }
-
-    Agros2D::scene()->stopInvalidating(false);
-    Agros2D::scene()->invalidate();
-}
-
-void SceneEdgeCommandRemoveMulti::redo()
-{
-    Agros2D::scene()->stopInvalidating(true);
-    for(int i = 0; i < m_pointsStart.size(); i++)
-    {
-        Agros2D::scene()->edges->remove(Agros2D::scene()->getEdge(m_pointsStart[i], m_pointsEnd[i], m_angles[i]));
-    }
-
     Agros2D::scene()->stopInvalidating(false);
     Agros2D::scene()->invalidate();
 }
