@@ -826,8 +826,8 @@ void FieldsToobar::createControls()
         layoutFields->addWidget(label, row, 1);
 
         // add to lists
-        buttons.append(button);
-        labels.append(label);
+        m_buttons.append(button);
+        m_labels.append(label);
 
         row++;
     }
@@ -874,19 +874,19 @@ void FieldsToobar::refresh()
                 .arg(fieldInfo->value(FieldInfo::SpaceNumberOfRefinements).toInt())
                 .arg(fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt());
 
-        labels[row]->setText(hint);
-        labels[row]->setVisible(true);
+        m_labels[row]->setText(hint);
+        m_labels[row]->setVisible(true);
 
-        buttons[row]->setText(fieldInfo->name());
-        buttons[row]->setIcon(icon("fields/" + fieldInfo->fieldId()));
-        buttons[row]->setVisible(true);
+        m_buttons[row]->setText(fieldInfo->name());
+        m_buttons[row]->setIcon(icon("fields/" + fieldInfo->fieldId()));
+        m_buttons[row]->setVisible(true);
 
         row++;
     }
-    for (int i = row; i < buttons.count(); i++)
+    for (int i = row; i < m_buttons.count(); i++)
     {
-        labels[i]->setVisible(false);
-        buttons[i]->setVisible(false);
+        m_labels[i]->setVisible(false);
+        m_buttons[i]->setVisible(false);
     }
 
     setUpdatesEnabled(true);
@@ -939,88 +939,82 @@ CouplingsWidget::CouplingsWidget(QWidget *parent) : QWidget(parent)
 {
     Agros2D::problem()->synchronizeCouplings();
 
-    layoutTable = NULL;
     createContent();
 
-    connect(Agros2D::problem(), SIGNAL(fieldsChanged()), this, SLOT(refresh()));
-
-    load();
+    connect(Agros2D::problem(), SIGNAL(fieldsChanged()), this, SLOT(refresh())); 
 }
 
 void CouplingsWidget::createContent()
 {
-    setUpdatesEnabled(false);
-
-    if (layoutTable)
-    {
-        delete layoutTable;
-        qDeleteAll(this->children());
-    }
-
-    layoutTable = new QGridLayout();
+    QGridLayout *layoutTable;layoutTable = new QGridLayout();
     layoutTable->setContentsMargins(0, 0, 0, 0);
     layoutTable->setColumnMinimumWidth(0, columnMinimumWidth());
     layoutTable->setColumnStretch(1, 1);
 
-    m_comboBoxes.clear();
-    int line = 0;
-    foreach (CouplingInfo *couplingInfo, Agros2D::problem()->couplingInfos())
+    for (int i = 0; i < couplingList()->availableCouplings().count(); i++)
     {
-        m_comboBoxes[couplingInfo] = new QComboBox();
+        QLabel *label = new QLabel(this);
+        label->setVisible(false);
 
-        layoutTable->addWidget(new QLabel(couplingInfo->name()), line, 0);
-        layoutTable->addWidget(m_comboBoxes[couplingInfo], line, 1);
+        QComboBox *combo = new QComboBox(this);
+        combo->setVisible(false);
+        combo->addItem(couplingTypeString(CouplingType_None), CouplingType_None);
+        combo->addItem(couplingTypeString(CouplingType_Weak), CouplingType_Weak);
 
-        line++;
-    }
+        connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(itemChanged(int)));
 
-    fillComboBox();
-    load();
+        layoutTable->addWidget(label, i, 0);
+        layoutTable->addWidget(combo, i, 1);
 
-    foreach (CouplingInfo *couplingInfo, Agros2D::problem()->couplingInfos())
-    {
-        connect(m_comboBoxes[couplingInfo], SIGNAL(currentIndexChanged(int)), this, SLOT(itemChanged(int)));
+        m_labels.append(label);
+        m_comboBoxes.append(combo);
     }
 
     setLayout(layoutTable);
-
-    setUpdatesEnabled(true);    
-}
-
-void CouplingsWidget::fillComboBox()
-{
-    foreach (QComboBox* comboBox, m_comboBoxes)
-    {
-        comboBox->addItem(couplingTypeString(CouplingType_None), CouplingType_None);
-        comboBox->addItem(couplingTypeString(CouplingType_Weak), CouplingType_Weak);
-        //comboBox->addItem(couplingTypeString(CouplingType_Hard), CouplingType_Hard);
-    }
-}
-
-void CouplingsWidget::load()
-{
-    foreach (CouplingInfo *couplingInfo, Agros2D::problem()->couplingInfos())
-        m_comboBoxes[couplingInfo]->setCurrentIndex(m_comboBoxes[couplingInfo]->findData(couplingInfo->couplingType()));
 }
 
 void CouplingsWidget::save()
 {
+    int row = 0;
     foreach (CouplingInfo *couplingInfo, Agros2D::problem()->couplingInfos())
-        if (m_comboBoxes.contains(couplingInfo))
-            couplingInfo->setCouplingType((CouplingType) m_comboBoxes[couplingInfo]->itemData(m_comboBoxes[couplingInfo]->currentIndex()).toInt());
+    {
+        couplingInfo->setCouplingType((CouplingType) m_comboBoxes[row]->itemData(m_comboBoxes[row]->currentIndex()).toInt());
 
-    //Agros2D::problem()->setCouplingInfos(Agros2D::problem()->couplingInfos());
+        row++;
+    }
 }
 
 void CouplingsWidget::refresh()
 {
     Agros2D::problem()->synchronizeCouplings();
 
-    createContent();
+    setUpdatesEnabled(false);
+
+    int row = 0;
+    foreach (CouplingInfo *couplingInfo, Agros2D::problem()->couplingInfos())
+    {
+        m_comboBoxes[row]->setUpdatesEnabled(false);
+        m_comboBoxes[row]->setCurrentIndex(m_comboBoxes[row]->findData(couplingInfo->couplingType()));
+        m_comboBoxes[row]->setUpdatesEnabled(true);
+        m_comboBoxes[row]->setVisible(true);
+
+        m_labels[row]->setText(couplingInfo->name());
+        m_labels[row]->setVisible(true);
+
+        row++;
+    }
+    for (int i = row; i < m_comboBoxes.count(); i++)
+    {
+        m_comboBoxes[i]->setVisible(false);
+        m_labels[i]->setVisible(false);
+    }
+
+    setUpdatesEnabled(true);
 }
 
 void CouplingsWidget::itemChanged(int index)
 {
+    // qDebug() << "void CouplingsWidget::itemChanged(int index)";
     emit changed();
 }
 

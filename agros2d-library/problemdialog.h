@@ -64,7 +64,6 @@ public:
     CouplingsWidget(QWidget *parent);
 
     void createContent();
-    void load();
 
 signals:
     void changed();
@@ -76,10 +75,9 @@ public slots:
 
 private:
     void createComboBoxes();
-    void fillComboBox();
 
-    QGridLayout *layoutTable;
-    QMap<CouplingInfo*, QComboBox*> m_comboBoxes;
+    QList<QComboBox *> m_comboBoxes;
+    QList<QLabel *> m_labels;
 };
 
 class FieldWidget : public QWidget
@@ -198,8 +196,8 @@ public slots:
     void refresh();
 
 private:
-    QList<QToolButton *> buttons;
-    QList<QLabel *> labels;
+    QList<QToolButton *> m_buttons;
+    QList<QLabel *> m_labels;
 
     void createControls();
 

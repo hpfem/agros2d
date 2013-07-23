@@ -1411,7 +1411,7 @@ void MainWindow::doPaste()
 
 void MainWindow::clear()
 {
-    sceneViewPreprocessor->actSceneModePreprocessor->trigger();
+    problemWidget->actProperties->trigger();
 
     setControls();
 }
