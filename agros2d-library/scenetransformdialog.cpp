@@ -34,10 +34,6 @@ SceneTransformDialog::SceneTransformDialog(SceneViewPreprocessor *sceneViewPrepr
 
     createControls();
 
-
-    setMinimumSize(350, 225);
-    setMaximumSize(minimumSize());
-
     QSettings settings;
     restoreGeometry(settings.value("SceneTransformDialog/Geometry", saveGeometry()).toByteArray());
 }
