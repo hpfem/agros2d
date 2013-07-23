@@ -140,7 +140,10 @@ long getCurrentRSS()
 bool isProcessRunning(int pid)
 {
 #if defined(_WIN32)
-    return true;
+    HANDLE process = OpenProcess(SYNCHRONIZE, FALSE, pid);
+    DWORD ret = WaitForSingleObject(process, 0);
+    CloseHandle(process);
+    return ret == WAIT_TIMEOUT;
 #elif defined(__linux__) || defined(__linux) || defined(linux) || defined(__gnu_linux__)
     int err = kill(pid, 0);
     if (err == 0 && errno == ESRCH)
