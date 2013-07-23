@@ -31,4 +31,6 @@ AGROS_API long getPeakRSS();
 // in bytes, or zero if the value cannot be determined on this OS.
 AGROS_API long getCurrentRSS();
 
+AGROS_API bool isProcessRunning(int pid);
+
 #endif // SYSTEM_UTILS_H

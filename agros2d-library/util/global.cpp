@@ -36,10 +36,33 @@
 #include "hermes2d/solutionstore.h"
 #include "hermes2d/plugin_interface.h"
 
+#include "util/system_utils.h"
+
+void clearAgros2DCache()
+{
+    QFileInfoList listExamples = QFileInfo(cacheProblemDir()).absoluteDir().entryInfoList();
+    for (int i = 0; i < listExamples.size(); ++i)
+    {
+        QFileInfo fileInfo = listExamples.at(i);
+        if (fileInfo.fileName() == "." || fileInfo.fileName() == ".." || fileInfo.fileName() == QString::number(QCoreApplication::applicationPid()))
+            continue;
+
+        if (fileInfo.isDir())
+        {
+            // process doesn't exists
+            if (!isProcessRunning(fileInfo.fileName().toInt()))
+                removeDirectory(QString("%1/%2").arg(QFileInfo(cacheProblemDir()).absolutePath()).arg(fileInfo.fileName()));
+        }
+    }
+
+}
+
 static QSharedPointer<Agros2D> m_singleton;
 
 Agros2D::Agros2D() : m_scriptEngineRemoteLocal(NULL)
 {
+    clearAgros2DCache();
+
     m_problem = new Problem();
     m_scene = new Scene();
 

@@ -302,7 +302,7 @@ QString cacheProblemDir()
             arg(QString::number(QCoreApplication::applicationPid()));
 #else
 #ifdef Q_WS_WIN
-    static QString str = QString("%1/agros2d/%2/cache").
+    static QString str = QString("%1/agros2d/cache/%2").
             arg(QDir::temp().absolutePath()).
             arg(QString::number(QCoreApplication::applicationPid()));
 #else

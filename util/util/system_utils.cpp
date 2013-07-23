@@ -44,7 +44,9 @@
 
 #elif defined(__linux__) || defined(__linux) || defined(linux) || defined(__gnu_linux__)
 #include <stdio.h>
-
+#include <sys/types.h>
+#include <signal.h>
+#include <errno.h>
 #endif
 
 #else
@@ -132,5 +134,18 @@ long getCurrentRSS()
 #else
     /* AIX, BSD, Solaris, and Unknown OS ------------------------ */
     return (size_t)0L;			/* Unsupported. */
+#endif
+}
+
+bool isProcessRunning(int pid)
+{
+#if defined(_WIN32)
+    return true;
+#elif defined(__linux__) || defined(__linux) || defined(linux) || defined(__gnu_linux__)
+    int err = kill(pid, 0);
+    if (err == 0 && errno == ESRCH)
+        return true;
+    else
+        return false;
 #endif
 }
