@@ -85,7 +85,7 @@
 <ul class="recent">
 {{#RECENT_PROBLEM_SECTION}}
 <li><a href="open?filename={{PROBLEM_FILENAME}}" class="recent_name">{{PROBLEM_BASE}}</a><br />
-	<span class="recent_filename">{{PROBLEM_FILENAME}}</span></li>
+	<span class="recent_filename">{{PROBLEM_FILENAME_LABEL}}</span></li>
 {{/RECENT_PROBLEM_SECTION}}
 </ul>
 </div>
@@ -97,7 +97,7 @@
 <ul class="recent">
 {{#RECENT_SCRIPT_SECTION}}
 <li><a href="open?filename={{SCRIPT_FILENAME}}" class="recent_name">{{SCRIPT_BASE}}</a><br />
-	<span class="recent_filename">{{SCRIPT_FILENAME}}</span></li>
+	<span class="recent_filename">{{SCRIPT_FILENAME_LABEL}}</span></li>
 {{/RECENT_SCRIPT_SECTION}}
 </ul>
 </div>
