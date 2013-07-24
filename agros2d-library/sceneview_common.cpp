@@ -61,7 +61,7 @@ SceneViewCommon::SceneViewCommon(QWidget *parent)
     createActions();
 
     setMouseTracking(true);
-    setFocusPolicy(Qt::StrongFocus);
+    setFocusPolicy(Qt::WheelFocus);
     setContextMenuPolicy(Qt::DefaultContextMenu);
 
     setMinimumSize(200, 200);

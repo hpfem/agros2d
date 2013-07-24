@@ -67,7 +67,7 @@ private:
 private slots:
     void doContextMenu(const QPoint &pos);
     void doItemDoubleClicked(QTreeWidgetItem *item, int role);
-    void doItemSelected(QTreeWidgetItem *item, int role);
+    void doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 };
 
 #endif // PREPROCESSORVIEW_H

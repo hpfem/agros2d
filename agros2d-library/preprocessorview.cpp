@@ -60,12 +60,11 @@ PreprocessorWidget::PreprocessorWidget(SceneViewPreprocessor *sceneView, QWidget
     connect(Agros2D::problem(), SIGNAL(timeStepChanged()), this, SLOT(refresh()));
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(refresh()));
 
-    connect(trvWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));
-    connect(trvWidget, SIGNAL(itemActivated(QTreeWidgetItem *, int)), this, SLOT(doItemSelected(QTreeWidgetItem *, int)));
-    connect(trvWidget, SIGNAL(itemPressed(QTreeWidgetItem *, int)), this, SLOT(doItemSelected(QTreeWidgetItem *, int)));
+    connect(trvWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));    
+    connect(trvWidget, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(doItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
     connect(trvWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doItemDoubleClicked(QTreeWidgetItem *, int)));
 
-    doItemSelected(NULL, Qt::UserRole);
+    doItemChanged(NULL, NULL);
 }
 
 PreprocessorWidget::~PreprocessorWidget()
@@ -330,21 +329,24 @@ void PreprocessorWidget::loadTooltip(SceneGeometryMode sceneMode)
 
 void PreprocessorWidget::doContextMenu(const QPoint &pos)
 {
-    QTreeWidgetItem *item = trvWidget->itemAt(pos);
-    doItemSelected(item, 0);
+    QTreeWidgetItem *current = trvWidget->itemAt(pos);
+    if (current)
+    {
+        doItemChanged(current, NULL);
 
-    trvWidget->setCurrentItem(item);
-    mnuPreprocessor->exec(QCursor::pos());
+        trvWidget->setCurrentItem(current);
+        mnuPreprocessor->exec(QCursor::pos());
+    }
 }
 
-void PreprocessorWidget::doItemSelected(QTreeWidgetItem *item, int role)
+void PreprocessorWidget::doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
     createMenu();
 
     actProperties->setEnabled(false);
     actDelete->setEnabled(false);
 
-    if (item != NULL)
+    if (current)
     {
         Agros2D::scene()->selectNone();
         Agros2D::scene()->highlightNone();
@@ -363,7 +365,6 @@ void PreprocessorWidget::doItemSelected(QTreeWidgetItem *item, int role)
 
             objectBasic->setSelected(true);
             m_sceneViewPreprocessor->refresh();
-            m_sceneViewPreprocessor->setFocus();
 
             actProperties->setEnabled(true);
             actDelete->setEnabled(true);
@@ -378,7 +379,6 @@ void PreprocessorWidget::doItemSelected(QTreeWidgetItem *item, int role)
             Agros2D::scene()->edges->haveMarker(objectBoundary).setSelected();
 
             m_sceneViewPreprocessor->refresh();
-            m_sceneViewPreprocessor->setFocus();
 
             actProperties->setEnabled(true);
             actDelete->setEnabled(true);
@@ -393,7 +393,6 @@ void PreprocessorWidget::doItemSelected(QTreeWidgetItem *item, int role)
             Agros2D::scene()->labels->haveMarker(objectMaterial).setSelected();
 
             m_sceneViewPreprocessor->refresh();
-            m_sceneViewPreprocessor->setFocus();
 
             actProperties->setEnabled(true);
             actDelete->setEnabled(true);
