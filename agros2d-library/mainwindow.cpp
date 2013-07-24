@@ -234,7 +234,6 @@ MainWindow::~MainWindow()
     removeDirectory(tempProblemDir());
 
     delete logStdOut;
-    delete scriptEditorDialog;
 }
 
 void MainWindow::createActions()
@@ -1668,17 +1667,10 @@ void MainWindow::showEvent(QShowEvent *event)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    // WILL BE FIXED
-    /*
-    if (!Agros2D::scene()->undoStack()->isClean())
-        doDocumentClose();
-
-    if (Agros2D::scene()->undoStack()->isClean() && !scriptEditorDialog->isScriptModified())
-        event->accept();
-    else
+    if (currentPythonEngine()->isRunning())
     {
+        QMessageBox::information(QApplication::activeWindow(), tr("Script"),
+                                 tr("Cannot close main window. Script is still running."));
         event->ignore();
-        if (scriptEditorDialog->isScriptModified()) scriptEditorDialog->show();
     }
-    */
 }
