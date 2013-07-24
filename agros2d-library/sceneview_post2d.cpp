@@ -1198,7 +1198,7 @@ void SceneViewPost2D::clear()
 
     SceneViewCommon2D::clear();
     if (Agros2D::problem()->isSolved())
-        doZoomBestFit();
+        SceneViewCommon::refresh();
 }
 
 void SceneViewPost2D::exportVTKScalarView(const QString &fileName)

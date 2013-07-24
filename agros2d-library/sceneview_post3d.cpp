@@ -885,9 +885,7 @@ void SceneViewPost3D::setControls()
 
 void SceneViewPost3D::clear()
 {
+    SceneViewCommon3D::clear();
     if (Agros2D::problem()->isSolved())
-    {
-        refresh();
         doZoomBestFit();
-    }
 }
