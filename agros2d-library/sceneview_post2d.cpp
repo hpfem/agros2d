@@ -1159,15 +1159,10 @@ void SceneViewPost2D::clearGLLists()
     if (m_listContours != -1) glDeleteLists(m_listContours, 1);
     if (m_listVectors != -1) glDeleteLists(m_listVectors, 1);
     if (m_listScalarField != -1) glDeleteLists(m_listScalarField, 1);
-    // if (m_listParticleTracing != -1) glDeleteLists(m_listParticleTracing, 1);
 
     m_listContours = -1;
     m_listVectors = -1;
     m_listScalarField = -1;
-    // m_listParticleTracing = -1;
-
-    // m_arrayScalarField.clear();
-    // m_arrayScalarFieldColors.clear();
 }
 
 void SceneViewPost2D::refresh()
