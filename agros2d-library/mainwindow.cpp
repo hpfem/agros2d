@@ -234,6 +234,7 @@ MainWindow::~MainWindow()
     removeDirectory(tempProblemDir());
 
     delete logStdOut;
+    delete scriptEditorDialog;
 }
 
 void MainWindow::createActions()

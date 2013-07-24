@@ -1074,7 +1074,7 @@ void SceneViewParticleTracing::refresh()
     setControls();
 
     if (Agros2D::problem()->isSolved())
-        SceneViewCommon::refresh();
+        clear();
 }
 
 void SceneViewParticleTracing::setControls()
@@ -1093,7 +1093,7 @@ void SceneViewParticleTracing::clear()
     if (Agros2D::problem()->isSolved())
     {
         refresh();
-        SceneViewCommon::clear();
+        doZoomBestFit();
     }
 }
 

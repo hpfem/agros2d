@@ -888,6 +888,6 @@ void SceneViewPost3D::clear()
     if (Agros2D::problem()->isSolved())
     {
         refresh();
-        SceneViewCommon::clear();
+        doZoomBestFit();
     }
 }
