@@ -518,8 +518,10 @@ void SceneViewCommon2D::keyPressEvent(QKeyEvent *event)
     }
         break;
     default:
-        QGLWidget::keyPressEvent(event);
+        ; //
     }
+
+    QGLWidget::keyPressEvent(event);
 }
 
 void SceneViewCommon2D::keyReleaseEvent(QKeyEvent *event)
@@ -531,6 +533,7 @@ void SceneViewCommon2D::keyReleaseEvent(QKeyEvent *event)
         m_nodeLast = NULL;
         updateGL();
     }
+    QGLWidget::keyReleaseEvent(event);
 
     emit mouseSceneModeChanged(MouseSceneMode_Nothing);
 }

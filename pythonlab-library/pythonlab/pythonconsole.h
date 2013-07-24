@@ -136,10 +136,6 @@ protected:
 
 private:
     PythonScriptingConsole *m_console;
-
-private slots:
-    void doVisibilityChanged(bool);
-
 };
 
 class AGROS_API PythonScriptingHistoryView : public QDockWidget

@@ -60,7 +60,7 @@ PreprocessorWidget::PreprocessorWidget(SceneViewPreprocessor *sceneView, QWidget
     connect(Agros2D::problem(), SIGNAL(timeStepChanged()), this, SLOT(refresh()));
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(refresh()));
 
-    connect(trvWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));    
+    connect(trvWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(doContextMenu(const QPoint &)));
     connect(trvWidget, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(doItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
     connect(trvWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doItemDoubleClicked(QTreeWidgetItem *, int)));
 
@@ -150,13 +150,13 @@ void PreprocessorWidget::createControls()
 
 void PreprocessorWidget::keyPressEvent(QKeyEvent *event)
 {
-    switch (event->key()) {
-    case Qt::Key_Delete:
+    if (event->key() == Qt::Key_Delete)
+    {
         doDelete();
-        break;
-    default:
-        QWidget::keyPressEvent(event);
+        return;
     }
+
+    QWidget::keyPressEvent(event);
 }
 
 void PreprocessorWidget::refresh()
@@ -330,13 +330,12 @@ void PreprocessorWidget::loadTooltip(SceneGeometryMode sceneMode)
 void PreprocessorWidget::doContextMenu(const QPoint &pos)
 {
     QTreeWidgetItem *current = trvWidget->itemAt(pos);
-    if (current)
-    {
-        doItemChanged(current, NULL);
+    doItemChanged(current, NULL);
 
+    if (current)
         trvWidget->setCurrentItem(current);
-        mnuPreprocessor->exec(QCursor::pos());
-    }
+
+    mnuPreprocessor->exec(QCursor::pos());
 }
 
 void PreprocessorWidget::doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
@@ -346,14 +345,14 @@ void PreprocessorWidget::doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem
     actProperties->setEnabled(false);
     actDelete->setEnabled(false);
 
+    Agros2D::scene()->selectNone();
+    Agros2D::scene()->highlightNone();
+
     if (current)
     {
-        Agros2D::scene()->selectNone();
-        Agros2D::scene()->highlightNone();
-
-        // geometry
-        if (SceneBasic *objectBasic = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBasic *>())
+        if (SceneBasic *objectBasic = current->data(0, Qt::UserRole).value<SceneBasic *>())
         {
+            // geometry
             m_sceneViewPreprocessor->actSceneModePreprocessor->trigger();
 
             if (dynamic_cast<SceneNode *>(objectBasic))
@@ -364,39 +363,34 @@ void PreprocessorWidget::doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem
                 m_sceneViewPreprocessor->actOperateOnLabels->trigger();
 
             objectBasic->setSelected(true);
-            m_sceneViewPreprocessor->refresh();
 
             actProperties->setEnabled(true);
             actDelete->setEnabled(true);
         }
-
-        // edge marker
-        if (SceneBoundary *objectBoundary = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneBoundary *>())
+        else if (SceneBoundary *objectBoundary = current->data(0, Qt::UserRole).value<SceneBoundary *>())
         {
+            // edge marker
             // select all edges
             m_sceneViewPreprocessor->actOperateOnEdges->trigger();
 
             Agros2D::scene()->edges->haveMarker(objectBoundary).setSelected();
 
-            m_sceneViewPreprocessor->refresh();
-
             actProperties->setEnabled(true);
             actDelete->setEnabled(true);
         }
-
-        // label marker
-        if (SceneMaterial *objectMaterial = trvWidget->currentItem()->data(0, Qt::UserRole).value<SceneMaterial *>())
+        else if (SceneMaterial *objectMaterial = current->data(0, Qt::UserRole).value<SceneMaterial *>())
         {
+            // label marker
             // select all labels
             m_sceneViewPreprocessor->actOperateOnLabels->trigger();
 
             Agros2D::scene()->labels->haveMarker(objectMaterial).setSelected();
 
-            m_sceneViewPreprocessor->refresh();
-
             actProperties->setEnabled(true);
             actDelete->setEnabled(true);
         }
+
+        m_sceneViewPreprocessor->refresh();
     }
 }
 

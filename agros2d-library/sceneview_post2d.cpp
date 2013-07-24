@@ -114,16 +114,11 @@ void SceneViewPost2D::createActionsPost2D()
 
 void SceneViewPost2D::keyPressEvent(QKeyEvent *event)
 {
-    SceneViewCommon2D::keyPressEvent(event);
-
-    switch (event->key())
-    {
-    case Qt::Key_A:
+    if (event->key() == Qt::Key_A)
     {
         // select all
         if (event->modifiers() & Qt::ControlModifier)
         {
-
             // select volume integral area
             if (actPostprocessorModeVolumeIntegral->isChecked())
             {
@@ -141,10 +136,8 @@ void SceneViewPost2D::keyPressEvent(QKeyEvent *event)
             updateGL();
         }
     }
-        break;
-    default:
-        QGLWidget::keyPressEvent(event);
-    }
+
+    SceneViewCommon2D::keyPressEvent(event);
 }
 
 void SceneViewPost2D::mousePressEvent(QMouseEvent *event)

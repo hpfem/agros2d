@@ -738,34 +738,33 @@ void SceneViewPreprocessor::mouseDoubleClickEvent(QMouseEvent *event)
 
 void SceneViewPreprocessor::keyPressEvent(QKeyEvent *event)
 {
-    SceneViewCommon2D::keyPressEvent(event);
-
     switch (event->key())
     {
     case Qt::Key_Delete:
     {
         Agros2D::scene()->deleteSelected();
-    }
         break;
+    }
     case Qt::Key_Space:
     {
         doSceneObjectProperties();
-    }
         break;
+    }
     case Qt::Key_A:
     {
         // select all
         if (event->modifiers() & Qt::ControlModifier)
         {
             Agros2D::scene()->selectAll(m_sceneMode);
-
             updateGL();
         }
-    }
         break;
+    }
     default:
         QGLWidget::keyPressEvent(event);
     }
+
+    SceneViewCommon2D::keyPressEvent(event);
 
     // snap to grid
     m_snapToGrid = ((Agros2D::problem()->setting()->value(ProblemSetting::View_SnapToGrid).toBool())

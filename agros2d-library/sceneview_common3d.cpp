@@ -336,6 +336,7 @@ void SceneViewCommon3D::keyReleaseEvent(QKeyEvent *event)
 {
     setToolTip("");
 
+    QGLWidget::keyReleaseEvent(event);
     emit mouseSceneModeChanged(MouseSceneMode_Nothing);
 }
 

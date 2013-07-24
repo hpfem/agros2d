@@ -707,9 +707,8 @@ PythonScriptingConsoleView::PythonScriptingConsoleView(PythonEngine *pythonEngin
 {
     setObjectName("ConsoleView");
 
-    connect(this, SIGNAL(visibilityChanged(bool)), this, SLOT(doVisibilityChanged(bool)));
-
     m_console = new PythonScriptingConsole(pythonEngine, this);
+    setFocusProxy(m_console);
 
     setWidget(m_console);
 }
@@ -722,12 +721,6 @@ PythonScriptingConsoleView::~PythonScriptingConsoleView()
 void PythonScriptingConsoleView::focusInEvent(QFocusEvent *event)
 {
     m_console->setFocus(event->reason());
-}
-
-void PythonScriptingConsoleView::doVisibilityChanged(bool)
-{
-    if (isVisible())
-        m_console->setFocus();
 }
 
 // ***********************************************************************************************

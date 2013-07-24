@@ -1292,11 +1292,7 @@ void MainWindow::doSolveFinished()
         postprocessorWidget->raise();
     }
 
-    if (!currentPythonEngineAgros()->isRunning())
-    {
-        setFocus();
-        activateWindow();
-    }
+    activateWindow();
 }
 
 void MainWindow::doFullScreen()
