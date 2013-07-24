@@ -139,9 +139,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(setControls()));
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
-
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(doSolveFinished()));
-    //connect(Agros2D::problem(), SIGNAL(calculationStoped()), this, SLOT(doSolveFinished()));
 
     connect(tabViewLayout, SIGNAL(currentChanged(int)), this, SLOT(setControls()));
     connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(setControls()));
@@ -347,17 +345,6 @@ void MainWindow::createActions()
     actOptions->setMenuRole(QAction::PreferencesRole);
     connect(actOptions, SIGNAL(triggered()), this, SLOT(doOptions()));
 
-    actCreateMesh = new QAction(icon("scene-meshgen"), tr("&Mesh area"), this);
-    actCreateMesh->setShortcut(QKeySequence(tr("Alt+W")));
-    connect(actCreateMesh, SIGNAL(triggered()), this, SLOT(doCreateMesh()));
-
-    actSolve = new QAction(icon("run"), tr("&Solve"), this);
-    actSolve->setShortcut(QKeySequence(tr("Alt+S")));
-    connect(actSolve, SIGNAL(triggered()), this, SLOT(doSolve()));
-
-    actSolveAdaptiveStep = new QAction(icon("run-step"), tr("Adaptive\nstep"), this);
-    connect(actSolveAdaptiveStep, SIGNAL(triggered()), this, SLOT(doSolveAdaptiveStep()));
-
     actFullScreen = new QAction(icon("view-fullscreen"), tr("Fullscreen mode"), this);
     actFullScreen->setShortcut(QKeySequence(tr("F11")));
     connect(actFullScreen, SIGNAL(triggered()), this, SLOT(doFullScreen()));
@@ -516,9 +503,9 @@ void MainWindow::createMenus()
     mnuProblem->addAction(sceneViewPost2D->actSelectPoint);
     mnuProblem->addAction(sceneViewPost2D->actSelectByMarker);
     mnuProblem->addSeparator();
-    mnuProblem->addAction(actCreateMesh);
-    mnuProblem->addAction(actSolve);
-    mnuProblem->addAction(actSolveAdaptiveStep);
+    mnuProblem->addAction(Agros2D::problem()->actionMesh());
+    mnuProblem->addAction(Agros2D::problem()->actionSolve());
+    mnuProblem->addAction(Agros2D::problem()->actionSolveAdaptiveStep());
 
     QMenu *mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actScriptEditor);
@@ -709,9 +696,9 @@ void MainWindow::createMain()
     tlbLeftBar->addSeparator();
     tlbLeftBar->addAction(settingsWidget->actSettings);
     tlbLeftBar->addWidget(spacing);
-    tlbLeftBar->addAction(actCreateMesh);
-    tlbLeftBar->addAction(actSolve);
-    // tlbLeftBar->addAction(actSolveAdaptiveStep);
+    tlbLeftBar->addAction(Agros2D::problem()->actionMesh());
+    tlbLeftBar->addAction(Agros2D::problem()->actionSolve());
+    // tlbLeftBar->addAction(Agros2D::problem()->actionSolveAdaptiveStep());
     tlbLeftBar->addSeparator();
     tlbLeftBar->addAction(actScriptEditor);
 
@@ -1238,50 +1225,9 @@ void MainWindow::doCreateVideo()
     }
 }
 
-void MainWindow::doCreateMesh()
-{
-    actCreateMesh->setEnabled(false);
-    actSolve->setEnabled(false);
-
-    LogDialog *logDialog = new LogDialog(this, tr("Mesh"));
-    logDialog->show();
-
-    // create mesh
-    Agros2D::problem()->mesh();
-    if (Agros2D::problem()->isMeshed())
-    {
-        // raise mesh viewer
-        sceneViewMesh->actSceneModeMesh->trigger();
-
-        // successful run
-        logDialog->close();
-    }
-}
-
-void MainWindow::doSolve()
-{
-    actCreateMesh->setEnabled(false);
-    actSolve->setEnabled(false);
-
-    LogDialog *logDialog = new LogDialog(this, tr("Solver"));
-    logDialog->show();
-
-    // solve problem
-    Agros2D::problem()->solve();
-}
-
-void MainWindow::doSolveAdaptiveStep()
-{
-    LogDialog *logDialog = new LogDialog(this, tr("Adaptive step"));
-    logDialog->show();
-
-    // solve problem
-    Agros2D::problem()->solveAdaptiveStep();
-}
-
 void MainWindow::doSolveFinished()
-{
-    if (Agros2D::problem()->isSolved())
+{   
+    if (Agros2D::problem()->isSolved() && !currentPythonEngine()->isRunning())
     {
         sceneViewPost2D->actSceneModePost2D->trigger();
 
@@ -1290,9 +1236,8 @@ void MainWindow::doSolveFinished()
 
         // raise postprocessor
         postprocessorWidget->raise();
+        activateWindow();
     }
-
-    activateWindow();
 }
 
 void MainWindow::doFullScreen()
@@ -1425,9 +1370,6 @@ void MainWindow::setControls()
     setUpdatesEnabled(false);
     setEnabled(true);
 
-    actCreateMesh->setEnabled(!Agros2D::problem()->isSolving());
-    actSolve->setEnabled(!Agros2D::problem()->isSolving());
-
     actDocumentSaveSolution->setEnabled(Agros2D::problem()->isSolved());
 
     QFileInfo fileInfo(Agros2D::problem()->config()->fileName());
@@ -1541,7 +1483,6 @@ void MainWindow::setControls()
     }
 
     actDocumentExportMeshFile->setEnabled(Agros2D::problem()->isMeshed());
-    actSolveAdaptiveStep->setEnabled(Agros2D::problem()->fieldInfos().count() > 0 && Agros2D::problem()->fieldInfos().count() <= 1 && (!Agros2D::problem()->isTransient()) );
 
     postprocessorWidget->updateControls();
 

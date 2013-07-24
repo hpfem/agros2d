@@ -169,18 +169,18 @@ void PyProblem::mesh()
     if (Agros2D::problem()->isMeshed())
     {
         // trigger postprocessor
-        if (!silentMode())
-        {
-            currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
-            QApplication::processEvents();
-        }
+        // if (!silentMode())
+        // {
+        //     currentPythonEngineAgros()->sceneViewMesh()->actSceneModeMesh->trigger();
+        //     QApplication::processEvents();
+        // }
     }
     else
     {
         // trigger preprocessor
-        if (!silentMode())
-            currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
-
+        // if (!silentMode())
+        //     currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
+        //
         throw logic_error(QObject::tr("Problem is not meshed.").toStdString());
     }
 }
@@ -193,17 +193,17 @@ void PyProblem::solve()
     if (Agros2D::problem()->isSolved())
     {
         // trigger postprocessor
-        if (!silentMode())
-        {
-            currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
-            QApplication::processEvents();
-        }
+        // if (!silentMode())
+        // {
+        //     currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
+        //     QApplication::processEvents();
+        // }
     }
     else
     {
         // trigger preprocessor
-        if (!silentMode())
-            currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
+        // if (!silentMode())
+        //     currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
 
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
     }
@@ -212,19 +212,19 @@ void PyProblem::solve()
 void PyProblem::solveAdaptiveStep()
 {
     Agros2D::scene()->invalidate();
-    Agros2D::problem()->solve(false, false);
+    Agros2D::problem()->solve(true, false);
 
     if (Agros2D::problem()->isSolved())
     {
         // trigger postprocessor
-        if (!silentMode())
-            currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
+        // if (!silentMode())
+        //     currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
     }
     else
     {
         // trigger preprocessor
-        if (!silentMode())
-            currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
+        // if (!silentMode())
+        //     currentPythonEngineAgros()->sceneViewPreprocessor()->actSceneModePreprocessor->trigger();
 
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
     }

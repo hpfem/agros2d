@@ -82,9 +82,6 @@ private slots:
 
     void doMouseSceneModeChanged(MouseSceneMode mouseSceneMode);
 
-    void doCreateMesh();
-    void doSolve();
-    void doSolveAdaptiveStep();
     void doSolveFinished();
 
     void doScriptEditor();
@@ -161,9 +158,6 @@ private:
     QAction *actCopy;
 
     QAction *actOptions;
-    QAction *actCreateMesh;
-    QAction *actSolve;
-    QAction *actSolveAdaptiveStep;
     QAction *actFullScreen;
     QAction *actPostprocessorView;
 

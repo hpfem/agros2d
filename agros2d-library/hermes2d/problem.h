@@ -19,7 +19,17 @@ class CalculationThread : public QThread
    Q_OBJECT
 
 public:
-    CalculationThread(bool adaptiveStep, bool commandLine);
+    enum CalculationType
+    {
+        CalculationType_Mesh,
+        CalculationType_Solve,
+        CalculationType_SolveAdaptiveStep,
+        CalculationType_SolveTimeStep
+    };
+
+    CalculationThread();
+
+    void startCalculation(CalculationType type);
 
 //public slots:
 //    void stopRunning();
@@ -31,9 +41,8 @@ signals:
    void signalValueUpdated(QString);
 
 private:
-    bool isRunning;
-    bool adaptiveStep;
-    bool commandLine;
+    CalculationType m_calculationType;
+
 };
 
 
@@ -55,6 +64,8 @@ signals:
     /// emited when an field is added or removed. Menus need to adjusted
     void couplingsChanged();
 
+    void clearedSolution();
+
 public slots:
     // clear problem
     void clearSolution();
@@ -74,16 +85,20 @@ public:
     bool mesh();
     // solve
     void solve();
-    void solveCommandLine();
     void solveAdaptiveStep();
 
     // check geometry
     bool checkGeometry();
 
     bool isSolved() const {  return m_isSolved; }
-    bool isMeshed() const;
     bool isSolving() const { return m_isSolving; }
-    bool isAborted() const { return m_abortSolve; }
+    bool isMeshed() const;
+    bool isMeshing() const { return m_isMeshing; }
+    bool isAborted() const { return m_abort; }
+
+    inline QAction *actionMesh() { return actMesh; }
+    inline QAction *actionSolve() { return actSolve; }
+    inline QAction *actionSolveAdaptiveStep() { return actSolveAdaptiveStep; }
 
     bool isTransient() const;
     int numTransientFields() const;
@@ -148,10 +163,16 @@ private:
 
     QTime m_lastTimeElapsed;
 
-    bool m_isSolving;
     bool m_isSolved;
+    bool m_isSolving;
+    bool m_isMeshing;
+    bool m_abort;
 
-    bool m_abortSolve;
+    CalculationThread *m_calculationThread;
+
+    QAction *actMesh;
+    QAction *actSolve;
+    QAction *actSolveAdaptiveStep;
 
     // determined in create structure to speed up the calculation
     bool m_isNonlinear;
@@ -168,8 +189,15 @@ private:
 
     void solveAdaptiveStepAction();
     void stepMessage(Block* block);
+
     friend class CalculationThread;
     friend class PyProblem;
+    friend class AgrosSolver;
+
+private slots:
+    void doMeshWithGUI();
+    void doSolveWithGUI();
+    void doSolveAdaptiveStepWithGUI();
 };
 
 #endif // PROBLEM_H

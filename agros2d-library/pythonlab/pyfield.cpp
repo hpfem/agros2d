@@ -679,6 +679,7 @@ void PyField::surfaceIntegrals(const vector<int> &edges, int timeStep, int adapt
             currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
             currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeSurfaceIntegral->trigger();
         }
+
         Agros2D::scene()->selectNone();
 
         if (!edges.empty())
@@ -744,6 +745,7 @@ void PyField::volumeIntegrals(const vector<int> &labels, int timeStep, int adapt
             currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
             currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeVolumeIntegral->trigger();
         }
+
         Agros2D::scene()->selectNone();
 
         if (!labels.empty())

@@ -63,7 +63,7 @@ void PythonEngineAgros::runPythonHeader()
 
 void PythonEngineAgros::abortScript()
 {
-    if (Agros2D::problem()->isSolving())
+    if (Agros2D::problem()->isMeshing() || Agros2D::problem()->isSolving())
         Agros2D::problem()->doAbortSolve();
 
     PythonEngine::abortScript();

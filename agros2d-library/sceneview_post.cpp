@@ -48,6 +48,7 @@ PostHermes::PostHermes() :
     m_activeViewField(NULL), m_activeTimeStep(NOT_FOUND_SO_FAR), m_activeAdaptivityStep(NOT_FOUND_SO_FAR), m_activeSolutionMode(SolutionMode_Undefined), m_isProcessed(false)
 {
     connect(Agros2D::scene(), SIGNAL(cleared()), this, SLOT(clear()));
+    connect(Agros2D::problem(), SIGNAL(clearedSolution()), this, SLOT(clearView()));
     connect(Agros2D::problem(), SIGNAL(fieldsChanged()), this, SLOT(clear()));
 
     connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(problemMeshed()));
@@ -295,7 +296,7 @@ void PostHermes::processRangeVector()
     }
 }
 
-void PostHermes::refresh()
+void PostHermes::clearView()
 {
     m_isProcessed = false;
 
@@ -306,6 +307,11 @@ void PostHermes::refresh()
     m_linContourView.free();
     m_linScalarView.free();
     m_vecVectorView.free();
+}
+
+void PostHermes::refresh()
+{
+    clearView();
 
     if (Agros2D::problem()->isMeshed())
         processMeshed();
@@ -319,15 +325,7 @@ void PostHermes::refresh()
 
 void PostHermes::clear()
 {
-    m_isProcessed = false;
-
-    m_linInitialMeshView.free();
-    m_linSolutionMeshView.free();
-    m_orderView.free();
-
-    m_linContourView.free();
-    m_linScalarView.free();
-    m_vecVectorView.free();
+    clearView();
 
     m_activeViewField = NULL;
     m_activeTimeStep = NOT_FOUND_SO_FAR;

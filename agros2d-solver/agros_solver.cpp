@@ -82,7 +82,7 @@ void AgrosSolver::solveProblem()
         Agros2D::log()->printMessage(tr("Problem"), tr("Problem '%1' successfuly loaded").arg(m_fileName));
 
         // solve
-        Agros2D::problem()->solveCommandLine();
+        Agros2D::problem()->solve(false, true);
         // save solution
         Agros2D::scene()->writeSolutionToFile(m_fileName);
 

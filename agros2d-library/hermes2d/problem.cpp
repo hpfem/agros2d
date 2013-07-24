@@ -40,18 +40,62 @@
 #include "meshgenerator_gmsh.h"
 #include "logview.h"
 
+CalculationThread::CalculationThread() : QThread()
+{
+}
+
+void CalculationThread::startCalculation(CalculationType type)
+{
+    m_calculationType = type;
+    start(QThread::TimeCriticalPriority);
+}
+
+void CalculationThread::run()
+{
+    switch (m_calculationType)
+    {
+    case CalculationType_Mesh:
+        Agros2D::problem()->mesh();
+        break;
+    case CalculationType_Solve:
+        Agros2D::problem()->solve(false, false);
+        break;
+    case CalculationType_SolveAdaptiveStep:
+        Agros2D::problem()->solve(true, false);
+        break;
+    case CalculationType_SolveTimeStep:
+        assert(0);
+        break;
+    default:
+        assert(0);
+    }
+}
+
 Problem::Problem()
 {
     // m_timeStep = 0;
     m_lastTimeElapsed = QTime(0, 0);
     m_isSolved = false;
     m_isSolving = false;
-    m_abortSolve = false;
+    m_isMeshing = false;
+    m_abort = false;
 
     m_config = new ProblemConfig();
     m_setting = new ProblemSetting();
+    m_calculationThread = new CalculationThread();
 
     m_isNonlinear = false;
+
+    actMesh = new QAction(icon("scene-meshgen"), tr("&Mesh area"), this);
+    actMesh->setShortcut(QKeySequence(tr("Alt+W")));
+    connect(actMesh, SIGNAL(triggered()), this, SLOT(doMeshWithGUI()));
+
+    actSolve = new QAction(icon("run"), tr("&Solve"), this);
+    actSolve->setShortcut(QKeySequence(tr("Alt+S")));
+    connect(actSolve, SIGNAL(triggered()), this, SLOT(doSolveWithGUI()));
+
+    actSolveAdaptiveStep = new QAction(icon("run-step"), tr("Adaptive\nstep"), this);
+    connect(actSolveAdaptiveStep, SIGNAL(triggered()), this, SLOT(doSolveAdaptiveStepWithGUI()));
 
     connect(m_config, SIGNAL(changed()), this, SLOT(clearSolution()));
 }
@@ -63,6 +107,7 @@ Problem::~Problem()
 
     delete m_config;
     delete m_setting;
+    delete m_calculationThread;
 }
 
 bool Problem::isMeshed() const
@@ -119,7 +164,8 @@ void Problem::clearSolution()
 {
     m_isSolved = false;
     m_isSolving = false;
-    m_abortSolve = false;
+    m_isMeshing = false;
+    m_abort = false;
 
     // m_timeStep = 0;
     m_lastTimeElapsed = QTime(0, 0);
@@ -133,6 +179,8 @@ void Problem::clearSolution()
 
     // remove cache
     removeDirectory(cacheProblemDir());
+
+    emit clearedSolution();
 }
 
 void Problem::clearFieldsAndConfig()
@@ -289,6 +337,9 @@ void Problem::createStructure()
 
 bool Problem::mesh()
 {
+    if (isMeshing() || isSolving())
+        return false;
+
     bool result = false;
 
     // TODO: make global check geometry before mesh() and solve()
@@ -297,6 +348,8 @@ bool Problem::mesh()
         Agros2D::log()->printError(tr("Mesh"), tr("No fields defined"));
         return false;
     }
+
+    m_isMeshing = true;
 
     try
     {
@@ -307,7 +360,7 @@ bool Problem::mesh()
         // this assumes that all the code in Hermes and Agros is exception-safe
         // todo:  this is almost certainly not the case, at least for Agros. It should be further investigated
         Agros2D::log()->printError(tr("Geometry"), QString("%1").arg(e.what()));
-        m_isSolving = false;
+        m_isMeshing = false;
         return false;
     }
     catch (AgrosMeshException& e)
@@ -315,7 +368,7 @@ bool Problem::mesh()
         // this assumes that all the code in Hermes and Agros is exception-safe
         // todo:  this is almost certainly not the case, at least for Agros. It should be further investigated
         Agros2D::log()->printError(tr("Mesh"), QString("%1").arg(e.what()));
-        m_isSolving = false;
+        m_isMeshing = false;
         return false;
     }
     catch (Hermes::Exceptions::Exception& e)
@@ -323,7 +376,7 @@ bool Problem::mesh()
         // todo: dangerous
         // catching all other exceptions. This is not safe at all
         Agros2D::log()->printWarning(tr("Mesh"), e.what());
-        m_isSolving = false;
+        m_isMeshing = false;
         return false;
     }
     catch (...)
@@ -332,16 +385,18 @@ bool Problem::mesh()
         // catching all other exceptions. This is not safe at all
         Agros2D::log()->printWarning(tr("Mesh"), tr("An unknown exception occured and has been ignored"));
         qDebug() << "Mesh: An unknown exception occured and has been ignored";
-        m_isSolving = false;
+        m_isMeshing = false;
         return false;
     }
+
+    m_isMeshing = false;
 
     return result;
 }
 
 bool Problem::meshAction()
 {
-    //clearSolution();
+    clearSolution();
 
     Agros2D::log()->printMessage(QObject::tr("Problem"), QObject::tr("Mesh generation"));
 
@@ -475,7 +530,6 @@ double Problem::actualTimeStepLength() const
 
 void Problem::solveInit(bool reCreateStructure)
 {
-    m_isSolving = true;
     m_timeStepLengths.clear();
     m_timeHistory.clear();
 
@@ -520,50 +574,29 @@ void Problem::solveInit(bool reCreateStructure)
     }
 }
 
-
-CalculationThread::CalculationThread(bool adaptiveStep, bool commandLine) : adaptiveStep(adaptiveStep), commandLine(commandLine)
-{
-
-}
-
-void CalculationThread::run()
-{
-    Agros2D::problem()->solve(adaptiveStep, commandLine);
-}
-
 void Problem::doAbortSolve()
 {
-    m_abortSolve = true;
+    m_abort = true;
     Agros2D::log()->printError(QObject::tr("Solver"), QObject::tr("Aborting calculation..."));
 }
 
 void Problem::solve()
-{
-    m_isSolved = false;
-    m_isSolving = false;
-
-    CalculationThread* thread = new CalculationThread(false, false);
-    thread->start(QThread::TimeCriticalPriority);
-}
-
-void Problem::solveCommandLine()
-{
-    //    MyThread* thread = new MyThread(false, true);
-    //    thread->start(QThread::TimeCriticalPriority);
-    solve(false, true);
+{    
+    m_calculationThread->startCalculation(CalculationThread::CalculationType_Solve);
 }
 
 void Problem::solveAdaptiveStep()
 {
-    CalculationThread* thread = new CalculationThread(true, false);
-    thread->start(QThread::TimeCriticalPriority);
+    m_calculationThread->startCalculation(CalculationThread::CalculationType_SolveAdaptiveStep);
 }
 
 void Problem::solve(bool adaptiveStepOnly, bool commandLine)
 {
-    if (isSolving())
+    if (isMeshing() || isSolving())
         return;
-    m_abortSolve = false;
+
+    // clear solution
+    clearSolution();
 
     if (numTransientFields() > 1)
     {
@@ -606,6 +639,8 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
         QTime timeCounter = QTime();
         timeCounter.start();
 
+        m_isSolving = true;
+
         if (adaptiveStepOnly)
             solveAdaptiveStepAction();
         else
@@ -623,7 +658,7 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
             config()->setFileName("");
         }
 
-        m_abortSolve = false;
+        m_abort = false;
         m_isSolving = false;
         m_isSolved = true;
 
@@ -707,7 +742,6 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
     }
 }
 
-
 //adaptivity step: from 0, if no adaptivity, than 0
 //time step: from 0 (initial condition), if block is not transient, calculate allways (todo: timeskipping)
 //if no block transient, everything in timestep 0
@@ -758,7 +792,7 @@ void Problem::solveAction()
                     // adaptivity
                     int adaptStep = 1;
                     bool continueAdaptivity = true;
-                    while (continueAdaptivity && (adaptStep <= block->adaptivitySteps()) && !m_abortSolve)
+                    while (continueAdaptivity && (adaptStep <= block->adaptivitySteps()) && !m_abort)
                     {
                         // solve problem
                         solvers[block]->solveReferenceAndProject(actualTimeStep(), adaptStep - 1);
@@ -796,14 +830,11 @@ void Problem::solveAction()
 
             doNextTimeStep = defineActualTimeStepLength(nextTimeStep.length);
         }
-    } while (doNextTimeStep && !m_abortSolve);
+    } while (doNextTimeStep && !m_abort);
 }
 
 void Problem::solveAdaptiveStepAction()
 {
-    m_isSolved = false;
-    m_isSolving = false;
-
     solveInit(false);
 
     assert(isMeshed());
@@ -1049,4 +1080,36 @@ Block* Problem::blockOfField(FieldInfo *fieldInfo) const
             return block;
     }
     return NULL;
+}
+
+void Problem::doMeshWithGUI()
+{
+    LogDialog *logDialog = new LogDialog(QApplication::activeWindow(), tr("Mesh"));
+    logDialog->show();
+
+    // create mesh
+    mesh();
+    if (isMeshed())
+    {
+        // successful run
+        logDialog->close();
+    }
+}
+
+void Problem::doSolveWithGUI()
+{
+    LogDialog *logDialog = new LogDialog(QApplication::activeWindow(), tr("Solver"));
+    logDialog->show();
+
+    // solve problem
+    solve();
+}
+
+void Problem::doSolveAdaptiveStepWithGUI()
+{
+    LogDialog *logDialog = new LogDialog(QApplication::activeWindow(), tr("Adaptive step"));
+    logDialog->show();
+
+    // solve problem
+    solveAdaptiveStep();
 }

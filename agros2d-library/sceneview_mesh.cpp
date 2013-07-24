@@ -420,6 +420,7 @@ void SceneViewMesh::paintOrder()
 void SceneViewMesh::paintOrderColorBar()
 {
     if (!Agros2D::problem()->isSolved() || !Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderColorBar).toBool()) return;
+    if (!m_postHermes->orderIsPrepared()) return;
 
     // order scalar view
     m_postHermes->ordView().lock_data();

@@ -85,6 +85,7 @@ signals:
 public slots:
     void refresh();
     void clear();
+    void clearView();
 
 private:
     bool m_isProcessed;
