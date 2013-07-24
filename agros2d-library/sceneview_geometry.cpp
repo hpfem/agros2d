@@ -201,6 +201,7 @@ void SceneViewPreprocessor::clear()
     m_backgroundTexture = -1;
 
     m_sceneMode = SceneGeometryMode_OperateOnNodes;
+    doZoomBestFit();
 }
 
 void SceneViewPreprocessor::doSceneGeometryModeSet(QAction *action)

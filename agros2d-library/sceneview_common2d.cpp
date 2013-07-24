@@ -59,8 +59,6 @@ void SceneViewCommon2D::clear()
     m_offset2d = Point();
 
     m_nodeLast = NULL;
-
-    SceneViewCommon::clear();
 }
 
 void SceneViewCommon2D::updatePosition(const Point &point)

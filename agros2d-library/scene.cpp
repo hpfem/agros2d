@@ -432,7 +432,6 @@ void Scene::clear()
     // clear problem
     if (Agros2D::singleton() && Agros2D::problem())
     {
-        Agros2D::problem()->clearSolution();
         Agros2D::problem()->clearFieldsAndConfig();
     }
 
@@ -468,7 +467,6 @@ void Scene::clear()
     blockSignals(false);
 
     emit cleared();
-
     emit fileNameChanged(tr("unnamed"));
     emit invalidated();
 }

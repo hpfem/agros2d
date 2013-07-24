@@ -56,8 +56,6 @@ void PyProblem::setCoordinateType(const std::string &coordinateType)
         Agros2D::problem()->config()->setCoordinateType(coordinateTypeFromStringKey(QString::fromStdString(coordinateType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(coordinateTypeStringKeys())).toStdString());
-
-    Agros2D::scene()->invalidate();
 }
 
 void PyProblem::setMeshType(const std::string &meshType)

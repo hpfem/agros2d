@@ -84,11 +84,6 @@ void SceneViewCommon3D::clear()
     m_rotation3d.x = 66.0;
     m_rotation3d.y = -35.0;
     m_rotation3d.z = 0.0;
-
-    refresh();
-    doZoomBestFit();
-
-    SceneViewCommon::clear();
 }
 
 void SceneViewCommon3D::doZoomRegion(const Point &start, const Point &end)

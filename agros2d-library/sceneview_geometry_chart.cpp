@@ -71,12 +71,14 @@ void SceneViewPreprocessorChart::doZoomRegion(const Point &start, const Point &e
 
 void SceneViewPreprocessorChart::refresh()
 {
-    SceneViewCommon::refresh();
+    if (Agros2D::problem()->isSolved())
+        SceneViewCommon::refresh();
 }
 
 void SceneViewPreprocessorChart::clear()
 {
-    SceneViewCommon2D::clear();
+    if (Agros2D::problem()->isSolved())
+        doZoomBestFit();
 }
 
 void SceneViewPreprocessorChart::setChartLine(ChartLine chartLine)

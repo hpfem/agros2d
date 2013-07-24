@@ -54,7 +54,7 @@ public slots:
     virtual void doZoomRegion(const Point &start, const Point &end) = 0;
 
     virtual void refresh();
-    virtual void clear();
+    virtual void clear() = 0;
 
 public:
     SceneViewCommon(QWidget *parent = 0);

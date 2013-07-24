@@ -1176,9 +1176,8 @@ void SceneViewPost2D::refresh()
 
     setControls();
 
-    SceneViewCommon2D::refresh();
-
-    // emit mousePressed();
+    if (Agros2D::problem()->isSolved())
+        SceneViewCommon2D::refresh();
 }
 
 void SceneViewPost2D::setControls()
@@ -1198,6 +1197,8 @@ void SceneViewPost2D::clear()
     setControls();
 
     SceneViewCommon2D::clear();
+    if (Agros2D::problem()->isSolved())
+        doZoomBestFit();
 }
 
 void SceneViewPost2D::exportVTKScalarView(const QString &fileName)

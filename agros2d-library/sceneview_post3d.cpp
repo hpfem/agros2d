@@ -870,7 +870,8 @@ void SceneViewPost3D::refresh()
 
     setControls();
 
-    SceneViewCommon::refresh();
+    if (Agros2D::problem()->isSolved())
+        SceneViewCommon::refresh();
 }
 
 void SceneViewPost3D::setControls()
@@ -884,5 +885,9 @@ void SceneViewPost3D::setControls()
 
 void SceneViewPost3D::clear()
 {
-    SceneViewCommon3D::clear();
+    if (Agros2D::problem()->isSolved())
+    {
+        refresh();
+        SceneViewCommon::clear();
+    }
 }

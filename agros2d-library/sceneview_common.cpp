@@ -292,11 +292,6 @@ void SceneViewCommon::doZoomOut()
     setZoom(-1/1.2);
 }
 
-void SceneViewCommon::clear()
-{
-    doZoomBestFit();
-}
-
 void SceneViewCommon::refresh()
 {
     createFontTexture();

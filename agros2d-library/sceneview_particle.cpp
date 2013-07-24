@@ -1073,7 +1073,8 @@ void SceneViewParticleTracing::refresh()
 
     setControls();
 
-    SceneViewCommon::refresh();
+    if (Agros2D::problem()->isSolved())
+        SceneViewCommon::refresh();
 }
 
 void SceneViewParticleTracing::setControls()
@@ -1089,6 +1090,11 @@ void SceneViewParticleTracing::clear()
     clearParticleLists();
 
     SceneViewCommon3D::clear();
+    if (Agros2D::problem()->isSolved())
+    {
+        refresh();
+        SceneViewCommon::clear();
+    }
 }
 
 void SceneViewParticleTracing::clearParticleLists()

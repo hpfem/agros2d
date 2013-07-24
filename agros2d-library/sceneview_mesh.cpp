@@ -95,6 +95,8 @@ void SceneViewMesh::clear()
     setControls();
 
     SceneViewCommon2D::clear();
+    if (Agros2D::problem()->isMeshed() || Agros2D::problem()->isSolved())
+        doZoomBestFit();
 }
 
 void SceneViewMesh::exportVTKMesh(const QString &fileName)
