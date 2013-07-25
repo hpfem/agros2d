@@ -12,6 +12,12 @@ cdef extern from "../../agros2d-library/pythonlab/pyproblem.h":
         string getMeshType()
         void setMeshType(string &meshType) except +
 
+        bool getCurvilinearElements()
+        void setCurvilinearElements(bool curvilinearElements)
+
+        int getAngleSegmentsCount()
+        void setAngleSegmentsCount(int count) except +
+
         double getFrequency()
         void setFrequency(double frequency) except +
 
@@ -72,6 +78,18 @@ cdef class __Problem__:
             return self.thisptr.getMeshType().c_str()
         def __set__(self, mesh_type):
             self.thisptr.setMeshType(string(mesh_type))
+
+    property curvilinear_elements:
+        def __get__(self):
+            return self.thisptr.getCurvilinearElements()
+        def __set__(self, elements):
+            self.thisptr.setCurvilinearElements(elements)
+
+    property angle_segments_count:
+        def __get__(self):
+            return self.thisptr.getAngleSegmentsCount()
+        def __set__(self, count):
+            self.thisptr.setAngleSegmentsCount(count)
 
     property frequency:
         def __get__(self):

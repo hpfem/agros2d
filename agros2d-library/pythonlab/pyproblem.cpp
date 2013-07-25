@@ -66,6 +66,14 @@ void PyProblem::setMeshType(const std::string &meshType)
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(meshTypeStringKeys())).toStdString());
 }
 
+void PyProblem::setAngleSegmentsCount(int count)
+{
+    if (count < 2 || count > 20)
+        throw out_of_range(QObject::tr("Angel segments count is out of range (2 - 20).").toStdString());
+
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_MeshAngleSegmentsCount, count);
+}
+
 void PyProblem::setFrequency(double frequency)
 {
     if (frequency > 0.0)
