@@ -75,7 +75,6 @@ Problem::Problem()
 {
     // m_timeStep = 0;
     m_lastTimeElapsed = QTime(0, 0);
-    m_isSolved = false;
     m_isSolving = false;
     m_isMeshing = false;
     m_abort = false;
@@ -117,6 +116,11 @@ bool Problem::isMeshed() const
             return false;
 
     return (m_fieldInfos.size() > 0);
+}
+
+bool Problem::isSolved() const
+{
+    return !Agros2D::solutionStore()->isEmpty();
 }
 
 int Problem::numAdaptiveFields() const
@@ -162,7 +166,6 @@ bool Problem::determineIsNonlinear() const
 
 void Problem::clearSolution()
 {
-    m_isSolved = false;
     m_isSolving = false;
     m_isMeshing = false;
     m_abort = false;
@@ -335,7 +338,7 @@ void Problem::createStructure()
     }
 }
 
-bool Problem::mesh()
+bool Problem::mesh(bool emitMeshed)
 {
     if (isMeshing() || isSolving())
         return false;
@@ -353,7 +356,7 @@ bool Problem::mesh()
 
     try
     {
-        result = meshAction();
+        result = meshAction(emitMeshed);
     }
     catch (AgrosGeometryException& e)
     {
@@ -394,7 +397,7 @@ bool Problem::mesh()
     return result;
 }
 
-bool Problem::meshAction()
+bool Problem::meshAction(bool emitMeshed)
 {
     clearSolution();
 
@@ -428,7 +431,7 @@ bool Problem::meshAction()
         // load mesh
         try
         {
-            readInitialMeshesFromFile(meshGenerator->xmldomain());
+            readInitialMeshesFromFile(emitMeshed, meshGenerator->xmldomain());
 
             delete meshGenerator;
             return true;
@@ -533,6 +536,12 @@ void Problem::solveInit(bool reCreateStructure)
     m_timeStepLengths.clear();
     m_timeHistory.clear();
 
+    if (fieldInfos().count() == 0)
+    {
+        Agros2D::log()->printError(QObject::tr("Solver"), QObject::tr("No fields defined"));
+        throw AgrosSolverException(tr("No field defined"));
+    }
+
     // check problem settings
     if (Agros2D::problem()->isTransient())
     {
@@ -559,19 +568,15 @@ void Problem::solveInit(bool reCreateStructure)
         Agros2D::log()->printError(tr("Problem"), e.toString());
     }
 
-    if(reCreateStructure || m_blocks.size() == 0)
+    if (reCreateStructure || m_blocks.size() == 0)
     {
         createStructure();
     }
-    // todo: we should not mesh always, but we would need to refine signals to determine when is it neccesary (whether, e.g., parameters of the mesh have been changed)
-    if (!mesh())
-        throw AgrosSolverException(tr("Could not create mesh"));
 
-    if (fieldInfos().count() == 0)
-    {
-        Agros2D::log()->printError(QObject::tr("Solver"), QObject::tr("No fields defined"));
-        throw AgrosSolverException(tr("No field defined"));
-    }
+    // todo: we should not mesh always, but we would need to refine signals to determine when is it neccesary
+    // (whether, e.g., parameters of the mesh have been changed)
+    if (!mesh(false))
+        throw AgrosSolverException(tr("Could not create mesh"));
 }
 
 void Problem::doAbortSolve()
@@ -660,7 +665,6 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
 
         m_abort = false;
         m_isSolving = false;
-        m_isSolved = true;
 
         if (!commandLine)
         {
@@ -914,10 +918,8 @@ void Problem::stepMessage(Block* block)
 }
 
 
-void Problem::readInitialMeshesFromFile(std::auto_ptr<XMLSubdomains::domain> xmldomain)
+void Problem::readInitialMeshesFromFile(bool emitMeshed, std::auto_ptr<XMLSubdomains::domain> xmldomain)
 {
-    Agros2D::log()->printMessage(tr("Problem"), tr("Loading initial mesh from disk"));
-
     // load initial mesh file
     // prepare mesh array
     Hermes::vector<MeshSharedPtr> meshesVector;
@@ -936,6 +938,8 @@ void Problem::readInitialMeshesFromFile(std::auto_ptr<XMLSubdomains::domain> xml
     Hermes::Hermes2D::MeshReaderH2DXML meshloader;
     if (!xmldomain.get())
     {
+        Agros2D::log()->printMessage(tr("Problem"), tr("Loading initial mesh from disk"));
+
         // read from file
         // save locale
         char *plocale = setlocale (LC_NUMERIC, "");
@@ -951,6 +955,8 @@ void Problem::readInitialMeshesFromFile(std::auto_ptr<XMLSubdomains::domain> xml
     }
     else
     {
+        Agros2D::log()->printMessage(tr("Problem"), tr("Reading initial mesh from memory"));
+
         // read from memory
         std::auto_ptr<XMLSubdomains::domain> xml(xmldomain);
         meshloader.load(xml, meshesVector);
@@ -1009,7 +1015,8 @@ void Problem::readInitialMeshesFromFile(std::auto_ptr<XMLSubdomains::domain> xml
     meshes.clear();
     meshesVector.clear();
 
-    emit meshed();
+    if (emitMeshed)
+        emit meshed();
 }
 
 void Problem::readSolutionsFromFile()
@@ -1027,7 +1034,6 @@ void Problem::readSolutionsFromFile()
         }
 
         // emit solve
-        m_isSolved = true;
         emit solved();
     }
 }

@@ -82,7 +82,7 @@ public:
     void createStructure();
 
     // mesh
-    bool mesh();
+    bool mesh(bool emitMeshed = true);
     // solve
     void solve();
     void solveAdaptiveStep();
@@ -90,7 +90,7 @@ public:
     // check geometry
     bool checkGeometry();
 
-    bool isSolved() const {  return m_isSolved; }
+    bool isSolved() const;
     bool isSolving() const { return m_isSolving; }
     bool isMeshed() const;
     bool isMeshing() const { return m_isMeshing; }
@@ -147,7 +147,7 @@ public:
     void refuseLastTimeStepLength();
 
     // read initial meshes and solution
-    void readInitialMeshesFromFile(std::auto_ptr<XMLSubdomains::domain> xmldomain = std::auto_ptr<XMLSubdomains::domain>());
+    void readInitialMeshesFromFile(bool emitMeshed = true, std::auto_ptr<XMLSubdomains::domain> xmldomain = std::auto_ptr<XMLSubdomains::domain>());
     void readSolutionsFromFile();
 
     QList<QPair<double, bool> > timeStepHistory() const { return m_timeHistory; }
@@ -163,7 +163,6 @@ private:
 
     QTime m_lastTimeElapsed;
 
-    bool m_isSolved;
     bool m_isSolving;
     bool m_isMeshing;
     bool m_abort;
@@ -182,7 +181,7 @@ private:
 
     bool skipThisTimeStep(Block* block);
 
-    bool meshAction();
+    bool meshAction(bool emitMeshed = true);
     void solveInit(bool reCreateStructure = true);
     void solve(bool adaptiveStepOnly, bool commandLine);
     void solveAction(); // called by solve, can throw SolverException

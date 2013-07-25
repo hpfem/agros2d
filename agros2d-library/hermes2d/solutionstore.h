@@ -120,6 +120,7 @@ public:
     SolutionRunTimeDetails multiSolutionRunTimeDetail(FieldSolutionID solutionID) const { assert(m_multiSolutionRunTimeDetails.contains(solutionID)); return m_multiSolutionRunTimeDetails[solutionID]; }
     void multiSolutionRunTimeDetailReplace(FieldSolutionID solutionID, SolutionRunTimeDetails runTime);
 
+    inline bool isEmpty() const { return m_multiSolutions.isEmpty(); }
     void clearAll();
 
     void printDebugCacheStatus();

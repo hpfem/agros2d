@@ -139,6 +139,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(setControls()));
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
+    connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(doSolveFinished()));
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(doSolveFinished()));
 
     connect(tabViewLayout, SIGNAL(currentChanged(int)), this, SLOT(setControls()));
@@ -1227,16 +1228,17 @@ void MainWindow::doCreateVideo()
 
 void MainWindow::doSolveFinished()
 {   
+    if (Agros2D::problem()->isMeshed() && !currentPythonEngine()->isRunning())
+    {
+        sceneViewMesh->actSceneModeMesh->trigger();
+    }
+
     if (Agros2D::problem()->isSolved() && !currentPythonEngine()->isRunning())
     {
         sceneViewPost2D->actSceneModePost2D->trigger();
 
         // show local point values
         resultsView->showEmpty();
-
-        // raise postprocessor
-        postprocessorWidget->raise();
-        activateWindow();
     }
 }
 
@@ -1256,8 +1258,6 @@ void MainWindow::doOptions()
         // postHermes->refresh();
         // setControls();
     }
-
-    activateWindow();
 }
 
 void MainWindow::doTransform()
