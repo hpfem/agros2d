@@ -253,10 +253,10 @@ void Agros2DGenerator::createStructure()
     // generate plugins project file
     // expand template
     std::string text;
-    ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/plugins_pro.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
+    ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/CMakeLists_txt.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
     // save to file
-    writeStringContent(QString("%1/%2/plugins.pro").
+    writeStringContent(QString("%1/%2/CMakeLists.txt").
                        arg(QApplication::applicationDirPath()).
                        arg(GENERATOR_PLUGINROOT),
                        QString::fromStdString(text));
