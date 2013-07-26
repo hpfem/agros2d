@@ -42,9 +42,6 @@ public:
 
     QString collaborationServerURL;
 
-    // global script
-    QString globalScript;
-
     // development
     bool saveMatrixRHS;
 

@@ -66,9 +66,6 @@ void Config::load()
     if (numberOfThreads > omp_get_max_threads())
         numberOfThreads = omp_get_max_threads();    
     Hermes::HermesCommonApi.set_integral_param_value(Hermes::numThreads, numberOfThreads);
-
-    // global script
-    globalScript = settings.value("Python/GlobalScript", "").toString();
 }
 
 void Config::save()
@@ -96,7 +93,4 @@ void Config::save()
     // number of threads
     settings.setValue("Parallel/NumberOfThreads", numberOfThreads);
     Hermes::HermesCommonApi.set_integral_param_value(Hermes::numThreads, numberOfThreads);
-
-    // global script
-    settings.setValue("Python/GlobalScript", globalScript);
 }

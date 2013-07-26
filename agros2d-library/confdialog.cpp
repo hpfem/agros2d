@@ -79,9 +79,6 @@ void ConfigComputerDialog::load()
 
     // std log
     chkLogStdOut->setChecked(Agros2D::configComputer()->showLogStdOut);
-
-    // global script
-    txtGlobalScript->setPlainText(Agros2D::configComputer()->globalScript);
 }
 
 void ConfigComputerDialog::save()
@@ -125,9 +122,6 @@ void ConfigComputerDialog::save()
     // std log
     Agros2D::configComputer()->showLogStdOut = chkLogStdOut->isChecked();
 
-    // global script
-    Agros2D::configComputer()->globalScript = txtGlobalScript->toPlainText();
-
     // save
     Agros2D::configComputer()->save();
 }
@@ -140,7 +134,6 @@ void ConfigComputerDialog::createControls()
     panMain = createMainWidget();
     panSolver = createSolverWidget();
     panPlugin = createPluginWidget();
-    panGlobalScriptWidget = createGlobalScriptWidget();
 
     // List View
     lstView->setCurrentRow(0);
@@ -173,15 +166,9 @@ void ConfigComputerDialog::createControls()
     itemPlugin->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
     itemPlugin->setSizeHint(sizeItem);
 
-    QListWidgetItem *itemGlobalScript = new QListWidgetItem(icon("options-python"), tr("Python"), lstView);
-    itemGlobalScript->setTextAlignment(Qt::AlignHCenter);
-    itemGlobalScript->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-    itemGlobalScript->setSizeHint(sizeItem);
-
     pages->addWidget(panMain);
     pages->addWidget(panSolver);
     pages->addWidget(panPlugin);
-    pages->addWidget(panGlobalScriptWidget);
 
     QHBoxLayout *layoutHorizontal = new QHBoxLayout();
     layoutHorizontal->addWidget(lstView);
@@ -479,21 +466,6 @@ void ConfigComputerDialog::readModulesAndCouplings()
             item->setForeground(1, QBrush(Qt::red));
         }
     }
-}
-
-QWidget *ConfigComputerDialog::createGlobalScriptWidget()
-{
-    QWidget *viewWidget = new QWidget(this);
-
-    txtGlobalScript = new ScriptEditor(currentPythonEngine(), this);
-
-    // layout
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(txtGlobalScript);
-
-    viewWidget->setLayout(layout);
-
-    return viewWidget;
 }
 
 void ConfigComputerDialog::fillComboBoxPhysicField(QComboBox *cmbPhysicField)

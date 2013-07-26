@@ -53,7 +53,6 @@ private:
     QWidget *panMain;
     QWidget *panSolver;
     QWidget *panPlugin;
-    QWidget *panGlobalScriptWidget;
 
     // main
     QComboBox *cmbGUIStyle;
@@ -81,9 +80,6 @@ private:
     // threads
     QSpinBox *txtNumOfThreads;
 
-    // global script
-    ScriptEditor *txtGlobalScript;
-
     // modules and couplings
     QTreeWidget *treeModules;
     QTreeWidget *treeCouplings;
@@ -97,7 +93,6 @@ private:
     QWidget *createMainWidget();
     QWidget *createSolverWidget();
     QWidget *createPluginWidget();
-    QWidget *createGlobalScriptWidget();
 
     void buildModuleOrCoupling(const QString &id);
     void readModulesAndCouplings();
