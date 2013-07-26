@@ -85,3 +85,15 @@ tcl
 .project
 resources_source/doc/source/modules/rf_te/
 resources_source/doc/source/modules/rf_tm/
+*.depend
+*.stamp
+*.cache
+*.cmake
+*.mesh
+*.msh
+*.sol
+*.bak
+*.spc
+CMakeFiles
+CMakeCache.txt
+*.unsuccessfulbuild
