@@ -37,13 +37,6 @@ public:
 private slots:
     void doCurrentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 
-    void moduleClicked(QTreeWidgetItem *item, int role);
-    void moduleDoubleClicked(QTreeWidgetItem *item, int role);
-    void couplingClicked(QTreeWidgetItem *item, int role);
-    void couplingDoubleClicked(QTreeWidgetItem *item, int role);
-    void buildModule();
-    void buildCoupling();
-
     void doAccept();
     void doReject();
 
@@ -52,7 +45,6 @@ private:
     QStackedWidget *pages;
     QWidget *panMain;
     QWidget *panSolver;
-    QWidget *panPlugin;
 
     // main
     QComboBox *cmbGUIStyle;
@@ -80,22 +72,12 @@ private:
     // threads
     QSpinBox *txtNumOfThreads;
 
-    // modules and couplings
-    QTreeWidget *treeModules;
-    QTreeWidget *treeCouplings;
-    QPushButton *btnBuildModule;
-    QPushButton *btnBuildCoupling;
-
     void load();
     void save();
 
     void createControls();
     QWidget *createMainWidget();
     QWidget *createSolverWidget();
-    QWidget *createPluginWidget();
-
-    void buildModuleOrCoupling(const QString &id);
-    void readModulesAndCouplings();
 
     void fillComboBoxPhysicField(QComboBox *cmbPhysicField);
 };

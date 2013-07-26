@@ -93,7 +93,7 @@ Problem::Problem()
     actSolve->setShortcut(QKeySequence(tr("Alt+S")));
     connect(actSolve, SIGNAL(triggered()), this, SLOT(doSolveWithGUI()));
 
-    actSolveAdaptiveStep = new QAction(icon("run-step"), tr("Adaptive\nstep"), this);
+    actSolveAdaptiveStep = new QAction(icon("run-step"), tr("Adaptive step"), this);
     connect(actSolveAdaptiveStep, SIGNAL(triggered()), this, SLOT(doSolveAdaptiveStepWithGUI()));
 
     connect(m_config, SIGNAL(changed()), this, SLOT(clearSolution()));

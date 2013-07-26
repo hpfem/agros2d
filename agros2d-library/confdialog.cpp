@@ -133,7 +133,6 @@ void ConfigComputerDialog::createControls()
 
     panMain = createMainWidget();
     panSolver = createSolverWidget();
-    panPlugin = createPluginWidget();
 
     // List View
     lstView->setCurrentRow(0);
@@ -161,14 +160,8 @@ void ConfigComputerDialog::createControls()
     itemSolver->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
     itemSolver->setSizeHint(sizeItem);
 
-    QListWidgetItem *itemPlugin = new QListWidgetItem(icon("options-plugin"), tr("Plugins"), lstView);
-    itemPlugin->setTextAlignment(Qt::AlignHCenter);
-    itemPlugin->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-    itemPlugin->setSizeHint(sizeItem);
-
     pages->addWidget(panMain);
     pages->addWidget(panSolver);
-    pages->addWidget(panPlugin);
 
     QHBoxLayout *layoutHorizontal = new QHBoxLayout();
     layoutHorizontal->addWidget(lstView);
@@ -282,190 +275,6 @@ QWidget *ConfigComputerDialog::createSolverWidget()
     solverGeneralWidget->setLayout(layoutGeneral);
 
     return solverGeneralWidget;
-}
-
-QWidget *ConfigComputerDialog::createPluginWidget()
-{
-    QWidget *pluginWidget = new QWidget(this);
-
-    btnBuildModule = new QPushButton(tr("Build plugin"));
-    btnBuildModule->setEnabled(false);
-    connect(btnBuildModule, SIGNAL(clicked()), this, SLOT(buildModule()));
-
-    QHBoxLayout *layoutButtonsModule = new QHBoxLayout();
-    layoutButtonsModule->addStretch();
-    layoutButtonsModule->addWidget(btnBuildModule);
-
-    treeModules = new QTreeWidget(this);
-    treeModules->setMouseTracking(true);
-    treeModules->setColumnCount(2);
-    treeModules->setColumnWidth(0, 250);
-    treeModules->setIndentation(20);
-    QStringList headModules;
-    headModules << tr("Name") << tr("Availability");
-    treeModules->setHeaderLabels(headModules);
-
-    // connect(treeModules, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(moduleDoubleClicked(QTreeWidgetItem *, int)));
-    connect(treeModules, SIGNAL(itemActivated(QTreeWidgetItem *, int)), this, SLOT(moduleClicked(QTreeWidgetItem *, int)));
-    connect(treeModules, SIGNAL(itemPressed(QTreeWidgetItem *, int)), this, SLOT(moduleClicked(QTreeWidgetItem *, int)));
-
-    // module
-    QVBoxLayout *layoutModules = new QVBoxLayout();
-    layoutModules->addWidget(treeModules);
-    layoutModules->addLayout(layoutButtonsModule);
-
-    QGroupBox *grpModules = new QGroupBox(tr("Modules"));
-    grpModules->setLayout(layoutModules);
-
-    btnBuildCoupling = new QPushButton(tr("Build plugin"));
-    btnBuildCoupling->setEnabled(false);
-    connect(btnBuildCoupling, SIGNAL(clicked()), this, SLOT(buildCoupling()));
-
-    QHBoxLayout *layoutButtonsCoupling = new QHBoxLayout();
-    layoutButtonsCoupling->addStretch();
-    layoutButtonsCoupling->addWidget(btnBuildCoupling);
-
-    treeCouplings = new QTreeWidget(this);
-    treeCouplings->setMouseTracking(true);
-    treeCouplings->setColumnCount(2);
-    treeCouplings->setColumnWidth(0, 250);
-    treeCouplings->setIndentation(5);
-    QStringList headCouplings;
-    headCouplings << tr("Name") << tr("Availability");
-    treeCouplings->setHeaderLabels(headCouplings);
-
-    connect(treeCouplings, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(couplingDoubleClicked(QTreeWidgetItem *, int)));
-    connect(treeCouplings, SIGNAL(itemActivated(QTreeWidgetItem *, int)), this, SLOT(couplingClicked(QTreeWidgetItem *, int)));
-    connect(treeCouplings, SIGNAL(itemPressed(QTreeWidgetItem *, int)), this, SLOT(couplingClicked(QTreeWidgetItem *, int)));
-
-    // coupling
-    QVBoxLayout *layoutCouplings = new QVBoxLayout();
-    layoutCouplings->addWidget(treeCouplings);
-    layoutCouplings->addLayout(layoutButtonsCoupling);
-
-    QGroupBox *grpCouplings = new QGroupBox(tr("Couplings"));
-    grpCouplings ->setLayout(layoutCouplings);
-
-    // layout
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(grpModules, 3);
-    layout->addWidget(grpCouplings, 2);
-    layout->addStretch();
-
-    pluginWidget->setLayout(layout);
-
-    readModulesAndCouplings();
-
-    return pluginWidget;
-}
-
-void ConfigComputerDialog::moduleClicked(QTreeWidgetItem *item, int role)
-{
-    btnBuildModule->setEnabled(item);
-}
-
-void ConfigComputerDialog::moduleDoubleClicked(QTreeWidgetItem *item, int role)
-{
-    QString module = item->data(0, Qt::UserRole).toString();
-    if (!module.isEmpty())
-    {
-        ModuleDialog moduleDialog(module, this);
-        moduleDialog.exec();
-
-        readModulesAndCouplings();
-    }
-}
-
-void ConfigComputerDialog::couplingClicked(QTreeWidgetItem *item, int role)
-{
-    btnBuildCoupling->setEnabled(item);
-}
-
-void ConfigComputerDialog::couplingDoubleClicked(QTreeWidgetItem *item, int role)
-{
-    QString module = item->data(0, Qt::UserRole).toString();
-    if (!module.isEmpty())
-    {
-        // TODO: implement
-    }
-}
-
-void ConfigComputerDialog::buildModule()
-{
-    if (treeModules->selectedItems().count() == 1)
-    {
-        QString module = treeModules->selectedItems()[0]->data(0, Qt::UserRole).toString();
-        if (!module.isEmpty())
-        {
-            buildModuleOrCoupling(module);
-        }
-    }
-}
-
-void ConfigComputerDialog::buildCoupling()
-{
-    if (treeCouplings->selectedItems().count() == 1)
-    {
-        QString coupling = treeCouplings->selectedItems()[0]->data(0, Qt::UserRole).toString();
-        if (!coupling.isEmpty())
-        {
-            buildModuleOrCoupling(coupling);
-        }
-    }
-}
-
-void ConfigComputerDialog::buildModuleOrCoupling(const QString &id)
-{
-    SystemOutputWidget *output = new SystemOutputWidget();
-    output->execute(QString(COMMANDS_BUILD_PLUGIN).arg(id));
-
-    readModulesAndCouplings();
-}
-
-void ConfigComputerDialog::readModulesAndCouplings()
-{
-    treeModules->clear();
-    QMapIterator<QString, QString> itModules(Module::availableModules());
-    while (itModules.hasNext())
-    {
-        itModules.next();
-
-        QTreeWidgetItem *item = new QTreeWidgetItem(treeModules);
-        item->setText(0, itModules.value());
-        item->setData(0, Qt::UserRole, itModules.key());
-
-        try
-        {
-            foreach (QString plugin, QStringList(itModules.key()))
-                Agros2D::loadPlugin(plugin);
-
-            item->setText(1, tr("available"));
-        }
-        catch (AgrosPluginException e)
-        {
-            item->setText(1, tr("missing"));
-            item->setForeground(1, QBrush(Qt::red));
-        }
-    }
-
-    treeCouplings->clear();
-    foreach (QString couplingId, couplingList()->availableCouplings())
-    {
-        QTreeWidgetItem *item = new QTreeWidgetItem(treeCouplings);
-        item->setText(0, couplingId);
-        item->setData(0, Qt::UserRole, couplingId);
-
-        try
-        {
-            Agros2D::loadPlugin(couplingId);
-            item->setText(1, tr("available"));
-        }
-        catch (AgrosPluginException e)
-        {
-            item->setText(1, tr("missing"));
-            item->setForeground(1, QBrush(Qt::red));
-        }
-    }
 }
 
 void ConfigComputerDialog::fillComboBoxPhysicField(QComboBox *cmbPhysicField)
