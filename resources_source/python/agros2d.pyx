@@ -62,10 +62,27 @@ include "pyview.pxi"
 include "pyparticletracing.pxi"
 
 cdef extern from "../../agros2d-library/pythonlab/pythonengine_agros.h":
+    # open and save
     void openFile(string &file) except +
     void saveFile(string &file, bool saveWithSolution) except +
+
+    # memory
     int appTime()
     void memoryUsage(vector[int] &time, vector[int] &usage)
+
+    # PyOptions
+    cdef cppclass PyOptions:
+        int getNumberOfThreads()
+        void setNumberOfThreads(int threads) except +
+
+        int getCacheSize()
+        void setCacheSize(int size) except +
+
+        bool getSolverCache()
+        void setSolverCache(bool cache)
+
+        bool getSaveMatrixRHS()
+        void setSaveMatrixRHS(bool save)
 
 def open_file(file):
     openFile(string(file))
@@ -88,3 +105,37 @@ def memory_usage():
         usage.append(usage_vector[i])
 
     return time, usage
+
+cdef class __Options__:
+    cdef PyOptions *thisptr
+
+    def __cinit__(self):
+        self.thisptr = new PyOptions()
+    def __dealloc__(self):
+        del self.thisptr
+
+    property number_of_threads:
+        def __get__(self):
+            return self.thisptr.getNumberOfThreads()
+        def __set__(self, threads):
+            self.thisptr.setNumberOfThreads(threads)
+
+    property cache_size:
+        def __get__(self):
+            return self.thisptr.getCacheSize()
+        def __set__(self, size):
+            self.thisptr.setCacheSize(size)
+
+    property solver_cache:
+        def __get__(self):
+            return self.thisptr.getSolverCache()
+        def __set__(self, cache):
+            self.thisptr.setSolverCache(cache)
+
+    property save_matrix_and_rhs:
+        def __get__(self):
+            return self.thisptr.getSaveMatrixRHS()
+        def __set__(self, save):
+            self.thisptr.setSaveMatrixRHS(save)
+
+options = __Options__()

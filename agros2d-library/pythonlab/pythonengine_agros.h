@@ -25,6 +25,7 @@
 #include "pythonlab/pythoneditor.h"
 
 #include "util.h"
+#include "util/global.h"
 #include "scene.h"
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
@@ -130,5 +131,24 @@ void saveFile(const std::string &file, bool saveWithSolution);
 
 int appTime();
 void memoryUsage(std::vector<int> &time, std::vector<int> &usage);
+
+struct PyOptions
+{
+    // number of threads
+    inline int getNumberOfThreads() const { return Agros2D::configComputer()->numberOfThreads; }
+    void setNumberOfThreads(int threads);
+
+    // cache size
+    inline int getCacheSize() const { return Agros2D::configComputer()->cacheSize; }
+    void setCacheSize(int size);
+
+    // solver cache
+    inline bool getSolverCache() const { return Agros2D::configComputer()->useSolverCache; }
+    inline void setSolverCache(bool cache) { Agros2D::configComputer()->useSolverCache = cache; }
+
+    // save matrix and rhs
+    inline bool getSaveMatrixRHS() const { return Agros2D::configComputer()->saveMatrixRHS; }
+    inline void setSaveMatrixRHS(bool save) { Agros2D::configComputer()->saveMatrixRHS = save; }
+};
 
 #endif // PYTHONENGINEAGROS_H

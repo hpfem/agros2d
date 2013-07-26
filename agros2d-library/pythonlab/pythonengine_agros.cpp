@@ -720,3 +720,22 @@ void memoryUsage(std::vector<int> &time, std::vector<int> &usage)
     time = Agros2D::memoryMonitor()->memoryTime().toVector().toStdVector();
     usage = Agros2D::memoryMonitor()->memoryUsage().toVector().toStdVector();
 }
+
+// ************************************************************************************
+
+void PyOptions::setNumberOfThreads(int threads)
+{
+    if (threads < 1 || threads > omp_get_max_threads())
+        throw out_of_range(QObject::tr("Number of threads is out of range (1 - %1).").arg(omp_get_max_threads()).toStdString());
+
+    Agros2D::configComputer()->numberOfThreads = threads;
+}
+
+void PyOptions::setCacheSize(int size)
+{
+    if (size < 2 || size > 50)
+        throw out_of_range(QObject::tr("Cache size is out of range (2 - 50).").toStdString());
+
+    Agros2D::configComputer()->cacheSize = size;
+}
+
