@@ -116,7 +116,7 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
             Agros2D::log()->printMessage(tr("Mesh generator"), tr("Mesh was converted to Hermes2D mesh file"));
 
             // copy triangle files
-            if ((!Agros2D::configComputer()->deleteMeshFiles) && (!Agros2D::problem()->config()->fileName().isEmpty()))
+            if (!Agros2D::problem()->config()->fileName().isEmpty())
             {
                 QFileInfo fileInfoOrig(Agros2D::problem()->config()->fileName());
 
@@ -127,7 +127,7 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
             }
 
             // copy hermes files
-            if ((!Agros2D::configComputer()->deleteHermesMeshFile) && (!Agros2D::problem()->config()->fileName().isEmpty()))
+            if (!Agros2D::problem()->config()->fileName().isEmpty())
             {
                 QFileInfo fileInfoOrig(Agros2D::problem()->config()->fileName());
 

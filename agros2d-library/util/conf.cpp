@@ -51,11 +51,6 @@ void Config::load()
 
     checkVersion = settings.value("General/CheckVersion", true).toBool();
     lineEditValueShowResult = settings.value("General/LineEditValueShowResult", false).toBool();
-    saveProblemWithSolution = settings.value("General/SaveProblemWithSolution", false).toBool();
-
-    // delete files
-    deleteMeshFiles = settings.value("Solver/DeleteTriangleMeshFiles", true).toBool();
-    deleteHermesMeshFile = settings.value("Solver/DeleteHermes2DMeshFile", true).toBool();
 
     // development
     saveMatrixRHS = settings.value("SceneViewSettings/SaveMatrixAndRHS", SAVEMATRIXANDRHS).toBool();
@@ -91,14 +86,6 @@ void Config::save()
 
     settings.setValue("General/CheckVersion", checkVersion);
     settings.setValue("General/LineEditValueShowResult", lineEditValueShowResult);
-    settings.setValue("General/SaveProblemWithSolution", saveProblemWithSolution);
-
-    // delete files
-    settings.setValue("Solver/DeleteTriangleMeshFiles", deleteMeshFiles);
-    settings.setValue("Solver/DeleteHermes2DMeshFile", deleteHermesMeshFile);
-
-    // development
-    settings.setValue("SceneViewSettings/SaveMatrixAndRHS", saveMatrixRHS);
 
     // cache size
     settings.setValue("Solution/CacheSize", cacheSize);

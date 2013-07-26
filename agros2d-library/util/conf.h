@@ -39,16 +39,11 @@ public:
 
     bool checkVersion;
     bool lineEditValueShowResult;
-    bool saveProblemWithSolution;
 
     QString collaborationServerURL;
 
     // global script
     QString globalScript;
-
-    // delete files
-    bool deleteMeshFiles;
-    bool deleteHermesMeshFile;
 
     // development
     bool saveMatrixRHS;

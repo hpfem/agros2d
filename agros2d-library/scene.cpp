@@ -2131,10 +2131,6 @@ void Scene::writeToFile31(const QString &fileName)
         std::ofstream out(compatibleFilename(fileName).toStdString().c_str());
         XMLProblem::document_(out, doc, namespace_info_map);
 
-        // save solution
-        if (Agros2D::configComputer()->saveProblemWithSolution)
-            writeSolutionToFile(fileName);
-
         if (QFileInfo(tempProblemFileName()).baseName() != QFileInfo(fileName).baseName())
             emit fileNameChanged(QFileInfo(fileName).absoluteFilePath());
     }

@@ -60,15 +60,8 @@ private:
     QComboBox *cmbLanguage;
     // LineEditDouble *txtCollaborationServerURL;
 
-    // delete files
-    QCheckBox *chkDeleteTriangleMeshFiles;
-    QCheckBox *chkDeleteHermes2DMeshFile;
-
     // show result in line edit value widget
     QCheckBox *chkLineEditValueShowResult;
-
-    // save with solution
-    QCheckBox *chkSaveWithSolution;
 
     // check version
     QCheckBox *chkCheckVersion;
