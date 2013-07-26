@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<schema targetNamespace="XMLSolution" xmlns="http://www.w3.org/2001/XMLSchema">
+  <element name="solution">
+    <complexType>
+      <sequence>
+        <element minOccurs="0" maxOccurs="unbounded" name="mono_coeffs">
+          <complexType>
+            <attribute name="id" type="integer" use="required" />
+            <attribute name="re" type="decimal" use="required" />
+            <attribute name="im" type="decimal" />
+          </complexType>
+        </element>
+        <element minOccurs="0" maxOccurs="unbounded" name="elem_orders">
+          <complexType>
+            <attribute name="id" type="integer" use="required" />
+            <attribute name="ord" type="integer" use="required" />
+          </complexType>
+        </element>
+        <element minOccurs="0" maxOccurs="unbounded" name="component">
+          <complexType>
+            <sequence>
+              <element minOccurs="1" maxOccurs="unbounded" name="elem_coeffs">
+                <complexType>
+                  <attribute name="id" type="integer" use="required" />
+                  <attribute name="c" type="integer" use="required" />
+                </complexType>
+              </element>
+            </sequence>
+            <attribute name="component_number" type="integer" />
+          </complexType>
+        </element>
+      </sequence>
+      <attribute name="ncmp" type="integer" use="required" />
+      <attribute name="nel" type="integer" use="required" />
+      <attribute name="nc" type="integer" use="required" />
+	  <attribute name="exact" type="integer" use="required" />
+	  <attribute name="exactC" type="integer" use="required" />
+	  <attribute name="exactCXR" type="decimal"/>
+	  <attribute name="exactCYR" type="decimal"/>
+	  <attribute name="exactCXC" type="decimal"/>
+	  <attribute name="exactCYC" type="decimal"/>
+	  <attribute name="space" type="string"/>
+    </complexType>
+  </element>
+</schema>

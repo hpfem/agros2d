@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<schema targetNamespace="XMLSubdomains"
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  xmlns:mesh="XMLMesh"
+  xmlns:subdomains="XMLSubdomains">
+  <import namespace="XMLMesh" 
+  schemaLocation="mesh_h2d_xml.xsd"/>  
+  <element name="domain">
+    <complexType>
+      <sequence>
+        <element minOccurs="0" maxOccurs="1" name="variables"
+        type="mesh:variables_type" />
+        <element minOccurs="1" maxOccurs="1" name="vertices"
+        type="mesh:vertices_type" />
+        <element minOccurs="1" maxOccurs="1" name="elements"
+        type="subdomains:elements_type" />
+        <element minOccurs="1" maxOccurs="1" name="edges"
+        type="subdomains:edges_type" />
+        <element minOccurs="0" maxOccurs="1" name="curves"
+        type="mesh:curves_type" />
+        <element name="subdomains">
+          <complexType>
+            <sequence>
+              <element minOccurs="1" maxOccurs="unbounded" name="subdomain">
+                <complexType mixed="true">
+                  <sequence>
+                    <element minOccurs="0" maxOccurs="1" name="vertices">
+                      <complexType>
+                        <sequence>
+                          <element minOccurs="0" maxOccurs="unbounded" name="i" type="integer" />
+                        </sequence>
+                      </complexType>
+                    </element>
+                    <element minOccurs="0" maxOccurs="1" name="elements">
+                      <complexType>
+                        <sequence>
+                          <element minOccurs="0" maxOccurs="unbounded" name="i" type="integer" />
+                        </sequence>
+                      </complexType>
+                    </element>                    
+                    <element minOccurs="0" maxOccurs="1" name="boundary_edges">
+                      <complexType>
+                        <sequence>
+                          <element minOccurs="0" maxOccurs="unbounded" name="i" type="integer" />
+                        </sequence>
+                      </complexType>
+                    </element>
+                    <element minOccurs="0" maxOccurs="1" name="inner_edges">
+                      <complexType>
+                        <sequence>
+                          <element minOccurs="0" maxOccurs="unbounded" name="i" type="integer" />
+                        </sequence>
+                      </complexType>
+                    </element>
+                    <element minOccurs="0" maxOccurs="1" name="refinements" type="mesh:refinements_type" />
+                  </sequence>
+                  <attribute name="name" type="string" use="required" />
+                </complexType>
+              </element>
+            </sequence>
+          </complexType>
+        </element>
+      </sequence>
+    </complexType>
+  </element>
+    
+  <element name="el" abstract="true" type="subdomains:el_t" />
+  <element name="t" substitutionGroup="subdomains:el" type="subdomains:t_t" />
+  <element name="q" substitutionGroup="subdomains:el" type="subdomains:q_t" />
+  
+  <complexType name="elements_type">
+    <sequence>
+      <element ref="subdomains:el" maxOccurs="unbounded" />
+    </sequence>
+  </complexType>
+    
+    <complexType name="el_t" abstract="true">
+      <attribute name="v1" type="integer" use="required" />
+      <attribute name="v2" type="integer" use="required" />
+      <attribute name="v3" type="integer" use="required" />
+      <attribute name="m" type="string" use="required" />
+      <attribute name="i" type="integer" use="required" />
+    </complexType>
+    <complexType name="t_t">
+      <complexContent>
+        <extension base="subdomains:el_t" />
+      </complexContent>
+    </complexType>
+    <complexType name="q_t">
+      <complexContent>
+        <extension base="subdomains:el_t">
+          <attribute name="v4" type="integer" use="required" />
+        </extension>
+      </complexContent>
+    </complexType>
+    
+  <complexType name="edges_type">
+    <sequence>
+      <element minOccurs="0" maxOccurs="unbounded" name="ed">
+        <complexType>
+          <attribute name="v1" type="integer" use="required" />
+          <attribute name="v2" type="integer" use="required" />
+          <attribute name="m" type="string" use="required" />
+          <attribute name="i" type="integer" use="required" />
+        </complexType>
+      </element>
+    </sequence>
+  </complexType>
+</schema>

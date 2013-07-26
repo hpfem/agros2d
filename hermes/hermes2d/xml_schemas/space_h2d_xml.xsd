@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<schema targetNamespace="XMLSpace" xmlns="http://www.w3.org/2001/XMLSchema">
+  <element name="space">
+    <complexType>
+      <sequence>
+        <element minOccurs="1" maxOccurs="unbounded" name="element_data">
+          <complexType>
+            <attribute name="e_id" type="integer" use="required" />
+            <attribute name="ord" type="integer" use="required" />
+            <attribute name="bd" type="integer" use="required" />
+            <attribute name="n" type="integer" use="required" />
+            <attribute name="chgd" type="boolean" use="required" />
+          </complexType>
+        </element>
+      </sequence>
+	  <attribute name="spaceType" type="string"/>
+    </complexType>
+  </element>
+</schema>
