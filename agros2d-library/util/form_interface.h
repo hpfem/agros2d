@@ -30,6 +30,7 @@ class PythonScriptingConsoleView;
 // plugin interface
 class AGROS_API FormInterface : public QDialog
 {   
+Q_OBJECT
 public:
     FormInterface(QWidget *parent = 0) : QDialog(parent) {}
     virtual ~FormInterface() {}

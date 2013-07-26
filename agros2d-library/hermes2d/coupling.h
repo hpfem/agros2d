@@ -54,8 +54,9 @@ private:
 // cached coupling list
 AGROS_API CouplingList *couplingList();
 
-class AGROS_API CouplingInfo
+class AGROS_API CouplingInfo : public QObject
 {
+  Q_OBJECT
 public:
     CouplingInfo(FieldInfo* sourceField, FieldInfo* targetField,
                  CouplingType couplingType = CouplingType_Weak);

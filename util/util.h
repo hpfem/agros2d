@@ -43,6 +43,7 @@
 
 #include <locale.h>
 #include <stdlib.h>
+#include "config.h"
 
 // qt5
 #ifdef Q_OS_WIN

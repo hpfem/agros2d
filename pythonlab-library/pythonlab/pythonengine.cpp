@@ -375,7 +375,7 @@ ExpressionResult PythonEngine::runExpression(const QString &expression, bool ret
     else
         exp = expression;
 
-#pragma omp atomic
+#pragma omp critical
     {
         PyObject *output = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
 
