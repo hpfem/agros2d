@@ -45,7 +45,6 @@ SET(QT_USE_QTDBUS TRUE)
 SET(QT_USE_QTSCRIPT TRUE)
 SET(QT_USE_QTWEBKIT TRUE)
 SET(QT_USE_QTXMLPATTERNS TRUE)
-SET(QT_USE_PHONON TRUE)
 find_package(Qt4 REQUIRED)
 # This has to be here, otherwise CMake will not do the magic and will not link to OpenGL
 find_package(OpenGL REQUIRED)
