@@ -4,7 +4,8 @@ SET(SOURCES bcon.c
     bson.c 
     encoding.c 
     env.c 
-    gridfs.c 
+    gridfs.c
+    mongo.c
     md5.c 
     numbers.c
   )
