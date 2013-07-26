@@ -59,6 +59,9 @@ private:
     
     QMenu *mnuPreprocessor;
 
+    QLineEdit *txtGridStep;
+    QCheckBox *chkSnapToGrid;
+
     void createActions();
     void createControls();
     void createMenu();
@@ -68,6 +71,7 @@ private slots:
     void doContextMenu(const QPoint &pos);
     void doItemDoubleClicked(QTreeWidgetItem *item, int role);
     void doItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+    void doApply();
 };
 
 #endif // PREPROCESSORVIEW_H

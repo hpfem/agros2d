@@ -44,9 +44,7 @@ private slots:
 
 private:
     // grid
-    QLineEdit *txtGridStep;
     QCheckBox *chkShowGrid;
-    QCheckBox *chkSnapToGrid;
 
     // general view
     QCheckBox *chkZoomToMouse;
@@ -120,8 +118,7 @@ public slots:
 private slots:
     void doWorkspaceDefault();
     void doMeshAndSolverDefault();
-    void doColorsDefault();
-    void doShowGridChanged();
+    void doColorsDefault();    
     void doStartupScriptChanged();
 };
 

@@ -21,6 +21,7 @@
 
 #include "util/constants.h"
 #include "util/global.h"
+#include "hermes2d/problem_config.h"
 
 #include "scene.h"
 #include "logview.h"
@@ -125,6 +126,23 @@ void PreprocessorWidget::createControls()
     trvWidget->setColumnWidth(0, 150);
     trvWidget->setIndentation(12);
 
+    txtGridStep = new QLineEdit("0.1");
+    txtGridStep->setValidator(new QDoubleValidator(txtGridStep));
+    chkSnapToGrid = new QCheckBox(tr("Snap to grid"));
+
+    QPushButton *btnOK = new QPushButton(tr("Apply"));
+    connect(btnOK, SIGNAL(clicked()), SLOT(doApply()));
+
+    QGridLayout *layoutTreeView = new QGridLayout();
+    layoutTreeView->addWidget(trvWidget, 0, 0, 1, 3);
+    layoutTreeView->addWidget(new QLabel(tr("Grid step:")), 1, 0);
+    layoutTreeView->addWidget(txtGridStep, 1, 1);
+    layoutTreeView->addWidget(chkSnapToGrid, 1, 2);
+    layoutTreeView->addWidget(btnOK, 2, 2);
+
+    QWidget *widgetTreeView = new QWidget();
+    widgetTreeView->setLayout(layoutTreeView);
+
     QHBoxLayout *layoutView = new QHBoxLayout();
     layoutView->addWidget(txtViewNodes);
     layoutView->addWidget(txtViewEdges);
@@ -135,7 +153,7 @@ void PreprocessorWidget::createControls()
 
     splitter = new QSplitter(this);
     splitter->setOrientation(Qt::Vertical);
-    splitter->addWidget(trvWidget);
+    splitter->addWidget(widgetTreeView);
     splitter->addWidget(view);
 
     QVBoxLayout *layoutMain = new QVBoxLayout();
@@ -161,6 +179,9 @@ void PreprocessorWidget::keyPressEvent(QKeyEvent *event)
 
 void PreprocessorWidget::refresh()
 {
+    txtGridStep->setText(QString::number(Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble()));
+    chkSnapToGrid->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_SnapToGrid).toBool());
+
     // script speed improvement
     if (currentPythonEngine()->isRunning()) return;
 
@@ -476,4 +497,10 @@ void PreprocessorWidget::doDelete()
         refresh();
         m_sceneViewPreprocessor->refresh();
     }
+}
+
+void PreprocessorWidget::doApply()
+{
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_GridStep, txtGridStep->text().toDouble());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_SnapToGrid, chkSnapToGrid->isChecked());
 }

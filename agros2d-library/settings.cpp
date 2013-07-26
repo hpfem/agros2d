@@ -54,9 +54,7 @@ void SettingsWidget::createActions()
 void SettingsWidget::load()
 {
     // workspace
-    txtGridStep->setText(QString::number(Agros2D::problem()->setting()->value(ProblemSetting::View_GridStep).toDouble()));
     chkShowGrid->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ShowGrid).toBool());
-    chkSnapToGrid->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_SnapToGrid).toBool());
 
     cmbRulersFont->setCurrentIndex(cmbRulersFont->findData(Agros2D::problem()->setting()->value(ProblemSetting::View_RulersFontFamily).toString()));
     txtRulersFontSizes->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_RulersFontPointSize).toInt());
@@ -144,10 +142,8 @@ void SettingsWidget::save()
 
     // workspace
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowGrid, chkShowGrid->isChecked());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_GridStep, txtGridStep->text().toDouble());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowRulers, chkShowRulers->isChecked());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ZoomToMouse, chkZoomToMouse->isChecked());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_SnapToGrid, chkSnapToGrid->isChecked());
 
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_RulersFontFamily, cmbRulersFont->itemData(cmbRulersFont->currentIndex()).toString());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_RulersFontPointSize, txtRulersFontSizes->value());
@@ -294,22 +290,15 @@ QWidget *SettingsWidget::controlsStartupScript()
 QWidget *SettingsWidget::controlsWorkspace()
 {
     // workspace
-    txtGridStep = new QLineEdit("0.1");
-    txtGridStep->setValidator(new QDoubleValidator(txtGridStep));
     chkShowGrid = new QCheckBox(tr("Show grid"));
-    connect(chkShowGrid, SIGNAL(clicked()), this, SLOT(doShowGridChanged()));
-    chkSnapToGrid = new QCheckBox(tr("Snap to grid"));
     chkZoomToMouse = new QCheckBox(tr("Zoom to mouse"));
     chkShowRulers = new QCheckBox(tr("Show rulers"));
     chkShowAxes = new QCheckBox(tr("Show axes"));
 
     QGridLayout *layoutGrid = new QGridLayout();
-    layoutGrid->addWidget(new QLabel(tr("Grid step:")), 0, 0);
-    layoutGrid->addWidget(txtGridStep, 0, 1);
     layoutGrid->addWidget(chkShowGrid, 1, 0);
     layoutGrid->addWidget(chkShowAxes, 2, 0);
     layoutGrid->addWidget(chkShowRulers, 3, 0);
-    layoutGrid->addWidget(chkSnapToGrid, 1, 1);
     layoutGrid->addWidget(chkZoomToMouse, 2, 1);
 
     QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
@@ -550,9 +539,7 @@ void SettingsWidget::doApply()
 
 void SettingsWidget::doWorkspaceDefault()
 {
-    txtGridStep->setText(QString::number(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_GridStep).toDouble()));
     chkShowGrid->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ShowGrid).toBool());
-    chkSnapToGrid->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_SnapToGrid).toBool());
 
     cmbRulersFont->setCurrentIndex(cmbRulersFont->findData(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_RulersFontFamily).toString()));
     txtRulersFontSizes->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_RulersFontPointSize).toInt());
@@ -621,11 +608,6 @@ void SettingsWidget::doColorsDefault()
     colorSelected->setColor(QColor(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorSelectedRed).toInt(),
                                    Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorSelectedGreen).toInt(),
                                    Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_ColorSelectedBlue).toInt()));
-}
-
-void SettingsWidget::doShowGridChanged()
-{
-    chkSnapToGrid->setEnabled(chkShowGrid->isChecked());
 }
 
 void SettingsWidget::doStartupScriptChanged()
