@@ -176,7 +176,6 @@ void ProblemSetting::clear()
 void ProblemSetting::setStringKeys()
 {
     m_settingKey[Problem_StartupScript] = "Problem_StartupScript";
-    m_settingKey[Problem_Description] = "Problem_Description";
     m_settingKey[View_RulersFontFamily] = "View_RulersFontFamily";
     m_settingKey[View_RulersFontPointSize] = "View_RulersFontPointSize";
     m_settingKey[View_PostFontFamily] = "View_PostFontFamily";
@@ -316,7 +315,6 @@ void ProblemSetting::setDefaultValues()
     m_settingDefault.clear();
 
     m_settingDefault[Problem_StartupScript] = QString();
-    m_settingDefault[Problem_Description] = QString();
     m_settingDefault[View_RulersFontFamily] = QString("Droid");
     m_settingDefault[View_RulersFontPointSize] = 12;
     m_settingDefault[View_PostFontFamily] = QString("Droid");

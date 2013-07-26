@@ -93,19 +93,16 @@ private:
     QSpinBox *txtMeshAngleSegmentsCount;
     QCheckBox *chkMeshCurvilinearElements;
 
-    // script and description
-    // startup script
+    // script
     ScriptEditor *txtStartupScript;
     QLabel *lblStartupScriptError;
-    // description
-    QTextEdit *txtDescription;
 
     QPushButton *btnOK;
 
     void createActions();
 
     void createControls();
-    QWidget *controlsControlsScriptAndDescription();
+    QWidget *controlsStartupScript();
     QWidget *controlsWorkspace();
     QWidget *controlsMeshAndSolver();
     QWidget *controlsColors();

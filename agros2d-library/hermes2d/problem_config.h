@@ -121,7 +121,6 @@ public:
     {
         Unknown,
         Problem_StartupScript,
-        Problem_Description,
         View_RulersFontFamily,
         View_RulersFontPointSize,
         View_PostFontFamily,

@@ -71,9 +71,8 @@ void SettingsWidget::load()
     txtGeometryEdgeWidth->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_EdgeWidth).toInt());
     txtGeometryLabelSize->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_LabelSize).toInt());
 
-    // script and description
+    // script
     txtStartupScript->setPlainText(Agros2D::problem()->setting()->value(ProblemSetting::Problem_StartupScript).toString());
-    txtDescription->setPlainText(Agros2D::problem()->setting()->value(ProblemSetting::Problem_Description).toString());
 
     // 3d
     chkView3DLighting->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DLighting).toBool());
@@ -162,9 +161,8 @@ void SettingsWidget::save()
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_EdgeWidth, txtGeometryEdgeWidth->value());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_LabelSize, txtGeometryLabelSize->value());
 
-    // script and description
+    // script
     Agros2D::problem()->setting()->setValue(ProblemSetting::Problem_StartupScript, txtStartupScript->toPlainText());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::Problem_Description, txtDescription->toPlainText());
 
     // 3d
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarView3DLighting, chkView3DLighting->isChecked());
@@ -238,14 +236,14 @@ void SettingsWidget::createControls()
     QWidget *workspace = controlsWorkspace();
     QWidget *colors = controlsColors();
     QWidget *meshAndSolver = controlsMeshAndSolver();
-    QWidget *descriptionAndScript = controlsControlsScriptAndDescription();
+    QWidget *startupScript = controlsStartupScript();
 
     // tab widget
     QToolBox *tbxWorkspace = new QToolBox();
     tbxWorkspace->addItem(workspace, icon(""), tr("Workspace"));
-    tbxWorkspace->addItem(descriptionAndScript, icon(""), tr("Script and description"));
     tbxWorkspace->addItem(colors, icon(""), tr("Colors"));
-    tbxWorkspace->addItem(meshAndSolver, icon(""), tr("Mesh and Solver"));
+    tbxWorkspace->addItem(startupScript, icon(""), tr("Startup script"));
+    tbxWorkspace->addItem(meshAndSolver, icon(""), tr("Mesh and solver"));
 
     // layout workspace
     QVBoxLayout *layout = new QVBoxLayout();
@@ -273,9 +271,8 @@ void SettingsWidget::createControls()
     setLayout(layoutMain);
 }
 
-QWidget *SettingsWidget::controlsControlsScriptAndDescription()
+QWidget *SettingsWidget::controlsStartupScript()
 {
-    // startup script
     txtStartupScript = new ScriptEditor(currentPythonEngine(), this);
     connect(txtStartupScript, SIGNAL(textChanged()), this, SLOT(doStartupScriptChanged()));
     lblStartupScriptError = new QLabel();
@@ -284,28 +281,9 @@ QWidget *SettingsWidget::controlsControlsScriptAndDescription()
     palette.setColor(QPalette::WindowText, QColor(Qt::red));
     lblStartupScriptError->setPalette(palette);
 
-    QVBoxLayout *layoutStartup = new QVBoxLayout();
-    layoutStartup->addWidget(txtStartupScript);
-    layoutStartup->addWidget(lblStartupScriptError);
-
-    QGroupBox *grpStartup = new QGroupBox(tr("Startup script"));
-    grpStartup->setLayout(layoutStartup);
-
-    // description
-    txtDescription = new QTextEdit(this);
-    txtDescription->setAcceptRichText(false);
-
-    QVBoxLayout *layoutDescription = new QVBoxLayout();
-    layoutDescription->addWidget(txtDescription);
-
-    QGroupBox *grpDescription = new QGroupBox(tr("Description"));
-    grpDescription->setLayout(layoutDescription);
-
-    // layout
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(grpStartup, 2);
-    layout->addWidget(grpDescription, 1);
-    layout->addStretch();
+    layout->addWidget(txtStartupScript);
+    layout->addWidget(lblStartupScriptError);
 
     QWidget *widget = new QWidget();
     widget->setLayout(layout);
