@@ -102,7 +102,7 @@ static PyObject *pythonTempname(PyObject* self, PyObject* pArgs)
 
     QString tempName = QUuid::createUuid().toString().remove("{").remove("}");
 
-    char *str = "";
+    char *str;
     if (PyArg_ParseTuple(pArgs, "|s", &str))
     {
         if (str != "")

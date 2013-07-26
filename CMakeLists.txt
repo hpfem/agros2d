@@ -18,7 +18,7 @@ SET(VERSION_DAY 13)
 # Naming of projects built.
 SET(AGROS_UTIL agros2d_util)
 SET(PYTHONLAB_LIBRARY agros2d_pythonlab_library)
-SET(PYTHONLAB_BINARY agros2d_pythonlab_binary)
+SET(PYTHONLAB_BINARY pythonlab_binary)
 SET(AGROS_LIBRARY agros2d_library)
 SET(AGROS_SOLVER agros2d_solver)
 SET(AGROS_GENERATOR agros2d_generator)
@@ -31,6 +31,7 @@ SET(POLY2TRI_LIBRARY agros2d_3dparty_poly2tri)
 SET(QCUSTOMPLOT_LIBRARY agros2d_3dparty_qcustomplot)
 SET(QUAZIP_LIBRARY agros2d_3dparty_quazip)
 SET(STB_TRUETYPE_LIBRARY agros2d_3dparty_stb_truetype)
+SET(QTSINGLEAPPLICATION_LIBRARY agros2d_3dparty_qtsingleapplication)
 
 # Add QT.
 SET(QT_USE_QTOPENGL TRUE)

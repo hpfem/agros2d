@@ -42,13 +42,6 @@ FieldSolutionID BlockSolutionID::fieldSolutionID(FieldInfo* fieldInfo)
     return FieldSolutionID(fieldInfo, timeStep, adaptivityStep, solutionMode);
 }
 
-QDebug& operator<<(QDebug output, const FieldSolutionID& id)
-{
-    output << "(" << id.group->name() << ", timeStep " << id.timeStep << ", adaptStep " <<
-              id.adaptivityStep << ", type "<< id.solutionMode << ")";
-    return output;
-}
-
 BlockSolutionID FieldSolutionID::blockSolutionID(Block *block)
 {
     assert(block->contains(this->group));

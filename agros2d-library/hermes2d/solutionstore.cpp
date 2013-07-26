@@ -40,7 +40,7 @@ void SolutionStore::printDebugCacheStatus()
     foreach(FieldSolutionID fsid, m_multiSolutionCacheIDOrder)
     {
         assert(m_multiSolutionCache.keys().contains(fsid));
-        qDebug() << fsid;
+        qDebug() << fsid.toString();
     }
 }
 

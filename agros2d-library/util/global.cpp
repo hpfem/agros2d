@@ -141,8 +141,9 @@ PluginInterface *Agros2D::loadPlugin(const QString &plugin)
 
     if (!loader->load())
     {
+        QString error = loader->errorString();
         delete loader;
-        throw AgrosPluginException(QObject::tr("Could not load 'agros2d_plugin_%1'").arg(plugin));
+        throw AgrosPluginException(QObject::tr("Could not load 'agros2d_plugin_%1' (%2)").arg(plugin).arg(error));
     }
 
     assert(loader->instance());

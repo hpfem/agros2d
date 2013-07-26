@@ -266,7 +266,7 @@ QList<Point> intersection(const Point &p1s, const Point &p1e, const Point &cente
     return out;
 }
 
-QDebug& operator<<(QDebug output, const Point& pt)
+QDebug& operator<<(QDebug &output, const Point& pt)
 {
     output << "(" << pt.x << ", " << pt.y << ")";
     return output;

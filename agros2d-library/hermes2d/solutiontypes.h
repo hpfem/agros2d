@@ -165,8 +165,6 @@ public:
     QString toString();
 };
 
-QDebug& operator<<(QDebug output, const FieldSolutionID& id);
-
 class BlockSolutionID : public SolutionID<Block>
 {
 public:

@@ -13,8 +13,10 @@ IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang
 ENDIF()
 INCLUDE_DIRECTORIES(.)
 
-SET(SOURCES {{ID}}_interface.cpp {{ID}}_weakform.cpp)
-SET(HEADERS {{ID}}_interface.h {{ID}}_weakform.h)
+SET(SOURCES {{ID}}_volumeintegral.cpp {{ID}}_surfaceintegral.cpp {{ID}}_localvalue.cpp {{ID}}_force.cpp {{ID}}_filter.cpp {{ID}}_interface.cpp {{ID}}_weakform.cpp)
+SET(HEADERS {{ID}}_volumeintegral.h {{ID}}_surfaceintegral.h {{ID}}_localvalue.h {{ID}}_force.h {{ID}}_filter.h {{ID}}_weakform.h {{ID}}_interface.h)
+
+QT4_WRAP_CPP(HEADERS_MOC ${HEADERS})
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${AGROS_UTIL} ${PYTHON_MODLIBS} ${PYTHON_LIB} ${AGROS_LIBRARY} hermes2d hermes_common ${PYTHONLAB_LIBRARY})
@@ -22,3 +24,5 @@ INSTALL(TARGETS ${PROJECT_NAME}
 				RUNTIME DESTINATION ${CMAKE_AGROS_DIRECTORY}/libs
 				LIBRARY DESTINATION ${CMAKE_AGROS_DIRECTORY}/libs
 				ARCHIVE DESTINATION ${CMAKE_AGROS_DIRECTORY}/libs)
+				
+SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_AGROS_DIRECTORY}/libs)

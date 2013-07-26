@@ -1,0 +1,29 @@
+PROJECT(${QTSINGLEAPPLICATION_LIBRARY})
+  
+IF(WIN32)
+    SET(PLATFORM win)
+ELSE(WIN32)
+    SET(PLATFORM unix)
+ENDIF(WIN32)
+
+SET(SOURCES qtlocalpeer.cpp
+    # qtlockedfile_${PLATFORM}.cpp
+    qtlockedfile.cpp
+    qtsingleapplication.cpp
+    qtsinglecoreapplication.cpp
+)
+
+SET(HEADERS qtlocalpeer.h
+    qtlockedfile.h
+    qtsingleapplication.h
+    qtsinglecoreapplication.h
+)
+
+QT4_WRAP_CPP(HEADERS_MOC ${HEADERS})
+
+ADD_LIBRARY(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${HEADERS_MOC})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES})
+INSTALL(TARGETS ${PROJECT_NAME}
+                RUNTIME DESTINATION ${CMAKE_HOME_DIRECTORY}/libs
+                LIBRARY DESTINATION ${CMAKE_HOME_DIRECTORY}/libs
+                ARCHIVE DESTINATION ${CMAKE_HOME_DIRECTORY}/libs)

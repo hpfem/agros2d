@@ -621,7 +621,7 @@ project(hermes2d)
 
     set(_FLAGS ${BUILD_FLAGS})
 
-    set_target_properties(${HERMES_LIB} PROPERTIES COMPILE_FLAGS ${_FLAGS})
+    SET_TARGET_PROPERTIES(${HERMES_LIB} PROPERTIES COMPILE_FLAGS ${_FLAGS})
 
     target_link_libraries(  ${HERMES_LIB}
       ${HERMES_COMMON_LIB}

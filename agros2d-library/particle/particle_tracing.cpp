@@ -39,7 +39,6 @@
 #include "hermes2d/field.h"
 #include "hermes2d/solutionstore.h"
 #include "hermes2d/problem_config.h"
-#include "mesh_hash.h"
 
 ParticleTracing::ParticleTracing(QObject *parent)
     : QObject(parent)

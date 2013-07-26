@@ -154,4 +154,4 @@ private:
     PythonScriptingConsole *console;
 };
 
-#endif _PYTHONCONSOLE
+#endif // _PYTHONCONSOLE

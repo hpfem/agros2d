@@ -1,7 +1,6 @@
 include_directories(${CMAKE_AGROS_DIRECTORY}3rdparty)
 include_directories(${CMAKE_AGROS_DIRECTORY}3rdparty/ctemplate)
 include_directories(${CMAKE_AGROS_DIRECTORY}3rdparty/dxflib)
-include_directories(${CMAKE_AGROS_DIRECTORY}3rdparty/rapidxml)
 include_directories(${CMAKE_AGROS_DIRECTORY}3rdparty/poly2tri)
 include_directories(${CMAKE_AGROS_DIRECTORY}3rdparty/bson)
 include_directories(${CMAKE_AGROS_DIRECTORY}3rdparty/quazip)

@@ -4,7 +4,6 @@ INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/pythonlab-library)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/ctemplate)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/libdxfrw)
-INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/rapidxml)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/poly2tri)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/bson)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/quazip)
@@ -94,7 +93,6 @@ SET(SOURCES value.cpp
     pythonlab/pyparticletracing.cpp
     pythonlab/remotecontrol.cpp
     particle/particle_tracing.cpp
-    particle/mesh_hash.cpp
     util/form_interface.cpp
     util/form_script.cpp
     ../resources_source/classes/module_xml.cpp
@@ -190,7 +188,6 @@ SET(SOURCES value.cpp
     pythonlab/pyparticletracing.h
     pythonlab/remotecontrol.h
     particle/particle_tracing.h
-    particle/mesh_hash.h
     )
     
 IF(MSVC)
@@ -214,9 +211,11 @@ SET(RESOURCES ../resources_source/resources.qrc)
 QT4_ADD_RESOURCES(RESOURCES_RCC ${RESOURCES})
 SET(RC_FILE ../resources_source/resources.rc)
 
-ADD_LIBRARY(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${RESOURCES_RCC} ${RC_FILE} ${HEADERS_MOC})
+ADD_LIBRARY(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS} ${RESOURCES_RCC} ${RC_FILE} ${HEADERS_MOC})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${OPENGL_LIBRARIES} hermes2d hermes_common)
 INSTALL(TARGETS ${PROJECT_NAME}
 				RUNTIME DESTINATION ${CMAKE_HOME_DIRECTORY}/libs
 				LIBRARY DESTINATION ${CMAKE_HOME_DIRECTORY}/libs
 				ARCHIVE DESTINATION ${CMAKE_HOME_DIRECTORY}/libs)
+
+SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/libs)

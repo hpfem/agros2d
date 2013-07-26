@@ -81,7 +81,7 @@ struct AGROS_API  Point
     }
 };
 
-QDebug& operator<<(QDebug output, const Point& pt);
+QDebug& operator<<(QDebug &output, const Point& pt);
 
 struct Point3
 {

@@ -3,7 +3,7 @@
 #include <QtGui>
 #include <QtCore>
 
-#include "singleapp/qtsingleapplication.h"
+#include "qtsingleapplication.h"
 
 #include "util.h"
 #include "pythonlab/pythonengine.h"
