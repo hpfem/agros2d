@@ -133,7 +133,7 @@ bool ValueLineEdit::evaluate(bool quiet)
     bool isOk = false;
     bool valueChanged = false;
 
-    if (!m_hasNonlin || m_table.size() == 0)
+    if (!m_hasNonlin || m_table.isEmpty())
     {
         Value val = value();
 
@@ -238,12 +238,12 @@ void ValueLineEdit::setLayoutValue()
     btnDataTableDelete->setVisible(false);
     btnDataTableDialog->setVisible(false);
 
-    if ((!m_hasNonlin) || (m_hasNonlin && m_table.size() == 0))
+    if ((!m_hasNonlin) || (m_hasNonlin && m_table.isEmpty()))
     {
         txtLineEdit->setVisible(true);
         lblValue->setVisible(true);
     }
-    if (m_hasNonlin && m_table.size() > 0)
+    if (m_hasNonlin && !m_table.isEmpty())
     {
         if (!m_labelX.isEmpty() && !m_labelY.isEmpty())
             lblInfo->setText(tr("nonlinear %1(%2)").arg(m_labelY).arg(m_labelX));

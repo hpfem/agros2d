@@ -92,7 +92,7 @@ bool Value::isNumber()
 
 bool Value::hasTable() const
 {
-    return (m_table.size() > 0);
+    return (!m_table.isEmpty());
 }
 
 bool Value::evaluateAtPoint(const Point &point)
@@ -212,7 +212,7 @@ void Value::setText(const QString &str)
 
 QString Value::toString() const
 {
-    if (m_table.size() == 0)
+    if (m_table.isEmpty())
         return m_text;
     else
         return m_text + ";" + m_table.toString();
