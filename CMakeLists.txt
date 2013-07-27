@@ -3,7 +3,6 @@ PROJECT( agros2d )
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 # Debug yes / no.
-# Not used so far.
 SET(AGROS_DEBUG NO)
 
 # versions
@@ -35,23 +34,28 @@ SET(STB_TRUETYPE_LIBRARY agros2d_3dparty_stb_truetype)
 SET(QTSINGLEAPPLICATION_LIBRARY agros2d_3dparty_qtsingleapplication)
 
 # Add QT.
-SET(QT_USE_QTOPENGL TRUE)
-SET(QT_USE_QTUITOOLS TRUE)
-SET(QT_USE_QTNETWORK TRUE)
-SET(QT_USE_QTOPENGL TRUE)
-SET(QT_USE_QTSQL TRUE)
-SET(QT_USE_QTXML TRUE)
-SET(QT_USE_QTSVG TRUE)
-SET(QT_USE_QTTEST TRUE)
-SET(QT_USE_QTDBUS TRUE)
-SET(QT_USE_QTSCRIPT TRUE)
-SET(QT_USE_QTWEBKIT TRUE)
-SET(QT_USE_QTXMLPATTERNS TRUE)
-find_package(Qt4 REQUIRED)
-# This has to be here, otherwise CMake will not do the magic and will not link to OpenGL
-find_package(OpenGL REQUIRED)
-INCLUDE(${QT_USE_FILE})
-ADD_DEFINITIONS(${QT_DEFINITIONS})
+SET(CMAKE_AUTOMOC TRUE)
+IF(WIN32)
+ELSE(WIN32)
+    SET(QT_USE_QTOPENGL TRUE)
+    SET(QT_USE_QTUITOOLS TRUE)
+    SET(QT_USE_QTNETWORK TRUE)
+    SET(QT_USE_QTOPENGL TRUE)
+    SET(QT_USE_QTSQL TRUE)
+    SET(QT_USE_QTXML TRUE)
+    SET(QT_USE_QTSVG TRUE)
+    SET(QT_USE_QTTEST TRUE)
+    SET(QT_USE_QTDBUS TRUE)
+    SET(QT_USE_QTSCRIPT TRUE)
+    SET(QT_USE_QTWEBKIT TRUE)
+    SET(QT_USE_QTXMLPATTERNS TRUE)
+    find_package(Qt4 REQUIRED)
+    # This has to be here, otherwise CMake will not do the magic and will not link to OpenGL
+    find_package(OpenGL REQUIRED)
+    INCLUDE(${QT_USE_FILE})
+    ADD_DEFINITIONS(${QT_DEFINITIONS})
+ENDIF(WIN32)
+
 
 # Set global compiler parameters.
 find_package(OpenMP REQUIRED)
@@ -75,6 +79,21 @@ ENDIF(MSVC)
 # Python
 FIND_PACKAGE(PythonLibs REQUIRED)
 INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})
+
+# Enable debugging symbols for all files all the time:
+# set(CMAKE_CXX_FLAGS "-g ${CMAKE_CXX_FLAGS}")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    IF(AGROS_DEBUG)
+        # Disable all warnings and turn on only important ones:
+        SET(CMAKE_CXX_FLAGS "-w ${CMAKE_CXX_FLAGS} -fPIC")
+        SET(CMAKE_CXX_FLAGS "-Wuninitialized -Wvla -Wsign-compare ${CMAKE_CXX_FLAGS}")
+
+        SET(RELEASE_FLAGS "-DNDEBUG -O3")
+        SET(FLAGS ${RELEASE_FLAGS})
+        SET(DEBUG_FLAGS   "-g")
+        SET(FLAGS ${DEBUG_FLAGS})
+    ENDIF(AGROS_DEBUG)
+endif()
 
 # Create file with preprocessor definitions exposing the build settings to the source code.
 configure_file(

@@ -22,14 +22,12 @@ SET(HEADERS generator.h
     generator_module.h 
     generator_coupling.h)
 
-QT4_WRAP_CPP(HEADERS_MOC ${HEADERS})
-    
 IF(MSVC)
   SET(HEADERS ${HEADERS} ../resources_source/classes/module_xml.h ../resources_source/classes/coupling_xml.h)
   SET(SOURCES ${SOURCES} ../resources_source/classes/module_xml.cpp ../resources_source/classes/coupling_xml.cpp)
 ENDIF(MSVC)
     
-ADD_EXECUTABLE(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${HEADERS_MOC})
+ADD_EXECUTABLE(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${AGROS_LIBRARY} ${PYTHONLAB_LIBRARY} ${CTEMPLATE_LIBRARY} ${DXFLIB_LIBRARY} ${POLY2TRI_LIBRARY} ${QCUSTOMPLOT_LIBRARY} ${QUAZIP_LIBRARY} ${STB_TRUETYPE_LIBRARY})
 INSTALL(TARGETS ${PROJECT_NAME}
 				RUNTIME DESTINATION ${CMAKE_HOME_DIRECTORY}
