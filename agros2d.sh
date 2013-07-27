@@ -1,13 +1,13 @@
 #!/bin/sh
 
-docPath="./resources_source/doc"
+docPath="resources_source/doc"
 docPathTarget="./resources/help"
-langPath="./resources_source/lang"
+langPath="resources_source/lang"
 langPathTarget="./resources/lang"
-tempPath="./tmp"
+tempPath="tmp"
 compCores=1
 version="3.0"
-debianizedFiles="debian hermes2d hermes_common lib libs resources resources_source util agros2d-forms agros2d-remote agros2d-generator agros2d-binary agros2d-library agros2d-solver pythonlab-library pythonlab-binary 3rdparty agros2d.desktop agros2d.pro agros2d.pri agros2d_version.pri agros2d.sh AUTHORS COPYING functions_agros2d.py functions_pythonlab.py README"
+debianizedFiles="debian hermes2d hermes_common lib libs resources resources_source util agros2d-forms agros2d-remote agros2d-generator agros2d-binary agros2d-library agros2d-solver pythonlab-library pythonlab-binary 3rdparty agros2d.desktop CMakeList.txt agros2d.sh AUTHORS COPYING functions_agros2d.py functions_pythonlab.py README"
 unwantedFiles="resources_source/test libs/* 3rdparty/build 3rdparty/Makefile 3rdparty/libs 3rdparty/ctemplate/Makefile agros2d-forms/Makefile agros2d-forms/example/build agros2d-forms/Makefile 3rdparty/ctemplate/build 3rdparty/dxflib/Makefile 3rdparty/dxflib/build 3rdparty/paralution/Makefile 3rdparty/paralution/build 3rdparty/poly2tri/Makefile 3rdparty/poly2tri/build 3rdparty/qcustomplot/Makefile 3rdparty/qcustomplot/build 3rdparty/quazip/Makefile 3rdparty/quazip/build 3rdparty/stb_truetype/Makefile 3rdparty/stb_truetype/build util/build util/Makefile hermes2d/build hermes2d/lib hermes2d/Makefile agros2d-solver/build solver/Makefile agros2d-solver/qrc_resources.cpp agros2d-remote/build agros2d-remote/Makefile agros2d-generator/build agros2d-generator/Makefile agros2d-generator/qrc_resources.cpp pythonlab-library/build pythonlab-library/Makefile pythonlab-library/qrc_resources.cpp agros2d-binary/build agros2d-binary/Makefile agros2d-binary/qrc_resources.cpp pythonlab-binary/build pythonlab-binary/Makefile pythonlab-binary/qrc_resources.cpp agros2d-library/build agros2d-library/Makefile agros2d-library/qrc_resources.cpp"
 
 export LD_LIBRARY_PATH="libs"
@@ -53,7 +53,31 @@ case "$1" in
     cython )
         cython --cplus resources_source/python/pythonlab.pyx
         cython --cplus resources_source/python/agros2d.pyx
-        ;;       
+        ;;     
+    release )
+    	git clean -dxf
+        ./agros2d.sh help
+        ./agros2d.sh lang release
+        ./agros2d.sh cython
+        
+        tempPathTarget=$tempPath/agros2d-$version
+
+        if [ -e $tempPath ]
+        then
+            if [ -e $tempPathTarget ] ; then rm -rv $tempPathTarget ; fi
+        else
+            mkdir -v $tempPath
+        fi
+        
+        mkdir -v $tempPathTarget
+        cp -rv * $tempPathTarget
+        rm -rv $tempPathTarget/resources_source/test
+        rmdir -v $tempPathTarget/resources_source/test
+        
+        cd $tempPathTarget        
+        debuild -S -sa >/dev/null
+        
+        ;;             
     build )
         case "$2" in
             binary )
