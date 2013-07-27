@@ -22,7 +22,6 @@
 #include "util/global.h"
 
 #include "gui/common.h"
-#include "gui/latexviewer.h"
 #include "gui/valuelineedit.h"
 
 #include "scenemarker.h"

@@ -33,7 +33,6 @@
 #include "hermes2d/problem_config.h"
 
 #include "gui/lineeditdouble.h"
-#include "gui/latexviewer.h"
 #include "gui/groupbox.h"
 #include "gui/common.h"
 

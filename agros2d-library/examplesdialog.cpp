@@ -28,7 +28,6 @@
 #include "moduledialog.h"
 
 #include "gui/lineeditdouble.h"
-#include "gui/latexviewer.h"
 #include "gui/common.h"
 
 #include "hermes2d/problem.h"

@@ -4,10 +4,8 @@ INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/util)
 INCLUDE_DIRECTORIES(.)
 
 IF(WIN32)
-  EXECUTE_PROCESS(COMMAND "C:/Python27/Scripts/cython.py" "--cplus" "${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx")
   EXECUTE_PROCESS(COMMAND "C:/Python27/Scripts/cython.py" "--cplus" "${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx")
 ELSE(WIN32)
-  EXECUTE_PROCESS(COMMAND "cython" "--cplus" "${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx")
   EXECUTE_PROCESS(COMMAND "cython" "--cplus" "${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx")
 ENDIF(WIN32)
 
@@ -40,13 +38,11 @@ SET(RC_FILE ../resources_source/resources.rc)
 IF(MSVC)
   SET(HEADERS ${HEADERS} ../util/gui/textedit.h
     ../util/gui/about.h
-    ../util/gui/filebrowser.h
-  singleapp/qtlockedfile.h)
-  # SET(SOURCES ${SOURCES} singleapp/qtlockedfile_win.cpp)
+    ../util/gui/filebrowser.h)  
 ENDIF(MSVC)
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS} ${RESOURCES_RCC} ${RC_FILE} ${HEADERS_MOC})
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${AGROS_UTIL} ${PYTHON_MODLIBS} ${PYTHON_LIB} ${QTSINGLEAPPLICATION_LIBRARY})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${PYTHON_LIBRARIES} ${AGROS_UTIL} ${QTSINGLEAPPLICATION_LIBRARY})
 INSTALL(TARGETS ${PROJECT_NAME}
 				RUNTIME DESTINATION ${CMAKE_HOME_DIRECTORY}/libs
 				LIBRARY DESTINATION ${CMAKE_HOME_DIRECTORY}/libs

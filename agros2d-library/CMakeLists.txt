@@ -3,18 +3,26 @@ INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/util)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/pythonlab-library)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/ctemplate)
+IF(WIN32)
+    INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/ctemplate/windows)
+ELSE(WIN32)
+    INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/ctemplate/linux)
+ENDIF(WIN32)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/libdxfrw)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/poly2tri)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/bson)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/quazip)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/paralution/src)
-EXECUTE_PROCESS(COMMAND "python" "-c" "import distutils.sysconfig; print distutils.sysconfig.get_python_inc()" OUTPUT_VARIABLE PYTHON_INC)
-STRING(STRIP ${PYTHON_INC} PYTHON_INC)
-INCLUDE_DIRECTORIES(${PYTHON_INC})    
-IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-  INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/ctemplate/linux)
-ENDIF()
 INCLUDE_DIRECTORIES(.)
+
+IF(WIN32)
+  EXECUTE_PROCESS(COMMAND "C:/Python27/Scripts/cython.py" "--cplus" "${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx")
+ELSE(WIN32)
+  EXECUTE_PROCESS(COMMAND "cython" "--cplus" "${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx")
+  #EXECUTE_PROCESS(COMMAND "lrelease" "${CMAKE_HOME_DIRECTORY}/resources_source/lang/*.ts")
+  #EXECUTE_PROCESS(COMMAND "mkdir" "${CMAKE_HOME_DIRECTORY}/resources/lang")
+  #EXECUTE_PROCESS(COMMAND "mv" "${CMAKE_HOME_DIRECTORY}/resources_source/lang/*.qm" "${CMAKE_HOME_DIRECTORY}/resources/lang/*.qm")
+ENDIF(WIN32)
 
 SET(SOURCES value.cpp
     scene.cpp
@@ -31,7 +39,6 @@ SET(SOURCES value.cpp
     gui/htmledit.cpp
     gui/scenewidget.cpp
     gui/groupbox.cpp
-    gui/latexviewer.cpp
     gui/physicalfield.cpp
     gui/valuetimedialog.cpp
     gui/valuedatatabledialog.cpp
@@ -119,7 +126,6 @@ SET(SOURCES value.cpp
     gui/imageloader.h
     gui/htmledit.h
     gui/scenewidget.h
-    gui/latexviewer.h
     gui/physicalfield.h
     gui/valuetimedialog.h
     gui/valuedatatabledialog.h

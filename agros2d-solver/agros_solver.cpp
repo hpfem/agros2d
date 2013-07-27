@@ -40,14 +40,14 @@ bool AgrosSolver::notify(QObject *receiver, QEvent *event)
     {
         return QCoreApplication::notify(receiver, event);
     }
-    catch (std::exception& e)
-    {
-        qCritical() << "Exception thrown: " << e.what();
-        QApplication::exit(1);
-    }
     catch (Hermes::Exceptions::Exception& e)
     {
         qCritical() << "Hermes exception thrown: " << QString("%1").arg(e.what());
+        QApplication::exit(1);
+    }
+    catch (std::exception& e)
+    {
+        qCritical() << "Exception thrown: " << e.what();
         QApplication::exit(1);
     }
     catch (AgrosException e)

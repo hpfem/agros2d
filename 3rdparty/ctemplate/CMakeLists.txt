@@ -23,6 +23,7 @@ ENDIF()
 
 IF(MSVC)
   INCLUDE_DIRECTORIES(ctemplate)
+  INCLUDE_DIRECTORIES(windows)
   SET(SOURCES windows/port.cc ${SOURCES})
 ENDIF(MSVC)
 
