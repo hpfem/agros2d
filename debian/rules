@@ -7,7 +7,7 @@ configure: configure-stamp
 configure-stamp:
 	dh_testdir
 	-$(MAKE) distclean
-	qmake-qt4 PREFIX=$(CURDIR)/debian/agros2d/usr CONFIG-="debug" CONFIG+="release"
+	cmake -DCMAKE_INSTALL_PREFIX=$(CURDIR)/debian/agros2d/usr 
 	touch $@
 
 build: build-stamp
@@ -16,14 +16,14 @@ build-stamp: configure-stamp
 	dh_testdir	
 	$(MAKE)
 	LD_LIBRARY_PATH=$(CURDIR)/libs ./agros2d_generator
-	qmake-qt4 PREFIX=$(CURDIR)/debian/agros2d/usr CONFIG-="debug" CONFIG+="release" plugins/plugins.pro
+	cmake -DCMAKE_INSTALL_-DCMAKE_INSTALL_PREFIX=$(CURDIR)/debian/agros2d/usr plugins/CMakeList.text
 	$(MAKE) --directory plugins
 
 clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp configure-stamp -f 
-	qmake-qt4 PREFIX=$(CURDIR)/debian/agros2d/usr CONFIG-="debug" CONFIG+="release"
+	cmake -DCMAKE_INSTALL_PREFIX=$(CURDIR)/debian/agros2d/usr
 	$(MAKE) distclean
 	dh_clean
 
@@ -34,6 +34,7 @@ install: build
 	dh_install
 	dh_installdirs
 	$(MAKE) install
+	$(MAKE) --directory plugins install
 
 binary-indep: build install
 
