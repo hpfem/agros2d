@@ -13,12 +13,16 @@ INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/poly2tri)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/bson)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/quazip)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/paralution/src)
-INCLUDE_DIRECTORIES(.)
 
+IF(BUILD_CYTHON)
+    IF(WIN32)
+      EXECUTE_PROCESS(COMMAND "C:/Python27/Scripts/cython.py" "--cplus" "${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx")
+    ELSE(WIN32)
+      EXECUTE_PROCESS(COMMAND "cython" "--cplus" "${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx")
+    ENDIF(WIN32)
+ENDIF(BUILD_CYTHON)
 IF(WIN32)
-  EXECUTE_PROCESS(COMMAND "C:/Python27/Scripts/cython.py" "--cplus" "${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx")
 ELSE(WIN32)
-  EXECUTE_PROCESS(COMMAND "cython" "--cplus" "${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx")
   #EXECUTE_PROCESS(COMMAND "lrelease" "${CMAKE_HOME_DIRECTORY}/resources_source/lang/*.ts")
   #EXECUTE_PROCESS(COMMAND "mkdir" "${CMAKE_HOME_DIRECTORY}/resources/lang")
   #EXECUTE_PROCESS(COMMAND "mv" "${CMAKE_HOME_DIRECTORY}/resources_source/lang/*.qm" "${CMAKE_HOME_DIRECTORY}/resources/lang/*.qm")
@@ -204,10 +208,6 @@ IF(MSVC)
     ../util/gui/filebrowser.h
     ../util/gui/lineeditdouble.h
     ../util/gui/systemoutput.h
-    ../pythonlab-library/pythonlab/pythonconsole.h
-    ../pythonlab-library/pythonlab/pythonengine.h
-    ../pythonlab-library/pythonlab/pythoneditor.h
-    ../pythonlab-library/singleapp/qtsingleapplication.h
     )
 ENDIF(MSVC)
 
@@ -220,7 +220,7 @@ ENDIF(WITH_QT5)
 SET(RC_FILE ../resources_source/resources.rc)
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS} ${RESOURCES_RCC} ${RC_FILE})
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${OPENGL_LIBRARIES} hermes2d hermes_common)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${OPENGL_LIBRARIES} ${HERMES_LIBRARY} ${HERMES_COMMON_LIBRARY})
 INSTALL(TARGETS ${PROJECT_NAME}
 				RUNTIME DESTINATION ${CMAKE_HOME_DIRECTORY}/libs
 				LIBRARY DESTINATION ${CMAKE_HOME_DIRECTORY}/libs

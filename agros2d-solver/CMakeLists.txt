@@ -8,11 +8,9 @@ INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/poly2tri)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/bson)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/quazip)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/paralution/src)
-INCLUDE_DIRECTORIES(.)
 
 SET(SOURCES main.cpp
-    agros_solver.cpp
-)
+    agros_solver.cpp)
 
 SET(HEADERS agros_solver.h)
 

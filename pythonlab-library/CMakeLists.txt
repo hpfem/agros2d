@@ -1,13 +1,14 @@
 PROJECT(${PYTHONLAB_LIBRARY})
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/qtsingleapplication)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/util)
-INCLUDE_DIRECTORIES(.)
 
-IF(WIN32)
-  EXECUTE_PROCESS(COMMAND "C:/Python27/Scripts/cython.py" "--cplus" "${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx")
-ELSE(WIN32)
-  EXECUTE_PROCESS(COMMAND "cython" "--cplus" "${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx")
-ENDIF(WIN32)
+IF(BUILD_CYTHON)
+    IF(WIN32)
+      EXECUTE_PROCESS(COMMAND "C:/Python27/Scripts/cython.py" "--cplus" "${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx")
+    ELSE(WIN32)
+      EXECUTE_PROCESS(COMMAND "cython" "--cplus" "${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx")
+    ENDIF(WIN32)
+ENDIF(BUILD_CYTHON)
 
 SET(SOURCES pythonlab.cpp
     pythonlab_functions.cpp
