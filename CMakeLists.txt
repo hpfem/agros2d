@@ -2,8 +2,12 @@
 PROJECT( agros2d )
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
+# Allow to override the default values in CMake.vars:
+include(CMake.vars OPTIONAL)
+
 # Debug yes / no.
 SET(AGROS_DEBUG NO)
+SET(WITH_QT5 NO)
 
 # versions
 # SET(VERSION_BETA)
@@ -35,8 +39,12 @@ SET(QTSINGLEAPPLICATION_LIBRARY agros2d_3dparty_qtsingleapplication)
 
 # Add QT.
 SET(CMAKE_AUTOMOC TRUE)
-IF(WIN32)
-ELSE(WIN32)
+IF(WITH_QT5)
+    IF(WIN32)
+        SET(CMAKE_PREFIX_PATH "C:\\Qt\\32\\Qt5.0.2\\5.0.2\\msvc2010_opengl\\")
+    ENDIF(WIN32)
+    FIND_PACKAGE(Qt5Widgets)
+ELSE(WITH_QT5)
     SET(QT_USE_QTOPENGL TRUE)
     SET(QT_USE_QTUITOOLS TRUE)
     SET(QT_USE_QTNETWORK TRUE)
@@ -49,13 +57,12 @@ ELSE(WIN32)
     SET(QT_USE_QTSCRIPT TRUE)
     SET(QT_USE_QTWEBKIT TRUE)
     SET(QT_USE_QTXMLPATTERNS TRUE)
-    find_package(Qt4 REQUIRED)
+    FIND_PACKAGE(Qt4 REQUIRED)
     # This has to be here, otherwise CMake will not do the magic and will not link to OpenGL
-    find_package(OpenGL REQUIRED)
+    FIND_PACKAGE(OpenGL REQUIRED)
     INCLUDE(${QT_USE_FILE})
     ADD_DEFINITIONS(${QT_DEFINITIONS})
-ENDIF(WIN32)
-
+ENDIF(WITH_QT5)
 
 # Set global compiler parameters.
 find_package(OpenMP REQUIRED)
