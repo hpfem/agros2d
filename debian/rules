@@ -8,9 +8,9 @@ configure-stamp:
 	dh_testdir
 	-$(MAKE) distclean
 	cmake -DCMAKE_INSTALL_PREFIX=$(CURDIR)/debian/agros2d/usr .
-	touch $@
+	touch configure-stamp
 
-build: build-stamp
+build: configure-stamp build-stamp
 
 build-stamp: configure-stamp
 	dh_testdir	
@@ -18,10 +18,12 @@ build-stamp: configure-stamp
 	LD_LIBRARY_PATH=$(CURDIR)/libs ./agros2d_generator
 	cmake -DCMAKE_INSTALL_PREFIX=$(CURDIR)/debian/agros2d/usr plugins/CMakeLists.txt
 	$(MAKE) --directory plugins
+	touch build-stamp
 
 clean:
 	dh_testdir
 	dh_testroot
+	rm -f build-stamp configure-stamp
 	dh_clean
 
 install: build
@@ -60,10 +62,11 @@ binary-arch: build install
 #	dh_perl
 	dh_makeshlibs
 	dh_installdeb
-	LD_LIBRARY_PATH=$(CURDIR)/libs dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info
+	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
 
 binary: binary-arch
 .PHONY: build clean binary-arch binary install configure
+
