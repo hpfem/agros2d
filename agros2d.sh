@@ -40,9 +40,9 @@ case "$1" in
         ;;
     comp )
         if [ $2 -gt $compCores ]; then compCores=$2 ; fi
-        if cmame . ; then make -j$compCores ; fi
+        if cmake . ; then make -j$compCores ; fi
         ./agros2d_generator
-        if qmake ./plugins/plugins.pro ; then make -j$compCores -C ./plugins/ ; fi
+        if cmake plugins/CMakeList.txt ; then make -j$compCores -C ./plugins/ ; fi
         ;;
     run )
         ./agros2d
