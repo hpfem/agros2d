@@ -244,7 +244,7 @@ void SceneViewCommon::initFont(GLuint textureID, stbtt_bakedchar *fnt, const QSt
         fclose(fp);
     }
 
-    fread(ttfBuffer, 1, fsize, fp);
+    size_t s = fread(ttfBuffer, 1, fsize, fp);
     fclose(fp);
     fp = NULL;
 

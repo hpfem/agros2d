@@ -51,9 +51,6 @@ project(hermes)
   # BSON 
   set(WITH_BSON NO)
 
-  # Installation path:
-  set(CMAKE_INSTALL_PREFIX             /usr/local) #default installation path for the library will be /usr/local/lib,
-                                            #for include files /usr/local/include
   #### Solvers ###
   # Standard UMFPACK
     # UMFPACK is chosen by default.

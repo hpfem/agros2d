@@ -7,7 +7,7 @@ configure: configure-stamp
 configure-stamp:
 	dh_testdir
 	-$(MAKE) distclean
-	cmake -DCMAKE_INSTALL_PREFIX=$(CURDIR)/debian/agros2d/usr 
+	cmake -DCMAKE_INSTALL_PREFIX=$(CURDIR)/debian/agros2d/usr .
 	touch $@
 
 build: build-stamp

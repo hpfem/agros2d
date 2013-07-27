@@ -7,8 +7,6 @@ SET(AGROS_DEBUG NO)
 SET(WITH_QT5 NO)
 SET(BUILD_CYTHON YES)
 
-SET(CMAKE_INSTALL_PREFIX "/usr/local")
-
 # Allow to override the default values in CMake.vars:
 include(CMake.vars OPTIONAL)
 
