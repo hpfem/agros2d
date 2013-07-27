@@ -184,10 +184,8 @@ SET(RESOURCES_FILES "resources")
 
 IF(WIN32)
   FILE(GLOB BINARY_AGROS2D "agros2d_binary.exe")
-  #FILE(RENAME "agros2d_binary.exe" "agros2d.exe")
 ELSE(WIN32)
   FILE(GLOB BINARY_AGROS2D "agros2d_binary")
-  #FILE(RENAME "agros2d_binary" "agros2d")
 ENDIF(WIN32)
 
 IF(WIN32)
@@ -198,10 +196,8 @@ ENDIF(WIN32)
 
 IF(WIN32)
   FILE(GLOB BINARY_PYTHONLAB "pythonlab_binary.exe")
-  #FILE(RENAME "pythonlab_binary.exe" "pythonlab.exe")
 ELSE(WIN32)
   FILE(GLOB BINARY_PYTHONLAB "pythonlab_binary")
-  #FILE(RENAME "pythonlab_binary" "pythonlab")
 ENDIF(WIN32)
 
 # bin
