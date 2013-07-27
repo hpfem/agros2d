@@ -7,6 +7,8 @@ SET(AGROS_DEBUG NO)
 SET(WITH_QT5 NO)
 SET(BUILD_CYTHON YES)
 
+SET(CMAKE_INSTALL_PREFIX "/usr/local")
+
 # Allow to override the default values in CMake.vars:
 include(CMake.vars OPTIONAL)
 
@@ -181,14 +183,14 @@ FILE(GLOB DESKTOP_FILES "agros2d.desktop")
 # python functions
 FILE(GLOB PYTHON_FUNCTION_FILES "*.py")
 # resources
-SET(RESOURCES_FILES "resources")
+FILE(GLOB_RECURSE RESOURCES_FILES "resources")
 
 IF(WIN32)
   FILE(GLOB BINARY_AGROS2D "agros2d_binary.exe")
-  FILE(RENAME "agros2d_binary.exe" "agros2d.exe")
+  #FILE(RENAME "agros2d_binary.exe" "agros2d.exe")
 ELSE(WIN32)
   FILE(GLOB BINARY_AGROS2D "agros2d_binary")
-  FILE(RENAME "agros2d_binary" "agros2d")
+  #FILE(RENAME "agros2d_binary" "agros2d")
 ENDIF(WIN32)
 
 IF(WIN32)
@@ -199,10 +201,10 @@ ENDIF(WIN32)
 
 IF(WIN32)
   FILE(GLOB BINARY_PYTHONLAB "pythonlab_binary.exe")
-  FILE(RENAME "pythonlab_binary.exe" "pythonlab.exe")
+  #FILE(RENAME "pythonlab_binary.exe" "pythonlab.exe")
 ELSE(WIN32)
   FILE(GLOB BINARY_PYTHONLAB "pythonlab_binary")
-  FILE(RENAME "pythonlab_binary" "pythonlab")
+  #FILE(RENAME "pythonlab_binary" "pythonlab")
 ENDIF(WIN32)
 
 # bin
@@ -215,4 +217,4 @@ INSTALL(FILES ${LIB_FILES} DESTINATION ${LIB_INSTALL_PATH})
 INSTALL(FILES ${PIXMAP_FILES} DESTINATION ${PIXMAP_INSTALL_PATH})
 INSTALL(FILES ${DESKTOP_FILES} DESTINATION ${DESKTOP_INSTALL_PATH})
 INSTALL(FILES ${PYTHON_FUNCTION_FILES} DESTINATION ${PYTHON_FUNCTION_INSTALL_PATH})
-INSTALL(DIRECTORY ${RESOURCES_FILES} DESTINATION ${RESOURCES_INSTALL_PATH})
+INSTALL(FILES ${RESOURCES_FILES} DESTINATION ${RESOURCES_INSTALL_PATH})
