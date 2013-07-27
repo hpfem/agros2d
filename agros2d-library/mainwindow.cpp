@@ -919,13 +919,6 @@ void MainWindow::doDocumentOpen(const QString &fileName)
 
                 return;
             }
-            catch (AgrosException &e)
-            {
-                Agros2D::scene()->clear();
-
-                Agros2D::log()->printError(tr("Problem"), e.toString());
-                return;
-            }
             catch(AgrosModuleException& e)
             {
                 Agros2D::scene()->clear();
@@ -934,6 +927,13 @@ void MainWindow::doDocumentOpen(const QString &fileName)
                 return;
             }
             catch(AgrosPluginException& e)
+            {
+                Agros2D::scene()->clear();
+
+                Agros2D::log()->printError(tr("Problem"), e.toString());
+                return;
+            }
+            catch (AgrosException &e)
             {
                 Agros2D::scene()->clear();
 

@@ -21,14 +21,14 @@ public:
         {
             return QApplication::notify(receiver, event);
         }
-        catch (std::exception& e)
-        {
-            qCritical() << "Exception thrown: " << e.what();
-            throw;
-        }
         catch (Hermes::Exceptions::Exception& e)
         {
             qCritical() << "Hermes exception thrown: " << QString("%1").arg(e.what());
+            throw;
+        }
+        catch (std::exception& e)
+        {
+            qCritical() << "Exception thrown: " << e.what();
             throw;
         }
         catch (AgrosException e)

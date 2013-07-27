@@ -248,8 +248,8 @@ void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Hermes2D::Mixi
         QString name = QString("%1/%2_%3_%4").arg(tempProblemDir()).arg(solverName).arg(Agros2D::problem()->actualTimeStep()).arg(adaptivityStep);
         solver->set_matrix_filename(QString("%1_Matrix").arg(name).toStdString());
         solver->set_rhs_filename(QString("%1_RHS").arg(name).toStdString());
-        solver->set_matrix_number_format("%g");
-        solver->set_rhs_number_format("%g");
+        solver->set_matrix_number_format((char *) "%g");
+        solver->set_rhs_number_format((char *) "%g");
     }
 }
 

@@ -13,13 +13,17 @@ IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang
 ENDIF()
 INCLUDE_DIRECTORIES(.)
 
-SET(SOURCES {{ID}}_volumeintegral.cpp {{ID}}_surfaceintegral.cpp {{ID}}_localvalue.cpp {{ID}}_force.cpp {{ID}}_filter.cpp {{ID}}_interface.cpp {{ID}}_weakform.cpp)
+SET(SOURCES {{ID}}_volumeintegral.cpp {{ID}}_surfaceintegral.cpp {{ID}}_localvalue.cpp {{ID}}_force.cpp {{ID}}_filter.cpp {{ID}}_weakform.cpp {{ID}}_interface.cpp)
 SET(HEADERS {{ID}}_volumeintegral.h {{ID}}_surfaceintegral.h {{ID}}_localvalue.h {{ID}}_force.h {{ID}}_filter.h {{ID}}_weakform.h {{ID}}_interface.h)
 
 QT4_WRAP_CPP(HEADERS_MOC ${HEADERS})
 
-ADD_LIBRARY(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${AGROS_UTIL} ${PYTHON_MODLIBS} ${PYTHON_LIB} ${AGROS_LIBRARY} hermes2d hermes_common ${PYTHONLAB_LIBRARY})
+ADD_DEFINITIONS(-DQT_PLUGIN)
+ADD_DEFINITIONS(-DQT_NO_DEBUG)
+ADD_DEFINITIONS(-DQT_SHARED)
+
+ADD_LIBRARY(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS} ${HEADERS_MOC})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${AGROS_UTIL} ${PYTHON_MODLIBS} ${PYTHON_LIB} ${AGROS_LIBRARY} ${PYTHONLAB_LIBRARY} hermes2d hermes_common)
 INSTALL(TARGETS ${PROJECT_NAME}
 				RUNTIME DESTINATION ${CMAKE_AGROS_DIRECTORY}/libs
 				LIBRARY DESTINATION ${CMAKE_AGROS_DIRECTORY}/libs

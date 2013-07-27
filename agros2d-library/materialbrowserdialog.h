@@ -22,7 +22,7 @@
 
 #include "util.h"
 
-#include "../resources_source/classes/material_xml.h";
+#include "../resources_source/classes/material_xml.h"
 
 class LineEditDouble;
 class QCustomPlot;
