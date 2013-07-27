@@ -16,7 +16,7 @@ build-stamp: configure-stamp
 	dh_testdir	
 	$(MAKE)
 	LD_LIBRARY_PATH=$(CURDIR)/libs ./agros2d_generator
-	cmake -DCMAKE_INSTALL_-DCMAKE_INSTALL_PREFIX=$(CURDIR)/debian/agros2d/usr plugins/CMakeList.txt
+	cmake -DCMAKE_INSTALL_PREFIX=$(CURDIR)/debian/agros2d/usr plugins/CMakeLists.txt
 	$(MAKE) --directory plugins
 
 clean:
