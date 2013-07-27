@@ -126,7 +126,8 @@ void DataTable::setImplicit()
     m_type = DataTableType_PiecewiseLinear;
     m_splineFirstDerivatives = true;
     m_extrapolateConstant = true;
-
+    m_numPoints = 0;
+    m_isEmpty = true;
 }
 
 double DataTable::value(double x)
