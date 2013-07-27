@@ -95,6 +95,8 @@ void DataTable::checkTable()
             throw AgrosException(QObject::tr("Points must be in ascending order (%1 < %2).").arg(m_points[i]).arg(m_points[i-1]));
         }
     }
+    m_numPoints = m_points.size();
+    m_isEmpty = (m_numPoints == 0);
 }
 
 void DataTable::setType(DataTableType type)
@@ -172,6 +174,8 @@ double DataTable::derivative(double x)
 void DataTable::inValidate()
 {
     m_valid = false;
+    m_numPoints = m_points.size();
+    m_isEmpty = (m_numPoints == 0);
 
     if(m_type == DataTableType_PiecewiseLinear)
     {
@@ -213,6 +217,10 @@ void DataTable::validate()
         assert(m_constant == NULL);
         assert(!m_valid);
 
+        assert(m_points.size() == m_values.size());
+        m_numPoints = m_points.size();
+        m_isEmpty = (m_numPoints == 0);
+
         if(m_type == DataTableType_PiecewiseLinear)
         {
             m_linear = new PiecewiseLinear(m_points, m_values);
@@ -251,14 +259,7 @@ void DataTable::validate()
     }
     mutex.unlock();
 }
-
-int DataTable::size() const
-{
-    assert(m_points.size() == m_values.size());
-
-    return m_points.size();
-}
-
+\
 double DataTable::minKey() const
 {
     double min = numeric_limits<double>::max();

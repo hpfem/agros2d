@@ -69,7 +69,8 @@ public:
 
     double value(double x);
     double derivative(double x);
-    int size() const;
+    inline int size() const { return m_numPoints; }
+    inline bool isEmpty() const {return m_isEmpty; }
     DataTableType type() const {return m_type;}
     bool splineFirstDerivatives() const {return m_splineFirstDerivatives; }
     bool extrapolateConstant() const {return m_extrapolateConstant; }
@@ -111,6 +112,10 @@ private:
     Hermes::Hermes2D::CubicSpline *m_spline;
     PiecewiseLinear *m_linear;
     ConstantTable *m_constant;
+
+    // efficiency reasons
+    int m_numPoints;
+    bool m_isEmpty;
 };
 
 
