@@ -6,6 +6,13 @@ project(hermes2d)
   else(WIN32)
     execute_process(COMMAND "chmod" "700" "${PROJECT_SOURCE_DIR}/xml_schemas/xml_schemas_generate_linux.sh" WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/xml_schemas/")
     execute_process(COMMAND "${PROJECT_SOURCE_DIR}/xml_schemas/xml_schemas_generate_linux.sh" WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/xml_schemas/" OUTPUT_QUIET)
+    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${comp}.cpp COMMAND ${ECPPC} -o ${CMAKE_CURRENT_BINARY_DIR}/${comp}.cpp -v -n ${comp} ${CMAKE_CURRENT_SOURCE_DIR}/${comp}.ecpp DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${comp}.ecpp)
+
+    # message("xsdcxx cxx-tree --generate-doxygen --generate-ostream --hxx-suffix .h --cxx-suffix .cpp --root-element-first --generate-polymorphic --generate-serialization --output-dir ${PROJECT_SOURCE_DIR}/include/mesh ${PROJECT_SOURCE_DIR}/xml_schemas/mesh_h2d_xml.xsd; mv -f ${PROJECT_SOURCE_DIR}/include/mesh/mesh_h2d_xml.cpp ${PROJECT_SOURCE_DIR}/src/mesh")
+    # ADD_CUSTOM_COMMAND(
+    #     OUTPUT ${PROJECT_SOURCE_DIR}/include/mesh/mesh_h2d_xml.h ${PROJECT_SOURCE_DIR}/src/mesh/mesh_h2d_xml.cpp
+    #     COMMAND xsdcxx cxx-tree --generate-doxygen --generate-ostream --hxx-suffix .h --cxx-suffix .cpp --root-element-first --generate-polymorphic --generate-serialization --output-dir ${PROJECT_SOURCE_DIR}/include/mesh ${PROJECT_SOURCE_DIR}/xml_schemas/mesh_h2d_xml.xsd
+    #     DEPENDS ${PROJECT_SOURCE_DIR}/xml_schemas/mesh_h2d_xml.xsd ${PROJECT_SOURCE_DIR}/include/mesh/mesh_h2d_xml.h ${PROJECT_SOURCE_DIR}/src/mesh/mesh_h2d_xml.cpp)
   endif(WIN32)
 
   SET(H2D_XML_SCHEMAS_DIRECTORY "\"${PROJECT_SOURCE_DIR}/xml_schemas\"")
@@ -617,7 +624,7 @@ project(hermes2d)
   # and set its build properties (compile and link flags, installation directories). Due to
   # different optional libraries for H1D, H2D and H3D, this macro is dimension-specific.
   macro(BUILD_2D_LIB HERMES_LIB HERMES_COMMON_LIB BUILD_FLAGS)
-    add_library(${HERMES_LIB} SHARED ${SRC} ${HEADERS})
+    add_library(${HERMES_LIB} SHARED ${SRC} ${HEADERS} ${SRC_GEN})
 
     set(_FLAGS ${BUILD_FLAGS})
 

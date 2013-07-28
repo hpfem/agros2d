@@ -112,8 +112,8 @@ SET(SOURCES value.cpp
     ../resources_source/classes/material_xml.cpp
     ../resources_source/classes/problem_a2d_31_xml.cpp
     ../resources_source/classes/form_xml.cpp
-    ../hermes/hermes2d/src/mesh/subdomains_h2d_xml.cpp
-    ../hermes/hermes2d/src/mesh/mesh_h2d_xml.cpp
+    # ../hermes/hermes2d/src/mesh/subdomains_h2d_xml.cpp
+    # ../hermes/hermes2d/src/mesh/mesh_h2d_xml.cpp
   )
   
   SET(HEADERS value.h

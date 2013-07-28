@@ -104,19 +104,19 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Enable debugging symbols for all files all the time:
 # set(CMAKE_CXX_FLAGS "-g ${CMAKE_CXX_FLAGS}")
 IF(AGROS_DEBUG)
-    SET(CMAKE_BUILD_TYPE Debug)
+    # SET(CMAKE_BUILD_TYPE Debug)
     IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         # Disable all warnings and turn on only important ones:
-        SET(CMAKE_CXX_FLAGS "-w ${CMAKE_CXX_FLAGS} -fPIC")
-        SET(CMAKE_CXX_FLAGS "-Wuninitialized -Wvla -Wsign-compare ${CMAKE_CXX_FLAGS}")
+        # SET(CMAKE_CXX_FLAGS "-w ${CMAKE_CXX_FLAGS} -fPIC")
+        # SET(CMAKE_CXX_FLAGS "-Wuninitialized -Wvla -Wsign-compare ${CMAKE_CXX_FLAGS}")
 
-        SET(DEBUG_FLAGS   "-g")
-        SET(FLAGS ${DEBUG_FLAGS})
+        # SET(DEBUG_FLAGS   "-g")
+        # SET(FLAGS ${DEBUG_FLAGS})
     ENDIF()
 ElSE(AGROS_DEBUG)
-    SET(CMAKE_BUILD_TYPE Release)
-    SET(RELEASE_FLAGS "-DNDEBUG -O3")
-    SET(FLAGS ${RELEASE_FLAGS})
+    # SET(CMAKE_BUILD_TYPE Release)
+    # SET(RELEASE_FLAGS "-DNDEBUG -O3")
+    # SET(FLAGS ${RELEASE_FLAGS})
 ENDIF(AGROS_DEBUG)
 
 # Create file with preprocessor definitions exposing the build settings to the source code.
