@@ -1,6 +1,29 @@
+def value_in_range(value, min, max):
+    if (value <= min or value >= max):
+        raise IndexError("Value is out of range (%1 - %2)".format(min, max))
+
+def value_in_list(value, list):
+    for item in list:
+        if (value == item):
+            return
+
+    raise KeyError("Invalid argument. Valid keys: %1".format(list))
+
+def positive_value(value):
+    if (value < 0):
+        raise IndexError("Value must be possitive.")
+
 cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
     cdef cppclass PyField:
         PyField(string fieldId) except +
+
+        void setParameter(string &parameter, bool value) except +
+        void setParameter(string &parameter, int value) except +
+        void setParameter(string &parameter, double value) except +
+
+        bool getBoolParameter(string &parameter) except +
+        int getIntParameter(string &parameter) except +
+        double getDoubleParameter(string &parameter) except +
 
         string fieldId()
 
@@ -19,12 +42,6 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         string getMatrixSolver()
         void setMatrixSolver(string &matrixSolver) except +
 
-        double getLinearSolverAbsoluteTolerance()
-        void setLinearSolverAbsoluteTolerance(double absoluteTolerance) except +
-
-        int getLinearSolverIterations()
-        void setLinearSolverIterations(int numberOfIterations)  except +
-
         string getLinearSolverMethod()
         void setLinearSolverMethod(string &linearSolverMethod) except +
 
@@ -34,71 +51,17 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         string getNonlinearConvergenceMeasurement()
         void setNonlinearConvergenceMeasurement(string &nonlinearConvergenceMeasurement) except +
 
-        double getNonlinearTolerance()
-        void setNonlinearTolerance(double nonlinearTolerance) except +
-
-        int getNonlinearSteps()
-        void setNonlinearSteps(int nonlinearSteps) except +
-
-        double getNewtonDampingCoeff()
-        void setNewtonDampingCoeff(double dampingCoeff) except +
-
         string getNewtonDampingType()
         void setNewtonDampingType(string &dampingType) except +
 
-        int getNewtonDampingNumberToIncrease()
-        void setNewtonDampingNumberToIncrease(int dampingNumberToIncrease) except +
-
-        double getNewtonSufficientImprovementFactorForJacobianReuse()
-        void setNewtonSufficientImprovementFactorForJacobianReuse(double sufficientImprovementFactorJacobian) except +
-
-        double getNewtonSufficientImprovementFactor()
-        void setNewtonSufficientImprovementFactor(double sufficientImprovementFactor) except +
-
-        int getNewtonMaximumStepsWithReusedJacobian()
-        void setNewtonMaximumStepsWithReusedJacobian(int maximumStepsWithReusedJacobian) except +
-
-        bool getNewtonReuseJacobian()
-        void setNewtonReuseJacobian(bool reuse) except +
-
-        bool getPicardAndersonAcceleration()
-        void setPicardAndersonAcceleration(bool acceleration) except +
-
-        double getPicardAndersonBeta()
-        void setPicardAndersonBeta(double beta) except +
-
-        int getPicardAndersonNumberOfLastVectors()
-        void setPicardAndersonNumberOfLastVectors(int number) except +
-
         string getAdaptivityType()
         void setAdaptivityType(string &adaptivityType) except +
-
-        double getAdaptivityTolerance()
-        void setAdaptivityTolerance(double adaptivityTolerance) except +
-
-        int getAdaptivitySteps()
-        void setAdaptivitySteps(int adaptivitySteps) except +
-
-        double getAdaptivityThreshold()
-        void setAdaptivityThreshold(double adaptivityThreshold)  except +
 
         string getAdaptivityStoppingCriterion()
         void setAdaptivityStoppingCriterion(string &adaptivityStoppingCriterion) except +
 
         string getAdaptivityNormType()
         void setAdaptivityNormType(string &adaptivityNormType) except +
-
-        bool getAdaptivityAnisotropic()
-        void setAdaptivityAnisotropic(bool adaptivityAnisotropic)
-
-        bool getAdaptivityFinerReference()
-        void setAdaptivityFinerReference(bool adaptivityFinerReference)
-
-        int getAdaptivityBackSteps()
-        void setAdaptivityBackSteps(int adaptivityBackSteps) except +
-
-        int getAdaptivityRedoneEach()
-        void setAdaptivityRedoneEach(int adaptivityRedoneEach) except +
 
         double getInitialCondition()
         void setInitialCondition(double initialCondition) except +
@@ -276,188 +239,6 @@ cdef class __Field__:
         def __set__(self, order):
             self.thisptr.setPolynomialOrder(order)
 
-    property matrix_solver:
-        def __get__(self):
-            return self.thisptr.getMatrixSolver().c_str()
-        def __set__(self, solver):
-            self.thisptr.setMatrixSolver(string(solver))
-
-    property matrix_iterative_solver_tolerance:
-        def __get__(self):
-            return self.thisptr.getLinearSolverAbsoluteTolerance()
-        def __set__(self, tolerance):
-            self.thisptr.setLinearSolverAbsoluteTolerance(tolerance)
-
-    property matrix_iterative_solver_iterations:
-        def __get__(self):
-            return self.thisptr.getLinearSolverIterations()
-        def __set__(self, iterations):
-            self.thisptr.setLinearSolverIterations(iterations)
-
-    property matrix_iterative_solver_method:
-        def __get__(self):
-            return self.thisptr.getLinearSolverMethod().c_str()
-        def __set__(self, method):
-            self.thisptr.setLinearSolverMethod(string(method))
-
-    property matrix_iterative_solver_preconditioner:
-        def __get__(self):
-            return self.thisptr.getLinearSolverPreconditioner().c_str()
-        def __set__(self, preconditioner):
-            self.thisptr.setLinearSolverPreconditioner(string(preconditioner))
-
-    # solver
-    property solver:
-        def __get__(self):
-            return self.thisptr.getLinearityType().c_str()
-        def __set__(self, solver):
-            self.thisptr.setLinearityType(string(solver))
-
-    # nonlinear
-    property nonlinear_steps:
-        def __get__(self):
-            return self.thisptr.getNonlinearSteps()
-        def __set__(self, steps):
-            self.thisptr.setNonlinearSteps(steps)
-
-    property nonlinear_tolerance:
-        def __get__(self):
-            return self.thisptr.getNonlinearTolerance()
-        def __set__(self, tolerance):
-            self.thisptr.setNonlinearTolerance(tolerance)
-
-    property nonlinear_convergence_measurement:
-        def __get__(self):
-            return self.thisptr.getNonlinearConvergenceMeasurement().c_str()
-        def __set__(self, measurement):
-            self.thisptr.setNonlinearConvergenceMeasurement(string(measurement))
-
-    # newton
-    property newton_damping_type:
-        def __get__(self):
-            return self.thisptr.getNewtonDampingType().c_str()
-        def __set__(self, damping):
-            self.thisptr.setNewtonDampingType(string(damping))
-
-    property newton_damping_factor:
-        def __get__(self):
-            return self.thisptr.getNewtonDampingCoeff()
-        def __set__(self, factor):
-            self.thisptr.setNewtonDampingCoeff(factor)
-
-    property newton_damping_decrease_ratio:
-        def __get__(self):
-            return self.thisptr.getNewtonSufficientImprovementFactor()
-        def __set__(self, ratio):
-            self.thisptr.setNewtonSufficientImprovementFactor(ratio)
-
-    property newton_damping_increase_steps:
-        def __get__(self):
-            return self.thisptr.getNewtonDampingNumberToIncrease()
-        def __set__(self, steps):
-            self.thisptr.setNewtonDampingNumberToIncrease(steps)
-
-    property newton_jacobian_reuse:
-        def __get__(self):
-            return self.thisptr.getNewtonReuseJacobian()
-        def __set__(self, reuse):
-            self.thisptr.setNewtonReuseJacobian(reuse)
-
-    property newton_jacobian_reuse_ratio:
-        def __get__(self):
-            return self.thisptr.getNewtonSufficientImprovementFactorForJacobianReuse()
-        def __set__(self, ratio):
-            self.thisptr.setNewtonSufficientImprovementFactorForJacobianReuse(ratio)
-
-    property newton_jacobian_reuse_steps:
-        def __get__(self):
-            return self.thisptr.getNewtonMaximumStepsWithReusedJacobian()
-        def __set__(self, steps):
-            self.thisptr.setNewtonMaximumStepsWithReusedJacobian(steps)
-
-    # picard
-    """
-    property picard_anderson_acceleration:
-        def __get__(self):
-            return self.thisptr.getPicardAndersonAcceleration()
-        def __set__(self, acceleration):
-            self.thisptr.setPicardAndersonAcceleration(acceleration)
-
-    property picard_anderson_beta:
-        def __get__(self):
-            return self.thisptr.getPicardAndersonBeta()
-        def __set__(self, beta):
-            self.thisptr.setPicardAndersonBeta(beta)
-
-    property picard_anderson_last_vectors:
-        def __get__(self):
-            return self.thisptr.getPicardAndersonNumberOfLastVectors()
-        def __set__(self, number):
-            self.thisptr.setPicardAndersonNumberOfLastVectors(number)
-    """
-
-    # adaptivity
-    property adaptivity_type:
-        def __get__(self):
-            return self.thisptr.getAdaptivityType().c_str()
-        def __set__(self, adaptivity_type):
-            self.thisptr.setAdaptivityType(string(adaptivity_type))
-
-    property adaptivity_steps:
-        def __get__(self):
-            return self.thisptr.getAdaptivitySteps()
-        def __set__(self, steps):
-            self.thisptr.setAdaptivitySteps(steps)
-
-    property adaptivity_tolerance:
-        def __get__(self):
-            return self.thisptr.getAdaptivityTolerance()
-        def __set__(self, tolerance):
-            self.thisptr.setAdaptivityTolerance(tolerance)
-
-    property adaptivity_threshold:
-        def __get__(self):
-            return self.thisptr.getAdaptivityThreshold()
-        def __set__(self, threshold):
-            self.thisptr.setAdaptivityThreshold(threshold)
-
-    property adaptivity_stopping_criterion:
-        def __get__(self):
-            return self.thisptr.getAdaptivityStoppingCriterion().c_str()
-        def __set__(self, criterion):
-            self.thisptr.setAdaptivityStoppingCriterion(string(criterion))
-
-    property adaptivity_norm_type:
-        def __get__(self):
-            return self.thisptr.getAdaptivityNormType().c_str()
-        def __set__(self, norm):
-            self.thisptr.setAdaptivityNormType(string(norm))
-
-    property adaptivity_anisotropic_refinement:
-        def __get__(self):
-            return self.thisptr.getAdaptivityAnisotropic()
-        def __set__(self, anisotropic):
-            self.thisptr.setAdaptivityAnisotropic(anisotropic)
-
-    property adaptivity_finer_reference:
-        def __get__(self):
-            return self.thisptr.getAdaptivityFinerReference()
-        def __set__(self, finer_reference):
-            self.thisptr.setAdaptivityFinerReference(finer_reference)
-
-    property adaptivity_back_steps:
-        def __get__(self):
-            return self.thisptr.getAdaptivityBackSteps()
-        def __set__(self, back_steps):
-            self.thisptr.setAdaptivityBackSteps(back_steps)
-
-    property adaptivity_redone_steps:
-        def __get__(self):
-            return self.thisptr.getAdaptivityRedoneEach()
-        def __set__(self, steps):
-            self.thisptr.setAdaptivityRedoneEach(steps)
-
-    # transient
     property transient_initial_condition:
         def __get__(self):
             return self.thisptr.getInitialCondition()
@@ -469,6 +250,168 @@ cdef class __Field__:
             return self.thisptr.getTimeSkip()
         def __set__(self, skip):
             self.thisptr.setTimeSkip(skip)
+
+    # matrix solver
+    property matrix_solver:
+        def __get__(self):
+            return self.thisptr.getMatrixSolver().c_str()
+        def __set__(self, solver):
+            self.thisptr.setMatrixSolver(string(solver))
+
+    def get_matrix_solver(self, parameter):
+        if (parameter == 'tolerance'):
+            return self.thisptr.getDoubleParameter(string('LinearSolverIterToleranceAbsolute'))
+        elif (parameter == 'iterations'):
+            return self.thisptr.getIntParameter(string('LinearSolverIterIters'))
+        elif (parameter == 'method'):
+            return self.thisptr.getLinearSolverMethod().c_str()
+        elif (parameter == 'preconditioner'):
+            return self.thisptr.getLinearSolverPreconditioner().c_str()
+        else:
+            raise KeyError("Parameter '{0}' is not defined.".format(parameter))
+
+    def set_matrix_solver(self, parameters):
+        for key in parameters:
+            value = parameters[key]
+
+            if (key == 'tolerance'):
+                positive_value(value)
+                self.thisptr.setParameter(string('LinearSolverIterToleranceAbsolute'), <double>value)
+            elif (key == 'iterations'):
+                value_in_range(value, 1, 1e4)
+                self.thisptr.setParameter(string('LinearSolverIterIters'), <int>value)
+            elif (key == 'method'):
+                self.thisptr.setLinearSolverMethod(string(value))
+            elif (key == 'preconditioner'):
+                self.thisptr.setLinearSolverPreconditioner(string(value))
+            else:
+                raise KeyError("Parameter '{0}' is not defined.".format(key))
+
+    # solver
+    property solver:
+        def __get__(self):
+            return self.thisptr.getLinearityType().c_str()
+        def __set__(self, solver):
+            self.thisptr.setLinearityType(string(solver))
+
+    def get_solver(self, parameter):
+        if (parameter == 'tolerance'):
+            return self.thisptr.getDoubleParameter(string('NonlinearTolerance'))
+        elif (parameter == 'steps'):
+            return self.thisptr.getIntParameter(string('NonlinearSteps'))
+        elif (parameter == 'measurement'):
+            return self.thisptr.getNonlinearConvergenceMeasurement().c_str()
+
+        elif (parameter == 'damping'):
+            return self.thisptr.getNewtonDampingType().c_str()
+        elif (parameter == 'damping_factor'):
+            return self.thisptr.getDoubleParameter(string('NewtonDampingCoeff'))
+        elif (parameter == 'damping_factor_decrease_ratio'):
+            return self.thisptr.getDoubleParameter(string('NewtonSufImprov'))
+        elif (parameter == 'damping_factor_increase_steps'):
+            return self.thisptr.getIntParameter(string('NewtonStepsToIncreaseDF'))
+
+        elif (parameter == 'jacobian_reuse'):
+            return self.thisptr.getBoolParameter('NewtonReuseJacobian')
+        elif (parameter == 'jacobian_reuse_ratio:'):
+            return self.thisptr.getDoubleParameter(string('NewtonSufImprovJacobian'))
+        elif (parameter == 'jacobian_reuse_step'):
+            return self.thisptr.getIntParameter(string('NewtonMaxStepsReuseJacobian'))
+        else:
+            raise KeyError("Parameter '{0}' is not defined.".format(parameter))
+
+    def set_solver(self, parameters):
+        for key in parameters:
+            value = parameters[key]
+
+            if (key == 'tolerance'):
+                positive_value(value)
+                self.thisptr.setParameter(string('NonlinearTolerance'), <double>value)
+            elif (key == 'steps'):
+                value_in_range(value, 1, 100)
+                self.thisptr.setParameter(string('NonlinearSteps'), <int>value)
+            elif (key == 'measurement'):
+                self.thisptr.setNonlinearConvergenceMeasurement(string(value))
+
+            elif (key == 'damping'):
+                self.thisptr.setNewtonDampingType(string(value))
+            elif (key == 'damping_factor'):
+                value_in_range(value, 0.0, 1.0)
+                self.thisptr.setParameter(string('NewtonDampingCoeff'), <double>value)
+            elif (key == 'damping_factor_decrease_ratio'):
+                self.thisptr.setParameter(string('NewtonSufImprov'), <double>value)
+            elif (key == 'damping_factor_increase_steps'):
+                value_in_range(value, 1, 5)
+                self.thisptr.setParameter(string('NewtonStepsToIncreaseDF'), <int>value)
+
+            elif (key == 'jacobian_reuse'):
+                self.thisptr.setParameter(string('NewtonReuseJacobian'), <bool>value)
+            elif (key == 'jacobian_reuse_ratio:'):
+                self.thisptr.setParameter(string('NewtonSufImprovJacobian'), <double>value)
+            elif (key == 'jacobian_reuse_step'):
+                value_in_range(value, 0, 100)
+                self.thisptr.setParameter(string('NewtonMaxStepsReuseJacobian'), <int>value)
+            else:
+                raise KeyError("Parameter '{0}' is not defined.".format(key))
+
+    # adaptivity
+    property adaptivity_type:
+        def __get__(self):
+            return self.thisptr.getAdaptivityType().c_str()
+        def __set__(self, adaptivity_type):
+            self.thisptr.setAdaptivityType(string(adaptivity_type))
+
+    def get_adaptivity(self, parameter):
+        if (parameter == 'tolerance'):
+            return self.thisptr.getDoubleParameter(string('AdaptivityTolerance'))
+        elif (parameter == 'steps'):
+            return self.thisptr.getIntParameter(string('AdaptivitySteps'))
+        elif (parameter == 'stopping_criterion'):
+            return self.thisptr.getAdaptivityStoppingCriterion().c_str()
+        elif (parameter == 'threshold'):
+            return self.thisptr.getDoubleParameter(string('AdaptivityThreshold'))
+        elif (parameter == 'norm'):
+            return self.thisptr.getAdaptivityNormType().c_str()
+        elif (parameter == 'anisotropic_refinement'):
+            return self.thisptr.getBoolParameter('AdaptivityUseAniso')
+        elif (parameter == 'finer_reference_solution'):
+            return self.thisptr.getBoolParameter('AdaptivityFinerReference')
+        elif (parameter == 'transient_back_steps'):
+            return self.thisptr.getIntParameter(string('AdaptivityTransientBackSteps'))
+        elif (parameter == 'transient_redone_steps'):
+            return self.thisptr.getIntParameter(string('AdaptivityTransientRedoneEach'))
+        else:
+            raise KeyError("Parameter '{0}' is not defined.".format(parameter))
+
+    def set_adaptivity(self, parameters):
+        for key in parameters:
+            value = parameters[key]
+
+            if (key == 'tolerance'):
+                positive_value(value)
+                self.thisptr.setParameter(string('AdaptivityTolerance'), <double>value)
+            elif (key == 'steps'):
+                value_in_range(value, 1, 100)
+                self.thisptr.setParameter(string('AdaptivitySteps'), <int>value)
+            elif (key == 'stopping_criterion'):
+                self.thisptr.setAdaptivityStoppingCriterion(string(value))
+            elif (key == 'threshold'):
+                value_in_range(value, 0.01, 1.0)
+                self.thisptr.setParameter(string('AdaptivityThreshold'), <double>value)
+            elif (key == 'norm'):
+                self.thisptr.setAdaptivityNormType(string(value))
+            elif (key == 'anisotropic_refinement'):
+                self.thisptr.setParameter(string('AdaptivityUseAniso'), <bool>value)
+            elif (key == 'finer_reference_solution'):
+                self.thisptr.setParameter(string('AdaptivityFinerReference'), <bool>value)
+            elif (key == 'transient_back_steps'):
+                value_in_range(value, 0, 100)
+                self.thisptr.setParameter(string('AdaptivityTransientBackSteps'), <int>value)
+            elif (key == 'transient_redone_steps'):
+                value_in_range(value, 1, 100)
+                self.thisptr.setParameter(string('AdaptivityTransientRedoneEach'), <int>value)
+            else:
+                raise KeyError("Parameter '{0}' is not defined.".format(key))
 
     # boundaries
     def add_boundary(self, name, type, parameters = {}):
