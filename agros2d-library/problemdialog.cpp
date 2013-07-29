@@ -477,6 +477,12 @@ void FieldWidget::fillComboBox()
 #ifdef WITH_PETSC
     cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PETSC), Hermes::SOLVER_PETSC);
 #endif
+#ifdef HAVE_AMESOS
+    cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_AMESOS), Hermes::SOLVER_AMESOS);
+#endif
+#ifdef HAVE_AZTECOO
+    cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_AZTECOO), Hermes::SOLVER_AZTECOO);
+#endif
     cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PARALUTION_ITERATIVE), Hermes::SOLVER_PARALUTION_ITERATIVE);
     cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PARALUTION_AMG), Hermes::SOLVER_PARALUTION_AMG);
 

@@ -248,8 +248,12 @@ void initLists()
 #ifdef WITH_PETSC
     matrixSolverTypeList.insert(Hermes::SOLVER_PETSC, "petsc");
 #endif
-    // matrixSolverTypeList.insert(Hermes::SOLVER_AMESOS, "trilinos_amesos");
-    // matrixSolverTypeList.insert(Hermes::SOLVER_AZTECOO, "trilinos_aztecoo");
+#ifdef HAVE_AMESOS
+    matrixSolverTypeList.insert(Hermes::SOLVER_AMESOS, "trilinos_amesos");
+#endif
+#ifdef HAVE_AZTECOO
+    matrixSolverTypeList.insert(Hermes::SOLVER_AZTECOO, "trilinos_aztecoo");
+#endif
 
     spaceTypeList.insert(Hermes::Hermes2D::HERMES_H1_SPACE, "h1");
     spaceTypeList.insert(Hermes::Hermes2D::HERMES_HCURL_SPACE, "hcurl");

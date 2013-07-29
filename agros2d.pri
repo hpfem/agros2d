@@ -65,6 +65,17 @@ linux-g++|linux-g++-64|linux-g++-32|linux-clang {
         INCLUDEPATH += /usr/include/superlu
         LIBS += -lsuperlu
     }
+    # trilinos
+    contains(CONFIG, WITH_TRILINOS) {
+        DEFINES += HAVE_EPETRA
+        DEFINES += HAVE_AZTECOO
+        DEFINES += HAVE_AMESOS
+        INCLUDEPATH += /usr/lib/openmpi/include
+        LIBS += -lamesos
+        LIBS += -laztecoo
+        LIBS += -lmpi
+        LIBS += -lmpi_cxx
+    }
     # petsc
     contains(CONFIG, WITH_PETSC) {
         DEFINES += WITH_PETSC

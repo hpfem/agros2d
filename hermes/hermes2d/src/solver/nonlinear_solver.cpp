@@ -70,7 +70,7 @@ namespace Hermes
       else
       {
         this->iterative_method = (char*)iterative_method_name;
-        dynamic_cast<Hermes::Solvers::AztecOOSolver<Scalar>*>(linear_solver)->set_solver(iterative_method_name);
+        dynamic_cast<Hermes::Solvers::AztecOOSolver<Scalar>*>(this->matrix_solver)->set_solver(iterative_method_name);
       }
 #else
       this->warn("Trying to set iterative method without AztecOO present.");
@@ -88,7 +88,7 @@ namespace Hermes
       }
       else
       {
-        dynamic_cast<Hermes::Solvers::AztecOOSolver<Scalar> *>(linear_solver)->set_precond(preconditioner_name);
+        dynamic_cast<Hermes::Solvers::AztecOOSolver<Scalar> *>(this->matrix_solver)->set_precond(preconditioner_name);
         this->preconditioner = (char*)preconditioner_name;
       }
 #else
