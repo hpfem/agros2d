@@ -58,6 +58,8 @@ public:
         inline void setAdaptivityError(double value) { m_adaptivityError = value; }
         inline int DOFs() const { return m_DOFs; }
         inline void setDOFs(int value) { m_DOFs = value; }
+        inline int jacobianCalculations() const { return m_jacobianCalculations; }
+        inline void setJacobianCalculations(int value) { m_jacobianCalculations = value; }
         inline QList<FileName> fileNames() const { return m_fileNames; }
         inline void setFileNames(QList<FileName> value) { m_fileNames = value; }
         inline QVector<double> newtonResidual() const { return m_newtonResidual; }
@@ -69,6 +71,7 @@ public:
         double m_timeStepLength;
         double m_adaptivityError;
         int m_DOFs;
+        int m_jacobianCalculations;
 
         QList<FileName> m_fileNames;
         QVector<double> m_newtonResidual;

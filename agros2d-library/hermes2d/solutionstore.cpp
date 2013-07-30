@@ -704,6 +704,7 @@ void SolutionStore::saveRunTimeDetails()
             data.time_step_length().set(str.timeStepLength());
             data.adaptivity_error().set(str.adaptivityError());
             data.dofs().set(str.DOFs());
+            data.jacobian_calculations().set(str.jacobianCalculations());
 
             structure.element_data().push_back(data);
         }

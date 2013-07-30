@@ -200,17 +200,25 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
     }
     else if (phase == Phase_Finished)
     {
-        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, calculation finished, error: %2")
-                                     .arg(iteration)
-                                     .arg(m_errors.last()));
         QString reuses;
+        m_jacobianCalculations = 0;
         for(int i = 0; i < jacobian_recalculated_log.size(); i++)
         {
             if(jacobian_recalculated_log.at(i))
+            {
+                m_jacobianCalculations++;
                 reuses.append("F ");
+            }
             else
+            {
                 reuses.append("T ");
+            }
         }
+
+        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, calculation finished, error: %2, Jacobian recalculated %3x")
+                                     .arg(iteration)
+                                     .arg(m_errors.last())
+                                     .arg(m_jacobianCalculations));
         //Agros2D::log()->printDebug(QObject::tr("Solver (Newton)"), QObject::tr("Jacobian reuse history %1").arg(reuses));
     }
     else
@@ -670,6 +678,7 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
 
             runTime.setNewtonResidual(solver->errors());
             runTime.setNewtonDamping(solver->damping());
+            runTime.setJacobianCalculations(solver->jacobianCalculations());
         }
 
         Agros2D::solutionStore()->addSolution(solutionID, MultiArray<Scalar>(actualSpaces(), solutions), runTime);
@@ -969,6 +978,7 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
 
         runTime.setNewtonResidual(solver->errors());
         runTime.setNewtonDamping(solver->damping());
+        runTime.setJacobianCalculations(solver->jacobianCalculations());
     }
 
     MultiArray<Scalar> msa(actualSpaces(), solutions);

@@ -138,7 +138,7 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         void initialMeshInfo(map[string , int] &info) except +
         void solutionMeshInfo(int timeStep, int adaptivityStep, string &solutionType, map[string , int] &info) except +
 
-        void solverInfo(int timeStep, int adaptivityStep, string &solutionType, vector[double] &residual, vector[double] &dampingCoeff) except +
+        void solverInfo(int timeStep, int adaptivityStep, string &solutionType, vector[double] &residual, vector[double] &dampingCoeff, int &jacobianCalculations) except +
 
         void adaptivityInfo(int timeStep, string &solutionType, vector[double] &error, vector[int] &dofs) except +
 
@@ -693,9 +693,11 @@ cdef class __Field__:
         """
         cdef vector[double] residual_vector
         cdef vector[double] damping_vector
+        cdef int jacobian_calculations
+        jacobian_calculations = -1
         self.thisptr.solverInfo(int(-1 if time_step is None else time_step),
                                 int(-1 if adaptivity_step is None else adaptivity_step),
-                                string(solution_type), residual_vector, damping_vector)
+                                string(solution_type), residual_vector, damping_vector, jacobian_calculations)
 
         residual = list()
         for i in range(residual_vector.size()):
@@ -705,7 +707,7 @@ cdef class __Field__:
         for i in range(damping_vector.size()):
             damping.append(damping_vector[i])
 
-        return {'residual' : residual, 'damping' : damping}
+        return {'residual' : residual, 'damping' : damping, 'jacobian_calculations' : jacobian_calculations}
 
     # adaptivity info
     def adaptivity_info(self, time_step = None, solution_type = 'normal'):

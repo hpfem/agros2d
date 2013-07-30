@@ -295,6 +295,30 @@ namespace XMLStructure
     this->dofs_ = x;
   }
 
+  const element_data::jacobian_calculations_optional& element_data::
+  jacobian_calculations () const
+  {
+    return this->jacobian_calculations_;
+  }
+
+  element_data::jacobian_calculations_optional& element_data::
+  jacobian_calculations ()
+  {
+    return this->jacobian_calculations_;
+  }
+
+  void element_data::
+  jacobian_calculations (const jacobian_calculations_type& x)
+  {
+    this->jacobian_calculations_.set (x);
+  }
+
+  void element_data::
+  jacobian_calculations (const jacobian_calculations_optional& x)
+  {
+    this->jacobian_calculations_ = x;
+  }
+
 
   // files
   // 
@@ -604,7 +628,8 @@ namespace XMLStructure
     solution_type_ (solution_type, ::xml_schema::flags (), this),
     time_step_length_ (::xml_schema::flags (), this),
     adaptivity_error_ (::xml_schema::flags (), this),
-    dofs_ (::xml_schema::flags (), this)
+    dofs_ (::xml_schema::flags (), this),
+    jacobian_calculations_ (::xml_schema::flags (), this)
   {
   }
 
@@ -626,7 +651,8 @@ namespace XMLStructure
     solution_type_ (solution_type, ::xml_schema::flags (), this),
     time_step_length_ (::xml_schema::flags (), this),
     adaptivity_error_ (::xml_schema::flags (), this),
-    dofs_ (::xml_schema::flags (), this)
+    dofs_ (::xml_schema::flags (), this),
+    jacobian_calculations_ (::xml_schema::flags (), this)
   {
   }
 
@@ -644,7 +670,8 @@ namespace XMLStructure
     solution_type_ (x.solution_type_, f, this),
     time_step_length_ (x.time_step_length_, f, this),
     adaptivity_error_ (x.adaptivity_error_, f, this),
-    dofs_ (x.dofs_, f, this)
+    dofs_ (x.dofs_, f, this),
+    jacobian_calculations_ (x.jacobian_calculations_, f, this)
   {
   }
 
@@ -662,7 +689,8 @@ namespace XMLStructure
     solution_type_ (f, this),
     time_step_length_ (f, this),
     adaptivity_error_ (f, this),
-    dofs_ (f, this)
+    dofs_ (f, this),
+    jacobian_calculations_ (f, this)
   {
     if ((f & ::xml_schema::flags::base) == 0)
     {
@@ -798,6 +826,12 @@ namespace XMLStructure
       if (n.name () == "dofs" && n.namespace_ ().empty ())
       {
         this->dofs_.set (dofs_traits::create (i, f, this));
+        continue;
+      }
+
+      if (n.name () == "jacobian_calculations" && n.namespace_ ().empty ())
+      {
+        this->jacobian_calculations_.set (jacobian_calculations_traits::create (i, f, this));
         continue;
       }
     }
@@ -1373,6 +1407,11 @@ namespace XMLStructure
     if (i.dofs ())
     {
       o << ::std::endl << "dofs: " << *i.dofs ();
+    }
+
+    if (i.jacobian_calculations ())
+    {
+      o << ::std::endl << "jacobian_calculations: " << *i.jacobian_calculations ();
     }
 
     return o;
@@ -2028,6 +2067,18 @@ namespace XMLStructure
           e));
 
       a << *i.dofs ();
+    }
+
+    // jacobian_calculations
+    //
+    if (i.jacobian_calculations ())
+    {
+      ::xercesc::DOMAttr& a (
+        ::xsd::cxx::xml::dom::create_attribute (
+          "jacobian_calculations",
+          e));
+
+      a << *i.jacobian_calculations ();
     }
   }
 

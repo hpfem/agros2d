@@ -57,6 +57,7 @@ public:
     inline QVector<double> steps() const { return m_steps; }
     inline QVector<double> damping() const { return m_damping; }
     inline QVector<double> errors() const { return m_errors; }
+    inline int jacobianCalculations() const { return m_jacobianCalculations; }
 
 protected:
     Block* m_block;
@@ -64,6 +65,7 @@ protected:
     QVector<double> m_steps;
     QVector<double> m_damping;
     QVector<double> m_errors;
+    int m_jacobianCalculations;
 
     void setError(Phase phase);
 };

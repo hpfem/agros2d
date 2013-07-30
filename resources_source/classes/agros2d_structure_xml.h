@@ -499,6 +499,24 @@ namespace XMLStructure
     void
     dofs (const dofs_optional& x);
 
+    // jacobian_calculations
+    // 
+    typedef ::xml_schema::int_ jacobian_calculations_type;
+    typedef ::xsd::cxx::tree::optional< jacobian_calculations_type > jacobian_calculations_optional;
+    typedef ::xsd::cxx::tree::traits< jacobian_calculations_type, char > jacobian_calculations_traits;
+
+    const jacobian_calculations_optional&
+    jacobian_calculations () const;
+
+    jacobian_calculations_optional&
+    jacobian_calculations ();
+
+    void
+    jacobian_calculations (const jacobian_calculations_type& x);
+
+    void
+    jacobian_calculations (const jacobian_calculations_optional& x);
+
     // Constructors.
     //
     element_data (const files_type&,
@@ -550,6 +568,7 @@ namespace XMLStructure
     time_step_length_optional time_step_length_;
     adaptivity_error_optional adaptivity_error_;
     dofs_optional dofs_;
+    jacobian_calculations_optional jacobian_calculations_;
   };
 
   class files: public ::xml_schema::type

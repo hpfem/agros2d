@@ -31,17 +31,18 @@
               </sequence>
             </complexType>
           </element>
-        <element name="newton_damping_coefficients">
-            <complexType>
-                <sequence>
-                <element minOccurs="1" maxOccurs="unbounded" name="damping_coefficient">
-                  <complexType>
-              <attribute name="value" type="float" use="required" />
-            </complexType>
+          <element name="newton_damping_coefficients">
+              <complexType>
+                  <sequence>
+                  <element minOccurs="1" maxOccurs="unbounded" name="damping_coefficient">
+                    <complexType>
+                <attribute name="value" type="float" use="required" />
+              </complexType>
+              </element>
+                </sequence>
+              </complexType>
             </element>
-              </sequence>
-            </complexType>
-          </element>
+
           </all>
         <attribute name="field_id" type="string" use="required" />
         <attribute name="time_step" type="integer" use="required" />
@@ -51,6 +52,7 @@
         <attribute name="time_step_length" type="double" use="optional" />
         <attribute name="adaptivity_error" type="double" use="optional" />
         <attribute name="dofs" type="int" use="optional" />
+        <attribute name="jacobian_calculations" type="int" use="optional" />
           </complexType>
         </element>
       </sequence>
