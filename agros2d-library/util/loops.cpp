@@ -584,7 +584,7 @@ void LoopsInfo::processLoops()
                 loopsContainingLabel[label].push_back(loopIdx);
             }
         }
-        if (labelsInsideLoop[loopIdx].size() == 0)
+        if (labelsInsideLoop[loopIdx].isEmpty())
             throw AgrosGeometryException(tr("Some areas do not have a marker"));
     }
 

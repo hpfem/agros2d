@@ -536,7 +536,7 @@ void Problem::solveInit(bool reCreateStructure)
     m_timeStepLengths.clear();
     m_timeHistory.clear();
 
-    if (fieldInfos().count() == 0)
+    if (fieldInfos().isEmpty())
     {
         Agros2D::log()->printError(QObject::tr("Solver"), QObject::tr("No fields defined"));
         throw AgrosSolverException(tr("No field defined"));
@@ -568,7 +568,7 @@ void Problem::solveInit(bool reCreateStructure)
         Agros2D::log()->printError(tr("Problem"), e.toString());
     }
 
-    if (reCreateStructure || m_blocks.size() == 0)
+    if (reCreateStructure || m_blocks.isEmpty())
     {
         createStructure();
     }
@@ -627,7 +627,7 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
         return;
     }
 
-    if (Agros2D::problem()->fieldInfos().count() == 0)
+    if (Agros2D::problem()->fieldInfos().isEmpty())
     {
         Agros2D::log()->printError(tr("Solver"), tr("No fields defined"));
         return;

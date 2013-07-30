@@ -160,7 +160,7 @@ bool MeshGenerator::writeToHermes()
     // subdomains
     XMLSubdomains::subdomains subdomains;
 
-    if (Agros2D::problem()->fieldInfos().count() == 0)
+    if (Agros2D::problem()->fieldInfos().isEmpty())
     {
         // one domain
         XMLSubdomains::subdomain subdomain(Agros2D::problem()->fieldInfos().begin().value()->fieldId().toStdString());

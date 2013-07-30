@@ -76,7 +76,7 @@ Boundary::Boundary(FieldInfo *fieldInfo, QString name, QString type,
     this->m_values = values;
     if (!isNone() && !m_type.isEmpty())
     {
-        if (this->m_values.size() == 0)
+        if (this->m_values.isEmpty())
         {
             Module::BoundaryType boundaryType = fieldInfo->boundaryType(type);
             foreach (Module::BoundaryTypeVariable variable, boundaryType.variables())
@@ -98,7 +98,7 @@ Material::Material(FieldInfo *fieldInfo, QString name,
     // set values
     if (name != "none")
     {
-        if (this->m_values.size() == 0)
+        if (this->m_values.isEmpty())
         {
             foreach (Module::MaterialTypeVariable variable, fieldInfo->materialTypeVariables())
             {

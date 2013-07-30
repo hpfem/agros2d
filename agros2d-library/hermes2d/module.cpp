@@ -53,7 +53,7 @@ QMap<QString, QString> Module::availableModules()
     static QMap<QString, QString> modules;
 
     // read modules
-    if (modules.size() == 0)
+    if (modules.isEmpty())
     {
         QDir dir(datadir() + MODULEROOT);
 

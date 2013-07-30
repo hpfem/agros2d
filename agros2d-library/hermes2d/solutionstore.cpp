@@ -64,9 +64,9 @@ void SolutionStore::clearAll()
     foreach (FieldSolutionID sid, m_multiSolutions)
         removeSolution(sid);
 
-    assert(m_multiSolutions.count() == 0);
-    assert(m_multiSolutionRunTimeDetails.count() == 0);
-    assert(m_multiSolutionCache.count() == 0);
+    assert(m_multiSolutions.isEmpty());
+    assert(m_multiSolutionRunTimeDetails.isEmpty());
+    assert(m_multiSolutionCache.isEmpty());
 }
 
 MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)

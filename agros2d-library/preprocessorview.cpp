@@ -217,7 +217,7 @@ void PreprocessorWidget::refresh()
 
             item->setText(0, material->name());
             item->setIcon(0, (Agros2D::scene()->labels->haveMarker(material).count() > 0) ? icon("scene-labelmarker") : icon("scene-labelmarker-notused"));
-            if (Agros2D::scene()->labels->haveMarker(material).count() == 0)
+            if (Agros2D::scene()->labels->haveMarker(material).isEmpty())
                 item->setForeground(0, QBrush(Qt::gray));
             item->setData(0, Qt::UserRole, material->variant());
 
@@ -242,7 +242,7 @@ void PreprocessorWidget::refresh()
 
             item->setText(0, QString("%1 (%2)").arg(boundary->name()).arg(boundaryType.name()));
             item->setIcon(0, (Agros2D::scene()->edges->haveMarker(boundary).count() > 0) ? icon("scene-edgemarker") : icon("scene-edgemarker-notused"));
-            if (Agros2D::scene()->edges->haveMarker(boundary).count() == 0)
+            if (Agros2D::scene()->edges->haveMarker(boundary).isEmpty())
                 item->setForeground(0, QBrush(Qt::gray));
             item->setData(0, Qt::UserRole, boundary->variant());
 
