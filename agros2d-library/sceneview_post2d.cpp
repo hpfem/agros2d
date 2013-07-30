@@ -1214,15 +1214,13 @@ void SceneViewPost2D::exportVTKScalarView(const QString &fileName)
         }
 
         Hermes::Hermes2D::Views::Linearizer linScalarView;
-        Hermes::Hermes2D::Filter<double> *slnScalarView = m_postHermes->viewScalarFilter(postHermes()->activeViewField()->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
-                                                                                         (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
+        MeshFunctionSharedPtr<double> slnScalarView = m_postHermes->viewScalarFilter(postHermes()->activeViewField()->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
+                                                                                     (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
 
         linScalarView.save_solution_vtk(slnScalarView,
                                         fn.toLatin1().data(),
                                         Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString().toLatin1().data(),
                                         true);
-
-        delete slnScalarView;
 
         if (!fn.isEmpty())
         {

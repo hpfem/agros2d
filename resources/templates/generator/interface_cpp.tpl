@@ -111,12 +111,12 @@ ExactSolutionScalarAgros<double> *{{CLASS}}Interface::exactSolution(const Proble
     return NULL;
 }
 
-Hermes::Hermes2D::Filter<double> *{{CLASS}}Interface::filter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+MeshFunctionSharedPtr<double> {{CLASS}}Interface::filter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
                                                      Hermes::vector<MeshFunctionSharedPtr<double> > sln,
                                                      const QString &variable,
                                                      PhysicFieldVariableComp physicFieldVariableComp)
 {
-    return new {{CLASS}}ViewScalarFilter(fieldInfo, timeStep, adaptivityStep, solutionType, sln, variable, physicFieldVariableComp);
+    return MeshFunctionSharedPtr<double>(new {{CLASS}}ViewScalarFilter(fieldInfo, timeStep, adaptivityStep, solutionType, sln, variable, physicFieldVariableComp));
 }
 
 LocalValue *{{CLASS}}Interface::localValue(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point)

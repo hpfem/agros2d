@@ -53,10 +53,10 @@ public:
 
     // postprocessor
     // filter
-    virtual Hermes::Hermes2D::Filter<double> *filter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                                                     Hermes::vector<MeshFunctionSharedPtr<double> > sln,
-                                                     const QString &variable,
-                                                     PhysicFieldVariableComp physicFieldVariableComp);
+    virtual MeshFunctionSharedPtr<double> filter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+                                                 Hermes::vector<MeshFunctionSharedPtr<double> > sln,
+                                                 const QString &variable,
+                                                 PhysicFieldVariableComp physicFieldVariableComp);
 
     // local values
     virtual LocalValue *localValue(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point);

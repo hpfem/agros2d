@@ -133,7 +133,7 @@ void PostHermes::processRangeContour()
         QString variableName = Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString();
         Module::LocalVariable variable = m_activeViewField->localVariable(variableName);
 
-        Hermes::Hermes2D::Filter<double> *slnContourView = NULL;
+        MeshFunctionSharedPtr<double> slnContourView;
         if (variable.isScalar())
             slnContourView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString()),
                                               PhysicFieldVariableComp_Scalar);
@@ -198,8 +198,8 @@ void PostHermes::processRangeScalar()
 
         Agros2D::log()->printMessage(tr("Post View"), tr("Scalar view (%1)").arg(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()));
 
-        Hermes::Hermes2D::Filter<double> *slnScalarView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
-                                                                           (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
+        MeshFunctionSharedPtr<double> slnScalarView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
+                                                                       (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
 
         m_linScalarView.free();
 
@@ -260,11 +260,11 @@ void PostHermes::processRangeVector()
 
         Agros2D::log()->printMessage(tr("Post View"), tr("Vector view (%1)").arg(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()));
 
-        Hermes::Hermes2D::Filter<double> *slnVectorXView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
-                                                                            PhysicFieldVariableComp_X);
+        MeshFunctionSharedPtr<double> slnVectorXView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
+                                                                        PhysicFieldVariableComp_X);
 
-        Hermes::Hermes2D::Filter<double> *slnVectorYView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
-                                                                            PhysicFieldVariableComp_Y);
+        MeshFunctionSharedPtr<double> slnVectorYView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
+                                                                        PhysicFieldVariableComp_Y);
 
         m_vecVectorView.free();
 
@@ -397,8 +397,8 @@ void PostHermes::processSolved()
     }
 }
 
-Hermes::Hermes2D::Filter<double> *PostHermes::viewScalarFilter(Module::LocalVariable physicFieldVariable,
-                                                               PhysicFieldVariableComp physicFieldVariableComp)
+MeshFunctionSharedPtr<double> PostHermes::viewScalarFilter(Module::LocalVariable physicFieldVariable,
+                                                           PhysicFieldVariableComp physicFieldVariableComp)
 {
     // update time functions
     if (Agros2D::problem()->isTransient())
