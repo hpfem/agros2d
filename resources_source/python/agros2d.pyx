@@ -19,7 +19,23 @@ cdef extern from "<string>" namespace "std":
         string(char *)
         char * c_str()
 
-# global functions
+# test functions
+def value_in_range(value, min, max, key):
+    if (value < min or value > max):
+        raise IndexError("Value of '{0}' is out of range ({1} - {2})".format(key, min, max))
+
+def value_in_list(value, list, key):
+    for item in list:
+        if (value == item):
+            return
+
+    raise KeyError("Key '{0}' is invalid. Valid keys: {1}".format(list, key))
+
+def positive_value(value, key):
+    if (value < 0):
+        raise IndexError("Value of {0} must be possitive.".format(key))
+
+# convert functions
 cdef vector[int] list_to_int_vector(list):
     cdef vector[int] int_vector
     for item in list:
