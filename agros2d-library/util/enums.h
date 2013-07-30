@@ -325,6 +325,12 @@ AGROS_API QStringList matrixSolverTypeStringKeys();
 AGROS_API QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType);
 AGROS_API Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType);
 
+// matrix dump format
+AGROS_API QString dumpFormatString(Hermes::Algebra::EMatrixDumpFormat format);
+AGROS_API QStringList dumpFormatStringKeys();
+AGROS_API QString dumpFormatToStringKey(Hermes::Algebra::EMatrixDumpFormat format);
+AGROS_API Hermes::Algebra::EMatrixDumpFormat dumpFormatFromStringKey(const QString &format);
+
 // space type
 AGROS_API QStringList spaceTypeStringKeys();
 AGROS_API QString spaceTypeToStringKey(Hermes::Hermes2D::SpaceType spaceType);

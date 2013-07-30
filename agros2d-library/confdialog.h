@@ -62,6 +62,7 @@ private:
 
     // development
     QCheckBox *chkDiscreteSaveMatrixRHS;
+    QComboBox *cmbDumpFormat;
 
     // cache
     QSpinBox *txtCacheSize;

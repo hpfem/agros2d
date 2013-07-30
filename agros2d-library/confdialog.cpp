@@ -54,7 +54,8 @@ void ConfigComputerDialog::load()
 
     // language
     cmbLanguage->setCurrentIndex(cmbLanguage->findText(Agros2D::configComputer()->language));
-    if (cmbLanguage->currentIndex() == -1 && cmbLanguage->count() > 0) cmbLanguage->setCurrentIndex(0);
+    if (cmbLanguage->currentIndex() == -1 && cmbLanguage->count() > 0)
+        cmbLanguage->setCurrentIndex(0);
 
     // collaboration server
     // txtCollaborationServerURL->setText(Agros2D::configComputer()->collaborationServerURL);
@@ -67,6 +68,7 @@ void ConfigComputerDialog::load()
 
     // development
     chkDiscreteSaveMatrixRHS->setChecked(Agros2D::configComputer()->saveMatrixRHS);
+    cmbDumpFormat->setCurrentIndex((Hermes::Algebra::EMatrixDumpFormat) cmbDumpFormat->findData(Agros2D::configComputer()->dumpFormat, Qt::UserRole));
 
     // number of threads
     txtNumOfThreads->setValue(Agros2D::configComputer()->numberOfThreads);
@@ -112,6 +114,7 @@ void ConfigComputerDialog::save()
 
     // development
     Agros2D::configComputer()->saveMatrixRHS = chkDiscreteSaveMatrixRHS->isChecked();
+    Agros2D::configComputer()->dumpFormat = (Hermes::Algebra::EMatrixDumpFormat) cmbDumpFormat->itemData(cmbDumpFormat->currentIndex(), Qt::UserRole).toInt();
 
     // number of threads
     Agros2D::configComputer()->numberOfThreads = txtNumOfThreads->value();
@@ -259,9 +262,16 @@ QWidget *ConfigComputerDialog::createSolverWidget()
     grpSolver->setLayout(layoutSolver);
 
     chkDiscreteSaveMatrixRHS = new QCheckBox(tr("Save matrix and RHS"));
+    cmbDumpFormat = new QComboBox(this);
+    cmbDumpFormat->addItem(dumpFormatString(DF_MATLAB_SPARSE), DF_MATLAB_SPARSE);
+    // cmbDumpFormat->addItem(dumpFormatString(DF_HERMES_MATLAB_BIN), DF_HERMES_MATLAB_BIN);
+    // cmbDumpFormat->addItem(dumpFormatString(DF_PLAIN_ASCII), DF_PLAIN_ASCII);
+    // cmbDumpFormat->addItem(dumpFormatString(DF_MATRIX_MARKET), DF_MATRIX_MARKET);
 
     QGridLayout *layoutDevelopment = new QGridLayout();
     layoutDevelopment->addWidget(chkDiscreteSaveMatrixRHS, 0, 0, 1, 2);
+    layoutDevelopment->addWidget(new QLabel(tr("Matrix format")), 1, 0);
+    layoutDevelopment->addWidget(cmbDumpFormat, 1, 1);
 
     QGroupBox *grpDevelopment = new QGroupBox(tr("Development"));
     grpDevelopment->setLayout(layoutDevelopment);

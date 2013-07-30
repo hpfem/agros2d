@@ -20,6 +20,7 @@
 \brief General linear solver functionality.
 */
 #include "linear_matrix_solver.h"
+#include "empty_solver.h"
 #include "umfpack_solver.h"
 #include "superlu_solver.h"
 #include "amesos_solver.h"
@@ -102,6 +103,12 @@ namespace Hermes
       Vector<double>* rhs_dummy = NULL;
       switch (use_direct_solver ? Hermes::HermesCommonApi.get_integral_param_value(Hermes::directMatrixSolverType) : Hermes::HermesCommonApi.get_integral_param_value(Hermes::matrixSolverType))
       {
+      case Hermes::SOLVER_EMPTY:
+        {
+          if(rhs != NULL) return new EmptySolver<double>(static_cast<EmptyMatrix<double>*>(matrix), static_cast<EmptyVector<double>*>(rhs));
+          else return new EmptySolver<double>(static_cast<EmptyMatrix<double>*>(matrix), static_cast<EmptyVector<double>*>(rhs_dummy));
+          break;
+        }
       case Hermes::SOLVER_AZTECOO:
         {
           if(use_direct_solver)

@@ -53,7 +53,8 @@ void Config::load()
     lineEditValueShowResult = settings.value("General/LineEditValueShowResult", false).toBool();
 
     // development
-    saveMatrixRHS = settings.value("SceneViewSettings/SaveMatrixAndRHS", SAVEMATRIXANDRHS).toBool();
+    saveMatrixRHS = settings.value("Solution/SaveMatrixAndRHS", SAVEMATRIXANDRHS).toBool();
+    dumpFormat = (Hermes::Algebra::EMatrixDumpFormat) settings.value("Solution/FormatMatrixAndRHS", DF_MATLAB_SPARSE).toInt();
 
     // cache size
     cacheSize = settings.value("Solution/CacheSize", CACHE_SIZE).toInt();
@@ -83,6 +84,10 @@ void Config::save()
 
     settings.setValue("General/CheckVersion", checkVersion);
     settings.setValue("General/LineEditValueShowResult", lineEditValueShowResult);
+
+    // development
+    settings.setValue("Solution/SaveMatrixAndRHS", saveMatrixRHS);
+    settings.setValue("Solution/FormatMatrixAndRHS", dumpFormat);
 
     // cache size
     settings.setValue("Solution/CacheSize", cacheSize);

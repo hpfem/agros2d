@@ -485,6 +485,7 @@ void FieldWidget::fillComboBox()
 #endif
     cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PARALUTION_ITERATIVE), Hermes::SOLVER_PARALUTION_ITERATIVE);
     cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PARALUTION_AMG), Hermes::SOLVER_PARALUTION_AMG);
+    // cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_EMPTY), Hermes::SOLVER_EMPTY);
 
     cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_NORM), Hermes::Hermes2D::HERMES_H1_NORM);
     cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_L2_NORM), Hermes::Hermes2D::HERMES_L2_NORM);
