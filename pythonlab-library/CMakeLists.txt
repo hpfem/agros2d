@@ -38,7 +38,7 @@ SET(HEADERS pythonlab.h
     pythonlab/pythonbrowser.h
     pythonlab/pythoneditor.h
    )
-    
+
 SET(RESOURCES ../resources_source/resources.qrc)
 IF(WITH_QT5)
     QT5_ADD_RESOURCES(RESOURCES_RCC ${RESOURCES})
