@@ -32,10 +32,10 @@ public:
     virtual ~Marker();
 
     /// value of one individual variable
-    Value &value(QString id);
+    Value &value(const QString &id);
 
     /// get all values
-    const QHash<QString, Value> values() const;
+    const QMap<QString, Value> values() const;
 
     void setValue(QString name, Value value) { m_values[name] = value; }
 
@@ -67,7 +67,7 @@ protected:
     FieldInfo *m_fieldInfo;
 
     /// variables - the way to customize boundary "template", given by the type parameter
-    QHash<QString, Value> m_values;
+    QMap<QString, Value> m_values;
 
 private:
     /// we don't want those objects to be copied since we compare pointers
@@ -81,7 +81,7 @@ class Boundary : public Marker
 {
 public:
     Boundary(FieldInfo *m_fieldInfo, QString m_name = "", QString m_type = "",
-             QHash<QString, Value> m_values = (QHash<QString, Value>()));
+             QMap<QString, Value> m_values = (QMap<QString, Value>()));
 
     /// get type
     const QString type() const { return m_type; }
@@ -101,7 +101,7 @@ class Material : public Marker
 {
 public:
     Material(FieldInfo *m_fieldInfo, QString m_name,
-             QHash<QString, Value> m_values = (QHash<QString, Value>()));
+             QMap<QString, Value> m_values = (QMap<QString, Value>()));
 };
 
 

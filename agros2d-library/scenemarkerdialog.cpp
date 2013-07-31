@@ -36,7 +36,7 @@
 
 
 SceneBoundary::SceneBoundary(FieldInfo *fieldInfo, QString name, QString type,
-                             QHash<QString, Value> values)
+                             QMap<QString, Value> values)
     : Boundary(fieldInfo, name, type, values)
 {
 
@@ -66,7 +66,7 @@ SceneBoundaryNone::SceneBoundaryNone() : SceneBoundary(NULL, "none")
 // *************************************************************************************************************************************
 
 SceneMaterial::SceneMaterial(FieldInfo *fieldInfo, QString name,
-                             QHash<QString, Value> values) : Material(fieldInfo, name, values)
+                             QMap<QString, Value> values) : Material(fieldInfo, name, values)
 {
 
 }

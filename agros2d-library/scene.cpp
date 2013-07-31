@@ -1853,8 +1853,8 @@ void Scene::writeToFile21(const QString &fileName)
                 eleBoundary.setAttribute("id", iboundary);
                 eleBoundary.setAttribute("type", boundary->type());
 
-                const QHash<QString, Value> values = boundary->values();
-                for (QHash<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+                const QMap<QString, Value> values = boundary->values();
+                for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
                     eleBoundary.setAttribute(it.key(), it.value().toString());
 
                 // add edges
@@ -1887,8 +1887,8 @@ void Scene::writeToFile21(const QString &fileName)
             eleMaterial.setAttribute("id", imaterial);
             eleMaterial.setAttribute("name", material->name());
 
-            const QHash<QString, Value> values = material->values();
-            for (QHash<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+            const QMap<QString, Value> values = material->values();
+            for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
                 eleMaterial.setAttribute(it.key(), it.value().toString());
 
             // add labels
@@ -1998,8 +1998,8 @@ void Scene::writeToFile31(const QString &fileName)
                         boundary_edges.boundary_edge().push_back(XMLProblem::boundary_edge(edges->items().indexOf(edge)));
 
                 XMLProblem::boundary_types boundary_types;
-                const QHash<QString, Value> values = bound->values();
-                for (QHash<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+                const QMap<QString, Value> values = bound->values();
+                for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
                     boundary_types.boundary_type().push_back(XMLProblem::boundary_type(it.key().toStdString(), it.value().toString().toStdString()));
 
                 XMLProblem::boundary boundary(boundary_edges,
@@ -2026,8 +2026,8 @@ void Scene::writeToFile31(const QString &fileName)
                         material_labels.material_label().push_back(XMLProblem::material_label(labels->items().indexOf(label)));
 
                 XMLProblem::material_types material_types;
-                const QHash<QString, Value> values = mat->values();
-                for (QHash<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
+                const QMap<QString, Value> values = mat->values();
+                for (QMap<QString, Value>::const_iterator it = values.begin(); it != values.end(); ++it)
                     material_types.material_type().push_back(XMLProblem::material_type(it.key().toStdString(), it.value().toString().toStdString()));
 
                 XMLProblem::material material(material_labels,

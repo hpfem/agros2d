@@ -65,7 +65,7 @@ void {{CLASS}}LocalValue::calculate()
             SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()));
             SceneMaterial *material = label->marker(m_fieldInfo);
 
-            {{#VARIABLE_MATERIAL}}Value *material_{{MATERIAL_VARIABLE}} = &material->value("{{MATERIAL_VARIABLE}}");
+            {{#VARIABLE_MATERIAL}}Value *material_{{MATERIAL_VARIABLE}} = &material->value(QLatin1String("{{MATERIAL_VARIABLE}}"));
             {{/VARIABLE_MATERIAL}}
 
             double *value = new double[numberOfSolutions];
@@ -102,7 +102,7 @@ void {{CLASS}}LocalValue::calculate()
             {{#VARIABLE_SOURCE}}
             if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
                     && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
-                m_values["{{VARIABLE}}"] = PointValue({{EXPRESSION_SCALAR}}, Point({{EXPRESSION_VECTORX}}, {{EXPRESSION_VECTORY}}), material);
+                m_values[QLatin1String("{{VARIABLE}}")] = PointValue({{EXPRESSION_SCALAR}}, Point({{EXPRESSION_VECTORX}}, {{EXPRESSION_VECTORY}}), material);
             {{/VARIABLE_SOURCE}}
 
             delete [] value;

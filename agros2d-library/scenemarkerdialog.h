@@ -43,7 +43,7 @@ class SceneBoundary : public Boundary
 {
 public:
     SceneBoundary(FieldInfo *fieldInfo, QString m_name = "", QString m_type = "",
-                  QHash<QString, Value> m_values = (QHash<QString, Value>()));
+                  QMap<QString, Value> m_values = (QMap<QString, Value>()));
 
     int showDialog(QWidget *parent);
 
@@ -138,7 +138,7 @@ class SceneMaterial : public Material
 {
 public:
     SceneMaterial(FieldInfo *fieldInfo, QString m_name,
-                  QHash<QString, Value> m_values = (QHash<QString, Value>()));
+                  QMap<QString, Value> m_values = (QMap<QString, Value>()));
 
     int showDialog(QWidget *parent);
 

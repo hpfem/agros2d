@@ -63,11 +63,18 @@ void {{CLASS}}SurfaceIntegral::calculate()
             ma.solutions().at(k)->set_quad_2d(quad);
 
         const MeshSharedPtr mesh = ma.solutions().at(0)->get_mesh();
-        for (int i = 0; i<Agros2D::scene()->edges->length(); i++)
+        for_all_active_elements(e, mesh)
         {
-            if (Agros2D::scene()->edges->at(i)->isSelected())
+            // set material variable
+            SceneMaterial *material = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().
+                                                                        get_user_marker(e->marker).marker.c_str()))->marker(m_fieldInfo);
+
+            {{#VARIABLE_MATERIAL}}Value *material_{{MATERIAL_VARIABLE}} = &material->value(QLatin1String("{{MATERIAL_VARIABLE}}"));
+            {{/VARIABLE_MATERIAL}}
+
+            for (int i = 0; i<Agros2D::scene()->edges->length(); i++)
             {
-                for_all_active_elements(e, mesh)
+                if (Agros2D::scene()->edges->at(i)->isSelected())
                 {
                     for (unsigned edge = 0; edge < e->get_nvert(); edge++)
                     {
@@ -121,13 +128,6 @@ void {{CLASS}}SurfaceIntegral::calculate()
 
                             int np = quad->get_num_points(eo, e->get_mode());
 
-                            // set material variable
-                            SceneMaterial *material = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().
-                                                                                     get_user_marker(e->marker).marker.c_str()))->marker(m_fieldInfo);
-
-                            {{#VARIABLE_MATERIAL}}Value *material_{{MATERIAL_VARIABLE}} = &material->value("{{MATERIAL_VARIABLE}}");
-                            {{/VARIABLE_MATERIAL}}
-
                             // expressions
                             {{#VARIABLE_SOURCE}}
                             if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
@@ -136,7 +136,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
                                 double result = 0.0;
                                 for (int i = 0; i < np; i++)
                                     result += pt[i][2] * tan[i][2] * 0.5 * (boundary ? 1.0 : 0.5) * ({{EXPRESSION}});
-                                m_values["{{VARIABLE}}"] += result;
+                                m_values[QLatin1String("{{VARIABLE}}")] += result;
                             }
                             {{/VARIABLE_SOURCE}}
                         }

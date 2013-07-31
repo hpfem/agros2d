@@ -339,7 +339,7 @@ void PyField::addBoundary(const std::string &name, const std::string &type,
     Module::BoundaryType boundaryType = m_fieldInfo->boundaryType(QString::fromStdString(type));
 
     // browse boundary parameters
-    QHash<QString, Value> values;
+    QMap<QString, Value> values;
     for (map<std::string, double>::const_iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         bool assigned = false;
@@ -426,7 +426,7 @@ void PyField::addMaterial(const std::string &name, const map<std::string, double
 
     // browse material parameters
     QList<Module::MaterialTypeVariable> variables = m_fieldInfo->materialTypeVariables();
-    QHash<QString, Value> values;
+    QMap<QString, Value> values;
     for (map<std::string, double>::const_iterator i = parameters.begin(); i != parameters.end(); ++i)
     {
         bool assigned = false;

@@ -71,7 +71,7 @@ void {{CLASS}}VolumeIntegral::calculate()
 
                 SceneMaterial *material = label->marker(m_fieldInfo);
 
-                {{#VARIABLE_MATERIAL}}Value *material_{{MATERIAL_VARIABLE}} = &material->value("{{MATERIAL_VARIABLE}}");
+                {{#VARIABLE_MATERIAL}}Value *material_{{MATERIAL_VARIABLE}} = &material->value(QLatin1String("{{MATERIAL_VARIABLE}}"));
                 {{/VARIABLE_MATERIAL}}
 
                 for_all_active_elements(e, mesh)
@@ -126,7 +126,7 @@ void {{CLASS}}VolumeIntegral::calculate()
                                 else
                                     result += pt[i][2] * jac[i] * ({{EXPRESSION}});
                             }
-                            m_values["{{VARIABLE}}"] += result;
+                            m_values[QLatin1String("{{VARIABLE}}")] += result;
                         }
                         {{/VARIABLE_SOURCE}}
                     }
