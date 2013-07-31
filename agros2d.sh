@@ -57,8 +57,8 @@ case "$1" in
     release )
     	git clean -dxf
         ./agros2d.sh help
-        ./agros2d.sh lang release
-        ./agros2d.sh cython
+        # ./agros2d.sh lang release
+        # ./agros2d.sh cython
         
         tempPathTarget=$tempPath/agros2d-$version
 
