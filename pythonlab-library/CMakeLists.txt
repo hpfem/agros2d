@@ -2,13 +2,22 @@ PROJECT(${PYTHONLAB_LIBRARY})
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/qtsingleapplication)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/util)
 
-IF(BUILD_CYTHON)
-    IF(WIN32)
-      EXECUTE_PROCESS(COMMAND "C:/Python27/Scripts/cython.py" "--cplus" "${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx")
-    ELSE(WIN32)
-      EXECUTE_PROCESS(COMMAND "cython" "--cplus" "${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx")
-    ENDIF(WIN32)
-ENDIF(BUILD_CYTHON)
+
+# cython
+message("Cython files - PythonLab")
+message("\tcython pythonlab.pyx")
+add_custom_target(CYTHON_PYTHONLAB ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp)
+IF(WIN32)
+  ADD_CUSTOM_COMMAND(
+    OUTPUT ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp
+    COMMAND C:/Python27/Scripts/cython.py ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx
+    DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp)
+ELSE()
+  ADD_CUSTOM_COMMAND(
+    OUTPUT ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp
+    COMMAND cython ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx
+    DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp)
+ENDIF()
 
 SET(SOURCES pythonlab.cpp
     pythonlab_functions.cpp

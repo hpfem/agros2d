@@ -47,8 +47,7 @@ namespace Hermes
     DIRECT_SOLVER_UMFPACK = 0,
     DIRECT_SOLVER_MUMPS = 1,
     DIRECT_SOLVER_SUPERLU = 2,
-    DIRECT_SOLVER_AMESOS = 3,
-    DIRECT_SOLVER_EMPTY = 100
+    DIRECT_SOLVER_AMESOS = 3
   };
 
   enum IterativeMatrixSolverType

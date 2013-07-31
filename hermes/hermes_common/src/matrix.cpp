@@ -24,7 +24,6 @@
 #include "callstack.h"
 
 #include "solvers/linear_matrix_solver.h"
-#include "solvers/empty_solver.h"
 #include "solvers/umfpack_solver.h"
 #include "solvers/superlu_solver.h"
 #include "solvers/amesos_solver.h"
@@ -299,11 +298,6 @@ namespace Hermes
     {
       switch (use_direct_solver ? Hermes::HermesCommonApi.get_integral_param_value(Hermes::directMatrixSolverType) : Hermes::HermesCommonApi.get_integral_param_value(Hermes::matrixSolverType))
       {
-      case Hermes::SOLVER_EMPTY:
-        {
-          return new EmptyMatrix<double>;
-          break;
-        }
       case Hermes::SOLVER_AMESOS:
         {
 #if defined HAVE_AMESOS && defined HAVE_EPETRA
@@ -385,11 +379,6 @@ namespace Hermes
     {
       switch (use_direct_solver ? Hermes::HermesCommonApi.get_integral_param_value(Hermes::directMatrixSolverType) : Hermes::HermesCommonApi.get_integral_param_value(Hermes::matrixSolverType))
       {
-      case Hermes::SOLVER_EMPTY:
-        {
-          return new EmptyVector<double>;
-          break;
-        }
       case Hermes::SOLVER_AMESOS:
         {
 #if defined HAVE_AMESOS && defined HAVE_EPETRA
@@ -471,11 +460,6 @@ namespace Hermes
     {
       switch (use_direct_solver ? Hermes::HermesCommonApi.get_integral_param_value(Hermes::directMatrixSolverType) : Hermes::HermesCommonApi.get_integral_param_value(Hermes::matrixSolverType))
       {
-      case Hermes::SOLVER_EMPTY:
-        {
-          return new EmptyMatrix<std::complex<double> >;
-          break;
-        }
       case Hermes::SOLVER_AMESOS:
         {
 #if defined HAVE_AMESOS && defined HAVE_EPETRA
@@ -557,11 +541,6 @@ namespace Hermes
     {
       switch (use_direct_solver ? Hermes::HermesCommonApi.get_integral_param_value(Hermes::directMatrixSolverType) : Hermes::HermesCommonApi.get_integral_param_value(Hermes::matrixSolverType))
       {
-      case Hermes::SOLVER_EMPTY:
-        {
-          return new EmptyVector<std::complex<double> >;
-          break;
-        }
       case Hermes::SOLVER_AMESOS:
         {
 #if defined HAVE_AMESOS && defined HAVE_EPETRA

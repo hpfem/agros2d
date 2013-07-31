@@ -14,19 +14,65 @@ INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/bson)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/quazip)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/paralution/src)
 
-IF(BUILD_CYTHON)
-    IF(WIN32)
-      EXECUTE_PROCESS(COMMAND "C:/Python27/Scripts/cython.py" "--cplus" "${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx")
-    ELSE(WIN32)
-      EXECUTE_PROCESS(COMMAND "cython" "--cplus" "${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx")
-    ENDIF(WIN32)
-ENDIF(BUILD_CYTHON)
+# languages
+message("Translations")
+FILE(GLOB files "${CMAKE_HOME_DIRECTORY}/resources_source/lang/*.ts")
+foreach(langfile ${files})
+  GET_FILENAME_COMPONENT(basefile ${langfile} NAME_WE)
+  add_custom_target(${basefile} ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/lang/${basefile}.ts ${CMAKE_HOME_DIRECTORY}/resources/lang/${basefile}.qm)
+
+  message("\tlrelease ${basefile}")
+
+  IF(WIN32)
+    ADD_CUSTOM_COMMAND(
+      OUTPUT ${CMAKE_HOME_DIRECTORY}/resources/lang/${basefile}.qm
+      COMMAND lrelease ARGS ${langfile} -qm ${CMAKE_HOME_DIRECTORY}/resources/lang/${basefile}.qm
+      DEPENDS ${XSD_FILE} ${CMAKE_HOME_DIRECTORY}/resources_source/lang/${basefile}.ts ${CMAKE_HOME_DIRECTORY}/resources/lang/${basefile}.qm)
+  ELSE()
+    ADD_CUSTOM_COMMAND(
+      OUTPUT ${CMAKE_HOME_DIRECTORY}/resources/lang/${basefile}.qm
+      COMMAND lrelease ARGS ${langfile} -qm ${CMAKE_HOME_DIRECTORY}/resources/lang/${basefile}.qm
+      DEPENDS ${XSD_FILE} ${CMAKE_HOME_DIRECTORY}/resources_source/lang/${basefile}.ts ${CMAKE_HOME_DIRECTORY}/resources/lang/${basefile}.qm)
+  ENDIF()
+endforeach()
+
+# XSDCXX
+message("XML cpp/h files")
+FILE(GLOB files "${CMAKE_HOME_DIRECTORY}/resources/xsd/*.xsd")
+foreach(xsdfile ${files})
+  GET_FILENAME_COMPONENT(basefile ${xsdfile} NAME_WE)
+  add_custom_target(${basefile} ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.cpp ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.h)
+
+  message("\txsdcxx ${basefile}")
+
+  IF(WIN32)
+    ADD_CUSTOM_COMMAND(
+      OUTPUT ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.cpp ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.h
+      COMMAND ${XSD_BIN} ARGS cxx-tree --generate-ostream --hxx-suffix .h --cxx-suffix .cpp --root-element-first --generate-polymorphic --output-dir ${CMAKE_HOME_DIRECTORY}/resources_source/classes --generate-serialization ${xsdfile}
+      DEPENDS ${XSD_FILE} ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.cpp ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.h)
+  ELSE()
+    ADD_CUSTOM_COMMAND(
+      OUTPUT ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.cpp ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.h
+      COMMAND ${XSD_BIN} ARGS cxx-tree --generate-ostream --hxx-suffix .h --cxx-suffix .cpp --root-element-first --generate-polymorphic --output-dir ${CMAKE_HOME_DIRECTORY}/resources_source/classes --generate-serialization ${xsdfile}
+      DEPENDS ${XSD_FILE} ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.cpp ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.h)
+  ENDIF()
+endforeach()
+
+# cython
+message("Cython files - Agros2D")
+message("\tcython agros2d.pyx")
+add_custom_target(CYTHON_AGROS2D ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
 IF(WIN32)
-ELSE(WIN32)
-  #EXECUTE_PROCESS(COMMAND "lrelease" "${CMAKE_HOME_DIRECTORY}/resources_source/lang/*.ts")
-  #EXECUTE_PROCESS(COMMAND "mkdir" "${CMAKE_HOME_DIRECTORY}/resources/lang")
-  #EXECUTE_PROCESS(COMMAND "mv" "${CMAKE_HOME_DIRECTORY}/resources_source/lang/*.qm" "${CMAKE_HOME_DIRECTORY}/resources/lang/*.qm")
-ENDIF(WIN32)
+  ADD_CUSTOM_COMMAND(
+    OUTPUT ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp
+    COMMAND C:/Python27/Scripts/cython.py ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
+    DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
+ELSE()
+  ADD_CUSTOM_COMMAND(
+    OUTPUT ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp
+    COMMAND cython ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
+    DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
+ENDIF()
 
 SET(SOURCES value.cpp
     scene.cpp

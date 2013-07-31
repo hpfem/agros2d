@@ -1,20 +1,24 @@
 project(hermes2d)
+
   # Generating classes for XML mesh parsing according to your version of XSD.
-  message("Hermes2D: Generating classes for XML mesh parsing according to your version of XSD.")
-  if(WIN32)
-    execute_process(COMMAND "${PROJECT_SOURCE_DIR}/xml_schemas/xml_schemas_generate_win.bat" WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/xml_schemas/" OUTPUT_QUIET)
-  else(WIN32)
-    execute_process(COMMAND "chmod" "700" "${PROJECT_SOURCE_DIR}/xml_schemas/xml_schemas_generate_linux.sh" WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/xml_schemas/")
-    execute_process(COMMAND "${PROJECT_SOURCE_DIR}/xml_schemas/xml_schemas_generate_linux.sh" WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/xml_schemas/" OUTPUT_QUIET)
-    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${comp}.cpp COMMAND ${ECPPC} -o ${CMAKE_CURRENT_BINARY_DIR}/${comp}.cpp -v -n ${comp} ${CMAKE_CURRENT_SOURCE_DIR}/${comp}.ecpp DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${comp}.ecpp)
+  include(BuildAndInstallScripts)
 
-    # message("xsdcxx cxx-tree --generate-doxygen --generate-ostream --hxx-suffix .h --cxx-suffix .cpp --root-element-first --generate-polymorphic --generate-serialization --output-dir ${PROJECT_SOURCE_DIR}/include/mesh ${PROJECT_SOURCE_DIR}/xml_schemas/mesh_h2d_xml.xsd; mv -f ${PROJECT_SOURCE_DIR}/include/mesh/mesh_h2d_xml.cpp ${PROJECT_SOURCE_DIR}/src/mesh")
-    # ADD_CUSTOM_COMMAND(
-    #     OUTPUT ${PROJECT_SOURCE_DIR}/include/mesh/mesh_h2d_xml.h ${PROJECT_SOURCE_DIR}/src/mesh/mesh_h2d_xml.cpp
-    #     COMMAND xsdcxx cxx-tree --generate-doxygen --generate-ostream --hxx-suffix .h --cxx-suffix .cpp --root-element-first --generate-polymorphic --generate-serialization --output-dir ${PROJECT_SOURCE_DIR}/include/mesh ${PROJECT_SOURCE_DIR}/xml_schemas/mesh_h2d_xml.xsd
-    #     DEPENDS ${PROJECT_SOURCE_DIR}/xml_schemas/mesh_h2d_xml.xsd ${PROJECT_SOURCE_DIR}/include/mesh/mesh_h2d_xml.h ${PROJECT_SOURCE_DIR}/src/mesh/mesh_h2d_xml.cpp)
-  endif(WIN32)
-
+  set(MESH_2D_XML_H "include/mesh/mesh_h2d_xml.h")
+  set(MESH_2D_XML_CPP "src/mesh/mesh_h2d_xml.cpp")
+  GENERATE_XSD_FILES(XSDMesh2D ${MESH_2D_XML_H} ${MESH_2D_XML_CPP} xml_schemas/mesh_h2d_xml.xsd mesh)
+  set(MESH_1D_XML_H "include/mesh/mesh_h1d_xml.h")
+  set(MESH_1D_XML_CPP "src/mesh/mesh_h1d_xml.cpp")
+  GENERATE_XSD_FILES(XSDMesh1D ${MESH_1D_XML_H} ${MESH_1D_XML_CPP} xml_schemas/mesh_h1d_xml.xsd mesh)
+  set(SOLUTION_XML_H "include/function/solution_h2d_xml.h")
+  set(SOLUTION_XML_CPP "src/function/solution_h2d_xml.cpp")
+  GENERATE_XSD_FILES(XSDSolution2D ${SOLUTION_XML_H} ${SOLUTION_XML_CPP} xml_schemas/solution_h2d_xml.xsd function)
+  set(SPACE_XML_H "include/space/space_h2d_xml.h")
+  set(SPACE_XML_CPP "src/space/space_h2d_xml.cpp")
+  GENERATE_XSD_FILES(XSDSpace2D ${SPACE_XML_H} ${SPACE_XML_CPP} xml_schemas/space_h2d_xml.xsd space)
+  set(SUBDOMAINS_XML_H "include/mesh/subdomains_h2d_xml.h")
+  set(SUBDOMAINS_XML_CPP "src/mesh/subdomains_h2d_xml.cpp")
+  GENERATE_XSD_FILES(XSDSubdomains2D ${SUBDOMAINS_XML_H} ${SUBDOMAINS_XML_CPP} xml_schemas/subdomains_h2d_xml.xsd mesh)
+  
   SET(H2D_XML_SCHEMAS_DIRECTORY "\"${PROJECT_SOURCE_DIR}/xml_schemas\"")
   SET(H2D_PRECALCULATED_FORMS_DIRECTORY "\"${PROJECT_SOURCE_DIR}/precalculated_forms\"")
 
@@ -618,17 +622,16 @@ project(hermes2d)
   #
   # Build and install the library.
   #
-  include(BuildAndInstallScripts)
-
+  
   # Add a target for a specified version of the Hermes library,
   # and set its build properties (compile and link flags, installation directories). Due to
   # different optional libraries for H1D, H2D and H3D, this macro is dimension-specific.
   macro(BUILD_2D_LIB HERMES_LIB HERMES_COMMON_LIB BUILD_FLAGS)
-    add_library(${HERMES_LIB} SHARED ${SRC} ${HEADERS} ${SRC_GEN})
+    add_library(${HERMES_LIB} SHARED ${SRC} ${HEADERS})
 
     set(_FLAGS ${BUILD_FLAGS})
 
-    SET_TARGET_PROPERTIES(${HERMES_LIB} PROPERTIES COMPILE_FLAGS ${_FLAGS})
+    set_target_properties(${HERMES_LIB} PROPERTIES COMPILE_FLAGS ${_FLAGS})
 
     target_link_libraries(  ${HERMES_LIB}
       ${HERMES_COMMON_LIB}
