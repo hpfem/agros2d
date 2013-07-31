@@ -97,3 +97,9 @@ resources_source/doc/source/modules/rf_tm/
 CMakeFiles
 CMakeCache.txt
 *.unsuccessfulbuild
+*_automoc.cpp
+*.cbp
+util/config.h
+agros2d-library/__/
+pythonlab-library/__/
+CMake.vars
