@@ -20,6 +20,8 @@
 #ifndef GENERATOR_MODULE_H
 #define GENERATOR_MODULE_H
 
+#include "generator.h"
+
 class Agros2DGeneratorModule : public Agros2DGeneratorBase
 {
 public:

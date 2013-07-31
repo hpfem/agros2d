@@ -20,6 +20,8 @@
 #ifndef GENERATOR_COUPLING_H
 #define GENERATOR_COUPLING_H
 
+#include "generator.h"
+
 class Agros2DGeneratorCoupling : public Agros2DGeneratorBase
 {
 
