@@ -115,25 +115,6 @@ void MeshGeneratorTriangle::meshTriangleCreated(int exitCode)
         {
             Agros2D::log()->printMessage(tr("Mesh generator"), tr("Mesh was converted to Hermes2D mesh file"));
 
-            // copy triangle files
-            if (!Agros2D::problem()->config()->fileName().isEmpty())
-            {
-                QFileInfo fileInfoOrig(Agros2D::problem()->config()->fileName());
-
-                QFile::copy(tempProblemFileName() + ".poly", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".poly");
-                QFile::copy(tempProblemFileName() + ".node", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".node");
-                QFile::copy(tempProblemFileName() + ".edge", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".edge");
-                QFile::copy(tempProblemFileName() + ".ele", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".ele");
-            }
-
-            // copy hermes files
-            if (!Agros2D::problem()->config()->fileName().isEmpty())
-            {
-                QFileInfo fileInfoOrig(Agros2D::problem()->config()->fileName());
-
-                QFile::copy(cacheProblemDir() + "/initial.msh", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".msh");
-            }
-
             //  remove triangle temp files
             QFile::remove(tempProblemFileName() + ".poly");
             QFile::remove(tempProblemFileName() + ".node");

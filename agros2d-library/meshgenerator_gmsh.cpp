@@ -101,22 +101,6 @@ void MeshGeneratorGMSH::meshGmshCreated(int exitCode)
         {
             Agros2D::log()->printMessage(tr("Mesh generator"), tr("Mesh was converted to Hermes2D mesh file"));
 
-            // copy gmsh files
-            if (!Agros2D::problem()->config()->fileName().isEmpty())
-            {
-                QFileInfo fileInfoOrig(Agros2D::problem()->config()->fileName());
-
-                QFile::copy(tempProblemFileName() + ".geo", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".geo");
-            }
-
-            // copy hermes files
-            if (!Agros2D::problem()->config()->fileName().isEmpty())
-            {
-                QFileInfo fileInfoOrig(Agros2D::problem()->config()->fileName());
-
-                QFile::copy(cacheProblemDir() + "/initial.msh", fileInfoOrig.absolutePath() + QDir::separator() + fileInfoOrig.baseName() + ".msh");
-            }
-
             //  remove gmsh temp files
             QFile::remove(tempProblemFileName() + ".geo");
             QFile::remove(tempProblemFileName() + ".msh");
