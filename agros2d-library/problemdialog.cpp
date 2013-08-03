@@ -735,13 +735,13 @@ FieldDialog::FieldDialog(FieldInfo *fieldInfo, QWidget *parent) : QDialog(parent
     btnDeleteField->setEnabled(Agros2D::problem()->hasField(fieldInfo->fieldId()));
     connect(btnDeleteField, SIGNAL(clicked()), this, SLOT(deleteField()));
 
-    // QPushButton *btnModuleEditor = new QPushButton(tr("Module editor"));
-    // btnModuleEditor->setDefault(false);
-    // connect(btnModuleEditor, SIGNAL(clicked()), this, SLOT(moduleEditor()));
+    QPushButton *btnModuleEditor = new QPushButton(tr("Module editor"));
+    btnModuleEditor->setDefault(false);
+    connect(btnModuleEditor, SIGNAL(clicked()), this, SLOT(moduleEditor()));
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     buttonBox->addButton(btnDeleteField, QDialogButtonBox::ActionRole);
-    // buttonBox->addButton(btnModuleEditor, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(btnModuleEditor, QDialogButtonBox::ActionRole);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
 
