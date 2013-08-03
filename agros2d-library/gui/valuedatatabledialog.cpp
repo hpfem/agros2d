@@ -393,13 +393,22 @@ void ValueDataTableDialog::doPlot()
     Hermes::vector<double> pointsVector = m_table.pointsVector();
     Hermes::vector<double> valuesVector = m_table.valuesVector();
 
-    QVector<double> pointsMarkersVector;
-    QVector<double> valuesMarkersVector;
-
-    for (int i = 0; i < pointsVector.size(); i++)
+    if (chkMarkers->isChecked())
     {
-        pointsMarkersVector.append(pointsVector[i]);
-        valuesMarkersVector.append(valuesVector[i]);
+        QCPDataMap *dataMarkers = new QCPDataMap();
+        for (int i = 0; i < m_table.size(); ++i)
+        {
+            QCPData newData;
+            newData.key = pointsVector[i];
+            newData.value = valuesVector[i];
+            dataMarkers->insertMulti(newData.key, newData);
+        }
+
+        chartValue->graph(1)->setData(dataMarkers);
+    }
+    else
+    {
+        chartValue->graph(1)->clearData();
     }
 
     // interpolation
@@ -415,27 +424,27 @@ void ValueDataTableDialog::doPlot()
 
     double dx = keyLength / (countSpline - 1);
 
-    QVector<double> keysSpline;
-    QVector<double> valuesSpline;
-    QVector<double> derivativesSpline;
-
     // spline
+    QCPDataMap *dataSpline = new QCPDataMap();
+    QCPDataMap *dataSplineDerivative = new QCPDataMap();
     for (int i = 0; i < countSpline; i++)
     {
-        keysSpline.append(keyStart + (i * dx));
-        valuesSpline.append(m_table.value(keysSpline[i]));
-        derivativesSpline.append(m_table.derivative(keysSpline[i]));
+        QCPData newDataValue;
+        newDataValue.key = keyStart + (i * dx);
+        newDataValue.value = m_table.value(newDataValue.key);
+        dataSpline->insertMulti(newDataValue.key, newDataValue);
+
+        QCPData newDataDerivative;
+        newDataDerivative.key = keyStart + (i * dx);
+        newDataDerivative.value = m_table.derivative(newDataDerivative.key);
+        dataSplineDerivative->insertMulti(newDataDerivative.key, newDataDerivative);
     }
 
-    chartValue->graph(0)->setData(keysSpline, valuesSpline);
-    if (chkMarkers->isChecked())
-        chartValue->graph(1)->setData(pointsMarkersVector, valuesMarkersVector);
-    else
-        chartValue->graph(1)->clearData();
+    chartValue->graph(0)->setData(dataSpline);
     chartValue->rescaleAxes();
     chartValue->replot();
 
-    chartDerivative->graph(0)->setData(keysSpline, derivativesSpline);
+    chartDerivative->graph(0)->setData(dataSplineDerivative);
     chartDerivative->rescaleAxes();
     chartDerivative->replot();
 }
