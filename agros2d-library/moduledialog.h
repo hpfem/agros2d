@@ -196,6 +196,7 @@ class ModuleItemConstantDialog : public ModuleItemEmptyDialog
     Q_OBJECT
 public:
     ModuleItemConstantDialog(ModuleDialog *moduleDialog, XMLModule::constant *constant, QWidget *parent);
+    ~ModuleItemConstantDialog();
 
 protected slots:
     void doAccept();
@@ -284,6 +285,7 @@ class ModuleItemMatrixFormDialog : public ModuleItemWeakformDialog
 public:
     ModuleItemMatrixFormDialog(ModuleDialog *moduleDialog, QString type, int numberOfSolutions,
                                XMLModule::matrix_form *form, QWidget *parent);
+    ~ModuleItemMatrixFormDialog();
 
 protected slots:
     void doAccept();
@@ -298,6 +300,7 @@ class ModuleItemVectorFormDialog : public ModuleItemWeakformDialog
 public:
     ModuleItemVectorFormDialog(ModuleDialog *moduleDialog, QString type, int numberOfSolutions,
                                XMLModule::vector_form *form, QWidget *parent);
+    ~ModuleItemVectorFormDialog();
 
 protected slots:
     void doAccept();
@@ -311,6 +314,7 @@ class ModuleItemEssentialFormDialog : public ModuleItemWeakformDialog
     Q_OBJECT
 public:
     ModuleItemEssentialFormDialog(ModuleDialog *moduleDialog, int numberOfSolutions, XMLModule::essential_form *form, QWidget *parent);
+    ~ModuleItemEssentialFormDialog();
 
 protected slots:
     void doAccept();
@@ -324,6 +328,7 @@ class ModulePreprocessorDialog : public ModuleItemDialog
     Q_OBJECT
 public:
     ModulePreprocessorDialog(ModuleDialog *moduleDialog, XMLModule::quantity *quant, QWidget *parent);
+    ~ModulePreprocessorDialog();
 
 protected slots:
     void doAccept();
@@ -340,6 +345,7 @@ class ModuleItemLocalValueDialog : public ModuleItemDialog
     Q_OBJECT
 public:
     ModuleItemLocalValueDialog(ModuleDialog *moduleDialog, XMLModule::localvariable *lv, QWidget *parent);
+    ~ModuleItemLocalValueDialog();
 
 protected slots:
     void doAccept();
@@ -355,6 +361,7 @@ public:
     ModuleItemViewDefaultsDialog(ModuleDialog *moduleDialog,
                                  XMLModule::default_ *def, XMLModule::localvariables *lv,
                                  QWidget *parent);
+    ~ModuleItemViewDefaultsDialog();
 
 protected slots:
     void doAccept();
@@ -372,6 +379,7 @@ class ModuleVolumeIntegralValueDialog : public ModuleItemDialog
     Q_OBJECT
 public:
     ModuleVolumeIntegralValueDialog(ModuleDialog *moduleDialog, XMLModule::volumeintegral *vol, QWidget *parent);
+    ~ModuleVolumeIntegralValueDialog();
 
 protected slots:
     void doAccept();
@@ -385,6 +393,7 @@ class ModuleSurfaceIntegralValueDialog : public ModuleItemDialog
     Q_OBJECT
 public:
     ModuleSurfaceIntegralValueDialog(ModuleDialog *moduleDialog, XMLModule::surfaceintegral *sur, QWidget *parent);
+    ~ModuleSurfaceIntegralValueDialog();
 
 protected:
     void addExpressions(QLayout *layout) {}
@@ -401,6 +410,7 @@ class ModuleDialog : public QDialog
     Q_OBJECT
 public:
     ModuleDialog(const QString &fieldId, QWidget *parent);
+    ~ModuleDialog();
 
     inline XMLModule::module *module() { return m_module_xsd.get(); }
     int numberOfSolutions(std::string analysisType);

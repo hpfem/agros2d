@@ -520,6 +520,15 @@ ModuleItemConstantDialog::ModuleItemConstantDialog(ModuleDialog *moduleDialog, X
     layoutMain->addLayout(layoutGeneral);
     layoutMain->addStretch();
     layoutMain->addWidget(buttonBox);
+
+    QSettings settings;
+    restoreGeometry(settings.value("ModuleItemConstantDialog/Geometry", saveGeometry()).toByteArray());
+}
+
+ModuleItemConstantDialog::~ModuleItemConstantDialog()
+{
+    QSettings settings;
+    settings.setValue("ModuleItemConstantDialog/Geometry", saveGeometry());
 }
 
 void ModuleItemConstantDialog::doAccept()
@@ -668,10 +677,10 @@ ModuleItemWeakformDialog::ModuleItemWeakformDialog(ModuleDialog *moduleDialog, Q
 
     layoutGeneral->addWidget(new QLabel(tr("ID:")), 0, 0);
     layoutGeneral->addWidget(txtID, 0, 1);
-    layoutGeneral->addWidget(new QLabel(tr("Solution index:")), 0, 2);
-    layoutGeneral->addWidget(txtSolutionIndex, 0, 3);
-    layoutGeneral->addWidget(new QLabel(tr("Test function index:")), 1, 2);
-    layoutGeneral->addWidget(txtTestFunctionIndex, 1, 3);
+    layoutGeneral->addWidget(new QLabel(tr("Solution index:")), 1, 0);
+    layoutGeneral->addWidget(txtSolutionIndex, 1, 1);
+    layoutGeneral->addWidget(new QLabel(tr("Test function index:")), 2, 0);
+    layoutGeneral->addWidget(txtTestFunctionIndex, 2, 1);
 
     QGridLayout *layoutLinear = new QGridLayout();
     layoutLinear->addWidget(new QLabel(tr("Planar:")), 0, 0);
@@ -725,6 +734,15 @@ ModuleItemMatrixFormDialog::ModuleItemMatrixFormDialog(ModuleDialog *moduleDialo
     txtAxiLinear->setText(QString::fromStdString(m_form->axi_linear()));
     txtPlanarNewton->setText(QString::fromStdString(m_form->planar_newton()));
     txtAxiNewton->setText(QString::fromStdString(m_form->axi_newton()));
+
+    QSettings settings;
+    restoreGeometry(settings.value("ModuleItemMatrixFormDialog/Geometry", saveGeometry()).toByteArray());
+}
+
+ModuleItemMatrixFormDialog::~ModuleItemMatrixFormDialog()
+{
+    QSettings settings;
+    settings.setValue("ModuleItemMatrixFormDialog/Geometry", saveGeometry());
 }
 
 void ModuleItemMatrixFormDialog::doAccept()
@@ -770,6 +788,15 @@ ModuleItemVectorFormDialog::ModuleItemVectorFormDialog(ModuleDialog *moduleDialo
     txtAxiLinear->setText(QString::fromStdString(m_form->axi_linear()));
     txtPlanarNewton->setText(QString::fromStdString(m_form->planar_newton()));
     txtAxiNewton->setText(QString::fromStdString(m_form->axi_newton()));
+
+    QSettings settings;
+    restoreGeometry(settings.value("ModuleItemVectorFormDialog/Geometry", saveGeometry()).toByteArray());
+}
+
+ModuleItemVectorFormDialog::~ModuleItemVectorFormDialog()
+{
+    QSettings settings;
+    settings.setValue("ModuleItemVectorFormDialog/Geometry", saveGeometry());
 }
 
 void ModuleItemVectorFormDialog::doAccept()
@@ -784,6 +811,8 @@ void ModuleItemVectorFormDialog::doAccept()
 
     accept();
 }
+
+// ***********************************************************************************************************************
 
 ModuleItemEssentialFormDialog::ModuleItemEssentialFormDialog(ModuleDialog *moduleDialog, int numberOfSolutions, XMLModule::essential_form *form, QWidget *parent)
     : ModuleItemWeakformDialog(moduleDialog, parent), m_form(form)
@@ -805,6 +834,15 @@ ModuleItemEssentialFormDialog::ModuleItemEssentialFormDialog(ModuleDialog *modul
     txtAxiLinear->setText(QString::fromStdString(m_form->axi_linear()));
     txtPlanarNewton->setText(QString::fromStdString(m_form->planar_newton()));
     txtAxiNewton->setText(QString::fromStdString(m_form->axi_newton()));
+
+    QSettings settings;
+    restoreGeometry(settings.value("ModuleItemEssentialFormDialog/Geometry", saveGeometry()).toByteArray());
+}
+
+ModuleItemEssentialFormDialog::~ModuleItemEssentialFormDialog()
+{
+    QSettings settings;
+    settings.setValue("ModuleItemEssentialFormDialog/Geometry", saveGeometry());
 }
 
 void ModuleItemEssentialFormDialog::doAccept()
@@ -861,6 +899,15 @@ ModulePreprocessorDialog::ModulePreprocessorDialog(ModuleDialog *moduleDialog, X
     layoutMain->addWidget(grpConstraints);
     layoutMain->addStretch();
     layoutMain->addWidget(buttonBox);
+
+    QSettings settings;
+    restoreGeometry(settings.value("ModulePreprocessorDialog/Geometry", saveGeometry()).toByteArray());
+}
+
+ModulePreprocessorDialog::~ModulePreprocessorDialog()
+{
+    QSettings settings;
+    settings.setValue("ModulePreprocessorDialog/Geometry", saveGeometry());
 }
 
 void ModulePreprocessorDialog::doAccept()
@@ -912,6 +959,15 @@ ModuleItemLocalValueDialog::ModuleItemLocalValueDialog(ModuleDialog *moduleDialo
     layoutMain->addWidget(tabWidget);
     layoutMain->addStretch();
     layoutMain->addWidget(buttonBox);
+
+    QSettings settings;
+    restoreGeometry(settings.value("ModuleItemLocalValueDialog/Geometry", saveGeometry()).toByteArray());
+}
+
+ModuleItemLocalValueDialog::~ModuleItemLocalValueDialog()
+{
+    QSettings settings;
+    settings.setValue("ModuleItemLocalValueDialog/Geometry", saveGeometry());
 }
 
 void ModuleItemLocalValueDialog::doAccept()
@@ -957,6 +1013,15 @@ ModuleItemViewDefaultsDialog::ModuleItemViewDefaultsDialog(ModuleDialog *moduleD
     layoutMain->addLayout(layoutGeneral);
     layoutMain->addStretch();
     layoutMain->addWidget(buttonBox);
+
+    QSettings settings;
+    restoreGeometry(settings.value("ModuleItemViewDefaultsDialog/Geometry", saveGeometry()).toByteArray());
+}
+
+ModuleItemViewDefaultsDialog::~ModuleItemViewDefaultsDialog()
+{
+    QSettings settings;
+    settings.setValue("ModuleItemViewDefaultsDialog/Geometry", saveGeometry());
 }
 
 void ModuleItemViewDefaultsDialog::doAccept()
@@ -1002,6 +1067,15 @@ ModuleVolumeIntegralValueDialog::ModuleVolumeIntegralValueDialog(ModuleDialog *m
 
     layoutMain->addStretch();
     layoutMain->addWidget(buttonBox);
+
+    QSettings settings;
+    restoreGeometry(settings.value("ModuleVolumeIntegralValueDialog/Geometry", saveGeometry()).toByteArray());
+}
+
+ModuleVolumeIntegralValueDialog::~ModuleVolumeIntegralValueDialog()
+{
+    QSettings settings;
+    settings.setValue("ModuleVolumeIntegralValueDialog/Geometry", saveGeometry());
 }
 
 void ModuleVolumeIntegralValueDialog::doAccept()
@@ -1055,6 +1129,15 @@ ModuleSurfaceIntegralValueDialog::ModuleSurfaceIntegralValueDialog(ModuleDialog 
 
     layoutMain->addStretch();
     layoutMain->addWidget(buttonBox);
+
+    QSettings settings;
+    restoreGeometry(settings.value("ModuleSurfaceIntegralValueDialog/Geometry", saveGeometry()).toByteArray());
+}
+
+ModuleSurfaceIntegralValueDialog::~ModuleSurfaceIntegralValueDialog()
+{
+    QSettings settings;
+    settings.setValue("ModuleSurfaceIntegralValueDialog/Geometry", saveGeometry());
 }
 
 void ModuleSurfaceIntegralValueDialog::doAccept()
@@ -1086,6 +1169,15 @@ ModuleDialog::ModuleDialog(const QString &fieldId, QWidget *parent)
     load();
 
     setMinimumSize(QSize(950, 600));
+
+    QSettings settings;
+    restoreGeometry(settings.value("ModuleDialog/Geometry", saveGeometry()).toByteArray());
+}
+
+ModuleDialog::~ModuleDialog()
+{
+    QSettings settings;
+    settings.setValue("ModuleDialog/Geometry", saveGeometry());
 }
 
 void ModuleDialog::load()
