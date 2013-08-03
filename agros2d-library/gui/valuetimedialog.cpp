@@ -142,17 +142,19 @@ void ValueTimeDialog::presetsChanged(int index)
 
 void ValueTimeDialog::checkExpression()
 {
-    // eval time
-    currentPythonEngineAgros()->runExpression(QString("time = %1").arg(0.0), false);
-
     // eval expression
-    ExpressionResult expressionResult;
-    expressionResult = currentPythonEngineAgros()->runExpression(txtLineEdit->text(), true);
-    lblInfoError->setText(expressionResult.error.trimmed());
-    if (expressionResult.error.isEmpty())
+    double out;
+    bool successfulRun = currentPythonEngineAgros()->runExpression(txtLineEdit->text(), &out, QString("time = %1").arg(0.0));
+    if (successfulRun)
+    {
         plotFunction();
+    }
     else
+    {
+        ErrorResult result = currentPythonEngineAgros()->parseError();
+        lblInfoError->setText(result.error().trimmed());
         txtLineEdit->setFocus();
+    }
 }
 
 void ValueTimeDialog::plotFunction()

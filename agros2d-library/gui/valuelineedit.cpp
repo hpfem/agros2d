@@ -210,11 +210,12 @@ bool ValueLineEdit::checkCondition(double value)
     QString condition = m_condition;
     condition.replace(QString("value"), QString::number(value));
 
-    ExpressionResult result = currentPythonEngineAgros()->runExpression(condition, true);
+    double out;
+    bool successfulRun = currentPythonEngineAgros()->runExpression(condition, &out);
 
-    if (result.error.isEmpty())
+    if (successfulRun)
     {
-        if (!(fabs(result.value) < EPS_ZERO))
+        if (!(fabs(out) < EPS_ZERO))
             isOK = true;
     }
     else
@@ -223,7 +224,8 @@ bool ValueLineEdit::checkCondition(double value)
         palette.setColor(QPalette::Text, QColor(Qt::red));
         txtLineEdit->setPalette(palette);
 
-        txtLineEdit->setToolTip(tr("Condition couldn't be evaluated:\n%1").arg(result.error));
+        ErrorResult result = currentPythonEngineAgros()->parseError();
+        txtLineEdit->setToolTip(tr("Condition couldn't be evaluated:\n%1").arg(result.error()));
         isOK = true;
     }
 

@@ -41,7 +41,7 @@ class ScriptEditor;
 class SearchDialog;
 class SearchWidget;
 
-struct ScriptResult;
+struct ErrorResult;
 struct ExpressionResult;
 
 #ifdef Q_WS_X11

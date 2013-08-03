@@ -217,7 +217,8 @@ PythonEngine::~PythonEngine()
 
 void PythonEngine::init()
 {
-    m_isRunning = false;
+    m_isScriptRunning = false;
+    m_isExpressionRunning = false;
     m_stdOut = "";
 
     // connect stdout
@@ -315,7 +316,7 @@ void PythonEngine::deleteUserModules()
 
 bool PythonEngine::runScript(const QString &script, const QString &fileName, bool useProfiler)
 {
-    m_isRunning = true;
+    m_isScriptRunning = true;
     m_stdOut = "";
 
     PyGILState_STATE gstate = PyGILState_Ensure();
@@ -335,6 +336,7 @@ bool PythonEngine::runScript(const QString &script, const QString &fileName, boo
         QString str = QString("from os import chdir; chdir(u'" + QFileInfo(fileName).absolutePath() + "')");
         PyRun_String(str.toLatin1().data(), Py_single_input, m_dict, m_dict);
     }
+
     // compile
     PyObject *code = Py_CompileString(script.toLatin1().data(), fileName.toLatin1().data(), Py_file_input);
     // run
@@ -353,7 +355,7 @@ bool PythonEngine::runScript(const QString &script, const QString &fileName, boo
 
     Py_XDECREF(output);
 
-    m_isRunning = false;
+    m_isScriptRunning = false;
 
     // release the thread, no Python API allowed beyond this point
     PyGILState_Release(gstate);
@@ -363,79 +365,72 @@ bool PythonEngine::runScript(const QString &script, const QString &fileName, boo
     return successfulRun;
 }
 
-ExpressionResult PythonEngine::runExpression(const QString &expression, bool returnValue)
+bool PythonEngine::runExpression(const QString &expression, double *value, const QString &command)
 {
-    ExpressionResult expressionResult;
+    if (m_isExpressionRunning)
+        qDebug() << "Expression is running" << expression;
 
-    runPythonHeader();
-
-    QString exp;
-    if (returnValue)
-        exp = QString("result_pythonlab = %1").arg(expression);
-    else
-        exp = expression;
+    m_isExpressionRunning = true;
+    bool succesfullRun = false;
 
 #pragma omp critical
     {
-        PyObject *output = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
-
-        if (output)
+        if (value)
         {
-            PyObject *type = NULL, *value = NULL, *traceback = NULL, *str = NULL;
-            PyErr_Fetch(&type, &value, &traceback);
+            // runPythonHeader();
 
-            if (type != NULL && (str = PyObject_Str(type)) != NULL && (PyString_Check(str)))
-            {
-                Py_INCREF(str);
-                expressionResult.error = PyString_AsString(str);
-                Py_XDECREF(type);
-                Py_XDECREF(str);
-            }
+            // return value
+            QString exp;
+            if (command.isEmpty())
+                exp = QString("result_pythonlab = %1").arg(expression);
             else
+                exp = QString("%1; result_pythonlab = %2").arg(command).arg(expression);
+
+            PyObject *output = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+            succesfullRun = !PyErr_Occurred();
+
+            if (output && succesfullRun)
             {
                 // parse result
-                if (returnValue)
+                PyObject *result = PyDict_GetItemString(m_dict, "result_pythonlab");
+
+                if (result)
                 {
-                    PyObject *result = PyDict_GetItemString(m_dict, "result_pythonlab");
-
-
-                    if (result)
+                    if ((QString(result->ob_type->tp_name) == "bool") ||
+                            (QString(result->ob_type->tp_name) == "int") ||
+                            (QString(result->ob_type->tp_name) == "float"))
                     {
-                        if ((QString(result->ob_type->tp_name) == "bool") ||
-                                (QString(result->ob_type->tp_name) == "int") ||
-                                (QString(result->ob_type->tp_name) == "float"))
-                        {
-                            Py_INCREF(result);
-                            PyArg_Parse(result, "d", &expressionResult.value);
-                            if (fabs(expressionResult.value) < EPS_ZERO)
-                                expressionResult.value = 0.0;
-                            Py_XDECREF(result);
-                        }
-                        else
-                        {
-                            qDebug() << tr("Type '%1' is not supported.").arg(result->ob_type->tp_name).arg(expression);
-                            expressionResult.error = tr("Type '%1' is not supported.").arg(result->ob_type->tp_name);
-                            expressionResult.value = 0.0;
-                        }
+                        Py_INCREF(result);
+                        PyArg_Parse(result, "d", value);
+                        if (fabs(*value) < EPS_ZERO)
+                            *value = 0.0;
+                        Py_XDECREF(result);
                     }
-
-                    PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
+                    else
+                    {
+                        qDebug() << tr("Type '%1' is not supported.").arg(result->ob_type->tp_name).arg(expression);
+                        succesfullRun = false;
+                    }
                 }
+
+                PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
             }
+            Py_XDECREF(output);
         }
         else
         {
-            ScriptResult error = parseError();
-            expressionResult.error = error.text;
-            expressionResult.traceback = error.traceback;
-        }
-        Py_XDECREF(output);
+            runPythonHeader();
 
+            PyObject *output = PyRun_String(expression.toLatin1().data(), Py_single_input, m_dict, m_dict);
+            succesfullRun = !PyErr_Occurred();
+            Py_XDECREF(output);
+        }
     }
 
-    emit executedExpression();
+    m_isExpressionRunning = false;
 
-    return expressionResult;
+    emit executedExpression();
+    return succesfullRun;
 }
 
 QStringList PythonEngine::codeCompletion(const QString& code, int offset, const QString& fileName)
@@ -529,7 +524,7 @@ QStringList PythonEngine::codePyFlakes(const QString& fileName)
 {
     QStringList out;
 
-    if (!isRunning())
+    if (!m_isScriptRunning && !m_isExpressionRunning)
     {
         QString exp = QString("result_pyflakes_pythonlab = python_engine_pyflakes_check(\"%1\")").arg(compatibleFilename(fileName));
 
@@ -561,12 +556,13 @@ QStringList PythonEngine::codePyFlakes(const QString& fileName)
     return out;
 }
 
-ScriptResult PythonEngine::parseError()
+ErrorResult PythonEngine::parseError()
 {
-    // error
-    ScriptResult error;
-    error.isError = true;
+    QString traceback;
+    QString text;
+    int line = -1;
 
+    // error traceback
     PyObject *error_type = NULL;
     PyObject *error_value = NULL;
     PyObject *error_traceback = NULL;
@@ -576,53 +572,53 @@ ScriptResult PythonEngine::parseError()
 
     if (error_traceback)
     {
-        PyTracebackObject *traceback = (PyTracebackObject *) error_traceback;
-        error.line = traceback->tb_lineno;
-        error.text.append(QString("Line %1: ").arg(traceback->tb_lineno));
+        PyTracebackObject *tb = (PyTracebackObject *) error_traceback;
+        line = tb->tb_lineno;
+        text.append(QString("Line %1: ").arg(tb->tb_lineno));
 
-        while (traceback)
+        while (tb)
         {
-            PyFrameObject *frame = traceback->tb_frame;
+            PyFrameObject *frame = tb->tb_frame;
 
             if (frame && frame->f_code) {
                 PyCodeObject* codeObject = frame->f_code;
                 if (PyString_Check(codeObject->co_filename))
-                    error.traceback.append(QString("File '%1'").arg(PyString_AsString(codeObject->co_filename)));
+                    traceback.append(QString("File '%1'").arg(PyString_AsString(codeObject->co_filename)));
 
                 int errorLine = PyCode_Addr2Line(codeObject, frame->f_lasti);
-                error.traceback.append(QString(", line %1").arg(errorLine));
+                traceback.append(QString(", line %1").arg(errorLine));
 
                 if (PyString_Check(codeObject->co_name))
-                    error.traceback.append(QString(", in %1").arg(PyString_AsString(codeObject->co_name)));
+                    traceback.append(QString(", in %1").arg(PyString_AsString(codeObject->co_name)));
             }
-            error.traceback.append(QString("\n"));
+            traceback.append(QString("\n"));
 
-            traceback = traceback->tb_next;
+            tb = tb->tb_next;
         }
     }
-    error.traceback = error.traceback.trimmed();
+    traceback = traceback.trimmed();
 
     if (error_type != NULL && (error_string = PyObject_Str(error_type)) != NULL && (PyString_Check(error_string)))
     {
         Py_INCREF(error_string);
-        error.text.append(PyString_AsString(error_string));
+        text.append(PyString_AsString(error_string));
         Py_XDECREF(error_string);
     }
     else
     {
-        error.text.append("\n<unknown exception type>");
+        text.append("\n<unknown exception type>");
     }
 
     if (error_value != NULL && (error_string = PyObject_Str(error_value)) != NULL && (PyString_Check(error_string)))
     {
         Py_INCREF(error_string);
-        error.text.append("\n");
-        error.text.append(PyString_AsString(error_string));
+        text.append("\n");
+        text.append(PyString_AsString(error_string));
         Py_XDECREF(error_string);
     }
     else
     {
-        error.text.append("\n<unknown exception data>");
+        text.append("\n<unknown exception data>");
     }
 
     Py_XDECREF(error_type);
@@ -631,7 +627,7 @@ ScriptResult PythonEngine::parseError()
 
     PyErr_Clear();
 
-    return error;
+    return ErrorResult(text, traceback, line);
 }
 
 void PythonEngine::addCustomExtensions()

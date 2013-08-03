@@ -772,12 +772,12 @@ void FormScript::acceptForm()
         }
         else
         {
-            ScriptResult result = currentPythonEngineAgros()->parseError();
+            ErrorResult result = currentPythonEngineAgros()->parseError();
 
             errorMessage->setVisible(true);
-            errorMessage->setText(result.text + "\n" + result.traceback);
+            errorMessage->setText(result.error() + "\n" + result.traceback());
 
-            consoleView->console()->stdErr(result.text);
+            consoleView->console()->stdErr(result.error());
             consoleView->console()->appendCommandPrompt();
         }
     }

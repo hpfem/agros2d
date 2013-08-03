@@ -51,6 +51,28 @@ private:
     QString m_profilerFileName;
 };
 
+class ErrorResult
+{
+public:
+    ErrorResult() : m_error(""), m_traceback(""), m_line(-1) {}
+
+    ErrorResult(const QString &error, const QString &traceback, int line = -1)
+    {
+        this->m_error = error;
+        this->m_traceback = traceback;
+        this->m_line = line;
+    }
+
+    inline QString error() { return m_error; }
+    inline QString traceback() { return m_traceback; }
+    inline int line() { return m_line; }
+
+private:
+    QString m_error;
+    QString m_traceback;
+    int m_line;
+};
+
 class AGROS_API PythonEngine : public QObject, public PythonEngineProfiler
 {
     Q_OBJECT
@@ -78,9 +100,9 @@ public:
     void pythonShowImageCommand(const QString &fileName, int width = 0, int height = 0);
 
     bool runScript(const QString &script, const QString &fileName = "", bool useProfiler = false);
-    ExpressionResult runExpression(const QString &expression, bool returnValue);
-    ScriptResult parseError();
-    inline bool isRunning() { return m_isRunning; }
+    bool runExpression(const QString &expression, double *value = NULL, const QString &command = QString());
+    ErrorResult parseError();
+    inline bool isScriptRunning() { return m_isScriptRunning; }
 
     void deleteUserModules();
     QStringList codeCompletion(const QString& code, int offset, const QString& fileName = "");
@@ -92,7 +114,8 @@ public slots:
 
 protected:
     PyObject *m_dict;
-    bool m_isRunning;
+    bool m_isScriptRunning;
+    bool m_isExpressionRunning;
 
     inline void addFunctions(const QString& code) { m_functions += "\n\n" + code; }
     virtual void addCustomExtensions();

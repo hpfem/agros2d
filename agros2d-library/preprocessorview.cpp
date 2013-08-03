@@ -183,7 +183,7 @@ void PreprocessorWidget::refresh()
     chkSnapToGrid->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_SnapToGrid).toBool());
 
     // script speed improvement
-    if (currentPythonEngine()->isRunning()) return;
+    if (currentPythonEngine()->isScriptRunning()) return;
 
     blockSignals(true);
     setUpdatesEnabled(false);

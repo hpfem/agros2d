@@ -72,9 +72,12 @@ void PythonEngineAgros::materialValues(const QString &function, double from, dou
         return;
 
     // function
-    ExpressionResult expressionResult = runExpression(function, false);
-    if (!expressionResult.error.isEmpty())
-        qDebug() << "Function: " << expressionResult.error;
+    bool succesfulRun = runExpression(function);
+    if (!succesfulRun)
+    {
+        ErrorResult result = currentPythonEngineAgros()->parseError();
+        qDebug() << "Function: " << result.error();
+    }
 
     // prepare keys
     double step = (to - from) / (count - 1);
@@ -93,7 +96,7 @@ void PythonEngineAgros::materialValues(const QString &function, double from, dou
     }
 
     // run expression
-    runExpression(QString("agros2d_material_values = agros2d_material_eval(%1)").arg(keysVector), false);
+    runExpression(QString("agros2d_material_values = agros2d_material_eval(%1)").arg(keysVector));
 
     // extract values
     PyObject *result = PyDict_GetItemString(m_dict, "agros2d_material_values");
@@ -106,7 +109,7 @@ void PythonEngineAgros::materialValues(const QString &function, double from, dou
     }
 
     // remove variables
-    runExpression("del agros2d_material; del agros2d_material_values", false);
+    runExpression("del agros2d_material; del agros2d_material_values");
 
     // error during execution
     if (keys->size() != values->size())

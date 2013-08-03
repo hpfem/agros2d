@@ -623,8 +623,8 @@ void SettingsWidget::doStartupScriptChanged()
 
         if (!successfulRun)
         {
-            ScriptResult result = currentPythonEngineAgros()->parseError();
-            lblStartupScriptError->setText(QObject::tr("Error: %1").arg(result.text));
+            ErrorResult result = currentPythonEngineAgros()->parseError();
+            lblStartupScriptError->setText(QObject::tr("Error: %1").arg(result.error()));
         }
     }
 }

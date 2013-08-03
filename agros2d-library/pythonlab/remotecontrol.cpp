@@ -79,10 +79,10 @@ void ScriptEngineRemoteLocal::disconnected()
     m_client_socket->connectToServer(clientName());
     if (m_client_socket->waitForConnected(1000))
     {
-        ScriptResult result = currentPythonEngineAgros()->parseError();
+        ErrorResult result = currentPythonEngineAgros()->parseError();
 
         QTextStream out(m_client_socket);
-        out << result.text;
+        out << result.error();
         out.flush();
         m_client_socket->waitForBytesWritten();
     }

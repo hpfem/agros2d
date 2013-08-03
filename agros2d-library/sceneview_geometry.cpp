@@ -207,7 +207,7 @@ void SceneViewPreprocessor::clear()
 void SceneViewPreprocessor::doSceneGeometryModeSet(QAction *action)
 {
     // disable during script running
-    if (currentPythonEngineAgros()->isRunning())
+    if (currentPythonEngineAgros()->isScriptRunning())
         return;
 
     if (actOperateOnNodes->isChecked())

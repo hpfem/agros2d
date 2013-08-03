@@ -135,12 +135,11 @@ void AgrosSolver::runScript()
     }
     else
     {
-        ScriptResult result = currentPythonEngineAgros()->parseError();
-
+        ErrorResult result = currentPythonEngineAgros()->parseError();
         Agros2D::log()->printMessage(tr("Scripting Engine"), tr("%1\nLine: %2\nStacktrace:\n%3\n").
-                                  arg(result.text).
-                                  arg(result.line).
-                                  arg(result.traceback));
+                                  arg(result.error()).
+                                  arg(result.line()).
+                                  arg(result.traceback()));
 
         QApplication::exit(-1);
     }

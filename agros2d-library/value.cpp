@@ -275,41 +275,40 @@ bool Value::evaluateExpression(const QString &expression)
     bool signalBlocked = currentPythonEngineAgros()->signalsBlocked();
     currentPythonEngineAgros()->blockSignals(true);
 
+    QString command;
+
     if (m_isCoordinateDependent && !m_isTimeDependent)
     {
         if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
-            currentPythonEngineAgros()->runExpression(QString("x = %1; y = %2").arg(m_point.x).arg(m_point.y), false);
+            command = QString("x = %1; y = %2").arg(m_point.x).arg(m_point.y);
         else
-            currentPythonEngineAgros()->runExpression(QString("r = %1; z = %2").arg(m_point.x).arg(m_point.y), false);
+            command = QString("r = %1; z = %2").arg(m_point.x).arg(m_point.y);
     }
 
     if (m_isTimeDependent && !m_isCoordinateDependent)
     {
-        currentPythonEngineAgros()->runExpression(QString("time = %1").arg(m_time), false);
+        command = QString("time = %1").arg(m_time);
     }
 
     if (m_isCoordinateDependent && m_isTimeDependent)
     {
         if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
-            currentPythonEngineAgros()->runExpression(QString("time = %1; x = %2; y = %3").arg(m_time).arg(m_point.x).arg(m_point.y), false);
+            command = QString("time = %1; x = %2; y = %3").arg(m_time).arg(m_point.x).arg(m_point.y);
         else
-            currentPythonEngineAgros()->runExpression(QString("time = %1; r = %2; z = %3").arg(m_time).arg(m_point.x).arg(m_point.y), false);
+            command = QString("time = %1; r = %2; z = %3").arg(m_time).arg(m_point.x).arg(m_point.y);
     }
 
     // eval expression
-    ExpressionResult expressionResult = currentPythonEngineAgros()->runExpression(expression, true);
-    if (expressionResult.error.isEmpty())
+    bool successfulRun = currentPythonEngineAgros()->runExpression(expression, &m_number, command);
+    if (!successfulRun)
     {
-        m_number = expressionResult.value;
-    }
-    else
-    {
-        Agros2D::log()->printDebug(QObject::tr("Problem"), expressionResult.error);
+        ErrorResult result = currentPythonEngineAgros()->parseError();
+        Agros2D::log()->printDebug(QObject::tr("Problem"), result.error());
     }
 
     if (!signalBlocked)
         currentPythonEngineAgros()->blockSignals(false);
 
-    m_isEvaluated = expressionResult.error.isEmpty();
+    m_isEvaluated = successfulRun;
     return m_isEvaluated;
 }

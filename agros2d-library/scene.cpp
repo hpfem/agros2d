@@ -260,7 +260,7 @@ SceneNode *Scene::addNode(SceneNode *node)
     }
 
     nodes->add(node);
-    if (!currentPythonEngine()->isRunning() && !m_stopInvalidating)
+    if (!currentPythonEngine()->isScriptRunning() && !m_stopInvalidating)
         emit invalidated();
 
     checkNodeConnect(node);
@@ -285,7 +285,7 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
     }
 
     edges->add(edge);
-    if (!currentPythonEngine()->isRunning() && !m_stopInvalidating)
+    if (!currentPythonEngine()->isScriptRunning() && !m_stopInvalidating)
         emit invalidated();
 
     return edge;
@@ -316,7 +316,7 @@ SceneLabel *Scene::addLabel(SceneLabel *label)
     }
 
     labels->add(label);
-    if (!currentPythonEngine()->isRunning() && !m_stopInvalidating)
+    if (!currentPythonEngine()->isScriptRunning() && !m_stopInvalidating)
         emit invalidated();
 
     return label;
@@ -330,7 +330,7 @@ SceneLabel *Scene::getLabel(const Point &point)
 void Scene::addBoundary(SceneBoundary *boundary)
 {
     boundaries->add(boundary);
-    if (!currentPythonEngine()->isRunning() && !m_stopInvalidating)
+    if (!currentPythonEngine()->isScriptRunning() && !m_stopInvalidating)
         emit invalidated();
 }
 
@@ -341,7 +341,7 @@ void Scene::removeBoundary(SceneBoundary *boundary)
     boundaries->remove(boundary);
     // delete boundary;
 
-    if (!currentPythonEngine()->isRunning() && !m_stopInvalidating)
+    if (!currentPythonEngine()->isScriptRunning() && !m_stopInvalidating)
         emit invalidated();
 }
 
@@ -359,7 +359,7 @@ SceneBoundary *Scene::getBoundary(FieldInfo *field, const QString &name)
 void Scene::addMaterial(SceneMaterial *material)
 {
     this->materials->add(material);
-    if (!currentPythonEngine()->isRunning() && !m_stopInvalidating)
+    if (!currentPythonEngine()->isScriptRunning() && !m_stopInvalidating)
         emit invalidated();
 }
 
@@ -376,7 +376,7 @@ void Scene::removeMaterial(SceneMaterial *material)
 
     // delete material;
 
-    if (!currentPythonEngine()->isRunning() && !m_stopInvalidating)
+    if (!currentPythonEngine()->isScriptRunning() && !m_stopInvalidating)
         emit invalidated();
 }
 
@@ -559,7 +559,7 @@ void Scene::deleteSelected()
 
     m_undoStack->endMacro();
 
-    if (!currentPythonEngine()->isRunning())
+    if (!currentPythonEngine()->isScriptRunning())
         emit invalidated();
 }
 
@@ -816,7 +816,7 @@ void Scene::transform(QString name, SceneTransformMode mode, const Point &point,
     if(!okNodes || !okEdges)
         nodes->setSelected(false);
 
-    if (!currentPythonEngine()->isRunning())
+    if (!currentPythonEngine()->isScriptRunning())
         emit invalidated();
 }
 
@@ -840,7 +840,7 @@ void Scene::doInvalidated()
     actNewEdge->setEnabled((nodes->length() >= 2) && (boundaries->length() >= 1));
     actNewLabel->setEnabled(materials->length() >= 1);
 
-    if (currentPythonEngineAgros() && !currentPythonEngineAgros()->isRunning())
+    if (currentPythonEngineAgros() && !currentPythonEngineAgros()->isScriptRunning())
     {
         findLyingEdgeNodes();
         findNumberOfConnectedNodeEdges();

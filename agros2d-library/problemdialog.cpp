@@ -859,7 +859,7 @@ void FieldsToobar::createControls()
 void FieldsToobar::refresh()
 {
     // disable during script running
-    if (currentPythonEngineAgros()->isRunning())
+    if (currentPythonEngineAgros()->isScriptRunning())
         return;
 
     setUpdatesEnabled(false);

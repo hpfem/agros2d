@@ -108,7 +108,7 @@ void InfoWidget::refresh()
 
 void InfoWidget::showWelcome()
 {
-    if (currentPythonEngine()->isRunning())
+    if (currentPythonEngine()->isScriptRunning())
         return;
 
     // template
@@ -184,7 +184,7 @@ void InfoWidget::showWelcome()
 
 void InfoWidget::showInfo()
 {
-    if (currentPythonEngine()->isRunning())
+    if (currentPythonEngine()->isScriptRunning())
         return;
 
     // template

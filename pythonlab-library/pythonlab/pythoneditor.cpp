@@ -250,34 +250,37 @@ void PythonEditorWidget::pyLintAnalyseStopped(int exitCode)
 
 void PythonEditorWidget::pyFlakesAnalyse()
 {
-    QString fn = tempProblemFileName() + ".pyflakes_str.py";
-    QString str = txtEditor->toPlainText();
-    writeStringContent(fn, &str);
-
-    QStringList messages = pythonEngine->codePyFlakes(fn);
-
-    txtEditor->errorMessagesPyFlakes.clear();
-    foreach (QString line, messages)
+    if (isVisible() && !pythonEngine->isScriptRunning())
     {
-        if (!line.isEmpty())
+        QString fn = tempProblemFileName() + ".pyflakes_str.py";
+        QString str = txtEditor->toPlainText();
+        writeStringContent(fn, &str);
+
+        QStringList messages = pythonEngine->codePyFlakes(fn);
+
+        txtEditor->errorMessagesPyFlakes.clear();
+        foreach (QString line, messages)
         {
-            int number;
-            QString message;
-
-            QStringList list = line.split(":");
-            if (list.count() == 3)
+            if (!line.isEmpty())
             {
-                number = list[1].toInt();
-                message = list[2];
+                int number;
+                QString message;
 
-                txtEditor->errorMessagesPyFlakes[number] = message;
+                QStringList list = line.split(":");
+                if (list.count() == 3)
+                {
+                    number = list[1].toInt();
+                    message = list[2];
+
+                    txtEditor->errorMessagesPyFlakes[number] = message;
+                }
             }
         }
+
+        QFile::remove(fn);
+
+        txtEditor->repaint();
     }
-
-    QFile::remove(fn);
-
-    txtEditor->repaint();
 }
 
 void PythonEditorWidget::doHighlightLine(QTreeWidgetItem *item, int role)
@@ -725,7 +728,7 @@ void PythonEditorDialog::createStatusBar()
 
 void PythonEditorDialog::doRunPython()
 {
-    if (pythonEngine->isRunning())
+    if (pythonEngine->isScriptRunning())
         return;
 
     if (!scriptEditorWidget()->fileName().isEmpty())
@@ -789,19 +792,19 @@ void PythonEditorDialog::doRunPython()
     if (!successfulRun)
     {
         // parse error
-        ScriptResult result = pythonEngine->parseError();
+        ErrorResult result = pythonEngine->parseError();
 
-        consoleView->console()->stdErr(result.text);
+        consoleView->console()->stdErr(result.error());
 
         QSettings settings;
         if (settings.value("PythonEditorWidget/PrintStacktrace", true).toBool())
         {
             consoleView->console()->stdErr("\nStacktrace:");
-            consoleView->console()->stdErr(result.traceback);
+            consoleView->console()->stdErr(result.traceback());
         }
 
-        if (!txtEditor->textCursor().hasSelection() && result.line >= 0)
-            txtEditor->gotoLine(result.line, true);
+        if (!txtEditor->textCursor().hasSelection() && result.line() >= 0)
+            txtEditor->gotoLine(result.line(), true);
     }
     consoleView->console()->appendCommandPrompt();
 
@@ -1410,9 +1413,9 @@ void ScriptEditor::keyPressEvent(QKeyEvent *event)
         }
     }
     else if ((event->key() == Qt::Key_Backspace) && (document()->characterAt(oldPos - 1) == ' ')
-                                                 && (document()->characterAt(oldPos - 2) == ' ')
-                                                 && (document()->characterAt(oldPos - 3) == ' ')
-                                                 && (document()->characterAt(oldPos - 4) == ' '))
+             && (document()->characterAt(oldPos - 2) == ' ')
+             && (document()->characterAt(oldPos - 3) == ' ')
+             && (document()->characterAt(oldPos - 4) == ' '))
     {
         cursor.beginEditBlock();
         // determine selection to delete

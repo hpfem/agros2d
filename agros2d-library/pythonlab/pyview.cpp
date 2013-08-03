@@ -229,7 +229,7 @@ void PyViewMesh::setOrderViewPalette(const std::string &palette)
 
 void PyViewMesh::setProblemSetting(ProblemSetting::Type type, bool value)
 {
-    if (!Agros2D::problem()->isMeshed() && !currentPythonEngineAgros()->isRunning())
+    if (!Agros2D::problem()->isMeshed() && !currentPythonEngineAgros()->isScriptRunning())
         throw logic_error(QObject::tr("Problem is not meshed.").toStdString());
 
     if (!silentMode())
@@ -240,7 +240,7 @@ void PyViewMesh::setProblemSetting(ProblemSetting::Type type, bool value)
 
 void PyViewPost::checkExistingSolution()
 {
-    if (!Agros2D::problem()->isSolved() && !currentPythonEngineAgros()->isRunning())
+    if (!Agros2D::problem()->isSolved() && !currentPythonEngineAgros()->isScriptRunning())
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
 }
 

@@ -215,27 +215,24 @@ void PythonScriptingConsole::executeCode(const QString& code)
     cursor.movePosition(QTextCursor::End);
     setTextCursor(cursor);
 
-    int cursorPosition = this->textCursor().position();
-
     connectStdOut();
-    ExpressionResult result = pythonEngine->runExpression(code, false);
+    bool successfulRun = pythonEngine->runExpression(code);
     disconnectStdOut();
 
-    if (!result.error.isEmpty())
+    if (!successfulRun)
     {
-        stdErr(result.error);
+        ErrorResult result = pythonEngine->parseError();
+        stdErr(result.error());
 
         QSettings settings;
         if (settings.value("PythonEditorWidget/PrintStacktrace", true).toBool())
         {
             stdErr("\nStacktrace:");
-            stdErr(result.traceback);
+            stdErr(result.traceback());
         }
     }
 
     QApplication::processEvents();
-
-    // bool messageInserted = (this->textCursor().position() != cursorPosition);
 }
 
 void PythonScriptingConsole::appendCommandPrompt(bool storeOnly)

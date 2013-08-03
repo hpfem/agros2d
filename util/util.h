@@ -218,49 +218,4 @@ public:
     }
 };
 
-struct ScriptResult
-{
-    ScriptResult()
-    {
-        text = "";
-        traceback = "";
-        isError = false;
-        this->line = -1;
-    }
-
-    ScriptResult(const QString &text, const QString &traceback, bool isError = false, int line = -1)
-    {
-        this->text = text;
-        this->traceback = traceback;
-        this->isError = isError;
-        this->line = line;
-    }
-
-    QString text;
-    QString traceback;
-    bool isError;
-    int line;
-};
-
-struct ExpressionResult
-{
-    ExpressionResult()
-    {
-        this->error = "";
-        this->traceback = "";
-        this->value = 0.0;
-    }
-
-    ExpressionResult(double value, const QString &traceback, const QString &error)
-    {
-        this->error = error;
-        this->traceback = traceback;
-        this->value = value;
-    }
-
-    QString error;
-    QString traceback;
-    double value;
-};
-
 #endif // UTIL_H

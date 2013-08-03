@@ -1228,12 +1228,12 @@ void MainWindow::doCreateVideo()
 
 void MainWindow::doSolveFinished()
 {   
-    if (Agros2D::problem()->isMeshed() && !currentPythonEngine()->isRunning())
+    if (Agros2D::problem()->isMeshed() && !currentPythonEngine()->isScriptRunning())
     {
         sceneViewMesh->actSceneModeMesh->trigger();
     }
 
-    if (Agros2D::problem()->isSolved() && !currentPythonEngine()->isRunning())
+    if (Agros2D::problem()->isSolved() && !currentPythonEngine()->isScriptRunning())
     {
         sceneViewPost2D->actSceneModePost2D->trigger();
 
@@ -1305,8 +1305,8 @@ void MainWindow::doScriptEditorRunScript(const QString &fileName)
 
         if (!successfulRun)
         {
-            ScriptResult result = currentPythonEngineAgros()->parseError();
-            consoleView->console()->stdErr(result.text);
+            ErrorResult result = currentPythonEngineAgros()->parseError();
+            consoleView->console()->stdErr(result.error());
         }
 
         consoleView->console()->appendCommandPrompt();
@@ -1364,7 +1364,7 @@ void MainWindow::disableControls()
 
 void MainWindow::setControls()
 {
-    if (currentPythonEngine()->isRunning())
+    if (currentPythonEngine()->isScriptRunning())
         return;
 
     setUpdatesEnabled(false);
@@ -1605,7 +1605,7 @@ void MainWindow::showEvent(QShowEvent *event)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    if (currentPythonEngine()->isRunning())
+    if (currentPythonEngine()->isScriptRunning())
     {
         QMessageBox::information(QApplication::activeWindow(), tr("Script"),
                                  tr("Cannot close main window. Script is still running."));

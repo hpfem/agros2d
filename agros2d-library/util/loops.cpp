@@ -759,7 +759,7 @@ QList<LoopsInfo::Triangle> LoopsInfo::triangulateLabel(const QList<Point> &polyl
 
 void LoopsInfo::processPolygonTriangles()
 {
-    if (currentPythonEngineAgros() && currentPythonEngineAgros()->isRunning())
+    if (currentPythonEngineAgros() && currentPythonEngineAgros()->isScriptRunning())
         return;
 
     m_polygonTriangles.clear();
