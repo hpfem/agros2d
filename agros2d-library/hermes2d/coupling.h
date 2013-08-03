@@ -40,6 +40,12 @@ public:
         AnalysisType sourceAnalysisType;
         QString targetField;
         AnalysisType targetAnalysisType;
+        CouplingType couplingType;
+
+        inline QString toString()
+        {
+            return QString("source: %1 (%2), target: %3 (%4), %5").arg(sourceField).arg(analysisTypeString(sourceAnalysisType)).arg(targetField).arg(analysisTypeString(targetAnalysisType)).arg(couplingTypeString(couplingType));
+        }
     };
 
     CouplingList();

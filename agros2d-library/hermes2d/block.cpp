@@ -34,9 +34,10 @@
 Block::Block(QList<FieldInfo *> fieldInfos, QList<CouplingInfo*> couplings) :
     m_couplings(couplings), m_wf(NULL)
 {
-    foreach (FieldInfo* fi, fieldInfos)
+    foreach (FieldInfo *fi, fieldInfos)
     {
         Field* field = new Field(fi);
+
         foreach (CouplingInfo* couplingInfo, Agros2D::problem()->couplingInfos())
         {
             if (couplingInfo->isWeak() && (couplingInfo->targetField() == fi))

@@ -259,6 +259,7 @@ void Problem::createStructure()
     m_isNonlinear = determineIsNonlinear();
 
     synchronizeCouplings();
+    QMap<QPair<FieldInfo*, FieldInfo* >, CouplingInfo* > ci = couplingInfos();
 
     //copy lists, items will be removed from them
     QList<FieldInfo *> fieldInfosCopy = fieldInfos().values();
@@ -1047,11 +1048,14 @@ void Problem::synchronizeCouplings()
     {
         foreach (FieldInfo* targetField, m_fieldInfos)
         {
-            if(sourceField == targetField)
+            if (sourceField == targetField)
                 continue;
-            QPair<FieldInfo*, FieldInfo*> fieldInfosPair(sourceField, targetField);
-            if (couplingList()->isCouplingAvailable(sourceField, targetField)){
-                if (!m_couplingInfos.contains(fieldInfosPair))
+
+            if (couplingList()->isCouplingAvailable(sourceField, targetField))
+            {
+                QPair<FieldInfo*, FieldInfo*> fieldInfosPair(sourceField, targetField);
+
+                if (!m_couplingInfos.keys().contains(fieldInfosPair))
                 {
                     m_couplingInfos[fieldInfosPair] = new CouplingInfo(sourceField, targetField);
 

@@ -984,7 +984,7 @@ void CouplingsWidget::save()
     int row = 0;
     foreach (CouplingInfo *couplingInfo, Agros2D::problem()->couplingInfos())
     {
-        couplingInfo->setCouplingType((CouplingType) m_comboBoxes[row]->itemData(m_comboBoxes[row]->currentIndex()).toInt());
+        couplingInfo->setCouplingType((CouplingType) m_comboBoxes[row]->itemData(row).toInt());
 
         row++;
     }
@@ -999,10 +999,12 @@ void CouplingsWidget::refresh()
     int row = 0;
     foreach (CouplingInfo *couplingInfo, Agros2D::problem()->couplingInfos())
     {
+        m_comboBoxes[row]->blockSignals(true);
         m_comboBoxes[row]->setUpdatesEnabled(false);
         m_comboBoxes[row]->setCurrentIndex(m_comboBoxes[row]->findData(couplingInfo->couplingType()));
         m_comboBoxes[row]->setUpdatesEnabled(true);
         m_comboBoxes[row]->setVisible(true);
+        m_comboBoxes[row]->blockSignals(false);
 
         m_labels[row]->setText(couplingInfo->name());
         m_labels[row]->setVisible(true);
@@ -1133,6 +1135,7 @@ void ProblemWidget::createControls()
 
     // couplings
     couplingsWidget = new CouplingsWidget(this);
+    connect(Agros2D::problem(), SIGNAL(couplingsChanged()), couplingsWidget, SLOT(refresh()));
     connect(couplingsWidget, SIGNAL(changed()), couplingsWidget, SLOT(save()));
 
     QVBoxLayout *layoutCouplings = new QVBoxLayout();

@@ -69,6 +69,7 @@ CouplingList::CouplingList()
             item.sourceAnalysisType = analysisTypeFromStringKey(QString::fromStdString(wf.sourceanalysis()));
             item.targetField = QString::fromStdString(coup->general().modules().target().id());
             item.targetAnalysisType = analysisTypeFromStringKey(QString::fromStdString(wf.targetanalysis()));
+            item.couplingType = couplingTypeFromStringKey(QString::fromStdString(wf.couplingtype()));
 
             m_couplings.append(item);
         }
@@ -90,7 +91,7 @@ QList<QString> CouplingList::availableCouplings()
 }
 
 bool CouplingList::isCouplingAvailable(FieldInfo *sourceField, FieldInfo *targetField)
-{
+{    
     foreach (Item item, m_couplings)
     {
         if (item.sourceAnalysisType == sourceField->analysisType() && item.targetAnalysisType == targetField->analysisType()
