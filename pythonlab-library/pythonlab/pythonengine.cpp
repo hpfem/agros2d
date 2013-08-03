@@ -413,7 +413,8 @@ bool PythonEngine::runExpression(const QString &expression, double *value, const
                     }
                 }
 
-                PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
+                // speed up?
+                // PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
             }
             Py_XDECREF(output);
         }

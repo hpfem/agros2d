@@ -36,6 +36,7 @@ public:
     ~MaterialEditDialog();
 
     int showDialog();
+    inline QString fileName() { return m_fileName; }
 
 protected:
     void createControls();

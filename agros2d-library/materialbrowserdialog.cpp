@@ -297,6 +297,23 @@ bool MaterialEditDialog::writeMaterial()
     if (lstProperties->currentItem())
         m_properties.replace(lstProperties->currentRow(), writeProperty());
 
+    QFileInfo fileInfo(m_fileName);
+    if (fileInfo.baseName() != txtName->text())
+    {
+        bool move = true;
+
+        // rename file
+        QString newFilename = fileInfo.absolutePath() + "/" + txtName->text() + ".mat";
+        if (QFile::exists(newFilename))
+            move = (QMessageBox::question(this, tr("File exists"), tr("Material '%1' already exists. Do you wish replace this file?").arg(newFilename)) == 0);
+
+        if (move)
+        {
+            QFile::remove(m_fileName);
+            m_fileName = newFilename;
+        }
+    }
+
     try
     {
         // general
@@ -714,11 +731,16 @@ void MaterialBrowserDialog::readMaterials()
     dirUser.setFilter(QDir::Dirs | QDir::Files | QDir::NoSymLinks);
     readMaterials(dirUser, customMaterialsItem);
 
-    if (m_selectedFilename.isEmpty())
+    if (!m_selectedFilename.isEmpty())
     {
-        QList<QTreeWidgetItem *> items = trvMaterial->findItems(m_selectedFilename, Qt::MatchExactly);
-        if (items.count() > 1)
+        // qDebug() << QFileInfo(m_selectedFilename).baseName();
+        QList<QTreeWidgetItem *> items = trvMaterial->findItems(QFileInfo(m_selectedFilename).baseName(), Qt::MatchExactly);
+        // qDebug() << items.count();
+        if (items.count() >= 1)
+        {
             trvMaterial->setCurrentItem(items.at(items.count() - 1));
+            materialInfo(m_selectedFilename);
+        }
     }
 }
 
@@ -967,6 +989,8 @@ void MaterialBrowserDialog::doEdit()
     MaterialEditDialog dialog(m_selectedFilename, this);
     if (dialog.showDialog() == QDialog::Accepted)
     {
+        m_selectedFilename = dialog.fileName();
+        trvMaterial->currentItem()->setText(0, QFileInfo(m_selectedFilename).baseName());
         materialInfo(m_selectedFilename);
     }
 }
