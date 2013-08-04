@@ -36,6 +36,7 @@ SET(QCUSTOMPLOT_LIBRARY agros2d_3dparty_qcustomplot)
 SET(QUAZIP_LIBRARY agros2d_3dparty_quazip)
 SET(STB_TRUETYPE_LIBRARY agros2d_3dparty_stb_truetype)
 SET(QTSINGLEAPPLICATION_LIBRARY agros2d_3dparty_qtsingleapplication)
+SET(MATIO_LIBRARY agros2d_3dparty_matio)
 
 # Hermes and Hermes common
 IF(AGROS_DEBUG)

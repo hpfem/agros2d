@@ -1,0 +1,19 @@
+PROJECT(${MATIO_LIBRARY})
+
+SET(SOURCES endian.c
+    inflate.c
+    io.c
+    mat4.c
+    mat5.c
+    mat73.c
+    mat.c
+    matvar_cell.c
+    matvar_struct.c
+    read_data.c
+    snprintf.c
+)
+
+ADD_LIBRARY(${PROJECT_NAME} SHARED ${SOURCES})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME})
+SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/libs)
+INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
