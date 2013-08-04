@@ -377,7 +377,7 @@ bool PythonEngine::runExpression(const QString &expression, double *value, const
     {
         if (value)
         {
-            // runPythonHeader();
+            runPythonHeader();
 
             // return value
             QString exp;

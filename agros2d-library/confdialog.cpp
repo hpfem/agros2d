@@ -265,7 +265,7 @@ QWidget *ConfigComputerDialog::createSolverWidget()
     cmbDumpFormat = new QComboBox(this);
     cmbDumpFormat->addItem(dumpFormatString(DF_MATLAB_SPARSE), DF_MATLAB_SPARSE);
     // cmbDumpFormat->addItem(dumpFormatString(DF_HERMES_MATLAB_BIN), DF_HERMES_MATLAB_BIN);
-    // cmbDumpFormat->addItem(dumpFormatString(DF_PLAIN_ASCII), DF_PLAIN_ASCII);
+    cmbDumpFormat->addItem(dumpFormatString(DF_PLAIN_ASCII), DF_PLAIN_ASCII);
     // cmbDumpFormat->addItem(dumpFormatString(DF_MATRIX_MARKET), DF_MATRIX_MARKET);
 
     QGridLayout *layoutDevelopment = new QGridLayout();

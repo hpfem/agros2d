@@ -738,3 +738,11 @@ void PyOptions::setCacheSize(int size)
     Agros2D::configComputer()->cacheSize = size;
 }
 
+void PyOptions::setDumpFormat(std::string format)
+{
+    if (dumpFormatStringKeys().contains(QString::fromStdString(format)))
+        Agros2D::configComputer()->dumpFormat = (Hermes::Algebra::EMatrixDumpFormat) dumpFormatFromStringKey(QString::fromStdString(format));
+    else
+        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(dumpFormatStringKeys())).toStdString());
+}
+

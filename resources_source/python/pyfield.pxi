@@ -142,6 +142,9 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
 
         void adaptivityInfo(int timeStep, string &solutionType, vector[double] &error, vector[int] &dofs) except +
 
+        string filenameMatrix(int timeStep, int adaptivityStep) except +
+        string filenameRHS(int timeStep, int adaptivityStep) except +
+
 cdef map[string, double] get_parameters_map(parameters):
     cdef map[string, double] parameters_map
     cdef pair[string, double] parameter
@@ -733,6 +736,16 @@ cdef class __Field__:
             dofs.append(dofs_vector[i])
 
         return {'error' : error, 'dofs' : dofs}
+
+	# filename - matrix
+    def filename_matrix(self, time_step = None, adaptivity_step = None):
+        return self.thisptr.filenameMatrix(int(-1 if time_step is None else time_step),
+                                           int(-1 if adaptivity_step is None else adaptivity_step))
+
+	# filename - vector
+    def filename_rhs(self, time_step = None, adaptivity_step = None):
+        return self.thisptr.filenameRHS(int(-1 if time_step is None else time_step),
+                                        int(-1 if adaptivity_step is None else adaptivity_step))
 
 def field(field_id):
     return __Field__(field_id)

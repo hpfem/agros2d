@@ -149,6 +149,9 @@ struct PyOptions
     // save matrix and rhs
     inline bool getSaveMatrixRHS() const { return Agros2D::configComputer()->saveMatrixRHS; }
     inline void setSaveMatrixRHS(bool save) { Agros2D::configComputer()->saveMatrixRHS = save; }
+
+    inline std::string getDumpFormat() const { return dumpFormatToStringKey(Agros2D::configComputer()->dumpFormat).toStdString(); }
+    void setDumpFormat(std::string format);
 };
 
 #endif // PYTHONENGINEAGROS_H

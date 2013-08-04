@@ -471,8 +471,8 @@ namespace Hermes
             }
           }
 
-          fprintf(file, "%d\n", size);
-          fprintf(file, "%d\n", nnz);
+          // fprintf(file, "%d\n", size);
+          // fprintf(file, "%d\n", nnz);
           for (unsigned int k = 0; k < nnz; k++)
             fprintf(file, "%d %d %f\n", ascii_entry_i[k], ascii_entry_j[k], ascii_entry_buff[k]);
 

@@ -215,8 +215,7 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
             }
         }
 
-        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, calculation finished, error: %2, Jacobian recalculated %3x")
-                                     .arg(iteration)
+        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Calculation finished, error: %2, Jacobian recalculated %3x")
                                      .arg(m_errors.last())
                                      .arg(m_jacobianCalculations));
         //Agros2D::log()->printDebug(QObject::tr("Solver (Newton)"), QObject::tr("Jacobian reuse history %1").arg(reuses));
@@ -255,6 +254,7 @@ void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Hermes2D::Mixi
         solver->output_rhs();
         QString name = QString("%1/%2_%3_%4").arg(cacheProblemDir()).arg(solverName).arg(Agros2D::problem()->actualTimeStep()).arg(adaptivityStep);
         solver->set_matrix_dump_format(Agros2D::configComputer()->dumpFormat);
+        solver->set_rhs_E_matrix_dump_format(Agros2D::configComputer()->dumpFormat);
         solver->set_matrix_filename(QString("%1_Matrix").arg(name).toStdString());
         solver->set_rhs_filename(QString("%1_RHS").arg(name).toStdString());
         solver->set_matrix_number_format((char *) "%g");
@@ -353,8 +353,7 @@ void LinearSolverContainer<Scalar>::matrixUnchangedDueToBDF(bool unchanged)
 template <typename Scalar>
 void LinearSolverContainer<Scalar>::solve(Scalar* previousSolutionVector)
 {
-    m_linearSolver->solve(previousSolutionVector);
-
+    m_linearSolver->solve(previousSolutionVector);    
     this->m_slnVector = m_linearSolver->get_sln_vector();
 }
 

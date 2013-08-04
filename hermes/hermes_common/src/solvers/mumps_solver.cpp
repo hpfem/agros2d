@@ -216,11 +216,11 @@ namespace Hermes
       switch (fmt)
       {
       case DF_PLAIN_ASCII:
-        fprintf(file, "%d\n", this->size);
-        fprintf(file, "%d\n", nnz);
+        // fprintf(file, "%d\n", this->size);
+        // fprintf(file, "%d\n", nnz);
         for (unsigned int i = 0; i < nnz; i++)
         {
-          fprintf(file, "%d %d ", irn[i], jcn[i]);
+          fprintf(file, "%d %d ", irn[i]-1, jcn[i]-1);
           Hermes::Helpers::fprint_num(file, mumps_to_Scalar(Ax[i]), number_format);
           fprintf(file, "\n");
         }

@@ -79,7 +79,7 @@ class PyProblem
         std::string getCouplingType(const std::string &sourceField, const std::string &targetField) const;
         void setCouplingType(const std::string &sourceField, const std::string &targetField, const std::string &type);
 
-        //mesh and solve
+        // mesh and solve
         void mesh();
         void solve();
         void solveAdaptiveStep();
@@ -89,6 +89,9 @@ class PyProblem
 
         // time steps
         void timeStepsLength(vector<double> &steps) const;
+
+        // solution vector
+
 
 private:
         void checkExistingFields(const QString &sourceField, const QString &targetField) const;

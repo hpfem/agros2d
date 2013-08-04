@@ -212,6 +212,10 @@ class PyField
         // adaptivity info
         void adaptivityInfo(int timeStep, const std::string &solutionType, vector<double> &error, vector<int> &dofs) const;
 
+        // matrix and RHS
+        std::string filenameMatrix(int timeStep, int adaptivityStep) const;
+        std::string filenameRHS(int timeStep, int adaptivityStep) const;
+
 private:
     FieldInfo *m_fieldInfo;
 
