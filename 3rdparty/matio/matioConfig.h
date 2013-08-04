@@ -130,7 +130,7 @@
 #define LT_OBJDIR ".libs/"
 
 /* MAT v7.3 file support */
-#define MAT73 0
+/* #undef MAT73 */
 
 /* Platform */
 #define MATIO_PLATFORM "x86_64-unknown-linux-gnu"
@@ -148,7 +148,7 @@
 #define PACKAGE_NAME "MATIO"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "MATIO 1.5.1"
+#define PACKAGE_STRING "MATIO 1.5.2"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "matio"
@@ -157,7 +157,7 @@
 #define PACKAGE_URL "http://sourceforge.net/projects/matio"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.5.1"
+#define PACKAGE_VERSION "1.5.2"
 
 /* The size of `char', as computed by sizeof. */
 #define SIZEOF_CHAR 1
@@ -193,7 +193,7 @@
 /* #undef SUN */
 
 /* Version number of package */
-#define VERSION "1.5.1"
+#define VERSION "1.5.2"
 
 /* OS is CygWin */
 /* #undef WINNT */

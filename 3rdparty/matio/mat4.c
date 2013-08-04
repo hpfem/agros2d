@@ -180,6 +180,76 @@ ReadData4(mat_t *mat,matvar_t *matvar,void *data,
     return err;
 }
 
+/** @brief Reads a subset of a MAT variable using a 1-D indexing
+ *
+ * Reads data from a MAT variable using a linear (1-D) indexing mode. The
+ * variable must have been read by Mat_VarReadInfo.
+ * @ingroup MAT
+ * @param mat MAT file to read data from
+ * @param matvar MAT variable information
+ * @param data pointer to store data in (must be pre-allocated)
+ * @param start starting index
+ * @param stride stride of data
+ * @param edge number of elements to read
+ * @retval 0 on success
+ */
+int
+Mat_VarReadDataLinear4(mat_t *mat,matvar_t *matvar,void *data,int start,
+                       int stride,int edge)
+{
+    size_t i, nmemb = 1;
+    int err = 0;
+    enum matio_classes class_type = MAT_C_EMPTY;
+
+    fseek(mat->fp,matvar->internal->datapos,SEEK_SET);
+
+    switch( matvar->data_type ) {
+        case MAT_T_DOUBLE:
+            class_type = MAT_C_DOUBLE;
+            break;
+        case MAT_T_SINGLE:
+            class_type = MAT_C_SINGLE;
+            break;
+        case MAT_T_INT32:
+            class_type = MAT_C_INT32;
+            break;
+        case MAT_T_INT16:
+            class_type = MAT_C_INT16;
+            break;
+        case MAT_T_UINT16:
+            class_type = MAT_C_UINT16;
+            break;
+        case MAT_T_UINT8:
+            class_type = MAT_C_UINT8;
+            break;
+        default:
+            return 1;
+    }
+    matvar->data_size = Mat_SizeOf(matvar->data_type);
+
+    for ( i = 0; i < matvar->rank; i++ )
+        nmemb *= matvar->dims[i];
+
+    if ( stride*(edge-1)+start+1 > nmemb ) {
+        return 1;
+    }
+    if ( matvar->isComplex ) {
+            mat_complex_split_t *complex_data = data;
+            long nbytes = nmemb*matvar->data_size;
+
+            ReadDataSlab1(mat,complex_data->Re,matvar->class_type,
+                          matvar->data_type,start,stride,edge);
+            fseek(mat->fp,matvar->internal->datapos+nbytes,SEEK_SET);
+            ReadDataSlab1(mat,complex_data->Im,matvar->class_type,
+                          matvar->data_type,start,stride,edge);
+    } else {
+        ReadDataSlab1(mat,data,matvar->class_type,matvar->data_type,start,
+                      stride,edge);
+    }
+
+    return err;
+}
+
 /** @if mat_devman
  * @brief Reads the header information for the next MAT variable in a version 4 MAT file
  *
@@ -241,6 +311,15 @@ Mat_VarReadNextInfo4(mat_t *mat)
             /* IEEE big endian */
             mat->byteswap = (endian.c[0] != 1);
             break;
+        default:
+            /* VAX, Cray, or bogus */
+            Mat_VarFree(matvar);
+            return NULL;
+    }
+    /* O must be zero */
+    if ( 0 != O ) {
+        Mat_VarFree(matvar);
+        return NULL;
     }
     /* Convert the V4 data type */
     switch ( data_type ) {
@@ -263,8 +342,8 @@ Mat_VarReadNextInfo4(mat_t *mat)
             matvar->data_type = MAT_T_UINT8;
             break;
         default:
-            matvar->data_type = MAT_T_UNKNOWN;
-            break;
+            Mat_VarFree(matvar);
+            return NULL;
     }
     switch ( class_type ) {
         case 0:
@@ -276,10 +355,16 @@ Mat_VarReadNextInfo4(mat_t *mat)
         case 2:
             matvar->class_type = MAT_C_SPARSE;
             break;
+        default:
+            Mat_VarFree(matvar);
+            return NULL;
     }
     matvar->rank = 2;
-    /* FIXME: Check allocation */
     matvar->dims = malloc(2*sizeof(*matvar->dims));
+    if ( NULL == matvar->dims ) {
+        Mat_VarFree(matvar);
+        return NULL;
+    }
     err = fread(&tmp,sizeof(int),1,mat->fp);
     if ( mat->byteswap )
         Mat_int32Swap(&tmp);
@@ -309,8 +394,16 @@ Mat_VarReadNextInfo4(mat_t *mat)
     }
     if ( mat->byteswap )
         Mat_int32Swap(&tmp);
-    /* FIXME: Check allocation */
+    /* Check that the length of the variable name is at least 1 */
+    if ( tmp < 1 ) {
+        Mat_VarFree(matvar);
+        return NULL;
+    }
     matvar->name = malloc(tmp);
+    if ( NULL == matvar->name ) {
+        Mat_VarFree(matvar);
+        return NULL;
+    }
     err = fread(matvar->name,1,tmp,mat->fp);
     if ( !err ) {
         Mat_VarFree(matvar);
