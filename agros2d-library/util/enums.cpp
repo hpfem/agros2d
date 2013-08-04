@@ -262,10 +262,9 @@ void initLists()
 #endif
 
     // dump format
-    dumpFormatList.insert(Hermes::Algebra::DF_MATLAB_SPARSE, "matlab_sparse");
-    dumpFormatList.insert(Hermes::Algebra::DF_HERMES_MATLAB_BIN, "matlab_matio");
-    dumpFormatList.insert(Hermes::Algebra::DF_MATRIX_MARKET, "matrix_market");
     dumpFormatList.insert(Hermes::Algebra::DF_PLAIN_ASCII, "plain_ascii");
+    dumpFormatList.insert(Hermes::Algebra::DF_MATLAB_MAT, "matlab_mat");
+    dumpFormatList.insert(Hermes::Algebra::DF_MATRIX_MARKET, "matrix_market");
 
     // space
     spaceTypeList.insert(Hermes::Hermes2D::HERMES_H1_SPACE, "h1");
@@ -702,10 +701,8 @@ QString dumpFormatString(Hermes::Algebra::EMatrixDumpFormat format)
 {
     switch (format)
     {
-    case Hermes::Algebra::DF_MATLAB_SPARSE:
-        return QObject::tr("MATLAB sparse");
-    case Hermes::Algebra::DF_HERMES_MATLAB_BIN:
-        return QObject::tr("MATLAB bin");
+    case Hermes::Algebra::DF_MATLAB_MAT:
+        return QObject::tr("MATLAB MAT");
     case Hermes::Algebra::DF_MATRIX_MARKET:
         return QObject::tr("Matrix market");
     case Hermes::Algebra::DF_PLAIN_ASCII:

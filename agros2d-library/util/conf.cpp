@@ -54,7 +54,7 @@ void Config::load()
 
     // development
     saveMatrixRHS = settings.value("Solution/SaveMatrixAndRHS", SAVEMATRIXANDRHS).toBool();
-    dumpFormat = (Hermes::Algebra::EMatrixDumpFormat) settings.value("Solution/FormatMatrixAndRHS", DF_MATLAB_SPARSE).toInt();
+    dumpFormat = (Hermes::Algebra::EMatrixDumpFormat) settings.value("Solution/FormatMatrixAndRHS", DF_PLAIN_ASCII).toInt();
 
     // cache size
     cacheSize = settings.value("Solution/CacheSize", CACHE_SIZE).toInt();
