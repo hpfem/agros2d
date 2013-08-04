@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_30_xml.xsd">
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
 
   <geometry>
     <nodes>
@@ -31,9 +31,9 @@
     </labels>
   </geometry>
 
-  <problem coordinate_type="planar" matrix_solver="umfpack" mesh_type="triangle">
+  <problem coordinate_type="planar" mesh_type="triangle">
     <fields>
-      <field adaptivity_type="disabled" analysis_type="harmonic" field_id="magnetic" linearity_type="linear">
+      <field adaptivity_type="disabled" analysis_type="harmonic" field_id="magnetic" linearity_type="linear" matrix_solver="mumps">
         <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>
@@ -66,13 +66,13 @@
               <material_label id="0"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="0"/>
-              <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
-              <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_current_density_external_imag" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
+              <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
@@ -82,13 +82,13 @@
               <material_label id="1"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="1e6"/>
-              <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="57e6"/>
-              <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_current_density_external_imag" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="1e6"/>
+              <material_type key="magnetic_permeability" value="1"/>
+              <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
@@ -98,23 +98,33 @@
           <field_item field_key="NonlinearTolerance" field_value="0.001"/>
           <field_item field_key="NonlinearSteps" field_value="10"/>
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
-          <field_item field_key="NewtonAutomaticDamping" field_value="1"/>
-          <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NewtonDampingType" field_value="0"/>
           <field_item field_key="NewtonDampingCoeff" field_value="0.8"/>
-          <field_item field_key="NewtonDampingNumberToIncrease" field_value="1"/>
-          <field_item field_key="NewtonSufficientImprovementFactorJacobian" field_value="0.4"/>
-          <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="3"/>
+          <field_item field_key="NewtonReuseJacobian" field_value="1"/>
+          <field_item field_key="NewtonSufImprovJacobian" field_value="0.8"/>
+          <field_item field_key="NewtonSufImprov" field_value="1.2"/>
+          <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
+          <field_item field_key="NewtonStepsToIncreaseDF" field_value="1"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
-          <field_item field_key="SpaceNumberOfRefinements" field_value="1"/>
-          <field_item field_key="SpacePolynomialOrder" field_value="2"/>
+          <field_item field_key="SpaceNumberOfRefinements" field_value="3"/>
+          <field_item field_key="SpacePolynomialOrder" field_value="3"/>
           <field_item field_key="AdaptivitySteps" field_value="1"/>
           <field_item field_key="AdaptivityTolerance" field_value="1"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
-          <field_item field_key="AdaptivityTransientRedoneEach" field_value="0"/>
+          <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
+          <field_item field_key="AdaptivityStoppingCriterion" field_value="1"/>
+          <field_item field_key="AdaptivityThreshold" field_value="0.6"/>
+          <field_item field_key="AdaptivityProjNormType" field_value="1"/>
+          <field_item field_key="AdaptivityUseAniso" field_value="1"/>
+          <field_item field_key="AdaptivityFinerReference" field_value="0"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
-          <field_item field_key="TransientInitialConditio" field_value="0"/>
+          <field_item field_key="TransientInitialCondition" field_value="0"/>
+          <field_item field_key="LinearSolverIterMethod" field_value="2"/>
+          <field_item field_key="LinearSolverIterPreconditioner" field_value="2"/>
+          <field_item field_key="LinearSolverIterToleranceAbsolute" field_value="1e-16"/>
+          <field_item field_key="LinearSolverIterIters" field_value="1000"/>
         </field_config>
       </field>
     </fields>
@@ -131,7 +141,6 @@
 
   <config>
     <item key="Problem_StartupScript" value=""/>
-    <item key="Problem_Description" value=""/>
     <item key="View_RulersFontFamily" value="Droid"/>
     <item key="View_RulersFontPointSize" value="12"/>
     <item key="View_PostFontFamily" value="Droid"/>
@@ -196,14 +205,14 @@
     <item key="View_ColorCrossedBlue" value="0"/>
     <item key="View_ShowInitialMeshView" value="1"/>
     <item key="View_ShowSolutionMeshView" value="0"/>
-    <item key="View_ContourVariable" value=""/>
+    <item key="View_ContourVariable" value="magnetic_potential"/>
     <item key="View_ShowContourView" value="0"/>
     <item key="View_ContoursCount" value="15"/>
     <item key="View_ContoursWidth" value="1"/>
     <item key="View_ShowScalarView" value="1"/>
     <item key="View_ShowScalarColorBar" value="1"/>
-    <item key="View_ScalarVariable" value=""/>
-    <item key="View_ScalarVariableComp" value="-1"/>
+    <item key="View_ScalarVariable" value="magnetic_flux_density_real"/>
+    <item key="View_ScalarVariableComp" value="1"/>
     <item key="View_PaletteType" value="0"/>
     <item key="View_PaletteFilter" value="0"/>
     <item key="View_PaletteSteps" value="30"/>
@@ -211,8 +220,8 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="0"/>
-    <item key="View_ScalarRangeMax" value="1"/>
+    <item key="View_ScalarRangeMin" value="3.71241417014014e-10"/>
+    <item key="View_ScalarRangeMax" value="2.54779698795838e-05"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value=""/>
     <item key="View_VectorProportional" value="1"/>
@@ -264,17 +273,6 @@
     <item key="View_MeshCurvilinearElements" value="1"/>
     <item key="View_LinearizerQuality" value="4"/>
     <item key="View_SolidViewHide" value=""/>
-    <item key="Adaptivity_MaxDofs" value="60000"/>
-    <item key="Adaptivity_IsoOnly" value="0"/>
-    <item key="Adaptivity_ConvExp" value="1"/>
-    <item key="Adaptivity_Threshold" value="0.3"/>
-    <item key="Adaptivity_Strategy" value="0"/>
-    <item key="Adaptivity_MeshRegularity" value="-1"/>
-    <item key="Adaptivity_ProjNormType" value="1"/>
-    <item key="Adaptivity_UseAniso" value="1"/>
-    <item key="Adaptivity_FinerReference" value="0"/>
-    <item key="Commands_Triangle" value="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;"/>
-    <item key="Commands_Gmsh" value="%1 -2 &quot;%2.geo&quot;"/>
   </config>
 
 </problem:document>
