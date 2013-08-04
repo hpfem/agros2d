@@ -35,7 +35,7 @@ ValueDataTableDialog::ValueDataTableDialog(DataTable table, QWidget *parent, con
     load();
 
     processDataTable();
-    doPlot();
+    // doPlot();
 
     setMinimumSize(600, 400);
 
@@ -59,15 +59,19 @@ ValueDataTableDialog::~ValueDataTableDialog()
 
 void ValueDataTableDialog::processDataTable()
 {
+    lstX->blockSignals(true);
+    lstY->blockSignals(true);
     for (int i = 0; i < m_table.pointsVector().size(); i++)
     {
         lstX->appendPlainText(QString::number(m_table.pointsVector().at(i)));
         lstY->appendPlainText(QString::number(m_table.valuesVector().at(i)));
     }
+    lstX->blockSignals(false);
+    lstY->blockSignals(false);
 
     // plot
     textChanged();
-    QTimer::singleShot(0, this, SLOT(doPlot()));
+    doPlot();
 }
 
 bool ValueDataTableDialog::parseTable(bool addToTable)
@@ -407,7 +411,7 @@ void ValueDataTableDialog::doPlot()
     }
 
     // interpolation
-    int countSpline = count * 1e3;
+    int countSpline = count * 50;
     double keyLength = m_table.maxKey() - m_table.minKey();
     double keyStart = m_table.minKey();
     if (chkExtrapolation->isChecked())
@@ -447,6 +451,7 @@ void ValueDataTableDialog::doPlot()
 void ValueDataTableDialog::doShowDerivativeClicked()
 {
     chartDerivative->setVisible(chkDerivative->isChecked());
+    doPlot();
 }
 
 void ValueDataTableDialog::doTypeChanged()
@@ -483,7 +488,7 @@ void ValueDataTableDialog::doMaterialBrowser()
             lstY->appendPlainText(QString::number(materialBrowserDialog.y().at(i)));
         }
 
-        QTimer::singleShot(0, this, SLOT(doPlot()));
+        doPlot();
     }
 }
 
