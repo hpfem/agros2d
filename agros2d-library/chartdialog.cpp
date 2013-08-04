@@ -75,9 +75,7 @@ ChartView::ChartView(QWidget *parent) : QWidget(parent)
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
 
     m_chart = new QCustomPlot(this);
-    m_chart->setInteractions(QCustomPlot::iRangeDrag | QCustomPlot::iRangeZoom);
-    m_chart->setRangeDrag(Qt::Horizontal|Qt::Vertical);
-    m_chart->setRangeZoom(Qt::Horizontal|Qt::Vertical);
+    m_chart->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
     m_chart->addGraph();
 
     m_chart->graph(0)->setLineStyle(QCPGraph::lsLine);

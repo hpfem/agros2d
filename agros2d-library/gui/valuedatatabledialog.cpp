@@ -171,9 +171,7 @@ void ValueDataTableDialog::createControls()
 
     // chart
     chartValue = new QCustomPlot(this);
-    chartValue->setInteractions(QCustomPlot::iRangeDrag | QCustomPlot::iRangeZoom);
-    chartValue->setRangeDrag(Qt::Horizontal|Qt::Vertical);
-    chartValue->setRangeZoom(Qt::Horizontal|Qt::Vertical);
+    chartValue->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
     chartValue->xAxis->setLabel(m_labelX);
     chartValue->yAxis->setLabel(m_labelY);
     chartValue->addGraph();
@@ -181,14 +179,11 @@ void ValueDataTableDialog::createControls()
 
     chartValue->graph(0)->setLineStyle(QCPGraph::lsLine);
     chartValue->graph(1)->setLineStyle(QCPGraph::lsNone);
-    chartValue->graph(1)->setScatterStyle(QCP::ssDisc);
-    chartValue->graph(1)->setScatterSize(7.0);
+    chartValue->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 7));
     chartValue->graph(1)->setPen(QPen(Qt::gray));
 
     chartDerivative = new QCustomPlot(this);
-    chartDerivative->setInteractions(QCustomPlot::iRangeDrag | QCustomPlot::iRangeZoom);
-    chartDerivative->setRangeDrag(Qt::Horizontal|Qt::Vertical);
-    chartDerivative->setRangeZoom(Qt::Horizontal|Qt::Vertical);
+    chartDerivative->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
     chartDerivative->xAxis->setLabel(m_labelX);
     chartDerivative->yAxis->setLabel(QString("d%1/d%2").arg(m_labelY).arg(m_labelX));
     chartDerivative->addGraph();

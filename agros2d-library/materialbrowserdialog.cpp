@@ -155,9 +155,7 @@ void MaterialEditDialog::createControls()
     widNonlinearFunction->setLayout(layoutFunction);
 
     chartNonlinear = new QCustomPlot();
-    chartNonlinear->setInteractions(QCustomPlot::iRangeDrag | QCustomPlot::iRangeZoom);
-    chartNonlinear->setRangeDrag(Qt::Horizontal|Qt::Vertical);
-    chartNonlinear->setRangeZoom(Qt::Horizontal|Qt::Vertical);
+    chartNonlinear->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
     chartNonlinear->setMinimumHeight(120);
     chartNonlinear->addGraph();
     chartNonlinear->graph(0)->setLineStyle(QCPGraph::lsLine);
@@ -512,7 +510,7 @@ void MaterialEditDialog::drawChart()
         }
     }
 
-    // chartNonlinear->xAxis->setLabel(txtPropertyDependenceUnit->text());
+    // chartNonlinear->xAxis->setLabel(txtPropertyIndependentVariableUnit->text());
     // chartNonlinear->yAxis->setLabel(txtPropertyUnit->text());
     chartNonlinear->graph(0)->setData(keys, values);
     chartNonlinear->rescaleAxes();
