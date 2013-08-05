@@ -5,6 +5,7 @@ import scipy.io as sio
 import pylab as pl
 
 def model_electrostatic():
+    print("Electrostatic field + adaptivity")
     # problem
     problem = a2d.problem(clear = True)
     problem.coordinate_type = "axisymmetric"
@@ -55,6 +56,7 @@ def model_electrostatic():
     return electrostatic.filename_matrix(), electrostatic.filename_rhs()
     
 def model_harmonic_magnetic():
+    print("Harmonic magnetic field (two components)")
     # problem
     problem = a2d.problem(clear = True)
     problem.coordinate_type = "planar"
@@ -66,7 +68,7 @@ def model_harmonic_magnetic():
     magnetic = a2d.field("magnetic")
     magnetic.analysis_type = "harmonic"
     magnetic.matrix_solver = "mumps"
-    magnetic.number_of_refinements = 1
+    magnetic.number_of_refinements = 2
     magnetic.polynomial_order = 3
     magnetic.adaptivity_type = "disabled"
     magnetic.solver = "linear"
@@ -109,7 +111,7 @@ a2d.options.dump_format = "matlab_mat"
 
 # solve model
 filename_matrix, filename_rhs = model_electrostatic()
-#filename_matrix, filename_rhs = model_harmonic_magnetic()
+# filename_matrix, filename_rhs = model_harmonic_magnetic()
 
 # restore state
 a2d.options.save_matrix_and_rhs = save_matrix_and_rhs
@@ -122,7 +124,7 @@ rhs = rhs_object["rhs"]
 
 # size of the matrix
 print("Matrix size: " + str(len(rhs)))
-# print("Number of nonzeros: " + str(np.count_nonzero(matrix)))
+print("Number of nonzeros: " + str(matrix.getnnz()))
 
 # visualize matrix sparsity pattern
 fig = pl.figure()
