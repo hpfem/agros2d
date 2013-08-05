@@ -103,34 +103,40 @@ def model_harmonic_magnetic():
     return magnetic.filename_matrix(), magnetic.filename_rhs()
 
 
+def analyse_matrix_and_rhs(filename_matrix, filename_rhs):  
+    # read matrix and rhs from file
+    mat_object = sio.loadmat(filename_matrix)
+    matrix = mat_object["matrix"]
+    rhs_object = sio.loadmat(filename_rhs)
+    rhs = rhs_object["rhs"]
+    
+    # size of the matrix
+    print("Matrix size: " + str(len(rhs)))
+    print("Number of nonzeros: " + str(matrix.getnnz()))
+    
+    # visualize matrix sparsity pattern
+    fig = pl.figure()
+    pl.spy(matrix, markersize=1)
+    fn_pattern = pythonlab.tempname("png")
+    pl.savefig(fn_pattern, dpi=60)
+    pl.close(fig)   
+    # show in console
+    pythonlab.image(fn_pattern)
+
 # store state
 save_matrix_and_rhs = a2d.options.save_matrix_and_rhs
+dump_format = a2d.options.dump_format
 a2d.options.save_matrix_and_rhs = True
+
 # dump format
 a2d.options.dump_format = "matlab_mat"
 
 # solve model
 filename_matrix, filename_rhs = model_electrostatic()
-# filename_matrix, filename_rhs = model_harmonic_magnetic()
+analyse_matrix_and_rhs(filename_matrix, filename_rhs)
+filename_matrix, filename_rhs = model_harmonic_magnetic()
+analyse_matrix_and_rhs(filename_matrix, filename_rhs)
 
 # restore state
 a2d.options.save_matrix_and_rhs = save_matrix_and_rhs
-
-# read matrix and rhs from file
-mat_object = sio.loadmat(filename_matrix)
-matrix = mat_object["matrix"]
-rhs_object = sio.loadmat(filename_rhs)
-rhs = rhs_object["rhs"]
-
-# size of the matrix
-print("Matrix size: " + str(len(rhs)))
-print("Number of nonzeros: " + str(matrix.getnnz()))
-
-# visualize matrix sparsity pattern
-fig = pl.figure()
-pl.spy(matrix, markersize=1)
-fn_pattern = pythonlab.tempname("png")
-pl.savefig(fn_pattern, dpi=60)
-pl.close(fig)   
-# show in console
-pythonlab.image(fn_pattern)
+a2d.options.dump_format = dump_format
