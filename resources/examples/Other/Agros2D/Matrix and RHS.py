@@ -112,7 +112,7 @@ def analyse_matrix_and_rhs(filename_matrix, filename_rhs):
     
     # size of the matrix
     print("Matrix size: " + str(len(rhs)))
-    print("Number of nonzeros: " + str(matrix.getnnz()))
+    print("Number of nonzeros: " + str(matrix.getnnz()) + " (" + str(round(float(matrix.getnnz()) / (len(rhs)**2) * 100.0, 3)) + " %)")
     
     # visualize matrix sparsity pattern
     fig = pl.figure()
