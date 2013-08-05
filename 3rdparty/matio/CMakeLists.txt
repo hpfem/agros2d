@@ -1,5 +1,11 @@
 PROJECT(${MATIO_LIBRARY})
 
+IF(WIN32)
+ADD_CUSTOM_COMMAND(COMMAND copy ARGS "matioConfigWin.h" "matioConfig.h" OUTPUT "matioConfig.h" DEPENDS "matioConfig.h")
+ELSE()
+ADD_CUSTOM_COMMAND(COMMAND cp ARGS "matioConfigLinux.h" "matioConfig.h" OUTPUT "matioConfig.h" DEPENDS "matioConfig.h")
+ENDIF()
+
 SET(SOURCES endian.c
     inflate.c
     io.c
@@ -11,6 +17,7 @@ SET(SOURCES endian.c
     matvar_struct.c
     read_data.c
     snprintf.c
+    matioConfig.h
 )
 
 ADD_LIBRARY(${PROJECT_NAME} ${SOURCES})
