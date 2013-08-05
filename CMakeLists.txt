@@ -66,7 +66,8 @@ IF(MSVC)
   INCLUDE_DIRECTORIES(c:/hpfem/hermes/dependencies/include)
   INCLUDE_DIRECTORIES(d:/hpfem/hermes/dependencies/include)
   INCLUDE_DIRECTORIES(c:/Python27/include)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /openmp /Zc:wchar_t")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D_WINDOWS /Dpopen=_popen /Dpclose=_pclose /D__value=_value /Dfinite=_finite /Dhypot=_hypot /Disatty=_isatty /Dfileno=_fileno /D_CRT_SECURE_NO_WARNINGS /MP /openmp /Zc:wchar_t")
+  
   SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt")
 ENDIF(MSVC)
 
