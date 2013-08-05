@@ -514,7 +514,7 @@ void SceneViewPost2D::paintContours()
             glBegin(GL_LINES);
             for (int i = 0; i < m_postHermes->linContourView().get_num_contour_triangles(); i++)
             {
-                if (_finite(vert[tris[i][0]][2]) && _finite(vert[tris[i][1]][2]) && _finite(vert[tris[i][2]][2]))
+                if (finite(vert[tris[i][0]][2]) && finite(vert[tris[i][1]][2]) && finite(vert[tris[i][2]][2]))
                 {
                     paintContoursTri(vert, &tris[i], step);
                 }

@@ -16,13 +16,7 @@ SET(SOURCES main.cpp
     generator.cpp 
     generator_module.cpp 
     generator_coupling.cpp
-    ../resources_source/classes/module_xml.cpp
-    ../resources_source/classes/coupling_xml.cpp
-    ../resources_source/classes/agros2d_structure_xml.cpp
-    ../resources_source/classes/material_xml.cpp
-    ../resources_source/classes/problem_a2d_31_xml.cpp
-    ../resources_source/classes/form_xml.cpp
-    )
+)
 
 SET(HEADERS generator.h 
     generator_module.h 

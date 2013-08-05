@@ -14,19 +14,19 @@ SET(SOURCES JlCompress.cpp
     zip.c
   )
   
-  SET(HEADERS crypt.h 
-    ioapi.h 
-    JlCompress.h 
-    quaadler32.h 
-    quachecksum32.h 
-    quacrc32.h 
-    quagzipfile.h 
-    quaziodevice.h 
-    quazipdir.h 
-    quazipfile.h 
-    quazipfileinfo.h 
-    quazip_global.h 
-    quazip.h 
+SET(HEADERS crypt.h
+    ioapi.h
+    JlCompress.h
+    quaadler32.h
+    quachecksum32.h
+    quacrc32.h
+    quagzipfile.h
+    quaziodevice.h
+    quazipdir.h
+    quazipfile.h
+    quazipfileinfo.h
+    quazip_global.h
+    quazip.h
     quazipnewinfo.h
   )
   
@@ -35,5 +35,3 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES})
 IF(WITH_QT5)
     QT5_USE_MODULES(${PROJECT_NAME} Core)
 ENDIF(WITH_QT5)
-SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/libs)
-INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)

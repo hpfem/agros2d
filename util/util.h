@@ -60,6 +60,7 @@
 
 // Windows DLL export/import definitions
 #ifdef Q_WS_WIN
+// windows
 // DLL build
 #ifdef AGROS_LIBRARY_DLL
 #define AGROS_LIBRARY_API __declspec(dllexport)
@@ -83,9 +84,11 @@
 #else
 #define AGROS_UTIL_API __declspec(dllimport)
 #endif
-
 #else
+// linux
 #define AGROS_UTIL_API
+#define AGROS_PYTHONLAB_API
+#define AGROS_LIBRARY_API
 #endif
 
 #include "util/point.h"
