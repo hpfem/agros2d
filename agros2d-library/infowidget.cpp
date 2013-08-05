@@ -480,6 +480,22 @@ void InfoWidget::showInfo()
         problemInfo.ShowSection("SOLUTION_PARAMETERS_SECTION");
     }
 
+    // details
+    if (!Agros2D::problem()->config()->fileName().isEmpty())
+    {
+        QFileInfo fileInfo(Agros2D::problem()->config()->fileName());
+        QString detailsFilename(QString("%1/%2/index.html").arg(fileInfo.absolutePath()).arg(fileInfo.baseName()));
+        if (QFile::exists(detailsFilename))
+        {
+            // replace current path in index.html
+            QString detail = readFileContent(detailsFilename);
+            detail = detail.replace("{{DIR}}", QString("%1/%2").arg(QUrl::fromLocalFile(fileInfo.absolutePath()).toString()).arg(fileInfo.baseName()));
+            detail = detail.replace("{{RESOURCES}}", QUrl::fromLocalFile(QString("%1/resources/").arg(QDir(datadir()).absolutePath())).toString());
+
+            problemInfo.SetValue("PROBLEM_DETAILS", detail.toStdString());
+        }
+    }
+
     ctemplate::ExpandTemplate(compatibleFilename(datadir() + TEMPLATEROOT + "/panels/problem.tpl").toStdString(), ctemplate::DO_NOT_STRIP, &problemInfo, &info);
 
     // setHtml(...) doesn't work
@@ -505,12 +521,19 @@ void InfoWidget::linkClicked(const QUrl &url)
     {
 #if QT_VERSION < 0x050000
         QString fileName = url.queryItemValue("filename");
+        QString formName = url.queryItemValue("form");
 #else
         QString fileName = QUrlQuery(url).queryItemValue("filename");
+        QString formName = QUrlQuery(url).queryItemValue("form");
 #endif
+        fileName = QUrl(fileName).toLocalFile();
+        formName = QUrl(formName).toLocalFile();
 
-        if (QFile::exists(fileName))
+        if (QFile::exists(fileName) && formName.isEmpty())
             emit open(fileName);
+        else if (QFile::exists(fileName))
+            if (QFile::exists(formName))
+                emit openForm(fileName, formName);
     }
     else
     {

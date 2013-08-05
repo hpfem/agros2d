@@ -235,6 +235,8 @@
 {{/SOLUTION_PARAMETERS_SECTION}}
 </td>
 
+{{PROBLEM_DETAILS}}
+
 <div class="cleaner"></div>
 
 <!--

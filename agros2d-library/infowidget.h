@@ -21,6 +21,7 @@
 #define INFOWIDGET_H
 
 #include "util.h"
+#include "util/form_script.h"
 #include "sceneview_common.h"
 
 #include <QWebView>
@@ -40,6 +41,7 @@ public:
 
 signals:
     void open(const QString &fileName);
+    void openForm(const QString &fileName, const QString &formName);
     void examples(const QString &groupName);
 
 public slots:

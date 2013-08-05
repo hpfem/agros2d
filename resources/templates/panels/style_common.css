@@ -78,10 +78,10 @@ b {
 }
 
 a:link {
-	color: blue;
+	color: #811517;
 }
 a:hover {
-	color: red;
+	color: #34458e;
 }
 
 a:link, a:visited {

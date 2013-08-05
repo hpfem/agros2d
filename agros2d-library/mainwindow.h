@@ -64,6 +64,7 @@ private slots:
 
     void doDocumentNew();
     void doDocumentOpen(const QString &fileName = "");
+    void doDocumentOpenForm(const QString &fileName, const QString &formName);
     void doDocumentDownloadFromServer();
     void doDocumentOpenRecent(QAction *action);
     void doDocumentSave();

@@ -83,6 +83,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     sceneInfoWidget = new InfoWidget(sceneViewPreprocessor, this);
     sceneInfoWidget->setRecentProblemFiles(&recentFiles);
     connect(sceneInfoWidget, SIGNAL(open(QString)), this, SLOT(doDocumentOpen(QString)));
+    connect(sceneInfoWidget, SIGNAL(openForm(QString, QString)), this, SLOT(doDocumentOpenForm(QString, QString)));
     connect(sceneInfoWidget, SIGNAL(examples(QString)), this, SLOT(doExamples(QString)));
 
     // scene
@@ -959,6 +960,29 @@ void MainWindow::doDocumentOpen(const QString &fileName)
     }
 }
 
+void MainWindow::doDocumentOpenForm(const QString &fileName, const QString &formName)
+{
+    // try to open standard form
+    bool customForm = false;
+    foreach (QAction *action, mnuCustomForms->actions())
+    {
+        if (FormScript *form = dynamic_cast<FormScript *>(action->parent()))
+        {
+            if (QFileInfo(form->fileName()).absoluteFilePath() == QFileInfo(fileName).absoluteFilePath())
+            {
+                customForm = true;
+                form->showForm(formName);
+            }
+        }
+    }
+    if (!customForm)
+    {
+        // example form
+        FormScript form(fileName, consoleView, this);
+        form.showForm(formName);
+    }
+}
+
 void MainWindow::doDocumentDownloadFromServer()
 {
     if (collaborationDownloadDialog->showDialog() == QDialog::Accepted)
@@ -1185,25 +1209,7 @@ void MainWindow::doExamples(const QString &groupName)
             }
             else if (fileInfo.suffix() == "ui")
             {
-                // try to open standard form
-                bool customForm = false;
-                foreach (QAction *action, mnuCustomForms->actions())
-                {
-                    if (FormScript *form = dynamic_cast<FormScript *>(action->parent()))
-                    {
-                        if (QFileInfo(form->fileName()).absoluteFilePath() == QFileInfo(examples.selectedFilename()).absoluteFilePath())
-                        {
-                            customForm = true;
-                            form->showForm(examples.selectedFormFilename());
-                        }
-                    }
-                }
-                if (!customForm)
-                {
-                    // example form
-                    FormScript form(examples.selectedFilename(), consoleView, this);
-                    form.showForm(examples.selectedFormFilename());
-                }
+                doDocumentOpenForm(examples.selectedFilename(), examples.selectedFormFilename());
             }
         }
     }

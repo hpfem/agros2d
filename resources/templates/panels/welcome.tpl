@@ -37,7 +37,6 @@
 		div.link:hover { 		  
 		}		
 		a.recent_name { 		  
-			color: #811517;
 			font-size: 110%;
 		}
 		span.recent_filename { 		  
