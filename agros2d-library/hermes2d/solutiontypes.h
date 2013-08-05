@@ -66,7 +66,7 @@ Hermes::vector<MeshFunctionSharedPtr<Scalar> > createSolutions(Hermes::vector<Me
 }
 
 template <typename Scalar>
-class AGROS_API MultiArray
+class AGROS_LIBRARY_API MultiArray
 {
 public:
     MultiArray();

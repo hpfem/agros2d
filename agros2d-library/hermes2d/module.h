@@ -166,7 +166,7 @@ private:
 namespace Module
 {
 // local variable
-class AGROS_API LocalVariable
+class AGROS_LIBRARY_API LocalVariable
 {
 public:
     struct Expression
@@ -485,10 +485,10 @@ private:
 };
 
 // functions
-AGROS_API void updateTimeFunctions(double time);
+AGROS_LIBRARY_API void updateTimeFunctions(double time);
 
 // available modules
-AGROS_API QMap<QString, QString> availableModules();
+AGROS_LIBRARY_API QMap<QString, QString> availableModules();
 
 // read and write mesh
 Hermes::vector<MeshSharedPtr> readMeshFromFileBSON(const QString &fileName);

@@ -29,7 +29,7 @@
 class DataTable;
 class FieldInfo;
 
-class AGROS_API Value
+class AGROS_LIBRARY_API Value
 {
 public:
     Value(double value = 0.0);

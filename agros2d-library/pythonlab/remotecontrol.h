@@ -22,7 +22,7 @@
 
 #include "../util/util.h"
 
-class AGROS_API ScriptEngineRemoteLocal : public QLocalServer
+class AGROS_LIBRARY_API ScriptEngineRemoteLocal : public QLocalServer
 {
     Q_OBJECT
 public:

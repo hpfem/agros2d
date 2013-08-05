@@ -27,7 +27,7 @@ class Material;
 
 // todo: zrychlit, odebrat asserty, uchovavat rovnou alpha/gamma, atd
 
-class AGROS_API BDF2Table
+class AGROS_LIBRARY_API BDF2Table
 {
 public:
     BDF2Table() : m_n(-100) {}

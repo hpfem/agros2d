@@ -32,17 +32,17 @@
 struct Point;
 
 // return center
-AGROS_API Point centerPoint(const Point &pointStart, const Point &pointEnd, double angle);
+AGROS_UTIL_API Point centerPoint(const Point &pointStart, const Point &pointEnd, double angle);
 
 // intersection of two lines
-AGROS_API bool intersectionLines(const Point &p1s, const Point &p1e, const Point &p2s, const Point &p2e, Point &out);
+AGROS_UTIL_API bool intersectionLines(const Point &p1s, const Point &p1e, const Point &p2s, const Point &p2e, Point &out);
 
 // intersection of two lines or line and arc
-AGROS_API QList<Point> intersection(const Point &p1s, const Point &p1e, const Point &center1, double radius1, double angle1,
+AGROS_UTIL_API QList<Point> intersection(const Point &p1s, const Point &p1e, const Point &center1, double radius1, double angle1,
                                     const Point &p2s, const Point &p2e, const Point &center2, double radius2, double angle2);
 
 
-struct AGROS_API  Point
+struct AGROS_UTIL_API  Point
 {
     double x, y;
 

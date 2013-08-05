@@ -31,7 +31,7 @@ namespace XMLForm
 
 class PythonScriptingConsoleView;
 
-class AGROS_API FormScript : public FormInterface
+class AGROS_LIBRARY_API FormScript : public FormInterface
 {
     Q_OBJECT
     Q_INTERFACES(FormInterface)

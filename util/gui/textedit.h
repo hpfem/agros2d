@@ -28,7 +28,7 @@ struct ParenthesisInfo
     int position;
 };
 
-class AGROS_API TextBlockData : public QTextBlockUserData
+class AGROS_UTIL_API TextBlockData : public QTextBlockUserData
 {
 public:
     TextBlockData();
@@ -40,7 +40,7 @@ private:
     QVector<ParenthesisInfo *> m_parentheses;
 };
 
-class AGROS_API PlainTextEditParenthesis : public QPlainTextEdit
+class AGROS_UTIL_API PlainTextEditParenthesis : public QPlainTextEdit
 {
     Q_OBJECT
 

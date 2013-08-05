@@ -1,4 +1,6 @@
 PROJECT(${AGROS_LIBRARY})
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DAGROS_LIBRARY_DLL")
+
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/util)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/pythonlab-library)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty)
@@ -248,17 +250,6 @@ SET(SOURCES value.cpp
     pythonlab/remotecontrol.h
     particle/particle_tracing.h
     )
-    
-IF(MSVC)
-  SET(HEADERS ${HEADERS} 
-    ../util/util/checkversion.h
-    ../util/gui/textedit.h
-    ../util/gui/about.h
-    ../util/gui/filebrowser.h
-    ../util/gui/lineeditdouble.h
-    ../util/gui/systemoutput.h
-    )
-ENDIF(MSVC)
 
 SET(RESOURCES ../resources_source/resources.qrc)
 IF(WITH_QT5)
@@ -269,7 +260,7 @@ ENDIF(WITH_QT5)
 SET(RC_FILE ../resources_source/resources.rc)
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS} ${RESOURCES_RCC} ${RC_FILE})
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${OPENGL_LIBRARIES} ${HERMES_LIBRARY} ${HERMES_COMMON_LIBRARY})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${OPENGL_LIBRARIES} ${HERMES_LIBRARY} ${HERMES_COMMON_LIBRARY} ${PYTHONLAB_LIBRARY} ${AGROS_UTIL} ${CTEMPLATE_LIBRARY} ${DXFLIB_LIBRARY} ${POLY2TRI_LIBRARY} ${QCUSTOMPLOT_LIBRARY} ${QUAZIP_LIBRARY} ${STB_TRUETYPE_LIBRARY} ${PYTHON_LIBRARIES})
 IF(WITH_QT5)
     QT5_USE_MODULES(${PROJECT_NAME} Core Widgets Network Xml XmlPatterns WebKit WebKitWidgets Svg UiTools)
 ENDIF(WITH_QT5)

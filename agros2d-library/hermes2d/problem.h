@@ -49,7 +49,7 @@ private:
 /// intented as central for solution process
 /// shielded from gui and QT
 /// holds data describing individual fields, means of coupling and solutions
-class AGROS_API Problem : public QObject
+class AGROS_LIBRARY_API Problem : public QObject
 {
     Q_OBJECT
 

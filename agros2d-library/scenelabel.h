@@ -28,7 +28,7 @@ class SceneLabelCommandAdd;
 class SceneLabelCommandRemove;
 class FieldInfo;
 
-class AGROS_API SceneLabel : public MarkedSceneBasic<SceneMaterial>
+class AGROS_LIBRARY_API SceneLabel : public MarkedSceneBasic<SceneMaterial>
 {
 public:
     SceneLabel(const Point &point, double area);
