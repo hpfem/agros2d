@@ -67,6 +67,8 @@ private:
 
 class ModuleDialogTextEdit : public PlainTextEditParenthesis
 {
+  Q_OBJECT
+
 public:
     ModuleDialogTextEdit(QWidget *parent = NULL, int rows = 1);
 

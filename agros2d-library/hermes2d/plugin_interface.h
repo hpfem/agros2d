@@ -184,7 +184,7 @@ public:
 
 
 // plugin interface
-class AGROS_API PluginInterface
+class AGROS_LIBRARY_API PluginInterface
 {
 public:
     inline PluginInterface() : m_module(NULL), m_coupling(NULL) {}

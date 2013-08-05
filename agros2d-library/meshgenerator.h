@@ -31,7 +31,7 @@ namespace XMLSubdomains
     class domain;
 };
 
-class AGROS_API MeshGenerator : public QObject
+class AGROS_LIBRARY_API MeshGenerator : public QObject
 {
     Q_OBJECT
 

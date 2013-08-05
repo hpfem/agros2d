@@ -27,7 +27,7 @@
 class SceneEdgeCommandAdd;
 class SceneEdgeCommandRemove;
 
-class AGROS_API SceneEdge : public MarkedSceneBasic<SceneBoundary>
+class AGROS_LIBRARY_API SceneEdge : public MarkedSceneBasic<SceneBoundary>
 {
 public:
     SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle);

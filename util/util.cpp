@@ -245,8 +245,8 @@ QString compatibleFilename(const QString &fileName)
         out = QString("%1").arg(QFileInfo(fileName).absolutePath());
 
     TCHAR szshortpath[4096];
-
-    GetShortPathName((LPCWSTR) out.replace("/", "\\\\").utf16(), szshortpath, 4096);
+    
+    GetShortPathName((LPCSTR)out.replace("/", "\\\\").utf16(), szshortpath, 4096);
 #ifdef UNICODE
     out = QString::fromWCharArray(szshortpath);
 #else

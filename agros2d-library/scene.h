@@ -58,7 +58,7 @@ class PluginInterface;
 
 QString generateSvgGeometry(QList<SceneEdge *> edges);
 
-class AGROS_API NewMarkerAction : public QAction
+class AGROS_LIBRARY_API NewMarkerAction : public QAction
 {
     Q_OBJECT
 
@@ -75,7 +75,7 @@ private:
     QString field;
 };
 
-class AGROS_API Scene : public QObject
+class AGROS_LIBRARY_API Scene : public QObject
 {
     Q_OBJECT
 
