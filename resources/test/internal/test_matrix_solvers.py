@@ -96,7 +96,11 @@ a2d.options.save_matrix_and_rhs = True
 a2d.options.dump_format = "matlab_mat"
 
 # read reference matrix and rhs from file
-reference_mat, reference_rhs = read_matrix_and_rhs("test_matrix_solvers_matrix.mat", "test_matrix_solvers_rhs.mat")
+from os import path
+if (path.exists("test_matrix_solvers_matrix.mat") and path.exists("test_matrix_solvers_rhs.mat")):
+    reference_mat, reference_rhs = read_matrix_and_rhs("test_matrix_solvers_matrix.mat", "test_matrix_solvers_rhs.mat")
+else:
+    reference_mat, reference_rhs = read_matrix_and_rhs("internal/test_matrix_solvers_matrix.mat", "internal/test_matrix_solvers_rhs.mat")
 
 # MUMPS
 filename_mumps_matrix, filename_mumps_rhs = model("mumps")

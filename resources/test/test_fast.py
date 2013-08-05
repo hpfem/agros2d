@@ -83,7 +83,7 @@ execfile("test_script.py")
 
 # internal
 print("Internal")
-execfile("test_matrix_solver.py")
+execfile("internal/test_matrix_solvers.py")
 
 
 
