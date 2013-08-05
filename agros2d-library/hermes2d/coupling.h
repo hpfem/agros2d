@@ -31,7 +31,7 @@ class ProblemConfig;
 class PluginInterface;
 
 
-class AGROS_API CouplingList
+class AGROS_LIBRARY_API CouplingList
 {
 public:
     struct Item
@@ -58,9 +58,9 @@ private:
 };
 
 // cached coupling list
-AGROS_API CouplingList *couplingList();
+AGROS_LIBRARY_API CouplingList *couplingList();
 
-class AGROS_API CouplingInfo : public QObject
+class AGROS_LIBRARY_API CouplingInfo : public QObject
 {
   Q_OBJECT
 public:

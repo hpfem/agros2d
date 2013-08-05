@@ -24,11 +24,11 @@
 
 namespace Indicator
 {
-	AGROS_API bool isRunning();
-	AGROS_API void init();
-	AGROS_API void openProgress();
-	AGROS_API void closeProgress();
-	AGROS_API void setProgress(double value);
+	AGROS_UTIL_API bool isRunning();
+	AGROS_UTIL_API void init();
+	AGROS_UTIL_API void openProgress();
+	AGROS_UTIL_API void closeProgress();
+	AGROS_UTIL_API void setProgress(double value);
 }
 
 #endif // INDICATORS_H

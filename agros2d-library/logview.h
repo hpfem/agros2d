@@ -24,7 +24,7 @@
 
 class QCustomPlot;
 
-class AGROS_API Log: public QObject
+class AGROS_LIBRARY_API Log: public QObject
 {
     Q_OBJECT
 public:
@@ -48,7 +48,7 @@ signals:
     void adaptivityTable(QVector<double> step, QVector<double> error);
 };
 
-class AGROS_API LogWidget : public QWidget
+class AGROS_LIBRARY_API LogWidget : public QWidget
 {
     Q_OBJECT
 public:
@@ -103,7 +103,7 @@ private:
     LogWidget *logWidget;
 };
 
-class AGROS_API LogDialog : public QDialog
+class AGROS_LIBRARY_API LogDialog : public QDialog
 {
     Q_OBJECT
 public:
@@ -133,7 +133,7 @@ private slots:
     void adaptivityTable(QVector<double> step, QVector<double> error);
 };
 
-class AGROS_API LogStdOut : public QObject
+class AGROS_LIBRARY_API LogStdOut : public QObject
 {
     Q_OBJECT
 public:

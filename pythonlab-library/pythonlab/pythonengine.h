@@ -11,7 +11,7 @@ struct PythonVariable
     QVariant value;
 };
 
-class AGROS_API PythonEngineProfiler
+class AGROS_PYTHONLAB_API PythonEngineProfiler
 {
 public:
     PythonEngineProfiler() {}
@@ -73,7 +73,7 @@ private:
     int m_line;
 };
 
-class AGROS_API PythonEngine : public QObject, public PythonEngineProfiler
+class AGROS_PYTHONLAB_API PythonEngine : public QObject, public PythonEngineProfiler
 {
     Q_OBJECT
 
@@ -132,13 +132,13 @@ private:
 };
 
 // create custom python engine
-AGROS_API void createPythonEngine(PythonEngine *custom = NULL);
+AGROS_PYTHONLAB_API void createPythonEngine(PythonEngine *custom = NULL);
 
 // current python engine
-AGROS_API PythonEngine *currentPythonEngine();
+AGROS_PYTHONLAB_API PythonEngine *currentPythonEngine();
 
 // silent mode
-AGROS_API void setSilentMode(bool mode);
-AGROS_API bool silentMode();
+AGROS_PYTHONLAB_API void setSilentMode(bool mode);
+AGROS_PYTHONLAB_API bool silentMode();
 
 #endif // PYTHONENGINE_H

@@ -1,142 +1,114 @@
-/* src/matioConfig.h.  Generated from matioConfig.h.in by configure.  */
-/*
- * Copyright (C) 2012   Christopher C. Hulbert
- *
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
- *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY CHRISTOPHER C. HULBERT ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL CHRISTOPHER C. HULBERT OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
-
 /* Debug enabled */
-/* #undef DEBUG */
+#undef DEBUG
 
 /* Extended sparse matrix data types */
-#define EXTENDED_SPARSE /**/
+#define EXTENDED_SPARSE 1
 
 /* Define to dummy `main' function (if any) required to link to the Fortran
    libraries. */
-/* #undef FC_DUMMY_MAIN */
+#undef FC_DUMMY_MAIN
 
 /* Define if F77 and FC dummy `main' functions are identical. */
-/* #undef FC_DUMMY_MAIN_EQ_F77 */
+#undef FC_DUMMY_MAIN_EQ_F77
 
 /* Define to a macro mangling the given C identifier (in lower and upper
    case), which must not contain underscores, for linking with Fortran. */
-/* #undef FC_FUNC */
+#undef FC_FUNC
 
 /* As FC_FUNC, but for C identifiers containing underscores. */
-/* #undef FC_FUNC_ */
+#undef FC_FUNC_
 
 /* Have asprintf */
-#define HAVE_ASPRINTF /**/
+#undef HAVE_ASPRINTF
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
-#define HAVE_DLFCN_H 1
+#undef HAVE_DLFCN_H
 
-/* Have HDF5 */
-/* #undef HAVE_HDF5 */
+/* Define to 1 if you have the <getopt.h> header file. */
+#undef HAVE_GETOPT_H
+
+/* Define to 1 if you have the `getopt_long_only' function. */
+#undef HAVE_GETOPT_LONG_ONLY
 
 /* Define to 1 if you have the `m' library (-lm). */
-#define HAVE_LIBM 1
+#undef HAVE_LIBM
 
 /* Have MAT int16 */
-#define HAVE_MAT_INT16_T /**/
+#define HAVE_MAT_INT16_T 1
 
 /* Have MAT int32 */
-#define HAVE_MAT_INT32_T /**/
+#define HAVE_MAT_INT32_T 1
 
 /* Have MAT int64 */
-#define HAVE_MAT_INT64_T /**/
+#define HAVE_MAT_INT64_T 1
 
 /* Have MAT int8 */
-#define HAVE_MAT_INT8_T /**/
+#define HAVE_MAT_INT8_T 1
 
 /* Have MAT int16 */
-#define HAVE_MAT_UINT16_T /**/
+#define HAVE_MAT_UINT16_T 1
 
 /* Have MAT int32 */
-#define HAVE_MAT_UINT32_T /**/
+#define HAVE_MAT_UINT32_T 1
 
 /* Have MAT int64 */
-#define HAVE_MAT_UINT64_T /**/
+#define HAVE_MAT_UINT64_T 1
 
 /* Have MAT int8 */
-#define HAVE_MAT_UINT8_T /**/
+#define HAVE_MAT_UINT8_T 1
 
 /* Define to 1 if you have the <memory.h> header file. */
 #define HAVE_MEMORY_H 1
 
 /* Have snprintf */
-#define HAVE_SNPRINTF /**/
+#undef HAVE_SNPRINTF
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #define HAVE_STDLIB_H 1
 
 /* Define to 1 if you have the <strings.h> header file. */
-#define HAVE_STRINGS_H 1
+#undef HAVE_STRINGS_H
 
 /* Define to 1 if you have the <string.h> header file. */
 #define HAVE_STRING_H 1
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
-#define HAVE_SYS_STAT_H 1
+#undef HAVE_SYS_STAT_H
 
 /* Define to 1 if you have the <sys/types.h> header file. */
-#define HAVE_SYS_TYPES_H 1
+#undef HAVE_SYS_TYPES_H
 
 /* Define to 1 if you have the <unistd.h> header file. */
-#define HAVE_UNISTD_H 1
+#undef HAVE_UNISTD_H
 
 /* Have vasprintf */
-#define HAVE_VASPRINTF /**/
+#undef HAVE_VASPRINTF
 
 /* Have va_copy */
-#define HAVE_VA_COPY /**/
+#undef HAVE_VA_COPY
 
 /* Have vsnprintf */
-#define HAVE_VSNPRINTF /**/
-
-/* Have zlib */
-#define HAVE_ZLIB 1
+#undef HAVE_VSNPRINTF
 
 /* Have va_copy */
-/* #undef HAVE___VA_COPY */
+#undef HAVE___VA_COPY
 
 /* OS is Linux */
-#define LINUX /**/
+#undef LINUX
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
-#define LT_OBJDIR ".libs/"
-
-/* MAT v7.3 file support */
-/* #undef MAT73 */
+#undef LT_OBJDIR
 
 /* Platform */
-#define MATIO_PLATFORM "x86_64-unknown-linux-gnu"
+#if defined(_WIN32)
+#   define MATIO_PLATFORM "i686-pc-windows"
+#elif defined(_WIN64)
+#   define MATIO_PLATFORM "x86_64-pc-windows"
+#endif
 
 /* Debug disabled */
-#define NODEBUG /**/
+#undef NODEBUG
 
 /* Name of package */
 #define PACKAGE "matio"
@@ -148,7 +120,7 @@
 #define PACKAGE_NAME "MATIO"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "MATIO 1.5.2"
+#define PACKAGE_STRING "MATIO 1.5.1"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "matio"
@@ -157,7 +129,7 @@
 #define PACKAGE_URL "http://sourceforge.net/projects/matio"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.5.2"
+#define PACKAGE_VERSION "1.5.1"
 
 /* The size of `char', as computed by sizeof. */
 #define SIZEOF_CHAR 1
@@ -172,7 +144,7 @@
 #define SIZEOF_INT 4
 
 /* The size of `long', as computed by sizeof. */
-#define SIZEOF_LONG 8
+#define SIZEOF_LONG 4
 
 /* The size of `long long', as computed by sizeof. */
 #define SIZEOF_LONG_LONG 8
@@ -180,23 +152,23 @@
 /* The size of `short', as computed by sizeof. */
 #define SIZEOF_SHORT 2
 
-/* The size of `size_t', as computed by sizeof. */
-#define SIZEOF_SIZE_T 8
-
-/* The size of `void *', as computed by sizeof. */
-#define SIZEOF_VOID_P 8
+#if defined(_WIN32)
+    /* The size of `void *', as computed by sizeof. */
+#   define SIZEOF_VOID_P 4
+    /* The size of `size_t', as computed by sizeof. */
+#    define SIZEOF_SIZE_T 4
+#elif defined(_WIN64)
+    /* The size of `void *', as computed by sizeof. */
+#   define SIZEOF_VOID_P 8
+    /* The size of `size_t', as computed by sizeof. */
+#    define SIZEOF_SIZE_T 8
+#endif
 
 /* Define to 1 if you have the ANSI C header files. */
-#define STDC_HEADERS 1
-
-/* OS is Solaris */
-/* #undef SUN */
+#undef STDC_HEADERS
 
 /* Version number of package */
-#define VERSION "1.5.2"
-
-/* OS is CygWin */
-/* #undef WINNT */
+#define VERSION "1.5.1"
 
 /* Z prefix */
-/* #undef Z_PREFIX */
+#undef Z_PREFIX

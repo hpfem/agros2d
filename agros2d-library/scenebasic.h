@@ -40,7 +40,7 @@ class FieldInfo;
 // Q_DECLARE_METATYPE(SceneEdge *)
 // Q_DECLARE_METATYPE(SceneLabel *)
 
-class AGROS_API SceneBasic 
+class AGROS_LIBRARY_API SceneBasic 
 {
 
 public:
@@ -62,7 +62,7 @@ private:
 };
 
 template <typename BasicType>
-class AGROS_API SceneBasicContainer
+class AGROS_LIBRARY_API SceneBasicContainer
 {
 public:
     SceneBasicContainer() : m_data(QList<BasicType* >()) {}

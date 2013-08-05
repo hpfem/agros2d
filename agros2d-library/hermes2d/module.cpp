@@ -633,7 +633,7 @@ void Module::DialogUI::clear()
 
 // ***********************************************************************************************
 
-AGROS_API void Module::updateTimeFunctions(double time)
+AGROS_LIBRARY_API void Module::updateTimeFunctions(double time)
 {
     // update materials
     foreach (SceneMaterial *material, Agros2D::scene()->materials->items())

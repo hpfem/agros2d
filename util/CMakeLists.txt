@@ -1,4 +1,5 @@
 PROJECT(${AGROS_UTIL})
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DAGROS_UTIL_DLL")
 
 SET(SOURCES util.cpp 
     util/checkversion.cpp 

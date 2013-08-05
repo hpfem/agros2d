@@ -25,12 +25,12 @@
 // Returns the peak (maximum so far) resident set size (physical
 // memory use) measured in bytes, or zero if the value cannot be
 // determined on this OS.
-AGROS_API long getPeakRSS();
+AGROS_UTIL_API long getPeakRSS();
 
 // Returns the current resident set size (physical memory use) measured
 // in bytes, or zero if the value cannot be determined on this OS.
-AGROS_API long getCurrentRSS();
+AGROS_UTIL_API long getCurrentRSS();
 
-AGROS_API bool isProcessRunning(int pid);
+AGROS_UTIL_API bool isProcessRunning(int pid);
 
 #endif // SYSTEM_UTILS_H

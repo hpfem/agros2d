@@ -39,7 +39,7 @@ class SceneViewPost3D;
 class SceneViewParticleTracing;
 class PostHermes;
 
-class AGROS_API PythonEngineAgros : public PythonEngine
+class AGROS_LIBRARY_API PythonEngineAgros : public PythonEngine
 {
     Q_OBJECT
 public:
@@ -85,7 +85,7 @@ private:
     PythonScriptingConsole *m_console;
 };
 
-class AGROS_API PythonEditorAgrosDialog : public PythonEditorDialog
+class AGROS_LIBRARY_API PythonEditorAgrosDialog : public PythonEditorDialog
 {
     Q_OBJECT
 public:
@@ -113,7 +113,7 @@ private slots:
 };
 
 // current python engine agros
-AGROS_API PythonEngineAgros *currentPythonEngineAgros();
+AGROS_LIBRARY_API PythonEngineAgros *currentPythonEngineAgros();
 
 enum StartupScript_Type
 {

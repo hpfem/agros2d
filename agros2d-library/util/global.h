@@ -32,7 +32,7 @@ class PluginInterface;
 class ScriptEngineRemoteLocal;
 class MemoryMonitor;
 
-class AGROS_API Agros2D
+class AGROS_LIBRARY_API Agros2D
 {
 public:
     Agros2D(const Agros2D &);

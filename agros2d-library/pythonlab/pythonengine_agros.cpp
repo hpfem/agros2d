@@ -26,7 +26,7 @@
 #include "util/memory_monitor.h"
 
 // current python engine agros
-AGROS_API PythonEngineAgros *currentPythonEngineAgros()
+AGROS_LIBRARY_API PythonEngineAgros *currentPythonEngineAgros()
 {
     return static_cast<PythonEngineAgros *>(currentPythonEngine());
 }
