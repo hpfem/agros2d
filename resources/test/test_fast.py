@@ -81,6 +81,12 @@ execfile("test_script.py")
 
 
 
+# internal
+print("Internal")
+execfile("test_matrix_solver.py")
+
+
+
 stop = timer.time()
 print("Total time: " + str(stop - start)) + " s"
 stop_time, stop_memory = a2d.memory_usage()

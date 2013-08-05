@@ -126,9 +126,9 @@ def analyse_matrix_and_rhs(filename_matrix, filename_rhs):
 # store state
 save_matrix_and_rhs = a2d.options.save_matrix_and_rhs
 dump_format = a2d.options.dump_format
-a2d.options.save_matrix_and_rhs = True
 
 # dump format
+a2d.options.save_matrix_and_rhs = True
 a2d.options.dump_format = "matlab_mat"
 
 # solve model
