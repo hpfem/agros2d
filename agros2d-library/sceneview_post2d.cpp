@@ -1220,7 +1220,7 @@ void SceneViewPost2D::exportVTKScalarView(const QString &fileName)
         linScalarView.save_solution_vtk(slnScalarView,
                                         fn.toLatin1().data(),
                                         Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString().toLatin1().data(),
-                                        true);
+                                        false);
 
         if (!fn.isEmpty())
         {
