@@ -298,6 +298,8 @@ private:
     int m_profilerMaxAccumulatedTime;
     int m_profilerMaxAccumulatedCallLine;
     int m_profilerMaxAccumulatedCall;
+
+    friend class PythonEditorDialog;
 };
 
 class AGROS_PYTHONLAB_API ScriptEditorLineNumberArea : public QWidget

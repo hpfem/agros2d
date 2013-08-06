@@ -780,7 +780,7 @@ void PythonEditorDialog::doRunPython()
         txtEditor->setProfilerMaxAccumulatedCall(currentPythonEngine()->profilerMaxAccumulatedCall());
 
         // refresh
-        txtEditor->setPlainText(txtEditor->toPlainText());
+        txtEditor->updateLineNumberAreaWidth(0);
     }
 
     // run script
@@ -1041,11 +1041,13 @@ void PythonEditorDialog::doFileSave()
 void PythonEditorDialog::doFileSaveAs()
 {
     QSettings settings;
-    QString dir = settings.value("PythonEditorDialog/WorkDirr").toString();
+    QString dir = settings.value("PythonEditorDialog/WorkDir").toString();
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Python scripts (*.py)"));
     if (!fileName.isEmpty())
     {
+        if (QFileInfo(fileName).suffix() != "py") fileName += ".py";
+
         scriptEditorWidget()->setFileName(fileName);
         doFileSave();
 
@@ -1063,8 +1065,7 @@ void PythonEditorDialog::doFileSaveConsoleAs()
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save file"), dir, tr("Html files (*.html)"));
     if (!fileName.isEmpty())
     {
-        QFileInfo fileInfo(fileName);
-        if (fileInfo.suffix() == "html" || fileInfo.suffix() == "htm")
+        if (QFileInfo(fileName).suffix() == "html" || QFileInfo(fileName).suffix() == "htm")
             ;
         else
             fileName += ".html";
@@ -1072,7 +1073,7 @@ void PythonEditorDialog::doFileSaveConsoleAs()
         QString str = consoleView->console()->document()->toHtml();
         writeStringContent(fileName, &str);
 
-
+        QFileInfo fileInfo(fileName);
         if (fileInfo.absoluteDir() != tempProblemDir())
             settings.setValue("PythonEditorDialog/WorkDir", fileInfo.absolutePath());
     }

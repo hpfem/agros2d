@@ -88,7 +88,7 @@ signals:
     void startedScript();
 
 public:
-    PythonEngine() {}
+    PythonEngine() : errorType(NULL), errorValue(NULL), errorTraceback(NULL) {}
     ~PythonEngine();
 
     void init();
@@ -129,6 +129,10 @@ private:
     QString m_stdOut;
     QString m_functions;
     QMutex m_mutex;
+
+    PyObject *errorType;
+    PyObject *errorValue;
+    PyObject *errorTraceback;
 };
 
 // create custom python engine

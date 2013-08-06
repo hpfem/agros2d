@@ -351,9 +351,20 @@ bool PythonEngine::runScript(const QString &script, const QString &fileName, boo
 
     bool successfulRun = false;
     if (output)
+    {
         successfulRun = true;
-
-    Py_XDECREF(output);
+        Py_XDECREF(output);
+    }
+    else
+    {
+        // error traceback
+        Py_XDECREF(errorType);
+        Py_XDECREF(errorValue);
+        Py_XDECREF(errorTraceback);
+        PyErr_Fetch(&errorType, &errorValue, &errorTraceback);
+        if (errorTraceback)
+            successfulRun = false;
+    }
 
     m_isScriptRunning = false;
 
@@ -371,10 +382,12 @@ bool PythonEngine::runExpression(const QString &expression, double *value, const
         qDebug() << "Expression is running" << expression;
 
     m_isExpressionRunning = true;
-    bool succesfullRun = false;
+    bool successfulRun = false;
 
 #pragma omp critical
     {
+        PyObject *output = NULL;
+
         if (value)
         {
             runPythonHeader();
@@ -386,10 +399,9 @@ bool PythonEngine::runExpression(const QString &expression, double *value, const
             else
                 exp = QString("%1; result_pythonlab = %2").arg(command).arg(expression);
 
-            PyObject *output = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
-            succesfullRun = !PyErr_Occurred();
+            output = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
 
-            if (output && succesfullRun)
+            if (output)
             {
                 // parse result
                 PyObject *result = PyDict_GetItemString(m_dict, "result_pythonlab");
@@ -409,29 +421,43 @@ bool PythonEngine::runExpression(const QString &expression, double *value, const
                     else
                     {
                         qDebug() << tr("Type '%1' is not supported.").arg(result->ob_type->tp_name).arg(expression);
-                        succesfullRun = false;
+                        successfulRun = false;
                     }
                 }
 
                 // speed up?
                 // PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
             }
-            Py_XDECREF(output);
+
         }
         else
         {
             runPythonHeader();
 
-            PyObject *output = PyRun_String(expression.toLatin1().data(), Py_single_input, m_dict, m_dict);
-            succesfullRun = !PyErr_Occurred();
+            output = PyRun_String(expression.toLatin1().data(), Py_single_input, m_dict, m_dict);
+        }
+
+        if (output)
+        {
+            successfulRun = true;
             Py_XDECREF(output);
+        }
+        else
+        {
+            // error traceback
+            Py_XDECREF(errorType);
+            Py_XDECREF(errorValue);
+            Py_XDECREF(errorTraceback);
+            PyErr_Fetch(&errorType, &errorValue, &errorTraceback);
+            if (errorTraceback)
+                successfulRun = false;
         }
     }
 
     m_isExpressionRunning = false;
 
     emit executedExpression();
-    return succesfullRun;
+    return successfulRun;
 }
 
 QStringList PythonEngine::codeCompletion(const QString& code, int offset, const QString& fileName)
@@ -563,17 +589,11 @@ ErrorResult PythonEngine::parseError()
     QString text;
     int line = -1;
 
-    // error traceback
-    PyObject *error_type = NULL;
-    PyObject *error_value = NULL;
-    PyObject *error_traceback = NULL;
-    PyObject *error_string = NULL;
-    PyErr_Fetch(&error_type, &error_value, &error_traceback);
-    PyErr_NormalizeException(&error_type, &error_value, &error_traceback);
+    PyErr_NormalizeException(&errorType, &errorValue, &errorTraceback);
 
-    if (error_traceback)
+    if (errorTraceback)
     {
-        PyTracebackObject *tb = (PyTracebackObject *) error_traceback;
+        PyTracebackObject *tb = (PyTracebackObject *) errorTraceback;
         line = tb->tb_lineno;
         text.append(QString("Line %1: ").arg(tb->tb_lineno));
 
@@ -599,32 +619,33 @@ ErrorResult PythonEngine::parseError()
     }
     traceback = traceback.trimmed();
 
-    if (error_type != NULL && (error_string = PyObject_Str(error_type)) != NULL && (PyString_Check(error_string)))
+    PyObject *errorString = NULL;
+    if (errorType != NULL && (errorString = PyObject_Str(errorType)) != NULL && (PyString_Check(errorString)))
     {
-        Py_INCREF(error_string);
-        text.append(PyString_AsString(error_string));
-        Py_XDECREF(error_string);
+        Py_INCREF(errorString);
+        text.append(PyString_AsString(errorString));
+        Py_XDECREF(errorString);
     }
     else
     {
         text.append("\n<unknown exception type>");
     }
 
-    if (error_value != NULL && (error_string = PyObject_Str(error_value)) != NULL && (PyString_Check(error_string)))
+    if (errorValue != NULL && (errorString = PyObject_Str(errorValue)) != NULL && (PyString_Check(errorString)))
     {
-        Py_INCREF(error_string);
+        Py_INCREF(errorString);
         text.append("\n");
-        text.append(PyString_AsString(error_string));
-        Py_XDECREF(error_string);
+        text.append(PyString_AsString(errorString));
+        Py_XDECREF(errorString);
     }
     else
     {
         text.append("\n<unknown exception data>");
     }
 
-    Py_XDECREF(error_type);
-    Py_XDECREF(error_value);
-    Py_XDECREF(error_traceback);
+    Py_XDECREF(errorType);
+    Py_XDECREF(errorValue);
+    Py_XDECREF(errorTraceback);
 
     PyErr_Clear();
 
