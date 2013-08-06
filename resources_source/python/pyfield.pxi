@@ -193,26 +193,6 @@ cdef map[string, map[string, string]] get_settings_map(parameters):
 
     return settings_map
 
-class Parameters(dict):
-    def __init__(self, get_method, set_method):
-        self.get = get_method
-        self.set = set_method
-        dict.__init__(self, self.get())
-
-    def __getitem__(self, key):
-        parameters = self.get()
-        for parameters_key in parameters:
-            dict.__setitem__(self, parameters_key, parameters[parameters_key])
-
-        return dict.__getitem__(self, key)
-
-    def __setitem__(self, key, value):
-        if (not self.has_key(key)):
-            raise KeyError("Invalid key. Valid keys: {0}".format(self.keys()))
-
-        dict.__setitem__(self, key, value)
-        self.set(dict(self))
-
 cdef class __Field__:
     cdef PyField *thisptr
     cdef object matrix_solver_parameters

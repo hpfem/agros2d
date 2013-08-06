@@ -142,6 +142,31 @@ struct PyViewMesh : PyViewMeshAndPost
 
 struct PyViewPost : PyViewMeshAndPost
 {
+    template <typename Type>
+    void setParameter(const std::string &parameter, Type value)
+    {
+        ProblemSetting::Type type = Agros2D::problem()->setting()->stringKeyToType(QString::fromStdString(parameter));
+        Agros2D::problem()->setting()->setValue(type, value);
+    }
+
+    inline int getBoolParameter(const std::string &parameter)
+    {
+        ProblemSetting::Type type = Agros2D::problem()->setting()->stringKeyToType(QString::fromStdString(parameter));
+        return Agros2D::problem()->setting()->value(type).toBool();
+    }
+
+    inline int getIntParameter(const std::string &parameter)
+    {
+        ProblemSetting::Type type = Agros2D::problem()->setting()->stringKeyToType(QString::fromStdString(parameter));
+        return Agros2D::problem()->setting()->value(type).toInt();
+    }
+
+    inline double getDoubleParameter(const std::string &parameter)
+    {
+        ProblemSetting::Type type = Agros2D::problem()->setting()->stringKeyToType(QString::fromStdString(parameter));
+        return Agros2D::problem()->setting()->value(type).toDouble();
+    }
+
     void checkExistingSolution();
 
     // field

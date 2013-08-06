@@ -66,6 +66,14 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
 
     # PyViewPost
     cdef cppclass PyViewPost:
+        void setParameter(string &parameter, bool value) except +
+        void setParameter(string &parameter, int value) except +
+        void setParameter(string &parameter, double value) except +
+
+        bool getBoolParameter(string &parameter) except +
+        int getIntParameter(string &parameter) except +
+        double getDoubleParameter(string &parameter) except +
+        
         void setField(string &fieldid) except +
         string getField()
 
@@ -292,9 +300,12 @@ cdef class __ViewMesh__(__ViewMeshAndPost__):
 # ViewPost
 cdef class __ViewPost__(__ViewMeshAndPost__):
     cdef PyViewPost *thisptrp
+    cdef object scalar_view_parameters
 
     def __cinit__(self):
         self.thisptrp = new PyViewPost()
+        self.scalar_view_parameters = Parameters(self.__get_scalar_view_parameters__,
+                                                 self.__set_scalar_view_parameters__)
     def __dealloc__(self):
         del self.thisptrp
 
@@ -304,83 +315,54 @@ cdef class __ViewPost__(__ViewMeshAndPost__):
         def __set__(self, id):
             self.thisptrp.setField(string(id))
 
-    property scalar_variable:
+    property scalar_view_parameters:
         def __get__(self):
-            return self.thisptrp.getScalarViewVariable().c_str()
-        def __set__(self, variable):
-            self.thisptrp.setScalarViewVariable(string(variable))
+            return self.scalar_view_parameters
 
-    property scalar_component:
-        def __get__(self):
-            return self.thisptrp.getScalarViewVariableComp().c_str()
-        def __set__(self, component):
-            self.thisptrp.setScalarViewVariableComp(string(component))
+    def __get_scalar_view_parameters__(self):
+        return {'variable' : self.thisptrp.getScalarViewVariable().c_str(),
+                'component' : self.thisptrp.getScalarViewVariableComp().c_str(),
+                'palette' : self.thisptrp.getScalarViewPalette().c_str(),
+                'quality' : self.thisptrp.getScalarViewPaletteQuality().c_str(),
+                'steps' : self.thisptr.getScalarViewPaletteSteps(),
+                'filter' : self.thisptr.getBoolParameter(string('ProblemSetting::View_PaletteFilter')),
+                'color_bar' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ShowScalarColorBar')),
+                'decimal_place' : self.thisptr.getIntParameter(string('ProblemSetting::View_ScalarDecimalPlace')),
+                'auto_range' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ScalarRangeAuto')),
+                'range_min' : self.thisptr.getDoubleParameter(string('ProblemSetting::View_ScalarRangeMin')),
+                'range_max' : self.thisptr.getDoubleParameter(string('ProblemSetting::View_ScalarRangeMax')),
+                'log_scale' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ScalarRangeLog')),
+                'log_scale_base' : self.thisptr.getDoubleParameter(string('ProblemSetting::View_ScalarRangeBase'))}
 
-    property scalar_palette:
-        def __get__(self):
-            return self.thisptrp.getScalarViewPalette().c_str()
-        def __set__(self, palette):
-            self.thisptrp.setScalarViewPalette(string(palette))
+    def __set_scalar_view_parameters__(self, parameters):
+        # variable, component
+        self.thisptrp.setScalarViewVariable(string(parameters['variable']))
+        self.thisptrp.setScalarViewVariableComp(string(parameters['component']))
 
-    property scalar_palette_quality:
-        def __get__(self):
-            return self.thisptrp.getScalarViewPaletteQuality().c_str()
-        def __set__(self, quality):
-            self.thisptrp.setScalarViewPaletteQuality(string(quality))
+        # pallete, quality
+        self.thisptrp.setScalarViewPalette(string(parameters['palette']))
+        self.thisptrp.setScalarViewPaletteQuality(string(parameters['quality']))
 
-    property scalar_palette_steps:
-        def __get__(self):
-            return self.thisptrp.getScalarViewPaletteSteps()
-        def __set__(self, steps):
-            self.thisptrp.setScalarViewPaletteSteps(steps)
+        # steps, filter
+        self.thisptrp.setScalarViewPaletteSteps(parameters['steps'])
+        self.thisptrp.setParameter(string('ProblemSetting::View_PaletteFilter'), <bool>parameters['filter'])
 
-    property scalar_palette_filter:
-        def __get__(self):
-            return self.thisptrp.getScalarViewPaletteFilter()
-        def __set__(self, filter):
-            self.thisptrp.setScalarViewPaletteFilter(filter)
+        # color bar, decimal place
+        self.thisptrp.setParameter(string('ProblemSetting::View_ShowScalarColorBar'), <bool>parameters['color_bar'])
+        self.thisptrp.setScalarViewDecimalPlace(parameters['decimal_place'])
 
-    property scalar_log_scale:
-        def __get__(self):
-            return self.thisptrp.getScalarViewRangeLog()
-        def __set__(self, log):
-            self.thisptrp.setScalarViewRangeLog(log)
+        # auto range, min, max
+        self.thisptrp.setParameter(string('ProblemSetting::View_ScalarRangeAuto'), <bool>parameters['auto_range'])
+        self.thisptr.setParameter(string('ProblemSetting::View_ScalarRangeMin'), <double>parameters['range_min'])
+        self.thisptr.setParameter(string('ProblemSetting::View_ScalarRangeMax'), <double>parameters['range_max'])
 
-    property scalar_log_base:
-        def __get__(self):
-            return self.thisptrp.getScalarViewRangeBase()
-        def __set__(self, base):
-            self.thisptrp.setScalarViewRangeBase(base)
+        # log scale
+        self.thisptr.setParameter(string('ProblemSetting::View_ScalarRangeLog'), <bool>parameters['log_scale'])
 
-    property scalar_color_bar:
-        def __get__(self):
-            return self.thisptrp.getScalarViewColorBar()
-        def __set__(self, show):
-            self.thisptrp.setScalarViewColorBar(show)
-
-    property scalar_decimal_place:
-        def __get__(self):
-            return self.thisptrp.getScalarViewDecimalPlace()
-        def __set__(self, place):
-            self.thisptrp.setScalarViewDecimalPlace(place)
-
-    property scalar_auto_range:
-        def __get__(self):
-            return self.thisptrp.getScalarViewRangeAuto()
-        def __set__(self, range_auto):
-            self.thisptrp.setScalarViewRangeAuto(range_auto)
-
-    property scalar_range_min:
-        def __get__(self):
-            return self.thisptrp.getScalarViewRangeMin()
-        def __set__(self, min):
-            self.thisptrp.setScalarViewRangeMin(min)
-
-    property scalar_range_max:
-        def __get__(self):
-            return self.thisptrp.getScalarViewRangeMax()
-        def __set__(self, max):
-            self.thisptrp.setScalarViewRangeMax(max)
+        # log base
+        if (parameters['log_scale_base'] < 0.0 or parameters['log_scale_base'] == 1):
+            raise IndexError("Value of 'log_scale_base' must be possitive and can not be equal to 1.")
+        self.thisptr.setParameter(string('ProblemSetting::View_ScalarRangeBase'), <double>parameters['log_scale_base'])
 
 # ViewPost2D
 cdef class __ViewPost2D__(__ViewPost__):

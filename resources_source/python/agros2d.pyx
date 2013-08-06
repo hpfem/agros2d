@@ -19,6 +19,27 @@ cdef extern from "<string>" namespace "std":
         string(char *)
         char * c_str()
 
+# Parametrs class
+class Parameters(dict):
+    def __init__(self, get_method, set_method):
+        self.get = get_method
+        self.set = set_method
+        dict.__init__(self, self.get())
+
+    def __getitem__(self, key):
+        parameters = self.get()
+        for parameters_key in parameters:
+            dict.__setitem__(self, parameters_key, parameters[parameters_key])
+
+        return dict.__getitem__(self, key)
+
+    def __setitem__(self, key, value):
+        if (not self.has_key(key)):
+            raise KeyError("Invalid key. Valid keys: {0}".format(self.keys()))
+
+        dict.__setitem__(self, key, value)
+        self.set(dict(self))
+
 # test functions
 def value_in_range(value, min, max, key):
     if (value < min or value > max):
