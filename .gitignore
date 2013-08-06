@@ -103,3 +103,4 @@ util/config.h
 agros2d-library/__/
 pythonlab-library/__/
 CMake.vars
+*.ts
