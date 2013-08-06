@@ -51,6 +51,9 @@ def release_localization():
         if (os.path.splitext(file)[1] != '.qm'):
             continue
 
+        if (not os.path.exists(LOC_DIR)):
+            os.mkdir(LOC_DIR)
+
         shutil.copy2('{0}/{1}'.format(LOC_SOURCE_DIR, file), LOC_DIR)
 
 def update_localization():
