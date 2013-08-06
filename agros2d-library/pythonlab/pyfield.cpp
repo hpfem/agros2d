@@ -102,30 +102,6 @@ void PyField::setNonlinearConvergenceMeasurement(const std::string &nonlinearCon
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(nonlinearSolverConvergenceMeasurementStringKeys())).toStdString());
 }
 
-void PyField::setNonlinearTolerance(double nonlinearTolerance)
-{
-    if (nonlinearTolerance > 0.0)
-        m_fieldInfo->setValue(FieldInfo::NonlinearTolerance, nonlinearTolerance);
-    else
-        throw out_of_range(QObject::tr("Nonlinearity tolerance must be positive.").toStdString());
-}
-
-void PyField::setNonlinearSteps(int nonlinearSteps)
-{
-    if (nonlinearSteps >= 1 && nonlinearSteps <= 100)
-        m_fieldInfo->setValue(FieldInfo::NonlinearSteps, nonlinearSteps);
-    else
-        throw out_of_range(QObject::tr("Nonlinearity steps is out of range (1 - 100).").toStdString());
-}
-
-void PyField::setNewtonDampingCoeff(double dampingCoeff)
-{
-    if (dampingCoeff > 0 && dampingCoeff <= 1)
-        m_fieldInfo->setValue(FieldInfo::NewtonDampingCoeff, dampingCoeff);
-    else
-        throw out_of_range(QObject::tr("Newton damping coefficient is out of range (0 - 1).").toStdString());
-}
-
 void PyField::setNewtonDampingType(std::string dampingType)
 {
     if (dampingTypeStringKeys().contains(QString::fromStdString(dampingType)))
@@ -134,43 +110,7 @@ void PyField::setNewtonDampingType(std::string dampingType)
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(dampingTypeStringKeys())).toStdString());
 }
 
-void PyField::setNewtonReuseJacobian(bool reuse)
-{
-    m_fieldInfo->setValue(FieldInfo::NewtonReuseJacobian, reuse);
-}
-
-void PyField::setNewtonDampingNumberToIncrease(int dampingNumberToIncrease)
-{
-    if (dampingNumberToIncrease >= 1 && dampingNumberToIncrease <= 5)
-        m_fieldInfo->setValue(FieldInfo::NewtonStepsToIncreaseDF, dampingNumberToIncrease);
-    else
-        throw out_of_range(QObject::tr("Number of steps needed to increase the damping coefficient is out of range (1 - 5).").toStdString());
-}
-
-void PyField::setNewtonSufficientImprovementFactorForJacobianReuse(double sufficientImprovementFactorJacobian)
-{
-    if (sufficientImprovementFactorJacobian >= 0.00001 && sufficientImprovementFactorJacobian <= 1.0)
-        m_fieldInfo->setValue(FieldInfo::NewtonSufImprovForJacobianReuse, sufficientImprovementFactorJacobian);
-    else
-        throw out_of_range(QObject::tr("Sufficient improvement factor for Jacobian reuse is out of range (0.00001 - 1.0).").toStdString());
-}
-
-void PyField::setNewtonSufficientImprovementFactor(double sufficientImprovementFactor)
-{
-    if (sufficientImprovementFactor >= 0.00001 && sufficientImprovementFactor <= 100.0)
-        m_fieldInfo->setValue(FieldInfo::NewtonSufImprov, sufficientImprovementFactor);
-    else
-        throw out_of_range(QObject::tr("Sufficient improvement factor is out of range (0.00001 - 100).").toStdString());
-}
-
-void PyField::setNewtonMaximumStepsWithReusedJacobian(int maximumStepsWithReusedJacobian)
-{
-    if (maximumStepsWithReusedJacobian >= 1 && maximumStepsWithReusedJacobian <= 100)
-        m_fieldInfo->setValue(FieldInfo::NewtonMaxStepsReuseJacobian, maximumStepsWithReusedJacobian);
-    else
-        throw out_of_range(QObject::tr("Maximum steps with reused Jacobian is out of range (1 - 100).").toStdString());
-}
-
+/*
 void PyField::setPicardAndersonAcceleration(bool acceleration)
 {
     m_fieldInfo->setValue(FieldInfo::PicardAndersonAcceleration, acceleration);
@@ -191,6 +131,7 @@ void PyField::setPicardAndersonNumberOfLastVectors(int number)
     else
         throw out_of_range(QObject::tr("Number of last vector is out of range (1 - 5).").toStdString());
 }
+*/
 
 void PyField::setAdaptivityType(const std::string &adaptivityType)
 {
@@ -207,23 +148,6 @@ void PyField::setMatrixSolver(const std::string &matrixSolver)
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(matrixSolverTypeStringKeys())).toStdString());
 }
-
-void PyField::setLinearSolverAbsoluteTolerance(double absoluteTolerance)
-{
-    if (absoluteTolerance > 0.0)
-        m_fieldInfo->setValue(FieldInfo::LinearSolverIterToleranceAbsolute, absoluteTolerance);
-    else
-        throw out_of_range(QObject::tr("Absolute tolerance must be positive.").toStdString());
-}
-
-void PyField::setLinearSolverIterations(int numberOfIterations)
-{
-    if (numberOfIterations >= 1 && numberOfIterations <= 10000)
-        m_fieldInfo->setValue(FieldInfo::LinearSolverIterIters, numberOfIterations);
-    else
-        throw out_of_range(QObject::tr("Linear solver iterations is out of range (1 - 10000).").toStdString());
-}
-
 
 void PyField::setLinearSolverMethod(const std::string &linearSolverMethod)
 {
@@ -243,30 +167,6 @@ void PyField::setLinearSolverPreconditioner(const std::string &linearSolverPreco
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(iterLinearSolverPreconditionerTypeStringKeys())).toStdString());
 }
 
-void PyField::setAdaptivityTolerance(double adaptivityTolerance)
-{
-    if (adaptivityTolerance > 0.0)
-        m_fieldInfo->setValue(FieldInfo::AdaptivityTolerance, adaptivityTolerance);
-    else
-        throw out_of_range(QObject::tr("Adaptivity tolerance must be positive.").toStdString());
-}
-
-void PyField::setAdaptivitySteps(int adaptivitySteps)
-{
-    if (adaptivitySteps >= 1 && adaptivitySteps <= 100)
-        m_fieldInfo->setValue(FieldInfo::AdaptivitySteps, adaptivitySteps);
-    else
-        throw out_of_range(QObject::tr("Adaptivity steps is out of range (1 - 100).").toStdString());
-}
-
-void PyField::setAdaptivityThreshold(double adaptivityThreshold)
-{
-    if (adaptivityThreshold > 0.0)
-        m_fieldInfo->setValue(FieldInfo::AdaptivityThreshold, adaptivityThreshold);
-    else
-        throw out_of_range(QObject::tr("Adaptivity threshold must be positive.").toStdString());
-}
-
 void PyField::setAdaptivityStoppingCriterion(const std::string &adaptivityStoppingCriterion)
 {
     if (adaptivityStoppingCriterionTypeStringKeys().contains(QString::fromStdString(adaptivityStoppingCriterion)))
@@ -281,32 +181,6 @@ void PyField::setAdaptivityNormType(const std::string &adaptivityNormType)
         m_fieldInfo->setValue(FieldInfo::AdaptivityProjNormType, (Hermes::Hermes2D::NormType) adaptivityNormTypeFromStringKey(QString::fromStdString(adaptivityNormType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(adaptivityNormTypeStringKeys())).toStdString());
-}
-
-void PyField::setAdaptivityAnisotropic(bool adaptivityAnisotropic)
-{
-    m_fieldInfo->setValue(FieldInfo::AdaptivityUseAniso, adaptivityAnisotropic);
-}
-
-void PyField::setAdaptivityFinerReference(bool adaptivityFinerReference)
-{
-    m_fieldInfo->setValue(FieldInfo::AdaptivityFinerReference, adaptivityFinerReference);
-}
-
-void PyField::setAdaptivityBackSteps(int adaptivityBackSteps)
-{
-    if (adaptivityBackSteps >= 0 && adaptivityBackSteps <= 100)
-        m_fieldInfo->setValue(FieldInfo::AdaptivityTransientBackSteps, adaptivityBackSteps);
-    else
-        throw out_of_range(QObject::tr("Adaptivity back steps is out of range (0 - 100).").toStdString());
-}
-
-void PyField::setAdaptivityRedoneEach(int adaptivityRedoneEach)
-{
-    if (adaptivityRedoneEach >= 1 && adaptivityRedoneEach <= 100)
-        m_fieldInfo->setValue(FieldInfo::AdaptivityTransientRedoneEach, adaptivityRedoneEach);
-    else
-        throw out_of_range(QObject::tr("Adaptivity back steps is out of range (0 - 100).").toStdString());
 }
 
 void PyField::setInitialCondition(double initialCondition)

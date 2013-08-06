@@ -135,11 +135,13 @@ public:
 
     inline QString typeToStringKey(Type type) { return m_settingKey[type]; }
     inline Type stringKeyToType(const QString &key) { return m_settingKey.key(key); }
+    inline QStringList stringKeys() { return m_settingKey.values(); }
 
     inline QVariant value(Type type) const { return m_setting[type]; }
     inline void setValue(Type type, int value, bool emitChanged = true) {  m_setting[type] = value; if (emitChanged) emit changed(); }
     inline void setValue(Type type, double value, bool emitChanged = true) {  m_setting[type] = value; emit changed(); if (emitChanged) emit changed(); }
     inline void setValue(Type type, bool value, bool emitChanged = true) {  m_setting[type] = value; emit changed(); if (emitChanged) emit changed(); }
+    inline void setValue(Type type, const std::string &value, bool emitChanged = true) { setValue(type, QString::fromStdString(value), emitChanged); }
     inline void setValue(Type type, const QString &value, bool emitChanged = true) { m_setting[type] = value; emit changed(); if (emitChanged) emit changed(); }
     inline void setValue(Type type, const QStringList &value, bool emitChanged = true) { m_setting[type] = value; emit changed(); if (emitChanged) emit changed(); }
 

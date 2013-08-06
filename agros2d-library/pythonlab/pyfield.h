@@ -29,6 +29,31 @@ class PyField
         PyField(std::string fieldId);
         ~PyField() {}
 
+        template <typename Type>
+        void setParameter(const std::string &parameter, Type value)
+        {
+            assert(m_fieldInfo->stringKeyToType(QString::fromStdString(parameter)));
+            m_fieldInfo->setValue(m_fieldInfo->stringKeyToType(QString::fromStdString(parameter)), value);
+        }
+
+        inline int getBoolParameter(const std::string &parameter)
+        {
+            assert(m_fieldInfo->stringKeyToType(QString::fromStdString(parameter)));
+            return m_fieldInfo->value(m_fieldInfo->stringKeyToType(QString::fromStdString(parameter))).toBool();
+        }
+
+        inline int getIntParameter(const std::string &parameter)
+        {
+            assert(m_fieldInfo->stringKeyToType(QString::fromStdString(parameter)));
+            return m_fieldInfo->value(m_fieldInfo->stringKeyToType(QString::fromStdString(parameter))).toInt();
+        }
+
+        inline double getDoubleParameter(const std::string &parameter)
+        {
+            assert(m_fieldInfo->stringKeyToType(QString::fromStdString(parameter)));
+            return m_fieldInfo->value(m_fieldInfo->stringKeyToType(QString::fromStdString(parameter))).toDouble();
+        }
+
         // field id
         inline std::string fieldId() const { return m_fieldInfo->fieldId().toStdString(); }
 
@@ -40,6 +65,14 @@ class PyField
         inline std::string getLinearityType() const { return linearityTypeToStringKey(m_fieldInfo->linearityType()).toStdString(); }
         void setLinearityType(const std::string &linearityType);
 
+        // convergence measurement
+        inline std::string getNonlinearConvergenceMeasurement() const { return nonlinearSolverConvergenceMeasurementToStringKey((Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) m_fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()).toStdString(); }
+        void setNonlinearConvergenceMeasurement(const std::string &nonlinearConvergenceMeasurement);
+
+        // automatic damping
+        inline std::string getNewtonDampingType() const { return dampingTypeToStringKey((DampingType)m_fieldInfo->value(FieldInfo::NewtonDampingType).toInt()).toStdString(); }
+        void setNewtonDampingType(std::string dampingType);
+
         // adaptivity type
         inline std::string getAdaptivityType() const { return adaptivityTypeToStringKey(m_fieldInfo->adaptivityType()).toStdString(); }
         void setAdaptivityType(const std::string &adaptivityType);
@@ -48,21 +81,11 @@ class PyField
         inline std::string getMatrixSolver() const { return matrixSolverTypeToStringKey(m_fieldInfo->matrixSolver()).toStdString(); }
         void setMatrixSolver(const std::string &matrixSolver);
 
-        // linear solver absolute tolerance
-        inline double getLinearSolverAbsoluteTolerance() const { return m_fieldInfo->value(FieldInfo::LinearSolverIterToleranceAbsolute).toDouble(); }
-        void setLinearSolverAbsoluteTolerance(double absoluteTolerance);
-
-        // linear solver iterations
-        inline int getLinearSolverIterations() const { return m_fieldInfo->value(FieldInfo::LinearSolverIterIters).toInt(); }
-        void setLinearSolverIterations(int numberOfIterations);
-
-        // linear solver method
         inline std::string getLinearSolverMethod() const {
              return iterLinearSolverMethodToStringKey((Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType) m_fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()).toStdString();
         }
         void setLinearSolverMethod(const std::string &linearSolverMethod);
 
-        // linear solver preconditioner
         inline std::string getLinearSolverPreconditioner() const {
             return iterLinearSolverPreconditionerTypeToStringKey((Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) m_fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()).toStdString();
         }
@@ -76,70 +99,6 @@ class PyField
         inline int getPolynomialOrder() const { return m_fieldInfo->value(FieldInfo::SpacePolynomialOrder).toInt(); }
         void setPolynomialOrder(int polynomialOrder);
 
-        // convergence measurement
-        inline std::string getNonlinearConvergenceMeasurement() const { return nonlinearSolverConvergenceMeasurementToStringKey((Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) m_fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()).toStdString(); }
-        void setNonlinearConvergenceMeasurement(const std::string &nonlinearConvergenceMeasurement);
-
-        // nonlinear tolerance
-        inline double getNonlinearTolerance() const { return m_fieldInfo->value(FieldInfo::NonlinearTolerance).toDouble(); }
-        void setNonlinearTolerance(double nonlinearTolerance);
-
-        // nonlinear steps
-        inline int getNonlinearSteps() const { return m_fieldInfo->value(FieldInfo::NonlinearSteps).toInt(); }
-        void setNonlinearSteps(int nonlinearSteps);
-
-        // damping coefficient
-        inline double getNewtonDampingCoeff() const { return m_fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble(); }
-        void setNewtonDampingCoeff(double dampingCoeff);
-
-        // automatic damping
-        inline std::string getNewtonDampingType() const { return dampingTypeToStringKey((DampingType)m_fieldInfo->value(FieldInfo::NewtonDampingType).toInt()).toStdString(); }
-        void setNewtonDampingType(std::string dampingType);
-
-        // newton reuse jacobian
-        inline bool getNewtonReuseJacobian() const { return m_fieldInfo->value(FieldInfo::NewtonReuseJacobian).toBool(); }
-        void setNewtonReuseJacobian(bool reuse);
-
-        // steps to increase damping coeff
-        inline int getNewtonDampingNumberToIncrease() const { return m_fieldInfo->value(FieldInfo::NewtonStepsToIncreaseDF).toInt(); }
-        void setNewtonDampingNumberToIncrease(int dampingNumberToIncrease);
-
-        // sufficient improvement factor for Jacobian reuse
-        inline double getNewtonSufficientImprovementFactorForJacobianReuse() const { return m_fieldInfo->value(FieldInfo::NewtonSufImprovForJacobianReuse).toDouble(); }
-        void setNewtonSufficientImprovementFactorForJacobianReuse(double sufficientImprovementFactorJacobian);
-
-        // sufficient improvement factor
-        inline double getNewtonSufficientImprovementFactor() const { return m_fieldInfo->value(FieldInfo::NewtonSufImprov).toDouble(); }
-        void setNewtonSufficientImprovementFactor(double sufficientImprovementFactor);
-
-        // maximum steps with reused Jacobian
-        inline int getNewtonMaximumStepsWithReusedJacobian() const { return m_fieldInfo->value(FieldInfo::NewtonMaxStepsReuseJacobian).toInt(); }
-        void setNewtonMaximumStepsWithReusedJacobian(int maximumStepsWithReusedJacobian);
-
-        // picard anderson acceleration
-        inline bool getPicardAndersonAcceleration() const { return m_fieldInfo->value(FieldInfo::PicardAndersonAcceleration).toBool(); }
-        void setPicardAndersonAcceleration(bool acceleration);
-
-        // picard anderson beta
-        inline double getPicardAndersonBeta() const { return m_fieldInfo->value(FieldInfo::PicardAndersonBeta).toDouble(); }
-        void setPicardAndersonBeta(double beta);
-
-        // picard anderson number of last vectors
-        inline int getPicardAndersonNumberOfLastVectors() const { return m_fieldInfo->value(FieldInfo::PicardAndersonNumberOfLastVectors).toInt(); }
-        void setPicardAndersonNumberOfLastVectors(int number);
-
-        // adaptivity tolerance
-        inline double getAdaptivityTolerance() const { return m_fieldInfo->value(FieldInfo::AdaptivityTolerance).toDouble(); }
-        void setAdaptivityTolerance(double adaptivityTolerance);
-
-        // adaptivity steps
-        inline int getAdaptivitySteps() const { return m_fieldInfo->value(FieldInfo::AdaptivitySteps).toInt(); }
-        void setAdaptivitySteps(int adaptivitySteps);
-
-        // adaptivity threshold
-        inline double getAdaptivityThreshold() const { return m_fieldInfo->value(FieldInfo::AdaptivityThreshold).toDouble(); }
-        void setAdaptivityThreshold(double adaptivityThreshold);
-
         // adaptivity stopping criterion
         inline std::string getAdaptivityStoppingCriterion() const { return adaptivityStoppingCriterionTypeToStringKey((AdaptivityStoppingCriterionType) m_fieldInfo->value(FieldInfo::AdaptivityStoppingCriterion).toInt()).toStdString(); }
         void setAdaptivityStoppingCriterion(const std::string &adaptivityStoppingCriterion);
@@ -147,22 +106,6 @@ class PyField
         // adaptivity norm
         inline std::string getAdaptivityNormType() const { return adaptivityNormTypeToStringKey((Hermes::Hermes2D::NormType) m_fieldInfo->value(FieldInfo::AdaptivityProjNormType).toInt()).toStdString(); }
         void setAdaptivityNormType(const std::string &adaptivityNormType);
-
-        // adaptivity anisotropic
-        inline bool getAdaptivityAnisotropic() const { return m_fieldInfo->value(FieldInfo::AdaptivityUseAniso).toBool(); }
-        void setAdaptivityAnisotropic(bool adaptivityAnisotropic);
-
-        // adaptivity finer reference
-        inline bool getAdaptivityFinerReference() const { return m_fieldInfo->value(FieldInfo::AdaptivityFinerReference).toBool(); }
-        void setAdaptivityFinerReference(bool adaptivityFinerReference);
-
-        // adaptivity back steps
-        inline int getAdaptivityBackSteps() const { return m_fieldInfo->value(FieldInfo::AdaptivityTransientBackSteps).toInt(); }
-        void setAdaptivityBackSteps(int adaptivityBackSteps);
-
-        //adaptivity redone each
-        inline int getAdaptivityRedoneEach() const { return m_fieldInfo->value(FieldInfo::AdaptivityTransientRedoneEach).toInt(); }
-        void setAdaptivityRedoneEach(int adaptivityRedoneEach);
 
         // initial condition
         inline double getInitialCondition() const { return m_fieldInfo->value(FieldInfo::TransientInitialCondition).toDouble(); }
