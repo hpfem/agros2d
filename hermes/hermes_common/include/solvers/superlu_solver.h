@@ -76,7 +76,7 @@ namespace Hermes
     template<>
     struct SuperLuType<double>
     {
-    /** Type for storing scalar number in SuperLU real structures */
+      /** Type for storing scalar number in SuperLU real structures */
       typedef double Scalar;
     };
 
@@ -84,7 +84,7 @@ namespace Hermes
     template<>
     struct SuperLuType<std::complex<double> >
     {
-    /** Type for storing scalar number in SuperLU complex structures */
+      /** Type for storing scalar number in SuperLU complex structures */
       typedef struct { double r, i; } Scalar;
     };
 #endif //SLU_MT
@@ -110,7 +110,7 @@ namespace Hermes
       virtual void add(unsigned int m, unsigned int n, Scalar v);
       virtual void add_to_diagonal(Scalar v);
       virtual void add(unsigned int m, unsigned int n, Scalar **mat, int *rows, int *cols);
-      virtual bool dump(char *filename, const char *var_name, EMatrixDumpFormat fmt = DF_PLAIN_ASCII, char* number_format = "%lf");
+      virtual bool export_to_file(char *filename, const char *var_name, EMatrixExportFormat fmt = EXPORT_FORMAT_PLAIN_ASCII, char* number_format = "%lf");
       virtual unsigned int get_matrix_size() const;
       virtual unsigned int get_nnz() const;
       virtual double get_fill_in() const;
@@ -176,13 +176,6 @@ namespace Hermes
       virtual void add(unsigned int n, unsigned int *idx, Scalar *y);
       virtual void add_vector(Vector<Scalar>* vec);
       virtual void add_vector(Scalar* vec);
-      virtual bool dump(char *filename, const char *var_name, EMatrixDumpFormat fmt = DF_PLAIN_ASCII, char* number_format = "%lf");
-
-    protected:
-      /// SUPERLU specific data structures for storing the rhs.
-      Scalar *v;     // Vector entries.
-
-      friend class Solvers::SuperLUSolver<Scalar>;
     };
   }
   namespace Solvers
@@ -237,7 +230,7 @@ namespace Hermes
       int *etree;                   ///< Elimination tree of Pc'*A'*A*Pc.
       slu_options_t options;        ///< Structure holding the input options for the solver.
 
-      private:
+    private:
 #ifndef SLU_MT
       void create_csc_matrix (SuperMatrix *A, int m, int n, int nnz, typename SuperLuType<Scalar>::Scalar *nzval, int *rowind, int *colptr,
         Stype_t stype, Dtype_t dtype, Mtype_t mtype);

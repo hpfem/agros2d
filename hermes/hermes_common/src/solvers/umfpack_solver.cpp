@@ -22,6 +22,7 @@
 #include "config.h"
 #ifdef WITH_UMFPACK
 #include "umfpack_solver.h"
+#include "common.h"
 
 #define umfpack_real_symbolic umfpack_di_symbolic
 #define umfpack_real_numeric umfpack_di_numeric
@@ -38,12 +39,11 @@ namespace Hermes
     template<typename Scalar>
     UMFPackVector<Scalar>::UMFPackVector() : Vector<Scalar>()
     {
-      v = NULL;
       this->size = 0;
     }
 
     template<typename Scalar>
-    UMFPackVector<Scalar>::UMFPackVector(unsigned int size) : Vector<Scalar>(size), v(NULL)
+    UMFPackVector<Scalar>::UMFPackVector(unsigned int size) : Vector<Scalar>(size)
     {
       this->alloc(size);
     }
@@ -59,61 +59,62 @@ namespace Hermes
     {
       free();
       this->size = n;
-      v = new Scalar[n];
+      this->v = new Scalar[n];
       this->zero();
     }
 
     template<typename Scalar>
     void UMFPackVector<Scalar>::zero()
     {
-      memset(v, 0, this->size * sizeof(Scalar));
+      memset(this->v, 0, this->size * sizeof(Scalar));
     }
 
     template<typename Scalar>
     void UMFPackVector<Scalar>::change_sign()
     {
-      for (unsigned int i = 0; i < this->size; i++) v[i] *= -1.;
+      for (unsigned int i = 0; i < this->size; i++)
+        this->v[i] *= -1.;
     }
 
     template<typename Scalar>
     void UMFPackVector<Scalar>::free()
     {
-      delete [] v;
-      v = NULL;
+      delete [] this->v;
+      this->v = NULL;
       this->size = 0;
     }
 
     template<typename Scalar>
     void UMFPackVector<Scalar>::set(unsigned int idx, Scalar y)
     {
-      v[idx] = y;
+      this->v[idx] = y;
     }
 
     template<>
     void UMFPackVector<double>::add(unsigned int idx, double y)
     {
 #pragma omp atomic
-      v[idx] += y;
+      this->v[idx] += y;
     }
 
     template<>
     void UMFPackVector<std::complex<double> >::add(unsigned int idx, std::complex<double> y)
     {
 #pragma omp critical(UMFPackVector_add)
-      v[idx] += y;
+      this->v[idx] += y;
     }
 
     template<typename Scalar>
     void UMFPackVector<Scalar>::add(unsigned int n, unsigned int *idx, Scalar *y)
     {
       for (unsigned int i = 0; i < n; i++)
-        v[idx[i]] += y[i];
+        this->v[idx[i]] += y[i];
     }
 
     template<typename Scalar>
     Scalar UMFPackVector<Scalar>::get(unsigned int idx) const
     {
-      return v[idx];
+      return this->v[idx];
     }
 
     template<typename Scalar>
@@ -126,7 +127,8 @@ namespace Hermes
     void UMFPackVector<Scalar>::set_vector(Vector<Scalar>* vec)
     {
       assert(this->size == vec->length());
-      for (unsigned int i = 0; i < this->size; i++) this->v[i] = vec->get(i);
+      for (unsigned int i = 0; i < this->size; i++)
+        this->v[i] = vec->get(i);
     }
 
     template<typename Scalar>
@@ -146,85 +148,6 @@ namespace Hermes
     void UMFPackVector<Scalar>::add_vector(Scalar* vec)
     {
       for (unsigned int i = 0; i < this->length(); i++) this->v[i] += vec[i];
-    }
-
-    template<typename Scalar>
-    Scalar *UMFPackVector<Scalar>::get_c_array()
-    {
-      return this->v;
-    }
-
-    template<>
-    bool UMFPackVector<double>::dump(char *filename, const char *var_name, EMatrixDumpFormat fmt, char* number_format)
-    {
-      switch (fmt)
-      {
-
-      case DF_MATLAB_MAT:
-      {
-#ifdef WITH_MATIO
-        size_t dims[2];
-        dims[0] = this->size;
-        dims[1] = 1;
-
-        mat_t *mat = Mat_CreateVer(filename, NULL, MAT_FT_MAT5);
-        matvar_t *matvar = Mat_VarCreate("rhs", MAT_C_DOUBLE, MAT_T_DOUBLE, 2, dims, v, MAT_F_DONT_COPY_DATA);
-        if (matvar)
-        {
-            Mat_VarWrite(mat, matvar, MAT_COMPRESSION_ZLIB);
-            Mat_VarFree(matvar);
-
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-        Mat_Close(mat);
-#endif
-        return false;
-      }
-
-      case DF_PLAIN_ASCII:
-        {
-          FILE* file = fopen(filename, "w+");
-          fprintf(file, "\n");
-          for (unsigned int i = 0; i < size; i++)
-          {
-            Hermes::Helpers::fprint_num(file, v[i], number_format);
-            fprintf(file, "\n");
-          }
-          fclose(file);
-
-          return true;
-        }
-
-      default:
-        return false;
-      }
-    }
-
-    template<>
-    bool UMFPackVector<std::complex<double> >::dump(char *filename, const char *var_name, EMatrixDumpFormat fmt, char* number_format)
-    {
-      switch (fmt)
-      {
-      case DF_PLAIN_ASCII:
-        {
-          FILE* file = fopen(filename, "w+");
-          fprintf(file, "\n");
-          for (unsigned int i = 0; i < size; i++)
-          {
-            fprintf(file, "%E %E\n", v[i].real(), v[i].imag());
-          }
-          fclose(file);
-
-          return true;
-        }
-
-      default:
-        return false;
-      }
     }
 
     template class HERMES_API UMFPackMatrix<double>;
@@ -388,7 +311,7 @@ namespace Hermes
 
       sln = new double[m->get_size()];
       memset(sln, 0, m->get_size() * sizeof(double));
-      int status = umfpack_real_solve(UMFPACK_A, m->get_Ap(), m->get_Ai(), m->get_Ax(), sln, rhs->get_c_array(), numeric, NULL, NULL);
+      int status = umfpack_real_solve(UMFPACK_A, m->get_Ap(), m->get_Ai(), m->get_Ax(), sln, rhs->v, numeric, NULL, NULL);
       if(status != UMFPACK_OK)
       {
         this->free_factorization_data();
@@ -414,7 +337,7 @@ namespace Hermes
       sln = new std::complex<double>[m->get_size()];
 
       memset(sln, 0, m->get_size() * sizeof(std::complex<double>));
-      int status = umfpack_complex_solve(UMFPACK_A, m->get_Ap(), m->get_Ai(), (double *)m->get_Ax(), NULL, (double*) sln, NULL, (double *)rhs->get_c_array(), NULL, numeric, NULL, NULL);
+      int status = umfpack_complex_solve(UMFPACK_A, m->get_Ap(), m->get_Ai(), (double *)m->get_Ax(), NULL, (double*) sln, NULL, (double *)rhs->v, NULL, numeric, NULL, NULL);
       if(status != UMFPACK_OK)
       {
         this->free_factorization_data();

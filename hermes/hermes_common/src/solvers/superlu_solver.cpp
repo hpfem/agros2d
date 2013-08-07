@@ -222,7 +222,7 @@ namespace Hermes
     /// Save matrix and right-hand side to a file.
     ///
     template<typename Scalar>
-    bool SuperLUMatrix<Scalar>::dump(char *filename, const char *var_name, EMatrixDumpFormat fmt, char* number_format)
+    bool SuperLUMatrix<Scalar>::export_to_file(char *filename, const char *var_name, EMatrixExportFormat fmt, char* number_format)
     {
       // TODO
       switch (fmt)
@@ -479,45 +479,6 @@ namespace Hermes
     void SuperLUVector<Scalar>::add_vector(Scalar* vec)
     {
       for (unsigned int i = 0; i < this->length(); i++) this->add(i, vec[i]);
-    }
-
-    template<typename Scalar>
-    bool SuperLUVector<Scalar>::dump(char *filename, const char *var_name, EMatrixDumpFormat fmt, char* number_format)
-    {
-      switch (fmt)
-      {
-      case DF_PLAIN_ASCII:
-        for (unsigned int i = 0; i < this->size; i++)
-        {
-          Hermes::Helpers::fprint_num(file, v[i], number_format);
-          fprintf(file, "\n");
-        }
-
-        return true;
-
-      case DF_MATLAB_SPARSE:
-        fprintf(file, "%% Size: %dx1\n%s =[\n", this->size, var_name);
-        for (unsigned int i = 0; i < this->size; i++)
-        {
-          Hermes::Helpers::fprint_num(file, v[i], number_format);
-          fprintf(file, "\n");
-        }
-        fprintf(file, " ];\n");
-        return true;
-
-      case DF_HERMES_BIN:
-        {
-          this->hermes_fwrite("HERMESR\001", 1, 8, file);
-          int ssize = sizeof(Scalar);
-          this->hermes_fwrite(&ssize, sizeof(int), 1, file);
-          this->hermes_fwrite(&this->size, sizeof(int), 1, file);
-          this->hermes_fwrite(v, sizeof(Scalar), this->size, file);
-          return true;
-        }
-
-      default:
-        return false;
-      }
     }
 
     template class HERMES_API SuperLUMatrix<double>;

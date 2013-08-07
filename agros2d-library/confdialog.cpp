@@ -68,7 +68,7 @@ void ConfigComputerDialog::load()
 
     // development
     chkDiscreteSaveMatrixRHS->setChecked(Agros2D::configComputer()->saveMatrixRHS);
-    cmbDumpFormat->setCurrentIndex((Hermes::Algebra::EMatrixDumpFormat) cmbDumpFormat->findData(Agros2D::configComputer()->dumpFormat, Qt::UserRole));
+    cmbDumpFormat->setCurrentIndex((Hermes::Algebra::EMatrixExportFormat) cmbDumpFormat->findData(Agros2D::configComputer()->dumpFormat, Qt::UserRole));
 
     // number of threads
     txtNumOfThreads->setValue(Agros2D::configComputer()->numberOfThreads);
@@ -114,7 +114,7 @@ void ConfigComputerDialog::save()
 
     // development
     Agros2D::configComputer()->saveMatrixRHS = chkDiscreteSaveMatrixRHS->isChecked();
-    Agros2D::configComputer()->dumpFormat = (Hermes::Algebra::EMatrixDumpFormat) cmbDumpFormat->itemData(cmbDumpFormat->currentIndex(), Qt::UserRole).toInt();
+    Agros2D::configComputer()->dumpFormat = (Hermes::Algebra::EMatrixExportFormat) cmbDumpFormat->itemData(cmbDumpFormat->currentIndex(), Qt::UserRole).toInt();
 
     // number of threads
     Agros2D::configComputer()->numberOfThreads = txtNumOfThreads->value();
@@ -263,8 +263,8 @@ QWidget *ConfigComputerDialog::createSolverWidget()
 
     chkDiscreteSaveMatrixRHS = new QCheckBox(tr("Save matrix and RHS"));
     cmbDumpFormat = new QComboBox(this);
-    cmbDumpFormat->addItem(dumpFormatString(DF_PLAIN_ASCII), DF_PLAIN_ASCII);
-    cmbDumpFormat->addItem(dumpFormatString(DF_MATLAB_MAT), DF_MATLAB_MAT);
+    cmbDumpFormat->addItem(dumpFormatString(EXPORT_FORMAT_PLAIN_ASCII), EXPORT_FORMAT_PLAIN_ASCII);
+    cmbDumpFormat->addItem(dumpFormatString(EXPORT_FORMAT_MATLAB_MATIO), EXPORT_FORMAT_MATLAB_MATIO);
     // cmbDumpFormat->addItem(dumpFormatString(DF_MATRIX_MARKET), DF_MATRIX_MARKET);
 
     QGridLayout *layoutDevelopment = new QGridLayout();

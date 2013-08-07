@@ -44,7 +44,7 @@ public:
 
     // development
     bool saveMatrixRHS;
-    Hermes::Algebra::EMatrixDumpFormat dumpFormat;
+    Hermes::Algebra::EMatrixExportFormat dumpFormat;
 
     // cache
     int cacheSize;

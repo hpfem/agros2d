@@ -41,7 +41,7 @@ static QMap<LinearityType, QString> linearityTypeList;
 static QMap<DampingType, QString> dampingTypeList;
 static QMap<MeshType, QString> meshTypeList;
 static QMap<Hermes::MatrixSolverType, QString> matrixSolverTypeList;
-static QMap<Hermes::Algebra::EMatrixDumpFormat, QString> dumpFormatList;
+static QMap<Hermes::Algebra::EMatrixExportFormat, QString> dumpFormatList;
 static QMap<Hermes::Hermes2D::SpaceType, QString> spaceTypeList;
 static QMap<PaletteType, QString> paletteTypeList;
 static QMap<PaletteQuality, QString> paletteQualityList;
@@ -111,8 +111,8 @@ QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType) {
 Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType) { return matrixSolverTypeList.key(matrixSolverType); }
 
 QStringList dumpFormatStringKeys() { return dumpFormatList.values(); }
-QString dumpFormatToStringKey(Hermes::Algebra::EMatrixDumpFormat format) { return dumpFormatList[format]; }
-Hermes::Algebra::EMatrixDumpFormat dumpFormatFromStringKey(const QString &format) { return dumpFormatList.key(format); }
+QString dumpFormatToStringKey(Hermes::Algebra::EMatrixExportFormat format) { return dumpFormatList[format]; }
+Hermes::Algebra::EMatrixExportFormat dumpFormatFromStringKey(const QString &format) { return dumpFormatList.key(format); }
 
 QStringList spaceTypeStringKeys() { return spaceTypeList.values(); }
 QString spaceTypeToStringKey(Hermes::Hermes2D::SpaceType spaceType) { return spaceTypeList[spaceType]; }
@@ -262,9 +262,9 @@ void initLists()
 #endif
 
     // dump format
-    dumpFormatList.insert(Hermes::Algebra::DF_PLAIN_ASCII, "plain_ascii");
-    dumpFormatList.insert(Hermes::Algebra::DF_MATLAB_MAT, "matlab_mat");
-    dumpFormatList.insert(Hermes::Algebra::DF_MATRIX_MARKET, "matrix_market");
+    dumpFormatList.insert(Hermes::Algebra::EXPORT_FORMAT_PLAIN_ASCII, "plain_ascii");
+    dumpFormatList.insert(Hermes::Algebra::EXPORT_FORMAT_MATLAB_MATIO, "matlab_mat");
+    dumpFormatList.insert(Hermes::Algebra::EXPORT_FORMAT_MATRIX_MARKET, "matrix_market");
 
     // space
     spaceTypeList.insert(Hermes::Hermes2D::HERMES_H1_SPACE, "h1");
@@ -697,18 +697,18 @@ QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType)
     }
 }
 
-QString dumpFormatString(Hermes::Algebra::EMatrixDumpFormat format)
+QString dumpFormatString(Hermes::Algebra::EMatrixExportFormat format)
 {
     switch (format)
     {
-    case Hermes::Algebra::DF_MATLAB_MAT:
+    case Hermes::Algebra::EXPORT_FORMAT_MATLAB_MATIO:
         return QObject::tr("MATLAB MAT");
-    case Hermes::Algebra::DF_MATRIX_MARKET:
-        return QObject::tr("Matrix market");
-    case Hermes::Algebra::DF_PLAIN_ASCII:
+    case Hermes::Algebra::EXPORT_FORMAT_MATRIX_MARKET:
+        return QObject::tr("Matrix Market");
+    case Hermes::Algebra::EXPORT_FORMAT_PLAIN_ASCII:
         return QObject::tr("Plain ASCII");
     default:
-        std::cerr << "Matrix dump format '" + QString::number(format).toStdString() + "' is not implemented. dumpFormatString(Hermes::Algebra::EMatrixDumpFormat format)" << endl;
+        std::cerr << "Matrix dump format '" + QString::number(format).toStdString() + "' is not implemented. dumpFormatString(Hermes::Algebra::EMatrixExportFormat format)" << endl;
         throw;
     }
 }

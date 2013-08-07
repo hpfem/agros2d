@@ -196,8 +196,6 @@ namespace Hermes
             add(rows[i], cols[j], mat[i][j]);
     }
 
-    /// Add a number to each diagonal entry.
-
     template<typename Scalar>
     void MumpsMatrix<Scalar>::add_to_diagonal(Scalar v)
     {
@@ -207,61 +205,106 @@ namespace Hermes
       }
     };
 
-    /// dumping matrix and right-hand side
-    ///
     template<typename Scalar>
-    bool MumpsMatrix<Scalar>::dump(char* filename, const char *var_name, EMatrixDumpFormat fmt, char* number_format)
+    bool MumpsMatrix<Scalar>::export_to_file(char *filename, const char *var_name, EMatrixExportFormat fmt, char* number_format)
     {
-      // TODO
       switch (fmt)
       {
-      case DF_PLAIN_ASCII:
-      {
-        FILE* file = fopen(filename, "w+");
-        // fprintf(file, "%d\n", this->size);
-        // fprintf(file, "%d\n", nnz);
-        for (unsigned int i = 0; i < nnz; i++)
+      case EXPORT_FORMAT_MATRIX_MARKET:
         {
-          fprintf(file, "%d %d ", irn[i]-1, jcn[i]-1);
-          Hermes::Helpers::fprint_num(file, mumps_to_Scalar(Ax[i]), number_format);
-          fprintf(file, "\n");
+          FILE* file = fopen(filename, "w");
+          fprintf(file, "%%%%Matrix<Scalar>Market matrix coordinate real\n");
+          fprintf(file, "%d %d %d\n", this->size, this->size, this->nnz);
+
+          for (unsigned int j = 0; j < this->size; j++)
+          {
+            for (int i = Ap[j]; i < Ap[j + 1]; i++)
+            {
+              Helpers::fprint_coordinate_num(file, irn[i]-1, jcn[i]-1, mumps_to_Scalar(Ax[i]), number_format);
+              fprintf(file, "\n");
+            }
+          }
+
+          fclose(file);
+          return true;
         }
-        fclose(file);
-        return true;
-      }
-      case DF_MATLAB_MAT:
-      {
-#ifdef WITH_MATIO
-        mat_sparse_t sparse;
-        sparse.nzmax = this->nnz;
-        sparse.nir = this->nnz;
-        sparse.ir = Ai;
-        sparse.njc = this->size + 1;
-        sparse.jc = (int *) Ap;
-        sparse.ndata = this->nnz;
-        sparse.data = Ax;
 
-        size_t dims[2];
-        dims[0] = this->size;
-        dims[1] = this->size;
-
-        mat_t *mat = Mat_CreateVer(filename, NULL, MAT_FT_MAT5);
-        matvar_t *matvar = Mat_VarCreate("matrix", MAT_C_SPARSE, MAT_T_DOUBLE, 2, dims, &sparse, MAT_F_DONT_COPY_DATA);
-        if (matvar)
+      case EXPORT_FORMAT_MATLAB_MATIO:
         {
+#ifdef WITH_MATIO
+          mat_sparse_t sparse;
+          sparse.nzmax = this->nnz;
+
+          // For complex.
+          double* Ax_re = new double[this->nnz];
+          double* Ax_im = new double[this->nnz];
+          struct mat_complex_split_t z = {Ax_re, Ax_im};
+
+          sparse.nir = this->nnz;
+          sparse.ir = Ai;
+          sparse.njc = this->size + 1;
+          sparse.jc = (int *) Ap;
+          sparse.ndata = this->nnz;
+          if(Hermes::Helpers::TypeIsReal<Scalar>::value)
+            sparse.data = Ax;
+          else
+          {
+            for(int i = 0; i < this->nnz; i++)
+            {
+              Ax_re[i] = ((std::complex<double>)(mumps_to_Scalar(this->Ax[i]))).real();
+              Ax_im[i] = ((std::complex<double>)(mumps_to_Scalar(this->Ax[i]))).imag();
+              sparse.data = &z;
+            }
+          }
+
+          size_t dims[2];
+          dims[0] = this->size;
+          dims[1] = this->size;
+
+          mat_t *mat = Mat_CreateVer(filename, "", MAT_FT_MAT5);
+
+          matvar_t *matvar;
+          if(Hermes::Helpers::TypeIsReal<Scalar>::value)
+            matvar = Mat_VarCreate("matrix", MAT_C_SPARSE, MAT_T_DOUBLE, 2, dims, &sparse, MAT_F_DONT_COPY_DATA);
+          else
+            matvar = Mat_VarCreate("matrix", MAT_C_SPARSE, MAT_T_DOUBLE, 2, dims, &sparse, MAT_F_DONT_COPY_DATA | MAT_F_COMPLEX);
+
+          if (matvar)
+          {
             Mat_VarWrite(mat, matvar, MAT_COMPRESSION_ZLIB);
             Mat_VarFree(matvar);
-
+            delete [] Ax_re;
+            delete [] Ax_im;
             return true;
-        }
-        else
-        {
+          }
+          else
+          {
+            delete [] Ax_re;
+            delete [] Ax_im;
             return false;
-        }
-        Mat_Close(mat);
+          }
+
+          Mat_Close(mat);
 #endif
-        return false;
-      }
+          return false;
+        }
+
+      case EXPORT_FORMAT_PLAIN_ASCII:
+        {
+          FILE* file = fopen(filename, "w");
+
+          for (unsigned int j = 0; j < this->size; j++)
+          {
+            for (int i = Ap[j]; i < Ap[j + 1]; i++)
+            {
+              Helpers::fprint_coordinate_num(file, irn[i]-1, jcn[i]-1, mumps_to_Scalar(Ax[i]), number_format);
+              fprintf(file, "\n");
+            }
+          }
+
+          fclose(file);
+          return true;
+        }
 
       default:
         return false;
@@ -443,7 +486,7 @@ namespace Hermes
     template<typename Scalar>
     MumpsVector<Scalar>::MumpsVector()
     {
-      v = NULL;
+      this->v = NULL;
       this->size = 0;
     }
 
@@ -458,41 +501,41 @@ namespace Hermes
     {
       free();
       this->size = n;
-      v = new Scalar[n];
+      this->v = new Scalar[n];
       zero();
     }
 
     template<typename Scalar>
     void MumpsVector<Scalar>::change_sign()
     {
-      for (unsigned int i = 0; i < this->size; i++) v[i] *= -1.;
+      for (unsigned int i = 0; i < this->size; i++) this->v[i] *= -1.;
     }
 
     template<typename Scalar>
     void MumpsVector<Scalar>::zero()
     {
-      memset(v, 0, this->size * sizeof(Scalar));
+      memset(this->v, 0, this->size * sizeof(Scalar));
     }
 
     template<typename Scalar>
     void MumpsVector<Scalar>::free()
     {
-      delete [] v;
-      v = NULL;
+      delete [] this->v;
+      this->v = NULL;
       this->size = 0;
     }
 
     template<typename Scalar>
     void MumpsVector<Scalar>::set(unsigned int idx, Scalar y)
     {
-      v[idx] = y;
+      this->v[idx] = y;
     }
 
     template<typename Scalar>
     void MumpsVector<Scalar>::add(unsigned int idx, Scalar y)
     {
-      #pragma omp critical (MumpsVector_add)
-      v[idx] += y;
+#pragma omp critical (MumpsVector_add)
+      this->v[idx] += y;
     }
 
     template<typename Scalar>
@@ -500,14 +543,14 @@ namespace Hermes
     {
       for (unsigned int i = 0; i < n; i++)
       {
-        v[idx[i]] += y[i];
+        this->v[idx[i]] += y[i];
       }
     }
 
     template<typename Scalar>
     Scalar MumpsVector<Scalar>::get(unsigned int idx) const
     {
-      return v[idx];
+      return this->v[idx];
     }
 
     template<typename Scalar>
@@ -527,54 +570,6 @@ namespace Hermes
     void MumpsVector<Scalar>::add_vector(Scalar* vec)
     {
       for (unsigned int i = 0; i < this->length(); i++) this->add(i, vec[i]);
-    }
-
-    template<typename Scalar>
-    bool MumpsVector<Scalar>::dump(char *filename, const char *var_name, EMatrixDumpFormat fmt, char* number_format)
-    {
-      switch (fmt)
-      {
-      case DF_PLAIN_ASCII:
-      {
-        FILE* file = fopen(filename, "w+");
-        for (unsigned int i = 0; i < this->size; i++)
-        {
-          Hermes::Helpers::fprint_num(file, v[i], number_format);
-          fprintf(file, "\n");
-        }
-        fclose(file);
-
-        return true;
-      }
-
-      case DF_MATLAB_MAT:
-      {
-#ifdef WITH_MATIO
-        size_t dims[2];
-        dims[0] = this->size;
-        dims[1] = 1;
-
-        mat_t *mat = Mat_CreateVer(filename, NULL, MAT_FT_MAT5);
-        matvar_t *matvar = Mat_VarCreate("rhs", MAT_C_DOUBLE, MAT_T_DOUBLE, 2, dims, v, MAT_F_DONT_COPY_DATA);
-        if (matvar)
-        {
-            Mat_VarWrite(mat, matvar, MAT_COMPRESSION_ZLIB);
-            Mat_VarFree(matvar);
-
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-        Mat_Close(mat);
-#endif
-        return false;
-      }
-
-      default:
-        return false;
-      }
     }
 
     template class HERMES_API MumpsMatrix<double>;
@@ -664,7 +659,7 @@ namespace Hermes
 
     template<typename Scalar>
     MumpsSolver<Scalar>::MumpsSolver(MumpsMatrix<Scalar> *m, MumpsVector<Scalar> *rhs) :
-    DirectSolver<Scalar>(), m(m), rhs(rhs)
+      DirectSolver<Scalar>(), m(m), rhs(rhs)
     {
       inited = false;
 
@@ -721,7 +716,7 @@ namespace Hermes
       if(ret)
       {
         delete [] this->sln;
-				this->sln = new Scalar[m->size];
+        this->sln = new Scalar[m->size];
         for (unsigned int i = 0; i < rhs->size; i++)
           this->sln[i] = mumps_to_Scalar(param.rhs[i]);
       }

@@ -237,15 +237,51 @@ namespace Hermes
     {
       this->nnz = nnz;
       this->size = size;
-      this->Ap = new int[this->size + 1]; assert(this->Ap != NULL);
-      this->Ai = new int[nnz];    assert(this->Ai != NULL);
-      this->Ax = new Scalar[nnz]; assert(this->Ax != NULL);
-      for (unsigned int i = 0; i < this->size + 1; i++) this->Ap[i] = ap[i];
+      this->Ap = new int[this->size + 1];
+      this->Ai = new int[nnz];
+      this->Ax = new Scalar[nnz];
+      for (unsigned int i = 0; i < this->size + 1; i++)
+        this->Ap[i] = ap[i];
       for (unsigned int i = 0; i < nnz; i++)
       {
         this->Ax[i] = ax[i];
         this->Ai[i] = ai[i];
       }
+    }
+
+    template<typename Scalar>
+    void CSMatrix<Scalar>::switch_orientation()
+    {
+      // The variable names are so to reflect CSC -> CSR direction.
+      // From the "Ap indexed by columns" to "Ap indexed by rows".
+      int* tempAp = new int[this->size + 1];
+      int* tempAi = new int[nnz];
+      Scalar* tempAx = new Scalar[nnz];
+
+      int run_i = 0;
+      for(int target_row = 0; target_row < this->size; target_row++)
+      {
+        tempAp[target_row] = run_i;
+        for(int src_column = 0; src_column < this->size; src_column++)
+        {
+          for(int src_row = this->Ap[src_column]; src_row < this->Ap[src_column + 1]; src_row++)
+          {
+            if(this->Ai[src_row] == target_row)
+            {
+              tempAi[run_i] = src_column;
+              tempAx[run_i++] = this->Ax[src_row];
+            }
+          }
+        }
+      }
+
+      tempAp[this->size] = this->nnz;
+      delete [] this->Ai;
+      delete [] this->Ap;
+      delete [] this->Ax;
+      this->Ai = tempAi;
+      this->Ax = tempAx;
+      this->Ap = tempAp;
     }
 
     template<typename Scalar>
@@ -370,116 +406,131 @@ namespace Hermes
       return CSMatrix<Scalar>::get(m, n);
     }
 
-    template<>
-    bool CSCMatrix<double>::dump(char *filename, const char *var_name, EMatrixDumpFormat fmt, char* number_format)
+    static int i_coordinate(int i, int j, bool invert)
+    {
+      if(invert)
+        return i;
+      else
+        return j;
+    }
+
+    static int j_coordinate(int i, int j, bool invert)
+    {
+      if(invert)
+        return j;
+      else
+        return i;
+    }
+
+    template<typename Scalar>
+    bool CSMatrix<Scalar>::export_to_file(char *filename, const char *var_name, EMatrixExportFormat fmt, char* number_format, bool invert_storage)
     {
       switch (fmt)
-      {      
-      case DF_MATRIX_MARKET:
+      {
+      case EXPORT_FORMAT_MATRIX_MARKET:
         {
-          FILE* file = fopen(filename, "w+");
-          fprintf(file, "%%%%Matrix<Scalar>Market matrix coordinate real symmetric\n");
-          int nnz_sym = 0;
+          FILE* file = fopen(filename, "w");
+          if(Hermes::Helpers::TypeIsReal<Scalar>::value)
+            fprintf(file, "%%%%Matrix<Scalar>Market matrix coordinate real\n");
+          else
+            fprintf(file, "%%%%Matrix<Scalar>Market matrix coordinate complex\n");
+
+          fprintf(file, "%d %d %d\n", this->size, this->size, this->nnz);
+
           for (unsigned int j = 0; j < this->size; j++)
-          {
-            for (int i = Ap[j]; i < Ap[j + 1]; i++)
-              if((int)j <= Ai[i]) nnz_sym++;
-          }
-          fprintf(file, "%d %d %d\n", this->size, this->size, nnz_sym);
-          for (unsigned int j = 0; j < this->size; j++)
-          {
-            for (int i = Ap[j]; i < Ap[j + 1]; i++)
-              // The following line was replaced with the one below, because it gave a warning
-                // to cause code abort at runtime.
-                  //if(j <= Ai[i]) fprintf(file, "%d %d %24.15e\n", Ai[i] + 1, j + 1, Ax[i]);
-                    if((int)j <= Ai[i])
-                    {
-                      fprintf(file, "%d %d ", Ai[i] + 1, (int)j + 1);
-                      Hermes::Helpers::fprint_num(file, Ax[i], number_format);
-                      fprintf(file, "\n");
-                    }
-          }
-          fclose(file);
-          return true;
-        }
-
-        case DF_MATLAB_MAT:
-        {
-          int ssize = sizeof(double);
-
-#ifdef WITH_MATIO
-        mat_sparse_t sparse;
-        sparse.nzmax = this->nnz;
-        sparse.nir = this->nnz;
-        sparse.ir = Ai;
-        sparse.njc = this->size + 1;
-        sparse.jc = (int *) Ap;
-        sparse.ndata = this->nnz;
-        sparse.data = Ax;
-
-        size_t dims[2];
-        dims[0] = this->size;
-        dims[1] = this->size;
-
-        mat_t *mat = Mat_CreateVer(filename, NULL, MAT_FT_MAT5);
-        matvar_t *matvar = Mat_VarCreate("matrix", MAT_C_SPARSE, MAT_T_DOUBLE, 2, dims, &sparse, MAT_F_DONT_COPY_DATA);
-        if (matvar)
-        {
-            Mat_VarWrite(mat, matvar, MAT_COMPRESSION_ZLIB);
-            Mat_VarFree(matvar);
-
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-        Mat_Close(mat);
-#endif
-          return true;
-        }
-
-      case DF_PLAIN_ASCII:
-        {
-          const double zero_cutoff = Hermes::epsilon;
-          double *ascii_entry_buff = new double[nnz];
-          int *ascii_entry_i = new int[nnz];
-          int *ascii_entry_j = new int[nnz];
-          int k = 0;
-
-          // If real or imaginary part of Scalar entry is below zero_cutoff
-          // it's not included in ascii file, and number of non-zeros is reduced by one.
-          for (unsigned int j = 0; j < size; j++)
           {
             for (int i = Ap[j]; i < Ap[j + 1]; i++)
             {
-              if(real(Ax[i]) > zero_cutoff || imag(Ax[i]) > zero_cutoff)
-              {
-                ascii_entry_buff[k] = Ax[i];
-                ascii_entry_i[k] = Ai[i];
-                ascii_entry_j[k] = j;
-                k++;
-              }
-              else
-                nnz -= 1;
+              Hermes::Helpers::fprint_coordinate_num(file, i_coordinate(Ai[i] + 1, j + 1, invert_storage), j_coordinate(Ai[i] + 1, j + 1, invert_storage), Ax[i], number_format);
+              fprintf(file, "\n");
             }
           }
 
-          FILE* file = fopen(filename, "w+");
-          for (unsigned int k = 0; k < nnz; k++)
-            fprintf(file, "%d %d %f\n", ascii_entry_i[k], ascii_entry_j[k], ascii_entry_buff[k]);
           fclose(file);
+          return true;
+        }
 
-          //Free memory
-          delete [] ascii_entry_buff;
-          delete [] ascii_entry_i;
-          delete [] ascii_entry_j;
+      case EXPORT_FORMAT_MATLAB_MATIO:
+        {
+#ifdef WITH_MATIO
+          mat_sparse_t sparse;
+          sparse.nzmax = this->nnz;
+          if(invert_storage)
+            this->switch_orientation();
 
-          //Clear pointer
-          ascii_entry_buff = NULL;
-          ascii_entry_i = NULL;
-          ascii_entry_j = NULL;
+          // For complex.
+          double* Ax_re = new double[this->nnz];
+          double* Ax_im = new double[this->nnz];
+          struct mat_complex_split_t z = {Ax_re, Ax_im};
 
+          sparse.nir = this->nnz;
+          sparse.ir = Ai;
+          sparse.njc = this->size + 1;
+          sparse.jc = (int *) Ap;
+          sparse.ndata = this->nnz;
+          if(Hermes::Helpers::TypeIsReal<Scalar>::value)
+            sparse.data = Ax;
+          else
+          {
+            for(int i = 0; i < this->nnz; i++)
+            {
+              Ax_re[i] = ((std::complex<double>)(this->Ax[i])).real();
+              Ax_im[i] = ((std::complex<double>)(this->Ax[i])).imag();
+              sparse.data = &z;
+            }
+          } 
+
+          size_t dims[2];
+          dims[0] = this->size;
+          dims[1] = this->size;
+
+          mat_t *mat = Mat_CreateVer(filename, "", MAT_FT_MAT5);
+
+          matvar_t *matvar;
+          if(Hermes::Helpers::TypeIsReal<Scalar>::value)
+            matvar = Mat_VarCreate("matrix", MAT_C_SPARSE, MAT_T_DOUBLE, 2, dims, &sparse, MAT_F_DONT_COPY_DATA);
+          else
+            matvar = Mat_VarCreate("matrix", MAT_C_SPARSE, MAT_T_DOUBLE, 2, dims, &sparse, MAT_F_DONT_COPY_DATA | MAT_F_COMPLEX);
+
+          if (matvar)
+          {
+            Mat_VarWrite(mat, matvar, MAT_COMPRESSION_ZLIB);
+            Mat_VarFree(matvar);
+            if(invert_storage)
+              this->switch_orientation();
+            delete [] Ax_re;
+            delete [] Ax_im;
+         
+            return true;
+          }
+          else
+          {
+            if(invert_storage)
+              this->switch_orientation();
+            delete [] Ax_re;
+            delete [] Ax_im;
+            return false;
+          }
+
+          Mat_Close(mat);
+#endif
+          return false;
+        }
+
+      case EXPORT_FORMAT_PLAIN_ASCII:
+        {
+          FILE* file = fopen(filename, "w");
+
+          for (unsigned int j = 0; j < this->size; j++)
+          {
+            for (int i = Ap[j]; i < Ap[j + 1]; i++)
+            {
+              Helpers::fprint_coordinate_num(file, i_coordinate(Ai[i], j, invert_storage), j_coordinate(Ai[i], j, invert_storage), Ax[i], number_format);
+              fprintf(file, "\n");
+            }
+          }
+
+          fclose(file);
           return true;
         }
 
@@ -488,121 +539,16 @@ namespace Hermes
       }
     }
 
-    template<>
-    bool CSCMatrix<std::complex<double> >::dump(char *filename, const char *var_name, EMatrixDumpFormat fmt, char* number_format)
+    template<typename Scalar>
+    bool CSCMatrix<Scalar>::export_to_file(char *filename, const char *var_name, EMatrixExportFormat fmt, char* number_format)
     {
-      switch (fmt)
-      {      
-      case DF_MATRIX_MARKET:
-        {
-          FILE* file = fopen(filename, "w+");
-          fprintf(file, "%%%%Matrix<Scalar>Market matrix coordinate real symmetric\n");
-          int nnz_sym = 0;
-          for (unsigned int j = 0; j < this->size; j++)
-            for (int i = Ap[j]; i < Ap[j + 1]; i++)
-              if((int)j <= Ai[i]) nnz_sym++;
-          fprintf(file, "%d %d %d\n", this->size, this->size, nnz_sym);
-          for (unsigned int j = 0; j < this->size; j++)
-          {
-            for (int i = Ap[j]; i < Ap[j + 1]; i++)
-              // The following line was replaced with the one below, because it gave a warning
-                // to cause code abort at runtime.
-                  //if(j <= Ai[i]) fprintf(file, "%d %d %24.15e\n", Ai[i] + 1, j + 1, Ax[i]);
-                    if((int)j <= Ai[i])
-                    {
-                      fprintf(file, "%d %d ", Ai[i] + 1, (int)j + 1);
-                      Hermes::Helpers::fprint_num(file, Ax[i], number_format);
-                      fprintf(file, "\n");
-                    }
-          }
-          fclose(file);
+      return CSMatrix<Scalar>::export_to_file(filename, var_name, fmt, number_format, false);
+    }
 
-          return true;
-        }
-
-        case DF_MATLAB_MAT:
-        {
-#ifdef WITH_MATIO
-        mat_sparse_t sparse;
-        sparse.nzmax = this->nnz;
-        sparse.nir = this->nnz;
-        sparse.ir = Ai;
-        sparse.njc = this->size + 1;
-        sparse.jc = (int *) Ap;
-        sparse.ndata = this->nnz;
-        sparse.data = Ax;
-
-        size_t dims[2];
-        dims[0] = this->size;
-        dims[1] = this->size;
-
-        mat_t *mat = Mat_CreateVer(filename, NULL, MAT_FT_MAT5);
-        matvar_t *matvar = Mat_VarCreate("matrix", MAT_C_SPARSE, MAT_T_DOUBLE, 2, dims, &sparse, MAT_F_DONT_COPY_DATA);
-        if (matvar)
-        {
-            Mat_VarWrite(mat, matvar, MAT_COMPRESSION_ZLIB);
-            Mat_VarFree(matvar);
-
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-        Mat_Close(mat);
-#endif
-        return false;
-        }
-
-      case DF_PLAIN_ASCII:
-        {
-          const double zero_cutoff = Hermes::epsilon;
-          std::complex<double> *ascii_entry_buff = new std::complex<double>[nnz];
-          int *ascii_entry_i = new int[nnz];
-          int *ascii_entry_j = new int[nnz];
-          int k = 0;
-
-          // If real or imaginary part of Scalar entry is below zero_cutoff
-          // it's not included in ascii file, and number of non-zeros is reduced by one.
-          for (unsigned int j = 0; j < size; j++)
-          {
-            for (int i = Ap[j]; i < Ap[j + 1]; i++)
-            {
-              if(real(Ax[i]) > zero_cutoff || imag(Ax[i]) > zero_cutoff)
-              {
-                ascii_entry_buff[k] = Ax[i];
-                ascii_entry_i[k] = Ai[i];
-                ascii_entry_j[k] = j;
-                k++;
-              }
-              else
-                nnz -= 1;
-            }
-          }
-
-          FILE* file = fopen(filename, "w+");
-          fprintf(file, "%d\n", size);
-          fprintf(file, "%d\n", nnz);
-          for (unsigned int k = 0; k < nnz; k++)
-            fprintf(file, "%d %d %E %E\n", ascii_entry_i[k], ascii_entry_j[k], ascii_entry_buff[k].real(), ascii_entry_buff[k].imag());
-          fclose(file);
-
-          //Free memory
-          delete [] ascii_entry_buff;
-          delete [] ascii_entry_i;
-          delete [] ascii_entry_j;
-
-          //Clear pointer
-          ascii_entry_buff = NULL;
-          ascii_entry_i = NULL;
-          ascii_entry_j = NULL;
-
-          return true;
-        }
-
-      default:
-        return false;
-      }
+    template<typename Scalar>
+    bool CSRMatrix<Scalar>::export_to_file(char *filename, const char *var_name, EMatrixExportFormat fmt, char* number_format)
+    {
+      return CSMatrix<Scalar>::export_to_file(filename, var_name, fmt, number_format, true);
     }
 
     template<typename Scalar>
@@ -735,124 +681,6 @@ namespace Hermes
       return CSMatrix<Scalar>::get(n, m);
     }
 
-    template<>
-    bool CSRMatrix<double>::dump(char *filename, const char *var_name, EMatrixDumpFormat fmt, char* number_format)
-    {
-      switch (fmt)
-      {      
-      case DF_MATRIX_MARKET:
-        {
-          FILE* file = fopen(filename, "w+");
-          fprintf(file, "%%%%Matrix<Scalar>Market matrix coordinate real symmetric\n");
-          int nnz_sym = 0;
-          for (unsigned int j = 0; j < this->size; j++)
-          {
-            for (int i = Ap[j]; i < Ap[j + 1]; i++)
-              if((int)j <= Ai[i]) nnz_sym++;
-          }
-          fprintf(file, "%d %d %d\n", this->size, this->size, nnz_sym);
-          for (unsigned int j = 0; j < this->size; j++)
-          {
-            for (int i = Ap[j]; i < Ap[j + 1]; i++)
-              // The following line was replaced with the one below, because it gave a warning
-                // to cause code abort at runtime.
-                  //if(j <= Ai[i]) fprintf(file, "%d %d %24.15e\n", Ai[i] + 1, j + 1, Ax[i]);
-                    if((int)j <= Ai[i])
-                    {
-                      fprintf(file, "%d %d ", (int)j + 1, Ai[i] + 1);
-                      Hermes::Helpers::fprint_num(file, Ax[i], number_format);
-                      fprintf(file, "\n");
-                    }
-          }
-          fclose(file);
-          return true;
-        }
-
-        case DF_MATLAB_MAT:
-        {
-#ifdef WITH_MATIO
-        mat_sparse_t sparse;
-        sparse.nzmax = this->nnz;
-        sparse.nir = this->nnz;
-        sparse.ir = Ai;
-        sparse.njc = this->size + 1;
-        sparse.jc = (int *) Ap;
-        sparse.ndata = this->nnz;
-        sparse.data = Ax;
-
-        size_t dims[2];
-        dims[0] = this->size;
-        dims[1] = this->size;
-
-        mat_t *mat = Mat_CreateVer(filename, NULL, MAT_FT_MAT5);
-        matvar_t *matvar = Mat_VarCreate("matrix", MAT_C_SPARSE, MAT_T_DOUBLE, 2, dims, &sparse, MAT_F_DONT_COPY_DATA);
-        if (matvar)
-        {
-            Mat_VarWrite(mat, matvar, MAT_COMPRESSION_ZLIB);
-            Mat_VarFree(matvar);
-
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-        Mat_Close(mat);
-#endif
-        return false;
-        }
-
-      case DF_PLAIN_ASCII:
-        {
-          const double zero_cutoff = Hermes::epsilon;
-          double *ascii_entry_buff = new double[nnz];
-          int *ascii_entry_i = new int[nnz];
-          int *ascii_entry_j = new int[nnz];
-          int k = 0;
-
-          // If real or imaginary part of Scalar entry is below zero_cutoff
-          // it's not included in ascii file, and number of non-zeros is reduced by one.
-          for (unsigned int j = 0; j < size; j++)
-          {
-            for (int i = Ap[j]; i < Ap[j + 1]; i++)
-            {
-              if(real(Ax[i]) > zero_cutoff || imag(Ax[i]) > zero_cutoff)
-              {
-                ascii_entry_buff[k] = Ax[i];
-                ascii_entry_i[k] = j;
-                ascii_entry_j[k] = Ai[i];
-                k++;
-              }
-              else
-                nnz -= 1;
-            }
-          }
-
-          FILE* file = fopen(filename, "w+");
-          fprintf(file, "%d\n", size);
-          fprintf(file, "%d\n", nnz);
-          for (unsigned int k = 0; k < nnz; k++)
-            fprintf(file, "%d %d %f\n", ascii_entry_i[k], ascii_entry_j[k], ascii_entry_buff[k]);
-          fclose(file);
-
-          //Free memory
-          delete [] ascii_entry_buff;
-          delete [] ascii_entry_i;
-          delete [] ascii_entry_j;
-
-          //Clear pointer
-          ascii_entry_buff = NULL;
-          ascii_entry_i = NULL;
-          ascii_entry_j = NULL;
-
-          return true;
-        }
-
-      default:
-        return false;
-      }
-    }
-
     template<typename Scalar>
     void CSRMatrix<Scalar>::pre_add_ij(unsigned int row, unsigned int col)
     {
@@ -864,13 +692,6 @@ namespace Hermes
         this->pages[row] = new_page;
       }
       this->pages[row]->idx[this->pages[row]->count++] = col;
-    }
-
-    template<>
-    bool CSRMatrix<std::complex<double> >::dump(char *filename, const char *var_name, EMatrixDumpFormat fmt, char* number_format)
-    {
-      throw Exceptions::MethodNotImplementedException("CSRMatrix<double>::dump");
-      return false;
     }
 
     template<typename Scalar>

@@ -55,9 +55,9 @@ namespace Hermes
     template <>
     struct mumps_type<std::complex<double> >
     {
-    /** Type for storing mumps struct in Mumps complex structures */
+      /** Type for storing mumps struct in Mumps complex structures */
       typedef ZMUMPS_STRUC_C mumps_struct;
-    /** Type for storing scalar number in Mumps complex structures */
+      /** Type for storing scalar number in Mumps complex structures */
       typedef ZMUMPS_COMPLEX mumps_Scalar;
     };
 
@@ -65,9 +65,9 @@ namespace Hermes
     template <>
     struct mumps_type<double>
     {
-    /** Type for storing mumps struct in Mumps real structures */
+      /** Type for storing mumps struct in Mumps real structures */
       typedef DMUMPS_STRUC_C mumps_struct;
-    /** Type for storing scalar number in Mumps real structures */
+      /** Type for storing scalar number in Mumps real structures */
       typedef double mumps_Scalar;
     };
 
@@ -86,7 +86,7 @@ namespace Hermes
       virtual void add(unsigned int m, unsigned int n, Scalar v);
       virtual void add_to_diagonal(Scalar v);
       virtual void add(unsigned int m, unsigned int n, Scalar **mat, int *rows, int *cols);
-      virtual bool dump(char *filename, const char *var_name, EMatrixDumpFormat fmt = DF_PLAIN_ASCII, char* number_format = "%lf");
+      virtual bool export_to_file(char *filename, const char *var_name, EMatrixExportFormat fmt = EXPORT_FORMAT_PLAIN_ASCII, char* number_format = "%lf");
       virtual unsigned int get_matrix_size() const;
       virtual unsigned int get_nnz() const;
       virtual double get_fill_in() const;
@@ -145,12 +145,6 @@ namespace Hermes
       virtual void add(unsigned int n, unsigned int *idx, Scalar *y);
       virtual void add_vector(Vector<Scalar>* vec);
       virtual void add_vector(Scalar* vec);
-      virtual bool dump(char *filename, const char *var_name, EMatrixDumpFormat fmt = DF_PLAIN_ASCII, char* number_format = "%lf");
-
-    protected:
-      // MUMPS specific data structures for storing the rhs.
-      ///Vector data.
-      Scalar *v;
 
       friend class Solvers::MumpsSolver<Scalar>;
     };
