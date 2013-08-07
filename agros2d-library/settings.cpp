@@ -134,7 +134,7 @@ void SettingsWidget::save()
     if (!txtStartupScript->toPlainText().isEmpty())
     {
         currentPythonEngineAgros()->blockSignals(true);
-        bool successfulRun = currentPythonEngineAgros()->runScript(txtStartupScript->toPlainText());
+        bool successfulRun = currentPythonEngineAgros()->runExpression(txtStartupScript->toPlainText());
         currentPythonEngineAgros()->blockSignals(false);
         if (!successfulRun)
             return;
