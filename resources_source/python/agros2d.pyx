@@ -20,7 +20,7 @@ cdef extern from "<string>" namespace "std":
         char * c_str()
 
 # Parametrs class
-class Parameters(dict):
+class __Parameters__(dict):
     def __init__(self, get_method, set_method):
         self.get = get_method
         self.set = set_method

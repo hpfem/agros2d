@@ -201,12 +201,12 @@ cdef class __Field__:
 
     def __cinit__(self, field_id):
         self.thisptr = new PyField(string(field_id))
-        self.matrix_solver_parameters = Parameters(self.__get_matrix_solver_parameters__,
-                                                   self.__set_matrix_solver_parameters__)
-        self.solver_parameters = Parameters(self.__get_solver_parameters__,
-                                            self.__set_solver_parameters__)
-        self.adaptivity_parameters = Parameters(self.__get_adaptivity_parameters__,
-                                            self.__set_adaptivity_parameters__)
+        self.matrix_solver_parameters = __Parameters__(self.__get_matrix_solver_parameters__,
+                                                       self.__set_matrix_solver_parameters__)
+        self.solver_parameters = __Parameters__(self.__get_solver_parameters__,
+                                                self.__set_solver_parameters__)
+        self.adaptivity_parameters = __Parameters__(self.__get_adaptivity_parameters__,
+                                                    self.__set_adaptivity_parameters__)
 
     def __dealloc__(self):
         del self.thisptr

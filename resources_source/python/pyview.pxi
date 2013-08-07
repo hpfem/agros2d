@@ -131,78 +131,78 @@ cdef class __ViewConfig__:
 
     def __cinit__(self):
         self.thisptr = new PyViewConfig()
-        self.workspace_parameters = Parameters(self.__get_workspace_parameters__,
-                                               self.__set_workspace_parameters__)
+        self.workspace_parameters = __Parameters__(self.__get_workspace_parameters__,
+                                                   self.__set_workspace_parameters__)
 
     def __dealloc__(self):
         del self.thisptr
 
     property workspace_parameters:
         def __get__(self):
-            return self.solver_parameters
+            return self.workspace_parameters
 
     def __get_workspace_parameters__(self):
-        return {'grid' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ShowGrid')),
-                'grid_step' : self.thisptr.getDoubleParameter(string('ProblemSetting::View_ShowOrderColorBar')),
-                'axes' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ShowOrderColorBar')),
-                'rulers' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ShowOrderLabel')),
+        return {'grid' : self.thisptr.getBoolParameter(string('View_ShowGrid')),
+                'grid_step' : self.thisptr.getDoubleParameter(string('View_GridStep')),
+                'axes' : self.thisptr.getBoolParameter(string('View_ShowAxes')),
+                'rulers' : self.thisptr.getBoolParameter(string('View_ShowRulers')),
                 'post_font_family' : self.thisptr.getPostFontFamily().c_str(),
                 'rulers_font_family' : self.thisptr.getRulersFontFamily().c_str(),
-                'post_font_size' : self.thisptr.getIntParameter(string('ProblemSetting::View_PostFontPointSize')),
-                'rulers_font_size' : self.thisptr.getIntParameter(string('ProblemSetting::View_RulersFontPointSize')),
-                'node_size' : self.thisptr.getIntParameter(string('ProblemSetting::View_NodeSize')),
-                'edge_width' : self.thisptr.getIntParameter(string('ProblemSetting::View_EdgeWidth')),
-                'label_size' : self.thisptr.getIntParameter(string('ProblemSetting::View_LabelSize')),
-                '3d_angle' : self.thisptr.getDoubleParameter(string('ProblemSetting::View_ScalarView3DAngle')),
-                '3d_height' : self.thisptr.getDoubleParameter(string('ProblemSetting::View_ScalarView3DHeight')),
-                '3d_lighting' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ScalarView3DLighting')),
-                '3d_gradient_background' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ScalarView3DBackground')),
-                '3d_bounding_box' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ScalarView3DBoundingBox')),
-                '3d_edges' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ScalarView3DSolidGeometry')),
-                'scalar_view_deform' : self.thisptr.getBoolParameter(string('ProblemSetting::View_DeformScalar')),
-                'contour_view_deform' : self.thisptr.getBoolParameter(string('ProblemSetting::View_DeformContour')),
-                'vector_view_deform' : self.thisptr.getBoolParameter(string('ProblemSetting::View_DeformVector'))}
+                'post_font_size' : self.thisptr.getIntParameter(string('View_PostFontPointSize')),
+                'rulers_font_size' : self.thisptr.getIntParameter(string('View_RulersFontPointSize')),
+                'node_size' : self.thisptr.getIntParameter(string('View_NodeSize')),
+                'edge_width' : self.thisptr.getIntParameter(string('View_EdgeWidth')),
+                'label_size' : self.thisptr.getIntParameter(string('View_LabelSize')),
+                '3d_angle' : self.thisptr.getDoubleParameter(string('View_ScalarView3DAngle')),
+                '3d_height' : self.thisptr.getDoubleParameter(string('View_ScalarView3DHeight')),
+                '3d_lighting' : self.thisptr.getBoolParameter(string('View_ScalarView3DLighting')),
+                '3d_gradient_background' : self.thisptr.getBoolParameter(string('View_ScalarView3DBackground')),
+                '3d_bounding_box' : self.thisptr.getBoolParameter(string('View_ScalarView3DBoundingBox')),
+                '3d_edges' : self.thisptr.getBoolParameter(string('View_ScalarView3DSolidGeometry')),
+                'scalar_view_deform' : self.thisptr.getBoolParameter(string('View_DeformScalar')),
+                'contour_view_deform' : self.thisptr.getBoolParameter(string('View_DeformContour')),
+                'vector_view_deform' : self.thisptr.getBoolParameter(string('View_DeformVector'))}
 
     def __set_workspace_parameters__(self, parameters):
         # grid, grid step
-        self.thisptr.setParameter(string('ProblemSetting::View_ShowGrid'), <bool>parameters['grid'])
+        self.thisptr.setParameter(string('View_ShowGrid'), <bool>parameters['grid'])
         positive_value(parameters['grid_step'], 'grid_step')
-        self.thisptr.setParameter(string('ProblemSetting::View_GridStep'), <double>parameters['grid_step'])
+        self.thisptr.setParameter(string('View_GridStep'), <double>parameters['grid_step'])
 
         # axes, rulers
-        self.thisptr.setParameter(string('ProblemSetting::View_ShowAxes'), <bool>parameters['axes'])
-        self.thisptr.setParameter(string('ProblemSetting::View_ShowRulers'), <bool>parameters['rulers'])
+        self.thisptr.setParameter(string('View_ShowAxes'), <bool>parameters['axes'])
+        self.thisptr.setParameter(string('View_ShowRulers'), <bool>parameters['rulers'])
 
         # fonts
         self.thisptr.setPostFontFamily(string(parameters['post_font_family']))
         self.thisptr.setRulersFontFamily(string(parameters['rulers_font_family']))
         value_in_range(parameters['post_font_size'], 6, 40, 'post_font_size')
-        self.thisptr.setParameter(string('ProblemSetting::PostFontPointSize'), <int>parameters['post_font_size'])
+        self.thisptr.setParameter(string('PostFontPointSize'), <int>parameters['post_font_size'])
         value_in_range(parameters['rulers_font_size'], 6, 40, 'rulers_font_size')
-        self.thisptr.setParameter(string('ProblemSetting::RulersFontPointSize'), <int>parameters['rulers_font_size'])
+        self.thisptr.setParameter(string('RulersFontPointSize'), <int>parameters['rulers_font_size'])
 
         # elements size
         value_in_range(parameters['node_size'], 1, 20, 'node_size')
-        self.thisptr.setParameter(string('ProblemSetting::View_NodeSize'), <int>parameters['node_size'])
+        self.thisptr.setParameter(string('View_NodeSize'), <int>parameters['node_size'])
         value_in_range(parameters['edge_width'], 1, 20, 'edge_width')
-        self.thisptr.setParameter(string('ProblemSetting::View_NodeSize'), <int>parameters['edge_width'])
+        self.thisptr.setParameter(string('View_NodeSize'), <int>parameters['edge_width'])
         value_in_range(parameters['label_size'], 1, 20, 'label_size')
-        self.thisptr.setParameter(string('ProblemSetting::View_LabelSize'), <int>parameters['label_size'])
+        self.thisptr.setParameter(string('View_LabelSize'), <int>parameters['label_size'])
         
         # 3d view
         value_in_range(parameters['3d_angle'], 30.0, 360.0, '3d_angle')
-        self.thisptr.setParameter(string('ProblemSetting::View_ScalarView'), <double>parameters['3d_angle'])
+        self.thisptr.setParameter(string('View_ScalarView'), <double>parameters['3d_angle'])
         value_in_range(parameters['3d_height'], 0.2, 10.0, '3d_height')
-        self.thisptr.setParameter(string('ProblemSetting::View_ScalarView3DHeight'), <double>parameters['3d_height'])
-        self.thisptr.setParameter(string('ProblemSetting::View_ScalarView3DLighting'), <bool>parameters['3d_lighting'])
-        self.thisptr.setParameter(string('ProblemSetting::View_ScalarView3DBackground'), <bool>parameters['3d_gradient_background'])
-        self.thisptr.setParameter(string('ProblemSetting::View_ScalarView3DBoundingBox'), <bool>parameters['3d_bounding_box'])
-        self.thisptr.setParameter(string('ProblemSetting::View_ScalarView3DSolidGeometry'), <bool>parameters['3d_edges'])
+        self.thisptr.setParameter(string('View_ScalarView3DHeight'), <double>parameters['3d_height'])
+        self.thisptr.setParameter(string('View_ScalarView3DLighting'), <bool>parameters['3d_lighting'])
+        self.thisptr.setParameter(string('View_ScalarView3DBackground'), <bool>parameters['3d_gradient_background'])
+        self.thisptr.setParameter(string('View_ScalarView3DBoundingBox'), <bool>parameters['3d_bounding_box'])
+        self.thisptr.setParameter(string('View_ScalarView3DSolidGeometry'), <bool>parameters['3d_edges'])
         
         # deform shape
-        self.thisptr.setParameter(string('ProblemSetting::View_DeformScalar'), <double>parameters['scalar_view_deform'])
-        self.thisptr.setParameter(string('ProblemSetting::View_DeformContour'), <double>parameters['contour_view_deform'])
-        self.thisptr.setParameter(string('ProblemSetting::View_DeformVector'), <double>parameters['vector_view_deform'])
+        self.thisptr.setParameter(string('View_DeformScalar'), <double>parameters['scalar_view_deform'])
+        self.thisptr.setParameter(string('View_DeformContour'), <double>parameters['contour_view_deform'])
+        self.thisptr.setParameter(string('View_DeformVector'), <double>parameters['vector_view_deform'])
 
 
 # ViewMeshAndPost
@@ -239,8 +239,8 @@ cdef class __ViewMesh__(__ViewMeshAndPost__):
 
     def __cinit__(self):
         self.thisptr = new PyViewMesh()
-        self.order_view_parameters = Parameters(self.__get_order_view_parameters__,
-                                                self.__set_order_view_parameters__)
+        self.order_view_parameters = __Parameters__(self.__get_order_view_parameters__,
+                                                    self.__set_order_view_parameters__)
 
     def __dealloc__(self):
         del self.thisptr
@@ -284,16 +284,16 @@ cdef class __ViewMesh__(__ViewMeshAndPost__):
 
     def __get_order_view_parameters__(self):
         return {'palette' : self.thisptr.getOrderViewPalette().c_str(),
-                'color_bar' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ShowOrderColorBar')),
-                'label' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ShowOrderLabel'))}
+                'color_bar' : self.thisptr.getBoolParameter(string('View_ShowOrderColorBar')),
+                'label' : self.thisptr.getBoolParameter(string('View_ShowOrderLabel'))}
 
     def __set_order_view_parameters__(self, parameters):
         # palette
         self.thisptr.setOrderViewPalette(string(parameters['palette']))
 
         # color bar, label
-        self.thisptr.setParameter(string('ProblemSetting::View_ShowOrderColorBar'), <bool>parameters['color_bar'])
-        self.thisptr.setParameter(string('ProblemSetting::View_ShowOrderLabel'), <bool>parameters['label'])
+        self.thisptr.setParameter(string('View_ShowOrderColorBar'), <bool>parameters['color_bar'])
+        self.thisptr.setParameter(string('View_ShowOrderLabel'), <bool>parameters['label'])
 
 # ViewPost
 cdef class __ViewPost__(__ViewMeshAndPost__):
@@ -302,8 +302,8 @@ cdef class __ViewPost__(__ViewMeshAndPost__):
 
     def __cinit__(self):
         self.thisptrp = new PyViewPost()
-        self.scalar_view_parameters = Parameters(self.__get_scalar_view_parameters__,
-                                                 self.__set_scalar_view_parameters__)
+        self.scalar_view_parameters = __Parameters__(self.__get_scalar_view_parameters__,
+                                                     self.__set_scalar_view_parameters__)
     def __dealloc__(self):
         del self.thisptrp
 
@@ -322,15 +322,15 @@ cdef class __ViewPost__(__ViewMeshAndPost__):
                 'component' : self.thisptrp.getScalarViewVariableComp().c_str(),
                 'palette' : self.thisptrp.getScalarViewPalette().c_str(),
                 'quality' : self.thisptrp.getScalarViewPaletteQuality().c_str(),
-                'steps' : self.thisptr.getScalarViewPaletteSteps(),
-                'filter' : self.thisptr.getBoolParameter(string('ProblemSetting::View_PaletteFilter')),
-                'color_bar' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ShowScalarColorBar')),
-                'decimal_place' : self.thisptr.getIntParameter(string('ProblemSetting::View_ScalarDecimalPlace')),
-                'auto_range' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ScalarRangeAuto')),
-                'range_min' : self.thisptr.getDoubleParameter(string('ProblemSetting::View_ScalarRangeMin')),
-                'range_max' : self.thisptr.getDoubleParameter(string('ProblemSetting::View_ScalarRangeMax')),
-                'log_scale' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ScalarRangeLog')),
-                'log_scale_base' : self.thisptr.getDoubleParameter(string('ProblemSetting::View_ScalarRangeBase'))}
+                'steps' : self.thisptrp.getIntParameter(string('View_PaletteSteps')),
+                'filter' : self.thisptrp.getBoolParameter(string('View_PaletteFilter')),
+                'color_bar' : self.thisptrp.getBoolParameter(string('View_ShowScalarColorBar')),
+                'decimal_place' : self.thisptrp.getIntParameter(string('View_ScalarDecimalPlace')),
+                'auto_range' : self.thisptrp.getBoolParameter(string('View_ScalarRangeAuto')),
+                'range_min' : self.thisptrp.getDoubleParameter(string('View_ScalarRangeMin')),
+                'range_max' : self.thisptrp.getDoubleParameter(string('View_ScalarRangeMax')),
+                'log_scale' : self.thisptrp.getBoolParameter(string('View_ScalarRangeLog')),
+                'log_scale_base' : self.thisptrp.getDoubleParameter(string('View_ScalarRangeBase'))}
 
     def __set_scalar_view_parameters__(self, parameters):
         # variable, component
@@ -343,26 +343,26 @@ cdef class __ViewPost__(__ViewMeshAndPost__):
 
         # steps, filter
         value_in_range(parameters['steps'], 3, 256, 'steps')
-        self.thisptrp.setParameter(string('ProblemSetting::View_PaletteSteps'), <double>parameters['steps'])
-        self.thisptrp.setParameter(string('ProblemSetting::View_PaletteFilter'), <bool>parameters['filter'])
+        self.thisptrp.setParameter(string('View_PaletteSteps'), <double>parameters['steps'])
+        self.thisptrp.setParameter(string('View_PaletteFilter'), <bool>parameters['filter'])
 
         # color bar, decimal place
-        self.thisptrp.setParameter(string('ProblemSetting::View_ShowScalarColorBar'), <bool>parameters['color_bar'])
+        self.thisptrp.setParameter(string('View_ShowScalarColorBar'), <bool>parameters['color_bar'])
         value_in_range(parameters['decimal_place'], 0, 10, 'decimal_place')
-        self.thisptrp.setParameter(string('ProblemSetting::View_ScalarDecimalPlace'), <bool>parameters['decimal_place'])
+        self.thisptrp.setParameter(string('View_ScalarDecimalPlace'), <bool>parameters['decimal_place'])
 
         # auto range, min, max
-        self.thisptrp.setParameter(string('ProblemSetting::View_ScalarRangeAuto'), <bool>parameters['auto_range'])
-        self.thisptr.setParameter(string('ProblemSetting::View_ScalarRangeMin'), <double>parameters['range_min'])
-        self.thisptr.setParameter(string('ProblemSetting::View_ScalarRangeMax'), <double>parameters['range_max'])
+        self.thisptrp.setParameter(string('View_ScalarRangeAuto'), <bool>parameters['auto_range'])
+        self.thisptrp.setParameter(string('View_ScalarRangeMin'), <double>parameters['range_min'])
+        self.thisptrp.setParameter(string('View_ScalarRangeMax'), <double>parameters['range_max'])
 
         # log scale
-        self.thisptr.setParameter(string('ProblemSetting::View_ScalarRangeLog'), <bool>parameters['log_scale'])
+        self.thisptrp.setParameter(string('View_ScalarRangeLog'), <bool>parameters['log_scale'])
 
         # log base
         if (parameters['log_scale_base'] < 0.0 or parameters['log_scale_base'] == 1):
             raise IndexError("Value of 'log_scale_base' must be possitive and can not be equal to 1.")
-        self.thisptr.setParameter(string('ProblemSetting::View_ScalarRangeBase'), <double>parameters['log_scale_base'])
+        self.thisptrp.setParameter(string('View_ScalarRangeBase'), <double>parameters['log_scale_base'])
 
 # ViewPost2D
 cdef class __ViewPost2D__(__ViewPost__):
@@ -372,10 +372,10 @@ cdef class __ViewPost2D__(__ViewPost__):
 
     def __cinit__(self):
         self.thisptr = new PyViewPost2D()
-        self.contour_view_parameters = Parameters(self.__get_contour_view_parameters__,
-                                                  self.__set_contour_view_parameters__)
-        self.vector_view_parameters = Parameters(self.__get_vector_view_parameters__,
-                                                 self.__set_vector_view_parameters__)
+        self.contour_view_parameters = __Parameters__(self.__get_contour_view_parameters__,
+                                                      self.__set_contour_view_parameters__)
+        self.vector_view_parameters = __Parameters__(self.__get_vector_view_parameters__,
+                                                     self.__set_vector_view_parameters__)
                                                  
     def __dealloc__(self):
         del self.thisptr
@@ -408,8 +408,8 @@ cdef class __ViewPost2D__(__ViewPost__):
 
     def __get_contour_view_parameters__(self):
         return {'variable' : self.thisptr.getContourVariable().c_str(),
-                'count' : self.thisptr.getIntParameter(string('ProblemSetting::View_ContoursCount')),
-                'width' : self.thisptr.getDoubleParameter(string('ProblemSetting::View_View_ContoursWidth'))}
+                'count' : self.thisptr.getIntParameter(string('View_ContoursCount')),
+                'width' : self.thisptr.getDoubleParameter(string('View_View_ContoursWidth'))}
 
     def __set_contour_view_parameters__(self, parameters):
         # variable
@@ -417,9 +417,9 @@ cdef class __ViewPost2D__(__ViewPost__):
 
         # count, width
         value_in_range(parameters['count'], 1, 100, 'count')
-        self.thisptr.setParameter(string('ProblemSetting::View_ContoursCount'), <int>parameters['count'])
+        self.thisptr.setParameter(string('View_ContoursCount'), <int>parameters['count'])
         value_in_range(parameters['width'], 0.1, 5.0, 'width')
-        self.thisptr.setParameter(string('ProblemSetting::View_ContoursWidth'), <bool>parameters['width'])
+        self.thisptr.setParameter(string('View_ContoursWidth'), <bool>parameters['width'])
 
     # vectors
     property vectors:
@@ -434,10 +434,10 @@ cdef class __ViewPost2D__(__ViewPost__):
 
     def __get_vector_view_parameters__(self):
         return {'variable' : self.thisptr.getVectorVariable().c_str(),
-                'count' : self.thisptr.getIntParameter(string('ProblemSetting::View_VectorCount')),
-                'scale' : self.thisptr.getDoubleParameter(string('ProblemSetting::View_VectorScale')),
-                'proportional' : self.thisptr.getBoolParameter(string('ProblemSetting::View_VectorProportional')),
-                'color' : self.thisptr.getBoolParameter(string('ProblemSetting::View_VectorColor')),
+                'count' : self.thisptr.getIntParameter(string('View_VectorCount')),
+                'scale' : self.thisptr.getDoubleParameter(string('View_VectorScale')),
+                'proportional' : self.thisptr.getBoolParameter(string('View_VectorProportional')),
+                'color' : self.thisptr.getBoolParameter(string('View_VectorColor')),
                 'type' : self.thisptr.getVectorType().c_str(),
                 'center' : self.thisptr.getVectorCenter().c_str()}
 
@@ -447,13 +447,13 @@ cdef class __ViewPost2D__(__ViewPost__):
 
         # count, scale
         value_in_range(parameters['count'], 1, 500, 'count')
-        self.thisptr.setParameter(string('ProblemSetting::View_VectorCount'), <int>parameters['count'])
+        self.thisptr.setParameter(string('View_VectorCount'), <int>parameters['count'])
         value_in_range(parameters['scale'], 0.1, 20.0, 'scale')
-        self.thisptr.setParameter(string('ProblemSetting::View_VectorScale'), <bool>parameters['scale'])
+        self.thisptr.setParameter(string('View_VectorScale'), <bool>parameters['scale'])
 
         # proportional, color
-        self.thisptr.setParameter(string('ProblemSetting::View_VectorProportional'), <bool>parameters['proportional'])
-        self.thisptr.setParameter(string('ProblemSetting::View_VectorColor'), <bool>parameters['color'])
+        self.thisptr.setParameter(string('View_VectorProportional'), <bool>parameters['proportional'])
+        self.thisptr.setParameter(string('View_VectorColor'), <bool>parameters['color'])
 
         # type, center
         self.thisptr.setVectorType(string(parameters['type']))
