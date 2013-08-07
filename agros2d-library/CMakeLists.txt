@@ -64,12 +64,22 @@ add_custom_target(CYTHON_AGROS2D ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_s
 IF(WIN32)
   ADD_CUSTOM_COMMAND(
         SOURCE    ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
+                  ${CMAKE_HOME_DIRECTORY}/resources_source/python/pyfield.pxi
+                  ${CMAKE_HOME_DIRECTORY}/resources_source/python/pygeometry.pxi
+                  ${CMAKE_HOME_DIRECTORY}/resources_source/python/pyparticletracing.pxi
+                  ${CMAKE_HOME_DIRECTORY}/resources_source/python/pyproblem.pxi
+                  ${CMAKE_HOME_DIRECTORY}/resources_source/python/pyview.pxi
         COMMAND   C:/Python27/Scripts/cython.py ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
         TARGET    CYTHON_AGROS2D
         OUTPUTS   ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
 ELSE()
   ADD_CUSTOM_COMMAND(
         SOURCE    ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
+                  ${CMAKE_HOME_DIRECTORY}/resources_source/python/pyfield.pxi
+                  ${CMAKE_HOME_DIRECTORY}/resources_source/python/pygeometry.pxi
+                  ${CMAKE_HOME_DIRECTORY}/resources_source/python/pyparticletracing.pxi
+                  ${CMAKE_HOME_DIRECTORY}/resources_source/python/pyproblem.pxi
+                  ${CMAKE_HOME_DIRECTORY}/resources_source/python/pyview.pxi
         COMMAND   cython ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
         TARGET    CYTHON_AGROS2D
         OUTPUTS   ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
