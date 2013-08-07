@@ -2,11 +2,12 @@
 SET(CMAKE_AUTOMOC TRUE)
 IF(WITH_QT5)
     IF(WIN32)
-        SET(CMAKE_PREFIX_PATH "C:\\Qt\\32\\Qt5.0.2\\5.0.2\\msvc2010_opengl\\")
+        SET(CMAKE_PREFIX_PATH "C:\\Qt\\Qt5.0.2\\5.0.2\\msvc2010_opengl\\")
     ELSE(WIN32)
 
     ENDIF(WIN32)
     FIND_PACKAGE(Qt5Core)
+    FIND_PACKAGE(Qt5Gui)
     FIND_PACKAGE(Qt5OpenGL)
     FIND_PACKAGE(Qt5PrintSupport)
     FIND_PACKAGE(Qt5Svg)
