@@ -77,21 +77,6 @@ void PyView::zoomRegion(double x1, double y1, double x2, double y2)
 
 // ************************************************************************************
 
-void PyViewConfig::setProblemSetting(ProblemSetting::Type type, bool value)
-{
-    if (!silentMode())
-        Agros2D::problem()->setting()->setValue(type, value);
-}
-
-void PyViewConfig::setGridStep(double step)
-{
-    if (step < 0.0)
-        throw out_of_range(QObject::tr("Grid step must be positive.").toStdString());
-
-    if (!silentMode())
-        Agros2D::problem()->setting()->setValue(ProblemSetting::View_GridStep, step);
-}
-
 void PyViewConfig::setFontFamily(ProblemSetting::Type type, const std::string &family)
 {
     if (silentMode())
@@ -115,15 +100,6 @@ void PyViewConfig::setFontFamily(ProblemSetting::Type type, const std::string &f
     }
 
     throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
-}
-
-void PyViewConfig::setFontPointSize(ProblemSetting::Type type, int size)
-{
-    if (size < 6 || size > 40)
-        throw out_of_range(QObject::tr("Font size must be in the range from 6 to 40.").toStdString());
-
-    if (!silentMode())
-        Agros2D::problem()->setting()->setValue(type, size);
 }
 
 // ************************************************************************************

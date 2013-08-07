@@ -10,18 +10,14 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
 
     # PyViewConfig
     cdef cppclass PyViewConfig:
-        void setGridShow(bool show)
-        bool getGridShow()
+        void setParameter(string &parameter, bool value) except +
+        void setParameter(string &parameter, int value) except +
+        void setParameter(string &parameter, double value) except +
 
-        void setGridStep(double step) except +
-        double getGridStep()
-
-        void setAxesShow(bool show)
-        bool getAxesShow()
-
-        void setRulersShow(bool show)
-        bool getRulersShow()
-
+        bool getBoolParameter(string &parameter)
+        int getIntParameter(string &parameter)
+        double getDoubleParameter(string &parameter)
+    
         void setPostFontFamily(string &family) except +
         string getPostFontFamily()
         void setPostFontPointSize(int size) except +
@@ -131,59 +127,82 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
 # ViewConfig
 cdef class __ViewConfig__:
     cdef PyViewConfig *thisptr
+    cdef object workspace_parameters
 
     def __cinit__(self):
         self.thisptr = new PyViewConfig()
+        self.workspace_parameters = Parameters(self.__get_workspace_parameters__,
+                                               self.__set_workspace_parameters__)
+
     def __dealloc__(self):
         del self.thisptr
 
-    property grid:
+    property workspace_parameters:
         def __get__(self):
-            return self.thisptr.getGridShow()
-        def __set__(self, show):
-            self.thisptr.setGridShow(show)
+            return self.solver_parameters
 
-    property grid_step:
-        def __get__(self):
-            return self.thisptr.getGridStep()
-        def __set__(self, step):
-            self.thisptr.setGridStep(step)
+    def __get_workspace_parameters__(self):
+        return {'grid' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ShowGrid')),
+                'grid_step' : self.thisptr.getDoubleParameter(string('ProblemSetting::View_ShowOrderColorBar')),
+                'axes' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ShowOrderColorBar')),
+                'rulers' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ShowOrderLabel')),
+                'post_font_family' : self.thisptr.getPostFontFamily().c_str(),
+                'rulers_font_family' : self.thisptr.getRulersFontFamily().c_str(),
+                'post_font_size' : self.thisptr.getIntParameter(string('ProblemSetting::View_PostFontPointSize')),
+                'rulers_font_size' : self.thisptr.getIntParameter(string('ProblemSetting::View_RulersFontPointSize')),
+                'node_size' : self.thisptr.getIntParameter(string('ProblemSetting::View_NodeSize')),
+                'edge_width' : self.thisptr.getIntParameter(string('ProblemSetting::View_EdgeWidth')),
+                'label_size' : self.thisptr.getIntParameter(string('ProblemSetting::View_LabelSize')),
+                '3d_angle' : self.thisptr.getDoubleParameter(string('ProblemSetting::View_ScalarView3DAngle')),
+                '3d_height' : self.thisptr.getDoubleParameter(string('ProblemSetting::View_ScalarView3DHeight')),
+                '3d_lighting' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ScalarView3DLighting')),
+                '3d_gradient_background' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ScalarView3DBackground')),
+                '3d_bounding_box' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ScalarView3DBoundingBox')),
+                '3d_edges' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ScalarView3DSolidGeometry')),
+                'scalar_view_deform' : self.thisptr.getBoolParameter(string('ProblemSetting::View_DeformScalar')),
+                'contour_view_deform' : self.thisptr.getBoolParameter(string('ProblemSetting::View_DeformContour')),
+                'vector_view_deform' : self.thisptr.getBoolParameter(string('ProblemSetting::View_DeformVector'))}
 
-    property axes:
-        def __get__(self):
-            return self.thisptr.getAxesShow()
-        def __set__(self, show):
-            self.thisptr.setAxesShow(show)
+    def __set_workspace_parameters__(self, parameters):
+        # grid, grid step
+        self.thisptr.setParameter(string('ProblemSetting::View_ShowGrid'), <bool>parameters['grid'])
+        positive_value(parameters['grid_step'], 'grid_step')
+        self.thisptr.setParameter(string('ProblemSetting::View_GridStep'), <double>parameters['grid_step'])
 
-    property rulers:
-        def __get__(self):
-            return self.thisptr.getRulersShow()
-        def __set__(self, show):
-            self.thisptr.setRulersShow(show)
+        # axes, rulers
+        self.thisptr.setParameter(string('ProblemSetting::View_ShowAxes'), <bool>parameters['axes'])
+        self.thisptr.setParameter(string('ProblemSetting::View_ShowRulers'), <bool>parameters['rulers'])
 
-    property post_font_family:
-        def __get__(self):
-            return self.thisptr.getPostFontFamily().c_str()
-        def __set__(self, family):
-            self.thisptr.setPostFontFamily(string(family))
+        # fonts
+        self.thisptr.setPostFontFamily(string(parameters['post_font_family']))
+        self.thisptr.setRulersFontFamily(string(parameters['rulers_font_family']))
+        value_in_range(parameters['post_font_size'], 6, 40, 'post_font_size')
+        self.thisptr.setParameter(string('ProblemSetting::PostFontPointSize'), <int>parameters['post_font_size'])
+        value_in_range(parameters['rulers_font_size'], 6, 40, 'rulers_font_size')
+        self.thisptr.setParameter(string('ProblemSetting::RulersFontPointSize'), <int>parameters['rulers_font_size'])
 
-    property post_font_size:
-        def __get__(self):
-            return self.thisptr.getPostFontPointSize()
-        def __set__(self, size):
-            self.thisptr.setPostFontPointSize(size)
-
-    property rulers_font_family:
-        def __get__(self):
-            return self.thisptr.getRulersFontFamily().c_str()
-        def __set__(self, family):
-            self.thisptr.setRulersFontFamily(string(family))
-
-    property rulers_font_size:
-        def __get__(self):
-            return self.thisptr.getRulersFontPointSize()
-        def __set__(self, size):
-            self.thisptr.setRulersFontPointSize(size)
+        # elements size
+        value_in_range(parameters['node_size'], 1, 20, 'node_size')
+        self.thisptr.setParameter(string('ProblemSetting::View_NodeSize'), <int>parameters['node_size'])
+        value_in_range(parameters['edge_width'], 1, 20, 'edge_width')
+        self.thisptr.setParameter(string('ProblemSetting::View_NodeSize'), <int>parameters['edge_width'])
+        value_in_range(parameters['label_size'], 1, 20, 'label_size')
+        self.thisptr.setParameter(string('ProblemSetting::View_LabelSize'), <int>parameters['label_size'])
+        
+        # 3d view
+        value_in_range(parameters['3d_angle'], 30.0, 360.0, '3d_angle')
+        self.thisptr.setParameter(string('ProblemSetting::View_ScalarView'), <double>parameters['3d_angle'])
+        value_in_range(parameters['3d_height'], 0.2, 10.0, '3d_height')
+        self.thisptr.setParameter(string('ProblemSetting::View_ScalarView3DHeight'), <double>parameters['3d_height'])
+        self.thisptr.setParameter(string('ProblemSetting::View_ScalarView3DLighting'), <bool>parameters['3d_lighting'])
+        self.thisptr.setParameter(string('ProblemSetting::View_ScalarView3DBackground'), <bool>parameters['3d_gradient_background'])
+        self.thisptr.setParameter(string('ProblemSetting::View_ScalarView3DBoundingBox'), <bool>parameters['3d_bounding_box'])
+        self.thisptr.setParameter(string('ProblemSetting::View_ScalarView3DSolidGeometry'), <bool>parameters['3d_edges'])
+        
+        # deform shape
+        self.thisptr.setParameter(string('ProblemSetting::View_DeformScalar'), <double>parameters['scalar_view_deform'])
+        self.thisptr.setParameter(string('ProblemSetting::View_DeformContour'), <double>parameters['contour_view_deform'])
+        self.thisptr.setParameter(string('ProblemSetting::View_DeformVector'), <double>parameters['vector_view_deform'])
 
 
 # ViewMeshAndPost
@@ -258,6 +277,10 @@ cdef class __ViewMesh__(__ViewMeshAndPost__):
             return self.thisptr.getOrderViewShow()
         def __set__(self, show):
             self.thisptr.setOrderViewShow(show)
+
+    property order_view_parameters:
+        def __get__(self):
+            return self.order_view_parameters
 
     def __get_order_view_parameters__(self):
         return {'palette' : self.thisptr.getOrderViewPalette().c_str(),
@@ -379,6 +402,10 @@ cdef class __ViewPost2D__(__ViewPost__):
         def __set__(self, show):
             self.thisptr.setContourShow(show)
 
+    property contour_view_parameters:
+        def __get__(self):
+            return self.contour_view_parameters
+
     def __get_contour_view_parameters__(self):
         return {'variable' : self.thisptr.getContourVariable().c_str(),
                 'count' : self.thisptr.getIntParameter(string('ProblemSetting::View_ContoursCount')),
@@ -400,6 +427,10 @@ cdef class __ViewPost2D__(__ViewPost__):
             return self.thisptr.getVectorShow()
         def __set__(self, show):
             self.thisptr.setVectorShow(show)
+
+    property vector_view_parameters:
+        def __get__(self):
+            return self.vector_view_parameters
 
     def __get_vector_view_parameters__(self):
         return {'variable' : self.thisptr.getVectorVariable().c_str(),
