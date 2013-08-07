@@ -644,8 +644,11 @@ ErrorResult PythonEngine::parseError()
     }
 
     Py_XDECREF(errorType);
+    errorType = NULL;
     Py_XDECREF(errorValue);
+    errorValue = NULL;
     Py_XDECREF(errorTraceback);
+    errorTraceback = NULL;
 
     PyErr_Clear();
 
