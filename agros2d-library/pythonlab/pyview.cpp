@@ -189,10 +189,23 @@ void PyViewMeshAndPost::setActiveSolutionType(const std::string &solutionType)
 
 // ************************************************************************************
 
+void PyViewMesh::checkExistingMesh()
+{
+    if (!Agros2D::problem()->isMeshed() && !currentPythonEngineAgros()->isScriptRunning())
+        throw logic_error(QObject::tr("Problem is not meshed.").toStdString());
+}
+
+void PyViewMesh::setProblemSetting(ProblemSetting::Type type, bool value)
+{
+    checkExistingMesh();
+
+    if (!silentMode())
+        Agros2D::problem()->setting()->setValue(type, value);
+}
+
 void PyViewMesh::activate()
 {
-    if (!Agros2D::problem()->isMeshed())
-        throw logic_error(QObject::tr("Problem is not meshed.").toStdString());
+    checkExistingMesh();
 
     if (!silentMode())
     {
@@ -203,8 +216,7 @@ void PyViewMesh::activate()
 
 void PyViewMesh::setField(const std::string &fieldId)
 {
-    if (!Agros2D::problem()->isMeshed())
-        throw logic_error(QObject::tr("Problem is not meshed.").toStdString());
+    checkExistingMesh();
 
     if (!Agros2D::problem()->hasField(QString::fromStdString(fieldId)))
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(Agros2D::problem()->fieldInfos().keys())).toStdString());
@@ -220,20 +232,13 @@ void PyViewMesh::setField(const std::string &fieldId)
 
 void PyViewMesh::setOrderViewPalette(const std::string &palette)
 {
+    checkExistingMesh();
+
     if (!paletteOrderTypeStringKeys().contains(QString::fromStdString(palette)))
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(paletteOrderTypeStringKeys())).toStdString());
 
     if (!silentMode())
         Agros2D::problem()->setting()->setValue(ProblemSetting::View_OrderPaletteOrderType, paletteOrderTypeFromStringKey(QString::fromStdString(palette)));
-}
-
-void PyViewMesh::setProblemSetting(ProblemSetting::Type type, bool value)
-{
-    if (!Agros2D::problem()->isMeshed() && !currentPythonEngineAgros()->isScriptRunning())
-        throw logic_error(QObject::tr("Problem is not meshed.").toStdString());
-
-    if (!silentMode())
-        Agros2D::problem()->setting()->setValue(type, value);
 }
 
 // ************************************************************************************
@@ -244,10 +249,17 @@ void PyViewPost::checkExistingSolution()
         throw logic_error(QObject::tr("Problem is not solved.").toStdString());
 }
 
+void PyViewPost::setProblemSetting(ProblemSetting::Type type, bool value)
+{
+    checkExistingSolution();
+
+    if (!silentMode())
+        Agros2D::problem()->setting()->setValue(type, value);
+}
+
 void PyViewPost::setField(const std::string &fieldId)
 {
-    if (!Agros2D::problem()->isSolved())
-        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
+    checkExistingSolution();
 
     if (!Agros2D::problem()->hasField(QString::fromStdString(fieldId)))
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(Agros2D::problem()->fieldInfos().keys())).toStdString());
@@ -333,8 +345,7 @@ void PyViewPost::setScalarViewPaletteQuality(const std::string &quality)
 
 void PyViewPost2D::activate()
 {
-    if (!Agros2D::problem()->isSolved())
-        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
+    checkExistingSolution();
 
     if (!silentMode())
     {
@@ -368,40 +379,10 @@ void PyViewPost2D::setContourVariable(const std::string &var)
     throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
 }
 
-void PyViewPost2D::setContourCount(int count)
-{
-    if (count < CONTOURSCOUNTMIN || count > CONTOURSCOUNTMAX)
-        throw invalid_argument(QObject::tr("Contour count must be in the range from %1 to %2.").arg(CONTOURSCOUNTMIN).arg(CONTOURSCOUNTMAX).toStdString());
-
-    setProblemSetting(ProblemSetting::View_ContoursCount, count);
-}
-
-void PyViewPost2D::setContourWidth(double width)
-{
-    if (width < 0.1 || width > 5.0)
-        throw invalid_argument(QObject::tr("Contour width must be in the range from 0.1 to 5.0.").toStdString());
-
-    setProblemSetting(ProblemSetting::View_ContoursWidth, width);
-}
-
-void PyViewPost2D::setVectorCount(int count)
-{
-    if (count < VECTORSCOUNTMIN || count > VECTORSCOUNTMAX)
-        throw invalid_argument(QObject::tr("Vector count must be in the range from %1 to %2.").arg(VECTORSCOUNTMIN).arg(VECTORSCOUNTMAX).toStdString());
-
-    setProblemSetting(ProblemSetting::View_VectorCount, count);
-}
-
-void PyViewPost2D::setVectorScale(double scale)
-{
-    if (scale < VECTORSSCALEMIN || scale > VECTORSSCALEMAX)
-        throw invalid_argument(QObject::tr("Vector scale must be in the range from %1 to %2.").arg(VECTORSSCALEMIN).arg(VECTORSSCALEMAX).toStdString());
-
-    setProblemSetting(ProblemSetting::View_VectorScale, scale);
-}
-
 void PyViewPost2D::setVectorVariable(const std::string &var)
 {
+    checkExistingSolution();
+
     QStringList list;
     foreach (Module::LocalVariable variable, currentPythonEngineAgros()->postHermes()->activeViewField()->viewVectorVariables())
     {
@@ -421,6 +402,8 @@ void PyViewPost2D::setVectorVariable(const std::string &var)
 
 void PyViewPost2D::setVectorType(const std::string &type)
 {
+    checkExistingSolution();
+
     if (!vectorTypeStringKeys().contains(QString::fromStdString(type)))
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(vectorTypeStringKeys())).toStdString());
 
@@ -430,6 +413,8 @@ void PyViewPost2D::setVectorType(const std::string &type)
 
 void PyViewPost2D::setVectorCenter(const std::string &center)
 {
+    checkExistingSolution();
+
     if (!vectorCenterStringKeys().contains(QString::fromStdString(center)))
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(vectorCenterStringKeys())).toStdString());
 
@@ -437,33 +422,11 @@ void PyViewPost2D::setVectorCenter(const std::string &center)
         Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorCenter, vectorCenterFromStringKey(QString::fromStdString(center)));
 }
 
-void PyViewPost2D::setProblemSetting(ProblemSetting::Type type, bool value)
-{
-    checkExistingSolution();
-    if (!silentMode())
-        Agros2D::problem()->setting()->setValue(type, value);
-}
-
-void PyViewPost2D::setProblemSetting(ProblemSetting::Type type, int value)
-{
-    checkExistingSolution();
-    if (!silentMode())
-        Agros2D::problem()->setting()->setValue(type, value);
-}
-
-void PyViewPost2D::setProblemSetting(ProblemSetting::Type type, double value)
-{
-    checkExistingSolution();
-    if (!silentMode())
-        Agros2D::problem()->setting()->setValue(type, value);
-}
-
 // ************************************************************************************
 
 void PyViewPost3D::activate()
 {
-    if (!Agros2D::problem()->isSolved())
-        throw logic_error(QObject::tr("Problem is not solved.").toStdString());
+    checkExistingSolution();
 
     if (!silentMode())
     {

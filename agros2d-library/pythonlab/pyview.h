@@ -25,6 +25,27 @@
 #include "hermes2d/problem.h"
 #include "hermes2d/problem_config.h"
 
+struct PyViewClass
+{
+    inline int getBoolParameter(const std::string &parameter)
+    {
+        ProblemSetting::Type type = Agros2D::problem()->setting()->stringKeyToType(QString::fromStdString(parameter));
+        return Agros2D::problem()->setting()->value(type).toBool();
+    }
+
+    inline int getIntParameter(const std::string &parameter)
+    {
+        ProblemSetting::Type type = Agros2D::problem()->setting()->stringKeyToType(QString::fromStdString(parameter));
+        return Agros2D::problem()->setting()->value(type).toInt();
+    }
+
+    inline double getDoubleParameter(const std::string &parameter)
+    {
+        ProblemSetting::Type type = Agros2D::problem()->setting()->stringKeyToType(QString::fromStdString(parameter));
+        return Agros2D::problem()->setting()->value(type).toDouble();
+    }
+};
+
 struct PyView
 {
     // save image
@@ -39,7 +60,7 @@ struct PyView
     SceneViewCommon *currentSceneViewMode();
 };
 
-struct PyViewConfig
+struct PyViewConfig : PyViewClass
 {
     // grid
     void setGridShow(bool show) { setProblemSetting(ProblemSetting::View_ShowGrid, show); }
@@ -81,7 +102,7 @@ struct PyViewConfig
     void setProblemSetting(ProblemSetting::Type type, bool value);
 };
 
-struct PyViewMeshAndPost
+struct PyViewMeshAndPost : PyViewClass
 {
     // time step
     void setActiveTimeStep(int timeStep);
@@ -101,6 +122,19 @@ struct PyViewMeshAndPost
 
 struct PyViewMesh : PyViewMeshAndPost
 {
+    template <typename Type>
+    void setParameter(const std::string &parameter, Type value)
+    {
+        checkExistingMesh();
+        ProblemSetting::Type type = Agros2D::problem()->setting()->stringKeyToType(QString::fromStdString(parameter));
+
+        if (!silentMode())
+            Agros2D::problem()->setting()->setValue(type, value);
+    }
+
+    void checkExistingMesh();
+    void setProblemSetting(ProblemSetting::Type type, bool value);
+
     void activate();
 
     // field
@@ -122,22 +156,12 @@ struct PyViewMesh : PyViewMeshAndPost
     void setOrderViewShow(bool show) { setProblemSetting(ProblemSetting::View_ShowOrderView, show); }
     inline bool getOrderViewShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderView).toBool(); }
 
-    // order color bar
-    void setOrderViewColorBar(bool show) { setProblemSetting(ProblemSetting::View_ShowOrderColorBar, show); }
-    inline bool getOrderViewColorBar() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderColorBar).toBool(); }
-
-    // order labels
-    void setOrderViewLabel(bool show) { setProblemSetting(ProblemSetting::View_ShowOrderLabel, show); }
-    inline bool getOrderViewLabel() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderLabel).toBool(); }
-
     // order pallete
     void setOrderViewPalette(const std::string & palette);
     inline std::string getOrderViewPalette() const
     {
         return paletteOrderTypeToStringKey((PaletteOrderType) Agros2D::problem()->setting()->value(ProblemSetting::View_OrderPaletteOrderType).toInt()).toStdString();
     }
-
-    void setProblemSetting(ProblemSetting::Type type, bool value);
 };
 
 struct PyViewPost : PyViewMeshAndPost
@@ -145,29 +169,15 @@ struct PyViewPost : PyViewMeshAndPost
     template <typename Type>
     void setParameter(const std::string &parameter, Type value)
     {
+        checkExistingSolution();
         ProblemSetting::Type type = Agros2D::problem()->setting()->stringKeyToType(QString::fromStdString(parameter));
-        Agros2D::problem()->setting()->setValue(type, value);
+
+        if (!silentMode())
+            Agros2D::problem()->setting()->setValue(type, value);
     }
 
-    inline int getBoolParameter(const std::string &parameter)
-    {
-        ProblemSetting::Type type = Agros2D::problem()->setting()->stringKeyToType(QString::fromStdString(parameter));
-        return Agros2D::problem()->setting()->value(type).toBool();
-    }
-
-    inline int getIntParameter(const std::string &parameter)
-    {
-        ProblemSetting::Type type = Agros2D::problem()->setting()->stringKeyToType(QString::fromStdString(parameter));
-        return Agros2D::problem()->setting()->value(type).toInt();
-    }
-
-    inline double getDoubleParameter(const std::string &parameter)
-    {
-        ProblemSetting::Type type = Agros2D::problem()->setting()->stringKeyToType(QString::fromStdString(parameter));
-        return Agros2D::problem()->setting()->value(type).toDouble();
-    }
-
-        void checkExistingSolution();
+    void checkExistingSolution();
+    void setProblemSetting(ProblemSetting::Type type, bool value);
 
     // field
     void setField(const std::string &fieldId);
@@ -209,27 +219,14 @@ struct PyViewPost2D : PyViewPost
     // contour view
     void setContourShow(bool show) { setProblemSetting(ProblemSetting::View_ShowContourView, show); }
     inline bool getContourShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowContourView).toBool(); }
-
     void setContourVariable(const std::string &var);
     inline std::string getContourVariable() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString().toStdString(); }
-    void setContourCount(int count);
-    inline int getContourCount() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ContoursCount).toDouble(); }
-    void setContourWidth(double width);
-    inline double getContourWidth() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ContoursCount).toDouble(); }
 
     // vector view
     void setVectorShow(bool show) { setProblemSetting(ProblemSetting::View_ShowVectorView, show); }
     inline bool getVectorShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowVectorView).toBool(); }
-    void setVectorCount(int count);
-    inline int getVectorCount() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_VectorCount).toInt(); }
-    void setVectorScale(double scale);
-    inline double getVectorScale() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_VectorScale).toDouble(); }
     void setVectorVariable(const std::string &var);
     inline std::string getVectorVariable() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString().toStdString(); }
-    void setVectorProportional(bool show) { setProblemSetting(ProblemSetting::View_VectorProportional, show); }
-    inline bool getVectorProportional() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_VectorProportional).toBool(); }
-    void setVectorColor(bool show) { setProblemSetting(ProblemSetting::View_VectorColor, show); }
-    inline bool getVectorColor() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_VectorColor).toBool(); }
     void setVectorType(const std::string &type);
     inline std::string getVectorType() const
     {
@@ -240,13 +237,9 @@ struct PyViewPost2D : PyViewPost
     {
         return vectorCenterToStringKey((VectorCenter) Agros2D::problem()->setting()->value(ProblemSetting::View_VectorCenter).toInt()).toStdString();
     }
-
-    void setProblemSetting(ProblemSetting::Type type, bool value);
-    void setProblemSetting(ProblemSetting::Type type, int value);
-    void setProblemSetting(ProblemSetting::Type type, double value);
 };
 
-struct PyViewPost3D
+struct PyViewPost3D : PyViewPost
 {
     void activate();
 

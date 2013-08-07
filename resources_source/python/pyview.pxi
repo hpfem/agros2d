@@ -45,6 +45,9 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
 
     # PyViewMesh
     cdef cppclass PyViewMesh:
+        void setParameter(string &parameter, bool value) except +
+        bool getBoolParameter(string &parameter)
+
         void activate() except +
 
         void setField(string &fieldid) except +
@@ -57,10 +60,6 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
 
         void setOrderViewShow(bool show) except +
         bool getOrderViewShow()
-        void setOrderViewColorBar(bool show) except +
-        bool getOrderViewColorBar()
-        void setOrderViewLabel(bool show) except +
-        bool getOrderViewLabel()
         void setOrderViewPalette(string &palette) except +
         string getOrderViewPalette()
 
@@ -70,9 +69,9 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
         void setParameter(string &parameter, int value) except +
         void setParameter(string &parameter, double value) except +
 
-        bool getBoolParameter(string &parameter) except +
-        int getIntParameter(string &parameter) except +
-        double getDoubleParameter(string &parameter) except +
+        bool getBoolParameter(string &parameter)
+        int getIntParameter(string &parameter)
+        double getDoubleParameter(string &parameter)
         
         void setField(string &fieldid) except +
         string getField()
@@ -88,6 +87,14 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
 
     # PyViewPost2D
     cdef cppclass PyViewPost2D:
+        void setParameter(string &parameter, bool value) except +
+        void setParameter(string &parameter, int value) except +
+        void setParameter(string &parameter, double value) except +
+
+        bool getBoolParameter(string &parameter)
+        int getIntParameter(string &parameter)
+        double getDoubleParameter(string &parameter)
+
         void activate() except +
 
         void setScalarViewShow(bool show) except +
@@ -95,23 +102,13 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
 
         void setContourShow(bool show) except +
         bool getContourShow()
-        void setContourCount(int count) except +
-        int getContourCount()
         void setContourVariable(string &variable) except +
         string getContourVariable()
 
         void setVectorShow(bool show) except +
         bool getVectorShow()
-        void setVectorCount(int count) except +
-        int getVectorCount()
-        void setVectorScale(double scale) except +
-        int getVectorScale()
         void setVectorVariable(string &variable) except +
         string getVectorVariable()
-        void setVectorProportional(bool show) except +
-        bool getVectorProportional()
-        void setVectorColor(bool show) except +
-        bool getVectorColor()
         void setVectorType(string &type) except +
         string getVectorType()
         void setVectorCenter(string &center) except +
@@ -219,9 +216,13 @@ cdef class __ViewMeshAndPost__:
 # ViewMesh
 cdef class __ViewMesh__(__ViewMeshAndPost__):
     cdef PyViewMesh *thisptr
+    cdef object order_view_parameters
 
     def __cinit__(self):
         self.thisptr = new PyViewMesh()
+        self.order_view_parameters = Parameters(self.__get_order_view_parameters__,
+                                                self.__set_order_view_parameters__)
+
     def __dealloc__(self):
         del self.thisptr
 
@@ -251,29 +252,25 @@ cdef class __ViewMesh__(__ViewMeshAndPost__):
         def __set__(self, show):
             self.thisptr.setInitialMeshViewShow(show)
 
+    # order
     property order:
         def __get__(self):
             return self.thisptr.getOrderViewShow()
         def __set__(self, show):
             self.thisptr.setOrderViewShow(show)
 
-    property order_color_bar:
-        def __get__(self):
-            return self.thisptr.getOrderViewColorBar()
-        def __set__(self, show):
-            self.thisptr.setOrderViewColorBar(show)
+    def __get_order_view_parameters__(self):
+        return {'palette' : self.thisptr.getOrderViewPalette().c_str(),
+                'color_bar' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ShowOrderColorBar')),
+                'label' : self.thisptr.getBoolParameter(string('ProblemSetting::View_ShowOrderLabel'))}
 
-    property order_label:
-        def __get__(self):
-            return self.thisptr.getOrderViewLabel()
-        def __set__(self, show):
-            self.thisptr.setOrderViewLabel(show)
+    def __set_order_view_parameters__(self, parameters):
+        # palette
+        self.thisptr.setOrderViewPalette(string(parameters['palette']))
 
-    property order_palette:
-        def __get__(self):
-            return self.thisptr.getOrderViewPalette().c_str()
-        def __set__(self, palette):
-            self.thisptr.setOrderViewPalette(string(palette))
+        # color bar, label
+        self.thisptr.setParameter(string('ProblemSetting::View_ShowOrderColorBar'), <bool>parameters['color_bar'])
+        self.thisptr.setParameter(string('ProblemSetting::View_ShowOrderLabel'), <bool>parameters['label'])
 
 # ViewPost
 cdef class __ViewPost__(__ViewMeshAndPost__):
@@ -317,7 +314,7 @@ cdef class __ViewPost__(__ViewMeshAndPost__):
         self.thisptrp.setScalarViewVariable(string(parameters['variable']))
         self.thisptrp.setScalarViewVariableComp(string(parameters['component']))
 
-        # pallete, quality
+        # palette, quality
         self.thisptrp.setScalarViewPalette(string(parameters['palette']))
         self.thisptrp.setScalarViewPaletteQuality(string(parameters['quality']))
 
@@ -347,9 +344,16 @@ cdef class __ViewPost__(__ViewMeshAndPost__):
 # ViewPost2D
 cdef class __ViewPost2D__(__ViewPost__):
     cdef PyViewPost2D *thisptr
+    cdef object contour_view_parameters
+    cdef object vector_view_parameters
 
     def __cinit__(self):
         self.thisptr = new PyViewPost2D()
+        self.contour_view_parameters = Parameters(self.__get_contour_view_parameters__,
+                                                  self.__set_contour_view_parameters__)
+        self.vector_view_parameters = Parameters(self.__get_vector_view_parameters__,
+                                                 self.__set_vector_view_parameters__)
+                                                 
     def __dealloc__(self):
         del self.thisptr
 
@@ -361,77 +365,68 @@ cdef class __ViewPost2D__(__ViewPost__):
       self.contours = False
       self.vectors = False
 
+    # scalar
     property scalar:
         def __get__(self):
             return self.thisptr.getScalarViewShow()
         def __set__(self, show):
             self.thisptr.setScalarViewShow(show)
 
+    # contours
     property contours:
         def __get__(self):
             return self.thisptr.getContourShow()
         def __set__(self, show):
             self.thisptr.setContourShow(show)
 
-    property contours_count:
-        def __get__(self):
-            return self.thisptr.getContourCount()
-        def __set__(self, count):
-            self.thisptr.setContourCount(count)
+    def __get_contour_view_parameters__(self):
+        return {'variable' : self.thisptr.getContourVariable().c_str(),
+                'count' : self.thisptr.getIntParameter(string('ProblemSetting::View_ContoursCount')),
+                'width' : self.thisptr.getDoubleParameter(string('ProblemSetting::View_View_ContoursWidth'))}
 
-    property contours_variable:
-        def __get__(self):
-            return self.thisptr.getContourVariable().c_str()
-        def __set__(self, variable):
-            self.thisptr.setContourVariable(string(variable))
+    def __set_contour_view_parameters__(self, parameters):
+        # variable
+        self.thisptr.setContourVariable(string(parameters['variable']))
 
+        # count, width
+        value_in_range(parameters['count'], 1, 100, 'count')
+        self.thisptr.setParameter(string('ProblemSetting::View_ContoursCount'), <int>parameters['count'])
+        value_in_range(parameters['width'], 0.1, 5.0, 'width')
+        self.thisptr.setParameter(string('ProblemSetting::View_ContoursWidth'), <bool>parameters['width'])
+
+    # vectors
     property vectors:
         def __get__(self):
             return self.thisptr.getVectorShow()
         def __set__(self, show):
             self.thisptr.setVectorShow(show)
 
-    property vectors_count:
-        def __get__(self):
-            return self.thisptr.getVectorCount()
-        def __set__(self, count):
-            self.thisptr.setVectorCount(count)
+    def __get_vector_view_parameters__(self):
+        return {'variable' : self.thisptr.getVectorVariable().c_str(),
+                'count' : self.thisptr.getIntParameter(string('ProblemSetting::View_VectorCount')),
+                'scale' : self.thisptr.getDoubleParameter(string('ProblemSetting::View_VectorScale')),
+                'proportional' : self.thisptr.getBoolParameter(string('ProblemSetting::View_VectorProportional')),
+                'color' : self.thisptr.getBoolParameter(string('ProblemSetting::View_VectorColor')),
+                'type' : self.thisptr.getVectorType().c_str(),
+                'center' : self.thisptr.getVectorCenter().c_str()}
 
-    property vectors_scale:
-        def __get__(self):
-            return self.thisptr.getVectorScale()
-        def __set__(self, count):
-            self.thisptr.setVectorScale(count)
+    def __set_vector_view_parameters__(self, parameters):
+        # variable
+        self.thisptr.setVectorVariable(string(parameters['variable']))
 
-    property vectors_variable:
-        def __get__(self):
-            return self.thisptr.getVectorVariable().c_str()
-        def __set__(self, variable):
-            self.thisptr.setVectorVariable(string(variable))
+        # count, scale
+        value_in_range(parameters['count'], 1, 500, 'count')
+        self.thisptr.setParameter(string('ProblemSetting::View_VectorCount'), <int>parameters['count'])
+        value_in_range(parameters['scale'], 0.1, 20.0, 'scale')
+        self.thisptr.setParameter(string('ProblemSetting::View_VectorScale'), <bool>parameters['scale'])
 
-    property vectors_proportional:
-        def __get__(self):
-            return self.thisptr.getVectorProportional()
-        def __set__(self, show):
-            self.thisptr.setVectorProportional(show)
+        # proportional, color
+        self.thisptr.setParameter(string('ProblemSetting::View_VectorProportional'), <bool>parameters['proportional'])
+        self.thisptr.setParameter(string('ProblemSetting::View_VectorColor'), <bool>parameters['color'])
 
-    property vectors_color:
-        def __get__(self):
-            return self.thisptr.getVectorColor()
-        def __set__(self, show):
-            self.thisptr.setVectorColor(show)
-
-    property vectors_type:
-        def __get__(self):
-            return self.thisptr.getVectorType().c_str()
-        def __set__(self, type):
-            self.thisptr.setVectorType(string(type))
-
-    property vectors_center:
-        def __get__(self):
-            return self.thisptr.getVectorCenter().c_str()
-        def __set__(self, center):
-            self.thisptr.setVectorCenter(string(center))
+        # type, center
+        self.thisptr.setVectorType(string(parameters['type']))
+        self.thisptr.setVectorCenter(string(parameters['center']))
 
 # ViewPost3D
 cdef class __ViewPost3D__(__ViewPost__):
