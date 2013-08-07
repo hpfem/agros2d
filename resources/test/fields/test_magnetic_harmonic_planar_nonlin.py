@@ -18,9 +18,10 @@ magnetic = agros2d.field("magnetic")
 magnetic.analysis_type = "harmonic"
 magnetic.number_of_refinements = 1
 magnetic.polynomial_order = 2
+
 magnetic.solver = "newton"
-magnetic.nonlinear_tolerance = 0.001
-magnetic.nonlinear_steps = 15
+magnetic.solver_parameters['tolerance'] = 0.01
+magnetic.solver_parameters['steps'] = 50
 
 magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_imag" : 0, "magnetic_potential_real" : 0})
 

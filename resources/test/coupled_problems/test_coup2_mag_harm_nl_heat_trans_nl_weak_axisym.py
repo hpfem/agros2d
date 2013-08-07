@@ -25,7 +25,7 @@ heat.analysis_type = "transient"
 heat.number_of_refinements = 1
 heat.polynomial_order = 2
 heat.solver = "newton"
-heat.nonlinear_tolerance = 0.001
+heat.solver_parameters['tolerance'] = 0.001
 
 heat.add_boundary("Symmetry", "heat_heat_flux", {"heat_convection_external_temperature" : 0, "heat_convection_heat_transfer_coefficient" : 0, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 0, "heat_radiation_emissivity" : 0})
 heat.add_boundary("Convection", "heat_heat_flux", {"heat_convection_external_temperature" : 20, "heat_convection_heat_transfer_coefficient" : 10, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 0, "heat_radiation_emissivity" : 0})
@@ -39,7 +39,7 @@ magnetic.analysis_type = "harmonic"
 magnetic.number_of_refinements = 1
 magnetic.polynomial_order = 2
 magnetic.solver = "newton"
-magnetic.nonlinear_tolerance = 0.001
+magnetic.solver_parameters['tolerance'] = 0.001
 
 magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_imag" : 0, "magnetic_potential_real" : 0})
 

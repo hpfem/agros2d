@@ -84,7 +84,7 @@ execfile("coupled_problems/test_coup1_curr_steady_nl_heat_trans_nl_elast_nl_weak
 execfile("coupled_problems/test_coup2_mag_harm_lin_heat_steady_lin_weak_axisym.py") 
 execfile("coupled_problems/test_coup2_mag_harm_lin_heat_trans_lin_weak_axisym.py") 
 execfile("coupled_problems/test_coup2_mag_harm_nl_heat_steady_nl_hard_axisym.py") 
-execfile("coupled_problems/test_coup2_mag_harm_nl_heat_steady_nl_weak_axisym.py") 
+execfile("coupled_problems/test_coup2_mag_harm_nl_heat_steady_nl_weak_axisym.py")
 execfile("coupled_problems/test_coup2_mag_harm_nl_heat_trans_nl_hard_axisym.py") 
 execfile("coupled_problems/test_coup2_mag_harm_nl_heat_trans_nl_weak_axisym.py") 
 

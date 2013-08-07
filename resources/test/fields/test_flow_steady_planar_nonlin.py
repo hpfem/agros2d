@@ -18,12 +18,13 @@ flow = agros2d.field("flow")
 flow.analysis_type = "steadystate"
 flow.number_of_refinements = 2
 flow.polynomial_order = 2
+
 flow.solver = "newton"
-flow.nonlinear_tolerance = 0.001
-flow.nonlinear_steps = 10
-flow.newton_damping_type = "automatic"
-flow.newton_damping_factor = 1.0
-flow.newton_jacobian_reuse = False
+flow.solver_parameters['tolerance'] = 0.0001
+flow.solver_parameters['steps'] = 10
+flow.solver_parameters['damping'] = 'automatic'
+flow.solver_parameters['damping_factor'] = 1.0
+flow.solver_parameters['jacobian_reuse'] = False
 
 flow.add_boundary("Inlet", "flow_velocity", {"flow_velocity_x" : { "expression" : "cos((y-0.135)/0.035*pi/2)" }, "flow_velocity_y" : 0})
 flow.add_boundary("Wall", "flow_velocity", {"flow_velocity_x" : 0, "flow_velocity_y" : 0})

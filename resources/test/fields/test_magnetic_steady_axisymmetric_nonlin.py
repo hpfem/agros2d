@@ -17,12 +17,13 @@ magnetic = agros2d.field("magnetic")
 magnetic.analysis_type = "steadystate"
 magnetic.number_of_refinements = 2
 magnetic.polynomial_order = 2
+
 magnetic.solver = "newton"
-magnetic.nonlinear_tolerance = 1
-magnetic.nonlinear_steps = 20
-magnetic.newton_damping_type = "automatic"
-magnetic.newton_jacobian_reuse = True
-magnetic.newton_damping_increase_steps = 3
+magnetic.solver_parameters['tolerance'] = 1
+magnetic.solver_parameters['steps'] = 20
+magnetic.solver_parameters['damping'] = 'automatic'
+magnetic.solver_parameters['jacobian_reuse'] = True
+magnetic.solver_parameters['jacobian_reuse_steps'] = 3
 
 # boundaries
 magnetic.add_boundary("A=0", "magnetic_potential", {"magnetic_potential_real" : 0})

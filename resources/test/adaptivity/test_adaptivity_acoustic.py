@@ -18,8 +18,8 @@ acoustic = agros2d.field("acoustic")
 acoustic.analysis_type = "harmonic"
 acoustic.polynomial_order = 1
 acoustic.adaptivity_type = "hp-adaptivity"
-acoustic.adaptivity_steps = 15
-acoustic.adaptivity_tolerance = 2
+acoustic.adaptivity_parameters['steps'] = 15
+acoustic.adaptivity_parameters['tolerance'] = 2
 acoustic.solver = "linear"
 
 

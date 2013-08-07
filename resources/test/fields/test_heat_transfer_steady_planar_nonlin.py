@@ -17,14 +17,15 @@ heat = agros2d.field("heat")
 heat.analysis_type = "steadystate"
 heat.number_of_refinements = 2
 heat.polynomial_order = 2
+
 heat.solver = "newton"
-heat.nonlinear_tolerance = 0.0001
-heat.nonlinear_steps = 30
-heat.newton_damping_type = "automatic"
-heat.newton_damping_factor = 0.8
-heat.newton_jacobian_reuse = True
-heat.newton_jacobian_reuse_steps = 10
-heat.newton_jacobian_reuse_ratio = 0.3
+heat.solver_parameters['tolerance'] = 0.0001
+heat.solver_parameters['steps'] = 30
+heat.solver_parameters['damping'] = 'automatic'
+heat.solver_parameters['damping_factor'] = 0.8
+heat.solver_parameters['jacobian_reuse'] = True
+heat.solver_parameters['jacobian_reuse_ratio'] = 0.3
+heat.solver_parameters['jacobian_reuse_steps'] = 20
 
 heat.add_boundary("Left", "heat_temperature", {"heat_temperature" : 10})
 heat.add_boundary("Radiace", "heat_heat_flux", {"heat_convection_external_temperature" : 0, "heat_convection_heat_transfer_coefficient" : 0, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 20, "heat_radiation_emissivity" : 0.9})

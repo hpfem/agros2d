@@ -23,8 +23,8 @@ heat.analysis_type = "transient"
 heat.number_of_refinements = 1
 heat.polynomial_order = 5
 heat.solver = "linear"
-heat.nonlinear_tolerance = 0.001
-heat.nonlinear_steps = 10
+heat.solver_parameters['tolerance'] = 0.001
+heat.solver_parameters['steps'] = 10
 heat.transient_initial_condition = 20
 
 heat.add_boundary("Flux", "heat_heat_flux", {"heat_heat_flux" : 0})

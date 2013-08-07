@@ -16,11 +16,11 @@ agros2d.view.post2d.disable()
 electrostatic = agros2d.field("electrostatic")
 electrostatic.analysis_type = "steadystate"
 electrostatic.polynomial_order = 2
-electrostatic.adaptivity_type = "hp-adaptivity"
-electrostatic.adaptivity_steps = 10
-electrostatic.adaptivity_tolerance = 1
-electrostatic.solver = "linear"
 
+electrostatic.adaptivity_type = "hp-adaptivity"
+electrostatic.adaptivity_parameters['steps'] = 10
+electrostatic.adaptivity_parameters['tolerance'] = 1
+electrostatic.solver = "linear"
 
 # boundaries
 electrostatic.add_boundary("Source", "electrostatic_potential", {"electrostatic_potential" : 1000})

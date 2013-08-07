@@ -17,8 +17,8 @@ current.analysis_type = "steadystate"
 current.number_of_refinements = 1
 current.polynomial_order = 2
 current.solver = "linear"
-current.nonlinear_tolerance = 0.001
-current.nonlinear_steps = 10
+current.solver_parameters['tolerance'] = 0.001
+current.solver_parameters['steps'] = 10
 
 current.add_boundary("10 V", "current_potential", {"current_potential" : 10})
 current.add_boundary("0 V", "current_potential", {"current_potential" : 0})
@@ -30,14 +30,15 @@ heat = agros2d.field("heat")
 heat.analysis_type = "steadystate"
 heat.number_of_refinements = 2
 heat.polynomial_order = 3
+
 heat.solver = "newton"
-heat.nonlinear_tolerance = 0.001
-heat.nonlinear_steps = 20
-heat.newton_damping_increase_steps = 1
-heat.newton_damping_type = "fixed"
-heat.newton_jacobian_reuse = True
-heat.newton_jacobian_reuse_steps = 10
-heat.newton_jacobian_reuse_ratio = 0.9
+heat.solver_parameters['tolerance'] = 0.001
+heat.solver_parameters['steps'] = 20
+heat.solver_parameters['damping'] = 'fixed'
+heat.solver_parameters['damping_factor_increase_steps'] = 1
+heat.solver_parameters['jacobian_reuse'] = True
+heat.solver_parameters['jacobian_reuse_steps'] = 10
+heat.solver_parameters['jacobian_reuse_ratio'] = 0.9
 
 heat.add_boundary("300 K", "heat_temperature", {"heat_temperature" : 300})
 heat.add_boundary("Flux", "heat_heat_flux", {"heat_convection_external_temperature" : 20, "heat_convection_heat_transfer_coefficient" : 20, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 20, "heat_radiation_emissivity" : 0.95})

@@ -19,14 +19,13 @@ flow.analysis_type = "steadystate"
 flow.number_of_refinements = 1
 flow.polynomial_order = 2
 flow.adaptivity_type = "disabled"
+
 flow.solver = "newton"
-flow.nonlinear_tolerance = 0.0001
-flow.nonlinear_steps = 10
-flow.newton_damping_type = "automatic"
-flow.newton_damping_factor = 1.0
-flow.newton_jacobian_reuse = False
-#flow.newton_jacobian_reuse_steps = 10
-#flow.newton_jacobian_reuse_ratio = 0.8
+flow.solver_parameters['tolerance'] = 0.0001
+flow.solver_parameters['steps'] = 10
+flow.solver_parameters['damping'] = 'automatic'
+flow.solver_parameters['damping_factor'] = 1.0
+flow.solver_parameters['jacobian_reuse'] = False
 
 # boundaries
 flow.add_boundary("inlet", "flow_velocity", {"flow_velocity_x" : 0, "flow_velocity_y" : { "expression" : "-cos(r/0.25*pi/2)" }})

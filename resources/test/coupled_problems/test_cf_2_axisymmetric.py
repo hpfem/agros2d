@@ -18,8 +18,8 @@ heat.analysis_type = "steadystate"
 heat.number_of_refinements = 1
 heat.polynomial_order = 2
 heat.solver = "linear"
-heat.nonlinear_tolerance = 0.001
-heat.nonlinear_steps = 10
+heat.solver_parameters['tolerance'] = 0.001
+heat.solver_parameters['steps'] = 10
 
 heat.add_boundary("Symmetry", "heat_heat_flux", {"heat_convection_external_temperature" : 0, "heat_convection_heat_transfer_coefficient" : 0, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 0, "heat_radiation_emissivity" : 0})
 heat.add_boundary("Convection", "heat_heat_flux", {"heat_convection_external_temperature" : 20, "heat_convection_heat_transfer_coefficient" : 10, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 0, "heat_radiation_emissivity" : 0})

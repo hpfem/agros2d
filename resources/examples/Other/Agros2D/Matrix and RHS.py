@@ -19,13 +19,14 @@ def model_electrostatic():
     electrostatic.number_of_refinements = 0
     electrostatic.polynomial_order = 2
     electrostatic.adaptivity_type = "hp-adaptivity"
-    electrostatic.adaptivity_steps = 10
-    electrostatic.adaptivity_tolerance = 0.5
-    electrostatic.adaptivity_threshold = 0.7
-    electrostatic.adaptivity_stopping_criterion = "singleelement"
-    electrostatic.adaptivity_norm_type = "h1_norm"
-    electrostatic.adaptivity_anisotropic_refinement= True
-    electrostatic.adaptivity_finer_reference= False
+    
+    electrostatic.adaptivity_parameters['steps'] = 10
+    electrostatic.adaptivity_parameters['tolerance'] = 0.5
+    electrostatic.adaptivity_parameters['threshold'] = 0.7
+    electrostatic.adaptivity_parameters['stopping_criterion'] = "singleelement"
+    electrostatic.adaptivity_parameters['norm'] = "h1_norm"
+    electrostatic.adaptivity_parameters['anisotropic_refinement'] = True
+    electrostatic.adaptivity_parameters['finer_reference_solution'] = False
     electrostatic.solver = "linear"
     
     # boundaries
