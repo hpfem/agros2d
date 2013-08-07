@@ -329,51 +329,6 @@ void PyViewPost::setScalarViewPaletteQuality(const std::string &quality)
         Agros2D::problem()->setting()->setValue(ProblemSetting::View_LinearizerQuality, paletteQualityFromStringKey(QString::fromStdString(quality)));
 }
 
-void PyViewPost::setScalarViewPaletteSteps(int steps)
-{
-    if (steps < PALETTESTEPSMIN || steps > PALETTESTEPSMAX)
-        throw invalid_argument(QObject::tr("Palette steps must be in the range from %1 to %2.").arg(PALETTESTEPSMIN).arg(PALETTESTEPSMAX).toStdString());
-
-    setProblemSetting(ProblemSetting::View_PaletteSteps, steps);
-}
-
-void PyViewPost::setScalarViewDecimalPlace(int place)
-{
-    if (place < SCALARDECIMALPLACEMIN || place > SCALARDECIMALPLACEMAX)
-        throw invalid_argument(QObject::tr("Decimal place must be in the range from %1 to %2.").arg(SCALARDECIMALPLACEMIN).arg(SCALARDECIMALPLACEMAX).toStdString());
-
-    setProblemSetting(ProblemSetting::View_ScalarDecimalPlace, place);
-}
-
-void PyViewPost::setScalarViewRangeBase(double base)
-{
-    if (base < 0.0 || base == 1)
-        throw invalid_argument(QObject::tr("Logarithm base must be possitive and can not be equal to 1.").toStdString());
-
-    setProblemSetting(ProblemSetting::View_ScalarRangeBase, base);
-}
-
-void PyViewPost::setProblemSetting(ProblemSetting::Type type, bool value)
-{
-    checkExistingSolution();
-    if (!silentMode())
-        Agros2D::problem()->setting()->setValue(type, value);
-}
-
-void PyViewPost::setProblemSetting(ProblemSetting::Type type, int value)
-{
-    checkExistingSolution();
-    if (!silentMode())
-        Agros2D::problem()->setting()->setValue(type, value);
-}
-
-void PyViewPost::setProblemSetting(ProblemSetting::Type type, double value)
-{
-    checkExistingSolution();
-    if (!silentMode())
-        Agros2D::problem()->setting()->setValue(type, value);
-}
-
 // ************************************************************************************
 
 void PyViewPost2D::activate()
@@ -480,6 +435,27 @@ void PyViewPost2D::setVectorCenter(const std::string &center)
 
     if (!silentMode())
         Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorCenter, vectorCenterFromStringKey(QString::fromStdString(center)));
+}
+
+void PyViewPost2D::setProblemSetting(ProblemSetting::Type type, bool value)
+{
+    checkExistingSolution();
+    if (!silentMode())
+        Agros2D::problem()->setting()->setValue(type, value);
+}
+
+void PyViewPost2D::setProblemSetting(ProblemSetting::Type type, int value)
+{
+    checkExistingSolution();
+    if (!silentMode())
+        Agros2D::problem()->setting()->setValue(type, value);
+}
+
+void PyViewPost2D::setProblemSetting(ProblemSetting::Type type, double value)
+{
+    checkExistingSolution();
+    if (!silentMode())
+        Agros2D::problem()->setting()->setValue(type, value);
 }
 
 // ************************************************************************************

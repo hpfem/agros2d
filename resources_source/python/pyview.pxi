@@ -86,28 +86,6 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
         void setScalarViewPaletteQuality(string &quality) except +
         string getScalarViewPaletteQuality()
 
-        void setScalarViewPaletteSteps(int steps) except +
-        int getScalarViewPaletteSteps()
-        void setScalarViewPaletteFilter(bool filter) except +
-        bool getScalarViewPaletteFilter()
-
-        void setScalarViewRangeLog(bool log) except +
-        bool getScalarViewRangeLog()
-        void setScalarViewRangeBase(double base) except +
-        double getScalarViewRangeBase()
-
-        void setScalarViewColorBar(bool show) except +
-        bool getScalarViewColorBar()
-        void setScalarViewDecimalPlace(int place) except +
-        int getScalarViewDecimalPlace()
-
-        void setScalarViewRangeAuto(bool autoRange) except +
-        bool getScalarViewRangeAuto()
-        void setScalarViewRangeMin(double min) except +
-        double getScalarViewRangeMin()
-        void setScalarViewRangeMax(double max) except +
-        double getScalarViewRangeMax()
-
     # PyViewPost2D
     cdef cppclass PyViewPost2D:
         void activate() except +
@@ -344,12 +322,14 @@ cdef class __ViewPost__(__ViewMeshAndPost__):
         self.thisptrp.setScalarViewPaletteQuality(string(parameters['quality']))
 
         # steps, filter
-        self.thisptrp.setScalarViewPaletteSteps(parameters['steps'])
+        value_in_range(parameters['steps'], 3, 256, 'steps')
+        self.thisptrp.setParameter(string('ProblemSetting::View_PaletteSteps'), <double>parameters['steps'])
         self.thisptrp.setParameter(string('ProblemSetting::View_PaletteFilter'), <bool>parameters['filter'])
 
         # color bar, decimal place
         self.thisptrp.setParameter(string('ProblemSetting::View_ShowScalarColorBar'), <bool>parameters['color_bar'])
-        self.thisptrp.setScalarViewDecimalPlace(parameters['decimal_place'])
+        value_in_range(parameters['decimal_place'], 0, 10, 'decimal_place')
+        self.thisptrp.setParameter(string('ProblemSetting::View_ScalarDecimalPlace'), <bool>parameters['decimal_place'])
 
         # auto range, min, max
         self.thisptrp.setParameter(string('ProblemSetting::View_ScalarRangeAuto'), <bool>parameters['auto_range'])

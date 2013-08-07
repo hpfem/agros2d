@@ -167,7 +167,7 @@ struct PyViewPost : PyViewMeshAndPost
         return Agros2D::problem()->setting()->value(type).toDouble();
     }
 
-    void checkExistingSolution();
+        void checkExistingSolution();
 
     // field
     void setField(const std::string &fieldId);
@@ -196,30 +196,6 @@ struct PyViewPost : PyViewMeshAndPost
     {
         return paletteQualityToStringKey((PaletteQuality) Agros2D::problem()->setting()->value(ProblemSetting::View_LinearizerQuality).toInt()).toStdString();
     }
-    void setScalarViewPaletteSteps(int steps);
-    inline int getScalarViewPaletteSteps() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteSteps).toInt(); }
-    void setScalarViewPaletteFilter(bool filter) { setProblemSetting(ProblemSetting::View_PaletteFilter, filter); }
-    inline bool getScalarViewPaletteFilter() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_PaletteFilter).toBool(); }
-    void setScalarViewColorBar(bool show) { setProblemSetting(ProblemSetting::View_ShowScalarColorBar, show); }
-    inline bool getScalarViewColorBar() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowScalarColorBar).toBool(); }
-    void setScalarViewDecimalPlace(int place);
-    inline int getScalarViewDecimalPlace() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarDecimalPlace).toInt(); }
-
-    // scalar view range
-    void setScalarViewRangeAuto(bool autoRange) { setProblemSetting(ProblemSetting::View_ScalarRangeAuto, autoRange); }
-    inline bool getScalarViewRangeAuto() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeAuto).toBool(); }
-    void setScalarViewRangeMin(double min) { setProblemSetting(ProblemSetting::View_ScalarRangeMin, min); }
-    inline double getScalarViewRangeMin() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMin).toDouble(); }
-    void setScalarViewRangeMax(double max) { setProblemSetting(ProblemSetting::View_ScalarRangeMax, max); }
-    inline double getScalarViewRangeMax() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeMax).toDouble(); }
-    void setScalarViewRangeLog(bool log) { setProblemSetting(ProblemSetting::View_ScalarRangeLog, log); }
-    inline bool getScalarViewRangeLog() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeLog).toBool(); }
-    void setScalarViewRangeBase(double base);
-    inline double getScalarViewRangeBase() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarRangeBase).toDouble(); }
-
-    void setProblemSetting(ProblemSetting::Type type, bool value);
-    void setProblemSetting(ProblemSetting::Type type, int value);
-    void setProblemSetting(ProblemSetting::Type type, double value);
 };
 
 struct PyViewPost2D : PyViewPost
@@ -233,6 +209,7 @@ struct PyViewPost2D : PyViewPost
     // contour view
     void setContourShow(bool show) { setProblemSetting(ProblemSetting::View_ShowContourView, show); }
     inline bool getContourShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowContourView).toBool(); }
+
     void setContourVariable(const std::string &var);
     inline std::string getContourVariable() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString().toStdString(); }
     void setContourCount(int count);
@@ -263,6 +240,10 @@ struct PyViewPost2D : PyViewPost
     {
         return vectorCenterToStringKey((VectorCenter) Agros2D::problem()->setting()->value(ProblemSetting::View_VectorCenter).toInt()).toStdString();
     }
+
+    void setProblemSetting(ProblemSetting::Type type, bool value);
+    void setProblemSetting(ProblemSetting::Type type, int value);
+    void setProblemSetting(ProblemSetting::Type type, double value);
 };
 
 struct PyViewPost3D
