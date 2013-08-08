@@ -280,6 +280,9 @@ void MainWindow::createActions()
     actDocumentExportMeshFile = new QAction(tr("Export mesh file..."), this);
     connect(actDocumentExportMeshFile, SIGNAL(triggered()), this, SLOT(doDocumentExportMeshFile()));
 
+    actExportVTKGeometry = new QAction(tr("Export VTK geometry..."), this);
+    connect(actExportVTKGeometry, SIGNAL(triggered()), this, SLOT(doExportVTKGeometry()));
+
     actDocumentSaveImage = new QAction(tr("Export image..."), this);
     connect(actDocumentSaveImage, SIGNAL(triggered()), this, SLOT(doDocumentSaveImage()));
 
@@ -416,9 +419,11 @@ void MainWindow::createMenus()
     mnuFileImportExport->addAction(actDocumentSaveImage);
     mnuFileImportExport->addAction(actDocumentSaveGeometry);
     mnuFileImportExport->addSeparator();
+    mnuFileImportExport->addAction(actExportVTKGeometry);
     mnuFileImportExport->addAction(sceneViewMesh->actExportVTKMesh);
     mnuFileImportExport->addAction(sceneViewMesh->actExportVTKOrder);
     mnuFileImportExport->addAction(sceneViewPost2D->actExportVTKScalar);
+    mnuFileImportExport->addAction(sceneViewPost2D->actExportVTKContours);
 
     // QMenu *mnuServer = new QMenu(tr("Colaboration"), this);
     // mnuServer->addAction(actDocumentDownloadFromServer);
@@ -1558,6 +1563,32 @@ void MainWindow::doDocumentExportMeshFile()
     else
     {
         Agros2D::log()->printMessage(tr("Problem"), tr("The problem is not meshed"));
+    }
+}
+
+void MainWindow::doExportVTKGeometry()
+{
+    // file dialog
+    QSettings settings;
+    QString dir = settings.value("General/LastVTKDir").toString();
+
+    QString fn = QFileDialog::getSaveFileName(QApplication::activeWindow(), tr("Export VTK file"), dir, tr("VTK files (*.vtk)"));
+    if (fn.isEmpty())
+        return;
+
+    if (!fn.endsWith(".vtk"))
+        fn.append(".vtk");
+
+    Agros2D::scene()->exportVTKGeometry(fn);
+
+    if (!fn.isEmpty())
+    {
+        QFileInfo fileInfo(fn);
+        if (fileInfo.absoluteDir() != tempProblemDir())
+        {
+            QSettings settings;
+            settings.setValue("General/LastVTKDir", fileInfo.absolutePath());
+        }
     }
 }
 

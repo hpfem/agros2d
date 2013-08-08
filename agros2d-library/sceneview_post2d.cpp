@@ -110,6 +110,9 @@ void SceneViewPost2D::createActionsPost2D()
 
     actExportVTKScalar = new QAction(tr("Export VTK scalar..."), this);
     connect(actExportVTKScalar, SIGNAL(triggered()), this, SLOT(exportVTKScalarView()));
+
+    actExportVTKContours = new QAction(tr("Export VTK contours..."), this);
+    connect(actExportVTKContours, SIGNAL(triggered()), this, SLOT(exportVTKContourView()));
 }
 
 void SceneViewPost2D::keyPressEvent(QKeyEvent *event)
@@ -1176,6 +1179,7 @@ void SceneViewPost2D::setControls()
     actSelectByMarker->setEnabled(Agros2D::problem()->isSolved() && (actPostprocessorModeSurfaceIntegral->isChecked() || actPostprocessorModeVolumeIntegral->isChecked()));
     actSelectPoint->setEnabled(Agros2D::problem()->isSolved() && actPostprocessorModeLocalPointValue->isChecked());
     actExportVTKScalar->setEnabled(Agros2D::problem()->isSolved());
+    actExportVTKContours->setEnabled(Agros2D::problem()->isSolved());
 }
 
 void SceneViewPost2D::clear()
@@ -1190,6 +1194,23 @@ void SceneViewPost2D::clear()
 }
 
 void SceneViewPost2D::exportVTKScalarView(const QString &fileName)
+{
+    exportVTK(fileName,
+              Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString(),
+              (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
+}
+
+void SceneViewPost2D::exportVTKContourView(const QString &fileName)
+{
+    Module::LocalVariable variable = postHermes()->activeViewField()->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString());
+    PhysicFieldVariableComp comp = variable.isScalar() ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude;
+
+    exportVTK(fileName,
+              Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString(),
+              comp);
+}
+
+void SceneViewPost2D::exportVTK(const QString &fileName, const QString &variable, PhysicFieldVariableComp physicFieldVariableComp)
 {
     if (Agros2D::problem()->isSolved())
     {
@@ -1214,8 +1235,7 @@ void SceneViewPost2D::exportVTKScalarView(const QString &fileName)
         }
 
         Hermes::Hermes2D::Views::Linearizer linScalarView;
-        MeshFunctionSharedPtr<double> slnScalarView = m_postHermes->viewScalarFilter(postHermes()->activeViewField()->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
-                                                                                     (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
+        MeshFunctionSharedPtr<double> slnScalarView = m_postHermes->viewScalarFilter(postHermes()->activeViewField()->localVariable(variable), physicFieldVariableComp);
 
         linScalarView.save_solution_vtk(slnScalarView,
                                         fn.toLatin1().data(),

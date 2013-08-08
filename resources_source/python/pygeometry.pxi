@@ -34,6 +34,8 @@ cdef extern from "../../agros2d-library/pythonlab/pygeometry.h":
         void rotateSelection(double x, double y, double angle, bool copy, bool withMarkers)
         void scaleSelection(double x, double y, double scale, bool copy, bool withMarkers)
         void removeSelection()
+        
+        void exportVTK(string filename)
 
 cdef class __Geometry__:
     cdef PyGeometry *thisptr
@@ -371,5 +373,9 @@ cdef class __Geometry__:
     def select_none(self):
         """Unselect all objects (nodes, edges or labels)."""
         self.thisptr.selectNone()
-
+        
+    def export_vtk(self, filename):
+        """Export geometry in VTK format."""
+        self.thisptr.exportVTK(filename)
+        
 geometry = __Geometry__()

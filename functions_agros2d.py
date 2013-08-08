@@ -38,9 +38,65 @@ def memory_chart(last_seconds = 0):
 
 setattr(agros2d, "memory_chart", memory_chart)
 
-def vtk_figure(vtk_filename, output_filename, width = 500, height = 300, colorbar = True):
+def vtk_geometry_actor(filename):
     import vtk
-    import math
+    
+    reader_poly = vtk.vtkPolyDataReader()
+    reader_poly.SetFileName(filename)        
+    geometry = reader_poly.GetOutput()
+
+    # create the mapper that corresponds the objects of the vtk file into graphics elements
+    geometry_mapper = vtk.vtkDataSetMapper()
+    geometry_mapper.SetInput(geometry)
+    
+    # actor
+    geometry_actor = vtk.vtkActor()
+    geometry_actor.SetMapper(geometry_mapper)
+    geometry_actor.GetProperty().SetColor(0, 0, 0)
+    geometry_actor.GetProperty().SetLineWidth(1.8)
+    
+    return geometry_actor
+    
+setattr(agros2d, "vtk_geometry_actor", vtk_geometry_actor)                   
+    
+def vtk_contours_actor(filename, count = 10, color = False):
+    import vtk
+    
+    # read the source file.
+    reader = vtk.vtkUnstructuredGridReader()
+    reader.SetFileName(filename)
+    reader.Update()
+    output = reader.GetOutput()
+    scalar_range = output.GetScalarRange()
+
+     # contours
+    contours = vtk.vtkContourFilter()
+    contours.SetInputConnection(reader.GetOutputPort()) 
+    contours.GenerateValues(count, scalar_range) 
+    contours.Update() 
+
+    # Get the poly data 
+    polys = vtk.vtkPolyData() 
+    polys = contours.GetOutput() 
+       
+    # map the contours to graphical primitives 
+    contMapper = vtk.vtkPolyDataMapper() 
+    contMapper.SetInput(polys) 
+    contMapper.SetScalarVisibility(color) # colored contours
+    contMapper.SetScalarRange(scalar_range)
+    
+    # create an actor for the contours 
+    contActor = vtk.vtkActor() 
+    contActor.SetMapper(contMapper) 
+    contActor.GetProperty().SetColor(0.2, 0.2, 0.2)
+    contActor.GetProperty().SetLineWidth(1)
+    
+    return contActor
+     
+setattr(agros2d, "vtk_contours_actor", vtk_contours_actor)                   
+                                               
+def vtk_scalar_actor(filename):
+    import vtk
     colobar_agros2d =  [[ 0.125500, 0.162200, 0.960000 ],
                         [ 0.132175, 0.167787, 0.954839 ],
                         [ 0.138849, 0.173373, 0.949678 ],
@@ -300,13 +356,10 @@ def vtk_figure(vtk_filename, output_filename, width = 500, height = 300, colorba
                          
     # read the source file.
     reader = vtk.vtkUnstructuredGridReader()
-    reader.SetFileName(vtk_filename)
-    reader.Update() # neded because of GetScalarRange
+    reader.SetFileName(filename)
+    reader.Update() 
     output = reader.GetOutput()
     scalar_range = output.GetScalarRange()
-    bounds = output.GetBounds()
-    cx = (bounds[0] + bounds[1]) / 2.0
-    cy = (bounds[2] + bounds[3]) / 2.0
     
     # create own palette
     lut = vtk.vtkLookupTable()
@@ -324,17 +377,40 @@ def vtk_figure(vtk_filename, output_filename, width = 500, height = 300, colorba
     # actor
     actor = vtk.vtkActor()
     actor.SetMapper(mapper)
-    # actor.GetProperty().SetRepresentationToWireframe();
-     
+    
+    return actor
+             
+setattr(agros2d, "vtk_scalar_actor", vtk_scalar_actor)
+                     
+def vtk_figure(output_filename, geometry, scalar = None, contours = None, width = 400, height = 230, scalar_colorbar = True):
+    import vtk
+    import math
+
+    # bounding box
+    bounds = geometry.GetBounds()
+    cx = (bounds[0] + bounds[1]) / 2.0
+    cy = (bounds[2] + bounds[3]) / 2.0
+    scale = max(math.fabs(bounds[0] - cx), math.fabs(bounds[1] - cx), math.fabs(bounds[2] - cy), math.fabs(bounds[3] - cy))
+
     # renderer
     renderer = vtk.vtkRenderer()
-    renderer.AddActor(actor)
     renderer.SetBackground(1, 1, 1)
-    
+        
+    # scalar
+    if (scalar != None):
+        renderer.AddActor(scalar)  
+            
+    # contours
+    if (contours != None):
+        renderer.AddActor(contours)
+
+    # geometry
+    renderer.AddActor(geometry)
+        
     # camera
     camera = renderer.GetActiveCamera()
     camera.ParallelProjectionOn()
-    camera.SetParallelScale(max(math.fabs(bounds[0] - cx), math.fabs(bounds[1] - cx), math.fabs(bounds[2] - cy), math.fabs(bounds[3] - cy)))
+    camera.SetParallelScale(scale)
     camera.SetPosition(cx, cy, 1);
     camera.SetFocalPoint(cx, cy, 0);
     
@@ -345,19 +421,26 @@ def vtk_figure(vtk_filename, output_filename, width = 500, height = 300, colorba
     render_window.AddRenderer(renderer)
     render_window.Render()
     
-    if (colorbar):
-        interactor = vtk.vtkRenderWindowInteractor()
-        interactor.SetRenderWindow(render_window)
-        
-        scalar_bar = vtk.vtkScalarBarActor()
-        scalar_bar.SetOrientationToHorizontal()
-        scalar_bar.SetLookupTable(lut)
-         
-        # create the scalar bar widget
-        scalar_bar_widget = vtk.vtkScalarBarWidget()
-        scalar_bar_widget.SetInteractor(interactor)
-        scalar_bar_widget.SetScalarBarActor(scalar_bar)
-        scalar_bar_widget.On()     
+    # scalar colorbar
+    if (scalar != None):
+        if (scalar_colorbar):
+            interactor = vtk.vtkRenderWindowInteractor()
+            interactor.SetRenderWindow(render_window)
+            
+            scalar_bar = vtk.vtkScalarBarActor()
+            scalar_bar.SetOrientationToHorizontal()
+            scalar_bar.SetLookupTable(scalar.GetMapper().GetLookupTable())
+            scalar_bar.GetTitleTextProperty().SetFontFamilyToCourier()
+            scalar_bar.GetLabelTextProperty().BoldOff()
+            scalar_bar.GetLabelTextProperty().ItalicOff()
+            scalar_bar.GetLabelTextProperty().ShadowOff()        
+            scalar_bar.GetLabelTextProperty().SetColor(0, 0, 0)
+                
+            # create the scalar bar widget
+            scalar_bar_widget = vtk.vtkScalarBarWidget()
+            scalar_bar_widget.SetInteractor(interactor)
+            scalar_bar_widget.SetScalarBarActor(scalar_bar)
+            scalar_bar_widget.On()    
        
     window_to_image_filter = vtk.vtkWindowToImageFilter()
     window_to_image_filter.SetInput(render_window)
@@ -367,5 +450,5 @@ def vtk_figure(vtk_filename, output_filename, width = 500, height = 300, colorba
     writer.SetFileName(output_filename)
     writer.SetInputConnection(window_to_image_filter.GetOutputPort())
     writer.Write()
-    
+
 setattr(agros2d, "vtk_figure", vtk_figure)

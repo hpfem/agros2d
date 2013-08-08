@@ -388,11 +388,11 @@ void Scene::setMaterial(SceneMaterial *material)
 
 void Scene::checkGeometryAssignement()
 {
-    if (Agros2D::scene()->edges->length() > 2)
+    if (edges->length() > 2)
     {
         // at least one boundary condition has to be assigned
         int count = 0;
-        foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
+        foreach (SceneEdge *edge, edges->items())
             if (edge->markersCount() > 0)
                 count++;
 
@@ -400,13 +400,13 @@ void Scene::checkGeometryAssignement()
             throw AgrosGeometryException(tr("At least one boundary condition has to be assigned"));
     }
 
-    if (Agros2D::scene()->labels->length() < 1)
+    if (labels->length() < 1)
         throw AgrosGeometryException(tr("At least one label has to be created"));
     else
     {
         // at least one material has to be assigned
         int count = 0;
-        foreach (SceneLabel *label, Agros2D::scene()->labels->items())
+        foreach (SceneLabel *label, labels->items())
             if (label->markersCount() > 0)
                 count++;
 
@@ -414,11 +414,11 @@ void Scene::checkGeometryAssignement()
             throw AgrosGeometryException(tr("At least one material has to be assigned"));
     }
 
-    if (Agros2D::scene()->boundaries->length() < 2) // + none marker
-        throw AgrosGeometryException(tr("Invalid number of boundary conditions (%1 < 1)").arg(Agros2D::scene()->boundaries->length() - 1));
+    if (boundaries->length() < 2) // + none marker
+        throw AgrosGeometryException(tr("Invalid number of boundary conditions (%1 < 1)").arg(boundaries->length() - 1));
 
-    if (Agros2D::scene()->materials->length() < 2) // + none marker
-        throw AgrosGeometryException(tr("Invalid number of materials (%1 < 1)").arg(Agros2D::scene()->materials->length() - 1));
+    if (materials->length() < 2) // + none marker
+        throw AgrosGeometryException(tr("Invalid number of materials (%1 < 1)").arg(materials->length() - 1));
 }
 
 void Scene::clear()
@@ -524,17 +524,17 @@ void Scene::deleteSelected()
 
     // nodes
     QList<Point> selectedNodePoints;
-    foreach (SceneNode *node, Agros2D::scene()->nodes->selected().items())
+    foreach (SceneNode *node, nodes->selected().items())
         selectedNodePoints.append(node->point());
     if (!selectedNodePoints.isEmpty())
-        Agros2D::scene()->undoStack()->push(new SceneNodeCommandRemoveMulti(selectedNodePoints));
+        undoStack()->push(new SceneNodeCommandRemoveMulti(selectedNodePoints));
 
     // edges
     QList<Point> selectedEdgePointsStart;
     QList<Point> selectedEdgePointsEnd;
     QList<double> selectedEdgeAngles;
     QList<QMap<QString, QString> > selectedEdgeMarkers;
-    foreach (SceneEdge *edge, Agros2D::scene()->edges->selected().items())
+    foreach (SceneEdge *edge, edges->selected().items())
     {
         selectedEdgePointsStart.append(edge->nodeStart()->point());
         selectedEdgePointsEnd.append(edge->nodeEnd()->point());
@@ -542,20 +542,20 @@ void Scene::deleteSelected()
         selectedEdgeMarkers.append(edge->markersKeys());
     }
     if (!selectedEdgePointsStart.isEmpty())
-        Agros2D::scene()->undoStack()->push(new SceneEdgeCommandRemoveMulti(selectedEdgePointsStart, selectedEdgePointsEnd, selectedEdgeAngles, selectedEdgeMarkers));
+        undoStack()->push(new SceneEdgeCommandRemoveMulti(selectedEdgePointsStart, selectedEdgePointsEnd, selectedEdgeAngles, selectedEdgeMarkers));
 
     // labels
     QList<Point> selectedLabelPointsStart;
     QList<double> selectedLabelAreas;
     QList<QMap<QString, QString> > selectedLabelMarkers;
-    foreach (SceneLabel *label, Agros2D::scene()->labels->selected().items())
+    foreach (SceneLabel *label, labels->selected().items())
     {
         selectedLabelPointsStart.append(label->point());
         selectedLabelAreas.append(label->area());
         selectedLabelMarkers.append(label->markersKeys());
     }
     if (!selectedLabelPointsStart.isEmpty())
-        Agros2D::scene()->undoStack()->push(new SceneLabelCommandRemoveMulti(selectedLabelPointsStart, selectedLabelMarkers, selectedLabelAreas));
+        undoStack()->push(new SceneLabelCommandRemoveMulti(selectedLabelPointsStart, selectedLabelMarkers, selectedLabelAreas));
 
     m_undoStack->endMacro();
 
@@ -954,6 +954,78 @@ void Scene::doFieldsChanged()
     materials->doFieldsChanged();
 }
 
+void Scene::exportVTKGeometry(const QString &fileName)
+{
+    QList<Point> vtkNodes;
+    QMultiMap<int, int> vtkEdges;
+
+    // edges
+    for (int i = 0; i < edges->length(); i++)
+    {
+        if (edges->at(i)->angle() == 0)
+        {
+            // line
+            vtkNodes.append(edges->at(i)->nodeStart()->point());
+            vtkNodes.append(edges->at(i)->nodeEnd()->point());
+
+            vtkEdges.insertMulti(vtkNodes.count() - 1, vtkNodes.count() - 2);
+        }
+        else
+        {
+            // arc
+            // add pseudo nodes
+            Point center = edges->at(i)->center();
+            double radius = edges->at(i)->radius();
+            double startAngle = atan2(center.y - edges->at(i)->nodeStart()->point().y,
+                                      center.x - edges->at(i)->nodeStart()->point().x) - M_PI;
+
+            int segments = edges->at(i)->angle() / 5.0;
+            double theta = deg2rad(edges->at(i)->angle()) / double(segments);
+
+            for (int j = 0; j <= segments; j++)
+            {
+                double arc = startAngle + j*theta;
+
+                double x = radius * cos(arc);
+                double y = radius * sin(arc);
+
+                vtkNodes.append(Point(center.x + x, center.y + y));
+                if (j > 0)
+                    vtkEdges.insertMulti(vtkNodes.count() - 1, vtkNodes.count() - 2);
+            }
+        }
+    }
+
+    // save current locale
+    char *plocale = setlocale (LC_NUMERIC, "");
+    setlocale (LC_NUMERIC, "C");
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        Agros2D::log()->printError(tr("VTK Geometry export"), tr("Could not create VTK file (%1)").arg(file.errorString()));
+        return;
+    }
+    QTextStream out(&file);
+
+    out << "# vtk DataFile Version 2.0\n";
+    out << "\n";
+    out << "ASCII\n";
+    out << "DATASET POLYDATA\n";
+    out << QString("POINTS %1 float\n").arg(vtkNodes.count());
+    foreach (Point p, vtkNodes)
+        out << QString("%1 %2 0.0\n").arg(p.x).arg(p.y);
+    out << QString("LINES %1 %2\n").arg(vtkEdges.count()).arg(vtkEdges.count() * 3);
+    for (int i = 0; i < vtkEdges.keys().size(); i++)
+        out << QString("2 %1 %2\n").arg(vtkEdges.keys().at(i)).arg(vtkEdges.values().at(i));
+
+    file.waitForBytesWritten(0);
+    file.close();
+
+    // set system locale
+    setlocale(LC_NUMERIC, plocale);
+}
+
 void Scene::writeToDxf(const QString &fileName)
 {
     writeToDXF(fileName);
@@ -1220,7 +1292,7 @@ void Scene::readFromFile21(const QString &fileName)
             QDomElement eleEdge = nodeEdgeRefinement.toElement();
             int edge = eleEdge.toElement().attribute("edge").toInt();
             int refinement = eleEdge.toElement().attribute("refinement").toInt();
-            field->setEdgeRefinement(Agros2D::scene()->edges->items().at(edge), refinement);
+            field->setEdgeRefinement(edges->items().at(edge), refinement);
 
             nodeEdgeRefinement = nodeEdgeRefinement.nextSibling();
         }
@@ -1233,7 +1305,7 @@ void Scene::readFromFile21(const QString &fileName)
             QDomElement eleLabel = nodeLabelRefinement.toElement();
             int label = eleLabel.toElement().attribute("label").toInt();
             int refinement = eleLabel.toElement().attribute("refinement").toInt();
-            field->setLabelRefinement(Agros2D::scene()->labels->items().at(label), refinement);
+            field->setLabelRefinement(labels->items().at(label), refinement);
 
             nodeLabelRefinement = nodeLabelRefinement.nextSibling();
         }
@@ -1247,7 +1319,7 @@ void Scene::readFromFile21(const QString &fileName)
             QDomElement eleLabel = nodeLabelPolynomialOrder.toElement();
             int label = eleLabel.toElement().attribute("label").toInt();
             int order = eleLabel.toElement().attribute("order").toInt();
-            field->setLabelPolynomialOrder(Agros2D::scene()->labels->items().at(label), order);
+            field->setLabelPolynomialOrder(labels->items().at(label), order);
 
             nodeLabelPolynomialOrder = nodeLabelPolynomialOrder.nextSibling();
         }
@@ -1298,7 +1370,7 @@ void Scene::readFromFile21(const QString &fileName)
                 boundary->setValue(variable.id(),
                                    Value(element.toElement().attribute(variable.id(), "0")));
 
-            Agros2D::scene()->addBoundary(boundary);
+            addBoundary(boundary);
 
             // add boundary to the edge marker
             QDomNode nodeEdge = element.firstChild();
@@ -1333,7 +1405,7 @@ void Scene::readFromFile21(const QString &fileName)
             }
 
             // add material
-            Agros2D::scene()->addMaterial(material);
+            addMaterial(material);
 
             // add material to the label marker
             QDomNode nodeLabel = element.firstChild();
@@ -1477,7 +1549,7 @@ void Scene::readFromFile31(const QString &fileName)
             {
                 XMLProblem::refinement_edge edge = field.refinement_edges().refinement_edge().at(j);
 
-                fieldInfo->setEdgeRefinement(Agros2D::scene()->edges->items().at(edge.refinement_edge_id()), edge.refinement_edge_number());
+                fieldInfo->setEdgeRefinement(edges->items().at(edge.refinement_edge_id()), edge.refinement_edge_number());
             }
 
             // label refinement
@@ -1485,7 +1557,7 @@ void Scene::readFromFile31(const QString &fileName)
             {
                 XMLProblem::refinement_label label = field.refinement_labels().refinement_label().at(j);
 
-                fieldInfo->setLabelRefinement(Agros2D::scene()->labels->items().at(label.refinement_label_id()), label.refinement_label_number());
+                fieldInfo->setLabelRefinement(labels->items().at(label.refinement_label_id()), label.refinement_label_number());
             }
 
             // polynomial order
@@ -1493,7 +1565,7 @@ void Scene::readFromFile31(const QString &fileName)
             {
                 XMLProblem::polynomial_order order = field.polynomial_orders().polynomial_order().at(j);
 
-                fieldInfo->setLabelPolynomialOrder(Agros2D::scene()->labels->items().at(order.polynomial_order_id()), order.polynomial_order_number());
+                fieldInfo->setLabelPolynomialOrder(labels->items().at(order.polynomial_order_id()), order.polynomial_order_number());
             }
 
             // boundary conditions
@@ -1518,7 +1590,7 @@ void Scene::readFromFile31(const QString &fileName)
                     bound->setValue(QString::fromStdString(type.key()), Value(QString::fromStdString(type.value())));
                 }
 
-                Agros2D::scene()->addBoundary(bound);
+                addBoundary(bound);
 
                 // add boundary to the edge marker
                 for (unsigned int k = 0; k < boundary.boundary_edges().boundary_edge().size(); k++)
@@ -1551,7 +1623,7 @@ void Scene::readFromFile31(const QString &fileName)
                     mat->setValue(QString::fromStdString(type.key()), Value(QString::fromStdString(type.value())));
                 }
 
-                Agros2D::scene()->addMaterial(mat);
+                addMaterial(mat);
 
                 // add boundary to the edge marker
                 for (unsigned int k = 0; k < material.material_labels().material_label().size(); k++)
@@ -1772,7 +1844,7 @@ void Scene::writeToFile21(const QString &fileName)
             edgeIterator.next();
             QDomElement eleEdge = doc.createElement("edge");
 
-            eleEdge.setAttribute("edge", QString::number(Agros2D::scene()->edges->items().indexOf(edgeIterator.key())));
+            eleEdge.setAttribute("edge", QString::number(edges->items().indexOf(edgeIterator.key())));
             eleEdge.setAttribute("refinement", QString::number(edgeIterator.value()));
 
             eleEdgesRefinement.appendChild(eleEdge);
@@ -1787,7 +1859,7 @@ void Scene::writeToFile21(const QString &fileName)
             labelIterator.next();
             QDomElement eleLabel = doc.createElement("label");
 
-            eleLabel.setAttribute("label", QString::number(Agros2D::scene()->labels->items().indexOf(labelIterator.key())));
+            eleLabel.setAttribute("label", QString::number(labels->items().indexOf(labelIterator.key())));
             eleLabel.setAttribute("refinement", QString::number(labelIterator.value()));
 
             eleLabelsRefinement.appendChild(eleLabel);
@@ -1804,7 +1876,7 @@ void Scene::writeToFile21(const QString &fileName)
             labelOrderIterator.next();
             QDomElement eleLabel = doc.createElement("label");
 
-            eleLabel.setAttribute("label", QString::number(Agros2D::scene()->labels->items().indexOf(labelOrderIterator.key())));
+            eleLabel.setAttribute("label", QString::number(labels->items().indexOf(labelOrderIterator.key())));
             eleLabel.setAttribute("order", QString::number(labelOrderIterator.value()));
 
             eleLabelPolynomialOrder.appendChild(eleLabel);
@@ -1965,7 +2037,7 @@ void Scene::writeToFile31(const QString &fileName)
             while (edgeIterator.hasNext()) {
                 edgeIterator.next();
 
-                refinement_edges.refinement_edge().push_back(XMLProblem::refinement_edge(Agros2D::scene()->edges->items().indexOf(edgeIterator.key()),
+                refinement_edges.refinement_edge().push_back(XMLProblem::refinement_edge(edges->items().indexOf(edgeIterator.key()),
                                                                                          edgeIterator.value()));
             }
 
@@ -1974,7 +2046,7 @@ void Scene::writeToFile31(const QString &fileName)
             while (labelIterator.hasNext()) {
                 labelIterator.next();
 
-                refinement_labels.refinement_label().push_back(XMLProblem::refinement_label(Agros2D::scene()->labels->items().indexOf(labelIterator.key()),
+                refinement_labels.refinement_label().push_back(XMLProblem::refinement_label(labels->items().indexOf(labelIterator.key()),
                                                                                             labelIterator.value()));
             }
 
@@ -1983,7 +2055,7 @@ void Scene::writeToFile31(const QString &fileName)
             while (labelOrderIterator.hasNext()) {
                 labelOrderIterator.next();
 
-                polynomial_orders.polynomial_order().push_back(XMLProblem::polynomial_order(Agros2D::scene()->labels->items().indexOf(labelOrderIterator.key()),
+                polynomial_orders.polynomial_order().push_back(XMLProblem::polynomial_order(labels->items().indexOf(labelOrderIterator.key()),
                                                                                             labelOrderIterator.value()));
             }
 

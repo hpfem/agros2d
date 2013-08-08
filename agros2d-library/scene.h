@@ -171,6 +171,8 @@ public:
 
     inline void invalidate() { emit invalidated(); }
 
+    void exportVTKGeometry(const QString &fileName);
+
     void readFromDxf(const QString &fileName);
     void writeToDxf(const QString &fileName);
 

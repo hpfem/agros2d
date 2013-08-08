@@ -95,11 +95,13 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
 
         void setScalarViewShow(bool show) except +
         bool getScalarViewShow()
+        void exportScalarVTK(string &filename)
 
         void setContourShow(bool show) except +
         bool getContourShow()
         void setContourVariable(string &variable) except +
         string getContourVariable()
+        void exportContourVTK(string &filename)
 
         void setVectorShow(bool show) except +
         bool getVectorShow()
@@ -395,6 +397,10 @@ cdef class __ViewPost2D__(__ViewPost__):
         def __set__(self, show):
             self.thisptr.setScalarViewShow(show)
 
+    def export_scalar_vtk(self, filename):
+        """Export scalar view in VTK format."""
+        self.thisptr.exportScalarVTK(filename)
+
     # contours
     property contours:
         def __get__(self):
@@ -420,6 +426,10 @@ cdef class __ViewPost2D__(__ViewPost__):
         self.thisptr.setParameter(string('View_ContoursCount'), <int>parameters['count'])
         value_in_range(parameters['width'], 0.1, 5.0, 'width')
         self.thisptr.setParameter(string('View_ContoursWidth'), <bool>parameters['width'])
+
+    def export_contour_vtk(self, filename):
+        """Export contour view in VTK format."""
+        self.thisptr.exportContourVTK(filename)
 
     # vectors
     property vectors:

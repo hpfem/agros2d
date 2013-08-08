@@ -75,6 +75,9 @@ class PyGeometry
         void scaleSelection(double x, double y, double scale, bool copy, bool withMarkers);
         void removeSelection();
 
+        // vtk
+        void exportVTK(const std::string &fileName) const;
+
 private:
         void testAngle(double angle) const;
         void setBoundaries(SceneEdge *edge, const map<std::string, std::string> &boundaries);

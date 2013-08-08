@@ -355,6 +355,20 @@ void PyViewPost2D::setContourVariable(const std::string &var)
     throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(list)).toStdString());
 }
 
+void PyViewPost2D::exportScalarVTK(const std::string &fileName)
+{
+    checkExistingSolution();
+
+    currentPythonEngineAgros()->sceneViewPost2D()->exportVTKScalarView(QString::fromStdString(fileName));
+}
+
+void PyViewPost2D::exportContourVTK(const std::string &fileName)
+{
+    checkExistingSolution();
+
+    currentPythonEngineAgros()->sceneViewPost2D()->exportVTKContourView(QString::fromStdString(fileName));
+}
+
 void PyViewPost2D::setVectorVariable(const std::string &var)
 {
     checkExistingSolution();

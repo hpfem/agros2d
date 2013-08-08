@@ -201,12 +201,16 @@ struct PyViewPost2D : PyViewPost
     // scalar view
     void setScalarViewShow(bool show) { setProblemSetting(ProblemSetting::View_ShowScalarView, show); }
     inline bool getScalarViewShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowScalarView).toBool(); }
+    // vtk
+    void exportScalarVTK(const std::string &fileName);
 
     // contour view
     void setContourShow(bool show) { setProblemSetting(ProblemSetting::View_ShowContourView, show); }
     inline bool getContourShow() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ShowContourView).toBool(); }
     void setContourVariable(const std::string &var);
     inline std::string getContourVariable() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString().toStdString(); }
+    // vtk
+    void exportContourVTK(const std::string &fileName);
 
     // vector view
     void setVectorShow(bool show) { setProblemSetting(ProblemSetting::View_ShowVectorView, show); }

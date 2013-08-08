@@ -569,3 +569,8 @@ void PyGeometry::removeSelection()
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->refresh();
 }
+
+void PyGeometry::exportVTK(const std::string &fileName) const
+{
+    Agros2D::scene()->exportVTKGeometry(QString::fromStdString(fileName));
+}

@@ -38,6 +38,7 @@ public slots:
     void doPostprocessorModeGroup(QAction *action);
     virtual void clear();
     void exportVTKScalarView(const QString &fileName = QString());
+    void exportVTKContourView(const QString &fileName = QString());
 
 public:
     SceneViewPost2D(PostHermes *postHermes, QWidget *parent = 0);
@@ -55,6 +56,7 @@ public:
     QAction *actPostprocessorModeVolumeIntegral;
 
     QAction *actExportVTKScalar;
+    QAction *actExportVTKContours;
 
     virtual QIcon iconView() { return icon("scene-post2d"); }
     virtual QString labelView() { return tr("Postprocessor 2D"); }
@@ -90,6 +92,8 @@ private:
     // QVector<QVector3D> m_arrayScalarFieldColors;
 
     void createActionsPost2D();
+
+    void exportVTK(const QString &fileName, const QString &variable, PhysicFieldVariableComp physicFieldVariableComp);
 
 private slots:
     void showGroup(QAction *action);
