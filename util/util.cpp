@@ -25,6 +25,7 @@
 
 #ifdef Q_WS_WIN
 #include "Windows.h"
+#pragma comment(lib, "psapi.lib")
 #endif
 
 #ifndef M_PI_2
