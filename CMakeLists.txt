@@ -7,7 +7,7 @@ SET(AGROS_DEBUG NO)
 SET(WITH_QT5 NO)
 
 # Allow to override the default values in CMake.vars:
-include(CMake.vars OPTIONAL)
+INCLUDE(CMake.vars OPTIONAL)
 
 # versions
 # SET(VERSION_BETA)
@@ -49,7 +49,7 @@ ENDIF(AGROS_DEBUG)
 
 
 # Add QT.
-include(CMakeQt.cmake)
+INCLUDE(CMakeQt.cmake)
 
 # Set global compiler parameters.
 find_package(OpenMP REQUIRED)
@@ -66,8 +66,6 @@ IF(MSVC)
   INCLUDE_DIRECTORIES(c:/hpfem/hermes/dependencies/include)
   INCLUDE_DIRECTORIES(d:/hpfem/hermes/dependencies/include)
   INCLUDE_DIRECTORIES(c:/Python27/include)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D_WINDOWS /Dpopen=_popen /Dpclose=_pclose /D__value=_value /Dfinite=_finite /Dhypot=_hypot /Disatty=_isatty /Dfileno=_fileno /D_CRT_SECURE_NO_WARNINGS /MP /openmp /Zc:wchar_t")
-  
   SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt")
 ENDIF(MSVC)
 
@@ -76,26 +74,36 @@ FIND_PACKAGE(PythonLibs 2.7 REQUIRED)
 INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})
 
 # Include current dir
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
+SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Enable debugging symbols for all files all the time:
-# set(CMAKE_CXX_FLAGS "-g ${CMAKE_CXX_FLAGS}")
 IF(AGROS_DEBUG)
-    SET(CMAKE_BUILD_TYPE Debug)
     IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         # Disable all warnings and turn on only important ones:
         # SET(CMAKE_CXX_FLAGS "-w ${CMAKE_CXX_FLAGS} -fPIC")
         # SET(CMAKE_CXX_FLAGS "-Wuninitialized -Wvla -Wsign-compare ${CMAKE_CXX_FLAGS}")
-
-        # SET(DEBUG_FLAGS   "-g")
-        SET(FLAGS ${DEBUG_FLAGS})
+        SET(CMAKE_BUILD_TYPE Debug)
+        SET(DEBUG_FLAGS   "-g")
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DEBUG_FLAGS}")
     ENDIF()
 ElSE(AGROS_DEBUG)
-    SET(CMAKE_BUILD_TYPE Release)
-    SET(RELEASE_FLAGS "-DNDEBUG -O3 -Ofast")
-    SET(FLAGS ${RELEASE_FLAGS})
+    IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+      SET(CMAKE_BUILD_TYPE Release)
+      SET(RELEASE_FLAGS "-DNDEBUG -O3 -Ofast")
+      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RELEASE_FLAGS}")
+    ENDIF()
 ENDIF(AGROS_DEBUG)
 
+# This overrides CXX flags for MSVC
+IF(MSVC)
+  SET(MSVC_DEFINES "/DWIN32 /D_WINDOWS /Dpopen=_popen /Dpclose=_pclose /D__value=_value /Dfinite=_finite /Dhypot=_hypot /Disatty=_isatty /Dfileno=_fileno /D_CRT_SECURE_NO_WARNINGS")
+  SET(CMAKE_CXX_FLAGS_DEBUG_INIT          "/D_DEBUG /Od /Ob2 /MDd /Zi ${MSVC_DEFINES}")
+  SET(CMAKE_CXX_FLAGS_RELEASE_INIT        "/DNDEBUG /O2 /Ob2 /MD ${MSVC_DEFINES}")
+  SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
+  SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
+  SET (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /SAFESEH:NO")
+ENDIF(MSVC)
+  
 # Create file with preprocessor definitions exposing the build settings to the source code.
 configure_file(
   util/config.h.cmake
@@ -103,7 +111,7 @@ configure_file(
 )
 
 # Include OUR header files location
-include(IncludeSubdirs.cmake)
+INCLUDE(IncludeSubdirs.cmake)
 
 # Subdirectories.
 ADD_SUBDIRECTORY(3rdparty)
