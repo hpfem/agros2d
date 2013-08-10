@@ -29,6 +29,7 @@ class SceneViewPost3D;
 class SceneViewPreprocessor;
 class SceneViewMesh;
 class SceneViewParticleTracing;
+class SceneViewVTK2D;
 class InfoWidget;
 class SettingsWidget;
 class ProblemWidget;
@@ -197,6 +198,7 @@ private:
     SceneViewWidget *sceneViewPost2DWidget;
     SceneViewWidget *sceneViewPost3DWidget;
     SceneViewWidget *sceneViewPostParticleTracingWidget;
+    SceneViewWidget *sceneViewPostVTK2DWidget;
     SceneViewWidget *sceneViewBlankWidget;
     SceneViewWidget *sceneViewChartWidget;
 
@@ -209,6 +211,7 @@ private:
     SceneViewPost2D *sceneViewPost2D;
     SceneViewPost3D *sceneViewPost3D;
     SceneViewParticleTracing *sceneViewParticleTracing;
+    SceneViewVTK2D *sceneViewVTK2D;
     ChartView *sceneViewChart;
     QWidget *sceneViewBlank;
 

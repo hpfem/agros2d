@@ -34,6 +34,7 @@
 #include "sceneview_post2d.h"
 #include "sceneview_post3d.h"
 #include "sceneview_particle.h"
+#include "sceneview_vtk2d.h"
 #include "logview.h"
 #include "infowidget.h"
 #include "preprocessorview.h"
@@ -87,6 +88,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     sceneViewPost3D = new SceneViewPost3D(postHermes, this);
     sceneViewChart = new ChartView(this);
     sceneViewParticleTracing = new SceneViewParticleTracing(postHermes, this);
+    sceneViewVTK2D = new SceneViewVTK2D(postHermes, this);
     sceneViewBlank = new QLabel("", this);
 
     // scene - info widget
@@ -381,6 +383,8 @@ void MainWindow::createActions()
     actSceneModeGroup->addAction(sceneViewPost3D->actSceneModePost3D);
     actSceneModeGroup->addAction(sceneViewChart->actSceneModeChart);
     actSceneModeGroup->addAction(sceneViewParticleTracing->actSceneModeParticleTracing);
+    actSceneModeGroup->addAction(sceneViewVTK2D->actSceneModeVTK2D);
+    actSceneModeGroup->addAction(settingsWidget->actSettings);
 
     actHideControlPanel = new QAction(icon("showhide"), tr("Show/hide control panel"), this);
     actHideControlPanel->setShortcut(tr("Alt+0"));
@@ -628,6 +632,7 @@ void MainWindow::createMain()
     sceneViewPost2DWidget = new SceneViewWidget(sceneViewPost2D, this);
     sceneViewPost3DWidget = new SceneViewWidget(sceneViewPost3D, this);
     sceneViewPostParticleTracingWidget = new SceneViewWidget(sceneViewParticleTracing, this);
+    sceneViewPostVTK2DWidget = new SceneViewWidget((QWidget *) sceneViewVTK2D, this);
     sceneViewChartWidget = new SceneViewWidget(sceneViewChart, this);
 
     tabViewLayout = new QStackedLayout();
@@ -639,6 +644,7 @@ void MainWindow::createMain()
     tabViewLayout->addWidget(sceneViewPost2DWidget);
     tabViewLayout->addWidget(sceneViewPost3DWidget);
     tabViewLayout->addWidget(sceneViewPostParticleTracingWidget);
+    tabViewLayout->addWidget(sceneViewPostVTK2DWidget);
     tabViewLayout->addWidget(sceneViewChartWidget);
 
     QWidget *viewWidget = new QWidget();
@@ -687,6 +693,7 @@ void MainWindow::createMain()
     tlbLeftBar->addAction(sceneViewPost2D->actSceneModePost2D);
     tlbLeftBar->addAction(sceneViewPost3D->actSceneModePost3D);
     tlbLeftBar->addAction(sceneViewParticleTracing->actSceneModeParticleTracing);
+    tlbLeftBar->addAction(sceneViewVTK2D->actSceneModeVTK2D);
     tlbLeftBar->addAction(sceneViewChart->actSceneModeChart);
     tlbLeftBar->addWidget(spacing);
     tlbLeftBar->addAction(Agros2D::problem()->actionMesh());
@@ -859,6 +866,8 @@ void MainWindow::doDocumentNew()
             sceneViewPost2D->doZoomBestFit();
             sceneViewPost3D->doZoomBestFit();
             sceneViewParticleTracing->doZoomBestFit();
+            sceneViewVTK2D->doZoomBestFit();
+            settingsWidget->updateControls();
         }
         catch (AgrosPluginException& e)
         {
@@ -907,6 +916,7 @@ void MainWindow::doDocumentOpen(const QString &fileName)
                 sceneViewPost2D->doZoomBestFit();
                 sceneViewPost3D->doZoomBestFit();
                 sceneViewParticleTracing->doZoomBestFit();
+                sceneViewVTK2D->doZoomBestFit();
 
                 return;
             }
@@ -1076,6 +1086,7 @@ void MainWindow::doDocumentClose()
     sceneViewPost2D->doZoomBestFit();
     sceneViewPost3D->doZoomBestFit();
     sceneViewParticleTracing->doZoomBestFit();
+    sceneViewVTK2D->doZoomBestFit();
 }
 
 void MainWindow::doDocumentImportDXF()
@@ -1478,6 +1489,11 @@ void MainWindow::setControls()
 
         // hide transform dialog
         sceneTransformDialog->hide();
+    }
+    if (sceneViewVTK2D->actSceneModeVTK2D->isChecked())
+    {
+        tabViewLayout->setCurrentWidget(sceneViewPostVTK2DWidget);
+        tabControlsLayout->setCurrentWidget(postprocessorWidget);
     }
     if (sceneViewChart->actSceneModeChart->isChecked())
     {
