@@ -68,7 +68,7 @@ void ConfigComputerDialog::load()
 
     // development
     chkDiscreteSaveMatrixRHS->setChecked(Agros2D::configComputer()->saveMatrixRHS);
-    cmbDumpFormat->setCurrentIndex((Hermes::Algebra::EMatrixExportFormat) cmbDumpFormat->findData(Agros2D::configComputer()->dumpFormat, Qt::UserRole));
+    cmbDumpFormat->setCurrentIndex((Hermes::Algebra::MatrixExportFormat) cmbDumpFormat->findData(Agros2D::configComputer()->dumpFormat, Qt::UserRole));
 
     // number of threads
     txtNumOfThreads->setValue(Agros2D::configComputer()->numberOfThreads);
@@ -114,7 +114,7 @@ void ConfigComputerDialog::save()
 
     // development
     Agros2D::configComputer()->saveMatrixRHS = chkDiscreteSaveMatrixRHS->isChecked();
-    Agros2D::configComputer()->dumpFormat = (Hermes::Algebra::EMatrixExportFormat) cmbDumpFormat->itemData(cmbDumpFormat->currentIndex(), Qt::UserRole).toInt();
+    Agros2D::configComputer()->dumpFormat = (Hermes::Algebra::MatrixExportFormat) cmbDumpFormat->itemData(cmbDumpFormat->currentIndex(), Qt::UserRole).toInt();
 
     // number of threads
     Agros2D::configComputer()->numberOfThreads = txtNumOfThreads->value();

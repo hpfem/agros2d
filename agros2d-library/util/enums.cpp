@@ -41,7 +41,7 @@ static QMap<LinearityType, QString> linearityTypeList;
 static QMap<DampingType, QString> dampingTypeList;
 static QMap<MeshType, QString> meshTypeList;
 static QMap<Hermes::MatrixSolverType, QString> matrixSolverTypeList;
-static QMap<Hermes::Algebra::EMatrixExportFormat, QString> dumpFormatList;
+static QMap<Hermes::Algebra::MatrixExportFormat, QString> dumpFormatList;
 static QMap<Hermes::Hermes2D::SpaceType, QString> spaceTypeList;
 static QMap<PaletteType, QString> paletteTypeList;
 static QMap<PaletteQuality, QString> paletteQualityList;
@@ -111,8 +111,8 @@ QString matrixSolverTypeToStringKey(Hermes::MatrixSolverType matrixSolverType) {
 Hermes::MatrixSolverType matrixSolverTypeFromStringKey(const QString &matrixSolverType) { return matrixSolverTypeList.key(matrixSolverType); }
 
 QStringList dumpFormatStringKeys() { return dumpFormatList.values(); }
-QString dumpFormatToStringKey(Hermes::Algebra::EMatrixExportFormat format) { return dumpFormatList[format]; }
-Hermes::Algebra::EMatrixExportFormat dumpFormatFromStringKey(const QString &format) { return dumpFormatList.key(format); }
+QString dumpFormatToStringKey(Hermes::Algebra::MatrixExportFormat format) { return dumpFormatList[format]; }
+Hermes::Algebra::MatrixExportFormat dumpFormatFromStringKey(const QString &format) { return dumpFormatList.key(format); }
 
 QStringList spaceTypeStringKeys() { return spaceTypeList.values(); }
 QString spaceTypeToStringKey(Hermes::Hermes2D::SpaceType spaceType) { return spaceTypeList[spaceType]; }
@@ -697,7 +697,7 @@ QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType)
     }
 }
 
-QString dumpFormatString(Hermes::Algebra::EMatrixExportFormat format)
+QString dumpFormatString(Hermes::Algebra::MatrixExportFormat format)
 {
     switch (format)
     {
@@ -708,7 +708,7 @@ QString dumpFormatString(Hermes::Algebra::EMatrixExportFormat format)
     case Hermes::Algebra::EXPORT_FORMAT_PLAIN_ASCII:
         return QObject::tr("Plain ASCII");
     default:
-        std::cerr << "Matrix dump format '" + QString::number(format).toStdString() + "' is not implemented. dumpFormatString(Hermes::Algebra::EMatrixExportFormat format)" << endl;
+        std::cerr << "Matrix dump format '" + QString::number(format).toStdString() + "' is not implemented. dumpFormatString(Hermes::Algebra::MatrixExportFormat format)" << endl;
         throw;
     }
 }

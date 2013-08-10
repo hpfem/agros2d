@@ -246,7 +246,7 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
 }
 
 template <typename Scalar>
-void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Hermes2D::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep)
+void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep)
 {
     if(Agros2D::configComputer()->saveMatrixRHS)
     {

@@ -247,43 +247,43 @@ namespace Hermes
 
 
     template<typename Scalar>
-    Vector<Scalar>::Vector() : size(0), v(NULL)
+    Vector<Scalar>::Vector() : size(0)
     {
     }
 
     template<typename Scalar>
-    Vector<Scalar>::Vector(unsigned int size) : size(size), v(NULL)
+    Vector<Scalar>::Vector(unsigned int size) : size(size)
     {
     }
 
     template<typename Scalar>
     void Vector<Scalar>::set_vector(Hermes::Algebra::Vector<Scalar>* vec)
     {
-      assert(this->length() == vec->length());
-      for (unsigned int i = 0; i < this->length(); i++) this->set(i, vec->get(i));
+      assert(this->get_size() == vec->get_size());
+      for (unsigned int i = 0; i < this->get_size(); i++) this->set(i, vec->get(i));
     }
 
     template<typename Scalar>
     void Vector<Scalar>::set_vector(Scalar* vec)
     {
-      for (unsigned int i = 0; i < this->length(); i++) this->set(i, vec[i]);
+      for (unsigned int i = 0; i < this->get_size(); i++) this->set(i, vec[i]);
     }
 
     template<typename Scalar>
     void Vector<Scalar>::add_vector(Hermes::Algebra::Vector<Scalar>* vec)
     {
-      assert(this->length() == vec->length());
-      for (unsigned int i = 0; i < this->length(); i++) this->add(i, vec->get(i));
+      assert(this->get_size() == vec->get_size());
+      for (unsigned int i = 0; i < this->get_size(); i++) this->add(i, vec->get(i));
     }
 
     template<typename Scalar>
     void Vector<Scalar>::add_vector(Scalar* vec)
     {
-      for (unsigned int i = 0; i < this->length(); i++) this->add(i, vec[i]);
+      for (unsigned int i = 0; i < this->get_size(); i++) this->add(i, vec[i]);
     }
 
     template<typename Scalar>
-    bool Vector<Scalar>::export_to_file(char *filename, const char *var_name, EMatrixExportFormat fmt, char* number_format)
+    bool SimpleVector<Scalar>::export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
     {
       if(!v)
       {
@@ -293,14 +293,14 @@ namespace Hermes
 
       switch (fmt)
       {
-        case EXPORT_FORMAT_MATRIX_MARKET:
+      case EXPORT_FORMAT_MATRIX_MARKET:
         {
           FILE* file = fopen(filename, "w");
-           if(Hermes::Helpers::TypeIsReal<Scalar>::value)
+          if(Hermes::Helpers::TypeIsReal<Scalar>::value)
             fprintf(file, "%%%%Matrix<Scalar>Market matrix coordinate real\n");
           else
             fprintf(file, "%%%%Matrix<Scalar>Market matrix coordinate complex\n");
-          
+
           fprintf(file, "%d 1 %d\n", this->size, this->size);
 
           for (unsigned int j = 0; j < this->size; j++)
@@ -346,7 +346,7 @@ namespace Hermes
             matvar = Mat_VarCreate("rhs", MAT_C_DOUBLE, MAT_T_DOUBLE, 2, dims, data, MAT_F_DONT_COPY_DATA);
           else
             matvar = Mat_VarCreate("rhs", MAT_C_DOUBLE, MAT_T_DOUBLE, 2, dims, data, MAT_F_DONT_COPY_DATA | MAT_F_COMPLEX);
-          
+
           if (matvar)
           {
             Mat_VarWrite(mat, matvar, MAT_COMPRESSION_ZLIB);
@@ -385,6 +385,118 @@ namespace Hermes
       }
     }
 
+    template<typename Scalar>
+    void SimpleVector<Scalar>::import_from_file(char *filename)
+    {
+      std::vector<Scalar> data;
+      std::ifstream input (filename);
+      std::string lineData;
+
+      while(getline(input, lineData))
+      {
+        Scalar d;
+        std::stringstream lineStream(lineData);
+        lineStream >> d;
+        data.push_back(d);
+      }
+
+      this->alloc(data.size());
+      memcpy(this->v, &data[0], sizeof(Scalar)*data.size());
+    }
+
+    template<typename Scalar>
+    SimpleVector<Scalar>::SimpleVector() : Vector<Scalar>(), v(NULL)
+    {
+    }
+
+    template<typename Scalar>
+    SimpleVector<Scalar>::SimpleVector(unsigned int size) : Vector<Scalar>(size), v(NULL)
+    {
+    }
+
+    template<typename Scalar>
+    SimpleVector<Scalar>::~SimpleVector()
+    {
+      free();
+    }
+
+    template<typename Scalar>
+    void SimpleVector<Scalar>::alloc(unsigned int n)
+    {
+      free();
+      this->size = n;
+      this->v = new Scalar[n];
+      zero();
+    }
+
+    template<typename Scalar>
+    void SimpleVector<Scalar>::change_sign()
+    {
+      for (unsigned int i = 0; i < this->size; i++)
+        v[i] *= -1.;
+    }
+
+    template<typename Scalar>
+    void SimpleVector<Scalar>::zero()
+    {
+      memset(this->v, 0, this->size * sizeof(Scalar));
+    }
+
+    template<typename Scalar>
+    void SimpleVector<Scalar>::free()
+    {
+      delete [] this->v;
+      this->v = NULL;
+      this->size = 0;
+    }
+
+    template<typename Scalar>
+    void SimpleVector<Scalar>::set(unsigned int idx, Scalar y)
+    {
+      this->v[idx] = y;
+    }
+
+    template<typename Scalar>
+    void SimpleVector<Scalar>::add(unsigned int idx, Scalar y)
+    {
+#pragma omp critical (SimpleVector_add)
+      this->v[idx] += y;
+    }
+
+    template<typename Scalar>
+    void SimpleVector<Scalar>::add(unsigned int n, unsigned int *idx, Scalar *y)
+    {
+      for (unsigned int i = 0; i < n; i++)
+        this->v[idx[i]] += y[i];
+    }
+
+    template<typename Scalar>
+    Scalar SimpleVector<Scalar>::get(unsigned int idx) const
+    {
+      return this->v[idx];
+    }
+
+    template<typename Scalar>
+    void SimpleVector<Scalar>::extract(Scalar *v) const
+    {
+      memcpy(v, this->v, this->size * sizeof(Scalar));
+    }
+
+    template<typename Scalar>
+    void SimpleVector<Scalar>::add_vector(Vector<Scalar>* vec)
+    {
+      assert(this->get_size() == vec->get_size());
+      for (unsigned int i = 0; i < this->get_size(); i++)
+        this->add(i, vec->get(i));
+    }
+
+    template<typename Scalar>
+    void SimpleVector<Scalar>::add_vector(Scalar* vec)
+    {
+      for (unsigned int i = 0; i < this->get_size(); i++)
+        this->add(i, vec[i]);
+    }
+
     template HERMES_API void Vector<double>::set_vector(Vector<double>* vec);
     template HERMES_API void Vector<double>::set_vector(double* vec);
     template HERMES_API void Vector<double>::add_vector(Vector<double>* vec);
@@ -395,12 +507,16 @@ namespace Hermes
     template HERMES_API void Vector<std::complex<double> >::add_vector(Vector<std::complex<double> >* vec);
     template HERMES_API void Vector<std::complex<double> >::add_vector(std::complex<double> * vec);
 
-
     template<>
     HERMES_API SparseMatrix<double>* create_matrix(bool use_direct_solver)
     {
       switch (use_direct_solver ? Hermes::HermesCommonApi.get_integral_param_value(Hermes::directMatrixSolverType) : Hermes::HermesCommonApi.get_integral_param_value(Hermes::matrixSolverType))
       {
+      case Hermes::SOLVER_EXTERNAL:
+        {
+          return new CSCMatrix<double>;
+        }
+
       case Hermes::SOLVER_AMESOS:
         {
 #if defined HAVE_AMESOS && defined HAVE_EPETRA
@@ -444,7 +560,7 @@ namespace Hermes
       case Hermes::SOLVER_UMFPACK:
         {
 #ifdef WITH_UMFPACK
-          return new UMFPackMatrix<double>;
+          return new CSCMatrix<double>;
 #else
           throw Hermes::Exceptions::Exception("UMFPACK was not installed.");
 #endif
@@ -465,7 +581,7 @@ namespace Hermes
       case Hermes::SOLVER_SUPERLU:
         {
 #ifdef WITH_SUPERLU
-          return new SuperLUMatrix<double>;
+          return new CSCMatrix<double>;
 #else
           throw Hermes::Exceptions::Exception("SuperLU was not installed.");
 #endif
@@ -482,6 +598,10 @@ namespace Hermes
     {
       switch (use_direct_solver ? Hermes::HermesCommonApi.get_integral_param_value(Hermes::directMatrixSolverType) : Hermes::HermesCommonApi.get_integral_param_value(Hermes::matrixSolverType))
       {
+      case Hermes::SOLVER_EXTERNAL:
+        {
+          return new SimpleVector<double>;
+        }
       case Hermes::SOLVER_AMESOS:
         {
 #if defined HAVE_AMESOS && defined HAVE_EPETRA
@@ -505,7 +625,7 @@ namespace Hermes
       case Hermes::SOLVER_MUMPS:
         {
 #ifdef WITH_MUMPS
-          return new MumpsVector<double>;
+          return new SimpleVector<double>;
 #else
           throw Hermes::Exceptions::Exception("MUMPS was not installed.");
 #endif
@@ -525,7 +645,7 @@ namespace Hermes
       case Hermes::SOLVER_UMFPACK:
         {
 #ifdef WITH_UMFPACK
-          return new UMFPackVector<double>;
+          return new SimpleVector<double>;
 #else
           throw Hermes::Exceptions::Exception("UMFPACK was not installed.");
 #endif
@@ -546,7 +666,7 @@ namespace Hermes
       case Hermes::SOLVER_SUPERLU:
         {
 #ifdef WITH_SUPERLU
-          return new SuperLUVector<double>;
+          return new SimpleVector<double>;
 #else
           throw Hermes::Exceptions::Exception("SuperLU was not installed.");
 #endif
@@ -559,10 +679,14 @@ namespace Hermes
     }
 
     template<>
-    HERMES_API SparseMatrix<std::complex<double> >* create_matrix(bool use_direct_solver)
+    HERMES_API SparseMatrix<std::complex<double> >*     create_matrix(bool use_direct_solver)
     {
       switch (use_direct_solver ? Hermes::HermesCommonApi.get_integral_param_value(Hermes::directMatrixSolverType) : Hermes::HermesCommonApi.get_integral_param_value(Hermes::matrixSolverType))
       {
+      case Hermes::SOLVER_EXTERNAL:
+        {
+          return new CSCMatrix<std::complex<double> >;
+        }
       case Hermes::SOLVER_AMESOS:
         {
 #if defined HAVE_AMESOS && defined HAVE_EPETRA
@@ -606,7 +730,7 @@ namespace Hermes
       case Hermes::SOLVER_UMFPACK:
         {
 #ifdef WITH_UMFPACK
-          return new UMFPackMatrix<std::complex<double> >;
+          return new CSCMatrix<std::complex<double> >;
 #else
           throw Hermes::Exceptions::Exception("UMFPACK was not installed.");
 #endif
@@ -627,7 +751,7 @@ namespace Hermes
       case Hermes::SOLVER_SUPERLU:
         {
 #ifdef WITH_SUPERLU
-          return new SuperLUMatrix<std::complex<double> >;
+          return new CSCMatrix<std::complex<double> >;
 #else
           throw Hermes::Exceptions::Exception("SuperLU was not installed.");
 #endif
@@ -644,6 +768,11 @@ namespace Hermes
     {
       switch (use_direct_solver ? Hermes::HermesCommonApi.get_integral_param_value(Hermes::directMatrixSolverType) : Hermes::HermesCommonApi.get_integral_param_value(Hermes::matrixSolverType))
       {
+      case Hermes::SOLVER_EXTERNAL:
+        {
+          return new SimpleVector<std::complex<double> >;
+        }
+
       case Hermes::SOLVER_AMESOS:
         {
 #if defined HAVE_AMESOS && defined HAVE_EPETRA
@@ -668,7 +797,7 @@ namespace Hermes
       case Hermes::SOLVER_MUMPS:
         {
 #ifdef WITH_MUMPS
-          return new MumpsVector<std::complex<double> >;
+          return new SimpleVector<std::complex<double> >;
 #else
           throw Hermes::Exceptions::Exception("MUMPS was not installed.");
 #endif
@@ -688,7 +817,7 @@ namespace Hermes
       case Hermes::SOLVER_UMFPACK:
         {
 #ifdef WITH_UMFPACK
-          return new UMFPackVector<std::complex<double> >;
+          return new SimpleVector<std::complex<double> >;
 #else
           throw Hermes::Exceptions::Exception("UMFPACK was not installed.");
 #endif
@@ -709,7 +838,7 @@ namespace Hermes
       case Hermes::SOLVER_SUPERLU:
         {
 #ifdef WITH_SUPERLU
-          return new SuperLUVector<std::complex<double> >;
+          return new SimpleVector<std::complex<double> >;
 #else
           throw Hermes::Exceptions::Exception("SuperLU was not installed.");
 #endif
@@ -726,5 +855,142 @@ namespace Hermes
 
     template class Vector<double>;
     template class Vector<std::complex<double> >;
+
+    template class SimpleVector<double>;
+    template class SimpleVector<std::complex<double> >;
+  }
+  namespace Mixins
+  {
+    template<typename Scalar>
+    MatrixRhsOutput<Scalar>::MatrixRhsOutput() : output_matrixOn(false), output_matrixIterations(-1), matrixFilename("Matrix_"),
+      matrixVarname("A"), matrixFormat(Hermes::Algebra::EXPORT_FORMAT_PLAIN_ASCII), matrix_number_format("%lf"), output_rhsOn(false), output_rhsIterations(-1),
+      RhsFilename("Rhs_"), RhsVarname("b"), RhsFormat(Hermes::Algebra::EXPORT_FORMAT_PLAIN_ASCII), rhs_number_format("%lf")
+    {
+    }
+
+    template<typename Scalar>
+    void MatrixRhsOutput<Scalar>::process_matrix_output(Hermes::Algebra::SparseMatrix<Scalar>* matrix, int iteration)
+    {
+      if (matrix == NULL)
+        return;
+
+      if(this->output_matrixOn && (this->output_matrixIterations == -1 || this->output_matrixIterations >= iteration))
+      {
+        char* fileName = new char[this->matrixFilename.length() + 5];
+        sprintf(fileName, "%s%i", this->matrixFilename.c_str(), iteration);
+        matrix->export_to_file(fileName, this->matrixVarname.c_str(), this->matrixFormat, this->matrix_number_format);
+        delete [] fileName;
+      }
+    }
+
+    template<typename Scalar>
+    void MatrixRhsOutput<Scalar>::process_matrix_output(Hermes::Algebra::SparseMatrix<Scalar>* matrix)
+    {
+      if (matrix == NULL)
+        return;
+
+      if(this->output_matrixOn)
+      {
+        char* fileName = new char[this->matrixFilename.length() + 5];
+        sprintf(fileName, "%s", this->matrixFilename.c_str());
+        matrix->export_to_file(fileName, this->matrixVarname.c_str(), this->matrixFormat, this->matrix_number_format);
+        delete [] fileName;
+      }
+    }
+
+    template<typename Scalar>
+    void MatrixRhsOutput<Scalar>::process_vector_output(Hermes::Algebra::Vector<Scalar>* rhs, int iteration)
+    {
+      if (rhs == NULL)
+        return;
+
+      if(this->output_rhsOn && (this->output_rhsIterations == -1 || this->output_rhsIterations >= iteration))
+      {
+        char* fileName = new char[this->RhsFilename.length() + 5];
+        sprintf(fileName, "%s%i", this->RhsFilename.c_str(), iteration);
+        rhs->export_to_file(fileName, this->RhsVarname.c_str(), this->RhsFormat, this->rhs_number_format);
+        delete [] fileName;
+      }
+    }
+
+    template<typename Scalar>
+    void MatrixRhsOutput<Scalar>::process_vector_output(Hermes::Algebra::Vector<Scalar>* rhs)
+    {
+      if (rhs == NULL)
+        return;
+
+      if(this->output_rhsOn)
+      {
+        char* fileName = new char[this->RhsFilename.length() + 5];
+        sprintf(fileName, "%s", this->RhsFilename.c_str());
+        rhs->export_to_file(fileName, this->RhsVarname.c_str(), this->RhsFormat, this->rhs_number_format);
+        delete [] fileName;
+      }
+    }
+
+    template<typename Scalar>
+    void MatrixRhsOutput<Scalar>::output_matrix(int firstIterations)
+    {
+      output_matrixOn = true;
+      this->output_matrixIterations = firstIterations;
+    }
+    template<typename Scalar>
+    void MatrixRhsOutput<Scalar>::set_matrix_filename(std::string name)
+    {
+      this->matrixFilename = name;
+    }
+
+    template<typename Scalar>
+    void MatrixRhsOutput<Scalar>::set_print_zero_matrix_entries(bool to_set)
+    {
+      this->print_matrix_zero_values = to_set;
+    }
+
+    template<typename Scalar>
+    void MatrixRhsOutput<Scalar>::set_matrix_varname(std::string name)
+    {
+      this->matrixVarname = name;
+    }
+    template<typename Scalar>
+    void MatrixRhsOutput<Scalar>::set_matrix_dump_format(Hermes::Algebra::MatrixExportFormat format)
+    {
+      this->matrixFormat = format;
+    }
+
+    template<typename Scalar>
+    void MatrixRhsOutput<Scalar>::set_matrix_number_format(char* number_format)
+    {
+      this->matrix_number_format = number_format;
+    }
+
+    template<typename Scalar>
+    void MatrixRhsOutput<Scalar>::output_rhs(int firstIterations)
+    {
+      this->output_rhsOn = true;
+      this->output_rhsIterations = firstIterations;
+    }
+    template<typename Scalar>
+    void MatrixRhsOutput<Scalar>::set_rhs_filename(std::string name)
+    {
+      this->RhsFilename = name;
+    }
+    template<typename Scalar>
+    void MatrixRhsOutput<Scalar>::set_rhs_varname(std::string name)
+    {
+      this->RhsVarname = name;
+    }
+    template<typename Scalar>
+    void MatrixRhsOutput<Scalar>::set_rhs_E_matrix_dump_format(Hermes::Algebra::MatrixExportFormat format)
+    {
+      this->RhsFormat = format;
+    }
+    template<typename Scalar>
+    void MatrixRhsOutput<Scalar>::set_rhs_number_format(char* number_format)
+    {
+      this->rhs_number_format = number_format;
+    }
+   
+    template HERMES_API class MatrixRhsOutput<double>;
+    template HERMES_API class MatrixRhsOutput<std::complex<double> >;
   }
 }

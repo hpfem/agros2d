@@ -211,7 +211,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    bool PetscMatrix<Scalar>::export_to_file(char *filename, const char *var_name, EMatrixExportFormat fmt, char* number_format)
+    bool PetscMatrix<Scalar>::export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
     {
       switch (fmt)
       {
@@ -435,18 +435,20 @@ namespace Hermes
     template<typename Scalar>
     void PetscVector<Scalar>::add_vector(Vector<Scalar>* vec)
     {
-      assert(this->length() == vec->length());
-      for (unsigned int i = 0; i < this->length(); i++) this->add(i, vec->get(i));
+      assert(this->->get_size() == vec->->get_size());
+      for (unsigned int i = 0; i < this->->get_size(); i++)
+        this->add(i, vec->get(i));
     }
 
     template<typename Scalar>
     void PetscVector<Scalar>::add_vector(Scalar* vec)
     {
-      for (unsigned int i = 0; i < this->length(); i++) this->add(i, vec[i]);
+      for (unsigned int i = 0; i < this->->get_size(); i++)
+        this->add(i, vec[i]);
     }
 
     template<typename Scalar>
-    bool PetscVector<Scalar>::export_to_file(char *filename, const char *var_name, EMatrixExportFormat fmt, char* number_format)
+    bool PetscVector<Scalar>::export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
     {
       switch (fmt)
       {

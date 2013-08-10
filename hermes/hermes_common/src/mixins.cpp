@@ -14,6 +14,7 @@
 // along with Hermes; if not, see <http://www.gnu.prg/licenses/>.
 #include "mixins.h"
 #include "common.h"
+#include "matrix.h"
 
 namespace Hermes
 {
@@ -30,19 +31,19 @@ namespace Hermes
 
     void Loggable::set_logFile_name(const char* filename)
     {
-    	if(this->logFileName)
-    			delete [] this->logFileName;
+      if(this->logFileName)
+        delete [] this->logFileName;
       int strlength = std::strlen(filename);
-    	this->logFileName = new char[strlength];
+      this->logFileName = new char[strlength];
       strcpy(this->logFileName, filename);
     }
 
     void Loggable::set_static_logFile_name(const char* filename)
     {
-    	if(Loggable::staticLogFileName)
-    		delete [] Loggable::staticLogFileName;
+      if(Loggable::staticLogFileName)
+        delete [] Loggable::staticLogFileName;
       int strlength = std::strlen(filename);
-    	Loggable::staticLogFileName = new char[strlength];
+      Loggable::staticLogFileName = new char[strlength];
       strcpy(Loggable::staticLogFileName, filename);
     }
 
@@ -495,6 +496,8 @@ namespace Hermes
       this->verbose_callback = callback;
     }
 
+    
+
     TimeMeasurable::TimeMeasurable(const char *name) : period_name(name == NULL ? "unnamed" : name)
     {
       //initialization
@@ -705,7 +708,7 @@ namespace Hermes
     template HERMES_API const Hermes::vector<unsigned int>& OutputAttachable::get_parameter_value<Hermes::vector<unsigned int> >(const Parameter<Hermes::vector<unsigned int> >& parameter);
     template HERMES_API const Hermes::vector<double>& OutputAttachable::get_parameter_value<Hermes::vector<double> >(const Parameter<Hermes::vector<double> >& parameter);
     template HERMES_API const Hermes::vector<bool>& OutputAttachable::get_parameter_value<Hermes::vector<bool> >(const Parameter<Hermes::vector<bool> >& parameter);
-    
+
     template HERMES_API unsigned int& OutputAttachable::get_parameter_value<unsigned int>(Parameter<unsigned int>& parameter);
     template HERMES_API double& OutputAttachable::get_parameter_value<double>(Parameter<double>& parameter);
     template HERMES_API bool& OutputAttachable::get_parameter_value<bool>(Parameter<bool>& parameter);

@@ -95,7 +95,7 @@ namespace Hermes
 
       /// Matrix export method.
       /// \param[in] invert_storage Used to distinguish between Column (no inversion) and Row (with inversion) format.
-      bool export_to_file(char *filename, const char *var_name, EMatrixExportFormat fmt = EXPORT_FORMAT_PLAIN_ASCII, char* number_format = "%lf", bool invert_storage = false);
+      bool export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt = EXPORT_FORMAT_PLAIN_ASCII, char* number_format = "%lf", bool invert_storage = false);
       
       /// Utility method.
       virtual unsigned int get_matrix_size() const;
@@ -136,7 +136,7 @@ namespace Hermes
 
     /// \brief General CSC Matrix class.
     /// (can be used in umfpack, in that case use the
-    /// UMFPackMatrix subclass, or with EigenSolver, or anything else).
+    /// CSCMatrix subclass, or with EigenSolver, or anything else).
     template <typename Scalar>
     class HERMES_API CSCMatrix : public CSMatrix<Scalar>
     {
@@ -155,7 +155,7 @@ namespace Hermes
 
       virtual void add(unsigned int m, unsigned int n, Scalar v);
 
-      virtual bool export_to_file(char *filename, const char *var_name, EMatrixExportFormat fmt = EXPORT_FORMAT_PLAIN_ASCII, char* number_format = "%lf");
+      virtual bool export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt = EXPORT_FORMAT_PLAIN_ASCII, char* number_format = "%lf");
 
       friend class Hermes::Solvers::CSCIterator<Scalar>;
 
@@ -176,7 +176,7 @@ namespace Hermes
 
     /// \brief General CSR Matrix class.
     /// (can be used in umfpack, in that case use the
-    /// UMFPackMatrix subclass, or with EigenSolver, or anything else).
+    /// CSCMatrix subclass, or with EigenSolver, or anything else).
     template <typename Scalar>
     class HERMES_API CSRMatrix : public CSMatrix<Scalar>
     {
@@ -195,7 +195,7 @@ namespace Hermes
 
       virtual void add(unsigned int m, unsigned int n, Scalar v);
 
-      virtual bool export_to_file(char *filename, const char *var_name, EMatrixExportFormat fmt = EXPORT_FORMAT_PLAIN_ASCII, char* number_format = "%lf");
+      virtual bool export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt = EXPORT_FORMAT_PLAIN_ASCII, char* number_format = "%lf");
 
       friend class Hermes::Solvers::CSCIterator<Scalar>;
 

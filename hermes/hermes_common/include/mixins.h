@@ -30,11 +30,11 @@
 namespace Hermes
 {
   /** \defgroup g_mixins Mixins
-    *  \brief Mixins are utility classes used for all kinds of other classes.
-    *
-    *  Mixin classes provide a single piece of functionality.
-    *
-    */
+  *  \brief Mixins are utility classes used for all kinds of other classes.
+  *
+  *  Mixin classes provide a single piece of functionality.
+  *
+  */
 
   /// \ingroup g_mixins
   /// \brief Namespace for mixin classes.
@@ -74,7 +74,7 @@ namespace Hermes
       /// \param[in] callback Function to be called for the messaging when verbose_output is set to yes.
       /// \todo Use this in solvers etc.
       virtual void set_verbose_callback(callbackFn callback);
-      
+
       /// Returns the current value of verbose_callback;
       callbackFn get_verbose_callback() const;
 
@@ -91,7 +91,7 @@ namespace Hermes
       char* logFileName;
       static char* staticLogFileName;
     protected:
-      
+
       /* file operations */
       void hermes_fwrite(const void* ptr, size_t size, size_t nitems, FILE* stream) const;
       void hermes_fread(void* ptr, size_t size, size_t nitems, FILE* stream) const;
@@ -205,12 +205,12 @@ namespace Hermes
       std::string last_str() const;
 
     private:
-  #ifdef _WINDOWS //Windows
+#ifdef _WINDOWS //Windows
       typedef uint64_t SysTime;
       double frequency; ///< Frequency of the performance timer. If zero, no hi-res timer is supported. (Win32 only)
-  #else //Linux
+#else //Linux
       typedef timespec SysTime;
-  #endif
+#endif
       const std::string period_name; ///< Name of the timer (can be empty)
       double last_period; ///< Time of the last measured period.
       SysTime last_time; ///< Time when the timer was started/resumed (in platform-dependent units).
@@ -220,7 +220,7 @@ namespace Hermes
       double period_in_seconds(const SysTime& begin, const SysTime& end) const; ///< Calculates distance between times (in platform specific units) and returns it in seconds.
       std::string to_string(const double time) const; ///< Converts time from seconds to human readable form.
     };
-  
+
     /// \brief Class that allows overriding integration order in its discrete problems
     /// Internal
     class HERMES_API IntegrableWithGlobalOrder
@@ -286,7 +286,7 @@ namespace Hermes
   typedef Hermes::Mixins::OutputAttachable::Parameter<unsigned int> OutputParameterUnsignedInt;
   typedef Hermes::Mixins::OutputAttachable::Parameter<double> OutputParameterDouble;
   typedef Hermes::Mixins::OutputAttachable::Parameter<bool> OutputParameterBool;
-  
+
   typedef Hermes::Mixins::OutputAttachable::Parameter<Hermes::vector<unsigned int> > OutputParameterUnsignedIntVector;
   typedef Hermes::Mixins::OutputAttachable::Parameter<Hermes::vector<double> > OutputParameterDoubleVector;
   typedef Hermes::Mixins::OutputAttachable::Parameter<Hermes::vector<bool> > OutputParameterBoolVector;
