@@ -89,12 +89,12 @@ testWm = agros2d.test("Energy", volume["Wm"], 3.088946)
 testPj = agros2d.test("Losses", volume["Pj"], 220.022114)
 testFxv = agros2d.test("Lorentz force - x", volume["Flx"], -110.011057)
 testFyv = agros2d.test("Lorentz force - y", volume["Fly"], -36.62167)
-testT = agros2d.test("Torque", volume["T"], 20.463818)
+testT = agros2d.test("Torque", volume["Tl"], 20.463818)
 
 # surface integral
 surface = magnetic.surface_integrals([2, 3, 4, 5])
-# testFx = agros2d.test("Maxwell force - x", surface["Fx"], 2.531945, 0.05)
-# testFy = agros2d.test("Maxwell force - y", surface["Fy"], -10.176192, 0.05)
+testFx = agros2d.test("Maxwell force - x", surface["Ftx"], 2.531945, 0.11)
+testFy = agros2d.test("Maxwell force - y", surface["Fty"], -10.176192, 0.1)
 
 result = str(point and testA and testB and testBx and testBy and testH and testHx and testHy
              and testJiv and testJr and testFx and testFy and testwm and testpj and testWm

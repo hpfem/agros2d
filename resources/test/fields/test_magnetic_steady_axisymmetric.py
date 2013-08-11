@@ -7,8 +7,6 @@ problem = agros2d.problem(clear = True)
 problem.coordinate_type = "axisymmetric"
 problem.mesh_type = "triangle"
 
-problem.frequency = 100
-
 # disable view
 agros2d.view.mesh.disable()
 agros2d.view.post2d.disable()
@@ -94,12 +92,12 @@ volume = magnetic.volume_integrals([1])
 testWm = agros2d.test("Energy", volume["Wm"], 0.002273)
 
 volume = magnetic.volume_integrals([2])
-testFLr = agros2d.test("Lorentz force - r", volume["Flx"], -8.069509) # TODO: Flr
-testFLz = agros2d.test("Lorentz force - z", volume["Fly"], -5.288991) # TODO: Flz
+testFLr = agros2d.test("Lorentz force - r", volume["Flx"], -8.069509) 
+testFLz = agros2d.test("Lorentz force - z", volume["Fly"], -5.288991) 
 
 # surface integral
 surface = magnetic.surface_integrals([12, 13, 14, 15])
-#testFz = agros2d.test("Maxwell force - z", surface["Fy"], 0.368232)
+testFz = agros2d.test("Maxwell force - z", surface["Fty"], 0.368232, 0.1)
 
 result = str(testA and testB and testBr and testBz and testH and testHr and testHz
              and testFr_real and testFz_real and testwm and testWm and testFLr and testFLz)
