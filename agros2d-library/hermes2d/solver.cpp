@@ -41,6 +41,97 @@ using namespace Hermes::Hermes2D;
 
 int DEBUG_COUNTER = 0;
 
+//AgrosExternalSolver::AgrosExternalSolver(CSCMatrix<double> *m, SimpleVector<double> *rhs)
+//    : ExternalSolver<double>(m, rhs)
+//{
+//}
+
+//void AgrosExternalSolver::solve()
+//{
+//    solve(NULL);
+//}
+
+//void AgrosExternalSolver::solve(double* initial_guess)
+//{
+//    QString file_command = QString("%1/solver_command").arg(cacheProblemDir());
+//    QString file_matrix = QString("%1/solver_matrix").arg(cacheProblemDir());
+//    QString file_rhs = QString("%1/solver_rhs").arg(cacheProblemDir());
+//    QString file_sln = QString("%1/solver_sln").arg(cacheProblemDir());
+
+//    this->set_matrix_dump_format(EXPORT_FORMAT_MATLAB_MATIO);
+//    this->set_rhs_E_matrix_dump_format(EXPORT_FORMAT_MATLAB_MATIO);
+//    this->set_matrix_filename(file_matrix.toStdString());
+//    this->set_rhs_filename(file_rhs.toStdString());
+//    this->set_matrix_number_format((char *) "%g");
+//    this->set_rhs_number_format((char *) "%g");
+
+//    // store state
+//    bool matrixOn = this->output_matrixOn;
+//    bool rhsOn = this->output_rhsOn;
+//    this->output_matrixOn = true;
+//    this->output_rhsOn = true;
+
+//    // write matrix and rhs to disk
+//    this->process_matrix_output(this->m);
+//    this->process_vector_output(this->rhs);
+
+//    // restore state
+//    this->output_matrixOn = matrixOn;
+//    this->output_rhsOn = rhsOn;
+
+//    // exec triangle
+//    m_process = new QProcess();
+//    m_process->setStandardOutputFile(tempProblemFileName() + ".solver.out");
+//    m_process->setStandardErrorFile(tempProblemFileName() + ".solver.err");
+//    // connect(m_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(solverError(QProcess::ProcessError)));
+//    // connect(m_process, SIGNAL(finished(int)), this, SLOT(solverSolutionCreated(int)));
+
+//    QString str = "#! /usr/bin/octave -qf\n";
+//    str += QString("load \"%1\";\n").arg(file_matrix);
+//    str += QString("load \"%2\";\n").arg(file_rhs);
+//    str += QString("sln = matrix \\ rhs;\n");
+//    str += QString("save -ascii \"%4\" sln;").arg(file_sln); // -mat
+
+//    writeStringContent(file_command, str);
+
+//    QFile script(file_command);
+//    script.setPermissions(QFile::ReadUser | QFile::ExeUser);
+
+//    m_process->start(file_command);
+
+//    // execute an event loop to process the request (nearly-synchronous)
+//    QEventLoop eventLoop;
+//    QObject::connect(m_process, SIGNAL(finished(int)), &eventLoop, SLOT(quit()));
+//    QObject::connect(m_process, SIGNAL(error(QProcess::ProcessError)), &eventLoop, SLOT(quit()));
+//    eventLoop.exec();
+
+//    SimpleVector<double> slnVector;
+//    slnVector.import_from_file((char*) file_sln.toStdString().c_str());
+
+//    // param.rhs = new typename mumps_type<Scalar>::mumps_Scalar[m->size];
+//    delete [] this->sln;
+//    this->sln = new double[slnVector.get_size()];
+//    memcpy(this->sln, slnVector.v, slnVector.get_size() * sizeof(double));
+
+//    QFile::remove(file_command);
+//    QFile::remove(file_matrix);
+//    QFile::remove(file_rhs);
+//    QFile::remove(file_sln);
+//}
+
+//void AgrosExternalSolver::solverError(QProcess::ProcessError error)
+//{
+//    m_process->kill();
+//}
+
+//void AgrosExternalSolver::solverSolutionCreated(int exitCode)
+//{
+//    if (exitCode == 0)
+//    {
+
+//    }
+//}
+
 template <typename Scalar>
 NewtonSolverAgros<Scalar>::NewtonSolverAgros(Block *block)
     : NewtonSolver<Scalar>(), m_block(block)
@@ -328,6 +419,12 @@ LinearSolverContainer<Scalar>::LinearSolverContainer(Block* block) : HermesSolve
     m_linearSolver = new LinearSolver<Scalar>();
     m_linearSolver->set_verbose_output(false);
 
+    // if (dynamic_cast<Hermes::Algebra::ExternalSolver<Scalar> *>(m_linearSolver->get_linear_solver()))
+    // {
+    //     m_linearSolver->set_linear_solver(new AgrosExternalSolver(dynamic_cast<Hermes::Algebra::ExternalSolver<Scalar> *>(m_linearSolver->get_linear_solver())->get_matrix(),
+    //                                                               dynamic_cast<Hermes::Algebra::ExternalSolver<Scalar> *>(m_linearSolver->get_linear_solver())->get_rhs()));
+    // }
+
     // solver cache
     m_linearSolver->set_do_not_use_cache(true);
     if (Agros2D::configComputer()->useSolverCache)
@@ -353,7 +450,7 @@ void LinearSolverContainer<Scalar>::matrixUnchangedDueToBDF(bool unchanged)
 template <typename Scalar>
 void LinearSolverContainer<Scalar>::solve(Scalar* previousSolutionVector)
 {
-    m_linearSolver->solve(previousSolutionVector);    
+    m_linearSolver->solve(previousSolutionVector);
     this->m_slnVector = m_linearSolver->get_sln_vector();
 }
 

@@ -109,6 +109,7 @@ namespace Hermes
 
       /// Get the Linear solver (thus influence its behavior).
       LinearMatrixSolver<Scalar>* get_linear_solver();
+      void set_linear_solver(LinearMatrixSolver<Scalar>* solver);
 
       /// If the cache should not be used for any reason.
       virtual void set_do_not_use_cache(bool to_set = true);

@@ -102,6 +102,12 @@ namespace Hermes
       Vector<double>* rhs_dummy = NULL;
       switch (use_direct_solver ? Hermes::HermesCommonApi.get_integral_param_value(Hermes::directMatrixSolverType) : Hermes::HermesCommonApi.get_integral_param_value(Hermes::matrixSolverType))
       {
+      case Hermes::SOLVER_EXTERNAL:
+        {
+          if(rhs != NULL) return new SimpleExternalSolver<double>(static_cast<CSCMatrix<double>*>(matrix), static_cast<SimpleVector<double>*>(rhs));
+          else return new SimpleExternalSolver<double>(static_cast<CSCMatrix<double>*>(matrix), static_cast<SimpleVector<double>*>(rhs_dummy));
+          break;
+        }
       case Hermes::SOLVER_AZTECOO:
         {
           if(use_direct_solver)
@@ -200,6 +206,12 @@ namespace Hermes
       Vector<std::complex<double> >* rhs_dummy = NULL;
       switch (use_direct_solver ? Hermes::HermesCommonApi.get_integral_param_value(Hermes::directMatrixSolverType) : Hermes::HermesCommonApi.get_integral_param_value(Hermes::matrixSolverType))
       {
+      case Hermes::SOLVER_EXTERNAL:
+        {
+          if(rhs != NULL) return new SimpleExternalSolver<std::complex<double> >(static_cast<CSCMatrix<std::complex<double> >*>(matrix), static_cast<SimpleVector<std::complex<double> >*>(rhs));
+          else return new SimpleExternalSolver<std::complex<double> >(static_cast<CSCMatrix<std::complex<double> >*>(matrix), static_cast<SimpleVector<std::complex<double> >*>(rhs_dummy));
+          break;
+        }
       case Hermes::SOLVER_AZTECOO:
         {
           if(use_direct_solver)
@@ -282,23 +294,33 @@ namespace Hermes
       return NULL;
     }
 
-
     template <typename Scalar>
     ExternalSolver<Scalar>::ExternalSolver(CSCMatrix<Scalar> *m, SimpleVector<Scalar> *rhs) : LinearMatrixSolver<Scalar>(HERMES_CREATE_STRUCTURE_FROM_SCRATCH), m(m), rhs(rhs)
     {
     }
 
     template <typename Scalar>
-    void ExternalSolver<Scalar>::solve()
+    SimpleExternalSolver<Scalar>::SimpleExternalSolver(CSCMatrix<Scalar> *m, SimpleVector<Scalar> *rhs) : ExternalSolver<Scalar>(m, rhs)
+    {
+    }
+
+    template <typename Scalar>
+    void SimpleExternalSolver<Scalar>::solve()
+    {
+      solve(NULL);
+    }
+
+    template <typename Scalar>
+    void SimpleExternalSolver<Scalar>::solve(Scalar* initial_guess)
     {
       // Output.
-      this->process_matrix_output();
-      this->process_vector_output();
+      this->process_matrix_output(this->m);
+      this->process_vector_output(this->rhs);
 
       // External process.
       std::string resultFileName = this->command();
 
-      this->rhs->import_from_file(resultFileName.c_str());
+      this->rhs->import_from_file((char*)resultFileName.c_str());
     }
 
     template <typename Scalar>
@@ -349,6 +371,10 @@ namespace Hermes
 
     template class HERMES_API LinearMatrixSolver<double>;
     template class HERMES_API LinearMatrixSolver<std::complex<double> >;
+    template class HERMES_API SimpleExternalSolver<double>;
+    template class HERMES_API SimpleExternalSolver<std::complex<double> >;
+    template class HERMES_API ExternalSolver<double>;
+    template class HERMES_API ExternalSolver<std::complex<double> >;
     template class HERMES_API DirectSolver<double>;
     template class HERMES_API DirectSolver<std::complex<double> >;
     template class HERMES_API IterSolver<double>;

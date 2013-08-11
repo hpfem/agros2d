@@ -260,6 +260,7 @@ void initLists()
 #ifdef HAVE_AZTECOO
     matrixSolverTypeList.insert(Hermes::SOLVER_AZTECOO, "trilinos_aztecoo");
 #endif
+    matrixSolverTypeList.insert(Hermes::SOLVER_EXTERNAL, "external");
 
     // dump format
     dumpFormatList.insert(Hermes::Algebra::EXPORT_FORMAT_PLAIN_ASCII, "plain_ascii");
@@ -691,6 +692,8 @@ QString matrixSolverTypeString(Hermes::MatrixSolverType matrixSolverType)
         return QObject::tr("Trilinos/Amesos");
     case Hermes::SOLVER_AZTECOO:
         return QObject::tr("Trilinos/AztecOO");
+    case Hermes::SOLVER_EXTERNAL:
+        return QObject::tr("External (out of core)");
     default:
         std::cerr << "Matrix solver type '" + QString::number(matrixSolverType).toStdString() + "' is not implemented. matrixSolverTypeString(MatrixSolverType matrixSolverType)" << endl;
         throw;
