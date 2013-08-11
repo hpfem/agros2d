@@ -25,6 +25,9 @@
 #include "QVTKWidget.h"
 
 #include <vtkSmartPointer.h>
+#include <vtkLookupTable.h>
+#include <vtkActor.h>
+#include <vtkScalarBarActor.h>
 
 template <typename Scalar> class SceneSolution;
 template <typename Scalar> class ViewScalarFilter;
@@ -52,9 +55,15 @@ public:
 
 protected:
 
+    vtkSmartPointer<vtkActor> geometryActor();
+    vtkSmartPointer<vtkActor> contourActor();
+    vtkSmartPointer<vtkActor> scalarActor();
+    vtkSmartPointer<vtkScalarBarActor> scalarColorBar();
+
 private:
     PostHermes *m_postHermes;
     vtkSmartPointer<vtkRenderer> m_renderer;
+    vtkSmartPointer<vtkLookupTable> m_palette;
 
     void initVTK();
     void createControls();
