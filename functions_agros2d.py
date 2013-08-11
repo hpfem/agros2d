@@ -73,15 +73,10 @@ def vtk_contours_actor(filename, count = 10, color = False):
     contours = vtk.vtkContourFilter()
     contours.SetInputConnection(reader.GetOutputPort()) 
     contours.GenerateValues(count, scalar_range) 
-    contours.Update() 
 
-    # Get the poly data 
-    polys = vtk.vtkPolyData() 
-    polys = contours.GetOutput() 
-       
     # map the contours to graphical primitives 
     contMapper = vtk.vtkPolyDataMapper() 
-    contMapper.SetInput(polys) 
+    contMapper.SetInput(contours.GetOutput()) 
     contMapper.SetScalarVisibility(color) # colored contours
     contMapper.SetScalarRange(scalar_range)
     
@@ -429,8 +424,12 @@ def vtk_figure(output_filename, geometry, scalar = None, contours = None, width 
             
             scalar_bar = vtk.vtkScalarBarActor()
             scalar_bar.SetOrientationToHorizontal()
+            scalar_bar.SetNumberOfLabels(8)
+            scalar_bar.SetLabelFormat("%+#6.2e")
             scalar_bar.SetLookupTable(scalar.GetMapper().GetLookupTable())
-            scalar_bar.GetTitleTextProperty().SetFontFamilyToCourier()
+            scalar_bar.GetLabelTextProperty().SetFontFamilyToCourier()
+            scalar_bar.GetLabelTextProperty().SetJustificationToRight()
+            scalar_bar.GetLabelTextProperty().SetVerticalJustificationToCentered()
             scalar_bar.GetLabelTextProperty().BoldOff()
             scalar_bar.GetLabelTextProperty().ItalicOff()
             scalar_bar.GetLabelTextProperty().ShadowOff()        

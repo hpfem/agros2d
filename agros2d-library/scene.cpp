@@ -957,41 +957,59 @@ void Scene::doFieldsChanged()
 void Scene::exportVTKGeometry(const QString &fileName)
 {
     QList<Point> vtkNodes;
-    QMultiMap<int, int> vtkEdges;
+    foreach (SceneNode *node, nodes->items())
+        vtkNodes.append(Point(node->point().x, node->point().y));
 
-    // edges
-    for (int i = 0; i < edges->length(); i++)
+    QMap<int, int> vtkEdges;
+    foreach (SceneEdge *edge, edges->items())
     {
-        if (edges->at(i)->angle() == 0)
+        if (edge->isStraight())
         {
-            // line
-            vtkNodes.append(edges->at(i)->nodeStart()->point());
-            vtkNodes.append(edges->at(i)->nodeEnd()->point());
-
-            vtkEdges.insertMulti(vtkNodes.count() - 1, vtkNodes.count() - 2);
+            // straight line
+            vtkEdges.insert(Agros2D::scene()->nodes->items().indexOf(edge->nodeStart()),
+                            Agros2D::scene()->nodes->items().indexOf(edge->nodeEnd()));
         }
         else
         {
             // arc
             // add pseudo nodes
-            Point center = edges->at(i)->center();
-            double radius = edges->at(i)->radius();
-            double startAngle = atan2(center.y - edges->at(i)->nodeStart()->point().y,
-                                      center.x - edges->at(i)->nodeStart()->point().x) - M_PI;
+            Point center = edge->center();
+            double radius = edge->radius();
+            double startAngle = atan2(center.y - edge->nodeStart()->point().y,
+                                      center.x - edge->nodeStart()->point().x) - M_PI;
 
-            int segments = edges->at(i)->angle() / 5.0;
-            double theta = deg2rad(edges->at(i)->angle()) / double(segments);
+            int segments = edge->angle() / 15.0;
+            double theta = deg2rad(edge->angle()) / double(segments);
 
-            for (int j = 0; j <= segments; j++)
+            for (int j = 1; j <= segments; j++)
             {
                 double arc = startAngle + j*theta;
 
                 double x = radius * cos(arc);
                 double y = radius * sin(arc);
 
-                vtkNodes.append(Point(center.x + x, center.y + y));
-                if (j > 0)
-                    vtkEdges.insertMulti(vtkNodes.count() - 1, vtkNodes.count() - 2);
+                if (j < segments)
+                    vtkNodes.append(Point(center.x + x, center.y + y));
+
+                int startIndex = -1;
+                int endIndex = -1;
+                if (j == 1)
+                {
+                    startIndex = Agros2D::scene()->nodes->items().indexOf(edge->nodeStart());
+                    endIndex = vtkNodes.count() - 1;
+                }
+                else if (j == segments)
+                {
+                    startIndex = vtkNodes.count() - 1;
+                    endIndex = Agros2D::scene()->nodes->items().indexOf(edge->nodeEnd());
+                }
+                else
+                {
+                    startIndex = vtkNodes.count() - 2;
+                    endIndex = vtkNodes.count() - 1;
+                }
+
+                vtkEdges.insert(startIndex, endIndex);
             }
         }
     }
