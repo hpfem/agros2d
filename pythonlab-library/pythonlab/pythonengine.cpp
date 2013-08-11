@@ -229,7 +229,7 @@ void PythonEngine::init()
     Py_Initialize();
 
     // read pythonlab functions
-    addFunctions(readFileContent(datadir() + "/functions_pythonlab.py"));
+    addFunctions(readFileContent(datadir() + "/resources/python/functions_pythonlab.py"));
     addCustomFunctions();
 
     m_dict = PyDict_New();

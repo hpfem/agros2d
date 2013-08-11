@@ -37,7 +37,8 @@ PyField::PyField(std::string fieldId)
         }
         else
         {
-            try{
+            try
+            {
                 m_fieldInfo = new FieldInfo(id);
             }
             catch(AgrosPluginException& e)

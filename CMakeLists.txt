@@ -153,13 +153,47 @@ message("\n")
 FILE(GLOB PIXMAP_FILES "resources/images/agros2d.xpm")
 # desktop
 FILE(GLOB DESKTOP_FILES "agros2d.desktop")
-# python functions
-FILE(GLOB PYTHON_FUNCTION_FILES "*.py")
 # resources
 SET(RESOURCES_FILES "resources")
 
 # share
 INSTALL(FILES ${PIXMAP_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pixmaps)
 INSTALL(FILES ${DESKTOP_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications)
-INSTALL(FILES ${PYTHON_FUNCTION_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/agros2d)
 INSTALL(DIRECTORY ${RESOURCES_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/agros2d)
+
+# other files
+MACRO(ADD_INFO_FILES)
+     FOREACH(_it ${ARGN})
+         IF(NOT IS_DIRECTORY ${_it})
+             GET_FILENAME_COMPONENT(name ${_it} NAME)
+             if(NOT ${_it} MATCHES "^/\\\\..*$;~$")
+                 SET_SOURCE_FILES_PROPERTIES(${_it} PROPERTIES HEADER_FILE_ONLY TRUE)
+             ENDIF()
+         ENDIF()
+     ENDFOREACH()
+ENDMACRO()
+
+set(info resources/modules/acoustic.xml
+         resources/modules/current.xml
+         resources/modules/elasticity.xml
+         resources/modules/electrostatic.xml
+         resources/modules/flow.xml
+         resources/modules/heat.xml
+         resources/modules/magnetic.xml
+         resources/modules/rf_te.xml
+         resources/modules/rf_tm.xml
+         resources/couplings/current-heat.xml
+         resources/couplings/heat-elasticity.xml
+         resources/couplings/magnetic-heat.xml
+         resources/python/functions_agros2d.py
+         resources/python/functions_pythonlab.py
+         resources_source/python/agros2d.pyx
+         resources_source/python/pyfield.pxi
+         resources_source/python/pygeometry.pxi
+         resources_source/python/pyparticletracing.pxi
+         resources_source/python/pyproblem.pxi
+         resources_source/python/pythonlab.pyx
+         resources_source/python/pyview.pxi
+)
+add_info_files(${info})
+add_custom_target(other SOURCES ${info})

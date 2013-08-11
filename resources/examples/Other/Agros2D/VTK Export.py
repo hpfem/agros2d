@@ -48,7 +48,7 @@ a2d.geometry.export_vtk(fn_geometry)
 geometry = a2d.vtk_geometry_actor(fn_geometry)
 
 fn_contour = pythonlab.tempname("vtk")
-#a2d.view.post2d.contour_view_parameters["width"] = 1.0
+a2d.view.post2d.contour_view_parameters["width"] = 1.0
 a2d.view.post2d.contour_view_parameters["variable"] = "electrostatic_potential"
 a2d.view.post2d.export_contour_vtk(fn_contour)
 contours = a2d.vtk_contours_actor(fn_contour, count = 15, color = False)

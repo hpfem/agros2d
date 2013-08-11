@@ -41,7 +41,7 @@ void PythonEngineAgros::addCustomExtensions()
 
 void PythonEngineAgros::addCustomFunctions()
 {
-    addFunctions(readFileContent(datadir() + "/functions_agros2d.py"));
+    addFunctions(readFileContent(datadir() + "/resources/python/functions_agros2d.py"));
 }
 
 void PythonEngineAgros::runPythonHeader()
