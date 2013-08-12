@@ -184,7 +184,7 @@ namespace Hermes
       /// External command call.
       /// \return Filepath to the result vector in the raw text format (just numbers, one per line).
       /// Can destroy the matrix and rhs files, those are not needed anymore.
-      virtual std::string command() {}
+      virtual std::string command() {  return ""; }
     };
 
     /// \brief Base class for defining interface for direct linear solvers.
