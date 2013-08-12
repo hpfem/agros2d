@@ -308,7 +308,7 @@ void LogDialog::createControls()
     m_adaptivityChart->graph(0)->setLineStyle(QCPGraph::lsLine);
 
     btnClose = new QPushButton(tr("Close"));
-    connect(btnClose, SIGNAL(clicked()), this, SLOT(close()));
+    connect(btnClose, SIGNAL(clicked()), this, SLOT(tryClose()));
     btnClose->setEnabled(false);
 
     btnAbort = new QPushButton(tr("Abort"));
@@ -353,6 +353,14 @@ void LogDialog::adaptivityTable(QVector<double> step, QVector<double> error)
     m_adaptivityChart->graph(0)->setData(step, error);
     m_adaptivityChart->rescaleAxes();
     m_adaptivityChart->replot();
+}
+
+void LogDialog::tryClose()
+{
+    if (Agros2D::problem()->isSolving())
+        Agros2D::log()->printError(tr("Solver"), tr("Problem is being aborted."));
+    else
+        close();
 }
 
 // *******************************************************************************************

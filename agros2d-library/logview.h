@@ -131,6 +131,8 @@ private slots:
 
     void nonlinearTable(QVector<double> step, QVector<double> error);
     void adaptivityTable(QVector<double> step, QVector<double> error);
+
+    void tryClose();
 };
 
 class AGROS_LIBRARY_API LogStdOut : public QObject

@@ -403,29 +403,37 @@ PiecewiseLinear::PiecewiseLinear(Hermes::vector<double> points, Hermes::vector<d
 
 int PiecewiseLinear::leftIndex(double x)
 {
+    // slower implementation
+    //
+    // Hermes::vector<double>::const_iterator it = std::lower_bound(m_points.begin(), m_points.end(), x);
+    // if (it == m_points.end())
+    //     return m_size - 1;
+    // else if (it == m_points.begin())
+    //     return 0;
+    // else
+    //     return (it - m_points.begin()) - 1;
+
     int i_left = 0;
     int i_right = m_size - 1;
     assert(i_right >= 0);
 
-    if(x < m_points[i_left]) return -1;
-    if(x > m_points[i_right]) return i_right;
-
     while (i_left + 1 < i_right)
     {
         int i_mid = (i_left + i_right) / 2;
-        if(m_points[i_mid] < x) i_left = i_mid;
-        else i_right = i_mid;
+        if (m_points[i_mid] < x)
+            i_left = i_mid;
+        else
+            i_right = i_mid;
     }
-
     return i_left;
 }
 
 double PiecewiseLinear::value(double x)
 {
     int leftIdx = leftIndex(x);
-    if(leftIdx == -1)
-        return m_values[0];
-    else if(leftIdx == m_size - 1)
+    if (x < m_points.front())
+        return m_values.front();
+    else if (x > m_points.back())
         return m_values[m_size - 1];
     else
         return m_values[leftIdx] + m_derivatives[leftIdx] * (x - m_points[leftIdx]);
@@ -434,10 +442,10 @@ double PiecewiseLinear::value(double x)
 double PiecewiseLinear::derivative(double x)
 {
     int leftIdx = leftIndex(x);
-    if(leftIdx == -1)
-        return 0;
-    else if(leftIdx == m_size - 1)
-        return 0;
+    if (x < m_points.front())
+        return 0.0;
+    else if (x > m_points.back())
+        return 0.0;
     else
         return m_derivatives[leftIdx];
 }
