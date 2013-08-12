@@ -1438,7 +1438,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
         dict["uval"] = "u->val[i]";
         dict["vval"] = "v->val[i]";
         dict["upval"] = "u_ext[this->j]->val[i]";
-        dict["uptval"] = "ext[this->j - this->offsetJ()]->val[i]";
+        dict["uptval"] = "ext[this->j - this->m_offsetJ]->val[i]";
         dict["deltat"] = "Agros2D::problem()->actualTimeStepLength()";
 
         // vector field
@@ -1480,17 +1480,17 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
 
         for (int i = 1; i < numOfSol + 1; i++)
         {
-            dict[QString("value%1").arg(i)] = QString("u_ext[%1 + this->offsetI()]->val[i]").arg(i-1);
+            dict[QString("value%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->val[i]").arg(i-1);
 
             if (coordinateType == CoordinateType_Planar)
             {
-                dict[QString("dx%1").arg(i)] = QString("u_ext[%1 + this->offsetI()]->dx[i]").arg(i-1);
-                dict[QString("dy%1").arg(i)] = QString("u_ext[%1 + this->offsetI()]->dy[i]").arg(i-1);
+                dict[QString("dx%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dx[i]").arg(i-1);
+                dict[QString("dy%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dy[i]").arg(i-1);
             }
             else
             {
-                dict[QString("dr%1").arg(i)] = QString("u_ext[%1 + this->offsetI()]->dx[i]").arg(i-1);
-                dict[QString("dz%1").arg(i)] = QString("u_ext[%1 + this->offsetI()]->dy[i]").arg(i-1);
+                dict[QString("dr%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dx[i]").arg(i-1);
+                dict[QString("dz%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dy[i]").arg(i-1);
             }
         }
 

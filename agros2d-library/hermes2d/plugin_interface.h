@@ -121,9 +121,6 @@ public:
     // time discretisation table
     inline void setTimeDiscretisationTable(BDF2Table** table) { m_table = table; }
 
-    inline int offsetI() const {assert(m_offsetI != OFFSET_NON_DEF); return m_offsetI;}
-    inline int offsetJ() const {assert(m_offsetI != OFFSET_NON_DEF); return m_offsetJ;}
-
 protected:
     // source or single marker
     Marker *m_markerSource;
@@ -136,7 +133,8 @@ protected:
     // for example, generated form ...something(heat_matrix_linear, etc)...._1_3 could have variables holding 1 and 3 (the original position,
     // before the schift) offsetI and offsetJ than could be obtained as different of form->i (j), the real position
     // and the original position
-    int m_offsetI, m_offsetJ;
+    int m_offsetI;
+    int m_offsetJ;
 };
 
 // weakforms
