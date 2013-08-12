@@ -109,9 +109,9 @@ private:
     bool m_splineFirstDerivatives;
     bool m_extrapolateConstant;
 
-    Hermes::Hermes2D::CubicSpline *m_spline;
-    PiecewiseLinear *m_linear;
-    ConstantTable *m_constant;
+    QSharedPointer<Hermes::Hermes2D::CubicSpline> m_spline;
+    QSharedPointer<PiecewiseLinear> m_linear;
+    QSharedPointer<ConstantTable> m_constant;
 
     // efficiency reasons
     int m_numPoints;

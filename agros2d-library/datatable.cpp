@@ -120,9 +120,9 @@ void DataTable::setExtrapolateConstant(bool ec)
 
 void DataTable::setImplicit()
 {
-    m_spline = NULL;
-    m_linear = NULL;
-    m_constant = NULL;
+    m_spline.clear();
+    m_linear.clear();
+    m_constant.clear();
     m_type = DataTableType_PiecewiseLinear;
     m_splineFirstDerivatives = true;
     m_extrapolateConstant = true;
@@ -137,15 +137,15 @@ double DataTable::value(double x)
 
     if (m_type == DataTableType_PiecewiseLinear)
     {
-        return m_linear->value(x);
+        return m_linear.data()->value(x);
     }
     else if(m_type == DataTableType_CubicSpline)
     {
-        return m_spline->value(x);
+        return m_spline.data()->value(x);
     }
     else if(m_type == DataTableType_Constant)
     {
-        return m_constant->value(x);
+        return m_constant.data()->value(x);
     }
     else
         assert(0);
@@ -158,15 +158,15 @@ double DataTable::derivative(double x)
 
     if(m_type == DataTableType_PiecewiseLinear)
     {
-        return m_linear->derivative(x);
+        return m_linear.data()->derivative(x);
     }
     else if(m_type == DataTableType_CubicSpline)
     {
-        return m_spline->derivative(x);
+        return m_spline.data()->derivative(x);
     }
     else if(m_type == DataTableType_Constant)
     {
-        return m_constant->derivative(x);
+        return m_constant.data()->derivative(x);
     }
     else
         assert(0);
@@ -178,30 +178,9 @@ void DataTable::inValidate()
     m_numPoints = m_points.size();
     m_isEmpty = (m_numPoints == 0);
 
-    if(m_type == DataTableType_PiecewiseLinear)
-    {
-        if(m_linear)
-            delete m_linear;
-        m_linear = NULL;
-    }
-    else if(m_type == DataTableType_CubicSpline)
-    {
-        if(m_spline)
-            delete m_spline;
-        m_spline = NULL;
-    }
-    else if(m_type == DataTableType_Constant)
-    {
-        if(m_constant)
-            delete m_constant;
-        m_constant = NULL;
-    }
-    else
-        assert(0);
-
-    assert(m_linear == NULL);
-    assert(m_spline == NULL);
-    assert(m_constant == NULL);
+    m_linear.clear();
+    m_spline.clear();
+    m_constant.clear();
 }
 
 void DataTable::validate()
@@ -213,32 +192,33 @@ void DataTable::validate()
         if(m_valid)
             return;
 
-        assert(m_linear == NULL);
-        assert(m_spline == NULL);
-        assert(m_constant == NULL);
+        assert(m_linear.isNull());
+        assert(m_spline.isNull());
+        assert(m_constant.isNull());
         assert(!m_valid);
 
         assert(m_points.size() == m_values.size());
         m_numPoints = m_points.size();
         m_isEmpty = (m_numPoints == 0);
 
-        if(m_type == DataTableType_PiecewiseLinear)
+        if (m_type == DataTableType_PiecewiseLinear)
         {
-            m_linear = new PiecewiseLinear(m_points, m_values);
+            m_linear = QSharedPointer<PiecewiseLinear>(new PiecewiseLinear(m_points, m_values));
         }
-        else if(m_type == DataTableType_CubicSpline)
+        else if (m_type == DataTableType_CubicSpline)
         {
             // first create object and calculate coeffs, than assign to m_spline
             // otherwise probably some other thread interfered and caused application fail
-            // this is strange, though, since no other thread should be able to acces thanks to m_isBeingValidated check
+            // this is strange, though, since no other thread should be able to access thanks to mutex check
             try
             {
-                Hermes::Hermes2D::CubicSpline *spline = new Hermes::Hermes2D::CubicSpline(m_points,
-                                                                                          m_values,
-                                                                                          0.0, 0.0,
-                                                                                          m_splineFirstDerivatives, m_splineFirstDerivatives,
-                                                                                          !m_extrapolateConstant, !m_extrapolateConstant);
-                spline->calculate_coeffs();
+                QSharedPointer<Hermes::Hermes2D::CubicSpline> spline
+                        = QSharedPointer<Hermes::Hermes2D::CubicSpline>(new Hermes::Hermes2D::CubicSpline(m_points,
+                                                                                                          m_values,
+                                                                                                          0.0, 0.0,
+                                                                                                          m_splineFirstDerivatives, m_splineFirstDerivatives,
+                                                                                                          !m_extrapolateConstant, !m_extrapolateConstant));
+                spline.data()->calculate_coeffs();
                 m_spline = spline;
             }
             catch (Hermes::Exceptions::Exception e)
@@ -251,7 +231,7 @@ void DataTable::validate()
         }
         else if(m_type == DataTableType_Constant)
         {
-            m_constant = new ConstantTable(m_points, m_values);
+            m_constant = QSharedPointer<ConstantTable>(new ConstantTable(m_points, m_values));
         }
         else
             assert(0);
