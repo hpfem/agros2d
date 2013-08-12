@@ -430,24 +430,36 @@ int PiecewiseLinear::leftIndex(double x)
 
 double PiecewiseLinear::value(double x)
 {
-    int leftIdx = leftIndex(x);
     if (x < m_points.front())
+    {
         return m_values.front();
+    }
     else if (x > m_points.back())
+    {
         return m_values[m_size - 1];
+    }
     else
+    {
+        int leftIdx = leftIndex(x);
         return m_values[leftIdx] + m_derivatives[leftIdx] * (x - m_points[leftIdx]);
+    }
 }
 
 double PiecewiseLinear::derivative(double x)
 {
-    int leftIdx = leftIndex(x);
     if (x < m_points.front())
+    {
         return 0.0;
+    }
     else if (x > m_points.back())
+    {
         return 0.0;
+    }
     else
+    {
+        int leftIdx = leftIndex(x);
         return m_derivatives[leftIdx];
+    }
 }
 
 /*
