@@ -41,8 +41,7 @@ class ScriptEditor;
 class SearchDialog;
 class SearchWidget;
 
-struct ErrorResult;
-struct ExpressionResult;
+class ErrorResult;
 
 #ifdef Q_WS_X11
     const QFont FONT = QFont("Monospace", 9);
