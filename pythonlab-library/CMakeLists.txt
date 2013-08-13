@@ -11,19 +11,14 @@ add_custom_target(CYTHON_PYTHONLAB ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources
 
 IF(WIN32)
   ADD_CUSTOM_COMMAND(
-        SOURCE    ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx
         COMMAND   C:/Python27/Scripts/cython.py ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx
-        TARGET    CYTHON_PYTHONLAB
-        OUTPUTS   ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp)
+        OUTPUT   ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp)
 ELSE()
   ADD_CUSTOM_COMMAND(
-        SOURCE    ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx
         COMMAND   cython ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx
-        TARGET    CYTHON_PYTHONLAB
-        OUTPUTS   ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp)
+        OUTPUT   ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp)
 ENDIF()
 ADD_CUSTOM_COMMAND(
-      SOURCE    CYTHON_PYTHONLAB
       TARGET    CYTHON_PYTHONLAB
       DEPENDS   ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp)
 

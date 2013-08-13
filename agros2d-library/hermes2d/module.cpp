@@ -65,8 +65,9 @@ QMap<QString, QString> Module::availableModules()
         {
             try
             {
-                std::auto_ptr<XMLModule::module> module_xsd = XMLModule::module_(compatibleFilename(datadir() + MODULEROOT + "/" + filename).toStdString(),
-                                                                                 xml_schema::flags::dont_validate & xml_schema::flags::dont_initialize);
+                ::xml_schema::flags parsing_flags = parsing_flags = xml_schema::flags::dont_validate;
+
+                std::auto_ptr<XMLModule::module> module_xsd(XMLModule::module_(compatibleFilename(datadir() + MODULEROOT + "/" + filename).toStdString(), parsing_flags));
 
                 XMLModule::module *mod = module_xsd.get();
 
