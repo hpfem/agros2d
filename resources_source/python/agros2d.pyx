@@ -26,11 +26,13 @@ class __Parameters__(dict):
         self.set = set_method
         dict.__init__(self, self.get())
 
-    def __getitem__(self, key):
+    def __update__(self):
         parameters = self.get()
         for parameters_key in parameters:
             dict.__setitem__(self, parameters_key, parameters[parameters_key])
 
+    def __getitem__(self, key):
+        self.__update__()
         return dict.__getitem__(self, key)
 
     def __setitem__(self, key, value):
@@ -39,6 +41,10 @@ class __Parameters__(dict):
 
         dict.__setitem__(self, key, value)
         self.set(dict(self))
+
+    def get_parameters(self):
+        self.__update__()
+        return self
 
 # test functions
 def value_in_range(value, min, max, key):

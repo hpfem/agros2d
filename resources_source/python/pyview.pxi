@@ -141,7 +141,7 @@ cdef class __ViewConfig__:
 
     property workspace_parameters:
         def __get__(self):
-            return self.workspace_parameters
+            return self.workspace_parameters.get_parameters()
 
     def __get_workspace_parameters__(self):
         return {'grid' : self.thisptr.getBoolParameter(string('View_ShowGrid')),
@@ -282,7 +282,7 @@ cdef class __ViewMesh__(__ViewMeshAndPost__):
 
     property order_view_parameters:
         def __get__(self):
-            return self.order_view_parameters
+            return self.order_view_parameters.get_parameters()
 
     def __get_order_view_parameters__(self):
         return {'palette' : self.thisptr.getOrderViewPalette().c_str(),
@@ -317,7 +317,7 @@ cdef class __ViewPost__(__ViewMeshAndPost__):
 
     property scalar_view_parameters:
         def __get__(self):
-            return self.scalar_view_parameters
+            return self.scalar_view_parameters.get_parameters()
 
     def __get_scalar_view_parameters__(self):
         return {'variable' : self.thisptrp.getScalarViewVariable().c_str(),
@@ -410,12 +410,12 @@ cdef class __ViewPost2D__(__ViewPost__):
 
     property contour_view_parameters:
         def __get__(self):
-            return self.contour_view_parameters
+            return self.contour_view_parameters.get_parameters()
 
     def __get_contour_view_parameters__(self):
         return {'variable' : self.thisptr.getContourVariable().c_str(),
                 'count' : self.thisptr.getIntParameter(string('View_ContoursCount')),
-                'width' : self.thisptr.getDoubleParameter(string('View_View_ContoursWidth'))}
+                'width' : self.thisptr.getDoubleParameter(string('View_ContoursWidth'))}
 
     def __set_contour_view_parameters__(self, parameters):
         # variable
@@ -440,7 +440,7 @@ cdef class __ViewPost2D__(__ViewPost__):
 
     property vector_view_parameters:
         def __get__(self):
-            return self.vector_view_parameters
+            return self.vector_view_parameters.get_parameters()
 
     def __get_vector_view_parameters__(self):
         return {'variable' : self.thisptr.getVectorVariable().c_str(),

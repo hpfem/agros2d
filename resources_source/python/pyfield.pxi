@@ -232,7 +232,7 @@ cdef class __Field__:
 
     property solver_parameters:
         def __get__(self):
-            return self.solver_parameters
+            return self.solver_parameters.get_parameters()
 
     def __get_solver_parameters__(self):
         return {'tolerance' : self.thisptr.getDoubleParameter(string('NonlinearTolerance')),
@@ -289,7 +289,7 @@ cdef class __Field__:
 
     property matrix_solver_parameters:
         def __get__(self):
-            return self.matrix_solver_parameters
+            return self.matrix_solver_parameters.get_parameters()
 
     def __get_matrix_solver_parameters__(self):
         return {'tolerance' : self.thisptr.getDoubleParameter(string('LinearSolverIterToleranceAbsolute')),
@@ -333,7 +333,7 @@ cdef class __Field__:
 
     property adaptivity_parameters:
         def __get__(self):
-            return self.adaptivity_parameters
+            return self.adaptivity_parameters.get_parameters()
 
     def __get_adaptivity_parameters__(self):
         return {'tolerance' : self.thisptr.getDoubleParameter(string('AdaptivityTolerance')),
