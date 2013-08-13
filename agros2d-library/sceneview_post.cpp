@@ -122,11 +122,13 @@ void PostHermes::processRangeContour()
             }
         }
 
+        /*
         if (Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString() == "" || !contains)
         {
             // default values
             Agros2D::problem()->setting()->setValue(ProblemSetting::View_ContourVariable, m_activeViewField->defaultViewScalarVariable().id());
         }
+        */
 
         Agros2D::log()->printMessage(tr("Post View"), tr("Contour view (%1)").arg(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString()));
 
@@ -188,6 +190,7 @@ void PostHermes::processRangeScalar()
             }
         }
 
+        /*
         if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString() == "" || !contains)
         {
             // default values
@@ -195,6 +198,7 @@ void PostHermes::processRangeScalar()
             Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariable, variable.id());
             Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariableComp, variable.isScalar() ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude);
         }
+        */
 
         Agros2D::log()->printMessage(tr("Post View"), tr("Scalar view (%1)").arg(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()));
 
@@ -252,11 +256,13 @@ void PostHermes::processRangeVector()
             }
         }
 
+        /*
         if (Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString() == "" || !contains)
         {
             // default values
             Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorVariable, m_activeViewField->defaultViewVectorVariable().id());
         }
+        */
 
         Agros2D::log()->printMessage(tr("Post View"), tr("Vector view (%1)").arg(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()));
 
@@ -434,6 +440,15 @@ void PostHermes::setActiveViewField(FieldInfo* fieldInfo)
         setActiveTimeStep(NOT_FOUND_SO_FAR);
         setActiveAdaptivityStep(NOT_FOUND_SO_FAR);
         setActiveAdaptivitySolutionType(SolutionMode_Normal);
+
+        // set default variables
+        Module::LocalVariable scalarVariable = m_activeViewField->defaultViewScalarVariable();
+        Module::LocalVariable vectorVariable = m_activeViewField->defaultViewVectorVariable();
+
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ContourVariable, scalarVariable.id());
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariable, scalarVariable.id());
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariableComp, scalarVariable.isScalar() ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude);
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorVariable, vectorVariable.id());
     }
 }
 

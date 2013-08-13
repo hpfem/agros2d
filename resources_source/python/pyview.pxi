@@ -368,22 +368,22 @@ cdef class __ViewPost__(__ViewMeshAndPost__):
 
 # ViewPost2D
 cdef class __ViewPost2D__(__ViewPost__):
-    cdef PyViewPost2D *thisptr
+    cdef PyViewPost2D *thisptr2d
     cdef object contour_view_parameters
     cdef object vector_view_parameters
 
     def __cinit__(self):
-        self.thisptr = new PyViewPost2D()
+        self.thisptr2d = new PyViewPost2D()
         self.contour_view_parameters = __Parameters__(self.__get_contour_view_parameters__,
                                                       self.__set_contour_view_parameters__)
         self.vector_view_parameters = __Parameters__(self.__get_vector_view_parameters__,
                                                      self.__set_vector_view_parameters__)
-                                                 
+
     def __dealloc__(self):
-        del self.thisptr
+        del self.thisptr2d
 
     def activate(self):
-        self.thisptr.activate()
+        self.thisptr2d.activate()
 
     def disable(self):
       self.scalar = False
@@ -393,111 +393,111 @@ cdef class __ViewPost2D__(__ViewPost__):
     # scalar
     property scalar:
         def __get__(self):
-            return self.thisptr.getScalarViewShow()
+            return self.thisptr2d.getScalarViewShow()
         def __set__(self, show):
-            self.thisptr.setScalarViewShow(show)
+            self.thisptr2d.setScalarViewShow(show)
 
     def export_scalar_vtk(self, filename):
         """Export scalar view in VTK format."""
-        self.thisptr.exportScalarVTK(filename)
+        self.thisptr2d.exportScalarVTK(filename)
 
     # contours
     property contours:
         def __get__(self):
-            return self.thisptr.getContourShow()
+            return self.thisptr2d.getContourShow()
         def __set__(self, show):
-            self.thisptr.setContourShow(show)
+            self.thisptr2d.setContourShow(show)
 
     property contour_view_parameters:
         def __get__(self):
             return self.contour_view_parameters.get_parameters()
 
     def __get_contour_view_parameters__(self):
-        return {'variable' : self.thisptr.getContourVariable().c_str(),
-                'count' : self.thisptr.getIntParameter(string('View_ContoursCount')),
-                'width' : self.thisptr.getDoubleParameter(string('View_ContoursWidth'))}
+        return {'variable' : self.thisptr2d.getContourVariable().c_str(),
+                'count' : self.thisptr2d.getIntParameter(string('View_ContoursCount')),
+                'width' : self.thisptr2d.getDoubleParameter(string('View_ContoursWidth'))}
 
     def __set_contour_view_parameters__(self, parameters):
         # variable
-        self.thisptr.setContourVariable(string(parameters['variable']))
+        self.thisptr2d.setContourVariable(string(parameters['variable']))
 
         # count, width
         value_in_range(parameters['count'], 1, 100, 'count')
-        self.thisptr.setParameter(string('View_ContoursCount'), <int>parameters['count'])
+        self.thisptr2d.setParameter(string('View_ContoursCount'), <int>parameters['count'])
         value_in_range(parameters['width'], 0.1, 5.0, 'width')
-        self.thisptr.setParameter(string('View_ContoursWidth'), <bool>parameters['width'])
+        self.thisptr2d.setParameter(string('View_ContoursWidth'), <double>parameters['width'])
 
     def export_contour_vtk(self, filename):
         """Export contour view in VTK format."""
-        self.thisptr.exportContourVTK(filename)
+        self.thisptr2d.exportContourVTK(filename)
 
     # vectors
     property vectors:
         def __get__(self):
-            return self.thisptr.getVectorShow()
+            return self.thisptr2d.getVectorShow()
         def __set__(self, show):
-            self.thisptr.setVectorShow(show)
+            self.thisptr2d.setVectorShow(show)
 
     property vector_view_parameters:
         def __get__(self):
             return self.vector_view_parameters.get_parameters()
 
     def __get_vector_view_parameters__(self):
-        return {'variable' : self.thisptr.getVectorVariable().c_str(),
-                'count' : self.thisptr.getIntParameter(string('View_VectorCount')),
-                'scale' : self.thisptr.getDoubleParameter(string('View_VectorScale')),
-                'proportional' : self.thisptr.getBoolParameter(string('View_VectorProportional')),
-                'color' : self.thisptr.getBoolParameter(string('View_VectorColor')),
-                'type' : self.thisptr.getVectorType().c_str(),
-                'center' : self.thisptr.getVectorCenter().c_str()}
+        return {'variable' : self.thisptr2d.getVectorVariable().c_str(),
+                'count' : self.thisptr2d.getIntParameter(string('View_VectorCount')),
+                'scale' : self.thisptr2d.getDoubleParameter(string('View_VectorScale')),
+                'proportional' : self.thisptr2d.getBoolParameter(string('View_VectorProportional')),
+                'color' : self.thisptr2d.getBoolParameter(string('View_VectorColor')),
+                'type' : self.thisptr2d.getVectorType().c_str(),
+                'center' : self.thisptr2d.getVectorCenter().c_str()}
 
     def __set_vector_view_parameters__(self, parameters):
         # variable
-        self.thisptr.setVectorVariable(string(parameters['variable']))
+        self.thisptr2d.setVectorVariable(string(parameters['variable']))
 
         # count, scale
         value_in_range(parameters['count'], 1, 500, 'count')
-        self.thisptr.setParameter(string('View_VectorCount'), <int>parameters['count'])
+        self.thisptr2d.setParameter(string('View_VectorCount'), <int>parameters['count'])
         value_in_range(parameters['scale'], 0.1, 20.0, 'scale')
-        self.thisptr.setParameter(string('View_VectorScale'), <bool>parameters['scale'])
+        self.thisptr2d.setParameter(string('View_VectorScale'), <bool>parameters['scale'])
 
         # proportional, color
-        self.thisptr.setParameter(string('View_VectorProportional'), <bool>parameters['proportional'])
-        self.thisptr.setParameter(string('View_VectorColor'), <bool>parameters['color'])
+        self.thisptr2d.setParameter(string('View_VectorProportional'), <bool>parameters['proportional'])
+        self.thisptr2d.setParameter(string('View_VectorColor'), <bool>parameters['color'])
 
         # type, center
-        self.thisptr.setVectorType(string(parameters['type']))
-        self.thisptr.setVectorCenter(string(parameters['center']))
+        self.thisptr2d.setVectorType(string(parameters['type']))
+        self.thisptr2d.setVectorCenter(string(parameters['center']))
 
 # ViewPost3D
 cdef class __ViewPost3D__(__ViewPost__):
-    cdef PyViewPost3D *thisptr
+    cdef PyViewPost3D *thisptr3d
 
     def __cinit__(self):
-        self.thisptr = new PyViewPost3D()
+        self.thisptr3d = new PyViewPost3D()
     def __dealloc__(self):
-        del self.thisptr
+        del self.thisptr3d
 
     def activate(self):
-        self.thisptr.activate()
+        self.thisptr3d.activate()
 
     property mode:
         def __get__(self):
-            return self.thisptr.getPost3DMode().c_str()
+            return self.thisptr3d.getPost3DMode().c_str()
         def __set__(self, mode):
-            self.thisptr.setPost3DMode(string(mode))
+            self.thisptr3d.setPost3DMode(string(mode))
 
 # ViewParticleTracing
 cdef class __ViewParticleTracing__:
-    cdef PyViewParticleTracing *thisptr
+    cdef PyViewParticleTracing *thisptrpt
 
     def __cinit__(self):
-        self.thisptr = new PyViewParticleTracing()
+        self.thisptrpt = new PyViewParticleTracing()
     def __dealloc__(self):
-        del self.thisptr
+        del self.thisptrpt
 
     def activate(self):
-        self.thisptr.activate()
+        self.thisptrpt.activate()
 
 # View
 cdef class __View__:
