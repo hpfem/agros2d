@@ -105,6 +105,8 @@ protected:
     // change the history according to _historyPos
     void changeHistory();
 
+    virtual void insertFromMimeData(const QMimeData *source);
+
 private:
     PythonEngine *pythonEngine;
 

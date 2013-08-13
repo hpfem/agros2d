@@ -546,7 +546,7 @@ void PythonScriptingConsole::keyPressEvent(QKeyEvent* event)
             if (textCursor().hasSelection() && !verifySelectionBeforeDeletion())
             {
                 // The selection must not be deleted.
-                // eventHandled = true;
+                eventHandled = true;
             }
             else
             {
@@ -670,6 +670,11 @@ void PythonScriptingConsole::changeHistory()
 
     textCursor.movePosition(QTextCursor::End);
     setTextCursor(textCursor);
+}
+
+void PythonScriptingConsole::insertFromMimeData(const QMimeData *source)
+{
+    this->textCursor().insertText(source->text());
 }
 
 void PythonScriptingConsole::consoleMessage(const QString &message, const QColor& color)
