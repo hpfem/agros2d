@@ -4,9 +4,6 @@ import agros2d as a2d
 import scipy.io as sio
 import pylab as pl
 import numpy as np
- 
-import time as timer
-start_time = timer.time()
 
 def model(solver):
     # problem
@@ -135,5 +132,4 @@ test_paralution_iterative_rhs = np.allclose(reference_rhs, paralution_iterative_
 if (not test_paralution_iterative_rhs):    
     print("PARALUTION rhs failed.")
     
-elapsed_time = timer.time() - start_time
-print("Test: Internal - matrix solvers ({0}): ".format(round(elapsed_time, 3)) + str(test_mumps_matrix and test_mumps_rhs and test_umfpack_matrix and test_umfpack_rhs and test_paralution_iterative_matrix and test_paralution_iterative_rhs))
+print("Test: Internal - matrix solvers: " + str(test_mumps_matrix and test_mumps_rhs and test_umfpack_matrix and test_umfpack_rhs and test_paralution_iterative_matrix and test_paralution_iterative_rhs))

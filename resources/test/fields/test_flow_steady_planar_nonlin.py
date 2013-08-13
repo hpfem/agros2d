@@ -1,6 +1,4 @@
 import agros2d
-from time import time
-start_time = time()
 
 # problem
 problem = agros2d.problem(clear = True)
@@ -77,5 +75,4 @@ volume = flow.volume_integrals([0])
 surface = flow.surface_integrals([0])
 # testI = agros2d.test("Current", surface["Ir"], 3629.425713)
 
-elapsed_time = time() - start_time
-print("Test: Incompressible flow - plana ({0}): ".format(round(elapsed_time, 3)) + str(testp and testv and testvx and testvy))
+print("Test: Incompressible flow - planar: " + str(testp and testv and testvx and testvy))

@@ -1,6 +1,4 @@
 import agros2d
-from time import time
-start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -63,5 +61,4 @@ testPj = agros2d.test("Losses", volume["Pj"], 4.542019e9)
 surface = current.surface_integrals([1])
 testI = agros2d.test("Current", surface["Ir"], -2.166256e8)
 
-elapsed_time = time() - start_time
-print("Test: Current field - axisymmetric ({0}): ".format(round(elapsed_time, 3)) + str(testV and testE and testEr and testEz and testJ and testJr and testJz and testpj and testI))
+print("Test: Current field - axisymmetric: " + str(testV and testE and testEr and testEz and testJ and testJr and testJz and testpj and testI))

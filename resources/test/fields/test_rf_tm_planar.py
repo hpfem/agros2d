@@ -1,6 +1,4 @@
 import agros2d as a2d
-from time import time
-start_time = time()
 
 # problem
 problem = a2d.problem(clear = True)
@@ -78,7 +76,6 @@ testNx = a2d.test("Poynting vector - x", point["Nx"], 0.820297)
 point = rf_tm.local_values(1.841e-01, -3.055e-02)
 testNy = a2d.test("Poynting vector - y", point["Ny"], -1.880639)
 
-elapsed_time = time() - start_time
-print("Test: RF TM - planar ({0}): ".format(round(elapsed_time, 3)) + str(testH and testH_real and testH_imag
+print("Test: RF TM - planar ({0}): " + str(testH and testH_real and testH_imag
 and testE and testEx_real and testEx_imag and testEy_real and testEy_imag and
 testD and testDx_real and testDx_imag and testDy_real and testDy_imag  and testNx and testNy))

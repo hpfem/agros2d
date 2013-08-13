@@ -1,6 +1,4 @@
 import agros2d
-from time import time
-start_time = time()
 
 # problem
 problem = agros2d.problem(clear = True)
@@ -83,5 +81,4 @@ x, y, z = tracing.positions()
 testPositionX = agros2d.test("Particle position", x[-1], 0.080043)
 testPositionY = agros2d.test("Particle position", y[-1], 0.015374)
 
-elapsed_time = time() - start_time
-print("Test: Particle tracing planar ({0}): ".format(round(elapsed_time, 3)) + str(testPositionX and testPositionY))
+print("Test: Particle tracing planar: " + str(testPositionX and testPositionY))

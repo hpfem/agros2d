@@ -1,7 +1,4 @@
 import agros2d
-from time import time
-start_time = time()
-
 
 # model
 problem = agros2d.problem(clear = True)
@@ -105,5 +102,4 @@ result = str(testA and testA_real and testA_imag and testB and testBx_real and t
              and testwm and testpj and testWm and testPj
              and testFLx and testFLy)
 
-elapsed_time = time() - start_time
-print("Test: Magnetic harmonic - planar ({0}): ".format(round(elapsed_time, 3)) + result)
+print("Test: Magnetic harmonic - planar: " + result)

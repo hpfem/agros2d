@@ -1,6 +1,4 @@
 import agros2d
-from time import time
-start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -77,5 +75,4 @@ testQ = agros2d.test("Electric charge", surface_integrals["Q"], 1.048981e-7)
 volume_integrals = electrostatic.volume_integrals([1])
 testEnergy = agros2d.test("Energy", volume_integrals["We"], 1.307484e-7)
 
-elapsed_time = time() - start_time
-print("Test: Electrostatic - planar ({0}): ".format(round(elapsed_time, 3)) + str(testV and testE and testEx and testEy and testD and testDx and testDy and testwe and testEnergy and testQ))
+print("Test: Electrostatic - planar: " + str(testV and testE and testEx and testEy and testD and testDx and testDy and testwe and testEnergy and testQ))

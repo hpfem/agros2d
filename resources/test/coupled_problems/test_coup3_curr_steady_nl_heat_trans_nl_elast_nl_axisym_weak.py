@@ -1,8 +1,6 @@
 # based on test_coupling_3_axisymmetric_nonlin.py
 
 import agros2d
-from time import time
-start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -97,5 +95,4 @@ testL2 = agros2d.test("Heat transfer - Heat conductivity", local_values_heat["la
 local_values_elasticity = elasticity.local_values(0.277308,-0.216051)
 testD = agros2d.test("Thermoelasticity - Displacement", local_values_elasticity["d"], 0.001958)
 
-elapsed_time = time() - start_time
-print("Test: Coupling 3 - axisymetric, current nonlin, heat realy nonlin transient, elasticity nonlin,  weak ({0}): ".format(round(elapsed_time, 3)) + str(testV and testT and testD and testL1 and testL2))
+print("Test: Coupling 3 - axisymetric, current nonlin, heat realy nonlin transient, elasticity nonlin,  weak: " + str(testV and testT and testD and testL1 and testL2))

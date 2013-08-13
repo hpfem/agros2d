@@ -1,6 +1,4 @@
 import agros2d
-from time import time
-start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -100,5 +98,4 @@ result = str(point and testA and testB and testBx and testBy and testH and testH
              and testJiv and testJr and testFx and testFy and testwm and testpj and testWm
              and testPj and testT and testFxv and testFyv)
 
-elapsed_time = time() - start_time
-print("Test: Magnetic steady state - planar ({0}): ".format(round(elapsed_time, 3)) + result)
+print("Test: Magnetic steady state - planar: " + result)

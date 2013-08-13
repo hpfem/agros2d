@@ -1,6 +1,4 @@
 import agros2d
-import time as timer
-start_time = timer.time()
 
 # problem
 problem = agros2d.problem(clear = True)
@@ -89,6 +87,5 @@ testIer = agros2d.test("Current - external", volumeSource["Ier"], 421.23575)
 # surface integral
 # surface = magnetic.surface_integrals([0])
 
-elapsed_time = timer.time() - start_time
-print("Test: Magnetic transient - planar ({0}): ".format(round(elapsed_time, 3)) + str(point and testA and testB and testBx and testBy and testH and testHx and testHy and testwm and testpj
+print("Test: Magnetic transient - planar: " + str(point and testA and testB and testBx and testBy and testH and testHx and testHy and testwm and testpj
 and testJitr and testJr and testFlx and testFly and testWm and testPj and testIer and testIitr and testIr1 and testIr2))

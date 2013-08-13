@@ -1,6 +1,4 @@
 import agros2d
-from time import time
-start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -102,5 +100,4 @@ testFz = agros2d.test("Maxwell force - z", surface["Fty"], 0.368232, 0.1)
 result = str(testA and testB and testBr and testBz and testH and testHr and testHz
              and testFr_real and testFz_real and testwm and testWm and testFLr and testFLz)
 
-elapsed_time = time() - start_time
-print("Test: Magnetic steady state - axisymmetric ({0}): ".format(round(elapsed_time, 3)) + result)
+print("Test: Magnetic steady state - axisymmetric: " + result)

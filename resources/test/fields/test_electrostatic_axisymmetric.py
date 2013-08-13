@@ -1,6 +1,4 @@
 import agros2d
-from time import time
-start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -73,5 +71,4 @@ testEnergy = agros2d.test("Energy", volume["We"], 1.799349e-8)
 surface = electrostatic.surface_integrals([1, 12])
 testQ = agros2d.test("Electric charge", surface["Q"], -1.291778e-9)
 
-elapsed_time = time() - start_time
-print("Test: Electrostatic - axisymmetric ({0}): ".format(round(elapsed_time, 3)) + str(testV and testE and testEr and testEz and testD and testDr and testDz and testwe and testEnergy and testQ))
+print("Test: Electrostatic - axisymmetric: " + str(testV and testE and testEr and testEz and testD and testDr and testDz and testwe and testEnergy and testQ))

@@ -1,6 +1,4 @@
 import agros2d
-from time import time
-start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -64,5 +62,4 @@ testTavg = agros2d.test("Temperature", volume["T"], 0.616202)
 surface = heat.surface_integrals([1])
 testFlux = agros2d.test("Heat flux", surface["f"], 199.0004)
 
-elapsed_time = time() - start_time
-print("Test: Heat transfer steady state - axisymmetric ({0}): ".format(round(elapsed_time, 3)) + str(testT and testG and testGr and testGz and testF and testFr and testFz and testTavg and testFlux))
+print("Test: Heat transfer steady state - axisymmetric: " + str(testT and testG and testGr and testGz and testF and testFr and testFz and testTavg and testFlux))

@@ -1,6 +1,4 @@
 import agros2d as a2d
-from time import time
-start_time = time()
 
 # problem
 problem = a2d.problem(clear = True)
@@ -81,7 +79,6 @@ testDz_imag = a2d.test("Electric displacement z component - imag", point["Diz"],
 testNr = a2d.test("Poynting vector r component", point["Nr"], 27.940976)
 testNz = a2d.test("Poynting vector z component", point["Nz"], 34.895617)
 
-elapsed_time = time() - start_time
-print("Test: RF TM - axisymmetric ({0}): ".format(round(elapsed_time, 3)) + str(testH and testHr and testHi and testB
+print("Test: RF TM - axisymmetric: " + str(testH and testHr and testHi and testB
 and testBr and testBi and testE and testEr_real and testEr_imag and testEz_real and testEz_imag
 and testD and testDr_real and testDr_imag and testDz_real and testDz_imag and testNr and testNz))

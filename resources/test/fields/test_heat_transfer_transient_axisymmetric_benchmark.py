@@ -1,6 +1,4 @@
 import agros2d
-from time import time
-start_time = time()
 
 # benchmark 
 #
@@ -55,5 +53,4 @@ problem.solve()
 point = heat.local_values(0.1, 0.3)
 testT = agros2d.test("Temperature", point["T"], 186.5, 0.0004) # permissible error 0.02 %
 
-elapsed_time = time() - start_time
-print("Test: Heat transfer transient - axisymmetric benchmark ({0}): ".format(round(elapsed_time, 3)) + str(testT))
+print("Test: Heat transfer transient - axisymmetric benchmark: " + str(testT))

@@ -1,6 +1,4 @@
 import agros2d
-from time import time
-start_time = time()
 
 # problem
 problem = agros2d.problem(clear = True)
@@ -53,5 +51,4 @@ problem.solve()
 point = electrostatic.local_values(3.278e-2, 4.624e-1)
 test = agros2d.test("Electrostatic potential", point["V"], 5.569e2)
 
-elapsed_time = time() - start_time
-print("Test: Adaptivity - electrostatic ({0}): ".format(round(elapsed_time, 3)) + str(test))
+print("Test: Adaptivity - electrostatic: " + str(test))

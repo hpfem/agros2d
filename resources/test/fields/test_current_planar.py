@@ -1,6 +1,4 @@
 import agros2d
-from time import time
-start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -70,5 +68,4 @@ testPj = agros2d.test("Losses", volume["Pj"], 10070.23937)
 surface = current.surface_integrals([0])
 testI = agros2d.test("Current", surface["Ir"], 3629.425713)
 
-elapsed_time = time() - start_time
-print("Test: Current field - planar ({0}): ".format(round(elapsed_time, 3)) + str(testV and testE and testEx and testEy and testJ and testJx and testJy and testpj and testI))
+print("Test: Current field - planar: " + str(testV and testE and testEx and testEy and testJ and testJx and testJy and testpj and testI))

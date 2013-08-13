@@ -1,6 +1,4 @@
 import agros2d
-from time import time
-start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -72,5 +70,4 @@ surface = acoustic.surface_integrals([0])
 
 # print("Test: Acoustic - planar: " + str(testp and testp_real and testp_imag and testSPL and testPv_real and testPv_imag and testPs_real and testPs_imag))
 
-elapsed_time = time() - start_time
-print("Test: Acoustic - axisymmetric ({0}): ".format(round(elapsed_time, 3)) + str(testp and testp_real and testp_imag))
+print("Test: Acoustic - axisymmetric: " + str(testp and testp_real and testp_imag))

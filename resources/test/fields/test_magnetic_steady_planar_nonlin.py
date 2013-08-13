@@ -1,6 +1,4 @@
 import agros2d
-from time import time
-start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -87,5 +85,4 @@ testmur = agros2d.test("Permeability", point["mur"], 139.364773, 0.04)
 volume = magnetic.volume_integrals([2])
 testWm = agros2d.test("Energy", volume["Wm"], 3.264012)
 
-elapsed_time = time() - start_time
-print("Test: Magnetic steady state - nonlin - planar ({0}): ".format(round(elapsed_time, 3)) + str(point and testmur and testB and testWm))
+print("Test: Magnetic steady state - nonlin - planar: " + str(point and testmur and testB and testWm))

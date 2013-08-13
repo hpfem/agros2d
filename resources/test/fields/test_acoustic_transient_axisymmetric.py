@@ -1,6 +1,4 @@
 import agros2d
-import time as timer
-start_time = timer.time()
 
 # problem
 problem = agros2d.problem(clear = True)
@@ -67,5 +65,4 @@ point = acoustic.local_values(0.413503,0.499528)
 testp = agros2d.test("Acoustic pressure", point["pr"], 0.106095)
 # testSPL = agros2d.test("Acoustic sound level", point["SPL"], 77.055706)
 
-elapsed_time = timer.time() - start_time
-print("Test: Acoustic - transient - axisymmetric ({0}): ".format(round(elapsed_time, 3)) + str(testp))
+print("Test: Acoustic - transient - axisymmetric: " + str(testp))

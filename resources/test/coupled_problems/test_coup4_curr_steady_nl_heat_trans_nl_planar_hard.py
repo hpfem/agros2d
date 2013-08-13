@@ -1,8 +1,6 @@
 # based on test_coupling_4_transient_planar.py
 
 import agros2d
-from time import time
-start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -90,5 +88,4 @@ testT2 = agros2d.test("Heat - Temperature 2", local_values_heat["T"], 25.002605)
 volume_integral_heat = heat.volume_integrals([0, 1, 2, 3, 4])
 testTvol = agros2d.test("Heat - Temperature volume", volume_integral_heat["T"], 8.498177)
 
-elapsed_time = time() - start_time
-print("Test: Coupling 4 - transient - planar, nonlinear, hard ({0}): ".format(round(elapsed_time, 3)) + str(testV and testJ and testT1 and testT2 and testTvol)) #testf
+print("Test: Coupling 4 - transient - planar, nonlinear, hard: " + str(testV and testJ and testT1 and testT2 and testTvol)) #testf

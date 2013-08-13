@@ -1,6 +1,4 @@
 import agros2d
-from time import time
-start_time = time()
 
 # problem
 problem = agros2d.problem(clear = True)
@@ -53,5 +51,4 @@ test1 = agros2d.test("Acoustic pressure", point1["p"], 7.481e-1)
 point2 = acoustic.local_values(6.994e-2, 1.894e-2)
 test2 = agros2d.test("Acoustic pressure", point2["p"], 2.889e-1)
 
-elapsed_time = time() - start_time
-print("Test: Adaptivity - acoustic ({0}): ".format(round(elapsed_time, 3)) + str(test1 and test2))
+print("Test: Adaptivity - acoustic: " + str(test1 and test2))

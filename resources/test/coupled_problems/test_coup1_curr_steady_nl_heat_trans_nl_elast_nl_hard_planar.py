@@ -1,8 +1,6 @@
 #based on test_coupling_1_planar
 
 import agros2d
-from time import time
-start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -99,5 +97,4 @@ testT = agros2d.test("Heat transfer - Temperature", local_values_heat["T"], 40.6
 local_values_elasticity = elasticity.local_values(0.155787, 0.00713725)
 testD = agros2d.test("Thermoelasticity - Displacement", local_values_elasticity["d"], 1.592721e-4)
 
-elapsed_time = time() - start_time
-print("Test: Coupling 1 - planar, heat transient, newton and hard coupling (all 3) ({0}): ".format(round(elapsed_time, 3)) + str(testV and testT and testD))
+print("Test: Coupling 1 - planar, heat transient, newton and hard coupling (all 3): " + str(testV and testT and testD))

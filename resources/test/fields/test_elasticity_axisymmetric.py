@@ -1,6 +1,4 @@
 import agros2d
-from time import time
-start_time = time()
 
 # model
 problem = agros2d.problem(clear = True)
@@ -74,5 +72,4 @@ testdz = agros2d.test("Displacement - y", point["dz"], -2.672647e-6)
 
 #print("Test: Structural mechanics - axisymmetric: " + str(testVonMises and testu and testv and testD and testsrr and testszz and testsaa and testerr and testezz and testeaa and testerz))
 
-elapsed_time = time() - start_time
-print("Test: Structural mechanics - axisymmetric ({0}): ".format(round(elapsed_time, 3)) + str(testd and testdr and testdz))
+print("Test: Structural mechanics - axisymmetric: " + str(testd and testdr and testdz))
