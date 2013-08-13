@@ -90,7 +90,7 @@ namespace Hermes
     ///
     /// Typical usage is through the function create_linear_solver(Matrix<Scalar>* matrix, Vector<Scalar>* rhs, bool use_direct_solver).
     template <typename Scalar>
-    class LinearMatrixSolver : public Hermes::Mixins::Loggable, public Hermes::Mixins::TimeMeasurable
+    class HERMES_API LinearMatrixSolver : public Hermes::Mixins::Loggable, public Hermes::Mixins::TimeMeasurable
     {
     public:
       LinearMatrixSolver(MatrixStructureReuseScheme reuse_scheme = HERMES_CREATE_STRUCTURE_FROM_SCRATCH);
@@ -147,16 +147,19 @@ namespace Hermes
       bool node_wise_ordering;
     };
 
-    /// \brief Special-purpose class for using external solvers.
+    /// \brief Special-purpose abstract class for using external solvers.
+    /// For examples implementation, see the class SimpleExternalSolver.
     template <typename Scalar>
-    class ExternalSolver : public LinearMatrixSolver<Scalar>, public Mixins::MatrixRhsOutput<Scalar>
+    class HERMES_API ExternalSolver : public LinearMatrixSolver<Scalar>, public Mixins::MatrixRhsOutput<Scalar>
     {
     public:
-      ExternalSolver(CSCMatrix<Scalar> *m, SimpleVector<Scalar> *rhs);
-      virtual void solve() = 0;
-      virtual void solve(Scalar* initial_guess) = 0;
-      virtual int get_matrix_size() { return m->get_size(); }
+      typedef ExternalSolver<Scalar>* (*creation)(CSCMatrix<Scalar> *m, SimpleVector<Scalar> *rhs);
+      static creation create_external_solver;
 
+      ExternalSolver(CSCMatrix<Scalar> *m, SimpleVector<Scalar> *rhs);
+      virtual void solve() { throw Exceptions::MethodNotOverridenException("ExternalSolver::solve()."); };
+      virtual void solve(Scalar* initial_guess) { throw Exceptions::MethodNotOverridenException("ExternalSolver::solve()."); };
+      virtual int get_matrix_size() { return this->m->get_size(); };
       /// Matrix to solve.
       ///template <typename Scalar>
       CSCMatrix<Scalar> *get_matrix() { return this->m; }
@@ -171,9 +174,9 @@ namespace Hermes
       SimpleVector<Scalar> *rhs;
     };
 
-    /// \brief Special-purpose class for using external solvers.
+    /// \brief An example class for using external solvers that run a command and store the result in a file.
     template <typename Scalar>
-    class SimpleExternalSolver : public ExternalSolver<Scalar>
+    class HERMES_API SimpleExternalSolver : public ExternalSolver<Scalar>
     {
     public:
       SimpleExternalSolver(CSCMatrix<Scalar> *m, SimpleVector<Scalar> *rhs);
@@ -184,13 +187,13 @@ namespace Hermes
       /// External command call.
       /// \return Filepath to the result vector in the raw text format (just numbers, one per line).
       /// Can destroy the matrix and rhs files, those are not needed anymore.
-      virtual std::string command() {  return ""; }
+      virtual std::string command() = 0;
     };
 
     /// \brief Base class for defining interface for direct linear solvers.
     /// Internal, though utilizable for defining interfaces to other algebraic packages.
     template <typename Scalar>
-    class DirectSolver : public LinearMatrixSolver<Scalar>
+    class HERMES_API DirectSolver : public LinearMatrixSolver<Scalar>
     {
     public:
       DirectSolver(MatrixStructureReuseScheme reuse_scheme = HERMES_CREATE_STRUCTURE_FROM_SCRATCH);
@@ -200,7 +203,7 @@ namespace Hermes
 
     /// \brief Abstract middle-class for solvers that work in a loop of a kind (iterative, multigrid, ...)
     template <typename Scalar>
-    class LoopSolver : public LinearMatrixSolver<Scalar>
+    class HERMES_API LoopSolver : public LinearMatrixSolver<Scalar>
     {
     public:
       LoopSolver(MatrixStructureReuseScheme reuse_scheme = HERMES_CREATE_STRUCTURE_FROM_SCRATCH);
@@ -247,7 +250,7 @@ namespace Hermes
     /// \brief  Abstract class for defining interface for iterative solvers.
     /// Internal, though utilizable for defining interfaces to other algebraic packages.
     template <typename Scalar>
-    class IterSolver : public LoopSolver<Scalar>
+    class HERMES_API IterSolver : public LoopSolver<Scalar>
     {
     public:
       IterSolver(MatrixStructureReuseScheme reuse_scheme = HERMES_CREATE_STRUCTURE_FROM_SCRATCH);
@@ -263,7 +266,7 @@ namespace Hermes
     /// \brief  Abstract class for defining interface for Algebraic Multigrid solvers.
     /// Internal, though utilizable for defining interfaces to other algebraic packages.
     template <typename Scalar>
-    class AMGSolver : public LoopSolver<Scalar>
+    class HERMES_API AMGSolver : public LoopSolver<Scalar>
     {
     public:
       AMGSolver(MatrixStructureReuseScheme reuse_scheme = HERMES_CREATE_STRUCTURE_FROM_SCRATCH);

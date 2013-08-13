@@ -31,18 +31,19 @@ class ExactSolutionScalarAgros;
 
 class SceneBoundary;
 
-//class AgrosExternalSolver : public ExternalSolver<double>
-//{
-//public:
-//  AgrosExternalSolver(CSCMatrix<double> *m, SimpleVector<double> *rhs);
-//  void solve();
-//  void solve(double* initial_guess);
+class AgrosExternalSolverOctave : public ExternalSolver<double>
+{
+public:
+    AgrosExternalSolverOctave(CSCMatrix<double> *m, SimpleVector<double> *rhs);
+    void solve();
+    void solve(double* initial_guess);
 
-//private:
-//    QProcess *m_process;
-//};
+private:
+    QProcess *m_process;
+};
 
-enum Phase  {
+enum Phase
+{
     Phase_Init,
     Phase_DFDetermined,
     Phase_JacobianReused,
@@ -136,7 +137,7 @@ public:
     virtual LinearMatrixSolver<Scalar> *linearSolver() { return m_linearSolver->get_linear_solver(); }
 
 private:
-    Hermes::Hermes2D::LinearSolver<Scalar> *m_linearSolver;    
+    Hermes::Hermes2D::LinearSolver<Scalar> *m_linearSolver;
 };
 
 template <typename Scalar>
