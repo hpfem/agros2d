@@ -10,7 +10,7 @@ INCLUDE_DIRECTORIES(.)
 SET(SOURCES {{ID}}_interface.cpp {{ID}}_weakform.cpp)
 SET(HEADERS {{ID}}_interface.h {{ID}}_weakform.h)
 
-SET(SOURCES ${SOURCES} "${CMAKE_AGROS_DIRECTORY}/resources_source/classes/module_xml.cpp")
+SET(SOURCES ${SOURCES} "${CMAKE_AGROS_DIRECTORY}/resources_source/classes/coupling_xml.cpp")
 ADD_DEFINITIONS(-DQT_PLUGIN)
 ADD_DEFINITIONS(-DQT_NO_DEBUG)
 ADD_DEFINITIONS(-DQT_SHARED)
