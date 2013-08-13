@@ -51,14 +51,8 @@ foreach(XSD_FILE ${files})
   message("\txsdcxx ${basefile}")
 
   ADD_CUSTOM_COMMAND(
-        SOURCE    ${XSD_FILE}
-        COMMAND   ${XSD_BIN} ARGS cxx-tree --generate-ostream --hxx-suffix .h --cxx-suffix .cpp --root-element-first --generate-polymorphic --output-dir ${CMAKE_HOME_DIRECTORY}/resources_source/classes --generate-serialization ${XSD_FILE}
-        TARGET    ${basefile}
-        OUTPUTS   ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.cpp ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.h)
-  ADD_CUSTOM_COMMAND(
-        SOURCE    ${basefile}
-        TARGET    ${basefile}
-        DEPENDS   ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.cpp ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.h)
+        COMMAND  ${XSD_BIN} ARGS cxx-tree --generate-ostream --hxx-suffix .h --cxx-suffix .cpp --root-element-first --generate-polymorphic --output-dir ${CMAKE_HOME_DIRECTORY}/resources_source/classes --generate-serialization ${XSD_FILE}
+        OUTPUT  ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.cpp ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.h)
 endforeach()
 
 # cython
@@ -172,12 +166,12 @@ SET(SOURCES value.cpp
     particle/particle_tracing.cpp
     util/form_interface.cpp
     util/form_script.cpp
-    ../resources_source/classes/module_xml.cpp
-    ../resources_source/classes/coupling_xml.cpp
-    ../resources_source/classes/agros2d_structure_xml.cpp
-    ../resources_source/classes/material_xml.cpp
-    ../resources_source/classes/problem_a2d_31_xml.cpp
-    ../resources_source/classes/form_xml.cpp
+    ${CMAKE_HOME_DIRECTORY}/resources_source/classes/module_xml.cpp
+    ${CMAKE_HOME_DIRECTORY}/resources_source/classes/coupling_xml.cpp
+    ${CMAKE_HOME_DIRECTORY}/resources_source/classes/agros2d_structure_xml.cpp
+    ${CMAKE_HOME_DIRECTORY}/resources_source/classes/material_xml.cpp
+    ${CMAKE_HOME_DIRECTORY}/resources_source/classes/problem_a2d_31_xml.cpp
+    ${CMAKE_HOME_DIRECTORY}/resources_source/classes/form_xml.cpp
     # ../hermes/hermes2d/src/mesh/subdomains_h2d_xml.cpp
     # ../hermes/hermes2d/src/mesh/mesh_h2d_xml.cpp
   )
@@ -284,7 +278,7 @@ IF(WITH_QT5)
 ENDIF(WITH_QT5)
 
 
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${OPENGL_LIBRARIES} ${HERMES_LIBRARY} ${HERMES_COMMON_LIBRARY} ${PYTHONLAB_LIBRARY} ${AGROS_UTIL} ${CTEMPLATE_LIBRARY} ${DXFLIB_LIBRARY} ${POLY2TRI_LIBRARY} ${QCUSTOMPLOT_LIBRARY} ${QUAZIP_LIBRARY} ${STB_TRUETYPE_LIBRARY} ${PYTHON_LIBRARIES} ${OPENGL_LIBRARIES} ${ZLIB_LIBRARIES})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${HERMES_LIBRARY} ${HERMES_COMMON_LIBRARY} ${PYTHONLAB_LIBRARY} ${AGROS_UTIL} ${CTEMPLATE_LIBRARY} ${DXFLIB_LIBRARY} ${POLY2TRI_LIBRARY} ${QCUSTOMPLOT_LIBRARY} ${QUAZIP_LIBRARY} ${STB_TRUETYPE_LIBRARY} ${PYTHON_LIBRARIES} ${OPENGL_LIBRARIES} ${ZLIB_LIBRARIES})
 
 SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/libs)
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
