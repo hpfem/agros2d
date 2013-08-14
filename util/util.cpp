@@ -244,8 +244,24 @@ QString compatibleFilename(const QString &fileName)
 #ifdef Q_WS_WIN
     if (!QFile::exists(fileName))
         out = QString("%1").arg(QFileInfo(fileName).absolutePath());
-    
-    out.replace("/", "\\");
+
+
+#ifdef UNICODE
+  // For some reason, it seems that unicode does not work on Qt 4.8.4 on Windows (the method from WCharArray gives a linker error).
+  #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    TCHAR szshortpath[4096];
+    GetShortPathName((LPCWSTR) out.replace("/", "\\\\").utf16(), szshortpath, 4096);
+    out = QString::fromWCharArray(szshortpath);
+  #else
+    char szshortpath[4096];
+    GetShortPathNameA((LPCSTR) out.replace("/", "\\").toAscii(), szshortpath, 4096);
+    out = QString::fromLocal8Bit(szshortpath);
+  #endif
+#else
+    TCHAR szshortpath[4096];
+    GetShortPathName((LPCSTR) out.replace("/", "\\").toAscii(), szshortpath, 4096);
+    out = QString::fromLocal8Bit(szshortpath);
+#endif
 
     if (!QFile::exists(fileName))
         out = out + "/" + QFileInfo(fileName).fileName();
