@@ -22,14 +22,14 @@ def calculate():
                                         {{txtLocalValuesY_text}})['{{trvLocalValues_variable}}']
             results['local'].append(result)
 
-        if ('{{trvSurfaceIntefrals_variable}}'):
+        if ('{{trvSurfaceIntegrals_variable}}'):
             field = a2d.field('{{trvSurfaceIntegrals_fieldid}}')
             result = field.surface_integrals({{lstSurfaceIntegralsEdges_list}})['{{trvSurfaceIntegrals_variable}}']
             results['surface'].append(result)
 
         if ('{{trvVolumeIntegrals_variable}}'):
             field = a2d.field('{{trvVolumeIntegrals_fieldid}}')
-            result = field.volume_integrals({{lstSurfaceIntegralsEdges_list}})['{{trvVolumeIntegrals_variable}}']
+            result = field.volume_integrals({{lstVolumeIntegralsLabels_list}})['{{trvVolumeIntegrals_variable}}']
             results['volume'].append(result)
 
     if ('{{txtExpression_text}}'):

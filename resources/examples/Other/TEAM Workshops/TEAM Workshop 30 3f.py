@@ -100,8 +100,8 @@ def model(omega):
     problem.solve()
     
     volume = magnetic.volume_integrals([1, 2])
-    return volume["T"], volume["Pj"]
-
+    return volume["Tl"], volume["Pj"]
+    
 # analytical solution
 # rpm    torque     rotor losses
 # 0     -3.825857   1455.644 
