@@ -1,8 +1,8 @@
 [Setup]
 
 #define AppName "Agros2D"
-#define AppVersion "3.0.0.4342"
-#define AppDate "2013-07-23"
+#define AppVersion "3.0.0.4514"
+#define AppDate "2013-08-14"
 #define OutputBaseFileName "Agros2D" + "_" + AppVersion
 
 AppName={#AppName}
@@ -22,8 +22,8 @@ UninstallDisplayIcon={app}\images\agros2d.ico
 Compression=lzma/max
 PrivilegesRequired=admin
 
-WizardImageFile=setup\files\SetupModern.bmp
-WizardSmallImageFile=setup\files\SetupModernSmall.bmp
+WizardImageFile=resources_source\images\setup\SetupModern.bmp
+WizardSmallImageFile=resources_source\images\setup\SetupModernSmall.bmp
 
 [Languages]
 
@@ -32,29 +32,13 @@ Source: agros2d_util.dll; DestDir: {app}; DestName: agros2d_util.dll
 Source: agros2d_pythonlab_library.dll; DestDir: {app}; DestName: agros2d_pythonlab_library.dll
 Source: agros_pythonlab.exe; DestDir: {app}; DestName: PythonLab.exe
 Source: agros2d_library.dll; DestDir: {app}; DestName: agros2d_library.dll
+Source: libs\*.dll; DestDir: {app}/libs
 Source: agros2d.exe; DestDir: {app}; DestName: Agros2D.exe
 Source: agros2d_solver.exe; DestDir: {app}; DestName: Solver.exe
 ;Source: agros2d_remote.exe; DestDir: {app}; DestName: Remote.exe
-Source: designer.exe; DestDir: {app}; DestName: Designer.exe
-Source: iconengines\*.dll; DestDir: {app}/iconengines
-Source: imageformats\*.dll; DestDir: {app}/imageformats
-Source: printsupport\*.dll; DestDir: {app}/printsupport
-Source: platforms\*.dll; DestDir: {app}/platforms
-Source: sqldrivers\*.dll; DestDir: {app}/sqldrivers
 Source: resources\images\agros2d.ico; DestDir: {app}; DestName: Agros2D.ico
-Source: COPYING; DestDir: {app}; DestName: COPYING
-Source: README; DestDir: {app}; DestName: README
-Source: README_Python.txt; DestDir: {app}; DestName: README_Python.txt
-Source: functions_pythonlab.py; DestDir: {app}; DestName: functions_pythonlab.py
-Source: functions_agros2d.py; DestDir: {app}; DestName: functions_agros2d.py
 Source: resources\*; DestDir: {app}/resources; Flags: recursesubdirs
-Source: DLLs\*; DestDir: {app}/DLLs; Flags: recursesubdirs
-Source: Lib\*; DestDir: {app}/Lib; Flags: recursesubdirs
-Source: tcl\*; DestDir: {app}/tcl; Flags: recursesubdirs
-Source: *.dll; DestDir: {app};
-Source: triangle.exe; DestDir: {app}; DestName: triangle.exe
-Source: GMSH.exe; DestDir: {app}; DestName: GMSH.exe
-Source: python.exe; DestDir: {app}; DestName: python.exe
+Source: ..\agros2d-win32\*; DestDir: {app}; Flags: recursesubdirs
 
 [Icons]
 Name: {group}\Agros2D; Filename: {app}\Agros2D.exe; WorkingDir: {app}
@@ -83,3 +67,4 @@ Filename: {app}\Agros2D.url; Section: InternetShortcut; Key: URL; String: http:/
 Type: files; Name: {app}\Agros2D.url
 
 [Code]
+
