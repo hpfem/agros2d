@@ -33,4 +33,6 @@ void pyQuit();
 char *pyInput(char *str);
 void pyMessage(char *str);
 
+char *pyDatadir();
+
 #endif // PYTHONLABFUNCTIONS_H

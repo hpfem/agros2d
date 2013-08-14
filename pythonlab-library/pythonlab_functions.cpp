@@ -42,3 +42,8 @@ void pyMessage(char *str)
 {
     QMessageBox::information(QApplication::activeWindow(), QObject::tr("Script message"), QString(str));
 }
+
+char *pyDatadir()
+{
+    return const_cast<char*>(compatibleFilename(datadir()).toStdString().c_str());
+}

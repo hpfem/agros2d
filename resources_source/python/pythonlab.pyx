@@ -22,6 +22,8 @@ cdef extern from "../../pythonlab-library/pythonlab_functions.h":
 
     char *pyInput(char *str)
     void pyMessage(char *str)
+
+    char *pyDatadir()
     
     
 # version()
@@ -40,3 +42,6 @@ def input(char *str):
 def message(char *str):
     pyMessage(str)
 
+# datadir()
+def datadir():
+    return pyDatadir()
