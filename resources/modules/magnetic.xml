@@ -403,10 +403,10 @@
         <module:expression analysistype="harmonic" axi="1.0" planar="1.0"/>
         <module:expression analysistype="transient" axi="1.0" planar="1.0"/>
       </module:surfaceintegral>
-      <module:surfaceintegral id="magnetic_tensor_x" name="Tensor - x" shortname="Ftx" shortname_html="&lt;i>Ftx&lt;/i>" shortname_latex="F_\mathrm{tx}" unit="N" unit_html="N" unit_latex="N">
+      <module:surfaceintegral id="magnetic_tensor_x" name="Maxwell force - x" shortname="Ftx" shortname_html="&lt;i>Ftx&lt;/i>" shortname_latex="F_\mathrm{tx}" unit="N" unit_html="N" unit_latex="N">
         <module:expression analysistype="steadystate" axi="0.0" planar="tern(SMALL > fabs(ma_mur - 1.0), - 2.0 / (MU0 * ma_mur) * ((-dy1) * (tany * (-dy1) + (-tanx) * dx1) - 0.5 * tany * (dy1*dy1 + dx1*dx1)), 0.0)"/>
       </module:surfaceintegral>
-      <module:surfaceintegral id="magnetic_tensor_y" name="Tensor - y" shortname="Fty" shortname_html="&lt;i>Fty&lt;/i>" shortname_latex="F_\mathrm{ty}" unit="N" unit_html="N" unit_latex="N">
+      <module:surfaceintegral id="magnetic_tensor_y" name="Maxwell force - y" shortname="Fty" shortname_html="&lt;i>Fty&lt;/i>" shortname_latex="F_\mathrm{ty}" unit="N" unit_html="N" unit_latex="N">
         <module:expression analysistype="steadystate" axi="tern(SMALL > fabs(ma_mur - 1.0), - 4.0 * PI * r / (MU0 * ma_mur) * ((dr1 + tern(r > SMALL, value1/r, dr1)) * ((tanz) * (- dz1) + (- tanr) * (dr1 + tern(r > SMALL, value1/r, dr1))) - 0.5 * (- tanr) * ((- dz1)*(- dz1) + (dr1 + tern(r > SMALL, value1/r, dr1))*(dr1 + tern(r > SMALL, value1/r, dr1)))), 0.0)" planar="tern(SMALL > fabs(ma_mur - 1.0), - 2.0 / (MU0 * ma_mur) * (dx1 * (tany * (-dy1) + (-tanx) * dx1) - 0.5 * (-tanx) * (dy1*dy1 + dx1*dx1)), 0.0)"/>
       </module:surfaceintegral>
     </module:surfaceintegrals>
