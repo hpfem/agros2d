@@ -150,7 +150,7 @@ void InfoWidget::showWelcome()
         for (int i = 0; i < qMin(10, m_recentProblemFiles->count()); i++)
         {
             ctemplate::TemplateDictionary *recent = problemInfo.AddSectionDictionary("RECENT_PROBLEM_SECTION");
-            recent->SetValue("PROBLEM_FILENAME", m_recentProblemFiles->at(i).toStdString());
+            recent->SetValue("PROBLEM_FILENAME", QUrl(m_recentProblemFiles->at(i)).toLocalFile().toStdString());
             recent->SetValue("PROBLEM_FILENAME_LABEL", QFileInfo(m_recentProblemFiles->at(i)).absolutePath().replace("/", "/&thinsp;").toStdString());
             recent->SetValue("PROBLEM_BASE", QFileInfo(m_recentProblemFiles->at(i)).baseName().toStdString());
         }
@@ -163,7 +163,7 @@ void InfoWidget::showWelcome()
         for (int i = 0; i < qMin(10, m_recentScriptFiles->count()); i++)
         {
             ctemplate::TemplateDictionary *recent = problemInfo.AddSectionDictionary("RECENT_SCRIPT_SECTION");
-            recent->SetValue("SCRIPT_FILENAME", m_recentScriptFiles->at(i).toStdString());
+            recent->SetValue("SCRIPT_FILENAME", QUrl(m_recentScriptFiles->at(i)).toLocalFile().toStdString());
             recent->SetValue("SCRIPT_FILENAME_LABEL", QFileInfo(m_recentScriptFiles->at(i)).absolutePath().replace("/", "/&thinsp;").toStdString());
             recent->SetValue("SCRIPT_BASE", QFileInfo(m_recentScriptFiles->at(i)).baseName().toStdString());
         }
