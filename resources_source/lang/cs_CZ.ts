@@ -159,7 +159,7 @@
     <message>
         <location filename="../../agros2d-solver/agros_solver.cpp" line="82"/>
         <source>Problem &apos;%1&apos; successfuly loaded</source>
-        <translation>Problem &apos;%1&apos; nebyl zprávně načten</translation>
+        <translation type="unfinished">Problem &apos;%1&apos; nebyl správně načten</translation>
     </message>
     <message>
         <location filename="../../agros2d-solver/agros_solver.cpp" line="89"/>
