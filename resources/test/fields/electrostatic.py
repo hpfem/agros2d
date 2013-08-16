@@ -1,8 +1,7 @@
 import agros2d
 
 class ElectrostaticPlanar(agros2d.Agros2DTestCase):
-    @classmethod
-    def setUpClass(self):  
+    def setUp(self):  
         # model
         problem = agros2d.problem(clear = True)
         problem.coordinate_type = "planar"
@@ -80,8 +79,7 @@ class ElectrostaticPlanar(agros2d.Agros2DTestCase):
         self.value_test("Electric charge", surface_integrals["Q"], 1.048981e-7)
             
 class ElectrostaticAxisymmetric(agros2d.Agros2DTestCase):
-    @classmethod
-    def setUpClass(self):       
+    def setUp(self):       
         # model
         problem = agros2d.problem(clear = True)
         problem.coordinate_type = "axisymmetric"

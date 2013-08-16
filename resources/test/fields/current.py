@@ -1,8 +1,7 @@
 import agros2d
 
 class CurrentPlanar(agros2d.Agros2DTestCase):
-    @classmethod
-    def setUpClass(self):  
+    def setUp(self):  
         # model
         problem = agros2d.problem(clear = True)
         problem.coordinate_type = "planar"
@@ -72,8 +71,7 @@ class CurrentPlanar(agros2d.Agros2DTestCase):
         self.value_test("Current", surface["Ir"], 3629.425713)
         
 class CurrentAxisymmetric(agros2d.Agros2DTestCase):
-    @classmethod
-    def setUpClass(self):  
+    def setUp(self):  
         # model
         problem = agros2d.problem(clear = True)
         problem.coordinate_type = "axisymmetric"

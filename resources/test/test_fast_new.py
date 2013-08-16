@@ -20,6 +20,17 @@ suite.addTest(ut.TestLoader().loadTestsFromTestCase(current.CurrentPlanar))
 suite.addTest(ut.TestLoader().loadTestsFromTestCase(current.CurrentAxisymmetric))
 
 
+
+# adaptivity
+sys.path.append("adaptivity")
+
+import adaptivity
+
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(adaptivity.AdaptivityElectrostatic))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(adaptivity.AdaptivityAcoustic))
+
+
+
 # script
 sys.path.append("script")
 
@@ -38,10 +49,6 @@ suite.run(result)
 #from test import Test
 
 #test_fast = Test(error_file='test_fast.err')
-
-# current field
-#test_fast.add("fields/test_current_planar.py")
-#test_fast.add("fields/test_current_axisymmetric.py")
 
 # magnetic field
 #test_fast.add("fields/test_magnetic_steady_planar.py")
@@ -86,13 +93,6 @@ suite.run(result)
 # particle tracing
 #test_fast.add("particle_tracing/test_particle_tracing_planar.py")
 #test_fast.add("particle_tracing/test_particle_tracing_axisymmetric.py")
-
-# adaptivity
-#test_fast.add("adaptivity/test_adaptivity_acoustic.py")
-#test_fast.add("adaptivity/test_adaptivity_electrostatic.py")
-
-# scripting
-#test_fast.add("test_script.py")
 
 # internal
 #test_fast.add("internal/test_matrix_solvers.py")

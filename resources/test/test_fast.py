@@ -2,14 +2,6 @@ from test import Test
 
 test_fast = Test(error_file='test_fast.err')
 
-# electrostatic
-test_fast.add("fields/test_electrostatic_planar.py")
-test_fast.add("fields/test_electrostatic_axisymmetric.py")
-
-# current field
-test_fast.add("fields/test_current_planar.py")
-test_fast.add("fields/test_current_axisymmetric.py")
-
 # magnetic field
 test_fast.add("fields/test_magnetic_steady_planar.py")
 test_fast.add("fields/test_magnetic_steady_axisymmetric.py")
@@ -54,14 +46,7 @@ test_fast.add("coupled_problems/test_cf_4_transient_planar.py")
 test_fast.add("particle_tracing/test_particle_tracing_planar.py")
 test_fast.add("particle_tracing/test_particle_tracing_axisymmetric.py")
 
-# adaptivity
-test_fast.add("adaptivity/test_adaptivity_acoustic.py")
-test_fast.add("adaptivity/test_adaptivity_electrostatic.py")
-
-# scripting
-test_fast.add("test_script.py")
-
 # internal
-test_fast.add("internal/test_matrix_solvers.py")
+#test_fast.add("internal/test_matrix_solvers.py")
 
 test_fast.run()
