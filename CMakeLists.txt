@@ -5,6 +5,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 # Debug yes / no.
 SET(AGROS_DEBUG NO)
 SET(WITH_QT5 NO)
+ADD_DEFINITIONS(-DQT_NO_DEBUG)
 
 # Path to Qt5. Should be before CMake.vars to be able to change it.
 IF(WITH_QT5)
