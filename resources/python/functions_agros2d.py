@@ -22,6 +22,42 @@ def test(text, value, normal, error = 0.03):
 
 setattr(agros2d, "test", test)
 
+import unittest as ut
+
+class Agros2DTestCase(ut.TestCase):
+    def __init__(self, methodName='runTest'):
+        ut.TestCase.__init__(self, methodName)
+
+    def value_test(self, text, value, normal, error = 0.03):
+        if ((normal == 0.0) and (abs(value) < 1e-14)):
+            self.assertTrue(True)
+        test = abs((value - normal)/value) < error
+        str = str = "{0}: Agros2D = {1}, correct = {2}, error = {3:.4f} %".format(text, value, normal, abs(value - normal)/value*100)
+        self.assertTrue(test, str)
+
+setattr(agros2d, "Agros2DTestCase", Agros2DTestCase)
+
+class Agros2DTestResult(ut.TestResult):
+    def __init__(self):
+        ut.TestResult.__init__(self)
+
+    def startTest(self, test):
+        ut.TestResult.startTest(self, test)
+
+    def addSuccess(self, test):
+        ut.TestResult.addSuccess(self, test)
+        print('{0} - OK'.format(test.id()))
+
+    def addError(self, test, err):
+        ut.TestResult.addError(self, test, err)
+        print('{0} - ERROR ({1})'.format(test.id(), err[1]))
+
+    def addFailure(self, test, err):
+        ut.TestResult.addFailure(self, test, err)
+        print('{0} - FAILURE ({1})'.format(test.id(), err[1]))
+
+setattr(agros2d, "Agros2DTestResult", Agros2DTestResult)
+
 def agros2d_material_eval(keys):
     values = []
     for i in range(len(keys)):

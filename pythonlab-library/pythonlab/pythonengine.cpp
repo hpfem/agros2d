@@ -46,7 +46,7 @@ PyObject* pythonStdout(PyObject* self, PyObject* pArgs)
     char *str = NULL;
     if (PyArg_ParseTuple(pArgs, "s", &str))
     {
-        emit currentPythonEngine()->pythonShowMessageCommand(QString(str) + "\n");
+        emit currentPythonEngine()->pythonShowMessageCommand(QString(str));
         Py_RETURN_NONE;
     }
     return NULL;
@@ -228,12 +228,20 @@ void PythonEngine::init()
     PyEval_InitThreads();
     Py_Initialize();
 
+    // args
+    int argc;
+    char **argv;
+    PySys_SetArgv(argc, argv);
+
     // read pythonlab functions
     addFunctions(readFileContent(datadir() + "/resources/python/functions_pythonlab.py"));
     addCustomFunctions();
 
-    m_dict = PyDict_New();
-    PyDict_SetItemString(m_dict, "__builtins__", PyEval_GetBuiltins());
+    // m_dict = PyDict_New();
+    // PyDict_SetItemString(m_dict, "__builtins__", PyEval_GetBuiltins());
+
+    PyObject *main = PyImport_ImportModule("__main__");
+    m_dict = PyModule_GetDict(main);
 
     // init engine extensions
     Py_InitModule("pythonlab", pythonEngineFuntions);
@@ -254,8 +262,7 @@ void PythonEngine::abortScript()
 
 void PythonEngine::pythonShowMessageCommand(const QString &message)
 {
-    if (message != "\n\n")
-        emit pythonShowMessage(message);
+    emit pythonShowMessage(message);
 }
 
 void PythonEngine::pythonShowImageCommand(const QString &fileName, int width, int height)

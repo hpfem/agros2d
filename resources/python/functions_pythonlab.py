@@ -103,5 +103,11 @@ class CatchOutErr:
     def write(self, str):
         pythonlab.__stdout__(str)
 
+    def writeln(self, str):
+        pythonlab.__stdout__(str + "\n")
+
+    def flush(self):
+        pass
+
 sys.stdout = CatchOutErr()
 sys.stderr = CatchOutErr()

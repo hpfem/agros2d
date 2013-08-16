@@ -273,12 +273,12 @@ QString compatibleFilename(const QString &fileName)
 QString datadir()
 {
     // windows and local installation
-    if (QFile::exists(QApplication::applicationDirPath() + "/resources/python/functions_pythonlab.py"))
-        return QApplication::applicationDirPath();
+    if (QFile::exists(QCoreApplication::applicationDirPath() + "/resources/python/functions_pythonlab.py"))
+        return QCoreApplication::applicationDirPath();
 
     // linux
-    if (QFile::exists(QApplication::applicationDirPath() + "/../share/agros2d/resources/python/functions_pythonlab.py"))
-        return QApplication::applicationDirPath() + "/../share/agros2d";
+    if (QFile::exists(QCoreApplication::applicationDirPath() + "/../share/agros2d/resources/python/functions_pythonlab.py"))
+        return QCoreApplication::applicationDirPath() + "/../share/agros2d";
 
     qCritical() << "Datadir not found.";
     exit(1);

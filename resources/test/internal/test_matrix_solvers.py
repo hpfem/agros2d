@@ -54,6 +54,9 @@ def model(solver):
     a2d.view.zoom_best_fit()
     problem.solve()
     
+    print (electrostatic.filename_matrix())
+    x
+    
     return electrostatic.filename_matrix(), electrostatic.filename_rhs()
     
 def analyse_matrix_and_rhs(filename_matrix, filename_rhs):  

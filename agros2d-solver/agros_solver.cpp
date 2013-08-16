@@ -147,10 +147,10 @@ void AgrosSolver::runScript()
 
 void AgrosSolver::stdOut(const QString &str)
 {
-    std::cout << str.toStdString() << std::endl;
+    std::cout << str.toStdString();
 }
 
 void AgrosSolver::stdHtml(const QString &str)
 {
-    std::cout << str.toStdString() << std::endl;
+    std::cout << str.toStdString();
 }

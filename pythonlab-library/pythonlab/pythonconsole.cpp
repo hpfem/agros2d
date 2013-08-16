@@ -88,10 +88,8 @@ void PythonScriptingConsole::stdClear()
 }
 
 void PythonScriptingConsole::stdOut(const QString& str)
-{
-    QStringList strList = str.trimmed().split("\n");
-    for (int i = 0; i < strList.count(); i++)
-        consoleMessage(strList[i], Qt::darkGreen);
+{    
+    consoleMessage(str, Qt::darkGreen);
 }
 
 void PythonScriptingConsole::stdHtml(const QString& str)
@@ -102,9 +100,7 @@ void PythonScriptingConsole::stdHtml(const QString& str)
 
 void PythonScriptingConsole::stdErr(const QString& str)
 {
-    QStringList strList = str.split("\n");
-    for (int i = 0; i < strList.count(); i++)
-        consoleMessage(strList[i], Qt::red);
+    consoleMessage(str, Qt::red);
 }
 
 void PythonScriptingConsole::stdImage(const QString &fileName, int width, int height)
@@ -227,7 +223,7 @@ void PythonScriptingConsole::executeCode(const QString& code)
         QSettings settings;
         if (settings.value("PythonEditorWidget/PrintStacktrace", true).toBool())
         {
-            stdErr("\nStacktrace:");
+            stdErr("\nStacktrace:\n");
             stdErr(result.traceback());
         }
     }
@@ -259,6 +255,8 @@ void PythonScriptingConsole::connectStdOut(const QString &currentPath)
         m_currentPath = currentPath;
     else
         m_currentPath = "";
+
+    append(QString());
 
     connect(pythonEngine, SIGNAL(pythonClear()), this, SLOT(stdClear()));
     connect(pythonEngine, SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
@@ -679,16 +677,23 @@ void PythonScriptingConsole::insertFromMimeData(const QMimeData *source)
 
 void PythonScriptingConsole::consoleMessage(const QString &message, const QColor& color)
 {
-    append(QString());
-
-    QString str;
-
-    str = "<span style=\"color: " + color.name() + ";\">";
+    QString str = "<span style=\"color: " + color.name() + ";\">";
+    // QStringList strList = message.split("\n", QString::SkipEmptyParts);
+    // for (int i = 0; i < strList.count(); i++)
+    for (int i = 0; i < message.count(); i++)
+    {
 #if QT_VERSION < 0x050000
-    str += Qt::escape(message);
+        str += Qt::escape(message[i]);
 #else
-    str += QString(message).toHtmlEscaped();
+        str += QString(message[i]).toHtmlEscaped();
 #endif
+        if (message[i] == '\n')
+        {
+            str += "</span>";
+            str += "<br/>";
+            str += "<span style=\"color: " + color.name() + ";\">";
+        }
+    }
     str += "</span>";
 
     QTextCursor textCursor = this->textCursor();

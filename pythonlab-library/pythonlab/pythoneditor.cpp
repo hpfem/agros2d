@@ -799,7 +799,7 @@ void PythonEditorDialog::doRunPython()
         QSettings settings;
         if (settings.value("PythonEditorWidget/PrintStacktrace", true).toBool())
         {
-            consoleView->console()->stdErr("\nStacktrace:");
+            consoleView->console()->stdErr("\nStacktrace:\n");
             consoleView->console()->stdErr(result.traceback());
         }
 
