@@ -4,14 +4,19 @@ import unittest as ut
 import sys
 sys.path.append("fields")
 
-import electrostatics
+import electrostatic
+import current
         
 suite = ut.TestSuite()
 result = a2d.Agros2DTestResult()
 
 # electrostatic
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(electrostatics.ElectrostaticAxisymmetric))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(electrostatics.ElectrostaticPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(electrostatic.ElectrostaticPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(electrostatic.ElectrostaticAxisymmetric))
+
+# current field
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(current.CurrentPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(current.CurrentAxisymmetric))
 
 # run tests
 suite.run(result)

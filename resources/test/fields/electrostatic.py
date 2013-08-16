@@ -59,34 +59,26 @@ class ElectrostaticPlanar(agros2d.Agros2DTestCase):
         # solve problem
         problem.solve()
 
-    def test_local_values(self):
+    def test_values(self):
         # point value
         local_values = self.electrostatic.local_values(13.257584, 11.117738)
-        testV = agros2d.test("Scalar potential", local_values["V"], 1111.544825)
-        testE = agros2d.test("Electric field", local_values["E"], 111.954358)
-        testEx = agros2d.test("Electric field - x", local_values["Ex"], 24.659054)
-        testEy = agros2d.test("Electric field - y", local_values["Ey"], -109.204896)
-        testD = agros2d.test("Displacement", local_values["D"], 9.912649e-10)
-        testDx = agros2d.test("Displacement - x", local_values["Dx"], 2.183359e-10)
-        testDy = agros2d.test("Displacement - y", local_values["Dy"], -9.669207e-10)
-        testwe = agros2d.test("Energy density", local_values["we"], 5.548821e-8)
-        
-        self.assertTrue(testV and testE and testEx and testEy and testD and testDx and testDy and testwe)
-        
-    def test_surface_integrals(self):        
-        # surface integral
-        surface_integrals = self.electrostatic.surface_integrals([0, 1, 2, 3])
-        testQ = agros2d.test("Electric charge", surface_integrals["Q"], 1.048981e-7)
-        
-        self.assertTrue(testQ)
-        
-    def test_volume_integrals(self):
+        self.value_test("Scalar potential", local_values["V"], 1111.544825)
+        self.value_test("Electric field", local_values["E"], 111.954358)
+        self.value_test("Electric field - x", local_values["Ex"], 24.659054)
+        self.value_test("Electric field - y", local_values["Ey"], -109.204896)
+        self.value_test("Displacement", local_values["D"], 9.912649e-10)
+        self.value_test("Displacement - x", local_values["Dx"], 2.183359e-10)
+        self.value_test("Displacement - y", local_values["Dy"], -9.669207e-10)
+        self.value_test("Energy density", local_values["we"], 5.548821e-8)
+  
         # volume integral
         volume_integrals = self.electrostatic.volume_integrals([1])
-        testEnergy = agros2d.test("Energy", volume_integrals["We"], 1.307484e-7)
-        
-        self.assertTrue(testEnergy)
-
+        self.value_test("Energy", volume_integrals["We"], 1.307484e-7)
+            
+        # surface integral
+        surface_integrals = self.electrostatic.surface_integrals([0, 1, 2, 3])
+        self.value_test("Electric charge", surface_integrals["Q"], 1.048981e-7)
+            
 class ElectrostaticAxisymmetric(agros2d.Agros2DTestCase):
     @classmethod
     def setUpClass(self):       
@@ -141,7 +133,7 @@ class ElectrostaticAxisymmetric(agros2d.Agros2DTestCase):
         agros2d.view.zoom_best_fit()
         problem.solve()
 
-    def test_local_values(self):
+    def test_values(self):
         # point value
         point = self.electrostatic.local_values(0.0255872, 0.0738211)
         
@@ -154,12 +146,10 @@ class ElectrostaticAxisymmetric(agros2d.Agros2DTestCase):
         self.value_test("Displacement - z", point["Dz"], 1.040894e-8)
         self.value_test("Energy density", point["we"], 1.01087e-6)
                 
-    def test_volume_integrals(self):
         # volume integral
         volume = self.electrostatic.volume_integrals([0, 1, 2])
         self.value_test("Energy", volume["We"], 1.799349e-8)
     
-    def test_surface_integrals(self):
         # surface integral
         surface = self.electrostatic.surface_integrals([1, 12])
         self.value_test("Electric charge", surface["Q"], -1.291778e-9)
