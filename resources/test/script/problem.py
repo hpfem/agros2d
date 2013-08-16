@@ -1,7 +1,6 @@
 import agros2d as a2d
-from unittest import TestCase
 
-class TestProblem(TestCase):
+class TestProblem(a2d.Agros2DTestCase):
     def setUp(self):
         self.problem = a2d.problem(clear = True)
 
@@ -84,3 +83,11 @@ class TestProblem(TestCase):
     def test_set_wrong_time_steps(self):
         with self.assertRaises(IndexError):
             self.problem.time_steps = 0
+            
+if __name__ == '__main__':        
+    import unittest as ut
+    
+    suite = ut.TestSuite()
+    result = a2d.Agros2DTestResult()
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblem))
+    suite.run(result)

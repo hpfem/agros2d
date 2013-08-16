@@ -678,8 +678,6 @@ void PythonScriptingConsole::insertFromMimeData(const QMimeData *source)
 void PythonScriptingConsole::consoleMessage(const QString &message, const QColor& color)
 {
     QString str = "<span style=\"color: " + color.name() + ";\">";
-    // QStringList strList = message.split("\n", QString::SkipEmptyParts);
-    // for (int i = 0; i < strList.count(); i++)
     for (int i = 0; i < message.count(); i++)
     {
 #if QT_VERSION < 0x050000
@@ -699,6 +697,8 @@ void PythonScriptingConsole::consoleMessage(const QString &message, const QColor
     QTextCursor textCursor = this->textCursor();
     textCursor.movePosition(QTextCursor::End);
     textCursor.insertHtml(str);
+    textCursor.movePosition(QTextCursor::End);
+    setTextCursor(textCursor);
 
     // repaint widget
     repaint();

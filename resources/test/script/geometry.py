@@ -1,9 +1,7 @@
 import agros2d as a2d
-from unittest import TestCase
-
 from math import pi, sqrt
 
-class TestGeometry(TestCase):
+class TestGeometry(a2d.Agros2DTestCase):
     def setUp(self):
         self.problem = a2d.problem(clear = True)
         self.geometry = a2d.geometry
@@ -31,7 +29,7 @@ class TestGeometry(TestCase):
     def test_add_node(self):
         self.assertEqual(self.geometry.add_node(0, 0), 0)
 
-    def test_add_node_with_negativ_radial_component(self):
+    def test_add_node_negative_comp(self):
         self.problem.coordinate_type = 'axisymmetric'
 
         with self.assertRaises(IndexError):
@@ -47,7 +45,7 @@ class TestGeometry(TestCase):
     def test_add_edge(self):
         self.assertEqual(self.geometry.add_edge(0, 0, 1, 1), 0)
 
-    def test_add_edge_with_negativ_radial_component(self):
+    def test_add_edge_negative_comp(self):
         self.problem.coordinate_type = 'axisymmetric'
 
         with self.assertRaises(IndexError):
@@ -142,7 +140,7 @@ class TestGeometry(TestCase):
     def test_modify_label(self):
         pass
 
-class TestGeometryTransformations(TestCase):
+class TestGeometryTransformations(a2d.Agros2DTestCase):
     def model(self):
         self.problem = a2d.problem(clear = True)
 
@@ -187,3 +185,12 @@ class TestGeometryTransformations(TestCase):
 
         self.problem.solve()
         self.assertAlmostEqual(self.electrostatic.volume_integrals([0])['S'], (self.a * scale) * (self.b * scale))
+        
+if __name__ == '__main__':        
+    import unittest as ut
+    
+    suite = ut.TestSuite()
+    result = a2d.Agros2DTestResult()
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestGeometry))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestGeometryTransformations))
+    suite.run(result)

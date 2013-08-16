@@ -1,28 +1,20 @@
-from unittest import TestLoader, TestResult
-
+import agros2d as a2d
+import unittest as ut
 import sys
+
+suite = ut.TestSuite()
+result = a2d.Agros2DTestResult()
+
 sys.path.append("script")
 
-import test_script_problem
+import problem
+import geometry
+import benchmark
 
-import test_script_geometry
-import benchmark_script_geometry
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(problem.TestProblem))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(geometry.TestGeometry))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(geometry.TestGeometryTransformations))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(benchmark.BenchmarkGeometryTransformation))
 
-result = TestResult()
-
-""" problem """
-TestLoader().loadTestsFromTestCase(test_script_problem.TestProblem).run(result)
-print('Basic problem test: {0}'.format(result.wasSuccessful()))
-
-""" geometry """
-TestLoader().loadTestsFromTestCase(test_script_geometry.TestGeometry).run(result)
-print('Basic geometry test: {0}'.format(result.wasSuccessful()))
-
-TestLoader().loadTestsFromTestCase(test_script_geometry.TestGeometryTransformations).run(result)
-print('Geometry transformations test: {0}'.format(result.wasSuccessful()))
-
-TestLoader().loadTestsFromTestCase(benchmark_script_geometry.BenchmarkGeometryTransformation).run(result)
-print('Geometry benchmark: {0}'.format(result.wasSuccessful()))
-
-if (result.wasSuccessful() != True):
-    print(result.errors)
+# run tests
+suite.run(result)
