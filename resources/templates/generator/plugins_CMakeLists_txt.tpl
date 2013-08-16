@@ -5,7 +5,21 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../hermes/cmake)
 SET(AGROS_DEBUG NO)
 SET(WITH_QT5 NO)
 
+# Path to Qt5. Should be before CMake.vars to be able to change it.
+IF(WITH_QT5)
+  IF(WIN32)
+    SET(CMAKE_PREFIX_PATH "C:\\Qt\\Qt5.0.2\\5.0.2\\msvc2010_opengl\\")
+  ENDIF()
+ENDIF()
+
 SET(CMAKE_AGROS_DIRECTORY "${CMAKE_HOME_DIRECTORY}/../")
+
+# For Win64
+if(${CMAKE_CL_64})
+  set(WIN64 YES)
+else(${CMAKE_CL_64})
+  set(WIN64 NO)
+endif(${CMAKE_CL_64})
 
 # Allow to override the default values in CMake.vars:
 include(../CMake.vars OPTIONAL)
@@ -97,29 +111,34 @@ INCLUDE(${CMAKE_AGROS_DIRECTORY}/hermes/CMake.vars)
 SET(CMAKE_MODULE_PATH ${CMAKE_AGROS_DIRECTORY}/hermes/cmake)
 
 # Look for UMFPACK, AND MUMPS
-FIND_PACKAGE(UMFPACK REQUIRED)
-INCLUDE_DIRECTORIES(${UMFPACK_INCLUDE_DIRS})
-FIND_PACKAGE(MUMPS REQUIRED)
+IF(WITH_UMFPACK)
+  FIND_PACKAGE(UMFPACK REQUIRED)
+  INCLUDE_DIRECTORIES(${UMFPACK_INCLUDE_DIRS})
+ENDIF()
 
-if(MSVC)
-  find_package(WINBLAS REQUIRED)
-else(MSVC)
-  if (NOT LAPACK_FOUND)
-    enable_language(Fortran)
-    find_package(LAPACK REQUIRED)
-    
-    # If no error occured, LAPACK library has been found. Save the path to
-    # it to cache, so that it will not be searched for during next 'cmake .'
-    set(LAPACK_LIBRARIES  ${LAPACK_LIBRARIES}
-            CACHE STRING  "Path to LAPACK/BLAS libraries.")
-    set(LAPACK_FOUND      YES
-            CACHE STRING  "Have LAPACK/BLAS libraries been found?")
-  endif (NOT LAPACK_FOUND)
+IF(WITH_MUMPS)
+  FIND_PACKAGE(MUMPS REQUIRED)
   
-  add_definitions(-DWITH_BLAS)
-endif(MSVC)
+  IF(MSVC)
+    FIND_PACKAGE(WINBLAS REQUIRED)
+  ELSE(MSVC)
+    IF (NOT LAPACK_FOUND)
+      ENABLE_LANGUAGE(Fortran)
+      FIND_PACKAGE(LAPACK REQUIRED)
+      
+      # If no error occured, LAPACK library has been found. Save the path to
+      # it to cache, so that it will not be searched for during next 'cmake .'
+      SET(LAPACK_LIBRARIES  ${LAPACK_LIBRARIES}
+              CACHE STRING  "Path to LAPACK/BLAS libraries.")
+      SET(LAPACK_FOUND      YES
+              CACHE STRING  "Have LAPACK/BLAS libraries been found?")
+    ENDIF (NOT LAPACK_FOUND)
+    
+    ADD_DEFINITIONS(-DWITH_BLAS)
+  ENDIF(MSVC)
+ENDIF()
 
-set(MUMPS_LIBRARIES ${MUMPS_CPLX_LIBRARIES})
+SET(MUMPS_LIBRARIES ${MUMPS_CPLX_LIBRARIES})
 LIST(APPEND MUMPS_LIBRARIES ${MUMPS_REAL_LIBRARIES})
 INCLUDE_DIRECTORIES(${MUMPS_INCLUDE_DIR})
 

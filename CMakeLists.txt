@@ -6,6 +6,13 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 SET(AGROS_DEBUG NO)
 SET(WITH_QT5 NO)
 
+# Path to Qt5. Should be before CMake.vars to be able to change it.
+IF(WITH_QT5)
+  IF(WIN32)
+    SET(CMAKE_PREFIX_PATH "C:\\Qt\\Qt5.0.2\\5.0.2\\msvc2010_opengl\\")
+  ENDIF()
+ENDIF()
+
 # Allow to override the default values in CMake.vars:
 INCLUDE(CMake.vars OPTIONAL)
 
