@@ -22,13 +22,13 @@ INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/quazip)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/paralution/src)
 
 # languages
-message("Translations")
+# message("Translations")
 FILE(GLOB files "${CMAKE_HOME_DIRECTORY}/resources_source/lang/*.ts")
 foreach(LANGFILE ${files})
   GET_FILENAME_COMPONENT(basefile ${LANGFILE} NAME_WE)
   add_custom_target(${basefile} ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/lang/${basefile}.ts ${CMAKE_HOME_DIRECTORY}/resources/lang/${basefile}.qm)
 
-  message("\tlrelease ${basefile}")
+  # message("\tlrelease ${basefile}")
 
   ADD_CUSTOM_COMMAND(
         SOURCE    ${LANGFILE}
@@ -42,13 +42,13 @@ foreach(LANGFILE ${files})
 endforeach()
 
 # XSDCXX
-message("XML cpp/h files")
+# message("XML cpp/h files")
 FILE(GLOB files "${CMAKE_HOME_DIRECTORY}/resources/xsd/*.xsd")
 foreach(XSD_FILE ${files})
   GET_FILENAME_COMPONENT(basefile ${XSD_FILE} NAME_WE)
   add_custom_target(${basefile} ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.cpp ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.h)
 
-  message("\txsdcxx ${basefile}")
+  # message("\txsdcxx ${basefile}")
 
   ADD_CUSTOM_COMMAND(
         COMMAND  ${XSD_BIN} ARGS cxx-tree --generate-ostream --hxx-suffix .h --cxx-suffix .cpp --root-element-first --generate-polymorphic --output-dir ${CMAKE_HOME_DIRECTORY}/resources_source/classes --generate-serialization ${XSD_FILE}
@@ -56,8 +56,8 @@ foreach(XSD_FILE ${files})
 endforeach()
 
 # cython
-message("Cython files - Agros2D")
-message("\tcython agros2d.pyx")
+# message("Cython files - Agros2D")
+# message("\tcython agros2d.pyx")
 add_custom_target(CYTHON_AGROS2D ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
 
 IF(WIN32)

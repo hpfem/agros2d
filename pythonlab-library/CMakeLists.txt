@@ -5,8 +5,8 @@ INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/qtsingleapplication)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/util)
 
 # cython
-message("Cython files - PythonLab")
-message("\tcython pythonlab.pyx")
+# message("Cython files - PythonLab")
+# message("\tcython pythonlab.pyx")
 add_custom_target(CYTHON_PYTHONLAB ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp)
 
 IF(WIN32)
