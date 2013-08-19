@@ -680,7 +680,7 @@ namespace Hermes
     }
 
     template<>
-    HERMES_API SparseMatrix<std::complex<double> >*     create_matrix(bool use_direct_solver)
+    HERMES_API SparseMatrix<std::complex<double> >* create_matrix(bool use_direct_solver)
     {
       switch (use_direct_solver ? Hermes::HermesCommonApi.get_integral_param_value(Hermes::directMatrixSolverType) : Hermes::HermesCommonApi.get_integral_param_value(Hermes::matrixSolverType))
       {
