@@ -10,8 +10,11 @@ sys.path.append("fields")
 
 import electrostatic
 import current
+import elasticity
+import flow
+import acoustic
 
-# electrostatic
+# electrostatic field
 suite.addTest(ut.TestLoader().loadTestsFromTestCase(electrostatic.ElectrostaticPlanar))
 suite.addTest(ut.TestLoader().loadTestsFromTestCase(electrostatic.ElectrostaticAxisymmetric))
 
@@ -19,15 +22,27 @@ suite.addTest(ut.TestLoader().loadTestsFromTestCase(electrostatic.ElectrostaticA
 suite.addTest(ut.TestLoader().loadTestsFromTestCase(current.CurrentPlanar))
 suite.addTest(ut.TestLoader().loadTestsFromTestCase(current.CurrentAxisymmetric))
 
+# elasticity
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(elasticity.ElasticityPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(elasticity.ElasticityAxisymmetric))
 
+# incompressible flow
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(flow.FlowPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(flow.FlowAxisymmetric))
+
+# acoustic field
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(acoustic.AcousticPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(acoustic.AcousticAxisymmetric))
+#suite.addTest(ut.TestLoader().loadTestsFromTestCase(acoustic.AcousticTransientPlanar))
+#suite.addTest(ut.TestLoader().loadTestsFromTestCase(acoustic.AcousticTransientAxisymmetric))  
 
 # adaptivity
 sys.path.append("adaptivity")
 
 import adaptivity
 
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(adaptivity.AdaptivityElectrostatic))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(adaptivity.AdaptivityAcoustic))
+#suite.addTest(ut.TestLoader().loadTestsFromTestCase(adaptivity.AdaptivityElectrostatic))
+#suite.addTest(ut.TestLoader().loadTestsFromTestCase(adaptivity.AdaptivityAcoustic))
 
 
 

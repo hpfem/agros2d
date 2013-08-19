@@ -1,9 +1,7 @@
 # import libraries
 import pythonlab
 import agros2d
-import sys
 from math import *
-from time import time
 
 # interactive help hack
 __pydoc_help__ = help
@@ -42,16 +40,20 @@ class Agros2DTestResult(ut.TestResult):
     def __init__(self):
         ut.TestResult.__init__(self)
 
-    def print_row(self, text, time, res):
+    def print_row(self, text, timedif, res):
         print("{0}".format(text.ljust(60, ".")) +
-              "{0:07.2f}".format(time).rjust(15, " ") + " ms " +
+              "{0:08.2f}".format(timedif).rjust(15, " ") + " ms " +
               "{0}".format(res.rjust(10, ".")))
 
     def startTest(self, test):
+        from time import time
+        
         ut.TestResult.startTest(self, test)
         self.time = time()
 
     def addSuccess(self, test):
+        from time import time
+        
         ut.TestResult.addSuccess(self, test)
         self.time -= time()
         self.print_row(test.id(), -self.time * 1000, "OK")

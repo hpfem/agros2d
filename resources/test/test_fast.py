@@ -16,14 +16,6 @@ test_fast.add("fields/test_heat_transfer_steady_planar_nonlin.py")
 test_fast.add("fields/test_heat_transfer_steady_axisymmetric.py")
 test_fast.add("fields/test_heat_transfer_transient_axisymmetric_benchmark.py") # benchmark
 
-# structural mechanics
-test_fast.add("fields/test_elasticity_planar.py")
-test_fast.add("fields/test_elasticity_axisymmetric.py")
-
-# acoustic
-test_fast.add("fields/test_acoustic_planar.py") 
-test_fast.add("fields/test_acoustic_axisymmetric.py")
-
 # electromagnetic wave - TE
 test_fast.add("fields/test_rf_te_planar.py")
 test_fast.add("fields/test_rf_te_axisymmetric.py")
@@ -31,10 +23,6 @@ test_fast.add("fields/test_rf_te_axisymmetric.py")
 # electromagnetic wave - TM
 test_fast.add("fields/test_rf_tm_planar.py")
 test_fast.add("fields/test_rf_tm_axisymmetric.py")
-
-# incompressible flow
-test_fast.add("fields/test_flow_steady_planar_nonlin.py") 
-test_fast.add("fields/test_flow_steady_axisymmetric_nonlin.py") 
 
 # coupled problems
 test_fast.add("coupled_problems/test_cf_1_planar.py")
