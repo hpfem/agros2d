@@ -98,8 +98,8 @@ testpj_1 = a2d.test("Losses density - 1 ", point1["pj"], 3.9578e7)
 
 #ztraty v comsolu jsou i zaporne, co to znamena?
 
-testFx_1 = a2d.test("Lorentz force - 1 - x", point1["Flx"], -2.30979e6)
-testFy_1 = a2d.test("Lorentz force - 1 - y", point1["Fly"], -2.60749e6)
+testFx_1 = a2d.test("Lorentz force point - 1 - x", point1["Flx"], -2.30979e6)
+testFy_1 = a2d.test("Lorentz force point - 1 - y", point1["Fly"], -2.60749e6)
 
 testBx_1_real = a2d.test("Flux density - 1 - x - real", point1["Brx"], -0.07714)
 testBx_1_imag = a2d.test("Flux density - 1 - x - imag", point1["Bix"], -0.01711)
@@ -122,8 +122,8 @@ testI_1_imag = a2d.test("Current - 1 - imag", volume1["Ii"], 1e4)
 
 testWm = a2d.test("Energy - 1", volume1["Wm"], 2.24807)
 testPj = a2d.test("Losses - 1", volume1["Pj"], 8029.097)
-testFLx = a2d.test("Lorentz force - 1 - x", volume1["Flx"], 265.14584)
-testFLy = a2d.test("Lorentz force - 1 - y", volume1["Fly"], 8.32792)
+testFLx = a2d.test("Lorentz force integral - 1 - x", volume1["Flx"], 265.14584)
+testFLy = a2d.test("Lorentz force integral - 1 - y", volume1["Fly"], 8.32792)
 
 
 #Area 2
