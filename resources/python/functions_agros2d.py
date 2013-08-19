@@ -30,6 +30,7 @@ class Agros2DTestCase(ut.TestCase):
     def value_test(self, text, value, normal, error = 0.03):
         if ((normal == 0.0) and (abs(value) < 1e-14)):
             self.assertTrue(True)
+            return
         test = abs((value - normal)/value) < error
         str = str = "{0}: Agros2D = {1}, correct = {2}, error = {3:.4f} %".format(text, value, normal, abs(value - normal)/value*100)
         self.assertTrue(test, str)
@@ -40,32 +41,31 @@ class Agros2DTestResult(ut.TestResult):
     def __init__(self):
         ut.TestResult.__init__(self)
 
-    def print_row(self, text, timedif, res):
-        print("{0}".format(text.ljust(60, ".")) +
-              "{0:08.2f}".format(timedif).rjust(15, " ") + " ms " +
-              "{0}".format(res.rjust(10, ".")))
-
     def startTest(self, test):
         from time import time
         
         ut.TestResult.startTest(self, test)
         self.time = time()
+        print("{0}".format(test.id().ljust(60, "."))),
 
     def addSuccess(self, test):
         from time import time
         
         ut.TestResult.addSuccess(self, test)
         self.time -= time()
-        self.print_row(test.id(), -self.time * 1000, "OK")
+        print("{0:08.2f}".format(-self.time * 1000).rjust(15, " ") + " ms " +
+              "{0}".format("OK".rjust(10, ".")))
 
     def addError(self, test, err):
         ut.TestResult.addError(self, test, err)
-        self.print_row(test.id(), 0, "ERROR")
+        print("{0:08.2f}".format(0).rjust(15, " ") + " ms " +
+              "{0}".format("ERROR".rjust(10, ".")))        
         print(err[1])
 
     def addFailure(self, test, err):
         ut.TestResult.addFailure(self, test, err)
-        self.print_row(test.id(), 0, "FAILURE")
+        print("{0:08.2f}".format(0).rjust(15, " ") + " ms " +
+              "{0}".format("FAILURE".rjust(10, ".")))        
         print(err[1])       
 
 setattr(agros2d, "Agros2DTestResult", Agros2DTestResult)

@@ -7,12 +7,13 @@ result = a2d.Agros2DTestResult()
 
 # fields
 sys.path.append("fields")
-
 import electrostatic
 import current
 import elasticity
 import flow
 import acoustic
+import heat
+import magnetic
 
 # electrostatic field
 suite.addTest(ut.TestLoader().loadTestsFromTestCase(electrostatic.ElectrostaticPlanar))
@@ -36,19 +37,46 @@ suite.addTest(ut.TestLoader().loadTestsFromTestCase(acoustic.AcousticAxisymmetri
 #suite.addTest(ut.TestLoader().loadTestsFromTestCase(acoustic.AcousticTransientPlanar))
 #suite.addTest(ut.TestLoader().loadTestsFromTestCase(acoustic.AcousticTransientAxisymmetric))  
 
+# heat transfer
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(heat.HeatPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(heat.HeatAxisymmetric))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(heat.HeatNonlinPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(heat.HeatTransientAxisymmetric))
+
+# magnetic field
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(magnetic.MagneticPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(magnetic.MagneticAxisymmetric))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(magnetic.MagneticHarmonicPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(magnetic.MagneticHarmonicAxisymmetric))
+
 # adaptivity
 sys.path.append("adaptivity")
-
 import adaptivity
 
 #suite.addTest(ut.TestLoader().loadTestsFromTestCase(adaptivity.AdaptivityElectrostatic))
 #suite.addTest(ut.TestLoader().loadTestsFromTestCase(adaptivity.AdaptivityAcoustic))
 
 
+# particle tracing
+sys.path.append("particle_tracing")
+import particle_tracing
+
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(particle_tracing.ParticleTracingPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(particle_tracing.ParticleTracingAxisymmetric))
+
+
+# coupled fields
+sys.path.append("coupled_problems")
+import basic_coupled_problems
+
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(basic_coupled_problems.CoupledProblemsBasic1))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(basic_coupled_problems.CoupledProblemsBasic2))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(basic_coupled_problems.CoupledProblemsBasic3))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(basic_coupled_problems.CoupledProblemsBasic4))
+
 
 # script
 sys.path.append("script")
-
 import problem
 import geometry
 import benchmark
@@ -58,34 +86,19 @@ suite.addTest(ut.TestLoader().loadTestsFromTestCase(geometry.TestGeometry))
 suite.addTest(ut.TestLoader().loadTestsFromTestCase(geometry.TestGeometryTransformations))
 suite.addTest(ut.TestLoader().loadTestsFromTestCase(benchmark.BenchmarkGeometryTransformation))
 
+
+# internal
+sys.path.append("internal")
+import matrix_solvers
+
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(matrix_solvers.InternalMatrixSolvers))
+
 # run tests
 suite.run(result)
 
 #from test import Test
 
 #test_fast = Test(error_file='test_fast.err')
-
-# magnetic field
-#test_fast.add("fields/test_magnetic_steady_planar.py")
-#test_fast.add("fields/test_magnetic_steady_axisymmetric.py")
-
-# harmonic magnetic field
-#test_fast.add("fields/test_magnetic_harmonic_planar.py") 
-#test_fast.add("fields/test_magnetic_harmonic_axisymmetric.py")
-
-# heat transfer
-#test_fast.add("fields/test_heat_transfer_steady_planar.py")
-#test_fast.add("fields/test_heat_transfer_steady_planar_nonlin.py")
-#test_fast.add("fields/test_heat_transfer_steady_axisymmetric.py")
-#test_fast.add("fields/test_heat_transfer_transient_axisymmetric_benchmark.py") # benchmark
-
-# structural mechanics
-#test_fast.add("fields/test_elasticity_planar.py")
-#test_fast.add("fields/test_elasticity_axisymmetric.py")
-
-# acoustic
-#test_fast.add("fields/test_acoustic_planar.py") 
-#test_fast.add("fields/test_acoustic_axisymmetric.py")
 
 # electromagnetic wave - TE
 #test_fast.add("fields/test_rf_te_planar.py")
@@ -94,20 +107,6 @@ suite.run(result)
 # electromagnetic wave - TM
 #test_fast.add("fields/test_rf_tm_planar.py")
 #test_fast.add("fields/test_rf_tm_axisymmetric.py")
-
-# incompressible flow
-#test_fast.add("fields/test_flow_steady_planar_nonlin.py") 
-#test_fast.add("fields/test_flow_steady_axisymmetric_nonlin.py") 
-
-# coupled problems
-#test_fast.add("coupled_problems/test_cf_1_planar.py")
-#test_fast.add("coupled_problems/test_cf_2_axisymmetric.py")
-#test_fast.add("coupled_problems/test_cf_3_axisymmetric_nonlin.py")
-#test_fast.add("coupled_problems/test_cf_4_transient_planar.py") 
-
-# particle tracing
-#test_fast.add("particle_tracing/test_particle_tracing_planar.py")
-#test_fast.add("particle_tracing/test_particle_tracing_axisymmetric.py")
 
 # internal
 #test_fast.add("internal/test_matrix_solvers.py")
