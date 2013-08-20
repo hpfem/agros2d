@@ -22,13 +22,13 @@ INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/quazip)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/paralution/src)
 
 # languages
-message("Translations")
+# message("Translations")
 FILE(GLOB files "${CMAKE_HOME_DIRECTORY}/resources_source/lang/*.ts")
 foreach(LANGFILE ${files})
   GET_FILENAME_COMPONENT(basefile ${LANGFILE} NAME_WE)
   add_custom_target(${basefile} ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/lang/${basefile}.ts ${CMAKE_HOME_DIRECTORY}/resources/lang/${basefile}.qm)
 
-  message("\tlrelease ${basefile}")
+  # message("\tlrelease ${basefile}")
 
   ADD_CUSTOM_COMMAND(
         SOURCE    ${LANGFILE}
@@ -42,13 +42,13 @@ foreach(LANGFILE ${files})
 endforeach()
 
 # XSDCXX
-message("XML cpp/h files")
+# message("XML cpp/h files")
 FILE(GLOB files "${CMAKE_HOME_DIRECTORY}/resources/xsd/*.xsd")
 foreach(XSD_FILE ${files})
   GET_FILENAME_COMPONENT(basefile ${XSD_FILE} NAME_WE)
   add_custom_target(${basefile} ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.cpp ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.h)
 
-  message("\txsdcxx ${basefile}")
+  # message("\txsdcxx ${basefile}")
 
   ADD_CUSTOM_COMMAND(
         COMMAND  ${XSD_BIN} ARGS cxx-tree --generate-ostream --hxx-suffix .h --cxx-suffix .cpp --root-element-first --generate-polymorphic --output-dir ${CMAKE_HOME_DIRECTORY}/resources_source/classes --generate-serialization ${XSD_FILE}
@@ -56,8 +56,8 @@ foreach(XSD_FILE ${files})
 endforeach()
 
 # cython
-message("Cython files - Agros2D")
-message("\tcython agros2d.pyx")
+# message("Cython files - Agros2D")
+# message("\tcython agros2d.pyx")
 add_custom_target(CYTHON_AGROS2D ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
 
 IF(WIN32)
@@ -269,15 +269,7 @@ ENDIF(WITH_QT5)
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS} ${RESOURCES_RCC})
 IF(WITH_QT5)
-  IF(WIN32)
-    FIND_PACKAGE(OpenGL REQUIRED)
-    FIND_PACKAGE(ZLIB REQUIRED)
-  ENDIF()
   QT5_USE_MODULES(${PROJECT_NAME} Core Widgets Network Xml XmlPatterns WebKit WebKitWidgets Svg UiTools OpenGL)
 ENDIF(WITH_QT5)
-
-
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${HERMES_LIBRARY} ${HERMES_COMMON_LIBRARY} ${PYTHONLAB_LIBRARY} ${AGROS_UTIL} ${CTEMPLATE_LIBRARY} ${DXFLIB_LIBRARY} ${POLY2TRI_LIBRARY} ${QCUSTOMPLOT_LIBRARY} ${QUAZIP_LIBRARY} ${STB_TRUETYPE_LIBRARY} ${PYTHON_LIBRARIES} ${OPENGL_LIBRARIES} ${ZLIB_LIBRARIES})
-
-SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/libs)
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)

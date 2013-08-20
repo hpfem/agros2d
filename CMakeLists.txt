@@ -5,16 +5,13 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 # Debug yes / no.
 SET(AGROS_DEBUG NO)
 SET(WITH_QT5 NO)
-
-# Path to Qt5. Should be before CMake.vars to be able to change it.
-IF(WITH_QT5)
-  IF(WIN32)
-    SET(CMAKE_PREFIX_PATH "C:\\Qt\\Qt5.0.2\\5.0.2\\msvc2010_opengl\\")
-  ENDIF()
-ENDIF()
+SET(CMAKE_AGROS_DIRECTORY "${CMAKE_HOME_DIRECTORY}/")
 
 # Allow to override the default values in CMake.vars:
 INCLUDE(CMake.vars OPTIONAL)
+
+# Handle Qt.
+include(QtHandling.cmake)
 
 # versions
 # SET(VERSION_BETA)
@@ -47,32 +44,29 @@ SET(MATIO_LIBRARY agros2d_3dparty_matio)
 
 # Hermes and Hermes common
 IF(AGROS_DEBUG)
-    SET(HERMES_COMMON_LIBRARY hermes_common-debug)
-    SET(HERMES_LIBRARY hermes2d-debug)
+  SET(HERMES_COMMON_LIBRARY hermes_common-debug)
+  SET(HERMES_LIBRARY hermes2d-debug)
 ElSE(AGROS_DEBUG)
-    SET(HERMES_COMMON_LIBRARY hermes_common)
-    SET(HERMES_LIBRARY hermes2d)
+  SET(HERMES_COMMON_LIBRARY hermes_common)
+  SET(HERMES_LIBRARY hermes2d)
 ENDIF(AGROS_DEBUG)
 
 # Output paths.
-SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_HOME_DIRECTORY})
-SET(LIBRARY_OUTPUT_PATH ${CMAKE_HOME_DIRECTORY}/libs)
+SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_AGROS_DIRECTORY})
+SET(LIBRARY_OUTPUT_PATH ${CMAKE_AGROS_DIRECTORY}/libs)
 
-SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY})
-SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/libs)
-SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/libs)
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_AGROS_DIRECTORY})
+SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_AGROS_DIRECTORY}/libs)
+SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_AGROS_DIRECTORY}/libs)
   
 IF(WIN32)
-  SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_HOME_DIRECTORY})
-  SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_HOME_DIRECTORY})
-  SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_HOME_DIRECTORY}/libs)
-  SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_HOME_DIRECTORY}/libs)
-  SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_HOME_DIRECTORY}/libs)
-  SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_HOME_DIRECTORY}/libs)
+  SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_AGROS_DIRECTORY})
+  SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_AGROS_DIRECTORY})
+  SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_AGROS_DIRECTORY}/libs)
+  SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_AGROS_DIRECTORY}/libs)
+  SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_AGROS_DIRECTORY}/libs)
+  SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_AGROS_DIRECTORY}/libs)
 ENDIF(WIN32)
-
-# Add QT.
-INCLUDE(CMakeQt.cmake)
 
 # Set global compiler parameters.
 find_package(OpenMP REQUIRED)
@@ -88,7 +82,6 @@ ENDIF()
 IF(MSVC)
   INCLUDE_DIRECTORIES(c:/hpfem/hermes/dependencies/include)
   INCLUDE_DIRECTORIES(d:/hpfem/hermes/dependencies/include)
-  INCLUDE_DIRECTORIES(c:/Python27/include)
   SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /NODEFAULTLIB:libcmtd /NODEFAULTLIB:libcmt")
 ENDIF(MSVC)
 
@@ -104,24 +97,26 @@ ADD_DEFINITIONS(-DUNICODE -D_UNICODE)
 
 # Enable debugging symbols for all files all the time:
 IF(AGROS_DEBUG)
-    IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-        # Disable all warnings and turn on only important ones:
-        # SET(CMAKE_CXX_FLAGS "-w ${CMAKE_CXX_FLAGS} -fPIC")
-        # SET(CMAKE_CXX_FLAGS "-Wuninitialized -Wvla -Wsign-compare ${CMAKE_CXX_FLAGS}")
-        SET(CMAKE_BUILD_TYPE Debug)
-        SET(DEBUG_FLAGS   "-g")
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DEBUG_FLAGS}")
-    ENDIF()
+  IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    # Disable all warnings and turn on only important ones:
+    # SET(CMAKE_CXX_FLAGS "-w ${CMAKE_CXX_FLAGS} -fPIC")
+    # SET(CMAKE_CXX_FLAGS "-Wuninitialized -Wvla -Wsign-compare ${CMAKE_CXX_FLAGS}")
+    SET(DEBUG_FLAGS   "-g")
+    SET(CMAKE_BUILD_TYPE Debug)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DEBUG_FLAGS}")
+  ENDIF()
 ElSE(AGROS_DEBUG)
-    IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-      SET(CMAKE_BUILD_TYPE Release)
-      SET(RELEASE_FLAGS "-DNDEBUG -O3 -Ofast")
-      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RELEASE_FLAGS}")
-    ENDIF()
+  IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    SET(CMAKE_BUILD_TYPE Release)
+    SET(RELEASE_FLAGS "-DNDEBUG -O3 -Ofast")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RELEASE_FLAGS}")
+  ENDIF()
 ENDIF(AGROS_DEBUG)
 
 # This overrides CXX flags for MSVC
 IF(MSVC)
+  # On MSVC, we will always use Debug, otherwise the plugins do not work.
+  SET(CMAKE_BUILD_TYPE Debug)
   SET(MSVC_DEFINES "/DWIN32 /D_WINDOWS /Dpopen=_popen /Dpclose=_pclose /D__value=_value /Dfinite=_finite /Dhypot=_hypot /Disatty=_isatty /Dfileno=_fileno /D_CRT_SECURE_NO_WARNINGS /MP")
   SET(CMAKE_CXX_FLAGS_DEBUG_INIT          "/D_DEBUG /Od /Ob2 /MDd /Zi ${MSVC_DEFINES}")
   SET(CMAKE_CXX_FLAGS_RELEASE_INIT        "/DNDEBUG /O2 /Ob2 /MD ${MSVC_DEFINES}")
@@ -143,14 +138,11 @@ INCLUDE(IncludeSubdirs.cmake)
 ADD_SUBDIRECTORY(3rdparty)
 # Also looks for Xerces, UMFPACK, etc.
 ADD_SUBDIRECTORY(hermes)
-# Include those
-#INCLUDE_DIRECTORIES(${XSD_INCLUDE_DIR})
-#INCLUDE_DIRECTORIES(${XERCES_INCLUDE_DIR})
-#INCLUDE_DIRECTORIES(${TCMALLOC_INCLUDE_DIR})
-#INCLUDE_DIRECTORIES(${BSON_INCLUDE_DIR})
+# Include external directories.
 INCLUDE_DIRECTORIES(${UMFPACK_INCLUDE_DIR})
 
-
+message("CMake: Start Agros2D")
+message("=====================")
 ADD_SUBDIRECTORY(util)
 ADD_SUBDIRECTORY(pythonlab-library)
 ADD_SUBDIRECTORY(pythonlab-binary)
@@ -161,19 +153,25 @@ ADD_SUBDIRECTORY(agros2d-generator)
 #ADD_SUBDIRECTORY(agros2d-remote)
 #ADD_SUBDIRECTORY(agros2d-forms)
 
-# TODO - better!
-message("\nConfiguration results - Agros2D")
+message("\nAgros2D Configuration results")
 message("---------------------")
-IF(WITH_QT5)
-    message("Build with QT5")
-ELSE(WITH_QT5)
-    message("Build with QT4")
-ENDIF(WITH_QT5)
+message(" Version: ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_SUB}.${VERSION_GIT}")
+
 IF(AGROS_DEBUG)
-  message("Build version: Debug")
+  message(" Build version: Debug")
 ELSE(AGROS_DEBUG)
-    message("Build version: Release")
+    message(" Build version: Release")
 ENDIF(AGROS_DEBUG)
+message("---------Qt---------")
+IF(WITH_QT5)
+  message(" Build with Qt5")
+ELSE(WITH_QT5)
+  message(" Build with Qt4")
+  message("  Qt use file: ${QT_USE_FILE}")
+  message("  Qt definitions: ${QT_DEFINITIONS}")
+  message("  Qt libraries: ${QT_LIBRARIES}")
+ENDIF(WITH_QT5)
+message("---------------------")
 message("\n")
 
 # pixmap
@@ -190,14 +188,14 @@ INSTALL(DIRECTORY ${RESOURCES_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/a
 
 # other files
 MACRO(ADD_INFO_FILES)
-     FOREACH(_it ${ARGN})
-         IF(NOT IS_DIRECTORY ${_it})
-             GET_FILENAME_COMPONENT(name ${_it} NAME)
-             if(NOT ${_it} MATCHES "^/\\\\..*$;~$")
-                 SET_SOURCE_FILES_PROPERTIES(${_it} PROPERTIES HEADER_FILE_ONLY TRUE)
-             ENDIF()
-         ENDIF()
-     ENDFOREACH()
+   FOREACH(_it ${ARGN})
+     IF(NOT IS_DIRECTORY ${_it})
+       GET_FILENAME_COMPONENT(name ${_it} NAME)
+       IF(NOT ${_it} MATCHES "^/\\\\..*$;~$")
+         SET_SOURCE_FILES_PROPERTIES(${_it} PROPERTIES HEADER_FILE_ONLY TRUE)
+       ENDIF()
+     ENDIF()
+   ENDFOREACH()
 ENDMACRO()
 
 set(info resources/modules/acoustic.xml

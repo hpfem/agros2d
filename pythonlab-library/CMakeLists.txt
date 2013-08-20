@@ -5,8 +5,8 @@ INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/qtsingleapplication)
 INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/util)
 
 # cython
-message("Cython files - PythonLab")
-message("\tcython pythonlab.pyx")
+# message("Cython files - PythonLab")
+# message("\tcython pythonlab.pyx")
 add_custom_target(CYTHON_PYTHONLAB ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp)
 
 IF(WIN32)
@@ -55,5 +55,4 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${PYTHON_LIBRARIES} ${AGRO
 IF(WITH_QT5)
     QT5_USE_MODULES(${PROJECT_NAME} Core Widgets Network Xml XmlPatterns WebKit WebKitWidgets OpenGL)
 ENDIF(WITH_QT5)
-SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/libs)
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)

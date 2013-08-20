@@ -25,13 +25,13 @@ SET(HEADERS generator.h
 
 IF(WIN32)
   # XSDCXX
-  message("XML cpp/h files")
+  # message("XML cpp/h files")
   FILE(GLOB files "${CMAKE_HOME_DIRECTORY}/resources/xsd/*.xsd")
   foreach(XSD_FILE ${files})
     GET_FILENAME_COMPONENT(basefile ${XSD_FILE} NAME_WE)
     add_custom_target(generator-${basefile} ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.cpp ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.h)
 
-    message("\txsdcxx ${basefile}")
+    # message("\txsdcxx ${basefile}")
 
     ADD_CUSTOM_COMMAND(
           COMMAND  ${XSD_BIN} ARGS cxx-tree --generate-ostream --hxx-suffix .h --cxx-suffix .cpp --root-element-first --generate-polymorphic --output-dir ${CMAKE_HOME_DIRECTORY}/resources_source/classes --generate-serialization ${XSD_FILE}
@@ -52,4 +52,3 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${AGROS_LIBRARY} ${PYTHONLAB_LIBRARY} ${CT
 IF(WITH_QT5)
     QT5_USE_MODULES(${PROJECT_NAME} Core Widgets Network Xml XmlPatterns WebKit WebKitWidgets OpenGL)
 ENDIF(WITH_QT5)
-SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY})
