@@ -29,6 +29,10 @@
 
 AgrosSolver::AgrosSolver(int &argc, char **argv)
     : QApplication(argc, argv)
+{        
+}
+
+void AgrosSolver::init()
 {
     Agros2D::createSingleton();
 }

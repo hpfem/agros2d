@@ -30,6 +30,8 @@ class AgrosSolver : public QApplication
 public:
     AgrosSolver(int& argc, char ** argv);
 
+    void init();
+
     // reimplemented from QApplication so we can throw exceptions in slots
     virtual bool notify(QObject *receiver, QEvent *event);
 

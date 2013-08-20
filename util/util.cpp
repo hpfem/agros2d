@@ -326,6 +326,7 @@ QString cacheProblemDir()
     if (!dir.exists())
         dir.mkpath(str);
 
+    qDebug() << str;
     return str;
 }
 

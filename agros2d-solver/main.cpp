@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
     a.setOrganizationName("hpfem.org");
     a.setOrganizationDomain("hpfem.org");
     a.setApplicationName("Agros2D-3");
+    a.init();
 
     QSettings settings;
 
