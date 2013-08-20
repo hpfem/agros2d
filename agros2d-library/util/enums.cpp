@@ -272,7 +272,7 @@ void initLists()
     spaceTypeList.insert(Hermes::Hermes2D::HERMES_HCURL_SPACE, "hcurl");
     spaceTypeList.insert(Hermes::Hermes2D::HERMES_HDIV_SPACE, "hdiv");
     spaceTypeList.insert(Hermes::Hermes2D::HERMES_L2_SPACE, "l2");
-    spaceTypeList.insert(Hermes::Hermes2D::HERMES_UTILITY_L2_SPACES, "const");
+    spaceTypeList.insert(Hermes::Hermes2D::HERMES_L2_MARKERWISE_CONST_SPACE, "const");
 
     // LinearityType
     linearityTypeList.insert(LinearityType_Undefined, "");

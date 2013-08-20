@@ -133,7 +133,7 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
                 try
                 {
                     EssentialBCs<double>* essentialBcs = NULL;
-                    if((fieldInfo->spaces()[fieldCompIdx].type() != HERMES_L2_SPACE) && (fieldInfo->spaces()[fieldCompIdx].type() != HERMES_UTILITY_L2_SPACES))
+                    if((fieldInfo->spaces()[fieldCompIdx].type() != HERMES_L2_SPACE) && (fieldInfo->spaces()[fieldCompIdx].type() != HERMES_L2_MARKERWISE_CONST_SPACE))
                     {
                         int bcIndex = fieldCompIdx + block->offset(block->field(fieldInfo));
                         essentialBcs = block->bcs().at(bcIndex);
