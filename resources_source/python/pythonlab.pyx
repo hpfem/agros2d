@@ -20,10 +20,10 @@ cdef extern from "../../pythonlab-library/pythonlab_functions.h":
     char *pyVersion()
     void pyQuit()
 
-    char *pyInput(char *str)
-    void pyMessage(char *str)
+    char *pyInput(string &str)
+    void pyMessage(string &str)
 
-    char *pyDatadir()
+    char *pyDatadir(string &str)
     
     
 # version()
@@ -35,13 +35,13 @@ def quit():
     pyQuit()
 
 # input()
-def input(char *str):
-    return pyInput(str)
+def input(str):
+    return pyInput(string(str))
 
 # message()
-def message(char *str):
-    pyMessage(str)
+def message(str):
+    pyMessage(string(str))
 
 # datadir()
-def datadir():
-    return pyDatadir()
+def datadir(str = ""):
+    return pyDatadir(string(str))

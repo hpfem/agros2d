@@ -30,9 +30,9 @@
 char *pyVersion();
 void pyQuit();
 
-char *pyInput(char *str);
-void pyMessage(char *str);
+char *pyInput(std::string str);
+void pyMessage(std::string str);
 
-char *pyDatadir();
+char *pyDatadir(std::string str = "");
 
 #endif // PYTHONLABFUNCTIONS_H

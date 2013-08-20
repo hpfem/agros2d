@@ -32,18 +32,18 @@ void pyQuit()
     exit(0);
 }
 
-char *pyInput(char *str)
+char *pyInput(std::string str)
 {
-    QString text = QInputDialog::getText(QApplication::activeWindow(), QObject::tr("Script input"), QString(str));
+    QString text = QInputDialog::getText(QApplication::activeWindow(), QObject::tr("Script input"), QString::fromStdString(str));
     return const_cast<char*>(text.toStdString().c_str());
 }
 
-void pyMessage(char *str)
+void pyMessage(std::string str)
 {
-    QMessageBox::information(QApplication::activeWindow(), QObject::tr("Script message"), QString(str));
+    QMessageBox::information(QApplication::activeWindow(), QObject::tr("Script message"), QString::fromStdString(str));
 }
 
-char *pyDatadir()
+char *pyDatadir(std::string str)
 {
-    return const_cast<char*>(compatibleFilename(datadir()).toStdString().c_str());
+    return const_cast<char*>(compatibleFilename(datadir() + "/" + QString::fromStdString(str)).toStdString().c_str());
 }
