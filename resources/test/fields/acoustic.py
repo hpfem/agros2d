@@ -1,6 +1,6 @@
 import agros2d
 
-class AcousticPlanar(agros2d.Agros2DTestCase):
+class AcousticHarmonicPlanar(agros2d.Agros2DTestCase):
     def setUp(self):  
         # model
         problem = agros2d.problem(clear = True)
@@ -72,7 +72,7 @@ class AcousticPlanar(agros2d.Agros2DTestCase):
         # print("Test: Acoustic - planar: " + str(testp and testp_real and testp_imag and testSPL and testPv_real and testPv_imag and testPs_real and testPs_imag))
         
 
-class AcousticAxisymmetric(agros2d.Agros2DTestCase):
+class AcousticHarmonicAxisymmetric(agros2d.Agros2DTestCase):
     def setUp(self):         
         # model
         problem = agros2d.problem(clear = True)
@@ -279,8 +279,8 @@ if __name__ == '__main__':
     
     suite = ut.TestSuite()
     result = agros2d.Agros2DTestResult()
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(AcousticPlanar))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(AcousticAxisymmetric))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(AcousticHarmonicPlanar))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(AcousticHarmonicAxisymmetric))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(AcousticTransientPlanar))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(AcousticTransientAxisymmetric))    
     suite.run(result)

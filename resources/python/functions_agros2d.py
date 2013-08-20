@@ -46,24 +46,27 @@ class Agros2DTestResult(ut.TestResult):
         
         ut.TestResult.startTest(self, test)
         self.time = time()
-        print("{0}".format(test.id().ljust(60, "."))),
+        # print("{0}".format(test.id().ljust(60, "."))),
 
     def addSuccess(self, test):
         from time import time
         
         ut.TestResult.addSuccess(self, test)
         self.time -= time()
+        print("{0}".format(test.id().ljust(60, "."))),
         print("{0:08.2f}".format(-self.time * 1000).rjust(15, " ") + " ms " +
               "{0}".format("OK".rjust(10, ".")))
 
     def addError(self, test, err):
         ut.TestResult.addError(self, test, err)
+        print("{0}".format(test.id().ljust(60, "."))),
         print("{0:08.2f}".format(0).rjust(15, " ") + " ms " +
               "{0}".format("ERROR".rjust(10, ".")))        
         print(err[1])
 
     def addFailure(self, test, err):
         ut.TestResult.addFailure(self, test, err)
+        print("{0}".format(test.id().ljust(60, "."))),
         print("{0:08.2f}".format(0).rjust(15, " ") + " ms " +
               "{0}".format("FAILURE".rjust(10, ".")))        
         print(err[1])       
