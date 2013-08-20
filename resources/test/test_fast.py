@@ -36,8 +36,6 @@ suite.addTest(ut.TestLoader().loadTestsFromTestCase(flow.FlowAxisymmetric))
 # acoustic field
 suite.addTest(ut.TestLoader().loadTestsFromTestCase(acoustic.AcousticHarmonicPlanar))
 suite.addTest(ut.TestLoader().loadTestsFromTestCase(acoustic.AcousticHarmonicAxisymmetric))
-#suite.addTest(ut.TestLoader().loadTestsFromTestCase(acoustic.AcousticTransientPlanar))
-#suite.addTest(ut.TestLoader().loadTestsFromTestCase(acoustic.AcousticTransientAxisymmetric))  
 
 # heat transfer
 suite.addTest(ut.TestLoader().loadTestsFromTestCase(heat.HeatPlanar))

@@ -1,61 +1,76 @@
-from test import Test
+import agros2d as a2d
+import unittest as ut
+import sys
 
-test_complete = Test(error_file='test_complete.err')
+suite = ut.TestSuite()
+result = a2d.Agros2DTestResult()
 
 # fields
-# acoustic
-test_complete.add("fields/test_acoustic_planar.py") 
-test_complete.add("fields/test_acoustic_axisymmetric.py")
-test_complete.add("fields/test_acoustic_transient_planar.py") 
-test_complete.add("fields/test_acoustic_transient_axisymmetric.py") 
+sys.path.append("fields")
+import electrostatic
+import current
+import elasticity
+import flow
+import acoustic
+import heat
+import magnetic
+import rf_te
+import rf_tm
 
-# electrostatic
-test_complete.add("fields/test_electrostatic_planar.py") 
-test_complete.add("fields/test_electrostatic_axisymmetric.py")
+# electrostatic field
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(electrostatic.ElectrostaticPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(electrostatic.ElectrostaticAxisymmetric))
 
 # current field
-test_complete.add("fields/test_current_planar.py")
-test_complete.add("fields/test_current_axisymmetric.py")
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(current.CurrentPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(current.CurrentAxisymmetric))
 
-# magnetic field
-test_complete.add("fields/test_magnetic_steady_planar.py")
-test_complete.add("fields/test_magnetic_steady_axisymmetric.py")
-test_complete.add("fields/test_magnetic_steady_planar_nonlin.py")
-test_complete.add("fields/test_magnetic_transient_planar.py")
-test_complete.add("fields/test_magnetic_transient_axisymmetric.py")
-
-# harmonic magnetic field
-test_complete.add("fields/test_magnetic_harmonic_planar.py") 
-test_complete.add("fields/test_magnetic_harmonic_axisymmetric.py")
-
-# heat transfer
-test_complete.add("fields/test_heat_transfer_steady_planar.py")
-test_complete.add("fields/test_heat_transfer_steady_planar_nonlin.py")
-test_complete.add("fields/test_heat_transfer_steady_axisymmetric.py")
-test_complete.add("fields/test_heat_transfer_transient_axisymmetric_benchmark.py") # benchmark
-test_complete.add("fields/test_heat_transfer_transient_axisymmetric.py") # very slow
-
-# structural mechanics
-test_complete.add("fields/test_elasticity_planar.py")
-test_complete.add("fields/test_elasticity_axisymmetric.py")
-
-# electromagnetic wave - TE
-test_complete.add("fields/test_rf_te_planar.py")
-test_complete.add("fields/test_rf_te_axisymmetric.py")
-
-# electromagnetic wave - TM
-test_complete.add("fields/test_rf_tm_planar.py")
-test_complete.add("fields/test_rf_tm_axisymmetric.py")
+# elasticity
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(elasticity.ElasticityPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(elasticity.ElasticityAxisymmetric))
 
 # incompressible flow
-test_complete.add("fields/test_flow_steady_planar_nonlin.py") 
-test_complete.add("fields/test_flow_steady_axisymmetric_nonlin.py") 
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(flow.FlowPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(flow.FlowAxisymmetric))
 
-# coupled problems
-test_complete.add("coupled_problems/test_cf_1_planar.py")
-test_complete.add("coupled_problems/test_cf_2_axisymmetric.py")
-test_complete.add("coupled_problems/test_cf_3_axisymmetric_nonlin.py")
-test_complete.add("coupled_problems/test_cf_4_transient_planar.py") 
+# acoustic field
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(acoustic.AcousticHarmonicPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(acoustic.AcousticHarmonicAxisymmetric))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(acoustic.AcousticTransientPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(acoustic.AcousticTransientAxisymmetric))
+
+# heat transfer
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(heat.HeatPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(heat.HeatAxisymmetric))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(heat.HeatNonlinPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(heat.HeatTransientAxisymmetric))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(heat.HeatTransientBenchmarkAxisymmetric))
+
+# magnetic field
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(magnetic.MagneticPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(magnetic.MagneticAxisymmetric))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(magnetic.MagneticNonlinPlanar))
+#suite.addTest(ut.TestLoader().loadTestsFromTestCase(magnetic.MagneticNonlinAxisymmetric))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(magnetic.MagneticHarmonicPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(magnetic.MagneticHarmonicAxisymmetric))
+#suite.addTest(ut.TestLoader().loadTestsFromTestCase(magnetic.MagneticHarmonicNonlinPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(magnetic.MagneticTransientPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(magnetic.MagneticTransientAxisymmetric))
+
+# rf te
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(rf_te.RFTEHarmonicPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(rf_te.RFTEHarmonicAxisymmetric))
+
+# rf tm
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(rf_tm.RFTMHarmonicPlanar))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(rf_tm.RFTMHarmonicAxisymmetric))
+
+# run tests
+suite.run(result)
+
+from test import Test
+
+test_complete = Test(error_file='test_complete.err') 
 
 # contains sets of tests obtained by varying previously present coupling tests
 # various combinations of hard/weak and linear/nonlinear are tested
