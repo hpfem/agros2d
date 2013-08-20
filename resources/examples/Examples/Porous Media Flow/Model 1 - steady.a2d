@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
+
+  <geometry>
+    <nodes>
+      <node id="0" x="0" y="0"/>
+      <node id="1" x="100" y="100"/>
+      <node id="2" x="100" y="0"/>
+      <node id="3" x="0" y="100"/>
+    </nodes>
+    <edges>
+      <edge angle="0" end="0" id="0" start="3"/>
+      <edge angle="0" end="2" id="1" start="0"/>
+      <edge angle="0" end="1" id="2" start="2"/>
+      <edge angle="0" end="3" id="3" start="1"/>
+    </edges>
+    <labels>
+      <label area="0" id="0" x="28.796" y="67.3436"/>
+    </labels>
+  </geometry>
+
+  <problem coordinate_type="planar" mesh_type="triangle">
+    <fields>
+      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="richards" linearity_type="newton" matrix_solver="mumps">
+        <refinement_edges/>
+        <refinement_labels/>
+        <polynomial_orders/>
+        <boundaries>
+          <boundary id="1" name="ph = 0" type="richards_pressure">
+            <boundary_edges>
+              <boundary_edge id="0"/>
+              <boundary_edge id="1"/>
+              <boundary_edge id="2"/>
+            </boundary_edges>
+            <boundary_types>
+              <boundary_type key="richards_pressure" value="0"/>
+              <boundary_type key="richards_pressure_flux" value="0"/>
+            </boundary_types>
+          </boundary>
+          <boundary id="2" name="ph TOP" type="richards_pressure">
+            <boundary_edges>
+              <boundary_edge id="3"/>
+            </boundary_edges>
+            <boundary_types>
+              <boundary_type key="richards_pressure" value="x*(100.0 - x)/2.5 * y/100"/>
+              <boundary_type key="richards_pressure_flux" value="0"/>
+            </boundary_types>
+          </boundary>
+        </boundaries>
+        <materials>
+          <material id="1" name="Water">
+            <material_labels>
+              <material_label id="0"/>
+            </material_labels>
+            <material_types>
+              <material_type key="richards_hydraulic_conductivity" value="10;piecewise_linear,1,1$-1500,-1488.44,-1476.88,-1465.33,-1453.77,-1442.21,-1430.65,-1419.1,-1407.54,-1395.98,-1384.42,-1372.86,-1361.31,-1349.75,-1338.19,-1326.63,-1315.08,-1303.52,-1291.96,-1280.4,-1268.84,-1257.29,-1245.73,-1234.17,-1222.61,-1211.06,-1199.5,-1187.94,-1176.38,-1164.82,-1153.27,-1141.71,-1130.15,-1118.59,-1107.04,-1095.48,-1083.92,-1072.36,-1060.8,-1049.25,-1037.69,-1026.13,-1014.57,-1003.02,-991.457,-979.899,-968.342,-956.784,-945.226,-933.668,-922.111,-910.553,-898.995,-887.437,-875.879,-864.322,-852.764,-841.206,-829.648,-818.09,-806.533,-794.975,-783.417,-771.859,-760.302,-748.744,-737.186,-725.628,-714.07,-702.513,-690.955,-679.397,-667.839,-656.281,-644.724,-633.166,-621.608,-610.05,-598.492,-586.935,-575.377,-563.819,-552.261,-540.704,-529.146,-517.588,-506.03,-494.472,-482.915,-471.357,-459.799,-448.241,-436.683,-425.126,-413.568,-402.01,-390.452,-378.894,-367.337,-355.779,-344.221,-332.663,-321.106,-309.548,-297.99,-286.432,-274.874,-263.317,-251.759,-240.201,-228.643,-217.085,-205.528,-193.97,-182.412,-170.854,-159.296,-147.739,-136.181,-124.623,-113.065,-101.508,-89.9497,-78.392,-66.8342,-55.2764,-43.7186,-32.1608,-20.603,-9.04523,2.51256,14.0704,25.6281,37.1859,48.7437,60.3015,71.8593,83.4171,94.9749,106.533,118.09,129.648,141.206,152.764,164.322,175.879,187.437,198.995,210.553,222.111,233.668,245.226,256.784,268.342,279.899,291.457,303.015,314.573,326.131,337.688,349.246,360.804,372.362,383.92,395.477,407.035,418.593,430.151,441.709,453.266,464.824,476.382,487.94,499.497,511.055,522.613,534.171,545.729,557.286,568.844,580.402,591.96,603.518,615.075,626.633,638.191,649.749,661.307,672.864,684.422,695.98,707.538,719.095,730.653,742.211,753.769,765.327,776.884,788.442,800;0.00397425,0.0041386,0.00431047,0.00449006,0.00467809,0.00487481,0.00508068,0.00529595,0.0055215,0.00575765,0.00600496,0.00626399,0.0065351,0.00681942,0.00711738,0.0074297,0.00775684,0.00810016,0.00846024,0.00883795,0.00923424,0.00964974,0.0100862,0.0105444,0.0110255,0.0115304,0.0120611,0.0126187,0.0132046,0.0138204,0.0144673,0.0151479,0.0158638,0.0166168,0.0174083,0.018242,0.0191194,0.0200431,0.0210156,0.022039,0.023118,0.0242547,0.0254526,0.0267142,0.0280456,0.0294489,0.0309288,0.0324901,0.0341373,0.0358757,0.0377104,0.0396475,0.041693,0.0438534,0.0461356,0.0485467,0.0510949,0.0537884,0.056636,0.059647,0.0628313,0.0662,0.0697641,0.0735357,0.0775273,0.0817532,0.0862276,0.090966,0.0959847,0.101301,0.106934,0.112904,0.119231,0.125938,0.133048,0.140588,0.148584,0.157066,0.166063,0.175608,0.185736,0.196485,0.207893,0.22,0.232853,0.246498,0.260985,0.276367,0.292699,0.310043,0.328461,0.34802,0.368792,0.390849,0.414276,0.439154,0.465573,0.493627,0.523413,0.555041,0.588618,0.624261,0.662089,0.702237,0.744838,0.790032,0.837967,0.888795,0.942685,0.999802,1.06032,1.12443,1.1923,1.26415,1.34017,1.42057,1.50557,1.59537,1.69021,1.79033,1.89593,2.00726,2.12457,2.24807,2.37801,2.51462,2.65813,2.80876,2.96672,3.13224,3.30549,3.48667,3.67594,3.87345,4.07934,4.29371,4.51665,4.7482,4.9884,5.23724,5.49465,5.7606,6.03495,6.31755,6.60819,6.90661,7.21258,7.52573,7.8457,8.17207,8.50434,8.84207,9.1847,9.53163,9.88223,10.2359,10.5919,10.9496,11.3083,11.6671,12.0254,12.3824,12.7374,13.0895,13.4381,13.7824,14.1218,14.4555,14.7828,15.1032,15.4161,15.721,16.0172,16.3045,16.5823,16.8504,17.1083,17.356,17.5931,17.8195,18.0351,18.2399,18.4339,18.617,18.7895,18.9513,19.1028,19.244,19.3753,19.4969,19.609,19.7121,19.8064,19.8923,19.9702,20.0405,20.1035,20.1598,20.2096,20.2534"/>
+              <material_type key="richards_hydraulic_conductivity_derivative" value="0;piecewise_linear,1,1$-1500,-1488.44,-1476.88,-1465.33,-1453.77,-1442.21,-1430.65,-1419.1,-1407.54,-1395.98,-1384.42,-1372.86,-1361.31,-1349.75,-1338.19,-1326.63,-1315.08,-1303.52,-1291.96,-1280.4,-1268.84,-1257.29,-1245.73,-1234.17,-1222.61,-1211.06,-1199.5,-1187.94,-1176.38,-1164.82,-1153.27,-1141.71,-1130.15,-1118.59,-1107.04,-1095.48,-1083.92,-1072.36,-1060.8,-1049.25,-1037.69,-1026.13,-1014.57,-1003.02,-991.457,-979.899,-968.342,-956.784,-945.226,-933.668,-922.111,-910.553,-898.995,-887.437,-875.879,-864.322,-852.764,-841.206,-829.648,-818.09,-806.533,-794.975,-783.417,-771.859,-760.302,-748.744,-737.186,-725.628,-714.07,-702.513,-690.955,-679.397,-667.839,-656.281,-644.724,-633.166,-621.608,-610.05,-598.492,-586.935,-575.377,-563.819,-552.261,-540.704,-529.146,-517.588,-506.03,-494.472,-482.915,-471.357,-459.799,-448.241,-436.683,-425.126,-413.568,-402.01,-390.452,-378.894,-367.337,-355.779,-344.221,-332.663,-321.106,-309.548,-297.99,-286.432,-274.874,-263.317,-251.759,-240.201,-228.643,-217.085,-205.528,-193.97,-182.412,-170.854,-159.296,-147.739,-136.181,-124.623,-113.065,-101.508,-89.9497,-78.392,-66.8342,-55.2764,-43.7186,-32.1608,-20.603,-9.04523,2.51256,14.0704,25.6281,37.1859,48.7437,60.3015,71.8593,83.4171,94.9749,106.533,118.09,129.648,141.206,152.764,164.322,175.879,187.437,198.995,210.553,222.111,233.668,245.226,256.784,268.342,279.899,291.457,303.015,314.573,326.131,337.688,349.246,360.804,372.362,383.92,395.477,407.035,418.593,430.151,441.709,453.266,464.824,476.382,487.94,499.497,511.055,522.613,534.171,545.729,557.286,568.844,580.402,591.96,603.518,615.075,626.633,638.191,649.749,661.307,672.864,684.422,695.98,707.538,719.095,730.653,742.211,753.769,765.327,776.884,788.442,800;1.39027e-05,1.45369e-05,1.52027e-05,1.59012e-05,1.66354e-05,1.74066e-05,1.82168e-05,1.90674e-05,1.99622e-05,2.09027e-05,2.18916e-05,2.29316e-05,2.40244e-05,2.5175e-05,2.63856e-05,2.76597e-05,2.89996e-05,3.04114e-05,3.1898e-05,3.34637e-05,3.51131e-05,3.68493e-05,3.86805e-05,4.06106e-05,4.26453e-05,4.4789e-05,4.70516e-05,4.94383e-05,5.19565e-05,5.46137e-05,5.74159e-05,6.03766e-05,6.35026e-05,6.68041e-05,7.02882e-05,7.39723e-05,7.78653e-05,8.19799e-05,8.63294e-05,9.09242e-05,9.57873e-05,0.000100931,0.000106373,0.000112126,0.000118222,0.000124671,0.000131498,0.000138729,0.000146386,0.000154498,0.000163091,0.000172198,0.000181851,0.000192083,0.000202931,0.000214433,0.000226634,0.000239575,0.000253305,0.000267874,0.000283334,0.000299745,0.000317167,0.000335663,0.000355302,0.00037616,0.000398314,0.000421848,0.000446849,0.000473411,0.000501638,0.000531634,0.000563515,0.0005974,0.000633415,0.000671704,0.000712407,0.000755681,0.000801687,0.000850597,0.000902602,0.000957895,0.00101668,0.00107918,0.00114562,0.00121626,0.00129135,0.00137116,0.00145598,0.00154612,0.00164191,0.00174367,0.00185176,0.00196654,0.00208843,0.00221781,0.00235512,0.0025008,0.0026553,0.00281912,0.00299276,0.00317671,0.00337151,0.00357772,0.00379589,0.00402659,0.00427041,0.0045279,0.00479971,0.00508642,0.00538861,0.00570688,0.00604177,0.00639391,0.0067638,0.00715196,0.00755887,0.00798492,0.00843056,0.00889609,0.00938176,0.00988769,0.0104141,0.0109608,0.0115278,0.0121148,0.0127214,0.013347,0.013991,0.0146525,0.0153305,0.0160237,0.0167307,0.0174499,0.0181794,0.0189171,0.0196609,0.0204081,0.0211562,0.0219023,0.0226431,0.0233756,0.0240963,0.0248016,0.0254879,0.0261513,0.0267882,0.0273946,0.0279668,0.028501,0.0289934,0.0294405,0.029839,0.0301857,0.0304775,0.030712,0.0308868,0.031,0.0310499,0.0310353,0.0309557,0.0308106,0.0306003,0.0303252,0.0299866,0.0295859,0.0291249,0.028606,0.028032,0.0274059,0.026731,0.026011,0.0252497,0.0244514,0.0236201,0.0227603,0.0218763,0.0209727,0.020054,0.0191244,0.0181882,0.0172498,0.0163132,0.0153823,0.0144606,0.0135518,0.012659,0.0117854,0.0109337,0.0101062,0.00930544,0.00853326,0.00779153,0.00708162,0.00640484,0.00576222,0.00515457,0.00458251,0.00404634,0.00354629"/>
+              <material_type key="richards_hydraulic_conductivity_mod" value="10;piecewise_linear,1,1$-2000,-1984.92,-1969.85,-1954.77,-1939.7,-1924.62,-1909.55,-1894.47,-1879.4,-1864.32,-1849.25,-1834.17,-1819.1,-1804.02,-1788.94,-1773.87,-1758.79,-1743.72,-1728.64,-1713.57,-1698.49,-1683.42,-1668.34,-1653.27,-1638.19,-1623.12,-1608.04,-1592.96,-1577.89,-1562.81,-1547.74,-1532.66,-1517.59,-1502.51,-1487.44,-1472.36,-1457.29,-1442.21,-1427.14,-1412.06,-1396.98,-1381.91,-1366.83,-1351.76,-1336.68,-1321.61,-1306.53,-1291.46,-1276.38,-1261.31,-1246.23,-1231.16,-1216.08,-1201.01,-1185.93,-1170.85,-1155.78,-1140.7,-1125.63,-1110.55,-1095.48,-1080.4,-1065.33,-1050.25,-1035.18,-1020.1,-1005.03,-989.95,-974.874,-959.799,-944.724,-929.648,-914.573,-899.497,-884.422,-869.347,-854.271,-839.196,-824.121,-809.045,-793.97,-778.894,-763.819,-748.744,-733.668,-718.593,-703.518,-688.442,-673.367,-658.291,-643.216,-628.141,-613.065,-597.99,-582.915,-567.839,-552.764,-537.688,-522.613,-507.538,-492.462,-477.387,-462.312,-447.236,-432.161,-417.085,-402.01,-386.935,-371.859,-356.784,-341.709,-326.633,-311.558,-296.482,-281.407,-266.332,-251.256,-236.181,-221.106,-206.03,-190.955,-175.879,-160.804,-145.729,-130.653,-115.578,-100.503,-85.4271,-70.3518,-55.2764,-40.201,-25.1256,-10.0503,5.02513,20.1005,35.1759,50.2513,65.3266,80.402,95.4774,110.553,125.628,140.704,155.779,170.854,185.93,201.005,216.08,231.156,246.231,261.307,276.382,291.457,306.533,321.608,336.683,351.759,366.834,381.91,396.985,412.06,427.136,442.211,457.286,472.362,487.437,502.513,517.588,532.663,547.739,562.814,577.889,592.965,608.04,623.116,638.191,653.266,668.342,683.417,698.492,713.568,728.643,743.719,758.794,773.869,788.945,804.02,819.095,834.171,849.246,864.322,879.397,894.472,909.548,924.623,939.698,954.774,969.849,984.925,1000;6.09009e-05,6.18262e-05,6.2765e-05,6.37187e-05,6.46862e-05,6.5669e-05,6.66662e-05,6.76791e-05,6.87068e-05,6.97507e-05,7.08098e-05,7.18857e-05,7.29772e-05,7.40861e-05,7.52118e-05,7.63538e-05,7.75139e-05,7.86909e-05,7.98866e-05,8.10996e-05,8.23318e-05,8.35819e-05,8.48519e-05,8.61403e-05,8.74492e-05,8.8777e-05,9.01259e-05,9.14953e-05,9.28846e-05,9.42959e-05,9.57277e-05,9.71822e-05,9.86578e-05,0.000100157,0.000101678,0.000103223,0.00010479,0.000106382,0.000107997,0.000109638,0.000111304,0.000112994,0.000114711,0.000116453,0.000118222,0.000120018,0.000121841,0.000123691,0.000125571,0.000127477,0.000129414,0.000131379,0.000133375,0.000135401,0.000137458,0.000139546,0.000141665,0.000143818,0.000146002,0.00014822,0.000150471,0.000152757,0.000155076,0.000157433,0.000159823,0.000162251,0.000164715,0.000167218,0.000169758,0.000172336,0.000174954,0.000177612,0.000180309,0.000183048,0.000185829,0.000188651,0.000191517,0.000194426,0.000197379,0.000200377,0.000203421,0.000206511,0.000209648,0.000212832,0.000216065,0.000219347,0.000222679,0.000226061,0.000229495,0.000232981,0.00023652,0.000240112,0.00024376,0.000247462,0.000251221,0.000255037,0.000258911,0.000262844,0.000266836,0.000270889,0.000275004,0.000279181,0.000283422,0.000287727,0.000292097,0.000296534,0.000301038,0.000305611,0.000310253,0.000314966,0.00031975,0.000324607,0.000329537,0.000334543,0.000339624,0.000344783,0.00035002,0.000355337,0.000360734,0.000366214,0.000371776,0.000377424,0.000383157,0.000388976,0.000394885,0.000400883,0.000406972,0.000413154,0.00041943,0.000425801,0.000432268,0.000438834,0.0004455,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045,0.00045"/>
+              <material_type key="richards_retention_capacity" value="0.0001;piecewise_linear,1,1$-2000,-1984.92,-1969.85,-1954.77,-1939.7,-1924.62,-1909.55,-1894.47,-1879.4,-1864.32,-1849.25,-1834.17,-1819.1,-1804.02,-1788.94,-1773.87,-1758.79,-1743.72,-1728.64,-1713.57,-1698.49,-1683.42,-1668.34,-1653.27,-1638.19,-1623.12,-1608.04,-1592.96,-1577.89,-1562.81,-1547.74,-1532.66,-1517.59,-1502.51,-1487.44,-1472.36,-1457.29,-1442.21,-1427.14,-1412.06,-1396.98,-1381.91,-1366.83,-1351.76,-1336.68,-1321.61,-1306.53,-1291.46,-1276.38,-1261.31,-1246.23,-1231.16,-1216.08,-1201.01,-1185.93,-1170.85,-1155.78,-1140.7,-1125.63,-1110.55,-1095.48,-1080.4,-1065.33,-1050.25,-1035.18,-1020.1,-1005.03,-989.95,-974.874,-959.799,-944.724,-929.648,-914.573,-899.497,-884.422,-869.347,-854.271,-839.196,-824.121,-809.045,-793.97,-778.894,-763.819,-748.744,-733.668,-718.593,-703.518,-688.442,-673.367,-658.291,-643.216,-628.141,-613.065,-597.99,-582.915,-567.839,-552.764,-537.688,-522.613,-507.538,-492.462,-477.387,-462.312,-447.236,-432.161,-417.085,-402.01,-386.935,-371.859,-356.784,-341.709,-326.633,-311.558,-296.482,-281.407,-266.332,-251.256,-236.181,-221.106,-206.03,-190.955,-175.879,-160.804,-145.729,-130.653,-115.578,-100.503,-85.4271,-70.3518,-55.2764,-40.201,-25.1256,-10.0503,5.02513,20.1005,35.1759,50.2513,65.3266,80.402,95.4774,110.553,125.628,140.704,155.779,170.854,185.93,201.005,216.08,231.156,246.231,261.307,276.382,291.457,306.533,321.608,336.683,351.759,366.834,381.91,396.985,412.06,427.136,442.211,457.286,472.362,487.437,502.513,517.588,532.663,547.739,562.814,577.889,592.965,608.04,623.116,638.191,653.266,668.342,683.417,698.492,713.568,728.643,743.719,758.794,773.869,788.945,804.02,819.095,834.171,849.246,864.322,879.397,894.472,909.548,924.623,939.698,954.774,969.849,984.925,1000;0.0027695,0.00281158,0.00285427,0.00289764,0.00294164,0.00298634,0.00303168,0.00307775,0.00312448,0.00317195,0.00322012,0.00326904,0.00331868,0.00336911,0.0034203,0.00347223,0.00352499,0.00357851,0.00363289,0.00368805,0.00374408,0.00380094,0.00385869,0.00391728,0.0039768,0.00403718,0.00409853,0.0041608,0.00422398,0.00428816,0.00435327,0.00441941,0.00448652,0.00455469,0.00462385,0.0046941,0.00476538,0.00483779,0.00491124,0.00498587,0.00506162,0.00513848,0.00521656,0.00529576,0.00537623,0.00545786,0.00554079,0.00562492,0.00571039,0.0057971,0.00588518,0.00597454,0.00606532,0.00615742,0.00625097,0.00634595,0.00644231,0.0065402,0.0066395,0.00674039,0.00684273,0.0069467,0.00705218,0.00715934,0.00726804,0.00737848,0.00749051,0.00760433,0.00771984,0.0078371,0.00795613,0.00807699,0.00819967,0.00832423,0.00845067,0.00857902,0.00870934,0.00884163,0.00897593,0.00911227,0.00925068,0.0093912,0.00953385,0.00967866,0.00982568,0.00997492,0.0101264,0.0102803,0.0104364,0.0105949,0.0107559,0.0109192,0.0110851,0.0112535,0.0114244,0.0115979,0.0117741,0.011953,0.0121345,0.0123188,0.012506,0.0126959,0.0128888,0.0130845,0.0132833,0.0134851,0.0136899,0.0138978,0.0141089,0.0143232,0.0145408,0.0147617,0.0149859,0.0152135,0.0154446,0.0156792,0.0159174,0.0161591,0.0164046,0.0166538,0.0169067,0.0171636,0.0174243,0.0176889,0.0179576,0.0182304,0.0185073,0.0187884,0.0190738,0.0193635,0.0196576,0.0199562,0.0202594,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"/>
+            </material_types>
+          </material>
+        </materials>
+        <field_config>
+          <field_item field_key="NonlinearTolerance" field_value="0.01"/>
+          <field_item field_key="NonlinearSteps" field_value="30"/>
+          <field_item field_key="NonlinearConvergenceMeasurement" field_value="16"/>
+          <field_item field_key="NewtonDampingType" field_value="0"/>
+          <field_item field_key="NewtonDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NewtonReuseJacobian" field_value="1"/>
+          <field_item field_key="NewtonSufImprovJacobian" field_value="0.8"/>
+          <field_item field_key="NewtonSufImprov" field_value="1.2"/>
+          <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
+          <field_item field_key="NewtonStepsToIncreaseDF" field_value="1"/>
+          <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
+          <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
+          <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
+          <field_item field_key="SpaceNumberOfRefinements" field_value="5"/>
+          <field_item field_key="SpacePolynomialOrder" field_value="5"/>
+          <field_item field_key="AdaptivitySteps" field_value="1"/>
+          <field_item field_key="AdaptivityTolerance" field_value="1"/>
+          <field_item field_key="AdaptivityTransientBackSteps" field_value="3"/>
+          <field_item field_key="AdaptivityTransientRedoneEach" field_value="5"/>
+          <field_item field_key="AdaptivityStoppingCriterion" field_value="1"/>
+          <field_item field_key="AdaptivityThreshold" field_value="0.6"/>
+          <field_item field_key="AdaptivityProjNormType" field_value="1"/>
+          <field_item field_key="AdaptivityUseAniso" field_value="1"/>
+          <field_item field_key="AdaptivityFinerReference" field_value="0"/>
+          <field_item field_key="TransientTimeSkip" field_value="0"/>
+          <field_item field_key="TransientInitialCondition" field_value="0"/>
+          <field_item field_key="LinearSolverIterMethod" field_value="2"/>
+          <field_item field_key="LinearSolverIterPreconditioner" field_value="2"/>
+          <field_item field_key="LinearSolverIterToleranceAbsolute" field_value="1e-16"/>
+          <field_item field_key="LinearSolverIterIters" field_value="1000"/>
+        </field_config>
+      </field>
+    </fields>
+    <couplings/>
+    <problem_config>
+      <problem_item problem_key="Frequency" problem_value="50"/>
+      <problem_item problem_key="TimeMethod" problem_value="0"/>
+      <problem_item problem_key="TimeMethodTolerance" problem_value="0.05"/>
+      <problem_item problem_key="TimeOrder" problem_value="2"/>
+      <problem_item problem_key="TimeSteps" problem_value="10"/>
+      <problem_item problem_key="TimeTotal" problem_value="0.03"/>
+    </problem_config>
+  </problem>
+
+  <config>
+    <item key="Problem_StartupScript" value=""/>
+    <item key="View_RulersFontFamily" value="Droid"/>
+    <item key="View_RulersFontPointSize" value="12"/>
+    <item key="View_PostFontFamily" value="Droid"/>
+    <item key="View_PostFontPointSize" value="16"/>
+    <item key="View_ZoomToMouse" value="1"/>
+    <item key="View_NodeSize" value="6"/>
+    <item key="View_EdgeWidth" value="2"/>
+    <item key="View_LabelSize" value="6"/>
+    <item key="View_ShowGrid" value="1"/>
+    <item key="View_GridStep" value="0.05"/>
+    <item key="View_ShowRulers" value="1"/>
+    <item key="View_SnapToGrid" value="1"/>
+    <item key="View_ShowAxes" value="1"/>
+    <item key="View_ScalarView3DMode" value="0"/>
+    <item key="View_ScalarView3DLighting" value="1"/>
+    <item key="View_ScalarView3DAngle" value="240"/>
+    <item key="View_ScalarView3DBackground" value="1"/>
+    <item key="View_ScalarView3DHeight" value="4"/>
+    <item key="View_ScalarView3DBoundingBox" value="1"/>
+    <item key="View_ScalarView3DSolidGeometry" value="1"/>
+    <item key="View_DeformScalar" value="1"/>
+    <item key="View_DeformContour" value="1"/>
+    <item key="View_DeformVector" value="1"/>
+    <item key="View_ColorBackgroundRed" value="255"/>
+    <item key="View_ColorBackgroundGreen" value="255"/>
+    <item key="View_ColorBackgroundBlue" value="255"/>
+    <item key="View_ColorGridRed" value="200"/>
+    <item key="View_ColorGridGreen" value="200"/>
+    <item key="View_ColorGridBlue" value="200"/>
+    <item key="View_ColorCrossRed" value="150"/>
+    <item key="View_ColorCrossGreen" value="150"/>
+    <item key="View_ColorCrossBlue" value="150"/>
+    <item key="View_ColorNodesRed" value="150"/>
+    <item key="View_ColorNodesGreen" value="0"/>
+    <item key="View_ColorNodesBlue" value="0"/>
+    <item key="View_ColorEdgesRed" value="0"/>
+    <item key="View_ColorEdgesGreen" value="0"/>
+    <item key="View_ColorEdgesBlue" value="150"/>
+    <item key="View_ColorLabelsRed" value="0"/>
+    <item key="View_ColorLabelsGreen" value="150"/>
+    <item key="View_ColorLabelsBlue" value="0"/>
+    <item key="View_ColorContoursRed" value="0"/>
+    <item key="View_ColorContoursGreen" value="0"/>
+    <item key="View_ColorContoursBlue" value="0"/>
+    <item key="View_ColorVectorsRed" value="0"/>
+    <item key="View_ColorVectorsGreen" value="0"/>
+    <item key="View_ColorVectorsBlue" value="0"/>
+    <item key="View_ColorInitialMeshRed" value="250"/>
+    <item key="View_ColorInitialMeshGreen" value="202"/>
+    <item key="View_ColorInitialMeshBlue" value="119"/>
+    <item key="View_ColorSolutionMeshRed" value="150"/>
+    <item key="View_ColorSolutionMeshGreen" value="70"/>
+    <item key="View_ColorSolutionMeshBlue" value="0"/>
+    <item key="View_ColorSelectedRed" value="150"/>
+    <item key="View_ColorSelectedGreen" value="0"/>
+    <item key="View_ColorSelectedBlue" value="0"/>
+    <item key="View_ColorHighlightedRed" value="250"/>
+    <item key="View_ColorHighlightedGreen" value="150"/>
+    <item key="View_ColorHighlightedBlue" value="0"/>
+    <item key="View_ColorCrossedRed" value="255"/>
+    <item key="View_ColorCrossedGreen" value="0"/>
+    <item key="View_ColorCrossedBlue" value="0"/>
+    <item key="View_ShowInitialMeshView" value="1"/>
+    <item key="View_ShowSolutionMeshView" value="0"/>
+    <item key="View_ContourVariable" value="richards_pressure"/>
+    <item key="View_ShowContourView" value="0"/>
+    <item key="View_ContoursCount" value="15"/>
+    <item key="View_ContoursWidth" value="1"/>
+    <item key="View_ShowScalarView" value="1"/>
+    <item key="View_ShowScalarColorBar" value="1"/>
+    <item key="View_ScalarVariable" value="richards_pressure"/>
+    <item key="View_ScalarVariableComp" value="0"/>
+    <item key="View_PaletteType" value="0"/>
+    <item key="View_PaletteFilter" value="0"/>
+    <item key="View_PaletteSteps" value="50"/>
+    <item key="View_ScalarRangeLog" value="0"/>
+    <item key="View_ScalarRangeBase" value="10"/>
+    <item key="View_ScalarDecimalPlace" value="4"/>
+    <item key="View_ScalarRangeAuto" value="1"/>
+    <item key="View_ScalarRangeMin" value="-1000"/>
+    <item key="View_ScalarRangeMax" value="2.27373675443232e-13"/>
+    <item key="View_ShowVectorView" value="0"/>
+    <item key="View_VectorVariable" value=""/>
+    <item key="View_VectorProportional" value="1"/>
+    <item key="View_VectorColor" value="1"/>
+    <item key="View_VectorCount" value="50"/>
+    <item key="View_VectorScale" value="0.6"/>
+    <item key="View_VectorType" value="0"/>
+    <item key="View_VectorCenter" value="0"/>
+    <item key="View_ShowOrderView" value="1"/>
+    <item key="View_ShowOrderColorBar" value="1"/>
+    <item key="View_ShowOrderLabel" value="0"/>
+    <item key="View_OrderPaletteOrderType" value="0"/>
+    <item key="View_ParticleButcherTableType" value="19"/>
+    <item key="View_ParticleIncludeRelativisticCorrection" value="1"/>
+    <item key="View_ParticleMass" value="9.109e-31"/>
+    <item key="View_ParticleConstant" value="1.602e-19"/>
+    <item key="View_ParticleStartX" value="0"/>
+    <item key="View_ParticleStartY" value="0"/>
+    <item key="View_ParticleStartVelocityX" value="0"/>
+    <item key="View_ParticleStartVelocityY" value="0"/>
+    <item key="View_ParticleNumberOfParticles" value="1"/>
+    <item key="View_ParticleStartingRadius" value="0"/>
+    <item key="View_ParticleReflectOnDifferentMaterial" value="0"/>
+    <item key="View_ParticleReflectOnBoundary" value="0"/>
+    <item key="View_ParticleCoefficientOfRestitution" value="0"/>
+    <item key="View_ParticleMaximumRelativeError" value="0.01"/>
+    <item key="View_ParticleShowPoints" value="0"/>
+    <item key="View_ParticleShowBlendedFaces" value="1"/>
+    <item key="View_ParticleNumShowParticlesAxi" value="1"/>
+    <item key="View_ParticleColorByVelocity" value="1"/>
+    <item key="View_ParticleMaximumNumberOfSteps" value="500"/>
+    <item key="View_ParticleMinimumStep" value="0"/>
+    <item key="View_ParticleDragDensity" value="1.2041"/>
+    <item key="View_ParticleDragCoefficient" value="0"/>
+    <item key="View_ParticleDragReferenceArea" value="0"/>
+    <item key="View_ParticleCustomForceX" value="0"/>
+    <item key="View_ParticleCustomForceY" value="0"/>
+    <item key="View_ParticleCustomForceZ" value="0"/>
+    <item key="View_ChartStartX" value="0"/>
+    <item key="View_ChartStartY" value="0"/>
+    <item key="View_ChartEndX" value="0"/>
+    <item key="View_ChartEndY" value="0"/>
+    <item key="View_ChartTimeX" value="0"/>
+    <item key="View_ChartTimeY" value="0"/>
+    <item key="View_ChartHorizontalAxis" value="2"/>
+    <item key="View_ChartHorizontalAxisReverse" value="0"/>
+    <item key="View_ChartHorizontalAxisPoints" value="200"/>
+    <item key="View_MeshAngleSegmentsCount" value="3"/>
+    <item key="View_MeshCurvilinearElements" value="1"/>
+    <item key="View_LinearizerQuality" value="4"/>
+    <item key="View_SolidViewHide" value=""/>
+  </config>
+
+</problem:document>
