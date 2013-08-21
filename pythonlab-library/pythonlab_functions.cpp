@@ -45,5 +45,5 @@ void pyMessage(std::string str)
 
 char *pyDatadir(std::string str)
 {
-    return const_cast<char*>(compatibleFilename(datadir() + "/" + QString::fromStdString(str)).toStdString().c_str());
+    return const_cast<char*>((datadir() + "/" + QString::fromStdString(str)).toStdString().c_str());
 }

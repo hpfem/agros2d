@@ -105,7 +105,9 @@ public:
     inline bool isScriptRunning() { return m_isScriptRunning; }
 
     void deleteUserModules();
-    QStringList codeCompletion(const QString& code, int offset, const QString& fileName = "");
+    QStringList codeCompletionScript(const QString& code, int row, int column, const QString& fileName = "");
+    QStringList codeCompletionInterpreter(const QString& code);
+    QStringList codeCompletion(const QString& command);
     QStringList codePyFlakes(const QString& fileName);
     QList<PythonVariable> variableList();
 

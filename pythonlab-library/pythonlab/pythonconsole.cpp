@@ -310,8 +310,7 @@ void PythonScriptingConsole::handleTabCompletion(bool autoComplete)
     QString search = c.selectedText();
 
     // code completion
-    QStringList found = pythonEngine->codeCompletion(search.toLower(), search.length());
-    // qDebug() << found.length();
+    QStringList found = pythonEngine->codeCompletionInterpreter(search.toLower());
 
     // add variables
     QList<PythonVariable> list = pythonEngine->variableList();
@@ -356,8 +355,6 @@ void PythonScriptingConsole::handleTabCompletion(bool autoComplete)
             str = "";
         else
             str = str.right(str.length() - str.lastIndexOf(".") - 1);
-
-        // qDebug() << str.trimmed();
 
         completer->setCompletionPrefix(str.trimmed());
         completer->setModel(new QStringListModel(found, completer));

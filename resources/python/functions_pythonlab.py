@@ -14,42 +14,30 @@ def sgn(number):
 # pythonlab_rope_project = Project(".", ropefolder=None)
 
 # get completion list
-def python_engine_get_completion_string(code, offset):
-    from rope.contrib import codeassist
+def python_engine_get_completion_script(script, row, column, filename):
+	import jedi
+	
+	s = jedi.Script(script, row, column, filename)
+	completions = s.completions()
+	
+	comps = []
+	for completion in completions:
+		comps.append(completion.name)
+		
+	return comps
 
-    proposals = codeassist.code_assist(pythonlab_rope_project, code, offset, maxfixes=20)
-    # proposals = codeassist.sorted_proposals(proposals)
-    proposals_string = []
-    for p in proposals:
-        proposals_string.append(p.__str__())
-
-    return proposals_string
-    # return [proposal.name for proposal in proposals]
-
-def python_engine_get_completion_string_dot(code):
-    try:
-        return dir(eval(code))
-    except:
-        return []
-
-def python_engine_get_completion_file(filename, offset):
-    from rope.contrib import codeassist
-
-    f = open(filename, 'r')
-    code = ''.join(f.readlines())
-
-    proposals_string = []
-    try:
-        proposals = codeassist.code_assist(pythonlab_rope_project, code, offset, maxfixes=20)
-        # proposals = codeassist.sorted_proposals(proposals)
-        for p in proposals:
-            proposals_string.append(p.__str__())
-
-        return proposals_string
-        # return [proposal.name for proposal in proposals]
-    except:
-        return []
-
+def python_engine_get_completion_interpreter(script):
+	import jedi
+	
+	s = jedi.Interpreter(script, [globals()])
+	completions = s.completions()
+	
+	comps = []
+	for completion in completions:
+		comps.append(completion.name)
+		
+	return comps
+		
 def python_engine_pyflakes_check(filename):
     f = open(filename, 'r')
     code = ''.join(f.readlines())

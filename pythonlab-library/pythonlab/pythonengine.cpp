@@ -471,62 +471,50 @@ bool PythonEngine::runExpression(const QString &expression, double *value, const
     return successfulRun;
 }
 
-QStringList PythonEngine::codeCompletion(const QString& code, int offset, const QString& fileName)
+QStringList PythonEngine::codeCompletionScript(const QString& code, int row, int column, const QString& fileName)
 {
     runPythonHeader();
 
     QStringList out;
 
-    QString exp;
+    QString fn = "";
     if (QFile::exists(fileName))
-    {
-        exp = QString("result_rope_pythonlab = python_engine_get_completion_file(\"%1\", %2)").
-                arg(compatibleFilename(fileName)).
-                arg(offset);
-    }
-    else
-    {
-        QString str = code;
-        // if (str.lastIndexOf("=") != -1)
-        //    str = str.right(str.length() - str.lastIndexOf("=") - 1);
+        fn = fileName;
 
-        for (int i = 33; i <= 126; i++)
-        {
-            // skip numbers and alphabet and dot
-            if ((i >= 48 && i <= 57) || (i >= 65 && i <= 90) || (i >= 97 && i <= 122) || (i == 46))
-                continue;
+    QString exp = QString("result_jedi_pythonlab = python_engine_get_completion_file(\"%1\", %2, %3, \"%4\")").
+            arg(code).
+            arg(row).
+            arg(column).
+            arg(fn);
 
-            QChar c(i);
-            // qDebug() << c << ", " << str.lastIndexOf(c) << ", " << str.length();
+    return codeCompletion(exp);
+}
 
-            if (str.lastIndexOf(c) != -1)
-            {
-                str = str.right(str.length() - str.lastIndexOf(c) - 1);
-                break;
-            }
-        }
+QStringList PythonEngine::codeCompletionInterpreter(const QString& code)
+{
+    runPythonHeader();
 
-        if (str.contains("."))
-        {
-            QString search = str.left(str.lastIndexOf("."));
-            exp = QString("result_rope_pythonlab = python_engine_get_completion_string_dot(\"%1\")").
-                    arg(search);
-        }
-        else
-            exp = QString("result_rope_pythonlab = python_engine_get_completion_string(\"%1\", %2)").
-                    arg(str.trimmed()).
-                    arg(str.trimmed().length());
-    }
+    QString exp = QString("result_jedi_pythonlab = python_engine_get_completion_interpreter(\"%1\")").
+            arg(code);
+
+    return codeCompletion(exp);
+}
+
+QStringList PythonEngine::codeCompletion(const QString& command)
+{
+    runPythonHeader();
+
+    QStringList out;
 
     // QTime time;
     // time.start();
-    PyObject *output = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
+    PyObject *output = PyRun_String(command.toLatin1().data(), Py_single_input, m_dict, m_dict);
     // qDebug() << time.elapsed();
 
     // parse result
     if (output)
     {
-        PyObject *result = PyDict_GetItemString(m_dict, "result_rope_pythonlab");
+        PyObject *result = PyDict_GetItemString(m_dict, "result_jedi_pythonlab");
         if (result)
         {
             Py_INCREF(result);
@@ -548,7 +536,7 @@ QStringList PythonEngine::codeCompletion(const QString& code, int offset, const 
             Py_DECREF(result);
         }
 
-        PyRun_String("del result_rope_pythonlab", Py_single_input, m_dict, m_dict);
+        PyRun_String("del result_jedi_pythonlab", Py_single_input, m_dict, m_dict);
     }
     else
     {
@@ -676,8 +664,8 @@ QList<PythonVariable> PythonEngine::variableList()
 {
     QStringList filter_name;
     filter_name << "__builtins__" << "StdoutCatcher" << "python_engine_stdout" << "chdir"
-                << "python_engine_get_completion_file" << "python_engine_get_completion_string"
-                << "python_engine_get_completion_string_dot" << "PythonLabRopeProject"
+                << "python_engine_get_completion_interpreter" << "python_engine_get_completion_script"
+                << "PythonLabRopeProject"
                 << "pythonlab_rope_project"
                 << "python_engine_pyflakes_check"
                 << "CatchOutErr"

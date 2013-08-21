@@ -1460,18 +1460,15 @@ void ScriptEditor::keyPressEvent(QKeyEvent *event)
             || completer->popup()->isVisible())
     {
         QTextCursor tc = textCursor();
-        tc.select(QTextCursor::WordUnderCursor);
-        QString textToComplete = tc.selectedText();
+        // tc.select(QTextCursor::WordUnderCursor);
+        // QString textToComplete = tc.selectedText();
+        QString textToComplete = textCursor().block().text().trimmed();
 
-        QString fn = tempProblemFileName() + ".rope_str.py";
-        QString str = toPlainText();
-        writeStringContent(fn, &str);
-
-        QStringList found = pythonEngine->codeCompletion("", tc.position(), fn);
+        QStringList found = pythonEngine->codeCompletionInterpreter(textToComplete);
 
         if (!found.isEmpty())
         {
-            completer->setCompletionPrefix(textToComplete);
+            // completer->setCompletionPrefix(textToComplete);
             completer->setModel(new QStringListModel(found, completer));
             QTextCursor c = textCursor();
             c.movePosition(QTextCursor::StartOfWord);
@@ -1485,8 +1482,6 @@ void ScriptEditor::keyPressEvent(QKeyEvent *event)
         {
             completer->popup()->hide();
         }
-
-        QFile::remove(fn);
     }
 }
 
@@ -1760,11 +1755,11 @@ void ScriptEditor::insertCompletion(const QString& completion)
 
     QTextCursor tc = textCursor();
     tc.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
-    if (tc.selectedText() == ".")
-    {
-        tc.insertText(QString(".") + str);
-    }
-    else
+    // if (tc.selectedText() == ".")
+    // {
+    //     tc.insertText(QString(".") + str);
+    // }
+    // else
     {
         tc = textCursor();
         tc.movePosition(QTextCursor::StartOfWord, QTextCursor::MoveAnchor);
