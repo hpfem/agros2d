@@ -223,15 +223,19 @@ void PythonEngine::init()
 
     // connect stdout
     connect(this, SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
-
+    
     // init python
     PyEval_InitThreads();
     Py_Initialize();
 
     // args
-    int argc;
-    char **argv;
+    /// \todo Better
+    int argc = 1;
+    char ** argv = new char*[1];
+    argv[0] = new char[1];
     PySys_SetArgv(argc, argv);
+    delete [] argv[0];
+    delete [] argv;
 
     // read pythonlab functions
     addFunctions(readFileContent(datadir() + "/resources/python/functions_pythonlab.py"));
