@@ -72,6 +72,9 @@
               <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_total_current_imag" value="0"/>
+              <material_type key="magnetic_total_current_prescribed" value="0"/>
+              <material_type key="magnetic_total_current_real" value="0"/>
               <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
@@ -84,10 +87,13 @@
             <material_types>
               <material_type key="magnetic_conductivity" value="57e6"/>
               <material_type key="magnetic_current_density_external_imag" value="0"/>
-              <material_type key="magnetic_current_density_external_real" value="1e6"/>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
               <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_total_current_imag" value="0"/>
+              <material_type key="magnetic_total_current_prescribed" value="1"/>
+              <material_type key="magnetic_total_current_real" value="0.25"/>
               <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
@@ -205,7 +211,7 @@
     <item key="View_ColorCrossedBlue" value="0"/>
     <item key="View_ShowInitialMeshView" value="1"/>
     <item key="View_ShowSolutionMeshView" value="0"/>
-    <item key="View_ContourVariable" value="magnetic_potential"/>
+    <item key="View_ContourVariable" value="magnetic_flux_density_real"/>
     <item key="View_ShowContourView" value="0"/>
     <item key="View_ContoursCount" value="15"/>
     <item key="View_ContoursWidth" value="1"/>
@@ -220,10 +226,10 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="3.71241417014014e-10"/>
-    <item key="View_ScalarRangeMax" value="2.54779698795838e-05"/>
+    <item key="View_ScalarRangeMin" value="3.71241416286688e-10"/>
+    <item key="View_ScalarRangeMax" value="2.54780275426584e-05"/>
     <item key="View_ShowVectorView" value="0"/>
-    <item key="View_VectorVariable" value=""/>
+    <item key="View_VectorVariable" value="magnetic_flux_density_real"/>
     <item key="View_VectorProportional" value="1"/>
     <item key="View_VectorColor" value="1"/>
     <item key="View_VectorCount" value="50"/>
