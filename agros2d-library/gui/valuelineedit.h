@@ -34,7 +34,7 @@ class ValueLineEdit : public QWidget
     Q_OBJECT
 
 public:
-    ValueLineEdit(QWidget *parent = 0, bool hasTimeDep = false, bool hasNonlin = false);
+    ValueLineEdit(QWidget *parent = 0, bool hasTimeDep = false, bool hasNonlin = false, bool isBool = false, QString id = QString(), QString onlyIf = QString());
     ~ValueLineEdit();
 
     double number();
@@ -49,27 +49,43 @@ public:
     inline void setMaximumSharp(double max) { m_maximumSharp = max; }
     inline void setCondition(QString condition) { m_condition = condition; }
 
-    inline void setTitle(const QString &title) { m_title = title; }
+    inline void setTitle(const QString &title) { m_title = title; if(m_isBool && chkCheckBox) chkCheckBox->setText(title);}
     inline QString title() const { return m_title; }
     inline void setLabelX(const QString &labelX) { m_labelX = labelX; }
     inline QString labelX() const { return m_labelX; }
     inline void setLabelY(const QString &labelY) { m_labelY = labelY; }
     inline QString labelY() const { return m_labelY; }
+    inline bool isBool() const {return m_isBool; }
+    inline QString id() const {return m_id; }
 
 public slots:
     bool evaluate(bool quiet = true);
     bool checkCondition(double value);
+
+    void doCheckBoxStateChanged();
+
+    // for the case of text fields. Check value of QString against only_if from xml
+    void doEnableFields(QString id, bool checked);
 
 signals:
     void editingFinished();
     void textChanged(QString);
     void evaluated(bool isError);
 
+    // for the case of bool (checkbox). If state changed, emits its id and state
+    void enableFields(QString id, bool checked);
+
 protected:
     virtual QSize sizeHint() const;
     void focusInEvent(QFocusEvent *event);
 
 private:
+    // if isBool, it is shown as checkbox, value is 0 or 1
+    bool m_isBool;
+    // textbox enabled only if checkbox with this id is checked
+    QString m_onlyIf;
+    QString m_id;
+
     double m_minimum;
     double m_minimumSharp;
     double m_maximum;
@@ -85,7 +101,11 @@ private:
     QString m_labelX;
     QString m_labelY;
 
+    //usually text field
     QLineEdit *txtLineEdit;
+    // but may be also checkbox
+    QCheckBox *chkCheckBox;
+
     QLabel *lblValue;
     QLabel *lblInfo;
 

@@ -343,7 +343,7 @@
                         <attribute name="nonlinearity_axi" type="string" />
                         <attribute name="dependence" type="string" />
                         <attribute name="name" type="string" />
-            <attribute name="shortname" type="string" />
+                        <attribute name="shortname" type="string" />
                         <attribute name="shortname_html" type="string" />
                         <attribute name="shortname_latex" type="string" />
                         <attribute name="shortname_dependence" type="string" />
@@ -351,6 +351,9 @@
                         <attribute name="unit" type="string" />
                         <attribute name="unit_html" type="string" />
                         <attribute name="unit_latex" type="string" />
+                        <attribute name="is_bool" type="string" />
+                        <attribute name="only_if" type="string" />
+
                 </complexType>
         </element>
 

@@ -145,21 +145,37 @@ void SceneFieldWidget::createContent()
                 ids.append(row.id());
 
                 // label
-                labels.append(new QLabel(QString("%1 (%2):").
-                                         arg(row.shortnameHtml()).
-                                         arg(row.unitHtml())));
-                labels.at(labels.count() - 1)->setToolTip(row.name());
-                labels.at(labels.count() - 1)->setMinimumWidth(100);
+                if(textEdit->isBool())
+                {
+                    labels.append(new QLabel(row.name()));
+                }
+                else{
+                    labels.append(new QLabel(QString("%1 (%2):").
+                                             arg(row.shortnameHtml()).
+                                             arg(row.unitHtml())));
+                    labels.at(labels.count() - 1)->setToolTip(row.name());
+                    labels.at(labels.count() - 1)->setMinimumWidth(100);
+                }
 
                 // text edit
                 values.append(textEdit);
-                values.at(values.count() - 1)->setValue(Value(QString::number(row.defaultValue())));
+                textEdit->setValue(Value(QString::number(row.defaultValue())));
 
                 conditions.append(row.condition());
 
                 int index = layoutGroup->rowCount();
-                layoutGroup->addWidget(labels.at(labels.count() - 1), index, 0);
-                layoutGroup->addWidget(values.at(values.count() - 1), index, 1);
+                if(textEdit->isBool())
+                {
+                    textEdit->setTitle(row.name());
+                    layoutGroup->addWidget(textEdit, index, 0,1,2);
+                    connect(textEdit, SIGNAL(enableFields(QString, bool)), this, SIGNAL(enableFields(QString, bool)));
+                }
+                else
+                {
+                    layoutGroup->addWidget(labels.at(labels.count() - 1), index, 0);
+                    layoutGroup->addWidget(textEdit, index, 1);
+                    connect(this, SIGNAL(enableFields(QString, bool)), textEdit, SLOT(doEnableFields(QString, bool)));
+                }
             }
         }
 
@@ -176,6 +192,12 @@ void SceneFieldWidget::createContent()
             grpGroup->setLayout(layoutGroup);
             layout->addWidget(grpGroup);
         }
+    }
+
+    foreach(ValueLineEdit* valueLineEdit, values)
+    {
+        if(valueLineEdit->isBool())
+            valueLineEdit->doCheckBoxStateChanged();
     }
 
     refresh();
@@ -196,7 +218,8 @@ ValueLineEdit *SceneFieldWidgetMaterial::addValueEditWidget(const Module::Dialog
         {
             ValueLineEdit *edit = new ValueLineEdit(this,
                                                     (variable.isTimeDep() && m_material->fieldInfo()->analysisType() == AnalysisType_Transient),
-                                                    (variable.isNonlinear() && m_material->fieldInfo()->linearityType() != LinearityType_Linear));
+                                                    (variable.isNonlinear() && m_material->fieldInfo()->linearityType() != LinearityType_Linear),
+                                                    variable.isBool(), variable.id(), variable.onlyIf());
             if (variable.isNonlinear())
             {
                 edit->setTitle(row.name());

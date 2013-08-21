@@ -107,6 +107,9 @@ public:
 
 private:
     void readEquation();
+
+signals:
+    void enableFields(QString id, bool checked);
 };
 
 class SceneFieldWidgetBoundary : public SceneFieldWidget

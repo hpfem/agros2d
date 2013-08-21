@@ -20,11 +20,14 @@
 			<coupling:weakform_volume couplingtype="weak" sourceanalysis="harmonic"
 				targetanalysis="steadystate">
                 <coupling:vector_form id="coupling" i="1" j="1"
-                    planar_linear="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (source1 * source1 + source2 * source2) * vval"
-                    axi_linear="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (source1 * source1 + source2 * source2) * r * vval"
-                    planar_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (source1 * source1 + source2 * source2) * vval"
-                    axi_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (source1 * source1 + source2 * source2) * r * vval" />
+                    planar_linear="0.5 * ma_gamma * (2 * PI * f)^2 * ((source1 + source3)^2 + (source2 + source4)^2) * vval"
+                    axi_linear="0.5 * ma_gamma * (2 * PI * f)^2 * ((source1 + source3)^2 + (source2 + source4)^2) * r * vval"
+                    planar_newton="- 0.5 * ma_gamma * (2 * PI * f)^2 * ((source1 + source3)^2 + (source2 + source4)^2) * vval"
+                    axi_newton="- 0.5 * ma_gamma * (2 * PI * f)^2 * ((source1 + source3)^2 + (source2 + source4)^2) * r * vval" />
 			</coupling:weakform_volume>
+
+<!-- TODO: has to be altered to new harmonic module with 4 fields. i: 3->5 and there will be probably two forms instead of one (i=5, j=1) AND (i=5, j=3)-->
+
 
 			<coupling:weakform_volume couplingtype="hard" sourceanalysis="harmonic"
 				targetanalysis="steadystate">
@@ -53,11 +56,13 @@
 			<coupling:weakform_volume couplingtype="weak" sourceanalysis="harmonic"
 				targetanalysis="transient">
                 <coupling:vector_form id="coupling" i="1" j="1"
-                    planar_linear="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (source1 * source1 + source2 * source2) * vval"
-                    axi_linear="0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (source1 * source1 + source2 * source2) * r * vval"
-                    planar_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (source1 * source1 + source2 * source2) * vval"
-                    axi_newton="- 0.5 * ma_gamma * (2 * PI * f) * (2 * PI * f) * (source1 * source1 + source2 * source2) * r * vval"/>
-			</coupling:weakform_volume>
+                planar_linear="0.5 * ma_gamma * (2 * PI * f)^2 * ((source1 + source3)^2 + (source2 + source4)^2) * vval"
+                axi_linear="0.5 * ma_gamma * (2 * PI * f)^2 * ((source1 + source3)^2 + (source2 + source4)^2) * r * vval"
+                planar_newton="- 0.5 * ma_gamma * (2 * PI * f)^2 * ((source1 + source3)^2 + (source2 + source4)^2) * vval"
+                axi_newton="- 0.5 * ma_gamma * (2 * PI * f)^2 * ((source1 + source3)^2 + (source2 + source4)^2) * r * vval" />
+                        </coupling:weakform_volume>
+
+<!-- TODO: has to be altered to new harmonic module with 4 fields. i: 3->5 and there will be probably two forms instead of one (i=5, j=1) AND (i=5, j=3)-->
 
 			<coupling:weakform_volume couplingtype="hard" sourceanalysis="harmonic"
 				targetanalysis="transient">
