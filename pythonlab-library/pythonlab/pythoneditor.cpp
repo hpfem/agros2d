@@ -86,7 +86,6 @@ PythonEditorWidget::~PythonEditorWidget()
 
     settings.setValue("PythonEditorWidget/Geometry", saveGeometry());
     settings.setValue("PythonEditorWidget/SplitterState", splitter->saveState());
-    settings.setValue("PythonEditorWidget/SplitterState", splitter->saveState());
     settings.setValue("PythonEditorWidget/SplitterGeometry", splitter->saveGeometry());
     settings.setValue("PythonEditorWidget/EditorHeight", txtEditor->height());
 }
@@ -1460,66 +1459,15 @@ void ScriptEditor::keyPressEvent(QKeyEvent *event)
             || completer->popup()->isVisible())
     {
         QTextCursor tc = textCursor();
-        // tc.select(QTextCursor::WordUnderCursor);
-        // QString textToComplete = tc.selectedText();
-        QString textToComplete = textCursor().block().text().trimmed();
-
         QStringList found = pythonEngine->codeCompletionScript(toPlainText(),
                                                                tc.blockNumber() + 1,
                                                                tc.columnNumber() + 1);
 
-        // experimental - intelligent text completion
-        if (false)
-        {
-            foreach (QString row, toPlainText().split("\n"))
-            {
-                // remove comment
-                if (int index = row.indexOf('#'))
-                {
-                    if (index > 0)
-                    {
-                        qDebug() << index;
-                        row = row.left(index);
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
+        QString textToComplete = textCursor().block().text().trimmed();
+        QStringList foundInterpreter = pythonEngine->codeCompletionInterpreter(textToComplete);
 
-                QRegExp rx("^[.,]*$");
-                QStringList strs = row.split(rx);
-                foreach (QString str, strs)
-                {
-                    if (!str.isEmpty() && !found.contains(str))
-                    {
-                        qDebug() << str;
-                        found.append(str);
-                    }
-                }
-
-                /*
-                QRegExp rx("(^[a-zA-Z0-9_]+$)");
-                int pos = 0;
-
-                while ((pos = rx.indexIn(row, pos)) != -1)
-                {
-                    QString str = rx.cap(1);
-                    if (!found.contains(str))
-                    {
-                        qDebug() << str;
-                        found.append(str);
-                    }
-                    pos += rx.matchedLength();
-                }
-                */
-            }
-        }
-
-        foreach (QString str, found)
-        {
-            // qDebug() << str;
-        }
+        found << foundInterpreter;
+        found.removeDuplicates();
 
         if (!found.isEmpty())
         {

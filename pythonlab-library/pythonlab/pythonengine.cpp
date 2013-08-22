@@ -475,8 +475,6 @@ QStringList PythonEngine::codeCompletionScript(const QString& code, int row, int
 {
     runPythonHeader();
 
-    QStringList out;
-
     QString fn = "";
     if (QFile::exists(fileName))
         fn = fileName;
@@ -530,7 +528,10 @@ QStringList PythonEngine::codeCompletion(const QString& command)
 
                     // remove builtin methods
                     if (!str.startsWith("__"))
+                    {
+                        qDebug() << str;
                         out.append(str);
+                    }
                 }
             }
             Py_DECREF(result);
