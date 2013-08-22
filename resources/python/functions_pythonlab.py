@@ -14,8 +14,10 @@ def sgn(number):
 # pythonlab_rope_project = Project(".", ropefolder=None)
 
 # get completion list
-def python_engine_get_completion_script(script, row, column, filename):
+def python_engine_get_completion_script(script, row, column, filename = None):
 	import jedi
+	
+	jedi.settings.additional_dynamic_modules = [pythonlab]
 	
 	s = jedi.Script(script, row, column, filename)
 	completions = s.completions()

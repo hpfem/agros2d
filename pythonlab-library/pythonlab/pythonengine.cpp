@@ -481,7 +481,7 @@ QStringList PythonEngine::codeCompletionScript(const QString& code, int row, int
     if (QFile::exists(fileName))
         fn = fileName;
 
-    QString exp = QString("result_jedi_pythonlab = python_engine_get_completion_file(\"%1\", %2, %3, \"%4\")").
+    QString exp = QString("result_jedi_pythonlab = python_engine_get_completion_script(\"\"\"%1\"\"\", %2, %3, \"%4\")").
             arg(code).
             arg(row).
             arg(column).
