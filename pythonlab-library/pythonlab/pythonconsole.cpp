@@ -131,11 +131,10 @@ void PythonScriptingConsole::stdImage(const QString &fileName, int width, int he
         imageFormat.setName(uri.toString());
         cursor.insertImage(imageFormat);
 
+        append("");
+
         cursor.movePosition(QTextCursor::End);
-        setTextCursor(cursor);
-
-
-        // appendCommandPrompt();
+        setTextCursor(cursor);        
     }
 }
 

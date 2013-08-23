@@ -7,7 +7,6 @@ class ElasticityPlanar(agros2d.Agros2DTestCase):
         problem.coordinate_type = "planar"
         problem.mesh_type = "triangle"
         
-        
         # disable view
         agros2d.view.mesh.disable()
         agros2d.view.post2d.disable()
@@ -41,7 +40,6 @@ class ElasticityPlanar(agros2d.Agros2DTestCase):
         geometry.add_edge(0, 0, 0.6, 0, boundaries = {"elasticity" : "Free"})
         geometry.add_edge(0.6, 0, 1.4, 0, boundaries = {"elasticity" : "Free"})
         geometry.add_edge(1.4, 0.2, 0.6, 0.2, boundaries = {"elasticity" : "Free"})
-        
         
         # labels
         geometry.add_label(0.0823077, 0.11114, materials = {"elasticity" : "Material 1"})
