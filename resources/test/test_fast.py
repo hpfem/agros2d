@@ -103,3 +103,6 @@ suite.addTest(ut.TestLoader().loadTestsFromTestCase(matrix_solvers.InternalMatri
 
 # run tests
 suite.run(result)
+
+if (not result.wasSuccessful()):
+    raise Exception('Failure', result.failures)
