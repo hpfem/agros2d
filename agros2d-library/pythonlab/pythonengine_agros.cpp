@@ -22,7 +22,18 @@
 #include "logview.h"
 #include "hermes2d/plugin_interface.h"
 #include "hermes2d/module.h"
-#include <Python.h>
+#ifdef _MSC_VER
+# ifdef _DEBUG
+#  undef _DEBUG
+#  include <Python.h>
+#  define _DEBUG
+# else
+#  include <Python.h>
+# endif
+#else
+#  include <Python.h>
+#endif
+
 #include "util/memory_monitor.h"
 
 // current python engine agros
