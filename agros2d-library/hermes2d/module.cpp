@@ -475,7 +475,7 @@ QList<FormInfo> WeakFormAgros<Scalar>::wfVectorVolumeTemplates(XMLModule::module
 {
     // vector weakforms
     QList<FormInfo> weakForms;
-    for (unsigned int i = 0; i = module->volume().vector_form().size(); i++)
+    for (unsigned int i = 0; i < module->volume().vector_form().size(); i++)
     {
         XMLModule::vector_form form = module->volume().vector_form().at(i);
         assert(form.i().present() && form.j().present() && form.planar().present() && form.axi().present());
@@ -570,7 +570,7 @@ FormInfo findFormInfo(QList<FormInfo> list, QString id)
         if(form.id == id)
             return form;
     }
-    throw AgrosGeneratorException("Form not found");
+    throw AgrosGeneratorException(QString("Form %1 not found").arg(id));
 }
 
 // todo: implement properly. What if uval is part of some identifier?
@@ -599,19 +599,36 @@ void replaceForVariant(QString& str, WeakFormVariant variant)
         throw AgrosGeneratorException("Unknown form variant");
 }
 
-QList<FormInfo> generateSeparated(QList<FormInfo> templates, QList<FormInfo> elements)
+QList<FormInfo> generateSeparated(QList<FormInfo> elements, QList<FormInfo> templates, QList<FormInfo> templatesForResidual = QList<FormInfo>())
 {
     checkDuplicities(templates);
     checkDuplicities(elements);
     QList<FormInfo> listResult;
     foreach(FormInfo formElement, elements)
     {
-        FormInfo formTemplate = findFormInfo(templates, formElement.id);
+        FormInfo formTemplate;
+        try
+        {
+            formTemplate = findFormInfo(templates, formElement.id);
+        }
+        catch(AgrosGeneratorException &err)
+        {
+            if(templatesForResidual.empty())
+                throw;
+            else
+                formTemplate = findFormInfo(templatesForResidual, formElement.id);
+        }
+
         FormInfo formResult(formTemplate.id, formTemplate.i, formTemplate.j, formTemplate.sym);
         if(formElement.coefficient != 1.)
         {
             formResult.expr_axi = QString("%1*(%2)").arg(formElement.coefficient).arg(formTemplate.expr_axi);
             formResult.expr_planar = QString("%1*(%2)").arg(formElement.coefficient).arg(formTemplate.expr_planar);
+        }
+        else
+        {
+            formResult.expr_axi = formTemplate.expr_axi;
+            formResult.expr_planar = formTemplate.expr_planar;
         }
         replaceForVariant(formResult.expr_axi, formElement.variant);
         replaceForVariant(formResult.expr_planar, formElement.variant);
@@ -628,16 +645,17 @@ QList<FormInfo> WeakFormAgros<Scalar>::wfMatrixVolumeSeparated(XMLModule::module
     QList<FormInfo> templates = wfMatrixVolumeTemplates(module);
     QList<FormInfo> elements = wfMatrixVolumeElements(module, analysisType, linearityType);
 
-    return generateSeparated(templates, elements);
+    return generateSeparated(elements, templates);
 }
 
 template <typename Scalar>
 QList<FormInfo> WeakFormAgros<Scalar>::wfVectorVolumeSeparated(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType)
 {
-    QList<FormInfo> templates = wfVectorVolumeTemplates(module);
+    QList<FormInfo> templatesVector = wfVectorVolumeTemplates(module);
+    QList<FormInfo> templatesMatrix = wfMatrixVolumeTemplates(module);
     QList<FormInfo> elements = wfVectorVolumeElements(module, analysisType, linearityType);
 
-    return generateSeparated(templates, elements);
+    return generateSeparated(elements, templatesVector, templatesMatrix);
 }
 
 template <typename Scalar>

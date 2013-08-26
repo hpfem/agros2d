@@ -77,7 +77,7 @@ nahrada uval -> uptval ... linearizace v prechodaku pomoci predchoziho casoveho 
         </module:linearity_option>
 
       </module:weakform_volume>
-<!--      <module:weakform_volume analysistype="transient" equation="-\, \div \left( \lambda\,\, \grad T \right) + \rho c_\mathrm{p} \left(\frac{\partial T}{\partial t} + \vec{v} \cdot \grad T\right) = Q">
+      <module:weakform_volume analysistype="transient" equation="-\, \div \left( \lambda\,\, \grad T \right) + \rho c_\mathrm{p} \left(\frac{\partial T}{\partial t} + \vec{v} \cdot \grad T\right) = Q">
         <module:quantity id="heat_velocity_x"/>
         <module:quantity id="heat_velocity_y"/>
         <module:quantity id="heat_velocity_angular"/>
@@ -106,7 +106,7 @@ nahrada uval -> uptval ... linearizace v prechodaku pomoci predchoziho casoveho 
           <module:vector_form id="time_mat" variant="residual"/>
         </module:linearity_option>
 
-      </module:weakform_volume>-->
+      </module:weakform_volume>
     </module:weakforms_volume>
   </module:volume>
 

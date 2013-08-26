@@ -220,7 +220,13 @@ void Agros2DGenerator::run()
     else
     {
         // generate all sources
-        generateSources();
+        try{
+            generateSources();
+        }
+        catch(AgrosGeneratorException& err)
+        {
+            qDebug() << "Generator exception " << err.what();
+        }
     }
 }
 
