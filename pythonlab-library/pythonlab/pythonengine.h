@@ -2,7 +2,17 @@
 #define PYTHONENGINE_H
 
 #include "util.h"
-#include <Python.h>
+#ifdef _MSC_VER
+# ifdef _DEBUG
+#  undef _DEBUG
+#  include <Python.h>
+#  define _DEBUG
+# else
+#  include <Python.h>
+# endif
+#else
+#  include <Python.h>
+#endif
 
 struct PythonVariable
 {
