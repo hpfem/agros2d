@@ -120,6 +120,13 @@ enum WeakFormKind
     WeakForm_ExactSol
 };
 
+enum WeakFormVariant
+{
+    WeakFormVariant_Normal,
+    WeakFormVariant_Residual,
+    WeakFormVariant_TimeResidual
+};
+
 enum SceneGeometryMode
 {
     SceneGeometryMode_OperateOnNodes,
@@ -275,6 +282,12 @@ AGROS_LIBRARY_API QString weakFormString(WeakFormKind weakForm);
 AGROS_LIBRARY_API QStringList weakFormStringKeys();
 AGROS_LIBRARY_API QString weakFormToStringKey(WeakFormKind weakForm);
 AGROS_LIBRARY_API WeakFormKind weakFormFromStringKey(const QString &weakForm);
+
+// weakform variant
+AGROS_LIBRARY_API QString weakFormVariantString(WeakFormVariant weakFormVariant);
+AGROS_LIBRARY_API QStringList weakFormVariantStringKeys();
+AGROS_LIBRARY_API QString weakFormVariantToStringKey(WeakFormVariant weakFormVariant);
+AGROS_LIBRARY_API WeakFormVariant weakFormVariantFromStringKey(const QString &weakFormVariant);
 
 // mesh type
 AGROS_LIBRARY_API QString meshTypeString(MeshType meshType);

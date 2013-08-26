@@ -238,4 +238,12 @@ public:
     }
 };
 
+class AgrosGeneratorException : public AgrosException
+{
+public:
+    AgrosGeneratorException(const QString &what) : AgrosException(what)
+    {
+    }
+};
+
 #endif // UTIL_H

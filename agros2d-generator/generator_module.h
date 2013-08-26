@@ -21,6 +21,7 @@
 #define GENERATOR_MODULE_H
 
 #include "generator.h"
+struct FormInfo;
 
 class Agros2DGeneratorModule : public Agros2DGeneratorBase
 {
@@ -55,8 +56,11 @@ private:
     void generateWeakForms(ctemplate::TemplateDictionary &output);
 
     //ToDo: make up better names
+    template <typename WeakForm>
+    void generateForm(FormInfo form, LinearityType linearityType, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, XMLModule::boundary *boundary = 0);
+
     template <typename Form, typename WeakForm>
-    void generateForm(Form form, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, XMLModule::boundary *boundary = 0, int j = 0);
+    void generateFormOld(Form form, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, int i, XMLModule::boundary *boundary = 0, int j = 0);
 
     QString nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);
     QString dependence(const QString &variable, AnalysisType analysisType);

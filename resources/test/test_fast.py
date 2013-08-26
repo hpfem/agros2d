@@ -48,6 +48,9 @@ suite.addTest(ut.TestLoader().loadTestsFromTestCase(magnetic.MagneticPlanar))
 suite.addTest(ut.TestLoader().loadTestsFromTestCase(magnetic.MagneticAxisymmetric))
 suite.addTest(ut.TestLoader().loadTestsFromTestCase(magnetic.MagneticHarmonicPlanar))
 suite.addTest(ut.TestLoader().loadTestsFromTestCase(magnetic.MagneticHarmonicAxisymmetric))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(magnetic.MagneticHarmonicPlanarTotalCurrent))
+suite.addTest(ut.TestLoader().loadTestsFromTestCase(magnetic.MagneticHarmonicAxisymmetricTotalCurrent))
+
 
 # rf te
 suite.addTest(ut.TestLoader().loadTestsFromTestCase(rf_te.RFTEHarmonicPlanar))

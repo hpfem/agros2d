@@ -712,8 +712,8 @@ ModuleItemMatrixFormDialog::ModuleItemMatrixFormDialog(ModuleDialog *moduleDialo
     : ModuleItemWeakformDialog(moduleDialog, parent), m_form(form)
 {
     txtID->setText(QString::fromStdString(m_form->id()));
-    txtSolutionIndex->setValue(m_form->i());
-    txtTestFunctionIndex->setValue(m_form->j());
+    txtSolutionIndex->setValue(m_form->i().get());
+    txtTestFunctionIndex->setValue(m_form->j().get());
 
     if (type == "volume")
     {
@@ -730,10 +730,11 @@ ModuleItemMatrixFormDialog::ModuleItemMatrixFormDialog(ModuleDialog *moduleDialo
         txtAxiNewton->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
     }
 
-    txtPlanarLinear->setText(QString::fromStdString(m_form->planar_linear()));
-    txtAxiLinear->setText(QString::fromStdString(m_form->axi_linear()));
-    txtPlanarNewton->setText(QString::fromStdString(m_form->planar_newton()));
-    txtAxiNewton->setText(QString::fromStdString(m_form->axi_newton()));
+    assert(0);
+//    txtPlanarLinear->setText(QString::fromStdString(m_form->planar_linear()));
+//    txtAxiLinear->setText(QString::fromStdString(m_form->axi_linear()));
+//    txtPlanarNewton->setText(QString::fromStdString(m_form->planar_newton()));
+//    txtAxiNewton->setText(QString::fromStdString(m_form->axi_newton()));
 
     QSettings settings;
     restoreGeometry(settings.value("ModuleItemMatrixFormDialog/Geometry", saveGeometry()).toByteArray());
@@ -750,10 +751,11 @@ void ModuleItemMatrixFormDialog::doAccept()
     m_form->id(txtID->text().toStdString());
     m_form->i(txtSolutionIndex->value());
     m_form->j(txtTestFunctionIndex->value());
-    m_form->planar_linear(txtPlanarLinear->toPlainText().toStdString());
-    m_form->axi_linear(txtAxiLinear->toPlainText().toStdString());
-    m_form->planar_newton(txtPlanarNewton->toPlainText().toStdString());
-    m_form->axi_newton(txtAxiNewton->toPlainText().toStdString());
+    assert(0);
+//    m_form->planar_linear(txtPlanarLinear->toPlainText().toStdString());
+//    m_form->axi_linear(txtAxiLinear->toPlainText().toStdString());
+//    m_form->planar_newton(txtPlanarNewton->toPlainText().toStdString());
+//    m_form->axi_newton(txtAxiNewton->toPlainText().toStdString());
 
     accept();
 }
@@ -766,8 +768,8 @@ ModuleItemVectorFormDialog::ModuleItemVectorFormDialog(ModuleDialog *moduleDialo
     setWindowIcon(icon("form-vector"));
 
     txtID->setText(QString::fromStdString(m_form->id()));
-    txtSolutionIndex->setValue(m_form->i());
-    txtTestFunctionIndex->setValue(m_form->j());
+    txtSolutionIndex->setValue(m_form->i().get());
+    txtTestFunctionIndex->setValue(m_form->j().get());
 
     if (type == "volume")
     {
@@ -784,10 +786,11 @@ ModuleItemVectorFormDialog::ModuleItemVectorFormDialog(ModuleDialog *moduleDialo
         txtAxiNewton->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
     }
 
-    txtPlanarLinear->setText(QString::fromStdString(m_form->planar_linear()));
-    txtAxiLinear->setText(QString::fromStdString(m_form->axi_linear()));
-    txtPlanarNewton->setText(QString::fromStdString(m_form->planar_newton()));
-    txtAxiNewton->setText(QString::fromStdString(m_form->axi_newton()));
+    assert(0);
+//    txtPlanarLinear->setText(QString::fromStdString(m_form->planar_linear()));
+//    txtAxiLinear->setText(QString::fromStdString(m_form->axi_linear()));
+//    txtPlanarNewton->setText(QString::fromStdString(m_form->planar_newton()));
+//    txtAxiNewton->setText(QString::fromStdString(m_form->axi_newton()));
 
     QSettings settings;
     restoreGeometry(settings.value("ModuleItemVectorFormDialog/Geometry", saveGeometry()).toByteArray());
@@ -804,10 +807,11 @@ void ModuleItemVectorFormDialog::doAccept()
     m_form->i(txtSolutionIndex->text().toInt());
     m_form->j(txtTestFunctionIndex->text().toInt());
 
-    m_form->planar_linear(txtPlanarLinear->toPlainText().toStdString());
-    m_form->axi_linear(txtAxiLinear->toPlainText().toStdString());
-    m_form->planar_newton(txtPlanarNewton->toPlainText().toStdString());
-    m_form->axi_newton(txtAxiNewton->toPlainText().toStdString());
+    assert(0);
+//    m_form->planar_linear(txtPlanarLinear->toPlainText().toStdString());
+//    m_form->axi_linear(txtAxiLinear->toPlainText().toStdString());
+//    m_form->planar_newton(txtPlanarNewton->toPlainText().toStdString());
+//    m_form->axi_newton(txtAxiNewton->toPlainText().toStdString());
 
     accept();
 }
@@ -830,10 +834,11 @@ ModuleItemEssentialFormDialog::ModuleItemEssentialFormDialog(ModuleDialog *modul
     txtAxiLinear->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
     txtAxiNewton->setWeakformSurfaceHighlighter(moduleDialog->module()->surface().quantity(), numberOfSolutions, CoordinateType_Axisymmetric);
 
-    txtPlanarLinear->setText(QString::fromStdString(m_form->planar_linear()));
-    txtAxiLinear->setText(QString::fromStdString(m_form->axi_linear()));
-    txtPlanarNewton->setText(QString::fromStdString(m_form->planar_newton()));
-    txtAxiNewton->setText(QString::fromStdString(m_form->axi_newton()));
+    assert(0);
+//    txtPlanarLinear->setText(QString::fromStdString(m_form->planar_linear()));
+//    txtAxiLinear->setText(QString::fromStdString(m_form->axi_linear()));
+//    txtPlanarNewton->setText(QString::fromStdString(m_form->planar_newton()));
+//    txtAxiNewton->setText(QString::fromStdString(m_form->axi_newton()));
 
     QSettings settings;
     restoreGeometry(settings.value("ModuleItemEssentialFormDialog/Geometry", saveGeometry()).toByteArray());
@@ -1269,41 +1274,42 @@ void ModuleDialog::load()
         analysis->setExpanded(true);
         analysis->setText(0, analysisTypeString(analysisTypeFromStringKey(QString::fromStdString(wf->analysistype()))));
 
-        // matrix form
-        for (int i = 0; i < wf->matrix_form().size(); i++)
-        {
-            XMLModule::matrix_form *form = &wf->matrix_form().at(i);
+        // TODO:
+//        // matrix form
+//        for (int i = 0; i < wf->matrix_form().size(); i++)
+//        {
+//            XMLModule::matrix_form *form = &wf->matrix_form().at(i);
 
-            QTreeWidgetItem *item = new QTreeWidgetItem(analysis);
+//            QTreeWidgetItem *item = new QTreeWidgetItem(analysis);
 
-            item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::matrix_form *>(form));
-            item->setData(1, Qt::UserRole, QString::fromStdString(wf->analysistype()));
-            item->setData(2, Qt::UserRole, "matrix");
-            item->setData(3, Qt::UserRole, "volume");
-            item->setText(0, tr("Matrix form"));
-            item->setText(1, QString::number(form->i()));
-            item->setText(2, QString::number(form->j()));
-            item->setText(3, QString::fromStdString(form->id()));
-            item->setIcon(0, icon("form-matrix"));
-        }
+//            item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::matrix_form *>(form));
+//            item->setData(1, Qt::UserRole, QString::fromStdString(wf->analysistype()));
+//            item->setData(2, Qt::UserRole, "matrix");
+//            item->setData(3, Qt::UserRole, "volume");
+//            item->setText(0, tr("Matrix form"));
+//            item->setText(1, QString::number(form->i()));
+//            item->setText(2, QString::number(form->j()));
+//            item->setText(3, QString::fromStdString(form->id()));
+//            item->setIcon(0, icon("form-matrix"));
+//        }
 
-        // vector form
-        for (int i = 0; i < wf->vector_form().size(); i++)
-        {
-            XMLModule::vector_form *form = &wf->vector_form().at(i);
+//        // vector form
+//        for (int i = 0; i < wf->vector_form().size(); i++)
+//        {
+//            XMLModule::vector_form *form = &wf->vector_form().at(i);
 
-            QTreeWidgetItem *item = new QTreeWidgetItem(analysis);
+//            QTreeWidgetItem *item = new QTreeWidgetItem(analysis);
 
-            item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::vector_form *>(form));
-            item->setData(1, Qt::UserRole, QString::fromStdString(wf->analysistype()));
-            item->setData(2, Qt::UserRole, "vector");
-            item->setData(3, Qt::UserRole, "volume");
-            item->setText(0, tr("Vector form"));
-            item->setText(1, QString::number(form->i()));
-            item->setText(2, QString::number(form->j()));
-            item->setText(3, QString::fromStdString(form->id()));
-            item->setIcon(0, icon("form-vector"));
-        }
+//            item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::vector_form *>(form));
+//            item->setData(1, Qt::UserRole, QString::fromStdString(wf->analysistype()));
+//            item->setData(2, Qt::UserRole, "vector");
+//            item->setData(3, Qt::UserRole, "volume");
+//            item->setText(0, tr("Vector form"));
+//            item->setText(1, QString::number(form->i()));
+//            item->setText(2, QString::number(form->j()));
+//            item->setText(3, QString::fromStdString(form->id()));
+//            item->setIcon(0, icon("form-vector"));
+//        }
     }
 
     // surface weakform quantities
@@ -1387,8 +1393,8 @@ void ModuleDialog::load()
                 item->setData(2, Qt::UserRole, "matrix");
                 item->setData(3, Qt::UserRole, "surface");
                 item->setText(0, tr("Matrix form"));
-                item->setText(1, QString::number(form->i()));
-                item->setText(2, QString::number(form->j()));
+                item->setText(1, QString::number(form->i().get()));
+                item->setText(2, QString::number(form->j().get()));
                 item->setText(3, QString::fromStdString(form->id()));
                 item->setIcon(0, icon("form-matrix"));
             }
@@ -1405,8 +1411,8 @@ void ModuleDialog::load()
                 item->setData(2, Qt::UserRole, "vector");
                 item->setData(3, Qt::UserRole, "surface");
                 item->setText(0, tr("Vector form"));
-                item->setText(1, QString::number(form->i()));
-                item->setText(2, QString::number(form->j()));
+                item->setText(1, QString::number(form->i().get()));
+                item->setText(2, QString::number(form->j().get()));
                 item->setText(3, QString::fromStdString(form->id()));
                 item->setIcon(0, icon("form-vector"));
             }
@@ -2120,8 +2126,8 @@ void ModuleDialog::weakformDoubleClicked(QTreeWidgetItem *item, int role)
                                               form, this);
             if (dialog.exec())
             {
-                item->setText(1, QString::number(form->i()));
-                item->setText(2, QString::number(form->j()));
+                item->setText(1, QString::number(form->i().get()));
+                item->setText(2, QString::number(form->j().get()));
             }
         }
     }
@@ -2136,8 +2142,8 @@ void ModuleDialog::weakformDoubleClicked(QTreeWidgetItem *item, int role)
                                               form, this);
             if (dialog.exec())
             {
-                item->setText(1, QString::number(form->i()));
-                item->setText(2, QString::number(form->j()));
+                item->setText(1, QString::number(form->i().get()));
+                item->setText(2, QString::number(form->j().get()));
             }
         }
     }

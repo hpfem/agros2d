@@ -90,7 +90,10 @@ class force;
 class localvariable;
 class gui;
 class space;
+
+class linearity_option;
 }
+void findVolumeLinearityOpton(XMLModule::linearity_option& option, XMLModule::module *module, AnalysisType analysisType, LinearityType linearityType);
 
 class Marker;
 
@@ -117,9 +120,9 @@ class BDF2Table;
 
 struct FormInfo
 {
-    FormInfo() : id(""), i(0), j(0), sym(Hermes::Hermes2D::HERMES_NONSYM) {}
-    FormInfo(const QString &id, int i, int j = 0, Hermes::Hermes2D::SymFlag sym = Hermes::Hermes2D::HERMES_NONSYM)
-        : id(id), i(i), j(j), sym(sym) {}
+    FormInfo() : id(""), i(0), j(0), sym(Hermes::Hermes2D::HERMES_NONSYM), variant(WeakFormVariant_Normal), coefficient(1) {}
+    FormInfo(const QString &id, int i = 0, int j = 0, Hermes::Hermes2D::SymFlag sym = Hermes::Hermes2D::HERMES_NONSYM)
+        : id(id), i(i), j(j), sym(sym), variant(WeakFormVariant_Normal), coefficient(1) {}
 
     QString id;
 
@@ -129,6 +132,11 @@ struct FormInfo
 
     // symmetric flag
     Hermes::Hermes2D::SymFlag sym;
+
+    QString expr_planar;
+    QString expr_axi;
+    WeakFormVariant variant;
+    double coefficient;
 };
 
 template <typename Scalar>
@@ -141,6 +149,20 @@ public:
     void registerForms();
     void updateExtField();
     inline BDF2Table* bdf2Table() { return m_bdf2Table; }
+
+    // weak form templates are common for all analysis as building blocks for final forms
+    static QList<FormInfo> wfMatrixVolumeTemplates(XMLModule::module* module);
+    static QList<FormInfo> wfVectorVolumeTemplates(XMLModule::module* module);
+
+    // specifies which weak form templates and in which variant should be used for active analysis and linearity type
+    static QList<FormInfo> wfMatrixVolumeElements(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
+    static QList<FormInfo> wfVectorVolumeElements(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
+
+    static QList<FormInfo> wfMatrixVolumeSeparated(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
+    static QList<FormInfo> wfVectorVolumeSeparated(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
+
+    static QList<FormInfo> wfMatrixVolumeComplete(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
+    static QList<FormInfo> wfVectorVolumeComplete(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
 
 private:
     // materialTarget has to be specified for coupling forms. couplingInfo only for weak couplings

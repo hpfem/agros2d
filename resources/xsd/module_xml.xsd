@@ -41,7 +41,6 @@
                 <complexType>
                    <sequence>
                    <element minOccurs="0" maxOccurs="1" ref="module:field_config" />
-                   <element minOccurs="0" maxOccurs="1" ref="module:linearity_config" />
                    </sequence>
                    <attribute name="id" use="required" type="string" />
                    <attribute name="name" use="required" type="string" />
@@ -57,18 +56,6 @@
                   <complexType>
                     <attribute name="field_key" type="string" use="required"/>
                     <attribute name="field_value" type="string" use="required"/>
-                  </complexType>
-                </element>
-              </sequence>
-            </complexType>
-        </element>
-
-        <element name="linearity_config">
-            <complexType>
-              <sequence>
-                <element minOccurs="0" maxOccurs="unbounded" name="linearity_item">
-                  <complexType>
-                    <attribute name="linearity_option" type="string" use="required"/>
                   </complexType>
                 </element>
               </sequence>
@@ -270,6 +257,8 @@
                 <complexType>
                         <sequence>
                                 <element maxOccurs="unbounded" ref="module:quantity" />
+                                <element maxOccurs="unbounded" ref="module:matrix_form" />
+                                <element maxOccurs="unbounded" ref="module:vector_form" />
                                 <element ref="module:weakforms_volume" />
                         </sequence>
                 </complexType>
@@ -367,17 +356,26 @@
 
         <element name="weakform_volume">
                 <complexType>
+                        <sequence>
+                                <element maxOccurs="unbounded" ref="module:quantity" />
+                                <element minOccurs="1" maxOccurs="unbounded" ref="module:linearity_option" />
+                        </sequence>
+                        <attribute name="analysistype" use="required" type="string" />
+                        <attribute name="equation" use="required" type="string" />
+                </complexType>
+        </element>
+
+        <element name="linearity_option">
+                <complexType>
                         <choice>
                                 <sequence>
-                                        <element maxOccurs="unbounded" ref="module:quantity" />
                                         <choice maxOccurs="unbounded">
                                                 <element ref="module:matrix_form" />
                                                 <element ref="module:vector_form" />
                                         </choice>
                                 </sequence>
                         </choice>
-                        <attribute name="analysistype" use="required" type="string" />
-                        <attribute name="equation" use="required" type="string" />
+                        <attribute name="type" use="required" type="string" />
                 </complexType>
         </element>
 
@@ -392,13 +390,15 @@
 
         <element name="matrix_form">
                 <complexType>
-		                <attribute name="id" use="required" type="string" />
-                        <attribute name="i" use="required" type="integer" />
-                        <attribute name="j" use="required" type="integer" />
-                        <attribute name="planar_linear" use="required" type="string" />
-                        <attribute name="axi_linear" use="required" type="string" />
-                        <attribute name="planar_newton" use="required" type="string" />
-                        <attribute name="axi_newton" use="required" type="string" />
+		        <attribute name="id" use="required" type="string" />
+                        <attribute name="i" type="integer" />
+                        <attribute name="j" type="integer" />
+                        <attribute name="planar" type="string" />
+                        <attribute name="axi"  type="string" />
+                        <attribute name="planar_linear"  type="string" />
+                        <attribute name="axi_linear"  type="string" />
+                        <attribute name="planar_newton"  type="string" />
+                        <attribute name="axi_newton"  type="string" />
                         <attribute name="symmetric" type="integer" />                        
                 </complexType>
         </element>
@@ -406,12 +406,16 @@
         <element name="vector_form">
                 <complexType>
 		                <attribute name="id" use="required" type="string" />                
-                        <attribute name="i" use="required" type="integer" />
-                        <attribute name="j" use="required" type="integer" />
-                        <attribute name="planar_linear" use="required" type="string" />
-                        <attribute name="axi_linear" use="required" type="string" />
-                        <attribute name="planar_newton" use="required" type="string" />
-                        <attribute name="axi_newton" use="required" type="string" />
+                        <attribute name="i" type="integer" />
+                        <attribute name="j" type="integer" />
+                        <attribute name="planar"  type="string" />
+                        <attribute name="axi"  type="string" />
+                        <attribute name="planar_linear"  type="string" />
+                        <attribute name="axi_linear"  type="string" />
+                        <attribute name="planar_newton"  type="string" />
+                        <attribute name="axi_newton"  type="string" />
+                        <attribute name="variant"  type="string" />
+                        <attribute name="coefficient"  type="string" />
                 </complexType>
         </element>
 
@@ -419,10 +423,10 @@
                 <complexType>
 		                <attribute name="id" use="required" type="string" />                
                         <attribute name="i" use="required" type="integer" />
-                        <attribute name="axi_linear" use="required" type="string" />
-                        <attribute name="planar_linear" use="required" type="string" />
-                        <attribute name="axi_newton" use="required" type="string" />
-                        <attribute name="planar_newton" use="required" type="string" />
+                        <attribute name="axi_linear" type="string" />
+                        <attribute name="planar_linear" type="string" />
+                        <attribute name="axi_newton" type="string" />
+                        <attribute name="planar_newton" type="string" />
                 </complexType>
         </element>
 
