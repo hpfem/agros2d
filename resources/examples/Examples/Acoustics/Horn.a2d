@@ -23,9 +23,9 @@
     </labels>
   </geometry>
 
-  <problem coordinate_type="axisymmetric" matrix_solver="umfpack" mesh_type="triangle">
+  <problem coordinate_type="axisymmetric" mesh_type="triangle">
     <fields>
-      <field adaptivity_type="hp-adaptivity" analysis_type="harmonic" field_id="acoustic" linearity_type="linear">
+      <field adaptivity_type="hp-adaptivity" analysis_type="harmonic" field_id="acoustic" linearity_type="linear" matrix_solver="mumps">
         <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>
@@ -38,10 +38,10 @@
               <boundary_edge id="5"/>
             </boundary_edges>
             <boundary_types>
-              <boundary_type key="acoustic_pressure_imag" value="0"/>
-              <boundary_type key="acoustic_normal_acceleration_real" value="0"/>
-              <boundary_type key="acoustic_normal_acceleration_imag" value="0"/>
               <boundary_type key="acoustic_impedance" value="0"/>
+              <boundary_type key="acoustic_normal_acceleration_imag" value="0"/>
+              <boundary_type key="acoustic_normal_acceleration_real" value="0"/>
+              <boundary_type key="acoustic_pressure_imag" value="0"/>
               <boundary_type key="acoustic_pressure_real" value="0"/>
             </boundary_types>
           </boundary>
@@ -50,10 +50,10 @@
               <boundary_edge id="4"/>
             </boundary_edges>
             <boundary_types>
-              <boundary_type key="acoustic_pressure_imag" value="0"/>
-              <boundary_type key="acoustic_normal_acceleration_real" value="0"/>
-              <boundary_type key="acoustic_normal_acceleration_imag" value="0"/>
               <boundary_type key="acoustic_impedance" value="0"/>
+              <boundary_type key="acoustic_normal_acceleration_imag" value="0"/>
+              <boundary_type key="acoustic_normal_acceleration_real" value="0"/>
+              <boundary_type key="acoustic_pressure_imag" value="0"/>
               <boundary_type key="acoustic_pressure_real" value="1"/>
             </boundary_types>
           </boundary>
@@ -62,10 +62,10 @@
               <boundary_edge id="0"/>
             </boundary_edges>
             <boundary_types>
-              <boundary_type key="acoustic_pressure_imag" value="0"/>
-              <boundary_type key="acoustic_normal_acceleration_real" value="0"/>
-              <boundary_type key="acoustic_normal_acceleration_imag" value="0"/>
               <boundary_type key="acoustic_impedance" value="1.25*343"/>
+              <boundary_type key="acoustic_normal_acceleration_imag" value="0"/>
+              <boundary_type key="acoustic_normal_acceleration_real" value="0"/>
+              <boundary_type key="acoustic_pressure_imag" value="0"/>
               <boundary_type key="acoustic_pressure_real" value="0"/>
             </boundary_types>
           </boundary>
@@ -76,8 +76,8 @@
               <material_label id="0"/>
             </material_labels>
             <material_types>
-              <material_type key="acoustic_speed" value="343"/>
               <material_type key="acoustic_density" value="1.25"/>
+              <material_type key="acoustic_speed" value="343"/>
             </material_types>
           </material>
         </materials>
@@ -98,7 +98,7 @@
           <field_item field_key="SpaceNumberOfRefinements" field_value="0"/>
           <field_item field_key="SpacePolynomialOrder" field_value="1"/>
           <field_item field_key="AdaptivitySteps" field_value="25"/>
-          <field_item field_key="AdaptivityTolerance" field_value="10"/>
+          <field_item field_key="AdaptivityTolerance" field_value="3"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
           <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
           <field_item field_key="AdaptivityStoppingCriterion" field_value="1"/>
@@ -106,8 +106,14 @@
           <field_item field_key="AdaptivityProjNormType" field_value="1"/>
           <field_item field_key="AdaptivityUseAniso" field_value="1"/>
           <field_item field_key="AdaptivityFinerReference" field_value="0"/>
+          <field_item field_key="AdaptivityOrderIncrease" field_value="3"/>
+          <field_item field_key="AdaptivitySpaceRefinement" field_value="0"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
           <field_item field_key="TransientInitialCondition" field_value="0"/>
+          <field_item field_key="LinearSolverIterMethod" field_value="2"/>
+          <field_item field_key="LinearSolverIterPreconditioner" field_value="2"/>
+          <field_item field_key="LinearSolverIterToleranceAbsolute" field_value="1e-16"/>
+          <field_item field_key="LinearSolverIterIters" field_value="1000"/>
         </field_config>
       </field>
     </fields>
@@ -124,7 +130,6 @@
 
   <config>
     <item key="Problem_StartupScript" value=""/>
-    <item key="Problem_Description" value=""/>
     <item key="View_RulersFontFamily" value="Droid"/>
     <item key="View_RulersFontPointSize" value="12"/>
     <item key="View_PostFontFamily" value="Droid"/>
@@ -189,7 +194,7 @@
     <item key="View_ColorCrossedBlue" value="0"/>
     <item key="View_ShowInitialMeshView" value="1"/>
     <item key="View_ShowSolutionMeshView" value="0"/>
-    <item key="View_ContourVariable" value="acoustic_pressure"/>
+    <item key="View_ContourVariable" value="acoustic_pressure_real"/>
     <item key="View_ShowContourView" value="0"/>
     <item key="View_ContoursCount" value="15"/>
     <item key="View_ContoursWidth" value="1"/>
@@ -204,16 +209,17 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="-1.07074316892807"/>
+    <item key="View_ScalarRangeMin" value="-1.03422244230294"/>
     <item key="View_ScalarRangeMax" value="1"/>
     <item key="View_ShowVectorView" value="0"/>
-    <item key="View_VectorVariable" value=""/>
+    <item key="View_VectorVariable" value="acoustic_local_acceleration_real"/>
     <item key="View_VectorProportional" value="1"/>
     <item key="View_VectorColor" value="1"/>
     <item key="View_VectorCount" value="50"/>
     <item key="View_VectorScale" value="0.6"/>
     <item key="View_VectorType" value="0"/>
     <item key="View_VectorCenter" value="0"/>
+    <item key="View_OrderComponent" value="1"/>
     <item key="View_ShowOrderView" value="1"/>
     <item key="View_ShowOrderColorBar" value="1"/>
     <item key="View_ShowOrderLabel" value="0"/>
@@ -257,9 +263,6 @@
     <item key="View_MeshCurvilinearElements" value="1"/>
     <item key="View_LinearizerQuality" value="4"/>
     <item key="View_SolidViewHide" value=""/>
-    <item key="Adaptivity_MaxDofs" value="60000"/>
-    <item key="Commands_Triangle" value="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;"/>
-    <item key="Commands_Gmsh" value="%1 -2 &quot;%2.geo&quot;"/>
   </config>
 
 </problem:document>
