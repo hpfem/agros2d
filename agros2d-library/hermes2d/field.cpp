@@ -832,6 +832,8 @@ void FieldInfo::setStringKeys()
     m_settingKey[AdaptivityProjNormType] = "AdaptivityProjNormType";
     m_settingKey[AdaptivityUseAniso] = "AdaptivityUseAniso";
     m_settingKey[AdaptivityFinerReference] = "AdaptivityFinerReference";
+    m_settingKey[AdaptivityOrderIncrease] = "AdaptivityOrderIncrease";
+    m_settingKey[AdaptivitySpaceRefinement] = "AdaptivitySpaceRefinement";
     m_settingKey[TransientTimeSkip] = "TransientTimeSkip";
     m_settingKey[TransientInitialCondition] = "TransientInitialCondition";
     m_settingKey[LinearSolverIterMethod] = "LinearSolverIterMethod";
@@ -868,6 +870,8 @@ void FieldInfo::setDefaultValues()
     m_settingDefault[AdaptivityProjNormType] = Hermes::Hermes2D::HERMES_H1_NORM;
     m_settingDefault[AdaptivityUseAniso] = true;
     m_settingDefault[AdaptivityFinerReference] = false;
+    m_settingDefault[AdaptivityOrderIncrease] = 1;
+    m_settingDefault[AdaptivitySpaceRefinement] = true;
     m_settingDefault[TransientTimeSkip] = 0.0;
     m_settingDefault[TransientInitialCondition] = 0.0;
     m_settingDefault[LinearSolverIterMethod] = Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::BiCGStab;

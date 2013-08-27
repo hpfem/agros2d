@@ -217,8 +217,7 @@ private:
     double m_averageErrorToLenghtRatio;
 
     void initSelectors(Hermes::vector<Hermes::Hermes2D::NormType>& projNormType,
-                       Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *>& selectors);
-    void deleteSelectors(Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *>& selectors);
+                       Hermes::vector<QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> > >& selectors);
 
     Scalar *solveOneProblem(Hermes::vector<SpaceSharedPtr<Scalar> > spaces, int adaptivityStep, Hermes::vector<MeshFunctionSharedPtr<Scalar> > previousSolution = Hermes::vector<MeshFunctionSharedPtr<Scalar> >());
 

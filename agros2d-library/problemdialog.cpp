@@ -348,6 +348,10 @@ QWidget *FieldWidget::createAdaptivityWidget()
     cmbAdaptivityProjNormType = new QComboBox();
     chkAdaptivityUseAniso = new QCheckBox(tr("Use anisotropic refinements"));
     chkAdaptivityFinerReference = new QCheckBox(tr("Use hp reference solution for h and p adaptivity"));
+    txtAdaptivityOrderIncrease = new QSpinBox(this);
+    txtAdaptivityOrderIncrease->setMinimum(1);
+    txtAdaptivityOrderIncrease->setMaximum(10);
+    chkAdaptivitySpaceRefinement = new QCheckBox(tr("Space refinement for hp adaptivity"));
     txtAdaptivityBackSteps = new QSpinBox(this);
     txtAdaptivityBackSteps->setMinimum(0);
     txtAdaptivityBackSteps->setMaximum(100);
@@ -366,14 +370,17 @@ QWidget *FieldWidget::createAdaptivityWidget()
     layoutAdaptivity->addWidget(cmbAdaptivityStoppingCriterionType, 2, 1);
     layoutAdaptivity->addWidget(new QLabel(tr("Threshold:")), 2, 2);
     layoutAdaptivity->addWidget(txtAdaptivityThreshold, 2, 3);
-    layoutAdaptivity->addWidget(new QLabel(tr("Norm:")), 3, 0);
-    layoutAdaptivity->addWidget(cmbAdaptivityProjNormType, 3, 1, 1, 3);
-    layoutAdaptivity->addWidget(chkAdaptivityUseAniso, 4, 1, 1, 3);
-    layoutAdaptivity->addWidget(chkAdaptivityFinerReference, 5, 1, 1, 3);
-    layoutAdaptivity->addWidget(new QLabel(tr("Steps back in transient:")), 6, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityBackSteps, 6, 1, 1, 3);
-    layoutAdaptivity->addWidget(new QLabel(tr("Redone each trans. step:")), 7, 0);
-    layoutAdaptivity->addWidget(txtAdaptivityRedoneEach, 7, 1, 1, 3);
+    layoutAdaptivity->addWidget(new QLabel(tr("Order increase:")), 3, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityOrderIncrease, 3, 1);
+    layoutAdaptivity->addWidget(new QLabel(tr("Norm:")), 4, 0);
+    layoutAdaptivity->addWidget(cmbAdaptivityProjNormType, 4, 1);
+    layoutAdaptivity->addWidget(chkAdaptivityUseAniso, 5, 1, 1, 3);
+    layoutAdaptivity->addWidget(chkAdaptivityFinerReference, 6, 1, 1, 3);
+    layoutAdaptivity->addWidget(chkAdaptivitySpaceRefinement, 7, 1, 1, 3);
+    layoutAdaptivity->addWidget(new QLabel(tr("Steps back in transient:")), 10, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityBackSteps, 10, 1, 1, 3);
+    layoutAdaptivity->addWidget(new QLabel(tr("Redone each trans. step:")), 11, 0);
+    layoutAdaptivity->addWidget(txtAdaptivityRedoneEach, 11, 1, 1, 3);
     layoutAdaptivity->setRowStretch(50, 1);
 
     QWidget *widAdaptivity = new QWidget(this);
@@ -515,6 +522,8 @@ void FieldWidget::load()
     cmbAdaptivityProjNormType->setCurrentIndex(cmbAdaptivityProjNormType->findData((Hermes::Hermes2D::NormType) m_fieldInfo->value(FieldInfo::AdaptivityProjNormType).toInt()));
     chkAdaptivityUseAniso->setChecked(m_fieldInfo->value(FieldInfo::AdaptivityUseAniso).toBool());
     chkAdaptivityFinerReference->setChecked(m_fieldInfo->value(FieldInfo::AdaptivityFinerReference).toBool());
+    txtAdaptivityOrderIncrease->setValue(m_fieldInfo->value(FieldInfo::AdaptivityOrderIncrease).toInt());
+    chkAdaptivitySpaceRefinement->setChecked(m_fieldInfo->value(FieldInfo::AdaptivitySpaceRefinement).toBool());
     txtAdaptivityBackSteps->setValue(m_fieldInfo->value(FieldInfo::AdaptivityTransientBackSteps).toInt());
     txtAdaptivityRedoneEach->setValue(m_fieldInfo->value(FieldInfo::AdaptivityTransientRedoneEach).toInt());
     // matrix solver
@@ -562,6 +571,8 @@ bool FieldWidget::save()
     m_fieldInfo->setValue(FieldInfo::AdaptivityProjNormType, (Hermes::Hermes2D::NormType) cmbAdaptivityProjNormType->itemData(cmbAdaptivityProjNormType->currentIndex()).toInt());
     m_fieldInfo->setValue(FieldInfo::AdaptivityUseAniso, chkAdaptivityUseAniso->isChecked());
     m_fieldInfo->setValue(FieldInfo::AdaptivityFinerReference, chkAdaptivityFinerReference->isChecked());
+    m_fieldInfo->setValue(FieldInfo::AdaptivityOrderIncrease, txtAdaptivityOrderIncrease->value());
+    m_fieldInfo->setValue(FieldInfo::AdaptivitySpaceRefinement, chkAdaptivitySpaceRefinement->isChecked());
     m_fieldInfo->setValue(FieldInfo::AdaptivityTransientBackSteps, txtAdaptivityBackSteps->value());
     m_fieldInfo->setValue(FieldInfo::AdaptivityTransientRedoneEach, txtAdaptivityRedoneEach->value());
     // matrix solver

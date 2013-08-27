@@ -311,10 +311,10 @@ bool Block::adaptivityFinerReference() const
     foreach (Field *field, m_fields)
     {
         // todo: ensure in GUI
-        assert(field->fieldInfo()->value(FieldInfo::AdaptivityFinerReference).toBool() == finerReference );
+        assert(field->fieldInfo()->value(FieldInfo::AdaptivityFinerReference).toBool() == finerReference);
     }
 
-    return finerReference ;
+    return finerReference;
 }
 
 int Block::numSolutions() const

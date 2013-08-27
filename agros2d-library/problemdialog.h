@@ -113,6 +113,8 @@ private:
     QComboBox *cmbAdaptivityStoppingCriterionType;
     QCheckBox *chkAdaptivityUseAniso;
     QCheckBox *chkAdaptivityFinerReference;
+    QSpinBox *txtAdaptivityOrderIncrease;
+    QCheckBox *chkAdaptivitySpaceRefinement;
     QSpinBox *txtAdaptivityBackSteps;
     QSpinBox *txtAdaptivityRedoneEach;
 

@@ -86,6 +86,8 @@ public:
         AdaptivityProjNormType,
         AdaptivityUseAniso,
         AdaptivityFinerReference,
+        AdaptivityOrderIncrease,
+        AdaptivitySpaceRefinement,
         TransientTimeSkip,
         TransientInitialCondition,
         LinearSolverIterMethod,

@@ -43,7 +43,7 @@ int DEBUG_COUNTER = 0;
 
 Hermes::Solvers::ExternalSolver<double>* getExternalSolver(CSCMatrix<double> *m, SimpleVector<double> *rhs)
 {
-  return new AgrosExternalSolverOctave(m, rhs);
+    return new AgrosExternalSolverOctave(m, rhs);
 }
 
 AgrosExternalSolverOctave::AgrosExternalSolverOctave(CSCMatrix<double> *m, SimpleVector<double> *rhs)
@@ -574,10 +574,10 @@ void ProblemSolver<Scalar>::init(Block* block)
 
 template <typename Scalar>
 void ProblemSolver<Scalar>::initSelectors(Hermes::vector<NormType>& projNormType,
-                                          Hermes::vector<RefinementSelectors::Selector<Scalar> *>& selectors)
+                                          Hermes::vector<QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> > > &selectors)
 {
     // set adaptivity selector
-    RefinementSelectors::Selector<Scalar> *select = NULL;
+    QSharedPointer<RefinementSelectors::Selector<Scalar> > select;
 
     // create types of projection and selectors
     for (int i = 0; i < m_block->numSolutions(); i++)
@@ -593,6 +593,8 @@ void ProblemSolver<Scalar>::initSelectors(Hermes::vector<NormType>& projNormType
                 candList = RefinementSelectors::H2D_HP_ANISO;
             else
                 candList = RefinementSelectors::H2D_HP_ISO;
+
+            select = QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> >(new RefinementSelectors::H1ProjBasedSelector<Scalar>(candList));
         }
         else
         {
@@ -603,34 +605,31 @@ void ProblemSolver<Scalar>::initSelectors(Hermes::vector<NormType>& projNormType
                     candList = RefinementSelectors::H2D_H_ANISO;
                 else
                     candList = RefinementSelectors::H2D_H_ISO;
+
+                select = QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> >(new RefinementSelectors::HOnlySelector<Scalar>());
                 break;
             case AdaptivityType_P:
                 if (m_block->adaptivityUseAniso())
                     candList = RefinementSelectors::H2D_P_ANISO;
                 else
                     candList = RefinementSelectors::H2D_P_ISO;
+
+                select = QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> >(new RefinementSelectors::POnlySelector<Scalar>(H2DRS_DEFAULT_ORDER, 1, 1));
                 break;
             case AdaptivityType_HP:
                 if (m_block->adaptivityUseAniso())
                     candList = RefinementSelectors::H2D_HP_ANISO;
                 else
                     candList = RefinementSelectors::H2D_HP_ISO;
+
+                select = QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> >(new RefinementSelectors::H1ProjBasedSelector<Scalar>(candList));
                 break;
             }
         }
-        select = new RefinementSelectors::H1ProjBasedSelector<Scalar>(candList);
 
         // add refinement selector
         selectors.push_back(select);
     }
-}
-
-template <typename Scalar>
-void ProblemSolver<Scalar>::deleteSelectors(Hermes::vector<RefinementSelectors::Selector<Scalar> *>& selectors)
-{
-    foreach(RefinementSelectors::Selector<Scalar> *select, selectors)
-        delete select;
-    selectors.clear();
 }
 
 template <typename Scalar>
@@ -642,14 +641,15 @@ Hermes::vector<SpaceSharedPtr<Scalar> > ProblemSolver<Scalar>::deepMeshAndSpaceC
     {
         bool refineMesh = false;
         int orderIncrease = 0;
-        if(createReference)
+
+        if (createReference)
         {
             AdaptivityType adaptivityType = field->fieldInfo()->adaptivityType();
             if (m_block->adaptivityFinerReference() || (adaptivityType != AdaptivityType_P))
-                refineMesh = true;
+                refineMesh = field->fieldInfo()->value(FieldInfo::AdaptivitySpaceRefinement).toBool();
 
             if (m_block->adaptivityFinerReference() || (adaptivityType != AdaptivityType_H))
-                orderIncrease = 1;
+                orderIncrease = field->fieldInfo()->value(FieldInfo::AdaptivityOrderIncrease).toInt();
         }
 
         MeshSharedPtr mesh;
@@ -1094,7 +1094,7 @@ bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep,
     MultiArray<Scalar> msaRef = Agros2D::solutionStore()->multiArray(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Reference));
 
     Hermes::vector<Hermes::Hermes2D::NormType> projNormType;
-    Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> selector;
+    Hermes::vector<QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> > > selector;
     initSelectors(projNormType, selector);
 
     assert(msa.spaces() == actualSpaces());
@@ -1105,19 +1105,35 @@ bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep,
     setActualSpaces(deepMeshAndSpaceCopy(actualSpaces(), false));
 
     // error calculation & adaptivity.
-    DefaultErrorCalculator<double, HERMES_H1_NORM> errorCalculator(RelativeErrorToGlobalNorm, m_actualSpaces.size());
+    QSharedPointer<ErrorCalculator<double> > errorCalculator;
+    switch (m_block->adaptivityNormType())
+    {
+    case HERMES_L2_NORM:
+        errorCalculator = QSharedPointer<ErrorCalculator<double> >(
+                    new DefaultErrorCalculator<double, HERMES_L2_NORM>(RelativeErrorToGlobalNorm, m_actualSpaces.size()));
+        break;
+    case HERMES_H1_NORM:
+        errorCalculator = QSharedPointer<ErrorCalculator<double> >(
+                    new DefaultErrorCalculator<double, HERMES_H1_NORM>(RelativeErrorToGlobalNorm, m_actualSpaces.size()));
+        break;
+    case HERMES_H1_SEMINORM:
+        errorCalculator = QSharedPointer<ErrorCalculator<double> >(
+                    new DefaultErrorCalculator<double, HERMES_H1_SEMINORM>(RelativeErrorToGlobalNorm, m_actualSpaces.size()));
+        break;
+    }
+
     // stopping criterion for an adaptivity step.
-    AdaptivityStoppingCriterion<Scalar> *stopingCriterion = NULL;
+    QSharedPointer<AdaptivityStoppingCriterion<double> > stopingCriterion;
     switch (m_block->adaptivityStoppingCriterionType())
     {
     case AdaptivityStoppingCriterionType_Cumulative:
-        stopingCriterion = new AdaptStoppingCriterionCumulative<double>(m_block->adaptivityThreshold());
+        stopingCriterion = QSharedPointer<AdaptivityStoppingCriterion<double> >(new AdaptStoppingCriterionCumulative<double>(m_block->adaptivityThreshold()));
         break;
     case AdaptivityStoppingCriterionType_SingleElement:
-        stopingCriterion = new AdaptStoppingCriterionSingleElement<double>(m_block->adaptivityThreshold());
+        stopingCriterion = QSharedPointer<AdaptivityStoppingCriterion<double> >(new AdaptStoppingCriterionSingleElement<double>(m_block->adaptivityThreshold()));
         break;
     case AdaptivityStoppingCriterionType_Levels:
-        stopingCriterion = new AdaptStoppingCriterionLevels<double>(m_block->adaptivityThreshold());
+        stopingCriterion = QSharedPointer<AdaptivityStoppingCriterion<double> >(new AdaptStoppingCriterionLevels<double>(m_block->adaptivityThreshold()));
         break;
     default:
         assert(0);
@@ -1125,13 +1141,13 @@ bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep,
     }
 
     // adaptivity
-    Adapt<Scalar> adaptivity(&errorCalculator, stopingCriterion);
+    Adapt<Scalar> adaptivity(errorCalculator.data(), stopingCriterion.data());
     adaptivity.set_spaces(m_actualSpaces);
     adaptivity.set_verbose_output(false);
 
     // calculate error the total error estimate.
-    errorCalculator.calculate_errors(msa.solutions(), msaRef.solutions(), true);
-    double error = errorCalculator.get_total_error_squared() * 100;
+    errorCalculator.data()->calculate_errors(msa.solutions(), msaRef.solutions(), true);
+    double error = errorCalculator.data()->get_total_error_squared() * 100;
     // update error in solution store
     foreach (Field *field, m_block->fields())
     {
@@ -1161,13 +1177,14 @@ bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep,
         bool noRefinementPerformed;
         try
         {
-            noRefinementPerformed = adaptivity.adapt(selector);
+            Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> vect;
+            foreach (QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> > sel, selector)
+                vect.push_back(sel.data());
+
+            noRefinementPerformed = adaptivity.adapt(vect);
         }
         catch (Hermes::Exceptions::Exception e)
         {
-            deleteSelectors(selector);
-            delete stopingCriterion;
-
             QString error = QString(e.what());
             Agros2D::log()->printDebug(m_solverID, QObject::tr("Adaptive process failed: %1").arg(error));
             throw;
@@ -1175,9 +1192,6 @@ bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep,
 
         adapt = adapt && (!noRefinementPerformed);
     }
-
-    deleteSelectors(selector);
-    delete stopingCriterion;
 
     return adapt;
 }
