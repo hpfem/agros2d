@@ -367,14 +367,10 @@
 
         <element name="linearity_option">
                 <complexType>
-                        <choice>
-                                <sequence>
-                                        <choice maxOccurs="unbounded">
-                                                <element ref="module:matrix_form" />
-                                                <element ref="module:vector_form" />
-                                        </choice>
-                                </sequence>
-                        </choice>
+                        <sequence>
+                                <element maxOccurs="unbounded" ref="module:matrix_form" />
+                                <element maxOccurs="unbounded" ref="module:vector_form" />
+                        </sequence>
                         <attribute name="type" use="required" type="string" />
                 </complexType>
         </element>

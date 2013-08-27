@@ -364,7 +364,7 @@ void ExamplesDialog::problemInfo(const QString &fileName)
             }
             catch (...)
             {
-
+                qDebug() << "Unknown exception catched in ExampleDialog";
             }
         }
         else if (fileInfo.suffix() == "py")
