@@ -344,8 +344,8 @@ void InfoWidget::showInfo()
             field->SetValue("LINEARSOLVER_TYPE_LABEL", tr("Linear solver:").toStdString());
             field->SetValue("LINEARSOLVER_TYPE", matrixSolver.toStdString());
 
-            int solutionMeshNodes = 0;
-            int solutionMeshElements = 0;
+            QList<int> solutionMeshNodes;
+            QList<int> solutionMeshElements;
             int DOFs = 0;
             int error = 0;
 
@@ -355,8 +355,11 @@ void InfoWidget::showInfo()
                 int adaptiveStep = Agros2D::solutionStore()->lastAdaptiveStep(fieldInfo, SolutionMode_Normal);
                 MultiArray<double> msa = Agros2D::solutionStore()->multiArray(FieldSolutionID(fieldInfo, timeStep, adaptiveStep, SolutionMode_Normal));
 
-                solutionMeshNodes = msa.solutions().at(0)->get_mesh()->get_num_vertex_nodes();
-                solutionMeshElements = msa.solutions().at(0)->get_mesh()->get_num_active_elements();
+                for (int comp = 0; comp < fieldInfo->numberOfSolutions(); comp++)
+                {
+                    solutionMeshNodes.append(msa.solutions().at(comp)->get_mesh()->get_num_vertex_nodes());
+                    solutionMeshElements.append(msa.solutions().at(comp)->get_mesh()->get_num_active_elements());
+                }
                 DOFs = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spaces());
             }
 
@@ -390,9 +393,17 @@ void InfoWidget::showInfo()
 
                 if (Agros2D::problem()->isSolved() && (fieldInfo->adaptivityType() != AdaptivityType_None))
                 {
+                    QString solutionMeshNodesAll = QString::number(solutionMeshNodes.at(0));
+                    QString solutionMeshElementsAll = QString::number(solutionMeshElements.at(0));
+                    for (int comp = 1; comp < fieldInfo->numberOfSolutions(); comp++)
+                    {
+                        solutionMeshNodesAll += ", " + QString::number(solutionMeshNodes.at(comp));
+                        solutionMeshElementsAll += ", " + QString::number(solutionMeshElements.at(comp));
+                    }
+
                     field->SetValue("SOLUTION_MESH_LABEL", tr("Solution mesh:").toStdString());
-                    field->SetValue("SOLUTION_MESH_NODES", tr("%1 nodes").arg(solutionMeshNodes).toStdString());
-                    field->SetValue("SOLUTION_MESH_ELEMENTS", tr("%1 elements").arg(solutionMeshElements).toStdString());
+                    field->SetValue("SOLUTION_MESH_NODES", tr("%1 nodes").arg(solutionMeshNodesAll).toStdString());
+                    field->SetValue("SOLUTION_MESH_ELEMENTS", tr("%1 elements").arg(solutionMeshElementsAll).toStdString());
                     field->ShowSection("MESH_SOLUTION_ADAPTIVITY_PARAMETERS_SECTION");
 
                     int timeStep = Agros2D::solutionStore()->timeLevels(fieldInfo).count() - 1;

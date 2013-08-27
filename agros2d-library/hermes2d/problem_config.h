@@ -210,6 +210,7 @@ public:
         View_VectorScale,
         View_VectorType,
         View_VectorCenter,
+        View_OrderComponent,
         View_ShowOrderView,
         View_ShowOrderColorBar,
         View_ShowOrderLabel,

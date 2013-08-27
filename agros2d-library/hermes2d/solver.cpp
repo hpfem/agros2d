@@ -576,12 +576,12 @@ template <typename Scalar>
 void ProblemSolver<Scalar>::initSelectors(Hermes::vector<NormType>& projNormType,
                                           Hermes::vector<QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> > > &selectors)
 {
-    // set adaptivity selector
-    QSharedPointer<RefinementSelectors::Selector<Scalar> > select;
-
     // create types of projection and selectors
     for (int i = 0; i < m_block->numSolutions(); i++)
     {
+        // set adaptivity selector
+        QSharedPointer<RefinementSelectors::Selector<Scalar> > select;
+
         // add norm
         projNormType.push_back(m_block->adaptivityNormType());
 
@@ -652,22 +652,21 @@ Hermes::vector<SpaceSharedPtr<Scalar> > ProblemSolver<Scalar>::deepMeshAndSpaceC
                 orderIncrease = field->fieldInfo()->value(FieldInfo::AdaptivityOrderIncrease).toInt();
         }
 
-        MeshSharedPtr mesh;
-        // Deep copy of mesh for each field separately, than use for all field component the same one
-        if (refineMesh)
-        {
-            Mesh::ReferenceMeshCreator meshCreator(spaces.at(totalComp)->get_mesh());
-            mesh = meshCreator.create_ref_mesh();
-        }
-        else
-        {
-            mesh = MeshSharedPtr(new Mesh());
-            mesh->copy(spaces.at(totalComp)->get_mesh());
-        }
-
         for (int comp = 0; comp < field->fieldInfo()->numberOfSolutions(); comp++)
         {
-            // TODO: double -> Scalar
+            MeshSharedPtr mesh;
+            // deep copy of mesh for each field component separately
+            if (refineMesh)
+            {
+                Mesh::ReferenceMeshCreator meshCreator(spaces.at(totalComp)->get_mesh());
+                mesh = meshCreator.create_ref_mesh();
+            }
+            else
+            {
+                mesh = MeshSharedPtr(new Mesh());
+                mesh->copy(spaces.at(totalComp)->get_mesh());
+            }
+
             Space<double>::ReferenceSpaceCreator spaceCreator(spaces.at(totalComp),
                                                               mesh,
                                                               orderIncrease);

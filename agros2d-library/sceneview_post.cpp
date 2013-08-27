@@ -83,12 +83,12 @@ void PostHermes::processSolutionMesh()
 {
     if ((Agros2D::problem()->isSolved()) && (m_activeViewField) && (Agros2D::problem()->setting()->value(ProblemSetting::View_ShowSolutionMeshView).toBool()))
     {
-        // ERROR: FIX component(0)
-        Agros2D::log()->printMessage(tr("Mesh View"), tr("Solution mesh with %1 elements").arg(activeMultiSolutionArray().solutions().at(0)->get_mesh()->get_num_active_elements()));
+        int comp = Agros2D::problem()->setting()->value(ProblemSetting::View_OrderComponent).toInt() - 1;
+
+        Agros2D::log()->printMessage(tr("Mesh View"), tr("Solution mesh with %1 elements").arg(activeMultiSolutionArray().solutions().at(comp)->get_mesh()->get_num_active_elements()));
 
         // init linearizer for solution mesh
-        // ERROR: FIX component(0)
-        const MeshSharedPtr mesh = activeMultiSolutionArray().solutions().at(0)->get_mesh();
+        const MeshSharedPtr mesh = activeMultiSolutionArray().solutions().at(comp)->get_mesh();
 
         m_linSolutionMeshView.free();
         m_linSolutionMeshView.process_solution(MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(mesh)));
@@ -102,9 +102,10 @@ void PostHermes::processOrder()
     {
         Agros2D::log()->printMessage(tr("Mesh View"), tr("Polynomial order"));
 
-        // ERROR: FIX component(0)
+        int comp = Agros2D::problem()->setting()->value(ProblemSetting::View_OrderComponent).toInt() - 1;
+
         m_orderView.free();
-        m_orderView.process_space(activeMultiSolutionArray().spaces().at(0));
+        m_orderView.process_space(activeMultiSolutionArray().spaces().at(comp));
     }
 }
 
@@ -121,14 +122,6 @@ void PostHermes::processRangeContour()
                 break;
             }
         }
-
-        /*
-        if (Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString() == "" || !contains)
-        {
-            // default values
-            Agros2D::problem()->setting()->setValue(ProblemSetting::View_ContourVariable, m_activeViewField->defaultViewScalarVariable().id());
-        }
-        */
 
         Agros2D::log()->printMessage(tr("Post View"), tr("Contour view (%1)").arg(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString()));
 
@@ -190,16 +183,6 @@ void PostHermes::processRangeScalar()
             }
         }
 
-        /*
-        if (Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString() == "" || !contains)
-        {
-            // default values
-            Module::LocalVariable variable = m_activeViewField->defaultViewScalarVariable();
-            Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariable, variable.id());
-            Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariableComp, variable.isScalar() ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude);
-        }
-        */
-
         Agros2D::log()->printMessage(tr("Post View"), tr("Scalar view (%1)").arg(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()));
 
         MeshFunctionSharedPtr<double> slnScalarView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
@@ -255,14 +238,6 @@ void PostHermes::processRangeVector()
                 break;
             }
         }
-
-        /*
-        if (Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString() == "" || !contains)
-        {
-            // default values
-            Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorVariable, m_activeViewField->defaultViewVectorVariable().id());
-        }
-        */
 
         Agros2D::log()->printMessage(tr("Post View"), tr("Vector view (%1)").arg(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()));
 
@@ -449,6 +424,9 @@ void PostHermes::setActiveViewField(FieldInfo* fieldInfo)
         Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariable, scalarVariable.id());
         Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarVariableComp, scalarVariable.isScalar() ? PhysicFieldVariableComp_Scalar : PhysicFieldVariableComp_Magnitude);
         Agros2D::problem()->setting()->setValue(ProblemSetting::View_VectorVariable, vectorVariable.id());
+
+        // order component
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_OrderComponent, 1);
     }
 }
 

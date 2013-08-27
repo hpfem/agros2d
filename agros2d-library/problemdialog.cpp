@@ -333,6 +333,7 @@ QWidget *FieldWidget::createAdaptivityWidget()
     txtAdaptivitySteps = new QSpinBox(this);
     txtAdaptivitySteps->setMinimum(1);
     txtAdaptivitySteps->setMaximum(100);
+    txtAdaptivitySteps->setValue(m_fieldInfo->defaultValue(FieldInfo::AdaptivitySteps).toInt());
     txtAdaptivityTolerance = new LineEditDouble(1.0);
     txtAdaptivityTolerance->setBottom(0.0);
     cmbAdaptivityStoppingCriterionType = new QComboBox();
@@ -340,11 +341,8 @@ QWidget *FieldWidget::createAdaptivityWidget()
         if (adaptivityStoppingCriterionFromStringKey(type) != AdaptivityStoppingCriterionType_Undefined)
             cmbAdaptivityStoppingCriterionType->addItem(adaptivityStoppingCriterionTypeString(adaptivityStoppingCriterionFromStringKey(type)),
                                                         adaptivityStoppingCriterionFromStringKey(type));
-    txtAdaptivityThreshold = new QDoubleSpinBox();
+    txtAdaptivityThreshold = new LineEditDouble(0.60);
     txtAdaptivityThreshold->setValue(m_fieldInfo->defaultValue(FieldInfo::AdaptivityThreshold).toDouble());
-    txtAdaptivityThreshold->setDecimals(2);
-    txtAdaptivityThreshold->setRange(0.01, 1.00);
-    txtAdaptivityThreshold->setSingleStep(0.01);
     cmbAdaptivityProjNormType = new QComboBox();
     chkAdaptivityUseAniso = new QCheckBox(tr("Use anisotropic refinements"));
     chkAdaptivityFinerReference = new QCheckBox(tr("Use hp reference solution for h and p adaptivity"));

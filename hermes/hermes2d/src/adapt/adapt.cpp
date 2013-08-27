@@ -45,6 +45,7 @@ namespace Hermes
     bool AdaptStoppingCriterionSingleElement<Scalar>::add_refinement(ErrorCalculator<Scalar>* error_calculator, double processed_error_squared, double max_error_squared, int element_inspected_i)
     {
       const typename ErrorCalculator<Scalar>::ElementReference& element_reference = error_calculator->get_element_reference(element_inspected_i);
+      std::cout << *(element_reference.error) << std::endl;
       if(*(element_reference.error) > (threshold*threshold) * max_error_squared)
         return true;
       else

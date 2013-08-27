@@ -71,6 +71,7 @@ void PostprocessorWidget::loadBasic()
     chkShowInitialMeshView->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ShowInitialMeshView).toBool());
     chkShowSolutionMeshView->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ShowSolutionMeshView).toBool());
     chkShowOrderView->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_ShowOrderView).toBool());
+    txtOrderComponent->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_OrderComponent).toInt());
 
     radPost3DNone->setChecked((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt() == SceneViewPost3DMode_None);
     radPost3DScalarField3D->setChecked((SceneViewPost3DMode) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarView3DMode).toInt() == SceneViewPost3DMode_ScalarView3D);
@@ -185,6 +186,7 @@ void PostprocessorWidget::saveBasic()
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowInitialMeshView, chkShowInitialMeshView->isChecked());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowSolutionMeshView, chkShowSolutionMeshView->isChecked());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowOrderView, chkShowOrderView->isChecked());
+    Agros2D::problem()->setting()->setValue(ProblemSetting::View_OrderComponent, txtOrderComponent->value());
 
     // show
     if (radPost3DNone->isChecked()) Agros2D::problem()->setting()->setValue(ProblemSetting::View_ScalarView3DMode, SceneViewPost3DMode_None);
@@ -287,10 +289,15 @@ QWidget *PostprocessorWidget::meshWidget()
     chkShowOrderView = new QCheckBox(tr("Polynomial order"));
     connect(chkShowOrderView, SIGNAL(clicked()), this, SLOT(refresh()));
 
-    QVBoxLayout *gridLayoutMesh = new QVBoxLayout();
-    gridLayoutMesh->addWidget(chkShowInitialMeshView);
-    gridLayoutMesh->addWidget(chkShowSolutionMeshView);
-    gridLayoutMesh->addWidget(chkShowOrderView);
+    txtOrderComponent = new QSpinBox(this);
+    txtOrderComponent->setMinimum(1);
+
+    QGridLayout *gridLayoutMesh = new QGridLayout();
+    gridLayoutMesh->addWidget(chkShowInitialMeshView, 0, 0, 1, 2);
+    gridLayoutMesh->addWidget(chkShowSolutionMeshView, 1, 0, 1, 2);
+    gridLayoutMesh->addWidget(chkShowOrderView, 2, 0, 1, 2);
+    gridLayoutMesh->addWidget(new QLabel(tr("Component:")), 3, 0);
+    gridLayoutMesh->addWidget(txtOrderComponent, 3, 1);
 
     QGroupBox *grpShowMesh = new QGroupBox(tr("Mesh"));
     grpShowMesh->setLayout(gridLayoutMesh);
@@ -736,6 +743,8 @@ void PostprocessorWidget::doField()
     fillComboBoxContourVariable(fieldWidget->selectedField(), cmbPost2DContourVariable);
     fillComboBoxVectorVariable(fieldWidget->selectedField(), cmbPost2DVectorFieldVariable);
     doScalarFieldVariable(cmbPostScalarFieldVariable->currentIndex());
+
+    txtOrderComponent->setMaximum(fieldWidget->selectedField()->numberOfSolutions());
 }
 
 void PostprocessorWidget::doCalculationFinished()
@@ -804,6 +813,7 @@ void PostprocessorWidget::refresh()
         chkShowInitialMeshView->setEnabled(Agros2D::problem()->isMeshed());
         chkShowSolutionMeshView->setEnabled(Agros2D::problem()->isSolved());
         chkShowOrderView->setEnabled(Agros2D::problem()->isSolved());
+        txtOrderComponent->setEnabled(Agros2D::problem()->isSolved() && (chkShowOrderView->isChecked() || chkShowSolutionMeshView->isChecked()));
 
         // mesh
         groupMeshOrder->setVisible(Agros2D::problem()->isSolved() && chkShowOrderView->isChecked());

@@ -861,7 +861,7 @@ void FieldInfo::setDefaultValues()
     m_settingDefault[PicardAndersonNumberOfLastVectors] = 3;
     m_settingDefault[SpaceNumberOfRefinements] = 1;
     m_settingDefault[SpacePolynomialOrder] = 2;
-    m_settingDefault[AdaptivitySteps] = 1;
+    m_settingDefault[AdaptivitySteps] = 10;
     m_settingDefault[AdaptivityTolerance] = 1.0;
     m_settingDefault[AdaptivityTransientBackSteps] = 3;
     m_settingDefault[AdaptivityTransientRedoneEach] = 5;

@@ -710,8 +710,10 @@ void PyField::solutionMeshInfo(int timeStep, int adaptivityStep, const std::stri
     // TODO: (Franta) time and adaptivity step in gui vs. implementation
     MultiArray<double> msa = Agros2D::solutionStore()->multiArray(FieldSolutionID(m_fieldInfo, timeStep, adaptivityStep, solutionMode));
 
+    // TODO: fix -> list
     info["nodes"] = msa.solutions().at(0)->get_mesh()->get_num_vertex_nodes();
     info["elements"] = msa.solutions().at(0)->get_mesh()->get_num_active_elements();
+
     info["dofs"] = Hermes::Hermes2D::Space<double>::get_num_dofs(msa.spaces());
 }
 

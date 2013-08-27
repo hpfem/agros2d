@@ -266,6 +266,7 @@ void ProblemSetting::setStringKeys()
     m_settingKey[View_VectorType] = "View_VectorType";
     m_settingKey[View_VectorCenter] = "View_VectorCenter";
     m_settingKey[View_ShowOrderView] = "View_ShowOrderView";
+    m_settingKey[View_OrderComponent] = "View_OrderComponent";
     m_settingKey[View_ShowOrderLabel] = "View_ShowOrderLabel";
     m_settingKey[View_ShowOrderColorBar] = "View_ShowOrderColorBar";
     m_settingKey[View_OrderPaletteOrderType] = "View_OrderPaletteOrderType";
@@ -404,6 +405,7 @@ void ProblemSetting::setDefaultValues()
     m_settingDefault[View_VectorScale] = 0.6;
     m_settingDefault[View_VectorType] = VectorType_Arrow;
     m_settingDefault[View_VectorCenter] = VectorCenter_Tail;
+    m_settingDefault[View_OrderComponent] = 1;
     m_settingDefault[View_ShowOrderView] = true;
     m_settingDefault[View_ShowOrderLabel] = false;
     m_settingDefault[View_ShowOrderColorBar] = true;

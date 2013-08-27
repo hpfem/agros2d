@@ -117,6 +117,7 @@ private:
     QCheckBox *chkShowOrderColorbar;
     QComboBox *cmbOrderPaletteOrder;
     QCheckBox *chkOrderLabel;
+    QSpinBox *txtOrderComponent;
 
     // solid view - materials
     QListWidget *lstSolidMaterials;
