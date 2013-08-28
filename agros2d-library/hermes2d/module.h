@@ -140,7 +140,7 @@ struct FormInfo
 };
 
 template <typename Scalar>
-class WeakFormAgros : public Hermes::Hermes2D::WeakForm<Scalar>
+class AGROS_LIBRARY_API WeakFormAgros : public Hermes::Hermes2D::WeakForm<Scalar>
 {
 public:
     WeakFormAgros(Block* block);
