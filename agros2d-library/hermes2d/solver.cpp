@@ -462,7 +462,7 @@ template <typename Scalar>
 NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolverContainer<Scalar>(block)
 {
     m_newtonSolver = new NewtonSolverAgros<Scalar>(block);
-    m_newtonSolver->set_verbose_output(true);
+    m_newtonSolver->set_verbose_output(false);
     m_newtonSolver->set_tolerance(block->nonlinearTolerance(), block->nonlinearConvergenceMeasurement());
     m_newtonSolver->set_max_allowed_iterations(block->nonlinearSteps());
     m_newtonSolver->set_max_allowed_residual_norm(1e15);
@@ -516,7 +516,7 @@ template <typename Scalar>
 PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block) : HermesSolverContainer<Scalar>(block)
 {
     m_picardSolver = new PicardSolver<Scalar>();
-    m_picardSolver->set_verbose_output(true);
+    m_picardSolver->set_verbose_output(false);
     m_picardSolver->set_tolerance(block->nonlinearTolerance());
     m_picardSolver->set_max_allowed_iterations(block->nonlinearSteps());
     if (block->picardAndersonAcceleration())
