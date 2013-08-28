@@ -37,9 +37,74 @@
 #include "logview.h"
 #include "bdf2.h"
 
+#include "pythonlab/pythonengine.h"
+
 using namespace Hermes::Hermes2D;
 
-int DEBUG_COUNTER = 0;
+template<typename Scalar>
+class AGROS_LIBRARY_API AgrosErrorFormVol : public NormFormVol<Scalar>
+{
+public:
+    AgrosErrorFormVol(int i, int j, FieldInfo *fieldInfo) : NormFormVol<Scalar>(i, j), m_fieldInfo(fieldInfo)
+    {}
+
+    virtual Scalar value(int n, double *wt, Func<Scalar> *u, Func<Scalar> *v, Geom<double> *e) const
+    {
+        SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str()));
+        SceneMaterial *material = label->marker(m_fieldInfo);
+
+        Value *material_electrostatic_permittivity = &material->value(QLatin1String("electrostatic_permittivity"));
+        Value *material_electrostatic_charge_density = &material->value(QLatin1String("electrostatic_charge_density"));
+
+        /*
+        Value *material_magnetic_permeability = &material->value(QLatin1String("magnetic_permeability"));
+        Value *material_magnetic_conductivity = &material->value(QLatin1String("magnetic_conductivity"));
+        Value *material_magnetic_remanence = &material->value(QLatin1String("magnetic_remanence"));
+        Value *material_magnetic_remanence_angle = &material->value(QLatin1String("magnetic_remanence_angle"));
+        Value *material_magnetic_velocity_x = &material->value(QLatin1String("magnetic_velocity_x"));
+        Value *material_magnetic_velocity_y = &material->value(QLatin1String("magnetic_velocity_y"));
+        Value *material_magnetic_velocity_angular = &material->value(QLatin1String("magnetic_velocity_angular"));
+        Value *material_magnetic_current_density_external_real = &material->value(QLatin1String("magnetic_current_density_external_real"));
+        Value *material_magnetic_current_density_external_imag = &material->value(QLatin1String("magnetic_current_density_external_imag"));
+        Value *material_magnetic_total_current_prescribed = &material->value(QLatin1String("magnetic_total_current_prescribed"));
+        Value *material_magnetic_total_current_real = &material->value(QLatin1String("magnetic_total_current_real"));
+        Value *material_magnetic_total_current_imag = &material->value(QLatin1String("magnetic_total_current_imag"));
+        */
+
+        Scalar result = Scalar(0);
+        for (int i = 0; i < n; i++)
+            // result += wt[i] * 0.5 / (material_magnetic_permeability->number() * 1.25664e-06) * (u->dx[i] * v->dx[i] + u->dy[i] * v->dy[i]);
+            result += wt[i] * 0.5 * (material_electrostatic_permittivity->number() * 8.854e-12) * (u->dx[i] * v->dx[i] + u->dy[i] * v->dy[i]);
+
+        return result;
+    }
+
+protected:
+    FieldInfo *m_fieldInfo;
+};
+
+template<typename Scalar>
+class AGROS_LIBRARY_API AgrosVolumeErrorCalculator : public ErrorCalculator<Scalar>
+{
+public:
+    AgrosVolumeErrorCalculator(CalculatedErrorType errorType, FieldInfo *fieldInfo)
+        : ErrorCalculator<Scalar>(errorType), m_fieldInfo(fieldInfo)
+    {
+        for(int i = 0; i < fieldInfo->numberOfSolutions(); i++)
+        {
+            this->add_error_form(new AgrosErrorFormVol<Scalar>(i, i, fieldInfo));
+        }
+    }
+
+    virtual ~AgrosVolumeErrorCalculator()
+    {
+        // for(int i = 0; i < this->mfvol.size(); i++)
+        //    delete this->mfvol[i];
+    }
+
+protected:
+    FieldInfo *m_fieldInfo;
+};
 
 Hermes::Solvers::ExternalSolver<double>* getExternalSolver(CSCMatrix<double> *m, SimpleVector<double> *rhs)
 {
@@ -1108,18 +1173,22 @@ bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep,
     switch (m_block->adaptivityNormType())
     {
     case HERMES_L2_NORM:
-        errorCalculator = QSharedPointer<ErrorCalculator<double> >(
-                    new DefaultErrorCalculator<double, HERMES_L2_NORM>(RelativeErrorToGlobalNorm, m_actualSpaces.size()));
+         errorCalculator = QSharedPointer<ErrorCalculator<double> >(
+                     new DefaultErrorCalculator<double, HERMES_L2_NORM>(RelativeErrorToGlobalNorm, m_actualSpaces.size()));
         break;
     case HERMES_H1_NORM:
-        errorCalculator = QSharedPointer<ErrorCalculator<double> >(
-                    new DefaultErrorCalculator<double, HERMES_H1_NORM>(RelativeErrorToGlobalNorm, m_actualSpaces.size()));
+         errorCalculator = QSharedPointer<ErrorCalculator<double> >(
+                     new DefaultErrorCalculator<double, HERMES_H1_NORM>(RelativeErrorToGlobalNorm, m_actualSpaces.size()));
         break;
     case HERMES_H1_SEMINORM:
         errorCalculator = QSharedPointer<ErrorCalculator<double> >(
-                    new DefaultErrorCalculator<double, HERMES_H1_SEMINORM>(RelativeErrorToGlobalNorm, m_actualSpaces.size()));
+                     new DefaultErrorCalculator<double, HERMES_H1_SEMINORM>(RelativeErrorToGlobalNorm, m_actualSpaces.size()));
         break;
+    case HERMES_UNSET_NORM:
+        errorCalculator = QSharedPointer<ErrorCalculator<double> >(
+                    new AgrosVolumeErrorCalculator<double>(RelativeErrorToGlobalNorm, m_block->fields().at(0)->fieldInfo()));
     }
+
 
     // stopping criterion for an adaptivity step.
     QSharedPointer<AdaptivityStoppingCriterion<double> > stopingCriterion;

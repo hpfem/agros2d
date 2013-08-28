@@ -383,6 +383,8 @@ QString errorNormString(Hermes::Hermes2D::NormType projNormType)
         return QObject::tr("Hdiv norm");
     case Hermes::Hermes2D::HERMES_HCURL_NORM:
         return QObject::tr("Hcurl norm");
+    case Hermes::Hermes2D::HERMES_UNSET_NORM:
+        return QObject::tr("Custom norm");
     default:
         std::cerr << "Norm '" + QString::number(projNormType).toStdString() + "' is not implemented. QString errorNormString(ProjNormType projNormType)" << endl;
         throw;

@@ -495,6 +495,7 @@ void FieldWidget::fillComboBox()
     cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_NORM), Hermes::Hermes2D::HERMES_H1_NORM);
     cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_L2_NORM), Hermes::Hermes2D::HERMES_L2_NORM);
     cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_SEMINORM), Hermes::Hermes2D::HERMES_H1_SEMINORM);
+    cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_UNSET_NORM), Hermes::Hermes2D::HERMES_UNSET_NORM);
 
     cmbIterLinearSolverMethod->clear();
     foreach (QString method, iterLinearSolverMethodStringKeys())
