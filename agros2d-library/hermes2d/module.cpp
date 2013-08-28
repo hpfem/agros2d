@@ -693,13 +693,13 @@ QList<FormInfo> WeakFormAgros<Scalar>::wfVectorVolumeSeparated(XMLModule::module
 template <typename Scalar>
 QList<FormInfo> WeakFormAgros<Scalar>::wfMatrixVolumeComplete(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType)
 {
-
+    return QList<FormInfo>();
 }
 
 template <typename Scalar>
 QList<FormInfo> WeakFormAgros<Scalar>::wfVectorVolumeComplete(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType)
 {
-
+    return QList<FormInfo>();
 }
 
 
