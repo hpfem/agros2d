@@ -30,6 +30,7 @@ static QMap<CoordinateType, QString> coordinateTypeList;
 static QMap<PhysicFieldVariableComp, QString> physicFieldVariableCompList;
 static QMap<SceneViewPost3DMode, QString> sceneViewPost3DModeList;
 static QMap<WeakFormKind, QString> weakFormList;
+static QMap<WeakFormVariant, QString> weakFormVariantList;
 static QMap<AdaptivityType, QString> adaptivityTypeList;
 static QMap<AdaptivityStoppingCriterionType, QString> adaptivityStoppingCriterionTypeList;
 static QMap<Hermes::Hermes2D::NormType, QString> adaptivityNormTypeList;
@@ -69,6 +70,10 @@ CouplingType couplingTypeFromStringKey(const QString &couplingType) { return cou
 QStringList weakFormStringKeys() { return weakFormList.values(); }
 QString weakFormToStringKey(WeakFormKind weakForm) { return weakFormList[weakForm]; }
 WeakFormKind weakFormFromStringKey(const QString &weakForm) { return weakFormList.key(weakForm); }
+
+QStringList weakFormVariantStringKeys() { return weakFormVariantList.values(); }
+QString weakFormVariantToStringKey(WeakFormVariant weakFormVariant) { return weakFormVariantList[weakFormVariant]; }
+WeakFormVariant weakFormVariantFromStringKey(const QString &weakFormVariant) { return weakFormVariantList.key(weakFormVariant); }
 
 QStringList meshTypeStringKeys() { return meshTypeList.values(); }
 QString meshTypeToStringKey(MeshType meshType) { return meshTypeList[meshType]; }
@@ -181,10 +186,16 @@ void initLists()
     couplingTypeList.insert(CouplingType_Weak, "weak");
     couplingTypeList.insert(CouplingType_None, "none");
 
+    // Weak form type
     weakFormList.insert(WeakForm_MatVol, "matvol");
     weakFormList.insert(WeakForm_MatSurf, "matsur");
     weakFormList.insert(WeakForm_VecVol, "vecvol");
     weakFormList.insert(WeakForm_VecSurf, "vecsur");
+
+    // Weak form variant
+    weakFormVariantList.insert(WeakFormVariant_Normal, "normal");
+    weakFormVariantList.insert(WeakFormVariant_Residual, "residual");
+    weakFormVariantList.insert(WeakFormVariant_TimeResidual, "time_residual");
 
     // Mesh Type
     meshTypeList.insert(MeshType_Triangle, "triangle");
@@ -525,6 +536,22 @@ QString weakFormString(WeakFormKind weakForm)
         return QObject::tr("Vector surface");
     default:
         std::cerr << "Weak form '" + QString::number(weakForm).toStdString() + "' is not implemented. weakFormString(WeakForm weakForm)" << endl;
+        throw;
+    }
+}
+
+QString weakFormVariantString(WeakFormVariant weakFormVariant)
+{
+    switch (weakFormVariant)
+    {
+    case WeakFormVariant_Normal:
+        return QObject::tr("Normal");
+    case WeakFormVariant_Residual:
+        return QObject::tr("Residual");
+    case WeakFormVariant_TimeResidual:
+        return QObject::tr("Time residual");
+    default:
+        std::cerr << "Weak form variant '" + QString::number(weakFormVariant).toStdString() + "' is not implemented. weakFormVariantString(WeakFormVariant weakFormVariant)" << endl;
         throw;
     }
 }

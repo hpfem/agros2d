@@ -34,6 +34,15 @@
     <module:quantity id="rf_te_conductivity" shortname="rf_gamma"/>
     <module:quantity id="rf_te_current_density_external_real" shortname="rf_Jer"/>
     <module:quantity id="rf_te_current_density_external_imag" shortname="rf_Jei"/>
+    
+    <module:matrix_form id="laplace_1_1" i="1" j="1" planar="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy)" axi="- 1 / (rf_mur * MU0) * (r * udr * vdr + r * udz * vdz + uval * vval/r + uval * vdr + vval * udr)" symmetric="0"/>
+    <module:matrix_form id="laplace_2_2" i="2" j="2" planar="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy)" axi="- 1 / (rf_mur * MU0) * (r * udr * vdr + r * udz * vdz + uval * vval/r + uval * vdr + vval * udr)"  symmetric="0"/>
+    <module:matrix_form id="frequency_1_1" i="1" j="1" planar="pow(2 * PI * f, 2) * rf_eps * EPS0 * uval * vval" axi="r * pow(2 * PI * f, 2) * rf_eps * EPS0 * uval * vval" symmetric="1"/>
+    <module:matrix_form id="frequency_1_2" i="1" j="2" planar="2 * PI * f * rf_gamma * uval * vval" axi="2 * PI * f * rf_gamma * uval * vval" />
+    <module:matrix_form id="frequency_2_1" i="2" j="1" planar="- 2 * PI * f * rf_gamma * uval * vval" axi="-2 * PI * f * rf_gamma * uval * vval" />
+    <module:matrix_form id="frequency_2_2" i="2" j="2" planar="pow(2 * PI * f, 2) * rf_eps * EPS0 * uval * vval" axi="r * pow(2 * PI * f, 2) * rf_eps * EPS0 * uval * vval" symmetric="1"/>
+    <module:vector_form id="rhs_1" i="1" j="1" planar="- 2 * PI * f * rf_Jei * vval" axi="- r * 2 * PI * f * rf_Jei * vval" />
+    <module:vector_form id="rhs_2" i="2" j="2" planar="2 * PI * f * rf_Jer * vval" axi="r * 2 * PI * f * rf_Jer * vval"/>
     <module:weakforms_volume>
       <module:weakform_volume analysistype="harmonic" equation="\curl \left( \frac{1}{\mu}\, \curl \vecfaz{E} \right) - \mj \omega \left( \sigma + \mj \omega \varepsilon \right) \vecfaz{E} = \mj \omega \vecfaz{J}_{\mathrm{ext}}">
         <module:quantity id="rf_te_permittivity"/>
@@ -41,12 +50,18 @@
         <module:quantity id="rf_te_conductivity"/>
         <module:quantity id="rf_te_current_density_external_real"/>
         <module:quantity id="rf_te_current_density_external_imag"/>
-        <module:matrix_form axi_linear="- 1 / (rf_mur * MU0) * (r * udr * vdr + r * udz * vdz + uval * vval/r + uval * vdr + vval * udr) + r * pow(2 * PI * f, 2) * rf_eps * EPS0 * uval * vval" axi_newton="- r * 1 / (rf_mur * MU0) * (udr * vdr + udz * vdz) + r * pow(2 * PI * f, 2) * rf_eps * EPS0 * uval * vval" i="1" id="form" j="1" planar_linear="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + pow(2 * PI * f, 2) * rf_eps * EPS0 * uval * vval" planar_newton="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + pow(2 * PI * f, 2) * rf_eps * EPS0 * uval * vval" symmetric="0"/>
-        <module:matrix_form axi_linear="- 1 / (rf_mur * MU0) * (r * udr * vdr + r * udz * vdz + uval * vval/r + uval * vdr + vval * udr) + r * pow(2 * PI * f, 2) * rf_eps * EPS0 * uval * vval" axi_newton="- r * 1 / (rf_mur * MU0) * (udr * vdr + udz * vdz) + r * pow(2 * PI * f, 2) * rf_eps * EPS0 * uval * vval" i="2" id="form" j="2" planar_linear="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + pow(2 * PI * f, 2) * rf_eps * EPS0 * uval * vval" planar_newton="- 1 / (rf_mur * MU0) * (udx * vdx + udy * vdy) + pow(2 * PI * f, 2) * rf_eps * EPS0 * uval * vval" symmetric="0"/>
-        <module:matrix_form axi_linear="2 * PI * f * rf_gamma * uval * vval" axi_newton="0" i="1" id="form" j="2" planar_linear="2 * PI * f * rf_gamma * uval * vval" planar_newton="0"/>
-        <module:matrix_form axi_linear="-2 * PI * f * rf_gamma * uval * vval" axi_newton="0" i="2" id="form" j="1" planar_linear="- 2 * PI * f * rf_gamma * uval * vval" planar_newton="0"/>
-        <module:vector_form axi_linear="- r * 2 * PI * f * rf_Jei * vval" axi_newton="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * pow(2 * PI * f, 2) * rf_eps * EPS0 * upval * vval - r * rf_Jer * vval" i="1" id="form" j="1" planar_linear="- 2 * PI * f * rf_Jei * vval" planar_newton="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + pow(2 * PI * f, 2) * rf_eps * EPS0 * upval * vval - rf_Jer * vval"/>
-        <module:vector_form axi_linear="r * 2 * PI * f * rf_Jer * vval" axi_newton="- 1 / (rf_mur * MU0) * (updr * vdr + updz * vdz) + r * pow(2 * PI * f, 2) * rf_eps * EPS0 * upval * vval - r * rf_Jei * vval" i="2" id="form" j="2" planar_linear="2 * PI * f * rf_Jer * vval" planar_newton="- 1 / (rf_mur * MU0) * (updx * vdx + updy * vdy) + pow(2 * PI * f, 2) * rf_eps * EPS0 * upval * vval - rf_Jei * vval"/>
+
+        <module:linearity_option type="linear">
+          <module:matrix_form id="laplace_1_1" />
+          <module:matrix_form id="laplace_2_2" />
+          <module:matrix_form id="frequency_1_1" />
+          <module:matrix_form id="frequency_1_2" />
+          <module:matrix_form id="frequency_2_1" />
+          <module:matrix_form id="frequency_2_2" />
+          <module:vector_form id="rhs_1" />
+          <module:vector_form id="rhs_2" />
+        </module:linearity_option>
+
       </module:weakform_volume>
       <!--
       <module:weakform_volume analysistype="transient" equation="-\, \div \left( \frac{1}{\rho}\,\, \grad p \right) + \frac{1}{\rho  c^2} \frac{\partial^2 p}{\partial t^2} = 0">

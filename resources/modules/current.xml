@@ -29,11 +29,16 @@
   <module:volume>
     <module:quantity id="current_conductivity" shortname="cu_gamma"/>
     <module:quantity id="current_permittivity" shortname="cu_epsr"/>
+    
+    <module:matrix_form id="steady_laplace" i="1" j="1" planar="cu_gamma * (udx * vdx + udy * vdy)" axi="cu_gamma * r * (udr * vdr + udz * vdz)" symmetric="1"/>
     <module:weakforms_volume>
       <module:weakform_volume analysistype="steadystate" equation="-\, \div \left( \sigma\,\, \grad \varphi \right) = 0">
         <module:quantity id="current_conductivity"/>
-        <module:matrix_form axi_linear="cu_gamma * r * (udr * vdr + udz * vdz)" axi_newton="cu_gamma * r * (udr * vdr + udz * vdz)" i="1" id="form" j="1" planar_linear="cu_gamma * (udx * vdx + udy * vdy)" planar_newton="cu_gamma * (udx * vdx + udy * vdy)" symmetric="1"/>
-        <module:vector_form axi_linear="0" axi_newton="cu_gamma * r * (updr * vdr + updz * vdz)" i="1" id="form" j="1" planar_linear="0" planar_newton="cu_gamma * (updx * vdx + updy * vdy)"/>
+
+        <module:linearity_option type="linear">
+          <module:matrix_form id="steady_laplace" />
+        </module:linearity_option>
+
       </module:weakform_volume>
       <!--
       <module:weakform_volume analysistype="harmonic" equation="-\, \div \left( \left( \sigma + \mj \omega \varepsilon \right) \,\, \grad \varphi \right) = 0">

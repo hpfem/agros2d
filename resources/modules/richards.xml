@@ -29,19 +29,55 @@
     <module:quantity id="richards_hydraulic_conductivity" shortname="re_k"/>
     <module:quantity id="richards_hydraulic_conductivity_derivative" shortname="re_kd"/>
     <module:quantity id="richards_retention_capacity" shortname="re_c"/>
+    
+    <module:matrix_form id="conductivity" i="1" j="1" planar="re_k * (udx * vdx + udy * vdy)" axi="re_k * r * (udr * vdr + udz * vdz)"/>
+    <module:matrix_form id="conductivity_derivative" i="1" j="1" planar="- re_kd * udy * vval" axi="- re_kd * udz * vval"/>
+    <module:matrix_form id="conductivity_jacobian" i="1" j="1"  planar="dre_k * uval * (updx * vdx + updy * vdy)" axi="dre_k * r * uval * (updr * vdr + updz * vdz)"/>
+    <module:matrix_form id="time_mat" i="1" j="1" planar="re_c * uval * vval * timedermat" axi="r * re_c * uval * vval * timedermat" />
+    <module:vector_form id="time_vec" i="1" j="1" planar="re_c * timedervec * vval" axi="r * re_c * timedervec * vval"/>
+    
     <module:weakforms_volume>
       <module:weakform_volume analysistype="steadystate" equation="-\, \div \left( \lambda\,\, \grad T \right) + k c_\mathrm{p} \left(\vec{v} \cdot \grad T\right) = Q">
         <module:quantity id="richards_hydraulic_conductivity" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
         <module:quantity id="richards_hydraulic_conductivity_derivative" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
-        <module:matrix_form axi_linear="re_k * r * (udr * vdr + udz * vdz) - re_kd * udz * vval" axi_newton="dre_k * r * uval * (updr * vdr + updz * vdz) + re_k * r * (udr * vdr + udz * vdz) - re_kd * udz * vval" i="1" id="form" j="1" planar_linear="re_k * (udx * vdx + udy * vdy) - re_kd * udy * vval" planar_newton="dre_k * uval * (updx * vdx + updy * vdy) + re_k * (udx * vdx + udy * vdy) - re_kd * udy * vval"/>
-        <module:vector_form axi_linear="0" axi_newton="re_k * r * (updr * vdr + updz * vdz) - re_kd * updz * vval" i="1" id="form" j="1" planar_linear="0" planar_newton="re_k * (updx * vdx + updy * vdy) - re_kd * updy * vval"/>
+
+        <module:linearity_option type="linear">
+          <module:matrix_form id="conductivity" />
+          <module:matrix_form id="conductivity_derivative" />
+        </module:linearity_option>
+
+        <module:linearity_option type="newton">
+          <module:matrix_form id="conductivity" />
+          <module:matrix_form id="conductivity_derivative" />
+          <module:matrix_form id="conductivity_jacobian" />
+          <module:vector_form id="conductivity" variant="residual" />
+          <module:vector_form id="conductivity_derivative" variant="residual" />
+        </module:linearity_option>
+
       </module:weakform_volume>
       <module:weakform_volume analysistype="transient" equation="-\, \div \left( \lambda\,\, \grad T \right) + k c_\mathrm{p} \left(\frac{\partial T}{\partial t} + \vec{v} \cdot \grad T\right) = Q">
         <module:quantity id="richards_hydraulic_conductivity" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
         <module:quantity id="richards_hydraulic_conductivity_derivative" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
         <module:quantity id="richards_retention_capacity" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
-        <module:matrix_form axi_linear="re_k * r * (udr * vdr + udz * vdz) - r * re_c * uval * vval * timedermat" axi_newton="dre_k * r * uval * (updr * vdr + updz * vdz) + re_k * r * (udr * vdr + udz * vdz)  - re_kd * udz * vval + r * re_c * uval * vval * timedermat" i="1" id="form" j="1" planar_linear="re_k * (udx * vdx + udy * vdy) - re_c * uval * vval * timedermat" planar_newton="dre_k * uval * (updx * vdx + updy * vdy) + re_k * (udx * vdx + udy * vdy) - re_kd * udy * vval + re_c * uval * vval * timedermat"/>
-        <module:vector_form axi_linear="r * re_c * timedervec * vval" axi_newton="re_k * r * (updr * vdr + updz * vdz) - re_kd * updz * vval + r * re_c * (timedermat * upval - timedervec) * vval" i="1" id="form" j="1" planar_linear="re_c * timedervec * vval" planar_newton="re_k * (updx * vdx + updy * vdy) - re_kd * updy * vval + re_c * (timedermat * upval - timedervec) * vval"/>
+
+        <module:linearity_option type="linear">
+          <module:matrix_form id="conductivity" />
+          <module:matrix_form id="conductivity_derivative" />
+	  <module:matrix_form id="time_mat" />
+	  <module:vector_form id="time_vec" />
+        </module:linearity_option>
+
+        <module:linearity_option type="newton">
+          <module:matrix_form id="conductivity" />
+          <module:matrix_form id="conductivity_derivative" />
+          <module:matrix_form id="conductivity_jacobian" />
+	  <module:matrix_form id="time_mat" />
+          <module:vector_form id="conductivity" variant="residual" />
+          <module:vector_form id="conductivity_derivative" variant="residual" />
+	  <module:vector_form id="time_mat" variant="residual"/>
+	  <module:vector_form id="time_vec" coefficient="-1"/>
+        </module:linearity_option>
+
       </module:weakform_volume>
     </module:weakforms_volume>
   </module:volume>

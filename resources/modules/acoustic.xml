@@ -27,24 +27,45 @@
   <module:volume>
     <module:quantity id="acoustic_density" shortname="ac_rho"/>
     <module:quantity id="acoustic_speed" shortname="ac_vel"/>
+
+    <module:matrix_form id="harmonic_laplace_1_1" i="1" j="1" planar="1 / ac_rho * (udx * vdx + udy * vdy)" axi="1 / ac_rho * r * (udr * vdr + udz * vdz)" symmetric="1"/>
+    <module:matrix_form id="harmonic_frequency_1_1" i="1" j="1" planar="- pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" axi="- r * pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" symmetric="1"/>
+    <module:matrix_form  id="harmonic_laplace_2_2" i="2" j="2" planar="1 / ac_rho * (udx * vdx + udy * vdy)" axi="1 / ac_rho * r * (udr * vdr + udz * vdz)" symmetric="1"/>
+    <module:matrix_form  id="harmonic_frequency_2_2" i="2" j="2" planar="- pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" axi="- r * pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" symmetric="1"/>
+
+    <module:matrix_form id="transient_1_1" i="1" j="1" planar="1 / ac_rho * (udx * vdx + udy * vdy)" axi="1 / ac_rho * r * (udr * vdr + udz * vdz)" symmetric="1"/>
+    <module:matrix_form id="transient_1_2" i="1" j="2" planar="1 / (ac_rho * ac_vel * ac_vel) * timedermat * uval * vval" axi="1 / (ac_rho * ac_vel * ac_vel) * timedermat * r * uval * vval"/>
+    <module:matrix_form id="transient_2_2" i="2" j="2" planar="- uval * vval" axi="- r * uval * vval" symmetric="1"/>
+    <module:matrix_form id="transient_2_1" i="2" j="1" planar="timedermat * uval * vval" axi="timedermat * r * uval * vval"/>
+    
+    <module:vector_form id="transient_rhs_1_2" i="1" j="2" planar="1 / (ac_rho * ac_vel * ac_vel) * timedervec * vval" axi="1 / (ac_rho * ac_vel * ac_vel) * r * timedervec * vval" />
+    <module:vector_form id="transient_rhs_2_1" i="2" j="1" planar="timedervec * vval" axi="timedervec * r * vval" />
+    
     <module:weakforms_volume>
       <module:weakform_volume analysistype="harmonic" equation="-\, \div \left( \frac{1}{\rho}\,\, \grad \faz{p} \right) - \frac{\omega^2}{\rho  c^2} \cdot \faz{p} = 0">
         <module:quantity id="acoustic_density"/>
         <module:quantity id="acoustic_speed"/>
-        <module:matrix_form axi_linear="1 / ac_rho * r * (udr * vdr + udz * vdz) - r * pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" axi_newton="1 / ac_rho * r * (udr * vdr + udz * vdz) - r * pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" i="1" id="form" j="1" planar_linear="1 / ac_rho * (udx * vdx + udy * vdy) - pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" planar_newton="1 / ac_rho * (udx * vdx + udy * vdy) - pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" symmetric="1"/>
-        <module:matrix_form axi_linear="1 / ac_rho * r * (udr * vdr + udz * vdz) - r * pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" axi_newton="1 / ac_rho * r * (udr * vdr + udz * vdz) - r * pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" i="2" id="form" j="2" planar_linear="1 / ac_rho * (udx * vdx + udy * vdy) - pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" planar_newton="1 / ac_rho * (udx * vdx + udy * vdy) - pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval"/>
-        <module:vector_form axi_linear="0" axi_newton="1 / ac_rho * r * (updr * vdr + updz * vdz) - r * pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * upval * vval" i="1" id="form" j="1" planar_linear="0" planar_newton="1 / ac_rho * (updx * vdx + updy * vdy) - pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * upval * vval"/>
-        <module:vector_form axi_linear="0" axi_newton="1 / ac_rho * r * (updr * vdr + updz * vdz) - r * pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * upval * vval" i="2" id="form" j="2" planar_linear="0" planar_newton="1 / ac_rho * (updx * vdx + updy * vdy) - pow(2 * PI * f, 2) / (ac_rho *ac_vel * ac_vel) * upval * vval"/>
+        
+        <module:linearity_option type="linear">
+          <module:matrix_form id="harmonic_laplace_1_1" />
+          <module:matrix_form id="harmonic_laplace_2_2" />
+          <module:matrix_form id="harmonic_frequency_1_1" />
+          <module:matrix_form id="harmonic_frequency_2_2" />
+        </module:linearity_option>
       </module:weakform_volume>
       <module:weakform_volume analysistype="transient" equation="-\, \div \left( \frac{1}{\rho}\,\, \grad p \right) + \frac{1}{\rho  c^2} \frac{\partial^2 p}{\partial t^2} = 0">
         <module:quantity id="acoustic_density"/>
         <module:quantity id="acoustic_speed"/>
-        <module:matrix_form axi_linear="1 / ac_rho * r * (udr * vdr + udz * vdz)" axi_newton="1 / ac_rho * r * (udr * vdr + udz * vdz)" i="1" id="form" j="1" planar_linear="1 / ac_rho * (udx * vdx + udy * vdy)" planar_newton="1 / ac_rho * (udx * vdx + udy * vdy)" symmetric="1"/>
-        <module:matrix_form axi_linear="1 / (ac_rho * ac_vel * ac_vel) * timedermat * r * uval * vval" axi_newton="1 / (ac_rho * ac_vel * ac_vel) * timedermat * r * uval * vval" i="1" id="form" j="2" planar_linear="1 / (ac_rho * ac_vel * ac_vel) * timedermat * uval * vval" planar_newton="1 / (ac_rho * ac_vel * ac_vel) * timedermat * uval * vval"/>
-        <module:matrix_form axi_linear="- r * uval * vval" axi_newton="- r * uval * vval" i="2" id="form" j="2" planar_linear="- uval * vval" planar_newton="- uval * vval" symmetric="1"/>
-        <module:matrix_form axi_linear="timedermat * r * uval * vval" axi_newton="timedermat * r * uval * vval" i="2" id="form" j="1" planar_linear="timedermat * uval * vval" planar_newton="timedermat * uval * vval"/>
-        <module:vector_form axi_linear="1 / (ac_rho * ac_vel * ac_vel) * r * timedervec * vval" axi_newton="-1 / (ac_rho * ac_vel * ac_vel) * r * timedervec * vval +  1 / ac_rho * r * (dr1 * vdr +dz1 * vdz) + 1 / (ac_rho * ac_vel * ac_vel) * timedermat * r * value2 * vval" i="1" id="form" j="2" planar_linear="1 / (ac_rho * ac_vel * ac_vel) * timedervec * vval" planar_newton="-1 / (ac_rho * ac_vel * ac_vel) * timedervec * vval + 1 / ac_rho * (dx1 * vdx +dy1 * vdy) + 1 / (ac_rho * ac_vel * ac_vel) * timedermat * value2 * vval"/>
-        <module:vector_form axi_linear="timedervec * r * vval" axi_newton="- timedervec * r * vval + timedermat * value1 * vval - value2 * r * vval" i="2" id="form" j="1" planar_linear="timedervec * vval" planar_newton="- timedervec * vval + timedermat * value1 * vval - value2 * vval"/>
+
+        <module:linearity_option type="linear">
+          <module:matrix_form id="transient_1_1" />
+          <module:matrix_form id="transient_1_2" />
+          <module:matrix_form id="transient_2_1" />
+          <module:matrix_form id="transient_2_2" />
+          <module:vector_form id="transient_rhs_1_2" />
+          <module:vector_form id="transient_rhs_2_1" />
+        </module:linearity_option>
+
       </module:weakform_volume>
     </module:weakforms_volume>
   </module:volume>

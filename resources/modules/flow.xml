@@ -28,23 +28,66 @@
     <module:quantity id="flow_density" shortname="fl_rho"/>
     <module:quantity id="flow_force_x" shortname="fl_fx"/>
     <module:quantity id="flow_force_y" shortname="fl_fy"/>
+
+<!--     todo: proc jsou laplace u axi jinak? nechybi tam nahodou clen u druheho? Spise ano! -->
+    <module:matrix_form id="viscosity_1_1" i="1" j="1" planar="fl_mu * (udx * vdx + udy * vdy)" axi="fl_mu * (udr * vdr - udr * vval / (r + 1e-12) + uval * vval / (r + 1e-12)^2 + udz * vdz)"/>
+    <module:matrix_form id="viscosity_2_2" i="2" j="2" planar="fl_mu * (udx * vdx + udy * vdy)" axi="fl_mu * (udr * vdr - udr * vval / (r + 1e-12) + udz * vdz) "/>
+    <module:matrix_form id="convection_jacobian_1_1" i="1" j="1" planar="fl_rho * (value1 * udx + value2 * udy + dx1 * uval) * vval" axi="fl_rho * (value1 * udr + value2 * udz + dr1 * uval) * vval" />
+    <module:matrix_form id="convection_jacobian_1_2" i="1" j="2" planar="fl_rho * dy1 * uval * vval" axi="fl_rho * dz1 * uval * vval" />
+    <module:matrix_form id="convection_jacobian_2_1" i="2" j="1" planar="fl_rho * dx2 * uval * vval" axi="fl_rho * dr2 * uval * vval" />
+    <module:matrix_form id="convection_jacobian_2_2" i="2" j="2" planar="fl_rho * (value1 * udx + value2 * udy + dy2 * uval) * vval" axi="fl_rho * (value1 * udr + value2 * udz + dz2 * uval) * vval" />
+    <module:matrix_form id="pressure_1_3" i="1" j="3" planar="- uval * vdx" axi="- uval * vdr" />
+    <module:matrix_form id="pressure_2_3" i="2" j="3" planar="- uval * vdy" axi="-uval * vdz" />
+    <module:matrix_form id="pressure_3_1" i="3" j="1" planar="udx * vval" axi="udr * vval + uval * vval / (r + 1e-12)" />
+    <module:matrix_form id="pressure_3_2" i="3" j="2" planar="udy * vval" axi="udz * vval" />
+
+    <module:vector_form id="rhs_1" i="1" j="1" planar="fl_fx * vval" axi="fl_fx * vval" />
+    <module:vector_form id="convection_residual_1" i="1" j="1" planar="fl_rho * (value1 * dx1 + value2 * dy1) * vval" axi="fl_rho * (value1 * dr1 + value2 * dz1) * vval" />
+    <module:vector_form id="rhs_2" i="2" j="2" planar="fl_fy * vval" axi="fl_fy * vval"/>
+    <module:vector_form id="convection_residual_2" i="2" j="2" planar="fl_rho * (value1 * dx2 + value2 * dy2) * vval" axi="fl_rho * (value1 * dr2 + value2 * dz2) * vval"/>
+
     <module:weakforms_volume>
       <module:weakform_volume analysistype="steadystate" equation="\rho \vec{v} \cdot \grad \vec{v} = -\, \grad p + \mu \triangle \vec{v} + \vec{f},~\div \vec{v} = 0">
         <module:quantity id="flow_viscosity"/>
         <module:quantity id="flow_density"/>
         <module:quantity id="flow_force_x"/>
         <module:quantity id="flow_force_y"/>
-        <module:matrix_form axi_linear="fl_mu * (udr * vdr - udr * vval / (r + 1e-12) + uval * vval / (r + 1e-12) / (r + 1e-12) + udz * vdz)" axi_newton="fl_mu * (udr * vdr - udr * vval / (r + 1e-12) + uval * vval / (r + 1e-12) / (r + 1e-12) + udz * vdz) + fl_rho * (value1 * udr + value2 * udz + dr1 * uval) * vval" i="1" id="form" j="1" planar_linear="fl_mu * (udx * vdx + udy * vdy)" planar_newton="fl_mu * (udx * vdx + udy * vdy) + fl_rho * (value1 * udx + value2 * udy + dx1 * uval) * vval"/>
-        <module:matrix_form axi_linear="0" axi_newton="fl_rho * dz1 * uval * vval" i="1" id="form" j="2" planar_linear="0" planar_newton="fl_rho * dy1 * uval * vval"/>
-        <module:matrix_form axi_linear="- uval * vdr" axi_newton="- uval * vdr" i="1" id="form" j="3" planar_linear=" - uval * vdx" planar_newton=" - uval * vdx"/>
-        <module:matrix_form axi_linear="0" axi_newton="fl_rho * dr2 * uval * vval" i="2" id="form" j="1" planar_linear="0" planar_newton="fl_rho * dx2 * uval * vval"/>
-        <module:matrix_form axi_linear="fl_mu * (udr * vdr - udr * vval / (r + 1e-12) + udz * vdz)" axi_newton="fl_mu * (udr * vdr - udr * vval / (r + 1e-12) + udz * vdz) + fl_rho * (value1 * udr + value2 * udz + dz2 * uval) * vval" i="2" id="form" j="2" planar_linear="fl_mu * (udx * vdx + udy * vdy)" planar_newton="fl_mu * (udx * vdx + udy * vdy) + fl_rho * (value1 * udx + value2 * udy + dy2 * uval) * vval"/>
-        <module:matrix_form axi_linear="-uval * vdz" axi_newton="-uval * vdz" i="2" id="form" j="3" planar_linear=" - uval * vdy" planar_newton=" - uval * vdy"/>
-        <module:matrix_form axi_linear="udr * vval + uval * vval / (r + 1e-12)" axi_newton="udr * vval + uval * vval / (r + 1e-12)" i="3" id="form" j="1" planar_linear="udx * vval" planar_newton="udx * vval"/>
-        <module:matrix_form axi_linear="udz * vval" axi_newton="udz * vval" i="3" id="form" j="2" planar_linear="udy * vval" planar_newton="udy * vval"/>
-        <module:vector_form axi_linear="fl_fx * vval" axi_newton="fl_mu * (updr * vdr - updr * vval / (r + 1e-12) + upval * vval / (r + 1e-12) / (r + 1e-12) + updz * vdz) - value3 * vdr + fl_rho * (value1 * dr1 + value2 * dz1) * vval - fl_fx * vval" i="1" id="form" j="1" planar_linear="fl_fx * vval" planar_newton="fl_mu * (updx * vdx + updy * vdy) - value3 * vdx + fl_rho * (value1 * dx1 + value2 * dy1) * vval - fl_fx * vval"/>
-        <module:vector_form axi_linear="fl_fy * vval" axi_newton="fl_mu * (updr * vdr - updr * vval / (r + 1e-12) + updz * vdz) - value3 * vdz + fl_rho * (value1 * dr2 + value2 * dz2) * vval - fl_fy * vval" i="2" id="form" j="2" planar_linear="fl_fy * vval" planar_newton="fl_mu * (updx * vdx + updy * vdy) - value3 * vdy + fl_rho * (value1 * dx2 + value2 * dy2) * vval - fl_fy * vval"/>
-        <module:vector_form axi_linear="0" axi_newton="(dr1 + value1 / (r + 1e-12) + dz2) * vval" i="3" id="form" j="3" planar_linear="0" planar_newton="(dx1 + dy2) * vval"/>
+
+        <module:linearity_option type="linear">
+          <module:matrix_form id="viscosity_1_1" />
+          <module:matrix_form id="viscosity_2_2" />
+          <module:matrix_form id="pressure_1_3" />
+          <module:matrix_form id="pressure_2_3" />
+          <module:matrix_form id="pressure_3_1" />
+          <module:matrix_form id="pressure_3_2" />
+          <module:vector_form id="rhs_1" />
+          <module:vector_form id="rhs_2" />
+        </module:linearity_option>
+
+        <module:linearity_option type="newton">
+          <module:matrix_form id="viscosity_1_1" />
+          <module:matrix_form id="viscosity_2_2" />
+          <module:matrix_form id="convection_jacobian_1_1" />
+          <module:matrix_form id="convection_jacobian_1_2" />
+          <module:matrix_form id="convection_jacobian_2_1" />
+          <module:matrix_form id="convection_jacobian_2_2" />
+          <module:matrix_form id="pressure_1_3" />
+          <module:matrix_form id="pressure_2_3" />
+          <module:matrix_form id="pressure_3_1" />
+          <module:matrix_form id="pressure_3_2" />
+	  
+          <module:vector_form id="rhs_1" coefficient="-1"/>
+          <module:vector_form id="rhs_2" coefficient="-1" />
+          <module:vector_form id="viscosity_1_1" variant="residual" />
+          <module:vector_form id="viscosity_2_2" variant="residual" />
+          <module:vector_form id="convection_residual_1" />
+          <module:vector_form id="convection_residual_2" />
+          <module:vector_form id="pressure_1_3" variant="residual"/>
+          <module:vector_form id="pressure_2_3" variant="residual"/>
+          <module:vector_form id="pressure_3_1" variant="residual"/>
+          <module:vector_form id="pressure_3_2" variant="residual"/>
+        </module:linearity_option>
+
       </module:weakform_volume>
     </module:weakforms_volume>
   </module:volume>

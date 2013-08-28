@@ -216,12 +216,7 @@ public:
     Module::LocalVariable defaultViewScalarVariable() const;
     Module::LocalVariable defaultViewVectorVariable() const;
 
-    // weak forms
-    QList<FormInfo> wfMatrixVolume() const;
-    QList<FormInfo> wfVectorVolume() const;        
-
     QList<LinearityType> availableLinearityTypes() const {return m_availableLinearityTypes;}
-
 
 signals:
     void changed();
@@ -265,7 +260,11 @@ private:
 
     void setDefaultValues();
     void setStringKeys();
+
+    // help functions extracting parts of xml
 };
+
+XMLModule::linearity_option volumeLinearityOption(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
 
 ostream& operator<<(ostream& output, FieldInfo& id);
 

@@ -64,8 +64,10 @@ QMap<QString, QString> Module::availableModules()
         foreach (QString filename, list)
         {
             try
-            {
-                ::xml_schema::flags parsing_flags = parsing_flags = xml_schema::flags::dont_validate;
+            {                
+                // todo: find a way to validate if required. If validated here, sendible error messages will be obtained
+                ::xml_schema::flags parsing_flags = xml_schema::flags::dont_validate;
+                //::xml_schema::flags parsing_flags = 0;
 
                 std::auto_ptr<XMLModule::module> module_xsd(XMLModule::module_(compatibleFilename(datadir() + MODULEROOT + "/" + filename).toStdString(), parsing_flags));
 
@@ -76,15 +78,49 @@ QMap<QString, QString> Module::availableModules()
             }
             catch (const xml_schema::expected_element& e)
             {
-                throw AgrosException(QString("%1: %2").arg(QString::fromStdString(e.what())).arg(QString::fromStdString(e.name())));
+                QString str = QString("%1: %2").arg(QString::fromStdString(e.what())).arg(QString::fromStdString(e.name()));
+                qDebug() << str;
+                throw AgrosException(str);
             }
             catch (const xml_schema::expected_attribute& e)
             {
-                throw AgrosException(QString("%1: %2").arg(QString::fromStdString(e.what())).arg(QString::fromStdString(e.name())));
+                QString str = QString("%1: %2").arg(QString::fromStdString(e.what())).arg(QString::fromStdString(e.name()));
+                qDebug() << str;
+                throw AgrosException(str);
+            }
+            catch (const xml_schema::unexpected_element& e)
+            {
+                QString str = QString("%1: %2 instead of %3").arg(QString::fromStdString(e.what())).arg(QString::fromStdString(e.encountered_name())).arg(QString::fromStdString(e.expected_name()));
+                qDebug() << str;
+                throw AgrosException(str);
+            }
+            catch (const xml_schema::unexpected_enumerator& e)
+            {
+                QString str = QString("%1: %2").arg(QString::fromStdString(e.what())).arg(QString::fromStdString(e.enumerator()));
+                qDebug() << str;
+                throw AgrosException(str);
+            }
+            catch (const xml_schema::expected_text_content& e)
+            {
+                QString str = QString("%1").arg(QString::fromStdString(e.what()));
+                qDebug() << str;
+                throw AgrosException(str);
+            }
+            catch (const xml_schema::parsing& e)
+            {
+                QString str = QString("%1").arg(QString::fromStdString(e.what()));
+                qDebug() << str;
+                xml_schema::diagnostics diagnostic = e.diagnostics();
+                for(int i = 0; i < diagnostic.size(); i++)
+                {
+                    xml_schema::error err = diagnostic.at(i);
+                    qDebug() << QString("%1, position %2:%3, %4").arg(QString::fromStdString(err.id())).arg(err.line()).arg(err.column()).arg(QString::fromStdString(err.message()));
+                }
+                throw AgrosException(str);
             }
             catch (const xml_schema::exception& e)
             {
-                qDebug() << e.what();
+                qDebug() << QString("Unknow parser exception: %1").arg(QString::fromStdString(e.what()));
                 throw AgrosException(QString::fromStdString(e.what()));
             }
         }
@@ -305,12 +341,12 @@ void WeakFormAgros<Scalar>::registerForms()
             assert(material);
             if (material != Agros2D::scene()->materials->getNone(fieldInfo))
             {
-                foreach (FormInfo expression, fieldInfo->wfMatrixVolume())
+                foreach (FormInfo expression, wfMatrixVolumeSeparated(fieldInfo->plugin()->module(), fieldInfo->analysisType(), fieldInfo->linearityType()))
                     registerForm(WeakForm_MatVol, field, QString::number(labelNum), expression,
                                  m_block->offset(field), m_block->offset(field), material);
 
 
-                foreach (FormInfo expression, fieldInfo->wfVectorVolume())
+                foreach (FormInfo expression, wfVectorVolumeSeparated(fieldInfo->plugin()->module(), fieldInfo->analysisType(), fieldInfo->linearityType()))
                     registerForm(WeakForm_VecVol, field, QString::number(labelNum), expression,
                                  m_block->offset(field), m_block->offset(field), material);
 
@@ -444,6 +480,232 @@ void WeakFormAgros<Scalar>::updateExtField()
     this->set_ext(externalSlns);
 }
 
+template <typename Scalar>
+QList<FormInfo> WeakFormAgros<Scalar>::wfMatrixVolumeTemplates(XMLModule::module* module)
+{
+    // matrix weakforms
+    QList<FormInfo> weakForms;
+    // weakform
+    for (unsigned int i = 0; i < module->volume().matrix_form().size(); i++)
+    {
+        XMLModule::matrix_form form = module->volume().matrix_form().at(i);
+        assert(form.i().present() && form.j().present() && form.planar().present() && form.axi().present());
+        FormInfo formInfo(QString::fromStdString(form.id()),
+                          form.i().get(),
+                          form.j().get(),
+                          form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM);
+        formInfo.expr_planar = QString::fromStdString(form.planar().get());
+        formInfo.expr_axi = QString::fromStdString(form.axi().get());
+        weakForms.append(formInfo);
+    }
+
+    return weakForms;
+}
+
+template <typename Scalar>
+QList<FormInfo> WeakFormAgros<Scalar>::wfVectorVolumeTemplates(XMLModule::module* module)
+{
+    // vector weakforms
+    QList<FormInfo> weakForms;
+    for (unsigned int i = 0; i < module->volume().vector_form().size(); i++)
+    {
+        XMLModule::vector_form form = module->volume().vector_form().at(i);
+        assert(form.i().present() && form.j().present() && form.planar().present() && form.axi().present());
+        FormInfo formInfo(QString::fromStdString(form.id()),
+                          form.i().get(),
+                          form.j().get());
+        formInfo.expr_planar = QString::fromStdString(form.planar().get());
+        formInfo.expr_axi = QString::fromStdString(form.axi().get());
+        weakForms.append(formInfo);
+    }
+
+    return weakForms;
+}
+
+XMLModule::linearity_option volumeLinearityOption(XMLModule::module *module, AnalysisType analysisType, LinearityType linearityType)
+{
+    for (unsigned int i = 0; i < module->volume().weakforms_volume().weakform_volume().size(); i++)
+    {
+        XMLModule::weakform_volume wf = module->volume().weakforms_volume().weakform_volume().at(i);
+
+        if (wf.analysistype() == analysisTypeToStringKey(analysisType).toStdString())
+        {
+            for(unsigned int i = 0; i < wf.linearity_option().size(); i++)
+            {
+                XMLModule::linearity_option lo = wf.linearity_option().at(i);
+                if(lo.type() == linearityTypeToStringKey(linearityType).toStdString())
+                {
+                    return lo;
+                }
+            }
+        }
+    }
+}
+
+template <typename Scalar>
+QList<FormInfo> WeakFormAgros<Scalar>::wfMatrixVolumeElements(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType)
+{
+    // matrix weakforms
+    QList<FormInfo> weakForms;
+    XMLModule::linearity_option lo = volumeLinearityOption(module, analysisType, linearityType);
+
+    for (unsigned int i = 0; i < lo.matrix_form().size(); i++)
+    {
+        XMLModule::matrix_form form = lo.matrix_form().at(i);
+        FormInfo formInfo(QString::fromStdString(form.id()));
+        weakForms.append(formInfo);
+    }
+
+    return weakForms;
+}
+
+template <typename Scalar>
+QList<FormInfo> WeakFormAgros<Scalar>::wfVectorVolumeElements(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType)
+{
+    // vector weakforms
+    QList<FormInfo> weakForms;
+    XMLModule::linearity_option lo = volumeLinearityOption(module, analysisType, linearityType);
+
+    for (unsigned int i = 0; i < lo.vector_form().size(); i++)
+    {
+        XMLModule::vector_form form = lo.vector_form().at(i);
+        FormInfo formInfo(QString::fromStdString(form.id()));
+        if(form.variant().present())
+            formInfo.variant = weakFormVariantFromStringKey(QString::fromStdString(form.variant().get()));
+        if(form.coefficient().present())
+            formInfo.coefficient = QString::fromStdString(form.coefficient().get()).toDouble();
+        weakForms.append(formInfo);
+    }
+
+    return weakForms;
+}
+
+void checkDuplicities(QList<FormInfo> list)
+{
+    for(int i = 0; i < list.size(); i++)
+    {
+        for(int j = 0; j < list.size(); j++)
+        {
+            if(i != j)
+            {
+                if(list[i].id == list[j].id)
+                    throw AgrosGeneratorException("Duplicities in forms");
+            }
+        }
+    }
+}
+
+FormInfo findFormInfo(QList<FormInfo> list, QString id)
+{
+    foreach(FormInfo form, list)
+    {
+        if(form.id == id)
+            return form;
+    }
+    throw AgrosGeneratorException(QString("Form %1 not found").arg(id));
+}
+
+// todo: implement properly. What if uval is part of some identifier?
+void replaceForVariant(QString& str, WeakFormVariant variant)
+{
+    if(variant == WeakFormVariant_Normal)
+    {
+    }
+    else if(variant == WeakFormVariant_Residual)
+    {
+        str.replace("uval", "upval");
+        str.replace("udx", "updx");
+        str.replace("udy", "updy");
+        str.replace("udr", "updr");
+        str.replace("udz", "updz");
+    }
+    else if(variant == WeakFormVariant_TimeResidual)
+    {
+        str.replace("uval", "uptval");
+        str.replace("udx", "uptdx");
+        str.replace("udy", "uptdy");
+        str.replace("udr", "uptdr");
+        str.replace("udz", "uptdz");
+    }
+    else
+        throw AgrosGeneratorException("Unknown form variant");
+}
+
+QList<FormInfo> generateSeparated(QList<FormInfo> elements, QList<FormInfo> templates, QList<FormInfo> templatesForResidual = QList<FormInfo>())
+{
+    checkDuplicities(templates);
+    checkDuplicities(elements);
+    QList<FormInfo> listResult;
+    foreach(FormInfo formElement, elements)
+    {
+        FormInfo formTemplate;
+        try
+        {
+            formTemplate = findFormInfo(templates, formElement.id);
+        }
+        catch(AgrosGeneratorException &err)
+        {
+            if(templatesForResidual.empty())
+                throw;
+            else
+                formTemplate = findFormInfo(templatesForResidual, formElement.id);
+        }
+
+        FormInfo formResult(formTemplate.id, formTemplate.i, formTemplate.j, formTemplate.sym);
+        if(formElement.coefficient != 1.)
+        {
+            formResult.expr_axi = QString("%1*(%2)").arg(formElement.coefficient).arg(formTemplate.expr_axi);
+            formResult.expr_planar = QString("%1*(%2)").arg(formElement.coefficient).arg(formTemplate.expr_planar);
+        }
+        else
+        {
+            formResult.expr_axi = formTemplate.expr_axi;
+            formResult.expr_planar = formTemplate.expr_planar;
+        }
+        replaceForVariant(formResult.expr_axi, formElement.variant);
+        replaceForVariant(formResult.expr_planar, formElement.variant);
+
+        listResult.push_back(formResult);
+    }
+
+    return listResult;
+}
+
+template <typename Scalar>
+QList<FormInfo> WeakFormAgros<Scalar>::wfMatrixVolumeSeparated(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType)
+{
+    QList<FormInfo> templates = wfMatrixVolumeTemplates(module);
+    QList<FormInfo> elements = wfMatrixVolumeElements(module, analysisType, linearityType);
+
+    return generateSeparated(elements, templates);
+}
+
+template <typename Scalar>
+QList<FormInfo> WeakFormAgros<Scalar>::wfVectorVolumeSeparated(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType)
+{
+    QList<FormInfo> templatesVector = wfVectorVolumeTemplates(module);
+    QList<FormInfo> templatesMatrix = wfMatrixVolumeTemplates(module);
+    QList<FormInfo> elements = wfVectorVolumeElements(module, analysisType, linearityType);
+
+    return generateSeparated(elements, templatesVector, templatesMatrix);
+}
+
+template <typename Scalar>
+QList<FormInfo> WeakFormAgros<Scalar>::wfMatrixVolumeComplete(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType)
+{
+
+}
+
+template <typename Scalar>
+QList<FormInfo> WeakFormAgros<Scalar>::wfVectorVolumeComplete(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType)
+{
+
+}
+
+
+
+
+
 // ***********************************************************************************************
 
 Module::LocalVariable::LocalVariable(const FieldInfo *fieldInfo, XMLModule::localvariable lv,
@@ -543,13 +805,15 @@ Module::BoundaryType::BoundaryType(const FieldInfo *fieldInfo,
     for (unsigned int i = 0; i < bdy.matrix_form().size(); i++)
     {
         XMLModule::matrix_form form = bdy.matrix_form().at(i);
-        m_wfMatrixSurface.append(FormInfo(QString::fromStdString(form.id()), form.i(), form.j(), form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
+        assert(form.i().present() && form.j().present());
+        m_wfMatrixSurface.append(FormInfo(QString::fromStdString(form.id()), form.i().get(), form.j().get(), form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
     }
 
     for (unsigned int i = 0; i < bdy.vector_form().size(); i++)
     {
         XMLModule::vector_form form = bdy.vector_form().at(i);
-        m_wfVectorSurface.append(FormInfo(QString::fromStdString(form.id()), form.i(), form.j()));
+        assert(form.i().present() && form.j().present());
+        m_wfVectorSurface.append(FormInfo(QString::fromStdString(form.id()), form.i().get(), form.j().get()));
     }
 
     // essential
@@ -737,5 +1001,27 @@ void Module::writeMeshToFileBSON(const QString &fileName, Hermes::vector<MeshSha
     Hermes::Hermes2D::MeshReaderH2DBSON meshloader;
     meshloader.save(compatibleFilename(QFileInfo(fileName).absoluteFilePath()).toStdString().c_str(), meshes);
 }
+
+void findVolumeLinearityOption(XMLModule::linearity_option& option, XMLModule::module *module, AnalysisType analysisType, LinearityType linearityType)
+
+{
+    for (unsigned int i = 0; i < module->volume().weakforms_volume().weakform_volume().size(); i++)
+    {
+        XMLModule::weakform_volume wf = module->volume().weakforms_volume().weakform_volume().at(i);
+
+        if (wf.analysistype() == analysisTypeToStringKey(analysisType).toStdString())
+        {
+            for(unsigned int i = 0; i < wf.linearity_option().size(); i++)
+            {
+                XMLModule::linearity_option lo = wf.linearity_option().at(i);
+                if(lo.type() == linearityTypeToStringKey(linearityType).toStdString())
+                {
+                    option = lo;
+                }
+            }
+        }
+    }
+}
+
 
 template class WeakFormAgros<double>;

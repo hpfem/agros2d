@@ -81,33 +81,164 @@ class Agros2DGeneratorBase : public QObject
 public:
 
 protected:
-    template <typename Form>
-    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, Form form)
+    // todo: Why does not the template work (after axi_planar, etc are not required)?
+    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::matrix_form form)
     {
         QString expression;
 
         if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
         {
-            expression = form.planar_linear().c_str();
+            expression = QString::fromStdString(form.planar_linear().get());
         }
 
         if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Planar))
         {
-            expression = form.planar_newton().c_str();
+            expression = QString::fromStdString(form.planar_newton().get());
         }
 
         if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
         {
-            expression = form.axi_linear().c_str();
+            expression = QString::fromStdString(form.axi_linear().get());
         }
 
         if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Axisymmetric))
         {
-            expression = form.axi_newton().c_str();
+            expression = QString::fromStdString(form.axi_newton().get());
         }
 
         return expression;
     }
+    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::vector_form form)
+    {
+        QString expression;
+
+        if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
+        {
+            expression = QString::fromStdString(form.planar_linear().get());
+        }
+
+        if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Planar))
+        {
+            expression = QString::fromStdString(form.planar_newton().get());
+        }
+
+        if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
+        {
+            expression = QString::fromStdString(form.axi_linear().get());
+        }
+
+        if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Axisymmetric))
+        {
+            expression = QString::fromStdString(form.axi_newton().get());
+        }
+
+        return expression;
+    }
+    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, XMLModule::essential_form form)
+    {
+        QString expression;
+
+        if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
+        {
+            expression = QString::fromStdString(form.planar_linear().get());
+        }
+
+        if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Planar))
+        {
+            expression = QString::fromStdString(form.planar_newton().get());
+        }
+
+        if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
+        {
+            expression = QString::fromStdString(form.axi_linear().get());
+        }
+
+        if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Axisymmetric))
+        {
+            expression = QString::fromStdString(form.axi_newton().get());
+        }
+
+        return expression;
+    }
+    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, XMLCoupling::matrix_form form)
+    {
+        QString expression;
+
+        if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
+        {
+            expression = QString::fromStdString(form.planar_linear());
+        }
+
+        if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Planar))
+        {
+            expression = QString::fromStdString(form.planar_newton());
+        }
+
+        if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
+        {
+            expression = QString::fromStdString(form.axi_linear());
+        }
+
+        if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Axisymmetric))
+        {
+            expression = QString::fromStdString(form.axi_newton());
+        }
+
+        return expression;
+    }
+    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, XMLCoupling::vector_form form)
+    {
+        QString expression;
+
+        if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
+        {
+            expression = QString::fromStdString(form.planar_linear());
+        }
+
+        if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Planar))
+        {
+            expression = QString::fromStdString(form.planar_newton());
+        }
+
+        if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
+        {
+            expression = QString::fromStdString(form.axi_linear());
+        }
+
+        if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Axisymmetric))
+        {
+            expression = QString::fromStdString(form.axi_newton());
+        }
+
+        return expression;
+    }
+//    template <typename Form>
+//    QString weakformExpression(CoordinateType coordinateType, LinearityType linearityType, Form form)
+//    {
+//    QString expression;
+
+//    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Planar))
+//    {
+//        expression = QString::fromStdString(form.planar_linear().get());
+//    }
+
+//    if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Planar))
+//    {
+//        expression = QString::fromStdString(form.planar_newton().get());
+//    }
+
+//    if ((linearityType == LinearityType_Linear || linearityType == LinearityType_Picard) && (coordinateType == CoordinateType_Axisymmetric))
+//    {
+//        expression = QString::fromStdString(form.axi_linear().get());
+//    }
+
+//    if ((linearityType == LinearityType_Newton) && (coordinateType == CoordinateType_Axisymmetric))
+//    {
+//        expression = QString::fromStdString(form.axi_newton().get());
+//    }
+
+//        return expression;
+//    }
 
 private:
 };

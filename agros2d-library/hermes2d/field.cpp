@@ -131,26 +131,18 @@ void FieldInfo::setAnalysisType(AnalysisType at)
 QList<LinearityType> FieldInfo::availableLinearityTypes(AnalysisType at) const
 {
     QList<LinearityType> availableLinearityTypes;
-    foreach (XMLModule::analysis an, m_plugin->module()->general().analyses().analysis())
+
+    foreach (XMLModule::weakform_volume weakformVolume, m_plugin->module()->volume().weakforms_volume().weakform_volume())
     {
-        if (an.type() == analysisTypeToStringKey(at).toStdString())
+        if(weakformVolume.analysistype() == analysisTypeToStringKey(at).toStdString())
         {
-            if (an.linearity_config().present())
+            foreach(XMLModule::linearity_option linearityOption, weakformVolume.linearity_option())
             {
-                for (int i = 0; i < an.linearity_config().get().linearity_item().size(); i ++)
-                {
-                    QString linearityTypeStr = QString::fromStdString(an.linearity_config().get().linearity_item().at(i).linearity_option());
-                    LinearityType linearityType = linearityTypeFromStringKey(linearityTypeStr);
-                    availableLinearityTypes.push_back(linearityType);
-                }
-            }
-            else
-            {
-                availableLinearityTypes.push_back(LinearityType_Linear);
-                availableLinearityTypes.push_back(LinearityType_Newton);
+                availableLinearityTypes.push_back(linearityTypeFromStringKey(QString::fromStdString(linearityOption.type())));
             }
         }
     }
+
     return availableLinearityTypes;
 }
 
@@ -715,55 +707,6 @@ Module::LocalVariable FieldInfo::defaultViewVectorVariable() const
             return(localVariable(QString::fromStdString(def.id())));
 
     assert(0);
-}
-
-// weak forms
-QList<FormInfo> FieldInfo::wfMatrixVolume() const
-{
-    // matrix weakforms
-    QList<FormInfo> weakForms;
-    for (unsigned int i = 0; i < m_plugin->module()->volume().weakforms_volume().weakform_volume().size(); i++)
-    {
-        XMLModule::weakform_volume wf = m_plugin->module()->volume().weakforms_volume().weakform_volume().at(i);
-
-        if (wf.analysistype() == analysisTypeToStringKey(analysisType()).toStdString())
-        {
-            // weakform
-            for (unsigned int i = 0; i < wf.matrix_form().size(); i++)
-            {
-                XMLModule::matrix_form form = wf.matrix_form().at(i);
-                weakForms.append(FormInfo(QString::fromStdString(form.id()),
-                                          form.i(),
-                                          form.j(),
-                                          form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM));
-            }
-        }
-    }
-
-    return weakForms;
-}
-
-QList<FormInfo> FieldInfo::wfVectorVolume() const
-{
-    // vector weakforms
-    QList<FormInfo> weakForms;
-    for (unsigned int i = 0; i < m_plugin->module()->volume().weakforms_volume().weakform_volume().size(); i++)
-    {
-        XMLModule::weakform_volume wf = m_plugin->module()->volume().weakforms_volume().weakform_volume().at(i);
-
-        if (wf.analysistype() == analysisTypeToStringKey(analysisType()).toStdString())
-        {
-            for (unsigned int i = 0; i < wf.vector_form().size(); i++)
-            {
-                XMLModule::vector_form form = wf.vector_form().at(i);
-                weakForms.append(FormInfo(QString::fromStdString(form.id()),
-                                          form.i(),
-                                          form.j()));
-            }
-        }
-    }
-
-    return weakForms;
 }
 
 void FieldInfo::load(XMLProblem::field_config *configxsd)

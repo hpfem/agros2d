@@ -21,13 +21,20 @@
   <module:volume>
     <module:quantity id="electrostatic_permittivity" shortname="el_epsr"/>
     <module:quantity id="electrostatic_charge_density" shortname="el_rho"/>
+    <module:matrix_form id="laplace" i="1" j="1" axi="el_epsr * EPS0 * r * (udr * vdr + udz * vdz)" planar="el_epsr * EPS0 * (udx * vdx + udy * vdy)" symmetric="1"/>
+    <module:vector_form id="rhs" i="1" j="1" axi="el_rho * r * vval" planar="el_rho * vval"/>
+
     <module:weakforms_volume>
       <module:weakform_volume analysistype="steadystate" equation="-\, \div \left( \varepsilon\,\, \grad \varphi \right) = \rho">
         <module:quantity id="electrostatic_permittivity"/>
         <module:quantity id="electrostatic_charge_density"/>
-        <module:matrix_form axi_linear="el_epsr * EPS0 * r * (udr * vdr + udz * vdz)" axi_newton="el_epsr * EPS0 * r * (udr * vdr + udz * vdz)" i="1" id="laplace" j="1" planar_linear="el_epsr * EPS0 * (udx * vdx + udy * vdy)" planar_newton="el_epsr * EPS0 * (udx * vdx + udy * vdy)" symmetric="1"/>
-        <module:vector_form axi_linear="el_rho * r * vval" axi_newton="el_epsr * EPS0 * r *(updr * vdr + updz * vdz) - r * el_rho * vval" i="1" id="function" j="1" planar_linear="el_rho * vval" planar_newton="el_epsr * EPS0 * (updx * vdx + updy * vdy) - el_rho * vval"/>
-      </module:weakform_volume>
+
+        <module:linearity_option type="linear">
+          <module:matrix_form id="laplace" />
+          <module:vector_form id="rhs" />
+        </module:linearity_option>
+
+        </module:weakform_volume>
     </module:weakforms_volume>
   </module:volume>
 

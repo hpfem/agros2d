@@ -36,6 +36,21 @@
     <module:quantity id="heat_velocity_x" shortname="he_vx"/>
     <module:quantity id="heat_velocity_y" shortname="he_vy"/>
     <module:quantity id="heat_velocity_angular" shortname="he_va"/>
+
+<!--
+maticove formy budou vyuzity nekolikrat
+nahrada uval -> upval ... vektor rezidualu pro newtona
+nahrada uval -> uptval ... linearizace v prechodaku pomoci predchoziho casoveho kroku
+-->
+
+    <module:matrix_form id="laplace" i="1"  j="1" planar="he_lambda * (udx * vdx + udy * vdy)" axi="he_lambda * r * (udr * vdr + udz * vdz)"/>
+    <module:matrix_form id="velocity" i="1"  j="1" planar="he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval" axi="r * he_rho * he_cp * (he_vy * udz) * vval"/>
+    <module:matrix_form id="jac_laplace" i="1"  j="1" planar="dhe_lambda * uval * (updx * vdx + updy * vdy)" axi="dhe_lambda * r * uval * (updr * vdr + updz * vdz)"/>
+    <module:matrix_form id="time_mat" i="1" j="1" planar="he_rho * he_cp * uval * vval * timedermat" axi="r * he_rho * he_cp * uval * vval * timedermat"/>
+
+    <module:vector_form id="rhs" i="1" j="1" planar="he_p * vval" axi="r * he_p * vval"/>
+    <module:vector_form id="time_vec" i="1" j="1" planar="he_rho * he_cp * timedervec * vval" axi="r * he_rho * he_cp * timedervec * vval"/>
+
     <module:weakforms_volume>
       <module:weakform_volume analysistype="steadystate" equation="-\, \div \left( \lambda\,\, \grad T \right) + \rho c_\mathrm{p} \left(\vec{v} \cdot \grad T\right) = Q">
         <module:quantity dependence="" id="heat_conductivity" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
@@ -45,8 +60,22 @@
         <module:quantity id="heat_velocity_angular"/>
         <module:quantity id="heat_density" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
         <module:quantity id="heat_specific_heat" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
-        <module:matrix_form axi_linear="he_lambda * r * (udr * vdr + udz * vdz) + r * he_rho * he_cp * (he_vy * udz) * vval" axi_newton="dhe_lambda * r * uval * (updr * vdr + updz * vdz) + he_lambda * r * (udr * vdr + udz * vdz) + r * he_rho * he_cp * (he_vy * udz) * vval" i="1" id="form" j="1" planar_linear="he_lambda * (udx * vdx + udy * vdy)  + he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval" planar_newton="dhe_lambda * uval * (updx * vdx + updy * vdy) + he_lambda * (udx * vdx + udy * vdy)  + he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval"/>
-        <module:vector_form axi_linear="he_p * r * vval" axi_newton="he_lambda * r * (updr * vdr + updz * vdz) - he_p * r * vval  + r * he_rho * he_cp * (he_vy * updz) * vval" i="1" id="form" j="1" planar_linear="he_p * vval" planar_newton="he_lambda * (updx * vdx + updy * vdy) - he_p * vval  + he_rho * he_cp * ((he_vx - y * he_va) * updx + (he_vy + x * he_va) * updy) * vval"/>
+
+        <module:linearity_option type="linear">
+          <module:matrix_form id="laplace" />
+          <module:matrix_form id="velocity" />
+          <module:vector_form id="rhs" />
+        </module:linearity_option>
+
+        <module:linearity_option type="newton">
+          <module:matrix_form id="laplace" />
+          <module:matrix_form id="velocity" />
+          <module:matrix_form id="jac_laplace" />
+          <module:vector_form id="rhs" coefficient="-1" />
+          <module:vector_form id="laplace" variant="residual" />
+          <module:vector_form id="velocity" variant="residual" />
+        </module:linearity_option>
+
       </module:weakform_volume>
       <module:weakform_volume analysistype="transient" equation="-\, \div \left( \lambda\,\, \grad T \right) + \rho c_\mathrm{p} \left(\frac{\partial T}{\partial t} + \vec{v} \cdot \grad T\right) = Q">
         <module:quantity id="heat_velocity_x"/>
@@ -56,8 +85,27 @@
         <module:quantity dependence="time" id="heat_volume_heat"/>
         <module:quantity id="heat_density" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
         <module:quantity id="heat_specific_heat" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
-        <module:matrix_form axi_linear="he_lambda * r * (udr * vdr + udz * vdz) + r * he_rho * he_cp * (he_vy * udz) * vval + r * he_rho * he_cp * uval * vval * timedermat" axi_newton="dhe_lambda * r * uval * (updr * vdr + updz * vdz) + he_lambda * r * (udr * vdr + udz * vdz) + r * he_rho * he_cp * (he_vy * udz) * vval + r * he_rho * he_cp * uval * vval * timedermat" i="1" id="form" j="1" planar_linear="he_lambda * (udx * vdx + udy * vdy) + he_rho * he_cp * uval * vval * timedermat + he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval" planar_newton="dhe_lambda * uval * (updx * vdx + updy * vdy) + he_lambda * (udx * vdx + udy * vdy) + he_rho * he_cp * uval * vval * timedermat + he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval"/>
-        <module:vector_form axi_linear="he_p * r * vval + r * he_rho * he_cp * timedervec * vval" axi_newton="he_lambda * r * (updr * vdr + updz * vdz) - he_p * r * vval + r * he_rho * he_cp * (he_vy * updz) * vval + r * he_rho * he_cp * (timedermat * upval - timedervec) * vval" i="1" id="form" j="1" planar_linear="he_p * vval + he_rho * he_cp * timedervec * vval" planar_newton="he_lambda * (updx * vdx + updy * vdy) - he_p * vval + he_rho * he_cp * (timedermat * upval - timedervec) * vval + he_rho * he_cp * ((he_vx - y * he_va) * updx + (he_vy + x * he_va) * updy) * vval"/>
+
+        <module:linearity_option type="linear">
+          <module:matrix_form id="laplace"/>
+          <module:matrix_form id="velocity"/>
+          <module:matrix_form id="time_mat"/>
+          <module:vector_form id="rhs"/>
+          <module:vector_form id="time_vec"/>
+        </module:linearity_option>
+
+        <module:linearity_option type="newton">
+          <module:matrix_form id="laplace"/>
+          <module:matrix_form id="velocity"/>
+          <module:matrix_form id="time_mat"/>
+          <module:matrix_form id="jac_laplace"/>
+          <module:vector_form id="rhs" coefficient="-1"/>
+          <module:vector_form id="time_vec" coefficient="-1"/>
+          <module:vector_form id="laplace" variant="residual"/>
+          <module:vector_form id="velocity" variant="residual"/>
+          <module:vector_form id="time_mat" variant="residual"/>
+        </module:linearity_option>
+
       </module:weakform_volume>
     </module:weakforms_volume>
   </module:volume>

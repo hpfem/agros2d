@@ -25,17 +25,32 @@
     <module:quantity id="rf_tm_permittivity" shortname="rf_eps"/>
     <module:quantity id="rf_tm_permeability" shortname="rf_mur"/>
     <module:quantity id="rf_tm_conductivity" shortname="rf_gamma"/>
+
+<!--     todo: frekvency formy mimo diagonalu nemaji v axi *r, ale na diagonale ano. To je divne! -->
+    <module:matrix_form id="laplace_1_1" i="1" j="1" planar="- 1 / (rf_eps * EPS0) * (udx * vdx + udy * vdy)" axi="- 1 / (rf_eps * EPS0) * (r * udr * vdr + r * udz * vdz + uval * vval/r + uval * vdr + vval * udr)" symmetric="0"/>
+    <module:matrix_form id="laplace_2_2" i="2" j="2" planar="- 1 / (rf_eps * EPS0) * (udx * vdx + udy * vdy)" axi="- 1 / (rf_eps * EPS0) * (r * udr * vdr + r * udz * vdz + uval * vval/r + uval * vdr + vval * udr)" symmetric="0"/>
+    <module:matrix_form id="frequency_1_1" i="1" j="1" planar="pow(2 * PI * f, 2) * rf_mur * MU0 * uval * vval" axi="r * pow(2 * PI * f, 2) * rf_mur* MU0 * uval * vval" symmetric="1"/>
+    <module:matrix_form id="frequency_1_2" i="1" j="2" planar="2 * PI * f * rf_gamma * 1 / (rf_eps * EPS0) * uval * vval" axi="2 * PI * f * rf_gamma * 1 / (rf_eps * EPS0) * uval * vval" />
+    <module:matrix_form id="frequency_2_1" i="2" j="1" planar="- 2 * PI * f * rf_gamma * 1 / (rf_eps * EPS0) * uval * vval" axi="- 2 * PI * f * rf_gamma * 1 / (rf_eps * EPS0) * uval * vval" />
+    <module:matrix_form id="frequency_2_2" i="2" j="2" planar="pow(2 * PI * f, 2) * rf_mur * MU0 * uval * vval" axi="r * pow(2 * PI * f, 2) * rf_mur* MU0 * uval * vval" symmetric="1"/>
+    <module:vector_form id="rhs_remove" i="1" j="1" planar="0" axi="0" />
+
     <module:weakforms_volume>
       <module:weakform_volume analysistype="harmonic" equation="\curl \left( \frac{1}{\mu}\, \curl \vecfaz{H} \right) - \mj \omega \left( \gamma + \mj \omega \varepsilon \right) \vecfaz{H} = - \curl \vecfaz{J}_{\mathrm{ext}}">
         <module:quantity id="rf_tm_permittivity"/>
         <module:quantity id="rf_tm_permeability"/>
         <module:quantity id="rf_tm_conductivity"/>
-        <module:matrix_form id="form" axi_linear="- 1 / (rf_eps * EPS0) * (r * udr * vdr + r * udz * vdz + uval * vval/r + uval * vdr + vval * udr) + r * pow(2 * PI * f, 2) * rf_mur* MU0 * uval * vval" axi_newton="0" i="1" j="1" planar_linear="- 1 / (rf_eps * EPS0) * (udx * vdx + udy * vdy) + pow(2 * PI * f, 2) * rf_mur * MU0 * uval * vval" planar_newton="0" symmetric="0"/>
-        <module:matrix_form id="form" axi_linear="- 1 / (rf_eps * EPS0) * (r * udr * vdr + r * udz * vdz + uval * vval/r + uval * vdr + vval * udr) + r * pow(2 * PI * f, 2) * rf_mur* MU0 * uval * vval" axi_newton="0" i="2" j="2" planar_linear="- 1 / (rf_eps * EPS0) * (udx * vdx + udy * vdy) + pow(2 * PI * f, 2) * rf_mur * MU0 * uval * vval" planar_newton="0" symmetric="0"/>
-        <module:matrix_form id="form" axi_linear="2 * PI * f * rf_gamma * 1 / (rf_eps * EPS0) * uval * vval" axi_newton="0" i="1" j="2" planar_linear="2 * PI * f * rf_gamma * 1 / (rf_eps * EPS0) * uval * vval" planar_newton="0"/>
-        <module:matrix_form id="form" axi_linear="- 2 * PI * f * rf_gamma * 1 / (rf_eps * EPS0) * uval * vval" axi_newton="0" i="2" j="1" planar_linear="- 2 * PI * f * rf_gamma * 1 / (rf_eps * EPS0) * uval * vval" planar_newton="0"/>
-        <module:vector_form id="form" axi_linear="0" axi_newton="0" i="1" j="1" planar_linear="0" planar_newton="0"/>
-        <module:vector_form id="form" axi_linear="0" axi_newton="0" i="2" j="2" planar_linear="0" planar_newton="0"/>
+
+        <module:linearity_option type="linear">
+          <module:matrix_form id="laplace_1_1" />
+          <module:matrix_form id="laplace_2_2" />
+          <module:matrix_form id="frequency_1_1" />
+          <module:matrix_form id="frequency_1_2" />
+          <module:matrix_form id="frequency_2_1" />
+          <module:matrix_form id="frequency_2_2" />
+          <module:vector_form id="rhs_remove" />
+        </module:linearity_option>
+
      </module:weakform_volume>
     </module:weakforms_volume>
   </module:volume>
