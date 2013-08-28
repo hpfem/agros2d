@@ -342,6 +342,8 @@ cdef class __Field__:
                 'threshold' : self.thisptr.getDoubleParameter(string('AdaptivityThreshold')),
                 'norm' : self.thisptr.getAdaptivityNormType().c_str(),
                 'anisotropic_refinement' : self.thisptr.getBoolParameter(string('AdaptivityUseAniso')),
+                'order_increase' : self.thisptr.getIntParameter(string('AdaptivityOrderIncrease')),
+                'space_refinement' : self.thisptr.getBoolParameter(string('AdaptivitySpaceRefinement')),
                 'finer_reference_solution' : self.thisptr.getBoolParameter(string('AdaptivityFinerReference')),
                 'transient_back_steps' : self.thisptr.getIntParameter(string('AdaptivityTransientBackSteps')),
                 'transient_redone_steps' : self.thisptr.getIntParameter(string('AdaptivityTransientRedoneEach'))}
@@ -367,6 +369,11 @@ cdef class __Field__:
         self.thisptr.setParameter(string('AdaptivityUseAniso'), <bool>parameters['anisotropic_refinement'])
         self.thisptr.setParameter(string('AdaptivityFinerReference'), <bool>parameters['finer_reference_solution'])
         
+        # space refinement, order increase
+        self.thisptr.setParameter(string('AdaptivitySpaceRefinement'), <bool>parameters['space_refinement'])
+        value_in_range(parameters['order_increase'], 1, 10, 'order_increase')
+        self.thisptr.setParameter(string('AdaptivityOrderIncrease'), <int>parameters['order_increase'])
+
         # back steps
         value_in_range(parameters['transient_back_steps'], 0, 100, 'transient_back_steps')
         self.thisptr.setParameter(string('AdaptivityTransientBackSteps'), <int>parameters['transient_back_steps'])
