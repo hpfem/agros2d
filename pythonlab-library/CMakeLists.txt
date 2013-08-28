@@ -19,7 +19,7 @@ ELSE()
         OUTPUT   ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp)
 ENDIF()
 ADD_CUSTOM_COMMAND(
-      TARGET    CYTHON_PYTHONLAB
+      TARGET    ${PROJECT_NAME}
       DEPENDS   ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp)
 
 SET(SOURCES pythonlab.cpp
