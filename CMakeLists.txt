@@ -207,9 +207,9 @@ set(info resources/modules/acoustic.xml
          resources/modules/magnetic.xml
          resources/modules/rf_te.xml
          resources/modules/rf_tm.xml
-         #resources/couplings/current-heat.xml
-         #resources/couplings/heat-elasticity.xml
-         #resources/couplings/magnetic-heat.xml
+         resources/couplings/current-heat.xml
+         resources/couplings/heat-elasticity.xml
+         resources/couplings/magnetic-heat.xml
          resources/python/functions_agros2d.py
          resources/python/functions_pythonlab.py
          resources_source/python/agros2d.pyx

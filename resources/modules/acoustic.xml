@@ -32,7 +32,7 @@
     <module:matrix_form id="harmonic_frequency_1_1" i="1" j="1" planar="- pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" axi="- r * pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" symmetric="1"/>
     <module:matrix_form  id="harmonic_laplace_2_2" i="2" j="2" planar="1 / ac_rho * (udx * vdx + udy * vdy)" axi="1 / ac_rho * r * (udr * vdr + udz * vdz)" symmetric="1"/>
     <module:matrix_form  id="harmonic_frequency_2_2" i="2" j="2" planar="- pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" axi="- r * pow(2 * PI * f, 2) / (ac_rho * ac_vel * ac_vel) * uval * vval" symmetric="1"/>
-    
+
     <module:matrix_form id="transient_1_1" i="1" j="1" planar="1 / ac_rho * (udx * vdx + udy * vdy)" axi="1 / ac_rho * r * (udr * vdr + udz * vdz)" symmetric="1"/>
     <module:matrix_form id="transient_1_2" i="1" j="2" planar="1 / (ac_rho * ac_vel * ac_vel) * timedermat * uval * vval" axi="1 / (ac_rho * ac_vel * ac_vel) * timedermat * r * uval * vval"/>
     <module:matrix_form id="transient_2_2" i="2" j="2" planar="- uval * vval" axi="- r * uval * vval" symmetric="1"/>
@@ -56,7 +56,7 @@
       <module:weakform_volume analysistype="transient" equation="-\, \div \left( \frac{1}{\rho}\,\, \grad p \right) + \frac{1}{\rho  c^2} \frac{\partial^2 p}{\partial t^2} = 0">
         <module:quantity id="acoustic_density"/>
         <module:quantity id="acoustic_speed"/>
-	
+
         <module:linearity_option type="linear">
           <module:matrix_form id="transient_1_1" />
           <module:matrix_form id="transient_1_2" />

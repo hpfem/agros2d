@@ -100,7 +100,7 @@ nahrada uval -> uptval ... linearizace v prechodaku pomoci predchoziho casoveho 
           <module:matrix_form id="time_mat"/>
           <module:matrix_form id="jac_laplace"/>
           <module:vector_form id="rhs" coefficient="-1"/>
-          <module:vector_form id="time_vec"/>
+          <module:vector_form id="time_vec" coefficient="-1"/>
           <module:vector_form id="laplace" variant="residual"/>
           <module:vector_form id="velocity" variant="residual"/>
           <module:vector_form id="time_mat" variant="residual"/>

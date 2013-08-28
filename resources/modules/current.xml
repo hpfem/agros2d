@@ -31,14 +31,12 @@
     <module:quantity id="current_permittivity" shortname="cu_epsr"/>
     
     <module:matrix_form id="steady_laplace" i="1" j="1" planar="cu_gamma * (udx * vdx + udy * vdy)" axi="cu_gamma * r * (udr * vdr + udz * vdz)" symmetric="1"/>
-    <module:vector_form id="rhs_remove" i="1" j="1" planar="0" axi="0" />
     <module:weakforms_volume>
       <module:weakform_volume analysistype="steadystate" equation="-\, \div \left( \sigma\,\, \grad \varphi \right) = 0">
         <module:quantity id="current_conductivity"/>
 
         <module:linearity_option type="linear">
           <module:matrix_form id="steady_laplace" />
-          <module:vector_form id="rhs_remove" />
         </module:linearity_option>
 
       </module:weakform_volume>
