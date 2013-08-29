@@ -2,6 +2,13 @@
 PROJECT( agros2d )
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
+# For Win64
+if(${CMAKE_CL_64})
+  set(WIN64 YES)
+else(${CMAKE_CL_64})
+  set(WIN64 NO)
+endif(${CMAKE_CL_64})
+
 # Debug yes / no.
 SET(AGROS_DEBUG NO)
 SET(WITH_QT5 NO)
@@ -43,13 +50,23 @@ SET(QTSINGLEAPPLICATION_LIBRARY agros2d_3dparty_qtsingleapplication)
 SET(MATIO_LIBRARY agros2d_3dparty_matio)
 
 # Hermes and Hermes common
-IF(AGROS_DEBUG)
-  SET(HERMES_COMMON_LIBRARY hermes_common-debug)
-  SET(HERMES_LIBRARY hermes2d-debug)
-ElSE(AGROS_DEBUG)
-  SET(HERMES_COMMON_LIBRARY hermes_common)
-  SET(HERMES_LIBRARY hermes2d)
-ENDIF(AGROS_DEBUG)
+IF(WIN64)
+  IF(AGROS_DEBUG)
+    SET(HERMES_COMMON_LIBRARY hermes_common_64-debug)
+    SET(HERMES_LIBRARY hermes2d_64-debug)
+  ElSE(AGROS_DEBUG)
+    SET(HERMES_COMMON_LIBRARY hermes_common_64)
+    SET(HERMES_LIBRARY hermes2d_64)
+  ENDIF(AGROS_DEBUG)
+ELSE()
+  IF(AGROS_DEBUG)
+    SET(HERMES_COMMON_LIBRARY hermes_common-debug)
+    SET(HERMES_LIBRARY hermes2d-debug)
+  ElSE(AGROS_DEBUG)
+    SET(HERMES_COMMON_LIBRARY hermes_common)
+    SET(HERMES_LIBRARY hermes2d)
+  ENDIF(AGROS_DEBUG)
+ENDIF()
 
 # Output paths.
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_AGROS_DIRECTORY})
