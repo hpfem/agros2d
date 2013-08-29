@@ -207,11 +207,45 @@ set(info resources/modules/acoustic.xml
          resources/modules/magnetic.xml
          resources/modules/rf_te.xml
          resources/modules/rf_tm.xml
+         resources/modules/richards.xml
          resources/couplings/current-heat.xml
          resources/couplings/heat-elasticity.xml
          resources/couplings/magnetic-heat.xml
          resources/python/functions_agros2d.py
          resources/python/functions_pythonlab.py
+         resources/templates/generator/coupling_CMakeLists_txt.tpl
+         resources/templates/generator/coupling_interface_cpp.tpl
+         resources/templates/generator/coupling_interface_h.tpl
+         resources/templates/generator/filter_cpp.tpl
+         resources/templates/generator/filter_h.tpl
+         resources/templates/generator/force_cpp.tpl
+         resources/templates/generator/force_h.tpl
+         resources/templates/generator/localvalue_h.tpl
+         resources/templates/generator/localvalue_cpp.tpl
+         resources/templates/generator/surfaceintegral_cpp.tpl
+         resources/templates/generator/surfaceintegral_h.tpl
+         resources/templates/generator/volumeintegral_cpp.tpl
+         resources/templates/generator/volumeintegral_h.tpl
+         resources/templates/generator/interface_h.tpl
+         resources/templates/generator/module_CMakeLists_txt.tpl
+         resources/templates/generator/weakform_cpp.tpl
+         resources/templates/generator/weakform_h.tpl
+         resources/templates/generator/plugins_CMakeLists_txt.tpl
+         resources/templates/generator/interface_cpp.tpl
+         resources/templates/generator/doc_index.tpl
+         resources/templates/generator/equations.tpl
+         resources/templates/generator/equations.tex
+         resources/templates/panels/empty.tpl
+         resources/templates/panels/example_form.tpl
+         resources/templates/panels/example_problem.tpl
+         resources/templates/panels/example_python.tpl
+         resources/templates/panels/integrals.tpl
+         resources/templates/panels/local_point_values.tpl
+         resources/templates/panels/material.tpl
+         resources/templates/panels/problem.tpl
+         resources/templates/panels/welcome.tpl
+         resources/templates/panels/style_common.css
+         resources/templates/panels/style_results.css
          resources_source/python/agros2d.pyx
          resources_source/python/pyfield.pxi
          resources_source/python/pygeometry.pxi
