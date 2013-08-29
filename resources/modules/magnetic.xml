@@ -314,31 +314,31 @@
         <module:expression analysistype="harmonic" axi="(value2) * r" planar="(value2)"/>
       </module:localvariable>
       <module:localvariable id="magnetic_flux_density" name="Flux density" shortname="B" shortname_html="&lt;i>B&lt;/i>" shortname_latex="B" type="scalar" unit="T" unit_html="T" unit_latex="T">
-        <module:expression analysistype="harmonic" axi="sqrt(dz1*dz1 + (dr1 + tern(r > SMALL, (value1)/r, dr1))^2 + dz2*dz2 + (dr2 + tern(r > SMALL, (value2)/r, dr2))^2)" planar="sqrt(dy1*dy1 + dx1*dx1 + dy2*dy2 + dx2*dx2)"/>
+        <module:expression analysistype="harmonic" axi="sqrt(dz1*dz1 + (dr1 + tern(r > SMALL, value1/r, dr1))^2 + dz2*dz2 + (dr2 + tern(r > SMALL, value2/r, dr2))^2)" planar="sqrt(dy1*dy1 + dx1*dx1 + dy2*dy2 + dx2*dx2)"/>
       </module:localvariable>
       <module:localvariable id="magnetic_flux_density_real" name="Flux density - real" shortname="Br" shortname_html="&lt;i>B&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="B_\mathrm{r}" type="vector" unit="T" unit_html="T" unit_latex="T">
         <module:expression analysistype="steadystate" axi_r="- dz1" axi_z="dr1 + tern(r > SMALL, value1/r, dr1)" planar_x="dy1" planar_y="- dx1"/>
         <module:expression analysistype="transient" axi_r="- dz1" axi_z="dr1 + tern(r > SMALL, value1/r, dr1)" planar_x="dy1" planar_y="- dx1"/>
-        <module:expression analysistype="harmonic" axi_r="- dz1" axi_z="dr1 + tern(r > SMALL, (value1)/r, dr1)" planar_x="dy1" planar_y="- dx1"/>
+        <module:expression analysistype="harmonic" axi_r="- dz1" axi_z="dr1 + tern(r > SMALL, value1/r, dr1)" planar_x="dy1" planar_y="- dx1"/>
       </module:localvariable>
       <module:localvariable id="magnetic_flux_density_imag" name="Flux density - imag" shortname="Bi" shortname_html="&lt;i>B&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="B_\mathrm{i}" type="vector" unit="T" unit_html="T" unit_latex="T">
-        <module:expression analysistype="harmonic" axi_r="- dz2" axi_z="dr2 + tern(r > SMALL, (value2)/r, dr2)" planar_x="dy2" planar_y="- dx2"/>
+        <module:expression analysistype="harmonic" axi_r="- dz2" axi_z="dr2 + tern(r > SMALL, value2/r, dr2)" planar_x="dy2" planar_y="- dx2"/>
       </module:localvariable>
       <module:localvariable id="magnetic_magnetic_field" name="Magnetic field" shortname="H" shortname_html="&lt;i>H&lt;/i>" shortname_latex="H" type="scalar" unit="A/m" unit_html="A.m&lt;sup>-1&lt;/sup>" unit_latex="A \cdot m^{-1}">
-        <module:expression analysistype="harmonic" axi="sqrt(dz1*dz1 + (dr1 + tern(r > SMALL, (value1)/r, dr1))^2 + dz2*dz2 + (dr2 + tern(r > SMALL, (value2)/r, dr2))^2) / (ma_mur * MU0)" planar="sqrt(dy1*dy1 + dx1*dx1 + dy2*dy2 + dx2*dx2) / (ma_mur * MU0)"/>
+        <module:expression analysistype="harmonic" axi="sqrt(dz1*dz1 + (dr1 + tern(r > SMALL, value1/r, dr1))^2 + dz2*dz2 + (dr2 + tern(r > SMALL, value2/r, dr2))^2) / (ma_mur * MU0)" planar="sqrt(dy1*dy1 + dx1*dx1 + dy2*dy2 + dx2*dx2) / (ma_mur * MU0)"/>
       </module:localvariable>
       <module:localvariable id="magnetic_magnetic_field_real" name="Magnetic field - real" shortname="Hr" shortname_html="&lt;i>H&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="H_\mathrm{r}" type="vector" unit="A/m" unit_html="A.m&lt;sup>-1&lt;/sup>" unit_latex="A \cdot m^{-1}">
         <module:expression analysistype="steadystate" axi_r="- dz1 / (ma_mur * MU0)" axi_z="(dr1 + tern(r > SMALL, value1/r, dr1)) / (ma_mur * MU0)" planar_x="dy1 / (ma_mur * MU0)" planar_y="- dx1 / (ma_mur * MU0)"/>
         <module:expression analysistype="transient" axi_r="- dz1 / (ma_mur * MU0)" axi_z="(dr1 + tern(r > SMALL, value1/r, dr1)) / (ma_mur * MU0)" planar_x="dy1 / (ma_mur * MU0)" planar_y="- dx1 / (ma_mur * MU0)"/>
-        <module:expression analysistype="harmonic" axi_r="- dz1 / (ma_mur * MU0)" axi_z="(dr1 + tern(r > SMALL, (value1)/r, dr1)) / (ma_mur * MU0)" planar_x="dy1 / (ma_mur * MU0)" planar_y="- dx1 / (ma_mur * MU0)"/>
+        <module:expression analysistype="harmonic" axi_r="- dz1 / (ma_mur * MU0)" axi_z="(dr1 + tern(r > SMALL, value1/r, dr1)) / (ma_mur * MU0)" planar_x="dy1 / (ma_mur * MU0)" planar_y="- dx1 / (ma_mur * MU0)"/>
       </module:localvariable>
       <module:localvariable id="magnetic_magnetic_field_imag" name="Magnetic field - imag" shortname="Hi" shortname_html="&lt;i>H&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="H_\mathrm{i}" type="vector" unit="A/m" unit_html="A.m&lt;sup>-1&lt;/sup>" unit_latex="A \cdot m^{-1}">
-        <module:expression analysistype="harmonic" axi_r="- dz2 / (ma_mur * MU0)" axi_z="(dr2 + tern(r > SMALL, (value2)/r, dr2)) / (ma_mur * MU0)" planar_x="dy2 / (ma_mur * MU0)" planar_y="- dx2 / (ma_mur * MU0)"/>
+        <module:expression analysistype="harmonic" axi_r="- dz2 / (ma_mur * MU0)" axi_z="(dr2 + tern(r > SMALL, value2/r, dr2)) / (ma_mur * MU0)" planar_x="dy2 / (ma_mur * MU0)" planar_y="- dx2 / (ma_mur * MU0)"/>
       </module:localvariable>
       <module:localvariable id="magnetic_energy_density" name="Energy density" shortname="wm" shortname_html="&lt;i>w&lt;/i>&lt;sub>m&lt;/sub>" shortname_latex="w_\mathrm{m}" type="scalar" unit="J/m3" unit_html="J.m&lt;sup>-3&lt;/sup>" unit_latex="J \cdot m^{-3}">
         <module:expression analysistype="steadystate" axi="0.5 * (dz1*dz1 + (dr1 + tern(r > SMALL, value1/r, dr1))^2) / (ma_mur * MU0)" planar="0.5 * (dy1*dy1 + dx1*dx1) / (ma_mur * MU0)"/>
         <module:expression analysistype="transient" axi="0.5 * (dz1*dz1 + (dr1 + tern(r > SMALL, value1/r, dr1))^2) / (ma_mur * MU0)" planar="0.5 * (dy1*dy1 + dx1*dx1) / (ma_mur * MU0)"/>
-        <module:expression analysistype="harmonic" axi="0.25*(dz1*dz1 + (dr1 + tern(r > SMALL, (value1+value3/(2*PI*(r+1e-12)))/r, dr1))^2 + dz2*dz2 + (dr2 + tern(r > SMALL, (value2+value4/(2*PI*(r+1e-12)))/r, dr2))^2) / (ma_mur * MU0)" planar="0.25*(dy1*dy1 + dx1*dx1 + dy2*dy2 + dx2*dx2) / (ma_mur * MU0)"/>
+        <module:expression analysistype="harmonic" axi="0.25*(dz1*dz1 + (dr1 + tern(r > SMALL, value1/r, dr1))^2 + dz2*dz2 + (dr2 + tern(r > SMALL, value2/r, dr2))^2) / (ma_mur * MU0)" planar="0.25*(dy1*dy1 + dx1*dx1 + dy2*dy2 + dx2*dx2) / (ma_mur * MU0)"/>
       </module:localvariable>
       <module:localvariable id="magnetic_permeability" name="Permeability" shortname="mur" shortname_html="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="\mu_\mathrm{r}" type="scalar" unit="-" unit_html="-" unit_latex="-">
         <module:expression analysistype="steadystate" axi="ma_mur" planar="ma_mur"/>
@@ -473,12 +473,12 @@
       </module:volumeintegral>
       <module:volumeintegral id="magnetic_energy" name="Energy" shortname="Wm" shortname_html="&lt;i>W&lt;/i>&lt;sub>m&lt;/sub>" shortname_latex="W_\mathrm{m}" unit="J" unit_html="" unit_latex="">
         <module:expression analysistype="steadystate" axi="2.0 * PI * r * 0.5 / (ma_mur * MU0) * (dz1*dz1 + (dr1 + tern(r > SMALL, value1/r, dr1))^2)" planar="0.5 / (ma_mur * MU0) * (dx1 * dx1 + dy1 * dy1)"/>
-        <module:expression analysistype="harmonic" axi="2 * PI * r * 0.25 / (ma_mur * MU0) * ((dz1*dz1 + (dr1 + tern(r > SMALL, (value1+value3/(2*PI*(r+1e-12)))/r, dr1))^2) +                                                                                             (dz2*dz2 + (dr2 + tern(r > SMALL, (value2+value4/(2*PI*(r+1e-12)))/r, dr2))^2))" planar="0.25 * ((dx1*dx1 + dy1*dy1) + (dx2*dx2 + dy2*dy2)) / (ma_mur * MU0)"/>
+        <module:expression analysistype="harmonic" axi="2 * PI * r * 0.25 / (ma_mur * MU0) * ((dz1*dz1 + (dr1 + tern(r > SMALL, value1/r, dr1))^2) + (dz2*dz2 + (dr2 + tern(r > SMALL, value2/r, dr2))^2))" planar="0.25 * ((dx1*dx1 + dy1*dy1) + (dx2*dx2 + dy2*dy2)) / (ma_mur * MU0)"/>
         <module:expression analysistype="transient" axi="2.0 * PI * r * 0.5 / (ma_mur * MU0) * (dz1*dz1 + (dr1 + tern(r > SMALL, value1/r, dr1))^2)" planar="0.5 / (ma_mur * MU0) * (dx1 * dx1 + dy1 * dy1)"/>
       </module:volumeintegral>
       <module:volumeintegral id="magnetic_losses" name="Power losses" shortname="Pj" shortname_html="&lt;i>P&lt;/i>&lt;sub>j&lt;/sub>" shortname_latex="P_\mathrm{J}" unit="W" unit_html="" unit_latex="">
         <module:expression analysistype="steadystate" axi="(ma_gamma > 0.0) ? 2 * PI * r / ma_gamma * (ma_Jer - ma_vy * dz1)^2 : 0.0" planar="(ma_gamma > 0.0) ? 1.0 / ma_gamma * (ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1))^2 : 0.0"/>
-        <module:expression analysistype="harmonic" axi="(ma_gamma > 0.0) ? 2 * PI * r * 0.5 / ma_gamma * ((ma_Jei - ma_gamma * ((ma_vx - ma_va * z) * dr2 + (ma_vy + ma_va * r) * dz2) - 2 * PI * f * ma_gamma * (value1+value3/(2*PI*(r+1e-12))))^2 +                                                                                                      (ma_Jer - ma_gamma * ((ma_vx - ma_va * z) * dr1 + (ma_vy + ma_va * r) * dz1) + 2 * PI * f * ma_gamma * (value2+value4/(2*PI*(r+1e-12))))^2) : 0.0" planar="(ma_gamma > 0.0) ? 0.5 / ma_gamma * ((ma_Jei - ma_gamma * ((ma_vx - ma_va * y) * dx2 + (ma_vy + ma_va * x) * dy2) - 2 * PI * f * ma_gamma * (value1+value3))^2 + (ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) + 2 * PI * f * ma_gamma * (value2+value4))^2) : 0.0"/>
+        <module:expression analysistype="harmonic" axi="(ma_gamma > 0.0) ? 2 * PI * r * 0.5 / ma_gamma * ((ma_Jei - ma_gamma * ((ma_vx - ma_va * z) * dr2 + (ma_vy + ma_va * r) * dz2) - 2 * PI * f * ma_gamma * (value1+value3/(2*PI*(r+1e-12))))^2 + (ma_Jer - ma_gamma * ((ma_vx - ma_va * z) * dr1 + (ma_vy + ma_va * r) * dz1) + 2 * PI * f * ma_gamma * (value2+value4/(2*PI*(r+1e-12))))^2) : 0.0" planar="(ma_gamma > 0.0) ? 0.5 * ((ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) + 2 * PI * f * ma_gamma * (value2+value4))^2 + (ma_Jei - ma_gamma * ((ma_vx - ma_va * y) * dx2 + (ma_vy + ma_va * x) * dy2) - 2 * PI * f * ma_gamma * (value1+value3))^2) / ma_gamma : 0.0"/>
         <module:expression analysistype="transient" axi="(ma_gamma > 0.0) ? 2 * PI * r / ma_gamma * (ma_Jer - ma_gamma * value2 - ma_vy * dz1)^2 : 0.0" planar="((ma_gamma > 0.0) ? (ma_Jer - ma_gamma * value2)*(ma_Jer - ma_gamma * value2) / ma_gamma : 0.0) + ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1)^2"/>
       </module:volumeintegral>
       <module:volumeintegral id="magnetic_lorentz_torque" name="Lorentz torque" shortname="Tl" shortname_html="&lt;i>T&lt;/i>&lt;/i>&lt;sub>L&lt;/sub>" shortname_latex="T_\mathrm{L}" unit="Nm" unit_html="Nm" unit_latex="Nm">
