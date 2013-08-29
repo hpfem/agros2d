@@ -23,28 +23,22 @@ INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/3rdparty/paralution/src)
 
 # languages
 # message("Translations")
-FILE(GLOB files "${CMAKE_HOME_DIRECTORY}/resources_source/lang/*.ts")
-foreach(LANGFILE ${files})
+FILE(GLOB lang_files "${CMAKE_HOME_DIRECTORY}/resources_source/lang/*.ts")
+foreach(LANGFILE ${lang_files})
   GET_FILENAME_COMPONENT(basefile ${LANGFILE} NAME_WE)
   add_custom_target(${basefile} ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/lang/${basefile}.ts ${CMAKE_HOME_DIRECTORY}/resources/lang/${basefile}.qm)
 
   # message("\tlrelease ${basefile}")
 
   ADD_CUSTOM_COMMAND(
-        SOURCE    ${LANGFILE}
         COMMAND   lrelease ARGS ${LANGFILE} -qm ${CMAKE_HOME_DIRECTORY}/resources/lang/${basefile}.qm
-        TARGET    ${basefile}
-        OUTPUTS   ${CMAKE_HOME_DIRECTORY}/resources/lang/${basefile}.qm)
-  ADD_CUSTOM_COMMAND(
-        SOURCE    ${basefile}
-        TARGET    ${basefile}
-        DEPENDS   ${CMAKE_HOME_DIRECTORY}/resources/lang/${basefile}.qm)
+        OUTPUT   ${CMAKE_HOME_DIRECTORY}/resources/lang/${basefile}.qm)
 endforeach()
 
 # XSDCXX
 # message("XML cpp/h files")
-FILE(GLOB files "${CMAKE_HOME_DIRECTORY}/resources/xsd/*.xsd")
-foreach(XSD_FILE ${files})
+FILE(GLOB xsd_files "${CMAKE_HOME_DIRECTORY}/resources/xsd/*.xsd")
+foreach(XSD_FILE ${xsd_files})
   GET_FILENAME_COMPONENT(basefile ${XSD_FILE} NAME_WE)
   add_custom_target(${basefile} ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.cpp ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.h)
 
@@ -58,7 +52,7 @@ endforeach()
 # cython
 # message("Cython files - Agros2D")
 # message("\tcython agros2d.pyx")
-add_custom_target(CYTHON_AGROS2D ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
+add_custom_target(CYTHON_AGROS2D ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
 
 IF(WIN32)
   ADD_CUSTOM_COMMAND(
@@ -69,10 +63,6 @@ ELSE()
         COMMAND   cython ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
         OUTPUT   ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
 ENDIF()
-
-ADD_CUSTOM_COMMAND(
-      TARGET    ${PROJECT_NAME}
-      DEPENDS   ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
 
 SET(SOURCES value.cpp
     scene.cpp
@@ -254,6 +244,18 @@ ELSE(WITH_QT5)
 ENDIF(WITH_QT5)
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS} ${RESOURCES_RCC})
+ADD_DEPENDENCIES(${PROJECT_NAME} CYTHON_AGROS2D)
+
+foreach(LANGFILE ${lang_files})
+  GET_FILENAME_COMPONENT(basefile ${LANGFILE} NAME_WE)
+  ADD_DEPENDENCIES(${PROJECT_NAME} ${basefile})
+endforeach()
+
+foreach(XSD_FILE ${xsd_files})
+  GET_FILENAME_COMPONENT(basefile ${XSD_FILE} NAME_WE)
+  ADD_DEPENDENCIES(${PROJECT_NAME} ${basefile})
+endforeach()
+
 IF(WITH_QT5)
   QT5_USE_MODULES(${PROJECT_NAME} Core Widgets Network Xml XmlPatterns WebKit WebKitWidgets Svg UiTools OpenGL)
 ENDIF(WITH_QT5)
