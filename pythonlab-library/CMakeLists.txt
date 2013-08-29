@@ -18,9 +18,6 @@ ELSE()
         COMMAND   cython ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx
         OUTPUT   ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp)
 ENDIF()
-ADD_CUSTOM_COMMAND(
-      TARGET    ${PROJECT_NAME}
-      DEPENDS   ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp)
 
 SET(SOURCES pythonlab.cpp
     pythonlab_functions.cpp
@@ -51,6 +48,7 @@ ENDIF(WITH_QT5)
 SET(RC_FILE ../resources_source/resources.rc)
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS} ${RESOURCES_RCC} ${RC_FILE})
+ADD_DEPENDENCIES(${PROJECT_NAME} CYTHON_PYTHONLAB)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${QT_LIBRARIES} ${PYTHON_LIBRARIES} ${AGROS_UTIL} ${QTSINGLEAPPLICATION_LIBRARY})
 IF(WITH_QT5)
     QT5_USE_MODULES(${PROJECT_NAME} Core Widgets Network Xml XmlPatterns WebKit WebKitWidgets OpenGL)
