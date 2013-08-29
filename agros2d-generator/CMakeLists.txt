@@ -26,8 +26,8 @@ SET(HEADERS generator.h
 IF(WIN32)
   # XSDCXX
   # message("XML cpp/h files")
-  FILE(GLOB files "${CMAKE_HOME_DIRECTORY}/resources/xsd/*.xsd")
-  foreach(XSD_FILE ${files})
+  FILE(GLOB generator_xsd_files "${CMAKE_HOME_DIRECTORY}/resources/xsd/*.xsd")
+  foreach(XSD_FILE ${generator_xsd_files})
     GET_FILENAME_COMPONENT(basefile ${XSD_FILE} NAME_WE)
     add_custom_target(generator-${basefile} ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.cpp ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.h)
 
@@ -48,6 +48,12 @@ IF(WIN32)
 ENDIF(WIN32)
     
 ADD_EXECUTABLE(${PROJECT_NAME} ${SOURCES} ${SOURCES_XML} ${HEADERS})
+
+foreach(XSD_FILE ${generator_xsd_files})
+  GET_FILENAME_COMPONENT(basefile ${XSD_FILE} NAME_WE)
+  ADD_DEPENDENCIES(${PROJECT_NAME} ${basefile})
+endforeach()
+
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${AGROS_LIBRARY} ${PYTHONLAB_LIBRARY} ${CTEMPLATE_LIBRARY} ${QCUSTOMPLOT_LIBRARY} ${QUAZIP_LIBRARY} ${STB_TRUETYPE_LIBRARY})
 IF(WITH_QT5)
     QT5_USE_MODULES(${PROJECT_NAME} Core Widgets Network Xml XmlPatterns WebKit WebKitWidgets OpenGL)
