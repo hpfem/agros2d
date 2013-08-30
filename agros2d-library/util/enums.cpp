@@ -288,12 +288,12 @@ void initLists()
     // LinearityType
     linearityTypeList.insert(LinearityType_Undefined, "");
     linearityTypeList.insert(LinearityType_Linear, "linear");
-    linearityTypeList.insert(LinearityType_Picard, "picard");
+    //linearityTypeList.insert(LinearityType_Picard, "picard");
     linearityTypeList.insert(LinearityType_Newton, "newton");
 
     // DampingType
     dampingTypeList.insert(DampingType_Undefined, "");
-    dampingTypeList.insert(DampingType_Off, "off");
+    dampingTypeList.insert(DampingType_Off, "disable");
     dampingTypeList.insert(DampingType_Automatic, "automatic");
     dampingTypeList.insert(DampingType_Fixed, "fixed");
 

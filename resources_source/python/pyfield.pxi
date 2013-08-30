@@ -220,8 +220,8 @@ cdef class __Field__:
     property analysis_type:
         def __get__(self):
             return self.thisptr.getAnalysisType().c_str()
-        def __set__(self, field_id):
-            self.thisptr.setAnalysisType(string(field_id))
+        def __set__(self, analysis):
+            self.thisptr.setAnalysisType(string(analysis))
 
     # solver
     property solver:
@@ -243,7 +243,7 @@ cdef class __Field__:
                 'damping_factor_decrease_ratio' : self.thisptr.getDoubleParameter(string('NewtonSufImprov')),
                 'damping_factor_increase_steps' : self.thisptr.getIntParameter(string('NewtonStepsToIncreaseDF')),
                 'jacobian_reuse' : self.thisptr.getBoolParameter(string('NewtonReuseJacobian')),
-                'jacobian_reuse_ratio' : self.thisptr.getIntParameter(string('NewtonSufImprovJacobian')),
+                'jacobian_reuse_ratio' : self.thisptr.getDoubleParameter(string('NewtonSufImprovJacobian')),
                 'jacobian_reuse_steps' : self.thisptr.getIntParameter(string('NewtonMaxStepsReuseJacobian'))}
 
     def __set_solver_parameters__(self, parameters):
@@ -262,20 +262,20 @@ cdef class __Field__:
         # damping factor
         value_in_range(parameters['damping_factor'], 0.0, 1.0, 'damping_factor')
         self.thisptr.setParameter(string('NewtonDampingCoeff'), <double>parameters['damping_factor'])
-        
+
         # damping decrese ratio
         self.thisptr.setParameter(string('NewtonSufImprov'), <double>parameters['damping_factor_decrease_ratio'])
-        
+
         # damping increase step
         value_in_range(parameters['damping_factor_increase_steps'], 1, 5, 'damping_factor_increase_steps')
         self.thisptr.setParameter(string('NewtonStepsToIncreaseDF'), <int>parameters['damping_factor_increase_steps'])
-        
+
         # jacobian reuse
         self.thisptr.setParameter(string('NewtonReuseJacobian'), <bool>parameters['jacobian_reuse'])
-        
+
         # jacobian reuse ratio
         self.thisptr.setParameter(string('NewtonSufImprovJacobian'), <double>parameters['jacobian_reuse_ratio'])
-        
+
         # jacobian reuse step
         value_in_range(parameters['jacobian_reuse_steps'], 0, 100, 'jacobian_reuse_steps')
         self.thisptr.setParameter(string('NewtonMaxStepsReuseJacobian'), <int>parameters['jacobian_reuse_steps'])
@@ -301,11 +301,11 @@ cdef class __Field__:
         # tolerance
         positive_value(parameters['tolerance'], 'tolerance')
         self.thisptr.setParameter(string('LinearSolverIterToleranceAbsolute'), <double>parameters['tolerance'])
-        
+
         # max iterations
         value_in_range(parameters['iterations'], 1, 1e4, 'iterations')
         self.thisptr.setParameter(string('LinearSolverIterIters'), <int>parameters['iterations'])
-        
+
         # method, preconditioner
         self.thisptr.setLinearSolverMethod(string(parameters['method']))
         self.thisptr.setLinearSolverPreconditioner(string(parameters['preconditioner']))
@@ -352,11 +352,11 @@ cdef class __Field__:
         # tolerance
         positive_value(parameters['tolerance'], 'tolerance')
         self.thisptr.setParameter(string('AdaptivityTolerance'), <double>parameters['tolerance'])
-        
+
         # steps
         value_in_range(parameters['steps'], 1, 100, 'steps')
         self.thisptr.setParameter(string('AdaptivitySteps'), <int>parameters['steps'])
-        
+
         # stoping criterion, norm
         self.thisptr.setAdaptivityStoppingCriterion(string(parameters['stopping_criterion']))
         self.thisptr.setAdaptivityNormType(string(parameters['norm']))
@@ -364,11 +364,11 @@ cdef class __Field__:
         # threshold
         value_in_range(parameters['threshold'], 0.01, 1.0, 'threshold')
         self.thisptr.setParameter(string('AdaptivityThreshold'), <double>parameters['threshold'])
-        
+
         # aniso, finer reference
         self.thisptr.setParameter(string('AdaptivityUseAniso'), <bool>parameters['anisotropic_refinement'])
         self.thisptr.setParameter(string('AdaptivityFinerReference'), <bool>parameters['finer_reference_solution'])
-        
+
         # space refinement, order increase
         self.thisptr.setParameter(string('AdaptivitySpaceRefinement'), <bool>parameters['space_refinement'])
         value_in_range(parameters['order_increase'], 1, 10, 'order_increase')
@@ -377,7 +377,7 @@ cdef class __Field__:
         # back steps
         value_in_range(parameters['transient_back_steps'], 0, 100, 'transient_back_steps')
         self.thisptr.setParameter(string('AdaptivityTransientBackSteps'), <int>parameters['transient_back_steps'])
-        
+
         # redone steps
         value_in_range(parameters['transient_redone_steps'], 1, 100, 'transient_redone_steps')
         self.thisptr.setParameter(string('AdaptivityTransientRedoneEach'), <int>parameters['transient_redone_steps'])
@@ -663,12 +663,12 @@ cdef class __Field__:
 
         return {'error' : error, 'dofs' : dofs}
 
-	# filename - matrix
+        # filename - matrix
     def filename_matrix(self, time_step = None, adaptivity_step = None):
         return self.thisptr.filenameMatrix(int(-1 if time_step is None else time_step),
                                            int(-1 if adaptivity_step is None else adaptivity_step))
 
-	# filename - vector
+        # filename - vector
     def filename_rhs(self, time_step = None, adaptivity_step = None):
         return self.thisptr.filenameRHS(int(-1 if time_step is None else time_step),
                                         int(-1 if adaptivity_step is None else adaptivity_step))
