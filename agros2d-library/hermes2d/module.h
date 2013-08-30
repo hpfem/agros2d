@@ -158,17 +158,20 @@ public:
     void updateExtField();
     inline BDF2Table* bdf2Table() { return m_bdf2Table; }
 
-    // weak form templates are common for all analysis as building blocks for final forms
+    // weak form templates are common for all analysis as building blocks for final forms; loaded from xml file
     static QList<FormInfo> wfMatrixVolumeTemplates(XMLModule::module* module);
     static QList<FormInfo> wfVectorVolumeTemplates(XMLModule::module* module);
 
-    // specifies which weak form templates and in which variant should be used for active analysis and linearity type
+    // specifies which weak form templates and in which variant should be used for active analysis and linearity type; loaded from xml files
     static QList<FormInfo> wfMatrixVolumeElements(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
     static QList<FormInfo> wfVectorVolumeElements(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
 
+    // prepares individual forms for given analysis and linearity type, as specified in Elements, using information form Templates
     static QList<FormInfo> wfMatrixVolumeSeparated(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
     static QList<FormInfo> wfVectorVolumeSeparated(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
 
+    // puts forms with the same indices (i,j) from Separated to one single form as sum. It is, however, not significantly faster even
+    // compared to Separated case without optimalizations, so it will probably not be used
     static QList<FormInfo> wfMatrixVolumeComplete(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
     static QList<FormInfo> wfVectorVolumeComplete(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
 
@@ -188,6 +191,8 @@ private:
 
     BDF2Table* m_bdf2Table;
     int m_offsetTimeExt;
+
+    int m_numberOfForms;
 };
 
 namespace Module

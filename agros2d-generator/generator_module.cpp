@@ -514,13 +514,19 @@ void Agros2DGeneratorModule::generateWeakForms(ctemplate::TemplateDictionary &ou
         {
             LinearityType linearityType = linearityTypeFromStringKey(QString::fromStdString(option.type().c_str()));
 
+            // generate individual forms
             QList<FormInfo> matrixForms = WeakFormAgros<double>::wfMatrixVolumeSeparated(m_module, analysisType, linearityType);
+            // genrate also complete forms
+            //matrixForms.append(WeakFormAgros<double>::wfMatrixVolumeComplete(m_module, analysisType, linearityType));
             foreach(FormInfo formInfo, matrixForms)
             {
                 generateForm(formInfo, linearityType, output, weakform, "VOLUME_MATRIX", 0);
             }
 
+            // generate individual forms
             QList<FormInfo> vectorForms = WeakFormAgros<double>::wfVectorVolumeSeparated(m_module, analysisType, linearityType);
+            // genrate also complete forms
+            //vectorForms.append(WeakFormAgros<double>::wfVectorVolumeComplete(m_module, analysisType, linearityType));
             foreach(FormInfo formInfo, vectorForms)
             {
                 generateForm(formInfo, linearityType, output, weakform, "VOLUME_VECTOR", 0);
