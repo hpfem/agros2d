@@ -74,6 +74,35 @@ class TestField(a2d.Agros2DTestCase):
         with self.assertRaises(ValueError):
             self.field.adaptivity_type = 'wrong_type'
 
+    """ transient_initial_condition """
+    def test_transient_initial_condition(self):
+        self.field.transient_initial_condition= 293.15
+        self.assertEqual(self.field.transient_initial_condition, 293.15)
+
+    """ transient_time_skip """
+    def test_transient_time_skip(self):
+        self.field.transient_time_skip = 60
+        self.assertEqual(self.field.transient_time_skip, 60)
+
+# TODO (Franta) :
+"""
+add_boundary
+modify_boundary
+remove_boundary
+add_material
+modify_material
+remove_material
+local_values
+surface_integrals
+volume_integrals
+initial_mesh_info
+solution_mesh_info
+solver_info
+adaptivity_info
+filename_matrix
+filename_rhs
+"""
+
 class TestFieldNewtonSolver(a2d.Agros2DTestCase):
     def setUp(self):
         self.problem = a2d.problem(clear = True)
@@ -175,6 +204,164 @@ class TestFieldNewtonSolver(a2d.Agros2DTestCase):
         with self.assertRaises(IndexError):
             self.field.solver_parameters['jacobian_reuse_steps'] = 101
 
+class TestFieldMatrixSolver(a2d.Agros2DTestCase):
+    def setUp(self):
+        self.problem = a2d.problem(clear = True)
+        self.field = a2d.field('magnetic')
+        self.field.matrix_solver = 'paralution_iterative'
+
+    """ preconditioner """
+    def test_preconditioner(self):
+        for preconditioner in ['jacobi', 'multicoloredsgs', 'ilu', 'multicoloredilu']:
+            self.field.matrix_solver_parameters['preconditioner'] = preconditioner
+            self.assertEqual(self.field.matrix_solver_parameters['preconditioner'], preconditioner)
+
+    def test_set_wrong_preconditioner(self):
+        with self.assertRaises(ValueError):
+            self.field.matrix_solver_parameters['preconditioner'] = 'wrong_preconditioner'
+
+    """ method """
+    def test_method(self):
+        for method in ['cg', 'gmres', 'bicgstab']:
+            self.field.matrix_solver_parameters['method'] = method
+            self.assertEqual(self.field.matrix_solver_parameters['method'], method)
+
+    def test_set_wrong_method(self):
+        with self.assertRaises(ValueError):
+            self.field.matrix_solver_parameters['method'] = 'wrong_method'
+
+    """ tolerance """
+    def test_tolerance(self):
+        self.field.matrix_solver_parameters['tolerance'] = 1e-5
+        self.assertEqual(self.field.matrix_solver_parameters['tolerance'], 1e-5)
+
+    def test_set_wrong_tolerance(self):
+        with self.assertRaises(IndexError):
+            self.field.matrix_solver_parameters['tolerance'] = -1
+
+
+    """ iterations """
+    def test_iterations(self):
+        self.field.matrix_solver_parameters['iterations'] = 1e2
+        self.assertEqual(self.field.matrix_solver_parameters['iterations'], 1e2)
+
+    def test_set_wrong_jacobian_reuse_steps(self):
+        with self.assertRaises(IndexError):
+            self.field.matrix_solver_parameters['iterations'] = 0
+
+        with self.assertRaises(IndexError):
+            self.field.matrix_solver_parameters['iterations'] = 1.1e4
+
+class TestFieldAdaptivity(a2d.Agros2DTestCase):
+    def setUp(self):
+        self.problem = a2d.problem(clear = True)
+        self.field = a2d.field('magnetic')
+        self.field.adaptivity_type = 'hp-adaptivity'
+
+    """ steps """
+    def test_steps(self):
+        self.field.adaptivity_parameters['steps'] = 20
+        self.assertEqual(self.field.adaptivity_parameters['steps'], 20)
+
+    def test_set_wrong_steps(self):
+        with self.assertRaises(IndexError):
+            self.field.adaptivity_parameters['steps'] = 0
+
+        with self.assertRaises(IndexError):
+            self.field.adaptivity_parameters['steps'] = 101
+
+    """ tolerance """
+    def test_tolerance(self):
+        self.field.adaptivity_parameters['tolerance'] = 3
+        self.assertEqual(self.field.adaptivity_parameters['tolerance'], 3)
+
+    def test_set_wrong_tolerance(self):
+        with self.assertRaises(IndexError):
+            self.field.adaptivity_parameters['tolerance'] = -1
+
+    """ threshold """
+    def test_threshold(self):
+        self.field.adaptivity_parameters['threshold'] = 0.8
+        self.assertEqual(self.field.adaptivity_parameters['threshold'], 0.8)
+
+    def test_set_wrong_threshold(self):
+        with self.assertRaises(IndexError):
+            self.field.adaptivity_parameters['threshold'] = 0.0
+
+        with self.assertRaises(IndexError):
+            self.field.adaptivity_parameters['threshold'] = 1.1
+
+    """ stopping_criterion """
+    def test_stopping_criterion(self):
+        for criterion in ['cumulative', 'singleelement', 'levels']:
+            self.field.adaptivity_parameters['stopping_criterion'] = criterion
+            self.assertEqual(self.field.adaptivity_parameters['stopping_criterion'], criterion)
+
+    def test_set_wrong_preconditioner(self):
+        with self.assertRaises(ValueError):
+            self.field.adaptivity_parameters['stopping_criterion'] = 'wrong_criterion'
+
+    """ norm """
+    def test_norm(self):
+        for norm in ['l2_norm', 'h1_norm', 'h1_seminorm']:
+            self.field.adaptivity_parameters['norm'] = norm
+            self.assertEqual(self.field.adaptivity_parameters['norm'], norm)
+
+    def test_set_wrong_norm(self):
+        with self.assertRaises(ValueError):
+            self.field.adaptivity_parameters['norm'] = 'wrong_norm'
+
+    """ order_increase """
+    def test_order_increase(self):
+        self.field.adaptivity_parameters['order_increase'] = 5
+        self.assertEqual(self.field.adaptivity_parameters['order_increase'], 5)
+
+    def test_set_wrong_order_increase(self):
+        with self.assertRaises(IndexError):
+            self.field.adaptivity_parameters['order_increase'] = 0
+
+        with self.assertRaises(IndexError):
+            self.field.adaptivity_parameters['order_increase'] = 11
+
+    """ space_refinement """
+    def test_space_refinement(self):
+        self.field.adaptivity_parameters['space_refinement'] = False
+        self.assertEqual(self.field.adaptivity_parameters['space_refinement'], False)
+
+    """ anisotropic_refinement """
+    def test_anisotropic_refinement(self):
+        self.field.adaptivity_parameters['anisotropic_refinement'] = False
+        self.assertEqual(self.field.adaptivity_parameters['anisotropic_refinement'], False)
+
+    """ finer_reference_solution """
+    def test_finer_reference_solution(self):
+        self.field.adaptivity_parameters['finer_reference_solution'] = True
+        self.assertEqual(self.field.adaptivity_parameters['finer_reference_solution'], True)
+
+    """ transient_redone_steps """
+    def test_transient_redone_steps(self):
+        self.field.adaptivity_parameters['transient_redone_steps'] = 10
+        self.assertEqual(self.field.adaptivity_parameters['transient_redone_steps'], 10)
+
+    def test_set_wrong_transient_redone_steps(self):
+        with self.assertRaises(IndexError):
+            self.field.adaptivity_parameters['transient_redone_steps'] = 0
+
+        with self.assertRaises(IndexError):
+            self.field.adaptivity_parameters['transient_redone_steps'] = 101
+
+    """ transient_back_steps """
+    def test_transient_back_steps(self):
+        self.field.adaptivity_parameters['transient_back_steps'] = 10
+        self.assertEqual(self.field.adaptivity_parameters['transient_back_steps'], 10)
+
+    def test_set_wrong_transient_back_steps(self):
+        with self.assertRaises(IndexError):
+            self.field.adaptivity_parameters['transient_back_steps'] = -1
+
+        with self.assertRaises(IndexError):
+            self.field.adaptivity_parameters['transient_back_steps'] = 101
+
 if __name__ == '__main__':
     import unittest as ut
     
@@ -182,4 +369,6 @@ if __name__ == '__main__':
     result = a2d.Agros2DTestResult()
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestField))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldNewtonSolver))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldMatrixSolver))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldAdaptivity))
     suite.run(result)
