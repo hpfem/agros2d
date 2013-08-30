@@ -83,7 +83,26 @@ class TestProblem(a2d.Agros2DTestCase):
     def test_set_wrong_time_steps(self):
         with self.assertRaises(IndexError):
             self.problem.time_steps = 0
-            
+
+    """ angle_segments_count """
+    def test_angle_segments_count(self):
+        self.problem.angle_segments_count = 10
+        self.assertEqual(self.problem.angle_segments_count, 10)
+
+    def test_set_wrong_angle_segments_count(self):
+        with self.assertRaises(IndexError):
+            self.problem.angle_segments_count = 1
+
+        with self.assertRaises(IndexError):
+            self.problem.angle_segments_count = 21
+
+    """ curvilinear_elements """
+    def test_curvilinear_elements(self):
+        self.problem.curvilinear_elements = False
+        self.assertEqual(self.problem.curvilinear_elements, False)
+
+# TODO (Franta): clear, cleat_solution, elapsed_time, mesh, solve, set_coupling_type, get_coupling_type, refresh, time_steps_length, time_steps_length
+
 if __name__ == '__main__':        
     import unittest as ut
     
