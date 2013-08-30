@@ -126,7 +126,7 @@ cdef extern from "../../agros2d-library/pythonlab/pythonengine_agros.h":
 
         bool getSaveMatrixRHS()
         void setSaveMatrixRHS(bool save)
-        
+
         string getDumpFormat()
         void setDumpFormat(string format) except +
 
@@ -183,7 +183,7 @@ cdef class __Options__:
             return self.thisptr.getSaveMatrixRHS()
         def __set__(self, save):
             self.thisptr.setSaveMatrixRHS(save)
-       
+
     property dump_format:
         def __get__(self):
             return self.thisptr.getDumpFormat()

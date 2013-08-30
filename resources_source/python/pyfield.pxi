@@ -243,7 +243,7 @@ cdef class __Field__:
                 'damping_factor_decrease_ratio' : self.thisptr.getDoubleParameter(string('NewtonSufImprov')),
                 'damping_factor_increase_steps' : self.thisptr.getIntParameter(string('NewtonStepsToIncreaseDF')),
                 'jacobian_reuse' : self.thisptr.getBoolParameter(string('NewtonReuseJacobian')),
-                'jacobian_reuse_ratio' : self.thisptr.getIntParameter(string('NewtonSufImprovJacobian')),
+                'jacobian_reuse_ratio' : self.thisptr.getDoubleParameter(string('NewtonSufImprovJacobian')),
                 'jacobian_reuse_steps' : self.thisptr.getIntParameter(string('NewtonMaxStepsReuseJacobian'))}
 
     def __set_solver_parameters__(self, parameters):
