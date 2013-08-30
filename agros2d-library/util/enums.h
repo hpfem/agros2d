@@ -113,98 +113,98 @@ enum PhysicFieldVariableComp
 
 enum WeakFormKind
 {
-    WeakForm_MatVol,
-    WeakForm_MatSurf,
-    WeakForm_VecVol,
-    WeakForm_VecSurf,
-    WeakForm_ExactSol
+    WeakForm_MatVol = 0,
+    WeakForm_MatSurf = 1,
+    WeakForm_VecVol = 2,
+    WeakForm_VecSurf = 3,
+    WeakForm_ExactSol = 4
 };
 
 enum WeakFormVariant
 {
-    WeakFormVariant_Normal,
-    WeakFormVariant_Residual,
-    WeakFormVariant_TimeResidual
+    WeakFormVariant_Normal = 0,
+    WeakFormVariant_Residual = 1,
+    WeakFormVariant_TimeResidual = 2
 };
 
 enum SceneGeometryMode
 {
-    SceneGeometryMode_OperateOnNodes,
-    SceneGeometryMode_OperateOnEdges,
-    SceneGeometryMode_OperateOnLabels
+    SceneGeometryMode_OperateOnNodes = 0,
+    SceneGeometryMode_OperateOnEdges = 1,
+    SceneGeometryMode_OperateOnLabels = 2
 };
 
 enum MouseSceneMode
 {
-    MouseSceneMode_Nothing,
-    MouseSceneMode_Pan,
-    MouseSceneMode_Rotate,
-    MouseSceneMode_Move,
-    MouseSceneMode_Add
+    MouseSceneMode_Nothing = 0,
+    MouseSceneMode_Pan = 1,
+    MouseSceneMode_Rotate = 2,
+    MouseSceneMode_Move = 3,
+    MouseSceneMode_Add = 4
 };
 
 enum SceneModePostprocessor
 {
-    SceneModePostprocessor_Empty,
-    SceneModePostprocessor_LocalValue,
-    SceneModePostprocessor_SurfaceIntegral,
-    SceneModePostprocessor_VolumeIntegral
+    SceneModePostprocessor_Empty = 0,
+    SceneModePostprocessor_LocalValue = 1,
+    SceneModePostprocessor_SurfaceIntegral = 2,
+    SceneModePostprocessor_VolumeIntegral = 3
 };
 
 enum PaletteType
 {
-    Palette_Agros2D,
-    Palette_Jet,
-    Palette_Copper,
-    Palette_Hot,
-    Palette_Cool,
-    Palette_Bone,
-    Palette_Pink,
-    Palette_Spring,
-    Palette_Summer,
-    Palette_Autumn,
-    Palette_Winter,
-    Palette_HSV,
-    Palette_BWAsc,
-    Palette_BWDesc
+    Palette_Agros2D = 0,
+    Palette_Jet = 1,
+    Palette_Copper = 2,
+    Palette_Hot = 3,
+    Palette_Cool = 4,
+    Palette_Bone = 5,
+    Palette_Pink = 6,
+    Palette_Spring = 7,
+    Palette_Summer = 8,
+    Palette_Autumn = 9,
+    Palette_Winter = 10,
+    Palette_HSV = 11,
+    Palette_BWAsc = 12,
+    Palette_BWDesc = 13
 };
 
 enum PaletteQuality
 {
-    PaletteQuality_ExtremelyCoarse,
-    PaletteQuality_ExtraCoarse,
-    PaletteQuality_Coarser,
-    PaletteQuality_Coarse,
-    PaletteQuality_Normal,
-    PaletteQuality_Fine,
-    PaletteQuality_Finer,
-    PaletteQuality_ExtraFine
+    PaletteQuality_ExtremelyCoarse = 0,
+    PaletteQuality_ExtraCoarse = 1,
+    PaletteQuality_Coarser = 2,
+    PaletteQuality_Coarse = 3,
+    PaletteQuality_Normal = 4,
+    PaletteQuality_Fine = 5,
+    PaletteQuality_Finer = 6,
+    PaletteQuality_ExtraFine = 7
 };
 
 enum PaletteOrderType
 {
-    PaletteOrder_Hermes,
-    PaletteOrder_Jet,
-    PaletteOrder_Copper,
-    PaletteOrder_Hot,
-    PaletteOrder_Cool,
-    PaletteOrder_Bone,
-    PaletteOrder_Pink,
-    PaletteOrder_Spring,
-    PaletteOrder_Summer,
-    PaletteOrder_Autumn,
-    PaletteOrder_Winter,
-    PaletteOrder_HSV,
-    PaletteOrder_BWAsc,
-    PaletteOrder_BWDesc
+    PaletteOrder_Hermes = 0,
+    PaletteOrder_Jet = 1,
+    PaletteOrder_Copper = 2,
+    PaletteOrder_Hot = 3,
+    PaletteOrder_Cool = 4,
+    PaletteOrder_Bone = 5,
+    PaletteOrder_Pink = 6,
+    PaletteOrder_Spring = 7,
+    PaletteOrder_Summer = 8,
+    PaletteOrder_Autumn = 9,
+    PaletteOrder_Winter = 10,
+    PaletteOrder_HSV = 11,
+    PaletteOrder_BWAsc = 12,
+    PaletteOrder_BWDesc = 13
 };
 
 
 enum ChartAxisType
 {
-    ChartAxis_X,
-    ChartAxis_Y,
-    ChartAxis_Length
+    ChartAxis_X = 0,
+    ChartAxis_Y = 1,
+    ChartAxis_Length = 2
 };
 
 enum SceneViewPost3DMode
@@ -217,9 +217,9 @@ enum SceneViewPost3DMode
 
 enum SceneTransformMode
 {
-    SceneTransformMode_Translate,
-    SceneTransformMode_Rotate,
-    SceneTransformMode_Scale
+    SceneTransformMode_Translate = 0,
+    SceneTransformMode_Rotate = 1,
+    SceneTransformMode_Scale = 2
 };
 
 enum SolutionMode
@@ -232,15 +232,15 @@ enum SolutionMode
 
 enum VectorType
 {
-    VectorType_Arrow,
-    VectorType_Cone
+    VectorType_Arrow = 0,
+    VectorType_Cone = 1
 };
 
 enum VectorCenter
 {
-    VectorCenter_Tail,
-    VectorCenter_Head,
-    VectorCenter_Center
+    VectorCenter_Tail = 0,
+    VectorCenter_Head = 1,
+    VectorCenter_Center = 2
 };
 
 enum DataTableType

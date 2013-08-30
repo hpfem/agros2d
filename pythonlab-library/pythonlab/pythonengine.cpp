@@ -223,7 +223,7 @@ void PythonEngine::init()
 
     // connect stdout
     connect(this, SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
-    
+
     // init python
     PyEval_InitThreads();
     Py_Initialize();
@@ -529,7 +529,7 @@ QStringList PythonEngine::codeCompletion(const QString& command)
                     // remove builtin methods
                     if (!str.startsWith("__"))
                     {
-                        qDebug() << str;
+                        //qDebug() << str;
                         out.append(str);
                     }
                 }

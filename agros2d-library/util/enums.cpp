@@ -170,18 +170,15 @@ Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType iterLin
 void initLists()
 {
     // coordinate list
-    coordinateTypeList.insert(CoordinateType_Undefined, "");
     coordinateTypeList.insert(CoordinateType_Planar, "planar");
     coordinateTypeList.insert(CoordinateType_Axisymmetric, "axisymmetric");
 
     // Analysis Type
-    analysisTypeList.insert(AnalysisType_Undefined, "");
     analysisTypeList.insert(AnalysisType_SteadyState, "steadystate");
     analysisTypeList.insert(AnalysisType_Transient, "transient");
     analysisTypeList.insert(AnalysisType_Harmonic, "harmonic");
 
     // coupling type
-    couplingTypeList.insert(CouplingType_Undefined, "");
     couplingTypeList.insert(CouplingType_Hard, "hard");
     couplingTypeList.insert(CouplingType_Weak, "weak");
     couplingTypeList.insert(CouplingType_None, "none");
@@ -215,28 +212,24 @@ void initLists()
     //    timeStepMethodList.insert(TimeStepMethod_FixedCombine, "fixed_combine");
 
     // PHYSICFIELDVARIABLECOMP
-    physicFieldVariableCompList.insert(PhysicFieldVariableComp_Undefined, "");
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Scalar, "scalar");
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Magnitude, "magnitude");
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_X, "x");
     physicFieldVariableCompList.insert(PhysicFieldVariableComp_Y, "y");
 
     // post3d
-    //sceneViewPost3DModeList.insert(SceneViewPost3DMode_Undefined, "");
     sceneViewPost3DModeList.insert(SceneViewPost3DMode_None, "none");
     sceneViewPost3DModeList.insert(SceneViewPost3DMode_ScalarView3D, "scalar");
     sceneViewPost3DModeList.insert(SceneViewPost3DMode_ScalarView3DSolid, "scalarsolid");
     sceneViewPost3DModeList.insert(SceneViewPost3DMode_Model, "model");
 
     // ADAPTIVITYTYPE
-    adaptivityTypeList.insert(AdaptivityType_Undefined, "");
     adaptivityTypeList.insert(AdaptivityType_None, "disabled");
     adaptivityTypeList.insert(AdaptivityType_H, "h-adaptivity");
     adaptivityTypeList.insert(AdaptivityType_P, "p-adaptivity");
     adaptivityTypeList.insert(AdaptivityType_HP, "hp-adaptivity");
 
     // AdaptivityStoppingCriterionType
-    adaptivityStoppingCriterionTypeList.insert(AdaptivityStoppingCriterionType_Undefined, "");
     adaptivityStoppingCriterionTypeList.insert(AdaptivityStoppingCriterionType_Cumulative, "cumulative");
     adaptivityStoppingCriterionTypeList.insert(AdaptivityStoppingCriterionType_SingleElement, "singleelement");
     adaptivityStoppingCriterionTypeList.insert(AdaptivityStoppingCriterionType_Levels, "levels");
@@ -286,13 +279,11 @@ void initLists()
     spaceTypeList.insert(Hermes::Hermes2D::HERMES_L2_MARKERWISE_CONST_SPACE, "const");
 
     // LinearityType
-    linearityTypeList.insert(LinearityType_Undefined, "");
     linearityTypeList.insert(LinearityType_Linear, "linear");
     linearityTypeList.insert(LinearityType_Picard, "picard");
     linearityTypeList.insert(LinearityType_Newton, "newton");
 
     // DampingType
-    dampingTypeList.insert(DampingType_Undefined, "");
     dampingTypeList.insert(DampingType_Off, "disable");
     dampingTypeList.insert(DampingType_Automatic, "automatic");
     dampingTypeList.insert(DampingType_Fixed, "fixed");

@@ -89,9 +89,9 @@ void PyField::setPolynomialOrder(int polynomialOrder)
 
 void PyField::setLinearityType(const std::string &linearityType)
 {
-    QString type = QString::fromStdString(linearityType);
-    if (linearityTypeStringKeys().contains(type) && !type.isEmpty())
-        m_fieldInfo->setLinearityType(linearityTypeFromStringKey(type));
+
+    if (linearityTypeStringKeys().contains(QString::fromStdString(linearityType)))
+        m_fieldInfo->setLinearityType(linearityTypeFromStringKey(QString::fromStdString(linearityType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(linearityTypeStringKeys())).toStdString());
 }
@@ -106,9 +106,8 @@ void PyField::setNonlinearConvergenceMeasurement(const std::string &nonlinearCon
 
 void PyField::setNewtonDampingType(std::string dampingType)
 {
-    QString type = QString::fromStdString(dampingType);
-    if (dampingTypeStringKeys().contains(type) && !type.isEmpty())
-        m_fieldInfo->setValue(FieldInfo::NewtonDampingType, (DampingType) dampingTypeFromStringKey(type));
+    if (dampingTypeStringKeys().contains(QString::fromStdString(dampingType)))
+        m_fieldInfo->setValue(FieldInfo::NewtonDampingType, (DampingType) dampingTypeFromStringKey(QString::fromStdString(dampingType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(dampingTypeStringKeys())).toStdString());
 }

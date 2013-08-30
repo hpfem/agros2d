@@ -84,9 +84,19 @@ class TestField(a2d.Agros2DTestCase):
         self.field.transient_time_skip = 60
         self.assertEqual(self.field.transient_time_skip, 60)
 
+class TestFieldBoundaries(a2d.Agros2DTestCase):
+    def setUp(self):
+        self.problem = a2d.problem(clear = True)
+        self.field = a2d.field('magnetic')
+        self.field.analysis_type = 'harmonic'
+
+    """ add_boundary """
+    def test_add_boundary(self):
+        self.field.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_real" : 0,
+                                                                "magnetic_potential_imag" : 0})
+
 # TODO (Franta) :
 """
-add_boundary
 modify_boundary
 remove_boundary
 add_material
@@ -368,6 +378,7 @@ if __name__ == '__main__':
     suite = ut.TestSuite()
     result = a2d.Agros2DTestResult()
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestField))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldBoundaries))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldNewtonSolver))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldMatrixSolver))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldAdaptivity))
