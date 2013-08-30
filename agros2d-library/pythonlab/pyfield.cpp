@@ -797,7 +797,7 @@ std::string PyField::filenameMatrix(int timeStep, int adaptivityStep) const
     timeStep = getTimeStep(timeStep, SolutionMode_Normal);
     adaptivityStep = getAdaptivityStep(adaptivityStep, timeStep, SolutionMode_Normal);
 
-    QString name = QString("%1/%2_%3_%4_Matrix%5").arg(cacheProblemDir()).arg(m_fieldInfo->fieldId()).arg(timeStep).arg(adaptivityStep).arg(1);
+    QString name = QString("%1/%2_%3_%4_Matrix").arg(cacheProblemDir()).arg(m_fieldInfo->fieldId()).arg(timeStep).arg(adaptivityStep);
     if (QFile::exists(name))
         return name.toStdString();
     else
@@ -809,11 +809,7 @@ std::string PyField::filenameRHS(int timeStep, int adaptivityStep) const
     timeStep = getTimeStep(timeStep, SolutionMode_Normal);
     adaptivityStep = getAdaptivityStep(adaptivityStep, timeStep, SolutionMode_Normal);
 
-    SolutionStore::SolutionRunTimeDetails runTime = Agros2D::solutionStore()->multiSolutionRunTimeDetail(FieldSolutionID(m_fieldInfo, timeStep, adaptivityStep, SolutionMode_Normal));
-    // TODO: check
-    int iterations = runTime.jacobianCalculations() > 0 ? runTime.newtonResidual().size() - runTime.jacobianCalculations() + 1 : 1;
-
-    QString name = QString("%1/%2_%3_%4_RHS%5").arg(cacheProblemDir()).arg(m_fieldInfo->fieldId()).arg(timeStep).arg(adaptivityStep).arg(iterations);
+    QString name = QString("%1/%2_%3_%4_RHS").arg(cacheProblemDir()).arg(m_fieldInfo->fieldId()).arg(timeStep).arg(adaptivityStep);
     if (QFile::exists(name))
         return name.toStdString();
     else

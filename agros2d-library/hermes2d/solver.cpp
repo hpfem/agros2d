@@ -410,8 +410,8 @@ void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Mixins::Matrix
 {
     if(Agros2D::configComputer()->saveMatrixRHS)
     {
-        solver->output_matrix();
-        solver->output_rhs();
+        solver->output_matrix(true);
+        solver->output_rhs(true);
         QString name = QString("%1/%2_%3_%4").arg(cacheProblemDir()).arg(solverName).arg(Agros2D::problem()->actualTimeStep()).arg(adaptivityStep);
         solver->set_matrix_dump_format(Agros2D::configComputer()->dumpFormat);
         solver->set_rhs_E_matrix_dump_format(Agros2D::configComputer()->dumpFormat);
