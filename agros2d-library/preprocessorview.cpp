@@ -134,11 +134,11 @@ void PreprocessorWidget::createControls()
     connect(btnOK, SIGNAL(clicked()), SLOT(doApply()));
 
     QGridLayout *layoutTreeView = new QGridLayout();
-    layoutTreeView->addWidget(trvWidget, 0, 0, 1, 3);
+    layoutTreeView->addWidget(trvWidget, 0, 0, 1, 4);
     layoutTreeView->addWidget(new QLabel(tr("Grid step:")), 1, 0);
     layoutTreeView->addWidget(txtGridStep, 1, 1);
     layoutTreeView->addWidget(chkSnapToGrid, 1, 2);
-    layoutTreeView->addWidget(btnOK, 2, 2);
+    layoutTreeView->addWidget(btnOK, 1, 3);
 
     QWidget *widgetTreeView = new QWidget();
     widgetTreeView->setLayout(layoutTreeView);
