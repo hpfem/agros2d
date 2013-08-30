@@ -34,6 +34,26 @@
     <module:quantity id="richards_theta_s" shortname="re_theta_s"/>
     <module:quantity id="richards_theta_r" shortname="re_theta_r"/>
 
+    <module:function id="richards_func_k" shortname="re_func_k" switch="constitutive_variant">
+      <!-- mela by mit kazda funkce vyjmenovane parametry? tedy neco jako seznam
+      <module:quantity id="richards_ks"/>
+      <module:quantity id="richards_a"/>
+      <module:quantity id="richards_m"/>
+      <module:quantity id="richards_n"/>
+      nebo se proste vezmou vsechny quantity v poradi, jak jsou vyjmenovany pro modul?
+      -->
+      <module:function_variant switch_value="van_genuchten" bound_low="-40" bound_hi="0" extrapolate_hi="re_ks"  expr="re_ks*std::pow((1 + std::pow((-re_a*h),n)),(-m/2))*std::pow((1 -std::pow((-re_a*h),(m*n))*std::pow((1 + std::pow((-re_a*h),n)),(-m))),2)"/>
+    </module:function>
+    <module:function id="richards_func_dkdh" shortname="re_func_dkdh" switch="constitutive_variant">
+      <module:function_variant switch_value="van_genuchten" bound_low="-40" bound_hi="0" extrapolate_hi="0"  expr="re_ks*std::pow((1 + std::pow((-re_a*h),n)),(-m/2))*(1 -std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m)))*(-2*m*n*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/h +2*m*n*std::pow((-re_a*h),n)*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/(h*(1 + std::pow((-re_a*h),n)))) -re_ks*m*n*std::pow((-re_a*h),n)*std::pow((1 + std::pow((-re_a*h),n)),(-m/2))*std::pow((1 -std::pow((-re_a*h),(m*n))*std::pow((1 + std::pow((-re_a*h),n)),(-m))),2)/(2*h*(1 +std::pow((-re_a*h),n)))"/>
+    </module:function>
+    <module:function id="richards_func_ddkdhh" shortname="re_func_ddkddh" switch="constitutive_variant">
+      <module:function_variant switch_value="van_genuchten" bound_low="-40" bound_hi="0" extrapolate_hi="0"  expr="re_ks*std::pow((1 + std::pow((-re_a*h),n)),(-m/2))*(1 -std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m)))*(-2*std::pow(m,2)*std::pow(n,2)*std::pow((-re_a*h),(m*n))*std::pow((1+ std::pow((-re_a*h),n)),(-m))/std::pow(h,2) +2*m*n*std::pow((-re_a*h),(m*n))*std::pow((1 + std::pow((-re_a*h),n)),(-m))/std::pow(h,2)- 2*m*n*std::pow((-re_a*h),n)*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/(std::pow(h,2)*(1 + std::pow((-re_a*h),n))) -2*m*std::pow(n,2)*std::pow((-re_a*h),(2*n))*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/(std::pow(h,2)*std::pow((1 + std::pow((-re_a*h),n)),2)) -2*std::pow(m,2)*std::pow(n,2)*std::pow((-re_a*h),(2*n))*std::pow((-re_a*h),(m*n))*std::pow((1+ std::pow((-re_a*h),n)),(-m))/(std::pow(h,2)*std::pow((1 + std::pow((-re_a*h),n)),2)) +2*m*std::pow(n,2)*std::pow((-re_a*h),n)*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/(std::pow(h,2)*(1 + std::pow((-re_a*h),n))) +4*std::pow(m,2)*std::pow(n,2)*std::pow((-re_a*h),n)*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/(std::pow(h,2)*(1 + std::pow((-re_a*h),n)))) +re_ks*std::pow((1 + std::pow((-re_a*h),n)),(-m/2))*(-m*n*std::pow((-re_a*h),(m*n))*std::pow((1+ std::pow((-re_a*h),n)),(-m))/h +m*n*std::pow((-re_a*h),n)*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/(h*(1 +std::pow((-re_a*h),n))))*(-2*m*n*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/h +2*m*n*std::pow((-re_a*h),n)*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/(h*(1 + std::pow((-re_a*h),n)))) -re_ks*m*n*std::pow((-re_a*h),n)*std::pow((1 + std::pow((-re_a*h),n)),(-m/2))*(1 -std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m)))*(-2*m*n*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/h +2*m*n*std::pow((-re_a*h),n)*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/(h*(1 + std::pow((-re_a*h),n))))/(h*(1 +std::pow((-re_a*h),n))) + re_ks*m*n*std::pow((-re_a*h),n)*std::pow((1 +std::pow((-re_a*h),n)),(-m/2))*std::pow((1 - std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))),2)/(2*std::pow(h,2)*(1 + std::pow((-re_a*h),n))) +re_ks*m*std::pow(n,2)*std::pow((-re_a*h),(2*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m/2))*std::pow((1 - std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))),2)/(2*std::pow(h,2)*std::pow((1 +std::pow((-re_a*h),n)),2)) - re_ks*m*std::pow(n,2)*std::pow((-re_a*h),n)*std::pow((1 +std::pow((-re_a*h),n)),(-m/2))*std::pow((1 - std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))),2)/(2*std::pow(h,2)*(1 + std::pow((-re_a*h),n))) +re_ks*std::pow(m,2)*std::pow(n,2)*std::pow((-re_a*h),(2*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m/2))*std::pow((1 - std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))),2)/(4*std::pow(h,2)*std::pow((1 +std::pow((-re_a*h),n)),2))"/>
+    </module:function>
+    <module:function id="richards_func_c" shortname="re_func_c" switch="constitutive_variant">
+      <module:function_variant switch_value="van_genuchten" bound_low="-40" bound_hi="0" extrapolate_hi="st"  expr="st*std::pow((1 + std::pow((-re_a*h),n)),(-m))*(theta_s - theta_r)/theta_s - m*n*std::pow((-re_a*h),n)*std::pow((1 + std::pow((-re_a*h),n)),(-m))*(theta_s - theta_r)/(h*(1 + std::pow((-re_a*h),n)))"/>
+    </module:function>
+
     <module:matrix_form id="conductivity" i="1" j="1" planar="re_function_k(value1, re_ks, re_a, re_m, re_n) * (udx * vdx + udy * vdy)"
                                                       axi="re_function_k(value1, re_ks, re_a, re_m, re_n) * r * (udr * vdr + udz * vdz)"/>
     <module:matrix_form id="conductivity_derivative" i="1" j="1" planar="- re_function_dkdh(value1, re_ks, re_a, re_m, re_n) * udy * vval"
@@ -148,6 +168,10 @@
         <module:quantity condition="value >= 0" default="0" id="richards_storativity" name="richards_storativity" shortname="st" shortname_html="&lt;i>st&lt;/i>" shortname_latex="L/t" unit="L/t" unit_html="Lt&lt;sup>-1&lt;/sup>" unit_latex="L\cdott^{-1}"/>
         <module:quantity condition="value >= 0" default="0" id="richards_theta_s" name="richards_theta_s" shortname="ts" shortname_html="&lt;i>&amp;theta;&lt;/i>&lt;/i>&lt;sub>s&lt;/sub>" shortname_latex="L/t" unit="L/t" unit_html="Lt&lt;sup>-1&lt;/sup>" unit_latex="L\cdott^{-1}"/>
         <module:quantity condition="value >= 0" default="0" id="richards_theta_r" name="richards_theta_r" shortname="tr" shortname_html="&lt;i>&amp;theta;&lt;/i>&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="L/t" unit="L/t" unit_html="Lt&lt;sup>-1&lt;/sup>" unit_latex="L\cdott^{-1}"/>
+
+        <module:switch id="constitutive_variant" name="Constitutive relations">
+          <module:switch_option id="van_genuchten" name="van Genuchten" />
+        </module:switch>
       </module:group>
     </module:gui>
     <module:gui type="surface">
