@@ -680,6 +680,8 @@ void FieldWidget::doAdaptivityChanged(int index)
     cmbAdaptivityStoppingCriterionType->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     cmbAdaptivityProjNormType->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     chkAdaptivityUseAniso->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+    chkAdaptivitySpaceRefinement->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+    txtAdaptivityOrderIncrease->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     chkAdaptivityFinerReference->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
 
     AnalysisType analysisType = (AnalysisType) cmbAnalysisType->itemData(cmbAnalysisType->currentIndex()).toInt();
@@ -703,9 +705,9 @@ void FieldWidget::doLinearityTypeChanged(int index)
     doNewtonDampingChanged(-1);
     doNewtonReuseJacobian(true);
 
-    chkPicardAndersonAcceleration->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard);
-    txtPicardAndersonBeta->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard);
-    txtPicardAndersonNumberOfLastVectors->setVisible((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard);
+    chkPicardAndersonAcceleration->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard);
+    txtPicardAndersonBeta->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard);
+    txtPicardAndersonNumberOfLastVectors->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard);
     doPicardAndersonChanged(-1);
 }
 
