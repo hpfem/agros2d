@@ -101,7 +101,19 @@ class TestProblem(a2d.Agros2DTestCase):
         self.problem.curvilinear_elements = False
         self.assertEqual(self.problem.curvilinear_elements, False)
 
-# TODO (Franta): clear, cleat_solution, elapsed_time, mesh, solve, set_coupling_type, get_coupling_type, refresh, time_steps_length, time_steps_length
+# TODO (Franta):
+"""
+clear
+cleat_solution
+elapsed_time
+mesh
+solve
+set_coupling_type
+get_coupling_type
+refresh
+time_steps_length
+time_steps_total
+"""
 
 if __name__ == '__main__':        
     import unittest as ut
