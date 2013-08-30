@@ -235,13 +235,25 @@ void FieldWidget::createContent()
 QWidget *FieldWidget::createSolverWidget()
 {
     // linearity
-    cmbNonlinearConvergenceMeasurement = new QComboBox();
     txtNonlinearSteps = new QSpinBox(this);
     txtNonlinearSteps->setMinimum(1);
     txtNonlinearSteps->setMaximum(100);
     txtNonlinearSteps->setValue(m_fieldInfo->defaultValue(FieldInfo::NonlinearSteps).toInt());
     txtNonlinearTolerance = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::NonlinearTolerance).toDouble());
     txtNonlinearTolerance->setBottom(0.0);
+
+    QGridLayout *layoutSolverConvergence = new QGridLayout();
+    //layoutSolverConvergence->setColumnMinimumWidth(0, columnMinimumWidth());
+
+    layoutSolverConvergence->addWidget(new QLabel(tr("Max. steps:")), 1, 0);
+    layoutSolverConvergence->addWidget(txtNonlinearSteps, 1, 1);
+    layoutSolverConvergence->addWidget(new QLabel(tr("Tolerance:")), 1, 2);
+    layoutSolverConvergence->addWidget(txtNonlinearTolerance, 1, 3);
+
+    QGroupBox *grpSolverConvergence = new QGroupBox(tr("Convergence"));
+    grpSolverConvergence->setLayout(layoutSolverConvergence);
+
+    cmbNonlinearConvergenceMeasurement = new QComboBox();
 
     cmbNewtonDampingType = new QComboBox();
     connect(cmbNewtonDampingType, SIGNAL(currentIndexChanged(int)), this, SLOT(doNewtonDampingChanged(int)));
@@ -259,6 +271,43 @@ QWidget *FieldWidget::createSolverWidget()
     txtNewtonDampingNumberToIncrease->setMinimum(1);
     txtNewtonDampingNumberToIncrease->setMaximum(5);
 
+    QGridLayout *layoutNewtonSolverDamping = new QGridLayout();
+    //layoutSolverDamping->setColumnMinimumWidth(0, columnMinimumWidth());
+
+    layoutNewtonSolverDamping->addWidget(new QLabel(tr("Damping type:")), 1, 0);
+    layoutNewtonSolverDamping->addWidget(cmbNewtonDampingType, 1, 1);
+    layoutNewtonSolverDamping->addWidget(new QLabel(tr("Factor:")), 1, 2);
+    layoutNewtonSolverDamping->addWidget(txtNewtonDampingCoeff, 1, 3);
+    layoutNewtonSolverDamping->addWidget(new QLabel(tr("Min. residual ratio for factor decrease:")), 2, 0, 1, 3);
+    layoutNewtonSolverDamping->addWidget(txtNewtonSufficientImprovementFactor, 2, 3);
+    layoutNewtonSolverDamping->addWidget(new QLabel(tr("Min. steps for factor increase:")), 3, 0, 1, 3);
+    layoutNewtonSolverDamping->addWidget(txtNewtonDampingNumberToIncrease, 3, 3);
+
+    QGridLayout *layoutNewtonSolverReuse = new QGridLayout();
+
+    layoutNewtonSolverReuse->addWidget(chkNewtonReuseJacobian, 1, 0);
+    layoutNewtonSolverReuse->addWidget(new QLabel(tr("Max. residual ratio for Jacobian reuse:")), 2, 0);
+    layoutNewtonSolverReuse->addWidget(txtNewtonSufficientImprovementFactorForJacobianReuse, 2, 1);
+    layoutNewtonSolverReuse->addWidget(new QLabel(tr("Max. steps with the same Jacobian:")), 3, 0);
+    layoutNewtonSolverReuse->addWidget(txtNewtonMaximumStepsWithReusedJacobian, 3, 1);
+
+    QGroupBox *grpNewtonSolverDamping = new QGroupBox(tr("Damping"));
+    grpNewtonSolverDamping->setLayout(layoutNewtonSolverDamping);
+
+    QGroupBox *grpNewtonSolverReuse = new QGroupBox(tr("Jacobian reuse"));
+    grpNewtonSolverReuse->setLayout(layoutNewtonSolverReuse);
+
+    // Newton's solver
+    QGridLayout *layoutNewtonSolver = new QGridLayout();
+    layoutNewtonSolver->addWidget(new QLabel(tr("Convergence measurement:")), 0, 0);
+    layoutNewtonSolver->addWidget(cmbNonlinearConvergenceMeasurement, 0, 1);
+    layoutNewtonSolver->addWidget(grpNewtonSolverDamping, 2, 0, 1, 2);
+    layoutNewtonSolver->addWidget(grpNewtonSolverReuse, 3, 0, 1, 2);
+
+    QWidget *widgetNewtonSolver = new QWidget(this);
+    widgetNewtonSolver->setLayout(layoutNewtonSolver);
+
+    // Picard's solver
     chkPicardAndersonAcceleration = new QCheckBox(tr("Use Anderson acceleration"));
     connect(chkPicardAndersonAcceleration, SIGNAL(stateChanged(int)), this, SLOT(doPicardAndersonChanged(int)));
     txtPicardAndersonBeta = new LineEditDouble(0.2);
@@ -268,59 +317,24 @@ QWidget *FieldWidget::createSolverWidget()
     txtPicardAndersonNumberOfLastVectors->setMinimum(1);
     txtPicardAndersonNumberOfLastVectors->setMaximum(5);
 
-    // linearity
-    QGridLayout *layoutSolver = new QGridLayout();
-    //layoutSolver->setColumnMinimumWidth(0, columnMinimumWidth());
+    QGridLayout *layoutPicardSolver = new QGridLayout(this);
+    layoutPicardSolver->addWidget(chkPicardAndersonAcceleration, 0, 0, 1, 2);
+    layoutPicardSolver->addWidget(new QLabel(tr("Anderson beta:")), 1, 0);
+    layoutPicardSolver->addWidget(txtPicardAndersonBeta, 1, 1);
+    layoutPicardSolver->addWidget(new QLabel(tr("Num. of last used iter.:")), 2, 0);
+    layoutPicardSolver->addWidget(txtPicardAndersonNumberOfLastVectors, 2, 1);
+    layoutPicardSolver->setRowStretch(50, 1);
 
-    QGridLayout *layoutSolverConvergence = new QGridLayout();
-    //layoutSolverConvergence->setColumnMinimumWidth(0, columnMinimumWidth());
+    QWidget *widgetPicardSolver = new QWidget(this);
+    widgetPicardSolver->setLayout(layoutPicardSolver);
 
-    QGridLayout *layoutSolverDamping = new QGridLayout();
-    //layoutSolverDamping->setColumnMinimumWidth(0, columnMinimumWidth());
+    QTabWidget *tab = new QTabWidget(this);
+    tab->addTab(widgetNewtonSolver, tr("Newton's solver"));
+    tab->addTab(widgetPicardSolver, tr("Picard's solver"));
 
-    QGridLayout *layoutSolverReuse = new QGridLayout();
-
-    layoutSolverConvergence->addWidget(new QLabel(tr("Max. steps:")), 1, 0);
-    layoutSolverConvergence->addWidget(txtNonlinearSteps, 1, 1);
-    layoutSolverConvergence->addWidget(new QLabel(tr("Tolerance:")), 1, 2);
-    layoutSolverConvergence->addWidget(txtNonlinearTolerance, 1, 3);
-    layoutSolverConvergence->addWidget(new QLabel(tr("Convergence measurement:")), 2, 0, 1, 3);
-    layoutSolverConvergence->addWidget(cmbNonlinearConvergenceMeasurement, 2, 3);
-
-    layoutSolverDamping->addWidget(new QLabel(tr("Damping type:")), 1, 0);
-    layoutSolverDamping->addWidget(cmbNewtonDampingType, 1, 1);
-    layoutSolverDamping->addWidget(new QLabel(tr("Factor:")), 1, 2);
-    layoutSolverDamping->addWidget(txtNewtonDampingCoeff, 1, 3);
-    layoutSolverDamping->addWidget(new QLabel(tr("Min. residual ratio for factor decrease:")), 2, 0, 1, 3);
-    layoutSolverDamping->addWidget(txtNewtonSufficientImprovementFactor, 2, 3);
-    layoutSolverDamping->addWidget(new QLabel(tr("Min. steps for factor increase:")), 3, 0, 1, 3);
-    layoutSolverDamping->addWidget(txtNewtonDampingNumberToIncrease, 3, 3);
-
-    layoutSolverReuse->addWidget(chkNewtonReuseJacobian, 1, 0);
-    layoutSolverReuse->addWidget(new QLabel(tr("Max. residual ratio for Jacobian reuse:")), 2, 0);
-    layoutSolverReuse->addWidget(txtNewtonSufficientImprovementFactorForJacobianReuse, 2, 1);
-    layoutSolverReuse->addWidget(new QLabel(tr("Max. steps with the same Jacobian:")), 3, 0);
-    layoutSolverReuse->addWidget(txtNewtonMaximumStepsWithReusedJacobian, 3, 1);
-
-    //layoutSolverReuse->setRowStretch(50, 1);
-    //layoutLinearity->addWidget(chkPicardAndersonAcceleration, 7, 0, 1, 2);
-    //layoutLinearity->addWidget(new QLabel(tr("Anderson beta:")), 8, 0);
-    //layoutLinearity->addWidget(txtPicardAndersonBeta, 8, 1);
-    //layoutLinearity->addWidget(new QLabel(tr("Num. of last used iter.:")), 9, 0);
-    //layoutLinearity->addWidget(txtPicardAndersonNumberOfLastVectors, 9, 1);
-
-    QGroupBox *grpSolverConvergence = new QGroupBox(tr("Convergence"));
-    grpSolverConvergence->setLayout(layoutSolverConvergence);
-
-    QGroupBox *grpSolverDamping = new QGroupBox(tr("Damping"));
-    grpSolverDamping->setLayout(layoutSolverDamping);
-
-    QGroupBox *grpSolverReuse = new QGroupBox(tr("Jacobian reuse"));
-    grpSolverReuse->setLayout(layoutSolverReuse);
-
+    QVBoxLayout *layoutSolver = new QVBoxLayout(this);
     layoutSolver->addWidget(grpSolverConvergence);
-    layoutSolver->addWidget(grpSolverDamping);
-    layoutSolver->addWidget(grpSolverReuse);
+    layoutSolver->addWidget(tab);
 
     QWidget *widSolver = new QWidget(this);
     widSolver->setLayout(layoutSolver);
@@ -722,7 +736,7 @@ void FieldWidget::doNewtonReuseJacobian(bool checked)
     txtNewtonMaximumStepsWithReusedJacobian->setEnabled(((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() == LinearityType_Newton) &&
                                                         (chkNewtonReuseJacobian->isChecked()));
     txtNewtonSufficientImprovementFactorForJacobianReuse->setEnabled(((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() == LinearityType_Newton) &&
-                                                             (chkNewtonReuseJacobian->isChecked()));
+                                                                     (chkNewtonReuseJacobian->isChecked()));
 }
 
 void FieldWidget::doPicardAndersonChanged(int index)
@@ -749,7 +763,7 @@ FieldDialog::FieldDialog(FieldInfo *fieldInfo, QWidget *parent) : QDialog(parent
     QPushButton *btnModuleEditor = new QPushButton(tr("Module editor"));
     btnModuleEditor->setDefault(false);
     btnModuleEditor->setVisible(false);
-    connect(btnModuleEditor, SIGNAL(clicked()), this, SLOT(moduleEditor()));    
+    connect(btnModuleEditor, SIGNAL(clicked()), this, SLOT(moduleEditor()));
 #endif
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -810,7 +824,7 @@ FieldsToobar::FieldsToobar(QWidget *parent) : QWidget(parent)
     connect(Agros2D::problem(), SIGNAL(fieldsChanged()), this, SLOT(refresh()));
     connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(refresh()));
 
-    connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(refresh()));   
+    connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(refresh()));
 
     refresh();
 }
@@ -879,7 +893,7 @@ void FieldsToobar::refresh()
 
     setUpdatesEnabled(false);
 
-    // fields    
+    // fields
     int row = 0;
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
@@ -962,7 +976,7 @@ CouplingsWidget::CouplingsWidget(QWidget *parent) : QWidget(parent)
 
     createContent();
 
-    connect(Agros2D::problem(), SIGNAL(fieldsChanged()), this, SLOT(refresh())); 
+    connect(Agros2D::problem(), SIGNAL(fieldsChanged()), this, SLOT(refresh()));
 }
 
 void CouplingsWidget::createContent()

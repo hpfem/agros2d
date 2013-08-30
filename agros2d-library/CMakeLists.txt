@@ -86,6 +86,9 @@ SET(SOURCES value.cpp
     hermes2d/marker.cpp
     hermes2d/module.cpp
     hermes2d/solver.cpp
+    hermes2d/solver_linear.cpp
+    hermes2d/solver_newton.cpp
+    hermes2d/solver_picard.cpp
     hermes2d/field.cpp
     hermes2d/block.cpp
     hermes2d/problem.cpp
@@ -208,6 +211,9 @@ SET(SOURCES value.cpp
     materialbrowserdialog.h
     confdialog.h
     hermes2d/solver.h
+    hermes2d/solver_linear.h
+    hermes2d/solver_newton.h
+    hermes2d/solver_picard.h
     sceneedge.h
     scenelabel.h
     scenenode.h

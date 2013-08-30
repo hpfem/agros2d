@@ -275,6 +275,10 @@ namespace Hermes
 
       double rel_error = abs_error / last_iter_vec_norm;
 
+      this->get_parameter_value(p_abs_error) = abs_error;
+      this->get_parameter_value(p_rel_error) = rel_error;
+      this->get_parameter_value(p_iter_vec_norm) = last_iter_vec_norm;
+
       return rel_error;
     }
 
@@ -317,14 +321,25 @@ namespace Hermes
     template<typename Scalar>
     void PicardSolver<Scalar>::solve(Scalar* coeff_vec)
     {
-      unsigned int it = 0;
-      this->set_parameter_value(this->p_iteration, &it);
       
       this->init_solving(coeff_vec);
 
+#pragma region parameter_setup
+      // Initialize parameters.
+      unsigned int iteration = 0;
+      double abs_error = 0.0;
+      double rel_error = 0.0;
+      double iter_vec_norm = 0.0;
+
+      this->set_parameter_value(this->p_iteration, &iteration);
+      this->set_parameter_value(this->p_abs_error, &abs_error);
+      this->set_parameter_value(this->p_rel_error, &rel_error);
+      this->set_parameter_value(this->p_iter_vec_norm, &iter_vec_norm);
+#pragma endregion
+
       this->init_anderson();
 
-      it++;
+      iteration++;
       unsigned int vec_in_memory = 1;   // There is already one vector in the memory.
       this->set_parameter_value(this->p_vec_in_memory, &vec_in_memory);
 
@@ -337,10 +352,8 @@ namespace Hermes
         if(this->report_cache_hits_and_misses)
           this->add_cache_hits_and_misses(this->dp);
 
-        this->process_matrix_output(this->jacobian, it); 
-        this->process_vector_output(this->residual, it);
-
-        this->on_step_end();
+        this->process_matrix_output(this->jacobian, iteration);
+        this->process_vector_output(this->residual, iteration);
 
         // Solve the linear system.
         this->matrix_solver->solve(coeff_vec);
@@ -350,25 +363,26 @@ namespace Hermes
 
         this->handle_previous_vectors(vec_in_memory);
 
-        if(it > 1)
+        if(iteration > 1)
         {
           double rel_error = this->calculate_relative_error(coeff_vec);
 
           // Output for the user.
-          this->info("\tPicard: iteration %d, nDOFs %d, relative error %g%%", it, ndof, rel_error * 100);
+          this->info("\tPicard: iteration %d, nDOFs %d, relative error %g%%", iteration, ndof, rel_error * 100);
 
           // Find out the state with respect to all residual norms.
-          PicardSolver<Scalar>::ConvergenceState state = get_convergence_state(rel_error, it);
+          PicardSolver<Scalar>::ConvergenceState state = get_convergence_state(rel_error, iteration);
 
           switch(state)
           {
           case Converged:
+            this->on_finish();
             this->deinit_solving(coeff_vec);
             return;
             break;
 
           case AboveMaxIterations:
-            throw Exceptions::ValueException("iterations", it, this->max_allowed_iterations);
+            throw Exceptions::ValueException("iterations", iteration, this->max_allowed_iterations);
             this->deinit_solving(coeff_vec);
             return;
             break;
@@ -385,7 +399,7 @@ namespace Hermes
           }
         }
 
-        if(it == 1)
+        if(iteration == 1)
         {
           if(!this->on_initial_step_end())
           {
@@ -405,7 +419,7 @@ namespace Hermes
         }
 
         // Increase counter of iterations.
-        it++;
+        iteration++;
 
         // Renew the last iteration vector.
         memcpy(coeff_vec, this->sln_vector, ndof*sizeof(Scalar));

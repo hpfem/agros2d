@@ -1839,8 +1839,9 @@ void Agros2DGeneratorModule::generateFormOld(Form form, ctemplate::TemplateDicti
     // old version of generate form
     // still used for surface forms
     FormInfo formInfo(form.id().c_str(), i, j);
-    LinearityType linearityTypes[2] = {LinearityType_Linear, LinearityType_Newton};
-    for(int lt = 0; lt < 2; lt++)
+    // LinearityType linearityTypes[2] = {LinearityType_Linear, LinearityType_Newton};
+    LinearityType linearityTypes[3] = {LinearityType_Linear, LinearityType_Newton, LinearityType_Picard};
+    for(int lt = 0; lt < 3; lt++)
     {
         formInfo.expr_planar = this->weakformExpression(CoordinateType_Planar, linearityTypes[lt], form);
         formInfo.expr_axi = this->weakformExpression(CoordinateType_Axisymmetric, linearityTypes[lt], form);

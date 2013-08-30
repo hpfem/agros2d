@@ -84,7 +84,7 @@
         <module:linearity_option type="linear">
           <module:matrix_form id="conductivity" />
           <module:matrix_form id="conductivity_derivative" />
-	  <module:matrix_form id="time_mat" />
+      <module:matrix_form id="time_mat" />
 	  <module:vector_form id="time_vec" />
         </module:linearity_option>
 
@@ -98,6 +98,13 @@
           <module:vector_form id="conductivity_derivative" variant="residual" />
 	  <module:vector_form id="time_mat" variant="residual"/>
 	  <module:vector_form id="time_vec" coefficient="-1"/>
+        </module:linearity_option>
+
+        <module:linearity_option type="picard">
+        <module:matrix_form id="conductivity" />
+        <module:matrix_form id="conductivity_derivative" />
+    <module:matrix_form id="time_mat" />
+    <module:vector_form id="time_vec" />
         </module:linearity_option>
 
       </module:weakform_volume>

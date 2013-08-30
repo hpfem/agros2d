@@ -288,7 +288,7 @@ void initLists()
     // LinearityType
     linearityTypeList.insert(LinearityType_Undefined, "");
     linearityTypeList.insert(LinearityType_Linear, "linear");
-    //linearityTypeList.insert(LinearityType_Picard, "picard");
+    linearityTypeList.insert(LinearityType_Picard, "picard");
     linearityTypeList.insert(LinearityType_Newton, "newton");
 
     // DampingType

@@ -50,38 +50,6 @@ enum Phase
     Phase_Finished
 };
 
-template <typename Scalar>
-class NewtonSolverAgros : public Hermes::Hermes2D::NewtonSolver<Scalar>
-{
-public:
-    NewtonSolverAgros(Block *block);
-
-    virtual bool on_initialization();
-    virtual bool on_initial_step_end();
-    virtual bool on_step_begin();
-    virtual bool on_step_end();
-    virtual bool on_finish();
-    virtual void on_damping_factor_updated();
-    virtual void on_reused_jacobian_step_end();
-
-    void clearSteps();
-
-    inline QVector<double> steps() const { return m_steps; }
-    inline QVector<double> damping() const { return m_damping; }
-    inline QVector<double> errors() const { return m_errors; }
-    inline int jacobianCalculations() const { return m_jacobianCalculations; }
-
-protected:
-    Block* m_block;
-
-    QVector<double> m_steps;
-    QVector<double> m_damping;
-    QVector<double> m_errors;
-    int m_jacobianCalculations;
-
-    void setError(Phase phase);
-};
-
 struct TimeStepInfo
 {
     TimeStepInfo(double len, bool ref = false) : length(len), refuse(ref) {}
@@ -120,60 +88,6 @@ protected:
     Scalar *m_slnVector;
 
     bool m_constJacobianPossible;
-};
-
-template <typename Scalar>
-class LinearSolverContainer : public HermesSolverContainer<Scalar>
-{
-public:
-    LinearSolverContainer(Block* block);
-    ~LinearSolverContainer();
-
-    void solve(Scalar* previousSolutionVector);
-    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_linearSolver, solverName, adaptivityStep); }
-    virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() { return m_linearSolver; }
-    virtual void setWeakFormulation(Hermes::Hermes2D::WeakForm<Scalar>* wf) {m_linearSolver->set_weak_formulation(wf); }
-    virtual void matrixUnchangedDueToBDF(bool unchanged);
-    virtual LinearMatrixSolver<Scalar> *linearSolver() { return m_linearSolver->get_linear_solver(); }
-
-private:
-    Hermes::Hermes2D::LinearSolver<Scalar> *m_linearSolver;
-};
-
-template <typename Scalar>
-class NewtonSolverContainer : public HermesSolverContainer<Scalar>
-{
-public:
-    NewtonSolverContainer(Block* block);
-    ~NewtonSolverContainer();
-
-    virtual void solve(Scalar* previousSolutionVector);
-    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_newtonSolver, solverName, adaptivityStep); }
-    virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() { return m_newtonSolver; }
-    virtual void setWeakFormulation(Hermes::Hermes2D::WeakForm<Scalar>* wf) { m_newtonSolver->set_weak_formulation(wf); }
-    virtual LinearMatrixSolver<Scalar> *linearSolver() { return m_newtonSolver->get_linear_solver(); }
-
-    NewtonSolverAgros<Scalar> *solver() const { return m_newtonSolver; }
-
-private:
-    NewtonSolverAgros<Scalar> *m_newtonSolver;
-};
-
-template <typename Scalar>
-class PicardSolverContainer : public HermesSolverContainer<Scalar>
-{
-public:
-    PicardSolverContainer(Block* block);
-    ~PicardSolverContainer();
-
-    virtual void solve(Scalar* previousSolutionVector);
-    virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) { this->setMatrixRhsOutputGen(m_picardSolver, solverName, adaptivityStep); }
-    virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() { return m_picardSolver; }
-    virtual void setWeakFormulation(Hermes::Hermes2D::WeakForm<Scalar>* wf) { m_picardSolver->set_weak_formulation(wf); }
-    virtual LinearMatrixSolver<Scalar> *linearSolver() { return m_picardSolver->get_linear_solver(); }
-
-private:
-    Hermes::Hermes2D::PicardSolver<Scalar> *m_picardSolver;
 };
 
 // solve

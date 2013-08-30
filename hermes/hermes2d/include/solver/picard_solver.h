@@ -157,13 +157,19 @@ namespace Hermes
 
 #pragma region OutputAttachable
       // For derived classes - read-only access.
-      const OutputParameterUnsignedInt& iteration() const { return this->p_iteration; };
-      const OutputParameterUnsignedInt& vec_in_memory() const { return this->p_vec_in_memory; };
+      const OutputParameterUnsignedInt& iteration() const { return this->p_iteration; }
+      const OutputParameterUnsignedInt& vec_in_memory() const { return this->p_vec_in_memory; }
+      const OutputParameterDouble& abs_error() const { return this->p_abs_error; }
+      const OutputParameterDouble& rel_error() const { return this->p_rel_error; }
+      const OutputParameterDouble& iter_vec_norm() const { return this->p_iter_vec_norm; }
 
     private:
       // Parameters for OutputAttachable mixin.
       OutputParameterUnsignedInt p_iteration;
       OutputParameterUnsignedInt p_vec_in_memory;
+      OutputParameterDouble p_abs_error;
+      OutputParameterDouble p_rel_error;
+      OutputParameterDouble p_iter_vec_norm;
 #pragma endregion
     };
   }
