@@ -293,7 +293,7 @@ void initLists()
 
     // DampingType
     dampingTypeList.insert(DampingType_Undefined, "");
-    dampingTypeList.insert(DampingType_Off, "off");
+    dampingTypeList.insert(DampingType_Off, "disable");
     dampingTypeList.insert(DampingType_Automatic, "automatic");
     dampingTypeList.insert(DampingType_Fixed, "fixed");
 

@@ -106,8 +106,9 @@ void PyField::setNonlinearConvergenceMeasurement(const std::string &nonlinearCon
 
 void PyField::setNewtonDampingType(std::string dampingType)
 {
-    if (dampingTypeStringKeys().contains(QString::fromStdString(dampingType)))
-        m_fieldInfo->setValue(FieldInfo::NewtonDampingType, (DampingType) dampingTypeFromStringKey(QString::fromStdString(dampingType)));
+    QString type = QString::fromStdString(dampingType);
+    if (dampingTypeStringKeys().contains(type) && !type.isEmpty())
+        m_fieldInfo->setValue(FieldInfo::NewtonDampingType, (DampingType) dampingTypeFromStringKey(type));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(dampingTypeStringKeys())).toStdString());
 }
