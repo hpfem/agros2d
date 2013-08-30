@@ -743,8 +743,8 @@ void FieldWidget::doNewtonReuseJacobian(bool checked)
 
 void FieldWidget::doPicardAndersonChanged(int index)
 {
-    txtPicardAndersonBeta->setEnabled(chkPicardAndersonAcceleration->isChecked());
-    txtPicardAndersonNumberOfLastVectors->setEnabled(chkPicardAndersonAcceleration->isChecked());
+    txtPicardAndersonBeta->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard && chkPicardAndersonAcceleration->isChecked());
+    txtPicardAndersonNumberOfLastVectors->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard && chkPicardAndersonAcceleration->isChecked());
 }
 
 // ********************************************************************************************
