@@ -103,6 +103,8 @@ void Agros2DGeneratorModule::generatePluginInterfaceFiles()
     QString description = QString::fromStdString(m_module->general().description());
     description = description.replace("\n","");
     output.SetValue("DESCRIPTION", description.toStdString());
+    if (m_module->cpp().present())
+        output.SetValue("CPP", m_module->cpp().get());
 
     std::string text;
 
@@ -1909,11 +1911,13 @@ void Agros2DGeneratorModule::generateForm(FormInfo formInfo, LinearityType linea
                                                       coordinateType, linearityType, expression);
             field->SetValue("EXPRESSION", exprCpp.toStdString());
 
-            QString exprCppCheck1 = parseWeakFormExpressionCheck(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
-                                                                 coordinateType, linearityType, expression, 1);
+            QString exprCppCheck1 = "1";
+            // QString exprCppCheck1 = parseWeakFormExpressionCheck(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
+            //                                                      coordinateType, linearityType, expression, 1);
             field->SetValue("EXPRESSION_CHECK_1", exprCppCheck1.toStdString());
-            QString exprCppCheck2 = parseWeakFormExpressionCheck(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
-                                                                 coordinateType, linearityType, expression, 17);
+            QString exprCppCheck2 = "1";
+            // QString exprCppCheck2 = parseWeakFormExpressionCheck(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
+            //                                                      coordinateType, linearityType, expression, 17);
             field->SetValue("EXPRESSION_CHECK_2", exprCppCheck2.toStdString());
 
             // add weakform

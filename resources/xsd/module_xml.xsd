@@ -12,6 +12,7 @@
                                 <element ref="module:surface" maxOccurs="1" />
                                 <element ref="module:preprocessor" maxOccurs="1" />
                                 <element ref="module:postprocessor" maxOccurs="1" />
+                                <element ref="module:cpp" minOccurs="0" maxOccurs="1" />
                         </sequence>
                 </complexType>
         </element>
@@ -446,5 +447,8 @@
                         <attribute name="name" use="required" type="string" />
                         <attribute name="equation" use="required" type="string" />
                 </complexType>
+        </element>
+        
+		<element name="cpp" type="string">         
         </element>
 </schema>

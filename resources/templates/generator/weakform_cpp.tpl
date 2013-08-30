@@ -18,6 +18,7 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "{{ID}}_weakform.h"
+#include "{{ID}}_interface.h"
 
 #include "util.h"
 #include "util/global.h"

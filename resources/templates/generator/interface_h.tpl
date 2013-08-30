@@ -79,4 +79,6 @@ public:
     virtual QString localeDescription();
 };
 
+{{CPP}}
+
 #endif // {{ID}}_INTERFACE_H

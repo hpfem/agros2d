@@ -42,7 +42,15 @@ inline Hermes::Ord tern(bool condition, Hermes::Ord a, double b)
     if (condition)
         return a;
     else
-        return Hermes::Ord(b);
+        return Hermes::Ord::get_max_order();
+}
+
+inline Hermes::Ord tern(bool condition, double a, Hermes::Ord b)
+{
+    if (condition)
+        return Hermes::Ord::get_max_order();
+    else
+        return b;
 }
 
 // to be thrown when string refering to module entity (boundary condition type, etc.) not found
