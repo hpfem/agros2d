@@ -217,6 +217,17 @@ void PyViewMesh::setOrderViewPalette(const std::string &palette)
         Agros2D::problem()->setting()->setValue(ProblemSetting::View_OrderPaletteOrderType, paletteOrderTypeFromStringKey(QString::fromStdString(palette)));
 }
 
+void PyViewMesh::setOrderComponent(int component)
+{
+    checkExistingMesh();
+
+    if (component < 1 && component > currentPythonEngineAgros()->postHermes()->activeViewField()->numberOfSolutions())
+        throw out_of_range(QObject::tr("Component must be in the range from 1 to %1.").arg(currentPythonEngineAgros()->postHermes()->activeViewField()->numberOfSolutions()).toStdString());
+
+    if (!silentMode())
+        Agros2D::problem()->setting()->setValue(ProblemSetting::View_OrderComponent, component);
+}
+
 // ************************************************************************************
 
 void PyViewPost::checkExistingSolution()
