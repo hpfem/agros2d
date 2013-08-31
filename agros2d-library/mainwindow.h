@@ -92,6 +92,7 @@ private slots:
     void doTransform();
     void doMaterialBrowser();
     void doCreateVideo();
+    void doUnitTests();
 
     void doHideControlPanel();
     void doFullScreen();
@@ -169,6 +170,7 @@ private:
     QAction *actScriptEditorRunScript;
     QAction *actMaterialBrowser;
     QAction *actCreateVideo;
+    QAction *actUnitTests;
 
     QAction *actHelp;
     QAction *actHelpShortCut;

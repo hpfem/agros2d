@@ -42,6 +42,7 @@
 #include "chartdialog.h"
 #include "confdialog.h"
 #include "pythonlab/pythonengine_agros.h"
+#include "pythonlab/python_unittests.h"
 #include "videodialog.h"
 #include "problemdialog.h"
 #include "collaboration.h"
@@ -350,6 +351,9 @@ void MainWindow::createActions()
     actOptions->setMenuRole(QAction::PreferencesRole);
     connect(actOptions, SIGNAL(triggered()), this, SLOT(doOptions()));
 
+    actUnitTests = new QAction(tr("Unit tests..."), this);
+    connect(actUnitTests, SIGNAL(triggered()), this, SLOT(doUnitTests()));
+
     actFullScreen = new QAction(icon("view-fullscreen"), tr("Fullscreen mode"), this);
     actFullScreen->setShortcut(QKeySequence(tr("F11")));
     connect(actFullScreen, SIGNAL(triggered()), this, SLOT(doFullScreen()));
@@ -517,6 +521,7 @@ void MainWindow::createMenus()
     QMenu *mnuTools = menuBar()->addMenu(tr("&Tools"));
     mnuTools->addAction(actScriptEditor);
     mnuTools->addAction(actScriptEditorRunScript);
+    mnuTools->addAction(actUnitTests);
     mnuTools->addSeparator();
     mnuTools->addAction(actMaterialBrowser);
     mnuTools->addSeparator();
@@ -1269,6 +1274,12 @@ void MainWindow::doOptions()
         // postHermes->refresh();
         // setControls();
     }
+}
+
+void MainWindow::doUnitTests()
+{
+    UnitTestsWidget unit(this);
+    unit.exec();
 }
 
 void MainWindow::doTransform()

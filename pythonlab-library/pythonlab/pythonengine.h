@@ -121,6 +121,8 @@ public:
     QStringList codePyFlakes(const QString& fileName);
     QList<PythonVariable> variableList();
 
+    inline PyObject *dict() const { return m_dict; }
+
 public slots:
     virtual void abortScript();
 

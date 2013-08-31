@@ -76,6 +76,28 @@ class Agros2DTestResult(ut.TestResult):
 
 setattr(agros2d, "Agros2DTestResult", Agros2DTestResult)
 
+import sys
+sys.path.append("resources/test")
+
+def agros2d_find_all_tests(obj, tests):
+    from inspect import getmembers, isclass, ismodule, ismethod
+
+    for o in getmembers(obj, ismodule):
+        if (o[1].__name__.startswith("test_suite.")):
+            agros2d_find_all_tests(o[1], tests)
+
+    for o in getmembers(obj, isclass):
+        if (issubclass(o[1], agros2d.Agros2DTestCase)):
+            # print("class: " + o[0] + "..." + o[1].__module__)
+            m = []
+            for d in getmembers(o[1], ismethod):
+                if (d[0].startswith("test_")):
+                    m.append(d[0])
+                    
+            tests.append([o[0], o[1].__module__, m])
+
+setattr(agros2d, "agros2d_find_all_tests", agros2d_find_all_tests)
+
 def agros2d_material_eval(keys):
     values = []
     for i in range(len(keys)):

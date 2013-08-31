@@ -141,6 +141,7 @@ SET(SOURCES value.cpp
     pythonlab/pygeometry.cpp
     pythonlab/pyview.cpp
     pythonlab/pyparticletracing.cpp
+    pythonlab/python_unittests.cpp
     pythonlab/remotecontrol.cpp
     particle/particle_tracing.cpp
     util/form_interface.cpp
@@ -238,6 +239,7 @@ SET(SOURCES value.cpp
     pythonlab/pygeometry.h
     pythonlab/pyview.h
     pythonlab/pyparticletracing.h
+    pythonlab/python_unittests.h
     pythonlab/remotecontrol.h
     particle/particle_tracing.h
     )
