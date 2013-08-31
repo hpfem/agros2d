@@ -949,7 +949,7 @@ class MagneticHarmonicPlanarTotalCurrent(agros2d.Agros2DTestCase):
                                                      
 class MagneticHarmonicAxisymmetricTotalCurrent(agros2d.Agros2DTestCase):
     def setUp(self):  
-     # problem
+        # problem
         problem = agros2d.problem(clear = True)
         problem.coordinate_type = "axisymmetric"
         problem.mesh_type = "triangle"
