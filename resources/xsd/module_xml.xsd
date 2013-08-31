@@ -258,6 +258,7 @@
                 <complexType>
                         <sequence>
                                 <element maxOccurs="unbounded" ref="module:quantity" />
+                                <element minOccurs="0" maxOccurs="unbounded" ref="module:function" />
                                 <choice maxOccurs="unbounded">
                                         <element ref="module:matrix_form" />
                                         <element ref="module:vector_form" />
@@ -266,6 +267,29 @@
                         </sequence>
                 </complexType>
         </element>
+        
+        <element name="function">
+                <complexType>
+                        <sequence>
+                                <element maxOccurs="unbounded" ref="module:function_variant" />
+                        </sequence>
+                        <attribute name="id" use="required" type="string" />
+                        <attribute name="shortname" use="required" type="string" />
+                        <attribute name="switch" use="required" type="string" />
+                </complexType>
+        </element>
+        
+        <element name="function_variant">
+                <complexType>
+                        <attribute name="switch_value" use="required" type="string" />
+                        <attribute name="bound_low" use="required" type="double" />
+                        <attribute name="bound_hi" use="required" type="double" />
+                        <attribute name="extrapolate_low" type="string" />
+                        <attribute name="extrapolate_hi" type="string" />
+                        <attribute name="expr" use="required" type="string" />
+                </complexType>
+        </element>
+                        
 
         <element name="surface">
                 <complexType>
@@ -385,11 +409,31 @@
         <element name="group">
                 <complexType>
                         <sequence>
-                                <element maxOccurs="unbounded" ref="module:quantity" />
+                                <choice maxOccurs="unbounded">
+                                        <element ref="module:quantity" />
+                                        <element ref="module:switch" />
+                                </choice>
                         </sequence>
                         <attribute name="name" type="string" />
                 </complexType>
         </element>
+        
+        <element name="switch">
+                <complexType>
+                        <sequence>
+                                <element ref="module:switch_option" />
+                        </sequence>
+                        <attribute name="id" use="required" type="string"/>
+                        <attribute name="name" use="required" type="string"/>
+                </complexType>
+        </element>
+                                
+        <element name="switch_option">
+                <complexType>
+                        <attribute name="id" use="required" type="string"/>
+                        <attribute name="name" use="required" type="string"/>
+                </complexType>
+        </element>                
 
         <element name="matrix_form">
                 <complexType>
