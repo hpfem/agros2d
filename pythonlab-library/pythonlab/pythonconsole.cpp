@@ -550,7 +550,8 @@ void PythonScriptingConsole::keyPressEvent(QKeyEvent* event)
             if (textCursor().hasSelection() && !verifySelectionBeforeDeletion())
             {
                 // The selection must not be deleted.
-                eventHandled = true;
+                if (!event->matches(QKeySequence::Copy))
+                    eventHandled = true;
             }
             else
             {
