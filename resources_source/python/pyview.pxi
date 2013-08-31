@@ -17,7 +17,7 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
         bool getBoolParameter(string &parameter)
         int getIntParameter(string &parameter)
         double getDoubleParameter(string &parameter)
-    
+
         void setPostFontFamily(string &family) except +
         string getPostFontFamily()
         void setPostFontPointSize(int size) except +
@@ -43,6 +43,7 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
     cdef cppclass PyViewMesh:
         void setParameter(string &parameter, bool value) except +
         bool getBoolParameter(string &parameter)
+        int getIntParameter(string &parameter)
 
         void activate() except +
 
@@ -59,6 +60,8 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
         void setOrderViewPalette(string &palette) except +
         string getOrderViewPalette()
 
+        void setOrderComponent(int component) except +
+
     # PyViewPost
     cdef cppclass PyViewPost:
         void setParameter(string &parameter, bool value) except +
@@ -68,7 +71,7 @@ cdef extern from "../../agros2d-library/pythonlab/pyview.h":
         bool getBoolParameter(string &parameter)
         int getIntParameter(string &parameter)
         double getDoubleParameter(string &parameter)
-        
+
         void setField(string &fieldid) except +
         string getField()
 
@@ -190,7 +193,7 @@ cdef class __ViewConfig__:
         self.thisptr.setParameter(string('View_NodeSize'), <int>parameters['edge_width'])
         value_in_range(parameters['label_size'], 1, 20, 'label_size')
         self.thisptr.setParameter(string('View_LabelSize'), <int>parameters['label_size'])
-        
+
         # 3d view
         value_in_range(parameters['3d_angle'], 30.0, 360.0, '3d_angle')
         self.thisptr.setParameter(string('View_ScalarView'), <double>parameters['3d_angle'])
@@ -200,7 +203,7 @@ cdef class __ViewConfig__:
         self.thisptr.setParameter(string('View_ScalarView3DBackground'), <bool>parameters['3d_gradient_background'])
         self.thisptr.setParameter(string('View_ScalarView3DBoundingBox'), <bool>parameters['3d_bounding_box'])
         self.thisptr.setParameter(string('View_ScalarView3DSolidGeometry'), <bool>parameters['3d_edges'])
-        
+
         # deform shape
         self.thisptr.setParameter(string('View_DeformScalar'), <double>parameters['scalar_view_deform'])
         self.thisptr.setParameter(string('View_DeformContour'), <double>parameters['contour_view_deform'])
@@ -287,7 +290,8 @@ cdef class __ViewMesh__(__ViewMeshAndPost__):
     def __get_order_view_parameters__(self):
         return {'palette' : self.thisptr.getOrderViewPalette().c_str(),
                 'color_bar' : self.thisptr.getBoolParameter(string('View_ShowOrderColorBar')),
-                'label' : self.thisptr.getBoolParameter(string('View_ShowOrderLabel'))}
+                'label' : self.thisptr.getBoolParameter(string('View_ShowOrderLabel')),
+                'component' : self.thisptr.getIntParameter(string('View_OrderComponent'))}
 
     def __set_order_view_parameters__(self, parameters):
         # palette
@@ -296,6 +300,9 @@ cdef class __ViewMesh__(__ViewMeshAndPost__):
         # color bar, label
         self.thisptr.setParameter(string('View_ShowOrderColorBar'), <bool>parameters['color_bar'])
         self.thisptr.setParameter(string('View_ShowOrderLabel'), <bool>parameters['label'])
+
+        # component
+        self.thisptr.setOrderComponent(parameters['component'])
 
 # ViewPost
 cdef class __ViewPost__(__ViewMeshAndPost__):

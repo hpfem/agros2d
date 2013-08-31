@@ -148,6 +148,9 @@ struct PyViewMesh : PyViewMeshAndPost
     {
         return paletteOrderTypeToStringKey((PaletteOrderType) Agros2D::problem()->setting()->value(ProblemSetting::View_OrderPaletteOrderType).toInt()).toStdString();
     }
+
+    // component
+    void setOrderComponent(int component);
 };
 
 struct PyViewPost : PyViewMeshAndPost
