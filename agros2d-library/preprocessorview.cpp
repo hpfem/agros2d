@@ -157,6 +157,7 @@ void PreprocessorWidget::createControls()
     splitter->addWidget(view);
 
     QVBoxLayout *layoutMain = new QVBoxLayout();
+    layoutMain->setContentsMargins(2, 2, 2, 3);
     layoutMain->addWidget(splitter);
 
     setLayout(layoutMain);

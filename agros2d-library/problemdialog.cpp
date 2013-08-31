@@ -243,7 +243,7 @@ QWidget *FieldWidget::createSolverWidget()
     txtNonlinearTolerance->setBottom(0.0);
 
     QGridLayout *layoutSolverConvergence = new QGridLayout();
-    //layoutSolverConvergence->setColumnMinimumWidth(0, columnMinimumWidth());
+    layoutSolverConvergence->setColumnMinimumWidth(0, columnMinimumWidth());
 
     layoutSolverConvergence->addWidget(new QLabel(tr("Max. steps:")), 1, 0);
     layoutSolverConvergence->addWidget(txtNonlinearSteps, 1, 1);
@@ -743,8 +743,8 @@ void FieldWidget::doNewtonReuseJacobian(bool checked)
 
 void FieldWidget::doPicardAndersonChanged(int index)
 {
-    txtPicardAndersonBeta->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard && chkPicardAndersonAcceleration->isChecked());
-    txtPicardAndersonNumberOfLastVectors->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard && chkPicardAndersonAcceleration->isChecked());
+    txtPicardAndersonBeta->setEnabled((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() == LinearityType_Picard && chkPicardAndersonAcceleration->isChecked());
+    txtPicardAndersonNumberOfLastVectors->setEnabled((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() == LinearityType_Picard && chkPicardAndersonAcceleration->isChecked());
 }
 
 // ********************************************************************************************
@@ -1176,7 +1176,7 @@ void ProblemWidget::createControls()
     grpCouplings->setLayout(layoutCouplings);
 
     QVBoxLayout *layoutArea = new QVBoxLayout();
-    layoutArea->setContentsMargins(2, 2, 2, 3);
+    layoutArea->setContentsMargins(0, 0, 0, 0);
     layoutArea->addWidget(grpGeneral);
     layoutArea->addWidget(grpFieldsToolbar);
     layoutArea->addWidget(grpCouplings);
@@ -1193,7 +1193,7 @@ void ProblemWidget::createControls()
     widgetArea->setWidget(widget);
 
     QVBoxLayout *layout= new QVBoxLayout();
-    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(2, 2, 2, 3);
     layout->addWidget(widgetArea);
 
     setLayout(layout);

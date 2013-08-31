@@ -231,11 +231,11 @@ void ParticleTracingWidget::createControls()
     gridLayoutSolver->addWidget(cmbParticleButcherTableType, 0, 1);
     gridLayoutSolver->addWidget(chkParticleIncludeRelativisticCorrection, 1, 0);
     gridLayoutSolver->addWidget(new QLabel(QString("<i>m</i><sub>p</sub> = m / (1 - v<sup>2</sup>/c<sup>2</sup>)<sup>1/2</sup>")), 1, 1);
-    gridLayoutSolver->addWidget(new QLabel(tr("Maximum relative error (%):")), 2, 0);
+    gridLayoutSolver->addWidget(new QLabel(tr("Max. relative error (%):")), 2, 0);
     gridLayoutSolver->addWidget(txtParticleMaximumRelativeError, 2, 1);
-    gridLayoutSolver->addWidget(new QLabel(tr("Minimum step (m):")), 3, 0);
+    gridLayoutSolver->addWidget(new QLabel(tr("Min. step (m):")), 3, 0);
     gridLayoutSolver->addWidget(txtParticleMinimumStep, 3, 1);
-    gridLayoutSolver->addWidget(new QLabel(tr("Maximum number of steps:")), 4, 0);
+    gridLayoutSolver->addWidget(new QLabel(tr("Max. number of steps:")), 4, 0);
     gridLayoutSolver->addWidget(txtParticleMaximumNumberOfSteps, 4, 1);
     gridLayoutSolver->addWidget(new QLabel(""), 10, 0);
     gridLayoutSolver->setRowStretch(10, 1);
@@ -266,7 +266,7 @@ void ParticleTracingWidget::createControls()
     tbxWorkspace->addItem(grpSettings, icon(""), tr("Settings"));
 
     QVBoxLayout *layoutParticle = new QVBoxLayout();
-    // layoutParticle->setContentsMargins(0, 0, 0, 0);
+    layoutParticle->setContentsMargins(2, 2, 2, 3);
     layoutParticle->addWidget(grpGeneral);
     layoutParticle->addWidget(grpInitialPosition);
     layoutParticle->addWidget(grpInitialVelocity);
