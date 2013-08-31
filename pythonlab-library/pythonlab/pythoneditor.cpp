@@ -747,7 +747,9 @@ void PythonEditorDialog::doRunPython()
     bool successfulRun = false;
     if (txtEditor->textCursor().hasSelection())
     {
-        successfulRun = pythonEngine->runScript(txtEditor->textCursor().selectedText().replace(0x2029, "\n"), "");
+        QFileInfo fileInfo(scriptEditorWidget()->fileName());
+        successfulRun = pythonEngine->runScript(txtEditor->textCursor().selectedText().replace(0x2029, "\n"),
+                                                fileInfo.exists() ? fileInfo.absoluteFilePath() : "");
     }
     else if (scriptEditorWidget()->fileName().isEmpty())
     {
