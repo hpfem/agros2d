@@ -332,9 +332,8 @@ QString cacheProblemDir()
 QString userDataDir()
 {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-    static QString str = QString("%1/cache/%2").
-            arg(QStandardPaths::writableLocation(QStandardPaths::DataLocation)).
-            arg(QString::number(QCoreApplication::applicationPid()));
+    static QString str = QString("%1/agros2d/").
+            arg(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
 #else
 #ifdef Q_WS_WIN
     static QString str = QString("%1/agros2d/").
