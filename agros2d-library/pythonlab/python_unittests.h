@@ -27,6 +27,8 @@
 #include "util.h"
 #include "util/global.h"
 
+#include "../../resources_source/classes/test_xml.h"
+
 class AGROS_LIBRARY_API UnitTestsWidget : public QDialog
 {
     Q_OBJECT
@@ -38,12 +40,30 @@ protected:
 
 private:
     QTreeWidget *trvTests;
-    QPlainTextEdit *lstLog;
+    QWebView *webView;
+    QSplitter *splitter;
+
+    XMLTest::test m_test;
+
+    QString m_cascadeStyleSheet;
+
+    void readTestFromDisk(const QString& fileName);
+
+    void readTestsFromSuite();
+    void runTestFromSuite(const QString &module, const QString &cls);
+
+    void showInfoTests(const QString &testID = "");
+
+    void saveTestsSettings();
 
 private slots:
+    void doAccept();
     void doReject();
 
-    void readTests();
+    void doContextMenu(const QPoint &pos);
+    void showInfoTest(QAction *act);
+
+    void runTestsFromSuite();
 };
 
 

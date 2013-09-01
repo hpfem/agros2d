@@ -15,7 +15,7 @@
 <table class="maintable">
 	{{#ITEM}}
 	<tr>
-		<td class="description"><b>{{NAME}}<b></td>
+		<td class="description"><b>{{NAME}}</b></td>
 		<td class="quantity">{{SHORTNAME}}</td>
 		<td>{{VALUE}}</td>
 		<td class="unit">{{UNIT}}</td>

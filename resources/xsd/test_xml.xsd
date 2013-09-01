@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema targetNamespace="XMLTest" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:coupling="XMLTest">
+  <element name="test">
+    <complexType>
+      <all>        
+        <element name="tests">
+          <complexType>
+            <sequence>
+			  <element minOccurs="1" maxOccurs="unbounded" name="item">
+				<complexType>
+				  <attribute name="name" type="string" use="required"/>
+				  <attribute name="module" type="string" use="required"/>
+				  <attribute name="cls" type="string" use="required"/>
+				  <attribute name="time" type="float" use="required"/>
+				  <attribute name="successful" type="int" use="required"/>
+				  <attribute name="error" type="string" use="required"/>
+				</complexType>
+			  </element>
+	  	    </sequence>
+          </complexType>
+        </element>
+      </all>
+      <attribute name="date" type="string" />
+    </complexType>			  
+  </element>
+</schema>

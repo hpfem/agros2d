@@ -29,7 +29,7 @@
 #include "problem.h"
 #include "problem_config.h"
 
-#include "../../resources_source/classes/agros2d_structure_xml.h"
+#include "../../resources_source/classes/structure_xml.h"
 
 using namespace Hermes::Hermes2D;
 
@@ -711,7 +711,7 @@ void SolutionStore::saveRunTimeDetails()
 
         std::string mesh_schema_location("");
 
-        mesh_schema_location.append(QString("%1/agros2d_structure_xml.xsd").arg(QFileInfo(datadir() + XSDROOT).absoluteFilePath()).toStdString());
+        mesh_schema_location.append(QString("%1/structure_xml.xsd").arg(QFileInfo(datadir() + XSDROOT).absoluteFilePath()).toStdString());
         ::xml_schema::namespace_info namespace_info_mesh("XMLStructure", mesh_schema_location);
 
         ::xml_schema::namespace_infomap namespace_info_map;

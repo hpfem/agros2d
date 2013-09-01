@@ -148,10 +148,11 @@ SET(SOURCES value.cpp
     util/form_script.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/module_xml.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/coupling_xml.cpp
-    ${CMAKE_HOME_DIRECTORY}/resources_source/classes/agros2d_structure_xml.cpp
+    ${CMAKE_HOME_DIRECTORY}/resources_source/classes/structure_xml.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/material_xml.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/problem_a2d_31_xml.cpp
     ${CMAKE_HOME_DIRECTORY}/resources_source/classes/form_xml.cpp
+    ${CMAKE_HOME_DIRECTORY}/resources_source/classes/test_xml.cpp
     # ../hermes/hermes2d/src/mesh/subdomains_h2d_xml.cpp
     # ../hermes/hermes2d/src/mesh/mesh_h2d_xml.cpp
   )

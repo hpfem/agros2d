@@ -40,6 +40,7 @@ setattr(agros2d, "Agros2DTestCase", Agros2DTestCase)
 class Agros2DTestResult(ut.TestResult):
     def __init__(self):
         ut.TestResult.__init__(self)
+        self.output = []
 
     def startTest(self, test):
         from time import time
@@ -53,7 +54,14 @@ class Agros2DTestResult(ut.TestResult):
         
         ut.TestResult.addSuccess(self, test)
         self.time -= time()
-        id = test.id().split(".")[-2] + "." + test.id().split(".")[-1]
+
+        modu = ".".join(test.id().split(".")[0:-2])
+        tst = test.id().split(".")[-1]
+        cls = test.id().split(".")[-2]
+        id = cls + "." + tst
+        
+        self.output.append([modu, cls, tst, -self.time * 1000, "OK", ""])
+        
         print("{0}".format(id.ljust(60, "."))),
         print("{0:08.2f}".format(-self.time * 1000).rjust(15, " ") + " ms " +
               "{0}".format("OK".rjust(10, ".")))
@@ -61,6 +69,14 @@ class Agros2DTestResult(ut.TestResult):
     def addError(self, test, err):
         ut.TestResult.addError(self, test, err)
         id = test.id().split(".")[-2] + "." + test.id().split(".")[-1]
+        
+        modu = ".".join(test.id().split(".")[0:-2])
+        tst = test.id().split(".")[-1]
+        cls = test.id().split(".")[-2]
+        id = cls + "." + tst
+        
+        self.output.append([modu, cls, tst, 0, "ERROR", err[1]])
+        
         print("{0}".format(id.ljust(60, "."))),
         print("{0:08.2f}".format(0).rjust(15, " ") + " ms " +
               "{0}".format("ERROR".rjust(10, ".")))        
@@ -69,15 +85,26 @@ class Agros2DTestResult(ut.TestResult):
     def addFailure(self, test, err):
         ut.TestResult.addFailure(self, test, err)
         id = test.id().split(".")[-2] + "." + test.id().split(".")[-1]
+
+        modu = ".".join(test.id().split(".")[0:-2])
+        tst = test.id().split(".")[-1]
+        cls = test.id().split(".")[-2]
+        id = cls + "." + tst
+        
+        self.output.append([modu, cls, tst, 0, "FAILURE", str(err[1])])
+
         print("{0}".format(id.ljust(60, "."))),
         print("{0:08.2f}".format(0).rjust(15, " ") + " ms " +
               "{0}".format("FAILURE".rjust(10, ".")))        
-        print(err[1])       
+        print(err[1])      
+        
+    def report(self):
+        return self.output
 
 setattr(agros2d, "Agros2DTestResult", Agros2DTestResult)
 
 import sys
-sys.path.append("resources/test")
+sys.path.append(pythonlab.datadir("resources/test"))
 
 def agros2d_find_all_tests(obj, tests):
     from inspect import getmembers, isclass, ismodule, ismethod
