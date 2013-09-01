@@ -554,6 +554,11 @@ void Agros2DGeneratorModule::generateWeakForms(ctemplate::TemplateDictionary &ou
             }
         }
     }
+
+    foreach(XMLModule::function function, m_module->volume().function())
+    {
+        generateSpecialFunction(&function, output);
+    }
 }
 
 void Agros2DGeneratorModule::generatePluginFilterFiles()
@@ -1931,6 +1936,50 @@ void Agros2DGeneratorModule::generateForm(FormInfo formInfo, LinearityType linea
             field = output.AddSectionDictionary("SOURCE");
             field->SetValue("FUNCTION_NAME", functionName.toStdString());
         }
+    }
+}
+
+void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function* function, ctemplate::TemplateDictionary &output)
+{
+    ctemplate::TemplateDictionary *functionTemplate = output.AddSectionDictionary("SPECIAL_FUNCTION_SOURCE");
+    functionTemplate->SetValue("SPECIAL_FUNCTION_NAME", function->shortname());
+    functionTemplate->SetValue("SPECIAL_FUNCTION_FULL_NAME", m_module->general().id() + "_function_" + function->shortname());
+    functionTemplate->SetValue("FROM", function->bound_low());
+    functionTemplate->SetValue("TO", function->bound_hi());
+    foreach(XMLModule::gui gui, m_module->preprocessor().gui())
+    {
+        if(gui.type() == "volume")
+        {
+            foreach(XMLModule::group group, gui.group())
+            {
+                foreach(XMLModule::switch_combo switch_combo, group.switch_combo())
+                {
+                    if(switch_combo.id() == function->switch_combo())
+                    {
+                        functionTemplate->SetValue("SELECTED_VARIANT", switch_combo.implicit_option());
+                    }
+                }
+            }
+        }
+    }
+
+    foreach(XMLModule::quantity quantity, function->quantity())
+    {
+        ctemplate::TemplateDictionary *functionParameters = functionTemplate->AddSectionDictionary("PARAMETERS");
+        for(int i = 0; i < m_module->volume().quantity().size(); i++)
+        {
+            if(m_module->volume().quantity().at(i).id() == quantity.id())
+            {
+                functionParameters->SetValue("NAME", m_module->volume().quantity().at(i).shortname().get().c_str());
+                break;
+            }
+        }
+    }
+    foreach(XMLModule::function_variant variant, function->function_variant())
+    {
+        ctemplate::TemplateDictionary *functionVariant = functionTemplate->AddSectionDictionary("VARIANT");
+        functionVariant->SetValue("ID", variant.switch_value().c_str());
+        functionVariant->SetValue("EXPR", variant.expr());
     }
 }
 

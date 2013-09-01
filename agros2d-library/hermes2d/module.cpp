@@ -66,8 +66,8 @@ QMap<QString, QString> Module::availableModules()
             try
             {                
                 // todo: find a way to validate if required. If validated here, sendible error messages will be obtained
-                ::xml_schema::flags parsing_flags = xml_schema::flags::dont_validate;
-                //::xml_schema::flags parsing_flags = 0;
+                //::xml_schema::flags parsing_flags = xml_schema::flags::dont_validate;
+                ::xml_schema::flags parsing_flags = 0;
 
                 std::auto_ptr<XMLModule::module> module_xsd(XMLModule::module_(compatibleFilename(datadir() + MODULEROOT + "/" + filename).toStdString(), parsing_flags));
 
