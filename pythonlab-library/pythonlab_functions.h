@@ -33,6 +33,6 @@ void pyQuit();
 char *pyInput(std::string str);
 void pyMessage(std::string str);
 
-char *pyDatadir(std::string str = "");
+std::string pyDatadir(std::string str = "");
 
 #endif // PYTHONLABFUNCTIONS_H

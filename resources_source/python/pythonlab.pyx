@@ -23,7 +23,7 @@ cdef extern from "../../pythonlab-library/pythonlab_functions.h":
     char *pyInput(string &str)
     void pyMessage(string &str)
 
-    char *pyDatadir(string &str)
+    string pyDatadir(string &str)
     
     
 # version()

@@ -43,7 +43,8 @@ void pyMessage(std::string str)
     QMessageBox::information(QApplication::activeWindow(), QObject::tr("Script message"), QString::fromStdString(str));
 }
 
-char *pyDatadir(std::string str)
+std::string pyDatadir(std::string str)
 {
-    return const_cast<char*>((datadir() + "/" + QString::fromStdString(str)).toStdString().c_str());
+    QString path = QFileInfo(datadir() + "/" + QString::fromStdString(str)).absoluteFilePath();
+    return compatibleFilename(path).toStdString();
 }
