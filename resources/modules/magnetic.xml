@@ -54,8 +54,8 @@
 
     <module:matrix_form id="steady_laplace" i="1" j="1" planar="1 / (ma_mur * MU0) * (udx * vdx + udy * vdy)" axi="1 / (ma_mur * MU0) * ((udr * vdr + udz * vdz) + uval * vdr / r)"/>
     <module:matrix_form id="steady_velocity" i="1" j="1" planar="- ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)" axi="- ma_gamma * uval * ma_vy * vdz"/>
-    <module:matrix_form id="steady_jac_laplace" i="1" j="1" planar="tern((updx * updx + updy * updy) > 0, (- dma_mur / (MU0 * ma_mur * ma_mur) * (updx * udx + updy * udy) / sqrt(updx * updx + updy * updy) * (updx * vdx + updy * vdy)), 0.0)" axi="(((updr + upval / r)^2 + updz * updz) > 0, (- dma_mur / (MU0 * ma_mur * ma_mur) * ((updr + upval / r) * (udr + uval / r) + updz * udz) / sqrt((updr + upval / r)^2 + updz * updz) * (updr * vdr + updz * vdz + upval * vdr / r)), 0.0)"/>
-
+    <module:matrix_form id="steady_jac_laplace" i="1" j="1" planar="tern((updx * updx + updy * updy) > 0, (- dma_mur / (MU0 * ma_mur * ma_mur) * (updx * udx + updy * udy) / sqrt(updx * updx + updy * updy) * (updx * vdx + updy * vdy)), 0.0)" axi="tern(((updr + upval / r) * (updr + upval / r) + updz * updz) > 0, (- dma_mur / (MU0 * ma_mur * ma_mur) * ((updr + upval / r) * (udr + uval / r) + updz * udz) / ((updr + upval / r)^2 + updz * updz)^0.5 * (updr * vdr + updz * vdz + upval * vdr / r)), 0.0)"/>
+    
     <module:vector_form  id="steady_rhs" i="1" j="1" planar="ma_Jer * vval + mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdx + cos((ma_Bra/180*PI)) * vdy)" axi="ma_Jer * vval - mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdr + cos((ma_Bra/180*PI)) * vdz)"/>
 
     <module:matrix_form id="transient_mat_1_2" i="1" j="2" planar="ma_gamma * uval * vval" axi="ma_gamma * uval * vval" />
