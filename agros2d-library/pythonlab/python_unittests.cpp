@@ -50,16 +50,37 @@ UnitTestsWidget::UnitTestsWidget(QWidget *parent)
     // connect(trvTests, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this, SLOT(doItemDoubleClicked(QTreeWidgetItem *, int)));
     // connect(trvTests, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(doItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
 
-    splitter = new QSplitter(this);
-    splitter->setOrientation(Qt::Horizontal);
-    splitter->addWidget(trvTests);
-    splitter->addWidget(webView);
-
     QPushButton *btnRunTests = new QPushButton(tr("Run tests"));
     connect(btnRunTests, SIGNAL(clicked()), this, SLOT(runTestsFromSuite()));
 
+    // dialog buttons
+    // QPushButton *btnMore = new QPushButton(tr("More..."));
+
+    // QAction *actSave = new QAction(tr("Save"), this);
+    // connect(actSave, SIGNAL(triggered()), this, SLOT(saveToFile()));
+
+    // QMenu *menu = new QMenu();
+    // menu->addAction(actSave);
+    // menu->addSeparator();
+
+    // btnMore->setMenu(menu);
+
+    QGridLayout *leftLayout = new QGridLayout();
+    leftLayout->setContentsMargins(0, 0, 0, 0);
+    leftLayout->addWidget(trvTests, 0, 1, 1, 3);
+    // leftLayout->addWidget(btnMore, 1, 1);
+    leftLayout->setColumnStretch(2, 1);
+    leftLayout->addWidget(btnRunTests, 1, 3);
+
+    QWidget *leftWidget = new QWidget();
+    leftWidget->setLayout(leftLayout);
+
+    splitter = new QSplitter(this);
+    splitter->setOrientation(Qt::Horizontal);
+    splitter->addWidget(leftWidget);
+    splitter->addWidget(webView);
+
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    buttonBox->addButton(btnRunTests, QDialogButtonBox::ActionRole);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(doAccept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(doReject()));
 
@@ -147,8 +168,6 @@ void UnitTestsWidget::runTestsFromSuite()
     m_test.date() = date.toStdString();
 
     QDir dirUser(QString("%1/tests").arg(userDataDir()));
-    if (!dirUser.exists())
-        QDir(userDataDir()).mkpath(dirUser.absolutePath());
     QString file = QString("%1/%2.res").arg(dirUser.absolutePath()).arg(date);
 
     try

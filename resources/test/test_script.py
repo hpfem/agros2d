@@ -1,20 +1,23 @@
-import agros2d as a2d
-import unittest as ut
-
 import test_suite
 
-suite = ut.TestSuite()
+tests = [
+test_suite.script.problem.TestProblem,
+test_suite.script.geometry.TestGeometry,
+test_suite.script.geometry.TestGeometryTransformations,
+test_suite.script.benchmark.BenchmarkGeometryTransformation
+]
 
-# script
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.script.problem.TestProblem))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.script.geometry.TestGeometry))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.script.geometry.TestGeometryTransformations))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.script.benchmark.BenchmarkGeometryTransformation))
+if __name__ == '__main__':        
+    import unittest as ut
+    import agros2d
+    
+    suite = ut.TestSuite()
+    
+    for test in tests:
+        suite.addTest(ut.TestLoader().loadTestsFromTestCase(test))
+    
+    result = agros2d.Agros2DTestResult()
+    suite.run(result)
 
-
-# run tests
-result = a2d.Agros2DTestResult()
-suite.run(result)
-
-if (not result.wasSuccessful()):
-   raise Exception('Failure', result.failures)
+    if (not result.wasSuccessful()):
+        raise Exception('Failure', result.failures)

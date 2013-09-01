@@ -1,28 +1,32 @@
-import agros2d as a2d
-import unittest as ut
-
 import test_suite
 
-suite = ut.TestSuite()
-
+tests = [
 # heat transfer
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.heat.HeatNonlinPlanar))
-
+test_suite.fields.heat.HeatNonlinPlanar,
 # magnetic field
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.magnetic.MagneticNonlinPlanar))
-#suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.magnetic.MagneticNonlinAxisymmetric))
-#suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.magnetic.MagneticHarmonicNonlinPlanar))
-
+test_suite.fields.magnetic.MagneticNonlinPlanar,
+#test_suite.fields.magnetic.MagneticNonlinAxisymmetric,
+#test_suite.fields.magnetic.MagneticHarmonicNonlinPlanar,
 # incompressible flow
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.flow.FlowPlanar))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.flow.FlowAxisymmetric))
+test_suite.fields.flow.FlowPlanar,
+test_suite.fields.flow.FlowAxisymmetric
+]
 
 # coupled problems
 # test_nonlin.add("coupled_problems/test_cf_3_axisymmetric_nonlin.py")
 
-# run tests
-result = a2d.Agros2DTestResult()
-suite.run(result)
 
-if (not result.wasSuccessful()):
-   raise Exception('Failure', result.failures)
+if __name__ == '__main__':        
+    import unittest as ut
+    import agros2d
+    
+    suite = ut.TestSuite()
+    
+    for test in tests:
+        suite.addTest(ut.TestLoader().loadTestsFromTestCase(test))
+    
+    result = agros2d.Agros2DTestResult()
+    suite.run(result)
+
+    if (not result.wasSuccessful()):
+        raise Exception('Failure', result.failures)

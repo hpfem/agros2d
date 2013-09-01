@@ -1,83 +1,70 @@
-import agros2d as a2d
-import unittest as ut
-
 import test_suite
 
-suite = ut.TestSuite()
-
-# fields
+tests = [
 # electrostatic field
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.electrostatic.ElectrostaticPlanar))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.electrostatic.ElectrostaticAxisymmetric))
-
+test_suite.fields.electrostatic.ElectrostaticPlanar, 
+test_suite.fields.electrostatic.ElectrostaticAxisymmetric,
 # current field
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.current.CurrentPlanar))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.current.CurrentAxisymmetric))
-
+test_suite.fields.current.CurrentPlanar,
+test_suite.fields.current.CurrentAxisymmetric,
 # elasticity
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.elasticity.ElasticityPlanar))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.elasticity.ElasticityAxisymmetric))
-
+test_suite.fields.elasticity.ElasticityPlanar,
+test_suite.fields.elasticity.ElasticityAxisymmetric,
 # incompressible flow
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.flow.FlowPlanar))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.flow.FlowAxisymmetric))
-
+test_suite.fields.flow.FlowPlanar,
+test_suite.fields.flow.FlowAxisymmetric,
 # acoustic field
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.acoustic.AcousticHarmonicPlanar))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.acoustic.AcousticHarmonicAxisymmetric))
-
+test_suite.fields.acoustic.AcousticHarmonicPlanar,
+test_suite.fields.acoustic.AcousticHarmonicAxisymmetric,
 # heat transfer
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.heat.HeatPlanar))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.heat.HeatAxisymmetric))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.heat.HeatNonlinPlanar))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.heat.HeatTransientAxisymmetric))
-
+test_suite.fields.heat.HeatPlanar,
+test_suite.fields.heat.HeatAxisymmetric,
+test_suite.fields.heat.HeatNonlinPlanar,
+test_suite.fields.heat.HeatTransientAxisymmetric,
 # magnetic field
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.magnetic.MagneticPlanar))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.magnetic.MagneticAxisymmetric))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.magnetic.MagneticHarmonicPlanar))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.magnetic.MagneticHarmonicAxisymmetric))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.magnetic.MagneticHarmonicPlanarTotalCurrent))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.magnetic.MagneticHarmonicAxisymmetricTotalCurrent))
-
+test_suite.fields.magnetic.MagneticPlanar,
+test_suite.fields.magnetic.MagneticAxisymmetric,
+test_suite.fields.magnetic.MagneticHarmonicPlanar,
+test_suite.fields.magnetic.MagneticHarmonicAxisymmetric,
+test_suite.fields.magnetic.MagneticHarmonicPlanarTotalCurrent,
+test_suite.fields.magnetic.MagneticHarmonicAxisymmetricTotalCurrent,
 # rf te
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.rf_te.RFTEHarmonicPlanar))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.rf_te.RFTEHarmonicAxisymmetric))
-
+test_suite.fields.rf_te.RFTEHarmonicPlanar,
+test_suite.fields.rf_te.RFTEHarmonicAxisymmetric,
 # rf tm
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.rf_tm.RFTMHarmonicPlanar))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.fields.rf_tm.RFTMHarmonicAxisymmetric))
-
+test_suite.fields.rf_tm.RFTMHarmonicPlanar,
+test_suite.fields.rf_tm.RFTMHarmonicAxisymmetric,
 # adaptivity
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.adaptivity.adaptivity.AdaptivityElectrostatic))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.adaptivity.adaptivity.AdaptivityAcoustic))
-
-
+test_suite.adaptivity.adaptivity.AdaptivityElectrostatic,
+test_suite.adaptivity.adaptivity.AdaptivityAcoustic,
 # particle tracing
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.particle_tracing.particle_tracing.ParticleTracingPlanar))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.particle_tracing.particle_tracing.ParticleTracingAxisymmetric))
-
-
+test_suite.particle_tracing.particle_tracing.ParticleTracingPlanar,
+test_suite.particle_tracing.particle_tracing.ParticleTracingAxisymmetric,
 # coupled fields
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.coupled_problems.basic_coupled_problems.CoupledProblemsBasic1))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.coupled_problems.basic_coupled_problems.CoupledProblemsBasic2))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.coupled_problems.basic_coupled_problems.CoupledProblemsBasic3))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.coupled_problems.basic_coupled_problems.CoupledProblemsBasic4))
-
-
+test_suite.coupled_problems.basic_coupled_problems.CoupledProblemsBasic1,
+test_suite.coupled_problems.basic_coupled_problems.CoupledProblemsBasic2,
+test_suite.coupled_problems.basic_coupled_problems.CoupledProblemsBasic3,
+test_suite.coupled_problems.basic_coupled_problems.CoupledProblemsBasic4,
 # script
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.script.problem.TestProblem))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.script.geometry.TestGeometry))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.script.geometry.TestGeometryTransformations))
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.script.benchmark.BenchmarkGeometryTransformation))
-
-
+test_suite.script.problem.TestProblem,
+test_suite.script.geometry.TestGeometry,
+test_suite.script.geometry.TestGeometryTransformations,
+test_suite.script.benchmark.BenchmarkGeometryTransformation,
 # internal
-suite.addTest(ut.TestLoader().loadTestsFromTestCase(test_suite.internal.matrix_solvers.InternalMatrixSolvers))
+test_suite.internal.matrix_solvers.InternalMatrixSolvers
+]
 
-# run tests
-result = a2d.Agros2DTestResult()
-suite.run(result)
+if __name__ == '__main__':        
+    import unittest as ut
+    import agros2d
+    
+    suite = ut.TestSuite()
+    
+    for test in tests:
+        suite.addTest(ut.TestLoader().loadTestsFromTestCase(test))
+    
+    result = agros2d.Agros2DTestResult()
+    suite.run(result)
 
-if (not result.wasSuccessful()):
-   raise Exception('Failure', result.failures)
+    if (not result.wasSuccessful()):
+        raise Exception('Failure', result.failures)
