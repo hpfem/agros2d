@@ -248,12 +248,14 @@ QSharedPointer<HermesSolverContainer<Scalar> > HermesSolverContainer<Scalar>::fa
         solver = QSharedPointer<HermesSolverContainer<Scalar> >(new PicardSolverContainer<Scalar>(block));
     }
 
+    solver->linearSolver()->set_verbose_output(false);
+
     assert(!solver.isNull());
 
     if (LoopSolver<Scalar> *linearSolver = dynamic_cast<LoopSolver<Scalar> *>(solver->linearSolver()))
     {
         linearSolver->set_max_iters(block->iterLinearSolverIters());
-        linearSolver->set_tolerance(block->iterLinearSolverToleranceAbsolute());
+        linearSolver->set_tolerance(block->iterLinearSolverToleranceAbsolute());        
     }
     if (IterativeParalutionLinearMatrixSolver<Scalar> *linearSolver = dynamic_cast<IterativeParalutionLinearMatrixSolver<Scalar> *>(solver.data()->linearSolver()))
     {
