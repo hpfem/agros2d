@@ -312,8 +312,6 @@ void InfoWidget::showInfo()
 
             if (fieldInfo->linearityType() != LinearityType_Linear)
             {
-                field->SetValue("NONLINEAR_STEPS_LABEL", tr("Steps:").toStdString());
-                field->SetValue("NONLINEAR_STEPS", QString::number(fieldInfo->value(FieldInfo::NonlinearSteps).toInt()).toStdString());
                 field->SetValue("NONLINEAR_CONVERGENCE_MEASUREMENT_LABEL", tr("Convergence:").toStdString());
                 field->SetValue("NONLINEAR_CONVERGENCE_MEASUREMENT", nonlinearSolverConvergenceMeasurementString((Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()).toStdString());
                 field->SetValue("NONLINEAR_TOLERANCE_LABEL", tr("Tolerance:").toStdString());

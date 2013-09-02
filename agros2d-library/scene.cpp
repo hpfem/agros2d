@@ -1357,7 +1357,6 @@ void Scene::readFromFile21(const QString &fileName)
 
         field->setLinearityType(linearityTypeFromStringKey(eleFieldLinearity.toElement().attribute("linearity_type", linearityTypeToStringKey(LinearityType_Linear))));
 
-        field->setValue(FieldInfo::NonlinearSteps, eleFieldLinearity.toElement().attribute("nonlinear_steps", QString::number(field->defaultValue(FieldInfo::NonlinearSteps).toInt())).toInt());
         field->setValue(FieldInfo::NonlinearTolerance, eleFieldLinearity.toElement().attribute("nonlinear_tolerance", QString::number(field->defaultValue(FieldInfo::NonlinearTolerance).toDouble())).toDouble());
         field->setValue(FieldInfo::NewtonDampingCoeff, eleFieldLinearity.toElement().attribute("newton_damping_coeff", QString::number(field->defaultValue(FieldInfo::NewtonDampingCoeff).toDouble())).toDouble());
         field->setValue(FieldInfo::NewtonDampingType,  dampingTypeFromStringKey(eleFieldLinearity.toElement().attribute("newton_damping_type")));
@@ -1915,7 +1914,6 @@ void Scene::writeToFile21(const QString &fileName)
         QDomElement eleLinearity = doc.createElement("solver");
         eleField.appendChild(eleLinearity);
         eleLinearity.setAttribute("linearity_type", linearityTypeToStringKey(fieldInfo->linearityType()));
-        eleLinearity.setAttribute("nonlinear_steps", fieldInfo->nonlinearSteps());
         eleLinearity.setAttribute("nonlinear_tolerance", fieldInfo->nonlinearTolerance());
         eleLinearity.setAttribute("newton_damping_coeff", fieldInfo->newtonDampingCoeff());
         eleLinearity.setAttribute("newton_automatic_damping", fieldInfo->newtonAutomaticDamping());

@@ -396,20 +396,6 @@ double Block::nonlinearTolerance() const
     return tolerance;
 }
 
-int Block::nonlinearSteps() const
-{
-    int steps = 0;
-
-    foreach (Field* field, m_fields)
-    {
-        FieldInfo* fieldInfo = field->fieldInfo();
-        if (fieldInfo->value(FieldInfo::NonlinearSteps).toInt() > steps)
-            steps = fieldInfo->value(FieldInfo::NonlinearSteps).toInt();
-    }
-
-    return steps;
-}
-
 Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType Block::nonlinearConvergenceMeasurement() const
 {
     // how to set properly?

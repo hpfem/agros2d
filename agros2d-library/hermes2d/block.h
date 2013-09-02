@@ -78,9 +78,6 @@ public:
     // minimal nonlinear tolerance of individual fields
     double nonlinearTolerance() const;
 
-    // maximal nonlinear steps of individual fields
-    int nonlinearSteps() const;
-
     // convergence method
     Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType nonlinearConvergenceMeasurement() const;
 

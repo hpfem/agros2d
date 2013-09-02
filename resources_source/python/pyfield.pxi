@@ -236,7 +236,6 @@ cdef class __Field__:
 
     def __get_solver_parameters__(self):
         return {'tolerance' : self.thisptr.getDoubleParameter(string('NonlinearTolerance')),
-                'steps' : self.thisptr.getIntParameter(string('NonlinearSteps')),
                 'measurement' : self.thisptr.getNonlinearConvergenceMeasurement().c_str(),
                 'damping' : self.thisptr.getNewtonDampingType().c_str(),
                 'damping_factor' : self.thisptr.getDoubleParameter(string('NewtonDampingCoeff')),
@@ -250,10 +249,6 @@ cdef class __Field__:
         # tolerance
         positive_value(parameters['tolerance'], 'tolerance')
         self.thisptr.setParameter(string('NonlinearTolerance'), <double>parameters['tolerance'])
-
-        # steps
-        value_in_range(parameters['steps'], 1, 100, 'steps')
-        self.thisptr.setParameter(string('NonlinearSteps'), <int>parameters['steps'])
 
         # measurement, damping type
         self.thisptr.setNonlinearConvergenceMeasurement(string(parameters['measurement']))

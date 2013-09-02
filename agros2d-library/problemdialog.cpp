@@ -235,20 +235,14 @@ void FieldWidget::createContent()
 QWidget *FieldWidget::createSolverWidget()
 {
     // linearity
-    txtNonlinearSteps = new QSpinBox(this);
-    txtNonlinearSteps->setMinimum(1);
-    txtNonlinearSteps->setMaximum(100);
-    txtNonlinearSteps->setValue(m_fieldInfo->defaultValue(FieldInfo::NonlinearSteps).toInt());
     txtNonlinearTolerance = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::NonlinearTolerance).toDouble());
     txtNonlinearTolerance->setBottom(0.0);
 
     QGridLayout *layoutSolverConvergence = new QGridLayout();
     layoutSolverConvergence->setColumnMinimumWidth(0, columnMinimumWidth());
 
-    layoutSolverConvergence->addWidget(new QLabel(tr("Max. steps:")), 1, 0);
-    layoutSolverConvergence->addWidget(txtNonlinearSteps, 1, 1);
-    layoutSolverConvergence->addWidget(new QLabel(tr("Tolerance:")), 1, 2);
-    layoutSolverConvergence->addWidget(txtNonlinearTolerance, 1, 3);
+    layoutSolverConvergence->addWidget(new QLabel(tr("Tolerance:")), 1, 0);
+    layoutSolverConvergence->addWidget(txtNonlinearTolerance, 1, 1);
 
     QGroupBox *grpSolverConvergence = new QGroupBox(tr("Convergence"));
     grpSolverConvergence->setLayout(layoutSolverConvergence);
@@ -550,7 +544,6 @@ void FieldWidget::load()
     // linearity
     cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(m_fieldInfo->linearityType()));
     cmbNonlinearConvergenceMeasurement->setCurrentIndex(cmbNonlinearConvergenceMeasurement->findData((Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) m_fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()));
-    txtNonlinearSteps->setValue(m_fieldInfo->value(FieldInfo::NonlinearSteps).toInt());
     txtNonlinearTolerance->setValue(m_fieldInfo->value(FieldInfo::NonlinearTolerance).toDouble());
     cmbNewtonDampingType->setCurrentIndex(cmbNewtonDampingType->findData((DampingType) m_fieldInfo->value(FieldInfo::NewtonDampingType).toInt()));
     txtNewtonDampingCoeff->setValue(m_fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble());
@@ -598,7 +591,6 @@ bool FieldWidget::save()
     m_fieldInfo->setValue(FieldInfo::TransientTimeSkip, txtTransientTimeSkip->value());
     // linearity
     m_fieldInfo->setLinearityType((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt());
-    m_fieldInfo->setValue(FieldInfo::NonlinearSteps, txtNonlinearSteps->value());
     m_fieldInfo->setValue(FieldInfo::NonlinearTolerance, txtNonlinearTolerance->value());
     m_fieldInfo->setValue(FieldInfo::NonlinearConvergenceMeasurement, (Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) cmbNonlinearConvergenceMeasurement->itemData(cmbNonlinearConvergenceMeasurement->currentIndex()).toInt());
     m_fieldInfo->setValue(FieldInfo::NewtonDampingCoeff, txtNewtonDampingCoeff->value());
@@ -691,7 +683,6 @@ void FieldWidget::doAdaptivityChanged(int index)
 
 void FieldWidget::doLinearityTypeChanged(int index)
 {
-    txtNonlinearSteps->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
     txtNonlinearTolerance->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
     cmbNonlinearConvergenceMeasurement->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
 

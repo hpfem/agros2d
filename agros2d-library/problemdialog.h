@@ -126,7 +126,6 @@ private:
     QSpinBox *txtPolynomialOrder;
 
     // linearity
-    QSpinBox *txtNonlinearSteps;
     LineEditDouble *txtNonlinearTolerance;
     QComboBox *cmbNonlinearConvergenceMeasurement;
     QComboBox *cmbNewtonDampingType;

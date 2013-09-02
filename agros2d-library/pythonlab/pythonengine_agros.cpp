@@ -392,10 +392,6 @@ QString createPythonFromModel(StartupScript_Type startupScript)
             str += QString("%1.nonlinear_tolerance = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::NonlinearTolerance).toDouble());
-
-            str += QString("%1.nonlinear_steps = %2\n").
-                    arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->value(FieldInfo::NonlinearSteps).toInt());
         }
 
         // newton

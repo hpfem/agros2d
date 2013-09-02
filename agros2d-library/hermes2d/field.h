@@ -63,7 +63,6 @@ public:
     {
         Unknown,
         NonlinearTolerance,
-        NonlinearSteps,
         NonlinearConvergenceMeasurement,
         NewtonDampingType,
         NewtonDampingCoeff,
