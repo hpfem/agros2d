@@ -236,7 +236,7 @@ class SpecialFunction
 {
 public:
     SpecialFunction() : m_interpolation(0), m_bound_low(0), m_bound_hi(0), m_count(IMPLIICT_APPROX_COUNT){}
-    ~SpecialFunction() { if(m_interpolation) delete m_interpolation; }
+    ~SpecialFunction();
     Scalar operator()(double h) const;
     Hermes::Ord operator()(Hermes::Ord h) const { return Hermes::Ord(10); }
     void setBounds(double bound_low, double bound_hi);
@@ -244,7 +244,7 @@ public:
     virtual Scalar value(double h) = 0;
     void setVariant(QString variant) { m_variant = variant; }
 protected:
-    PiecewiseLinear* m_interpolation;
+    QSharedPointer<PiecewiseLinear> m_interpolation;
     double m_bound_low;
     double m_bound_hi;
     double m_count;

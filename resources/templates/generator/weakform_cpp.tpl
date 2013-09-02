@@ -143,6 +143,12 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
 
     {{#VARIABLE_SOURCE}}
     {{VARIABLE_SHORT}} = &this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
+    {{#SPECIAL_FUNCTION_SOURCE}}
+    {{#PARAMETERS}}
+    {{SPECIAL_FUNCTION_NAME}}.{{NAME}} = this->{{NAME}}->number(); {{/PARAMETERS}}
+    {{SPECIAL_FUNCTION_NAME}}.setVariant("{{SELECTED_VARIANT}}");
+    {{SPECIAL_FUNCTION_NAME}}.setBounds({{FROM}}, {{TO}});
+    {{SPECIAL_FUNCTION_NAME}}.createInterpolation();{{/SPECIAL_FUNCTION_SOURCE}}
 }
 
 template <typename Scalar>
