@@ -218,7 +218,6 @@ class MagneticNonlinPlanar(Agros2DTestCase):
         
         self.magnetic.solver = "newton"
         self.magnetic.solver_parameters['tolerance'] = 0.1
-        self.magnetic.solver_parameters['steps'] = 40
         self.magnetic.solver_parameters['damping_factor'] = 0.6
         self.magnetic.solver_parameters['damping'] = 'automatic'
         self.magnetic.solver_parameters['jacobian_reuse'] = True

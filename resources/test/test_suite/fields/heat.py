@@ -150,7 +150,6 @@ class HeatNonlinPlanar(Agros2DTestCase):
 
         self.heat.solver = "newton"
         self.heat.solver_parameters['tolerance'] = 0.0001
-        self.heat.solver_parameters['steps'] = 30
         self.heat.solver_parameters['damping'] = 'automatic'
         self.heat.solver_parameters['damping_factor'] = 0.8
         self.heat.solver_parameters['jacobian_reuse'] = True

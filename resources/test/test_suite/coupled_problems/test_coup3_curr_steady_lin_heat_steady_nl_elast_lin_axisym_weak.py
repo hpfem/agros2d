@@ -44,7 +44,6 @@ elasticity.number_of_refinements = 1
 elasticity.polynomial_order = 3
 elasticity.solver = "linear"
 current.solver_parameters['tolerance'] = 0.001
-current.solver_parameters['steps'] = 50
 
 elasticity.add_boundary("Fixed", "elasticity_fixed_fixed", {"elasticity_displacement_x" : 0, "elasticity_displacement_y" : 0})
 elasticity.add_boundary("Fixed free", "elasticity_fixed_free", {"elasticity_displacement_x" : 0, "elasticity_force_y" : 0})

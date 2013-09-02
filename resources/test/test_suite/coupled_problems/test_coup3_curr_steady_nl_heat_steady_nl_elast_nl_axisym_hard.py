@@ -19,7 +19,6 @@ current.number_of_refinements = 1
 current.polynomial_order = 2
 current.solver = "newton"
 current.solver_parameters['tolerance'] = 0.001
-current.solver_parameters['steps'] = 10
 
 current.add_boundary("10 V", "current_potential", {"current_potential" : 10})
 current.add_boundary("0 V", "current_potential", {"current_potential" : 0})

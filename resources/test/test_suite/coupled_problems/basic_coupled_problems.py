@@ -114,7 +114,6 @@ class CoupledProblemsBasic2(Agros2DTestCase):
         self.heat.polynomial_order = 2
         self.heat.solver = "linear"
         self.heat.solver_parameters['tolerance'] = 0.001
-        self.heat.solver_parameters['steps'] = 10
         
         self.heat.add_boundary("Symmetry", "heat_heat_flux", {"heat_convection_external_temperature" : 0, "heat_convection_heat_transfer_coefficient" : 0, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 0, "heat_radiation_emissivity" : 0})
         self.heat.add_boundary("Convection", "heat_heat_flux", {"heat_convection_external_temperature" : 20, "heat_convection_heat_transfer_coefficient" : 10, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 0, "heat_radiation_emissivity" : 0})

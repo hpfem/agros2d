@@ -31,8 +31,6 @@ elasticity.analysis_type = "steadystate"
 elasticity.number_of_refinements = 1
 elasticity.polynomial_order = 3
 elasticity.solver = "newton"
-elasticity.solver_parameters['steps'] = 30
-
 
 elasticity.add_boundary("Fixed", "elasticity_fixed_fixed", {"elasticity_displacement_x" : 0, "elasticity_displacement_y" : 0})
 elasticity.add_boundary("Free", "elasticity_free_free", {"elasticity_force_x" : 0, "elasticity_force_y" : 0})

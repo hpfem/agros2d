@@ -121,18 +121,6 @@ class TestFieldNewtonSolver(Agros2DTestCase):
         self.field = a2d.field('magnetic')
         self.field.solver = 'newton'
 
-    """ steps """
-    def test_steps(self):
-        self.field.solver_parameters['steps'] = 50
-        self.assertEqual(self.field.solver_parameters['steps'], 50)
-
-    def test_set_wrong_steps(self):
-        with self.assertRaises(IndexError):
-            self.field.solver_parameters['steps'] = 0
-
-        with self.assertRaises(IndexError):
-            self.field.solver_parameters['steps'] = 101
-
     """ tolerance """
     def test_tolerance(self):
         self.field.solver_parameters['tolerance'] = 0.5
