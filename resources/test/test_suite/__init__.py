@@ -14,10 +14,6 @@ import internal
 import particle_tracing
 import script
 
-test_pokus = [
-fields.current.CurrentPlanar
-]
-
 test_fast = [
 # electrostatic field
 fields.electrostatic.ElectrostaticPlanar, 

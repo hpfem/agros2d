@@ -207,6 +207,7 @@ void UnitTestsWidget::runTestsFromSuite()
 
     // clean test suite
     m_test = XMLTest::test(XMLTest::tests());
+    webView->setHtml("");
 
     // set date
     QString date = QString("%1").arg(QDateTime::currentDateTime().toString(DATE_FORMAT));
