@@ -10,6 +10,9 @@ def __a2d_help__(obj = agros2d):
 
 help = __a2d_help__
 
+import sys
+sys.path.append(pythonlab.datadir("resources/test"))
+
 # test
 def test(text, value, normal, error = 0.03):
     if ((normal == 0.0) and (abs(value) < 1e-14)):
@@ -20,110 +23,6 @@ def test(text, value, normal, error = 0.03):
     return test
 
 setattr(agros2d, "test", test)
-
-import unittest as ut
-
-class Agros2DTestCase(ut.TestCase):
-    def __init__(self, methodName='runTest'):
-        ut.TestCase.__init__(self, methodName)
-
-    def value_test(self, text, value, normal, error = 0.03):
-        if ((normal == 0.0) and (abs(value) < 1e-14)):
-            self.assertTrue(True)
-            return
-        test = abs((value - normal)/value) < error
-        str = str = "{0}: Agros2D = {1}, correct = {2}, error = {3:.4f} %".format(text, value, normal, abs(value - normal)/value*100)
-        self.assertTrue(test, str)
-
-setattr(agros2d, "Agros2DTestCase", Agros2DTestCase)
-
-class Agros2DTestResult(ut.TestResult):
-    def __init__(self):
-        ut.TestResult.__init__(self)
-        self.output = []
-
-    def startTest(self, test):
-        from time import time
-        
-        ut.TestResult.startTest(self, test)
-        self.time = time()
-        # print("{0}".format(test.id().ljust(60, "."))),
-
-    def addSuccess(self, test):
-        from time import time
-        
-        ut.TestResult.addSuccess(self, test)
-        self.time -= time()
-
-        modu = ".".join(test.id().split(".")[0:-2])
-        tst = test.id().split(".")[-1]
-        cls = test.id().split(".")[-2]
-        id = cls + "." + tst
-        
-        self.output.append([modu, cls, tst, -self.time * 1000, "OK", ""])
-        
-        print("{0}".format(id.ljust(60, "."))),
-        print("{0:08.2f}".format(-self.time * 1000).rjust(15, " ") + " ms " +
-              "{0}".format("OK".rjust(10, ".")))
-
-    def addError(self, test, err):
-        ut.TestResult.addError(self, test, err)
-        id = test.id().split(".")[-2] + "." + test.id().split(".")[-1]
-        
-        modu = ".".join(test.id().split(".")[0:-2])
-        tst = test.id().split(".")[-1]
-        cls = test.id().split(".")[-2]
-        id = cls + "." + tst
-        
-        self.output.append([modu, cls, tst, 0, "ERROR", err[1]])
-        
-        print("{0}".format(id.ljust(60, "."))),
-        print("{0:08.2f}".format(0).rjust(15, " ") + " ms " +
-              "{0}".format("ERROR".rjust(10, ".")))        
-        print(err[1])
-
-    def addFailure(self, test, err):
-        ut.TestResult.addFailure(self, test, err)
-        id = test.id().split(".")[-2] + "." + test.id().split(".")[-1]
-
-        modu = ".".join(test.id().split(".")[0:-2])
-        tst = test.id().split(".")[-1]
-        cls = test.id().split(".")[-2]
-        id = cls + "." + tst
-        
-        self.output.append([modu, cls, tst, 0, "FAILURE", str(err[1])])
-
-        print("{0}".format(id.ljust(60, "."))),
-        print("{0:08.2f}".format(0).rjust(15, " ") + " ms " +
-              "{0}".format("FAILURE".rjust(10, ".")))        
-        print(err[1])      
-        
-    def report(self):
-        return self.output
-
-setattr(agros2d, "Agros2DTestResult", Agros2DTestResult)
-
-import sys
-sys.path.append(pythonlab.datadir("resources/test"))
-
-def agros2d_find_all_tests(obj, tests):
-    from inspect import getmembers, isclass, ismodule, ismethod
-
-    for o in getmembers(obj, ismodule):
-        if (o[1].__name__.startswith("test_suite.")):
-            agros2d_find_all_tests(o[1], tests)
-
-    for o in getmembers(obj, isclass):
-        if (issubclass(o[1], agros2d.Agros2DTestCase)):
-            # print("class: " + o[0] + "..." + o[1].__module__)
-            m = []
-            for d in getmembers(o[1], ismethod):
-                if (d[0].startswith("test_")):
-                    m.append(d[0])
-                    
-            tests.append([o[0], o[1].__module__, m])
-
-setattr(agros2d, "agros2d_find_all_tests", agros2d_find_all_tests)
 
 def agros2d_material_eval(keys):
     values = []

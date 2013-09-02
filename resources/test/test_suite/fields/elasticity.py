@@ -1,6 +1,8 @@
 import agros2d
+from test_suite.scenario import Agros2DTestCase
+from test_suite.scenario import Agros2DTestResult
 
-class ElasticityPlanar(agros2d.Agros2DTestCase):
+class ElasticityPlanar(Agros2DTestCase):
     def setUp(self):  
         # model
         problem = agros2d.problem(clear = True)
@@ -72,7 +74,7 @@ class ElasticityPlanar(agros2d.Agros2DTestCase):
         # testI = agros2d.test("Current", surface["I"], 3629.425713)
         
 
-class ElasticityAxisymmetric(agros2d.Agros2DTestCase):
+class ElasticityAxisymmetric(Agros2DTestCase):
     def setUp(self):      
         # model
         problem = agros2d.problem(clear = True)
@@ -148,7 +150,7 @@ if __name__ == '__main__':
     import unittest as ut
     
     suite = ut.TestSuite()
-    result = agros2d.Agros2DTestResult()
+    result = Agros2DTestResult()
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(ElasticityPlanar))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(ElasticityAxisymmetric))
     suite.run(result)

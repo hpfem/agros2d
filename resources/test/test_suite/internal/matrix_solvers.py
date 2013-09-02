@@ -1,10 +1,13 @@
 import pythonlab
-import agros2d 
+import agros2d
 
 import scipy.io as sio
 import numpy as np
 
-class InternalMatrixSolvers(agros2d.Agros2DTestCase):
+from test_suite.scenario import Agros2DTestCase
+from test_suite.scenario import Agros2DTestResult
+
+class InternalMatrixSolvers(Agros2DTestCase):
     @classmethod
     def setUpClass(self): 
         # store state
@@ -153,6 +156,6 @@ if __name__ == '__main__':
     import unittest as ut
     
     suite = ut.TestSuite()
-    result = agros2d.Agros2DTestResult()
+    result = Agros2DTestResult()
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(InternalMatrixSolvers))
     suite.run(result)

@@ -1,6 +1,8 @@
 import agros2d
+from test_suite.scenario import Agros2DTestCase
+from test_suite.scenario import Agros2DTestResult
 
-class MagneticPlanar(agros2d.Agros2DTestCase):
+class MagneticPlanar(Agros2DTestCase):
     def setUp(self):  
         # model
         problem = agros2d.problem(clear = True)
@@ -97,7 +99,7 @@ class MagneticPlanar(agros2d.Agros2DTestCase):
         self.value_test("Maxwell force - x", surface["Ftx"], 2.531945, 0.11)
         self.value_test("Maxwell force - y", surface["Fty"], -10.176192, 0.1)    
         
-class MagneticAxisymmetric(agros2d.Agros2DTestCase):
+class MagneticAxisymmetric(Agros2DTestCase):
     def setUp(self):  
         # model
         problem = agros2d.problem(clear = True)
@@ -197,7 +199,7 @@ class MagneticAxisymmetric(agros2d.Agros2DTestCase):
         surface = self.magnetic.surface_integrals([12, 13, 14, 15])
         self.value_test("Maxwell force - z", surface["Fty"], 0.368232, 0.1)
     
-class MagneticNonlinPlanar(agros2d.Agros2DTestCase):
+class MagneticNonlinPlanar(Agros2DTestCase):
     def setUp(self):  
         # model
         problem = agros2d.problem(clear = True)
@@ -285,7 +287,7 @@ class MagneticNonlinPlanar(agros2d.Agros2DTestCase):
         volume = self.magnetic.volume_integrals([2])
         self.value_test("Energy", volume["Wm"], 3.264012)
 
-class MagneticNonlinAxisymmetric(agros2d.Agros2DTestCase):
+class MagneticNonlinAxisymmetric(Agros2DTestCase):
     def setUp(self):  
         # problem
         problem = agros2d.problem(clear = True)
@@ -369,7 +371,7 @@ class MagneticNonlinAxisymmetric(agros2d.Agros2DTestCase):
         surface = self.magnetic.surface_integrals([1, 2, 3])
         self.value_test("Maxwell force - z", surface["Fty"], 0.368232)
                                                                                                                                                                                                                                            
-class MagneticHarmonicPlanar(agros2d.Agros2DTestCase):
+class MagneticHarmonicPlanar(Agros2DTestCase):
     def setUp(self):                                                                                                                         
         # model
         problem = agros2d.problem(clear = True)
@@ -465,7 +467,7 @@ class MagneticHarmonicPlanar(agros2d.Agros2DTestCase):
         self.value_test("Lorentz force - x", volume["Flx"], -11.228229)
         self.value_test("Lorentz force - y", volume["Fly"], -4.995809)   
              
-class MagneticHarmonicAxisymmetric(agros2d.Agros2DTestCase):
+class MagneticHarmonicAxisymmetric(Agros2DTestCase):
     def setUp(self):                                                                                                                         
         # model
         problem = agros2d.problem(clear = True)
@@ -556,7 +558,7 @@ class MagneticHarmonicAxisymmetric(agros2d.Agros2DTestCase):
         self.value_test("Lorentz force - r", volume["Flx"], -4.018686e-4)
         self.value_test("Lorentz force - z", volume["Fly"], -1.233904e-5)    
              
-class MagneticHarmonicNonlinPlanar(agros2d.Agros2DTestCase):
+class MagneticHarmonicNonlinPlanar(Agros2DTestCase):
     def setUp(self):  
         # model
         problem = agros2d.problem(clear = True)
@@ -617,7 +619,7 @@ class MagneticHarmonicNonlinPlanar(agros2d.Agros2DTestCase):
         volume = self.magnetic.volume_integrals([2])
         self.value_test("Energy", volume["Wm"], 6.219017e-4)
                        
-class MagneticTransientPlanar(agros2d.Agros2DTestCase):
+class MagneticTransientPlanar(Agros2DTestCase):
     def setUp(self):  
         # problem
         problem = agros2d.problem(clear = True)
@@ -704,7 +706,7 @@ class MagneticTransientPlanar(agros2d.Agros2DTestCase):
         self.value_test("Current - total2", volumeSource["Ir"], 421.23575)
         self.value_test("Current - external", volumeSource["Ier"], 421.23575)
                 
-class MagneticTransientAxisymmetric(agros2d.Agros2DTestCase):
+class MagneticTransientAxisymmetric(Agros2DTestCase):
     def setUp(self):  
         # problem
         problem = agros2d.problem(clear = True)
@@ -785,7 +787,7 @@ class MagneticTransientAxisymmetric(agros2d.Agros2DTestCase):
         self.value_test("Current - induced transform", volume["Iitr"], 965.8993026017961)
         self.value_test("Current - total", volume["Ir"], 965.8993026017961)
 
-class MagneticHarmonicPlanarTotalCurrent(agros2d.Agros2DTestCase):
+class MagneticHarmonicPlanarTotalCurrent(Agros2DTestCase):
     def setUp(self):  
         # problem
         problem = agros2d.problem(clear = True)
@@ -947,7 +949,7 @@ class MagneticHarmonicPlanarTotalCurrent(agros2d.Agros2DTestCase):
         self.value_test("Current - 3 - imag", volume3["Ii"], 0, 100)
 
                                                      
-class MagneticHarmonicAxisymmetricTotalCurrent(agros2d.Agros2DTestCase):
+class MagneticHarmonicAxisymmetricTotalCurrent(Agros2DTestCase):
     def setUp(self):  
         # problem
         problem = agros2d.problem(clear = True)
@@ -1053,7 +1055,7 @@ if __name__ == '__main__':
     import unittest as ut
 
     suite = ut.TestSuite()
-    result = agros2d.Agros2DTestResult()
+    result = Agros2DTestResult()
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticPlanar))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticAxisymmetric))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticNonlinPlanar))

@@ -42,6 +42,7 @@ private:
     QTreeWidget *trvTests;
     QWebView *webView;
     QSplitter *splitter;
+    QPushButton *btnScenarios;
 
     XMLTest::test m_test;
 
@@ -50,6 +51,7 @@ private:
     void readTestFromDisk(const QString& fileName);
 
     void readTestsFromSuite();
+    void readScenariosFromSuite();
     void runTestFromSuite(const QString &module, const QString &cls);
 
     void showInfoTests(const QString &testID = "");
@@ -64,6 +66,7 @@ private slots:
     void showInfoTest(QAction *act);
 
     void runTestsFromSuite();   
+    void readTestsSettingsFromScenario(QAction *action);
 };
 
 

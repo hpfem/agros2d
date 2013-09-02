@@ -1,6 +1,8 @@
 import agros2d as a2d
+from test_suite.scenario import Agros2DTestCase
+from test_suite.scenario import Agros2DTestResult
 
-class TestProblem(a2d.Agros2DTestCase):
+class TestProblem(Agros2DTestCase):
     def setUp(self):
         self.problem = a2d.problem(clear = True)
 
@@ -52,7 +54,7 @@ class TestProblem(a2d.Agros2DTestCase):
         self.problem.curvilinear_elements = False
         self.assertEqual(self.problem.curvilinear_elements, False)
 
-class TestProblemTime(a2d.Agros2DTestCase):
+class TestProblemTime(Agros2DTestCase):
     def setUp(self):
         self.problem = a2d.problem(clear = True)
         self.problem.time_step_method = "fixed"
@@ -136,7 +138,7 @@ class TestProblemTime(a2d.Agros2DTestCase):
         with self.assertRaises(RuntimeError):
             self.problem.elapsed_time()
 
-class TestProblemSolution(a2d.Agros2DTestCase):
+class TestProblemSolution(Agros2DTestCase):
     def setUp(self):
         self.problem = a2d.problem(clear = True)
         current = a2d.field('current')
@@ -177,7 +179,7 @@ if __name__ == '__main__':
     import unittest as ut
     
     suite = ut.TestSuite()
-    result = a2d.Agros2DTestResult()
+    result = Agros2DTestResult()
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblem))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblemTime))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestProblemSolution))

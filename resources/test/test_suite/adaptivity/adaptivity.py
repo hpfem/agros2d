@@ -1,6 +1,8 @@
 import agros2d
+from test_suite.scenario import Agros2DTestCase
+from test_suite.scenario import Agros2DTestResult
 
-class AdaptivityElectrostatic(agros2d.Agros2DTestCase):
+class AdaptivityElectrostatic(Agros2DTestCase):
     def setUp(self):  
         # problem
         problem = agros2d.problem(clear = True)
@@ -53,7 +55,7 @@ class AdaptivityElectrostatic(agros2d.Agros2DTestCase):
         point = self.electrostatic.local_values(3.278e-2, 4.624e-1)
         self.value_test("Electrostatic potential", point["V"], 5.569e2)
 
-class AdaptivityAcoustic(agros2d.Agros2DTestCase):
+class AdaptivityAcoustic(Agros2DTestCase):
     def setUp(self):  
         # problem
         problem = agros2d.problem(clear = True)
@@ -109,7 +111,7 @@ if __name__ == '__main__':
     import unittest as ut
     
     suite = ut.TestSuite()
-    result = agros2d.Agros2DTestResult()
+    result = Agros2DTestResult()
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(AdaptivityElectrostatic))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(AdaptivityAcoustic))
     suite.run(result)

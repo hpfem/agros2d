@@ -24,6 +24,8 @@
 
 #include <ctemplate/template.h>
 
+const static QString DATE_FORMAT = "yyyy-MM-dd hh.mm.ss";
+
 UnitTestsWidget::UnitTestsWidget(QWidget *parent)
     : QDialog(parent), m_test(XMLTest::tests())
 {
@@ -54,21 +56,12 @@ UnitTestsWidget::UnitTestsWidget(QWidget *parent)
     connect(btnRunTests, SIGNAL(clicked()), this, SLOT(runTestsFromSuite()));
 
     // dialog buttons
-    // QPushButton *btnMore = new QPushButton(tr("More..."));
-
-    // QAction *actSave = new QAction(tr("Save"), this);
-    // connect(actSave, SIGNAL(triggered()), this, SLOT(saveToFile()));
-
-    // QMenu *menu = new QMenu();
-    // menu->addAction(actSave);
-    // menu->addSeparator();
-
-    // btnMore->setMenu(menu);
+    btnScenarios = new QPushButton(tr("Scenarios..."));
 
     QGridLayout *leftLayout = new QGridLayout();
     leftLayout->setContentsMargins(0, 0, 0, 0);
     leftLayout->addWidget(trvTests, 0, 1, 1, 3);
-    // leftLayout->addWidget(btnMore, 1, 1);
+    leftLayout->addWidget(btnScenarios, 1, 1);
     leftLayout->setColumnStretch(2, 1);
     leftLayout->addWidget(btnRunTests, 1, 3);
 
@@ -108,6 +101,7 @@ UnitTestsWidget::UnitTestsWidget(QWidget *parent)
 
     // read tests from test_suite
     readTestsFromSuite();
+    readScenariosFromSuite();
 
     // read last test
     QDir dirUser(QString("%1/tests").arg(userDataDir()));
@@ -155,6 +149,57 @@ void UnitTestsWidget::doContextMenu(const QPoint &pos)
     }
 }
 
+void UnitTestsWidget::readTestsSettingsFromScenario(QAction *action)
+{
+    QStringList modules;
+    QStringList clss;
+
+    // run expression
+    currentPythonEngine()->runExpression(QString("import test_suite; agros2d_scenario = test_suite.%1").arg(action->data().toString()));
+
+    // extract values
+    PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_scenario");
+    if (result)
+    {
+        Py_INCREF(result);
+        for (int i = 0; i < PyList_Size(result); i++)
+        {
+            PyObject *obj = PyList_GetItem(result, i);
+            Py_INCREF(obj);
+
+            modules << QString::fromStdString(PyString_AsString(PyObject_GetAttrString(obj, "__module__")));
+            clss << QString::fromStdString(PyString_AsString(PyObject_GetAttrString(obj, "__name__")));
+
+            Py_XDECREF(obj);
+        }
+        Py_XDECREF(result);
+    }
+
+    for (int i = 0; i < trvTests->topLevelItemCount(); i++)
+    {
+        QTreeWidgetItem *item = trvTests->topLevelItem(i);
+        item->setCheckState(0, Qt::Unchecked);
+
+        for (int j = 0; j < modules.count(); j++)
+        {
+            if ((item->data(0, Qt::UserRole).toString() == modules.at(j)) &&
+                (item->data(1, Qt::UserRole).toString() == clss.at(j)))
+            {
+                item->setCheckState(0, Qt::Checked);
+
+                // remove module and class
+                modules.removeAt(j);
+                clss.removeAt(j);
+
+                break;
+            }
+        }
+    }
+
+    // remove variables
+    currentPythonEngine()->runExpression("del agros2d_scenario");
+}
+
 void UnitTestsWidget::runTestsFromSuite()
 {
     // save settings
@@ -164,7 +209,7 @@ void UnitTestsWidget::runTestsFromSuite()
     m_test = XMLTest::test(XMLTest::tests());
 
     // set date
-    QString date = QString("%1").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh.mm.ss"));
+    QString date = QString("%1").arg(QDateTime::currentDateTime().toString(DATE_FORMAT));
     m_test.date() = date.toStdString();
 
     QDir dirUser(QString("%1/tests").arg(userDataDir()));
@@ -202,7 +247,7 @@ void UnitTestsWidget::runTestsFromSuite()
 
 void UnitTestsWidget::runTestFromSuite(const QString &module, const QString &cls)
 {
-    QString str = QString("import unittest as ut; agros2d_suite = ut.TestSuite(); import %1; agros2d_suite.addTest(ut.TestLoader().loadTestsFromTestCase(%1.%2)); agros2d_result = agros2d.Agros2DTestResult(); agros2d_suite.run(agros2d_result); agros2d_result_report = agros2d_result.report()").
+    QString str = QString("import unittest as ut; agros2d_suite = ut.TestSuite(); import %1; agros2d_suite.addTest(ut.TestLoader().loadTestsFromTestCase(%1.%2)); agros2d_result = test_suite.scenario.Agros2DTestResult(); agros2d_suite.run(agros2d_result); agros2d_result_report = agros2d_result.report()").
             arg(module).arg(cls);
     currentPythonEngine()->runScript(str);
 
@@ -283,8 +328,7 @@ void UnitTestsWidget::showInfoTests(const QString &testID)
         dirUser.setFilter(QDir::Files | QDir::NoSymLinks);
         if (!dirUser.entryInfoList().isEmpty())
         {
-            // QList<QString> dates;
-            QList<int> dates;
+            QList<uint> dates;
             QList<double> times;
 
             for (int i = 0; i < dirUser.entryInfoList().size(); ++i)
@@ -308,12 +352,7 @@ void UnitTestsWidget::showInfoTests(const QString &testID)
 
                         if (itemID == testID)
                         {
-                            // if (testlocal->date().present())
-                            //     dates.append(QString::fromStdString(testlocal->date().get()));
-                            // else
-                            //     dates.append("-");
-
-                            dates.append(i);
+                            dates.append(QDateTime::fromString(QString::fromStdString(testlocal->date().get()), DATE_FORMAT).toTime_t());
                             times.append(item.time());
 
                             break;
@@ -328,11 +367,11 @@ void UnitTestsWidget::showInfoTests(const QString &testID)
 
             QString dataTimeSteps = "[";
             for (int i = 0; i < times.size(); i++)
-                dataTimeSteps += QString("[%1, %2], ").arg(dates.at(i)).arg(times.at(i));
+                dataTimeSteps += QString("[%1*1000, %2], ").arg(dates.at(i)).arg(times.at(i));
             dataTimeSteps += "]";
 
             // chart time step vs. steps
-            QString testChart = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_test\"), [ { data: %1, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true }, xaxes: [ { axisLabel: 'Date' } ], yaxes: [ { axisLabel: 'Elapsed time (ms)' } ] });});</script>").
+            QString testChart = QString("<script type=\"text/javascript\">$(function () { $.plot($(\"#chart_test\"), [ { data: %1, color: \"rgb(61, 61, 251)\", lines: { show: true }, points: { show: true } } ], { grid: { hoverable : true }, xaxes: [ { mode: 'time', timeformat: '%d/%m/%y', axisLabel: 'Date' } ], yaxes: [ { axisLabel: 'Elapsed time (ms)' } ] });});</script>").
                     arg(dataTimeSteps);
 
             testsTemplate.ShowSection("TEST_CHART_JS");
@@ -388,7 +427,7 @@ void UnitTestsWidget::readTestsFromSuite()
     trvTests->clear();
 
     // run expression
-    currentPythonEngine()->runExpression(QString("import test_suite; agros2d_tests = []; agros2d.agros2d_find_all_tests(test_suite, agros2d_tests)"));
+    currentPythonEngine()->runExpression(QString("import test_suite; agros2d_tests = []; test_suite.scenario.find_all_tests(test_suite, agros2d_tests)"));
 
     // extract values
     PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_tests");
@@ -437,6 +476,37 @@ void UnitTestsWidget::readTestsFromSuite()
 
     // remove variables
     currentPythonEngine()->runExpression("del agros2d_tests");
+}
+
+void UnitTestsWidget::readScenariosFromSuite()
+{    
+    QMenu *menu = new QMenu();
+    connect(menu, SIGNAL(triggered(QAction *)), this, SLOT(readTestsSettingsFromScenario(QAction *)));
+
+    // run expression
+    currentPythonEngine()->runExpression(QString("import test_suite; agros2d_scenarios = []; test_suite.scenario.find_all_scenarios(test_suite, agros2d_scenarios)"));
+
+    // extract values
+    PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_scenarios");
+    if (result)
+    {
+        Py_INCREF(result);
+        for (int i = 0; i < PyList_Size(result); i++)
+        {
+            QString name = PyString_AsString(PyList_GetItem(result, i));
+
+            QAction *act = new QAction(name, this);
+            act->setData(name);
+
+            menu->addAction(act);
+        }
+        Py_XDECREF(result);
+    }
+
+    // remove variables
+    currentPythonEngine()->runExpression("del agros2d_scenarios");
+
+    btnScenarios->setMenu(menu);
 }
 
 void UnitTestsWidget::saveTestsSettings()

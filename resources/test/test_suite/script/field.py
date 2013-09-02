@@ -1,6 +1,8 @@
 import agros2d as a2d
+from test_suite.scenario import Agros2DTestCase
+from test_suite.scenario import Agros2DTestResult
 
-class TestField(a2d.Agros2DTestCase):
+class TestField(Agros2DTestCase):
     def setUp(self):
         self.problem = a2d.problem(clear = True)
         self.field = a2d.field('magnetic')
@@ -84,7 +86,7 @@ class TestField(a2d.Agros2DTestCase):
         self.field.transient_time_skip = 60
         self.assertEqual(self.field.transient_time_skip, 60)
 
-class TestFieldBoundaries(a2d.Agros2DTestCase):
+class TestFieldBoundaries(Agros2DTestCase):
     def setUp(self):
         self.problem = a2d.problem(clear = True)
         self.field = a2d.field('magnetic')
@@ -113,7 +115,7 @@ filename_matrix
 filename_rhs
 """
 
-class TestFieldNewtonSolver(a2d.Agros2DTestCase):
+class TestFieldNewtonSolver(Agros2DTestCase):
     def setUp(self):
         self.problem = a2d.problem(clear = True)
         self.field = a2d.field('magnetic')
@@ -214,7 +216,7 @@ class TestFieldNewtonSolver(a2d.Agros2DTestCase):
         with self.assertRaises(IndexError):
             self.field.solver_parameters['jacobian_reuse_steps'] = 101
 
-class TestFieldMatrixSolver(a2d.Agros2DTestCase):
+class TestFieldMatrixSolver(Agros2DTestCase):
     def setUp(self):
         self.problem = a2d.problem(clear = True)
         self.field = a2d.field('magnetic')
@@ -262,7 +264,7 @@ class TestFieldMatrixSolver(a2d.Agros2DTestCase):
         with self.assertRaises(IndexError):
             self.field.matrix_solver_parameters['iterations'] = 1.1e4
 
-class TestFieldAdaptivity(a2d.Agros2DTestCase):
+class TestFieldAdaptivity(Agros2DTestCase):
     def setUp(self):
         self.problem = a2d.problem(clear = True)
         self.field = a2d.field('magnetic')
@@ -376,7 +378,7 @@ if __name__ == '__main__':
     import unittest as ut
     
     suite = ut.TestSuite()
-    result = a2d.Agros2DTestResult()
+    result = Agros2DTestResult()
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestField))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldBoundaries))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestFieldNewtonSolver))

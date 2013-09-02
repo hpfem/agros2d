@@ -1,7 +1,9 @@
 import agros2d as a2d
 from math import pi, sqrt
+from test_suite.scenario import Agros2DTestCase
+from test_suite.scenario import Agros2DTestResult
 
-class TestGeometry(a2d.Agros2DTestCase):
+class TestGeometry(Agros2DTestCase):
     def setUp(self):
         self.problem = a2d.problem(clear = True)
         self.geometry = a2d.geometry
@@ -140,7 +142,7 @@ class TestGeometry(a2d.Agros2DTestCase):
     def test_modify_label(self):
         pass
 
-class TestGeometryTransformations(a2d.Agros2DTestCase):
+class TestGeometryTransformations(Agros2DTestCase):
     def model(self):
         self.problem = a2d.problem(clear = True)
 
@@ -190,7 +192,7 @@ if __name__ == '__main__':
     import unittest as ut
     
     suite = ut.TestSuite()
-    result = a2d.Agros2DTestResult()
+    result = Agros2DTestResult()
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestGeometry))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(TestGeometryTransformations))
     suite.run(result)

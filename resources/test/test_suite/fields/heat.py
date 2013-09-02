@@ -1,6 +1,8 @@
 import agros2d
+from test_suite.scenario import Agros2DTestCase
+from test_suite.scenario import Agros2DTestResult
 
-class HeatPlanar(agros2d.Agros2DTestCase):
+class HeatPlanar(Agros2DTestCase):
     def setUp(self):  
         # model
         problem = agros2d.problem(clear = True)
@@ -66,7 +68,7 @@ class HeatPlanar(agros2d.Agros2DTestCase):
         surface = self.heat.surface_integrals([0, 6, 7])
         self.value_test("Heat flux", surface["f"], -85.821798)
 
-class HeatAxisymmetric(agros2d.Agros2DTestCase):
+class HeatAxisymmetric(Agros2DTestCase):
     def setUp(self):  
         # model
         problem = agros2d.problem(clear = True)
@@ -129,7 +131,7 @@ class HeatAxisymmetric(agros2d.Agros2DTestCase):
         surface = self.heat.surface_integrals([1])
         self.value_test("Heat flux", surface["f"], 199.0004)
         
-class HeatNonlinPlanar(agros2d.Agros2DTestCase):
+class HeatNonlinPlanar(Agros2DTestCase):
     def setUp(self):  
         # model
         problem = agros2d.problem(clear = True)
@@ -202,7 +204,7 @@ class HeatNonlinPlanar(agros2d.Agros2DTestCase):
         surface = self.heat.surface_integrals([8])
         self.value_test("Heat flux", surface["f"], 96464.56418)
         
-class HeatTransientBenchmarkAxisymmetric(agros2d.Agros2DTestCase):
+class HeatTransientBenchmarkAxisymmetric(Agros2DTestCase):
     def setUp(self):  
         # benchmark 
         #
@@ -258,7 +260,7 @@ class HeatTransientBenchmarkAxisymmetric(agros2d.Agros2DTestCase):
         point = self.heat.local_values(0.1, 0.3)
         self.value_test("Temperature", point["T"], 186.5, 0.0004) # permissible error 0.02 %
         
-class HeatTransientAxisymmetric(agros2d.Agros2DTestCase):
+class HeatTransientAxisymmetric(Agros2DTestCase):
     def setUp(self):  
         # model
         problem = agros2d.problem(clear = True)
@@ -357,7 +359,7 @@ if __name__ == '__main__':
     import unittest as ut
 
     suite = ut.TestSuite()
-    result = agros2d.Agros2DTestResult()
+    result = Agros2DTestResult()
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(HeatPlanar))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(HeatAxisymmetric))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(HeatNonlinPlanar))

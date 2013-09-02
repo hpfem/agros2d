@@ -1,8 +1,10 @@
 import agros2d as a2d
+from test_suite.scenario import Agros2DTestCase
+from test_suite.scenario import Agros2DTestResult
 
 from math import sin, cos
 
-class BenchmarkGeometryTransformation(a2d.Agros2DTestCase):
+class BenchmarkGeometryTransformation(Agros2DTestCase):
     def setUp(self):
         self.problem = a2d.problem(clear = True)
         self.geometry = a2d.geometry
@@ -28,6 +30,6 @@ if __name__ == '__main__':
     import unittest as ut
     
     suite = ut.TestSuite()
-    result = a2d.Agros2DTestResult()
+    result = Agros2DTestResult()
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(BenchmarkGeometryTransformation))
     suite.run(result)

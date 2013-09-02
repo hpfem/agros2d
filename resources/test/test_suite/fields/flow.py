@@ -1,6 +1,8 @@
 import agros2d
+from test_suite.scenario import Agros2DTestCase
+from test_suite.scenario import Agros2DTestResult
 
-class FlowPlanar(agros2d.Agros2DTestCase):
+class FlowPlanar(Agros2DTestCase):
     def setUp(self):         
         # problem
         problem = agros2d.problem(clear = True)
@@ -79,7 +81,7 @@ class FlowPlanar(agros2d.Agros2DTestCase):
         # surface = flow.surface_integrals([0])
         # testI = agros2d.test("Current", surface["Ir"], 3629.425713)
 
-class FlowAxisymmetric(agros2d.Agros2DTestCase):
+class FlowAxisymmetric(Agros2DTestCase):
     def setUp(self):  
         # problem
         problem = agros2d.problem(clear = True)
@@ -157,7 +159,7 @@ if __name__ == '__main__':
     import unittest as ut
 
     suite = ut.TestSuite()
-    result = agros2d.Agros2DTestResult()
+    result = Agros2DTestResult()
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(FlowPlanar))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(FlowAxisymmetric))
     suite.run(result)
