@@ -90,7 +90,7 @@ def find_all_tests(obj, tests):
             find_all_tests(o[1], tests)
 
     for o in getmembers(obj, isclass):
-        if (issubclass(o[1], Agros2DTestCase)):
+        if (issubclass(o[1], Agros2DTestCase) and o[1].__name__ != "Agros2DTestCase"):
             m = []
             for d in getmembers(o[1], ismethod):
                 if (d[0].startswith("test_")):
