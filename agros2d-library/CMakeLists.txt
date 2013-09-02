@@ -93,6 +93,7 @@ SET(SOURCES value.cpp
     hermes2d/block.cpp
     hermes2d/problem.cpp
     hermes2d/problem_config.cpp
+    hermes2d/plugin_interface.cpp
     mainwindow.cpp
     scenemarker.cpp
     scenemarkerdialog.cpp

@@ -271,21 +271,22 @@
         <element name="function">
                 <complexType>
                         <sequence>
+                                <element maxOccurs="unbounded" ref="module:quantity" />
                                 <element maxOccurs="unbounded" ref="module:function_variant" />
                         </sequence>
                         <attribute name="id" use="required" type="string" />
                         <attribute name="shortname" use="required" type="string" />
-                        <attribute name="switch" use="required" type="string" />
+                        <attribute name="switch_combo" use="required" type="string" />
+                        <attribute name="bound_low" use="required" type="string" />
+                        <attribute name="bound_hi" use="required" type="string" />
+                        <attribute name="extrapolate_low" type="string" />
+                        <attribute name="extrapolate_hi" type="string" />
                 </complexType>
         </element>
         
         <element name="function_variant">
                 <complexType>
                         <attribute name="switch_value" use="required" type="string" />
-                        <attribute name="bound_low" use="required" type="double" />
-                        <attribute name="bound_hi" use="required" type="double" />
-                        <attribute name="extrapolate_low" type="string" />
-                        <attribute name="extrapolate_hi" type="string" />
                         <attribute name="expr" use="required" type="string" />
                 </complexType>
         </element>
@@ -411,20 +412,21 @@
                         <sequence>
                                 <choice maxOccurs="unbounded">
                                         <element ref="module:quantity" />
-                                        <element ref="module:switch" />
+                                        <element ref="module:switch_combo" />
                                 </choice>
                         </sequence>
                         <attribute name="name" type="string" />
                 </complexType>
         </element>
         
-        <element name="switch">
+        <element name="switch_combo">
                 <complexType>
                         <sequence>
                                 <element ref="module:switch_option" />
                         </sequence>
                         <attribute name="id" use="required" type="string"/>
                         <attribute name="name" use="required" type="string"/>
+                        <attribute name="implicit_option" use="required" type="string"/>
                 </complexType>
         </element>
                                 

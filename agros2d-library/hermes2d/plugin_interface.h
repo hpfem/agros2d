@@ -229,6 +229,28 @@ protected:
     XMLCoupling::coupling *m_coupling;
 };
 
+const int IMPLIICT_APPROX_COUNT = 500;
+
+template <typename Scalar>
+class SpecialFunction
+{
+public:
+    SpecialFunction() : m_interpolation(0), m_bound_low(0), m_bound_hi(0), m_count(IMPLIICT_APPROX_COUNT){}
+    ~SpecialFunction();
+    Scalar operator()(double h) const;
+    Hermes::Ord operator()(Hermes::Ord h) const { return Hermes::Ord(10); }
+    void setBounds(double bound_low, double bound_hi);
+    void createInterpolation();
+    virtual Scalar value(double h) = 0;
+    void setVariant(QString variant) { m_variant = variant; }
+protected:
+    QSharedPointer<PiecewiseLinear> m_interpolation;
+    double m_bound_low;
+    double m_bound_hi;
+    double m_count;
+    QString m_variant;
+};
+
 
 QT_BEGIN_NAMESPACE
 Q_DECLARE_INTERFACE(PluginInterface, "agros2d.PluginInterface/1.0")

@@ -25,6 +25,20 @@
 #include "hermes2d/plugin_interface.h"
 #include "hermes2d/marker.h"
 
+
+{{#SPECIAL_FUNCTION_SOURCE}}
+template <typename Scalar>
+class {{SPECIAL_FUNCTION_FULL_NAME}} : public SpecialFunction<Scalar>
+{
+public:
+{{#PARAMETERS}}    double {{NAME}};
+{{/PARAMETERS}}
+    virtual Scalar value(double h);
+};
+{{/SPECIAL_FUNCTION_SOURCE}}
+
+// ***********************************************************************************************************************************
+
 {{#VOLUME_MATRIX_SOURCE}}
 template<typename Scalar>
 class {{FUNCTION_NAME}} : public MatrixFormVolAgros<Scalar>
@@ -47,6 +61,8 @@ private:
     mutable Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
     {{#VARIABLE_TARGET}}
     mutable Value *{{VARIABLE_SHORT}};{{/VARIABLE_TARGET}}
+    {{#SPECIAL_FUNCTION_SOURCE}}
+    {{SPECIAL_FUNCTION_FULL_NAME}}<Scalar> {{SPECIAL_FUNCTION_NAME}}; {{/SPECIAL_FUNCTION_SOURCE}}
 };
 {{/VOLUME_MATRIX_SOURCE}}
 
@@ -74,6 +90,8 @@ private:
     mutable Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
     {{#VARIABLE_TARGET}}
     mutable Value *{{VARIABLE_SHORT}};{{/VARIABLE_TARGET}}
+    {{#SPECIAL_FUNCTION_SOURCE}}
+{{SPECIAL_FUNCTION_FULL_NAME}}<Scalar> {{SPECIAL_FUNCTION_NAME}}; {{/SPECIAL_FUNCTION_SOURCE}}
 };
 {{/VOLUME_VECTOR_SOURCE}}  
 

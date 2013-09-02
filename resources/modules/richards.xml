@@ -34,38 +34,51 @@
     <module:quantity id="richards_theta_s" shortname="re_theta_s"/>
     <module:quantity id="richards_theta_r" shortname="re_theta_r"/>
 
-    <module:function id="richards_func_k" shortname="re_func_k" switch="constitutive_variant">
-      <!-- mela by mit kazda funkce vyjmenovane parametry? tedy neco jako seznam
+<!--    bounds and extrapolate information should be transfered to function_variant-->
+    <module:function id="richards_func_k" shortname="re_k" switch_combo="constitutive_variant" bound_low="-40" bound_hi="0" extrapolate_hi="re_ks"  >
       <module:quantity id="richards_ks"/>
       <module:quantity id="richards_a"/>
       <module:quantity id="richards_m"/>
       <module:quantity id="richards_n"/>
-      nebo se proste vezmou vsechny quantity v poradi, jak jsou vyjmenovany pro modul?
-      -->
-      <module:function_variant switch_value="van_genuchten" bound_low="-40" bound_hi="0" extrapolate_hi="re_ks"  expr="re_ks*std::pow((1 + std::pow((-re_a*h),n)),(-m/2))*std::pow((1 -std::pow((-re_a*h),(m*n))*std::pow((1 + std::pow((-re_a*h),n)),(-m))),2)"/>
+      <module:function_variant switch_value="van_genuchten" expr="re_ks*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m/2))*std::pow((1 -std::pow((-re_a*h),(re_m*re_n))*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m))),2)"/>
     </module:function>
-    <module:function id="richards_func_dkdh" shortname="re_func_dkdh" switch="constitutive_variant">
-      <module:function_variant switch_value="van_genuchten" bound_low="-40" bound_hi="0" extrapolate_hi="0"  expr="re_ks*std::pow((1 + std::pow((-re_a*h),n)),(-m/2))*(1 -std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m)))*(-2*m*n*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/h +2*m*n*std::pow((-re_a*h),n)*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/(h*(1 + std::pow((-re_a*h),n)))) -re_ks*m*n*std::pow((-re_a*h),n)*std::pow((1 + std::pow((-re_a*h),n)),(-m/2))*std::pow((1 -std::pow((-re_a*h),(m*n))*std::pow((1 + std::pow((-re_a*h),n)),(-m))),2)/(2*h*(1 +std::pow((-re_a*h),n)))"/>
+      <module:function id="richards_func_dkdh" shortname="re_dkdh" switch_combo="constitutive_variant" bound_low="-40" bound_hi="0" extrapolate_hi="0" >
+      <module:quantity id="richards_ks"/>
+      <module:quantity id="richards_a"/>
+      <module:quantity id="richards_m"/>
+      <module:quantity id="richards_n"/>
+      <module:function_variant switch_value="van_genuchten" expr="re_ks*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m/2))*(1 -std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m)))*(-2*re_m*re_n*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/h +2*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(h*(1 + std::pow((-re_a*h),re_n)))) -re_ks*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m/2))*std::pow((1 -std::pow((-re_a*h),(re_m*re_n))*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m))),2)/(2*h*(1 +std::pow((-re_a*h),re_n)))"/>
     </module:function>
-    <module:function id="richards_func_ddkdhh" shortname="re_func_ddkddh" switch="constitutive_variant">
-      <module:function_variant switch_value="van_genuchten" bound_low="-40" bound_hi="0" extrapolate_hi="0"  expr="re_ks*std::pow((1 + std::pow((-re_a*h),n)),(-m/2))*(1 -std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m)))*(-2*std::pow(m,2)*std::pow(n,2)*std::pow((-re_a*h),(m*n))*std::pow((1+ std::pow((-re_a*h),n)),(-m))/std::pow(h,2) +2*m*n*std::pow((-re_a*h),(m*n))*std::pow((1 + std::pow((-re_a*h),n)),(-m))/std::pow(h,2)- 2*m*n*std::pow((-re_a*h),n)*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/(std::pow(h,2)*(1 + std::pow((-re_a*h),n))) -2*m*std::pow(n,2)*std::pow((-re_a*h),(2*n))*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/(std::pow(h,2)*std::pow((1 + std::pow((-re_a*h),n)),2)) -2*std::pow(m,2)*std::pow(n,2)*std::pow((-re_a*h),(2*n))*std::pow((-re_a*h),(m*n))*std::pow((1+ std::pow((-re_a*h),n)),(-m))/(std::pow(h,2)*std::pow((1 + std::pow((-re_a*h),n)),2)) +2*m*std::pow(n,2)*std::pow((-re_a*h),n)*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/(std::pow(h,2)*(1 + std::pow((-re_a*h),n))) +4*std::pow(m,2)*std::pow(n,2)*std::pow((-re_a*h),n)*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/(std::pow(h,2)*(1 + std::pow((-re_a*h),n)))) +re_ks*std::pow((1 + std::pow((-re_a*h),n)),(-m/2))*(-m*n*std::pow((-re_a*h),(m*n))*std::pow((1+ std::pow((-re_a*h),n)),(-m))/h +m*n*std::pow((-re_a*h),n)*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/(h*(1 +std::pow((-re_a*h),n))))*(-2*m*n*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/h +2*m*n*std::pow((-re_a*h),n)*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/(h*(1 + std::pow((-re_a*h),n)))) -re_ks*m*n*std::pow((-re_a*h),n)*std::pow((1 + std::pow((-re_a*h),n)),(-m/2))*(1 -std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m)))*(-2*m*n*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/h +2*m*n*std::pow((-re_a*h),n)*std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))/(h*(1 + std::pow((-re_a*h),n))))/(h*(1 +std::pow((-re_a*h),n))) + re_ks*m*n*std::pow((-re_a*h),n)*std::pow((1 +std::pow((-re_a*h),n)),(-m/2))*std::pow((1 - std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))),2)/(2*std::pow(h,2)*(1 + std::pow((-re_a*h),n))) +re_ks*m*std::pow(n,2)*std::pow((-re_a*h),(2*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m/2))*std::pow((1 - std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))),2)/(2*std::pow(h,2)*std::pow((1 +std::pow((-re_a*h),n)),2)) - re_ks*m*std::pow(n,2)*std::pow((-re_a*h),n)*std::pow((1 +std::pow((-re_a*h),n)),(-m/2))*std::pow((1 - std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))),2)/(2*std::pow(h,2)*(1 + std::pow((-re_a*h),n))) +re_ks*std::pow(m,2)*std::pow(n,2)*std::pow((-re_a*h),(2*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m/2))*std::pow((1 - std::pow((-re_a*h),(m*n))*std::pow((1 +std::pow((-re_a*h),n)),(-m))),2)/(4*std::pow(h,2)*std::pow((1 +std::pow((-re_a*h),n)),2))"/>
+      <module:function id="richards_func_ddkdhh" shortname="re_ddkdhh" switch_combo="constitutive_variant" bound_low="-40" bound_hi="0" extrapolate_hi="0" >
+      <module:quantity id="richards_ks"/>
+      <module:quantity id="richards_a"/>
+      <module:quantity id="richards_m"/>
+      <module:quantity id="richards_n"/>
+      <module:function_variant switch_value="van_genuchten" expr="re_ks*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m/2))*(1 -std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m)))*(-2*std::pow(re_m,2)*std::pow(re_n,2)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1+ std::pow((-re_a*h),re_n)),(-re_m))/std::pow(h,2) +2*re_m*re_n*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m))/std::pow(h,2)- 2*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(std::pow(h,2)*(1 + std::pow((-re_a*h),re_n))) -2*re_m*std::pow(re_n,2)*std::pow((-re_a*h),(2*re_n))*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(std::pow(h,2)*std::pow((1 + std::pow((-re_a*h),re_n)),2)) -2*std::pow(re_m,2)*std::pow(re_n,2)*std::pow((-re_a*h),(2*re_n))*std::pow((-re_a*h),(re_m*re_n))*std::pow((1+ std::pow((-re_a*h),re_n)),(-re_m))/(std::pow(h,2)*std::pow((1 + std::pow((-re_a*h),re_n)),2)) +2*re_m*std::pow(re_n,2)*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(std::pow(h,2)*(1 + std::pow((-re_a*h),re_n))) +4*std::pow(re_m,2)*std::pow(re_n,2)*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(std::pow(h,2)*(1 + std::pow((-re_a*h),re_n)))) +re_ks*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m/2))*(-re_m*re_n*std::pow((-re_a*h),(re_m*re_n))*std::pow((1+ std::pow((-re_a*h),re_n)),(-re_m))/h +re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(h*(1 +std::pow((-re_a*h),re_n))))*(-2*re_m*re_n*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/h +2*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(h*(1 + std::pow((-re_a*h),re_n)))) -re_ks*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m/2))*(1 -std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m)))*(-2*re_m*re_n*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/h +2*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(h*(1 + std::pow((-re_a*h),re_n))))/(h*(1 +std::pow((-re_a*h),re_n))) + re_ks*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m/2))*std::pow((1 - std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))),2)/(2*std::pow(h,2)*(1 + std::pow((-re_a*h),re_n))) +re_ks*re_m*std::pow(re_n,2)*std::pow((-re_a*h),(2*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m/2))*std::pow((1 - std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))),2)/(2*std::pow(h,2)*std::pow((1 +std::pow((-re_a*h),re_n)),2)) - re_ks*re_m*std::pow(re_n,2)*std::pow((-re_a*h),re_n)*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m/2))*std::pow((1 - std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))),2)/(2*std::pow(h,2)*(1 + std::pow((-re_a*h),re_n))) +re_ks*std::pow(re_m,2)*std::pow(re_n,2)*std::pow((-re_a*h),(2*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m/2))*std::pow((1 - std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))),2)/(4*std::pow(h,2)*std::pow((1 +std::pow((-re_a*h),re_n)),2))"/>
     </module:function>
-    <module:function id="richards_func_c" shortname="re_func_c" switch="constitutive_variant">
-      <module:function_variant switch_value="van_genuchten" bound_low="-40" bound_hi="0" extrapolate_hi="st"  expr="st*std::pow((1 + std::pow((-re_a*h),n)),(-m))*(theta_s - theta_r)/theta_s - m*n*std::pow((-re_a*h),n)*std::pow((1 + std::pow((-re_a*h),n)),(-m))*(theta_s - theta_r)/(h*(1 + std::pow((-re_a*h),n)))"/>
+      <module:function id="richards_func_c" shortname="re_c" switch_combo="constitutive_variant" bound_low="-40" bound_hi="0" extrapolate_hi="re_st" >
+      <module:quantity id="richards_ks"/>
+      <module:quantity id="richards_a"/>
+      <module:quantity id="richards_m"/>
+      <module:quantity id="richards_n"/>
+      <module:quantity id="richards_storativity"/>
+      <module:quantity id="richards_theta_s"/>
+      <module:quantity id="richards_theta_r"/>
+      <module:function_variant switch_value="van_genuchten" expr="re_st*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m))*(re_theta_s - re_theta_r)/re_theta_s - re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m))*(re_theta_s - re_theta_r)/(h*(1 + std::pow((-re_a*h),re_n)))"/>
     </module:function>
 
-    <module:matrix_form id="conductivity" i="1" j="1" planar="re_function_k(value1, re_ks, re_a, re_m, re_n) * (udx * vdx + udy * vdy)"
-                                                      axi="re_function_k(value1, re_ks, re_a, re_m, re_n) * r * (udr * vdr + udz * vdz)"/>
-    <module:matrix_form id="conductivity_derivative" i="1" j="1" planar="- re_function_dkdh(value1, re_ks, re_a, re_m, re_n) * udy * vval"
-                                                                 axi="- re_function_dkdh(value1, re_ks, re_a, re_m, re_n) * udz * vval"/>
-    <module:matrix_form id="conductivity_jacobian" i="1" j="1" planar="re_function_dkdh(value1, re_ks, re_a, re_m, re_n) * uval * (updx * vdx + updy * vdy)"
-                                                               axi="re_function_dkdh(value1, re_ks, re_a, re_m, re_n) * r * uval * (updr * vdr + updz * vdz)"/>
-    <module:matrix_form id="conductivity_derivative_jacobian" i="1" j="1" planar="- re_function_ddkdhh(value1, re_ks, re_a, re_m, re_n) * uval * updy * vval"
-                                                                          axi="- re_function_ddkdhh(value1, re_ks, re_a, re_m, re_n) * r * uval * updz * vval"/>
-    <module:matrix_form id="time_mat" i="1" j="1" planar="re_function_c(value1, re_ks, re_a, re_m, re_n, re_st, re_theta_s, re_theta_r) * uval * vval * timedermat"
-                                                  axi="re_function_c(value1, re_ks, re_a, re_m, re_n, re_st, re_theta_s, re_theta_r) * r * uval * vval * timedermat" />
-    <module:vector_form id="time_vec" i="1" j="1" planar="re_function_c(value1, re_ks, re_a, re_m, re_n, re_st, re_theta_s, re_theta_r) * timedervec * vval"
-                                                  axi="re_function_c(value1, re_ks, re_a, re_m, re_n, re_st, re_theta_s, re_theta_r) * r * timedervec * vval"/>
+    <module:matrix_form id="conductivity" i="1" j="1" planar="re_k(value1) * (udx * vdx + udy * vdy)"
+                                                      axi="re_k(value1) * r * (udr * vdr + udz * vdz)"/>
+    <module:matrix_form id="conductivity_derivative" i="1" j="1" planar="- re_dkdh(value1) * udy * vval"
+                                                                 axi="- re_dkdh(value1) * udz * vval"/>
+    <module:matrix_form id="conductivity_jacobian" i="1" j="1" planar="re_dkdh(value1) * uval * (updx * vdx + updy * vdy)"
+                                                               axi="re_dkdh(value1) * r * uval * (updr * vdr + updz * vdz)"/>
+    <module:matrix_form id="conductivity_derivative_jacobian" i="1" j="1" planar="- re_ddkdhh(value1) * uval * updy * vval"
+                                                                          axi="- re_ddkdhh(value1) * r * uval * updz * vval"/>
+    <module:matrix_form id="time_mat" i="1" j="1" planar="re_c(value1) * uval * vval * timedermat"
+                                                  axi="re_c(value1) * r * uval * vval * timedermat" />
+    <module:vector_form id="time_vec" i="1" j="1" planar="re_c(value1) * timedervec * vval"
+                                                  axi="re_c(value1) * r * timedervec * vval"/>
     
     <module:weakforms_volume>
       <module:weakform_volume analysistype="steadystate" equation="-\, \div \left( \lambda\,\, \grad T \right) + k c_\mathrm{p} \left(\vec{v} \cdot \grad T\right) = Q">
@@ -104,7 +117,7 @@
         <module:linearity_option type="linear">
           <module:matrix_form id="conductivity" />
           <module:matrix_form id="conductivity_derivative" />
-      <module:matrix_form id="time_mat" />
+          <module:matrix_form id="time_mat" />
 	  <module:vector_form id="time_vec" />
         </module:linearity_option>
 
@@ -123,8 +136,8 @@
         <module:linearity_option type="picard">
         <module:matrix_form id="conductivity" />
         <module:matrix_form id="conductivity_derivative" />
-    <module:matrix_form id="time_mat" />
-    <module:vector_form id="time_vec" />
+        <module:matrix_form id="time_mat" />
+        <module:vector_form id="time_vec" />
         </module:linearity_option>
 
       </module:weakform_volume>
@@ -169,9 +182,9 @@
         <module:quantity condition="value >= 0" default="0" id="richards_theta_s" name="richards_theta_s" shortname="ts" shortname_html="&lt;i>&amp;theta;&lt;/i>&lt;/i>&lt;sub>s&lt;/sub>" shortname_latex="L/t" unit="L/t" unit_html="Lt&lt;sup>-1&lt;/sup>" unit_latex="L\cdott^{-1}"/>
         <module:quantity condition="value >= 0" default="0" id="richards_theta_r" name="richards_theta_r" shortname="tr" shortname_html="&lt;i>&amp;theta;&lt;/i>&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="L/t" unit="L/t" unit_html="Lt&lt;sup>-1&lt;/sup>" unit_latex="L\cdott^{-1}"/>
 
-        <module:switch id="constitutive_variant" name="Constitutive relations">
+        <module:switch_combo id="constitutive_variant" name="Constitutive relations" implicit_option="van_genuchten">
           <module:switch_option id="van_genuchten" name="van Genuchten" />
-        </module:switch>
+        </module:switch_combo>
       </module:group>
     </module:gui>
     <module:gui type="surface">
@@ -233,170 +246,6 @@
   </module:postprocessor>
 
   <module:cpp>
-  #define count 500
-
-  // K (van Genuchten)
-  static double re_function_k(double value, double k_s, double alpha, double m, double n)
-  {
-      if (value > 0)
-      {
-          return k_s;
-      }
-      else
-      {
-          // static Hermes::Hermes2D::CubicSpline *piece = NULL;
-          static PiecewiseLinear *piece = NULL;
-          if (!piece)
-          {
-              Hermes::vector&lt;double> points;
-              Hermes::vector&lt;double> values;
-
-              double from = - 500.0;
-              double to = 0.0;
-
-              double step = (to - from) / (count - 1);
-              for (int i = 0; i &lt; count; i++)
-              {
-                  double h = from + i * step;
-                  points.push_back(h);
-                  values.push_back(k_s*std::pow((1 + std::pow((-alpha*h),n)),(-m/2))*std::pow((1 -std::pow((-alpha*h),(m*n))*std::pow((1 + std::pow((-alpha*h),n)),(-m))),2));
-              }
-
-              // piece = new Hermes::Hermes2D::CubicSpline(points, values, 0.0, 0.0, true, true, false, false);
-              piece = new PiecewiseLinear(points, values);
-          }
-
-          return piece->value(value);
-      }
-  }
-
-  static Hermes::Ord re_function_k(Hermes::Ord value, double k_s, double alpha, double m, double n)
-  {
-      return Hermes::Ord(10);
-  }
-
-  // dK/dh (van Genuchten)
-  static double re_function_dkdh(double value, double k_s, double alpha, double m, double n)
-  {
-      if (value > 0)
-      {
-          return 0;
-      }
-      else
-      {
-          // static Hermes::Hermes2D::CubicSpline *piece = NULL;
-          static PiecewiseLinear *piece = NULL;
-          if (!piece)
-          {
-              Hermes::vector&lt;double> points;
-              Hermes::vector&lt;double> values;
-
-              double from = - 500.0;
-              double to = 0.0;
-
-              double step = (to - from) / (count - 1);
-              for (int i = 0; i &lt; count; i++)
-              {
-                  double h = from + i * step;
-                  points.push_back(h);
-                  values.push_back(k_s*std::pow((1 + std::pow((-alpha*h),n)),(-m/2))*(1 -std::pow((-alpha*h),(m*n))*std::pow((1 +std::pow((-alpha*h),n)),(-m)))*(-2*m*n*std::pow((-alpha*h),(m*n))*std::pow((1 +std::pow((-alpha*h),n)),(-m))/h +2*m*n*std::pow((-alpha*h),n)*std::pow((-alpha*h),(m*n))*std::pow((1 +std::pow((-alpha*h),n)),(-m))/(h*(1 + std::pow((-alpha*h),n)))) -k_s*m*n*std::pow((-alpha*h),n)*std::pow((1 + std::pow((-alpha*h),n)),(-m/2))*std::pow((1 -std::pow((-alpha*h),(m*n))*std::pow((1 + std::pow((-alpha*h),n)),(-m))),2)/(2*h*(1 +std::pow((-alpha*h),n))));
-              }
-
-              // piece = new Hermes::Hermes2D::CubicSpline(points, values, 0.0, 0.0, true, true, false, false);
-              piece = new PiecewiseLinear(points, values);
-          }
-
-          return piece->value(value);
-      }
-  }
-
-  static Hermes::Ord re_function_dkdh(Hermes::Ord value, double k_s, double alpha, double m, double n)
-  {
-      return Hermes::Ord(10);
-  }
-
-  // ddK/dhh (van Genuchten)
-  static double re_function_ddkdhh(double value, double k_s, double alpha, double m, double n)
-  {
-      if (value > 0)
-      {
-          return 0.0;
-      }
-      else
-      {
-          // static Hermes::Hermes2D::CubicSpline *piece = NULL;
-          static PiecewiseLinear *piece = NULL;
-          if (!piece)
-          {
-              Hermes::vector&lt;double> points;
-              Hermes::vector&lt;double> values;
-
-              double from = - 500.0;
-              double to = 0.0;
-
-              double step = (to - from) / (count - 1);
-              for (int i = 0; i &lt; count; i++)
-              {
-                  double h = from + i * step;
-                  points.push_back(h);
-                  values.push_back(k_s*std::pow((1 + std::pow((-alpha*h),n)),(-m/2))*(1 -std::pow((-alpha*h),(m*n))*std::pow((1 +std::pow((-alpha*h),n)),(-m)))*(-2*std::pow(m,2)*std::pow(n,2)*std::pow((-alpha*h),(m*n))*std::pow((1+ std::pow((-alpha*h),n)),(-m))/std::pow(h,2) +2*m*n*std::pow((-alpha*h),(m*n))*std::pow((1 + std::pow((-alpha*h),n)),(-m))/std::pow(h,2)- 2*m*n*std::pow((-alpha*h),n)*std::pow((-alpha*h),(m*n))*std::pow((1 +std::pow((-alpha*h),n)),(-m))/(std::pow(h,2)*(1 + std::pow((-alpha*h),n))) -2*m*std::pow(n,2)*std::pow((-alpha*h),(2*n))*std::pow((-alpha*h),(m*n))*std::pow((1 +std::pow((-alpha*h),n)),(-m))/(std::pow(h,2)*std::pow((1 + std::pow((-alpha*h),n)),2)) -2*std::pow(m,2)*std::pow(n,2)*std::pow((-alpha*h),(2*n))*std::pow((-alpha*h),(m*n))*std::pow((1+ std::pow((-alpha*h),n)),(-m))/(std::pow(h,2)*std::pow((1 + std::pow((-alpha*h),n)),2)) +2*m*std::pow(n,2)*std::pow((-alpha*h),n)*std::pow((-alpha*h),(m*n))*std::pow((1 +std::pow((-alpha*h),n)),(-m))/(std::pow(h,2)*(1 + std::pow((-alpha*h),n))) +4*std::pow(m,2)*std::pow(n,2)*std::pow((-alpha*h),n)*std::pow((-alpha*h),(m*n))*std::pow((1 +std::pow((-alpha*h),n)),(-m))/(std::pow(h,2)*(1 + std::pow((-alpha*h),n)))) +k_s*std::pow((1 + std::pow((-alpha*h),n)),(-m/2))*(-m*n*std::pow((-alpha*h),(m*n))*std::pow((1+ std::pow((-alpha*h),n)),(-m))/h +m*n*std::pow((-alpha*h),n)*std::pow((-alpha*h),(m*n))*std::pow((1 +std::pow((-alpha*h),n)),(-m))/(h*(1 +std::pow((-alpha*h),n))))*(-2*m*n*std::pow((-alpha*h),(m*n))*std::pow((1 +std::pow((-alpha*h),n)),(-m))/h +2*m*n*std::pow((-alpha*h),n)*std::pow((-alpha*h),(m*n))*std::pow((1 +std::pow((-alpha*h),n)),(-m))/(h*(1 + std::pow((-alpha*h),n)))) -k_s*m*n*std::pow((-alpha*h),n)*std::pow((1 + std::pow((-alpha*h),n)),(-m/2))*(1 -std::pow((-alpha*h),(m*n))*std::pow((1 +std::pow((-alpha*h),n)),(-m)))*(-2*m*n*std::pow((-alpha*h),(m*n))*std::pow((1 +std::pow((-alpha*h),n)),(-m))/h +2*m*n*std::pow((-alpha*h),n)*std::pow((-alpha*h),(m*n))*std::pow((1 +std::pow((-alpha*h),n)),(-m))/(h*(1 + std::pow((-alpha*h),n))))/(h*(1 +std::pow((-alpha*h),n))) + k_s*m*n*std::pow((-alpha*h),n)*std::pow((1 +std::pow((-alpha*h),n)),(-m/2))*std::pow((1 - std::pow((-alpha*h),(m*n))*std::pow((1 +std::pow((-alpha*h),n)),(-m))),2)/(2*std::pow(h,2)*(1 + std::pow((-alpha*h),n))) +k_s*m*std::pow(n,2)*std::pow((-alpha*h),(2*n))*std::pow((1 +std::pow((-alpha*h),n)),(-m/2))*std::pow((1 - std::pow((-alpha*h),(m*n))*std::pow((1 +std::pow((-alpha*h),n)),(-m))),2)/(2*std::pow(h,2)*std::pow((1 +std::pow((-alpha*h),n)),2)) - k_s*m*std::pow(n,2)*std::pow((-alpha*h),n)*std::pow((1 +std::pow((-alpha*h),n)),(-m/2))*std::pow((1 - std::pow((-alpha*h),(m*n))*std::pow((1 +std::pow((-alpha*h),n)),(-m))),2)/(2*std::pow(h,2)*(1 + std::pow((-alpha*h),n))) +k_s*std::pow(m,2)*std::pow(n,2)*std::pow((-alpha*h),(2*n))*std::pow((1 +std::pow((-alpha*h),n)),(-m/2))*std::pow((1 - std::pow((-alpha*h),(m*n))*std::pow((1 +std::pow((-alpha*h),n)),(-m))),2)/(4*std::pow(h,2)*std::pow((1 +std::pow((-alpha*h),n)),2)));
-              }
-
-              // piece = new Hermes::Hermes2D::CubicSpline(points, values, 0.0, 0.0, true, true, false, false);
-              piece = new PiecewiseLinear(points, values);
-          }
-
-          return piece->value(value);
-      }
-  }
-
-  static Hermes::Ord re_function_ddkdhh(Hermes::Ord value, double k_s, double alpha, double m, double n)
-  {
-      return Hermes::Ord(10);
-  }
-
-  // C (van Genuchten)
-  static double re_function_c(double value, double k_s, double alpha, double m, double n, double st, double theta_s, double theta_r)
-  {
-      if (value > 0)
-      {
-          return st;
-      }
-      else
-      {
-          // static Hermes::Hermes2D::CubicSpline *piece = NULL;
-          static PiecewiseLinear *piece = NULL;
-          if (!piece)
-          {
-              Hermes::vector&lt;double> points;
-              Hermes::vector&lt;double> values;
-
-              double from = - 500.0;
-              double to = 0.0;
-
-              double step = (to - from) / (count - 1);
-              for (int i = 0; i &lt; count; i++)
-              {
-                  double h = from + i * step;
-                  points.push_back(h);
-                  values.push_back(st*std::pow((1 + std::pow((-alpha*h),n)),(-m))*(theta_s - theta_r)/theta_s - m*n*std::pow((-alpha*h),n)*std::pow((1 + std::pow((-alpha*h),n)),(-m))*(theta_s - theta_r)/(h*(1 + std::pow((-alpha*h),n))));
-              }
-
-              // piece = new Hermes::Hermes2D::CubicSpline(points, values, 0.0, 0.0, true, true, false, false);
-              piece = new PiecewiseLinear(points, values);
-          }
-
-          return piece->value(value);
-      }
-  }
-
-  static Hermes::Ord re_function_c(Hermes::Ord value, double k_s, double a, double m, double n, double re_st, double re_theta_s, double re_theta_r)
-  {
-      return Hermes::Ord(10);
-  }
-
-  // dC/dh (van Genuchten)
-  // m*n*std::pow((-alpha*h),n)*std::pow((1 + std::pow((-alpha*h),n)),(-m))*(theta_s - theta_r)/(std::pow(h,2)*(1 + std::pow((-alpha*h),n))) + m*std::pow(n,2)*std::pow((-alpha*h),(2*n))*std::pow((1 + std::pow((-alpha*h),n)),(-m))*(theta_s - theta_r)/(std::pow(h,2)*std::pow((1 + std::pow((-alpha*h),n)),2)) + std::pow(m,2)*std::pow(n,2)*std::pow((-alpha*h),(2*n))*std::pow((1 + std::pow((-alpha*h),n)),(-m))*(theta_s - theta_r)/(std::pow(h,2)*std::pow((1 + std::pow((-alpha*h),n)),2)) - m*std::pow(n,2)*std::pow((-alpha*h),n)*std::pow((1 + std::pow((-alpha*h),n)),(-m))*(theta_s - theta_r)/(std::pow(h,2)*(1 + std::pow((-alpha*h),n))) - m*n*storativity*std::pow((-alpha*h),n)*std::pow((1 + std::pow((-alpha*h),n)),(-m))*(theta_s - theta_r)/(theta_s*h*(1 + std::pow((-alpha*h),n)))
   </module:cpp>
 
 </module:module>
