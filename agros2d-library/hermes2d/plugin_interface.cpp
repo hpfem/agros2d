@@ -18,14 +18,42 @@ Scalar SpecialFunction<Scalar>::operator ()(double h) const
 {
 //    if((h > m_bound_hi) || (h < m_bound_low))
 //        std::cout << "mimo " << h << " -> " << m_interpolation->value(h) << std::endl;
-    return m_interpolation->value(h);
+
+//    double value = m_interpolation->value(h);
+//    if((value > 1e5) || (value < -1e5))
+//        std::cout << "velke " << h << " -> " << value  << std::endl;
+//    if(h > m_bound_hi)
+//        std::cout << "mimo " << h << " -> " << value << std::endl;
+
+
+    double value;
+    if((h > m_bound_hi) && m_extrapolation_hi_present)
+        value = m_extrapolation_hi;
+    else if((h < m_bound_low) && m_extrapolation_low_present)
+        value = m_extrapolation_low;
+    else
+        value = m_interpolation->value(h);
+
+        if(!((value < 1e5) && (value > -1e5)))
+            std::cout << "velke " << h << " -> " << value  << std::endl;
+//        if(h > m_bound_hi)
+//            std::cout << "mimo " << h << " -> " << value << std::endl;
+
+
+    return value;
 }
 
 template <typename Scalar>
-void SpecialFunction<Scalar>::setBounds(double bound_low, double bound_hi)
+void SpecialFunction<Scalar>::setBounds(double bound_low, double bound_hi, bool extrapolate_low, bool extrapolate_hi)
 {
     m_bound_low = bound_low;
     m_bound_hi = bound_hi;
+    m_extrapolation_low_present = extrapolate_low;
+    m_extrapolation_hi_present = extrapolate_hi;
+    if(extrapolate_low)
+        m_extrapolation_low = extrapolation_low();
+    if(extrapolate_hi)
+        m_extrapolation_hi = extrapolation_hi();
 }
 
 template <typename Scalar>

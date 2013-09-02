@@ -81,7 +81,7 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
     {{#PARAMETERS}}
     {{SPECIAL_FUNCTION_NAME}}.{{NAME}} = this->{{NAME}}->number(); {{/PARAMETERS}}
     {{SPECIAL_FUNCTION_NAME}}.setVariant("{{SELECTED_VARIANT}}");
-    {{SPECIAL_FUNCTION_NAME}}.setBounds({{FROM}}, {{TO}});
+    {{SPECIAL_FUNCTION_NAME}}.setBounds({{FROM}}, {{TO}}, {{EXTRAPOLATE_LOW_PRESENT}}, {{EXTRAPOLATE_HI_PRESENT}});
     {{SPECIAL_FUNCTION_NAME}}.createInterpolation();{{/SPECIAL_FUNCTION_SOURCE}}
 
 }
@@ -147,7 +147,7 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
     {{#PARAMETERS}}
     {{SPECIAL_FUNCTION_NAME}}.{{NAME}} = this->{{NAME}}->number(); {{/PARAMETERS}}
     {{SPECIAL_FUNCTION_NAME}}.setVariant("{{SELECTED_VARIANT}}");
-    {{SPECIAL_FUNCTION_NAME}}.setBounds({{FROM}}, {{TO}});
+    {{SPECIAL_FUNCTION_NAME}}.setBounds({{FROM}}, {{TO}}, {{EXTRAPOLATE_LOW_PRESENT}}, {{EXTRAPOLATE_HI_PRESENT}});
     {{SPECIAL_FUNCTION_NAME}}.createInterpolation();{{/SPECIAL_FUNCTION_SOURCE}}
 }
 
@@ -306,6 +306,20 @@ Scalar {{SPECIAL_FUNCTION_FULL_NAME}}<Scalar>::value(double h)
     {{#VARIANT}}else if (this->m_variant == QString("{{ID}}"))
         return {{EXPR}};{{/VARIANT}}
     assert(0);
+}
+
+template <typename Scalar>
+Scalar {{SPECIAL_FUNCTION_FULL_NAME}}<Scalar>::extrapolation_low()
+{
+    assert({{EXTRAPOLATE_LOW_PRESENT}});
+    return {{EXTRAPOLATE_LOW}};
+}
+
+template <typename Scalar>
+Scalar {{SPECIAL_FUNCTION_FULL_NAME}}<Scalar>::extrapolation_hi()
+{
+    assert({{EXTRAPOLATE_HI_PRESENT}});
+    return {{EXTRAPOLATE_HI}};
 }
 {{/SPECIAL_FUNCTION_SOURCE}}
 

@@ -239,14 +239,20 @@ public:
     ~SpecialFunction();
     Scalar operator()(double h) const;
     Hermes::Ord operator()(Hermes::Ord h) const { return Hermes::Ord(10); }
-    void setBounds(double bound_low, double bound_hi);
+    void setBounds(double bound_low, double bound_hi, bool extrapolate_low, bool extrapolate_hi);
     void createInterpolation();
     virtual Scalar value(double h) = 0;
+    virtual Scalar extrapolation_low() = 0;
+    virtual Scalar extrapolation_hi() = 0;
     void setVariant(QString variant) { m_variant = variant; }
 protected:
     QSharedPointer<PiecewiseLinear> m_interpolation;
     double m_bound_low;
     double m_bound_hi;
+    bool m_extrapolation_low_present;
+    double m_extrapolation_low;
+    bool m_extrapolation_hi_present;
+    double m_extrapolation_hi;
     double m_count;
     QString m_variant;
 };

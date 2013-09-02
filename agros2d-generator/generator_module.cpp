@@ -1946,6 +1946,26 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function* functi
     functionTemplate->SetValue("SPECIAL_FUNCTION_FULL_NAME", m_module->general().id() + "_function_" + function->shortname());
     functionTemplate->SetValue("FROM", function->bound_low());
     functionTemplate->SetValue("TO", function->bound_hi());
+    if(function->extrapolate_low().present())
+    {
+        functionTemplate->SetValue("EXTRAPOLATE_LOW_PRESENT", "true");
+        functionTemplate->SetValue("EXTRAPOLATE_LOW", function->extrapolate_low().get());
+    }
+    else
+    {
+        functionTemplate->SetValue("EXTRAPOLATE_LOW_PRESENT", "false");
+        functionTemplate->SetValue("EXTRAPOLATE_LOW", "-123456");
+    }
+    if(function->extrapolate_hi().present())
+    {
+        functionTemplate->SetValue("EXTRAPOLATE_HI_PRESENT", "true");
+        functionTemplate->SetValue("EXTRAPOLATE_HI", function->extrapolate_hi().get());
+    }
+    else
+    {
+        functionTemplate->SetValue("EXTRAPOLATE_HI_PRESENT", "false");
+        functionTemplate->SetValue("EXTRAPOLATE_HI", "-123456");
+    }
     foreach(XMLModule::gui gui, m_module->preprocessor().gui())
     {
         if(gui.type() == "volume")

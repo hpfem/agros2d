@@ -34,6 +34,8 @@ public:
 {{#PARAMETERS}}    double {{NAME}};
 {{/PARAMETERS}}
     virtual Scalar value(double h);
+    virtual Scalar extrapolation_low();
+    virtual Scalar extrapolation_hi();
 };
 {{/SPECIAL_FUNCTION_SOURCE}}
 
