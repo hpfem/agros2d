@@ -305,7 +305,6 @@ class MagneticNonlinAxisymmetric(Agros2DTestCase):
         
         self.magnetic.solver = "newton"
         self.magnetic.solver_parameters['tolerance'] = 0.01
-        self.magnetic.solver_parameters['steps'] = 30
         self.magnetic.solver_parameters['damping'] = 'automatic'
         self.magnetic.solver_parameters['jacobian_reuse'] = True
         self.magnetic.solver_parameters['jacobian_reuse_steps'] = 3
@@ -578,7 +577,6 @@ class MagneticHarmonicNonlinPlanar(Agros2DTestCase):
         
         self.magnetic.solver = "newton"
         self.magnetic.solver_parameters['tolerance'] = 0.01
-        self.magnetic.solver_parameters['steps'] = 100
         self.magnetic.solver_parameters['damping_factor'] = 0.7
         self.magnetic.solver_parameters['damping'] = 'automatic'
         self.magnetic.solver_parameters['jacobian_reuse'] = True
@@ -1055,15 +1053,15 @@ if __name__ == '__main__':
 
     suite = ut.TestSuite()
     result = Agros2DTestResult()
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticPlanar))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticAxisymmetric))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticNonlinPlanar))
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticNonlinAxisymmetric))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicPlanar))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicAxisymmetric))
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicNonlinPlanar))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicPlanarTotalCurrent))
+    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticPlanar))
+    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticAxisymmetric))
+    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticNonlinPlanar))
+    ##suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticNonlinAxisymmetric))
+    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicPlanar))
+    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicAxisymmetric))
+    ##suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicNonlinPlanar))
+    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicPlanarTotalCurrent))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicAxisymmetricTotalCurrent))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticTransientPlanar))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticTransientAxisymmetric))
+    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticTransientPlanar))
+    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticTransientAxisymmetric))
     suite.run(result)

@@ -308,13 +308,20 @@ void UnitTestsWidget::showInfoTests(const QString &testID)
 
         ctemplate::TemplateDictionary *itemTemplate = testsTemplate.AddSectionDictionary("ITEM");
 
+
+#if QT_VERSION < 0x050000
+        QString err = Qt::escape(QString::fromStdString(item.error()));
+#else
+        QString err = QString(QString::fromStdString(item.error())).toHtmlEscaped();
+#endif
+
         itemTemplate->SetValue("MODULE", item.module());
         itemTemplate->SetValue("CLS", item.cls());
         itemTemplate->SetValue("NAME", item.name());
         itemTemplate->SetValue("TIME", milisecondsToTime(item.time()).toString("mm:ss.zzz").toStdString());
         itemTemplate->SetValue("STATUS", item.successful() == 1 ?
                                    tr("OK").toStdString() :
-                                   tr("<span style=\"color: red;\" title=\"%1\">ERROR</span>").arg(QString::fromStdString(item.error())).toStdString());
+                                   tr("<span style=\"color: red;\" title=\"%1\">ERROR</span>").arg(err).toStdString());
 
         totalTime += item.time();
         testsTemplate.SetValue("TOTAL_TIME", milisecondsToTime(totalTime).toString("mm:ss.zzz").toStdString());

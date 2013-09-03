@@ -192,7 +192,6 @@ class CoupledProblemsBasic3(Agros2DTestCase):
         self.current.polynomial_order = 2
         self.current.solver = "linear"
         self.current.solver_parameters['tolerance'] = 0.001
-        self.current.solver_parameters['steps'] = 10
         
         self.current.add_boundary("10 V", "current_potential", {"current_potential" : 10})
         self.current.add_boundary("0 V", "current_potential", {"current_potential" : 0})
@@ -207,7 +206,6 @@ class CoupledProblemsBasic3(Agros2DTestCase):
         
         self.heat.solver = "newton"
         self.heat.solver_parameters['tolerance'] = 0.001
-        self.heat.solver_parameters['steps'] = 20
         self.heat.solver_parameters['damping'] = 'fixed'
         self.heat.solver_parameters['damping_factor_increase_steps'] = 1
         self.heat.solver_parameters['jacobian_reuse'] = True

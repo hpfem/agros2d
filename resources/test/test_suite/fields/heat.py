@@ -283,7 +283,6 @@ class HeatTransientAxisymmetric(Agros2DTestCase):
         self.heat.polynomial_order = 5
         self.heat.solver = "linear"
         self.heat.solver_parameters['tolerance'] = 0.001
-        self.heat.solver_parameters['steps'] = 10
         self.heat.transient_initial_condition = 20
         
         self.heat.add_boundary("Flux", "heat_heat_flux", {"heat_heat_flux" : 0})

@@ -430,19 +430,26 @@ int PiecewiseLinear::leftIndex(double x)
 
 double PiecewiseLinear::value(double x)
 {
-    if (x < m_points.front())
+    double value = 0.0;
+
+#pragma omp critical
     {
-        return m_values.front();
+        if (x < m_points.front())
+        {
+            value = m_values.front();
+        }
+        else if (x > m_points.back())
+        {
+            value = m_values[m_size - 1];
+        }
+        else
+        {
+            int leftIdx = leftIndex(x);
+            value = m_values[leftIdx] + m_derivatives[leftIdx] * (x - m_points[leftIdx]);
+        }
     }
-    else if (x > m_points.back())
-    {
-        return m_values[m_size - 1];
-    }
-    else
-    {
-        int leftIdx = leftIndex(x);
-        return m_values[leftIdx] + m_derivatives[leftIdx] * (x - m_points[leftIdx]);
-    }
+
+    return value;
 }
 
 double PiecewiseLinear::derivative(double x)

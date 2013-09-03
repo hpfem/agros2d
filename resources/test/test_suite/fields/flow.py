@@ -12,8 +12,7 @@ class FlowPlanar(Agros2DTestCase):
         # disable view
         agros2d.view.mesh.disable()
         agros2d.view.post2d.disable()
-        
-        # fields
+
         # flow
         self.flow = agros2d.field("flow")
         self.flow.analysis_type = "steadystate"
@@ -91,7 +90,6 @@ class FlowAxisymmetric(Agros2DTestCase):
         agros2d.view.mesh.disable()
         agros2d.view.post2d.disable()
         
-        # fields
         # flow
         self.flow = agros2d.field("flow")
         self.flow.analysis_type = "steadystate"
@@ -101,7 +99,6 @@ class FlowAxisymmetric(Agros2DTestCase):
         
         self.flow.solver = "newton"
         self.flow.solver_parameters['tolerance'] = 0.0001
-        self.flow.solver_parameters['steps'] = 10
         self.flow.solver_parameters['damping'] = 'automatic'
         self.flow.solver_parameters['damping_factor'] = 1.0
         self.flow.solver_parameters['jacobian_reuse'] = False
@@ -143,7 +140,7 @@ class FlowAxisymmetric(Agros2DTestCase):
         point = self.flow.local_values(2.137e-01, 8.173e-03)
         self.value_test("Pressure", point["p"], 2.880471)
         self.value_test("Velocity", point["v"], 0.652625)
-        self.value_test("Velocity - r", point["vr"], 0.02563)
+        self.value_test("Velocity - r", point["vr"], 0.02563, 4)
         self.value_test("Velocity - z", point["vz"], -0.652122)
         
         # volume integral
