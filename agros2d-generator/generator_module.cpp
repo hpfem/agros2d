@@ -1464,7 +1464,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
 
         // area of a label
         // assumes, that this->getAreas has allways only one component (it is true at the moment, since in Agros we create one form for each label)
-        dict["area"] = "this->m_markerSource->fieldInfo()->initialMesh()->get_marker_area(this->m_markerSource->fieldInfo()->initialMesh()->get_element_markers_conversion().get_internal_marker(this->getAreas().at(0)).marker)";
+        dict["area"] = "this->markerVolume()";
 
         // functions
         // scalar field
