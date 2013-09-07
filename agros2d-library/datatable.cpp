@@ -135,20 +135,27 @@ double DataTable::value(double x)
     if (!m_valid)
         validate();
 
-    if (m_type == DataTableType_PiecewiseLinear)
+    double value = 0.0;
+
+#pragma omp critical
     {
-        return m_linear.data()->value(x);
+        if (m_type == DataTableType_PiecewiseLinear)
+        {
+            value = m_linear.data()->value(x);
+        }
+        else if (m_type == DataTableType_CubicSpline)
+        {
+            value = m_spline.data()->value(x);
+        }
+        else if (m_type == DataTableType_Constant)
+        {
+            value = m_constant.data()->value(x);
+        }
+        else
+            assert(0);
     }
-    else if(m_type == DataTableType_CubicSpline)
-    {
-        return m_spline.data()->value(x);
-    }
-    else if(m_type == DataTableType_Constant)
-    {
-        return m_constant.data()->value(x);
-    }
-    else
-        assert(0);
+
+    return value;
 }
 
 double DataTable::derivative(double x)

@@ -584,7 +584,7 @@ TimeStepInfo ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
     errorCalculator.calculate_errors(referenceCalculation.solutions(), solutions, false);
     double error = errorCalculator.get_total_error_squared();
 
-    //update
+    // update
     double actualRatio = error / Agros2D::problem()->actualTimeStepLength();
     m_averageErrorToLenghtRatio = ((timeStep - 2) * m_averageErrorToLenghtRatio + actualRatio) / (timeStep - 1);
     //m_averageErrorToLenghtRatio = (m_averageErrorToLenghtRatio + actualRatio) / 2.;
@@ -619,7 +619,7 @@ TimeStepInfo ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
     nextTimeStepLength = min(nextTimeStepLength, Agros2D::problem()->actualTimeStepLength() * maxTimeStepRatio);
     nextTimeStepLength = max(nextTimeStepLength, Agros2D::problem()->actualTimeStepLength() / maxTimeStepRatio);
 
-    Agros2D::log()->printDebug(m_solverID, QString("Time adaptivity, time %1, rel. error %2, tolerance %3, step size %4 -> %5 (%6 %)").
+    Agros2D::log()->printDebug(m_solverID, QString("Time adaptivity, time %1 s, rel. error %2, tolerance %3, step size %4 -> %5 (%6 %)").
                                arg(Agros2D::problem()->actualTime()).
                                arg(error).
                                arg(TOL).
