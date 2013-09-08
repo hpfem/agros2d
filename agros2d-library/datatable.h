@@ -49,7 +49,7 @@ public:
     double value(double x);
     double derivative(double x);
 
-private:
+private:    
     double m_value;
 };
 

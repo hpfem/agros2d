@@ -25,7 +25,7 @@ DataTable::DataTable() : m_valid(false)
 }
 
 DataTable::DataTable(Hermes::vector<double> points, Hermes::vector<double> values)
-    : m_valid(false), m_points(points), m_values(values)
+    : m_valid(false), m_points(points), m_values(values), m_numPoints(0), m_isEmpty(true), m_type(DataTableType_PiecewiseLinear)
 {
     setImplicit();
     checkTable();
@@ -64,6 +64,8 @@ void DataTable::setValues(vector<double> points, vector<double> values)
 void DataTable::setValues(double *keys, double *values, int count)
 {
     inValidate();
+    m_points.clear();
+    m_values.clear();
     for (int i = 0; i < count; i++)
     {
         m_points.push_back(keys[i]);
@@ -95,6 +97,7 @@ void DataTable::checkTable()
             throw AgrosException(QObject::tr("Points must be in ascending order (%1 < %2).").arg(m_points[i]).arg(m_points[i-1]));
         }
     }
+
     m_numPoints = m_points.size();
     m_isEmpty = (m_numPoints == 0);
 }
@@ -126,6 +129,7 @@ void DataTable::setImplicit()
     m_type = DataTableType_PiecewiseLinear;
     m_splineFirstDerivatives = true;
     m_extrapolateConstant = true;
+    m_valid = false;
     m_numPoints = 0;
     m_isEmpty = true;
 }
@@ -135,43 +139,36 @@ double DataTable::value(double x)
     if (!m_valid)
         validate();
 
-    double value = 0.0;
-
-#pragma omp critical
+    if (m_type == DataTableType_PiecewiseLinear)
     {
-        if (m_type == DataTableType_PiecewiseLinear)
-        {
-            value = m_linear.data()->value(x);
-        }
-        else if (m_type == DataTableType_CubicSpline)
-        {
-            value = m_spline.data()->value(x);
-        }
-        else if (m_type == DataTableType_Constant)
-        {
-            value = m_constant.data()->value(x);
-        }
-        else
-            assert(0);
+        return m_linear.data()->value(x);
     }
-
-    return value;
+    else if (m_type == DataTableType_CubicSpline)
+    {
+        return m_spline.data()->value(x);
+    }
+    else if (m_type == DataTableType_Constant)
+    {
+        return m_constant.data()->value(x);
+    }
+    else
+        assert(0);
 }
 
 double DataTable::derivative(double x)
-{
+{    
     if(!m_valid)
         validate();
 
-    if(m_type == DataTableType_PiecewiseLinear)
+    if (m_type == DataTableType_PiecewiseLinear)
     {
         return m_linear.data()->derivative(x);
     }
-    else if(m_type == DataTableType_CubicSpline)
+    else if (m_type == DataTableType_CubicSpline)
     {
         return m_spline.data()->derivative(x);
     }
-    else if(m_type == DataTableType_Constant)
+    else if (m_type == DataTableType_Constant)
     {
         return m_constant.data()->derivative(x);
     }
@@ -205,8 +202,8 @@ void DataTable::validate()
         assert(!m_valid);
 
         assert(m_points.size() == m_values.size());
-        m_numPoints = m_points.size();
-        m_isEmpty = (m_numPoints == 0);
+        m_numPoints = 0;
+        m_isEmpty = true;
 
         if (m_type == DataTableType_PiecewiseLinear)
         {
@@ -243,11 +240,13 @@ void DataTable::validate()
         else
             assert(0);
 
+        m_numPoints = m_points.size();
+        m_isEmpty = (m_numPoints == 0);
         m_valid = true;
     }
     mutex.unlock();
 }
-\
+
 double DataTable::minKey() const
 {
     double min = numeric_limits<double>::max();
@@ -437,26 +436,19 @@ int PiecewiseLinear::leftIndex(double x)
 
 double PiecewiseLinear::value(double x)
 {
-    double value = 0.0;
-
-#pragma omp critical
+    if (x < m_points.front())
     {
-        if (x < m_points.front())
-        {
-            value = m_values.front();
-        }
-        else if (x > m_points.back())
-        {
-            value = m_values[m_size - 1];
-        }
-        else
-        {
-            int leftIdx = leftIndex(x);
-            value = m_values[leftIdx] + m_derivatives[leftIdx] * (x - m_points[leftIdx]);
-        }
+        return m_values.front();
     }
-
-    return value;
+    else if (x > m_points.back())
+    {
+        return m_values[m_size - 1];
+    }
+    else
+    {
+        int leftIdx = leftIndex(x);
+        return m_values[leftIdx] + m_derivatives[leftIdx] * (x - m_points[leftIdx]);
+    }
 }
 
 double PiecewiseLinear::derivative(double x)
