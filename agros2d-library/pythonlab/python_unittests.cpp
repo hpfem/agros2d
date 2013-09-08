@@ -57,11 +57,14 @@ UnitTestsWidget::UnitTestsWidget(QWidget *parent)
 
     // dialog buttons
     btnScenarios = new QPushButton(tr("Scenarios..."));
+    QPushButton *btnUncheckTests = new QPushButton(tr("Uncheck tests"));
+    connect(btnUncheckTests, SIGNAL(clicked()), this, SLOT(uncheckTests()));
 
     QGridLayout *leftLayout = new QGridLayout();
     leftLayout->setContentsMargins(0, 0, 0, 0);
-    leftLayout->addWidget(trvTests, 0, 1, 1, 3);
-    leftLayout->addWidget(btnScenarios, 1, 1);
+    leftLayout->addWidget(trvTests, 0, 0, 1, 4);
+    leftLayout->addWidget(btnScenarios, 1, 0);
+    leftLayout->addWidget(btnUncheckTests, 1, 1);
     leftLayout->setColumnStretch(2, 1);
     leftLayout->addWidget(btnRunTests, 1, 3);
 
@@ -198,6 +201,16 @@ void UnitTestsWidget::readTestsSettingsFromScenario(QAction *action)
 
     // remove variables
     currentPythonEngine()->runExpression("del agros2d_scenario");
+}
+
+void UnitTestsWidget::uncheckTests()
+{
+    for (int i = 0; i < trvTests->topLevelItemCount(); i++)
+    {
+        QTreeWidgetItem *item = trvTests->topLevelItem(i);
+
+        item->setCheckState(0, Qt::Unchecked);
+    }
 }
 
 void UnitTestsWidget::runTestsFromSuite()

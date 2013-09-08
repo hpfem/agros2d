@@ -65,6 +65,7 @@ private slots:
     void doContextMenu(const QPoint &pos);
     void showInfoTest(QAction *act);
 
+    void uncheckTests();
     void runTestsFromSuite();   
     void readTestsSettingsFromScenario(QAction *action);
 };
