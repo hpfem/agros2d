@@ -81,7 +81,7 @@
                                                   axi="re_c(value1) * r * timedervec * vval"/>
     
     <module:weakforms_volume>
-      <module:weakform_volume analysistype="steadystate" equation="-\, \div \left( \lambda\,\, \grad T \right) + k c_\mathrm{p} \left(\vec{v} \cdot \grad T\right) = Q">
+      <module:weakform_volume analysistype="steadystate" equation="-\, \div \left( K\,\, \grad h \right) - \frac{\partial K}{\partial h} \frac{\partial h}{\partial z} = 0">
         <module:quantity id="richards_ks"/>
         <module:quantity id="richards_a"/>
         <module:quantity id="richards_m"/>
@@ -90,10 +90,12 @@
         <module:quantity id="richards_theta_s"/>
         <module:quantity id="richards_theta_r"/>
 
+        <!--
         <module:linearity_option type="linear">
           <module:matrix_form id="conductivity" />
           <module:matrix_form id="conductivity_derivative" />
         </module:linearity_option>
+        -->
 
         <module:linearity_option type="newton">
           <module:matrix_form id="conductivity" />
@@ -105,7 +107,7 @@
         </module:linearity_option>
 
       </module:weakform_volume>
-      <module:weakform_volume analysistype="transient" equation="-\, \div \left( \lambda\,\, \grad T \right) + k c_\mathrm{p} \left(\frac{\partial T}{\partial t} + \vec{v} \cdot \grad T\right) = Q">
+      <module:weakform_volume analysistype="transient" equation="-\, \div \left( K\,\, \grad h \right) - \frac{\partial K}{\partial h} \frac{\partial h}{\partial z} + C \frac{\partial h}{\partial t} = 0">
         <module:quantity id="richards_ks"/>
         <module:quantity id="richards_a"/>
         <module:quantity id="richards_m"/>
@@ -114,12 +116,14 @@
         <module:quantity id="richards_theta_s"/>
         <module:quantity id="richards_theta_r"/>
 
+        <!--
         <module:linearity_option type="linear">
           <module:matrix_form id="conductivity" />
           <module:matrix_form id="conductivity_derivative" />
           <module:matrix_form id="time_mat" />
-	  <module:vector_form id="time_vec" />
+          <module:vector_form id="time_vec" />
         </module:linearity_option>
+        -->
 
         <module:linearity_option type="newton">
           <module:matrix_form id="conductivity" />
@@ -153,17 +157,17 @@
           <module:quantity dependence="space" id="richards_pressure_head"/>
           <module:essential_form axi_linear="re_h" axi_newton="re_h" i="1" id="form" planar_linear="re_h" planar_newton="re_h"/>
         </module:boundary>
-        <module:boundary equation="f = - \lambda \frac{\partial T}{\partial n_0} = f_0 + \alpha \left ( T_\mathrm{ext} - T \right) + \epsilon \sigma \left ( T_\mathrm{amb}^4 - T^4 \right)" id="richards_darcy_velocity" name="Darcy velocity">
+        <module:boundary equation="q = - K \frac{\partial h}{\partial n_0} = q_0 " id="richards_darcy_velocity" name="Darcy velocity">
           <module:quantity id="richards_darcy_velocity"/>
           <module:vector_form axi_linear="r * re_q * vval" axi_newton="r * (- re_q) * vval" i="1" id="form" j="1" planar_linear="re_q * vval" planar_newton="- re_q * vval"/>
         </module:boundary>
       </module:weakform_surface>
       <module:weakform_surface analysistype="transient" default="richards_pressure_head">
-        <module:boundary equation="T = T_0" id="richards_pressure_head" name="Pressure head">
+        <module:boundary equation="h = h_0" id="richards_pressure_head" name="Pressure head">
           <module:quantity dependence="space" id="richards_pressure_head"/>
           <module:essential_form axi_linear="re_h" axi_newton="re_h" i="1" id="form" planar_linear="re_h" planar_newton="re_h"/>
         </module:boundary>
-        <module:boundary equation="f = - \lambda \frac{\partial T}{\partial n_0} = f_0 + \alpha \left ( T_\mathrm{ext} - T \right) + \epsilon \sigma \left ( T_\mathrm{amb}^4 - T^4 \right)" id="richards_darcy_velocity" name="Heat flux">
+        <module:boundary equation="q = - K \frac{\partial h}{\partial n_0} = q_0 " id="richards_darcy_velocity" name="Darcy velocity">
           <module:quantity id="richards_darcy_velocity"/>
           <module:vector_form axi_linear="r * re_q * vval" axi_newton="r * (- re_q) * vval" i="1" id="form" j="1" planar_linear="re_q * vval" planar_newton="- re_q * vval"/>
         </module:boundary>
@@ -203,7 +207,11 @@
       </module:localvariable>
       <module:localvariable format="%5.3e" id="richards_pressure_darcy_velocity" name="Darcy velocity" shortname="q" shortname_html="&lt;i>q&lt;/i>" shortname_latex="q" type="vector" unit="L/T" unit_html="L.T&lt;sup>-1&lt;/sup>" unit_latex="T \cdot T^{-1}">
         <module:expression analysistype="steadystate" axi_r="- tern(value1 > 0, re_ks, re_ks*pow((1 + pow((-re_a*value1), re_n)),(-re_m/2))*pow((1 - pow((-re_a*value1), (re_m*re_n))*pow((1 + pow((-re_a*value1), re_n)), (-re_m))), 2)) * dr1" axi_z="- tern(value1 > 0, re_ks, re_ks*pow((1 + pow((-re_a*value1), re_n)),(-re_m/2))*pow((1 - pow((-re_a*value1), (re_m*re_n))*pow((1 + pow((-re_a*value1), re_n)), (-re_m))), 2)) * dz1" planar_x="- tern(value1 > 0, re_ks, re_ks*pow((1 + pow((-re_a*value1), re_n)),(-re_m/2))*pow((1 - pow((-re_a*value1), (re_m*re_n))*pow((1 + pow((-re_a*value1), re_n)), (-re_m))), 2)) * dx1" planar_y="- tern(value1 > 0, re_ks, re_ks*pow((1 + pow((-re_a*value1), re_n)),(-re_m/2))*pow((1 - pow((-re_a*value1), (re_m*re_n))*pow((1 + pow((-re_a*value1), re_n)), (-re_m))), 2)) * dy1"/>
-        <module:expression analysistype="transient" axi_r="tern(value1 > 0, re_ks, re_ks*pow((1 + pow((-re_a*value1), re_n)),(-re_m/2))*pow((1 - pow((-re_a*value1), (re_m*re_n))*pow((1 + pow((-re_a*value1), re_n)), (-re_m))), 2)) * dr1" axi_z="tern(value1 > 0, re_ks, re_ks*pow((1 + pow((-re_a*value1), re_n)),(-re_m/2))*pow((1 - pow((-re_a*value1), (re_m*re_n))*pow((1 + pow((-re_a*value1), re_n)), (-re_m))), 2)) * dz1" planar_x="tern(value1 > 0, re_ks, re_ks*pow((1 + pow((-re_a*value1), re_n)),(-re_m/2))*pow((1 - pow((-re_a*value1), (re_m*re_n))*pow((1 + pow((-re_a*value1), re_n)), (-re_m))), 2)) * dx1" planar_y="tern(value1 > 0, re_ks, re_ks*pow((1 + pow((-re_a*value1), re_n)),(-re_m/2))*pow((1 - pow((-re_a*value1), (re_m*re_n))*pow((1 + pow((-re_a*value1), re_n)), (-re_m))), 2)) * dy1"/>
+        <module:expression analysistype="transient" axi_r="- tern(value1 > 0, re_ks, re_ks*pow((1 + pow((-re_a*value1), re_n)),(-re_m/2))*pow((1 - pow((-re_a*value1), (re_m*re_n))*pow((1 + pow((-re_a*value1), re_n)), (-re_m))), 2)) * dr1" axi_z="- tern(value1 > 0, re_ks, re_ks*pow((1 + pow((-re_a*value1), re_n)),(-re_m/2))*pow((1 - pow((-re_a*value1), (re_m*re_n))*pow((1 + pow((-re_a*value1), re_n)), (-re_m))), 2)) * dz1" planar_x="- tern(value1 > 0, re_ks, re_ks*pow((1 + pow((-re_a*value1), re_n)),(-re_m/2))*pow((1 - pow((-re_a*value1), (re_m*re_n))*pow((1 + pow((-re_a*value1), re_n)), (-re_m))), 2)) * dx1" planar_y="- tern(value1 > 0, re_ks, re_ks*pow((1 + pow((-re_a*value1), re_n)),(-re_m/2))*pow((1 - pow((-re_a*value1), (re_m*re_n))*pow((1 + pow((-re_a*value1), re_n)), (-re_m))), 2)) * dy1"/>
+      </module:localvariable>
+      <module:localvariable format="%5.3e" id="richards_pressure_hydraulic conductivity" name="Hydraulic conductivity" shortname="K" shortname_html="&lt;i>K&lt;/i>" shortname_latex="K" type="scalar" unit="1/T" unit_html="T&lt;sup>-1&lt;/sup>" unit_latex="T^{-1}">
+        <module:expression analysistype="steadystate" axi="tern(value1 > 0, re_ks, re_ks*pow((1 + pow((-re_a*value1), re_n)),(-re_m/2))*pow((1 - pow((-re_a*value1), (re_m*re_n))*pow((1 + pow((-re_a*value1), re_n)), (-re_m))), 2))" planar="tern(value1 > 0, re_ks, re_ks*pow((1 + pow((-re_a*value1), re_n)),(-re_m/2))*pow((1 - pow((-re_a*value1), (re_m*re_n))*pow((1 + pow((-re_a*value1), re_n)), (-re_m))), 2))"/>
+        <module:expression analysistype="transient" axi="tern(value1 > 0, re_ks, re_ks*pow((1 + pow((-re_a*value1), re_n)),(-re_m/2))*pow((1 - pow((-re_a*value1), (re_m*re_n))*pow((1 + pow((-re_a*value1), re_n)), (-re_m))), 2))" planar="tern(value1 > 0, re_ks, re_ks*pow((1 + pow((-re_a*value1), re_n)),(-re_m/2))*pow((1 - pow((-re_a*value1), (re_m*re_n))*pow((1 + pow((-re_a*value1), re_n)), (-re_m))), 2))" />
       </module:localvariable>
       <!--
       <module:localvariable id="richards_pressure_gradient" name="Pressure gradient" shortname="G" shortname_html="&lt;i>G&lt;/i>" shortname_latex="G" type="vector" unit="-" unit_html="-" unit_latex="-">

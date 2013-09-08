@@ -129,5 +129,6 @@
         <file alias="fields/flow.png">images/fields/flow.png</file>
         <file alias="fields/rf_te.png">images/fields/rf_te.png</file>
         <file alias="fields/rf_tm.png">images/fields/rf_tm.png</file>
+        <file alias="fields/richards.png">images/fields/richards.png</file>
     </qresource>
 </RCC>
