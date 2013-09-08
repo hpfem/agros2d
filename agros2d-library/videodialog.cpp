@@ -268,6 +268,7 @@ void VideoDialog::setTransientStep(int transientStep)
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ShowAxes, chkFigureShowAxes->isChecked());
 
     m_postHermes->setActiveTimeStep(transientStep);
+    m_postHermes->setActiveAdaptivityStep(Agros2D::solutionStore()->lastAdaptiveStep(m_postHermes->activeViewField(), SolutionMode_Normal, transientStep));
     m_postHermes->refresh();
 
     sliderTransientAnimate->setValue(transientStep);
