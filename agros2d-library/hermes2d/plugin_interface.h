@@ -122,7 +122,14 @@ public:
     inline void setTimeDiscretisationTable(BDF2Table** table) { m_table = table; }
 
     // volume (area) of the marekr
-    double markerVolume() const;
+    double markerVolume() const
+    {
+        if (!m_markerVolumeCalculated)
+            calculateMarkerVolume();
+
+        return m_markerVolume;
+    }
+
     virtual void calculateMarkerVolume() const {assert(0);}
 
 protected:

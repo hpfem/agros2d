@@ -81,14 +81,4 @@ void SpecialFunction<Scalar>::createInterpolation()
     mutex.unlock();
 }
 
-double FormAgrosInterface::markerVolume() const
-{
-    if(! m_markerVolumeCalculated)
-        calculateMarkerVolume();
-
-    return m_markerVolume;
-}
-
 template class SpecialFunction<double>;
-template class MatrixFormVolAgros<double>;
-template class VectorFormVolAgros<double>;
