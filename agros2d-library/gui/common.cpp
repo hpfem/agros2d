@@ -181,7 +181,7 @@ void fillComboBoxTimeStep(const FieldInfo* fieldInfo, QComboBox *cmbTimeStep)
             cmbTimeStep->addItem(QObject::tr("Initial step"),
                                  i++);
         else
-            cmbTimeStep->addItem(QObject::tr("Step: %1, time: %2 s").arg(i-1).arg(QString::number(time, 'e', 2)),
+            cmbTimeStep->addItem(QObject::tr("Step: %1, time: %2 %3").arg(i-1).arg(QString::number(time, 'e', 2)).arg(Agros2D::problem()->timeUnit()),
                                  i++);
 
         if (time < timeValue)
