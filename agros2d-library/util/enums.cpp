@@ -284,7 +284,7 @@ void initLists()
     linearityTypeList.insert(LinearityType_Newton, "newton");
 
     // DampingType
-    dampingTypeList.insert(DampingType_Off, "disable");
+    dampingTypeList.insert(DampingType_Off, "disabled");
     dampingTypeList.insert(DampingType_Automatic, "automatic");
     dampingTypeList.insert(DampingType_Fixed, "fixed");
 
