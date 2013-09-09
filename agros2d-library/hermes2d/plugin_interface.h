@@ -166,7 +166,7 @@ protected:
 };
 
 template<typename Scalar>
-class AGROS_LIBRARY_API MatrixFormSurfAgros : public Hermes::Hermes2D::MatrixFormSurf<Scalar>, public FormAgrosInterface
+class MatrixFormSurfAgros : public Hermes::Hermes2D::MatrixFormSurf<Scalar>, public FormAgrosInterface
 {
 public:
     MatrixFormSurfAgros(unsigned int i, unsigned int j, int offsetI, int offsetJ)
@@ -174,7 +174,7 @@ public:
 };
 
 template<typename Scalar>
-class AGROS_LIBRARY_API VectorFormSurfAgros : public Hermes::Hermes2D::VectorFormSurf<Scalar>, public FormAgrosInterface
+class VectorFormSurfAgros : public Hermes::Hermes2D::VectorFormSurf<Scalar>, public FormAgrosInterface
 {
 public:
     VectorFormSurfAgros(unsigned int i, int offsetI, int offsetJ)
@@ -182,7 +182,7 @@ public:
 };
 
 template<typename Scalar>
-class AGROS_LIBRARY_API ExactSolutionScalarAgros : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>, public FormAgrosInterface
+class ExactSolutionScalarAgros : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>, public FormAgrosInterface
 {
 public:
     ExactSolutionScalarAgros(MeshSharedPtr mesh)
@@ -241,7 +241,7 @@ protected:
 const int IMPLIICT_APPROX_COUNT = 500;
 
 template <typename Scalar>
-class AGROS_LIBRARY_API SpecialFunction
+class SpecialFunction
 {
 public:
     SpecialFunction() : m_interpolation(0), m_bound_low(0), m_bound_hi(0), m_count(IMPLIICT_APPROX_COUNT){}
