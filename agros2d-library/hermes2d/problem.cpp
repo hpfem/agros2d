@@ -1123,3 +1123,11 @@ void Problem::doSolveAdaptiveStepWithGUI()
     // solve problem
     solveAdaptiveStep();
 }
+
+QString Problem::timeUnit()
+{
+    if(fieldInfos().size() == 1)
+        return fieldInfos().begin().value()->value(FieldInfo::TimeUnit).toString();
+    else
+        return "s";
+}

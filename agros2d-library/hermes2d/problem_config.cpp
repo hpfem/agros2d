@@ -149,7 +149,6 @@ void ProblemConfig::setDefaultValues()
     m_settingDefault[TimeTotal] = 15000.0;
 }
 
-
 // ********************************************************************************************
 
 ProblemSetting::ProblemSetting()

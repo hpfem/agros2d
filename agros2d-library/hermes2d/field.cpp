@@ -787,6 +787,8 @@ void FieldInfo::setStringKeys()
     m_settingKey[LinearSolverIterPreconditioner] = "LinearSolverIterPreconditioner";
     m_settingKey[LinearSolverIterToleranceAbsolute] = "LinearSolverIterToleranceAbsolute";
     m_settingKey[LinearSolverIterIters] = "LinearSolverIterIters";
+    m_settingKey[TimeUnit] = "TimeUnit";
+
 }
 
 void FieldInfo::setDefaultValues()
@@ -824,4 +826,5 @@ void FieldInfo::setDefaultValues()
     m_settingDefault[LinearSolverIterPreconditioner] = Hermes::Solvers::ParalutionPrecond<double>::ILU;
     m_settingDefault[LinearSolverIterToleranceAbsolute] = 1e-16;
     m_settingDefault[LinearSolverIterIters] = 1000;
+    m_settingDefault[TimeUnit] = "s";
 }
