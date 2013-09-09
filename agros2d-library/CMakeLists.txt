@@ -46,6 +46,7 @@ foreach(XSD_FILE ${xsd_files})
 
   ADD_CUSTOM_COMMAND(
         COMMAND  ${XSD_BIN} ARGS cxx-tree --generate-ostream --hxx-suffix .h --cxx-suffix .cpp --root-element-first --generate-polymorphic --output-dir ${CMAKE_HOME_DIRECTORY}/resources_source/classes --generate-serialization ${XSD_FILE}
+        DEPENDS ${CMAKE_HOME_DIRECTORY}/resources/xsd/${basefile}.xsd
         OUTPUT  ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.cpp ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.h)
 endforeach()
 
@@ -56,12 +57,14 @@ add_custom_target(CYTHON_AGROS2D ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_s
 
 IF(WIN32)
   ADD_CUSTOM_COMMAND(
-        COMMAND   C:/Python27/Scripts/cython.py ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
-        OUTPUT   ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
+        COMMAND C:/Python27/Scripts/cython.py ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
+        DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
+        OUTPUT  ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
 ELSE()
   ADD_CUSTOM_COMMAND(
-        COMMAND   cython ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
-        OUTPUT   ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
+        COMMAND cython ARGS --cplus ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
+        DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx
+        OUTPUT  ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
 ENDIF()
 
 SET(SOURCES value.cpp
