@@ -89,41 +89,6 @@ double FormAgrosInterface::markerVolume() const
     return m_markerVolume;
 }
 
-template<typename Scalar>
-void MatrixFormVolAgros<Scalar>::calculateMarkerVolume() const
-{
-    QMutex mutex;
-    mutex.lock();
-    {
-        if(!m_markerVolumeCalculated)
-        {
-            MeshSharedPtr initialMesh = this->m_markerSource->fieldInfo()->initialMesh();
-            //Hermes::Hermes2D::Mesh::ElementMarkersConversion& markersConversion = initialMesh->get_element_markers_conversion();
-            //qDebug() << markersConversion.size();
-            m_markerVolume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(this->getAreas().at(0)).marker);
-            m_markerVolumeCalculated = true;
-        }
-    }
-    mutex.unlock();
-}
-
-// todo: code repetition. The same fuction in two classes.
-template<typename Scalar>
-void VectorFormVolAgros<Scalar>::calculateMarkerVolume() const
-{
-    QMutex mutex;
-    mutex.lock();
-    {
-        if(!m_markerVolumeCalculated)
-        {
-            MeshSharedPtr initialMesh = this->m_markerSource->fieldInfo()->initialMesh();
-            m_markerVolume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(this->getAreas().at(0)).marker);
-            m_markerVolumeCalculated = true;
-        }
-    }
-    mutex.unlock();
-}
-
 template class SpecialFunction<double>;
 template class MatrixFormVolAgros<double>;
 template class VectorFormVolAgros<double>;

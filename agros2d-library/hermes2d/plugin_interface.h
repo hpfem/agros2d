@@ -146,21 +146,50 @@ protected:
 
 // weakforms
 template<typename Scalar>
-class AGROS_LIBRARY_API MatrixFormVolAgros : public Hermes::Hermes2D::MatrixFormVol<Scalar>, public FormAgrosInterface
+class MatrixFormVolAgros : public Hermes::Hermes2D::MatrixFormVol<Scalar>, public FormAgrosInterface
 {
 public:
     MatrixFormVolAgros(unsigned int i, unsigned int j, int offsetI, int offsetJ)
         : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j), FormAgrosInterface(offsetI, offsetJ) {}
-    virtual void calculateMarkerVolume() const;
+    virtual void calculateMarkerVolume() const
+    {
+        QMutex mutex;
+        mutex.lock();
+        {
+            if(!m_markerVolumeCalculated)
+            {
+                MeshSharedPtr initialMesh = this->m_markerSource->fieldInfo()->initialMesh();
+                //Hermes::Hermes2D::Mesh::ElementMarkersConversion& markersConversion = initialMesh->get_element_markers_conversion();
+                //qDebug() << markersConversion.size();
+                m_markerVolume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(this->getAreas().at(0)).marker);
+                m_markerVolumeCalculated = true;
+            }
+        }
+        mutex.unlock();
+    }
 };
 
 template<typename Scalar>
-class AGROS_LIBRARY_API VectorFormVolAgros : public Hermes::Hermes2D::VectorFormVol<Scalar>, public FormAgrosInterface
+class VectorFormVolAgros : public Hermes::Hermes2D::VectorFormVol<Scalar>, public FormAgrosInterface
 {
 public:
     VectorFormVolAgros(unsigned int i, int offsetI, int offsetJ, int *offsetTimeExt)
         : Hermes::Hermes2D::VectorFormVol<Scalar>(i), FormAgrosInterface(offsetI, offsetJ), m_offsetTimeExt(offsetTimeExt) {}
-    virtual void calculateMarkerVolume() const;
+    virtual void calculateMarkerVolume() const
+    {
+        QMutex mutex;
+        mutex.lock();
+        {
+            if(!m_markerVolumeCalculated)
+            {
+                MeshSharedPtr initialMesh = this->m_markerSource->fieldInfo()->initialMesh();
+                m_markerVolume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(this->getAreas().at(0)).marker);
+                m_markerVolumeCalculated = true;
+            }
+        }
+        mutex.unlock();
+    }
+
 protected:
     int *m_offsetTimeExt;
 };
