@@ -168,7 +168,7 @@ void SceneFieldWidget::createContent()
                 {
                     textEdit->setTitle(row.name());
                     layoutGroup->addWidget(textEdit, index, 0,1,2);
-                    connect(textEdit, SIGNAL(enableFields(QString, bool)), this, SIGNAL(enableFields(QString, bool)));
+                    connect(textEdit, SIGNAL(enableFields(QString, bool)), this, SIGNAL(doEnableFields(QString, bool)));
                 }
                 else
                 {

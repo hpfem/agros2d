@@ -178,13 +178,13 @@
   <module:preprocessor>
     <module:gui type="volume">
       <module:group>        
-        <module:quantity condition="value >= 0" default="0" id="richards_ks" name="richards_ks" shortname="ks" shortname_html="&lt;i>k&lt;/i>&lt;sub>s&lt;/sub>" shortname_latex="L/t" unit="L/t" unit_html="Lt&lt;sup>-1&lt;/sup>" unit_latex="L\cdott^{-1}"/>
-        <module:quantity condition="value >= 0" default="0" id="richards_a" name="richards_a" shortname="a" shortname_html="&lt;i>a&lt;/i>" shortname_latex="L/t" unit="L/t" unit_html="Lt&lt;sup>-1&lt;/sup>" unit_latex="L\cdott^{-1}"/>
-        <module:quantity condition="value >= 0" default="0" id="richards_m" name="richards_m" shortname="m" shortname_html="&lt;i>m&lt;/i>" shortname_latex="L/t" unit="L/t" unit_html="Lt&lt;sup>-1&lt;/sup>" unit_latex="L\cdott^{-1}"/>
-        <module:quantity condition="value >= 0" default="0" id="richards_n" name="richards_n" shortname="n" shortname_html="&lt;i>n&lt;/i>" shortname_latex="L/t" unit="L/t" unit_html="Lt&lt;sup>-1&lt;/sup>" unit_latex="L\cdott^{-1}"/>
-        <module:quantity condition="value >= 0" default="0" id="richards_storativity" name="richards_storativity" shortname="st" shortname_html="&lt;i>st&lt;/i>" shortname_latex="L/t" unit="L/t" unit_html="Lt&lt;sup>-1&lt;/sup>" unit_latex="L\cdott^{-1}"/>
-        <module:quantity condition="value >= 0" default="0" id="richards_theta_s" name="richards_theta_s" shortname="ts" shortname_html="&lt;i>&amp;theta;&lt;/i>&lt;/i>&lt;sub>s&lt;/sub>" shortname_latex="L/t" unit="L/t" unit_html="Lt&lt;sup>-1&lt;/sup>" unit_latex="L\cdott^{-1}"/>
-        <module:quantity condition="value >= 0" default="0" id="richards_theta_r" name="richards_theta_r" shortname="tr" shortname_html="&lt;i>&amp;theta;&lt;/i>&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="L/t" unit="L/t" unit_html="Lt&lt;sup>-1&lt;/sup>" unit_latex="L\cdott^{-1}"/>
+        <module:quantity condition="value >= 0" default="0" id="richards_ks" name="richards_ks" shortname="ks" shortname_html="&lt;i>k&lt;/i>&lt;sub>s&lt;/sub>" shortname_latex="K_\mathrm{s}" unit="L/t" unit_html="Lt&lt;sup>-1&lt;/sup>" unit_latex="L\cdott^{-1}"/>
+        <module:quantity condition="value >= 0" default="0" id="richards_a" name="richards_a" shortname="a" shortname_html="&lt;i>&amp;alpha;&lt;/i>" shortname_latex="\alpha" unit="1/L" unit_html="L&lt;sup>-1&lt;/sup>" unit_latex="L^{-1}"/>
+        <module:quantity condition="value >= 0" default="0" id="richards_m" name="richards_m" shortname="m" shortname_html="&lt;i>m&lt;/i>" shortname_latex="m" unit="-" unit_html="-" unit_latex="-"/>
+        <module:quantity condition="value >= 0" default="0" id="richards_n" name="richards_n" shortname="n" shortname_html="&lt;i>n&lt;/i>" shortname_latex="n" unit="-" unit_html="-" unit_latex="-"/>
+        <module:quantity condition="value >= 0" default="0" id="richards_storativity" name="richards_storativity" shortname="st" shortname_html="&lt;i>st&lt;/i>" shortname_latex="st" unit_html="L&lt;sup>-1&lt;/sup>" unit_latex="L^{-1}"/>
+        <module:quantity condition="value >= 0" default="0" id="richards_theta_s" name="richards_theta_s" shortname="ts" shortname_html="&lt;i>&amp;theta;&lt;/i>&lt;/i>&lt;sub>s&lt;/sub>" shortname_latex="\theta_\mathrm{s}" unit="-" unit_html="-" unit_latex="-"/>
+        <module:quantity condition="value >= 0" default="0" id="richards_theta_r" name="richards_theta_r" shortname="tr" shortname_html="&lt;i>&amp;theta;&lt;/i>&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="\theta_\mathrm{r}" unit="-" unit_html="-" unit_latex="-"/>
 
         <module:switch_combo id="constitutive_variant" name="Constitutive relations" implicit_option="van_genuchten">
           <module:switch_option id="van_genuchten" name="van Genuchten" />
@@ -193,8 +193,8 @@
     </module:gui>
     <module:gui type="surface">
       <module:group>
-        <module:quantity condition="" default="0" id="richards_pressure_head" name="Pressure head" shortname="h" shortname_html="&lt;i>ph&lt;/i>" shortname_latex="h" unit="m" unit_html="m" unit_latex="m"/>
-        <module:quantity condition="" default="0" id="richards_darcy_velocity" name="Darcy velocity" shortname="q" shortname_html="&lt;i>f&lt;/i>" shortname_latex="" unit="?" unit_html="?" unit_latex="?"/>
+        <module:quantity condition="" default="0" id="richards_pressure_head" name="Pressure head" shortname="h" shortname_html="&lt;i>h&lt;/i>" shortname_latex="h" unit="L" unit_html="L" unit_latex="L"/>
+        <module:quantity condition="" default="0" id="richards_darcy_velocity" name="Darcy velocity" shortname="q" shortname_html="&lt;i>q&lt;/i>" shortname_latex="q" unit="L/T" unit_html="L.T&lt;sup>-1&lt;/sup>" unit_latex="T \cdot T^{-1}"/>
       </module:group>
     </module:gui>
   </module:preprocessor>
