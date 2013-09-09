@@ -146,7 +146,7 @@ protected:
 
 // weakforms
 template<typename Scalar>
-class MatrixFormVolAgros : public Hermes::Hermes2D::MatrixFormVol<Scalar>, public FormAgrosInterface
+class AGROS_LIBRARY_API MatrixFormVolAgros : public Hermes::Hermes2D::MatrixFormVol<Scalar>, public FormAgrosInterface
 {
 public:
     MatrixFormVolAgros(unsigned int i, unsigned int j, int offsetI, int offsetJ)
@@ -155,7 +155,7 @@ public:
 };
 
 template<typename Scalar>
-class VectorFormVolAgros : public Hermes::Hermes2D::VectorFormVol<Scalar>, public FormAgrosInterface
+class AGROS_LIBRARY_API VectorFormVolAgros : public Hermes::Hermes2D::VectorFormVol<Scalar>, public FormAgrosInterface
 {
 public:
     VectorFormVolAgros(unsigned int i, int offsetI, int offsetJ, int *offsetTimeExt)
@@ -166,7 +166,7 @@ protected:
 };
 
 template<typename Scalar>
-class MatrixFormSurfAgros : public Hermes::Hermes2D::MatrixFormSurf<Scalar>, public FormAgrosInterface
+class AGROS_LIBRARY_API MatrixFormSurfAgros : public Hermes::Hermes2D::MatrixFormSurf<Scalar>, public FormAgrosInterface
 {
 public:
     MatrixFormSurfAgros(unsigned int i, unsigned int j, int offsetI, int offsetJ)
@@ -174,7 +174,7 @@ public:
 };
 
 template<typename Scalar>
-class VectorFormSurfAgros : public Hermes::Hermes2D::VectorFormSurf<Scalar>, public FormAgrosInterface
+class AGROS_LIBRARY_API VectorFormSurfAgros : public Hermes::Hermes2D::VectorFormSurf<Scalar>, public FormAgrosInterface
 {
 public:
     VectorFormSurfAgros(unsigned int i, int offsetI, int offsetJ)
@@ -182,7 +182,7 @@ public:
 };
 
 template<typename Scalar>
-class ExactSolutionScalarAgros : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>, public FormAgrosInterface
+class AGROS_LIBRARY_API ExactSolutionScalarAgros : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>, public FormAgrosInterface
 {
 public:
     ExactSolutionScalarAgros(MeshSharedPtr mesh)
@@ -241,7 +241,7 @@ protected:
 const int IMPLIICT_APPROX_COUNT = 500;
 
 template <typename Scalar>
-class SpecialFunction
+class AGROS_LIBRARY_API SpecialFunction
 {
 public:
     SpecialFunction() : m_interpolation(0), m_bound_low(0), m_bound_hi(0), m_count(IMPLIICT_APPROX_COUNT){}
