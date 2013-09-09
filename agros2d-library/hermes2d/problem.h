@@ -151,6 +151,8 @@ public:
 
     QList<QPair<double, bool> > timeStepHistory() const { return m_timeHistory; }
 
+    QString timeUnit();
+
 private:
     ProblemConfig *m_config;
     ProblemSetting *m_setting;

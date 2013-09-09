@@ -1124,6 +1124,7 @@ void ProblemWidget::createControls()
     txtTransientOrder->setMaximum(3);
     txtTransientTimeTotal = new LineEditDouble(1.0);
     txtTransientTimeTotal->setBottom(0.0);
+    lblTransientTimeTotal = new QLabel("Total time");
     txtTransientTolerance = new LineEditDouble(0.1);
     txtTransientTolerance->setBottom(0.0);
     txtTransientSteps = new QSpinBox();
@@ -1142,7 +1143,7 @@ void ProblemWidget::createControls()
     layoutTransientAnalysis->addWidget(txtTransientOrder, 1, 1);
     layoutTransientAnalysis->addWidget(new QLabel(tr("Tolerance:")), 2, 0);
     layoutTransientAnalysis->addWidget(txtTransientTolerance, 2, 1);
-    layoutTransientAnalysis->addWidget(new QLabel(tr("Total time (s):")), 3, 0);
+    layoutTransientAnalysis->addWidget(lblTransientTimeTotal, 3, 0);
     layoutTransientAnalysis->addWidget(txtTransientTimeTotal, 3, 1);
     layoutTransientAnalysis->addWidget(lblTransientSteps, 4, 0);
     layoutTransientAnalysis->addWidget(txtTransientSteps, 4, 1);
@@ -1248,6 +1249,8 @@ void ProblemWidget::updateControls()
     if (cmbTransientMethod->currentIndex() == -1)
         cmbTransientMethod->setCurrentIndex(0);
 
+    lblTransientTimeTotal->setText(QString("Total time (%1)").arg(Agros2D::problem()->timeUnit()));
+
     // couplings
     fieldsToolbar->refresh();
     couplingsWidget->refresh();
@@ -1301,7 +1304,7 @@ void ProblemWidget::changedWithClear()
 
 void ProblemWidget::transientChanged()
 {
-    lblTransientTimeStep->setText(QString("%1 s").arg(txtTransientTimeTotal->value() / txtTransientSteps->value()));
+    lblTransientTimeStep->setText(QString("%1 %2").arg(txtTransientTimeTotal->value() / txtTransientSteps->value()).arg(Agros2D::problem()->timeUnit()));
 
     if (((TimeStepMethod) Agros2D::problem()->config()->value(ProblemConfig::TimeMethod).toInt()) == TimeStepMethod_BDFTolerance)
     {

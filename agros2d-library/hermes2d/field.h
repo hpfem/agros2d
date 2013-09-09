@@ -92,7 +92,8 @@ public:
         LinearSolverIterMethod,
         LinearSolverIterPreconditioner,
         LinearSolverIterToleranceAbsolute,
-        LinearSolverIterIters
+        LinearSolverIterIters,
+        TimeUnit
     };
 
     // analysis type

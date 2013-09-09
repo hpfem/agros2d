@@ -8,6 +8,7 @@
         <module:field_config>
           <field_item field_key="NewtonDampingCoeff" field_value="0.8"/>
           <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
+          <field_item field_key="TimeUnit" field_value="days"/>
         </module:field_config>
       </module:analysis>
       <module:analysis id="transient" name="Transient" solutions="1" type="transient"/>

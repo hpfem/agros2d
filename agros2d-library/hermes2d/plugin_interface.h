@@ -108,10 +108,10 @@ const int OFFSET_NON_DEF = -100;
 class FormAgrosInterface
 {
 public:
-    FormAgrosInterface(int offsetI, int offsetJ) : m_markerSource(NULL), m_markerTarget(NULL), m_table(NULL), m_offsetI(offsetI), m_offsetJ(offsetJ) {}
+    FormAgrosInterface(int offsetI, int offsetJ) : m_markerSource(NULL), m_markerTarget(NULL), m_table(NULL), m_offsetI(offsetI), m_offsetJ(offsetJ), m_markerVolumeCalculated(false) {}
 
     // source or single marker
-    virtual inline void setMarkerSource(Marker *marker) { m_markerSource = marker; }
+    virtual inline void setMarkerSource(Marker *marker) { m_markerSource = marker; m_markerVolumeCalculated = false;}
     inline Marker *markerSource() { assert(m_markerSource); return m_markerSource; }
 
     // target marker
@@ -120,6 +120,10 @@ public:
 
     // time discretisation table
     inline void setTimeDiscretisationTable(BDF2Table** table) { m_table = table; }
+
+    // volume (area) of the marekr
+    double markerVolume() const;
+    virtual void calculateMarkerVolume() const {assert(0);}
 
 protected:
     // source or single marker
@@ -135,6 +139,9 @@ protected:
     // and the original position
     int m_offsetI;
     int m_offsetJ;
+
+    mutable bool m_markerVolumeCalculated;
+    mutable double m_markerVolume;
 };
 
 // weakforms
@@ -144,6 +151,7 @@ class MatrixFormVolAgros : public Hermes::Hermes2D::MatrixFormVol<Scalar>, publi
 public:
     MatrixFormVolAgros(unsigned int i, unsigned int j, int offsetI, int offsetJ)
         : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j), FormAgrosInterface(offsetI, offsetJ) {}
+    virtual void calculateMarkerVolume() const;
 };
 
 template<typename Scalar>
@@ -152,6 +160,7 @@ class VectorFormVolAgros : public Hermes::Hermes2D::VectorFormVol<Scalar>, publi
 public:
     VectorFormVolAgros(unsigned int i, int offsetI, int offsetJ, int *offsetTimeExt)
         : Hermes::Hermes2D::VectorFormVol<Scalar>(i), FormAgrosInterface(offsetI, offsetJ), m_offsetTimeExt(offsetTimeExt) {}
+    virtual void calculateMarkerVolume() const;
 protected:
     int *m_offsetTimeExt;
 };
