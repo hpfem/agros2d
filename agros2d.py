@@ -88,7 +88,7 @@ def source_package(VERSION):
     if (os.path.exists(temp)):
         shutil.rmtree(temp)
 
-    ignored = ['tmp', '.git*', 'test']
+    ignored = ['tmp', '.git*']
     shutil.copytree('./', temp, ignore=shutil.ignore_patterns(*ignored))
 
     os.chdir(temp)
