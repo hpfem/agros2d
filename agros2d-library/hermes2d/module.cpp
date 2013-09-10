@@ -186,6 +186,10 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
         weakFormAgros->setMarkerSource(markerSource);
         // target marker
         weakFormAgros->setMarkerTarget(markerTarget);
+        // volume
+        MeshSharedPtr initialMesh = markerSource->fieldInfo()->initialMesh();
+        double volume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(area.toStdString()).marker);
+        weakFormAgros->setMarkerVolume(volume);
 
         weakForm = weakFormAgros;
     }
@@ -210,6 +214,10 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
         weakFormAgros->setMarkerSource(markerSource);
         // target marker
         weakFormAgros->setMarkerTarget(markerTarget);
+        // volume
+        MeshSharedPtr initialMesh = markerSource->fieldInfo()->initialMesh();
+        double volume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(area.toStdString()).marker);
+        weakFormAgros->setMarkerVolume(volume);
 
         weakForm = weakFormAgros;
     }

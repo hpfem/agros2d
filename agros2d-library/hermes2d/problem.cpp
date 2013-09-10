@@ -569,15 +569,15 @@ void Problem::solveInit(bool reCreateStructure)
         Agros2D::log()->printError(tr("Problem"), e.toString());
     }
 
-    if (reCreateStructure || m_blocks.isEmpty())
-    {
-        createStructure();
-    }
-
     // todo: we should not mesh always, but we would need to refine signals to determine when is it neccesary
     // (whether, e.g., parameters of the mesh have been changed)
     if (!mesh(false))
         throw AgrosSolverException(tr("Could not create mesh"));
+
+    if (reCreateStructure || m_blocks.isEmpty())
+    {
+        createStructure();
+    }
 }
 
 void Problem::doAbortSolve()

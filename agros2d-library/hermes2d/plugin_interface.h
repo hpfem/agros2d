@@ -32,6 +32,7 @@
 
 #include "hermes2d/module.h"
 #include "hermes2d/marker.h"
+#include "hermes2d/field.h"
 
 #include "../../resources_source/classes/coupling_xml.h"
 
@@ -108,29 +109,22 @@ const int OFFSET_NON_DEF = -100;
 class FormAgrosInterface
 {
 public:
-    FormAgrosInterface(int offsetI, int offsetJ) : m_markerSource(NULL), m_markerTarget(NULL), m_table(NULL), m_offsetI(offsetI), m_offsetJ(offsetJ), m_markerVolumeCalculated(false) {}
+    FormAgrosInterface(int offsetI, int offsetJ) : m_markerSource(NULL), m_markerTarget(NULL), m_table(NULL), m_offsetI(offsetI), m_offsetJ(offsetJ), m_markerVolume(0.0) {}
 
     // source or single marker
-    virtual inline void setMarkerSource(Marker *marker) { m_markerSource = marker; m_markerVolumeCalculated = false;}
+    virtual void setMarkerSource(Marker *marker) { m_markerSource = marker; }
     inline Marker *markerSource() { assert(m_markerSource); return m_markerSource; }
 
     // target marker
-    virtual inline void setMarkerTarget(Marker *marker) { m_markerTarget = marker; }
+    virtual void setMarkerTarget(Marker *marker) { m_markerTarget = marker; }
     inline Marker *markerTarget() { assert(m_markerTarget); return m_markerTarget; }
 
     // time discretisation table
     inline void setTimeDiscretisationTable(BDF2Table** table) { m_table = table; }
 
-    // volume (area) of the marekr
-    double markerVolume() const
-    {
-        if (!m_markerVolumeCalculated)
-            calculateMarkerVolume();
-
-        return m_markerVolume;
-    }
-
-    virtual void calculateMarkerVolume() const {assert(0);}
+    // volume (area) of the marker
+    void setMarkerVolume(double volume) { m_markerVolume = volume; }
+    inline double markerVolume() const { return m_markerVolume; }
 
 protected:
     // source or single marker
@@ -142,13 +136,12 @@ protected:
 
     // the offset of position in the stiffness matrix for the case of hard coupling; could be done some other way
     // for example, generated form ...something(heat_matrix_linear, etc)...._1_3 could have variables holding 1 and 3 (the original position,
-    // before the schift) offsetI and offsetJ than could be obtained as different of form->i (j), the real position
+    // before the shift) offsetI and offsetJ than could be obtained as different of form->i (j), the real position
     // and the original position
     int m_offsetI;
     int m_offsetJ;
 
-    mutable bool m_markerVolumeCalculated;
-    mutable double m_markerVolume;
+    double m_markerVolume;
 };
 
 // weakforms
@@ -158,22 +151,6 @@ class MatrixFormVolAgros : public Hermes::Hermes2D::MatrixFormVol<Scalar>, publi
 public:
     MatrixFormVolAgros(unsigned int i, unsigned int j, int offsetI, int offsetJ)
         : Hermes::Hermes2D::MatrixFormVol<Scalar>(i, j), FormAgrosInterface(offsetI, offsetJ) {}
-    virtual void calculateMarkerVolume() const
-    {
-        QMutex mutex;
-        mutex.lock();
-        {
-            if(!m_markerVolumeCalculated)
-            {
-                MeshSharedPtr initialMesh = this->m_markerSource->fieldInfo()->initialMesh();
-                //Hermes::Hermes2D::Mesh::ElementMarkersConversion& markersConversion = initialMesh->get_element_markers_conversion();
-                //qDebug() << markersConversion.size();
-                m_markerVolume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(this->getAreas().at(0)).marker);
-                m_markerVolumeCalculated = true;
-            }
-        }
-        mutex.unlock();
-    }
 };
 
 template<typename Scalar>
@@ -182,21 +159,6 @@ class VectorFormVolAgros : public Hermes::Hermes2D::VectorFormVol<Scalar>, publi
 public:
     VectorFormVolAgros(unsigned int i, int offsetI, int offsetJ, int *offsetTimeExt)
         : Hermes::Hermes2D::VectorFormVol<Scalar>(i), FormAgrosInterface(offsetI, offsetJ), m_offsetTimeExt(offsetTimeExt) {}
-    virtual void calculateMarkerVolume() const
-    {
-        QMutex mutex;
-        mutex.lock();
-        {
-            if(!m_markerVolumeCalculated)
-            {
-                MeshSharedPtr initialMesh = this->m_markerSource->fieldInfo()->initialMesh();
-                m_markerVolume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(this->getAreas().at(0)).marker);
-                m_markerVolumeCalculated = true;
-            }
-        }
-        mutex.unlock();
-    }
-
 protected:
     int *m_offsetTimeExt;
 };
