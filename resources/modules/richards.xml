@@ -214,6 +214,10 @@
         <module:expression analysistype="steadystate" axi="re_k(value1)" planar="re_k(value1)"/>
         <module:expression analysistype="transient" axi="re_k(value1)" planar="re_k(value1)" />
       </module:localvariable>
+      <module:localvariable format="%5.3e" id="richards_specific_moisture_capacity" name="Specific moisture capacity" shortname="C" shortname_html="&lt;i>C&lt;/i>" shortname_latex="C" type="scalar" unit="1/L" unit_html="L&lt;sup>-1&lt;/sup>" unit_latex="L^{-1}">
+        <module:expression analysistype="steadystate" axi="re_c(value1)" planar="re_c(value1)"/>
+        <module:expression analysistype="transient" axi="re_c(value1)" planar="re_c(value1)" />
+      </module:localvariable>
       <!--
       <module:localvariable id="richards_pressure_gradient" name="Pressure gradient" shortname="G" shortname_html="&lt;i>G&lt;/i>" shortname_latex="G" type="vector" unit="-" unit_html="-" unit_latex="-">
         <module:expression analysistype="steadystate" axi_r="dr1" axi_z="dz1" planar_x="dx1" planar_y="dy1"/>
