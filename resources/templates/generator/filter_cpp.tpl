@@ -18,6 +18,7 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "{{ID}}_filter.h"
+#include "{{ID}}_interface.h"
 
 #include "util.h"
 #include "util/global.h"
@@ -74,6 +75,13 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
 
     {{#VARIABLE_MATERIAL}}Value *material_{{MATERIAL_VARIABLE}} = &material->value(QLatin1String("{{MATERIAL_VARIABLE}}"));
     {{/VARIABLE_MATERIAL}}
+    {{#SPECIAL_FUNCTION_SOURCE}}
+    {{SPECIAL_FUNCTION_FULL_NAME}}<double> {{SPECIAL_FUNCTION_NAME}};{{#PARAMETERS}}
+    {{SPECIAL_FUNCTION_NAME}}.{{PARAMETER_NAME}} = material_{{PARAMETER_FULL_NAME}}->number(); {{/PARAMETERS}}
+    {{SPECIAL_FUNCTION_NAME}}.setVariant("{{SELECTED_VARIANT}}");
+    {{SPECIAL_FUNCTION_NAME}}.setBounds({{FROM}}, {{TO}}, {{EXTRAPOLATE_LOW_PRESENT}}, {{EXTRAPOLATE_HI_PRESENT}});
+    {{SPECIAL_FUNCTION_NAME}}.setUseInterpolation(false);
+    {{/SPECIAL_FUNCTION_SOURCE}}
 
     {{#VARIABLE_SOURCE}}
     if ((Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}})

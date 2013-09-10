@@ -79,6 +79,23 @@ public:
     virtual QString localeDescription();
 };
 
+// ***********************************************************************************************************************************
+
+{{#SPECIAL_FUNCTION_SOURCE}}
+template <typename Scalar>
+class {{SPECIAL_FUNCTION_FULL_NAME}} : public SpecialFunction<Scalar>
+{
+public:
+{{#PARAMETERS}}    double {{PARAMETER_NAME}};
+{{/PARAMETERS}}
+    virtual Scalar value(double h) const;
+    virtual Scalar extrapolation_low();
+    virtual Scalar extrapolation_hi();
+};
+{{/SPECIAL_FUNCTION_SOURCE}}
+
+// ***********************************************************************************************************************************
+
 {{CPP}}
 
 #endif // {{ID}}_INTERFACE_H

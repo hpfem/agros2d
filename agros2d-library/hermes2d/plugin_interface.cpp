@@ -17,29 +17,21 @@ SpecialFunction<Scalar>::~SpecialFunction()
 template <typename Scalar>
 Scalar SpecialFunction<Scalar>::operator ()(double h) const
 {
-//    if((h > m_bound_hi) || (h < m_bound_low))
-//        std::cout << "mimo " << h << " -> " << m_interpolation->value(h) << std::endl;
-
-//    double value = m_interpolation->value(h);
-//    if((value > 1e5) || (value < -1e5))
-//        std::cout << "velke " << h << " -> " << value  << std::endl;
-//    if(h > m_bound_hi)
-//        std::cout << "mimo " << h << " -> " << value << std::endl;
-
-
     double value;
     if((h > m_bound_hi) && m_extrapolation_hi_present)
         value = m_extrapolation_hi;
     else if((h < m_bound_low) && m_extrapolation_low_present)
         value = m_extrapolation_low;
     else
-        value = m_interpolation->value(h);
-
-        if(!((value < 1e5) && (value > -1e5)))
-            std::cout << "velke " << h << " -> " << value  << std::endl;
-//        if(h > m_bound_hi)
-//            std::cout << "mimo " << h << " -> " << value << std::endl;
-
+    {
+        if(m_useInterpolation)
+        {
+            assert(m_interpolationCreated);
+            value = m_interpolation->value(h);
+        }
+        else
+            value = this->value(h);
+    }
 
     return value;
 }
@@ -63,7 +55,9 @@ void SpecialFunction<Scalar>::createInterpolation()
     QMutex mutex;
     mutex.lock();
     {
+        // when more variants will be implemented, this will not be true
         assert(m_interpolation.isNull());
+        assert(!m_interpolationCreated);
         Hermes::vector<double> points;
         Hermes::vector<double> values;
 
@@ -77,6 +71,7 @@ void SpecialFunction<Scalar>::createInterpolation()
 
         // piece = new Hermes::Hermes2D::CubicSpline(points, values, 0.0, 0.0, true, true, false, false);
         m_interpolation = QSharedPointer<PiecewiseLinear>(new PiecewiseLinear(points, values));
+        m_interpolationCreated = true;
     }
     mutex.unlock();
 }

@@ -53,7 +53,7 @@ private:
     void generatePluginWeakFormSourceFiles();
     void generatePluginWeakFormHeaderFiles();
 
-    void generateWeakForms(ctemplate::TemplateDictionary &output);
+    void generateWeakForms(ctemplate::TemplateDictionary &output, bool withSpecialFunctions = true);
 
     //ToDo: make up better names
     template <typename WeakForm>

@@ -160,6 +160,37 @@ QString {{CLASS}}Interface::localeDescription()
     return tr("{{DESCRIPTION}}");
 }
 
+// ***********************************************************************************************************************************
+
+{{#SPECIAL_FUNCTION_SOURCE}}
+template <typename Scalar>
+Scalar {{SPECIAL_FUNCTION_FULL_NAME}}<Scalar>::value(double h) const
+{
+    if(0)
+    {}
+    {{#VARIANT}}else if (this->m_variant == QString("{{ID}}"))
+        return {{EXPR}};{{/VARIANT}}
+    assert(0);
+}
+
+template <typename Scalar>
+Scalar {{SPECIAL_FUNCTION_FULL_NAME}}<Scalar>::extrapolation_low()
+{
+    assert({{EXTRAPOLATE_LOW_PRESENT}});
+    return {{EXTRAPOLATE_LOW}};
+}
+
+template <typename Scalar>
+Scalar {{SPECIAL_FUNCTION_FULL_NAME}}<Scalar>::extrapolation_hi()
+{
+    assert({{EXTRAPOLATE_HI_PRESENT}});
+    return {{EXTRAPOLATE_HI}};
+}
+{{/SPECIAL_FUNCTION_SOURCE}}
+
+{{#SPECIAL_FUNCTION_SOURCE}}template class {{SPECIAL_FUNCTION_FULL_NAME}}<double>;
+{{/SPECIAL_FUNCTION_SOURCE}}
+
 #if QT_VERSION < 0x050000
 Q_EXPORT_PLUGIN2(agros2d_plugin_{{ID}}, {{CLASS}}Interface)
 #endif

@@ -106,6 +106,11 @@ void Agros2DGeneratorModule::generatePluginInterfaceFiles()
     if (m_module->cpp().present())
         output.SetValue("CPP", m_module->cpp().get());
 
+    foreach(XMLModule::function function, m_module->volume().function())
+    {
+        generateSpecialFunction(&function, output);
+    }
+
     std::string text;
 
     // header - expand template
@@ -121,7 +126,7 @@ void Agros2DGeneratorModule::generatePluginInterfaceFiles()
 
     // source - expand template
     text.clear();
-    generateWeakForms(output);
+    generateWeakForms(output, false);
 
     foreach(QString name, m_names)
     {
@@ -504,7 +509,7 @@ void Agros2DGeneratorModule::generatePluginWeakFormHeaderFiles()
                        QString::fromStdString(text));
 }
 
-void Agros2DGeneratorModule::generateWeakForms(ctemplate::TemplateDictionary &output)
+void Agros2DGeneratorModule::generateWeakForms(ctemplate::TemplateDictionary &output, bool withSpecialFunctions)
 {
     this->m_docString = "";
     foreach(XMLModule::weakform_volume weakform, m_module->volume().weakforms_volume().weakform_volume())
@@ -555,9 +560,12 @@ void Agros2DGeneratorModule::generateWeakForms(ctemplate::TemplateDictionary &ou
         }
     }
 
-    foreach(XMLModule::function function, m_module->volume().function())
+    if(withSpecialFunctions)
     {
-        generateSpecialFunction(&function, output);
+        foreach(XMLModule::function function, m_module->volume().function())
+        {
+            generateSpecialFunction(&function, output);
+        }
     }
 }
 
@@ -663,6 +671,11 @@ void Agros2DGeneratorModule::generatePluginFilterFiles()
                        arg(GENERATOR_PLUGINROOT).
                        arg(id),
                        QString::fromStdString(text));
+
+    foreach(XMLModule::function function, m_module->volume().function())
+    {
+        generateSpecialFunction(&function, output);
+    }
 
     // source - expand template
     text.clear();
@@ -816,6 +829,11 @@ void Agros2DGeneratorModule::generatePluginLocalPointFiles()
                 }
             }
         }
+    }
+
+    foreach(XMLModule::function function, m_module->volume().function())
+    {
+        generateSpecialFunction(&function, output);
     }
 
     // header - save to file
@@ -1990,7 +2008,8 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function* functi
         {
             if(m_module->volume().quantity().at(i).id() == quantity.id())
             {
-                functionParameters->SetValue("NAME", m_module->volume().quantity().at(i).shortname().get().c_str());
+                functionParameters->SetValue("PARAMETER_NAME", m_module->volume().quantity().at(i).shortname().get().c_str());
+                functionParameters->SetValue("PARAMETER_FULL_NAME", m_module->volume().quantity().at(i).id().c_str());
                 break;
             }
         }
