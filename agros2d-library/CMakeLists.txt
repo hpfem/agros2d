@@ -40,7 +40,7 @@ endforeach()
 FILE(GLOB xsd_files "${CMAKE_HOME_DIRECTORY}/resources/xsd/*.xsd")
 foreach(XSD_FILE ${xsd_files})
   GET_FILENAME_COMPONENT(basefile ${XSD_FILE} NAME_WE)
-  add_custom_target(${basefile} ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.cpp ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.h ${CMAKE_HOME_DIRECTORY}/resources/xsd/${basefile}.xsd)
+  add_custom_target(${basefile} ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.cpp ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.h)
 
   # message("\txsdcxx ${basefile}")
 
@@ -53,7 +53,7 @@ endforeach()
 # cython
 # message("Cython files - Agros2D")
 # message("\tcython agros2d.pyx")
-add_custom_target(CYTHON_AGROS2D ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.pyx ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
+add_custom_target(CYTHON_AGROS2D ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/agros2d.cpp)
 
 IF(WIN32)
   ADD_CUSTOM_COMMAND(

@@ -76,4 +76,4 @@ void SpecialFunction<Scalar>::createInterpolation()
     mutex.unlock();
 }
 
-template class SpecialFunction<double>;
+template AGROS_LIBRARY_API class SpecialFunction<double>;
