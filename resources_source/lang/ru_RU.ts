@@ -6272,17 +6272,17 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../3rdparty/quazip/quagzipfile.cpp" line="36"/>
         <source>Opening gzip for both reading and writing is not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Открытие gzip одновременно для чтения и записи не поддерживается</translation>
     </message>
     <message>
         <location filename="../../3rdparty/quazip/quagzipfile.cpp" line="44"/>
         <source>You can open a gzip either for reading or for writing. Which is it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы можете открыть gzip либо для чтения либо для записи.</translation>
     </message>
     <message>
         <location filename="../../3rdparty/quazip/quagzipfile.cpp" line="50"/>
         <source>Could not gzopen() file</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно gzopen() файл </translation>
     </message>
 </context>
 <context>
@@ -6290,7 +6290,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../3rdparty/quazip/quazipfile.cpp" line="217"/>
         <source>ZIP/UNZIP API error %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ZIP/UNZIP API ошибка %1</translation>
     </message>
 </context>
 <context>
@@ -6512,7 +6512,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="447"/>
         <source>At least one label has to be created</source>
-        <translation type="unfinished"></translation>
+        <translation>Хотя бы одна метка должна быть создана</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="972"/>
@@ -6652,22 +6652,22 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1172"/>
         <source>File &apos;%1&apos; is not valid Agros2D data file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл &apos;%1&apos; является недопустимым для Agros2D.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1201"/>
         <source>Data file was transformed to new version and saved to temp dictionary.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл данных конвертирован в новую версию и сохранен в temp.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1220"/>
         <source>It is impossible to transform data file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно конвертировать файл данных.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1224"/>
         <source>File cannot be saved (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно сохранить файл (&apos;%2&apos;).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/scene.cpp" line="1255"/>
@@ -6949,7 +6949,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/scenelabel.cpp" line="361"/>
         <source>Element area (Triangle) (m&lt;sup&gt;2&lt;/sup&gt;):</source>
-        <translation type="unfinished"></translation>
+        <translation>Площадь элемента (Triangle) (м&lt;sup&gt;2&lt;/sup&gt;):</translation>
     </message>
     <message>
         <source>Triangle area (m&lt;sup&gt;2&lt;/sup&gt;):</source>
@@ -7246,7 +7246,7 @@ Tracing</source>
     <message>
         <location filename="../../agros2d-library/sceneview_particle.cpp" line="1191"/>
         <source>Total cpu time %1 ms</source>
-        <translation type="unfinished"></translation>
+        <translation>Общее процессорное время %1 мс</translation>
     </message>
 </context>
 <context>
@@ -7480,22 +7480,22 @@ Tracing</source>
     <message>
         <location filename="../../agros2d-library/pythonlab/remotecontrol.cpp" line="32"/>
         <source>Error: Unable to start the server (agros2d-server): %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: невозможно запустить сервер (agros2d-server): %1.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/remotecontrol.cpp" line="100"/>
         <source>Server error: The host was not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка сервера: Хост не найден.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/remotecontrol.cpp" line="103"/>
         <source>Server error: The connection was refused by the peer. Make sure the agros2d-client server is running.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка сервера: Соединение отклонено. Проверьте, запущен ли agros2d-client.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/remotecontrol.cpp" line="106"/>
         <source>Server error: The following error occurred: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка сервера:%1.</translation>
     </message>
 </context>
 <context>
@@ -8002,12 +8002,12 @@ Tracing</source>
     <message>
         <location filename="../../util/gui/systemoutput.cpp" line="25"/>
         <source>System shell</source>
-        <translation type="unfinished">Системная оболочка</translation>
+        <translation>Системная оболочка</translation>
     </message>
     <message>
         <location filename="../../util/gui/systemoutput.cpp" line="74"/>
         <source>&lt;b&gt;Working directory:&lt;/b&gt; %1&lt;/br&gt;</source>
-        <translation type="unfinished">&lt;b&gt;Рабочий каталог:&lt;/b&gt; %1&lt;/br&gt;</translation>
+        <translation>&lt;b&gt;Рабочий каталог:&lt;/b&gt; %1&lt;/br&gt;</translation>
     </message>
 </context>
 <context>
@@ -8022,108 +8022,108 @@ Tracing</source>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="31"/>
         <source>Data Table</source>
-        <translation type="unfinished">Таблица данных</translation>
+        <translation>Таблица данных</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="96"/>
         <source>Size doesn&apos;t match (%1 &gt; %2).</source>
-        <translation type="unfinished">Размеры не совпадают (%1 &gt; %2).</translation>
+        <translation>Размеры не совпадают (%1 &gt; %2).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="97"/>
         <source>Size doesn&apos;t match (%1 &lt; %2).</source>
-        <translation type="unfinished">Размеры не совпадают (%1 &lt; %2).</translation>
+        <translation>Размеры не совпадают (%1 &lt; %2).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="115"/>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="137"/>
         <source>%1: cannot parse number (line %2).</source>
-        <translation type="unfinished">%1: отсутствует число (строка %2).</translation>
+        <translation>%1: отсутствует число (строка %2).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="125"/>
         <source>%1: points must be in ascending order (line %2).</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: точки должны быть в порядке возрастания (строка %2).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="214"/>
         <source>Show markers</source>
-        <translation type="unfinished">Показать маркеры</translation>
+        <translation>Показать маркеры</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="217"/>
         <source>Show extrapolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать экстраполяцию</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="220"/>
         <source>Derivative chart</source>
-        <translation type="unfinished">График производной</translation>
+        <translation>График производной</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="232"/>
         <source>First</source>
-        <translation type="unfinished"></translation>
+        <translation>Первая</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="233"/>
         <source>Second</source>
-        <translation type="unfinished"></translation>
+        <translation>Вторая</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="242"/>
         <source>Constant</source>
-        <translation type="unfinished">Константа</translation>
+        <translation>Константа</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="243"/>
         <source>Linear function</source>
-        <translation type="unfinished"></translation>
+        <translation>Линейная функция</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="258"/>
         <source>View</source>
-        <translation type="unfinished">Вид</translation>
+        <translation>Вид</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="262"/>
         <source>Interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Интерполяция</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="266"/>
         <source>Derivative to be zero at endpoints</source>
-        <translation type="unfinished"></translation>
+        <translation>Нулевые производные в конечных точках</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="269"/>
         <source>Extrapolate as</source>
-        <translation type="unfinished"></translation>
+        <translation>Экстраполировать как</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="273"/>
         <source>Spline properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Свойства сплайна</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="300"/>
         <source>Ok</source>
-        <translation type="unfinished">Ок</translation>
+        <translation>Ок</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="303"/>
         <source>Close</source>
-        <translation type="unfinished">Закрыть</translation>
+        <translation>Закрыть</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="305"/>
         <source>Plot</source>
-        <translation type="unfinished">График</translation>
+        <translation>График</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/gui/valuedatatabledialog.cpp" line="307"/>
         <source>Material browser</source>
-        <translation type="unfinished">Материалы</translation>
+        <translation>Материалы</translation>
     </message>
 </context>
 <context>
