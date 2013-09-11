@@ -1,8 +1,9 @@
-agros2d (3.0-ubuntu190) raring; urgency=low
+agros2d (3.1-ubuntu205) raring; urgency=low
 
   * welcome screen
   * new dxf library (not fully implemented)
   * speed improvement
+  * Richards equation
   
  -- Pavel Karban <pkarban@gmail.com>  Thu, 23 Jul 2013 12:00:00 +0200
  

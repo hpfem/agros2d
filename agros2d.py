@@ -6,7 +6,7 @@ from subprocess import call
 from glob import glob
 
 CORES = cpu_count()
-VERSION = 3.0
+VERSION = 3.1
 
 DOC_SOURCE_DIR = './resources_source/doc'
 DOC_DIR = './resources/help'
