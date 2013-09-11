@@ -7,7 +7,7 @@ INCLUDE_DIRECTORIES(${CMAKE_HOME_DIRECTORY}/util)
 # cython
 # message("Cython files - PythonLab")
 # message("\tcython pythonlab.pyx")
-add_custom_target(CYTHON_PYTHONLAB ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp)
+add_custom_target(CYTHON_PYTHONLAB ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.cpp DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/python/pythonlab.pyx)
 
 IF(WIN32)
   ADD_CUSTOM_COMMAND(
