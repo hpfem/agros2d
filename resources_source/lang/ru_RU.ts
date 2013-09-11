@@ -5247,65 +5247,65 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="147"/>
         <source>Number of steps needed to increase the damping coefficient is out of range (1 - 5).</source>
-        <translation type="unfinished"></translation>
+        <translation>Кол-во шагов, необходимых для увеличения коэфициента демпфирования, вне диапазона (1–5).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="155"/>
         <source>Sufficient improvement factor for Jacobian reuse is out of range (0.00001 - 1.0).</source>
-        <translation type="unfinished"></translation>
+        <translation>Достаточный фактор улучшения при повторном использования матрицы Якоби вне диапазона (0,00001–1).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="163"/>
         <source>Sufficient improvement factor is out of range (0.00001 - 100).</source>
-        <translation type="unfinished"></translation>
+        <translation>Достаточный фактор улучшения вне диапазона (0,00001–100).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="171"/>
         <source>Maximum steps with reused Jacobian is out of range (1 - 100).</source>
-        <translation type="unfinished"></translation>
+        <translation>Макс. кол-во шагов с повторно использованной матрицей Якоби вне диапазона (1–100).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="184"/>
         <source>Anderson coefficient is out of range (0 - 1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Коэф. Андерсона (0–1). </translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="192"/>
         <source>Number of last vector is out of range (1 - 5).</source>
-        <translation type="unfinished"></translation>
+        <translation>Число последнего вектора вне диапазона (1–5).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="224"/>
         <source>Adaptivity steps is out of range (1 - 100).</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаги адаптивности вне диапазона (1–100).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="232"/>
         <source>Adaptivity threshold must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Порог адаптивности должен быть положителен.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="266"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="274"/>
         <source>Adaptivity back steps is out of range (0 - 100).</source>
-        <translation type="unfinished"></translation>
+        <translation>Обратные шаги адаптивности вне диапазона (1–100).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="287"/>
         <source>Time skip must be greater than or equal to zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>Пропуск времени должен быть больше или равным 0.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="432"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="532"/>
         <source>Invalid parameter &apos;%1&apos;. Valid parameters are &apos;constant&apos; or &apos;linear&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверный параметр &apos;%1&apos;. Допустимые параметны: &apos;constant&apos; или &apos;linear&apos;.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="442"/>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="542"/>
         <source>Invalid parameter &apos;%1&apos;. Valid parameters are &apos;first&apos; or &apos;second&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверный параметр &apos;%1&apos;. Допустимые параметны: &apos;first&apos; или &apos;second&apos;.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyfield.cpp" line="832"/>
@@ -5341,13 +5341,13 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="43"/>
         <source>Node already exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Узел уже существует.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="65"/>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="111"/>
         <source>Edge already exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ребро уже существует.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="98"/>
@@ -5363,7 +5363,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="138"/>
         <source>No edges are defined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не задано ни одного ребра.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="197"/>
@@ -5380,12 +5380,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="218"/>
         <source>Label already exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Метка уже существует.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="247"/>
         <source>No labels are defined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не задана ни одна метка.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pygeometry.cpp" line="323"/>
@@ -5428,7 +5428,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="76"/>
         <source>Trajectories of particles are not solved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Траектории частиц не найдены.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="96"/>
@@ -5443,42 +5443,42 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="119"/>
         <source>Number of particles is out of range (1 - 200).</source>
-        <translation type="unfinished"></translation>
+        <translation>Кол-во частиц вне допустимого диапазона (1–200).</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="127"/>
         <source>Particles dispersion cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Дисперсия частиц не может быть отрицательной.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="135"/>
         <source>Particle mass cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Масса частиц не может быть отрицательной.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="148"/>
         <source>Drag force density cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Плотность тормозящих сил не может быть отрицательной.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="156"/>
         <source>Drag force area cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Площадь тормозящих сил не может быть отрицательной.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="164"/>
         <source>Drag force coefficient cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Коэфициент тормозящих сил не может быть отрицательным.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="199"/>
         <source>Maximum relative error cannot be negative.</source>
-        <translation type="unfinished"></translation>
+        <translation>Максимальная относительная погрешность не может быть отрицательной.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyparticletracing.cpp" line="207"/>
         <source>Maximum number of steps is out of range (10 - 1e5).</source>
-        <translation type="unfinished"></translation>
+        <translation>Макс. кол-во шагов вне диапазона (10–1e5).</translation>
     </message>
     <message>
         <source>Mass must be positive.</source>
@@ -5553,17 +5553,17 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="156"/>
         <source>No fields are defined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не задано ни одно поле.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="159"/>
         <source>Source field &apos;%1&apos; is not defined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Исходное поле &apos;%1&apos; не определено.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="162"/>
         <source>Target field &apos;%1&apos; is not defined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле цели &apos;%1&apos; не определено.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyproblem.cpp" line="247"/>
@@ -5573,7 +5573,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="95"/>
         <source>Grid step must be positive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаг сетки должен быть положительным.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="142"/>
@@ -5593,7 +5593,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="185"/>
         <source>Field &apos;%1&apos; was solved with space adaptivity.</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле &apos;%1&apos; решено с применением пространственной адаптивности.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="303"/>
@@ -5608,7 +5608,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="319"/>
         <source>Logarithm base must be possitive and can not be equal to 1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Основание логарифма должно быть положительным и не равным 1.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/pythonlab/pyview.cpp" line="340"/>
@@ -5771,17 +5771,17 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="466"/>
         <source>Cumulative</source>
-        <translation type="unfinished"></translation>
+        <translation>Кумулятивный</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="468"/>
         <source>Single element</source>
-        <translation type="unfinished"></translation>
+        <translation>Один элемент</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="470"/>
         <source>Levels</source>
-        <translation type="unfinished"></translation>
+        <translation>Уровни</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="482"/>
@@ -5821,67 +5821,67 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="524"/>
         <source>GMSH (exp.) - triangle</source>
-        <translation type="unfinished"></translation>
+        <translation>GMSH (exp.) — треугольная</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="526"/>
         <source>GMSH (exp.) - quad</source>
-        <translation type="unfinished"></translation>
+        <translation>GMSH (exp.) — четырёхугольная</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="528"/>
         <source>GMSH (exp.) - quad Delaunay</source>
-        <translation type="unfinished"></translation>
+        <translation>GMSH (exp.) — четырёхугольная Delaunay</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="668"/>
         <source>PARALUTION (exp.)</source>
-        <translation type="unfinished"></translation>
+        <translation>PARALUTION (exp.)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="782"/>
         <source>CG</source>
-        <translation type="unfinished"></translation>
+        <translation>CG</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="784"/>
         <source>GMRES</source>
-        <translation type="unfinished"></translation>
+        <translation>GMRES</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="786"/>
         <source>BiCGStab</source>
-        <translation type="unfinished"></translation>
+        <translation>BiCGStab</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="798"/>
         <source>Jacobi</source>
-        <translation type="unfinished"></translation>
+        <translation>Якоби</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="800"/>
         <source>ILU</source>
-        <translation type="unfinished"></translation>
+        <translation>ILU</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="802"/>
         <source>MultiColoredSGS</source>
-        <translation type="unfinished"></translation>
+        <translation>MultiColoredSGS</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="804"/>
         <source>MultiColoredILU</source>
-        <translation type="unfinished"></translation>
+        <translation>MultiColoredILU</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="806"/>
         <source>IC</source>
-        <translation type="unfinished"></translation>
+        <translation>IC</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="808"/>
         <source>AIChebyshev</source>
-        <translation type="unfinished"></translation>
+        <translation>AIChebyshev</translation>
     </message>
     <message>
         <source>Triangle</source>
@@ -6096,92 +6096,92 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="705"/>
         <source>No damping</source>
-        <translation type="unfinished"></translation>
+        <translation>Без демпфирования</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="707"/>
         <source>Fixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Фиксированный</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="709"/>
         <source>Automatic</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматический</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="721"/>
         <source>Cubic spline</source>
-        <translation type="unfinished"></translation>
+        <translation>Кубический сплайн</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="723"/>
         <source>Piecewise linear</source>
-        <translation type="unfinished"></translation>
+        <translation>Кусочно-линейный</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="725"/>
         <source>Constant</source>
-        <translation type="unfinished">Константа</translation>
+        <translation>Константа</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="737"/>
         <source>Heun-Euler (2,1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Heun-Euler (2,1)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="739"/>
         <source>Bogacki-Shampine (2,3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bogacki-Shampine (2,3)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="741"/>
         <source>Fehlberg (4,5)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehlberg (4,5)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="743"/>
         <source>Cash-Karp (4,5)</source>
-        <translation type="unfinished"></translation>
+        <translation>Cash-Karp (4,5)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="745"/>
         <source>Dormand-Prince (4,5)</source>
-        <translation type="unfinished"></translation>
+        <translation>Dormand-Prince (4,5)</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="758"/>
         <source>Residual relative to initial norm</source>
-        <translation type="unfinished"></translation>
+        <translation>Невязка в отношении к исходной норме</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="760"/>
         <source>Residual relative to previous norm</source>
-        <translation type="unfinished"></translation>
+        <translation>Невязка в отношении к предыдущей норме</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="762"/>
         <source>Residual ratio to initial norm</source>
-        <translation type="unfinished"></translation>
+        <translation>Соотношение невязки к исходной норме</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="764"/>
         <source>Residual ratio to previous norm</source>
-        <translation type="unfinished"></translation>
+        <translation>Соотношение невязки к предыдущей норме</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="766"/>
         <source>Residual absolute</source>
-        <translation type="unfinished"></translation>
+        <translation>Абсолютная невязка</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="768"/>
         <source>Absolute solution distance from previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Абсолютное расстояние от предыдущего решения</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/enums.cpp" line="770"/>
         <source>Relative solution distance from previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Относительное расстояние от предыдущего решения</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/global.cpp" line="111"/>
@@ -6214,7 +6214,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../agros2d-library/util/loops.cpp" line="88"/>
         <source>Node %1 already visited.</source>
-        <translation type="unfinished"></translation>
+        <translation>Узел %1 уже использован.</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/loops.cpp" line="553"/>
@@ -6231,27 +6231,27 @@ Do you want to save your changes?</source>
         <location filename="../../agros2d-library/hermes2d/problem.cpp" line="812"/>
         <location filename="../../agros2d-library/value.cpp" line="307"/>
         <source>Problem</source>
-        <translation>Проблема</translation>
+        <translation>Задача</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/form_interface.cpp" line="43"/>
         <source>Could not find &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось найти &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../../agros2d-library/util/form_interface.cpp" line="51"/>
         <source>Could not load &apos;%1&apos;. %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось загрузить &apos;%1&apos;. %2 </translation>
     </message>
     <message>
         <location filename="../../agros2d-solver/main.cpp" line="82"/>
         <source>Unknown suffix.</source>
-        <translation type="unfinished">Неизвестный суффикс</translation>
+        <translation>Неизвестный суффикс.</translation>
     </message>
     <message>
         <location filename="../../agros2d-solver/main.cpp" line="91"/>
         <source>File &apos;%1&apos; not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл &apos;%1&apos; не найден.</translation>
     </message>
 </context>
 <context>
