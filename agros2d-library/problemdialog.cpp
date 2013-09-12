@@ -1006,7 +1006,7 @@ void CouplingsWidget::save()
     int row = 0;
     foreach (CouplingInfo *couplingInfo, Agros2D::problem()->couplingInfos())
     {
-        couplingInfo->setCouplingType((CouplingType) m_comboBoxes[row]->itemData(row).toInt());
+        couplingInfo->setCouplingType((CouplingType) m_comboBoxes[row]->itemData(m_comboBoxes[row]->currentIndex()).toInt());
 
         row++;
     }
