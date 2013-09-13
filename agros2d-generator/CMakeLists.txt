@@ -29,14 +29,14 @@ IF(WIN32)
   FILE(GLOB generator_xsd_files "${CMAKE_HOME_DIRECTORY}/resources/xsd/*.xsd")
   foreach(XSD_FILE ${generator_xsd_files})
     GET_FILENAME_COMPONENT(basefile ${XSD_FILE} NAME_WE)
-    ADD_CUSTOM_TARGET(generator-${basefile} ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.cpp ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.h ${CMAKE_HOME_DIRECTORY}/resources/xsd/${basefile}.xsd)
+    ADD_CUSTOM_TARGET(generator-${basefile} ALL DEPENDS ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.cpp ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.h)
 
     # message("\txsdcxx ${basefile}")
 
     ADD_CUSTOM_COMMAND(
-          COMMAND  ${XSD_BIN} ARGS cxx-tree --generate-ostream --hxx-suffix .h --cxx-suffix .cpp --root-element-first --generate-polymorphic --output-dir ${CMAKE_HOME_DIRECTORY}/resources_source/classes --generate-serialization ${XSD_FILE}
-          DEPENDS ${CMAKE_HOME_DIRECTORY}/resources/xsd/${basefile}.xsd
-          OUTPUT  ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.cpp ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.h)
+	  COMMAND  ${XSD_BIN} ARGS cxx-tree --generate-ostream --hxx-suffix .h --cxx-suffix .cpp --root-element-first --generate-polymorphic --output-dir ${CMAKE_HOME_DIRECTORY}/resources_source/classes --generate-serialization ${XSD_FILE}
+	  DEPENDS ${XSD_FILE}
+	  OUTPUT  ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.cpp ${CMAKE_HOME_DIRECTORY}/resources_source/classes/${basefile}.h)
   endforeach()
 
   SET(SOURCES_XML ${CMAKE_HOME_DIRECTORY}/resources_source/classes/module_xml.cpp
@@ -51,10 +51,12 @@ ENDIF(WIN32)
     
 ADD_EXECUTABLE(${PROJECT_NAME} ${SOURCES} ${SOURCES_XML} ${HEADERS})
 
-foreach(XSD_FILE ${generator_xsd_files})
-  GET_FILENAME_COMPONENT(basefile ${XSD_FILE} NAME_WE)
-  ADD_DEPENDENCIES(${PROJECT_NAME} generator-${basefile})
-endforeach()
+IF(WIN32)
+	foreach(XSD_FILE ${generator_xsd_files})
+	  GET_FILENAME_COMPONENT(basefile ${XSD_FILE} NAME_WE)
+	  ADD_DEPENDENCIES(${PROJECT_NAME} generator-${basefile})
+	endforeach()
+ENDIF(WIN32)
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${AGROS_LIBRARY} ${PYTHONLAB_LIBRARY} ${CTEMPLATE_LIBRARY} ${QCUSTOMPLOT_LIBRARY} ${QUAZIP_LIBRARY} ${STB_TRUETYPE_LIBRARY})
 IF(WITH_QT5)

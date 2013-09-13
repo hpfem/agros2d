@@ -239,7 +239,7 @@ protected:
 const int IMPLIICT_APPROX_COUNT = 500;
 
 template <typename Scalar>
-class SpecialFunction
+class AGROS_LIBRARY_API SpecialFunction
 {
 public:
     SpecialFunction() : m_interpolation(0), m_bound_low(0), m_bound_hi(0), m_count(IMPLIICT_APPROX_COUNT), m_interpolationCreated(false), m_useInterpolation(true){}
