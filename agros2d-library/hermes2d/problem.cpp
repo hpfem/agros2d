@@ -408,19 +408,19 @@ bool Problem::meshAction(bool emitMeshed)
     Agros2D::scene()->checkGeometryResult();
     Agros2D::scene()->checkGeometryAssignement();
 
-    MeshGenerator *meshGenerator = NULL;
+    QSharedPointer<MeshGenerator> meshGenerator;
     switch (config()->meshType())
     {
     case MeshType_Triangle:
     case MeshType_Triangle_QuadFineDivision:
     case MeshType_Triangle_QuadRoughDivision:
     case MeshType_Triangle_QuadJoin:
-        meshGenerator = new MeshGeneratorTriangle();
+        meshGenerator = QSharedPointer<MeshGenerator>(new MeshGeneratorTriangle());
         break;
     case MeshType_GMSH_Triangle:
     case MeshType_GMSH_Quad:
     case MeshType_GMSH_QuadDelaunay_Experimental:
-        meshGenerator = new MeshGeneratorGMSH();
+        meshGenerator = QSharedPointer<MeshGenerator>(new MeshGeneratorGMSH());
         break;
     default:
         QMessageBox::critical(QApplication::activeWindow(), "Mesh generator error", QString("Mesh generator '%1' is not supported.").arg(meshTypeString(config()->meshType())));
@@ -432,19 +432,15 @@ bool Problem::meshAction(bool emitMeshed)
         // load mesh
         try
         {
-            readInitialMeshesFromFile(emitMeshed, meshGenerator->xmldomain());
-
-            delete meshGenerator;
+            readInitialMeshesFromFile(emitMeshed, meshGenerator.data()->xmldomain());
             return true;
         }
         catch (AgrosException& e)
         {
-            delete meshGenerator;
             throw AgrosMeshException(e.what());
         }
         catch (Hermes::Exceptions::Exception& e)
         {
-            delete meshGenerator;
             throw AgrosMeshException(e.what());
         }
     }
