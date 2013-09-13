@@ -27,7 +27,7 @@
 #include "hermes2d.h"
 
 template<typename Scalar>
-class AGROS_LIBRARY_API {{CLASS}}ErrorCalculator : public Hermes::Hermes2D::ErrorCalculator<Scalar>
+class {{CLASS}}ErrorCalculator : public Hermes::Hermes2D::ErrorCalculator<Scalar>
 {
 public:
     {{CLASS}}ErrorCalculator(FieldInfo *fieldInfo, const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType);
