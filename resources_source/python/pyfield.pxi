@@ -242,8 +242,11 @@ cdef class __Field__:
                 'damping_factor_decrease_ratio' : self.thisptr.getDoubleParameter(string('NewtonSufImprov')),
                 'damping_factor_increase_steps' : self.thisptr.getIntParameter(string('NewtonStepsToIncreaseDF')),
                 'jacobian_reuse' : self.thisptr.getBoolParameter(string('NewtonReuseJacobian')),
-                'jacobian_reuse_ratio' : self.thisptr.getDoubleParameter(string('NewtonSufImprovJacobian')),
-                'jacobian_reuse_steps' : self.thisptr.getIntParameter(string('NewtonMaxStepsReuseJacobian'))}
+                'jacobian_reuse_ratio' : self.thisptr.getDoubleParameter(string('NewtonSufImprovForJacobianReuse')),
+                'jacobian_reuse_steps' : self.thisptr.getIntParameter(string('NewtonMaxStepsReuseJacobian')),
+                'anderson_acceleration' : self.thisptr.getBoolParameter(string('PicardAndersonAcceleration')),
+                'anderson_beta' : self.thisptr.getDoubleParameter(string('PicardAndersonBeta')),
+                'anderson_last_vectors' : self.thisptr.getIntParameter(string('PicardAndersonNumberOfLastVectors'))}
 
     def __set_solver_parameters__(self, parameters):
         # tolerance
@@ -269,11 +272,18 @@ cdef class __Field__:
         self.thisptr.setParameter(string('NewtonReuseJacobian'), <bool>parameters['jacobian_reuse'])
 
         # jacobian reuse ratio
-        self.thisptr.setParameter(string('NewtonSufImprovJacobian'), <double>parameters['jacobian_reuse_ratio'])
+        self.thisptr.setParameter(string('NewtonSufImprovForJacobianReuse'), <double>parameters['jacobian_reuse_ratio'])
 
         # jacobian reuse step
         value_in_range(parameters['jacobian_reuse_steps'], 0, 100, 'jacobian_reuse_steps')
         self.thisptr.setParameter(string('NewtonMaxStepsReuseJacobian'), <int>parameters['jacobian_reuse_steps'])
+
+        # Picard solver
+        self.thisptr.setParameter(string('PicardAndersonAcceleration'), <int>parameters['anderson_acceleration'])
+        value_in_range(parameters['anderson_last_vectors'], 1, 100, 'anderson_last_vectors')
+        self.thisptr.setParameter(string('PicardAndersonNumberOfLastVectors'), <int>parameters['anderson_last_vectors'])
+        value_in_range(parameters['anderson_beta'], 0.0, 1.0, 'anderson_beta')
+        self.thisptr.setParameter(string('PicardAndersonBeta'), <int>parameters['anderson_beta'])
 
     # matrix solver
     property matrix_solver:

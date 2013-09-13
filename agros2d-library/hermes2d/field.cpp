@@ -761,7 +761,7 @@ void FieldInfo::setStringKeys()
     m_settingKey[NewtonDampingType] = "NewtonDampingType";
     m_settingKey[NewtonDampingCoeff] = "NewtonDampingCoeff";
     m_settingKey[NewtonReuseJacobian] = "NewtonReuseJacobian";
-    m_settingKey[NewtonSufImprovForJacobianReuse] = "NewtonSufImprovJacobian";
+    m_settingKey[NewtonSufImprovForJacobianReuse] = "NewtonSufImprovForJacobianReuse";
     m_settingKey[NewtonSufImprov] = "NewtonSufImprov";
     m_settingKey[NewtonMaxStepsReuseJacobian] = "NewtonMaxStepsReuseJacobian";
     m_settingKey[NewtonStepsToIncreaseDF] = "NewtonStepsToIncreaseDF";

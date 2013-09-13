@@ -343,41 +343,51 @@ QString createPythonFromModel(StartupScript_Type startupScript)
 
         if (fieldInfo->adaptivityType() != AdaptivityType_None)
         {
-            str += QString("%1.adaptivity_steps = %2\n").
+            // TODO: Quick FIX - must be more general
+
+            str += QString("%1.adaptivity_parameters['steps'] = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::AdaptivitySteps).toInt());
 
-            str += QString("%1.adaptivity_tolerance = %2\n").
+            str += QString("%1.adaptivity_parameters['tolerance'] = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::AdaptivityTolerance).toDouble());
 
-            str += QString("%1.adaptivity_threshold = %2\n").
+            str += QString("%1.adaptivity_parameters['threshold'] = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::AdaptivityThreshold).toDouble());
 
-            str += QString("%1.adaptivity_stopping_criterion = \"%2\"\n").
+            str += QString("%1.adaptivity_parameters['stopping_criterion'] = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
                     arg(adaptivityStoppingCriterionTypeToStringKey((AdaptivityStoppingCriterionType) fieldInfo->value(FieldInfo::AdaptivityStoppingCriterion).toInt()));
 
-            str += QString("%1.adaptivity_norm_type = \"%2\"\n").
+            str += QString("%1.adaptivity_parameters['norm'] = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
                     arg(adaptivityNormTypeToStringKey((Hermes::Hermes2D::NormType) fieldInfo->value(FieldInfo::AdaptivityProjNormType).toInt()));
 
-            str += QString("%1.adaptivity_anisotropic_refinement= %2\n").
+            str += QString("%1.adaptivity_parameters['anisotropic_refinement'] = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg((fieldInfo->value(FieldInfo::AdaptivityUseAniso).toBool()) ? "True" : "False");
 
-            str += QString("%1.adaptivity_finer_reference= %2\n").
+            str += QString("%1.adaptivity_parameters['finer_reference_solution'] = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg((fieldInfo->value(FieldInfo::AdaptivityFinerReference).toBool()) ? "True" : "False");
 
+            str += QString("%1.adaptivity_parameters['space_refinement'] = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg((fieldInfo->value(FieldInfo::AdaptivitySpaceRefinement).toBool()) ? "True" : "False");
+
+            str += QString("%1.adaptivity_parameters['order_increase'] = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(fieldInfo->value(FieldInfo::AdaptivityOrderIncrease).toInt());
+
             if (Agros2D::problem()->isTransient())
             {
-                str += QString("%1.adaptivity_back_steps = %2\n").
+                str += QString("%1.adaptivity_parameters['transient_back_steps'] = %2\n").
                         arg(fieldInfo->fieldId()).
                         arg(fieldInfo->value(FieldInfo::AdaptivityTransientBackSteps).toInt());
 
-                str += QString("%1.adaptivity_redone_steps = %2\n").
+                str += QString("%1.adaptivity_parameters['transient_redone_steps'] = %2\n").
                         arg(fieldInfo->fieldId()).
                         arg(fieldInfo->value(FieldInfo::AdaptivityTransientRedoneEach).toInt());
             }
@@ -385,11 +395,11 @@ QString createPythonFromModel(StartupScript_Type startupScript)
 
         str += QString("%1.solver = \"%2\"\n").
                 arg(fieldInfo->fieldId()).
-                arg(linearityTypeToStringKey(fieldInfo->linearityType()));
+                arg(linearityTypeToStringKey(fieldInfo->linearityType()));                      
 
         if (fieldInfo->linearityType() != LinearityType_Linear)
         {
-            str += QString("%1.nonlinear_tolerance = %2\n").
+            str += QString("%1.solver_parameters['tolerance'] = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::NonlinearTolerance).toDouble());
         }
@@ -397,35 +407,35 @@ QString createPythonFromModel(StartupScript_Type startupScript)
         // newton
         if (fieldInfo->linearityType() == LinearityType_Newton)
         {
-            str += QString("%1.nonlinear_convergence_measurement = \"%2\"\n").
+            str += QString("%1.solver_parameters['measurement'] = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
                     arg(nonlinearSolverConvergenceMeasurementToStringKey((Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()));
 
-            str += QString("%1.newton_damping_type = \"%2\"\n").
+            str += QString("%1.solver_parameters['damping'] = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
                     arg(dampingTypeToStringKey((DampingType)fieldInfo->value(FieldInfo::NewtonDampingType).toInt()));
 
-            str += QString("%1.newton_damping_factor = %2\n").
+            str += QString("%1.solver_parameters['damping_factor'] = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble());
 
-            str += QString("%1.newton_jacobian_reuse = %2\n").
+            str += QString("%1.solver_parameters['jacobian_reuse'] = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg((fieldInfo->value(FieldInfo::NewtonReuseJacobian).toBool()) ? "True" : "False");
 
-            str += QString("%1.newton_jacobian_reuse_ratio = %2\n").
+            str += QString("%1.solver_parameters['jacobian_reuse_ratio'] = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::NewtonSufImprovForJacobianReuse).toDouble());
 
-            str += QString("%1.newton_damping_decrease_ratio = %2\n").
+            str += QString("%1.solver_parameters['damping_factor_decrease_ratio'] = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::NewtonSufImprov).toDouble());
 
-            str += QString("%1.newton_jacobian_reuse_steps = %2\n").
+            str += QString("%1.solver_parameters['jacobian_reuse_steps'] = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::NewtonMaxStepsReuseJacobian).toInt());
 
-            str += QString("%1.newton_damping_increase_steps = %2\n").
+            str += QString("%1.solver_parameters['damping_factor_increase_steps'] = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::NewtonStepsToIncreaseDF).toInt());
         }
@@ -433,17 +443,17 @@ QString createPythonFromModel(StartupScript_Type startupScript)
         // picard
         if (fieldInfo->linearityType() == LinearityType_Picard)
         {
-            str += QString("%1.picard_anderson_acceleration = %2\n").
+            str += QString("%1.solver_parameters['anderson_acceleration'] = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg((fieldInfo->value(FieldInfo::PicardAndersonAcceleration).toBool()) ? "True" : "False");
 
             if (fieldInfo->value(FieldInfo::PicardAndersonAcceleration).toBool())
             {
-                str += QString("%1.picard_anderson_beta = %2\n").
+                str += QString("%1.solver_parameters['anderson_beta'] = %2\n").
                         arg(fieldInfo->fieldId()).
                         arg(fieldInfo->value(FieldInfo::PicardAndersonBeta).toDouble());
 
-                str += QString("%1.picard_anderson_last_vectors = %2\n").
+                str += QString("%1.solver_parameters['anderson_last_vectors'] = %2\n").
                         arg(fieldInfo->fieldId()).
                         arg(fieldInfo->value(FieldInfo::PicardAndersonNumberOfLastVectors).toInt());
             }
