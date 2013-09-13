@@ -9,6 +9,7 @@ import scenario
 
 import adaptivity
 import coupled_problems
+import examples
 import fields
 import internal
 import particle_tracing
@@ -65,7 +66,9 @@ script.geometry.TestGeometry,
 script.geometry.TestGeometryTransformations,
 script.benchmark.BenchmarkGeometryTransformation,
 # internal
-internal.matrix_solvers.InternalMatrixSolvers
+internal.matrix_solvers.InternalMatrixSolvers,
+# examples
+examples.examples.A2DExamples
 ]
 
 test_nonlin = [
