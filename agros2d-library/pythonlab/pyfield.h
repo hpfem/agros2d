@@ -104,8 +104,8 @@ class PyField
         void setAdaptivityStoppingCriterion(const std::string &adaptivityStoppingCriterion);
 
         // adaptivity norm
-        inline std::string getAdaptivityNormType() const { return adaptivityNormTypeToStringKey((Hermes::Hermes2D::NormType) m_fieldInfo->value(FieldInfo::AdaptivityProjNormType).toInt()).toStdString(); }
-        void setAdaptivityNormType(const std::string &adaptivityNormType);
+        inline std::string getAdaptivityErrorCalculator() const { return m_fieldInfo->value(FieldInfo::AdaptivityErrorCalculator).toString().toStdString(); }
+        void setAdaptivityErrorCalculator(const std::string &calculator);
 
         // initial condition
         inline double getInitialCondition() const { return m_fieldInfo->value(FieldInfo::TransientInitialCondition).toDouble(); }

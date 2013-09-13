@@ -7,8 +7,8 @@ INCLUDE_DIRECTORIES(${CMAKE_AGROS_DIRECTORY}/3rdparty/bson)
 INCLUDE_DIRECTORIES(${CMAKE_AGROS_DIRECTORY}/3rdparty/paralution/src)
 INCLUDE_DIRECTORIES(.)
 
-SET(SOURCES {{ID}}_volumeintegral.cpp {{ID}}_surfaceintegral.cpp {{ID}}_localvalue.cpp {{ID}}_force.cpp {{ID}}_filter.cpp {{ID}}_weakform.cpp {{ID}}_interface.cpp)
-SET(HEADERS {{ID}}_volumeintegral.h {{ID}}_surfaceintegral.h {{ID}}_localvalue.h {{ID}}_force.h {{ID}}_filter.h {{ID}}_weakform.h {{ID}}_interface.h)
+SET(SOURCES {{ID}}_volumeintegral.cpp {{ID}}_surfaceintegral.cpp {{ID}}_localvalue.cpp {{ID}}_force.cpp {{ID}}_filter.cpp {{ID}}_weakform.cpp {{ID}}_interface.cpp {{ID}}_errorcalculator.cpp)
+SET(HEADERS {{ID}}_volumeintegral.h {{ID}}_surfaceintegral.h {{ID}}_localvalue.h {{ID}}_force.h {{ID}}_filter.h {{ID}}_weakform.h {{ID}}_interface.h {{ID}}_errorcalculator.h)
 
 SET(SOURCES ${SOURCES} "${CMAKE_AGROS_DIRECTORY}/resources_source/classes/module_xml.cpp")
 ADD_DEFINITIONS(-DQT_PLUGIN)

@@ -511,6 +511,30 @@ Module::Force FieldInfo::force() const
     }
 }
 
+// error calculators
+QList<Module::ErrorCalculator> FieldInfo::errorCalculators() const
+{
+    QList<Module::ErrorCalculator> calculators;
+    for (unsigned int i = 0; i < m_plugin->module()->error_calculator().calculator().size(); i++)
+    {
+        XMLModule::calculator calc = m_plugin->module()->error_calculator().calculator().at(i);
+
+        for (unsigned int i = 0; i < calc.expression().size(); i++)
+        {
+            XMLModule::expression expr = calc.expression().at(i);
+            if (expr.analysistype() == analysisTypeToStringKey(analysisType()).toStdString())
+            {
+                if (Agros2D::problem()->config()->coordinateType() == CoordinateType_Planar)
+                    calculators.append(Module::ErrorCalculator(QString::fromStdString(calc.id()), QString::fromStdString(calc.name()), QString::fromStdString(expr.planar().get()).trimmed()));
+                else
+                    calculators.append(Module::ErrorCalculator(QString::fromStdString(calc.id()), QString::fromStdString(calc.name()), QString::fromStdString(expr.axi().get()).trimmed()));
+            }
+        }
+    }
+
+    return calculators;
+}
+
 // material and boundary user interface
 Module::DialogUI FieldInfo::materialUI() const
 {
@@ -776,7 +800,7 @@ void FieldInfo::setStringKeys()
     m_settingKey[AdaptivityTransientRedoneEach] = "AdaptivityTransientRedoneEach";
     m_settingKey[AdaptivityThreshold] = "AdaptivityThreshold";
     m_settingKey[AdaptivityStoppingCriterion] = "AdaptivityStoppingCriterion";
-    m_settingKey[AdaptivityProjNormType] = "AdaptivityProjNormType";
+    m_settingKey[AdaptivityErrorCalculator] = "AdaptivityErrorCalculator";
     m_settingKey[AdaptivityUseAniso] = "AdaptivityUseAniso";
     m_settingKey[AdaptivityFinerReference] = "AdaptivityFinerReference";
     m_settingKey[AdaptivityOrderIncrease] = "AdaptivityOrderIncrease";
@@ -815,7 +839,7 @@ void FieldInfo::setDefaultValues()
     m_settingDefault[AdaptivityTransientRedoneEach] = 5;
     m_settingDefault[AdaptivityStoppingCriterion] = AdaptivityStoppingCriterionType_SingleElement;
     m_settingDefault[AdaptivityThreshold] = 0.6;
-    m_settingDefault[AdaptivityProjNormType] = Hermes::Hermes2D::HERMES_H1_NORM;
+    m_settingDefault[AdaptivityErrorCalculator] = "h1";
     m_settingDefault[AdaptivityUseAniso] = true;
     m_settingDefault[AdaptivityFinerReference] = false;
     m_settingDefault[AdaptivityOrderIncrease] = 1;

@@ -351,7 +351,7 @@ QWidget *FieldWidget::createAdaptivityWidget()
                                                         adaptivityStoppingCriterionFromStringKey(type));
     txtAdaptivityThreshold = new LineEditDouble(0.60);
     txtAdaptivityThreshold->setValue(m_fieldInfo->defaultValue(FieldInfo::AdaptivityThreshold).toDouble());
-    cmbAdaptivityProjNormType = new QComboBox();
+    cmbAdaptivityErrorCalculator = new QComboBox();
     chkAdaptivityUseAniso = new QCheckBox(tr("Use anisotropic refinements"));
     chkAdaptivityFinerReference = new QCheckBox(tr("Use hp reference solution for h and p adaptivity"));
     txtAdaptivityOrderIncrease = new QSpinBox(this);
@@ -379,7 +379,7 @@ QWidget *FieldWidget::createAdaptivityWidget()
     layoutAdaptivity->addWidget(new QLabel(tr("Order increase:")), 3, 0);
     layoutAdaptivity->addWidget(txtAdaptivityOrderIncrease, 3, 1);
     layoutAdaptivity->addWidget(new QLabel(tr("Norm:")), 4, 0);
-    layoutAdaptivity->addWidget(cmbAdaptivityProjNormType, 4, 1);
+    layoutAdaptivity->addWidget(cmbAdaptivityErrorCalculator, 4, 1);
     layoutAdaptivity->addWidget(chkAdaptivityUseAniso, 5, 1, 1, 3);
     layoutAdaptivity->addWidget(chkAdaptivityFinerReference, 6, 1, 1, 3);
     layoutAdaptivity->addWidget(chkAdaptivitySpaceRefinement, 7, 1, 1, 3);
@@ -500,10 +500,8 @@ void FieldWidget::fillComboBox()
     cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_PARALUTION_AMG), Hermes::SOLVER_PARALUTION_AMG);
     // cmbLinearSolver->addItem(matrixSolverTypeString(Hermes::SOLVER_EXTERNAL), Hermes::SOLVER_EXTERNAL);
 
-    cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_NORM), Hermes::Hermes2D::HERMES_H1_NORM);
-    cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_L2_NORM), Hermes::Hermes2D::HERMES_L2_NORM);
-    cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_H1_SEMINORM), Hermes::Hermes2D::HERMES_H1_SEMINORM);
-    // cmbAdaptivityProjNormType->addItem(errorNormString(Hermes::Hermes2D::HERMES_UNSET_NORM), Hermes::Hermes2D::HERMES_UNSET_NORM);
+    foreach(Module::ErrorCalculator calc, m_fieldInfo->errorCalculators())
+        cmbAdaptivityErrorCalculator->addItem(calc.name(), calc.id());
 
     cmbIterLinearSolverMethod->clear();
     foreach (QString method, iterLinearSolverMethodStringKeys())
@@ -526,7 +524,7 @@ void FieldWidget::load()
     txtAdaptivityTolerance->setValue(m_fieldInfo->value(FieldInfo::AdaptivityTolerance).toDouble());
     txtAdaptivityThreshold->setValue(m_fieldInfo->value(FieldInfo::AdaptivityThreshold).toDouble());
     cmbAdaptivityStoppingCriterionType->setCurrentIndex(cmbAdaptivityStoppingCriterionType->findData((AdaptivityStoppingCriterionType) m_fieldInfo->value(FieldInfo::AdaptivityStoppingCriterion).toInt()));
-    cmbAdaptivityProjNormType->setCurrentIndex(cmbAdaptivityProjNormType->findData((Hermes::Hermes2D::NormType) m_fieldInfo->value(FieldInfo::AdaptivityProjNormType).toInt()));
+    cmbAdaptivityErrorCalculator->setCurrentIndex(cmbAdaptivityErrorCalculator->findData(m_fieldInfo->value(FieldInfo::AdaptivityErrorCalculator).toString()));
     chkAdaptivityUseAniso->setChecked(m_fieldInfo->value(FieldInfo::AdaptivityUseAniso).toBool());
     chkAdaptivityFinerReference->setChecked(m_fieldInfo->value(FieldInfo::AdaptivityFinerReference).toBool());
     txtAdaptivityOrderIncrease->setValue(m_fieldInfo->value(FieldInfo::AdaptivityOrderIncrease).toInt());
@@ -574,7 +572,7 @@ bool FieldWidget::save()
     m_fieldInfo->setValue(FieldInfo::AdaptivityTolerance, txtAdaptivityTolerance->value());
     m_fieldInfo->setValue(FieldInfo::AdaptivityThreshold, txtAdaptivityThreshold->value());
     m_fieldInfo->setValue(FieldInfo::AdaptivityStoppingCriterion, (AdaptivityStoppingCriterionType) cmbAdaptivityStoppingCriterionType->itemData(cmbAdaptivityStoppingCriterionType->currentIndex()).toInt());
-    m_fieldInfo->setValue(FieldInfo::AdaptivityProjNormType, (Hermes::Hermes2D::NormType) cmbAdaptivityProjNormType->itemData(cmbAdaptivityProjNormType->currentIndex()).toInt());
+    m_fieldInfo->setValue(FieldInfo::AdaptivityErrorCalculator, cmbAdaptivityErrorCalculator->itemData(cmbAdaptivityErrorCalculator->currentIndex()).toString());
     m_fieldInfo->setValue(FieldInfo::AdaptivityUseAniso, chkAdaptivityUseAniso->isChecked());
     m_fieldInfo->setValue(FieldInfo::AdaptivityFinerReference, chkAdaptivityFinerReference->isChecked());
     m_fieldInfo->setValue(FieldInfo::AdaptivityOrderIncrease, txtAdaptivityOrderIncrease->value());
@@ -670,7 +668,7 @@ void FieldWidget::doAdaptivityChanged(int index)
     txtAdaptivityTolerance->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     txtAdaptivityThreshold->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     cmbAdaptivityStoppingCriterionType->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
-    cmbAdaptivityProjNormType->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
+    cmbAdaptivityErrorCalculator->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     chkAdaptivityUseAniso->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     chkAdaptivitySpaceRefinement->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);
     txtAdaptivityOrderIncrease->setEnabled((AdaptivityType) cmbAdaptivityType->itemData(index).toInt() != AdaptivityType_None);

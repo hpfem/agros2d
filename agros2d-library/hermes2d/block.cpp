@@ -278,19 +278,6 @@ double Block::adaptivityThreshold() const
     return threshold;
 }
 
-Hermes::Hermes2D::NormType Block::adaptivityNormType() const
-{
-    Hermes::Hermes2D::NormType type = (Hermes::Hermes2D::NormType) m_fields.at(0)->fieldInfo()->value(FieldInfo::AdaptivityProjNormType).toInt();
-
-    foreach (Field *field, m_fields)
-    {
-        // todo: ensure in GUI
-        assert((Hermes::Hermes2D::NormType) field->fieldInfo()->value(FieldInfo::AdaptivityProjNormType).toInt() == type);
-    }
-
-    return type;
-}
-
 bool Block::adaptivityUseAniso() const
 {
     bool useAniso = m_fields.at(0)->fieldInfo()->value(FieldInfo::AdaptivityUseAniso).toBool();

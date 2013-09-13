@@ -82,7 +82,7 @@ public:
         AdaptivityTransientRedoneEach,
         AdaptivityStoppingCriterion,
         AdaptivityThreshold,
-        AdaptivityProjNormType,
+        AdaptivityErrorCalculator,
         AdaptivityUseAniso,
         AdaptivityFinerReference,
         AdaptivityOrderIncrease,
@@ -192,6 +192,9 @@ public:
 
     // force
     Module::Force force() const;
+
+    // error calculators
+    QList<Module::ErrorCalculator> errorCalculators() const;
 
     // material and boundary user interface
     Module::DialogUI materialUI() const;

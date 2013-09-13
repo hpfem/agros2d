@@ -66,9 +66,7 @@ script.geometry.TestGeometry,
 script.geometry.TestGeometryTransformations,
 script.benchmark.BenchmarkGeometryTransformation,
 # internal
-internal.matrix_solvers.InternalMatrixSolvers,
-# examples
-examples.examples.A2DExamples
+internal.matrix_solvers.InternalMatrixSolvers
 ]
 
 test_nonlin = [
@@ -88,4 +86,9 @@ script.problem.TestProblem,
 script.geometry.TestGeometry,
 script.geometry.TestGeometryTransformations,
 script.benchmark.BenchmarkGeometryTransformation
+]
+
+test_examples = [
+# a2d
+examples.examples.A2DExamples
 ]

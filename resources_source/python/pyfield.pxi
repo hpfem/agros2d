@@ -45,8 +45,8 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         string getAdaptivityStoppingCriterion()
         void setAdaptivityStoppingCriterion(string &adaptivityStoppingCriterion) except +
 
-        string getAdaptivityNormType()
-        void setAdaptivityNormType(string &adaptivityNormType) except +
+        string getAdaptivityErrorCalculator()
+        void setAdaptivityErrorCalculator(string &calculator) except +
 
         double getInitialCondition()
         void setInitialCondition(double initialCondition) except +
@@ -345,7 +345,7 @@ cdef class __Field__:
                 'steps' : self.thisptr.getIntParameter(string('AdaptivitySteps')),
                 'stopping_criterion' : self.thisptr.getAdaptivityStoppingCriterion().c_str(),
                 'threshold' : self.thisptr.getDoubleParameter(string('AdaptivityThreshold')),
-                'norm' : self.thisptr.getAdaptivityNormType().c_str(),
+                'error_calculator' : self.thisptr.getAdaptivityErrorCalculator().c_str(),
                 'anisotropic_refinement' : self.thisptr.getBoolParameter(string('AdaptivityUseAniso')),
                 'order_increase' : self.thisptr.getIntParameter(string('AdaptivityOrderIncrease')),
                 'space_refinement' : self.thisptr.getBoolParameter(string('AdaptivitySpaceRefinement')),
@@ -364,7 +364,7 @@ cdef class __Field__:
 
         # stoping criterion, norm
         self.thisptr.setAdaptivityStoppingCriterion(string(parameters['stopping_criterion']))
-        self.thisptr.setAdaptivityNormType(string(parameters['norm']))
+        self.thisptr.setAdaptivityErrorCalculator(string(parameters['error_calculator']))
 
         # threshold
         value_in_range(parameters['threshold'], 0.01, 1.0, 'threshold')

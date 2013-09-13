@@ -26,6 +26,7 @@
 #include "{{ID}}_localvalue.h"
 #include "{{ID}}_surfaceintegral.h"
 #include "{{ID}}_volumeintegral.h"
+#include "{{ID}}_errorcalculator.h"
 
 #include "util.h"
 #include "util/global.h"
@@ -109,6 +110,12 @@ ExactSolutionScalarAgros<double> *{{CLASS}}Interface::exactSolution(const Proble
     {{/EXACT_SOURCE}}
 
     return NULL;
+}
+
+Hermes::Hermes2D::ErrorCalculator<double> *{{CLASS}}Interface::errorCalculator(FieldInfo *fieldInfo,
+                                                                               const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType)
+{
+    return new {{CLASS}}ErrorCalculator<double>(fieldInfo, calculator, errorType);
 }
 
 MeshFunctionSharedPtr<double> {{CLASS}}Interface::filter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,

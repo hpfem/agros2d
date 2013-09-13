@@ -39,75 +39,11 @@
 #include "plugin_interface.h"
 #include "logview.h"
 #include "bdf2.h"
+#include "plugin_interface.h"
 
 #include "pythonlab/pythonengine.h"
 
 using namespace Hermes::Hermes2D;
-
-template<typename Scalar>
-class AGROS_LIBRARY_API AgrosErrorFormVol : public NormFormVol<Scalar>
-{
-public:
-    AgrosErrorFormVol(int i, int j, FieldInfo *fieldInfo) : NormFormVol<Scalar>(i, j), m_fieldInfo(fieldInfo)
-    {}
-
-    virtual Scalar value(int n, double *wt, Func<Scalar> *u, Func<Scalar> *v, Geom<double> *e) const
-    {
-        SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str()));
-        SceneMaterial *material = label->marker(m_fieldInfo);
-
-        Value *material_electrostatic_permittivity = &material->value(QLatin1String("electrostatic_permittivity"));
-        Value *material_electrostatic_charge_density = &material->value(QLatin1String("electrostatic_charge_density"));
-
-        /*
-        Value *material_magnetic_permeability = &material->value(QLatin1String("magnetic_permeability"));
-        Value *material_magnetic_conductivity = &material->value(QLatin1String("magnetic_conductivity"));
-        Value *material_magnetic_remanence = &material->value(QLatin1String("magnetic_remanence"));
-        Value *material_magnetic_remanence_angle = &material->value(QLatin1String("magnetic_remanence_angle"));
-        Value *material_magnetic_velocity_x = &material->value(QLatin1String("magnetic_velocity_x"));
-        Value *material_magnetic_velocity_y = &material->value(QLatin1String("magnetic_velocity_y"));
-        Value *material_magnetic_velocity_angular = &material->value(QLatin1String("magnetic_velocity_angular"));
-        Value *material_magnetic_current_density_external_real = &material->value(QLatin1String("magnetic_current_density_external_real"));
-        Value *material_magnetic_current_density_external_imag = &material->value(QLatin1String("magnetic_current_density_external_imag"));
-        Value *material_magnetic_total_current_prescribed = &material->value(QLatin1String("magnetic_total_current_prescribed"));
-        Value *material_magnetic_total_current_real = &material->value(QLatin1String("magnetic_total_current_real"));
-        Value *material_magnetic_total_current_imag = &material->value(QLatin1String("magnetic_total_current_imag"));
-        */
-
-        Scalar result = Scalar(0);
-        for (int i = 0; i < n; i++)
-            // result += wt[i] * 0.5 / (material_magnetic_permeability->number() * 1.25664e-06) * (u->dx[i] * v->dx[i] + u->dy[i] * v->dy[i]);
-            result += wt[i] * 0.5 * (material_electrostatic_permittivity->number() * 8.854e-12) * (u->dx[i] * v->dx[i] + u->dy[i] * v->dy[i]);
-
-        return result;
-    }
-
-protected:
-    FieldInfo *m_fieldInfo;
-};
-
-template<typename Scalar>
-class AGROS_LIBRARY_API AgrosVolumeErrorCalculator : public ErrorCalculator<Scalar>
-{
-public:
-    AgrosVolumeErrorCalculator(CalculatedErrorType errorType, FieldInfo *fieldInfo)
-        : ErrorCalculator<Scalar>(errorType), m_fieldInfo(fieldInfo)
-    {
-        for(int i = 0; i < fieldInfo->numberOfSolutions(); i++)
-        {
-            this->add_error_form(new AgrosErrorFormVol<Scalar>(i, i, fieldInfo));
-        }
-    }
-
-    virtual ~AgrosVolumeErrorCalculator()
-    {
-        // for(int i = 0; i < this->mfvol.size(); i++)
-        //    delete this->mfvol[i];
-    }
-
-protected:
-    FieldInfo *m_fieldInfo;
-};
 
 Hermes::Solvers::ExternalSolver<double>* getExternalSolver(CSCMatrix<double> *m, SimpleVector<double> *rhs)
 {
@@ -255,7 +191,7 @@ QSharedPointer<HermesSolverContainer<Scalar> > HermesSolverContainer<Scalar>::fa
     if (LoopSolver<Scalar> *linearSolver = dynamic_cast<LoopSolver<Scalar> *>(solver->linearSolver()))
     {
         linearSolver->set_max_iters(block->iterLinearSolverIters());
-        linearSolver->set_tolerance(block->iterLinearSolverToleranceAbsolute());        
+        linearSolver->set_tolerance(block->iterLinearSolverToleranceAbsolute());
     }
     if (IterativeParalutionLinearMatrixSolver<Scalar> *linearSolver = dynamic_cast<IterativeParalutionLinearMatrixSolver<Scalar> *>(solver.data()->linearSolver()))
     {
@@ -316,17 +252,13 @@ void ProblemSolver<Scalar>::init(Block* block)
 }
 
 template <typename Scalar>
-void ProblemSolver<Scalar>::initSelectors(Hermes::vector<NormType>& projNormType,
-                                          Hermes::vector<QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> > > &selectors)
+void ProblemSolver<Scalar>::initSelectors(Hermes::vector<QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> > > &selectors)
 {
     // create types of projection and selectors
     for (int i = 0; i < m_block->numSolutions(); i++)
     {
         // set adaptivity selector
         QSharedPointer<RefinementSelectors::Selector<Scalar> > select;
-
-        // add norm
-        projNormType.push_back(m_block->adaptivityNormType());
 
         RefinementSelectors::CandList candList;
 
@@ -835,9 +767,8 @@ bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep,
     MultiArray<Scalar> msa = Agros2D::solutionStore()->multiArray(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Normal));
     MultiArray<Scalar> msaRef = Agros2D::solutionStore()->multiArray(BlockSolutionID(m_block, timeStep, adaptivityStep - 1, SolutionMode_Reference));
 
-    Hermes::vector<Hermes::Hermes2D::NormType> projNormType;
     Hermes::vector<QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> > > selector;
-    initSelectors(projNormType, selector);
+    initSelectors(selector);
 
     assert(msa.spaces() == actualSpaces());
 
@@ -845,28 +776,6 @@ bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep,
     // not counting creating of reference space
     // we have to use it here, since we are going to change the space through adaptivity
     setActualSpaces(deepMeshAndSpaceCopy(actualSpaces(), false));
-
-    // error calculation & adaptivity.
-    QSharedPointer<ErrorCalculator<double> > errorCalculator;
-    switch (m_block->adaptivityNormType())
-    {
-    case HERMES_L2_NORM:
-         errorCalculator = QSharedPointer<ErrorCalculator<double> >(
-                     new DefaultErrorCalculator<double, HERMES_L2_NORM>(RelativeErrorToGlobalNorm, m_actualSpaces.size()));
-        break;
-    case HERMES_H1_NORM:
-         errorCalculator = QSharedPointer<ErrorCalculator<double> >(
-                     new DefaultErrorCalculator<double, HERMES_H1_NORM>(RelativeErrorToGlobalNorm, m_actualSpaces.size()));
-        break;
-    case HERMES_H1_SEMINORM:
-        errorCalculator = QSharedPointer<ErrorCalculator<double> >(
-                     new DefaultErrorCalculator<double, HERMES_H1_SEMINORM>(RelativeErrorToGlobalNorm, m_actualSpaces.size()));
-        break;
-    case HERMES_UNSET_NORM:
-        errorCalculator = QSharedPointer<ErrorCalculator<double> >(
-                    new AgrosVolumeErrorCalculator<double>(RelativeErrorToGlobalNorm, m_block->fields().at(0)->fieldInfo()));
-    }
-
 
     // stopping criterion for an adaptivity step.
     QSharedPointer<AdaptivityStoppingCriterion<double> > stopingCriterion;
@@ -886,17 +795,27 @@ bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep,
         break;
     }
 
-    // adaptivity
-    Adapt<Scalar> adaptivity(errorCalculator.data(), stopingCriterion.data());
-    adaptivity.set_spaces(m_actualSpaces);
-    adaptivity.set_verbose_output(false);
+    // TODO: hard coupling
+    bool adapt = false;
 
-    // calculate error the total error estimate.
-    errorCalculator.data()->calculate_errors(msa.solutions(), msaRef.solutions(), true);
-    double error = errorCalculator.data()->get_total_error_squared() * 100;
     // update error in solution store
     foreach (Field *field, m_block->fields())
     {
+        // error calculation & adaptivity.
+        QSharedPointer<ErrorCalculator<double> > errorCalculator = QSharedPointer<ErrorCalculator<double> >(
+                    field->fieldInfo()->plugin()->errorCalculator(field->fieldInfo(),
+                                                                  field->fieldInfo()->value(FieldInfo::AdaptivityErrorCalculator).toString(),
+                                                                  Hermes::Hermes2D::RelativeErrorToGlobalNorm));
+
+        // adaptivity
+        Adapt<Scalar> adaptivity(errorCalculator.data(), stopingCriterion.data());
+        adaptivity.set_spaces(m_actualSpaces);
+        adaptivity.set_verbose_output(false);
+
+        // calculate error the total error estimate.
+        errorCalculator.data()->calculate_errors(msa.solutions(), msaRef.solutions(), true);
+        double error = errorCalculator.data()->get_total_error_squared() * 100;
+
         FieldSolutionID solutionID(field->fieldInfo(), timeStep, adaptivityStep - 1, SolutionMode_Normal);
 
         // get run time
@@ -905,38 +824,38 @@ bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep,
         runTime.setAdaptivityError(error);
         // replace runtime
         Agros2D::solutionStore()->multiSolutionRunTimeDetailReplace(solutionID, runTime);
-    }
 
-    // adaptive tolerance
-    bool adapt = error >= m_block->adaptivityTolerance();
+        // adaptive tolerance
+        adapt = error >= m_block->adaptivityTolerance();
 
-    // allways adapt when forcing adaptation, to be used in solveAdaptiveStep
-    adapt = adapt || forceAdaptation;
+        // allways adapt when forcing adaptation, to be used in solveAdaptiveStep
+        adapt = adapt || forceAdaptation;
 
-    if (adapt)
-    {
-        Agros2D::log()->printMessage(m_solverID, QObject::tr("Adaptivity step (error = %1, DOFs = %2/%3)").
-                                     arg(error).
-                                     arg(Space<Scalar>::get_num_dofs(msa.spaces())).
-                                     arg(Space<Scalar>::get_num_dofs(msaRef.spaces())));
-
-        bool noRefinementPerformed;
-        try
+        if (adapt)
         {
-            Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> vect;
-            foreach (QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> > sel, selector)
-                vect.push_back(sel.data());
+            Agros2D::log()->printMessage(m_solverID, QObject::tr("Adaptivity step (error = %1, DOFs = %2/%3)").
+                                         arg(error).
+                                         arg(Space<Scalar>::get_num_dofs(msa.spaces())).
+                                         arg(Space<Scalar>::get_num_dofs(msaRef.spaces())));
 
-            noRefinementPerformed = adaptivity.adapt(vect);
-        }
-        catch (Hermes::Exceptions::Exception e)
-        {
-            QString error = QString(e.what());
-            Agros2D::log()->printDebug(m_solverID, QObject::tr("Adaptive process failed: %1").arg(error));
-            throw;
-        }
+            bool noRefinementPerformed;
+            try
+            {
+                Hermes::vector<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> *> vect;
+                foreach (QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> > sel, selector)
+                    vect.push_back(sel.data());
 
-        adapt = adapt && (!noRefinementPerformed);
+                noRefinementPerformed = adaptivity.adapt(vect);
+            }
+            catch (Hermes::Exceptions::Exception e)
+            {
+                QString error = QString(e.what());
+                Agros2D::log()->printDebug(m_solverID, QObject::tr("Adaptive process failed: %1").arg(error));
+                throw;
+            }
+
+            adapt = adapt && (!noRefinementPerformed);
+        }
     }
 
     return adapt;

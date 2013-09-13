@@ -71,7 +71,6 @@ public:
     int adaptivityRedoneEach() const;
     AdaptivityStoppingCriterionType adaptivityStoppingCriterionType() const;
     double adaptivityThreshold() const;
-    Hermes::Hermes2D::NormType adaptivityNormType() const;
     bool adaptivityUseAniso() const;
     bool adaptivityFinerReference() const;
 

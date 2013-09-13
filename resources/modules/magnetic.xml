@@ -256,6 +256,29 @@
     </module:weakforms_surface>
   </module:surface>
 
+  <module:error_calculator>
+        <module:calculator id="l2" name="L2 norm">
+            <module:expression analysistype="steadystate" axi="(uval * vval)"
+                                                          planar="(uval * vval)"/>
+            <module:expression analysistype="harmonic" axi="(uval * vval)"
+                                                       planar="(uval * vval)"/>
+            <module:expression analysistype="transient" axi="(uval * vval)"
+                                                        planar="(uval * vval)"/>
+        </module:calculator>
+        <module:calculator id="h1" name="H1 norm">
+            <module:expression analysistype="steadystate" axi="(uval * vval + udr * vdr + udz * vdz)"
+                                                          planar="(uval * vval + udx * vdx + udy * vdy)"/>
+            <module:expression analysistype="harmonic" axi="(uval * vval + udr * vdr + udz * vdz)"
+                                                       planar="(uval * vval + udx * vdx + udy * vdy)"/>
+            <module:expression analysistype="transient" axi="(uval * vval + udr * vdr + udz * vdz)"
+                                                        planar="(uval * vval + udx * vdx + udy * vdy)"/>
+        </module:calculator>
+        <module:calculator id="energy" name="Energy">
+            <module:expression analysistype="steadystate" axi="2.0 * PI * r * 0.5 / (ma_mur * MU0) * (udr * vdr + udz * vdz)"
+                                                          planar="0.5 / (ma_mur * MU0) * (udx * vdx + udy * vdy)"/>
+        </module:calculator>
+  </module:error_calculator>
+
   <module:preprocessor>
     <module:gui type="volume">
       <module:group name="Material properties">

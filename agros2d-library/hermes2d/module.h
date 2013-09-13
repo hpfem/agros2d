@@ -98,6 +98,7 @@ class force;
 class localvariable;
 class gui;
 class space;
+class calculator;
 
 class linearity_option;
 }
@@ -302,6 +303,35 @@ private:
     QString m_compX;
     QString m_compY;
     QString m_compZ;
+};
+
+// error calculator
+class AGROS_LIBRARY_API ErrorCalculator
+{
+public:
+    ErrorCalculator(const QString &id = "",
+                  const QString &name = "",
+                   const QString &expr = "")
+        : m_id(id),
+          m_name(name),
+          m_expression(expr) {}
+
+    // id
+    inline QString id() const { return m_id; }
+    // name
+    inline QString name() const { return m_name; }
+
+    // expression
+    inline QString expression() const { return m_expression; }
+
+private:
+    // id
+    QString m_id;
+    // name
+    QString m_name;
+
+    // expressions
+    QString m_expression;
 };
 
 // material property

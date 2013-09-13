@@ -31,6 +31,10 @@ class ExactSolutionScalarAgros;
 
 class SceneBoundary;
 
+namespace Module {
+    class ErrorCalculator;
+}
+
 class AgrosExternalSolverOctave : public ExternalSolver<double>
 {
 public:
@@ -130,8 +134,7 @@ private:
     // to be used in advanced time step adaptivity
     double m_averageErrorToLenghtRatio;
 
-    void initSelectors(Hermes::vector<Hermes::Hermes2D::NormType>& projNormType,
-                       Hermes::vector<QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> > >& selectors);
+    void initSelectors(Hermes::vector<QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> > >& selectors);
 
     Scalar *solveOneProblem(Hermes::vector<SpaceSharedPtr<Scalar> > spaces, int adaptivityStep, Hermes::vector<MeshFunctionSharedPtr<Scalar> > previousSolution = Hermes::vector<MeshFunctionSharedPtr<Scalar> >());
 

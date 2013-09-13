@@ -10,6 +10,7 @@
                                 <element ref="module:spaces" maxOccurs="1" />
                                 <element ref="module:volume" maxOccurs="1" />
                                 <element ref="module:surface" maxOccurs="1" />
+                                <element ref="module:error_calculator" maxOccurs="1" />                                
                                 <element ref="module:preprocessor" maxOccurs="1" />
                                 <element ref="module:postprocessor" maxOccurs="1" />
                                 <element ref="module:cpp" minOccurs="0" maxOccurs="1" />
@@ -407,6 +408,24 @@
                 </complexType>
         </element>
 
+		<element name="error_calculator">
+                <complexType>
+                        <sequence>
+                                <element maxOccurs="unbounded" ref="module:calculator" />
+                        </sequence>
+                </complexType>
+        </element>
+
+        <element name="calculator">
+                <complexType>
+                        <sequence>
+                                <element maxOccurs="unbounded" ref="module:expression" />
+                        </sequence>
+                        <attribute name="id" use="required" type="string" />    
+                        <attribute name="name" use="required" type="string" />    
+                </complexType>
+        </element>
+        
         <element name="group">
                 <complexType>
                         <sequence>

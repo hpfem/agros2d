@@ -206,7 +206,7 @@ QString Agros2DGeneratorModule::createTable(QList<QStringList> table)
         for(int i = 0; i < columnsNumber; i++)
         {
             QString item =  "| " + table.at(i).at(k) + " ";
-            int rest = columnWidths.at(i) - item.length();            
+            int rest = columnWidths.at(i) - item.length();
             QString fillRest(rest, ' ');
             text += item + fillRest;
         };
@@ -246,8 +246,8 @@ void Agros2DGeneratorModule::generatePluginDocumentationFiles()
     values.append("Units");
     foreach(XMLModule::constant con, m_module->constants().constant())
     {
-       names.append(QString::fromStdString(con.id()));
-       values.append(QString::number(con.value()));
+        names.append(QString::fromStdString(con.id()));
+        values.append(QString::number(con.value()));
     }
 
     table.append(names);
@@ -317,13 +317,13 @@ void Agros2DGeneratorModule::generatePluginDocumentationFiles()
     shortNames.append("Agros2D variable");
 
     foreach(XMLModule::localvariable var, m_module->postprocessor().localvariables().localvariable())
-    {        
+    {
         shortNames.append(var.shortname().c_str());
         if(var.shortname_latex().present())
             latexShortNames.append(QString::fromStdString(":math:`" + var.shortname_latex().get() + "`"));
         else latexShortNames.append(" ");
         units.append(var.unit().c_str());
-        descriptions.append(QString::fromStdString(var.name()));        
+        descriptions.append(QString::fromStdString(var.name()));
     }
 
     table.append(shortNames);
@@ -451,6 +451,91 @@ void Agros2DGeneratorModule::generatePluginEquations()
 
     // source - save to file
     writeStringContent(QString("%1/%2/%3/%3_equations.py").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+}
+
+void Agros2DGeneratorModule::generatePluginErrorCalculator()
+{
+    qDebug() << tr("%1: generating plugin error calculator file.").arg(QString::fromStdString(m_module->general().id()));
+
+    QString id = QString::fromStdString(m_module->general().id());
+
+
+    ctemplate::TemplateDictionary output("output");
+
+    output.SetValue("ID", id.toStdString());
+    output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
+
+    std::string text;
+
+    // header - expand template
+    ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/errorcalculator_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
+
+    for (unsigned int i = 0; i < m_module->error_calculator().calculator().size(); i++)
+    {
+        XMLModule::calculator calc = m_module->error_calculator().calculator().at(i);
+
+        for (unsigned int i = 0; i < calc.expression().size(); i++)
+        {
+            XMLModule::expression expr = calc.expression().at(i);
+
+            AnalysisType analysisType = analysisTypeFromStringKey(QString::fromStdString(expr.analysistype()));
+
+            foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
+            {
+                // TODO: better !!!
+                LinearityType linearityTypes[3] = {LinearityType_Linear, LinearityType_Newton, LinearityType_Picard};
+                for (int lt = 0; lt < 3; lt++)
+                {
+                    ctemplate::TemplateDictionary *expression = output.AddSectionDictionary("CALCULATOR_SOURCE");
+
+                    expression->SetValue("ID_CALCULATOR", calc.id());
+                    expression->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisType).toStdString());
+                    expression->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityTypes[lt]).toStdString());
+                    expression->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
+
+                    if (expr.analysistype() == analysisTypeToStringKey(analysisType).toStdString())
+                    {
+                        QString exprCpp;
+                        if (coordinateType == CoordinateType_Planar)
+                            exprCpp = parseWeakFormExpression(analysisType, coordinateType, linearityTypes[lt], QString::fromStdString(expr.planar().get()), true, true);
+                        else
+                            exprCpp = parseWeakFormExpression(analysisType, coordinateType, linearityTypes[lt], QString::fromStdString(expr.axi().get()), true, true);
+
+                        expression->SetValue("EXPRESSION", exprCpp.toStdString());
+
+                        foreach(QString key, m_volumeVariables.keys())
+                        {
+                            ctemplate::TemplateDictionary *subField = 0;
+                            subField = expression->AddSectionDictionary("VARIABLE_SOURCE");
+                            subField->SetValue("VARIABLE", key.toStdString());
+                            subField->SetValue("VARIABLE_SHORT", m_volumeVariables.value(key).toStdString());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    // header - save to file
+    writeStringContent(QString("%1/%2/%3/%3_errorcalculator.h").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+
+    // source - expand template
+    text.clear();
+    ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/errorcalculator_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
+                              ctemplate::DO_NOT_STRIP, &output, &text);
+
+    // source - save to file
+    writeStringContent(QString("%1/%2/%3/%3_errorcalculator.cpp").
                        arg(QApplication::applicationDirPath()).
                        arg(GENERATOR_PLUGINROOT).
                        arg(id),
@@ -1446,7 +1531,7 @@ LexicalAnalyser *Agros2DGeneratorModule::weakFormLexicalAnalyser(AnalysisType an
 }
 
 QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType,
-                                                        const QString &expr, bool includeVariables)
+                                                        const QString &expr, bool includeVariables, bool errorCalculation)
 {
     try
     {
@@ -1531,17 +1616,36 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
 
         for (int i = 1; i < numOfSol + 1; i++)
         {
-            dict[QString("value%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->val[i]").arg(i-1);
-
-            if (coordinateType == CoordinateType_Planar)
+            if (!errorCalculation)
             {
-                dict[QString("dx%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dx[i]").arg(i-1);
-                dict[QString("dy%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dy[i]").arg(i-1);
+                dict[QString("value%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->val[i]").arg(i-1);
+
+                if (coordinateType == CoordinateType_Planar)
+                {
+                    dict[QString("dx%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dx[i]").arg(i-1);
+                    dict[QString("dy%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dy[i]").arg(i-1);
+                }
+                else
+                {
+                    dict[QString("dr%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dx[i]").arg(i-1);
+                    dict[QString("dz%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dy[i]").arg(i-1);
+                }
             }
             else
             {
-                dict[QString("dr%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dx[i]").arg(i-1);
-                dict[QString("dz%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dy[i]").arg(i-1);
+                // TODO: better !!!
+                dict[QString("value%1").arg(i)] = QString("u->val[i]");
+
+                if (coordinateType == CoordinateType_Planar)
+                {
+                    dict[QString("dx%1").arg(i)] = QString("u->dx[i]");
+                    dict[QString("dy%1").arg(i)] = QString("u->dy[i]");
+                }
+                else
+                {
+                    dict[QString("dr%1").arg(i)] = QString("u->dx[i]");
+                    dict[QString("dz%1").arg(i)] = QString("u->dy[i]");
+                }
             }
         }
 
@@ -1590,12 +1694,12 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
                         // nonlinear material
                         dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberFromTable(%2)").
                                 arg(QString::fromStdString(quantity.shortname().get())).
-                                arg(parseWeakFormExpression(analysisType, coordinateType, linearityType, nonlinearExpr, false));
+                                arg(parseWeakFormExpression(analysisType, coordinateType, linearityType, nonlinearExpr, false, errorCalculation));
 
                         if (linearityType == LinearityType_Newton)
                             dict["d" + QString::fromStdString(quantity.shortname().get())] = QString("%1->derivativeFromTable(%2)").
                                     arg(QString::fromStdString(quantity.shortname().get())).
-                                    arg(parseWeakFormExpression(analysisType, coordinateType, linearityType, nonlinearExpr, false));
+                                    arg(parseWeakFormExpression(analysisType, coordinateType, linearityType, nonlinearExpr, false, errorCalculation));
                     }
                 }
             }

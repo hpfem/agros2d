@@ -208,6 +208,10 @@ public:
 
     virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, MeshSharedPtr mesh) = 0;
 
+    // error calculators
+    virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(FieldInfo *fieldInfo,
+                                                                       const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType) = 0;
+
     // postprocessor
     // filter
     virtual MeshFunctionSharedPtr<double> filter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,

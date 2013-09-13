@@ -177,12 +177,19 @@ void PyField::setAdaptivityStoppingCriterion(const std::string &adaptivityStoppi
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(adaptivityStoppingCriterionTypeStringKeys())).toStdString());
 }
 
-void PyField::setAdaptivityNormType(const std::string &adaptivityNormType)
+void PyField::setAdaptivityErrorCalculator(const std::string &calculator)
 {
-    if (adaptivityNormTypeStringKeys().contains(QString::fromStdString(adaptivityNormType)))
-        m_fieldInfo->setValue(FieldInfo::AdaptivityProjNormType, (Hermes::Hermes2D::NormType) adaptivityNormTypeFromStringKey(QString::fromStdString(adaptivityNormType)));
-    else
-        throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(adaptivityNormTypeStringKeys())).toStdString());
+    foreach (Module::ErrorCalculator calc, m_fieldInfo->errorCalculators())
+    {
+        if (calc.id() == QString::fromStdString(calculator))
+        {
+            m_fieldInfo->setValue(FieldInfo::AdaptivityErrorCalculator, calc.id());
+
+            return;
+        }
+    }
+
+    throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(adaptivityNormTypeStringKeys())).toStdString());
 }
 
 void PyField::setInitialCondition(double initialCondition)

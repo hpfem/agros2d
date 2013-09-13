@@ -58,6 +58,10 @@ public:
                                                  const QString &variable,
                                                  PhysicFieldVariableComp physicFieldVariableComp);
 
+    // error calculators
+    virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(FieldInfo *fieldInfo,
+                                                                       const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType);
+
     // local values
     virtual LocalValue *localValue(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point);
     // surface integrals

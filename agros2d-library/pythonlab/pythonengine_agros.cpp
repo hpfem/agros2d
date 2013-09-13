@@ -361,9 +361,9 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                     arg(fieldInfo->fieldId()).
                     arg(adaptivityStoppingCriterionTypeToStringKey((AdaptivityStoppingCriterionType) fieldInfo->value(FieldInfo::AdaptivityStoppingCriterion).toInt()));
 
-            str += QString("%1.adaptivity_parameters['norm'] = \"%2\"\n").
+            str += QString("%1.adaptivity_parameters['error_calculator'] = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
-                    arg(adaptivityNormTypeToStringKey((Hermes::Hermes2D::NormType) fieldInfo->value(FieldInfo::AdaptivityProjNormType).toInt()));
+                    arg(fieldInfo->value(FieldInfo::AdaptivityErrorCalculator).toString());
 
             str += QString("%1.adaptivity_parameters['anisotropic_refinement'] = %2\n").
                     arg(fieldInfo->fieldId()).

@@ -38,6 +38,7 @@ public:
     void generatePluginWeakFormFiles();
     void generatePluginDocumentationFiles();
     void generatePluginEquations();
+    void generatePluginErrorCalculator();
 
 
 private:
@@ -74,7 +75,7 @@ private:
     void createIntegralExpression(ctemplate::TemplateDictionary &output, const QString &variable, AnalysisType analysisType, CoordinateType coordinateType, const QString &expr);
 
     LexicalAnalyser *weakFormLexicalAnalyser(AnalysisType analysisType, CoordinateType coordinateType);
-    QString parseWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType, const QString &expr, bool includeVariables = true);
+    QString parseWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType, const QString &expr, bool includeVariables = true, bool errorCalculation = false);
     QString parseWeakFormExpressionCheck(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType, const QString &expr, int generatorStartValue);
     QString generateDocWeakFormExpression(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType, const QString &expr, bool includeVariables = true);
     QString underline(QString text, char symbol);

@@ -22,6 +22,7 @@ class AdaptivityElectrostatic(Agros2DTestCase):
         self.electrostatic.adaptivity_type = "hp-adaptivity"
         self.electrostatic.adaptivity_parameters['steps'] = 10
         self.electrostatic.adaptivity_parameters['tolerance'] = 1
+        self.electrostatic.adaptivity_parameters['error_calculator'] = "h1"
         self.electrostatic.solver = "linear"
         
         # boundaries
@@ -75,6 +76,7 @@ class AdaptivityAcoustic(Agros2DTestCase):
         self.acoustic.adaptivity_type = "hp-adaptivity"
         self.acoustic.adaptivity_parameters['steps'] = 15
         self.acoustic.adaptivity_parameters['tolerance'] = 2
+        self.acoustic.adaptivity_parameters['error_calculator'] = "h1"
         self.acoustic.solver = "linear"
         
         # boundaries
