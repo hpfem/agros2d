@@ -47,9 +47,9 @@ namespace Hermes
         std::map<std::string, double> variables;
         for (unsigned int variables_i = 0; variables_i < variables_count; variables_i++)
 #ifdef _MSC_VER
-				variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_mesh->variables()->var().at(variables_i).name(), (double&&)parsed_xml_mesh->variables()->var().at(variables_i).value()));
+                variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_mesh->variables()->var().at(variables_i).name(), (double&&)parsed_xml_mesh->variables()->var().at(variables_i).value()));
 #else
-				variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_mesh->variables()->var().at(variables_i).name(), parsed_xml_mesh->variables()->var().at(variables_i).value()));
+                variables.insert(std::make_pair<std::string, double>((std::string)parsed_xml_mesh->variables()->var().at(variables_i).name(), parsed_xml_mesh->variables()->var().at(variables_i).value()));
 #endif
 
         // Vertices //
@@ -97,10 +97,10 @@ namespace Hermes
               int dot_position = strchr(x.c_str(), '.') == NULL ? -1 : strchr(x.c_str(), '.') - x.c_str();
               for(int i = 0; i < dot_position; i++)
                 if(strncmp(x.c_str() + i, "0", 1) != 0)
-                  throw Hermes::Exceptions::MeshLoadFailureException("Wrong syntax in the x coordinate of vertex no. %i.", vertices_i % vertices_count + 1);
+                  this->warn("Probably wrong syntax in the x coordinate of vertex no. %i.", vertices_i % vertices_count + 1);
               for(int i = dot_position + 1; i < x.length(); i++)
                 if(strncmp(x.c_str() + i, "0", 1) != 0)
-                  throw Hermes::Exceptions::MeshLoadFailureException("Wrong syntax in the x coordinate of vertex no. %i.", vertices_i % vertices_count + 1);
+                  this->warn("Probably wrong syntax in the x coordinate of vertex no. %i.", vertices_i % vertices_count + 1);
               x_value = std::strtod(x.c_str(), NULL);
             }
 
