@@ -85,7 +85,8 @@ test_script = [
 script.problem.TestProblem,
 script.geometry.TestGeometry,
 script.geometry.TestGeometryTransformations,
-script.benchmark.BenchmarkGeometryTransformation
+script.benchmark.BenchmarkGeometryTransformation,
+script.generator.Generator
 ]
 
 test_examples = [

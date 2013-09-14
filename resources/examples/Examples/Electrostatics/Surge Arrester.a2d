@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_30_xml.xsd">
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/fmach/Projekty/Agros2D/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
 
   <geometry>
     <nodes>
@@ -89,6 +89,7 @@
       <node id="83" x="0.051452" y="0.165953"/>
       <node id="84" x="0.051452" y="0.190953"/>
       <node id="85" x="0.051452" y="0.215953"/>
+      <node id="86" x="0.3735" y="0.1235"/>
     </nodes>
     <edges>
       <edge angle="0" end="1" id="0" start="0"/>
@@ -149,43 +150,44 @@
       <edge angle="0" end="49" id="55" start="72"/>
       <edge angle="0" end="72" id="56" start="46"/>
       <edge angle="0" end="72" id="57" start="71"/>
-      <edge angle="180" end="74" id="58" start="73"/>
-      <edge angle="0" end="68" id="59" start="74"/>
-      <edge angle="0" end="73" id="60" start="48"/>
-      <edge angle="45" end="45" id="61" start="44"/>
-      <edge angle="0" end="76" id="62" start="38"/>
-      <edge angle="0" end="37" id="63" start="75"/>
-      <edge angle="55" end="41" id="64" start="40"/>
-      <edge angle="45" end="39" id="65" start="38"/>
-      <edge angle="55" end="37" id="66" start="36"/>
-      <edge angle="0" end="82" id="67" start="16"/>
-      <edge angle="80" end="83" id="68" start="82"/>
-      <edge angle="70" end="81" id="69" start="83"/>
-      <edge angle="0" end="15" id="70" start="81"/>
-      <edge angle="80" end="84" id="71" start="11"/>
-      <edge angle="70" end="10" id="72" start="84"/>
-      <edge angle="80" end="80" id="73" start="21"/>
-      <edge angle="70" end="20" id="74" start="80"/>
-      <edge angle="80" end="79" id="75" start="27"/>
-      <edge angle="70" end="26" id="76" start="79"/>
-      <edge angle="80" end="78" id="77" start="33"/>
-      <edge angle="70" end="32" id="78" start="78"/>
-      <edge angle="80" end="77" id="79" start="76"/>
-      <edge angle="70" end="75" id="80" start="77"/>
-      <edge angle="80" end="85" id="81" start="5"/>
-      <edge angle="70" end="4" id="82" start="85"/>
-      <edge angle="45" end="35" id="83" start="34"/>
-      <edge angle="55" end="31" id="84" start="30"/>
-      <edge angle="45" end="29" id="85" start="28"/>
-      <edge angle="55" end="25" id="86" start="24"/>
-      <edge angle="45" end="23" id="87" start="22"/>
-      <edge angle="55" end="19" id="88" start="18"/>
-      <edge angle="45" end="17" id="89" start="16"/>
-      <edge angle="55" end="15" id="90" start="14"/>
-      <edge angle="45" end="13" id="91" start="12"/>
-      <edge angle="55" end="9" id="92" start="8"/>
-      <edge angle="45" end="7" id="93" start="6"/>
-      <edge angle="55" end="3" id="94" start="2"/>
+      <edge angle="0" end="68" id="58" start="74"/>
+      <edge angle="0" end="73" id="59" start="48"/>
+      <edge angle="45" end="45" id="60" start="44"/>
+      <edge angle="0" end="76" id="61" start="38"/>
+      <edge angle="0" end="37" id="62" start="75"/>
+      <edge angle="55" end="41" id="63" start="40"/>
+      <edge angle="45" end="39" id="64" start="38"/>
+      <edge angle="55" end="37" id="65" start="36"/>
+      <edge angle="0" end="82" id="66" start="16"/>
+      <edge angle="80" end="83" id="67" start="82"/>
+      <edge angle="70" end="81" id="68" start="83"/>
+      <edge angle="0" end="15" id="69" start="81"/>
+      <edge angle="80" end="84" id="70" start="11"/>
+      <edge angle="70" end="10" id="71" start="84"/>
+      <edge angle="80" end="80" id="72" start="21"/>
+      <edge angle="70" end="20" id="73" start="80"/>
+      <edge angle="80" end="79" id="74" start="27"/>
+      <edge angle="70" end="26" id="75" start="79"/>
+      <edge angle="80" end="78" id="76" start="33"/>
+      <edge angle="70" end="32" id="77" start="78"/>
+      <edge angle="80" end="77" id="78" start="76"/>
+      <edge angle="70" end="75" id="79" start="77"/>
+      <edge angle="80" end="85" id="80" start="5"/>
+      <edge angle="70" end="4" id="81" start="85"/>
+      <edge angle="45" end="35" id="82" start="34"/>
+      <edge angle="55" end="31" id="83" start="30"/>
+      <edge angle="45" end="29" id="84" start="28"/>
+      <edge angle="55" end="25" id="85" start="24"/>
+      <edge angle="45" end="23" id="86" start="22"/>
+      <edge angle="55" end="19" id="87" start="18"/>
+      <edge angle="45" end="17" id="88" start="16"/>
+      <edge angle="55" end="15" id="89" start="14"/>
+      <edge angle="45" end="13" id="90" start="12"/>
+      <edge angle="55" end="9" id="91" start="8"/>
+      <edge angle="45" end="7" id="92" start="6"/>
+      <edge angle="55" end="3" id="93" start="2"/>
+      <edge angle="90" end="86" id="94" start="73"/>
+      <edge angle="90" end="74" id="95" start="86"/>
     </edges>
     <labels>
       <label area="0" id="0" x="0.0998906" y="0.127835"/>
@@ -201,9 +203,9 @@
     </labels>
   </geometry>
 
-  <problem coordinate_type="axisymmetric" matrix_solver="umfpack" mesh_type="triangle">
+  <problem coordinate_type="axisymmetric" mesh_type="triangle">
     <fields>
-      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="electrostatic" linearity_type="linear">
+      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="electrostatic" linearity_type="linear" matrix_solver="mumps">
         <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>
@@ -219,7 +221,8 @@
               <boundary_edge id="47"/>
               <boundary_edge id="58"/>
               <boundary_edge id="59"/>
-              <boundary_edge id="60"/>
+              <boundary_edge id="94"/>
+              <boundary_edge id="95"/>
             </boundary_edges>
             <boundary_types>
               <boundary_type key="electrostatic_surface_charge_density" value="0"/>
@@ -308,14 +311,14 @@
         </materials>
         <field_config>
           <field_item field_key="NonlinearTolerance" field_value="0.001"/>
-          <field_item field_key="NonlinearSteps" field_value="10"/>
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
-          <field_item field_key="NewtonAutomaticDamping" field_value="1"/>
-          <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NewtonDampingType" field_value="0"/>
           <field_item field_key="NewtonDampingCoeff" field_value="1"/>
-          <field_item field_key="NewtonDampingNumberToIncrease" field_value="1"/>
-          <field_item field_key="NewtonSufficientImprovementFactorJacobian" field_value="0.4"/>
-          <field_item field_key="NewtonMaximumStepsWithReusedJacobian" field_value="3"/>
+          <field_item field_key="NewtonReuseJacobian" field_value="1"/>
+          <field_item field_key="NewtonSufImprovForJacobianReuse" field_value="0.8"/>
+          <field_item field_key="NewtonSufImprov" field_value="1.2"/>
+          <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
+          <field_item field_key="NewtonStepsToIncreaseDF" field_value="1"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
           <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
@@ -325,8 +328,20 @@
           <field_item field_key="AdaptivityTolerance" field_value="5"/>
           <field_item field_key="AdaptivityTransientBackSteps" field_value="0"/>
           <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
+          <field_item field_key="AdaptivityStoppingCriterion" field_value="1"/>
+          <field_item field_key="AdaptivityThreshold" field_value="0.6"/>
+          <field_item field_key="AdaptivityErrorCalculator" field_value="h1"/>
+          <field_item field_key="AdaptivityUseAniso" field_value="1"/>
+          <field_item field_key="AdaptivityFinerReference" field_value="0"/>
+          <field_item field_key="AdaptivityOrderIncrease" field_value="1"/>
+          <field_item field_key="AdaptivitySpaceRefinement" field_value="1"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
-          <field_item field_key="TransientInitialConditio" field_value="0"/>
+          <field_item field_key="TransientInitialCondition" field_value="0"/>
+          <field_item field_key="LinearSolverIterMethod" field_value="2"/>
+          <field_item field_key="LinearSolverIterPreconditioner" field_value="2"/>
+          <field_item field_key="LinearSolverIterToleranceAbsolute" field_value="1e-16"/>
+          <field_item field_key="LinearSolverIterIters" field_value="1000"/>
+          <field_item field_key="TimeUnit" field_value="s"/>
         </field_config>
       </field>
     </fields>
@@ -343,7 +358,6 @@
 
   <config>
     <item key="Problem_StartupScript" value=""/>
-    <item key="Problem_Description" value=""/>
     <item key="View_RulersFontFamily" value="Droid"/>
     <item key="View_RulersFontPointSize" value="12"/>
     <item key="View_PostFontFamily" value="Droid"/>
@@ -433,6 +447,7 @@
     <item key="View_VectorScale" value="0.6"/>
     <item key="View_VectorType" value="0"/>
     <item key="View_VectorCenter" value="0"/>
+    <item key="View_OrderComponent" value="1"/>
     <item key="View_ShowOrderView" value="1"/>
     <item key="View_ShowOrderColorBar" value="1"/>
     <item key="View_ShowOrderLabel" value="0"/>
@@ -476,17 +491,6 @@
     <item key="View_MeshCurvilinearElements" value="1"/>
     <item key="View_LinearizerQuality" value="0"/>
     <item key="View_SolidViewHide" value=""/>
-    <item key="Adaptivity_MaxDofs" value="60000"/>
-    <item key="Adaptivity_IsoOnly" value="0"/>
-    <item key="Adaptivity_ConvExp" value="1"/>
-    <item key="Adaptivity_Threshold" value="0.3"/>
-    <item key="Adaptivity_Strategy" value="0"/>
-    <item key="Adaptivity_MeshRegularity" value="-1"/>
-    <item key="Adaptivity_ProjNormType" value="1"/>
-    <item key="Adaptivity_UseAniso" value="1"/>
-    <item key="Adaptivity_FinerReference" value="0"/>
-    <item key="Commands_Triangle" value="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;"/>
-    <item key="Commands_Gmsh" value="%1 -2 &quot;%2.geo&quot;"/>
   </config>
 
 </problem:document>
