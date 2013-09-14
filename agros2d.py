@@ -5,8 +5,8 @@ from multiprocessing import cpu_count
 from subprocess import call
 from glob import glob
 
-CORES = cpu_count()
 VERSION = 3.1
+CORES = cpu_count()
 
 DOC_SOURCE_DIR = './resources_source/doc'
 DOC_DIR = './resources/help'
@@ -24,13 +24,13 @@ LOC_PLUGINS_SOURCE_FILES = ['plugins/*.cpp', 'plugins/*.h']
 LOC_PLUGINS_TARGET_FILES = ['plugin_en_US.ts', 'plugin_cs_CZ.ts', 'plugin_pl_PL.ts',
                             'plugin_ru_RU.ts', 'plugin_fr_FR.ts']
 
-def documentation():
-    call(['make', 'html', '-C', DOC_SOURCE_DIR])
+def documentation(format):
+    call(['make', format, '-C', DOC_SOURCE_DIR])
 
     if (os.path.exists(DOC_DIR)):
         shutil.rmtree(DOC_DIR)
 
-    shutil.copytree('{0}/build/html/'.format(DOC_SOURCE_DIR), DOC_DIR)
+    shutil.copytree('{0}/build/{1}/'.format(DOC_SOURCE_DIR, format), DOC_DIR)
 
 def equations():
     for root, dirs, files in os.walk(PLUGINS_DIR):
@@ -69,7 +69,7 @@ def update_localization():
 
     call(['lupdate'] + sources + ['-ts'] + LOC_PLUGINS_TARGET_FILES)
 
-def build(cores):
+def build_project(cores):
     call(['cmake', '.'])
     call(['make', '-j', str(cores)])
 
@@ -77,14 +77,20 @@ def build(cores):
     call(['cmake', PLUGINS_DIR + '/CMakeLists.txt'])
     call(['make', '-C', PLUGINS_DIR, '-j', str(cores)])
 
-def source_package(VERSION):
+def run_project(project, server):
+    if (not server):
+        call(['LD_LIBRARY_PATH=libs', './{0}'.format(project)])
+    else:
+        call(['LD_LIBRARY_PATH=libs', 'xvfb-run', '--auto-servernum', './{0}'.format(project)])
+
+def source_package(version):
     call(['git', 'clean', '-fdx'])
     
     documentation()
     equations()
     release_localization()
 
-    temp = '{0}/agros2d-{1}'.format(TEMP_DIR, VERSION)
+    temp = '{0}/agros2d-{1}'.format(TEMP_DIR, version)
     if (os.path.exists(temp)):
         shutil.rmtree(temp)
 
@@ -94,49 +100,61 @@ def source_package(VERSION):
     os.chdir(temp)
     call(['debuild', '-S', '-sa'])
 
-def binary_package(VERSION):
+def binary_package():
     call(['dpkg-buildpackage', '-sgpg', '-rfakeroot'])
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--documentation', action='store_true', required=False,
-                        help='generate HTML documentation')
-    parser.add_argument('-e', '--equations', action='store_true', required=False,
-                        help='generate equation from LaTeX source')
+    subparsers = parser.add_subparsers(dest='command')
 
-    loc = parser.add_argument_group('localization')
-    loc.add_argument('-l', '--localization', nargs='?', type=str, required=False,
-                     help='release or update localization (valid parameters: release, update)')
+    # documentation
+    doc = subparsers.add_parser('doc', help='generate documentation')
+    doc.add_argument('-f', '--format', nargs='?', default='html', type=str, required=False,
+                     help='output format (default parameter is html)')
 
-    comp = parser.add_argument_group('buid')
-    comp.add_argument('-b', '--build', action='store_true', required=False,
-                      help='build project')
-    comp.add_argument('-c', '--cores', nargs='?', default=1, type=int, required=False,
+    # localization
+    loc = subparsers.add_parser('loc', help='release or update localization')
+    loc.add_argument('-r', '--release', default=True, action='store_true', required=False)
+    loc.add_argument('-u', '--update', default=False, action='store_true', required=False)
+
+    # build
+    build = subparsers.add_parser('build', help='build project')
+    build.add_argument('-c', '--cores', nargs='?', default=CORES, type=int, required=False,
                       help='number of used cores')
 
-    pac = parser.add_argument_group('package')
-    pac.add_argument('-p', '--package', nargs='?', type=str, required=False,
-                      help='build source or binary package (valid parameters: source, binary)')
-    pac.add_argument('-v', '--version', nargs='?', default=VERSION, type=float, required=False,
-                      help='set version')
+    # run
+    run = subparsers.add_parser('run', help='run project')
+    run.add_argument('-p', '--project', nargs='?', default='agros2d', type=str, required=False,
+                     help='project (valid parameters are agros2d, agros2d_pythonalb, agros2d_generator, agros2d_solver)')
+    run.add_argument('-s', '--server', action='store_true', required=False,
+                     help='run project with X virtual framebuffer')
+
+    # package
+    pack = subparsers.add_parser('pack', help='make source or binary package')
+    pack.add_argument('-s', '--source', default=True, action='store_true')
+    pack.add_argument('-b', '--binary', default=False, action='store_true')
+    pack.add_argument('-v', '--version', nargs='?', default=VERSION, type=float, required=False,
+                      help='version of package')
 
     args = parser.parse_args()
 
-    if (args.documentation):
-        documentation()
+    if (args.command == 'doc'):
+        documentation(args.format)
 
-    if (args.equations):
-        equations()
+    if (args.command == 'loc'):
+        if (args.release):
+            release_localization()
+        if (args.update):
+            update_localization()
 
-    if (args.localization == 'release'):
-        release_localization()
-    elif (args.localization == 'update'):
-        update_localization()
+    if (args.command == 'build'):
+        build_project(args.cores)
 
-    if (args.build):
-        build(args.cores)
+    if (args.command == 'run'):
+        run_project(args.project, args.server)
 
-    if (args.package == 'source'):
-        source_package(args.version)
-    elif (args.package == 'binary'):
-        binary_package(args.version)
+    if (args.command == 'pack'):
+        if (args.source):
+            source_package(args.version)
+        if (args.binary):
+            binary_package()
