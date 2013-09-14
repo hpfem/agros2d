@@ -179,17 +179,18 @@ void PyField::setAdaptivityStoppingCriterion(const std::string &adaptivityStoppi
 
 void PyField::setAdaptivityErrorCalculator(const std::string &calculator)
 {
+    QStringList calculators;
     foreach (Module::ErrorCalculator calc, m_fieldInfo->errorCalculators())
     {
         if (calc.id() == QString::fromStdString(calculator))
         {
             m_fieldInfo->setValue(FieldInfo::AdaptivityErrorCalculator, calc.id());
-
             return;
         }
+        calculators.append(calc.id());
     }
 
-    throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(adaptivityNormTypeStringKeys())).toStdString());
+    throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(calculators)).toStdString());
 }
 
 void PyField::setInitialCondition(double initialCondition)

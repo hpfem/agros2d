@@ -24,7 +24,7 @@ def model_electrostatic():
     electrostatic.adaptivity_parameters['tolerance'] = 0.5
     electrostatic.adaptivity_parameters['threshold'] = 0.7
     electrostatic.adaptivity_parameters['stopping_criterion'] = "singleelement"
-    electrostatic.adaptivity_parameters['norm'] = "h1_norm"
+    electrostatic.adaptivity_parameters['error_calculator'] = "h1"
     electrostatic.adaptivity_parameters['anisotropic_refinement'] = True
     electrostatic.adaptivity_parameters['finer_reference_solution'] = False
     electrostatic.solver = "linear"
