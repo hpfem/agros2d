@@ -339,9 +339,9 @@ struct MaterialTypeVariable
 {
     MaterialTypeVariable() : m_id(""), m_shortname(""), m_defaultValue(0),  m_expressionNonlinear(""), m_isTimeDep(false), m_isBool(false), m_onlyIf(QString()){}
     MaterialTypeVariable(const QString &id, const QString &shortname,
-                         const QString &expressionNonlinear = "", bool isTimedep = false, bool isBool = false, QString onlyIf = QString())
+                         const QString &expressionNonlinear = "", bool isTimedep = false, bool isBool = false, QString onlyIf = QString(), bool isSource = false)
         : m_id(id), m_shortname(shortname),
-          m_expressionNonlinear(expressionNonlinear), m_isTimeDep(isTimedep), m_isBool(isBool), m_onlyIf(onlyIf){}
+          m_expressionNonlinear(expressionNonlinear), m_isTimeDep(isTimedep), m_isBool(isBool), m_onlyIf(onlyIf), m_isSource(isSource) {}
     MaterialTypeVariable(XMLModule::quantity quant);
 
     // id
@@ -354,9 +354,11 @@ struct MaterialTypeVariable
     // timedep
     inline bool isTimeDep() const { return m_isTimeDep; }
     // show as checkbox
-    inline bool isBool() const {return m_isBool; }
-    // enable only if checkbox with id==m_onlyIf is checked
+    inline bool isBool() const { return m_isBool; }
+    // enable only if checkbox with id == m_onlyIf is checked
     inline QString onlyIf() const {return m_onlyIf; }
+    // field source
+    inline bool isSource() const { return m_isSource; }
 
 private:
     // id
@@ -369,8 +371,12 @@ private:
     QString m_expressionNonlinear;
     // timedep
     bool m_isTimeDep;
+    // bool parameter
     bool m_isBool;
+    // only if
     QString m_onlyIf;
+    // source
+    bool m_isSource;
 };
 
 // boundary condition type variable

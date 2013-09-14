@@ -881,8 +881,10 @@ void MaterialBrowserDialog::materialInfo(const QString &fileName)
                                               .arg(QString::fromStdString(prop.shortname()))
                                               .arg(QString::fromStdString(prop.unit())).toStdString());
 
-                        propSection->SetValue("PROPERTY_INDEPENDENT_X", keysString.toStdString());
-                        propSection->SetValue("PROPERTY_INDEPENDENT_Y", valuesString.toStdString());
+                        propSection->SetValue("PROPERTY_X", keysString.toStdString());
+                        propSection->SetValue("PROPERTY_Y", valuesString.toStdString());
+
+                        propSection->ShowSection("PROPERTY_NONLINEAR");
                     }
                 }
             }
@@ -910,13 +912,16 @@ void MaterialBrowserDialog::linkClicked(const QUrl &url)
     {
         m_selected_x.clear();
         m_selected_y.clear();
+        m_selected_constant = 0.0;
 
 #if QT_VERSION < 0x050000
         QStringList keysString = url.queryItemValue("x").split(",");
         QStringList valuesString = url.queryItemValue("y").split(",");
+        m_selected_constant = url.queryItemValue("constant").toDouble();
 #else
         QStringList keysString = QUrlQuery(url).queryItemValue("x").split(",");
         QStringList valuesString = QUrlQuery(url).queryItemValue("y").split(",");
+        m_selected_constant = QUrlQuery(url).queryItemValue("constant").toDouble();
 #endif
 
         for (int j = 0; j < keysString.size(); j++)

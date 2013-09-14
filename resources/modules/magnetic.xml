@@ -286,20 +286,20 @@
         <module:quantity id="magnetic_conductivity" name="Electrical conductivity" shortname="gamma" shortname_html="&lt;i>&amp;gamma;&lt;/i>" unit="S/m" unit_html="S.m&lt;sup>-1&lt;/sup>" unit_latex="S \cdot m^{-1}"/>
       </module:group>
       <module:group name="Source">
-        <module:quantity id="magnetic_current_density_external_real" name="Current dens. - ext. - real" shortname="Jer" shortname_html="&lt;i>J&lt;/i>&lt;sub>r,ext&lt;/sub>" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
-        <module:quantity id="magnetic_current_density_external_imag" name="Current dens. - ext. - imag" shortname="Jei" shortname_html="&lt;i>J&lt;/i>&lt;sub>i,ext&lt;/sub>" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
-        <module:quantity is_bool="true" id="magnetic_total_current_prescribed" name="Total current prescribed" shortname="IPrescribed" shortname_html="IPrescribed" unit="-" unit_html="-" unit_latex="-"/>
-        <module:quantity only_if="magnetic_total_current_prescribed" id="magnetic_total_current_real" name="Avg. total current density - real" shortname="Itr" shortname_html="Itr" unit="A" unit_html="A" unit_latex="A"/>
-        <module:quantity only_if="magnetic_total_current_prescribed" id="magnetic_total_current_imag" name="Avg. total current density - imag" shortname="Iti" shortname_html="Iti" unit="A" unit_html="A" unit_latex="A"/>
+        <module:quantity id="magnetic_current_density_external_real" name="Current dens. - ext. - real" is_source="1" shortname="Jer" shortname_html="&lt;i>J&lt;/i>&lt;sub>r,ext&lt;/sub>" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
+        <module:quantity id="magnetic_current_density_external_imag" name="Current dens. - ext. - imag" is_source="1" shortname="Jei" shortname_html="&lt;i>J&lt;/i>&lt;sub>i,ext&lt;/sub>" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
+        <module:quantity id="magnetic_total_current_prescribed" name="Total current prescribed" is_bool="1" shortname="IPrescribed" shortname_html="IPrescribed" unit="-" unit_html="-" unit_latex="-"/>
+        <module:quantity id="magnetic_total_current_real" name="Avg. total current density - real" is_source="1" only_if="magnetic_total_current_prescribed" shortname="Itr" shortname_html="Itr" unit="A" unit_html="A" unit_latex="A"/>
+        <module:quantity id="magnetic_total_current_imag" name="Avg. total current density - imag" is_source="1" only_if="magnetic_total_current_prescribed" shortname="Iti" shortname_html="Iti" unit="A" unit_html="A" unit_latex="A"/>
       </module:group>
       <module:group name="Permanent magnet">
         <module:quantity id="magnetic_remanence" name="Remanent flux density" shortname="Brm" shortname_html="&lt;i>B&lt;/i>&lt;sub>rm&lt;/sub>" unit="T" unit_html="T"/>
-        <module:quantity id="magnetic_remanence_angle" name="Remanent flux density - angle" shortname="Bra" shortname_html="&lt;i>&amp;alpha;&lt;/i>&lt;sub>rm&lt;/sub>" unit="deg." unit_html="deg."/>
+        <module:quantity id="magnetic_remanence_angle" name="Remanent flux density - angle" is_source="1" shortname="Bra" shortname_html="&lt;i>&amp;alpha;&lt;/i>&lt;sub>rm&lt;/sub>" unit="deg." unit_html="deg."/>
       </module:group>
       <module:group name="Velocity">
-        <module:quantity id="magnetic_velocity_x" name="Velocity - x" shortname="vx" shortname_html="&lt;i>v&lt;/i>&lt;sub>x&lt;/sub>" unit="m/s" unit_html="m.s&lt;sup>-1&lt;/sup>" unit_latex="m \cdot s^{-1}"/>
-        <module:quantity id="magnetic_velocity_y" name="Velocity - y" shortname="vy" shortname_html="&lt;i>v&lt;/i>&lt;sub>y&lt;/sub>" unit="m/s" unit_html="m.s&lt;sup>-1&lt;/sup>" unit_latex="m \cdot s^{-1}"/>
-        <module:quantity id="magnetic_velocity_angular" name="Velocity - angular" shortname="va" shortname_html="&lt;i>&amp;omega;&lt;/i>" unit="m/s" unit_html="m.s&lt;sup>-1&lt;/sup>" unit_latex="m \cdot s^{-1}"/>
+        <module:quantity id="magnetic_velocity_x" name="Velocity - x" is_source="1" shortname="vx" shortname_html="&lt;i>v&lt;/i>&lt;sub>x&lt;/sub>" unit="m/s" unit_html="m.s&lt;sup>-1&lt;/sup>" unit_latex="m \cdot s^{-1}"/>
+        <module:quantity id="magnetic_velocity_y" name="Velocity - y" is_source="1" shortname="vy" shortname_html="&lt;i>v&lt;/i>&lt;sub>y&lt;/sub>" unit="m/s" unit_html="m.s&lt;sup>-1&lt;/sup>" unit_latex="m \cdot s^{-1}"/>
+        <module:quantity id="magnetic_velocity_angular" name="Velocity - angular" is_source="1" shortname="va" shortname_html="&lt;i>&amp;omega;&lt;/i>" unit="m/s" unit_html="m.s&lt;sup>-1&lt;/sup>" unit_latex="m \cdot s^{-1}"/>
       </module:group>
     </module:gui>
     <module:gui type="surface">

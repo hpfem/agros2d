@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
+
+  <material:general description="" name="Air"/>
+
+  <material:properties>
+    <material:property independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Density" nonlinearity_kind="table" shortname="&lt;i>&amp;rho;&lt;/i>" source="" unit="kg/m&lt;sup>3&lt;/sup>">
+      <material:constant value="1.25"/>
+      <material:nonlinearity>
+        <material:table keys="" values=""/>
+      </material:nonlinearity>
+    </material:property>
+    <material:property independent_shortname="" independent_unit="" name="Speed of sound" nonlinearity_kind="table" shortname="&lt;i>c&lt;/i>" source="" unit="m/s">
+      <material:constant value="343"/>
+      <material:nonlinearity>
+        <material:table keys="" values=""/>
+      </material:nonlinearity>
+    </material:property>
+    <material:property independent_shortname="" independent_unit="" name="Relative permittivity" nonlinearity_kind="table" shortname="&lt;i>&amp;epsilon;&lt;/i>&lt;sub>r&lt;/sub>" source="" unit="-">
+      <material:constant value="1"/>
+      <material:nonlinearity>
+        <material:table keys="" values=""/>
+      </material:nonlinearity>
+    </material:property>
+    <material:property independent_shortname="" independent_unit="" name="Relative permeability" nonlinearity_kind="table" shortname="&lt;i>&amp;mu;&lt;/i>&lt;sub>r&lt;/sub>" source="" unit="-">
+      <material:constant value="1"/>
+      <material:nonlinearity>
+        <material:table keys="" values=""/>
+      </material:nonlinearity>
+    </material:property>
+  </material:properties>
+
+</material:material>

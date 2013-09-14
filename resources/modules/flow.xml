@@ -136,8 +136,8 @@
       <module:group>
         <module:quantity id="flow_density" name="Density" shortname="rho" shortname_html="&lt;i>&amp;rho;&lt;/i>" shortname_latex="\rho" unit="kg/m3" unit_html="kg.m&lt;sup>-3&lt;/sup>" unit_latex="kg \cdot m^{-3}"/>
         <module:quantity id="flow_viscosity" name="Viscosity" shortname="mu" shortname_html="&lt;i>&amp;mu;&lt;/i>" shortname_latex="\mu" unit="Pa.s" unit_html="Pa.s" unit_latex="Pa\cdot s"/>
-        <module:quantity id="flow_force_x" name="Force - x" shortname="fx" shortname_html="&lt;i>f&lt;/i>&lt;sub>x&lt;/sub>" shortname_latex="f_{x}" unit="N/m3" unit_html="N.m&lt;sup>-3&lt;/sup>" unit_latex="N \cdot m^{-3}"/>
-        <module:quantity id="flow_force_y" name="Force - y" shortname="fy" shortname_html="&lt;i>f&lt;/i>&lt;sub>y&lt;/sub>" shortname_latex="f_{y}" unit="N/m3" unit_html="N.m&lt;sup>-3&lt;/sup>" unit_latex="N \cdot m^{-3}"/>
+        <module:quantity id="flow_force_x" name="Force - x" shortname="fx" is_source="1" shortname_html="&lt;i>f&lt;/i>&lt;sub>x&lt;/sub>" shortname_latex="f_{x}" unit="N/m3" unit_html="N.m&lt;sup>-3&lt;/sup>" unit_latex="N \cdot m^{-3}"/>
+        <module:quantity id="flow_force_y" name="Force - y" shortname="fy" is_source="1" shortname_html="&lt;i>f&lt;/i>&lt;sub>y&lt;/sub>" shortname_latex="f_{y}" unit="N/m3" unit_html="N.m&lt;sup>-3&lt;/sup>" unit_latex="N \cdot m^{-3}"/>
       </module:group>
     </module:gui>
     <module:gui type="surface">

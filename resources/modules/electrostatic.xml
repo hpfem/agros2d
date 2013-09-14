@@ -74,7 +74,7 @@
     <module:gui type="volume">
       <module:group>
         <module:quantity condition="value > 0" default="1" id="electrostatic_permittivity" name="Permittivity" shortname="epsr" shortname_html="&lt;i>&amp;epsilon;&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="\varepsilon_{r}" unit="-" unit_html="-" unit_latex="-"/>
-        <module:quantity id="electrostatic_charge_density" name="Charge density" shortname="rho" shortname_html="&lt;i>&amp;rho;&lt;/i>" shortname_latex="\rho" unit="C/m3" unit_html="C.m&lt;sup>-3&lt;/sup>" unit_latex="C \cdot m^{-3}"/>
+        <module:quantity id="electrostatic_charge_density" name="Charge density" is_source="1" shortname="rho" shortname_html="&lt;i>&amp;rho;&lt;/i>" shortname_latex="\rho" unit="C/m3" unit_html="C.m&lt;sup>-3&lt;/sup>" unit_latex="C \cdot m^{-3}"/>
       </module:group>
     </module:gui>
     <module:gui type="surface">

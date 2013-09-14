@@ -168,7 +168,7 @@ void SceneFieldWidget::createContent()
                 {
                     textEdit->setTitle(row.name());
                     layoutGroup->addWidget(textEdit, index, 0,1,2);
-                    connect(textEdit, SIGNAL(enableFields(QString, bool)), this, SIGNAL(doEnableFields(QString, bool)));
+                    connect(textEdit, SIGNAL(enableFields(QString, bool)), this, SLOT(doEnableFields(QString, bool)));
                 }
                 else
                 {
@@ -219,7 +219,7 @@ ValueLineEdit *SceneFieldWidgetMaterial::addValueEditWidget(const Module::Dialog
             ValueLineEdit *edit = new ValueLineEdit(this,
                                                     (variable.isTimeDep() && m_material->fieldInfo()->analysisType() == AnalysisType_Transient),
                                                     (variable.isNonlinear() && m_material->fieldInfo()->linearityType() != LinearityType_Linear),
-                                                    variable.isBool(), variable.id(), variable.onlyIf());
+                                                    variable.isBool(), variable.id(), variable.onlyIf(), variable.isSource());
             if (variable.isNonlinear())
             {
                 edit->setTitle(row.name());

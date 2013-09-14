@@ -34,7 +34,7 @@ class ValueLineEdit : public QWidget
     Q_OBJECT
 
 public:
-    ValueLineEdit(QWidget *parent = 0, bool hasTimeDep = false, bool hasNonlin = false, bool isBool = false, QString id = QString(), QString onlyIf = QString());
+    ValueLineEdit(QWidget *parent = 0, bool hasTimeDep = false, bool hasNonlin = false, bool isBool = false, QString id = QString(), QString onlyIf = QString(), bool isSource = true);
     ~ValueLineEdit();
 
     double number();
@@ -85,6 +85,8 @@ private:
     // textbox enabled only if checkbox with this id is checked
     QString m_onlyIf;
     QString m_id;
+    // field source
+    bool m_isSource;
 
     double m_minimum;
     double m_minimumSharp;
@@ -113,10 +115,12 @@ private:
     QToolButton *btnEditTimeDep;
     QToolButton *btnDataTableDelete;
     QToolButton *btnDataTableDialog;
+    QToolButton *btnMaterialDialog;
 #else
     QPushButton *btnEditTimeDep;
     QPushButton *btnDataTableDelete;
     QPushButton *btnDataTableDialog;
+    QPushButton *btnMaterialDialog;
 #endif
 
     void setLayoutValue();
@@ -126,6 +130,7 @@ private slots:
     void doOpenValueTimeDialog();
     void doOpenDataTableDelete();
     void doOpenDataTableDialog();
+    void doOpenMaterialDialog();
 };
 
 #endif // VALUELINEEDIT_H

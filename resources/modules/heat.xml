@@ -170,14 +170,14 @@ nahrada uval -> uptval ... linearizace v prechodaku pomoci predchoziho casoveho 
     <module:gui type="volume">
       <module:group>
         <module:quantity condition="value > 0" default="385" id="heat_conductivity" name="Thermal conductivity" shortname="lambda" shortname_html="&lt;i>&amp;lambda;&lt;/i>" shortname_latex="\lambda" shortname_dependence="T" shortname_dependence_html="&lt;i>T&lt;/i>" unit="W/m.K" unit_html="W.m&lt;sup>-1&lt;/sup>.K&lt;sup>-1&lt;/sup>" unit_latex="W \cdot m^{-1} \cdot K^{-1}"/>
-        <module:quantity condition="value >= 0" id="heat_volume_heat" name="Volume heat" shortname="p" shortname_html="&lt;i>p&lt;/i>" shortname_latex="p" unit="W/m3" unit_html="W.m&lt;sup>-3&lt;/sup>" unit_latex="W \cdot m^{-3}"/>
+        <module:quantity condition="value >= 0" id="heat_volume_heat" name="Volume heat" is_source="1" shortname="p" shortname_html="&lt;i>p&lt;/i>" shortname_latex="p" unit="W/m3" unit_html="W.m&lt;sup>-3&lt;/sup>" unit_latex="W \cdot m^{-3}"/>
         <module:quantity condition="value >= 0" id="heat_density" name="Density" shortname="rho" shortname_html="&lt;i>&amp;rho;&lt;/i>" shortname_latex="\rho" shortname_dependence="T" shortname_dependence_html="&lt;i>T&lt;/i>" unit="kg/m3" unit_html="kg.m&lt;sup>-3&lt;/sup>" unit_latex="kg \cdot m^{-3}"/>
         <module:quantity condition="value >= 0" id="heat_specific_heat" name="Specific heat" shortname="cp" shortname_html="&lt;i>c&lt;/i>&lt;sub>P&lt;/sub>" shortname_latex="c_{P}" shortname_dependence="T" shortname_dependence_html="&lt;i>T&lt;/i>" unit="J/kg.K" unit_html="J.kg&lt;sup>-1&lt;/sup>.K&lt;sup>-1&lt;/sup>" unit_latex="J \cdot kg^{-1} \cdot K^{-1}"/>
       </module:group>
       <module:group name="Velocity">
-        <module:quantity id="heat_velocity_x" name="Velocity - x" shortname="vx" shortname_html="&lt;i>v&lt;/i>&lt;sub>x&lt;/sub>" unit="m/s" unit_html="m.s&lt;sup>-1&lt;/sup>" unit_latex="m \cdot s^{-1}"/>
-        <module:quantity id="heat_velocity_y" name="Velocity - y" shortname="vy" shortname_html="&lt;i>v&lt;/i>&lt;sub>y&lt;/sub>" unit="m/s" unit_html="m.s&lt;sup>-1&lt;/sup>" unit_latex="m \cdot s^{-1}"/>
-        <module:quantity id="heat_velocity_angular" name="Velocity - angular" shortname="va" shortname_html="&lt;i>&amp;omega;&lt;/i>" unit="m/s" unit_html="m.s&lt;sup>-1&lt;/sup>" unit_latex="m \cdot s^{-1}"/>
+        <module:quantity id="heat_velocity_x" name="Velocity - x" is_source="1" shortname="vx" shortname_html="&lt;i>v&lt;/i>&lt;sub>x&lt;/sub>" unit="m/s" unit_html="m.s&lt;sup>-1&lt;/sup>" unit_latex="m \cdot s^{-1}"/>
+        <module:quantity id="heat_velocity_y" name="Velocity - y" is_source="1" shortname="vy" shortname_html="&lt;i>v&lt;/i>&lt;sub>y&lt;/sub>" unit="m/s" unit_html="m.s&lt;sup>-1&lt;/sup>" unit_latex="m \cdot s^{-1}"/>
+        <module:quantity id="heat_velocity_angular" name="Velocity - angular" is_source="1" shortname="va" shortname_html="&lt;i>&amp;omega;&lt;/i>" unit="m/s" unit_html="m.s&lt;sup>-1&lt;/sup>" unit_latex="m \cdot s^{-1}"/>
       </module:group>
     </module:gui>
     <module:gui type="surface">

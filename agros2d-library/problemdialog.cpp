@@ -378,7 +378,7 @@ QWidget *FieldWidget::createAdaptivityWidget()
     layoutAdaptivity->addWidget(txtAdaptivityThreshold, 2, 3);
     layoutAdaptivity->addWidget(new QLabel(tr("Order increase:")), 3, 0);
     layoutAdaptivity->addWidget(txtAdaptivityOrderIncrease, 3, 1);
-    layoutAdaptivity->addWidget(new QLabel(tr("Norm:")), 4, 0);
+    layoutAdaptivity->addWidget(new QLabel(tr("Error calculator:")), 4, 0);
     layoutAdaptivity->addWidget(cmbAdaptivityErrorCalculator, 4, 1);
     layoutAdaptivity->addWidget(chkAdaptivityUseAniso, 5, 1, 1, 3);
     layoutAdaptivity->addWidget(chkAdaptivityFinerReference, 6, 1, 1, 3);

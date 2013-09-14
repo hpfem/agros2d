@@ -23,6 +23,7 @@
 #include "util/conf.h"
 #include "gui/valuetimedialog.h"
 #include "gui/valuedatatabledialog.h"
+#include "materialbrowserdialog.h"
 
 #include "hermes2d/field.h"
 #include "hermes2d/problem.h"
@@ -32,7 +33,7 @@
 #include "pythonlab/pythonengine_agros.h"
 
 
-ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin, bool isBool, QString id, QString onlyIf)
+ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin, bool isBool, QString id, QString onlyIf, bool isSource)
     : QWidget(parent), m_hasTimeDep(hasTimeDep), m_hasNonlin(hasNonlin),
       m_minimum(-numeric_limits<double>::max()),
       m_minimumSharp(-numeric_limits<double>::max()),
@@ -41,6 +42,7 @@ ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin, b
       m_isBool(isBool),
       m_id(id),
       m_onlyIf(onlyIf),
+      m_isSource(isSource),
       txtLineEdit(NULL),
       chkCheckBox(NULL)
 {
@@ -61,6 +63,16 @@ ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin, b
         connect(txtLineEdit, SIGNAL(textChanged(QString)), this, SLOT(evaluate()));
         //connect(txtLineEdit, SIGNAL(textChanged(QString)), this, SIGNAL(textChanged(QString)));
         connect(txtLineEdit, SIGNAL(editingFinished()), this, SIGNAL(editingFinished()));
+
+#ifdef Q_WS_MAC
+        btnMaterialDialog = new QToolButton();
+        btnMaterialDialog->setIcon(icon("three-dots"));
+        btnMaterialDialog->setMaximumHeight(txtLineEdit->height() - 4);
+#else
+        btnMaterialDialog = new QPushButton(icon("three-dots"), "");
+        btnMaterialDialog->setMaximumSize(btnMaterialDialog->sizeHint());
+#endif
+        connect(btnMaterialDialog, SIGNAL(clicked()), this, SLOT(doOpenMaterialDialog()));
 
 #ifdef Q_WS_MAC
         btnDataTableDelete = new QToolButton();
@@ -98,14 +110,15 @@ ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin, b
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setMargin(0);
-    if(isBool)
+    if (isBool)
         layout->addWidget(chkCheckBox, 1);
     else
         layout->addWidget(txtLineEdit, 1);
     layout->addWidget(lblInfo, 1);
     layout->addWidget(lblValue, 0, Qt::AlignRight);
-    if(! isBool)
+    if (!isBool)
     {
+        layout->addWidget(btnMaterialDialog, 0, Qt::AlignRight);
         layout->addWidget(btnEditTimeDep, 0, Qt::AlignRight);
         layout->addWidget(btnDataTableDelete, 0, Qt::AlignRight);
         layout->addWidget(btnDataTableDialog, 0, Qt::AlignRight);
@@ -183,7 +196,7 @@ bool ValueLineEdit::evaluate(bool quiet)
     bool isOk = false;
     bool valueChanged = false;
 
-    if(m_isBool)
+    if (m_isBool)
     {
         m_number = int(chkCheckBox->isChecked());
         emit evaluated(false);
@@ -196,6 +209,7 @@ bool ValueLineEdit::evaluate(bool quiet)
             Value val = value();
 
             btnEditTimeDep->setVisible(m_hasTimeDep && Agros2D::problem()->isTransient());
+            btnMaterialDialog->setVisible(!m_isSource && !m_hasNonlin);
 
             if (val.evaluate())
             {
@@ -319,6 +333,7 @@ void ValueLineEdit::setLayoutValue()
 
     btnDataTableDialog->setVisible(m_hasNonlin);
     btnEditTimeDep->setVisible(m_hasTimeDep && Agros2D::problem()->isTransient());
+    btnMaterialDialog->setVisible(!m_isSource && !m_hasNonlin);
 }
 
 void ValueLineEdit::setValueLabel(const QString &text, QColor color, bool isVisible)
@@ -368,4 +383,16 @@ void ValueLineEdit::doOpenDataTableDialog()
 
     setLayoutValue();
     evaluate();
+}
+
+void ValueLineEdit::doOpenMaterialDialog()
+{
+    MaterialBrowserDialog materialBrowserDialog(this);
+    if (materialBrowserDialog.showDialog(true) == QDialog::Accepted)
+    {
+        setNumber(materialBrowserDialog.constant());
+
+        setLayoutValue();
+        evaluate();
+    }
 }

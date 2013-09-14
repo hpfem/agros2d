@@ -359,11 +359,12 @@ QList<Module::MaterialTypeVariable> FieldInfo::materialTypeVariables() const
 
                             if (quant_ui.is_bool().present())
                                 quant.is_bool().set(quant_ui.is_bool().get());
-                            else
-                                quant.is_bool().set("false");
 
                             if (quant_ui.only_if().present())
                                 quant.only_if().set(quant_ui.only_if().get());
+
+                            if (quant_ui.is_source().present())
+                                quant.is_source().set(quant_ui.is_source().get());
                         }
                     }
                 }
@@ -401,7 +402,7 @@ QList<Module::MaterialTypeVariable> FieldInfo::materialTypeVariables() const
                             isTimeDep = (QString::fromStdString(qty.dependence().get()) == "time");
 
                         materialTypeVariables.append(Module::MaterialTypeVariable(variable.id(), variable.shortname(),
-                                                                                  nonlinearExpression, isTimeDep, variable.isBool(), variable.onlyIf()));
+                                                                                  nonlinearExpression, isTimeDep, variable.isBool(), variable.onlyIf(), variable.isSource()));
                     }
                 }
             }

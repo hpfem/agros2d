@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/fmach/Projekty/Agros2D/agros2d-current/resources/xsd/material_xml.xsd">
+<material:material xmlns:material="XMLMaterial" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLMaterial /home/karban/Projects/agros2d/resources/xsd/material_xml.xsd">
 
   <material:general description="Copper is a chemical element with the symbol Cu and atomic number 29. It is a ductile metal with very high thermal and electrical conductivity. Pure copper is soft and malleable; a freshly exposed surface has a reddish-orange color. It is used as a conductor of heat and electricity, a building material, and a constituent of various metal alloys." name="Copper"/>
 
   <material:properties>
-    <material:property nonlinearity_kind="function" independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Thermal conductivity" shortname="&lt;i>&amp;lambda;&lt;/i>" source="N.J. Simon, E.S. Drexler, R.P. Reed, NIST Monograph 177, Properties of Copper and Copper Alloys at Cryogenic Temperatures (1992) and C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)" unit="W/m.K">
+    <material:property independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Thermal conductivity" nonlinearity_kind="function" shortname="&lt;i>&amp;lambda;&lt;/i>" source="N.J. Simon, E.S. Drexler, R.P. Reed, NIST Monograph 177, Properties of Copper and Copper Alloys at Cryogenic Temperatures (1992) and C.Y. Ho, R.W. Powell and P.E. Liley, J. Phys. Chem. Ref. Data, v1, p279 (1972)" unit="W/m.K">
       <material:constant value="401"/>
       <material:nonlinearity>
         <material:function body="def agros2d_material(t) :&#xA;&#x9;if t >= 1.0 and t &lt; 40.0 :&#xA;&#x9;&#x9;return 6.997990e-04*t*t*t*t -7.168113e-02*t*t*t +1.387207e+00*t*t +3.666487e+01*t +1.255868e+01&#xA;&#x9;elif t >= 40.0 and t &lt; 70.0 :&#xA;&#x9;&#x9;return -9.504397e-04*t*t*t +3.738471e-01*t*t -4.525448e+01*t +2.174919e+03&#xA;&#x9;elif t >= 70.0 and t &lt; 100.0 :&#xA;&#x9;&#x9;return 9.226190e-06*t*t*t*t -4.470238e-03*t*t*t +8.176488e-01*t*t -6.753869e+01*t +2.545870e+03&#xA;&#x9;elif t >= 100.0 and t &lt; 300.0 :&#xA;&#x9;&#x9;return -1.266667e-05*t*t*t +8.971429e-03*t*t -2.116905e+00*t +5.554000e+02&#xA;&#x9;elif t >= 300.0 and t &lt;= 1358.0 :&#xA;&#x9;&#x9;return -2.641980e-13*t*t*t*t*t +1.062220e-09*t*t*t*t -1.570451e-06*t*t*t +1.013916e-03*t*t -3.133575e-01*t +4.237411e+02&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100&#xA;&#xA;" interval_from="1" interval_to="1358"/>
       </material:nonlinearity>
     </material:property>
-    <material:property nonlinearity_kind="function" independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Specific heat" shortname="&lt;i>c&lt;/i>&lt;sub>p&lt;/sub>" source="G.K. White and S.J. Collocott, J. Phys. Chem. Ref. Data, vol 13, no 4, p1251 (1984)" unit="J/kg.K">
+    <material:property independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Specific heat" nonlinearity_kind="function" shortname="&lt;i>c&lt;/i>&lt;sub>p&lt;/sub>" source="G.K. White and S.J. Collocott, J. Phys. Chem. Ref. Data, vol 13, no 4, p1251 (1984)" unit="J/kg.K">
       <material:constant value="383"/>
       <material:nonlinearity>
         <material:function body="def agros2d_material(t) :&#xA;&#x9;if t >= 1.0 and t &lt; 18.0 :&#xA;&#x9;&#x9;return 2.246429e-05*t*t*t*t +2.847033e-04*t*t*t +3.441219e-03*t*t +1.044570e-03*t +8.168055e-03&#xA;&#x9;elif t >= 18.0 and t &lt; 60.0 :&#xA;&#x9;&#x9;return 3.010206e-07*t*t*t*t -1.048364e-03*t*t*t +1.540539e-01*t*t -3.767169e+00*t +2.905972e+01&#xA;&#x9;elif t >= 60.0 and t &lt; 300.0 :&#xA;&#x9;&#x9;return -1.357031e-07*t*t*t*t +1.291112e-04*t*t*t -4.732108e-02*t*t +8.236392e+00*t -2.152814e+02&#xA;&#x9;elif t >= 300.0 and t &lt;= 1300.0 :&#xA;&#x9;&#x9;return 1.140747e-10*t*t*t*t -1.971221e-07*t*t*t +5.535252e-05*t*t +1.338348e-01*t +3.427640e+02&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="1" interval_to="1300"/>
       </material:nonlinearity>
     </material:property>
-    <material:property nonlinearity_kind="function" independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Density" shortname="&lt;i>&amp;rho;&lt;/i>" source="N.J. Simon, E.S. Drexler, R.P. Reed, NIST Monograph 177, Properties of Copper and Copper Alloys at Cryogenic Temperatures (1992) and T.A. Hahn, J. Applied Physics, v41, p5096 (1970) and G.K. White, R.B. Roberts, High Temperatures-High Pressures, v12, p311 (1980); calculated from the linear expansion" unit="kg/m&lt;sup>3&lt;/sup>">
+    <material:property independent_shortname="&lt;i>T&lt;/i>" independent_unit="K" name="Density" nonlinearity_kind="function" shortname="&lt;i>&amp;rho;&lt;/i>" source="N.J. Simon, E.S. Drexler, R.P. Reed, NIST Monograph 177, Properties of Copper and Copper Alloys at Cryogenic Temperatures (1992) and T.A. Hahn, J. Applied Physics, v41, p5096 (1970) and G.K. White, R.B. Roberts, High Temperatures-High Pressures, v12, p311 (1980); calculated from the linear expansion" unit="kg/m&lt;sup>3&lt;/sup>">
       <material:constant value="8940"/>
       <material:nonlinearity>
         <material:function body="def agros2d_material(t) :&#xA;    &#x9;if t >= 4.0 and t &lt; 90.0 :&#xA;&#x9;&#x9;return -8.227902e-06*t*t*t -4.310034e-04*t*t +1.936185e-03*t +9.028155e+03&#xA;&#x9;elif t >= 90.0 and t &lt; 250.0 :&#xA;&#x9;&#x9;return 1.736657e-06*t*t*t -1.406238e-03*t*t -5.885933e-02*t +9.034264e+03&#xA;&#x9;elif t >= 250.0 and t &lt;= 1250.0 :&#xA;&#x9;&#x9;return -8.730517e-05*t*t -3.926111e-01*t +9.062604e+03&#xA;&#x9;else :&#xA;&#x9;&#x9;return 1.000000e+100" interval_from="4" interval_to="1250"/>
+      </material:nonlinearity>
+    </material:property>
+    <material:property independent_shortname="" independent_unit="" name="Electrical conductivity" nonlinearity_kind="table" shortname="&lt;i>&amp;sigma;&lt;/i>" source="" unit="S/m">
+      <material:constant value="57000000"/>
+      <material:nonlinearity>
+        <material:table keys="" values=""/>
       </material:nonlinearity>
     </material:property>
   </material:properties>

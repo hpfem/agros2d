@@ -139,6 +139,7 @@ public:
 
     inline QList<double> x() const { return m_selected_x; }
     inline QList<double> y() const { return m_selected_y; }
+    inline double constant() const { return m_selected_constant; }
 
 protected:
     void readMaterials();
@@ -156,6 +157,7 @@ private:
 
     QList<double> m_selected_x;
     QList<double> m_selected_y;
+    double m_selected_constant;
 
     bool m_select;
 

@@ -18,7 +18,7 @@
 </div>
 <br />
 
-<table>
+<table width="100%">
 {{#PROPERTIES_SECTION}}
 <tr>
 <td>
@@ -27,16 +27,21 @@
 <hr/>
 <table>
 	<p>{{PROPERTY_SOURCE}}</p>
-	<tr><td><b>{{PROPERTY_SHORTNAME_LABEL}}</b></td><td>{{PROPERTY_SHORTNAME}}</td><td rowspan="7"><div id="{{PROPERTY_CHART}}" style="width:400px;height:155px;"></div></td></tr>
+	<tr>
+		<td><b>{{PROPERTY_SHORTNAME_LABEL}}</b></td><td>{{PROPERTY_SHORTNAME}}</td>
+		{{#PROPERTY_NONLINEAR}}<td rowspan="7"><div id="{{PROPERTY_CHART}}" style="width:400px;height:155px;"></div></td>{{/PROPERTY_NONLINEAR}}
+	</tr>
 	<tr><td><b>{{PROPERTY_UNIT_LABEL}}</b></td><td>{{PROPERTY_UNIT}}</td></tr>
+	<tr><td><b>&nbsp;</b></td><td>&nbsp;</td></tr>
+	<tr><td><b>{{PROPERTY_CONSTANT_LABEL}}</b></td><td>{{PROPERTY_CONSTANT}} {{PROPERTY_UNIT}}</td></tr>
+	{{#PROPERTY_NONLINEAR}}
 	<tr><td><b>&nbsp;</b></td><td>&nbsp;</td></tr>
 	<tr><td><b>{{PROPERTY_INDEPENDENT_SHORTNAME_LABEL}}</b></td><td>{{PROPERTY_INDEPENDENT_SHORTNAME}}</td></tr>
 	<tr><td><b>{{PROPERTY_INDEPENDENT_UNIT_LABEL}}</b></td><td>{{PROPERTY_INDEPENDENT_UNIT}}</td></tr>
-	<tr><td><b>&nbsp;</b></td><td>&nbsp;</td></tr>
-	<tr><td><b>{{PROPERTY_CONSTANT_LABEL}}</b></td><td>{{PROPERTY_CONSTANT}} {{PROPERTY_UNIT}}</td></tr>
+	{{/PROPERTY_NONLINEAR}}
 </table>
 {{#PROPERTY_SELECTABLE}}
-<a href="property?id={{PROPERTY_ID}}&amp;constant={{PROPERTY_CONSTANT}}&amp;x={{PROPERTY_INDEPENDENT_X}}&amp;y={{PROPERTY_INDEPENDENT_Y}}" style="float: right;"><button>Select property</button></a>
+<a href="property?id={{PROPERTY_ID}}&amp;constant={{PROPERTY_CONSTANT}}&amp;x={{PROPERTY_X}}&amp;y={{PROPERTY_Y}}" style="float: right;"><button>Select property</button></a>
 {{/PROPERTY_SELECTABLE}}
 </div>
 </td>
