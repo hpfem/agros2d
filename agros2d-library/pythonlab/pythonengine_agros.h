@@ -128,6 +128,7 @@ QString createPythonFromModel(StartupScript_Type startupScript);
 
 void openFile(const std::string &file);
 void saveFile(const std::string &file, bool saveWithSolution);
+inline std::string getScriptFromModel() { return createPythonFromModel(StartupScript_Value).toStdString(); }
 
 int appTime();
 void memoryUsage(std::vector<int> &time, std::vector<int> &usage);

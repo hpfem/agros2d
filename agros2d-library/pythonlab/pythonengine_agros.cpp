@@ -395,7 +395,7 @@ QString createPythonFromModel(StartupScript_Type startupScript)
 
         str += QString("%1.solver = \"%2\"\n").
                 arg(fieldInfo->fieldId()).
-                arg(linearityTypeToStringKey(fieldInfo->linearityType()));                      
+                arg(linearityTypeToStringKey(fieldInfo->linearityType()));
 
         if (fieldInfo->linearityType() != LinearityType_Linear)
         {

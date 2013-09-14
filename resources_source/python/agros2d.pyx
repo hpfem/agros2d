@@ -108,6 +108,7 @@ cdef extern from "../../agros2d-library/pythonlab/pythonengine_agros.h":
     # open and save
     void openFile(string &file) except +
     void saveFile(string &file, bool saveWithSolution) except +
+    string getScriptFromModel()
 
     # memory
     int appTime()
@@ -135,6 +136,9 @@ def open_file(file):
 
 def save_file(file, save_with_solution = False):
     saveFile(string(file), save_with_solution)
+
+def get_script_from_model():
+    return getScriptFromModel().c_str()
 
 def app_time():
     return appTime()
