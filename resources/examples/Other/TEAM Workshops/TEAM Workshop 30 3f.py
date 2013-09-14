@@ -2,6 +2,7 @@
 # http://www.compumag.org/jsite/images/stories/TEAM/problem30b.pdf
 
 import agros2d as a2d
+import math
 
 def model(omega):
     # problem
@@ -28,12 +29,12 @@ def model(omega):
     magnetic.add_material("Rotor steel", {"magnetic_permeability" : 30, "magnetic_conductivity" : 1.6e+06, "magnetic_velocity_angular" : omega})
     magnetic.add_material("Aluminum", {"magnetic_permeability" : 1, "magnetic_conductivity" : 3.72e+07, "magnetic_velocity_angular" : omega})
     magnetic.add_material("Air", {"magnetic_permeability" : 1})
-    magnetic.add_material("JA+", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : sqrt(2)*3.1e6})
-    magnetic.add_material("JA-", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : -sqrt(2)*3.1e6})
-    magnetic.add_material("JB+", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : sqrt(2)*3.1e6*cos(2.0*pi/3.0), "magnetic_current_density_external_imag" : sqrt(2)*3.1e6*sin(2.0*pi/3.0)})
-    magnetic.add_material("JB-", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : -sqrt(2)*3.1e6*cos(2.0*pi/3.0), "magnetic_current_density_external_imag" : -sqrt(2)*3.1e6*sin(2.0*pi/3.0)})
-    magnetic.add_material("JC+", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : sqrt(2)*3.1e6*cos(4.0*pi/3.0), "magnetic_current_density_external_imag" : sqrt(2)*3.1e6*sin(4.0*pi/3.0)})
-    magnetic.add_material("JC-", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : -sqrt(2)*3.1e6*cos(4.0*pi/3.0), "magnetic_current_density_external_imag" : -sqrt(2)*3.1e6*sin(4.0*pi/3.0)})
+    magnetic.add_material("JA+", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : math.sqrt(2)*3.1e6})
+    magnetic.add_material("JA-", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : -math.sqrt(2)*3.1e6})
+    magnetic.add_material("JB+", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : math.sqrt(2)*3.1e6*math.cos(2.0*math.pi/3.0), "magnetic_current_density_external_imag" : math.sqrt(2)*3.1e6*math.sin(2.0*math.pi/3.0)})
+    magnetic.add_material("JB-", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : -math.sqrt(2)*3.1e6*math.cos(2.0*math.pi/3.0), "magnetic_current_density_external_imag" : -math.sqrt(2)*3.1e6*math.sin(2.0*math.pi/3.0)})
+    magnetic.add_material("JC+", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : math.sqrt(2)*3.1e6*math.cos(4.0*math.pi/3.0), "magnetic_current_density_external_imag" : math.sqrt(2)*3.1e6*math.sin(4.0*math.pi/3.0)})
+    magnetic.add_material("JC-", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : -math.sqrt(2)*3.1e6*math.cos(4.0*math.pi/3.0), "magnetic_current_density_external_imag" : -math.sqrt(2)*3.1e6*math.sin(4.0*math.pi/3.0)})
     
     # geometry
     geometry = a2d.geometry

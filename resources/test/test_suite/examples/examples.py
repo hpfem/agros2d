@@ -13,9 +13,9 @@ def create_tests(case, dir):
             method = 'test_{0}_{1}'.format(os.path.split(path)[-1].replace(" ", "_"), name.replace(" ", "_")).lower()
             example = '{0}/{1}'.format(path, file)
 
-            if(extension == '.a2d'):
+            if (extension == '.a2d'):
                 setattr(case, method, get_a2d_test(example))
-            elif(extension == '.py'):
+            elif (extension == '.py'):
                 setattr(case, method, get_py_test(example))
 
 def get_a2d_test(example):
@@ -25,8 +25,9 @@ def get_a2d_test(example):
     return test
         
 def get_py_test(example):
-    def test(self):
-        execfile(example)
+    def test(self):        
+        with open(example) as f:
+            exec f.read() in globals()
     return test
 
 class Examples(Agros2DTestCase): pass

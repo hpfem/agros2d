@@ -2,6 +2,7 @@
 # http://www.compumag.org/jsite/images/stories/TEAM/problem30b.pdf
 
 import agros2d as a2d
+import math
 
 def model(omega):
     # problem
@@ -28,8 +29,8 @@ def model(omega):
     magnetic.add_material("Rotor steel", {"magnetic_permeability" : 30, "magnetic_conductivity" : 3.72e+06, "magnetic_velocity_angular" : omega})
     magnetic.add_material("Aluminum", {"magnetic_permeability" : 1, "magnetic_conductivity" : 3.72e+07, "magnetic_velocity_angular" : omega})
     magnetic.add_material("Air", {"magnetic_permeability" : 1})
-    magnetic.add_material("J+", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : sqrt(2)*3.1e6})
-    magnetic.add_material("J-", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : -sqrt(2)*3.1e6})
+    magnetic.add_material("J+", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : math.sqrt(2)*3.1e6})
+    magnetic.add_material("J-", {"magnetic_permeability" : 1, "magnetic_current_density_external_real" : -math.sqrt(2)*3.1e6})
     
     # geometry
     geometry = a2d.geometry

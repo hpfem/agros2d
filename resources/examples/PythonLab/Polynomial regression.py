@@ -2,7 +2,7 @@ import pylab as pl
 import numpy as np
 import pythonlab
 
-data = np.loadtxt('Polynomial regression.csv', delimiter=",")
+data = np.loadtxt(pythonlab.datadir('resources/examples/PythonLab/Polynomial regression.csv'), delimiter=",")
 x = data[:, 0]
 y = data[:, 1]
 
