@@ -825,7 +825,7 @@ ModuleItemEssentialFormDialog::ModuleItemEssentialFormDialog(ModuleDialog *modul
     setWindowIcon(icon("form-essential"));
 
     txtID->setText("function");
-    txtSolutionIndex->setValue(m_form->i());
+    txtSolutionIndex->setValue(m_form->i().get());
     txtTestFunctionIndex->setValue(0);
     txtTestFunctionIndex->setDisabled(true);
 
@@ -854,10 +854,11 @@ void ModuleItemEssentialFormDialog::doAccept()
 {
     m_form->i(txtSolutionIndex->text().toInt());
 
-    m_form->planar_linear(txtPlanarLinear->toPlainText().toStdString());
-    m_form->axi_linear(txtAxiLinear->toPlainText().toStdString());
-    m_form->planar_newton(txtPlanarNewton->toPlainText().toStdString());
-    m_form->axi_newton(txtAxiNewton->toPlainText().toStdString());
+    assert(0);
+//    m_form->planar_linear(txtPlanarLinear->toPlainText().toStdString());
+//    m_form->axi_linear(txtAxiLinear->toPlainText().toStdString());
+//    m_form->planar_newton(txtPlanarNewton->toPlainText().toStdString());
+//    m_form->axi_newton(txtAxiNewton->toPlainText().toStdString());
 
     accept();
 }
@@ -1381,59 +1382,60 @@ void ModuleDialog::load()
             boundary->setExpanded(true);
             boundary->setText(0, QString::fromStdString(bnd->name()));
 
-            // matrix form
-            for (int i = 0; i < bnd->matrix_form().size(); i++)
-            {
-                XMLModule::matrix_form *form = &bnd->matrix_form().at(i);
+            assert(0);
+//            // matrix form
+//            for (int i = 0; i < bnd->matrix_form().size(); i++)
+//            {
+//                XMLModule::matrix_form *form = &bnd->matrix_form().at(i);
 
-                QTreeWidgetItem *item = new QTreeWidgetItem(boundary);
+//                QTreeWidgetItem *item = new QTreeWidgetItem(boundary);
 
-                item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::matrix_form *>(form));
-                item->setData(1, Qt::UserRole, QString::fromStdString(wf->analysistype()));
-                item->setData(2, Qt::UserRole, "matrix");
-                item->setData(3, Qt::UserRole, "surface");
-                item->setText(0, tr("Matrix form"));
-                item->setText(1, QString::number(form->i().get()));
-                item->setText(2, QString::number(form->j().get()));
-                item->setText(3, QString::fromStdString(form->id()));
-                item->setIcon(0, icon("form-matrix"));
-            }
+//                item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::matrix_form *>(form));
+//                item->setData(1, Qt::UserRole, QString::fromStdString(wf->analysistype()));
+//                item->setData(2, Qt::UserRole, "matrix");
+//                item->setData(3, Qt::UserRole, "surface");
+//                item->setText(0, tr("Matrix form"));
+//                item->setText(1, QString::number(form->i().get()));
+//                item->setText(2, QString::number(form->j().get()));
+//                item->setText(3, QString::fromStdString(form->id()));
+//                item->setIcon(0, icon("form-matrix"));
+//            }
 
-            // vector form
-            for (int i = 0; i < bnd->vector_form().size(); i++)
-            {
-                XMLModule::vector_form *form = &bnd->vector_form().at(i);
+//            // vector form
+//            for (int i = 0; i < bnd->vector_form().size(); i++)
+//            {
+//                XMLModule::vector_form *form = &bnd->vector_form().at(i);
 
-                QTreeWidgetItem *item = new QTreeWidgetItem(boundary);
+//                QTreeWidgetItem *item = new QTreeWidgetItem(boundary);
 
-                item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::vector_form *>(form));
-                item->setData(1, Qt::UserRole, QString::fromStdString(wf->analysistype()));
-                item->setData(2, Qt::UserRole, "vector");
-                item->setData(3, Qt::UserRole, "surface");
-                item->setText(0, tr("Vector form"));
-                item->setText(1, QString::number(form->i().get()));
-                item->setText(2, QString::number(form->j().get()));
-                item->setText(3, QString::fromStdString(form->id()));
-                item->setIcon(0, icon("form-vector"));
-            }
+//                item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::vector_form *>(form));
+//                item->setData(1, Qt::UserRole, QString::fromStdString(wf->analysistype()));
+//                item->setData(2, Qt::UserRole, "vector");
+//                item->setData(3, Qt::UserRole, "surface");
+//                item->setText(0, tr("Vector form"));
+//                item->setText(1, QString::number(form->i().get()));
+//                item->setText(2, QString::number(form->j().get()));
+//                item->setText(3, QString::fromStdString(form->id()));
+//                item->setIcon(0, icon("form-vector"));
+//            }
 
-            // essential form
-            for (int i = 0; i < bnd->essential_form().size(); i++)
-            {
-                XMLModule::essential_form *form = &bnd->essential_form().at(i);
+//            // essential form
+//            for (int i = 0; i < bnd->essential_form().size(); i++)
+//            {
+//                XMLModule::essential_form *form = &bnd->essential_form().at(i);
 
-                QTreeWidgetItem *item = new QTreeWidgetItem(boundary);
+//                QTreeWidgetItem *item = new QTreeWidgetItem(boundary);
 
-                item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::essential_form *>(form));
-                item->setData(1, Qt::UserRole, QString::fromStdString(wf->analysistype()));
-                item->setData(2, Qt::UserRole, "essential");
-                item->setData(3, Qt::UserRole, "surface");
-                item->setText(0, tr("Essential form"));
-                item->setText(1, QString::number(form->i()));
-                item->setText(2, "");
-                item->setText(3, QString::fromStdString(form->id()));
-                item->setIcon(0, icon("form-essential"));
-            }
+//                item->setData(0, Qt::UserRole, QVariant::fromValue<XMLModule::essential_form *>(form));
+//                item->setData(1, Qt::UserRole, QString::fromStdString(wf->analysistype()));
+//                item->setData(2, Qt::UserRole, "essential");
+//                item->setData(3, Qt::UserRole, "surface");
+//                item->setText(0, tr("Essential form"));
+//                item->setText(1, QString::number(form->i()));
+//                item->setText(2, "");
+//                item->setText(3, QString::fromStdString(form->id()));
+//                item->setIcon(0, icon("form-essential"));
+//            }
         }
     }
 
@@ -2157,7 +2159,7 @@ void ModuleDialog::weakformDoubleClicked(QTreeWidgetItem *item, int role)
                                                  form, this);
             if (dialog.exec())
             {
-                item->setText(1, QString::number(form->i()));
+                item->setText(1, QString::number(form->i().get()));
             }
         }
     }

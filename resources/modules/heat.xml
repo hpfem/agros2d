@@ -37,12 +37,6 @@
     <module:quantity id="heat_velocity_y" shortname="he_vy"/>
     <module:quantity id="heat_velocity_angular" shortname="he_va"/>
 
-<!--
-maticove formy budou vyuzity nekolikrat
-nahrada uval -> upval ... vektor rezidualu pro newtona
-nahrada uval -> uptval ... linearizace v prechodaku pomoci predchoziho casoveho kroku
--->
-
     <module:matrix_form id="laplace" i="1"  j="1" planar="he_lambda * (udx * vdx + udy * vdy)" axi="he_lambda * r * (udr * vdr + udz * vdz)"/>
     <module:matrix_form id="velocity" i="1"  j="1" planar="he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval" axi="r * he_rho * he_cp * (he_vy * udz) * vval"/>
     <module:matrix_form id="jac_laplace" i="1"  j="1" planar="dhe_lambda * uval * (updx * vdx + updy * vdy)" axi="dhe_lambda * r * uval * (updr * vdr + updz * vdz)"/>
@@ -117,35 +111,81 @@ nahrada uval -> uptval ... linearizace v prechodaku pomoci predchoziho casoveho 
     <module:quantity id="heat_convection_external_temperature" shortname="he_Te"/>
     <module:quantity id="heat_radiation_emissivity" shortname="he_eps"/>
     <module:quantity id="heat_radiation_ambient_temperature" shortname="he_Ta"/>
+
+    <module:essential_form id="essential" i="1" axi="he_T" planar="he_T"/>
+    <module:matrix_form id="flux_matrix" i="1" j="1" axi="he_h * r * uval * vval" planar="he_h * uval * vval"/>
+    <module:vector_form id="flux_vector" i="1" j="1" axi="r * (he_f + he_h * he_Te) * vval" planar="(he_f + he_h * he_Te) * vval"/>
+    <module:matrix_form id="emission_jacobian" i="1" j="1" axi="SIGMA0 * he_eps * r * 4 * uval * upval*upval*upval * vval" planar="SIGMA0 * he_eps * 4 * uval * upval*upval*upval * vval"/>
+    <module:vector_form id="emission_vector" i="1" j="1" axi="r * (- SIGMA0 * he_eps * he_Ta*he_Ta*he_Ta*he_Ta + SIGMA0 * he_eps * upval*upval*upval*upval) * vval" planar="(- SIGMA0 * he_eps * he_Ta*he_Ta*he_Ta*he_Ta + SIGMA0 * he_eps * upval*upval*upval*upval) * vval"/>
+
     <module:weakforms_surface>
       <module:weakform_surface analysistype="steadystate" default="heat_temperature">
         <module:boundary equation="T = T_0" id="heat_temperature" name="Temperature">
           <module:quantity id="heat_temperature"/>
-          <module:essential_form axi_linear="he_T" axi_newton="he_T" i="1" id="form" planar_linear="he_T" planar_newton="he_T"/>
+
+          <module:linearity_option type="linear">
+            <module:essential_form id="essential" i="1" axi="he_T" planar="he_T"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:essential_form id="essential" i="1" axi="he_T" planar="he_T"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="f = - \lambda \frac{\partial T}{\partial n_0} = f_0 + \alpha \left ( T_\mathrm{ext} - T \right) + \epsilon \sigma \left ( T_\mathrm{amb}^4 - T^4 \right)" id="heat_heat_flux" name="Heat flux">
           <module:quantity id="heat_heat_flux"/>
           <module:quantity id="heat_convection_heat_transfer_coefficient"/>
           <module:quantity id="heat_convection_external_temperature"/>
           <module:quantity id="heat_radiation_emissivity"/>
           <module:quantity id="heat_radiation_ambient_temperature"/>
-          <module:matrix_form axi_linear="he_h * r * uval * vval" axi_newton="he_h * r * uval * vval + SIGMA0 * he_eps * r * 4 * uval * upval*upval*upval * vval" i="1" id="form" j="1" planar_linear="he_h * uval * vval" planar_newton="he_h * uval * vval + SIGMA0 * he_eps * 4 * uval * upval*upval*upval * vval" symmetric="1"/>
-          <module:vector_form axi_linear="r * (he_f + he_h * he_Te) * vval" axi_newton="r * ((- he_f - he_h * he_Te - SIGMA0 * he_eps * he_Ta*he_Ta*he_Ta*he_Ta) + he_h * upval + SIGMA0 * he_eps * upval*upval*upval*upval) * vval" i="1" id="form" j="1" planar_linear="(he_f + he_h * he_Te) * vval" planar_newton="((- he_f - he_h * he_Te - SIGMA0 * he_eps * he_Ta*he_Ta*he_Ta*he_Ta) + he_h * upval + SIGMA0 * he_eps * upval*upval*upval*upval) * vval"/>
+
+          <module:linearity_option type="linear">
+            <module:matrix_form id="flux_matrix"/>
+            <module:vector_form id="flux_vector"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:matrix_form id="flux_matrix"/>
+            <module:vector_form id="flux_vector" coefficient="-1"/>
+            <module:vector_form id="flux_matrix" variant="residual"/>
+            <module:matrix_form id="emission_jacobian"/>
+            <module:vector_form id="emission_vector"/>
+          </module:linearity_option>
         </module:boundary>
       </module:weakform_surface>
+
       <module:weakform_surface analysistype="transient" default="heat_temperature">
         <module:boundary equation="T = T_0" id="heat_temperature" name="Temperature">
           <module:quantity id="heat_temperature"/>
-          <module:essential_form axi_linear="he_T" axi_newton="he_T" i="1" id="form" planar_linear="he_T" planar_newton="he_T"/>
+
+          <module:linearity_option type="linear">
+            <module:essential_form id="essential" i="1" axi="he_T" planar="he_T"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:essential_form id="essential" i="1" axi="he_T" planar="he_T"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="f = - \lambda \frac{\partial T}{\partial n_0} = f_0 + \alpha \left ( T_\mathrm{ext} - T \right) + \epsilon \sigma \left ( T_\mathrm{amb}^4 - T^4 \right)" id="heat_heat_flux" name="Heat flux">
           <module:quantity id="heat_heat_flux"/>
           <module:quantity id="heat_convection_heat_transfer_coefficient"/>
           <module:quantity id="heat_convection_external_temperature"/>
           <module:quantity id="heat_radiation_emissivity"/>
           <module:quantity id="heat_radiation_ambient_temperature"/>
-          <module:matrix_form axi_linear="he_h * r * uval * vval" axi_newton="he_h * r * uval * vval + SIGMA0 * he_eps * r * 4 * uval * upval*upval*upval * vval" i="1" id="form" j="1" planar_linear="he_h * uval * vval" planar_newton="he_h * uval * vval + SIGMA0 * he_eps * 4 * uval * upval*upval*upval * vval" symmetric="1"/>
-          <module:vector_form axi_linear="r * (he_f + he_h * he_Te) * vval" axi_newton="r * ((- he_f - he_h * he_Te - SIGMA0 * he_eps * he_Ta*he_Ta*he_Ta*he_Ta) + he_h * upval + SIGMA0 * he_eps * upval*upval*upval*upval) * vval" i="1" id="form" j="1" planar_linear="(he_f + he_h * he_Te) * vval" planar_newton="((- he_f - he_h * he_Te - SIGMA0 * he_eps * he_Ta*he_Ta*he_Ta*he_Ta) + he_h * upval + SIGMA0 * he_eps * upval*upval*upval*upval) * vval"/>
+
+          <module:linearity_option type="linear">
+            <module:matrix_form id="flux_matrix"/>
+            <module:vector_form id="flux_vector"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:matrix_form id="flux_matrix"/>
+            <module:vector_form id="flux_vector" coefficient="-1"/>
+            <module:vector_form id="flux_matrix" variant="residual"/>
+            <module:matrix_form id="emission_jacobian"/>
+            <module:vector_form id="emission_vector"/>
+          </module:linearity_option>
         </module:boundary>
       </module:weakform_surface>
     </module:weakforms_surface>

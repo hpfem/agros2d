@@ -96,25 +96,56 @@
     <module:quantity id="flow_velocity_x" shortname="fl_vx"/>
     <module:quantity id="flow_velocity_y" shortname="fl_vy"/>
     <module:quantity id="flow_pressure" shortname="fl_p"/>
+    <module:essential_form id="velocity_1" i="1" axi="fl_vx" planar="fl_vx"/>
+    <module:essential_form id="velocity_2" i="2" axi="fl_vy" planar="fl_vy"/>
+    <module:essential_form id="zero_velocity_1" i="1" axi="0" planar="0"/>
+    <module:essential_form id="pressure_3" i="3" axi="fl_p" planar="fl_p"/>
+
     <module:weakforms_surface>
       <module:weakform_surface analysistype="steadystate" default="flow_velocity">
         <module:boundary equation="v_x = v_{0,x},\,\,\, v_y = v_{0,y}" id="flow_velocity" name="Velocity">
           <module:quantity dependence="space" id="flow_velocity_x"/>
           <module:quantity dependence="space" id="flow_velocity_y"/>
-          <module:essential_form axi_linear="fl_vx" axi_newton="fl_vx" i="1" id="form" planar_linear="fl_vx" planar_newton="fl_vx"/>
-          <module:essential_form axi_linear="fl_vy" axi_newton="fl_vy" i="2" id="form" planar_linear="fl_vy" planar_newton="fl_vy"/>
+
+          <module:linearity_option type="linear">
+            <module:essential_form id="velocity_1"/>
+            <module:essential_form id="velocity_2"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:essential_form id="velocity_1"/>
+            <module:essential_form id="velocity_2"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="\frac{\partial v_x}{\partial n} = 0,\,\,\, \frac{\partial v_y}{\partial n} = 0" id="flow_outlet" name="Outlet">
-          <module:vector_form axi_linear="0" axi_newton="0" i="1" id="form" j="1" planar_linear="0" planar_newton="0"/>
-          <module:vector_form axi_linear="0" axi_newton="0" i="2" id="form" j="2" planar_linear="0" planar_newton="0"/>
+          <module:linearity_option type="linear">
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="p = p_0" id="flow_pressure" name="Pressure">
           <module:quantity dependence="space" id="flow_pressure"/>
-          <module:essential_form axi_linear="fl_p" axi_newton="fl_p" i="3" id="form" planar_linear="fl_p" planar_newton="fl_p"/>
+
+          <module:linearity_option type="linear">
+            <module:essential_form id="pressure_3"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:essential_form id="pressure_3"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="v_r = 0,\,\,\, \frac{\partial v_z}{\partial n} = 0" id="flow_symmetry" name="Axial symmetry">
-          <module:vector_form axi_linear="0" axi_newton="0" i="2" id="form" j="2" planar_linear="0" planar_newton="0"/>
-          <module:essential_form axi_linear="0" axi_newton="0" i="1" id="form" planar_linear="0" planar_newton="0"/>
+          <module:linearity_option type="linear">
+            <module:essential_form id="zero_velocity_1"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:essential_form id="zero_velocity_1"/>
+          </module:linearity_option>
         </module:boundary>
       </module:weakform_surface>
     </module:weakforms_surface>

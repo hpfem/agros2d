@@ -56,15 +56,23 @@
   <module:surface>
     <module:quantity id="current_potential" shortname="cu_V"/>
     <module:quantity id="current_inward_current_flow" shortname="cu_Jn"/>
+    <module:essential_form id="essential" i="1" axi="cu_V" planar="cu_V" />
+    <module:vector_form id="neumann" i="1" j="1" axi="cu_Jn * r * vval" planar="cu_Jn * vval"/>
+
     <module:weakforms_surface>
       <module:weakform_surface analysistype="steadystate" default="current_potential">
         <module:boundary equation="\varphi = \varphi_0" id="current_potential" name="Fixed voltage">
           <module:quantity id="current_potential"/>
-          <module:essential_form axi_linear="cu_V" axi_newton="cu_V" i="1" id="form" planar_linear="cu_V" planar_newton="cu_V"/>
+          <module:linearity_option type="linear">
+            <module:essential_form id="essential"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="J_\mathrm{n} = \sigma \frac{\partial \varphi}{\partial n_0} = J_0" id="current_inward_current_flow" name="Current density">
           <module:quantity id="current_inward_current_flow"/>
-          <module:vector_form axi_linear="cu_Jn * r * vval" axi_newton="- cu_Jn * r * vval" i="1" id="form" j="1" planar_linear="cu_Jn * vval" planar_newton="- cu_Jn * vval"/>
+          <module:linearity_option type="linear">
+            <module:vector_form id="neumann"/>
+          </module:linearity_option>
         </module:boundary>
       </module:weakform_surface>
       <!--

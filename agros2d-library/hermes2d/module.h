@@ -94,6 +94,7 @@ namespace XMLModule
 class module;
 class quantity;
 class boundary;
+class surface;
 class force;
 class localvariable;
 class gui;
@@ -158,14 +159,6 @@ public:
     void registerForms();
     void updateExtField();
     inline BDF2Table* bdf2Table() { return m_bdf2Table; }
-
-    // weak form templates are common for all analysis as building blocks for final forms; loaded from xml file
-    static QList<FormInfo> wfMatrixVolumeTemplates(XMLModule::module* module);
-    static QList<FormInfo> wfVectorVolumeTemplates(XMLModule::module* module);
-
-    // specifies which weak form templates and in which variant should be used for active analysis and linearity type; loaded from xml files
-    static QList<FormInfo> wfMatrixVolumeElements(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
-    static QList<FormInfo> wfVectorVolumeElements(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
 
     // prepares individual forms for given analysis and linearity type, as specified in Elements, using information form Templates
     static QList<FormInfo> wfMatrixVolumeSeparated(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
@@ -431,11 +424,14 @@ struct BoundaryType
     inline QList<BoundaryTypeVariable> variables() const { return m_variables; }
 
     // weakform
-    inline QList<FormInfo> wfMatrixSurface() const { return m_wfMatrixSurface; }
-    inline QList<FormInfo> wfVectorSurface() const { return m_wfVectorSurface; }
+    static QList<FormInfo> wfMatrixSurface(XMLModule::surface *surface, XMLModule::boundary *boundary, AnalysisType analysisType, LinearityType linearityType);
+    static QList<FormInfo> wfVectorSurface(XMLModule::surface *surface, XMLModule::boundary *boundary, AnalysisType analysisType, LinearityType linearityType);
+    inline QList<FormInfo> wfMatrixSurface() const {return m_wfMatrix; }
+    inline QList<FormInfo> wfVectorSurface() const {return m_wfVector; }
 
     // essential
-    inline QList<FormInfo> essential() const { return m_essential; }
+    static QList<FormInfo> essential(XMLModule::surface *surface, XMLModule::boundary *boundary, AnalysisType analysisType, LinearityType linearityType);
+    inline QList<FormInfo> essential() const {return m_essential; }
 
     // latex equation
     inline QString equation() { return m_equation; }
@@ -446,15 +442,12 @@ private:
     // name
     QString m_name;
 
+    QList<FormInfo> m_wfMatrix;
+    QList<FormInfo> m_wfVector;
+    QList<FormInfo> m_essential;
+
     // variables
     QList<BoundaryTypeVariable> m_variables;
-
-    // weakform
-    QList<FormInfo> m_wfMatrixSurface;
-    QList<FormInfo> m_wfVectorSurface;
-
-    // essential
-    QList<FormInfo> m_essential;
 
     // latex equation
     QString m_equation;

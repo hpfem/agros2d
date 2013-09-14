@@ -218,39 +218,96 @@
     <module:quantity id="magnetic_potential_imag" shortname="Ai"/>
     <module:quantity id="magnetic_surface_current_real" shortname="Jr"/>
     <module:quantity id="magnetic_surface_current_imag" shortname="Ji"/>
+
+    <module:essential_form id="steady_essential" i="1" axi="Ar" planar="Ar"/>
+    <module:vector_form id="steady_current" i="1" j="1" axi="-Jr * vval" planar="-Jr * vval"/>
+    <module:essential_form id="harmonic_essential_1" i="1" axi="Ar" planar="Ar"/>
+    <module:essential_form id="harmonic_essential_2" i="2" axi="Ai" planar="Ai"/>
+    <module:vector_form id="harmonic_current_1" i="1" j="1" axi="-Jr * vval" planar="-Jr * vval"/>
+    <module:vector_form id="harmonic_current_2" i="2" j="2" axi="-Ji * vval" planar="-Ji * vval"/>
+
     <module:weakforms_surface>
       <module:weakform_surface analysistype="steadystate" default="magnetic_potential">
         <module:boundary equation="A = A_0" id="magnetic_potential" name="Magnetic potential">
           <module:quantity dependence="space" id="magnetic_potential_real"/>
-          <module:essential_form axi_linear="Ar" axi_newton="Ar" i="1" id="form" planar_linear="Ar" planar_newton="Ar"/>
+
+          <module:linearity_option type="linear">
+            <module:essential_form id="steady_essential"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:essential_form id="steady_essential"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="K = - \frac{1}{\mu} \frac{\partial A}{\partial n_0} = K_0" id="magnetic_surface_current" name="Surface current">
           <module:quantity id="magnetic_surface_current_real"/>
-          <module:vector_form axi_linear="-Jr * vval" axi_newton="-Jr * vval" i="1" id="form" j="1" planar_linear="-Jr * vval" planar_newton="-Jr * vval"/>
+
+          <module:linearity_option type="linear">
+            <module:vector_form id="steady_current"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:vector_form id="steady_current" coefficient="-1"/>
+          </module:linearity_option>
         </module:boundary>
       </module:weakform_surface>
+
       <module:weakform_surface analysistype="transient" default="magnetic_potential">
         <module:boundary equation="A = A_0" id="magnetic_potential" name="Magnetic potential">
           <module:quantity dependence="space" id="magnetic_potential_real"/>
-          <module:essential_form axi_linear="Ar" axi_newton="Ar" i="1" id="form" planar_linear="Ar" planar_newton="Ar"/>
+
+          <module:linearity_option type="linear">
+            <module:essential_form id="steady_essential"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:essential_form id="steady_essential"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="K = - \frac{1}{\mu} \frac{\partial A}{\partial n_0} = K_0" id="magnetic_surface_current" name="Surface current">
           <module:quantity id="magnetic_surface_current_real"/>
-          <module:vector_form axi_linear="-Jr * vval" axi_newton="-Jr * vval" i="1" id="form" j="1" planar_linear="-Jr * vval" planar_newton="-Jr * vval"/>
+
+          <module:linearity_option type="linear">
+            <module:vector_form id="steady_current"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:vector_form id="steady_current" coefficient="-1"/>
+          </module:linearity_option>
         </module:boundary>
       </module:weakform_surface>
+
       <module:weakform_surface analysistype="harmonic" default="magnetic_potential">
         <module:boundary equation="\vecfaz{A} = \vecfaz{A}_0" id="magnetic_potential" name="Magnetic potential">
           <module:quantity dependence="space" id="magnetic_potential_real"/>
           <module:quantity dependence="space" id="magnetic_potential_imag"/>
-          <module:essential_form axi_linear="Ar" axi_newton="Ar" i="1" id="form" planar_linear="Ar" planar_newton="Ar"/>
-          <module:essential_form axi_linear="Ai" axi_newton="Ai" i="2" id="form" planar_linear="Ai" planar_newton="Ai"/>
+
+          <module:linearity_option type="linear">
+            <module:essential_form id="harmonic_essential_1"/>
+            <module:essential_form id="harmonic_essential_2"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+          <module:essential_form id="harmonic_essential_1"/>
+          <module:essential_form id="harmonic_essential_2"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="\faz{K} = - \frac{1}{\mu} \frac{\partial \vecfaz{A}}{\partial n_0} = \faz{K}_0" id="magnetic_surface_current" name="Surface current">
           <module:quantity id="magnetic_surface_current_real"/>
           <module:quantity id="magnetic_surface_current_imag"/>
-          <module:vector_form axi_linear="-Jr * vval" axi_newton="-Jr * vval" i="1" id="form" j="1" planar_linear="-Jr * vval" planar_newton="-Jr * vval"/>
-          <module:vector_form axi_linear="-Ji * vval" axi_newton="-Ji * vval" i="2" id="form" j="2" planar_linear="-Ji * vval" planar_newton="-Ji * vval"/>
+
+          <module:linearity_option type="linear">
+            <module:vector_form id="harmonic_current_1"/>
+            <module:vector_form id="harmonic_current_2"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:vector_form id="harmonic_current_1" coefficient="-1"/>
+            <module:vector_form id="harmonic_current_2" coefficient="-1"/>
+          </module:linearity_option>
         </module:boundary>
       </module:weakform_surface>
     </module:weakforms_surface>

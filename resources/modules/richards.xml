@@ -139,10 +139,10 @@
         </module:linearity_option>
 
         <module:linearity_option type="picard">
-        <module:matrix_form id="conductivity" />
-        <module:matrix_form id="conductivity_derivative" />
-        <module:matrix_form id="time_mat" />
-        <module:vector_form id="time_vec" />
+          <module:matrix_form id="conductivity" />
+          <module:matrix_form id="conductivity_derivative" />
+          <module:matrix_form id="time_mat" />
+          <module:vector_form id="time_vec" />
         </module:linearity_option>
 
       </module:weakform_volume>
@@ -152,25 +152,60 @@
   <module:surface>
     <module:quantity id="richards_pressure_head" shortname="re_h"/>
     <module:quantity id="richards_darcy_velocity" shortname="re_q"/>
+
+    <module:essential_form id="essential" i="1" axi="re_h" planar="re_h"/>
+    <module:vector_form id="darcy_velocity" i="1" j="1" axi="r * re_q * vval" planar="re_q * vval"/>
+
     <module:weakforms_surface>
       <module:weakform_surface analysistype="steadystate" default="richards_pressure_head">
         <module:boundary equation="h = h_0" id="richards_pressure_head" name="Pressure head">
           <module:quantity dependence="space" id="richards_pressure_head"/>
-          <module:essential_form axi_linear="re_h" axi_newton="re_h" i="1" id="form" planar_linear="re_h" planar_newton="re_h"/>
+
+          <module:linearity_option type="newton">
+            <module:essential_form id="essential" i="1" axi="re_h" planar="re_h"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="picard">
+            <module:essential_form id="essential" i="1" axi="re_h" planar="re_h"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="q = - K \frac{\partial h}{\partial n_0} = q_0 " id="richards_darcy_velocity" name="Darcy velocity">
           <module:quantity id="richards_darcy_velocity"/>
-          <module:vector_form axi_linear="r * re_q * vval" axi_newton="r * (- re_q) * vval" i="1" id="form" j="1" planar_linear="re_q * vval" planar_newton="- re_q * vval"/>
+
+          <module:linearity_option type="newton">
+            <module:vector_form id="darcy_velocity" coefficient="-1"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="picard">
+            <module:vector_form id="darcy_velocity"/>
+          </module:linearity_option>
         </module:boundary>
       </module:weakform_surface>
+
       <module:weakform_surface analysistype="transient" default="richards_pressure_head">
         <module:boundary equation="h = h_0" id="richards_pressure_head" name="Pressure head">
           <module:quantity dependence="space" id="richards_pressure_head"/>
-          <module:essential_form axi_linear="re_h" axi_newton="re_h" i="1" id="form" planar_linear="re_h" planar_newton="re_h"/>
+
+          <module:linearity_option type="newton">
+            <module:essential_form id="essential" i="1" axi="re_h" planar="re_h"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="picard">
+            <module:essential_form id="essential" i="1" axi="re_h" planar="re_h"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="q = - K \frac{\partial h}{\partial n_0} = q_0 " id="richards_darcy_velocity" name="Darcy velocity">
           <module:quantity id="richards_darcy_velocity"/>
-          <module:vector_form axi_linear="r * re_q * vval" axi_newton="r * (- re_q) * vval" i="1" id="form" j="1" planar_linear="re_q * vval" planar_newton="- re_q * vval"/>
+
+          <module:linearity_option type="newton">
+            <module:vector_form id="darcy_velocity" coefficient="-1"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="picard">
+            <module:vector_form id="darcy_velocity"/>
+          </module:linearity_option>
         </module:boundary>
       </module:weakform_surface>
     </module:weakforms_surface>

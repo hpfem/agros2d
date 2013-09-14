@@ -626,21 +626,30 @@ void Agros2DGeneratorModule::generateWeakForms(ctemplate::TemplateDictionary &ou
 
     foreach(XMLModule::weakform_surface weakform, m_module->surface().weakforms_surface().weakform_surface())
     {
+        AnalysisType analysisType = analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype().c_str()));
         foreach(XMLModule::boundary boundary, weakform.boundary())
         {
-            foreach(XMLModule::matrix_form form, boundary.matrix_form())
+            foreach(XMLModule::linearity_option option, boundary.linearity_option())
             {
-                assert(form.i().present() && form.j().present());
-                generateFormOld(form, output, weakform, "SURFACE_MATRIX", form.i().get(), &boundary, form.j().get());
-            }
-            foreach(XMLModule::vector_form form, boundary.vector_form())
-            {
-                assert(form.i().present() && form.j().present());
-                generateFormOld(form, output, weakform, "SURFACE_VECTOR", form.i().get(), &boundary, form.j().get());
-            }
-            foreach(XMLModule::essential_form form, boundary.essential_form())
-            {
-                generateFormOld(form, output, weakform, "EXACT",  form.i(), &boundary, 0);
+                LinearityType linearityType = linearityTypeFromStringKey(QString::fromStdString(option.type().c_str()));
+
+                QList<FormInfo> matrixForms = Module::BoundaryType::wfMatrixSurface(&m_module->surface(), &boundary, analysisType, linearityType);
+                QList<FormInfo> vectorForms = Module::BoundaryType::wfVectorSurface(&m_module->surface(), &boundary, analysisType, linearityType);
+                QList<FormInfo> essentialForms = Module::BoundaryType::essential(&m_module->surface(), &boundary, analysisType, linearityType);
+                foreach(FormInfo formInfo, matrixForms)
+                {
+                    generateForm(formInfo, linearityType, output, weakform, "SURFACE_MATRIX", &boundary);
+                }
+
+                foreach(FormInfo formInfo, vectorForms)
+                {
+                    generateForm(formInfo, linearityType, output, weakform, "SURFACE_VECTOR", &boundary);
+                }
+
+                foreach(FormInfo formInfo, essentialForms)
+                {
+                    generateForm(formInfo, linearityType, output, weakform, "EXACT", &boundary);
+                }
             }
         }
     }
@@ -1970,6 +1979,7 @@ void Agros2DGeneratorModule::generateFormOld(Form form, ctemplate::TemplateDicti
     LinearityType linearityTypes[3] = {LinearityType_Linear, LinearityType_Newton, LinearityType_Picard};
     for(int lt = 0; lt < 3; lt++)
     {
+        //assert(0);
         formInfo.expr_planar = this->weakformExpression(CoordinateType_Planar, linearityTypes[lt], form);
         formInfo.expr_axi = this->weakformExpression(CoordinateType_Axisymmetric, linearityTypes[lt], form);
         generateForm(formInfo, linearityTypes[lt], output, weakform, weakFormType, boundary);

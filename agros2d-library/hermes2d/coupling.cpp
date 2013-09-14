@@ -54,24 +54,85 @@ CouplingList::CouplingList()
 
     foreach (QString filename, list)
     {
-        std::auto_ptr<XMLCoupling::coupling> coupling_xsd = XMLCoupling::coupling_(compatibleFilename(datadir() + COUPLINGROOT + "/" + filename).toStdString(),
-                                                                                   xml_schema::flags::dont_validate & xml_schema::flags::dont_initialize);
-        XMLCoupling::coupling *coup = coupling_xsd.get();
-
-        // check whether coupling is available for values of source and target fields such as analysis type
-        for (int i = 0; i < coup->volume().weakforms_volume().weakform_volume().size(); i++)
+        try
         {
-            XMLCoupling::weakform_volume wf = coup->volume().weakforms_volume().weakform_volume().at(i);
+            // todo: this was copied from module. Find a way to do all catching at one place
 
-            CouplingList::Item item;
+            // todo: find a way to validate if required. If validated here, sensible error messages will be obtained
+            bool validateAtTheBeginning = true;
+            ::xml_schema::flags parsing_flags = xml_schema::flags::dont_validate;
+            if(validateAtTheBeginning)
+            {
+                parsing_flags = 0;
+                qDebug() << "Warning: Validating all XML files. This is time-consuming and should be switched off in coupling.cpp for release. Set validateAtTheBeginning = false.";
+            }
 
-            item.sourceField = QString::fromStdString(coup->general().modules().source().id());
-            item.sourceAnalysisType = analysisTypeFromStringKey(QString::fromStdString(wf.sourceanalysis()));
-            item.targetField = QString::fromStdString(coup->general().modules().target().id());
-            item.targetAnalysisType = analysisTypeFromStringKey(QString::fromStdString(wf.targetanalysis()));
-            item.couplingType = couplingTypeFromStringKey(QString::fromStdString(wf.couplingtype()));
+            std::auto_ptr<XMLCoupling::coupling> coupling_xsd = XMLCoupling::coupling_(compatibleFilename(datadir() + COUPLINGROOT + "/" + filename).toStdString(),
+                                                                                   xml_schema::flags::dont_validate & xml_schema::flags::dont_initialize);
+            XMLCoupling::coupling *coup = coupling_xsd.get();
 
-            m_couplings.append(item);
+            // check whether coupling is available for values of source and target fields such as analysis type
+            for (int i = 0; i < coup->volume().weakforms_volume().weakform_volume().size(); i++)
+            {
+                XMLCoupling::weakform_volume wf = coup->volume().weakforms_volume().weakform_volume().at(i);
+
+                CouplingList::Item item;
+
+                item.sourceField = QString::fromStdString(coup->general().modules().source().id());
+                item.sourceAnalysisType = analysisTypeFromStringKey(QString::fromStdString(wf.sourceanalysis()));
+                item.targetField = QString::fromStdString(coup->general().modules().target().id());
+                item.targetAnalysisType = analysisTypeFromStringKey(QString::fromStdString(wf.targetanalysis()));
+                item.couplingType = couplingTypeFromStringKey(QString::fromStdString(wf.couplingtype()));
+
+                m_couplings.append(item);
+            }
+        }
+        catch (const xml_schema::expected_element& e)
+        {
+            QString str = QString("%1: %2").arg(QString::fromStdString(e.what())).arg(QString::fromStdString(e.name()));
+            qDebug() << str;
+            throw AgrosException(str);
+        }
+        catch (const xml_schema::expected_attribute& e)
+        {
+            QString str = QString("%1: %2").arg(QString::fromStdString(e.what())).arg(QString::fromStdString(e.name()));
+            qDebug() << str;
+            throw AgrosException(str);
+        }
+        catch (const xml_schema::unexpected_element& e)
+        {
+            QString str = QString("%1: %2 instead of %3").arg(QString::fromStdString(e.what())).arg(QString::fromStdString(e.encountered_name())).arg(QString::fromStdString(e.expected_name()));
+            qDebug() << str;
+            throw AgrosException(str);
+        }
+        catch (const xml_schema::unexpected_enumerator& e)
+        {
+            QString str = QString("%1: %2").arg(QString::fromStdString(e.what())).arg(QString::fromStdString(e.enumerator()));
+            qDebug() << str;
+            throw AgrosException(str);
+        }
+        catch (const xml_schema::expected_text_content& e)
+        {
+            QString str = QString("%1").arg(QString::fromStdString(e.what()));
+            qDebug() << str;
+            throw AgrosException(str);
+        }
+        catch (const xml_schema::parsing& e)
+        {
+            QString str = QString("%1").arg(QString::fromStdString(e.what()));
+            qDebug() << str;
+            xml_schema::diagnostics diagnostic = e.diagnostics();
+            for(int i = 0; i < diagnostic.size(); i++)
+            {
+                xml_schema::error err = diagnostic.at(i);
+                qDebug() << QString("%1, position %2:%3, %4").arg(QString::fromStdString(err.id())).arg(err.line()).arg(err.column()).arg(QString::fromStdString(err.message()));
+            }
+            throw AgrosException(str);
+        }
+        catch (const xml_schema::exception& e)
+        {
+            qDebug() << QString("Unknow parser exception: %1").arg(QString::fromStdString(e.what()));
+            throw AgrosException(QString::fromStdString(e.what()));
         }
     }
 }

@@ -84,31 +84,72 @@
     <module:quantity id="elasticity_displacement_y" shortname="st_dy"/>
     <module:quantity id="elasticity_force_x" shortname="st_fx"/>
     <module:quantity id="elasticity_force_y" shortname="st_fy"/>
+
+    <module:essential_form id="fixed_1" i="1" axi="st_dx" planar="st_dx" />
+    <module:essential_form id="fixed_2" i="2" axi="st_dy" planar="st_dy" />
+    <module:vector_form id="free_1" i="1" j="1" axi="st_fx * r * vval" planar="st_fx * vval"/>
+    <module:vector_form id="free_2" i="2" j="2" axi="st_fy * r * vval" planar="st_fy * vval"/>
+
     <module:weakforms_surface>
       <module:weakform_surface analysistype="steadystate" default="elasticity_fixed_fixed">
         <module:boundary equation="u_x = u_{0,x},\,\,\, u_y = u_{0,y}" id="elasticity_fixed_fixed" name="Fixed - fixed">
           <module:quantity id="elasticity_displacement_x"/>
           <module:quantity id="elasticity_displacement_y"/>
-          <module:essential_form axi_linear="st_dx" axi_newton="st_dx" i="1" id="form" planar_linear="st_dx" planar_newton="st_dx"/>
-          <module:essential_form axi_linear="st_dy" axi_newton="st_dy" i="2" id="form" planar_linear="st_dy" planar_newton="st_dy"/>
+
+          <module:linearity_option type="linear">
+            <module:essential_form id="fixed_1"/>
+            <module:essential_form id="fixed_2"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:essential_form id="fixed_1"/>
+            <module:essential_form id="fixed_2"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="u_x = u_{0,x},\,\,\, F_y = F_{0,y}" id="elasticity_fixed_free" name="Fixed - free">
           <module:quantity id="elasticity_displacement_x"/>
           <module:quantity id="elasticity_force_y"/>
-          <module:vector_form axi_linear="st_fy * r * vval" axi_newton="- st_fy * r * vval" i="2" id="form" j="2" planar_linear="st_fy * vval" planar_newton="- st_fy * vval"/>
-          <module:essential_form axi_linear="st_dx" axi_newton="st_dx" i="1" id="form" planar_linear="st_dx" planar_newton="st_dx"/>
+
+          <module:linearity_option type="linear">
+            <module:essential_form id="fixed_1"/>
+            <module:vector_form id="free_2"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:essential_form id="fixed_1"/>
+            <module:vector_form id="free_2" coefficient="-1"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="F_x = F_{0,x},\,\,\, u_y = u_{0,y}" id="elasticity_free_fixed" name="Free - fixed">
           <module:quantity id="elasticity_force_x"/>
           <module:quantity id="elasticity_displacement_y"/>
-          <module:vector_form axi_linear="st_fx * r * vval" axi_newton="- st_fx * r * vval" i="1" id="form" j="1" planar_linear="st_fx * vval" planar_newton="- st_fx * vval"/>
-          <module:essential_form axi_linear="st_dy" axi_newton="st_dy" i="2" id="form" planar_linear="st_dy" planar_newton="st_dy"/>
+
+          <module:linearity_option type="linear">
+            <module:vector_form id="free_1"/>
+            <module:essential_form id="fixed_2"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:vector_form id="free_1" coefficient="-1"/>
+            <module:essential_form id="fixed_2"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="F_x = F_{0,x},\,\,\, F_y = F_{0,y}" id="elasticity_free_free" name="Free - free">
           <module:quantity id="elasticity_force_x"/>
           <module:quantity id="elasticity_force_y"/>
-          <module:vector_form axi_linear="st_fx * r * vval" axi_newton="- st_fx * r * vval" i="1" id="form" j="1" planar_linear="st_fx * vval" planar_newton="- st_fx * vval"/>
-          <module:vector_form axi_linear="st_fy * r * vval" axi_newton="- st_fy * r * vval" i="2" id="form" j="2" planar_linear="st_fy * vval" planar_newton="- st_fy * vval"/>
+
+          <module:linearity_option type="linear">
+            <module:vector_form id="free_1"/>
+            <module:vector_form id="free_2"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:vector_form id="free_1" coefficient="-1"/>
+            <module:vector_form id="free_2" coefficient="-1"/>
+          </module:linearity_option>
         </module:boundary>
       </module:weakform_surface>
     </module:weakforms_surface>

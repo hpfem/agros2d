@@ -41,15 +41,24 @@
   <module:surface>
     <module:quantity id="electrostatic_potential" shortname="V"/>
     <module:quantity id="electrostatic_surface_charge_density" shortname="sigma"/>
+    <module:essential_form id="essential" i="1" axi="V" planar="V"/>
+    <module:vector_form id="neumann" i="1" j="1" axi="sigma * r * vval" planar="sigma * vval"/>
     <module:weakforms_surface>
       <module:weakform_surface analysistype="steadystate" default="electrostatic_potential">
         <module:boundary equation="\varphi = \varphi_0" id="electrostatic_potential" name="Fixed voltage">
           <module:quantity id="electrostatic_potential"/>
-          <module:essential_form axi_linear="V" axi_newton="V" i="1" id="function" planar_linear="V" planar_newton="V"/>
+
+          <module:linearity_option type="linear">
+            <module:essential_form id="essential"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="\sigma = D_\mathrm{n} = \varepsilon \frac{\partial \varphi}{\partial n_0} = \sigma_0" id="electrostatic_surface_charge_density" name="Surface charge density">
           <module:quantity id="electrostatic_surface_charge_density"/>
-          <module:vector_form axi_linear="sigma * r * vval" axi_newton="sigma * r * vval" i="1" id="function" j="1" planar_linear="sigma * vval" planar_newton="sigma * vval"/>
+
+          <module:linearity_option type="linear">
+            <module:vector_form id="neumann"/>
+          </module:linearity_option>
         </module:boundary>
       </module:weakform_surface>
     </module:weakforms_surface>
