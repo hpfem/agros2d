@@ -89,6 +89,8 @@ script.benchmark.BenchmarkGeometryTransformation
 ]
 
 test_examples = [
-# a2d
-examples.examples.A2DExamples
+examples.examples.Examples,
+examples.examples.Other,
+examples.examples.PythonLab,
+examples.examples.Tutorials
 ]
