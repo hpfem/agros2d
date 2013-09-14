@@ -70,12 +70,12 @@ def update_localization():
     call(['lupdate'] + sources + ['-ts'] + LOC_PLUGINS_TARGET_FILES)
 
 def build(cores):
-    call(['cmake', './'])
-    call(['make', '-j', cores])
+    call(['cmake', '.'])
+    call(['make', '-j', str(cores)])
 
-    call('./agros2d_generator')
-    call(['cmake', PLUGINS_DIR])
-    call(['make', '-C', PLUGINS_DIR, '-j', cores])
+    call(['./agros2d_generator'])
+    call(['cmake', PLUGINS_DIR + '/CMakeLists.txt'])
+    call(['make', '-C', PLUGINS_DIR, '-j', str(cores)])
 
 def source_package(VERSION):
     call(['git', 'clean', '-fdx'])
@@ -111,7 +111,7 @@ if __name__ == "__main__":
     comp = parser.add_argument_group('buid')
     comp.add_argument('-b', '--build', action='store_true', required=False,
                       help='build project')
-    comp.add_argument('-c', '--cores', nargs='?', default=CORES, type=int, required=False,
+    comp.add_argument('-c', '--cores', nargs='?', default=1, type=int, required=False,
                       help='number of used cores')
 
     pac = parser.add_argument_group('package')
