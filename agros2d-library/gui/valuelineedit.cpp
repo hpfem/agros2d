@@ -49,14 +49,14 @@ ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin, b
     //isBool = false;
 
     // create controls
-    if(isBool)
+    if (isBool)
     {
         chkCheckBox = new QCheckBox(title(), this);
         connect(chkCheckBox, SIGNAL(stateChanged(int)), this, SLOT(evaluate()));
         connect(chkCheckBox, SIGNAL(stateChanged(int)), this, SLOT(doCheckBoxStateChanged()));
     }
-    else{
-
+    else
+    {
         txtLineEdit = new QLineEdit(this);
         txtLineEdit->setToolTip(tr("This textedit allows using variables."));
         txtLineEdit->setText("0");
@@ -183,10 +183,10 @@ void ValueLineEdit::doCheckBoxStateChanged()
 
 void ValueLineEdit::doEnableFields(QString id, bool checked)
 {
-    if(m_onlyIf == id)
+    if (m_onlyIf == id)
     {
         assert(txtLineEdit);
-        assert(! m_isBool);
+        assert(!m_isBool);
         txtLineEdit->setEnabled(checked);
     }
 }

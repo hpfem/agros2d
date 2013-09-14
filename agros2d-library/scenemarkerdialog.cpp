@@ -145,7 +145,7 @@ void SceneFieldWidget::createContent()
                 ids.append(row.id());
 
                 // label
-                if(textEdit->isBool())
+                if (textEdit->isBool())
                 {
                     labels.append(new QLabel(row.name()));
                 }
@@ -164,11 +164,11 @@ void SceneFieldWidget::createContent()
                 conditions.append(row.condition());
 
                 int index = layoutGroup->rowCount();
-                if(textEdit->isBool())
+                if (textEdit->isBool())
                 {
                     textEdit->setTitle(row.name());
-                    layoutGroup->addWidget(textEdit, index, 0,1,2);
-                    connect(textEdit, SIGNAL(enableFields(QString, bool)), this, SLOT(doEnableFields(QString, bool)));
+                    layoutGroup->addWidget(textEdit, index, 0, 1, 2);
+                    connect(textEdit, SIGNAL(enableFields(QString, bool)), this, SIGNAL(enableFields(QString, bool)));
                 }
                 else
                 {

@@ -32,7 +32,6 @@
 		{{#PROPERTY_NONLINEAR}}<td rowspan="7"><div id="{{PROPERTY_CHART}}" style="width:400px;height:155px;"></div></td>{{/PROPERTY_NONLINEAR}}
 	</tr>
 	<tr><td><b>{{PROPERTY_UNIT_LABEL}}</b></td><td>{{PROPERTY_UNIT}}</td></tr>
-	<tr><td><b>&nbsp;</b></td><td>&nbsp;</td></tr>
 	<tr><td><b>{{PROPERTY_CONSTANT_LABEL}}</b></td><td>{{PROPERTY_CONSTANT}} {{PROPERTY_UNIT}}</td></tr>
 	{{#PROPERTY_NONLINEAR}}
 	<tr><td><b>&nbsp;</b></td><td>&nbsp;</td></tr>
