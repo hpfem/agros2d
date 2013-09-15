@@ -33,7 +33,7 @@
 #include "pythonlab/pythonengine_agros.h"
 
 
-ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin, bool isBool, QString id, QString onlyIf, bool isSource)
+ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin, bool isBool, QString id, QString onlyIf, QString onlyIfNot, bool isSource)
     : QWidget(parent), m_hasTimeDep(hasTimeDep), m_hasNonlin(hasNonlin),
       m_minimum(-numeric_limits<double>::max()),
       m_minimumSharp(-numeric_limits<double>::max()),
@@ -42,6 +42,7 @@ ValueLineEdit::ValueLineEdit(QWidget *parent, bool hasTimeDep, bool hasNonlin, b
       m_isBool(isBool),
       m_id(id),
       m_onlyIf(onlyIf),
+      m_onlyIfNot(onlyIfNot),
       m_isSource(isSource),
       txtLineEdit(NULL),
       chkCheckBox(NULL)
@@ -188,6 +189,12 @@ void ValueLineEdit::doEnableFields(QString id, bool checked)
         assert(txtLineEdit);
         assert(!m_isBool);
         txtLineEdit->setEnabled(checked);
+    }
+    if (m_onlyIfNot == id)
+    {
+        assert(txtLineEdit);
+        assert(!m_isBool);
+        txtLineEdit->setEnabled(! checked);
     }
 }
 

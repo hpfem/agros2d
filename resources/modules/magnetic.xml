@@ -56,7 +56,8 @@
     <module:matrix_form id="steady_velocity" i="1" j="1" planar="- ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)" axi="- ma_gamma * uval * ma_vy * vdz"/>
     <module:matrix_form id="steady_jac_laplace" i="1" j="1" planar="tern((updx * updx + updy * updy) > 0, (- dma_mur / (MU0 * ma_mur * ma_mur) * (updx * udx + updy * udy) / sqrt(updx * updx + updy * updy) * (updx * vdx + updy * vdy)), 0.0)" axi="tern(((updr + upval / r) * (updr + upval / r) + updz * updz) > 0, (- dma_mur / (MU0 * ma_mur * ma_mur) * ((updr + upval / r) * (udr + uval / r) + updz * udz) / ((updr + upval / r)^2 + updz * updz)^0.5 * (updr * vdr + updz * vdz + upval * vdr / r)), 0.0)"/>
 
-    <module:vector_form  id="steady_rhs" i="1" j="1" planar="ma_Jer * vval + mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdx + cos((ma_Bra/180*PI)) * vdy)" axi="ma_Jer * vval - mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdr + cos((ma_Bra/180*PI)) * vdz)"/>
+    <module:vector_form  id="steady_rhs_remanence" i="1" j="1" planar="mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdx + cos((ma_Bra/180*PI)) * vdy)" axi="- mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdr + cos((ma_Bra/180*PI)) * vdz)"/>
+    <module:vector_form  id="steady_rhs_current" i="1" j="1" planar="((1-ma_IPrescribed) * ma_Jer + ma_IPrescribed * ma_Itr / area) * vval " axi="((1-ma_IPrescribed) * ma_Jer + ma_IPrescribed * ma_Itr / area) * vval"/>
 
     <module:matrix_form id="transient_mat_1_2" i="1" j="2" planar="ma_gamma * uval * vval" axi="ma_gamma * uval * vval" />
     <module:matrix_form id="transient_mat_2_2" i="2" j="2" planar="- uval * vval" axi="- uval * vval" symmetric="1"/>
@@ -103,18 +104,22 @@
         <module:quantity id="magnetic_velocity_y"/>
         <module:quantity id="magnetic_velocity_angular"/>
         <module:quantity id="magnetic_current_density_external_real"/>
+        <module:quantity id="magnetic_total_current_prescribed"/>
+        <module:quantity id="magnetic_total_current_real"/>
 
         <module:linearity_option type="linear">
           <module:matrix_form id="steady_laplace"/>
           <module:matrix_form id="steady_velocity"/>
-          <module:vector_form id="steady_rhs"/>
+          <module:vector_form  id="steady_rhs_remanence"/>
+          <module:vector_form  id="steady_rhs_current"/>
         </module:linearity_option>
 
         <module:linearity_option type="newton">
           <module:matrix_form id="steady_laplace"/>
           <module:matrix_form id="steady_velocity"/>
           <module:matrix_form id="steady_jac_laplace"/>
-          <module:vector_form id="steady_rhs" coefficient="-1"/>
+          <module:vector_form id="steady_rhs_remanence" coefficient="-1"/>
+          <module:vector_form id="steady_rhs_current" coefficient="-1"/>
           <module:vector_form id="steady_laplace" variant="residual"/>
           <module:vector_form id="steady_velocity" variant="residual"/>
         </module:linearity_option>
@@ -129,6 +134,8 @@
         <module:quantity id="magnetic_velocity_y"/>
         <module:quantity id="magnetic_velocity_angular"/>
         <module:quantity dependence="time" id="magnetic_current_density_external_real"/>
+        <module:quantity id="magnetic_total_current_prescribed"/>
+        <module:quantity dependence="time" id="magnetic_total_current_real"/>
 
         <module:linearity_option type="linear">
           <module:matrix_form id="steady_laplace"/>
@@ -136,7 +143,8 @@
           <module:matrix_form id="transient_mat_1_2"/>
           <module:matrix_form id="transient_mat_2_2"/>
           <module:matrix_form id="transient_mat_2_1"/>
-          <module:vector_form id="steady_rhs"/>
+          <module:vector_form  id="steady_rhs_remanence"/>
+          <module:vector_form  id="steady_rhs_current"/>
           <module:vector_form id="transient_vec_2_1"/>
         </module:linearity_option>
 
@@ -343,11 +351,11 @@
         <module:quantity id="magnetic_conductivity" name="Electrical conductivity" shortname="gamma" shortname_html="&lt;i>&amp;gamma;&lt;/i>" unit="S/m" unit_html="S.m&lt;sup>-1&lt;/sup>" unit_latex="S \cdot m^{-1}"/>
       </module:group>
       <module:group name="Source">
-        <module:quantity id="magnetic_current_density_external_real" name="Current dens. - ext. - real" is_source="1" shortname="Jer" shortname_html="&lt;i>J&lt;/i>&lt;sub>r,ext&lt;/sub>" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
-        <module:quantity id="magnetic_current_density_external_imag" name="Current dens. - ext. - imag" is_source="1" shortname="Jei" shortname_html="&lt;i>J&lt;/i>&lt;sub>i,ext&lt;/sub>" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
+        <module:quantity id="magnetic_current_density_external_real" name="Current dens. - ext. - real" is_source="1" only_if_not="magnetic_total_current_prescribed" shortname="Jer" shortname_html="&lt;i>J&lt;/i>&lt;sub>r,ext&lt;/sub>" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
+        <module:quantity id="magnetic_current_density_external_imag" name="Current dens. - ext. - imag" is_source="1" only_if_not="magnetic_total_current_prescribed" shortname="Jei" shortname_html="&lt;i>J&lt;/i>&lt;sub>i,ext&lt;/sub>" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
         <module:quantity id="magnetic_total_current_prescribed" name="Total current prescribed" is_bool="1" shortname="IPrescribed" shortname_html="IPrescribed" unit="-" unit_html="-" unit_latex="-"/>
-        <module:quantity id="magnetic_total_current_real" name="Avg. total current density - real" is_source="1" only_if="magnetic_total_current_prescribed" shortname="Itr" shortname_html="Itr" unit="A" unit_html="A" unit_latex="A"/>
-        <module:quantity id="magnetic_total_current_imag" name="Avg. total current density - imag" is_source="1" only_if="magnetic_total_current_prescribed" shortname="Iti" shortname_html="Iti" unit="A" unit_html="A" unit_latex="A"/>
+        <module:quantity id="magnetic_total_current_real" name="Total current - real" is_source="1" only_if="magnetic_total_current_prescribed" shortname="Itr" shortname_html="Itr" unit="A" unit_html="A" unit_latex="A"/>
+        <module:quantity id="magnetic_total_current_imag" name="Total current - imag" is_source="1" only_if="magnetic_total_current_prescribed" shortname="Iti" shortname_html="Iti" unit="A" unit_html="A" unit_latex="A"/>
       </module:group>
       <module:group name="Permanent magnet">
         <module:quantity id="magnetic_remanence" name="Remanent flux density" shortname="Brm" shortname_html="&lt;i>B&lt;/i>&lt;sub>rm&lt;/sub>" unit="T" unit_html="T"/>

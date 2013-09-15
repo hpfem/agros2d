@@ -330,11 +330,11 @@ private:
 // material property
 struct MaterialTypeVariable
 {
-    MaterialTypeVariable() : m_id(""), m_shortname(""), m_defaultValue(0),  m_expressionNonlinear(""), m_isTimeDep(false), m_isBool(false), m_onlyIf(QString()){}
+    MaterialTypeVariable() : m_id(""), m_shortname(""), m_defaultValue(0),  m_expressionNonlinear(""), m_isTimeDep(false), m_isBool(false), m_onlyIf(QString()), m_onlyIfNot(QString()){}
     MaterialTypeVariable(const QString &id, const QString &shortname,
-                         const QString &expressionNonlinear = "", bool isTimedep = false, bool isBool = false, QString onlyIf = QString(), bool isSource = false)
+                         const QString &expressionNonlinear = "", bool isTimedep = false, bool isBool = false, QString onlyIf = QString(), QString onlyIfNot = QString(), bool isSource = false)
         : m_id(id), m_shortname(shortname),
-          m_expressionNonlinear(expressionNonlinear), m_isTimeDep(isTimedep), m_isBool(isBool), m_onlyIf(onlyIf), m_isSource(isSource) {}
+          m_expressionNonlinear(expressionNonlinear), m_isTimeDep(isTimedep), m_isBool(isBool), m_onlyIf(onlyIf), m_onlyIfNot(onlyIfNot), m_isSource(isSource) {}
     MaterialTypeVariable(XMLModule::quantity quant);
 
     // id
@@ -350,6 +350,8 @@ struct MaterialTypeVariable
     inline bool isBool() const { return m_isBool; }
     // enable only if checkbox with id == m_onlyIf is checked
     inline QString onlyIf() const {return m_onlyIf; }
+    // enable only if checkbox with id == m_onlyIf is NOT checked
+    inline QString onlyIfNot() const {return m_onlyIfNot; }
     // field source
     inline bool isSource() const { return m_isSource; }
 
@@ -368,6 +370,8 @@ private:
     bool m_isBool;
     // only if
     QString m_onlyIf;
+    // only if not
+    QString m_onlyIfNot;
     // source
     bool m_isSource;
 };

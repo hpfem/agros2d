@@ -375,9 +375,10 @@
                         <attribute name="unit" type="string" />
                         <attribute name="unit_html" type="string" />
                         <attribute name="unit_latex" type="string" />
-						<attribute name="is_source" type="int" />
+                        <attribute name="is_source" type="int" />
                         <attribute name="is_bool" type="int" />
                         <attribute name="only_if" type="string" />
+                        <attribute name="only_if_not" type="string" />
                 </complexType>
         </element>
 

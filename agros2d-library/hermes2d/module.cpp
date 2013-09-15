@@ -845,6 +845,9 @@ Module::MaterialTypeVariable::MaterialTypeVariable(XMLModule::quantity quant)
     if (quant.only_if().present())
         m_onlyIf = QString::fromStdString(quant.only_if().get());
 
+    if (quant.only_if_not().present())
+        m_onlyIfNot = QString::fromStdString(quant.only_if_not().get());
+
     if (quant.is_source().present())
         m_isSource = (quant.is_source().get() != 0);
 }
