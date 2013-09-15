@@ -251,6 +251,12 @@ enum DataTableType
     DataTableType_Constant = 2
 };
 
+enum SpecialFunctionType
+{
+    SpecialFunctionType_Constant = 0,
+    SpecialFunctionType_Function1D = 1
+};
+
 AGROS_LIBRARY_API QString stringListToString(const QStringList &list);
 
 // keys
@@ -401,6 +407,13 @@ AGROS_LIBRARY_API QString dataTableTypeString(DataTableType dataTableType);
 AGROS_LIBRARY_API QStringList dataTableTypeStringKeys();
 AGROS_LIBRARY_API QString dataTableTypeToStringKey(DataTableType dataTableType);
 AGROS_LIBRARY_API DataTableType dataTableTypeFromStringKey(const QString &dataTableType);
+
+// special function type
+AGROS_LIBRARY_API QString specialFunctionTypeString(SpecialFunctionType specialFunctionType);
+AGROS_LIBRARY_API QStringList specialFunctionTypeStringKeys();
+AGROS_LIBRARY_API QString specialFunctionTypeToStringKey(SpecialFunctionType specialFunctionType);
+AGROS_LIBRARY_API SpecialFunctionType specialFunctionTypeFromStringKey(const QString &specialFunctionType);
+
 
 // butcher table type
 AGROS_LIBRARY_API QString butcherTableTypeString(Hermes::ButcherTableType tableType);

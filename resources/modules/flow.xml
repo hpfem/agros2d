@@ -40,7 +40,6 @@
     <module:quantity id="flow_force_x" shortname="fl_fx"/>
     <module:quantity id="flow_force_y" shortname="fl_fy"/>
 
-<!--     todo: proc jsou viscosity u axi jinak? nechybi tam nahodou clen u druheho? Spise ano! -->
     <module:matrix_form id="viscosity_1_1" i="1" j="1" planar="fl_mu * (udx * vdx + udy * vdy)" axi="fl_mu * (udr * vdr - udr * vval / (r + 1e-12) + uval * vval / (r + 1e-12)^2 + udz * vdz)"/>
     <module:matrix_form id="viscosity_2_2" i="2" j="2" planar="fl_mu * (udx * vdx + udy * vdy)" axi="fl_mu * (udr * vdr - udr * vval / (r + 1e-12) + udz * vdz) "/>
     <module:matrix_form id="convection_jacobian_1_1" i="1" j="1" planar="fl_rho * (value1 * udx + value2 * udy + dx1 * uval) * vval" axi="fl_rho * (value1 * udr + value2 * udz + dr1 * uval) * vval" />

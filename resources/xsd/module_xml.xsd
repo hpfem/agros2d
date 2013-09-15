@@ -274,12 +274,13 @@
                         <sequence>
                                 <element maxOccurs="unbounded" ref="module:quantity" />
                                 <element maxOccurs="unbounded" ref="module:function_variant" />
-                        </sequence>
+                        </sequence>                       
                         <attribute name="id" use="required" type="string" />
                         <attribute name="shortname" use="required" type="string" />
-                        <attribute name="switch_combo" use="required" type="string" />
-                        <attribute name="bound_low" use="required" type="string" />
-                        <attribute name="bound_hi" use="required" type="string" />
+                        <attribute name="type" use="required" type="string" />
+                        <attribute name="switch_combo" type="string" />
+                        <attribute name="bound_low" type="string" />
+                        <attribute name="bound_hi" type="string" />
                         <attribute name="extrapolate_low" type="string" />
                         <attribute name="extrapolate_hi" type="string" />
                 </complexType>
@@ -287,7 +288,7 @@
         
         <element name="function_variant">
                 <complexType>
-                        <attribute name="switch_value" use="required" type="string" />
+                        <attribute name="switch_value" type="string" />
                         <attribute name="expr" use="required" type="string" />
                 </complexType>
         </element>

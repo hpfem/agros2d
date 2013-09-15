@@ -2076,8 +2076,9 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function* functi
     ctemplate::TemplateDictionary *functionTemplate = output.AddSectionDictionary("SPECIAL_FUNCTION_SOURCE");
     functionTemplate->SetValue("SPECIAL_FUNCTION_NAME", function->shortname());
     functionTemplate->SetValue("SPECIAL_FUNCTION_FULL_NAME", m_module->general().id() + "_function_" + function->shortname());
-    functionTemplate->SetValue("FROM", function->bound_low());
-    functionTemplate->SetValue("TO", function->bound_hi());
+    functionTemplate->SetValue("FROM", function->bound_low().present() ? function->bound_low().get() : "-1");
+    functionTemplate->SetValue("TO", function->bound_hi().present() ? function->bound_hi().get() : "1");
+    functionTemplate->SetValue("TYPE", function->type());
     if(function->extrapolate_low().present())
     {
         functionTemplate->SetValue("EXTRAPOLATE_LOW_PRESENT", "true");
@@ -2098,22 +2099,27 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function* functi
         functionTemplate->SetValue("EXTRAPOLATE_HI_PRESENT", "false");
         functionTemplate->SetValue("EXTRAPOLATE_HI", "-123456");
     }
-    foreach(XMLModule::gui gui, m_module->preprocessor().gui())
+    QString selectedVariant("no_variant");
+    if(function->switch_combo().present())
     {
-        if(gui.type() == "volume")
+        foreach(XMLModule::gui gui, m_module->preprocessor().gui())
         {
-            foreach(XMLModule::group group, gui.group())
+            if(gui.type() == "volume")
             {
-                foreach(XMLModule::switch_combo switch_combo, group.switch_combo())
+                foreach(XMLModule::group group, gui.group())
                 {
-                    if(switch_combo.id() == function->switch_combo())
+                    foreach(XMLModule::switch_combo switch_combo, group.switch_combo())
                     {
-                        functionTemplate->SetValue("SELECTED_VARIANT", switch_combo.implicit_option());
+                        if(switch_combo.id() == function->switch_combo().get())
+                        {
+                            selectedVariant = QString::fromStdString(switch_combo.implicit_option());
+                        }
                     }
                 }
             }
         }
     }
+    functionTemplate->SetValue("SELECTED_VARIANT", selectedVariant.toStdString().c_str());
 
     foreach(XMLModule::quantity quantity, function->quantity())
     {
@@ -2131,7 +2137,7 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function* functi
     foreach(XMLModule::function_variant variant, function->function_variant())
     {
         ctemplate::TemplateDictionary *functionVariant = functionTemplate->AddSectionDictionary("VARIANT");
-        functionVariant->SetValue("ID", variant.switch_value().c_str());
+        functionVariant->SetValue("ID", variant.switch_value().present() ? variant.switch_value().get().c_str() : "no_variant");
         functionVariant->SetValue("EXPR", variant.expr());
     }
 }

@@ -50,6 +50,7 @@ static QMap<PaletteOrderType, QString> paletteOrderTypeList;
 static QMap<VectorType, QString> vectorTypeList;
 static QMap<VectorCenter, QString> vectorCenterList;
 static QMap<DataTableType, QString> dataTableTypeList;
+static QMap<SpecialFunctionType, QString> specialFunctionTypeList;
 static QMap<Hermes::ButcherTableType, QString> butcherTableTypeList;
 static QMap<Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType, QString> nonlinearSolverConvergenceMeasurementList;
 static QMap<Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType, QString> iterLinearSolverMethodList;
@@ -150,6 +151,10 @@ VectorCenter vectorCenterFromStringKey(const QString &vectorCenter) { return vec
 QStringList dataTableTypeStringKeys() { return dataTableTypeList.values(); }
 QString dataTableTypeToStringKey(DataTableType dataTableType) { return dataTableTypeList[dataTableType]; }
 DataTableType dataTableTypeFromStringKey(const QString &dataTableType) { return dataTableTypeList.key(dataTableType); }
+
+QStringList specialFunctionTypeStringKeys() { return specialFunctionTypeList.values(); }
+QString specialFunctionTypeToStringKey(SpecialFunctionType specialFunctionType) { return specialFunctionTypeList[specialFunctionType]; }
+SpecialFunctionType specialFunctionTypeFromStringKey(const QString &specialFunctionType) { return specialFunctionTypeList.key(specialFunctionType); }
 
 QStringList butcherTableTypeStringKeys() { return butcherTableTypeList.values(); }
 QString butcherTableTypeToStringKey(Hermes::ButcherTableType tableType) { return butcherTableTypeList[tableType]; }
@@ -341,6 +346,10 @@ void initLists()
     dataTableTypeList.insert(DataTableType_CubicSpline, "cubic_spline");
     dataTableTypeList.insert(DataTableType_PiecewiseLinear, "piecewise_linear");
     dataTableTypeList.insert(DataTableType_Constant, "constant");
+
+    // SpecialFunctionType
+    specialFunctionTypeList.insert(SpecialFunctionType_Constant, "constant");
+    specialFunctionTypeList.insert(SpecialFunctionType_Function1D, "function_1d");
 
     // ButcherTableType
     butcherTableTypeList.insert(Hermes::Explicit_HEUN_EULER_2_12_embedded, "heun-euler");
@@ -786,6 +795,20 @@ QString dataTableTypeString(DataTableType dataTableType)
         return QObject::tr("Constant");
     default:
         std::cerr << "Data table type '" + QString::number(dataTableType).toStdString() + "' is not implemented. dataTableTypeString(DataTableType dataTableType)" << endl;
+        throw;
+    }
+}
+
+QString specialFunctionTypeString(SpecialFunctionType specialFunctionType)
+{
+    switch (specialFunctionType)
+    {
+    case SpecialFunctionType_Constant:
+        return QObject::tr("Constant");
+    case SpecialFunctionType_Function1D:
+        return QObject::tr("1D function");
+    default:
+        std::cerr << "Data table type '" + QString::number(specialFunctionType).toStdString() + "' is not implemented. specialFunctionTypeString(SpecialFunctionType specialFunctionType)" << endl;
         throw;
     }
 }
