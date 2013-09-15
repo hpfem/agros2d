@@ -59,7 +59,7 @@ CouplingList::CouplingList()
             // todo: this was copied from module. Find a way to do all catching at one place
 
             // todo: find a way to validate if required. If validated here, sensible error messages will be obtained
-            bool validateAtTheBeginning = true;
+            bool validateAtTheBeginning = false;
             ::xml_schema::flags parsing_flags = xml_schema::flags::dont_validate;
             if(validateAtTheBeginning)
             {

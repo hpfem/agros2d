@@ -66,7 +66,7 @@ QMap<QString, QString> Module::availableModules()
             try
             {                
                 // todo: find a way to validate if required. If validated here, sensible error messages will be obtained
-                bool validateAtTheBeginning = true;
+                bool validateAtTheBeginning = false;
                 ::xml_schema::flags parsing_flags = xml_schema::flags::dont_validate;
                 if(validateAtTheBeginning)
                 {
