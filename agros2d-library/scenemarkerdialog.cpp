@@ -219,7 +219,7 @@ ValueLineEdit *SceneFieldWidgetMaterial::addValueEditWidget(const Module::Dialog
             ValueLineEdit *edit = new ValueLineEdit(this,
                                                     (variable.isTimeDep() && m_material->fieldInfo()->analysisType() == AnalysisType_Transient),
                                                     (variable.isNonlinear() && m_material->fieldInfo()->linearityType() != LinearityType_Linear),
-                                                    variable.isBool(), variable.id(), variable.onlyIf(), variable.isSource());
+                                                    variable.isBool(), variable.id(), variable.onlyIf(), variable.onlyIfNot(), variable.isSource());
             if (variable.isNonlinear())
             {
                 edit->setTitle(row.name());

@@ -267,7 +267,7 @@ private:
     // help functions extracting parts of xml
 };
 
-XMLModule::linearity_option volumeLinearityOption(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
+XMLModule::linearity_option findLinearityOption(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
 
 ostream& operator<<(ostream& output, FieldInfo& id);
 

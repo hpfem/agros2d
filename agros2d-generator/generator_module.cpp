@@ -626,21 +626,30 @@ void Agros2DGeneratorModule::generateWeakForms(ctemplate::TemplateDictionary &ou
 
     foreach(XMLModule::weakform_surface weakform, m_module->surface().weakforms_surface().weakform_surface())
     {
+        AnalysisType analysisType = analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype().c_str()));
         foreach(XMLModule::boundary boundary, weakform.boundary())
         {
-            foreach(XMLModule::matrix_form form, boundary.matrix_form())
+            foreach(XMLModule::linearity_option option, boundary.linearity_option())
             {
-                assert(form.i().present() && form.j().present());
-                generateFormOld(form, output, weakform, "SURFACE_MATRIX", form.i().get(), &boundary, form.j().get());
-            }
-            foreach(XMLModule::vector_form form, boundary.vector_form())
-            {
-                assert(form.i().present() && form.j().present());
-                generateFormOld(form, output, weakform, "SURFACE_VECTOR", form.i().get(), &boundary, form.j().get());
-            }
-            foreach(XMLModule::essential_form form, boundary.essential_form())
-            {
-                generateFormOld(form, output, weakform, "EXACT",  form.i(), &boundary, 0);
+                LinearityType linearityType = linearityTypeFromStringKey(QString::fromStdString(option.type().c_str()));
+
+                QList<FormInfo> matrixForms = Module::BoundaryType::wfMatrixSurface(&m_module->surface(), &boundary, analysisType, linearityType);
+                QList<FormInfo> vectorForms = Module::BoundaryType::wfVectorSurface(&m_module->surface(), &boundary, analysisType, linearityType);
+                QList<FormInfo> essentialForms = Module::BoundaryType::essential(&m_module->surface(), &boundary, analysisType, linearityType);
+                foreach(FormInfo formInfo, matrixForms)
+                {
+                    generateForm(formInfo, linearityType, output, weakform, "SURFACE_MATRIX", &boundary);
+                }
+
+                foreach(FormInfo formInfo, vectorForms)
+                {
+                    generateForm(formInfo, linearityType, output, weakform, "SURFACE_VECTOR", &boundary);
+                }
+
+                foreach(FormInfo formInfo, essentialForms)
+                {
+                    generateForm(formInfo, linearityType, output, weakform, "EXACT", &boundary);
+                }
             }
         }
     }
@@ -1970,6 +1979,7 @@ void Agros2DGeneratorModule::generateFormOld(Form form, ctemplate::TemplateDicti
     LinearityType linearityTypes[3] = {LinearityType_Linear, LinearityType_Newton, LinearityType_Picard};
     for(int lt = 0; lt < 3; lt++)
     {
+        //assert(0);
         formInfo.expr_planar = this->weakformExpression(CoordinateType_Planar, linearityTypes[lt], form);
         formInfo.expr_axi = this->weakformExpression(CoordinateType_Axisymmetric, linearityTypes[lt], form);
         generateForm(formInfo, linearityTypes[lt], output, weakform, weakFormType, boundary);
@@ -2066,8 +2076,9 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function* functi
     ctemplate::TemplateDictionary *functionTemplate = output.AddSectionDictionary("SPECIAL_FUNCTION_SOURCE");
     functionTemplate->SetValue("SPECIAL_FUNCTION_NAME", function->shortname());
     functionTemplate->SetValue("SPECIAL_FUNCTION_FULL_NAME", m_module->general().id() + "_function_" + function->shortname());
-    functionTemplate->SetValue("FROM", function->bound_low());
-    functionTemplate->SetValue("TO", function->bound_hi());
+    functionTemplate->SetValue("FROM", function->bound_low().present() ? function->bound_low().get() : "-1");
+    functionTemplate->SetValue("TO", function->bound_hi().present() ? function->bound_hi().get() : "1");
+    functionTemplate->SetValue("TYPE", function->type());
     if(function->extrapolate_low().present())
     {
         functionTemplate->SetValue("EXTRAPOLATE_LOW_PRESENT", "true");
@@ -2088,22 +2099,27 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function* functi
         functionTemplate->SetValue("EXTRAPOLATE_HI_PRESENT", "false");
         functionTemplate->SetValue("EXTRAPOLATE_HI", "-123456");
     }
-    foreach(XMLModule::gui gui, m_module->preprocessor().gui())
+    QString selectedVariant("no_variant");
+    if(function->switch_combo().present())
     {
-        if(gui.type() == "volume")
+        foreach(XMLModule::gui gui, m_module->preprocessor().gui())
         {
-            foreach(XMLModule::group group, gui.group())
+            if(gui.type() == "volume")
             {
-                foreach(XMLModule::switch_combo switch_combo, group.switch_combo())
+                foreach(XMLModule::group group, gui.group())
                 {
-                    if(switch_combo.id() == function->switch_combo())
+                    foreach(XMLModule::switch_combo switch_combo, group.switch_combo())
                     {
-                        functionTemplate->SetValue("SELECTED_VARIANT", switch_combo.implicit_option());
+                        if(switch_combo.id() == function->switch_combo().get())
+                        {
+                            selectedVariant = QString::fromStdString(switch_combo.implicit_option());
+                        }
                     }
                 }
             }
         }
     }
+    functionTemplate->SetValue("SELECTED_VARIANT", selectedVariant.toStdString().c_str());
 
     foreach(XMLModule::quantity quantity, function->quantity())
     {
@@ -2121,7 +2137,7 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function* functi
     foreach(XMLModule::function_variant variant, function->function_variant())
     {
         ctemplate::TemplateDictionary *functionVariant = functionTemplate->AddSectionDictionary("VARIANT");
-        functionVariant->SetValue("ID", variant.switch_value().c_str());
+        functionVariant->SetValue("ID", variant.switch_value().present() ? variant.switch_value().get().c_str() : "no_variant");
         functionVariant->SetValue("EXPR", variant.expr());
     }
 }

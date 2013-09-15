@@ -34,7 +34,7 @@ class ValueLineEdit : public QWidget
     Q_OBJECT
 
 public:
-    ValueLineEdit(QWidget *parent = 0, bool hasTimeDep = false, bool hasNonlin = false, bool isBool = false, QString id = QString(), QString onlyIf = QString(), bool isSource = true);
+    ValueLineEdit(QWidget *parent = 0, bool hasTimeDep = false, bool hasNonlin = false, bool isBool = false, QString id = QString(), QString onlyIf = QString(), QString onlyIfNot = QString(), bool isSource = true);
     ~ValueLineEdit();
 
     double number();
@@ -84,6 +84,8 @@ private:
     bool m_isBool;
     // textbox enabled only if checkbox with this id is checked
     QString m_onlyIf;
+    // textbox enabled only if checkbox with this id is NOT checked
+    QString m_onlyIfNot;
     QString m_id;
     // field source
     bool m_isSource;

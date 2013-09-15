@@ -36,28 +36,28 @@
     <module:quantity id="richards_theta_r" shortname="re_theta_r"/>
 
 <!--    bounds and extrapolate information should be transfered to function_variant-->
-    <module:function id="richards_func_k" shortname="re_k" switch_combo="constitutive_variant" bound_low="-40" bound_hi="-1e-5" extrapolate_hi="re_ks"  >
+    <module:function id="richards_func_k" shortname="re_k" type="function_1d" switch_combo="constitutive_variant" bound_low="-40" bound_hi="-1e-5" extrapolate_hi="re_ks"  >
       <module:quantity id="richards_ks"/>
       <module:quantity id="richards_a"/>
       <module:quantity id="richards_m"/>
       <module:quantity id="richards_n"/>
       <module:function_variant switch_value="van_genuchten" expr="re_ks*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m/2))*std::pow((1 -std::pow((-re_a*h),(re_m*re_n))*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m))),2)"/>
     </module:function>
-      <module:function id="richards_func_dkdh" shortname="re_dkdh" switch_combo="constitutive_variant" bound_low="-40" bound_hi="-1e-5" extrapolate_hi="0" >
+    <module:function id="richards_func_dkdh" shortname="re_dkdh" type="function_1d" switch_combo="constitutive_variant" bound_low="-40" bound_hi="-1e-5" extrapolate_hi="0" >
       <module:quantity id="richards_ks"/>
       <module:quantity id="richards_a"/>
       <module:quantity id="richards_m"/>
       <module:quantity id="richards_n"/>
       <module:function_variant switch_value="van_genuchten" expr="re_ks*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m/2))*(1 -std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m)))*(-2*re_m*re_n*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/h +2*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(h*(1 + std::pow((-re_a*h),re_n)))) -re_ks*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m/2))*std::pow((1 -std::pow((-re_a*h),(re_m*re_n))*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m))),2)/(2*h*(1 +std::pow((-re_a*h),re_n)))"/>
     </module:function>
-      <module:function id="richards_func_ddkdhh" shortname="re_ddkdhh" switch_combo="constitutive_variant" bound_low="-40" bound_hi="-1e-5" extrapolate_hi="0" >
+    <module:function id="richards_func_ddkdhh" shortname="re_ddkdhh" type="function_1d" switch_combo="constitutive_variant" bound_low="-40" bound_hi="-1e-5" extrapolate_hi="0" >
       <module:quantity id="richards_ks"/>
       <module:quantity id="richards_a"/>
       <module:quantity id="richards_m"/>
       <module:quantity id="richards_n"/>
       <module:function_variant switch_value="van_genuchten" expr="re_ks*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m/2))*(1 -std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m)))*(-2*std::pow(re_m,2)*std::pow(re_n,2)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1+ std::pow((-re_a*h),re_n)),(-re_m))/std::pow(h,2) +2*re_m*re_n*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m))/std::pow(h,2)- 2*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(std::pow(h,2)*(1 + std::pow((-re_a*h),re_n))) -2*re_m*std::pow(re_n,2)*std::pow((-re_a*h),(2*re_n))*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(std::pow(h,2)*std::pow((1 + std::pow((-re_a*h),re_n)),2)) -2*std::pow(re_m,2)*std::pow(re_n,2)*std::pow((-re_a*h),(2*re_n))*std::pow((-re_a*h),(re_m*re_n))*std::pow((1+ std::pow((-re_a*h),re_n)),(-re_m))/(std::pow(h,2)*std::pow((1 + std::pow((-re_a*h),re_n)),2)) +2*re_m*std::pow(re_n,2)*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(std::pow(h,2)*(1 + std::pow((-re_a*h),re_n))) +4*std::pow(re_m,2)*std::pow(re_n,2)*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(std::pow(h,2)*(1 + std::pow((-re_a*h),re_n)))) +re_ks*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m/2))*(-re_m*re_n*std::pow((-re_a*h),(re_m*re_n))*std::pow((1+ std::pow((-re_a*h),re_n)),(-re_m))/h +re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(h*(1 +std::pow((-re_a*h),re_n))))*(-2*re_m*re_n*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/h +2*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(h*(1 + std::pow((-re_a*h),re_n)))) -re_ks*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((1 + std::pow((-re_a*h),re_n)),(-re_m/2))*(1 -std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m)))*(-2*re_m*re_n*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/h +2*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))/(h*(1 + std::pow((-re_a*h),re_n))))/(h*(1 +std::pow((-re_a*h),re_n))) + re_ks*re_m*re_n*std::pow((-re_a*h),re_n)*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m/2))*std::pow((1 - std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))),2)/(2*std::pow(h,2)*(1 + std::pow((-re_a*h),re_n))) +re_ks*re_m*std::pow(re_n,2)*std::pow((-re_a*h),(2*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m/2))*std::pow((1 - std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))),2)/(2*std::pow(h,2)*std::pow((1 +std::pow((-re_a*h),re_n)),2)) - re_ks*re_m*std::pow(re_n,2)*std::pow((-re_a*h),re_n)*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m/2))*std::pow((1 - std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))),2)/(2*std::pow(h,2)*(1 + std::pow((-re_a*h),re_n))) +re_ks*std::pow(re_m,2)*std::pow(re_n,2)*std::pow((-re_a*h),(2*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m/2))*std::pow((1 - std::pow((-re_a*h),(re_m*re_n))*std::pow((1 +std::pow((-re_a*h),re_n)),(-re_m))),2)/(4*std::pow(h,2)*std::pow((1 +std::pow((-re_a*h),re_n)),2))"/>
     </module:function>
-      <module:function id="richards_func_c" shortname="re_c" switch_combo="constitutive_variant" bound_low="-40" bound_hi="-1e-5" extrapolate_hi="re_st" >
+    <module:function id="richards_func_c" shortname="re_c" type="function_1d" switch_combo="constitutive_variant" bound_low="-40" bound_hi="-1e-5" extrapolate_hi="re_st" >
       <module:quantity id="richards_ks"/>
       <module:quantity id="richards_a"/>
       <module:quantity id="richards_m"/>
@@ -139,10 +139,10 @@
         </module:linearity_option>
 
         <module:linearity_option type="picard">
-        <module:matrix_form id="conductivity" />
-        <module:matrix_form id="conductivity_derivative" />
-        <module:matrix_form id="time_mat" />
-        <module:vector_form id="time_vec" />
+          <module:matrix_form id="conductivity" />
+          <module:matrix_form id="conductivity_derivative" />
+          <module:matrix_form id="time_mat" />
+          <module:vector_form id="time_vec" />
         </module:linearity_option>
 
       </module:weakform_volume>
@@ -152,25 +152,60 @@
   <module:surface>
     <module:quantity id="richards_pressure_head" shortname="re_h"/>
     <module:quantity id="richards_darcy_velocity" shortname="re_q"/>
+
+    <module:essential_form id="essential" i="1" axi="re_h" planar="re_h"/>
+    <module:vector_form id="darcy_velocity" i="1" j="1" axi="r * re_q * vval" planar="re_q * vval"/>
+
     <module:weakforms_surface>
       <module:weakform_surface analysistype="steadystate" default="richards_pressure_head">
         <module:boundary equation="h = h_0" id="richards_pressure_head" name="Pressure head">
           <module:quantity dependence="space" id="richards_pressure_head"/>
-          <module:essential_form axi_linear="re_h" axi_newton="re_h" i="1" id="form" planar_linear="re_h" planar_newton="re_h"/>
+
+          <module:linearity_option type="newton">
+            <module:essential_form id="essential" i="1" axi="re_h" planar="re_h"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="picard">
+            <module:essential_form id="essential" i="1" axi="re_h" planar="re_h"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="q = - K \frac{\partial h}{\partial n_0} = q_0 " id="richards_darcy_velocity" name="Darcy velocity">
           <module:quantity id="richards_darcy_velocity"/>
-          <module:vector_form axi_linear="r * re_q * vval" axi_newton="r * (- re_q) * vval" i="1" id="form" j="1" planar_linear="re_q * vval" planar_newton="- re_q * vval"/>
+
+          <module:linearity_option type="newton">
+            <module:vector_form id="darcy_velocity" coefficient="-1"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="picard">
+            <module:vector_form id="darcy_velocity"/>
+          </module:linearity_option>
         </module:boundary>
       </module:weakform_surface>
+
       <module:weakform_surface analysistype="transient" default="richards_pressure_head">
         <module:boundary equation="h = h_0" id="richards_pressure_head" name="Pressure head">
           <module:quantity dependence="space" id="richards_pressure_head"/>
-          <module:essential_form axi_linear="re_h" axi_newton="re_h" i="1" id="form" planar_linear="re_h" planar_newton="re_h"/>
+
+          <module:linearity_option type="newton">
+            <module:essential_form id="essential" i="1" axi="re_h" planar="re_h"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="picard">
+            <module:essential_form id="essential" i="1" axi="re_h" planar="re_h"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="q = - K \frac{\partial h}{\partial n_0} = q_0 " id="richards_darcy_velocity" name="Darcy velocity">
           <module:quantity id="richards_darcy_velocity"/>
-          <module:vector_form axi_linear="r * re_q * vval" axi_newton="r * (- re_q) * vval" i="1" id="form" j="1" planar_linear="re_q * vval" planar_newton="- re_q * vval"/>
+
+          <module:linearity_option type="newton">
+            <module:vector_form id="darcy_velocity" coefficient="-1"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="picard">
+            <module:vector_form id="darcy_velocity"/>
+          </module:linearity_option>
         </module:boundary>
       </module:weakform_surface>
     </module:weakforms_surface>

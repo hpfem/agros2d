@@ -88,32 +88,55 @@
     <module:quantity id="rf_te_surface_current_imag" shortname="rf_Ji"/>
     <module:quantity id="rf_te_impedance" shortname="rf_Z0"/>
     <module:quantity id="rf_te_electric_field_time_derivative" shortname="rf_dEr"/>
+
+    <module:essential_form id="essential_1" i="1" axi="rf_Er" planar="rf_Er"/>
+    <module:essential_form id="essential_2" i="2" axi="rf_Ei" planar="rf_Ei"/>
+    <module:vector_form id="magnetic_1" i="1" j="1" axi="r * 2 * PI * f * rf_Hi * vval" planar="2 * PI * f * rf_Hi * vval"/>
+    <module:vector_form id="magnetic_2" i="2" j="2" axi="- r * 2 * PI * f * rf_Hr * vval" planar="- 2 * PI * f * rf_Hr * vval"/>
+    <module:vector_form id="current_1" i="1" j="1" axi="- 2 * PI * f * rf_Ji * r * vval" planar="- 2 * PI * f * rf_Ji * vval"/>
+    <module:vector_form id="current_2" i="2" j="2" axi="2 * PI * f * rf_Jr * r * vval" planar="2 * PI * f * rf_Jr * vval"/>
+    <module:matrix_form id="impedance_1_2" i="1" j="2" axi="r * 2 * PI * f / rf_Z0 * uval * vval"  planar="2 * PI * f / rf_Z0 * uval * vval"/>
+    <module:matrix_form id="impedance_2_1" i="2" j="1" axi="- r * 2 * PI * f / rf_Z0 * uval * vval" planar="- 2 * PI * f / rf_Z0 * uval * vval"/>
+
     <module:weakforms_surface>
       <module:weakform_surface analysistype="harmonic" default="rf_te_electric_field">
         <module:boundary equation="\vecfaz{E} = \vecfaz{E}_0" id="rf_te_electric_field" name="Electric field">
           <module:quantity dependence="space" id="rf_te_electric_field_real"/>
           <module:quantity dependence="space" id="rf_te_electric_field_imag"/>
-          <module:essential_form axi_linear="rf_Er" axi_newton="rf_Er" i="1" id="form" planar_linear="rf_Er" planar_newton="rf_Er"/>
-          <module:essential_form axi_linear="rf_Ei" axi_newton="rf_Ei" i="2" id="form" planar_linear="rf_Ei" planar_newton="rf_Ei"/>
+
+          <module:linearity_option type="linear">
+            <module:essential_form id="essential_1"/>
+            <module:essential_form id="essential_2"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="n \times H = n \times H_0" id="rf_te_magnetic_field" name="Magnetic field">
           <module:quantity id="rf_te_magnetic_field_real"/>
           <module:quantity id="rf_te_magnetic_field_imag"/>
-          <module:vector_form axi_linear="r * 2 * PI * f * rf_Hi * vval" axi_newton="r * 2 * PI * f * rf_Hi * vval" i="1" id="form" j="1" planar_linear="2 * PI * f * rf_Hi * vval" planar_newton="2 * PI * f * rf_Hi * vval"/>
-          <module:vector_form axi_linear="- r * 2 * PI * f * rf_Hr * vval" axi_newton="- r * 2 * PI * f * rf_Hr * vval" i="2" id="form" j="2" planar_linear="- 2 * PI * f * rf_Hr * vval" planar_newton="- 2 * PI * f * rf_Hr * vval"/>
+
+          <module:linearity_option type="linear">
+            <module:vector_form id="magnetic_1"/>
+            <module:vector_form id="magnetic_2"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="\faz{J}_{t} = - \frac{1}{\omega \mu} \frac{\partial \vecfaz{E}}{\partial n_0} = \faz{J}_0" id="rf_te_surface_current" name="Surface current">
           <module:quantity id="rf_te_surface_current_real"/>
           <module:quantity id="rf_te_surface_current_imag"/>
-          <module:vector_form axi_linear="- 2 * PI * f * rf_Ji * r * vval" axi_newton="- 2 * PI * f * rf_Ji * r * vval" i="1" id="form" j="1" planar_linear="- 2 * PI * f * rf_Ji * vval" planar_newton="- 2 * PI * f * rf_Ji * vval"/>
-          <module:vector_form axi_linear="2 * PI * f * rf_Jr * r * vval" axi_newton="2 * PI * f * rf_Jr * r * vval" i="2" id="form" j="2" planar_linear="2 * PI * f * rf_Jr * vval" planar_newton="2 * PI * f * rf_Jr * vval"/>
+
+          <module:linearity_option type="linear">
+            <module:vector_form id="current_1"/>
+            <module:vector_form id="current_2"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="- \frac{1}{\omega \mu} \frac{\partial \vecfaz{E}}{\partial n_0} = \sqrt{\frac{\varepsilon - \mj \sigma / \omega}{\mu}} \vecfaz{E}" id="rf_te_impedance" name="Impedance boundary condition">
           <module:quantity id="rf_te_impedance"/>
-          <module:matrix_form axi_linear="r * 2 * PI * f / rf_Z0 * uval * vval" axi_newton="-r * 2 * PI * f / rf_Z0 * uval * vval" i="1" id="form" j="2" planar_linear="2 * PI * f / rf_Z0 * uval * vval" planar_newton="- 2 * PI * f / rf_Z0 * uval * vval"/>
-          <module:matrix_form axi_linear="- r * 2 * PI * f / rf_Z0 * uval * vval" axi_newton="r * 2 * PI * f / rf_Z0 * uval * vval" i="2" id="form" j="1" planar_linear="- 2 * PI * f / rf_Z0 * uval * vval" planar_newton="2 * PI * f / rf_Z0 * uval * vval"/>
-          <module:vector_form axi_linear="0" axi_newton="r * 2 * PI * f / rf_Z0 * upval * vval" i="1" id="form" j="1" planar_linear="0" planar_newton="2 * PI * f / rf_Z0 * upval * vval"/>
-          <module:vector_form axi_linear="0" axi_newton="r * 2 * PI * f / rf_Z0 * upval * vval" i="2" id="form" j="2" planar_linear="0" planar_newton="2 * PI * f / rf_Z0 * upval * vval"/>
+
+          <module:linearity_option type="linear">
+            <module:matrix_form id="impedance_1_2"/>
+            <module:matrix_form id="impedance_2_1"/>
+          </module:linearity_option>
         </module:boundary>
       </module:weakform_surface>
       <!--

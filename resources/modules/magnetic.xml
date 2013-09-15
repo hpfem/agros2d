@@ -56,7 +56,8 @@
     <module:matrix_form id="steady_velocity" i="1" j="1" planar="- ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)" axi="- ma_gamma * uval * ma_vy * vdz"/>
     <module:matrix_form id="steady_jac_laplace" i="1" j="1" planar="tern((updx * updx + updy * updy) > 0, (- dma_mur / (MU0 * ma_mur * ma_mur) * (updx * udx + updy * udy) / sqrt(updx * updx + updy * updy) * (updx * vdx + updy * vdy)), 0.0)" axi="tern(((updr + upval / r) * (updr + upval / r) + updz * updz) > 0, (- dma_mur / (MU0 * ma_mur * ma_mur) * ((updr + upval / r) * (udr + uval / r) + updz * udz) / ((updr + upval / r)^2 + updz * updz)^0.5 * (updr * vdr + updz * vdz + upval * vdr / r)), 0.0)"/>
 
-    <module:vector_form  id="steady_rhs" i="1" j="1" planar="ma_Jer * vval + mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdx + cos((ma_Bra/180*PI)) * vdy)" axi="ma_Jer * vval - mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdr + cos((ma_Bra/180*PI)) * vdz)"/>
+    <module:vector_form  id="steady_rhs_remanence" i="1" j="1" planar="mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdx + cos((ma_Bra/180*PI)) * vdy)" axi="- mu_Brm / (ma_mur * MU0) * (- sin((ma_Bra/180*PI)) * vdr + cos((ma_Bra/180*PI)) * vdz)"/>
+    <module:vector_form  id="steady_rhs_current" i="1" j="1" planar="((1-ma_IPrescribed) * ma_Jer + ma_IPrescribed * ma_Itr / area) * vval " axi="((1-ma_IPrescribed) * ma_Jer + ma_IPrescribed * ma_Itr / area) * vval"/>
 
     <module:matrix_form id="transient_mat_1_2" i="1" j="2" planar="ma_gamma * uval * vval" axi="ma_gamma * uval * vval" />
     <module:matrix_form id="transient_mat_2_2" i="2" j="2" planar="- uval * vval" axi="- uval * vval" symmetric="1"/>
@@ -103,18 +104,22 @@
         <module:quantity id="magnetic_velocity_y"/>
         <module:quantity id="magnetic_velocity_angular"/>
         <module:quantity id="magnetic_current_density_external_real"/>
+        <module:quantity id="magnetic_total_current_prescribed"/>
+        <module:quantity id="magnetic_total_current_real"/>
 
         <module:linearity_option type="linear">
           <module:matrix_form id="steady_laplace"/>
           <module:matrix_form id="steady_velocity"/>
-          <module:vector_form id="steady_rhs"/>
+          <module:vector_form  id="steady_rhs_remanence"/>
+          <module:vector_form  id="steady_rhs_current"/>
         </module:linearity_option>
 
         <module:linearity_option type="newton">
           <module:matrix_form id="steady_laplace"/>
           <module:matrix_form id="steady_velocity"/>
           <module:matrix_form id="steady_jac_laplace"/>
-          <module:vector_form id="steady_rhs" coefficient="-1"/>
+          <module:vector_form id="steady_rhs_remanence" coefficient="-1"/>
+          <module:vector_form id="steady_rhs_current" coefficient="-1"/>
           <module:vector_form id="steady_laplace" variant="residual"/>
           <module:vector_form id="steady_velocity" variant="residual"/>
         </module:linearity_option>
@@ -129,6 +134,8 @@
         <module:quantity id="magnetic_velocity_y"/>
         <module:quantity id="magnetic_velocity_angular"/>
         <module:quantity dependence="time" id="magnetic_current_density_external_real"/>
+        <module:quantity id="magnetic_total_current_prescribed"/>
+        <module:quantity dependence="time" id="magnetic_total_current_real"/>
 
         <module:linearity_option type="linear">
           <module:matrix_form id="steady_laplace"/>
@@ -136,7 +143,8 @@
           <module:matrix_form id="transient_mat_1_2"/>
           <module:matrix_form id="transient_mat_2_2"/>
           <module:matrix_form id="transient_mat_2_1"/>
-          <module:vector_form id="steady_rhs"/>
+          <module:vector_form  id="steady_rhs_remanence"/>
+          <module:vector_form  id="steady_rhs_current"/>
           <module:vector_form id="transient_vec_2_1"/>
         </module:linearity_option>
 
@@ -177,7 +185,6 @@
           <module:vector_form id="harmonic_vec_current_4_4"/>
         </module:linearity_option>
 
-<!--      zrejme pridat i rezidualy current veci
           <module:linearity_option type="newton">
           <module:matrix_form id="harmonic_laplace_1_1"/>
           <module:matrix_form id="harmonic_jac_laplace_1_1"/>
@@ -207,7 +214,14 @@
           <module:vector_form id="harmonic_velocity_2_2" variant="residual"/>
           <module:vector_form id="harmonic_gamma_1_2" variant="residual"/>
           <module:vector_form id="harmonic_gamma_2_1" variant="residual"/>
-        </module:linearity_option>-->
+
+<!--          <module:matrix_form id="harmonic_current_1_4" variant="residual"/>
+          <module:matrix_form id="harmonic_current_2_3" variant="residual"/>
+          <module:matrix_form id="harmonic_current_3_1" variant="residual"/>
+          <module:matrix_form id="harmonic_current_4_2" variant="residual"/>
+          <module:matrix_form id="harmonic_current_3_3" variant="residual"/>
+          <module:matrix_form id="harmonic_current_4_4" variant="residual"/>-->
+        </module:linearity_option>
 
       </module:weakform_volume>
     </module:weakforms_volume>
@@ -218,39 +232,96 @@
     <module:quantity id="magnetic_potential_imag" shortname="Ai"/>
     <module:quantity id="magnetic_surface_current_real" shortname="Jr"/>
     <module:quantity id="magnetic_surface_current_imag" shortname="Ji"/>
+
+    <module:essential_form id="steady_essential" i="1" axi="Ar" planar="Ar"/>
+    <module:vector_form id="steady_current" i="1" j="1" axi="-Jr * vval" planar="-Jr * vval"/>
+    <module:essential_form id="harmonic_essential_1" i="1" axi="Ar" planar="Ar"/>
+    <module:essential_form id="harmonic_essential_2" i="2" axi="Ai" planar="Ai"/>
+    <module:vector_form id="harmonic_current_1" i="1" j="1" axi="-Jr * vval" planar="-Jr * vval"/>
+    <module:vector_form id="harmonic_current_2" i="2" j="2" axi="-Ji * vval" planar="-Ji * vval"/>
+
     <module:weakforms_surface>
       <module:weakform_surface analysistype="steadystate" default="magnetic_potential">
         <module:boundary equation="A = A_0" id="magnetic_potential" name="Magnetic potential">
           <module:quantity dependence="space" id="magnetic_potential_real"/>
-          <module:essential_form axi_linear="Ar" axi_newton="Ar" i="1" id="form" planar_linear="Ar" planar_newton="Ar"/>
+
+          <module:linearity_option type="linear">
+            <module:essential_form id="steady_essential"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:essential_form id="steady_essential"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="K = - \frac{1}{\mu} \frac{\partial A}{\partial n_0} = K_0" id="magnetic_surface_current" name="Surface current">
           <module:quantity id="magnetic_surface_current_real"/>
-          <module:vector_form axi_linear="-Jr * vval" axi_newton="-Jr * vval" i="1" id="form" j="1" planar_linear="-Jr * vval" planar_newton="-Jr * vval"/>
+
+          <module:linearity_option type="linear">
+            <module:vector_form id="steady_current"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:vector_form id="steady_current" coefficient="-1"/>
+          </module:linearity_option>
         </module:boundary>
       </module:weakform_surface>
+
       <module:weakform_surface analysistype="transient" default="magnetic_potential">
         <module:boundary equation="A = A_0" id="magnetic_potential" name="Magnetic potential">
           <module:quantity dependence="space" id="magnetic_potential_real"/>
-          <module:essential_form axi_linear="Ar" axi_newton="Ar" i="1" id="form" planar_linear="Ar" planar_newton="Ar"/>
+
+          <module:linearity_option type="linear">
+            <module:essential_form id="steady_essential"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:essential_form id="steady_essential"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="K = - \frac{1}{\mu} \frac{\partial A}{\partial n_0} = K_0" id="magnetic_surface_current" name="Surface current">
           <module:quantity id="magnetic_surface_current_real"/>
-          <module:vector_form axi_linear="-Jr * vval" axi_newton="-Jr * vval" i="1" id="form" j="1" planar_linear="-Jr * vval" planar_newton="-Jr * vval"/>
+
+          <module:linearity_option type="linear">
+            <module:vector_form id="steady_current"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:vector_form id="steady_current" coefficient="-1"/>
+          </module:linearity_option>
         </module:boundary>
       </module:weakform_surface>
+
       <module:weakform_surface analysistype="harmonic" default="magnetic_potential">
         <module:boundary equation="\vecfaz{A} = \vecfaz{A}_0" id="magnetic_potential" name="Magnetic potential">
           <module:quantity dependence="space" id="magnetic_potential_real"/>
           <module:quantity dependence="space" id="magnetic_potential_imag"/>
-          <module:essential_form axi_linear="Ar" axi_newton="Ar" i="1" id="form" planar_linear="Ar" planar_newton="Ar"/>
-          <module:essential_form axi_linear="Ai" axi_newton="Ai" i="2" id="form" planar_linear="Ai" planar_newton="Ai"/>
+
+          <module:linearity_option type="linear">
+            <module:essential_form id="harmonic_essential_1"/>
+            <module:essential_form id="harmonic_essential_2"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+          <module:essential_form id="harmonic_essential_1"/>
+          <module:essential_form id="harmonic_essential_2"/>
+          </module:linearity_option>
         </module:boundary>
+
         <module:boundary equation="\faz{K} = - \frac{1}{\mu} \frac{\partial \vecfaz{A}}{\partial n_0} = \faz{K}_0" id="magnetic_surface_current" name="Surface current">
           <module:quantity id="magnetic_surface_current_real"/>
           <module:quantity id="magnetic_surface_current_imag"/>
-          <module:vector_form axi_linear="-Jr * vval" axi_newton="-Jr * vval" i="1" id="form" j="1" planar_linear="-Jr * vval" planar_newton="-Jr * vval"/>
-          <module:vector_form axi_linear="-Ji * vval" axi_newton="-Ji * vval" i="2" id="form" j="2" planar_linear="-Ji * vval" planar_newton="-Ji * vval"/>
+
+          <module:linearity_option type="linear">
+            <module:vector_form id="harmonic_current_1"/>
+            <module:vector_form id="harmonic_current_2"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="newton">
+            <module:vector_form id="harmonic_current_1" coefficient="-1"/>
+            <module:vector_form id="harmonic_current_2" coefficient="-1"/>
+          </module:linearity_option>
         </module:boundary>
       </module:weakform_surface>
     </module:weakforms_surface>
@@ -286,11 +357,11 @@
         <module:quantity id="magnetic_conductivity" name="Electrical conductivity" shortname="gamma" shortname_html="&lt;i>&amp;gamma;&lt;/i>" unit="S/m" unit_html="S.m&lt;sup>-1&lt;/sup>" unit_latex="S \cdot m^{-1}"/>
       </module:group>
       <module:group name="Source">
-        <module:quantity id="magnetic_current_density_external_real" name="Current dens. - ext. - real" is_source="1" shortname="Jer" shortname_html="&lt;i>J&lt;/i>&lt;sub>r,ext&lt;/sub>" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
-        <module:quantity id="magnetic_current_density_external_imag" name="Current dens. - ext. - imag" is_source="1" shortname="Jei" shortname_html="&lt;i>J&lt;/i>&lt;sub>i,ext&lt;/sub>" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
+        <module:quantity id="magnetic_current_density_external_real" name="Current dens. - ext. - real" is_source="1" only_if_not="magnetic_total_current_prescribed" shortname="Jer" shortname_html="&lt;i>J&lt;/i>&lt;sub>r,ext&lt;/sub>" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
+        <module:quantity id="magnetic_current_density_external_imag" name="Current dens. - ext. - imag" is_source="1" only_if_not="magnetic_total_current_prescribed" shortname="Jei" shortname_html="&lt;i>J&lt;/i>&lt;sub>i,ext&lt;/sub>" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
         <module:quantity id="magnetic_total_current_prescribed" name="Total current prescribed" is_bool="1" shortname="IPrescribed" shortname_html="IPrescribed" unit="-" unit_html="-" unit_latex="-"/>
-        <module:quantity id="magnetic_total_current_real" name="Avg. total current density - real" is_source="1" only_if="magnetic_total_current_prescribed" shortname="Itr" shortname_html="Itr" unit="A" unit_html="A" unit_latex="A"/>
-        <module:quantity id="magnetic_total_current_imag" name="Avg. total current density - imag" is_source="1" only_if="magnetic_total_current_prescribed" shortname="Iti" shortname_html="Iti" unit="A" unit_html="A" unit_latex="A"/>
+        <module:quantity id="magnetic_total_current_real" name="Total current - real" is_source="1" only_if="magnetic_total_current_prescribed" shortname="Itr" shortname_html="Itr" unit="A" unit_html="A" unit_latex="A"/>
+        <module:quantity id="magnetic_total_current_imag" name="Total current - imag" is_source="1" only_if="magnetic_total_current_prescribed" shortname="Iti" shortname_html="Iti" unit="A" unit_html="A" unit_latex="A"/>
       </module:group>
       <module:group name="Permanent magnet">
         <module:quantity id="magnetic_remanence" name="Remanent flux density" shortname="Brm" shortname_html="&lt;i>B&lt;/i>&lt;sub>rm&lt;/sub>" unit="T" unit_html="T"/>

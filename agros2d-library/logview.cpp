@@ -220,7 +220,7 @@ void LogWidget::refreshMemory(int usage)
 
 // *******************************************************************************************************
 
-LogView::LogView(QWidget *parent) : QDockWidget(tr("Applicaton log"), parent)
+LogView::LogView(QWidget *parent) : QDockWidget(tr("Application log"), parent)
 {
     setObjectName("LogView");
 

@@ -17,7 +17,10 @@ SpecialFunction<Scalar>::~SpecialFunction()
 template <typename Scalar>
 Scalar SpecialFunction<Scalar>::operator ()(double h) const
 {
+    assert(m_type == SpecialFunctionType_Function1D);
+
     double value;
+
     if((h > m_bound_hi) && m_extrapolation_hi_present)
         value = m_extrapolation_hi;
     else if((h < m_bound_low) && m_extrapolation_low_present)
@@ -32,9 +35,21 @@ Scalar SpecialFunction<Scalar>::operator ()(double h) const
         else
             value = this->value(h);
     }
-
     return value;
 }
+
+template <typename Scalar>
+SpecialFunction<Scalar>::operator Scalar() const
+{
+    assert(m_type == SpecialFunctionType_Constant);
+
+    if(m_useInterpolation)
+        return m_constantValue;
+    else
+        return value(0);
+
+}
+
 
 template <typename Scalar>
 void SpecialFunction<Scalar>::setBounds(double bound_low, double bound_hi, bool extrapolate_low, bool extrapolate_hi)
@@ -56,21 +71,27 @@ void SpecialFunction<Scalar>::createInterpolation()
     mutex.lock();
     {
         // when more variants will be implemented, this will not be true
-        assert(m_interpolation.isNull());
+        assert(m_interpolation.isNull());        
         assert(!m_interpolationCreated);
-        Hermes::vector<double> points;
-        Hermes::vector<double> values;
 
-        double step = (m_bound_hi - m_bound_low) / (m_count - 1);
-        for (int i = 0; i < m_count; i++)
+        if(m_type == SpecialFunctionType_Constant)
+            m_constantValue = value(0);
+        else
         {
-            double h = m_bound_low + i * step;
-            points.push_back(h);
-            values.push_back(value(h));
-        }
+            Hermes::vector<double> points;
+            Hermes::vector<double> values;
 
-        // piece = new Hermes::Hermes2D::CubicSpline(points, values, 0.0, 0.0, true, true, false, false);
-        m_interpolation = QSharedPointer<PiecewiseLinear>(new PiecewiseLinear(points, values));
+            double step = (m_bound_hi - m_bound_low) / (m_count - 1);
+            for (int i = 0; i < m_count; i++)
+            {
+                double h = m_bound_low + i * step;
+                points.push_back(h);
+                values.push_back(value(h));
+            }
+
+            // piece = new Hermes::Hermes2D::CubicSpline(points, values, 0.0, 0.0, true, true, false, false);
+            m_interpolation = QSharedPointer<PiecewiseLinear>(new PiecewiseLinear(points, values));
+        }
         m_interpolationCreated = true;
     }
     mutex.unlock();

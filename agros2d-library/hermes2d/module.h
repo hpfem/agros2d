@@ -94,6 +94,7 @@ namespace XMLModule
 class module;
 class quantity;
 class boundary;
+class surface;
 class force;
 class localvariable;
 class gui;
@@ -158,14 +159,6 @@ public:
     void registerForms();
     void updateExtField();
     inline BDF2Table* bdf2Table() { return m_bdf2Table; }
-
-    // weak form templates are common for all analysis as building blocks for final forms; loaded from xml file
-    static QList<FormInfo> wfMatrixVolumeTemplates(XMLModule::module* module);
-    static QList<FormInfo> wfVectorVolumeTemplates(XMLModule::module* module);
-
-    // specifies which weak form templates and in which variant should be used for active analysis and linearity type; loaded from xml files
-    static QList<FormInfo> wfMatrixVolumeElements(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
-    static QList<FormInfo> wfVectorVolumeElements(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
 
     // prepares individual forms for given analysis and linearity type, as specified in Elements, using information form Templates
     static QList<FormInfo> wfMatrixVolumeSeparated(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType);
@@ -337,11 +330,11 @@ private:
 // material property
 struct MaterialTypeVariable
 {
-    MaterialTypeVariable() : m_id(""), m_shortname(""), m_defaultValue(0),  m_expressionNonlinear(""), m_isTimeDep(false), m_isBool(false), m_onlyIf(QString()){}
+    MaterialTypeVariable() : m_id(""), m_shortname(""), m_defaultValue(0),  m_expressionNonlinear(""), m_isTimeDep(false), m_isBool(false), m_onlyIf(QString()), m_onlyIfNot(QString()){}
     MaterialTypeVariable(const QString &id, const QString &shortname,
-                         const QString &expressionNonlinear = "", bool isTimedep = false, bool isBool = false, QString onlyIf = QString(), bool isSource = false)
+                         const QString &expressionNonlinear = "", bool isTimedep = false, bool isBool = false, QString onlyIf = QString(), QString onlyIfNot = QString(), bool isSource = false)
         : m_id(id), m_shortname(shortname),
-          m_expressionNonlinear(expressionNonlinear), m_isTimeDep(isTimedep), m_isBool(isBool), m_onlyIf(onlyIf), m_isSource(isSource) {}
+          m_expressionNonlinear(expressionNonlinear), m_isTimeDep(isTimedep), m_isBool(isBool), m_onlyIf(onlyIf), m_onlyIfNot(onlyIfNot), m_isSource(isSource) {}
     MaterialTypeVariable(XMLModule::quantity quant);
 
     // id
@@ -357,6 +350,8 @@ struct MaterialTypeVariable
     inline bool isBool() const { return m_isBool; }
     // enable only if checkbox with id == m_onlyIf is checked
     inline QString onlyIf() const {return m_onlyIf; }
+    // enable only if checkbox with id == m_onlyIf is NOT checked
+    inline QString onlyIfNot() const {return m_onlyIfNot; }
     // field source
     inline bool isSource() const { return m_isSource; }
 
@@ -375,6 +370,8 @@ private:
     bool m_isBool;
     // only if
     QString m_onlyIf;
+    // only if not
+    QString m_onlyIfNot;
     // source
     bool m_isSource;
 };
@@ -431,11 +428,14 @@ struct BoundaryType
     inline QList<BoundaryTypeVariable> variables() const { return m_variables; }
 
     // weakform
-    inline QList<FormInfo> wfMatrixSurface() const { return m_wfMatrixSurface; }
-    inline QList<FormInfo> wfVectorSurface() const { return m_wfVectorSurface; }
+    static QList<FormInfo> wfMatrixSurface(XMLModule::surface *surface, XMLModule::boundary *boundary, AnalysisType analysisType, LinearityType linearityType);
+    static QList<FormInfo> wfVectorSurface(XMLModule::surface *surface, XMLModule::boundary *boundary, AnalysisType analysisType, LinearityType linearityType);
+    inline QList<FormInfo> wfMatrixSurface() const {return m_wfMatrix; }
+    inline QList<FormInfo> wfVectorSurface() const {return m_wfVector; }
 
     // essential
-    inline QList<FormInfo> essential() const { return m_essential; }
+    static QList<FormInfo> essential(XMLModule::surface *surface, XMLModule::boundary *boundary, AnalysisType analysisType, LinearityType linearityType);
+    inline QList<FormInfo> essential() const {return m_essential; }
 
     // latex equation
     inline QString equation() { return m_equation; }
@@ -446,15 +446,12 @@ private:
     // name
     QString m_name;
 
+    QList<FormInfo> m_wfMatrix;
+    QList<FormInfo> m_wfVector;
+    QList<FormInfo> m_essential;
+
     // variables
     QList<BoundaryTypeVariable> m_variables;
-
-    // weakform
-    QList<FormInfo> m_wfMatrixSurface;
-    QList<FormInfo> m_wfVectorSurface;
-
-    // essential
-    QList<FormInfo> m_essential;
 
     // latex equation
     QString m_equation;
