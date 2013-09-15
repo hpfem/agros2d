@@ -91,7 +91,8 @@ def run_project(project, file, run_script, server):
     if (run_script):
         args.append('-r')
 
-    args.append(file)
+    if (file != ''):
+        args.append(file)
 
     call(args, env=env)
 
@@ -138,7 +139,7 @@ if __name__ == "__main__":
     run = subparsers.add_parser('run', help='run project')
     run.add_argument('-p', '--project', nargs='?', default='agros2d', type=str, required=False,
                      help='project (valid parameters are agros2d, agros2d_pythonalb, agros2d_generator, agros2d_solver)')
-    run.add_argument('-f', '--file', nargs='?', default='', type=str, required=False,
+    run.add_argument('-f', '--file', nargs='?', default=str(), type=str, required=False,
                      help='open Agros2D data file or Python script')
     run.add_argument('-r', '--run', action='store_true', required=False,
                      help='run Python script defined as file')
