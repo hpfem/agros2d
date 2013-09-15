@@ -185,7 +185,6 @@
           <module:vector_form id="harmonic_vec_current_4_4"/>
         </module:linearity_option>
 
-<!--      zrejme pridat i rezidualy current veci
           <module:linearity_option type="newton">
           <module:matrix_form id="harmonic_laplace_1_1"/>
           <module:matrix_form id="harmonic_jac_laplace_1_1"/>
@@ -215,7 +214,14 @@
           <module:vector_form id="harmonic_velocity_2_2" variant="residual"/>
           <module:vector_form id="harmonic_gamma_1_2" variant="residual"/>
           <module:vector_form id="harmonic_gamma_2_1" variant="residual"/>
-        </module:linearity_option>-->
+
+<!--          <module:matrix_form id="harmonic_current_1_4" variant="residual"/>
+          <module:matrix_form id="harmonic_current_2_3" variant="residual"/>
+          <module:matrix_form id="harmonic_current_3_1" variant="residual"/>
+          <module:matrix_form id="harmonic_current_4_2" variant="residual"/>
+          <module:matrix_form id="harmonic_current_3_3" variant="residual"/>
+          <module:matrix_form id="harmonic_current_4_4" variant="residual"/>-->
+        </module:linearity_option>
 
       </module:weakform_volume>
     </module:weakforms_volume>
