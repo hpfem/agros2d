@@ -78,10 +78,12 @@ def build_project(cores):
     call(['make', '-C', PLUGINS_DIR, '-j', str(cores)])
 
 def run_project(project, server):
+    env = dict(os.environ)
+    env['LD_LIBRARY_PATH'] = 'libs'
     if (not server):
-        call(['LD_LIBRARY_PATH=libs', './{0}'.format(project)])
+        call(['./{0}'.format(project)], env=env)
     else:
-        call(['LD_LIBRARY_PATH=libs', 'xvfb-run', '--auto-servernum', './{0}'.format(project)])
+        call(['xvfb-run', '--auto-servernum', './{0}'.format(project)], env=env)
 
 def source_package(version):
     call(['git', 'clean', '-fdx'])
