@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/fmach/Projekty/Agros2D/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
+
+  <geometry>
+    <nodes>
+      <node id="0" x="0.01" y="-0.005"/>
+      <node id="1" x="0.03" y="-0.005"/>
+      <node id="2" x="0.03" y="0.005"/>
+      <node id="3" x="0.01" y="0.005"/>
+      <node id="4" x="0.0422955" y="-0.006507"/>
+      <node id="5" x="0.0325" y="-0.005"/>
+      <node id="6" x="0.0325" y="0.005"/>
+      <node id="7" x="0.0422955" y="0.006507"/>
+      <node id="8" x="0.0300985" y="-0.0132412"/>
+      <node id="9" x="0.0300985" y="0.0132412"/>
+      <node id="10" x="0.0391702" y="-0.0172322"/>
+      <node id="11" x="0.0391702" y="0.0172322"/>
+      <node id="12" x="0.005" y="0.01"/>
+      <node id="13" x="0.005" y="0.03"/>
+      <node id="14" x="-0.005" y="0.03"/>
+      <node id="15" x="-0.005" y="0.01"/>
+      <node id="16" x="-0.01" y="0.005"/>
+      <node id="17" x="-0.03" y="0.005"/>
+      <node id="18" x="-0.03" y="-0.005"/>
+      <node id="19" x="-0.01" y="-0.005"/>
+      <node id="20" x="-0.005" y="-0.01"/>
+      <node id="21" x="-0.005" y="-0.03"/>
+      <node id="22" x="0.005" y="-0.03"/>
+      <node id="23" x="0.005" y="-0.01"/>
+      <node id="24" x="0.026783" y="0.0333755"/>
+      <node id="25" x="0.0205801" y="0.0256458"/>
+      <node id="26" x="0.0119199" y="0.0306458"/>
+      <node id="27" x="0.0155125" y="0.0398825"/>
+      <node id="28" x="0.0265165" y="0.0194454"/>
+      <node id="29" x="0.00358199" y="0.0326867"/>
+      <node id="30" x="0.0345086" y="0.0253063"/>
+      <node id="31" x="0.00466161" y="0.0425384"/>
+      <node id="32" x="-0.0155125" y="0.0398825"/>
+      <node id="33" x="-0.0119199" y="0.0306458"/>
+      <node id="34" x="-0.0205801" y="0.0256458"/>
+      <node id="35" x="-0.026783" y="0.0333755"/>
+      <node id="36" x="-0.00358199" y="0.0326867"/>
+      <node id="37" x="-0.0265165" y="0.0194454"/>
+      <node id="38" x="-0.00466161" y="0.0425384"/>
+      <node id="39" x="-0.0345086" y="0.0253063"/>
+      <node id="40" x="-0.0422955" y="0.006507"/>
+      <node id="41" x="-0.0325" y="0.005"/>
+      <node id="42" x="-0.0325" y="-0.005"/>
+      <node id="43" x="-0.0422955" y="-0.006507"/>
+      <node id="44" x="-0.0300985" y="0.0132412"/>
+      <node id="45" x="-0.0300985" y="-0.0132412"/>
+      <node id="46" x="-0.0391702" y="0.0172322"/>
+      <node id="47" x="-0.0391702" y="-0.0172322"/>
+      <node id="48" x="-0.026783" y="-0.0333755"/>
+      <node id="49" x="-0.0205801" y="-0.0256458"/>
+      <node id="50" x="-0.0119199" y="-0.0306458"/>
+      <node id="51" x="-0.0155125" y="-0.0398825"/>
+      <node id="52" x="-0.0265165" y="-0.0194454"/>
+      <node id="53" x="-0.00358199" y="-0.0326867"/>
+      <node id="54" x="-0.0345086" y="-0.0253063"/>
+      <node id="55" x="-0.00466161" y="-0.0425384"/>
+      <node id="56" x="0.0155125" y="-0.0398825"/>
+      <node id="57" x="0.0119199" y="-0.0306458"/>
+      <node id="58" x="0.0205801" y="-0.0256458"/>
+      <node id="59" x="0.026783" y="-0.0333755"/>
+      <node id="60" x="0.00358199" y="-0.0326867"/>
+      <node id="61" x="0.0265165" y="-0.0194454"/>
+      <node id="62" x="0.00466161" y="-0.0425384"/>
+      <node id="63" x="0.0345086" y="-0.0253063"/>
+      <node id="64" x="0.055" y="0"/>
+      <node id="65" x="3.36778e-18" y="0.055"/>
+      <node id="66" x="-0.055" y="6.73556e-18"/>
+      <node id="67" x="-1.01033e-17" y="-0.055"/>
+    </nodes>
+    <edges>
+      <edge angle="0" end="5" id="0" start="4"/>
+      <edge angle="17.4832" end="6" id="1" start="5"/>
+      <edge angle="0" end="7" id="2" start="6"/>
+      <edge angle="15.9799" end="5" id="3" start="8"/>
+      <edge angle="15.9799" end="9" id="4" start="6"/>
+      <edge angle="15.9799" end="4" id="5" start="10"/>
+      <edge angle="15.9799" end="11" id="6" start="7"/>
+      <edge angle="0" end="11" id="7" start="9"/>
+      <edge angle="0" end="10" id="8" start="8"/>
+      <edge angle="0" end="25" id="9" start="24"/>
+      <edge angle="17.4832" end="26" id="10" start="25"/>
+      <edge angle="0" end="27" id="11" start="26"/>
+      <edge angle="15.9799" end="25" id="12" start="28"/>
+      <edge angle="15.9799" end="29" id="13" start="26"/>
+      <edge angle="15.9799" end="24" id="14" start="30"/>
+      <edge angle="15.9799" end="31" id="15" start="27"/>
+      <edge angle="0" end="31" id="16" start="29"/>
+      <edge angle="0" end="30" id="17" start="28"/>
+      <edge angle="0" end="33" id="18" start="32"/>
+      <edge angle="17.4832" end="34" id="19" start="33"/>
+      <edge angle="0" end="35" id="20" start="34"/>
+      <edge angle="15.9799" end="33" id="21" start="36"/>
+      <edge angle="15.9799" end="37" id="22" start="34"/>
+      <edge angle="15.9799" end="32" id="23" start="38"/>
+      <edge angle="15.9799" end="39" id="24" start="35"/>
+      <edge angle="0" end="39" id="25" start="37"/>
+      <edge angle="0" end="38" id="26" start="36"/>
+      <edge angle="0" end="41" id="27" start="40"/>
+      <edge angle="17.4832" end="42" id="28" start="41"/>
+      <edge angle="0" end="43" id="29" start="42"/>
+      <edge angle="15.9799" end="41" id="30" start="44"/>
+      <edge angle="15.9799" end="45" id="31" start="42"/>
+      <edge angle="15.9799" end="40" id="32" start="46"/>
+      <edge angle="15.9799" end="47" id="33" start="43"/>
+      <edge angle="0" end="47" id="34" start="45"/>
+      <edge angle="0" end="46" id="35" start="44"/>
+      <edge angle="0" end="49" id="36" start="48"/>
+      <edge angle="17.4832" end="50" id="37" start="49"/>
+      <edge angle="0" end="51" id="38" start="50"/>
+      <edge angle="15.9799" end="49" id="39" start="52"/>
+      <edge angle="15.9799" end="53" id="40" start="50"/>
+      <edge angle="15.9799" end="48" id="41" start="54"/>
+      <edge angle="15.9799" end="55" id="42" start="51"/>
+      <edge angle="0" end="55" id="43" start="53"/>
+      <edge angle="0" end="54" id="44" start="52"/>
+      <edge angle="0" end="57" id="45" start="56"/>
+      <edge angle="17.4832" end="58" id="46" start="57"/>
+      <edge angle="0" end="59" id="47" start="58"/>
+      <edge angle="15.9799" end="57" id="48" start="60"/>
+      <edge angle="15.9799" end="61" id="49" start="58"/>
+      <edge angle="15.9799" end="56" id="50" start="62"/>
+      <edge angle="15.9799" end="63" id="51" start="59"/>
+      <edge angle="0" end="63" id="52" start="61"/>
+      <edge angle="0" end="62" id="53" start="60"/>
+      <edge angle="12.5076" end="30" id="54" start="11"/>
+      <edge angle="12.5076" end="38" id="55" start="31"/>
+      <edge angle="12.5076" end="46" id="56" start="39"/>
+      <edge angle="12.5076" end="54" id="57" start="47"/>
+      <edge angle="12.5076" end="62" id="58" start="55"/>
+      <edge angle="12.5076" end="10" id="59" start="63"/>
+      <edge angle="90" end="65" id="60" start="64"/>
+      <edge angle="90" end="66" id="61" start="65"/>
+      <edge angle="90" end="67" id="62" start="66"/>
+      <edge angle="90" end="64" id="63" start="67"/>
+      <edge angle="0" end="1" id="64" start="0"/>
+      <edge angle="18.9246" end="2" id="65" start="1"/>
+      <edge angle="0" end="3" id="66" start="2"/>
+      <edge angle="36.8698" end="12" id="67" start="3"/>
+      <edge angle="0" end="13" id="68" start="12"/>
+      <edge angle="18.9246" end="14" id="69" start="13"/>
+      <edge angle="0" end="15" id="70" start="14"/>
+      <edge angle="36.8698" end="16" id="71" start="15"/>
+      <edge angle="0" end="17" id="72" start="16"/>
+      <edge angle="18.9246" end="18" id="73" start="17"/>
+      <edge angle="0" end="19" id="74" start="18"/>
+      <edge angle="36.8698" end="20" id="75" start="19"/>
+      <edge angle="0" end="21" id="76" start="20"/>
+      <edge angle="18.9246" end="22" id="77" start="21"/>
+      <edge angle="0" end="23" id="78" start="22"/>
+      <edge angle="36.8698" end="0" id="79" start="23"/>
+    </edges>
+    <labels>
+      <label area="0" id="0" x="0" y="0"/>
+      <label area="0" id="1" x="0.05" y="0"/>
+      <label area="0" id="2" x="0.0363212" y="0.010565"/>
+      <label area="0" id="3" x="0.0360223" y="-0.0108051"/>
+      <label area="0" id="4" x="0.0272053" y="0.0261068"/>
+      <label area="0" id="5" x="0.00837571" y="0.0365677"/>
+      <label area="0" id="6" x="-0.00910887" y="0.0367171"/>
+      <label area="0" id="7" x="-0.0273407" y="0.0261068"/>
+      <label area="0" id="8" x="-0.0367554" y="0.010565"/>
+      <label area="0" id="9" x="-0.0364566" y="-0.011104"/>
+      <label area="0" id="10" x="-0.0273407" y="-0.0261975"/>
+      <label area="0" id="11" x="-0.00895943" y="-0.0368078"/>
+      <label area="0" id="12" x="0.00837571" y="-0.0363595"/>
+      <label area="0" id="13" x="0.0272053" y="-0.0260481"/>
+      <label area="0" id="14" x="0.0331829" y="0.0189336"/>
+    </labels>
+  </geometry>
+
+  <problem coordinate_type="planar" mesh_type="triangle">
+    <fields>
+      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="magnetic" linearity_type="linear" matrix_solver="mumps">
+        <refinement_edges/>
+        <refinement_labels/>
+        <polynomial_orders/>
+        <boundaries>
+          <boundary id="1" name="A = 0" type="magnetic_potential">
+            <boundary_edges>
+              <boundary_edge id="60"/>
+              <boundary_edge id="61"/>
+              <boundary_edge id="62"/>
+              <boundary_edge id="63"/>
+            </boundary_edges>
+            <boundary_types>
+              <boundary_type key="magnetic_potential_real" value="0"/>
+              <boundary_type key="magnetic_surface_current_real" value="0"/>
+            </boundary_types>
+          </boundary>
+        </boundaries>
+        <materials>
+          <material id="1" name="Iron">
+            <material_labels>
+              <material_label id="0"/>
+              <material_label id="1"/>
+            </material_labels>
+            <material_types>
+              <material_type key="magnetic_permeability" value="1000"/>
+            </material_types>
+          </material>
+          <material id="2" name="Copper A+">
+            <material_labels>
+              <material_label id="2"/>
+              <material_label id="9"/>
+            </material_labels>
+            <material_types>
+              <material_type key="magnetic_conductivity" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
+              <material_type key="magnetic_remanence" value="0"/>
+              <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
+              <material_type key="magnetic_velocity_x" value="0"/>
+              <material_type key="magnetic_velocity_y" value="0"/>
+            </material_types>
+          </material>
+          <material id="3" name="Copper A-">
+            <material_labels>
+              <material_label id="3"/>
+              <material_label id="8"/>
+            </material_labels>
+            <material_types>
+              <material_type key="magnetic_conductivity" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
+              <material_type key="magnetic_remanence" value="0"/>
+              <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
+              <material_type key="magnetic_velocity_x" value="0"/>
+              <material_type key="magnetic_velocity_y" value="0"/>
+            </material_types>
+          </material>
+          <material id="4" name="Copper B+">
+            <material_labels>
+              <material_label id="7"/>
+              <material_label id="13"/>
+            </material_labels>
+            <material_types>
+              <material_type key="magnetic_conductivity" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="2e6"/>
+              <material_type key="magnetic_permeability" value="1"/>
+              <material_type key="magnetic_remanence" value="0"/>
+              <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
+              <material_type key="magnetic_velocity_x" value="0"/>
+              <material_type key="magnetic_velocity_y" value="0"/>
+            </material_types>
+          </material>
+          <material id="5" name="Copper B-">
+            <material_labels>
+              <material_label id="6"/>
+              <material_label id="12"/>
+            </material_labels>
+            <material_types>
+              <material_type key="magnetic_conductivity" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="-2e6"/>
+              <material_type key="magnetic_permeability" value="1"/>
+              <material_type key="magnetic_remanence" value="0"/>
+              <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
+              <material_type key="magnetic_velocity_x" value="0"/>
+              <material_type key="magnetic_velocity_y" value="0"/>
+            </material_types>
+          </material>
+          <material id="6" name="Copper C+">
+            <material_labels>
+              <material_label id="5"/>
+              <material_label id="11"/>
+            </material_labels>
+            <material_types>
+              <material_type key="magnetic_conductivity" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
+              <material_type key="magnetic_remanence" value="0"/>
+              <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
+              <material_type key="magnetic_velocity_x" value="0"/>
+              <material_type key="magnetic_velocity_y" value="0"/>
+            </material_types>
+          </material>
+          <material id="7" name="Copper C-">
+            <material_labels>
+              <material_label id="4"/>
+              <material_label id="10"/>
+            </material_labels>
+            <material_types>
+              <material_type key="magnetic_conductivity" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
+              <material_type key="magnetic_remanence" value="0"/>
+              <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
+              <material_type key="magnetic_velocity_x" value="0"/>
+              <material_type key="magnetic_velocity_y" value="0"/>
+            </material_types>
+          </material>
+          <material id="8" name="Air">
+            <material_labels>
+              <material_label id="14"/>
+            </material_labels>
+            <material_types>
+              <material_type key="magnetic_conductivity" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
+              <material_type key="magnetic_remanence" value="0"/>
+              <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
+              <material_type key="magnetic_velocity_x" value="0"/>
+              <material_type key="magnetic_velocity_y" value="0"/>
+            </material_types>
+          </material>
+        </materials>
+        <field_config>
+          <field_item field_key="NonlinearTolerance" field_value="0.1"/>
+          <field_item field_key="NonlinearConvergenceMeasurement" field_value="16"/>
+          <field_item field_key="NewtonDampingType" field_value="0"/>
+          <field_item field_key="NewtonDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NewtonReuseJacobian" field_value="1"/>
+          <field_item field_key="NewtonSufImprovForJacobianReuse" field_value="0.8"/>
+          <field_item field_key="NewtonSufImprov" field_value="1.2"/>
+          <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
+          <field_item field_key="NewtonStepsToIncreaseDF" field_value="1"/>
+          <field_item field_key="PicardAndersonAcceleration" field_value="1"/>
+          <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
+          <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
+          <field_item field_key="SpaceNumberOfRefinements" field_value="1"/>
+          <field_item field_key="SpacePolynomialOrder" field_value="2"/>
+          <field_item field_key="AdaptivitySteps" field_value="10"/>
+          <field_item field_key="AdaptivityTolerance" field_value="1"/>
+          <field_item field_key="AdaptivityTransientBackSteps" field_value="3"/>
+          <field_item field_key="AdaptivityTransientRedoneEach" field_value="5"/>
+          <field_item field_key="AdaptivityStoppingCriterion" field_value="1"/>
+          <field_item field_key="AdaptivityThreshold" field_value="0.6"/>
+          <field_item field_key="AdaptivityErrorCalculator" field_value="h1"/>
+          <field_item field_key="AdaptivityUseAniso" field_value="1"/>
+          <field_item field_key="AdaptivityFinerReference" field_value="0"/>
+          <field_item field_key="AdaptivityOrderIncrease" field_value="1"/>
+          <field_item field_key="AdaptivitySpaceRefinement" field_value="1"/>
+          <field_item field_key="TransientTimeSkip" field_value="0"/>
+          <field_item field_key="TransientInitialCondition" field_value="0"/>
+          <field_item field_key="LinearSolverIterMethod" field_value="2"/>
+          <field_item field_key="LinearSolverIterPreconditioner" field_value="2"/>
+          <field_item field_key="LinearSolverIterToleranceAbsolute" field_value="1e-16"/>
+          <field_item field_key="LinearSolverIterIters" field_value="1000"/>
+          <field_item field_key="TimeUnit" field_value="s"/>
+        </field_config>
+      </field>
+    </fields>
+    <couplings/>
+    <problem_config>
+      <problem_item problem_key="Frequency" problem_value="50"/>
+      <problem_item problem_key="TimeMethod" problem_value="2"/>
+      <problem_item problem_key="TimeMethodTolerance" problem_value="0.05"/>
+      <problem_item problem_key="TimeOrder" problem_value="2"/>
+      <problem_item problem_key="TimeSteps" problem_value="10"/>
+      <problem_item problem_key="TimeTotal" problem_value="15000"/>
+    </problem_config>
+  </problem>
+
+  <config>
+    <item key="Problem_StartupScript" value=""/>
+    <item key="View_RulersFontFamily" value="Droid"/>
+    <item key="View_RulersFontPointSize" value="12"/>
+    <item key="View_PostFontFamily" value="Droid"/>
+    <item key="View_PostFontPointSize" value="16"/>
+    <item key="View_ZoomToMouse" value="1"/>
+    <item key="View_NodeSize" value="6"/>
+    <item key="View_EdgeWidth" value="2"/>
+    <item key="View_LabelSize" value="6"/>
+    <item key="View_ShowGrid" value="1"/>
+    <item key="View_GridStep" value="0.05"/>
+    <item key="View_ShowRulers" value="1"/>
+    <item key="View_SnapToGrid" value="1"/>
+    <item key="View_ShowAxes" value="1"/>
+    <item key="View_ScalarView3DMode" value="-1"/>
+    <item key="View_ScalarView3DLighting" value="1"/>
+    <item key="View_ScalarView3DAngle" value="240"/>
+    <item key="View_ScalarView3DBackground" value="1"/>
+    <item key="View_ScalarView3DHeight" value="4"/>
+    <item key="View_ScalarView3DBoundingBox" value="1"/>
+    <item key="View_ScalarView3DSolidGeometry" value="1"/>
+    <item key="View_DeformScalar" value="1"/>
+    <item key="View_DeformContour" value="1"/>
+    <item key="View_DeformVector" value="1"/>
+    <item key="View_ColorBackgroundRed" value="255"/>
+    <item key="View_ColorBackgroundGreen" value="255"/>
+    <item key="View_ColorBackgroundBlue" value="255"/>
+    <item key="View_ColorGridRed" value="200"/>
+    <item key="View_ColorGridGreen" value="200"/>
+    <item key="View_ColorGridBlue" value="200"/>
+    <item key="View_ColorCrossRed" value="150"/>
+    <item key="View_ColorCrossGreen" value="150"/>
+    <item key="View_ColorCrossBlue" value="150"/>
+    <item key="View_ColorNodesRed" value="150"/>
+    <item key="View_ColorNodesGreen" value="0"/>
+    <item key="View_ColorNodesBlue" value="0"/>
+    <item key="View_ColorEdgesRed" value="0"/>
+    <item key="View_ColorEdgesGreen" value="0"/>
+    <item key="View_ColorEdgesBlue" value="150"/>
+    <item key="View_ColorLabelsRed" value="0"/>
+    <item key="View_ColorLabelsGreen" value="150"/>
+    <item key="View_ColorLabelsBlue" value="0"/>
+    <item key="View_ColorContoursRed" value="0"/>
+    <item key="View_ColorContoursGreen" value="0"/>
+    <item key="View_ColorContoursBlue" value="0"/>
+    <item key="View_ColorVectorsRed" value="0"/>
+    <item key="View_ColorVectorsGreen" value="0"/>
+    <item key="View_ColorVectorsBlue" value="0"/>
+    <item key="View_ColorInitialMeshRed" value="250"/>
+    <item key="View_ColorInitialMeshGreen" value="202"/>
+    <item key="View_ColorInitialMeshBlue" value="119"/>
+    <item key="View_ColorSolutionMeshRed" value="150"/>
+    <item key="View_ColorSolutionMeshGreen" value="70"/>
+    <item key="View_ColorSolutionMeshBlue" value="0"/>
+    <item key="View_ColorSelectedRed" value="150"/>
+    <item key="View_ColorSelectedGreen" value="0"/>
+    <item key="View_ColorSelectedBlue" value="0"/>
+    <item key="View_ColorHighlightedRed" value="250"/>
+    <item key="View_ColorHighlightedGreen" value="150"/>
+    <item key="View_ColorHighlightedBlue" value="0"/>
+    <item key="View_ColorCrossedRed" value="255"/>
+    <item key="View_ColorCrossedGreen" value="0"/>
+    <item key="View_ColorCrossedBlue" value="0"/>
+    <item key="View_ShowInitialMeshView" value="1"/>
+    <item key="View_ShowSolutionMeshView" value="0"/>
+    <item key="View_ContourVariable" value=""/>
+    <item key="View_ShowContourView" value="0"/>
+    <item key="View_ContoursCount" value="15"/>
+    <item key="View_ContoursWidth" value="1"/>
+    <item key="View_ShowScalarView" value="1"/>
+    <item key="View_ShowScalarColorBar" value="1"/>
+    <item key="View_ScalarVariable" value=""/>
+    <item key="View_ScalarVariableComp" value="-1"/>
+    <item key="View_PaletteType" value="0"/>
+    <item key="View_PaletteFilter" value="0"/>
+    <item key="View_PaletteSteps" value="30"/>
+    <item key="View_ScalarRangeLog" value="0"/>
+    <item key="View_ScalarRangeBase" value="10"/>
+    <item key="View_ScalarDecimalPlace" value="4"/>
+    <item key="View_ScalarRangeAuto" value="1"/>
+    <item key="View_ScalarRangeMin" value="0"/>
+    <item key="View_ScalarRangeMax" value="1"/>
+    <item key="View_ShowVectorView" value="0"/>
+    <item key="View_VectorVariable" value=""/>
+    <item key="View_VectorProportional" value="1"/>
+    <item key="View_VectorColor" value="1"/>
+    <item key="View_VectorCount" value="50"/>
+    <item key="View_VectorScale" value="0.6"/>
+    <item key="View_VectorType" value="0"/>
+    <item key="View_VectorCenter" value="0"/>
+    <item key="View_OrderComponent" value="1"/>
+    <item key="View_ShowOrderView" value="1"/>
+    <item key="View_ShowOrderColorBar" value="1"/>
+    <item key="View_ShowOrderLabel" value="0"/>
+    <item key="View_OrderPaletteOrderType" value="0"/>
+    <item key="View_ParticleButcherTableType" value="19"/>
+    <item key="View_ParticleIncludeRelativisticCorrection" value="1"/>
+    <item key="View_ParticleMass" value="9.109e-31"/>
+    <item key="View_ParticleConstant" value="1.602e-19"/>
+    <item key="View_ParticleStartX" value="0"/>
+    <item key="View_ParticleStartY" value="0"/>
+    <item key="View_ParticleStartVelocityX" value="0"/>
+    <item key="View_ParticleStartVelocityY" value="0"/>
+    <item key="View_ParticleNumberOfParticles" value="1"/>
+    <item key="View_ParticleStartingRadius" value="0"/>
+    <item key="View_ParticleReflectOnDifferentMaterial" value="0"/>
+    <item key="View_ParticleReflectOnBoundary" value="0"/>
+    <item key="View_ParticleCoefficientOfRestitution" value="0"/>
+    <item key="View_ParticleMaximumRelativeError" value="0.01"/>
+    <item key="View_ParticleShowPoints" value="0"/>
+    <item key="View_ParticleShowBlendedFaces" value="1"/>
+    <item key="View_ParticleNumShowParticlesAxi" value="1"/>
+    <item key="View_ParticleColorByVelocity" value="1"/>
+    <item key="View_ParticleMaximumNumberOfSteps" value="500"/>
+    <item key="View_ParticleMinimumStep" value="0"/>
+    <item key="View_ParticleDragDensity" value="1.2041"/>
+    <item key="View_ParticleDragCoefficient" value="0"/>
+    <item key="View_ParticleDragReferenceArea" value="0"/>
+    <item key="View_ParticleCustomForceX" value="0"/>
+    <item key="View_ParticleCustomForceY" value="0"/>
+    <item key="View_ParticleCustomForceZ" value="0"/>
+    <item key="View_ChartStartX" value="0"/>
+    <item key="View_ChartStartY" value="0"/>
+    <item key="View_ChartEndX" value="0"/>
+    <item key="View_ChartEndY" value="0"/>
+    <item key="View_ChartTimeX" value="0"/>
+    <item key="View_ChartTimeY" value="0"/>
+    <item key="View_ChartHorizontalAxis" value="2"/>
+    <item key="View_ChartHorizontalAxisReverse" value="0"/>
+    <item key="View_ChartHorizontalAxisPoints" value="200"/>
+    <item key="View_MeshAngleSegmentsCount" value="3"/>
+    <item key="View_MeshCurvilinearElements" value="1"/>
+    <item key="View_LinearizerQuality" value="4"/>
+    <item key="View_SolidViewHide" value=""/>
+  </config>
+
+</problem:document>
