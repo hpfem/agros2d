@@ -52,7 +52,7 @@
             <item row="2" column="0">
              <widget class="QLabel" name="label_8">
               <property name="text">
-               <string>Thicknes (&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;cir&lt;/sub&gt;):</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Thickness (&lt;span style=&quot; font-style:italic;&quot;&gt;T&lt;/span&gt;&lt;span style=&quot; vertical-align:sub;&quot;&gt;cir&lt;/span&gt;):&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
              </widget>
             </item>
