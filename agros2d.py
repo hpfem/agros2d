@@ -77,13 +77,23 @@ def build_project(cores):
     call(['cmake', PLUGINS_DIR + '/CMakeLists.txt'])
     call(['make', '-C', PLUGINS_DIR, '-j', str(cores)])
 
-def run_project(project, server):
+def run_project(project, file, run_script, server):
     env = dict(os.environ)
     env['LD_LIBRARY_PATH'] = 'libs'
-    if (not server):
-        call(['./{0}'.format(project)], env=env)
-    else:
-        call(['xvfb-run', '--auto-servernum', './{0}'.format(project)], env=env)
+    
+    args = list()
+    if (server):
+        args.append('xvfb-run')
+        args.append('--auto-servernum')
+
+    args.append('./{0}'.format(project))
+
+    if (run_script):
+        args.append('-r')
+
+    args.append(file)
+
+    call(args, env=env)
 
 def source_package(version):
     call(['git', 'clean', '-fdx'])
@@ -128,6 +138,10 @@ if __name__ == "__main__":
     run = subparsers.add_parser('run', help='run project')
     run.add_argument('-p', '--project', nargs='?', default='agros2d', type=str, required=False,
                      help='project (valid parameters are agros2d, agros2d_pythonalb, agros2d_generator, agros2d_solver)')
+    run.add_argument('-f', '--file', nargs='?', default='', type=str, required=False,
+                     help='open Agros2D data file or Python script')
+    run.add_argument('-r', '--run', action='store_true', required=False,
+                     help='run Python script defined as file')
     run.add_argument('-s', '--server', action='store_true', required=False,
                      help='run project with X virtual framebuffer')
 
@@ -153,7 +167,7 @@ if __name__ == "__main__":
         build_project(args.cores)
 
     if (args.command == 'run'):
-        run_project(args.project, args.server)
+        run_project(args.project, args.file, args.run, args.server)
 
     if (args.command == 'pack'):
         if (args.source):
