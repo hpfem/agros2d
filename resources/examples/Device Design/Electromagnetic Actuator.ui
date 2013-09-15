@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>346</width>
-    <height>453</height>
+    <width>514</width>
+    <height>588</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,58 +23,18 @@
       <attribute name="title">
        <string>Main dimensions</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QGroupBox" name="groupBox">
-         <property name="title">
-          <string>Armature</string>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="1" rowspan="3">
+        <widget class="QLabel" name="label_12">
+         <property name="text">
+          <string/>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <layout class="QGridLayout" name="gridLayout">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label">
-              <property name="text">
-               <string>Radius:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="txtArmatureHeight">
-              <property name="accessibleName">
-               <string/>
-              </property>
-              <property name="text">
-               <string>0.075</string>
-              </property>
-              <property name="dataType" stdset="0">
-               <string>double</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_2">
-              <property name="text">
-               <string>Height:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="txtArmatureRadius">
-              <property name="text">
-               <string>0.009</string>
-              </property>
-              <property name="dataType" stdset="0">
-               <string>double</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
+         <property name="pixmap">
+          <pixmap>Electromagnetic_Actuator.png</pixmap>
+         </property>
         </widget>
        </item>
-       <item>
+       <item row="1" column="0">
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
           <string>Magnetic circuit</string>
@@ -82,13 +42,41 @@
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
            <layout class="QGridLayout" name="gridLayout_2">
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="txtCircuitSpineHeight">
+              <property name="text">
+               <string>0.02</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>Thicknes (&lt;i&gt;T&lt;/i&gt;&lt;sub&gt;cir&lt;/sub&gt;):</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_10">
+              <property name="text">
+               <string>Permeability (&lt;i&gt;&amp;mu;&lt;/i&gt;&lt;sub&gt;arm&lt;/sub&gt;):</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QLineEdit" name="txtCircuitPermeability">
+              <property name="text">
+               <string>1000</string>
+              </property>
+             </widget>
+            </item>
             <item row="0" column="1">
              <widget class="QLineEdit" name="txtCircuitRadius">
               <property name="accessibleName">
                <string/>
               </property>
               <property name="text">
-               <string>0.04</string>
+               <string>0.035</string>
               </property>
               <property name="dataType" stdset="0">
                <string>double</string>
@@ -98,14 +86,14 @@
             <item row="0" column="0">
              <widget class="QLabel" name="label_4">
               <property name="text">
-               <string>Radius:</string>
+               <string>Radius (&lt;i&gt;R&lt;/i&gt;&lt;sub&gt;cir&lt;/sub&gt;):</string>
               </property>
              </widget>
             </item>
             <item row="1" column="0">
              <widget class="QLabel" name="label_5">
               <property name="text">
-               <string>Height:</string>
+               <string>Height (&lt;i&gt;H&lt;/i&gt;&lt;sub&gt;cir&lt;/sub&gt;):</string>
               </property>
              </widget>
             </item>
@@ -115,49 +103,128 @@
                <string/>
               </property>
               <property name="text">
-               <string>0.1</string>
+               <string>0.15</string>
               </property>
               <property name="dataType" stdset="0">
                <string>int</string>
               </property>
              </widget>
             </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>Spine (&lt;i&gt;H&lt;/i&gt;&lt;sub&gt;sp&lt;/sub&gt;):</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="txtCircuitThickness">
+              <property name="text">
+               <string>0.008</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLineEdit" name="txtGap_text">
+              <property name="text">
+               <string>0.002</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_11">
+              <property name="text">
+               <string>Gap (&lt;i&gt;G&lt;/i&gt;):</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
          </layout>
         </widget>
        </item>
-       <item>
-        <widget class="QGroupBox" name="groupBox_3">
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="groupBox">
          <property name="title">
-          <string>Iron</string>
+          <string>Armature</string>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <layout class="QGridLayout" name="gridLayout_3">
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_6">
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="txtArmaturePermeability">
               <property name="text">
-               <string>Permeability:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QLineEdit" name="txtIronPermeability">
-              <property name="text">
-               <string>9000</string>
+               <string>1000</string>
               </property>
               <property name="dataType" stdset="0">
                <string>double</string>
               </property>
              </widget>
             </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Radius (&lt;i&gt;R&lt;/i&gt;&lt;sub&gt;arm&lt;/sub&gt;):</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="txtArmatureHeight">
+              <property name="accessibleName">
+               <string/>
+              </property>
+              <property name="text">
+               <string>0.13</string>
+              </property>
+              <property name="dataType" stdset="0">
+               <string>double</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>Height (&lt;i&gt;H&lt;/i&gt;&lt;sub&gt;arm&lt;/sub&gt;):</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="txtArmatureRadius">
+              <property name="text">
+               <string>0.008</string>
+              </property>
+              <property name="dataType" stdset="0">
+               <string>double</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_6">
+              <property name="text">
+               <string>Permeability (&lt;i&gt;&amp;mu;&lt;/i&gt;&lt;sub&gt;arm&lt;/sub&gt;):</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="txtArmatureShift">
+              <property name="text">
+               <string>0.01</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_13">
+              <property name="text">
+               <string>Shift (&lt;i&gt;S&lt;/i&gt;):</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
          </layout>
         </widget>
        </item>
-       <item>
+       <item row="2" column="0">
         <widget class="QGroupBox" name="groupBox_5">
          <property name="title">
           <string>Coil</string>
@@ -182,7 +249,7 @@
             <item row="1" column="1">
              <widget class="QLineEdit" name="txtCoilNumberOfTurns">
               <property name="text">
-               <string>1500</string>
+               <string>1200</string>
               </property>
               <property name="dataType" stdset="0">
                <string>int</string>
@@ -192,7 +259,7 @@
             <item row="0" column="1">
              <widget class="QLineEdit" name="txtCoilCurrent">
               <property name="text">
-               <string>1</string>
+               <string>2.5</string>
               </property>
               <property name="dataType" stdset="0">
                <string>double</string>
@@ -204,22 +271,22 @@
          </layout>
         </widget>
        </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
       </layout>
      </widget>
     </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
@@ -228,7 +295,6 @@
   <tabstop>txtArmatureHeight</tabstop>
   <tabstop>txtCircuitRadius</tabstop>
   <tabstop>txtCircuitHeight</tabstop>
-  <tabstop>txtIronPermeability</tabstop>
  </tabstops>
  <resources/>
  <connections/>
