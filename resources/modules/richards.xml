@@ -185,7 +185,7 @@
 
       <module:weakform_surface analysistype="transient" default="richards_pressure_head">
         <module:boundary equation="h = h_0" id="richards_pressure_head" name="Pressure head">
-          <module:quantity dependence="space" id="richards_pressure_head"/>
+          <module:quantity dependence="time-space" id="richards_pressure_head"/>
 
           <module:linearity_option type="newton">
             <module:essential_form id="essential" i="1" axi="re_h" planar="re_h"/>
