@@ -33,9 +33,9 @@
 #include "hermes2d/problem_config.h"
 #include "hermes2d/field.h"
 
-SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle)
+SceneEdge::SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle, int segments, bool isCurvilinear)
     : MarkedSceneBasic<SceneBoundary>(),
-      m_nodeStart(nodeStart), m_nodeEnd(nodeEnd), m_angle(angle)
+      m_nodeStart(nodeStart), m_nodeEnd(nodeEnd), m_angle(angle), m_segments(segments), m_isCurvilinear(isCurvilinear)
 {
     foreach (FieldInfo* field, Agros2D::problem()->fieldInfos())
     {
@@ -180,14 +180,20 @@ QList<SceneNode *> SceneEdge::lyingNodes() const
     return Agros2D::scene()->lyingEdgeNodes().values(const_cast<SceneEdge *>(this));
 }
 
-int SceneEdge::segments() const
+void SceneEdge::setSegments(int segments)
 {
-    double division = 40.0;
-    int segments = m_angle/division + 1;
-    if (segments < Agros2D::problem()->setting()->value(ProblemSetting::View_MeshAngleSegmentsCount).toInt())
-        segments = Agros2D::problem()->setting()->value(ProblemSetting::View_MeshAngleSegmentsCount).toInt(); // minimum segments
+    m_segments = segments;
 
-    return segments;
+    // minimum and maximum segments
+    if (m_segments < 3)
+        m_segments = 3;
+    if (m_segments > 20)
+        m_segments = 20;
+}
+
+void SceneEdge::setCurvilinear(bool isCurvilinear)
+{
+    m_isCurvilinear = isCurvilinear;
 }
 
 double SceneEdge::length() const
@@ -216,12 +222,12 @@ int SceneEdge::showDialog(QWidget *parent, bool isNew)
 
 SceneEdgeCommandAdd* SceneEdge::getAddCommand()
 {
-    return new SceneEdgeCommandAdd(m_nodeStart->point(), m_nodeEnd->point(), markersKeys(), m_angle);
+    return new SceneEdgeCommandAdd(m_nodeStart->point(), m_nodeEnd->point(), markersKeys(), m_angle, m_segments, m_isCurvilinear);
 }
 
 SceneEdgeCommandRemove* SceneEdge::getRemoveCommand()
 {
-    return new SceneEdgeCommandRemove(m_nodeStart->point(), m_nodeEnd->point(), markersKeys(), m_angle);
+    return new SceneEdgeCommandRemove(m_nodeStart->point(), m_nodeEnd->point(), markersKeys(), m_angle, m_segments, m_isCurvilinear);
 }
 
 void SceneEdge::computeCenterAndRadius()
@@ -282,7 +288,9 @@ void SceneEdgeContainer::removeConnectedToNode(SceneNode *node)
             Agros2D::scene()->undoStack()->push(new SceneEdgeCommandRemove(edge->nodeStart()->point(),
                                                                            edge->nodeEnd()->point(),
                                                                            edge->markersKeys(),
-                                                                           edge->angle()));
+                                                                           edge->angle(),
+                                                                           edge->segments(),
+                                                                           edge->isCurvilinear()));
         }
     }
 
@@ -304,11 +312,12 @@ SceneEdge* SceneEdgeContainer::get(SceneEdge* edge) const
     return NULL;
 }
 
-SceneEdge* SceneEdgeContainer::get(const Point &pointStart, const Point &pointEnd, double angle) const
+SceneEdge* SceneEdgeContainer::get(const Point &pointStart, const Point &pointEnd, double angle, int segments, bool isCurvilinear) const
 {
     foreach (SceneEdge *edgeCheck, m_data)
     {
-        if (((edgeCheck->nodeStart()->point() == pointStart) && (edgeCheck->nodeEnd()->point() == pointEnd)) && (edgeCheck->angle() == angle))
+        if (((edgeCheck->nodeStart()->point() == pointStart) && (edgeCheck->nodeEnd()->point() == pointEnd))
+                && ((edgeCheck->angle() - angle) < EPS_ZERO) && (edgeCheck->segments() == segments) && (edgeCheck->isCurvilinear() == isCurvilinear))
             return edgeCheck;
     }
 
@@ -502,19 +511,26 @@ QLayout* SceneEdgeDialog::createContent()
 
     txtAngle = new ValueLineEdit();
     txtAngle->setMinimum(0.0);
-    txtAngle->setMaximum(90.0);
+    txtAngle->setMaximum(90.0);    
+    txtSegments = new QSpinBox();
+    txtSegments->setMinimum(3);
+    txtSegments->setMaximum(20);
+    chkIsCurvilinear = new QCheckBox(tr("Curvilinear"));
     connect(txtAngle, SIGNAL(evaluated(bool)), this, SLOT(evaluated(bool)));
-    // connect(txtAngle, SIGNAL(evaluated(bool)), this, SLOT(doNodeChanged()));
+    connect(txtAngle, SIGNAL(evaluated(bool)), this, SLOT(angleChanged()));
+
     lblLength = new QLabel();
 
     cmbNodeStart = new QComboBox();
     cmbNodeEnd = new QComboBox();
-    connect(cmbNodeStart, SIGNAL(currentIndexChanged(int)), this, SLOT(doNodeChanged()));
-    connect(cmbNodeEnd, SIGNAL(currentIndexChanged(int)), this, SLOT(doNodeChanged()));
+    connect(cmbNodeStart, SIGNAL(currentIndexChanged(int)), this, SLOT(nodeChanged()));
+    connect(cmbNodeEnd, SIGNAL(currentIndexChanged(int)), this, SLOT(nodeChanged()));
 
     // coordinates
     QFormLayout *layoutEdgeParameters = new QFormLayout();
     layoutEdgeParameters->addRow(tr("Angle (deg.):"), txtAngle);
+    layoutEdgeParameters->addRow(tr("Segments (-):"), txtSegments);
+    layoutEdgeParameters->addRow(tr(""), chkIsCurvilinear);
     layoutEdgeParameters->addRow(tr("Start node:"), cmbNodeStart);
     layoutEdgeParameters->addRow(tr("End node:"), cmbNodeEnd);
     layoutEdgeParameters->addRow(tr("Length:"), lblLength);
@@ -528,7 +544,7 @@ QLayout* SceneEdgeDialog::createContent()
 
     QPushButton *btnSwap = new QPushButton();
     btnSwap->setText(tr("Swap direction"));
-    connect(btnSwap, SIGNAL(clicked()), this, SLOT(doSwap()));
+    connect(btnSwap, SIGNAL(clicked()), this, SLOT(swap()));
     buttonBox->addButton(btnSwap, QDialogButtonBox::ActionRole);
 
     return layout;
@@ -572,11 +588,14 @@ bool SceneEdgeDialog::load()
     cmbNodeStart->setCurrentIndex(cmbNodeStart->findData(sceneEdge->nodeStart()->variant()));
     cmbNodeEnd->setCurrentIndex(cmbNodeEnd->findData(sceneEdge->nodeEnd()->variant()));
     txtAngle->setNumber(sceneEdge->angle());
+    connect(txtAngle, SIGNAL(evaluated(bool)), this, SLOT(angleChanged()));
+    txtSegments->setValue(sceneEdge->segments());
+    chkIsCurvilinear->setChecked(sceneEdge->isCurvilinear());
 
     foreach (SceneEdgeMarker *edgeMarker, m_edgeMarkers)
         edgeMarker->load();
 
-    doNodeChanged();
+    nodeChanged();
 
     cmbNodeStart->blockSignals(false);
     cmbNodeEnd->blockSignals(false);
@@ -612,12 +631,18 @@ bool SceneEdgeDialog::save()
         Agros2D::scene()->undoStack()->push(new SceneEdgeCommandEdit(sceneEdge->nodeStart()->point(), sceneEdge->nodeEnd()->point(),
                                                                      nodeStart->point(), nodeEnd->point(),
                                                                      sceneEdge->angle(),
-                                                                     txtAngle->number()));
+                                                                     txtAngle->number(),
+                                                                     sceneEdge->segments(),
+                                                                     txtSegments->value(),
+                                                                     sceneEdge->isCurvilinear(),
+                                                                     chkIsCurvilinear->checkState() == Qt::Checked));
     }
 
     sceneEdge->setNodeStart(nodeStart);
     sceneEdge->setNodeEnd(nodeEnd);
     sceneEdge->setAngle(txtAngle->number());
+    sceneEdge->setSegments(txtSegments->value());
+    sceneEdge->setCurvilinear(chkIsCurvilinear->checkState() == Qt::Checked);
 
     foreach (SceneEdgeMarker *edgeMarker, m_edgeMarkers)
         edgeMarker->save();
@@ -626,7 +651,7 @@ bool SceneEdgeDialog::save()
     return true;
 }
 
-void SceneEdgeDialog::doNodeChanged()
+void SceneEdgeDialog::nodeChanged()
 {
     SceneNode *nodeStart = dynamic_cast<SceneNode *>(cmbNodeStart->itemData(cmbNodeStart->currentIndex()).value<SceneBasic *>());
     SceneNode *nodeEnd = dynamic_cast<SceneNode *>(cmbNodeEnd->itemData(cmbNodeEnd->currentIndex()).value<SceneBasic *>());
@@ -638,17 +663,23 @@ void SceneEdgeDialog::doNodeChanged()
         SceneEdge *edgeCheck = Agros2D::scene()->getEdge(nodeStart->point(), nodeEnd->point());
         buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!((nodeStart == nodeEnd) || ((edgeCheck) && ((sceneEdge != edgeCheck) || m_isNew))));
 
-        SceneEdge edge(nodeStart, nodeEnd, txtAngle->number());
+        SceneEdge edge(nodeStart, nodeEnd, txtAngle->number(), txtSegments->value(), chkIsCurvilinear->checkState() == Qt::Checked);
         lblLength->setText(QString("%1 m").arg(edge.length()));
     }
 }
 
-void SceneEdgeDialog::doSwap()
+void SceneEdgeDialog::swap()
 {
     // swap nodes
     int startIndex = cmbNodeStart->currentIndex();
     cmbNodeStart->setCurrentIndex(cmbNodeEnd->currentIndex());
     cmbNodeEnd->setCurrentIndex(startIndex);
+}
+
+void SceneEdgeDialog::angleChanged()
+{
+    txtSegments->setEnabled(txtAngle->value().number() > 0.0);
+    chkIsCurvilinear->setEnabled(txtAngle->value().number() > 0.0);
 }
 
 SceneEdgeSelectDialog::SceneEdgeSelectDialog(MarkedSceneBasicContainer<SceneBoundary, SceneEdge> edges, QWidget *parent)
@@ -754,17 +785,19 @@ void SceneEdgeSelectDialog::doReject()
 // **********************************************************************************************************************************
 
 SceneEdgeCommandAdd::SceneEdgeCommandAdd(const Point &pointStart, const Point &pointEnd, const QMap<QString, QString> &markers,
-                                         double angle, QUndoCommand *parent) : QUndoCommand(parent)
+                                         double angle, int segments, bool isCurvilinear, QUndoCommand *parent) : QUndoCommand(parent)
 {
     m_pointStart = pointStart;
     m_pointEnd = pointEnd;
     m_markers = markers;
     m_angle = angle;
+    m_segments = segments;
+    m_isCurvilinear = isCurvilinear;
 }
 
 void SceneEdgeCommandAdd::undo()
 {
-    Agros2D::scene()->edges->remove(Agros2D::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
+    Agros2D::scene()->edges->remove(Agros2D::scene()->getEdge(m_pointStart, m_pointEnd, m_angle, m_segments, m_isCurvilinear));
     Agros2D::scene()->invalidate();
 }
 
@@ -775,7 +808,7 @@ void SceneEdgeCommandAdd::redo()
     nodeStart = Agros2D::scene()->addNode(nodeStart);
     SceneNode *nodeEnd = new SceneNode(m_pointEnd);
     nodeEnd = Agros2D::scene()->addNode(nodeEnd);
-    SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, m_angle);
+    SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, m_angle, m_segments, m_isCurvilinear);
 
     edge->addMarkersFromStrings(m_markers);
 
@@ -785,13 +818,15 @@ void SceneEdgeCommandAdd::redo()
 }
 
 SceneEdgeCommandAddOrRemoveMulti::SceneEdgeCommandAddOrRemoveMulti(QList<Point> pointStarts, QList<Point> pointEnds,
-                                                   QList<double> angles, QList<QMap<QString, QString> > markers, QUndoCommand *parent) : QUndoCommand(parent)
+                                                   QList<double> angles, QList<int> segments, QList<bool> isCurvilinear, QList<QMap<QString, QString> > markers, QUndoCommand *parent) : QUndoCommand(parent)
 {
     assert(pointStarts.size() == pointEnds.size());
     assert(pointStarts.size() == angles.size());
     m_pointStarts = pointStarts;
     m_pointEnds = pointEnds;
     m_angles = angles;
+    m_segments = segments;
+    m_isCurvilinear = isCurvilinear;
     m_markers = markers;
 }
 
@@ -801,7 +836,7 @@ void SceneEdgeCommandAddOrRemoveMulti::remove()
 
     for(int i = 0; i < m_pointStarts.size(); i++)
     {
-        Agros2D::scene()->edges->remove(Agros2D::scene()->getEdge(m_pointStarts[i], m_pointEnds[i], m_angles[i]));
+        Agros2D::scene()->edges->remove(Agros2D::scene()->getEdge(m_pointStarts[i], m_pointEnds[i], m_angles[i], m_segments[i], m_isCurvilinear[i]));
     }
 
     Agros2D::scene()->stopInvalidating(false);
@@ -818,7 +853,7 @@ void SceneEdgeCommandAddOrRemoveMulti::add()
         assert(nodeStart && nodeEnd);
         if(nodeStart && nodeEnd)
         {
-            SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, m_angles[i]);
+            SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, m_angles[i], m_segments[i], m_isCurvilinear[i]);
 
             // if markers are not empty, we were deleting or copying "withMarkers = True"
             if(!m_markers.empty())
@@ -834,12 +869,14 @@ void SceneEdgeCommandAddOrRemoveMulti::add()
 }
 
 SceneEdgeCommandRemove::SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QMap<QString, QString> &markers,
-                                               double angle, QUndoCommand *parent) : QUndoCommand(parent)
+                                               double angle, int segments, bool isCurvilinear, QUndoCommand *parent) : QUndoCommand(parent)
 {
     m_pointStart = pointStart;
     m_pointEnd = pointEnd;
     m_markers = markers;
     m_angle = angle;
+    m_segments = segments;
+    m_isCurvilinear = isCurvilinear;
 }
 
 void SceneEdgeCommandRemove::undo()
@@ -849,7 +886,7 @@ void SceneEdgeCommandRemove::undo()
     nodeStart = Agros2D::scene()->addNode(nodeStart);
     SceneNode *nodeEnd = new SceneNode(m_pointEnd);
     nodeEnd = Agros2D::scene()->addNode(nodeEnd);
-    SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, m_angle);
+    SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, m_angle, m_segments, m_isCurvilinear);
 
     edge->addMarkersFromStrings(m_markers);
 
@@ -860,12 +897,12 @@ void SceneEdgeCommandRemove::undo()
 
 void SceneEdgeCommandRemove::redo()
 {
-    Agros2D::scene()->edges->remove(Agros2D::scene()->getEdge(m_pointStart, m_pointEnd, m_angle));
+    Agros2D::scene()->edges->remove(Agros2D::scene()->getEdge(m_pointStart, m_pointEnd, m_angle, m_segments, m_isCurvilinear));
     Agros2D::scene()->invalidate();
 }
 
 SceneEdgeCommandEdit::SceneEdgeCommandEdit(const Point &pointStart, const Point &pointEnd, const Point &pointStartNew, const Point &pointEndNew,
-                                           double angle, double angleNew, QUndoCommand *parent) : QUndoCommand(parent)
+                                           double angle, double angleNew, int segments, int segmentsNew, bool isCurvilinear, bool isCurvilinearNew, QUndoCommand *parent) : QUndoCommand(parent)
 {
     m_pointStart = pointStart;
     m_pointEnd = pointEnd;
@@ -873,28 +910,34 @@ SceneEdgeCommandEdit::SceneEdgeCommandEdit(const Point &pointStart, const Point 
     m_pointEndNew = pointEndNew;
     m_angle = angle;
     m_angleNew = angleNew;
+    m_segments = segments;
+    m_segmentsNew = segmentsNew;
+    m_isCurvilinear = isCurvilinear;
+    m_isCurvilinearNew = isCurvilinearNew;
 }
 
 void SceneEdgeCommandEdit::undo()
 {
-    SceneEdge *edge = Agros2D::scene()->getEdge(m_pointStartNew, m_pointEndNew, m_angleNew);
+    SceneEdge *edge = Agros2D::scene()->getEdge(m_pointStartNew, m_pointEndNew, m_angleNew, m_segmentsNew, m_isCurvilinearNew);
     if (edge)
     {
         edge->setNodeStart(Agros2D::scene()->getNode(m_pointStart));
         edge->setNodeEnd(Agros2D::scene()->getNode(m_pointEnd));
         edge->setAngle(m_angle);
+        edge->setSegments(m_segments);
         Agros2D::scene()->invalidate();
     }
 }
 
 void SceneEdgeCommandEdit::redo()
 {
-    SceneEdge *edge = Agros2D::scene()->getEdge(m_pointStart, m_pointEnd, m_angle);
+    SceneEdge *edge = Agros2D::scene()->getEdge(m_pointStart, m_pointEnd, m_angle, m_segments, m_isCurvilinear);
     if (edge)
     {
         edge->setNodeStart(Agros2D::scene()->getNode(m_pointStartNew));
         edge->setNodeEnd(Agros2D::scene()->getNode(m_pointEndNew));
         edge->setAngle(m_angleNew);
+        edge->setAngle(m_segmentsNew);
         Agros2D::scene()->invalidate();
     }
 }

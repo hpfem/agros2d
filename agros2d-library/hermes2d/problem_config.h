@@ -250,8 +250,6 @@ public:
         View_ChartHorizontalAxis,
         View_ChartHorizontalAxisReverse,
         View_ChartHorizontalAxisPoints,
-        View_MeshAngleSegmentsCount,
-        View_MeshCurvilinearElements,
         View_LinearizerQuality,
         View_SolidViewHide
     };

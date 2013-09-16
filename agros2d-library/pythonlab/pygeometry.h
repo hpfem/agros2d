@@ -36,9 +36,9 @@ class PyGeometry
 
         // add operations
         int addNode(double x, double y);
-        int addEdge(double x1, double y1, double x2, double y2, double angle,
+        int addEdge(double x1, double y1, double x2, double y2, double angle, int segments, int isCurvilinear,
                     const map<std::string, int> &refinements, const map<std::string, std::string> &boundaries);
-        int addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle,
+        int addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, int segments, int isCurvilinear,
                            const map<std::string, int> &refinements, const map<std::string, std::string> &boundaries);
         int addLabel(double x, double y, double area, const map<std::string, int> &refinements,
                      const map<std::string, int> &orders, const map<std::string, std::string> &materials);
@@ -48,7 +48,7 @@ class PyGeometry
         inline int labelsCount() const { return Agros2D::scene()->labels->count(); }
 
         // modify operations
-        void modifyEdge(int index, double angle, const map<std::string, int> &refinements,
+        void modifyEdge(int index, double angle, int segments, int isCurvilinear, const map<std::string, int> &refinements,
                         const map<std::string, std::string> &boundaries);
         void modifyLabel(int index, double area, const map<std::string, int> &refinements,
                          const map<std::string, int> &orders, const map<std::string, std::string> &materials);
@@ -80,6 +80,7 @@ class PyGeometry
 
 private:
         void testAngle(double angle) const;
+        void testSegments(int segments) const;
         void setBoundaries(SceneEdge *edge, const map<std::string, std::string> &boundaries);
         void setMaterials(SceneLabel *label, const map<std::string, std::string> &materials);
         void setRefinementsOnEdge(SceneEdge *edge, const map<std::string, int> &refinements);

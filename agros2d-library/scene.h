@@ -129,7 +129,7 @@ public:
     SceneNode *getNode(const Point &point);
 
     SceneEdge *addEdge(SceneEdge *edge);
-    SceneEdge *getEdge(const Point &pointStart, const Point &pointEnd, double angle);
+    SceneEdge *getEdge(const Point &pointStart, const Point &pointEnd, double angle, int segments, bool isCurvilinear);
     SceneEdge *getEdge(const Point &pointStart, const Point &pointEnd);
 
     SceneLabel *addLabel(SceneLabel *label);

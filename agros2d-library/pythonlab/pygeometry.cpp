@@ -47,7 +47,7 @@ int PyGeometry::addNode(double x, double y)
     return Agros2D::scene()->nodes->items().indexOf(node);
 }
 
-int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle,
+int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle, int segments, int isCurvilinear,
                         const map<std::string, int> &refinements, const map<std::string, std::string> &boundaries)
 {
     if (!silentMode())
@@ -57,6 +57,7 @@ int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle
         throw out_of_range(QObject::tr("Radial component must be greater then or equal to zero.").toStdString());
 
     testAngle(angle);
+    testSegments(segments);
 
     foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
     {
@@ -69,7 +70,8 @@ int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle
     nodeStart = Agros2D::scene()->addNode(nodeStart);
     SceneNode *nodeEnd = new SceneNode(Point(x2, y2));
     nodeEnd = Agros2D::scene()->addNode(nodeEnd);
-    SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd, angle);
+    SceneEdge *edge = new SceneEdge(nodeStart, nodeEnd,
+                                    angle, segments, isCurvilinear);
 
     try
     {
@@ -87,7 +89,7 @@ int PyGeometry::addEdge(double x1, double y1, double x2, double y2, double angle
     return Agros2D::scene()->edges->items().indexOf(edge);
 }
 
-int PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle,
+int PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angle, int segments, int isCurvilinear,
                                const map<std::string, int> &refinements, const map<std::string, std::string> &boundaries)
 {
     if (!silentMode())
@@ -105,6 +107,7 @@ int PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angl
         throw out_of_range(QObject::tr("Node with index '%1' does not exist.").arg(nodeEndIndex).toStdString());
 
     testAngle(angle);
+    testSegments(segments);
 
     foreach (SceneEdge *edge, Agros2D::scene()->edges->items())
     {
@@ -113,7 +116,8 @@ int PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angl
             throw logic_error(QObject::tr("Edge already exist.").toStdString());
     }
 
-    SceneEdge *edge = new SceneEdge(Agros2D::scene()->nodes->at(nodeStartIndex), Agros2D::scene()->nodes->at(nodeEndIndex), angle);
+    SceneEdge *edge = new SceneEdge(Agros2D::scene()->nodes->at(nodeStartIndex), Agros2D::scene()->nodes->at(nodeEndIndex),
+                                    angle, segments, isCurvilinear);
 
     try
     {
@@ -131,7 +135,7 @@ int PyGeometry::addEdgeByNodes(int nodeStartIndex, int nodeEndIndex, double angl
     return Agros2D::scene()->edges->items().indexOf(edge);
 }
 
-void PyGeometry::modifyEdge(int index, double angle, const map<std::string, int> &refinements, const map<std::string, std::string> &boundaries)
+void PyGeometry::modifyEdge(int index, double angle, int segments, int isCurvilinear, const map<std::string, int> &refinements, const map<std::string, std::string> &boundaries)
 {
     if (!silentMode())
         currentPythonEngineAgros()->sceneViewPreprocessor()->actOperateOnEdges->trigger();
@@ -143,10 +147,14 @@ void PyGeometry::modifyEdge(int index, double angle, const map<std::string, int>
         throw out_of_range(QObject::tr("Edge index must be between 0 and '%1'.").arg(Agros2D::scene()->edges->length()-1).toStdString());
 
     testAngle(angle);
+    testSegments(segments);
 
     SceneEdge *edge = Agros2D::scene()->edges->items().at(index);
 
     edge->setAngle(angle);
+    edge->setSegments(segments);
+    edge->setCurvilinear(isCurvilinear);
+
     setRefinementsOnEdge(edge, refinements);
     setBoundaries(edge, boundaries);
 
@@ -157,6 +165,12 @@ void PyGeometry::testAngle(double angle) const
 {
     if (angle < 0.0 || angle > 90.0)
         throw out_of_range(QObject::tr("Angle '%1' is out of range.").arg(angle).toStdString());
+}
+
+void PyGeometry::testSegments(int segments) const
+{
+    if (segments < 3 || segments > 20)
+        throw out_of_range(QObject::tr("Segments '%1' is out of range.").arg(segments).toStdString());
 }
 
 void PyGeometry::setBoundaries(SceneEdge *edge, const map<std::string, std::string> &boundaries)

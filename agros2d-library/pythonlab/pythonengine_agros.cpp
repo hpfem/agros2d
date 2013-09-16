@@ -566,7 +566,13 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                     arg(edge->nodeEnd()->point().y);
 
             if (edge->angle() > 0.0)
+            {
                 str += ", angle = " + QString::number(edge->angle());
+                if (edge->segments() > 3)
+                    str += ", segments = " + QString::number(edge->segments());
+                if (!edge->isCurvilinear())
+                    str += ", is_curvilinear = False";
+            }
 
             // refinement
             if (Agros2D::problem()->fieldInfos().count() > 0)

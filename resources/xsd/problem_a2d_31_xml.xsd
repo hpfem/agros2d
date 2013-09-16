@@ -28,6 +28,8 @@
                         <attribute name="start" type="int" use="required"/>
                         <attribute name="end" type="int" use="required"/>
                         <attribute name="angle" type="float" use="required"/>
+                        <attribute name="segments" type="int"/>                        
+                        <attribute name="is_curvilinear" type="int"/>   
                       </complexType>
                     </element>
                   </sequence>

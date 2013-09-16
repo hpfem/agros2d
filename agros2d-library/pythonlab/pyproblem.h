@@ -43,14 +43,6 @@ class PyProblem
         inline std::string getMeshType() const { return meshTypeToStringKey(Agros2D::problem()->config()->meshType()).toStdString(); }
         void setMeshType(const std::string &meshType);
 
-        // curvilinear elements
-        inline bool getCurvilinearElements() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_MeshCurvilinearElements).toBool(); }
-        void setCurvilinearElements(bool curvilinearElements) { Agros2D::problem()->setting()->setValue(ProblemSetting::View_MeshCurvilinearElements, curvilinearElements); }
-
-        // angle segments count
-        inline int getAngleSegmentsCount() const { return Agros2D::problem()->setting()->value(ProblemSetting::View_MeshAngleSegmentsCount).toInt(); }
-        void setAngleSegmentsCount(int count);
-
         // frequency
         inline double getFrequency() const { return Agros2D::problem()->config()->value(ProblemConfig::Frequency).toDouble(); }
         void setFrequency(double frequency);

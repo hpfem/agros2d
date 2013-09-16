@@ -30,7 +30,7 @@ class SceneEdgeCommandRemove;
 class AGROS_LIBRARY_API SceneEdge : public MarkedSceneBasic<SceneBoundary>
 {
 public:
-    SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle);
+    SceneEdge(SceneNode *nodeStart, SceneNode *nodeEnd, double angle, int segments = 3, bool isCurvilinear = true);
 
     inline SceneNode *nodeStart() const { return m_nodeStart; }
     inline void setNodeStart(SceneNode *nodeStart) { m_nodeStart = nodeStart; computeCenterAndRadius(); }
@@ -55,7 +55,11 @@ public:
     double length() const;
     bool isStraight() const { return (fabs(m_angle) < EPS_ZERO); }
 
-    int segments() const; // needed by mesh generator
+    // needed by mesh generator
+    inline int segments() const { return m_segments; }
+    void setSegments(int segments);
+    inline bool isCurvilinear() const { return m_isCurvilinear; }
+    void setCurvilinear(bool isCurvilinear);
 
     SceneEdgeCommandAdd* getAddCommand();
     SceneEdgeCommandRemove* getRemoveCommand();
@@ -70,6 +74,8 @@ private:
     SceneNode *m_nodeStart;
     SceneNode *m_nodeEnd;
     double m_angle;
+    int m_segments;
+    bool m_isCurvilinear;
 
     // cache
     Point m_centerCache;
@@ -93,7 +99,7 @@ public:
     SceneEdge* get(SceneEdge* edge) const;
 
     /// returns corresponding edge or NULL
-    SceneEdge* get(const Point &pointStart, const Point &pointEnd, double angle) const;
+    SceneEdge* get(const Point &pointStart, const Point &pointEnd, double angle, int segments, bool isCurvilinear) const;
 
     /// returns corresponding edge or NULL
     SceneEdge* get(const Point &pointStart, const Point &pointEnd) const;
@@ -148,6 +154,8 @@ protected:
 private:
     QLabel *lblEquation;
     ValueLineEdit *txtAngle;
+    QSpinBox *txtSegments;
+    QCheckBox *chkIsCurvilinear;
     QLabel *lblLength;
 
     QComboBox *cmbNodeStart;
@@ -158,8 +166,9 @@ private:
     void fillComboBox();
 
 private slots:
-    void doNodeChanged();
-    void doSwap();
+    void nodeChanged();
+    void swap();
+    void angleChanged();
 };
 
 class SceneEdgeSelectDialog : public QDialog
@@ -190,7 +199,7 @@ class SceneEdgeCommandAdd : public QUndoCommand
 {
 public:
     SceneEdgeCommandAdd(const Point &pointStart, const Point &pointEnd, const QMap<QString, QString> &markers,
-                        double angle, QUndoCommand *parent = 0);
+                        double angle, int segments, bool isCurvilinear, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
@@ -199,13 +208,15 @@ private:
     Point m_pointEnd;
     QMap<QString, QString> m_markers;
     double m_angle;
+    int m_segments;
+    bool m_isCurvilinear;
 };
 
 class SceneEdgeCommandAddOrRemoveMulti : public QUndoCommand
 {
 public:
     SceneEdgeCommandAddOrRemoveMulti(QList<Point> pointStarts, QList<Point> pointEnds,
-                        QList<double> angles, QList<QMap<QString, QString> > markers, QUndoCommand *parent = 0);
+                        QList<double> angles, QList<int> segments, QList<bool> isCurvilinear, QList<QMap<QString, QString> > markers, QUndoCommand *parent = 0);
     void add();
     void remove();
 
@@ -213,6 +224,8 @@ private:
     QList<Point> m_pointStarts;
     QList<Point> m_pointEnds;
     QList<double> m_angles;
+    QList<int> m_segments;
+    QList<bool> m_isCurvilinear;
     QList<QMap<QString, QString> > m_markers;
 };
 
@@ -220,8 +233,8 @@ class SceneEdgeCommandRemoveMulti : public SceneEdgeCommandAddOrRemoveMulti
 {
 public:
     SceneEdgeCommandRemoveMulti(QList<Point> pointStarts, QList<Point> pointEnds,
-                                QList<double> angles, QList<QMap<QString, QString> > markers, QUndoCommand *parent = 0)
-        : SceneEdgeCommandAddOrRemoveMulti(pointStarts, pointEnds, angles, markers, parent) {}
+                                QList<double> angles, QList<int> segments, QList<bool> isCurvilinear, QList<QMap<QString, QString> > markers, QUndoCommand *parent = 0)
+        : SceneEdgeCommandAddOrRemoveMulti(pointStarts, pointEnds, angles, segments, isCurvilinear, markers, parent) {}
 
     void undo() { add(); }
     void redo() { remove(); }
@@ -231,8 +244,8 @@ class SceneEdgeCommandAddMulti : public SceneEdgeCommandAddOrRemoveMulti
 {
 public:
     SceneEdgeCommandAddMulti(QList<Point> pointStarts, QList<Point> pointEnds,
-                                QList<double> angles, QList<QMap<QString, QString> > markers, QUndoCommand *parent = 0)
-        : SceneEdgeCommandAddOrRemoveMulti(pointStarts, pointEnds, angles, markers, parent) {}
+                                QList<double> angles, QList<int> segments, QList<bool> isCurvilinear, QList<QMap<QString, QString> > markers, QUndoCommand *parent = 0)
+        : SceneEdgeCommandAddOrRemoveMulti(pointStarts, pointEnds, angles, segments, isCurvilinear, markers, parent) {}
 
     void undo() { remove(); }
     void redo() { add(); }
@@ -242,7 +255,7 @@ class SceneEdgeCommandRemove : public QUndoCommand
 {
 public:
     SceneEdgeCommandRemove(const Point &pointStart, const Point &pointEnd, const QMap<QString, QString> &markers,
-                           double angle, QUndoCommand *parent = 0);
+                           double angle, int segments, bool isCurvilinear, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
@@ -251,13 +264,15 @@ private:
     Point m_pointEnd;
     QMap<QString, QString> m_markers;
     double m_angle;
+    int m_segments;
+    bool m_isCurvilinear;
 };
 
 class SceneEdgeCommandEdit : public QUndoCommand
 {
 public:
     SceneEdgeCommandEdit(const Point &pointStart, const Point &pointEnd, const Point &pointStartNew, const Point &pointEndNew,
-                         double angle, double angleNew, QUndoCommand *parent = 0);
+                         double angle, double angleNew, int segments, int segmentsNew, bool isCurvilinear, bool isCurvilinearNew, QUndoCommand *parent = 0);
     void undo();
     void redo();
 
@@ -268,6 +283,10 @@ private:
     Point m_pointEndNew;
     double m_angle;
     double m_angleNew;
+    int m_segments;
+    int m_segmentsNew;
+    bool m_isCurvilinear;
+    bool m_isCurvilinearNew;
 };
 
 

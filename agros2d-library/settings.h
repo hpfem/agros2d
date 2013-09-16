@@ -87,10 +87,6 @@ private:
     ColorButton *colorHighlighted;
     ColorButton *colorSelected;
 
-    // mesh and solver
-    QSpinBox *txtMeshAngleSegmentsCount;
-    QCheckBox *chkMeshCurvilinearElements;
-
     // script
     ScriptEditor *txtStartupScript;
     QLabel *lblStartupScriptError;
@@ -102,7 +98,6 @@ private:
     void createControls();
     QWidget *controlsStartupScript();
     QWidget *controlsWorkspace();
-    QWidget *controlsMeshAndSolver();
     QWidget *controlsColors();
 
     void load();
@@ -117,7 +112,6 @@ public slots:
 
 private slots:
     void doWorkspaceDefault();
-    void doMeshAndSolverDefault();
     void doColorsDefault();    
     void doStartupScriptChanged();
 };

@@ -291,9 +291,9 @@ SceneEdge *Scene::addEdge(SceneEdge *edge)
     return edge;
 }
 
-SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd, double angle)
+SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd, double angle, int segments, bool isCurvilinear)
 {
-    return edges->get(pointStart, pointEnd, angle);
+    return edges->get(pointStart, pointEnd, angle, segments, isCurvilinear);
 }
 
 SceneEdge *Scene::getEdge(const Point &pointStart, const Point &pointEnd)
@@ -533,16 +533,22 @@ void Scene::deleteSelected()
     QList<Point> selectedEdgePointsStart;
     QList<Point> selectedEdgePointsEnd;
     QList<double> selectedEdgeAngles;
+    QList<int> selectedEdgeSegments;
+    QList<bool> selectedEdgeIsCurvilinear;
     QList<QMap<QString, QString> > selectedEdgeMarkers;
     foreach (SceneEdge *edge, edges->selected().items())
     {
         selectedEdgePointsStart.append(edge->nodeStart()->point());
         selectedEdgePointsEnd.append(edge->nodeEnd()->point());
         selectedEdgeAngles.append(edge->angle());
+        selectedEdgeSegments.append(edge->segments());
+        selectedEdgeIsCurvilinear.append(edge->isCurvilinear());
         selectedEdgeMarkers.append(edge->markersKeys());
     }
     if (!selectedEdgePointsStart.isEmpty())
-        undoStack()->push(new SceneEdgeCommandRemoveMulti(selectedEdgePointsStart, selectedEdgePointsEnd, selectedEdgeAngles, selectedEdgeMarkers));
+        undoStack()->push(new SceneEdgeCommandRemoveMulti(selectedEdgePointsStart, selectedEdgePointsEnd,
+                                                          selectedEdgeAngles, selectedEdgeSegments, selectedEdgeIsCurvilinear,
+                                                          selectedEdgeMarkers));
 
     // labels
     QList<Point> selectedLabelPointsStart;
@@ -690,6 +696,8 @@ bool Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle
     QList<QPair<Point, Point> > newEdgeEndPoints;
     QList<Point> edgeStartPointsToAdd, edgeEndPointsToAdd;
     QList<double> edgeAnglesToAdd;
+    QList<int> edgeSegmentsToAdd;
+    QList<bool> edgeIsCurvilinearToAdd;
     QList<QMap<QString, QString> > edgeMarkersToAdd;
 
     foreach (SceneEdge *edge, selectedEdges)
@@ -715,6 +723,8 @@ bool Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle
             edgeStartPointsToAdd.push_back(newPointStart);
             edgeEndPointsToAdd.push_back(newPointEnd);
             edgeAnglesToAdd.push_back(edge->angle());
+            edgeSegmentsToAdd.push_back(edge->segments());
+            edgeIsCurvilinearToAdd.push_back(edge->isCurvilinear());
 
             if(withMarkers)
                 edgeMarkersToAdd.append(edge->markersKeys());
@@ -725,7 +735,8 @@ bool Scene::moveSelectedEdges(SceneTransformMode mode, Point point, double angle
 
     edges->setSelected(false);
 
-    m_undoStack->push(new SceneEdgeCommandAddMulti(edgeStartPointsToAdd, edgeEndPointsToAdd, edgeAnglesToAdd, edgeMarkersToAdd));
+    m_undoStack->push(new SceneEdgeCommandAddMulti(edgeStartPointsToAdd, edgeEndPointsToAdd,
+                                                   edgeAnglesToAdd, edgeSegmentsToAdd, edgeIsCurvilinearToAdd, edgeMarkersToAdd));
 
     for(int i = 0; i < newEdgeEndPoints.size(); i++)
     {
@@ -1531,7 +1542,14 @@ void Scene::readFromFile31(const QString &fileName)
             SceneNode *nodeFrom = nodes->at(edge.start());
             SceneNode *nodeTo = nodes->at(edge.end());
 
-            addEdge(new SceneEdge(nodeFrom, nodeTo, edge.angle()));
+            int segments = 3;
+            int isCurvilinear = 1;
+            if (edge.segments().present())
+                segments = edge.segments().get();
+            if (edge.is_curvilinear().present())
+                isCurvilinear = edge.is_curvilinear().get();
+
+            addEdge(new SceneEdge(nodeFrom, nodeTo, edge.angle(), segments, isCurvilinear));
         }
 
         // labels
@@ -2107,7 +2125,7 @@ void Scene::writeToFile31(const QString &fileName)
             int imaterial = 1;
             foreach (SceneMaterial *mat, this->materials->filter(fieldInfo).items())
             {
-                // add edges
+                // add labels
                 XMLProblem::material_labels material_labels;
                 foreach (SceneLabel *label, labels->items())
                     if (label->hasMarker(mat))
@@ -2183,10 +2201,14 @@ void Scene::writeToFile31(const QString &fileName)
         int iedge = 0;
         foreach (SceneEdge *edge, this->edges->items())
         {
-            edges.edge().push_back(XMLProblem::edge(iedge,
-                                                    this->nodes->items().indexOf(edge->nodeStart()),
-                                                    this->nodes->items().indexOf(edge->nodeEnd()),
-                                                    edge->angle()));
+            XMLProblem::edge e = XMLProblem::edge(iedge,
+                                                  this->nodes->items().indexOf(edge->nodeStart()),
+                                                  this->nodes->items().indexOf(edge->nodeEnd()),
+                                                  edge->angle());
+            e.segments().set(edge->segments());
+            e.is_curvilinear().set(edge->isCurvilinear());
+            edges.edge().push_back(e);
+
             iedge++;
         }
 

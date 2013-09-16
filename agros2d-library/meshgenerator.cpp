@@ -57,59 +57,58 @@ bool MeshGenerator::writeToHermes()
 
     // curved edges
     XMLMesh::curves_type curves;
-    if (Agros2D::problem()->setting()->value(ProblemSetting::View_MeshCurvilinearElements).toBool())
+    for (int i = 0; i<edgeList.count(); i++)
     {
-        for (int i = 0; i<edgeList.count(); i++)
+        if (edgeList[i].marker != -1)
         {
-            if (edgeList[i].marker != -1)
+            // curve
+            if (Agros2D::scene()->edges->at(edgeList[i].marker)->angle() > 0.0 &&
+                    Agros2D::scene()->edges->at(edgeList[i].marker)->isCurvilinear())
             {
-                // curve
-                if (Agros2D::scene()->edges->at(edgeList[i].marker)->angle() > 0.0)
-                {
-                    int segments = Agros2D::scene()->edges->at(edgeList[i].marker)->segments();
+                int segments = Agros2D::scene()->edges->at(edgeList[i].marker)->segments();
 
-                    // subdivision angle and chord
-                    double theta = deg2rad(Agros2D::scene()->edges->at(edgeList[i].marker)->angle()) / double(segments);
-                    double chord = 2 * Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * sin(theta / 2.0);
+                // subdivision angle and chord
+                double theta = deg2rad(Agros2D::scene()->edges->at(edgeList[i].marker)->angle()) / double(segments);
+                double chord = 2 * Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * sin(theta / 2.0);
 
-                    // length of short chord
-                    double chordShort = (nodeList[edgeList[i].node[1]] - nodeList[edgeList[i].node[0]]).magnitude();
+                // length of short chord
+                double chordShort = (nodeList[edgeList[i].node[1]] - nodeList[edgeList[i].node[0]]).magnitude();
 
-                    // direction
-                    Point center = Agros2D::scene()->edges->at(edgeList[i].marker)->center();
-                    int direction = (((nodeList[edgeList[i].node[0]].x-center.x)*(nodeList[edgeList[i].node[1]].y-center.y) -
-                            (nodeList[edgeList[i].node[0]].y-center.y)*(nodeList[edgeList[i].node[1]].x-center.x)) > 0) ? 1 : -1;
+                // direction
+                Point center = Agros2D::scene()->edges->at(edgeList[i].marker)->center();
+                int direction = (((nodeList[edgeList[i].node[0]].x-center.x)*(nodeList[edgeList[i].node[1]].y-center.y) -
+                        (nodeList[edgeList[i].node[0]].y-center.y)*(nodeList[edgeList[i].node[1]].x-center.x)) > 0) ? 1 : -1;
 
-                    double angle = direction * theta * chordShort / chord;
+                double angle = direction * theta * chordShort / chord;
 
-                    curves.arc().push_back(XMLMesh::arc(edgeList[i].node[0], edgeList[i].node[1], rad2deg(angle)));
-                }
+                curves.arc().push_back(XMLMesh::arc(edgeList[i].node[0], edgeList[i].node[1], rad2deg(angle)));
             }
         }
+    }
 
-        // move nodes (arcs)
-        for (int i = 0; i<edgeList.count(); i++)
+    // move nodes (arcs)
+    for (int i = 0; i<edgeList.count(); i++)
+    {
+        // assert(edgeList[i].marker >= 0); // markers changed to marker - 1, check...
+        if (edgeList[i].marker != -1)
         {
-            // assert(edgeList[i].marker >= 0); // markers changed to marker - 1, check...
-            if (edgeList[i].marker != -1)
+            // curve
+            if (Agros2D::scene()->edges->at(edgeList[i].marker)->angle() > 0.0 &&
+                    Agros2D::scene()->edges->at(edgeList[i].marker)->isCurvilinear())
             {
-                // curve
-                if (Agros2D::scene()->edges->at(edgeList[i].marker)->angle() > 0.0)
-                {
-                    // angle
-                    Point center = Agros2D::scene()->edges->at(edgeList[i].marker)->center();
-                    double pointAngle1 = atan2(center.y - nodeList[edgeList[i].node[0]].y,
-                            center.x - nodeList[edgeList[i].node[0]].x) - M_PI;
+                // angle
+                Point center = Agros2D::scene()->edges->at(edgeList[i].marker)->center();
+                double pointAngle1 = atan2(center.y - nodeList[edgeList[i].node[0]].y,
+                        center.x - nodeList[edgeList[i].node[0]].x) - M_PI;
 
-                    double pointAngle2 = atan2(center.y - nodeList[edgeList[i].node[1]].y,
-                            center.x - nodeList[edgeList[i].node[1]].x) - M_PI;
+                double pointAngle2 = atan2(center.y - nodeList[edgeList[i].node[1]].y,
+                        center.x - nodeList[edgeList[i].node[1]].x) - M_PI;
 
-                    nodeList[edgeList[i].node[0]].x = center.x + Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * cos(pointAngle1);
-                    nodeList[edgeList[i].node[0]].y = center.y + Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * sin(pointAngle1);
+                nodeList[edgeList[i].node[0]].x = center.x + Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * cos(pointAngle1);
+                nodeList[edgeList[i].node[0]].y = center.y + Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * sin(pointAngle1);
 
-                    nodeList[edgeList[i].node[1]].x = center.x + Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * cos(pointAngle2);
-                    nodeList[edgeList[i].node[1]].y = center.y + Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * sin(pointAngle2);
-                }
+                nodeList[edgeList[i].node[1]].x = center.x + Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * cos(pointAngle2);
+                nodeList[edgeList[i].node[1]].y = center.y + Agros2D::scene()->edges->at(edgeList[i].marker)->radius() * sin(pointAngle2);
             }
         }
     }

@@ -37,23 +37,6 @@ class TestProblem(Agros2DTestCase):
         with self.assertRaises(IndexError):
             self.problem.frequency = -100
 
-    """ angle_segments_count """
-    def test_angle_segments_count(self):
-        self.problem.angle_segments_count = 10
-        self.assertEqual(self.problem.angle_segments_count, 10)
-
-    def test_set_wrong_angle_segments_count(self):
-        with self.assertRaises(IndexError):
-            self.problem.angle_segments_count = 1
-
-        with self.assertRaises(IndexError):
-            self.problem.angle_segments_count = 21
-
-    """ curvilinear_elements """
-    def test_curvilinear_elements(self):
-        self.problem.curvilinear_elements = False
-        self.assertEqual(self.problem.curvilinear_elements, False)
-
 class TestProblemTime(Agros2DTestCase):
     def setUp(self):
         self.problem = a2d.problem(clear = True)

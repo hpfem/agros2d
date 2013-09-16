@@ -122,10 +122,6 @@ void SettingsWidget::load()
     colorSelected->setColor(QColor(Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedRed).toInt(),
                                    Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedGreen).toInt(),
                                    Agros2D::problem()->setting()->value(ProblemSetting::View_ColorSelectedBlue).toInt()));
-
-    // mesh and solver
-    txtMeshAngleSegmentsCount->setValue(Agros2D::problem()->setting()->value(ProblemSetting::View_MeshAngleSegmentsCount).toInt());
-    chkMeshCurvilinearElements->setChecked(Agros2D::problem()->setting()->value(ProblemSetting::View_MeshCurvilinearElements).toBool());
 }
 
 void SettingsWidget::save()
@@ -221,17 +217,12 @@ void SettingsWidget::save()
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorSelectedRed, colorSelected->color().red());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorSelectedGreen, colorSelected->color().green());
     Agros2D::problem()->setting()->setValue(ProblemSetting::View_ColorSelectedBlue, colorSelected->color().blue());
-
-    // mesh and solver
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_MeshAngleSegmentsCount, txtMeshAngleSegmentsCount->value());
-    Agros2D::problem()->setting()->setValue(ProblemSetting::View_MeshCurvilinearElements, chkMeshCurvilinearElements->isChecked());
 }
 
 void SettingsWidget::createControls()
 {
     QWidget *workspace = controlsWorkspace();
     QWidget *colors = controlsColors();
-    QWidget *meshAndSolver = controlsMeshAndSolver();
     QWidget *startupScript = controlsStartupScript();
 
     // tab widget
@@ -239,7 +230,6 @@ void SettingsWidget::createControls()
     tbxWorkspace->addItem(workspace, icon(""), tr("Workspace"));
     tbxWorkspace->addItem(colors, icon(""), tr("Colors"));
     tbxWorkspace->addItem(startupScript, icon(""), tr("Startup script"));
-    tbxWorkspace->addItem(meshAndSolver, icon(""), tr("Mesh and solver"));
 
     // layout workspace
     QVBoxLayout *layout = new QVBoxLayout();
@@ -412,44 +402,6 @@ QWidget *SettingsWidget::controlsWorkspace()
     return workspaceWidget;
 }
 
-QWidget *SettingsWidget::controlsMeshAndSolver()
-{
-    // QGroupBox *grpSolver = new QGroupBox(tr("Solver"));
-    // grpSolver->setLayout(layoutSolver);
-
-    txtMeshAngleSegmentsCount = new QSpinBox(this);
-    txtMeshAngleSegmentsCount->setMinimum(2);
-    txtMeshAngleSegmentsCount->setMaximum(20);
-    chkMeshCurvilinearElements = new QCheckBox(tr("Curvilinear elements"));
-
-    QGridLayout *layoutMesh = new QGridLayout();
-    layoutMesh->setColumnStretch(1, 1);
-    layoutMesh->addWidget(chkMeshCurvilinearElements, 0, 0, 1, 2);
-    layoutMesh->addWidget(new QLabel(tr("Angle seg. count:")), 1, 0);
-    layoutMesh->addWidget(txtMeshAngleSegmentsCount, 1, 1);
-
-    QGroupBox *grpMesh = new QGroupBox(tr("Mesh"));
-    grpMesh->setLayout(layoutMesh);
-
-    QPushButton *btnMeshAndSolverDefault = new QPushButton(tr("Default"));
-    connect(btnMeshAndSolverDefault, SIGNAL(clicked()), this, SLOT(doMeshAndSolverDefault()));
-
-    // adaptivity
-    QFont fnt = font();
-    fnt.setPointSize(fnt.pointSize() - 1);
-
-    // layout mesh and solver
-    QVBoxLayout *layoutMeshAndSolver = new QVBoxLayout();
-    layoutMeshAndSolver->addWidget(grpMesh);
-    layoutMeshAndSolver->addStretch();
-    layoutMeshAndSolver->addWidget(btnMeshAndSolverDefault, 0, Qt::AlignLeft);
-
-    QWidget *widget = new QWidget(this);
-    widget->setLayout(layoutMeshAndSolver);
-
-    return widget;
-}
-
 QWidget *SettingsWidget::controlsColors()
 {
     QWidget *colorsWidget = new QWidget(this);
@@ -562,12 +514,6 @@ void SettingsWidget::doWorkspaceDefault()
     chkDeformScalar->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_DeformScalar).toBool());
     chkDeformContour->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_DeformContour).toBool());
     chkDeformVector->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_DeformVector).toBool());
-}
-
-void SettingsWidget::doMeshAndSolverDefault()
-{
-    txtMeshAngleSegmentsCount->setValue(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_MeshAngleSegmentsCount).toInt());
-    chkMeshCurvilinearElements->setChecked(Agros2D::problem()->setting()->defaultValue(ProblemSetting::View_MeshCurvilinearElements).toBool());
 }
 
 void SettingsWidget::doColorsDefault()
