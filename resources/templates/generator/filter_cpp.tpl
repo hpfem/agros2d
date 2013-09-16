@@ -79,6 +79,7 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
     {{SPECIAL_FUNCTION_FULL_NAME}}<double> {{SPECIAL_FUNCTION_NAME}};{{#PARAMETERS}}
     {{SPECIAL_FUNCTION_NAME}}.{{PARAMETER_NAME}} = material_{{PARAMETER_FULL_NAME}}->number(); {{/PARAMETERS}}
     {{SPECIAL_FUNCTION_NAME}}.setVariant("{{SELECTED_VARIANT}}");
+    {{SPECIAL_FUNCTION_NAME}}.setType(specialFunctionTypeFromStringKey("{{TYPE}}"));
     {{SPECIAL_FUNCTION_NAME}}.setBounds({{FROM}}, {{TO}}, {{EXTRAPOLATE_LOW_PRESENT}}, {{EXTRAPOLATE_HI_PRESENT}});
     {{SPECIAL_FUNCTION_NAME}}.setUseInterpolation(false);
     {{/SPECIAL_FUNCTION_SOURCE}}
