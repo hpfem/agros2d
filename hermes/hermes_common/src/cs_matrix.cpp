@@ -75,23 +75,10 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void CSMatrix<Scalar>::multiply_with_vector(Scalar* vector_in, Scalar* vector_out) const
-    {
-      int n = this->size;
-      for (int j = 0; j<n; j++) vector_out[j] = 0;
-      for (int j = 0; j<n; j++)
-      {
-        for (int i = Ap[j]; i < Ap[j + 1]; i++)
-        {
-          vector_out[Ai[i]] += vector_in[j]*Ax[i];
-        }
-      }
-    }
-
-    template<typename Scalar>
     void CSMatrix<Scalar>::multiply_with_Scalar(Scalar value)
     {
-      for (unsigned int i = 0; i < this->nnz; i++) Ax[i] *= value;
+      for (unsigned int i = 0; i < this->nnz; i++)
+        Ax[i] *= value;
     }
 
     template<typename Scalar>
@@ -158,46 +145,9 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void CSMatrix<Scalar>::add_to_diagonal_blocks(int num_stages, CSMatrix<Scalar>* mat_block)
-    {
-      int ndof = mat_block->get_size();
-      if(this->get_size() != (unsigned int) num_stages * ndof)
-        throw Hermes::Exceptions::Exception("Incompatible matrix sizes in CSMatrix<Scalar>::add_to_diagonal_blocks()");
-
-      for (int i = 0; i < num_stages; i++)
-      {
-        this->add_as_block(ndof*i, ndof*i, mat_block);
-      }
-    }
-
-    template<typename Scalar>
-    void CSMatrix<Scalar>::add_sparse_to_diagonal_blocks(int num_stages, SparseMatrix<Scalar>* mat)
-    {
-      add_to_diagonal_blocks(num_stages, static_cast<CSMatrix<Scalar>*>(mat));
-    }
-
-    template<typename Scalar>
     unsigned int CSMatrix<Scalar>::get_nnz() const
     {
       return this->nnz;
-    }
-
-    template<typename Scalar>
-    void CSMatrix<Scalar>::add_to_diagonal(Scalar v)
-    {
-      for (unsigned int i = 0; i<this->size; i++)
-      {
-        add(i, i, v);
-      }
-    };
-
-    template<typename Scalar>
-    void CSMatrix<Scalar>::add(unsigned int m, unsigned int n, Scalar **mat, int *rows, int *cols)
-    {
-      for (unsigned int i = 0; i < m; i++)       // rows
-        for (unsigned int j = 0; j < n; j++)     // cols
-          if(rows[i] >= 0 && cols[j] >= 0) // not Dir. dofs.
-            add(rows[i], cols[j], mat[i][j]);
     }
 
     double inline real(double x)
@@ -218,12 +168,6 @@ namespace Hermes
     double inline imag(std::complex<double> x)
     {
       return x.imag();;
-    }
-
-    template<typename Scalar>
-    unsigned int CSMatrix<Scalar>::get_matrix_size() const
-    {
-      return this->size;
     }
 
     template<typename Scalar>
@@ -285,40 +229,21 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    int *CSMatrix<Scalar>::get_Ap()
+    int *CSMatrix<Scalar>::get_Ap() const
     {
       return this->Ap;
     }
 
     template<typename Scalar>
-    int *CSMatrix<Scalar>::get_Ai()
+    int *CSMatrix<Scalar>::get_Ai() const
     {
       return this->Ai;
     }
 
     template<typename Scalar>
-    Scalar *CSMatrix<Scalar>::get_Ax()
+    Scalar *CSMatrix<Scalar>::get_Ax() const
     {
       return this->Ax;
-    }
-
-    template<typename Scalar>
-    void CSMatrix<Scalar>::add_as_block(unsigned int offset_i, unsigned int offset_j, CSMatrix<Scalar>* mat)
-    {
-      throw Exceptions::MethodNotOverridenException("CSMatrix<Scalar>::add_as_block");
-    }
-
-    template<typename Scalar>
-    void CSMatrix<Scalar>::add_matrix(CSMatrix<Scalar>* mat)
-    {
-      throw Exceptions::MethodNotOverridenException("CSMatrix<Scalar>::add_matrix");
-    }
-
-    template<typename Scalar>
-    CSMatrix<Scalar>* CSMatrix<Scalar>::duplicate()
-    {
-      throw Exceptions::MethodNotOverridenException("CSMatrix<Scalar>::duplicate()");
-      return NULL;
     }
 
     template<>
@@ -371,8 +296,6 @@ namespace Hermes
         return Ax[Ap[n] + mid];
     }
 
-
-
     template<typename Scalar>
     CSCMatrix<Scalar>::CSCMatrix() : CSMatrix<Scalar>()
     {
@@ -423,13 +346,15 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    bool CSMatrix<Scalar>::export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format, bool invert_storage)
+    void CSMatrix<Scalar>::export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format, bool invert_storage)
     {
       switch (fmt)
       {
       case EXPORT_FORMAT_MATRIX_MARKET:
         {
           FILE* file = fopen(filename, "w");
+          if(!file)
+            throw Exceptions::IOException(Exceptions::IOException::Write, filename);
           if(Hermes::Helpers::TypeIsReal<Scalar>::value)
             fprintf(file, "%%%%Matrix<Scalar>Market matrix coordinate real\n");
           else
@@ -437,6 +362,8 @@ namespace Hermes
 
           fprintf(file, "%d %d %d\n", this->size, this->size, this->nnz);
 
+          if(invert_storage)
+            this->switch_orientation();
           for (unsigned int j = 0; j < this->size; j++)
           {
             for (int i = Ap[j]; i < Ap[j + 1]; i++)
@@ -445,10 +372,12 @@ namespace Hermes
               fprintf(file, "\n");
             }
           }
+          if(invert_storage)
+            this->switch_orientation();
 
           fclose(file);
-          return true;
         }
+        break;
 
       case EXPORT_FORMAT_MATLAB_MATIO:
         {
@@ -458,27 +387,11 @@ namespace Hermes
           if(invert_storage)
             this->switch_orientation();
 
-          // For complex.
-          double* Ax_re = new double[this->nnz];
-          double* Ax_im = new double[this->nnz];
-          struct mat_complex_split_t z = {Ax_re, Ax_im};
-
           sparse.nir = this->nnz;
           sparse.ir = Ai;
           sparse.njc = this->size + 1;
           sparse.jc = (int *) Ap;
           sparse.ndata = this->nnz;
-          if(Hermes::Helpers::TypeIsReal<Scalar>::value)
-            sparse.data = Ax;
-          else
-          {
-            for(int i = 0; i < this->nnz; i++)
-            {
-              Ax_re[i] = ((std::complex<double>)(this->Ax[i])).real();
-              Ax_im[i] = ((std::complex<double>)(this->Ax[i])).imag();
-              sparse.data = &z;
-            }
-          } 
 
           size_t dims[2];
           dims[0] = this->size;
@@ -487,40 +400,60 @@ namespace Hermes
           mat_t *mat = Mat_CreateVer(filename, "", MAT_FT_MAT5);
 
           matvar_t *matvar;
+
+          // For complex. No allocation here.
+          double* Ax_re = NULL;
+          double* Ax_im = NULL;
+
+          // For real.
           if(Hermes::Helpers::TypeIsReal<Scalar>::value)
-            matvar = Mat_VarCreate("matrix", MAT_C_SPARSE, MAT_T_DOUBLE, 2, dims, &sparse, MAT_F_DONT_COPY_DATA);
+          {
+            sparse.data = Ax;
+            matvar = Mat_VarCreate(var_name, MAT_C_SPARSE, MAT_T_DOUBLE, 2, dims, &sparse, MAT_F_DONT_COPY_DATA);
+          }
           else
-            matvar = Mat_VarCreate("matrix", MAT_C_SPARSE, MAT_T_DOUBLE, 2, dims, &sparse, MAT_F_DONT_COPY_DATA | MAT_F_COMPLEX);
+          {
+            // For complex.
+            Ax_re = new double[this->nnz];
+            Ax_im = new double[this->nnz];
+            struct mat_complex_split_t z = {Ax_re, Ax_im};
+
+            for(int i = 0; i < this->nnz; i++)
+            {
+              Ax_re[i] = ((std::complex<double>)(this->Ax[i])).real();
+              Ax_im[i] = ((std::complex<double>)(this->Ax[i])).imag();
+              sparse.data = &z;
+            }
+            matvar = Mat_VarCreate(var_name, MAT_C_SPARSE, MAT_T_DOUBLE, 2, dims, &sparse, MAT_F_DONT_COPY_DATA | MAT_F_COMPLEX);
+          }
 
           if (matvar)
           {
             Mat_VarWrite(mat, matvar, MAT_COMPRESSION_ZLIB);
             Mat_VarFree(matvar);
-            if(invert_storage)
-              this->switch_orientation();
-            delete [] Ax_re;
-            delete [] Ax_im;
-            Mat_Close(mat);
-            return true;
           }
-          else
-          {
-            if(invert_storage)
-              this->switch_orientation();
+          if(invert_storage)
+            this->switch_orientation();
+          if(Ax_re)
             delete [] Ax_re;
+          if(Ax_im)
             delete [] Ax_im;
-            Mat_Close(mat);
-            return false;
-          }
+          Mat_Close(mat);
 
+          if(!matvar)
+            throw Exceptions::IOException(Exceptions::IOException::Write, filename);
 #endif
-          return false;
         }
+        break;
 
       case EXPORT_FORMAT_PLAIN_ASCII:
         {
           FILE* file = fopen(filename, "w");
+          if(!file)
+            throw Exceptions::IOException(Exceptions::IOException::Write, filename);
 
+          if(invert_storage)
+            this->switch_orientation();
           for (unsigned int j = 0; j < this->size; j++)
           {
             for (int i = Ap[j]; i < Ap[j + 1]; i++)
@@ -529,119 +462,112 @@ namespace Hermes
               fprintf(file, "\n");
             }
           }
+          if(invert_storage)
+            this->switch_orientation();
 
           fclose(file);
-          return true;
         }
-
-      default:
-        return false;
       }
     }
 
     template<typename Scalar>
-    bool CSCMatrix<Scalar>::export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
+    void CSCMatrix<Scalar>::export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
     {
-      return CSMatrix<Scalar>::export_to_file(filename, var_name, fmt, number_format, false);
+      CSMatrix<Scalar>::export_to_file(filename, var_name, fmt, number_format, false);
     }
 
     template<typename Scalar>
-    bool CSRMatrix<Scalar>::export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
+    void CSRMatrix<Scalar>::export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
     {
-      return CSMatrix<Scalar>::export_to_file(filename, var_name, fmt, number_format, true);
+      CSMatrix<Scalar>::export_to_file(filename, var_name, fmt, number_format, true);
     }
 
     template<typename Scalar>
-    void CSCMatrix<Scalar>::add_as_block(unsigned int offset_i, unsigned int offset_j, CSMatrix<Scalar>* mat)
+    void CSMatrix<Scalar>::import_from_file(char *filename, const char *var_name, MatrixExportFormat fmt, bool invert_storage)
     {
-      CSCMatrix<Scalar>* mat_cast = dynamic_cast<CSCMatrix<Scalar>*>(mat);
-      if(!mat_cast)
-        throw Hermes::Exceptions::Exception("Wrong matrix type detected in CSCMatrix<Scalar>::add_as_block().");
-
-      Hermes::Solvers::CSCIterator<Scalar> mat_it(mat_cast);
-      Hermes::Solvers::CSCIterator<Scalar> this_it(this);
-
-      // Sanity check.
-      bool this_not_empty = this_it.init();
-      if(!this_not_empty)
-        throw Hermes::Exceptions::Exception("Empty matrix detected in CSCMatrix<Scalar>::add_as_block().");
-
-      // Iterate through the small matrix column by column and add all nonzeros
-      // to the large one.
-      bool mat_not_finished = mat_it.init();
-      if(!mat_not_finished)
-        throw Hermes::Exceptions::Exception("Empty matrix detected in CSCMatrix<Scalar>::add_as_block().");
-
-      int mat_i, mat_j;
-      Scalar mat_val;
-      while(mat_not_finished)
+      switch (fmt)
       {
-        mat_it.get_current_position(mat_i, mat_j, mat_val);
-        bool found = this_it.move_to_position(mat_i + offset_i, mat_j + offset_j);
-        if(!found)
-          throw Hermes::Exceptions::Exception("Nonzero matrix entry at %d, %d not found in CSCMatrix<Scalar>::add_as_block().",
-          mat_i + offset_i, mat_j + offset_j);
-        this_it.add_to_current_position(mat_val);
-        mat_not_finished = mat_it.move_ptr();
-      }
-    }
-
-    template<typename Scalar>
-    void CSCMatrix<Scalar>::add_sparse_matrix(SparseMatrix<Scalar>* mat)
-    {
-      CSCMatrix<Scalar> *_mat = dynamic_cast<CSCMatrix<Scalar>* >(mat);
-      if (_mat)
-        this->add_matrix(_mat);
-      else
-        SparseMatrix<Scalar>::add_sparse_matrix(mat);
-    }
-
-    template<typename Scalar>
-    void CSCMatrix<Scalar>::add_matrix(CSMatrix<Scalar>* mat)
-    {
-      assert(this->get_size() == mat->get_size());
-
-      // Create iterators for both matrices.
-      CSCMatrix<Scalar>* mat_cast = dynamic_cast<CSCMatrix<Scalar>*>(mat);
-      if(!mat_cast)
-        throw Hermes::Exceptions::Exception("Wrong matrix type detected in CSCMatrix<Scalar>::add_as_block().");
-
-      Hermes::Solvers::CSCIterator<Scalar> mat_it(mat_cast);
-      Hermes::Solvers::CSCIterator<Scalar> this_it(this);
-      int mat_i, mat_j;
-      Scalar mat_val;
-      int this_i, this_j;
-      Scalar this_val;
-
-      bool mat_not_finished = mat_it.init();
-      bool this_not_finished = this_it.init();
-      while(mat_not_finished && this_not_finished)
-      {
-        mat_it.get_current_position(mat_i, mat_j, mat_val);
-        //printf("mat: current position %d %d %g\n", mat_i, mat_j, mat_val);
-        this_it.get_current_position(this_i, this_j, this_val);
-        //printf("this: current position %d %d %g\n", this_i, this_j, this_val);
-        while(mat_i != this_i || mat_j != this_j)
+      case EXPORT_FORMAT_MATRIX_MARKET:
+        throw Exceptions::MethodNotOverridenException("CSMatrix<Scalar>::import_from_file - Matrix Market");
+        break;
+      case EXPORT_FORMAT_MATLAB_MATIO:
         {
-          //printf("SHOULD NOT BE HERE\n");
-          this_not_finished = this_it.move_ptr();
-          if(!this_not_finished)
+#ifdef WITH_MATIO
+          mat_t    *matfp;
+          matvar_t *matvar;
+
+          matfp = Mat_Open(filename,MAT_ACC_RDONLY);
+
+          if (!matfp )
           {
-            printf("Entry %d %d does not exist in the matrix to which it is contributed.\n", mat_i, mat_j);
-            throw Hermes::Exceptions::Exception("Incompatible matrices in add_umfpack_matrix().");
+            throw Exceptions::IOException(Exceptions::IOException::Read, filename);
+            return;
           }
-          this_it.get_current_position(this_i, this_j, this_val);
+
+          matvar = Mat_VarRead(matfp, var_name);
+
+          if (matvar)
+          {
+            mat_sparse_t *sparse = (mat_sparse_t *)matvar->data;
+
+            this->nnz = sparse->nir;
+            this->Ax = new Scalar[this->nnz];
+            this->Ai = new int[this->nnz];
+            this->size = sparse->njc - 1;
+            this->Ap = new int[this->size + 1];
+
+            void* data = NULL;
+            if(Hermes::Helpers::TypeIsReal<Scalar>::value)
+              data = sparse->data;
+            else
+            {
+              std::complex<double>* complex_data = new std::complex<double>[this->nnz];
+              double* real_array = (double*)((mat_complex_split_t*)sparse->data)->Re;
+              double* imag_array = (double*)((mat_complex_split_t*)sparse->data)->Im;
+              for(int i = 0; i < this->nnz; i++)
+                complex_data[i] = std::complex<double>(real_array[i], imag_array[i]);
+              data = (void*)complex_data;
+            }
+            memcpy(this->Ax, data, this->nnz * sizeof(Scalar));
+            if(!Hermes::Helpers::TypeIsReal<Scalar>::value)
+              delete [] data;
+            memcpy(this->Ap, sparse->jc, (this->size + 1) * sizeof(Scalar));
+            memcpy(this->Ai, sparse->ir, this->nnz * sizeof(int));
+
+            if(invert_storage)
+              this->switch_orientation();
+          }
+
+          Mat_Close(matfp);
+
+          if(!matvar)
+            throw Exceptions::IOException(Exceptions::IOException::Read, filename);
+#else
+          throw Exceptions::Exception("MATIO not included.");
+#endif
         }
-        this_it.add_to_current_position(mat_val);
-        mat_not_finished = mat_it.move_ptr();
-        this_not_finished = this_it.move_ptr();
-        if(mat_not_finished && !this_not_finished)
-          throw Hermes::Exceptions::Exception("Incompatible matrices in add_umfpack_matrix().");
+        break;
+
+      case EXPORT_FORMAT_PLAIN_ASCII:
+        throw Exceptions::MethodNotOverridenException("CSMatrix<Scalar>::import_from_file - Simple format");
+        break;
       }
     }
 
     template<typename Scalar>
-    CSMatrix<Scalar>* CSCMatrix<Scalar>::duplicate()
+    void CSCMatrix<Scalar>::import_from_file(char *filename, const char *var_name, MatrixExportFormat fmt)
+    {
+      CSMatrix<Scalar>::import_from_file(filename, var_name, fmt, false);
+    }
+
+    template<typename Scalar>
+    void CSRMatrix<Scalar>::import_from_file(char *filename, const char *var_name, MatrixExportFormat fmt)
+    {
+      CSMatrix<Scalar>::import_from_file(filename, var_name, fmt, true);
+    }
+
+    template<typename Scalar>
+    CSMatrix<Scalar>* CSCMatrix<Scalar>::duplicate() const
     {
       CSCMatrix<Scalar>* new_matrix = new CSCMatrix<Scalar>();
       new_matrix->create(this->get_size(), this->get_nnz(), this->get_Ap(),  this->get_Ai(),  this->get_Ax());
@@ -695,117 +621,11 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void CSRMatrix<Scalar>::add_as_block(unsigned int offset_i, unsigned int offset_j, CSMatrix<Scalar>* mat)
+    SparseMatrix<Scalar>* CSRMatrix<Scalar>::duplicate() const
     {
-      throw Exceptions::MethodNotImplementedException("CSRMatrix<double>::add_as_block");
-    }
-
-    template<typename Scalar>
-    void CSRMatrix<Scalar>::add_matrix(CSMatrix<Scalar>* mat)
-    {
-      throw Exceptions::MethodNotImplementedException("CSRMatrix<double>::add_matrix");
-    }
-
-    template<typename Scalar>
-    CSMatrix<Scalar>* CSRMatrix<Scalar>::duplicate()
-    {
-      throw Exceptions::MethodNotImplementedException("CSRMatrix<double>::duplicate");
-    }
-  }
-
-  namespace Solvers
-  {
-    template<typename Scalar>
-    bool CSIterator<Scalar>::init()
-    {
-      if(this->size == 0 || this->nnz == 0) return false;
-      this->Ap_pos = 0;
-      this->Ai_pos = 0;
-      return true;
-    }
-
-    template<typename Scalar>
-    CSIterator<Scalar>::CSIterator(Hermes::Algebra::CSMatrix<Scalar>* mat)
-    {
-      this->size = mat->get_size();
-      this->nnz = mat->get_nnz();
-      this->Ai = mat->get_Ai();
-      this->Ap = mat->get_Ap();
-      this->Ax = mat->get_Ax();
-      this->Ai_pos = 0;
-      this->Ap_pos = 0;
-    }
-
-    template<typename Scalar>
-    bool CSIterator<Scalar>::move_ptr()
-    {
-      if(Ai_pos >= nnz - 1) return false; // It is no longer possible to find next element.
-      if(Ai_pos + 1 >= Ap[Ap_pos + 1])
-      {
-        Ap_pos++;
-      }
-      Ai_pos++;
-      return true;
-    }
-
-    template<typename Scalar>
-    void CSIterator<Scalar>::add_to_current_position(Scalar val)
-    {
-      this->Ax[this->Ai_pos] += val;
-    }
-
-    template<typename Scalar>
-    CSCIterator<Scalar>::CSCIterator(Hermes::Algebra::CSCMatrix<Scalar>* mat) : CSIterator<Scalar>(mat)
-    {
-    }
-
-    template<typename Scalar>
-    void CSCIterator<Scalar>::get_current_position(int& i, int& j, Scalar& val)
-    {
-      i = this->Ai[this->Ai_pos];
-      j = this->Ap_pos;
-      val = this->Ax[this->Ai_pos];
-    }
-
-    template<typename Scalar>
-    bool CSCIterator<Scalar>::move_to_position(int i, int j)
-    {
-      int ii, jj;
-      Scalar val;
-      get_current_position(ii, jj, val);
-      while (!(ii == i && jj == j))
-      {
-        if(!this->move_ptr()) return false;
-        get_current_position(ii, jj, val);
-      }
-      return true;
-    }
-
-    template<typename Scalar>
-    CSRIterator<Scalar>::CSRIterator(Hermes::Algebra::CSRMatrix<Scalar>* mat) : CSIterator<Scalar>(mat)
-    {
-    }
-
-    template<typename Scalar>
-    void CSRIterator<Scalar>::get_current_position(int& i, int& j, Scalar& val)
-    {
-      i = this->Ai[this->Ai_pos];
-      j = this->Ap_pos;
-      val = this->Ax[this->Ai_pos];
-    }
-
-    template<typename Scalar>
-    bool CSRIterator<Scalar>::move_to_position(int i, int j)
-    {
-      int ii, jj;
-      Scalar val;
-      get_current_position(ii, jj, val);
-      while (!(ii == i && jj == j))
-      {
-        if(!this->move_ptr()) return false;
-        get_current_position(ii, jj, val);
-      }
-      return true;
+      CSRMatrix<Scalar>* new_matrix = new CSRMatrix<Scalar>();
+      new_matrix->create(this->get_size(), this->get_nnz(), this->get_Ap(),  this->get_Ai(),  this->get_Ax());
+      return new_matrix;
     }
   }
 }
@@ -818,12 +638,3 @@ template class HERMES_API Hermes::Algebra::CSCMatrix<std::complex<double> >;
 
 template class HERMES_API Hermes::Algebra::CSRMatrix<double>;
 template class HERMES_API Hermes::Algebra::CSRMatrix<std::complex<double> >;
-
-template class HERMES_API Hermes::Solvers::CSIterator<double>;
-template class HERMES_API Hermes::Solvers::CSIterator<std::complex<double> >;
-
-template class HERMES_API Hermes::Solvers::CSCIterator<double>;
-template class HERMES_API Hermes::Solvers::CSCIterator<std::complex<double> >;
-
-template class HERMES_API Hermes::Solvers::CSRIterator<double>;
-template class HERMES_API Hermes::Solvers::CSRIterator<std::complex<double> >;

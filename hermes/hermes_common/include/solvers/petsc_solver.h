@@ -59,29 +59,15 @@ namespace Hermes
       virtual void add(unsigned int m, unsigned int n, Scalar v);
       virtual void add_to_diagonal(Scalar v);
       virtual void add(unsigned int m, unsigned int n, Scalar **mat, int *rows, int *cols);
-      virtual bool export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt = EXPORT_FORMAT_PLAIN_ASCII, char* number_format = "%lf");
+      virtual void export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format = "%lf");
       virtual unsigned int get_matrix_size() const;
       virtual unsigned int get_nnz() const;
       virtual double get_fill_in() const;
-      /// Add matrix.
-      /// @param[in] mat matrix to be added
-      virtual void add_matrix(PetscMatrix* mat);
-      /// Add matrix to diagonal.
-      /// @param[in] num_stages matrix is added to num_stages positions. num_stages * size(added matrix) = size(target matrix)
-      /// @param[in] mat added matrix
-      virtual void add_to_diagonal_blocks(int num_stages, PetscMatrix* mat);
-      virtual void add_sparse_to_diagonal_blocks(int num_stages, SparseMatrix<Scalar>* mat)
-      {
-        add_to_diagonal_blocks(num_stages, dynamic_cast<PetscMatrix<Scalar>*>(mat));
-      }
-      /// Add matrix to specific position.
-      /// @param[in] i row in target matrix coresponding with top row of added matrix
-      /// @param[in] j column in target matrix coresponding with lef column of added matrix
-      /// @param[in] mat added matrix
-      virtual void add_as_block(unsigned int i, unsigned int j, PetscMatrix* mat);
 
-      // Applies the matrix to vector_in and saves result to vector_out.
-      void multiply_with_vector(Scalar* vector_in, Scalar* vector_out) const;
+      /// Add matrix - General.
+      /// See add_petsc_matrix
+      /// @param[in] mat matrix to be added.
+      virtual void add_sparse_matrix(SparseMatrix<Scalar>* mat);
 
       // Multiplies matrix with a Scalar.
       void multiply_with_Scalar(Scalar value);
@@ -96,6 +82,10 @@ namespace Hermes
       // Duplicates a matrix (including allocation).
       PetscMatrix* duplicate();
     protected:
+      /// Add matrix - PETSc.
+      /// @param[in] mat matrix to be added
+      virtual void add_petsc_matrix(PetscMatrix* mat);
+
       /// Petsc matrix data structure.
       Mat matrix;
       /// Number of nonzero values.
@@ -128,7 +118,7 @@ namespace Hermes
       virtual void add(unsigned int n, unsigned int *idx, Scalar *y);
       virtual void add_vector(Vector<Scalar>* vec);
       virtual void add_vector(Scalar* vec);
-      virtual bool export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt = EXPORT_FORMAT_PLAIN_ASCII, char* number_format = "%lf");
+      virtual void export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format = "%lf");
 
     protected:
       /// Petsc vector data structure.

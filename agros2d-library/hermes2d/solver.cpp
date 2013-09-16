@@ -65,13 +65,16 @@ void AgrosExternalSolverOctave::solve(double* initial_guess)
     QString file_command = QString("%1/solver_command").arg(cacheProblemDir());
     QString file_matrix = QString("%1/solver_matrix").arg(cacheProblemDir());
     QString file_rhs = QString("%1/solver_rhs").arg(cacheProblemDir());
+    QString file_initial = QString("%1/solver_initial").arg(cacheProblemDir());
     QString file_sln = QString("%1/solver_sln").arg(cacheProblemDir());
 
-    this->set_matrix_dump_format(EXPORT_FORMAT_MATLAB_MATIO);
-    this->set_rhs_E_matrix_dump_format(EXPORT_FORMAT_MATLAB_MATIO);
+    this->set_matrix_export_format(EXPORT_FORMAT_MATLAB_MATIO);
     this->set_matrix_filename(file_matrix.toStdString());
-    this->set_rhs_filename(file_rhs.toStdString());
+    this->set_matrix_varname("matrix");
     this->set_matrix_number_format((char *) "%g");
+    this->set_rhs_export_format(EXPORT_FORMAT_MATLAB_MATIO);
+    this->set_rhs_filename(file_rhs.toStdString());
+    this->set_rhs_varname("rhs");
     this->set_rhs_number_format((char *) "%g");
 
     // store state
@@ -83,6 +86,15 @@ void AgrosExternalSolverOctave::solve(double* initial_guess)
     // write matrix and rhs to disk
     this->process_matrix_output(this->m);
     this->process_vector_output(this->rhs);
+
+    // write initial guess to disk
+    if (initial_guess)
+    {
+        SimpleVector<double> initialVector;
+        initialVector.alloc(rhs->get_size());
+        initialVector.set_vector(initial_guess);
+        initialVector.export_to_file((char*) file_initial.toStdString().c_str(), "initial", EXPORT_FORMAT_MATLAB_MATIO);
+    }
 
     // restore state
     this->output_matrixOn = matrixOn;
@@ -96,10 +108,22 @@ void AgrosExternalSolverOctave::solve(double* initial_guess)
     // connect(m_process, SIGNAL(finished(int)), this, SLOT(solverSolutionCreated(int)));
 
     QString str = "#! /usr/bin/octave -qf\n";
-    str += QString("load \"%1\";\n").arg(file_matrix);
-    str += QString("load \"%2\";\n").arg(file_rhs);
-    str += QString("sln = matrix \\ rhs;\n");
-    str += QString("save -ascii \"%4\" sln;").arg(file_sln); // -mat
+    if (initial_guess)
+        str += QString("load(\"%1\", \"initial\");\n").arg(file_initial);
+    str += QString("load(\"%1\", \"matrix\");\n").arg(file_matrix);
+    str += QString("load(\"%1\", \"rhs\");\n").arg(file_rhs);
+    if (!initial_guess)
+        // direct solver
+        str += QString("sln = matrix \\ rhs;\n");
+    else
+    {
+        // iterative solver
+        str += QString("[sln, flag, relres, iter] = gmres(matrix, rhs, [], 1e-2, [], [], [], initial);\n");
+        str += QString("file_id = fopen('%1', 'w');\n").arg(QString("%1/solver_info.txt").arg(cacheProblemDir()));
+        str += QString("fprintf(file_id, 'iter = %i\\n', iter(2));\n");
+        str += QString("fclose(file_id);\n");
+    }
+    str += QString("save -mat \"%1\" sln;").arg(file_sln); // -ascii
 
     writeStringContent(file_command, str);
 
@@ -115,16 +139,26 @@ void AgrosExternalSolverOctave::solve(double* initial_guess)
     eventLoop.exec();
 
     SimpleVector<double> slnVector;
-    slnVector.import_from_file((char*) file_sln.toStdString().c_str());
+    slnVector.import_from_file((char*) file_sln.toStdString().c_str(), "sln", EXPORT_FORMAT_MATLAB_MATIO);
 
     delete [] this->sln;
     this->sln = new double[slnVector.get_size()];
     memcpy(this->sln, slnVector.v, slnVector.get_size() * sizeof(double));
 
+    if (initial_guess)
+    {
+        QString str = readFileContent(QString("%1/solver_info.txt").arg(cacheProblemDir()));
+        qDebug() << str;
+    }
+
     QFile::remove(file_command);
+    if (initial_guess)
+        QFile::remove(file_initial);
     QFile::remove(file_matrix);
     QFile::remove(file_rhs);
     QFile::remove(file_sln);
+
+    qDebug() << "EXTERNAL";
 }
 
 //void AgrosExternalSolver::solverError(QProcess::ProcessError error)
@@ -148,12 +182,14 @@ void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Mixins::Matrix
         solver->output_matrix(true);
         solver->output_rhs(true);
         QString name = QString("%1/%2_%3_%4").arg(cacheProblemDir()).arg(solverName).arg(Agros2D::problem()->actualTimeStep()).arg(adaptivityStep);
-        solver->set_matrix_dump_format(Agros2D::configComputer()->dumpFormat);
-        solver->set_rhs_E_matrix_dump_format(Agros2D::configComputer()->dumpFormat);
+        solver->set_matrix_export_format(Agros2D::configComputer()->dumpFormat);
         solver->set_matrix_filename(QString("%1_Matrix").arg(name).toStdString());
-        solver->set_rhs_filename(QString("%1_RHS").arg(name).toStdString());
+        solver->set_matrix_varname("matrix");
         solver->set_matrix_number_format((char *) "%g");
+        solver->set_rhs_export_format(Agros2D::configComputer()->dumpFormat);
+        solver->set_rhs_filename(QString("%1_RHS").arg(name).toStdString());
         solver->set_rhs_number_format((char *) "%g");
+        solver->set_rhs_varname("rhs");
     }
 }
 

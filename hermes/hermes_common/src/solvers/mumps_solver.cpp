@@ -197,22 +197,15 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void MumpsMatrix<Scalar>::add_to_diagonal(Scalar v)
-    {
-      for (unsigned int i = 0; i < this->size; i++)
-      {
-        add(i, i, v);
-      }
-    };
-
-    template<typename Scalar>
-    bool MumpsMatrix<Scalar>::export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
+    void MumpsMatrix<Scalar>::export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
     {
       switch (fmt)
       {
       case EXPORT_FORMAT_MATRIX_MARKET:
         {
           FILE* file = fopen(filename, "w");
+          if(!file)
+            throw Exceptions::IOException(Exceptions::IOException::Write, filename);
           fprintf(file, "%%%%Matrix<Scalar>Market matrix coordinate real\n");
           fprintf(file, "%d %d %d\n", this->size, this->size, this->nnz);
 
@@ -226,8 +219,8 @@ namespace Hermes
           }
 
           fclose(file);
-          return true;
         }
+        break;
 
       case EXPORT_FORMAT_MATLAB_MATIO:
         {
@@ -236,26 +229,14 @@ namespace Hermes
           sparse.nzmax = this->nnz;
 
           // For complex.
-          double* Ax_re = new double[this->nnz];
-          double* Ax_im = new double[this->nnz];
-          struct mat_complex_split_t z = {Ax_re, Ax_im};
+          double* Ax_re = NULL;
+          double* Ax_im = NULL;
 
           sparse.nir = this->nnz;
           sparse.ir = Ai;
           sparse.njc = this->size + 1;
           sparse.jc = (int *) Ap;
           sparse.ndata = this->nnz;
-          if(Hermes::Helpers::TypeIsReal<Scalar>::value)
-            sparse.data = Ax;
-          else
-          {
-            for(int i = 0; i < this->nnz; i++)
-            {
-              Ax_re[i] = ((std::complex<double>)(mumps_to_Scalar(this->Ax[i]))).real();
-              Ax_im[i] = ((std::complex<double>)(mumps_to_Scalar(this->Ax[i]))).imag();
-              sparse.data = &z;
-            }
-          }
 
           size_t dims[2];
           dims[0] = this->size;
@@ -264,35 +245,50 @@ namespace Hermes
           mat_t *mat = Mat_CreateVer(filename, "", MAT_FT_MAT5);
 
           matvar_t *matvar;
+
           if(Hermes::Helpers::TypeIsReal<Scalar>::value)
+          {
+            sparse.data = Ax;
             matvar = Mat_VarCreate("matrix", MAT_C_SPARSE, MAT_T_DOUBLE, 2, dims, &sparse, MAT_F_DONT_COPY_DATA);
+          }
           else
+          {
+            Ax_re = new double[this->nnz];
+            Ax_im = new double[this->nnz];
+            struct mat_complex_split_t z = {Ax_re, Ax_im};
+
+            for(int i = 0; i < this->nnz; i++)
+            {
+              Ax_re[i] = ((std::complex<double>)(mumps_to_Scalar(this->Ax[i]))).real();
+              Ax_im[i] = ((std::complex<double>)(mumps_to_Scalar(this->Ax[i]))).imag();
+              sparse.data = &z;
+            }
             matvar = Mat_VarCreate("matrix", MAT_C_SPARSE, MAT_T_DOUBLE, 2, dims, &sparse, MAT_F_DONT_COPY_DATA | MAT_F_COMPLEX);
+          }
 
           if (matvar)
           {
             Mat_VarWrite(mat, matvar, MAT_COMPRESSION_ZLIB);
             Mat_VarFree(matvar);
-            delete [] Ax_re;
-            delete [] Ax_im;
-            return true;
-          }
-          else
-          {
-            delete [] Ax_re;
-            delete [] Ax_im;
-            return false;
           }
 
+          if(Ax_re)
+            delete [] Ax_re;
+          if(Ax_im)
+            delete [] Ax_im;
           Mat_Close(mat);
+
+          if(!matvar)
+            throw Exceptions::IOException(Exceptions::IOException::Write, filename);
 #endif
-          return false;
         }
+        break;
 
       case EXPORT_FORMAT_PLAIN_ASCII:
         {
           FILE* file = fopen(filename, "w");
-
+          if(!file)
+            throw Exceptions::IOException(Exceptions::IOException::Write, filename);
           for (unsigned int j = 0; j < this->size; j++)
           {
             for (int i = Ap[j]; i < Ap[j + 1]; i++)
@@ -303,18 +299,8 @@ namespace Hermes
           }
 
           fclose(file);
-          return true;
         }
-
-      default:
-        return false;
       }
-    }
-
-    template<typename Scalar>
-    unsigned int MumpsMatrix<Scalar>::get_matrix_size() const
-    {
-      return this->size;
     }
 
     template<typename Scalar>
@@ -329,31 +315,6 @@ namespace Hermes
       return Ap[this->size] / (double) (this->size * this->size);
     }
 
-    template<typename Scalar>
-    void MumpsMatrix<Scalar>::add_matrix(MumpsMatrix<Scalar>* mat)
-    {
-      add_as_block(0, 0, mat);
-    };
-
-    template<typename Scalar>
-    void MumpsMatrix<Scalar>::add_to_diagonal_blocks(int num_stages, MumpsMatrix<Scalar>* mat)
-    {
-      int ndof = mat->get_size();
-      if(this->get_size() != (unsigned int) num_stages * ndof)
-        throw Hermes::Exceptions::Exception("Incompatible matrix sizes in PetscMatrix<Scalar>::add_to_diagonal_blocks()");
-
-      for (int i = 0; i < num_stages; i++)
-      {
-        this->add_as_block(ndof*i, ndof*i, mat);
-      }
-    }
-
-    template<typename Scalar>
-    void MumpsMatrix<Scalar>::add_sparse_to_diagonal_blocks(int num_stages, SparseMatrix<Scalar>* mat)
-    {
-      add_to_diagonal_blocks(num_stages, static_cast<MumpsMatrix*>(mat));
-    }
-
     inline ZMUMPS_COMPLEX& operator +=(ZMUMPS_COMPLEX &a, ZMUMPS_COMPLEX b)
     {
       a.r +=b.r;
@@ -365,42 +326,42 @@ namespace Hermes
     void MumpsMatrix<Scalar>::add_as_block(unsigned int i, unsigned int j, MumpsMatrix<Scalar>* mat)
     {
       int idx;
-      for (unsigned int col = 0;col<mat->get_size();col++)
+      for (unsigned int col = 0; col<mat->get_size(); col++)
       {
-        for (unsigned int n = mat->Ap[col];n<mat->Ap[col + 1];n++)
+        for (unsigned int n = mat->Ap[col]; n < mat->Ap[col + 1]; n++)
         {
           idx = find_position(Ai + Ap[col + j], Ap[col + 1 + j] - Ap[col + j], mat->Ai[n] + i);
-          if(idx<0)
+          if(idx < 0)
             throw Hermes::Exceptions::Exception("Sparse matrix entry not found");
-          idx +=Ap[col + j];
-          Ax[idx] +=mat->Ax[n];
+          idx += Ap[col + j];
+          Ax[idx] += mat->Ax[n];
         }
       }
     }
 
     // Applies the matrix to vector_in and saves result to vector_out.
     template<typename Scalar>
-    void MumpsMatrix<Scalar>::multiply_with_vector(Scalar* vector_in, Scalar* vector_out) const
+    void MumpsMatrix<Scalar>::multiply_with_vector(Scalar* vector_in, Scalar*& vector_out, bool vector_out_initialized) const
     {
-      for(unsigned int i = 0;i<this->size;i++)
-      {
-        vector_out[i] = 0;
-      }
+      if(!vector_out_initialized)
+        vector_out = new Scalar[this->size];
+      for(unsigned int i = 0; i < this->size; i++)
+        vector_out[i] = Scalar(0.);
       Scalar a;
       for (unsigned int i = 0;i<nnz;i++)
       {
         a = mumps_to_Scalar(Ax[i]);
-        vector_out[jcn[i]-1] +=vector_in[irn[i]-1]*a;
+        vector_out[jcn[i] - 1] += vector_in[irn[i] - 1] * a;
       }
     }
-    // Multiplies matrix with a Scalar.
+
     template<>
     void MumpsMatrix<double>::multiply_with_Scalar(double value)
     {
       int n = nnz;
       for(int i = 0;i<n;i++)
       {
-        Ax[i] = Ax[i]*value;
+        Ax[i] = Ax[i] * value;
       }
     }
 
@@ -429,7 +390,6 @@ namespace Hermes
       a = b;
     }
 
-    // Creates matrix using size, nnz, and the three arrays.
     template<typename Scalar>
     void MumpsMatrix<Scalar>::create(unsigned int size, unsigned int nnz, int* ap, int* ai, Scalar* ax)
     {
@@ -456,7 +416,7 @@ namespace Hermes
     }
     // Duplicates a matrix (including allocation).
     template<typename Scalar>
-    MumpsMatrix<Scalar>* MumpsMatrix<Scalar>::duplicate()
+    SparseMatrix<Scalar>* MumpsMatrix<Scalar>::duplicate() const
     {
       MumpsMatrix<Scalar> * nmat = new MumpsMatrix<Scalar>();
 
@@ -481,14 +441,8 @@ namespace Hermes
       return nmat;
     }
 
-    // SimpleVector<Scalar> /////////////////////////////////////////////////////////////////////////////////////
-
-    
-
     template class HERMES_API MumpsMatrix<double>;
     template class HERMES_API MumpsMatrix<std::complex<double> >;
-    template class HERMES_API SimpleVector<double>;
-    template class HERMES_API SimpleVector<std::complex<double> >;
   }
   namespace Solvers
   {
