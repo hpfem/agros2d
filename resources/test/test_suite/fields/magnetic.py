@@ -606,15 +606,18 @@ class MagneticHarmonicNonlinPlanar(Agros2DTestCase):
 
     def test_values(self):
         # point value
-        point = self.magnetic.local_values(0.00299, 0.001355)
-        self.value_test("Flux density", point["B"], 1.396825)
-        self.value_test("Magnetic potential", point["mur"], 6666.8723)
-        self.value_test("Current density - total - real", point["Jr"], 6.24881e5)
-        self.value_test("Current density - total - imag", point["Ji"], -3.112391e5)
+        point = self.magnetic.local_values(-2e-3, 4e-4)
+        self.value_test("Flux density", point["B"], 1.478466609831)
+        self.value_test("Permeability", point["mur"], 4381.88257, 5)
+        self.value_test("Current density - total - real", point["Jr"], -141396.38032153525)
+        self.value_test("Current density - total - imag", point["Ji"], -931848.5966661869)
         
         # volume integral
-        volume = self.magnetic.volume_integrals([2])
-        self.value_test("Energy", volume["Wm"], 6.219017e-4)
+        volume = self.magnetic.volume_integrals()
+        self.value_test("Energy", volume["Wm"], 0.012166845506925431)
+        self.value_test("Current density - induced - real", volume["Iivr"], -76.31308924012728)
+        self.value_test("Current density - induced - imag", volume["Iiti"], -25.458979006398277)
+        self.value_test("Energy", volume["Wm"], 0.012166845506925431)
                        
 class MagneticTransientPlanar(Agros2DTestCase):
     def setUp(self):  
@@ -1059,7 +1062,7 @@ if __name__ == '__main__':
     #suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticNonlinAxisymmetric))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicPlanar))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicAxisymmetric))
-    #suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicNonlinPlanar))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicNonlinPlanar))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicPlanarTotalCurrent))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicAxisymmetricTotalCurrent))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticTransientPlanar))
