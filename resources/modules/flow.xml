@@ -105,7 +105,7 @@
 
       </module:weakform_volume>
 
-      <module:weakform_volume analysistype="transient" equation="\rho \left(\frac{\partial T}{\partial t} + \vec{v} \cdot \grad \vec{v}\right) = -\, \grad p + \mu \triangle \vec{v} + \vec{f},~\div \vec{v} = 0">
+      <module:weakform_volume analysistype="transient" equation="\rho \left(\frac{\partial \vec{v}}{\partial t} + \vec{v} \cdot \grad \vec{v}\right) = -\, \grad p + \mu \triangle \vec{v} + \vec{f},~\div \vec{v} = 0">
         <module:quantity id="flow_viscosity"/>
         <module:quantity id="flow_density"/>
         <module:quantity id="flow_force_x"/>

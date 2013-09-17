@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
+<problem:document xmlns:problem="XMLProblem" version="3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/pkus/sources/agros2d/resources/xsd/problem_a2d_31_xml.xsd">
 
   <geometry>
     <nodes>
@@ -30,7 +30,7 @@
 
   <problem coordinate_type="planar" mesh_type="gmsh_quad">
     <fields>
-      <field adaptivity_type="disabled" analysis_type="steadystate" field_id="flow" linearity_type="newton" matrix_solver="mumps">
+      <field adaptivity_type="disabled" analysis_type="transient" field_id="flow" linearity_type="newton" matrix_solver="mumps">
         <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>
@@ -41,7 +41,7 @@
             </boundary_edges>
             <boundary_types>
               <boundary_type key="flow_pressure" value="0"/>
-              <boundary_type key="flow_velocity_x" value="cos(y*pi/2)"/>
+              <boundary_type key="flow_velocity_x" value="cos(y*pi/2)*((time&lt;2)*time + (time>=2)*(time&lt;=100)*2)"/>
               <boundary_type key="flow_velocity_y" value="0"/>
             </boundary_types>
           </boundary>
@@ -78,20 +78,19 @@
             </material_labels>
             <material_types>
               <material_type key="flow_density" value="1"/>
-              <material_type key="flow_viscosity" value="0.001"/>
               <material_type key="flow_force_x" value="0"/>
               <material_type key="flow_force_y" value="0"/>
+              <material_type key="flow_viscosity" value="0.001"/>
             </material_types>
           </material>
         </materials>
         <field_config>
           <field_item field_key="NonlinearTolerance" field_value="0.05"/>
-          <field_item field_key="NonlinearSteps" field_value="20"/>
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="16"/>
           <field_item field_key="NewtonDampingType" field_value="0"/>
           <field_item field_key="NewtonDampingCoeff" field_value="1"/>
           <field_item field_key="NewtonReuseJacobian" field_value="0"/>
-          <field_item field_key="NewtonSufImprovJacobian" field_value="0.8"/>
+          <field_item field_key="NewtonSufImprovForJacobianReuse" field_value="0.8"/>
           <field_item field_key="NewtonSufImprov" field_value="1.2"/>
           <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
           <field_item field_key="NewtonStepsToIncreaseDF" field_value="1"/>
@@ -106,15 +105,18 @@
           <field_item field_key="AdaptivityTransientRedoneEach" field_value="1"/>
           <field_item field_key="AdaptivityStoppingCriterion" field_value="1"/>
           <field_item field_key="AdaptivityThreshold" field_value="0.6"/>
-          <field_item field_key="AdaptivityProjNormType" field_value="1"/>
+          <field_item field_key="AdaptivityErrorCalculator" field_value="h1"/>
           <field_item field_key="AdaptivityUseAniso" field_value="1"/>
           <field_item field_key="AdaptivityFinerReference" field_value="0"/>
+          <field_item field_key="AdaptivityOrderIncrease" field_value="1"/>
+          <field_item field_key="AdaptivitySpaceRefinement" field_value="1"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
           <field_item field_key="TransientInitialCondition" field_value="0"/>
           <field_item field_key="LinearSolverIterMethod" field_value="2"/>
           <field_item field_key="LinearSolverIterPreconditioner" field_value="2"/>
           <field_item field_key="LinearSolverIterToleranceAbsolute" field_value="1e-16"/>
           <field_item field_key="LinearSolverIterIters" field_value="1000"/>
+          <field_item field_key="TimeUnit" field_value="s"/>
         </field_config>
       </field>
     </fields>
@@ -124,14 +126,13 @@
       <problem_item problem_key="TimeMethod" problem_value="0"/>
       <problem_item problem_key="TimeMethodTolerance" problem_value="0.05"/>
       <problem_item problem_key="TimeOrder" problem_value="1"/>
-      <problem_item problem_key="TimeSteps" problem_value="2"/>
-      <problem_item problem_key="TimeTotal" problem_value="1"/>
+      <problem_item problem_key="TimeSteps" problem_value="40"/>
+      <problem_item problem_key="TimeTotal" problem_value="8"/>
     </problem_config>
   </problem>
 
   <config>
     <item key="Problem_StartupScript" value=""/>
-    <item key="Problem_Description" value=""/>
     <item key="View_RulersFontFamily" value="Droid"/>
     <item key="View_RulersFontPointSize" value="12"/>
     <item key="View_PostFontFamily" value="Droid"/>
@@ -212,15 +213,16 @@
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
     <item key="View_ScalarRangeMin" value="0"/>
-    <item key="View_ScalarRangeMax" value="1.48376584802112"/>
+    <item key="View_ScalarRangeMax" value="1.85749005116802"/>
     <item key="View_ShowVectorView" value="0"/>
-    <item key="View_VectorVariable" value=""/>
+    <item key="View_VectorVariable" value="flow_velocity"/>
     <item key="View_VectorProportional" value="1"/>
     <item key="View_VectorColor" value="1"/>
     <item key="View_VectorCount" value="50"/>
     <item key="View_VectorScale" value="0.6"/>
     <item key="View_VectorType" value="0"/>
     <item key="View_VectorCenter" value="0"/>
+    <item key="View_OrderComponent" value="1"/>
     <item key="View_ShowOrderView" value="1"/>
     <item key="View_ShowOrderColorBar" value="1"/>
     <item key="View_ShowOrderLabel" value="0"/>
