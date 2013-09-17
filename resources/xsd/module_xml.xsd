@@ -292,6 +292,13 @@
                         <attribute name="expr" use="required" type="string" />
                 </complexType>
         </element>
+
+        <element name="function_use">
+                <complexType>
+                        <attribute name="id" use="required" type="string" />
+                </complexType>
+        </element>
+
                         
 
         <element name="surface">
@@ -326,6 +333,7 @@
                                 <element maxOccurs="unbounded" ref="module:boundary" />
                                 <sequence>
                                         <element maxOccurs="unbounded" ref="module:quantity" />
+                                        <element minOccurs="0" maxOccurs="unbounded" ref="module:function_use" />
                                         <choice maxOccurs="unbounded">
                                                 <element ref="module:matrix_form" />
                                                 <element ref="module:vector_form" />
@@ -394,6 +402,7 @@
                 <complexType>
                         <sequence>
                                 <element maxOccurs="unbounded" ref="module:quantity" />
+                                <element minOccurs="0" maxOccurs="unbounded" ref="module:function_use" />
                                 <element minOccurs="1" maxOccurs="unbounded" ref="module:linearity_option" />
                         </sequence>
                         <attribute name="analysistype" use="required" type="string" />

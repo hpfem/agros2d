@@ -116,6 +116,8 @@
         <module:quantity id="magnetic_total_current_prescribed"/>
         <module:quantity id="magnetic_total_current_real"/>
 
+        <module:function_use id="magnetic_func_current_density_external_real_complete"/>
+
         <module:linearity_option type="linear">
           <module:matrix_form id="steady_laplace"/>
           <module:matrix_form id="steady_velocity"/>
@@ -143,8 +145,6 @@
         <module:quantity id="magnetic_velocity_y"/>
         <module:quantity id="magnetic_velocity_angular"/>
         <module:quantity dependence="time" id="magnetic_current_density_external_real"/>
-        <module:quantity id="magnetic_total_current_prescribed"/>
-        <module:quantity dependence="time" id="magnetic_total_current_real"/>
 
         <module:linearity_option type="linear">
           <module:matrix_form id="steady_laplace"/>

@@ -108,7 +108,7 @@ void Agros2DGeneratorModule::generatePluginInterfaceFiles()
 
     foreach(XMLModule::function function, m_module->volume().function())
     {
-        generateSpecialFunction(&function, output);
+        generateSpecialFunction(&function, &output);
     }
 
     std::string text;
@@ -600,6 +600,7 @@ void Agros2DGeneratorModule::generateWeakForms(ctemplate::TemplateDictionary &ou
     foreach(XMLModule::weakform_volume weakform, m_module->volume().weakforms_volume().weakform_volume())
     {
         AnalysisType analysisType = analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype().c_str()));
+
         foreach(XMLModule::linearity_option option, weakform.linearity_option())
         {
             LinearityType linearityType = linearityTypeFromStringKey(QString::fromStdString(option.type().c_str()));
@@ -651,14 +652,6 @@ void Agros2DGeneratorModule::generateWeakForms(ctemplate::TemplateDictionary &ou
                     generateForm(formInfo, linearityType, output, weakform, "EXACT", &boundary);
                 }
             }
-        }
-    }
-
-    if(withSpecialFunctions)
-    {
-        foreach(XMLModule::function function, m_module->volume().function())
-        {
-            generateSpecialFunction(&function, output);
         }
     }
 }
@@ -768,7 +761,7 @@ void Agros2DGeneratorModule::generatePluginFilterFiles()
 
     foreach(XMLModule::function function, m_module->volume().function())
     {
-        generateSpecialFunction(&function, output);
+        generateSpecialFunction(&function, &output);
     }
 
     // source - expand template
@@ -927,7 +920,7 @@ void Agros2DGeneratorModule::generatePluginLocalPointFiles()
 
     foreach(XMLModule::function function, m_module->volume().function())
     {
-        generateSpecialFunction(&function, output);
+        generateSpecialFunction(&function, &output);
     }
 
     // header - save to file
@@ -1050,7 +1043,7 @@ void Agros2DGeneratorModule::generatePluginVolumeIntegralFiles()
 
     foreach(XMLModule::function function, m_module->volume().function())
     {
-        generateSpecialFunction(&function, output);
+        generateSpecialFunction(&function, &output);
     }
 
     foreach (XMLModule::volumeintegral vol, m_module->postprocessor().volumeintegrals().volumeintegral())
@@ -2047,6 +2040,17 @@ void Agros2DGeneratorModule::generateForm(FormInfo formInfo, LinearityType linea
                 }
             }
 
+            foreach(XMLModule::function_use functionUse, weakform.function_use())
+            {
+                foreach(XMLModule::function functionDefinition, m_module->volume().function())
+                {
+                    if(functionUse.id() == functionDefinition.id())
+                    {
+                        generateSpecialFunction(&functionDefinition, field);
+                    }
+                }
+            }
+            
             field->SetValue("FUNCTION_NAME", functionName.toStdString());
             field->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
             field->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
@@ -2076,9 +2080,9 @@ void Agros2DGeneratorModule::generateForm(FormInfo formInfo, LinearityType linea
     }
 }
 
-void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function* function, ctemplate::TemplateDictionary &output)
+void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function* function, ctemplate::TemplateDictionary *output)
 {
-    ctemplate::TemplateDictionary *functionTemplate = output.AddSectionDictionary("SPECIAL_FUNCTION_SOURCE");
+    ctemplate::TemplateDictionary *functionTemplate = output->AddSectionDictionary("SPECIAL_FUNCTION_SOURCE");
     functionTemplate->SetValue("SPECIAL_FUNCTION_NAME", function->shortname());
     functionTemplate->SetValue("SPECIAL_FUNCTION_FULL_NAME", m_module->general().id() + "_function_" + function->shortname());
     functionTemplate->SetValue("FROM", function->bound_low().present() ? function->bound_low().get() : "-1");
