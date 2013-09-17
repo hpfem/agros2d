@@ -82,8 +82,8 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
     {{SPECIAL_FUNCTION_NAME}}.setVariant("{{SELECTED_VARIANT}}");
     {{SPECIAL_FUNCTION_NAME}}.setType(specialFunctionTypeFromStringKey("{{TYPE}}"));
     {{SPECIAL_FUNCTION_NAME}}.setBounds({{FROM}}, {{TO}}, {{EXTRAPOLATE_LOW_PRESENT}}, {{EXTRAPOLATE_HI_PRESENT}});
+    {{SPECIAL_FUNCTION_NAME}}.setArea(this->markerVolume());
     {{SPECIAL_FUNCTION_NAME}}.createInterpolation();{{/SPECIAL_FUNCTION_SOURCE}}
-
 }
 
 template <typename Scalar>
@@ -149,6 +149,7 @@ void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
     {{SPECIAL_FUNCTION_NAME}}.setVariant("{{SELECTED_VARIANT}}");
     {{SPECIAL_FUNCTION_NAME}}.setType(specialFunctionTypeFromStringKey("{{TYPE}}"));
     {{SPECIAL_FUNCTION_NAME}}.setBounds({{FROM}}, {{TO}}, {{EXTRAPOLATE_LOW_PRESENT}}, {{EXTRAPOLATE_HI_PRESENT}});
+    {{SPECIAL_FUNCTION_NAME}}.setArea(this->markerVolume());
     {{SPECIAL_FUNCTION_NAME}}.createInterpolation();{{/SPECIAL_FUNCTION_SOURCE}}
 }
 
