@@ -151,6 +151,9 @@ if __name__ == "__main__":
     pack.add_argument('-v', '--version', nargs='?', default=VERSION, type=float, required=False,
                       help='version of package')
 
+    # equations
+    eqs = subparsers.add_parser('eqs', help='generate equations from modules')
+
     args = parser.parse_args()
 
     if (args.command == 'doc'):
@@ -173,3 +176,6 @@ if __name__ == "__main__":
             source_package(args.version)
         if (args.binary):
             binary_package()
+
+    if (args.command == 'eqs'):
+        equations()
