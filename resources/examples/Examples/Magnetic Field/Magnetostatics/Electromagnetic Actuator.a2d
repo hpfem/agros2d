@@ -26,29 +26,29 @@
       <node id="20" x="0.15" y="0.05"/>
     </nodes>
     <edges>
-      <edge angle="0" end="1" id="0" start="0"/>
-      <edge angle="0" end="2" id="1" start="1"/>
-      <edge angle="0" end="3" id="2" start="2"/>
-      <edge angle="0" end="4" id="3" start="3"/>
-      <edge angle="0" end="5" id="4" start="4"/>
-      <edge angle="0" end="6" id="5" start="5"/>
-      <edge angle="0" end="8" id="6" start="7"/>
-      <edge angle="0" end="6" id="7" start="7"/>
-      <edge angle="0" end="9" id="8" start="8"/>
-      <edge angle="0" end="9" id="9" start="0"/>
-      <edge angle="0" end="11" id="10" start="10"/>
-      <edge angle="0" end="12" id="11" start="11"/>
-      <edge angle="0" end="13" id="12" start="12"/>
-      <edge angle="0" end="10" id="13" start="13"/>
-      <edge angle="0" end="15" id="14" start="14"/>
-      <edge angle="0" end="16" id="15" start="15"/>
-      <edge angle="0" end="17" id="16" start="14"/>
-      <edge angle="0" end="16" id="17" start="17"/>
-      <edge angle="0" end="4" id="18" start="18"/>
-      <edge angle="0" end="14" id="19" start="5"/>
-      <edge angle="0" end="19" id="20" start="17"/>
-      <edge angle="90" end="20" id="21" start="19"/>
-      <edge angle="90" end="18" id="22" start="20"/>
+      <edge angle="0" end="1" id="0" is_curvilinear="1" segments="3" start="0"/>
+      <edge angle="0" end="2" id="1" is_curvilinear="1" segments="3" start="1"/>
+      <edge angle="0" end="3" id="2" is_curvilinear="1" segments="3" start="2"/>
+      <edge angle="0" end="4" id="3" is_curvilinear="1" segments="3" start="3"/>
+      <edge angle="0" end="5" id="4" is_curvilinear="1" segments="3" start="4"/>
+      <edge angle="0" end="6" id="5" is_curvilinear="1" segments="3" start="5"/>
+      <edge angle="0" end="8" id="6" is_curvilinear="1" segments="3" start="7"/>
+      <edge angle="0" end="6" id="7" is_curvilinear="1" segments="3" start="7"/>
+      <edge angle="0" end="9" id="8" is_curvilinear="1" segments="3" start="8"/>
+      <edge angle="0" end="9" id="9" is_curvilinear="1" segments="3" start="0"/>
+      <edge angle="0" end="11" id="10" is_curvilinear="1" segments="3" start="10"/>
+      <edge angle="0" end="12" id="11" is_curvilinear="1" segments="3" start="11"/>
+      <edge angle="0" end="13" id="12" is_curvilinear="1" segments="3" start="12"/>
+      <edge angle="0" end="10" id="13" is_curvilinear="1" segments="3" start="13"/>
+      <edge angle="0" end="15" id="14" is_curvilinear="1" segments="3" start="14"/>
+      <edge angle="0" end="16" id="15" is_curvilinear="1" segments="3" start="15"/>
+      <edge angle="0" end="17" id="16" is_curvilinear="1" segments="3" start="14"/>
+      <edge angle="0" end="16" id="17" is_curvilinear="1" segments="3" start="17"/>
+      <edge angle="0" end="4" id="18" is_curvilinear="1" segments="3" start="18"/>
+      <edge angle="0" end="14" id="19" is_curvilinear="1" segments="3" start="5"/>
+      <edge angle="0" end="19" id="20" is_curvilinear="1" segments="3" start="17"/>
+      <edge angle="90" end="20" id="21" is_curvilinear="1" segments="3" start="19"/>
+      <edge angle="90" end="18" id="22" is_curvilinear="1" segments="3" start="20"/>
     </edges>
     <labels>
       <label area="0" id="0" x="0.0348743" y="0.0347237"/>
@@ -86,13 +86,15 @@
               <material_label id="2"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="0"/>
-              <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
-              <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_current_density_external_imag" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
+              <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_total_current_prescribed" value="0"/>
+              <material_type key="magnetic_total_current_real" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
@@ -103,13 +105,15 @@
               <material_label id="3"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="0"/>
-              <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="300"/>
               <material_type key="magnetic_conductivity" value="0"/>
-              <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_current_density_external_imag" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_permeability" value="300"/>
+              <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_total_current_prescribed" value="0"/>
+              <material_type key="magnetic_total_current_real" value="0"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
@@ -119,13 +123,15 @@
               <material_label id="1"/>
             </material_labels>
             <material_types>
-              <material_type key="magnetic_current_density_external_real" value="1e6"/>
-              <material_type key="magnetic_velocity_angular" value="0"/>
-              <material_type key="magnetic_permeability" value="1"/>
               <material_type key="magnetic_conductivity" value="0"/>
-              <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_current_density_external_imag" value="0"/>
+              <material_type key="magnetic_current_density_external_real" value="0"/>
+              <material_type key="magnetic_permeability" value="1"/>
+              <material_type key="magnetic_remanence" value="0"/>
               <material_type key="magnetic_remanence_angle" value="0"/>
+              <material_type key="magnetic_total_current_prescribed" value="1"/>
+              <material_type key="magnetic_total_current_real" value="1000*2.5"/>
+              <material_type key="magnetic_velocity_angular" value="0"/>
               <material_type key="magnetic_velocity_x" value="0"/>
               <material_type key="magnetic_velocity_y" value="0"/>
             </material_types>
@@ -133,12 +139,11 @@
         </materials>
         <field_config>
           <field_item field_key="NonlinearTolerance" field_value="0.001"/>
-          <field_item field_key="NonlinearSteps" field_value="10"/>
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="4"/>
           <field_item field_key="NewtonDampingType" field_value="0"/>
           <field_item field_key="NewtonDampingCoeff" field_value="1"/>
           <field_item field_key="NewtonReuseJacobian" field_value="1"/>
-          <field_item field_key="NewtonSufImprovJacobian" field_value="0.8"/>
+          <field_item field_key="NewtonSufImprovForJacobianReuse" field_value="0.8"/>
           <field_item field_key="NewtonSufImprov" field_value="1.2"/>
           <field_item field_key="NewtonMaxStepsReuseJacobian" field_value="20"/>
           <field_item field_key="NewtonStepsToIncreaseDF" field_value="1"/>
@@ -153,15 +158,18 @@
           <field_item field_key="AdaptivityTransientRedoneEach" field_value="0"/>
           <field_item field_key="AdaptivityStoppingCriterion" field_value="1"/>
           <field_item field_key="AdaptivityThreshold" field_value="0.6"/>
-          <field_item field_key="AdaptivityProjNormType" field_value="1"/>
+          <field_item field_key="AdaptivityErrorCalculator" field_value="h1"/>
           <field_item field_key="AdaptivityUseAniso" field_value="1"/>
           <field_item field_key="AdaptivityFinerReference" field_value="0"/>
+          <field_item field_key="AdaptivityOrderIncrease" field_value="1"/>
+          <field_item field_key="AdaptivitySpaceRefinement" field_value="1"/>
           <field_item field_key="TransientTimeSkip" field_value="0"/>
           <field_item field_key="TransientInitialCondition" field_value="0"/>
           <field_item field_key="LinearSolverIterMethod" field_value="2"/>
           <field_item field_key="LinearSolverIterPreconditioner" field_value="2"/>
           <field_item field_key="LinearSolverIterToleranceAbsolute" field_value="1e-16"/>
           <field_item field_key="LinearSolverIterIters" field_value="1000"/>
+          <field_item field_key="TimeUnit" field_value="s"/>
         </field_config>
       </field>
     </fields>
@@ -178,7 +186,6 @@
 
   <config>
     <item key="Problem_StartupScript" value=""/>
-    <item key="Problem_Description" value=""/>
     <item key="View_RulersFontFamily" value="Droid"/>
     <item key="View_RulersFontPointSize" value="12"/>
     <item key="View_PostFontFamily" value="Droid"/>
@@ -268,6 +275,7 @@
     <item key="View_VectorScale" value="0.6"/>
     <item key="View_VectorType" value="0"/>
     <item key="View_VectorCenter" value="0"/>
+    <item key="View_OrderComponent" value="1"/>
     <item key="View_ShowOrderView" value="1"/>
     <item key="View_ShowOrderColorBar" value="1"/>
     <item key="View_ShowOrderLabel" value="0"/>
@@ -307,13 +315,8 @@
     <item key="View_ChartHorizontalAxis" value="2"/>
     <item key="View_ChartHorizontalAxisReverse" value="0"/>
     <item key="View_ChartHorizontalAxisPoints" value="200"/>
-    <item key="View_MeshAngleSegmentsCount" value="3"/>
-    <item key="View_MeshCurvilinearElements" value="1"/>
     <item key="View_LinearizerQuality" value="0"/>
     <item key="View_SolidViewHide" value="Air"/>
-    <item key="Adaptivity_MaxDofs" value="60000"/>
-    <item key="Commands_Triangle" value="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;"/>
-    <item key="Commands_Gmsh" value="%1 -2 &quot;%2.geo&quot;"/>
   </config>
 
 </problem:document>

@@ -252,6 +252,8 @@ bool Value::evaluate()
 
 bool Value::evaluateExpression(const QString &expression)
 {
+    m_isEvaluated = false;
+
     // speed up - int number
     bool isInt = false;
     double numInt = expression.toInt(&isInt);

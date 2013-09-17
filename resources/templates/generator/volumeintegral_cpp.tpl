@@ -78,6 +78,8 @@ void {{CLASS}}VolumeIntegral::calculate()
                 {
                     if (m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->marker).marker == QString::number(index).toStdString())
                     {
+                        double area = m_fieldInfo->initialMesh()->get_marker_area(e->marker);
+
                         Hermes::Hermes2D::update_limit_table(e->get_mode());
 
                         for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)

@@ -357,11 +357,11 @@
         <module:quantity id="magnetic_conductivity" name="Electrical conductivity" shortname="gamma" shortname_html="&lt;i>&amp;gamma;&lt;/i>" unit="S/m" unit_html="S.m&lt;sup>-1&lt;/sup>" unit_latex="S \cdot m^{-1}"/>
       </module:group>
       <module:group name="Source">
-        <module:quantity id="magnetic_current_density_external_real" name="Current dens. - ext. - real" is_source="1" only_if_not="magnetic_total_current_prescribed" shortname="Jer" shortname_html="&lt;i>J&lt;/i>&lt;sub>r,ext&lt;/sub>" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
-        <module:quantity id="magnetic_current_density_external_imag" name="Current dens. - ext. - imag" is_source="1" only_if_not="magnetic_total_current_prescribed" shortname="Jei" shortname_html="&lt;i>J&lt;/i>&lt;sub>i,ext&lt;/sub>" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
+        <module:quantity id="magnetic_current_density_external_real" name="Current dens. - ext. - real" is_source="1" only_if_not="magnetic_total_current_prescribed" shortname="Jer" shortname_html="&lt;i>J&lt;/i>&lt;sub>ext,r&lt;/sub>" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
+        <module:quantity id="magnetic_current_density_external_imag" name="Current dens. - ext. - imag" is_source="1" only_if_not="magnetic_total_current_prescribed" shortname="Jei" shortname_html="&lt;i>J&lt;/i>&lt;sub>ext,i&lt;/sub>" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}"/>
         <module:quantity id="magnetic_total_current_prescribed" name="Total current prescribed" is_bool="1" shortname="IPrescribed" shortname_html="IPrescribed" unit="-" unit_html="-" unit_latex="-"/>
-        <module:quantity id="magnetic_total_current_real" name="Total current - real" is_source="1" only_if="magnetic_total_current_prescribed" shortname="Itr" shortname_html="Itr" unit="A" unit_html="A" unit_latex="A"/>
-        <module:quantity id="magnetic_total_current_imag" name="Total current - imag" is_source="1" only_if="magnetic_total_current_prescribed" shortname="Iti" shortname_html="Iti" unit="A" unit_html="A" unit_latex="A"/>
+        <module:quantity id="magnetic_total_current_real" name="Total current - real" is_source="1" only_if="magnetic_total_current_prescribed" shortname="Itr" shortname_html="&lt;i>I&lt;/i>&lt;sub>t,r&lt;/sub>" unit="A" unit_html="A" unit_latex="A"/>
+        <module:quantity id="magnetic_total_current_imag" name="Total current - imag" is_source="1" only_if="magnetic_total_current_prescribed" shortname="Iti" shortname_html="&lt;i>I&lt;/i>&lt;sub>t,i&lt;/sub>" unit="A" unit_html="A" unit_latex="A"/>
       </module:group>
       <module:group name="Permanent magnet">
         <module:quantity id="magnetic_remanence" name="Remanent flux density" shortname="Brm" shortname_html="&lt;i>B&lt;/i>&lt;sub>rm&lt;/sub>" unit="T" unit_html="T"/>
@@ -491,9 +491,9 @@
         <module:expression analysistype="steadystate" axi="- ma_gamma * (ma_vy * dz1)" planar="- ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1)"/>
       </module:localvariable>
       <module:localvariable id="magnetic_current_density_total_real" name="Current dens. - total - real" shortname="Jr" shortname_html="&lt;i>J&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="J_\mathrm{r}" type="scalar" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
-        <module:expression analysistype="steadystate" axi="ma_Jer - ma_gamma * (ma_vy * dz1)" planar="ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1)"/>
+        <module:expression analysistype="steadystate" axi="ma_Jer - ma_gamma * (ma_vy * dz1) + ma_Itr / area" planar="ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) + ma_Itr / area"/>
         <module:expression analysistype="harmonic" axi="ma_Jer - ma_gamma * (ma_vy * dz1) + 2 * PI * f * ma_gamma * (value2+value4/(2*PI*(r+1e-12)))" planar="ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) + 2 * PI * f * ma_gamma * (value2+value4)"/>
-        <module:expression analysistype="transient" axi="ma_Jer - ma_gamma * (ma_vy * dz1) - ma_gamma * value2" planar="ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) - ma_gamma * value2"/>
+        <module:expression analysistype="transient" axi="ma_Jer - ma_gamma * (ma_vy * dz1) - ma_gamma * value2 + ma_Itr / area" planar="ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) - ma_gamma * value2 + ma_Itr / area"/>
       </module:localvariable>
       <module:localvariable id="magnetic_current_density_total_imag" name="Current dens. - total - imag" shortname="Ji" shortname_html="&lt;i>J&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="J_\mathrm{i}" type="scalar" unit="A/m2" unit_html="A.m&lt;sup>-2&lt;/sup>" unit_latex="A \cdot m^{-2}">
         <module:expression analysistype="harmonic" axi="ma_Jei - ma_gamma * (ma_vy * dz2) - 2 * PI * f * ma_gamma * (value1+value3/(2*PI*(r+1e-12)))" planar="ma_Jei - ma_gamma * ((ma_vx - ma_va * y) * dx2 + (ma_vy + ma_va * x) * dy2) - 2 * PI * f * ma_gamma * (value1+value3)"/>
@@ -558,9 +558,9 @@
         <module:expression analysistype="transient" axi="- ma_gamma * (ma_vy * dz1) - ma_gamma * value2" planar="- ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) - ma_gamma * value2"/>
       </module:volumeintegral>
       <module:volumeintegral id="magnetic_current_total_real" name="Current - total - real" shortname="Ir" shortname_html="&lt;i>I&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="I_\mathrm{r}" unit="A" unit_html="" unit_latex="">
-        <module:expression analysistype="steadystate" axi="ma_Jer - ma_gamma * (ma_vy * dz1)" planar="ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1)"/>
+        <module:expression analysistype="steadystate" axi="ma_Jer - ma_gamma * (ma_vy * dz1) + ma_Itr / area" planar="ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) + ma_Itr / area"/>
         <module:expression analysistype="harmonic" axi="ma_Jer - ma_gamma * (ma_vy * dz1) + 2 * PI * f * ma_gamma * (value2+value4/(2*PI*(r+1e-12)))" planar="ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) + 2 * PI * f * ma_gamma * (value2+value4)"/>
-        <module:expression analysistype="transient" axi="ma_Jer - ma_gamma * (ma_vy * dz1) - ma_gamma * value2" planar="ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) - ma_gamma * value2"/>
+        <module:expression analysistype="transient" axi="ma_Jer - ma_gamma * (ma_vy * dz1) - ma_gamma * value2 + ma_Itr / area" planar="ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) - ma_gamma * value2 + ma_Itr / area"/>
       </module:volumeintegral>
       <module:volumeintegral id="magnetic_current_total_imag" name="Current - total - imag" shortname="Ii" shortname_html="&lt;i>I&lt;/i>&lt;sub>i&lt;/sub>" shortname_latex="I_\mathrm{i}" unit="A" unit_html="" unit_latex="">
         <module:expression analysistype="harmonic" axi="ma_Jei - ma_gamma * (ma_vy * dz2) - 2 * PI * f * ma_gamma * (value1+value3/(2*PI*(r+1e-12)))" planar="ma_Jei - ma_gamma * ((ma_vx - ma_va * y) * dx2 + (ma_vy + ma_va * x) * dy2) - 2 * PI * f * ma_gamma * (value1+value3)"/>
