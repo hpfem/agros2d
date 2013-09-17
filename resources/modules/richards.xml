@@ -91,6 +91,11 @@
         <module:quantity id="richards_theta_s"/>
         <module:quantity id="richards_theta_r"/>
 
+        <module:function_use id="richards_func_k"/>
+        <module:function_use id="richards_func_dkdh"/>
+        <module:function_use id="richards_func_ddkdhh"/>
+        <module:function_use id="richards_func_c"/>
+
         <!--
         <module:linearity_option type="linear">
           <module:matrix_form id="conductivity" />
@@ -116,6 +121,11 @@
         <module:quantity id="richards_storativity"/>
         <module:quantity id="richards_theta_s"/>
         <module:quantity id="richards_theta_r"/>
+
+        <module:function_use id="richards_func_k"/>
+        <module:function_use id="richards_func_dkdh"/>
+        <module:function_use id="richards_func_ddkdhh"/>
+        <module:function_use id="richards_func_c"/>
 
         <!--
         <module:linearity_option type="linear">

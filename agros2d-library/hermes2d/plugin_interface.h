@@ -247,8 +247,7 @@ template <typename Scalar>
 class AGROS_LIBRARY_API SpecialFunction
 {
 public:
-    SpecialFunction() : m_interpolation(0), m_bound_low(0), m_bound_hi(0), m_count(IMPLIICT_APPROX_COUNT), m_interpolationCreated(false), m_useInterpolation(true), area(-12345){}
-    ~SpecialFunction();
+    SpecialFunction() : m_interpolation(0), m_bound_low(0), m_bound_hi(0), m_count(IMPLICIT_APPROX_COUNT), m_interpolationCreated(false), m_useInterpolation(true), area(-12345){}
 
     //allows to naturaly write as function of one parameter
     Scalar operator()(double h) const;
