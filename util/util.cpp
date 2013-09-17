@@ -426,6 +426,19 @@ void appendToFile(const QString &fileName, const QString &str)
     }
 }
 
+QString stringListToString(const QStringList &list)
+{
+    QString out;
+    foreach (QString str, list)
+        if (!str.isEmpty())
+            out += str + ", ";
+
+    if (out.length() > 0)
+        out = out.left(out.length() - 2);
+
+    return out;
+}
+
 void showPage(const QString &str)
 {
     if (str.isEmpty())
