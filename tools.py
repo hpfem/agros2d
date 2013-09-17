@@ -99,15 +99,13 @@ def run_project(project, file, run_script, server):
 def source_package(version):
     call(['git', 'clean', '-fdx'])
     
-    documentation()
+    documentation('html')
     equations()
     release_localization()
 
     temp = '{0}/agros2d-{1}'.format(TEMP_DIR, version)
-    if (os.path.exists(temp)):
-        shutil.rmtree(temp)
 
-    ignored = ['tmp', '.git*']
+    ignored = ['tmp', '.git*', '*.mph']
     shutil.copytree('./', temp, ignore=shutil.ignore_patterns(*ignored))
 
     os.chdir(temp)
