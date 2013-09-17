@@ -40,7 +40,7 @@ class SceneViewInterface;
 
 namespace Module
 {
-    struct LocalVariable;
+    class LocalVariable;
 }
 
 class SceneViewCommon : public QGLWidget
