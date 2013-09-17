@@ -184,16 +184,17 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
                                                                           static_cast<Material *>(markerSource));
         if (!weakFormAgros) return NULL;
 
+        // volume
+        MeshSharedPtr initialMesh = markerSource->fieldInfo()->initialMesh();
+        double volume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(area.toStdString()).marker);
+        weakFormAgros->setMarkerVolume(volume);
+
         // symmetric flag
         weakFormAgros->setSymFlag(form->sym);
         // source marker
         weakFormAgros->setMarkerSource(markerSource);
         // target marker
         weakFormAgros->setMarkerTarget(markerTarget);
-        // volume
-        MeshSharedPtr initialMesh = markerSource->fieldInfo()->initialMesh();
-        double volume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(area.toStdString()).marker);
-        weakFormAgros->setMarkerVolume(volume);
 
         weakForm = weakFormAgros;
     }
@@ -214,14 +215,15 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
                                                                           static_cast<Material *>(markerSource), offsetTimeExt);
         if (!weakFormAgros) return NULL;
 
-        // source marker
-        weakFormAgros->setMarkerSource(markerSource);
-        // target marker
-        weakFormAgros->setMarkerTarget(markerTarget);
         // volume
         MeshSharedPtr initialMesh = markerSource->fieldInfo()->initialMesh();
         double volume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(area.toStdString()).marker);
         weakFormAgros->setMarkerVolume(volume);
+
+        // source marker
+        weakFormAgros->setMarkerSource(markerSource);
+        // target marker
+        weakFormAgros->setMarkerTarget(markerTarget);
 
         weakForm = weakFormAgros;
     }

@@ -18,6 +18,7 @@
 // Email: agros2d@googlegroups.com, home page: http://hpfem.org/agros2d/
 
 #include "{{ID}}_volumeintegral.h"
+#include "{{ID}}_interface.h"
 
 #include "util.h"
 #include "util/global.h"
@@ -71,15 +72,26 @@ void {{CLASS}}VolumeIntegral::calculate()
 
                 SceneMaterial *material = label->marker(m_fieldInfo);
 
+                Hermes::Hermes2D::Mesh::MarkersConversion::IntValid internalMarker = m_fieldInfo->initialMesh()->get_element_markers_conversion().get_internal_marker(QString::number(index).toStdString());
+                assert(internalMarker.valid);
+                double area = m_fieldInfo->initialMesh()->get_marker_area(internalMarker.marker);
+
                 {{#VARIABLE_MATERIAL}}Value *material_{{MATERIAL_VARIABLE}} = &material->value(QLatin1String("{{MATERIAL_VARIABLE}}"));
                 {{/VARIABLE_MATERIAL}}
+                {{#SPECIAL_FUNCTION_SOURCE}}
+                {{SPECIAL_FUNCTION_FULL_NAME}}<double> {{SPECIAL_FUNCTION_NAME}};{{#PARAMETERS}}
+                {{SPECIAL_FUNCTION_NAME}}.{{PARAMETER_NAME}} = material_{{PARAMETER_FULL_NAME}}->number(); {{/PARAMETERS}}
+                {{SPECIAL_FUNCTION_NAME}}.setVariant("{{SELECTED_VARIANT}}");
+                {{SPECIAL_FUNCTION_NAME}}.setType(specialFunctionTypeFromStringKey("{{TYPE}}"));
+                {{SPECIAL_FUNCTION_NAME}}.setBounds({{FROM}}, {{TO}}, {{EXTRAPOLATE_LOW_PRESENT}}, {{EXTRAPOLATE_HI_PRESENT}});
+                {{SPECIAL_FUNCTION_NAME}}.setArea(area);
+                {{SPECIAL_FUNCTION_NAME}}.setUseInterpolation(false);
+                {{/SPECIAL_FUNCTION_SOURCE}}
 
                 for_all_active_elements(e, mesh)
                 {
                     if (m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->marker).marker == QString::number(index).toStdString())
                     {
-                        double area = m_fieldInfo->initialMesh()->get_marker_area(e->marker);
-
                         Hermes::Hermes2D::update_limit_table(e->get_mode());
 
                         for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)

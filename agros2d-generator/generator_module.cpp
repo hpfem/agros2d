@@ -1048,6 +1048,11 @@ void Agros2DGeneratorModule::generatePluginVolumeIntegralFiles()
         }
     }
 
+    foreach(XMLModule::function function, m_module->volume().function())
+    {
+        generateSpecialFunction(&function, output);
+    }
+
     foreach (XMLModule::volumeintegral vol, m_module->postprocessor().volumeintegrals().volumeintegral())
     {
         foreach (XMLModule::expression expr, vol.expression())
