@@ -229,13 +229,13 @@
   <module:preprocessor>
     <module:gui type="volume">
       <module:group>        
-        <module:quantity condition="value >= 0" default="0" id="richards_ks" name="richards_ks" shortname="ks" shortname_html="&lt;i>k&lt;/i>&lt;sub>s&lt;/sub>" shortname_latex="K_\mathrm{s}" unit="L/t" unit_html="Lt&lt;sup>-1&lt;/sup>" unit_latex="L\cdott^{-1}"/>
-        <module:quantity condition="value >= 0" default="0" id="richards_a" name="richards_a" shortname="a" shortname_html="&lt;i>&amp;alpha;&lt;/i>" shortname_latex="\alpha" unit="1/L" unit_html="L&lt;sup>-1&lt;/sup>" unit_latex="L^{-1}"/>
-        <module:quantity condition="value >= 0" default="0" id="richards_m" name="richards_m" shortname="m" shortname_html="&lt;i>m&lt;/i>" shortname_latex="m" unit="-" unit_html="-" unit_latex="-"/>
-        <module:quantity condition="value >= 0" default="0" id="richards_n" name="richards_n" shortname="n" shortname_html="&lt;i>n&lt;/i>" shortname_latex="n" unit="-" unit_html="-" unit_latex="-"/>
-        <module:quantity condition="value >= 0" default="0" id="richards_storativity" name="richards_storativity" shortname="st" shortname_html="&lt;i>st&lt;/i>" shortname_latex="st" unit_html="L&lt;sup>-1&lt;/sup>" unit_latex="L^{-1}"/>
-        <module:quantity condition="value >= 0" default="0" id="richards_theta_s" name="richards_theta_s" shortname="ts" shortname_html="&lt;i>&amp;theta;&lt;/i>&lt;/i>&lt;sub>s&lt;/sub>" shortname_latex="\theta_\mathrm{s}" unit="-" unit_html="-" unit_latex="-"/>
-        <module:quantity condition="value >= 0" default="0" id="richards_theta_r" name="richards_theta_r" shortname="tr" shortname_html="&lt;i>&amp;theta;&lt;/i>&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="\theta_\mathrm{r}" unit="-" unit_html="-" unit_latex="-"/>
+        <module:quantity condition="value >= 0" default="0" id="richards_ks" name="Saturated hydraulic conductivity" shortname="ks" shortname_html="&lt;i>k&lt;/i>&lt;sub>s&lt;/sub>" shortname_latex="K_\mathrm{s}" unit="L/t" unit_html="Lt&lt;sup>-1&lt;/sup>" unit_latex="L\cdott^{-1}"/>
+        <module:quantity condition="value >= 0" default="0" id="richards_a" name="Van Genuchten's parameter" shortname="a" shortname_html="&lt;i>&amp;alpha;&lt;/i>" shortname_latex="\alpha" unit="1/L" unit_html="L&lt;sup>-1&lt;/sup>" unit_latex="L^{-1}"/>
+        <module:quantity condition="value >= 0" default="0" id="richards_m" name="Van Genuchten's parameter" shortname="m" shortname_html="&lt;i>m&lt;/i>" shortname_latex="m" unit="-" unit_html="-" unit_latex="-"/>
+        <module:quantity condition="value >= 0" default="0" id="richards_n" name="Van Genuchten's parameter" shortname="n" shortname_html="&lt;i>n&lt;/i>" shortname_latex="n" unit="-" unit_html="-" unit_latex="-"/>
+        <module:quantity condition="value >= 0" default="0" id="richards_storativity" name="Storativity" shortname="st" shortname_html="&lt;i>st&lt;/i>" shortname_latex="st" unit_html="L&lt;sup>-1&lt;/sup>" unit_latex="L^{-1}"/>
+        <module:quantity condition="value >= 0" default="0" id="richards_theta_s" name="Saturated water content" shortname="ts" shortname_html="&lt;i>&amp;theta;&lt;/i>&lt;/i>&lt;sub>s&lt;/sub>" shortname_latex="\theta_\mathrm{s}" unit="-" unit_html="-" unit_latex="-"/>
+        <module:quantity condition="value >= 0" default="0" id="richards_theta_r" name="Residual water content" shortname="tr" shortname_html="&lt;i>&amp;theta;&lt;/i>&lt;/i>&lt;sub>r&lt;/sub>" shortname_latex="\theta_\mathrm{r}" unit="-" unit_html="-" unit_latex="-"/>
 
         <module:switch_combo id="constitutive_variant" name="Constitutive relations" implicit_option="van_genuchten">
           <module:switch_option id="van_genuchten" name="van Genuchten" />
