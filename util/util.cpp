@@ -101,20 +101,6 @@ double fastcos(double angle)
    return fastsin(M_PI_2 - angle);
 }
 
-
-QString stringListToString(const QStringList &list)
-{
-    QString out;
-    foreach (QString str, list)
-        if (!str.isEmpty())
-            out += str + ", ";
-
-    if (out.length() > 0)
-        out = out.left(out.length() - 2);
-
-    return out;
-}
-
 void setGUIStyle(const QString &styleName)
 {
     // standard style

@@ -35,11 +35,6 @@ class PhysicalFieldWidget;
 class SceneViewPreprocessorChart;
 class QCustomPlot;
 
-namespace Module
-{
-struct LocalVariable;
-}
-
 // definition of chart line
 struct ChartLine
 {

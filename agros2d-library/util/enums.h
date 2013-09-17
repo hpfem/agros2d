@@ -257,8 +257,6 @@ enum SpecialFunctionType
     SpecialFunctionType_Function1D = 1
 };
 
-AGROS_LIBRARY_API QString stringListToString(const QStringList &list);
-
 // keys
 AGROS_LIBRARY_API void initLists();
 
