@@ -25,6 +25,7 @@
 #include <QString>
 
 #include "agros_solver.h"
+#include "../util/config.h"
 
 const QString CONSOLE_DISABLE_LOG = "disable-log";
 const QString CONSOLE_HELP = "help";

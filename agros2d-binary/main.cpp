@@ -7,6 +7,7 @@
 
 #include "util.h"
 #include "util/global.h"
+#include "../util/config.h"
 #include "mainwindow.h"
 
 class AgrosApplication : public QApplication

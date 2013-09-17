@@ -6,6 +6,7 @@
 #include "qtsingleapplication.h"
 
 #include "util.h"
+#include "../util/config.h"
 #include "pythonlab/pythonengine.h"
 #include "pythonlab/pythoneditor.h"
 #include "pythonlab.h"

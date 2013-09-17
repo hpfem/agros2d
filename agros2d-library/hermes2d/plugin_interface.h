@@ -240,14 +240,14 @@ protected:
     XMLCoupling::coupling *m_coupling;
 };
 
-const int IMPLIICT_APPROX_COUNT = 500;
+const int IMPLICIT_APPROX_COUNT = 500;
 
 // todo create hierarcy of ConstantSpecialFunction, 1dSpecialFunction, etc...
 template <typename Scalar>
 class AGROS_LIBRARY_API SpecialFunction
 {
 public:
-    SpecialFunction() : m_interpolation(0), m_bound_low(0), m_bound_hi(0), m_count(IMPLIICT_APPROX_COUNT), m_interpolationCreated(false), m_useInterpolation(true){}
+    SpecialFunction() : m_interpolation(0), m_bound_low(0), m_bound_hi(0), m_count(IMPLICIT_APPROX_COUNT), m_interpolationCreated(false), m_useInterpolation(true){}
     ~SpecialFunction();
 
     //allows to naturaly write as function of one parameter
