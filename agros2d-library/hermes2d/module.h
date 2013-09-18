@@ -411,7 +411,7 @@ private:
 };
 
 // boundary condition type
-struct BoundaryType
+struct AGROS_LIBRARY_API BoundaryType
 {
     BoundaryType() : m_id(""), m_name(""), m_equation("") {}
     BoundaryType(const FieldInfo *fieldInfo,
