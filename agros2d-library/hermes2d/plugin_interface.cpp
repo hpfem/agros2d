@@ -2,19 +2,6 @@
 #include "field.h"
 
 template <typename Scalar>
-SpecialFunction<Scalar>::~SpecialFunction()
-{
-//    QMutex mutex;
-//    mutex.lock();
-//    {
-//        if(m_interpolation){
-//            delete m_interpolation;
-//            m_interpolation = 0;
-//        }
-//    }
-//    mutex.unlock();
-}
-template <typename Scalar>
 Scalar SpecialFunction<Scalar>::operator ()(double h) const
 {
     assert(m_type == SpecialFunctionType_Function1D);

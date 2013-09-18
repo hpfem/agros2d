@@ -63,7 +63,7 @@ private:
     template <typename Form, typename WeakForm>
     void generateFormOld(Form form, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, int i, XMLModule::boundary *boundary = 0, int j = 0);
 
-    void generateSpecialFunction(XMLModule::function* function, ctemplate::TemplateDictionary &output);
+    void generateSpecialFunction(XMLModule::function* function, ctemplate::TemplateDictionary *output);
 
     QString nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);
     QString dependence(const QString &variable, AnalysisType analysisType);
