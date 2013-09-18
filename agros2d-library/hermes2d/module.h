@@ -128,7 +128,7 @@ class CouplingInfo;
 
 class BDF2Table;
 
-struct FormInfo
+struct AGROS_LIBRARY_API FormInfo
 {
     FormInfo() : id(""), i(0), j(0), sym(Hermes::Hermes2D::HERMES_NONSYM), variant(WeakFormVariant_Normal), coefficient(1) {}
     FormInfo(const QString &id, int i = 0, int j = 0, Hermes::Hermes2D::SymFlag sym = Hermes::Hermes2D::HERMES_NONSYM)
