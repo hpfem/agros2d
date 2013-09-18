@@ -30,7 +30,8 @@ def documentation(format):
     if (os.path.exists(DOC_DIR)):
         shutil.rmtree(DOC_DIR)
 
-    shutil.copytree('{0}/build/{1}/'.format(DOC_SOURCE_DIR, format), DOC_DIR)
+    ignored = ['doctrees']
+    shutil.copytree('{0}/build/'.format(DOC_SOURCE_DIR), DOC_DIR, ignore=shutil.ignore_patterns(*ignored))
 
 def equations():
     for root, dirs, files in os.walk(PLUGINS_DIR):
@@ -98,10 +99,6 @@ def run_project(project, file, run_script, server):
 
 def source_package(version):
     call(['git', 'clean', '-fdx'])
-    
-    documentation('html')
-    equations()
-    release_localization()
 
     temp = '{0}/agros2d-{1}'.format(TEMP_DIR, version)
 

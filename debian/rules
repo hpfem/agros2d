@@ -18,6 +18,8 @@ build-stamp: configure-stamp
 	LD_LIBRARY_PATH=$(CURDIR)/libs ./agros2d_generator
 	cmake -DCMAKE_INSTALL_PREFIX=$(CURDIR)/debian/agros2d/usr plugins/CMakeLists.txt
 	$(MAKE) --directory plugins
+	$(MAKE) html --directory resources_source/doc
+	cp -r resources_source/doc/build/html resources/help
 	touch build-stamp
 
 clean:
