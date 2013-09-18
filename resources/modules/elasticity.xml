@@ -61,8 +61,8 @@
         <module:quantity id="elasticity_temperature_difference"/>
         <module:quantity id="elasticity_temperature_reference"/>
 
-        <module:function id="elasticity_func_lambda"/>
-        <module:function id="elasticity_func_mu"/>
+        <module:function_use id="elasticity_func_lambda"/>
+        <module:function_use id="elasticity_func_mu"/>
 
         <module:linearity_option type="linear">
           <module:matrix_form id="form_1_1" />
