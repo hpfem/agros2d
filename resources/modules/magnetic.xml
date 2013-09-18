@@ -77,12 +77,12 @@
     <module:matrix_form  id="harmonic_laplace_1_1" i="1" j="1" planar="1 / (ma_mur * MU0) * (udx * vdx + udy * vdy)" axi="1 / (ma_mur * MU0) * (udr * vdr + udz * vdz + uval * vdr / r)"/>
 
     <!-- TODO: lisi se clen u axi. Jeden z jakobianu (1,1) nebo (2,2) je spatne!!!-->
-    <module:matrix_form  id="harmonic_jac_laplace_1_1" i="1" j="1" planar="tern((dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2) > 0, ( - dma_mur / (ma_mur * ma_mur * MU0) * (updx * udx + updy * udy) / sqrt(dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2) * (updx * vdx + updy * vdy)), 0)" axi="tern((((dr1+value1/r)^2) + dz1*dz1 + (dr2+value2/r)^2 + dz2*dz2) > 0,( - dma_mur / (MU0 * ma_mur * ma_mur) * ((updr + upval / r) * (udr + uval / r) + updz * udz) / sqrt(((dr1+value1/r)^2) + dz1*dz1 + ((dr2+value2/r))^2 + dz2*dz2) * (updr * vdr + updz * vdz + upval * vdr / r)), 0)" />
+    <module:matrix_form id="harmonic_jac_laplace_1_1" i="1" j="1" planar="tern((dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2) > 0, ( - dma_mur / (ma_mur * ma_mur * MU0) * (updx * udx + updy * udy) / sqrt(dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2) * (updx * vdx + updy * vdy)), 0)" axi="tern((((dr1+value1/r)^2) + dz1*dz1 + (dr2+value2/r)^2 + dz2*dz2) > 0,( - dma_mur / (MU0 * ma_mur * ma_mur) * ((updr + upval / r) * (udr + uval / r) + updz * udz) / sqrt(((dr1+value1/r)^2) + dz1*dz1 + ((dr2+value2/r))^2 + dz2*dz2) * (updr * vdr + updz * vdz + upval * vdr / r)), 0)" />
 
     <module:matrix_form id="harmonic_laplace_2_2" i="2" j="2" planar="1 / (ma_mur * MU0) * (udx * vdx + udy * vdy)" axi="1 / (ma_mur * MU0) * (udr * vdr + udz * vdz + uval * vdr / r)" />
 
     <!-- TODO: lisi se clen u axi. Jeden z jakobianu (1,1) nebo (2,2) je spatne!!!-->
-    <module:matrix_form id="harmonic_jac_laplace_2_2" i="2" j="2" planar="tern((dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2) > 0, ( - dma_mur / (ma_mur * ma_mur * MU0) * (updx * udx + updy * udy) / sqrt(dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2) * (updx * vdx + updy * vdy)), 0)" axi="tern((((dr1+value1/r)^2) + dz1*dz1 + (dr2+value2/r)^2 + dz2*dz2) > 0, dma_mur * (((dr1+value1/r)^2) + dz1*dz1 + ((dr2+value2/r)^2) + dz2*dz2) * ( - dma_mur / (MU0 * ma_mur * ma_mur) * ((updr + upval / r) * (udr + uval / r) + updz * udz) / sqrt(((dr1+value1/r)^2) + dz1*dz1 + ((dr2+value2/r)^2) + dz2*dz2) * (updr * vdr + updz * vdz + upval * vdr / r)), 0)"/>
+    <module:matrix_form id="harmonic_jac_laplace_2_2" i="2" j="2" planar="tern((dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2) > 0, ( - dma_mur / (ma_mur * ma_mur * MU0) * (updx * udx + updy * udy) / sqrt(dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2) * (updx * vdx + updy * vdy)), 0)" axi="tern((((dr1+value1/r)^2) + dz1*dz1 + (dr2+value2/r)^2 + dz2*dz2) > 0,( - dma_mur / (MU0 * ma_mur * ma_mur) * ((updr + upval / r) * (udr + uval / r) + updz * udz) / sqrt(((dr1+value1/r)^2) + dz1*dz1 + ((dr2+value2/r)^2) + dz2*dz2) * (updr * vdr + updz * vdz + upval * vdr / r)), 0)"/>
 
     <module:matrix_form id="harmonic_velocity_1_1" i="1" j="1" planar="- ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)" axi="- ma_gamma * uval * ma_vy * vdz"/>
     <module:matrix_form id="harmonic_velocity_2_2" i="2" j="2" planar="- ma_gamma * uval * ((ma_vx - y * ma_va) * vdx + (ma_vy + x * ma_va) * vdy)" axi="- ma_gamma * uval * ma_vy * vdz" />
@@ -159,7 +159,7 @@
 
       </module:weakform_volume>
       <module:weakform_volume analysistype="harmonic" equation="\curl \left( \frac{1}{\mu}\, \left( \curl \vecfaz{A} - \vec{B}_\mathrm{r} \right) \right) - \sigma \vec{v} \times \curl \vecfaz{A} + \mj \omega \sigma \vecfaz{A} = \vec{J}_\mathrm{ext}">
-        <module:quantity id="magnetic_permeability" nonlinearity_axi="sqrt((dr1+tern(r > 0, (value1+value3)/r, 0.0))^2 + dz1*dz1 + (dr2+tern(r > 0, (value2+value4)/r, 0.0))^2 + dz2*dz2)" nonlinearity_planar="sqrt(dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)"/>
+        <module:quantity id="magnetic_permeability" nonlinearity_axi="sqrt((dr1+tern(r > 0, value1/r, 0.0))^2 + dz1*dz1 + (dr2+tern(r > 0, value2/r, 0.0))^2 + dz2*dz2)" nonlinearity_planar="sqrt(dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)"/>
         <module:quantity id="magnetic_conductivity"/>
         <module:quantity id="magnetic_remanence"/>
         <module:quantity id="magnetic_remanence_angle"/>
