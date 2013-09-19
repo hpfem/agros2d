@@ -608,7 +608,10 @@ class MagneticHarmonicNonlinPlanar(Agros2DTestCase):
 
         self.magnetic.add_boundary("A = 0", "magnetic_potential", {"magnetic_potential_imag" : 0, "magnetic_potential_real" : 0})
         
-        self.magnetic.add_material("Zelezo", {"magnetic_conductivity" : 5e6, "magnetic_current_density_external_imag" : 0, "magnetic_current_density_external_real" : 3e6, "magnetic_permeability" : { "value" : 5000, "x" : [0,0.227065,0.45413,0.681195,0.90826,1.13533,1.36239,1.58935,1.81236,2.01004,2.13316,2.19999,2.25479,2.29993,2.34251,2.37876,2.41501,2.45126,2.4875,2.52375,2.56,3,5,10,20], "y" : [13001,13001,13001,12786,12168,10967,7494,1409,315,90,41,26,19,15,12,11,9,8,8,7,6,4,3,3,2] }, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_angular" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0})
+        self.magnetic.add_material("Zelezo", {"magnetic_conductivity" : 5e6, "magnetic_current_density_external_imag" : 0, "magnetic_current_density_external_real" : 3e6, "magnetic_permeability" : { "value" : 5000, 
+            "x" : [0,0.227065,0.45413,0.681195,0.90826,1.13533,1.36239,1.58935,1.81236,2.01004,2.13316,2.19999,2.25479,2.29993,2.34251,2.37876,2.41501,2.45126,2.4875,2.52375,2.56,3,5,10,20], 
+            "y" : [13001,13001,13001,12786,12168,10967,7494,1409,315,90,41,26,19,15,12,11,9,8,8,7,6,4,3,3,2] 
+            }, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_angular" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0})
         
         # geometry
         geometry = agros2d.geometry
@@ -641,7 +644,87 @@ class MagneticHarmonicNonlinPlanar(Agros2DTestCase):
         self.value_test("Current density - induced - real", volume["Iivr"], -76.31308924012728)
         self.value_test("Current density - induced - imag", volume["Iiti"], -25.458979006398277)
         self.value_test("Energy", volume["Wm"], 0.012166845506925431)
-                       
+            
+
+class MagneticHarmonicNonlinAxisymmetric(Agros2DTestCase):
+    def setUp(self):  
+        # problem
+        problem = agros2d.problem(clear = True)
+        problem.coordinate_type = "axisymmetric"
+        problem.mesh_type = "triangle"
+        problem.frequency = 50
+        
+        # magnetic
+        self.magnetic = agros2d.field("magnetic")
+        self.magnetic.analysis_type = "harmonic"
+        self.magnetic.matrix_solver = "mumps"
+        self.magnetic.number_of_refinements = 3
+        self.magnetic.polynomial_order = 3
+        self.magnetic.adaptivity_type = "disabled"
+        self.magnetic.solver = "newton"
+        self.magnetic.solver_parameters['tolerance'] = 0.01
+        self.magnetic.solver_parameters['measurement'] = "residual_norm_absolute"
+        self.magnetic.solver_parameters['damping'] = "automatic"
+        self.magnetic.solver_parameters['damping_factor'] = 0.8
+        self.magnetic.solver_parameters['jacobian_reuse'] = True
+        self.magnetic.solver_parameters['jacobian_reuse_ratio'] = 0.8
+        self.magnetic.solver_parameters['damping_factor_decrease_ratio'] = 1.2
+        self.magnetic.solver_parameters['jacobian_reuse_steps'] = 20
+        self.magnetic.solver_parameters['damping_factor_increase_steps'] = 1
+                
+        # boundaries
+        self.magnetic.add_boundary("A=0", "magnetic_potential", {"magnetic_potential_real" : 0, "magnetic_potential_imag" : 0})
+                
+        # materials
+        self.magnetic.add_material("new material", {"magnetic_permeability" : { "value" : 9300, 
+            "x" : [0,0.227065,0.45413,0.681195,0.90826,1.13533,1.36239,1.58935,1.81236,2.01004,2.13316,2.19999,2.25479,2.29993,2.34251,2.37876,2.41501,2.45126,2.4875,2.52375,2.56,3,5,10,20], 
+            "y" : [13001,13001,13001,12786,12168,10967,7494,1409,315,90,41,26,19,15,12,11,9,8,8,7,6,4,3,3,2], 
+            "interpolation" : "piecewise_linear", "extrapolation" : "constant", "derivative_at_endpoints" : "first" }, 
+            "magnetic_conductivity" : 5e6, "magnetic_remanence" : 0, "magnetic_remanence_angle" : 0, "magnetic_velocity_x" : 0, "magnetic_velocity_y" : 0, "magnetic_velocity_angular" : 0, 
+            "magnetic_current_density_external_real" : 1e6, "magnetic_current_density_external_imag" : 0, "magnetic_total_current_prescribed" : 0, "magnetic_total_current_real" : 0, "magnetic_total_current_imag" : 0})
+        
+        # geometry
+        geometry = agros2d.geometry
+        geometry.add_edge(0.004, 0, 0.007, -0.003, angle = 90, boundaries = {"magnetic" : "A=0"})
+        geometry.add_edge(0.007, -0.003, 0.01, 0, angle = 90, boundaries = {"magnetic" : "A=0"})
+        geometry.add_edge(0.01, 0, 0.007, 0.003, angle = 90, boundaries = {"magnetic" : "A=0"})
+        geometry.add_edge(0.007, 0.003, 0.004, 0, angle = 90, boundaries = {"magnetic" : "A=0"})
+        
+        geometry.add_label(0.0069576, -0.000136791, materials = {"magnetic" : "new material"})
+        agros2d.view.zoom_best_fit()
+        
+        # solve problem
+        problem.solve()
+                                              
+    def test_values(self):
+        # point value
+        point = self.magnetic.local_values(0.0051, -0.0003)
+#    current density 1.5e6 (calculations takes 3 minutes)
+#        self.value_test("Flux density", point["B"], 0.60932, 8)
+#        self.value_test("Permeability", point["mur"], 12854.05251)
+#        self.value_test("Current density - total - real", point["Jr"], -1.41843e5)
+#        self.value_test("Current density - total - imag", point["Ji"], -1.29996e5)
+        
+        self.value_test("Flux density", point["B"], 0.10239)
+        self.value_test("Permeability", point["mur"], 13001)
+        self.value_test("Current density - total - real", point["Jr"], -49436.7)
+        self.value_test("Current density - total - imag", point["Ji"], 4043.9)
+        point2 = self.magnetic.local_values(0.0043, -2e-4)
+        self.value_test("Flux density", point2["B"], 1.3649)
+        self.value_test("Permeability", point2["mur"], 7425.7)
+        self.value_test("Current density - total - real", point2["Jr"], 4.846e5)
+        self.value_test("Current density - total - imag", point2["Ji"], -3.569e5)
+        
+        # volume integral
+        volume = self.magnetic.volume_integrals()        
+#    current density 1.5e6 (calculations takes 3 minutes)
+        #self.value_test("Energy", volume["Wm"], 0.012166845506925431)
+#        self.value_test("Current density - induced - real", volume["Iitr"], -32.95049)
+#        self.value_test("Current density - induced - imag", volume["Iiti"], -6.50704)
+        self.value_test("Current density - induced - real", volume["Iitr"], -23.807)
+        self.value_test("Current density - induced - imag", volume["Iiti"], -3.323)
+            
+                                             
 class MagneticTransientPlanar(Agros2DTestCase):
     def setUp(self):  
         # problem
@@ -1088,6 +1171,7 @@ if __name__ == '__main__':
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicPlanar))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicAxisymmetric))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicNonlinPlanar))
+    suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicNonlinAxisymmetric))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicPlanarTotalCurrent))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticHarmonicAxisymmetricTotalCurrent))
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(MagneticTransientPlanar))
