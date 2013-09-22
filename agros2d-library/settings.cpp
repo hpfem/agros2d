@@ -286,10 +286,10 @@ QWidget *SettingsWidget::controlsWorkspace()
     chkShowAxes = new QCheckBox(tr("Show axes"));
 
     QGridLayout *layoutGrid = new QGridLayout();
-    layoutGrid->addWidget(chkShowGrid, 1, 0);
-    layoutGrid->addWidget(chkShowAxes, 2, 0);
-    layoutGrid->addWidget(chkShowRulers, 3, 0);
-    layoutGrid->addWidget(chkZoomToMouse, 2, 1);
+    layoutGrid->addWidget(chkShowGrid, 0, 0);
+    layoutGrid->addWidget(chkShowAxes, 1, 0);
+    layoutGrid->addWidget(chkShowRulers, 2, 0);
+    layoutGrid->addWidget(chkZoomToMouse, 0, 1);
 
     QGroupBox *grpGrid = new QGroupBox(tr("Grid"));
     grpGrid->setLayout(layoutGrid);

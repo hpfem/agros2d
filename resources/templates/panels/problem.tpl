@@ -101,9 +101,6 @@
 	</tr>
 	{{#SOLVER_PARAMETERS_SECTION}}
 	<tr>
-		<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_STEPS_LABEL}}</b></td><td>{{NONLINEAR_STEPS}}</td>
-	</tr>
-	<tr>
 		<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_CONVERGENCE_MEASUREMENT_LABEL}}</b></td><td>{{NONLINEAR_CONVERGENCE_MEASUREMENT}}</td>
 	</tr>	
 	<tr>
