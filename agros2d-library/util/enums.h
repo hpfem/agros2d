@@ -420,21 +420,21 @@ AGROS_LIBRARY_API QString butcherTableTypeToStringKey(Hermes::ButcherTableType t
 AGROS_LIBRARY_API Hermes::ButcherTableType butcherTableTypeFromStringKey(const QString &tableType);
 
 // nonlinear measurement method
-AGROS_LIBRARY_API QString nonlinearSolverConvergenceMeasurementString(Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType measurement);
+AGROS_LIBRARY_API QString nonlinearSolverConvergenceMeasurementString(Hermes::Hermes2D::NonlinearConvergenceMeasurementType measurement);
 AGROS_LIBRARY_API QStringList nonlinearSolverConvergenceMeasurementStringKeys();
-AGROS_LIBRARY_API QString nonlinearSolverConvergenceMeasurementToStringKey(Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType measurement);
-AGROS_LIBRARY_API Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType nonlinearSolverConvergenceMeasurementFromStringKey(const QString &measurement);
+AGROS_LIBRARY_API QString nonlinearSolverConvergenceMeasurementToStringKey(Hermes::Hermes2D::NonlinearConvergenceMeasurementType measurement);
+AGROS_LIBRARY_API Hermes::Hermes2D::NonlinearConvergenceMeasurementType nonlinearSolverConvergenceMeasurementFromStringKey(const QString &measurement);
 
 // iterative solver - method
-AGROS_LIBRARY_API QString iterLinearSolverMethodString(Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType type);
+AGROS_LIBRARY_API QString iterLinearSolverMethodString(Hermes::Solvers::IterSolverType type);
 AGROS_LIBRARY_API QStringList iterLinearSolverMethodStringKeys();
-AGROS_LIBRARY_API QString iterLinearSolverMethodToStringKey(Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType type);
-AGROS_LIBRARY_API Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType iterLinearSolverMethodFromStringKey(const QString &type);
+AGROS_LIBRARY_API QString iterLinearSolverMethodToStringKey(Hermes::Solvers::IterSolverType type);
+AGROS_LIBRARY_API Hermes::Solvers::IterSolverType iterLinearSolverMethodFromStringKey(const QString &type);
 
 // iterative solver - preconditioner
-AGROS_LIBRARY_API QString iterLinearSolverPreconditionerTypeString(Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType type);
+AGROS_LIBRARY_API QString iterLinearSolverPreconditionerTypeString(Hermes::Solvers::PreconditionerType type);
 AGROS_LIBRARY_API QStringList iterLinearSolverPreconditionerTypeStringKeys();
-AGROS_LIBRARY_API QString iterLinearSolverPreconditionerTypeToStringKey(Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType type);
-AGROS_LIBRARY_API Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType iterLinearSolverPreconditionerTypeFromStringKey(const QString &type);
+AGROS_LIBRARY_API QString iterLinearSolverPreconditionerTypeToStringKey(Hermes::Solvers::PreconditionerType type);
+AGROS_LIBRARY_API Hermes::Solvers::PreconditionerType iterLinearSolverPreconditionerTypeFromStringKey(const QString &type);
 
 #endif // UTIL_ENUMS_H

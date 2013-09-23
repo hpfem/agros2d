@@ -88,12 +88,13 @@ void PicardSolverAgros<Scalar>::setError(Phase phase)
     }
 
     int iteration = this->get_parameter_value(this->iteration()) - 1;
-    double rel_error = this->get_parameter_value(this->rel_error());
-    double abs_error = this->get_parameter_value(this->abs_error());
+    const Hermes::vector<double>& residual_norms = this->get_parameter_value(this->residual_norms());
+    const Hermes::vector<double>& solution_norms = this->get_parameter_value(this->solution_norms());
+    const Hermes::vector<double>& solution_change_norms = this->get_parameter_value(this->solution_change_norms());
 
     // add iteration
     m_steps.append(iteration);
-    m_errors.append(rel_error);
+    m_errors.append(solution_change_norms.back());
 
     assert(m_steps.size() == m_errors.size());
 
@@ -119,7 +120,7 @@ PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block) : HermesSolve
 {
     m_picardSolver = new PicardSolverAgros<Scalar>(block);
     m_picardSolver->set_verbose_output(true);
-    m_picardSolver->set_tolerance(block->nonlinearTolerance());
+    m_picardSolver->set_tolerance(block->nonlinearTolerance(), block->nonlinearConvergenceMeasurement());
     m_picardSolver->set_max_allowed_iterations(1e5);
     if (block->picardAndersonAcceleration())
     {
@@ -128,7 +129,9 @@ PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block) : HermesSolve
         m_picardSolver->set_anderson_beta(block->picardAndersonBeta());
     }
     else
+    {
         m_picardSolver->use_Anderson_acceleration(false);
+    }
 
     // solver cache
     m_picardSolver->set_do_not_use_cache(!Agros2D::configComputer()->useSolverCache);

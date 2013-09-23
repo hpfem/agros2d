@@ -40,7 +40,7 @@ namespace Hermes
       public Hermes::Mixins::SettableComputationTime, 
       public Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>, 
       public Hermes::Mixins::OutputAttachable,
-      public Hermes::Mixins::MatrixRhsOutput<Scalar>, 
+      public Hermes::Algebra::Mixins::MatrixRhsOutput<Scalar>, 
       public Hermes::Mixins::IntegrableWithGlobalOrder, 
       public Hermes::Hermes2D::Mixins::StateQueryable, 
       public Hermes::Hermes2D::Mixins::DiscreteProblemCacheSettings,
@@ -102,13 +102,13 @@ namespace Hermes
       void set_jacobian_constant(bool to_set = true);
 
       /// Get the Jacobian.
-      SparseMatrix<Scalar>* get_jacobian();
+      Hermes::Algebra::SparseMatrix<Scalar>* get_jacobian();
 
       /// Get the Residual.
-      Vector<Scalar>* get_residual();
+      Hermes::Algebra::Vector<Scalar>* get_residual();
 
       /// Get the Linear solver (thus influence its behavior).
-      LinearMatrixSolver<Scalar>* get_linear_solver();
+      Hermes::Solvers::LinearMatrixSolver<Scalar>* get_linear_solver();
 
       /// If the cache should not be used for any reason.
       virtual void set_do_not_use_cache(bool to_set = true);
@@ -150,16 +150,19 @@ namespace Hermes
       Scalar* sln_vector;
 
       /// Jacobian.
-      SparseMatrix<Scalar>* jacobian;
+      Hermes::Algebra::SparseMatrix<Scalar>* jacobian;
 
       /// Residual.
       Vector<Scalar>* residual;
 
       /// Linear solver.
-      LinearMatrixSolver<Scalar>* matrix_solver;
+      Hermes::Solvers::LinearMatrixSolver<Scalar>* matrix_solver;
       
       /// This instance owns its DP.
       const bool own_dp;
+
+      /// Number of degrees of freedom.
+      int ndof;
 
       /// For deciding if the jacobian is constant at this point.
       virtual bool reuse_jacobian_values();

@@ -78,7 +78,7 @@ public:
     double nonlinearTolerance() const;
 
     // convergence method
-    Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType nonlinearConvergenceMeasurement() const;
+    Hermes::Hermes2D::NonlinearConvergenceMeasurementType nonlinearConvergenceMeasurement() const;
 
     // use only if true for all fields
     DampingType newtonDampingType() const;
@@ -113,8 +113,8 @@ public:
     int picardAndersonNumberOfLastVectors() const;
 
     // iterative linear solver
-    Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType iterParalutionLinearSolverMethod() const;
-    Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType iterParalutionLinearSolverPreconditioner() const;
+    Hermes::Solvers::IterSolverType iterLinearSolverType() const;
+    Hermes::Solvers::PreconditionerType iterPreconditionerType() const;
     double iterLinearSolverToleranceAbsolute() const;
     int iterLinearSolverIters() const;
 

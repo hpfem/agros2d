@@ -16,25 +16,39 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-/*! \file c99_functions.h
-\brief File containing definitions from the C99 standard that are missing in MSVC.
+/*! \file callstack.h
+    \brief File containing functionality for investigating call stack.
 */
-#ifndef __HERMES_COMMON_C99_FUNCTIONS_H
-#define __HERMES_COMMON_C99_FUNCTIONS_H
+#ifndef __HERMES_COMMON_CALLSTACK_H_
+#define __HERMES_COMMON_CALLSTACK_H_
 
-#include "compat.h"
-#ifdef IMPLEMENT_C99
+#include "util/compat.h"
+#include "common.h"
+#ifdef WITH_STACKTRACE
+  #ifdef _WINDOWS
+    #include <windows.h>
+    #include "StackWalker.h"
 
-/// \brief Not-a-number constant.
-#define NAN 0x7fffffffffffffffL;
+    class MyStackWalker : public StackWalker
+    {
+    public:
+      MyStackWalker() : StackWalker(StackWalker::RetrieveSymbol & StackWalker::RetrieveLine, NULL, GetCurrentProcessId(), GetCurrentProcess())
+      {
+        int a = 1;
+      }
+    protected:
+      virtual void OnOutput(LPCSTR szText)
+        { printf(szText);}
+    };
 
-/// \brief The exp2 function from C99 standard.
-HERMES_API double exp2(double x);
-/// \brief The log2 function from C99 standard.
-HERMES_API double log2(double x);
-/// \brief The cbrt function from C99 standard.
-HERMES_API double cbrt(double x);
+  #endif
+#endif
 
-#endif /* IMPLEMENT_C99 */
-
+/// Call stack class.
+class HERMES_API CallStack
+{
+public:
+  // dump the call stack objects to standard error
+  static void dump(int signalCode);
+};
 #endif

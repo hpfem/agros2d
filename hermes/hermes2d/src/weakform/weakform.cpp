@@ -22,7 +22,10 @@
 #include "shapeset_hc_all.h"
 #include "shapeset_hd_all.h"
 #include "shapeset_h1_all.h"
+#include "algebra/dense_matrix_operations.h"
+
 using namespace Hermes::Algebra::DenseMatrixOperations;
+
 namespace Hermes
 {
   namespace Hermes2D
@@ -663,6 +666,11 @@ namespace Hermes
       {
         if(fabs(mfsurf[i]->scaling_factor) > Hermes::epsilon)
           blocks[mfsurf[i]->i][mfsurf[i]->j] = true;
+      }
+      for (unsigned i = 0; i < mfDG.size(); i++)
+      {
+        if(fabs(mfDG[i]->scaling_factor) > Hermes::epsilon)
+          blocks[mfDG[i]->i][mfDG[i]->j] = true;
       }
 
       return blocks;

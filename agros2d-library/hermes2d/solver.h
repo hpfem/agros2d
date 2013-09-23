@@ -77,7 +77,7 @@ public:
     virtual void setWeakFormulation(Hermes::Hermes2D::WeakForm<Scalar>* wf) = 0;
 
     virtual void setMatrixRhsOutput(QString solverName, int adaptivityStep) = 0;
-    void setMatrixRhsOutputGen(Hermes::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep);
+    void setMatrixRhsOutputGen(Hermes::Algebra::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep);
 
     virtual void matrixUnchangedDueToBDF(bool unchanged) {}
     virtual LinearMatrixSolver<Scalar> *linearSolver() = 0;

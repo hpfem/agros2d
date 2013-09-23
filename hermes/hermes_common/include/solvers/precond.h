@@ -25,7 +25,7 @@
 #include "common.h"  // Also includes preprocessor definitions for the various
 // solver libraries via config.h.
 
-#include "matrix.h"
+#include "algebra/matrix.h"
 
 #ifdef HAVE_EPETRA
 #include <Epetra_Operator.h>
@@ -38,6 +38,18 @@ namespace Hermes
   /// Namespace containing objects for preconditioners.
   namespace Preconditioners
   {
+    /// @ingroup preconds
+    /// The preconditioner type.
+    enum PreconditionerType
+    {
+      Jacobi = 0,
+      MultiColoredSGS = 1,
+      ILU = 2,
+      MultiColoredILU = 3,
+      IC = 4,
+      AIChebyshev = 5
+    };
+
     /// \brief Abstract class to define interface for preconditioners.
     ///
     /// @ingroup preconds

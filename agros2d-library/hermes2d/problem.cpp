@@ -671,32 +671,32 @@ void Problem::solve(bool adaptiveStepOnly, bool commandLine)
             Indicator::closeProgress();
         }
     }
-    catch (Hermes::Hermes2D::NewtonSolver<double>::NewtonException& e)
+    catch (Hermes::Exceptions::NonlinearException &e)
     {
-        Hermes::Hermes2D::NewtonSolver<double>::ConvergenceState convergenceState = e.get_exception_state();
+        Hermes::Hermes2D::NonlinearConvergenceState convergenceState = e.get_exception_state();
         switch(convergenceState)
         {
-        case Hermes::Hermes2D::NewtonSolver<double>::NotConverged:
+        case Hermes::Hermes2D::NotConverged:
         {
             Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("Newton solver did not converge."));
             break;
         }
-        case Hermes::Hermes2D::NewtonSolver<double>::BelowMinDampingCoeff:
+        case Hermes::Hermes2D::BelowMinDampingCoeff:
         {
             Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("Damping coefficient below minimum."));
             break;
         }
-        case Hermes::Hermes2D::NewtonSolver<double>::AboveMaxAllowedResidualNorm:
+        case Hermes::Hermes2D::AboveMaxAllowedResidualNorm:
         {
             Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("Residual norm exceeded limit."));
             break;
         }
-        case Hermes::Hermes2D::NewtonSolver<double>::AboveMaxIterations:
+        case Hermes::Hermes2D::AboveMaxIterations:
         {
             Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("Number of iterations exceeded limit."));
             break;
         }
-        case Hermes::Hermes2D::NewtonSolver<double>::Error:
+        case Hermes::Hermes2D::Error:
         {
             Agros2D::log()->printError(QObject::tr("Solver (Newton)"), QObject::tr("An error occured in Newton solver."));
             break;

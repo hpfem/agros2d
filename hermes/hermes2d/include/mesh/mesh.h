@@ -148,6 +148,19 @@ namespace Hermes
 
       /// For internal use.
       unsigned get_seq() const;
+
+      static const std::string eggShellInnerMarker;
+      static const std::string eggShell1Marker;
+      static const std::string eggShell0Marker;
+      
+      /// Return the "Egg-shell".
+      /// Finds all the elements that neighbor an area with a marker marker.
+      /// \param[in] mesh The source mesh
+      /// \param[in/out] elements The array where the elements will be returned.
+      /// \param[in/out] n_elements Size of the array.
+      /// \param[in] marker The marker
+      /// \param[in] n_element_guess(optional) Approximate number of elements that will be in this method. Used as an allocation hint. -1 for not-known.
+      static MeshSharedPtr get_egg_shell(MeshSharedPtr mesh, std::string marker, unsigned int levels, int n_element_guess = -1);
 #pragma endregion
 
 #pragma region refinements
@@ -184,9 +197,9 @@ namespace Hermes
       void refine_towards_boundary(std::string marker, int depth = 1, bool aniso = true, bool mark_as_initial = false);
 
       /// Refines all element sharing the marker passed.
-      void refine_in_area(std::string marker, int depth = 1, bool mark_as_initial = false);
+      void refine_in_area(std::string marker, int depth = 1, int refinement = 0, bool mark_as_initial = false);
       /// Refines all element sharing the markers passed.
-      void refine_in_areas(Hermes::vector<std::string> markers, int depth = 1, bool mark_as_initial = false);
+      void refine_in_areas(Hermes::vector<std::string> markers, int depth = 1, int refinement = 0, bool mark_as_initial = false);
 
       /// Regularizes the mesh by refining elements with hanging nodes of
       /// degree more than 'n'. As a result, n-irregular mesh is obtained.
@@ -304,6 +317,26 @@ namespace Hermes
       void set_seq(unsigned seq);
 
     private:
+
+      /// Internal.
+      /// Return the "Egg-shell" internal structures.
+      /// Finds all the elements that neighbor an area with a marker marker.
+      /// \param[in] mesh The target mesh
+      /// \param[in/out] elements The array where the elements will be returned.
+      /// \param[in/out] n_elements Size of the array.
+      /// \param[in] marker The marker
+      /// \param[in] n_element_guess(optional) Approximate number of elements that will be in this method. Used as an allocation hint. -1 for not-known.
+      static void get_egg_shell_structures(MeshSharedPtr target_mesh, Element**& elements, int& n_elements, std::string marker, unsigned int levels, int n_element_guess = -1);
+      
+      
+      /// Internal.
+      /// Return the "Egg-shell" mesh.
+      /// Finds all the elements that neighbor an area with a marker marker.
+      /// \param[in/out] mesh The target mesh
+      /// \param[in] elements The array from get_egg_shell_structures.
+      /// \param[in] n_elements Size of the array from get_egg_shell_structures.
+      static void make_egg_shell_mesh(MeshSharedPtr target_mesh, Element** elements, int n_elements);
+
       /// For internal use.
       void initial_single_check();
       static void initial_multimesh_check(Hermes::vector<MeshSharedPtr > meshes);

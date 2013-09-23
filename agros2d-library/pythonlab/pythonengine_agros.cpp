@@ -301,10 +301,10 @@ QString createPythonFromModel(StartupScript_Type startupScript)
         {
             str += QString("%1.matrix_iterative_solver_method = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
-                    arg(iterLinearSolverMethodToStringKey((Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()));
+                    arg(iterLinearSolverMethodToStringKey((Hermes::Solvers::IterSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()));
             str += QString("%1.matrix_iterative_solver_preconditioner = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
-                    arg(iterLinearSolverPreconditionerTypeToStringKey((Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
+                    arg(iterLinearSolverPreconditionerTypeToStringKey((Hermes::Solvers::PreconditionerType) fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
             str += QString("%1.matrix_iterative_solver_tolerance = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::LinearSolverIterToleranceAbsolute).toDouble());
@@ -409,7 +409,7 @@ QString createPythonFromModel(StartupScript_Type startupScript)
         {
             str += QString("%1.solver_parameters['measurement'] = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
-                    arg(nonlinearSolverConvergenceMeasurementToStringKey((Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()));
+                    arg(nonlinearSolverConvergenceMeasurementToStringKey((Hermes::Hermes2D::NonlinearConvergenceMeasurementType) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()));
 
             str += QString("%1.solver_parameters['damping'] = \"%2\"\n").
                     arg(fieldInfo->fieldId()).

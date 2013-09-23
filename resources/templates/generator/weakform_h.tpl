@@ -136,7 +136,7 @@ public:
     Scalar value(double x, double y) const;
     void derivatives (double x, double y, Scalar& dx, Scalar& dy) const;
 
-    Hermes::Ord ord (Hermes::Ord x, Hermes::Ord y) const
+    Hermes::Ord ord (double x, double y) const
     {
         return Hermes::Ord(Hermes::Ord::get_max_order());
     }

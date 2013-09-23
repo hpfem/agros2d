@@ -18,6 +18,7 @@
 #include "solution_h2d_xml.h"
 #include "ogprojection.h"
 #include "api2d.h"
+#include "algebra/dense_matrix_operations.h"
 
 namespace Hermes
 {
@@ -448,7 +449,7 @@ namespace Hermes
           // solve for the monomial coefficients
           if(mono_lu.mat[this->mode][o] == NULL)
             mono_lu.mat[this->mode][o] = calc_mono_matrix(o, mono_lu.perm[this->mode][o]);
-          lubksb(mono_lu.mat[this->mode][o], np, mono_lu.perm[this->mode][o], val);
+          lubksb<double, Scalar>(mono_lu.mat[this->mode][o], np, mono_lu.perm[this->mode][o], val);
         }
       }
 
@@ -716,6 +717,20 @@ namespace Hermes
         free_tables();
       transform = enable;
     }
+    
+    template<typename Scalar>
+    void Solution<Scalar>::add(MeshFunctionSharedPtr<Scalar> other_mesh_function, SpaceSharedPtr<Scalar> target_space)
+    {
+      Scalar* base_vector = new Scalar[target_space->get_num_dofs()];
+      Scalar* added_vector = new Scalar[target_space->get_num_dofs()];
+      OGProjection<Scalar>::project_global(target_space, this, base_vector);
+      OGProjection<Scalar>::project_global(target_space, other_mesh_function, added_vector);
+      
+      for(int i = 0; i < target_space->get_num_dofs(); i++)
+        base_vector[i] += added_vector[i];
+
+      this->set_coeff_vector(target_space, base_vector, true, 0);
+    }
 
     template<typename Scalar>
     void Solution<Scalar>::multiply(Scalar coef)
@@ -732,10 +747,11 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    static void make_dx_coeffs(int mode, int o, Scalar* mono, Scalar* result)
+    void Solution<Scalar>::make_dx_coeffs(int mode, int o, Scalar* mono, Scalar* result)
     {
       int i, j, k;
-      for (i = 0; i <= o; i++) {
+      for (i = 0; i <= o; i++)
+      {
         *result++= 0.0;
         k = mode ? o : i;
         for (j = 0; j < k; j++)
@@ -745,10 +761,11 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    static void make_dy_coeffs(int mode, int o, Scalar* mono, Scalar* result)
+    void Solution<Scalar>::make_dy_coeffs(int mode, int o, Scalar* mono, Scalar* result)
     {
       int i, j;
-      if(mode) {
+      if(mode)
+      {
         for (j = 0; j <= o; j++)
           *result++= 0.0;
         for (i = 0; i < o; i++)
@@ -756,7 +773,8 @@ namespace Hermes
             *result++= (Scalar) (o-i) * (*mono++);
       }
       else {
-        for (i = 0; i <= o; i++) {
+        for (i = 0; i <= o; i++)
+        {
           *result++= 0.0;
           for (j = 0; j < i; j++)
             *result++= (Scalar) (o + 1-i) * (*mono++);
@@ -824,7 +842,13 @@ namespace Hermes
       }
       else if(sln_type == HERMES_EXACT)
       {
-        this->order = Hermes::Hermes2D::g_max_quad;
+        this->order = Hermes2D::g_max_quad;
+        /// \todo
+        /*
+        double x, y;
+        e->get_center(x, y);
+        this->order = (dynamic_cast<ExactSolution<double>*>(this))->ord(x, y).get_order();
+        */
       }
       else
         throw Hermes::Exceptions::Exception("Uninitialized solution.");
@@ -1836,6 +1860,11 @@ namespace Hermes
       if(e == NULL) 
         throw Exceptions::NullException(1);
 
+      if(this->sln_type != HERMES_SLN)
+        throw Exceptions::Exception("Solution::get_ref_value_transformed only works for solutions wrt. FE space, project if you want to use the method for exact solutions.");
+
+      set_active_element(e);
+
       if(this->num_components == 1)
       {
         if(b == 0)
@@ -1852,7 +1881,6 @@ namespace Hermes
         }
         else
         {
-#ifdef H2D_USE_SECOND_DERIVATIVES
           double2x2 mat;
           double3x2 mat2;
           double xx, yy;
@@ -1871,7 +1899,6 @@ namespace Hermes
             return sqr(mat[1][0])*vxx + 2*mat[1][1]*mat[1][0]*vxy + sqr(mat[1][1])*vyy + mat2[2][0]*vx + mat2[2][1]*vy;   // dyy
           if(b == 5)
             return mat[0][0]*mat[1][0]*vxx + (mat[0][0]*mat[1][1] + mat[1][0]*mat[0][1])*vxy + mat[0][1]*mat[1][1]*vyy + mat2[1][0]*vx + mat2[1][1]*vy;   //dxy
-#endif
         }
       }
       else // vector solution
@@ -1889,8 +1916,9 @@ namespace Hermes
         else
           throw Hermes::Exceptions::Exception("Getting derivatives of the vector solution: Not implemented yet.");
       }
-      throw Hermes::Exceptions::Exception("internal error: reached end of non-void function");
-      return 0;
+
+      throw Hermes::Exceptions::Exception("Internal error: reached end of non-void function");
+      return 0.;
     }
 
     template<typename Scalar>

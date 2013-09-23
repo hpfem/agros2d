@@ -189,7 +189,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    bool PetscMatrix<Scalar>::export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
+    bool PetscMatrix<Scalar>::export_to_file(const char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
     {
       throw Exceptions::MethodNotImplementedException("PetscVector<double>::export_to_file");
       /*
@@ -333,7 +333,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void PetscVector<Scalar>::change_sign()
+    Vector<Scalar>* PetscVector<Scalar>::change_sign()
     {
       PetscScalar* y = new PetscScalar[this->size];
       int *idx = new int[this->size];
@@ -343,6 +343,7 @@ namespace Hermes
       VecSetValues(vec, this->size, idx, y, INSERT_VALUES);
       delete [] y;
       delete [] idx;
+      return this;
     }
 
     template<typename Scalar>
@@ -369,22 +370,24 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void PetscVector<Scalar>::add_vector(Vector<Scalar>* vec)
+    Vector<Scalar>* PetscVector<Scalar>::add_vector(Vector<Scalar>* vec)
     {
       assert(this->->get_size() == vec->->get_size());
       for (unsigned int i = 0; i < this->->get_size(); i++)
         this->add(i, vec->get(i));
+      return this;
     }
 
     template<typename Scalar>
-    void PetscVector<Scalar>::add_vector(Scalar* vec)
+    Vector<Scalar>* PetscVector<Scalar>::add_vector(Scalar* vec)
     {
       for (unsigned int i = 0; i < this->->get_size(); i++)
         this->add(i, vec[i]);
+      return this;
     }
 
     template<typename Scalar>
-    void PetscVector<Scalar>::export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
+    void PetscVector<Scalar>::export_to_file(const char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
     {
       throw Exceptions::MethodNotImplementedException("PetscVector<double>::export_to_file");
       /*

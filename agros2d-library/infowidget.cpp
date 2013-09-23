@@ -313,7 +313,7 @@ void InfoWidget::showInfo()
             if (fieldInfo->linearityType() != LinearityType_Linear)
             {
                 field->SetValue("NONLINEAR_CONVERGENCE_MEASUREMENT_LABEL", tr("Convergence:").toStdString());
-                field->SetValue("NONLINEAR_CONVERGENCE_MEASUREMENT", nonlinearSolverConvergenceMeasurementString((Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()).toStdString());
+                field->SetValue("NONLINEAR_CONVERGENCE_MEASUREMENT", nonlinearSolverConvergenceMeasurementString((Hermes::Hermes2D::NonlinearConvergenceMeasurementType) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()).toStdString());
                 field->SetValue("NONLINEAR_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
                 field->SetValue("NONLINEAR_TOLERANCE", QString::number(fieldInfo->value(FieldInfo::NonlinearTolerance).toDouble()).toStdString());
 
@@ -330,12 +330,12 @@ void InfoWidget::showInfo()
             QString matrixSolver = matrixSolverTypeString(fieldInfo->matrixSolver());
             if ((fieldInfo->matrixSolver() == Hermes::SOLVER_PARALUTION_ITERATIVE))
                 matrixSolver += tr(" (%1, %2) - iterative").
-                        arg(iterLinearSolverMethodString((Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt())).
-                        arg(iterLinearSolverPreconditionerTypeString((Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
+                        arg(iterLinearSolverMethodString((Hermes::Solvers::IterSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt())).
+                        arg(iterLinearSolverPreconditionerTypeString((Hermes::Solvers::PreconditionerType) fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
             else if ((fieldInfo->matrixSolver() == Hermes::SOLVER_PARALUTION_AMG))
                 matrixSolver += tr(" (%1, %2) - AMG").
-                        arg(iterLinearSolverMethodString((Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt())).
-                        arg(iterLinearSolverPreconditionerTypeString((Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
+                        arg(iterLinearSolverMethodString((Hermes::Solvers::IterSolverType) fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt())).
+                        arg(iterLinearSolverPreconditionerTypeString((Hermes::Solvers::PreconditionerType) fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
             else
                 matrixSolver += tr(" - direct");
 

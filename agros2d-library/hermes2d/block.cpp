@@ -383,13 +383,13 @@ double Block::nonlinearTolerance() const
     return tolerance;
 }
 
-Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType Block::nonlinearConvergenceMeasurement() const
+Hermes::Hermes2D::NonlinearConvergenceMeasurementType Block::nonlinearConvergenceMeasurement() const
 {
     // how to set properly?
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        return (Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt();
+        return (Hermes::Hermes2D::NonlinearConvergenceMeasurementType) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt();
     }
 
     return Hermes::Hermes2D::ResidualNormAbsolute;
@@ -534,29 +534,29 @@ int Block::picardAndersonNumberOfLastVectors() const
     return number;
 }
 
-Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType Block::iterParalutionLinearSolverMethod() const
+IterSolverType Block::iterLinearSolverType() const
 {
-    Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType method
-            = (Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType) m_fields.at(0)->fieldInfo()->value(FieldInfo::LinearSolverIterMethod).toInt();
+    Hermes::Solvers::IterSolverType method
+            = (Hermes::Solvers::IterSolverType) m_fields.at(0)->fieldInfo()->value(FieldInfo::LinearSolverIterMethod).toInt();
 
     foreach (Field *field, m_fields)
     {
         // todo: ensure in GUI
-        assert((Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType) field->fieldInfo()->value(FieldInfo::LinearSolverIterMethod).toInt() == method );
+        assert((Hermes::Solvers::IterSolverType) field->fieldInfo()->value(FieldInfo::LinearSolverIterMethod).toInt() == method );
     }
 
     return method ;
 }
 
-Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType Block::iterParalutionLinearSolverPreconditioner() const
+Hermes::Solvers::PreconditionerType Block::iterPreconditionerType() const
 {
-    Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType type
-            = (Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) m_fields.at(0)->fieldInfo()->value(FieldInfo::LinearSolverIterPreconditioner).toInt();
+    Hermes::Solvers::PreconditionerType type
+            = (Hermes::Solvers::PreconditionerType) m_fields.at(0)->fieldInfo()->value(FieldInfo::LinearSolverIterPreconditioner).toInt();
 
     foreach (Field *field, m_fields)
     {
         // todo: ensure in GUI
-        assert((Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) field->fieldInfo()->value(FieldInfo::LinearSolverIterPreconditioner).toInt() == type );
+        assert((Hermes::Solvers::PreconditionerType) field->fieldInfo()->value(FieldInfo::LinearSolverIterPreconditioner).toInt() == type );
     }
 
     return type ;

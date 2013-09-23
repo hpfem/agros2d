@@ -99,7 +99,7 @@ void PyField::setLinearityType(const std::string &linearityType)
 void PyField::setNonlinearConvergenceMeasurement(const std::string &nonlinearConvergenceMeasurement)
 {
     if (nonlinearSolverConvergenceMeasurementStringKeys().contains(QString::fromStdString(nonlinearConvergenceMeasurement)))
-        m_fieldInfo->setValue(FieldInfo::NonlinearConvergenceMeasurement, (Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) nonlinearSolverConvergenceMeasurementFromStringKey(QString::fromStdString(nonlinearConvergenceMeasurement)));
+        m_fieldInfo->setValue(FieldInfo::NonlinearConvergenceMeasurement, (Hermes::Hermes2D::NonlinearConvergenceMeasurementType) nonlinearSolverConvergenceMeasurementFromStringKey(QString::fromStdString(nonlinearConvergenceMeasurement)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(nonlinearSolverConvergenceMeasurementStringKeys())).toStdString());
 }
@@ -155,7 +155,7 @@ void PyField::setLinearSolverMethod(const std::string &linearSolverMethod)
 {
     if (iterLinearSolverMethodStringKeys().contains(QString::fromStdString(linearSolverMethod)))
         m_fieldInfo->setValue(FieldInfo::LinearSolverIterMethod,
-                              (Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType) iterLinearSolverMethodFromStringKey(QString::fromStdString(linearSolverMethod)));
+                              (Hermes::Solvers::IterSolverType) iterLinearSolverMethodFromStringKey(QString::fromStdString(linearSolverMethod)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(iterLinearSolverMethodStringKeys())).toStdString());
 }
@@ -164,7 +164,7 @@ void PyField::setLinearSolverPreconditioner(const std::string &linearSolverPreco
 {
     if (iterLinearSolverPreconditionerTypeStringKeys().contains(QString::fromStdString(linearSolverPreconditioner)))
         m_fieldInfo->setValue(FieldInfo::LinearSolverIterPreconditioner,
-                              (Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) iterLinearSolverPreconditionerTypeFromStringKey(QString::fromStdString(linearSolverPreconditioner)));
+                              (Hermes::Solvers::PreconditionerType) iterLinearSolverPreconditionerTypeFromStringKey(QString::fromStdString(linearSolverPreconditioner)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(iterLinearSolverPreconditionerTypeStringKeys())).toStdString());
 }

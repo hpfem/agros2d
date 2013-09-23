@@ -238,16 +238,18 @@ QWidget *FieldWidget::createSolverWidget()
     txtNonlinearTolerance = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::NonlinearTolerance).toDouble());
     txtNonlinearTolerance->setBottom(0.0);
 
+    cmbNonlinearConvergenceMeasurement = new QComboBox();
+
     QGridLayout *layoutSolverConvergence = new QGridLayout();
     layoutSolverConvergence->setColumnMinimumWidth(0, columnMinimumWidth());
 
     layoutSolverConvergence->addWidget(new QLabel(tr("Tolerance:")), 1, 0);
     layoutSolverConvergence->addWidget(txtNonlinearTolerance, 1, 1);
+    layoutSolverConvergence->addWidget(new QLabel(tr("Convergence measurement:")), 2, 0);
+    layoutSolverConvergence->addWidget(cmbNonlinearConvergenceMeasurement, 2, 1);
 
     QGroupBox *grpSolverConvergence = new QGroupBox(tr("Convergence"));
     grpSolverConvergence->setLayout(layoutSolverConvergence);
-
-    cmbNonlinearConvergenceMeasurement = new QComboBox();
 
     cmbNewtonDampingType = new QComboBox();
     connect(cmbNewtonDampingType, SIGNAL(currentIndexChanged(int)), this, SLOT(doNewtonDampingChanged(int)));
@@ -293,8 +295,6 @@ QWidget *FieldWidget::createSolverWidget()
 
     // Newton's solver
     QGridLayout *layoutNewtonSolver = new QGridLayout();
-    layoutNewtonSolver->addWidget(new QLabel(tr("Convergence measurement:")), 0, 0);
-    layoutNewtonSolver->addWidget(cmbNonlinearConvergenceMeasurement, 0, 1);
     layoutNewtonSolver->addWidget(grpNewtonSolverDamping, 2, 0, 1, 2);
     layoutNewtonSolver->addWidget(grpNewtonSolverReuse, 3, 0, 1, 2);
 
@@ -541,8 +541,8 @@ void FieldWidget::load()
     txtTransientTimeSkip->setValue(m_fieldInfo->value(FieldInfo::TransientTimeSkip).toDouble());
     // linearity
     cmbLinearityType->setCurrentIndex(cmbLinearityType->findData(m_fieldInfo->linearityType()));
-    cmbNonlinearConvergenceMeasurement->setCurrentIndex(cmbNonlinearConvergenceMeasurement->findData((Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) m_fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()));
     txtNonlinearTolerance->setValue(m_fieldInfo->value(FieldInfo::NonlinearTolerance).toDouble());
+    cmbNonlinearConvergenceMeasurement->setCurrentIndex(cmbNonlinearConvergenceMeasurement->findData((Hermes::Hermes2D::NonlinearConvergenceMeasurementType) m_fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()));
     cmbNewtonDampingType->setCurrentIndex(cmbNewtonDampingType->findData((DampingType) m_fieldInfo->value(FieldInfo::NewtonDampingType).toInt()));
     txtNewtonDampingCoeff->setValue(m_fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble());
     txtNewtonSufficientImprovementFactorForJacobianReuse->setValue(m_fieldInfo->value(FieldInfo::NewtonSufImprovForJacobianReuse).toDouble());
@@ -554,8 +554,8 @@ void FieldWidget::load()
     txtPicardAndersonBeta->setValue(m_fieldInfo->value(FieldInfo::PicardAndersonBeta).toDouble());
     txtPicardAndersonNumberOfLastVectors->setValue(m_fieldInfo->value(FieldInfo::PicardAndersonNumberOfLastVectors).toInt());
     // linear solver
-    cmbIterLinearSolverMethod->setCurrentIndex((Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType) cmbIterLinearSolverMethod->findData(m_fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()));
-    cmbIterLinearSolverPreconditioner->setCurrentIndex((Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) cmbIterLinearSolverPreconditioner->findData(m_fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
+    cmbIterLinearSolverMethod->setCurrentIndex((Hermes::Solvers::IterSolverType) cmbIterLinearSolverMethod->findData(m_fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()));
+    cmbIterLinearSolverPreconditioner->setCurrentIndex((Hermes::Solvers::PreconditionerType) cmbIterLinearSolverPreconditioner->findData(m_fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()));
     txtIterLinearSolverToleranceAbsolute->setValue(m_fieldInfo->value(FieldInfo::LinearSolverIterToleranceAbsolute).toDouble());
     txtIterLinearSolverIters->setValue(m_fieldInfo->value(FieldInfo::LinearSolverIterIters).toInt());
 
@@ -590,7 +590,7 @@ bool FieldWidget::save()
     // linearity
     m_fieldInfo->setLinearityType((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt());
     m_fieldInfo->setValue(FieldInfo::NonlinearTolerance, txtNonlinearTolerance->value());
-    m_fieldInfo->setValue(FieldInfo::NonlinearConvergenceMeasurement, (Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) cmbNonlinearConvergenceMeasurement->itemData(cmbNonlinearConvergenceMeasurement->currentIndex()).toInt());
+    m_fieldInfo->setValue(FieldInfo::NonlinearConvergenceMeasurement, (Hermes::Hermes2D::NonlinearConvergenceMeasurementType) cmbNonlinearConvergenceMeasurement->itemData(cmbNonlinearConvergenceMeasurement->currentIndex()).toInt());
     m_fieldInfo->setValue(FieldInfo::NewtonDampingCoeff, txtNewtonDampingCoeff->value());
     m_fieldInfo->setValue(FieldInfo::NewtonDampingType, (DampingType) cmbNewtonDampingType->itemData(cmbNewtonDampingType->currentIndex()).toInt());
     m_fieldInfo->setValue(FieldInfo::NewtonReuseJacobian, chkNewtonReuseJacobian->isChecked());

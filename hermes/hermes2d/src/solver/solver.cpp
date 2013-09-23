@@ -23,6 +23,7 @@
 #include "projections/ogprojection.h"
 
 using namespace Hermes::Algebra;
+using namespace Hermes::Solvers;
 
 namespace Hermes
 {
@@ -83,6 +84,8 @@ namespace Hermes
       this->constant_jacobian = false;
 
       this->do_UMFPACK_reporting = false;
+
+      this->ndof = -1;
     }
 
     template<typename Scalar>
@@ -212,7 +215,7 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    LinearMatrixSolver<Scalar>* Solver<Scalar>::get_linear_solver()
+    Hermes::Solvers::LinearMatrixSolver<Scalar>* Solver<Scalar>::get_linear_solver()
     {
       return this->matrix_solver;
     }

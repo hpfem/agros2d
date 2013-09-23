@@ -24,7 +24,7 @@
 #include "config.h"
 #ifdef HAVE_EPETRA
 #define EPETRA_NO_64BIT_GLOBAL_INDICES
-#include "matrix.h"
+#include "algebra/matrix.h"
 #include <Epetra_SerialComm.h>
 #include <Epetra_Map.h>
 #include <Epetra_Vector.h>
@@ -81,7 +81,8 @@ namespace Hermes
       EpetraMatrix* duplicate() { return new EpetraMatrix<Scalar>(*this); }
       
       virtual void add(unsigned int m, unsigned int n, Scalar **mat, int *rows, int *cols);
-      virtual void export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format = "%lf");
+      using Matrix<Scalar>::export_to_file;
+      virtual void export_to_file(const char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format = "%lf");
       virtual unsigned int get_matrix_size() const;
       virtual unsigned int get_nnz() const;
       virtual double get_fill_in() const;
@@ -115,11 +116,12 @@ namespace Hermes
       virtual Scalar get(unsigned int idx) const;
       virtual void extract(Scalar *v) const;
       virtual void zero();
-      virtual void change_sign();
+      virtual Vector<Scalar>* change_sign();
       virtual void set(unsigned int idx, Scalar y);
       virtual void add(unsigned int idx, Scalar y);
       virtual void add(unsigned int n, unsigned int *idx, Scalar *y);
-      virtual void export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format = "%lf");
+      using Vector<Scalar>::export_to_file;
+      virtual void export_to_file(const char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format = "%lf");
 
     protected:
       Epetra_BlockMap *std_map;

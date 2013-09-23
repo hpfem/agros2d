@@ -22,7 +22,7 @@
 #ifndef __HERMES_COMMON_PETSC_SOLVER_H_
 #define __HERMES_COMMON_PETSC_SOLVER_H_
 
-#include "matrix.h"
+#include "algebra/matrix.h"
 #include "linear_matrix_solver.h"
 
 #ifdef WITH_PETSC
@@ -59,7 +59,8 @@ namespace Hermes
       virtual void add(unsigned int m, unsigned int n, Scalar v);
       virtual void add_to_diagonal(Scalar v);
       virtual void add(unsigned int m, unsigned int n, Scalar **mat, int *rows, int *cols);
-      virtual void export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format = "%lf");
+      using Matrix<Scalar>::export_to_file;
+      virtual void export_to_file(const char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format = "%lf");
       virtual unsigned int get_matrix_size() const;
       virtual unsigned int get_nnz() const;
       virtual double get_fill_in() const;
@@ -112,13 +113,14 @@ namespace Hermes
       virtual Scalar get(unsigned int idx) const;
       virtual void extract(Scalar *v) const;
       virtual void zero();
-      virtual void change_sign();
+      virtual Vector<Scalar>* change_sign();
       virtual void set(unsigned int idx, Scalar y);
       virtual void add(unsigned int idx, Scalar y);
       virtual void add(unsigned int n, unsigned int *idx, Scalar *y);
-      virtual void add_vector(Vector<Scalar>* vec);
-      virtual void add_vector(Scalar* vec);
-      virtual void export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format = "%lf");
+      virtual Vector<Scalar>* add_vector(Vector<Scalar>* vec);
+      virtual Vector<Scalar>* add_vector(Scalar* vec);
+      using Vector<Scalar>::export_to_file;
+      virtual void export_to_file(const char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format = "%lf");
 
     protected:
       /// Petsc vector data structure.

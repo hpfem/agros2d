@@ -23,6 +23,7 @@
 #define __H2D_SOLVER_PICARD_H_
 
 #include "solver/nonlinear_solver.h"
+#include "solver/nonlinear_convergence_measurement.h"
 
 namespace Hermes
 {
@@ -77,11 +78,9 @@ namespace Hermes
       PicardSolver(WeakForm<Scalar>* wf, Hermes::vector<SpaceSharedPtr<Scalar> >& spaces);
       virtual ~PicardSolver();
 
-      /// Sets the attribute verbose_output for the inner Newton's loop to the parameter passed.
-      void set_verbose_output_linear_solver(bool verbose_output_to_set);
-
       // See the base class for details, the following serves only for avoiding C++ name-hiding.
       using NonlinearSolver<Scalar>::solve;
+      
       /// Solve.
       /// \param[in] coeff_vec initiall guess as a vector of coefficients wrt. basis functions.
       virtual void solve(Scalar* coeff_vec);
@@ -89,9 +88,6 @@ namespace Hermes
 #pragma region anderson-public
       /// Turn on / off the Anderson acceleration. By default it is off.
       void use_Anderson_acceleration(bool to_set);
-    
-      /// Set the relative tolerance, thus co-determine when to stop Picard's iterations.
-      void set_tolerance(double tol);
       
       /// Set how many last vectors will be used for Anderson acceleration. See the details about the Anderson acceleration for 
       /// explanation of this parameter.
@@ -103,35 +99,39 @@ namespace Hermes
 #pragma endregion
 
     protected:
+      /// Common constructors code.
+      /// Internal setting of default values (see individual set methods).
+      void init_picard();
+
       /// State querying helpers.
       virtual bool isOkay() const;
       inline std::string getClassName() const { return "PicardSolver"; }
 
-      /// Convergence state.
-      enum ConvergenceState
-      {
-        Converged,
-        NotConverged,
-        AboveMaxAllowedResidualNorm,
-        AboveMaxIterations,
-        Error
-      };
-
-      /// Find out the state.
-      typename PicardSolver<Scalar>::ConvergenceState get_convergence_state(double relative_error, int iteration);
-
+      /// Init - deinit one solving.
       virtual void init_solving(Scalar*& coeff_vec);
       void deinit_solving(Scalar* coeff_vec);
 
-      void init_picard();
-
-      double calculate_relative_error(Scalar* coeff_vec);
+      /// Finalize solving (+deinit)
+      /// For "good" finish.
+      void finalize_solving(Scalar* coeff_vec);
       
-      bool verbose_output_linear_solver;
-      int ndof;
+      /// Calculate and store solution norm and solution change norm.
+      void calculate_error(Scalar* coeff_vec);
+      
+      /// Initial iteratios is handled separately (though it is completely identical - this is just to reflect Newton solver).
+      bool do_initial_step_return_finished(Scalar* coeff_vec);
 
-      /// Tolerance.
-      double picard_tolerance;
+      /// Act upon the convergence state.
+      /// \return If the main loop in solve() should finalize after this.
+      bool handle_convergence_state_return_finished(NonlinearConvergenceState state, Scalar* coeff_vec);
+
+      void solve_linear_system(Scalar* coeff_vec);
+
+      /// Shortcut method for getting the current iteration.
+      int get_current_iteration_number();
+      
+      /// Output info about the step.
+      void step_info();
 
 #pragma region anderson-private
       // Anderson.
@@ -157,20 +157,16 @@ namespace Hermes
 
 #pragma region OutputAttachable
       // For derived classes - read-only access.
-      const OutputParameterUnsignedInt& iteration() const { return this->p_iteration; }
-      const OutputParameterUnsignedInt& vec_in_memory() const { return this->p_vec_in_memory; }
-      const OutputParameterDouble& abs_error() const { return this->p_abs_error; }
-      const OutputParameterDouble& rel_error() const { return this->p_rel_error; }
-      const OutputParameterDouble& iter_vec_norm() const { return this->p_iter_vec_norm; }
+      const OutputParameterUnsignedInt& iteration() const { return this->p_iteration; };
+      const OutputParameterUnsignedInt& vec_in_memory() const { return this->p_vec_in_memory; };
 
     private:
       // Parameters for OutputAttachable mixin.
       OutputParameterUnsignedInt p_iteration;
       OutputParameterUnsignedInt p_vec_in_memory;
-      OutputParameterDouble p_abs_error;
-      OutputParameterDouble p_rel_error;
-      OutputParameterDouble p_iter_vec_norm;
 #pragma endregion
+
+      friend class NonlinearConvergenceMeasurement<Scalar>;
     };
   }
 }

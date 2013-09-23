@@ -276,7 +276,7 @@ namespace Hermes
     }
    
     template<>
-    void EpetraMatrix<double>::export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
+    void EpetraMatrix<double>::export_to_file(const char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
     {
       throw Exceptions::MethodNotImplementedException("EpetraMatrix<double>::export_to_file");
       /*
@@ -290,7 +290,7 @@ namespace Hermes
     }
     
     template<>
-    void EpetraMatrix<std::complex<double> >::export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
+    void EpetraMatrix<std::complex<double> >::export_to_file(const char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
     {
       throw Exceptions::MethodNotImplementedException("EpetraMatrix<double>::export_to_file");
     }
@@ -359,10 +359,13 @@ namespace Hermes
     }
 
     template<typename Scalar>
-    void EpetraVector<Scalar>::change_sign()
+    Vector<Scalar>* EpetraVector<Scalar>::change_sign()
     {
-      for (unsigned int i = 0; i < this->size; i++) (*vec)[i] *= -1.;
-      for (unsigned int i = 0; i < this->size; i++) (*vec_im)[i] *= -1.;
+      for (unsigned int i = 0; i < this->size; i++)
+        (*vec)[i] *= -1.;
+      for (unsigned int i = 0; i < this->size; i++)
+        (*vec_im)[i] *= -1.;
+      return this;
     }
 
     template<typename Scalar>
@@ -423,7 +426,7 @@ namespace Hermes
     }
     
     template<>
-    bool EpetraVector<double>::export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
+    bool EpetraVector<double>::export_to_file(const char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
     {
       switch (fmt)
       {
@@ -437,7 +440,7 @@ namespace Hermes
     }
     
     template<>
-    bool EpetraVector<std::complex<double> >::export_to_file(char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
+    bool EpetraVector<std::complex<double> >::export_to_file(const char *filename, const char *var_name, MatrixExportFormat fmt, char* number_format)
     {
       return false;
     }

@@ -175,7 +175,7 @@ void AgrosExternalSolverOctave::solve(double* initial_guess)
 //}
 
 template <typename Scalar>
-void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep)
+void HermesSolverContainer<Scalar>::setMatrixRhsOutputGen(Hermes::Algebra::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep)
 {
     if(Agros2D::configComputer()->saveMatrixRHS)
     {
@@ -231,12 +231,12 @@ QSharedPointer<HermesSolverContainer<Scalar> > HermesSolverContainer<Scalar>::fa
     }
     if (IterativeParalutionLinearMatrixSolver<Scalar> *linearSolver = dynamic_cast<IterativeParalutionLinearMatrixSolver<Scalar> *>(solver.data()->linearSolver()))
     {
-        linearSolver->set_solver_type(block->iterParalutionLinearSolverMethod());
-        linearSolver->set_precond(new Hermes::Preconditioners::ParalutionPrecond<Scalar>(block->iterParalutionLinearSolverPreconditioner()));
+        linearSolver->set_solver_type(block->iterLinearSolverType());
+        linearSolver->set_precond(new Hermes::Preconditioners::ParalutionPrecond<Scalar>(block->iterPreconditionerType()));
     }
     if (AMGParalutionLinearMatrixSolver<Scalar> *linearSolver = dynamic_cast<AMGParalutionLinearMatrixSolver<Scalar> *>(solver.data()->linearSolver()))
     {
-        linearSolver->set_smoother(block->iterParalutionLinearSolverMethod(), block->iterParalutionLinearSolverPreconditioner());
+        linearSolver->set_smoother(block->iterLinearSolverType(), block->iterPreconditionerType());
     }
 
     return solver;

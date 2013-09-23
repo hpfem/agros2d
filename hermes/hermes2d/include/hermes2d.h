@@ -21,9 +21,9 @@
 #include "global.h"
 
 #include "solver/newton_solver.h"
-#include "solver/newton_solver_convergence_measurement.h"
 #include "solver/picard_solver.h"
 #include "solver/linear_solver.h"
+#include "solver/nonlinear_convergence_measurement.h"
 #include "calculation_continuity.h"
 
 #include "boundary_conditions/essential_boundary_conditions.h"
@@ -60,13 +60,13 @@
 
 #include "weakform/weakform.h"
 #include "discrete_problem.h"
-#include "discrete_problem.h"
 #include "forms.h"
 
 #include "function/exact_solution.h"
 #include "function/solution.h"
 #include "function/mesh_function.h"
 #include "function/filter.h"
+#include "function/postprocessing.h"
 
 #include "graph.h"
 

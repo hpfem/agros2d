@@ -23,7 +23,7 @@
 #define __HERMES_COMMON_EXCEPTIONS_H_
 
 #include "common.h"
-#include "compat.h"
+#include "util/compat.h"
 
 #undef assert
 #define assert(x) \
@@ -81,7 +81,8 @@ namespace Hermes
         /// Constructor
         /// \param[in] readWrite obvious.
         /// \param[in] filename obvious.
-        IOException(ReadWrite readWrite, char* filename);
+        IOException(ReadWrite readWrite, const char* filename);
+        IOException(ReadWrite readWrite, std::string filename);
 
         ~IOException() throw();
         IOException(const IOException & e);

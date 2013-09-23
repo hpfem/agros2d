@@ -106,60 +106,14 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
     double current_damping_factor = 1.0;
     if (damping_factors.size() >= 1.0)
         current_damping_factor = damping_factors.at(damping_factors.size() - 1);
-    unsigned int successful_steps_damping = this->get_parameter_value(this->successful_steps_damping());
-    unsigned int successful_steps_jacobian = this->get_parameter_value(this->successful_steps_jacobian());
 
-    double initial_residual_norm = residual_norms[0];
-    double initial_solution_norm = solution_norms[0];
-
-    double current_residual_norm = residual_norms[iteration];
-    double current_solution_norm = solution_norms[iteration];
-    double current_solution_change_norm = solution_change_norms[iteration];
-    QString resNorms;
-    for(int i = 0; i < residual_norms.size(); i++)
-        resNorms = QObject::tr("%1%2, ").arg(resNorms).arg(residual_norms[i]);
-
-    double previous_residual_norm = current_residual_norm;
-    double previous_solution_norm = current_solution_norm;
     double previous_damping_factors = current_damping_factor;
-    if (iteration > 1)
-    {
-        previous_residual_norm = residual_norms[iteration - 1];
-        previous_solution_norm = solution_norms[iteration - 1];
-    }
     if(damping_factors.size() >= 2)
         previous_damping_factors = damping_factors.at(damping_factors.size() - 2);
 
-
     // add iteration
     m_steps.append(iteration);
-
-    switch(this->current_convergence_measurement)
-    {
-    case Hermes::Hermes2D::ResidualNormRelativeToInitial:
-        m_errors.append((initial_residual_norm - current_residual_norm) / initial_residual_norm);
-        break;
-    case Hermes::Hermes2D::ResidualNormRelativeToPrevious:
-        m_errors.append((previous_residual_norm - current_residual_norm) / previous_residual_norm);
-        break;
-    case Hermes::Hermes2D::ResidualNormRatioToInitial:
-        m_errors.append(current_residual_norm / initial_residual_norm);
-        break;
-    case Hermes::Hermes2D::ResidualNormRatioToPrevious:
-        m_errors.append(current_residual_norm / previous_residual_norm);
-        break;
-    case Hermes::Hermes2D::ResidualNormAbsolute:
-        m_errors.append(current_residual_norm);
-        break;
-    case Hermes::Hermes2D::SolutionDistanceFromPreviousAbsolute:
-        m_errors.append(current_solution_change_norm);
-        break;
-    case Hermes::Hermes2D::SolutionDistanceFromPreviousRelative:
-        m_errors.append(current_solution_change_norm / current_solution_norm);
-        break;
-    default:
-        throw AgrosException(QObject::tr("Convergence measurement '%1' doesn't exists.").arg(this->current_convergence_measurement));
-    }
+    m_errors.append(residual_norms.back());
 
     assert(m_steps.size() == m_errors.size());
     if(phase != Phase_Finished)
@@ -170,7 +124,6 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
         assert(iteration == 0);
         Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Initial step, error: %1")
                                      .arg(m_errors.last()));
-        //Agros2D::log()->printDebug(QObject::tr("Solver (Newton)"), QObject::tr("Norms history %1").arg(resNorms));
     }
     else if (phase == Phase_DFDetermined)
     {
@@ -178,7 +131,6 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
                                      .arg(iteration)
                                      .arg(previous_damping_factors)
                                      .arg(m_errors.last()));
-        //Agros2D::log()->printDebug(QObject::tr("Solver (Newton)"), QObject::tr("Norms history %1").arg(resNorms));
     }
     else if (phase == Phase_JacobianReused)
     {
@@ -207,28 +159,9 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
         Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Calculation finished, error: %2, Jacobian recalculated %3x")
                                      .arg(m_errors.last())
                                      .arg(m_jacobianCalculations));
-        //Agros2D::log()->printDebug(QObject::tr("Solver (Newton)"), QObject::tr("Jacobian reuse history %1").arg(reuses));
     }
     else
         assert(0);
-
-    //    if (iteration == 1)
-    //    {
-    //        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Initial step, error: %1")
-    //                                     .arg(m_errors.last()));
-    //    }
-    //    else
-    //    {
-    //        if (successful_steps_jacobian == 0 && iteration > 2 && m_block->newtonMaxStepsWithReusedJacobian() > 0)
-    //            Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Results not improved, step restarted with new Jacobian"));
-    //        if (m_block->newtonDampingType() == DampingType_Automatic && successful_steps_damping == 0)
-    //            Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Results not improved, step restarted with new damping coefficient"));
-
-    //        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, damping coeff.: %2, error: %3")
-    //                                     .arg(iteration)
-    //                                     .arg(current_damping_coefficient)
-    //                                     .arg(m_errors.last()));
-    //    }
 
     m_damping.append(current_damping_factor);
     Agros2D::log()->setNonlinearTable(m_steps, m_errors);
@@ -242,7 +175,6 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
     m_newtonSolver->set_tolerance(block->nonlinearTolerance(), block->nonlinearConvergenceMeasurement());
     m_newtonSolver->set_max_allowed_iterations(1e5);
     m_newtonSolver->set_max_allowed_residual_norm(1e15);
-    m_newtonSolver->set_convergence_measurement(block->nonlinearConvergenceMeasurement());
     m_newtonSolver->set_sufficient_improvement_factor_jacobian(block->newtonSufficientImprovementFactorForJacobianReuse());
     m_newtonSolver->set_sufficient_improvement_factor(block->newtonSufficientImprovementFactor());
 

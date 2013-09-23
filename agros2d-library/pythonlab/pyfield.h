@@ -66,7 +66,7 @@ class PyField
         void setLinearityType(const std::string &linearityType);
 
         // convergence measurement
-        inline std::string getNonlinearConvergenceMeasurement() const { return nonlinearSolverConvergenceMeasurementToStringKey((Hermes::Hermes2D::NewtonSolverConvergenceMeasurementType) m_fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()).toStdString(); }
+        inline std::string getNonlinearConvergenceMeasurement() const { return nonlinearSolverConvergenceMeasurementToStringKey((Hermes::Hermes2D::NonlinearConvergenceMeasurementType) m_fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()).toStdString(); }
         void setNonlinearConvergenceMeasurement(const std::string &nonlinearConvergenceMeasurement);
 
         // automatic damping
@@ -82,12 +82,12 @@ class PyField
         void setMatrixSolver(const std::string &matrixSolver);
 
         inline std::string getLinearSolverMethod() const {
-             return iterLinearSolverMethodToStringKey((Hermes::Solvers::IterativeParalutionLinearMatrixSolver<double>::ParalutionSolverType) m_fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()).toStdString();
+             return iterLinearSolverMethodToStringKey((Hermes::Solvers::IterSolverType) m_fieldInfo->value(FieldInfo::LinearSolverIterMethod).toInt()).toStdString();
         }
         void setLinearSolverMethod(const std::string &linearSolverMethod);
 
         inline std::string getLinearSolverPreconditioner() const {
-            return iterLinearSolverPreconditionerTypeToStringKey((Hermes::Solvers::ParalutionPrecond<double>::ParalutionPreconditionerType) m_fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()).toStdString();
+            return iterLinearSolverPreconditionerTypeToStringKey((Hermes::Solvers::PreconditionerType) m_fieldInfo->value(FieldInfo::LinearSolverIterPreconditioner).toInt()).toStdString();
         }
         void setLinearSolverPreconditioner(const std::string &linearSolverPreconditioner);
 
