@@ -150,7 +150,7 @@
         </materials>
         <field_config>
           <field_item field_key="NonlinearTolerance" field_value="1e-08"/>
-          <field_item field_key="NonlinearConvergenceMeasurement" field_value="16"/>
+          <field_item field_key="NonlinearConvergenceMeasurement" field_value="32"/>
           <field_item field_key="NewtonDampingType" field_value="0"/>
           <field_item field_key="NewtonDampingCoeff" field_value="0.8"/>
           <field_item field_key="NewtonReuseJacobian" field_value="1"/>
@@ -276,7 +276,7 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="-15.0000000000002"/>
+    <item key="View_ScalarRangeMin" value="-15.0000000000001"/>
     <item key="View_ScalarRangeMax" value="10"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value="richards_pressure_darcy_velocity"/>
