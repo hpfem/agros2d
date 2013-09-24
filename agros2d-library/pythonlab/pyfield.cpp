@@ -41,7 +41,7 @@ PyField::PyField(std::string fieldId)
             {
                 m_fieldInfo = new FieldInfo(id);
             }
-            catch(AgrosPluginException& e)
+            catch (AgrosPluginException& e)
             {
                 throw invalid_argument(QObject::tr("Invalid field id. Plugin %1 cannot be loaded").arg(id).toStdString());
             }
@@ -507,7 +507,7 @@ void PyField::localValues(double x, double y, int timeStep, int adaptivityStep,
     if (Agros2D::problem()->isSolved())
     {
         // set mode
-        if (!silentMode())
+        if (!silentMode() && !Agros2D::problem()->isSolving())
         {
             currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
             currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeNothing->trigger();
@@ -558,7 +558,7 @@ void PyField::surfaceIntegrals(const vector<int> &edges, int timeStep, int adapt
     if (Agros2D::problem()->isSolved())
     {
         // set mode
-        if (!silentMode())
+        if (!silentMode() && !Agros2D::problem()->isSolving())
         {
             currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
             currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeSurfaceIntegral->trigger();
@@ -624,7 +624,7 @@ void PyField::volumeIntegrals(const vector<int> &labels, int timeStep, int adapt
     if (Agros2D::problem()->isSolved())
     {
         // set mode
-        if (!silentMode())
+        if (!silentMode() && !Agros2D::problem()->isSolving())
         {
             currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
             currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeVolumeIntegral->trigger();

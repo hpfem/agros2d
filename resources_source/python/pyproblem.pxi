@@ -42,9 +42,11 @@ cdef extern from "../../agros2d-library/pythonlab/pyproblem.h":
 
 cdef class __Problem__:
     cdef PyProblem *thisptr
+    cdef object time_callback
 
     def __cinit__(self, clear = False):
         self.thisptr = new PyProblem(clear)
+        self.time_callback = None
 
     def __dealloc__(self):
         del self.thisptr
@@ -108,6 +110,12 @@ cdef class __Problem__:
             return self.thisptr.getNumConstantTimeSteps()
         def __set__(self, time_steps):
             self.thisptr.setNumConstantTimeSteps(time_steps)
+
+    property time_callback:
+        def __get__(self):
+            return self.time_callback
+        def __set__(self, callback):
+            self.time_callback = callback
 
     def get_coupling_type(self, source_field, target_field):
         """Return type of coupling.

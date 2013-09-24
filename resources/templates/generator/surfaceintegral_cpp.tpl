@@ -46,7 +46,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
     if (Agros2D::problem()->isSolved())
     {
         // update time functions
-        if (m_fieldInfo->analysisType() == AnalysisType_Transient)
+        if (!Agros2D::problem()->isSolving() && m_fieldInfo->analysisType() == AnalysisType_Transient)
         {
             QList<double> timeLevels = Agros2D::solutionStore()->timeLevels(m_fieldInfo);
             Module::updateTimeFunctions(timeLevels[m_timeStep]);

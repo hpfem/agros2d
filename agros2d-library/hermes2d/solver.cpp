@@ -491,7 +491,7 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
             runTime.setJacobianCalculations(solver->jacobianCalculations());
         }
 
-        Agros2D::solutionStore()->addSolution(solutionID, MultiArray<Scalar>(actualSpaces(), solutions), runTime);
+        Agros2D::solutionStore()->addSolution(solutionID, MultiArray<Scalar>(actualSpaces(), solutions), runTime);       
     }
     catch (AgrosSolverException e)
     {
@@ -735,7 +735,7 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
     Hermes::vector<SpaceSharedPtr<Scalar> > spaces = actualSpaces();
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(spaces, Agros2D::problem()->actualTime());
 
-    if(m_block->isTransient())
+    if (m_block->isTransient())
     {
         int order = min(timeStep, Agros2D::problem()->config()->value(ProblemConfig::TimeOrder).toInt());
         bool matrixUnchanged = m_block->weakForm()->bdf2Table()->setOrderAndPreviousSteps(order, Agros2D::problem()->timeStepLengths());
@@ -794,7 +794,7 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
     }
 
     MultiArray<Scalar> msa(actualSpaces(), solutions);
-    Agros2D::solutionStore()->addSolution(solutionID, msa, runTime);
+    Agros2D::solutionStore()->addSolution(solutionID, msa, runTime);  
 }
 
 template <typename Scalar>
@@ -867,13 +867,13 @@ bool ProblemSolver<Scalar>::createAdaptedSpace(int timeStep, int adaptivityStep,
         // allways adapt when forcing adaptation, to be used in solveAdaptiveStep
         adapt = adapt || forceAdaptation;
 
+        Agros2D::log()->printMessage(m_solverID, QObject::tr("Adaptivity step (error = %1, DOFs = %2/%3)").
+                                     arg(error).
+                                     arg(Space<Scalar>::get_num_dofs(msa.spaces())).
+                                     arg(Space<Scalar>::get_num_dofs(msaRef.spaces())));
+
         if (adapt)
         {
-            Agros2D::log()->printMessage(m_solverID, QObject::tr("Adaptivity step (error = %1, DOFs = %2/%3)").
-                                         arg(error).
-                                         arg(Space<Scalar>::get_num_dofs(msa.spaces())).
-                                         arg(Space<Scalar>::get_num_dofs(msaRef.spaces())));
-
             bool noRefinementPerformed;
             try
             {

@@ -48,7 +48,7 @@ void {{CLASS}}LocalValue::calculate()
     MultiArray<double> ma = Agros2D::solutionStore()->multiArray(fsid);
 
     // update time functions
-    if (m_fieldInfo->analysisType() == AnalysisType_Transient)
+    if (!Agros2D::problem()->isSolving() && m_fieldInfo->analysisType() == AnalysisType_Transient)
     {
        Module::updateTimeFunctions(Agros2D::problem()->timeStepToTotalTime(m_timeStep));
     }

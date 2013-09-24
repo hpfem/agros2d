@@ -198,6 +198,7 @@ cdef class __Field__:
     cdef object matrix_solver_parameters
     cdef object solver_parameters
     cdef object adaptivity_parameters
+    cdef object adaptivity_callback
 
     def __cinit__(self, field_id):
         self.thisptr = new PyField(string(field_id))
@@ -207,6 +208,7 @@ cdef class __Field__:
                                                 self.__set_solver_parameters__)
         self.adaptivity_parameters = __Parameters__(self.__get_adaptivity_parameters__,
                                                     self.__set_adaptivity_parameters__)
+        self.adaptivity_callback = None
 
     def __dealloc__(self):
         del self.thisptr
@@ -233,6 +235,12 @@ cdef class __Field__:
     property solver_parameters:
         def __get__(self):
             return self.solver_parameters.get_parameters()
+
+    property adaptivity_callback:
+        def __get__(self):
+            return self.adaptivity_callback
+        def __set__(self, callback):
+            self.adaptivity_callback = callback
 
     def __get_solver_parameters__(self):
         return {'tolerance' : self.thisptr.getDoubleParameter(string('NonlinearTolerance')),
@@ -677,6 +685,13 @@ cdef class __Field__:
     def filename_rhs(self, time_step = None, adaptivity_step = None):
         return self.thisptr.filenameRHS(int(-1 if time_step is None else time_step),
                                         int(-1 if adaptivity_step is None else adaptivity_step))
-
+__fields__ = {}
 def field(field_id):
-    return __Field__(field_id)
+    if not (__fields__.has_key(field_id)):
+        __fields__[field_id] = __Field__(field_id)
+
+    return __fields__[field_id]
+
+def __remove_field__(field_id):
+    if (__fields__.has_key(field_id)):
+        del __fields__[field_id]

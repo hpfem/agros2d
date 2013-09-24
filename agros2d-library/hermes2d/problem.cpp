@@ -40,6 +40,8 @@
 #include "meshgenerator_gmsh.h"
 #include "logview.h"
 
+#include "pythonlab/pythonengine.h"
+
 CalculationThread::CalculationThread() : QThread()
 {
 }
@@ -166,8 +168,6 @@ bool Problem::determineIsNonlinear() const
 
 void Problem::clearSolution()
 {
-    m_isSolving = false;
-    m_isMeshing = false;
     m_abort = false;
 
     // m_timeStep = 0;
@@ -246,6 +246,8 @@ void Problem::removeField(FieldInfo *field)
     m_fieldInfos.remove(field->fieldId());
 
     synchronizeCouplings();
+
+    currentPythonEngine()->runExpression(QString("agros2d.__remove_field__(\"%1\")").arg(field->fieldId()));
 
     emit fieldsChanged();
 }
@@ -341,9 +343,6 @@ void Problem::createStructure()
 
 bool Problem::mesh(bool emitMeshed)
 {
-    if (isMeshing() || isSolving())
-        return false;
-
     bool result = false;
 
     // TODO: make global check geometry before mesh() and solve()
@@ -792,13 +791,33 @@ void Problem::solveAction()
                 {
                     // adaptivity
                     int adaptStep = 1;
-                    bool continueAdaptivity = true;
-                    while (continueAdaptivity && (adaptStep <= block->adaptivitySteps()) && !m_abort)
+                    bool doContinueAdaptivity = true;
+                    while (doContinueAdaptivity && (adaptStep <= block->adaptivitySteps()) && !m_abort)
                     {
                         // solve problem
                         solvers[block]->solveReferenceAndProject(actualTimeStep(), adaptStep - 1);
                         // create adapted space
-                        continueAdaptivity = solvers[block]->createAdaptedSpace(actualTimeStep(), adaptStep);
+                        doContinueAdaptivity = solvers[block]->createAdaptedSpace(actualTimeStep(), adaptStep);
+
+                        // Python callback
+                        foreach (Field *field, block->fields())
+                        {
+                            QString command = QString("(agros2d.field(\"%1\").adaptivity_callback(%2) if (agros2d.field(\"%1\").adaptivity_callback is not None and hasattr(agros2d.field(\"%1\").adaptivity_callback, '__call__')) else True)").
+                                    arg(field->fieldInfo()->fieldId()).
+                                    arg(adaptStep - 1);
+
+                            double cont = 1.0;
+                            bool successfulRun = currentPythonEngine()->runExpression(command, &cont);
+                            if (!successfulRun)
+                            {
+                                ErrorResult result = currentPythonEngine()->parseError();
+                                Agros2D::log()->printError(QObject::tr("Adaptivity callback"), result.error());
+                            }
+
+                            if (!cont)
+                                doContinueAdaptivity = false;
+                            break;
+                        }
 
                         adaptStep++;
                     }
@@ -828,8 +847,32 @@ void Problem::solveAction()
                 Agros2D::solutionStore()->removeTimeStep(actualTimeStep());
                 refuseLastTimeStepLength();
             }
+            else
+            {
+                // Python callback
+                if (actualTimeStep() > 0)
+                {
+                    QString command = QString("(agros2d.problem().time_callback(%1) if (agros2d.problem().time_callback is not None and hasattr(agros2d.problem().time_callback, '__call__')) else True)").
+                            arg(actualTimeStep());
 
-            doNextTimeStep = defineActualTimeStepLength(nextTimeStep.length);
+                    double cont = 1.0;
+                    bool successfulRun = currentPythonEngine()->runExpression(command, &cont);
+                    if (!successfulRun)
+                    {
+                        ErrorResult result = currentPythonEngine()->parseError();
+                        Agros2D::log()->printError(QObject::tr("Transient callback"), result.error());
+                    }
+
+                    if (!cont)
+                    {
+                        doNextTimeStep = false;
+                        break;
+                    }
+                }
+            }
+
+            if (!doNextTimeStep)
+                doNextTimeStep = defineActualTimeStepLength(nextTimeStep.length);
         }
     } while (doNextTimeStep && !m_abort);
 }

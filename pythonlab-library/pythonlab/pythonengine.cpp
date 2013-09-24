@@ -389,14 +389,18 @@ bool PythonEngine::runScript(const QString &script, const QString &fileName, boo
 
 bool PythonEngine::runExpression(const QString &expression, double *value, const QString &command)
 {
-    if (m_isExpressionRunning)
+    while (m_isExpressionRunning)
+    {
         qDebug() << "Expression is running" << expression;
+        msleep(10);
+    }
 
-    m_isExpressionRunning = true;
     bool successfulRun = false;
 
 #pragma omp critical
     {
+        m_isExpressionRunning = true;
+
         PyObject *output = NULL;
 
         if (value)
@@ -463,11 +467,12 @@ bool PythonEngine::runExpression(const QString &expression, double *value, const
             if (errorTraceback)
                 successfulRun = false;
         }
+
+        m_isExpressionRunning = false;
+
+        emit executedExpression();
     }
 
-    m_isExpressionRunning = false;
-
-    emit executedExpression();
     return successfulRun;
 }
 
