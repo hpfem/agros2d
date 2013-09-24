@@ -42,17 +42,15 @@
     <labels>
       <label area="5000" id="0" x="434.362" y="872.026"/>
       <label area="6000" id="1" x="330.153" y="165.57"/>
-      <label area="300" id="2" x="776.763" y="334.741"/>
-      <label area="3000" id="3" x="891.799" y="539.099"/>
+      <label area="200" id="2" x="776.763" y="334.741"/>
+      <label area="200" id="3" x="891.799" y="539.099"/>
     </labels>
   </geometry>
 
   <problem coordinate_type="planar" mesh_type="triangle">
     <fields>
       <field adaptivity_type="disabled" analysis_type="transient" field_id="richards" linearity_type="picard" matrix_solver="mumps">
-        <refinement_edges>
-          <refinement_edge refinement_edge_id="0" refinement_edge_number="1"/>
-        </refinement_edges>
+        <refinement_edges/>
         <refinement_labels/>
         <polynomial_orders/>
         <boundaries>
@@ -149,7 +147,7 @@
           </material>
         </materials>
         <field_config>
-          <field_item field_key="NonlinearTolerance" field_value="1e-08"/>
+          <field_item field_key="NonlinearTolerance" field_value="0.001"/>
           <field_item field_key="NonlinearConvergenceMeasurement" field_value="32"/>
           <field_item field_key="NewtonDampingType" field_value="0"/>
           <field_item field_key="NewtonDampingCoeff" field_value="0.8"/>
@@ -160,7 +158,7 @@
           <field_item field_key="NewtonStepsToIncreaseDF" field_value="1"/>
           <field_item field_key="PicardAndersonAcceleration" field_value="0"/>
           <field_item field_key="PicardAndersonBeta" field_value="0.2"/>
-          <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="3"/>
+          <field_item field_key="PicardAndersonNumberOfLastVectors" field_value="4"/>
           <field_item field_key="SpaceNumberOfRefinements" field_value="0"/>
           <field_item field_key="SpacePolynomialOrder" field_value="2"/>
           <field_item field_key="AdaptivitySteps" field_value="10"/>
@@ -276,7 +274,7 @@
     <item key="View_ScalarRangeBase" value="10"/>
     <item key="View_ScalarDecimalPlace" value="4"/>
     <item key="View_ScalarRangeAuto" value="1"/>
-    <item key="View_ScalarRangeMin" value="-15.0000000000001"/>
+    <item key="View_ScalarRangeMin" value="-15.0000000000003"/>
     <item key="View_ScalarRangeMax" value="10"/>
     <item key="View_ShowVectorView" value="0"/>
     <item key="View_VectorVariable" value="richards_pressure_darcy_velocity"/>

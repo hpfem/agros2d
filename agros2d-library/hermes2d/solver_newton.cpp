@@ -172,6 +172,7 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
 {
     m_newtonSolver = new NewtonSolverAgros<Scalar>(block);
     m_newtonSolver->set_verbose_output(false);
+    m_newtonSolver->clear_tolerances();
     m_newtonSolver->set_tolerance(block->nonlinearTolerance(), block->nonlinearConvergenceMeasurement());
     m_newtonSolver->set_max_allowed_iterations(1e5);
     m_newtonSolver->set_max_allowed_residual_norm(1e15);

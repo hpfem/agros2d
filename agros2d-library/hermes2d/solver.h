@@ -80,7 +80,7 @@ public:
     void setMatrixRhsOutputGen(Hermes::Algebra::Mixins::MatrixRhsOutput<Scalar>* solver, QString solverName, int adaptivityStep);
 
     virtual void matrixUnchangedDueToBDF(bool unchanged) {}
-    virtual LinearMatrixSolver<Scalar> *linearSolver() = 0;
+    virtual Hermes::Algebra::LinearMatrixSolver<Scalar> *linearSolver() = 0;
 
     inline Scalar *slnVector() { return m_slnVector; }
 
