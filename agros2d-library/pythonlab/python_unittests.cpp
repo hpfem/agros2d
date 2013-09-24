@@ -263,6 +263,7 @@ void UnitTestsWidget::runTestFromSuite(const QString &module, const QString &cls
 {
     QString str = QString("import unittest as ut; agros2d_suite = ut.TestSuite(); import %1; agros2d_suite.addTest(ut.TestLoader().loadTestsFromTestCase(%1.%2)); agros2d_result = test_suite.scenario.Agros2DTestResult(); agros2d_suite.run(agros2d_result); agros2d_result_report = agros2d_result.report()").
             arg(module).arg(cls);
+
     currentPythonEngine()->runScript(str);
 
     PyObject *result = PyDict_GetItemString(currentPythonEngine()->dict(), "agros2d_result_report");

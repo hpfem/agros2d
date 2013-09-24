@@ -470,7 +470,8 @@ bool PythonEngine::runExpression(const QString &expression, double *value, const
 
         m_isExpressionRunning = false;
 
-        emit executedExpression();
+        if (!m_isScriptRunning)
+            emit executedExpression();
     }
 
     return successfulRun;
