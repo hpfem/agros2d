@@ -93,7 +93,10 @@ void AgrosExternalSolverOctave::solve(double* initial_guess)
         SimpleVector<double> initialVector;
         initialVector.alloc(rhs->get_size());
         initialVector.set_vector(initial_guess);
-        initialVector.export_to_file((char*) file_initial.toStdString().c_str(), "initial", EXPORT_FORMAT_MATLAB_MATIO);
+        initialVector.export_to_file(file_initial.toStdString().c_str(),
+                                     (char *) "initial",
+                                     EXPORT_FORMAT_MATLAB_MATIO,
+                                     (char *) "%lf");
     }
 
     // restore state

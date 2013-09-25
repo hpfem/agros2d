@@ -63,8 +63,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     setWindowIcon(icon("agros2d"));
 
-    Agros2D::createSingleton();
-
     // log stdout
     logStdOut = NULL;
     if (Agros2D::configComputer()->showLogStdOut)
@@ -160,7 +158,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(sceneViewPreprocessor, SIGNAL(sceneGeometryModeChanged(SceneGeometryMode)), preprocessorWidget, SLOT(loadTooltip(SceneGeometryMode)));
     connect(currentPythonEngine(), SIGNAL(executedScript()), Agros2D::scene(), SLOT(doInvalidated()));
     connect(currentPythonEngine(), SIGNAL(executedScript()), Agros2D::scene()->loopsInfo(), SLOT(processPolygonTriangles()));
-    currentPythonEngineAgros()->setSceneViewGeometry(sceneViewPreprocessor);
+    currentPythonEngineAgros()->setSceneViewPreprocessor(sceneViewPreprocessor);
 
     // particle tracing
     currentPythonEngineAgros()->setSceneViewParticleTracing(sceneViewParticleTracing);
@@ -958,7 +956,6 @@ void MainWindow::doDocumentOpen(const QString &fileName)
             // python script
             scriptEditorDialog->doFileOpen(fileNameDocument);
             scriptEditorDialog->showDialog();
-            scriptEditorDialog->activateWindow();
             return;
         }
 

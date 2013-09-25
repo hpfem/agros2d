@@ -94,7 +94,7 @@ void PicardSolverAgros<Scalar>::setError(Phase phase)
 
     // add iteration
     m_steps.append(iteration);
-    m_errors.append(solution_change_norms.back());
+    m_errors.append(solution_change_norms.back());    
 
     assert(m_steps.size() == m_errors.size());
 
@@ -122,7 +122,7 @@ PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block) : HermesSolve
     m_picardSolver->set_verbose_output(false);
     m_picardSolver->clear_tolerances();
     m_picardSolver->set_tolerance(block->nonlinearTolerance(), block->nonlinearConvergenceMeasurement());
-    m_picardSolver->set_max_allowed_iterations(1e5);
+    m_picardSolver->set_max_allowed_iterations(100);
     if (block->picardAndersonAcceleration())
     {
         m_picardSolver->use_Anderson_acceleration(true);

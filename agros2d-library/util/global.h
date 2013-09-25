@@ -32,6 +32,17 @@ class PluginInterface;
 class ScriptEngineRemoteLocal;
 class MemoryMonitor;
 
+class AGROS_LIBRARY_API AgrosApplication : public QApplication
+{
+public:
+    AgrosApplication(int& argc, char ** argv);
+
+    virtual bool notify(QObject *receiver, QEvent *event);
+
+    void setLocale();
+    void setStyle();
+};
+
 class AGROS_LIBRARY_API Agros2D
 {
 public:

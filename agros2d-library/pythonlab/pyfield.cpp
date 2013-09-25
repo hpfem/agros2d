@@ -506,13 +506,6 @@ void PyField::localValues(double x, double y, int timeStep, int adaptivityStep,
 
     if (Agros2D::problem()->isSolved())
     {
-        // set mode
-        if (!silentMode() && !Agros2D::problem()->isSolving())
-        {
-            currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
-            currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeNothing->trigger();
-        }
-
         Point point(x, y);
 
         SolutionMode solutionMode = getSolutionMode(QString::fromStdString(solutionType));
@@ -557,13 +550,6 @@ void PyField::surfaceIntegrals(const vector<int> &edges, int timeStep, int adapt
 
     if (Agros2D::problem()->isSolved())
     {
-        // set mode
-        if (!silentMode() && !Agros2D::problem()->isSolving())
-        {
-            currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
-            currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeSurfaceIntegral->trigger();
-        }
-
         Agros2D::scene()->selectNone();
 
         if (!edges.empty())
@@ -582,7 +568,7 @@ void PyField::surfaceIntegrals(const vector<int> &edges, int timeStep, int adapt
                 }
             }
 
-            if (!silentMode())
+            if (!silentMode() && !Agros2D::problem()->isSolving())
                 currentPythonEngineAgros()->sceneViewPost2D()->updateGL();
         }
         else
@@ -623,13 +609,6 @@ void PyField::volumeIntegrals(const vector<int> &labels, int timeStep, int adapt
 
     if (Agros2D::problem()->isSolved())
     {
-        // set mode
-        if (!silentMode() && !Agros2D::problem()->isSolving())
-        {
-            currentPythonEngineAgros()->sceneViewPost2D()->actSceneModePost2D->trigger();
-            currentPythonEngineAgros()->sceneViewPost2D()->actPostprocessorModeVolumeIntegral->trigger();
-        }
-
         Agros2D::scene()->selectNone();
 
         if (!labels.empty())
@@ -655,7 +634,7 @@ void PyField::volumeIntegrals(const vector<int> &labels, int timeStep, int adapt
                 }
             }
 
-            if (!silentMode())
+            if (!silentMode() && !Agros2D::problem()->isSolving())
                 currentPythonEngineAgros()->sceneViewPost2D()->updateGL();
         }
         else

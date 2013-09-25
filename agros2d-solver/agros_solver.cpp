@@ -28,13 +28,8 @@
 #include "hermes2d.h"
 
 AgrosSolver::AgrosSolver(int &argc, char **argv)
-    : QApplication(argc, argv)
+    : AgrosApplication(argc, argv)
 {        
-}
-
-void AgrosSolver::init()
-{
-    Agros2D::createSingleton();
 }
 
 // reimplemented from QApplication so we can throw exceptions in slots

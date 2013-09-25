@@ -25,7 +25,6 @@
 #include <QString>
 
 #include "agros_solver.h"
-#include "../util/config.h"
 
 const QString CONSOLE_DISABLE_LOG = "disable-log";
 const QString CONSOLE_HELP = "help";
@@ -33,24 +32,6 @@ const QString CONSOLE_HELP = "help";
 int main(int argc, char *argv[])
 {
     AgrosSolver a(argc, argv);
-
-#ifdef VERSION_BETA
-    bool beta = true;
-#else
-    bool beta = false;
-#endif
-
-    a.setApplicationVersion(versionString(VERSION_MAJOR, VERSION_MINOR, VERSION_SUB, VERSION_GIT, VERSION_YEAR, VERSION_MONTH, VERSION_DAY, beta));
-    a.setOrganizationName("hpfem.org");
-    a.setOrganizationDomain("hpfem.org");
-    a.setApplicationName("Agros2D-3");
-    a.init();
-
-    QSettings settings;
-
-    // language
-    QString locale = settings.value("General/Language", QLocale::system().name()).value<QString>();
-    setLanguage(locale);
 
     // parameters
     QStringList args = QCoreApplication::arguments();

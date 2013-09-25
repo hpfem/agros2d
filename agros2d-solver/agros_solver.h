@@ -21,16 +21,14 @@
 #define AGROS_SOLVER_H
 
 #include "util.h"
+#include "util/global.h"
 
-
-class AgrosSolver : public QApplication
+class AgrosSolver : public AgrosApplication
 {
     Q_OBJECT
 
 public:
     AgrosSolver(int& argc, char ** argv);
-
-    void init();
 
     // reimplemented from QApplication so we can throw exceptions in slots
     virtual bool notify(QObject *receiver, QEvent *event);
