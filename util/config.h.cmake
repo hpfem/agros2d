@@ -1,20 +1,12 @@
 #ifndef __AGROS_CONFIG_H_
 #define __AGROS_CONFIG_H_
 
-#cmakedefine VERSION_MAJOR ${VERSION_MAJOR}
-#cmakedefine VERSION_MINOR ${VERSION_MINOR}
-#cmakedefine VERSION_SUB ${VERSION_SUB}
-#cmakedefine VERSION_GIT ${VERSION_GIT}
-#cmakedefine VERSION_YEAR ${VERSION_YEAR}
-#cmakedefine VERSION_MONTH ${VERSION_MONTH}
-#cmakedefine VERSION_DAY ${VERSION_DAY}
-
-/* For the case CMake does not define this. */
-#ifndef VERSION_MINOR
-#define VERSION_MINOR 0
-#endif
-#ifndef VERSION_SUB
-#define VERSION_SUB 0
-#endif
+const int VERSION_MAJOR = ${VERSION_MAJOR};
+const int VERSION_MINOR = ${VERSION_MINOR};
+const int VERSION_SUB = ${VERSION_SUB};
+const int VERSION_GIT = ${VERSION_GIT};
+const int VERSION_YEAR = ${VERSION_YEAR};
+const int VERSION_MONTH = ${VERSION_MONTH}.0;
+const int VERSION_DAY = ${VERSION_DAY}.0;
 
 #endif

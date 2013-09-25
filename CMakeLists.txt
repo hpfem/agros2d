@@ -26,13 +26,33 @@ SET(VERSION_MAJOR 3)
 SET(VERSION_MINOR 1)
 SET(VERSION_SUB 0)
 
-execute_process(COMMAND git rev-list HEAD --count
-                OUTPUT_VARIABLE NUMBER_OF_COMMITS)
-SET(VERSION_GIT ${NUMBER_OF_COMMITS})
+# git revision
+execute_process(COMMAND git rev-list HEAD --count OUTPUT_VARIABLE NUMBER_OF_COMMITS)
+STRING(REGEX REPLACE "(\r?\n)+$" "" VERSION_GIT "${NUMBER_OF_COMMITS}")
 
-SET(VERSION_YEAR 2013)
-SET(VERSION_MONTH 9)
-SET(VERSION_DAY 17)
+# date
+MACRO (TODAY RESULT)
+    IF (WIN32)
+        EXECUTE_PROCESS(COMMAND "date" "/T" OUTPUT_VARIABLE ${RESULT})
+        string(REGEX REPLACE "(..)/(..)/..(..).*" "\\3\\2\\1" ${RESULT} ${${RESULT}})
+    ELSEIF (UNIX)
+        EXECUTE_PROCESS(COMMAND "date" "+%d/%m/%Y" OUTPUT_VARIABLE ${RESULT})
+        string(REGEX REPLACE "(..)/(..)/..(..).*" "\\3\\2\\1" ${RESULT} ${${RESULT}})
+    ELSE (WIN32)
+        MESSAGE(SEND_ERROR "date not implemented")
+        SET(${RESULT} 000000)
+    ENDIF (WIN32)
+ENDMACRO (TODAY)
+
+TODAY(RESULT)
+string(SUBSTRING ${RESULT} 0 2 YEAR)
+string(SUBSTRING ${RESULT} 2 2 MONTH)
+string(SUBSTRING ${RESULT} 4 2 DAY)
+SET(VERSION_YEAR 20${YEAR})
+SET(VERSION_MONTH ${MONTH})
+SET(VERSION_DAY ${DAY})
+
+
 
 # Naming of projects built.
 SET(AGROS_UTIL agros2d_util)
@@ -149,8 +169,10 @@ ENDIF(MSVC)
 # Create file with preprocessor definitions exposing the build settings to the source code.
 configure_file(
   util/config.h.cmake
-  util/config.h
-)
+  util/config.h)
+configure_file(
+  resources_source/resources.rc.cmake
+  resources_source/resources.rc)
 
 # Include OUR header files location
 INCLUDE(IncludeSubdirs.cmake)
