@@ -321,7 +321,7 @@
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="589"/>
         <source>Temperature coefficient</source>
-        <translation>Koeficient přestupu tepla</translation>
+        <translation type="unfinished">Koeficient teplotní roztažnosti</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="592"/>
