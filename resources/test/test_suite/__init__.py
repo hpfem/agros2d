@@ -75,7 +75,8 @@ fields.heat.HeatNonlinPlanar,
 # magnetic field
 fields.magnetic.MagneticNonlinPlanar,
 #fields.magnetic.MagneticNonlinAxisymmetric,
-#fields.magnetic.MagneticHarmonicNonlinPlanar,
+fields.magnetic.MagneticHarmonicNonlinPlanar,
+fields.magnetic.MagneticHarmonicNonlinAxisymmetric,
 # incompressible flow
 fields.flow.FlowPlanar,
 fields.flow.FlowAxisymmetric
