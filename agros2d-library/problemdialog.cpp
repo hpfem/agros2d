@@ -691,13 +691,13 @@ void FieldWidget::doLinearityTypeChanged(int index)
     txtNewtonSufficientImprovementFactor->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
     txtNewtonMaximumStepsWithReusedJacobian->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
     txtNewtonDampingNumberToIncrease->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
-    doNewtonDampingChanged(-1);
-    doNewtonReuseJacobian(true);
+    doNewtonDampingChanged(cmbNewtonDampingType->currentIndex());
+    doNewtonReuseJacobian(chkNewtonReuseJacobian->isChecked());
 
     chkPicardAndersonAcceleration->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard);
     txtPicardAndersonBeta->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard);
     txtPicardAndersonNumberOfLastVectors->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard);
-    doPicardAndersonChanged(-1);
+    doPicardAndersonChanged(chkPicardAndersonAcceleration->checkState());
 }
 
 void FieldWidget::doLinearSolverChanged(int index)
