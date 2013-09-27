@@ -64,7 +64,7 @@ QMap<QString, QString> Module::availableModules()
         foreach (QString filename, list)
         {
             try
-            {                
+            {
                 // todo: find a way to validate if required. If validated here, sensible error messages will be obtained
                 bool validateAtTheBeginning = false;
                 ::xml_schema::flags parsing_flags = xml_schema::flags::dont_validate;
@@ -843,6 +843,8 @@ Module::MaterialTypeVariable::MaterialTypeVariable(XMLModule::quantity quant)
 
     if (quant.is_bool().present())
         m_isBool = (quant.is_bool().get() != 0);
+    else
+        m_isBool = false;
 
     if (quant.only_if().present())
         m_onlyIf = QString::fromStdString(quant.only_if().get());
