@@ -66,7 +66,8 @@ script.geometry.TestGeometry,
 script.geometry.TestGeometryTransformations,
 script.benchmark.BenchmarkGeometryTransformation,
 # internal
-internal.matrix_solvers.InternalMatrixSolvers
+internal.matrix_solvers.InternalMatrixSolvers,
+internal.xslt.XSLT
 ]
 
 test_nonlin = [

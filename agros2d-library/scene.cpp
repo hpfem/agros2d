@@ -1133,6 +1133,8 @@ void Scene::transformFile(const QString &fileName, const QString &tempFileName, 
     else
         throw AgrosException(tr("It is impossible to transform data file."));
 
+    //qDebug() << out;
+
     QFile tempFile(tempFileName);
     if (!tempFile.open(QIODevice::WriteOnly))
         throw AgrosException(tr("File cannot be saved (%2).").arg(tempFile.errorString()));
