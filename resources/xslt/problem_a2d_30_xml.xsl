@@ -234,7 +234,6 @@
                                 </xsl:element>
                             </xsl:for-each>
                         </xsl:element>
-
                     </xsl:element>
                 </xsl:for-each>
             </xsl:element>

@@ -130,12 +130,7 @@
             <xsl:element name="fields">
                 <xsl:element name="field">
                     <xsl:attribute name="field_id">
-                        <xsl:choose>
-                            <xsl:when test="/document/problems/problem/@type!='rf'">
-                                <xsl:value-of select="/document/problems/problem/@type" />
-                            </xsl:when>
-                            <xsl:otherwise>rf_te</xsl:otherwise>
-                        </xsl:choose>
+                        <xsl:value-of select="/document/problems/problem/@type" />
                     </xsl:attribute>
                     <xsl:attribute name="number_of_refinements">
                         <xsl:value-of select="/document/problems/problem/@numberofrefinements" />

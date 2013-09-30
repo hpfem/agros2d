@@ -30,7 +30,12 @@
                 <xsl:for-each select="problem:document/problem/fields/field">
                     <xsl:element name="field">
                         <xsl:attribute name="field_id">
-                          <xsl:value-of select ="@field_id"/>
+                            <xsl:choose>
+                                <xsl:when test="@field_id!='rf'">
+                                    <xsl:value-of select="@field_id" />
+                                </xsl:when>
+                                <xsl:otherwise>rf_te</xsl:otherwise>
+                            </xsl:choose>
                         </xsl:attribute>
                         <xsl:attribute name="adaptivity_type">
                           <xsl:value-of select ="adaptivity/@adaptivity_type"/>
