@@ -1,0 +1,155 @@
+<document>
+    <problems>
+        <problem adaptivitytolerance="1" frequency="0" numberofrefinements="0" adaptivitytype="disabled" analysistype="steadystate" adaptivitysteps="1" polynomialorder="2" problemtype="planar" timetotal="0" type="heat" timestep="0" id="0" name="Heat Transfer Planar Building Detail" initialcondition="0">
+            <scriptstartup></scriptstartup>
+            <description>This model is an example.</description>
+            <edges>
+                <edge h="25" external_temperature="-15" type="heat_heat_flux" id="1" name="Exterior" heat_flux="0"/>
+                <edge h="4" external_temperature="21" type="heat_heat_flux" id="2" name="Interior" heat_flux="0"/>
+                <edge h="0" external_temperature="0" type="heat_heat_flux" id="3" name="Border" heat_flux="0"/>
+            </edges>
+            <labels>
+                <label thermal_conductivity="0.418" specific_heat="0" volume_heat="0" id="1" density="0" name="Zdici prvky SENDWIX tl. 240 kontakt"/>
+                <label thermal_conductivity="0.042" specific_heat="0" volume_heat="0" id="2" density="0" name="Izolace Rockwool Fasrock L"/>
+                <label thermal_conductivity="0.036" specific_heat="0" volume_heat="0" id="3" density="0" name="Flexibilni pena"/>
+                <label thermal_conductivity="1.01" specific_heat="0" volume_heat="0" id="4" density="0" name="Naslapna vrstva podlahy"/>
+                <label thermal_conductivity="0.037" specific_heat="0" volume_heat="0" id="5" density="0" name="Krocejova vrstva izolace - Rockwool Steprock ND tl.40mm"/>
+                <label thermal_conductivity="1.58" specific_heat="0" volume_heat="0" id="6" density="0" name="Stropní konstrukce Rector tl. 200 mm"/>
+                <label thermal_conductivity="0.671" specific_heat="0" volume_heat="0" id="7" density="0" name="Vapenopiskovy preklad Sendwix 2DF"/>
+                <label thermal_conductivity="0.57" specific_heat="0" volume_heat="0" id="8" density="0" name="Armovaci vrstva Cermix flex T + armovaci mriz 5 mm"/>
+                <label thermal_conductivity="0.57" specific_heat="0" volume_heat="0" id="9" density="0" name="Tenkovrstva silikonova omitka Cermix 2 mm"/>
+                <label thermal_conductivity="0.47" specific_heat="0" volume_heat="0" id="10" density="0" name="Jednovrstva omitka Cemix 073 tl. 8 mm"/>
+                <label thermal_conductivity="0.14" specific_heat="0" volume_heat="0" id="11" density="0" name="Sklo"/>
+                <label thermal_conductivity="1.23" specific_heat="0" volume_heat="0" id="12" density="0" name="Betonovy zaklad"/>
+            </labels>
+        </problem>
+    </problems>
+    <geometry>
+        <nodes>
+            <node x="0.616656" y="0.647324" id="0"/>
+            <node x="0.856656" y="0.647324" id="1"/>
+            <node x="0.616656" y="1.087324" id="2"/>
+            <node x="0.496656" y="1.700008" id="3"/>
+            <node x="0.496656" y="0.607324" id="4"/>
+            <node x="0.6966560000000001" y="0.637324" id="5"/>
+            <node x="0.866656" y="0.637324" id="6"/>
+            <node x="0.856656" y="0.887324" id="7"/>
+            <node x="0.866656" y="0.877324" id="8"/>
+            <node x="0.6966560000000001" y="0.647324" id="9"/>
+            <node x="0.616656" y="0.607324" id="10"/>
+            <node x="0.616656" y="1.700008" id="11"/>
+            <node x="0.616656" y="0.637324" id="12"/>
+            <node x="0.6966560000000001" y="0.26741" id="13"/>
+            <node x="0.616656" y="0.26741" id="14"/>
+            <node x="0.616656" y="0.600324" id="15"/>
+            <node x="1.936884" y="0.877324" id="16"/>
+            <node x="0.856656" y="1.087324" id="17"/>
+            <node x="0.856656" y="1.700008" id="18"/>
+            <node x="0.866656" y="1.700008" id="19"/>
+            <node x="0.866656" y="1.279324" id="20"/>
+            <node x="0.866656" y="1.087324" id="21"/>
+            <node x="0.866656" y="1.187324" id="22"/>
+            <node x="1.936884" y="1.087324" id="23"/>
+            <node x="1.936884" y="1.187324" id="24"/>
+            <node x="0.876656" y="1.187324" id="25"/>
+            <node x="1.936884" y="1.199324" id="26"/>
+            <node x="0.878656" y="1.199324" id="27"/>
+            <node x="0.876656" y="1.127324" id="28"/>
+            <node x="1.936884" y="1.127324" id="29"/>
+            <node x="1.936884" y="0.887324" id="30"/>
+            <node x="1.936884" y="1.190324" id="31"/>
+            <node x="0.869656" y="1.190324" id="32"/>
+            <node x="0.869656" y="1.279324" id="33"/>
+            <node x="0.869656" y="1.199324" id="34"/>
+            <node x="0.878656" y="1.279324" id="35"/>
+            <node x="0.494156" y="1.700008" id="36"/>
+            <node x="0.494156" y="0.604824" id="37"/>
+            <node x="0.491656" y="1.700008" id="38"/>
+            <node x="0.491656" y="0.602324" id="39"/>
+            <node x="0.616656" y="0.604824" id="40"/>
+            <node x="0.616656" y="0.602324" id="41"/>
+            <node x="0.489656" y="0.600324" id="42"/>
+            <node x="0.489656" y="1.700008" id="43"/>
+            <node x="0.616656" y="0.887324" id="44"/>
+        </nodes>
+        <edges>
+            <edge end="4" marker="0" id="0" start="3" angle="0"/>
+            <edge end="6" marker="2" id="1" start="5" angle="0"/>
+            <edge end="8" marker="2" id="2" start="6" angle="0"/>
+            <edge end="1" marker="0" id="3" start="9" angle="0"/>
+            <edge end="9" marker="0" id="4" start="5" angle="0"/>
+            <edge end="4" marker="0" id="5" start="10" angle="0"/>
+            <edge end="5" marker="0" id="6" start="12" angle="0"/>
+            <edge end="5" marker="2" id="7" start="13" angle="0"/>
+            <edge end="15" marker="1" id="8" start="14" angle="0"/>
+            <edge end="12" marker="0" id="9" start="10" angle="0"/>
+            <edge end="16" marker="2" id="10" start="8" angle="0"/>
+            <edge end="20" marker="2" id="11" start="19" angle="0"/>
+            <edge end="22" marker="0" id="12" start="21" angle="0"/>
+            <edge end="20" marker="0" id="13" start="22" angle="0"/>
+            <edge end="25" marker="0" id="14" start="24" angle="0"/>
+            <edge end="27" marker="2" id="15" start="26" angle="0"/>
+            <edge end="29" marker="0" id="16" start="28" angle="0"/>
+            <edge end="32" marker="0" id="17" start="31" angle="0"/>
+            <edge end="22" marker="0" id="18" start="25" angle="0"/>
+            <edge end="28" marker="0" id="19" start="25" angle="0"/>
+            <edge end="34" marker="0" id="20" start="33" angle="0"/>
+            <edge end="27" marker="2" id="21" start="35" angle="0"/>
+            <edge end="32" marker="0" id="22" start="34" angle="0"/>
+            <edge end="33" marker="2" id="23" start="20" angle="0"/>
+            <edge end="35" marker="2" id="24" start="33" angle="0"/>
+            <edge end="37" marker="0" id="25" start="36" angle="0"/>
+            <edge end="39" marker="0" id="26" start="38" angle="0"/>
+            <edge end="10" marker="0" id="27" start="40" angle="0"/>
+            <edge end="37" marker="0" id="28" start="40" angle="0"/>
+            <edge end="40" marker="0" id="29" start="41" angle="0"/>
+            <edge end="39" marker="0" id="30" start="41" angle="0"/>
+            <edge end="41" marker="0" id="31" start="15" angle="0"/>
+            <edge end="42" marker="1" id="32" start="15" angle="0"/>
+            <edge end="42" marker="1" id="33" start="43" angle="0"/>
+            <edge end="13" marker="3" id="34" start="14" angle="0"/>
+            <edge end="31" marker="3" id="35" start="26" angle="0"/>
+            <edge end="24" marker="3" id="36" start="31" angle="0"/>
+            <edge end="29" marker="3" id="37" start="24" angle="0"/>
+            <edge end="23" marker="3" id="38" start="29" angle="0"/>
+            <edge end="30" marker="3" id="39" start="23" angle="0"/>
+            <edge end="16" marker="3" id="40" start="30" angle="0"/>
+            <edge end="38" marker="3" id="41" start="43" angle="0"/>
+            <edge end="36" marker="3" id="42" start="38" angle="0"/>
+            <edge end="3" marker="3" id="43" start="36" angle="0"/>
+            <edge end="11" marker="3" id="44" start="3" angle="0"/>
+            <edge end="18" marker="3" id="45" start="11" angle="0"/>
+            <edge end="19" marker="3" id="46" start="18" angle="0"/>
+            <edge end="23" marker="0" id="47" start="21" angle="0"/>
+            <edge end="17" marker="0" id="48" start="2" angle="0"/>
+            <edge end="21" marker="0" id="49" start="17" angle="0"/>
+            <edge end="11" marker="0" id="50" start="2" angle="0"/>
+            <edge end="18" marker="0" id="51" start="17" angle="0"/>
+            <edge end="44" marker="0" id="52" start="2" angle="0"/>
+            <edge end="0" marker="0" id="53" start="44" angle="0"/>
+            <edge end="44" marker="0" id="54" start="7" angle="0"/>
+            <edge end="1" marker="0" id="55" start="7" angle="0"/>
+            <edge end="30" marker="0" id="56" start="7" angle="0"/>
+            <edge end="12" marker="0" id="57" start="0" angle="0"/>
+            <edge end="9" marker="0" id="58" start="0" angle="0"/>
+        </edges>
+        <labels>
+            <label x="0.548642" y="1.52308" marker="2" id="0" area="0"/>
+            <label x="0.72758" y="1.53842" marker="1" id="1" area="0"/>
+            <label x="0.9746860000000001" y="1.15327" marker="12" id="2" area="0"/>
+            <label x="1.18089" y="1.11067" marker="5" id="3" area="0"/>
+            <label x="0.979798" y="1.02376" marker="6" id="4" area="0"/>
+            <label x="1.20089" y="0.8835110000000001" marker="10" id="5" area="0"/>
+            <label x="0.740474" y="0.801808" marker="7" id="6" area="0"/>
+            <label x="0.653573" y="0.545525" marker="11" id="7" area="0.001"/>
+            <label x="0.6771390000000001" y="0.645682" marker="3" id="8" area="0"/>
+            <label x="0.490513" y="1.26727" marker="9" id="9" area="0"/>
+            <label x="0.493158" y="1.25838" marker="8" id="10" area="0"/>
+            <label x="0.495586" y="1.24928" marker="8" id="11" area="0"/>
+            <label x="0.868425" y="1.25275" marker="4" id="12" area="0"/>
+            <label x="0.874732" y="1.21192" marker="4" id="13" area="0"/>
+            <label x="0.862434" y="1.22563" marker="10" id="14" area="0"/>
+        </labels>
+    </geometry>
+    <functions/>
+</document>

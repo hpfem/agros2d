@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<problem:document xmlns:problem="XMLProblem" version="3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="XMLProblem /home/karban/Projects/agros2d/resources/xsd/problem_a2d_30_xml.xsd">
+
+  <geometry>
+    <nodes>
+      <node id="0" x="-1.5" y="-1"/>
+      <node id="1" x="-1.5" y="1"/>
+      <node id="2" x="3.5" y="1"/>
+      <node id="3" x="3.5" y="-1"/>
+      <node id="4" x="-0.25" y="-0.05"/>
+      <node id="5" x="0.25" y="-0.05"/>
+      <node id="6" x="0" y="0.2"/>
+      <node id="7" x="0" y="-0.3"/>
+    </nodes>
+    <edges>
+      <edge angle="0" end="2" id="0" start="1"/>
+      <edge angle="0" end="3" id="1" start="2"/>
+      <edge angle="0" end="0" id="2" start="3"/>
+      <edge angle="0" end="0" id="3" start="1"/>
+      <edge angle="90" end="4" id="4" start="6"/>
+      <edge angle="90" end="7" id="5" start="4"/>
+      <edge angle="90" end="5" id="6" start="7"/>
+      <edge angle="90" end="6" id="7" start="5"/>
+    </edges>
+    <labels>
+      <label area="0" id="0" x="0.00662661" y="-0.0476999"/>
+      <label area="0" id="1" x="1.71743" y="0.461503"/>
+    </labels>
+  </geometry>
+
+  <problem coordinate_type="planar" frequency="0" matrix_solver="umfpack" mesh_type="gmsh_quad" time_method="fixed" time_method_tolerance="0.05" time_order="1" time_steps="2" time_total="1">
+    <fields>
+      <field analysis_type="steadystate" field_id="flow" initial_condition="0" number_of_refinements="1" polynomial_order="2" time_skip="0">
+        <refinement_edges/>
+        <refinement_labels/>
+        <polynomial_orders/>
+        <adaptivity adaptivity_back_steps="0" adaptivity_redone_each="1" adaptivity_steps="1" adaptivity_tolerance="1" adaptivity_type="disabled"/>
+        <solver linearity_type="newton" newton_automatic_damping="1" newton_automatic_damping_coeff="0" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.1" picard_anderson_acceleration="1" picard_anderson_beta="0.2" picard_anderson_vectors="3"/>
+        <boundaries>
+          <boundary id="1" name="Inlet" type="flow_velocity">
+            <boundary_edges>
+              <boundary_edge id="3"/>
+            </boundary_edges>
+            <boundary_types>
+              <boundary_type key="flow_velocity_x" value="cos(y*pi/2)"/>
+              <boundary_type key="flow_velocity_y" value="0"/>
+            </boundary_types>
+          </boundary>
+          <boundary id="2" name="Wall" type="flow_velocity">
+            <boundary_edges>
+              <boundary_edge id="0"/>
+              <boundary_edge id="2"/>
+              <boundary_edge id="4"/>
+              <boundary_edge id="5"/>
+              <boundary_edge id="6"/>
+              <boundary_edge id="7"/>
+            </boundary_edges>
+            <boundary_types>
+              <boundary_type key="flow_velocity_x" value="0"/>
+              <boundary_type key="flow_velocity_y" value="0"/>
+            </boundary_types>
+          </boundary>
+          <boundary id="3" name="Outlet" type="flow_outlet">
+            <boundary_edges>
+              <boundary_edge id="1"/>
+            </boundary_edges>
+            <boundary_types/>
+          </boundary>
+        </boundaries>
+        <materials>
+          <material id="4" name="Air">
+            <material_labels>
+              <material_label id="1"/>
+            </material_labels>
+            <material_types>
+              <material_type key="flow_density" value="1"/>
+              <material_type key="flow_viscosity" value="0.001"/>
+              <material_type key="flow_force_x" value="0"/>
+              <material_type key="flow_force_y" value="0"/>
+            </material_types>
+          </material>
+        </materials>
+      </field>
+    </fields>
+    <couplings/>
+  </problem>
+
+  <config>
+    <item key="Problem_StartupScript" value=""/>
+    <item key="Problem_Description" value=""/>
+    <item key="View_RulersFontFamily" value="Droid"/>
+    <item key="View_RulersFontPointSize" value="12"/>
+    <item key="View_PostFontFamily" value="Droid"/>
+    <item key="View_PostFontPointSize" value="16"/>
+    <item key="General_ZoomToMouse" value="1"/>
+    <item key="View_NodeSize" value="6"/>
+    <item key="View_EdgeWidth" value="2"/>
+    <item key="View_LabelSize" value="6"/>
+    <item key="View_ShowGrid" value="1"/>
+    <item key="View_GridStep" value="0.05"/>
+    <item key="View_ShowRulers" value="1"/>
+    <item key="View_SnapToGrid" value="1"/>
+    <item key="View_ShowAxes" value="1"/>
+    <item key="View_ScalarView3DLighting" value="1"/>
+    <item key="View_ScalarView3DAngle" value="240"/>
+    <item key="View_ScalarView3DBackground" value="1"/>
+    <item key="View_ScalarView3DHeight" value="4"/>
+    <item key="View_ScalarView3DBoundingBox" value="1"/>
+    <item key="View_ScalarView3DSolidGeometry" value="1"/>
+    <item key="View_DeformScalar" value="1"/>
+    <item key="View_DeformContour" value="1"/>
+    <item key="View_DeformVector" value="1"/>
+    <item key="View_ColorBackground_red" value="255"/>
+    <item key="View_ColorBackground_green" value="255"/>
+    <item key="View_ColorBackground_blue" value="255"/>
+    <item key="View_ColorGrid_red" value="200"/>
+    <item key="View_ColorGrid_green" value="200"/>
+    <item key="View_ColorGrid_blue" value="200"/>
+    <item key="View_ColorCross_red" value="150"/>
+    <item key="View_ColorCross_green" value="150"/>
+    <item key="View_ColorCross_blue" value="150"/>
+    <item key="View_ColorNodes_red" value="150"/>
+    <item key="View_ColorNodes_green" value="0"/>
+    <item key="View_ColorNodes_blue" value="0"/>
+    <item key="View_ColorEdges_red" value="0"/>
+    <item key="View_ColorEdges_green" value="0"/>
+    <item key="View_ColorEdges_blue" value="150"/>
+    <item key="View_ColorLabels_red" value="0"/>
+    <item key="View_ColorLabels_green" value="150"/>
+    <item key="View_ColorLabels_blue" value="0"/>
+    <item key="View_ColorContours_red" value="0"/>
+    <item key="View_ColorContours_green" value="0"/>
+    <item key="View_ColorContours_blue" value="0"/>
+    <item key="View_ColorVectors_red" value="0"/>
+    <item key="View_ColorVectors_green" value="0"/>
+    <item key="View_ColorVectors_blue" value="0"/>
+    <item key="View_ColorInitialMesh_red" value="250"/>
+    <item key="View_ColorInitialMesh_green" value="150"/>
+    <item key="View_ColorInitialMesh_blue" value="0"/>
+    <item key="View_ColorSolutionMesh_red" value="150"/>
+    <item key="View_ColorSolutionMesh_green" value="0"/>
+    <item key="View_ColorSolutionMesh_blue" value="0"/>
+    <item key="View_ColorInitialMesh_red" value="250"/>
+    <item key="View_ColorInitialMesh_green" value="150"/>
+    <item key="View_ColorInitialMesh_blue" value="0"/>
+    <item key="View_ColorSolutionMesh_red" value="150"/>
+    <item key="View_ColorSolutionMesh_green" value="0"/>
+    <item key="View_ColorSolutionMesh_blue" value="0"/>
+    <item key="View_ActiveField" value="flow"/>
+    <item key="View_ShowInitialMeshView" value="1"/>
+    <item key="View_ShowSolutionMeshView" value="0"/>
+    <item key="View_ShowPost3D" value="0"/>
+    <item key="View_ContourVariable" value="flow_velocity"/>
+    <item key="View_ShowContourView" value="0"/>
+    <item key="View_ContoursCount" value="15"/>
+    <item key="View_ContoursWidth" value="1"/>
+    <item key="View_ShowScalarView" value="1"/>
+    <item key="View_ShowScalarColorBar" value="1"/>
+    <item key="View_ScalarVariable" value="flow_velocity"/>
+    <item key="View_ScalarVariableComp" value="2"/>
+    <item key="View_PaletteType" value="0"/>
+    <item key="View_PaletteFilter" value="0"/>
+    <item key="View_PaletteSteps" value="30"/>
+    <item key="View_ScalarRangeLog" value="0"/>
+    <item key="View_ScalarRangeBase" value="10"/>
+    <item key="View_ScalarDecimalPlace" value="2"/>
+    <item key="View_ScalarRangeAuto" value="1"/>
+    <item key="View_ScalarRangeMin" value="0"/>
+    <item key="View_ScalarRangeMax" value="1.75077"/>
+    <item key="View_ShowVectorView" value="0"/>
+    <item key="View_VectorVariable" value="flow_velocity"/>
+    <item key="View_VectorProportional" value="1"/>
+    <item key="View_VectorColor" value="1"/>
+    <item key="View_VectorNumber" value="50"/>
+    <item key="View_VectorScale" value="0.6"/>
+    <item key="View_VectorType" value="0"/>
+    <item key="View_VectorCenter" value="0"/>
+    <item key="View_ShowOrderView" value="1"/>
+    <item key="View_ShowOrderColorBar" value="1"/>
+    <item key="View_OrderPaletteOrderType" value="0"/>
+    <item key="View_OrderLabel" value="0"/>
+    <item key="View_ParticleButcherTableType" value="19"/>
+    <item key="View_ParticleIncludeRelativisticCorrection" value="1"/>
+    <item key="View_ParticleMass" value="9.109e-31"/>
+    <item key="View_ParticleConstant" value="1.602e-19"/>
+    <item key="View_ParticleStartX" value="0"/>
+    <item key="View_ParticleStartY" value="0"/>
+    <item key="View_ParticleStartVelocityX" value="0"/>
+    <item key="View_ParticleStartVelocityY" value="0"/>
+    <item key="View_ParticleNumberOfParticles" value="1"/>
+    <item key="View_ParticleStartingRadius" value="0"/>
+    <item key="View_ParticleReflectOnDifferentMaterial" value="1"/>
+    <item key="View_ParticleReflectOnBoundary" value="0"/>
+    <item key="View_ParticleCoefficientOfRestitution" value="0"/>
+    <item key="View_ParticleMaximumRelativeError" value="0.01"/>
+    <item key="View_ParticleShowPoints" value="0"/>
+    <item key="View_ParticleShowBlendedFaces" value="1"/>
+    <item key="View_ParticleNumShowParticlesAxi" value="1"/>
+    <item key="View_ParticleColorByVelocity" value="1"/>
+    <item key="View_ParticleMaximumNumberOfSteps" value="500"/>
+    <item key="View_ParticleMinimumStep" value="0"/>
+    <item key="View_ParticleDragDensity" value="1.2041"/>
+    <item key="View_ParticleDragCoefficient" value="0"/>
+    <item key="View_ParticleDragReferenceArea" value="1e-06"/>
+    <item key="View_ParticleCustomForceX" value="0"/>
+    <item key="View_ParticleCustomForceY" value="0"/>
+    <item key="View_ParticleCustomForceZ" value="0"/>
+    <item key="View_ChartStartX" value="0"/>
+    <item key="View_ChartStartY" value="0"/>
+    <item key="View_ChartEndX" value="0"/>
+    <item key="View_ChartEndY" value="0"/>
+    <item key="View_ChartTimeX" value="0"/>
+    <item key="View_ChartTimeY" value="0"/>
+    <item key="View_ChartHorizontalAxis" value="0"/>
+    <item key="View_ChartHorizontalAxisReverse" value="0"/>
+    <item key="View_ChartHorizontalAxisPoints" value="200"/>
+    <item key="View_MeshAngleSegmentsCount" value="3"/>
+    <item key="View_MeshCurvilinearElements" value="1"/>
+    <item key="Adaptivity_MaxDofs" value="60000"/>
+    <item key="Adaptivity_IsoOnly" value="0"/>
+    <item key="Adaptivity_ConvExp" value="1"/>
+    <item key="Adaptivity_Threshold" value="0.3"/>
+    <item key="Adaptivity_Strategy" value="0"/>
+    <item key="Adaptivity_MeshRegularity" value="-1"/>
+    <item key="Adaptivity_ProjNormType" value="1"/>
+    <item key="Adaptivity_UseAniso" value="1"/>
+    <item key="Adaptivity_FinerReference" value="0"/>
+    <item key="View_LinearizerQuality" value="normal"/>
+    <item key="View_SolidViewHide" value=""/>
+    <item key="Commands_Triangle" value="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;"/>
+    <item key="Commands_Gmsh" value="%1 -2 &quot;%2.geo&quot;"/>
+  </config>
+
+</problem:document>

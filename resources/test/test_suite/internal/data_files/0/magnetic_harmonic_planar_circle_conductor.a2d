@@ -1,0 +1,32 @@
+<document>
+    <problems>
+        <problem adaptivitytolerance="1" frequency="5000" numberofrefinements="0" adaptivitytype="disabled" matrix_solver="umfpack" analysistype="harmonic" adaptivitysteps="1" polynomialorder="3" problemtype="planar" timetotal="0" type="magnetic" timestep="0" id="0" name="Magnetic Harmonic Planar Circle Conductor" initialcondition="0">
+            <scriptstartup></scriptstartup>
+            <description>This model is an example.</description>
+            <edges>
+                <edge value_imag="0" type="magnetic_vector_potential" id="1" name="A = 0" value_real="0"/>
+            </edges>
+            <labels>
+                <label current_density_real="1e6" remanence="0" conductivity="57e6" velocity_x="0" velocity_y="0" remanence_angle="0" id="1" name="Copper" current_density_imag="0" permeability="1" velocity_angular="0"/>
+            </labels>
+        </problem>
+    </problems>
+    <geometry>
+        <nodes>
+            <node x="0.0035" y="0" id="0"/>
+            <node x="-0.0035" y="0" id="1"/>
+            <node x="0" y="-0.0035" id="2"/>
+            <node x="0" y="0.0035" id="3"/>
+        </nodes>
+        <edges>
+            <edge end="1" refine_towards="0" marker="1" id="0" start="3" angle="90"/>
+            <edge end="2" refine_towards="0" marker="1" id="1" start="1" angle="90"/>
+            <edge end="0" refine_towards="0" marker="1" id="2" start="2" angle="90"/>
+            <edge end="3" refine_towards="0" marker="1" id="3" start="0" angle="90"/>
+        </edges>
+        <labels>
+            <label x="0" y="0" polynomialorder="0" marker="1" id="0" area="5e-07"/>
+        </labels>
+    </geometry>
+    <functions/>
+</document>
