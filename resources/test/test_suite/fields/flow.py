@@ -20,7 +20,7 @@ class FlowPlanar(Agros2DTestCase):
         self.flow.polynomial_order = 2
         
         self.flow.solver = "newton"
-        self.flow.solver_parameters['tolerance'] = 0.0001
+        self.flow.solver_parameters['residual'] = 0.0001
         self.flow.solver_parameters['damping'] = 'automatic'
         self.flow.solver_parameters['damping_factor'] = 1.0
         self.flow.solver_parameters['jacobian_reuse'] = False
@@ -98,7 +98,7 @@ class FlowAxisymmetric(Agros2DTestCase):
         self.flow.adaptivity_type = "disabled"
         
         self.flow.solver = "newton"
-        self.flow.solver_parameters['tolerance'] = 0.0001
+        self.flow.solver_parameters['residual'] = 0.0001
         self.flow.solver_parameters['damping'] = 'automatic'
         self.flow.solver_parameters['damping_factor'] = 1.0
         self.flow.solver_parameters['jacobian_reuse'] = False

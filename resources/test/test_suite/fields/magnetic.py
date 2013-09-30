@@ -240,7 +240,7 @@ class MagneticNonlinPlanar(Agros2DTestCase):
         self.magnetic.polynomial_order = 3
         
         self.magnetic.solver = "newton"
-        self.magnetic.solver_parameters['tolerance'] = 0.1
+        self.magnetic.solver_parameters['residual'] = 0.1
         self.magnetic.solver_parameters['damping_factor'] = 0.6
         self.magnetic.solver_parameters['damping'] = 'automatic'
         self.magnetic.solver_parameters['jacobian_reuse'] = True
@@ -327,7 +327,7 @@ class MagneticNonlinAxisymmetric(Agros2DTestCase):
         self.magnetic.polynomial_order = 2
         
         self.magnetic.solver = "newton"
-        self.magnetic.solver_parameters['tolerance'] = 0.01
+        self.magnetic.solver_parameters['residual'] = 0.01
         self.magnetic.solver_parameters['damping'] = 'automatic'
         self.magnetic.solver_parameters['jacobian_reuse'] = True
         self.magnetic.solver_parameters['jacobian_reuse_steps'] = 3
@@ -599,7 +599,7 @@ class MagneticHarmonicNonlinPlanar(Agros2DTestCase):
         self.magnetic.polynomial_order = 3
         
         self.magnetic.solver = "newton"
-        self.magnetic.solver_parameters['tolerance'] = 0.01
+        self.magnetic.solver_parameters['residual'] = 0.01
         self.magnetic.solver_parameters['damping_factor'] = 0.7
         self.magnetic.solver_parameters['damping'] = 'automatic'
         self.magnetic.solver_parameters['jacobian_reuse'] = True
@@ -662,7 +662,7 @@ class MagneticHarmonicNonlinAxisymmetric(Agros2DTestCase):
         self.magnetic.polynomial_order = 3
         self.magnetic.adaptivity_type = "disabled"
         self.magnetic.solver = "newton"
-        self.magnetic.solver_parameters['tolerance'] = 0.01
+        self.magnetic.solver_parameters['residual'] = 0.01
         self.magnetic.solver_parameters['measurement'] = "residual_norm_absolute"
         self.magnetic.solver_parameters['damping'] = "automatic"
         self.magnetic.solver_parameters['damping_factor'] = 0.8

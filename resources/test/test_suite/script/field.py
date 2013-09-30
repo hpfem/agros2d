@@ -121,37 +121,33 @@ class TestFieldNewtonSolver(Agros2DTestCase):
         self.field = a2d.field('magnetic')
         self.field.solver = 'newton'
 
-    """ tolerance """
-    def test_tolerance(self):
-        self.field.solver_parameters['tolerance'] = 0.5
-        self.assertEqual(self.field.solver_parameters['tolerance'], 0.5)
+    """ residual """
+    def test_relative_change_of_solutions(self):
+        self.field.solver_parameters['relative_change_of_solutions'] = 10
+        self.assertEqual(self.field.solver_parameters['relative_change_of_solutions'], 10)
+
+    def test_set_wrong_relative_change_of_solutions(self):
+        with self.assertRaises(IndexError):
+            self.field.solver_parameters['relative_change_of_solutions'] = -10
+
+    """ residual """
+    def test_residual(self):
+        self.field.solver_parameters['residual'] = 0.5
+        self.assertEqual(self.field.solver_parameters['residual'], 0.5)
 
     def test_set_wrong_tolerance(self):
         with self.assertRaises(IndexError):
-            self.field.solver_parameters['tolerance'] = -0.1
+            self.field.solver_parameters['residual'] = -0.1
 
     """ damping """
     def test_damping(self):
-        for type in ['automatic', 'fixed', 'disable']:
+        for type in ['automatic', 'fixed', 'disabled']:
             self.field.solver_parameters['damping'] = type
             self.assertEqual(self.field.solver_parameters['damping'], type)
 
     def test_set_wrong_damping(self):
         with self.assertRaises(ValueError):
             self.field.solver_parameters['damping'] = 'wrong_damping'
-
-    """ measurement """
-    def test_measurement(self):
-        for measurement in ['residual_norm_relative_to_initial', 'residual_norm_relative_to_previous',
-                            'residual_norm_ratio_to_initial', 'residual_norm_ratio_to_previous',
-                            'residual_norm_absolute', 'solution_distance_from_previous_absolute',
-                            'solution_distance_from_previous_relative']:
-            self.field.solver_parameters['measurement'] = measurement
-            self.assertEqual(self.field.solver_parameters['measurement'], measurement)
-
-    def test_set_wrong_measurement(self):
-        with self.assertRaises(ValueError):
-            self.field.solver_parameters['measurement'] = 'wrong_measurement'
 
     """ damping_factor """
     def test_damping_factor(self):
@@ -302,6 +298,7 @@ class TestFieldAdaptivity(Agros2DTestCase):
             self.field.adaptivity_parameters['stopping_criterion'] = 'wrong_criterion'
 
     """ norm """
+    """
     def test_norm(self):
         for norm in ['l2_norm', 'h1_norm', 'h1_seminorm']:
             self.field.adaptivity_parameters['norm'] = norm
@@ -310,6 +307,7 @@ class TestFieldAdaptivity(Agros2DTestCase):
     def test_set_wrong_norm(self):
         with self.assertRaises(ValueError):
             self.field.adaptivity_parameters['norm'] = 'wrong_norm'
+    """
 
     """ order_increase """
     def test_order_increase(self):

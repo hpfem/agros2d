@@ -113,7 +113,7 @@ class CoupledProblemsBasic2(Agros2DTestCase):
         self.heat.number_of_refinements = 1
         self.heat.polynomial_order = 2
         self.heat.solver = "linear"
-        self.heat.solver_parameters['tolerance'] = 0.001
+        self.heat.solver_parameters['residual'] = 0.001
         
         self.heat.add_boundary("Symmetry", "heat_heat_flux", {"heat_convection_external_temperature" : 0, "heat_convection_heat_transfer_coefficient" : 0, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 0, "heat_radiation_emissivity" : 0})
         self.heat.add_boundary("Convection", "heat_heat_flux", {"heat_convection_external_temperature" : 20, "heat_convection_heat_transfer_coefficient" : 10, "heat_heat_flux" : 0, "heat_radiation_ambient_temperature" : 0, "heat_radiation_emissivity" : 0})
@@ -191,7 +191,7 @@ class CoupledProblemsBasic3(Agros2DTestCase):
         self.current.number_of_refinements = 1
         self.current.polynomial_order = 2
         self.current.solver = "linear"
-        self.current.solver_parameters['tolerance'] = 0.001
+        self.current.solver_parameters['residual'] = 0.001
         
         self.current.add_boundary("10 V", "current_potential", {"current_potential" : 10})
         self.current.add_boundary("0 V", "current_potential", {"current_potential" : 0})
@@ -205,7 +205,7 @@ class CoupledProblemsBasic3(Agros2DTestCase):
         self.heat.polynomial_order = 3
         
         self.heat.solver = "newton"
-        self.heat.solver_parameters['tolerance'] = 0.001
+        self.heat.solver_parameters['residual'] = 0.001
         self.heat.solver_parameters['damping'] = 'fixed'
         self.heat.solver_parameters['damping_factor_increase_steps'] = 1
         self.heat.solver_parameters['jacobian_reuse'] = True

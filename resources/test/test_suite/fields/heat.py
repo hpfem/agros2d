@@ -149,7 +149,7 @@ class HeatNonlinPlanar(Agros2DTestCase):
         self.heat.polynomial_order = 2
 
         self.heat.solver = "newton"
-        self.heat.solver_parameters['tolerance'] = 0.0001
+        self.heat.solver_parameters['residual'] = 0.0001
         self.heat.solver_parameters['damping'] = 'automatic'
         self.heat.solver_parameters['damping_factor'] = 0.8
         self.heat.solver_parameters['jacobian_reuse'] = True
@@ -282,7 +282,7 @@ class HeatTransientAxisymmetric(Agros2DTestCase):
         self.heat.number_of_refinements = 1
         self.heat.polynomial_order = 5
         self.heat.solver = "linear"
-        self.heat.solver_parameters['tolerance'] = 0.001
+        self.heat.solver_parameters['residual'] = 0.001
         self.heat.transient_initial_condition = 20
         
         self.heat.add_boundary("Flux", "heat_heat_flux", {"heat_heat_flux" : 0})
