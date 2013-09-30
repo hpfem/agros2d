@@ -32,14 +32,16 @@ using namespace Hermes::Hermes2D;
 
 template <typename Scalar>
 NewtonSolverAgros<Scalar>::NewtonSolverAgros(Block *block)
-    : NewtonSolver<Scalar>(), m_block(block)
+    : NewtonSolver<Scalar>(), SolverAgros(block)
 {
 }
 
 template <typename Scalar>
 bool NewtonSolverAgros<Scalar>::on_initialization()
 {
-    m_errors.clear();
+    m_residualNorms.clear();
+    m_solutionNorms.clear();
+    m_relativeChangeOfSolutions.clear();
 
     return !Agros2D::problem()->isAborted();
 }
@@ -83,17 +85,10 @@ void NewtonSolverAgros<Scalar>::on_reused_jacobian_step_end()
 }
 
 template <typename Scalar>
-void NewtonSolverAgros<Scalar>::clearSteps()
-{
-    m_steps.clear();
-    m_errors.clear();
-}
-
-template <typename Scalar>
 void NewtonSolverAgros<Scalar>::setError(Phase phase)
 {
     int iteration;
-    if(phase == Phase_Init)
+    if (phase == Phase_Init)
         iteration = 0;
     else
         iteration = this->get_current_iteration_number() - 1;
@@ -103,47 +98,54 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
     const Hermes::vector<double>& solution_change_norms = this->get_parameter_value(this->solution_change_norms());
     const Hermes::vector<double>& damping_factors = this->get_parameter_value(this->damping_factors());
     const Hermes::vector<bool>& jacobian_recalculated_log = this->get_parameter_value(this->iterations_with_recalculated_jacobian());
-    double current_damping_factor = 1.0;
-    if (damping_factors.size() >= 1.0)
-        current_damping_factor = damping_factors.at(damping_factors.size() - 1);
 
-    double previous_damping_factors = current_damping_factor;
-    if(damping_factors.size() >= 2)
-        previous_damping_factors = damping_factors.at(damping_factors.size() - 2);
+    double current_damping_factor = damping_factors.back();
+    double previous_damping_factor = current_damping_factor;
+    if (damping_factors.size() > 1)
+        previous_damping_factor = damping_factors.at(damping_factors.size() - 2);
+
+    double previous_solution_norm = solution_norms.back();
+    if (solution_norms.size() > 2)
+        previous_solution_norm = solution_norms.at(solution_norms.size() - 2);
 
     // add iteration
     m_steps.append(iteration);
-    m_errors.append(residual_norms.back());
+    m_residualNorms.append(residual_norms.back());
+    m_solutionNorms.append(solution_norms.back());
+    m_relativeChangeOfSolutions.append(solution_change_norms.back() / previous_solution_norm * 100);
+    // qDebug() << "res. norm = " << residual_norms.back() << "sol. norm = " << solution_norms.back() << "sol. change = " << solution_change_norms.back() << "prev. sol. norm = " << previous_solution_norm << "relative change of sol.  = " << solution_change_norms.back() / previous_solution_norm;
 
-    assert(m_steps.size() == m_errors.size());
+    assert (m_steps.size() == m_residualNorms.size());
     if(phase != Phase_Finished)
         assert(m_steps.size() == iteration + 1);
 
-    if(phase == Phase_Init)
+    if (phase == Phase_Init)
     {
         assert(iteration == 0);
         Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Initial step, error: %1")
-                                     .arg(m_errors.last()));
+                                     .arg(m_residualNorms.last()));
     }
     else if (phase == Phase_DFDetermined)
     {
-        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, Jacobian recalculated, damping coeff.: %2, error: %3")
+        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, Jacobian recalculated, damping coeff.: %2, res. norm: %3, rel. change of sol.: %4 %")
                                      .arg(iteration)
-                                     .arg(previous_damping_factors)
-                                     .arg(m_errors.last()));
+                                     .arg(previous_damping_factor)
+                                     .arg(m_residualNorms.last())
+                                     .arg(QString::number(m_relativeChangeOfSolutions.last(), 'f', 3)));
     }
     else if (phase == Phase_JacobianReused)
     {
-        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, Jacobian reused, damping coeff.: %2, error: %3")
+        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Iteration: %1, Jacobian reused, damping coeff.: %2, res. norm: %3, rel. change of sol.: %4 %")
                                      .arg(iteration)
                                      .arg(current_damping_factor)
-                                     .arg(m_errors.last()));
+                                     .arg(m_residualNorms.last())
+                                     .arg(QString::number(m_relativeChangeOfSolutions.last(), 'f', 3)));
     }
     else if (phase == Phase_Finished)
     {
         QString reuses;
         m_jacobianCalculations = 0;
-        for(int i = 0; i < jacobian_recalculated_log.size(); i++)
+        for (int i = 0; i < jacobian_recalculated_log.size(); i++)
         {
             if(jacobian_recalculated_log.at(i))
             {
@@ -156,15 +158,16 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
             }
         }
 
-        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Calculation finished, error: %2, Jacobian recalculated %3x")
-                                     .arg(m_errors.last())
+        Agros2D::log()->printMessage(QObject::tr("Solver (Newton)"), QObject::tr("Calculation finished, res. norm: %1, rel. change of sol.: %2 %, Jacobian recalculated %3x")
+                                     .arg(m_residualNorms.last())
+                                     .arg(QString::number(m_relativeChangeOfSolutions.last(), 'f', 3))
                                      .arg(m_jacobianCalculations));
     }
     else
         assert(0);
 
     m_damping.append(current_damping_factor);
-    Agros2D::log()->setNonlinearTable(m_steps, m_errors);
+    Agros2D::log()->setNonlinearTable(m_steps, m_relativeChangeOfSolutions);
 }
 
 template <typename Scalar>
@@ -173,8 +176,9 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
     m_newtonSolver = new NewtonSolverAgros<Scalar>(block);
     m_newtonSolver->set_verbose_output(false);
     m_newtonSolver->clear_tolerances();
-    m_newtonSolver->set_tolerance(block->nonlinearTolerance(), block->nonlinearConvergenceMeasurement());
-    m_newtonSolver->set_max_allowed_iterations(1e5);
+    m_newtonSolver->set_tolerance(block->nonlinearResidualNorm(), ResidualNormAbsolute);
+    m_newtonSolver->set_tolerance(block->nonlinearRelativeChangeOfSolutions() / 100.0, SolutionChangeRelative);
+    m_newtonSolver->set_max_allowed_iterations(500);
     m_newtonSolver->set_max_allowed_residual_norm(1e15);
     m_newtonSolver->set_sufficient_improvement_factor_jacobian(block->newtonSufficientImprovementFactorForJacobianReuse());
     m_newtonSolver->set_sufficient_improvement_factor(block->newtonSufficientImprovementFactor());

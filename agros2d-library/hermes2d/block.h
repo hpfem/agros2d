@@ -75,10 +75,8 @@ public:
     bool adaptivityFinerReference() const;
 
     // minimal nonlinear tolerance of individual fields
-    double nonlinearTolerance() const;
-
-    // convergence method
-    Hermes::Hermes2D::NonlinearConvergenceMeasurementType nonlinearConvergenceMeasurement() const;
+    double nonlinearResidualNorm() const;
+    double nonlinearRelativeChangeOfSolutions() const;
 
     // use only if true for all fields
     DampingType newtonDampingType() const;

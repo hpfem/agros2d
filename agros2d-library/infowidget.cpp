@@ -312,17 +312,21 @@ void InfoWidget::showInfo()
 
             if (fieldInfo->linearityType() != LinearityType_Linear)
             {
-                field->SetValue("NONLINEAR_CONVERGENCE_MEASUREMENT_LABEL", tr("Convergence:").toStdString());
-                field->SetValue("NONLINEAR_CONVERGENCE_MEASUREMENT", nonlinearSolverConvergenceMeasurementString((Hermes::Hermes2D::NonlinearConvergenceMeasurementType) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()).toStdString());
-                field->SetValue("NONLINEAR_TOLERANCE_LABEL", tr("Tolerance:").toStdString());
-                field->SetValue("NONLINEAR_TOLERANCE", QString::number(fieldInfo->value(FieldInfo::NonlinearTolerance).toDouble()).toStdString());
+                field->SetValue("NONLINEAR_RELATIVE_CHANGE_OF_SOLUTIONS_LABEL", tr("Rel. change of solutions:").toStdString());
+                field->SetValue("NONLINEAR_RELATIVE_CHANGE_OF_SOLUTIONS", QString::number(fieldInfo->value(FieldInfo::NonlinearRelativeChangeOfSolutions).toDouble()).toStdString());
 
-                field->SetValue("NONLINEAR_NEWTON_DAMPING_FACTOR_LABEL", tr("Damping factor:").toStdString());
-                field->SetValue("NONLINEAR_NEWTON_DAMPING_FACTOR", QString("%1 (%2)").
-                                arg(fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble()).
-                                arg(dampingTypeString((DampingType) fieldInfo->value(FieldInfo::NewtonDampingType).toInt())).toStdString());
-                field->SetValue("NONLINEAR_NEWTON_REUSE_JACOBIAN_LABEL", tr("Reuse Jacobian:").toStdString());
-                field->SetValue("NONLINEAR_NEWTON_REUSE_JACOBIAN", (fieldInfo->value(FieldInfo::NewtonReuseJacobian).toBool() ? tr("Yes") : tr("No")).toStdString());
+                field->SetValue("NONLINEAR_RESIDUAL_LABEL", tr("Residual:").toStdString());
+                field->SetValue("NONLINEAR_RESIDUAL", QString::number(fieldInfo->value(FieldInfo::NonlinearResidualNorm).toDouble()).toStdString());
+
+                if (fieldInfo->linearityType() == LinearityType_Newton)
+                {
+                    field->SetValue("NONLINEAR_NEWTON_DAMPING_FACTOR_LABEL", tr("Damping factor:").toStdString());
+                    field->SetValue("NONLINEAR_NEWTON_DAMPING_FACTOR", QString("%1 (%2)").
+                                    arg(fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble()).
+                                    arg(dampingTypeString((DampingType) fieldInfo->value(FieldInfo::NewtonDampingType).toInt())).toStdString());
+                    field->SetValue("NONLINEAR_NEWTON_REUSE_JACOBIAN_LABEL", tr("Reuse Jacobian:").toStdString());
+                    field->SetValue("NONLINEAR_NEWTON_REUSE_JACOBIAN", (fieldInfo->value(FieldInfo::NewtonReuseJacobian).toBool() ? tr("Yes") : tr("No")).toStdString());
+                }
 
                 field->ShowSection("SOLVER_PARAMETERS_SECTION");
             }

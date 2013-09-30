@@ -369,30 +369,32 @@ Hermes::MatrixSolverType Block::matrixSolver() const
     return mt;
 }
 
-double Block::nonlinearTolerance() const
+double Block::nonlinearResidualNorm() const
 {
     double tolerance = numeric_limits<double>::max();
 
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if (fieldInfo->value(FieldInfo::NonlinearTolerance).toDouble() < tolerance)
-            tolerance = fieldInfo->value(FieldInfo::NonlinearTolerance).toDouble();
+        if (fieldInfo->value(FieldInfo::NonlinearResidualNorm).toDouble() < tolerance)
+            tolerance = fieldInfo->value(FieldInfo::NonlinearResidualNorm).toDouble();
     }
 
     return tolerance;
 }
 
-Hermes::Hermes2D::NonlinearConvergenceMeasurementType Block::nonlinearConvergenceMeasurement() const
+double Block::nonlinearRelativeChangeOfSolutions() const
 {
-    // how to set properly?
+    double tolerance = numeric_limits<double>::max();
+
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        return (Hermes::Hermes2D::NonlinearConvergenceMeasurementType) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt();
+        if (fieldInfo->value(FieldInfo::NonlinearRelativeChangeOfSolutions).toDouble() < tolerance)
+            tolerance = fieldInfo->value(FieldInfo::NonlinearRelativeChangeOfSolutions).toDouble();
     }
 
-    return Hermes::Hermes2D::ResidualNormAbsolute;
+    return tolerance;
 }
 
 DampingType Block::newtonDampingType() const

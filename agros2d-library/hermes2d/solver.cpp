@@ -45,6 +45,15 @@
 
 using namespace Hermes::Hermes2D;
 
+void SolverAgros::clearSteps()
+{
+    m_steps.clear();
+    m_damping.clear();
+    m_residualNorms.clear();
+    m_solutionNorms.clear();
+}
+
+
 Hermes::Solvers::ExternalSolver<double>* getExternalSolver(CSCMatrix<double> *m, SimpleVector<double> *rhs)
 {
     return new AgrosExternalSolverOctave(m, rhs);
@@ -489,7 +498,7 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
         {
             NewtonSolverAgros<Scalar> *solver = dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer.data())->solver();
 
-            runTime.setNewtonResidual(solver->errors());
+            runTime.setNewtonResidual(solver->residualNorms());
             runTime.setNewtonDamping(solver->damping());
             runTime.setJacobianCalculations(solver->jacobianCalculations());
         }
@@ -791,7 +800,7 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
     {
         NewtonSolverAgros<Scalar> *solver = dynamic_cast<NewtonSolverContainer<Scalar> *>(m_hermesSolverContainer.data())->solver();
 
-        runTime.setNewtonResidual(solver->errors());
+        runTime.setNewtonResidual(solver->residualNorms());
         runTime.setNewtonDamping(solver->damping());
         runTime.setJacobianCalculations(solver->jacobianCalculations());
     }

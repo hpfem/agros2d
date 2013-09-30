@@ -62,8 +62,8 @@ public:
     enum Type
     {
         Unknown,
-        NonlinearTolerance,
-        NonlinearConvergenceMeasurement,
+        NonlinearResidualNorm,
+        NonlinearRelativeChangeOfSolutions,
         NewtonDampingType,
         NewtonDampingCoeff,
         NewtonReuseJacobian,

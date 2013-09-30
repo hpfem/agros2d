@@ -33,7 +33,7 @@ class ExactSolutionScalarAgros;
 class SceneBoundary;
 
 template <typename Scalar>
-class NewtonSolverAgros : public Hermes::Hermes2D::NewtonSolver<Scalar>
+class NewtonSolverAgros : public SolverAgros, public Hermes::Hermes2D::NewtonSolver<Scalar>
 {
 public:
     NewtonSolverAgros(Block *block);
@@ -46,22 +46,13 @@ public:
     virtual void on_damping_factor_updated();
     virtual void on_reused_jacobian_step_end();
 
-    void clearSteps();
-
-    inline QVector<double> steps() const { return m_steps; }
-    inline QVector<double> damping() const { return m_damping; }
-    inline QVector<double> errors() const { return m_errors; }
     inline int jacobianCalculations() const { return m_jacobianCalculations; }
 
 protected:
-    Block* m_block;
-
-    QVector<double> m_steps;
-    QVector<double> m_damping;
-    QVector<double> m_errors;
+    QVector<double> m_relativeChangeOfSolutions;
     int m_jacobianCalculations;
 
-    void setError(Phase phase);
+    virtual void setError(Phase phase);
 };
 template <typename Scalar>
 class NewtonSolverContainer : public HermesSolverContainer<Scalar>

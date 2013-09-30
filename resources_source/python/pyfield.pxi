@@ -33,9 +33,6 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         string getLinearSolverPreconditioner()
         void setLinearSolverPreconditioner(string &linearSolverPreconditioner) except +
 
-        string getNonlinearConvergenceMeasurement()
-        void setNonlinearConvergenceMeasurement(string &nonlinearConvergenceMeasurement) except +
-
         string getNewtonDampingType()
         void setNewtonDampingType(string &dampingType) except +
 
@@ -243,8 +240,8 @@ cdef class __Field__:
             self.adaptivity_callback = callback
 
     def __get_solver_parameters__(self):
-        return {'tolerance' : self.thisptr.getDoubleParameter(string('NonlinearTolerance')),
-                'measurement' : self.thisptr.getNonlinearConvergenceMeasurement().c_str(),
+        return {'residual' : self.thisptr.getDoubleParameter(string('NonlinearResidualNorm')),
+                'relative_change_of_solutions' : self.thisptr.getDoubleParameter(string('NonlinearRelativeChangeOfSolutions')),
                 'damping' : self.thisptr.getNewtonDampingType().c_str(),
                 'damping_factor' : self.thisptr.getDoubleParameter(string('NewtonDampingCoeff')),
                 'damping_factor_decrease_ratio' : self.thisptr.getDoubleParameter(string('NewtonSufImprov')),
@@ -257,12 +254,15 @@ cdef class __Field__:
                 'anderson_last_vectors' : self.thisptr.getIntParameter(string('PicardAndersonNumberOfLastVectors'))}
 
     def __set_solver_parameters__(self, parameters):
-        # tolerance
-        positive_value(parameters['tolerance'], 'tolerance')
-        self.thisptr.setParameter(string('NonlinearTolerance'), <double>parameters['tolerance'])
+        # residual
+        positive_value(parameters['residual'], 'residual')
+        self.thisptr.setParameter(string('NonlinearResidualNorm'), <double>parameters['residual'])
 
-        # measurement, damping type
-        self.thisptr.setNonlinearConvergenceMeasurement(string(parameters['measurement']))
+        # relative change of solutions
+        positive_value(parameters['relative_change_of_solutions'], 'relative_change_of_solutions')
+        self.thisptr.setParameter(string('NonlinearRelativeChangeOfSolutions'), <double>parameters['relative_change_of_solutions'])
+
+        # damping type
         self.thisptr.setNewtonDampingType(string(parameters['damping']))
 
         # damping factor

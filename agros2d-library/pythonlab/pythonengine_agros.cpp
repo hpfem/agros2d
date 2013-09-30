@@ -399,18 +399,17 @@ QString createPythonFromModel(StartupScript_Type startupScript)
 
         if (fieldInfo->linearityType() != LinearityType_Linear)
         {
-            str += QString("%1.solver_parameters['tolerance'] = %2\n").
+            str += QString("%1.solver_parameters['residual'] = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->value(FieldInfo::NonlinearTolerance).toDouble());
+                    arg(fieldInfo->value(FieldInfo::NonlinearResidualNorm).toDouble());
+            str += QString("%1.solver_parameters['relative_change_of_solutions'] = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(fieldInfo->value(FieldInfo::NonlinearRelativeChangeOfSolutions).toDouble());
         }
 
         // newton
         if (fieldInfo->linearityType() == LinearityType_Newton)
         {
-            str += QString("%1.solver_parameters['measurement'] = \"%2\"\n").
-                    arg(fieldInfo->fieldId()).
-                    arg(nonlinearSolverConvergenceMeasurementToStringKey((Hermes::Hermes2D::NonlinearConvergenceMeasurementType) fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()));
-
             str += QString("%1.solver_parameters['damping'] = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
                     arg(dampingTypeToStringKey((DampingType)fieldInfo->value(FieldInfo::NewtonDampingType).toInt()));

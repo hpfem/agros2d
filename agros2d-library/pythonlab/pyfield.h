@@ -65,10 +65,6 @@ class PyField
         inline std::string getLinearityType() const { return linearityTypeToStringKey(m_fieldInfo->linearityType()).toStdString(); }
         void setLinearityType(const std::string &linearityType);
 
-        // convergence measurement
-        inline std::string getNonlinearConvergenceMeasurement() const { return nonlinearSolverConvergenceMeasurementToStringKey((Hermes::Hermes2D::NonlinearConvergenceMeasurementType) m_fieldInfo->value(FieldInfo::NonlinearConvergenceMeasurement).toInt()).toStdString(); }
-        void setNonlinearConvergenceMeasurement(const std::string &nonlinearConvergenceMeasurement);
-
         // automatic damping
         inline std::string getNewtonDampingType() const { return dampingTypeToStringKey((DampingType)m_fieldInfo->value(FieldInfo::NewtonDampingType).toInt()).toStdString(); }
         void setNewtonDampingType(std::string dampingType);

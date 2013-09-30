@@ -101,10 +101,10 @@
 	</tr>
 	{{#SOLVER_PARAMETERS_SECTION}}
 	<tr>
-		<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_CONVERGENCE_MEASUREMENT_LABEL}}</b></td><td>{{NONLINEAR_CONVERGENCE_MEASUREMENT}}</td>
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_RESIDUAL_LABEL}}</b></td><td>{{NONLINEAR_RESIDUAL}}</td>
 	</tr>	
 	<tr>
-		<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_TOLERANCE_LABEL}}</b></td><td>{{NONLINEAR_TOLERANCE}}</td>
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_RELATIVE_CHANGE_OF_SOLUTIONS_LABEL}}</b></td><td>{{NONLINEAR_RELATIVE_CHANGE_OF_SOLUTIONS}} %</td>
 	</tr>	
 	<tr>
 		<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>{{NONLINEAR_NEWTON_DAMPING_FACTOR_LABEL}}</b></td><td>{{NONLINEAR_NEWTON_DAMPING_FACTOR}}</td>

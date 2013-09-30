@@ -784,8 +784,8 @@ void FieldInfo::save(XMLProblem::field_config *configxsd)
 
 void FieldInfo::setStringKeys()
 {
-    m_settingKey[NonlinearTolerance] = "NonlinearTolerance";
-    m_settingKey[NonlinearConvergenceMeasurement] = "NonlinearConvergenceMeasurement";
+    m_settingKey[NonlinearResidualNorm] = "NonlinearResidualNorm";
+    m_settingKey[NonlinearRelativeChangeOfSolutions] = "NonlinearRelativeChangeOfSolutions";
     m_settingKey[NewtonDampingType] = "NewtonDampingType";
     m_settingKey[NewtonDampingCoeff] = "NewtonDampingCoeff";
     m_settingKey[NewtonReuseJacobian] = "NewtonReuseJacobian";
@@ -823,8 +823,8 @@ void FieldInfo::setDefaultValues()
 {
     m_settingDefault.clear();
 
-    m_settingDefault[NonlinearTolerance] = 0.1;
-    m_settingDefault[NonlinearConvergenceMeasurement] = Hermes::Hermes2D::ResidualNormAbsolute;
+    m_settingDefault[NonlinearResidualNorm] = 1e-6;
+    m_settingDefault[NonlinearRelativeChangeOfSolutions] = 0.0;
     m_settingDefault[NewtonDampingType] = DampingType_Automatic;
     m_settingDefault[NewtonDampingCoeff] = 0.8;
     m_settingDefault[NewtonReuseJacobian] = true;

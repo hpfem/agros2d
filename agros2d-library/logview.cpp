@@ -285,7 +285,7 @@ void LogDialog::createControls()
     m_nonlinearChart->xAxis->setTickStep(1.0);
     m_nonlinearChart->xAxis->setAutoTickStep(false);
     m_nonlinearChart->xAxis->setLabel(tr("iteration"));
-    m_nonlinearChart->yAxis->setLabel(tr("error"));
+    m_nonlinearChart->yAxis->setLabel(tr("rel. error (%)"));
     m_nonlinearChart->yAxis->setScaleType(QCPAxis::stLogarithmic);
     m_nonlinearChart->addGraph();
 

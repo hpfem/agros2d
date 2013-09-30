@@ -32,14 +32,14 @@ using namespace Hermes::Hermes2D;
 
 template <typename Scalar>
 PicardSolverAgros<Scalar>::PicardSolverAgros(Block *block)
-    : PicardSolver<Scalar>(), m_block(block)
+    : PicardSolver<Scalar>(), SolverAgros(block)
 {
 }
 
 template <typename Scalar>
 bool PicardSolverAgros<Scalar>::on_initialization()
 {
-    m_errors.clear();
+    m_relativeChangeOfSolutions.clear();
 
     return !Agros2D::problem()->isAborted();
 }
@@ -72,13 +72,6 @@ bool PicardSolverAgros<Scalar>::on_finish()
 }
 
 template <typename Scalar>
-void PicardSolverAgros<Scalar>::clearSteps()
-{
-    m_steps.clear();
-    m_errors.clear();
-}
-
-template <typename Scalar>
 void PicardSolverAgros<Scalar>::setError(Phase phase)
 {
     if (phase == Phase_Init)
@@ -92,27 +85,33 @@ void PicardSolverAgros<Scalar>::setError(Phase phase)
     const Hermes::vector<double>& solution_norms = this->get_parameter_value(this->solution_norms());
     const Hermes::vector<double>& solution_change_norms = this->get_parameter_value(this->solution_change_norms());
 
+    double previous_solution_norm = solution_norms.back();
+    if (solution_norms.size() > 1)
+        previous_solution_norm = solution_norms.at(solution_norms.size() - 2);
+
     // add iteration
     m_steps.append(iteration);
-    m_errors.append(solution_change_norms.back());    
+    m_solutionNorms.append(solution_norms.back());
+    m_relativeChangeOfSolutions.append(solution_change_norms.back() / previous_solution_norm * 100);
+    // qDebug() << "res. norm = " << residual_norms.back() << "sol. norm = " << solution_norms.back() << "sol. change = " << solution_change_norms.back() << "prev. sol. norm = " << previous_solution_norm << "relative change of sol.  = " << solution_change_norms.back() / previous_solution_norm;
 
-    assert(m_steps.size() == m_errors.size());
+    assert(m_steps.size() == m_relativeChangeOfSolutions.size());
 
     if (phase == Phase_DFDetermined)
     {
-        Agros2D::log()->printMessage(QObject::tr("Solver (Picard)"), QObject::tr("Iteration: %1, error: %2")
+        Agros2D::log()->printMessage(QObject::tr("Solver (Picard)"), QObject::tr("Iteration: %1, rel. change of sol.: %2 %")
                                      .arg(iteration)
-                                     .arg(m_errors.last()));
+                                     .arg(QString::number(m_relativeChangeOfSolutions.last(), 'f', 3)));
     }
     else if (phase == Phase_Finished)
     {
-        Agros2D::log()->printMessage(QObject::tr("Solver (Picard)"), QObject::tr("Calculation finished, error: %1")
-                                     .arg(m_errors.last()));
+        Agros2D::log()->printMessage(QObject::tr("Solver (Picard)"), QObject::tr("Calculation finished, rel. change of sol.: %1 %")
+                                     .arg(QString::number(m_relativeChangeOfSolutions.last(), 'f', 3)));
     }
     else
         assert(0);
 
-    Agros2D::log()->setNonlinearTable(m_steps, m_errors);
+    Agros2D::log()->setNonlinearTable(m_steps, m_relativeChangeOfSolutions);
 }
 
 template <typename Scalar>
@@ -121,8 +120,8 @@ PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block) : HermesSolve
     m_picardSolver = new PicardSolverAgros<Scalar>(block);
     m_picardSolver->set_verbose_output(false);
     m_picardSolver->clear_tolerances();
-    m_picardSolver->set_tolerance(block->nonlinearTolerance(), block->nonlinearConvergenceMeasurement());
-    m_picardSolver->set_max_allowed_iterations(100);
+    m_picardSolver->set_tolerance(block->nonlinearRelativeChangeOfSolutions() / 100.0, SolutionChangeRelative);
+    m_picardSolver->set_max_allowed_iterations(500);
     if (block->picardAndersonAcceleration())
     {
         m_picardSolver->use_Anderson_acceleration(true);

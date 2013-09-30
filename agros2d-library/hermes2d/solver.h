@@ -35,6 +35,37 @@ namespace Module {
     class ErrorCalculator;
 }
 
+class SolverAgros
+{
+public:
+    SolverAgros(Block *block) : m_block(block) {}
+
+    enum Phase
+    {
+        Phase_Init,
+        Phase_DFDetermined,
+        Phase_JacobianReused,
+        Phase_Finished
+    };
+
+    inline QVector<double> steps() const { return m_steps; }
+    inline QVector<double> damping() const { return m_damping; }
+    inline QVector<double> residualNorms() const { return m_residualNorms; }
+    inline QVector<double> solutionNorms() const { return m_solutionNorms; }
+
+    void clearSteps();
+
+protected:
+    Block* m_block;
+
+    virtual void setError(Phase phase) = 0;
+
+    QVector<double> m_steps;
+    QVector<double> m_damping;
+    QVector<double> m_residualNorms;
+    QVector<double> m_solutionNorms;
+};
+
 class AgrosExternalSolverOctave : public ExternalSolver<double>
 {
 public:
@@ -44,14 +75,6 @@ public:
 
 private:
     QProcess *m_process;
-};
-
-enum Phase
-{
-    Phase_Init,
-    Phase_DFDetermined,
-    Phase_JacobianReused,
-    Phase_Finished
 };
 
 struct TimeStepInfo

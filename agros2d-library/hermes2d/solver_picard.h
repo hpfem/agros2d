@@ -33,7 +33,7 @@ class ExactSolutionScalarAgros;
 class SceneBoundary;
 
 template <typename Scalar>
-class PicardSolverAgros : public Hermes::Hermes2D::PicardSolver<Scalar>
+class PicardSolverAgros : public SolverAgros, public Hermes::Hermes2D::PicardSolver<Scalar>
 {
 public:
     PicardSolverAgros(Block *block);
@@ -44,20 +44,10 @@ public:
     virtual bool on_step_end();
     virtual bool on_finish();
 
-    void clearSteps();
-
-    inline QVector<double> steps() const { return m_steps; }
-    inline QVector<double> damping() const { return m_damping; }
-    inline QVector<double> errors() const { return m_errors; }
-
 protected:
-    Block* m_block;
+    virtual void setError(Phase phase);
 
-    QVector<double> m_steps;
-    QVector<double> m_damping;
-    QVector<double> m_errors;
-
-    void setError(Phase phase);
+    QVector<double> m_relativeChangeOfSolutions;
 };
 
 template <typename Scalar>

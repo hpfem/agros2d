@@ -1368,7 +1368,7 @@ void Scene::readFromFile21(const QString &fileName)
 
         field->setLinearityType(linearityTypeFromStringKey(eleFieldLinearity.toElement().attribute("linearity_type", linearityTypeToStringKey(LinearityType_Linear))));
 
-        field->setValue(FieldInfo::NonlinearTolerance, eleFieldLinearity.toElement().attribute("nonlinear_tolerance", QString::number(field->defaultValue(FieldInfo::NonlinearTolerance).toDouble())).toDouble());
+        field->setValue(FieldInfo::NonlinearResidualNorm, eleFieldLinearity.toElement().attribute("nonlinear_tolerance", QString::number(field->defaultValue(FieldInfo::NonlinearResidualNorm).toDouble())).toDouble());
         field->setValue(FieldInfo::NewtonDampingCoeff, eleFieldLinearity.toElement().attribute("newton_damping_coeff", QString::number(field->defaultValue(FieldInfo::NewtonDampingCoeff).toDouble())).toDouble());
         field->setValue(FieldInfo::NewtonDampingType,  dampingTypeFromStringKey(eleFieldLinearity.toElement().attribute("newton_damping_type")));
         field->setValue(FieldInfo::NewtonReuseJacobian,  eleFieldLinearity.toElement().attribute("newton_reuse_jacobian", "1").toInt());
