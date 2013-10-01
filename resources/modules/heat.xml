@@ -61,6 +61,12 @@
           <module:vector_form id="rhs" />
         </module:linearity_option>
 
+        <module:linearity_option type="picard">
+          <module:matrix_form id="laplace" />
+          <module:matrix_form id="velocity" />
+          <module:vector_form id="rhs" />
+        </module:linearity_option>
+
         <module:linearity_option type="newton">
           <module:matrix_form id="laplace" />
           <module:matrix_form id="velocity" />
@@ -81,6 +87,14 @@
         <module:quantity id="heat_specific_heat" nonlinearity_axi="value1" nonlinearity_planar="value1"/>
 
         <module:linearity_option type="linear">
+          <module:matrix_form id="laplace"/>
+          <module:matrix_form id="velocity"/>
+          <module:matrix_form id="time_mat"/>
+          <module:vector_form id="rhs"/>
+          <module:vector_form id="time_vec"/>
+        </module:linearity_option>
+
+        <module:linearity_option type="picard">
           <module:matrix_form id="laplace"/>
           <module:matrix_form id="velocity"/>
           <module:matrix_form id="time_mat"/>
@@ -127,6 +141,10 @@
             <module:essential_form id="essential" i="1" axi="he_T" planar="he_T"/>
           </module:linearity_option>
 
+          <module:linearity_option type="picard">
+            <module:essential_form id="essential" i="1" axi="he_T" planar="he_T"/>
+          </module:linearity_option>
+
           <module:linearity_option type="newton">
             <module:essential_form id="essential" i="1" axi="he_T" planar="he_T"/>
           </module:linearity_option>
@@ -140,6 +158,11 @@
           <module:quantity id="heat_radiation_ambient_temperature"/>
 
           <module:linearity_option type="linear">
+            <module:matrix_form id="flux_matrix"/>
+            <module:vector_form id="flux_vector"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="picard">
             <module:matrix_form id="flux_matrix"/>
             <module:vector_form id="flux_vector"/>
           </module:linearity_option>
@@ -162,6 +185,10 @@
             <module:essential_form id="essential" i="1" axi="he_T" planar="he_T"/>
           </module:linearity_option>
 
+          <module:linearity_option type="picard">
+            <module:essential_form id="essential" i="1" axi="he_T" planar="he_T"/>
+          </module:linearity_option>
+
           <module:linearity_option type="newton">
             <module:essential_form id="essential" i="1" axi="he_T" planar="he_T"/>
           </module:linearity_option>
@@ -175,6 +202,11 @@
           <module:quantity id="heat_radiation_ambient_temperature"/>
 
           <module:linearity_option type="linear">
+            <module:matrix_form id="flux_matrix"/>
+            <module:vector_form id="flux_vector"/>
+          </module:linearity_option>
+
+          <module:linearity_option type="picard">
             <module:matrix_form id="flux_matrix"/>
             <module:vector_form id="flux_vector"/>
           </module:linearity_option>

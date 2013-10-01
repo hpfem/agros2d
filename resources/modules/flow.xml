@@ -79,6 +79,17 @@
           <module:vector_form id="rhs_2" />
         </module:linearity_option>
 
+        <module:linearity_option type="picard">
+          <module:matrix_form id="viscosity_1_1" />
+          <module:matrix_form id="viscosity_2_2" />
+          <module:matrix_form id="pressure_1_3" />
+          <module:matrix_form id="pressure_2_3" />
+          <module:matrix_form id="pressure_3_1" />
+          <module:matrix_form id="pressure_3_2" />
+          <module:vector_form id="rhs_1" />
+          <module:vector_form id="rhs_2" />
+        </module:linearity_option>
+
         <module:linearity_option type="newton">
           <module:matrix_form id="viscosity_1_1" />
           <module:matrix_form id="viscosity_2_2" />
@@ -112,6 +123,21 @@
         <module:quantity id="flow_force_y"/>
 
         <module:linearity_option type="linear">
+          <module:matrix_form id="viscosity_1_1" />
+          <module:matrix_form id="viscosity_2_2" />
+          <module:matrix_form id="pressure_1_3" />
+          <module:matrix_form id="pressure_2_3" />
+          <module:matrix_form id="pressure_3_1" />
+          <module:matrix_form id="pressure_3_2" />
+          <module:matrix_form id="time_mat_1_1" />
+          <module:matrix_form id="time_mat_2_2" />
+          <module:vector_form id="rhs_1" />
+          <module:vector_form id="rhs_2" />
+          <module:vector_form id="time_vec_1_1" />
+          <module:vector_form id="time_vec_2_2" />
+        </module:linearity_option>
+
+        <module:linearity_option type="picard">
           <module:matrix_form id="viscosity_1_1" />
           <module:matrix_form id="viscosity_2_2" />
           <module:matrix_form id="pressure_1_3" />
@@ -180,6 +206,11 @@
             <module:essential_form id="velocity_2"/>
           </module:linearity_option>
 
+          <module:linearity_option type="picard">
+            <module:essential_form id="velocity_1"/>
+            <module:essential_form id="velocity_2"/>
+          </module:linearity_option>
+
           <module:linearity_option type="newton">
             <module:essential_form id="velocity_1"/>
             <module:essential_form id="velocity_2"/>
@@ -187,7 +218,10 @@
         </module:boundary>
 
         <module:boundary equation="\frac{\partial v_x}{\partial n} = 0,\,\,\, \frac{\partial v_y}{\partial n} = 0" id="flow_outlet" name="Outlet">
-          <module:linearity_option type="linear">
+        <module:linearity_option type="linear">
+        </module:linearity_option>
+
+          <module:linearity_option type="picard">
           </module:linearity_option>
 
           <module:linearity_option type="newton">
@@ -201,13 +235,21 @@
             <module:essential_form id="pressure_3"/>
           </module:linearity_option>
 
+          <module:linearity_option type="picard">
+            <module:essential_form id="pressure_3"/>
+          </module:linearity_option>
+
           <module:linearity_option type="newton">
             <module:essential_form id="pressure_3"/>
           </module:linearity_option>
         </module:boundary>
 
         <module:boundary equation="v_r = 0,\,\,\, \frac{\partial v_z}{\partial n} = 0" id="flow_symmetry" name="Axial symmetry">
-          <module:linearity_option type="linear">
+        <module:linearity_option type="linear">
+          <module:essential_form id="zero_velocity_1"/>
+        </module:linearity_option>
+
+          <module:linearity_option type="picard">
             <module:essential_form id="zero_velocity_1"/>
           </module:linearity_option>
 
@@ -227,6 +269,11 @@
             <module:essential_form id="velocity_2"/>
           </module:linearity_option>
 
+          <module:linearity_option type="picard">
+            <module:essential_form id="velocity_1"/>
+            <module:essential_form id="velocity_2"/>
+          </module:linearity_option>
+
           <module:linearity_option type="newton">
             <module:essential_form id="velocity_1"/>
             <module:essential_form id="velocity_2"/>
@@ -234,7 +281,10 @@
         </module:boundary>
 
         <module:boundary equation="\frac{\partial v_x}{\partial n} = 0,\,\,\, \frac{\partial v_y}{\partial n} = 0" id="flow_outlet" name="Outlet">
-          <module:linearity_option type="linear">
+        <module:linearity_option type="linear">
+        </module:linearity_option>
+
+          <module:linearity_option type="picard">
           </module:linearity_option>
 
           <module:linearity_option type="newton">
@@ -248,13 +298,21 @@
             <module:essential_form id="pressure_3"/>
           </module:linearity_option>
 
+          <module:linearity_option type="picard">
+            <module:essential_form id="pressure_3"/>
+          </module:linearity_option>
+
           <module:linearity_option type="newton">
             <module:essential_form id="pressure_3"/>
           </module:linearity_option>
         </module:boundary>
 
         <module:boundary equation="v_r = 0,\,\,\, \frac{\partial v_z}{\partial n} = 0" id="flow_symmetry" name="Axial symmetry">
-          <module:linearity_option type="linear">
+        <module:linearity_option type="linear">
+          <module:essential_form id="zero_velocity_1"/>
+        </module:linearity_option>
+
+          <module:linearity_option type="picard">
             <module:essential_form id="zero_velocity_1"/>
           </module:linearity_option>
 
