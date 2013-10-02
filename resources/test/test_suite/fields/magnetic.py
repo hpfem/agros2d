@@ -663,7 +663,6 @@ class MagneticHarmonicNonlinAxisymmetric(Agros2DTestCase):
         self.magnetic.adaptivity_type = "disabled"
         self.magnetic.solver = "newton"
         self.magnetic.solver_parameters['residual'] = 0.01
-        self.magnetic.solver_parameters['measurement'] = "residual_norm_absolute"
         self.magnetic.solver_parameters['damping'] = "automatic"
         self.magnetic.solver_parameters['damping_factor'] = 0.8
         self.magnetic.solver_parameters['jacobian_reuse'] = True
