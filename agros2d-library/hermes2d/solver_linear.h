@@ -44,7 +44,7 @@ public:
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() { return m_linearSolver; }
     virtual void setWeakFormulation(Hermes::Hermes2D::WeakForm<Scalar>* wf) {m_linearSolver->set_weak_formulation(wf); }
     virtual void matrixUnchangedDueToBDF(bool unchanged);
-    virtual LinearMatrixSolver<Scalar> *linearSolver() { return m_linearSolver->get_linear_solver(); }
+    virtual LinearMatrixSolver<Scalar> *linearSolver() { return m_linearSolver->get_linear_matrix_solver(); }
 
 private:
     Hermes::Hermes2D::LinearSolver<Scalar> *m_linearSolver;

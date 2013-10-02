@@ -64,8 +64,8 @@ public:
         inline void setFileNames(QList<FileName> value) { m_fileNames = value; }
         inline QVector<double> newtonResidual() const { return m_newtonResidual; }
         inline void setNewtonResidual(QVector<double> value) { m_newtonResidual = value; }
-        inline QVector<double> newtonDamping() const { return m_newtonDamping; }
-        inline void setNewtonDamping(QVector<double> value) { m_newtonDamping = value; }
+        inline QVector<double> nonlinearDamping() const { return m_nonlinearDamping; }
+        inline void setNonlinearDamping(QVector<double> value) { m_nonlinearDamping = value; }
 
     private:
         double m_timeStepLength;
@@ -75,7 +75,7 @@ public:
 
         QList<FileName> m_fileNames;
         QVector<double> m_newtonResidual;
-        QVector<double> m_newtonDamping;
+        QVector<double> m_nonlinearDamping;
     };
 
     bool contains(FieldSolutionID solutionID) const;

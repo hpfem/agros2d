@@ -128,13 +128,13 @@ private:
     // linearity
     LineEditDouble *txtNonlinearResidual;
     LineEditDouble *txtNonlinearRelativeChangeOfSolutions;
-    QComboBox *cmbNewtonDampingType;
+    QComboBox *cmbNonlinearDampingType;
     QCheckBox *chkNewtonReuseJacobian;
-    LineEditDouble *txtNewtonDampingCoeff;
+    LineEditDouble *txtNonlinearDampingCoeff;
     LineEditDouble *txtNewtonSufficientImprovementFactorForJacobianReuse;
     LineEditDouble *txtNewtonSufficientImprovementFactor;
     QSpinBox *txtNewtonMaximumStepsWithReusedJacobian;
-    QSpinBox *txtNewtonDampingNumberToIncrease;
+    QSpinBox *txtNonlinearDampingNumberToIncrease;
     QCheckBox *chkPicardAndersonAcceleration;
     LineEditDouble *txtPicardAndersonBeta;
     QSpinBox *txtPicardAndersonNumberOfLastVectors;
@@ -161,7 +161,7 @@ private slots:
     void doLinearityTypeChanged(int index);
     void doLinearSolverChanged(int index);
 
-    void doNewtonDampingChanged(int index);
+    void doNonlinearDampingChanged(int index);
     void doNewtonReuseJacobian(bool checked);
     void doPicardAndersonChanged(int index);
     void doShowEquation();

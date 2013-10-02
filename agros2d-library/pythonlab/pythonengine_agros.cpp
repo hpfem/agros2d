@@ -412,11 +412,11 @@ QString createPythonFromModel(StartupScript_Type startupScript)
         {
             str += QString("%1.solver_parameters['damping'] = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
-                    arg(dampingTypeToStringKey((DampingType)fieldInfo->value(FieldInfo::NewtonDampingType).toInt()));
+                    arg(dampingTypeToStringKey((DampingType)fieldInfo->value(FieldInfo::NonlinearDampingType).toInt()));
 
             str += QString("%1.solver_parameters['damping_factor'] = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble());
+                    arg(fieldInfo->value(FieldInfo::NonlinearDampingCoeff).toDouble());
 
             str += QString("%1.solver_parameters['jacobian_reuse'] = %2\n").
                     arg(fieldInfo->fieldId()).

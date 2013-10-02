@@ -21,9 +21,9 @@
 */
 #ifndef __HERMES_COMMON_AMESOS_SOLVER_H_
 #define __HERMES_COMMON_AMESOS_SOLVER_H_
-#include "../config.h"
+#include "../../config.h"
 #ifdef HAVE_AMESOS
-#include "linear_matrix_solver.h"
+#include "solvers/linear_matrix_solver.h"
 #include "epetra.h"
 #include "util/compat.h"
 #include <Amesos.h>

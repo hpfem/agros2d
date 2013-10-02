@@ -322,8 +322,8 @@ void InfoWidget::showInfo()
                 {
                     field->SetValue("NONLINEAR_NEWTON_DAMPING_FACTOR_LABEL", tr("Damping factor:").toStdString());
                     field->SetValue("NONLINEAR_NEWTON_DAMPING_FACTOR", QString("%1 (%2)").
-                                    arg(fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble()).
-                                    arg(dampingTypeString((DampingType) fieldInfo->value(FieldInfo::NewtonDampingType).toInt())).toStdString());
+                                    arg(fieldInfo->value(FieldInfo::NonlinearDampingCoeff).toDouble()).
+                                    arg(dampingTypeString((DampingType) fieldInfo->value(FieldInfo::NonlinearDampingType).toInt())).toStdString());
                     field->SetValue("NONLINEAR_NEWTON_REUSE_JACOBIAN_LABEL", tr("Reuse Jacobian:").toStdString());
                     field->SetValue("NONLINEAR_NEWTON_REUSE_JACOBIAN", (fieldInfo->value(FieldInfo::NewtonReuseJacobian).toBool() ? tr("Yes") : tr("No")).toStdString());
                 }

@@ -21,10 +21,10 @@
 */
 #ifndef __HERMES_COMMON_AZTECOO_SOLVER_H_
 #define __HERMES_COMMON_AZTECOO_SOLVER_H_
-#include "../config.h"
+#include "../../config.h"
 #ifdef HAVE_AZTECOO
 #include "epetra.h"
-#include "linear_matrix_solver.h"
+#include "solvers/linear_matrix_solver.h"
 #include "precond_ifpack.h"
 #include "precond_ml.h"
 #include <AztecOO.h>
@@ -74,7 +74,7 @@ namespace Hermes
       virtual int get_matrix_size();
 
       virtual int get_num_iters();
-      virtual double get_residual();
+      virtual double get_residual_norm();
 
       /// Option setting function
       void set_option(int option, int value);

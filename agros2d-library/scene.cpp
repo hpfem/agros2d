@@ -1369,8 +1369,8 @@ void Scene::readFromFile21(const QString &fileName)
         field->setLinearityType(linearityTypeFromStringKey(eleFieldLinearity.toElement().attribute("linearity_type", linearityTypeToStringKey(LinearityType_Linear))));
 
         field->setValue(FieldInfo::NonlinearResidualNorm, eleFieldLinearity.toElement().attribute("nonlinear_tolerance", QString::number(field->defaultValue(FieldInfo::NonlinearResidualNorm).toDouble())).toDouble());
-        field->setValue(FieldInfo::NewtonDampingCoeff, eleFieldLinearity.toElement().attribute("newton_damping_coeff", QString::number(field->defaultValue(FieldInfo::NewtonDampingCoeff).toDouble())).toDouble());
-        field->setValue(FieldInfo::NewtonDampingType,  dampingTypeFromStringKey(eleFieldLinearity.toElement().attribute("newton_damping_type")));
+        field->setValue(FieldInfo::NonlinearDampingCoeff, eleFieldLinearity.toElement().attribute("newton_damping_coeff", QString::number(field->defaultValue(FieldInfo::NonlinearDampingCoeff).toDouble())).toDouble());
+        field->setValue(FieldInfo::NonlinearDampingType,  dampingTypeFromStringKey(eleFieldLinearity.toElement().attribute("newton_damping_type")));
         field->setValue(FieldInfo::NewtonReuseJacobian,  eleFieldLinearity.toElement().attribute("newton_reuse_jacobian", "1").toInt());
         field->setValue(FieldInfo::PicardAndersonAcceleration, eleFieldLinearity.toElement().attribute("picard_anderson_acceleration", "1").toInt());
         field->setValue(FieldInfo::PicardAndersonBeta, eleFieldLinearity.toElement().attribute("picard_anderson_beta", "0.2").toDouble());
@@ -1933,10 +1933,10 @@ void Scene::writeToFile21(const QString &fileName)
         eleField.appendChild(eleLinearity);
         eleLinearity.setAttribute("linearity_type", linearityTypeToStringKey(fieldInfo->linearityType()));
         eleLinearity.setAttribute("nonlinear_tolerance", fieldInfo->nonlinearTolerance());
-        eleLinearity.setAttribute("newton_damping_coeff", fieldInfo->newtonDampingCoeff());
+        eleLinearity.setAttribute("newton_damping_coeff", fieldInfo->nonlinearDampingCoeff());
         eleLinearity.setAttribute("newton_automatic_damping", fieldInfo->newtonAutomaticDamping());
         eleLinearity.setAttribute("newton_automatic_damping_coeff", fieldInfo->newtonAutomaticDampingCoeff());
-        eleLinearity.setAttribute("newton_damping_number_to_increase",fieldInfo->newtonDampingNumberToIncrease());
+        eleLinearity.setAttribute("newton_damping_number_to_increase",fieldInfo->nonlinearDampingNumberToIncrease());
         eleLinearity.setAttribute("picard_anderson_acceleration", fieldInfo->picardAndersonAcceleration());
         eleLinearity.setAttribute("picard_anderson_beta", fieldInfo->picardAndersonBeta());
         eleLinearity.setAttribute("picard_anderson_vectors", fieldInfo->picardAndersonNumberOfLastVectors());

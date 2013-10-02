@@ -397,13 +397,13 @@ double Block::nonlinearRelativeChangeOfSolutions() const
     return tolerance;
 }
 
-DampingType Block::newtonDampingType() const
+DampingType Block::nonlinearDampingType() const
 {
     DampingType blockDt = DampingType_Undefined;
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        DampingType dt = (DampingType)fieldInfo->value(FieldInfo::NewtonDampingType).toInt();
+        DampingType dt = (DampingType)fieldInfo->value(FieldInfo::NonlinearDampingType).toInt();
         assert(dt != DampingType_Undefined);
         if(blockDt != DampingType_Undefined)
             assert (blockDt == dt);
@@ -413,15 +413,15 @@ DampingType Block::newtonDampingType() const
     return blockDt;
 }
 
-double Block::newtonDampingCoeff() const
+double Block::nonlinearDampingCoeff() const
 {
     double coeff = 1.0;
 
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if (fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble() < coeff)
-            coeff = fieldInfo->value(FieldInfo::NewtonDampingCoeff).toDouble();
+        if (fieldInfo->value(FieldInfo::NonlinearDampingCoeff).toDouble() < coeff)
+            coeff = fieldInfo->value(FieldInfo::NonlinearDampingCoeff).toDouble();
     }
 
     return coeff;

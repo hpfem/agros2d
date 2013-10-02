@@ -20,14 +20,15 @@
 \brief General linear solver functionality.
 */
 #include "linear_matrix_solver.h"
-#include "umfpack_solver.h"
-#include "superlu_solver.h"
-#include "amesos_solver.h"
-#include "petsc_solver.h"
-#include "mumps_solver.h"
-#include "aztecoo_solver.h"
-#include "paralution_solver.h"
+#include "solvers/interfaces/umfpack_solver.h"
+#include "solvers/interfaces/superlu_solver.h"
+#include "solvers/interfaces/amesos_solver.h"
+#include "solvers/interfaces/petsc_solver.h"
+#include "solvers/interfaces/mumps_solver.h"
+#include "solvers/interfaces/aztecoo_solver.h"
+#include "solvers/interfaces/paralution_solver.h"
 #include "api.h"
+#include "exceptions.h"
 
 using namespace Hermes::Algebra;
 
@@ -36,7 +37,7 @@ namespace Hermes
   namespace Solvers
   {
     template<typename Scalar>
-    LinearMatrixSolver<Scalar>::LinearMatrixSolver(MatrixStructureReuseScheme reuse_scheme) : reuse_scheme(reuse_scheme)
+    LinearMatrixSolver<Scalar>::LinearMatrixSolver(SparseMatrix<Scalar>* matrix, Vector<Scalar>* rhs) : reuse_scheme(HERMES_CREATE_STRUCTURE_FROM_SCRATCH), general_matrix(matrix), general_rhs(rhs)
     {
       sln = NULL;
       time = -1.0;
@@ -55,6 +56,18 @@ namespace Hermes
     Scalar *LinearMatrixSolver<Scalar>::get_sln_vector()
     {
       return sln;
+    }
+
+    template<typename Scalar>
+    SparseMatrix<Scalar>* LinearMatrixSolver<Scalar>::get_matrix()
+    {
+      return this->general_matrix;
+    }
+
+    template<typename Scalar>
+    Vector<Scalar>* LinearMatrixSolver<Scalar>::get_rhs()
+    {
+      return this->general_rhs;
     }
 
     template<typename Scalar>
@@ -80,7 +93,7 @@ namespace Hermes
     {
       this->reuse_scheme = reuse_scheme; 
     }
-    
+
     template<typename Scalar>
     void LinearMatrixSolver<Scalar>::use_node_wise_ordering(unsigned int num_pdes)
     {
@@ -88,13 +101,69 @@ namespace Hermes
       this->n_eq = num_pdes;
       this->node_wise_ordering = true;
     }
-    
+
     template<typename Scalar>
     void LinearMatrixSolver<Scalar>::use_equations_wise_ordering()
     {
       this->reuse_scheme = HERMES_CREATE_STRUCTURE_FROM_SCRATCH; 
       this->node_wise_ordering = false;
     }
+
+    template<typename Scalar>
+    double LinearMatrixSolver<Scalar>::get_residual_norm()
+    {
+      throw Exceptions::MethodNotOverridenException("LinearMatrixSolver<Scalar>::get_residual_norm");
+      return 0.;
+    }
+
+    template<typename Scalar>
+    DirectSolver<Scalar>* LinearMatrixSolver<Scalar>::as_DirectSolver() const
+    {
+      DirectSolver<Scalar>* solver = dynamic_cast<DirectSolver<Scalar>*>(const_cast<LinearMatrixSolver<Scalar>*>(this));
+      if(solver)
+        return solver;
+      else
+      {
+        throw Hermes::Exceptions::LinearMatrixSolverException("Can not cast to DirectSolver.");
+      }
+    }
+
+    template<typename Scalar>
+    LoopSolver<Scalar>* LinearMatrixSolver<Scalar>::as_LoopSolver() const
+    {
+      LoopSolver<Scalar>* solver = dynamic_cast<LoopSolver<Scalar>*>(const_cast<LinearMatrixSolver<Scalar>*>(this));
+      if(solver)
+        return solver;
+      else
+      {
+        throw Hermes::Exceptions::LinearMatrixSolverException("Can not cast to LoopSolver.");
+      }
+    }
+
+    template<typename Scalar>
+    IterSolver<Scalar>* LinearMatrixSolver<Scalar>::as_IterSolver() const
+    {
+      IterSolver<Scalar>* solver = dynamic_cast<IterSolver<Scalar>*>(const_cast<LinearMatrixSolver<Scalar>*>(this));
+      if(solver)
+        return solver;
+      else
+      {
+        throw Hermes::Exceptions::LinearMatrixSolverException("Can not cast to IterSolver.");
+      }
+    }
+
+    template<typename Scalar>
+    AMGSolver<Scalar>* LinearMatrixSolver<Scalar>::as_AMGSolver() const
+    {
+      AMGSolver<Scalar>* solver = dynamic_cast<AMGSolver<Scalar>*>(const_cast<LinearMatrixSolver<Scalar>*>(this));
+      if(solver)
+        return solver;
+      else
+      {
+        throw Hermes::Exceptions::LinearMatrixSolverException("Can not cast to AMGSolver.");
+      }
+    }
+
 
     template<typename Scalar>
     ExternalSolver<Scalar>* static_create_external_solver(CSCMatrix<Scalar> *m, SimpleVector<Scalar> *rhs)
@@ -191,7 +260,7 @@ namespace Hermes
           if(use_direct_solver)
             throw Hermes::Exceptions::Exception("The AMG solver PARALUTION selected as a direct solver.");
 #ifdef WITH_PARALUTION
-					return new AMGParalutionLinearMatrixSolver<double>(static_cast<ParalutionMatrix<double>*>(matrix), static_cast<ParalutionVector<double>*>(rhs));
+          return new AMGParalutionLinearMatrixSolver<double>(static_cast<ParalutionMatrix<double>*>(matrix), static_cast<ParalutionVector<double>*>(rhs));
 #else
           throw Hermes::Exceptions::Exception("PARALUTION was not installed.");
 #endif
@@ -220,12 +289,12 @@ namespace Hermes
       switch (use_direct_solver ? Hermes::HermesCommonApi.get_integral_param_value(Hermes::directMatrixSolverType) : Hermes::HermesCommonApi.get_integral_param_value(Hermes::matrixSolverType))
       {
       case Hermes::SOLVER_EXTERNAL:
-      {
-        if(rhs != NULL)
+        {
+          if(rhs != NULL)
             return ExternalSolver<std::complex<double> >::create_external_solver(static_cast<CSCMatrix<std::complex<double> >*>(matrix), static_cast<SimpleVector<std::complex<double> >*>(rhs));
           else
             return ExternalSolver<std::complex<double> >::create_external_solver(static_cast<CSCMatrix<std::complex<double> >*>(matrix), static_cast<SimpleVector<std::complex<double> >*>(rhs_dummy));
-      }
+        }
       case Hermes::SOLVER_AZTECOO:
         {
           if(use_direct_solver)
@@ -309,7 +378,7 @@ namespace Hermes
     }
 
     template <typename Scalar>
-    ExternalSolver<Scalar>::ExternalSolver(CSCMatrix<Scalar> *m, SimpleVector<Scalar> *rhs) : LinearMatrixSolver<Scalar>(HERMES_CREATE_STRUCTURE_FROM_SCRATCH), m(m), rhs(rhs)
+    ExternalSolver<Scalar>::ExternalSolver(CSCMatrix<Scalar> *m, SimpleVector<Scalar> *rhs) : LinearMatrixSolver<Scalar>(m, rhs), m(m), rhs(rhs)
     {
     }
 
@@ -343,7 +412,7 @@ namespace Hermes
     }
 
     template <typename Scalar>
-    DirectSolver<Scalar>::DirectSolver(MatrixStructureReuseScheme reuse_scheme) : LinearMatrixSolver<Scalar>(reuse_scheme)
+    DirectSolver<Scalar>::DirectSolver(SparseMatrix<Scalar>* matrix, Vector<Scalar>* rhs) : LinearMatrixSolver<Scalar>(matrix, rhs)
     {
     }
 
@@ -354,7 +423,7 @@ namespace Hermes
     }
 
     template <typename Scalar>
-    LoopSolver<Scalar>::LoopSolver(MatrixStructureReuseScheme reuse_scheme) : LinearMatrixSolver<Scalar>(reuse_scheme), max_iters(10000), tolerance(1e-8)
+    LoopSolver<Scalar>::LoopSolver(SparseMatrix<Scalar>* matrix, Vector<Scalar>* rhs) : LinearMatrixSolver<Scalar>(matrix, rhs), max_iters(10000), tolerance(1e-8)
     {
     }
 
@@ -379,13 +448,26 @@ namespace Hermes
     }
 
     template <typename Scalar>
-    IterSolver<Scalar>::IterSolver(MatrixStructureReuseScheme reuse_scheme) : LoopSolver<Scalar>(reuse_scheme), precond_yes(false)
+    IterSolver<Scalar>::IterSolver(SparseMatrix<Scalar>* matrix, Vector<Scalar>* rhs) : LoopSolver<Scalar>(matrix, rhs), precond_yes(false), iterSolverType(CG)
     {
     }
 
-    template <typename Scalar>
-    AMGSolver<Scalar>::AMGSolver(MatrixStructureReuseScheme reuse_scheme) : LoopSolver<Scalar>(reuse_scheme)
+    template<typename Scalar>
+    void IterSolver<Scalar>::set_solver_type(IterSolverType iterSolverType)
     {
+      this->iterSolverType = iterSolverType;
+    }
+
+    template <typename Scalar>
+    AMGSolver<Scalar>::AMGSolver(SparseMatrix<Scalar>* matrix, Vector<Scalar>* rhs) : LoopSolver<Scalar>(matrix, rhs), smootherSolverType(CG), smootherPreconditionerType(MultiColoredSGS)
+    {
+    }
+
+    template<typename Scalar>
+    void AMGSolver<Scalar>::set_smoother(IterSolverType solverType_, PreconditionerType preconditionerType_)
+    {
+      this->smootherPreconditionerType = preconditionerType_;
+      this->smootherSolverType = solverType_;
     }
 
     template class HERMES_API LinearMatrixSolver<double>;

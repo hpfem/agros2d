@@ -14,6 +14,7 @@ project(hermes_common)
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/data_structures)
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/util)
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/solvers)
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/solvers/interfaces)
   
   #
   # Source files for the Hermes_common library.
@@ -35,19 +36,24 @@ project(hermes_common)
     src/util/c99_functions.cpp
     src/data_structures/range.cpp
     src/data_structures/table.cpp
+    src/solvers/matrix_solver.cpp
     src/solvers/linear_matrix_solver.cpp
-    src/solvers/epetra.cpp
-    src/solvers/aztecoo_solver.cpp
-    src/solvers/amesos_solver.cpp
-    src/solvers/mumps_solver.cpp
-    src/solvers/paralution_solver.cpp
-    src/solvers/superlu_solver.cpp
-    src/solvers/superlu_solver_real.cpp
-    src/solvers/superlu_solver_cplx.cpp
-    src/solvers/petsc_solver.cpp
-    src/solvers/umfpack_solver.cpp
-    src/solvers/precond_ml.cpp
-    src/solvers/precond_ifpack.cpp
+    src/solvers/nonlinear_matrix_solver.cpp
+    src/solvers/picard_matrix_solver.cpp
+    src/solvers/newton_matrix_solver.cpp
+    src/solvers/nonlinear_convergence_measurement.cpp
+    src/solvers/interfaces/epetra.cpp
+    src/solvers/interfaces/aztecoo_solver.cpp
+    src/solvers/interfaces/amesos_solver.cpp
+    src/solvers/interfaces/mumps_solver.cpp
+    src/solvers/interfaces/paralution_solver.cpp
+    src/solvers/interfaces/superlu_solver.cpp
+    src/solvers/interfaces/superlu_solver_real.cpp
+    src/solvers/interfaces/superlu_solver_cplx.cpp
+    src/solvers/interfaces/petsc_solver.cpp
+    src/solvers/interfaces/umfpack_solver.cpp
+    src/solvers/interfaces/precond_ml.cpp
+    src/solvers/interfaces/precond_ifpack.cpp
   )
 
   set(HEADERS
@@ -71,35 +77,49 @@ project(hermes_common)
     include/data_structures/range.h
     include/data_structures/table.h
     include/data_structures/hermes_vector.h
+    include/solvers/matrix_solver.h
     include/solvers/linear_matrix_solver.h
-    include/solvers/epetra.h
-    include/solvers/aztecoo_solver.h
-    include/solvers/amesos_solver.h
-    include/solvers/mumps_solver.h
-    include/solvers/paralution_solver.h
-    include/solvers/superlu_solver.h
-    include/solvers/petsc_solver.h
-    include/solvers/umfpack_solver.h
-    include/solvers/precond_ml.h
-    include/solvers/precond_ifpack.h
+    include/solvers/nonlinear_matrix_solver.h
+    include/solvers/picard_matrix_solver.h
+    include/solvers/newton_matrix_solver.h
+    include/solvers/nonlinear_convergence_measurement.h
+    include/solvers/interfaces/epetra.h
+    include/solvers/interfaces/aztecoo_solver.h
+    include/solvers/interfaces/amesos_solver.h
+    include/solvers/interfaces/mumps_solver.h
+    include/solvers/interfaces/paralution_solver.h
+    include/solvers/interfaces/superlu_solver.h
+    include/solvers/interfaces/petsc_solver.h
+    include/solvers/interfaces/umfpack_solver.h
+    include/solvers/interfaces/precond_ml.h
+    include/solvers/interfaces/precond_ifpack.h
     include/solvers/precond.h
   )
   
   SOURCE_GROUP(
     "Source Files\\Matrix Solvers" FILES 
+    src/solvers/matrix_solver.cpp
     src/solvers/linear_matrix_solver.cpp
-    src/solvers/epetra.cpp
-    src/solvers/aztecoo_solver.cpp
-    src/solvers/amesos_solver.cpp
-    src/solvers/mumps_solver.cpp
-    src/solvers/paralution_solver.cpp
-    src/solvers/superlu_solver.cpp
-    src/solvers/superlu_solver_real.cpp
-    src/solvers/superlu_solver_cplx.cpp
-    src/solvers/petsc_solver.cpp
-    src/solvers/umfpack_solver.cpp
-    src/solvers/precond_ml.cpp
-    src/solvers/precond_ifpack.cpp
+    src/solvers/nonlinear_matrix_solver.cpp
+    src/solvers/nonlinear_convergence_measurement.cpp
+    src/solvers/picard_matrix_solver.cpp
+    src/solvers/newton_matrix_solver.cpp
+  )
+  
+  SOURCE_GROUP(
+    "Source Files\\Matrix Solvers\\Interfaces" FILES 
+    src/solvers/interfaces/epetra.cpp
+    src/solvers/interfaces/aztecoo_solver.cpp
+    src/solvers/interfaces/amesos_solver.cpp
+    src/solvers/interfaces/mumps_solver.cpp
+    src/solvers/interfaces/paralution_solver.cpp
+    src/solvers/interfaces/superlu_solver.cpp
+    src/solvers/interfaces/superlu_solver_real.cpp
+    src/solvers/interfaces/superlu_solver_cplx.cpp
+    src/solvers/interfaces/petsc_solver.cpp
+    src/solvers/interfaces/umfpack_solver.cpp
+    src/solvers/interfaces/precond_ml.cpp
+    src/solvers/interfaces/precond_ifpack.cpp
   )
   
   SOURCE_GROUP(
@@ -127,17 +147,27 @@ project(hermes_common)
   
   SOURCE_GROUP(
     "Header Files\\Matrix Solvers" FILES 
+    include/solvers/matrix_solver.h
     include/solvers/linear_matrix_solver.h
-    include/solvers/epetra.h
-    include/solvers/aztecoo_solver.h
-    include/solvers/amesos_solver.h
-    include/solvers/mumps_solver.h
-    include/solvers/paralution_solver.h
-    include/solvers/superlu_solver.h
-    include/solvers/petsc_solver.h
-    include/solvers/umfpack_solver.h
-    include/solvers/precond_ml.h
-    include/solvers/precond_ifpack.h
+    include/solvers/nonlinear_matrix_solver.h
+    include/solvers/picard_matrix_solver.h
+    include/solvers/newton_matrix_solver.h
+    include/solvers/nonlinear_convergence_measurement.h
+    include/solvers/precond.h
+  )
+  
+  SOURCE_GROUP(
+    "Header Files\\Matrix Solvers\\Interfaces" FILES 
+    include/solvers/interfaces/epetra.h
+    include/solvers/interfaces/aztecoo_solver.h
+    include/solvers/interfaces/amesos_solver.h
+    include/solvers/interfaces/mumps_solver.h
+    include/solvers/interfaces/paralution_solver.h
+    include/solvers/interfaces/superlu_solver.h
+    include/solvers/interfaces/petsc_solver.h
+    include/solvers/interfaces/umfpack_solver.h
+    include/solvers/interfaces/precond_ml.h
+    include/solvers/interfaces/precond_ifpack.h
     include/solvers/precond.h
   )
   
@@ -272,11 +302,13 @@ project(hermes_common)
 
   file(GLOB INC_COMMON    "include/*.h")
   file(GLOB INC_SOLVER    "include/solvers/*.h")
+  file(GLOB INC_SOLVER_INTERFACES    "include/solvers/interfaces/*.h")
   file(GLOB INC_STRUCTURES "include/data_structures/*.h")
   file(GLOB INC_ALGEBRA    "include/algebra/*.h")
   file(GLOB INC_UTIL    "include/util/*.h")
   install(FILES ${INC_COMMON}    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/hermes_common)
   install(FILES ${INC_SOLVER}    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/hermes_common/solvers)
+  install(FILES ${INC_SOLVER_INTERFACES}    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/hermes_common/solvers/interfaces)
   install(FILES ${INC_STRUCTURES}    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/hermes_common/data_structures)
   install(FILES ${INC_ALGEBRA}    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/hermes_common/algebra)
   install(FILES ${INC_UTIL}    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/hermes_common/util)

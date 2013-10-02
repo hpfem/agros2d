@@ -412,18 +412,11 @@ AGROS_LIBRARY_API QStringList specialFunctionTypeStringKeys();
 AGROS_LIBRARY_API QString specialFunctionTypeToStringKey(SpecialFunctionType specialFunctionType);
 AGROS_LIBRARY_API SpecialFunctionType specialFunctionTypeFromStringKey(const QString &specialFunctionType);
 
-
 // butcher table type
 AGROS_LIBRARY_API QString butcherTableTypeString(Hermes::ButcherTableType tableType);
 AGROS_LIBRARY_API QStringList butcherTableTypeStringKeys();
 AGROS_LIBRARY_API QString butcherTableTypeToStringKey(Hermes::ButcherTableType tableType);
 AGROS_LIBRARY_API Hermes::ButcherTableType butcherTableTypeFromStringKey(const QString &tableType);
-
-// nonlinear measurement method
-AGROS_LIBRARY_API QString nonlinearSolverConvergenceMeasurementString(Hermes::Hermes2D::NonlinearConvergenceMeasurementType measurement);
-AGROS_LIBRARY_API QStringList nonlinearSolverConvergenceMeasurementStringKeys();
-AGROS_LIBRARY_API QString nonlinearSolverConvergenceMeasurementToStringKey(Hermes::Hermes2D::NonlinearConvergenceMeasurementType measurement);
-AGROS_LIBRARY_API Hermes::Hermes2D::NonlinearConvergenceMeasurementType nonlinearSolverConvergenceMeasurementFromStringKey(const QString &measurement);
 
 // iterative solver - method
 AGROS_LIBRARY_API QString iterLinearSolverMethodString(Hermes::Solvers::IterSolverType type);

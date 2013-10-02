@@ -6,7 +6,7 @@
     <module:analyses>
       <module:analysis id="steadystate" name="Steady state" solutions="1" type="steadystate">
         <module:field_config>
-          <field_item field_key="NewtonDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NonlinearDampingCoeff" field_value="0.8"/>
           <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
           <field_item field_key="TimeUnit" field_value="days"/>
         </module:field_config>

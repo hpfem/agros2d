@@ -33,8 +33,8 @@ cdef extern from "../../agros2d-library/pythonlab/pyfield.h":
         string getLinearSolverPreconditioner()
         void setLinearSolverPreconditioner(string &linearSolverPreconditioner) except +
 
-        string getNewtonDampingType()
-        void setNewtonDampingType(string &dampingType) except +
+        string getNonlinearDampingType()
+        void setNonlinearDampingType(string &dampingType) except +
 
         string getAdaptivityType()
         void setAdaptivityType(string &adaptivityType) except +
@@ -242,8 +242,8 @@ cdef class __Field__:
     def __get_solver_parameters__(self):
         return {'residual' : self.thisptr.getDoubleParameter(string('NonlinearResidualNorm')),
                 'relative_change_of_solutions' : self.thisptr.getDoubleParameter(string('NonlinearRelativeChangeOfSolutions')),
-                'damping' : self.thisptr.getNewtonDampingType().c_str(),
-                'damping_factor' : self.thisptr.getDoubleParameter(string('NewtonDampingCoeff')),
+                'damping' : self.thisptr.getNonlinearDampingType().c_str(),
+                'damping_factor' : self.thisptr.getDoubleParameter(string('NonlinearDampingCoeff')),
                 'damping_factor_decrease_ratio' : self.thisptr.getDoubleParameter(string('NewtonSufImprov')),
                 'damping_factor_increase_steps' : self.thisptr.getIntParameter(string('NewtonStepsToIncreaseDF')),
                 'jacobian_reuse' : self.thisptr.getBoolParameter(string('NewtonReuseJacobian')),
@@ -263,11 +263,11 @@ cdef class __Field__:
         self.thisptr.setParameter(string('NonlinearRelativeChangeOfSolutions'), <double>parameters['relative_change_of_solutions'])
 
         # damping type
-        self.thisptr.setNewtonDampingType(string(parameters['damping']))
+        self.thisptr.setNonlinearDampingType(string(parameters['damping']))
 
         # damping factor
         value_in_range(parameters['damping_factor'], 0.0, 1.0, 'damping_factor')
-        self.thisptr.setParameter(string('NewtonDampingCoeff'), <double>parameters['damping_factor'])
+        self.thisptr.setParameter(string('NonlinearDampingCoeff'), <double>parameters['damping_factor'])
 
         # damping decrese ratio
         self.thisptr.setParameter(string('NewtonSufImprov'), <double>parameters['damping_factor_decrease_ratio'])

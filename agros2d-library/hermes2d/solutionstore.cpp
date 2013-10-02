@@ -686,9 +686,9 @@ void SolutionStore::saveRunTimeDetails()
             }
 
             XMLStructure::newton_damping_coefficients newton_damping_coefficients;
-            for (int iteration = 0; iteration < str.newtonDamping().size(); iteration++)
+            for (int iteration = 0; iteration < str.nonlinearDamping().size(); iteration++)
             {
-                newton_damping_coefficients.damping_coefficient().push_back(str.newtonDamping().at(iteration));
+                newton_damping_coefficients.damping_coefficient().push_back(str.nonlinearDamping().at(iteration));
             }
 
             // solution id

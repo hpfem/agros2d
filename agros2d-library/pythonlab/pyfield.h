@@ -66,8 +66,8 @@ class PyField
         void setLinearityType(const std::string &linearityType);
 
         // automatic damping
-        inline std::string getNewtonDampingType() const { return dampingTypeToStringKey((DampingType)m_fieldInfo->value(FieldInfo::NewtonDampingType).toInt()).toStdString(); }
-        void setNewtonDampingType(std::string dampingType);
+        inline std::string getNonlinearDampingType() const { return dampingTypeToStringKey((DampingType)m_fieldInfo->value(FieldInfo::NonlinearDampingType).toInt()).toStdString(); }
+        void setNonlinearDampingType(std::string dampingType);
 
         // adaptivity type
         inline std::string getAdaptivityType() const { return adaptivityTypeToStringKey(m_fieldInfo->adaptivityType()).toStdString(); }

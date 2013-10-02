@@ -60,7 +60,7 @@ namespace Hermes
     ///&nbsp;return -1;<br>
     /// }<br>
     template <typename Scalar>
-    class LinearSolver : public Solver<Scalar>
+    class LinearSolver : public Solver<Scalar>, public Hermes::Solvers::MatrixSolver<Scalar>
     {
     public:
       LinearSolver(bool force_use_direct_solver = false);
@@ -71,16 +71,23 @@ namespace Hermes
 
       // See the base class for details, the following serves only for avoiding C++ name-hiding.
       using Solver<Scalar>::solve;
+      
       /// Basic solve method - in linear solvers it serves only as an initial guess for iterative solvers.
       /// \param[in] coeff_vec initiall guess.
       virtual void solve(Scalar* coeff_vec);
+
+     /// DiscreteProblemWeakForm helper.
+      virtual void set_spaces(Hermes::vector<SpaceSharedPtr<Scalar> >& spaces);
+
+      /// DiscreteProblemWeakForm helper.
+      virtual void set_weak_formulation(WeakForm<Scalar>* wf);
 
     protected:
       /// State querying helpers.
       virtual bool isOkay() const;
       inline std::string getClassName() const { return "LinearSolver"; }
-
-      void init_linear();
+      
+      void init_linear(bool force_use_direct_solver);
     };
   }
 }

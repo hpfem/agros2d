@@ -52,7 +52,6 @@ static QMap<VectorCenter, QString> vectorCenterList;
 static QMap<DataTableType, QString> dataTableTypeList;
 static QMap<SpecialFunctionType, QString> specialFunctionTypeList;
 static QMap<Hermes::ButcherTableType, QString> butcherTableTypeList;
-static QMap<Hermes::Hermes2D::NonlinearConvergenceMeasurementType, QString> nonlinearSolverConvergenceMeasurementList;
 static QMap<Hermes::Solvers::IterSolverType, QString> iterLinearSolverMethodList;
 static QMap<Hermes::Solvers::PreconditionerType, QString> iterLinearSolverPreconditionerTypeList;
 
@@ -159,10 +158,6 @@ SpecialFunctionType specialFunctionTypeFromStringKey(const QString &specialFunct
 QStringList butcherTableTypeStringKeys() { return butcherTableTypeList.values(); }
 QString butcherTableTypeToStringKey(Hermes::ButcherTableType tableType) { return butcherTableTypeList[tableType]; }
 Hermes::ButcherTableType butcherTableTypeFromStringKey(const QString &tableType) { return butcherTableTypeList.key(tableType); }
-
-QStringList nonlinearSolverConvergenceMeasurementStringKeys() { return nonlinearSolverConvergenceMeasurementList.values(); }
-QString nonlinearSolverConvergenceMeasurementToStringKey(Hermes::Hermes2D::NonlinearConvergenceMeasurementType measurement) { return nonlinearSolverConvergenceMeasurementList[measurement]; }
-Hermes::Hermes2D::NonlinearConvergenceMeasurementType nonlinearSolverConvergenceMeasurementFromStringKey(const QString &measurement) { return nonlinearSolverConvergenceMeasurementList.key(measurement); }
 
 QStringList iterLinearSolverMethodStringKeys() { return iterLinearSolverMethodList.values(); }
 QString iterLinearSolverMethodToStringKey(Hermes::Solvers::IterSolverType type) { return iterLinearSolverMethodList[type]; }
@@ -357,15 +352,6 @@ void initLists()
     butcherTableTypeList.insert(Hermes::Explicit_FEHLBERG_6_45_embedded, "fehlberg");
     butcherTableTypeList.insert(Hermes::Explicit_CASH_KARP_6_45_embedded, "cash-karp");
     butcherTableTypeList.insert(Hermes::Explicit_DORMAND_PRINCE_7_45_embedded, "dormand-prince");
-
-    // Newton solver
-    nonlinearSolverConvergenceMeasurementList.insert(Hermes::Hermes2D::ResidualNormAbsolute, "residual_norm_absolute");
-    nonlinearSolverConvergenceMeasurementList.insert(Hermes::Hermes2D::ResidualNormRelativeToInitial, "residual_norm_relative_to_initial");
-    nonlinearSolverConvergenceMeasurementList.insert(Hermes::Hermes2D::ResidualNormRelativeToPrevious, "residual_norm_relative_to_previous");
-    nonlinearSolverConvergenceMeasurementList.insert(Hermes::Hermes2D::ResidualNormRatioToInitial, "residual_norm_ratio_to_initial");
-    nonlinearSolverConvergenceMeasurementList.insert(Hermes::Hermes2D::ResidualNormRatioToPrevious, "residual_norm_ratio_to_previous");
-    nonlinearSolverConvergenceMeasurementList.insert(Hermes::Hermes2D::SolutionChangeAbsolute, "solution_distance_from_previous_absolute");
-    nonlinearSolverConvergenceMeasurementList.insert(Hermes::Hermes2D::SolutionChangeRelative, "solution_distance_from_previous_relative");
 
     // Iterative solver
     iterLinearSolverMethodList.insert(Hermes::Solvers::CG, "cg");
@@ -829,31 +815,6 @@ QString butcherTableTypeString(Hermes::ButcherTableType tableType)
         return QObject::tr("Dormand-Prince (4,5)");
     default:
         std::cerr << "Butcher table type'" + QString::number(tableType).toStdString() + "' is not implemented. butcherTableTypeString(Hermes::ButcherTableType tableType)" << endl;
-        throw;
-    }
-}
-
-
-QString nonlinearSolverConvergenceMeasurementString(Hermes::Hermes2D::NonlinearConvergenceMeasurementType measurement)
-{
-    switch (measurement)
-    {
-    case Hermes::Hermes2D::ResidualNormRelativeToInitial:
-        return QObject::tr("Residual relative to initial norm");
-    case Hermes::Hermes2D::ResidualNormRelativeToPrevious:
-        return QObject::tr("Residual relative to previous norm");
-    case Hermes::Hermes2D::ResidualNormRatioToInitial:
-        return QObject::tr("Residual ratio to initial norm");
-    case Hermes::Hermes2D::ResidualNormRatioToPrevious:
-        return QObject::tr("Residual ratio to previous norm");
-    case Hermes::Hermes2D::ResidualNormAbsolute:
-        return QObject::tr("Residual absolute");
-    case Hermes::Hermes2D::SolutionChangeAbsolute:
-        return QObject::tr("Absolute solution distance from previous");
-    case Hermes::Hermes2D::SolutionChangeRelative:
-        return QObject::tr("Relative solution distance from previous");
-    default:
-        std::cerr << "Convergence measurement type '" + QString::number(measurement).toStdString() + "' is not implemented. nonlinearSolverConvergenceMeasurementString(Hermes::Hermes2D::NonlinearConvergenceMeasurementType measurement)" << endl;
         throw;
     }
 }

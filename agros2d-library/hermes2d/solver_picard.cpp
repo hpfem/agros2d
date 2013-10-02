@@ -122,6 +122,24 @@ PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block) : HermesSolve
     m_picardSolver->clear_tolerances();
     m_picardSolver->set_tolerance(block->nonlinearRelativeChangeOfSolutions() / 100.0, SolutionChangeRelative);
     m_picardSolver->set_max_allowed_iterations(500);
+
+    if (block->nonlinearDampingType() == DampingType_Off)
+    {
+        m_picardSolver->set_damping_coefficient(1.0);
+    }
+    else if (block->nonlinearDampingType() == DampingType_Fixed)
+    {
+        m_picardSolver->set_damping_coefficient(block->nonlinearDampingCoeff());
+    }
+    else if (block->nonlinearDampingType() == DampingType_Automatic)
+    {
+        assert(0);
+    }
+    else
+    {
+        assert(0);
+    }
+
     if (block->picardAndersonAcceleration())
     {
         m_picardSolver->use_Anderson_acceleration(true);

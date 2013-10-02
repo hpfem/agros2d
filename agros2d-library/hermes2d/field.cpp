@@ -786,8 +786,8 @@ void FieldInfo::setStringKeys()
 {
     m_settingKey[NonlinearResidualNorm] = "NonlinearResidualNorm";
     m_settingKey[NonlinearRelativeChangeOfSolutions] = "NonlinearRelativeChangeOfSolutions";
-    m_settingKey[NewtonDampingType] = "NewtonDampingType";
-    m_settingKey[NewtonDampingCoeff] = "NewtonDampingCoeff";
+    m_settingKey[NonlinearDampingType] = "NonlinearDampingType";
+    m_settingKey[NonlinearDampingCoeff] = "NonlinearDampingCoeff";
     m_settingKey[NewtonReuseJacobian] = "NewtonReuseJacobian";
     m_settingKey[NewtonSufImprovForJacobianReuse] = "NewtonSufImprovForJacobianReuse";
     m_settingKey[NewtonSufImprov] = "NewtonSufImprov";
@@ -825,8 +825,8 @@ void FieldInfo::setDefaultValues()
 
     m_settingDefault[NonlinearResidualNorm] = 1e-6;
     m_settingDefault[NonlinearRelativeChangeOfSolutions] = 0.0;
-    m_settingDefault[NewtonDampingType] = DampingType_Automatic;
-    m_settingDefault[NewtonDampingCoeff] = 0.8;
+    m_settingDefault[NonlinearDampingType] = DampingType_Automatic;
+    m_settingDefault[NonlinearDampingCoeff] = 0.8;
     m_settingDefault[NewtonReuseJacobian] = true;
     m_settingDefault[NewtonSufImprovForJacobianReuse] = 0.8;
     m_settingDefault[NewtonSufImprov] = 1.2;

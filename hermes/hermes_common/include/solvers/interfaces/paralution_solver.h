@@ -23,11 +23,11 @@
 #define __HERMES_COMMON_PARALUTION_SOLVER_H_
 #include "config.h"
 #ifdef WITH_PARALUTION
-#include "linear_matrix_solver.h"
+#include "solvers/linear_matrix_solver.h"
 #include "algebra/cs_matrix.h"
 
 #include "paralution.hpp"
-#include "precond.h"
+#include "solvers/precond.h"
 
 using namespace Hermes::Algebra;
 
@@ -150,7 +150,7 @@ namespace Hermes
       virtual int get_num_iters();
 
       /// Get the residual value.
-      virtual double get_residual();
+      virtual double get_residual_norm();
       
       /// Sets the verboseness.
       virtual void set_verbose_output(bool to_set);
@@ -225,9 +225,6 @@ namespace Hermes
     private:
       /// Preconditioner.
       Preconditioners::ParalutionPrecond<Scalar> *preconditioner;
-      
-      // Paralution solver type.
-      IterSolverType iterSolverType;
     };
 
     /// \brief Encapsulation of PARALUTION AMG linear solver.
@@ -243,16 +240,11 @@ namespace Hermes
       AMGParalutionLinearMatrixSolver(ParalutionMatrix<Scalar> *m, ParalutionVector<Scalar> *rhs);
       virtual ~AMGParalutionLinearMatrixSolver();
 
-      /// Set smoother (another PARALUTION linear matrix solver).
+      /// Set smoother (an iterative linear matrix solver).
       virtual void set_smoother(IterSolverType solverType, PreconditionerType preconditionerType);
       
       /// Set internal solver for the current solution.
       virtual void init_internal_solver();
-
-    private:
-      /// Smoother.
-      IterSolverType smootherSolverType;
-      PreconditionerType smootherPreconditionerType;
     };
   }
 }

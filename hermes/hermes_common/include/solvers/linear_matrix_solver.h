@@ -16,11 +16,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Hermes2D; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-/*! \file linear_solver.h
-\brief General linear/iterative solver functionality.
+/*! \file linear_matrix_solver.h
+\brief Linear matrix solver functionality.
 */
-#ifndef __HERMES_COMMON_SOLVER_H_
-#define __HERMES_COMMON_SOLVER_H_
+#ifndef __HERMES_COMMON_LINEAR_MATRIX_SOLVER_H_
+#define __HERMES_COMMON_LINEAR_MATRIX_SOLVER_H_
 
 #include "precond.h"
 #include "exceptions.h"
@@ -85,6 +85,12 @@ namespace Hermes
       ///< factorization / operator.
     };
 
+    /// Forward declarations.
+    template <typename Scalar> class DirectSolver;
+    template <typename Scalar> class LoopSolver;
+    template <typename Scalar> class IterSolver;
+    template <typename Scalar> class AMGSolver;
+
     /// \brief Abstract class for defining solver interface.
     ///
     ///\todo Adjust interface to support faster update of matrix and rhs
@@ -94,8 +100,11 @@ namespace Hermes
     class HERMES_API LinearMatrixSolver : public Hermes::Mixins::Loggable, public Hermes::Mixins::TimeMeasurable
     {
     public:
-      LinearMatrixSolver(MatrixStructureReuseScheme reuse_scheme = HERMES_CREATE_STRUCTURE_FROM_SCRATCH);
-
+      LinearMatrixSolver(SparseMatrix<Scalar>* matrix, Vector<Scalar>* rhs);
+      DirectSolver<Scalar>* as_DirectSolver() const;
+      LoopSolver<Scalar>* as_LoopSolver() const;
+      IterSolver<Scalar>* as_IterSolver() const;
+      AMGSolver<Scalar>* as_AMGSolver() const;
       virtual ~LinearMatrixSolver();
 
       /// Solve.
@@ -132,9 +141,18 @@ namespace Hermes
       virtual void use_node_wise_ordering(unsigned int num_pdes);
       virtual void use_equations_wise_ordering();
 
+      /// Dummy methods that are implemented in the appropriate classes.
+      virtual double get_residual_norm();
+
+      SparseMatrix<Scalar>* get_matrix();
+      Vector<Scalar>* get_rhs();
+
     protected:
       /// Factorization scheme
       MatrixStructureReuseScheme reuse_scheme;
+
+      SparseMatrix<Scalar>* general_matrix;
+      Vector<Scalar>* general_rhs;
 
       /// Solution vector.
       Scalar *sln;
@@ -197,32 +215,36 @@ namespace Hermes
     class HERMES_API DirectSolver : public LinearMatrixSolver<Scalar>
     {
     public:
-      DirectSolver(MatrixStructureReuseScheme reuse_scheme = HERMES_CREATE_STRUCTURE_FROM_SCRATCH);
+      DirectSolver(SparseMatrix<Scalar>* matrix, Vector<Scalar>* rhs);
       virtual void solve() = 0;
       virtual void solve(Scalar* initial_guess);
+
+      /// Returns 0. - for compatibility
+      virtual double get_residual_norm() { return 0.; };
     };
 
     /// Various tolerances.
     /// Not necessarily supported by all iterative solvers used.
+    /// Used also for direct solvers, but the settings there are ignored.
     enum LoopSolverToleranceType
     {
       AbsoluteTolerance = 0,
       RelativeTolerance = 1,
       DivergenceTolerance = 2
     };
-
+    
     /// \brief Abstract middle-class for solvers that work in a loop of a kind (iterative, multigrid, ...)
     template <typename Scalar>
     class HERMES_API LoopSolver : public LinearMatrixSolver<Scalar>
     {
     public:
-      LoopSolver(MatrixStructureReuseScheme reuse_scheme = HERMES_CREATE_STRUCTURE_FROM_SCRATCH);
+      LoopSolver(SparseMatrix<Scalar>* matrix, Vector<Scalar>* rhs);
 
       /// Get the number of iterations performed.
       virtual int get_num_iters() = 0;
       
       /// Get the final residual.
-      virtual double get_residual() = 0;
+      virtual double get_residual_norm() = 0;
 
       /// Set the convergence tolerance.
       /// @param[in] tol - the tolerance to set
@@ -262,14 +284,21 @@ namespace Hermes
     class HERMES_API IterSolver : public virtual LoopSolver<Scalar>
     {
     public:
-      IterSolver(MatrixStructureReuseScheme reuse_scheme = HERMES_CREATE_STRUCTURE_FROM_SCRATCH);
+      IterSolver(SparseMatrix<Scalar>* matrix, Vector<Scalar>* rhs);
 
       /// Set preconditioner.
       virtual void set_precond(Precond<Scalar> *pc) = 0;
 
+      /// Set current solver type.
+      /// This destroys the current solver (NOT the matrix, and rhs).
+      void set_solver_type(IterSolverType iterSolverType);
+      
     protected:
       /// Whether the solver is preconditioned.
       bool precond_yes;
+      
+      // Paralution solver type.
+      IterSolverType iterSolverType;
     };
     
     /// \brief  Abstract class for defining interface for Algebraic Multigrid solvers.
@@ -278,7 +307,15 @@ namespace Hermes
     class HERMES_API AMGSolver : public virtual LoopSolver<Scalar>
     {
     public:
-      AMGSolver(MatrixStructureReuseScheme reuse_scheme = HERMES_CREATE_STRUCTURE_FROM_SCRATCH);
+      AMGSolver(SparseMatrix<Scalar>* matrix, Vector<Scalar>* rhs);
+
+      /// Set smoother (an iterative linear matrix solver).
+      virtual void set_smoother(IterSolverType solverType, PreconditionerType preconditionerType);
+     
+    protected:
+      /// Smoother.
+      IterSolverType smootherSolverType;
+      PreconditionerType smootherPreconditionerType;
     };
 
     /// \brief Function returning a solver according to the users's choice.

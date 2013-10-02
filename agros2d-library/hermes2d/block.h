@@ -79,10 +79,10 @@ public:
     double nonlinearRelativeChangeOfSolutions() const;
 
     // use only if true for all fields
-    DampingType newtonDampingType() const;
+    DampingType nonlinearDampingType() const;
 
     // minimal damping coefficient
-    double newtonDampingCoeff() const;
+    double nonlinearDampingCoeff() const;
 
     // reuse jacobian
     bool newtonReuseJacobian() const;

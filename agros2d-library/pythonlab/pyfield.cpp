@@ -96,10 +96,10 @@ void PyField::setLinearityType(const std::string &linearityType)
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(linearityTypeStringKeys())).toStdString());
 }
 
-void PyField::setNewtonDampingType(std::string dampingType)
+void PyField::setNonlinearDampingType(std::string dampingType)
 {
     if (dampingTypeStringKeys().contains(QString::fromStdString(dampingType)))
-        m_fieldInfo->setValue(FieldInfo::NewtonDampingType, (DampingType) dampingTypeFromStringKey(QString::fromStdString(dampingType)));
+        m_fieldInfo->setValue(FieldInfo::NonlinearDampingType, (DampingType) dampingTypeFromStringKey(QString::fromStdString(dampingType)));
     else
         throw invalid_argument(QObject::tr("Invalid argument. Valid keys: %1").arg(stringListToString(dampingTypeStringKeys())).toStdString());
 }
@@ -713,8 +713,8 @@ void PyField::solverInfo(int timeStep, int adaptivityStep, const std::string &so
     for (int i = 0; i < runTime.newtonResidual().size(); i++)
         residual.push_back(runTime.newtonResidual().at(i));
 
-    for (int i = 0; i < runTime.newtonDamping().size(); i++)
-        dampingCoeff.push_back(runTime.newtonDamping().at(i));
+    for (int i = 0; i < runTime.nonlinearDamping().size(); i++)
+        dampingCoeff.push_back(runTime.nonlinearDamping().at(i));
 
     jacobianCalculations = runTime.jacobianCalculations();
 }

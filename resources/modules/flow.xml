@@ -6,13 +6,13 @@
     <module:analyses>
       <module:analysis id="steadystate" name="Steady state" solutions="3" type="steadystate">
         <module:field_config>
-          <field_item field_key="NewtonDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NonlinearDampingCoeff" field_value="0.8"/>
           <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
         </module:field_config>
       </module:analysis>
       <module:analysis id="transient" name="Transient" solutions="3" type="transient">
         <module:field_config>
-          <field_item field_key="NewtonDampingCoeff" field_value="0.8"/>
+          <field_item field_key="NonlinearDampingCoeff" field_value="0.8"/>
           <field_item field_key="NewtonAutomaticDampingCoeff" field_value="0.8"/>
         </module:field_config>
       </module:analysis>

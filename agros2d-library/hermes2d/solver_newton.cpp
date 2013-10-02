@@ -188,17 +188,17 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
     else
         m_newtonSolver->set_max_steps_with_reused_jacobian(0);
 
-    if (block->newtonDampingType() == DampingType_Off)
+    if (block->nonlinearDampingType() == DampingType_Off)
     {
-        m_newtonSolver->set_manual_damping_coeff(true, 1.);
+        m_newtonSolver->set_manual_damping_coeff(true, 1.0);
     }
-    else if (block->newtonDampingType() == DampingType_Fixed)
+    else if (block->nonlinearDampingType() == DampingType_Fixed)
     {
-        m_newtonSolver->set_manual_damping_coeff(true, block->newtonDampingCoeff());
+        m_newtonSolver->set_manual_damping_coeff(true, block->nonlinearDampingCoeff());
     }
-    else if (block->newtonDampingType() == DampingType_Automatic)
+    else if (block->nonlinearDampingType() == DampingType_Automatic)
     {
-        m_newtonSolver->set_initial_auto_damping_coeff(block->newtonDampingCoeff());
+        m_newtonSolver->set_initial_auto_damping_coeff(block->nonlinearDampingCoeff());
         m_newtonSolver->set_necessary_successful_steps_to_increase(block->newtonStepsToIncreaseDF());
     }
     else
