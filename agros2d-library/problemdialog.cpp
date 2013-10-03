@@ -256,29 +256,31 @@ QWidget *FieldWidget::createSolverWidget()
     connect(cmbNonlinearDampingType, SIGNAL(currentIndexChanged(int)), this, SLOT(doNonlinearDampingChanged(int)));
     txtNonlinearDampingCoeff = new LineEditDouble(m_fieldInfo->defaultValue(FieldInfo::NonlinearDampingCoeff).toDouble());
     txtNonlinearDampingCoeff->setBottom(0.0);
+    txtNonlinearDampingStepsForFactorIncrease = new QSpinBox(this);
+    txtNonlinearDampingStepsForFactorIncrease->setMinimum(1);
+    txtNonlinearDampingStepsForFactorIncrease->setMaximum(5);
+    txtNonlinearDampingRatioForFactorDecrease = new LineEditDouble();
+
+    QGridLayout *layoutSolverDamping = new QGridLayout();
+
+    layoutSolverDamping->addWidget(new QLabel(tr("Damping type:")), 1, 0);
+    layoutSolverDamping->addWidget(cmbNonlinearDampingType, 1, 1);
+    layoutSolverDamping->addWidget(new QLabel(tr("Factor:")), 1, 2);
+    layoutSolverDamping->addWidget(txtNonlinearDampingCoeff, 1, 3);
+    layoutSolverDamping->addWidget(new QLabel(tr("Min. residual ratio for factor decrease:")), 2, 0, 1, 3);
+    layoutSolverDamping->addWidget(txtNonlinearDampingRatioForFactorDecrease, 2, 3);
+    layoutSolverDamping->addWidget(new QLabel(tr("Min. steps for factor increase:")), 3, 0, 1, 3);
+    layoutSolverDamping->addWidget(txtNonlinearDampingStepsForFactorIncrease, 3, 3);
+
+    QGroupBox *grpSolverDamping = new QGroupBox(tr("Damping"));
+    grpSolverDamping->setLayout(layoutSolverDamping);
+
     chkNewtonReuseJacobian = new QCheckBox(tr("Reuse Jacobian if possible"));
     connect(chkNewtonReuseJacobian, SIGNAL(toggled(bool)), this, SLOT(doNewtonReuseJacobian(bool)));
-
     txtNewtonSufficientImprovementFactorForJacobianReuse = new LineEditDouble();
-    txtNewtonSufficientImprovementFactor = new LineEditDouble();
     txtNewtonMaximumStepsWithReusedJacobian = new QSpinBox(this);
     txtNewtonMaximumStepsWithReusedJacobian->setMinimum(0);
     txtNewtonMaximumStepsWithReusedJacobian->setMaximum(100);
-    txtNonlinearDampingNumberToIncrease = new QSpinBox(this);
-    txtNonlinearDampingNumberToIncrease->setMinimum(1);
-    txtNonlinearDampingNumberToIncrease->setMaximum(5);
-
-    QGridLayout *layoutNewtonSolverDamping = new QGridLayout();
-    //layoutSolverDamping->setColumnMinimumWidth(0, columnMinimumWidth());
-
-    layoutNewtonSolverDamping->addWidget(new QLabel(tr("Damping type:")), 1, 0);
-    layoutNewtonSolverDamping->addWidget(cmbNonlinearDampingType, 1, 1);
-    layoutNewtonSolverDamping->addWidget(new QLabel(tr("Factor:")), 1, 2);
-    layoutNewtonSolverDamping->addWidget(txtNonlinearDampingCoeff, 1, 3);
-    layoutNewtonSolverDamping->addWidget(new QLabel(tr("Min. residual ratio for factor decrease:")), 2, 0, 1, 3);
-    layoutNewtonSolverDamping->addWidget(txtNewtonSufficientImprovementFactor, 2, 3);
-    layoutNewtonSolverDamping->addWidget(new QLabel(tr("Min. steps for factor increase:")), 3, 0, 1, 3);
-    layoutNewtonSolverDamping->addWidget(txtNonlinearDampingNumberToIncrease, 3, 3);
 
     QGridLayout *layoutNewtonSolverReuse = new QGridLayout();
 
@@ -288,15 +290,11 @@ QWidget *FieldWidget::createSolverWidget()
     layoutNewtonSolverReuse->addWidget(new QLabel(tr("Max. steps with the same Jacobian:")), 3, 0);
     layoutNewtonSolverReuse->addWidget(txtNewtonMaximumStepsWithReusedJacobian, 3, 1);
 
-    QGroupBox *grpNewtonSolverDamping = new QGroupBox(tr("Damping"));
-    grpNewtonSolverDamping->setLayout(layoutNewtonSolverDamping);
-
     QGroupBox *grpNewtonSolverReuse = new QGroupBox(tr("Jacobian reuse"));
     grpNewtonSolverReuse->setLayout(layoutNewtonSolverReuse);
 
     // Newton's solver
     QGridLayout *layoutNewtonSolver = new QGridLayout();
-    layoutNewtonSolver->addWidget(grpNewtonSolverDamping, 2, 0, 1, 2);
     layoutNewtonSolver->addWidget(grpNewtonSolverReuse, 3, 0, 1, 2);
 
     QWidget *widgetNewtonSolver = new QWidget(this);
@@ -329,6 +327,7 @@ QWidget *FieldWidget::createSolverWidget()
 
     QVBoxLayout *layoutSolver = new QVBoxLayout(this);
     layoutSolver->addWidget(grpSolverConvergence);
+    layoutSolver->addWidget(grpSolverDamping);
     layoutSolver->addWidget(tab);
 
     QWidget *widSolver = new QWidget(this);
@@ -543,9 +542,9 @@ void FieldWidget::load()
     cmbNonlinearDampingType->setCurrentIndex(cmbNonlinearDampingType->findData((DampingType) m_fieldInfo->value(FieldInfo::NonlinearDampingType).toInt()));
     txtNonlinearDampingCoeff->setValue(m_fieldInfo->value(FieldInfo::NonlinearDampingCoeff).toDouble());
     txtNewtonSufficientImprovementFactorForJacobianReuse->setValue(m_fieldInfo->value(FieldInfo::NewtonSufImprovForJacobianReuse).toDouble());
-    txtNewtonSufficientImprovementFactor->setValue(m_fieldInfo->value(FieldInfo::NewtonSufImprov).toDouble());
+    txtNonlinearDampingRatioForFactorDecrease->setValue(m_fieldInfo->value(FieldInfo::NewtonSufImprov).toDouble());
     txtNewtonMaximumStepsWithReusedJacobian->setValue(m_fieldInfo->value(FieldInfo::NewtonMaxStepsReuseJacobian).toInt());
-    txtNonlinearDampingNumberToIncrease->setValue(m_fieldInfo->value(FieldInfo::NewtonStepsToIncreaseDF).toInt());
+    txtNonlinearDampingStepsForFactorIncrease->setValue(m_fieldInfo->value(FieldInfo::NewtonStepsToIncreaseDF).toInt());
     chkNewtonReuseJacobian->setChecked((m_fieldInfo->value(FieldInfo::NewtonReuseJacobian)).toBool());
     chkPicardAndersonAcceleration->setChecked(m_fieldInfo->value(FieldInfo::PicardAndersonAcceleration).toBool());
     txtPicardAndersonBeta->setValue(m_fieldInfo->value(FieldInfo::PicardAndersonBeta).toDouble());
@@ -592,9 +591,9 @@ bool FieldWidget::save()
     m_fieldInfo->setValue(FieldInfo::NonlinearDampingType, (DampingType) cmbNonlinearDampingType->itemData(cmbNonlinearDampingType->currentIndex()).toInt());
     m_fieldInfo->setValue(FieldInfo::NewtonReuseJacobian, chkNewtonReuseJacobian->isChecked());
     m_fieldInfo->setValue(FieldInfo::NewtonSufImprovForJacobianReuse, txtNewtonSufficientImprovementFactorForJacobianReuse->value());
-    m_fieldInfo->setValue(FieldInfo::NewtonSufImprov, txtNewtonSufficientImprovementFactor->value());
+    m_fieldInfo->setValue(FieldInfo::NewtonSufImprov, txtNonlinearDampingRatioForFactorDecrease->value());
     m_fieldInfo->setValue(FieldInfo::NewtonMaxStepsReuseJacobian, txtNewtonMaximumStepsWithReusedJacobian->value());
-    m_fieldInfo->setValue(FieldInfo::NewtonStepsToIncreaseDF, txtNonlinearDampingNumberToIncrease->value());
+    m_fieldInfo->setValue(FieldInfo::NewtonStepsToIncreaseDF, txtNonlinearDampingStepsForFactorIncrease->value());
     m_fieldInfo->setValue(FieldInfo::PicardAndersonAcceleration, chkPicardAndersonAcceleration->isChecked());
     m_fieldInfo->setValue(FieldInfo::PicardAndersonBeta, txtPicardAndersonBeta->value());
     m_fieldInfo->setValue(FieldInfo::PicardAndersonNumberOfLastVectors, txtPicardAndersonNumberOfLastVectors->value());
@@ -681,14 +680,12 @@ void FieldWidget::doLinearityTypeChanged(int index)
     txtNonlinearResidual->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
     txtNonlinearRelativeChangeOfSolutions->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
 
-    cmbNonlinearDampingType->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
-    txtNonlinearDampingCoeff->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
+    cmbNonlinearDampingType->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() != LinearityType_Linear);
+    doNonlinearDampingChanged(cmbNonlinearDampingType->currentIndex());
+
+    txtNewtonMaximumStepsWithReusedJacobian->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
     chkNewtonReuseJacobian->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
     txtNewtonSufficientImprovementFactorForJacobianReuse->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
-    txtNewtonSufficientImprovementFactor->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
-    txtNewtonMaximumStepsWithReusedJacobian->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
-    txtNonlinearDampingNumberToIncrease->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Newton);
-    doNonlinearDampingChanged(cmbNonlinearDampingType->currentIndex());
     doNewtonReuseJacobian(chkNewtonReuseJacobian->isChecked());
 
     chkPicardAndersonAcceleration->setEnabled((LinearityType) cmbLinearityType->itemData(index).toInt() == LinearityType_Picard);
@@ -710,11 +707,11 @@ void FieldWidget::doLinearSolverChanged(int index)
 
 void FieldWidget::doNonlinearDampingChanged(int index)
 {
-    txtNonlinearDampingCoeff->setEnabled(((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() == LinearityType_Newton) &&
+    txtNonlinearDampingCoeff->setEnabled(((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() != LinearityType_Linear) &&
                                       ((DampingType) cmbNonlinearDampingType->itemData(index).toInt() != DampingType_Off));
-    txtNonlinearDampingNumberToIncrease->setEnabled(((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() == LinearityType_Newton) &&
+    txtNonlinearDampingStepsForFactorIncrease->setEnabled(((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() != LinearityType_Linear) &&
                                                  ((DampingType) cmbNonlinearDampingType->itemData(index).toInt() == DampingType_Automatic));
-    txtNewtonSufficientImprovementFactor->setEnabled(((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() == LinearityType_Newton) &&
+    txtNonlinearDampingRatioForFactorDecrease->setEnabled(((LinearityType) cmbLinearityType->itemData(cmbLinearityType->currentIndex()).toInt() != LinearityType_Linear) &&
                                                      ((DampingType) cmbNonlinearDampingType->itemData(index).toInt() == DampingType_Automatic));
 
 }

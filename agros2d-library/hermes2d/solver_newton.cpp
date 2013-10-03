@@ -91,7 +91,7 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
     if (phase == Phase_Init)
         iteration = 0;
     else
-        iteration = this->get_current_iteration_number() - 1;
+        iteration = this->get_current_iteration_number();
 
     const Hermes::vector<double>& residual_norms = this->get_parameter_value(this->residual_norms());
     const Hermes::vector<double>& solution_norms = this->get_parameter_value(this->solution_norms());
@@ -113,11 +113,10 @@ void NewtonSolverAgros<Scalar>::setError(Phase phase)
     m_residualNorms.append(residual_norms.back());
     m_solutionNorms.append(solution_norms.back());
     m_relativeChangeOfSolutions.append(solution_change_norms.back() / previous_solution_norm * 100);
-    // qDebug() << "res. norm = " << residual_norms.back() << "sol. norm = " << solution_norms.back() << "sol. change = " << solution_change_norms.back() << "prev. sol. norm = " << previous_solution_norm << "relative change of sol.  = " << solution_change_norms.back() / previous_solution_norm;
 
-    assert (m_steps.size() == m_residualNorms.size());
-    if(phase != Phase_Finished)
-        assert(m_steps.size() == iteration + 1);
+    assert(m_steps.size() == m_residualNorms.size());
+    assert(m_steps.size() == m_solutionNorms.size());
+    assert(m_steps.size() == m_relativeChangeOfSolutions.size());
 
     if (phase == Phase_Init)
     {

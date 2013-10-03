@@ -34,11 +34,11 @@ namespace Hermes
 
       Vectorizer::Vectorizer() : LinearizerBase(), component_x(0), value_type_x(0), component_y(0), value_type_y(0), curvature_epsilon(1e-3)
       {
-        verts = NULL;
-        dashes = NULL;
+        verts = nullptr;
+        dashes = nullptr;
         dashes_count = dashes_size = 0;
-        xdisp = NULL;
-        ydisp = NULL;
+        xdisp = nullptr;
+        ydisp = nullptr;
       }
 
       int Vectorizer::get_vertex(int p1, int p2, double x, double y, double xvalue, double yvalue)
@@ -101,17 +101,17 @@ namespace Hermes
         fns[0]->push_transform(transform);
         if(fns[1] != fns[0]) 
           fns[1]->push_transform(transform);
-        if(this->xdisp != NULL)
+        if(this->xdisp != nullptr)
           if(fns[2] != fns[0])
             fns[2]->push_transform(transform);
 
-        if(this->ydisp != NULL)
+        if(this->ydisp != nullptr)
         {
-          if(fns[this->xdisp == NULL ? 2 : 3] != fns[0] && fns[this->xdisp == NULL ? 2 : 3] != fns[1])
+          if(fns[this->xdisp == nullptr ? 2 : 3] != fns[0] && fns[this->xdisp == nullptr ? 2 : 3] != fns[1])
           {
-            if(this->xdisp != NULL && fns[3] == fns[2])
+            if(this->xdisp != nullptr && fns[3] == fns[2])
               return;
-            fns[this->xdisp == NULL ? 2 : 3]->push_transform(transform);
+            fns[this->xdisp == nullptr ? 2 : 3]->push_transform(transform);
           }
         }
       }
@@ -121,16 +121,16 @@ namespace Hermes
         fns[0]->pop_transform(); 
         if(fns[1] != fns[0]) 
           fns[1]->pop_transform();
-        if(this->xdisp != NULL)
+        if(this->xdisp != nullptr)
           if(fns[2] != fns[0])
             fns[2]->pop_transform();
-        if(this->ydisp != NULL)
+        if(this->ydisp != nullptr)
         {
-          if(fns[this->xdisp == NULL ? 2 : 3] != fns[0] && fns[this->xdisp == NULL ? 2 : 3] != fns[1])
+          if(fns[this->xdisp == nullptr ? 2 : 3] != fns[0] && fns[this->xdisp == nullptr ? 2 : 3] != fns[1])
           {
-            if(this->xdisp != NULL && fns[3] == fns[2])
+            if(this->xdisp != nullptr && fns[3] == fns[2])
               return;
-            fns[this->xdisp == NULL ? 2 : 3]->pop_transform();
+            fns[this->xdisp == nullptr ? 2 : 3]->pop_transform();
           }
         }
       }
@@ -152,7 +152,7 @@ namespace Hermes
             yval = fns[1]->get_values(component_y, value_type_y);
             for (i = 0; i < lin_np_tri[1]; i++)
             {
-              double m = (sqrt(sqr(xval[i]) + sqr(yval[i])));
+              double m = (sqrt( norm(xval[i]) +  norm(yval[i])));
 #pragma omp critical(max)
               if(finite(m) && fabs(m) > max)
                 max = fabs(m);
@@ -166,23 +166,23 @@ namespace Hermes
               phx = refmap->get_phys_x(1);
               phy = refmap->get_phys_y(1);
 
-              double* dx = NULL;
-              double* dy = NULL;
-              if(this->xdisp != NULL)
+              double* dx = nullptr;
+              double* dy = nullptr;
+              if(this->xdisp != nullptr)
               {
                 fns[2]->set_quad_order(1, H2D_FN_VAL);
                 dx = fns[2]->get_fn_values();
               }
-              if(this->ydisp != NULL)
+              if(this->ydisp != nullptr)
               {
-                fns[this->xdisp == NULL ? 2 : 3]->set_quad_order(1, H2D_FN_VAL);
-                dy = fns[this->xdisp == NULL ? 2 : 3]->get_fn_values();
+                fns[this->xdisp == nullptr ? 2 : 3]->set_quad_order(1, H2D_FN_VAL);
+                dy = fns[this->xdisp == nullptr ? 2 : 3]->get_fn_values();
               }
               for (i = 0; i < lin_np_tri[1]; i++)
               {
-                if(this->xdisp != NULL)
+                if(this->xdisp != nullptr)
                   phx[i] += dmult*dx[i];
-                if(this->ydisp != NULL)
+                if(this->ydisp != nullptr)
                   phy[i] += dmult*dy[i];
               }
             }
@@ -206,9 +206,9 @@ namespace Hermes
           else
           {
             // calculate the approximate error of linearizing the normalized solution
-            double err = fabs(sqrt(sqr(xval[idx[0]]) + sqr(yval[idx[0]])) - sqrt(sqr(midval[2][0]) + sqr(midval[3][0]))) +
-              fabs(sqrt(sqr(xval[idx[1]]) + sqr(yval[idx[1]])) - sqrt(sqr(midval[2][1]) + sqr(midval[3][1]))) +
-              fabs(sqrt(sqr(xval[idx[2]]) + sqr(yval[idx[2]])) - sqrt(sqr(midval[2][2]) + sqr(midval[3][2])));
+            double err = fabs(sqrt( norm(xval[idx[0]]) +  norm(yval[idx[0]])) - sqrt( norm(midval[2][0]) +  norm(midval[3][0]))) +
+              fabs(sqrt( norm(xval[idx[1]]) +  norm(yval[idx[1]])) - sqrt( norm(midval[2][1]) +  norm(midval[3][1]))) +
+              fabs(sqrt( norm(xval[idx[2]]) +  norm(yval[idx[2]])) - sqrt( norm(midval[2][2]) +  norm(midval[3][2])));
             split = !finite(err) || err > max*3*eps;
 
 
@@ -216,7 +216,7 @@ namespace Hermes
             if(!split && curved)
             {
               for (i = 0; i < 3; i++)
-                if(sqr(phx[idx[i]] - midval[0][i]) + sqr(phy[idx[i]] - midval[1][i]) > sqr(fns[0]->get_active_element()->get_diameter()*this->get_curvature_epsilon()))
+                if( norm(phx[idx[i]] - midval[0][i]) +  norm(phy[idx[i]] - midval[1][i]) >  norm(fns[0]->get_active_element()->get_diameter()*this->get_curvature_epsilon()))
                 {
                   split = true;
                   break;
@@ -226,9 +226,9 @@ namespace Hermes
             // do extra tests at level 0, so as not to miss some functions with zero error at edge midpoints
             if(level == 0 && !split)
             {
-              split = (fabs(sqrt(sqr(xval[8]) + sqr(yval[8])) - 0.5*(sqrt(sqr(midval[2][0]) + sqr(midval[3][0])) + sqrt(sqr(midval[2][1]) + sqr(midval[3][1])))) +
-                fabs(sqrt(sqr(xval[9]) + sqr(yval[9])) - 0.5*(sqrt(sqr(midval[2][1]) + sqr(midval[3][1])) + sqrt(sqr(midval[2][2]) + sqr(midval[3][2])))) +
-                fabs(sqrt(sqr(xval[4]) + sqr(yval[4])) - 0.5*(sqrt(sqr(midval[2][2]) + sqr(midval[3][2])) + sqrt(sqr(midval[2][0]) + sqr(midval[3][0]))))) > max*3*eps;
+              split = (fabs(sqrt( norm(xval[8]) +  norm(yval[8])) - 0.5*(sqrt( norm(midval[2][0]) +  norm(midval[3][0])) + sqrt( norm(midval[2][1]) +  norm(midval[3][1])))) +
+                fabs(sqrt( norm(xval[9]) +  norm(yval[9])) - 0.5*(sqrt( norm(midval[2][1]) +  norm(midval[3][1])) + sqrt( norm(midval[2][2]) +  norm(midval[3][2])))) +
+                fabs(sqrt( norm(xval[4]) +  norm(yval[4])) - 0.5*(sqrt( norm(midval[2][2]) +  norm(midval[3][2])) + sqrt( norm(midval[2][0]) +  norm(midval[3][0]))))) > max*3*eps;
             }
           }
 
@@ -281,9 +281,9 @@ namespace Hermes
         double midval[4][5];
 
         // try not to split through the vertex with the largest value
-        int a = (sqr(verts[iv1][2]) + sqr(verts[iv1][3]) > sqr(verts[iv0][2]) + sqr(verts[iv0][3])) ? iv0 : iv1;
-        int b = (sqr(verts[iv2][2]) + sqr(verts[iv2][3]) > sqr(verts[iv3][2]) + sqr(verts[iv3][3])) ? iv2 : iv3;
-        a = (sqr(verts[a][2]) + sqr(verts[a][3]) > sqr(verts[b][2]) + sqr(verts[b][3])) ? a : b;
+        int a = ( norm(verts[iv1][2]) +  norm(verts[iv1][3]) >  norm(verts[iv0][2]) +  norm(verts[iv0][3])) ? iv0 : iv1;
+        int b = ( norm(verts[iv2][2]) +  norm(verts[iv2][3]) >  norm(verts[iv3][2]) +  norm(verts[iv3][3])) ? iv2 : iv3;
+        a = ( norm(verts[a][2]) +  norm(verts[a][3]) >  norm(verts[b][2]) +  norm(verts[b][3])) ? a : b;
         int flip = (a == iv1 || a == iv3) ? 1 : 0;
 
         if(level < LinearizerBase::get_max_level(fns[0]->get_active_element(), std::max(fns[0]->get_fn_order(), fns[1]->get_fn_order()), fns[0]->get_mesh()))
@@ -298,7 +298,7 @@ namespace Hermes
             yval = fns[1]->get_values(component_y, value_type_y);
             for (i = 0; i < lin_np_quad[1]; i++)
             {
-              double m = sqrt(sqr(xval[i]) + sqr(yval[i]));
+              double m = sqrt( norm(xval[i]) +  norm(yval[i]));
               if(finite(m) && fabs(m) > max)
 #pragma omp critical(max)
                 if(finite(m) && fabs(m) > max)
@@ -317,22 +317,22 @@ namespace Hermes
               phx = refmap->get_phys_x(1);
               phy = refmap->get_phys_y(1);
 
-              double* dx = NULL;
-              double* dy = NULL;
+              double* dx = nullptr;
+              double* dy = nullptr;
 
-              if(this->xdisp != NULL)
+              if(this->xdisp != nullptr)
                 fns[2]->set_quad_order(1, H2D_FN_VAL);
-              if(this->ydisp != NULL)
-                fns[this->xdisp == NULL ? 2 : 3]->set_quad_order(1, H2D_FN_VAL);
-              if(this->xdisp != NULL)
+              if(this->ydisp != nullptr)
+                fns[this->xdisp == nullptr ? 2 : 3]->set_quad_order(1, H2D_FN_VAL);
+              if(this->xdisp != nullptr)
                 dx = fns[2]->get_fn_values();
-              if(this->ydisp != NULL)
-                dy = fns[this->xdisp == NULL ? 2 : 3]->get_fn_values();
+              if(this->ydisp != nullptr)
+                dy = fns[this->xdisp == nullptr ? 2 : 3]->get_fn_values();
               for (i = 0; i < lin_np_quad[1]; i++)
               {
-                if(this->xdisp != NULL)
+                if(this->xdisp != nullptr)
                   phx[i] += dmult*dx[i];
-                if(this->ydisp != NULL)
+                if(this->ydisp != nullptr)
                   phy[i] += dmult*dy[i];
               }
             }
@@ -361,31 +361,31 @@ namespace Hermes
             midval[3][4] = flip ? (verts[iv0][3] + verts[iv2][3]) * 0.5 : (verts[iv1][3] + verts[iv3][3]) * 0.5;
 
             // calculate the approximate error of linearizing the normalized solution
-            double err = fabs(sqrt(sqr(xval[idx[0]]) + sqr(yval[idx[0]])) - sqrt(sqr(midval[2][0]) + sqr(midval[3][0]))) +
-              fabs(sqrt(sqr(xval[idx[1]]) + sqr(yval[idx[1]])) - sqrt(sqr(midval[2][1]) + sqr(midval[3][1]))) +
-              fabs(sqrt(sqr(xval[idx[2]]) + sqr(yval[idx[2]])) - sqrt(sqr(midval[2][2]) + sqr(midval[3][2]))) +
-              fabs(sqrt(sqr(xval[idx[3]]) + sqr(yval[idx[3]])) - sqrt(sqr(midval[2][3]) + sqr(midval[3][3]))) +
-              fabs(sqrt(sqr(xval[idx[4]]) + sqr(yval[idx[4]])) - sqrt(sqr(midval[2][4]) + sqr(midval[3][4])));
+            double err = fabs(sqrt( norm(xval[idx[0]]) +  norm(yval[idx[0]])) - sqrt( norm(midval[2][0]) +  norm(midval[3][0]))) +
+              fabs(sqrt( norm(xval[idx[1]]) +  norm(yval[idx[1]])) - sqrt( norm(midval[2][1]) +  norm(midval[3][1]))) +
+              fabs(sqrt( norm(xval[idx[2]]) +  norm(yval[idx[2]])) - sqrt( norm(midval[2][2]) +  norm(midval[3][2]))) +
+              fabs(sqrt( norm(xval[idx[3]]) +  norm(yval[idx[3]])) - sqrt( norm(midval[2][3]) +  norm(midval[3][3]))) +
+              fabs(sqrt( norm(xval[idx[4]]) +  norm(yval[idx[4]])) - sqrt( norm(midval[2][4]) +  norm(midval[3][4])));
             split = !finite(err) || err > max*40*eps;
 
             // do the same for the curvature
             if(curved && !split)
             {
-              double cm2 = sqr(fns[0]->get_active_element()->get_diameter()*this->get_curvature_epsilon());
-              if(sqr(phx[idx[1]] - midval[0][1]) + sqr(phy[idx[1]] - midval[1][1]) > cm2 ||
-                sqr(phx[idx[3]] - midval[0][3]) + sqr(phy[idx[3]] - midval[1][3]) > cm2) split = true;
+              double cm2 =  norm(fns[0]->get_active_element()->get_diameter()*this->get_curvature_epsilon());
+              if( norm(phx[idx[1]] - midval[0][1]) +  norm(phy[idx[1]] - midval[1][1]) > cm2 ||
+                 norm(phx[idx[3]] - midval[0][3]) +  norm(phy[idx[3]] - midval[1][3]) > cm2) split = true;
 
-              if(sqr(phx[idx[0]] - midval[0][0]) + sqr(phy[idx[0]] - midval[1][0]) > cm2 ||
-                sqr(phx[idx[2]] - midval[0][2]) + sqr(phy[idx[2]] - midval[1][2]) > cm2) split = true;
+              if( norm(phx[idx[0]] - midval[0][0]) +  norm(phy[idx[0]] - midval[1][0]) > cm2 ||
+                 norm(phx[idx[2]] - midval[0][2]) +  norm(phy[idx[2]] - midval[1][2]) > cm2) split = true;
             }
 
             // do extra tests at level 0, so as not to miss functions with zero error at edge midpoints
             if(level == 0 && !split)
             {
-              err = fabs(sqrt(sqr(xval[13]) + sqr(yval[13])) - 0.5*(sqrt(sqr(midval[2][0]) + sqr(midval[3][0])) + sqrt(sqr(midval[2][1]) + sqr(midval[3][1])))) +
-                fabs(sqrt(sqr(xval[17]) + sqr(yval[17])) - 0.5*(sqrt(sqr(midval[2][1]) + sqr(midval[3][1])) + sqrt(sqr(midval[2][2]) + sqr(midval[3][2])))) +
-                fabs(sqrt(sqr(xval[20]) + sqr(yval[20])) - 0.5*(sqrt(sqr(midval[2][2]) + sqr(midval[3][2])) + sqrt(sqr(midval[2][3]) + sqr(midval[3][3])))) +
-                fabs(sqrt(sqr(xval[9]) + sqr(yval[9]))  - 0.5*(sqrt(sqr(midval[2][3]) + sqr(midval[3][3])) + sqrt(sqr(midval[2][0]) + sqr(midval[3][0]))));
+              err = fabs(sqrt( norm(xval[13]) +  norm(yval[13])) - 0.5*(sqrt( norm(midval[2][0]) +  norm(midval[3][0])) + sqrt( norm(midval[2][1]) +  norm(midval[3][1])))) +
+                fabs(sqrt( norm(xval[17]) +  norm(yval[17])) - 0.5*(sqrt( norm(midval[2][1]) +  norm(midval[3][1])) + sqrt( norm(midval[2][2]) +  norm(midval[3][2])))) +
+                fabs(sqrt( norm(xval[20]) +  norm(yval[20])) - 0.5*(sqrt( norm(midval[2][2]) +  norm(midval[3][2])) + sqrt( norm(midval[2][3]) +  norm(midval[3][3])))) +
+                fabs(sqrt( norm(xval[9]) +  norm(yval[9]))  - 0.5*(sqrt( norm(midval[2][3]) +  norm(midval[3][3])) + sqrt( norm(midval[2][0]) +  norm(midval[3][0]))));
               split = !finite(err) || (err) > max*4*eps;
             }
           }
@@ -488,8 +488,8 @@ namespace Hermes
         this->exceptionMessageCaughtInParallelBlock.clear();      
 
         // sanity check
-        if(xsln == NULL || ysln == NULL) 
-          throw Hermes::Exceptions::Exception("One of the solutions is NULL in Vectorizer:process_solution().");
+        if(xsln == nullptr || ysln == nullptr) 
+          throw Hermes::Exceptions::Exception("One of the solutions is nullptr in Vectorizer:process_solution().");
 
         this->init_linearizer_base(xsln);
         this->tick();
@@ -533,17 +533,17 @@ namespace Hermes
         Quad2D *old_quad_x_disp, *old_quad_y_disp;
         old_quad_x = xsln->get_quad_2d();
         old_quad_y = ysln->get_quad_2d();
-        if(xdisp != NULL)
+        if(xdisp != nullptr)
           old_quad_x_disp = xdisp->get_quad_2d();
-        if(ydisp != NULL)
+        if(ydisp != nullptr)
           old_quad_y_disp = ydisp->get_quad_2d();
 
         Hermes::vector<MeshSharedPtr > meshes;
         meshes.push_back(xsln->get_mesh());
         meshes.push_back(ysln->get_mesh());
-        if(xdisp != NULL)
+        if(xdisp != nullptr)
           meshes.push_back(xdisp->get_mesh());
-        if(ydisp != NULL)
+        if(ydisp != nullptr)
           meshes.push_back(ydisp->get_mesh());
 
         // Parallelization
@@ -575,7 +575,7 @@ namespace Hermes
 
           fns[i][1]->set_refmap(new RefMap);
           fns[i][1]->set_quad_2d(&g_quad_lin);
-          if(xdisp != NULL)
+          if(xdisp != nullptr)
           {
             Solution<double>* xdispsolution = dynamic_cast<Solution<double>*>(xdisp.get());
             if(xdispsolution && xdispsolution->get_type() == HERMES_SLN)
@@ -588,18 +588,18 @@ namespace Hermes
 
             fns[i][2]->set_quad_2d(&g_quad_lin);
           }
-          if(ydisp != NULL)
+          if(ydisp != nullptr)
           {
             Solution<double>* ydispsolution = dynamic_cast<Solution<double>*>(ydisp.get());
             if(ydispsolution && ydispsolution->get_type() == HERMES_SLN)
             {
-              fns[i][xdisp == NULL ? 2 : 3] = new Solution<double>();
-              fns[i][xdisp == NULL ? 2 : 3]->copy(ydisp);
+              fns[i][xdisp == nullptr ? 2 : 3] = new Solution<double>();
+              fns[i][xdisp == nullptr ? 2 : 3]->copy(ydisp);
             }
             else
-              fns[i][xdisp == NULL ? 2 : 3] = ydisp->clone();
+              fns[i][xdisp == nullptr ? 2 : 3] = ydisp->clone();
 
-            fns[i][xdisp == NULL ? 2 : 3]->set_quad_2d(&g_quad_lin);
+            fns[i][xdisp == nullptr ? 2 : 3]->set_quad_2d(&g_quad_lin);
           }
         }
 
@@ -628,7 +628,7 @@ namespace Hermes
         xitem = xitem_orig;
         yitem = yitem_orig;
 
-        Traverse trav_master(ydisp == NULL ? (xdisp == NULL ? 2 : 3) : (xdisp == NULL ? 3 : 4));
+        Traverse trav_master(ydisp == nullptr ? (xdisp == nullptr ? 2 : 3) : (xdisp == nullptr ? 3 : 4));
         int num_states;
         Traverse::State** states = trav_master.get_states(meshes, num_states);
 
@@ -690,31 +690,31 @@ namespace Hermes
               fns[thread_number][1]->set_quad_order(0, yitem);
               double* xval = fns[thread_number][0]->get_values(component_x, value_type_x);
               double* yval = fns[thread_number][1]->get_values(component_y, value_type_y);
-              if(xval == NULL || yval == NULL)
+              if(xval == nullptr || yval == nullptr)
               {
                 throw Hermes::Exceptions::Exception("Item not defined in the solution in Linearizer::process_solution.");
               }
 
-              if(xdisp != NULL)
+              if(xdisp != nullptr)
               {
                 fns[thread_number][2]->set_active_element(current_state->e[2]);
                 fns[thread_number][2]->set_transform(current_state->sub_idx[2]);
                 fns[thread_number][2]->set_quad_order(0, H2D_FN_VAL);
               }
-              if(ydisp != NULL)
+              if(ydisp != nullptr)
               {
-                int index = (xdisp == NULL ? 2 : 3);
+                int index = (xdisp == nullptr ? 2 : 3);
                 fns[thread_number][index]->set_active_element(current_state->e[index]);
                 fns[thread_number][index]->set_transform(current_state->sub_idx[index]);
                 fns[thread_number][index]->set_quad_order(0, H2D_FN_VAL);
               }
 
-              double *dx = NULL;
-              double *dy = NULL;
-              if(xdisp != NULL)
+              double *dx = nullptr;
+              double *dy = nullptr;
+              if(xdisp != nullptr)
                 dx = fns[thread_number][2]->get_fn_values();
-              if(ydisp != NULL)
-                dy = fns[thread_number][xdisp == NULL ? 2 : 3]->get_fn_values();
+              if(ydisp != nullptr)
+                dy = fns[thread_number][xdisp == nullptr ? 2 : 3]->get_fn_values();
 
               int iv[H2D_MAX_NUMBER_VERTICES];
               for (unsigned int i = 0; i < current_state->e[0]->get_nvert(); i++)
@@ -724,9 +724,9 @@ namespace Hermes
 
                 double x_disp = fns[thread_number][0]->get_refmap()->get_phys_x(0)[i];
                 double y_disp = fns[thread_number][0]->get_refmap()->get_phys_y(0)[i];
-                if(this->xdisp != NULL)
+                if(this->xdisp != nullptr)
                   x_disp += dmult * dx[i];
-                if(this->ydisp != NULL)
+                if(this->ydisp != nullptr)
                   y_disp += dmult * dy[i];
 
                 iv[i] = this->get_vertex(-fns[thread_number][0]->get_active_element()->vn[i]->id, -fns[thread_number][0]->get_active_element()->vn[i]->id, x_disp, y_disp, fx, fy);
@@ -737,9 +737,9 @@ namespace Hermes
 
               // recur to sub-elements
               if(current_state->e[0]->is_triangle())
-                process_triangle(fns[thread_number], iv[0], iv[1], iv[2], 0, NULL, NULL, NULL, NULL, NULL, current_state->e[0]->is_curved());
+                process_triangle(fns[thread_number], iv[0], iv[1], iv[2], 0, nullptr, nullptr, nullptr, nullptr, nullptr, current_state->e[0]->is_curved());
               else
-                process_quad(fns[thread_number], iv[0], iv[1], iv[2], iv[3], 0, NULL, NULL, NULL, NULL, NULL, current_state->e[0]->is_curved());
+                process_quad(fns[thread_number], iv[0], iv[1], iv[2], iv[3], 0, nullptr, nullptr, nullptr, nullptr, nullptr, current_state->e[0]->is_curved());
 
               for (unsigned int i = 0; i < current_state->e[0]->get_nvert(); i++)
                 process_edge(iv[i], iv[current_state->e[0]->next_vert(i)], current_state->e[0]->en[i]->marker);
@@ -758,7 +758,7 @@ namespace Hermes
 
         for(unsigned int i = 0; i < this->num_threads_used; i++)
         {
-          for(unsigned int j = 0; j < (2 + (xdisp != NULL? 1 : 0) + (ydisp != NULL ? 1 : 0)); j++)
+          for(unsigned int j = 0; j < (2 + (xdisp != nullptr? 1 : 0) + (ydisp != nullptr ? 1 : 0)); j++)
             delete fns[i][j];
           delete [] fns[i];
         }
@@ -789,9 +789,9 @@ namespace Hermes
         // select old quadratrues
         xsln->set_quad_2d(old_quad_x);
         ysln->set_quad_2d(old_quad_y);
-        if(xdisp != NULL)
+        if(xdisp != nullptr)
           xdisp->set_quad_2d(old_quad_x_disp);
-        if(ydisp != NULL)
+        if(ydisp != nullptr)
           ydisp->set_quad_2d(old_quad_y_disp);
 
         // clean up
@@ -804,15 +804,15 @@ namespace Hermes
 
       void Vectorizer::free()
       {
-        if(verts != NULL)
+        if(verts != nullptr)
         {
           ::free(verts);
-          verts = NULL;
+          verts = nullptr;
         }
-        if(dashes != NULL)
+        if(dashes != nullptr)
         {
           ::free(dashes);
-          dashes = NULL;
+          dashes = nullptr;
         }
 
         LinearizerBase::free();
@@ -825,8 +825,8 @@ namespace Hermes
 
       void Vectorizer::calc_vertices_aabb(double* min_x, double* max_x, double* min_y, double* max_y) const
       {
-        if(verts == NULL)
-          throw Exceptions::Exception("Cannot calculate AABB from NULL vertices");
+        if(verts == nullptr)
+          throw Exceptions::Exception("Cannot calculate AABB from nullptr vertices");
 
         LinearizerBase::calc_aabb(&verts[0][0], &verts[0][1], sizeof(double4), this->vertex_count, min_x, max_x, min_y, max_y);
       }

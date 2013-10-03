@@ -30,13 +30,13 @@ namespace Hermes
 {
   namespace Hermes2D
   {
-    double** CurvMap::edge_proj_matrix = NULL;
-    double** CurvMap::bubble_proj_matrix_tri = NULL;
-    double** CurvMap::bubble_proj_matrix_quad = NULL;
+    double** CurvMap::edge_proj_matrix = nullptr;
+    double** CurvMap::bubble_proj_matrix_tri = nullptr;
+    double** CurvMap::bubble_proj_matrix_quad = nullptr;
 
-    double* CurvMap::edge_p = NULL;
-    double* CurvMap::bubble_tri_p = NULL;
-    double* CurvMap::bubble_quad_p = NULL;
+    double* CurvMap::edge_p = nullptr;
+    double* CurvMap::bubble_tri_p = nullptr;
+    double* CurvMap::bubble_quad_p = nullptr;
 
     Quad1DStd CurvMap::quad1d;
     Quad2DStd CurvMap::quad2d;
@@ -99,10 +99,10 @@ namespace Hermes
       double2 v;
       v[0] = B[0] - A[0];
       v[1] = B[1] - A[1];
-      double abs_v = sqrt(sqr(v[0]) + sqr(v[1]));
+      double abs_v = sqrt( norm(v[0]) +  norm(v[1]));
 
       // Straight line.
-      if(nurbs == NULL)
+      if(nurbs == nullptr)
       {
         x = A[0] + t * v[0];
         y = A[1] + t * v[1];
@@ -171,8 +171,8 @@ namespace Hermes
           SA[1] = A[1] - S[1];
           SB[0] = B[0] - S[0];
           SB[1] = B[1] - S[1];
-          double R = sqrt(sqr(SA[0]) + sqr(SA[1]));
-          double R2 = sqrt(sqr(SB[0]) + sqr(SB[1]));
+          double R = sqrt( norm(SA[0]) +  norm(SA[1]));
+          double R2 = sqrt( norm(SB[0]) +  norm(SB[1]));
           if(std::abs(R - R2) > Hermes::Epsilon)
             throw Hermes::Exceptions::Exception("Internal error in nurbs_edge() - bad radius R.");
 
@@ -225,7 +225,7 @@ namespace Hermes
           // position of parameter 't' between 0 and 1.
           n_x = normal_A[0] + t * (normal_B[0] - normal_A[0]);
           n_y = normal_A[1] + t * (normal_B[1] - normal_A[1]);
-          double size_n = sqrt(sqr(n_x) + sqr(n_y));
+          double size_n = sqrt( norm(n_x) +  norm(n_y));
           n_x /= size_n;
           n_y /= size_n;
           */
@@ -562,10 +562,10 @@ namespace Hermes
         bubble_proj_matrix_quad = calculate_bubble_projection_matrix(nb, indices, ref_map_shapeset, ref_map_pss, HERMES_MODE_QUAD);
 
         // cholesky factorization of the matrix
-        if(bubble_quad_p != NULL)
+        if(bubble_quad_p != nullptr)
         {
           delete bubble_quad_p;
-          bubble_quad_p = NULL;
+          bubble_quad_p = nullptr;
         }
         bubble_quad_p = new double[nb];
         choldc(bubble_proj_matrix_quad, nb, bubble_quad_p);
@@ -826,11 +826,11 @@ namespace Hermes
       ref_map_pss.set_active_element(e);
 
       // calculation of projection matrices
-      if(edge_proj_matrix == NULL)
+      if(edge_proj_matrix == nullptr)
         precalculate_cholesky_projection_matrix_edge(&ref_map_shapeset, &ref_map_pss);
-      if(bubble_proj_matrix_tri == NULL && e->get_mode() == HERMES_MODE_TRIANGLE)
+      if(bubble_proj_matrix_tri == nullptr && e->get_mode() == HERMES_MODE_TRIANGLE)
         precalculate_cholesky_projection_matrices_bubble(&ref_map_shapeset, &ref_map_pss);
-      if(bubble_proj_matrix_quad == NULL && e->get_mode() == HERMES_MODE_QUAD)
+      if(bubble_proj_matrix_quad == nullptr && e->get_mode() == HERMES_MODE_QUAD)
         precalculate_cholesky_projection_matrices_bubble(&ref_map_shapeset, &ref_map_pss);
 
       // allocate projection coefficients
@@ -839,10 +839,10 @@ namespace Hermes
       int qo = e->is_quad() ? H2D_MAKE_QUAD_ORDER(order, order) : order;
       int nb = ref_map_shapeset.get_num_bubbles(qo, e->get_mode());
       nc = nv + nv*ne + nb;
-      if(coeffs != NULL)
+      if(coeffs != nullptr)
       {
         delete [] coeffs;
-        coeffs = NULL;
+        coeffs = nullptr;
       }
       coeffs = new double2[nc];
 
@@ -896,9 +896,9 @@ namespace Hermes
       if(!--ref) // fixme: possible leak, we need ~Nurbs too
       {
         delete [] pt;
-        pt = NULL;
+        pt = nullptr;
         delete [] kv;
-        kv = NULL;
+        kv = nullptr;
         delete this;
       }
     }
@@ -911,21 +911,21 @@ namespace Hermes
 
       if(toplevel)
         for (int i = 0; i < 4; i++)
-          if(nurbs[i] != NULL)
+          if(nurbs[i] != nullptr)
             nurbs[i]->ref++;
     }
 
     CurvMap::~CurvMap()
     {
-      if(coeffs != NULL)
+      if(coeffs != nullptr)
       {
         delete [] coeffs;
-        coeffs = NULL;
+        coeffs = nullptr;
       }
 
       if(toplevel)
         for (int i = 0; i < 4; i++)
-          if(nurbs[i] != NULL)
+          if(nurbs[i] != nullptr)
           {
             nurbs[i]->unref();
           }

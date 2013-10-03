@@ -71,7 +71,7 @@ namespace Hermes
       this->mesh = meshes[0];
       
       Solution<Scalar>* sln = dynamic_cast<Solution<Scalar>*>(this->sln[0].get());
-      if (sln == NULL)
+      if (sln == nullptr)
         this->space_type = HERMES_INVALID_SPACE;
       else
         this->space_type = sln->get_space_type();
@@ -81,10 +81,10 @@ namespace Hermes
       for (int i = 1; i < num; i++)
 
       {
-        if(meshes[i] == NULL)
+        if(meshes[i] == nullptr)
         {
           this->warn("You may be initializing a Filter with Solution that is missing a Mesh.");
-          throw Hermes::Exceptions::Exception("this->meshes[%d] is NULL in Filter<Scalar>::init().", i);
+          throw Hermes::Exceptions::Exception("this->meshes[%d] is nullptr in Filter<Scalar>::init().", i);
         }
         if(meshes[i]->get_seq() != this->mesh->get_seq())
         {
@@ -93,7 +93,7 @@ namespace Hermes
         }
         
         sln = dynamic_cast<Solution<Scalar>*>(this->sln[i].get());
-        if(sln == NULL || sln->get_space_type() != this->space_type)
+        if(sln == nullptr || sln->get_space_type() != this->space_type)
           this->space_type = HERMES_INVALID_SPACE;
       }
 
@@ -283,7 +283,7 @@ namespace Hermes
           if(mask >= 0x40) { a = 1; mask >>= 6; }
           while (!(mask & 1)) { mask >>= 1; b++; }
           tab[i] = this->sln[i]->get_values(this->num_components == 1 ? a : j, b);
-          if(tab[i] == NULL) throw Hermes::Exceptions::Exception("Value of 'item%d' is incorrect in filter definition.", i + 1);
+          if(tab[i] == nullptr) throw Hermes::Exceptions::Exception("Value of 'item%d' is incorrect in filter definition.", i + 1);
         }
 
         Hermes::vector<Scalar*> values;
@@ -571,8 +571,8 @@ namespace Hermes
       {
         result[i] = 0;
         for(unsigned int j = 0; j < values.size(); j++)
-          result[i] += sqr(values.at(j)[i]);
-        result[i] = sqrt(result[i]);
+          result[i] += norm(values.at(j)[i]);
+        result[i] = std::sqrt(result[i]);
       }
     };
 
@@ -810,14 +810,14 @@ namespace Hermes
     void SquareFilter<double>::filter_fn(int n, Hermes::vector<double *> v1, double* result)
     {
       for (int i = 0; i < n; i++)
-        result[i] = sqr(v1.at(0)[i]);
+        result[i] = norm(v1.at(0)[i]);
     };
 
     template<>
     void SquareFilter<std::complex<double> >::filter_fn(int n, Hermes::vector<std::complex<double> *> v1, std::complex<double> * result)
     {
       for (int i = 0; i < n; i++)
-        result[i] = std::norm(v1.at(0)[i]);
+        result[i] = norm(v1.at(0)[i]);
     };
 
     template<typename Scalar>
@@ -939,7 +939,7 @@ namespace Hermes
     void ComplexAbsFilter::filter_fn(int n, std::complex<double>* values, double* result)
     {
       for (int i = 0; i < n; i++)
-        result[i] = sqrt(sqr(values[i].real()) + sqr(values[i].imag()));
+        result[i] = std::sqrt(norm(values[i].real()) + norm(values[i].imag()));
     };
 
     MeshFunction<double>* ComplexAbsFilter::clone() const
@@ -960,7 +960,7 @@ namespace Hermes
     void AngleFilter::filter_fn(int n, Hermes::vector<std::complex<double>*> v1, double* result)
     {
       for (int i = 0; i < n; i++)
-        result[i] = atan2( v1.at(0)[i].imag(), v1.at(0)[i].real() );
+        result[i] = std::atan2(v1.at(0)[i].imag(), v1.at(0)[i].real());
     };
 
     AngleFilter::AngleFilter(Hermes::vector<MeshFunctionSharedPtr<std::complex<double> > > solutions, Hermes::vector<int> items)
@@ -1003,7 +1003,7 @@ namespace Hermes
         double txy = mu*(dudy[i] + dvdx[i]);
 
         // Von Mises stress
-        node->values[0][0][i] = 1.0/sqrt(2.0) * sqrt(sqr(tx - ty) + sqr(ty - tz) + sqr(tz - tx) + 6*sqr(txy));
+        node->values[0][0][i] = 1.0 / std::sqrt(2.0) * std::sqrt(norm(tx - ty) + norm(ty - tz) + norm(tz - tx) + 6 * norm(txy));
       }
 
       if(this->nodes->present(order))

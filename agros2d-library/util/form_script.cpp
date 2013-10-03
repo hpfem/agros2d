@@ -223,7 +223,7 @@ void FormScript::showWidget()
                     item->setText(QString("%1 - %2 m").
                                   arg(i).
                                   arg((edge->angle() < EPS_ZERO) ?
-                                          sqrt(Hermes::sqr(edge->nodeEnd()->point().x - edge->nodeStart()->point().x) + Hermes::sqr(edge->nodeEnd()->point().y - edge->nodeStart()->point().y)) :
+                                          (edge->nodeEnd()->point() - edge->nodeStart()->point()).magnitude() :
                                           edge->radius() * edge->angle() / 180.0 * M_PI, 0, 'e', 2));
                     item->setData(Qt::UserRole, edge->variant());
                     if (edges.contains(i))

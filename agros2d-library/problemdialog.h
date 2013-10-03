@@ -129,12 +129,16 @@ private:
     LineEditDouble *txtNonlinearResidual;
     LineEditDouble *txtNonlinearRelativeChangeOfSolutions;
     QComboBox *cmbNonlinearDampingType;
-    QCheckBox *chkNewtonReuseJacobian;
     LineEditDouble *txtNonlinearDampingCoeff;
+    QSpinBox *txtNonlinearDampingStepsForFactorIncrease;
+    LineEditDouble *txtNonlinearDampingRatioForFactorDecrease;
+
+    // Newton
+    QCheckBox *chkNewtonReuseJacobian;
     LineEditDouble *txtNewtonSufficientImprovementFactorForJacobianReuse;
-    LineEditDouble *txtNewtonSufficientImprovementFactor;
     QSpinBox *txtNewtonMaximumStepsWithReusedJacobian;
-    QSpinBox *txtNonlinearDampingNumberToIncrease;
+
+    // Picard
     QCheckBox *chkPicardAndersonAcceleration;
     LineEditDouble *txtPicardAndersonBeta;
     QSpinBox *txtPicardAndersonNumberOfLastVectors;

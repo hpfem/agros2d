@@ -58,7 +58,7 @@ namespace Hermes
 
       void VectorView::show(MeshFunctionSharedPtr<double> vsln, double eps)
       {
-        if(vec == NULL)
+        if(vec == nullptr)
           vec = new Vectorizer;
         if(vsln->get_num_components() < 2)
           throw Hermes::Exceptions::Exception("The single-argument version of show() is only for vector-valued solutions.");
@@ -67,10 +67,10 @@ namespace Hermes
 
       void VectorView::show(MeshFunctionSharedPtr<double> xsln, MeshFunctionSharedPtr<double> ysln, double eps, int xitem, int yitem, MeshFunctionSharedPtr<double> xdisp, MeshFunctionSharedPtr<double> ydisp, double dmult)
       {
-        if(vec == NULL)
+        if(vec == nullptr)
           vec = new Vectorizer;
 
-        if(xsln != NULL && ysln != NULL && xsln == ysln)
+        if(xsln != nullptr && ysln != nullptr && xsln == ysln)
           this->warn("Identical solutions passed to the two-argument version of show(). Most likely this is a mistake.");
         
         vec->set_displacement(xdisp, ydisp, dmult);
@@ -117,7 +117,7 @@ namespace Hermes
           glColor3f(0.5f, 0.5f, 0.5f);
 
         // magnitude
-        double Real_mag = sqrt(sqr(xval) + sqr(yval));
+        double Real_mag = sqrt( norm(xval) +  norm(yval));
         double mag = Real_mag;
         if(Real_mag > max) mag = max;
         double length = mag/max * gs * length_coef;
@@ -219,7 +219,7 @@ namespace Hermes
           tvert[i][1] = transform_y(vert[i][1]);
 
           // find max length of vectors
-          double length = sqr(vert[i][2]) + sqr(vert[i][3]);
+          double length =  norm(vert[i][2]) +  norm(vert[i][3]);
           if(length > max_length) max_length = length;
         }
         max_length = sqrt(max_length);
@@ -240,15 +240,15 @@ namespace Hermes
         glColor3f(0.95f, 0.95f, 0.95f);
         for (i = 0; i < vec->get_num_triangles(); i++)
         {
-          double mag = sqrt(sqr(vert[xtris[i][0]][2]) + sqr(vert[xtris[i][0]][3]));
+          double mag = sqrt( norm(vert[xtris[i][0]][2]) +  norm(vert[xtris[i][0]][3]));
           glTexCoord2d((mag -min) * irange * tex_scale + tex_shift, 0.0);
           glVertex2d(tvert[xtris[i][0]][0], tvert[xtris[i][0]][1]);
 
-          mag = sqrt(sqr(vert[xtris[i][1]][2]) + sqr(vert[xtris[i][1]][3]));
+          mag = sqrt( norm(vert[xtris[i][1]][2]) +  norm(vert[xtris[i][1]][3]));
           glTexCoord2d((mag -min) * irange * tex_scale + tex_shift, 0.0);
           glVertex2d(tvert[xtris[i][1]][0], tvert[xtris[i][1]][1]);
 
-          mag = sqrt(sqr(vert[xtris[i][2]][2]) + sqr(vert[xtris[i][2]][3]));
+          mag = sqrt( norm(vert[xtris[i][2]][2]) +  norm(vert[xtris[i][2]][3]));
           glTexCoord2d((mag -min) * irange * tex_scale + tex_shift, 0.0);
           glVertex2d(tvert[xtris[i][2]][0], tvert[xtris[i][2]][1]);
         }

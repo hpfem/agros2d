@@ -84,6 +84,12 @@ void PicardSolverAgros<Scalar>::setError(Phase phase)
     const Hermes::vector<double>& residual_norms = this->get_parameter_value(this->residual_norms());
     const Hermes::vector<double>& solution_norms = this->get_parameter_value(this->solution_norms());
     const Hermes::vector<double>& solution_change_norms = this->get_parameter_value(this->solution_change_norms());
+    const Hermes::vector<double>& damping_factors = this->get_parameter_value(this->damping_factors());
+
+    double current_damping_factor = damping_factors.back();
+    double previous_damping_factor = current_damping_factor;
+    if (damping_factors.size() > 1)
+        previous_damping_factor = damping_factors.at(damping_factors.size() - 2);
 
     double previous_solution_norm = solution_norms.back();
     if (solution_norms.size() > 1)
@@ -93,14 +99,15 @@ void PicardSolverAgros<Scalar>::setError(Phase phase)
     m_steps.append(iteration);
     m_solutionNorms.append(solution_norms.back());
     m_relativeChangeOfSolutions.append(solution_change_norms.back() / previous_solution_norm * 100);
-    // qDebug() << "res. norm = " << residual_norms.back() << "sol. norm = " << solution_norms.back() << "sol. change = " << solution_change_norms.back() << "prev. sol. norm = " << previous_solution_norm << "relative change of sol.  = " << solution_change_norms.back() / previous_solution_norm;
 
+    assert(m_steps.size() == m_solutionNorms.size());
     assert(m_steps.size() == m_relativeChangeOfSolutions.size());
 
     if (phase == Phase_DFDetermined)
     {
-        Agros2D::log()->printMessage(QObject::tr("Solver (Picard)"), QObject::tr("Iteration: %1, rel. change of sol.: %2 %")
+        Agros2D::log()->printMessage(QObject::tr("Solver (Picard)"), QObject::tr("Iteration: %1, damping coeff.: %2, rel. change of sol.: %3 %")
                                      .arg(iteration)
+                                     .arg(previous_damping_factor)
                                      .arg(QString::number(m_relativeChangeOfSolutions.last(), 'f', 3)));
     }
     else if (phase == Phase_Finished)
@@ -125,15 +132,16 @@ PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block) : HermesSolve
 
     if (block->nonlinearDampingType() == DampingType_Off)
     {
-        m_picardSolver->set_damping_coefficient(1.0);
+        m_picardSolver->set_manual_damping_coeff(true, 1.0);
     }
     else if (block->nonlinearDampingType() == DampingType_Fixed)
     {
-        m_picardSolver->set_damping_coefficient(block->nonlinearDampingCoeff());
+        m_picardSolver->set_manual_damping_coeff(true, block->nonlinearDampingCoeff());
     }
     else if (block->nonlinearDampingType() == DampingType_Automatic)
     {
-        assert(0);
+        m_picardSolver->set_initial_auto_damping_coeff(block->nonlinearDampingCoeff());
+        m_picardSolver->set_necessary_successful_steps_to_increase(block->newtonStepsToIncreaseDF());
     }
     else
     {

@@ -247,7 +247,7 @@ project(hermes)
 
   if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     # Disable all warnings and turn on only important ones:
-    set(CMAKE_CXX_FLAGS "-w ${CMAKE_CXX_FLAGS} -fPIC")
+    set(CMAKE_CXX_FLAGS "-w ${CMAKE_CXX_FLAGS} -fPIC -std=c++11")
     set(CMAKE_CXX_FLAGS "-Wuninitialized -Wvla -Wsign-compare ${CMAKE_CXX_FLAGS}")
 
     set(HERMES_RELEASE_FLAGS "${CMAKE_CXX_FLAGS} -DNDEBUG -O3")
@@ -265,9 +265,9 @@ project(hermes)
   # This overrides CXX flags for MSVC
   if(MSVC)
     if(WIN64)
-      set(MSVC_DEFINES "/DWIN64 /D_WINDOWS /Dpopen=_popen /Dpclose=_pclose /D__value=_value /Dfinite=_finite /Dhypot=_hypot /Disatty=_isatty /Dfileno=_fileno /D_CRT_SECURE_NO_WARNINGS /DYY_NO_UNISTD_H /D_USE_MATH_DEFINES /DIMPLEMENT_C99 /wd4275 /wd4251")
+      set(MSVC_DEFINES "/DWIN64 /D_WINDOWS /Dfinite=_finite /wd4275 /wd4251")
     else(WIN64)
-      set(MSVC_DEFINES "/DWIN32 /D_WINDOWS /Dpopen=_popen /Dpclose=_pclose /D__value=_value /Dfinite=_finite /Dhypot=_hypot /Disatty=_isatty /Dfileno=_fileno /D_CRT_SECURE_NO_WARNINGS /DYY_NO_UNISTD_H /D_USE_MATH_DEFINES /DIMPLEMENT_C99 /wd4275 /wd4251")
+      set(MSVC_DEFINES "/DWIN32 /D_WINDOWS /Dfinite=_finite /wd4275 /wd4251")
     endif(WIN64)
     set(CMAKE_CXX_FLAGS_DEBUG          "/D_DEBUG /Od /Ob2 /MDd /Zi ${MSVC_DEFINES}")
     set(HERMES_DEBUG_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}")

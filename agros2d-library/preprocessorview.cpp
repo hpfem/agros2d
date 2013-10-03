@@ -301,7 +301,7 @@ void PreprocessorWidget::refresh()
         item->setText(0, QString("%1 - %2 m").
                       arg(iedge).
                       arg((edge->angle() < EPS_ZERO) ?
-                              sqrt(Hermes::sqr(edge->nodeEnd()->point().x - edge->nodeStart()->point().x) + Hermes::sqr(edge->nodeEnd()->point().y - edge->nodeStart()->point().y)) :
+                              (edge->nodeEnd()->point() - edge->nodeStart()->point()).magnitude() :
                               edge->radius() * edge->angle() / 180.0 * M_PI, 0, 'e', 2));
         item->setIcon(0, icon("scene-edge"));
         item->setData(0, Qt::UserRole, edge->variant());

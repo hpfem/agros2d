@@ -242,9 +242,9 @@ bool DSceneNode::save()
 
 void DSceneNode::doEditingFinished()
 {
-    lblDistance->setText(QString("%1 m").arg(sqrt(Hermes::sqr(txtPointX->number()) + Hermes::sqr(txtPointY->number()))));
+    lblDistance->setText(QString("%1 m").arg(sqrt(txtPointX->number()*txtPointX->number() + txtPointY->number()*txtPointY->number())));
     lblAngle->setText(QString("%1 deg.").arg(
-                          (sqrt(Hermes::sqr(txtPointX->number()) + Hermes::sqr(txtPointY->number())) > EPS_ZERO)
+                          (sqrt(txtPointX->number()*txtPointX->number() + txtPointY->number()*txtPointY->number()) > EPS_ZERO)
                           ? atan2(txtPointY->number(), txtPointX->number()) / M_PI * 180.0 : 0.0));
 }
 

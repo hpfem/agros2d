@@ -367,7 +367,7 @@ QVector<double> ChartWidget::horizontalAxisValues(ChartLine *chartLine)
             if (i == 0)
                 xval.append(0.0);
             else
-                xval.append(xval.at(i-1) + sqrt(Hermes::sqr(points.at(i).x - points.at(i-1).x) + Hermes::sqr(points.at(i).y - points.at(i-1).y)));
+                xval.append(xval.at(i-1) + (points.at(i) - points.at(i-1)).magnitude());
         }
     }
     else if (radHorizontalAxisX->isChecked())

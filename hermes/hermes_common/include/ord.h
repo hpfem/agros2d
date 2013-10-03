@@ -92,12 +92,24 @@ namespace Hermes
   HERMES_API Ord operator-(const std::complex<double> &a, const Ord &b);
   HERMES_API Ord operator-(const Ord &a);
 
+  using std::pow;
+  using std::sqrt;
+  using std::norm;
+  using std::conj;
+  using std::abs;
+  
   HERMES_API Ord pow(const Ord &a, const double &b);
   HERMES_API Ord sqrt(const Ord &a);
-  HERMES_API Ord sqr(const Ord &a);
+  HERMES_API Ord norm(const Ord &a);
   HERMES_API Ord conj(const Ord &a);
   HERMES_API Ord abs(const Ord &a);
-  HERMES_API Ord magn(const Ord &a);
+
+  using std::atan2;
+  using std::atan;
+  using std::sin;
+  using std::cos;
+  using std::log;
+  using std::exp;
 
   HERMES_API Ord atan2(const Ord &a, const Ord &b);
   HERMES_API Ord atan(const Ord &a);

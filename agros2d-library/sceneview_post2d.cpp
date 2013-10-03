@@ -950,7 +950,7 @@ void SceneViewPost2D::paintVectors()
                         double dx = ax + bx * point.x + cx * point.y;
                         double dy = ay + by * point.x + cy * point.y;
 
-                        double value = sqrt(Hermes::sqr(dx) + Hermes::sqr(dy));
+                        double value = sqrt(dx*dx + dy*dy);
                         double angle = atan2(dy, dx);
 
                         if ((Agros2D::problem()->setting()->value(ProblemSetting::View_VectorProportional).toBool()) && (fabs(vectorRangeMin - vectorRangeMax) > EPS_ZERO))
@@ -972,7 +972,7 @@ void SceneViewPost2D::paintVectors()
                             dy = Agros2D::problem()->setting()->value(ProblemSetting::View_VectorScale).toDouble() * gs * sin(angle);
                         }
 
-                        double dm = sqrt(Hermes::sqr(dx) + Hermes::sqr(dy));
+                        double dm = sqrt(dx*dx + dy*dy);
 
                         // color
                         if ((Agros2D::problem()->setting()->value(ProblemSetting::View_VectorColor).toBool())

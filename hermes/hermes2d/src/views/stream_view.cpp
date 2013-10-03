@@ -25,7 +25,7 @@ namespace Hermes
     namespace Views
     {
       StreamView::StreamView(const char* title, WinGeom* wg)
-        : View(title, wg), vec(NULL)
+        : View(title, wg), vec(nullptr)
       {
         lines = false;
         pmode = false;
@@ -34,11 +34,11 @@ namespace Hermes
         root_y_min = 1e100;
         root_x_max = -1e100;
         root_y_max = -1e100;
-        root = NULL;
+        root = nullptr;
       }
 
       StreamView::StreamView(char* title, WinGeom* wg)
-        : View(title, wg), vec(NULL)
+        : View(title, wg), vec(nullptr)
       {
         lines = false;
         pmode = false;
@@ -47,12 +47,12 @@ namespace Hermes
         root_y_min = 1e100;
         root_x_max = -1e100;
         root_y_max = -1e100;
-        root = NULL;
+        root = nullptr;
       }
 
       void StreamView::show(MeshFunctionSharedPtr<double> xsln, MeshFunctionSharedPtr<double> ysln, int marker, double step, double eps)
       {
-        if(this->vec == NULL)
+        if(this->vec == nullptr)
           this->vec = new Vectorizer;
         if(xsln == ysln)
           throw Hermes::Exceptions::Exception("Identical solutions passed to the two-argument version of show(). This is most likely a mistake.");
@@ -311,7 +311,7 @@ namespace Hermes
         int3 key;
         key[0] = b_idx;
         int3* edge = (int3*) bsearch(&key, edges, num_edges, sizeof(int3), compare);
-        if(edge == NULL)
+        if(edge == nullptr)
           return -1; // not found
         else
           return edge - edges;
@@ -354,7 +354,7 @@ namespace Hermes
             bnd_edges[idx][2] = 1; // visited
             double ax = vert[bnd_edges[idx][0]][0]; double bx = vert[bnd_edges[idx][1]][0];
             double ay = vert[bnd_edges[idx][0]][1]; double by = vert[bnd_edges[idx][1]][1];
-            double len = sqrt(sqr(bx - ax) + sqr(by - ay));
+            double len = sqrt( norm(bx - ax) +  norm(by - ay));
             double remaining_len = len; double init_x = ax; double init_y = ay;
             while (tmp_step < remaining_len)
             {
@@ -377,7 +377,7 @@ namespace Hermes
 
       void StreamView::show(MeshFunctionSharedPtr<double> xsln, MeshFunctionSharedPtr<double> ysln, int marker, double step, double eps, int xitem, int yitem)
       {
-        if(vec == NULL)
+        if(vec == nullptr)
           vec = new Vectorizer;
         vec->process_solution(xsln, ysln, xitem, yitem, eps);
 
@@ -429,7 +429,7 @@ namespace Hermes
 
       void StreamView::add_streamline(double x, double y)
       {
-        if(root == NULL)
+        if(root == nullptr)
           throw Hermes::Exceptions::Exception("Function add_streamline must be called after StreamView::show().");
         this->tick();
         streamlines = (double2**) realloc(streamlines, sizeof(double2*) * (num_stream + 1));
@@ -479,15 +479,15 @@ namespace Hermes
         glColor3f(0.95f, 0.95f, 0.95f);
         for (i = 0; i < vec->get_num_triangles(); i++)
         {
-          double mag = sqrt(sqr(vert[xtris[i][0]][2]) + sqr(vert[xtris[i][0]][3]));
+          double mag = sqrt( norm(vert[xtris[i][0]][2]) +  norm(vert[xtris[i][0]][3]));
           glTexCoord2d((mag -min) * irange * tex_scale + tex_shift, 0.0);
           glVertex2d(tvert[xtris[i][0]][0], tvert[xtris[i][0]][1]);
 
-          mag = sqrt(sqr(vert[xtris[i][1]][2]) + sqr(vert[xtris[i][1]][3]));
+          mag = sqrt( norm(vert[xtris[i][1]][2]) +  norm(vert[xtris[i][1]][3]));
           glTexCoord2d((mag -min) * irange * tex_scale + tex_shift, 0.0);
           glVertex2d(tvert[xtris[i][1]][0], tvert[xtris[i][1]][1]);
 
-          mag = sqrt(sqr(vert[xtris[i][2]][2]) + sqr(vert[xtris[i][2]][3]));
+          mag = sqrt( norm(vert[xtris[i][2]][2]) +  norm(vert[xtris[i][2]][3]));
           glTexCoord2d((mag -min) * irange * tex_scale + tex_shift, 0.0);
           glVertex2d(tvert[xtris[i][2]][0], tvert[xtris[i][2]][1]);
         }

@@ -23,10 +23,10 @@ namespace Hermes
   {
     RefMap::RefMap() : ref_map_shapeset(H1ShapesetJacobi()), ref_map_pss(PrecalcShapeset(&ref_map_shapeset))
     {
-      quad_2d = NULL;
+      quad_2d = nullptr;
       num_tables = 0;
-      cur_node = NULL;
-      overflow = NULL;
+      cur_node = nullptr;
+      overflow = nullptr;
       set_quad_2d(&g_quad_2d_std); // default quadrature
     }
 
@@ -75,9 +75,9 @@ namespace Hermes
     /// points of the specified order. Intended for non-constant jacobian elements.
     double* RefMap::get_jacobian(int order)
     {
-      if(cur_node == NULL)
-        throw Hermes::Exceptions::Exception("Cur_node == NULL in RefMap - inner algorithms failed");
-      if(cur_node->inv_ref_map[order] == NULL)
+      if(cur_node == nullptr)
+        throw Hermes::Exceptions::Exception("Cur_node == nullptr in RefMap - inner algorithms failed");
+      if(cur_node->inv_ref_map[order] == nullptr)
         calc_inv_ref_map(order);
       return cur_node->jacobian[order];
     }
@@ -87,9 +87,9 @@ namespace Hermes
     /// jacobian elements.
     double2x2* RefMap::get_inv_ref_map(int order)
     {
-      if(cur_node == NULL)
-        throw Hermes::Exceptions::Exception("Cur_node == NULL in RefMap - inner algorithms failed");
-      if(cur_node->inv_ref_map[order] == NULL)
+      if(cur_node == nullptr)
+        throw Hermes::Exceptions::Exception("Cur_node == nullptr in RefMap - inner algorithms failed");
+      if(cur_node->inv_ref_map[order] == nullptr)
         calc_inv_ref_map(order);
       return cur_node->inv_ref_map[order];
     }
@@ -97,9 +97,9 @@ namespace Hermes
     /// Returns coefficients for weak forms with second derivatives.
     double3x2* RefMap::get_second_ref_map(int order)
     {
-      if(cur_node == NULL)
-        throw Hermes::Exceptions::Exception("Cur_node == NULL in RefMap - inner algorithms failed");
-      if(cur_node->second_ref_map[order] == NULL) calc_second_ref_map(order);
+      if(cur_node == nullptr)
+        throw Hermes::Exceptions::Exception("Cur_node == nullptr in RefMap - inner algorithms failed");
+      if(cur_node->second_ref_map[order] == nullptr) calc_second_ref_map(order);
       return cur_node->second_ref_map[order];
     }
 
@@ -108,9 +108,9 @@ namespace Hermes
     /// variables.
     double* RefMap::get_phys_x(int order)
     {
-      if(cur_node == NULL)
-        throw Hermes::Exceptions::Exception("Cur_node == NULL in RefMap - inner algorithms failed");
-      if(cur_node->phys_x[order] == NULL) calc_phys_x(order);
+      if(cur_node == nullptr)
+        throw Hermes::Exceptions::Exception("Cur_node == nullptr in RefMap - inner algorithms failed");
+      if(cur_node->phys_x[order] == nullptr) calc_phys_x(order);
       return cur_node->phys_x[order];
     }
 
@@ -119,9 +119,9 @@ namespace Hermes
     /// variables.
     double* RefMap::get_phys_y(int order)
     {
-      if(cur_node == NULL)
-        throw Hermes::Exceptions::Exception("Cur_node == NULL in RefMap - inner algorithms failed");
-      if(cur_node->phys_y[order] == NULL) calc_phys_y(order);
+      if(cur_node == nullptr)
+        throw Hermes::Exceptions::Exception("Cur_node == nullptr in RefMap - inner algorithms failed");
+      if(cur_node->phys_y[order] == nullptr) calc_phys_y(order);
       return cur_node->phys_y[order];
     }
 
@@ -132,16 +132,16 @@ namespace Hermes
     /// Quad2D::get_edge_points).
     double3* RefMap::get_tangent(int edge, int order)
     {
-      if(quad_2d == NULL)
+      if(quad_2d == nullptr)
         throw Hermes::Exceptions::Exception("2d quadrature wasn't set.");
       if(order == -1)
         order = quad_2d->get_edge_points(edge, quad_2d->get_max_order(element->get_mode()), element->get_mode());
 
       // NOTE: Hermes::Order-based caching of geometric data is already employed in DiscreteProblem.
-      if(cur_node->tan[edge] != NULL)
+      if(cur_node->tan[edge] != nullptr)
       {
         delete [] cur_node->tan[edge];
-        cur_node->tan[edge] = NULL;
+        cur_node->tan[edge] = nullptr;
       }
       calc_tangent(edge, order);
 
@@ -178,7 +178,7 @@ namespace Hermes
         indices[k++] = ref_map_shapeset.get_vertex_index(i, e->get_mode());
 
       // straight-edged element
-      if(e->cm == NULL)
+      if(e->cm == nullptr)
       {
         for (unsigned int i = 0; i < e->get_nvert(); i++)
         {
@@ -230,7 +230,7 @@ namespace Hermes
 
     void RefMap::calc_inv_ref_map(int order)
     {
-      assert(quad_2d != NULL);
+      assert(quad_2d != nullptr);
       int i, j, np = quad_2d->get_num_points(order, element->get_mode());
 
       // construct jacobi matrices of the direct reference map for all integration points
@@ -285,7 +285,7 @@ namespace Hermes
 
     void RefMap::calc_second_ref_map(int order)
     {
-      assert(quad_2d != NULL);
+      assert(quad_2d != nullptr);
       int i, j, np = quad_2d->get_num_points(order, element->get_mode());
 
       double3x2* k = new double3x2[np];
@@ -316,8 +316,8 @@ namespace Hermes
       {
         double a, b;
         // coefficients in second derivative with respect to xx
-        a = sqr(m[j][0][0])*k[j][0][0] + 2*m[j][0][0]*m[j][0][1]*k[j][1][0] + sqr(m[j][0][1])*k[j][2][0];
-        b = sqr(m[j][0][0])*k[j][0][1] + 2*m[j][0][0]*m[j][0][1]*k[j][1][1] + sqr(m[j][0][1])*k[j][2][1];
+        a =  norm(m[j][0][0])*k[j][0][0] + 2*m[j][0][0]*m[j][0][1]*k[j][1][0] +  norm(m[j][0][1])*k[j][2][0];
+        b =  norm(m[j][0][0])*k[j][0][1] + 2*m[j][0][0]*m[j][0][1]*k[j][1][1] +  norm(m[j][0][1])*k[j][2][1];
         mm[j][0][0] = -(a * m[j][0][0] + b * m[j][1][0]); // du/dx
         mm[j][0][1] = -(a * m[j][0][1] + b * m[j][1][1]); // du/dy
 
@@ -328,8 +328,8 @@ namespace Hermes
         mm[j][1][1] = -(a * m[j][0][1] + b * m[j][1][1]); // du/dy
 
         // coefficients in second derivative with respect to yy
-        a = sqr(m[j][1][0])*k[j][0][0] + 2*m[j][1][0]*m[j][1][1]*k[j][1][0] + sqr(m[j][1][1])*k[j][2][0];
-        b = sqr(m[j][1][0])*k[j][0][1] + 2*m[j][1][0]*m[j][1][1]*k[j][1][1] + sqr(m[j][1][1])*k[j][2][1];
+        a =  norm(m[j][1][0])*k[j][0][0] + 2*m[j][1][0]*m[j][1][1]*k[j][1][0] +  norm(m[j][1][1])*k[j][2][0];
+        b =  norm(m[j][1][0])*k[j][0][1] + 2*m[j][1][0]*m[j][1][1]*k[j][1][1] +  norm(m[j][1][1])*k[j][2][1];
         mm[j][2][0] = -(a * m[j][0][0] + b * m[j][1][0]); // du/dx
         mm[j][2][1] = -(a * m[j][0][1] + b * m[j][1][1]); // du/dy
       }
@@ -347,8 +347,8 @@ namespace Hermes
 
     void RefMap::calc_const_inv_ref_map()
     {
-      if(element == NULL)
-        throw Hermes::Exceptions::Exception("The element variable must not be NULL.");
+      if(element == nullptr)
+        throw Hermes::Exceptions::Exception("The element variable must not be nullptr.");
       int k = element->is_triangle() ? 2 : 3;
       double m[2][2] = { { element->vn[1]->x - element->vn[0]->x,  element->vn[k]->x - element->vn[0]->x },
       { element->vn[1]->y - element->vn[0]->y,  element->vn[k]->y - element->vn[0]->y } };
@@ -411,7 +411,7 @@ namespace Hermes
         // straight edges: the tangent at each point is just the edge length
         tan[0][0] = element->vn[b]->x - element->vn[a]->x;
         tan[0][1] = element->vn[b]->y - element->vn[a]->y;
-        tan[0][2] = sqrt(sqr(tan[0][0]) + sqr(tan[0][1]));
+        tan[0][2] = sqrt( norm(tan[0][0]) +  norm(tan[0][1]));
         double inorm = 1.0 / tan[0][2];
         tan[0][0] *= inorm;
         tan[0][1] *= inorm;
@@ -453,7 +453,7 @@ namespace Hermes
           double3& t = tan[i];
           t[0] = m[i][0][0]*ex + m[i][0][1]*ey;
           t[1] = m[i][1][0]*ex + m[i][1][1]*ey;
-          t[2] = sqrt(sqr(t[0]) + sqr(t[1]));
+          t[2] = sqrt( norm(t[0]) +  norm(t[1]));
           double inorm = 1.0 / t[2];
           t[0] *= inorm;
           t[1] *= inorm;
@@ -481,7 +481,7 @@ namespace Hermes
       double exact2 = 0.0;
       for (i = 0; i < quad->get_num_points(mo, element->get_mode()); i++, m++)
       {
-        exact1 += pt[i][2] * jac[i] * (sqr((*m)[0][0] + (*m)[0][1]) + sqr((*m)[1][0] + (*m)[1][1]));
+        exact1 += pt[i][2] * jac[i] * ( norm((*m)[0][0] + (*m)[0][1]) +  norm((*m)[1][0] + (*m)[1][1]));
         exact2 += pt[i][2] / jac[i];
       }
       // find sufficient quadrature degree
@@ -494,7 +494,7 @@ namespace Hermes
         double result2 = 0.0;
         for (i = 0; i < quad->get_num_points(o, element->get_mode()); i++, m++)
         {
-          result1 += pt[i][2] * jac[i] * (sqr((*m)[0][0] + (*m)[0][1]) + sqr((*m)[1][0] + (*m)[1][1]));
+          result1 += pt[i][2] * jac[i] * ( norm((*m)[0][0] + (*m)[0][1]) +  norm((*m)[1][0] + (*m)[1][1]));
           result2 += pt[i][2] / jac[i] ;
         }
         if((fabs((exact1 - result1) / exact1) < Hermes::Epsilon) &&
@@ -564,8 +564,8 @@ namespace Hermes
       double a, b;
 
       // coefficients in second derivative with respect to xx
-      a = sqr(m[0][0])*k[0][0] + 2*m[0][0]*m[0][1]*k[1][0] + sqr(m[0][1])*k[2][0];
-      b = sqr(m[0][0])*k[0][1] + 2*m[0][0]*m[0][1]*k[1][1] + sqr(m[0][1])*k[2][1];
+      a =  norm(m[0][0])*k[0][0] + 2*m[0][0]*m[0][1]*k[1][0] +  norm(m[0][1])*k[2][0];
+      b =  norm(m[0][0])*k[0][1] + 2*m[0][0]*m[0][1]*k[1][1] +  norm(m[0][1])*k[2][1];
       mm[0][0] = -(a * m[0][0] + b * m[1][0]); // du/dx
       mm[0][1] = -(a * m[0][1] + b * m[1][1]); // du/dy
 
@@ -576,8 +576,8 @@ namespace Hermes
       mm[1][1] = -(a * m[0][1] + b * m[1][1]); // du/dy
 
       // coefficients in second derivative with respect to yy
-      a = sqr(m[1][0])*k[0][0] + 2*m[1][0]*m[1][1]*k[1][0] + sqr(m[1][1])*k[2][0];
-      b = sqr(m[1][0])*k[0][1] + 2*m[1][0]*m[1][1]*k[1][1] + sqr(m[1][1])*k[2][1];
+      a =  norm(m[1][0])*k[0][0] + 2*m[1][0]*m[1][1]*k[1][0] +  norm(m[1][1])*k[2][0];
+      b =  norm(m[1][0])*k[0][1] + 2*m[1][0]*m[1][1]*k[1][1] +  norm(m[1][1])*k[2][1];
       mm[2][0] = -(a * m[0][0] + b * m[1][0]); // du/dx
       mm[2][1] = -(a * m[0][1] + b * m[1][1]); // du/dy
     }
@@ -599,7 +599,7 @@ namespace Hermes
         local_indices[k++] = shapeset.get_vertex_index(i, e->get_mode());
 
       // straight-edged element
-      if(e->cm == NULL)
+      if(e->cm == nullptr)
       {
         for (unsigned int i = 0; i < e->get_nvert(); i++)
         {
@@ -937,9 +937,9 @@ namespace Hermes
             untransform(e, x, y, xi1, xi2);
             if(is_in_ref_domain(e, xi1, xi2))
             {
-              if(x_reference != NULL)
+              if(x_reference != nullptr)
                 (*x_reference) = xi1;
-              if(y_reference != NULL)
+              if(y_reference != nullptr)
                 (*y_reference) = xi2;
               return e;
             }
@@ -955,16 +955,16 @@ namespace Hermes
         untransform(improbable_curved_elements[i], x, y, xi1, xi2);
         if(is_in_ref_domain(improbable_curved_elements[i], xi1, xi2))
         {
-          if(x_reference != NULL)
+          if(x_reference != nullptr)
             (*x_reference) = xi1;
-          if(y_reference != NULL)
+          if(y_reference != nullptr)
             (*y_reference) = xi2;
           return improbable_curved_elements[i];
         }
       }
 
       Hermes::Mixins::Loggable::Static::warn("Point (%g, %g) does not lie in any element.", x, y);
-      return NULL;
+      return nullptr;
     }
 
     void RefMap::init_node(Node* pp)
@@ -983,24 +983,24 @@ namespace Hermes
       // destroy all precalculated tables
       for (int i = 0; i < node->num_tables; i++)
       {
-        if(node->inv_ref_map[i] != NULL)
+        if(node->inv_ref_map[i] != nullptr)
           delete [] node->inv_ref_map[i];
 
-        if(node->jacobian[i] != NULL)
+        if(node->jacobian[i] != nullptr)
           delete [] node->jacobian[i];
 
-        if(node->second_ref_map[i] != NULL)
+        if(node->second_ref_map[i] != nullptr)
           delete [] node->second_ref_map[i];
 
-        if(node->phys_x[i] != NULL)
+        if(node->phys_x[i] != nullptr)
           delete [] node->phys_x[i];
 
-        if(node->phys_y[i] != NULL)
+        if(node->phys_y[i] != nullptr)
           delete [] node->phys_y[i];
       }
 
       for (int i = 0; i < H2D_MAX_NUMBER_EDGES; i++)
-        if(node->tan[i] != NULL)
+        if(node->tan[i] != nullptr)
           delete [] node->tan[i];
 
       delete node;

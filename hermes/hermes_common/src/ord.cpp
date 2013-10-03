@@ -72,7 +72,7 @@ namespace Hermes
 
   Ord pow(const Ord &a, const double &b) { return Ord((int) ceil(fabs(b)) * a.get_order()); }
   Ord sqrt(const Ord &a) { return a; }
-  Ord sqr(const Ord &a) { return Ord(2 * a.get_order()); }
+  Ord norm(const Ord &a) { return Ord(2 * a.get_order()); }
   Ord conj(const Ord &a) { return a; }
   Ord abs(const Ord &a) { return a; }
   Ord magn(const Ord &a) { return a; }
