@@ -303,7 +303,7 @@
                                                 <xsl:value-of select="@type"/>
                                             </xsl:attribute>
                                             <xsl:attribute name="acoustic_impedance">
-                                                <xsl:value-of select="@acoustic_impedance"/>
+                                                <xsl:value-of select="@impedance"/>
                                             </xsl:attribute>
                                         </xsl:if>
                                         <xsl:if test="@type='acoustic_matched_boundary'">
