@@ -1,0 +1,33 @@
+<document>
+    <problems>
+        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0.0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Beam" date="2011-07-07" polynomialorder="3" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="2" frequency="0" matrix_solver="umfpack" type="elasticity" timetotal="1.0">
+            <scriptstartup></scriptstartup>
+            <description></description>
+            <edges>
+                <edge typex="elasticity_free" typey="elasticity_free" id="1" name="Free" forcex="0" forcey="0"/>
+                <edge typex="elasticity_fixed" typey="elasticity_fixed" id="2" name="Fixed" forcex="0" forcey="0"/>
+            </edges>
+            <labels>
+                <label temp="0" poisson_ratio="0.33" temp_ref="0" young_modulus="2e11" alpha="0" id="1" name="Steel" forcex="0" forcey="-7800*9.81"/>
+            </labels>
+        </problem>
+    </problems>
+    <geometry>
+        <nodes>
+            <node x="0" y="-0" id="0"/>
+            <node x="1" y="-0" id="1"/>
+            <node x="0" y="0.05" id="2"/>
+            <node x="1" y="0.05" id="3"/>
+        </nodes>
+        <edges>
+            <edge end="0" refine_towards="1" marker="2" id="0" start="2" angle="0"/>
+            <edge end="1" refine_towards="0" marker="1" id="1" start="0" angle="0"/>
+            <edge end="3" refine_towards="1" marker="2" id="2" start="1" angle="0"/>
+            <edge end="3" refine_towards="0" marker="1" id="3" start="2" angle="0"/>
+        </edges>
+        <labels>
+            <label x="0.5728" y="0.0249913" polynomialorder="0" marker="1" id="0" area="0"/>
+        </labels>
+    </geometry>
+    <config SceneViewSettings_ParticleMass="9.108999999999999e-31" SceneViewSettings_ParticleShowPoints="0" SceneViewSettings_ParticleDragReferenceArea="1e-06" SceneViewSettings_VectorColor="1" SceneViewSettings_PaletteType="0" SceneViewSettings_ScalarRangeLog="0" SceneViewSettings_ScalarRangeBase="10" SceneViewSettings_ParticleNumberOfParticles="5" SceneViewSettings_ParticleColorByVelocity="1" SceneViewSettings_VectorProportional="1" SceneViewSettings_ParticleStartVelocityX="0" SceneViewSettings_ContoursCount="15" SceneViewSettings_ParticleStartVelocityY="0" SceneViewSettings_PaletteSteps="30" SceneViewSettings_ShowOrderScale="1" SceneViewSettings_ParticleDragCoefficient="0" SceneViewSettings_ParticleDragDensity="1.2041" SceneViewSettings_ScalarDecimalPlace="2" SceneViewSettings_ParticleStartingRadius="0" SceneViewSettings_ParticleMaximumSteps="1000" SceneViewSettings_ShowScalarScale="1" SceneViewSettings_VectorScale="0.6" SceneViewSettings_PaletteFilter="0" SceneViewSettings_ParticleTerminateOnDifferentMaterial="1" SceneViewSettings_ParticleMaximumRelativeError="0" SceneViewSettings_OrderLabel="0" SceneViewSettings_ParticleStartX="0" SceneViewSettings_ParticleIncludeGravitation="1" SceneViewSettings_OrderPaletteOrderType="0" SceneViewSettings_ParticleStartY="0" SceneViewSettings_ParticleConstant="1.602e-19" SceneViewSettings_VectorNumber="50"/>
+</document>

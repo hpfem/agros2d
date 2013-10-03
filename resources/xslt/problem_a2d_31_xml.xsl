@@ -30,7 +30,12 @@
                 <xsl:for-each select="problem:document/problem/fields/field">
                     <xsl:element name="field">
                         <xsl:attribute name="field_id">
-                          <xsl:value-of select ="@field_id"/>
+                            <xsl:choose>
+                                <xsl:when test="@field_id!='rf'">
+                                    <xsl:value-of select="@field_id" />
+                                </xsl:when>
+                                <xsl:otherwise>rf_te</xsl:otherwise>
+                            </xsl:choose>
                         </xsl:attribute>
                         <xsl:attribute name="adaptivity_type">
                           <xsl:value-of select ="adaptivity/@adaptivity_type"/>
@@ -51,7 +56,7 @@
                         <!-- field config -->
                         <xsl:element name="field_config">
                             <!-- space config -->
-                            <xsl:if test="@number_of_refinements!=null">
+                            <xsl:if test="@number_of_refinements">
                                 <xsl:element name="field_item">
                                     <xsl:attribute name="field_key">SpaceNumberOfRefinements</xsl:attribute>
                                     <xsl:attribute name="field_value">
@@ -59,7 +64,7 @@
                                     </xsl:attribute>
                                 </xsl:element>
                             </xsl:if>
-                            <xsl:if test="@polynomial_order!=null">
+                            <xsl:if test="@polynomial_order">
                                 <xsl:element name="field_item">
                                     <xsl:attribute name="field_key">SpacePolynomialOrder</xsl:attribute>
                                     <xsl:attribute name="field_value">
@@ -69,7 +74,7 @@
                             </xsl:if>
 
                             <!-- transient config -->
-                            <xsl:if test="@time_skip!=null">
+                            <xsl:if test="@time_skip">
                             <xsl:element name="field_item">
                                 <xsl:attribute name="field_key">TransientTimeSkip</xsl:attribute>
                                 <xsl:attribute name="field_value">
@@ -77,7 +82,7 @@
                                 </xsl:attribute>
                             </xsl:element>
                             </xsl:if>
-                            <xsl:if test="@initial_condition!=null">
+                            <xsl:if test="@initial_condition">
                                <xsl:element name="field_item">
                                    <xsl:attribute name="field_key">TransientInitialCondition</xsl:attribute>
                                    <xsl:attribute name="field_value">
@@ -87,7 +92,7 @@
                             </xsl:if>
 
                             <!-- nonlinearity config -->
-                            <xsl:if test="./solver/@nonlinear_tolerance!=null">
+                            <xsl:if test="./solver/@nonlinear_tolerance">
                                 <xsl:element name="field_item">
                                     <xsl:attribute name="field_key">NonlinearTolerance</xsl:attribute>
                                     <xsl:attribute name="field_value">
@@ -95,7 +100,7 @@
                                     </xsl:attribute>
                                 </xsl:element>
                             </xsl:if>
-                            <xsl:if test="./solver/@nonlinear_steps!=null">
+                            <xsl:if test="./solver/@nonlinear_steps">
                                 <xsl:element name="field_item">
                                     <xsl:attribute name="field_key">NonlinearSteps</xsl:attribute>
                                     <xsl:attribute name="field_value">
@@ -135,7 +140,7 @@
                                     </xsl:attribute>
                                 </xsl:element>
                             </xsl:if>
-                            <xsl:if test="./solver/@newton_damping_number_to_increase!=null">
+                            <xsl:if test="./solver/@newton_damping_number_to_increase">
                                 <xsl:element name="field_item">
                                     <xsl:attribute name="field_key">NewtonDampingNumberToIncrease</xsl:attribute>
                                     <xsl:attribute name="field_value">
@@ -143,7 +148,7 @@
                                     </xsl:attribute>
                                 </xsl:element>
                             </xsl:if>
-                            <xsl:if test="./solver/@picard_anderson_acceleration!=null">
+                            <xsl:if test="./solver/@picard_anderson_acceleration">
                                 <xsl:element name="field_item">
                                     <xsl:attribute name="field_key">PicardAndersonAcceleration</xsl:attribute>
                                     <xsl:attribute name="field_value">
@@ -151,7 +156,7 @@
                                     </xsl:attribute>
                                 </xsl:element>
                             </xsl:if>
-                            <xsl:if test="./solver/@picard_anderson_beta!=null">
+                            <xsl:if test="./solver/@picard_anderson_beta">
                                 <xsl:element name="field_item">
                                     <xsl:attribute name="field_key">PicardAndersonBeta</xsl:attribute>
                                     <xsl:attribute name="field_value">
@@ -159,7 +164,7 @@
                                     </xsl:attribute>
                                 </xsl:element>
                             </xsl:if>
-                            <xsl:if test="./solver/@picard_anderson_vectors!=null">
+                            <xsl:if test="./solver/@picard_anderson_vectors">
                                 <xsl:element name="field_item">
                                     <xsl:attribute name="field_key">PicardAndersonNumberOfLastVectors</xsl:attribute>
                                     <xsl:attribute name="field_value">
@@ -169,7 +174,7 @@
                             </xsl:if>
 
                             <!-- adaptivity config -->
-                            <xsl:if test="./adaptivity/@adaptivity_steps!=null">
+                            <xsl:if test="./adaptivity/@adaptivity_steps">
                                 <xsl:element name="field_item">
                                     <xsl:attribute name="field_key">AdaptivitySteps</xsl:attribute>
                                     <xsl:attribute name="field_value">
@@ -177,7 +182,7 @@
                                     </xsl:attribute>
                                 </xsl:element>
                             </xsl:if>
-                            <xsl:if test="./adaptivity/@adaptivity_tolerance!=null">
+                            <xsl:if test="./adaptivity/@adaptivity_tolerance">
                                 <xsl:element name="field_item">
                                     <xsl:attribute name="field_key">AdaptivityTolerance</xsl:attribute>
                                     <xsl:attribute name="field_value">
@@ -185,7 +190,7 @@
                                     </xsl:attribute>
                                 </xsl:element>
                             </xsl:if>
-                            <xsl:if test="./adaptivity/@adaptivity_back_steps!=null">
+                            <xsl:if test="./adaptivity/@adaptivity_back_steps">
                                 <xsl:element name="field_item">
                                     <xsl:attribute name="field_key">AdaptivityTransientBackSteps</xsl:attribute>
                                     <xsl:attribute name="field_value">
@@ -193,7 +198,7 @@
                                     </xsl:attribute>
                                 </xsl:element>
                             </xsl:if>
-                            <xsl:if test="./adaptivity/@adaptivity_redone_each!=null">
+                            <xsl:if test="./adaptivity/@adaptivity_redone_each">
                                 <xsl:element name="field_item">
                                     <xsl:attribute name="field_key">AdaptivityTransientRedoneEach</xsl:attribute>
                                     <xsl:attribute name="field_value">
@@ -211,50 +216,50 @@
 
             <!-- problem config -->
             <xsl:element name="problem_config">
-                <xsl:if test="problem:document/problem/@frequency!=null">
-                    <xsl:element name="field_item">
-                        <xsl:attribute name="field_key">Frequency</xsl:attribute>
-                        <xsl:attribute name="field_value">
+                <xsl:if test="problem:document/problem/@frequency">
+                    <xsl:element name="problem_item">
+                        <xsl:attribute name="problem_key">Frequency</xsl:attribute>
+                        <xsl:attribute name="problem_value">
                             <xsl:value-of select="problem:document/problem/@frequency" />
                         </xsl:attribute>
                     </xsl:element>
                 </xsl:if>
-                <xsl:if test="problem:document/problem/@time_method!=null">
-                    <xsl:element name="field_item">
-                        <xsl:attribute name="field_key">TimeMethod</xsl:attribute>
-                        <xsl:attribute name="field_value">
+                <xsl:if test="problem:document/problem/@time_method">
+                    <xsl:element name="problem_item">
+                        <xsl:attribute name="problem_key">TimeMethod</xsl:attribute>
+                        <xsl:attribute name="problem_value">
                             <xsl:value-of select="problem:document/problem/@time_method" />
                         </xsl:attribute>
                     </xsl:element>
                 </xsl:if>
-                <xsl:if test="problem:document/problem/@time_method_tolerance!=null">
-                    <xsl:element name="field_item">
-                        <xsl:attribute name="field_key">TimeMethodTolerance</xsl:attribute>
-                        <xsl:attribute name="field_value">
-                            <xsl:value-of select="problem:document/problem/@time_method_tolerance" />
+                <xsl:if test="problem:document/problem/@time_method_tolerance">
+                    <xsl:element name="problem_item">
+                        <xsl:attribute name="problem_key">TimeMethodTolerance</xsl:attribute>
+                        <xsl:attribute name="problem_value">
+                                <xsl:value-of select="problem:document/problem/@time_method_tolerance" />
                         </xsl:attribute>
                     </xsl:element>
                 </xsl:if>
-                <xsl:if test="problem:document/problem/@time_order!=null">
-                    <xsl:element name="field_item">
-                        <xsl:attribute name="field_key">TimeOrder</xsl:attribute>
-                        <xsl:attribute name="field_value">
+                <xsl:if test="problem:document/problem/@time_order">
+                    <xsl:element name="problem_item">
+                        <xsl:attribute name="problem_key">TimeOrder</xsl:attribute>
+                        <xsl:attribute name="problem_value">
                             <xsl:value-of select="problem:document/problem/@time_order" />
                         </xsl:attribute>
                     </xsl:element>
                 </xsl:if>
-                <xsl:if test="problem:document/problem/@time_steps!=null">
-                    <xsl:element name="field_item">
-                        <xsl:attribute name="field_key">TimeSteps</xsl:attribute>
-                        <xsl:attribute name="field_value">
-                               <xsl:value-of select="problem:document/problem/@time_steps" />
-                           </xsl:attribute>
+                <xsl:if test="problem:document/problem/@time_steps">
+                    <xsl:element name="problem_item">
+                        <xsl:attribute name="problem_key">TimeSteps</xsl:attribute>
+                        <xsl:attribute name="problem_value">
+                            <xsl:value-of select="problem:document/problem/@time_steps" />
+                        </xsl:attribute>
                     </xsl:element>
                 </xsl:if>
-                <xsl:if test="problem:document/problem/@time_total!=null">
-                    <xsl:element name="field_item">
-                        <xsl:attribute name="field_key">TimeTotal</xsl:attribute>
-                        <xsl:attribute name="field_value">
+                <xsl:if test="problem:document/problem/@time_total">
+                    <xsl:element name="problem_item">
+                        <xsl:attribute name="problem_key">TimeTotal</xsl:attribute>
+                        <xsl:attribute name="problem_value">
                             <xsl:value-of select="problem:document/problem/@time_total" />
                         </xsl:attribute>
                     </xsl:element>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<document version="2.1">
+    <geometry>
+        <nodes>
+            <node x="0" y="0.5" id="0"/>
+            <node x="0.2" y="1" id="1"/>
+            <node x="0" y="-0.25" id="2"/>
+            <node x="0" y="0.25" id="3"/>
+            <node x="0" y="-1" id="4"/>
+            <node x="0" y="2" id="5"/>
+            <node x="1.5" y="0.5" id="6"/>
+            <node x="0" y="1" id="7"/>
+            <node x="0.25" y="0" id="8"/>
+        </nodes>
+        <edges>
+            <edge end="0" id="0" start="1" angle="0"/>
+            <edge end="3" id="1" start="0" angle="0"/>
+            <edge end="4" id="2" start="2" angle="0"/>
+            <edge end="6" id="3" start="4" angle="90"/>
+            <edge end="5" id="4" start="6" angle="90"/>
+            <edge end="1" id="5" start="7" angle="0"/>
+            <edge end="7" id="6" start="5" angle="0"/>
+            <edge end="8" id="7" start="2" angle="90"/>
+            <edge end="3" id="8" start="8" angle="90"/>
+        </edges>
+        <labels>
+            <label x="0.879551" y="0.764057" id="0" area="0.06"/>
+        </labels>
+    </geometry>
+    <problem time_order="1" frequency="0" time_method="fixed" time_method_tolerance="0.05" matrix_solver="umfpack" coordinate_type="axisymmetric" mesh_type="triangle" time_steps="2" time_total="1.0">
+        <fields>
+            <field field_id="electrostatic" initial_condition="0" polynomial_order="1" number_of_refinements="0" time_skip="0" analysis_type="steadystate">
+                <refinement>
+                    <edges/>
+                    <labels/>
+                </refinement>
+                <polynomial_order/>
+                <adaptivity adaptivity_type="hp-adaptivity" adaptivity_back_steps="0" adaptivity_redone_each="1" adaptivity_tolerance="5" adaptivity_steps="10"/>
+                <solver linearity_type="linear" picard_anderson_acceleration="1" newton_automatic_damping="1" picard_anderson_beta="0.2" picard_anderson_vectors="3" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <boundaries>
+                    <boundary electrostatic_potential="1000" type="electrostatic_potential" id="1" name="Source">
+                        <edge edge="0"/>
+                        <edge edge="5"/>
+                    </boundary>
+                    <boundary electrostatic_potential="0" type="electrostatic_potential" id="2" name="Ground">
+                        <edge edge="7"/>
+                        <edge edge="8"/>
+                    </boundary>
+                    <boundary type="electrostatic_surface_charge_density" id="3" name="Border" electrostatic_surface_charge_density="0">
+                        <edge edge="1"/>
+                        <edge edge="2"/>
+                        <edge edge="3"/>
+                        <edge edge="4"/>
+                        <edge edge="6"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material id="1" electrostatic_charge_density="0" name="Air" electrostatic_permittivity="1">
+                        <label label="0"/>
+                    </material>
+                </materials>
+            </field>
+        </fields>
+        <couplings/>
+    </problem>
+    <config View_ParticleMinimumStep="0" View_MeshCurvilinearElements="1" View_ColorGrid_blue="200" View_ScalarRangeLog="0" View_ParticleMaximumNumberOfSteps="500" View_ScalarDecimalPlace="2" View_ParticleShowPoints="0" View_OrderLabel="0" View_ColorContours_red="0" View_ParticleNumberOfParticles="5" View_ScalarView3DHeight="4" Adaptivity_MaxDofs="60000" View_ColorLabels_red="0" View_ColorGrid_red="200" View_ColorLabels_blue="0" View_SolidViewHide="" View_ColorEdges_blue="150" View_ParticleReflectOnBoundary="0" Adaptivity_Strategy="0" View_ColorEdges_green="0" View_VectorType="0" View_ColorBackground_blue="255" View_ColorInitialMesh_red="250" View_ColorCross_red="150" View_ColorVectors_blue="0" View_ShowScalarView="1" View_LinearizerQuality="normal" View_DeformScalar="1" View_ScalarRangeMax="1000.000000000002" View_PaletteType="0" View_ShowPost3D="0" View_ShowVectorView="0" View_ParticleDragCoefficient="0" View_ColorContours_green="0" View_ScalarView3DBoundingBox="1" View_ChartHorizontalAxisReverse="0" View_ColorContours_blue="0" View_VectorProportional="1" View_ActiveField="" View_ColorSolutionMesh_green="0" View_GridStep="0.05" View_VectorNumber="50" View_ShowOrderView="1" View_MeshAngleSegmentsCount="3" View_ColorSolutionMesh_blue="0" View_EdgeWidth="2" View_ParticleCoefficientOfRestitution="0" Adaptivity_Threshold="0.3" Problem_Description="" View_ContoursCount="15" View_ColorVectors_green="0" View_OrderPaletteOrderType="0" Adaptivity_MeshRegularity="-1" View_VectorScale="0.6" View_ParticleMaximumRelativeError="0.01" Adaptivity_IsoOnly="0" View_ScalarView3DAngle="240" View_ChartHorizontalAxisPoints="200" View_ShowRulers="1" View_ShowContourView="0" View_ParticleStartingRadius="0" View_RulersFont="fontGoogleDroidMono10" View_ParticleMass="9.108999999999999e-31" View_ColorNodes_blue="0" View_ChartEndX="0" View_ChartEndY="0" View_PostFont="fontGoogleDroidMono14" View_ColorSolutionMesh_red="150" Adaptivity_ProjNormType="1" View_ScalarVariableComp="1" View_VectorVariable="electrostatic_electric_field" View_ParticleDragDensity="1.2041" View_ScalarView3DSolidGeometry="1" View_ColorLabels_green="150" View_ScalarView3DBackground="1" Adaptivity_FinerReference="0" View_ParticleColorByVelocity="1" View_ParticleIncludeRelativisticCorrection="1" Commands_Gmsh="%1 -2 &quot;%2.geo&quot;" View_ParticleStartVelocityX="0" View_PaletteSteps="30" View_ParticleStartVelocityY="0" View_ParticleCustomForceX="0" View_ParticleCustomForceY="0" View_ScalarRangeMin="-5.684341886080801e-14" View_ParticleCustomForceZ="0" View_ColorVectors_red="0" View_VectorCenter="0" View_ShowSolutionMeshView="0" View_ChartTimeX="0" View_ChartTimeY="0" View_ContoursWidth="1" View_NodeSize="6" View_ColorCross_green="150" Adaptivity_ConvExp="1" View_ColorInitialMesh_blue="0" View_ParticleStartX="0" General_ZoomToMouse="1" View_ParticleStartY="0" View_ColorNodes_green="0" View_SnapToGrid="1" View_ScalarRangeAuto="1" View_VectorColor="1" View_ColorGrid_green="200" View_ParticleReflectOnDifferentMaterial="1" View_ParticleDragReferenceArea="1e-06" View_ParticleConstant="1.602e-19" Problem_StartupScript="" Adaptivity_UseAniso="1" View_DeformContour="1" View_LabelSize="6" View_ColorInitialMesh_green="150" View_ColorCross_blue="150" View_ScalarView3DLighting="0" View_ShowAxes="1" View_ChartHorizontalAxis="0" View_ContourVariable="electrostatic_potential" View_ScalarVariable="electrostatic_potential" Commands_Triangle="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;" View_ShowScalarColorBar="1" View_ColorBackground_green="255" View_ShowInitialMeshView="1" View_ColorEdges_red="0" View_ColorNodes_red="150" View_DeformVector="1" View_PaletteFilter="0" View_ChartStartX="0" View_ChartStartY="0" View_ScalarRangeBase="10" View_ShowOrderColorBar="1" View_ColorBackground_red="255" View_ShowGrid="1"/>
+</document>

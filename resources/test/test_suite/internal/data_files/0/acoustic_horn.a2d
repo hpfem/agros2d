@@ -1,0 +1,38 @@
+<document>
+    <problems>
+        <problem maxdofs="60000" adaptivitytolerance="10" id="0" analysistype="harmonic" initialcondition="0.0" linearitysteps="10" adaptivitysteps="25" linearity="linear" name="Acoustic Horn" date="2011-05-17" polynomialorder="1" meshtype="quad_join" timestep="1.0" problemtype="axisymmetric" adaptivitytype="hp-adaptivity" linearitytolerance="0.001" numberofrefinements="0" frequency="5000" matrix_solver="umfpack" type="acoustic" timetotal="1.0">
+            <scriptstartup></scriptstartup>
+            <description></description>
+            <edges>
+                <edge type="acoustic_normal_acceleration" id="1" name="Wall" acceleration="0"/>
+                <edge type="acoustic_matched_boundary" id="2" name="Matched boundary"/>
+                <edge type="acoustic_pressure" id="3" name="Source" pressure="1"/>
+            </edges>
+            <labels>
+                <label speed="343" id="1" density="1.25" name="Air"/>
+            </labels>
+        </problem>
+    </problems>
+    <geometry>
+        <nodes>
+            <node x="0" y="-0.2" id="0"/>
+            <node x="0.025" y="-0.2" id="1"/>
+            <node x="0.025" y="-0.175" id="2"/>
+            <node x="0.1" y="0" id="3"/>
+            <node x="0.3" y="0" id="4"/>
+            <node x="0" y="0.3" id="5"/>
+        </nodes>
+        <edges>
+            <edge end="5" refine_towards="0" marker="2" id="0" start="4" angle="90"/>
+            <edge end="4" refine_towards="0" marker="1" id="1" start="3" angle="0"/>
+            <edge end="2" refine_towards="0" marker="1" id="2" start="3" angle="0"/>
+            <edge end="1" refine_towards="0" marker="1" id="3" start="2" angle="0"/>
+            <edge end="0" refine_towards="0" marker="3" id="4" start="1" angle="0"/>
+            <edge end="0" refine_towards="0" marker="1" id="5" start="5" angle="0"/>
+        </edges>
+        <labels>
+            <label x="0.109723" y="0.176647" polynomialorder="0" marker="1" id="0" area="0"/>
+        </labels>
+    </geometry>
+    <config SceneViewSettings_ParticleMass="9.108999999999999e-31" SceneViewSettings_ParticleShowPoints="0" SceneViewSettings_ParticleDragReferenceArea="1e-06" SceneViewSettings_VectorColor="1" SceneViewSettings_PaletteType="0" SceneViewSettings_ScalarRangeLog="0" SceneViewSettings_ScalarRangeBase="10" SceneViewSettings_ParticleNumberOfParticles="5" SceneViewSettings_ParticleColorByVelocity="1" SceneViewSettings_VectorProportional="1" SceneViewSettings_ParticleStartVelocityX="0" SceneViewSettings_ContoursCount="15" SceneViewSettings_ParticleStartVelocityY="0" SceneViewSettings_PaletteSteps="30" SceneViewSettings_ShowOrderScale="1" SceneViewSettings_ParticleDragCoefficient="0" SceneViewSettings_ParticleDragDensity="1.2041" SceneViewSettings_ScalarDecimalPlace="2" SceneViewSettings_ParticleStartingRadius="0" SceneViewSettings_ParticleMaximumSteps="1000" SceneViewSettings_ShowScalarScale="1" SceneViewSettings_VectorScale="0.6" SceneViewSettings_PaletteFilter="0" SceneViewSettings_ParticleTerminateOnDifferentMaterial="1" SceneViewSettings_ParticleMaximumRelativeError="0" SceneViewSettings_OrderLabel="0" SceneViewSettings_ParticleStartX="0" SceneViewSettings_ParticleIncludeGravitation="1" SceneViewSettings_OrderPaletteOrderType="0" SceneViewSettings_ParticleStartY="0" SceneViewSettings_ParticleConstant="1.602e-19" SceneViewSettings_VectorNumber="50"/>
+</document>

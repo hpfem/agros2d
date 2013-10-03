@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<document version="2.1">
+    <geometry>
+        <nodes>
+            <node x="0.8848077530122079" y="-0.1236481776669303" id="0"/>
+            <node x="0.8375643194047672" y="-0.1036404796239434" id="1"/>
+            <node x="0.7899735894419928" y="-0.08560239708698093" id="2"/>
+            <node x="0.6947921295164438" y="-0.04952623201305596" id="3"/>
+            <node x="0.5994370214132275" y="-0.01443487469214316" id="4"/>
+            <node x="0.5039082651323445" y="0.01967167487575741" id="5"/>
+            <node x="0.4076849161407939" y="0.04983899343160912" id="6"/>
+            <node x="0.3104196780832417" y="0.07409746546938764" id="7"/>
+            <node x="0.2119389027820208" y="0.09146228323608066" id="8"/>
+            <node x="0.1117216457041307" y="0.09897902347265163" id="9"/>
+            <node x="0.0612136263565517" y="0.100472335759009" id="10"/>
+            <node x="0.009767906849571267" y="0.09664768617910049" id="11"/>
+            <node x="-0.01568579822853519" y="0.09626181340631516" id="12"/>
+            <node x="-0.04242449982137694" y="0.08858836326123948" id="13"/>
+            <node x="-0.06886799951218492" y="0.08258908629628454" id="14"/>
+            <node x="-0.08184726912528251" y="0.07950728925851697" id="15"/>
+            <node x="-0.09484219141506024" y="0.06501918912614464" id="16"/>
+            <node x="-0.08720368818988" y="0.05058685948759756" id="17"/>
+            <node x="-0.07537980617469481" y="0.04565879555832675" id="18"/>
+            <node x="-0.0507596123493896" y="0.04131759111665349" id="19"/>
+            <node x="-0.02613941852408441" y="0.03697638667498022" id="20"/>
+            <node x="-0.001519224698779201" y="0.03263518223330697" id="21"/>
+            <node x="0.04772116295183118" y="0.02395277334996045" id="22"/>
+            <node x="0.09730884695777552" y="0.01723997997263835" id="23"/>
+            <node x="0.1963973908808305" y="0.003321989341488057" id="24"/>
+            <node x="0.2951386384485518" y="-0.01256561679568668" id="25"/>
+            <node x="0.3937930619274395" y="-0.02894562680936752" id="26"/>
+            <node x="0.4922738372286602" y="-0.04631044457606052" id="27"/>
+            <node x="0.5905809643522141" y="-0.06466007009576577" id="28"/>
+            <node x="0.6887144432981011" y="-0.08399450336848326" id="29"/>
+            <node x="0.7866742740663211" y="-0.1043137443942129" id="30"/>
+            <node x="0.8355673653615975" y="-0.1149657687835838" id="31"/>
+            <node x="-1.500000000000001" y="-0.8500000000000001" id="32"/>
+            <node x="-1.500000000000001" y="0.8500000000000001" id="33"/>
+            <node x="5" y="0.85" id="34"/>
+            <node x="5" y="-0.85" id="35"/>
+        </nodes>
+        <edges>
+            <edge end="1" id="0" start="0" angle="0"/>
+            <edge end="2" id="1" start="1" angle="0"/>
+            <edge end="3" id="2" start="2" angle="0"/>
+            <edge end="4" id="3" start="3" angle="0"/>
+            <edge end="5" id="4" start="4" angle="0"/>
+            <edge end="6" id="5" start="5" angle="0"/>
+            <edge end="7" id="6" start="6" angle="0"/>
+            <edge end="8" id="7" start="7" angle="0"/>
+            <edge end="9" id="8" start="8" angle="0"/>
+            <edge end="10" id="9" start="9" angle="0"/>
+            <edge end="11" id="10" start="10" angle="0"/>
+            <edge end="12" id="11" start="11" angle="0"/>
+            <edge end="13" id="12" start="12" angle="0"/>
+            <edge end="14" id="13" start="13" angle="0"/>
+            <edge end="15" id="14" start="14" angle="5"/>
+            <edge end="16" id="15" start="15" angle="60"/>
+            <edge end="17" id="16" start="16" angle="60"/>
+            <edge end="18" id="17" start="17" angle="10"/>
+            <edge end="19" id="18" start="18" angle="0"/>
+            <edge end="20" id="19" start="19" angle="0"/>
+            <edge end="21" id="20" start="20" angle="0"/>
+            <edge end="22" id="21" start="21" angle="0"/>
+            <edge end="23" id="22" start="22" angle="0"/>
+            <edge end="24" id="23" start="23" angle="0"/>
+            <edge end="25" id="24" start="24" angle="0"/>
+            <edge end="26" id="25" start="25" angle="0"/>
+            <edge end="27" id="26" start="26" angle="0"/>
+            <edge end="28" id="27" start="27" angle="0"/>
+            <edge end="29" id="28" start="28" angle="0"/>
+            <edge end="30" id="29" start="29" angle="0"/>
+            <edge end="31" id="30" start="30" angle="0"/>
+            <edge end="0" id="31" start="31" angle="0"/>
+            <edge end="34" id="32" start="33" angle="0"/>
+            <edge end="35" id="33" start="34" angle="0"/>
+            <edge end="32" id="34" start="35" angle="0"/>
+            <edge end="32" id="35" start="33" angle="0"/>
+        </edges>
+        <labels>
+            <label x="0.2890205970000961" y="0.04072651952392475" id="0" area="0"/>
+            <label x="1.71743" y="0.461503" id="1" area="0"/>
+        </labels>
+    </geometry>
+    <problem time_order="1" frequency="0" time_method="fixed" time_method_tolerance="0.05" matrix_solver="umfpack" coordinate_type="planar" mesh_type="gmsh_quad" time_steps="2" name="Eiffel 428 (Bleriot)" time_total="1.0">
+        <startup_script></startup_script>
+        <description></description>
+        <fields>
+            <field field_id="flow" initial_condition="0.0" polynomial_order="2" number_of_refinements="1" time_skip="0" analysis_type="steadystate">
+                <refinement>
+                    <edges/>
+                    <labels/>
+                </refinement>
+                <polynomial_order/>
+                <adaptivity adaptivity_type="disabled" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver linearity_type="newton" picard_anderson_acceleration="1" newton_automatic_damping="1" picard_anderson_beta="0.2" picard_anderson_vectors="3" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <boundaries>
+                    <boundary type="flow_velocity" id="1" name="Inlet" flow_velocity_x="cos(y/0.85*pi/2)" flow_velocity_y="0">
+                        <edge edge="35"/>
+                    </boundary>
+                    <boundary type="flow_velocity" id="2" name="Wall" flow_velocity_x="0" flow_velocity_y="0">
+                        <edge edge="32"/>
+                        <edge edge="34"/>
+                    </boundary>
+                    <boundary type="flow_outlet" id="3" name="Outlet">
+                        <edge edge="33"/>
+                    </boundary>
+                    <boundary type="flow_velocity" id="4" name="Airfoil" flow_velocity_x="0" flow_velocity_y="0">
+                        <edge edge="0"/>
+                        <edge edge="1"/>
+                        <edge edge="2"/>
+                        <edge edge="3"/>
+                        <edge edge="4"/>
+                        <edge edge="5"/>
+                        <edge edge="6"/>
+                        <edge edge="7"/>
+                        <edge edge="8"/>
+                        <edge edge="9"/>
+                        <edge edge="10"/>
+                        <edge edge="11"/>
+                        <edge edge="12"/>
+                        <edge edge="13"/>
+                        <edge edge="14"/>
+                        <edge edge="15"/>
+                        <edge edge="16"/>
+                        <edge edge="17"/>
+                        <edge edge="18"/>
+                        <edge edge="19"/>
+                        <edge edge="20"/>
+                        <edge edge="21"/>
+                        <edge edge="22"/>
+                        <edge edge="23"/>
+                        <edge edge="24"/>
+                        <edge edge="25"/>
+                        <edge edge="26"/>
+                        <edge edge="27"/>
+                        <edge edge="28"/>
+                        <edge edge="29"/>
+                        <edge edge="30"/>
+                        <edge edge="31"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material flow_density="1" flow_viscosity="0.001" id="1" flow_force_x="0" name="Air" flow_force_y="0">
+                        <label label="1"/>
+                    </material>
+                </materials>
+            </field>
+        </fields>
+        <couplings/>
+    </problem>
+    <config SceneViewSettings_VectorColor="1" SceneViewSettings_ParticleDragReferenceArea="1e-06" SceneViewSettings_VectorProportional="1" Adaptivity_Threshold="0.3" SceneViewSettings_ShowSolutionMeshView="0" SceneViewSettings_ParticleMinimumStep="0" Adaptivity_IsoOnly="0" SceneViewSettings_ScalarRangeBase="10" SceneViewSettings_VectorScale="0.5" SceneViewSettings_ShowOrderColorBar="1" SceneViewSettings_ShowPost3D="1" Adaptivity_UseAniso="1" Adaptivity_MeshRegularity="-1" SceneViewSettings_VectorNumber="90" Adaptivity_FinerReference="0" SceneViewSettings_ShowInitialMeshView="1" SceneViewSettings_VectorType="0" SceneViewSettings_PaletteFilter="0" SceneViewSettings_ParticleColorByVelocity="1" SceneViewSettings_ShowScalarColorBar="1" SceneViewSettings_ActiveField="flow" SceneViewSettings_ScalarDecimalPlace="2" SceneViewSettings_ParticleCustomForceX="0" SceneViewSettings_ParticleCustomForceY="0" SceneViewSettings_ParticleCustomForceZ="0" SceneViewSettings_ParticleShowPoints="0" Adaptivity_MaxDofs="60000" SceneViewSettings_ParticleIncludeRelativisticCorrection="1" SceneViewSettings_ScalarRangeMin="0" Commands_Triangle="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;" SceneViewSettings_ParticleStartingRadius="0" SceneViewSettings_ParticleNumberOfParticles="5" SceneViewSettings_ScalarVariable="" SceneViewSettings_ScalarRangeAuto="1" SceneViewSettings_ParticleReflectOnDifferentMaterial="1" SceneViewSettings_ShowContourView="0" SceneViewSettings_ParticleDragDensity="1.2041" SceneViewSettings_PaletteSteps="30" SceneViewSettings_ParticleStartX="0" SceneViewSettings_ParticleStartY="0" SceneViewSettings_OrderPaletteOrderType="0" SceneViewSettings_OrderLabel="0" SceneViewSettings_ScalarRangeLog="0" SceneViewSettings_ShowScalarView="1" SceneViewSettings_ContoursWidth="1" SceneViewSettings_ShowParticleView="0" SceneViewSettings_ContourVariable="" Adaptivity_ConvExp="1" Adaptivity_ProjNormType="1" SceneViewSettings_VectorCenter="0" SceneViewSettings_MeshCurvilinearElements="1" Adaptivity_Strategy="0" SceneViewSettings_ScalarVariableComp="0" SceneViewSettings_ParticleStartVelocityX="0" SceneViewSettings_ParticleStartVelocityY="0" SceneViewSettings_MeshAngleSegmentsCount="3" SceneViewSettings_ParticleConstant="1.602e-19" SceneViewSettings_ParticleMaximumNumberOfSteps="1000" SceneViewSettings_ParticleDragCoefficient="0" SceneViewSettings_ParticleReflectOnBoundary="0" SceneViewSettings_ShowOrderView="1" SceneViewSettings_ParticleCoefficientOfRestitution="0" SceneViewSettings_ShowVectorView="0" SceneViewSettings_PaletteType="0" SceneViewSettings_ParticleMaximumRelativeError="0" SceneViewSettings_ParticleMass="9.108999999999999e-31" SceneViewSettings_VectorVariable="" Commands_Gmsh="%1 -2 &quot;%2.geo&quot;" SceneViewSettings_ContoursCount="15" SceneViewSettings_ScalarRangeMax="1.26581164492599"/>
+</document>

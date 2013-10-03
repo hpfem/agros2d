@@ -1,0 +1,149 @@
+<document>
+    <problems>
+        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0.0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Depressed Collector" date="2012-02-14" polynomialorder="2" meshtype="triangle" timestep="1.0" problemtype="axisymmetric" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="electrostatic" timetotal="1.0">
+            <scriptstartup></scriptstartup>
+            <description></description>
+            <edges>
+                <edge type="electrostatic_potential" value="250e3" id="1" name="250 kV"/>
+                <edge type="electrostatic_potential" value="170e3" id="2" name="170 kV"/>
+                <edge type="electrostatic_potential" value="20e3" id="3" name="20 kV"/>
+                <edge type="electrostatic_potential" value="-50e3" id="4" name="-50 kV"/>
+                <edge type="electrostatic_surface_charge_density" value="0" id="5" name="Neumann"/>
+            </edges>
+            <labels>
+                <label charge_density="0" id="1" name="Air" permittivity="1"/>
+            </labels>
+        </problem>
+    </problems>
+    <geometry>
+        <nodes>
+            <node x="0" y="0" id="0"/>
+            <node x="0.04" y="0" id="1"/>
+            <node x="0.04" y="-0.08500000000000001" id="2"/>
+            <node x="0.08478321667989797" y="-0.2372645996994089" id="3"/>
+            <node x="0.26" y="-0.315" id="4"/>
+            <node x="0.26" y="-0.345" id="5"/>
+            <node x="0.26" y="-0.3" id="6"/>
+            <node x="0.26" y="-0.245" id="7"/>
+            <node x="0.0900177077845157" y="-0.2332778594499772" id="8"/>
+            <node x="0.045" y="-0.08500000000000001" id="9"/>
+            <node x="0.045" y="0" id="10"/>
+            <node x="0.235" y="-0.37" id="11"/>
+            <node x="0.26" y="-0.395" id="12"/>
+            <node x="0.285" y="-0.37" id="13"/>
+            <node x="0.235" y="-0.22" id="14"/>
+            <node x="0.26" y="-0.195" id="15"/>
+            <node x="0.285" y="-0.22" id="16"/>
+            <node x="0.325" y="-0.46" id="17"/>
+            <node x="0.325" y="-0.445" id="18"/>
+            <node x="0.325" y="-0.485" id="19"/>
+            <node x="0.305" y="-0.505" id="20"/>
+            <node x="0.325" y="-0.525" id="21"/>
+            <node x="0.345" y="-0.505" id="22"/>
+            <node x="0.325" y="-0.35" id="23"/>
+            <node x="0.345" y="-0.35" id="24"/>
+            <node x="0.335" y="-0.34" id="25"/>
+            <node x="0.11" y="-0.245" id="26"/>
+            <node x="0.11" y="-0.26" id="27"/>
+            <node x="0.145" y="-0.38" id="28"/>
+            <node x="0.1426830144785602" y="-0.3940854004520632" id="29"/>
+            <node x="0.1373490486907982" y="-0.3843403715078641" id="30"/>
+            <node x="0" y="-0.5" id="31"/>
+            <node x="0.03" y="-0.525" id="32"/>
+            <node x="0.03" y="-0.625" id="33"/>
+            <node x="0" y="-0.6294149999999999" id="34"/>
+            <node x="0.34" y="-0.755" id="35"/>
+            <node x="0.4050000000000001" y="-0.765" id="36"/>
+            <node x="0.415" y="-0.765" id="37"/>
+            <node x="0.435" y="-0.785" id="38"/>
+            <node x="0.415" y="-0.805" id="39"/>
+            <node x="0.355" y="-0.805" id="40"/>
+            <node x="0.34" y="-0.79" id="41"/>
+            <node x="0.4" y="-0.68" id="42"/>
+            <node x="0.38" y="-0.7000000000000001" id="43"/>
+            <node x="0.4" y="-0.72" id="44"/>
+            <node x="0.42" y="-0.7000000000000001" id="45"/>
+            <node x="0.4" y="-0.485" id="46"/>
+            <node x="0.42" y="-0.485" id="47"/>
+            <node x="0.41" y="-0.475" id="48"/>
+            <node x="0.4" y="-0.595" id="49"/>
+            <node x="0.4" y="-0.61" id="50"/>
+            <node x="0.19" y="-0.515" id="51"/>
+            <node x="0.1876830144785602" y="-0.5290854004520632" id="52"/>
+            <node x="0.1823490486907982" y="-0.5193403715078641" id="53"/>
+            <node x="0" y="-1" id="54"/>
+            <node x="1" y="-1" id="55"/>
+            <node x="1" y="0.5" id="56"/>
+            <node x="0" y="0.5" id="57"/>
+            <node x="0.0425" y="0.0025" id="58"/>
+        </nodes>
+        <edges>
+            <edge end="2" refine_towards="0" marker="1" id="0" start="1" angle="0"/>
+            <edge end="3" refine_towards="0" marker="1" id="1" start="2" angle="0"/>
+            <edge end="8" refine_towards="0" marker="1" id="2" start="9" angle="0"/>
+            <edge end="10" refine_towards="0" marker="1" id="3" start="9" angle="0"/>
+            <edge end="5" refine_towards="0" marker="1" id="4" start="4" angle="0"/>
+            <edge end="7" refine_towards="0" marker="1" id="5" start="6" angle="0"/>
+            <edge end="11" refine_towards="0" marker="1" id="6" start="5" angle="90"/>
+            <edge end="12" refine_towards="0" marker="1" id="7" start="11" angle="90"/>
+            <edge end="13" refine_towards="0" marker="1" id="8" start="12" angle="90"/>
+            <edge end="16" refine_towards="0" marker="1" id="9" start="13" angle="0"/>
+            <edge end="15" refine_towards="0" marker="1" id="10" start="16" angle="90"/>
+            <edge end="14" refine_towards="0" marker="1" id="11" start="15" angle="90"/>
+            <edge end="7" refine_towards="0" marker="1" id="12" start="14" angle="90"/>
+            <edge end="20" refine_towards="0" marker="2" id="13" start="19" angle="90"/>
+            <edge end="22" refine_towards="0" marker="2" id="14" start="21" angle="90"/>
+            <edge end="21" refine_towards="0" marker="2" id="15" start="20" angle="90"/>
+            <edge end="25" refine_towards="0" marker="2" id="16" start="24" angle="90"/>
+            <edge end="18" refine_towards="0" marker="2" id="17" start="23" angle="0"/>
+            <edge end="23" refine_towards="0" marker="2" id="18" start="25" angle="90"/>
+            <edge end="24" refine_towards="0" marker="2" id="19" start="22" angle="0"/>
+            <edge end="26" refine_towards="0" marker="1" id="20" start="6" angle="0"/>
+            <edge end="27" refine_towards="0" marker="1" id="21" start="4" angle="0"/>
+            <edge end="27" refine_towards="0" marker="1" id="22" start="3" angle="40"/>
+            <edge end="26" refine_towards="0" marker="1" id="23" start="8" angle="30"/>
+            <edge end="19" refine_towards="0" marker="2" id="24" start="17" angle="0"/>
+            <edge end="18" refine_towards="0" marker="2" id="25" start="28" angle="0"/>
+            <edge end="29" refine_towards="0" marker="2" id="26" start="17" angle="0"/>
+            <edge end="30" refine_towards="0" marker="2" id="27" start="28" angle="90"/>
+            <edge end="29" refine_towards="0" marker="2" id="28" start="30" angle="80"/>
+            <edge end="31" refine_towards="0" marker="4" id="29" start="32" angle="90"/>
+            <edge end="33" refine_towards="0" marker="4" id="30" start="32" angle="0"/>
+            <edge end="36" refine_towards="0" marker="4" id="31" start="33" angle="0"/>
+            <edge end="34" refine_towards="0" marker="4" id="32" start="35" angle="0"/>
+            <edge end="37" refine_towards="0" marker="4" id="33" start="36" angle="0"/>
+            <edge end="40" refine_towards="0" marker="4" id="34" start="39" angle="0"/>
+            <edge end="41" refine_towards="0" marker="4" id="35" start="35" angle="0"/>
+            <edge end="40" refine_towards="0" marker="4" id="36" start="41" angle="90"/>
+            <edge end="38" refine_towards="0" marker="4" id="37" start="39" angle="90"/>
+            <edge end="37" refine_towards="0" marker="4" id="38" start="38" angle="90"/>
+            <edge end="43" refine_towards="0" marker="3" id="39" start="42" angle="90"/>
+            <edge end="44" refine_towards="0" marker="3" id="40" start="43" angle="90"/>
+            <edge end="45" refine_towards="0" marker="3" id="41" start="44" angle="90"/>
+            <edge end="48" refine_towards="0" marker="3" id="42" start="47" angle="90"/>
+            <edge end="46" refine_towards="0" marker="3" id="43" start="48" angle="90"/>
+            <edge end="45" refine_towards="0" marker="3" id="44" start="47" angle="0"/>
+            <edge end="49" refine_towards="0" marker="3" id="45" start="46" angle="0"/>
+            <edge end="42" refine_towards="0" marker="3" id="46" start="50" angle="0"/>
+            <edge end="49" refine_towards="0" marker="3" id="47" start="51" angle="0"/>
+            <edge end="52" refine_towards="0" marker="3" id="48" start="50" angle="0"/>
+            <edge end="53" refine_towards="0" marker="3" id="49" start="51" angle="90"/>
+            <edge end="52" refine_towards="0" marker="3" id="50" start="53" angle="80"/>
+            <edge end="31" refine_towards="0" marker="5" id="51" start="0" angle="0"/>
+            <edge end="55" refine_towards="0" marker="5" id="52" start="56" angle="0"/>
+            <edge end="54" refine_towards="0" marker="5" id="53" start="55" angle="0"/>
+            <edge end="54" refine_towards="0" marker="5" id="54" start="34" angle="0"/>
+            <edge end="0" refine_towards="0" marker="5" id="55" start="57" angle="0"/>
+            <edge end="56" refine_towards="0" marker="5" id="56" start="57" angle="0"/>
+            <edge end="58" refine_towards="0" marker="1" id="57" start="10" angle="90"/>
+            <edge end="1" refine_towards="0" marker="1" id="58" start="58" angle="90"/>
+        </edges>
+        <labels>
+            <label x="0.259550325463293" y="-0.22435370218158" polynomialorder="0" marker="0" id="0" area="0"/>
+            <label x="0.3289707851983604" y="-0.5050538219798961" polynomialorder="0" marker="0" id="1" area="0"/>
+            <label x="0.399900385362451" y="-0.7012420777529128" polynomialorder="0" marker="0" id="2" area="0"/>
+            <label x="0.715311" y="0.26008" polynomialorder="0" marker="1" id="3" area="0"/>
+        </labels>
+    </geometry>
+    <config SceneViewSettings_ParticleMass="9.108999999999999e-31" SceneViewSettings_ParticleShowPoints="0" SceneViewSettings_ParticleDragReferenceArea="1e-06" SceneViewSettings_VectorColor="1" SceneViewSettings_PaletteType="8" SceneViewSettings_ScalarRangeLog="0" SceneViewSettings_ScalarRangeBase="10" SceneViewSettings_ParticleNumberOfParticles="10" SceneViewSettings_ParticleColorByVelocity="1" SceneViewSettings_VectorProportional="1" SceneViewSettings_ParticleStartVelocityX="0" SceneViewSettings_ContoursCount="15" SceneViewSettings_ParticleStartVelocityY="-240000000" SceneViewSettings_PaletteSteps="30" SceneViewSettings_ShowOrderScale="1" SceneViewSettings_ParticleDragCoefficient="0" SceneViewSettings_ParticleDragDensity="1.2041" SceneViewSettings_ScalarDecimalPlace="2" SceneViewSettings_ParticleStartingRadius="0.015" SceneViewSettings_ParticleMaximumSteps="1000" SceneViewSettings_ShowScalarScale="1" SceneViewSettings_VectorScale="0.6" SceneViewSettings_PaletteFilter="1" SceneViewSettings_ParticleTerminateOnDifferentMaterial="1" SceneViewSettings_ParticleMaximumRelativeError="1e-07" SceneViewSettings_OrderLabel="0" SceneViewSettings_ParticleStartX="0.01" SceneViewSettings_ParticleIncludeGravitation="0" SceneViewSettings_OrderPaletteOrderType="0" SceneViewSettings_ParticleStartY="0.45" SceneViewSettings_ParticleConstant="-1.602e-19" SceneViewSettings_VectorNumber="50"/>
+</document>

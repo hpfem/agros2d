@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<document version="2.1">
+    <geometry>
+        <nodes>
+            <node x="0" y="0" id="0"/>
+            <node x="0.04" y="0" id="1"/>
+            <node x="0.04" y="-0.08500000000000001" id="2"/>
+            <node x="0.08478321667989797" y="-0.2372645996994089" id="3"/>
+            <node x="0.26" y="-0.315" id="4"/>
+            <node x="0.26" y="-0.345" id="5"/>
+            <node x="0.26" y="-0.3" id="6"/>
+            <node x="0.26" y="-0.245" id="7"/>
+            <node x="0.0900177077845157" y="-0.2332778594499772" id="8"/>
+            <node x="0.045" y="-0.08500000000000001" id="9"/>
+            <node x="0.045" y="0" id="10"/>
+            <node x="0.235" y="-0.37" id="11"/>
+            <node x="0.26" y="-0.395" id="12"/>
+            <node x="0.285" y="-0.37" id="13"/>
+            <node x="0.235" y="-0.22" id="14"/>
+            <node x="0.26" y="-0.195" id="15"/>
+            <node x="0.285" y="-0.22" id="16"/>
+            <node x="0.325" y="-0.46" id="17"/>
+            <node x="0.325" y="-0.445" id="18"/>
+            <node x="0.325" y="-0.485" id="19"/>
+            <node x="0.305" y="-0.505" id="20"/>
+            <node x="0.325" y="-0.525" id="21"/>
+            <node x="0.345" y="-0.505" id="22"/>
+            <node x="0.325" y="-0.35" id="23"/>
+            <node x="0.345" y="-0.35" id="24"/>
+            <node x="0.335" y="-0.34" id="25"/>
+            <node x="0.11" y="-0.245" id="26"/>
+            <node x="0.11" y="-0.26" id="27"/>
+            <node x="0.145" y="-0.38" id="28"/>
+            <node x="0.1426830144785602" y="-0.3940854004520632" id="29"/>
+            <node x="0.1373490486907982" y="-0.3843403715078641" id="30"/>
+            <node x="0" y="-0.5" id="31"/>
+            <node x="0.03" y="-0.525" id="32"/>
+            <node x="0.03" y="-0.625" id="33"/>
+            <node x="0" y="-0.6294149999999999" id="34"/>
+            <node x="0.34" y="-0.755" id="35"/>
+            <node x="0.4050000000000001" y="-0.765" id="36"/>
+            <node x="0.415" y="-0.765" id="37"/>
+            <node x="0.435" y="-0.785" id="38"/>
+            <node x="0.415" y="-0.805" id="39"/>
+            <node x="0.355" y="-0.805" id="40"/>
+            <node x="0.34" y="-0.79" id="41"/>
+            <node x="0.4" y="-0.68" id="42"/>
+            <node x="0.38" y="-0.7000000000000001" id="43"/>
+            <node x="0.4" y="-0.72" id="44"/>
+            <node x="0.42" y="-0.7000000000000001" id="45"/>
+            <node x="0.4" y="-0.485" id="46"/>
+            <node x="0.42" y="-0.485" id="47"/>
+            <node x="0.41" y="-0.475" id="48"/>
+            <node x="0.4" y="-0.595" id="49"/>
+            <node x="0.4" y="-0.61" id="50"/>
+            <node x="0.19" y="-0.515" id="51"/>
+            <node x="0.1876830144785602" y="-0.5290854004520632" id="52"/>
+            <node x="0.1823490486907982" y="-0.5193403715078641" id="53"/>
+            <node x="0" y="-1" id="54"/>
+            <node x="1" y="-1" id="55"/>
+            <node x="1" y="0.5" id="56"/>
+            <node x="0" y="0.5" id="57"/>
+            <node x="0.0425" y="0.0025" id="58"/>
+        </nodes>
+        <edges>
+            <edge end="2" id="0" start="1" angle="0"/>
+            <edge end="3" id="1" start="2" angle="0"/>
+            <edge end="8" id="2" start="9" angle="0"/>
+            <edge end="10" id="3" start="9" angle="0"/>
+            <edge end="5" id="4" start="4" angle="0"/>
+            <edge end="7" id="5" start="6" angle="0"/>
+            <edge end="11" id="6" start="5" angle="90"/>
+            <edge end="12" id="7" start="11" angle="90"/>
+            <edge end="13" id="8" start="12" angle="90"/>
+            <edge end="16" id="9" start="13" angle="0"/>
+            <edge end="15" id="10" start="16" angle="90"/>
+            <edge end="14" id="11" start="15" angle="90"/>
+            <edge end="7" id="12" start="14" angle="90"/>
+            <edge end="20" id="13" start="19" angle="90"/>
+            <edge end="22" id="14" start="21" angle="90"/>
+            <edge end="21" id="15" start="20" angle="90"/>
+            <edge end="25" id="16" start="24" angle="90"/>
+            <edge end="18" id="17" start="23" angle="0"/>
+            <edge end="23" id="18" start="25" angle="90"/>
+            <edge end="24" id="19" start="22" angle="0"/>
+            <edge end="26" id="20" start="6" angle="0"/>
+            <edge end="27" id="21" start="4" angle="0"/>
+            <edge end="27" id="22" start="3" angle="40"/>
+            <edge end="26" id="23" start="8" angle="30"/>
+            <edge end="19" id="24" start="17" angle="0"/>
+            <edge end="18" id="25" start="28" angle="0"/>
+            <edge end="29" id="26" start="17" angle="0"/>
+            <edge end="30" id="27" start="28" angle="90"/>
+            <edge end="29" id="28" start="30" angle="80"/>
+            <edge end="31" id="29" start="32" angle="90"/>
+            <edge end="33" id="30" start="32" angle="0"/>
+            <edge end="36" id="31" start="33" angle="0"/>
+            <edge end="34" id="32" start="35" angle="0"/>
+            <edge end="37" id="33" start="36" angle="0"/>
+            <edge end="40" id="34" start="39" angle="0"/>
+            <edge end="41" id="35" start="35" angle="0"/>
+            <edge end="40" id="36" start="41" angle="90"/>
+            <edge end="38" id="37" start="39" angle="90"/>
+            <edge end="37" id="38" start="38" angle="90"/>
+            <edge end="43" id="39" start="42" angle="90"/>
+            <edge end="44" id="40" start="43" angle="90"/>
+            <edge end="45" id="41" start="44" angle="90"/>
+            <edge end="48" id="42" start="47" angle="90"/>
+            <edge end="46" id="43" start="48" angle="90"/>
+            <edge end="45" id="44" start="47" angle="0"/>
+            <edge end="49" id="45" start="46" angle="0"/>
+            <edge end="42" id="46" start="50" angle="0"/>
+            <edge end="49" id="47" start="51" angle="0"/>
+            <edge end="52" id="48" start="50" angle="0"/>
+            <edge end="53" id="49" start="51" angle="90"/>
+            <edge end="52" id="50" start="53" angle="80"/>
+            <edge end="31" id="51" start="0" angle="0"/>
+            <edge end="55" id="52" start="56" angle="0"/>
+            <edge end="54" id="53" start="55" angle="0"/>
+            <edge end="54" id="54" start="34" angle="0"/>
+            <edge end="0" id="55" start="57" angle="0"/>
+            <edge end="56" id="56" start="57" angle="0"/>
+            <edge end="58" id="57" start="10" angle="90"/>
+            <edge end="1" id="58" start="58" angle="90"/>
+        </edges>
+        <labels>
+            <label x="0.259550325463293" y="-0.22435370218158" id="0" area="0"/>
+            <label x="0.3289707851983604" y="-0.5050538219798961" id="1" area="0"/>
+            <label x="0.399900385362451" y="-0.7012420777529128" id="2" area="0"/>
+            <label x="0.715311" y="0.26008" id="3" area="0"/>
+        </labels>
+    </geometry>
+    <problem time_order="1" frequency="0" time_method="fixed" time_method_tolerance="0.05" matrix_solver="umfpack" coordinate_type="axisymmetric" mesh_type="triangle" time_steps="2" name="Depressed Collector" time_total="1.0">
+        <fields>
+            <field field_id="electrostatic" initial_condition="0.0" polynomial_order="2" number_of_refinements="1" time_skip="0" analysis_type="steadystate">
+                <refinement>
+                    <edges/>
+                    <labels/>
+                </refinement>
+                <polynomial_order/>
+                <adaptivity adaptivity_type="disabled" adaptivity_back_steps="0" adaptivity_redone_each="0" adaptivity_tolerance="1" adaptivity_steps="1"/>
+                <solver linearity_type="linear" picard_anderson_acceleration="1" newton_automatic_damping="1" picard_anderson_beta="0.2" picard_anderson_vectors="3" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <boundaries>
+                    <boundary electrostatic_potential="250e3" type="electrostatic_potential" id="1" name="250 kV">
+                        <edge edge="0"/>
+                        <edge edge="1"/>
+                        <edge edge="2"/>
+                        <edge edge="3"/>
+                        <edge edge="4"/>
+                        <edge edge="5"/>
+                        <edge edge="6"/>
+                        <edge edge="7"/>
+                        <edge edge="8"/>
+                        <edge edge="9"/>
+                        <edge edge="10"/>
+                        <edge edge="11"/>
+                        <edge edge="12"/>
+                        <edge edge="20"/>
+                        <edge edge="21"/>
+                        <edge edge="22"/>
+                        <edge edge="23"/>
+                        <edge edge="57"/>
+                        <edge edge="58"/>
+                    </boundary>
+                    <boundary electrostatic_potential="170e3" type="electrostatic_potential" id="2" name="170 kV">
+                        <edge edge="13"/>
+                        <edge edge="14"/>
+                        <edge edge="15"/>
+                        <edge edge="16"/>
+                        <edge edge="17"/>
+                        <edge edge="18"/>
+                        <edge edge="19"/>
+                        <edge edge="24"/>
+                        <edge edge="25"/>
+                        <edge edge="26"/>
+                        <edge edge="27"/>
+                        <edge edge="28"/>
+                    </boundary>
+                    <boundary electrostatic_potential="20e3" type="electrostatic_potential" id="3" name="20 kV">
+                        <edge edge="39"/>
+                        <edge edge="40"/>
+                        <edge edge="41"/>
+                        <edge edge="42"/>
+                        <edge edge="43"/>
+                        <edge edge="44"/>
+                        <edge edge="45"/>
+                        <edge edge="46"/>
+                        <edge edge="47"/>
+                        <edge edge="48"/>
+                        <edge edge="49"/>
+                        <edge edge="50"/>
+                    </boundary>
+                    <boundary electrostatic_potential="-50e3" type="electrostatic_potential" id="4" name="-50 kV">
+                        <edge edge="29"/>
+                        <edge edge="30"/>
+                        <edge edge="31"/>
+                        <edge edge="32"/>
+                        <edge edge="33"/>
+                        <edge edge="34"/>
+                        <edge edge="35"/>
+                        <edge edge="36"/>
+                        <edge edge="37"/>
+                        <edge edge="38"/>
+                    </boundary>
+                    <boundary type="electrostatic_surface_charge_density" id="5" name="Neumann" electrostatic_surface_charge_density="0">
+                        <edge edge="51"/>
+                        <edge edge="52"/>
+                        <edge edge="53"/>
+                        <edge edge="54"/>
+                        <edge edge="55"/>
+                        <edge edge="56"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material id="1" electrostatic_charge_density="0" name="Air" electrostatic_permittivity="1">
+                        <label label="3"/>
+                    </material>
+                </materials>
+            </field>
+        </fields>
+        <couplings/>
+    </problem>
+    <config View_ColorSolutionMesh_blue="0" View_ParticleReflectOnDifferentMaterial="1" Adaptivity_Threshold="0.3" View_ColorContours_green="0" View_ScalarView3DAngle="240" View_SnapToGrid="1" View_ColorSolutionMesh_red="150" View_ContourVariable="electrostatic_potential" View_ColorEdges_blue="150" View_ParticleMaximumRelativeError="0.01" View_ParticleDragCoefficient="0" Adaptivity_IsoOnly="0" View_ScalarVariableComp="1" View_ScalarVariable="electrostatic_potential" View_ShowParticleView="1" View_ParticleCoefficientOfRestitution="0" View_ScalarView3DSolidGeometry="1" View_ColorContours_blue="0" Adaptivity_UseAniso="1" View_OrderLabel="0" View_PaletteType="0" View_ColorEdges_green="0" View_ScalarView3DBoundingBox="1" Adaptivity_MeshRegularity="-1" Adaptivity_FinerReference="0" View_ParticleMinimumStep="0" View_LinearizerQuality="normal" View_NodeSize="6" View_ScalarView3DBackground="1" Problem_Description="" View_EdgeWidth="2" View_PaletteSteps="30" View_ColorCross_green="150" View_SolidViewHide="" View_ColorContours_red="0" View_ContoursWidth="1" View_PostFont="fontGoogleDroidMono14" View_ScalarView3DHeight="4" View_VectorNumber="50" View_VectorColor="1" View_ParticleDragReferenceArea="1e-06" Adaptivity_MaxDofs="60000" View_ColorEdges_red="0" View_ScalarDecimalPlace="2" View_MeshAngleSegmentsCount="3" View_ParticleNumberOfParticles="1" View_ColorBackground_blue="255" View_ShowScalarView="1" View_ColorGrid_blue="200" View_ShowSolutionMeshView="0" Commands_Triangle="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;" View_ScalarView3DLighting="1" View_ContoursCount="15" View_ScalarRangeAuto="1" View_OrderPaletteOrderType="0" View_ColorNodes_blue="0" View_ScalarRangeLog="0" View_ShowAxes="1" View_VectorProportional="1" View_ParticleStartVelocityX="0" View_ParticleStartVelocityY="-170000000" View_VectorType="0" View_ShowInitialMeshView="1" View_GridStep="0.05" View_ColorLabels_blue="0" View_ParticleIncludeRelativisticCorrection="1" View_ColorLabels_green="150" View_ParticleStartX="0.03" View_ParticleStartY="0.46" View_RulersFont="fontGoogleDroidMono10" View_ColorBackground_red="255" View_DeformContour="1" View_ParticleShowPoints="0" View_ColorGrid_red="200" View_ColorInitialMesh_green="150" View_PaletteFilter="0" View_ColorVectors_green="0" View_ParticleReflectOnBoundary="0" Adaptivity_ConvExp="1" View_ShowGrid="1" Adaptivity_ProjNormType="1" View_LabelSize="6" View_ColorSolutionMesh_green="0" View_ShowPost3D="0" View_VectorScale="0.6" Adaptivity_Strategy="0" View_ShowOrderView="1" View_ColorNodes_green="0" View_ShowOrderColorBar="1" View_ColorNodes_red="150" View_ScalarRangeMin="-50000.00000000001" View_ParticleStartingRadius="0.01" View_ParticleColorByVelocity="1" View_ColorBackground_green="255" View_MeshCurvilinearElements="1" View_DeformScalar="1" View_ColorCross_blue="150" View_ColorInitialMesh_blue="0" View_ColorCross_red="150" View_DeformVector="1" View_ShowContourView="0" View_ScalarRangeMax="250000" View_ColorVectors_red="0" View_ColorVectors_blue="0" View_ParticleMaximumNumberOfSteps="500" View_ParticleConstant="-1.602e-19" View_VectorCenter="0" View_ParticleMass="9.108999999999999e-31" View_ParticleCustomForceX="0" View_ScalarRangeBase="10" View_ParticleCustomForceY="0" View_ParticleCustomForceZ="0" View_ColorGrid_green="200" View_VectorVariable="electrostatic_electric_field" Commands_Gmsh="%1 -2 &quot;%2.geo&quot;" View_ShowScalarColorBar="1" View_ShowVectorView="0" View_ColorInitialMesh_red="250" View_ShowRulers="1" View_ActiveField="electrostatic" View_ParticleDragDensity="1.2041" General_ZoomToMouse="1" Problem_StartupScript="" View_ColorLabels_red="0"/>
+</document>

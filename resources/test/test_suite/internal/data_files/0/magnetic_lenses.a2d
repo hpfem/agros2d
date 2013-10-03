@@ -1,0 +1,61 @@
+<document>
+    <problems>
+        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0.0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="unnamed" date="2012-01-16" polynomialorder="2" meshtype="triangle" timestep="1.0" problemtype="axisymmetric" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="2" frequency="0" matrix_solver="umfpack" type="magnetic" timetotal="1.0">
+            <scriptstartup></scriptstartup>
+            <description></description>
+            <edges>
+                <edge value_imag="0" type="magnetic_vector_potential" id="1" name="A = 0" value_real="0"/>
+            </edges>
+            <labels>
+                <label current_density_real="0" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="1" name="Air" current_density_imag="0" permeability="1" velocity_angular="0"/>
+                <label current_density_real="8e6" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="2" name="Coil 1" current_density_imag="0" permeability="1" velocity_angular="0"/>
+                <label current_density_real="1e7" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="3" name="Coil 2" current_density_imag="0" permeability="1" velocity_angular="0"/>
+            </labels>
+        </problem>
+    </problems>
+    <geometry>
+        <nodes>
+            <node x="0.01" y="0.00125" id="0"/>
+            <node x="0.01" y="-0.00125" id="1"/>
+            <node x="0.0075" y="0.00125" id="2"/>
+            <node x="0.0075" y="-0.00125" id="3"/>
+            <node x="0" y="0.04" id="4"/>
+            <node x="0.05" y="0.04" id="5"/>
+            <node x="0.05" y="-0.08" id="6"/>
+            <node x="0" y="-0.08" id="7"/>
+            <node x="0.01" y="0.00625" id="8"/>
+            <node x="0.01" y="0.00375" id="9"/>
+            <node x="0.0075" y="0.00625" id="10"/>
+            <node x="0.0075" y="0.00375" id="11"/>
+            <node x="0.01" y="-0.01475000000000001" id="12"/>
+            <node x="0.01" y="-0.02125000000000001" id="13"/>
+            <node x="0.0075" y="-0.01475000000000001" id="14"/>
+            <node x="0.0075" y="-0.02125000000000001" id="15"/>
+        </nodes>
+        <edges>
+            <edge end="5" refine_towards="0" marker="1" id="0" start="4" angle="0"/>
+            <edge end="6" refine_towards="0" marker="1" id="1" start="5" angle="0"/>
+            <edge end="7" refine_towards="0" marker="1" id="2" start="6" angle="0"/>
+            <edge end="4" refine_towards="0" marker="1" id="3" start="7" angle="0"/>
+            <edge end="0" refine_towards="0" marker="0" id="4" start="2" angle="0"/>
+            <edge end="1" refine_towards="0" marker="0" id="5" start="0" angle="0"/>
+            <edge end="3" refine_towards="0" marker="0" id="6" start="1" angle="0"/>
+            <edge end="3" refine_towards="0" marker="0" id="7" start="2" angle="0"/>
+            <edge end="8" refine_towards="0" marker="0" id="8" start="10" angle="0"/>
+            <edge end="8" refine_towards="0" marker="0" id="9" start="9" angle="0"/>
+            <edge end="11" refine_towards="0" marker="0" id="10" start="10" angle="0"/>
+            <edge end="11" refine_towards="0" marker="0" id="11" start="9" angle="0"/>
+            <edge end="12" refine_towards="0" marker="0" id="12" start="14" angle="0"/>
+            <edge end="13" refine_towards="0" marker="0" id="13" start="12" angle="0"/>
+            <edge end="15" refine_towards="0" marker="0" id="14" start="13" angle="0"/>
+            <edge end="15" refine_towards="0" marker="0" id="15" start="14" angle="0"/>
+        </edges>
+        <labels>
+            <label x="0.008704691305356789" y="0.0002046367594877234" polynomialorder="0" marker="2" id="0" area="0"/>
+            <label x="0.027331" y="0.0261643" polynomialorder="0" marker="1" id="1" area="0"/>
+            <label x="0.008834334915109543" y="0.00543333583048046" polynomialorder="0" marker="2" id="2" area="0"/>
+            <label x="0.009024435087982553" y="-0.0168831321142232" polynomialorder="0" marker="3" id="3" area="0"/>
+        </labels>
+    </geometry>
+    <config SceneViewSettings_ParticleMass="9.108999999999999e-31" SceneViewSettings_ParticleShowPoints="0" SceneViewSettings_ParticleDragReferenceArea="1e-06" SceneViewSettings_VectorColor="1" SceneViewSettings_PaletteType="0" SceneViewSettings_ScalarRangeLog="0" SceneViewSettings_ScalarRangeBase="10" SceneViewSettings_ParticleNumberOfParticles="15" SceneViewSettings_ParticleColorByVelocity="0" SceneViewSettings_VectorProportional="1" SceneViewSettings_ParticleStartVelocityX="0" SceneViewSettings_ContoursCount="15" SceneViewSettings_ParticleStartVelocityY="-10000000" SceneViewSettings_PaletteSteps="30" SceneViewSettings_ShowOrderScale="1" SceneViewSettings_ParticleDragCoefficient="0" SceneViewSettings_ParticleDragDensity="1.2041" SceneViewSettings_ScalarDecimalPlace="2" SceneViewSettings_ParticleStartingRadius="0.005" SceneViewSettings_ParticleMaximumSteps="700" SceneViewSettings_ShowScalarScale="1" SceneViewSettings_VectorScale="0.6" SceneViewSettings_PaletteFilter="1" SceneViewSettings_ParticleTerminateOnDifferentMaterial="1" SceneViewSettings_ParticleMaximumRelativeError="1e-07" SceneViewSettings_OrderLabel="0" SceneViewSettings_ParticleStartX="0.004" SceneViewSettings_ParticleIncludeGravitation="0" SceneViewSettings_OrderPaletteOrderType="0" SceneViewSettings_ParticleStartY="0.017" SceneViewSettings_ParticleConstant="1.602e-19" SceneViewSettings_VectorNumber="50"/>
+</document>

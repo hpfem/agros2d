@@ -66,11 +66,20 @@
             </xsl:attribute>
             <xsl:attribute name="mesh_type">
                 <xsl:choose>
-                    <xsl:when test="/document/problem/@mesh_type!=null">
+                    <xsl:when test="/document/problem/@mesh_type">
                         <xsl:value-of select="/document/problem/@mesh_type" />
                     </xsl:when>
                     <xsl:otherwise>triangle</xsl:otherwise>
                 </xsl:choose>
+            </xsl:attribute>
+            <xsl:attribute name="frequency">
+                <xsl:value-of select="/document/problem/@frequency" />
+            </xsl:attribute>
+            <xsl:attribute name="time_total">
+                <xsl:value-of select="/document/problem/@time_total" />
+            </xsl:attribute>
+            <xsl:attribute name="time_steps">
+                <xsl:value-of select="/document/problem/@time_steps" />
             </xsl:attribute>
 
             <!-- fields -->
@@ -225,14 +234,13 @@
                                 </xsl:element>
                             </xsl:for-each>
                         </xsl:element>
-
                     </xsl:element>
                 </xsl:for-each>
             </xsl:element>
 
             <!-- couplings -->
             <xsl:choose>
-                <xsl:when test="/document/problem/couplings!=null">
+                <xsl:when test="/document/problem/couplings">
                     <xsl:copy-of select="/document/problem/couplings"/>
                 </xsl:when>
                 <xsl:otherwise><xsl:element name="couplings"></xsl:element></xsl:otherwise>

@@ -50,7 +50,7 @@
                         <xsl:attribute name="refine_towards">
                             <xsl:variable name="refine_towards" select="/document/geometry/edges/edge/@refine_towards" />
                             <xsl:choose>
-                                <xsl:when test="$refine_towards!=null">
+                                <xsl:when test="$refine_towards">
                                     <xsl:value-of select="$refine_towards" />
                                 </xsl:when>
                                 <xsl:otherwise>0</xsl:otherwise>
@@ -77,7 +77,7 @@
                         <xsl:attribute name="polynomial_order">
                             <xsl:variable name="polynomial_order" select="/document/geometry/labels/label/@polynomial_order" />
                             <xsl:choose>
-                                <xsl:when test="$polynomial_order!=null">
+                                <xsl:when test="$polynomial_order">
                                     <xsl:value-of select="$polynomial_order" />
                                 </xsl:when>
                                 <xsl:otherwise>0</xsl:otherwise>
@@ -158,7 +158,7 @@
                         <xsl:attribute name="max_dofs">
                             <xsl:variable name="max_dofs" select="/document/problems/problem/@maxdofs" />
                             <xsl:choose>
-                                <xsl:when test="$max_dofs!=null">
+                                <xsl:when test="$max_dofs">
                                     <xsl:value-of select="$max_dofs" />
                                 </xsl:when>
                                 <xsl:otherwise>60000</xsl:otherwise>
@@ -170,7 +170,7 @@
                         <xsl:attribute name="nonlinear_tolerance">
                             <xsl:variable name="nonlinear_tolerance" select="/document/problems/problem/@nonlineartolerance" />
                             <xsl:choose>
-                                <xsl:when test="$nonlinear_tolerance!=null">
+                                <xsl:when test="$nonlinear_tolerance">
                                     <xsl:value-of select="$nonlinear_tolerance" />
                                 </xsl:when>
                                 <xsl:otherwise>1e-3</xsl:otherwise>
@@ -179,7 +179,7 @@
                         <xsl:attribute name="nonlinear_steps">
                             <xsl:variable name="nonlinear_steps" select="/document/problems/problem/@nonlinearsteps" />
                             <xsl:choose>
-                                <xsl:when test="$nonlinear_steps!=null">
+                                <xsl:when test="$nonlinear_steps">
                                     <xsl:value-of select="$nonlinear_steps" />
                                 </xsl:when>
                                 <xsl:otherwise>10</xsl:otherwise>
@@ -188,7 +188,7 @@
                         <xsl:attribute name="linearity_type">
                             <xsl:variable name="linearity_type" select="/document/problems/problem/@linearity" />
                             <xsl:choose>
-                                <xsl:when test="$linearity_type!=null">
+                                <xsl:when test="$linearity_type">
                                     <xsl:value-of select="$linearity_type" />
                                 </xsl:when>
                                 <xsl:otherwise>linear</xsl:otherwise>
@@ -199,7 +199,7 @@
                     <!-- boundaries -->
                     <xsl:element name="boundaries">
                         <xsl:choose>
-                            <xsl:when test="$current_version!=null">
+                            <xsl:when test="$current_version">
                                 <!-- transformation from version 2.0 -->
                                 <xsl:for-each select="/document/problems/problem/edges/edge">
                                     <xsl:element name="boundary">
@@ -272,18 +272,8 @@
                                             <xsl:attribute name="heat_heat_flux">
                                                 <xsl:value-of select="@heat_flux"/>
                                             </xsl:attribute>
-                                        </xsl:if>
-                                        <xsl:if test="@type='heat_heat_flux'">
-                                            <xsl:attribute name="type">
-                                                <xsl:value-of select="@type"/>
-                                            </xsl:attribute>
                                             <xsl:attribute name="heat_convection_heat_transfer_coefficient">
                                                 <xsl:value-of select="@h"/>
-                                            </xsl:attribute>
-                                        </xsl:if>
-                                        <xsl:if test="@type='heat_heat_flux'">
-                                            <xsl:attribute name="type">
-                                                <xsl:value-of select="@type"/>
                                             </xsl:attribute>
                                             <xsl:attribute name="heat_convection_external_temperature">
                                                 <xsl:value-of select="@external_temperature"/>
@@ -313,7 +303,7 @@
                                                 <xsl:value-of select="@type"/>
                                             </xsl:attribute>
                                             <xsl:attribute name="acoustic_impedance">
-                                                <xsl:value-of select="@acoustic_impedance"/>
+                                                <xsl:value-of select="@impedance"/>
                                             </xsl:attribute>
                                         </xsl:if>
                                         <xsl:if test="@type='acoustic_matched_boundary'">
@@ -333,7 +323,7 @@
 
                                         <!-- rf field -->
                                         <xsl:if test="@type='rf_electric_field'">
-                                            <xsl:attribute name="type">rf_electric_field</xsl:attribute>
+                                            <xsl:attribute name="type">rf_te_electric_field</xsl:attribute>
                                             <xsl:attribute name="rf_te_electric_field_real">
                                                 <xsl:value-of select="@value_real"/>
                                             </xsl:attribute>
@@ -369,7 +359,8 @@
                                             </xsl:attribute>
                                         </xsl:if>
                                         <xsl:if test="@type='rf_matched_boundary'">
-                                            <xsl:attribute name="type">rf_te_matched_boundary</xsl:attribute>
+                                            <xsl:attribute name="type">rf_te_impedance</xsl:attribute>
+                                            <xsl:attribute name="rf_te_impedance">428.75</xsl:attribute>
                                         </xsl:if>
 
                                         <!-- elasticity -->
@@ -437,7 +428,7 @@
                     <!-- materials -->
                     <xsl:element name="materials">
                         <xsl:choose>
-                            <xsl:when test="$current_version!=null">
+                            <xsl:when test="$current_version">
                                 <!-- transformation from version 2.0 -->
                                 <xsl:for-each select="/document/problems/problem/labels/label">
                                     <xsl:element name="material">

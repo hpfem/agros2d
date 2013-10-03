@@ -1,0 +1,72 @@
+<document>
+    <problems>
+        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="steadystate" initialcondition="0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Magnetic Steadystate Axisymmetric Actuator" date="2011-07-09" polynomialorder="3" meshtype="triangle" timestep="1" problemtype="axisymmetric" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="1" frequency="0" matrix_solver="umfpack" type="magnetic" timetotal="1">
+            <scriptstartup></scriptstartup>
+            <description>This model is an example.</description>
+            <edges>
+                <edge value_imag="0" type="magnetic_vector_potential" id="1" name="A = 0" value_real="0"/>
+            </edges>
+            <labels>
+                <label current_density_real="0" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="1" name="Air" current_density_imag="0" permeability="1" velocity_angular="0"/>
+                <label current_density_real="0" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="2" name="Iron" current_density_imag="0" permeability="300" velocity_angular="0"/>
+                <label current_density_real="1e6" remanence="0" conductivity="0" velocity_x="0" velocity_y="0" remanence_angle="0" id="3" name="Copper" current_density_imag="0" permeability="1" velocity_angular="0"/>
+            </labels>
+        </problem>
+    </problems>
+    <geometry>
+        <nodes>
+            <node x="0.01" y="0.01" id="0"/>
+            <node x="0.01" y="0" id="1"/>
+            <node x="0.04000000000000001" y="0" id="2"/>
+            <node x="0.04000000000000001" y="0.1" id="3"/>
+            <node x="0" y="0.1" id="4"/>
+            <node x="0" y="0.08" id="5"/>
+            <node x="0.01" y="0.08" id="6"/>
+            <node x="0.01" y="0.09" id="7"/>
+            <node x="0.03" y="0.09" id="8"/>
+            <node x="0.03" y="0.01" id="9"/>
+            <node x="0.012" y="0.08799999999999999" id="10"/>
+            <node x="0.012" y="0.012" id="11"/>
+            <node x="0.028" y="0.012" id="12"/>
+            <node x="0.028" y="0.08799999999999999" id="13"/>
+            <node x="0" y="0.05" id="14"/>
+            <node x="0.008999999999999999" y="0.05" id="15"/>
+            <node x="0.008999999999999999" y="-0.02" id="16"/>
+            <node x="0" y="-0.02" id="17"/>
+            <node x="0" y="0.15" id="18"/>
+            <node x="0" y="-0.05" id="19"/>
+            <node x="0.1" y="0.05" id="20"/>
+        </nodes>
+        <edges>
+            <edge end="1" refine_towards="0" marker="0" id="0" start="0" angle="0"/>
+            <edge end="2" refine_towards="0" marker="0" id="1" start="1" angle="0"/>
+            <edge end="3" refine_towards="0" marker="0" id="2" start="2" angle="0"/>
+            <edge end="4" refine_towards="0" marker="0" id="3" start="3" angle="0"/>
+            <edge end="5" refine_towards="0" marker="1" id="4" start="4" angle="0"/>
+            <edge end="6" refine_towards="0" marker="0" id="5" start="5" angle="0"/>
+            <edge end="8" refine_towards="0" marker="0" id="6" start="7" angle="0"/>
+            <edge end="6" refine_towards="0" marker="0" id="7" start="7" angle="0"/>
+            <edge end="9" refine_towards="0" marker="0" id="8" start="8" angle="0"/>
+            <edge end="9" refine_towards="0" marker="0" id="9" start="0" angle="0"/>
+            <edge end="11" refine_towards="0" marker="0" id="10" start="10" angle="0"/>
+            <edge end="12" refine_towards="0" marker="0" id="11" start="11" angle="0"/>
+            <edge end="13" refine_towards="0" marker="0" id="12" start="12" angle="0"/>
+            <edge end="10" refine_towards="0" marker="0" id="13" start="13" angle="0"/>
+            <edge end="15" refine_towards="0" marker="0" id="14" start="14" angle="0"/>
+            <edge end="16" refine_towards="0" marker="0" id="15" start="15" angle="0"/>
+            <edge end="17" refine_towards="0" marker="1" id="16" start="14" angle="0"/>
+            <edge end="16" refine_towards="0" marker="0" id="17" start="17" angle="0"/>
+            <edge end="4" refine_towards="0" marker="1" id="18" start="18" angle="0"/>
+            <edge end="14" refine_towards="0" marker="1" id="19" start="5" angle="0"/>
+            <edge end="19" refine_towards="0" marker="1" id="20" start="17" angle="0"/>
+            <edge end="20" refine_towards="0" marker="1" id="21" start="19" angle="90"/>
+            <edge end="18" refine_towards="0" marker="1" id="22" start="20" angle="90"/>
+        </edges>
+        <labels>
+            <label x="0.03487431206306708" y="0.03472367950279597" polynomialorder="0" marker="2" id="0" area="0"/>
+            <label x="0.021206" y="0.06929639999999999" polynomialorder="0" marker="3" id="1" area="0"/>
+            <label x="0.0141705" y="0.12445" polynomialorder="0" marker="1" id="2" area="0"/>
+            <label x="0.00512569" y="0.040852" polynomialorder="0" marker="2" id="3" area="0"/>
+        </labels>
+    </geometry>
+</document>

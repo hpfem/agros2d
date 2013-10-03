@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<document version="2.1">
+    <geometry>
+        <nodes>
+            <node x="0.02499999999999991" y="0.24" id="0"/>
+            <node x="0.02499999999999991" y="0.247" id="1"/>
+            <node x="0.02499999999999991" y="0.227" id="2"/>
+            <node x="0.02800000000000002" y="0.224" id="3"/>
+            <node x="0.05099999999999993" y="0.217" id="4"/>
+            <node x="0.05000000000000004" y="0.215" id="5"/>
+            <node x="0.03099999999999992" y="0.217" id="6"/>
+            <node x="0.02499999999999991" y="0.215" id="7"/>
+            <node x="0.02499999999999991" y="0.202" id="8"/>
+            <node x="0.02800000000000002" y="0.199" id="9"/>
+            <node x="0.05099999999999993" y="0.1919999999999999" id="10"/>
+            <node x="0.05000000000000004" y="0.1899999999999999" id="11"/>
+            <node x="0.03099999999999992" y="0.1929999999999999" id="12"/>
+            <node x="0.02499999999999991" y="0.1899999999999999" id="13"/>
+            <node x="0.02499999999999991" y="0.177" id="14"/>
+            <node x="0.02800000000000002" y="0.174" id="15"/>
+            <node x="0.03099999999999992" y="0.167" id="16"/>
+            <node x="0.02499999999999991" y="0.165" id="17"/>
+            <node x="0.02499999999999991" y="0.152" id="18"/>
+            <node x="0.02800000000000002" y="0.149" id="19"/>
+            <node x="0.05099999999999993" y="0.142" id="20"/>
+            <node x="0.05000000000000004" y="0.14" id="21"/>
+            <node x="0.03099999999999992" y="0.142" id="22"/>
+            <node x="0.02499999999999991" y="0.14" id="23"/>
+            <node x="0.02499999999999991" y="0.127" id="24"/>
+            <node x="0.02800000000000002" y="0.124" id="25"/>
+            <node x="0.05099999999999993" y="0.117" id="26"/>
+            <node x="0.05000000000000004" y="0.115" id="27"/>
+            <node x="0.03099999999999992" y="0.117" id="28"/>
+            <node x="0.02499999999999991" y="0.115" id="29"/>
+            <node x="0.02499999999999991" y="0.102" id="30"/>
+            <node x="0.02800000000000002" y="0.09899999999999998" id="31"/>
+            <node x="0.05099999999999993" y="0.09199999999999997" id="32"/>
+            <node x="0.05000000000000004" y="0.08999999999999997" id="33"/>
+            <node x="0.03099999999999992" y="0.09199999999999997" id="34"/>
+            <node x="0.02499999999999991" y="0.08999999999999997" id="35"/>
+            <node x="0.02499999999999991" y="0.07699999999999996" id="36"/>
+            <node x="0.02800000000000002" y="0.07399999999999995" id="37"/>
+            <node x="0.03099999999999992" y="0.06699999999999995" id="38"/>
+            <node x="0.02499999999999991" y="0.06499999999999995" id="39"/>
+            <node x="0.02499999999999991" y="0.05200000000000005" id="40"/>
+            <node x="0.02800000000000002" y="0.04900000000000004" id="41"/>
+            <node x="0.05099999999999993" y="0.04200000000000004" id="42"/>
+            <node x="0.05000000000000004" y="0.04000000000000004" id="43"/>
+            <node x="0.03099999999999992" y="0.04200000000000004" id="44"/>
+            <node x="0.02499999999999991" y="0.04000000000000004" id="45"/>
+            <node x="0.02499999999999991" y="0.008000000000000007" id="46"/>
+            <node x="0.02499999999999991" y="0" id="47"/>
+            <node x="0" y="0" id="48"/>
+            <node x="0.02000000000000002" y="0.008000000000000007" id="49"/>
+            <node x="0.02000000000000002" y="0.03910000000000002" id="50"/>
+            <node x="0.02000000000000002" y="0.03939999999999999" id="51"/>
+            <node x="0.02000000000000002" y="0.08209999999999995" id="52"/>
+            <node x="0.02000000000000002" y="0.08240000000000003" id="53"/>
+            <node x="0.02000000000000002" y="0.1242" id="54"/>
+            <node x="0.02000000000000002" y="0.1245000000000001" id="55"/>
+            <node x="0.02000000000000002" y="0.1663" id="56"/>
+            <node x="0.02000000000000002" y="0.1666" id="57"/>
+            <node x="0.02000000000000002" y="0.2083" id="58"/>
+            <node x="0.02000000000000002" y="0.24" id="59"/>
+            <node x="0" y="0.03939999999999999" id="60"/>
+            <node x="0" y="0.08209999999999995" id="61"/>
+            <node x="0" y="0.08240000000000003" id="62"/>
+            <node x="0" y="0.1242" id="63"/>
+            <node x="0" y="0.1245000000000001" id="64"/>
+            <node x="0" y="0.1663" id="65"/>
+            <node x="0" y="0.1666" id="66"/>
+            <node x="0" y="0.2083" id="67"/>
+            <node x="0" y="0.247" id="68"/>
+            <node x="0.05145197602220786" y="0.04095344571000514" id="69"/>
+            <node x="0.02000000000000002" y="0.2086" id="70"/>
+            <node x="0.02099999999999991" y="0.24" id="71"/>
+            <node x="0.02099999999999991" y="0.008000000000000007" id="72"/>
+            <node x="0" y="-0.25" id="73"/>
+            <node x="0" y="0.5" id="74"/>
+            <node x="0.05099999999999993" y="0.06700000000000003" id="75"/>
+            <node x="0.05000000000000004" y="0.06500000000000004" id="76"/>
+            <node x="0.05145197602220786" y="0.06595344571000514" id="77"/>
+            <node x="0.05145197602220786" y="0.09095344571000513" id="78"/>
+            <node x="0.05145197602220786" y="0.1159534457100051" id="79"/>
+            <node x="0.05145197602220786" y="0.1409534457100051" id="80"/>
+            <node x="0.05099999999999993" y="0.167" id="81"/>
+            <node x="0.05000000000000004" y="0.165" id="82"/>
+            <node x="0.05145197602220786" y="0.1659534457100051" id="83"/>
+            <node x="0.05145197602220786" y="0.1909534457100051" id="84"/>
+            <node x="0.05145197602220786" y="0.2159534457100051" id="85"/>
+        </nodes>
+        <edges>
+            <edge end="1" id="0" start="0" angle="0"/>
+            <edge end="0" id="1" start="2" angle="0"/>
+            <edge end="4" id="2" start="3" angle="0"/>
+            <edge end="6" id="3" start="5" angle="0"/>
+            <edge end="8" id="4" start="7" angle="0"/>
+            <edge end="10" id="5" start="9" angle="0"/>
+            <edge end="12" id="6" start="11" angle="0"/>
+            <edge end="14" id="7" start="13" angle="0"/>
+            <edge end="18" id="8" start="17" angle="0"/>
+            <edge end="20" id="9" start="19" angle="0"/>
+            <edge end="22" id="10" start="21" angle="0"/>
+            <edge end="24" id="11" start="23" angle="0"/>
+            <edge end="26" id="12" start="25" angle="0"/>
+            <edge end="28" id="13" start="27" angle="0"/>
+            <edge end="30" id="14" start="29" angle="0"/>
+            <edge end="32" id="15" start="31" angle="0"/>
+            <edge end="34" id="16" start="33" angle="0"/>
+            <edge end="36" id="17" start="35" angle="0"/>
+            <edge end="40" id="18" start="39" angle="0"/>
+            <edge end="42" id="19" start="41" angle="0"/>
+            <edge end="44" id="20" start="43" angle="0"/>
+            <edge end="46" id="21" start="45" angle="0"/>
+            <edge end="47" id="22" start="46" angle="0"/>
+            <edge end="48" id="23" start="47" angle="0"/>
+            <edge end="50" id="24" start="49" angle="0"/>
+            <edge end="51" id="25" start="50" angle="0"/>
+            <edge end="52" id="26" start="51" angle="0"/>
+            <edge end="53" id="27" start="52" angle="0"/>
+            <edge end="54" id="28" start="53" angle="0"/>
+            <edge end="55" id="29" start="54" angle="0"/>
+            <edge end="56" id="30" start="55" angle="0"/>
+            <edge end="57" id="31" start="56" angle="0"/>
+            <edge end="58" id="32" start="57" angle="0"/>
+            <edge end="61" id="33" start="52" angle="0"/>
+            <edge end="62" id="34" start="61" angle="0"/>
+            <edge end="63" id="35" start="54" angle="0"/>
+            <edge end="64" id="36" start="63" angle="0"/>
+            <edge end="65" id="37" start="56" angle="0"/>
+            <edge end="66" id="38" start="65" angle="0"/>
+            <edge end="67" id="39" start="58" angle="0"/>
+            <edge end="1" id="40" start="68" angle="0"/>
+            <edge end="61" id="41" start="60" angle="0"/>
+            <edge end="51" id="42" start="60" angle="0"/>
+            <edge end="63" id="43" start="62" angle="0"/>
+            <edge end="53" id="44" start="62" angle="0"/>
+            <edge end="65" id="45" start="64" angle="0"/>
+            <edge end="55" id="46" start="64" angle="0"/>
+            <edge end="67" id="47" start="66" angle="0"/>
+            <edge end="57" id="48" start="66" angle="0"/>
+            <edge end="69" id="49" start="43" angle="80"/>
+            <edge end="42" id="50" start="69" angle="70"/>
+            <edge end="59" id="51" start="70" angle="0"/>
+            <edge end="70" id="52" start="58" angle="0"/>
+            <edge end="0" id="53" start="71" angle="0"/>
+            <edge end="71" id="54" start="59" angle="0"/>
+            <edge end="49" id="55" start="72" angle="0"/>
+            <edge end="72" id="56" start="46" angle="0"/>
+            <edge end="72" id="57" start="71" angle="0"/>
+            <edge end="74" id="58" start="73" angle="180"/>
+            <edge end="68" id="59" start="74" angle="0"/>
+            <edge end="73" id="60" start="48" angle="0"/>
+            <edge end="45" id="61" start="44" angle="45"/>
+            <edge end="76" id="62" start="38" angle="0"/>
+            <edge end="37" id="63" start="75" angle="0"/>
+            <edge end="41" id="64" start="40" angle="55"/>
+            <edge end="39" id="65" start="38" angle="45"/>
+            <edge end="37" id="66" start="36" angle="55"/>
+            <edge end="82" id="67" start="16" angle="0"/>
+            <edge end="83" id="68" start="82" angle="80"/>
+            <edge end="81" id="69" start="83" angle="70"/>
+            <edge end="15" id="70" start="81" angle="0"/>
+            <edge end="84" id="71" start="11" angle="80"/>
+            <edge end="10" id="72" start="84" angle="70"/>
+            <edge end="80" id="73" start="21" angle="80"/>
+            <edge end="20" id="74" start="80" angle="70"/>
+            <edge end="79" id="75" start="27" angle="80"/>
+            <edge end="26" id="76" start="79" angle="70"/>
+            <edge end="78" id="77" start="33" angle="80"/>
+            <edge end="32" id="78" start="78" angle="70"/>
+            <edge end="77" id="79" start="76" angle="80"/>
+            <edge end="75" id="80" start="77" angle="70"/>
+            <edge end="85" id="81" start="5" angle="80"/>
+            <edge end="4" id="82" start="85" angle="70"/>
+            <edge end="35" id="83" start="34" angle="45"/>
+            <edge end="31" id="84" start="30" angle="55"/>
+            <edge end="29" id="85" start="28" angle="45"/>
+            <edge end="25" id="86" start="24" angle="55"/>
+            <edge end="23" id="87" start="22" angle="45"/>
+            <edge end="19" id="88" start="18" angle="55"/>
+            <edge end="17" id="89" start="16" angle="45"/>
+            <edge end="15" id="90" start="14" angle="55"/>
+            <edge end="13" id="91" start="12" angle="45"/>
+            <edge end="9" id="92" start="8" angle="55"/>
+            <edge end="7" id="93" start="6" angle="45"/>
+            <edge end="3" id="94" start="2" angle="55"/>
+        </edges>
+        <labels>
+            <label x="0.0998906" y="0.127835" id="0" area="0"/>
+            <label x="0.009889749999999999" y="0.186791" id="1" area="0"/>
+            <label x="0.01017437235888598" y="0.1435285707170678" id="2" area="0"/>
+            <label x="0.0104589952311539" y="0.1039659914718254" id="3" area="0"/>
+            <label x="0.01017437235888598" y="0.06212642924843963" id="4" area="0"/>
+            <label x="0.0205122" y="0.223519" id="5" area="0"/>
+            <label x="0.0229784" y="0.0232514" id="6" area="0"/>
+            <label x="0.00978188" y="0.166438" id="7" area="0"/>
+            <label x="0.009892720000000001" y="0.124325" id="8" area="0"/>
+            <label x="0.0101315" y="0.0822441" id="9" area="0"/>
+        </labels>
+    </geometry>
+    <problem time_order="1" frequency="0" time_method="fixed" time_method_tolerance="0.05" matrix_solver="umfpack" coordinate_type="axisymmetric" mesh_type="triangle" time_steps="2" name="Surge Arrester" time_total="1.0">
+        <fields>
+            <field field_id="electrostatic" initial_condition="0.0" polynomial_order="2" number_of_refinements="0" time_skip="0.0" analysis_type="steadystate">
+                <refinement>
+                    <edges/>
+                    <labels/>
+                </refinement>
+                <polynomial_order/>
+                <adaptivity adaptivity_type="disabled" adaptivity_back_steps="0" adaptivity_redone_each="1" adaptivity_tolerance="5" adaptivity_steps="10"/>
+                <solver linearity_type="linear" picard_anderson_acceleration="1" newton_automatic_damping="1" picard_anderson_beta="0.2" picard_anderson_vectors="3" newton_damping_coeff="1" newton_damping_number_to_increase="1" nonlinear_steps="10" nonlinear_tolerance="0.001"/>
+                <boundaries>
+                    <boundary type="electrostatic_surface_charge_density" id="1" name="Border" electrostatic_surface_charge_density="0">
+                        <edge edge="34"/>
+                        <edge edge="36"/>
+                        <edge edge="38"/>
+                        <edge edge="41"/>
+                        <edge edge="43"/>
+                        <edge edge="45"/>
+                        <edge edge="47"/>
+                        <edge edge="58"/>
+                        <edge edge="59"/>
+                        <edge edge="60"/>
+                    </boundary>
+                    <boundary electrostatic_potential="4.24e4" type="electrostatic_potential" id="2" name="Source">
+                        <edge edge="0"/>
+                        <edge edge="39"/>
+                        <edge edge="40"/>
+                        <edge edge="51"/>
+                        <edge edge="52"/>
+                        <edge edge="53"/>
+                        <edge edge="54"/>
+                    </boundary>
+                    <boundary electrostatic_potential="0" type="electrostatic_potential" id="3" name="Ground">
+                        <edge edge="22"/>
+                        <edge edge="23"/>
+                        <edge edge="24"/>
+                        <edge edge="25"/>
+                        <edge edge="42"/>
+                        <edge edge="55"/>
+                        <edge edge="56"/>
+                    </boundary>
+                </boundaries>
+                <materials>
+                    <material id="1" electrostatic_charge_density="0" name="Air" electrostatic_permittivity="1">
+                        <label label="0"/>
+                    </material>
+                    <material id="2" electrostatic_charge_density="0" name="Insulator" electrostatic_permittivity="3.9">
+                        <label label="6"/>
+                    </material>
+                    <material id="3" electrostatic_charge_density="0" name="ZnO" electrostatic_permittivity="60">
+                        <label label="1"/>
+                        <label label="2"/>
+                        <label label="3"/>
+                        <label label="4"/>
+                    </material>
+                    <material id="4" electrostatic_charge_density="0" name="Resin" electrostatic_permittivity="4.6">
+                        <label label="5"/>
+                    </material>
+                    <material id="5" electrostatic_charge_density="0" name="Conductor" electrostatic_permittivity="1e6">
+                        <label label="7"/>
+                        <label label="8"/>
+                        <label label="9"/>
+                    </material>
+                </materials>
+            </field>
+        </fields>
+        <couplings/>
+    </problem>
+    <config View_ColorSolutionMesh_blue="0" View_ParticleReflectOnDifferentMaterial="1" Adaptivity_Threshold="0.3" View_ColorContours_green="0" View_ScalarView3DAngle="240" View_SnapToGrid="1" View_ColorSolutionMesh_red="150" View_ContourVariable="electrostatic_potential" View_ColorEdges_blue="150" View_ParticleMaximumRelativeError="0.01" View_ParticleDragCoefficient="0" Adaptivity_IsoOnly="0" View_ScalarVariableComp="1" View_ScalarVariable="electrostatic_potential" View_ShowParticleView="0" View_ParticleCoefficientOfRestitution="0" View_ColorContours_blue="0" Adaptivity_UseAniso="1" View_OrderLabel="0" View_PaletteType="0" View_ColorEdges_green="0" View_ScalarView3DBoundingBox="1" Adaptivity_MeshRegularity="-1" Adaptivity_FinerReference="0" View_ParticleMinimumStep="0" View_LinearizerQuality="normal" View_NodeSize="6" View_ScalarView3DBackground="1" Problem_Description="" View_EdgeWidth="2" View_PaletteSteps="30" View_ColorCross_green="150" View_SolidViewHide="" View_ColorContours_red="0" View_ContoursWidth="1" View_PostFont="fontGoogleDroidMono14" View_ScalarView3DHeight="4" View_VectorNumber="50" View_VectorColor="1" View_ParticleDragReferenceArea="1e-06" Adaptivity_MaxDofs="60000" View_ColorEdges_red="0" View_ScalarDecimalPlace="2" View_MeshAngleSegmentsCount="3" View_ParticleNumberOfParticles="5" View_ColorBackground_blue="255" View_ShowScalarView="1" View_ColorGrid_blue="200" View_ShowSolutionMeshView="0" Commands_Triangle="%1 -p -P -q31.0 -e -A -a -z -Q -I -n -o2 &quot;%2&quot;" View_ScalarView3DLighting="0" View_ContoursCount="15" View_ScalarRangeAuto="1" View_OrderPaletteOrderType="0" View_ColorNodes_blue="0" View_ScalarRangeLog="0" View_ShowAxes="1" View_VectorProportional="1" View_ParticleStartVelocityX="0" View_ParticleStartVelocityY="0" View_VectorType="0" View_ShowInitialMeshView="1" View_GridStep="0.05" View_ColorLabels_blue="0" View_ParticleIncludeRelativisticCorrection="1" View_ColorLabels_green="150" View_ParticleStartX="0" View_ParticleStartY="0" View_RulersFont="fontGoogleDroidMono10" View_ColorBackground_red="255" View_DeformContour="1" View_ParticleShowPoints="0" View_ColorGrid_red="200" View_ColorInitialMesh_green="150" View_PaletteFilter="0" View_ColorVectors_green="0" View_ParticleReflectOnBoundary="0" Adaptivity_ConvExp="1" View_ShowGrid="1" Adaptivity_ProjNormType="1" View_LabelSize="6" View_ColorSolutionMesh_green="0" View_ShowPost3D="0" View_VectorScale="0.6" Adaptivity_Strategy="0" View_ShowOrderView="1" View_ColorNodes_green="0" View_ShowOrderColorBar="1" View_ColorNodes_red="150" View_ScalarRangeMin="-9.094947017729282e-13" View_ParticleStartingRadius="0" View_ParticleColorByVelocity="1" View_ColorBackground_green="255" View_MeshCurvilinearElements="1" View_DeformScalar="1" View_ColorCross_blue="150" View_ColorInitialMesh_blue="0" View_ColorCross_red="150" View_DeformVector="1" View_ShowContourView="0" View_ScalarRangeMax="42400.00000000001" View_ColorVectors_red="0" View_ColorVectors_blue="0" View_ParticleMaximumNumberOfSteps="500" View_ParticleConstant="1.602e-19" View_VectorCenter="0" View_ParticleMass="9.108999999999999e-31" View_ParticleCustomForceX="0" View_ScalarRangeBase="10" View_ParticleCustomForceY="0" View_ParticleCustomForceZ="0" View_ColorGrid_green="200" View_VectorVariable="electrostatic_electric_field" Commands_Gmsh="%1 -2 &quot;%2.geo&quot;" View_ShowScalarColorBar="1" View_ShowVectorView="0" View_ColorInitialMesh_red="250" View_ShowRulers="1" View_ActiveField="" View_ParticleDragDensity="1.2041" General_ZoomToMouse="1" Problem_StartupScript="" View_ColorLabels_red="0"/>
+</document>

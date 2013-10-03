@@ -1,0 +1,50 @@
+<document>
+    <problems>
+        <problem maxdofs="60000" adaptivitytolerance="1" id="0" analysistype="harmonic" initialcondition="0.0" linearitysteps="10" adaptivitysteps="1" linearity="linear" name="Waveguide R100" date="2011-04-13" polynomialorder="5" meshtype="triangle" timestep="1.0" problemtype="planar" adaptivitytype="disabled" linearitytolerance="0.001" numberofrefinements="0" frequency="16000000000" matrix_solver="umfpack" type="rf" timetotal="1.0">
+            <scriptstartup></scriptstartup>
+            <description></description>
+            <edges>
+                <edge value_imag="0" type="rf_electric_field" id="1" name="Perfect electric conductor" value_real="0"/>
+                <edge type="rf_matched_boundary" id="2" name="Matched boundary"/>
+                <edge value_imag="0" type="rf_electric_field" id="3" name="Surface current" value_real="1"/>
+            </edges>
+            <labels>
+                <label current_density_real="0" conductivity="0" id="1" name="Air" current_density_imag="0" permeability="1" permittivity="1"/>
+            </labels>
+        </problem>
+    </problems>
+    <geometry>
+        <nodes>
+            <node x="0.17" y="0.02286" id="0"/>
+            <node x="0" y="0" id="1"/>
+            <node x="0" y="0.02286" id="2"/>
+            <node x="0.17" y="0" id="3"/>
+            <node x="0.07600000000000001" y="0.00693" id="4"/>
+            <node x="0.08100000000000002" y="0.00693" id="5"/>
+            <node x="0.08100000000000002" y="0" id="6"/>
+            <node x="0.07600000000000001" y="0" id="7"/>
+            <node x="0.07600000000000001" y="0.02286" id="8"/>
+            <node x="0.07600000000000001" y="0.01593" id="9"/>
+            <node x="0.08100000000000002" y="0.01593" id="10"/>
+            <node x="0.08100000000000002" y="0.02286" id="11"/>
+        </nodes>
+        <edges>
+            <edge end="0" refine_towards="0" marker="2" id="0" start="3" angle="0"/>
+            <edge end="1" refine_towards="0" marker="3" id="1" start="2" angle="0"/>
+            <edge end="9" refine_towards="0" marker="1" id="2" start="8" angle="0"/>
+            <edge end="10" refine_towards="0" marker="1" id="3" start="9" angle="0"/>
+            <edge end="11" refine_towards="0" marker="1" id="4" start="10" angle="0"/>
+            <edge end="6" refine_towards="0" marker="1" id="5" start="5" angle="0"/>
+            <edge end="4" refine_towards="0" marker="1" id="6" start="5" angle="0"/>
+            <edge end="7" refine_towards="0" marker="1" id="7" start="4" angle="0"/>
+            <edge end="7" refine_towards="0" marker="1" id="8" start="1" angle="0"/>
+            <edge end="3" refine_towards="0" marker="1" id="9" start="6" angle="0"/>
+            <edge end="11" refine_towards="0" marker="1" id="10" start="0" angle="0"/>
+            <edge end="2" refine_towards="0" marker="1" id="11" start="8" angle="0"/>
+        </edges>
+        <labels>
+            <label x="0.0359418" y="0.0109393" polynomialorder="0" marker="1" id="0" area="1e-05"/>
+        </labels>
+    </geometry>
+    <config SceneViewSettings_ParticleMass="9.108999999999999e-31" SceneViewSettings_ParticleShowPoints="0" SceneViewSettings_ParticleDragReferenceArea="1e-06" SceneViewSettings_VectorColor="1" SceneViewSettings_PaletteType="0" SceneViewSettings_ScalarRangeLog="0" SceneViewSettings_ScalarRangeBase="10" SceneViewSettings_ParticleNumberOfParticles="5" SceneViewSettings_ParticleColorByVelocity="1" SceneViewSettings_VectorProportional="1" SceneViewSettings_ParticleStartVelocityX="0" SceneViewSettings_ContoursCount="15" SceneViewSettings_ParticleStartVelocityY="0" SceneViewSettings_PaletteSteps="30" SceneViewSettings_ShowOrderScale="1" SceneViewSettings_ParticleDragCoefficient="0" SceneViewSettings_ParticleDragDensity="1.2041" SceneViewSettings_ScalarDecimalPlace="2" SceneViewSettings_ParticleStartingRadius="0" SceneViewSettings_ParticleMaximumSteps="1000" SceneViewSettings_ShowScalarScale="1" SceneViewSettings_VectorScale="0.6" SceneViewSettings_PaletteFilter="0" SceneViewSettings_ParticleTerminateOnDifferentMaterial="1" SceneViewSettings_ParticleMaximumRelativeError="0" SceneViewSettings_OrderLabel="0" SceneViewSettings_ParticleStartX="0" SceneViewSettings_ParticleIncludeGravitation="1" SceneViewSettings_OrderPaletteOrderType="0" SceneViewSettings_ParticleStartY="0" SceneViewSettings_ParticleConstant="1.602e-19" SceneViewSettings_VectorNumber="50"/>
+</document>
