@@ -172,7 +172,7 @@
 
       </module:weakform_volume>
       <module:weakform_volume analysistype="harmonic" equation="\curl \left( \frac{1}{\mu}\, \left( \curl \vecfaz{A} - \vec{B}_\mathrm{r} \right) \right) - \sigma \vec{v} \times \curl \vecfaz{A} + \mj \omega \sigma \vecfaz{A} = \vec{J}_\mathrm{ext}">
-        <module:quantity id="magnetic_permeability" nonlinearity_axi="sqrt((dr1+tern(r > 0, value1/r, 0.0))^2 + dz1*dz1 + (dr2+tern(r > 0, value2/r, 0.0))^2 + dz2*dz2)" nonlinearity_planar="sqrt(dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)"/>
+        <module:quantity id="magnetic_permeability" nonlinearity_axi="sqrt((dr1+tern(r > 0, value1/r, 0.0))*(dr1+tern(r > 0, value1/r, 0.0)) + dz1*dz1 + (dr2+tern(r > 0, value2/r, 0.0))*(dr2+tern(r > 0, value2/r, 0.0)) + dz2*dz2)" nonlinearity_planar="sqrt(dx1*dx1 + dy1*dy1 + dx2*dx2 + dy2*dy2)"/>
         <module:quantity id="magnetic_conductivity"/>
         <module:quantity id="magnetic_remanence"/>
         <module:quantity id="magnetic_remanence_angle"/>

@@ -54,15 +54,13 @@ private:
     void generatePluginWeakFormSourceFiles();
     void generatePluginWeakFormHeaderFiles();
 
-    void generateWeakForms(ctemplate::TemplateDictionary &output, bool withSpecialFunctions = true);
+    void generateWeakForms(ctemplate::TemplateDictionary &output);
+    void generateExtFunctions(ctemplate::TemplateDictionary &output);
 
     //ToDo: make up better names
     template <typename WeakForm>
     void generateForm(FormInfo form, LinearityType linearityType, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, XMLModule::boundary *boundary = 0);
-
-    template <typename Form, typename WeakForm>
-    void generateFormOld(Form form, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, int i, XMLModule::boundary *boundary = 0, int j = 0);
-
+    void generateExtFunction(XMLModule::quantity quantity, AnalysisType analysisType, ctemplate::TemplateDictionary &output);
     void generateSpecialFunction(XMLModule::function* function, ctemplate::TemplateDictionary *output);
 
     QString nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);

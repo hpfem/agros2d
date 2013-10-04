@@ -288,6 +288,32 @@ protected:
     double m_constantValue;
 };
 
+//template <typename Scalar>
+class AGROS_LIBRARY_API AgrosExtFunction : public Hermes::Hermes2D::UExtFunction<double>
+{
+public:
+    // an attempt to fix thread-related errors: value will not be passed as pointer, but a (now created) copy constructor will be used.
+    AgrosExtFunction(MeshSharedPtr mesh, Value* value) : UExtFunction(mesh), m_value(value) {}
+//    MeshFunction<double>* clone() const
+//    {
+//        // an attempt to fix thread-related errors: value will not be passed as pointer, but a (now created) copy constructor will be used.
+//        return new AgrosExtFunction(this->mesh, this->value);
+//    }
+
+    // todo: this is dangerous. Order should be determined from the type of ExtFunction
+    // for consants should be 0, for nonlinearities more. Hom much?
+    virtual void ord(Hermes::Ord* values, Hermes::Ord* dx, Hermes::Ord* dy, Hermes::Ord result[3]) const
+    {
+        result[0] = Hermes::Ord(1);
+        result[1] = Hermes::Ord(0);
+        result[2] = Hermes::Ord(0);
+    }
+
+protected:
+    Value* m_value;
+};
+
+
 
 QT_BEGIN_NAMESPACE
 Q_DECLARE_INTERFACE(PluginInterface, "agros2d.PluginInterface/1.0")

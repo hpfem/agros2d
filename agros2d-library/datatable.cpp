@@ -31,6 +31,25 @@ DataTable::DataTable(Hermes::vector<double> points, Hermes::vector<double> value
     checkTable();
 }
 
+DataTable::DataTable(const DataTable &origin)
+{
+    m_points = origin.m_points;
+    m_values = origin.m_values;
+
+    m_valid = false;
+
+    m_type = origin.m_type;
+    m_splineFirstDerivatives = origin.m_splineFirstDerivatives;
+    m_extrapolateConstant = origin.m_extrapolateConstant;
+
+    m_spline = QSharedPointer<Hermes::Hermes2D::CubicSpline>();
+    m_linear = QSharedPointer<PiecewiseLinear>();
+    m_constant = QSharedPointer<ConstantTable>();
+
+    m_numPoints = origin.m_numPoints;
+    m_isEmpty = origin.m_isEmpty;
+}
+
 void DataTable::clear()
 {
     setValues(Hermes::vector<double>(), Hermes::vector<double>());

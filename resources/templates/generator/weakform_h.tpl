@@ -26,6 +26,19 @@
 #include "hermes2d/marker.h"
 #include "{{ID}}_interface.h"
 
+{{#EXT_FUNCTION}}
+class {{EXT_FUNCTION_NAME}} : public AgrosExtFunction
+{
+public:
+    virtual void value (double* values, double* dx, double* dy, double result[3]) const;
+    {{EXT_FUNCTION_NAME}}(MeshSharedPtr mesh, Value* value) : AgrosExtFunction(mesh, value) {}
+    MeshFunction<double>* clone() const
+    {
+        return new {{EXT_FUNCTION_NAME}}(this->mesh, this->m_value);
+    }
+};
+{{/EXT_FUNCTION}}
+
 {{#VOLUME_MATRIX_SOURCE}}
 template<typename Scalar>
 class {{FUNCTION_NAME}} : public MatrixFormVolAgros<Scalar>
