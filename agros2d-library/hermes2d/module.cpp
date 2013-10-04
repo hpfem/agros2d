@@ -425,6 +425,16 @@ void WeakFormAgros<Scalar>::registerForms()
 template <typename Scalar>
 void WeakFormAgros<Scalar>::updateExtField()
 {
+    // todo: new values handling is not ready for hard coupling: offsets have to be used
+    assert(m_block->fields().size() == 1);
+    foreach(Field* field, m_block->fields())
+    {
+        FieldInfo* fieldInfo = field->fieldInfo();
+        XMLModule::module* module = fieldInfo->plugin()->module();
+
+    }
+
+
     FieldInfo* transientFieldInfo;
     CouplingInfo* couplingInfo;
     int numTransientFields = 0;

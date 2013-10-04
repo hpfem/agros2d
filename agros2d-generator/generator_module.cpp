@@ -1931,8 +1931,10 @@ void Agros2DGeneratorModule::generateExtFunction(XMLModule::quantity quantity, A
                 assert(0);
             }
         }
-        field->SetValue("EXT_FUNCTION_DEPENDENCE", dependence.toStdString());
-        field->SetValue("EXT_FUNCTION_VALUE_METHOD", valueMethod.toStdString());
+        field->SetValue("DEPENDENCE", dependence.toStdString());
+        field->SetValue("VALUE_METHOD", valueMethod.toStdString());
+        field->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
+        field->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisType).toStdString());
     }
 }
 

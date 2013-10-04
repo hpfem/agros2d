@@ -36,6 +36,32 @@
 
 #include "../../resources_source/classes/coupling_xml.h"
 
+//template <typename Scalar>
+class AGROS_LIBRARY_API AgrosExtFunction : public Hermes::Hermes2D::UExtFunction<double>
+{
+public:
+    // an attempt to fix thread-related errors: value will not be passed as pointer, but a (now created) copy constructor will be used.
+    AgrosExtFunction(MeshSharedPtr mesh, Value* value) : UExtFunction(mesh), m_value(value) {}
+//    MeshFunction<double>* clone() const
+//    {
+//        // an attempt to fix thread-related errors: value will not be passed as pointer, but a (now created) copy constructor will be used.
+//        return new AgrosExtFunction(this->mesh, this->value);
+//    }
+
+    // todo: this is dangerous. Order should be determined from the type of ExtFunction
+    // for consants should be 0, for nonlinearities more. Hom much?
+    virtual void ord(Hermes::Ord* values, Hermes::Ord* dx, Hermes::Ord* dy, Hermes::Ord result[3]) const
+    {
+        result[0] = Hermes::Ord(1);
+        result[1] = Hermes::Ord(0);
+        result[2] = Hermes::Ord(0);
+    }
+
+protected:
+    Value* m_value;
+};
+
+
 struct PointValue
 {
     PointValue()
@@ -208,6 +234,8 @@ public:
 
     virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, MeshSharedPtr mesh) = 0;
 
+    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, MeshSharedPtr mesh, Value* value) = 0;
+
     // error calculators
     virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(FieldInfo *fieldInfo,
                                                                        const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType) = 0;
@@ -287,32 +315,6 @@ protected:
     SpecialFunctionType m_type;
     double m_constantValue;
 };
-
-//template <typename Scalar>
-class AGROS_LIBRARY_API AgrosExtFunction : public Hermes::Hermes2D::UExtFunction<double>
-{
-public:
-    // an attempt to fix thread-related errors: value will not be passed as pointer, but a (now created) copy constructor will be used.
-    AgrosExtFunction(MeshSharedPtr mesh, Value* value) : UExtFunction(mesh), m_value(value) {}
-//    MeshFunction<double>* clone() const
-//    {
-//        // an attempt to fix thread-related errors: value will not be passed as pointer, but a (now created) copy constructor will be used.
-//        return new AgrosExtFunction(this->mesh, this->value);
-//    }
-
-    // todo: this is dangerous. Order should be determined from the type of ExtFunction
-    // for consants should be 0, for nonlinearities more. Hom much?
-    virtual void ord(Hermes::Ord* values, Hermes::Ord* dx, Hermes::Ord* dy, Hermes::Ord result[3]) const
-    {
-        result[0] = Hermes::Ord(1);
-        result[1] = Hermes::Ord(0);
-        result[2] = Hermes::Ord(0);
-    }
-
-protected:
-    Value* m_value;
-};
-
 
 
 QT_BEGIN_NAMESPACE
