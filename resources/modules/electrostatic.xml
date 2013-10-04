@@ -21,8 +21,12 @@
   <module:volume>
     <module:quantity id="electrostatic_permittivity" shortname="el_epsr"/>
     <module:quantity id="electrostatic_charge_density" shortname="el_rho"/>
-    <module:matrix_form id="laplace" i="1" j="1" axi="el_epsr * EPS0 * r * (udr * vdr + udz * vdz)" planar="el_epsr * EPS0 * (udx * vdx + udy * vdy)" symmetric="1"/>
-    <module:vector_form id="rhs" i="1" j="1" axi="el_rho * r * vval" planar="el_rho * vval"/>
+    <module:matrix_form id="laplace" i="1" j="1" axi="el_epsr * EPS0 * r * (udr * vdr + udz * vdz)"
+                                                 planar="el_epsr * EPS0 * (udx * vdx + udy * vdy)"
+                                                 symmetric="1" />
+    <module:vector_form id="rhs" i="1" j="1" axi="el_rho * r * vval"
+                                             planar="el_rho * vval"
+                                             condition="fabs(el_rho) > 0" />
 
     <module:weakforms_volume>
       <module:weakform_volume analysistype="steadystate" equation="-\, \div \left( \varepsilon\,\, \grad \varphi \right) = \rho">

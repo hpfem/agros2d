@@ -478,7 +478,8 @@
                         <attribute name="j" type="integer" />
                         <attribute name="planar" type="string" />
                         <attribute name="axi"  type="string" />
-                        <attribute name="symmetric" type="integer" />                        
+                        <attribute name="symmetric" type="integer" />
+                        <attribute name="condition" type="string" />
                 </complexType>
         </element>
 
@@ -491,6 +492,7 @@
                         <attribute name="axi"  type="string" />
                         <attribute name="variant"  type="string" />
                         <attribute name="coefficient"  type="string" />
+                        <attribute name="condition" type="string" />                        
                 </complexType>
         </element>
 
@@ -500,6 +502,7 @@
                         <attribute name="i" type="integer" />
                         <attribute name="planar"  type="string" />
                         <attribute name="axi"  type="string" />
+                        <attribute name="condition" type="string" />                        
                 </complexType>
         </element>
 

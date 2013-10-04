@@ -512,6 +512,7 @@ QList<FormInfo> wfMatrixTemplates(SectionWithTemplates *section)
                           form.i().get(),
                           form.j().get(),
                           form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM);
+        formInfo.condition = form.condition().present() ? QString::fromStdString(form.condition().get()) : "";
         formInfo.expr_planar = QString::fromStdString(form.planar().get());
         formInfo.expr_axi = QString::fromStdString(form.axi().get());
         weakForms.append(formInfo);
@@ -532,6 +533,7 @@ QList<FormInfo> wfVectorTemplates(SectionWithTemplates *section)
         FormInfo formInfo(QString::fromStdString(form.id()),
                           form.i().get(),
                           form.j().get());
+        formInfo.condition = form.condition().present() ? QString::fromStdString(form.condition().get()) : "";
         formInfo.expr_planar = QString::fromStdString(form.planar().get());
         formInfo.expr_axi = QString::fromStdString(form.axi().get());
         weakForms.append(formInfo);
@@ -550,6 +552,7 @@ QList<FormInfo> wfEssentialTemplates(XMLModule::surface *surface)
         assert(form.i().present() && form.planar().present() && form.axi().present());
         FormInfo formInfo(QString::fromStdString(form.id()),
                           form.i().get());
+        formInfo.condition = form.condition().present() ? QString::fromStdString(form.condition().get()) : "";
         formInfo.expr_planar = QString::fromStdString(form.planar().get());
         formInfo.expr_axi = QString::fromStdString(form.axi().get());
         weakForms.append(formInfo);
@@ -716,7 +719,9 @@ QList<FormInfo> generateSeparated(QList<FormInfo> elements, QList<FormInfo> temp
         }
 
         FormInfo formResult(formTemplate.id, formTemplate.i, formTemplate.j, formTemplate.sym);
-        if(formElement.coefficient != 1.)
+        formResult.condition = formTemplate.condition;
+
+        if (formElement.coefficient != 1.)
         {
             formResult.expr_axi = QString("%1*(%2)").arg(formElement.coefficient).arg(formTemplate.expr_axi);
             formResult.expr_planar = QString("%1*(%2)").arg(formElement.coefficient).arg(formTemplate.expr_planar);

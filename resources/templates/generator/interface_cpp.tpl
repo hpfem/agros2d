@@ -60,7 +60,7 @@ MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID pr
        {{#VOLUME_MATRIX_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
             (form->id == "{{WEAKFORM_ID}}") && (form->i == {{ROW_INDEX}}) && (form->j == {{COLUMN_INDEX}}))
-        if ((fabs((double) ({{EXPRESSION_CHECK_1}})) > 0.0) || (fabs((double) ({{EXPRESSION_CHECK_2}})) > 0.0))
+        if ({{EXPRESSION_CHECK}})
             return new {{FUNCTION_NAME}}<double>(form->i - 1 + offsetI, form->j - 1 + offsetJ, offsetI, offsetJ);
     {{/VOLUME_MATRIX_SOURCE}}
 
@@ -72,7 +72,7 @@ VectorFormVolAgros<double> *{{CLASS}}Interface::vectorFormVol(const ProblemID pr
     {{#VOLUME_VECTOR_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&
          (form->id == "{{WEAKFORM_ID}}") && (form->i == {{ROW_INDEX}}) && (form->j == {{COLUMN_INDEX}})))
-        if ((fabs((double) ({{EXPRESSION_CHECK_1}})) > 0.0) || (fabs((double) ({{EXPRESSION_CHECK_2}})) > 0.0))
+        if ({{EXPRESSION_CHECK}})
             return new {{FUNCTION_NAME}}<double>(form->i - 1 + offsetI, form->j - 1 + offsetJ, offsetI, offsetJ, offsetTimeExt);
     {{/VOLUME_VECTOR_SOURCE}}
 

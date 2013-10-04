@@ -132,7 +132,7 @@ struct AGROS_LIBRARY_API FormInfo
 {
     FormInfo() : id(""), i(0), j(0), sym(Hermes::Hermes2D::HERMES_NONSYM), variant(WeakFormVariant_Normal), coefficient(1) {}
     FormInfo(const QString &id, int i = 0, int j = 0, Hermes::Hermes2D::SymFlag sym = Hermes::Hermes2D::HERMES_NONSYM)
-        : id(id), i(i), j(j), sym(sym), variant(WeakFormVariant_Normal), coefficient(1) {}
+        : id(id), i(i), j(j), sym(sym), variant(WeakFormVariant_Normal), coefficient(1), condition("") {}
 
     QString id;
 
@@ -147,6 +147,7 @@ struct AGROS_LIBRARY_API FormInfo
     QString expr_axi;
     WeakFormVariant variant;
     double coefficient;
+    QString condition;
 };
 
 template <typename Scalar>

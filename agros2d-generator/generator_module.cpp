@@ -1779,102 +1779,15 @@ private:
 };
 
 QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analysisType, CoordinateType coordinateType, LinearityType linearityType,
-                                                             const QString &expr, int generatorStartValue)
+                                                             const QString &expr)
 {
     try
     {
         int numOfSol = Agros2DGenerator::numberOfSolutions(m_module->general().analyses(), analysisType);
 
         QMap<QString, QString> dict;
-        ValueGenerator generator(generatorStartValue);
-
-        // coordinates
-        if (coordinateType == CoordinateType_Planar)
-        {
-            dict["x"] = generator.value();
-            dict["y"] = generator.value();
-            dict["tx"] = generator.value();
-            dict["ty"] = generator.value();
-            dict["nx"] = generator.value();
-            dict["ny"] = generator.value();
-        }
-        else
-        {
-            dict["r"] = generator.value();
-            dict["z"] = generator.value();
-            dict["tr"] = generator.value();
-            dict["tz"] = generator.value();
-            dict["nr"] = generator.value();
-            dict["nz"] = generator.value();
-        }
-
-        // constants
-        dict["PI"] = "M_PI";
-        dict["f"] = "Agros2D::problem()->config()->value(ProblemConfig::Frequency).toDouble()";
-        foreach (XMLModule::constant cnst, m_module->constants().constant())
-            dict[QString::fromStdString(cnst.id())] = QString::number(cnst.value());
-
-        dict["area"] = "1";
-
-        // functions
-        // scalar field
-        dict["uval"] = generator.value();
-        dict["vval"] = generator.value();
-        dict["upval"] = generator.value();
-        dict["uptval"] = generator.value();
-
-        // vector field
-        dict["uval0"] = generator.value();
-        dict["uval1"] = generator.value();
-        dict["vval0"] = generator.value();
-        dict["vval1"] = generator.value();
-        dict["ucurl"] = generator.value();
-        dict["vcurl"] = generator.value();
-        dict["upcurl"] = generator.value();
-
-        dict["deltat"] = "Agros2D::problem()->actualTimeStepLength()";
-        dict["timedermat"] = generator.value();
-        dict["timedervec"] = generator.value();
-
-        if (coordinateType == CoordinateType_Planar)
-        {
-            // scalar field
-            dict["udx"] = generator.value();
-            dict["vdx"] = generator.value();
-            dict["udy"] = generator.value();
-            dict["vdy"] = generator.value();
-            dict["updx"] = generator.value();
-            dict["updy"] = generator.value();
-            dict["uptdx"] = generator.value();
-            dict["uptdy"] = generator.value();
-        }
-        else
-        {
-            // scalar field
-            dict["udr"] = generator.value();
-            dict["vdr"] = generator.value();
-            dict["udz"] = generator.value();
-            dict["vdz"] = generator.value();
-            dict["updr"] = generator.value();
-            dict["updz"] = generator.value();
-            dict["uptdr"] = generator.value();
-            dict["uptdz"] = generator.value();
-        }
-
-        for (int i = 1; i < numOfSol + 1; i++)
-        {
-            dict[QString("value%1").arg(i)] = generator.value();
-            if (coordinateType == CoordinateType_Planar)
-            {
-                dict[QString("dx%1").arg(i)] = generator.value();
-                dict[QString("dy%1").arg(i)] = generator.value();
-            }
-            else
-            {
-                dict[QString("dr%1").arg(i)] = generator.value();
-                dict[QString("dz%1").arg(i)] = generator.value();
-            }
-        }
+        // TODO: remove
+        ValueGenerator generator(1);
 
         // variables
         foreach (XMLModule::quantity quantity, m_module->volume().quantity())
@@ -1948,7 +1861,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
         }
 
         LexicalAnalyser *lex = weakFormLexicalAnalyser(analysisType, coordinateType);
-        lex->setExpression(expr);
+        lex->setExpression(expr.isEmpty() ? "true" : expr);
         QString exprCpp = lex->replaceVariables(dict);
 
         // TODO: move from lex
@@ -2064,14 +1977,9 @@ void Agros2DGeneratorModule::generateForm(FormInfo formInfo, LinearityType linea
                                                       coordinateType, linearityType, expression);
             field->SetValue("EXPRESSION", exprCpp.toStdString());
 
-            QString exprCppCheck1 = "1";
-            // QString exprCppCheck1 = parseWeakFormExpressionCheck(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
-            //                                                      coordinateType, linearityType, expression, 1);
-            field->SetValue("EXPRESSION_CHECK_1", exprCppCheck1.toStdString());
-            QString exprCppCheck2 = "1";
-            // QString exprCppCheck2 = parseWeakFormExpressionCheck(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
-            //                                                      coordinateType, linearityType, expression, 17);
-            field->SetValue("EXPRESSION_CHECK_2", exprCppCheck2.toStdString());
+            QString exprCppCheck = parseWeakFormExpressionCheck(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
+                                                                 coordinateType, linearityType, formInfo.condition);
+            field->SetValue("EXPRESSION_CHECK", exprCppCheck.toStdString());
 
             // add weakform
             field = output.AddSectionDictionary("SOURCE");
