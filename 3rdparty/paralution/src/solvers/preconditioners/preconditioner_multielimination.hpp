@@ -115,6 +115,7 @@ protected:
 };
 
 
-};
+}
 
 #endif // PARALUTION_PRECONDITIONER_MULTIELIMINATION_HPP_
+

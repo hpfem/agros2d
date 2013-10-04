@@ -42,6 +42,8 @@ public:
 
   virtual void Clear(void);
   virtual void AllocateDENSE(const int nrow, const int ncol);
+  virtual void SetDataPtrDENSE(ValueType **val, const int nrow, const int ncol);
+  virtual void LeaveDataPtrDENSE(ValueType **val);
 
   virtual bool ConvertFrom(const BaseMatrix<ValueType> &mat);
 
@@ -50,7 +52,14 @@ public:
 
   virtual void Apply(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const; 
   virtual void ApplyAdd(const BaseVector<ValueType> &in, const ValueType scalar, 
-                        BaseVector<ValueType> *out) const; 
+                        BaseVector<ValueType> *out) const;
+
+  virtual void Householder(const int idx, ValueType &beta, BaseVector<ValueType> *vec);
+  virtual void QRDecompose(void);
+  virtual void QRSolve(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const;
+
+  virtual void LUFactorize(void);
+  virtual bool LUSolve(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const;
   
 private:
   
@@ -66,11 +75,12 @@ private:
 
   friend class GPUAcceleratorMatrixDENSE<ValueType>;
   friend class OCLAcceleratorMatrixDENSE<ValueType>;
+  friend class MICAcceleratorMatrixDENSE<ValueType>;
 
 
 };
 
 
-};
+}
 
 #endif // PARALUTION_HOST_MATRIX_DENSE_HPP_

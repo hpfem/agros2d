@@ -43,9 +43,7 @@ void set_to_one_gpu(const int blocksize,
                     const int size, DataType *ptr);
 
 
-};
+}
 
 #endif // PARALUTION_GPU_ALLOCATE_FREE_HPP_
-
-
 

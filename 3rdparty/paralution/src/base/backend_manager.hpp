@@ -78,12 +78,13 @@ extern struct Paralution_Backend_Descriptor _Backend_Descriptor;
 extern const std::string _paralution_host_name [1];
 
 /// Backend names
-extern const std::string _paralution_backend_name [3];
+extern const std::string _paralution_backend_name [4];
 
 /// Backend IDs
 enum _paralution_backend_id {None=0,
                              GPU=1,
-                             OCL=2};
+                             OCL=2,
+                             MIC=3};
 
 /// Initialization of the paralution platform
 int init_paralution(void);
@@ -128,6 +129,6 @@ AcceleratorMatrix<ValueType>* _paralution_init_base_backend_matrix(const struct 
                                                                    const unsigned int matrix_format);
 
 
-};
+}
 
 #endif // PARALUTION_BACKEND_MANAGER_HPP_

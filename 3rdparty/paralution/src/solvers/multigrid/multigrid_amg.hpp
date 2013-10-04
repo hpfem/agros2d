@@ -130,7 +130,8 @@ protected:
 
 };
 
-};
+
+}
 
 #endif // PARALUTION_MULTIGRID_AMG_HPP_
 

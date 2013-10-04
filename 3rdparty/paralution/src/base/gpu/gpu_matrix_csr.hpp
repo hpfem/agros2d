@@ -144,6 +144,8 @@ private:
 
 };
 
-};
+
+}
 
 #endif // PARALUTION_GPU_MATRIX_CSR_HPP_
+

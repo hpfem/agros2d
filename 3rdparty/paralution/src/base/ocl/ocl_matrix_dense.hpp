@@ -71,6 +71,8 @@ private:
 
 };
 
-};
+
+}
 
 #endif // PARALUTION_OCL_MATRIX_DENSE_HPP_
+

@@ -22,6 +22,8 @@
 #ifndef PARALUTION_GPU_CUDA_KERNELS_DIA_HPP_
 #define PARALUTION_GPU_CUDA_KERNELS_DIA_HPP_
 
+#include "../matrix_formats_ind.hpp"
+
 namespace paralution {
 
 // Nathan Bell and Michael Garland
@@ -158,7 +160,6 @@ __global__ void kernel_dia_convert(const IndexType nrow, const IndexType ndiag,
 
 
 }
-
 
 #endif
 

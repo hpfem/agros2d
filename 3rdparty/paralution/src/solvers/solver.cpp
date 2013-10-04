@@ -38,6 +38,8 @@ namespace paralution {
 template <class OperatorType, class VectorType, typename ValueType>
 Solver<OperatorType, VectorType, ValueType>::Solver() {
 
+  this->res_norm_ = 2;
+
   this->op_  = NULL;
   this->precond_   = NULL;
 
@@ -156,9 +158,33 @@ void Solver<OperatorType, VectorType, ValueType>::Verbose(const int verb) {
 
 }
 
+template <class OperatorType, class VectorType, typename ValueType>
+void Solver<OperatorType, VectorType, ValueType>::SetResidualNorm(const int resnorm) {
 
+  assert(resnorm == 1 || resnorm == 2 || resnorm == 3);
 
+  this->res_norm_ = resnorm;
 
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+ValueType Solver<OperatorType, VectorType, ValueType>::Norm(const VectorType &vec) const {
+
+  // L1 norm
+  if (this->res_norm_ == 1)
+    return vec.Asum();
+
+  // L2 norm
+  if (this->res_norm_ == 2)
+    return vec.Norm();
+
+  // Infinity norm
+  if (this->res_norm_ == 3)
+    return vec.Amax();
+
+  return 0;
+ 
+}
 
 
 
@@ -430,8 +456,8 @@ void FixedPoint<OperatorType, VectorType, ValueType>::SolvePrecond_(const Vector
     // inital residual x_res = b - Ax
     this->op_->Apply(*x, &this->x_res_);
     this->x_res_.ScaleAdd(ValueType(-1.0), rhs);
-    
-    this->iter_ctrl_.InitResidual(this->x_res_.Norm());
+
+    this->iter_ctrl_.InitResidual(this->Norm(this->x_res_));
     
     // Solve M x_old = x_res
     this->precond_->SolveZeroSol(this->x_res_, &this->x_old_);
@@ -442,8 +468,8 @@ void FixedPoint<OperatorType, VectorType, ValueType>::SolvePrecond_(const Vector
     // x_res = b - Ax
     this->op_->Apply(*x, &this->x_res_);
     this->x_res_.ScaleAdd(ValueType(-1.0), rhs); 
-    
-    while (!this->iter_ctrl_.CheckResidual(this->x_res_.Norm())) {
+
+    while (!this->iter_ctrl_.CheckResidual(this->Norm(this->x_res_))) {
       
       // Solve M x_old = x_res
       this->precond_->SolveZeroSol(this->x_res_, &this->x_old_);
@@ -523,5 +549,5 @@ template class FixedPoint< GlobalMatrix<float>,  GlobalVector<float>, float >;
 template class FixedPoint< GlobalStencil<double>, GlobalVector<double>, double >;
 template class FixedPoint< GlobalStencil<float>,  GlobalVector<float>, float >;
 
+}
 
-};

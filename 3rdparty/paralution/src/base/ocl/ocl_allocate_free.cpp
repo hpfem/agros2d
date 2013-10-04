@@ -227,5 +227,5 @@ template void ocl_dev2dev<int         >(const int size, cl_mem *src, cl_mem *dst
 template void ocl_dev2dev<unsigned int>(const int size, cl_mem *src, cl_mem *dst, cl_command_queue ocl_cmdQueue);
 template void ocl_dev2dev<char        >(const int size, cl_mem *src, cl_mem *dst, cl_command_queue ocl_cmdQueue);
 
-};
+}
 

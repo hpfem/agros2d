@@ -53,6 +53,11 @@
 #include "ocl/backend_ocl.hpp"
 #endif
 
+#ifdef SUPPORT_MIC
+#include "mic/backend_mic.hpp"
+#endif
+
+
 namespace paralution {
 
 // Global backend descriptor and default values
@@ -62,10 +67,14 @@ Paralution_Backend_Descriptor _Backend_Descriptor = {
   GPU,   // default backend
 #else
   #ifdef SUPPORT_OCL
-    OCL,
-  #else
-    None,
-  #endif
+  OCL,
+   #else
+     #ifdef SUPPORT_MIC
+     MIC,
+    #else
+     None,
+   #endif
+#endif
 #endif
   false, // use Accelerator
   1,     // OpenMP threads
@@ -93,16 +102,17 @@ const std::string _paralution_host_name [1] =
 #endif
 
 /// Backend names
-const std::string _paralution_backend_name [3] =
+const std::string _paralution_backend_name [4] =
   {"No Accelerator",
    "GPU(CUDA)",
-   "OpenCL"};
+   "OpenCL",
+   "MIC(OpenMP)"};
 
   
 int init_paralution(void) {
 
   if (_Backend_Descriptor.init == true) {
-    LOG_INFO("Paralution platform has been initialized - restarting");
+    LOG_INFO("PARALUTION platform has been initialized - restarting");
     stop_paralution();
   }
 
@@ -112,8 +122,12 @@ int init_paralution(void) {
   #ifdef SUPPORT_OCL
     _Backend_Descriptor.backend = OCL;
   #else
+    #ifdef SUPPORT_MIC
+    _Backend_Descriptor.backend = MIC;
+   #else
     _Backend_Descriptor.backend = None;
   #endif
+ #endif
 #endif
 
 #ifdef _OPENMP
@@ -130,6 +144,10 @@ int init_paralution(void) {
   _Backend_Descriptor.accelerator = paralution_init_ocl();
 #endif
 
+#ifdef SUPPORT_MIC
+  _Backend_Descriptor.accelerator = paralution_init_mic();
+#endif
+
   _Backend_Descriptor.init = true ;
   return 0;
 
@@ -143,6 +161,10 @@ int stop_paralution(void) {
 
 #ifdef SUPPORT_OCL
   paralution_stop_ocl();
+#endif
+
+#ifdef SUPPORT_MIC
+  paralution_stop_mic();
 #endif
 
   _Backend_Descriptor.init = false;
@@ -190,9 +212,9 @@ void info_paralution(void) {
 void info_paralution(const struct Paralution_Backend_Descriptor backend_descriptor) {
 
   if (backend_descriptor.init == true) {
-    LOG_INFO("Paralution platform is initialized");
+    LOG_INFO("PARALUTION platform is initialized");
   } else {
-    LOG_INFO("Paralution platform is NOT initialized");
+    LOG_INFO("PARALUTION platform is NOT initialized");
   }
 
   //  LOG_INFO("Accelerator Backend:" << _paralution_backend_name[backend_descriptor.backend]);
@@ -213,18 +235,27 @@ void info_paralution(const struct Paralution_Backend_Descriptor backend_descript
   if (backend_descriptor.accelerator)
     paralution_info_gpu(backend_descriptor);
   else
-    LOG_INFO("GPU could not be initialized");
+    LOG_INFO("GPU is not initialized");
 #else
-  LOG_INFO("No GPU support");
+  LOG_INFO("No CUDA/GPU support");
 #endif
 
 #ifdef SUPPORT_OCL
   if (backend_descriptor.accelerator)
     paralution_info_ocl(backend_descriptor);
   else
-    LOG_INFO("OpenCL could not be initialized");
+    LOG_INFO("OpenCL is not initialized");
 #else
   LOG_INFO("No OpenCL support");
+#endif
+
+#ifdef SUPPORT_MIC
+  if (backend_descriptor.accelerator)
+    paralution_info_mic(backend_descriptor);
+  else
+    LOG_INFO("MIC/OpenMP is not initialized");
+#else
+  LOG_INFO("No MIC/OpenMP support");
 #endif
 
 }
@@ -270,6 +301,14 @@ AcceleratorVector<ValueType>* _paralution_init_base_backend_vector(const struct 
     break;
 #endif
 
+#ifdef SUPPORT_MIC
+  // GPU
+  case MIC:
+    return _paralution_init_base_mic_vector<ValueType>(backend_descriptor);
+    break;
+#endif
+
+
   default:
     // No backend supported!
     LOG_INFO("Paralution was not compiled with " << _paralution_backend_name[backend_descriptor.backend] << " support");
@@ -297,6 +336,13 @@ AcceleratorMatrix<ValueType>* _paralution_init_base_backend_matrix(const struct 
     return _paralution_init_base_ocl_matrix<ValueType>(backend_descriptor, matrix_format);
     break;
 #endif
+
+#ifdef SUPPORT_MIC      
+  case MIC:
+    return _paralution_init_base_mic_matrix<ValueType>(backend_descriptor, matrix_format);
+    break;
+#endif
+
 
   default:
     LOG_INFO("Paralution was not compiled with " << _paralution_backend_name[backend_descriptor.backend] << " support");
@@ -371,4 +417,5 @@ template HostMatrix<float>* _paralution_init_base_host_matrix(const struct Paral
 template HostMatrix<double>* _paralution_init_base_host_matrix(const struct Paralution_Backend_Descriptor backend_descriptor,
                                                                const unsigned int matrix_format);
 
-};
+}
+

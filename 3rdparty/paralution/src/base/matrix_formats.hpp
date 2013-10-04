@@ -24,20 +24,6 @@
 
 #include <string>
 
-// Matrix indexing
-#define DENSE_IND(ai,aj,nrow,ncol) ai + aj*nrow
-//#define DENSE_IND(ai,aj,nrow,ncol) aj + ai*nol
-
-#define ELL_IND(row, el , nrow, max_row) el*nrow + row
-//#define ELL_IND(row, el , nrow, max_row) el + max_row*row
-
-#define DIA_IND(row, el, nrow, ndiag) el*nrow + row
-//#define DIA_IND(row, el, nrow, ndiag) el + ndiag*row
-
-
-
-
-
 namespace paralution {
 
 /// Matrix Names
@@ -157,7 +143,7 @@ struct MatrixDENSE {
 
 
 
-};
+}
 
 #endif // PARALUTION_MATRIX_FORMATS_HPP_
 

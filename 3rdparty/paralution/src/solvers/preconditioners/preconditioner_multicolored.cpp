@@ -448,8 +448,8 @@ void MultiColored<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalDa
 }
 
 
-
 template class MultiColored< LocalMatrix<double>, LocalVector<double>, double >;
 template class MultiColored< LocalMatrix<float>,  LocalVector<float>, float >;
 
-};
+}
+

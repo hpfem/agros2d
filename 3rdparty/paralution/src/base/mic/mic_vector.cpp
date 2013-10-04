@@ -1,0 +1,615 @@
+// *************************************************************************
+//
+//    PARALUTION   www.paralution.com
+//
+//    Copyright (C) 2012-2013 Dimitar Lukarski
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+// *************************************************************************
+
+#include "mic_vector.hpp"
+#include "../base_vector.hpp"
+#include "../host/host_vector.hpp"
+#include "../backend_manager.hpp"
+#include "../../utils/log.hpp"
+#include "../../utils/allocate_free.hpp"
+#include "mic_utils.hpp"
+#include "mic_allocate_free.hpp"
+#include "mic_vector_kernel.hpp"
+
+#include <math.h>
+
+#include <assert.h>
+
+
+namespace paralution {
+
+template <typename ValueType>
+MICAcceleratorVector<ValueType>::MICAcceleratorVector() {
+
+  // no default constructors
+  FATAL_ERROR(__FILE__, __LINE__);
+
+}
+
+template <typename ValueType>
+MICAcceleratorVector<ValueType>::MICAcceleratorVector(const Paralution_Backend_Descriptor local_backend) {
+
+  this->vec_ = NULL;
+  this->set_backend(local_backend); 
+
+}
+
+
+template <typename ValueType>
+MICAcceleratorVector<ValueType>::~MICAcceleratorVector() {
+
+  this->Clear();
+
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::info(void) const {
+
+  LOG_INFO("MICAcceleratorVector<ValueType>");
+
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::Allocate(const int n) {
+
+  assert(n >= 0);
+
+  if (this->get_size() >0)
+    this->Clear();
+
+  if (n > 0) {
+
+    allocate_mic(n, &this->vec_);
+    set_to_zero_mic(n, this->vec_);
+    this->size_ = n;
+  }
+
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::SetDataPtr(ValueType **ptr, const int size) {
+
+  assert(*ptr != NULL);
+  assert(size > 0);
+
+  this->vec_ = *ptr;
+  this->size_ = size;
+
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::LeaveDataPtr(ValueType **ptr) {
+
+  assert(this->get_size() > 0);
+
+  *ptr = this->vec_;
+  this->vec_ = NULL;
+
+  this->size_ = 0 ;
+
+}
+
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::Clear(void) {
+  
+  if (this->get_size() >0) {
+
+    free_mic(&this->vec_);
+
+    this->size_ = 0 ;
+
+  }
+
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::CopyFromHost(const HostVector<ValueType> &src) {
+
+  // CPU to MIC copy
+  const HostVector<ValueType> *cast_vec;
+  if ((cast_vec = dynamic_cast<const HostVector<ValueType>*> (&src)) != NULL) {
+
+  if (this->get_size() == 0)
+    this->Allocate(cast_vec->get_size());
+    
+    assert(cast_vec->get_size() == this->get_size());
+
+    if (this->get_size() >0) {
+
+      copy_to_mic(cast_vec->vec_, this->vec_, this->get_size());
+
+    }
+
+  } else {
+    
+    LOG_INFO("Error unsupported MIC vector type");
+    this->info();
+    src.info();
+    FATAL_ERROR(__FILE__, __LINE__);
+    
+  }
+
+}
+
+
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::CopyToHost(HostVector<ValueType> *dst) const {
+
+  // MIC to CPU copy
+  HostVector<ValueType> *cast_vec;
+  if ((cast_vec = dynamic_cast<HostVector<ValueType>*> (dst)) != NULL) {
+
+  if (cast_vec->get_size() == 0)
+    cast_vec->Allocate(this->get_size());  
+    
+    assert(cast_vec->get_size() == this->get_size());
+
+    if (this->get_size() >0) {
+
+      copy_to_host(this->vec_, cast_vec->vec_, this->get_size());
+
+    }
+
+  } else {
+    
+    LOG_INFO("Error unsupported MIC vector type");
+    this->info();
+    dst->info();
+    FATAL_ERROR(__FILE__, __LINE__);
+    
+  }
+
+  
+}
+
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::CopyFrom(const BaseVector<ValueType> &src) {
+
+  const MICAcceleratorVector<ValueType> *mic_cast_vec;
+  const HostVector<ValueType> *host_cast_vec;
+
+
+    // MIC to MIC copy
+    if ((mic_cast_vec = dynamic_cast<const MICAcceleratorVector<ValueType>*> (&src)) != NULL) {
+
+      if (this->get_size() == 0)
+        this->Allocate(mic_cast_vec->get_size());
+
+      assert(mic_cast_vec->get_size() == this->get_size());
+
+      if (this != mic_cast_vec)  {  
+
+        if (this->get_size() >0) {
+
+	  copy_mic_mic(mic_cast_vec->vec_, this->vec_, this->get_size());
+
+        }
+
+      }
+
+    } else {
+      
+      //MIC to CPU copy
+      if ((host_cast_vec = dynamic_cast<const HostVector<ValueType>*> (&src)) != NULL) {
+        
+
+        this->CopyFromHost(*host_cast_vec);
+        
+      
+      } else {
+
+        LOG_INFO("Error unsupported MIC vector type");
+        this->info();
+        src.info();
+        FATAL_ERROR(__FILE__, __LINE__);
+        
+      }
+      
+    }
+
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::CopyFrom(const BaseVector<ValueType> &src,
+                                               const int src_offset,
+                                               const int dst_offset,
+                                               const int size) {
+
+  assert(&src != this);
+  assert(this->get_size() > 0);
+  assert(src.  get_size() > 0);
+  assert(size > 0);
+
+  assert(src_offset + size <= src.get_size());
+  assert(dst_offset + size <= this->get_size());
+
+  const MICAcceleratorVector<ValueType> *cast_src = dynamic_cast<const MICAcceleratorVector<ValueType>*> (&src);
+  assert(cast_src != NULL);
+
+  
+  copy_mic_mic(cast_src->vec_+src_offset, 
+	       this->vec_+dst_offset, 
+	       size);
+  
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::CopyTo(BaseVector<ValueType> *dst) const{
+
+  MICAcceleratorVector<ValueType> *mic_cast_vec;
+  HostVector<ValueType> *host_cast_vec;
+
+    // MIC to MIC copy
+    if ((mic_cast_vec = dynamic_cast<MICAcceleratorVector<ValueType>*> (dst)) != NULL) {
+
+      if (mic_cast_vec->get_size() == 0)
+        mic_cast_vec->Allocate(this->get_size());
+
+      assert(mic_cast_vec->get_size() == this->get_size());
+
+      if (this != mic_cast_vec)  {  
+
+        if (this->get_size() >0) {
+
+	  copy_mic_mic(this->vec_, mic_cast_vec->vec_, this->get_size());
+
+        }
+      }
+
+    } else {
+      
+      //MIC to CPU copy
+      if ((host_cast_vec = dynamic_cast<HostVector<ValueType>*> (dst)) != NULL) {
+        
+
+        this->CopyToHost(host_cast_vec);
+        
+      
+      } else {
+
+        LOG_INFO("Error unsupported MIC vector type");
+        this->info();
+        dst->info();
+        FATAL_ERROR(__FILE__, __LINE__);
+        
+      }
+      
+    }
+
+
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::Zeros(void) {
+
+  if (this->get_size() > 0) {
+
+    set_to_zero_mic(this->get_size(), this->vec_);
+    
+  }
+
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::Ones(void) {
+
+  if (this->get_size() > 0)
+    set_to_one_mic(this->get_size(), this->vec_);
+
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::SetValues(const ValueType val) {
+
+  LOG_INFO("MICAcceleratorVector::SetValues NYI");
+  FATAL_ERROR(__FILE__, __LINE__);
+
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::AddScale(const BaseVector<ValueType> &x, const ValueType alpha) {
+
+  if (this->get_size() > 0) {
+
+    assert(this->get_size() == x.get_size());
+    
+    const MICAcceleratorVector<ValueType> *cast_x = dynamic_cast<const MICAcceleratorVector<ValueType>*> (&x);
+    assert(cast_x != NULL);
+
+    addscale(cast_x->vec_, alpha, this->get_size(), this->vec_);
+
+  }
+
+}
+
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::ScaleAdd(const ValueType alpha, const BaseVector<ValueType> &x) {
+
+  if (this->get_size() > 0) {
+
+    assert(this->get_size() == x.get_size());
+    
+    const MICAcceleratorVector<ValueType> *cast_x = dynamic_cast<const MICAcceleratorVector<ValueType>*> (&x);
+    assert(cast_x != NULL);
+
+    scaleadd(cast_x->vec_, alpha, this->get_size(), this->vec_);
+
+  }
+
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::ScaleAddScale(const ValueType alpha, const BaseVector<ValueType> &x, const ValueType beta) {
+
+  if (this->get_size() > 0) {
+
+    assert(this->get_size() == x.get_size());
+    
+    const MICAcceleratorVector<ValueType> *cast_x = dynamic_cast<const MICAcceleratorVector<ValueType>*> (&x);
+    assert(cast_x != NULL);
+
+    scaleaddscale(cast_x->vec_, alpha, beta, this->get_size(), this->vec_);
+
+  }
+
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::ScaleAdd2(const ValueType alpha, const BaseVector<ValueType> &x, const ValueType beta, const BaseVector<ValueType> &y, const ValueType gamma) {
+
+  if (this->get_size() > 0) {
+
+    assert(this->get_size() == x.get_size());
+    assert(this->get_size() == y.get_size());
+    
+    const MICAcceleratorVector<ValueType> *cast_x = dynamic_cast<const MICAcceleratorVector<ValueType>*> (&x);
+    const MICAcceleratorVector<ValueType> *cast_y = dynamic_cast<const MICAcceleratorVector<ValueType>*> (&y);
+    assert(cast_x != NULL);
+    assert(cast_y != NULL);
+
+    scaleadd2(cast_x->vec_, cast_y->vec_,
+	      alpha, beta, gamma,
+	      this->get_size(),
+	      this->vec_);
+    
+  }
+
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::Scale(const ValueType alpha) {
+
+  if (this->get_size() > 0) {
+
+    scale(alpha, this->get_size(), this->vec_);
+
+  }
+
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::PartialSum(const BaseVector<ValueType> &x) {
+
+  LOG_INFO("MICAcceleratorVector::PartialSum() NYI");
+  FATAL_ERROR(__FILE__, __LINE__); 
+
+}
+
+template <typename ValueType>
+ValueType MICAcceleratorVector<ValueType>::Dot(const BaseVector<ValueType> &x) const {
+
+  assert(this->get_size() == x.get_size());
+
+  const MICAcceleratorVector<ValueType> *cast_x = dynamic_cast<const MICAcceleratorVector<ValueType>*> (&x);
+  assert(cast_x != NULL);
+
+  ValueType d;
+
+  dot(this->vec_, cast_x->vec_, this->get_size(), d);
+
+  return d;
+}
+
+
+template <typename ValueType>
+ValueType MICAcceleratorVector<ValueType>::Asum(void) const {
+
+  ValueType asumv;
+
+  asum(this->vec_, this->get_size(), asumv);
+
+  return asumv;
+
+}
+
+template <typename ValueType>
+ValueType MICAcceleratorVector<ValueType>::Amax(void) const {
+
+  ValueType amaxv;
+
+  amax(this->vec_, this->get_size(), amaxv);
+
+  return amaxv;
+
+}
+
+
+template <typename ValueType>
+ValueType MICAcceleratorVector<ValueType>::Norm(void) const {
+
+  ValueType n;
+
+  norm(this->vec_, this->get_size(), n);
+
+  return n;
+
+}
+
+
+template <typename ValueType>
+ValueType MICAcceleratorVector<ValueType>::Reduce(void) const {
+
+  ValueType r = ValueType(0.0);
+
+  reduce(this->vec_, this->get_size(), r);
+
+  return r;
+
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::PointWiseMult(const BaseVector<ValueType> &x) {
+
+  if (this->get_size() > 0) {
+
+    assert(this->get_size() == x.get_size());
+    
+    const MICAcceleratorVector<ValueType> *cast_x = dynamic_cast<const MICAcceleratorVector<ValueType>*> (&x);
+    assert(cast_x != NULL);
+
+    pointwisemult(cast_x->vec_, this->get_size(), this->vec_);
+
+  }
+
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::PointWiseMult(const BaseVector<ValueType> &x, const BaseVector<ValueType> &y) {
+
+  if (this->get_size() > 0) {
+
+    assert(this->get_size() == x.get_size());
+    assert(this->get_size() == y.get_size());
+    
+    const MICAcceleratorVector<ValueType> *cast_x = dynamic_cast<const MICAcceleratorVector<ValueType>*> (&x);
+    const MICAcceleratorVector<ValueType> *cast_y = dynamic_cast<const MICAcceleratorVector<ValueType>*> (&y);
+    assert(cast_x != NULL);
+    assert(cast_y != NULL);
+
+    pointwisemult2(cast_x->vec_, cast_y->vec_, this->get_size(), this->vec_);
+
+  }
+
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::Permute(const BaseVector<int> &permutation) {
+
+  if (this->get_size() > 0) {
+
+    assert(&permutation != NULL);
+    assert(this->get_size() == permutation.get_size());
+    
+    const MICAcceleratorVector<int> *cast_perm = dynamic_cast<const MICAcceleratorVector<int>*> (&permutation);
+    assert(cast_perm != NULL);
+    
+    MICAcceleratorVector<ValueType> vec_tmp(this->local_backend_);     
+    vec_tmp.Allocate(this->get_size());
+    vec_tmp.CopyFrom(*this);
+
+    permute(cast_perm->vec_, vec_tmp.vec_,
+	    this->get_size(), this->vec_);
+
+  }
+}
+
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::PermuteBackward(const BaseVector<int> &permutation) {
+
+  if (this->get_size() > 0) {
+
+    assert(&permutation != NULL);
+    assert(this->get_size() == permutation.get_size());
+    
+    const MICAcceleratorVector<int> *cast_perm = dynamic_cast<const MICAcceleratorVector<int>*> (&permutation);
+    assert(cast_perm != NULL);
+    
+    MICAcceleratorVector<ValueType> vec_tmp(this->local_backend_);   
+    vec_tmp.Allocate(this->get_size());
+    vec_tmp.CopyFrom(*this);
+
+    permuteback(cast_perm->vec_, vec_tmp.vec_,
+		this->get_size(), this->vec_);
+
+  }
+
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::CopyFromPermute(const BaseVector<ValueType> &src,
+                                                      const BaseVector<int> &permutation) { 
+
+  if (this->get_size() > 0) {
+
+    assert(this != &src);
+    
+    const MICAcceleratorVector<ValueType> *cast_vec = dynamic_cast<const MICAcceleratorVector<ValueType>*> (&src);
+    const MICAcceleratorVector<int> *cast_perm      = dynamic_cast<const MICAcceleratorVector<int>*> (&permutation) ; 
+    assert(cast_perm != NULL);
+    assert(cast_vec  != NULL);
+    
+    assert(cast_vec ->get_size() == this->get_size());
+    assert(cast_perm->get_size() == this->get_size());
+
+    permute(cast_perm->vec_, cast_vec->vec_,
+	    this->get_size(),
+	    this->vec_);
+ 
+  }
+
+}
+
+template <typename ValueType>
+void MICAcceleratorVector<ValueType>::CopyFromPermuteBackward(const BaseVector<ValueType> &src,
+                                                              const BaseVector<int> &permutation) {
+
+  if (this->get_size() > 0) {
+
+    assert(this != &src);
+    
+    const MICAcceleratorVector<ValueType> *cast_vec = dynamic_cast<const MICAcceleratorVector<ValueType>*> (&src);
+    const MICAcceleratorVector<int> *cast_perm      = dynamic_cast<const MICAcceleratorVector<int>*> (&permutation) ; 
+    assert(cast_perm != NULL);
+    assert(cast_vec  != NULL);
+    
+    assert(cast_vec ->get_size() == this->get_size());
+    assert(cast_perm->get_size() == this->get_size());
+
+    permuteback(cast_perm->vec_, cast_vec->vec_,
+		this->get_size(),
+		this->vec_);
+        
+  }
+
+}
+
+
+template class MICAcceleratorVector<double>;
+template class MICAcceleratorVector<float>;
+
+template class MICAcceleratorVector<int>;
+
+}

@@ -21,6 +21,7 @@
 
 #include "host_conversion.hpp"
 #include "../matrix_formats.hpp"
+#include "../matrix_formats_ind.hpp"
 #include "../../utils/allocate_free.hpp"
 #include <assert.h>
 #include <stdlib.h>
@@ -1066,5 +1067,5 @@ template void hyb_to_csr(const int omp_threads,
                          const MatrixHYB<int, int> &src,
                          MatrixCSR<int, int> *dst, int *nnz_csr );
 
-};
+}
 

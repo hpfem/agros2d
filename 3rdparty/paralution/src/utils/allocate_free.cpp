@@ -60,7 +60,7 @@ void allocate_host(const int size, DataType **ptr) {
     //  LOG_INFO("A " << *ptr << " " <<  aligned << " " << non_aligned << " "<<  sizeof(DataType) << " " << size);
   }
 
-};
+}
 
 template <typename DataType>
 void free_host(DataType **ptr) {
@@ -78,7 +78,7 @@ void free_host(DataType **ptr) {
 
   *ptr = NULL;
 
-};
+}
 
 template <typename DataType>
 void set_to_zero_host(const int size, DataType *ptr) {
@@ -93,8 +93,7 @@ void set_to_zero_host(const int size, DataType *ptr) {
     //    ptr[i] = DataType(0);
   }
 
-};
-
+}
 
 
 template void allocate_host<float       >(const int size, float        **ptr);
@@ -115,7 +114,5 @@ template void set_to_zero_host<int         >(const int size, int          *ptr);
 template void set_to_zero_host<unsigned int>(const int size, unsigned int *ptr);
 template void set_to_zero_host<char        >(const int size, char         *ptr);
 
-
-};
-
+}
 

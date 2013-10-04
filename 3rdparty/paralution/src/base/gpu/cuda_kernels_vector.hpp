@@ -27,7 +27,7 @@ namespace paralution {
 template <typename ValueType, typename IndexType>
 __global__ void kernel_scaleadd(const IndexType n, const ValueType alpha, const ValueType *x, ValueType *out) {
 
-  IndexType ind = blockIdx.x*blockDim.x+threadIdx.x;
+  IndexType ind = blockIdx.x * blockDim.x + threadIdx.x;
 
   if (ind < n)
     out[ind] = alpha * out[ind] + x[ind];
@@ -38,7 +38,7 @@ template <typename ValueType, typename IndexType>
 __global__ void kernel_scaleaddscale(const IndexType n, const ValueType alpha, const ValueType beta,
                                      const ValueType *x, ValueType *out) {
 
-  IndexType ind = blockIdx.x*blockDim.x+threadIdx.x;
+  IndexType ind = blockIdx.x * blockDim.x + threadIdx.x;
 
   if (ind < n)
     out[ind] = alpha*out[ind] + beta*x[ind];
@@ -46,101 +46,91 @@ __global__ void kernel_scaleaddscale(const IndexType n, const ValueType alpha, c
 }
 
 template <typename ValueType, typename IndexType>
-__global__ void kernel_scaleadd2(const IndexType n, 
-                                 const ValueType alpha, const ValueType beta, const ValueType gamma, 
-                                 const ValueType *x, const ValueType *y, ValueType *out) 
-{
-  IndexType ind = blockIdx.x*blockDim.x+threadIdx.x;
+__global__ void kernel_scaleadd2(const IndexType n, const ValueType alpha, const ValueType beta, const ValueType gamma,
+                                 const ValueType *x, const ValueType *y, ValueType *out) {
 
-  if (ind <n) {
+  IndexType ind = blockIdx.x * blockDim.x + threadIdx.x;
+
+  if (ind < n)
     out[ind] = alpha*out[ind] + beta*x[ind] + gamma*y[ind];
-  }
+
 }
 
 template <typename ValueType, typename IndexType>
-__global__ void kernel_pointwisemult(const IndexType n, const ValueType *x, ValueType *out) 
-{
-  IndexType ind = blockIdx.x*blockDim.x+threadIdx.x;
+__global__ void kernel_pointwisemult(const IndexType n, const ValueType *x, ValueType *out) {
 
-  if (ind <n) {
+  IndexType ind = blockIdx.x * blockDim.x + threadIdx.x;
+
+  if (ind < n)
     out[ind] = out[ind] * x[ind];
-  }
+
 }
 
 template <typename ValueType, typename IndexType>
-__global__ void kernel_pointwisemult2(const IndexType n, const ValueType *x, const ValueType *y, ValueType *out) 
-{
-  IndexType ind = blockIdx.x*blockDim.x+threadIdx.x;
+__global__ void kernel_pointwisemult2(const IndexType n, const ValueType *x, const ValueType *y, ValueType *out) {
 
-  if (ind <n) {
+  IndexType ind = blockIdx.x * blockDim.x + threadIdx.x;
+
+  if (ind < n)
     out[ind] = y[ind] * x[ind];
-  }
+
 }
 
 template <typename ValueType, typename IndexType>
-__global__ void kernel_copy_offset_from(const IndexType size, const IndexType src_offset, const IndexType dst_offset,
+__global__ void kernel_copy_offset_from(const IndexType n, const IndexType src_offset, const IndexType dst_offset,
                                         const ValueType *in, ValueType *out) {
 
-  IndexType i = blockIdx.x*blockDim.x+threadIdx.x;
+  IndexType ind = blockIdx.x * blockDim.x + threadIdx.x;
 
-  if (i <size) {
-    out[i+dst_offset] = in[i+src_offset];
-  }
+  if (ind < n)
+    out[ind+dst_offset] = in[ind+src_offset];
 
 }
 
 template <typename ValueType, typename IndexType>
-__global__ void kernel_permute(const IndexType size, const IndexType *permute, 
+__global__ void kernel_permute(const IndexType n, const IndexType *permute,
                                const ValueType *in, ValueType *out) {
 
-  IndexType i = blockIdx.x*blockDim.x+threadIdx.x;
+  IndexType ind = blockIdx.x * blockDim.x + threadIdx.x;
 
-  if (i <size) {
-    out[ permute[i] ] = in[i];
-  }
+  if (ind < n)
+    out[permute[ind]] = in[ind];
 
 }
 
 template <typename ValueType, typename IndexType>
-__global__ void kernel_permute_backward(const IndexType size, const IndexType *permute, 
+__global__ void kernel_permute_backward(const IndexType n, const IndexType *permute,
                                         const ValueType *in, ValueType *out) {
 
-  IndexType i = blockIdx.x*blockDim.x+threadIdx.x;
+  IndexType ind = blockIdx.x * blockDim.x + threadIdx.x;
 
-  if (i <size) {
-    out[i] = in[ permute[i] ];
-  }
+  if (ind < n)
+    out[ind] = in[permute[ind]];
 
 }
 
 template <typename ValueType, typename IndexType, unsigned int BLOCK_SIZE>
-__global__ void kernel_reduce(const IndexType  size,
-                              const ValueType *data,
-                                    ValueType *out,
-                              const IndexType  GROUP_SIZE,
-                              const IndexType  LOCAL_SIZE) {
+__global__ void kernel_reduce(const IndexType n, const ValueType *data, ValueType *out,
+                              const IndexType GROUP_SIZE, const IndexType LOCAL_SIZE) {
 
-    int tid = threadIdx.x;
+    IndexType tid = threadIdx.x;
 
     __shared__ ValueType sdata[BLOCK_SIZE];
-    sdata[tid] = 0.0;
+    sdata[tid] = ValueType(0.0);
 
     // get global id
-    int gid = GROUP_SIZE * blockIdx.x + tid;
+    IndexType gid = GROUP_SIZE * blockIdx.x + tid;
 
-    for (int i = 0; i < LOCAL_SIZE; ++i, gid += BLOCK_SIZE) {
-
-      if ( gid < size )
+    for (IndexType i = 0; i < LOCAL_SIZE; ++i, gid += BLOCK_SIZE)
+      if ( gid < n )
         sdata[tid] += data[gid];
-
-    }
 
     __syncthreads();
 
 #pragma unroll
-    for (int i = BLOCK_SIZE/2; i > 0; i /= 2) {
+    for (IndexType i = BLOCK_SIZE/2; i > 0; i /= 2) {
 
-      if ( tid < i )
+      if (tid < i)
         sdata[tid] += sdata[tid + i];
 
       __syncthreads();
@@ -153,23 +143,20 @@ __global__ void kernel_reduce(const IndexType  size,
 }
 
 template <typename ValueType, typename IndexType, unsigned int BLOCK_SIZE>
-__global__ void kernel_max(const IndexType  size,
-                           const ValueType *data,
-                                 ValueType *out,
-                           const IndexType  GROUP_SIZE,
-                           const IndexType  LOCAL_SIZE) {
+__global__ void kernel_max(const IndexType n, const ValueType *data, ValueType *out,
+                           const IndexType GROUP_SIZE, const IndexType LOCAL_SIZE) {
 
-    int tid = threadIdx.x;
+    IndexType tid = threadIdx.x;
 
     __shared__ ValueType sdata[BLOCK_SIZE];
     sdata[tid] = ValueType(0);
 
     // get global id
-    int gid = GROUP_SIZE * blockIdx.x + tid;
+    IndexType gid = GROUP_SIZE * blockIdx.x + tid;
 
-    for (int i = 0; i < LOCAL_SIZE; ++i, gid += BLOCK_SIZE) {
+    for (IndexType i = 0; i < LOCAL_SIZE; ++i, gid += BLOCK_SIZE) {
 
-      if (gid < size) {
+      if (gid < n) {
         ValueType tmp = data[gid];
         if (tmp > sdata[tid])
           sdata[tid] = tmp;
@@ -180,9 +167,9 @@ __global__ void kernel_max(const IndexType  size,
     __syncthreads();
 
 #pragma unroll
-    for (int i = BLOCK_SIZE/2; i > 0; i /= 2) {
+    for (IndexType i = BLOCK_SIZE/2; i > 0; i /= 2) {
 
-      if ( tid < i )
+      if (tid < i)
         if (sdata[tid+i] > sdata[tid])
           sdata[tid] = sdata[tid+i];
 
@@ -195,9 +182,52 @@ __global__ void kernel_max(const IndexType  size,
 
 }
 
+template <typename ValueType, typename IndexType, unsigned int BLOCK_SIZE>
+__global__ void kernel_amax(const IndexType n, const ValueType *data, ValueType *out,
+                            const IndexType GROUP_SIZE, const IndexType LOCAL_SIZE) {
+
+    IndexType tid = threadIdx.x;
+
+    __shared__ ValueType sdata[BLOCK_SIZE];
+    sdata[tid] = ValueType(0);
+
+    // get global id
+    IndexType gid = GROUP_SIZE * blockIdx.x + tid;
+
+    for (IndexType i = 0; i < LOCAL_SIZE; ++i, gid += BLOCK_SIZE) {
+
+      if (gid < n) {
+        ValueType tmp = data[gid];
+        tmp = max(tmp, ValueType(-1.0)*tmp);
+        if (tmp > sdata[tid])
+          sdata[tid] = tmp;
+      }
+
+    }
+
+    __syncthreads();
+
+#pragma unroll
+    for (IndexType i = BLOCK_SIZE/2; i > 0; i /= 2) {
+
+      if (tid < i) {
+        ValueType tmp = sdata[tid+i];
+        tmp = max(tmp, ValueType(-1.0)*tmp);
+        if (tmp > sdata[tid])
+          sdata[tid] = tmp;
+      }
+
+      __syncthreads();
+
+    }
+
+    if (tid == 0)
+      out[blockIdx.x] = sdata[tid];
 
 }
 
+
+}
 
 #endif
 

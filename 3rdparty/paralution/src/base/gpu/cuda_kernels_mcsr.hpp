@@ -22,6 +22,8 @@
 #ifndef PARALUTION_GPU_CUDA_KERNELS_MCSR_HPP_
 #define PARALUTION_GPU_CUDA_KERNELS_MCSR_HPP_
 
+#include "../matrix_formats_ind.hpp"
+
 namespace paralution {
 
 template <typename ValueType, typename IndexType>
@@ -68,7 +70,6 @@ __global__ void kernel_mcsr_add_spmv_scalar(const IndexType nrow, const IndexTyp
 
 
 }
-
 
 #endif
 

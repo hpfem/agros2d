@@ -38,6 +38,7 @@
 #include "cuda_kernels_ell.hpp"
 #include "gpu_allocate_free.hpp"
 #include "../../utils/allocate_free.hpp"
+#include "../matrix_formats_ind.hpp"
 
 #include <assert.h>
 #include <cuda.h>
@@ -514,3 +515,4 @@ template class GPUAcceleratorMatrixELL<double>;
 template class GPUAcceleratorMatrixELL<float>;
 
 }
+

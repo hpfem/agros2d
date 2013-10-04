@@ -200,9 +200,7 @@ void paralution_info_gpu(const struct Paralution_Backend_Descriptor backend_desc
       LOG_INFO("kernelExecTimeoutEnabled: "    << dev_prop.kernelExecTimeoutEnabled);    //    int kernelExecTimeoutEnabled;
       LOG_INFO("integrated: "                  << dev_prop.integrated);                  //    int integrated;
       LOG_INFO("canMapHostMemory: "            << dev_prop.canMapHostMemory);            //    int canMapHostMemory;
-      */
       LOG_INFO("computeMode: "                 << dev_prop.computeMode);                 //    int computeMode;
-      /*
       LOG_INFO("maxTexture1D: "                << dev_prop.maxTexture1D);                //    int maxTexture1D;
       LOG_INFO("maxTexture2D[0]: "             << dev_prop.maxTexture2D[0]);             //    int maxTexture2D[0];
       LOG_INFO("maxTexture2D[1]: "             << dev_prop.maxTexture2D[1]);             //    int maxTexture2D[1];
@@ -298,5 +296,5 @@ template AcceleratorMatrix<float>* _paralution_init_base_gpu_matrix(const struct
 template AcceleratorMatrix<double>* _paralution_init_base_gpu_matrix(const struct Paralution_Backend_Descriptor backend_descriptor,
                                                                           const unsigned int matrix_format);
 
+}
 
-};

@@ -72,10 +72,11 @@ private:
 
   friend class GPUAcceleratorMatrixHYB<ValueType>;
   friend class OCLAcceleratorMatrixHYB<ValueType>;
+  friend class MICAcceleratorMatrixHYB<ValueType>;
 
 };
 
 
-};
+}
 
 #endif // PARALUTION_HOST_MATRIX_HYB_HPP_

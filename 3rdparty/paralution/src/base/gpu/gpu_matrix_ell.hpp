@@ -67,6 +67,8 @@ private:
 
 };
 
-};
+
+}
 
 #endif // PARALUTION_GPU_MATRIX_ELL_HPP_
+

@@ -41,7 +41,7 @@ void allocate_gpu(const int size, DataType **ptr) {
     assert(*ptr != NULL);
   }
 
-};
+}
 
 template <typename DataType>
 void free_gpu(DataType **ptr) {
@@ -56,7 +56,7 @@ void free_gpu(DataType **ptr) {
   
   *ptr = NULL;
 
-};
+}
 
 template <typename DataType>
 void set_to_zero_gpu(const int blocksize,
@@ -102,7 +102,6 @@ void set_to_zero_gpu(const int blocksize,
 
 }
 
-
 template <typename DataType>
 void set_to_one_gpu(const int blocksize,
                     const int max_threads,
@@ -144,7 +143,6 @@ void set_to_one_gpu(const int blocksize,
 }
 
 
-
 template void allocate_gpu<float       >(const int size, float        **ptr);
 template void allocate_gpu<double      >(const int size, double       **ptr);
 template void allocate_gpu<int         >(const int size, int          **ptr);
@@ -170,7 +168,5 @@ template void set_to_one_gpu<int         >(const int blocksize, const int max_th
 template void set_to_one_gpu<unsigned int>(const int blocksize, const int max_threads, const int size, unsigned int *ptr);
 template void set_to_one_gpu<char        >(const int blocksize, const int max_threads, const int size, char         *ptr);
 
-
-};
-
+}
 

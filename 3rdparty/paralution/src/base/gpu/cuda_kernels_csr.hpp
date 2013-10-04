@@ -22,6 +22,8 @@
 #ifndef PARALUTION_GPU_CUDA_KERNELS_CSR_HPP_
 #define PARALUTION_GPU_CUDA_KERNELS_CSR_HPP_
 
+#include "../matrix_formats_ind.hpp"
+
 namespace paralution {
 
 // Nathan Bell and Michael Garland

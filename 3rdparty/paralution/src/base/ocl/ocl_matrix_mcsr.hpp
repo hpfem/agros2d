@@ -71,6 +71,8 @@ private:
 
 };
 
-};
+
+}
 
 #endif // PARALUTION_OCL_MATRIX_MCSR_HPP_
+

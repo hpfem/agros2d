@@ -82,6 +82,12 @@ public:
   /// Initialize a CSR matrix on the Host with externally allocated data
   void SetDataPtrCSR(int **row_offset, int **col, ValueType **val,
                      std::string name, const int nnz, const int nrow, const int ncol);
+  /// Leave a CSR matrix to Host pointers
+  void LeaveDataPtrCSR(int **row_offset, int **col, ValueType **val);
+  /// Initialize a DENSE matrix on the Host with externally allocated data
+  void SetDataPtrDENSE(ValueType **val, std::string name, const int nrow, const int ncol);
+  /// Leave a DENSE matrix to Host pointers
+  void LeaveDataPtrDENSE(ValueType **val);
 
   /// Clear (free) the matrix
   void Clear(void);
@@ -125,6 +131,11 @@ public:
   /// Extract the inverse (reciprocal) diagonal values of the matrix into a LocalVector
   void ExtractInverseDiagonal(LocalVector<ValueType> *vec_inv_diag) const;
 
+  /// Extract the upper triangular matrix
+  void ExtractU(LocalMatrix<ValueType> *U) const;
+  /// Extract the lower triangular matrix
+  void ExtractL(LocalMatrix<ValueType> *L) const;
+
   /// Perform (forward) permutation of the matrix
   void Permute(const LocalVector<int> &permutation);
 
@@ -144,8 +155,16 @@ public:
   void MaximalIndependentSet(int &size,
                              LocalVector<int> *permutation) const;
 
+  /// Return a permutation for saddle-point problems (zero diagonal entries),
+  /// where all zero diagonal elements are mapped to the last block;
+  /// the return size is the size of the first block
+  void ZeroBlockPermutation(int &size,
+                            LocalVector<int> *permutation) const;
+
   /// Perform ILU(0) factorization
   void ILU0Factorize(void);
+  /// Perform LU factorization
+  void LUFactorize(void);
 
   /// Perform ILU(t,m) factorization based on threshold and maximum
   /// number of elements per row
@@ -194,8 +213,14 @@ public:
   void UAnalyseClear(void);
   /// Solve U out = in; if level-scheduling algorithm is provided then the 
   /// graph traversing is performed in parallel
-  void USolve(const LocalVector<ValueType> &in, LocalVector<ValueType> *out) const; 
+  void USolve(const LocalVector<ValueType> &in, LocalVector<ValueType> *out) const;
 
+  /// Compute Householder vector
+  void Householder(const int idx, ValueType &beta, LocalVector<ValueType> *vec);
+  /// QR Decomposition
+  void QRDecompose(void);
+  /// Solve QR out = in
+  void QRSolve(const LocalVector<ValueType> &in, LocalVector<ValueType> *out) const;
 
   /// Read matrix from MTX (Matrix Market Format) file
   void ReadFileMTX(const std::string filename);
@@ -292,6 +317,13 @@ public:
                             LocalMatrix<ValueType> *prolong,
                             LocalMatrix<ValueType> *restrict) const;
 
+  /// Factorized Sparse Approximate Inverse assembly for given system
+  /// matrix power pattern or external sparsity pattern
+  void FSAI(const int power, const LocalMatrix<ValueType> *pattern);
+
+  /// SParse Approximate Inverse assembly for given system matrix pattern
+  void SPAI(void);
+
 protected:
 
   virtual bool is_host(void) const;
@@ -316,7 +348,7 @@ private:
 };
 
 
-};
+}
 
 #endif // PARALUTION_LOCAL_MATRIX_HPP_
 

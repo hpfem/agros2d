@@ -89,6 +89,25 @@ class OCLAcceleratorMatrixHYB;
 template <typename ValueType>
 class OCLAcceleratorMatrixDENSE;
 
+template <typename ValueType>
+class MICAcceleratorMatrix;
+template <typename ValueType>
+class MICAcceleratorMatrixCSR;
+template <typename ValueType>
+class MICAcceleratorMatrixMCSR;
+template <typename ValueType>
+class MICAcceleratorMatrixBCSR;
+template <typename ValueType>
+class MICAcceleratorMatrixCOO;
+template <typename ValueType>
+class MICAcceleratorMatrixDIA;
+template <typename ValueType>
+class MICAcceleratorMatrixELL;
+template <typename ValueType>
+class MICAcceleratorMatrixHYB;
+template <typename ValueType>
+class MICAcceleratorMatrixDENSE;
+
 /// Base class for all host/accelerator matrices
 template <typename ValueType>
 class BaseMatrix {
@@ -134,6 +153,13 @@ public:
   /// Initialize a CSR matrix on the Host with externally allocated data
   virtual void SetDataPtrCSR(int **row_offset, int **col, ValueType **val,
                              const int nnz, const int nrow, const int ncol);
+  /// Leave a CSR matrix to Host pointers
+  virtual void LeaveDataPtrCSR(int **row_offset, int **col, ValueType **val);
+
+  /// Initialize a DENSE matrix on the Host with externally allocated data
+  virtual void SetDataPtrDENSE(ValueType **val, const int nrow, const int ncol);
+  /// Leave a DENSE matrix to Host pointers
+  virtual void LeaveDataPtrDENSE(ValueType **val);
 
   /// Clear (free) the matrix
   virtual void Clear(void) = 0;
@@ -165,6 +191,10 @@ public:
   virtual bool ExtractDiagonal(BaseVector<ValueType> *vec_diag) const;
   /// Extract the inverse (reciprocal) diagonal values of the matrix into a LocalVector
   virtual bool ExtractInverseDiagonal(BaseVector<ValueType> *vec_inv_diag) const;
+  /// Extract the upper triangular matrix
+  virtual bool ExtractU(BaseMatrix<ValueType> *U) const;
+  /// Extract the lower triangular matrix
+  virtual bool ExtractL(BaseMatrix<ValueType> *L) const;
 
   /// Perform (forward) permutation of the matrix
   virtual bool Permute(const BaseVector<int> &permutation);
@@ -185,6 +215,12 @@ public:
   virtual void MaximalIndependentSet(int &size,
                                      BaseVector<int> *permutation) const;
 
+  /// Return a permutation for saddle-point problems (zero diagonal entries),
+  /// where all zero diagonal elements are mapped to the last block;
+  /// the return size is the size of the first block
+  virtual void ZeroBlockPermutation(int &size,
+                                    BaseVector<int> *permutation) const;
+  
   /// Convert the matrix from another matrix (with different structure)
   virtual bool ConvertFrom(const BaseMatrix<ValueType> &mat) = 0;
 
@@ -235,6 +271,8 @@ public:
 
   /// Perform ILU(0) factorization
   virtual bool ILU0Factorize(void);
+  /// Perform LU factorization
+  virtual void LUFactorize(void);
   /// Perform ILU(t,m) factorization based on threshold and maximum
   /// number of elements per row
   virtual bool ILUTFactorize(const ValueType t, const int maxrow);
@@ -282,6 +320,13 @@ public:
   /// graph traversing is performed in parallel
   virtual bool USolve(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const; 
 
+  /// Compute Householder vector
+  virtual void Householder(const int idx, ValueType &beta, BaseVector<ValueType> *vec);
+  /// QR Decomposition
+  virtual void QRDecompose(void);
+  /// Solve QR out = in
+  virtual void QRSolve(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const;
+
   /// Compute the spectrum approximation with Gershgorin circles theorem
   virtual bool Gershgorin(ValueType &lambda_min,
                           ValueType &lambda_max) const;
@@ -311,6 +356,13 @@ public:
                                     BaseMatrix<ValueType> *prolong,
                                     BaseMatrix<ValueType> *restrict) const;
 
+  /// Factorized Sparse Approximate Inverse assembly for given system
+  /// matrix power pattern or external sparsity pattern
+  virtual bool FSAI(const int power, const BaseMatrix<ValueType> *pattern);
+
+  /// SParse Approximate Inverse assembly for given system matrix pattern
+  virtual void SPAI(void);
+
 protected:
   
   /// Number of rows
@@ -328,6 +380,7 @@ protected:
   friend class AcceleratorVector<ValueType>;
   friend class GPUAcceleratorVector<ValueType>;
   friend class OCLAcceleratorVector<ValueType>;
+  friend class MICAcceleratorVector<ValueType>;
   
 };
 
@@ -380,8 +433,16 @@ public:
 
 };
 
+template <typename ValueType>
+class MICAcceleratorMatrix : public AcceleratorMatrix<ValueType> {
 
+public: 
+
+  MICAcceleratorMatrix();
+  virtual ~MICAcceleratorMatrix();
 
 };
+
+}
 
 #endif // PARALUTION_BASE_MATRIX_HPP_

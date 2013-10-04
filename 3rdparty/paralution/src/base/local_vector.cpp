@@ -150,6 +150,22 @@ void LocalVector<ValueType>::SetValues(const ValueType val) {
 }
 
 template <typename ValueType>
+void LocalVector<ValueType>::SetRandom(const ValueType a, const ValueType b, const int seed) {
+
+  // host only
+  bool on_host = this->is_host();
+  if (on_host == false)
+    this->MoveToHost();
+  
+  assert(this->vector_ == this->vector_host_);
+  this->vector_host_->SetRandom(a, b, seed);
+  
+  if (on_host == false)
+    this->MoveToAccelerator();
+
+}
+
+template <typename ValueType>
 void LocalVector<ValueType>::CopyFrom(const LocalVector<ValueType> &src) {
 
   assert(this != &src);
@@ -386,6 +402,20 @@ template <typename ValueType>
 ValueType LocalVector<ValueType>::Reduce(void) const {
 
   return this->vector_->Reduce();
+
+}
+
+template <typename ValueType>
+ValueType LocalVector<ValueType>::Asum(void) const {
+
+  return this->vector_->Asum();
+
+}
+
+template <typename ValueType>
+ValueType LocalVector<ValueType>::Amax(void) const {
+
+  return this->vector_->Amax();
 
 }
 

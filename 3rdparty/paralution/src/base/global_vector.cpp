@@ -70,6 +70,10 @@ void GlobalVector<ValueType>::SetValues(const ValueType val) {
 }
 
 template <typename ValueType>
+void GlobalVector<ValueType>::SetRandom(const ValueType a, const ValueType b, const int seed) {
+}
+
+template <typename ValueType>
 void GlobalVector<ValueType>::CopyFrom(const GlobalVector<ValueType> &src) {
 }
 
@@ -133,6 +137,16 @@ ValueType GlobalVector<ValueType>::Norm(void) const {
 
 template <typename ValueType>
 ValueType GlobalVector<ValueType>::Reduce(void) const {
+  return ValueType(0.0);
+}
+
+template <typename ValueType>
+ValueType GlobalVector<ValueType>::Asum(void) const {
+  return ValueType(0.0);
+}
+
+template <typename ValueType>
+ValueType GlobalVector<ValueType>::Amax(void) const {
   return ValueType(0.0);
 }
 

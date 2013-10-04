@@ -65,6 +65,8 @@ private:
 
 };
 
-};
+
+}
 
 #endif // PARALUTION_GPU_MATRIX_MCSR_HPP_
+

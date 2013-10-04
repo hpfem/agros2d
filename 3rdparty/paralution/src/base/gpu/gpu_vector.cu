@@ -764,6 +764,110 @@ int GPUAcceleratorVector<int>::Reduce(void) const {
 
 }
 
+template <>
+double GPUAcceleratorVector<double>::Asum(void) const {
+
+  double res = 0.0;
+
+  if (this->get_size() > 0) {
+
+    cublasStatus_t stat_t;
+    stat_t = cublasDasum(CUBLAS_HANDLE(this->local_backend_.GPU_cublas_handle), 
+                         this->get_size(), 
+                         this->vec_, 1, 
+                         &res);
+    CHECK_CUBLAS_ERROR(stat_t, __FILE__, __LINE__);
+
+  }
+
+  return res;
+
+}
+
+template <>
+float GPUAcceleratorVector<float>::Asum(void) const {
+
+  float res = 0.0;
+
+  if (this->get_size() > 0) {
+
+    cublasStatus_t stat_t;
+    stat_t = cublasSasum(CUBLAS_HANDLE(this->local_backend_.GPU_cublas_handle), 
+                         this->get_size(), 
+                         this->vec_, 1, 
+                         &res);
+    CHECK_CUBLAS_ERROR(stat_t, __FILE__, __LINE__);
+
+  }
+
+  return res;
+
+}
+
+template <>
+int GPUAcceleratorVector<int>::Asum(void) const {
+
+  LOG_INFO("Asum<int> not implemented");
+  FATAL_ERROR(__FILE__, __LINE__);
+
+}
+
+template <typename ValueType>
+ValueType GPUAcceleratorVector<ValueType>::Amax(void) const {
+
+  ValueType res = 0.0;
+
+  if (this->get_size() > 0) {
+
+    ValueType *d_buffer = NULL;
+    ValueType *h_buffer = NULL;
+    int GROUP_SIZE;
+    int LOCAL_SIZE;
+    int FinalReduceSize;
+
+    allocate_gpu<ValueType>(this->local_backend_.GPU_wrap * 4, &d_buffer);
+
+    dim3 BlockSize2(this->local_backend_.GPU_block_size);
+    dim3 GridSize2(this->local_backend_.GPU_wrap * 4);
+
+    GROUP_SIZE = ( size_t( ( size_t( this->get_size() / ( this->local_backend_.GPU_wrap * 4 ) ) + 1 ) 
+                 / this->local_backend_.GPU_block_size ) + 1 ) * this->local_backend_.GPU_block_size;
+    LOCAL_SIZE = GROUP_SIZE / this->local_backend_.GPU_block_size;
+
+    cudaDeviceSynchronize();
+
+    kernel_amax<ValueType, int, 256> <<<GridSize2, BlockSize2>>> (this->get_size(),
+                                                                  this->vec_,
+                                                                  d_buffer,
+                                                                  GROUP_SIZE,
+                                                                  LOCAL_SIZE);
+    CHECK_CUDA_ERROR(__FILE__, __LINE__);
+
+    FinalReduceSize = this->local_backend_.GPU_wrap * 4;
+    allocate_host(FinalReduceSize, &h_buffer);
+
+    cudaMemcpy(h_buffer, // dst
+               d_buffer, // src
+               FinalReduceSize*sizeof(int), // size
+               cudaMemcpyDeviceToHost);
+    CHECK_CUDA_ERROR(__FILE__, __LINE__);
+
+    free_gpu<ValueType>(&d_buffer);
+
+    for (int i=0; i<FinalReduceSize; ++i) {
+      ValueType tmp = fabs(h_buffer[i]);
+      if (res < tmp)
+        res = tmp;
+    }
+
+    free_host(&h_buffer);
+
+  }
+
+  return res;
+
+}
+
 template <typename ValueType>
 void GPUAcceleratorVector<ValueType>::PointWiseMult(const BaseVector<ValueType> &x) {
 
@@ -939,3 +1043,4 @@ template class GPUAcceleratorVector<float>;
 template class GPUAcceleratorVector<int>;
 
 }
+

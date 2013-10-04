@@ -122,6 +122,8 @@ bool cum_sum( IndexType*  dst,
   
 }
 
+
 }
 
 #endif // PARALUTION_GPU_GPU_UTILS_HPP_
+

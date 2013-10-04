@@ -73,7 +73,7 @@ private:
 };
 
 
-};
+}
 
 #endif // PARALUTION_GLOBAL_MATRIX_HPP_
 

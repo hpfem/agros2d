@@ -292,8 +292,8 @@ void IterationControl<ValueType>::PrintStatus(void) {
 }
 
 
-
 template class IterationControl<double>;
 template class IterationControl<float>;
 
-};
+}
+

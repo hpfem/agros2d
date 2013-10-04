@@ -122,6 +122,12 @@ public:
   /// Reduce the vector
   virtual ValueType Reduce(void) const = 0;
 
+  /// Compute the sum of the absolute values of the vector (L1 norm), return =  sum(|this|)
+  virtual ValueType Asum(void) const = 0;
+
+  /// Compute the absolute max value of the vector, return = max(|this|)
+  virtual ValueType Amax(void) const = 0;
+
   /// Perform point-wise multiplication (element-wise) of type this = this * x
   virtual void PointWiseMult(const LocalVector<ValueType> &x);
   /// Perform point-wise multiplication (element-wise) of type this = this * x
@@ -136,6 +142,7 @@ public:
 };
 
 
-};
+}
 
 #endif // PARALUTION_VECTOR_HPP_
+

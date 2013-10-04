@@ -65,10 +65,11 @@ private:
 
   friend class GPUAcceleratorMatrixMCSR<ValueType>;
   friend class OCLAcceleratorMatrixMCSR<ValueType>;
+  friend class MICAcceleratorMatrixMCSR<ValueType>;
 
 };
 
 
-};
+}
 
 #endif // PARALUTION_HOST_MATRIX_MCSR_HPP_

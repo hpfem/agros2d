@@ -206,3 +206,85 @@ __kernel void kernel_reduce(         const       int  size,
 
 }
 
+__kernel void kernel_asum(         const       int  size,
+                          __global const ValueType *data,
+                          __global       ValueType *out,
+                          __local        ValueType *sdata,
+                                   const       int  GROUP_SIZE,
+                                   const       int  LOCAL_SIZE) {
+
+    int tid = get_local_id(0);
+
+    sdata[tid] = (ValueType)(0);
+
+    // get global id
+    int gid = GROUP_SIZE * get_group_id(0) + tid;
+
+    for (int i = 0; i < LOCAL_SIZE; ++i, gid += BLOCK_SIZE) {
+
+      if (gid < size)
+        sdata[tid] += fabs(data[gid]);
+      else
+        i = LOCAL_SIZE;
+
+    }
+
+    barrier(CLK_LOCAL_MEM_FENCE);
+
+    for (int i = BLOCK_SIZE/2; i > 0; i /= 2) {
+
+      if (tid < i)
+        sdata[tid] += sdata[tid + i];
+
+      barrier(CLK_LOCAL_MEM_FENCE);
+
+    }
+
+    if (tid == 0)
+      out[get_group_id(0)] = sdata[tid];
+
+}
+
+__kernel void kernel_amax(         const       int  size,
+                          __global const ValueType *data,
+                          __global       ValueType *out,
+                          __local        ValueType *sdata,
+                                   const       int  GROUP_SIZE,
+                                   const       int  LOCAL_SIZE) {
+
+    int tid = get_local_id(0);
+
+    sdata[tid] = (ValueType)(0);
+
+    // get global id
+    int gid = GROUP_SIZE * get_group_id(0) + tid;
+
+    for (int i = 0; i < LOCAL_SIZE; ++i, gid += BLOCK_SIZE) {
+
+      if (gid < size) {
+        ValueType tmp = fabs(data[gid]);
+        if (tmp > sdata[tid])
+          sdata[tid] = tmp;
+      }
+
+    }
+
+    barrier(CLK_LOCAL_MEM_FENCE);
+
+    for (int i = BLOCK_SIZE/2; i > 0; i /= 2) {
+
+      if (tid < i) {
+        ValueType tmp = fabs(sdata[tid+i]);
+        if (tmp > sdata[tid])
+          sdata[tid] = tmp;
+      }
+
+      barrier(CLK_LOCAL_MEM_FENCE);
+
+    }
+
+    if (tid == 0)
+      out[get_group_id(0)] = sdata[tid];
+
+}
+

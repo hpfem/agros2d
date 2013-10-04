@@ -430,4 +430,5 @@ void MultiElimination<OperatorType, VectorType, ValueType>::MoveToAcceleratorLoc
 template class MultiElimination< LocalMatrix<double>, LocalVector<double>, double >;
 template class MultiElimination< LocalMatrix<float>,  LocalVector<float>, float >;
 
-};
+}
+

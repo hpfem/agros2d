@@ -67,7 +67,7 @@ private:
 };
 
 
-
-};
+}
 
 #endif // PARALUTION_KRYLOV_CHEBYSHEV_HPP_
+

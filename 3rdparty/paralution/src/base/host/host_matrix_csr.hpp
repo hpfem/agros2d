@@ -43,6 +43,7 @@ public:
   virtual void AllocateCSR(const int nnz, const int nrow, const int ncol);
   virtual void SetDataPtrCSR(int **row_offset, int **col, ValueType **val,
                              const int nnz, const int nrow, const int ncol);
+  virtual void LeaveDataPtrCSR(int **row_offset, int **col, ValueType **val);
 
   virtual void Clear(void);
   virtual void Zeros(void);
@@ -62,6 +63,8 @@ public:
 
   virtual bool ExtractDiagonal(BaseVector<ValueType> *vec_diag) const;
   virtual bool ExtractInverseDiagonal(BaseVector<ValueType> *vec_inv_diag) const;
+  virtual bool ExtractU(BaseMatrix<ValueType> *U) const;
+  virtual bool ExtractL(BaseMatrix<ValueType> *L) const;
  
   virtual bool MultiColoring(int &num_colors,
                              int **size_colors,
@@ -69,6 +72,9 @@ public:
 
   virtual void MaximalIndependentSet(int &size,
                                      BaseVector<int> *permutation) const;
+  
+  virtual void ZeroBlockPermutation(int &size,
+                                    BaseVector<int> *permutation) const;
 
 
   virtual void SymbolicPower(const int p);
@@ -140,6 +146,9 @@ public:
                                     BaseMatrix<ValueType> *prolong,
                                     BaseMatrix<ValueType> *restrict) const;
 
+  virtual bool FSAI(const int power, const BaseMatrix<ValueType> *pattern);
+  virtual void SPAI(void);
+
 private:
 
   MatrixCSR<ValueType, int> mat_;
@@ -156,6 +165,7 @@ private:
 
   friend class GPUAcceleratorMatrixCSR<ValueType>;
   friend class OCLAcceleratorMatrixCSR<ValueType>;
+  friend class MICAcceleratorMatrixCSR<ValueType>;
 
 #ifdef SUPPORT_MKL
 
@@ -168,6 +178,7 @@ private:
 
 };
 
-};
+
+}
 
 #endif // PARALUTION_HOST_MATRIX_CSR_HPP_

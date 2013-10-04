@@ -62,7 +62,7 @@ private:
 };
 
 
-
-};
+}
 
 #endif // PARALUTION_KRYLOV_CG_HPP_
+

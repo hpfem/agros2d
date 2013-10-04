@@ -335,5 +335,5 @@ template class Chebyshev< GlobalMatrix<float>,  GlobalVector<float>, float >;
 template class Chebyshev< GlobalStencil<double>, GlobalVector<double>, double >;
 template class Chebyshev< GlobalStencil<float>,  GlobalVector<float>, float >;
 
+}
 
-};

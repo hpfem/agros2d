@@ -48,6 +48,7 @@ public:
   virtual void Zeros(void);
   virtual void Ones(void);
   virtual void SetValues(const ValueType val);
+  virtual void SetRandom(const ValueType a, const ValueType b, const int seed);
 
   virtual void CopyFrom(const BaseVector<ValueType> &vec);
   virtual void CopyFromFloat(const BaseVector<float> &vec);
@@ -91,6 +92,10 @@ public:
   virtual ValueType Norm(void) const;
   // reduce vector
   virtual ValueType Reduce(void) const;
+  // Compute sum of absolute values of this
+  virtual ValueType Asum(void) const;
+  // Compute absolute value of this
+  virtual ValueType Amax(void) const;
   // point-wise multiplication
   virtual void PointWiseMult(const BaseVector<ValueType> &x);
   virtual void PointWiseMult(const BaseVector<ValueType> &x, const BaseVector<ValueType> &y);
@@ -124,9 +129,12 @@ private:
 
   friend class GPUAcceleratorVector<ValueType>;
   friend class OCLAcceleratorVector<ValueType>;
+  friend class MICAcceleratorVector<ValueType>;
 
 };
 
-};
+
+}
 
 #endif // PARALUTION_HOST_VECTOR_HPP_
+

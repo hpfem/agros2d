@@ -75,7 +75,7 @@ private:
 };
 
 
-
-};
+}
 
 #endif // PARALUTION_GMRES_GMRES_HPP_
+

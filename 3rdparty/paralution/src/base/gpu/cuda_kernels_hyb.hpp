@@ -24,6 +24,7 @@
 
 #include "cuda_kernels_ell.hpp"
 #include "cuda_kernels_coo.hpp"
+#include "../matrix_formats_ind.hpp"
 
 namespace paralution {
 

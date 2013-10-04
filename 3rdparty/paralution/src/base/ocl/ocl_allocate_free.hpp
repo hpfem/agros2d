@@ -55,6 +55,7 @@ template <typename DataType>
 void ocl_dev2dev(const int, cl_mem*, cl_mem*, cl_command_queue);
 
 
-};
+}
 
 #endif // PARALUTION_OCL_ALLOCATE_FREE_HPP_
+

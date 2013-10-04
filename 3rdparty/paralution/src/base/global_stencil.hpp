@@ -73,7 +73,7 @@ private:
 };
 
 
-};
+}
 
 #endif // PARALUTION_GLOBAL_STENCIL_HPP_
 

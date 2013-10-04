@@ -72,7 +72,7 @@ private:
 };
 
 
-
-};
+}
 
 #endif // PARALUTION_MIXED_PRECISION_HPP_
+

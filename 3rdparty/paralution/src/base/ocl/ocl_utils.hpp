@@ -158,6 +158,8 @@ static const char *OCL_ERROR[] = {
 #define CL_KERNEL_REDUCE                            paralution_get_ocl_kernel<ValueType>(88)
 #define CL_KERNEL_ELL_MAX_ROW                       paralution_get_ocl_kernel<ValueType>(92)
 #define CL_KERNEL_ELL_CSR_TO_ELL                    paralution_get_ocl_kernel<ValueType>(94)
+#define CL_KERNEL_ASUM                              paralution_get_ocl_kernel<ValueType>(100)
+#define CL_KERNEL_AMAX                              paralution_get_ocl_kernel<ValueType>(102)
 
 
 #endif // PARALUTION_OCL_OCL_UTILS_HPP_

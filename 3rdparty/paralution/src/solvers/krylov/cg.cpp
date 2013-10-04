@@ -223,7 +223,7 @@ void CG<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType 
   // rho = (r,r)
   rho = r->Dot(*r);
 
-  res_norm = sqrt(rho) ;
+  res_norm = this->Norm(*r);
 
   // use for |b-Ax0|
   this->iter_ctrl_.InitResidual(res_norm);
@@ -248,7 +248,7 @@ void CG<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType 
   // rho = (r,r)
   rho = r->Dot(*r);
 
-  res_norm = sqrt(rho);
+  res_norm = this->Norm(*r);
   
   while (!this->iter_ctrl_.CheckResidual(res_norm)) {
     
@@ -274,7 +274,7 @@ void CG<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const VectorType 
     // rho = (r,r)
     rho = r->Dot(*r);
 
-    res_norm = sqrt(rho);
+    res_norm = this->Norm(*r);
 
   }
 
@@ -318,7 +318,7 @@ void CG<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &rh
 
   // use for |b-Ax0|
   ValueType res_norm;
-  res_norm = r->Norm() ;
+  res_norm = this->Norm(*r) ;
   this->iter_ctrl_.InitResidual(res_norm);
 
   // use for |b|
@@ -336,7 +336,7 @@ void CG<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorType &rh
   // r = r - alpha*q
   r->AddScale(*q, ValueType(-1.0)*alpha);
 
-  while (!this->iter_ctrl_.CheckResidual(r->Norm())) {
+  while (!this->iter_ctrl_.CheckResidual(this->Norm(*r))) {
 
     rho_old = rho;
 
@@ -381,4 +381,5 @@ template class CG< GlobalMatrix<float>,  GlobalVector<float>, float >;
 template class CG< GlobalStencil<double>, GlobalVector<double>, double >;
 template class CG< GlobalStencil<float>,  GlobalVector<float>, float >;
 
-};
+}
+

@@ -288,4 +288,5 @@ template class MultiColoredSGS< LocalMatrix<float>,  LocalVector<float>, float >
 template class MultiColoredGS< LocalMatrix<double>, LocalVector<double>, double >;
 template class MultiColoredGS< LocalMatrix<float>,  LocalVector<float>, float >;
 
-};
+}
+

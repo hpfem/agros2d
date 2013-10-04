@@ -155,7 +155,7 @@ int main(int argc, char* argv[]) {
         if ( ocl_typeDevice & CL_DEVICE_TYPE_ACCELERATOR ) ocl_deviceType = "ACCELERATOR";
         if ( ocl_typeDevice & CL_DEVICE_TYPE_DEFAULT )     ocl_deviceType = "DEFAULT";
 
-        std::cout << "-- \t" << j+1 << ") " << ocl_nameDevice << " (" << ocl_nameVendor << ", " <<ocl_deviceType <<")" << std::endl;
+        std::cout << "-- \t" << j+1 << ") " << ocl_nameDevice << " (" << ocl_nameVendor << ", " <<ocl_deviceType.c_str() <<")" << std::endl;
 
       }
 
@@ -201,25 +201,43 @@ int main(int argc, char* argv[]) {
       if ( err != CL_SUCCESS )
         FATAL_ERROR( __FILE__, __LINE__ );
 
-      // TODO hardcoded divisor
-      if ( ocl_deviceType == "CPU" ) ocl_blocksize /= 16;
-      if ( ocl_deviceType == "GPU" ) ocl_blocksize /= 8;
+        err = clGetDeviceInfo( ocl_devices[ocl_dev], 
+			       CL_DEVICE_TYPE, 
+			       sizeof(ocl_typeDevice), 
+			       &ocl_typeDevice, NULL );
+        if (err != CL_SUCCESS )
+          FATAL_ERROR( __FILE__, __LINE__ );
+
+        if ( ocl_typeDevice & CL_DEVICE_TYPE_CPU )         ocl_deviceType = "CPU";
+        if ( ocl_typeDevice & CL_DEVICE_TYPE_GPU )         ocl_deviceType = "GPU";
+        if ( ocl_typeDevice & CL_DEVICE_TYPE_ACCELERATOR ) ocl_deviceType = "ACCELERATOR";
+        if ( ocl_typeDevice & CL_DEVICE_TYPE_DEFAULT )     ocl_deviceType = "DEFAULT";
+
+        // TODO hardcoded divisor
+        //      if ( ocl_deviceType == "CPU" ) ocl_blocksize /= 16;
+        // Uncomment for NVIDIA GPU:
+        //      if ( ocl_deviceType == "GPU" ) ocl_blocksize /= 8;
+        // Uncomment for AMD GPU:
+        //      if ( ocl_deviceType == "GPU" ) ocl_blocksize /= 1;
+
+        if ( ocl_deviceType == "CPU" ) ocl_blocksize /= 16;
+        if ( ocl_deviceType == "GPU" ) ocl_blocksize = 128;
 
     }
 
   }
 
   std::string file = utilsPath;
-  std::ofstream hwparam( (file + "HardwareParameters.hpp").c_str() );
+  std::ofstream hwparam((file.append("HardwareParameters.hpp")).c_str());
 
-  if ( hwparam.is_open() ) {
+  if (hwparam.is_open()) {
 
-    hwparam << "#define OPENCL_PLATFORM "  << ocl_plat              << std::endl;
-    hwparam << "#define OPENCL_DEVICE "    << ocl_dev               << std::endl;
-    hwparam << "#define OPENCL_TYPE \""    << ocl_deviceType <<"\"" << std::endl;
-    hwparam << "#define OPENCL_CU "        << ocl_cu                << std::endl;
-    hwparam << "#define OPENCL_BLOCKSIZE " << ocl_blocksize         << std::endl;
-    hwparam << "#define OPENCL_WARPSIZE "  << ocl_warpsize          << std::endl;
+    hwparam << "#define OPENCL_PLATFORM "  << ocl_plat << std::endl;
+    hwparam << "#define OPENCL_DEVICE "    << ocl_dev << std::endl;
+    hwparam << "#define OPENCL_TYPE \""    << ocl_deviceType.c_str() <<"\"" << std::endl;
+    hwparam << "#define OPENCL_CU "        << ocl_cu << std::endl;
+    hwparam << "#define OPENCL_BLOCKSIZE " << ocl_blocksize << std::endl;
+    hwparam << "#define OPENCL_WARPSIZE "  << ocl_warpsize << std::endl;
 
   }
 

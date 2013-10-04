@@ -133,6 +133,8 @@ private:
 
 };
 
-};
+
+}
 
 #endif // PARALUTION_ITER_CTRL_HPP_
+

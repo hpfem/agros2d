@@ -68,11 +68,12 @@ private:
 
   friend class GPUAcceleratorMatrixDIA<ValueType>;
   friend class OCLAcceleratorMatrixDIA<ValueType>;
+  friend class MICAcceleratorMatrixDIA<ValueType>;
 
 
 };
 
 
-};
+}
 
 #endif // PARALUTION_HOST_MATRIX_DIA_HPP_

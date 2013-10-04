@@ -74,6 +74,8 @@ private:
 
 };
 
-};
+
+}
 
 #endif // PARALUTION_OCL_MATRIX_DIA_HPP_
+

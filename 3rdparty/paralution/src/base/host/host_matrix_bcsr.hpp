@@ -65,10 +65,11 @@ private:
 
   friend class GPUAcceleratorMatrixBCSR<ValueType>;
   friend class OCLAcceleratorMatrixBCSR<ValueType>;
+  friend class MICAcceleratorMatrixBCSR<ValueType>;
 
 };
 
 
-};
+}
 
 #endif // PARALUTION_HOST_MATRIX_BCSR_HPP_

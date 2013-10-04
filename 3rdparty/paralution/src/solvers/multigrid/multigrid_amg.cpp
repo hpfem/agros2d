@@ -616,5 +616,5 @@ void AMG<OperatorType, VectorType, ValueType>::CoarsenOperator(const OperatorTyp
 template class AMG< LocalMatrix<double>, LocalVector<double>, double >;
 template class AMG< LocalMatrix<float>,  LocalVector<float>, float >;
 
-};
+}
 

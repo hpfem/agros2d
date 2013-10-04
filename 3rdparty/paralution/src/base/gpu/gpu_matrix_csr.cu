@@ -40,6 +40,7 @@
 #include "cuda_kernels_vector.hpp"
 #include "cusparse_csr.hpp"
 #include "gpu_allocate_free.hpp"
+#include "../matrix_formats_ind.hpp"
 
 #include <cuda.h>
 #include <cusparse_v2.h>
@@ -2364,9 +2365,12 @@ bool GPUAcceleratorMatrixCSR<float>::Transpose(void) {
   }
 
   return true;
+
 }
+
 
 template class GPUAcceleratorMatrixCSR<double>;
 template class GPUAcceleratorMatrixCSR<float>;
 
 }
+

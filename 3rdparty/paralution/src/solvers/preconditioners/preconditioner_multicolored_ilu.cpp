@@ -249,4 +249,5 @@ void MultiColoredILU<OperatorType, VectorType, ValueType>::Solve_(const VectorTy
 template class MultiColoredILU< LocalMatrix<double>, LocalVector<double>, double >;
 template class MultiColoredILU< LocalMatrix<float>,  LocalVector<float>, float >;
 
-};
+}
+

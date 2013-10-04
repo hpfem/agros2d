@@ -88,6 +88,10 @@ public:
   virtual ValueType Norm(void) const;
   // reduce
   virtual ValueType Reduce(void) const;
+  // Compute sum of absolute values of this
+  virtual ValueType Asum(void) const;
+  // Compute absolute value of this
+  virtual ValueType Amax(void) const;
   // point-wise multiplication
   virtual void PointWiseMult(const BaseVector<ValueType> &x);
   virtual void PointWiseMult(const BaseVector<ValueType> &x, const BaseVector<ValueType> &y);
@@ -98,6 +102,7 @@ private:
 
   friend class GPUAcceleratorVector<float>;
   friend class GPUAcceleratorVector<double>;
+  friend class GPUAcceleratorVector<int>;
 
   friend class HostVector<ValueType>;
   friend class AcceleratorMatrix<ValueType>;
@@ -120,8 +125,7 @@ private:
 };
 
 
-
-
-};
+}
 
 #endif // PARALUTION_BASE_VECTOR_HPP_
+

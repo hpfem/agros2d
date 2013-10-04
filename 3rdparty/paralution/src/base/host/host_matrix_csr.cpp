@@ -34,6 +34,7 @@
 #include "../backend_manager.hpp"
 #include "../../utils/log.hpp"
 #include "../../utils/allocate_free.hpp"
+#include "../matrix_formats_ind.hpp"
 
 #include <assert.h>
 #include <stdio.h>
@@ -146,7 +147,7 @@ void HostMatrixCSR<ValueType>::AllocateCSR(const int nnz, const int nrow, const 
     set_to_zero_host(nrow+1, mat_.row_offset);
     set_to_zero_host(nnz, mat_.col);
     set_to_zero_host(nnz, mat_.val);
-    
+
     this->nrow_ = nrow;
     this->ncol_ = ncol;
     this->nnz_  = nnz;
@@ -154,7 +155,6 @@ void HostMatrixCSR<ValueType>::AllocateCSR(const int nnz, const int nrow, const 
 #ifdef SUPPORT_MKL
     allocate_host(nrow, &this->mkl_tmp_vec_);
 #endif
-    
 
   }
 
@@ -184,6 +184,28 @@ void HostMatrixCSR<ValueType>::SetDataPtrCSR(int **row_offset, int **col, ValueT
 }
 
 template <typename ValueType>
+void HostMatrixCSR<ValueType>::LeaveDataPtrCSR(int **row_offset, int **col, ValueType **val) {
+
+  assert(this->get_nrow() > 0);
+  assert(this->get_ncol() > 0);
+  assert(this->get_nnz() > 0);
+
+  // see free_host function for details
+  *row_offset = this->mat_.row_offset;
+  *col = this->mat_.col;
+  *val = this->mat_.val;
+
+  this->mat_.row_offset = NULL;
+  this->mat_.col = NULL;
+  this->mat_.val = NULL;
+
+  this->nrow_ = 0;
+  this->ncol_ = 0;
+  this->nnz_  = 0;
+
+}
+
+template <typename ValueType>
 void HostMatrixCSR<ValueType>::CopyFromCSR(const int *row_offsets, const int *col, const ValueType *val) {
 
   assert(this->get_nnz() > 0);
@@ -197,12 +219,10 @@ void HostMatrixCSR<ValueType>::CopyFromCSR(const int *row_offsets, const int *co
     this->mat_.row_offset[i] = row_offsets[i];
   
 #pragma omp parallel for      
-  for (int j=0; j<this->get_nnz(); ++j)
+  for (int j=0; j<this->get_nnz(); ++j) {
     this->mat_.col[j] = col[j];
-  
-#pragma omp parallel for      
-  for (int j=0; j<this->get_nnz(); ++j)
     this->mat_.val[j] = val[j];
+  }
   
 }
 
@@ -218,14 +238,12 @@ void HostMatrixCSR<ValueType>::CopyToCSR(int *row_offsets, int *col, ValueType *
 #pragma omp parallel for      
   for (int i=0; i<this->get_nrow()+1; ++i)
     row_offsets[i] = this->mat_.row_offset[i]; 
-  
-#pragma omp parallel for      
-  for (int j=0; j<this->get_nnz(); ++j)
+
+#pragma omp parallel for
+  for (int j=0; j<this->get_nnz(); ++j) {
     col[j] = this->mat_.col[j];
-  
-#pragma omp parallel for      
-  for (int j=0; j<this->get_nnz(); ++j)
     val[j] = this->mat_.val[j];
+  }
 
 }
 
@@ -253,16 +271,13 @@ void HostMatrixCSR<ValueType>::CopyFrom(const BaseMatrix<ValueType> &mat) {
         this->mat_.row_offset[i] = cast_mat->mat_.row_offset[i] ;
 
 #pragma omp parallel for
-      for (int j=0; j<this->get_nnz(); ++j)
+      for (int j=0; j<this->get_nnz(); ++j) {
         this->mat_.col[j] = cast_mat->mat_.col[j];
-
-#pragma omp parallel for
-      for (int j=0; j<this->get_nnz(); ++j)
         this->mat_.val[j] = cast_mat->mat_.val[j];
+      }
 
     }
-    
-    
+
   } else {
 
     // Host matrix knows only host matrices
@@ -270,7 +285,7 @@ void HostMatrixCSR<ValueType>::CopyFrom(const BaseMatrix<ValueType> &mat) {
     mat.CopyTo(this);
 
   }
-  
+
 }
 
 template <typename ValueType>
@@ -295,7 +310,6 @@ bool HostMatrixCSR<ValueType>::ConvertFrom(const BaseMatrix<ValueType> &mat) {
     return true;
     
   }
-
 
   if (const HostMatrixCOO<ValueType> *cast_mat = dynamic_cast<const HostMatrixCOO<ValueType>*> (&mat)) {
 
@@ -397,7 +411,6 @@ bool HostMatrixCSR<ValueType>::ConvertFrom(const BaseMatrix<ValueType> &mat) {
     return true;
 
   }
-  
 
   return false;
 
@@ -450,7 +463,6 @@ void HostMatrixCSR<float>::Apply(const BaseVector<float> &in, BaseVector<float> 
                        cast_in->vec_, cast_out->vec_);
     
 }
-
 
 #else
 
@@ -619,6 +631,105 @@ bool HostMatrixCSR<ValueType>::ExtractSubMatrix(const int row_offset,
   }
 
   return true;
+
+}
+
+template <typename ValueType>
+bool HostMatrixCSR<ValueType>::ExtractU(BaseMatrix<ValueType> *U) const {
+
+  assert(U != NULL);
+
+  assert(this->get_nrow() > 0);
+  assert(this->get_ncol() > 0);
+
+  HostMatrixCSR<ValueType> *cast_U = dynamic_cast<HostMatrixCSR<ValueType>*> (U);
+
+  assert(cast_U != NULL);
+
+  // count nnz of upper triangular part
+  int nnz_U = 0;
+#pragma omp parallel for reduction(+:nnz_U)
+  for (int ai=0; ai<this->get_nrow(); ++ai)
+    for (int aj=this->mat_.row_offset[ai]; aj<this->mat_.row_offset[ai+1]; ++aj)
+      if (this->mat_.col[aj] <= ai)
+        ++nnz_U;
+
+  // allocate upper triangular part structure
+  int *row_offset = NULL;
+  int *col = NULL;
+  ValueType *val = NULL;
+
+  allocate_host(this->get_nrow()+1, &row_offset);
+  allocate_host(nnz_U, &col);
+  allocate_host(nnz_U, &val);
+
+  // fill upper triangular part
+  int nnz = 0;
+  row_offset[0] = 0;
+  for (int ai=0; ai<this->get_nrow(); ++ai) {
+    for (int aj=this->mat_.row_offset[ai]; aj<this->mat_.row_offset[ai+1]; ++aj)
+      if (this->mat_.col[aj] >= ai) {
+        col[nnz] = this->mat_.col[aj];
+        val[nnz] = this->mat_.val[aj];
+        ++nnz;
+      }
+    row_offset[ai+1] = nnz;
+  }
+
+  cast_U->Clear();
+  cast_U->SetDataPtrCSR(&row_offset, &col, &val, nnz_U, this->get_nrow(), this->get_ncol());
+
+  return true;
+
+}
+
+template <typename ValueType>
+bool HostMatrixCSR<ValueType>::ExtractL(BaseMatrix<ValueType> *L) const {
+
+  assert(L != NULL);
+
+  assert(this->get_nrow() > 0);
+  assert(this->get_ncol() > 0);
+
+  HostMatrixCSR<ValueType> *cast_L = dynamic_cast<HostMatrixCSR<ValueType>*> (L);
+
+  assert(cast_L != NULL);
+
+  // count nnz of lower triangular part
+  int nnz_L = 0;
+#pragma omp parallel for reduction(+:nnz_L)
+  for (int ai=0; ai<this->get_nrow(); ++ai)
+    for (int aj=this->mat_.row_offset[ai]; aj<this->mat_.row_offset[ai+1]; ++aj)
+      if (this->mat_.col[aj] <= ai)
+        ++nnz_L;
+
+  // allocate lower triangular part structure
+  int *row_offset = NULL;
+  int *col = NULL;
+  ValueType *val = NULL;
+
+  allocate_host(this->get_nrow()+1, &row_offset);
+  allocate_host(nnz_L, &col);
+  allocate_host(nnz_L, &val);
+
+  // fill lower triangular part
+  int nnz = 0;
+  row_offset[0] = 0;
+  for (int ai=0; ai<this->get_nrow(); ++ai) {
+    for (int aj=this->mat_.row_offset[ai]; aj<this->mat_.row_offset[ai+1]; ++aj)
+      if (this->mat_.col[aj] <= ai) {
+        col[nnz] = this->mat_.col[aj];
+        val[nnz] = this->mat_.val[aj];
+        ++nnz;
+      }
+    row_offset[ai+1] = nnz;
+  }
+
+  cast_L->Clear();
+  cast_L->SetDataPtrCSR(&row_offset, &col, &val, nnz_L, this->get_nrow(), this->get_ncol());
+
+  return true;
+
 }
 
 #ifdef SUPPORT_MKL
@@ -722,7 +833,8 @@ bool HostMatrixCSR<ValueType>::LUSolve(const BaseVector<ValueType> &in, BaseVect
     cast_out->vec_[ai] /= this->mat_.val[diag_aj];
   }
 
-  return true;    
+  return true;
+
 }
 
 #endif
@@ -770,21 +882,18 @@ bool HostMatrixCSR<ValueType>::LLSolve(const BaseVector<ValueType> &in, BaseVect
 
     for (int aj=this->mat_.row_offset[ai]; aj<this->mat_.row_offset[ai+1]; ++aj) {
 
-      if (this->mat_.col[aj] < ai) {
-        // under the diagonal
+      // under the diagonal
+      if (this->mat_.col[aj] < ai)
         cast_out->vec_[ai] -= this->mat_.val[aj] * cast_out->vec_[ this->mat_.col[aj] ];
-      } 
 
-      if (this->mat_.col[aj] == ai) {
+      if (this->mat_.col[aj] == ai)
         diag_aj = aj;
-      }
-
-      cast_out->vec_[ai] /= this->mat_.val[diag_aj];
 
     }
 
-  }
+    cast_out->vec_[ai] /= this->mat_.val[diag_aj];
 
+  }
 
   // last elements should be the diagonal one (last)
   diag_aj = this->get_nnz()-1;
@@ -794,14 +903,13 @@ bool HostMatrixCSR<ValueType>::LLSolve(const BaseVector<ValueType> &in, BaseVect
 
     for (int aj=this->mat_.row_offset[ai]; aj<this->mat_.row_offset[ai+1]; ++aj) {
 
-      if (this->mat_.col[aj] > ai) {
-        // above the diagonal
+      // above the diagonal
+      if (this->mat_.col[aj] > ai)
         cast_out->vec_[ai] -= this->mat_.val[aj] * cast_out->vec_[ this->mat_.col[aj] ];
-      } 
       
-      if (this->mat_.col[aj] == ai) {
+      if (this->mat_.col[aj] == ai)
         diag_aj = aj;
-      }
+
     }
 
     cast_out->vec_[ai] /= this->mat_.val[diag_aj];
@@ -809,6 +917,7 @@ bool HostMatrixCSR<ValueType>::LLSolve(const BaseVector<ValueType> &in, BaseVect
   }
 
   return true;
+
 }
 
 template <typename ValueType>
@@ -1176,6 +1285,10 @@ bool HostMatrixCSR<ValueType>::ILUTFactorize(const ValueType t, const int maxrow
     for (int k=0, num_lower=0, num_upper=0; k<nrow; ++k) {
 
       int aj = nnz_entries[k];
+
+      if (aj == -1)
+        break;
+
       if (nnz_pos[aj] == false)
         break;
 
@@ -1239,17 +1352,107 @@ bool HostMatrixCSR<ValueType>::ILUTFactorize(const ValueType t, const int maxrow
   this->Clear();
   this->SetDataPtrCSR(&row_offset, &col, &val, nnz, nrow, ncol);
 
+#ifdef SUPPORT_MKL
+  allocate_host(nrow, &this->mkl_tmp_vec_);
+#endif
+
   return true;
 
 }
 
-// TODO
 template <typename ValueType>
 bool HostMatrixCSR<ValueType>::IC0Factorize(void) {
 
-  FATAL_ERROR(__FILE__, __LINE__);
+  assert(this->get_nrow() == this->get_ncol());
+  assert(this->get_nnz() > 0);
 
-  return false;
+  int *ind_diag = NULL;
+  allocate_host(this->get_nrow(), &ind_diag);
+
+#pragma omp parallel for
+  for (int ai=0; ai<this->get_nrow(); ++ai)
+    for (int aj=this->mat_.row_offset[ai]; aj<this->mat_.row_offset[ai+1]; ++aj)
+      if (ai == this->mat_.col[aj]) {
+        // diagonal indices
+        ind_diag[ai] = aj;
+        break;        
+      }
+
+  // k=1..n
+  for (int ak=0; ak<this->get_nrow(); ++ak) {
+
+    // a_k,k = sqrt(a_k,k)
+    assert(this->mat_.val[ ind_diag[ak] ] > ValueType(0.0));
+    this->mat_.val[ ind_diag[ak] ] = sqrt(this->mat_.val[ ind_diag[ak] ]);
+
+    for (int ai=this->mat_.row_offset[ak]; ai<this->mat_.row_offset[ak+1]; ++ai)
+      if (this->mat_.col[ai] > ak)
+        // a_i,k /= a_k,k
+        this->mat_.val[ai] /= this->mat_.val[ ind_diag[ak] ];
+
+    for (int aj=ind_diag[ak]; aj<this->mat_.row_offset[ak+1]; ++aj)
+      if (this->mat_.col[aj] > ak) {
+        // a_j,k
+        ValueType akj = this->mat_.val[aj];
+
+        for (int ai=ind_diag[ak]; ai<this->mat_.row_offset[ak+1]; ++ai)
+          if (this->mat_.col[ai] >= this->mat_.col[aj]) {
+            // a_i,k
+            ValueType aki = this->mat_.val[ai];
+
+            for (int aji=this->mat_.row_offset[this->mat_.col[aj]]; aji<this->mat_.row_offset[this->mat_.col[aj]+1]; ++aji)
+              if (this->mat_.col[aji] == this->mat_.col[ai]) {
+                // a_i,j -= a_i,k * a_k,j
+                this->mat_.val[aji] -= aki * akj;
+                break;
+              }
+
+          }
+
+      }
+
+  }
+
+  free_host(&ind_diag);
+
+  // Fill U part
+
+  this->Transpose(); 
+
+  // copy L^T to U
+
+  int *row_offset  = new int[this->get_nrow()+1];
+
+  for (int ai=0; ai<this->get_nrow(); ++ai) {
+
+    row_offset[ai+1] = this->mat_.row_offset[ai+1];
+
+    for (int aj=this->mat_.row_offset[ai]; aj<this->mat_.row_offset[ai+1]; ++aj)
+      if (ai < this->mat_.col[aj]) {
+        row_offset[ai+1]--;
+      }
+  }
+
+  for (int ai=0; ai<this->get_nrow(); ++ai) {
+    for (int aj=this->mat_.row_offset[ai]; aj<this->mat_.row_offset[ai+1]; ++aj)
+      if (ai > this->mat_.col[aj]) {
+
+        const int ind_col = this->mat_.col[aj] + 1;
+        const int ind = row_offset[ ind_col ];
+
+        assert(this->mat_.col[ind] == ai);
+        this->mat_.val[ind] = this->mat_.val[aj];        
+
+        row_offset[ ind_col ] += 1;
+
+      }
+
+  }
+
+  delete row_offset;
+
+  return true;
+
 }
 
 
@@ -1374,6 +1577,51 @@ void HostMatrixCSR<ValueType>::MaximalIndependentSet(int &size,
   }
 
   free_host(&mis);
+
+}
+
+template <typename ValueType>
+void HostMatrixCSR<ValueType>::ZeroBlockPermutation(int &size,
+                                                    BaseVector<int> *permutation) const {
+
+  assert(permutation != NULL);
+  assert( (permutation->get_size() == this->get_nrow()) &&
+          (permutation->get_size() == this->get_ncol()) );
+  
+  HostVector<int> *cast_perm = dynamic_cast<HostVector<int>*> (permutation) ; 
+  assert(cast_perm != NULL);
+
+  size = 0;
+
+  for (int ai=0; ai<this->get_nrow(); ++ai)
+    for (int aj=this->mat_.row_offset[ai]; aj<this->mat_.row_offset[ai+1]; ++aj)
+      if (ai == this->mat_.col[aj])
+        ++size;
+
+
+  int k_z  = size ;
+  int k_nz = 0 ;
+
+  for (int ai=0; ai<this->get_nrow(); ++ai) {
+
+    bool hit = false ;
+
+    for (int aj=this->mat_.row_offset[ai]; aj<this->mat_.row_offset[ai+1]; ++aj)
+      if (ai == this->mat_.col[aj]) {
+
+        cast_perm->vec_[k_nz] = ai;
+        ++k_nz;
+        hit = true ;
+
+      }
+
+    if (hit == false) {
+        cast_perm->vec_[k_z] = ai;
+        ++k_z;
+    }
+
+  }
+
 }
 
 // following R.E.Bank and C.C.Douglas paper
@@ -1548,6 +1796,7 @@ bool HostMatrixCSR<ValueType>::MatMatMult(const BaseMatrix<ValueType> &A, const 
   this->NumericMatMatMult (A, B);
 */
   return true;
+
 }
 
 // following R.E.Bank and C.C.Douglas paper
@@ -1616,6 +1865,7 @@ void HostMatrixCSR<ValueType>::SymbolicMatMatMult(const BaseMatrix<ValueType> &A
   //      this->mat_.val[i] = ValueType(1.0);
 
   delete [] new_col;
+
 }
 
 template <typename ValueType>
@@ -1975,6 +2225,7 @@ bool HostMatrixCSR<ValueType>::MatrixAdd(const BaseMatrix<ValueType> &mat, const
   }
 
   return true;
+
 }
 
 template <typename ValueType>
@@ -2011,6 +2262,7 @@ bool HostMatrixCSR<ValueType>::Gershgorin(ValueType &lambda_min,
   }
 
   return true;
+
 }
 
 template <typename ValueType>
@@ -2023,8 +2275,8 @@ bool HostMatrixCSR<ValueType>::Scale(const ValueType alpha) {
     this->mat_.val[ai] *= alpha;
 
   return true;
-}
 
+}
 
 template <typename ValueType>
 bool HostMatrixCSR<ValueType>::ScaleDiagonal(const ValueType alpha) {
@@ -2040,6 +2292,7 @@ bool HostMatrixCSR<ValueType>::ScaleDiagonal(const ValueType alpha) {
       }
 
   return true;
+
 }
 
 template <typename ValueType>
@@ -2053,7 +2306,8 @@ bool HostMatrixCSR<ValueType>::ScaleOffDiagonal(const ValueType alpha) {
       if (ai != this->mat_.col[aj])
         this->mat_.val[aj] *= alpha;
 
-  return true;    
+  return true;
+
 }
 
 template <typename ValueType>
@@ -2066,6 +2320,7 @@ bool HostMatrixCSR<ValueType>::AddScalar(const ValueType alpha) {
     this->mat_.val[ai] += alpha;
 
   return true;
+
 }
 
 
@@ -2083,6 +2338,7 @@ bool HostMatrixCSR<ValueType>::AddScalarDiagonal(const ValueType alpha) {
       }
 
   return true;
+
 }
 
 template <typename ValueType>
@@ -2097,6 +2353,7 @@ bool HostMatrixCSR<ValueType>::AddScalarOffDiagonal(const ValueType alpha) {
         this->mat_.val[aj] += alpha;
 
   return true;
+
 }
 
 
@@ -2117,13 +2374,13 @@ bool HostMatrixCSR<ValueType>::DiagMatMult(const BaseVector<ValueType> &diag) {
   }
     
   return true;
-}
 
+}
 
 template <typename ValueType>
 bool HostMatrixCSR<ValueType>::Compress(const ValueType drop_off) {
 
-  assert(drop_off >= ValueType(0.0));
+  assert(fabs(drop_off) >= ValueType(0.0));
 
   if (this->get_nnz() > 0) {
     
@@ -2175,11 +2432,12 @@ bool HostMatrixCSR<ValueType>::Compress(const ValueType drop_off) {
          ++jj;
        }
              
-     }              
+     }
     
   }
 
   return true;
+
 }
 
 template <typename ValueType>
@@ -2191,7 +2449,6 @@ bool HostMatrixCSR<ValueType>::Transpose(void) {
 
     tmp.CopyFrom(*this);
 
-//TODO only re-allocate if nrow != ncol
     this->Clear();
     this->AllocateCSR(tmp.get_nnz(), tmp.get_ncol(), tmp.get_nrow());
 
@@ -2327,7 +2584,9 @@ bool HostMatrixCSR<ValueType>::Permute(const BaseVector<int> &permutation) {
     free_host<int>(&perm_row_nnz);
     
   }
+
     return true;
+
 }
 
 template <typename ValueType>
@@ -2382,6 +2641,7 @@ bool HostMatrixCSR<ValueType>::CreateFromMap(const BaseVector<int> &map, const i
   free_host<int>(&row_buffer);
 
   return true;
+
 }
 
 // ----------------------------------------------------------
@@ -2761,8 +3021,200 @@ void HostMatrixCSR<ValueType>::AMGAggregation(const BaseVector<int> &aggregates,
 
 }
 
+template <typename ValueType>
+bool HostMatrixCSR<ValueType>::FSAI(const int power, const BaseMatrix<ValueType> *pattern) {
+
+  // Extract lower triangular matrix of A
+  HostMatrixCSR<ValueType> L(this->local_backend_);
+
+  const HostMatrixCSR<ValueType> *cast_pattern = NULL;
+  if (pattern != NULL) {
+    cast_pattern = dynamic_cast<const HostMatrixCSR<ValueType>*>(pattern);
+    assert(cast_pattern != NULL);
+
+    cast_pattern->ExtractL(&L);
+  } else if (power > 1) {
+    HostMatrixCSR<ValueType> structure(this->local_backend_);
+    structure.CopyFrom(*this);
+    structure.SymbolicPower(power);
+    structure.ExtractL(&L);
+  } else {
+    this->ExtractL(&L);
+  }
+
+  int nnz = L.get_nnz();
+  int nrow = L.get_nrow();
+  int ncol = L.get_ncol();
+  int *row_offset = NULL;
+  int *col = NULL;
+  ValueType *val = NULL;
+
+  L.LeaveDataPtrCSR(&row_offset, &col, &val);
+
+#pragma omp parallel for
+  for (int ai=0; ai<this->get_nrow(); ++ai) {
+
+    // entries of ai-th row
+    int nnz_row = row_offset[ai+1] - row_offset[ai];
+
+    if (nnz_row == 1) {
+
+      int aj = this->mat_.row_offset[ai];
+      if (this->mat_.col[aj] == ai)
+        val[row_offset[ai]] = 1. / this->mat_.val[aj];
+
+    } else {
+
+      HostVector<ValueType> mk(this->local_backend_);
+      HostVector<ValueType> ek(this->local_backend_);
+      HostMatrixDENSE<ValueType> Asub(this->local_backend_);
+
+      Asub.AllocateDENSE(nnz_row, nnz_row);
+      mk.Allocate(nnz_row);
+      ek.Allocate(nnz_row);
+
+      ek.vec_[nnz_row-1] = 1.;
+
+      // create submatrix taking only the lower tridiagonal part into account
+      for (int k=0; k<nnz_row; ++k) {
+
+        int row_begin = this->mat_.row_offset[col[row_offset[ai]+k]];
+        int row_end   = this->mat_.row_offset[col[row_offset[ai]+k]+1];
+        int j = 0;
+
+        for (int aj=row_begin; aj<row_end; ++aj)
+          for (; j<nnz_row; ++j) {
+
+            int Asub_col = col[row_offset[ai]+j];
+
+            if (this->mat_.col[aj] < Asub_col)
+              break;
+
+            if (this->mat_.col[aj] == Asub_col)
+              Asub.mat_.val[DENSE_IND(k, j, nnz_row, nnz_row)] = this->mat_.val[aj];
+
+          }
+
+      }
+
+      // solve Asub * mk = ek with LU factorization
+      Asub.LUFactorize();
+      Asub.LUSolve(ek, &mk);
+
+      // update the preconditioner matrix with mk
+      for (int aj=row_offset[ai], k=0; aj<row_offset[ai+1]; ++aj, ++k)
+        val[aj] = mk.vec_[k];
+
+      // free data structures
+      mk.Clear();
+      ek.Clear();
+      Asub.Clear();
+
+    }
+
+  }
+
+  // scaling
+  for (int ai=0; ai<nrow; ++ai) {
+    ValueType fac = sqrt(1. / fabs(val[row_offset[ai+1]-1]));
+    for (int aj=row_offset[ai]; aj<row_offset[ai+1]; ++aj)
+      val[aj] *= fac;
+  }
+
+  this->Clear();
+  this->SetDataPtrCSR(&row_offset, &col, &val, nnz, nrow, ncol);
+
+  return true;
+
+}
+
+template <typename ValueType>
+void HostMatrixCSR<ValueType>::SPAI(void) {
+
+  int nrow = this->get_nrow();
+  int nnz  = this->get_nnz();
+
+  ValueType *val = NULL;
+  allocate_host(nnz, &val);
+
+  HostMatrixCSR<ValueType> T(this->local_backend_);
+  T.CopyFrom(*this);
+  this->Transpose();
+
+  // Loop over each row to get J indexing vector
+#pragma omp parallel for
+  for (int i=0; i<nrow; ++i) {
+
+    int *J = NULL;
+    int Jsize = this->mat_.row_offset[i+1]-this->mat_.row_offset[i];
+    allocate_host(Jsize, &J);
+    std::vector<int> I;
+
+    // Setup J = {j | m(j) != 0}
+    for (int j=this->mat_.row_offset[i], idx = 0; j<this->mat_.row_offset[i+1]; ++j, ++idx)
+      J[idx] = this->mat_.col[j];
+
+    // Setup I = {i | row A(i,J) != 0}
+    for (int idx=0; idx<Jsize; ++idx)
+      for (int j=this->mat_.row_offset[J[idx]]; j<this->mat_.row_offset[J[idx]+1]; ++j)
+        if (std::find(I.begin(), I.end(), this->mat_.col[j]) == I.end())
+          I.push_back(this->mat_.col[j]);
+
+    // Build dense matrix
+    HostMatrixDENSE<ValueType> Asub(this->local_backend_);
+    Asub.AllocateDENSE(I.size(), Jsize);
+
+    for (int k=0; k<Asub.get_nrow(); ++k) {
+      for (int aj = T.mat_.row_offset[I[k]]; aj < T.mat_.row_offset[I[k]+1]; ++aj) {
+        for (int j=0; j<Jsize; ++j) {
+
+          if (T.mat_.col[aj] == J[j])
+            Asub.mat_.val[DENSE_IND(k,j,Asub.get_nrow(),Asub.get_ncol())] = T.mat_.val[aj];
+
+        }
+      }
+    }
+
+    // QR Decomposition of dense submatrix Ak
+    Asub.QRDecompose();
+
+    // Solve least squares
+    HostVector<ValueType> ek(this->local_backend_);
+    HostVector<ValueType> mk(this->local_backend_);
+
+    ek.Allocate(Asub.get_nrow());
+    mk.Allocate(Asub.get_ncol());
+
+    for (int j=0; j<ek.get_size(); ++j)
+      if (I[j] == i)
+        ek.vec_[j] = 1.0;
+
+    Asub.QRSolve(ek, &mk);
+
+    // Write m_k into preconditioner matrix
+    for (int j=0; j<Jsize; ++j)
+      val[this->mat_.row_offset[i]+j] = mk.vec_[j];
+
+    // Clear index vectors
+    I.clear();
+    ek.Clear();
+    mk.Clear();
+    Asub.Clear();
+    free_host(&J);
+
+  }
+
+  // Only reset value array since we keep the sparsity pattern of A
+  free_host(&this->mat_.val);
+  this->mat_.val = val;
+
+  this->Transpose();
+
+}
+
 
 template class HostMatrixCSR<double>;
 template class HostMatrixCSR<float>;
 
 }
+

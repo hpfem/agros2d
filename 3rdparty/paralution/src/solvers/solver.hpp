@@ -42,6 +42,12 @@ public:
   /// Reset the operator; see ReBuildNumeric
   virtual void ResetOperator(const OperatorType &op);
 
+  /// Set the residual norm to L1 or L2 norm
+  /// resnorm == 1 L1 Norm
+  /// resnorm == 2 L2 Norm (default)
+  /// resnorm == 3 Inf Norm
+  void SetResidualNorm(const int resnorm);
+
   /// Print information about the solver
   virtual void Print(void) const = 0;
 
@@ -96,6 +102,14 @@ protected:
   /// verb == 1 print info about the solver (start,end);
   /// verb == 2 print (#iter, residual) via iteration control;
   int verb_;
+
+  /// Residual norm
+  /// res_norm = 0 L2 Norm
+  /// res_norm = 1 Reduction
+  int res_norm_;
+
+  /// Computes the vector norm
+  ValueType Norm(const VectorType &vec) const;
 
   /// Print starting msg of the solver
   virtual void PrintStart_(void) const = 0;
@@ -213,6 +227,7 @@ protected:
 };
 
 
-};
+}
 
 #endif // PARALUTION_SOLVER_HPP_
+

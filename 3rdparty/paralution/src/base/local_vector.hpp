@@ -66,6 +66,7 @@ public:
   virtual void Zeros();
   virtual void Ones();
   virtual void SetValues(const ValueType val);
+  virtual void SetRandom(const ValueType a = -1.0, const ValueType b = 1.0, const int seed = 0);
 
   /// Access operator (only for host data!)
   ValueType& operator[](const int i);
@@ -120,6 +121,8 @@ public:
   virtual ValueType Dot(const LocalVector<ValueType> &x) const;
   virtual ValueType Norm(void) const;
   virtual ValueType Reduce(void) const;
+  virtual ValueType Asum(void) const;
+  virtual ValueType Amax(void) const;
   virtual void PointWiseMult(const LocalVector<ValueType> &x);
   virtual void PointWiseMult(const LocalVector<ValueType> &x, const LocalVector<ValueType> &y);
 
@@ -154,7 +157,7 @@ private:
 };
 
 
-};
+}
 
 #endif // PARALUTION_LOCAL_VECTOR_HPP_
 

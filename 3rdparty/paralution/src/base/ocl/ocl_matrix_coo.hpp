@@ -75,6 +75,8 @@ private:
 
 };
 
-};
+
+}
 
 #endif // PARALUTION_OCL_MATRIX_COO_HPP_
+

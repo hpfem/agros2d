@@ -456,7 +456,8 @@ void MultiGrid<OperatorType, VectorType, ValueType>::SolveV(const VectorType &rh
   this->t_level_[0]->ScaleAdd(ValueType(-1.0), rhs);
 
   ValueType res_norm;
-  res_norm = this->t_level_[0]->Norm();
+  res_norm = this->Norm(*this->t_level_[0]);
+
 
   this->iter_ctrl_.InitResidual(res_norm);
 
@@ -552,7 +553,7 @@ void MultiGrid<OperatorType, VectorType, ValueType>::SolveV(const VectorType &rh
     this->op_->Apply(*this->d_level_[0], this->t_level_[0]); 
     this->t_level_[0]->ScaleAdd(ValueType(-1.0), rhs);
 
-    res_norm = this->t_level_[0]->Norm();
+    res_norm = this->Norm(*this->t_level_[0]);
 
   }
 
@@ -647,7 +648,9 @@ void MultiGrid<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorT
 
 }
 
+
 template class MultiGrid< LocalMatrix<double>, LocalVector<double>, double >;
 template class MultiGrid< LocalMatrix<float>,  LocalVector<float>, float >;
 
-};
+}
+

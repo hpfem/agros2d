@@ -84,10 +84,11 @@ private:
 
   friend class GPUAcceleratorMatrixCOO<ValueType>;
   friend class OCLAcceleratorMatrixCOO<ValueType>;
+  friend class MICAcceleratorMatrixCOO<ValueType>;
 
 };
 
 
-};
+}
 
 #endif // PARALUTION_HOST_MATRIX_COO_HPP_

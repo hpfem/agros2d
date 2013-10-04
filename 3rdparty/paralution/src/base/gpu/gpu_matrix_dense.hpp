@@ -65,6 +65,8 @@ private:
 
 };
 
-};
+
+}
 
 #endif // PARALUTION_GPU_MATRIX_DENSE_HPP_
+

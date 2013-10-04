@@ -28,6 +28,7 @@
 #include "../backend_manager.hpp"
 #include "../../utils/log.hpp"
 #include "../../utils/allocate_free.hpp"
+#include "../matrix_formats_ind.hpp"
 
 extern "C" {
 #include "../../../thirdparty/matrix-market/mmio.h"

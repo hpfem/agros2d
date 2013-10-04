@@ -22,6 +22,8 @@
 #ifndef PARALUTION_GPU_CUDA_KERNELS_COO_HPP_
 #define PARALUTION_GPU_CUDA_KERNELS_COO_HPP_
 
+#include "../matrix_formats_ind.hpp"
+
 namespace paralution {
 
 template <typename ValueType, typename IndexType>
@@ -279,7 +281,6 @@ kernel_spmv_coo_serial(const IndexType num_entries,
 
   
 }
-
 
 #endif
 

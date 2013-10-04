@@ -150,7 +150,7 @@ private:
 
 };
 
-/// Incomplete Cholesky with no fill-ins IC0 - under development
+/// Incomplete Cholesky with no fill-ins IC0
 template <class OperatorType, class VectorType, typename ValueType>
 class IC : public Preconditioner<OperatorType, VectorType, ValueType> {
 
@@ -212,7 +212,85 @@ private:
 
 };
 
+/// Factorized Approximate Inverse preconditioner
+template <class OperatorType, class VectorType, typename ValueType>
+class FSAI : public Preconditioner<OperatorType, VectorType, ValueType> {
+
+public:
+
+  FSAI();
+  virtual ~FSAI();
+
+  virtual void Print(void) const;
+  virtual void Solve(const VectorType &rhs, VectorType *x);
+  /// Initialize the FSAI with powered system matrix sparsity pattern
+  virtual void Init(const int power);
+  /// Initialize the FSAI with external sparsity pattern
+  virtual void Init(const OperatorType &pattern);
+  virtual void Build(void);
+  virtual void Clear(void);
+
+  virtual void SetPrecondMatrixFormat(const unsigned int mat_format);
+
+protected:
+
+  virtual void MoveToHostLocalData_(void);
+  virtual void MoveToAcceleratorLocalData_(void);
+
+private:
+
+  OperatorType FSAI_L_;
+  OperatorType FSAI_LT_;
+  VectorType t_;
+
+  int matrix_power_;
+
+  bool external_pattern_;
+  const OperatorType *matrix_pattern_;
+
+  /// Keep the precond matrix in CSR or not
+  bool op_mat_format_;
+  /// Precond matrix format
+  unsigned int precond_mat_format_;
 
 };
 
+/// SParse Approximate Inverse preconditioner
+template <class OperatorType, class VectorType, typename ValueType>
+class SPAI : public Preconditioner<OperatorType, VectorType, ValueType> {
+
+public:
+
+  SPAI();
+  virtual ~SPAI();
+
+  virtual void Print(void) const;  
+  virtual void Solve(const VectorType &rhs, VectorType *x);
+  virtual void Build(void);
+  virtual void Clear(void);
+
+  virtual void SetPrecondMatrixFormat(const unsigned int mat_format);
+
+
+protected:
+
+  virtual void MoveToHostLocalData_(void);
+  virtual void MoveToAcceleratorLocalData_(void);
+
+
+private:
+
+  OperatorType SPAI_;
+
+  /// Keep the precond matrix in CSR or not
+  bool op_mat_format_; 
+  /// Precond matrix format
+  unsigned int precond_mat_format_;
+
+};
+
+
+}
+
 #endif // PARALUTION_PRECONDITIONER_HPP_
+

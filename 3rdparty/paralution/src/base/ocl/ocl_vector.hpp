@@ -94,6 +94,10 @@ public:
   virtual ValueType Norm(void) const;
   // reduce
   virtual ValueType Reduce(void) const;
+  // Compute sum of absolute values of this
+  virtual ValueType Asum(void) const;
+  // Compute absolute max value of this
+  virtual ValueType Amax(void) const;
   // point-wise multiplication
   virtual void PointWiseMult(const BaseVector<ValueType> &x);
   virtual void PointWiseMult(const BaseVector<ValueType> &x, const BaseVector<ValueType> &y);
@@ -126,8 +130,7 @@ private:
 };
 
 
-
-
-};
+}
 
 #endif // PARALUTION_OCL_VECTOR_HPP_
+

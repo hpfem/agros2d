@@ -103,6 +103,6 @@ void hyb_to_csr(const int omp_threads,
                 MatrixCSR<ValueType, IndexType> *dst, IndexType *nnz_csr );
 
 
-};
+}
 
 #endif // PARALUTION_HOST_CONVERSION_HPP_

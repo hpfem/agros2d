@@ -145,7 +145,7 @@ protected:
 };
 
 
-
-};
+}
 
 #endif // PARALUTION_MULTIGRID_HPP_
+

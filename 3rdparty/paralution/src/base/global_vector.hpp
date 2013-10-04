@@ -52,10 +52,11 @@ public:
   virtual int get_size(void) const;
 
   virtual void Allocate(std::string name, const unsigned int size);
-  virtual void Clear();
-  virtual void Zeros();
-  virtual void Ones();
+  virtual void Clear(void);
+  virtual void Zeros(void);
+  virtual void Ones(void);
   virtual void SetValues(const ValueType val);
+  virtual void SetRandom(const ValueType a = -1.0, const ValueType b = 1.0, const int seed = 0);
   void CloneFrom(const GlobalVector<ValueType> &src);
 
   // Accessing operator - only for host data
@@ -79,6 +80,10 @@ public:
   virtual ValueType Norm(void) const;
   // reduce
   virtual ValueType Reduce(void) const;
+  // L1 norm, sum(|this|)
+  virtual ValueType Asum(void) const;
+  // Amax, max(|this|)
+  virtual ValueType Amax(void) const;
   // point-wise multiplication
   virtual void PointWiseMult(const GlobalVector<ValueType> &x);
   virtual void PointWiseMult(const GlobalVector<ValueType> &x, const GlobalVector<ValueType> &y);
@@ -104,7 +109,7 @@ private:
 };
 
 
-};
+}
 
 #endif // PARALUTION_GLOBAL_VECTOR_HPP_
 

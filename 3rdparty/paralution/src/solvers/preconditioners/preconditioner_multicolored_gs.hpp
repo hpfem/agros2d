@@ -84,6 +84,7 @@ protected:
 };
 
 
-};
+}
 
 #endif // PARALUTION_PRECONDITIONER_MULTICOLORED_GS_HPP_
+

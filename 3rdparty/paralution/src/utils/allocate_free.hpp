@@ -39,9 +39,7 @@ template <typename DataType>
 void set_to_zero_host(const int size, DataType *ptr);
 
 
-};
+}
 
 #endif // PARALUTION_UTILS_ALLOCATE_FREE_HPP_
-
-
 

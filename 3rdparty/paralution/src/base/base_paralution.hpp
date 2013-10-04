@@ -74,7 +74,7 @@ protected:
 };
 
 
-};
+}
 
 #endif // PARALUTION_LOCAL_BASE_HPP_
 

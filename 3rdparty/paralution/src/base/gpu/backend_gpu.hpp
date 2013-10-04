@@ -53,6 +53,7 @@ template <typename ValueType>
 AcceleratorMatrix<ValueType>* _paralution_init_base_gpu_matrix(const struct Paralution_Backend_Descriptor backend_descriptor,
                                                                const unsigned int matrix_format);
 
-};
+}
 
 #endif // PARALUTION_BACKEND_GPU_HPP_
+

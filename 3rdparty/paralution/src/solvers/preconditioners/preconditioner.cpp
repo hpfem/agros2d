@@ -213,6 +213,7 @@ void ILU<OperatorType, VectorType, ValueType>::Build(void) {
   if (this->p_ == 0 ) {
     // ILU0
     this->ILU_.ILU0Factorize();
+
   } else {
     // ILUp
     this->ILU_.ILUpFactorize(this->p_, this->level_);
@@ -235,6 +236,7 @@ template <class OperatorType, class VectorType, typename ValueType>
 void ILU<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
 
   this->ILU_.MoveToHost();
+  this->ILU_.LUAnalyse();
 
 }
 
@@ -242,6 +244,7 @@ template <class OperatorType, class VectorType, typename ValueType>
 void ILU<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
 
   this->ILU_.MoveToAccelerator();
+  this->ILU_.LUAnalyse();
 
 }
 
@@ -385,7 +388,7 @@ IC<OperatorType, VectorType, ValueType>::~IC() {
 template <class OperatorType, class VectorType, typename ValueType>
 void IC<OperatorType, VectorType, ValueType>::Print(void) const {
 
-  LOG_INFO("IC");
+  LOG_INFO("IC(0) preconditioner");
 
   if (this->build_ == true) {
     LOG_INFO("IC nnz = " << this->IC_.get_nnz());
@@ -406,13 +409,8 @@ void IC<OperatorType, VectorType, ValueType>::Build(void) {
   assert(this->op_ != NULL);
 
   this->IC_.CloneFrom(*this->op_);
-
   this->IC_.IC0Factorize();
-
-
   this->IC_.LLAnalyse();
-  this->IC_.WriteFileMTX("IC.mtx");
-  this->IC_.ReadFileMTX("nos4_IC.mtx");
 
 }
 
@@ -447,7 +445,6 @@ void IC<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs,
   assert(this->build_ == true);
   assert(x != NULL);
   assert(x != &rhs);
-
 
   this->IC_.LLSolve(rhs, x);
 
@@ -600,7 +597,6 @@ void AIChebyshev<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalDat
 
 }
 
-
 template <class OperatorType, class VectorType, typename ValueType>
 void AIChebyshev<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs,
                                                     VectorType *x) {
@@ -611,6 +607,242 @@ void AIChebyshev<OperatorType, VectorType, ValueType>::Solve(const VectorType &r
 
 
   this->AIChebyshev_.Apply(rhs, x);
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+FSAI<OperatorType, VectorType, ValueType>::FSAI() {
+
+  this->op_mat_format_ = false;
+  this->precond_mat_format_ = CSR;
+
+  this->matrix_power_ = 1;
+  this->external_pattern_ = false;
+  this->matrix_pattern_ = NULL;
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+FSAI<OperatorType, VectorType, ValueType>::~FSAI() {
+
+  this->Clear();
+  this->matrix_pattern_ = NULL;
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void FSAI<OperatorType, VectorType, ValueType>::Print(void) const {
+
+  LOG_INFO("Factorized Sparse Approximate Inverse preconditioner");
+
+  if (this->build_ == true) {
+    LOG_INFO("FSAI matrix nnz = " << this->FSAI_L_.get_nnz()
+                                   + this->FSAI_LT_.get_nnz()
+                                   - this->FSAI_L_.get_nrow());
+  }
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void FSAI<OperatorType, VectorType, ValueType>::Init(const int power) {
+
+  assert(this->build_ == false);
+  assert(power > 0);
+
+  this->matrix_power_ = power;
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void FSAI<OperatorType, VectorType, ValueType>::Init(const OperatorType &pattern) {
+
+  assert(this->build_ == false);
+  assert(&pattern != NULL);
+
+  this->matrix_pattern_ = &pattern;
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void FSAI<OperatorType, VectorType, ValueType>::Build(void) {
+
+  if (this->build_ == true)
+    this->Clear();
+
+  assert(this->build_ == false);
+  this->build_ = true;
+
+  assert(this->op_ != NULL);
+
+  this->FSAI_L_.CloneFrom(*this->op_);
+  this->FSAI_L_.FSAI(this->matrix_power_, this->matrix_pattern_);
+
+  this->FSAI_LT_.CloneFrom(this->FSAI_L_);
+  this->FSAI_LT_.Transpose();
+
+  this->t_.CloneBackend(*this->op_);
+  this->t_.Allocate("temporary", this->op_->get_nrow());
+
+  if (this->op_mat_format_ == true) {
+    this->FSAI_L_.ConvertTo(this->precond_mat_format_);
+    this->FSAI_LT_.ConvertTo(this->precond_mat_format_);
+  }
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void FSAI<OperatorType, VectorType, ValueType>::Clear(void) {
+
+  if (this->build_ == true) {
+
+    this->FSAI_L_.Clear();
+    this->FSAI_LT_.Clear();
+
+    this->t_.Clear();
+
+    this->op_mat_format_ = false;
+    this->precond_mat_format_ = CSR;
+
+    this->build_ = false;
+
+  }
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void FSAI<OperatorType, VectorType, ValueType>::SetPrecondMatrixFormat(const unsigned int mat_format) {
+
+  this->op_mat_format_ = true;
+  this->precond_mat_format_ = mat_format;
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void FSAI<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
+
+  this->FSAI_L_.MoveToHost();
+  this->FSAI_LT_.MoveToHost();
+
+  this->t_.MoveToHost();
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void FSAI<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
+
+  this->FSAI_L_.MoveToAccelerator();
+  this->FSAI_LT_.MoveToAccelerator();
+
+  this->t_.MoveToAccelerator();
+
+}
+
+
+template <class OperatorType, class VectorType, typename ValueType>
+void FSAI<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs, VectorType *x) {
+
+  assert(this->build_ == true);
+  assert(x != NULL);
+  assert(x != &rhs);
+
+  this->FSAI_L_.Apply(rhs, &this->t_);
+  this->FSAI_LT_.Apply(this->t_, x);
+
+}
+
+
+template <class OperatorType, class VectorType, typename ValueType>
+SPAI<OperatorType, VectorType, ValueType>::SPAI() {
+
+  this->op_mat_format_ = false;
+  this->precond_mat_format_ = CSR;
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+SPAI<OperatorType, VectorType, ValueType>::~SPAI() {
+
+  this->Clear();
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void SPAI<OperatorType, VectorType, ValueType>::Print(void) const {
+
+  LOG_INFO("SParse Approximate Inverse preconditioner");
+
+  if (this->build_ == true) {
+    LOG_INFO("SPAI matrix nnz = " << this->SPAI_.get_nnz());
+  }
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void SPAI<OperatorType, VectorType, ValueType>::Build(void) {
+
+  if (this->build_ == true)
+    this->Clear();
+
+  assert(this->build_ == false);
+  this->build_ = true;
+
+  assert(this->op_ != NULL);
+
+  this->SPAI_.CloneFrom(*this->op_);
+  this->SPAI_.SPAI();
+
+  if (this->op_mat_format_ == true)
+    this->SPAI_.ConvertTo(this->precond_mat_format_);
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void SPAI<OperatorType, VectorType, ValueType>::Clear(void) {
+
+  if (this->build_ == true) {
+
+    this->SPAI_.Clear();
+
+    this->op_mat_format_ = false;
+    this->precond_mat_format_ = CSR;
+
+    this->build_ = false;
+
+  }
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void SPAI<OperatorType, VectorType, ValueType>::SetPrecondMatrixFormat(const unsigned int mat_format) {
+
+  this->op_mat_format_ = true;
+  this->precond_mat_format_ = mat_format;
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void SPAI<OperatorType, VectorType, ValueType>::MoveToHostLocalData_(void) {
+
+  this->SPAI_.MoveToHost();
+
+}
+
+template <class OperatorType, class VectorType, typename ValueType>
+void SPAI<OperatorType, VectorType, ValueType>::MoveToAcceleratorLocalData_(void) {
+
+  this->SPAI_.MoveToAccelerator();
+
+}
+
+
+template <class OperatorType, class VectorType, typename ValueType>
+void SPAI<OperatorType, VectorType, ValueType>::Solve(const VectorType &rhs, VectorType *x) {
+
+  assert(this->build_ == true);
+  assert(x != NULL);
+  assert(x != &rhs);
+
+  this->SPAI_.Apply(rhs, x);
 
 }
 
@@ -643,4 +875,11 @@ template class IC< LocalMatrix<float>,  LocalVector<float>, float >;
 template class AIChebyshev< LocalMatrix<double>, LocalVector<double>, double >;
 template class AIChebyshev< LocalMatrix<float>,  LocalVector<float>, float >;
 
-};
+template class FSAI< LocalMatrix<double>, LocalVector<double>, double >;
+template class FSAI< LocalMatrix<float>,  LocalVector<float>, float >;
+
+template class SPAI< LocalMatrix<double>, LocalVector<double>, double >;
+template class SPAI< LocalMatrix<float>,  LocalVector<float>, float >;
+
+}
+

@@ -147,6 +147,7 @@ void HostVector<ValueType>::CopyFrom(const BaseVector<ValueType> &vec) {
 
       assert(cast_vec->get_size() == this->get_size());
 
+#pragma omp parallel for
       for (int i=0; i<this->size_; ++i)
         this->vec_[i] = cast_vec->vec_[i];
       
@@ -178,7 +179,8 @@ void HostVector<ValueType>::CopyFromFloat(const BaseVector<float> &vec) {
       this->Allocate(cast_vec->get_size());
     
     assert(cast_vec->get_size() == this->get_size());
-    
+
+#pragma omp parallel for
     for (int i=0; i<this->size_; ++i)
       this->vec_[i] = ValueType(cast_vec->vec_[i]);
     
@@ -201,11 +203,11 @@ void HostVector<ValueType>::CopyFromDouble(const BaseVector<double> &vec) {
       this->Allocate(cast_vec->get_size());
     
     assert(cast_vec->get_size() == this->get_size());
-    
+
+#pragma omp parallel for
     for (int i=0; i<this->size_; ++i)
       this->vec_[i] = ValueType(cast_vec->vec_[i]);
-    
-    
+
   } else {
   
     LOG_INFO("No cross backend casting");
@@ -245,6 +247,17 @@ void HostVector<ValueType>::SetValues(const ValueType val) {
 #pragma omp parallel for
   for (int i=0; i<this->size_; ++i)
     this->vec_[i] = val;
+
+}
+
+template <typename ValueType>
+void HostVector<ValueType>::SetRandom(const ValueType a, const ValueType b, const int seed) {
+
+  // Fill this with random data from interval [a,b]
+  srand(seed);
+#pragma omp parallel for
+  for (int i=0; i<this->size_; ++i)
+    this->vec_[i] = a + (ValueType)rand() / RAND_MAX * (b - a);
 
 }
 
@@ -396,7 +409,6 @@ void HostVector<int>::AddScale(const BaseVector<int> &x, const int alpha) {
      
 }
 
-
 #else
 
 template <typename ValueType>
@@ -432,7 +444,6 @@ void HostVector<ValueType>::ScaleAdd(const ValueType alpha, const BaseVector<Val
     this->vec_[i] = alpha*this->vec_[i] + cast_x->vec_[i];
 
 }
-
 
 template <typename ValueType>
 void HostVector<ValueType>::ScaleAddScale(const ValueType alpha, const BaseVector<ValueType> &x, const ValueType beta) {
@@ -493,7 +504,6 @@ void HostVector<int>::Scale(const int alpha) {
 
 }
 
-
 #else
 
 template <typename ValueType>
@@ -504,8 +514,6 @@ void HostVector<ValueType>::Scale(const ValueType alpha) {
 #pragma omp parallel for 
   for (int i=0; i<this->size_; ++i)
     this->vec_[i] *= alpha ; 
-
-
 
 }
 
@@ -526,7 +534,6 @@ void HostVector<ValueType>::PartialSum(const BaseVector<ValueType> &x) {
     this->vec_[i] = cast_x->vec_[i] + cast_x->vec_[i-1];
 
 }
-
 
 #ifdef SUPPORT_MKL
 
@@ -565,7 +572,6 @@ int HostVector<int>::Dot(const BaseVector<int> &x) const {
 
 }
 
-
 #else
 
 template <typename ValueType>
@@ -585,10 +591,47 @@ ValueType HostVector<ValueType>::Dot(const BaseVector<ValueType> &x) const {
     dot += this->vec_[i]*cast_x->vec_[i];
 
   return dot;
+
 }
 
 #endif
 
+template <typename ValueType>
+ValueType HostVector<ValueType>::Asum(void) const {
+
+  ValueType asum = ValueType(0.0);
+
+  omp_set_num_threads(this->local_backend_.OpenMP_threads);
+
+#pragma omp parallel for reduction(+:asum)
+  for (int i=0; i<this->size_; ++i)
+    asum += fabs(this->vec_[i]);
+
+  return asum;
+
+}
+
+template <typename ValueType>
+ValueType HostVector<ValueType>::Amax(void) const {
+
+  ValueType amax = 0.0;
+
+  omp_set_num_threads(this->local_backend_.OpenMP_threads);
+
+#pragma omp parallel for
+  for (int i=0; i<this->size_; ++i) {
+    ValueType val = fabs(this->vec_[i]);
+    if (val > amax)
+#pragma omp critical
+{
+      if (val > amax)
+        amax = val;
+}
+  }
+
+  return amax;
+
+}
 
 #ifdef SUPPORT_MKL
 
@@ -647,7 +690,6 @@ int HostVector<int>::Norm(void) const {
   FATAL_ERROR(__FILE__, __LINE__);
 
 }
-
 
 template <typename ValueType>
 void HostVector<ValueType>::PointWiseMult(const BaseVector<ValueType> &x) {
@@ -708,7 +750,6 @@ void HostVector<ValueType>::CopyFrom(const BaseVector<ValueType> &src,
   for (int i=0; i<size; ++i)
     this->vec_[i+dst_offset] = cast_src->vec_[i+src_offset];
 
-  
 }
 
 template <typename ValueType>
@@ -772,7 +813,6 @@ void HostVector<ValueType>::CopyFromPermute(const BaseVector<ValueType> &src,
 #pragma omp parallel for
   for (int i=0; i<this->get_size(); ++i)
     this->vec_[ cast_perm->vec_[i] ] = cast_vec->vec_[i];
-  
 
 }
 
@@ -795,7 +835,6 @@ void HostVector<ValueType>::CopyFromPermuteBackward(const BaseVector<ValueType> 
 #pragma omp parallel for
   for (int i=0; i<this->get_size(); ++i)
     this->vec_[i] = cast_vec->vec_[ cast_perm->vec_[i] ];
-  
 
 }
 
@@ -809,7 +848,6 @@ bool HostVector<ValueType>::Restriction(const BaseVector<ValueType> &vec_fine, c
   assert(cast_map != NULL);
   assert(cast_vec != NULL);
 
-
   assert(cast_map->get_size() == vec_fine.get_size());
   
   for (int i=0; i<vec_fine.get_size(); ++i) {
@@ -820,6 +858,7 @@ bool HostVector<ValueType>::Restriction(const BaseVector<ValueType> &vec_fine, c
   }
 
   return true;
+
 }
 
 template <typename ValueType>
@@ -832,7 +871,6 @@ bool HostVector<ValueType>::Prolongation(const BaseVector<ValueType> &vec_coarse
   assert(cast_map != NULL);
   assert(cast_vec != NULL);
 
-
   assert(cast_map->get_size() == this->get_size());
   
   for (int i=0; i<this->get_size(); ++i) {
@@ -843,6 +881,7 @@ bool HostVector<ValueType>::Prolongation(const BaseVector<ValueType> &vec_coarse
   }
 
   return true;
+
 }
 
 
@@ -852,3 +891,4 @@ template class HostVector<float>;
 template class HostVector<int>;
 
 }
+

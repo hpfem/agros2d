@@ -198,6 +198,16 @@ bool BaseMatrix<ValueType>::ExtractSubMatrix(const int row_offset,
 }
 
 template <typename ValueType>
+bool BaseMatrix<ValueType>::ExtractL(BaseMatrix<ValueType> *L) const {
+  return false;
+}
+
+template <typename ValueType>
+bool BaseMatrix<ValueType>::ExtractU(BaseMatrix<ValueType> *U) const {
+  return false;
+}
+
+template <typename ValueType>
 bool BaseMatrix<ValueType>::LUSolve(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const {
   return false;
 }
@@ -251,6 +261,19 @@ void BaseMatrix<ValueType>::MaximalIndependentSet(int &size,
   FATAL_ERROR(__FILE__, __LINE__);
 
 }
+
+template <typename ValueType>
+void BaseMatrix<ValueType>::ZeroBlockPermutation(int &size,
+                                                 BaseVector<int> *permutation) const {
+
+  LOG_INFO("ZeroBlockPermutation(int &size, BaseVector<int> *permutation) const");
+  LOG_INFO("Matrix format=" << _matrix_format_names[this->get_mat_format()]);
+  this->info();
+  LOG_INFO("The function is not implemented (yet)!");
+  FATAL_ERROR(__FILE__, __LINE__);
+
+}
+
 
 
 template <typename ValueType>
@@ -503,6 +526,66 @@ void BaseMatrix<ValueType>::AMGAggregation(const BaseVector<int> &aggregates,
 }
 
 template <typename ValueType>
+void BaseMatrix<ValueType>::LUFactorize(void) {
+
+  LOG_INFO("BaseMatrix<ValueType>::LUFactorize()");
+  LOG_INFO("Matrix format=" << _matrix_format_names[this->get_mat_format()]);
+  this->info();
+  LOG_INFO("The function is not implemented (yet)!");
+  FATAL_ERROR(__FILE__, __LINE__);
+
+}
+
+template <typename ValueType>
+void BaseMatrix<ValueType>::Householder(const int idx, ValueType &beta, BaseVector<ValueType> *vec) {
+
+  LOG_INFO("BaseMatrix<ValueType>::Householder(const int idx, ValueType &beta, BaseVector<ValueType> *vec)");
+  LOG_INFO("Matrix format=" << _matrix_format_names[this->get_mat_format()]);
+  this->info();
+  LOG_INFO("The function is not implemented (yet)!");
+  FATAL_ERROR(__FILE__, __LINE__);
+
+}
+
+template <typename ValueType>
+void BaseMatrix<ValueType>::QRDecompose(void) {
+
+  LOG_INFO("BaseMatrix<ValueType>::QRDecompose()");
+  LOG_INFO("Matrix format=" << _matrix_format_names[this->get_mat_format()]);
+  this->info();
+  LOG_INFO("The function is not implemented (yet)!");
+  FATAL_ERROR(__FILE__, __LINE__);
+
+}
+
+template <typename ValueType>
+void BaseMatrix<ValueType>::QRSolve(const BaseVector<ValueType> &in, BaseVector<ValueType> *out) const {
+
+  LOG_INFO("BaseMatrix<ValueType>::QRSolve(const BaseVector<ValueType> &in, BaseVector<ValueType> *out)");
+  LOG_INFO("Matrix format=" << _matrix_format_names[this->get_mat_format()]);
+  this->info();
+  LOG_INFO("The function is not implemented (yet)!");
+  FATAL_ERROR(__FILE__, __LINE__);
+
+}
+
+template <typename ValueType>
+bool BaseMatrix<ValueType>::FSAI(const int power, const BaseMatrix<ValueType> *pattern) {
+  return false;
+}
+
+template <typename ValueType>
+void BaseMatrix<ValueType>::SPAI(void) {
+
+  LOG_INFO("BaseMatrix<ValueType>::SPAI(void)");
+  LOG_INFO("Matrix format=" << _matrix_format_names[this->get_mat_format()]);
+  this->info();
+  LOG_INFO("The function is not implemented (yet)!");
+  FATAL_ERROR(__FILE__, __LINE__);
+
+}
+
+template <typename ValueType>
 bool BaseMatrix<ValueType>::DiagMatMult(const BaseVector<ValueType> &diag) {
   return false;
 }
@@ -559,6 +642,39 @@ void BaseMatrix<ValueType>::SetDataPtrCSR(int **row_offset, int **col, ValueType
                                           const int nnz, const int nrow, const int ncol) {
 
   LOG_INFO("BaseMatrix<ValueType>::SetDataPtrCSR(...)");
+  LOG_INFO("Matrix format=" << _matrix_format_names[this->get_mat_format()]);
+  this->info();
+  LOG_INFO("The function is not implemented (yet)! Check the backend?");
+  FATAL_ERROR(__FILE__, __LINE__);
+
+}
+
+template <typename ValueType>
+void BaseMatrix<ValueType>::LeaveDataPtrCSR(int **row_offset, int **col, ValueType **val) {
+
+  LOG_INFO("BaseMatrix<ValueType>::LeaveDataPtrCSR(...)");
+  LOG_INFO("Matrix format=" << _matrix_format_names[this->get_mat_format()]);
+  this->info();
+  LOG_INFO("The function is not implemented (yet)! Check the backend?");
+  FATAL_ERROR(__FILE__, __LINE__);
+
+}
+
+template <typename ValueType>
+void BaseMatrix<ValueType>::SetDataPtrDENSE(ValueType **val, const int nrow, const int ncol) {
+
+  LOG_INFO("BaseMatrix<ValueType>::SetDataPtrDENSE(...)");
+  LOG_INFO("Matrix format=" << _matrix_format_names[this->get_mat_format()]);
+  this->info();
+  LOG_INFO("The function is not implemented (yet)! Check the backend?");
+  FATAL_ERROR(__FILE__, __LINE__);
+
+}
+
+template <typename ValueType>
+void BaseMatrix<ValueType>::LeaveDataPtrDENSE(ValueType **val) {
+
+  LOG_INFO("BaseMatrix<ValueType>::LeaveDataPtrDENSE(...)");
   LOG_INFO("Matrix format=" << _matrix_format_names[this->get_mat_format()]);
   this->info();
   LOG_INFO("The function is not implemented (yet)! Check the backend?");
@@ -645,6 +761,15 @@ OCLAcceleratorMatrix<ValueType>::~OCLAcceleratorMatrix() {
 }
 
 
+template <typename ValueType>
+MICAcceleratorMatrix<ValueType>::MICAcceleratorMatrix() {
+}
+
+template <typename ValueType>
+MICAcceleratorMatrix<ValueType>::~MICAcceleratorMatrix() {
+}
+
+
 
 template class BaseMatrix<double>;
 template class BaseMatrix<float>;
@@ -660,5 +785,8 @@ template class GPUAcceleratorMatrix<float>;
 
 template class OCLAcceleratorMatrix<double>;
 template class OCLAcceleratorMatrix<float>;
+
+template class MICAcceleratorMatrix<double>;
+template class MICAcceleratorMatrix<float>;
 
 }

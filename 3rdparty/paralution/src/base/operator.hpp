@@ -63,6 +63,7 @@ public:
 };
 
 
-};
+}
 
 #endif // PARALUTION_OPERTOR_HPP_
+

@@ -48,6 +48,7 @@
 #include "solvers/krylov/cg.hpp"
 #include "solvers/krylov/bicgstab.hpp"
 #include "solvers/krylov/gmres.hpp"
+#include "solvers/krylov/idr.hpp"
 #include "solvers/multigrid/multigrid.hpp"
 #include "solvers/multigrid/multigrid_amg.hpp"
 
@@ -56,8 +57,8 @@
 #include "solvers/preconditioners/preconditioner_multicolored_gs.hpp"
 #include "solvers/preconditioners/preconditioner_multicolored_ilu.hpp"
 #include "solvers/preconditioners/preconditioner_multielimination.hpp"
+#include "solvers/preconditioners/preconditioner_saddlepoint.hpp"
 
-#include "utils/log.hpp"
 #include "utils/allocate_free.hpp"
 
 

@@ -76,6 +76,6 @@ private:
 };
 
 
-};
+}
 
 #endif // PARALUTION_LOCAL_STENCIL_HPP_

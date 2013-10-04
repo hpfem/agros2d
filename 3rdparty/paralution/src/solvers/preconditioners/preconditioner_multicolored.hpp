@@ -115,11 +115,10 @@ protected:
   virtual void MoveToHostLocalData_(void);
   virtual void MoveToAcceleratorLocalData_(void) ;
 
-  
-
 };
 
 
-};
+}
 
 #endif // PARALUTION_PRECONDITIONER_MULTICOLORED_HPP_
+

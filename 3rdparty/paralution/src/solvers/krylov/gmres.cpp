@@ -533,4 +533,5 @@ template class GMRES< GlobalMatrix<float>,  GlobalVector<float>, float >;
 template class GMRES< GlobalStencil<double>, GlobalVector<double>, double >;
 template class GMRES< GlobalStencil<float>,  GlobalVector<float>, float >;
 
-};
+}
+

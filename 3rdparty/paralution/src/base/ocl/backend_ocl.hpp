@@ -64,7 +64,7 @@ struct oclHandle_t {
   cl_device_id *OCL_devices;
 
   // OCL kernel array
-  cl_kernel OCL_kernel[100];
+  cl_kernel OCL_kernel[104];
 
 };
 
@@ -91,6 +91,8 @@ template <typename ValueType>
 AcceleratorMatrix<ValueType>* _paralution_init_base_ocl_matrix(const struct Paralution_Backend_Descriptor backend_descriptor,
                                                                const unsigned int matrix_format);
 
-};
+
+}
 
 #endif // PARALUTION_BACKEND_OCL_HPP_
+

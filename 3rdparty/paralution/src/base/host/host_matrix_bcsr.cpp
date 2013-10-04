@@ -31,6 +31,7 @@
 #include "../backend_manager.hpp"
 #include "../../utils/log.hpp"
 #include "../../utils/allocate_free.hpp"
+#include "../matrix_formats_ind.hpp"
 
 extern "C" {
 #include "../../../thirdparty/matrix-market/mmio.h"
@@ -308,7 +309,7 @@ void HostMatrixBCSR<ValueType>::ApplyAdd(const BaseVector<ValueType> &in, const 
     assert(out->get_size() >= 0);
     assert(in.  get_size() == this->get_ncol());
     assert(out->get_size() == this->get_nrow());
-    
+
 //    const HostVector<ValueType> *cast_in = dynamic_cast<const HostVector<ValueType>*> (&in) ; 
 //    HostVector<ValueType> *cast_out      = dynamic_cast<      HostVector<ValueType>*> (out) ; 
     

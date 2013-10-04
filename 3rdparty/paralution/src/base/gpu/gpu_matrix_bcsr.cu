@@ -37,6 +37,7 @@
 #include "cuda_kernels_general.hpp"
 #include "cuda_kernels_bcsr.hpp"
 #include "gpu_allocate_free.hpp"
+#include "../matrix_formats_ind.hpp"
 
 #include <assert.h>
 #include <cuda.h>

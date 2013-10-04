@@ -40,6 +40,8 @@ class GPUAcceleratorVector;
 template <typename ValueType>
 class OCLAcceleratorVector;
 
+template <typename ValueType>
+class MICAcceleratorVector;
 
 /// Base class for all host/accelerator vectors
 template <typename ValueType>
@@ -131,6 +133,10 @@ public:
   virtual ValueType Norm(void) const = 0;
   /// Reduce vector
   virtual ValueType Reduce(void) const = 0;
+  /// Compute sum of absolute values of the vector (L1 norm), return =  sum(|this|)
+  virtual ValueType Asum(void) const = 0;
+  /// Compute the absolute max value of the vector, return =  max(|this|)
+  virtual ValueType Amax(void) const = 0;
   /// Perform point-wise multiplication (element-wise) of type this = this * x
   virtual void PointWiseMult(const BaseVector<ValueType> &x) = 0;
   /// Perform point-wise multiplication (element-wise) of type this = x*y
@@ -165,6 +171,6 @@ public:
 };
 
 
-};
+}
 
 #endif // PARALUTION_BASE_VECTOR_HPP_

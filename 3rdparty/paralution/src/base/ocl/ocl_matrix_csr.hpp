@@ -138,6 +138,8 @@ private:
 
 };
 
-};
+
+}
 
 #endif // PARALUTION_OCL_MATRIX_CSR_HPP_
+

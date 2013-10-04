@@ -243,7 +243,7 @@ void BiCGStab<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const Vecto
   r->CopyFrom(*r0);
 
   // use for |b-Ax0|
-  ValueType init_res = r0->Norm();
+  ValueType init_res = this->Norm(*r0);
 
   // use for |b|
   //  ValueType init_res = rhs.Norm();
@@ -285,8 +285,8 @@ void BiCGStab<OperatorType, VectorType, ValueType>::SolveNonPrecond_(const Vecto
   
   // r = r - omega*t
   r->AddScale(*t, ValueType(-1.0)*omega);      
-  
-  while (!this->iter_ctrl_.CheckResidual(r->Norm())) {
+
+  while (!this->iter_ctrl_.CheckResidual(this->Norm(*r))) {
 
     rho_old   = rho;
 
@@ -370,7 +370,7 @@ void BiCGStab<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorTy
   r->CopyFrom(*r0);
 
   // use for |b-Ax0|
-  ValueType init_res = r0->Norm();
+  ValueType init_res = this->Norm(*r0);
 
   // use for |b|
   //  ValueType init_res = rhs.Norm();
@@ -420,7 +420,7 @@ void BiCGStab<OperatorType, VectorType, ValueType>::SolvePrecond_(const VectorTy
   // r = r - omega*t
   r->AddScale(*t, ValueType(-1.0)*omega);      
   
-  while (!this->iter_ctrl_.CheckResidual(r->Norm())) {
+  while (!this->iter_ctrl_.CheckResidual(this->Norm(*r))) {
 
     rho_old   = rho;
 
@@ -491,4 +491,5 @@ template class BiCGStab< GlobalMatrix<float>,  GlobalVector<float>, float >;
 template class BiCGStab< GlobalStencil<double>, GlobalVector<double>, double >;
 template class BiCGStab< GlobalStencil<float>,  GlobalVector<float>, float >;
 
-};
+}
+

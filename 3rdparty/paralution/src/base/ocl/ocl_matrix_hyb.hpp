@@ -80,6 +80,8 @@ private:
 
 };
 
-};
+
+}
 
 #endif // PARALUTION_OCL_MATRIX_HYB_HPP_
+

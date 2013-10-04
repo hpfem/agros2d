@@ -251,9 +251,9 @@ void MixedPrecisionDC<OperatorTypeH, VectorTypeH, ValueTypeH,
   this->op_h_->Apply(*this->x_h_, &this->r_h_); 
   this->r_h_.ScaleAdd(ValueTypeH(-1.0), rhs);
 
-  this->iter_ctrl_.InitResidual(this->r_h_.Norm());
+  this->iter_ctrl_.InitResidual(this->Norm(this->r_h_));
 
-  while (!this->iter_ctrl_.CheckResidual(this->r_h_.Norm())) {
+  while (!this->iter_ctrl_.CheckResidual(this->Norm(this->r_h_))) {
 
   // cast to lower precision 
 
@@ -318,4 +318,5 @@ template class MixedPrecisionDC< LocalMatrix<double>, LocalVector<double>, doubl
 
 
 
-};
+}
+

@@ -73,6 +73,8 @@ private:
 
 };
 
-};
+
+}
 
 #endif // PARALUTION_GPU_MATRIX_HYB_HPP_
+

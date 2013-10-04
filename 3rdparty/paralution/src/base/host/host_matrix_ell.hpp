@@ -67,10 +67,11 @@ private:
 
   friend class GPUAcceleratorMatrixELL<ValueType>;
   friend class OCLAcceleratorMatrixELL<ValueType>;
+  friend class MICAcceleratorMatrixELL<ValueType>;
 
 };
 
 
-};
+}
 
 #endif // PARALUTION_HOST_MATRIX_ELL_HPP_

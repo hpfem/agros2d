@@ -33,6 +33,7 @@ SET(SOURCES src/base/backend_manager.cpp
     src/solvers/krylov/bicgstab.cpp 
     src/solvers/krylov/cg.cpp 
     src/solvers/krylov/gmres.cpp 
+    src/solvers/krylov/idr.cpp
     src/solvers/multigrid/multigrid_amg.cpp 
     src/solvers/multigrid/multigrid.cpp 
     src/solvers/preconditioners/preconditioner.cpp 
@@ -40,6 +41,7 @@ SET(SOURCES src/base/backend_manager.cpp
     src/solvers/preconditioners/preconditioner_multicolored_gs.cpp 
     src/solvers/preconditioners/preconditioner_multicolored_ilu.cpp 
     src/solvers/preconditioners/preconditioner_multielimination.cpp 
+    src/solvers/preconditioners/preconditioner_saddlepoint.cpp
     src/utils/allocate_free.cpp 
     thirdparty/matrix-market/mmio.c
   )

@@ -35,6 +35,7 @@
 #include "../../utils/log.hpp"
 #include "ocl_utils.hpp"
 #include "ocl_allocate_free.hpp"
+#include "../matrix_formats_ind.hpp"
 
 #include <assert.h>
 
