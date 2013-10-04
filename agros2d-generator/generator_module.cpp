@@ -126,7 +126,8 @@ void Agros2DGeneratorModule::generatePluginInterfaceFiles()
 
     // source - expand template
     text.clear();
-    generateWeakForms(output, false);
+    generateExtFunctions(output);
+    generateWeakForms(output);
 
     foreach(QString name, m_names)
     {
@@ -555,6 +556,7 @@ void Agros2DGeneratorModule::generatePluginWeakFormSourceFiles()
 
 
     std::string text;
+    generateExtFunctions(output);
     generateWeakForms(output);
 
     ExpandTemplate(compatibleFilename(QString("%1/%2/weakform_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
@@ -579,6 +581,7 @@ void Agros2DGeneratorModule::generatePluginWeakFormHeaderFiles()
     output.SetValue("ID", m_module->general().id());
     output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
 
+    generateExtFunctions(output);
     generateWeakForms(output);
 
     // header - expand template
@@ -594,7 +597,19 @@ void Agros2DGeneratorModule::generatePluginWeakFormHeaderFiles()
                        QString::fromStdString(text));
 }
 
-void Agros2DGeneratorModule::generateWeakForms(ctemplate::TemplateDictionary &output, bool withSpecialFunctions)
+void Agros2DGeneratorModule::generateExtFunctions(ctemplate::TemplateDictionary &output)
+{
+    foreach(XMLModule::weakform_volume weakform, m_module->volume().weakforms_volume().weakform_volume())
+    {
+        AnalysisType analysisType = analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype().c_str()));
+        foreach(XMLModule::quantity quantity, weakform.quantity())
+        {
+            generateExtFunction(quantity, analysisType, output);
+        }
+    }
+}
+
+void Agros2DGeneratorModule::generateWeakForms(ctemplate::TemplateDictionary &output)
 {
     this->m_docString = "";
     foreach(XMLModule::weakform_volume weakform, m_module->volume().weakforms_volume().weakform_volume())
@@ -1879,21 +1894,45 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
     }
 }
 
-
-template <typename Form, typename WeakForm>
-void Agros2DGeneratorModule::generateFormOld(Form form, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, int i, XMLModule::boundary *boundary, int j)
+void Agros2DGeneratorModule::generateExtFunction(XMLModule::quantity quantity, AnalysisType analysisType, ctemplate::TemplateDictionary &output)
 {
-    // old version of generate form
-    // still used for surface forms
-    FormInfo formInfo(form.id().c_str(), i, j);
-    // LinearityType linearityTypes[2] = {LinearityType_Linear, LinearityType_Newton};
-    LinearityType linearityTypes[3] = {LinearityType_Linear, LinearityType_Newton, LinearityType_Picard};
-    for(int lt = 0; lt < 3; lt++)
+    foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
     {
-        //assert(0);
-        formInfo.expr_planar = this->weakformExpression(CoordinateType_Planar, linearityTypes[lt], form);
-        formInfo.expr_axi = this->weakformExpression(CoordinateType_Axisymmetric, linearityTypes[lt], form);
-        generateForm(formInfo, linearityTypes[lt], output, weakform, weakFormType, boundary);
+        QString functionName = QString("ext_function_%1_%2_%3_%4").
+                arg(QString::fromStdString(m_module->general().id())).
+                arg(analysisTypeToStringKey(analysisType)).
+                arg(coordinateTypeToStringKey(coordinateType)).
+                arg(QString::fromStdString(quantity.id()));
+
+        ctemplate::TemplateDictionary *field;
+        field = output.AddSectionDictionary("EXT_FUNCTION");
+        field->SetValue("EXT_FUNCTION_NAME", functionName.toStdString());
+        QString dependence("0");
+        if((coordinateType == CoordinateType_Planar) && (quantity.nonlinearity_planar().present()))
+            dependence = QString::fromStdString(quantity.nonlinearity_planar().get());
+        if((coordinateType == CoordinateType_Axisymmetric) && (quantity.nonlinearity_axi().present()))
+            dependence = QString::fromStdString(quantity.nonlinearity_axi().get());
+
+        QString valueMethod("numberFromTable");
+        if(quantity.dependence().present())
+        {
+            if(quantity.dependence().get() == "time")
+            {
+                valueMethod = "numberAtTime";
+                dependence = "Agros2D::problem()->actualTime(), false";
+            }
+            else if(quantity.dependence().get() == "")
+            {
+                // todo: why are for some quantities in XML dependence=""? remove?
+            }
+            else
+            {
+                std::cout << "not implemented " << quantity.dependence().get() << std::endl;
+                assert(0);
+            }
+        }
+        field->SetValue("EXT_FUNCTION_DEPENDENCE", dependence.toStdString());
+        field->SetValue("EXT_FUNCTION_VALUE_METHOD", valueMethod.toStdString());
     }
 }
 

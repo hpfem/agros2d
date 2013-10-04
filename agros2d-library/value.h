@@ -41,6 +41,9 @@ public:
           std::vector<double> x, std::vector<double> y, DataTableType type = DataTableType_PiecewiseLinear, bool splineFirstDerivatives = true, bool extrapolateConstant = true);
     Value(const QString &value, const DataTable &table);
 
+    // Copy constructor to be used e.g. for clonning, so that we have one instance of Value for each thread (-> thread safe? )
+    //Value(const Value& origin);
+
     ~Value();
 
     // expression

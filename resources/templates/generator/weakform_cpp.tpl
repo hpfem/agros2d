@@ -31,6 +31,31 @@
 #include "hermes2d/problem_config.h"
 #include "hermes2d/bdf2.h"
  		
+{{#EXT_FUNCTION}}
+void {{EXT_FUNCTION_NAME}}::value (double* values, double* dx, double* dy, double result[3]) const
+{
+    // todo: instead of this, replace in dependence string
+    // todo: for hard coupling, an offset should be considered!!!
+    double value1 = values[0];
+    double value2 = values[1];
+    double dx1 = dx[0];
+    double dx2 = dx[1];
+    double dy1 = dy[0];
+    double dy2 = dy[1];
+    double dr1 = dx[0];
+    double dr2 = dx[1];
+    double dz1 = dy[0];
+    double dz2 = dy[1];
+
+    // todo: geometry has to be obtained
+    double r = 1;
+
+    result[0] = m_value->{{EXT_FUNCTION_VALUE_METHOD}}({{EXT_FUNCTION_DEPENDENCE}});
+    result[1] = 0;
+    result[2] = 0;
+}
+{{/EXT_FUNCTION}}
+
 {{#VOLUME_MATRIX_SOURCE}}
 template <typename Scalar>
 {{FUNCTION_NAME}}<Scalar>::{{FUNCTION_NAME}}(unsigned int i, unsigned int j, int offsetI, int offsetJ)

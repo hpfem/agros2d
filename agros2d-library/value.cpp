@@ -69,6 +69,20 @@ Value::Value(const QString &value, const DataTable &table)
     parseFromString(value.isEmpty() ? "0" : value);
 }
 
+//Value::Value(const Value &origin)
+//{
+//    m_isEvaluated = false;
+
+//    m_number = origin.m_number;
+//    m_text = origin.m_text;
+//    m_time = origin.m_time;
+//    m_point = origin.m_point;
+//    m_isTimeDependent = origin.m_isTimeDependent;
+//    m_isCoordinateDependent = origin.m_isTimeDependent;
+
+//    m_table = DataTable(origin.m_table);
+//}
+
 Value::~Value()
 {
     m_table.clear();

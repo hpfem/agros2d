@@ -85,3 +85,4 @@ void SpecialFunction<Scalar>::createInterpolation()
 }
 
 template AGROS_LIBRARY_API class SpecialFunction<double>;
+//template AGROS_LIBRARY_API class AgrosExtFunction<double>;
