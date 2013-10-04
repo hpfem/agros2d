@@ -596,6 +596,23 @@ ValueType HostVector<ValueType>::Dot(const BaseVector<ValueType> &x) const {
 
 #endif
 
+#ifdef _MSC_VER
+template <>
+int HostVector<int>::Asum(void) const {
+
+  int asum = int(0.0);
+
+  omp_set_num_threads(this->local_backend_.OpenMP_threads);
+
+#pragma omp parallel for reduction(+:asum)
+  for (int i=0; i<this->size_; ++i)
+    asum += fabs((double)this->vec_[i]);
+
+  return asum;
+
+}
+#endif
+
 template <typename ValueType>
 ValueType HostVector<ValueType>::Asum(void) const {
 
@@ -610,6 +627,30 @@ ValueType HostVector<ValueType>::Asum(void) const {
   return asum;
 
 }
+
+#ifdef _MSC_VER
+template <>
+int HostVector<int>::Amax(void) const {
+
+  int amax = 0.0;
+
+  omp_set_num_threads(this->local_backend_.OpenMP_threads);
+
+#pragma omp parallel for
+  for (int i=0; i<this->size_; ++i) {
+    int val = fabs((double)this->vec_[i]);
+    if (val > amax)
+#pragma omp critical
+{
+      if (val > amax)
+        amax = val;
+}
+  }
+
+  return amax;
+
+}
+#endif
 
 template <typename ValueType>
 ValueType HostVector<ValueType>::Amax(void) const {

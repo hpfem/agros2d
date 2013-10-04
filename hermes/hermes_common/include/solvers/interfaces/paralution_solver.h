@@ -130,6 +130,15 @@ namespace Hermes
         paralution::info_paralution();
       }
 
+      static void set_threads_paralution()
+      {
+        if(HermesCommonApi.get_integral_param_value(matrixSolverType) == SOLVER_PARALUTION_AMG || HermesCommonApi.get_integral_param_value(matrixSolverType) == SOLVER_PARALUTION_ITERATIVE)
+        {
+          paralution::set_omp_threads_paralution(HermesCommonApi.get_integral_param_value(numThreads));
+          paralution::info_paralution();
+        }
+      }
+
       static void deinit_paralution()
       {
         paralution::stop_paralution();
@@ -151,7 +160,7 @@ namespace Hermes
 
       /// Get the residual value.
       virtual double get_residual_norm();
-      
+
       /// Sets the verboseness.
       virtual void set_verbose_output(bool to_set);
 
@@ -213,12 +222,12 @@ namespace Hermes
       /// Set current solver type.
       /// This destroys the current solver (NOT the matrix, and rhs).
       void set_solver_type(IterSolverType iterSolverType);
-      
+
       /// Set internal solver for the current solution.
       virtual void init_internal_solver();
 
       virtual void set_precond(Precond<Scalar> *pc);
-      
+
       // Linear Solver creation.
       static paralution::IterativeLinearSolver<paralution::LocalMatrix<Scalar>, paralution::LocalVector<Scalar>, Scalar>* return_paralutionSolver(IterSolverType type);
 
@@ -242,7 +251,7 @@ namespace Hermes
 
       /// Set smoother (an iterative linear matrix solver).
       virtual void set_smoother(IterSolverType solverType, PreconditionerType preconditionerType);
-      
+
       /// Set internal solver for the current solution.
       virtual void init_internal_solver();
     };

@@ -314,11 +314,6 @@ namespace Hermes
           return new paralution::BiCGStab<paralution::LocalMatrix<Scalar>, paralution::LocalVector<Scalar>, Scalar>();
         }
         break;
-      case IDR:
-        {
-          return new paralution::IDR<paralution::LocalMatrix<Scalar>, paralution::LocalVector<Scalar>, Scalar>();
-        }
-        break;
       default:
         throw Hermes::Exceptions::Exception("A wrong solver type detected in PARALUTION.");
         return nullptr;
@@ -448,11 +443,6 @@ namespace Hermes
           this->paralutionPreconditioner = new paralution::AIChebyshev<paralution::LocalMatrix<Scalar>, paralution::LocalVector<Scalar>, Scalar>();
         }
         break;
-      case DiagJacobiSaddlePointPrecond:
-        {
-          this->paralutionPreconditioner = new paralution::DiagJacobiSaddlePointPrecond<paralution::LocalMatrix<Scalar>, paralution::LocalVector<Scalar>, Scalar>();
-        }
-        break;
       default:
         throw Hermes::Exceptions::Exception("A wrong paralution preconditioner type passed to ParalutionPrecond constructor.");
       }
@@ -497,11 +487,6 @@ namespace Hermes
       case AIChebyshev:
         {
           return new paralution::AIChebyshev<paralution::LocalMatrix<Scalar>, paralution::LocalVector<Scalar>, Scalar>();
-        }
-        break;
-      case DiagJacobiSaddlePointPrecond:
-        {
-          return new paralution::DiagJacobiSaddlePointPrecond<paralution::LocalMatrix<Scalar>, paralution::LocalVector<Scalar>, Scalar>();
         }
         break;
       default:

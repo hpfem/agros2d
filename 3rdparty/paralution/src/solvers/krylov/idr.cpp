@@ -37,6 +37,9 @@
 
 #include <assert.h>
 #include <math.h>
+#ifdef _MSC_VER
+#include <time.h>
+#endif
 
 namespace paralution {
 
