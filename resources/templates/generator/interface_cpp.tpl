@@ -55,6 +55,15 @@ static XMLModule::module *module_module = NULL;
     // delete m_module;
 }
 
+AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QString id, MeshSharedPtr mesh, Value* value)
+{
+    {{#EXT_FUNCTION}}
+    if((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (id == "{{EXT_FUNCTION_NAME}}"))
+        return new {{EXT_FUNCTION_NAME}}(mesh, value);
+    {{/EXT_FUNCTION}}
+}
+
+
 MatrixFormVolAgros<double> *{{CLASS}}Interface::matrixFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material)
 {
        {{#VOLUME_MATRIX_SOURCE}}

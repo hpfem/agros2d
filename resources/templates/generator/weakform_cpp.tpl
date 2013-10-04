@@ -50,7 +50,7 @@ void {{EXT_FUNCTION_NAME}}::value (double* values, double* dx, double* dy, doubl
     // todo: geometry has to be obtained
     double r = 1;
 
-    result[0] = m_value->{{EXT_FUNCTION_VALUE_METHOD}}({{EXT_FUNCTION_DEPENDENCE}});
+    result[0] = m_value->{{VALUE_METHOD}}({{DEPENDENCE}});
     result[1] = 0;
     result[2] = 0;
 }
