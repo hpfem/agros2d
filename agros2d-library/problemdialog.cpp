@@ -541,10 +541,10 @@ void FieldWidget::load()
     txtNonlinearRelativeChangeOfSolutions->setValue(m_fieldInfo->value(FieldInfo::NonlinearRelativeChangeOfSolutions).toDouble());
     cmbNonlinearDampingType->setCurrentIndex(cmbNonlinearDampingType->findData((DampingType) m_fieldInfo->value(FieldInfo::NonlinearDampingType).toInt()));
     txtNonlinearDampingCoeff->setValue(m_fieldInfo->value(FieldInfo::NonlinearDampingCoeff).toDouble());
-    txtNewtonSufficientImprovementFactorForJacobianReuse->setValue(m_fieldInfo->value(FieldInfo::NewtonSufImprovForJacobianReuse).toDouble());
-    txtNonlinearDampingRatioForFactorDecrease->setValue(m_fieldInfo->value(FieldInfo::NewtonSufImprov).toDouble());
+    txtNewtonSufficientImprovementFactorForJacobianReuse->setValue(m_fieldInfo->value(FieldInfo::NewtonJacobianReuseRatio).toDouble());
+    txtNonlinearDampingRatioForFactorDecrease->setValue(m_fieldInfo->value(FieldInfo::NonlinearDampingFactorDecreaseRatio).toDouble());
     txtNewtonMaximumStepsWithReusedJacobian->setValue(m_fieldInfo->value(FieldInfo::NewtonMaxStepsReuseJacobian).toInt());
-    txtNonlinearDampingStepsForFactorIncrease->setValue(m_fieldInfo->value(FieldInfo::NewtonStepsToIncreaseDF).toInt());
+    txtNonlinearDampingStepsForFactorIncrease->setValue(m_fieldInfo->value(FieldInfo::NonlinearStepsToIncreaseDampingFactor).toInt());
     chkNewtonReuseJacobian->setChecked((m_fieldInfo->value(FieldInfo::NewtonReuseJacobian)).toBool());
     chkPicardAndersonAcceleration->setChecked(m_fieldInfo->value(FieldInfo::PicardAndersonAcceleration).toBool());
     txtPicardAndersonBeta->setValue(m_fieldInfo->value(FieldInfo::PicardAndersonBeta).toDouble());
@@ -590,10 +590,10 @@ bool FieldWidget::save()
     m_fieldInfo->setValue(FieldInfo::NonlinearDampingCoeff, txtNonlinearDampingCoeff->value());
     m_fieldInfo->setValue(FieldInfo::NonlinearDampingType, (DampingType) cmbNonlinearDampingType->itemData(cmbNonlinearDampingType->currentIndex()).toInt());
     m_fieldInfo->setValue(FieldInfo::NewtonReuseJacobian, chkNewtonReuseJacobian->isChecked());
-    m_fieldInfo->setValue(FieldInfo::NewtonSufImprovForJacobianReuse, txtNewtonSufficientImprovementFactorForJacobianReuse->value());
-    m_fieldInfo->setValue(FieldInfo::NewtonSufImprov, txtNonlinearDampingRatioForFactorDecrease->value());
+    m_fieldInfo->setValue(FieldInfo::NewtonJacobianReuseRatio, txtNewtonSufficientImprovementFactorForJacobianReuse->value());
+    m_fieldInfo->setValue(FieldInfo::NonlinearDampingFactorDecreaseRatio, txtNonlinearDampingRatioForFactorDecrease->value());
     m_fieldInfo->setValue(FieldInfo::NewtonMaxStepsReuseJacobian, txtNewtonMaximumStepsWithReusedJacobian->value());
-    m_fieldInfo->setValue(FieldInfo::NewtonStepsToIncreaseDF, txtNonlinearDampingStepsForFactorIncrease->value());
+    m_fieldInfo->setValue(FieldInfo::NonlinearStepsToIncreaseDampingFactor, txtNonlinearDampingStepsForFactorIncrease->value());
     m_fieldInfo->setValue(FieldInfo::PicardAndersonAcceleration, chkPicardAndersonAcceleration->isChecked());
     m_fieldInfo->setValue(FieldInfo::PicardAndersonBeta, txtPicardAndersonBeta->value());
     m_fieldInfo->setValue(FieldInfo::PicardAndersonNumberOfLastVectors, txtPicardAndersonNumberOfLastVectors->value());

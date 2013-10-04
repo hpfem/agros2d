@@ -180,7 +180,7 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
     m_newtonSolver->set_max_allowed_iterations(500);
     m_newtonSolver->set_max_allowed_residual_norm(1e15);
     m_newtonSolver->set_sufficient_improvement_factor_jacobian(block->newtonSufficientImprovementFactorForJacobianReuse());
-    m_newtonSolver->set_sufficient_improvement_factor(block->newtonSufficientImprovementFactor());
+    m_newtonSolver->set_sufficient_improvement_factor(block->nonlinearDampingFactorDecreaseRatio());
 
     if(block->newtonReuseJacobian())
         m_newtonSolver->set_max_steps_with_reused_jacobian(block->newtonMaxStepsWithReusedJacobian());
@@ -197,8 +197,9 @@ NewtonSolverContainer<Scalar>::NewtonSolverContainer(Block* block) : HermesSolve
     }
     else if (block->nonlinearDampingType() == DampingType_Automatic)
     {
+        m_newtonSolver->set_manual_damping_coeff(false, 1.0);
         m_newtonSolver->set_initial_auto_damping_coeff(block->nonlinearDampingCoeff());
-        m_newtonSolver->set_necessary_successful_steps_to_increase(block->newtonStepsToIncreaseDF());
+        m_newtonSolver->set_necessary_successful_steps_to_increase(block->nonlinearStepsToIncreaseDampingFactor());
     }
     else
     {

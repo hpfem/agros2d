@@ -65,9 +65,6 @@ script.problem.TestProblem,
 script.geometry.TestGeometry,
 script.geometry.TestGeometryTransformations,
 script.benchmark.BenchmarkGeometryTransformation,
-# internal
-internal.matrix_solvers.InternalMatrixSolvers,
-internal.xslt.XSLT
 ]
 
 test_nonlin = [
@@ -96,4 +93,10 @@ examples.examples.Examples,
 examples.examples.Other,
 examples.examples.PythonLab,
 examples.examples.Tutorials
+]
+
+test_internal = [
+# internal
+internal.matrix_solvers.InternalMatrixSolvers,
+internal.xslt.XSLT
 ]

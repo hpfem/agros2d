@@ -439,15 +439,15 @@ bool Block::newtonReuseJacobian() const
     return true;
 }
 
-int Block::newtonStepsToIncreaseDF() const
+int Block::nonlinearStepsToIncreaseDampingFactor() const
 {
     int number = 0;
 
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if (fieldInfo->value(FieldInfo::NewtonStepsToIncreaseDF).toInt() > number)
-            number = fieldInfo->value(FieldInfo::NewtonStepsToIncreaseDF).toInt();
+        if (fieldInfo->value(FieldInfo::NonlinearStepsToIncreaseDampingFactor).toInt() > number)
+            number = fieldInfo->value(FieldInfo::NonlinearStepsToIncreaseDampingFactor).toInt();
     }
 
     return number;
@@ -460,22 +460,22 @@ double Block::newtonSufficientImprovementFactorForJacobianReuse() const
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if (fieldInfo->value(FieldInfo::NewtonSufImprovForJacobianReuse).toDouble() < number)
-            number = fieldInfo->value(FieldInfo::NewtonSufImprovForJacobianReuse).toDouble();
+        if (fieldInfo->value(FieldInfo::NewtonJacobianReuseRatio).toDouble() < number)
+            number = fieldInfo->value(FieldInfo::NewtonJacobianReuseRatio).toDouble();
     }
 
     return number;
 }
 
-double Block::newtonSufficientImprovementFactor() const
+double Block::nonlinearDampingFactorDecreaseRatio() const
 {
     double number = 1e10;
 
     foreach (Field* field, m_fields)
     {
         FieldInfo* fieldInfo = field->fieldInfo();
-        if (fieldInfo->value(FieldInfo::NewtonSufImprov).toDouble() < number)
-            number = fieldInfo->value(FieldInfo::NewtonSufImprov).toDouble();
+        if (fieldInfo->value(FieldInfo::NonlinearDampingFactorDecreaseRatio).toDouble() < number)
+            number = fieldInfo->value(FieldInfo::NonlinearDampingFactorDecreaseRatio).toDouble();
     }
 
     return number;

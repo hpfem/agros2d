@@ -125,10 +125,10 @@ template <typename Scalar>
 PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block) : HermesSolverContainer<Scalar>(block)
 {
     m_picardSolver = new PicardSolverAgros<Scalar>(block);
-    m_picardSolver->set_verbose_output(false);
+    m_picardSolver->set_verbose_output(true);
     m_picardSolver->clear_tolerances();
     m_picardSolver->set_tolerance(block->nonlinearRelativeChangeOfSolutions() / 100.0, SolutionChangeRelative);
-    m_picardSolver->set_max_allowed_iterations(500);
+    m_picardSolver->set_max_allowed_iterations(50);
 
     if (block->nonlinearDampingType() == DampingType_Off)
     {
@@ -140,8 +140,9 @@ PicardSolverContainer<Scalar>::PicardSolverContainer(Block* block) : HermesSolve
     }
     else if (block->nonlinearDampingType() == DampingType_Automatic)
     {
+        m_picardSolver->set_manual_damping_coeff(false, 1.0);
         m_picardSolver->set_initial_auto_damping_coeff(block->nonlinearDampingCoeff());
-        m_picardSolver->set_necessary_successful_steps_to_increase(block->newtonStepsToIncreaseDF());
+        m_picardSolver->set_necessary_successful_steps_to_increase(block->nonlinearStepsToIncreaseDampingFactor());
     }
     else
     {

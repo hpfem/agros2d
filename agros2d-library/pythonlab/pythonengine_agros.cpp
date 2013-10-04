@@ -402,14 +402,11 @@ QString createPythonFromModel(StartupScript_Type startupScript)
             str += QString("%1.solver_parameters['residual'] = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::NonlinearResidualNorm).toDouble());
+
             str += QString("%1.solver_parameters['relative_change_of_solutions'] = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::NonlinearRelativeChangeOfSolutions).toDouble());
-        }
 
-        // newton
-        if (fieldInfo->linearityType() == LinearityType_Newton)
-        {
             str += QString("%1.solver_parameters['damping'] = \"%2\"\n").
                     arg(fieldInfo->fieldId()).
                     arg(dampingTypeToStringKey((DampingType)fieldInfo->value(FieldInfo::NonlinearDampingType).toInt()));
@@ -418,25 +415,30 @@ QString createPythonFromModel(StartupScript_Type startupScript)
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::NonlinearDampingCoeff).toDouble());
 
+            str += QString("%1.solver_parameters['damping_factor_increase_steps'] = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(fieldInfo->value(FieldInfo::NonlinearStepsToIncreaseDampingFactor).toInt());
+
+            str += QString("%1.solver_parameters['damping_factor_decrease_ratio'] = %2\n").
+                    arg(fieldInfo->fieldId()).
+                    arg(fieldInfo->value(FieldInfo::NonlinearDampingFactorDecreaseRatio).toDouble());
+        }
+
+        // newton
+        if (fieldInfo->linearityType() == LinearityType_Newton)
+        {
             str += QString("%1.solver_parameters['jacobian_reuse'] = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg((fieldInfo->value(FieldInfo::NewtonReuseJacobian).toBool()) ? "True" : "False");
 
             str += QString("%1.solver_parameters['jacobian_reuse_ratio'] = %2\n").
                     arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->value(FieldInfo::NewtonSufImprovForJacobianReuse).toDouble());
-
-            str += QString("%1.solver_parameters['damping_factor_decrease_ratio'] = %2\n").
-                    arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->value(FieldInfo::NewtonSufImprov).toDouble());
+                    arg(fieldInfo->value(FieldInfo::NewtonJacobianReuseRatio).toDouble());
 
             str += QString("%1.solver_parameters['jacobian_reuse_steps'] = %2\n").
                     arg(fieldInfo->fieldId()).
                     arg(fieldInfo->value(FieldInfo::NewtonMaxStepsReuseJacobian).toInt());
 
-            str += QString("%1.solver_parameters['damping_factor_increase_steps'] = %2\n").
-                    arg(fieldInfo->fieldId()).
-                    arg(fieldInfo->value(FieldInfo::NewtonStepsToIncreaseDF).toInt());
         }
 
         // picard

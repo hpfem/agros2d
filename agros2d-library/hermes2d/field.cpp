@@ -789,10 +789,10 @@ void FieldInfo::setStringKeys()
     m_settingKey[NonlinearDampingType] = "NonlinearDampingType";
     m_settingKey[NonlinearDampingCoeff] = "NonlinearDampingCoeff";
     m_settingKey[NewtonReuseJacobian] = "NewtonReuseJacobian";
-    m_settingKey[NewtonSufImprovForJacobianReuse] = "NewtonSufImprovForJacobianReuse";
-    m_settingKey[NewtonSufImprov] = "NewtonSufImprov";
+    m_settingKey[NewtonJacobianReuseRatio] = "NewtonJacobianReuseRatio";
+    m_settingKey[NonlinearDampingFactorDecreaseRatio] = "NonlinearDampingFactorDecreaseRatio";
     m_settingKey[NewtonMaxStepsReuseJacobian] = "NewtonMaxStepsReuseJacobian";
-    m_settingKey[NewtonStepsToIncreaseDF] = "NewtonStepsToIncreaseDF";
+    m_settingKey[NonlinearStepsToIncreaseDampingFactor] = "NonlinearStepsToIncreaseDampingFactor";
     m_settingKey[PicardAndersonAcceleration] = "PicardAndersonAcceleration";
     m_settingKey[PicardAndersonBeta] = "PicardAndersonBeta";
     m_settingKey[PicardAndersonNumberOfLastVectors] = "PicardAndersonNumberOfLastVectors";
@@ -828,10 +828,10 @@ void FieldInfo::setDefaultValues()
     m_settingDefault[NonlinearDampingType] = DampingType_Automatic;
     m_settingDefault[NonlinearDampingCoeff] = 0.8;
     m_settingDefault[NewtonReuseJacobian] = true;
-    m_settingDefault[NewtonSufImprovForJacobianReuse] = 0.8;
-    m_settingDefault[NewtonSufImprov] = 1.2;
+    m_settingDefault[NewtonJacobianReuseRatio] = 0.8;
+    m_settingDefault[NonlinearDampingFactorDecreaseRatio] = 1.2;
     m_settingDefault[NewtonMaxStepsReuseJacobian] = 20;
-    m_settingDefault[NewtonStepsToIncreaseDF] = 1;
+    m_settingDefault[NonlinearStepsToIncreaseDampingFactor] = 1;
     m_settingDefault[PicardAndersonAcceleration] = true;
     m_settingDefault[PicardAndersonBeta] = 0.2;
     m_settingDefault[PicardAndersonNumberOfLastVectors] = 3;

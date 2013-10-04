@@ -244,10 +244,10 @@ cdef class __Field__:
                 'relative_change_of_solutions' : self.thisptr.getDoubleParameter(string('NonlinearRelativeChangeOfSolutions')),
                 'damping' : self.thisptr.getNonlinearDampingType().c_str(),
                 'damping_factor' : self.thisptr.getDoubleParameter(string('NonlinearDampingCoeff')),
-                'damping_factor_decrease_ratio' : self.thisptr.getDoubleParameter(string('NewtonSufImprov')),
-                'damping_factor_increase_steps' : self.thisptr.getIntParameter(string('NewtonStepsToIncreaseDF')),
+                'damping_factor_decrease_ratio' : self.thisptr.getDoubleParameter(string('NonlinearDampingFactorDecreaseRatio')),
+                'damping_factor_increase_steps' : self.thisptr.getIntParameter(string('NonlinearStepsToIncreaseDampingFactor')),
                 'jacobian_reuse' : self.thisptr.getBoolParameter(string('NewtonReuseJacobian')),
-                'jacobian_reuse_ratio' : self.thisptr.getDoubleParameter(string('NewtonSufImprovForJacobianReuse')),
+                'jacobian_reuse_ratio' : self.thisptr.getDoubleParameter(string('NewtonJacobianReuseRatio')),
                 'jacobian_reuse_steps' : self.thisptr.getIntParameter(string('NewtonMaxStepsReuseJacobian')),
                 'anderson_acceleration' : self.thisptr.getBoolParameter(string('PicardAndersonAcceleration')),
                 'anderson_beta' : self.thisptr.getDoubleParameter(string('PicardAndersonBeta')),
@@ -270,17 +270,17 @@ cdef class __Field__:
         self.thisptr.setParameter(string('NonlinearDampingCoeff'), <double>parameters['damping_factor'])
 
         # damping decrese ratio
-        self.thisptr.setParameter(string('NewtonSufImprov'), <double>parameters['damping_factor_decrease_ratio'])
+        self.thisptr.setParameter(string('NonlinearDampingFactorDecreaseRatio'), <double>parameters['damping_factor_decrease_ratio'])
 
         # damping increase step
         value_in_range(parameters['damping_factor_increase_steps'], 1, 5, 'damping_factor_increase_steps')
-        self.thisptr.setParameter(string('NewtonStepsToIncreaseDF'), <int>parameters['damping_factor_increase_steps'])
+        self.thisptr.setParameter(string('NonlinearStepsToIncreaseDampingFactor'), <int>parameters['damping_factor_increase_steps'])
 
         # jacobian reuse
         self.thisptr.setParameter(string('NewtonReuseJacobian'), <bool>parameters['jacobian_reuse'])
 
         # jacobian reuse ratio
-        self.thisptr.setParameter(string('NewtonSufImprovForJacobianReuse'), <double>parameters['jacobian_reuse_ratio'])
+        self.thisptr.setParameter(string('NewtonJacobianReuseRatio'), <double>parameters['jacobian_reuse_ratio'])
 
         # jacobian reuse step
         value_in_range(parameters['jacobian_reuse_steps'], 0, 100, 'jacobian_reuse_steps')

@@ -74,10 +74,37 @@ namespace Hermes
     }
 
     template<typename Scalar>
+    double PicardMatrixSolver<Scalar>::calculate_residual_norm()
+    {
+      Scalar* temp = new Scalar[this->problem_size];
+      this->get_jacobian()->multiply_with_vector(this->sln_vector, temp, true);
+      Vector<Scalar>* residual = this->get_residual();
+      for (int i = 0; i < this->problem_size; i++)
+        temp[i] = temp[i] - residual->get(i);
+
+      double residual_norm = get_l2_norm(temp, this->problem_size);
+      delete[] temp;
+
+      return residual_norm;
+    }
+
+    template<typename Scalar>
     void PicardMatrixSolver<Scalar>::solve_linear_system()
     {
       NonlinearMatrixSolver<Scalar>::solve_linear_system();
       this->handle_previous_vectors();
+    }
+
+    template<typename Scalar>
+    bool PicardMatrixSolver<Scalar>::damping_factor_condition()
+    {
+      if (this->get_parameter_value(this->solution_change_norms()).size() == 1)
+          return true;
+
+      double sln_change_norm = *(this->get_parameter_value(this->solution_change_norms()).end() - 1);
+      double previous_sln_change_norm = *(this->get_parameter_value(this->solution_change_norms()).end() - 2);
+
+      return (sln_change_norm < previous_sln_change_norm);
     }
 
     template<typename Scalar>

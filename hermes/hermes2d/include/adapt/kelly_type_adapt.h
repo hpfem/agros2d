@@ -338,7 +338,7 @@ namespace Hermes
                                 Func<Ord> **ext) const
         {
           if(u->fn_central != nullptr)
-            return Hermes:: norm(u->dx[0] + u->dy[0]);
+            return Hermes::sqr(u->dx[0] + u->dy[0]);
           else
             return Hermes:: norm(u->dx_neighbor[0] + u->dy_neighbor[0]);
         }
