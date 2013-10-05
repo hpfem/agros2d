@@ -41,8 +41,8 @@
     <module:matrix_form id="frequency_1_2" i="1" j="2" planar="2 * PI * f * rf_gamma * uval * vval" axi="2 * PI * f * rf_gamma * uval * vval" />
     <module:matrix_form id="frequency_2_1" i="2" j="1" planar="- 2 * PI * f * rf_gamma * uval * vval" axi="-2 * PI * f * rf_gamma * uval * vval" />
     <module:matrix_form id="frequency_2_2" i="2" j="2" planar="pow(2 * PI * f, 2) * rf_eps * EPS0 * uval * vval" axi="r * pow(2 * PI * f, 2) * rf_eps * EPS0 * uval * vval" symmetric="1"/>
-    <module:vector_form id="rhs_1" i="1" j="1" planar="- 2 * PI * f * rf_Jei * vval" axi="- r * 2 * PI * f * rf_Jei * vval" />
-    <module:vector_form id="rhs_2" i="2" j="2" planar="2 * PI * f * rf_Jer * vval" axi="r * 2 * PI * f * rf_Jer * vval"/>
+    <module:vector_form id="rhs_1" i="1" j="1" planar="- 2 * PI * f * rf_Jei * vval" axi="- r * 2 * PI * f * rf_Jei * vval" condition="fabs(rf_Jei) > 0" />
+    <module:vector_form id="rhs_2" i="2" j="2" planar="2 * PI * f * rf_Jer * vval" axi="r * 2 * PI * f * rf_Jer * vval" condition="fabs(rf_Jer) > 0" />
     <module:weakforms_volume>
       <module:weakform_volume analysistype="harmonic" equation="\curl \left( \frac{1}{\mu}\, \curl \vecfaz{E} \right) - \mj \omega \left( \sigma + \mj \omega \varepsilon \right) \vecfaz{E} = \mj \omega \vecfaz{J}_{\mathrm{ext}}">
         <module:quantity id="rf_te_permittivity"/>

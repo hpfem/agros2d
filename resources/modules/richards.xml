@@ -69,7 +69,7 @@
     </module:function>
 
     <module:matrix_form id="conductivity" i="1" j="1" planar="re_k(value1) * (udx * vdx + udy * vdy)"
-                                                      axi="re_k(value1) * r * (udr * vdr + udz * vdz)"/>
+                                                      axi="re_k(value1) * r * (udr * vdr + udz * vdz)" symmetric="1" />
     <module:matrix_form id="conductivity_derivative" i="1" j="1" planar="- re_dkdh(value1) * udy * vval"
                                                                  axi="- re_dkdh(value1) * udz * vval"/>
     <module:matrix_form id="conductivity_jacobian" i="1" j="1" planar="re_dkdh(value1) * uval * (updx * vdx + updy * vdy)"

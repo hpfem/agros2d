@@ -37,12 +37,12 @@
     <module:quantity id="heat_velocity_y" shortname="he_vy"/>
     <module:quantity id="heat_velocity_angular" shortname="he_va"/>
 
-    <module:matrix_form id="laplace" i="1"  j="1" planar="he_lambda * (udx * vdx + udy * vdy)" axi="he_lambda * r * (udr * vdr + udz * vdz)"/>
-    <module:matrix_form id="velocity" i="1"  j="1" planar="he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval" axi="r * he_rho * he_cp * (he_vy * udz) * vval"/>
+    <module:matrix_form id="laplace" i="1"  j="1" planar="he_lambda * (udx * vdx + udy * vdy)" axi="he_lambda * r * (udr * vdr + udz * vdz)" symmetric="1" />
+    <module:matrix_form id="velocity" i="1"  j="1" planar="he_rho * he_cp * ((he_vx - y * he_va) * udx + (he_vy + x * he_va) * udy) * vval" axi="r * he_rho * he_cp * (he_vy * udz) * vval" condition="((fabs(he_rho) > 0) &amp;&amp; ((fabs(he_cp) > 0) &amp;&amp; (fabs(he_vx) > 0) || (fabs(he_vy) > 0) || (fabs(he_va) > 0)))"/>
     <module:matrix_form id="jac_laplace" i="1"  j="1" planar="dhe_lambda * uval * (updx * vdx + updy * vdy)" axi="dhe_lambda * r * uval * (updr * vdr + updz * vdz)"/>
     <module:matrix_form id="time_mat" i="1" j="1" planar="he_rho * he_cp * uval * vval * timedermat" axi="r * he_rho * he_cp * uval * vval * timedermat"/>
 
-    <module:vector_form id="rhs" i="1" j="1" planar="he_p * vval" axi="r * he_p * vval"/>
+    <module:vector_form id="rhs" i="1" j="1" planar="he_p * vval" axi="r * he_p * vval" condition="fabs(he_p) > 0" />
     <module:vector_form id="time_vec" i="1" j="1" planar="he_rho * he_cp * timedervec * vval" axi="r * he_rho * he_cp * timedervec * vval"/>
 
     <module:weakforms_volume>

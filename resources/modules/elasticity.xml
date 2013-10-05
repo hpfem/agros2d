@@ -39,12 +39,11 @@
     </module:function>
 
 
-    <module:matrix_form id="form_1_1" i="1" j="1" planar="(st_lambda + 2*st_mu) * (udx * vdx) + st_mu * (udy * vdy)" axi="st_lambda * (r * udr * vdr + uval * vdr + udr * vval + uval * vval / (r + 1e-12)) + st_mu * (2 * r * udr * vdr + 2 * uval * vval / (r + 1e-12) + r * udz * vdz)"
-    />
+    <module:matrix_form id="form_1_1" i="1" j="1" planar="(st_lambda + 2*st_mu) * (udx * vdx) + st_mu * (udy * vdy)" axi="st_lambda * (r * udr * vdr + uval * vdr + udr * vval + uval * vval / (r + 1e-12)) + st_mu * (2 * r * udr * vdr + 2 * uval * vval / (r + 1e-12) + r * udz * vdz)" symmetric="1" />
     <module:matrix_form id="form_1_2" i="1" j="2" planar="st_lambda * (udy * vdx) + st_mu * (udx * vdy)" axi="st_lambda * (r * udz * vdr + udz * vval) + st_mu * r * udr * vdz" />
     <module:matrix_form id="form_2_1" i="2" j="1" planar="st_mu * (udy * vdx) + st_lambda * (udx * vdy)" axi="st_lambda * (r * udr * vdz + uval * vdz) + st_mu * r * udz * vdr" />
 
-    <module:matrix_form  id="form_2_2" i="2" j="2" planar="st_mu * (udx * vdx) + (st_lambda + 2*st_mu) * (udy * vdy)" axi="r * st_lambda * udz * vdz + r * st_mu * (udr * vdr + 2 * udz * vdz)"  />
+    <module:matrix_form  id="form_2_2" i="2" j="2" planar="st_mu * (udx * vdx) + (st_lambda + 2*st_mu) * (udy * vdy)" axi="r * st_lambda * udz * vdz + r * st_mu * (udr * vdr + 2 * udz * vdz)" symmetric="1" />
 
     <module:vector_form  id="rhs_load_1_1" i="1" j="1" planar="st_fvx * vval" axi="r * st_fvx * vval"/>
     <module:vector_form  id="rhs_temperature_1_1" i="1" j="1" planar="((3*st_lambda + 2*st_mu) * st_alpha * st_dT) * vdx" axi="r * ((3*st_lambda + 2*st_mu) * st_alpha * st_dT) * (vdr + vval / r)"/>
