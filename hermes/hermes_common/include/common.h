@@ -156,7 +156,19 @@ namespace Hermes
   const double epsilon = std::numeric_limits<double>::epsilon() * 1e3;
   const double Epsilon = std::sqrt(std::numeric_limits<double>::epsilon());
 
-  inline double conj(double a) { return a; }
+  inline double sqr(int x) { return x*x; }
+  inline double sqr(double x) { return x*x; }
+  inline double sqrt(double x) { return std::sqrt(x); }
+  inline double sqr(std::complex<double> x)   { return std::norm(x); }
+  inline double magn(double x) { return fabs(x); }
+  inline double conj(double a) {  return a; }
+  inline double cos(double x) { return std::cos(x); }
+  inline double sin(double x) { return std::sin(x); }
+  inline double atan(double x) { return std::atan(x); }
+  inline double atan2(double x, double y) { return std::atan2(x, y); }
+  inline double abs(double x) { return std::abs(x); }
+  inline double pow(double x, double y) { return std::pow(x, y); }
+  inline double log(double x) { return std::log(x); }
 
   /* event codes */
 #define HERMES_EC_ERROR 'E' ///< An event code: warnings. \internal

@@ -99,7 +99,7 @@ namespace Hermes
       double2 v;
       v[0] = B[0] - A[0];
       v[1] = B[1] - A[1];
-      double abs_v = sqrt( norm(v[0]) +  norm(v[1]));
+      double abs_v = sqrt(sqr(v[0]) + sqr(v[1]));
 
       // Straight line.
       if(nurbs == nullptr)
@@ -171,8 +171,8 @@ namespace Hermes
           SA[1] = A[1] - S[1];
           SB[0] = B[0] - S[0];
           SB[1] = B[1] - S[1];
-          double R = sqrt( norm(SA[0]) +  norm(SA[1]));
-          double R2 = sqrt( norm(SB[0]) +  norm(SB[1]));
+          double R = sqrt(sqr(SA[0]) + sqr(SA[1]));
+          double R2 = sqrt(sqr(SB[0]) + sqr(SB[1]));
           if(std::abs(R - R2) > Hermes::Epsilon)
             throw Hermes::Exceptions::Exception("Internal error in nurbs_edge() - bad radius R.");
 
@@ -225,7 +225,7 @@ namespace Hermes
           // position of parameter 't' between 0 and 1.
           n_x = normal_A[0] + t * (normal_B[0] - normal_A[0]);
           n_y = normal_A[1] + t * (normal_B[1] - normal_A[1]);
-          double size_n = sqrt( norm(n_x) +  norm(n_y));
+          double size_n = sqrt(sqr(n_x) + sqr(n_y));
           n_x /= size_n;
           n_y /= size_n;
           */

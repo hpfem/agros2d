@@ -239,7 +239,7 @@ namespace Hermes
      double l3, l3x, l2, l2x;
      double ker, kerx, kerxx;
      l3 = lambda3(x, y); l3x = lambda3x(x, y); l2 = lambda2(x, y); l2x = lambda2x(x, y);
-     ker = phi0(l3 - l2); kerx = phi0x(l3 - l2) * (l3x - l2x); kerxx = phi0xx(l3 - l2) *  norm(l3x - l2x);
+     ker = phi0(l3 - l2); kerx = phi0x(l3 - l2) * (l3x - l2x); kerxx = phi0xx(l3 - l2) * sqr(l3x - l2x);
      return  (2.0 * l3x * l2x * ker + 2.0 * l3x * l2 * kerx + 2.0 * l3 * l2x * kerx + l3 * l2 * kerxx) / 1.0000000000000;
     }
 
@@ -270,7 +270,7 @@ namespace Hermes
      double l3, l3y, l2, l2y;
      double ker, kery, keryy;
      l3 = lambda3(x, y); l3y = lambda3y(x, y); l2 = lambda2(x, y); l2y = lambda2y(x, y);
-     ker = phi0(l3 - l2); kery = phi0x(l3 - l2) * (l3y - l2y); keryy = phi0xx(l3 - l2) *  norm(l3y - l2y);
+     ker = phi0(l3 - l2); kery = phi0x(l3 - l2) * (l3y - l2y); keryy = phi0xx(l3 - l2) * sqr(l3y - l2y);
      return  (2.0 * l3y * l2y * ker + 2.0 * l3y * l2 * kery + 2.0 * l3 * l2y * kery + l3 * l2 * keryy) / 1.0000000000000;
     }
 
@@ -295,7 +295,7 @@ namespace Hermes
      double l1, l1x, l3, l3x;
      double ker, kerx, kerxx;
      l1 = lambda1(x, y); l1x = lambda1x(x, y); l3 = lambda3(x, y); l3x = lambda3x(x, y);
-     ker = phi0(l1 - l3); kerx = phi0x(l1 - l3) * (l1x - l3x); kerxx = phi0xx(l1 - l3) *  norm(l1x - l3x);
+     ker = phi0(l1 - l3); kerx = phi0x(l1 - l3) * (l1x - l3x); kerxx = phi0xx(l1 - l3) * sqr(l1x - l3x);
      return  (2.0 * l1x * l3x * ker + 2.0 * l1x * l3 * kerx + 2.0 * l1 * l3x * kerx + l1 * l3 * kerxx) / 1.0000000000000;
     }
 
@@ -326,7 +326,7 @@ namespace Hermes
      double l1, l1y, l3, l3y;
      double ker, kery, keryy;
      l1 = lambda1(x, y); l1y = lambda1y(x, y); l3 = lambda3(x, y); l3y = lambda3y(x, y);
-     ker = phi0(l1 - l3); kery = phi0x(l1 - l3) * (l1y - l3y); keryy = phi0xx(l1 - l3) *  norm(l1y - l3y);
+     ker = phi0(l1 - l3); kery = phi0x(l1 - l3) * (l1y - l3y); keryy = phi0xx(l1 - l3) * sqr(l1y - l3y);
      return  (2.0 * l1y * l3y * ker + 2.0 * l1y * l3 * kery + 2.0 * l1 * l3y * kery + l1 * l3 * keryy) / 1.0000000000000;
     }
 
@@ -351,7 +351,7 @@ namespace Hermes
      double l2, l2x, l1, l1x;
      double ker, kerx, kerxx;
      l2 = lambda2(x, y); l2x = lambda2x(x, y); l1 = lambda1(x, y); l1x = lambda1x(x, y);
-     ker = phi0(l2 - l1); kerx = phi0x(l2 - l1) * (l2x - l1x); kerxx = phi0xx(l2 - l1) *  norm(l2x - l1x);
+     ker = phi0(l2 - l1); kerx = phi0x(l2 - l1) * (l2x - l1x); kerxx = phi0xx(l2 - l1) * sqr(l2x - l1x);
      return  (2.0 * l2x * l1x * ker + 2.0 * l2x * l1 * kerx + 2.0 * l2 * l1x * kerx + l2 * l1 * kerxx) / 1.0000000000000;
     }
 
@@ -382,7 +382,7 @@ namespace Hermes
      double l2, l2y, l1, l1y;
      double ker, kery, keryy;
      l2 = lambda2(x, y); l2y = lambda2y(x, y); l1 = lambda1(x, y); l1y = lambda1y(x, y);
-     ker = phi0(l2 - l1); kery = phi0x(l2 - l1) * (l2y - l1y); keryy = phi0xx(l2 - l1) *  norm(l2y - l1y);
+     ker = phi0(l2 - l1); kery = phi0x(l2 - l1) * (l2y - l1y); keryy = phi0xx(l2 - l1) * sqr(l2y - l1y);
      return  (2.0 * l2y * l1y * ker + 2.0 * l2y * l1 * kery + 2.0 * l2 * l1y * kery + l2 * l1 * keryy) / 1.0000000000000;
     }
 
@@ -421,7 +421,7 @@ namespace Hermes
      double l3, l3x, l2, l2x;
      double ker, kerx, kerxx;
      l3 = lambda3(x, y); l3x = lambda3x(x, y); l2 = lambda2(x, y); l2x = lambda2x(x, y);
-     ker = phi1(l3 - l2); kerx = phi1x(l3 - l2) * (l3x - l2x); kerxx = phi1xx(l3 - l2) *  norm(l3x - l2x);
+     ker = phi1(l3 - l2); kerx = phi1x(l3 - l2) * (l3x - l2x); kerxx = phi1xx(l3 - l2) * sqr(l3x - l2x);
      return  (2.0 * l3x * l2x * ker + 2.0 * l3x * l2 * kerx + 2.0 * l3 * l2x * kerx + l3 * l2 * kerxx) / 1.0000000000000;
     }
 
@@ -467,7 +467,7 @@ namespace Hermes
      double l3, l3y, l2, l2y;
      double ker, kery, keryy;
      l3 = lambda3(x, y); l3y = lambda3y(x, y); l2 = lambda2(x, y); l2y = lambda2y(x, y);
-     ker = phi1(l3 - l2); kery = phi1x(l3 - l2) * (l3y - l2y); keryy = phi1xx(l3 - l2) *  norm(l3y - l2y);
+     ker = phi1(l3 - l2); kery = phi1x(l3 - l2) * (l3y - l2y); keryy = phi1xx(l3 - l2) * sqr(l3y - l2y);
      return  (2.0 * l3y * l2y * ker + 2.0 * l3y * l2 * kery + 2.0 * l3 * l2y * kery + l3 * l2 * keryy) / 1.0000000000000;
     }
 
@@ -507,7 +507,7 @@ namespace Hermes
      double l1, l1x, l3, l3x;
      double ker, kerx, kerxx;
      l1 = lambda1(x, y); l1x = lambda1x(x, y); l3 = lambda3(x, y); l3x = lambda3x(x, y);
-     ker = phi1(l1 - l3); kerx = phi1x(l1 - l3) * (l1x - l3x); kerxx = phi1xx(l1 - l3) *  norm(l1x - l3x);
+     ker = phi1(l1 - l3); kerx = phi1x(l1 - l3) * (l1x - l3x); kerxx = phi1xx(l1 - l3) * sqr(l1x - l3x);
      return  (2.0 * l1x * l3x * ker + 2.0 * l1x * l3 * kerx + 2.0 * l1 * l3x * kerx + l1 * l3 * kerxx) / 1.0000000000000;
     }
 
@@ -553,7 +553,7 @@ namespace Hermes
      double l1, l1y, l3, l3y;
      double ker, kery, keryy;
      l1 = lambda1(x, y); l1y = lambda1y(x, y); l3 = lambda3(x, y); l3y = lambda3y(x, y);
-     ker = phi1(l1 - l3); kery = phi1x(l1 - l3) * (l1y - l3y); keryy = phi1xx(l1 - l3) *  norm(l1y - l3y);
+     ker = phi1(l1 - l3); kery = phi1x(l1 - l3) * (l1y - l3y); keryy = phi1xx(l1 - l3) * sqr(l1y - l3y);
      return  (2.0 * l1y * l3y * ker + 2.0 * l1y * l3 * kery + 2.0 * l1 * l3y * kery + l1 * l3 * keryy) / 1.0000000000000;
     }
 
@@ -593,7 +593,7 @@ namespace Hermes
      double l2, l2x, l1, l1x;
      double ker, kerx, kerxx;
      l2 = lambda2(x, y); l2x = lambda2x(x, y); l1 = lambda1(x, y); l1x = lambda1x(x, y);
-     ker = phi1(l2 - l1); kerx = phi1x(l2 - l1) * (l2x - l1x); kerxx = phi1xx(l2 - l1) *  norm(l2x - l1x);
+     ker = phi1(l2 - l1); kerx = phi1x(l2 - l1) * (l2x - l1x); kerxx = phi1xx(l2 - l1) * sqr(l2x - l1x);
      return  (2.0 * l2x * l1x * ker + 2.0 * l2x * l1 * kerx + 2.0 * l2 * l1x * kerx + l2 * l1 * kerxx) / 1.0000000000000;
     }
 
@@ -639,7 +639,7 @@ namespace Hermes
      double l2, l2y, l1, l1y;
      double ker, kery, keryy;
      l2 = lambda2(x, y); l2y = lambda2y(x, y); l1 = lambda1(x, y); l1y = lambda1y(x, y);
-     ker = phi1(l2 - l1); kery = phi1x(l2 - l1) * (l2y - l1y); keryy = phi1xx(l2 - l1) *  norm(l2y - l1y);
+     ker = phi1(l2 - l1); kery = phi1x(l2 - l1) * (l2y - l1y); keryy = phi1xx(l2 - l1) * sqr(l2y - l1y);
      return  (2.0 * l2y * l1y * ker + 2.0 * l2y * l1 * kery + 2.0 * l2 * l1y * kery + l2 * l1 * keryy) / 1.0000000000000;
     }
 
@@ -806,7 +806,7 @@ namespace Hermes
      double l3, l3x, l2, l2x;
      double ker, kerx, kerxx;
      l3 = lambda3(x, y); l3x = lambda3x(x, y); l2 = lambda2(x, y); l2x = lambda2x(x, y);
-     ker = phi2(l3 - l2); kerx = phi2x(l3 - l2) * (l3x - l2x); kerxx = phi2xx(l3 - l2) *  norm(l3x - l2x);
+     ker = phi2(l3 - l2); kerx = phi2x(l3 - l2) * (l3x - l2x); kerxx = phi2xx(l3 - l2) * sqr(l3x - l2x);
      return  (2.0 * l3x * l2x * ker + 2.0 * l3x * l2 * kerx + 2.0 * l3 * l2x * kerx + l3 * l2 * kerxx) / 1.0000000000000;
     }
 
@@ -837,7 +837,7 @@ namespace Hermes
      double l3, l3y, l2, l2y;
      double ker, kery, keryy;
      l3 = lambda3(x, y); l3y = lambda3y(x, y); l2 = lambda2(x, y); l2y = lambda2y(x, y);
-     ker = phi2(l3 - l2); kery = phi2x(l3 - l2) * (l3y - l2y); keryy = phi2xx(l3 - l2) *  norm(l3y - l2y);
+     ker = phi2(l3 - l2); kery = phi2x(l3 - l2) * (l3y - l2y); keryy = phi2xx(l3 - l2) * sqr(l3y - l2y);
      return  (2.0 * l3y * l2y * ker + 2.0 * l3y * l2 * kery + 2.0 * l3 * l2y * kery + l3 * l2 * keryy) / 1.0000000000000;
     }
 
@@ -862,7 +862,7 @@ namespace Hermes
      double l1, l1x, l3, l3x;
      double ker, kerx, kerxx;
      l1 = lambda1(x, y); l1x = lambda1x(x, y); l3 = lambda3(x, y); l3x = lambda3x(x, y);
-     ker = phi2(l1 - l3); kerx = phi2x(l1 - l3) * (l1x - l3x); kerxx = phi2xx(l1 - l3) *  norm(l1x - l3x);
+     ker = phi2(l1 - l3); kerx = phi2x(l1 - l3) * (l1x - l3x); kerxx = phi2xx(l1 - l3) * sqr(l1x - l3x);
      return  (2.0 * l1x * l3x * ker + 2.0 * l1x * l3 * kerx + 2.0 * l1 * l3x * kerx + l1 * l3 * kerxx) / 1.0000000000000;
     }
 
@@ -893,7 +893,7 @@ namespace Hermes
      double l1, l1y, l3, l3y;
      double ker, kery, keryy;
      l1 = lambda1(x, y); l1y = lambda1y(x, y); l3 = lambda3(x, y); l3y = lambda3y(x, y);
-     ker = phi2(l1 - l3); kery = phi2x(l1 - l3) * (l1y - l3y); keryy = phi2xx(l1 - l3) *  norm(l1y - l3y);
+     ker = phi2(l1 - l3); kery = phi2x(l1 - l3) * (l1y - l3y); keryy = phi2xx(l1 - l3) * sqr(l1y - l3y);
      return  (2.0 * l1y * l3y * ker + 2.0 * l1y * l3 * kery + 2.0 * l1 * l3y * kery + l1 * l3 * keryy) / 1.0000000000000;
     }
 
@@ -918,7 +918,7 @@ namespace Hermes
      double l2, l2x, l1, l1x;
      double ker, kerx, kerxx;
      l2 = lambda2(x, y); l2x = lambda2x(x, y); l1 = lambda1(x, y); l1x = lambda1x(x, y);
-     ker = phi2(l2 - l1); kerx = phi2x(l2 - l1) * (l2x - l1x); kerxx = phi2xx(l2 - l1) *  norm(l2x - l1x);
+     ker = phi2(l2 - l1); kerx = phi2x(l2 - l1) * (l2x - l1x); kerxx = phi2xx(l2 - l1) * sqr(l2x - l1x);
      return  (2.0 * l2x * l1x * ker + 2.0 * l2x * l1 * kerx + 2.0 * l2 * l1x * kerx + l2 * l1 * kerxx) / 1.0000000000000;
     }
 
@@ -949,7 +949,7 @@ namespace Hermes
      double l2, l2y, l1, l1y;
      double ker, kery, keryy;
      l2 = lambda2(x, y); l2y = lambda2y(x, y); l1 = lambda1(x, y); l1y = lambda1y(x, y);
-     ker = phi2(l2 - l1); kery = phi2x(l2 - l1) * (l2y - l1y); keryy = phi2xx(l2 - l1) *  norm(l2y - l1y);
+     ker = phi2(l2 - l1); kery = phi2x(l2 - l1) * (l2y - l1y); keryy = phi2xx(l2 - l1) * sqr(l2y - l1y);
      return  (2.0 * l2y * l1y * ker + 2.0 * l2y * l1 * kery + 2.0 * l2 * l1y * kery + l2 * l1 * keryy) / 1.0000000000000;
     }
 
@@ -1207,7 +1207,7 @@ namespace Hermes
      double l3, l3x, l2, l2x;
      double ker, kerx, kerxx;
      l3 = lambda3(x, y); l3x = lambda3x(x, y); l2 = lambda2(x, y); l2x = lambda2x(x, y);
-     ker = phi3(l3 - l2); kerx = phi3x(l3 - l2) * (l3x - l2x); kerxx = phi3xx(l3 - l2) *  norm(l3x - l2x);
+     ker = phi3(l3 - l2); kerx = phi3x(l3 - l2) * (l3x - l2x); kerxx = phi3xx(l3 - l2) * sqr(l3x - l2x);
      return  (2.0 * l3x * l2x * ker + 2.0 * l3x * l2 * kerx + 2.0 * l3 * l2x * kerx + l3 * l2 * kerxx) / 1.0000000000000;
     }
 
@@ -1253,7 +1253,7 @@ namespace Hermes
      double l3, l3y, l2, l2y;
      double ker, kery, keryy;
      l3 = lambda3(x, y); l3y = lambda3y(x, y); l2 = lambda2(x, y); l2y = lambda2y(x, y);
-     ker = phi3(l3 - l2); kery = phi3x(l3 - l2) * (l3y - l2y); keryy = phi3xx(l3 - l2) *  norm(l3y - l2y);
+     ker = phi3(l3 - l2); kery = phi3x(l3 - l2) * (l3y - l2y); keryy = phi3xx(l3 - l2) * sqr(l3y - l2y);
      return  (2.0 * l3y * l2y * ker + 2.0 * l3y * l2 * kery + 2.0 * l3 * l2y * kery + l3 * l2 * keryy) / 1.0000000000000;
     }
 
@@ -1293,7 +1293,7 @@ namespace Hermes
      double l1, l1x, l3, l3x;
      double ker, kerx, kerxx;
      l1 = lambda1(x, y); l1x = lambda1x(x, y); l3 = lambda3(x, y); l3x = lambda3x(x, y);
-     ker = phi3(l1 - l3); kerx = phi3x(l1 - l3) * (l1x - l3x); kerxx = phi3xx(l1 - l3) *  norm(l1x - l3x);
+     ker = phi3(l1 - l3); kerx = phi3x(l1 - l3) * (l1x - l3x); kerxx = phi3xx(l1 - l3) * sqr(l1x - l3x);
      return  (2.0 * l1x * l3x * ker + 2.0 * l1x * l3 * kerx + 2.0 * l1 * l3x * kerx + l1 * l3 * kerxx) / 1.0000000000000;
     }
 
@@ -1339,7 +1339,7 @@ namespace Hermes
      double l1, l1y, l3, l3y;
      double ker, kery, keryy;
      l1 = lambda1(x, y); l1y = lambda1y(x, y); l3 = lambda3(x, y); l3y = lambda3y(x, y);
-     ker = phi3(l1 - l3); kery = phi3x(l1 - l3) * (l1y - l3y); keryy = phi3xx(l1 - l3) *  norm(l1y - l3y);
+     ker = phi3(l1 - l3); kery = phi3x(l1 - l3) * (l1y - l3y); keryy = phi3xx(l1 - l3) * sqr(l1y - l3y);
      return  (2.0 * l1y * l3y * ker + 2.0 * l1y * l3 * kery + 2.0 * l1 * l3y * kery + l1 * l3 * keryy) / 1.0000000000000;
     }
 
@@ -1379,7 +1379,7 @@ namespace Hermes
      double l2, l2x, l1, l1x;
      double ker, kerx, kerxx;
      l2 = lambda2(x, y); l2x = lambda2x(x, y); l1 = lambda1(x, y); l1x = lambda1x(x, y);
-     ker = phi3(l2 - l1); kerx = phi3x(l2 - l1) * (l2x - l1x); kerxx = phi3xx(l2 - l1) *  norm(l2x - l1x);
+     ker = phi3(l2 - l1); kerx = phi3x(l2 - l1) * (l2x - l1x); kerxx = phi3xx(l2 - l1) * sqr(l2x - l1x);
      return  (2.0 * l2x * l1x * ker + 2.0 * l2x * l1 * kerx + 2.0 * l2 * l1x * kerx + l2 * l1 * kerxx) / 1.0000000000000;
     }
 
@@ -1425,7 +1425,7 @@ namespace Hermes
      double l2, l2y, l1, l1y;
      double ker, kery, keryy;
      l2 = lambda2(x, y); l2y = lambda2y(x, y); l1 = lambda1(x, y); l1y = lambda1y(x, y);
-     ker = phi3(l2 - l1); kery = phi3x(l2 - l1) * (l2y - l1y); keryy = phi3xx(l2 - l1) *  norm(l2y - l1y);
+     ker = phi3(l2 - l1); kery = phi3x(l2 - l1) * (l2y - l1y); keryy = phi3xx(l2 - l1) * sqr(l2y - l1y);
      return  (2.0 * l2y * l1y * ker + 2.0 * l2y * l1 * kery + 2.0 * l2 * l1y * kery + l2 * l1 * keryy) / 1.0000000000000;
     }
 
@@ -1762,7 +1762,7 @@ namespace Hermes
      double l3, l3x, l2, l2x;
      double ker, kerx, kerxx;
      l3 = lambda3(x, y); l3x = lambda3x(x, y); l2 = lambda2(x, y); l2x = lambda2x(x, y);
-     ker = phi4(l3 - l2); kerx = phi4x(l3 - l2) * (l3x - l2x); kerxx = phi4xx(l3 - l2) *  norm(l3x - l2x);
+     ker = phi4(l3 - l2); kerx = phi4x(l3 - l2) * (l3x - l2x); kerxx = phi4xx(l3 - l2) * sqr(l3x - l2x);
      return  (2.0 * l3x * l2x * ker + 2.0 * l3x * l2 * kerx + 2.0 * l3 * l2x * kerx + l3 * l2 * kerxx) / 1.0000000000000;
     }
 
@@ -1793,7 +1793,7 @@ namespace Hermes
      double l3, l3y, l2, l2y;
      double ker, kery, keryy;
      l3 = lambda3(x, y); l3y = lambda3y(x, y); l2 = lambda2(x, y); l2y = lambda2y(x, y);
-     ker = phi4(l3 - l2); kery = phi4x(l3 - l2) * (l3y - l2y); keryy = phi4xx(l3 - l2) *  norm(l3y - l2y);
+     ker = phi4(l3 - l2); kery = phi4x(l3 - l2) * (l3y - l2y); keryy = phi4xx(l3 - l2) * sqr(l3y - l2y);
      return  (2.0 * l3y * l2y * ker + 2.0 * l3y * l2 * kery + 2.0 * l3 * l2y * kery + l3 * l2 * keryy) / 1.0000000000000;
     }
 
@@ -1818,7 +1818,7 @@ namespace Hermes
      double l1, l1x, l3, l3x;
      double ker, kerx, kerxx;
      l1 = lambda1(x, y); l1x = lambda1x(x, y); l3 = lambda3(x, y); l3x = lambda3x(x, y);
-     ker = phi4(l1 - l3); kerx = phi4x(l1 - l3) * (l1x - l3x); kerxx = phi4xx(l1 - l3) *  norm(l1x - l3x);
+     ker = phi4(l1 - l3); kerx = phi4x(l1 - l3) * (l1x - l3x); kerxx = phi4xx(l1 - l3) * sqr(l1x - l3x);
      return  (2.0 * l1x * l3x * ker + 2.0 * l1x * l3 * kerx + 2.0 * l1 * l3x * kerx + l1 * l3 * kerxx) / 1.0000000000000;
     }
 
@@ -1849,7 +1849,7 @@ namespace Hermes
      double l1, l1y, l3, l3y;
      double ker, kery, keryy;
      l1 = lambda1(x, y); l1y = lambda1y(x, y); l3 = lambda3(x, y); l3y = lambda3y(x, y);
-     ker = phi4(l1 - l3); kery = phi4x(l1 - l3) * (l1y - l3y); keryy = phi4xx(l1 - l3) *  norm(l1y - l3y);
+     ker = phi4(l1 - l3); kery = phi4x(l1 - l3) * (l1y - l3y); keryy = phi4xx(l1 - l3) * sqr(l1y - l3y);
      return  (2.0 * l1y * l3y * ker + 2.0 * l1y * l3 * kery + 2.0 * l1 * l3y * kery + l1 * l3 * keryy) / 1.0000000000000;
     }
 
@@ -1874,7 +1874,7 @@ namespace Hermes
      double l2, l2x, l1, l1x;
      double ker, kerx, kerxx;
      l2 = lambda2(x, y); l2x = lambda2x(x, y); l1 = lambda1(x, y); l1x = lambda1x(x, y);
-     ker = phi4(l2 - l1); kerx = phi4x(l2 - l1) * (l2x - l1x); kerxx = phi4xx(l2 - l1) *  norm(l2x - l1x);
+     ker = phi4(l2 - l1); kerx = phi4x(l2 - l1) * (l2x - l1x); kerxx = phi4xx(l2 - l1) * sqr(l2x - l1x);
      return  (2.0 * l2x * l1x * ker + 2.0 * l2x * l1 * kerx + 2.0 * l2 * l1x * kerx + l2 * l1 * kerxx) / 1.0000000000000;
     }
 
@@ -1905,7 +1905,7 @@ namespace Hermes
      double l2, l2y, l1, l1y;
      double ker, kery, keryy;
      l2 = lambda2(x, y); l2y = lambda2y(x, y); l1 = lambda1(x, y); l1y = lambda1y(x, y);
-     ker = phi4(l2 - l1); kery = phi4x(l2 - l1) * (l2y - l1y); keryy = phi4xx(l2 - l1) *  norm(l2y - l1y);
+     ker = phi4(l2 - l1); kery = phi4x(l2 - l1) * (l2y - l1y); keryy = phi4xx(l2 - l1) * sqr(l2y - l1y);
      return  (2.0 * l2y * l1y * ker + 2.0 * l2y * l1 * kery + 2.0 * l2 * l1y * kery + l2 * l1 * keryy) / 1.0000000000000;
     }
 
@@ -2331,7 +2331,7 @@ namespace Hermes
      double l3, l3x, l2, l2x;
      double ker, kerx, kerxx;
      l3 = lambda3(x, y); l3x = lambda3x(x, y); l2 = lambda2(x, y); l2x = lambda2x(x, y);
-     ker = phi5(l3 - l2); kerx = phi5x(l3 - l2) * (l3x - l2x); kerxx = phi5xx(l3 - l2) *  norm(l3x - l2x);
+     ker = phi5(l3 - l2); kerx = phi5x(l3 - l2) * (l3x - l2x); kerxx = phi5xx(l3 - l2) * sqr(l3x - l2x);
      return  (2.0 * l3x * l2x * ker + 2.0 * l3x * l2 * kerx + 2.0 * l3 * l2x * kerx + l3 * l2 * kerxx) / 1.0000000000000;
     }
 
@@ -2377,7 +2377,7 @@ namespace Hermes
      double l3, l3y, l2, l2y;
      double ker, kery, keryy;
      l3 = lambda3(x, y); l3y = lambda3y(x, y); l2 = lambda2(x, y); l2y = lambda2y(x, y);
-     ker = phi5(l3 - l2); kery = phi5x(l3 - l2) * (l3y - l2y); keryy = phi5xx(l3 - l2) *  norm(l3y - l2y);
+     ker = phi5(l3 - l2); kery = phi5x(l3 - l2) * (l3y - l2y); keryy = phi5xx(l3 - l2) * sqr(l3y - l2y);
      return  (2.0 * l3y * l2y * ker + 2.0 * l3y * l2 * kery + 2.0 * l3 * l2y * kery + l3 * l2 * keryy) / 1.0000000000000;
     }
 
@@ -2417,7 +2417,7 @@ namespace Hermes
      double l1, l1x, l3, l3x;
      double ker, kerx, kerxx;
      l1 = lambda1(x, y); l1x = lambda1x(x, y); l3 = lambda3(x, y); l3x = lambda3x(x, y);
-     ker = phi5(l1 - l3); kerx = phi5x(l1 - l3) * (l1x - l3x); kerxx = phi5xx(l1 - l3) *  norm(l1x - l3x);
+     ker = phi5(l1 - l3); kerx = phi5x(l1 - l3) * (l1x - l3x); kerxx = phi5xx(l1 - l3) * sqr(l1x - l3x);
      return  (2.0 * l1x * l3x * ker + 2.0 * l1x * l3 * kerx + 2.0 * l1 * l3x * kerx + l1 * l3 * kerxx) / 1.0000000000000;
     }
 
@@ -2463,7 +2463,7 @@ namespace Hermes
      double l1, l1y, l3, l3y;
      double ker, kery, keryy;
      l1 = lambda1(x, y); l1y = lambda1y(x, y); l3 = lambda3(x, y); l3y = lambda3y(x, y);
-     ker = phi5(l1 - l3); kery = phi5x(l1 - l3) * (l1y - l3y); keryy = phi5xx(l1 - l3) *  norm(l1y - l3y);
+     ker = phi5(l1 - l3); kery = phi5x(l1 - l3) * (l1y - l3y); keryy = phi5xx(l1 - l3) * sqr(l1y - l3y);
      return  (2.0 * l1y * l3y * ker + 2.0 * l1y * l3 * kery + 2.0 * l1 * l3y * kery + l1 * l3 * keryy) / 1.0000000000000;
     }
 
@@ -2503,7 +2503,7 @@ namespace Hermes
      double l2, l2x, l1, l1x;
      double ker, kerx, kerxx;
      l2 = lambda2(x, y); l2x = lambda2x(x, y); l1 = lambda1(x, y); l1x = lambda1x(x, y);
-     ker = phi5(l2 - l1); kerx = phi5x(l2 - l1) * (l2x - l1x); kerxx = phi5xx(l2 - l1) *  norm(l2x - l1x);
+     ker = phi5(l2 - l1); kerx = phi5x(l2 - l1) * (l2x - l1x); kerxx = phi5xx(l2 - l1) * sqr(l2x - l1x);
      return  (2.0 * l2x * l1x * ker + 2.0 * l2x * l1 * kerx + 2.0 * l2 * l1x * kerx + l2 * l1 * kerxx) / 1.0000000000000;
     }
 
@@ -2549,7 +2549,7 @@ namespace Hermes
      double l2, l2y, l1, l1y;
      double ker, kery, keryy;
      l2 = lambda2(x, y); l2y = lambda2y(x, y); l1 = lambda1(x, y); l1y = lambda1y(x, y);
-     ker = phi5(l2 - l1); kery = phi5x(l2 - l1) * (l2y - l1y); keryy = phi5xx(l2 - l1) *  norm(l2y - l1y);
+     ker = phi5(l2 - l1); kery = phi5x(l2 - l1) * (l2y - l1y); keryy = phi5xx(l2 - l1) * sqr(l2y - l1y);
      return  (2.0 * l2y * l1y * ker + 2.0 * l2y * l1 * kery + 2.0 * l2 * l1y * kery + l2 * l1 * keryy) / 1.0000000000000;
     }
 
@@ -3054,7 +3054,7 @@ namespace Hermes
      double l3, l3x, l2, l2x;
      double ker, kerx, kerxx;
      l3 = lambda3(x, y); l3x = lambda3x(x, y); l2 = lambda2(x, y); l2x = lambda2x(x, y);
-     ker = phi6(l3 - l2); kerx = phi6x(l3 - l2) * (l3x - l2x); kerxx = phi6xx(l3 - l2) *  norm(l3x - l2x);
+     ker = phi6(l3 - l2); kerx = phi6x(l3 - l2) * (l3x - l2x); kerxx = phi6xx(l3 - l2) * sqr(l3x - l2x);
      return  (2.0 * l3x * l2x * ker + 2.0 * l3x * l2 * kerx + 2.0 * l3 * l2x * kerx + l3 * l2 * kerxx) / 1.0000000000000;
     }
 
@@ -3085,7 +3085,7 @@ namespace Hermes
      double l3, l3y, l2, l2y;
      double ker, kery, keryy;
      l3 = lambda3(x, y); l3y = lambda3y(x, y); l2 = lambda2(x, y); l2y = lambda2y(x, y);
-     ker = phi6(l3 - l2); kery = phi6x(l3 - l2) * (l3y - l2y); keryy = phi6xx(l3 - l2) *  norm(l3y - l2y);
+     ker = phi6(l3 - l2); kery = phi6x(l3 - l2) * (l3y - l2y); keryy = phi6xx(l3 - l2) * sqr(l3y - l2y);
      return  (2.0 * l3y * l2y * ker + 2.0 * l3y * l2 * kery + 2.0 * l3 * l2y * kery + l3 * l2 * keryy) / 1.0000000000000;
     }
 
@@ -3110,7 +3110,7 @@ namespace Hermes
      double l1, l1x, l3, l3x;
      double ker, kerx, kerxx;
      l1 = lambda1(x, y); l1x = lambda1x(x, y); l3 = lambda3(x, y); l3x = lambda3x(x, y);
-     ker = phi6(l1 - l3); kerx = phi6x(l1 - l3) * (l1x - l3x); kerxx = phi6xx(l1 - l3) *  norm(l1x - l3x);
+     ker = phi6(l1 - l3); kerx = phi6x(l1 - l3) * (l1x - l3x); kerxx = phi6xx(l1 - l3) * sqr(l1x - l3x);
      return  (2.0 * l1x * l3x * ker + 2.0 * l1x * l3 * kerx + 2.0 * l1 * l3x * kerx + l1 * l3 * kerxx) / 1.0000000000000;
     }
 
@@ -3141,7 +3141,7 @@ namespace Hermes
      double l1, l1y, l3, l3y;
      double ker, kery, keryy;
      l1 = lambda1(x, y); l1y = lambda1y(x, y); l3 = lambda3(x, y); l3y = lambda3y(x, y);
-     ker = phi6(l1 - l3); kery = phi6x(l1 - l3) * (l1y - l3y); keryy = phi6xx(l1 - l3) *  norm(l1y - l3y);
+     ker = phi6(l1 - l3); kery = phi6x(l1 - l3) * (l1y - l3y); keryy = phi6xx(l1 - l3) * sqr(l1y - l3y);
      return  (2.0 * l1y * l3y * ker + 2.0 * l1y * l3 * kery + 2.0 * l1 * l3y * kery + l1 * l3 * keryy) / 1.0000000000000;
     }
 
@@ -3166,7 +3166,7 @@ namespace Hermes
      double l2, l2x, l1, l1x;
      double ker, kerx, kerxx;
      l2 = lambda2(x, y); l2x = lambda2x(x, y); l1 = lambda1(x, y); l1x = lambda1x(x, y);
-     ker = phi6(l2 - l1); kerx = phi6x(l2 - l1) * (l2x - l1x); kerxx = phi6xx(l2 - l1) *  norm(l2x - l1x);
+     ker = phi6(l2 - l1); kerx = phi6x(l2 - l1) * (l2x - l1x); kerxx = phi6xx(l2 - l1) * sqr(l2x - l1x);
      return  (2.0 * l2x * l1x * ker + 2.0 * l2x * l1 * kerx + 2.0 * l2 * l1x * kerx + l2 * l1 * kerxx) / 1.0000000000000;
     }
 
@@ -3197,7 +3197,7 @@ namespace Hermes
      double l2, l2y, l1, l1y;
      double ker, kery, keryy;
      l2 = lambda2(x, y); l2y = lambda2y(x, y); l1 = lambda1(x, y); l1y = lambda1y(x, y);
-     ker = phi6(l2 - l1); kery = phi6x(l2 - l1) * (l2y - l1y); keryy = phi6xx(l2 - l1) *  norm(l2y - l1y);
+     ker = phi6(l2 - l1); kery = phi6x(l2 - l1) * (l2y - l1y); keryy = phi6xx(l2 - l1) * sqr(l2y - l1y);
      return  (2.0 * l2y * l1y * ker + 2.0 * l2y * l1 * kery + 2.0 * l2 * l1y * kery + l2 * l1 * keryy) / 1.0000000000000;
     }
 
@@ -3791,7 +3791,7 @@ namespace Hermes
      double l3, l3x, l2, l2x;
      double ker, kerx, kerxx;
      l3 = lambda3(x, y); l3x = lambda3x(x, y); l2 = lambda2(x, y); l2x = lambda2x(x, y);
-     ker = phi7(l3 - l2); kerx = phi7x(l3 - l2) * (l3x - l2x); kerxx = phi7xx(l3 - l2) *  norm(l3x - l2x);
+     ker = phi7(l3 - l2); kerx = phi7x(l3 - l2) * (l3x - l2x); kerxx = phi7xx(l3 - l2) * sqr(l3x - l2x);
      return  (2.0 * l3x * l2x * ker + 2.0 * l3x * l2 * kerx + 2.0 * l3 * l2x * kerx + l3 * l2 * kerxx) / 1.0000000000000;
     }
 
@@ -3837,7 +3837,7 @@ namespace Hermes
      double l3, l3y, l2, l2y;
      double ker, kery, keryy;
      l3 = lambda3(x, y); l3y = lambda3y(x, y); l2 = lambda2(x, y); l2y = lambda2y(x, y);
-     ker = phi7(l3 - l2); kery = phi7x(l3 - l2) * (l3y - l2y); keryy = phi7xx(l3 - l2) *  norm(l3y - l2y);
+     ker = phi7(l3 - l2); kery = phi7x(l3 - l2) * (l3y - l2y); keryy = phi7xx(l3 - l2) * sqr(l3y - l2y);
      return  (2.0 * l3y * l2y * ker + 2.0 * l3y * l2 * kery + 2.0 * l3 * l2y * kery + l3 * l2 * keryy) / 1.0000000000000;
     }
 
@@ -3877,7 +3877,7 @@ namespace Hermes
      double l1, l1x, l3, l3x;
      double ker, kerx, kerxx;
      l1 = lambda1(x, y); l1x = lambda1x(x, y); l3 = lambda3(x, y); l3x = lambda3x(x, y);
-     ker = phi7(l1 - l3); kerx = phi7x(l1 - l3) * (l1x - l3x); kerxx = phi7xx(l1 - l3) *  norm(l1x - l3x);
+     ker = phi7(l1 - l3); kerx = phi7x(l1 - l3) * (l1x - l3x); kerxx = phi7xx(l1 - l3) * sqr(l1x - l3x);
      return  (2.0 * l1x * l3x * ker + 2.0 * l1x * l3 * kerx + 2.0 * l1 * l3x * kerx + l1 * l3 * kerxx) / 1.0000000000000;
     }
 
@@ -3923,7 +3923,7 @@ namespace Hermes
      double l1, l1y, l3, l3y;
      double ker, kery, keryy;
      l1 = lambda1(x, y); l1y = lambda1y(x, y); l3 = lambda3(x, y); l3y = lambda3y(x, y);
-     ker = phi7(l1 - l3); kery = phi7x(l1 - l3) * (l1y - l3y); keryy = phi7xx(l1 - l3) *  norm(l1y - l3y);
+     ker = phi7(l1 - l3); kery = phi7x(l1 - l3) * (l1y - l3y); keryy = phi7xx(l1 - l3) * sqr(l1y - l3y);
      return  (2.0 * l1y * l3y * ker + 2.0 * l1y * l3 * kery + 2.0 * l1 * l3y * kery + l1 * l3 * keryy) / 1.0000000000000;
     }
 
@@ -3963,7 +3963,7 @@ namespace Hermes
      double l2, l2x, l1, l1x;
      double ker, kerx, kerxx;
      l2 = lambda2(x, y); l2x = lambda2x(x, y); l1 = lambda1(x, y); l1x = lambda1x(x, y);
-     ker = phi7(l2 - l1); kerx = phi7x(l2 - l1) * (l2x - l1x); kerxx = phi7xx(l2 - l1) *  norm(l2x - l1x);
+     ker = phi7(l2 - l1); kerx = phi7x(l2 - l1) * (l2x - l1x); kerxx = phi7xx(l2 - l1) * sqr(l2x - l1x);
      return  (2.0 * l2x * l1x * ker + 2.0 * l2x * l1 * kerx + 2.0 * l2 * l1x * kerx + l2 * l1 * kerxx) / 1.0000000000000;
     }
 
@@ -4009,7 +4009,7 @@ namespace Hermes
      double l2, l2y, l1, l1y;
      double ker, kery, keryy;
      l2 = lambda2(x, y); l2y = lambda2y(x, y); l1 = lambda1(x, y); l1y = lambda1y(x, y);
-     ker = phi7(l2 - l1); kery = phi7x(l2 - l1) * (l2y - l1y); keryy = phi7xx(l2 - l1) *  norm(l2y - l1y);
+     ker = phi7(l2 - l1); kery = phi7x(l2 - l1) * (l2y - l1y); keryy = phi7xx(l2 - l1) * sqr(l2y - l1y);
      return  (2.0 * l2y * l1y * ker + 2.0 * l2y * l1 * kery + 2.0 * l2 * l1y * kery + l2 * l1 * keryy) / 1.0000000000000;
     }
 
@@ -4682,7 +4682,7 @@ namespace Hermes
      double l3, l3x, l2, l2x;
      double ker, kerx, kerxx;
      l3 = lambda3(x, y); l3x = lambda3x(x, y); l2 = lambda2(x, y); l2x = lambda2x(x, y);
-     ker = phi8(l3 - l2); kerx = phi8x(l3 - l2) * (l3x - l2x); kerxx = phi8xx(l3 - l2) *  norm(l3x - l2x);
+     ker = phi8(l3 - l2); kerx = phi8x(l3 - l2) * (l3x - l2x); kerxx = phi8xx(l3 - l2) * sqr(l3x - l2x);
      return  (2.0 * l3x * l2x * ker + 2.0 * l3x * l2 * kerx + 2.0 * l3 * l2x * kerx + l3 * l2 * kerxx) / 1.0000000000000;
     }
 
@@ -4713,7 +4713,7 @@ namespace Hermes
      double l3, l3y, l2, l2y;
      double ker, kery, keryy;
      l3 = lambda3(x, y); l3y = lambda3y(x, y); l2 = lambda2(x, y); l2y = lambda2y(x, y);
-     ker = phi8(l3 - l2); kery = phi8x(l3 - l2) * (l3y - l2y); keryy = phi8xx(l3 - l2) *  norm(l3y - l2y);
+     ker = phi8(l3 - l2); kery = phi8x(l3 - l2) * (l3y - l2y); keryy = phi8xx(l3 - l2) * sqr(l3y - l2y);
      return  (2.0 * l3y * l2y * ker + 2.0 * l3y * l2 * kery + 2.0 * l3 * l2y * kery + l3 * l2 * keryy) / 1.0000000000000;
     }
 
@@ -4738,7 +4738,7 @@ namespace Hermes
      double l1, l1x, l3, l3x;
      double ker, kerx, kerxx;
      l1 = lambda1(x, y); l1x = lambda1x(x, y); l3 = lambda3(x, y); l3x = lambda3x(x, y);
-     ker = phi8(l1 - l3); kerx = phi8x(l1 - l3) * (l1x - l3x); kerxx = phi8xx(l1 - l3) *  norm(l1x - l3x);
+     ker = phi8(l1 - l3); kerx = phi8x(l1 - l3) * (l1x - l3x); kerxx = phi8xx(l1 - l3) * sqr(l1x - l3x);
      return  (2.0 * l1x * l3x * ker + 2.0 * l1x * l3 * kerx + 2.0 * l1 * l3x * kerx + l1 * l3 * kerxx) / 1.0000000000000;
     }
 
@@ -4769,7 +4769,7 @@ namespace Hermes
      double l1, l1y, l3, l3y;
      double ker, kery, keryy;
      l1 = lambda1(x, y); l1y = lambda1y(x, y); l3 = lambda3(x, y); l3y = lambda3y(x, y);
-     ker = phi8(l1 - l3); kery = phi8x(l1 - l3) * (l1y - l3y); keryy = phi8xx(l1 - l3) *  norm(l1y - l3y);
+     ker = phi8(l1 - l3); kery = phi8x(l1 - l3) * (l1y - l3y); keryy = phi8xx(l1 - l3) * sqr(l1y - l3y);
      return  (2.0 * l1y * l3y * ker + 2.0 * l1y * l3 * kery + 2.0 * l1 * l3y * kery + l1 * l3 * keryy) / 1.0000000000000;
     }
 
@@ -4794,7 +4794,7 @@ namespace Hermes
      double l2, l2x, l1, l1x;
      double ker, kerx, kerxx;
      l2 = lambda2(x, y); l2x = lambda2x(x, y); l1 = lambda1(x, y); l1x = lambda1x(x, y);
-     ker = phi8(l2 - l1); kerx = phi8x(l2 - l1) * (l2x - l1x); kerxx = phi8xx(l2 - l1) *  norm(l2x - l1x);
+     ker = phi8(l2 - l1); kerx = phi8x(l2 - l1) * (l2x - l1x); kerxx = phi8xx(l2 - l1) * sqr(l2x - l1x);
      return  (2.0 * l2x * l1x * ker + 2.0 * l2x * l1 * kerx + 2.0 * l2 * l1x * kerx + l2 * l1 * kerxx) / 1.0000000000000;
     }
 
@@ -4825,7 +4825,7 @@ namespace Hermes
      double l2, l2y, l1, l1y;
      double ker, kery, keryy;
      l2 = lambda2(x, y); l2y = lambda2y(x, y); l1 = lambda1(x, y); l1y = lambda1y(x, y);
-     ker = phi8(l2 - l1); kery = phi8x(l2 - l1) * (l2y - l1y); keryy = phi8xx(l2 - l1) *  norm(l2y - l1y);
+     ker = phi8(l2 - l1); kery = phi8x(l2 - l1) * (l2y - l1y); keryy = phi8xx(l2 - l1) * sqr(l2y - l1y);
      return  (2.0 * l2y * l1y * ker + 2.0 * l2y * l1 * kery + 2.0 * l2 * l1y * kery + l2 * l1 * keryy) / 1.0000000000000;
     }
 
@@ -5587,7 +5587,7 @@ namespace Hermes
      double l3, l3x, l2, l2x;
      double ker, kerx, kerxx;
      l3 = lambda3(x, y); l3x = lambda3x(x, y); l2 = lambda2(x, y); l2x = lambda2x(x, y);
-     ker = phi9(l3 - l2); kerx = phi9x(l3 - l2) * (l3x - l2x); kerxx = phi9xx(l3 - l2) *  norm(l3x - l2x);
+     ker = phi9(l3 - l2); kerx = phi9x(l3 - l2) * (l3x - l2x); kerxx = phi9xx(l3 - l2) * sqr(l3x - l2x);
      return  (2.0 * l3x * l2x * ker + 2.0 * l3x * l2 * kerx + 2.0 * l3 * l2x * kerx + l3 * l2 * kerxx) / 1.0000000000000;
     }
 
@@ -5633,7 +5633,7 @@ namespace Hermes
      double l3, l3y, l2, l2y;
      double ker, kery, keryy;
      l3 = lambda3(x, y); l3y = lambda3y(x, y); l2 = lambda2(x, y); l2y = lambda2y(x, y);
-     ker = phi9(l3 - l2); kery = phi9x(l3 - l2) * (l3y - l2y); keryy = phi9xx(l3 - l2) *  norm(l3y - l2y);
+     ker = phi9(l3 - l2); kery = phi9x(l3 - l2) * (l3y - l2y); keryy = phi9xx(l3 - l2) * sqr(l3y - l2y);
      return  (2.0 * l3y * l2y * ker + 2.0 * l3y * l2 * kery + 2.0 * l3 * l2y * kery + l3 * l2 * keryy) / 1.0000000000000;
     }
 
@@ -5673,7 +5673,7 @@ namespace Hermes
      double l1, l1x, l3, l3x;
      double ker, kerx, kerxx;
      l1 = lambda1(x, y); l1x = lambda1x(x, y); l3 = lambda3(x, y); l3x = lambda3x(x, y);
-     ker = phi9(l1 - l3); kerx = phi9x(l1 - l3) * (l1x - l3x); kerxx = phi9xx(l1 - l3) *  norm(l1x - l3x);
+     ker = phi9(l1 - l3); kerx = phi9x(l1 - l3) * (l1x - l3x); kerxx = phi9xx(l1 - l3) * sqr(l1x - l3x);
      return  (2.0 * l1x * l3x * ker + 2.0 * l1x * l3 * kerx + 2.0 * l1 * l3x * kerx + l1 * l3 * kerxx) / 1.0000000000000;
     }
 
@@ -5719,7 +5719,7 @@ namespace Hermes
      double l1, l1y, l3, l3y;
      double ker, kery, keryy;
      l1 = lambda1(x, y); l1y = lambda1y(x, y); l3 = lambda3(x, y); l3y = lambda3y(x, y);
-     ker = phi9(l1 - l3); kery = phi9x(l1 - l3) * (l1y - l3y); keryy = phi9xx(l1 - l3) *  norm(l1y - l3y);
+     ker = phi9(l1 - l3); kery = phi9x(l1 - l3) * (l1y - l3y); keryy = phi9xx(l1 - l3) * sqr(l1y - l3y);
      return  (2.0 * l1y * l3y * ker + 2.0 * l1y * l3 * kery + 2.0 * l1 * l3y * kery + l1 * l3 * keryy) / 1.0000000000000;
     }
 
@@ -5759,7 +5759,7 @@ namespace Hermes
      double l2, l2x, l1, l1x;
      double ker, kerx, kerxx;
      l2 = lambda2(x, y); l2x = lambda2x(x, y); l1 = lambda1(x, y); l1x = lambda1x(x, y);
-     ker = phi9(l2 - l1); kerx = phi9x(l2 - l1) * (l2x - l1x); kerxx = phi9xx(l2 - l1) *  norm(l2x - l1x);
+     ker = phi9(l2 - l1); kerx = phi9x(l2 - l1) * (l2x - l1x); kerxx = phi9xx(l2 - l1) * sqr(l2x - l1x);
      return  (2.0 * l2x * l1x * ker + 2.0 * l2x * l1 * kerx + 2.0 * l2 * l1x * kerx + l2 * l1 * kerxx) / 1.0000000000000;
     }
 
@@ -5805,7 +5805,7 @@ namespace Hermes
      double l2, l2y, l1, l1y;
      double ker, kery, keryy;
      l2 = lambda2(x, y); l2y = lambda2y(x, y); l1 = lambda1(x, y); l1y = lambda1y(x, y);
-     ker = phi9(l2 - l1); kery = phi9x(l2 - l1) * (l2y - l1y); keryy = phi9xx(l2 - l1) *  norm(l2y - l1y);
+     ker = phi9(l2 - l1); kery = phi9x(l2 - l1) * (l2y - l1y); keryy = phi9xx(l2 - l1) * sqr(l2y - l1y);
      return  (2.0 * l2y * l1y * ker + 2.0 * l2y * l1 * kery + 2.0 * l2 * l1y * kery + l2 * l1 * keryy) / 1.0000000000000;
     }
 

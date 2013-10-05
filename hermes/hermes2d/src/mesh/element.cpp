@@ -308,15 +308,15 @@ namespace Hermes
           for (int i = 0; i < 3; i++)
           {
             int j = next_vert(i);
-            l =  norm(vn[i]->x - vn[j]->x) +  norm(vn[i]->y - vn[j]->y);
+            l = sqr(vn[i]->x - vn[j]->x) + sqr(vn[i]->y - vn[j]->y);
             if(l > max) 
               max = l;
           }
         }
         else
         {
-          max =  norm(vn[0]->x - vn[2]->x) +  norm(vn[0]->y - vn[2]->y);
-          l   =  norm(vn[1]->x - vn[3]->x) +  norm(vn[1]->y - vn[3]->y);
+          max = sqr(vn[0]->x - vn[2]->x) + sqr(vn[0]->y - vn[2]->y);
+          l   = sqr(vn[1]->x - vn[3]->x) + sqr(vn[1]->y - vn[3]->y);
           if(l > max) 
             max = l;
         }

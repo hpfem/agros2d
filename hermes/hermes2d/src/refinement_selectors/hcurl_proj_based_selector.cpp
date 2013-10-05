@@ -151,9 +151,9 @@ namespace Hermes
           for(int k = 0; k < num_gip_points; k++)
           {
             double sum = 0.0;
-            sum +=  norm(svals[H2D_TRF_IDENTITY][inx_shape_i][H2D_HCFE_VALUE0][k]);
-            sum +=  norm(svals[H2D_TRF_IDENTITY][inx_shape_i][H2D_HCFE_VALUE1][k]);
-            sum +=  norm(svals[H2D_TRF_IDENTITY][inx_shape_i][H2D_HCFE_CURL][k]);
+            sum += sqr(svals[H2D_TRF_IDENTITY][inx_shape_i][H2D_HCFE_VALUE0][k]);
+            sum += sqr(svals[H2D_TRF_IDENTITY][inx_shape_i][H2D_HCFE_VALUE1][k]);
+            sum += sqr(svals[H2D_TRF_IDENTITY][inx_shape_i][H2D_HCFE_CURL][k]);
             norm_squared += gip_points[k][H2D_GIP2D_W] * sum;
           }
           double norm = sqrt(norm_squared);
@@ -306,9 +306,9 @@ namespace Hermes
             Scalar ref_curl = coef_curl * sub_gip.rvals[H2D_HCFE_CURL][gip_inx]; //coef_curl * curl
 
             //evaluate error
-            double error_squared =  norm(proj_value0 - ref_value0)
-              +  norm(proj_value1 - ref_value1)
-              +  norm(proj_curl - ref_curl);
+            double error_squared = sqr(proj_value0 - ref_value0)
+              + sqr(proj_value1 - ref_value1)
+              + sqr(proj_curl - ref_curl);
 
             total_error_squared += gip_pt[H2D_GIP2D_W] * error_squared;
           }

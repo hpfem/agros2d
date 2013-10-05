@@ -316,8 +316,8 @@ namespace Hermes
       {
         double a, b;
         // coefficients in second derivative with respect to xx
-        a =  norm(m[j][0][0])*k[j][0][0] + 2*m[j][0][0]*m[j][0][1]*k[j][1][0] +  norm(m[j][0][1])*k[j][2][0];
-        b =  norm(m[j][0][0])*k[j][0][1] + 2*m[j][0][0]*m[j][0][1]*k[j][1][1] +  norm(m[j][0][1])*k[j][2][1];
+        a = sqr(m[j][0][0])*k[j][0][0] + 2*m[j][0][0]*m[j][0][1]*k[j][1][0] + sqr(m[j][0][1])*k[j][2][0];
+        b = sqr(m[j][0][0])*k[j][0][1] + 2*m[j][0][0]*m[j][0][1]*k[j][1][1] + sqr(m[j][0][1])*k[j][2][1];
         mm[j][0][0] = -(a * m[j][0][0] + b * m[j][1][0]); // du/dx
         mm[j][0][1] = -(a * m[j][0][1] + b * m[j][1][1]); // du/dy
 
@@ -328,8 +328,8 @@ namespace Hermes
         mm[j][1][1] = -(a * m[j][0][1] + b * m[j][1][1]); // du/dy
 
         // coefficients in second derivative with respect to yy
-        a =  norm(m[j][1][0])*k[j][0][0] + 2*m[j][1][0]*m[j][1][1]*k[j][1][0] +  norm(m[j][1][1])*k[j][2][0];
-        b =  norm(m[j][1][0])*k[j][0][1] + 2*m[j][1][0]*m[j][1][1]*k[j][1][1] +  norm(m[j][1][1])*k[j][2][1];
+        a = sqr(m[j][1][0])*k[j][0][0] + 2*m[j][1][0]*m[j][1][1]*k[j][1][0] + sqr(m[j][1][1])*k[j][2][0];
+        b = sqr(m[j][1][0])*k[j][0][1] + 2*m[j][1][0]*m[j][1][1]*k[j][1][1] + sqr(m[j][1][1])*k[j][2][1];
         mm[j][2][0] = -(a * m[j][0][0] + b * m[j][1][0]); // du/dx
         mm[j][2][1] = -(a * m[j][0][1] + b * m[j][1][1]); // du/dy
       }
@@ -411,7 +411,7 @@ namespace Hermes
         // straight edges: the tangent at each point is just the edge length
         tan[0][0] = element->vn[b]->x - element->vn[a]->x;
         tan[0][1] = element->vn[b]->y - element->vn[a]->y;
-        tan[0][2] = sqrt( norm(tan[0][0]) +  norm(tan[0][1]));
+        tan[0][2] = sqrt(sqr(tan[0][0]) + sqr(tan[0][1]));
         double inorm = 1.0 / tan[0][2];
         tan[0][0] *= inorm;
         tan[0][1] *= inorm;
@@ -453,7 +453,7 @@ namespace Hermes
           double3& t = tan[i];
           t[0] = m[i][0][0]*ex + m[i][0][1]*ey;
           t[1] = m[i][1][0]*ex + m[i][1][1]*ey;
-          t[2] = sqrt( norm(t[0]) +  norm(t[1]));
+          t[2] = sqrt(sqr(t[0]) + sqr(t[1]));
           double inorm = 1.0 / t[2];
           t[0] *= inorm;
           t[1] *= inorm;
@@ -481,7 +481,7 @@ namespace Hermes
       double exact2 = 0.0;
       for (i = 0; i < quad->get_num_points(mo, element->get_mode()); i++, m++)
       {
-        exact1 += pt[i][2] * jac[i] * ( norm((*m)[0][0] + (*m)[0][1]) +  norm((*m)[1][0] + (*m)[1][1]));
+        exact1 += pt[i][2] * jac[i] * (sqr((*m)[0][0] + (*m)[0][1]) + sqr((*m)[1][0] + (*m)[1][1]));
         exact2 += pt[i][2] / jac[i];
       }
       // find sufficient quadrature degree
@@ -494,7 +494,7 @@ namespace Hermes
         double result2 = 0.0;
         for (i = 0; i < quad->get_num_points(o, element->get_mode()); i++, m++)
         {
-          result1 += pt[i][2] * jac[i] * ( norm((*m)[0][0] + (*m)[0][1]) +  norm((*m)[1][0] + (*m)[1][1]));
+          result1 += pt[i][2] * jac[i] * (sqr((*m)[0][0] + (*m)[0][1]) + sqr((*m)[1][0] + (*m)[1][1]));
           result2 += pt[i][2] / jac[i] ;
         }
         if((fabs((exact1 - result1) / exact1) < Hermes::Epsilon) &&
@@ -564,8 +564,8 @@ namespace Hermes
       double a, b;
 
       // coefficients in second derivative with respect to xx
-      a =  norm(m[0][0])*k[0][0] + 2*m[0][0]*m[0][1]*k[1][0] +  norm(m[0][1])*k[2][0];
-      b =  norm(m[0][0])*k[0][1] + 2*m[0][0]*m[0][1]*k[1][1] +  norm(m[0][1])*k[2][1];
+      a = sqr(m[0][0])*k[0][0] + 2*m[0][0]*m[0][1]*k[1][0] + sqr(m[0][1])*k[2][0];
+      b = sqr(m[0][0])*k[0][1] + 2*m[0][0]*m[0][1]*k[1][1] + sqr(m[0][1])*k[2][1];
       mm[0][0] = -(a * m[0][0] + b * m[1][0]); // du/dx
       mm[0][1] = -(a * m[0][1] + b * m[1][1]); // du/dy
 
@@ -576,8 +576,8 @@ namespace Hermes
       mm[1][1] = -(a * m[0][1] + b * m[1][1]); // du/dy
 
       // coefficients in second derivative with respect to yy
-      a =  norm(m[1][0])*k[0][0] + 2*m[1][0]*m[1][1]*k[1][0] +  norm(m[1][1])*k[2][0];
-      b =  norm(m[1][0])*k[0][1] + 2*m[1][0]*m[1][1]*k[1][1] +  norm(m[1][1])*k[2][1];
+      a = sqr(m[1][0])*k[0][0] + 2*m[1][0]*m[1][1]*k[1][0] + sqr(m[1][1])*k[2][0];
+      b = sqr(m[1][0])*k[0][1] + 2*m[1][0]*m[1][1]*k[1][1] + sqr(m[1][1])*k[2][1];
       mm[2][0] = -(a * m[0][0] + b * m[1][0]); // du/dx
       mm[2][1] = -(a * m[0][1] + b * m[1][1]); // du/dy
     }

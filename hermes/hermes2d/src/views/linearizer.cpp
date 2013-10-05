@@ -200,7 +200,7 @@ namespace Hermes
             if(!split && curved)
             {
               for (i = 0; i < 3; i++)
-                if( norm(phx[idx[i]] - midval[0][i]) +  norm(phy[idx[i]] - midval[1][i]) >  norm(fns[0]->get_active_element()->get_diameter()*this->get_curvature_epsilon()))
+                if(sqr(phx[idx[i]] - midval[0][i]) + sqr(phy[idx[i]] - midval[1][i]) > sqr(fns[0]->get_active_element()->get_diameter()*this->get_curvature_epsilon()))
                 {
                   split = true;
                   break;
@@ -415,11 +415,11 @@ namespace Hermes
             // also decide whether to split because of the curvature
             if(split != 3 && curved)
             {
-              double cm2 =  norm(fns[0]->get_active_element()->get_diameter()*this->get_curvature_epsilon());
-              if( norm(phx[idx[1]] - midval[0][1]) +  norm(phy[idx[1]] - midval[1][1]) > cm2 ||
-                 norm(phx[idx[3]] - midval[0][3]) +  norm(phy[idx[3]] - midval[1][3]) > cm2) split |= 1;
-              if( norm(phx[idx[0]] - midval[0][0]) +  norm(phy[idx[0]] - midval[1][0]) > cm2 ||
-                 norm(phx[idx[2]] - midval[0][2]) +  norm(phy[idx[2]] - midval[1][2]) > cm2) split |= 2;
+              double cm2 = sqr(fns[0]->get_active_element()->get_diameter()*this->get_curvature_epsilon());
+              if(sqr(phx[idx[1]] - midval[0][1]) + sqr(phy[idx[1]] - midval[1][1]) > cm2 ||
+                sqr(phx[idx[3]] - midval[0][3]) + sqr(phy[idx[3]] - midval[1][3]) > cm2) split |= 1;
+              if(sqr(phx[idx[0]] - midval[0][0]) + sqr(phy[idx[0]] - midval[1][0]) > cm2 ||
+                sqr(phx[idx[2]] - midval[0][2]) + sqr(phy[idx[2]] - midval[1][2]) > cm2) split |= 2;
             }
 
             // do extra tests at level 0, so as not to miss some functions with zero error at edge midpoints

@@ -1230,7 +1230,7 @@ namespace Hermes
 
     double Mesh::vector_length(double a_1, double a_2)
     {
-      return sqrt( norm(a_1) +  norm(a_2));
+      return sqrt(sqr(a_1) + sqr(a_2));
     }
 
     bool Mesh::same_line(double p_1, double p_2, double q_1, double q_2, double r_1, double r_2)

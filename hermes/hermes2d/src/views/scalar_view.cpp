@@ -1163,7 +1163,7 @@ namespace Hermes
 
       static inline void normalize(double& x, double& y, double& z)
       {
-        double l = 1.0 / sqrt( norm(x) +  norm(y) +  norm(z));
+        double l = 1.0 / sqrt(sqr(x) + sqr(y) + sqr(z));
         x *= l; y *= l; z *= l;
       }
 

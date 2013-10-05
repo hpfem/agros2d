@@ -145,7 +145,7 @@ namespace Hermes
           for(int k = 0; k < num_gip_points; k++)
           {
             double sum = 0.0;
-            sum +=  norm(svals[H2D_TRF_IDENTITY][inx_shape_i][H2D_L2FE_VALUE][k]);
+            sum += sqr(svals[H2D_TRF_IDENTITY][inx_shape_i][H2D_L2FE_VALUE][k]);
             norm_squared += gip_points[k][H2D_GIP2D_W] * sum;
           }
           double norm = sqrt(norm_squared);
@@ -267,7 +267,7 @@ namespace Hermes
           Scalar ref_value = sub_gip.rvals[H2D_L2FE_VALUE][gip_inx];
 
           //evaluate error
-          double error_squared =  norm(proj_value - ref_value);
+          double error_squared = sqr(proj_value - ref_value);
 
           total_error_squared += gip_pt[H2D_GIP2D_W] * error_squared;
         }

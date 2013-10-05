@@ -334,7 +334,7 @@ namespace Hermes
       fv->get_dx_dy_values(dvdx, dvdy);
 
       double result = 0.0;
-      h1_integrate_expression( norm(fnu[i] - fnv[i]) +  norm(dudx[i] - dvdx[i]) +  norm(dudy[i] - dvdy[i]));
+      h1_integrate_expression(sqr(fnu[i] - fnv[i]) + sqr(dudx[i] - dvdx[i]) + sqr(dudy[i] - dvdy[i]));
       return result;
     }
 
@@ -357,7 +357,7 @@ namespace Hermes
       fv->get_dx_dy_values(dvdx, dvdy);
 
       double result = 0.0;
-      h1_integrate_expression( norm(dudx[i] - dvdx[i]) +  norm(dudy[i] - dvdy[i]));
+      h1_integrate_expression(sqr(dudx[i] - dvdx[i]) + sqr(dudy[i] - dvdy[i]));
       return result;
     }
 
@@ -376,7 +376,7 @@ namespace Hermes
       Scalar* fnv = fv->get_fn_values();
 
       double result = 0.0;
-      h1_integrate_expression( norm(fnu[i] - fnv[i]));
+      h1_integrate_expression(sqr(fnu[i] - fnv[i]));
       return result;
     }
 
@@ -396,7 +396,7 @@ namespace Hermes
       fv->get_dx_dy_values(dvdx, dvdy);
 
       double result = 0.0;
-      h1_integrate_expression( norm(dudx[i] - dvdx[i]));
+      h1_integrate_expression(sqr(dudx[i] - dvdx[i]));
       return result;
     }
 
@@ -416,7 +416,7 @@ namespace Hermes
       fv->get_dx_dy_values(dvdx, dvdy);
 
       double result = 0.0;
-      h1_integrate_expression( norm(dudy[i] - dvdy[i]));
+      h1_integrate_expression(sqr(dudy[i] - dvdy[i]));
       return result;
     }
 
@@ -434,7 +434,7 @@ namespace Hermes
       fu->get_dx_dy_values(dudx, dudy);
 
       double result = 0.0;
-      h1_integrate_expression( norm(fnu[i]) +  norm(dudx[i]) +  norm(dudy[i]));
+      h1_integrate_expression(sqr(fnu[i]) + sqr(dudx[i]) + sqr(dudy[i]));
       return result;
     }
 
@@ -452,7 +452,7 @@ namespace Hermes
       fu->get_dx_dy_values(dudx, dudy);
 
       double result = 0.0;
-      h1_integrate_expression( norm(dudx[i]) +  norm(dudy[i]));
+      h1_integrate_expression(sqr(dudx[i]) + sqr(dudy[i]));
       return result;
     }
 
@@ -468,7 +468,7 @@ namespace Hermes
       Scalar* fnu = fu->get_fn_values();
 
       double result = 0.0;
-      h1_integrate_expression( norm(fnu[i]));
+      h1_integrate_expression(sqr(fnu[i]));
       return result;
     }
   }

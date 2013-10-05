@@ -354,7 +354,7 @@ namespace Hermes
             bnd_edges[idx][2] = 1; // visited
             double ax = vert[bnd_edges[idx][0]][0]; double bx = vert[bnd_edges[idx][1]][0];
             double ay = vert[bnd_edges[idx][0]][1]; double by = vert[bnd_edges[idx][1]][1];
-            double len = sqrt( norm(bx - ax) +  norm(by - ay));
+            double len = sqrt(sqr(bx - ax) + sqr(by - ay));
             double remaining_len = len; double init_x = ax; double init_y = ay;
             while (tmp_step < remaining_len)
             {
@@ -479,15 +479,15 @@ namespace Hermes
         glColor3f(0.95f, 0.95f, 0.95f);
         for (i = 0; i < vec->get_num_triangles(); i++)
         {
-          double mag = sqrt( norm(vert[xtris[i][0]][2]) +  norm(vert[xtris[i][0]][3]));
+          double mag = sqrt(sqr(vert[xtris[i][0]][2]) + sqr(vert[xtris[i][0]][3]));
           glTexCoord2d((mag -min) * irange * tex_scale + tex_shift, 0.0);
           glVertex2d(tvert[xtris[i][0]][0], tvert[xtris[i][0]][1]);
 
-          mag = sqrt( norm(vert[xtris[i][1]][2]) +  norm(vert[xtris[i][1]][3]));
+          mag = sqrt(sqr(vert[xtris[i][1]][2]) + sqr(vert[xtris[i][1]][3]));
           glTexCoord2d((mag -min) * irange * tex_scale + tex_shift, 0.0);
           glVertex2d(tvert[xtris[i][1]][0], tvert[xtris[i][1]][1]);
 
-          mag = sqrt( norm(vert[xtris[i][2]][2]) +  norm(vert[xtris[i][2]][3]));
+          mag = sqrt(sqr(vert[xtris[i][2]][2]) + sqr(vert[xtris[i][2]][3]));
           glTexCoord2d((mag -min) * irange * tex_scale + tex_shift, 0.0);
           glVertex2d(tvert[xtris[i][2]][0], tvert[xtris[i][2]][1]);
         }

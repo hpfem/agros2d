@@ -52,7 +52,7 @@ namespace Hermes
         {
           for (k = 0; k <= 10; k++)
           {
-            np[mode_i][k] = n = mode_i ?  norm(k + 1) : (k + 1)*(k + 2)/2;
+            np[mode_i][k] = n = mode_i ? sqr(k + 1) : (k + 1)*(k + 2)/2;
             tables[mode_i][k] = pt = new double3[n];
 
             for (i = k, m = 0; i >= 0; i--)
@@ -288,7 +288,7 @@ namespace Hermes
     {
       int i, j, k, l, m, row;
       double x, y, xn, yn;
-      int n = this->mode ?  norm(o + 1) : (o + 1)*(o + 2)/2;
+      int n = this->mode ? sqr(o + 1) : (o + 1)*(o + 2)/2;
 
       // loop through all chebyshev points
       double** mat = new_matrix<double>(n, n);
@@ -402,7 +402,7 @@ namespace Hermes
         // Hcurl and Hdiv: actual order of functions is one higher than element order
         if((space->shapeset)->get_num_components() == 2) o++;
 
-        num_coeffs += this->mode ?  norm(o + 1) : (o + 1)*(o + 2)/2;
+        num_coeffs += this->mode ? sqr(o + 1) : (o + 1)*(o + 2)/2;
         elem_orders[e->id] = o;
       }
       num_coeffs *= this->num_components;
@@ -826,7 +826,7 @@ namespace Hermes
       if(sln_type == HERMES_SLN)
       {
         int o = this->order = elem_orders[this->element->id];
-        int n = this->mode ?  norm(o + 1) : (o + 1)*(o + 2)/2;
+        int n = this->mode ? sqr(o + 1) : (o + 1)*(o + 2)/2;
 
         for (int i = 0, m = 0; i < this->num_components; i++)
         {
@@ -906,8 +906,8 @@ namespace Hermes
             Scalar vyy = node->values[0][4][i];
             Scalar vxy = node->values[0][5][i];
 
-            node->values[0][3][i] =  norm((*m)[0][0])*vxx + 2*(*m)[0][1]*(*m)[0][0]*vxy +  norm((*m)[0][1])*vyy + (*mm)[0][0]*vx + (*mm)[0][1]*vy;   // dxx
-            node->values[0][4][i] =  norm((*m)[1][0])*vxx + 2*(*m)[1][1]*(*m)[1][0]*vxy +  norm((*m)[1][1])*vyy + (*mm)[2][0]*vx + (*mm)[2][1]*vy;   // dyy
+            node->values[0][3][i] = sqr((*m)[0][0])*vxx + 2*(*m)[0][1]*(*m)[0][0]*vxy + sqr((*m)[0][1])*vyy + (*mm)[0][0]*vx + (*mm)[0][1]*vy;   // dxx
+            node->values[0][4][i] = sqr((*m)[1][0])*vxx + 2*(*m)[1][1]*(*m)[1][0]*vxy + sqr((*m)[1][1])*vyy + (*mm)[2][0]*vx + (*mm)[2][1]*vy;   // dyy
             node->values[0][5][i] = (*m)[0][0]*(*m)[1][0]*vxx + ((*m)[0][0]*(*m)[1][1] + (*m)[1][0]*(*m)[0][1])*vxy + (*m)[0][1]*(*m)[1][1]*vyy + (*mm)[1][0]*vx + (*mm)[1][1]*vy;   //dxy
           }
         }
@@ -1894,9 +1894,9 @@ namespace Hermes
           Scalar vyy = get_ref_value(e, xi1, xi2, a, 4);
           Scalar vxy = get_ref_value(e, xi1, xi2, a, 5);
           if(b == 3)
-            return  norm(mat[0][0])*vxx + 2*mat[0][1]*mat[0][0]*vxy +  norm(mat[0][1])*vyy + mat2[0][0]*vx + mat2[0][1]*vy;   // dxx
+            return sqr(mat[0][0])*vxx + 2*mat[0][1]*mat[0][0]*vxy + sqr(mat[0][1])*vyy + mat2[0][0]*vx + mat2[0][1]*vy;   // dxx
           if(b == 4)
-            return  norm(mat[1][0])*vxx + 2*mat[1][1]*mat[1][0]*vxy +  norm(mat[1][1])*vyy + mat2[2][0]*vx + mat2[2][1]*vy;   // dyy
+            return sqr(mat[1][0])*vxx + 2*mat[1][1]*mat[1][0]*vxy + sqr(mat[1][1])*vyy + mat2[2][0]*vx + mat2[2][1]*vy;   // dyy
           if(b == 5)
             return mat[0][0]*mat[1][0]*vxx + (mat[0][0]*mat[1][1] + mat[1][0]*mat[0][1])*vxy + mat[0][1]*mat[1][1]*vyy + mat2[1][0]*vx + mat2[1][1]*vy;   //dxy
         }
@@ -1966,8 +1966,8 @@ namespace Hermes
         toReturn[0][1] = mat[0][0]*result[1] + mat[0][1]*result[2];
         toReturn[0][2] = mat[1][0]*result[1] + mat[1][1]*result[2];
 #ifdef H2D_USE_SECOND_DERIVATIVES
-        toReturn[0][3] =  norm(mat[0][0])*result[3] + 2*mat[0][1]*mat[0][0]*result[5] +  norm(mat[0][1])*result[4] + mat2[0][0]*result[1] + mat2[0][1]*result[2];
-        toReturn[0][4] =  norm(mat[1][0])*result[3] + 2*mat[1][1]*mat[1][0]*result[5] +  norm(mat[1][1])*result[4] + mat2[2][0]*result[1] + mat2[2][1]*result[2];
+        toReturn[0][3] = sqr(mat[0][0])*result[3] + 2*mat[0][1]*mat[0][0]*result[5] + sqr(mat[0][1])*result[4] + mat2[0][0]*result[1] + mat2[0][1]*result[2];
+        toReturn[0][4] = sqr(mat[1][0])*result[3] + 2*mat[1][1]*mat[1][0]*result[5] + sqr(mat[1][1])*result[4] + mat2[2][0]*result[1] + mat2[2][1]*result[2];
         toReturn[0][5] = mat[0][0]*mat[1][0]*result[3] + (mat[0][0]*mat[1][1] + mat[1][0]*mat[0][1])*result[5] + mat[0][1]*mat[1][1]*result[4] + mat2[1][0]*result[1] + mat2[1][1]*result[2];
 #endif
       }
@@ -2070,8 +2070,8 @@ namespace Hermes
             Scalar vxx = get_ref_value(e, xi1, xi2, 0, 3);
             Scalar vyy = get_ref_value(e, xi1, xi2, 0, 4);
             Scalar vxy = get_ref_value(e, xi1, xi2, 0, 5);
-            Scalar dxx =  norm(mat[0][0])*vxx + 2*mat[0][1]*mat[0][0]*vxy +  norm(mat[0][1])*vyy + mat2[0][0]*dx + mat2[0][1]*dy;   // dxx
-            Scalar dyy =  norm(mat[1][0])*vxx + 2*mat[1][1]*mat[1][0]*vxy +  norm(mat[1][1])*vyy + mat2[2][0]*dx + mat2[2][1]*dy;   // dyy
+            Scalar dxx = sqr(mat[0][0])*vxx + 2*mat[0][1]*mat[0][0]*vxy + sqr(mat[0][1])*vyy + mat2[0][0]*dx + mat2[0][1]*dy;   // dxx
+            Scalar dyy = sqr(mat[1][0])*vxx + 2*mat[1][1]*mat[1][0]*vxy + sqr(mat[1][1])*vyy + mat2[2][0]*dx + mat2[2][1]*dy;   // dyy
             toReturn->laplace[0] = dxx + dyy;
 #endif
           }

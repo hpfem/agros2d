@@ -571,8 +571,8 @@ namespace Hermes
       {
         result[i] = 0;
         for(unsigned int j = 0; j < values.size(); j++)
-          result[i] += norm(values.at(j)[i]);
-        result[i] = std::sqrt(result[i]);
+          result[i] += sqr(values.at(j)[i]);
+        result[i] = sqrt(result[i]);
       }
     };
 
@@ -810,14 +810,14 @@ namespace Hermes
     void SquareFilter<double>::filter_fn(int n, Hermes::vector<double *> v1, double* result)
     {
       for (int i = 0; i < n; i++)
-        result[i] = norm(v1.at(0)[i]);
+        result[i] = sqr(v1.at(0)[i]);
     };
 
     template<>
     void SquareFilter<std::complex<double> >::filter_fn(int n, Hermes::vector<std::complex<double> *> v1, std::complex<double> * result)
     {
       for (int i = 0; i < n; i++)
-        result[i] = norm(v1.at(0)[i]);
+        result[i] = std::norm(v1.at(0)[i]);
     };
 
     template<typename Scalar>
@@ -939,7 +939,7 @@ namespace Hermes
     void ComplexAbsFilter::filter_fn(int n, std::complex<double>* values, double* result)
     {
       for (int i = 0; i < n; i++)
-        result[i] = std::sqrt(norm(values[i].real()) + norm(values[i].imag()));
+        result[i] = sqrt(sqr(values[i].real()) + sqr(values[i].imag()));
     };
 
     MeshFunction<double>* ComplexAbsFilter::clone() const
@@ -960,7 +960,7 @@ namespace Hermes
     void AngleFilter::filter_fn(int n, Hermes::vector<std::complex<double>*> v1, double* result)
     {
       for (int i = 0; i < n; i++)
-        result[i] = std::atan2(v1.at(0)[i].imag(), v1.at(0)[i].real());
+        result[i] = atan2( v1.at(0)[i].imag(), v1.at(0)[i].real() );
     };
 
     AngleFilter::AngleFilter(Hermes::vector<MeshFunctionSharedPtr<std::complex<double> > > solutions, Hermes::vector<int> items)
@@ -1003,7 +1003,7 @@ namespace Hermes
         double txy = mu*(dudy[i] + dvdx[i]);
 
         // Von Mises stress
-        node->values[0][0][i] = 1.0 / std::sqrt(2.0) * std::sqrt(norm(tx - ty) + norm(ty - tz) + norm(tz - tx) + 6 * norm(txy));
+        node->values[0][0][i] = 1.0/sqrt(2.0) * sqrt(sqr(tx - ty) + sqr(ty - tz) + sqr(tz - tx) + 6*sqr(txy));
       }
 
       if(this->nodes->present(order))

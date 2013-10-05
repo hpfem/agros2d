@@ -204,7 +204,7 @@ namespace Hermes
 
       Node* vn1 = this->mesh->get_node(surf_pos->v1);
       Node* vn2 = this->mesh->get_node(surf_pos->v2);
-      double el = sqrt( norm(vn1->x - vn2->x) +  norm(vn1->y - vn2->y));
+      double el = sqrt(sqr(vn1->x - vn2->x) + sqr(vn1->y - vn2->y));
       el *= 0.5 * (surf_pos->hi - surf_pos->lo);
 
       // get boundary values at integration points, construct rhs

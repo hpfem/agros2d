@@ -325,10 +325,10 @@ namespace Hermes
           Scalar result = 0.;
           if(u->fn_central != nullptr)
             for (int i = 0; i < n; i++)
-              result += wt[i] * Hermes:: norm( const_by_laplacian * ( e->nx[i] * u->dx[i] + e->ny[i] * u->dy[i]));
+              result += wt[i] * Hermes::sqr( const_by_laplacian * ( e->nx[i] * u->dx[i] + e->ny[i] * u->dy[i]));
           else
             for (int i = 0; i < n; i++)
-              result += wt[i] * Hermes:: norm( const_by_laplacian * ( e->nx[i] * u->dx_neighbor[i] + e->ny[i] * u->dy_neighbor[i]));
+              result += wt[i] * Hermes::sqr( const_by_laplacian * ( e->nx[i] * u->dx_neighbor[i] + e->ny[i] * u->dy_neighbor[i]));
 
           return result;
         }
@@ -340,7 +340,7 @@ namespace Hermes
           if(u->fn_central != nullptr)
             return Hermes::sqr(u->dx[0] + u->dy[0]);
           else
-            return Hermes:: norm(u->dx_neighbor[0] + u->dy_neighbor[0]);
+            return Hermes::sqr(u->dx_neighbor[0] + u->dy_neighbor[0]);
         }
 
       private:

@@ -534,8 +534,8 @@ namespace Hermes
           u->dx[i] = (dx[i] * (*m)[0][0] + dy[i] * (*m)[0][1]);
           u->dy[i] = (dx[i] * (*m)[1][0] + dy[i] * (*m)[1][1]);
       
-          double axx = (Hermes:: norm((*m)[0][0]) + Hermes:: norm((*m)[1][0]));
-          double ayy = (Hermes:: norm((*m)[0][1]) + Hermes:: norm((*m)[1][1]));
+          double axx = (Hermes::sqr((*m)[0][0]) + Hermes::sqr((*m)[1][0]));
+          double ayy = (Hermes::sqr((*m)[0][1]) + Hermes::sqr((*m)[1][1]));
           double axy = 2.0 * ((*m)[0][0]*(*m)[0][1] + (*m)[1][0]*(*m)[1][1]);
           double ax = (*mm)[0][0] + (*mm)[2][0];
           double ay = (*mm)[0][1] + (*mm)[2][1];

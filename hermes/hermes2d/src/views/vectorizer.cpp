@@ -152,7 +152,7 @@ namespace Hermes
             yval = fns[1]->get_values(component_y, value_type_y);
             for (i = 0; i < lin_np_tri[1]; i++)
             {
-              double m = (sqrt( norm(xval[i]) +  norm(yval[i])));
+              double m = (sqrt(sqr(xval[i]) + sqr(yval[i])));
 #pragma omp critical(max)
               if(finite(m) && fabs(m) > max)
                 max = fabs(m);
@@ -206,9 +206,9 @@ namespace Hermes
           else
           {
             // calculate the approximate error of linearizing the normalized solution
-            double err = fabs(sqrt( norm(xval[idx[0]]) +  norm(yval[idx[0]])) - sqrt( norm(midval[2][0]) +  norm(midval[3][0]))) +
-              fabs(sqrt( norm(xval[idx[1]]) +  norm(yval[idx[1]])) - sqrt( norm(midval[2][1]) +  norm(midval[3][1]))) +
-              fabs(sqrt( norm(xval[idx[2]]) +  norm(yval[idx[2]])) - sqrt( norm(midval[2][2]) +  norm(midval[3][2])));
+            double err = fabs(sqrt(sqr(xval[idx[0]]) + sqr(yval[idx[0]])) - sqrt(sqr(midval[2][0]) + sqr(midval[3][0]))) +
+              fabs(sqrt(sqr(xval[idx[1]]) + sqr(yval[idx[1]])) - sqrt(sqr(midval[2][1]) + sqr(midval[3][1]))) +
+              fabs(sqrt(sqr(xval[idx[2]]) + sqr(yval[idx[2]])) - sqrt(sqr(midval[2][2]) + sqr(midval[3][2])));
             split = !finite(err) || err > max*3*eps;
 
 
@@ -216,7 +216,7 @@ namespace Hermes
             if(!split && curved)
             {
               for (i = 0; i < 3; i++)
-                if( norm(phx[idx[i]] - midval[0][i]) +  norm(phy[idx[i]] - midval[1][i]) >  norm(fns[0]->get_active_element()->get_diameter()*this->get_curvature_epsilon()))
+                if(sqr(phx[idx[i]] - midval[0][i]) + sqr(phy[idx[i]] - midval[1][i]) > sqr(fns[0]->get_active_element()->get_diameter()*this->get_curvature_epsilon()))
                 {
                   split = true;
                   break;
@@ -226,9 +226,9 @@ namespace Hermes
             // do extra tests at level 0, so as not to miss some functions with zero error at edge midpoints
             if(level == 0 && !split)
             {
-              split = (fabs(sqrt( norm(xval[8]) +  norm(yval[8])) - 0.5*(sqrt( norm(midval[2][0]) +  norm(midval[3][0])) + sqrt( norm(midval[2][1]) +  norm(midval[3][1])))) +
-                fabs(sqrt( norm(xval[9]) +  norm(yval[9])) - 0.5*(sqrt( norm(midval[2][1]) +  norm(midval[3][1])) + sqrt( norm(midval[2][2]) +  norm(midval[3][2])))) +
-                fabs(sqrt( norm(xval[4]) +  norm(yval[4])) - 0.5*(sqrt( norm(midval[2][2]) +  norm(midval[3][2])) + sqrt( norm(midval[2][0]) +  norm(midval[3][0]))))) > max*3*eps;
+              split = (fabs(sqrt(sqr(xval[8]) + sqr(yval[8])) - 0.5*(sqrt(sqr(midval[2][0]) + sqr(midval[3][0])) + sqrt(sqr(midval[2][1]) + sqr(midval[3][1])))) +
+                fabs(sqrt(sqr(xval[9]) + sqr(yval[9])) - 0.5*(sqrt(sqr(midval[2][1]) + sqr(midval[3][1])) + sqrt(sqr(midval[2][2]) + sqr(midval[3][2])))) +
+                fabs(sqrt(sqr(xval[4]) + sqr(yval[4])) - 0.5*(sqrt(sqr(midval[2][2]) + sqr(midval[3][2])) + sqrt(sqr(midval[2][0]) + sqr(midval[3][0]))))) > max*3*eps;
             }
           }
 
@@ -281,9 +281,9 @@ namespace Hermes
         double midval[4][5];
 
         // try not to split through the vertex with the largest value
-        int a = ( norm(verts[iv1][2]) +  norm(verts[iv1][3]) >  norm(verts[iv0][2]) +  norm(verts[iv0][3])) ? iv0 : iv1;
-        int b = ( norm(verts[iv2][2]) +  norm(verts[iv2][3]) >  norm(verts[iv3][2]) +  norm(verts[iv3][3])) ? iv2 : iv3;
-        a = ( norm(verts[a][2]) +  norm(verts[a][3]) >  norm(verts[b][2]) +  norm(verts[b][3])) ? a : b;
+        int a = (sqr(verts[iv1][2]) + sqr(verts[iv1][3]) > sqr(verts[iv0][2]) + sqr(verts[iv0][3])) ? iv0 : iv1;
+        int b = (sqr(verts[iv2][2]) + sqr(verts[iv2][3]) > sqr(verts[iv3][2]) + sqr(verts[iv3][3])) ? iv2 : iv3;
+        a = (sqr(verts[a][2]) + sqr(verts[a][3]) > sqr(verts[b][2]) + sqr(verts[b][3])) ? a : b;
         int flip = (a == iv1 || a == iv3) ? 1 : 0;
 
         if(level < LinearizerBase::get_max_level(fns[0]->get_active_element(), std::max(fns[0]->get_fn_order(), fns[1]->get_fn_order()), fns[0]->get_mesh()))
@@ -298,7 +298,7 @@ namespace Hermes
             yval = fns[1]->get_values(component_y, value_type_y);
             for (i = 0; i < lin_np_quad[1]; i++)
             {
-              double m = sqrt( norm(xval[i]) +  norm(yval[i]));
+              double m = sqrt(sqr(xval[i]) + sqr(yval[i]));
               if(finite(m) && fabs(m) > max)
 #pragma omp critical(max)
                 if(finite(m) && fabs(m) > max)
@@ -361,31 +361,31 @@ namespace Hermes
             midval[3][4] = flip ? (verts[iv0][3] + verts[iv2][3]) * 0.5 : (verts[iv1][3] + verts[iv3][3]) * 0.5;
 
             // calculate the approximate error of linearizing the normalized solution
-            double err = fabs(sqrt( norm(xval[idx[0]]) +  norm(yval[idx[0]])) - sqrt( norm(midval[2][0]) +  norm(midval[3][0]))) +
-              fabs(sqrt( norm(xval[idx[1]]) +  norm(yval[idx[1]])) - sqrt( norm(midval[2][1]) +  norm(midval[3][1]))) +
-              fabs(sqrt( norm(xval[idx[2]]) +  norm(yval[idx[2]])) - sqrt( norm(midval[2][2]) +  norm(midval[3][2]))) +
-              fabs(sqrt( norm(xval[idx[3]]) +  norm(yval[idx[3]])) - sqrt( norm(midval[2][3]) +  norm(midval[3][3]))) +
-              fabs(sqrt( norm(xval[idx[4]]) +  norm(yval[idx[4]])) - sqrt( norm(midval[2][4]) +  norm(midval[3][4])));
+            double err = fabs(sqrt(sqr(xval[idx[0]]) + sqr(yval[idx[0]])) - sqrt(sqr(midval[2][0]) + sqr(midval[3][0]))) +
+              fabs(sqrt(sqr(xval[idx[1]]) + sqr(yval[idx[1]])) - sqrt(sqr(midval[2][1]) + sqr(midval[3][1]))) +
+              fabs(sqrt(sqr(xval[idx[2]]) + sqr(yval[idx[2]])) - sqrt(sqr(midval[2][2]) + sqr(midval[3][2]))) +
+              fabs(sqrt(sqr(xval[idx[3]]) + sqr(yval[idx[3]])) - sqrt(sqr(midval[2][3]) + sqr(midval[3][3]))) +
+              fabs(sqrt(sqr(xval[idx[4]]) + sqr(yval[idx[4]])) - sqrt(sqr(midval[2][4]) + sqr(midval[3][4])));
             split = !finite(err) || err > max*40*eps;
 
             // do the same for the curvature
             if(curved && !split)
             {
-              double cm2 =  norm(fns[0]->get_active_element()->get_diameter()*this->get_curvature_epsilon());
-              if( norm(phx[idx[1]] - midval[0][1]) +  norm(phy[idx[1]] - midval[1][1]) > cm2 ||
-                 norm(phx[idx[3]] - midval[0][3]) +  norm(phy[idx[3]] - midval[1][3]) > cm2) split = true;
+              double cm2 = sqr(fns[0]->get_active_element()->get_diameter()*this->get_curvature_epsilon());
+              if(sqr(phx[idx[1]] - midval[0][1]) + sqr(phy[idx[1]] - midval[1][1]) > cm2 ||
+                sqr(phx[idx[3]] - midval[0][3]) + sqr(phy[idx[3]] - midval[1][3]) > cm2) split = true;
 
-              if( norm(phx[idx[0]] - midval[0][0]) +  norm(phy[idx[0]] - midval[1][0]) > cm2 ||
-                 norm(phx[idx[2]] - midval[0][2]) +  norm(phy[idx[2]] - midval[1][2]) > cm2) split = true;
+              if(sqr(phx[idx[0]] - midval[0][0]) + sqr(phy[idx[0]] - midval[1][0]) > cm2 ||
+                sqr(phx[idx[2]] - midval[0][2]) + sqr(phy[idx[2]] - midval[1][2]) > cm2) split = true;
             }
 
             // do extra tests at level 0, so as not to miss functions with zero error at edge midpoints
             if(level == 0 && !split)
             {
-              err = fabs(sqrt( norm(xval[13]) +  norm(yval[13])) - 0.5*(sqrt( norm(midval[2][0]) +  norm(midval[3][0])) + sqrt( norm(midval[2][1]) +  norm(midval[3][1])))) +
-                fabs(sqrt( norm(xval[17]) +  norm(yval[17])) - 0.5*(sqrt( norm(midval[2][1]) +  norm(midval[3][1])) + sqrt( norm(midval[2][2]) +  norm(midval[3][2])))) +
-                fabs(sqrt( norm(xval[20]) +  norm(yval[20])) - 0.5*(sqrt( norm(midval[2][2]) +  norm(midval[3][2])) + sqrt( norm(midval[2][3]) +  norm(midval[3][3])))) +
-                fabs(sqrt( norm(xval[9]) +  norm(yval[9]))  - 0.5*(sqrt( norm(midval[2][3]) +  norm(midval[3][3])) + sqrt( norm(midval[2][0]) +  norm(midval[3][0]))));
+              err = fabs(sqrt(sqr(xval[13]) + sqr(yval[13])) - 0.5*(sqrt(sqr(midval[2][0]) + sqr(midval[3][0])) + sqrt(sqr(midval[2][1]) + sqr(midval[3][1])))) +
+                fabs(sqrt(sqr(xval[17]) + sqr(yval[17])) - 0.5*(sqrt(sqr(midval[2][1]) + sqr(midval[3][1])) + sqrt(sqr(midval[2][2]) + sqr(midval[3][2])))) +
+                fabs(sqrt(sqr(xval[20]) + sqr(yval[20])) - 0.5*(sqrt(sqr(midval[2][2]) + sqr(midval[3][2])) + sqrt(sqr(midval[2][3]) + sqr(midval[3][3])))) +
+                fabs(sqrt(sqr(xval[9]) + sqr(yval[9]))  - 0.5*(sqrt(sqr(midval[2][3]) + sqr(midval[3][3])) + sqrt(sqr(midval[2][0]) + sqr(midval[3][0]))));
               split = !finite(err) || (err) > max*4*eps;
             }
           }
