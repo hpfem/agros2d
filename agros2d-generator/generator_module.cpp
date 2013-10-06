@@ -1935,6 +1935,7 @@ void Agros2DGeneratorModule::generateExtFunction(XMLModule::quantity quantity, A
         field->SetValue("VALUE_METHOD", valueMethod.toStdString());
         field->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
         field->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisType).toStdString());
+        field->SetValue("QUANTITY_ID", quantity.id());
     }
 }
 

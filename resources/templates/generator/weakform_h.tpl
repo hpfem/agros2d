@@ -31,10 +31,10 @@ class {{EXT_FUNCTION_NAME}} : public AgrosExtFunction
 {
 public:
     virtual void value (double* values, double* dx, double* dy, double result[3]) const;
-    {{EXT_FUNCTION_NAME}}(MeshSharedPtr mesh, Value* value) : AgrosExtFunction(mesh, value) {}
+    {{EXT_FUNCTION_NAME}}(MeshSharedPtr mesh, FieldInfo* fieldInfo) : AgrosExtFunction(mesh, fieldInfo) {}
     MeshFunction<double>* clone() const
     {
-        return new {{EXT_FUNCTION_NAME}}(this->mesh, this->m_value);
+        return new {{EXT_FUNCTION_NAME}}(this->mesh, this->m_fieldInfo);
     }
 };
 {{/EXT_FUNCTION}}

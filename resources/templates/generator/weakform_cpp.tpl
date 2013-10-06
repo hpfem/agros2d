@@ -50,7 +50,12 @@ void {{EXT_FUNCTION_NAME}}::value (double* values, double* dx, double* dy, doubl
     // todo: geometry has to be obtained
     double r = 1;
 
-    result[0] = m_value->{{VALUE_METHOD}}({{DEPENDENCE}});
+    // todo: labelNum has to be obtained
+    int labelNum = 0;
+    SceneMaterial *material = Agros2D::scene()->labels->at(labelNum)->marker(m_fieldInfo);
+    Value* value = &material->value("{{QUANTITY_ID}}");
+
+    result[0] = value->{{VALUE_METHOD}}({{DEPENDENCE}});
     result[1] = 0;
     result[2] = 0;
 }

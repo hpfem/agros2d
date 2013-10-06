@@ -55,11 +55,11 @@ static XMLModule::module *module_module = NULL;
     // delete m_module;
 }
 
-AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QString id, MeshSharedPtr mesh, Value* value)
+AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QString id)
 {
     {{#EXT_FUNCTION}}
     if((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (id == "{{EXT_FUNCTION_NAME}}"))
-        return new {{EXT_FUNCTION_NAME}}(mesh, value);
+        return new {{EXT_FUNCTION_NAME}}(MeshSharedPtr(), Agros2D::problem()->fieldInfo(problemId.sourceFieldId));
     {{/EXT_FUNCTION}}
 }
 
