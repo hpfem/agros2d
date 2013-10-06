@@ -431,7 +431,24 @@ void WeakFormAgros<Scalar>::updateExtField()
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         XMLModule::module* module = fieldInfo->plugin()->module();
+        foreach(XMLModule::weakform_volume weakform, module->volume().weakforms_volume().weakform_volume())
+        {
+            if(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())) == fieldInfo->analysisType())
+            {
+                foreach(XMLModule::quantity quantity, weakform.quantity())
+                {
+                    ProblemID problemId;
 
+                    problemId.sourceFieldId = fieldInfo->fieldId();
+                    problemId.analysisTypeSource = fieldInfo->analysisType();
+                    problemId.coordinateType = Agros2D::problem()->config()->coordinateType();
+                    problemId.linearityType = field->fieldInfo()->linearityType();
+
+                    AgrosExtFunction *extFunction = fieldInfo->plugin()->extFunction(problemId, QString::fromStdString(quantity.id()));
+
+                }
+            }
+        }
     }
 
 
