@@ -685,7 +685,7 @@ namespace Hermes
                 target_marker = true;
                 break;
               }
-              if (target_marker)
+              if (!target_marker)
                 continue;
 
               memset(result_local, 0, sizeof(Scalar)* this->number_of_integrals);

@@ -983,6 +983,7 @@ void Agros2DGeneratorModule::generatePluginSurfaceIntegralFiles()
         }
     }
 
+    int counter = 0;
     foreach (XMLModule::surfaceintegral surf, m_module->postprocessor().surfaceintegrals().surfaceintegral())
     {
         foreach (XMLModule::expression expr, surf.expression())
@@ -994,16 +995,20 @@ void Agros2DGeneratorModule::generatePluginSurfaceIntegralFiles()
                     createIntegralExpression(output, QString::fromStdString(surf.id()),
                                              analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
                                              coordinateType,
-                                             (expr.planar().present() ? QString::fromStdString(expr.planar().get()) : ""));
+                                             (expr.planar().present() ? QString::fromStdString(expr.planar().get()) : ""),
+                                             counter);
                 }
                 else
                 {
                     createIntegralExpression(output, QString::fromStdString(surf.id()),
                                              analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
                                              coordinateType,
-                                             (expr.axi().present() ? QString::fromStdString(expr.axi().get()) : ""));
+                                             (expr.axi().present() ? QString::fromStdString(expr.axi().get()) : ""),
+                                             counter);
                 }
             }
+
+            counter++;
         }
     }
 
@@ -1059,6 +1064,7 @@ void Agros2DGeneratorModule::generatePluginVolumeIntegralFiles()
         generateSpecialFunction(&function, &output);
     }
 
+    int counter = 0;
     foreach (XMLModule::volumeintegral vol, m_module->postprocessor().volumeintegrals().volumeintegral())
     {
         foreach (XMLModule::expression expr, vol.expression())
@@ -1070,18 +1076,23 @@ void Agros2DGeneratorModule::generatePluginVolumeIntegralFiles()
                     createIntegralExpression(output, QString::fromStdString(vol.id()),
                                              analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
                                              coordinateType,
-                                             (expr.planar().present() ? QString::fromStdString(expr.planar().get()) : ""));
+                                             (expr.planar().present() ? QString::fromStdString(expr.planar().get()) : ""),
+                                             counter);
                 }
                 else
                 {
                     createIntegralExpression(output, QString::fromStdString(vol.id()),
                                              analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
                                              coordinateType,
-                                             (expr.axi().present() ? QString::fromStdString(expr.axi().get()) : ""));
+                                             (expr.axi().present() ? QString::fromStdString(expr.axi().get()) : ""),
+                                             counter);
                 }
             }
+
+            counter++;
         }
     }
+    output.SetValue("INTEGRAL_COUNT", QString::number(counter).toStdString());
 
     // header - save to file
     writeStringContent(QString("%1/%2/%3/%3_volumeintegral.h").
@@ -1240,7 +1251,8 @@ void Agros2DGeneratorModule::createIntegralExpression(ctemplate::TemplateDiction
                                                       const QString &variable,
                                                       AnalysisType analysisType,
                                                       CoordinateType coordinateType,
-                                                      const QString &expr)
+                                                      const QString &expr,
+                                                      int pos)
 {
     if (!expr.isEmpty())
     {
@@ -1250,6 +1262,7 @@ void Agros2DGeneratorModule::createIntegralExpression(ctemplate::TemplateDiction
         expression->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisType).toStdString());
         expression->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
         expression->SetValue("EXPRESSION", parsePostprocessorExpression(analysisType, coordinateType, expr).toStdString());
+        expression->SetValue("POSITION", QString::number(pos).toStdString());
     }
 }
 
