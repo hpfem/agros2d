@@ -32,7 +32,7 @@
 #include "hermes2d/bdf2.h"
  		
 {{#EXT_FUNCTION}}
-void {{EXT_FUNCTION_NAME}}::value (double* values, double* dx, double* dy, double result[3]) const
+void {{EXT_FUNCTION_NAME}}::value (double* values, double* dx, double* dy, double result[3], Hermes::Hermes2D::Geom<double>* geometry) const
 {
     // todo: instead of this, replace in dependence string
     // todo: for hard coupling, an offset should be considered!!!
@@ -47,11 +47,10 @@ void {{EXT_FUNCTION_NAME}}::value (double* values, double* dx, double* dy, doubl
     double dz1 = dy[0];
     double dz2 = dy[1];
 
-    // todo: geometry has to be obtained
-    double r = 1;
+    // todo: instead of this, replace in dependence string
+    double r = 0;
 
-    // todo: labelNum has to be obtained
-    int labelNum = 0;
+    int labelNum = geometry->elem_marker;
     SceneMaterial *material = Agros2D::scene()->labels->at(labelNum)->marker(m_fieldInfo);
     Value* value = &material->value("{{QUANTITY_ID}}");
 
