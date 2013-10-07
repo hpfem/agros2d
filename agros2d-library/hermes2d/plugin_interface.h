@@ -45,7 +45,7 @@ public:
 
     // todo: this is dangerous. Order should be determined from the type of ExtFunction
     // for consants should be 0, for nonlinearities more. Hom much?
-    virtual void ord(Hermes::Ord* values, Hermes::Ord* dx, Hermes::Ord* dy, Hermes::Ord result[3]) const
+    virtual void ord(Hermes::Ord* values, Hermes::Ord* dx, Hermes::Ord* dy, Hermes::Ord result[3], Hermes::Hermes2D::Geom<Hermes::Ord>* geometry) const
     {
         result[0] = Hermes::Ord(1);
         result[1] = Hermes::Ord(0);

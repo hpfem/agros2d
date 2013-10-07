@@ -30,7 +30,7 @@
 class {{EXT_FUNCTION_NAME}} : public AgrosExtFunction
 {
 public:
-    virtual void value (double* values, double* dx, double* dy, double result[3]) const;
+    virtual void value (double* values, double* dx, double* dy, double result[3], Hermes::Hermes2D::Geom<double>* geometry) const;
     {{EXT_FUNCTION_NAME}}(MeshSharedPtr mesh, FieldInfo* fieldInfo) : AgrosExtFunction(mesh, fieldInfo) {}
     MeshFunction<double>* clone() const
     {
