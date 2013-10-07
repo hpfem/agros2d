@@ -30,8 +30,6 @@
 #include "hermes2d/coupling.h"
 #include "parser/lex.h"
 
-#include "util/constants.h"
-
 Agros2DGeneratorModule::Agros2DGeneratorModule(const QString &moduleId)
 {
     QDir root(QApplication::applicationDirPath());
