@@ -32,31 +32,33 @@
 #include "hermes2d/bdf2.h"
  		
 {{#EXT_FUNCTION}}
-void {{EXT_FUNCTION_NAME}}::value (double* values, double* dx, double* dy, double result[3], Hermes::Hermes2D::Geom<double>* geometry) const
+void {{EXT_FUNCTION_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* geometry) const
+
 {
-    // todo: instead of this, replace in dependence string
-    // todo: for hard coupling, an offset should be considered!!!
-    double value1 = values[0];
-    double value2 = values[1];
-    double dx1 = dx[0];
-    double dx2 = dx[1];
-    double dy1 = dy[0];
-    double dy2 = dy[1];
-    double dr1 = dx[0];
-    double dr2 = dx[1];
-    double dz1 = dy[0];
-    double dz2 = dy[1];
+    for(int i = 0; i < n; i++)
+    {
+        // todo: instead of this, replace in dependence string
+        // todo: for hard coupling, an offset should be considered!!!
+        double value1 = u_ext[0]->val[i];
+        double value2 = u_ext[1]->val[i];
+        double dx1 = u_ext[0]->dx[i];
+        double dx2 = u_ext[1]->dx[i];
+        double dy1 = u_ext[0]->dy[i];
+        double dy2 = u_ext[1]->dy[i];
+        double dr1 = u_ext[0]->dx[i];
+        double dr2 = u_ext[1]->dx[i];
+        double dz1 = u_ext[0]->dy[i];
+        double dz2 = u_ext[1]->dy[i];
+        double r = geometry->x[i];
 
-    // todo: instead of this, replace in dependence string
-    double r = 0;
+        int labelNum = geometry->elem_marker;
+        SceneMaterial *material = Agros2D::scene()->labels->at(labelNum)->marker(m_fieldInfo);
+        Value* value = &material->value("{{QUANTITY_ID}}");
 
-    int labelNum = geometry->elem_marker;
-    SceneMaterial *material = Agros2D::scene()->labels->at(labelNum)->marker(m_fieldInfo);
-    Value* value = &material->value("{{QUANTITY_ID}}");
-
-    result[0] = value->{{VALUE_METHOD}}({{DEPENDENCE}});
-    result[1] = 0;
-    result[2] = 0;
+        result->val[i] = value->{{VALUE_METHOD}}({{DEPENDENCE}});
+        //result->dx[i] = 0;
+        //result->dy[i] = 0;
+    }
 }
 {{/EXT_FUNCTION}}
 
