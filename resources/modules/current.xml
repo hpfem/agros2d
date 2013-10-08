@@ -29,7 +29,7 @@
   <module:volume>
     <module:quantity id="current_conductivity" shortname="cu_gamma"/>
     <module:quantity id="current_permittivity" shortname="cu_epsr"/>
-    
+
     <module:matrix_form id="steady_laplace" i="1" j="1" planar="cu_gamma * (udx * vdx + udy * vdy)" axi="cu_gamma * r * (udr * vdr + udz * vdz)" symmetric="1"/>
     <module:weakforms_volume>
       <module:weakform_volume analysistype="steadystate" equation="-\, \div \left( \sigma\,\, \grad \varphi \right) = 0">
@@ -222,6 +222,15 @@
       </module:volumeintegral>
       <module:volumeintegral id="current_joule_losses" name="Joule losses" shortname="Pj" shortname_html="&lt;i>P&lt;/i>&lt;sub>j&lt;/sub>" shortname_latex="P_{j}" unit="W" unit_html="W" unit_latex="W">
         <module:expression analysistype="steadystate" axi="2.0 * PI * r * cu_gamma * (dr1 * dr1 + dz1 * dz1)" planar="cu_gamma * (dx1 * dx1 + dy1 * dy1)"/>
+      </module:volumeintegral>
+      <module:volumeintegral id="current_current_density_conductive_real" name="Current density - conductive - real" shortname="Jrc" shortname_html="&lt;i>J&lt;/i>&lt;sub>r,cond&lt;/sub>" shortname_latex="J_\mathrm{rc}" unit="A" unit_html="A" unit_latex="A">
+        <module:expression analysistype="steadystate" axi="2.0 * PI * r * cu_gamma * sqrt(dr1 * dr1 + dz1 * dz1)" planar="cu_gamma * sqrt(dx1 * dx1 + dy1 * dy1)"/>
+      </module:volumeintegral>
+      <module:volumeintegral id="current_current_density_conductive_real_x" name="Current density - conductive - real - x" shortname="Jrcx" shortname_html="&lt;i>J&lt;/i>&lt;sub>r,cond,x&lt;/sub>" shortname_latex="J_\mathrm{rcx}" unit="A" unit_html="A" unit_latex="A">
+        <module:expression analysistype="steadystate" axi="2.0 * PI * r * cu_gamma * dr1" planar="cu_gamma * dx1"/>
+      </module:volumeintegral>
+      <module:volumeintegral id="current_current_density_conductive_real_y" name="Current density - conductive - real - y" shortname="Jrcy" shortname_html="&lt;i>J&lt;/i>&lt;sub>r,cond,y&lt;/sub>" shortname_latex="J_\mathrm{rcy}" unit="A" unit_html="A" unit_latex="A">
+        <module:expression analysistype="steadystate" axi="2.0 * PI * r * cu_gamma * dz1" planar="cu_gamma * dy1"/>
       </module:volumeintegral>
     </module:volumeintegrals>
     <module:surfaceintegrals>
