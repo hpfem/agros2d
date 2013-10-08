@@ -1011,6 +1011,7 @@ void Agros2DGeneratorModule::generatePluginSurfaceIntegralFiles()
             counter++;
         }
     }
+    output.SetValue("INTEGRAL_COUNT", QString::number(counter).toStdString());
 
     // header - save to file
     writeStringContent(QString("%1/%2/%3/%3_surfaceintegral.h").
@@ -1364,8 +1365,8 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
             dict["x"] = "x[i]";
             dict["y"] = "y[i]";
             // surface integral
-            dict["tanx"] = "tan[i][0]";
-            dict["tany"] = "tan[i][1]";
+            dict["tanx"] = "e->tx[i]";
+            dict["tany"] = "e->ty[i]";
             // velocity (force calculation)
             dict["velx"] = "velocity.x";
             dict["vely"] = "velocity.y";
@@ -1376,8 +1377,8 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
             dict["r"] = "x[i]";
             dict["z"] = "y[i]";
             // surface integral
-            dict["tanr"] = "tan[i][0]";
-            dict["tanz"] = "tan[i][1]";
+            dict["tanr"] = "e->tx[i]";
+            dict["tanz"] = "e->ty[i]";
             // velocity (force calculation)
             dict["velr"] = "velocity.x";
             dict["velz"] = "velocity.y";

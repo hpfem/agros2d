@@ -30,12 +30,113 @@
 
 #include "hermes2d/plugin_interface.h"
 
+
+class {{CLASS}}SurfaceIntegralCalculator : public Hermes::Hermes2D::PostProcessing::SurfaceIntegralCalculator<double>
+{
+public:
+    {{CLASS}}SurfaceIntegralCalculator(FieldInfo *fieldInfo, MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
+        : Hermes::Hermes2D::PostProcessing::SurfaceIntegralCalculator<double>(source_function, number_of_integrals), m_fieldInfo(fieldInfo)
+    {
+    }
+
+    {{CLASS}}SurfaceIntegralCalculator(FieldInfo *fieldInfo, Hermes::vector<MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
+        : Hermes::Hermes2D::PostProcessing::SurfaceIntegralCalculator<double>(source_functions, number_of_integrals), m_fieldInfo(fieldInfo)
+    {
+    }
+
+    virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, Hermes::Hermes2D::Geom<double> *e, double* result)
+    {
+        SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str()));
+        SceneMaterial *material = label->marker(m_fieldInfo);
+
+        double *x = e->x;
+        double *y = e->y;
+
+        {{#VARIABLE_MATERIAL}}Value *material_{{MATERIAL_VARIABLE}} = &material->value(QLatin1String("{{MATERIAL_VARIABLE}}"));
+        {{/VARIABLE_MATERIAL}}
+
+        // functions
+        double **value = new double*[source_functions.size()];
+        double **dudx = new double*[source_functions.size()];
+        double **dudy = new double*[source_functions.size()];
+
+        for (int i = 0; i < source_functions.size(); i++)
+        {
+            value[i] = fns[i]->val;
+            dudx[i] = fns[i]->dx;
+            dudy[i] = fns[i]->dy;
+        }
+
+        for (int i = 0; i < n; i++)
+        {
+            // expressions
+            {{#VARIABLE_SOURCE}}
+            if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
+                    && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
+            {
+                    result[{{POSITION}}] += wt[i] * ({{EXPRESSION}});
+            }
+            {{/VARIABLE_SOURCE}}
+        }
+
+        delete [] value;
+        delete [] dudx;
+        delete [] dudy;
+    }
+
+    virtual void order(Hermes::Hermes2D::Func<Hermes::Ord> **fns, Hermes::Ord* result)
+    {
+        {{#VARIABLE_SOURCE}}result[{{POSITION}}] = Hermes::Ord(21);
+        {{/VARIABLE_SOURCE}}
+    }
+
+private:
+    // field info
+    FieldInfo *m_fieldInfo;
+};
+
 {{CLASS}}SurfaceIntegral::{{CLASS}}SurfaceIntegral(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType)
     : IntegralValue(fieldInfo, timeStep, adaptivityStep, solutionType)
 {
     calculate();
 }
 
+void {{CLASS}}SurfaceIntegral::calculate()
+{
+    m_values.clear();
+
+    FieldSolutionID fsid(m_fieldInfo, m_timeStep, m_adaptivityStep, m_solutionType);
+    MultiArray<double> ma = Agros2D::solutionStore()->multiArray(fsid);
+
+    if (Agros2D::problem()->isSolved())
+    {
+        // update time functions
+        if (!Agros2D::problem()->isSolving() && m_fieldInfo->analysisType() == AnalysisType_Transient)
+        {
+            QList<double> timeLevels = Agros2D::solutionStore()->timeLevels(m_fieldInfo);
+            Module::updateTimeFunctions(timeLevels[m_timeStep]);
+        }
+
+        Hermes::vector<std::string> markers;
+        for (int i = 0; i < Agros2D::scene()->edges->count(); i++)
+        {
+            SceneEdge *edge = Agros2D::scene()->edges->at(i);
+            if (edge->isSelected())
+            {
+                markers.push_back(QString::number(i).toStdString());
+            }
+        }
+
+        {{CLASS}}SurfaceIntegralCalculator calc(m_fieldInfo, ma.solutions(), {{INTEGRAL_COUNT}});
+        double *values = calc.calculate(markers);
+
+        {{#VARIABLE_SOURCE}}m_values[QLatin1String("{{VARIABLE}}")] = values[{{POSITION}}];
+        {{/VARIABLE_SOURCE}}
+    }
+}
+
+
+/*
 void {{CLASS}}SurfaceIntegral::calculate()
 {
     m_values.clear();
@@ -150,3 +251,4 @@ void {{CLASS}}SurfaceIntegral::calculate()
         delete [] dudy;
     }
 }
+*/
