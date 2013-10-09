@@ -77,17 +77,15 @@ public:
             dudy[i] = fns[i]->dy;
         }
 
-        for (int i = 0; i < n; i++)
+        // expressions
+        {{#VARIABLE_SOURCE}}
+        if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
+                && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
         {
-            // expressions
-            {{#VARIABLE_SOURCE}}
-            if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
-                    && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
-            {
-                    result[{{POSITION}}] += wt[i] * ({{EXPRESSION}});
-            }
-            {{/VARIABLE_SOURCE}}
+            for (int i = 0; i < n; i++)
+                result[{{POSITION}}] += wt[i] * ({{EXPRESSION}});
         }
+        {{/VARIABLE_SOURCE}}
 
         delete [] value;
         delete [] dudx;
@@ -142,5 +140,7 @@ void {{CLASS}}VolumeIntegral::calculate()
 
         {{#VARIABLE_SOURCE}}m_values[QLatin1String("{{VARIABLE}}")] = values[{{POSITION}}];
         {{/VARIABLE_SOURCE}}
+
+        delete [] values;
     }
 }
