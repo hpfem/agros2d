@@ -50,7 +50,7 @@ public:
 
     virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, MeshSharedPtr mesh) { assert(0); return NULL; }
 
-    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id) {}
+    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, MeshSharedPtr mesh) {}
 
     // error calculators
     virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(FieldInfo *fieldInfo, const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType) { assert(0); return NULL; }

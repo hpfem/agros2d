@@ -54,6 +54,26 @@ protected:
     FieldInfo* m_fieldInfo;
 };
 
+// used for quantities, that are not present in a given particular analysis
+// something has to be pushed to weakform, since the individual forms expect ext[i] with indices i
+// taken from general list of quantities in volume, not from lists in particular analysis
+// (the reason is that this way we can generate only 1 form which can be used for all analyses, where appropriate
+class AGROS_LIBRARY_API AgrosEmptyExtFunction : public AgrosExtFunction
+{
+public:
+    AgrosEmptyExtFunction(MeshSharedPtr mesh) : AgrosExtFunction(mesh, NULL) {}
+    virtual void value(int n, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const
+    {
+        // result values are not initialized, but they should never be used.
+        // this is not very safe, but done from efficiency reasons
+    }
+
+    MeshFunction<double>* clone() const
+    {
+        return new AgrosEmptyExtFunction(this->mesh);
+    }
+};
+
 
 struct PointValue
 {
@@ -227,7 +247,7 @@ public:
 
     virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, MeshSharedPtr mesh) = 0;
 
-    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id) = 0;
+    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, MeshSharedPtr mesh) = 0;
 
     // error calculators
     virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(FieldInfo *fieldInfo,

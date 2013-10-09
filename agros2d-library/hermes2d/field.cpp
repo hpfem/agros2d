@@ -50,10 +50,8 @@ bool Field::solveInitVariables()
 FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
     : m_plugin(NULL), m_numberOfSolutions(0)
 {
-    if (fieldId.isEmpty())
-        m_fieldId = "electrostatic";
-    else
-        m_fieldId = fieldId;
+    assert(!fieldId.isEmpty());
+    m_fieldId = fieldId;
 
     // read plugin
     try
@@ -75,7 +73,6 @@ FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
 
     // default analysis
     setAnalysisType(analyses().begin().key());
-
 }
 
 FieldInfo::~FieldInfo()

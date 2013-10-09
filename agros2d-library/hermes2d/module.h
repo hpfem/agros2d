@@ -568,6 +568,10 @@ Hermes::vector<MeshSharedPtr> readMeshFromFileXML(const QString &fileName);
 void writeMeshToFileXML(const QString &fileName, Hermes::vector<MeshSharedPtr> meshes);
 void writeMeshToFileBSON(const QString &fileName, Hermes::vector<MeshSharedPtr> meshes);
 
+// index of quantity in the list of quantities at the begining of the volume section of the XML (NOT the reduced list in individual analysis)
+//
+void volumeQuantityProperties(XMLModule::module *module, QMap<QString, int> &quantityOrder, QMap<QString, bool> &quantityIsNonlin);
+
 }
 
 #endif // HERMES_FIELD_H

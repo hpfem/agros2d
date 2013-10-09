@@ -31,6 +31,10 @@
 #include "hermes2d/problem_config.h"
 #include "hermes2d/bdf2.h"
  		
+// quantities in volume weak forms:
+{{#QUANTITY_INFO}}//{{QUANT_ID}} = ext[{{INDEX}}]
+{{/QUANTITY_INFO}}
+
 {{#EXT_FUNCTION}}
 void {{EXT_FUNCTION_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* geometry) const
 
