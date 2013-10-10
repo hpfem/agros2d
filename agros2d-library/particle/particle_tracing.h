@@ -59,7 +59,7 @@ private:
     double m_velocityMax;
 
     QMap<FieldInfo *, FieldSolutionID> m_solutionIDs;
-    QMap<FieldInfo *, MeshSharedPtr> m_meshes;
+    QMap<FieldInfo *, Hermes::Hermes2D::MeshSharedPtr> m_meshes;
     QMap<FieldInfo *, Hermes::Hermes2D::Element *> m_activeElement;
 
     Point3 force(Point3 position, Point3 velocity);

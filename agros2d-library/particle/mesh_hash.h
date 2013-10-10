@@ -39,7 +39,7 @@ private:
 class MeshHash
 {
 public:
-    MeshHash(const MeshSharedPtr mesh);
+    MeshHash(const Hermes::Hermes2D::MeshSharedPtr mesh);
     ~MeshHash();
 
     // smallest box interval_x X interval_y in which element is contained. If element is curvilinear, has to be made larger

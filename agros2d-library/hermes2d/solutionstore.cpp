@@ -93,7 +93,7 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
         for (int fieldCompIdx = 0; fieldCompIdx < solutionID.group->numberOfSolutions(); fieldCompIdx++)
         {
             // reuse space and mesh
-            SpaceSharedPtr<double> space;
+            Hermes::Hermes2D::SpaceSharedPtr<double> space;
             foreach (FieldSolutionID searchSolutionID, m_multiSolutionCacheIDOrder)
             {
                 SolutionRunTimeDetails searchRunTime = m_multiSolutionRunTimeDetails[searchSolutionID];
@@ -111,13 +111,13 @@ MultiArray<double> SolutionStore::multiArray(FieldSolutionID solutionID)
             {
                 // load the mesh file
                 QString fn = QString("%1/%2").arg(cacheProblemDir()).arg(runTime.fileNames()[fieldCompIdx].meshFileName());
-                Hermes::vector<MeshSharedPtr> meshes;
+                Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshes;
                 if (QFileInfo(fn).suffix() == "msh")
                     meshes = Module::readMeshFromFileXML(fn);
                 else
                     meshes = Module::readMeshFromFileBSON(fn);
 
-                MeshSharedPtr mesh;
+                Hermes::Hermes2D::MeshSharedPtr mesh;
                 int globalFieldIdx = 0;
                 foreach (FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
                 {
@@ -227,7 +227,7 @@ void SolutionStore::addSolution(FieldSolutionID solutionID, MultiArray<double> m
     {
         if (fileNames[i].meshFileName().isEmpty())
         {
-            Hermes::vector<MeshSharedPtr> meshes;
+            Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshes;
             foreach(FieldInfo* fieldInfo, Agros2D::problem()->fieldInfos())
             {
                 if (fieldInfo == solutionID.group)

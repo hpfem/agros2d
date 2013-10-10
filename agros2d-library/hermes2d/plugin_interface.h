@@ -216,7 +216,7 @@ template<typename Scalar>
 class ExactSolutionScalarAgros : public Hermes::Hermes2D::ExactSolutionScalar<Scalar>, public FormAgrosInterface
 {
 public:
-    ExactSolutionScalarAgros(MeshSharedPtr mesh)
+    ExactSolutionScalarAgros(Hermes::Hermes2D::MeshSharedPtr mesh)
         : Hermes::Hermes2D::ExactSolutionScalar<Scalar>(mesh), FormAgrosInterface(OFFSET_NON_DEF, OFFSET_NON_DEF) {}
 };
 
@@ -239,7 +239,7 @@ public:
     virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Boundary *boundary) = 0;
     virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Boundary *boundary) = 0;
 
-    virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, MeshSharedPtr mesh) = 0;
+    virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, Hermes::Hermes2D::MeshSharedPtr mesh) = 0;
 
     virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative) = 0;
 

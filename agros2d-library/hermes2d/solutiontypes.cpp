@@ -80,14 +80,14 @@ void MultiArray<Scalar>::clear()
 }
 
 template <typename Scalar>
-void MultiArray<Scalar>::append(SpaceSharedPtr<Scalar> space, MeshFunctionSharedPtr<Scalar> solution)
+void MultiArray<Scalar>::append(Hermes::Hermes2D::SpaceSharedPtr<Scalar> space, Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> solution)
 {
     m_spaces.push_back(space);
     m_solutions.push_back(solution);
 }
 
 template <typename Scalar>
-void MultiArray<Scalar>::append(Hermes::vector<SpaceSharedPtr<Scalar> > spaces, Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions)
+void MultiArray<Scalar>::append(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces, Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions)
 {
     assert(spaces.size() == solutions.size());
     for (int i = 0; i < solutions.size(); i++)

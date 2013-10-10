@@ -73,6 +73,7 @@ FieldInfo::FieldInfo(QString fieldId, const AnalysisType analysisType)
 
     // default analysis
     setAnalysisType(analyses().begin().key());
+
 }
 
 FieldInfo::~FieldInfo()
@@ -80,7 +81,7 @@ FieldInfo::~FieldInfo()
     delete m_plugin;
 }
 
-void FieldInfo::setInitialMesh(MeshSharedPtr mesh)
+void FieldInfo::setInitialMesh(Hermes::Hermes2D::MeshSharedPtr mesh)
 {
     clearInitialMesh();
     m_initialMesh = mesh;
@@ -203,7 +204,7 @@ void FieldInfo::clear()
     m_matrixSolver = Hermes::SOLVER_MUMPS;
 }
 
-void FieldInfo::refineMesh(MeshSharedPtr mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea)
+void FieldInfo::refineMesh(Hermes::Hermes2D::MeshSharedPtr mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea)
 {
     // refine mesh - global
     /*

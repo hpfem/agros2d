@@ -163,7 +163,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
         for (int k = 0; k < m_fieldInfo->numberOfSolutions(); k++)
             ma.solutions().at(k)->set_quad_2d(quad);
 
-        const MeshSharedPtr mesh = ma.solutions().at(0)->get_mesh();
+        const Hermes::Hermes2D::MeshSharedPtr mesh = ma.solutions().at(0)->get_mesh();
         for_all_active_elements(e, mesh)
         {
             // set material variable
