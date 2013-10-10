@@ -51,7 +51,7 @@ public:
 
     virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, MeshSharedPtr mesh);
 
-    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id);
+    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, MeshSharedPtr mesh);
 
     // postprocessor
     // filter

@@ -60,7 +60,7 @@ private:
     //ToDo: make up better names
     template <typename WeakForm>
     void generateForm(FormInfo form, LinearityType linearityType, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, XMLModule::boundary *boundary = 0);
-    void generateExtFunction(XMLModule::quantity quantity, AnalysisType analysisType, ctemplate::TemplateDictionary &output);
+    void generateExtFunction(XMLModule::quantity quantity, AnalysisType analysisType, bool derivative, ctemplate::TemplateDictionary &output);
     void generateSpecialFunction(XMLModule::function* function, ctemplate::TemplateDictionary *output);
 
     QString nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);
@@ -79,6 +79,9 @@ private:
     QString underline(QString text, char symbol);
     QString capitalize(QString text);
     QString createTable(QList<QStringList>);
+
+    QMap<QString, int> quantityOrdering;
+    QMap<QString, bool> quantityIsNonlinear;
 };
 
 #endif // GENERATOR_MODULE_H

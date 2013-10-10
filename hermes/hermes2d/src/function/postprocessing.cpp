@@ -685,7 +685,7 @@ namespace Hermes
                 target_marker = true;
                 break;
               }
-              if (!target_marker)
+              if (target_marker)
                 continue;
 
               memset(result_local, 0, sizeof(Scalar)* this->number_of_integrals);
@@ -710,7 +710,6 @@ namespace Hermes
                 order += orders[i];
 
               int order_int = order.get_order();
-
               limit_order(order_int, refmap->get_active_element()->get_mode());
 
               for (int i = 0; i < source_functions_size; i++)
@@ -773,7 +772,7 @@ namespace Hermes
         Hermes::vector<int> internal_markers;
         for (int i = 0; i < markers.size(); i++)
         {
-          Hermes::Hermes2D::Mesh::MarkersConversion::IntValid internalMarker = this->source_functions[0]->get_mesh()->get_boundary_markers_conversion().get_internal_marker(markers[i]);
+          Hermes::Hermes2D::Mesh::MarkersConversion::IntValid internalMarker = this->source_functions[0]->get_mesh()->get_element_markers_conversion().get_internal_marker(markers[i]);
           if (internalMarker.valid)
             internal_markers.push_back(internalMarker.marker);
         }
@@ -839,7 +838,7 @@ namespace Hermes
                   target_marker = true;
                   break;
                 }
-                if (!target_marker)
+                if (target_marker)
                   continue;
 
                 memset(result_local, 0, sizeof(Scalar)* this->number_of_integrals);

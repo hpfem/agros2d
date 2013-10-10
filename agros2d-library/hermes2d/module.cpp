@@ -425,32 +425,76 @@ void WeakFormAgros<Scalar>::registerForms()
 template <typename Scalar>
 void WeakFormAgros<Scalar>::updateExtField()
 {
+    Hermes::vector<MeshFunctionSharedPtr<Scalar> > externalSlns;
+
     // todo: new values handling is not ready for hard coupling: offsets have to be used
     assert(m_block->fields().size() == 1);
     foreach(Field* field, m_block->fields())
     {
         FieldInfo* fieldInfo = field->fieldInfo();
         XMLModule::module* module = fieldInfo->plugin()->module();
-        foreach(XMLModule::weakform_volume weakform, module->volume().weakforms_volume().weakform_volume())
+        ProblemID problemId;
+        problemId.sourceFieldId = fieldInfo->fieldId();
+        problemId.analysisTypeSource = fieldInfo->analysisType();
+        problemId.coordinateType = Agros2D::problem()->config()->coordinateType();
+        problemId.linearityType = fieldInfo->linearityType();
+
+        XMLModule::weakform_volume weakform = module->volume().weakforms_volume().weakform_volume().at(0);
+        foreach(XMLModule::weakform_volume weakformTest, module->volume().weakforms_volume().weakform_volume())
         {
-            if(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())) == fieldInfo->analysisType())
+            if(analysisTypeFromStringKey(QString::fromStdString(weakformTest.analysistype())) == fieldInfo->analysisType())
             {
-                foreach(XMLModule::quantity quantity, weakform.quantity())
-                {
-                    ProblemID problemId;
-
-                    problemId.sourceFieldId = fieldInfo->fieldId();
-                    problemId.analysisTypeSource = fieldInfo->analysisType();
-                    problemId.coordinateType = Agros2D::problem()->config()->coordinateType();
-                    problemId.linearityType = field->fieldInfo()->linearityType();
-
-                    AgrosExtFunction *extFunction = fieldInfo->plugin()->extFunction(problemId, QString::fromStdString(quantity.id()));
-
-                }
+                weakform = weakformTest;
+                break;
             }
         }
-    }
 
+        QMap<QString, int> quantityOrdering;
+        QMap<QString, bool> quantityIsNonlin;
+        Module::volumeQuantityProperties(module, quantityOrdering, quantityIsNonlin);
+        QList<int> numbers = quantityOrdering.values();
+        qSort(numbers);
+        foreach(int index, numbers)
+        {
+            QString quantityID = quantityOrdering.key(index);
+            qDebug() << QString("register value %1, index %2").arg(quantityID).arg(index);
+
+
+            bool containedInAnalysis = false;
+            foreach(XMLModule::quantity quantity, weakform.quantity())
+            {
+                if(QString::fromStdString(quantity.id()) == quantityID)
+                {
+                    containedInAnalysis = true;
+                    break;
+                }
+            }
+
+            AgrosExtFunction *extFunction = NULL;
+            if(containedInAnalysis)
+                extFunction = fieldInfo->plugin()->extFunction(problemId, quantityID, false, fieldInfo->initialMesh()); //todo: solutionMesh
+            else
+                extFunction = new AgrosEmptyExtFunction(fieldInfo->initialMesh()); //todo: solutionMesh
+
+            assert(extFunction);
+            assert(externalSlns.size() == index);
+            externalSlns.push_back(extFunction);
+
+            if(quantityIsNonlin[quantityID])
+            {
+                extFunction = NULL;
+                if(containedInAnalysis)
+                    extFunction = fieldInfo->plugin()->extFunction(problemId, quantityID, true, fieldInfo->initialMesh());  //todo: solutionMesh
+                else
+                    extFunction = new AgrosEmptyExtFunction(    fieldInfo->initialMesh());  //todo: solutionMesh
+
+                assert(extFunction);
+                assert(externalSlns.size() - 1 == index);
+                externalSlns.push_back(extFunction);
+            }
+
+        }
+    }
 
     FieldInfo* transientFieldInfo;
     CouplingInfo* couplingInfo;
@@ -482,8 +526,6 @@ void WeakFormAgros<Scalar>::updateExtField()
 
     // at the present moment, block can be influenced (weakly coupled with) only one other field. Otherwise changes in offsetExtTime have to be done
     assert(numTotalCouplings <= 1);
-
-    Hermes::vector<MeshFunctionSharedPtr<Scalar> > externalSlns;
 
     m_offsetTimeExt = 0;
 
@@ -1139,7 +1181,6 @@ void Module::writeMeshToFileBSON(const QString &fileName, Hermes::vector<MeshSha
 }
 
 void findVolumeLinearityOption(XMLModule::linearity_option& option, XMLModule::module *module, AnalysisType analysisType, LinearityType linearityType)
-
 {
     for (unsigned int i = 0; i < module->volume().weakforms_volume().weakform_volume().size(); i++)
     {
@@ -1159,5 +1200,33 @@ void findVolumeLinearityOption(XMLModule::linearity_option& option, XMLModule::m
     }
 }
 
+void Module::volumeQuantityProperties(XMLModule::module *module, QMap<QString, int> &quantityOrder, QMap<QString, bool> &quantityIsNonlin)
+{
+    int nextIndex = 0;
+    foreach(XMLModule::quantity quantity, module->volume().quantity())
+    {
+        QString quantityId = QString::fromStdString(quantity.id());
+        quantityOrder[quantityId] = nextIndex;
+        nextIndex++;
+        quantityIsNonlin[quantityId] = false;
+        foreach(XMLModule::weakform_volume weakform, module->volume().weakforms_volume().weakform_volume())
+        {
+            foreach(XMLModule::quantity quantityInAnalysis, weakform.quantity())
+            {
+                if(quantity.id() == quantityInAnalysis.id())
+                {
+                    if(quantityInAnalysis.nonlinearity_axi().present() || quantityInAnalysis.nonlinearity_planar().present())
+                    {
+                        quantityIsNonlin[quantityId] = true;
+                    }
+                }
+            }
+        }
+
+        // if the quantity is nonlinear, we have to reserve space for its derivative as well
+        if(quantityIsNonlin[quantityId])
+            nextIndex++;
+    }
+}
 
 template class WeakFormAgros<double>;

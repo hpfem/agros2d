@@ -63,6 +63,8 @@ Agros2DGeneratorModule::Agros2DGeneratorModule(const QString &moduleId)
 
     // localization
     getNames(moduleId);
+
+    Module::volumeQuantityProperties(m_module, quantityOrdering, quantityIsNonlinear);
 }
 
 void Agros2DGeneratorModule::generatePluginProjectFile()
@@ -552,6 +554,20 @@ void Agros2DGeneratorModule::generatePluginWeakFormSourceFiles()
     output.SetValue("ID", m_module->general().id());
     output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
 
+    //comment on beginning of weakform.cpp, may be removed
+    ctemplate::TemplateDictionary *field;
+    foreach(QString quantID, this->quantityOrdering.keys())
+    {
+        field = output.AddSectionDictionary("QUANTITY_INFO");
+        field->SetValue("QUANT_ID", quantID.toStdString());
+        field->SetValue("INDEX", QString("%1").arg(quantityOrdering[quantID]).toStdString());
+        if(quantityIsNonlinear[quantID])
+        {
+            field = output.AddSectionDictionary("QUANTITY_INFO");
+            field->SetValue("QUANT_ID", QString("derivative %1").arg(quantID).toStdString());
+            field->SetValue("INDEX", QString("%1").arg(quantityOrdering[quantID] + 1).toStdString());
+        }
+    }
 
     std::string text;
     generateExtFunctions(output);
@@ -597,12 +613,18 @@ void Agros2DGeneratorModule::generatePluginWeakFormHeaderFiles()
 
 void Agros2DGeneratorModule::generateExtFunctions(ctemplate::TemplateDictionary &output)
 {
+    QMap<QString, int> quantityOrdering;
+    QMap<QString, bool> quantityIsNonlin;
+    Module::volumeQuantityProperties(m_module, quantityOrdering, quantityIsNonlin);
+
     foreach(XMLModule::weakform_volume weakform, m_module->volume().weakforms_volume().weakform_volume())
     {
         AnalysisType analysisType = analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype().c_str()));
         foreach(XMLModule::quantity quantity, weakform.quantity())
         {
-            generateExtFunction(quantity, analysisType, output);
+            generateExtFunction(quantity, analysisType, false, output);
+            if(quantityIsNonlin[QString::fromStdString(quantity.id())])
+                generateExtFunction(quantity, analysisType, true, output);
         }
     }
 }
@@ -1650,22 +1672,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
 
         for (int i = 1; i < numOfSol + 1; i++)
         {
-            if (!errorCalculation)
-            {
-                dict[QString("value%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->val[i]").arg(i-1);
-
-                if (coordinateType == CoordinateType_Planar)
-                {
-                    dict[QString("dx%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dx[i]").arg(i-1);
-                    dict[QString("dy%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dy[i]").arg(i-1);
-                }
-                else
-                {
-                    dict[QString("dr%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dx[i]").arg(i-1);
-                    dict[QString("dz%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dy[i]").arg(i-1);
-                }
-            }
-            else
+            if (errorCalculation)
             {
                 // TODO: better !!!
                 dict[QString("value%1").arg(i)] = QString("u->val[i]");
@@ -1681,6 +1688,21 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
                     dict[QString("dz%1").arg(i)] = QString("u->dy[i]");
                 }
             }
+            else
+            {
+                dict[QString("value%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->val[i]").arg(i-1);
+
+                if (coordinateType == CoordinateType_Planar)
+                {
+                    dict[QString("dx%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dx[i]").arg(i-1);
+                    dict[QString("dy%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dy[i]").arg(i-1);
+                }
+                else
+                {
+                    dict[QString("dr%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dx[i]").arg(i-1);
+                    dict[QString("dz%1").arg(i)] = QString("u_ext[%1 + this->m_offsetI]->dy[i]").arg(i-1);
+                }
+            }
         }
 
         // variables
@@ -1690,50 +1712,64 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
             {
                 if (quantity.shortname().present())
                 {
-                    QString dep = dependence(QString::fromStdString(quantity.id()), analysisType);
-                    QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), analysisType, coordinateType);
-
-                    if (linearityType == LinearityType_Linear || nonlinearExpr.isEmpty())
+                    if(errorCalculation)
                     {
-                        if (dep.isEmpty())
-                        {
-                            // linear material
-                            dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->number()").
-                                    arg(QString::fromStdString(quantity.shortname().get()));
-                        }
-                        else if (dep == "time")
-                        {
-                            // linear boundary condition
-                            // ERROR: Python expression evaluation doesn't work from weakform ("false" should be removed)
-                            dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtTime(Agros2D::problem()->actualTime(), false)").
-                                    arg(QString::fromStdString(quantity.shortname().get()));
-                        }
-                        else if (dep == "space")
-                        {
-                            // spacedep boundary condition
-                            // ERROR: Python expression evaluation doesn't work from weakform - ERROR
-                            dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtPoint(Point(x, y))").
-                                    arg(QString::fromStdString(quantity.shortname().get()));
-                        }
-                        else if (dep == "time-space")
-                        {
-                            // spacedep boundary condition
-                            // ERROR: Python expression evaluation doesn't work from weakform - ERROR
-                            dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtTimeAndPoint(Agros2D::problem()->actualTime(), Point(x, y))").
-                                    arg(QString::fromStdString(quantity.shortname().get()));
-                        }
-                    }
-                    else
-                    {
-                        // nonlinear material
-                        dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberFromTable(%2)").
-                                arg(QString::fromStdString(quantity.shortname().get())).
-                                arg(parseWeakFormExpression(analysisType, coordinateType, linearityType, nonlinearExpr, false, errorCalculation));
+                        QString dep = dependence(QString::fromStdString(quantity.id()), analysisType);
+                        QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), analysisType, coordinateType);
 
-                        if (linearityType == LinearityType_Newton)
-                            dict["d" + QString::fromStdString(quantity.shortname().get())] = QString("%1->derivativeFromTable(%2)").
+                        if (linearityType == LinearityType_Linear || nonlinearExpr.isEmpty())
+                        {
+                            if (dep.isEmpty())
+                            {
+                                // linear material
+                                dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->number()").
+                                        arg(QString::fromStdString(quantity.shortname().get()));
+                            }
+                            else if (dep == "time")
+                            {
+                                // linear boundary condition
+                                // ERROR: Python expression evaluation doesn't work from weakform ("false" should be removed)
+                                dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtTime(Agros2D::problem()->actualTime(), false)").
+                                        arg(QString::fromStdString(quantity.shortname().get()));
+                            }
+                            else if (dep == "space")
+                            {
+                                // spacedep boundary condition
+                                // ERROR: Python expression evaluation doesn't work from weakform - ERROR
+                                dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtPoint(Point(x, y))").
+                                        arg(QString::fromStdString(quantity.shortname().get()));
+                            }
+                            else if (dep == "time-space")
+                            {
+                                // spacedep boundary condition
+                                // ERROR: Python expression evaluation doesn't work from weakform - ERROR
+                                dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberAtTimeAndPoint(Agros2D::problem()->actualTime(), Point(x, y))").
+                                        arg(QString::fromStdString(quantity.shortname().get()));
+                            }
+                        }
+                        else
+                        {
+                            // nonlinear material
+                            dict[QString::fromStdString(quantity.shortname().get())] = QString("%1->numberFromTable(%2)").
                                     arg(QString::fromStdString(quantity.shortname().get())).
                                     arg(parseWeakFormExpression(analysisType, coordinateType, linearityType, nonlinearExpr, false, errorCalculation));
+
+                            if (linearityType == LinearityType_Newton)
+                                dict["d" + QString::fromStdString(quantity.shortname().get())] = QString("%1->derivativeFromTable(%2)").
+                                        arg(QString::fromStdString(quantity.shortname().get())).
+                                        arg(parseWeakFormExpression(analysisType, coordinateType, linearityType, nonlinearExpr, false, errorCalculation));
+                        }
+                    }
+                    else{
+                        // in weak forms, values replaced by ext functions
+                        dict[QString::fromStdString(quantity.shortname().get())] = QString("ext[%1]->val[i]").
+                                arg(quantityOrdering[QString::fromStdString(quantity.id())]);
+                        if(quantityIsNonlinear[QString::fromStdString(quantity.id())])
+                        {
+                            dict["d" + QString::fromStdString(quantity.shortname().get())] = QString("ext[%1]->val[i]").
+                                    arg(quantityOrdering[QString::fromStdString(quantity.id())] + 1);
+
+                        }
                     }
                 }
             }
@@ -1906,15 +1942,20 @@ QString Agros2DGeneratorModule::parseWeakFormExpressionCheck(AnalysisType analys
     }
 }
 
-void Agros2DGeneratorModule::generateExtFunction(XMLModule::quantity quantity, AnalysisType analysisType, ctemplate::TemplateDictionary &output)
+void Agros2DGeneratorModule::generateExtFunction(XMLModule::quantity quantity, AnalysisType analysisType, bool derivative, ctemplate::TemplateDictionary &output)
 {
     foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
     {
-        QString functionName = QString("ext_function_%1_%2_%3_%4").
+        QString type("value");
+        if(derivative)
+            type = "derivative";
+
+        QString functionName = QString("ext_function_%1_%2_%3_%4_%5").
                 arg(QString::fromStdString(m_module->general().id())).
                 arg(analysisTypeToStringKey(analysisType)).
                 arg(coordinateTypeToStringKey(coordinateType)).
-                arg(QString::fromStdString(quantity.id()));
+                arg(QString::fromStdString(quantity.id())).
+                arg(type);
 
         ctemplate::TemplateDictionary *field;
         field = output.AddSectionDictionary("EXT_FUNCTION");
@@ -1925,7 +1966,12 @@ void Agros2DGeneratorModule::generateExtFunction(XMLModule::quantity quantity, A
         if((coordinateType == CoordinateType_Axisymmetric) && (quantity.nonlinearity_axi().present()))
             dependence = QString::fromStdString(quantity.nonlinearity_axi().get());
 
+        // nonlinear or constant (in which case numberFromTable returns just a constant number)
         QString valueMethod("numberFromTable");
+        if(derivative)
+            valueMethod = "derivativeFromTable";
+
+        // other dependence
         if(quantity.dependence().present())
         {
             if(quantity.dependence().get() == "time")
@@ -1948,6 +1994,10 @@ void Agros2DGeneratorModule::generateExtFunction(XMLModule::quantity quantity, A
         field->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
         field->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisType).toStdString());
         field->SetValue("QUANTITY_ID", quantity.id());
+        if(derivative)
+            field->SetValue("IS_DERIVATIVE", "true");
+        else
+            field->SetValue("IS_DERIVATIVE", "false");
     }
 }
 

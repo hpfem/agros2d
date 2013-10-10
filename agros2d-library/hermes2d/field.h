@@ -46,7 +46,7 @@ class AGROS_LIBRARY_API FieldInfo : public QObject
     Q_OBJECT
 
 public:
-    FieldInfo(QString fieldId = "", const AnalysisType analysisType = AnalysisType_Undefined);
+    FieldInfo(QString fieldId, const AnalysisType analysisType = AnalysisType_Undefined);
     ~FieldInfo();
 
     void clear();
