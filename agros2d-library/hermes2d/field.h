@@ -55,9 +55,9 @@ public:
 
     QString fieldId() const { return m_fieldId; }
 
-    inline MeshSharedPtr initialMesh() const { return m_initialMesh; }
-    inline void clearInitialMesh() { m_initialMesh = MeshSharedPtr();}
-    void setInitialMesh(MeshSharedPtr mesh);
+    inline Hermes::Hermes2D::MeshSharedPtr initialMesh() const { return m_initialMesh; }
+    inline void clearInitialMesh() { m_initialMesh = Hermes::Hermes2D::MeshSharedPtr();}
+    void setInitialMesh(Hermes::Hermes2D::MeshSharedPtr mesh);
 
     enum Type
     {
@@ -150,7 +150,7 @@ public:
     inline QVariant defaultValue(Type type) {  return m_settingDefault[type]; }
 
     // refine mesh
-    void refineMesh(MeshSharedPtr mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea);
+    void refineMesh(Hermes::Hermes2D::MeshSharedPtr mesh, bool refineGlobal, bool refineTowardsEdge, bool refineArea);
 
     // name
     QString name() const;
@@ -235,7 +235,7 @@ private:
     QString m_fieldId;
 
     // initial mesh
-    MeshSharedPtr m_initialMesh;
+    Hermes::Hermes2D::MeshSharedPtr m_initialMesh;
 
     // analysis type
     AnalysisType m_analysisType;
@@ -283,7 +283,7 @@ public:
     QList<CouplingInfo* > couplingInfos() { return m_couplingInfos; }
 
     // mesh
-    void setMeshInitial(MeshSharedPtr meshInitial);
+    void setMeshInitial(Hermes::Hermes2D::MeshSharedPtr meshInitial);
 
 private:
     QList<CouplingInfo* > m_couplingInfos;

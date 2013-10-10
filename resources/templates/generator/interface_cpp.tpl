@@ -112,7 +112,7 @@ VectorFormSurfAgros<double> *{{CLASS}}Interface::vectorFormSurf(const ProblemID 
     return NULL;
 }
 
-ExactSolutionScalarAgros<double> *{{CLASS}}Interface::exactSolution(const ProblemID problemId, FormInfo *form, MeshSharedPtr mesh)
+ExactSolutionScalarAgros<double> *{{CLASS}}Interface::exactSolution(const ProblemID problemId, FormInfo *form, Hermes::Hermes2D::MeshSharedPtr mesh)
 {
     {{#EXACT_SOURCE}}
     if ((problemId.coordinateType == {{COORDINATE_TYPE}} && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) &&

@@ -256,7 +256,7 @@ QSharedPointer<HermesSolverContainer<Scalar> > HermesSolverContainer<Scalar>::fa
 
 template <typename Scalar>
 void HermesSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVector,
-                                                            Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
+                                                            Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces,
                                                             Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions)
 {
     if (solutions.empty())
@@ -356,9 +356,9 @@ void ProblemSolver<Scalar>::initSelectors(Hermes::vector<QSharedPointer<Hermes::
 }
 
 template <typename Scalar>
-Hermes::vector<SpaceSharedPtr<Scalar> > ProblemSolver<Scalar>::deepMeshAndSpaceCopy(Hermes::vector<SpaceSharedPtr<Scalar> > spaces, bool createReference)
+Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > ProblemSolver<Scalar>::deepMeshAndSpaceCopy(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces, bool createReference)
 {
-    Hermes::vector<SpaceSharedPtr<Scalar> > newSpaces;
+    Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > newSpaces;
     int totalComp = 0;
     foreach(Field* field, m_block->fields())
     {
@@ -377,7 +377,7 @@ Hermes::vector<SpaceSharedPtr<Scalar> > ProblemSolver<Scalar>::deepMeshAndSpaceC
 
         for (int comp = 0; comp < field->fieldInfo()->numberOfSolutions(); comp++)
         {
-            MeshSharedPtr mesh;
+            Hermes::Hermes2D::MeshSharedPtr mesh;
             // deep copy of mesh for each field component separately
             if (refineMesh)
             {
@@ -386,7 +386,7 @@ Hermes::vector<SpaceSharedPtr<Scalar> > ProblemSolver<Scalar>::deepMeshAndSpaceC
             }
             else
             {
-                mesh = MeshSharedPtr(new Mesh());
+                mesh = Hermes::Hermes2D::MeshSharedPtr(new Mesh());
                 mesh->copy(spaces.at(totalComp)->get_mesh());
             }
 
@@ -403,7 +403,7 @@ Hermes::vector<SpaceSharedPtr<Scalar> > ProblemSolver<Scalar>::deepMeshAndSpaceC
 }
 
 template <typename Scalar>
-void ProblemSolver<Scalar>::setActualSpaces(Hermes::vector<SpaceSharedPtr<Scalar> > spaces)
+void ProblemSolver<Scalar>::setActualSpaces(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces)
 {
     clearActualSpaces();
     m_actualSpaces = spaces;
@@ -416,7 +416,7 @@ void ProblemSolver<Scalar>::clearActualSpaces()
 }
 
 template <typename Scalar>
-Scalar *ProblemSolver<Scalar>::solveOneProblem(Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
+Scalar *ProblemSolver<Scalar>::solveOneProblem(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces,
                                                int adaptivityStep,
                                                Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > previousSolution)
 {
@@ -464,7 +464,7 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
     // cout << QString("updating with time %1\n").arg(Agros2D::problem()->actualTime()).toStdString() << endl;
     m_block->updateExactSolutionFunctions();
 
-    Hermes::vector<SpaceSharedPtr<Scalar> > spaces = actualSpaces();
+    Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces = actualSpaces();
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(spaces, Agros2D::problem()->actualTime());
 
     if (m_block->isTransient())
@@ -554,7 +554,7 @@ TimeStepInfo ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
         timeReferenceSolution = referenceCalculation.solutions();
     Scalar *solutionVector = solveOneProblem(actualSpaces(), adaptivityStep, timeReferenceSolution);
 
-    Hermes::vector<MeshSharedPtr> meshes = spacesMeshes(actualSpaces());
+    Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshes = spacesMeshes(actualSpaces());
     Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions = createSolutions<Scalar>(meshes);
     Solution<Scalar>::vector_to_solutions(solutionVector, actualSpaces(), solutions);
 
@@ -629,7 +629,7 @@ void ProblemSolver<Scalar>::createInitialSpace()
 
 
         // create copy of initial mesh, for all components only one mesh
-        //        MeshSharedPtr oneInitialMesh(new Hermes::Hermes2D::Mesh());
+        //        Hermes::Hermes2D::MeshSharedPtr oneInitialMesh(new Hermes::Hermes2D::Mesh());
         //        oneInitialMesh->copy(fieldInfo->initialMesh());
 
         QMap<int, Module::Space> fieldSpaces = fieldInfo->spaces();
@@ -744,7 +744,7 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
     m_block->updateExactSolutionFunctions();
 
     // todo: delete? delam to pro referencni... (zkusit)
-    Hermes::vector<SpaceSharedPtr<Scalar> > spaces = actualSpaces();
+    Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces = actualSpaces();
     Hermes::Hermes2D::Space<Scalar>::update_essential_bc_values(spaces, Agros2D::problem()->actualTime());
 
     if (m_block->isTransient())
@@ -758,7 +758,7 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
     m_block->weakForm()->updateExtField();
 
     // create reference spaces
-    Hermes::vector<SpaceSharedPtr<Scalar> > spacesRef = deepMeshAndSpaceCopy(actualSpaces(), true);
+    Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spacesRef = deepMeshAndSpaceCopy(actualSpaces(), true);
     assert(actualSpaces().size() == spacesRef.size());
 
     // todo: delete? je to vubec potreba?
@@ -772,7 +772,7 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
                                              Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> >());
 
     // output reference solution
-    Hermes::vector<MeshSharedPtr> meshesRef = spacesMeshes(spacesRef);
+    Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshesRef = spacesMeshes(spacesRef);
     Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutionsRef = createSolutions<Scalar>(meshesRef);
     Solution<Scalar>::vector_to_solutions(solutionVector, spacesRef, solutionsRef);
 
@@ -783,8 +783,8 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
     Agros2D::solutionStore()->addSolution(referenceSolutionID, MultiArray<Scalar>(spacesRef, solutionsRef), runTimeRef);
 
     // copy spaces and create empty solutions
-    //Hermes::vector<SpaceSharedPtr<Scalar> > spacesCopy = deepMeshAndSpaceCopy(actualSpaces(), false);
-    Hermes::vector<MeshSharedPtr> meshes = spacesMeshes(actualSpaces());
+    //Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spacesCopy = deepMeshAndSpaceCopy(actualSpaces(), false);
+    Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshes = spacesMeshes(actualSpaces());
     Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions = createSolutions<Scalar>(meshes);
 
     // project the fine mesh solution onto the coarse mesh.
@@ -914,7 +914,7 @@ void ProblemSolver<Scalar>::solveInitialTimeStep()
 {
     Agros2D::log()->printDebug(m_solverID, QObject::tr("Initial time step"));
 
-    //Hermes::vector<SpaceSharedPtr<Scalar> > spaces = deepMeshAndSpaceCopy(actualSpaces(), false);
+    //Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces = deepMeshAndSpaceCopy(actualSpaces(), false);
     Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions;
 
     int totalComp = 0;
@@ -923,7 +923,7 @@ void ProblemSolver<Scalar>::solveInitialTimeStep()
         for (int comp = 0; comp < field->fieldInfo()->numberOfSolutions(); comp++)
         {
             // constant initial solution
-            MeshSharedPtr mesh = actualSpaces().at(totalComp)->get_mesh();
+            Hermes::Hermes2D::MeshSharedPtr mesh = actualSpaces().at(totalComp)->get_mesh();
             ConstantSolution<double> *initial = new ConstantSolution<double>(mesh, field->fieldInfo()->value(FieldInfo::TransientInitialCondition).toDouble());
             solutions.push_back(initial);
             totalComp++;

@@ -185,7 +185,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
         if (!weakFormAgros) return NULL;
 
         // volume
-        MeshSharedPtr initialMesh = markerSource->fieldInfo()->initialMesh();
+        Hermes::Hermes2D::MeshSharedPtr initialMesh = markerSource->fieldInfo()->initialMesh();
         double volume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(area.toStdString()).marker);
         weakFormAgros->setMarkerVolume(volume);
 
@@ -216,7 +216,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
         if (!weakFormAgros) return NULL;
 
         // volume
-        MeshSharedPtr initialMesh = markerSource->fieldInfo()->initialMesh();
+        Hermes::Hermes2D::MeshSharedPtr initialMesh = markerSource->fieldInfo()->initialMesh();
         double volume = initialMesh->get_marker_area(initialMesh->get_element_markers_conversion().get_internal_marker(area.toStdString()).marker);
         weakFormAgros->setMarkerVolume(volume);
 
@@ -1102,17 +1102,17 @@ AGROS_LIBRARY_API void Module::updateTimeFunctions(double time)
                         boundary->evaluate(variable.id(), time);
 }
 
-Hermes::vector<MeshSharedPtr> Module::readMeshFromFileXML(const QString &fileName)
+Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> Module::readMeshFromFileXML(const QString &fileName)
 {
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
     setlocale (LC_NUMERIC, "C");
 
-    Hermes::vector<MeshSharedPtr > meshes;
+    Hermes::vector<Hermes::Hermes2D::MeshSharedPtr > meshes;
     int numMeshes = Agros2D::problem()->fieldInfos().count();
     for(int i = 0; i < numMeshes; i++)
     {
-        MeshSharedPtr mesh(new Hermes::Hermes2D::Mesh());
+        Hermes::Hermes2D::MeshSharedPtr mesh(new Hermes::Hermes2D::Mesh());
         meshes.push_back(mesh);
     }
 
@@ -1134,13 +1134,13 @@ Hermes::vector<MeshSharedPtr> Module::readMeshFromFileXML(const QString &fileNam
     return meshes;
 }
 
-Hermes::vector<MeshSharedPtr> Module::readMeshFromFileBSON(const QString &fileName)
+Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> Module::readMeshFromFileBSON(const QString &fileName)
 {
-    Hermes::vector<MeshSharedPtr > meshes;
+    Hermes::vector<Hermes::Hermes2D::MeshSharedPtr > meshes;
     int numMeshes = Agros2D::problem()->fieldInfos().count();
     for(int i = 0; i < numMeshes; i++)
     {
-        MeshSharedPtr mesh(new Hermes::Hermes2D::Mesh());
+        Hermes::Hermes2D::MeshSharedPtr mesh(new Hermes::Hermes2D::Mesh());
         meshes.push_back(mesh);
     }
 
@@ -1163,7 +1163,7 @@ Hermes::vector<MeshSharedPtr> Module::readMeshFromFileBSON(const QString &fileNa
     return meshes;
 }
 
-void Module::writeMeshToFileXML(const QString &fileName, Hermes::vector<MeshSharedPtr> meshes)
+void Module::writeMeshToFileXML(const QString &fileName, Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshes)
 {
     // save locale
     char *plocale = setlocale (LC_NUMERIC, "");
@@ -1177,13 +1177,14 @@ void Module::writeMeshToFileXML(const QString &fileName, Hermes::vector<MeshShar
     setlocale(LC_NUMERIC, plocale);
 }
 
-void Module::writeMeshToFileBSON(const QString &fileName, Hermes::vector<MeshSharedPtr> meshes)
+void Module::writeMeshToFileBSON(const QString &fileName, Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshes)
 {
     Hermes::Hermes2D::MeshReaderH2DBSON meshloader;
     meshloader.save(compatibleFilename(QFileInfo(fileName).absoluteFilePath()).toStdString().c_str(), meshes);
 }
 
 void findVolumeLinearityOption(XMLModule::linearity_option& option, XMLModule::module *module, AnalysisType analysisType, LinearityType linearityType)
+
 {
     for (unsigned int i = 0; i < module->volume().weakforms_volume().weakform_volume().size(); i++)
     {

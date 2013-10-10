@@ -34,19 +34,19 @@ class BlockSolutionID;
 class FieldSolutionID;
 
 //template <typename Scalar>
-//Hermes::vector<const SpaceSharedPtr<Scalar> > castConst(Hermes::vector<SpaceSharedPtr<Scalar> > space)
+//Hermes::vector<const Hermes::Hermes2D::SpaceSharedPtr<Scalar> > castConst(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > space)
 //{
-//    Hermes::vector<const SpaceSharedPtr<Scalar> > out;
+//    Hermes::vector<const Hermes::Hermes2D::SpaceSharedPtr<Scalar> > out;
 //    for (int i = 0; i < space.size(); i++)
-//        out.push_back(const_cast<const SpaceSharedPtr<Scalar> >(space.at(i)));
+//        out.push_back(const_cast<const Hermes::Hermes2D::SpaceSharedPtr<Scalar> >(space.at(i)));
 
 //    return out;
 //}
 
 template <typename Scalar>
-Hermes::vector<MeshSharedPtr> spacesMeshes(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces)
+Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> spacesMeshes(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces)
 {
-    Hermes::vector<MeshSharedPtr> meshes;
+    Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshes;
     foreach (Hermes::Hermes2D::SpaceSharedPtr<Scalar> space, spaces)
         meshes.push_back(space->get_mesh());
 
@@ -54,10 +54,10 @@ Hermes::vector<MeshSharedPtr> spacesMeshes(Hermes::vector<Hermes::Hermes2D::Spac
 }
 
 template <typename Scalar>
-Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > createSolutions(Hermes::vector<MeshSharedPtr> meshes)
+Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > createSolutions(Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshes)
 {
     Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > slns;
-    foreach (MeshSharedPtr mesh, meshes)
+    foreach (Hermes::Hermes2D::MeshSharedPtr mesh, meshes)
     {
         slns.push_back(Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar>(new Hermes::Hermes2D::Solution<double>(mesh)));
     }
@@ -83,7 +83,7 @@ public:
     Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > &spaces() { return m_spaces; }
     Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > &solutions() { return m_solutions; }
 
-    //Hermes::vector<const SpaceSharedPtr<Scalar> > spacesConst() { return m_spaces; }
+    //Hermes::vector<const Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spacesConst() { return m_spaces; }
 
     // returns only that part of list that corresponds to given field (as part of the given block)
     MultiArray<Scalar> fieldPart(Block* block, FieldInfo* fieldInfo);

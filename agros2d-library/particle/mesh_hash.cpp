@@ -133,7 +133,7 @@ void MeshHash::elementBoundingBox(Hermes::Hermes2D::Element *element, Point &p1,
 
 
 
-MeshHash::MeshHash(const MeshSharedPtr mesh)
+MeshHash::MeshHash(const Hermes::Hermes2D::MeshSharedPtr mesh)
 {
     // find bounding box of the whole mesh
     Point mesh_p1, mesh_p2;
