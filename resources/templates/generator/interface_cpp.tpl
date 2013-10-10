@@ -58,7 +58,7 @@ static XMLModule::module *module_module = NULL;
 AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QString id, bool derivative)
 {
     {{#EXT_FUNCTION}}
-    if((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (id == "{{QUANTITY_ID}}") && (derivative == {{IS_DERIVATIVE}}))
+    if((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (id == "{{QUANTITY_ID}}") && (derivative == {{IS_DERIVATIVE}}))
         return new {{EXT_FUNCTION_NAME}}(Agros2D::problem()->fieldInfo(problemId.sourceFieldId));
     {{/EXT_FUNCTION}}
 

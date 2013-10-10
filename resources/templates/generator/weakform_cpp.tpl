@@ -36,18 +36,14 @@
 {{/QUANTITY_INFO}}
 
 {{#EXT_FUNCTION}}
-void {{EXT_FUNCTION_NAME}}::value(int n, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* e) const
+void {{EXT_FUNCTION_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* e) const
 {
     SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->elem_marker).marker.c_str()));
-    SceneMaterial *material = label->marker(m_fieldInfo);
+    Value* value = &label->marker(m_fieldInfo)->value("{{QUANTITY_ID}}");
 
-    Value* value = &material->value("{{QUANTITY_ID}}");
-
-    for (int i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         result->val[i] = value->{{VALUE_METHOD}}({{DEPENDENCE}});
-        //result->dx[i] = 0;
-        //result->dy[i] = 0;
     }
 }
 {{/EXT_FUNCTION}}
