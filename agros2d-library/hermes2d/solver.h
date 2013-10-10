@@ -159,8 +159,7 @@ private:
 
     void initSelectors(Hermes::vector<QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> > >& selectors);
 
-    Scalar *solveOneProblem(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces, int adaptivityStep,
-                            Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > previousSolution = Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> >());
+    Scalar *solveOneProblem(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces, int adaptivityStep, Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > previousSolution = Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> >());
 
     void clearActualSpaces();
     void setActualSpaces(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces);

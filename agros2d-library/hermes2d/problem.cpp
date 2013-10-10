@@ -962,11 +962,11 @@ void Problem::readInitialMeshesFromFile(bool emitMeshed, std::auto_ptr<XMLSubdom
 {
     // load initial mesh file
     // prepare mesh array
-    Hermes::vector<MeshSharedPtr> meshesVector;
-    QMap<FieldInfo *, MeshSharedPtr> meshes;
+    Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshesVector;
+    QMap<FieldInfo *, Hermes::Hermes2D::MeshSharedPtr> meshes;
     foreach (FieldInfo* fieldInfo, m_fieldInfos)
     {
-        MeshSharedPtr mesh(new Hermes::Hermes2D::Mesh());
+        Hermes::Hermes2D::MeshSharedPtr mesh(new Hermes::Hermes2D::Mesh());
 
         meshesVector.push_back(mesh);
         // cache
@@ -1005,7 +1005,7 @@ void Problem::readInitialMeshesFromFile(bool emitMeshed, std::auto_ptr<XMLSubdom
     QSet<int> boundaries;
     foreach (FieldInfo *fieldInfo, m_fieldInfos)
     {
-        MeshSharedPtr mesh = meshes[fieldInfo];
+        Hermes::Hermes2D::MeshSharedPtr mesh = meshes[fieldInfo];
 
         // check that all boundary edges have a marker assigned
         for (int i = 0; i < mesh->get_max_node_id(); i++)
