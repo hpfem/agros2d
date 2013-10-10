@@ -40,8 +40,8 @@
 class AGROS_LIBRARY_API AgrosExtFunction : public Hermes::Hermes2D::UExtFunction<double>
 {
 public:
-    // an attempt to fix thread-related errors: value will not be passed as pointer, but a (now created) copy constructor will be used.
-    AgrosExtFunction(FieldInfo* fieldInfo) : UExtFunction(), m_fieldInfo(fieldInfo){}
+    // todo: m_offsetI has to be filled in at the point of creation (Hard coupling)
+    AgrosExtFunction(FieldInfo* fieldInfo) : UExtFunction(), m_fieldInfo(fieldInfo), m_offsetI(0){}
 
     // todo: this is dangerous. Order should be determined from the type of ExtFunction
     // for consants should be 0, for nonlinearities more. Hom much?
@@ -52,6 +52,7 @@ public:
 
 protected:
     FieldInfo* m_fieldInfo;
+    int m_offsetI;
 };
 
 // used for quantities, that are not present in a given particular analysis
