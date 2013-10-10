@@ -1966,6 +1966,8 @@ void Agros2DGeneratorModule::generateExtFunction(XMLModule::quantity quantity, A
         if((coordinateType == CoordinateType_Axisymmetric) && (quantity.nonlinearity_axi().present()))
             dependence = QString::fromStdString(quantity.nonlinearity_axi().get());
 
+        dependence = parseWeakFormExpression(analysisType, coordinateType, LinearityType_Linear, dependence, false, false);
+
         // nonlinear or constant (in which case numberFromTable returns just a constant number)
         QString valueMethod("numberFromTable");
         if(derivative)

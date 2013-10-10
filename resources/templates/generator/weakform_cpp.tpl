@@ -36,26 +36,12 @@
 {{/QUANTITY_INFO}}
 
 {{#EXT_FUNCTION}}
-void {{EXT_FUNCTION_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* geometry) const
+void {{EXT_FUNCTION_NAME}}::value (int n, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* e) const
 
 {
     for(int i = 0; i < n; i++)
     {
-        // todo: instead of this, replace in dependence string
-        // todo: for hard coupling, an offset should be considered!!!
-        double value1 = u_ext[0]->val[i];
-        double value2 = u_ext[1]->val[i];
-        double dx1 = u_ext[0]->dx[i];
-        double dx2 = u_ext[1]->dx[i];
-        double dy1 = u_ext[0]->dy[i];
-        double dy2 = u_ext[1]->dy[i];
-        double dr1 = u_ext[0]->dx[i];
-        double dr2 = u_ext[1]->dx[i];
-        double dz1 = u_ext[0]->dy[i];
-        double dz2 = u_ext[1]->dy[i];
-        double r = geometry->x[i];
-
-        int labelNum = geometry->elem_marker;
+        int labelNum = e->elem_marker;
         SceneMaterial *material = Agros2D::scene()->labels->at(labelNum)->marker(m_fieldInfo);
         Value* value = &material->value("{{QUANTITY_ID}}");
 
