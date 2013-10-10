@@ -50,16 +50,16 @@ public:
 
     virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, MeshSharedPtr mesh) { assert(0); return NULL; }
 
-    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, MeshSharedPtr mesh) {}
+    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative) {}
 
     // error calculators
     virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(FieldInfo *fieldInfo, const QString &calculator, Hermes::Hermes2D::CalculatedErrorType errorType) { assert(0); return NULL; }
 
     // postprocessor
     // filter
-    virtual MeshFunctionSharedPtr<double> filter(FieldInfo *fieldInfo,
+    virtual Hermes::Hermes2D::MeshFunctionSharedPtr<double> filter(FieldInfo *fieldInfo,
                                                  int timeStep, int adaptivityStep, SolutionMode solutionType,
-                                                 Hermes::vector<MeshFunctionSharedPtr<double> > sln,
+                                                 Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > sln,
                                                  const QString &variable,
                                                  PhysicFieldVariableComp physicFieldVariableComp) { assert(0); return NULL; }
 

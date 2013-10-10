@@ -55,11 +55,11 @@ static XMLModule::module *module_module = NULL;
     // delete m_module;
 }
 
-AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QString id, bool derivative, MeshSharedPtr mesh)
+AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QString id, bool derivative)
 {
     {{#EXT_FUNCTION}}
     if((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (id == "{{QUANTITY_ID}}") && (derivative == {{IS_DERIVATIVE}}))
-        return new {{EXT_FUNCTION_NAME}}(mesh, Agros2D::problem()->fieldInfo(problemId.sourceFieldId));
+        return new {{EXT_FUNCTION_NAME}}(Agros2D::problem()->fieldInfo(problemId.sourceFieldId));
     {{/EXT_FUNCTION}}
 
     return NULL;
@@ -129,12 +129,12 @@ Hermes::Hermes2D::ErrorCalculator<double> *{{CLASS}}Interface::errorCalculator(F
     return new {{CLASS}}ErrorCalculator<double>(fieldInfo, calculator, errorType);
 }
 
-MeshFunctionSharedPtr<double> {{CLASS}}Interface::filter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                                                     Hermes::vector<MeshFunctionSharedPtr<double> > sln,
+Hermes::Hermes2D::MeshFunctionSharedPtr<double> {{CLASS}}Interface::filter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+                                                     Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > sln,
                                                      const QString &variable,
                                                      PhysicFieldVariableComp physicFieldVariableComp)
 {
-    return MeshFunctionSharedPtr<double>(new {{CLASS}}ViewScalarFilter(fieldInfo, timeStep, adaptivityStep, solutionType, sln, variable, physicFieldVariableComp));
+    return Hermes::Hermes2D::MeshFunctionSharedPtr<double>(new {{CLASS}}ViewScalarFilter(fieldInfo, timeStep, adaptivityStep, solutionType, sln, variable, physicFieldVariableComp));
 }
 
 LocalValue *{{CLASS}}Interface::localValue(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point)

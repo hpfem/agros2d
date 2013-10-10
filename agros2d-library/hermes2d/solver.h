@@ -92,8 +92,8 @@ public:
     virtual ~HermesSolverContainer() {}
 
     void projectPreviousSolution(Scalar* solutionVector,
-                                 Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
-                                 Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions);
+                                 Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces,
+                                 Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions);
 
     virtual void solve(Scalar* previousSolutionVector) = 0;
     virtual Hermes::Hermes2D::Mixins::SettableSpaces<Scalar>* setTableSpaces() = 0;
@@ -145,7 +145,7 @@ private:
 
     QSharedPointer<HermesSolverContainer<Scalar> > m_hermesSolverContainer;
 
-    Hermes::vector<SpaceSharedPtr<Scalar> > m_actualSpaces;
+    Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > m_actualSpaces;
 
     QString m_solverID;
     QString m_solverName;
@@ -159,12 +159,13 @@ private:
 
     void initSelectors(Hermes::vector<QSharedPointer<Hermes::Hermes2D::RefinementSelectors::Selector<Scalar> > >& selectors);
 
-    Scalar *solveOneProblem(Hermes::vector<SpaceSharedPtr<Scalar> > spaces, int adaptivityStep, Hermes::vector<MeshFunctionSharedPtr<Scalar> > previousSolution = Hermes::vector<MeshFunctionSharedPtr<Scalar> >());
+    Scalar *solveOneProblem(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces, int adaptivityStep,
+                            Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > previousSolution = Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> >());
 
     void clearActualSpaces();
-    void setActualSpaces(Hermes::vector<SpaceSharedPtr<Scalar> > spaces);
-    Hermes::vector<SpaceSharedPtr<Scalar> > actualSpaces() { return m_actualSpaces;}
-    Hermes::vector<SpaceSharedPtr<Scalar> > deepMeshAndSpaceCopy(Hermes::vector<SpaceSharedPtr<Scalar> > spaces, bool createReference);
+    void setActualSpaces(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces);
+    Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > actualSpaces() { return m_actualSpaces;}
+    Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > deepMeshAndSpaceCopy(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces, bool createReference);
 };
 
 #endif // SOLVER_H

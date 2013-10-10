@@ -44,22 +44,22 @@ class FieldSolutionID;
 //}
 
 template <typename Scalar>
-Hermes::vector<MeshSharedPtr> spacesMeshes(Hermes::vector<SpaceSharedPtr<Scalar> > spaces)
+Hermes::vector<MeshSharedPtr> spacesMeshes(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces)
 {
     Hermes::vector<MeshSharedPtr> meshes;
-    foreach (SpaceSharedPtr<Scalar> space, spaces)
+    foreach (Hermes::Hermes2D::SpaceSharedPtr<Scalar> space, spaces)
         meshes.push_back(space->get_mesh());
 
     return meshes;
 }
 
 template <typename Scalar>
-Hermes::vector<MeshFunctionSharedPtr<Scalar> > createSolutions(Hermes::vector<MeshSharedPtr> meshes)
+Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > createSolutions(Hermes::vector<MeshSharedPtr> meshes)
 {
-    Hermes::vector<MeshFunctionSharedPtr<Scalar> > slns;
+    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > slns;
     foreach (MeshSharedPtr mesh, meshes)
     {
-        slns.push_back(MeshFunctionSharedPtr<Scalar>(new Hermes::Hermes2D::Solution<double>(mesh)));
+        slns.push_back(Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar>(new Hermes::Hermes2D::Solution<double>(mesh)));
     }
 
     return slns;
@@ -70,18 +70,18 @@ class AGROS_LIBRARY_API MultiArray
 {
 public:
     MultiArray();
-    MultiArray(Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
-               Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions) : m_spaces(spaces), m_solutions(solutions) {}
+    MultiArray(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces,
+               Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions) : m_spaces(spaces), m_solutions(solutions) {}
     ~MultiArray();
 
     void clear();
 
     // add next component
-    void append(SpaceSharedPtr<Scalar> space, MeshFunctionSharedPtr<Scalar> solution);
-    void append(Hermes::vector<SpaceSharedPtr<Scalar> > spaces, Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions);
+    void append(Hermes::Hermes2D::SpaceSharedPtr<Scalar> space, Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> solution);
+    void append(Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > spaces, Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions);
 
-    Hermes::vector<SpaceSharedPtr<Scalar> > &spaces() { return m_spaces; }
-    Hermes::vector<MeshFunctionSharedPtr<Scalar> > &solutions() { return m_solutions; }
+    Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > &spaces() { return m_spaces; }
+    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > &solutions() { return m_solutions; }
 
     //Hermes::vector<const SpaceSharedPtr<Scalar> > spacesConst() { return m_spaces; }
 
@@ -93,8 +93,8 @@ public:
     void createEmpty(int numComp);
 
 private:
-    Hermes::vector<SpaceSharedPtr<Scalar> > m_spaces;
-    Hermes::vector<MeshFunctionSharedPtr<Scalar> > m_solutions;
+    Hermes::vector<Hermes::Hermes2D::SpaceSharedPtr<Scalar> > m_spaces;
+    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > m_solutions;
 };
 
 //const int LAST_ADAPTIVITY_STEP = -1;

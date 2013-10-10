@@ -51,12 +51,12 @@ public:
 
     virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, MeshSharedPtr mesh);
 
-    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, MeshSharedPtr mesh);
+    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative);
 
     // postprocessor
     // filter
-    virtual MeshFunctionSharedPtr<double> filter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                                                 Hermes::vector<MeshFunctionSharedPtr<double> > sln,
+    virtual Hermes::Hermes2D::MeshFunctionSharedPtr<double> filter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+                                                 Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > sln,
                                                  const QString &variable,
                                                  PhysicFieldVariableComp physicFieldVariableComp);
 

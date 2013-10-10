@@ -1235,7 +1235,7 @@ void SceneViewPost2D::exportVTK(const QString &fileName, const QString &variable
         }
 
         Hermes::Hermes2D::Views::Linearizer linScalarView;
-        MeshFunctionSharedPtr<double> slnScalarView = m_postHermes->viewScalarFilter(postHermes()->activeViewField()->localVariable(variable), physicFieldVariableComp);
+        Hermes::Hermes2D::MeshFunctionSharedPtr<double> slnScalarView = m_postHermes->viewScalarFilter(postHermes()->activeViewField()->localVariable(variable), physicFieldVariableComp);
 
         linScalarView.save_solution_vtk(slnScalarView,
                                         fn.toLatin1().data(),

@@ -34,12 +34,12 @@
 class {{CLASS}}SurfaceIntegralCalculator : public Hermes::Hermes2D::PostProcessing::SurfaceIntegralCalculator<double>
 {
 public:
-    {{CLASS}}SurfaceIntegralCalculator(FieldInfo *fieldInfo, MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
+    {{CLASS}}SurfaceIntegralCalculator(FieldInfo *fieldInfo, Hermes::Hermes2D::MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
         : Hermes::Hermes2D::PostProcessing::SurfaceIntegralCalculator<double>(source_function, number_of_integrals), m_fieldInfo(fieldInfo)
     {
     }
 
-    {{CLASS}}SurfaceIntegralCalculator(FieldInfo *fieldInfo, Hermes::vector<MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
+    {{CLASS}}SurfaceIntegralCalculator(FieldInfo *fieldInfo, Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
         : Hermes::Hermes2D::PostProcessing::SurfaceIntegralCalculator<double>(source_functions, number_of_integrals), m_fieldInfo(fieldInfo)
     {
     }

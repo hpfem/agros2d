@@ -425,7 +425,7 @@ void WeakFormAgros<Scalar>::registerForms()
 template <typename Scalar>
 void WeakFormAgros<Scalar>::updateExtField()
 {
-    Hermes::vector<MeshFunctionSharedPtr<Scalar> > externalSlns;
+    Hermes::vector<Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> > externalUSlns;
 
     // todo: new values handling is not ready for hard coupling: offsets have to be used
     assert(m_block->fields().size() == 1);
@@ -470,31 +470,33 @@ void WeakFormAgros<Scalar>::updateExtField()
                 }
             }
 
-            AgrosExtFunction *extFunction = NULL;
+            Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> extFunction;
             if(containedInAnalysis)
-                extFunction = fieldInfo->plugin()->extFunction(problemId, quantityID, false, fieldInfo->initialMesh()); //todo: solutionMesh
+                extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, false));
             else
-                extFunction = new AgrosEmptyExtFunction(fieldInfo->initialMesh()); //todo: solutionMesh
+                extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
 
             assert(extFunction);
-            assert(externalSlns.size() == index);
-            externalSlns.push_back(extFunction);
+            assert(externalUSlns.size() == index);
+            externalUSlns.push_back(extFunction);
 
             if(quantityIsNonlin[quantityID])
             {
                 extFunction = NULL;
                 if(containedInAnalysis)
-                    extFunction = fieldInfo->plugin()->extFunction(problemId, quantityID, true, fieldInfo->initialMesh());  //todo: solutionMesh
+                    extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, true));
                 else
-                    extFunction = new AgrosEmptyExtFunction(    fieldInfo->initialMesh());  //todo: solutionMesh
+                    extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
 
                 assert(extFunction);
-                assert(externalSlns.size() - 1 == index);
-                externalSlns.push_back(extFunction);
+                assert(externalUSlns.size() - 1 == index);
+                externalUSlns.push_back(extFunction);
             }
 
         }
     }
+
+    this->set_u_ext_fn(externalUSlns);
 
     FieldInfo* transientFieldInfo;
     CouplingInfo* couplingInfo;
@@ -529,6 +531,8 @@ void WeakFormAgros<Scalar>::updateExtField()
 
     m_offsetTimeExt = 0;
 
+    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > externalSlns;
+
     // first push previous solutions for transient forms
     if (numTransientFields >= 1)
     {
@@ -555,14 +559,13 @@ void WeakFormAgros<Scalar>::updateExtField()
     // push external solution for weak coupling
     if(numTotalCouplings >= 1)
     {
-        assert(externalSlns.size() == m_offsetTimeExt);
+        assert(externalUSlns.size() == m_offsetTimeExt);
 
         FieldSolutionID solutionID = Agros2D::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionMode_Finer);
 
         for (int comp = 0; comp < solutionID.group->numberOfSolutions(); comp++)
             externalSlns.push_back(Agros2D::solutionStore()->multiArray(solutionID).solutions().at(comp));
     }
-
 
     this->set_ext(externalSlns);
 }

@@ -132,7 +132,7 @@ private:
     WeakFormAgros<double> *m_wf;
     Hermes::vector<Hermes::Hermes2D::EssentialBCs<double> *> m_bcs;
 
-    QMap<MeshFunctionSharedPtr<double>, SceneBoundary *> m_exactSolutionFunctions;
+    QMap<Hermes::Hermes2D::MeshFunctionSharedPtr<double>, SceneBoundary *> m_exactSolutionFunctions;
 
     QList<Field*> m_fields;
     QList<CouplingInfo*> m_couplings;

@@ -59,8 +59,8 @@ public:
     inline bool vectorIsPrepared() { return !m_vecVectorView.is_empty(); }
     inline Hermes::Hermes2D::Views::Vectorizer &vecVectorView() { return m_vecVectorView; }
 
-    MeshFunctionSharedPtr<double> viewScalarFilter(Module::LocalVariable physicFieldVariable,
-                                                   PhysicFieldVariableComp physicFieldVariableComp);
+    Hermes::Hermes2D::MeshFunctionSharedPtr<double> viewScalarFilter(Module::LocalVariable physicFieldVariable,
+                                                                     PhysicFieldVariableComp physicFieldVariableComp);
 
     // view
     inline FieldInfo* activeViewField() const { return m_activeViewField; } // assert(m_activeViewField);

@@ -70,7 +70,7 @@ void PostHermes::processInitialMesh()
         try
         {
             m_linInitialMeshView.free();
-            m_linInitialMeshView.process_solution(MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(m_activeViewField->initialMesh())));
+            m_linInitialMeshView.process_solution(Hermes::Hermes2D::MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(m_activeViewField->initialMesh())));
         }
         catch (Hermes::Exceptions::Exception& e)
         {
@@ -91,7 +91,7 @@ void PostHermes::processSolutionMesh()
         const MeshSharedPtr mesh = activeMultiSolutionArray().solutions().at(comp)->get_mesh();
 
         m_linSolutionMeshView.free();
-        m_linSolutionMeshView.process_solution(MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(mesh)));
+        m_linSolutionMeshView.process_solution(Hermes::Hermes2D::MeshFunctionSharedPtr<double>(new Hermes::Hermes2D::ZeroSolution<double>(mesh)));
     }
 }
 
@@ -128,7 +128,7 @@ void PostHermes::processRangeContour()
         QString variableName = Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString();
         Module::LocalVariable variable = m_activeViewField->localVariable(variableName);
 
-        MeshFunctionSharedPtr<double> slnContourView;
+        Hermes::Hermes2D::MeshFunctionSharedPtr<double> slnContourView;
         if (variable.isScalar())
             slnContourView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ContourVariable).toString()),
                                               PhysicFieldVariableComp_Scalar);
@@ -141,8 +141,8 @@ void PostHermes::processRangeContour()
         // deformed shape
         if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformContour).toBool())
         {
-            Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<MeshFunctionSharedPtr<double> >(activeMultiSolutionArray().solutions().at(0),
-                                                                                                                                                 activeMultiSolutionArray().solutions().at(1)));
+            Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> >(activeMultiSolutionArray().solutions().at(0),
+                                                                                                                                                                   activeMultiSolutionArray().solutions().at(1)));
 
             if (fabs(filter->get_approx_max_value() - filter->get_approx_min_value()) > EPS_ZERO)
             {
@@ -185,16 +185,16 @@ void PostHermes::processRangeScalar()
 
         Agros2D::log()->printMessage(tr("Post View"), tr("Scalar view (%1)").arg(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()));
 
-        MeshFunctionSharedPtr<double> slnScalarView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
-                                                                       (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
+        Hermes::Hermes2D::MeshFunctionSharedPtr<double> slnScalarView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
+                                                                                         (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
 
         m_linScalarView.free();
 
         // deformed shape
         if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformScalar).toBool())
         {
-            Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<MeshFunctionSharedPtr<double> >(activeMultiSolutionArray().solutions().at(0),
-                                                                                                                                                 activeMultiSolutionArray().solutions().at(1)));
+            Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> >(activeMultiSolutionArray().solutions().at(0),
+                                                                                                                                                                   activeMultiSolutionArray().solutions().at(1)));
 
             if (fabs(filter->get_approx_max_value() - filter->get_approx_min_value()) > EPS_ZERO)
             {
@@ -241,19 +241,19 @@ void PostHermes::processRangeVector()
 
         Agros2D::log()->printMessage(tr("Post View"), tr("Vector view (%1)").arg(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()));
 
-        MeshFunctionSharedPtr<double> slnVectorXView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
-                                                                        PhysicFieldVariableComp_X);
+        Hermes::Hermes2D::MeshFunctionSharedPtr<double> slnVectorXView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
+                                                                                          PhysicFieldVariableComp_X);
 
-        MeshFunctionSharedPtr<double> slnVectorYView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
-                                                                        PhysicFieldVariableComp_Y);
+        Hermes::Hermes2D::MeshFunctionSharedPtr<double> slnVectorYView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_VectorVariable).toString()),
+                                                                                          PhysicFieldVariableComp_Y);
 
         m_vecVectorView.free();
 
         // deformed shape
         if (m_activeViewField->hasDeformableShape() && Agros2D::problem()->setting()->value(ProblemSetting::View_DeformVector).toBool())
         {
-            Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<MeshFunctionSharedPtr<double> >(activeMultiSolutionArray().solutions().at(0),
-                                                                                                                                                 activeMultiSolutionArray().solutions().at(1)));
+            Hermes::Hermes2D::MagFilter<double> *filter = new Hermes::Hermes2D::MagFilter<double>(Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> >(activeMultiSolutionArray().solutions().at(0),
+                                                                                                                                                                   activeMultiSolutionArray().solutions().at(1)));
             if (fabs(filter->get_approx_max_value() - filter->get_approx_min_value()) > EPS_ZERO)
             {
                 RectPoint rect = Agros2D::scene()->boundingBox();
@@ -378,14 +378,14 @@ void PostHermes::processSolved()
     }
 }
 
-MeshFunctionSharedPtr<double> PostHermes::viewScalarFilter(Module::LocalVariable physicFieldVariable,
-                                                           PhysicFieldVariableComp physicFieldVariableComp)
+Hermes::Hermes2D::MeshFunctionSharedPtr<double> PostHermes::viewScalarFilter(Module::LocalVariable physicFieldVariable,
+                                                                             PhysicFieldVariableComp physicFieldVariableComp)
 {
     // update time functions
     if (Agros2D::problem()->isTransient())
         Module::updateTimeFunctions(Agros2D::problem()->timeStepToTotalTime(activeTimeStep()));
 
-    Hermes::vector<MeshFunctionSharedPtr<double> > slns;
+    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > slns;
     for (int k = 0; k < activeViewField()->numberOfSolutions(); k++)
         slns.push_back(activeMultiSolutionArray().solutions().at(k));
 

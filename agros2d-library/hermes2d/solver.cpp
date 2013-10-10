@@ -257,7 +257,7 @@ QSharedPointer<HermesSolverContainer<Scalar> > HermesSolverContainer<Scalar>::fa
 template <typename Scalar>
 void HermesSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVector,
                                                             Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
-                                                            Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions)
+                                                            Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions)
 {
     if (solutions.empty())
     {
@@ -266,7 +266,7 @@ void HermesSolverContainer<Scalar>::projectPreviousSolution(Scalar* solutionVect
     }
     else
     {
-        OGProjection<double> ogProjection;
+        Hermes::Hermes2D::OGProjection<double> ogProjection;
         ogProjection.project_global(spaces,
                                     solutions,
                                     solutionVector, this->m_block->projNormTypeVector());
@@ -418,7 +418,7 @@ void ProblemSolver<Scalar>::clearActualSpaces()
 template <typename Scalar>
 Scalar *ProblemSolver<Scalar>::solveOneProblem(Hermes::vector<SpaceSharedPtr<Scalar> > spaces,
                                                int adaptivityStep,
-                                               Hermes::vector<MeshFunctionSharedPtr<Scalar> > previousSolution)
+                                               Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > previousSolution)
 {
     LinearMatrixSolver<Scalar> *linearSolver = m_hermesSolverContainer->linearSolver();
 
@@ -486,7 +486,7 @@ void ProblemSolver<Scalar>::solveSimple(int timeStep, int adaptivityStep)
                                                  previousTSMultiSolutionArray.solutions());
 
         // output
-        Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions = createSolutions<Scalar>(spacesMeshes(actualSpaces()));
+        Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions = createSolutions<Scalar>(spacesMeshes(actualSpaces()));
         Solution<Scalar>::vector_to_solutions(solutionVector, actualSpaces(), solutions);
 
         BlockSolutionID solutionID(m_block, timeStep, adaptivityStep, SolutionMode_Normal);
@@ -549,13 +549,13 @@ TimeStepInfo ProblemSolver<Scalar>::estimateTimeStepLength(int timeStep, int ada
     m_block->weakForm()->updateExtField();
 
     // solutions obtained by time method of higher order in the original calculation
-    Hermes::vector<MeshFunctionSharedPtr<Scalar> > timeReferenceSolution;
+    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > timeReferenceSolution;
     if(timeStep > 0)
         timeReferenceSolution = referenceCalculation.solutions();
     Scalar *solutionVector = solveOneProblem(actualSpaces(), adaptivityStep, timeReferenceSolution);
 
     Hermes::vector<MeshSharedPtr> meshes = spacesMeshes(actualSpaces());
-    Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions = createSolutions<Scalar>(meshes);
+    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions = createSolutions<Scalar>(meshes);
     Solution<Scalar>::vector_to_solutions(solutionVector, actualSpaces(), solutions);
 
     // error calculation
@@ -769,11 +769,11 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
     // in adaptivity, in each step we use different spaces. This should be done some other way
     m_hermesSolverContainer->setTableSpaces()->set_spaces(spacesRef);
     Scalar *solutionVector = solveOneProblem(spacesRef, adaptivityStep,
-                                             Hermes::vector<MeshFunctionSharedPtr<Scalar> >());
+                                             Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> >());
 
     // output reference solution
     Hermes::vector<MeshSharedPtr> meshesRef = spacesMeshes(spacesRef);
-    Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutionsRef = createSolutions<Scalar>(meshesRef);
+    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutionsRef = createSolutions<Scalar>(meshesRef);
     Solution<Scalar>::vector_to_solutions(solutionVector, spacesRef, solutionsRef);
 
     BlockSolutionID referenceSolutionID(m_block, timeStep, adaptivityStep, SolutionMode_Reference);
@@ -785,7 +785,7 @@ void ProblemSolver<Scalar>::solveReferenceAndProject(int timeStep, int adaptivit
     // copy spaces and create empty solutions
     //Hermes::vector<SpaceSharedPtr<Scalar> > spacesCopy = deepMeshAndSpaceCopy(actualSpaces(), false);
     Hermes::vector<MeshSharedPtr> meshes = spacesMeshes(actualSpaces());
-    Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions = createSolutions<Scalar>(meshes);
+    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions = createSolutions<Scalar>(meshes);
 
     // project the fine mesh solution onto the coarse mesh.
     Hermes::Hermes2D::OGProjection<Scalar> ogProjection;
@@ -915,7 +915,7 @@ void ProblemSolver<Scalar>::solveInitialTimeStep()
     Agros2D::log()->printDebug(m_solverID, QObject::tr("Initial time step"));
 
     //Hermes::vector<SpaceSharedPtr<Scalar> > spaces = deepMeshAndSpaceCopy(actualSpaces(), false);
-    Hermes::vector<MeshFunctionSharedPtr<Scalar> > solutions;
+    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > solutions;
 
     int totalComp = 0;
     foreach(Field* field, m_block->fields())

@@ -41,7 +41,7 @@ class AGROS_LIBRARY_API AgrosExtFunction : public Hermes::Hermes2D::UExtFunction
 {
 public:
     // an attempt to fix thread-related errors: value will not be passed as pointer, but a (now created) copy constructor will be used.
-    AgrosExtFunction(MeshSharedPtr mesh, FieldInfo* fieldInfo) : UExtFunction(mesh), m_fieldInfo(fieldInfo){}
+    AgrosExtFunction(FieldInfo* fieldInfo) : UExtFunction(), m_fieldInfo(fieldInfo){}
 
     // todo: this is dangerous. Order should be determined from the type of ExtFunction
     // for consants should be 0, for nonlinearities more. Hom much?
@@ -61,16 +61,11 @@ protected:
 class AGROS_LIBRARY_API AgrosEmptyExtFunction : public AgrosExtFunction
 {
 public:
-    AgrosEmptyExtFunction(MeshSharedPtr mesh) : AgrosExtFunction(mesh, NULL) {}
+    AgrosEmptyExtFunction() : AgrosExtFunction(NULL) {}
     virtual void value(int n, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const
     {
         // result values are not initialized, but they should never be used.
         // this is not very safe, but done from efficiency reasons
-    }
-
-    MeshFunction<double>* clone() const
-    {
-        return new AgrosEmptyExtFunction(this->mesh);
     }
 };
 
@@ -246,7 +241,7 @@ public:
 
     virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, MeshSharedPtr mesh) = 0;
 
-    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, MeshSharedPtr mesh) = 0;
+    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative) = 0;
 
     // error calculators
     virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(FieldInfo *fieldInfo,
@@ -254,10 +249,10 @@ public:
 
     // postprocessor
     // filter
-    virtual MeshFunctionSharedPtr<double> filter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                                                 Hermes::vector<MeshFunctionSharedPtr<double> > sln,
-                                                 const QString &variable,
-                                                 PhysicFieldVariableComp physicFieldVariableComp) = 0;
+    virtual Hermes::Hermes2D::MeshFunctionSharedPtr<double> filter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
+                                                                   Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > sln,
+                                                                   const QString &variable,
+                                                                   PhysicFieldVariableComp physicFieldVariableComp) = 0;
 
     // local values
     virtual LocalValue *localValue(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType, const Point &point) = 0;

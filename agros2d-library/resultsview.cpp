@@ -40,28 +40,28 @@
 class CustomVolumetricIntegralCalculator : public Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>
 {
 public:
-  CustomVolumetricIntegralCalculator(MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
-      : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_function, number_of_integrals)
-  {
-  }
-
-  CustomVolumetricIntegralCalculator(Hermes::vector<MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
-      : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_functions, number_of_integrals)
-  {
-  }
-
-  virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, Hermes::Hermes2D::Geom<double> *e, double* result)
-  {
-    for (int i = 0; i < n; i++)
+    CustomVolumetricIntegralCalculator(Hermes::Hermes2D::MeshFunctionSharedPtr<double> source_function, int number_of_integrals)
+        : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_function, number_of_integrals)
     {
-        result[0] += wt[i]; // * fns[0]->val[i];
-        result[1] += wt[i] * 2 * M_PI * e->x[i];
     }
-  }
 
-  virtual void order(Hermes::Hermes2D::Func<Hermes::Ord> **fns, Hermes::Ord* result) {
-    result[0] = Hermes::Ord(21);
-  }
+    CustomVolumetricIntegralCalculator(Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > source_functions, int number_of_integrals)
+        : Hermes::Hermes2D::PostProcessing::VolumetricIntegralCalculator<double>(source_functions, number_of_integrals)
+    {
+    }
+
+    virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, Hermes::Hermes2D::Geom<double> *e, double* result)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            result[0] += wt[i]; // * fns[0]->val[i];
+            result[1] += wt[i] * 2 * M_PI * e->x[i];
+        }
+    }
+
+    virtual void order(Hermes::Hermes2D::Func<Hermes::Ord> **fns, Hermes::Ord* result) {
+        result[0] = Hermes::Ord(21);
+    }
 };
 
 
@@ -223,7 +223,7 @@ void ResultsView::showVolumeIntegral()
     foreach (FieldInfo *fieldInfo, Agros2D::problem()->fieldInfos())
     {
         // TODO: dummy calc - remove
-        CustomVolumetricIntegralCalculator calc(MeshFunctionSharedPtr<double>(), 0);
+        CustomVolumetricIntegralCalculator calc(Hermes::Hermes2D::MeshFunctionSharedPtr<double>(), 0);
 
         IntegralValue *integral = fieldInfo->plugin()->volumeIntegral(fieldInfo,
                                                                       m_postHermes->activeTimeStep(),

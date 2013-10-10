@@ -31,7 +31,7 @@
 
 
 {{CLASS}}ViewScalarFilter::{{CLASS}}ViewScalarFilter(FieldInfo *fieldInfo, int timeStep, int adaptivityStep, SolutionMode solutionType,
-                                           Hermes::vector<MeshFunctionSharedPtr<double> > sln,
+                                           Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > sln,
                                            const QString &variable,
                                            PhysicFieldVariableComp physicFieldVariableComp)
     : Hermes::Hermes2D::Filter<double>(sln), m_fieldInfo(fieldInfo), m_timeStep(timeStep), m_adaptivityStep(adaptivityStep), m_solutionType(solutionType),
@@ -111,7 +111,7 @@ void {{CLASS}}ViewScalarFilter::precalculate(int order, int mask)
 
 {{CLASS}}ViewScalarFilter* {{CLASS}}ViewScalarFilter::clone() const
 {
-    Hermes::vector<MeshFunctionSharedPtr<double> > slns;
+    Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<double> > slns;
 
     for (int i = 0; i < this->num; i++)
         slns.push_back(this->sln[i]->clone());

@@ -31,10 +31,10 @@ class {{EXT_FUNCTION_NAME}} : public AgrosExtFunction
 {
 public:
     virtual void value (int n, Hermes::Hermes2D::Func<double>** u_ext, Hermes::Hermes2D::Func<double>* result, Hermes::Hermes2D::Geom<double>* geometry) const;
-    {{EXT_FUNCTION_NAME}}(MeshSharedPtr mesh, FieldInfo* fieldInfo) : AgrosExtFunction(mesh, fieldInfo) {}
-    MeshFunction<double>* clone() const
+    {{EXT_FUNCTION_NAME}}(FieldInfo* fieldInfo) : AgrosExtFunction(fieldInfo) {}
+    Hermes::Hermes2D::Function<double>* clone() const
     {
-        return new {{EXT_FUNCTION_NAME}}(this->mesh, this->m_fieldInfo);
+        return new {{EXT_FUNCTION_NAME}}(this->m_fieldInfo);
     }
 };
 {{/EXT_FUNCTION}}
