@@ -144,6 +144,6 @@ void {{CLASS}}VolumeIntegral::calculate()
             m_values[QLatin1String("{{VARIABLE}}")] = values[{{POSITION}}];
         {{/VARIABLE_SOURCE}}
 
-        delete [] values;
+        ::free(values);
     }
 }
