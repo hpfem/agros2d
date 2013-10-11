@@ -48,25 +48,25 @@ bool BDF2Table::setOrderAndPreviousSteps(int order, QList<double> previousSteps)
     return matrixUnchanged;
 }
 
-double BDF2Table::vectorFormCoefficient(Hermes::Hermes2D::Func<double> **ext, int component, int numComponents, int integrationPoint)
+double BDF2Table::vectorFormCoefficient(Hermes::Hermes2D::Func<double> **ext, int component, int numComponents, int offsetPreviousTimeExt, int integrationPoint)
 {
     double coef = 0;
 
     for(int ps = 0; ps < n(); ps++)
     {
-        coef += (-alpha()[ps + 1]) * ext[numComponents * ps + component]->val[integrationPoint];
+        coef += (-alpha()[ps + 1]) * ext[offsetPreviousTimeExt + numComponents * ps + component]->val[integrationPoint];
     }
 
     return coef;
 }
 
-Hermes::Ord BDF2Table::vectorFormCoefficient(Hermes::Hermes2D::Func<Hermes::Ord> **ext, int component, int numComponents, int integrationPoint)
+Hermes::Ord BDF2Table::vectorFormCoefficient(Hermes::Hermes2D::Func<Hermes::Ord> **ext, int component, int numComponents, int offsetPreviousTimeExt, int integrationPoint)
 {
     Hermes::Ord coef(0);
 
     for(int ps = 0; ps < n(); ps++)
     {
-        coef += (-alpha()[ps + 1]) * ext[numComponents * ps + component]->val[integrationPoint];
+        coef += (-alpha()[ps + 1]) * ext[offsetPreviousTimeExt + numComponents * ps + component]->val[integrationPoint];
     }
 
     return coef;

@@ -135,7 +135,7 @@ QMap<QString, QString> Module::availableModules()
 
 template <typename Scalar>
 WeakFormAgros<Scalar>::WeakFormAgros(Block* block) :
-    Hermes::Hermes2D::WeakForm<Scalar>(block->numSolutions()), m_block(block), m_offsetTimeExt(0)
+    Hermes::Hermes2D::WeakForm<Scalar>(block->numSolutions()), m_block(block), m_offsetCouplingExt(0), m_offsetPreviousTimeExt(0)
 {
     m_bdf2Table = new BDF2ATable;
 }
@@ -157,7 +157,7 @@ template <typename Scalar>
 Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID problemId,
                                             const QString &area, FormInfo *form,
                                             Marker* markerSource, Material *markerTarget,
-                                            int offsetI, int offsetJ, int *offsetTimeExt)
+                                            int offsetI, int offsetJ, int offsetPreviousTimeExt, int *offsetCouplingExt)
 {
     QString fieldId = (problemId.analysisTypeTarget == AnalysisType_Undefined) ?
                 problemId.sourceFieldId : problemId.sourceFieldId + "-" + problemId.targetFieldId;
@@ -212,7 +212,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
     else if (type == WeakForm_VecVol)
     {
         VectorFormVolAgros<double> *weakFormAgros = plugin->vectorFormVol(problemId, form, offsetI, offsetJ,
-                                                                          static_cast<Material *>(markerSource), offsetTimeExt);
+                                                                          static_cast<Material *>(markerSource), offsetPreviousTimeExt, offsetCouplingExt);
         if (!weakFormAgros) return NULL;
 
         // volume
@@ -278,7 +278,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     problemId.linearityType = field->fieldInfo()->linearityType();
 
     // compiled form
-    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId, area, &form, marker, NULL, offsetI, offsetJ, NULL);
+    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId, area, &form, marker, NULL, offsetI, offsetJ, m_offsetPreviousTimeExt, NULL);
 
     // weakform with zero coefficients
     if (!custom_form) return;
@@ -295,7 +295,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
 
 template <typename Scalar>
 void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area, FormInfo form, int offsetI, int offsetJ,
-                                                 SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo, int* offsetTimeExt)
+                                                 SceneMaterial* materialSource, SceneMaterial* materialTarget, CouplingInfo *couplingInfo)
 {
     ProblemID problemId;
 
@@ -309,7 +309,7 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
 
     // compiled form
     Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId,
-                                                                      area, &form, materialSource, materialTarget, offsetI, offsetJ, offsetTimeExt);
+                                                                      area, &form, materialSource, materialTarget, offsetI, offsetJ, m_offsetPreviousTimeExt, &m_offsetCouplingExt);
     // weakform with zero coefficients
     if (!custom_form) return;
 
@@ -378,7 +378,7 @@ void WeakFormAgros<Scalar>::registerForms()
                         if (materialSource != Agros2D::scene()->materials->getNone(couplingInfo->sourceField()))
                         {
                             registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), expression,
-                                                 m_block->offset(field), m_block->offset(field), materialSource, material, couplingInfo, &m_offsetTimeExt);
+                                                 m_block->offset(field), m_block->offset(field), materialSource, material, couplingInfo);
                         }
                     }
                 }
@@ -408,12 +408,12 @@ void WeakFormAgros<Scalar>::registerForms()
                     foreach (FormInfo pars, couplingInfo->wfMatrixVolume())
                         registerFormCoupling(WeakForm_MatVol, QString::number(labelNum), pars,
                                              m_block->offset(targetField) - sourceField->fieldInfo()->numberOfSolutions(), m_block->offset(sourceField),
-                                             sourceMaterial, targetMaterial, couplingInfo, NULL);
+                                             sourceMaterial, targetMaterial, couplingInfo);
 
                     foreach (FormInfo pars, couplingInfo->wfVectorVolume())
                         registerFormCoupling(WeakForm_VecVol, QString::number(labelNum), pars,
                                              m_block->offset(targetField) - sourceField->fieldInfo()->numberOfSolutions(), m_block->offset(sourceField),
-                                             sourceMaterial, targetMaterial, couplingInfo, NULL);
+                                             sourceMaterial, targetMaterial, couplingInfo);
 
                 }
             }
@@ -498,6 +498,10 @@ void WeakFormAgros<Scalar>::updateExtField()
 
     this->set_u_ext_fn(externalUSlns);
 
+    // previous time steps solutions or solutions of coupled fields start after USlns
+    m_offsetPreviousTimeExt = externalUSlns.size();
+    m_offsetCouplingExt = externalUSlns.size();
+
     FieldInfo* transientFieldInfo;
     CouplingInfo* couplingInfo;
     int numTransientFields = 0;
@@ -529,8 +533,6 @@ void WeakFormAgros<Scalar>::updateExtField()
     // at the present moment, block can be influenced (weakly coupled with) only one other field. Otherwise changes in offsetExtTime have to be done
     assert(numTotalCouplings <= 1);
 
-    m_offsetTimeExt = 0;
-
     Hermes::vector<Hermes::Hermes2D::MeshFunctionSharedPtr<Scalar> > externalSlns;
 
     // first push previous solutions for transient forms
@@ -538,7 +540,7 @@ void WeakFormAgros<Scalar>::updateExtField()
     {
         assert(m_bdf2Table);
 
-        m_offsetTimeExt = m_bdf2Table->n() * transientFieldInfo->numberOfSolutions() ;
+        m_offsetCouplingExt = m_offsetPreviousTimeExt + m_bdf2Table->n() * transientFieldInfo->numberOfSolutions() ;
 
         int lastTimeStep = Agros2D::problem()->actualTimeStep() - 1; // todo: check
 
@@ -559,7 +561,7 @@ void WeakFormAgros<Scalar>::updateExtField()
     // push external solution for weak coupling
     if(numTotalCouplings >= 1)
     {
-        assert(externalUSlns.size() == m_offsetTimeExt);
+        assert(externalUSlns.size() + externalSlns.size() == m_offsetCouplingExt);
 
         FieldSolutionID solutionID = Agros2D::solutionStore()->lastTimeAndAdaptiveSolution(couplingInfo->sourceField(), SolutionMode_Finer);
 
