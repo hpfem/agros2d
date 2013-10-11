@@ -1033,9 +1033,9 @@ void Agros2DGeneratorModule::generatePluginSurfaceIntegralFiles()
                                              counter);
                 }
             }
-
-            counter++;
         }
+
+        counter++;
     }
     output.SetValue("INTEGRAL_COUNT", QString::number(counter).toStdString());
 
@@ -1115,9 +1115,9 @@ void Agros2DGeneratorModule::generatePluginVolumeIntegralFiles()
                                              counter);
                 }
             }
-
-            counter++;
         }
+
+        counter++;
     }
     output.SetValue("INTEGRAL_COUNT", QString::number(counter).toStdString());
 

@@ -69,8 +69,7 @@ public:
 
         // expressions
         {{#VARIABLE_SOURCE}}
-        if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}})
-                && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
+        if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
         {
             for (int i = 0; i < n; i++)
                 result[{{POSITION}}] += wt[i] * ({{EXPRESSION}});
@@ -84,7 +83,9 @@ public:
 
     virtual void order(Hermes::Hermes2D::Func<Hermes::Ord> **fns, Hermes::Ord* result)
     {
-        {{#VARIABLE_SOURCE}}result[{{POSITION}}] = Hermes::Ord(21);
+        {{#VARIABLE_SOURCE}}
+        if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
+            result[{{POSITION}}] = Hermes::Ord(21);
         {{/VARIABLE_SOURCE}}
     }
 
@@ -128,7 +129,9 @@ void {{CLASS}}SurfaceIntegral::calculate()
         {{CLASS}}SurfaceIntegralCalculator calc(m_fieldInfo, ma.solutions(), {{INTEGRAL_COUNT}});
         double *values = calc.calculate(markers);
 
-        {{#VARIABLE_SOURCE}}m_values[QLatin1String("{{VARIABLE}}")] = values[{{POSITION}}];
+        {{#VARIABLE_SOURCE}}
+        if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
+            m_values[QLatin1String("{{VARIABLE}}")] = values[{{POSITION}}];
         {{/VARIABLE_SOURCE}}
 
         delete [] values;
