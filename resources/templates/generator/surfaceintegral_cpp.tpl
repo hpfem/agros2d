@@ -131,7 +131,7 @@ void {{CLASS}}SurfaceIntegral::calculate()
         {{#VARIABLE_SOURCE}}m_values[QLatin1String("{{VARIABLE}}")] = values[{{POSITION}}];
         {{/VARIABLE_SOURCE}}
 
-        delete [] values;
+        ::free(values);
     }
 }
 
