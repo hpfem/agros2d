@@ -830,7 +830,7 @@ void FieldInfo::setDefaultValues()
     m_settingDefault[NonlinearDampingFactorDecreaseRatio] = 1.2;
     m_settingDefault[NewtonMaxStepsReuseJacobian] = 20;
     m_settingDefault[NonlinearStepsToIncreaseDampingFactor] = 1;
-    m_settingDefault[PicardAndersonAcceleration] = true;
+    m_settingDefault[PicardAndersonAcceleration] = false;
     m_settingDefault[PicardAndersonBeta] = 0.2;
     m_settingDefault[PicardAndersonNumberOfLastVectors] = 3;
     m_settingDefault[SpaceNumberOfRefinements] = 1;
