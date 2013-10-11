@@ -432,10 +432,13 @@ bool PythonEngine::runExpression(const QString &expression, double *value, const
                         if (fabs(*value) < EPS_ZERO)
                             *value = 0.0;
                         Py_XDECREF(result);
+
+                        successfulRun = true;
                     }
                     else
                     {
                         qDebug() << tr("Type '%1' is not supported.").arg(result->ob_type->tp_name).arg(expression);
+
                         successfulRun = false;
                     }
                 }
@@ -454,7 +457,6 @@ bool PythonEngine::runExpression(const QString &expression, double *value, const
 
         if (output)
         {
-            successfulRun = true;
             Py_XDECREF(output);
         }
         else

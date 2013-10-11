@@ -319,7 +319,6 @@ bool Value::evaluateExpression(const QString &expression)
     if (!successfulRun)
     {
         ErrorResult result = currentPythonEngineAgros()->parseError();
-        Agros2D::log()->printDebug(QObject::tr("Problem"), result.error());
     }
 
     if (!signalBlocked)
