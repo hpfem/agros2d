@@ -174,10 +174,9 @@ private:
     // materialTarget has to be specified for coupling forms. couplingInfo only for weak couplings
     void registerForm(WeakFormKind type, Field *field, QString area, FormInfo form, int offsetI, int offsetJ, Marker *marker);
 
-    // offsetTimeExt defines how many positions (0, ... offsetTimeExt - 1) in the ext array are reserved for previous time solutions
-    // used for problems which are transient and weakly coupled at the same time
+    // offsetCouplingExt defines position in Ext field where coupling solutions start
     void registerFormCoupling(WeakFormKind type, QString area, FormInfo form, int offsetI, int offsetJ, SceneMaterial *materialSource,
-                              SceneMaterial *materialTarget, CouplingInfo *couplingInfo, int *offsetTimeExt);
+                              SceneMaterial *materialTarget, CouplingInfo *couplingInfo);
     void addForm(WeakFormKind type, Hermes::Hermes2D::Form<Scalar>* form);
 
     virtual Hermes::Hermes2D::WeakForm<Scalar>* clone() const { return new WeakFormAgros<Scalar>(m_block); }
@@ -185,7 +184,13 @@ private:
     Block* m_block;
 
     BDF2Table* m_bdf2Table;
-    int m_offsetTimeExt;
+
+    // index in EXT field, where start solutions from previous time levels. ( == number of Value ext functions)
+    int m_offsetPreviousTimeExt;
+
+    // index in EXT field, where start solutions from weakly coupled fields ( == number of Value ext functions + time components)
+    // we have to pass pointer to individual forms, since it may change during the calculation (the order of the BDF method may vary)
+    int m_offsetCouplingExt;
 
     int m_numberOfForms;
 };

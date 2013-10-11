@@ -39,8 +39,8 @@ public:
     int order() { return m_n;}
 
     inline double matrixFormCoefficient() {return m_alpha[0];}
-    double vectorFormCoefficient(Hermes::Hermes2D::Func<double> **ext, int component, int numComponents, int integrationPoint);
-    Hermes::Ord vectorFormCoefficient(Hermes::Hermes2D::Func<Hermes::Ord> **ext, int component, int numComponents, int integrationPoint);
+    double vectorFormCoefficient(Hermes::Hermes2D::Func<double> **ext, int component, int numComponents, int offsetPreviousTimeExt, int integrationPoint);
+    Hermes::Ord vectorFormCoefficient(Hermes::Hermes2D::Func<Hermes::Ord> **ext, int component, int numComponents, int offsetPreviousTimeExt, int integrationPoint);
 
     static void test(bool varyLength = false);
 
