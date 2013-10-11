@@ -566,7 +566,7 @@ AGROS_LIBRARY_API QMap<QString, QString> availableModules();
 
 // index of quantity in the list of quantities at the begining of the volume section of the XML (NOT the reduced list in individual analysis)
 //
-void volumeQuantityProperties(XMLModule::module *module, QMap<QString, int> &quantityOrder, QMap<QString, bool> &quantityIsNonlin);
+void AGROS_LIBRARY_API volumeQuantityProperties(XMLModule::module *module, QMap<QString, int> &quantityOrder, QMap<QString, bool> &quantityIsNonlin);
 Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> readMeshFromFileBSON(const QString &fileName);
 Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> readMeshFromFileXML(const QString &fileName);
 void writeMeshToFileXML(const QString &fileName, Hermes::vector<Hermes::Hermes2D::MeshSharedPtr> meshes);
