@@ -85,7 +85,7 @@ public:
     {
         {{#VARIABLE_SOURCE}}
         if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
-            result[{{POSITION}}] = Hermes::Ord(21);
+            result[{{POSITION}}] = Hermes::Ord(5);
         {{/VARIABLE_SOURCE}}
     }
 
