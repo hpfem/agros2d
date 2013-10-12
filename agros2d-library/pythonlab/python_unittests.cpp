@@ -335,7 +335,13 @@ void UnitTestsWidget::showInfoTests(const QString &testID)
         itemTemplate->SetValue("TIME", milisecondsToTime(item.time()).toString("mm:ss.zzz").toStdString());
         itemTemplate->SetValue("STATUS", item.successful() == 1 ?
                                    tr("OK").toStdString() :
-                                   tr("<span style=\"color: red;\" title=\"%1\">ERROR</span>").arg(err).toStdString());
+                                   tr("<span style=\"color: red;\">ERROR</span>").toStdString());
+
+        if (item.successful() == 0)
+        {
+            ctemplate::TemplateDictionary *itemTemplateError = itemTemplate->AddSectionDictionary("ITEM_ERROR");
+            itemTemplateError->SetValue("ERROR", err.toStdString());
+        }
 
         totalTime += item.time();
         testsTemplate.SetValue("TOTAL_TIME", milisecondsToTime(totalTime).toString("mm:ss.zzz").toStdString());
