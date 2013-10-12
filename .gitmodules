@@ -1,0 +1,4 @@
+[submodule "hermes"]
+	path = hermes
+	url = git@github.com:hpfem/hermes.git
+	branch = master
