@@ -453,6 +453,8 @@ bool PythonEngine::runExpression(const QString &expression, double *value, const
             runPythonHeader();
 
             output = PyRun_String(expression.toLatin1().data(), Py_single_input, m_dict, m_dict);
+            if (output)
+                successfulRun = true;
         }
 
         if (output)
