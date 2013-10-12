@@ -22,7 +22,7 @@ endif(${CMAKE_CL_64})
 
 # Allow to override the default values in CMake.vars:
 include(../CMake.vars OPTIONAL)
-include(../hermes/CMake.vars OPTIONAL)
+include(../CMakeHermes.cmake OPTIONAL)
 
 # Handle Qt.
 include(../QtHandling.cmake)
