@@ -23,7 +23,7 @@
 #include "util.h"
 #include "util/loops.h"
 #ifdef Q_WS_X11
-#include "auto_ptr.h"
+#include <tr1/memory>
 #endif
 
 namespace XMLSubdomains
