@@ -1,5 +1,5 @@
-// stb_truetype.h - v0.6c - public domain
-// authored from 2009-2012 by Sean Barrett / RAD Game Tools
+// stb_truetype.h - v0.7 - public domain
+// authored from 2009-2013 by Sean Barrett / RAD Game Tools
 //
 //   This library processes TrueType files:
 //        parse files
@@ -30,6 +30,7 @@
 //
 // VERSION HISTORY
 //
+//   0.7  (2013-09-25) bugfix: subpixel glyph bug fixed in 0.5 had come back
 //   0.6c (2012-07-24) improve documentation
 //   0.6b (2012-07-20) fix a few more warnings
 //   0.6  (2012-07-17) fix warnings; added stbtt_ScaleForMappingEmToPixels,
@@ -1760,7 +1761,7 @@ unsigned char *stbtt_GetGlyphBitmapSubpixel(const stbtt_fontinfo *info, float sc
       scale_y = scale_x;
    }
 
-   stbtt_GetGlyphBitmapBox(info, glyph, scale_x, scale_y, &ix0,&iy0,&ix1,&iy1);
+   stbtt_GetGlyphBitmapBoxSubpixel(info, glyph, scale_x, scale_y, shift_x, shift_y, &ix0,&iy0,&ix1,&iy1);
 
    // now we get the size
    gbm.w = (ix1 - ix0);
