@@ -19,8 +19,8 @@
 ****************************************************************************
 **           Author: Emanuel Eichhammer                                   **
 **  Website/Contact: http://www.qcustomplot.com/                          **
-**             Date: 01.08.13                                             **
-**          Version: 1.0.0                                                **
+**             Date: 05.09.13                                             **
+**          Version: 1.0.1                                                **
 ****************************************************************************/
 
 #ifndef QCUSTOMPLOT_H
@@ -177,7 +177,7 @@ Q_DECLARE_FLAGS(Interactions, Interaction)
 */
 inline bool isInvalidData(double value)
 {
-  return (!qIsNaN(value) && !qIsInf(value));
+  return qIsNaN(value) || qIsInf(value);
 }
 
 /*! \internal
@@ -254,7 +254,7 @@ public:
                       ,ssCross     ///< \enumimage{ssCross.png} a cross
                       ,ssPlus      ///< \enumimage{ssPlus.png} a plus
                       ,ssCircle    ///< \enumimage{ssCircle.png} a circle
-                      ,ssDisc      ///< \enumimage{ssDisc.png} a circle which is filled with the pen (not the brush as with ssCircle)
+                      ,ssDisc      ///< \enumimage{ssDisc.png} a circle which is filled with the pen's color (not the brush as with ssCircle)
                       ,ssSquare    ///< \enumimage{ssSquare.png} a square
                       ,ssDiamond   ///< \enumimage{ssDiamond.png} a diamond
                       ,ssStar      ///< \enumimage{ssStar.png} a star with eight arms, i.e. a combination of cross and plus
@@ -265,7 +265,7 @@ public:
                       ,ssCrossCircle      ///< \enumimage{ssCrossCircle.png} a circle with a cross inside
                       ,ssPlusCircle       ///< \enumimage{ssPlusCircle.png} a circle with a plus inside
                       ,ssPeace     ///< \enumimage{ssPeace.png} a circle, with one vertical and two downward diagonal lines
-                      ,ssPixmap    ///< a custom pixmap specified by setScatterPixmap, centered on the data point coordinates
+                      ,ssPixmap    ///< a custom pixmap specified by \ref setPixmap, centered on the data point coordinates
                       ,ssCustom    ///< custom painter operations are performed per scatter (As QPainterPath, see \ref setCustomPath)
                     };
 

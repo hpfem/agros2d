@@ -19,8 +19,8 @@
 ****************************************************************************
 **           Author: Emanuel Eichhammer                                   **
 **  Website/Contact: http://www.qcustomplot.com/                          **
-**             Date: 01.08.13                                             **
-**          Version: 1.0.0                                                **
+**             Date: 05.09.13                                             **
+**          Version: 1.0.1                                                **
 ****************************************************************************/
 
 #include "qcustomplot.h"
@@ -1503,8 +1503,8 @@ bool QCPRange::validRange(const QCPRange &range)
   complex hierarchies may be created, offering very flexible arrangements.
   
   <div style="text-align:center">
-  <div style="display:inline-block; margin-left:auto; margin-right:auto"><img src="LayoutsystemSketch0.png"></div>
-  <div style="display:inline-block; margin-left:auto; margin-right:auto"><img src="LayoutsystemSketch1.png"></div>
+  <div style="display:inline-block; margin-left:auto; margin-right:auto">\image html LayoutsystemSketch0.png ""</div>
+  <div style="display:inline-block; margin-left:auto; margin-right:auto">\image html LayoutsystemSketch1.png ""</div>
   <div style="clear:both"></div>
   <div style="display:inline-block; max-width:1000px; text-align:justify">
   Sketch of the default QCPLayoutGrid accessible via \ref QCustomPlot::plotLayout. The left image
@@ -1790,8 +1790,7 @@ void QCPMarginGroup::removeChild(QCP::MarginSide side, QCPLayoutElement *element
 /* end documentation of inline functions */
 
 /*!
-  Creates an instance of QCPLayoutElement and sets default values. Note that since QCPLayoutElement
-  is an abstract base class, it can't be instantiated directly.
+  Creates an instance of QCPLayoutElement and sets default values.
 */
 QCPLayoutElement::QCPLayoutElement(QCustomPlot *parentPlot) :
   QCPLayerable(parentPlot), // parenthood is changed as soon as layout element gets inserted into a layout (except for top level layout)
@@ -2052,7 +2051,7 @@ QList<QCPLayoutElement*> QCPLayoutElement::elements(bool recursive) const
 /*!
   Layout elements are sensitive to events inside their outer rect. If \a pos is within the outer
   rect, this method returns a value corresponding to 0.99 times the parent plot's selection
-  tolerance. However, layout elements are not selectable by default. So if \ref onlySelectable is
+  tolerance. However, layout elements are not selectable by default. So if \a onlySelectable is
   true, -1.0 is returned.
   
   See \ref QCPLayerable::selectTest for a general explanation of this virtual method.
@@ -3341,7 +3340,7 @@ bool QCPLayoutInset::take(QCPLayoutElement *element)
   The inset layout is sensitive to events only at areas where its child elements are sensitive. If
   the selectTest method of any of the child elements returns a positive number for \a pos, this
   method returns a value corresponding to 0.99 times the parent plot's selection tolerance. The
-  inset layout is not selectable itself by default. So if \ref onlySelectable is true, -1.0 is
+  inset layout is not selectable itself by default. So if \a onlySelectable is true, -1.0 is
   returned.
   
   See \ref QCPLayerable::selectTest for a general explanation of this virtual method.
@@ -8111,7 +8110,7 @@ QCP::Interaction QCPAbstractItem::selectionCategory() const
 
 
 
-/*! \mainpage %QCustomPlot 1.0.0 Documentation
+/*! \mainpage %QCustomPlot 1.0.1 Documentation
 
   \image html qcp-doc-logo.png
   
@@ -18432,8 +18431,8 @@ void QCPLegend::parentPlotInitialized(QCustomPlot *parentPlot)
 /*! \class QCPPlotTitle
   \brief A layout element displaying a plot title text
   
-  A simple layout element which shows a text. The text may be specified with \ref setText, the
-  formatting can be controlled with \ref setFont and \ref setTextColor.
+  The text may be specified with \ref setText, theformatting can be controlled with \ref setFont
+  and \ref setTextColor.
   
   A plot title can be added as follows:
   \code
