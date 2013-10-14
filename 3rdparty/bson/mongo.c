@@ -19,6 +19,10 @@
   #define _CRT_SECURE_NO_WARNINGS
 #endif
 
+#if _MSC_VER
+  #define snprintf _snprintf
+#endif
+
 #include "mongo.h"
 #include "md5.h"
 #include "env.h"
@@ -50,13 +54,14 @@ MONGO_EXPORT int mongo_get_op_timeout(mongo* conn) {
 }
 
 
-static const char* _get_host_port(mongo_host_port* hp) {
-    static char _hp[sizeof(hp->host)+12];
+static const char* _get_host_port(mongo_host_port* hp) {    
+    char *_hp = (char*) bson_malloc(sizeof(hp->host)+12);
     bson_sprintf(_hp, "%s:%d", hp->host, hp->port);
     return _hp;
 }
 
 
+/* Memory returned by this function MUST be freed with bson_free */
 MONGO_EXPORT const char* mongo_get_primary(mongo* conn) {
     mongo* conn_ = (mongo*)conn;
     if( !(conn_->connected) || (conn_->primary->host[0] == '\0') )
@@ -82,6 +87,7 @@ MONGO_EXPORT int mongo_get_host_count(mongo* conn) {
 }
 
 
+/* Memory returned by this function MUST be freed with bson_free */
 MONGO_EXPORT const char* mongo_get_host(mongo* conn, int i) {
     mongo_replica_set* r = conn->replica_set;
     mongo_host_port* hp;
@@ -653,6 +659,7 @@ MONGO_EXPORT int mongo_replica_set_client( mongo *conn ) {
 
                 /* Primary found, so return. */
                 else if( conn->replica_set->primary_connected ) {
+                    bson_free( conn->primary );
                     conn->primary = bson_malloc( sizeof( mongo_host_port ) );
                     snprintf( conn->primary->host, MAXHOSTNAMELEN, "%s", node->host );
                     conn->primary->port = node->port;
@@ -1267,10 +1274,9 @@ static int mongo_cursor_get_more( mongo_cursor *cursor ) {
         }
 
         res = mongo_read_response( cursor->conn, &( cursor->reply ) );
-        if( res != MONGO_OK ) {
-            mongo_cursor_destroy( cursor );
+        if( res != MONGO_OK )
             return MONGO_ERROR;
-        }
+
         cursor->current.data = NULL;
         cursor->seen += cursor->reply->fields.num;
 
@@ -1357,10 +1363,11 @@ MONGO_EXPORT const bson *mongo_cursor_bson( mongo_cursor *cursor ) {
 MONGO_EXPORT int mongo_cursor_next( mongo_cursor *cursor ) {
     char *next_object;
     char *message_end;
+    int already_sent = ( cursor->flags & MONGO_CURSOR_QUERY_SENT ) == MONGO_CURSOR_QUERY_SENT;
 
     if( cursor == NULL ) return MONGO_ERROR;
 
-    if( ! ( cursor->flags & MONGO_CURSOR_QUERY_SENT ) )
+    if( ! already_sent )
         if( mongo_cursor_op_query( cursor ) != MONGO_OK )
             return MONGO_ERROR;
 
@@ -1378,8 +1385,13 @@ MONGO_EXPORT int mongo_cursor_next( mongo_cursor *cursor ) {
             }
         }
 
-        else
+        else {
+            if( already_sent ) {
+                cursor->err = MONGO_CURSOR_INVALID;
+            }
+            /* else preserve the MONGO_CURSOR_EXHAUSTED error flag set by mongo_cursor_get_more */
             return MONGO_ERROR;
+        }
     }
 
     /* first */
@@ -1453,7 +1465,7 @@ MONGO_EXPORT int mongo_cursor_destroy( mongo_cursor *cursor ) {
 #define INDEX_NAME_BUFFER_SIZE 255
 #define INDEX_NAME_MAX_LENGTH (INDEX_NAME_BUFFER_SIZE - 1)
 
-MONGO_EXPORT int mongo_create_index( mongo *conn, const char *ns, const bson *key, const char *name, int options, bson *out ) {
+MONGO_EXPORT int mongo_create_index( mongo *conn, const char *ns, const bson *key, const char *name, int options, int ttl, bson *out ) {
     bson b;
     bson_iterator it;
     char default_name[INDEX_NAME_BUFFER_SIZE] = {'\0'};
@@ -1486,17 +1498,25 @@ MONGO_EXPORT int mongo_create_index( mongo *conn, const char *ns, const bson *ke
         bson_append_bool( &b, "background", 1 );
     if ( options & MONGO_INDEX_SPARSE )
         bson_append_bool( &b, "sparse", 1 );
+	
+    if( ttl > 0 )
+        bson_append_int( &b, "expireAfterSeconds", ttl );
+
     bson_finish( &b );
 
     strncpy( idxns, ns, 1024-16 );
     p = strchr( idxns, '.' );
     if ( !p ) {
 	    bson_destroy( &b );
+        if( out )
+            bson_init_zero(out);
 	    return MONGO_ERROR;
     }
     strcpy( p, ".system.indexes" );
     if ( mongo_insert( conn, idxns, &b, NULL ) != MONGO_OK) {
 	    bson_destroy( &b );
+        if( out )
+            bson_init_zero(out);
 	    return MONGO_ERROR;
     }
     bson_destroy( &b );
@@ -1513,7 +1533,7 @@ MONGO_EXPORT bson_bool_t mongo_create_simple_index( mongo *conn, const char *ns,
     bson_append_int( b, field, 1 );
     bson_finish( b );
 
-    success = mongo_create_index( conn, ns, b, NULL, options, out );
+    success = mongo_create_index( conn, ns, b, NULL, options, -1, out );
     bson_destroy( b );
     return success;
 }
