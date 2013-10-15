@@ -66,7 +66,7 @@ class CurrentPlanar(Agros2DTestCase):
         
         # volume integral
         volume = self.current.volume_integrals([0, 1, 2])
-        self.value_test("Losses", volume["Pj"], 10070.23937)
+        self.value_test("Losses", volume["Pj"], 11640.65644)
         
         # surface integral
         surface = self.current.surface_integrals([0])

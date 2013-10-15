@@ -457,8 +457,6 @@ void WeakFormAgros<Scalar>::updateExtField()
         foreach(int index, numbers)
         {
             QString quantityID = quantityOrdering.key(index);
-            qDebug() << QString("register value %1, index %2").arg(quantityID).arg(index);
-
 
             bool containedInAnalysis = false;
             foreach(XMLModule::quantity quantity, weakform.quantity())
