@@ -85,7 +85,7 @@ public:
     {
         {{#VARIABLE_SOURCE}}
         if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
-            result[{{POSITION}}] = Hermes::Ord(5);
+            result[{{POSITION}}] = Hermes::Ord(20);
         {{/VARIABLE_SOURCE}}
     }
 
@@ -116,25 +116,31 @@ void {{CLASS}}SurfaceIntegral::calculate()
             Module::updateTimeFunctions(timeLevels[m_timeStep]);
         }
 
-        Hermes::vector<std::string> markers;
+        Hermes::vector<std::string> boundaryMarkers;
+        Hermes::vector<std::string> internalMarkers;
         for (int i = 0; i < Agros2D::scene()->edges->count(); i++)
         {
             SceneEdge *edge = Agros2D::scene()->edges->at(i);
             if (edge->isSelected())
             {
-                markers.push_back(QString::number(i).toStdString());
+                if (edge->marker(m_fieldInfo)->isNone())
+                    internalMarkers.push_back(QString::number(i).toStdString());
+                else
+                    boundaryMarkers.push_back(QString::number(i).toStdString());
             }
         }
 
         {{CLASS}}SurfaceIntegralCalculator calc(m_fieldInfo, ma.solutions(), {{INTEGRAL_COUNT}});
-        double *values = calc.calculate(markers);
+        double *internalValues = calc.calculate(internalMarkers);
+        double *boundaryValues = calc.calculate(boundaryMarkers);
 
         {{#VARIABLE_SOURCE}}
         if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
-            m_values[QLatin1String("{{VARIABLE}}")] = values[{{POSITION}}];
+            m_values[QLatin1String("{{VARIABLE}}")] = 0.5 * internalValues[{{POSITION}}] + boundaryValues[{{POSITION}}];
         {{/VARIABLE_SOURCE}}
 
-        ::free(values);
+        ::free(internalValues);
+        ::free(boundaryValues);
     }
 }
 
