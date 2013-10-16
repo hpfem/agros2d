@@ -404,12 +404,12 @@ ConstantTable::ConstantTable(Hermes::vector<double> points, Hermes::vector<doubl
     m_value = sum / size;
 }
 
-double ConstantTable::value(double x)
+double ConstantTable::value(double x) const
 {
     return m_value;
 }
 
-double ConstantTable::derivative(double x)
+double ConstantTable::derivative(double x) const
 {
     return 0;
 }

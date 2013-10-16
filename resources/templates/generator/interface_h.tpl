@@ -86,6 +86,7 @@ public:
 };
 
 // ***********************************************************************************************************************************
+// Previous declaration of special functions
 
 {{#SPECIAL_FUNCTION_SOURCE}}
 template <typename Scalar>
@@ -97,6 +98,23 @@ public:
     virtual Scalar value(double h) const;
     virtual Scalar extrapolation_low();
     virtual Scalar extrapolation_hi();
+};
+{{/SPECIAL_FUNCTION_SOURCE}}
+
+// ***********************************************************************************************************************************
+// New declaration of special functions
+
+{{#SPECIAL_FUNCTION_SOURCE}}
+class {{SPECIAL_EXT_FUNCTION_FULL_NAME}} : public AgrosSpecialExtFunction
+{
+public:
+    {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(FieldInfo* fieldInfo);
+    virtual double calculateValue(double h) const;
+    virtual void value(int n, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const;
+private:
+{{#PARAMETERS}}    mutable double {{PARAMETER_NAME}};
+{{/PARAMETERS}}
+    mutable double area;
 };
 {{/SPECIAL_FUNCTION_SOURCE}}
 

@@ -283,6 +283,8 @@
                         <attribute name="bound_hi" type="string" />
                         <attribute name="extrapolate_low" type="string" />
                         <attribute name="extrapolate_hi" type="string" />
+                        <attribute name="nonlinearity" type="string" />
+                        <attribute name="interpolation_count" type="string" />
                 </complexType>
         </element>
         

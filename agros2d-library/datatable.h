@@ -46,8 +46,8 @@ class ConstantTable
 {
 public:
     ConstantTable(Hermes::vector<double> points, Hermes::vector<double> values);
-    double value(double x);
-    double derivative(double x);
+    double value(double x) const;
+    double derivative(double x) const;
 
 private:    
     double m_value;

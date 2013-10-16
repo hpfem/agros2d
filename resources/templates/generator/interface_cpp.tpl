@@ -206,6 +206,47 @@ Scalar {{SPECIAL_FUNCTION_FULL_NAME}}<Scalar>::extrapolation_hi()
 }
 {{/SPECIAL_FUNCTION_SOURCE}}
 
+{{#SPECIAL_FUNCTION_SOURCE}}
+{{SPECIAL_EXT_FUNCTION_FULL_NAME}}::{{SPECIAL_EXT_FUNCTION_FULL_NAME}}(FieldInfo* fieldInfo) : AgrosSpecialExtFunction(fieldInfo)
+{
+    m_type = specialFunctionTypeFromStringKey("{{TYPE}}");
+    m_bound_low = {{FROM}};
+    m_bound_hi = {{TO}};
+    m_extrapolation_low = {{EXTRAPOLATE_LOW}};
+    m_extrapolation_hi = {{EXTRAPOLATE_HI}};
+    m_count = {{INTERPOLATION_COUNT}};
+    m_variant = "{{SELECTED_VARIANT}}";
+}
+
+double {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::calculateValue(double h) const
+{
+    if(0)
+    {}
+    {{#VARIANT}}else if (this->m_variant == QString("{{ID}}"))
+        return {{EXPR}};{{/VARIANT}}
+    assert(0);
+}
+
+void {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::value(int n, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const
+{
+    SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(geometry->elem_marker).marker.c_str()));
+{{#PARAMETERS}}    {{PARAMETER_NAME}} = label->marker(m_fieldInfo)->value("{{PARAMETER_NAME}}").number();
+{{/PARAMETERS}}
+    area = m_fieldInfo->initialMesh()->get_marker_area(geometry->elem_marker);
+
+    for(int i = 0; i < n; i++)
+    {
+        // todo: the string DEPENDENCE should be parsed and tokens value1 replaced by u_ext[0]->val[i], etc.
+        // todo: Problem that specialExtFunctions are not generated for individual analysisTypes, this causes technical probelms in generator. Do it!
+        double value1 = u_ext[0]->val[i];
+
+        result->val[i] = calculateValue({{DEPENDENCE}});
+    }
+}
+
+{{/SPECIAL_FUNCTION_SOURCE}}
+
+
 {{#SPECIAL_FUNCTION_SOURCE}}template class {{SPECIAL_FUNCTION_FULL_NAME}}<double>;
 {{/SPECIAL_FUNCTION_SOURCE}}
 

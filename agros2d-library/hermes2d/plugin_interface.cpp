@@ -84,5 +84,45 @@ void SpecialFunction<Scalar>::createInterpolation()
     mutex.unlock();
 }
 
+void AgrosSpecialExtFunction::createTable()
+{
+    QMutex mutex;
+    mutex.lock();
+    {
+        if(m_type == SpecialFunctionType_Constant)
+            m_constantValue = calculateValue(0);
+        else
+        {
+            Hermes::vector<double> points;
+            Hermes::vector<double> values;
+
+            double step = (m_bound_hi - m_bound_low) / (m_count - 1);
+            for (int i = 0; i < m_count; i++)
+            {
+                double h = m_bound_low + i * step;
+                points.push_back(h);
+                values.push_back(calculateValue(h));
+            }
+            m_dataTable.setValues(points, values);
+        }
+    }
+    mutex.unlock();
+}
+
+double AgrosSpecialExtFunction::valueFromTable(double h)
+{
+    if(m_type == SpecialFunctionType_Constant)
+        return m_constantValue;
+    else
+    {
+        if(h < m_bound_low)
+            return m_extrapolation_low;
+        else if(h > m_bound_hi)
+            return m_extrapolation_hi;
+        else
+            return m_dataTable.value(h);
+    }
+}
+
 template AGROS_LIBRARY_API class SpecialFunction<double>;
 //template AGROS_LIBRARY_API class AgrosExtFunction<double>;

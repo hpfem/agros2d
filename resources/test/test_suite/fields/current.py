@@ -141,5 +141,5 @@ if __name__ == '__main__':
     suite = ut.TestSuite()
     result = Agros2DTestResult()
     suite.addTest(ut.TestLoader().loadTestsFromTestCase(CurrentPlanar))
-    suite.addTest(ut.TestLoader().loadTestsFromTestCase(CurrentAxisymmetric))
+#    suite.addTest(ut.TestLoader().loadTestsFromTestCase(CurrentAxisymmetric))
     suite.run(result)

@@ -2108,9 +2108,12 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function* functi
     ctemplate::TemplateDictionary *functionTemplate = output->AddSectionDictionary("SPECIAL_FUNCTION_SOURCE");
     functionTemplate->SetValue("SPECIAL_FUNCTION_NAME", function->shortname());
     functionTemplate->SetValue("SPECIAL_FUNCTION_FULL_NAME", m_module->general().id() + "_function_" + function->shortname());
+    functionTemplate->SetValue("SPECIAL_EXT_FUNCTION_FULL_NAME", m_module->general().id() + "_ext_function_" + function->shortname());
     functionTemplate->SetValue("FROM", function->bound_low().present() ? function->bound_low().get() : "-1");
     functionTemplate->SetValue("TO", function->bound_hi().present() ? function->bound_hi().get() : "1");
     functionTemplate->SetValue("TYPE", function->type());
+    functionTemplate->SetValue("DEPENDENCE", function->nonlinearity().present() ? function->nonlinearity().get() : "0");
+    functionTemplate->SetValue("INTERPOLATION_COUNT", function->interpolation_count().present() ? function->interpolation_count().get() : "50");
     if(function->extrapolate_low().present())
     {
         functionTemplate->SetValue("EXTRAPOLATE_LOW_PRESENT", "true");

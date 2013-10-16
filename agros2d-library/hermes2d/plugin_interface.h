@@ -45,6 +45,8 @@ public:
 
     // todo: this is dangerous. Order should be determined from the type of ExtFunction
     // for consants should be 0, for nonlinearities more. Hom much?
+    // todo:
+    // todo:
     virtual void ord(Hermes::Hermes2D::Func<Hermes::Ord>** u_ext, Hermes::Hermes2D::Func<Hermes::Ord>* result) const
     {
         result->val[0] = Hermes::Ord(1);
@@ -68,6 +70,26 @@ public:
         // result values are not initialized, but they should never be used.
         // this is not very safe, but done from efficiency reasons
     }
+};
+
+class AGROS_LIBRARY_API AgrosSpecialExtFunction : public AgrosExtFunction
+{
+public:
+    AgrosSpecialExtFunction(FieldInfo* fieldInfo) : AgrosExtFunction(fieldInfo) {}
+    void createTable();
+    double valueFromTable(double h);
+    virtual double calculateValue(double h) const = 0;
+
+protected:
+    mutable DataTable m_dataTable;
+    SpecialFunctionType m_type;
+    double m_constantValue;
+    double m_bound_low;
+    double m_bound_hi;
+    double m_extrapolation_low;
+    double m_extrapolation_hi;
+    int m_count;
+    QString m_variant;
 };
 
 struct PointValue
