@@ -55,11 +55,11 @@ static XMLModule::module *module_module = NULL;
     // delete m_module;
 }
 
-AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QString id, bool derivative)
+AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QString id, bool derivative, int offsetI)
 {
     {{#EXT_FUNCTION}}
     if((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (id == "{{QUANTITY_ID}}") && (derivative == {{IS_DERIVATIVE}}))
-        return new {{EXT_FUNCTION_NAME}}(Agros2D::problem()->fieldInfo(problemId.sourceFieldId));
+        return new {{EXT_FUNCTION_NAME}}(Agros2D::problem()->fieldInfo(problemId.sourceFieldId), offsetI);
     {{/EXT_FUNCTION}}
 
     return NULL;
@@ -207,7 +207,7 @@ Scalar {{SPECIAL_FUNCTION_FULL_NAME}}<Scalar>::extrapolation_hi()
 {{/SPECIAL_FUNCTION_SOURCE}}
 
 {{#SPECIAL_FUNCTION_SOURCE}}
-{{SPECIAL_EXT_FUNCTION_FULL_NAME}}::{{SPECIAL_EXT_FUNCTION_FULL_NAME}}(FieldInfo* fieldInfo) : AgrosSpecialExtFunction(fieldInfo)
+{{SPECIAL_EXT_FUNCTION_FULL_NAME}}::{{SPECIAL_EXT_FUNCTION_FULL_NAME}}(FieldInfo* fieldInfo, int offsetI) : AgrosSpecialExtFunction(fieldInfo, offsetI)
 {
     m_type = specialFunctionTypeFromStringKey("{{TYPE}}");
     m_bound_low = {{FROM}};
@@ -236,7 +236,7 @@ void {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::value(int n, Hermes::Hermes2D::Func<dou
 
     for(int i = 0; i < n; i++)
     {
-        // todo: the string DEPENDENCE should be parsed and tokens value1 replaced by u_ext[0]->val[i], etc.
+        // todo: the string DEPENDENCE should be parsed and tokens value1 replaced by u_ext[m_offsetI + 0]->val[i], etc.
         // todo: Problem that specialExtFunctions are not generated for individual analysisTypes, this causes technical probelms in generator. Do it!
         double value1 = u_ext[0]->val[i];
 

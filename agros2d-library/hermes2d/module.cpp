@@ -468,9 +468,10 @@ void WeakFormAgros<Scalar>::updateExtField()
                 }
             }
 
+            int offsetI = m_block->offset(field);
             Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> extFunction;
             if(containedInAnalysis)
-                extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, false));
+                extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, false, offsetI));
             else
                 extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
 
@@ -482,7 +483,7 @@ void WeakFormAgros<Scalar>::updateExtField()
             {
                 extFunction = NULL;
                 if(containedInAnalysis)
-                    extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, true));
+                    extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, true, offsetI));
                 else
                     extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
 

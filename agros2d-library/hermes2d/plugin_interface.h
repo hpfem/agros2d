@@ -40,8 +40,7 @@
 class AGROS_LIBRARY_API AgrosExtFunction : public Hermes::Hermes2D::UExtFunction<double>
 {
 public:
-    // todo: m_offsetI has to be filled in at the point of creation (Hard coupling)
-    AgrosExtFunction(FieldInfo* fieldInfo) : UExtFunction(), m_fieldInfo(fieldInfo), m_offsetI(0){}
+    AgrosExtFunction(FieldInfo* fieldInfo, int offsetI) : UExtFunction(), m_fieldInfo(fieldInfo), m_offsetI(offsetI){}
 
     // todo: this is dangerous. Order should be determined from the type of ExtFunction
     // for consants should be 0, for nonlinearities more. Hom much?
@@ -64,7 +63,7 @@ protected:
 class AGROS_LIBRARY_API AgrosEmptyExtFunction : public AgrosExtFunction
 {
 public:
-    AgrosEmptyExtFunction() : AgrosExtFunction(NULL) {}
+    AgrosEmptyExtFunction() : AgrosExtFunction(NULL, 0) {}
     virtual void value(int n, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const
     {
         // result values are not initialized, but they should never be used.
@@ -75,7 +74,7 @@ public:
 class AGROS_LIBRARY_API AgrosSpecialExtFunction : public AgrosExtFunction
 {
 public:
-    AgrosSpecialExtFunction(FieldInfo* fieldInfo) : AgrosExtFunction(fieldInfo) {}
+    AgrosSpecialExtFunction(FieldInfo* fieldInfo, int offsetI) : AgrosExtFunction(fieldInfo, offsetI) {}
     void createTable();
     double valueFromTable(double h);
     virtual double calculateValue(double h) const = 0;
@@ -265,7 +264,8 @@ public:
 
     virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, Hermes::Hermes2D::MeshSharedPtr mesh) = 0;
 
-    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative) = 0;
+    // offsetI .. for hard coupling
+    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, int offsetI) = 0;
 
     // error calculators
     virtual Hermes::Hermes2D::ErrorCalculator<double> *errorCalculator(FieldInfo *fieldInfo,

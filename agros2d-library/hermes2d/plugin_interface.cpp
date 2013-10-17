@@ -86,6 +86,7 @@ void SpecialFunction<Scalar>::createInterpolation()
 
 void AgrosSpecialExtFunction::createTable()
 {
+    // todo: get rid of mutex
     QMutex mutex;
     mutex.lock();
     {

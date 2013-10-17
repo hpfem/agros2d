@@ -51,7 +51,7 @@ public:
 
     virtual ExactSolutionScalarAgros<double> *exactSolution(const ProblemID problemId, FormInfo *form, Hermes::Hermes2D::MeshSharedPtr mesh);
 
-    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative);
+    virtual AgrosExtFunction *extFunction(const ProblemID problemId, QString id, bool derivative, int offsetI);
 
     // postprocessor
     // filter
@@ -108,7 +108,7 @@ public:
 class {{SPECIAL_EXT_FUNCTION_FULL_NAME}} : public AgrosSpecialExtFunction
 {
 public:
-    {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(FieldInfo* fieldInfo);
+    {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(FieldInfo* fieldInfo, int offsetI);
     virtual double calculateValue(double h) const;
     virtual void value(int n, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const;
 private:
