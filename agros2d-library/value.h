@@ -61,8 +61,8 @@ public:
     bool evaluateAtTimeAndPoint(double time, const Point &point);
 
     // table
-    double numberFromTable(double key);
-    Hermes::Ord numberFromTable(Hermes::Ord ord);
+    double numberFromTable(double key) const;
+    Hermes::Ord numberFromTable(Hermes::Ord ord) const;
     double derivativeFromTable(double key);
     Hermes::Ord derivativeFromTable(Hermes::Ord ord);
 

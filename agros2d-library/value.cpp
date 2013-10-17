@@ -155,7 +155,7 @@ double Value::numberAtTimeAndPoint(double time, const Point &point, bool evaluat
     return number();
 }
 
-double Value::numberFromTable(double key)
+double Value::numberFromTable(double key) const
 {
     if (Agros2D::problem()->isNonlinear() && hasTable())
         return m_table.value(key);
@@ -163,7 +163,7 @@ double Value::numberFromTable(double key)
         return number();
 }
 
-Hermes::Ord Value::numberFromTable(Hermes::Ord key)
+Hermes::Ord Value::numberFromTable(Hermes::Ord key) const
 {
     return Hermes::Ord(1);
 }
