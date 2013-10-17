@@ -155,8 +155,15 @@ void DataTable::setImplicit()
 
 double DataTable::value(double x)
 {
+    // todo: get rid of this, make value const function !
     if (!m_valid)
-        validate();
+    {
+#pragma omp critical (validation)
+        {
+            if (!m_valid)
+                validate();
+        }
+    }
 
     if (m_type == DataTableType_PiecewiseLinear)
     {
@@ -176,8 +183,15 @@ double DataTable::value(double x)
 
 double DataTable::derivative(double x)
 {    
-    if(!m_valid)
-        validate();
+    // todo: get rid of this, make derivative const function !
+    if (!m_valid)
+    {
+#pragma omp critical (validation)
+        {
+            if (!m_valid)
+                validate();
+        }
+    }
 
     if (m_type == DataTableType_PiecewiseLinear)
     {
@@ -208,62 +222,57 @@ void DataTable::inValidate()
 
 void DataTable::validate()
 {
-    QMutex mutex;
-    mutex.lock();
+    // object may have been validated by other thread. In that case, leave.
+    if(m_valid)
+        return;
+
+    assert(m_linear.isNull());
+    assert(m_spline.isNull());
+    assert(m_constant.isNull());
+    assert(!m_valid);
+
+    assert(m_points.size() == m_values.size());
+    m_numPoints = 0;
+    m_isEmpty = true;
+
+    if (m_type == DataTableType_PiecewiseLinear)
     {
-        // object may have been validated by other thread. In that case, leave.
-        if(m_valid)
-            return;
-
-        assert(m_linear.isNull());
-        assert(m_spline.isNull());
-        assert(m_constant.isNull());
-        assert(!m_valid);
-
-        assert(m_points.size() == m_values.size());
-        m_numPoints = 0;
-        m_isEmpty = true;
-
-        if (m_type == DataTableType_PiecewiseLinear)
-        {
-            m_linear = QSharedPointer<PiecewiseLinear>(new PiecewiseLinear(m_points, m_values));
-        }
-        else if (m_type == DataTableType_CubicSpline)
-        {
-            // first create object and calculate coeffs, than assign to m_spline
-            // otherwise probably some other thread interfered and caused application fail
-            // this is strange, though, since no other thread should be able to access thanks to mutex check
-            try
-            {
-                QSharedPointer<Hermes::Hermes2D::CubicSpline> spline
-                        = QSharedPointer<Hermes::Hermes2D::CubicSpline>(new Hermes::Hermes2D::CubicSpline(m_points,
-                                                                                                          m_values,
-                                                                                                          0.0, 0.0,
-                                                                                                          m_splineFirstDerivatives, m_splineFirstDerivatives,
-                                                                                                          !m_extrapolateConstant, !m_extrapolateConstant));
-                spline.data()->calculate_coeffs();
-                m_spline = spline;
-            }
-            catch (Hermes::Exceptions::Exception e)
-            {
-                m_valid = false;
-                qDebug() << "Exception thrown from Hermes::Hermes2D::CubicSpline has been ignored. DataTable not validated!";
-                return;
-            }
-
-        }
-        else if(m_type == DataTableType_Constant)
-        {
-            m_constant = QSharedPointer<ConstantTable>(new ConstantTable(m_points, m_values));
-        }
-        else
-            assert(0);
-
-        m_numPoints = m_points.size();
-        m_isEmpty = (m_numPoints == 0);
-        m_valid = true;
+        m_linear = QSharedPointer<PiecewiseLinear>(new PiecewiseLinear(m_points, m_values));
     }
-    mutex.unlock();
+    else if (m_type == DataTableType_CubicSpline)
+    {
+        // first create object and calculate coeffs, than assign to m_spline
+        // otherwise probably some other thread interfered and caused application fail
+        // this is strange, though, since no other thread should be able to access thanks to mutex check
+        try
+        {
+            QSharedPointer<Hermes::Hermes2D::CubicSpline> spline
+                    = QSharedPointer<Hermes::Hermes2D::CubicSpline>(new Hermes::Hermes2D::CubicSpline(m_points,
+                                                                                                      m_values,
+                                                                                                      0.0, 0.0,
+                                                                                                      m_splineFirstDerivatives, m_splineFirstDerivatives,
+                                                                                                      !m_extrapolateConstant, !m_extrapolateConstant));
+            spline.data()->calculate_coeffs();
+            m_spline = spline;
+        }
+        catch (Hermes::Exceptions::Exception e)
+        {
+            m_valid = false;
+            qDebug() << "Exception thrown from Hermes::Hermes2D::CubicSpline has been ignored. DataTable not validated!";
+            return;
+        }
+
+    }
+    else if(m_type == DataTableType_Constant)
+    {
+        m_constant = QSharedPointer<ConstantTable>(new ConstantTable(m_points, m_values));
+    }
+    else
+        assert(0);
+
+    m_numPoints = m_points.size();
+    m_isEmpty = (m_numPoints == 0);
+    m_valid = true;
 }
 
 double DataTable::minKey() const
