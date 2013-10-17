@@ -2,3 +2,4 @@
 	path = hermes
 	url = git@github.com:hpfem/hermes.git
 	branch = master
+	ignore = dirty
