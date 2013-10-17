@@ -51,7 +51,7 @@ public:
 
         double *x = e->x;
         double *y = e->y;
-        double area = e->area;
+        double area = m_fieldInfo->initialMesh()->get_marker_area(e->elem_marker);
 
         {{#VARIABLE_MATERIAL}}Value *material_{{MATERIAL_VARIABLE}} = &material->value(QLatin1String("{{MATERIAL_VARIABLE}}"));
         {{/VARIABLE_MATERIAL}}

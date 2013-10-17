@@ -207,8 +207,8 @@ class MagneticAxisymmetricGeneral(Agros2DTestCase):
         self.value_test("Energy", volume["Wm"], 0.002273)
         
         volume = self.magnetic.volume_integrals([2])
-        self.value_test("Lorentz force - r", volume["Flx"], -8.069509) 
-        self.value_test("Lorentz force - z", volume["Fly"], -5.288991) 
+        self.value_test("Integral Lorentz force - r", volume["Flx"], -8.069509) 
+        self.value_test("Integral Lorentz force - z", volume["Fly"], -5.288991) 
         
         # surface integral
         surface = self.magnetic.surface_integrals([12, 13, 14, 15])
