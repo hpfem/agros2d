@@ -1634,7 +1634,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
         dict["uval"] = "u->val[i]";
         dict["vval"] = "v->val[i]";
         dict["upval"] = "u_ext[this->j]->val[i]";
-        dict["uptval"] = "ext[this->m_offsetPreviousTimeExt + this->j - this->m_offsetJ]->val[i]";
+        dict["uptval"] = "ext[*this->m_offsetPreviousTimeExt + this->j - this->m_offsetJ]->val[i]";
         dict["deltat"] = "Agros2D::problem()->actualTimeStepLength()";
 
         // vector field
@@ -1647,7 +1647,7 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
         dict["upcurl"] = "u_ext[this->j]->curl[i]";
 
         dict["timedermat"] = "(*this->m_table)->matrixFormCoefficient()";
-        dict["timedervec"] = "(*this->m_table)->vectorFormCoefficient(ext, this->j, this->m_markerSource->fieldInfo()->numberOfSolutions(), this->m_offsetPreviousTimeExt, i)";
+        dict["timedervec"] = "(*this->m_table)->vectorFormCoefficient(ext, this->j, this->m_markerSource->fieldInfo()->numberOfSolutions(), *this->m_offsetPreviousTimeExt, i)";
 
         if (coordinateType == CoordinateType_Planar)
         {

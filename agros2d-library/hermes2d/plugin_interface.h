@@ -212,10 +212,10 @@ template<typename Scalar>
 class VectorFormVolAgros : public Hermes::Hermes2D::VectorFormVol<Scalar>, public FormAgrosInterface
 {
 public:
-    VectorFormVolAgros(unsigned int i, int offsetI, int offsetJ, int offsetPreviousTimeExt, int *offsetCouplingExt)
+    VectorFormVolAgros(unsigned int i, int offsetI, int offsetJ, int *offsetPreviousTimeExt, int *offsetCouplingExt)
         : Hermes::Hermes2D::VectorFormVol<Scalar>(i), FormAgrosInterface(offsetI, offsetJ), m_offsetPreviousTimeExt(offsetPreviousTimeExt), m_offsetCouplingExt(offsetCouplingExt) {}
 protected:
-    int m_offsetPreviousTimeExt;
+    int *m_offsetPreviousTimeExt;
     int *m_offsetCouplingExt;
 };
 
@@ -258,7 +258,7 @@ public:
 
     // weak forms
     virtual MatrixFormVolAgros<double> *matrixFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material) = 0;
-    virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material, int offsetPreviousTimeExt, int *offsetCouplingExt) = 0;
+    virtual VectorFormVolAgros<double> *vectorFormVol(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Material *material, int *offsetPreviousTimeExt, int *offsetCouplingExt) = 0;
     virtual MatrixFormSurfAgros<double> *matrixFormSurf(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Boundary *boundary) = 0;
     virtual VectorFormSurfAgros<double> *vectorFormSurf(const ProblemID problemId, FormInfo *form, int offsetI, int offsetJ, Boundary *boundary) = 0;
 

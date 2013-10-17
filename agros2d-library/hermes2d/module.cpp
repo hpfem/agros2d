@@ -157,7 +157,7 @@ template <typename Scalar>
 Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID problemId,
                                             const QString &area, FormInfo *form,
                                             Marker* markerSource, Material *markerTarget,
-                                            int offsetI, int offsetJ, int offsetPreviousTimeExt, int *offsetCouplingExt)
+                                            int offsetI, int offsetJ, int *offsetPreviousTimeExt, int *offsetCouplingExt)
 {
     QString fieldId = (problemId.analysisTypeTarget == AnalysisType_Undefined) ?
                 problemId.sourceFieldId : problemId.sourceFieldId + "-" + problemId.targetFieldId;
@@ -278,7 +278,7 @@ void WeakFormAgros<Scalar>::registerForm(WeakFormKind type, Field *field, QStrin
     problemId.linearityType = field->fieldInfo()->linearityType();
 
     // compiled form
-    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId, area, &form, marker, NULL, offsetI, offsetJ, m_offsetPreviousTimeExt, NULL);
+    Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId, area, &form, marker, NULL, offsetI, offsetJ, &m_offsetPreviousTimeExt, NULL);
 
     // weakform with zero coefficients
     if (!custom_form) return;
@@ -309,7 +309,7 @@ void WeakFormAgros<Scalar>::registerFormCoupling(WeakFormKind type, QString area
 
     // compiled form
     Hermes::Hermes2D::Form<Scalar> *custom_form = factoryForm<Scalar>(type, problemId,
-                                                                      area, &form, materialSource, materialTarget, offsetI, offsetJ, m_offsetPreviousTimeExt, &m_offsetCouplingExt);
+                                                                      area, &form, materialSource, materialTarget, offsetI, offsetJ, &m_offsetPreviousTimeExt, &m_offsetCouplingExt);
     // weakform with zero coefficients
     if (!custom_form) return;
 
