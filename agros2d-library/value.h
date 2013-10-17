@@ -63,8 +63,8 @@ public:
     // table
     double numberFromTable(double key) const;
     Hermes::Ord numberFromTable(Hermes::Ord ord) const;
-    double derivativeFromTable(double key);
-    Hermes::Ord derivativeFromTable(Hermes::Ord ord);
+    double derivativeFromTable(double key) const;
+    Hermes::Ord derivativeFromTable(Hermes::Ord ord) const;
 
     bool hasTable() const;
 
