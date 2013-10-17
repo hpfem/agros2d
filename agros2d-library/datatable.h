@@ -68,8 +68,8 @@ public:
     void setSplineFirstDerivatives(bool fd);
     void setExtrapolateConstant(bool ec);
 
-    double value(double x);
-    double derivative(double x);
+    double value(double x) const;
+    double derivative(double x) const;
     inline int size() const { return m_numPoints; }
     inline bool isEmpty() const {return m_isEmpty; }
     DataTableType type() const {return m_type;}

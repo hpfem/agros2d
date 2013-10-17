@@ -29,6 +29,7 @@ DataTable::DataTable(Hermes::vector<double> points, Hermes::vector<double> value
 {
     setImplicit();
     checkTable();
+    validate();
 }
 
 DataTable::DataTable(const DataTable &origin)
@@ -48,6 +49,8 @@ DataTable::DataTable(const DataTable &origin)
 
     m_numPoints = origin.m_numPoints;
     m_isEmpty = origin.m_isEmpty;
+
+    validate();
 }
 
 void DataTable::clear()
@@ -62,6 +65,7 @@ void DataTable::setValues(Hermes::vector<double> points, Hermes::vector<double> 
     m_values = values;
 
     checkTable();
+    validate();
 }
 
 void DataTable::setValues(vector<double> points, vector<double> values)
@@ -78,6 +82,7 @@ void DataTable::setValues(vector<double> points, vector<double> values)
     }
 
     checkTable();
+    validate();
 }
 
 void DataTable::setValues(double *keys, double *values, int count)
@@ -92,6 +97,7 @@ void DataTable::setValues(double *keys, double *values, int count)
     }
 
     checkTable();
+    validate();
 }
 
 void DataTable::checkTable()
@@ -125,18 +131,21 @@ void DataTable::setType(DataTableType type)
 {
     inValidate();
     m_type = type;
+    validate();
 }
 
 void DataTable::setSplineFirstDerivatives(bool fd)
 {
     inValidate();
     m_splineFirstDerivatives = fd;
+    validate();
 }
 
 void DataTable::setExtrapolateConstant(bool ec)
 {
     inValidate();
     m_extrapolateConstant = ec;
+    validate();
 }
 
 
@@ -153,17 +162,18 @@ void DataTable::setImplicit()
     m_isEmpty = true;
 }
 
-double DataTable::value(double x)
+double DataTable::value(double x) const
 {
-    // todo: get rid of this, make value const function !
-    if (!m_valid)
-    {
-#pragma omp critical (validation)
-        {
-            if (!m_valid)
-                validate();
-        }
-    }
+//    // todo: get rid of this, make value const function !
+//    if (!m_valid)
+//    {
+//#pragma omp critical (validation)
+//        {
+//            if (!m_valid)
+//                validate();
+//        }
+//    }
+    assert(m_valid);
 
     if (m_type == DataTableType_PiecewiseLinear)
     {
@@ -181,17 +191,18 @@ double DataTable::value(double x)
         assert(0);
 }
 
-double DataTable::derivative(double x)
+double DataTable::derivative(double x) const
 {    
-    // todo: get rid of this, make derivative const function !
-    if (!m_valid)
-    {
-#pragma omp critical (validation)
-        {
-            if (!m_valid)
-                validate();
-        }
-    }
+//    // todo: get rid of this, make derivative const function !
+//    if (!m_valid)
+//    {
+//#pragma omp critical (validation)
+//        {
+//            if (!m_valid)
+//                validate();
+//        }
+//    }
+    assert(m_valid);
 
     if (m_type == DataTableType_PiecewiseLinear)
     {
@@ -400,6 +411,7 @@ void DataTable::fromString(const QString &str)
         m_values.push_back(numStr.toDouble());
 
     checkTable();
+    validate();
 }
 
 

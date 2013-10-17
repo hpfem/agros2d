@@ -84,33 +84,34 @@ void SpecialFunction<Scalar>::createInterpolation()
     mutex.unlock();
 }
 
-void AgrosSpecialExtFunction::createTable()
-{
-    // todo: get rid of mutex
-    QMutex mutex;
-    mutex.lock();
-    {
-        if(m_type == SpecialFunctionType_Constant)
-            m_constantValue = calculateValue(0);
-        else
-        {
-            Hermes::vector<double> points;
-            Hermes::vector<double> values;
+//***********************************************************************************
 
-            double step = (m_bound_hi - m_bound_low) / (m_count - 1);
-            for (int i = 0; i < m_count; i++)
-            {
-                double h = m_bound_low + i * step;
-                points.push_back(h);
-                values.push_back(calculateValue(h));
-            }
-            m_dataTable.setValues(points, values);
-        }
-    }
-    mutex.unlock();
+AgrosSpecialExtFunction::AgrosSpecialExtFunction(FieldInfo* fieldInfo, int offsetI) : AgrosExtFunction(fieldInfo, offsetI)
+{
+    createTable();
 }
 
-double AgrosSpecialExtFunction::valueFromTable(double h)
+void AgrosSpecialExtFunction::createTable()
+{
+    if(m_type == SpecialFunctionType_Constant)
+        m_constantValue = calculateValue(0);
+    else
+    {
+        Hermes::vector<double> points;
+        Hermes::vector<double> values;
+
+        double step = (m_bound_hi - m_bound_low) / (m_count - 1);
+        for (int i = 0; i < m_count; i++)
+        {
+            double h = m_bound_low + i * step;
+            points.push_back(h);
+            values.push_back(calculateValue(h));
+        }
+        m_dataTable.setValues(points, values);
+    }
+}
+
+double AgrosSpecialExtFunction::valueFromTable(double h) const
 {
     if(m_type == SpecialFunctionType_Constant)
         return m_constantValue;

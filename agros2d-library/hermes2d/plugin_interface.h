@@ -71,16 +71,22 @@ public:
     }
 };
 
+class AGROS_LIBRARY_API AgrosSpecialExtFunctionOneMaterial
+{
+public:
+protected:
+};
+
 class AGROS_LIBRARY_API AgrosSpecialExtFunction : public AgrosExtFunction
 {
 public:
-    AgrosSpecialExtFunction(FieldInfo* fieldInfo, int offsetI) : AgrosExtFunction(fieldInfo, offsetI) {}
+    AgrosSpecialExtFunction(FieldInfo* fieldInfo, int offsetI);
     void createTable();
-    double valueFromTable(double h);
+    double valueFromTable(double h) const;
     virtual double calculateValue(double h) const = 0;
 
 protected:
-    mutable DataTable m_dataTable;
+    DataTable m_dataTable;
     SpecialFunctionType m_type;
     double m_constantValue;
     double m_bound_low;

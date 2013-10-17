@@ -58,9 +58,9 @@ public:
 
 private:
     {{#VARIABLE_SOURCE}}
-    mutable Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
+    Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
     {{#VARIABLE_TARGET}}
-    mutable Value *{{VARIABLE_SHORT}};{{/VARIABLE_TARGET}}
+    Value *{{VARIABLE_SHORT}};{{/VARIABLE_TARGET}}
     {{#SPECIAL_FUNCTION_SOURCE}}
     {{SPECIAL_FUNCTION_FULL_NAME}}<Scalar> {{SPECIAL_FUNCTION_NAME}}; {{/SPECIAL_FUNCTION_SOURCE}}
 };
@@ -87,9 +87,9 @@ private:
     unsigned int j;
 
     {{#VARIABLE_SOURCE}}
-    mutable Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
+    Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
     {{#VARIABLE_TARGET}}
-    mutable Value *{{VARIABLE_SHORT}};{{/VARIABLE_TARGET}}
+    Value *{{VARIABLE_SHORT}};{{/VARIABLE_TARGET}}
     {{#SPECIAL_FUNCTION_SOURCE}}
 {{SPECIAL_FUNCTION_FULL_NAME}}<Scalar> {{SPECIAL_FUNCTION_NAME}}; {{/SPECIAL_FUNCTION_SOURCE}}
 };
@@ -112,7 +112,7 @@ public:
 
 private:
     {{#VARIABLE_SOURCE}}
-    mutable Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
+    Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
 };
 {{/SURFACE_MATRIX_SOURCE}}
 
@@ -135,7 +135,7 @@ private:
     unsigned int j;
 
     {{#VARIABLE_SOURCE}}
-    mutable Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
+    Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
 };
 {{/SURFACE_VECTOR_SOURCE}}
 
@@ -158,7 +158,7 @@ public:
 
 private:
     {{#VARIABLE_SOURCE}}
-    mutable Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
+    Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
 };
 {{/EXACT_SOURCE}}
 

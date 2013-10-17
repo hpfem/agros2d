@@ -112,9 +112,6 @@ public:
     virtual double calculateValue(double h) const;
     virtual void value(int n, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const;
 private:
-{{#PARAMETERS}}    mutable double {{PARAMETER_NAME}};
-{{/PARAMETERS}}
-    mutable double area;
 };
 {{/SPECIAL_FUNCTION_SOURCE}}
 
