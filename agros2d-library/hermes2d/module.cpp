@@ -438,6 +438,7 @@ void WeakFormAgros<Scalar>::updateExtField()
         problemId.analysisTypeSource = fieldInfo->analysisType();
         problemId.coordinateType = Agros2D::problem()->config()->coordinateType();
         problemId.linearityType = fieldInfo->linearityType();
+        int offsetI = m_block->offset(field);
 
         XMLModule::weakform_volume weakform = module->volume().weakforms_volume().weakform_volume().at(0);
         foreach(XMLModule::weakform_volume weakformTest, module->volume().weakforms_volume().weakform_volume())
@@ -449,9 +450,11 @@ void WeakFormAgros<Scalar>::updateExtField()
             }
         }
 
+        // first register Values
         QMap<QString, int> quantityOrdering;
         QMap<QString, bool> quantityIsNonlin;
-        Module::volumeQuantityProperties(module, quantityOrdering, quantityIsNonlin);
+        QMap<QString, int> functionOrdering;
+        Module::volumeQuantityProperties(module, quantityOrdering, quantityIsNonlin, functionOrdering);
         QList<int> numbers = quantityOrdering.values();
         qSort(numbers);
         foreach(int index, numbers)
@@ -468,30 +471,58 @@ void WeakFormAgros<Scalar>::updateExtField()
                 }
             }
 
-            int offsetI = m_block->offset(field);
             Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> extFunction;
             if(containedInAnalysis)
                 extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, false, offsetI));
             else
                 extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
 
-            assert(extFunction);
             assert(externalUSlns.size() == index);
             externalUSlns.push_back(extFunction);
 
+            // for nonlinear quantities, register derivative as well
             if(quantityIsNonlin[quantityID])
             {
                 extFunction = NULL;
                 if(containedInAnalysis)
                     extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, quantityID, true, offsetI));
                 else
+                    // pass an empty functions if the quantity is not contained in the given analysis
+                    // the reason is that we can use uniform indexing ext[n] in the weak forms (the same n for all analysis)
+                    // as a result we can generate only one variant of each form (although there are more variants of ext functions because of different dependencies of nonlinear and time dependent terms)
                     extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
 
                 assert(extFunction);
                 assert(externalUSlns.size() - 1 == index);
                 externalUSlns.push_back(extFunction);
             }
+        }
 
+        // register special ext functions
+        numbers = functionOrdering.values();
+        qSort(numbers);
+
+        foreach(int index, numbers)
+        {
+            QString functionID = functionOrdering.key(index);
+
+            bool containedInAnalysis = false;
+            foreach(XMLModule::function_use functionUse, weakform.function_use())
+            {
+                if(QString::fromStdString(functionUse.id()) == functionID)
+                {
+                    containedInAnalysis = true;
+                    break;
+                }
+            }
+            Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar> extFunction;
+            if(containedInAnalysis)
+                extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(fieldInfo->plugin()->extFunction(problemId, functionID, false, offsetI));
+            else
+                extFunction = Hermes::Hermes2D::UExtFunctionSharedPtr<Scalar>(new AgrosEmptyExtFunction());
+
+            assert(externalUSlns.size() == index);
+            externalUSlns.push_back(extFunction);
         }
     }
 
@@ -1205,7 +1236,7 @@ void findVolumeLinearityOption(XMLModule::linearity_option& option, XMLModule::m
     }
 }
 
-void Module::volumeQuantityProperties(XMLModule::module *module, QMap<QString, int> &quantityOrder, QMap<QString, bool> &quantityIsNonlin)
+void Module::volumeQuantityProperties(XMLModule::module *module, QMap<QString, int> &quantityOrder, QMap<QString, bool> &quantityIsNonlin, QMap<QString, int> &functionOrder)
 {
     int nextIndex = 0;
     foreach(XMLModule::quantity quantity, module->volume().quantity())
@@ -1231,6 +1262,13 @@ void Module::volumeQuantityProperties(XMLModule::module *module, QMap<QString, i
         // if the quantity is nonlinear, we have to reserve space for its derivative as well
         if(quantityIsNonlin[quantityId])
             nextIndex++;
+    }
+
+    foreach(XMLModule::function function, module->volume().function())
+    {
+        QString functionID = QString::fromStdString(function.id());
+        functionOrder[functionID] = nextIndex;
+        nextIndex++;
     }
 }
 

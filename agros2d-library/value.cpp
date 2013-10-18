@@ -168,7 +168,7 @@ Hermes::Ord Value::numberFromTable(Hermes::Ord key) const
     return Hermes::Ord(1);
 }
 
-double Value::derivativeFromTable(double key)
+double Value::derivativeFromTable(double key) const
 {
     if (Agros2D::problem()->isNonlinear() && hasTable())
         return m_table.derivative(key);
@@ -176,7 +176,7 @@ double Value::derivativeFromTable(double key)
         return 0.0;
 }
 
-Hermes::Ord Value::derivativeFromTable(Hermes::Ord key)
+Hermes::Ord Value::derivativeFromTable(Hermes::Ord key) const
 {
     return Hermes::Ord(1);
 }

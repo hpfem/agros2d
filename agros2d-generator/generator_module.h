@@ -82,6 +82,7 @@ private:
 
     QMap<QString, int> quantityOrdering;
     QMap<QString, bool> quantityIsNonlinear;
+    QMap<QString, int> functionOrdering;
 };
 
 #endif // GENERATOR_MODULE_H

@@ -56,8 +56,7 @@
       <module:quantity id="magnetic_current_density_external_real"/>
       <module:quantity id="magnetic_total_current_prescribed"/>
       <module:quantity id="magnetic_total_current_real"/>
-<!--      todo: get rid of "this->" in the following (why inherited class needs it to acces ancestors field?-->
-      <module:function_variant expr="(1-ma_IPrescribed) * ma_Jer + ma_IPrescribed * ma_Itr / this->area"/>
+      <module:function_variant expr="(1-ma_IPrescribed) * ma_Jer + ma_IPrescribed * ma_Itr / area"/>
     </module:function>
 
     <module:matrix_form id="steady_laplace" i="1" j="1" planar="1 / (ma_mur * MU0) * (udx * vdx + udy * vdy)" axi="1 / (ma_mur * MU0) * ((udr * vdr + udz * vdz) + uval * vdr / r)"/>

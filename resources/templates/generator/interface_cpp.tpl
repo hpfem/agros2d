@@ -61,6 +61,14 @@ AgrosExtFunction *{{CLASS}}Interface::extFunction(const ProblemID problemId, QSt
     if((problemId.coordinateType == {{COORDINATE_TYPE}}) && (problemId.analysisTypeSource == {{ANALYSIS_TYPE}}) && (problemId.linearityType == {{LINEARITY_TYPE}}) && (id == "{{QUANTITY_ID}}") && (derivative == {{IS_DERIVATIVE}}))
         return new {{EXT_FUNCTION_NAME}}(Agros2D::problem()->fieldInfo(problemId.sourceFieldId), offsetI);
     {{/EXT_FUNCTION}}
+    {{#SPECIAL_FUNCTION_SOURCE}}
+    if((id == "{{SPECIAL_FUNCTION_ID}}") && (derivative == false))
+    {
+        AgrosExtFunction* extFunction = new {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(Agros2D::problem()->fieldInfo(problemId.sourceFieldId), offsetI);
+        extFunction->init();
+        return extFunction;
+    }
+    {{/SPECIAL_FUNCTION_SOURCE}}
 
     return NULL;
 }
@@ -184,6 +192,7 @@ QString {{CLASS}}Interface::localeDescription()
 template <typename Scalar>
 Scalar {{SPECIAL_FUNCTION_FULL_NAME}}<Scalar>::value(double h) const
 {
+    double area = this->area;
     if(0)
     {}
     {{#VARIANT}}else if (this->m_variant == QString("{{ID}}"))
@@ -209,26 +218,31 @@ Scalar {{SPECIAL_FUNCTION_FULL_NAME}}<Scalar>::extrapolation_hi()
 {{#SPECIAL_FUNCTION_SOURCE}}
 {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::{{SPECIAL_EXT_FUNCTION_FULL_NAME}}(FieldInfo* fieldInfo, int offsetI) : AgrosSpecialExtFunction(fieldInfo, offsetI)
 {
-//    m_type = specialFunctionTypeFromStringKey("{{TYPE}}");
-//    m_bound_low = {{FROM}};
-//    m_bound_hi = {{TO}};
-//    m_extrapolation_low = {{EXTRAPOLATE_LOW}};
-//    m_extrapolation_hi = {{EXTRAPOLATE_HI}};
-//    m_count = {{INTERPOLATION_COUNT}};
-//    m_variant = "{{SELECTED_VARIANT}}";
+    m_type = specialFunctionTypeFromStringKey("{{TYPE}}");
+    m_boundLow = {{FROM}};
+    m_boundHi = {{TO}};
+    m_count = {{INTERPOLATION_COUNT}};
+    m_variant = "{{SELECTED_VARIANT}}";
 }
 
-double {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::calculateValue(double h) const
+double {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::calculateValue(int hermesMarker, double h) const
 {
-//    SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(geometry->elem_marker).marker.c_str()));
-//{{#PARAMETERS}}    double {{PARAMETER_NAME}} = label->marker(m_fieldInfo)->value("{{PARAMETER_NAME}}").number();
-//{{/PARAMETERS}}
-//    double area = m_fieldInfo->initialMesh()->get_marker_area(geometry->elem_marker);
-//    if(0)
-//    {}
-//    {{#VARIANT}}else if (this->m_variant == QString("{{ID}}"))
-//        return {{EXPR}};{{/VARIANT}}
-//    assert(0);
+    SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(hermesMarker).marker.c_str()));
+    SceneMaterial *material = label->marker(m_fieldInfo);
+
+{{#PARAMETERS}}    double {{PARAMETER_NAME}} = material->value("{{PARAMETER_ID}}").number();
+{{/PARAMETERS}}
+    double area = m_fieldInfo->initialMesh()->get_marker_area(hermesMarker);
+    if(h < m_boundLow)
+        return {{EXTRAPOLATE_LOW}};
+    if(h > m_boundHi)
+        return {{EXTRAPOLATE_HI}};
+
+    if(0)
+    {}
+    {{#VARIANT}}else if (this->m_variant == QString("{{ID}}"))
+        return {{EXPR}};{{/VARIANT}}
+    assert(0);
 }
 
 void {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::value(int n, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const
@@ -239,7 +253,7 @@ void {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::value(int n, Hermes::Hermes2D::Func<dou
         // todo: Problem that specialExtFunctions are not generated for individual analysisTypes, this causes technical probelms in generator. Do it!
         double value1 = u_ext[0]->val[i];
 
-        result->val[i] = calculateValue({{DEPENDENCE}});
+        result->val[i] = valueFromTable(geometry->elem_marker, {{DEPENDENCE}});
     }
 }
 
