@@ -51,6 +51,8 @@ public:
         result->val[0] = Hermes::Ord(1);
     }
 
+    virtual void init() {}
+
 protected:
     FieldInfo* m_fieldInfo;
     int m_offsetI;
@@ -74,27 +76,40 @@ public:
 class AGROS_LIBRARY_API AgrosSpecialExtFunctionOneMaterial
 {
 public:
+    AgrosSpecialExtFunctionOneMaterial() : m_constantValue(-123456), m_extrapolationLow(-123456), m_extrapolationHi(-123456), m_isValid(false) {}
+    AgrosSpecialExtFunctionOneMaterial(QSharedPointer<DataTable> dataTable, double constantValue, double extrapolationLow, double extrapolationHi) :
+        m_dataTable(dataTable), m_constantValue(constantValue), m_extrapolationLow(extrapolationLow), m_extrapolationHi(extrapolationHi), m_isValid(true) {}
+
 protected:
+    // using pointer from efficiency reasons. Each copy constructor of DataTable calculates approximation.
+    QSharedPointer<DataTable> m_dataTable;
+    double m_constantValue;
+    double m_extrapolationLow;
+    double m_extrapolationHi;
+
+    bool m_isValid;
+
+    friend class AgrosSpecialExtFunction;
 };
 
 class AGROS_LIBRARY_API AgrosSpecialExtFunction : public AgrosExtFunction
 {
 public:
     AgrosSpecialExtFunction(FieldInfo* fieldInfo, int offsetI);
-    void createTable();
-    double valueFromTable(double h) const;
-    virtual double calculateValue(double h) const = 0;
+
+    virtual void init();
+    double valueFromTable(int hermesMarker, double h) const;
+    virtual double calculateValue(int hermesMarker, double h) const = 0;
 
 protected:
-    DataTable m_dataTable;
+    void createOneTable(int hermesMarker);
+
     SpecialFunctionType m_type;
-    double m_constantValue;
-    double m_bound_low;
-    double m_bound_hi;
-    double m_extrapolation_low;
-    double m_extrapolation_hi;
+    double m_boundLow;
+    double m_boundHi;
     int m_count;
     QString m_variant;
+    QMap<int , AgrosSpecialExtFunctionOneMaterial> m_data;
 };
 
 struct PointValue

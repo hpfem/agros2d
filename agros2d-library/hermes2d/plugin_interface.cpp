@@ -1,5 +1,6 @@
 #include "plugin_interface.h"
 #include "field.h"
+#include "util/global.h"
 
 template <typename Scalar>
 Scalar SpecialFunction<Scalar>::operator ()(double h) const
@@ -88,41 +89,69 @@ void SpecialFunction<Scalar>::createInterpolation()
 
 AgrosSpecialExtFunction::AgrosSpecialExtFunction(FieldInfo* fieldInfo, int offsetI) : AgrosExtFunction(fieldInfo, offsetI)
 {
-    createTable();
 }
 
-void AgrosSpecialExtFunction::createTable()
+void AgrosSpecialExtFunction::init()
 {
-    if(m_type == SpecialFunctionType_Constant)
-        m_constantValue = calculateValue(0);
-    else
+    assert(m_data.isEmpty());
+    for (int labelNum = 0; labelNum < Agros2D::scene()->labels->count(); labelNum++)
     {
-        Hermes::vector<double> points;
-        Hermes::vector<double> values;
+        Hermes::Hermes2D::Mesh::MarkersConversion::IntValid marker = m_fieldInfo->initialMesh()->get_element_markers_conversion().get_internal_marker(std::to_string(labelNum));
+        assert(marker.valid);
+        int hermesMarker = marker.marker;
+        assert(!m_data.contains(hermesMarker));
 
-        double step = (m_bound_hi - m_bound_low) / (m_count - 1);
-        for (int i = 0; i < m_count; i++)
-        {
-            double h = m_bound_low + i * step;
-            points.push_back(h);
-            values.push_back(calculateValue(h));
-        }
-        m_dataTable.setValues(points, values);
+        SceneLabel* label = Agros2D::scene()->labels->at(labelNum);
+        if(label->hasMarker(m_fieldInfo))
+            createOneTable(hermesMarker);
+        else
+            m_data[hermesMarker] = AgrosSpecialExtFunctionOneMaterial();
     }
 }
 
-double AgrosSpecialExtFunction::valueFromTable(double h) const
+void AgrosSpecialExtFunction::createOneTable(int hermesMarker)
 {
+    double constantValue = -123456;
+    double extrapolationLow = -123456;
+    double extrapolationHi = -123456;
+    Hermes::vector<double> points;
+    Hermes::vector<double> values;
+
     if(m_type == SpecialFunctionType_Constant)
-        return m_constantValue;
+        constantValue = calculateValue(hermesMarker, 0);
     else
     {
-        if(h < m_bound_low)
-            return m_extrapolation_low;
-        else if(h > m_bound_hi)
-            return m_extrapolation_hi;
+        double step = (m_boundHi - m_boundLow) / (m_count - 1);
+        for (int i = 0; i < m_count; i++)
+        {
+            double h = m_boundLow + i * step;
+            points.push_back(h);
+            values.push_back(calculateValue(hermesMarker, h));
+        }
+        extrapolationLow = calculateValue(hermesMarker, m_boundLow - 1);
+        extrapolationHi = calculateValue(hermesMarker, m_boundHi + 1);
+    }
+    QSharedPointer<DataTable> table(new DataTable(points, values));
+    AgrosSpecialExtFunctionOneMaterial materialData(table, constantValue, extrapolationLow, extrapolationHi);
+    m_data[hermesMarker] = materialData;
+}
+
+double AgrosSpecialExtFunction::valueFromTable(int hermesMarker, double h) const
+{
+    AgrosSpecialExtFunctionOneMaterial data = m_data[hermesMarker];
+
+    assert(data.m_isValid);
+
+    if(m_type == SpecialFunctionType_Constant)
+        return data.m_constantValue;
+    else
+    {
+        if(h < m_boundLow)
+            return data.m_extrapolationLow;
+        else if(h > m_boundHi)
+            return data.m_extrapolationHi;
         else
-            return m_dataTable.value(h);
+            return data.m_dataTable->value(h);
     }
 }
 

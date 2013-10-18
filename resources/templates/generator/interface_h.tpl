@@ -109,7 +109,7 @@ class {{SPECIAL_EXT_FUNCTION_FULL_NAME}} : public AgrosSpecialExtFunction
 {
 public:
     {{SPECIAL_EXT_FUNCTION_FULL_NAME}}(FieldInfo* fieldInfo, int offsetI);
-    virtual double calculateValue(double h) const;
+    virtual double calculateValue(int hermesMarker, double h) const;
     virtual void value(int n, Hermes::Hermes2D::Func<double> **u_ext, Hermes::Hermes2D::Func<double> *result, Hermes::Hermes2D::Geom<double> *geometry) const;
 private:
 };

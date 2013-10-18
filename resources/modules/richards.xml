@@ -68,18 +68,18 @@
       <module:function_variant switch_value="van_genuchten" expr="re_a*std::pow(-(re_a*h), -1 + re_n)*std::pow(1 + std::pow(-(re_a*h), re_n), -1 - re_m)*re_m*re_n*(re_theta_s - re_theta_r) + (re_st*((re_theta_s - re_theta_r)/std::pow(1 + std::pow(-(re_a*h), re_n), re_m) + re_theta_r))/re_theta_s"/>
     </module:function>
 
-    <module:matrix_form id="conductivity" i="1" j="1" planar="re_k(value1) * (udx * vdx + udy * vdy)"
-                                                      axi="re_k(value1) * r * (udr * vdr + udz * vdz)" symmetric="1" />
-    <module:matrix_form id="conductivity_derivative" i="1" j="1" planar="- re_dkdh(value1) * udy * vval"
-                                                                 axi="- re_dkdh(value1) * udz * vval"/>
-    <module:matrix_form id="conductivity_jacobian" i="1" j="1" planar="re_dkdh(value1) * uval * (updx * vdx + updy * vdy)"
-                                                               axi="re_dkdh(value1) * r * uval * (updr * vdr + updz * vdz)"/>
-    <module:matrix_form id="conductivity_derivative_jacobian" i="1" j="1" planar="- re_ddkdhh(value1) * uval * updy * vval"
-                                                                          axi="- re_ddkdhh(value1) * r * uval * updz * vval"/>
-    <module:matrix_form id="time_mat" i="1" j="1" planar="re_c(value1) * uval * vval * timedermat"
-                                                  axi="re_c(value1) * r * uval * vval * timedermat" />
-    <module:vector_form id="time_vec" i="1" j="1" planar="re_c(value1) * timedervec * vval"
-                                                  axi="re_c(value1) * r * timedervec * vval"/>
+    <module:matrix_form id="conductivity" i="1" j="1" planar="re_k * (udx * vdx + udy * vdy)"
+                                                      axi="re_k * r * (udr * vdr + udz * vdz)" symmetric="1" />
+    <module:matrix_form id="conductivity_derivative" i="1" j="1" planar="- re_dkdh * udy * vval"
+                                                                 axi="- re_dkdh * udz * vval"/>
+    <module:matrix_form id="conductivity_jacobian" i="1" j="1" planar="re_dkdh * uval * (updx * vdx + updy * vdy)"
+                                                               axi="re_dkdh * r * uval * (updr * vdr + updz * vdz)"/>
+    <module:matrix_form id="conductivity_derivative_jacobian" i="1" j="1" planar="- re_ddkdhh * uval * updy * vval"
+                                                                          axi="- re_ddkdhh * r * uval * updz * vval"/>
+    <module:matrix_form id="time_mat" i="1" j="1" planar="re_c * uval * vval * timedermat"
+                                                  axi="re_c * r * uval * vval * timedermat" />
+    <module:vector_form id="time_vec" i="1" j="1" planar="re_c * timedervec * vval"
+                                                  axi="re_c * r * timedervec * vval"/>
     
     <module:weakforms_volume>
       <module:weakform_volume analysistype="steadystate" equation="-\, \div \left( K\,\, \grad h \right) - \frac{\partial K}{\partial h} \frac{\partial h}{\partial z} = 0">

@@ -64,7 +64,7 @@ Agros2DGeneratorModule::Agros2DGeneratorModule(const QString &moduleId)
     // localization
     getNames(moduleId);
 
-    Module::volumeQuantityProperties(m_module, quantityOrdering, quantityIsNonlinear);
+    Module::volumeQuantityProperties(m_module, quantityOrdering, quantityIsNonlinear, functionOrdering);
 }
 
 void Agros2DGeneratorModule::generatePluginProjectFile()
@@ -568,6 +568,12 @@ void Agros2DGeneratorModule::generatePluginWeakFormSourceFiles()
             field->SetValue("INDEX", QString("%1").arg(quantityOrdering[quantID] + 1).toStdString());
         }
     }
+    foreach(QString funcID, this->functionOrdering.keys())
+    {
+        field = output.AddSectionDictionary("QUANTITY_INFO");
+        field->SetValue("QUANT_ID", funcID.toStdString());
+        field->SetValue("INDEX", QString("%1").arg(functionOrdering[funcID]).toStdString());
+    }
 
     std::string text;
     generateExtFunctions(output);
@@ -613,10 +619,6 @@ void Agros2DGeneratorModule::generatePluginWeakFormHeaderFiles()
 
 void Agros2DGeneratorModule::generateExtFunctions(ctemplate::TemplateDictionary &output)
 {
-    QMap<QString, int> quantityOrdering;
-    QMap<QString, bool> quantityIsNonlin;
-    Module::volumeQuantityProperties(m_module, quantityOrdering, quantityIsNonlin);
-
     foreach(XMLModule::weakform_volume weakform, m_module->volume().weakforms_volume().weakform_volume())
     {
         AnalysisType analysisType = analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype().c_str()));
@@ -626,7 +628,7 @@ void Agros2DGeneratorModule::generateExtFunctions(ctemplate::TemplateDictionary 
             foreach(XMLModule::quantity quantity, weakform.quantity())
             {
                 generateExtFunction(quantity, analysisType, linearityType, false, output);
-                if(quantityIsNonlin[QString::fromStdString(quantity.id())])
+                if(quantityIsNonlinear[QString::fromStdString(quantity.id())])
                     generateExtFunction(quantity, analysisType, linearityType, true, output);
             }
         }
@@ -1778,6 +1780,20 @@ QString Agros2DGeneratorModule::parseWeakFormExpression(AnalysisType analysisTyp
                 }
             }
 
+            foreach (XMLModule::function function, m_module->volume().function())
+            {
+                if(errorCalculation)
+                {
+                    // todo:
+                }
+                else{
+                    // in weak forms, functions replaced by ext functions
+                    dict[QString::fromStdString(function.shortname())] = QString("ext[%1]->val[i]").
+                            arg(functionOrdering[QString::fromStdString(function.id())]);
+                }
+            }
+
+
             foreach (XMLModule::quantity quantity, m_module->surface().quantity())
             {
                 if (quantity.shortname().present())
@@ -2107,6 +2123,7 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function* functi
 {
     ctemplate::TemplateDictionary *functionTemplate = output->AddSectionDictionary("SPECIAL_FUNCTION_SOURCE");
     functionTemplate->SetValue("SPECIAL_FUNCTION_NAME", function->shortname());
+    functionTemplate->SetValue("SPECIAL_FUNCTION_ID", function->id());
     functionTemplate->SetValue("SPECIAL_FUNCTION_FULL_NAME", m_module->general().id() + "_function_" + function->shortname());
     functionTemplate->SetValue("SPECIAL_EXT_FUNCTION_FULL_NAME", m_module->general().id() + "_ext_function_" + function->shortname());
     functionTemplate->SetValue("FROM", function->bound_low().present() ? function->bound_low().get() : "-1");
@@ -2164,6 +2181,7 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function* functi
             if(m_module->volume().quantity().at(i).id() == quantity.id())
             {
                 functionParameters->SetValue("PARAMETER_NAME", m_module->volume().quantity().at(i).shortname().get().c_str());
+                functionParameters->SetValue("PARAMETER_ID", m_module->volume().quantity().at(i).id().c_str());
                 functionParameters->SetValue("PARAMETER_FULL_NAME", m_module->volume().quantity().at(i).id().c_str());
                 break;
             }
