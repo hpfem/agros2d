@@ -472,14 +472,16 @@ struct Integral
              const QString &shortnameHtml = "",
              const QString &unit = "",
              const QString &unitHtml = "",
-             const QString &expression = "")
+             const QString &expression = "",
+             const bool isEggShell = false)
         : m_id(id),
           m_name(name),
           m_shortname(shortname),
           m_shortnameHtml(shortnameHtml),
           m_unit(unit),
           m_unitHtml(unitHtml),
-          m_expression(expression) {}
+          m_expression(expression),
+          m_isEggShell(isEggShell) {}
 
     // id
     inline QString id() const { return m_id; }
@@ -495,6 +497,9 @@ struct Integral
     // expressions
     inline QString expression() const { return m_expression; }
 
+    // eggshell
+    inline bool isEggShell() const { return m_isEggShell; }
+
 private:
     // id
     QString m_id;
@@ -509,6 +514,9 @@ private:
 
     // expression
     QString m_expression;
+
+    // eggshell
+    bool m_isEggShell;
 };
 
 // dialog UI

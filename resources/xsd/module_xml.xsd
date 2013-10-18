@@ -220,6 +220,7 @@
                         <attribute name="unit" use="required" type="string" />
                         <attribute name="unit_html" type="string" />
                         <attribute name="unit_latex" type="string" />
+                        <attribute name="eggshell" type="int" />
                 </complexType>
         </element>
 

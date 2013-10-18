@@ -640,7 +640,8 @@ QList<Module::Integral> FieldInfo::surfaceIntegrals() const
                         (sur.shortname_html().present()) ? QString::fromStdString(sur.shortname_html().get()) : QString::fromStdString(sur.shortname()),
                         QString::fromStdString(sur.unit()),
                         (sur.unit_html().present()) ? QString::fromStdString(sur.unit_html().get()) : QString::fromStdString(sur.unit()),
-                        expr);
+                        expr,
+                        false);
 
             surfaceIntegrals.append(surint);
         }
@@ -679,7 +680,8 @@ QList<Module::Integral> FieldInfo::volumeIntegrals() const
                         (vol.shortname_html().present()) ? QString::fromStdString(vol.shortname_html().get()) : QString::fromStdString(vol.shortname()),
                         QString::fromStdString(vol.unit()),
                         (vol.unit_html().present()) ? QString::fromStdString(vol.unit_html().get()) : QString::fromStdString(vol.unit()),
-                        expr);
+                        expr,
+                        (vol.eggshell().present()) ? (vol.eggshell().get() == 1) : false);
 
             volumeIntegrals.append(volint);
         }

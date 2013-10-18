@@ -130,16 +130,19 @@ void {{CLASS}}SurfaceIntegral::calculate()
             }
         }
 
-        {{CLASS}}SurfaceIntegralCalculator calc(m_fieldInfo, ma.solutions(), {{INTEGRAL_COUNT}});
-        double *internalValues = calc.calculate(internalMarkers);
-        double *boundaryValues = calc.calculate(boundaryMarkers);
+        if (internalMarkers.size() > 0 || boundaryMarkers.size() > 0)
+        {
+            {{CLASS}}SurfaceIntegralCalculator calc(m_fieldInfo, ma.solutions(), {{INTEGRAL_COUNT}});
+            double *internalValues = calc.calculate(internalMarkers);
+            double *boundaryValues = calc.calculate(boundaryMarkers);
 
-        {{#VARIABLE_SOURCE}}
-        if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
-            m_values[QLatin1String("{{VARIABLE}}")] = 0.5 * internalValues[{{POSITION}}] + boundaryValues[{{POSITION}}];
-        {{/VARIABLE_SOURCE}}
+            {{#VARIABLE_SOURCE}}
+            if ((m_fieldInfo->analysisType() == {{ANALYSIS_TYPE}}) && (Agros2D::problem()->config()->coordinateType() == {{COORDINATE_TYPE}}))
+                m_values[QLatin1String("{{VARIABLE}}")] = 0.5 * internalValues[{{POSITION}}] + boundaryValues[{{POSITION}}];
+            {{/VARIABLE_SOURCE}}
 
-        ::free(internalValues);
-        ::free(boundaryValues);
+            ::free(internalValues);
+            ::free(boundaryValues);
+        }
     }
 }

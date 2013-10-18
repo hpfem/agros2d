@@ -1018,7 +1018,9 @@ void Agros2DGeneratorModule::generatePluginSurfaceIntegralFiles()
             {
                 if (coordinateType == CoordinateType_Planar)
                 {
-                    createIntegralExpression(output, QString::fromStdString(surf.id()),
+                    createIntegralExpression(output,
+                                             "VARIABLE_SOURCE",
+                                             QString::fromStdString(surf.id()),
                                              analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
                                              coordinateType,
                                              (expr.planar().present() ? QString::fromStdString(expr.planar().get()) : ""),
@@ -1026,7 +1028,9 @@ void Agros2DGeneratorModule::generatePluginSurfaceIntegralFiles()
                 }
                 else
                 {
-                    createIntegralExpression(output, QString::fromStdString(surf.id()),
+                    createIntegralExpression(output,
+                                             "VARIABLE_SOURCE",
+                                             QString::fromStdString(surf.id()),
                                              analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
                                              coordinateType,
                                              (expr.axi().present() ? QString::fromStdString(expr.axi().get()) : ""),
@@ -1091,16 +1095,24 @@ void Agros2DGeneratorModule::generatePluginVolumeIntegralFiles()
         generateSpecialFunction(&function, &output);
     }
 
+    // normal volume integral
     int counter = 0;
     foreach (XMLModule::volumeintegral vol, m_module->postprocessor().volumeintegrals().volumeintegral())
     {
+        // normal volume integral
+        if (vol.eggshell().present())
+            if (vol.eggshell().get() == 1)
+                continue;
+
         foreach (XMLModule::expression expr, vol.expression())
         {
             foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
             {
                 if (coordinateType == CoordinateType_Planar)
                 {
-                    createIntegralExpression(output, QString::fromStdString(vol.id()),
+                    createIntegralExpression(output,
+                                             "VARIABLE_SOURCE",
+                                             QString::fromStdString(vol.id()),
                                              analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
                                              coordinateType,
                                              (expr.planar().present() ? QString::fromStdString(expr.planar().get()) : ""),
@@ -1108,7 +1120,9 @@ void Agros2DGeneratorModule::generatePluginVolumeIntegralFiles()
                 }
                 else
                 {
-                    createIntegralExpression(output, QString::fromStdString(vol.id()),
+                    createIntegralExpression(output,
+                                             "VARIABLE_SOURCE",
+                                             QString::fromStdString(vol.id()),
                                              analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
                                              coordinateType,
                                              (expr.axi().present() ? QString::fromStdString(expr.axi().get()) : ""),
@@ -1120,6 +1134,49 @@ void Agros2DGeneratorModule::generatePluginVolumeIntegralFiles()
         counter++;
     }
     output.SetValue("INTEGRAL_COUNT", QString::number(counter).toStdString());
+
+    // eggshell volume integral
+    counter = 0;
+    foreach (XMLModule::volumeintegral vol, m_module->postprocessor().volumeintegrals().volumeintegral())
+    {
+        // normal volume integral
+        if (vol.eggshell().present())
+        {
+            if (vol.eggshell().get() == 1)
+            {
+
+                foreach (XMLModule::expression expr, vol.expression())
+                {
+                    foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
+                    {
+                        if (coordinateType == CoordinateType_Planar)
+                        {
+                            createIntegralExpression(output,
+                                                     "VARIABLE_SOURCE_EGGSHELL",
+                                                     QString::fromStdString(vol.id()),
+                                                     analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                                     coordinateType,
+                                                     (expr.planar().present() ? QString::fromStdString(expr.planar().get()) : ""),
+                                                     counter);
+                        }
+                        else
+                        {
+                            createIntegralExpression(output,
+                                                     "VARIABLE_SOURCE_EGGSHELL",
+                                                     QString::fromStdString(vol.id()),
+                                                     analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                                     coordinateType,
+                                                     (expr.axi().present() ? QString::fromStdString(expr.axi().get()) : ""),
+                                                     counter);
+                        }
+                    }
+                }
+
+                counter++;
+            }
+        }
+    }
+    output.SetValue("INTEGRAL_COUNT_EGGSHELL", QString::number(counter).toStdString());
 
     // header - save to file
     writeStringContent(QString("%1/%2/%3/%3_volumeintegral.h").
@@ -1275,6 +1332,7 @@ void Agros2DGeneratorModule::createLocalValueExpression(ctemplate::TemplateDicti
 }
 
 void Agros2DGeneratorModule::createIntegralExpression(ctemplate::TemplateDictionary &output,
+                                                      const QString &section,
                                                       const QString &variable,
                                                       AnalysisType analysisType,
                                                       CoordinateType coordinateType,
@@ -1283,7 +1341,7 @@ void Agros2DGeneratorModule::createIntegralExpression(ctemplate::TemplateDiction
 {
     if (!expr.isEmpty())
     {
-        ctemplate::TemplateDictionary *expression = output.AddSectionDictionary("VARIABLE_SOURCE");
+        ctemplate::TemplateDictionary *expression = output.AddSectionDictionary(section.toStdString());
 
         expression->SetValue("VARIABLE", variable.toStdString());
         expression->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisType).toStdString());
@@ -1431,6 +1489,17 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
                 dict[QString("dr%1").arg(i)] = QString("dudx[%1][i]").arg(i-1);
                 dict[QString("dz%1").arg(i)] = QString("dudy[%1][i]").arg(i-1);
             }
+        }
+        // eggshell
+        if (coordinateType == CoordinateType_Planar)
+        {
+            dict["dxegg"] = "dudx[source_functions.size() - 1][i]";
+            dict["dyegg"] = "dudy[source_functions.size() - 1][i]";
+        }
+        else
+        {
+            dict["dregg"] = "dudx[source_functions.size() - 1][i]";
+            dict["dzegg"] = "dudy[source_functions.size() - 1][i]";
         }
 
         // variables
@@ -2093,7 +2162,7 @@ void Agros2DGeneratorModule::generateForm(FormInfo formInfo, LinearityType linea
             field->SetValue("EXPRESSION", exprCpp.toStdString());
 
             QString exprCppCheck = parseWeakFormExpressionCheck(analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())),
-                                                                 coordinateType, linearityType, formInfo.condition);
+                                                                coordinateType, linearityType, formInfo.condition);
             field->SetValue("EXPRESSION_CHECK", exprCppCheck.toStdString());
 
             // add weakform
