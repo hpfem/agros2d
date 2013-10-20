@@ -23,7 +23,7 @@
 #include "problem.h"
 #include "marker.h"
 
-bool BDF2Table::setOrderAndPreviousSteps(int order, QList<double> previousSteps)
+bool BDF2Table::setOrderAndPreviousSteps(int order, QList<double> previousStepsLengths)
 {
     bool matrixUnchanged = true;
     if(this->m_n != order)
@@ -31,17 +31,20 @@ bool BDF2Table::setOrderAndPreviousSteps(int order, QList<double> previousSteps)
 
     this->m_n = order;
 
-    int numSteps = previousSteps.length();
+    int numSteps = previousStepsLengths.length();
     assert(numSteps >= m_n);
 
-    int numToCheckConst = min(order, numSteps);
-    for(int iCheck = 0; iCheck < numToCheckConst; iCheck++)
-        if(m_actualTimeStep != previousSteps[numSteps - 1 - iCheck])
-            matrixUnchanged = false;
-
-    m_actualTimeStep = previousSteps[numSteps-1];
+    // otherwise m_actulaTimeStepLength not initialized
+    if(numSteps > 1)
+    {
+        int numToCheckConst = min(order, numSteps);
+        for(int iCheck = 0; iCheck < numToCheckConst; iCheck++)
+            if(m_actualTimeStepLength != previousStepsLengths[numSteps - 1 - iCheck])
+                matrixUnchanged = false;
+    }
+    m_actualTimeStepLength = previousStepsLengths[numSteps-1];
     for (int i = 0; i < order - 1; i++)
-       th[i] = previousSteps[numSteps - 1 - i] / previousSteps[numSteps - 2 - i];
+       th[i] = previousStepsLengths[numSteps - 1 - i] / previousStepsLengths[numSteps - 2 - i];
 
     recalculate();
 
@@ -86,19 +89,19 @@ void BDF2ATable::recalculate()
     if (m_n == 1)
     {
         // matrix coef
-        m_alpha[0] = 1. / m_actualTimeStep;
+        m_alpha[0] = 1. / m_actualTimeStepLength;
         // vector coefs
-        m_alpha[1] = -1. / m_actualTimeStep;
+        m_alpha[1] = -1. / m_actualTimeStepLength;
     }
     else if (m_n == 2)
     {
         double t0 = th[0];
 
         // matrix coef
-        m_alpha[0] = ((2*t0 + 1) / (t0 + 1)) / m_actualTimeStep;
+        m_alpha[0] = ((2*t0 + 1) / (t0 + 1)) / m_actualTimeStepLength;
         // vector coefs
-        m_alpha[1] = (-t0 - 1) / m_actualTimeStep ;
-        m_alpha[2] = (t0 * t0 / (t0 + 1)) / m_actualTimeStep;
+        m_alpha[1] = (-t0 - 1) / m_actualTimeStepLength ;
+        m_alpha[2] = (t0 * t0 / (t0 + 1)) / m_actualTimeStepLength;
     }
     else if (m_n == 3)
     {
@@ -106,11 +109,11 @@ void BDF2ATable::recalculate()
         double t1 = th[1];
 
         // matrix coef
-        m_alpha[0] = ((4*t0*t1 + 3*t0*t0*t1 + t1 + 1 + 2*t0) / (t0 + 2*t0*t1 + 1 + t1 + t0*t0*t1)) / m_actualTimeStep;
+        m_alpha[0] = ((4*t0*t1 + 3*t0*t0*t1 + t1 + 1 + 2*t0) / (t0 + 2*t0*t1 + 1 + t1 + t0*t0*t1)) / m_actualTimeStepLength;
         // vector coefs
-        m_alpha[1] = (-(t0 + 2*t0*t1 + 1 + t1 + t0*t0*t1) / (1+t1)) / m_actualTimeStep;
-        m_alpha[2] = ((t1 + t0*t1 + 1) * t0*t0 / (1+t0)) / m_actualTimeStep;
-        m_alpha[3] = ( -(1+t0) * t0*t0 * t1*t1*t1 / (t0*t1*t1 + t0*t1 + 2*t1 + 1 + t1*t1)) / m_actualTimeStep;
+        m_alpha[1] = (-(t0 + 2*t0*t1 + 1 + t1 + t0*t0*t1) / (1+t1)) / m_actualTimeStepLength;
+        m_alpha[2] = ((t1 + t0*t1 + 1) * t0*t0 / (1+t0)) / m_actualTimeStepLength;
+        m_alpha[3] = ( -(1+t0) * t0*t0 * t1*t1*t1 / (t0*t1*t1 + t0*t1 + 2*t1 + 1 + t1*t1)) / m_actualTimeStepLength;
     }
     else
         assert(0);

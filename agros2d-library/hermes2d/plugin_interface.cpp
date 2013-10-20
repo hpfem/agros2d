@@ -96,16 +96,16 @@ void AgrosSpecialExtFunction::init()
     assert(m_data.isEmpty());
     for (int labelNum = 0; labelNum < Agros2D::scene()->labels->count(); labelNum++)
     {
-        Hermes::Hermes2D::Mesh::MarkersConversion::IntValid marker = m_fieldInfo->initialMesh()->get_element_markers_conversion().get_internal_marker(std::to_string(labelNum));
-        assert(marker.valid);
-        int hermesMarker = marker.marker;
-        assert(!m_data.contains(hermesMarker));
-
         SceneLabel* label = Agros2D::scene()->labels->at(labelNum);
-        if(label->hasMarker(m_fieldInfo))
+        Hermes::Hermes2D::Mesh::MarkersConversion::IntValid marker = m_fieldInfo->initialMesh()->get_element_markers_conversion().get_internal_marker(std::to_string(labelNum));
+        if(label->hasMarker(m_fieldInfo) && !label->marker(m_fieldInfo)->isNone())
+        {
+            qDebug() << label->marker(m_fieldInfo)->name();
+            assert(marker.valid);
+            int hermesMarker = marker.marker;
+            assert(!m_data.contains(hermesMarker));
             createOneTable(hermesMarker);
-        else
-            m_data[hermesMarker] = AgrosSpecialExtFunctionOneMaterial();
+        }
     }
 }
 

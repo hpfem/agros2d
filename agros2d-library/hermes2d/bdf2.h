@@ -33,7 +33,7 @@ public:
     BDF2Table() : m_n(-100) {}
 
     // returns true if matrix unchanged
-    bool setOrderAndPreviousSteps(int order, QList<double> previousSteps);
+    bool setOrderAndPreviousSteps(int order, QList<double> previousStepsLengths);
 
     int n() { return m_n;}
     int order() { return m_n;}
@@ -53,7 +53,7 @@ protected:
 
     int m_n;
     double th[10];
-    double m_actualTimeStep;
+    double m_actualTimeStepLength;
     double m_alpha[10];
 };
 

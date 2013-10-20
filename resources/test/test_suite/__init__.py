@@ -82,6 +82,14 @@ fields.flow.FlowPlanar,
 fields.flow.FlowAxisymmetric
 ]
 
+test_coupled = [
+# coupled fields
+coupled_problems.basic_coupled_problems.CoupledProblemsBasic1,
+coupled_problems.basic_coupled_problems.CoupledProblemsBasic2,
+coupled_problems.basic_coupled_problems.CoupledProblemsBasic3,
+coupled_problems.basic_coupled_problems.CoupledProblemsBasic4,
+]
+
 test_script = [
 script.problem.TestProblem,
 script.geometry.TestGeometry,
