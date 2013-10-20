@@ -168,6 +168,10 @@ Scene::~Scene()
 {
     clear();
 
+    // markers (delete None markers)
+    boundaries->clear();
+    materials->clear();
+
     delete m_undoStack;
 
     delete boundaries;

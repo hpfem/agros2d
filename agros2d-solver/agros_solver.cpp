@@ -28,8 +28,14 @@
 #include "hermes2d.h"
 
 AgrosSolver::AgrosSolver(int &argc, char **argv)
-    : AgrosApplication(argc, argv)
-{        
+    : AgrosApplication(argc, argv), m_log(NULL), m_enableLog(false)
+{    
+}
+
+AgrosSolver::~AgrosSolver()
+{
+    if (m_log)
+        delete m_log;
 }
 
 // reimplemented from QApplication so we can throw exceptions in slots
@@ -67,7 +73,7 @@ void AgrosSolver::solveProblem()
 {
     // log stdout
     if (m_enableLog)
-        new LogStdOut();
+        m_log = new LogStdOut();
 
     createPythonEngine(new PythonEngineAgros());
 

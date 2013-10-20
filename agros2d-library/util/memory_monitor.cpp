@@ -25,7 +25,7 @@
 MemoryMonitor::MemoryMonitor()
 {
     // memory usage
-    m_memoryTimer = new QTimer();
+    m_memoryTimer = new QTimer(this);
     m_memoryTimer->start(1000);
 
     m_memoryTimer->connect(m_memoryTimer, SIGNAL(timeout()), this, SLOT(refreshMemory()));

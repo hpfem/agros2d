@@ -23,12 +23,15 @@
 #include "util.h"
 #include "util/global.h"
 
+class LogStdOut;
+
 class AgrosSolver : public AgrosApplication
 {
     Q_OBJECT
 
 public:
     AgrosSolver(int& argc, char ** argv);
+    ~AgrosSolver();
 
     // reimplemented from QApplication so we can throw exceptions in slots
     virtual bool notify(QObject *receiver, QEvent *event);
@@ -47,6 +50,7 @@ private slots:
 private:
     QString m_fileName;
     bool m_enableLog;
+    LogStdOut *m_log;
 };
 
 #endif // AGROS_SOLVER_H
