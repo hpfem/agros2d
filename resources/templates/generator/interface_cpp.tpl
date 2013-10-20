@@ -251,7 +251,9 @@ void {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::value(int n, Hermes::Hermes2D::Func<dou
     {
         // todo: the string DEPENDENCE should be parsed and tokens value1 replaced by u_ext[m_offsetI + 0]->val[i], etc.
         // todo: Problem that specialExtFunctions are not generated for individual analysisTypes, this causes technical probelms in generator. Do it!
-        double value1 = u_ext[0]->val[i];
+        double value1 = 0;
+        if (u_ext)
+            value1 = u_ext[0]->val[i];
 
         result->val[i] = valueFromTable(geometry->elem_marker, {{DEPENDENCE}});
     }
