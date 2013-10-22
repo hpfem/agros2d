@@ -109,7 +109,7 @@ void AgrosSolver::runScript()
 {
     // log stdout
     if (m_enableLog)
-        new LogStdOut();
+         m_log = new LogStdOut();
 
     if (!QFile::exists(m_fileName))
     {
