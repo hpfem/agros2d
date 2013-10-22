@@ -232,7 +232,7 @@ void PythonEngine::init()
     /// \todo Better
     int argc = 1;
     char ** argv = new char*[1];
-    argv[0] = new char[1];
+    argv[0] = new char[1]();
     PySys_SetArgv(argc, argv);
     delete [] argv[0];
     delete [] argv;
@@ -245,7 +245,9 @@ void PythonEngine::init()
     // PyDict_SetItemString(m_dict, "__builtins__", PyEval_GetBuiltins());
 
     PyObject *main = PyImport_ImportModule("__main__");
+    Py_INCREF(main);
     m_dict = PyModule_GetDict(main);
+    Py_INCREF(m_dict);
 
     // init engine extensions
     Py_InitModule("pythonlab", pythonEngineFuntions);
@@ -381,7 +383,7 @@ bool PythonEngine::runScript(const QString &script, const QString &fileName, boo
             successfulRun = false;
     }
 
-     Py_XDECREF(code);
+    Py_XDECREF(code);
 
     m_isScriptRunning = false;
 

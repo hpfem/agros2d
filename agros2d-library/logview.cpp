@@ -332,7 +332,7 @@ void LogDialog::createControls()
 }
 
 void LogDialog::printMessage(const QString &module, const QString &message, bool escaped)
-{       
+{
 }
 
 void LogDialog::printError(const QString &module, const QString &message, bool escaped)

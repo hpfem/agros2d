@@ -108,7 +108,7 @@ void InfoWidget::refresh()
 
 void InfoWidget::showWelcome()
 {
-    if (currentPythonEngine()->isScriptRunning())
+    if (currentPythonEngine()->isScriptRunning() || Agros2D::problem()->isSolving())
         return;
 
     // template
@@ -184,7 +184,7 @@ void InfoWidget::showWelcome()
 
 void InfoWidget::showInfo()
 {
-    if (currentPythonEngine()->isScriptRunning())
+    if (currentPythonEngine()->isScriptRunning() || Agros2D::problem()->isSolving())
         return;
 
     // template

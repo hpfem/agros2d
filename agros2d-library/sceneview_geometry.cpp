@@ -43,7 +43,8 @@
 #include "hermes2d/problem_config.h"
 
 SceneViewPreprocessor::SceneViewPreprocessor(QWidget *parent)
-    : SceneViewCommon2D(NULL, parent)
+    : SceneViewCommon2D(NULL, parent),
+      m_sceneMode(SceneGeometryMode_OperateOnNodes), m_snapToGrid(true), m_selectRegion(false), m_selectRegionPos(QPointF())
 {
     createActionsGeometry();
     createMenuGeometry();

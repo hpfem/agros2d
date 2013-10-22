@@ -59,7 +59,7 @@ public:
     static inline Log *log() { return Agros2D::singleton()->m_log; }
     static inline MemoryMonitor *memoryMonitor() { return Agros2D::singleton()->m_memoryMonitor; }
 
-    static PluginInterface *loadPlugin(const QString &plugin);
+    static PluginInterface *loadPlugin(const QString &pluginName);
 
     static void clear();
 

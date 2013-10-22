@@ -77,6 +77,9 @@ bool AgrosApplication::notify(QObject *receiver, QEvent *event)
 {
     try
     {
+        // if (!receiver->objectName().isEmpty())
+        //     qDebug() << "receiver" << receiver->objectName() << event->type();
+
         return QApplication::notify(receiver, event);
     }
     catch (Hermes::Exceptions::Exception& e)
@@ -238,20 +241,20 @@ Agros2D *Agros2D::singleton()
     return m_singleton.data();
 }
 
-PluginInterface *Agros2D::loadPlugin(const QString &plugin)
+PluginInterface *Agros2D::loadPlugin(const QString &pluginName)
 {
     QPluginLoader *loader = NULL;
 
 #ifdef Q_WS_X11
-    if (QFile::exists(QString("%1/libs/libagros2d_plugin_%2.so").arg(datadir()).arg(plugin)))
-        loader = new QPluginLoader(QString("%1/libs/libagros2d_plugin_%2.so").arg(datadir()).arg(plugin));
+    if (QFile::exists(QString("%1/libs/libagros2d_plugin_%2.so").arg(datadir()).arg(pluginName)))
+        loader = new QPluginLoader(QString("%1/libs/libagros2d_plugin_%2.so").arg(datadir()).arg(pluginName));
 
     if (!loader)
     {
-        if (QFile::exists(QString("/usr/local/lib/libagros2d_plugin_%1.so").arg(plugin)))
-            loader = new QPluginLoader(QString("/usr/local/lib/libagros2d_plugin_%1.so").arg(plugin));
-        else if (QFile::exists(QString("/usr/lib/libagros2d_plugin_%1.so").arg(plugin)))
-            loader = new QPluginLoader(QString("/usr/lib/libagros2d_plugin_%1.so").arg(plugin));
+        if (QFile::exists(QString("/usr/local/lib/libagros2d_plugin_%1.so").arg(pluginName)))
+            loader = new QPluginLoader(QString("/usr/local/lib/libagros2d_plugin_%1.so").arg(pluginName));
+        else if (QFile::exists(QString("/usr/lib/libagros2d_plugin_%1.so").arg(pluginName)))
+            loader = new QPluginLoader(QString("/usr/lib/libagros2d_plugin_%1.so").arg(pluginName));
     }
 #endif
 
@@ -262,18 +265,21 @@ PluginInterface *Agros2D::loadPlugin(const QString &plugin)
 
     if (!loader)
     {
-        throw AgrosPluginException(QObject::tr("Could not find 'agros2d_plugin_%1'").arg(plugin));
+        throw AgrosPluginException(QObject::tr("Could not find 'agros2d_plugin_%1'").arg(pluginName));
     }
 
     if (!loader->load())
     {
         QString error = loader->errorString();
         delete loader;
-        throw AgrosPluginException(QObject::tr("Could not load 'agros2d_plugin_%1' (%2)").arg(plugin).arg(error));
+        throw AgrosPluginException(QObject::tr("Could not load 'agros2d_plugin_%1' (%2)").arg(pluginName).arg(error));
     }
 
     assert(loader->instance());
-    PluginInterface *plugion = qobject_cast<PluginInterface *>(loader->instance());
+    PluginInterface *plugin = qobject_cast<PluginInterface *>(loader->instance());
+
+    // loader->unload();
     delete loader;
-    return plugion;
+
+    return plugin;
 }

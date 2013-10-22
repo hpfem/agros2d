@@ -77,7 +77,6 @@ SceneViewPost3D::SceneViewPost3D(PostHermes *postHermes, QWidget *parent)
     connect(Agros2D::scene(), SIGNAL(invalidated()), this, SLOT(setControls()));
     connect(Agros2D::problem(), SIGNAL(meshed()), this, SLOT(setControls()));
     connect(Agros2D::problem(), SIGNAL(solved()), this, SLOT(setControls()));
-
 }
 
 SceneViewPost3D::~SceneViewPost3D()
