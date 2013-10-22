@@ -188,6 +188,37 @@ void PostHermes::processRangeScalar()
         Hermes::Hermes2D::MeshFunctionSharedPtr<double> slnScalarView = viewScalarFilter(m_activeViewField->localVariable(Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariable).toString()),
                                                                                          (PhysicFieldVariableComp) Agros2D::problem()->setting()->value(ProblemSetting::View_ScalarVariableComp).toInt());
 
+        /*
+        FieldSolutionID fsid(m_activeViewField, m_activeTimeStep, m_activeAdaptivityStep, m_activeSolutionMode);
+        MultiArray<double> ma = Agros2D::solutionStore()->multiArray(fsid);
+
+        Hermes::vector<std::string> markers;
+        Hermes::vector<std::string> markersInverted;
+        for (int i = 0; i < Agros2D::scene()->labels->count(); i++)
+        {
+            SceneLabel *label = Agros2D::scene()->labels->at(i);
+            if (label->isSelected())
+            {
+                markers.push_back(QString::number(i).toStdString());
+            }
+            else
+            {
+                markersInverted.push_back(QString::number(i).toStdString());
+            }
+        }
+
+        Hermes::Hermes2D::MeshFunctionSharedPtr<double> slnScalarView;
+        if (markers.size() > 0)
+        {
+            Hermes::Hermes2D::MeshSharedPtr eggShellMesh = Hermes::Hermes2D::EggShell::get_egg_shell(ma.solutions().at(0)->get_mesh(), markers, 2);
+            slnScalarView = Hermes::Hermes2D::MeshFunctionSharedPtr<double> (new Hermes::Hermes2D::ExactSolutionEggShell(eggShellMesh, 3));
+        }
+        else
+        {
+            return;
+        }
+        */
+
         m_linScalarView.free();
 
         // deformed shape

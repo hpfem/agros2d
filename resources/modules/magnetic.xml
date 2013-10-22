@@ -660,13 +660,15 @@
         <module:expression analysistype="transient" axi="2 * PI * r * dz1 * (ma_Jer - ma_gamma * (ma_vy * dz1) - ma_gamma * value2)" planar="dy1 * (-ma_Jer - ma_gamma * ((ma_vx - ma_va * y) * dx1 + (ma_vy + ma_va * x) * dy1) - ma_gamma * value2)"/>
       </module:volumeintegral>
       <module:volumeintegral id="magnetic_tensor_torque" name="Maxwell torque" shortname="Tt" shortname_html="&lt;i>T&lt;/i>&lt;/i>&lt;sub>t&lt;/sub>" shortname_latex="T_\mathrm{t}" unit="Nm" unit_html="Nm" unit_latex="Nm" eggshell="1">
-        <module:expression analysistype="steadystate" axi="0" planar="y * dxegg * (- 1.0 / (2.0 * ma_mur * MU0) * (dx1 * dx1 + dy1 * dy1) + 1.0 / (ma_mur * MU0) * (dx1 * dx1)) - x * dyegg * (- 1.0 / (2.0 * ma_mur * MU0) * (dx1 * dx1 + dy1 * dy1) + 1.0 / (ma_mur * MU0) * (dy1 * dy1))"/>
+        <module:expression analysistype="steadystate" axi="0" planar="y * ((dxegg * (- 1.0 / (2.0 * ma_mur * MU0) * (dx1 * dx1 + dy1 * dy1) + 1.0 / (ma_mur * MU0) * (dx1 * dx1))) + (dyegg * 1.0 / (ma_mur * MU0) * dx1 * dy1)) - x * ((dyegg * (- 1.0 / (2.0 * ma_mur * MU0) * (dx1 * dx1 + dy1 * dy1) + 1.0 / (ma_mur * MU0) * (dy1 * dy1))) + (dxegg * 1.0 / (ma_mur * MU0) * dx1 * dy1))"/>
       </module:volumeintegral>
       <module:volumeintegral id="magnetic_tensor_force_x" name="Maxwell force - x" shortname="Ftx" shortname_html="&lt;i>F&lt;/i>&lt;sub>tx&lt;/sub>" shortname_latex="F_\mathrm{Lx}" unit="N" unit_html="N" unit_latex="N" eggshell="1" >
-        <module:expression analysistype="steadystate" axi="2 * PI * r * (dregg * (- 1.0 / (2.0 * ma_mur * MU0) * ((dr1 + tern(r > SMALL, value1/r, dr1)) * (dr1 + tern(r > SMALL, value1/r, dr1)) + dz1 * dz1) + 1.0 / (ma_mur * MU0) * ((dr1 + tern(r > SMALL, value1/r, dr1)) * (dr1 + tern(r > SMALL, value1/r, dr1)))))" planar="dxegg * (- 1.0 / (2.0 * ma_mur * MU0) * (dx1 * dx1 + dy1 * dy1) + 1.0 / (ma_mur * MU0) * (dx1 * dx1))"/>
+        <module:expression analysistype="steadystate" axi="2 * PI * r * (dregg * (- 1.0 / (2.0 * ma_mur * MU0) * ((dr1 + tern(r > SMALL, value1/r, dr1)) * (dr1 + tern(r > SMALL, value1/r, dr1)) + dz1 * dz1) + 1.0 / (ma_mur * MU0) * ((dr1 + tern(r > SMALL, value1/r, dr1)) * (dr1 + tern(r > SMALL, value1/r, dr1)))))"
+                                                      planar="(dxegg * (- 1.0 / (2.0 * ma_mur * MU0) * (dx1 * dx1 + dy1 * dy1) + 1.0 / (ma_mur * MU0) * (dx1 * dx1))) + (dyegg * 1.0 / (ma_mur * MU0) * dx1 * dy1)"/>
       </module:volumeintegral>
       <module:volumeintegral id="magnetic_tensor_force_y" name="Maxwell force - y" shortname="Fty" shortname_html="&lt;i>F&lt;/i>&lt;sub>ty&lt;/sub>" shortname_latex="F_\mathrm{Ly}" unit="N" unit_html="N" unit_latex="N" eggshell="1" >
-        <module:expression analysistype="steadystate" axi="2 * PI * r * (dzegg * (- 1.0 / (2.0 * ma_mur * MU0) * ((dr1 + tern(r > SMALL, value1/r, dr1)) * (dr1 + tern(r > SMALL, value1/r, dr1)) + dz1 * dz1) + 1.0 / (ma_mur * MU0) * (dz1 * dz1)))" planar="dyegg * (- 1.0 / (2.0 * ma_mur * MU0) * (dx1 * dx1 + dy1 * dy1) + 1.0 / (ma_mur * MU0) * (dy1 * dy1))"/>
+        <module:expression analysistype="steadystate" axi="2 * PI * r * (dzegg * (- 1.0 / (2.0 * ma_mur * MU0) * ((dr1 + tern(r > SMALL, value1/r, dr1)) * (dr1 + tern(r > SMALL, value1/r, dr1)) + dz1 * dz1) + 1.0 / (ma_mur * MU0) * (dz1 * dz1)))"
+                                                      planar="(dyegg * (- 1.0 / (2.0 * ma_mur * MU0) * (dx1 * dx1 + dy1 * dy1) + 1.0 / (ma_mur * MU0) * (dy1 * dy1))) + (dxegg * 1.0 / (ma_mur * MU0) * dx1 * dy1)"/>
       </module:volumeintegral>
     </module:volumeintegrals>
 
