@@ -61,12 +61,12 @@ class MagneticPlanarGeneral(Agros2DTestCase):
         geometry.add_edge(0.5, -0.15, -0.5, -0.15)
         
         # labels
-        geometry.add_label(-0.0959509, 0.445344, 0.001, materials = {"magnetic" : "Fe"})
-        geometry.add_label(0.00301448, 0.0404858, 0.005, materials = {"magnetic" : "Cu"})
-        geometry.add_label(-0.145434, -0.706253, 0.01, materials = {"magnetic" : "Air"})
-        geometry.add_label(0.143596, -0.364811, 0, materials = {"magnetic" : "Magnet"})
-        geometry.add_label(0.310203, 0.631164, 0, materials = {"magnetic" : "Air"})
-        geometry.add_label(-0.295858, -0.182894, 0, materials = {"magnetic" : "Velocity"})
+        geometry.add_label(-0.0959509, 0.445344, area = 0.0002, materials = {"magnetic" : "Fe"})
+        geometry.add_label(0.00301448, 0.0404858, area = 0.005, materials = {"magnetic" : "Cu"})
+        geometry.add_label(-0.145434, -0.706253, area = 0.01, materials = {"magnetic" : "Air"})
+        geometry.add_label(0.143596, -0.364811, materials = {"magnetic" : "Magnet"})
+        geometry.add_label(0.310203, 0.631164, materials = {"magnetic" : "Air"})
+        geometry.add_label(-0.295858, -0.182894, materials = {"magnetic" : "Velocity"})
         
         agros2d.view.zoom_best_fit()
         
@@ -97,11 +97,14 @@ class MagneticPlanarGeneral(Agros2DTestCase):
         self.value_test("Lorentz force - x", volume["Flx"], -110.011057)
         self.value_test("Lorentz force - y", volume["Fly"], -36.62167)
         self.value_test("Torque", volume["Tl"], 20.463818)
+        volume = self.magnetic.volume_integrals([0])
+        self.value_test("Volume Maxwell force - x", volume["Ftx"], 2.66, 0.15)
+        self.value_test("Volume Maxwell force - y", volume["Fty"], -11.87, 0.15)            
         
         # surface integral
         surface = self.magnetic.surface_integrals([2, 3, 4, 5])
-        self.value_test("Maxwell force - x", surface["Ftx"], 2.531945, 0.11)
-        self.value_test("Maxwell force - y", surface["Fty"], -10.176192, 0.1)            
+        self.value_test("Surface Maxwell force - x", surface["Ftx"], 2.66, 0.15)
+        self.value_test("Surface Maxwell force - y", surface["Fty"], -11.87, 0.15)            
 
 class MagneticPlanar(MagneticPlanarGeneral):
     def setUp(self):  
@@ -175,7 +178,7 @@ class MagneticAxisymmetricGeneral(Agros2DTestCase):
         
         # labels
         geometry.add_label(0.0348743, 0.0347237, materials = {"magnetic" : "Fe"})
-        geometry.add_label(0.00512569, -0.0070852, materials = {"magnetic" : "Fe"})
+        geometry.add_label(0.00512569, -0.0070852, area = 0.8e-06, materials = {"magnetic" : "Fe"})
         geometry.add_label(0.021206, 0.0692964, materials = {"magnetic" : "Cu"})
         geometry.add_label(0.0141705, 0.12445, materials = {"magnetic" : "Air"})
         geometry.add_label(0.0346923, 0.0892198, materials = {"magnetic" : "Fe"})
@@ -209,10 +212,12 @@ class MagneticAxisymmetricGeneral(Agros2DTestCase):
         volume = self.magnetic.volume_integrals([2])
         self.value_test("Integral Lorentz force - r", volume["Flx"], -8.069509) 
         self.value_test("Integral Lorentz force - z", volume["Fly"], -5.288991) 
+        volume = self.magnetic.volume_integrals([1])        
+        self.value_test("Volume Maxwell force - z", volume["Fty"], 0.429770, 0.1)
         
         # surface integral
         surface = self.magnetic.surface_integrals([12, 13, 14, 15])
-        self.value_test("Maxwell force - z", surface["Fty"], 0.368232, 0.1)
+        self.value_test("Surface Maxwell force - z", surface["Fty"], 0.429770, 0.1)
 
 class MagneticAxisymmetric(MagneticAxisymmetricGeneral):
     def setUp(self):  
