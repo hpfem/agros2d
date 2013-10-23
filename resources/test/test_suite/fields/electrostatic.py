@@ -51,7 +51,7 @@ class ElectrostaticPlanar(Agros2DTestCase):
         
         # labels
         geometry.add_label(2.78257, 1.37346, materials = {"electrostatic" : "none"})
-        geometry.add_label(10.3839, 15.7187, materials = {"electrostatic" : "Source"})
+        geometry.add_label(10.3839, 15.7187, area = 0.2, materials = {"electrostatic" : "Source"})
         geometry.add_label(3.37832, 15.8626, materials = {"electrostatic" : "Air"})
         geometry.add_label(12.3992, 0.556005, materials = {"electrostatic" : "Dieletric"})
         
@@ -75,7 +75,9 @@ class ElectrostaticPlanar(Agros2DTestCase):
         # volume integral
         volume_integrals = self.electrostatic.volume_integrals([1])
         self.value_test("Energy", volume_integrals["We"], 1.307484e-7)
-            
+        self.value_test("Volume Maxwell force - x", volume_integrals["Ftx"], 7.592e-8, 0.1)
+        self.value_test("Volume Maxwell force - y", volume_integrals["Fty"], -5.546e-7, 0.1)    
+        
         # surface integral
         surface_integrals = self.electrostatic.surface_integrals([0, 1, 2, 3])
         self.value_test("Electric charge", surface_integrals["Q"], 1.048981e-7)
