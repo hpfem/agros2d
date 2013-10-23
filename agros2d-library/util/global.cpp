@@ -259,8 +259,8 @@ PluginInterface *Agros2D::loadPlugin(const QString &pluginName)
 #endif
 
 #ifdef Q_WS_WIN
-    if (QFile::exists(QString("%1/libs/agros2d_plugin_%2.dll").arg(datadir()).arg(plugin)))
-        loader = new QPluginLoader(QString("%1/libs/agros2d_plugin_%2.dll").arg(datadir()).arg(plugin));
+    if (QFile::exists(QString("%1/libs/agros2d_plugin_%2.dll").arg(datadir()).arg(pluginName)))
+        loader = new QPluginLoader(QString("%1/libs/agros2d_plugin_%2.dll").arg(datadir()).arg(pluginName));
 #endif
 
     if (!loader)

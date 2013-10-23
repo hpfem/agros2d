@@ -97,7 +97,7 @@ void AgrosSpecialExtFunction::init()
     for (int labelNum = 0; labelNum < Agros2D::scene()->labels->count(); labelNum++)
     {
         SceneLabel* label = Agros2D::scene()->labels->at(labelNum);
-        Hermes::Hermes2D::Mesh::MarkersConversion::IntValid marker = m_fieldInfo->initialMesh()->get_element_markers_conversion().get_internal_marker(std::to_string(labelNum));
+        Hermes::Hermes2D::Mesh::MarkersConversion::IntValid marker = m_fieldInfo->initialMesh()->get_element_markers_conversion().get_internal_marker(std::to_string((long double)labelNum));
         if(label->hasMarker(m_fieldInfo) && !label->marker(m_fieldInfo)->isNone())
         {
             qDebug() << label->marker(m_fieldInfo)->name();
