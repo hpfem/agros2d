@@ -129,7 +129,7 @@
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="241"/>
         <source>Fixed voltage</source>
-        <translation type="unfinished">Potentiel fixe</translation>
+        <translation>Potentiel fixe</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="244"/>
@@ -154,22 +154,22 @@
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="256"/>
         <source>Electric field - real</source>
-        <translation type="unfinished">C</translation>
+        <translation>Champ électrique : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="259"/>
         <source>Current density - conductive - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de courant : cond. : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="262"/>
         <source>Current density - total - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de courant : totale. : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="265"/>
         <source>Joule losses</source>
-        <translation type="unfinished"></translation>
+        <translation>Pertes Joule</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="268"/>
@@ -194,7 +194,7 @@
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="280"/>
         <source>Current - conductive - real</source>
-        <translation type="unfinished"></translation>
+        <translation>Courant : cond. : Re</translation>
     </message>
     <message>
         <location filename="../../plugins/current/current_interface.cpp" line="287"/>
@@ -207,7 +207,7 @@
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="556"/>
         <source>Structural analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Analyse structurelle</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="562"/>
@@ -217,92 +217,92 @@
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="565"/>
         <source>Fixed - fixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Fixe–Fixe</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="568"/>
         <source>Fixed - free</source>
-        <translation type="unfinished"></translation>
+        <translation>Fixe–Libre</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="571"/>
         <source>Free - fixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Libre–Fixe</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="574"/>
         <source>Free - free</source>
-        <translation type="unfinished"></translation>
+        <translation>Libre–Libre</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="577"/>
         <source>Young modulus</source>
-        <translation type="unfinished"></translation>
+        <translation>Module d&apos;Young</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="580"/>
         <source>Poisson ratio</source>
-        <translation type="unfinished"></translation>
+        <translation>Coefficient de Poisson</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="583"/>
         <source>Force - x</source>
-        <translation type="unfinished"></translation>
+        <translation>Force : x</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="586"/>
         <source>Force - y</source>
-        <translation type="unfinished"></translation>
+        <translation>Force : y</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="589"/>
         <source>Temperature coefficient</source>
-        <translation type="unfinished"></translation>
+        <translation>Coefficient de température</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="592"/>
         <source>Temperature difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Différence de température</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="595"/>
         <source>Reference temperature</source>
-        <translation type="unfinished"></translation>
+        <translation>Température de référence</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="598"/>
         <source>Fixed - x</source>
-        <translation type="unfinished"></translation>
+        <translation>Fixe : x</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="601"/>
         <source>Fixed - y</source>
-        <translation type="unfinished"></translation>
+        <translation>Fixe : y</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="604"/>
         <source>Free - x</source>
-        <translation type="unfinished"></translation>
+        <translation>Libre : x</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="607"/>
         <source>Free - y</source>
-        <translation type="unfinished"></translation>
+        <translation>Libre : y</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="610"/>
         <source>Displacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Déplacement</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="613"/>
         <source>Von Misses stress</source>
-        <translation type="unfinished"></translation>
+        <translation>Stress de Von Mises</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="616"/>
         <source>Inner force</source>
-        <translation type="unfinished"></translation>
+        <translation>Force intérieure</translation>
     </message>
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="619"/>
@@ -327,7 +327,7 @@
     <message>
         <location filename="../../plugins/elasticity/elasticity_interface.cpp" line="635"/>
         <source>Structural analysis is the determination of the effects of loads on physical structures and their components.        </source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;analyse structurelle est la détermination des effets des forces sur les structures physiques et leurs composants.</translation>
     </message>
 </context>
 <context>
@@ -335,87 +335,87 @@
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="232"/>
         <source>Electrostatic field</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ électrostatique</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="238"/>
         <source>Steady state</source>
-        <translation type="unfinished">État stationnaire</translation>
+        <translation>État stationnaire</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="241"/>
         <source>Fixed voltage</source>
-        <translation type="unfinished">Potentiel fixe</translation>
+        <translation>Potentiel fixe</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="244"/>
         <source>Surface charge density</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de charge de surface</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="247"/>
         <source>Permittivity</source>
-        <translation type="unfinished">Permittivité</translation>
+        <translation>Permittivité</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="250"/>
         <source>Charge density</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de charge</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="253"/>
         <source>Scalar potential</source>
-        <translation type="unfinished"></translation>
+        <translation>Potentiel scalaire</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="256"/>
         <source>Electric field</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ électrique</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="259"/>
         <source>Displacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Déplacement</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="262"/>
         <source>Energy density</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité d&apos;énergie</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="265"/>
         <source>Volume</source>
-        <translation type="unfinished">Volume</translation>
+        <translation>Volume</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="268"/>
         <source>Cross section</source>
-        <translation type="unfinished">Coupe transversale</translation>
+        <translation>Coupe transversale</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="271"/>
         <source>Energy</source>
-        <translation type="unfinished"></translation>
+        <translation>Energie</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="274"/>
         <source>Length</source>
-        <translation type="unfinished">Longueur</translation>
+        <translation>Longueur</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="277"/>
         <source>Surface</source>
-        <translation type="unfinished">Surface</translation>
+        <translation>Surface</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="280"/>
         <source>Charge</source>
-        <translation type="unfinished"></translation>
+        <translation>Charge</translation>
     </message>
     <message>
         <location filename="../../plugins/electrostatic/electrostatic_interface.cpp" line="287"/>
         <source>Electrostatics is the branch of science that deals with the phenomena and properties of stationary or slow-moving (without acceleration) electric charges.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;électrostatique est la branche de la physique qui étudie les phénomènes créés par des charges électriques statiques pour l&apos;observateur.</translation>
     </message>
 </context>
 <context>
