@@ -122,6 +122,9 @@ void ConfigComputerDialog::save()
     // solver cache
     Agros2D::configComputer()->useSolverCache = chkUseSolverCache->isChecked();
 
+    // cache size
+    Agros2D::configComputer()->cacheSize = txtCacheSize->value();
+
     // std log
     Agros2D::configComputer()->showLogStdOut = chkLogStdOut->isChecked();
 
