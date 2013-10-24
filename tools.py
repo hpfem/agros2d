@@ -111,6 +111,9 @@ def source_package(version):
 def binary_package():
     call(['dpkg-buildpackage', '-sgpg', '-rfakeroot'])
 
+def callgrind():
+	call(['valgrind --tool=callgrind --smc-check=all-non-file --fn-skip=QMetaObject::activate* --fn-skip=QMetaObject::metacall* --fn-skip=*::qt_metacall* --fn-skip=*::qt_static_metacall* ./agros2d'])	  
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest='command')
@@ -150,7 +153,10 @@ if __name__ == "__main__":
 
     # equations
     eqs = subparsers.add_parser('eqs', help='generate equations from modules')
-
+	
+	# callgrind
+    call = subparsers.add_parser('callgrind', help='call callgrind')
+	    
     args = parser.parse_args()
 
     if (args.command == 'doc'):
@@ -176,3 +182,6 @@ if __name__ == "__main__":
 
     if (args.command == 'eqs'):
         equations()
+        
+    if (args.command == 'callgrind'):
+        callgrind()
