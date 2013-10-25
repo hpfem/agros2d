@@ -64,6 +64,8 @@ Agros2DGeneratorCoupling::Agros2DGeneratorCoupling(const QString &couplingId)
         QString iD = QString::fromStdString(quantity.id().c_str()).replace(" ", "");
         m_targetVariables.insert(iD, shortName);
     }
+
+    Module::volumeQuantityProperties(m_targetModule, quantityOrdering, quantityIsNonlinear, functionOrdering);
 }
 
 void Agros2DGeneratorCoupling::generatePluginProjectFile()
@@ -174,7 +176,7 @@ void Agros2DGeneratorCoupling::generatePluginWeakFormHeaderFiles()
 
     // header - expand template
     std::string text;
-    ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/weakform_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
+    ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/coupling_weakform_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
 
     // header - save to file
@@ -213,7 +215,7 @@ void Agros2DGeneratorCoupling::generatePluginWeakFormSourceFiles()
     }
 
     std::string text;
-    ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/weakform_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
+    ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/coupling_weakform_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
                               ctemplate::DO_NOT_STRIP, &output, &text);
 
     // source - save to file
@@ -437,7 +439,6 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
                 if (repl == QString("source%1dz").arg(i)) { exprCpp += QString("ext[*this->m_offsetCouplingExt + %1]->dy[i]").arg(i-1); isReplaced = true; }
             }
 
-            // variables
             foreach (XMLModule::quantity quantity, m_sourceModule->volume().quantity())
             {
                 if (quantity.shortname().present())
@@ -467,27 +468,29 @@ QString Agros2DGeneratorCoupling::parseWeakFormExpression(AnalysisType sourceAna
             foreach (XMLModule::quantity quantity, m_targetModule->volume().quantity())
             {
                 if (quantity.shortname().present())
-                    if ((repl == QString::fromStdString(quantity.shortname().get())) || repl == QString::fromStdString("d" + quantity.shortname().get()))
+                {
+                    if (repl == QString::fromStdString(quantity.shortname().get()))
                     {
-                        QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), sourceAnalysisType, coordinateType);
+                        QString nonlinearExpr = nonlinearExpression(QString::fromStdString(quantity.id()), targetAnalysisType, coordinateType);
                         if (nonlinearExpr.isEmpty())
+                        {
                             // linear material
-                            exprCpp += QString("%1->number()").arg(QString::fromStdString(quantity.shortname().get()));
+                            exprCpp += QString("ext[%1]->val[i]").arg(quantityOrdering[QString::fromStdString(quantity.id())]);
+                        }
                         else
                         {
-                            // nonlinear material
-                            if (repl == QString::fromStdString(quantity.shortname().get()))
-                                exprCpp += QString("%1->value(%2)").
-                                        arg(QString::fromStdString(quantity.shortname().get())).
-                                        arg(parseWeakFormExpression(sourceAnalysisType, targetAnalysisType, coordinateType, nonlinearExpr));
-                            if (repl == QString::fromStdString("d" + quantity.shortname().get()))
-                                exprCpp += QString("%1->derivative(%2)").
-                                        arg(QString::fromStdString(quantity.shortname().get())).
-                                        arg(parseWeakFormExpression(sourceAnalysisType, targetAnalysisType, coordinateType, nonlinearExpr));
+                            // todo: not implemented
+                            assert(0);
                         }
 
                         isReplaced = true;
                     }
+                    if (repl == QString::fromStdString("d" + quantity.shortname().get()))
+                    {
+                        // todo: not implemented
+                        assert(0);
+                    }
+                }
             }
 
             // operators and other

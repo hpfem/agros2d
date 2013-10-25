@@ -53,16 +53,7 @@ public:
 
     {{FUNCTION_NAME}}<Scalar>* clone() const;
 
-    virtual void setMarkerSource(Marker *marker);
-    virtual void setMarkerTarget(Marker *marker);
-
 private:
-    {{#VARIABLE_SOURCE}}
-    Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
-    {{#VARIABLE_TARGET}}
-    Value *{{VARIABLE_SHORT}};{{/VARIABLE_TARGET}}
-    {{#SPECIAL_FUNCTION_SOURCE}}
-    {{SPECIAL_FUNCTION_FULL_NAME}}<Scalar> {{SPECIAL_FUNCTION_NAME}}; {{/SPECIAL_FUNCTION_SOURCE}}
 };
 {{/VOLUME_MATRIX_SOURCE}}
 
@@ -80,18 +71,8 @@ public:
 
     {{FUNCTION_NAME}}<Scalar>* clone() const;
 
-    virtual void setMarkerSource(Marker *marker);
-    virtual void setMarkerTarget(Marker *marker);
-
 private:
     unsigned int j;
-
-    {{#VARIABLE_SOURCE}}
-    Value *{{VARIABLE_SHORT}};{{/VARIABLE_SOURCE}}
-    {{#VARIABLE_TARGET}}
-    Value *{{VARIABLE_SHORT}};{{/VARIABLE_TARGET}}
-    {{#SPECIAL_FUNCTION_SOURCE}}
-{{SPECIAL_FUNCTION_FULL_NAME}}<Scalar> {{SPECIAL_FUNCTION_NAME}}; {{/SPECIAL_FUNCTION_SOURCE}}
 };
 {{/VOLUME_VECTOR_SOURCE}}  
 

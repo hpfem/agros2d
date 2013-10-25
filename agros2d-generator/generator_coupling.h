@@ -64,6 +64,10 @@ private:
 
     QString parseWeakFormExpression(AnalysisType sourceAnalysisType, AnalysisType targetAnalysisType,CoordinateType coordinateType, const QString &expr);    
     QString generateDocWeakFormExpression(QString symbol);
+
+    QMap<QString, int> quantityOrdering;
+    QMap<QString, bool> quantityIsNonlinear;
+    QMap<QString, int> functionOrdering;
 };
 
 #endif // GENERATOR_COUPLING_H

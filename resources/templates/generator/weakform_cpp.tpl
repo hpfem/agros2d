@@ -87,31 +87,6 @@ template <typename Scalar>
     return new {{FUNCTION_NAME}}(*this);
 }
 
-template <typename Scalar>
-void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
-{
-    FormAgrosInterface::setMarkerSource(marker);
-
-    {{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = &this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
-    {{#SPECIAL_FUNCTION_SOURCE}}
-    {{#PARAMETERS}}
-    {{SPECIAL_FUNCTION_NAME}}.{{PARAMETER_NAME}} = this->{{PARAMETER_NAME}}->number(); {{/PARAMETERS}}
-    {{SPECIAL_FUNCTION_NAME}}.setVariant("{{SELECTED_VARIANT}}");
-    {{SPECIAL_FUNCTION_NAME}}.setType(specialFunctionTypeFromStringKey("{{TYPE}}"));
-    {{SPECIAL_FUNCTION_NAME}}.setBounds({{FROM}}, {{TO}}, {{EXTRAPOLATE_LOW_PRESENT}}, {{EXTRAPOLATE_HI_PRESENT}});
-    {{SPECIAL_FUNCTION_NAME}}.setArea(this->markerVolume());
-    {{SPECIAL_FUNCTION_NAME}}.createInterpolation();{{/SPECIAL_FUNCTION_SOURCE}}
-}
-
-template <typename Scalar>
-void {{FUNCTION_NAME}}<Scalar>::setMarkerTarget(Marker *marker)
-{
-    FormAgrosInterface::setMarkerTarget(marker);
-
-    {{#VARIABLE_TARGET}}
-    {{VARIABLE_SHORT}} = &this->m_markerTarget->value("{{VARIABLE}}");{{/VARIABLE_TARGET}}
-}
 {{/VOLUME_MATRIX_SOURCE}}
 
 // ***********************************************************************************************************************************
@@ -155,31 +130,6 @@ template <typename Scalar>
     return new {{FUNCTION_NAME}}(*this);
 }
 
-template <typename Scalar>
-void {{FUNCTION_NAME}}<Scalar>::setMarkerSource(Marker *marker)
-{
-    FormAgrosInterface::setMarkerSource(marker);
-
-    {{#VARIABLE_SOURCE}}
-    {{VARIABLE_SHORT}} = &this->m_markerSource->value("{{VARIABLE}}"); {{/VARIABLE_SOURCE}}
-    {{#SPECIAL_FUNCTION_SOURCE}}
-    {{#PARAMETERS}}
-    {{SPECIAL_FUNCTION_NAME}}.{{PARAMETER_NAME}} = this->{{PARAMETER_NAME}}->number(); {{/PARAMETERS}}
-    {{SPECIAL_FUNCTION_NAME}}.setVariant("{{SELECTED_VARIANT}}");
-    {{SPECIAL_FUNCTION_NAME}}.setType(specialFunctionTypeFromStringKey("{{TYPE}}"));
-    {{SPECIAL_FUNCTION_NAME}}.setBounds({{FROM}}, {{TO}}, {{EXTRAPOLATE_LOW_PRESENT}}, {{EXTRAPOLATE_HI_PRESENT}});
-    {{SPECIAL_FUNCTION_NAME}}.setArea(this->markerVolume());
-    {{SPECIAL_FUNCTION_NAME}}.createInterpolation();{{/SPECIAL_FUNCTION_SOURCE}}
-}
-
-template <typename Scalar>
-void {{FUNCTION_NAME}}<Scalar>::setMarkerTarget(Marker *marker)
-{
-    FormAgrosInterface::setMarkerTarget(marker);
-
-    {{#VARIABLE_TARGET}}
-    {{VARIABLE_SHORT}} = &this->m_markerTarget->value("{{VARIABLE}}");{{/VARIABLE_TARGET}}
-}
 {{/VOLUME_VECTOR_SOURCE}}
 
 // ***********************************************************************************************************************************
