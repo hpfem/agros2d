@@ -122,7 +122,7 @@ bool Problem::isMeshed() const
 
 bool Problem::isSolved() const
 {
-    return !Agros2D::solutionStore()->isEmpty();
+    return (!Agros2D::solutionStore()->isEmpty() && !m_isSolving && !m_isMeshing);
 }
 
 int Problem::numAdaptiveFields() const

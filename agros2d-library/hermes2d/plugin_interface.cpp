@@ -100,7 +100,6 @@ void AgrosSpecialExtFunction::init()
         Hermes::Hermes2D::Mesh::MarkersConversion::IntValid marker = m_fieldInfo->initialMesh()->get_element_markers_conversion().get_internal_marker(std::to_string((int) labelNum));
         if(label->hasMarker(m_fieldInfo) && !label->marker(m_fieldInfo)->isNone())
         {
-            qDebug() << label->marker(m_fieldInfo)->name();
             assert(marker.valid);
             int hermesMarker = marker.marker;
             assert(!m_data.contains(hermesMarker));
