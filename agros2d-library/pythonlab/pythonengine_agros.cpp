@@ -65,7 +65,10 @@ void PythonEngineAgros::runPythonHeader()
 
     // run script
     if (!script.trimmed().isEmpty())
-        PyRun_String(script.toLatin1().data(), Py_file_input, m_dict, m_dict);
+    {
+        PyObject *func = PyRun_String(script.toLatin1().data(), Py_file_input, m_dict, m_dict);
+        Py_XDECREF(func);
+    }
 }
 
 void PythonEngineAgros::abortScript()
