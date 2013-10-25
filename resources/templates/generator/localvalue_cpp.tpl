@@ -66,19 +66,12 @@ void {{CLASS}}LocalValue::calculate()
             SceneLabel *label = Agros2D::scene()->labels->at(atoi(m_fieldInfo->initialMesh()->get_element_markers_conversion().get_user_marker(e->marker).marker.c_str()));
             SceneMaterial *material = label->marker(m_fieldInfo);
 
-            double area = m_fieldInfo->initialMesh()->get_marker_area(e->marker);
+            int elementMarker = e->marker;
 
             {{#VARIABLE_MATERIAL}}Value *material_{{MATERIAL_VARIABLE}} = &material->value(QLatin1String("{{MATERIAL_VARIABLE}}"));
             {{/VARIABLE_MATERIAL}}
             {{#SPECIAL_FUNCTION_SOURCE}}
-            {{SPECIAL_FUNCTION_FULL_NAME}}<double> {{SPECIAL_FUNCTION_NAME}};{{#PARAMETERS}}
-            {{SPECIAL_FUNCTION_NAME}}.{{PARAMETER_NAME}} = material_{{PARAMETER_FULL_NAME}}->number(); {{/PARAMETERS}}
-            {{SPECIAL_FUNCTION_NAME}}.setVariant("{{SELECTED_VARIANT}}");
-            {{SPECIAL_FUNCTION_NAME}}.setType(specialFunctionTypeFromStringKey("{{TYPE}}"));
-            {{SPECIAL_FUNCTION_NAME}}.setBounds({{FROM}}, {{TO}}, {{EXTRAPOLATE_LOW_PRESENT}}, {{EXTRAPOLATE_HI_PRESENT}});
-            {{SPECIAL_FUNCTION_NAME}}.setArea(area);
-            {{SPECIAL_FUNCTION_NAME}}.setUseInterpolation(false);
-            {{/SPECIAL_FUNCTION_SOURCE}}
+            {{SPECIAL_EXT_FUNCTION_FULL_NAME}} {{SPECIAL_FUNCTION_NAME}}(m_fieldInfo, 0);{{/SPECIAL_FUNCTION_SOURCE}}
 
             double *value = new double[numberOfSolutions];
             double *dudx = new double[numberOfSolutions];

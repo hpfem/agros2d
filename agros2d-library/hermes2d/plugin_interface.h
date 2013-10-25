@@ -320,54 +320,6 @@ protected:
     XMLCoupling::coupling *m_coupling;
 };
 
-const int IMPLICIT_APPROX_COUNT = 500;
-
-// todo create hierarcy of ConstantSpecialFunction, 1dSpecialFunction, etc...
-template <typename Scalar>
-class AGROS_LIBRARY_API SpecialFunction
-{
-public:
-    SpecialFunction() : m_interpolation(0), m_bound_low(0), m_bound_hi(0), m_count(IMPLICIT_APPROX_COUNT), m_interpolationCreated(false), m_useInterpolation(true), area(-12345){}
-
-    //allows to naturaly write as function of one parameter
-    Scalar operator()(double h) const;
-    Hermes::Ord operator()(Hermes::Ord h) const {return Hermes::Ord(10); }
-
-    // retypes to Scalar: allows to naturaly write as constant (without parameters)
-    operator Scalar() const;
-
-    void setBounds(double bound_low, double bound_hi, bool extrapolate_low, bool extrapolate_hi);
-    void createInterpolation();
-    virtual Scalar value(double h) const = 0 ;
-    virtual Scalar extrapolation_low() = 0;
-    virtual Scalar extrapolation_hi() = 0;
-    void setVariant(QString variant) { m_variant = variant; m_interpolationCreated = false;}
-    void setType(SpecialFunctionType type) { m_type = type; }
-
-    // interpolation is not created for local values and filters.
-    // todo: it should be created for filters
-    void setUseInterpolation(bool use = true) { m_useInterpolation = use; }
-
-    // area of given label
-    void setArea(double a) { area = a; }
-    double area;
-
-protected:
-    QSharedPointer<PiecewiseLinear> m_interpolation;
-    double m_bound_low;
-    double m_bound_hi;
-    bool m_extrapolation_low_present;
-    double m_extrapolation_low;
-    bool m_extrapolation_hi_present;
-    double m_extrapolation_hi;
-    double m_count;
-    QString m_variant;
-    bool m_useInterpolation;
-    bool m_interpolationCreated;
-    SpecialFunctionType m_type;
-    double m_constantValue;
-};
-
 
 QT_BEGIN_NAMESPACE
 Q_DECLARE_INTERFACE(PluginInterface, "agros2d.PluginInterface/1.0")

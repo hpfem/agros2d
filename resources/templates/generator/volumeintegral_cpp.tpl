@@ -51,19 +51,11 @@ virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, H
 
     double *x = e->x;
     double *y = e->y;
-    double area = m_fieldInfo->initialMesh()->get_marker_area(e->elem_marker);
 
     {{#VARIABLE_MATERIAL}}Value *material_{{MATERIAL_VARIABLE}} = &material->value(QLatin1String("{{MATERIAL_VARIABLE}}"));
     {{/VARIABLE_MATERIAL}}
     {{#SPECIAL_FUNCTION_SOURCE}}
-    {{SPECIAL_FUNCTION_FULL_NAME}}<double> {{SPECIAL_FUNCTION_NAME}};{{#PARAMETERS}}
-    {{SPECIAL_FUNCTION_NAME}}.{{PARAMETER_NAME}} = material_{{PARAMETER_FULL_NAME}}->number(); {{/PARAMETERS}}
-    {{SPECIAL_FUNCTION_NAME}}.setVariant("{{SELECTED_VARIANT}}");
-    {{SPECIAL_FUNCTION_NAME}}.setType(specialFunctionTypeFromStringKey("{{TYPE}}"));
-    {{SPECIAL_FUNCTION_NAME}}.setBounds({{FROM}}, {{TO}}, {{EXTRAPOLATE_LOW_PRESENT}}, {{EXTRAPOLATE_HI_PRESENT}});
-    {{SPECIAL_FUNCTION_NAME}}.setArea(area);
-    {{SPECIAL_FUNCTION_NAME}}.setUseInterpolation(false);
-    {{/SPECIAL_FUNCTION_SOURCE}}
+    {{SPECIAL_EXT_FUNCTION_FULL_NAME}} {{SPECIAL_FUNCTION_NAME}}(m_fieldInfo, 0);{{/SPECIAL_FUNCTION_SOURCE}}
 
     // functions
     double **value = new double*[source_functions.size()];
@@ -124,19 +116,12 @@ virtual void integral(int n, double* wt, Hermes::Hermes2D::Func<double> **fns, H
 
     double *x = e->x;
     double *y = e->y;
-    double area = m_fieldInfo->initialMesh()->get_marker_area(e->elem_marker);
+    int elementMarker = e->elem_marker;
 
     {{#VARIABLE_MATERIAL}}Value *material_{{MATERIAL_VARIABLE}} = &material->value(QLatin1String("{{MATERIAL_VARIABLE}}"));
     {{/VARIABLE_MATERIAL}}
     {{#SPECIAL_FUNCTION_SOURCE}}
-    {{SPECIAL_FUNCTION_FULL_NAME}}<double> {{SPECIAL_FUNCTION_NAME}};{{#PARAMETERS}}
-    {{SPECIAL_FUNCTION_NAME}}.{{PARAMETER_NAME}} = material_{{PARAMETER_FULL_NAME}}->number(); {{/PARAMETERS}}
-    {{SPECIAL_FUNCTION_NAME}}.setVariant("{{SELECTED_VARIANT}}");
-    {{SPECIAL_FUNCTION_NAME}}.setType(specialFunctionTypeFromStringKey("{{TYPE}}"));
-    {{SPECIAL_FUNCTION_NAME}}.setBounds({{FROM}}, {{TO}}, {{EXTRAPOLATE_LOW_PRESENT}}, {{EXTRAPOLATE_HI_PRESENT}});
-    {{SPECIAL_FUNCTION_NAME}}.setArea(area);
-    {{SPECIAL_FUNCTION_NAME}}.setUseInterpolation(false);
-    {{/SPECIAL_FUNCTION_SOURCE}}
+    {{SPECIAL_EXT_FUNCTION_FULL_NAME}} {{SPECIAL_FUNCTION_NAME}}(m_fieldInfo, 0);{{/SPECIAL_FUNCTION_SOURCE}}
 
     // functions
     double **value = new double*[source_functions.size()];

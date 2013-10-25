@@ -863,21 +863,21 @@ void Agros2DGeneratorModule::generatePluginForceFiles()
             if (coordinateType == CoordinateType_Planar)
             {
                 expression->SetValue("EXPRESSION_X", parsePostprocessorExpression(analysisType, coordinateType,
-                                                                                  QString::fromStdString(expr.planar_x().get())).replace("[i]", "").toStdString());
+                                                                                  QString::fromStdString(expr.planar_x().get()), true).replace("[i]", "").toStdString());
                 expression->SetValue("EXPRESSION_Y", parsePostprocessorExpression(analysisType, coordinateType,
-                                                                                  QString::fromStdString(expr.planar_y().get())).replace("[i]", "").toStdString());
+                                                                                  QString::fromStdString(expr.planar_y().get()), true).replace("[i]", "").toStdString());
                 expression->SetValue("EXPRESSION_Z", parsePostprocessorExpression(analysisType, coordinateType,
-                                                                                  QString::fromStdString(expr.planar_z().get())).replace("[i]", "").toStdString());
+                                                                                  QString::fromStdString(expr.planar_z().get()), true).replace("[i]", "").toStdString());
             }
             else
             {
                 {
                     expression->SetValue("EXPRESSION_X", parsePostprocessorExpression(analysisType, coordinateType,
-                                                                                      QString::fromStdString(expr.axi_r().get())).replace("[i]", "").toStdString());
+                                                                                      QString::fromStdString(expr.axi_r().get()), true).replace("[i]", "").toStdString());
                     expression->SetValue("EXPRESSION_Y", parsePostprocessorExpression(analysisType, coordinateType,
-                                                                                      QString::fromStdString(expr.axi_z().get())).replace("[i]", "").toStdString());
+                                                                                      QString::fromStdString(expr.axi_z().get()), true).replace("[i]", "").toStdString());
                     expression->SetValue("EXPRESSION_Z", parsePostprocessorExpression(analysisType, coordinateType,
-                                                                                      QString::fromStdString(expr.axi_phi().get())).replace("[i]", "").toStdString());
+                                                                                      QString::fromStdString(expr.axi_phi().get()), true).replace("[i]", "").toStdString());
                 }
             }
         }
@@ -1311,7 +1311,7 @@ void Agros2DGeneratorModule::createFilterExpression(ctemplate::TemplateDictionar
         expression->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisType).toStdString());
         expression->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
         expression->SetValue("PHYSICFIELDVARIABLECOMP_TYPE", Agros2DGenerator::physicFieldVariableCompStringEnum(physicFieldVariableComp).toStdString());
-        expression->SetValue("EXPRESSION", parsePostprocessorExpression(analysisType, coordinateType, expr).toStdString());
+        expression->SetValue("EXPRESSION", parsePostprocessorExpression(analysisType, coordinateType, expr, true, true).toStdString());
     }
 }
 
@@ -1328,9 +1328,9 @@ void Agros2DGeneratorModule::createLocalValueExpression(ctemplate::TemplateDicti
     expression->SetValue("VARIABLE", variable.toStdString());
     expression->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisType).toStdString());
     expression->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
-    expression->SetValue("EXPRESSION_SCALAR", exprScalar.isEmpty() ? "0" : parsePostprocessorExpression(analysisType, coordinateType, exprScalar).replace("[i]", "").toStdString());
-    expression->SetValue("EXPRESSION_VECTORX", exprVectorX.isEmpty() ? "0" : parsePostprocessorExpression(analysisType, coordinateType, exprVectorX).replace("[i]", "").toStdString());
-    expression->SetValue("EXPRESSION_VECTORY", exprVectorY.isEmpty() ? "0" : parsePostprocessorExpression(analysisType, coordinateType, exprVectorY).replace("[i]", "").toStdString());
+    expression->SetValue("EXPRESSION_SCALAR", exprScalar.isEmpty() ? "0" : parsePostprocessorExpression(analysisType, coordinateType, exprScalar, true).replace("[i]", "").toStdString());
+    expression->SetValue("EXPRESSION_VECTORX", exprVectorX.isEmpty() ? "0" : parsePostprocessorExpression(analysisType, coordinateType, exprVectorX, true).replace("[i]", "").toStdString());
+    expression->SetValue("EXPRESSION_VECTORY", exprVectorY.isEmpty() ? "0" : parsePostprocessorExpression(analysisType, coordinateType, exprVectorY, true).replace("[i]", "").toStdString());
 }
 
 void Agros2DGeneratorModule::createIntegralExpression(ctemplate::TemplateDictionary &output,
@@ -1348,7 +1348,7 @@ void Agros2DGeneratorModule::createIntegralExpression(ctemplate::TemplateDiction
         expression->SetValue("VARIABLE", variable.toStdString());
         expression->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisType).toStdString());
         expression->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
-        expression->SetValue("EXPRESSION", parsePostprocessorExpression(analysisType, coordinateType, expr).toStdString());
+        expression->SetValue("EXPRESSION", parsePostprocessorExpression(analysisType, coordinateType, expr, true).toStdString());
         expression->SetValue("POSITION", QString::number(pos).toStdString());
     }
 }
@@ -1437,7 +1437,7 @@ LexicalAnalyser *Agros2DGeneratorModule::postprocessorLexicalAnalyser(AnalysisTy
     return lex;
 }
 
-QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analysisType, CoordinateType coordinateType, const QString &expr, bool includeVariables)
+QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analysisType, CoordinateType coordinateType, const QString &expr, bool includeVariables, bool forFilter)
 {
     try
     {
@@ -1522,6 +1522,21 @@ QString Agros2DGeneratorModule::parsePostprocessorExpression(AnalysisType analys
                                 arg(QString::fromStdString(quantity.id())).
                                 arg(parsePostprocessorExpression(analysisType, coordinateType, nonlinearExpr, false));
                 }
+            }
+
+            foreach (XMLModule::function function, m_module->volume().function())
+            {
+                QString parameter("0");
+                // todo: so far used only in Richards, where is OK
+                if(QString::fromStdString(function.type()) == "function_1d")
+                {
+                    if(forFilter)
+                        parameter = "value[0][i]";
+                    else
+                        parameter = "value[0]";
+                }
+                dict[QString::fromStdString(function.shortname())] = QString("%1.calculateValue(elementMarker, %2)").
+                        arg(QString::fromStdString(function.shortname())).arg(parameter);
             }
         }
 
@@ -2193,7 +2208,6 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function* functi
     ctemplate::TemplateDictionary *functionTemplate = output->AddSectionDictionary("SPECIAL_FUNCTION_SOURCE");
     functionTemplate->SetValue("SPECIAL_FUNCTION_NAME", function->shortname());
     functionTemplate->SetValue("SPECIAL_FUNCTION_ID", function->id());
-    functionTemplate->SetValue("SPECIAL_FUNCTION_FULL_NAME", m_module->general().id() + "_function_" + function->shortname());
     functionTemplate->SetValue("SPECIAL_EXT_FUNCTION_FULL_NAME", m_module->general().id() + "_ext_function_" + function->shortname());
     functionTemplate->SetValue("FROM", function->bound_low().present() ? function->bound_low().get() : "-1");
     functionTemplate->SetValue("TO", function->bound_hi().present() ? function->bound_hi().get() : "1");
