@@ -93,7 +93,6 @@ signals:
     void pythonShowHtml(const QString &);
     void pythonShowImage(const QString &, int, int);
 
-    void executedExpression();
     void executedScript();
     void startedScript();
 
@@ -111,6 +110,7 @@ public:
 
     bool runScript(const QString &script, const QString &fileName = "", bool useProfiler = false);
     bool runExpression(const QString &expression, double *value = NULL, const QString &command = QString());
+    bool runExpressionConsole(const QString &expression);
     ErrorResult parseError();
     inline bool isScriptRunning() { return m_isScriptRunning; }
 
@@ -136,11 +136,7 @@ protected:
     virtual void addCustomFunctions() {}
     virtual void runPythonHeader() {}
 
-private slots:
-    void stdOut(const QString &message);    
-
 private:
-    QString m_stdOut;
     QString m_functions;
     QMutex m_mutex;
 

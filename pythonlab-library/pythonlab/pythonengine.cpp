@@ -219,10 +219,6 @@ void PythonEngine::init()
 {
     m_isScriptRunning = false;
     m_isExpressionRunning = false;
-    m_stdOut = "";
-
-    // connect stdout
-    connect(this, SIGNAL(pythonShowMessage(QString)), this, SLOT(stdOut(QString)));
 
     // init python
     PyEval_InitThreads();
@@ -288,11 +284,6 @@ void PythonEngine::pythonClearCommand()
     emit pythonClear();
 }
 
-void PythonEngine::stdOut(const QString &message)
-{
-    m_stdOut.append(message);
-}
-
 void PythonEngine::deleteUserModules()
 {
     // delete all user modules
@@ -333,59 +324,62 @@ void PythonEngine::deleteUserModules()
 bool PythonEngine::runScript(const QString &script, const QString &fileName, bool useProfiler)
 {
     m_isScriptRunning = true;
-    m_stdOut = "";
 
     PyGILState_STATE gstate = PyGILState_Ensure();
 
     emit startedScript();
 
-    QSettings settings;
-    // enable user module deleter
-    if (settings.value("PythonEngine/UserModuleDeleter", true).toBool())
-        deleteUserModules();
-
-    runPythonHeader();
-
-    PyObject *output = NULL;
-    if (QFile::exists(fileName))
-    {
-        QString str = QString("from os import chdir; chdir(u'" + QFileInfo(fileName).absolutePath() + "')");
-        PyObject *import = PyRun_String(str.toLatin1().data(), Py_single_input, m_dict, m_dict);
-        Py_XDECREF(import);
-    }
-
-    // compile
-    PyObject *code = Py_CompileString(script.toLatin1().data(), fileName.toLatin1().data(), Py_file_input);
-    // run
-    if (useProfiler)
-    {
-        setProfilerFileName(fileName);
-        startProfiler();
-    }
-    if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
-    if (useProfiler)
-        finishProfiler();
-
     bool successfulRun = false;
-    if (output)
-    {
-        successfulRun = true;
-        Py_XDECREF(output);
-    }
-    else
-    {
-        // error traceback
-        Py_XDECREF(errorType);
-        Py_XDECREF(errorValue);
-        Py_XDECREF(errorTraceback);
-        PyErr_Fetch(&errorType, &errorValue, &errorTraceback);
-        if (errorTraceback)
-            successfulRun = false;
-    }
 
-    Py_XDECREF(code);
+#pragma omp critical
+    {
+        QSettings settings;
+        // enable user module deleter
+        if (settings.value("PythonEngine/UserModuleDeleter", true).toBool())
+            deleteUserModules();
 
-    m_isScriptRunning = false;
+        runPythonHeader();
+
+        PyObject *output = NULL;
+        if (QFile::exists(fileName))
+        {
+            QString str = QString("from os import chdir; chdir(u'" + QFileInfo(fileName).absolutePath() + "')");
+            PyObject *import = PyRun_String(str.toLatin1().data(), Py_single_input, m_dict, m_dict);
+            Py_XDECREF(import);
+        }
+
+        // compile
+        PyObject *code = Py_CompileString(script.toLatin1().data(), fileName.toLatin1().data(), Py_file_input);
+        // run
+        if (useProfiler)
+        {
+            setProfilerFileName(fileName);
+            startProfiler();
+        }
+        if (code) output = PyEval_EvalCode((PyCodeObject *) code, m_dict, m_dict);
+        if (useProfiler)
+            finishProfiler();
+
+        if (output)
+        {
+            successfulRun = true;
+            Py_XDECREF(output);
+        }
+        else
+        {
+            // error traceback
+            Py_XDECREF(errorType);
+            Py_XDECREF(errorValue);
+            Py_XDECREF(errorTraceback);
+            PyErr_Fetch(&errorType, &errorValue, &errorTraceback);
+            if (errorTraceback)
+                successfulRun = false;
+        }
+
+        Py_XDECREF(code);
+
+        m_isScriptRunning = false;
+    }
 
     // release the thread, no Python API allowed beyond this point
     PyGILState_Release(gstate);
@@ -405,82 +399,84 @@ bool PythonEngine::runExpression(const QString &expression, double *value, const
 
     bool successfulRun = false;
 
-#pragma omp critical
+    m_isExpressionRunning = true;
+
+    PyObject *output = NULL;
+
+    runPythonHeader();
+
+    if (value)
     {
-        m_isExpressionRunning = true;
+        // return value
+        QString exp;
+        if (command.isEmpty())
+            exp = QString("result_pythonlab = %1").arg(expression);
+        else
+            exp = QString("%1; result_pythonlab = %2").arg(command).arg(expression);
 
-        PyObject *output = NULL;
+        output = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
 
-        runPythonHeader();
-
-        if (value)
+        if (output)
         {
-            // return value
-            QString exp;
-            if (command.isEmpty())
-                exp = QString("result_pythonlab = %1").arg(expression);
-            else
-                exp = QString("%1; result_pythonlab = %2").arg(command).arg(expression);
+            // parse result
+            PyObject *result = PyDict_GetItemString(m_dict, "result_pythonlab");
 
-            output = PyRun_String(exp.toLatin1().data(), Py_single_input, m_dict, m_dict);
-
-            if (output)
+            if (result)
             {
-                // parse result
-                PyObject *result = PyDict_GetItemString(m_dict, "result_pythonlab");
-
-                if (result)
+                if ((QString(result->ob_type->tp_name) == "bool") ||
+                        (QString(result->ob_type->tp_name) == "int") ||
+                        (QString(result->ob_type->tp_name) == "float"))
                 {
-                    if ((QString(result->ob_type->tp_name) == "bool") ||
-                            (QString(result->ob_type->tp_name) == "int") ||
-                            (QString(result->ob_type->tp_name) == "float"))
-                    {
-                        Py_INCREF(result);
-                        PyArg_Parse(result, "d", value);
-                        if (fabs(*value) < EPS_ZERO)
-                            *value = 0.0;
-                        Py_XDECREF(result);
+                    Py_INCREF(result);
+                    PyArg_Parse(result, "d", value);
+                    if (fabs(*value) < EPS_ZERO)
+                        *value = 0.0;
+                    Py_XDECREF(result);
 
-                        successfulRun = true;
-                    }
-                    else
-                    {
-                        qDebug() << tr("Type '%1' is not supported.").arg(result->ob_type->tp_name).arg(expression);
-
-                        successfulRun = false;
-                    }
+                    successfulRun = true;
                 }
+                else
+                {
+                    qDebug() << tr("Type '%1' is not supported.").arg(result->ob_type->tp_name).arg(expression);
 
-                // speed up?
-                // PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
+                    successfulRun = false;
+                }
             }
 
-        }
-        else
-        {
-            output = PyRun_String(expression.toLatin1().data(), Py_single_input, m_dict, m_dict);
-            if (output)
-                successfulRun = true;            
+            // speed up?
+            // PyRun_String("del result_pythonlab", Py_single_input, m_dict, m_dict);
         }
 
-        if (!output)
-        {
-            // error traceback
-            Py_XDECREF(errorType);
-            Py_XDECREF(errorValue);
-            Py_XDECREF(errorTraceback);
-            PyErr_Fetch(&errorType, &errorValue, &errorTraceback);
-            if (errorTraceback)
-                successfulRun = false;
-        }
-
-        Py_XDECREF(output);
-
-        m_isExpressionRunning = false;
-
-        if (!m_isScriptRunning)
-            emit executedExpression();
     }
+    else
+    {
+        output = PyRun_String(expression.toLatin1().data(), Py_single_input, m_dict, m_dict);
+        if (output)
+            successfulRun = true;
+    }
+
+    if (!output)
+    {
+        // error traceback
+        Py_XDECREF(errorType);
+        Py_XDECREF(errorValue);
+        Py_XDECREF(errorTraceback);
+        PyErr_Fetch(&errorType, &errorValue, &errorTraceback);
+        if (errorTraceback)
+            successfulRun = false;
+    }
+
+    Py_XDECREF(output);
+
+    m_isExpressionRunning = false;
+
+    return successfulRun;
+}
+
+bool PythonEngine::runExpressionConsole(const QString &expression)
+{
+    bool successfulRun = runExpression(expression);
+    emit executedScript();
 
     return successfulRun;
 }

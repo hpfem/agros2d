@@ -83,7 +83,6 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent)
     connect(Agros2D::problem(), SIGNAL(couplingsChanged()), this, SLOT(refresh()));
 
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(refresh()));
-    connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(refresh()));
 
     refresh();
 }

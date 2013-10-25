@@ -844,8 +844,11 @@ void PythonEditorDialog::doExecutedScript()
     actRunPython->setEnabled(true);
     actStopPython->setEnabled(false);
 
-    txtEditor->setFocus();
-    activateWindow();
+    if (txtEditor->isVisible())
+    {
+        txtEditor->setFocus();
+        activateWindow();
+    }
 }
 
 void PythonEditorDialog::setEnabledControls(bool state)

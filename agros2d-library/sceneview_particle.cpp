@@ -60,7 +60,6 @@ ParticleTracingWidget::ParticleTracingWidget(SceneViewParticleTracing *sceneView
     updateControls();
 
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(updateControls()));
-    connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(updateControls()));
 }
 
 ParticleTracingWidget::~ParticleTracingWidget()

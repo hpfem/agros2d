@@ -101,7 +101,7 @@ void LexicalAnalyser::setExpression(const QString &expr)
         foreach(Terminal terminal, m_patterns)
         {
             index = terminal.m_pattern.indexIn(exprTrimmed, position);
-            if(index == position)
+            if (index == position)
             {
                 position =  index + terminal.m_pattern.capturedTexts()[0].count();
                 Token token(terminal.m_terminalType,terminal.m_pattern.capturedTexts()[0], index);

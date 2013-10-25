@@ -41,7 +41,6 @@ SettingsWidget::SettingsWidget(QWidget *parent) : QWidget(parent)
     load();
 
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(updateControls()));
-    connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(updateControls()));
 }
 
 void SettingsWidget::createActions()

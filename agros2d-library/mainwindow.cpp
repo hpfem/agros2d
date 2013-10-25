@@ -129,7 +129,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // python engine
     connect(currentPythonEngineAgros(), SIGNAL(startedScript()), this, SLOT(disableControls()));
     connect(currentPythonEngineAgros(), SIGNAL(executedScript()), this, SLOT(setControls()));
-    connect(currentPythonEngineAgros(), SIGNAL(executedExpression()), this, SLOT(setControls()));
 
     // post hermes
     connect(problemWidget, SIGNAL(changed()), postHermes, SLOT(refresh()));

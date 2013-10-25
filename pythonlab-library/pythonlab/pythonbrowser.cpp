@@ -41,7 +41,6 @@ PythonBrowserView::PythonBrowserView(PythonEngine *pythonEngine, PythonScripting
 {
     setObjectName("BrowserView");
 
-    connect(pythonEngine, SIGNAL(executedExpression()), this, SLOT(executed()));
     connect(pythonEngine, SIGNAL(executedScript()), this, SLOT(executed()));
 
     trvBrowser = new QTreeWidget(this);

@@ -221,7 +221,7 @@ void PythonScriptingConsole::executeCode(const QString& code)
     setTextCursor(cursor);
 
     connectStdOut();
-    bool successfulRun = pythonEngine->runExpression(code);
+    bool successfulRun = pythonEngine->runExpressionConsole(code);
     disconnectStdOut();
 
     if (!successfulRun)
@@ -237,6 +237,7 @@ void PythonScriptingConsole::executeCode(const QString& code)
         }
     }
 
+    setFocus();
     QApplication::processEvents();
 }
 
