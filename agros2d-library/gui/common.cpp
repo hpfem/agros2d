@@ -31,16 +31,6 @@
 
 #include <QNetworkAccessManager>
 
-static QNetworkAccessManager *m_networkAccessManager = NULL;
-
-QNetworkAccessManager *networkAccessManager()
-{
-    if (!m_networkAccessManager)
-        m_networkAccessManager = new QNetworkAccessManager();
-
-    return m_networkAccessManager;
-}
-
 void readPixmap(QLabel *lblEquation, const QString &name)
 {
     QPixmap pixmap;

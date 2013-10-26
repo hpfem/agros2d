@@ -122,7 +122,6 @@ SET(SOURCES value.cpp
     logview.cpp
     scenebasicselectdialog.cpp
     postprocessorview.cpp
-    collaboration.cpp
     resultsview.cpp
     examplesdialog.cpp
     datatable.cpp
@@ -210,7 +209,6 @@ SET(SOURCES value.cpp
     logview.h
     scenebasicselectdialog.h
     postprocessorview.h
-    collaboration.h
     resultsview.h
     examplesdialog.h
     datatable.h

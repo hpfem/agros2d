@@ -71,7 +71,7 @@ ResultsView::ResultsView(PostHermes *postHermes, QWidget *parent)
     setObjectName("ResultsView");
 
     webView = new QWebView();
-    webView->page()->setNetworkAccessManager(networkAccessManager());
+    webView->page()->setNetworkAccessManager(new QNetworkAccessManager());
 
     createActions();
 

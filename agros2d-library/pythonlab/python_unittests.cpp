@@ -33,7 +33,7 @@ UnitTestsWidget::UnitTestsWidget(QWidget *parent)
     setModal(true);
 
     webView = new QWebView();
-    webView->page()->setNetworkAccessManager(networkAccessManager());
+    webView->page()->setNetworkAccessManager(new QNetworkAccessManager());
     webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     webView->setMinimumSize(200, 200);
 

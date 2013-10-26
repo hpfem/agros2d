@@ -50,7 +50,7 @@ ExamplesDialog::ExamplesDialog(QWidget *parent) : QDialog(parent)
 
     // problem information
     webView = new QWebView();
-    webView->page()->setNetworkAccessManager(networkAccessManager());
+    webView->page()->setNetworkAccessManager(new QNetworkAccessManager());
     webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
 
     connect(webView->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(linkClicked(QUrl)));

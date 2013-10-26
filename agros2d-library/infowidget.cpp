@@ -53,7 +53,7 @@ InfoWidget::InfoWidget(SceneViewPreprocessor *sceneView, QWidget *parent)
 
     // problem information
     webView = new QWebView();
-    webView->page()->setNetworkAccessManager(networkAccessManager());
+    webView->page()->setNetworkAccessManager(new QNetworkAccessManager());
     webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     webView->setMinimumSize(200, 200);
 
@@ -98,11 +98,6 @@ void InfoWidget::refresh()
         QTimer::singleShot(0, this, SLOT(showWelcome()));
     else
         QTimer::singleShot(0, this, SLOT(showInfo()));
-
-    // if (Agros2D::problem()->fieldInfos().count() == 0)
-    //     showWelcome();
-    // else
-    //     showInfo();
 }
 
 void InfoWidget::showWelcome()

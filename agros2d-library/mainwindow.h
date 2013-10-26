@@ -45,7 +45,6 @@ class LogDialog;
 
 class ChartWidget;
 class PythonEditorAgrosDialog;
-class ServerDownloadDialog;
 class SceneTransformDialog;
 class SceneViewWidget;
 class LogStdOut;
@@ -65,13 +64,11 @@ private slots:
     void doDocumentNew();
     void doDocumentOpen(const QString &fileName = "");
     void doDocumentOpenForm(const QString &fileName, const QString &formName);
-    void doDocumentDownloadFromServer();
     void doDocumentOpenRecent(QAction *action);
     void doDocumentSave();
     void doDocumentSaveAs();
     void doDocumentSaveSolution();
     void doDocumentDeleteSolution();
-    void doDocumentUploadToServer();
     void doDocumentClose();
     void doDocumentImportDXF();
     void doDocumentExportDXF();
@@ -226,7 +223,6 @@ private:
     LogView *logView;
 
     PythonEditorAgrosDialog *scriptEditorDialog;
-    ServerDownloadDialog *collaborationDownloadDialog;
     SceneTransformDialog *sceneTransformDialog;
 
     QSplitter *splitter;

@@ -45,7 +45,6 @@
 #include "pythonlab/python_unittests.h"
 #include "videodialog.h"
 #include "problemdialog.h"
-#include "collaboration.h"
 #include "resultsview.h"
 #include "materialbrowserdialog.h"
 #include "hermes2d/module.h"
@@ -989,15 +988,6 @@ void MainWindow::doDocumentOpenForm(const QString &fileName, const QString &form
     }
 }
 
-void MainWindow::doDocumentDownloadFromServer()
-{
-    if (collaborationDownloadDialog->showDialog() == QDialog::Accepted)
-    {
-        if (QFile::exists(collaborationDownloadDialog->fileName()))
-            doDocumentOpen(collaborationDownloadDialog->fileName());
-    }
-}
-
 void MainWindow::doDocumentOpenRecent(QAction *action)
 {
     QString fileName = action->text();
@@ -1071,16 +1061,6 @@ void MainWindow::doDocumentSaveAs()
             Agros2D::log()->printError(tr("Problem"), e.toString());
         }
     }
-}
-
-void MainWindow::doDocumentUploadToServer()
-{
-    // save
-    doDocumentSave();
-
-    ServerUploadDialog *cloud = new ServerUploadDialog(this);
-    cloud->showDialog();
-    delete cloud;
 }
 
 void MainWindow::doDocumentClose()
