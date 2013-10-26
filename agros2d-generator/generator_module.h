@@ -27,7 +27,10 @@ class Agros2DGeneratorModule : public Agros2DGeneratorBase
 {
 public:
     Agros2DGeneratorModule(const QString &moduleId);
+    ~Agros2DGeneratorModule();
 
+    void prepareWeakFormsOutput();
+    void deleteWeakFormOutput();
     void generatePluginProjectFile();
     void generatePluginFilterFiles();
     void generatePluginForceFiles();
@@ -83,6 +86,8 @@ private:
     QMap<QString, int> quantityOrdering;
     QMap<QString, bool> quantityIsNonlinear;
     QMap<QString, int> functionOrdering;
+
+    ctemplate::TemplateDictionary* m_output;
 };
 
 #endif // GENERATOR_MODULE_H
