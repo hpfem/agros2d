@@ -30,7 +30,7 @@
 #include "hermes2d/coupling.h"
 #include "parser/lex.h"
 
-Agros2DGeneratorModule::Agros2DGeneratorModule(const QString &moduleId)
+Agros2DGeneratorModule::Agros2DGeneratorModule(const QString &moduleId) : m_output(nullptr)
 {
     QDir root(QApplication::applicationDirPath());
     root.mkpath(QString("%1/%2").arg(GENERATOR_PLUGINROOT).arg(moduleId));
@@ -67,6 +67,10 @@ Agros2DGeneratorModule::Agros2DGeneratorModule(const QString &moduleId)
     Module::volumeQuantityProperties(m_module, quantityOrdering, quantityIsNonlinear, functionOrdering);
 }
 
+Agros2DGeneratorModule::~Agros2DGeneratorModule()
+{
+}
+
 void Agros2DGeneratorModule::generatePluginProjectFile()
 {
     qDebug() << tr("%1: generating plugin project file.").arg(QString::fromStdString(m_module->general().id()));
@@ -89,33 +93,76 @@ void Agros2DGeneratorModule::generatePluginProjectFile()
                        QString::fromStdString(text));
 }
 
-void Agros2DGeneratorModule::generatePluginInterfaceFiles()
+void Agros2DGeneratorModule::prepareWeakFormsOutput()
 {
-    qDebug() << tr("%1: generating plugin interface file.").arg(QString::fromStdString(m_module->general().id()));
+    qDebug() << tr("%1: generating parsing weak forms.").arg(QString::fromStdString(m_module->general().id()));
+    assert(! m_output);
+    m_output = new ctemplate::TemplateDictionary("output");
 
     QString id = QString::fromStdString(m_module->general().id());
 
-    ctemplate::TemplateDictionary output("output");
+    m_output->SetValue("ID", m_module->general().id());
+    m_output->SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
 
-    output.SetValue("ID", m_module->general().id());
-    output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
+    //comment on beginning of weakform.cpp, may be removed
+    ctemplate::TemplateDictionary *field;
+    foreach(QString quantID, this->quantityOrdering.keys())
+    {
+        field = m_output->AddSectionDictionary("QUANTITY_INFO");
+        field->SetValue("QUANT_ID", quantID.toStdString());
+        field->SetValue("INDEX", QString("%1").arg(quantityOrdering[quantID]).toStdString());
+        if(quantityIsNonlinear[quantID])
+        {
+            field = m_output->AddSectionDictionary("QUANTITY_INFO");
+            field->SetValue("QUANT_ID", QString("derivative %1").arg(quantID).toStdString());
+            field->SetValue("INDEX", QString("%1").arg(quantityOrdering[quantID] + 1).toStdString());
+        }
+    }
+    foreach(QString funcID, this->functionOrdering.keys())
+    {
+        field = m_output->AddSectionDictionary("QUANTITY_INFO");
+        field->SetValue("QUANT_ID", funcID.toStdString());
+        field->SetValue("INDEX", QString("%1").arg(functionOrdering[funcID]).toStdString());
+    }
 
     QString description = QString::fromStdString(m_module->general().description());
     description = description.replace("\n","");
-    output.SetValue("DESCRIPTION", description.toStdString());
+    m_output->SetValue("DESCRIPTION", description.toStdString());
     if (m_module->cpp().present())
-        output.SetValue("CPP", m_module->cpp().get());
+        m_output->SetValue("CPP", m_module->cpp().get());
 
     foreach(XMLModule::function function, m_module->volume().function())
     {
-        generateSpecialFunction(&function, &output);
+        generateSpecialFunction(&function, m_output);
     }
+
+    generateExtFunctions(*m_output);
+    generateWeakForms(*m_output);
+
+    foreach(QString name, m_names)
+    {
+        ctemplate::TemplateDictionary *field = m_output->AddSectionDictionary("NAMES");
+        field->SetValue("NAME",name.toStdString());
+    }
+
+}
+
+void Agros2DGeneratorModule::deleteWeakFormOutput()
+{
+    delete m_output;
+    m_output = nullptr;
+}
+
+void Agros2DGeneratorModule::generatePluginInterfaceFiles()
+{
+    qDebug() << tr("%1: generating plugin interface file.").arg(QString::fromStdString(m_module->general().id()));
+    QString id = QString::fromStdString(m_module->general().id());
 
     std::string text;
 
     // header - expand template
     ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/interface_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
-                              ctemplate::DO_NOT_STRIP, &output, &text);
+                              ctemplate::DO_NOT_STRIP, m_output, &text);
 
     // header - save to file
     writeStringContent(QString("%1/%2/%3/%3_interface.h").
@@ -126,17 +173,9 @@ void Agros2DGeneratorModule::generatePluginInterfaceFiles()
 
     // source - expand template
     text.clear();
-    generateExtFunctions(output);
-    generateWeakForms(output);
-
-    foreach(QString name, m_names)
-    {
-        ctemplate::TemplateDictionary *field = output.AddSectionDictionary("NAMES");
-        field->SetValue("NAME",name.toStdString());
-    }
 
     ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/interface_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
-                              ctemplate::DO_NOT_STRIP, &output, &text);
+                              ctemplate::DO_NOT_STRIP, m_output, &text);
 
     // source - save to file
     writeStringContent(QString("%1/%2/%3/%3_interface.cpp").
@@ -150,6 +189,43 @@ void Agros2DGeneratorModule::generatePluginWeakFormFiles()
 {
     generatePluginWeakFormSourceFiles();
     generatePluginWeakFormHeaderFiles();
+}
+
+void Agros2DGeneratorModule::generatePluginWeakFormSourceFiles()
+{
+    qDebug() << tr("%1: generating plugin weakform source file.").arg(QString::fromStdString(m_module->general().id()));
+
+    QString id = QString::fromStdString(m_module->general().id());
+    std::string text;
+
+    ExpandTemplate(compatibleFilename(QString("%1/%2/weakform_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
+                   ctemplate::DO_NOT_STRIP, m_output, &text);
+
+    // source - save to file
+    writeStringContent(QString("%1/%2/%3/%3_weakform.cpp").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
+}
+
+void Agros2DGeneratorModule::generatePluginWeakFormHeaderFiles()
+{
+    qDebug() << tr("%1: generating plugin weakform header file.").arg(QString::fromStdString(m_module->general().id()));
+
+    QString id = QString::fromStdString(m_module->general().id());
+
+    // header - expand template
+    std::string text;
+    ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/weakform_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
+                              ctemplate::DO_NOT_STRIP, m_output, &text);
+
+    // header - save to file
+    writeStringContent(QString("%1/%2/%3/%3_weakform.h").
+                       arg(QApplication::applicationDirPath()).
+                       arg(GENERATOR_PLUGINROOT).
+                       arg(id),
+                       QString::fromStdString(text));
 }
 
 
@@ -543,79 +619,6 @@ void Agros2DGeneratorModule::generatePluginErrorCalculator()
                        QString::fromStdString(text));
 }
 
-void Agros2DGeneratorModule::generatePluginWeakFormSourceFiles()
-{
-    qDebug() << tr("%1: generating plugin weakform source file.").arg(QString::fromStdString(m_module->general().id()));
-
-    QString id = QString::fromStdString(m_module->general().id());
-
-    ctemplate::TemplateDictionary output("output");
-
-    output.SetValue("ID", m_module->general().id());
-    output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
-
-    //comment on beginning of weakform.cpp, may be removed
-    ctemplate::TemplateDictionary *field;
-    foreach(QString quantID, this->quantityOrdering.keys())
-    {
-        field = output.AddSectionDictionary("QUANTITY_INFO");
-        field->SetValue("QUANT_ID", quantID.toStdString());
-        field->SetValue("INDEX", QString("%1").arg(quantityOrdering[quantID]).toStdString());
-        if(quantityIsNonlinear[quantID])
-        {
-            field = output.AddSectionDictionary("QUANTITY_INFO");
-            field->SetValue("QUANT_ID", QString("derivative %1").arg(quantID).toStdString());
-            field->SetValue("INDEX", QString("%1").arg(quantityOrdering[quantID] + 1).toStdString());
-        }
-    }
-    foreach(QString funcID, this->functionOrdering.keys())
-    {
-        field = output.AddSectionDictionary("QUANTITY_INFO");
-        field->SetValue("QUANT_ID", funcID.toStdString());
-        field->SetValue("INDEX", QString("%1").arg(functionOrdering[funcID]).toStdString());
-    }
-
-    std::string text;
-    generateExtFunctions(output);
-    generateWeakForms(output);
-
-    ExpandTemplate(compatibleFilename(QString("%1/%2/weakform_cpp.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
-                   ctemplate::DO_NOT_STRIP, &output, &text);
-
-    // source - save to file
-    writeStringContent(QString("%1/%2/%3/%3_weakform.cpp").
-                       arg(QApplication::applicationDirPath()).
-                       arg(GENERATOR_PLUGINROOT).
-                       arg(id),
-                       QString::fromStdString(text));
-}
-
-void Agros2DGeneratorModule::generatePluginWeakFormHeaderFiles()
-{
-    qDebug() << tr("%1: generating plugin weakform header file.").arg(QString::fromStdString(m_module->general().id()));
-
-    QString id = QString::fromStdString(m_module->general().id());
-
-    ctemplate::TemplateDictionary output("output");
-
-    output.SetValue("ID", m_module->general().id());
-    output.SetValue("CLASS", (id.left(1).toUpper() + id.right(id.length() - 1)).toStdString());
-
-    generateExtFunctions(output);
-    generateWeakForms(output);
-
-    // header - expand template
-    std::string text;
-    ctemplate::ExpandTemplate(compatibleFilename(QString("%1/%2/weakform_h.tpl").arg(QApplication::applicationDirPath()).arg(GENERATOR_TEMPLATEROOT)).toStdString(),
-                              ctemplate::DO_NOT_STRIP, &output, &text);
-
-    // header - save to file
-    writeStringContent(QString("%1/%2/%3/%3_weakform.h").
-                       arg(QApplication::applicationDirPath()).
-                       arg(GENERATOR_PLUGINROOT).
-                       arg(id),
-                       QString::fromStdString(text));
-}
 
 void Agros2DGeneratorModule::generateExtFunctions(ctemplate::TemplateDictionary &output)
 {
