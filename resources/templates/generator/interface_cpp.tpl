@@ -189,33 +189,6 @@ QString {{CLASS}}Interface::localeDescription()
 // ***********************************************************************************************************************************
 
 {{#SPECIAL_FUNCTION_SOURCE}}
-template <typename Scalar>
-Scalar {{SPECIAL_FUNCTION_FULL_NAME}}<Scalar>::value(double h) const
-{
-    double area = this->area;
-    if(0)
-    {}
-    {{#VARIANT}}else if (this->m_variant == QString("{{ID}}"))
-        return {{EXPR}};{{/VARIANT}}
-    assert(0);
-}
-
-template <typename Scalar>
-Scalar {{SPECIAL_FUNCTION_FULL_NAME}}<Scalar>::extrapolation_low()
-{
-    assert({{EXTRAPOLATE_LOW_PRESENT}});
-    return {{EXTRAPOLATE_LOW}};
-}
-
-template <typename Scalar>
-Scalar {{SPECIAL_FUNCTION_FULL_NAME}}<Scalar>::extrapolation_hi()
-{
-    assert({{EXTRAPOLATE_HI_PRESENT}});
-    return {{EXTRAPOLATE_HI}};
-}
-{{/SPECIAL_FUNCTION_SOURCE}}
-
-{{#SPECIAL_FUNCTION_SOURCE}}
 {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::{{SPECIAL_EXT_FUNCTION_FULL_NAME}}(FieldInfo* fieldInfo, int offsetI) : AgrosSpecialExtFunction(fieldInfo, offsetI)
 {
     m_type = specialFunctionTypeFromStringKey("{{TYPE}}");
@@ -259,10 +232,6 @@ void {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::value(int n, Hermes::Hermes2D::Func<dou
     }
 }
 
-{{/SPECIAL_FUNCTION_SOURCE}}
-
-
-{{#SPECIAL_FUNCTION_SOURCE}}template class {{SPECIAL_FUNCTION_FULL_NAME}}<double>;
 {{/SPECIAL_FUNCTION_SOURCE}}
 
 #if QT_VERSION < 0x050000
