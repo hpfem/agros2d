@@ -33,12 +33,7 @@ void AgrosSpecialExtFunction::init()
     for (int labelNum = 0; labelNum < Agros2D::scene()->labels->count(); labelNum++)
     {
         SceneLabel* label = Agros2D::scene()->labels->at(labelNum);
-        // Needed because of a bug in VS: http://www.open-std.org/jtc1/sc22/wg21/docs/lwg-defects.html#1261
-#ifdef _MSC_VER
-        Hermes::Hermes2D::Mesh::MarkersConversion::IntValid marker = m_fieldInfo->initialMesh()->get_element_markers_conversion().get_internal_marker(std::to_string((long double) labelNum));
-#else
-        Hermes::Hermes2D::Mesh::MarkersConversion::IntValid marker = m_fieldInfo->initialMesh()->get_element_markers_conversion().get_internal_marker(std::to_string((int) labelNum));
-#endif
+        Hermes::Hermes2D::Mesh::MarkersConversion::IntValid marker = m_fieldInfo->initialMesh()->get_element_markers_conversion().get_internal_marker(QString::number(labelNum).toStdString());
         if(label->hasMarker(m_fieldInfo) && !label->marker(m_fieldInfo)->isNone())
         {
             assert(marker.valid);
