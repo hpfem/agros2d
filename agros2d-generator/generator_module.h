@@ -59,14 +59,17 @@ private:
 
     void generateWeakForms(ctemplate::TemplateDictionary &output);
     void generateExtFunctions(ctemplate::TemplateDictionary &output);
+    void generateSpecialFunctions(ctemplate::TemplateDictionary &output);
+    void generateSpecialFunctionsPostprocessor(ctemplate::TemplateDictionary &output);
 
     //ToDo: make up better names
     template <typename WeakForm>
     void generateForm(FormInfo form, LinearityType linearityType, ctemplate::TemplateDictionary &output, WeakForm weakform, QString weakFormType, XMLModule::boundary *boundary = 0);
     void generateExtFunction(XMLModule::quantity quantity, AnalysisType analysisType, LinearityType linearityType, bool derivative, ctemplate::TemplateDictionary &output);
-    void generateSpecialFunction(XMLModule::function* function, ctemplate::TemplateDictionary *output);
+    void generateSpecialFunction(XMLModule::function function, AnalysisType analysisType, LinearityType linearityType, CoordinateType coordinateType, ctemplate::TemplateDictionary &output);
 
     QString nonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);
+    QString specialFunctionNonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType);
     QString dependence(const QString &variable, AnalysisType analysisType);
     LexicalAnalyser *postprocessorLexicalAnalyser(AnalysisType analysisType, CoordinateType coordinateType);
     QString parsePostprocessorExpression(AnalysisType analysisType, CoordinateType coordinateType, const QString &expr, bool includeVariables, bool forFilter = false);

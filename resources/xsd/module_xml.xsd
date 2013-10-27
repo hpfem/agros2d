@@ -284,8 +284,10 @@
                         <attribute name="bound_hi" type="string" />
                         <attribute name="extrapolate_low" type="string" />
                         <attribute name="extrapolate_hi" type="string" />
-                        <attribute name="nonlinearity" type="string" />
                         <attribute name="interpolation_count" type="string" />
+                        <attribute name="postprocessor_analysis" type="string" />
+                        <attribute name="postprocessor_linearity" type="string" />
+
                 </complexType>
         </element>
         
@@ -299,6 +301,8 @@
         <element name="function_use">
                 <complexType>
                         <attribute name="id" use="required" type="string" />
+                        <attribute name="nonlinearity_planar" type="string" />
+                        <attribute name="nonlinearity_axi" type="string" />
                 </complexType>
         </element>
 

@@ -23,23 +23,30 @@ void AgrosExtFunction::getLabelValuesPointers(QString id)
     }
 }
 
-AgrosSpecialExtFunction::AgrosSpecialExtFunction(FieldInfo* fieldInfo, int offsetI) : AgrosExtFunction(fieldInfo, offsetI)
+AgrosSpecialExtFunction::AgrosSpecialExtFunction(FieldInfo* fieldInfo, int offsetI, SpecialFunctionType type, int count) : AgrosExtFunction(fieldInfo, offsetI), m_type(type), m_count(count)
 {
+    if((type == SpecialFunctionType_Constant) || (count > 0))
+        m_useTable = true;
+    else
+        m_useTable = false;
 }
 
 void AgrosSpecialExtFunction::init()
 {
-    assert(m_data.isEmpty());
-    for (int labelNum = 0; labelNum < Agros2D::scene()->labels->count(); labelNum++)
+    if(m_useTable)
     {
-        SceneLabel* label = Agros2D::scene()->labels->at(labelNum);
-        Hermes::Hermes2D::Mesh::MarkersConversion::IntValid marker = m_fieldInfo->initialMesh()->get_element_markers_conversion().get_internal_marker(std::to_string((int) labelNum));
-        if(label->hasMarker(m_fieldInfo) && !label->marker(m_fieldInfo)->isNone())
+        assert(m_data.isEmpty());
+        for (int labelNum = 0; labelNum < Agros2D::scene()->labels->count(); labelNum++)
         {
-            assert(marker.valid);
-            int hermesMarker = marker.marker;
-            assert(!m_data.contains(hermesMarker));
-            createOneTable(hermesMarker);
+            SceneLabel* label = Agros2D::scene()->labels->at(labelNum);
+            Hermes::Hermes2D::Mesh::MarkersConversion::IntValid marker = m_fieldInfo->initialMesh()->get_element_markers_conversion().get_internal_marker(std::to_string((int) labelNum));
+            if(label->hasMarker(m_fieldInfo) && !label->marker(m_fieldInfo)->isNone())
+            {
+                assert(marker.valid);
+                int hermesMarker = marker.marker;
+                assert(!m_data.contains(hermesMarker));
+                createOneTable(hermesMarker);
+            }
         }
     }
 }
@@ -90,3 +97,10 @@ double AgrosSpecialExtFunction::valueFromTable(int hermesMarker, double h) const
     }
 }
 
+double AgrosSpecialExtFunction::getValue(int hermesMarker, double h) const
+{
+    if(m_useTable)
+        return valueFromTable(hermesMarker, h);
+    else
+        return calculateValue(hermesMarker, h);
+}

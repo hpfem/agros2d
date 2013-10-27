@@ -189,12 +189,10 @@ QString {{CLASS}}Interface::localeDescription()
 // ***********************************************************************************************************************************
 
 {{#SPECIAL_FUNCTION_SOURCE}}
-{{SPECIAL_EXT_FUNCTION_FULL_NAME}}::{{SPECIAL_EXT_FUNCTION_FULL_NAME}}(FieldInfo* fieldInfo, int offsetI) : AgrosSpecialExtFunction(fieldInfo, offsetI)
+{{SPECIAL_EXT_FUNCTION_FULL_NAME}}::{{SPECIAL_EXT_FUNCTION_FULL_NAME}}(FieldInfo* fieldInfo, int offsetI) : AgrosSpecialExtFunction(fieldInfo, offsetI, specialFunctionTypeFromStringKey("{{TYPE}}"), {{INTERPOLATION_COUNT}})
 {
-    m_type = specialFunctionTypeFromStringKey("{{TYPE}}");
     m_boundLow = {{FROM}};
     m_boundHi = {{TO}};
-    m_count = {{INTERPOLATION_COUNT}};
     m_variant = "{{SELECTED_VARIANT}}";
 }
 
@@ -228,7 +226,7 @@ void {{SPECIAL_EXT_FUNCTION_FULL_NAME}}::value(int n, Hermes::Hermes2D::Func<dou
         if (u_ext)
             value1 = u_ext[0]->val[i];
 
-        result->val[i] = valueFromTable(geometry->elem_marker, {{DEPENDENCE}});
+        result->val[i] = getValue(geometry->elem_marker, {{DEPENDENCE}});
     }
 }
 

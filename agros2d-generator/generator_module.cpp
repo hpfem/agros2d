@@ -131,11 +131,7 @@ void Agros2DGeneratorModule::prepareWeakFormsOutput()
     if (m_module->cpp().present())
         m_output->SetValue("CPP", m_module->cpp().get());
 
-    foreach(XMLModule::function function, m_module->volume().function())
-    {
-        generateSpecialFunction(&function, m_output);
-    }
-
+    generateSpecialFunctions(*m_output);
     generateExtFunctions(*m_output);
     generateWeakForms(*m_output);
 
@@ -634,6 +630,46 @@ void Agros2DGeneratorModule::generateExtFunctions(ctemplate::TemplateDictionary 
                 if(quantityIsNonlinear[QString::fromStdString(quantity.id())])
                     generateExtFunction(quantity, analysisType, linearityType, true, output);
             }
+       }
+    }
+}
+
+void Agros2DGeneratorModule::generateSpecialFunctions(ctemplate::TemplateDictionary &output)
+{
+    foreach(XMLModule::weakform_volume weakform, m_module->volume().weakforms_volume().weakform_volume())
+    {
+        AnalysisType analysisType = analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype().c_str()));
+        foreach(XMLModule::linearity_option linearityOption, weakform.linearity_option())
+        {
+            LinearityType linearityType = linearityTypeFromStringKey(QString::fromStdString(linearityOption.type().c_str()));
+            foreach(XMLModule::function_use functionUse, weakform.function_use())
+            {
+                foreach(XMLModule::function function, m_module->volume().function())
+                {
+                    if(function.id() == functionUse.id())
+                    {
+                        foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
+                        {
+                            generateSpecialFunction(function, analysisType, linearityType, coordinateType, output);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+void Agros2DGeneratorModule::generateSpecialFunctionsPostprocessor(ctemplate::TemplateDictionary &output)
+{
+    foreach(XMLModule::function function, m_module->volume().function())
+    {
+        if(function.postprocessor_linearity().present())
+        {
+            assert(function.postprocessor_analysis().present());
+            LinearityType linearityType = linearityTypeFromStringKey(QString::fromStdString(function.postprocessor_linearity().get()));
+            AnalysisType analysisType = analysisTypeFromStringKey(QString::fromStdString(function.postprocessor_analysis().get()));
+
+            generateSpecialFunction(function, analysisType, linearityType, CoordinateType_Planar, output);
         }
     }
 }
@@ -731,32 +767,33 @@ void Agros2DGeneratorModule::generatePluginFilterFiles()
     {
         foreach (XMLModule::expression expr, lv.expression())
         {
+            AnalysisType analysisType = analysisTypeFromStringKey(QString::fromStdString(expr.analysistype()));
             foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
             {
                 if (coordinateType == CoordinateType_Planar)
                 {
                     if (lv.type() == "scalar")
                         createFilterExpression(output, QString::fromStdString(lv.id()),
-                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               analysisType,
                                                coordinateType,
                                                PhysicFieldVariableComp_Scalar,
                                                QString::fromStdString(expr.planar().get()));
                     if (lv.type() == "vector")
                     {
                         createFilterExpression(output, QString::fromStdString(lv.id()),
-                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               analysisType,
                                                coordinateType,
                                                PhysicFieldVariableComp_X,
                                                QString::fromStdString(expr.planar_x().get()));
 
                         createFilterExpression(output, QString::fromStdString(lv.id()),
-                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               analysisType,
                                                coordinateType,
                                                PhysicFieldVariableComp_Y,
                                                QString::fromStdString(expr.planar_y().get()));
 
                         createFilterExpression(output, QString::fromStdString(lv.id()),
-                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               analysisType,
                                                coordinateType,
                                                PhysicFieldVariableComp_Magnitude,
                                                QString("sqrt(pow((double) %1, 2) + pow((double) %2, 2))").arg(QString::fromStdString(expr.planar_x().get())).arg(QString::fromStdString(expr.planar_y().get())));
@@ -767,34 +804,37 @@ void Agros2DGeneratorModule::generatePluginFilterFiles()
                 {
                     if (lv.type() == "scalar")
                         createFilterExpression(output, QString::fromStdString(lv.id()),
-                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               analysisType,
                                                coordinateType,
                                                PhysicFieldVariableComp_Scalar,
                                                QString::fromStdString(expr.axi().get()));
                     if (lv.type() == "vector")
                     {
                         createFilterExpression(output, QString::fromStdString(lv.id()),
-                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               analysisType,
                                                coordinateType,
                                                PhysicFieldVariableComp_X,
                                                QString::fromStdString(expr.axi_r().get()));
 
                         createFilterExpression(output, QString::fromStdString(lv.id()),
-                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               analysisType,
                                                coordinateType,
                                                PhysicFieldVariableComp_Y,
                                                QString::fromStdString(expr.axi_z().get()));
 
                         createFilterExpression(output, QString::fromStdString(lv.id()),
-                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               analysisType,
                                                coordinateType,
                                                PhysicFieldVariableComp_Magnitude,
                                                QString("sqrt(pow((double) %1, 2) + pow((double) %2, 2))").arg(QString::fromStdString(expr.axi_r().get())).arg(QString::fromStdString(expr.axi_z().get())));
                     }
                 }
+
             }
         }
     }
+
+    generateSpecialFunctionsPostprocessor(output);
 
     // header - save to file
     writeStringContent(QString("%1/%2/%3/%3_filter.h").
@@ -802,11 +842,6 @@ void Agros2DGeneratorModule::generatePluginFilterFiles()
                        arg(GENERATOR_PLUGINROOT).
                        arg(id),
                        QString::fromStdString(text));
-
-    foreach(XMLModule::function function, m_module->volume().function())
-    {
-        generateSpecialFunction(&function, &output);
-    }
 
     // source - expand template
     text.clear();
@@ -938,12 +973,13 @@ void Agros2DGeneratorModule::generatePluginLocalPointFiles()
     {
         foreach (XMLModule::expression expr, lv.expression())
         {
+            AnalysisType analysisType = analysisTypeFromStringKey(QString::fromStdString(expr.analysistype()));
             foreach (CoordinateType coordinateType, Agros2DGenerator::coordinateTypeList())
             {
                 if (coordinateType == CoordinateType_Planar)
                 {
                     createLocalValueExpression(output, QString::fromStdString(lv.id()),
-                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               analysisType,
                                                coordinateType,
                                                (expr.planar().present() ? QString::fromStdString(expr.planar().get()) : ""),
                                                (expr.planar_x().present() ? QString::fromStdString(expr.planar_x().get()) : ""),
@@ -952,7 +988,7 @@ void Agros2DGeneratorModule::generatePluginLocalPointFiles()
                 else
                 {
                     createLocalValueExpression(output, QString::fromStdString(lv.id()),
-                                               analysisTypeFromStringKey(QString::fromStdString(expr.analysistype())),
+                                               analysisType,
                                                coordinateType,
                                                (expr.axi().present() ? QString::fromStdString(expr.axi().get()) : ""),
                                                (expr.axi_r().present() ? QString::fromStdString(expr.axi_r().get()) : ""),
@@ -962,10 +998,7 @@ void Agros2DGeneratorModule::generatePluginLocalPointFiles()
         }
     }
 
-    foreach(XMLModule::function function, m_module->volume().function())
-    {
-        generateSpecialFunction(&function, &output);
-    }
+    generateSpecialFunctionsPostprocessor(output);
 
     // header - save to file
     writeStringContent(QString("%1/%2/%3/%3_localvalue.h").
@@ -1095,10 +1128,7 @@ void Agros2DGeneratorModule::generatePluginVolumeIntegralFiles()
         }
     }
 
-    foreach(XMLModule::function function, m_module->volume().function())
-    {
-        generateSpecialFunction(&function, &output);
-    }
+    generateSpecialFunctionsPostprocessor(output);
 
     // normal volume integral
     int counter = 0;
@@ -1257,6 +1287,34 @@ QString Agros2DGeneratorModule::nonlinearExpression(const QString &variable, Ana
     }
 
     return "";
+}
+
+QString Agros2DGeneratorModule::specialFunctionNonlinearExpression(const QString &variable, AnalysisType analysisType, CoordinateType coordinateType)
+{
+    foreach (XMLModule::weakform_volume wf, m_module->volume().weakforms_volume().weakform_volume())
+    {
+        if (wf.analysistype() == analysisTypeToStringKey(analysisType).toStdString())
+        {
+            foreach (XMLModule::function_use functionUse, wf.function_use())
+            {
+                if (functionUse.id() == variable.toStdString())
+                {
+                    if (coordinateType == CoordinateType_Planar)
+                    {
+                        if (functionUse.nonlinearity_planar().present())
+                            return QString::fromStdString(functionUse.nonlinearity_planar().get());
+                    }
+                    else
+                    {
+                        if (functionUse.nonlinearity_axi().present())
+                            return QString::fromStdString(functionUse.nonlinearity_axi().get());
+                    }
+                }
+            }
+        }
+    }
+
+    return "0";
 }
 
 QString Agros2DGeneratorModule::dependence(const QString &variable, AnalysisType analysisType)
@@ -2177,7 +2235,7 @@ void Agros2DGeneratorModule::generateForm(FormInfo formInfo, LinearityType linea
                 {
                     if(functionUse.id() == functionDefinition.id())
                     {
-                        generateSpecialFunction(&functionDefinition, field);
+                        generateSpecialFunction(functionDefinition, analysisTypeFromStringKey(QString::fromStdString(weakform.analysistype())), linearityType, coordinateType, *field);
                     }
                 }
             }
@@ -2206,31 +2264,47 @@ void Agros2DGeneratorModule::generateForm(FormInfo formInfo, LinearityType linea
     }
 }
 
-void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function* function, ctemplate::TemplateDictionary *output)
+void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function function, AnalysisType analysisType, LinearityType linearityType, CoordinateType coordinateType, ctemplate::TemplateDictionary &output)
 {
-    ctemplate::TemplateDictionary *functionTemplate = output->AddSectionDictionary("SPECIAL_FUNCTION_SOURCE");
-    functionTemplate->SetValue("SPECIAL_FUNCTION_NAME", function->shortname());
-    functionTemplate->SetValue("SPECIAL_FUNCTION_ID", function->id());
-    functionTemplate->SetValue("SPECIAL_EXT_FUNCTION_FULL_NAME", m_module->general().id() + "_ext_function_" + function->shortname());
-    functionTemplate->SetValue("FROM", function->bound_low().present() ? function->bound_low().get() : "-1");
-    functionTemplate->SetValue("TO", function->bound_hi().present() ? function->bound_hi().get() : "1");
-    functionTemplate->SetValue("TYPE", function->type());
-    functionTemplate->SetValue("DEPENDENCE", function->nonlinearity().present() ? function->nonlinearity().get() : "0");
-    functionTemplate->SetValue("INTERPOLATION_COUNT", function->interpolation_count().present() ? function->interpolation_count().get() : "50");
-    if(function->extrapolate_low().present())
+    ctemplate::TemplateDictionary *functionTemplate = output.AddSectionDictionary("SPECIAL_FUNCTION_SOURCE");
+    functionTemplate->SetValue("SPECIAL_FUNCTION_NAME", function.shortname());
+    functionTemplate->SetValue("SPECIAL_FUNCTION_ID", function.id());
+    functionTemplate->SetValue("COORDINATE_TYPE", Agros2DGenerator::coordinateTypeStringEnum(coordinateType).toStdString());
+    functionTemplate->SetValue("LINEARITY_TYPE", Agros2DGenerator::linearityTypeStringEnum(linearityType).toStdString());
+    functionTemplate->SetValue("ANALYSIS_TYPE", Agros2DGenerator::analysisTypeStringEnum(analysisType).toStdString());
+
+    QString fullName = QString("%1_ext_function_%2_%3_%4_%5").
+            arg(QString::fromStdString(m_module->general().id())).
+            arg(analysisTypeToStringKey(analysisType)).
+            arg(coordinateTypeToStringKey(coordinateType)).
+            arg(linearityTypeToStringKey(linearityType)).
+            arg(QString::fromStdString(function.shortname()));
+
+    functionTemplate->SetValue("SPECIAL_EXT_FUNCTION_FULL_NAME", fullName.toStdString());
+    functionTemplate->SetValue("FROM", function.bound_low().present() ? function.bound_low().get() : "-1");
+    functionTemplate->SetValue("TO", function.bound_hi().present() ? function.bound_hi().get() : "1");
+    functionTemplate->SetValue("TYPE", function.type());
+
+    QString nonlinearity("0");
+    if(linearityType != LinearityType_Linear)
+        nonlinearity = specialFunctionNonlinearExpression(QString::fromStdString(function.id()), analysisType, coordinateType);
+
+    functionTemplate->SetValue("DEPENDENCE", nonlinearity.toStdString());
+    functionTemplate->SetValue("INTERPOLATION_COUNT", function.interpolation_count().present() ? function.interpolation_count().get() : "0");
+    if(function.extrapolate_low().present())
     {
         functionTemplate->SetValue("EXTRAPOLATE_LOW_PRESENT", "true");
-        functionTemplate->SetValue("EXTRAPOLATE_LOW", function->extrapolate_low().get());
+        functionTemplate->SetValue("EXTRAPOLATE_LOW", function.extrapolate_low().get());
     }
     else
     {
         functionTemplate->SetValue("EXTRAPOLATE_LOW_PRESENT", "false");
         functionTemplate->SetValue("EXTRAPOLATE_LOW", "-123456");
     }
-    if(function->extrapolate_hi().present())
+    if(function.extrapolate_hi().present())
     {
         functionTemplate->SetValue("EXTRAPOLATE_HI_PRESENT", "true");
-        functionTemplate->SetValue("EXTRAPOLATE_HI", function->extrapolate_hi().get());
+        functionTemplate->SetValue("EXTRAPOLATE_HI", function.extrapolate_hi().get());
     }
     else
     {
@@ -2238,7 +2312,7 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function* functi
         functionTemplate->SetValue("EXTRAPOLATE_HI", "-123456");
     }
     QString selectedVariant("no_variant");
-    if(function->switch_combo().present())
+    if(function.switch_combo().present())
     {
         foreach(XMLModule::gui gui, m_module->preprocessor().gui())
         {
@@ -2248,7 +2322,7 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function* functi
                 {
                     foreach(XMLModule::switch_combo switch_combo, group.switch_combo())
                     {
-                        if(switch_combo.id() == function->switch_combo().get())
+                        if(switch_combo.id() == function.switch_combo().get())
                         {
                             selectedVariant = QString::fromStdString(switch_combo.implicit_option());
                         }
@@ -2259,7 +2333,7 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function* functi
     }
     functionTemplate->SetValue("SELECTED_VARIANT", selectedVariant.toStdString().c_str());
 
-    foreach(XMLModule::quantity quantity, function->quantity())
+    foreach(XMLModule::quantity quantity, function.quantity())
     {
         ctemplate::TemplateDictionary *functionParameters = functionTemplate->AddSectionDictionary("PARAMETERS");
         for(int i = 0; i < m_module->volume().quantity().size(); i++)
@@ -2273,7 +2347,7 @@ void Agros2DGeneratorModule::generateSpecialFunction(XMLModule::function* functi
             }
         }
     }
-    foreach(XMLModule::function_variant variant, function->function_variant())
+    foreach(XMLModule::function_variant variant, function.function_variant())
     {
         ctemplate::TemplateDictionary *functionVariant = functionTemplate->AddSectionDictionary("VARIANT");
         functionVariant->SetValue("ID", variant.switch_value().present() ? variant.switch_value().get().c_str() : "no_variant");
