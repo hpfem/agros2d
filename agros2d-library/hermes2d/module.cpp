@@ -190,7 +190,7 @@ Hermes::Hermes2D::Form<Scalar> *factoryForm(WeakFormKind type, const ProblemID p
         weakFormAgros->setMarkerVolume(volume);
 
         // symmetric flag
-        weakFormAgros->setSymFlag(form->sym);
+        weakFormAgros->setSymFlag(form->sym(problemId.coordinateType));
         // source marker
         weakFormAgros->setMarkerSource(markerSource);
         // target marker
@@ -612,10 +612,26 @@ QList<FormInfo> wfMatrixTemplates(SectionWithTemplates *section)
     {
         XMLModule::matrix_form form = section->matrix_form().at(i);
         assert(form.i().present() && form.j().present() && form.planar().present() && form.axi().present());
+        Hermes::Hermes2D::SymFlag symPlanar = Hermes::Hermes2D::HERMES_NONSYM;
+        Hermes::Hermes2D::SymFlag symAxi = Hermes::Hermes2D::HERMES_NONSYM;
+        if(form.symmetric().present())
+        {
+            symPlanar = (Hermes::Hermes2D::SymFlag)form.symmetric().get();
+            symAxi = (Hermes::Hermes2D::SymFlag)form.symmetric().get();
+        }
+        if(form.symmetric_planar().present())
+        {
+            symPlanar = (Hermes::Hermes2D::SymFlag)form.symmetric_planar().get();
+        }
+        if(form.symmetric_axi().present())
+        {
+            symAxi = (Hermes::Hermes2D::SymFlag)form.symmetric_axi().get();
+        }
         FormInfo formInfo(QString::fromStdString(form.id()),
                           form.i().get(),
                           form.j().get(),
-                          form.symmetric() ? Hermes::Hermes2D::HERMES_SYM : Hermes::Hermes2D::HERMES_NONSYM);
+                          symPlanar,
+                          symAxi);
         formInfo.condition = form.condition().present() ? QString::fromStdString(form.condition().get()) : "";
         formInfo.expr_planar = QString::fromStdString(form.planar().get());
         formInfo.expr_axi = QString::fromStdString(form.axi().get());
@@ -822,7 +838,7 @@ QList<FormInfo> generateSeparated(QList<FormInfo> elements, QList<FormInfo> temp
                 formTemplate = findFormInfo(templatesForResidual, formElement.id);
         }
 
-        FormInfo formResult(formTemplate.id, formTemplate.i, formTemplate.j, formTemplate.sym);
+        FormInfo formResult(formTemplate.id, formTemplate.i, formTemplate.j, formTemplate.sym_planar, formTemplate.sym_axi);
         formResult.condition = formTemplate.condition;
 
         if (formElement.coefficient != 1.)
@@ -862,49 +878,6 @@ QList<FormInfo> WeakFormAgros<Scalar>::wfVectorVolumeSeparated(XMLModule::module
 
     return generateSeparated(elements, templatesVector, templatesMatrix);
 }
-
-QList<FormInfo> generateComplete(QList<FormInfo> separated)
-{
-    QList<FormInfo> complete;
-    while(! separated.empty())
-    {
-        FormInfo form = separated.first();
-        separated.removeFirst();
-        QMutableListIterator<FormInfo> iter(separated);
-        form.id = QString("complete_%1_%2").arg(form.i).arg(form.j);
-        while(iter.hasNext())
-        {
-            iter.next();
-            if((iter.value().i == form.i) && (iter.value().j == form.j))
-            {
-                form.expr_planar = QString("%1 + (%2)").arg(form.expr_planar).arg(iter.value().expr_planar);
-                form.expr_axi = QString("%1 + (%2)").arg(form.expr_axi).arg(iter.value().expr_axi);
-                if((form.sym == Hermes::Hermes2D::HERMES_SYM) && (iter.value().sym != Hermes::Hermes2D::HERMES_SYM))
-                    form.sym = Hermes::Hermes2D::HERMES_NONSYM;
-                if((form.sym == Hermes::Hermes2D::HERMES_ANTISYM) && (iter.value().sym != Hermes::Hermes2D::HERMES_ANTISYM))
-                    form.sym = Hermes::Hermes2D::HERMES_NONSYM;
-                iter.remove();
-            }
-        }
-        complete.push_back(form);
-    }
-    return complete;
-}
-
-template <typename Scalar>
-QList<FormInfo> WeakFormAgros<Scalar>::wfMatrixVolumeComplete(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType)
-{
-    QList<FormInfo> separated = wfMatrixVolumeSeparated(module, analysisType, linearityType);
-    return generateComplete(separated);
-}
-
-template <typename Scalar>
-QList<FormInfo> WeakFormAgros<Scalar>::wfVectorVolumeComplete(XMLModule::module* module, AnalysisType analysisType, LinearityType linearityType)
-{
-    QList<FormInfo> separated = wfVectorVolumeSeparated(module, analysisType, linearityType);
-    return generateComplete(separated);
-}
-
 
 // ***********************************************************************************************
 

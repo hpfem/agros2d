@@ -482,6 +482,8 @@
                         <attribute name="planar" type="string" />
                         <attribute name="axi"  type="string" />
                         <attribute name="symmetric" type="integer" />
+                        <attribute name="symmetric_planar" type="integer" />
+                        <attribute name="symmetric_axi" type="integer" />
                         <attribute name="condition" type="string" />
                 </complexType>
         </element>
