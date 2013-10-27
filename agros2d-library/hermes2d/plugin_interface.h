@@ -40,8 +40,8 @@
 class AGROS_LIBRARY_API AgrosExtFunction : public Hermes::Hermes2D::UExtFunction<double>
 {
 public:
-    AgrosExtFunction(FieldInfo* fieldInfo, int offsetI) : UExtFunction(), m_fieldInfo(fieldInfo), m_offsetI(offsetI){}
-
+    AgrosExtFunction(FieldInfo* fieldInfo, int offsetI) : UExtFunction(), m_fieldInfo(fieldInfo), m_offsetI(offsetI), m_valuesPointers(nullptr){}
+    ~AgrosExtFunction();
     // todo: this is dangerous. Order should be determined from the type of ExtFunction
     // for consants should be 0, for nonlinearities more. Hom much?
     // todo:
@@ -52,8 +52,10 @@ public:
     }
 
     virtual void init() {}
+    void getLabelValuesPointers(QString id);
 
 protected:
+    Value** m_valuesPointers;
     FieldInfo* m_fieldInfo;
     int m_offsetI;
 };
